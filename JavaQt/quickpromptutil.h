@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+class QIntValidator;
 class Component;
 class QuickPromptUtil : public QObject
 {
@@ -12,10 +13,9 @@ protected:
 public:
  static /*public*/ QString promptForString(Component* parentComponent, QString message, QString title, QString oldValue);
  static /*public*/ int promptForInt(Component* parentComponent, QString message, QString title, int oldValue);
+ /*public*/ static int promptForInteger(Component* parentComponent, /*@Nonnull*/ QString message, /*@Nonnull*/ QString title, int oldValue, /*@CheckForNull*/ QIntValidator* validator);
+ /*public*/ static QIntValidator* checkIntRange(int min, int max, QString valueLabel);
 
-signals:
-
-public slots:
+private:
 };
-
 #endif // QUICKPROMPTUTIL_H

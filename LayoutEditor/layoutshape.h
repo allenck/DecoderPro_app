@@ -60,11 +60,24 @@ public:
  void remove();
  /*public*/ QGraphicsEllipseItem* trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint);
  /*public*/ QGraphicsEllipseItem* trackControlCircleAt(/*@Nonnull*/ QPointF inPoint);
+ /*public*/ QGraphicsItemGroup* invalidateItem(EditScene* g2, QGraphicsItemGroup* item);
 
 signals:
 
 public slots:
  void on_changeName();
+ void on_setOpen();
+ void on_setClosed();
+ void on_setFilled();
+ void on_setStraight();
+ void on_setCurve();
+ void on_lineColor();
+ void on_setFillColor();
+ void on_lineWidth();
+ void on_setLevel();
+ void on_duplicateShape();
+ void on_deleteShape();
+ void on_deletePoint();
 
 private:
  static Logger* log;
@@ -81,7 +94,9 @@ private:
  // list of LayoutShapePoints
  /*private*/ /*final*/ QList<LayoutShapePoint*> shapePoints;
  /*private*/ QMenu* popup = nullptr;
- QGraphicsItemGroup* itemGroup;
+ QGraphicsItemGroup* rects= nullptr;
+ QGraphicsItemGroup* paths = nullptr;
+ int pointIndex;
 
 protected:
  /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles);
@@ -95,9 +110,9 @@ protected:
  * These are the points that make up the outline of the shape. Each point
  * can be ether a straight or a control point for a curve
  */
-/*public*/ /*static*/ class LayoutShapePoint : public QObject
+/*public*/ /*static*/ class LayoutShapePoint //: public QObject
 {
- Q_OBJECT
+ //Q_OBJECT
     /*private*/ /*transient*/ LayoutShapePointType* type;
     /*private*/ /*transient*/ QPointF point;
  QString name;

@@ -234,6 +234,10 @@ public:
     /*public*/ int getUpperLeftX() ;
     /*public*/ int getUpperLeftY() ;
     QT_DEPRECATED /*public*/ bool getScroll();
+    /*public*/ int setGridSize(int newSize);
+    /*public*/ int getGridSize();
+    /*public*/ int setGridSize2nd(int newSize);
+    /*public*/ int getGridSize2nd();
     /*public*/ /*const*/ int getAnchorX();
     /*public*/ /*const*/ int getAnchorY();
 //    /*public*/ bool allPositionable();
@@ -858,6 +862,7 @@ private:
  /*private*/ /*transient*/ QPushButton* scaleTrackDiagramCancel =nullptr;
  /*private*/ /*transient*/ NamedBean::DisplayOptions gDDMDO ;//= JmriBeanComboBox.DisplayOptions.DISPLAYNAME;
  /*private*/ /*transient*/ QList<LayoutTrack*> _layoutTrackSelection;// = new ArrayList<>();
+
  /*private*/ void updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent);
  /*private*/ void updateDropDownMenuDisplayOrderMenu();
  /*private*/ void updateAllComboBoxesDropDownListDisplayOrderFromPrefs();
@@ -1210,6 +1215,8 @@ protected:
 // /*protected*/ /*final*/ void setPaintScale(double newScale);
  /*protected*/ LayoutShape* addLayoutShape(/*@Nonnull*/ QPointF p);
  /*protected*/ bool removeLayoutShape(/*@Nonnull*/ LayoutShape* s);
+ /*protected*/ void amendSelectionGroup(/*@Nonnull*/ LayoutShape* ls);
+ /*protected*/ /*transient*/ QList<LayoutShape*>* _layoutShapeSelection;// = new ArrayList<>();
 
 protected slots:
  /*protected*/ void assignBlockToSelection();

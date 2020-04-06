@@ -5,6 +5,9 @@
 #include "layouttrack.h"
 #include "quickpromptutil.h"
 #include <QGraphicsItemGroup>
+#include "jmricolorchooser.h"
+#include "abstractaction.h"
+#include "layouteditorfinditems.h"
 
 /**
  * A LayoutShape is a set of LayoutShapePoint used to draw a shape. Each point
@@ -443,7 +446,7 @@
         popup = new QMenu();
     }
     if (layoutEditor->isEditable()) {
-        int pointIndex = hitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN;
+        pointIndex = hitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN;
 
         //JMenuItem jmi = popup.add(tr("MakeLabel", tr("LayoutShape")) + getName());
         QAction* jmi = popup->addAction(tr("Shape Name: %1 (select to change)").arg(getName()));
@@ -461,192 +464,238 @@
         connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_changeName()));
 
         popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
-#if 0
+#if 1
 
 //            if (true) { // only enable for debugging; TODO: delete or disable this for production
 //                jmi = popup.add("hitPointType: " + hitPointType);
 //                jmi->setEnabled(false);
 //            }
         // add "Change Shape Type to..." menu
-        JMenu shapeTypeMenu = new JMenu(tr("ChangeShapeTypeFromTo", getType().getName()));
-        if (getType() != LayoutShapeType.eOpen) {
-            jmi = shapeTypeMenu.add(new JCheckBoxMenuItem(new AbstractAction(tr("ShapeTypeOpen")) {
-                @Override
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    setType(LayoutShapeType.eOpen);
-                    layoutEditor.repaint();
-                }
-            }));
+        QMenu* shapeTypeMenu = new QMenu(tr("Change shape type from %1 to").arg(getType()->getName()));
+        if (getType()->getType() != LayoutShapeType::eOpen)
+        {
+         QAction* jmi = new QAction(tr("Open"),this);
+            shapeTypeMenu->addAction(jmi);
+            jmi->setCheckable(true);
+//            {
+//                @Override
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                    setType(LayoutShapeType.eOpen);
+//                    layoutEditor.repaint();
+//                }
+//            }));
+            connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setOpen()));
+        }
+#endif
+
+        if (getType()->getType() != LayoutShapeType::eClosed) {
+         QAction* jmi = new QAction(tr("Closed"), this);
+            shapeTypeMenu->addAction(jmi);
+            jmi->setCheckable(true);
+//            {
+//                @Override
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                    setType(LayoutShapeType.eClosed);
+//                    layoutEditor.repaint();
+//                }
+//            }));
+            connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setClosed()));
         }
 
-        if (getType() != LayoutShapeType.eClosed) {
-            jmi = shapeTypeMenu.add(new JCheckBoxMenuItem(new AbstractAction(tr("ShapeTypeClosed")) {
-                @Override
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    setType(LayoutShapeType.eClosed);
-                    layoutEditor.repaint();
-                }
-            }));
+        if (getType()->getType() != LayoutShapeType::eFilled)
+        {
+         QAction* jmi = new QAction(tr("Filled"), this);
+            shapeTypeMenu->addAction(jmi);
+            jmi->setCheckable(true);
+//            {
+//                @Override
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                    setType(LayoutShapeType.eFilled);
+//                    layoutEditor.repaint();
+//                }
+//            }));
+            connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setFilled()));
         }
 
-        if (getType() != LayoutShapeType.eFilled) {
-            jmi = shapeTypeMenu.add(new JCheckBoxMenuItem(new AbstractAction(tr("ShapeTypeFilled")) {
-                @Override
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    setType(LayoutShapeType.eFilled);
-                    layoutEditor.repaint();
-                }
-            }));
-        }
-
-        popup.add(shapeTypeMenu);
-
+        popup->addMenu(shapeTypeMenu);
+#if 1
         // Add "Change Shape Type from {0} to..." menu
-        if (hitPointType == LayoutTrack.SHAPE_CENTER) {
-            JMenu shapePointTypeMenu = new JMenu(tr("ChangeAllShapePointTypesTo"));
-            jmi = shapePointTypeMenu.add(new JCheckBoxMenuItem(new AbstractAction(tr("ShapePointTypeStraight")) {
-                @Override
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    for (LayoutShapePoint ls : shapePoints) {
-                        ls.setType(LayoutShapePointType.eStraight);
-                    }
-                    layoutEditor.repaint();
-                }
-            }));
+        if (hitPointType == LayoutTrack::SHAPE_CENTER) {
+            QMenu* shapePointTypeMenu = new QMenu(tr("Change all shape point types to"));
+            QAction* jmi = new QAction(tr("Straight"),this);
+            shapePointTypeMenu->addAction(jmi);
+            jmi->setCheckable(true);
+//            {
+//                @Override
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                    for (LayoutShapePoint ls : shapePoints) {
+//                        ls.setType(LayoutShapePointType.eStraight);
+//                    }
+//                    layoutEditor.repaint();
+//                }
+//            }));
+            connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setStraight()));
+            jmi = new QAction(tr("Curve"),this);
+            shapePointTypeMenu->addAction(jmi);
+            jmi->setCheckable(true);
+//            {
+//                @Override
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                        for (LayoutShapePoint ls : shapePoints) {
+//                         ls.setType(LayoutShapePointType.eCurve);
+//                    }
+//                    layoutEditor.repaint();
+//                }
+//            }));
+            connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setCurve()));
 
-            jmi = shapePointTypeMenu.add(new JCheckBoxMenuItem(new AbstractAction(tr("ShapePointTypeCurve")) {
-                @Override
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    for (LayoutShapePoint ls : shapePoints) {
-                        ls.setType(LayoutShapePointType.eCurve);
-                    }
-                    layoutEditor.repaint();
-                }
-            }));
+            popup->addMenu(shapePointTypeMenu);
+        }
+        else {
+            LayoutShapePoint* lsp = shapePoints.at(pointIndex);
 
-            popup.add(shapePointTypeMenu);
-        } else {
-            LayoutShapePoint lsp = shapePoints.get(pointIndex);
-
-            if (lsp != null) { // this should never happen... but just in case...
-                String otherPointTypeName = (lsp.getType() == LayoutShapePointType.eStraight)
-                        ? LayoutShapePointType.eCurve.getName() : LayoutShapePointType.eStraight.getName();
-                jmi = popup.add(tr("ChangeShapePointTypeFromTo", lsp.getType().getName(), otherPointTypeName));
-                jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
-                    switch (lsp.getType()) {
+            if (lsp != nullptr) { // this should never happen... but just in case...
+                QString otherPointTypeName = (lsp->getType()->getType() == LayoutShapePointType::eStraight)
+                        ? LayoutShapePointType(LayoutShapePointType::eCurve).getName() : LayoutShapePointType(LayoutShapePointType::eStraight).getName();
+                QAction* jmi = new QAction(tr("Change shape point type from %1 to %2").arg(lsp->getType()->getName()).arg(otherPointTypeName),this);
+                popup->addAction(jmi);
+#if 0
+                jmi->addActionListener((java.awt.event.ActionEvent e3) ->
+                {
+                    switch (lsp->getType()->getType()) {
                         case eStraight: {
-                            lsp.setType(LayoutShapePointType.eCurve);
+                            lsp->setType(LayoutShapePointType::eCurve);
                             break;
                         }
                         case eCurve: {
-                            lsp.setType(LayoutShapePointType.eStraight);
+                            lsp->setType(LayoutShapePointType::eStraight);
                             break;
                         }
                         default:
-                            log.error("unexpected enum member!");
+                            log->error("unexpected enum member!");
                     }
-                    layoutEditor.repaint();
+                    layoutEditor->repaint();
                 });
+#endif
             }
         }
 
         // Add "Set Level: x" menu
-        jmi = popup.add(new JMenuItem(tr("MakeLabel",
-                tr("ShapeLevelMenuItemTitle")) + level));
-        jmi->setToolTipText(tr("ShapeLevelMenuItemToolTip"));
-        jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
-            //prompt for level
-            int newValue = QuickPromptUtil.promptForInteger(layoutEditor,
-                    tr("ShapeLevelMenuItemTitle"),
-                    tr("ShapeLevelMenuItemTitle"),
-                    level, QuickPromptUtil.checkIntRange(1, 10, null));
-            setLevel(newValue);
-            layoutEditor.repaint();
-        });
+        jmi = new QAction(tr("%1").arg(
+                tr("Set Level ")) + QString::number(level), this);
+        popup->addAction(jmi);
+        jmi->setToolTip(tr("Select this to change the level of this shape"));
+//        jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+//            //prompt for level
+//            int newValue = QuickPromptUtil::promptForInteger(layoutEditor,
+//                    tr("ShapeLevelMenuItemTitle"),
+//                    tr("ShapeLevelMenuItemTitle"),
+//                    level, QuickPromptUtil.checkIntRange(1, 10, null));
+//            setLevel(newValue);
+//            layoutEditor->repaint();
+//        });
+        connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setLevel()));
 
-        jmi = popup.add(new JMenuItem(tr("ShapeLineColorMenuItemTitle")));
-        jmi->setToolTipText(tr("ShapeLineColorMenuItemToolTip"));
-        jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
-            Color newColor = JmriColorChooser.showDialog(null, "Choose a color", lineColor);
-            if ((newColor != null) && !newColor.equals(lineColor)) {
-                setLineColor(newColor);
-                layoutEditor.repaint();
-            }
-        });
-        jmi->setForeground(lineColor);
-        jmi->setBackground(ColorUtil.contrast(lineColor));
+        jmi = new QAction(tr("Set Line Color"),this);
+        popup->addAction(jmi);
+        jmi->setToolTip(tr("Select this to change the line color of this shape"));
+//        jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+//            Color newColor = JmriColorChooser.showDialog(null, "Choose a color", lineColor);
+//            if ((newColor != null) && !newColor.equals(lineColor)) {
+//                setLineColor(newColor);
+//                layoutEditor.repaint();
+//            }
+//        });
+        connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_lineColor()));
+//        jmi->setForeground(lineColor);
+//        jmi->setBackground(ColorUtil::contrast(lineColor));
 
-        if (getType() == LayoutShapeType.eFilled) {
-            jmi = popup.add(new JMenuItem(tr("ShapeFillColorMenuItemTitle")));
-            jmi->setToolTipText(tr("ShapeFillColorMenuItemToolTip"));
-            jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
-                Color newColor = JmriColorChooser.showDialog(null, "Choose a color", fillColor);
-                if ((newColor != null) && !newColor.equals(fillColor)) {
-                    setFillColor(newColor);
-                    layoutEditor.repaint();
-                }
-            });
-            jmi->setForeground(fillColor);
-            jmi->setBackground(ColorUtil.contrast(fillColor));
+        if (getType()->getType() == LayoutShapeType::eFilled) {
+            jmi = new QAction(tr("Set Fill Color"));
+            popup->addAction(jmi);
+            jmi->setToolTip(tr("Select this to change the fill color of this shape"));
+//            jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+//                Color newColor = JmriColorChooser.showDialog(null, "Choose a color", fillColor);
+//                if ((newColor != null) && !newColor.equals(fillColor)) {
+//                    setFillColor(newColor);
+//                    layoutEditor.repaint();
+//                }
+//            });
+//            jmi->setForeground(fillColor);
+//            jmi->setBackground(ColorUtil.contrast(fillColor));
+            connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setFillColor()));
         }
 
         // add "Set Line Width: x" menu
-        jmi = popup.add(new JMenuItem(tr("MakeLabel",
-                tr("ShapeLineWidthMenuItemTitle")) + lineWidth));
-        jmi->setToolTipText(tr("ShapeLineWidthMenuItemToolTip"));
-        jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
-            //prompt for lineWidth
-            int newValue = QuickPromptUtil.promptForInteger(layoutEditor,
-                    tr("ShapeLineWidthMenuItemTitle"),
-                    tr("ShapeLineWidthMenuItemTitle"),
-                    lineWidth, QuickPromptUtil.checkIntRange(1, MAX_LINEWIDTH, null));
-            setLineWidth(newValue);
-            layoutEditor.repaint();
-        });
+        jmi = new QAction(tr("%1").arg(
+                tr("Set Line Width")) + QString::number(lineWidth),this);
+        popup->addAction(jmi);
+        jmi->setToolTip(tr("Select this to change the line width of this shape"));
+//        jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+//            //prompt for lineWidth
+//            int newValue = QuickPromptUtil.promptForInteger(layoutEditor,
+//                    tr("ShapeLineWidthMenuItemTitle"),
+//                    tr("ShapeLineWidthMenuItemTitle"),
+//                    lineWidth, QuickPromptUtil.checkIntRange(1, MAX_LINEWIDTH, null));
+//            setLineWidth(newValue);
+//            layoutEditor.repaint();
+//        });
+        connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_lineWidth()));
 
-        popup.add(new JSeparator(JSeparator.HORIZONTAL));
-        if (hitPointType == LayoutTrack.SHAPE_CENTER) {
-            jmi = popup.add(new AbstractAction(tr("ShapeDuplicateMenuItemTitle")) {
-                @Override
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    LayoutShape ls = new LayoutShape(LayoutShape.this);
-                    ls.setName(layoutEditor.getFinder().uniqueName("S"));
+        popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
+        if (hitPointType == LayoutTrack::SHAPE_CENTER) {
+            jmi = new QAction(tr("Duplicate shape"),this);
+            popup->addAction(jmi);
+//            {
+//                @Override
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                    LayoutShape ls = new LayoutShape(LayoutShape.this);
+//                    ls.setName(layoutEditor.getFinder().uniqueName("S"));
 
-                    double gridSize = layoutEditor.getGridSize();
-                    QPointF delta = new QPointF.Double(gridSize, gridSize);
-                    for (LayoutShapePoint lsp : ls.getPoints()) {
-                        lsp.setPoint(MathUtil::add(lsp.getPoint(), delta));
-                    }
-                    layoutEditor.getLayoutShapes().add(ls);
-                    layoutEditor.clearSelectionGroups();
-                    layoutEditor.amendSelectionGroup(ls);
-                }
-            });
-            jmi->setToolTipText(tr("ShapeDuplicateMenuItemToolTip"));
+//                    double gridSize = layoutEditor.getGridSize();
+//                    QPointF delta = new QPointF.Double(gridSize, gridSize);
+//                    for (LayoutShapePoint lsp : ls.getPoints()) {
+//                        lsp.setPoint(MathUtil::add(lsp.getPoint(), delta));
+//                    }
+//                    layoutEditor.getLayoutShapes().add(ls);
+//                    layoutEditor.clearSelectionGroups();
+//                    layoutEditor.amendSelectionGroup(ls);
+//                }
+//            });
+            connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_duplicateShape()));
+            jmi->setToolTip(tr("Select this to duplicate this shape"));
 
-            popup.add(new AbstractAction(tr("ButtonDelete")) {
-                @Override
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    if (layoutEditor.removeLayoutShape(LayoutShape.this)) {
-                        // Returned true if user did not cancel
-                        remove();
-                        dispose();
-                    }
-                }
-            });
-        } else {
-            popup.add(new AbstractAction(tr("ButtonDelete")) {
-                @Override
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    shapePoints.remove(pointIndex);
-                    layoutEditor.repaint();
-                }
-            });
-        }
-        if (mouseEvent != null) {
-            popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
-        }
+            jmi = new QAction(new AbstractAction(tr("Delete"), this));
+            popup->addAction(jmi);
+//            {
+//                @Override
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                    if (layoutEditor.removeLayoutShape(LayoutShape.this)) {
+//                        // Returned true if user did not cancel
+//                        remove();
+//                        dispose();
+//                    }
+//                }
+//            });
+              connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_deleteShape()));
+        } else
 #endif
+        {
+         jmi = new AbstractAction(tr("Delete"), this);
+         popup->addAction(jmi);
+//            {
+//                @Override
+//                /*public*/ void actionPerformed(ActionEvent e) {
+//                    shapePoints.remove(pointIndex);
+//                    layoutEditor.repaint();
+//                }
+//            });
+              connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_deletePoint()));
+        }
+        if (mouseEvent != nullptr) {
+            //popup->show(mouseEvent->getComponent(), mouseEvent->pos().x(), mouseEvent.getY());
+         popup->exec();
+        }
     }
 
     return popup;
@@ -662,6 +711,100 @@ void LayoutShape::on_changeName()
  setName(newValue);
  layoutEditor->repaint();
 
+}
+
+/*public*/ void LayoutShape::on_setOpen() {
+    setType(new LayoutShapeType(LayoutShapeType::eOpen));
+    layoutEditor->repaint();
+}
+
+/*public*/ void LayoutShape::on_setClosed()
+{
+    setType(new LayoutShapeType(LayoutShapeType::eClosed));
+    layoutEditor->repaint();
+}
+
+/*public*/ void LayoutShape::on_setStraight() {
+    for (LayoutShapePoint* ls : shapePoints) {
+        ls->setType( new LayoutShapePointType( LayoutShapePointType::eStraight));
+    }
+    layoutEditor->repaint();
+}
+
+/*public*/ void LayoutShape::on_setCurve() {
+        for (LayoutShapePoint* ls : shapePoints) {
+         ls->setType(new LayoutShapePointType(LayoutShapePointType::eCurve));
+    }
+    layoutEditor->repaint();
+}
+
+/*public*/ void LayoutShape::on_lineColor()
+{
+ QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", lineColor);
+ if ((newColor.isValid()) && newColor!=(lineColor)) {
+     setLineColor(newColor);
+     layoutEditor->repaint();
+ }
+}
+
+/*public*/ void LayoutShape::on_setFillColor()
+{
+ QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", lineColor);
+ if ((newColor.isValid()) && newColor!=(lineColor)) {
+     setFillColor(newColor);
+     layoutEditor->repaint();
+ }
+}
+
+/*public*/ void LayoutShape::on_lineWidth()
+{
+ int newValue = QuickPromptUtil::promptForInteger((Component*)layoutEditor,
+         tr("Set Line Width"),
+         tr("Set Line Width"),
+         lineWidth, QuickPromptUtil::checkIntRange(1, MAX_LINEWIDTH, nullptr));
+ setLineWidth(newValue);
+ layoutEditor->repaint();
+}
+
+/*public*/ void LayoutShape::on_setLevel()
+{
+ //prompt for level
+ int newValue = QuickPromptUtil::promptForInteger((Component*)layoutEditor,
+         tr("Set Level"),
+         tr("Set Level"),
+         level, QuickPromptUtil::checkIntRange(1, 10, nullptr));
+ setLevel(newValue);
+ layoutEditor->repaint();
+
+}
+
+/*public*/ void LayoutShape::on_duplicateShape() {
+    LayoutShape* ls = new LayoutShape(this);
+    ls->setName(layoutEditor->getFinder()->uniqueName("S"));
+
+    double gridSize = layoutEditor->getGridSize();
+    QPointF delta = QPointF(gridSize, gridSize);
+    for (LayoutShapePoint* lsp : ls->getPoints()) {
+        lsp->setPoint(MathUtil::add(lsp->getPoint(), delta));
+    }
+    layoutEditor->getLayoutShapes()->append(ls);
+    layoutEditor->clearSelectionGroups();
+    layoutEditor->amendSelectionGroup(ls);
+}
+
+/*public*/ void LayoutShape::on_deleteShape()
+{
+    if (layoutEditor->removeLayoutShape(this)) {
+        // Returned true if user did not cancel
+        remove();
+        dispose();
+    }
+}
+
+/*public*/ void LayoutShape::on_deletePoint()
+{
+    shapePoints.removeAt(pointIndex);
+    layoutEditor->repaint();
 }
 
 
@@ -686,6 +829,11 @@ void LayoutShape::remove() {
 
 //@Override
 /*protected*/ void LayoutShape::draw(EditScene* g2) {
+
+ paths = invalidateItem(g2, paths);
+
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+
 #if 1
     //GeneralPath path = new GeneralPath();
  QPainterPath path = QPainterPath();
@@ -753,16 +901,21 @@ void LayoutShape::remove() {
     }   // for (idx = 0; idx < cnt; idx++)
 
     QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-    QPen stroke = QPen(fillColor);
+    QPen fillPen = QPen(fillColor);
     if (getType()->getType() == LayoutShapeType::eFilled) {
 //        g2.setColor(fillColor);
 //        g2.fill(path);
-     pathItem->setPen(stroke);
+     pathItem->setPen(fillPen);
 
     }
 //    g2.setStroke(new BasicStroke(lineWidth,
 //            BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //    g2.setColor(lineColor);
+    QPen stroke = QPen(lineColor,1,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
+    pathItem->setPen(stroke);
+    itemGroup->addToGroup(pathItem);
+    paths = itemGroup;
+    g2->addItem(paths);
 //    g2.draw(path);
 #endif
 }   // draw
@@ -771,27 +924,49 @@ void LayoutShape::remove() {
     QColor backgroundColor = layoutEditor->getBackground();
     QColor controlsColor = ColorUtil::contrast(backgroundColor);
     controlsColor = ColorUtil::setAlpha(controlsColor, 0.5);
-#if 0
-    g2.setColor(controlsColor);
+#if 1
+    rects = invalidateItem(g2, rects);
 
-    shapePoints.forEach((slp) -> {
-        g2.draw(layoutEditor.layoutEditorControlRectAt(slp.getPoint()));
-    });
+    //g2.setColor(controlsColor);
+
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+    QPen drawingStroke = QPen(controlsColor);
+
+//    shapePoints.forEach((slp) -> {
+//        g2.draw(layoutEditor.layoutEditorControlRectAt(slp.getPoint()));
+//    });
+    foreach(LayoutShapePoint* slp, shapePoints)
+    {
+     QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->layoutEditorControlRectAt(slp->getPoint()));
+     rectItem->setPen(drawingStroke);
+     itemGroup->addToGroup(rectItem);
+    }
     if (shapePoints.size() > 0) {
-        QPointF end0 = shapePoints.get(0).getPoint();
+        QPointF end0 = shapePoints.at(0)->getPoint();
         QPointF end1 = end0;
-        for (LayoutShapePoint lsp : shapePoints) {
-            QPointF end2 = lsp.getPoint();
-            g2.draw(new Line2D.Double(end1, end2));
+        QGraphicsLineItem* lineItem;
+        for (LayoutShapePoint* lsp : shapePoints) {
+            QPointF end2 = lsp->getPoint();
+            //g2.draw(new Line2D.Double(end1, end2));
+            lineItem = new QGraphicsLineItem(end1.x(), end1.y(), end2.x(), end2.y() );
+            lineItem->setPen(drawingStroke);
+            itemGroup->addToGroup(lineItem);
             end1 = end2;
         }
 
-        if (getType() != LayoutShapeType.eOpen) {
-            g2.draw(new Line2D.Double(end1, end0));
+        if (getType() != new LayoutShapeType(LayoutShapeType::eOpen)) {
+            //g2.draw(new Line2D.Double(end1, end0));
+         lineItem = new QGraphicsLineItem(end1.x(), end1.y(), end0.x(), end0.y() );
+         lineItem->setPen(drawingStroke);
+         itemGroup->addToGroup(lineItem);
         }
     }
 
-    g2.draw(trackEditControlCircleAt(getCoordsCenter()));
+    //g2.draw(trackEditControlCircleAt(getCoordsCenter()));
+    QGraphicsEllipseItem* circle = trackEditControlCircleAt(getCoordsCenter());
+    itemGroup->addToGroup(circle);
+    rects = itemGroup;
+    g2->addItem(rects);
 #endif
 }   // drawEditControls
 
@@ -926,7 +1101,7 @@ void LayoutShape::remove() {
  return ENUM_MAP.value(name);
 }
 
-    /*public*/ QString LayoutShapePointType::getName()
+/*public*/ QString LayoutShapePointType::getName()
 {
  return name;
 }
@@ -934,3 +1109,21 @@ void LayoutShape::remove() {
 
 /*private*/ /*final*/ /*static*/ Logger*  LayoutShape::log = LoggerFactory::getLogger("LayoutShape");
 //}   // class LayoutShape
+
+/*public*/ QGraphicsItemGroup* LayoutShape::invalidateItem(EditScene* g2, QGraphicsItemGroup* item)
+{
+ if(item!=nullptr && item->scene() != nullptr)
+ {
+  for(QGraphicsItem* i : item->childItems())
+  {
+   if(qgraphicsitem_cast<QGraphicsItemGroup*>(i) && qgraphicsitem_cast<QGraphicsItemGroup*>(i)->childItems().count()>0)
+    invalidateItem(g2, qgraphicsitem_cast<QGraphicsItemGroup*>(i));
+   g2->removeItem(i);
+  }
+  if(item->scene() == g2)
+   g2->destroyItemGroup(item);
+
+ }
+ item = nullptr;
+ return item;
+}

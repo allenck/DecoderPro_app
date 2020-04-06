@@ -325,6 +325,7 @@
 #include "DCS240/dcs240usbmodeselectpane.h"
 #include "guilafpreferencesmanager.h"
 #include "webserverpreferences.h"
+#include "layoutshapexml.h"
 
 bool Metatypes::done = false;
 
@@ -667,6 +668,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<Dcs240UsbModeSelectPane>("Dcs240UsbModeSelectPane");
  qRegisterMetaType<GuiLafPreferencesManager>("GuiLafPreferencesManager");
  qRegisterMetaType<WebServerPreferences>("WebServerPreferences");
+ qRegisterMetaType<LayoutShapeXml>("LayoutShapeXml");
 
  Metatypes::done = true;
 }

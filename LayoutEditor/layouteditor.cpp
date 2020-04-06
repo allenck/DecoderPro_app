@@ -755,6 +755,7 @@ _contents = new QVector<Positionable*>();
  textColorMenuItems = new QVector<QAction*>(13);
  turnoutCircleColorMenuItems = new QVector<QAction*>(14);
  turnoutCircleSizeMenuItems = new QVector<QAction*>(10);
+ _layoutShapeSelection = new QList<LayoutShape*>();
 
 #if 0
  //
@@ -6267,6 +6268,14 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   paintTargetPanel(editScene);
 }
 
+/*protected*/ void LayoutEditor::amendSelectionGroup(/*@Nonnull*/ LayoutShape* ls) {
+    if (_layoutShapeSelection->contains(ls)) {
+        _layoutShapeSelection->removeOne(ls);
+    } else {
+        _layoutShapeSelection->append(ls);
+    }
+    redrawPanel();
+}
 /************************ Options setup **********************/
 /**
 *  Control whether target panel items are editable.
@@ -6326,6 +6335,23 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   // on version 2.5.1 and earlier
   if (_scrollState==SCROLL_NONE) return false;
   else return true;
+}
+/*public*/ int LayoutEditor::setGridSize(int newSize) {
+    gridSize1st = newSize;
+    return gridSize1st;
+}
+
+/*public*/ int LayoutEditor::getGridSize() {
+    return gridSize1st;
+}
+
+/*public*/ int LayoutEditor::setGridSize2nd(int newSize) {
+    gridSize2nd = newSize;
+    return gridSize2nd;
+}
+
+/*public*/ int LayoutEditor::getGridSize2nd() {
+    return gridSize2nd;
 }
 /*public*/ /*const*/ int LayoutEditor::getAnchorX() {
   return _anchorX;
