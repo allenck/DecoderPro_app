@@ -233,7 +233,9 @@ SOURCES += \
     entryexit/sourcetest.cpp \
     entryexit/sourcetestaction.cpp \
     layouteditor/layouteditortoolstest.cpp \
-    layouteditor/layouteditortoolstestaction.cpp
+    layouteditor/layouteditortoolstestaction.cpp \
+    layouteditor/layoutshapetest.cpp \
+    layouteditor/layoutshapetestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -444,7 +446,9 @@ HEADERS += \
     entryexit/sourcetest.h \
     entryexit/sourcetestaction.h \
     layouteditor/layouteditortoolstest.h \
-    layouteditor/layouteditortoolstestaction.h
+    layouteditor/layouteditortoolstestaction.h \
+    layouteditor/layoutshapetest.h \
+    layouteditor/layoutshapetestaction.h
 
 unix {
     target.path = /usr/lib

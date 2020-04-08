@@ -78,6 +78,7 @@
 #include "entryexit/sourcetestaction.h"
 #include "entryexit/sectiontestaction.h"
 #include "layouteditor/layouteditortoolstestaction.h"
+#include "layouteditor/layoutshapetestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -227,4 +228,5 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* layoutEditorMenu = new QMenu("LayoutEditor");
     addMenu(layoutEditorMenu);
     layoutEditorMenu->addAction(new LayoutEditorToolsTestAction(this));
+    layoutEditorMenu->addAction(new LayoutShapeTestAction(this));
 }
