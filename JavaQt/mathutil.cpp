@@ -179,6 +179,18 @@ MathUtil::MathUtil()
 }
 
 /**
+ * Offset a rectangle by a single value.
+ *
+ * @param r the rectangle
+ * @param o the offset
+ * @return the offset rectangle
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QRectF MathUtil::offset(/*@Nonnull*/ QRectF r, /*@Nonnull*/ QPointF o) {
+    return offset(r, o.x(), o.y());
+}
+
+/**
  * calculate the point 1/3 of the way between two points
  *
  * @param pA the first point
@@ -288,6 +300,18 @@ MathUtil::MathUtil()
 /*public*/ /*static*/ double MathUtil::absDiffAngleRAD(double a, double b) {
     return qAbs(diffAngleRAD(a, b));
 }
+/**
+ * Get the minimum coordinates of two points.
+ *
+ * @param pA the first point
+ * @param pB the second point
+ * @return the minimum coordinates
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::min(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB) {
+    return  QPointF(qMin(pA.x(), pB.x()), qMin(pA.y(), pB.y()));
+}
+
 /**
  * return the maximum coordinates of two points
  *

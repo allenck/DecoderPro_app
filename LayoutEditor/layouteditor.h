@@ -441,6 +441,11 @@ public:
     QT_DEPRECATED /*public*/ bool getOpenDispatcherOnLoad();
     /*public*/ void setOpenDispatcherOnLoad(bool boo);
     /*public*/ void setHighlightSelectedBlock(bool state);
+    /*public*/ void rotateSelection90();
+    /*public*/ void rotateLayout90();
+    /*public*/ void alignLayoutToGrid();
+    /*public*/ void alignSelectionToGrid() ;
+    /*public*/ void translate(float xTranslation, float yTranslation);
 
 
 public slots:
@@ -478,7 +483,7 @@ private:
  /*private*/ /*transient*/ QPointF currentPoint;// = new QPointF(100.0,100.0);
  QObject* selectedObject;
  QObject* prevSelectedObject;
- int selectedPointType;
+ int selectedHitPointType;
  /*private*/ void createSelectionGroups();
  bool isDragging;
  // counts used to determine unique internal names
@@ -825,6 +830,7 @@ private:
  /*private*/ AnalogClock2Display* checkClockPopUps(/*@Nonnull*/ QPointF loc);
  /*private*/ MultiSensorIcon* checkMultiSensorPopUps(/*@Nonnull */QPointF loc);
  /*private*/ LocoIcon* checkMarkerPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ LayoutShape* checkLayoutShapePopUps(/*@Nonnull*/ QPointF loc);
  /*private*/ /*transient*/ LayoutTrackEditors* layoutTrackEditors = nullptr;
  /*private*/ /*transient*/ LayoutEditorChecks* layoutEditorChecks = nullptr;
  //operational variables for enter track width pane
@@ -879,6 +885,8 @@ private:
  /*private*/ /*transient*/ QPushButton* moveSelectionDone;
  /*private*/ /*transient*/ QPushButton* moveSelectionCancel;
  /*private*/ bool canUndoMoveSelection = false;
+ /*private*/ QPointF undoDelta;// = MathUtil.zeroPoint2D;
+
  /*private*/ double undoDeltaX = 0.0;
  /*private*/ double undoDeltaY = 0.0;
  /*private*/ /*transient*/ QRectF undoRect;
@@ -944,9 +952,12 @@ private:
  /*private*/ void deletefloatingEditToolBoxFrame();
  /*private*/ void createFloatingHelpPanel();
  /*private*/ void setScrollbarScale(double ratio);
+ /*private*/ /*transient*/ QMenu* undoTranslateSelectionMenuItem;// = new JMenuItem(Bundle.getMessage("UndoTranslateSelection"));
+ /*private*/ /*transient*/ QMenu* assignBlockToSelectionMenuItem;// = new JMenuItem(Bundle.getMessage("AssignBlockToSelectionTitle") + "...");
 
  //QHBoxLayout* editPanelLayout;
  BorderLayout* borderLayout = nullptr;
+ /*private*/ void alignToGrid(QVector<Positionable *> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes);
 
  /*private*/ /*enum*/class ToolBarSide {
 
@@ -1149,6 +1160,7 @@ protected:
  * Select the menu items to display for the Positionable's popup
  */
 // /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
+ /*public*/ void alignSelection(bool alignX);
  /*protected*/ bool showAlignPopup();
  /**
  * Remove a PositionablePoint -- an Anchor or an End Bumper.
@@ -1216,7 +1228,7 @@ protected:
  /*protected*/ LayoutShape* addLayoutShape(/*@Nonnull*/ QPointF p);
  /*protected*/ bool removeLayoutShape(/*@Nonnull*/ LayoutShape* s);
  /*protected*/ void amendSelectionGroup(/*@Nonnull*/ LayoutShape* ls);
- /*protected*/ /*transient*/ QList<LayoutShape*>* _layoutShapeSelection;// = new ArrayList<>();
+ /*protected*/ /*transient*/ QList<LayoutShape*> _layoutShapeSelection;// = new ArrayList<>();
 
 protected slots:
  /*protected*/ void assignBlockToSelection();
@@ -1229,6 +1241,7 @@ protected slots:
  void scaleTrackDiagramDonePressed(/*ActionEvent event*/);
  void scaleTrackDiagramCancelPressed(/*ActionEvent event*/);
  /*protected*/ void moveSelection();
+
  void undoMoveSelection();
 
  /*protected*/ void enterGridSizes();

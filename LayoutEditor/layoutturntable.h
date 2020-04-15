@@ -117,6 +117,7 @@ public:
  /*public*/  QPointF getRayCoordsIndexed(int index);
  /*public*/  QPointF getRayCoordsOrdered(int i);
  /*public*/  void setRayCoordsIndexed(double x, double y, int index);
+ /*public*/ void setRayCoordsIndexed(QPointF point, int index);
  /*public*/ QPointF getCoordsForConnectionType(int locationType);
  /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException);
  /*public*/ void setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException);

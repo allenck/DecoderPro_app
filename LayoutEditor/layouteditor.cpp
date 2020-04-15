@@ -572,6 +572,7 @@ _contents = new QVector<Positionable*>();
  _pointSelection = nullptr; //new QVector<PositionablePoint*>();  // PositionablePoint list
  //_labelSelection = nullptr; //new QVector<PositionableLabel*>(); // PositionalLabel list
  _paintScale = 1.0;   // scale for _targetPanel drawing
+ undoDelta = MathUtil::zeroPoint2D;
 
   openFrame = this;
  // program default turnout size parameters
@@ -618,7 +619,7 @@ _contents = new QVector<Positionable*>();
  noWarnLevelXing = false;
  noWarnSlip = false;
  selectedObject = nullptr;
- selectedPointType = 0;
+ selectedHitPointType = 0;
  skipIncludedTurnout = false;
  mainlineTrackWidth = 4.0F;
  sidelineTrackWidth = 2.0F;
@@ -668,6 +669,10 @@ _contents = new QVector<Positionable*>();
  zoom70Item->setCheckable(true);
  zoom80Item = new QAction("x 8.0");
  zoom80Item->setCheckable(true);
+
+ undoTranslateSelectionMenuItem = new QMenu(tr("Undo Translate Selection"));
+ assignBlockToSelectionMenuItem = new QMenu(tr("Assign Block To Selection") + "...");
+
 
  _labelImage = new QVector<PositionableLabel*>(); // layout positionable label images
  sensorImage = new QVector<SensorIcon*>();  // sensor images
@@ -755,7 +760,7 @@ _contents = new QVector<Positionable*>();
  textColorMenuItems = new QVector<QAction*>(13);
  turnoutCircleColorMenuItems = new QVector<QAction*>(14);
  turnoutCircleSizeMenuItems = new QVector<QAction*>(10);
- _layoutShapeSelection = new QList<LayoutShape*>();
+ _layoutShapeSelection = QList<LayoutShape*>();
 
 #if 0
  //
@@ -1485,11 +1490,11 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   {
    // if moving an item, identify the item for mouseDragging
    selectedObject = nullptr;
-   selectedPointType = NONE;
+   selectedHitPointType = NONE;
    if (findLayoutTracksHitPoint(dLoc))
    {
     selectedObject = foundObject;
-    selectedPointType = foundPointType;
+    selectedHitPointType = foundPointType;
     //selectedNeedsConnect = foundNeedsConnect;
     startDel = QPointF(foundLocation.x()-dLoc.x(), foundLocation.y()-dLoc.y());
     foundObject = nullptr;
@@ -1499,7 +1504,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
     selectedObject = checkMarkers(dLoc);
     if (selectedObject!=nullptr)
     {
-     selectedPointType = MARKER;
+     selectedHitPointType = MARKER;
      startDel= QPointF((((LocoIcon*)selectedObject)->x()-dLoc.y()),(((LocoIcon*)selectedObject)->y()-dLoc.y()));
      selectedNeedsConnect = false;
     }
@@ -1508,7 +1513,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
      selectedObject = checkClocks(dLoc);
      if (selectedObject!=nullptr)
      {
-      selectedPointType = LAYOUT_POS_JCOMP;
+      selectedHitPointType = LAYOUT_POS_JCOMP;
       //startDel.setLocation((((PositionableJComponent)selectedObject).getX()-dLoc.getX()),(((PositionableJComponent)selectedObject).getY()-dLoc.getY()));
       startDel= QPointF((((AnalogClock2Display*)selectedObject)->x()-dLoc.y()),(((AnalogClock2Display*)selectedObject)->x()-dLoc.y()));
       selectedNeedsConnect = false;
@@ -1518,7 +1523,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
       selectedObject = checkMultiSensors(dLoc);
       if (selectedObject!=nullptr)
       {
-       selectedPointType = MULTI_SENSOR;
+       selectedHitPointType = MULTI_SENSOR;
        startDel= QPointF((((MultiSensorIcon*)selectedObject)->x()-dLoc.y()), (((MultiSensorIcon*)selectedObject)->x()-dLoc.y()));
        //selectedNeedsConnect = false;
       }
@@ -1541,7 +1546,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
      }
      if (selectedObject!=nullptr)
      {
-      selectedPointType = LAYOUT_POS_LABEL;
+      selectedHitPointType = LAYOUT_POS_LABEL;
       //startDel.setLocation((((PositionableLabel*)selectedObject)->getX()-dLoc.getX()),                     (((PositionableLabel*)selectedObject)->getY()-dLoc.getY()));
       startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),(((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
       //if (selectedObject instanceof MemoryIcon)
@@ -1561,7 +1566,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
       selectedObject = checkBackgrounds(dLoc);
       if (selectedObject!=nullptr)
       {
-       selectedPointType = LAYOUT_POS_LABEL;
+       selectedHitPointType = LAYOUT_POS_LABEL;
        //startDel.setLocation((((PositionableLabel)selectedObject).getX()-dLoc.x()),                            (((PositionableLabel)selectedObject).getY()-dLoc.y()));
        startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
                           (((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
@@ -1620,7 +1625,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   selectedObject = checkMarkers(dLoc);
   if (selectedObject!=nullptr)
   {
-   selectedPointType = MARKER;
+   selectedHitPointType = MARKER;
    startDel= QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
                                             (((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
    //selectedNeedsConnect = false;
@@ -1653,9 +1658,9 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 
 /**
  * Called by {@link #mousePressed} to determine if the mouse click was in a turnout control location.
- * If so, update selectedPointType and selectedObject for use by {@link #mouseReleased}.
+ * If so, update selectedHitPointType and selectedObject for use by {@link #mouseReleased}.
  * <p>
- * If there's no match, selectedObject is set to null and selectedPointType
+ * If there's no match, selectedObject is set to null and selectedHitPointType
  * is left referring to the results of the checking the last track on the list.
  * <p>
  * Refers to the current value of {@link #layoutTrackList) and {@link #dLoc}.
@@ -1666,8 +1671,8 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
     selectedObject = nullptr;  // deliberate side-effect
     for (LayoutTrack* theTrack : *layoutTrackList)
     {
-        selectedPointType = theTrack->findHitPointType(dLoc, useRectangles); // deliberate side-effect
-        if (LayoutTrack::isControlHitType(selectedPointType)) {
+        selectedHitPointType = theTrack->findHitPointType(dLoc, useRectangles); // deliberate side-effect
+        if (LayoutTrack::isControlHitType(selectedHitPointType)) {
             selectedObject = theTrack; // deliberate side-effect
             return;
         }
@@ -1870,6 +1875,18 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
     return result;
 }
 
+/*private*/ LayoutShape* LayoutEditor::checkLayoutShapePopUps(/*@Nonnull*/ QPointF loc) {
+    LayoutShape* result = nullptr;
+    for (LayoutShape* ls : *layoutShapes) {
+        selectedHitPointType = ls->findHitPointType(loc, true);
+        if (LayoutShape::isShapeHitPointType(selectedHitPointType)) {
+            result = ls;
+            break;
+        }
+    }
+    return result;
+}
+
 /**
  * get the coordinates for the connection type of the specified object
  *
@@ -1908,7 +1925,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   if (isEditable())
   {
    selectedObject = nullptr;
-   selectedPointType = NONE;
+   selectedHitPointType = NONE;
    showEditPopUps(event);
   }
   else
@@ -1986,6 +2003,12 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
         {
          amendSelectionGroup((Positionable*)sm);
         }
+        else {
+         LayoutShape* ls = checkLayoutShapePopUps(dLoc);
+         if (ls != nullptr) {
+             amendSelectionGroup(ls);
+         }
+     }
        }
 //      }
      }
@@ -2610,6 +2633,16 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    else if (leToolBarPanel->iconLabelButton->isChecked()) {
         addIcon();
     }
+    else if (leToolBarPanel->shapeButton->isChecked())
+    {
+     if (selectedObject == nullptr) {
+         addLayoutShape(currentPoint);
+         setCursor(/*Cursor.getDefaultCursor()*/Qt::ArrowCursor);
+     } else {
+         LayoutShape* ls = (LayoutShape*) selectedObject;
+         ls->addPoint(currentPoint, selectedHitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN);
+     }
+    }
 #if 1
     else if (leToolBarPanel->signalMastButton->isChecked()) {
         addSignalMast();
@@ -2627,13 +2660,13 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   else if ( (/*event->isPopupTrigger() ||*/ delayedPopupTrigger)  && !isDragging)
   {
    selectedObject = nullptr;
-   selectedPointType = LayoutTrack::NONE;
+   selectedHitPointType = LayoutTrack::NONE;
    //whenReleased = event.getWhen();
    showEditPopUps(event);
    delayedPopupTrigger = false;
   }
    // check if controlling turnouts
-  else if ( ( selectedObject!=nullptr) && (selectedPointType==TURNOUT_CENTER)
+  else if ( ( selectedObject!=nullptr) && (selectedHitPointType==TURNOUT_CENTER)
              && allControlling() /*&& (!(event->modifiers()&Qt::ControlModifier))*/ /*&& (!(event->modifiers()&Qt::AltModifier)) *//*&& (!event.isPopupTrigger())*/
              && (!(event->modifiers()&Qt::ShiftModifier))
              && (!(event->modifiers()&Qt::ControlModifier)) )
@@ -2642,9 +2675,9 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    LayoutTurnout* t = (LayoutTurnout*)selectedObject;
    t->toggleTurnout();
   }
-  else if ( ( selectedObject!=nullptr) && ((selectedPointType == LayoutTrack::SLIP_CENTER) ||
-                                        (selectedPointType == LayoutTrack::SLIP_LEFT) ||
-                                        (selectedPointType == LayoutTrack::SLIP_RIGHT))/* &&
+  else if ( ( selectedObject!=nullptr) && ((selectedHitPointType == LayoutTrack::SLIP_CENTER) ||
+                                        (selectedHitPointType == LayoutTrack::SLIP_LEFT) ||
+                                        (selectedHitPointType == LayoutTrack::SLIP_RIGHT))/* &&
                allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
                    (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
   {
@@ -2652,15 +2685,15 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    LayoutSlip* t = (LayoutSlip*)selectedObject;
    t->toggleTurnout();
   }
-  else if ( ( selectedObject!=nullptr) && (selectedPointType>=TURNTABLE_RAY_OFFSET) /*&&
+  else if ( ( selectedObject!=nullptr) && (selectedHitPointType>=TURNTABLE_RAY_OFFSET) /*&&
                allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
                    (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
   {
    // controlling layout, in edit mode
    LayoutTurntable* t =  (LayoutTurntable*)selectedObject;
-   t->setPosition(selectedPointType-TURNTABLE_RAY_OFFSET);
+   t->setPosition(selectedHitPointType-TURNTABLE_RAY_OFFSET);
   }
-  else if ((selectedObject != nullptr) && (selectedPointType == LayoutTrack::TURNOUT_CENTER) /*&&
+  else if ((selectedObject != nullptr) && (selectedHitPointType == LayoutTrack::TURNOUT_CENTER) /*&&
                          allControlling() && (event.isMetaDown()) && (!event.isAltDown()) &&
                          (!event.isShiftDown()) && (!event.isControlDown()) && isDragging)*/
            && (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) && isDragging)
@@ -2668,7 +2701,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
         //controlling layout, in edit mode
         hitPointCheckLayoutTurnouts((LayoutTurnout*) selectedObject);
   }
-  else if ((selectedObject != nullptr) && (selectedPointType == LayoutTrack::POS_POINT) /*&&
+  else if ((selectedObject != nullptr) && (selectedHitPointType == LayoutTrack::POS_POINT) /*&&
                allControlling() && (event.isMetaDown()) && (!event.isAltDown()) &&
                (!event.isShiftDown()) && (!event.isControlDown()) && isDragging) */
            && (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) && isDragging)
@@ -2693,7 +2726,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    createSelectionGroups();
   }
   // check if controlling turnouts out of edit mode
-  else if ( ( selectedObject!=nullptr) && (selectedPointType==TURNOUT_CENTER) /*&&
+  else if ( ( selectedObject!=nullptr) && (selectedHitPointType==TURNOUT_CENTER) /*&&
             allControlling() && (!event.isMetaDown())*/ && (!(event->modifiers()&Qt::AltModifier)) /*&& (!event.isPopupTrigger()) */&&
                 (!(event->modifiers()&Qt::ShiftModifier)) && (!delayedPopupTrigger) )
   {
@@ -2702,9 +2735,9 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    t->toggleTurnout();
   }
     // check if controlling turnouts out of edit mode
-    else if ( ( selectedObject!=nullptr) && ((selectedPointType == LayoutTrack::SLIP_CENTER) ||
-                                          (selectedPointType == LayoutTrack::SLIP_LEFT) ||
-                                          (selectedPointType == LayoutTrack::SLIP_RIGHT)) /*&&
+    else if ( ( selectedObject!=nullptr) && ((selectedHitPointType == LayoutTrack::SLIP_CENTER) ||
+                                          (selectedHitPointType == LayoutTrack::SLIP_LEFT) ||
+                                          (selectedHitPointType == LayoutTrack::SLIP_RIGHT)) /*&&
             allControlling() && (!event.isMetaDown())*/ && (!(event->modifiers()&Qt::AltModifier))/* && (!event.isPopupTrigger())*/ &&
                 (!(event->modifiers()&Qt::ShiftModifier)) && (!delayedPopupTrigger) )
   {
@@ -2713,12 +2746,12 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    t->toggleTurnout();
   }
 #if 1
-  else if ( ( selectedObject!=nullptr) && (selectedPointType>=TURNTABLE_RAY_OFFSET)/* &&
+  else if ( ( selectedObject!=nullptr) && (selectedHitPointType>=TURNTABLE_RAY_OFFSET)/* &&
             allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier)) && (!event.isPopupTrigger())*/ &&
                 (!(event->modifiers()&Qt::ShiftModifier)) && (!delayedPopupTrigger) )
   {
    LayoutTurntable*  t =  (LayoutTurntable*)selectedObject;
-   t->setPosition(selectedPointType-TURNTABLE_RAY_OFFSET);
+   t->setPosition(selectedHitPointType-TURNTABLE_RAY_OFFSET);
   }
 #endif
    // check if requesting marker popup out of edit mode
@@ -2874,6 +2907,11 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
               showPopUp(sm, event);
               break;
           }
+          LayoutShape* ls = checkLayoutShapePopUps(dLoc);
+          if (ls != nullptr) {
+           ls->showShapePopUp(event, selectedHitPointType);
+              break;
+          }
       } while (false);
   }
 }
@@ -2996,7 +3034,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
  //don't allow negative placement, objects could become unreachable
  currentPoint = MathUtil::max(currentPoint, MathUtil::zeroPoint2D);
 
- if ((selectedObject!=nullptr) && (/*event.isMetaDown() ||*/ ((event->modifiers()&Qt::MetaModifier)!=0) || (selectedPointType==MARKER)))
+ if ((selectedObject!=nullptr) && (/*event.isMetaDown() ||*/ ((event->modifiers()&Qt::MetaModifier)!=0) || (selectedHitPointType==MARKER)))
   {
    // marker moves regardless of editMode or positionable
    PositionableLabel* pl = (PositionableLabel*)selectedObject;
@@ -3027,7 +3065,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
      newPos.setY(yy);
     }
     if ((_positionableSelection && _positionableSelection->size() > 0)
-           || (_layoutTrackSelection.size() > 0))
+           || (_layoutTrackSelection.size() > 0) || (_layoutShapeSelection.size() > 0))
     {
        QPointF lastPoint = QPointF(_lastX, _lastY);
        QPointF offset = MathUtil::subtract(currentPoint, lastPoint);
@@ -3054,13 +3092,20 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
            newPoint = MathUtil::max(newPoint, MathUtil::zeroPoint2D);
            lt->setCoordsCenter(newPoint);
        }
-
+       for (LayoutShape* ls : _layoutShapeSelection)
+       {
+           QPointF center = ls->getCoordsCenter();
+           newPoint = MathUtil::add(center, offset);
+           //don't allow negative placement, objects could become unreachable
+           newPoint = MathUtil::max(newPoint, MathUtil::zeroPoint2D);
+           ls->setCoordsCenter(newPoint);
+       }
        _lastX = xLoc;
        _lastY = yLoc;
     }
     else
     {
-       switch (selectedPointType) {
+       switch (selectedHitPointType) {
            case LayoutTrack::POS_POINT: {
                ((PositionablePoint*) selectedObject)->setCoordsCenter(currentPoint);
                isDragging = true;
@@ -3187,12 +3232,19 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
            default: {
                if ((foundPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
                        && (foundPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
-                   int index = selectedPointType - LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN;
+                   int index = selectedHitPointType - LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN;
                    ((TrackSegment*) selectedObject)->setBezierControlPoint(currentPoint, index);
-               } else if (selectedPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
+               }
+               else if ((selectedHitPointType == LayoutTrack::SHAPE_CENTER))
+               {
+                   ((LayoutShape*) selectedObject)->setCoordsCenter(currentPoint);
+               } else if (LayoutShape::isShapePointOffsetHitPointType(selectedHitPointType)) {
+                   int index = selectedHitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN;
+                   ((LayoutShape*) selectedObject)->setPoint(index, currentPoint);
+               } else if (selectedHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
                    LayoutTurntable* turn = (LayoutTurntable*) selectedObject;
                    turn->setRayCoordsIndexed(currentPoint.x(), currentPoint.y(),
-                           selectedPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
+                           selectedHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
                }
                break;
            }
@@ -4198,17 +4250,33 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
          }
      }
  }
+ assignBlockToSelectionMenuItem->setEnabled(_layoutTrackSelection.size() > 0);
+
+ //layoutShapes.forEach((ls) ->
+ foreach(LayoutShape* ls, *layoutShapes)
+ {
+     if (selectionRect.intersects(ls->getBounds())) {
+         if (!_layoutShapeSelection.contains(ls)) {
+             _layoutShapeSelection.append(ls);
+         }
+     }
+ }//);
  redrawPanel();
 }
 
 
 /*private*/ void LayoutEditor::clearSelectionGroups(){
-  _pointSelection=nullptr;
-  _turntableSelection=nullptr;
-  _xingSelection=nullptr;
-  _slipSelection=nullptr;
-  _turnoutSelection=nullptr;
-  _positionableSelection=nullptr;
+//  _pointSelection=nullptr;
+//  _turntableSelection=nullptr;
+//  _xingSelection=nullptr;
+//  _slipSelection=nullptr;
+//  _turnoutSelection=nullptr;
+
+  selectionActive = false;
+  _positionableSelection->clear();
+  _layoutTrackSelection.clear();
+  assignBlockToSelectionMenuItem->setEnabled(false);
+  _layoutShapeSelection.clear();
   //_labelSelection=nullptr;
 }
 /**
@@ -4837,7 +4905,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
       delete item;
      }
     }
-
+    foreach (LayoutShape* ls, *layoutShapes) {
+     ls->draw(editScene);
+    }
 #endif
     // things that only get drawn in edit mode
     if (isEditable())
@@ -4875,6 +4945,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
         highLightSelection(g2);
 
         drawTrackSegmentInProgress(g2);
+
+        foreach (LayoutShape* ls, *layoutShapes) {
+         ls->drawEditControls(editScene);
+        }
+
     } else if (turnoutCirclesWithoutEditMode) {
         if (allControlling()) {
             drawTurnoutControls(g2);
@@ -6269,10 +6344,10 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 }
 
 /*protected*/ void LayoutEditor::amendSelectionGroup(/*@Nonnull*/ LayoutShape* ls) {
-    if (_layoutShapeSelection->contains(ls)) {
-        _layoutShapeSelection->removeOne(ls);
+    if (_layoutShapeSelection.contains(ls)) {
+        _layoutShapeSelection.removeOne(ls);
     } else {
-        _layoutShapeSelection->append(ls);
+        _layoutShapeSelection.append(ls);
     }
     redrawPanel();
 }
@@ -6730,6 +6805,78 @@ double LayoutEditor::toRadians(double degrees)
 #endif
 }
 
+/*public*/ void LayoutEditor::alignSelection(bool alignX) {
+    QPointF minPoint = MathUtil::infinityPoint2D();
+    QPointF maxPoint = MathUtil::zeroPoint2D;
+    QPointF sumPoint = MathUtil::zeroPoint2D;
+    int cnt = 0;
+
+    for (Positionable* comp : *_positionableSelection) {
+        if (!getFlag(Editor::OPTION_POSITION, comp->isPositionable())) {
+            continue;   // skip non-positionables
+        }
+        QPointF p = MathUtil::pointToPoint2D(QPoint(comp->getLocation().x(), comp->getLocation().y()));
+        minPoint = MathUtil::min(minPoint, p);
+        maxPoint = MathUtil::max(maxPoint, p);
+        sumPoint = MathUtil::add(sumPoint, p);
+        cnt++;
+    }
+
+    for (LayoutTrack* lt : _layoutTrackSelection) {
+        QPointF p = lt->getCoordsCenter();
+        minPoint = MathUtil::min(minPoint, p);
+        maxPoint = MathUtil::max(maxPoint, p);
+        sumPoint = MathUtil::add(sumPoint, p);
+        cnt++;
+    }
+
+    for (LayoutShape* ls : _layoutShapeSelection) {
+        QPointF p = ls->getCoordsCenter();
+        minPoint = MathUtil::min(minPoint, p);
+        maxPoint = MathUtil::max(maxPoint, p);
+        sumPoint = MathUtil::add(sumPoint, p);
+        cnt++;
+    }
+
+    QPointF avePoint = MathUtil::divide(sumPoint, cnt);
+    int aveX = (int) avePoint.x();
+    int aveY = (int) avePoint.y();
+
+    for (Positionable* comp : *_positionableSelection) {
+        if (!getFlag(Editor::OPTION_POSITION, comp->isPositionable())) {
+            continue;   // skip non-positionables
+        }
+
+        if (alignX) {
+            comp->setLocation(aveX, comp->getY());
+        } else {
+            comp->setLocation(comp->getX(), aveY);
+        }
+    }
+
+    //_layoutTrackSelection.forEach((lt) ->
+    foreach(LayoutTrack* lt, _layoutTrackSelection)
+    {
+        if (alignX) {
+            lt->setCoordsCenter(QPointF(aveX, lt->getCoordsCenter().y()));
+        } else {
+            lt->setCoordsCenter(QPointF(lt->getCoordsCenter().x(), aveY));
+        }
+    }//);
+
+    //_layoutShapeSelection.forEach((ls) ->
+    foreach(LayoutShape* ls, _layoutShapeSelection)
+    {
+        if (alignX) {
+            ls->setCoordsCenter(QPointF(aveX, ls->getCoordsCenter().y()));
+        } else {
+            ls->setCoordsCenter(QPointF(ls->getCoordsCenter().x(), aveY));
+        }
+    }//);
+
+    redrawPanel();
+}
+
 /*protected*/ bool LayoutEditor::showAlignPopup()
 {
  if (_positionableSelection!=nullptr)
@@ -6794,46 +6941,46 @@ double LayoutEditor::toRadians(double degrees)
  return false;
 }
 #if 0
-/*public*/ QPointF LayoutEditor::getEndCoords(QObject* o, int type) {
-             if(o == nullptr)
-             return QPointF(0,0);
-  switch (type) {
-      case POS_POINT:
-          return ((PositionablePoint*)o)->getCoordsCenter();
-      case TURNOUT_A:
-          return ((LayoutTurnout*)o)->getCoordsA();
-      case TURNOUT_B:
-          return ((LayoutTurnout*)o)->getCoordsB();
-      case TURNOUT_C:
-          return ((LayoutTurnout*)o)->getCoordsC();
-      case TURNOUT_D:
-          return ((LayoutTurnout*)o)->getCoordsD();
-      case LEVEL_XING_A:
-          return ((LevelXing*)o)->getCoordsA();
-      case LEVEL_XING_B:
-          return ((LevelXing*)o)->getCoordsB();
-      case LEVEL_XING_C:
-          return ((LevelXing*)o)->getCoordsC();
-      case LEVEL_XING_D:
-          return ((LevelXing*)o)->getCoordsD();
-      case SLIP_A:
-          return ((LayoutSlip*)o)->getCoordsA();
-      case SLIP_B:
-          return ((LayoutSlip*)o)->getCoordsB();
-      case SLIP_C:
-          return ((LayoutSlip*)o)->getCoordsC();
-      case SLIP_D:
-          return ((LayoutSlip*)o)->getCoordsD();
-      default:
-#if 1 // TODO:
-          if (type>=TURNTABLE_RAY_OFFSET) {
-              return ((LayoutTurntable*)o)->getRayCoordsIndexed(type-TURNTABLE_RAY_OFFSET);
-          }
-#endif
-       break;
-  }
-  return (QPointF(0.0,0.0));
-}
+@Override
+    public void keyPressed(@Nonnull KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.VK_DELETE) {
+            deleteSelectedItems();
+            return;
+        }
+
+        double deltaX = returnDeltaPositionX(event);
+        double deltaY = returnDeltaPositionY(event);
+
+        if ((deltaX != 0) || (deltaY != 0)) {
+            selectionX += deltaX;
+            selectionY += deltaY;
+
+            Point2D delta = new Point2D.Double(deltaX, deltaY);
+            _positionableSelection.forEach((c) -> {
+                Point2D newPoint = c.getLocation();
+                if ((c instanceof MemoryIcon) && (c.getPopupUtility().getFixedWidth() == 0)) {
+                    MemoryIcon pm = (MemoryIcon) c;
+                    newPoint = new Point2D.Double(pm.getOriginalX(), pm.getOriginalY());
+                }
+                newPoint = MathUtil.add(newPoint, delta);
+                newPoint = MathUtil.max(MathUtil.zeroPoint2D, newPoint);
+                c.setLocation(MathUtil.point2DToPoint(newPoint));
+            });
+
+            _layoutTrackSelection.forEach((lt) -> {
+                Point2D newPoint = MathUtil.add(lt.getCoordsCenter(), delta);
+                newPoint = MathUtil.max(MathUtil.zeroPoint2D, newPoint);
+                lt.setCoordsCenter(newPoint);
+            });
+
+            _layoutShapeSelection.forEach((ls) -> {
+                Point2D newPoint = MathUtil.add(ls.getCoordsCenter(), delta);
+                newPoint = MathUtil.max(MathUtil.zeroPoint2D, newPoint);
+                ls.setCoordsCenter(newPoint);
+            });
+            redrawPanel();
+        }
+    }
 #endif
 void LayoutEditor::on_actionEnable_antialiasing_smoother_lines_toggled(bool bChecked)
 {
@@ -8389,6 +8536,11 @@ void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
    noWarnLayoutTurnout = oldTurnout;
   }
   selectionActive = false;
+
+  //layoutShapes->removeAll(_layoutShapeSelection);
+  foreach(LayoutShape* ls, _layoutShapeSelection)
+   layoutShapes->removeOne(ls);
+
   clearSelectionGroups();
   //repaint();
 
@@ -9821,6 +9973,47 @@ void LayoutEditor::moveSelectionCancelPressed() {
     moveSelectionFrame->dispose();
     moveSelectionFrame = nullptr;
 }
+/**
+ * Translate entire layout by x and y amounts.
+ *
+ * @param xTranslation horizontal (X) translation value
+ * @param yTranslation vertical (Y) translation value
+ */
+/*public*/ void LayoutEditor::translate(float xTranslation, float yTranslation) {
+    // here when all numbers read in - translation if entered
+    if ((xTranslation != 0.0F) || (yTranslation != 0.0F)) {
+        QPointF delta = QPointF(xTranslation, yTranslation);
+        QRectF selectionRect = getSelectionRect();
+
+        //set up undo information
+        undoRect = MathUtil::offset(selectionRect, delta);
+        undoDelta = MathUtil::subtract(MathUtil::zeroPoint2D, delta);
+        canUndoMoveSelection = true;
+        undoTranslateSelectionMenuItem->setEnabled(canUndoMoveSelection);
+
+        //apply translation to icon items within the selection
+        for (Positionable* c : *_positionableSelection) {
+            QPointF newPoint = MathUtil::add(c->getLocation(), delta);
+            c->setLocation((int) newPoint.x(), (int) newPoint.y());
+        }
+
+        for (LayoutTrack* lt : _layoutTrackSelection) {
+            lt->setCoordsCenter(MathUtil::add(lt->getCoordsCenter(), delta));
+        }
+
+        for (LayoutShape* ls : _layoutShapeSelection) {
+            ls->setCoordsCenter(MathUtil::add(ls->getCoordsCenter(), delta));
+        }
+
+        selectionX = undoRect.x();
+        selectionY = undoRect.y();
+        selectionWidth = undoRect.width();
+        selectionHeight = undoRect.height();
+        resizePanelBounds(false);
+        setDirty();
+        redrawPanel();
+    }
+}
 
 void LayoutEditor::undoMoveSelection() {
     if (canUndoMoveSelection) {
@@ -9852,6 +10045,206 @@ void LayoutEditor::undoMoveSelection() {
         redrawPanel();
         canUndoMoveSelection = false;
     }
+}
+
+/**
+ * Rotate selection by 90 degrees clockwise.
+ */
+/*public*/ void LayoutEditor::rotateSelection90() {
+    QRectF bounds = getSelectionRect();
+    QPointF center = MathUtil::midPoint(bounds);
+
+    for (Positionable* positionable : *_positionableSelection) {
+        QRectF cBounds = positionable->getBounds(QRectF());
+        QPointF oldBottomLeft = QPointF(cBounds.left(), cBounds.top());
+        QPointF newTopLeft = MathUtil::rotateDEG(oldBottomLeft, center, 90);
+        bool rotateFlag = true;
+        if (qobject_cast<PositionableLabel*>(positionable->self())) {
+            PositionableLabel* positionableLabel = (PositionableLabel*) positionable->self();
+            if (positionableLabel->isBackground()) {
+                rotateFlag = false;
+            }
+        }
+        if (rotateFlag) {
+            positionable->rotate(positionable->getDegrees() + 90);
+            positionable->setLocation((int) newTopLeft.x(), (int) newTopLeft.y());
+        }
+    }
+
+    for (LayoutTrack* lt : _layoutTrackSelection) {
+        lt->setCoordsCenter(MathUtil::rotateDEG(lt->getCoordsCenter(), center, 90));
+        lt->rotateCoords(90);
+    }
+
+    for (LayoutShape* ls : _layoutShapeSelection) {
+        ls->setCoordsCenter(MathUtil::rotateDEG(ls->getCoordsCenter(), center, 90));
+        ls->rotateCoords(90);
+    }
+
+    resizePanelBounds(true);
+    setDirty();
+    redrawPanel();
+}
+
+/**
+ * Rotate the entire layout by 90 degrees clockwise.
+ */
+/*public*/ void LayoutEditor::rotateLayout90() {
+    QVector<Positionable*> positionables = QVector<Positionable*>(*_contents);
+    //positionables.append(backgroundImage);
+    for(PositionableLabel* l: *backgroundImage)
+     positionables.append(l);
+    //positionables.append(blockContentsLabelList);
+    for(LEBlockContentsIcon* l: *blockContentsLabelList)
+     positionables.append(l);
+    //positionables.append(labelImage);
+    for(PositionableLabel* l: *labelImage)
+     positionables.append(l);
+    //positionables.append(memoryLabelList);
+    for(LEMemoryIcon* l: *memoryLabelList)
+     positionables.append(l);
+    //positionables.append(sensorImage);
+    for(SensorIcon* l: *sensorImage)
+     positionables.append(l);
+    //positionables.append(sensorList);
+    for(SensorIcon* l: *sensorList)
+     positionables.append(l);
+    //positionables.append(signalHeadImage);
+    for(SignalHeadIcon* l: *signalHeadImage)
+     positionables.append(l);
+    //positionables.append(signalList);
+    for(SignalHeadIcon* l: *signalList)
+     positionables.append(l);
+    //positionables.append(signalMastList);
+    for(SignalMastIcon* l: *signalMastList)
+     positionables.append(l);
+
+    //do this to remove duplicates that may be in more than one list
+#if 0
+    positionables = positionables.stream().distinct().collect(Collectors.toList());
+#endif
+
+    QRectF bounds = getPanelBounds();
+    QPointF lowerLeft = QPointF(bounds.bottom(), bounds.top());
+
+    for (Positionable* positionable : positionables) {
+        QRectF cBounds = positionable->getBounds(QRectF());
+        QPointF newTopLeft = MathUtil::subtract(MathUtil::rotateDEG(positionable->getLocation(), lowerLeft, 90), lowerLeft);
+        bool reLocateFlag = true;
+        if (qobject_cast<PositionableLabel*>(positionable->self())) {
+            try {
+                PositionableLabel* positionableLabel = (PositionableLabel*) positionable->self();
+                if (positionableLabel->isBackground()) {
+                    reLocateFlag = false;
+                }
+                positionableLabel->rotate(positionableLabel->getDegrees() + 90);
+            } catch (NullPointerException ex) {
+            }
+        }
+        if (reLocateFlag) {
+            try {
+                positionable->setLocation((int) (newTopLeft.x() - cBounds.height()), (int) newTopLeft.y());
+            } catch (NullPointerException ex) {
+
+            }
+        }
+    }
+
+    for (LayoutTrack* lt : *layoutTrackList) {
+        try {
+            QPointF newPoint = MathUtil::subtract(MathUtil::rotateDEG(lt->getCoordsCenter(), lowerLeft, 90), lowerLeft);
+            lt->setCoordsCenter(newPoint);
+            lt->rotateCoords(90);
+        } catch (NullPointerException ex) {
+
+        }
+    }
+
+    for (LayoutShape* ls : *layoutShapes) {
+        QPointF newPoint = MathUtil::subtract(MathUtil::rotateDEG(ls->getCoordsCenter(), lowerLeft, 90), lowerLeft);
+        ls->setCoordsCenter(newPoint);
+        ls->rotateCoords(90);
+    }
+
+    resizePanelBounds(true);
+    setDirty();
+    redrawPanel();
+}
+
+/**
+ * align the layout to grid
+ */
+/*public*/ void LayoutEditor::alignLayoutToGrid() {
+    //align to grid
+    QVector<Positionable*> positionables = QVector<Positionable*>(*_contents);
+    //positionables.append(backgroundImage);
+    for(PositionableLabel* l: *backgroundImage)
+     positionables.append(l);
+    //positionables.append(blockContentsLabelList);
+    for(LEBlockContentsIcon* l: *blockContentsLabelList)
+     positionables.append(l);
+    //positionables.append(labelImage);
+    for(PositionableLabel* l: *labelImage)
+     positionables.append(l);
+    //positionables.append(memoryLabelList);
+    for(LEMemoryIcon* l: *memoryLabelList)
+     positionables.append(l);
+    //positionables.append(sensorImage);
+    for(SensorIcon* l: *sensorImage)
+     positionables.append(l);
+    //positionables.append(sensorList);
+    for(SensorIcon* l: *sensorList)
+     positionables.append(l);
+    //positionables.append(signalHeadImage);
+    for(SignalHeadIcon* l: *signalHeadImage)
+     positionables.append(l);
+    //positionables.append(signalList);
+    for(SignalHeadIcon* l: *signalList)
+     positionables.append(l);
+    //positionables.append(signalMastList);
+    for(SignalMastIcon* l: *signalMastList)
+     positionables.append(l);
+
+
+    //do this to remove duplicates that may be in more than one list
+#if 0
+    positionables = positionables.stream().distinct().collect(Collectors.toList());
+    alignToGrid(positionables, layoutTrackList, layoutShapes);
+#endif
+}
+
+/**
+ * align selection to grid
+ */
+/*public*/ void LayoutEditor::alignSelectionToGrid() {
+    alignToGrid(*_positionableSelection, _layoutTrackSelection, _layoutShapeSelection);
+}
+
+/*private*/ void LayoutEditor::alignToGrid(QVector<Positionable*> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes) {
+    for (Positionable* positionable : positionables) {
+        QPointF newLocation = MathUtil::granulize(positionable->getLocation(), gridSize1st);
+        positionable->setLocation((int) (newLocation.x()), (int) newLocation.y());
+    }
+    for (LayoutTrack* lt : tracks) {
+        lt->setCoordsCenter(MathUtil::granulize(lt->getCoordsCenter(), gridSize1st));
+        if (qobject_cast<LayoutTurntable*>(lt)) {
+            LayoutTurntable* tt = (LayoutTurntable*) lt;
+            for (RayTrack* rt : tt->getRayList()) {
+                int rayIndex = rt->getConnectionIndex();
+                tt->setRayCoordsIndexed(MathUtil::granulize(tt->getRayCoordsIndexed(rayIndex), gridSize1st), rayIndex);
+            }
+        }
+    }
+    for (LayoutShape* ls : shapes) {
+        ls->setCoordsCenter(MathUtil::granulize(ls->getCoordsCenter(), gridSize1st));
+        for (int idx = 0; idx < ls->getNumberPoints(); idx++) {
+            ls->setPoint(idx, MathUtil::granulize(ls->getPoint(idx), gridSize1st));
+        }
+    }
+
+    resizePanelBounds(true);
+    setDirty();
+    redrawPanel();
 }
 
 /*public*/ void LayoutEditor::setCurrentPositionAndSize()

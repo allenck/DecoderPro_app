@@ -113,6 +113,12 @@ public:
   dashed
  };
  QGraphicsItemGroup* selectItemGroup(ITEMTYPE, bool isMain, bool isBlock);
+ /**
+  * rotate this LayoutTrack's coordinates by angleDEG's
+  *
+  * @param angleDEG the amount to rotate in degrees
+  */
+ /*public*/ /*abstract*/ virtual void rotateCoords(double angleDEG) {}
 
 signals:
 
@@ -135,7 +141,7 @@ protected:
  /*protected*/ /*abstract*/ virtual QMenu* showPopup(/*@Nullable */QGraphicsSceneMouseEvent* mouseEvent);
  /*protected*/ QMenu* showPopup(QPointF where);
  /*protected*/ QMenu* showPopup();
- /*protected*/ QPointF rotatePoint(/*@Nonnull*/ QPointF p, double sineRot, double cosineRot) ;
+  /*protected*/ QPointF rotatePoint(/*@Nonnull*/ QPointF p, double sineRot, double cosineRot) ;
  /*protected*/ /*abstract*/ virtual int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected);
  /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF p);
  /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF p, bool useRectangles);

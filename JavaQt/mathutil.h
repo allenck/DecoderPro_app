@@ -21,6 +21,7 @@ public:
  /*public*/ static QPointF midPoint(QRectF r);
  /*public*/ static QPointF midPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static QRectF offset(/*@Nonnull*/ QRectF r, double x, double y);
+ /*public*/ static QRectF offset(/*@Nonnull*/ QRectF r, /*@Nonnull*/ QPointF o);
  /*public*/ static QPointF oneThirdPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static QPointF twoThirdsPoint(QPointF p1, QPointF p2);
  /*public*/ static QPointF oneFourthPoint(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
@@ -34,6 +35,7 @@ public:
  /*public*/ static double diffAngleRAD(double a, double b);
  /*public*/ static double absDiffAngleDEG(double a, double b);
  /*public*/ static double absDiffAngleRAD(double a, double b);
+ /*public*/ static QPointF min(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static QPointF max(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static double pin(double inValue, double inMin, double inMax);
  /*public*/ static QPointF add(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);

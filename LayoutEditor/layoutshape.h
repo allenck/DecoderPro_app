@@ -104,6 +104,7 @@ protected:
  /*protected*/ void draw(EditScene* g2);
  /*protected*/ void drawEditControls(EditScene* g2);
 
+ friend class LayoutEditor;
 };
 
 /**

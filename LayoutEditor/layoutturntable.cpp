@@ -327,6 +327,17 @@
     }
     ray->setAngle(angle);
 }
+
+/**
+ * Set the coordinates for the ray at this index.
+ *
+ * @param point the new coordinates
+ * @param index the index
+ */
+/*public*/ void LayoutTurntable::setRayCoordsIndexed(QPointF point, int index) {
+    setRayCoordsIndexed(point.x(), point.y(), index);
+}
+
 /**
  * Get the coordinates for a specified connection type.
  *
