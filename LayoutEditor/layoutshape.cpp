@@ -33,6 +33,7 @@
     this->layoutEditor = layoutEditor;
     this->layoutShapeType = new LayoutShapeType(LayoutShapeType::eOpen);
     this->shapePoints = QList<LayoutShapePoint*>();
+
 }
 
 /**
@@ -66,6 +67,9 @@
  this->name = name;
  this->layoutEditor = layoutEditor;
  this->shapePoints.append(new LayoutShapePoint(c));
+
+ this->layoutShapeType = new LayoutShapeType(LayoutShapeType::eOpen);
+
 }
 
 /**
@@ -471,12 +475,15 @@
 //                jmi->setEnabled(false);
 //            }
         // add "Change Shape Type to..." menu
+        QActionGroup* ag = new QActionGroup(this);
         QMenu* shapeTypeMenu = new QMenu(tr("Change shape type from %1 to").arg(getType()->getName()));
         if (getType()->getType() != LayoutShapeType::eOpen)
         {
          QAction* jmi = new QAction(tr("Open"),this);
-            shapeTypeMenu->addAction(jmi);
-            jmi->setCheckable(true);
+         ag->addAction(jmi);
+         shapeTypeMenu->addAction(jmi);
+         jmi->setCheckable(true);
+         jmi->setChecked(getType()->getType() != LayoutShapeType::eOpen);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -490,8 +497,10 @@
 
         if (getType()->getType() != LayoutShapeType::eClosed) {
          QAction* jmi = new QAction(tr("Closed"), this);
-            shapeTypeMenu->addAction(jmi);
-            jmi->setCheckable(true);
+         ag->addAction(jmi);
+         shapeTypeMenu->addAction(jmi);
+         jmi->setCheckable(true);
+         jmi->setChecked(getType()->getType() == LayoutShapeType::eClosed);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -505,8 +514,10 @@
         if (getType()->getType() != LayoutShapeType::eFilled)
         {
          QAction* jmi = new QAction(tr("Filled"), this);
-            shapeTypeMenu->addAction(jmi);
-            jmi->setCheckable(true);
+         ag->addAction(jmi);
+         shapeTypeMenu->addAction(jmi);
+         jmi->setCheckable(true);
+         jmi->setChecked(getType()->getType() == LayoutShapeType::eFilled);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -520,11 +531,14 @@
         popup->addMenu(shapeTypeMenu);
 #if 1
         // Add "Change Shape Type from {0} to..." menu
+        QActionGroup* ag1 = new QActionGroup(this);
         if (hitPointType == LayoutTrack::SHAPE_CENTER) {
             QMenu* shapePointTypeMenu = new QMenu(tr("Change all shape point types to"));
             QAction* jmi = new QAction(tr("Straight"),this);
             shapePointTypeMenu->addAction(jmi);
             jmi->setCheckable(true);
+            ag1->addAction(jmi);
+            jmi->setChecked(hitPointType == LayoutTrack::SHAPE_CENTER);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -538,6 +552,8 @@
             jmi = new QAction(tr("Curve"),this);
             shapePointTypeMenu->addAction(jmi);
             jmi->setCheckable(true);
+            ag1->addAction(jmi);
+
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -559,6 +575,8 @@
                         ? LayoutShapePointType(LayoutShapePointType::eCurve).getName() : LayoutShapePointType(LayoutShapePointType::eStraight).getName();
                 QAction* jmi = new QAction(tr("Change shape point type from %1 to %2").arg(lsp->getType()->getName()).arg(otherPointTypeName),this);
                 popup->addAction(jmi);
+                ag1->addAction(jmi);
+                jmi->setChecked(hitPointType != LayoutTrack::SHAPE_CENTER);
 #if 0
                 jmi->addActionListener((java.awt.event.ActionEvent e3) ->
                 {
@@ -628,7 +646,7 @@
 
         // add "Set Line Width: x" menu
         jmi = new QAction(tr("%1").arg(
-                tr("Set Line Width")) + QString::number(lineWidth),this);
+                tr("Set Line Width ")) + QString::number(lineWidth),this);
         popup->addAction(jmi);
         jmi->setToolTip(tr("Select this to change the line width of this shape"));
 //        jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
@@ -1048,11 +1066,17 @@ void LayoutShape::remove() {
 
     LayoutShapeType::LayoutShapeType(QString name) {
         this->name = name;
+     if(LayoutShapeType::ENUM_MAP.isEmpty())
+     {
+      LayoutShapeType::ENUM_MAP.insert("Open", eOpen);
+      LayoutShapeType::ENUM_MAP.insert("Closed", eClosed);
+      LayoutShapeType::ENUM_MAP.insert("Filled", eFilled);
+     }
     }
 
 //    //Build an immutable map of String name to enum pairs.
 //    static {
-        QMap<QString, LayoutShapeType*> LayoutShapeType::ENUM_MAP = QMap<QString, LayoutShapeType*>();
+        QMap<QString, LayoutShapeType::TYPES> LayoutShapeType::ENUM_MAP = QMap<QString, LayoutShapeType::TYPES>();
 
 //        for (LayoutShapeType instance : LayoutShapeType.values()) {
 //            map.put(instance.getName(), instance);
@@ -1060,7 +1084,7 @@ void LayoutShape::remove() {
 //        ENUM_MAP = Collections.unmodifiableMap(map);
 //    }
 
-    /*public*/ /*static*/ LayoutShapeType* LayoutShapeType::getName(/*@CheckForNull*/ QString name) {
+    /*public*/ /*static*/ LayoutShapeType::TYPES LayoutShapeType::getName(/*@CheckForNull*/ QString name) {
         return ENUM_MAP.value(name);
     }
 
@@ -1086,18 +1110,26 @@ void LayoutShape::remove() {
 /*public*/ LayoutShapePointType::LayoutShapePointType(QString name)
 {
  this->name = name;
+ if(LayoutShapePointType::ENUM_MAP.isEmpty())
+ {
+  LayoutShapePointType::ENUM_MAP.insert("Straight", eStraight);
+  LayoutShapePointType::ENUM_MAP.insert("Curve", eCurve);
+ }
 }
 
     //Build an immutable map of String name to enum pairs.
 //    static {
-        QMap<QString, LayoutShapePointType*> LayoutShapePointType::ENUM_MAP = QMap<QString, LayoutShapePointType*>();
+        QMap<QString, LayoutShapePointType::TYPES> LayoutShapePointType::ENUM_MAP = QMap<QString, LayoutShapePointType::TYPES>();
 //        for (LayoutShapePointType instance : LayoutShapePointType.values()) {
 //            map.put(instance.getName(), instance);
 //        }
 //        ENUM_MAP = Collections.unmodifiableMap(map);
+//        LayoutShapePointType::ENUM_MAP.insert("Straight", new LayoutShapePointType("Straight"));
+//        LayoutShapePointType::ENUM_MAP.insert("Curve", new LayoutShapePointType("Curve"));
+
 //    }
 
-    /*public*/ /*static*/ LayoutShapePointType* LayoutShapePointType::getName(/*@CheckForNull*/ QString name) {
+    /*public*/ /*static*/ LayoutShapePointType::TYPES LayoutShapePointType::getName(/*@CheckForNull*/ QString name) {
  return ENUM_MAP.value(name);
 }
 

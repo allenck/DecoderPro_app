@@ -83,7 +83,7 @@ LayoutShapeXml::LayoutShapeXml(QObject* parent)
 
         LayoutShapeType type = LayoutShapeType::eOpen;
         try {
-            type = *LayoutShapeType::getName(element.attribute("type"));
+            type = LayoutShapeType::getName(element.attribute("type"));
         } catch (NullPointerException e) {
             log->error("Layout Shape type attribute not found.");
         }
@@ -144,7 +144,7 @@ LayoutShapeXml::LayoutShapeXml(QObject* parent)
 
                         LayoutShapePointType pointType = LayoutShapePointType::eStraight;
                         try {
-                            pointType = *LayoutShapePointType::getName(relem.attribute("type"));
+                            pointType = LayoutShapePointType::getName(relem.attribute("type"));
                         } catch (NullPointerException e) {
                             log->error("Layout Shape Point #" + QString::number(i) + "type attribute not found.");
                         }

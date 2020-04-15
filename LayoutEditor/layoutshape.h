@@ -174,7 +174,6 @@ private:
 
 
     /*private*/ /*final*/ /*transient*/ QString name;
-    /*private*/ /*transient*/ static /*final*/ QMap<QString, LayoutShapeType*> ENUM_MAP;
 public:
  enum TYPES
  {
@@ -209,12 +208,13 @@ public:
 //        ENUM_MAP = Collections.unmodifiableMap(map);
 //    }
 
-    /*public*/ static LayoutShapeType* getName(/*@CheckForNull*/ QString name);
+    /*public*/ static LayoutShapeType::TYPES getName(/*@CheckForNull*/ QString name);
     /*public*/ QString getName();
     /*public*/ LayoutShapeType::TYPES getType() {return type;}
 
 private:
     LayoutShapeType::TYPES type;
+    /*private*/ /*transient*/ static /*final*/ QMap<QString, LayoutShapeType::TYPES> ENUM_MAP;
 
 };
 
@@ -231,7 +231,6 @@ private:
  };
 private:
     /*private*/ /*final*/ /*transient*/ QString name;
-    /*private*/ static /*final*/ /*transient*/ QMap<QString, LayoutShapePointType*> ENUM_MAP;
  LayoutShapePointType::TYPES type;
 public:
     LayoutShapePointType(QString name);
@@ -245,7 +244,7 @@ public:
 //        ENUM_MAP = Collections.unmodifiableMap(map);
 //    }
 
-    /*public*/ static LayoutShapePointType* getName(/*@CheckForNull*/ QString name);
+    /*public*/ static TYPES getName(/*@CheckForNull*/ QString name);
 
     /*public*/ QString getName();
 
@@ -266,6 +265,9 @@ public:
       break;
      }
     }
+private:
+    /*private*/ static /*final*/ /*transient*/ QMap<QString, TYPES> ENUM_MAP;
+
 }; // enum LayoutShapePointType
 
 #endif // LAYOUTSHAPE_H
