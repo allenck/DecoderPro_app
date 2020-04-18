@@ -240,6 +240,7 @@ LayoutEditor::~LayoutEditor()
 //        editToolBarScrollPane->setWidget(leToolBarPanel);
 //        editToolBarScrollPane->setWidgetResizable(true);
      toolbarWidth = screenDim.width();
+     setMinimumWidth(toolbarWidth -100);
      toolbarHeight = leToolBarPanel->maximumHeight();
     }
 
@@ -442,10 +443,9 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  numAnchors = 0;
  numEndBumpers = 0;
  numTrackSegments = 0;
- beginObject = nullptr; // begin track segment connection object, nullptr if none
- beginPointType = 0;   // connection type within begin connection object
- foundObject = nullptr; // found object, nullptr if nothing found
- foundPointType = 0;   // connection type within the found object
+ beginTrack = nullptr; // begin track segment connection object, nullptr if none
+ foundTrack = nullptr; // found object, nullptr if nothing found
+ foundTrack = 0;   // connection type within the found object
  newTrack = nullptr;
  numLevelXings = 0;
  numLayoutSlips = 0;
@@ -573,6 +573,8 @@ _contents = new QVector<Positionable*>();
  //_labelSelection = nullptr; //new QVector<PositionableLabel*>(); // PositionalLabel list
  _paintScale = 1.0;   // scale for _targetPanel drawing
  undoDelta = MathUtil::zeroPoint2D;
+ beginLocation = QPointF(0.0, 0.0); //location of begin object
+ beginHitPointType = LayoutTrack::NONE; //connection type within begin connection object
 
   openFrame = this;
  // program default turnout size parameters
@@ -629,7 +631,7 @@ _contents = new QVector<Positionable*>();
  turnoutCirclesWithoutEditMode = false;
  //ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
  isDragging = false;
- foundObject = nullptr;
+ foundTrack = nullptr;
  layoutTrackList = new QList<LayoutTrack*>();  // TrackSegment list
  drawGrid =false;
  //ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
@@ -702,7 +704,6 @@ _contents = new QVector<Positionable*>();
 
  turnoutDrawUnselectedLeg = true;
  _showCoordinates = true;
- selectedNeedsConnect = false;
  sensorList = new QVector<SensorIcon*>();  // Sensor Icons
  delayedPopupTrigger = false;
  isDragging = false;
@@ -762,144 +763,6 @@ _contents = new QVector<Positionable*>();
  turnoutCircleSizeMenuItems = new QVector<QAction*>(10);
  _layoutShapeSelection = QList<LayoutShape*>();
 
-#if 0
- //
- //background image menu item
- //
-// QAction* backgroundItem = new JMenuItem(rb.getString("AddBackground") + "...");
- //optionMenu.add(backgroundItem);
-// backgroundItem.addActionListener((ActionEvent event) -> {
-//     addBackground();
-//     setDirty(true);
-//     repaint();
-// });
- // TODO: move this to proper menu.
- // set track drawing options menu item
- QAction* jmi = new QAction(tr("SetTrackDrawingOptions"));
- //trackMenu.add(jmi);
- ui->menuOptions->addAction(jmi);
- jmi->setToolTip(tr("SetTrackDrawingOptionsToolTip"));
-// jmi.addActionListener((ActionEvent event) -> {
-//     LayoutTrackDrawingOptionsDialog ltdod
-//             = new LayoutTrackDrawingOptionsDialog(
-//                     this, true, getLayoutTrackDrawingOptions());
-//     ltdod.setVisible(true);
-// });
-connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDialog()));
- //
- //background color menu item
- //
-#endif
-#if 0
- QMenu* backgroundColorMenu = ui->menuSet_Background_color;//new QMenu(tr("Set Background Color"));
- backgroundColorButtonGroup = new QActionGroup(this);
- backgroundColorButtonMapper = new QSignalMapper();
- connect(backgroundColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_colorBackgroundMenuItemSelected(int)));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Black"),     QColor(Qt::black));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("DarkGray"),  QColor(Qt::darkGray));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Gray"),      QColor(Qt::gray));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("LightGray"), QColor(Qt::lightGray));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("White"),     QColor(Qt::white));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Red"),       QColor(Qt::red));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Pink"),      QColor(255,192,203));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Orange"),    QColor(255, 170, 0));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Yellow"),    QColor(Qt::yellow));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Green"),     QColor(Qt::green));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Blue"),      QColor(Qt::blue));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Magenta"),   QColor(Qt::magenta));
- addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Cyan"),      QColor(Qt::cyan));
- ui->menuOptions->addMenu(backgroundColorMenu);
-#endif
-#if 0
-
- //
- //track colors item menu item
- //
-
- QMenu* trkColourMenu = new QMenu(tr("Default Track Colors"));
- ui->menuOptions->addMenu(trkColourMenu);
- QMenu* trackColorMenu = new QMenu(tr("Default Track Color"));
- trackColorButtonGroup = new QActionGroup(this);
- trackColorButtonMapper = new QSignalMapper();
- connect(trackColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackColorMenuEntry_triggered(int)));
- addTrackColorMenuEntry(trackColorMenu, tr("Black"),     QColor(Qt::black));
- addTrackColorMenuEntry(trackColorMenu, tr("DarkGray"),  QColor(Qt::darkGray));
- addTrackColorMenuEntry(trackColorMenu, tr("Gray"),      QColor(Qt::gray));
- addTrackColorMenuEntry(trackColorMenu, tr("LightGray"), QColor(Qt::lightGray));
- addTrackColorMenuEntry(trackColorMenu, tr("White"),     QColor(Qt::white));
- addTrackColorMenuEntry(trackColorMenu, tr("Red"),       QColor(Qt::red));
- addTrackColorMenuEntry(trackColorMenu, tr("Pink"),      QColor(255,192,203));
- addTrackColorMenuEntry(trackColorMenu, tr("Orange"),    QColor(255, 170, 0));
- addTrackColorMenuEntry(trackColorMenu, tr("Yellow"),    QColor(Qt::yellow));
- addTrackColorMenuEntry(trackColorMenu, tr("Green"),     QColor(Qt::green));
- addTrackColorMenuEntry(trackColorMenu, tr("Blue"),      QColor(Qt::blue));
- addTrackColorMenuEntry(trackColorMenu, tr("Magenta"),   QColor(Qt::magenta));
- addTrackColorMenuEntry(trackColorMenu, tr("Cyan"),      QColor(Qt::cyan));
- trkColourMenu->addMenu(trackColorMenu);
-#endif
-#if 0
- QMenu* trackOccupiedColorMenu = new QMenu(tr("Default Occupied Track Color"));
- trackOccupiedColorButtonGroup = new QActionGroup(this);
- trackOccupiedColorButtonMapper = new QSignalMapper();
- connect(trackOccupiedColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackOccupiedColorMenuEntry_triggered(int)));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Black"),     QColor(Qt::black));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("DarkGray"),  QColor(Qt::darkGray));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Gray"),      QColor(Qt::gray));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("LightGray"), QColor(Qt::lightGray));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("White"),     QColor(Qt::white));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Red"),       QColor(Qt::red));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Pink"),      QColor(255,192,203));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Orange"),    QColor(255, 170, 0));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Yellow"),    QColor(Qt::yellow));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Green"),     QColor(Qt::green));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Blue"),      QColor(Qt::blue));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Magenta"),   QColor(Qt::magenta));
- addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Cyan"),      QColor(Qt::cyan));
- trkColourMenu->addMenu(trackOccupiedColorMenu);
-#endif
-#if 0
- QMenu* trackAlternativeColorMenu = new QMenu(tr("Default Alternative Track Color"));
- trackAlternativeColorButtonGroup = new QActionGroup(this);
- trackAlternativeColorButtonMapper = new QSignalMapper();
- connect(trackAlternativeColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackAlternativeColorMenuEntry_triggered(int)));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Black"),     QColor(Qt::black));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("DarkGray"),  QColor(Qt::darkGray));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Gray"),      QColor(Qt::gray));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("LightGray"), QColor(Qt::lightGray));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("White"),     QColor(Qt::white));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Red"),       QColor(Qt::red));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Pink"),      QColor(255,192,203));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Orange"),    QColor(255, 170, 0));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Yellow"),    QColor(Qt::yellow));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Green"),     QColor(Qt::green));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Blue"),      QColor(Qt::blue));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
- addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
- trkColourMenu->addMenu(trackAlternativeColorMenu);
-#endif
-#if 0
- //
- //add text color menu item
- //
- QMenu* textColorMenu = new QMenu(tr("Default Text Color"));
- textColorButtonGroup = new QActionGroup(this);
- textColorButtonMapper = new QSignalMapper();
- connect(textColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(OnDefaultTextColorSelected(int)));
- addTextColorMenuEntry(textColorMenu,  tr("Black"),     QColor(Qt::black));
- addTextColorMenuEntry(textColorMenu,  tr("DarkGray"),  QColor(Qt::darkGray));
- addTextColorMenuEntry(textColorMenu,  tr("Gray"),      QColor(Qt::gray));
- addTextColorMenuEntry(textColorMenu,  tr("LightGray"), QColor(Qt::lightGray));
- addTextColorMenuEntry(textColorMenu,  tr("White"),     QColor(Qt::white));
- addTextColorMenuEntry(textColorMenu,  tr("Red"),       QColor(Qt::red));
- addTextColorMenuEntry(textColorMenu,  tr("Pink"),      QColor(255,192,203));
- addTextColorMenuEntry(textColorMenu,  tr("Orange"),    QColor(255, 170, 0));
- addTextColorMenuEntry(textColorMenu,  tr("Yellow"),    QColor(Qt::yellow));
- addTextColorMenuEntry(textColorMenu,  tr("Green"),     QColor(Qt::green));
- addTextColorMenuEntry(textColorMenu,  tr("Blue"),      QColor(Qt::blue));
- addTextColorMenuEntry(textColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
- addTextColorMenuEntry(textColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
- ui->menuOptions->addMenu(textColorMenu);
-#endif
 
  editPanel->setMouseTracking(true);
  editPanel->setScene(editScene);
@@ -999,9 +862,6 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
  iconFrameLayout->addWidget(iconEditor);
  iconFrame->pack();
 
-
-
-
  autoAssignBlocks = true;
  tooltipsInEditMode = true;
  tooltipsWithoutEditMode = false;
@@ -1068,7 +928,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
      QString windowFrameRef = getWindowFrameRef();
 
      QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "toolBarSide");
-     //log.debug("{}.toolBarSide is {}", windowFrameRef, prefsProp);
+     log->debug(tr("%1.toolBarSide is %2").arg(windowFrameRef).arg(prefsProp.toString()));
      if (prefsProp != QVariant()) {
          QString newToolBarSide = prefsProp.toString();
          setToolBarSide(newToolBarSide);
@@ -1093,16 +953,20 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
      //log.debug("{}.highlightSelectedBlock is {}", windowFrameRef, prefsHighlightSelectedBlockFlag);
      setHighlightSelectedBlock(prefsHighlightSelectedBlockFlag);
 
-     prefsProp = prefsMgr->getProperty(windowFrameRef, "toolBarFontSize");
-     //log.debug("{} prefsProp toolBarFontSize is {}", windowFrameRef, prefsProp);
-     //if (prefsProp != null) {
-     //float toolBarFontSize = Float.parseFloat(prefsProp.toString());
-     //setupToolBarFontSizes(toolBarFontSize);
-     //}
-     updateAllComboBoxesDropDownListDisplayOrderFromPrefs();
  }//); //Inst
-
-
+ // make sure that the layoutEditorComponent is in the _targetPanel components
+#if 0
+ QList<QWidget*> componentList = QList<QWidget*>(_targetPanel->getComponents());
+ if (!componentList.contains(layoutEditorComponent)) {
+     try {
+         _targetPanel.remove(layoutEditorComponent);
+         _targetPanel.add(layoutEditorComponent, Integer.valueOf(3));
+         _targetPanel.moveToFront(layoutEditorComponent);
+     } catch (Exception e) {
+         log.warn("paintTargetPanelBefore: Exception {}", e);
+     }
+ }
+#endif
 #endif
 } // init
 
@@ -1114,130 +978,6 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDial
   ltdod->setVisible(true);
 
  }
-#if 0
- void LayoutEditor::onChangeIcons()
- {
-//  ui->changeIconsButton->setEnabled(ui->sensorButton->isChecked() || ui->signalButton->isChecked() || ui->iconLabelButton->isChecked());
-//  onMiscFields();
- }
-
- void LayoutEditor::onTurnoutProperties()
- {
-  bool e = (ui->turnoutRHButton->isChecked()
-            || ui->turnoutLHButton->isChecked()
-            || ui->turnoutWYEButton->isChecked()
-            || ui->doubleXoverButton->isChecked()
-            || ui->rhXoverButton->isChecked()
-            || ui->lhXoverButton->isChecked()
-            || ui->layoutSingleSlipButton->isChecked()
-            || ui->layoutDoubleSlipButton->isChecked());
-  log->debug(tr("turnoutPropertiesPanel is %1").arg(e ? "enabled" : "disabled"));
-
-              //  for (Component i : turnoutNamePanel.getComponents())
-//  {
-//      i.setEnabled(e);
-//  }
-  ui->turnoutNameComboBox->setEnabled(e);
-  ui->turnoutNameLabel->setEnabled(e);
-
-//  for (Component i : rotationPanel.getComponents()) {
-//      i.setEnabled(e);
-//  }
-  ui->rotationComboBox->setEnabled(e);
-
-  onMiscFields();
-
- }
- void LayoutEditor::onSecondTurnoutProperties()
- {
-  //second turnout property
-     bool e = (ui->layoutSingleSlipButton->isChecked() || ui->layoutDoubleSlipButton->isChecked());
-     log->debug(tr("extraTurnoutPanel is %1").arg(e ? "enabled" : "disabled"));
-
-//     for (Component i : extraTurnoutPanel.getComponents()) {
-//         i.setEnabled(e);
-//     }
-     ui->extraTurnoutLabel->setEnabled(e);
-     ui->extraTurnoutNameComboBox->setEnabled(e);
-     onMiscFields();
-
- }
-void LayoutEditor::onTrackSegmentProperties()
-{
-     //track Segment properties
-    bool e = ui->trackButton->isChecked();
-     log->debug(tr("trackSegmentPropertiesPanel is %1").arg(e ? "enabled" : "disabled"));
-
-//     for (Component i : trackSegmentPropertiesPanel.getComponents()) {
-//         i.setEnabled(e);
-//     }
-     ui->chkDashed->setEnabled(e);
-     ui->chkMainline->setEnabled(e);
-     ui->levelXingButton->setEnabled(e);
-     onMiscFields();
-
-}
-
-void LayoutEditor::onBlockProperties()
-{
-     //block properties
-     bool e = (ui->turnoutRHButton->isChecked()
-             || ui->turnoutLHButton->isChecked()
-             || ui->turnoutWYEButton->isChecked()
-             || ui->doubleXoverButton->isChecked()
-             || ui->rhXoverButton->isChecked()
-             || ui->lhXoverButton->isChecked()
-             || ui->layoutSingleSlipButton->isChecked()
-             || ui->layoutDoubleSlipButton->isChecked()
-             || ui->levelXingButton->isChecked()
-             || ui->trackButton->isChecked());
-     log->debug(tr("blockPanel is %1").arg(e ? "enabled" : "disabled"));
-
-#if 0 //dock panel?
-     if (ui->blockPropertiesPanel != null) {
-         for (Component i : blockPropertiesPanel.getComponents()) {
-             i.setEnabled(e);
-         }
-
-         if (e) {
-             blockPropertiesPanel.setBackground(Color.lightGray);
-         } else {
-             blockPropertiesPanel.setBackground(new Color(238, 238, 238));
-         }
-     } else
-#endif
-     {
-         ui->blockNameLabel->setEnabled(e);
-//         blockIDComboBox.setEnabled(e);
-         ui->blockSensorNameLabel->setEnabled(e);
-//         ui->blockSensorLabel.setEnabled(e);
-         ui->blockSensorComboBox->setEnabled(e);
-     }
-     onMiscFields();
-}
-
-void LayoutEditor::onMiscFields()
-{
-     //enable/disable text label, memory & block contents text fields
-     ui->textLabel->setEnabled(ui->textLabelButton->isChecked());
-     ui->textMemoryComboBox->setEnabled(ui->memoryButton->isChecked());
-//     ui->blockContentsComboBox->setEnabled(ui->blockContentsButton->isChecked());
-
-     //enable/disable signal mast, sensor & signal head text fields
-     ui->signalMastComboBox->setEnabled(ui->signalMastButton->isChecked());
-     ui->sensorComboBox->setEnabled(ui->sensorButton->isChecked());
-     ui->signalHeadComboBox->setEnabled(ui->signalButton->isChecked());
-
-}
-
-void LayoutEditor::blockContentsComboBoxChanged()
-{
- if (highlightSelectedBlockFlag) {
-     highlightBlockInComboBox(ui->blockContentsComboBox);
- }
-
-}
-#endif
 /*public*/ void LayoutEditor::setSize(int w, int h)
 {
  log->debug("Frame size now w=" + QString::number(w) + ", h=" + QString::number(h));
@@ -1478,7 +1218,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 //   if(event->modifiers()&Qt::MetaModifier || event->modifiers()&Qt::AltModifier)
 //   {
     // if requesting a popup and it might conflict with moving, delay the request to mouseReleased
-    delayedPopupTrigger = true;
+   delayedPopupTrigger = true;
 //   }
 //   else
 //   {
@@ -1488,89 +1228,98 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   }
   if (bMeta || (!bAlt && !bShift))
   {
-   // if moving an item, identify the item for mouseDragging
+   //if dragging an item, identify the item for mouseDragging
    selectedObject = nullptr;
-   selectedHitPointType = NONE;
+   selectedHitPointType = LayoutTrack::NONE;
+
    if (findLayoutTracksHitPoint(dLoc))
    {
-    selectedObject = foundObject;
-    selectedHitPointType = foundPointType;
-    //selectedNeedsConnect = foundNeedsConnect;
-    startDel = QPointF(foundLocation.x()-dLoc.x(), foundLocation.y()-dLoc.y());
-    foundObject = nullptr;
+    selectedObject = foundTrack;
+    selectedHitPointType = foundHitPointType;
+    startDelta = QPointF(MathUtil::subtract(foundLocation, dLoc));
+    foundTrack = nullptr;
    }
    else
    {
-    selectedObject = checkMarkers(dLoc);
-    if (selectedObject!=nullptr)
+    selectedObject = checkMarkerPopUps(dLoc);
+    if (selectedObject != nullptr)
     {
-     selectedHitPointType = MARKER;
-     startDel= QPointF((((LocoIcon*)selectedObject)->x()-dLoc.y()),(((LocoIcon*)selectedObject)->y()-dLoc.y()));
-     selectedNeedsConnect = false;
-    }
-    else
-    {
-     selectedObject = checkClocks(dLoc);
-     if (selectedObject!=nullptr)
+     selectedHitPointType = LayoutTrack::MARKER;
+     //startDelta.setLocation(MathUtil.subtract(((LocoIcon) selectedObject).getLocation(), dLoc));
+     startDelta= QPointF((((LocoIcon*)selectedObject)->x()-dLoc.y()),(((LocoIcon*)selectedObject)->y()-dLoc.y()));       } else {
+     selectedObject = checkClockPopUps(dLoc);
+     if (selectedObject != nullptr)
      {
-      selectedHitPointType = LAYOUT_POS_JCOMP;
-      //startDel.setLocation((((PositionableJComponent)selectedObject).getX()-dLoc.getX()),(((PositionableJComponent)selectedObject).getY()-dLoc.getY()));
-      startDel= QPointF((((AnalogClock2Display*)selectedObject)->x()-dLoc.y()),(((AnalogClock2Display*)selectedObject)->x()-dLoc.y()));
-      selectedNeedsConnect = false;
+      selectedHitPointType = LayoutTrack::LAYOUT_POS_JCOMP;
+      startDelta = QPointF(MathUtil::subtract(((PositionableJComponent*) selectedObject)->getLocation(), dLoc));
      }
      else
      {
-      selectedObject = checkMultiSensors(dLoc);
-      if (selectedObject!=nullptr)
+      selectedObject = checkMultiSensorPopUps(dLoc);
+      if (selectedObject != nullptr)
       {
-       selectedHitPointType = MULTI_SENSOR;
-       startDel= QPointF((((MultiSensorIcon*)selectedObject)->x()-dLoc.y()), (((MultiSensorIcon*)selectedObject)->x()-dLoc.y()));
-       //selectedNeedsConnect = false;
+       selectedHitPointType = LayoutTrack::MULTI_SENSOR;
+       startDelta= QPointF((((MultiSensorIcon*)selectedObject)->x()-dLoc.y()), (((MultiSensorIcon*)selectedObject)->x()-dLoc.y()));               }
       }
      }
-    }
-    if (selectedObject==nullptr)
-    {
-     selectedObject = checkSensorIcons(dLoc);
-     if (selectedObject==nullptr)
+
+     if (selectedObject == nullptr)
      {
-      selectedObject = checkSignalHeadIcons(dLoc);
-      if (selectedObject==nullptr)
+      selectedObject = checkSensorIconPopUps(dLoc);
+      if (selectedObject == nullptr)
       {
-       selectedObject = checkLabelImages(dLoc);
-       if(selectedObject==nullptr)
+       selectedObject = checkSignalHeadIconPopUps(dLoc);
+       if (selectedObject == nullptr)
        {
-        selectedObject = checkSignalMastIcons(dLoc);
+        selectedObject = checkLabelImagePopUps(dLoc);
+        if (selectedObject == nullptr) {
+            selectedObject = checkSignalMastIconPopUps(dLoc);
        }
       }
      }
-     if (selectedObject!=nullptr)
+
+     if (selectedObject != nullptr)
      {
-      selectedHitPointType = LAYOUT_POS_LABEL;
-      //startDel.setLocation((((PositionableLabel*)selectedObject)->getX()-dLoc.getX()),                     (((PositionableLabel*)selectedObject)->getY()-dLoc.getY()));
-      startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),(((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
-      //if (selectedObject instanceof MemoryIcon)
-      if(qobject_cast<LEMemoryIcon*>(selectedObject)!= nullptr)
+      selectedHitPointType = LayoutTrack::LAYOUT_POS_LABEL;
+      startDelta = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),(((PositionableLabel*)selectedObject)->getY()-dLoc.y()));               //if (selectedObject instanceof MemoryIcon)
+      if(qobject_cast<LEMemoryIcon*>(selectedObject))
       {
        LEMemoryIcon* pm = (LEMemoryIcon*) selectedObject;
-       if (pm->getPopupUtility()->getFixedWidth()==0)
+
+       if (pm->getPopupUtility()->getFixedWidth() == 0)
        {
-        //startDel.setLocation((pm->getOriginalX()-dLoc.getX()),                                (pm->getOriginalY()-dLoc.getY()));
-        startDel = QPointF((pm->getOriginalX()-dLoc.y()),                                (pm->getOriginalY()-dLoc.y()));
+        startDelta= QPointF((pm->getOriginalX() - dLoc.x()),
+                (pm->getOriginalY() - dLoc.y()));
        }
       }
-     selectedNeedsConnect = false;
      }
      else
      {
-      selectedObject = checkBackgrounds(dLoc);
-      if (selectedObject!=nullptr)
+      selectedObject = checkBackgroundPopUps(dLoc);
+
+      if (selectedObject != nullptr)
       {
-       selectedHitPointType = LAYOUT_POS_LABEL;
-       //startDel.setLocation((((PositionableLabel)selectedObject).getX()-dLoc.x()),                            (((PositionableLabel)selectedObject).getY()-dLoc.y()));
-       startDel = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
-                          (((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
-      selectedNeedsConnect = false;
+       selectedHitPointType = LayoutTrack::LAYOUT_POS_LABEL;
+       startDelta = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
+                                 (((PositionableLabel*)selectedObject)->getY()-dLoc.y())); } else {
+       //dragging a shape?
+       QListIterator<LayoutShape*> listIterator(*layoutShapes);// = layoutShapes.listIterator(layoutShapes.size());
+       listIterator.toBack();
+       //hit test in front to back order (reverse order of list)
+       while (listIterator.hasPrevious())
+       {
+        LayoutShape* ls = listIterator.previous();
+        selectedHitPointType = ls->findHitPointType(dLoc, true);
+        if (LayoutShape::isShapeHitPointType(selectedHitPointType))
+        {
+         //log.warn("drag selectedObject: ", lt);
+         selectedObject = ls;    // found one!
+         beginLocation = QPointF(dLoc);
+         currentLocation = QPointF(beginLocation);
+         startDelta = QPointF(MathUtil::zeroPoint2D);
+         break;
+        }
+       }
       }
      }
     }
@@ -1583,50 +1332,52 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    if (findLayoutTracksHitPoint(dLoc))
    {
     // match to a free connection point
-    beginObject = foundObject;
-    beginPointType = foundPointType;
-    beginLocation = foundLocation;
+    beginTrack = foundTrack;
+    beginHitPointType = foundHitPointType;
+    beginLocation = QPointF(foundLocation);
+    //BUGFIX: prevents initial drawTrackSegmentInProgress to {0, 0}
+    currentLocation = QPointF(beginLocation);
    }
-   else {
-    foundObject = nullptr;
-    beginObject = nullptr;
+   else
+   {
+    foundTrack = nullptr;
+    beginTrack = nullptr;
    }
   }
   else if ( (!bShift) && (!bControl) /*&& (!event.isPopupTrigger())*/ && !bPopupTrigger)
   {
    // check if controlling a turnout in edit mode
-    selectedObject = nullptr;
-    if (allControlling())
-    {
-     checkControls(false);
-    }
-    // initialize starting selection - cancel any previous selection rectangle
-    selectionActive = true;
-    selectionX = dLoc.x();
-    selectionY = dLoc.y();
-    selectionWidth = 0.0;
-    selectionHeight = 0.0;
-   }
-   if (prevSelectionActive) /*repaint();*/
-    paintTargetPanel(editScene);
-  } // isEditable
-
-  else if (allControlling() && /*(!event.isMetaDown()) && (!event.isPopupTrigger()) &&*/
-           (!(event->modifiers()&Qt::AltModifier)) &&(!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
-  {
-   // not in edit mode - check if mouse is on a turnout (using wider search range)
    selectedObject = nullptr;
-   checkControls(true);
+   if (allControlling())
+   {
+    checkControls(false);
+   }
+   // initialize starting selection - cancel any previous selection rectangle
+   selectionActive = true;
+   selectionX = dLoc.x();
+   selectionY = dLoc.y();
+   selectionWidth = 0.0;
+   selectionHeight = 0.0;
+  }
+  if (prevSelectionActive) /*repaint();*/
+   paintTargetPanel(editScene);
+ } // isEditable
+ else if (allControlling() && /*(!event.isMetaDown()) && (!event.isPopupTrigger()) &&*/
+          (!(event->modifiers()&Qt::AltModifier)) &&(!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
+ {
+  // not in edit mode - check if mouse is on a turnout (using wider search range)
+  selectedObject = nullptr;
+  checkControls(true);
  }
  else if ( (/*event.isMetaDown() ||*/ /*event.isAltDown()*/event->modifiers()&Qt::AltModifier) &&
-              (!(/*event.isShiftDown()*/event->modifiers()&Qt::ShiftModifier)) && (!(/*event.isControlDown()*/event->modifiers()&Qt::ControlModifier)) )
+               (!(/*event.isShiftDown()*/event->modifiers()&Qt::ShiftModifier)) && (!(/*event.isControlDown()*/event->modifiers()&Qt::ControlModifier)) )
  {
   // not in edit mode - check if moving a marker if there are any
   selectedObject = checkMarkers(dLoc);
   if (selectedObject!=nullptr)
   {
    selectedHitPointType = MARKER;
-   startDel= QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
+   startDelta= QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
                                             (((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
    //selectedNeedsConnect = false;
   }
@@ -1648,7 +1399,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 //   if(qobject_cast<SensorIcon*>(selection->self()s.at(0))!=  nullptr)
 //    ((SensorIcon*)selections.at(0))->doMousePressed(event);
 //   else
-    selections.at(0)->doMousePressed(event);
+   selections.at(0)->doMousePressed(event);
   }
  }
  //thisPanel.setFocusable(true);
@@ -1694,33 +1445,33 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
         bool requireUnconnected, /*@Nullable*/ LayoutTrack* avoid) {
     bool result = false; // assume failure (pessimist!)
 
-    foundObject = nullptr;
-    foundPointType = LayoutTrack::NONE;
+    foundTrack = nullptr;
+    foundHitPointType = LayoutTrack::NONE;
 #if 1
     Optional<LayoutTrack*> opt;// = layoutTrackList.stream().filter(layoutTrack ->
     for(LayoutTrack* layoutTrack : *layoutTrackList)
     {
         if ((layoutTrack != avoid) && (layoutTrack != selectedObject)) {
-            foundPointType = layoutTrack->findHitPointType(loc, false, requireUnconnected);
+            foundHitPointType = layoutTrack->findHitPointType(loc, false, requireUnconnected);
 
 //        return (LayoutTrack::NONE != foundPointType);
-        if(LayoutTrack::NONE != foundPointType)
+        if(LayoutTrack::NONE != foundHitPointType)
         {
-         foundObject = layoutTrack;
+         foundTrack = layoutTrack;
          break;
         }
       }
     }//).findFirst();
     //opt.findFirst();
 
-    LayoutTrack* layoutTrack = foundObject;
+    LayoutTrack* layoutTrack = foundTrack;
 //    if (opt.isPresent()) {
 //        layoutTrack = opt.get();
 //    }
     if (layoutTrack != nullptr) {
-        foundObject = layoutTrack;
-        foundLocation = layoutTrack->getCoordsForConnectionType(foundPointType);
-        foundNeedsConnect = layoutTrack->isDisconnected(foundPointType);
+        foundTrack = layoutTrack;
+        foundLocation = layoutTrack->getCoordsForConnectionType(foundHitPointType);
+        //foundNeedsConnect = layoutTrack->isDisconnected(foundTrack);
         result = true;
     }
 #endif
@@ -1939,22 +1690,22 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   if (findLayoutTracksHitPoint(dLoc))
   {
    // show popup menu
-   switch (foundPointType)
+   switch (foundHitPointType)
    {
     case POS_POINT:
-        amendSelectionGroup((PositionablePoint*)foundObject);
+        amendSelectionGroup((PositionablePoint*)foundTrack);
         break;
     case TURNOUT_CENTER:
-        amendSelectionGroup((LayoutTurnout*)foundObject);
+        amendSelectionGroup((LayoutTurnout*)foundTrack);
         break;
     case LEVEL_XING_CENTER:
-        amendSelectionGroup((LevelXing*)foundObject);
+        amendSelectionGroup((LevelXing*)foundTrack);
         break;
     case SLIP_CENTER:
-        amendSelectionGroup((LayoutSlip*)foundObject);
+        amendSelectionGroup((LayoutSlip*)foundTrack);
         break;
     case TURNTABLE_CENTER:
-        amendSelectionGroup((LayoutTurntable*)foundObject);
+        amendSelectionGroup((LayoutTurntable*)foundTrack);
         break;
     default: break;
    }
@@ -1962,7 +1713,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   else
   {
 
-   PositionableLabel* s = checkSensorIcons(dLoc);
+   PositionableLabel* s = checkSensorIconPopUps(dLoc);
    if (s!=nullptr)
    {
     amendSelectionGroup((Positionable*)s);
@@ -1970,21 +1721,21 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 
    else
    {
-    PositionableLabel* sh = checkSignalHeadIcons(dLoc);
+    PositionableLabel* sh = checkSignalHeadIconPopUps(dLoc);
     if (sh!=nullptr)
     {
      amendSelectionGroup((Positionable*)sh);
     }
     else
     {
-     PositionableLabel* ms = checkMultiSensors(dLoc);
+     PositionableLabel* ms = checkMultiSensorPopUps(dLoc);
      if (ms!=nullptr)
      {
       amendSelectionGroup((Positionable*)ms);
      }
      else
      {
-      PositionableLabel* lb = checkLabelImages(dLoc);
+      PositionableLabel* lb = checkLabelImagePopUps(dLoc);
       if (lb!=nullptr)
       {
        amendSelectionGroup((Positionable*)lb);
@@ -1998,7 +1749,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 //       }
        else
        {
-        PositionableLabel* sm = checkSignalMastIcons(dLoc);
+        PositionableLabel* sm = checkSignalMastIconPopUps(dLoc);
         if (sm!=nullptr)
         {
          amendSelectionGroup((Positionable*)sm);
@@ -2037,17 +1788,17 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
  if (t == nullptr) {
      return;
  }
- beginObject = p;
- beginPointType = LayoutTrack::POS_POINT;
+ beginTrack = p;
+ beginHitPointType = LayoutTrack::POS_POINT;
  QPointF loc = p->getCoordsCenter();
 
  if (findLayoutTracksHitPoint(loc, true, p))
  {
-  switch (foundPointType)
+  switch (foundHitPointType)
   {
    case LayoutTrack::POS_POINT:
    {
-    PositionablePoint* p2 = (PositionablePoint*) foundObject;
+    PositionablePoint* p2 = (PositionablePoint*) foundTrack;
 
     if ((p2->getType() == PositionablePoint::ANCHOR) && p2->setTrackConnection(t))
     {
@@ -2067,133 +1818,43 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
     break;
    }
 
-   case LayoutTrack::TURNOUT_A:
-   case LayoutTrack::TURNOUT_B:
-   case LayoutTrack::TURNOUT_C:
-   case LayoutTrack::TURNOUT_D:
-   {
-    LayoutTurnout* lt = (LayoutTurnout*) foundObject;
-    try
-    {
-     if (lt->getConnection(foundPointType) == nullptr)
-     {
-      lt->setConnection(foundPointType, t, LayoutTrack::TRACK);
 
-      if (t->getConnect1() == p) {
-          t->setNewConnect1(lt, foundPointType);
-      } else {
-          t->setNewConnect2(lt, foundPointType);
-      }
-      p->removeTrackConnection(t);
-
-      if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr))
-      {
-          removePositionablePoint(p);
-      }
-     }
-    } catch (JmriException e) {
-       log->debug("Unable to set location");
-    }
-    break;
-   }
-
-   case LayoutTrack::LEVEL_XING_A:
-   case LayoutTrack::LEVEL_XING_B:
-   case LayoutTrack::LEVEL_XING_C:
-   case LayoutTrack::LEVEL_XING_D:
-   {
-    LevelXing* lx = (LevelXing*) foundObject;
-    try
-    {
-     if (lx->getConnection(foundPointType) == nullptr)
-     {
-      lx->setConnection(foundPointType, t, LayoutTrack::TRACK);
-
-      if (t->getConnect1() == p) {
-          t->setNewConnect1(lx, foundPointType);
-      } else {
-          t->setNewConnect2(lx, foundPointType);
-      }
-      p->removeTrackConnection(t);
-
-      if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr)) {
-          removePositionablePoint(p);
-      }
-     }
-    }
-    catch (JmriException e) {
-       log->debug("Unable to set location");
-    }
-    break;
-   }
-
-   case LayoutTrack::SLIP_A:
-   case LayoutTrack::SLIP_B:
-   case LayoutTrack::SLIP_C:
-   case LayoutTrack::SLIP_D:
-   {
-    LayoutSlip* ls = (LayoutSlip*) foundObject;
-    try
-    {
-     if (ls->getConnection(foundPointType) == nullptr)
-     {
-      ls->setConnection(foundPointType, t, LayoutTrack::TRACK);
-
-      if (t->getConnect1() == p) {
-          t->setNewConnect1(ls, foundPointType);
-      } else {
-          t->setNewConnect2(ls, foundPointType);
-      }
-      p->removeTrackConnection(t);
-
-      if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr)) {
-          removePositionablePoint(p);
-      }
-     }
-    } catch (JmriException e) {
-       log->debug("Unable to set location");
-   }
-   break;
-  }
 
   default:
-
-   if (foundPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET)
-   {
-    LayoutTurntable* tt = (LayoutTurntable*) foundObject;
-    int ray = foundPointType - LayoutTrack::TURNTABLE_RAY_OFFSET;
-
-    if (tt->getRayConnectIndexed(ray) == nullptr)
-    {
-     tt->setRayConnect(t, ray);
-
-     if (t->getConnect1() == p) {
-         t->setNewConnect1(tt, foundPointType);
-     } else {
-         t->setNewConnect2(tt, foundPointType);
-     }
-     p->removeTrackConnection(t);
-
-     if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr)) {
-         removePositionablePoint(p);
-     }
-    }
-   }
-   else
-   {
-    log->debug("No valid point, so will quit");
-    return;
-   }
-  }   //switch
-  update();
-
-  if (t->getLayoutBlock() != nullptr)
   {
-   auxTools->setBlockConnectivityChanged();
+   if (foundHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET)
+   {
+        LayoutTurntable* tt = (LayoutTurntable*) foundTrack;
+        int ray = foundHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET;
+
+        if (tt->getRayConnectIndexed(ray) == nullptr) {
+            tt->setRayConnect(t, ray);
+
+            if (t->getConnect1() == p) {
+                t->setNewConnect1(tt, foundHitPointType);
+            } else {
+                t->setNewConnect2(tt, foundHitPointType);
+            }
+            p->removeTrackConnection(t);
+
+            if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr)) {
+                removePositionablePoint(p);
+            }
+        }
+    } else {
+        log->debug("No valid point, so will quit");
+        return;
+    }
+    break;
+   }
+  }
+  redrawPanel();
+
+  if (t->getLayoutBlock() != nullptr) {
+      getLEAuxTools()->setBlockConnectivityChanged();
   }
  }
- beginObject = nullptr;
- foundObject = nullptr;
+ beginTrack = nullptr;
 }   //checkPointOfPositionable
 
 #if 0
@@ -2301,13 +1962,13 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 #endif
 // We just dropped a turnout... see if it will connect to anything
 /*private*/ void LayoutEditor::hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt) {
-    beginObject = lt;
+    beginTrack = lt;
 
     if (lt->getConnectA() == nullptr) {
         if (qobject_cast<LayoutSlip*>(lt)) {
-            beginPointType = LayoutTrack::SLIP_A;
+            beginHitPointType = LayoutTrack::SLIP_A;
         } else {
-            beginPointType = LayoutTrack::TURNOUT_A;
+            beginHitPointType = LayoutTrack::TURNOUT_A;
         }
         dLoc = lt->getCoordsA();
         hitPointCheckLayoutTurnoutSubs(dLoc);
@@ -2315,9 +1976,9 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 
     if (lt->getConnectB() == nullptr) {
         if (qobject_cast<LayoutSlip*>(lt)) {
-            beginPointType = LayoutTrack::SLIP_B;
+            beginHitPointType = LayoutTrack::SLIP_B;
         } else {
-            beginPointType = LayoutTrack::TURNOUT_B;
+            beginHitPointType = LayoutTrack::TURNOUT_B;
         }
         dLoc = lt->getCoordsB();
         hitPointCheckLayoutTurnoutSubs(dLoc);
@@ -2325,9 +1986,9 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 
     if (lt->getConnectC() == nullptr) {
         if (qobject_cast<LayoutSlip*>(lt)) {
-            beginPointType = LayoutTrack::SLIP_C;
+            beginHitPointType = LayoutTrack::SLIP_C;
         } else {
-            beginPointType = LayoutTrack::TURNOUT_C;
+            beginHitPointType = LayoutTrack::TURNOUT_C;
         }
         dLoc = lt->getCoordsC();
         hitPointCheckLayoutTurnoutSubs(dLoc);
@@ -2339,22 +2000,22 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
             || (lt->getTurnoutType() == LayoutTurnout::SINGLE_SLIP)
             || (lt->getTurnoutType() == LayoutTurnout::DOUBLE_SLIP))) {
         if (qobject_cast<LayoutSlip*>(lt)) {
-            beginPointType = LayoutTrack::SLIP_D;
+            beginHitPointType = LayoutTrack::SLIP_D;
         } else {
-            beginPointType = LayoutTrack::TURNOUT_D;
+            beginHitPointType = LayoutTrack::TURNOUT_D;
         }
         dLoc = lt->getCoordsD();
         hitPointCheckLayoutTurnoutSubs(dLoc);
     }
-    beginObject = nullptr;
-    foundObject = nullptr;
+    beginTrack = nullptr;
+    foundTrack = nullptr;
 }
 
 /*private*/ void LayoutEditor::hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc) {
     if (findLayoutTracksHitPoint(dLoc, true)) {
-        switch (foundPointType) {
+        switch (foundHitPointType) {
             case LayoutTrack::POS_POINT: {
-                PositionablePoint* p2 = (PositionablePoint*) foundObject;
+                PositionablePoint* p2 = (PositionablePoint*) foundTrack;
 
                 if (((p2->getConnect1() == nullptr) && (p2->getConnect2() != nullptr))
                         || ((p2->getConnect1() != nullptr) && (p2->getConnect2() == nullptr))) {
@@ -2367,16 +2028,16 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
                     if (t == nullptr) {
                         return;
                     }
-                    LayoutTurnout* lt = (LayoutTurnout*) beginObject;
+                    LayoutTurnout* lt = (LayoutTurnout*) beginTrack;
                     try {
-                        if (lt->getConnection(beginPointType) == nullptr) {
-                            lt->setConnection(beginPointType, t, LayoutTrack::TRACK);
+                        if (lt->getConnection(beginHitPointType) == nullptr) {
+                            lt->setConnection(beginHitPointType, t, LayoutTrack::TRACK);
                             p2->removeTrackConnection(t);
 
                             if (t->getConnect1() == p2) {
-                                t->setNewConnect1(lt, beginPointType);
+                                t->setNewConnect1(lt, beginHitPointType);
                             } else {
-                                t->setNewConnect2(lt, beginPointType);
+                                t->setNewConnect2(lt, beginHitPointType);
                             }
                             removePositionablePoint(p2);
                         }
@@ -2399,7 +2060,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
             case LayoutTrack::SLIP_B:
             case LayoutTrack::SLIP_C:
             case LayoutTrack::SLIP_D: {
-                LayoutTurnout* ft = (LayoutTurnout*) foundObject;
+                LayoutTurnout* ft = (LayoutTurnout*) foundTrack;
                 addTrackSegment();
 
                 if ((ft->getTurnoutType() == LayoutTurnout::RH_TURNOUT) || (ft->getTurnoutType() == LayoutTurnout::LH_TURNOUT)) {
@@ -2407,12 +2068,12 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
                 }
 
                 // Assign a block to the new zero length track segment.
-                ft->setTrackSegmentBlock(foundPointType, true);
+                ft->setTrackSegmentBlock(foundHitPointType, true);
                 break;
             }
 
             default: {
-                log->warn(tr("Unexpected foundPointType %1 in hitPointCheckLayoutTurnoutSubs").arg(foundPointType));
+                log->warn(tr("Unexpected foundPointType %1 in hitPointCheckLayoutTurnoutSubs").arg(foundHitPointType));
                 break;
             }
         }
@@ -2420,11 +2081,11 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 }
 
 /*private*/ void LayoutEditor::rotateTurnout(LayoutTurnout* t) {
-    LayoutTurnout* be = (LayoutTurnout*) beginObject;
+    LayoutTurnout* be = (LayoutTurnout*) beginTrack;
 
-    if (((beginPointType == LayoutTrack::TURNOUT_A) && ((be->getConnectB() != nullptr) || (be->getConnectC() != nullptr))) ||
-        ((beginPointType == LayoutTrack::TURNOUT_B) && ((be->getConnectA() != nullptr) || (be->getConnectC() != nullptr))) ||
-        ((beginPointType == LayoutTrack::TURNOUT_C) && ((be->getConnectB() != nullptr) || (be->getConnectA() != nullptr)))) {
+    if (((beginHitPointType == LayoutTrack::TURNOUT_A) && ((be->getConnectB() != nullptr) || (be->getConnectC() != nullptr))) ||
+        ((beginHitPointType == LayoutTrack::TURNOUT_B) && ((be->getConnectA() != nullptr) || (be->getConnectC() != nullptr))) ||
+        ((beginHitPointType == LayoutTrack::TURNOUT_C) && ((be->getConnectB() != nullptr) || (be->getConnectA() != nullptr)))) {
         return;
     }
 
@@ -2438,45 +2099,45 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
     QPointF c;
     QPointF diverg;
 
-    if ((foundPointType == LayoutTrack::TURNOUT_C) && (beginPointType == LayoutTrack::TURNOUT_C)) {
+    if ((foundHitPointType == LayoutTrack::TURNOUT_C) && (beginHitPointType == LayoutTrack::TURNOUT_C)) {
         c = t->getCoordsA();
         diverg = t->getCoordsB();
         x2 = be->getCoordsA().x() - be->getCoordsB().x();
         y2 = be->getCoordsA().y() - be->getCoordsB().y();
-    } else if ((foundPointType == LayoutTrack::TURNOUT_C) &&
-               ((beginPointType == LayoutTrack::TURNOUT_A) || (beginPointType == LayoutTrack::TURNOUT_B))) {
+    } else if ((foundHitPointType == LayoutTrack::TURNOUT_C) &&
+               ((beginHitPointType == LayoutTrack::TURNOUT_A) || (beginHitPointType == LayoutTrack::TURNOUT_B))) {
         c = t->getCoordsCenter();
         diverg = t->getCoordsC();
 
-        if (beginPointType == LayoutTrack::TURNOUT_A) {
+        if (beginHitPointType == LayoutTrack::TURNOUT_A) {
             x2 = be->getCoordsB().x() - be->getCoordsA().x();
             y2 = be->getCoordsB().y() - be->getCoordsA().y();
         } else {
             x2 = be->getCoordsA().x() - be->getCoordsB().x();
             y2 = be->getCoordsA().y() - be->getCoordsB().y();
         }
-    } else if (foundPointType == LayoutTrack::TURNOUT_B) {
+    } else if (foundHitPointType == LayoutTrack::TURNOUT_B) {
         c = t->getCoordsA();
         diverg = t->getCoordsB();
 
-        if (beginPointType == LayoutTrack::TURNOUT_B) {
+        if (beginHitPointType == LayoutTrack::TURNOUT_B) {
             x2 = be->getCoordsA().x() - be->getCoordsB().x();
             y2 = be->getCoordsA().y() - be->getCoordsB().y();
-        } else if (beginPointType == LayoutTrack::TURNOUT_A) {
+        } else if (beginHitPointType == LayoutTrack::TURNOUT_A) {
             x2 = be->getCoordsB().x() - be->getCoordsA().x();
             y2 = be->getCoordsB().y() - be->getCoordsA().y();
         } else {    //(beginPointType==TURNOUT_C){
             x2 = be->getCoordsCenter().x() - be->getCoordsC().x();
             y2 = be->getCoordsCenter().y() - be->getCoordsC().y();
         }
-    } else if (foundPointType == LayoutTrack::TURNOUT_A) {
+    } else if (foundHitPointType == LayoutTrack::TURNOUT_A) {
         c = t->getCoordsA();
         diverg = t->getCoordsB();
 
-        if (beginPointType == LayoutTrack::TURNOUT_A) {
+        if (beginHitPointType == LayoutTrack::TURNOUT_A) {
             x2 = be->getCoordsA().x() - be->getCoordsB().x();
             y2 = be->getCoordsA().y() - be->getCoordsB().y();
-        } else if (beginPointType == LayoutTrack::TURNOUT_B) {
+        } else if (beginHitPointType == LayoutTrack::TURNOUT_B) {
             x2 = be->getCoordsB().x() - be->getCoordsA().x();
             y2 = be->getCoordsB().y() - be->getCoordsA().y();
         } else {    //(beginPointType==TURNOUT_C){
@@ -2495,19 +2156,19 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
     QPointF conCord = be->getCoordsA();
     QPointF tCord = t->getCoordsC();
 
-    if (foundPointType == LayoutTrack::TURNOUT_B) {
+    if (foundHitPointType == LayoutTrack::TURNOUT_B) {
         tCord = t->getCoordsB();
     }
 
-    if (foundPointType == LayoutTrack::TURNOUT_A) {
+    if (foundHitPointType == LayoutTrack::TURNOUT_A) {
         tCord = t->getCoordsA();
     }
 
-    if (beginPointType == LayoutTrack::TURNOUT_B) {
+    if (beginHitPointType == LayoutTrack::TURNOUT_B) {
         conCord = be->getCoordsB();
-    } else if (beginPointType == LayoutTrack::TURNOUT_C) {
+    } else if (beginHitPointType == LayoutTrack::TURNOUT_C) {
         conCord = be->getCoordsC();
-    } else if (beginPointType == LayoutTrack::TURNOUT_A) {
+    } else if (beginHitPointType == LayoutTrack::TURNOUT_A) {
         conCord = be->getCoordsA();
     }
     x = conCord.x() - tCord.x();
@@ -2599,8 +2260,8 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    }
    else if (leToolBarPanel->trackButton->isChecked())
    {
-    if ( (beginObject!=nullptr) && (foundObject!=nullptr) &&
-                (beginObject!=foundObject) )
+    if ( (beginTrack!=nullptr) && (foundTrack!=nullptr) &&
+                (beginTrack!=foundTrack) )
     {
      if(trackInProgress != nullptr && trackInProgress->scene()!=0)
      {
@@ -2610,8 +2271,8 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
      addTrackSegment();
      setCursor(Qt::ArrowCursor);
     }
-    beginObject = nullptr;
-    foundObject = nullptr;
+    beginTrack = nullptr;
+    foundTrack = nullptr;
     }
    else if (leToolBarPanel->multiSensorButton->isChecked())
    {
@@ -2635,12 +2296,17 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
     }
     else if (leToolBarPanel->shapeButton->isChecked())
     {
-     if (selectedObject == nullptr) {
+     if (selectedObject == nullptr ) {
          addLayoutShape(currentPoint);
          setCursor(/*Cursor.getDefaultCursor()*/Qt::ArrowCursor);
-     } else {
+     }
+     else
+     {
+      if(qobject_cast<LayoutShape*>(selectedObject))
+      {
          LayoutShape* ls = (LayoutShape*) selectedObject;
          ls->addPoint(currentPoint, selectedHitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN);
+      }
      }
     }
 #if 1
@@ -2661,7 +2327,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   {
    selectedObject = nullptr;
    selectedHitPointType = LayoutTrack::NONE;
-   //whenReleased = event.getWhen();
+   //whenReleased = event->timestamp();
    showEditPopUps(event);
    delayedPopupTrigger = false;
   }
@@ -2713,12 +2379,12 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
     }
    }
 
-   if ( (leToolBarPanel->trackButton->isChecked()) && (beginObject!=nullptr) && (foundObject!=nullptr) )
+   if ( (leToolBarPanel->trackButton->isChecked()) && (beginTrack!=nullptr) && (foundTrack!=nullptr) )
    {
     // user let up shift key before releasing the mouse when creating a track segment
     setCursor(Qt::ArrowCursor);
-    beginObject = nullptr;
-    foundObject = nullptr;
+    beginTrack = nullptr;
+    foundTrack = nullptr;
     //repaint();
     paintTargetPanel(editScene);
    }
@@ -2764,36 +2430,36 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
      if (findLayoutTracksHitPoint(dLoc))
      {
       // show popup menu
-      switch (foundPointType)
+      switch (foundHitPointType)
       {
        case TURNOUT_CENTER:
-        ((LayoutTurnout*)foundObject)->showPopup(event);
+        ((LayoutTurnout*)foundTrack)->showPopup(event);
         break;
        case LEVEL_XING_CENTER:
-        ((LevelXing*)foundObject)->showPopup(event);
+        ((LevelXing*)foundTrack)->showPopup(event);
         break;
        case SLIP_CENTER:
-        ((LayoutSlip*)foundObject)->showPopup(event);
+        ((LayoutSlip*)foundTrack)->showPopup(event);
         break;
        default: break;
       }
      }
 
-     AnalogClock2Display* c = checkClocks(dLoc);
+     AnalogClock2Display* c = checkClockPopUps(dLoc);
      if (c!=nullptr)
      {
        showPopUp((Positionable*)c, event);
      }
      else
      {
-      SignalMastIcon* sm = checkSignalMastIcons(dLoc);
+      SignalMastIcon* sm = checkSignalMastIconPopUps(dLoc);
       if (sm!=nullptr)
       {
        showPopUp((Positionable*)sm, event);
       }
       else
       {
-       PositionableLabel* im = checkLabelImages(dLoc);
+       PositionableLabel* im = checkLabelImagePopUps(dLoc);
        if(im!=nullptr)
        {
         showPopUp((Positionable*)im, event);
@@ -2830,25 +2496,25 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
 {
   if (findLayoutTracksHitPoint(dLoc))
   {
-   if ((foundPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
-           && (foundPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
-       ((TrackSegment*) foundObject)->showBezierPopUp(event, foundPointType);
+   if ((foundHitPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
+           && (foundHitPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
+       ((TrackSegment*) foundTrack)->showBezierPopUp(event, foundHitPointType);
    }
-   else if (foundPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
-       LayoutTurntable* t = (LayoutTurntable*) foundObject;
+   else if (foundHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
+       LayoutTurntable* t = (LayoutTurntable*) foundTrack;
        if (t->isTurnoutControlled()) {
-           ((LayoutTurntable*) foundObject)->showRayPopUp(event, foundPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
+           ((LayoutTurntable*) foundHitPointType)->showRayPopUp(event, foundHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
        }
    }
-   else if (LayoutTrack::isPopupHitType(foundPointType)) {
-       foundObject->showPopup(event);
+   else if (LayoutTrack::isPopupHitType(foundHitPointType)) {
+       foundTrack->showPopup(event);
    }
-   else if ((foundPointType >= LayoutTrack::TURNOUT_A)
-           && (foundPointType <= LayoutTrack::TURNOUT_D)) {
+   else if ((foundHitPointType >= LayoutTrack::TURNOUT_A)
+           && (foundHitPointType <= LayoutTrack::TURNOUT_D)) {
        // don't curently have edit popup for these
    }
    else {
-       log->warn("Unknown foundPointType:" + QString::number(foundPointType));
+       log->warn("Unknown foundPointType:" + QString::number(foundHitPointType));
    }
   }
   else
@@ -3030,7 +2696,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   leToolBarPanel->xLabel->setText(QString("%1").arg(xLoc));
   leToolBarPanel->yLabel->setText(QString("%1").arg(yLoc));
  }
- QPointF newPos = currentPoint = QPointF(dLoc.x() + startDel.y(), dLoc.y() + startDel.y());
+ QPointF newPos = currentPoint = QPointF(dLoc.x() + startDelta.y(), dLoc.y() + startDelta.y());
  //don't allow negative placement, objects could become unreachable
  currentPoint = MathUtil::max(currentPoint, MathUtil::zeroPoint2D);
 
@@ -3230,8 +2896,8 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
            }
 
            default: {
-               if ((foundPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
-                       && (foundPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
+               if ((foundHitPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
+                       && (foundHitPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
                    int index = selectedHitPointType - LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN;
                    ((TrackSegment*) selectedObject)->setBezierControlPoint(currentPoint, index);
                }
@@ -3251,11 +2917,11 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
        }
    }
   }
-  else if ( (beginObject!=nullptr) && event->modifiers()&Qt::ShiftModifier && leToolBarPanel->trackButton->isChecked() )
+  else if ( (beginTrack!=nullptr) && event->modifiers()&Qt::ShiftModifier && leToolBarPanel->trackButton->isChecked() )
   {
    // dragging from first end of Track Segment
    currentLocation= QPointF(xLoc,yLoc);
-   bool needResetCursor = (foundObject!=nullptr);
+   bool needResetCursor = (foundTrack!=nullptr);
    if (findLayoutTracksHitPoint(currentLocation, true))
    {
    // have match to free connection point, change cursor
@@ -3757,16 +3423,16 @@ void LayoutEditor::onCalculateBounds()
   if (duplicate) numTrackSegments ++;
  }
  // create object
- newTrack = new TrackSegment(name,(LayoutTrack*)beginObject,beginPointType,
-                 (LayoutTrack*)foundObject,foundPointType,leToolBarPanel->dashedLine->isChecked(), leToolBarPanel->mainlineTrack->isChecked(),this);
+ newTrack = new TrackSegment(name,(LayoutTrack*)beginTrack,beginHitPointType,
+                 (LayoutTrack*)foundTrack,foundHitPointType,leToolBarPanel->dashedLine->isChecked(), leToolBarPanel->mainlineTrack->isChecked(),this);
  if (newTrack!=nullptr)
  {
   layoutTrackList->append(newTrack);
   unionToPanelBounds(newTrack->getBounds());
   setDirty(true);
   // link to connected objects
-  setLink(newTrack,TRACK,beginObject,beginPointType);
-  setLink(newTrack,TRACK,foundObject,foundPointType);
+  setLink(newTrack,TRACK,beginTrack,beginHitPointType);
+  setLink(newTrack,TRACK,foundTrack,foundHitPointType);
   // check on layout block
   LayoutBlock* b = provideLayoutBlock(leToolBarPanel->blockLabel->text().trimmed());
   if (b!=nullptr)
@@ -5372,7 +5038,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 // draw track segment (in progress)
 /*private*/ void LayoutEditor::drawTrackSegmentInProgress(EditScene* g2) {
     //check for segment in progress
-    if (isEditable() && (beginObject != nullptr) && leToolBarPanel->trackButton->isChecked()) {
+    if (isEditable() && (beginTrack != nullptr) && leToolBarPanel->trackButton->isChecked()) {
 //        g2.setColor(defaultTrackColor);
 //        g2.setStroke(new BasicStroke(sidelineTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
      QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::FlatCap, Qt::RoundJoin);
@@ -5388,12 +5054,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
         stroke = QPen(highlightColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
 
         for (LayoutTrack* lt : *getLayoutTracks()) {
-            if (lt != beginObject) {
-                if (lt == foundObject) {
+            if (lt != beginTrack) {
+                if (lt == foundTrack) {
                     lt->highlightUnconnected(g2);
 //                    g2.setColor(connectColor);
                     drawingStroke.setColor(connectColor);
-                    lt->highlightUnconnected(g2, foundPointType);
+                    lt->highlightUnconnected(g2, foundHitPointType);
 //                    g2.setColor(highlightColor);
                     drawingStroke.setColor(highlightColor);
                 } else {
@@ -7202,115 +6868,9 @@ QGraphicsView* LayoutEditor::panel()
    break;
   }
 }
-#if 1 // TODO:
-/*private*/ SignalHeadIcon* LayoutEditor::checkSignalHeadIcons(QPointF loc)
-{
- // check signal head images, if any
- for (int i=signalHeadImage->size()-1; i>=0; i--)
- {
-  SignalHeadIcon* s = signalHeadImage->at(i);
-  double x = ((Positionable*)s)->getX();
-  double y = ((Positionable*)s)->getY();
-  double w = s->maxWidth();
-  double h = s->maxHeight();
-  QRectF r =  QRectF(x ,y ,w ,h);
-  if(s->getItem() == nullptr)
-   return nullptr;
-  QRectF r2 =s->getItem()->boundingRect();
-  // Test this detection rectangle
-  if (r.contains(loc))
-  {
-   // mouse was pressed in signal head image
-   return s;
-  }
-  if (r2.contains(loc))
-  {
-   // mouse was pressed in signal head image
-   return s;
-  }
- }
- return nullptr;
-}
 
-/*private*/ SignalMastIcon* LayoutEditor::checkSignalMastIcons(QPointF loc) {
- // check signal head images, if any
- for (int i=signalMastImage->size()-1; i>=0; i--) {
-     SignalMastIcon* s = signalMastImage->at(i);
-     double x = ((Positionable*)s)->getX();
-     double y = ((Positionable*)s)->getY();
-     double w = s->maxWidth();
-     double h = s->maxHeight();
-     QRectF r = QRectF(x ,y ,w ,h);
-     // Test this detection rectangle
-     if (r.contains(loc)) {
-         // mouse was pressed in signal head image
-         return s;
-     }
- }
- return nullptr;
-}
-#endif
-/*private*/ PositionableLabel* LayoutEditor::checkLabelImages(QPointF loc)
-{
- PositionableLabel* l =nullptr;
- int level = 0;
- for (int i=_contents->size()-1; i>=0; i--)
- {
-  PositionableLabel* s = (PositionableLabel*)_contents->at(i);
-  double x = ((Positionable*)s)->getX();
-  double y = ((Positionable*)s)->getY();
-  double w = 10.0;
-  double h = 5.0;
-  if (s->isIcon() || s->isRotated())
-  {
-   w = s->maxWidth();
-   h = s->maxHeight();
-  }
-  else if (s->isText())
-  {
-   //h = s->getFont().getSize();
-   h = s->getFont().pointSizeF();
 
-   w = (h*2*(s->getUnRotatedText().length()))/3;
-   if(s->getItem() != nullptr)
-   {
-    QPointF pt = s->getItem()->mapFromParent(loc);
-    if(s->getItem()->contains(pt))
-     return s;
-   }
-  }
-  QRectF r =  QRectF(x ,y ,w ,h);
-  // Test this detection rectangle
-  if (r.contains(loc))
-  {
-   // mouse was pressed in label image
-   if (s->getDisplayLevel()>=level)
-   {
-    //Check to make sure that we are returning the highest level label.
-    l = s;
-    level = s->getDisplayLevel();
-   }
-  }
- }
- return l;
-}
- /*private*/ AnalogClock2Display* LayoutEditor::checkClocks(QPointF loc) {
-     // check clocks, if any
-     for (int i=clocks->size()-1; i>=0; i--) {
-         AnalogClock2Display* s = clocks->at(i);
-         double x = s->getX();
-         double y = s->getY();
-         double w = s->getFaceWidth();
-         double h = s->getFaceHeight();
-         QRectF r = QRectF(x ,y ,w ,h);
-         // Test this detection rectangle
-         if (r.contains(loc)) {
-             // mouse was pressed in clock image
-             return s;
-         }
-     }
-     return nullptr;
-}
+
 
 LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
 {
@@ -7821,27 +7381,6 @@ void LayoutEditor::repaint()
  paintTargetPanel(editScene);
 }
 
-/*private*/ SensorIcon* LayoutEditor::checkSensorIcons(QPointF loc)
-{
- // check sensor images, if any
- for (int i=sensorImage->size()-1; i>=0; i--)
- {
-  SensorIcon* s =static_cast<SensorIcon*>(sensorImage->at(i));
-  if(s == nullptr)
-   continue;
-  double x = s->getX();
-  double y = s->getY();
-  double w = s->maxWidth();
-  double h = s->maxHeight();
-  QRectF r =  QRectF(x ,y ,w ,h);
-  // Test this detection rectangle
-  if (r.contains(loc)) {
-      // mouse was pressed in sensor icon image
-      return s;
-  }
- }
- return nullptr;
-}
 /**
 * Add a sensor indicator to the Draw Panel
 */
@@ -7892,27 +7431,7 @@ void LayoutEditor::addSensor()
   l->updateSize();
   l->setDisplayLevel(SENSORS);
 }
-/*private*/ PositionableLabel* LayoutEditor::checkBackgrounds(QPointF loc)
-{
- // check background images, if any
- for (int i=backgroundImage->size()-1; i>=0; i--)
- {
-  PositionableLabel* b = backgroundImage->at(i);
-  double x = b->getX();
-  double y = b->getY();
-  double w = b->maxWidth();
-  double h = b->maxHeight();
-  QRectF r = QRectF(x ,y ,w ,h);
-  // Test this detection rectangle
-  if (r.contains(loc))
-  {
-   // mouse was pressed in background image
-   return b;
-  }
- }
- return nullptr;
-}
-/*protected*/ void LayoutEditor::setSelectionsScale(double s, Positionable* p)
+ /*protected*/ void LayoutEditor::setSelectionsScale(double s, Positionable* p)
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
  Q_ASSERT(pl != nullptr);
@@ -8019,25 +7538,7 @@ void LayoutEditor::On_removeMenuAction_triggered()
  }
 }
 
-/*private*/ MultiSensorIcon* LayoutEditor::checkMultiSensors(QPointF loc)
-{
- // check multi sensor icons, if any
- for (int i=multiSensors->size()-1; i>=0; i--)
-  {
-   MultiSensorIcon* s = multiSensors->at(i);
-   double x = ((Positionable*)s)->getLocation().x();
-   double y = ((Positionable*)s)->getLocation().y();
-   double w = s->maxWidth();
-   double h = s->maxHeight();
-   QRectF r = QRectF(x ,y ,w ,h);
- // Test this detection rectangle
- if (r.contains(loc)) {
-     // mouse was pressed in multi sensor image
-     return s;
- }
-}
-return nullptr;
-}
+
 /*private*/ LocoIcon* LayoutEditor::checkMarkers(QPointF loc)
 {
  // check marker icons, if any
@@ -10467,20 +9968,30 @@ void LayoutEditor::undoMoveSelection() {
 /*public*/ void LayoutEditor::setShowHelpBar(bool state)
 {
  if (showHelpBar != state)
+ {
+  showHelpBar = state;
+
+  //these may not be set up yet...
+  if (showHelpCheckBoxMenuItem != nullptr) {
+      showHelpCheckBoxMenuItem->setChecked(showHelpBar);
+  }
+
+  if (toolBarSide.getType() == eFLOAT) {
+      if (floatEditHelpPanel != nullptr) {
+          floatEditHelpPanel->setVisible(isEditable() && showHelpBar);
+      }
+  } else {
+      if (helpBarPanel != nullptr) {
+          helpBarPanel->setVisible(isEditable() && showHelpBar);
+
+      }
+  }
+  UserPreferencesManager* prefsMgr=
+   ((UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager"));
+  if(prefsMgr)
   {
-   showHelpBar = state;
-//   if (toolBarSide.equals(eToolBarSide.eFLOAT)) {
-//                   if (floatEditHelpPanel != null) {
-//                       floatEditHelpPanel.setVisible(isEditable() && showHelpBar);
-//                   }
-//               } else {
-//                   if (helpBarPanel != null) {
-//                       helpBarPanel.setVisible(isEditable() && showHelpBar);
-//                   }
-//               }
-//               InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefsMgr) -> {
-//                   prefsMgr.setSimplePreferenceState(getWindowFrameRef() + ".showHelpBar", showHelpBar);
-//               });
+      prefsMgr->setSimplePreferenceState(getWindowFrameRef() + ".showHelpBar", showHelpBar);
+  }//);
  }
 }
 
@@ -12703,98 +12214,98 @@ void LayoutEditor::On_clearTrack()
 //
 //update drop down menu display order for all combo boxes (from prefs)
 //
-/*private*/ void LayoutEditor::updateAllComboBoxesDropDownListDisplayOrderFromPrefs() {
-    //1st call the recursive funtion starting from the edit toolbar container
-#if 0
-    updateComboBoxDropDownListDisplayOrderFromPrefs(editToolBarContainerPanel);
-    updateComboBoxDropDownListDisplayOrderFromPrefs(floatingEditContentScrollPane);
-#endif
-    //and now that that's done update the drop down menu display order menu
-    updateDropDownMenuDisplayOrderMenu();
-}
+///*private*/ void LayoutEditor::updateAllComboBoxesDropDownListDisplayOrderFromPrefs() {
+//    //1st call the recursive funtion starting from the edit toolbar container
+//#if 0
+//    updateComboBoxDropDownListDisplayOrderFromPrefs(editToolBarContainerPanel);
+//    updateComboBoxDropDownListDisplayOrderFromPrefs(floatingEditContentScrollPane);
+//#endif
+//    //and now that that's done update the drop down menu display order menu
+//    updateDropDownMenuDisplayOrderMenu();
+//}
 
 //
 //update drop down menu display order for all combo boxes (from prefs)
 //note: recursive function that walks down the component / container tree
 //
-/*private*/ void LayoutEditor::updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent)
-{
-#if 0
-    if (qobject_cast<JmriBeanComboBox*>(inComponent))
-    {
-        //try to get the preference
-        //InstanceManager::getOptionalDefault("UserPreferencesManager").ifPresent((prefsMgr) ->
-     UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
-     if(prefsMgr)
-     {
-            QString windowFrameRef = getWindowFrameRef();
+///*private*/ void LayoutEditor::updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent)
+//{
+//#if 0
+//    if (qobject_cast<JmriBeanComboBox*>(inComponent))
+//    {
+//        //try to get the preference
+//        //InstanceManager::getOptionalDefault("UserPreferencesManager").ifPresent((prefsMgr) ->
+//     UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
+//     if(prefsMgr)
+//     {
+//            QString windowFrameRef = getWindowFrameRef();
 
-            //this is the preference name
-            QString ddldoPrefName = "DropDownListsDisplayOrder";
+//            //this is the preference name
+//            QString ddldoPrefName = "DropDownListsDisplayOrder";
 
-            //this is the default value if we can't find it in any preferences
-            QString ddldoPref = "DISPLAYNAME";
+//            //this is the default value if we can't find it in any preferences
+//            QString ddldoPref = "DISPLAYNAME";
 
-            QVariant ddldoProp = prefsMgr->getProperty(windowFrameRef, ddldoPrefName);
+//            QVariant ddldoProp = prefsMgr->getProperty(windowFrameRef, ddldoPrefName);
 
-            if (ddldoProp.isValid()) {
-                //this will be the value if this combo box doesn't have a saved preference.
-                ddldoPref = ddldoProp.toString();
-            } else {
-                //save a default preference
-                prefsMgr->setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
-            }
+//            if (ddldoProp.isValid()) {
+//                //this will be the value if this combo box doesn't have a saved preference.
+//                ddldoPref = ddldoProp.toString();
+//            } else {
+//                //save a default preference
+//                prefsMgr->setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
+//            }
 
-            //now try to get a preference specific to this combobox
-            JmriBeanComboBox* jbcb = (JmriBeanComboBox*) inComponent;
-            if (qobject_cast<JTextField*>(inComponent)
-            {
-                jbcb = (JmriBeanComboBox*) SwingUtilities.getUnwrappedParent(jbcb);
-            }
-            if (jbcb != null) {
-                QString ttt = jbcb.getToolTipText();
-                if (ttt != null) {
-                    //change the name of the preference based on the tool tip text
-                    ddldoPrefName = String.format("%s.%s", ddldoPrefName, ttt);
-                    //try to get the preference
-                    ddldoProp = prefsMgr.getProperty(getWindowFrameRef(), ddldoPrefName);
-                    if (ddldoProp != null) { //if we found it...
-                        ddldoPref = ddldoProp.toString(); //get it's (string value
-                    } else { //otherwise...
-                        //save it in the users preferences
-                        prefsMgr.setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
-                    }
-                }
+//            //now try to get a preference specific to this combobox
+//            JmriBeanComboBox* jbcb = (JmriBeanComboBox*) inComponent;
+//            if (qobject_cast<JTextField*>(inComponent)
+//            {
+//                jbcb = (JmriBeanComboBox*) SwingUtilities.getUnwrappedParent(jbcb);
+//            }
+//            if (jbcb != null) {
+//                QString ttt = jbcb.getToolTipText();
+//                if (ttt != null) {
+//                    //change the name of the preference based on the tool tip text
+//                    ddldoPrefName = String.format("%s.%s", ddldoPrefName, ttt);
+//                    //try to get the preference
+//                    ddldoProp = prefsMgr.getProperty(getWindowFrameRef(), ddldoPrefName);
+//                    if (ddldoProp != null) { //if we found it...
+//                        ddldoPref = ddldoProp.toString(); //get it's (string value
+//                    } else { //otherwise...
+//                        //save it in the users preferences
+//                        prefsMgr.setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
+//                    }
+//                }
 
-                //now set the combo box display order
-                if (ddldoPref.equals("DISPLAYNAME")) {
-                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-                } else if (ddldoPref.equals("USERNAME")) {
-                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.USERNAME);
-                } else if (ddldoPref.equals("SYSTEMNAME")) {
-                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.SYSTEMNAME);
-                } else if (ddldoPref.equals("USERNAMESYSTEMNAME")) {
-                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.USERNAMESYSTEMNAME);
-                } else if (ddldoPref.equals("SYSTEMNAMEUSERNAME")) {
-                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.SYSTEMNAMEUSERNAME);
-                } else {
-                    //must be a bogus value... lets re-set everything to DISPLAYNAME
-                    ddldoPref = "DISPLAYNAME";
-                    prefsMgr.setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
-                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-                }
-            }
-        });
+//                //now set the combo box display order
+//                if (ddldoPref.equals("DISPLAYNAME")) {
+//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
+//                } else if (ddldoPref.equals("USERNAME")) {
+//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.USERNAME);
+//                } else if (ddldoPref.equals("SYSTEMNAME")) {
+//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.SYSTEMNAME);
+//                } else if (ddldoPref.equals("USERNAMESYSTEMNAME")) {
+//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.USERNAMESYSTEMNAME);
+//                } else if (ddldoPref.equals("SYSTEMNAMEUSERNAME")) {
+//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.SYSTEMNAMEUSERNAME);
+//                } else {
+//                    //must be a bogus value... lets re-set everything to DISPLAYNAME
+//                    ddldoPref = "DISPLAYNAME";
+//                    prefsMgr.setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
+//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
+//                }
+//            }
+//        });
 
-    } else if (qobject_cast<Container*>(inComponent)) {
-        for (Component* c : ((Container*) inComponent).getComponents()) {
-            updateComboBoxDropDownListDisplayOrderFromPrefs(c);
-        }
-    } else {
-        //nothing to do here... move along...
-    }
-#endif
-}
+//    } else if (qobject_cast<Container*>(inComponent)) {
+//        for (Component* c : ((Container*) inComponent).getComponents()) {
+//            updateComboBoxDropDownListDisplayOrderFromPrefs(c);
+//        }
+//    } else {
+//        //nothing to do here... move along...
+//    }
+//#endif
+//}
 #if 1
 //
 //

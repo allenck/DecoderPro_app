@@ -500,13 +500,9 @@ private:
  //bool bDirty;
  bool isDirty();
  void resetDirty();
- /*private*/ QObject* beginObject;// = nullptr; // begin track segment connection object, NULL if none
- /*private*/ /*transient*/ QPointF beginLocation;// = new QPointF(0.0,0.0);  // location of begin object
- /*private*/ int beginPointType;// = 0;   // connection type within begin connection object
+ ///*private*/ QObject* beginObject;// = nullptr; // begin track segment connection object, NULL if none
  /*private*/ /*transient*/ QPointF currentLocation;// = new QPointF(0.0,0.0); // current location
- /*private*/ LayoutTrack* foundObject;// = nullptr; // found object, NULL if nothing found
  /*private*/ /*transient*/ QPointF foundLocation;// = new QPointF(0.0,0.0);  // location of found object
- /*private*/ int foundPointType;// = 0;   // connection type within the found object
  /*private*/ TrackSegment* newTrack;// = nullptr;
  /*private*/ void setLink(QObject* fromObject,int fromPointType, QObject* toObject,int toPointType);
  LayoutEditorAuxTools* auxTools;
@@ -628,7 +624,7 @@ private:
  int upperLeftX, upperLeftY;
  int _scrollState;
  int _anchorX, _anchorY;
- QPointF startDel;
+ QPointF startDelta;
  bool _positionable;
  /*private*/ /*transient*/ bool snapToGridOnAdd = false;
  /*private*/ /*transient*/ bool snapToGridOnMove = false;
@@ -656,7 +652,6 @@ private:
  bool noWarnSlip;
  /*private*/ void disconnect(QObject* o, int type);
  ///*private*/ void drawMemoryRects(EditScene* g2);
- /*private*/ PositionableLabel* checkLabelImages(QPointF loc);
  /**
  * Add a sensor indicator to the Draw Panel
  */
@@ -666,9 +661,7 @@ private:
   InstanceManager* instanceManager;
   /*private*/ bool _showCoordinates;// = true;
  Positionable* saveP;
- /*private*/ PositionableLabel* checkBackgrounds(QPointF loc);
- bool selectedNeedsConnect;
- /*private*/ MultiSensorIcon* checkMultiSensors(QPointF loc);
+ //bool selectedNeedsConnect;
  /*private*/ LocoIcon* checkMarkers(QPointF loc);
  /*private*/ MultiIconEditor* iconEditor;// = nullptr;
  QGraphicsItemGroup* panelGridGroup = nullptr;
@@ -704,9 +697,6 @@ private:
  //bool bTestMode;
  QString layoutFile;
  int _prevNumSel;
- /*private*/ SignalHeadIcon* checkSignalHeadIcons(QPointF loc);
- /*private*/ SignalMastIcon* checkSignalMastIcons(QPointF loc);
- /*private*/ AnalogClock2Display* checkClocks(QPointF loc);
  LayoutEditorTools* tools;
  JFrame* signalFrame;
  JFrame* sensorFrame;
@@ -869,9 +859,9 @@ private:
  /*private*/ /*transient*/ NamedBean::DisplayOptions gDDMDO ;//= JmriBeanComboBox.DisplayOptions.DISPLAYNAME;
  /*private*/ /*transient*/ QList<LayoutTrack*> _layoutTrackSelection;// = new ArrayList<>();
 
- /*private*/ void updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent);
+ ///*private*/ void updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent);
  /*private*/ void updateDropDownMenuDisplayOrderMenu();
- /*private*/ void updateAllComboBoxesDropDownListDisplayOrderFromPrefs();
+ ///*private*/ void updateAllComboBoxesDropDownListDisplayOrderFromPrefs();
  /*private*/ void showEditPopUps(/*@Nonnull */QGraphicsSceneMouseEvent* event);
  /*private*/ void hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt);
  /*private*/ void hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc);
@@ -958,7 +948,8 @@ private:
  //QHBoxLayout* editPanelLayout;
  BorderLayout* borderLayout = nullptr;
  /*private*/ void alignToGrid(QVector<Positionable *> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes);
-
+ /*private*/ long whenReleased = 0; //used to identify event that was popup trigger
+ /*private*/ bool awaitingIconChange = false;
  /*private*/ /*enum*/class ToolBarSide {
 
   TOOLBARSIDES type;
@@ -1194,7 +1185,6 @@ protected:
  * Remove object from all Layout Editor temmporary lists of items not part of track schematic
  */
  /*protected*/ bool remove(QObject* s);
- /*private*/ SensorIcon* checkSensorIcons(QPointF loc);
  /*protected*/ void setSelectionsScale(double s, Positionable* p);
  /*protected*/ void setSelectionsRotation(int k, Positionable* p);
  friend class CoordinateEdit;
@@ -1229,6 +1219,11 @@ protected:
  /*protected*/ bool removeLayoutShape(/*@Nonnull*/ LayoutShape* s);
  /*protected*/ void amendSelectionGroup(/*@Nonnull*/ LayoutShape* ls);
  /*protected*/ /*transient*/ QList<LayoutShape*> _layoutShapeSelection;// = new ArrayList<>();
+ /*protected*/ /*transient*/ LayoutTrack* foundTrack = nullptr;      //found object, null if nothing found
+ /*protected*/ /*transient*/ LayoutTrack* beginTrack = nullptr;      //begin track segment connection object, null if none
+ /*protected*/ /*transient*/ QPointF beginLocation;// = new Point2D.Double(0.0, 0.0); //location of begin object
+ /*protected*/ /*transient*/ int beginHitPointType;// = LayoutTrack.NONE; //connection type within begin connection object
+ /*protected*/ /*transient*/ int foundHitPointType = 0;          //connection type within the found object
 
 protected slots:
  /*protected*/ void assignBlockToSelection();
