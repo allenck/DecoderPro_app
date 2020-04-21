@@ -22,7 +22,7 @@ public slots:
  /*public*/ void testToString();
  /*public*/ void testGetDisplayName();
  /*public*/ void testGetType();
-#if 0
+#if 1
  /*public*/ void testSetType();
  /*public*/ void testGetBounds();
  /*public*/ void testSetCoordsCenter();

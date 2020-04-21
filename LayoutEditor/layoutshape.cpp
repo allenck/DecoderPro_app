@@ -31,7 +31,7 @@
 /*public*/ LayoutShape::LayoutShape(QString name, LayoutEditor* layoutEditor, QObject* parent) : QObject(parent){
     this->name = name;
     this->layoutEditor = layoutEditor;
-    this->layoutShapeType = new LayoutShapeType(LayoutShapeType::eOpen);
+    this->layoutShapeType = LayoutShapeType::eOpen;
     this->shapePoints = QList<LayoutShapePoint*>();
 
 }
@@ -42,7 +42,7 @@
  * @param name         the name of the shape
  * @param layoutEditor reference to the LayoutEditor this shape is in
  */
-/*public*/ LayoutShape::LayoutShape(QString name, LayoutShapeType* t, LayoutEditor* layoutEditor, QObject *parent) : QObject(parent){
+/*public*/ LayoutShape::LayoutShape(QString name, LayoutShapeType::TYPES t, LayoutEditor* layoutEditor, QObject *parent) : QObject(parent){
  lineColor = QColor(Qt::black);
  fillColor = QColor(Qt::darkGray);
 
@@ -68,7 +68,7 @@
  this->layoutEditor = layoutEditor;
  this->shapePoints.append(new LayoutShapePoint(c));
 
- this->layoutShapeType = new LayoutShapeType(LayoutShapeType::eOpen);
+ this->layoutShapeType = LayoutShapeType::eOpen;
 
 }
 
@@ -80,6 +80,7 @@
 /*public*/ LayoutShape::LayoutShape(LayoutShape* layoutShape, QObject* parent) : QObject(parent){
  lineColor = QColor(Qt::black);
  fillColor = QColor(Qt::darkGray);
+ layoutShapeType = LayoutShapeType::eOpen;
 
     //this(layoutShape.getName(), layoutShape.getLayoutEditor());
  this->name = layoutShape->getName();
@@ -117,22 +118,22 @@
     name = n;
 }
 
-/*public*/ LayoutShapeType* LayoutShape::getType() {
+/*public*/ LayoutShapeType::TYPES LayoutShape::getType() {
     return layoutShapeType;
 }
 
-/*public*/ void LayoutShape::setType(LayoutShapeType* t)
+/*public*/ void LayoutShape::setType(LayoutShapeType::TYPES t)
 {
  if (layoutShapeType != t)
  {
-  switch (t->getType()) {
+  switch (t ) {
       case LayoutShapeType::eOpen:
       case LayoutShapeType::eClosed:
       case LayoutShapeType::eFilled:
           layoutShapeType = t;
           break;
       default:    // You shouldn't ever have any invalid LayoutShapeTypes
-          log->error("Invalid Shape Type " + t->getName()); //I18IN
+          log->error("Invalid Shape Type " + t); //I18IN
   }
  }
 }
@@ -196,6 +197,8 @@
  *                  closest neighbor
  */
 /*public*/ void LayoutShape::addPoint(QPointF p, int nearIndex) {
+ if(nearIndex < 0)
+  nearIndex = 0;
     int cnt = shapePoints.size();
     if (cnt < getMaxNumberPoints()) {
         // this point
@@ -215,14 +218,14 @@
         double distR = MathUtil::distance(p, pR);
 
         // if nearIndex is the 1st point in open shape...
-        if ((getType()->getType() == LayoutShapeType::eOpen) && (nearIndex == 0)) {
+        if ((getType() == LayoutShapeType::eOpen) && (nearIndex == 0)) {
             distR = MathUtil::distance(pR, p);
             distL = MathUtil::distance(pR, sp);
         }
         int beforeIndex = (distR < distL) ? idxR : nearIndex;
 
         // if nearIndex is the last point in open shape...
-        if ((getType()->getType() == LayoutShapeType::eOpen) && (idxR == 0)) {
+        if ((getType() == LayoutShapeType::eOpen) && (idxR == 0)) {
             distR = MathUtil::distance(pL, p);
             distL = MathUtil::distance(pL, sp);
             beforeIndex = (distR < distL) ? nearIndex : nearIndex + 1;
@@ -242,7 +245,7 @@
  * @param t the type of point to add
  * @param p the point to add
  */
-/*public*/ void LayoutShape::addPoint(LayoutShapePointType* t, QPointF p) {
+/*public*/ void LayoutShape::addPoint(LayoutShapePointType::TYPES t, QPointF p) {
     if (shapePoints.size() < getMaxNumberPoints()) {
         shapePoints.append(new LayoutShapePoint(t, p));
     }
@@ -475,15 +478,11 @@
 //                jmi->setEnabled(false);
 //            }
         // add "Change Shape Type to..." menu
-        QActionGroup* ag = new QActionGroup(this);
-        QMenu* shapeTypeMenu = new QMenu(tr("Change shape type from %1 to").arg(getType()->getName()));
-        if (getType()->getType() != LayoutShapeType::eOpen)
+        QMenu* shapeTypeMenu = new QMenu(tr("Change shape type from %1 to").arg(LayoutShapeType::getName(getType())));
+        if (getType() != LayoutShapeType::eOpen)
         {
          QAction* jmi = new QAction(tr("Open"),this);
-         ag->addAction(jmi);
          shapeTypeMenu->addAction(jmi);
-         jmi->setCheckable(true);
-         jmi->setChecked(getType()->getType() != LayoutShapeType::eOpen);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -495,12 +494,9 @@
         }
 #endif
 
-        if (getType()->getType() != LayoutShapeType::eClosed) {
+        if (getType() != LayoutShapeType::eClosed) {
          QAction* jmi = new QAction(tr("Closed"), this);
-         ag->addAction(jmi);
          shapeTypeMenu->addAction(jmi);
-         jmi->setCheckable(true);
-         jmi->setChecked(getType()->getType() == LayoutShapeType::eClosed);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -511,13 +507,10 @@
             connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setClosed()));
         }
 
-        if (getType()->getType() != LayoutShapeType::eFilled)
+        if (getType() != LayoutShapeType::eFilled)
         {
          QAction* jmi = new QAction(tr("Filled"), this);
-         ag->addAction(jmi);
          shapeTypeMenu->addAction(jmi);
-         jmi->setCheckable(true);
-         jmi->setChecked(getType()->getType() == LayoutShapeType::eFilled);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -531,14 +524,10 @@
         popup->addMenu(shapeTypeMenu);
 #if 1
         // Add "Change Shape Type from {0} to..." menu
-        QActionGroup* ag1 = new QActionGroup(this);
         if (hitPointType == LayoutTrack::SHAPE_CENTER) {
             QMenu* shapePointTypeMenu = new QMenu(tr("Change all shape point types to"));
             QAction* jmi = new QAction(tr("Straight"),this);
             shapePointTypeMenu->addAction(jmi);
-            jmi->setCheckable(true);
-            ag1->addAction(jmi);
-            jmi->setChecked(hitPointType == LayoutTrack::SHAPE_CENTER);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -551,8 +540,6 @@
             connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_setStraight()));
             jmi = new QAction(tr("Curve"),this);
             shapePointTypeMenu->addAction(jmi);
-            jmi->setCheckable(true);
-            ag1->addAction(jmi);
 
 //            {
 //                @Override
@@ -567,15 +554,15 @@
 
             popup->addMenu(shapePointTypeMenu);
         }
-        else {
+        else
+        {
             LayoutShapePoint* lsp = shapePoints.at(pointIndex);
 
             if (lsp != nullptr) { // this should never happen... but just in case...
-                QString otherPointTypeName = (lsp->getType()->getType() == LayoutShapePointType::eStraight)
+                otherPointTypeName = (lsp->getType() == LayoutShapePointType::eStraight)
                         ? LayoutShapePointType(LayoutShapePointType::eCurve).getName() : LayoutShapePointType(LayoutShapePointType::eStraight).getName();
-                QAction* jmi = new QAction(tr("Change shape point type from %1 to %2").arg(lsp->getType()->getName()).arg(otherPointTypeName),this);
+                QAction* jmi = new QAction(tr("Change shape point type from %1 to %2").arg(LayoutShapePointType::typeName(lsp->getType())).arg(otherPointTypeName),this);
                 popup->addAction(jmi);
-                ag1->addAction(jmi);
                 jmi->setChecked(hitPointType != LayoutTrack::SHAPE_CENTER);
 #if 0
                 jmi->addActionListener((java.awt.event.ActionEvent e3) ->
@@ -595,6 +582,7 @@
                     layoutEditor->repaint();
                 });
 #endif
+                connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_changeShapePointType()));
             }
         }
 
@@ -628,7 +616,7 @@
 //        jmi->setForeground(lineColor);
 //        jmi->setBackground(ColorUtil::contrast(lineColor));
 
-        if (getType()->getType() == LayoutShapeType::eFilled) {
+        if (getType() == LayoutShapeType::eFilled) {
             jmi = new QAction(tr("Set Fill Color"));
             popup->addAction(jmi);
             jmi->setToolTip(tr("Select this to change the fill color of this shape"));
@@ -732,26 +720,26 @@ void LayoutShape::on_changeName()
 }
 
 /*public*/ void LayoutShape::on_setOpen() {
-    setType(new LayoutShapeType(LayoutShapeType::eOpen));
+    setType(LayoutShapeType::eOpen);
     layoutEditor->repaint();
 }
 
 /*public*/ void LayoutShape::on_setClosed()
 {
-    setType(new LayoutShapeType(LayoutShapeType::eClosed));
+    setType(LayoutShapeType::eClosed);
     layoutEditor->repaint();
 }
 
 /*public*/ void LayoutShape::on_setStraight() {
     for (LayoutShapePoint* ls : shapePoints) {
-        ls->setType( new LayoutShapePointType( LayoutShapePointType::eStraight));
+        ls->setType(LayoutShapePointType::eStraight);
     }
     layoutEditor->repaint();
 }
 
 /*public*/ void LayoutShape::on_setCurve() {
         for (LayoutShapePoint* ls : shapePoints) {
-         ls->setType(new LayoutShapePointType(LayoutShapePointType::eCurve));
+         ls->setType(LayoutShapePointType::eCurve);
     }
     layoutEditor->repaint();
 }
@@ -772,6 +760,12 @@ void LayoutShape::on_changeName()
      setFillColor(newColor);
      layoutEditor->repaint();
  }
+}
+
+/*public*/ void LayoutShape::on_setFilled()
+{
+  setType(LayoutShapeType::eFilled);
+  layoutEditor->repaint();
 }
 
 /*public*/ void LayoutShape::on_lineWidth()
@@ -825,6 +819,23 @@ void LayoutShape::on_changeName()
     layoutEditor->repaint();
 }
 
+/*pubic*/ void LayoutShape::on_changeShapePointType()
+{
+ LayoutShapePoint* lsp = shapePoints.at(pointIndex);
+ switch (lsp->getType()) {
+     case LayoutShapePointType::eStraight: {
+         lsp->setType(LayoutShapePointType::eCurve);
+         break;
+     }
+     case LayoutShapePointType::eCurve: {
+         lsp->setType(LayoutShapePointType::eStraight);
+         break;
+     }
+     default:
+         log->error("unexpected enum member!");
+ }
+ layoutEditor->repaint();
+}
 
 /**
  * Clean up when this object is no longer needed. Should not be called while
@@ -846,145 +857,153 @@ void LayoutShape::remove() {
 }
 
 //@Override
-/*protected*/ void LayoutShape::draw(EditScene* g2) {
+/*protected*/ void LayoutShape::draw(EditScene* g2)
+{
 
  paths = invalidateItem(g2, paths);
 
  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
 
-#if 1
-    //GeneralPath path = new GeneralPath();
+ //GeneralPath path = new GeneralPath();
  QPainterPath path = QPainterPath();
 
-    int idx, cnt = shapePoints.size();
-    for (idx = 0; idx < cnt; idx++) {
-        // this point
-        LayoutShapePoint* lsp = shapePoints.at(idx);
-        QPointF p = lsp->getPoint();
+ int idx, cnt = shapePoints.size();
+ for (idx = 0; idx < cnt; idx++)
+ {
+  // this point
+  LayoutShapePoint* lsp = shapePoints.at(idx);
+  QPointF p = lsp->getPoint();
 
-        // left point
-        int idxL = (idx + cnt - 1) % cnt;
-        LayoutShapePoint* lspL = shapePoints.at(idxL);
-        QPointF pL = lspL->getPoint();
-        QPointF midL = MathUtil::midPoint(pL, p);
+  // left point
+  int idxL = (idx + cnt - 1) % cnt;
+  LayoutShapePoint* lspL = shapePoints.at(idxL);
+  QPointF pL = lspL->getPoint();
+  QPointF midL = MathUtil::midPoint(pL, p);
 
-        // right point
-        int idxR = (idx + 1) % cnt;
-        LayoutShapePoint* lspR = shapePoints.at(idxR);
-        QPointF pR = lspR->getPoint();
-        QPointF midR = MathUtil::midPoint(p, pR);
+  // right point
+  int idxR = (idx + 1) % cnt;
+  LayoutShapePoint* lspR = shapePoints.at(idxR);
+  QPointF pR = lspR->getPoint();
+  QPointF midR = MathUtil::midPoint(p, pR);
 
-        // if this is an open shape...
-        LayoutShapePointType* lspt = lsp->getType();
-        if (getType()->getType() == LayoutShapeType::eOpen) {
-            // and this is first or last point...
-            if ((idx == 0) || (idxR == 0)) {
-                // then force straight shape point type
-                lspt = new LayoutShapePointType(LayoutShapePointType::eStraight);
-            }
-        }
-        switch (lspt->getType()) {
-            case LayoutShapePointType::eStraight: {
-                if (idx == 0) { // if this is the first point...
-                    // ...and our shape is open...
-                    if (getType()->getType() == LayoutShapeType::eOpen) {
-                        path.moveTo(p.x(), p.y());    // then start here
-                    } else {    // otherwise
-                        path.moveTo(midL.x(), midL.y());  //start here
-                        path.lineTo(p.x(), p.y());        //draw to here
-                    }
-                } else {
-                    path.lineTo(midL.x(), midL.y());  //start here
-                    path.lineTo(p.x(), p.y());        //draw to here
-                }
-                // if this is not the last point...
-                // ...or our shape isn't open
-                if ((idxR != 0) || (getType()->getType() != LayoutShapeType::eOpen)) {
-                    path.lineTo(midR.x(), midR.y());      // draw to here
-                }
-                break;
-            }
+  // if this is an open shape...
+  LayoutShapePointType::TYPES lspt = lsp->getType();
+  if (getType() == LayoutShapeType::eOpen)
+  {
+   // and this is first or last point...
+   if ((idx == 0) || (idxR == 0)) {
+       // then force straight shape point type
+       lspt = LayoutShapePointType::eStraight;
+   }
+  }
+  switch (lspt)
+  {
+   case LayoutShapePointType::eStraight:
+   {
+     if (idx == 0) { // if this is the first point...
+         // ...and our shape is open...
+         if (getType() == LayoutShapeType::eOpen) {
+             path.moveTo(p.x(), p.y());    // then start here
+         } else {    // otherwise
+             path.moveTo(midL.x(), midL.y());  //start here
+             path.lineTo(p.x(), p.y());        //draw to here
+         }
+     } else {
+         path.lineTo(midL.x(), midL.y());  //start here
+         path.lineTo(p.x(), p.y());        //draw to here
+     }
+     // if this is not the last point...
+     // ...or our shape isn't open
+     if ((idxR != 0) || (getType() != LayoutShapeType::eOpen)) {
+         path.lineTo(midR.x(), midR.y());      // draw to here
+     }
+     break;
+    }
 
-            case LayoutShapePointType::eCurve: {
-                if (idx == 0) { // if this is the first point
-                    path.moveTo(midL.x(), midL.y());  // then start here
-                }
-                path.quadTo(p.x(), p.y(), midR.x(), midR.y());
-                break;
-            }
+   case LayoutShapePointType::eCurve:
+   {
+    if (idx == 0) { // if this is the first point
+        path.moveTo(midL.x(), midL.y());  // then start here
+    }
+    path.quadTo(p.x(), p.y(), midR.x(), midR.y());
+    break;
+   }
 
-            default:
-                log->error("unexpected enum member!");
-        }
-    }   // for (idx = 0; idx < cnt; idx++)
+   default:
+    log->error(tr("LayoutShape: unexpected enum member! %1").arg(lspt));
+  }
+ }   // for (idx = 0; idx < cnt; idx++)
 
-    QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-    QPen fillPen = QPen(fillColor);
-    if (getType()->getType() == LayoutShapeType::eFilled) {
+ QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+ QPen fillPen = QPen(fillColor);
+ if (getType() == LayoutShapeType::eFilled) {
 //        g2.setColor(fillColor);
 //        g2.fill(path);
-     pathItem->setPen(fillPen);
+  pathItem->setPen(fillPen);
 
-    }
+ }
 //    g2.setStroke(new BasicStroke(lineWidth,
 //            BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //    g2.setColor(lineColor);
-    QPen stroke = QPen(lineColor,1,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
-    pathItem->setPen(stroke);
-    itemGroup->addToGroup(pathItem);
-    paths = itemGroup;
-    g2->addItem(paths);
+ QPen stroke = QPen(lineColor,1,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
+ pathItem->setPen(stroke);
+ itemGroup->addToGroup(pathItem);
+ paths = itemGroup;
+ g2->addItem(paths);
 //    g2.draw(path);
-#endif
 }   // draw
 
-/*protected*/ void LayoutShape::drawEditControls(EditScene* g2) {
-    QColor backgroundColor = layoutEditor->getBackground();
-    QColor controlsColor = ColorUtil::contrast(backgroundColor);
-    controlsColor = ColorUtil::setAlpha(controlsColor, 0.5);
+/*protected*/ void LayoutShape::drawEditControls(EditScene* g2)
+{
+ QColor backgroundColor = layoutEditor->getBackground();
+ QColor controlsColor = ColorUtil::contrast(backgroundColor);
+ if(layoutEditor->selectedObject == this)
+  controlsColor = QColor(Qt::magenta);
+ //controlsColor = ColorUtil::setAlpha(controlsColor, 0.5);
+ log->debug(tr("LayoutShape::drawEditControls controls color %1 ").arg(ColorUtil::colorToColorName(controlsColor)));
 #if 1
-    rects = invalidateItem(g2, rects);
+ rects = invalidateItem(g2, rects);
 
-    //g2.setColor(controlsColor);
+ //g2.setColor(controlsColor);
 
-    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
-    QPen drawingStroke = QPen(controlsColor);
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ QPen drawingStroke = QPen(controlsColor);
 
 //    shapePoints.forEach((slp) -> {
 //        g2.draw(layoutEditor.layoutEditorControlRectAt(slp.getPoint()));
 //    });
-    foreach(LayoutShapePoint* slp, shapePoints)
-    {
-     QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->layoutEditorControlRectAt(slp->getPoint()));
-     rectItem->setPen(drawingStroke);
-     itemGroup->addToGroup(rectItem);
-    }
-    if (shapePoints.size() > 0) {
-        QPointF end0 = shapePoints.at(0)->getPoint();
-        QPointF end1 = end0;
-        QGraphicsLineItem* lineItem;
-        for (LayoutShapePoint* lsp : shapePoints) {
-            QPointF end2 = lsp->getPoint();
-            //g2.draw(new Line2D.Double(end1, end2));
-            lineItem = new QGraphicsLineItem(end1.x(), end1.y(), end2.x(), end2.y() );
-            lineItem->setPen(drawingStroke);
-            itemGroup->addToGroup(lineItem);
-            end1 = end2;
-        }
-
-        if (getType() != new LayoutShapeType(LayoutShapeType::eOpen)) {
-            //g2.draw(new Line2D.Double(end1, end0));
-         lineItem = new QGraphicsLineItem(end1.x(), end1.y(), end0.x(), end0.y() );
+ foreach(LayoutShapePoint* slp, shapePoints)
+ {
+  QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->layoutEditorControlRectAt(slp->getPoint()));
+  rectItem->setPen(drawingStroke);
+  itemGroup->addToGroup(rectItem);
+ }
+ if (shapePoints.size() > 0) {
+     QPointF end0 = shapePoints.at(0)->getPoint();
+     QPointF end1 = end0;
+     QGraphicsLineItem* lineItem;
+     for (LayoutShapePoint* lsp : shapePoints) {
+         QPointF end2 = lsp->getPoint();
+         //g2.draw(new Line2D.Double(end1, end2));
+         lineItem = new QGraphicsLineItem(end1.x(), end1.y(), end2.x(), end2.y() );
          lineItem->setPen(drawingStroke);
          itemGroup->addToGroup(lineItem);
-        }
-    }
+         end1 = end2;
+     }
 
-    //g2.draw(trackEditControlCircleAt(getCoordsCenter()));
-    QGraphicsEllipseItem* circle = trackEditControlCircleAt(getCoordsCenter());
-    itemGroup->addToGroup(circle);
-    rects = itemGroup;
-    g2->addItem(rects);
+     if (getType() != LayoutShapeType::eOpen) {
+         //g2.draw(new Line2D.Double(end1, end0));
+      lineItem = new QGraphicsLineItem(end1.x(), end1.y(), end0.x(), end0.y() );
+      lineItem->setPen(drawingStroke);
+      itemGroup->addToGroup(lineItem);
+     }
+ }
+
+ //g2.draw(trackEditControlCircleAt(getCoordsCenter()));
+ QGraphicsEllipseItem* circle = trackEditControlCircleAt(getCoordsCenter());
+ itemGroup->addToGroup(circle);
+ rects = itemGroup;
+ g2->addItem(rects);
 #endif
 }   // drawEditControls
 
@@ -1018,7 +1037,7 @@ void LayoutShape::remove() {
      * @param c QPointF for initial point
      */
     /*public*/ LayoutShapePoint::LayoutShapePoint(QPointF c) {
-        this->type = new LayoutShapePointType("Straight");
+        this->type = LayoutShapePointType::eStraight;
         this->point = c;
     }
 
@@ -1027,7 +1046,7 @@ void LayoutShape::remove() {
      *
      * @param c QPointF for initial point
      */
-    /*public*/ LayoutShapePoint::LayoutShapePoint(LayoutShapePointType* t, QPointF c) {
+    /*public*/ LayoutShapePoint::LayoutShapePoint(LayoutShapePointType::TYPES t, QPointF c) {
         //this(c);
      this->point = c;
         this->type = t;
@@ -1038,11 +1057,11 @@ void LayoutShape::remove() {
      *
      * @return the LayoutShapePointType
      */
-    /*public*/ LayoutShapePointType* LayoutShapePoint::getType() {
+    /*public*/ LayoutShapePointType::TYPES LayoutShapePoint::getType() {
         return type;
     }
 
-    /*public*/ void LayoutShapePoint::setType(LayoutShapePointType *type) {
+    /*public*/ void LayoutShapePoint::setType(LayoutShapePointType::TYPES type) {
         this->type = type;
     }
 

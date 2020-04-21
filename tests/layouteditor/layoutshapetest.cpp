@@ -51,11 +51,11 @@ LayoutShapeTest::LayoutShapeTest(QObject *parent) : QObject(parent)
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         Assert::assertNotNull("LayoutEditor exists", layoutEditor, __FILE__, __LINE__);
         Assert::assertNotNull("LayoutShape not null", ls, __FILE__, __LINE__);
-#if 0
+
         Assert::assertTrue("ls.getType() is eOpen", ls->getType() == LayoutShapeType::eOpen, __FILE__, __LINE__);
-#endif
+
 }
-#if 0
+#if 1
     //@Test
     /*public*/ void LayoutShapeTest::testSetType() {
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());

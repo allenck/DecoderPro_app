@@ -129,21 +129,29 @@ ColorUtil::ColorUtil()
  * @return the color name or null if not known
  */
 //'@CheckForNull
-/*private*/ /*static*/ QString ColorUtil::colorToName(/*@Nullable*/ QColor color) {
-    if (!color.isValid()) {
+/*private*/ /*static*/ QString ColorUtil::colorToName(/*@Nullable*/ QColor colorIn) {
+    if (!colorIn.isValid()) {
         return "";
     }
-    if (color == Qt::black) {
+    int r, g, b, a;
+    QRgb rgb = colorIn.rgba();
+    QString name = colorIn.name();
+    r = qRed(rgb)&0x0F;
+    g = qGreen(rgb)&0x0F;
+    b = qBlue(rgb)&0x0F;
+    a = qAlpha(rgb)&0x0F;
+    QColor color = QColor(r, g, b);
+    if (color == QColor(Qt::black)) {
         return "black";
-    } else if (color== Qt::darkGray) {
+    } else if (color== QColor(Qt::darkGray)) {
         return "darkGray";
-    } else if (color == Qt::gray) {
+    } else if (color == QColor(Qt::gray)) {
         return "gray";
-    } else if (color==Qt::lightGray) {
+    } else if (color==QColor(Qt::lightGray)) {
         return "lightGray";
-    } else if (color== Qt::white) {
+    } else if (color== QColor(Qt::white)) {
         return "white";
-    } else if (color== Qt::red) {
+    } else if (color== QColor(Qt::red)) {
         return "red";
     }
     else if (color == (QColor(255,233,236)))
@@ -154,20 +162,21 @@ ColorUtil::ColorUtil()
     {
         return "orange";
     }
-    else if (color== Qt::yellow) {
+    else if (color== QColor(Qt::yellow)) {
         return "yellow";
-    } else if (color== Qt::green) {
+    } else if (color== QColor(Qt::green)) {
         return "green";
-    } else if (color == Qt::blue) {
+    } else if (color == QColor(Qt::blue)) {
         return "blue";
-    } else if (color== Qt::magenta) {
+    } else if (color== QColor(Qt::magenta)) {
         return "magenta";
-    } else if (color== Qt::cyan) {
+    } else if (color== QColor(Qt::cyan)) {
         return "cyan";
     }
     else
-    return QString("rgb(%1,%2,%3,%4)").arg(color.red()).arg(color.green()).arg(color.blue()).arg(color.alpha());
+    return QString("rgb(%1,%2,%3,%4) '%5'").arg(r).arg(g).arg(b).arg(a).arg(name);
 }
+
 /**
  * Return the color (Black/White) that most contrasts with the specified
  * color.

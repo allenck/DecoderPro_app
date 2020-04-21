@@ -138,9 +138,9 @@
                                    ActionListener* okListener,
                                    ActionListener* cancelListener)
 {
-  QObject* parent = /*findParent*/component->parent();
-  if (parent == nullptr)
-    throw /*AWTError*/Exception("No suitable parent found for Component.");
+  QObject* parent = component;// /*findParent*/component->parent();
+//  if (parent == nullptr)
+//    throw /*AWTError*/Exception("No suitable parent found for Component.");
 
   JDialog* dialog;
   //if (parent instanceof Frame)

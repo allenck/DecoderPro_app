@@ -1211,20 +1211,19 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
   selectionActive = false;
   leToolBarPanel->xLabel->setText(QString("%1").arg(xLoc));
   leToolBarPanel->yLabel->setText(QString("%1").arg(yLoc));
-  if (/*event.isPopupTrigger()*/ bPopupTrigger)
+  if (/*event.isPopupTrigger()*/ bPopupTrigger && !bShift)
   {
 //   if (event.isMetaDown() || event.isAltDown())
-//   {
-//   if(event->modifiers()&Qt::MetaModifier || event->modifiers()&Qt::AltModifier)
-//   {
+   if(bMeta || bAlt)
+   {
     // if requesting a popup and it might conflict with moving, delay the request to mouseReleased
-   delayedPopupTrigger = true;
-//   }
-//   else
-//   {
-//    // no possible conflict with moving, display the popup now
-//    checkPopUp(event);
-//   }
+    delayedPopupTrigger = true;
+   }
+   else
+   {
+    // no possible conflict with moving, display the popup now
+    showEditPopUps(event);
+   }
   }
   if (bMeta || (!bAlt && !bShift))
   {
@@ -1317,6 +1316,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
          beginLocation = QPointF(dLoc);
          currentLocation = QPointF(beginLocation);
          startDelta = QPointF(MathUtil::zeroPoint2D);
+         ls->drawEditControls(editScene);
          break;
         }
        }
@@ -2278,42 +2278,42 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    {
     startMultiSensor();
    }
-    else if (leToolBarPanel->sensorButton->isChecked())
-    {
-        addSensor();
-    }
-    else if (leToolBarPanel->signalButton->isChecked()) {
-        addSignalHead();
-    }
-    else if (leToolBarPanel->textLabelButton->isChecked()) {
-        addLabel();
-    }
-    else if (leToolBarPanel->memoryButton->isChecked()) {
-        addMemory();
-    }
-   else if (leToolBarPanel->iconLabelButton->isChecked()) {
+   else if (leToolBarPanel->sensorButton->isChecked())
+   {
+       addSensor();
+   }
+   else if (leToolBarPanel->signalButton->isChecked()) {
+       addSignalHead();
+   }
+   else if (leToolBarPanel->textLabelButton->isChecked()) {
+       addLabel();
+   }
+   else if (leToolBarPanel->memoryButton->isChecked()) {
+       addMemory();
+   }
+   else if (leToolBarPanel->iconLabelButton->isChecked())
+   {
         addIcon();
+   }
+   else if (leToolBarPanel->shapeButton->isChecked())
+   {
+    if (selectedObject == nullptr ) {
+        addLayoutShape(currentPoint);
+        setCursor(/*Cursor.getDefaultCursor()*/Qt::ArrowCursor);
     }
-    else if (leToolBarPanel->shapeButton->isChecked())
+    else
     {
-     if (selectedObject == nullptr ) {
-         addLayoutShape(currentPoint);
-         setCursor(/*Cursor.getDefaultCursor()*/Qt::ArrowCursor);
-     }
-     else
+     if(qobject_cast<LayoutShape*>(selectedObject))
      {
-      if(qobject_cast<LayoutShape*>(selectedObject))
-      {
-         LayoutShape* ls = (LayoutShape*) selectedObject;
-         ls->addPoint(currentPoint, selectedHitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN);
-      }
+        LayoutShape* ls = (LayoutShape*) selectedObject;
+        ls->addPoint(currentPoint, selectedHitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN);
      }
     }
-#if 1
-    else if (leToolBarPanel->signalMastButton->isChecked()) {
+   }
+   else if (leToolBarPanel->signalMastButton->isChecked())
+   {
         addSignalMast();
-    }
-#endif
+   }
    else
    {
     log->warn("No item selected in panel edit mode");
