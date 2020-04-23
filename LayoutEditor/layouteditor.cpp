@@ -180,22 +180,21 @@ LayoutEditor::~LayoutEditor()
 
 /*private*/ void LayoutEditor::setupToolBar() {
     //Initial setup for both horizontal and vertical
-#if 1
     //QWidget* contentPane = getContentPane();
 
     //remove these (if present) so we can add them back (without duplicates)
     if (editToolBarContainerPanel != nullptr) {
         editToolBarContainerPanel->setVisible(false);
 //        contentPane.remove(editToolBarContainerPanel);
-        //ui->verticalLayout->removeWidget(editToolBarContainerPanel);
         if(borderLayout)
          borderLayout->removeWidget(editToolBarContainerPanel);
 //        removeDockWidget(editToolBarContainerPanel);
     }
 
-//    if (helpBarPanel != nullptr) {
-//        contentPane.remove(helpBarPanel);
-//    }
+    if (helpBarPanel != nullptr) {
+     if(borderLayout)
+        borderLayout-> removeWidget(helpBarPanel);
+    }
 
     deletefloatingEditToolBoxFrame();
     if (toolBarSide.getType() == eFLOAT) {
@@ -203,7 +202,6 @@ LayoutEditor::~LayoutEditor()
         createFloatingHelpPanel();
         return;
     }
-#endif
 //    if(borderLayout)
 //    {
 //     QWidget* cw = centralWidget();
@@ -298,62 +296,11 @@ LayoutEditor::~LayoutEditor()
      borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::South);
      break;
     }
-    borderLayout->addWidget(helpBar, BorderLayout::South);
+    borderLayout->addWidget(helpBarPanel, BorderLayout::South);
 
      QWidget* borderWidget = new QWidget();
      borderWidget->setLayout(borderLayout);
      setCentralWidget(borderWidget);
-
-//    helpBarPanel = new JPanel();
-//    helpBarPanel->setLayout(new QHBoxLayout());
-//    helpBarPanel->layout()->addWidget(helpBar);
-
-    //for (Component c : helpBar.getComponents())
-//    foreach(QWidget* c, helpBar->findChildren<QWidget*>())
-//    {
-//     if (qobject_cast<JTextArea*>(c))
-//     {
-//      JTextArea* j = (JTextArea*) c;
-//      j->resize(QSize(toolbarWidth, j->size().height()));
-//      j->setLineWrap(toolBarIsVertical);
-//      j->setWrapStyleWord(toolBarIsVertical);
-//     }
-//    }
-    //contentPane.setLayout(new BoxLayout(contentPane, toolBarIsVertical ? BoxLayout.LINE_AXIS : BoxLayout.PAGE_AXIS));
-
-//    switch (toolBarSide.getType()) {
-//    case eTOP:
-//     editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea);
-//     break;
-//    case eLEFT:
-//            //contentPane.add(editToolBarContainerPanel, 0);
-//     editToolBarContainerPanel->setAllowedAreas(Qt::LeftDockWidgetArea);
-//            break;
-
-//    case eBOTTOM:
-//     editToolBarContainerPanel->setAllowedAreas(Qt::BottomDockWidgetArea );
-//     break;
-//    case eRIGHT:
-//            //contentPane.add(editToolBarContainerPanel);
-//     editToolBarContainerPanel->setAllowedAreas( Qt::RightDockWidgetArea);
-//            break;
-
-//        default:
-//            // fall through
-//            break;
-//    }
-
-//    if (toolBarIsVertical) {
-//       // leToolBarPanel->layout()->addWidget(helpBarPanel);
-//     borderLayout->addWidget(helpBarPanel, BorderLayout::South);
-//    } else {
-//        //contentPane.add(helpBarPanel);
-//    }
-//    helpBarPanel->setVisible(isEditable() && getShowHelpBar());
-//    editToolBarContainerPanel->setVisible(isEditable());
-
-    //connect(leToolBarPanel->blockContentsComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(blockContentsComboBoxChanged()));
-    //connect(changeIconsButton, SIGNAL(clicked(bool)), this, SLOT(onChangeIconsButton()));
 
 }
 
@@ -458,7 +405,7 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
 
  wideToolBarCheckBoxMenuItem = new QAction(tr("Wide ToolBar"));
  wideToolBarCheckBoxMenuItem->setCheckable(true);
- helpBar = new JPanel();
+ helpBarPanel = new JPanel();
 
  //ui->toolBarWidget->hide();
  editPanel = new QGraphicsView(/*ui->centralWidget*/);
@@ -487,7 +434,7 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
 
  //setup help bar
 
- helpBar->setLayout(new QVBoxLayout());//helpBar, BoxLayout.PAGE_AXIS));
+ helpBarPanel->setLayout(new QVBoxLayout());//helpBar, BoxLayout.PAGE_AXIS));
 #if 0
  JTextArea* helpTextArea1 = new JTextArea(tr("To add an item, check item type, enter needed data, then, with shift down, click on panel - except Track Segment."));
  helpBar->layout()->addWidget(helpTextArea1);
@@ -532,7 +479,7 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
 
- helpBar->layout()->addWidget(textEdit);
+ helpBarPanel->layout()->addWidget(textEdit);
 #endif
  if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
@@ -2758,6 +2705,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
            newPoint = MathUtil::max(newPoint, MathUtil::zeroPoint2D);
            lt->setCoordsCenter(newPoint);
        }
+
        for (LayoutShape* ls : _layoutShapeSelection)
        {
            QPointF center = ls->getCoordsCenter();
@@ -2895,7 +2843,8 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
                break;
            }
 
-           default: {
+           default:
+           {
                if ((foundHitPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
                        && (foundHitPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
                    int index = selectedHitPointType - LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN;
@@ -2904,10 +2853,14 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
                else if ((selectedHitPointType == LayoutTrack::SHAPE_CENTER))
                {
                    ((LayoutShape*) selectedObject)->setCoordsCenter(currentPoint);
-               } else if (LayoutShape::isShapePointOffsetHitPointType(selectedHitPointType)) {
+               }
+               else if (LayoutShape::isShapePointOffsetHitPointType(selectedHitPointType))
+               {
                    int index = selectedHitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN;
                    ((LayoutShape*) selectedObject)->setPoint(index, currentPoint);
-               } else if (selectedHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
+               }
+               else if (selectedHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET)
+               {
                    LayoutTurntable* turn = (LayoutTurntable*) selectedObject;
                    turn->setRayCoordsIndexed(currentPoint.x(), currentPoint.y(),
                            selectedHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
@@ -2926,7 +2879,7 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    {
    // have match to free connection point, change cursor
    //setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-    setCursor(Qt::PointingHandCursor);
+    setCursor(Qt::CrossCursor);
    }
    else if (needResetCursor)
    {
@@ -2943,7 +2896,12 @@ void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
    paintTargetPanel(editScene);
   }
  }
- else
+  else if (/*event.isShiftDown()*/ (event->modifiers()&Qt::ShiftModifier)
+         && leToolBarPanel->shapeButton->isChecked() && (selectedObject != nullptr)) {
+     //dragging from end of shape
+     currentLocation = QPointF(xLoc,yLoc);
+ }
+ else if (selectionActive && !(event->modifiers()&Qt::ShiftModifier) && ((event->modifiers()&Qt::MetaModifier)==0))
  {
   QRect r =  QRect(event->scenePos().x(), event->scenePos().y(), 1, 1);
       //((JComponent) event->getSource()).scrollRectToVisible(r);
@@ -6025,20 +5983,82 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 *  (which are the primary way that items are edited).
 * @param state true for editable.
 */
-/*public*/ void LayoutEditor::setAllEditable(bool state)
+/*public*/ void LayoutEditor::setAllEditable(bool editable)
 {
-  //_editable = state;
- Editor::setAllEditable(state);
-  for (int i = 0; i<_contents->size(); i++)
+  int restoreScroll = _scrollState;
+
+  Editor::setAllEditable(editable);
+
+  if (toolBarSide.getType() == eFLOAT)
   {
-   _contents->at(i)->setEditable(state);
-  }
-  if (!_editable)
-  {
-//      _highlightcomponent = nullptr;
-   _selectionGroup =new  QList<Positionable*>();
-  }
+     if (editable) {
+         createfloatingEditToolBoxFrame();
+         createFloatingHelpPanel();
+     } else {
+         deletefloatingEditToolBoxFrame();
+     }
+ } else {
+   if(editToolBarContainerPanel)
+     editToolBarContainerPanel->setVisible(editable);
+ }
+ setShowHidden(editable);
+
+ if (editable) {
+     setScroll(Editor::SCROLL_BOTH);
+     _scrollState = restoreScroll;
+ } else {
+     setScroll(_scrollState);
+ }
+
+ //these may not be set up yet...
+ if (helpBarPanel != nullptr) {
+     if (toolBarSide.getType() ==eFLOAT) {
+         if (floatEditHelpPanel != nullptr) {
+             floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
+         }
+     } else {
+         helpBarPanel->setVisible(editable && getShowHelpBar());
+     }
+ }
+ awaitingIconChange = false;
+ editModeCheckBoxMenuItem->setChecked(editable);
+ redrawPanel();
 }
+
+/*public*/ void LayoutEditor::on_setAllEditable(bool state)
+{
+ setAllEditable(state);
+
+    //show/hide the help bar
+    if (toolBarSide.getType() == eFLOAT) {
+        if (floatEditHelpPanel != nullptr) {
+            floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
+        }
+    } else {
+     if(helpBarPanel)
+        helpBarPanel->setVisible(isEditable() && getShowHelpBar());
+    }
+
+    if (isEditable()) {
+        setAllShowToolTip(tooltipsInEditMode);
+
+        //redo using the "Extra" color to highlight the selected block
+        if (highlightSelectedBlockFlag) {
+            if (!highlightBlockInComboBox(leToolBarPanel->blockIDComboBox)) {
+                highlightBlockInComboBox(leToolBarPanel->blockContentsComboBox);
+            }
+        }
+    } else {
+        setAllShowToolTip(tooltipsWithoutEditMode);
+
+        //undo using the "Extra" color to highlight the selected block
+        if (highlightSelectedBlockFlag) {
+            highlightBlock(nullptr);
+        }
+    }
+    awaitingIconChange = false;
+}
+
 /**
 *  Control whether target panel items are controlling layout items.
 *  Does this by invoke the {@link Positionable#setControlling} function of
@@ -7481,11 +7501,11 @@ void LayoutEditor::addSensor()
 //  }.init(p));
  currComp = p;
  QAction* removeMenuAction = new QAction("Remove", this);
- connect(removeMenuAction, SIGNAL(triggered()), this, SLOT(On_removeMenuAction_triggered()));
+ connect(removeMenuAction, SIGNAL(triggered()), this, SLOT(on_removeMenuAction_triggered()));
  popup->addAction(removeMenuAction);
 }
 
-void LayoutEditor::On_removeMenuAction_triggered()
+void LayoutEditor::on_removeMenuAction_triggered()
 {
  Positionable* comp = currComp;
  //comp->remove();
@@ -8274,11 +8294,11 @@ void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
   QAction* hiddenAction = new QAction(tr("Hide when not editing"),this);
   hiddenAction->setCheckable(true);
   hiddenAction->setChecked(p->isHidden());
-  connect(hiddenAction, SIGNAL(toggled(bool)), this, SLOT(On_actionHidden_toggled(bool)));
+  connect(hiddenAction, SIGNAL(toggled(bool)), this, SLOT(on_actionHidden_toggled(bool)));
   popup->addAction(hiddenAction);
   saveP = p;
 }
-void LayoutEditor::On_actionHidden_toggled(bool bState)
+void LayoutEditor::on_actionHidden_toggled(bool bState)
 {
  Positionable* comp =saveP;
  //comp.setHidden(checkBox->isChecked());
@@ -11095,7 +11115,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        }
 //        awaitingIconChange = false;
 //    });
-    connect(editModeCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setAllEditable(bool)));
+    connect(editModeCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_setAllEditable(bool)));
     editModeCheckBoxMenuItem->setChecked(isEditable());
 
     //
@@ -11316,7 +11336,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        setScroll(_scrollState);
 //        redrawPanel();
 //    });
-    connect(scrollBothMenuItem, SIGNAL(triggered(bool)), this, SLOT(onActionBoth_scrollbars()));
+    connect(scrollBothMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionBoth_scrollbars()));
     scrollNoneMenuItem = new QAction(tr("No Scrollbars"), this);
     scrollNoneMenuItem->setCheckable(true);
     scrollGroup->addAction(scrollNoneMenuItem);
@@ -11327,7 +11347,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        setScroll(_scrollState);
 //        redrawPanel();
 //    });
-    connect(scrollNoneMenuItem, SIGNAL(triggered(bool)), this, SLOT(onActionNo_scrollbars()));
+    connect(scrollNoneMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionNo_scrollbars()));
     scrollHorizontalMenuItem = new QAction(tr("Horizontal Scrollbars"),this);
     scrollHorizontalMenuItem->setCheckable(true);
     scrollGroup->addAction(scrollHorizontalMenuItem);
@@ -11338,7 +11358,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        setScroll(_scrollState);
 //        redrawPanel();
 //    });
-    connect(scrollHorizontalMenuItem, SIGNAL(triggered(bool)), this, SLOT(onActionHorizontal_scrollbars()));
+    connect(scrollHorizontalMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionHorizontal_scrollbars()));
     scrollVerticalMenuItem = new QAction(tr("Vertical scrollbars"), this);
     scrollVerticalMenuItem->setCheckable(true);
     scrollGroup->addAction(scrollVerticalMenuItem);
@@ -11349,7 +11369,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        setScroll(_scrollState);
 //        redrawPanel();
 //    });
-    connect(scrollVerticalMenuItem, SIGNAL(triggered(bool)), this, SLOT(onActionVertical_scrollbars()));
+    connect(scrollVerticalMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionVertical_scrollbars()));
 
     //
     // Tooltips
@@ -12160,16 +12180,16 @@ void LayoutEditor::on_locationItem()
     toolsMenu->addSeparator();
     QAction* clearAction = new QAction(tr("Clear track"), this);
     toolsMenu->addAction(clearAction);
-    connect(clearAction, SIGNAL(triggered(bool)), this, SLOT(On_clearTrack()));
+    connect(clearAction, SIGNAL(triggered(bool)), this, SLOT(on_clearTrack()));
 }
 
-void LayoutEditor::onTranslateSelections()
+void LayoutEditor::on_translateSelections()
 {
  //bring up translate selection dialog
  moveSelection();
 }
 
-void LayoutEditor::On_clearTrack()
+void LayoutEditor::on_clearTrack()
 {
  // remove existing items from scene
  for(LayoutTrack* layoutTrack : *layoutTrackList)
@@ -12186,6 +12206,8 @@ void LayoutEditor::On_clearTrack()
   }
  }
 }
+
+#if 0
 //
 //update drop down menu display order menu
 //
@@ -12210,7 +12232,7 @@ void LayoutEditor::On_clearTrack()
     }
 #endif
 }
-
+#endif
 //
 //update drop down menu display order for all combo boxes (from prefs)
 //
@@ -12443,24 +12465,24 @@ void LayoutEditor::On_clearTrack()
     return QPointF(0, 0);
 }
 
-void LayoutEditor::onActionBoth_scrollbars()
+void LayoutEditor::on_actionBoth_scrollbars()
 {
  editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
  editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
-void LayoutEditor::onActionNo_scrollbars()
+void LayoutEditor::on_actionNo_scrollbars()
 {
  editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
  editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
-void LayoutEditor::onActionHorizontal_scrollbars()
+void LayoutEditor::on_actionHorizontal_scrollbars()
 {
  editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
  editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
-void LayoutEditor::onActionVertical_scrollbars()
+void LayoutEditor::on_actionVertical_scrollbars()
 {
  editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
  editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);

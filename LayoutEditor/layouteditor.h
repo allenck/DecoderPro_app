@@ -460,7 +460,8 @@ public slots:
     *  (which are the primary way that items are edited).
     * @param state true for editable.
     */
-    /*public*/ void setAllEditable(bool state);
+    /*public*/ void setAllEditable(bool editable);
+    /*public*/ void on_setAllEditable(bool state);
     /*public*/ void setShowHelpBar(bool state);
     void on_deletePanel();
 
@@ -859,8 +860,8 @@ private:
  /*private*/ /*transient*/ NamedBean::DisplayOptions gDDMDO ;//= JmriBeanComboBox.DisplayOptions.DISPLAYNAME;
  /*private*/ /*transient*/ QList<LayoutTrack*> _layoutTrackSelection;// = new ArrayList<>();
 
- ///*private*/ void updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent);
- /*private*/ void updateDropDownMenuDisplayOrderMenu();
+ // /*private*/ void updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent);
+ // /*private*/ void updateDropDownMenuDisplayOrderMenu();
  ///*private*/ void updateAllComboBoxesDropDownListDisplayOrderFromPrefs();
  /*private*/ void showEditPopUps(/*@Nonnull */QGraphicsSceneMouseEvent* event);
  /*private*/ void hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt);
@@ -936,7 +937,7 @@ private:
  /*private*/ /*transient*/ QWidget* editToolBarContainerPanel = nullptr;
  /*private*/ /*transient*/ QScrollArea* editToolBarScrollPane = nullptr;
  /*private*/ /*transient*/ JPanel* helpBarPanel = nullptr;
- /*private*/ /*transient*/ JPanel* helpBar;// = new JPanel();
+ // /*private*/ /*transient*/ JPanel* helpBar;// = new JPanel();
  /*private*/ void setupToolBar();
  /*private*/ void createfloatingEditToolBoxFrame();
  /*private*/ void deletefloatingEditToolBoxFrame();
@@ -1033,7 +1034,7 @@ private slots:
  void on_actionShow_grid_in_edit_mode_toggled(bool bChecked);
  void on_actionEnable_antialiasing_smoother_lines_toggled(bool bChecked);
  //void On_lockPosition_triggered(bool bChecked);
- void On_removeMenuAction_triggered();
+ void on_removeMenuAction_triggered();
  void on_actionAdd_loco_triggered();
  void on_actionAdd_loco_from_roster_triggered();
  void on_actionRemove_markers_triggered();
@@ -1042,7 +1043,7 @@ private slots:
  void on_actionAllow_layout_control_toggled(bool bChecked);
  /*private*/ void deleteSelectedItems(); // SLOT[]
  void on_actionShow_turnout_circles_toggled(bool bState);
- void On_actionHidden_toggled(bool bState);
+ void on_actionHidden_toggled(bool bState);
  void on_actionEdit_track_width_triggered();
  void on_colorBackgroundMenuItemSelected(/*int*/);
  void on_actionAdd_reporter_label_triggered();
@@ -1093,10 +1094,10 @@ private slots:
  //void onBlockProperties();
  //void onMiscFields();
  //void blockContentsComboBoxChanged();
- void onActionBoth_scrollbars();
- void onActionNo_scrollbars();
- void onActionHorizontal_scrollbars();
- void onActionVertical_scrollbars();
+ void on_actionBoth_scrollbars();
+ void on_actionNo_scrollbars();
+ void on_actionHorizontal_scrollbars();
+ void on_actionVertical_scrollbars();
  void onCalculateBounds();
  void onZoomIn();
  void onZoomOut();
@@ -1104,8 +1105,8 @@ private slots:
  /*private*/ double zoomOut();
  double zoomToFit();
  void onLayoutTrackDrawingOptionsDialog();
- void On_clearTrack(); // for testing
- void onTranslateSelections();
+ void on_clearTrack(); // for testing
+ void on_translateSelections();
  void moveSelectionCancelPressed();
  void moveSelectionDonePressed(/*@Nonnull ActionEvent event*/);
  void onNewTrain();

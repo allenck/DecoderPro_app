@@ -150,7 +150,7 @@ PanelEditor::~PanelEditor()
  common->layout()->addWidget(new QLabel(" y:"));
  common->layout()->addWidget(nextY);
  contentPaneLayout->addWidget(common);
- setAllEditable(true);
+ //setAllEditable(true);
  setShowHidden(true);
 // super.setTargetPanel(null, makeFrame(name));
 // super.setTargetPanelSize(400, 300);

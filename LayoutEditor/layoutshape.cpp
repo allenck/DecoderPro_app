@@ -965,7 +965,7 @@ void LayoutShape::remove() {
  QColor controlsColor = ColorUtil::contrast(backgroundColor);
  if(layoutEditor->selectedObject == this)
   controlsColor = QColor(Qt::magenta);
- //controlsColor = ColorUtil::setAlpha(controlsColor, 0.5);
+ controlsColor = ColorUtil::setAlpha(controlsColor, 0.5);
  log->debug(tr("LayoutShape::drawEditControls controls color %1 ").arg(ColorUtil::colorToColorName(controlsColor)));
 #if 1
  rects = invalidateItem(g2, rects);

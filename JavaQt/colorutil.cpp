@@ -213,8 +213,10 @@ ColorUtil::ColorUtil()
  */
 //@CheckReturnValue
 /*public*/ /*static*/ QColor ColorUtil::setAlpha(/*@Nonnull*/ QColor color, double alpha) {
-    return  QColor(color.redF(), color.greenF(), color.blueF(),
-            (int) (255.0 * alpha));
+//    return  QColor(color.redF(), color.greenF(), color.blueF(),
+//            (int) (255.0 * alpha));
+ color.setAlphaF(alpha);
+ return color;
 }
 
 // initialize logging
