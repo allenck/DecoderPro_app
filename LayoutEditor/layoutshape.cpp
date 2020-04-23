@@ -8,6 +8,7 @@
 #include "jmricolorchooser.h"
 #include "abstractaction.h"
 #include "layouteditorfinditems.h"
+#include "inputdialog.h"
 
 /**
  * A LayoutShape is a set of LayoutShapePoint used to draw a shape. Each point
@@ -770,10 +771,14 @@ void LayoutShape::on_changeName()
 
 /*public*/ void LayoutShape::on_lineWidth()
 {
- int newValue = QuickPromptUtil::promptForInteger((Component*)layoutEditor,
-         tr("Set Line Width"),
-         tr("Set Line Width"),
-         lineWidth, QuickPromptUtil::checkIntRange(1, MAX_LINEWIDTH, nullptr));
+// int newValue = QuickPromptUtil::promptForInteger((Component*)layoutEditor,
+//         tr("Set Line Width"),
+//         tr("Set Line Width"),
+//         lineWidth, QuickPromptUtil::checkIntRange(1, MAX_LINEWIDTH, nullptr));
+ int newValue = lineWidth;
+ InputDialog* dlg = new InputDialog(tr("Enter line width"), QString::number(lineWidth), nullptr);
+ dlg->exec();
+ newValue = dlg->value().toInt();
  setLineWidth(newValue);
  layoutEditor->repaint();
 }
@@ -935,17 +940,18 @@ void LayoutShape::remove() {
  }   // for (idx = 0; idx < cnt; idx++)
 
  QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
- QPen fillPen = QPen(fillColor);
- if (getType() == LayoutShapeType::eFilled) {
+ QBrush fillBrush = QBrush(fillColor);
+ if (getType() == LayoutShapeType::eFilled)
+ {
 //        g2.setColor(fillColor);
 //        g2.fill(path);
-  pathItem->setPen(fillPen);
+  pathItem->setBrush(fillBrush);
 
  }
 //    g2.setStroke(new BasicStroke(lineWidth,
 //            BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //    g2.setColor(lineColor);
- QPen stroke = QPen(lineColor,1,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
+ QPen stroke = QPen(lineColor,lineWidth,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
  pathItem->setPen(stroke);
  itemGroup->addToGroup(pathItem);
  paths = itemGroup;

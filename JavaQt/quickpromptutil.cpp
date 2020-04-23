@@ -3,6 +3,7 @@
 #include "joptionpane.h"
 #include <QIntValidator>
 
+
 QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
 {
 

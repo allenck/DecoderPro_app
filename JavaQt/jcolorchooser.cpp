@@ -156,18 +156,22 @@
   FlowLayout* panelLayout;
   panel->setLayout(panelLayout = new FlowLayout());
 
-  ActionListener* al = new DefaultOKCancelListener(dialog);
+  ActionListener* al = new DefaultOKCancelListener(dialog, true);
 
   QPushButton* ok = new QPushButton("OK");
 //  ok.addActionListener(okListener);
-  connect(ok, SIGNAL(clicked(bool)), okListener, SLOT(actionPerformed()));
+  if(okListener)
+   connect(ok, SIGNAL(clicked(bool)), okListener, SLOT(actionPerformed()));
 //  ok.addActionListener(al);
   connect(ok, SIGNAL(clicked(bool)), al, SLOT(actionPerformed()));
 
+  al = new DefaultOKCancelListener(dialog, false);
   QPushButton* cancel = new QPushButton("Cancel");
 //  cancel.addActionListener(cancelListener);
-  connect(cancel, SIGNAL(clicked(bool)), cancelListener, SLOT(actionPerformed()));
+  if(cancelListener)
+   connect(cancel, SIGNAL(clicked(bool)), cancelListener, SLOT(actionPerformed()));
 //  cancel.addActionListener(al);
+  connect(cancel, SIGNAL(clicked(bool)), al, SLOT(actionPerformed()));
 
   QPushButton* reset = new QPushButton("Reset");
 //  reset.addActionListener(new DefaultResetListener(chooserPane));

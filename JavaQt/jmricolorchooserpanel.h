@@ -16,7 +16,7 @@ public:
  /*public*/ QIcon getSmallDisplayIcon();
  /*public*/ QIcon getLargeDisplayIcon();
 public slots:
- void onColorButton(QWidget*);
+ void onColorButton(QString s);
  QString getTitle();
 
 private:

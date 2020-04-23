@@ -76,6 +76,8 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
          QPushButton* button;
          stdColorsLayout->addWidget(button = createColorButton(colors[i], true), c);
          buttonGroup->addButton(button);
+         signalMapper->setMapping(button, colors.at(i).name());
+         connect(button, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
      }
      thisLayout->addWidget(stdColors);
      stdColors->setVisible(true);
@@ -88,12 +90,15 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
      for (QColor recent : colors) {
          c.gridx = idx % cols;
          c.gridy = idx / cols;
-         recentPanelLayout->addWidget(createColorButton(recent, false), c);
+         QPushButton* button;
+         recentPanelLayout->addWidget(button =createColorButton(recent, false), c);
          idx++;
+         signalMapper->setMapping(button, recent.name());
+         connect(button, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
      }
      thisLayout->addWidget(recentPanel);
      recentPanel->setVisible(true);
-     connect(signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(onColorButton(QWidget*)));
+     connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(onColorButton(QString)));
     }
 
     /**
@@ -136,10 +141,9 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
         return colorButton;
     }
 
-    void JmriColorChooserPanel::onColorButton(QWidget *b)
+    void JmriColorChooserPanel::onColorButton(QString s)
     {
-     QPushButton* button = (QPushButton*)b;
-     getColorSelectionModel()->setSelectedColor(ColorUtil::stringToColor(button->text()));
+     getColorSelectionModel()->setSelectedColor(QColor(s));
     }
 
     const QIcon JmriColorChooserPanel::getColorIcon(QColor color)

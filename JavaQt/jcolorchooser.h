@@ -72,7 +72,6 @@ signals:
 public slots:
  void stateChanged(ChangeEvent* evt);
 
-
 private:
     /*private*/ void common(ColorSelectionModel* model);
  /**
@@ -161,16 +160,18 @@ public:
  Q_OBJECT
   /** The JDialog to hide. */
   /*private*/ JDialog* dialog;
+  bool bAccept;
 public:
   /**
    * Creates a new DefaultOKCancelListener with the given JDialog to hide.
    *
    * @param dialog The JDialog to hide.
    */
-   /*public*/ DefaultOKCancelListener(JDialog* dialog)
+   /*public*/ DefaultOKCancelListener(JDialog* dialog, bool accept)
    {
      //super();
      this->dialog = dialog;
+    bAccept = accept;
    }
   public slots:
    /**
@@ -181,6 +182,10 @@ public:
     /*public*/ void actionPerformed(/*ActionEvent e*/)
     {
      dialog->hide();
+     if(bAccept)
+      dialog->accept();
+     else
+      dialog->reject();
     }
    };
 #endif // JCOLORCHOOSER_H

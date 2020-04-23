@@ -74,9 +74,11 @@
 //            }),
 //            null);
         d->setVisible(true);
+        int rslt = d->exec();
 
         //_chooser->setOption(QColorDialog::NoButtons);
-        color = chooser->getColor();
+        if(rslt == d->Accepted)
+         color = chooser->getColor();
         return color;
     }
 
