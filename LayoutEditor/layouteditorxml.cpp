@@ -500,7 +500,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  if ((a = shared.attribute("animating")) != nullptr && a==("no")) {
      value = false;
  }
- panel->setTurnoutAnimation(value);
+ panel->on_setTurnoutAnimation(value);
 
  bool hbValue = true;
  if ((a = shared.attribute("showhelpbar")) != nullptr && a==("no")) {
@@ -580,7 +580,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  {
   if (shared.attribute("useDirectTurnoutControl")==("yes"))
   {
-   panel->setDirectTurnoutControl(true);
+   panel->on_setDirectTurnoutControl(true);
   }
  }
 

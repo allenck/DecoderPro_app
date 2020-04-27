@@ -29,10 +29,13 @@
 #include "component.h"
 //#include "jmribeancombobox.h"
 #include <QPen>
+#include "borderlayout.h"
 
 namespace Ui {
 class LayoutEditor;
 }
+
+class EditToolBarContainerPanel;
 class NamedBeanComboBox;
 class LEBlockContentsIcon;
 class LayoutEditorChecks;
@@ -449,10 +452,10 @@ public:
 
 
 public slots:
-    /*public*/ void setIncludedTurnoutSkipped(bool boo);
+    /*public*/ void on_setIncludedTurnoutSkipped(bool boo);
     void on_locationItem();
-    /*public*/ void setTurnoutAnimation(bool state) ;
-    /*public*/ void setDirectTurnoutControl(bool boo);
+    /*public*/ void on_setTurnoutAnimation(bool state) ;
+    /*public*/ void on_setDirectTurnoutControl(bool boo);
     /**
     *  Control whether target panel items are editable.
     *  Does this by invoke the {@link Positionable#setEditable(bool)} function of
@@ -934,7 +937,7 @@ private:
  /*private*/ /*transient*/ JmriJFrame* floatingEditToolBoxFrame = nullptr;
  /*private*/ /*transient*/ QScrollArea* floatingEditContentScrollPane = nullptr;
  /*private*/ /*transient*/ JPanel* floatEditHelpPanel = nullptr;
- /*private*/ /*transient*/ QWidget* editToolBarContainerPanel = nullptr;
+ /*private*/ /*transient*/ EditToolBarContainerPanel* editToolBarContainerPanel = nullptr;
  /*private*/ /*transient*/ QScrollArea* editToolBarScrollPane = nullptr;
  /*private*/ /*transient*/ JPanel* helpBarPanel = nullptr;
  // /*private*/ /*transient*/ JPanel* helpBar;// = new JPanel();
@@ -1017,12 +1020,12 @@ private:
  };
  /*private*/ /*transient*/ ToolBarSide toolBarSide = ToolBarSide("top");
  /*private*/ /*transient*/ bool toolBarIsWide = true;
- /*private*/ void setToolBarSide(QString);
+ /*private*/ void on_setToolBarSide(QString);
  /*private*/ void setupMenuBar();
 
 
 private slots:
- void OnScenePos(QGraphicsSceneMouseEvent*);
+ void on_scenePos(QGraphicsSceneMouseEvent*);
  /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event);
  /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);
  /**
@@ -1035,32 +1038,32 @@ private slots:
  void on_actionEnable_antialiasing_smoother_lines_toggled(bool bChecked);
  //void On_lockPosition_triggered(bool bChecked);
  void on_removeMenuAction_triggered();
- void on_actionAdd_loco_triggered();
- void on_actionAdd_loco_from_roster_triggered();
- void on_actionRemove_markers_triggered();
- void on_actionAllow_turnout_animation_toggled(bool bChecked);
- void on_actionAllow_repositioning_toggled(bool bChecked);
+ //void on_actionAdd_loco_triggered();
+ //void on_actionAdd_loco_from_roster_triggered();
+ //void on_actionRemove_markers_triggered();
+ //void on_actionAllow_turnout_animation_toggled(bool bChecked);
+ //void on_actionAllow_repositioning_toggled(bool bChecked);
  void on_actionAllow_layout_control_toggled(bool bChecked);
  /*private*/ void deleteSelectedItems(); // SLOT[]
- void on_actionShow_turnout_circles_toggled(bool bState);
+ //void on_actionShow_turnout_circles_toggled(bool bState);
  void on_actionHidden_toggled(bool bState);
- void on_actionEdit_track_width_triggered();
- void on_colorBackgroundMenuItemSelected(/*int*/);
+ //void on_actionEdit_track_width_triggered();
+ //void on_colorBackgroundMenuItemSelected(/*int*/);
  void on_actionAdd_reporter_label_triggered();
  void on_actionAdd_background_image_2_triggered();
  //void on_actionLoad_XML_triggered();
  //void on_actionLoad_Other_XML_triggered();
- void on_actionSave_triggered();
+ //void on_actionSave_triggered();
  //void on_actionSave_as_triggered();
  //void on_newSensor(QString,int,int);
  void on_actionSnap_to_grid_when_adding_toggled(bool bState);
  void on_actionSnap_to_grid_when_moving_toggled(bool bState);
- void OnZoom_selected(QAction* act);
- void on_actionEdit_mode_toggled(bool bState);
- void OnDefaultTrackColorSelected(QAction * act);
- void OnDefaultTextColorSelected();
- void on_actionDelete_this_panel_triggered();
- void on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool);
+ //void OnZoom_selected(QAction* act);
+ //void on_actionEdit_mode_toggled(bool bState);
+ //void OnDefaultTrackColorSelected(QAction * act);
+ void on_defaultTextColorSelected();
+ //void on_actionDelete_this_panel_triggered();
+ //void on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool);
  void on_actionSet_Signals_at_Block_Boundary_triggered();
  void on_actionSet_Signals_at_Turnout_triggered();
  void on_actionSet_Signals_at_Crossover_triggered();
@@ -1069,21 +1072,21 @@ private slots:
  //void on_rosterBoxSelectionChanged(QString propertyName,QObject* o,QObject* n);
  //void on_menuWindow_aboutToShow();
  void on_actionAdd_Fast_Clock_triggered();
- void onChangeIconsButton();
+ //void onChangeIconsButton();
  void on_actionSet_Signals_at_Slip_triggered();
  void on_actionSet_Signals_at_Throat_to_Throat_Turnouts_triggered();
  void on_actionEntry_Exit_triggered();
 // void on_actionMoveLayout_triggered();
 // void on_okMove_clicked();
  void on_actionAdd_Turntable_triggered();
- void On_turnoutCirclesOnItem_triggered(bool);
- void On_turnoutDrawUnselectedLegItem_triggered(bool);
- void On_turnoutCircleColorButtonMapper_triggered(int);
- void On_turnoutCircleSizeButtonMapper_triggered(int);
+ void on_turnoutCirclesOnItem_triggered(bool);
+ void on_turnoutDrawUnselectedLegItem_triggered(bool);
+ //void on_turnoutCircleColorButtonMapper_triggered(int);
+ //void on_turnoutCircleSizeButtonMapper_triggered(int);
  void on_actionSet_Signals_at_Three_Way_Turnout();
  void on_autoAssignBlocksItem_triggered(bool b);
  void on_hideTrackSegmentConstructionLines_toggled(bool);
- void on_useDirectTurnoutControlItem_triggered(bool);
+ //void on_useDirectTurnoutControlItem_triggered(bool);
  void on_addTrackColorMenuEntry_triggered();
  void on_addTrackOccupiedColorMenuEntry_triggered();
  void on_addTrackAlternativeColorMenuEntry_triggered(/*int*/);
@@ -1098,34 +1101,34 @@ private slots:
  void on_actionNo_scrollbars();
  void on_actionHorizontal_scrollbars();
  void on_actionVertical_scrollbars();
- void onCalculateBounds();
- void onZoomIn();
- void onZoomOut();
- /*private*/ double zoomIn();
- /*private*/ double zoomOut();
- double zoomToFit();
- void onLayoutTrackDrawingOptionsDialog();
+ //void onCalculateBounds();
+// void onZoomIn();
+// void onZoomOut();
+ /*private*/ double on_zoomIn();
+ /*private*/ double on_zoomOut();
+ double on_zoomToFit();
+ void on_layoutTrackDrawingOptionsDialog();
  void on_clearTrack(); // for testing
  void on_translateSelections();
  void moveSelectionCancelPressed();
  void moveSelectionDonePressed(/*@Nonnull ActionEvent event*/);
- void onNewTrain();
- void onZoom025Item();
- void onZoom05Item();
- void onZoom075Item();
- void onNoZoomItem();
- void onZoom15Item();
- void onZoom20Item();
- void onZoom30Item();
- void onZoom40Item();
- /*private*/ void resetTurnoutSize();
- void onTurnoutCircleColorMenuItem();
- void onTooltipNoneMenuItem();
- void onTooltipAlwaysMenuItem();
- void onTooltipInEditMenuItem();
- void onTooltipNotInEditMenuItem();
- /*private*/ void setToolBarSide(QAction* act);
- /*private*/ void setToolBarWide(bool newToolBarIsWide);
+ void on_NewTrain();
+ void on_Zoom025Item();
+ void on_Zoom05Item();
+ void on_Zoom075Item();
+ void on_NoZoomItem();
+ void on_Zoom15Item();
+ void on_Zoom20Item();
+ void on_Zoom30Item();
+ void on_Zoom40Item();
+ /*private*/ void on_resetTurnoutSize();
+ void on_TurnoutCircleColorMenuItem();
+ void on_TooltipNoneMenuItem();
+ void on_TooltipAlwaysMenuItem();
+ void on_TooltipInEditMenuItem();
+ void on_TooltipNotInEditMenuItem();
+ /*private*/ void on_setToolBarSide(QAction* act);
+ /*private*/ void on_setToolBarWide(bool newToolBarIsWide);
 
 protected:
  /**
@@ -1261,6 +1264,7 @@ friend class EnterTrackWidthFrameWindowListener;
 friend class EnterGridSizesFrameWindowListener;
 friend class LayoutEditorToolBarPanel;
 friend class LayoutShape;
+friend class EditToolBarContainerPanel;
 };
 Q_DECLARE_METATYPE(LayoutEditor)
 
@@ -1320,5 +1324,47 @@ class EnterGridSizesFrameWindowListener : public WindowListener
 public:
  EnterGridSizesFrameWindowListener(LayoutEditor* layoutEditor) { this->layoutEditor = layoutEditor;}
  void windowClosing(QCloseEvent*) {layoutEditor->gridSizesCancelPressed();}
+};
+
+class EditToolBarContainerPanel : public QWidget
+{
+ Q_OBJECT
+ LayoutEditor* editor;
+public:
+ EditToolBarContainerPanel(LayoutEditor* editor, QWidget* parent = nullptr) : QWidget(parent)
+ {
+  this->editor = editor;
+ }
+ void setVisible(bool visible)
+ {
+  bool isVisible = QWidget::isVisible();
+  QObject* p = parent();
+  if(visible == isVisible)
+   return;
+  QWidget::setVisible(visible);
+  if(visible && editor->borderLayout)
+  {
+   editor->borderLayout->removeWidget(this);
+   switch (editor->toolBarSide.getType()) {
+    case LayoutEditor::eTOP:
+     editor->borderLayout->addWidget(this, BorderLayout::North);
+     break;
+    case LayoutEditor::eBOTTOM:
+     editor->borderLayout->addWidget(this, BorderLayout::South);
+     break;
+    case LayoutEditor::eLEFT:
+     editor->borderLayout->addWidget(this, BorderLayout::West);
+     break;
+    case LayoutEditor::eRIGHT:
+     editor->borderLayout->addWidget(this, BorderLayout::East);
+     break;
+    default:
+     break;
+    }
+   }
+   else
+    editor->borderLayout->removeWidget(this);
+  }
+
 };
 #endif // LAYOUTEDITOR_H

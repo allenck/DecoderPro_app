@@ -84,7 +84,6 @@
 #include <QSysInfo>
 #include <QMenuBar>
 #include "layouteditorfloatingtoolbarpanel.h"
-#include "borderlayout.h"
 #include <QScrollBar>
 #include "layoutshape.h"
 
@@ -183,12 +182,11 @@ LayoutEditor::~LayoutEditor()
     //QWidget* contentPane = getContentPane();
 
     //remove these (if present) so we can add them back (without duplicates)
-    if (editToolBarContainerPanel != nullptr) {
+    if (editToolBarContainerPanel != nullptr)
+    {
         editToolBarContainerPanel->setVisible(false);
-//        contentPane.remove(editToolBarContainerPanel);
         if(borderLayout)
          borderLayout->removeWidget(editToolBarContainerPanel);
-//        removeDockWidget(editToolBarContainerPanel);
     }
 
     if (helpBarPanel != nullptr) {
@@ -243,7 +241,7 @@ LayoutEditor::~LayoutEditor()
     }
 
     //editToolBarContainerPanel = new QDockWidget("Toolbar", this);
-    editToolBarContainerPanel = new QWidget();
+    editToolBarContainerPanel = new EditToolBarContainerPanel(this);
     QVBoxLayout* editToolBarContainerPanelLayout;
     editToolBarContainerPanel->setLayout(editToolBarContainerPanelLayout = new QVBoxLayout());//editToolBarContainerPanel, BoxLayout.PAGE_AXIS));
 //    editToolBarContainerPanel->setWidget(editToolBarScrollPane);
@@ -295,13 +293,14 @@ LayoutEditor::~LayoutEditor()
      //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignBottom);
      borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::South);
      break;
+    default:
+     break;
     }
     borderLayout->addWidget(helpBarPanel, BorderLayout::South);
 
-     QWidget* borderWidget = new QWidget();
-     borderWidget->setLayout(borderLayout);
-     setCentralWidget(borderWidget);
-
+    QWidget* borderWidget = new QWidget();
+    borderWidget->setLayout(borderLayout);
+    setCentralWidget(borderWidget);
 }
 
 /*private*/ void LayoutEditor::createfloatingEditToolBoxFrame()
@@ -716,24 +715,12 @@ _contents = new QVector<Positionable*>();
  _turnoutSelection = nullptr;
 
 
- connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(OnScenePos(QGraphicsSceneMouseEvent*)));
+ connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(on_scenePos(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)),this, SLOT(mouseClicked(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)), this, SLOT(mouseReleased(QGraphicsSceneMouseEvent*)));
  // connect(editScene,SIGNAL(sceneDragMove(QGraphicsSceneDragDropEvent*)),this, SLOT(mouseDragged(QGraphicsSceneDragDropEvent*)));
  connect(editScene, SIGNAL(sceneMousePress(QGraphicsSceneMouseEvent*)), this, SLOT(mousePressed(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(mouseMoved(QGraphicsSceneMouseEvent*)));
-// connect(trackColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTrackColorSelected(QAction*)));
-// connect(textColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(OnDefaultTextColorSelected(QAction*)));
-// connect(backgroundColorActGrp, SIGNAL(triggered(QAction*)), this, SLOT(on_colorBackgroundMenuItemSelected(QAction*)));
-// connect(ui->actionBoth_scrollbars, SIGNAL(triggered(bool)), this, SLOT(onActionBoth_scrollbars()));
-// connect(ui->actionNo_scrollbars, SIGNAL(triggered(bool)), this, SLOT(onActionNo_scrollbars()));
-// connect(ui->actionHorizontal_only, SIGNAL(triggered(bool)), this, SLOT(onActionHorizontal_scrollbars()));
-// connect(ui->actionVertical_only, SIGNAL(triggered(bool)), this, SLOT(onActionVertical_scrollbars()));
-// connect(ui->actionCalculate_bounds, SIGNAL(triggered(bool)), this, SLOT(onCalculateBounds()));
-// connect(ui->actionZoom_Out, SIGNAL(triggered(bool)), this, SLOT(onZoomOut()));
-// connect(ui->actionZoom_In, SIGNAL(triggered(bool)), this, SLOT(onZoomIn()));
-// connect(ui->actionZoom_to_fit, SIGNAL(triggered(bool)), this, SLOT(zoomToFit()));
-
 
  sensorIconEditor = new MultiIconEditor(4);
  sensorIconEditor->setIcon(0, "Active:",":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
@@ -878,14 +865,14 @@ _contents = new QVector<Positionable*>();
      log->debug(tr("%1.toolBarSide is %2").arg(windowFrameRef).arg(prefsProp.toString()));
      if (prefsProp != QVariant()) {
          QString newToolBarSide = prefsProp.toString();
-         setToolBarSide(newToolBarSide);
+         on_setToolBarSide(newToolBarSide);
      }
 
      //Note: since prefs default to false and we want wide to be the default
      //we invert it and save it as thin
      bool prefsToolBarIsWide = prefsMgr->getSimplePreferenceState(windowFrameRef + ".toolBarThin");
      log->debug(tr("%1.toolBarThin is %2").arg(windowFrameRef).arg(prefsProp.toString()));
-     setToolBarWide(prefsToolBarIsWide);
+     on_setToolBarWide(prefsToolBarIsWide);
 
      bool prefsShowHelpBar = prefsMgr->getSimplePreferenceState(windowFrameRef + ".showHelpBar");
      //log.debug("{}.showHelpBar is {}", windowFrameRef, prefsShowHelpBar);
@@ -917,7 +904,7 @@ _contents = new QVector<Positionable*>();
 #endif
 } // init
 
- void LayoutEditor::onLayoutTrackDrawingOptionsDialog()
+ void LayoutEditor::on_layoutTrackDrawingOptionsDialog()
  {
   LayoutTrackDrawingOptionsDialog* ltdod
           = new LayoutTrackDrawingOptionsDialog(
@@ -931,13 +918,13 @@ _contents = new QVector<Positionable*>();
  Editor::resize(w, h);
 }
 
-void LayoutEditor::On_turnoutCirclesOnItem_triggered(bool)
+void LayoutEditor::on_turnoutCirclesOnItem_triggered(bool)
 {
  turnoutCirclesWithoutEditMode = turnoutCirclesOnItem->isChecked();
  repaint();
 }
 
-void LayoutEditor::On_turnoutDrawUnselectedLegItem_triggered(bool)
+void LayoutEditor::on_turnoutDrawUnselectedLegItem_triggered(bool)
 {
  turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegItem->isChecked();
  repaint();
@@ -962,15 +949,15 @@ void LayoutEditor::on_hideTrackSegmentConstructionLines_toggled(bool /*b*/)
   repaint();
 }
 
-void LayoutEditor::on_useDirectTurnoutControlItem_triggered(bool)
-{
- useDirectTurnoutControl = false;
+//void LayoutEditor::on_useDirectTurnoutControlItem_triggered(bool)
+//{
+// useDirectTurnoutControl = false;
 
- if (useDirectTurnoutControlItem->isChecked()) {
-     useDirectTurnoutControl = true;
- }
+// if (useDirectTurnoutControlItem->isChecked()) {
+//     useDirectTurnoutControl = true;
+// }
 
-}
+//}
 void LayoutEditor::addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color)
 {
 //        ActionListener a = new ActionListener() {
@@ -1001,13 +988,13 @@ void LayoutEditor::addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString
  turnoutCircleColorCount++;
 }
 
-void LayoutEditor::On_turnoutCircleColorButtonMapper_triggered(int i)
-{
- turnoutCircleColor = /*desiredColor*/turnoutCircleColors->at(i);
- setDirty(true);
- repaint();
+//void LayoutEditor::on_turnoutCircleColorButtonMapper_triggered(int i)
+//{
+// turnoutCircleColor = /*desiredColor*/turnoutCircleColors->at(i);
+// setDirty(true);
+// repaint();
 
-}
+//}
 
 void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size)
 {
@@ -1041,16 +1028,16 @@ void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString 
 // turnoutCircleSizeCount++;
 }
 
-void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
-{
- int desiredSize = size;//act->data().toInt();
- if (turnoutCircleSize != desiredSize)
- {
-  turnoutCircleSize = desiredSize;
-  setDirty(true);
-  repaint();
- }
-}
+//void LayoutEditor::on_turnoutCircleSizeButtonMapper_triggered(int size)
+//{
+// int desiredSize = size;//act->data().toInt();
+// if (turnoutCircleSize != desiredSize)
+// {
+//  turnoutCircleSize = desiredSize;
+//  setDirty(true);
+//  repaint();
+// }
+//}
 
 /*protected*/ void  LayoutEditor::targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* /*e*/)
 {
@@ -1104,7 +1091,7 @@ void LayoutEditor::On_turnoutCircleSizeButtonMapper_triggered(int size)
     inComboBox->setCurrentIndex(-1);
 }
 
-void LayoutEditor::OnScenePos(QGraphicsSceneMouseEvent* e)
+void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
 {
  calcLocation(e->scenePos(), 0,0);
  leToolBarPanel->xLabel->setText(QString("%1").arg(xLoc));
@@ -3049,7 +3036,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 // zoomInItem.addActionListener((ActionEvent event) -> {
 //     zoomIn();
 // });
- connect(zoomInItem, SIGNAL(triggered(bool)), this, SLOT(zoomIn()));
+ connect(zoomInItem, SIGNAL(triggered(bool)), this, SLOT(on_zoomIn()));
 
  QAction* zoomOutItem = new QAction(tr("Zoom Out"));
 // zoomOutItem.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("zoomOutMnemonic")));
@@ -3060,14 +3047,14 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 // zoomOutItem.addActionListener((ActionEvent event) -> {
 //     zoomOut();
 // });
- connect(zoomOutItem, SIGNAL(triggered(bool)), this, SLOT(zoomOut()));
+ connect(zoomOutItem, SIGNAL(triggered(bool)), this, SLOT(on_zoomOut()));
 
  QAction* zoomFitItem = new QAction(tr("Zoom To Fit"));
  zoomMenu->addAction(zoomFitItem);
 // zoomFitItem.addActionListener((ActionEvent event) -> {
 //     zoomToFit();
 // });
- connect(zoomFitItem, SIGNAL(triggered(bool)), this, SLOT(zoomToFit()));
+ connect(zoomFitItem, SIGNAL(triggered(bool)), this, SLOT(on_zoomToFit()));
  zoomMenu->addSeparator();
 
  zoomButtonGroup->setExclusive(true);
@@ -3080,7 +3067,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //         setZoom(0.25);
 //     }
 // });
- connect(zoom025Item, SIGNAL(triggered(bool)), this, SLOT(onZoom025Item()));
+ connect(zoom025Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom025Item()));
  zoomButtonGroup->addAction(zoom025Item);
  QAction* zoom05Item = new QAction("x 0.5", this);
  zoom05Item->setCheckable(true);
@@ -3090,7 +3077,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //         setZoom(0.5);
 //     }
 // });
- connect(zoom05Item, SIGNAL(triggered(bool)), this, SLOT(onZoom05Item()));
+ connect(zoom05Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom05Item()));
  zoomButtonGroup->addAction(zoom05Item);
  QAction* zoom075Item = new QAction("x 0.75", this);
  zoom075Item->setCheckable(true);
@@ -3100,7 +3087,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //         setZoom(0.75);
 //     }
 // });
- connect(zoom075Item, SIGNAL(triggered(bool)), this, SLOT(onZoom075Item()));
+ connect(zoom075Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom075Item()));
  zoomButtonGroup->addAction(zoom075Item);
  QAction* noZoomItem = new QAction(tr("No Zoom"), this);
  noZoomItem->setCheckable(true);
@@ -3110,7 +3097,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //         setZoom(1.0);
 //     }
 // });
- connect(noZoomItem, SIGNAL(triggered(bool)), this, SLOT(onNoZoomItem()));
+ connect(noZoomItem, SIGNAL(triggered(bool)), this, SLOT(on_NoZoomItem()));
  zoomButtonGroup->addAction(noZoomItem);
  QAction* zoom15Item = new QAction("x 1.5", this);
  zoom15Item->setCheckable(true);
@@ -3130,7 +3117,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //         setZoom(2.0);
 //     }
 // });
- connect(zoom20Item, SIGNAL(triggered(bool)), this, SLOT(onZoom20Item()));
+ connect(zoom20Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom20Item()));
  zoomButtonGroup->addAction(zoom20Item);
  QAction* zoom30Item = new QAction("x 3.0", this);
  zoomMenu->addAction(zoom30Item);
@@ -3139,7 +3126,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //         setZoom(3.0);
 //     }
 // });
- connect(zoom30Item, SIGNAL(triggered(bool)), this, SLOT(onZoom30Item()));
+ connect(zoom30Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom30Item()));
  zoomButtonGroup->addAction(zoom30Item);
  QAction* zoom40Item = new QAction("x 4.0", this);
  zoomMenu->addAction(zoom40Item);
@@ -3148,41 +3135,41 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //         setZoom(4.0);
 //     }
 // });
- connect(zoom40Item, SIGNAL(triggered(bool)), this, SLOT(onZoom40Item()));
+ connect(zoom40Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom40Item()));
  zoomButtonGroup->addAction(zoom40Item);
  noZoomItem->setChecked(true);
 }
 
-void LayoutEditor::onZoom025Item()
+void LayoutEditor::on_Zoom025Item()
 {
  setZoom(0.25);
 }
-void LayoutEditor::onZoom05Item()
+void LayoutEditor::on_Zoom05Item()
 {
  setZoom(0.5);
 }
-void LayoutEditor::onZoom075Item()
+void LayoutEditor::on_Zoom075Item()
 {
  setZoom(0.75);
 }
-void LayoutEditor::onNoZoomItem()
+void LayoutEditor::on_NoZoomItem()
 {
  setZoom(1.0);
 }
 
-void LayoutEditor::onZoom15Item()
+void LayoutEditor::on_Zoom15Item()
 {
  setZoom(1.5);
 }
-void LayoutEditor::onZoom30Item()
+void LayoutEditor::on_Zoom30Item()
 {
  setZoom(3.0);
 }
-void LayoutEditor::onZoom40Item()
+void LayoutEditor::on_Zoom40Item()
 {
  setZoom(4.0);
 }
-void LayoutEditor::onZoom20Item()
+void LayoutEditor::on_Zoom20Item()
 {
  setZoom(2.0);
 }
@@ -3212,30 +3199,30 @@ void LayoutEditor::onZoom20Item()
     return getPaintScale();
 }
 
-/*private*/ double LayoutEditor::zoomIn() {
+/*private*/ double LayoutEditor::on_zoomIn() {
     return setZoom(getZoom() * 1.1);
 }
 
-/*private*/ double LayoutEditor::zoomOut() {
+/*private*/ double LayoutEditor::on_zoomOut() {
     return setZoom(getZoom() / 1.1);
 }
 
-void LayoutEditor::onZoomIn()
-{
- //setPaintScale(getPaintScale()* 1.1);
- xScale = xScale*1.1;
- yScale = yScale*1.1;
- editPanel->scale(xScale, yScale);
+//void LayoutEditor::onZoomIn()
+//{
+// //setPaintScale(getPaintScale()* 1.1);
+// xScale = xScale*1.1;
+// yScale = yScale*1.1;
+// editPanel->scale(xScale, yScale);
 
-}
-void LayoutEditor::onZoomOut()
-{
- //setPaintScale(getPaintScale()/ 1.1);
- xScale = xScale/1.1;
- yScale = yScale/1.1;
- editPanel->scale(xScale, yScale);
+//}
+//void LayoutEditor::onZoomOut()
+//{
+// //setPaintScale(getPaintScale()/ 1.1);
+// xScale = xScale/1.1;
+// yScale = yScale/1.1;
+// editPanel->scale(xScale, yScale);
 
-}
+//}
 
 //
 // TODO: make this public? (might be useful!)
@@ -3245,12 +3232,12 @@ void LayoutEditor::onZoomOut()
  return editScene->sceneRect();
 }
 
-void LayoutEditor::onCalculateBounds()
-{
- QRectF bounds = calculateMinimumLayoutBounds();
- log->info(tr("calculated bounds = %1 %2 %3 %4").arg(bounds.x()).arg(bounds.y()).arg(bounds.width()).arg(bounds.height()));
- log->info(tr("scene bounds = %1 %2 %3 %4").arg(editScene->itemsBoundingRect().x()).arg(editScene->itemsBoundingRect().y()).arg(editScene->itemsBoundingRect().width()).arg(editScene->itemsBoundingRect().height()));
-}
+//void LayoutEditor::onCalculateBounds()
+//{
+// QRectF bounds = calculateMinimumLayoutBounds();
+// log->info(tr("calculated bounds = %1 %2 %3 %4").arg(bounds.x()).arg(bounds.y()).arg(bounds.width()).arg(bounds.height()));
+// log->info(tr("scene bounds = %1 %2 %3 %4").arg(editScene->itemsBoundingRect().x()).arg(editScene->itemsBoundingRect().y()).arg(editScene->itemsBoundingRect().width()).arg(editScene->itemsBoundingRect().height()));
+//}
 
 /**
  * resize panel bounds
@@ -3281,7 +3268,7 @@ void LayoutEditor::onCalculateBounds()
     return panelBounds;
 }
 
-/*private*/ double LayoutEditor::zoomToFit() {
+/*private*/ double LayoutEditor::on_zoomToFit() {
     QRectF layoutBounds = resizePanelBounds(true);
 
     // calculate the bounds for the scroll pane
@@ -4180,7 +4167,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 }
 /*public*/ double LayoutEditor::getXOverShort() {return xOverShort;}
 // reset turnout sizes to program defaults
-/*private*/ void LayoutEditor::resetTurnoutSize() {
+/*private*/ void LayoutEditor::on_resetTurnoutSize() {
   turnoutBX = turnoutBXDefault;
   turnoutCX = turnoutCXDefault;
   turnoutWid = turnoutWidDefault;
@@ -5997,9 +5984,33 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
      } else {
          deletefloatingEditToolBoxFrame();
      }
- } else {
-   if(editToolBarContainerPanel)
+  }
+  else {
+   if(editToolBarContainerPanel /*&& (editToolBarContainerPanel->isVisible())*/)
+   {
      editToolBarContainerPanel->setVisible(editable);
+//     if(editable)
+//     {
+//      switch (toolBarSide.getType()) {
+//      case eTOP:
+//       borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::North);
+//       break;
+//      case eBOTTOM:
+//       borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::South);
+//       break;
+//      case eLEFT:
+//       borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::West);
+//       break;
+//      case eRIGHT:
+//       borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::East);
+//       break;
+//      default:
+//       break;
+//      }
+//     }
+//     else
+//      borderLayout->removeWidget(editToolBarContainerPanel);
+   }
  }
  setShowHidden(editable);
 
@@ -6029,34 +6040,45 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 {
  setAllEditable(state);
 
-    //show/hide the help bar
-    if (toolBarSide.getType() == eFLOAT) {
-        if (floatEditHelpPanel != nullptr) {
-            floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
-        }
-    } else {
-     if(helpBarPanel)
-        helpBarPanel->setVisible(isEditable() && getShowHelpBar());
-    }
+ //show/hide the help bar
+ if (toolBarSide.getType() == eFLOAT) {
+     if (floatEditHelpPanel != nullptr) {
+         floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
+     }
+ }
+ else {
+  if(helpBarPanel)
+  {
+     //helpBarPanel->setVisible(isEditable() && getShowHelpBar());
+   bool visible = isEditable() && getShowHelpBar();
+  if(visible)
+  {
+   borderLayout->removeWidget(helpBarPanel);
+   borderLayout->addWidget(helpBarPanel, BorderLayout::South);
+  }
+  else
+   borderLayout->removeWidget(helpBarPanel);
+  }
+ }
 
-    if (isEditable()) {
-        setAllShowToolTip(tooltipsInEditMode);
+ if (isEditable()) {
+     setAllShowToolTip(tooltipsInEditMode);
 
-        //redo using the "Extra" color to highlight the selected block
-        if (highlightSelectedBlockFlag) {
-            if (!highlightBlockInComboBox(leToolBarPanel->blockIDComboBox)) {
-                highlightBlockInComboBox(leToolBarPanel->blockContentsComboBox);
-            }
-        }
-    } else {
-        setAllShowToolTip(tooltipsWithoutEditMode);
+     //redo using the "Extra" color to highlight the selected block
+     if (highlightSelectedBlockFlag) {
+         if (!highlightBlockInComboBox(leToolBarPanel->blockIDComboBox)) {
+             highlightBlockInComboBox(leToolBarPanel->blockContentsComboBox);
+         }
+     }
+ } else {
+     setAllShowToolTip(tooltipsWithoutEditMode);
 
-        //undo using the "Extra" color to highlight the selected block
-        if (highlightSelectedBlockFlag) {
-            highlightBlock(nullptr);
-        }
-    }
-    awaitingIconChange = false;
+     //undo using the "Extra" color to highlight the selected block
+     if (highlightSelectedBlockFlag) {
+         highlightBlock(nullptr);
+     }
+ }
+ awaitingIconChange = false;
 }
 
 /**
@@ -6065,7 +6087,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 *  each item on the target panel. This also controls the relevant pop-up menu items.
 * @param state true for controlling.
 */
-/*public*/ void LayoutEditor::setTurnoutAnimation(bool state) {
+/*public*/ void LayoutEditor::on_setTurnoutAnimation(bool state) {
   if (animationCheckBoxMenuItem->isChecked()!=state) animationCheckBoxMenuItem->setChecked(state);
   animatingLayout = state;
   //repaint();
@@ -6137,13 +6159,13 @@ void LayoutEditor::on_actionShow_grid_in_edit_mode_toggled(bool bChecked)
  drawPanelGrid(editScene);
  paintTargetPanel(editScene);
 }
-void LayoutEditor::on_actionEdit_mode_toggled(bool bState)
-{
- bIsEditable = bState;
- editModeCheckBoxMenuItem->setChecked(bState);
- drawPanelGrid(editScene);
- paintTargetPanel(editScene);
-}
+//void LayoutEditor::on_actionEdit_mode_toggled(bool bState)
+//{
+// bIsEditable = bState;
+// editModeCheckBoxMenuItem->setChecked(bState);
+// drawPanelGrid(editScene);
+// paintTargetPanel(editScene);
+//}
 
 double LayoutEditor::toDegrees(double radians)
 {
@@ -6673,6 +6695,7 @@ void LayoutEditor::on_actionEnable_antialiasing_smoother_lines_toggled(bool bChe
  antialiasingOn = bChecked;
  paintTargetPanel(editScene);
 }
+
 QGraphicsView* LayoutEditor::panel()
 {
  return editPanel;
@@ -7543,6 +7566,7 @@ void LayoutEditor::on_removeMenuAction_triggered()
  }
  removeSelections(comp);
 }
+
 /*protected*/ void LayoutEditor::removeSelections(Positionable* p)
 {
  PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
@@ -7580,20 +7604,20 @@ void LayoutEditor::on_removeMenuAction_triggered()
   }
   return nullptr;
 }
-void LayoutEditor::on_actionAdd_loco_triggered()
-{
- InputDialog* dlg = new InputDialog("Enter loco id", "0", nullptr, this);
- if(dlg->exec() == QDialog::Accepted)
- {
-  QString nameID= dlg->value();
-  if(!nameID.isNull())
-  {
-   LocoIcon* icon = addLocoIcon(nameID.trimmed());
-   icon->setLocation(200,100);
-  }
- }
- paintTargetPanel(editScene);
-}
+//void LayoutEditor::on_actionAdd_loco_triggered()
+//{
+// InputDialog* dlg = new InputDialog("Enter loco id", "0", nullptr, this);
+// if(dlg->exec() == QDialog::Accepted)
+// {
+//  QString nameID= dlg->value();
+//  if(!nameID.isNull())
+//  {
+//   LocoIcon* icon = addLocoIcon(nameID.trimmed());
+//   icon->setLocation(200,100);
+//  }
+// }
+// paintTargetPanel(editScene);
+//}
 /**
 * Add a loco marker to the target
 */
@@ -7738,9 +7762,10 @@ void LayoutEditor::on_actionAdd_loco_triggered()
 //            }
 //        }
 //    });
+    connect(act, SIGNAL(triggered(bool)), this, SLOT(on_NewTrain()));
 }
 
-void LayoutEditor::onNewTrain()
+void LayoutEditor::on_NewTrain()
 {
  if (static_cast<TransitManager*>(InstanceManager::getDefault("TransitManager"))->getNamedBeanSet().size() <= 0) {
      //Inform the user that there are no Transits available, and don't open the window
@@ -7756,11 +7781,12 @@ void LayoutEditor::onNewTrain()
      }
  }
 }
+
 /*public*/ bool LayoutEditor::isIncludedTurnoutSkipped() {
     return includedTurnoutSkipped;
 }
 
-/*public*/ void LayoutEditor::setIncludedTurnoutSkipped(bool boo) {
+/*public*/ void LayoutEditor::on_setIncludedTurnoutSkipped(bool boo) {
     includedTurnoutSkipped = boo;
 }
 
@@ -7808,10 +7834,10 @@ void LayoutEditor::onNewTrain()
     }
 }
 
-void LayoutEditor::on_actionRemove_markers_triggered()
-{
- removeMarkers();
-}
+//void LayoutEditor::on_actionRemove_markers_triggered()
+//{
+// removeMarkers();
+//}
 void LayoutEditor::on_actionAdd_Turntable_triggered()
 {
  addTurntable(windowCenter());
@@ -7904,24 +7930,24 @@ void LayoutEditor::addIcon() {
   l->updateSize();
 }
 
-void LayoutEditor::on_actionAllow_turnout_animation_toggled(bool bChecked)
-{
- animatingLayout = bChecked;
- animationCheckBoxMenuItem->setChecked(bChecked);
-}
+//void LayoutEditor::on_actionAllow_turnout_animation_toggled(bool bChecked)
+//{
+// animatingLayout = bChecked;
+// animationCheckBoxMenuItem->setChecked(bChecked);
+//}
 /**
  *  Control whether panel items are positionable.
  *  Markers are always positionable.
  * @param state true for positionable.
  */
-void LayoutEditor::on_actionAllow_repositioning_toggled(bool bChecked)
-{
- setAllPositionable(bChecked);
- for (int i = 0; i<markerImage->size(); i++)
- {
-  ((PositionableLabel*)markerImage->at(i))->setPositionable(true);
- }
-}
+//void LayoutEditor::on_actionAllow_repositioning_toggled(bool bChecked)
+//{
+// setAllPositionable(bChecked);
+// for (int i = 0; i<markerImage->size(); i++)
+// {
+//  ((PositionableLabel*)markerImage->at(i))->setPositionable(true);
+// }
+//}
 void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
 {
  setAllControlling(bChecked);
@@ -8261,12 +8287,12 @@ switch(QMessageBox::question(this,tr("Warning"),tr("Are you sure that you want t
  }
  return(false);
 }
-void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
-{
- turnoutCirclesWithoutEditMode = bState;
- turnoutCirclesOnCheckBoxMenuItem->setChecked(bState);
- paintTargetPanel(editScene);
-}
+//void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
+//{
+// turnoutCirclesWithoutEditMode = bState;
+// turnoutCirclesOnCheckBoxMenuItem->setChecked(bState);
+// paintTargetPanel(editScene);
+//}
 /**
 * Add a checkbox to set visibility of the Positionable item
 */
@@ -8316,15 +8342,15 @@ void LayoutEditor::on_actionHidden_toggled(bool bState)
   }
  }
 }
-void LayoutEditor::on_actionEdit_track_width_triggered()
-{
- SetTrackWidthDlg dlg(sidelineTrackWidth, mainlineTrackWidth, this);
- if(dlg.exec() == QDialog::Accepted)
- {
-  sidelineTrackWidth = dlg.sidetrackWidth();
-  mainlineTrackWidth = dlg.mainlineTrackWidth();
- }
-}
+//void LayoutEditor::on_actionEdit_track_width_triggered()
+//{
+// SetTrackWidthDlg dlg(sidelineTrackWidth, mainlineTrackWidth, this);
+// if(dlg.exec() == QDialog::Accepted)
+// {
+//  sidelineTrackWidth = dlg.sidetrackWidth();
+//  mainlineTrackWidth = dlg.mainlineTrackWidth();
+// }
+//}
 
 ///*protected*/ void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color)
 //{
@@ -8622,20 +8648,20 @@ void LayoutEditor::addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*
     }
 }   //setOptionMenuBackgroundColor
 
-void LayoutEditor::on_colorBackgroundMenuItemSelected()
-{
-// QColor color = backgroundColors->at(i);
-// editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
- QColor desiredColor = JmriColorChooser::showDialog(this,
-         tr("Set Background Color", ""),
-         defaultBackgroundColor);
- if (desiredColor.isValid() && defaultBackgroundColor!=(desiredColor)) {
-     defaultBackgroundColor = desiredColor;
-     setBackgroundColor(desiredColor);
-     setDirty();
-     redrawPanel();
- }
-}
+//void LayoutEditor::on_colorBackgroundMenuItemSelected()
+//{
+//// QColor color = backgroundColors->at(i);
+//// editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
+// QColor desiredColor = JmriColorChooser::showDialog(this,
+//         tr("Set Background Color", ""),
+//         defaultBackgroundColor);
+// if (desiredColor.isValid() && defaultBackgroundColor!=(desiredColor)) {
+//     defaultBackgroundColor = desiredColor;
+//     setBackgroundColor(desiredColor);
+//     setDirty();
+//     redrawPanel();
+// }
+//}
 
 void LayoutEditor::on_actionAdd_reporter_label_triggered()
 {
@@ -8729,20 +8755,20 @@ void LayoutEditor::on_newSensor(QString name, int x, int y)
 //  leToolBarPanel->actionSave->setEnabled(true);
 //}
 
-void LayoutEditor::on_actionSave_triggered()
-{
- if(layoutFile.isEmpty())
- {
-  //on_actionSave_as_triggered();
-  savePanels->actionPerformed();
- }
- setCursor(Qt::WaitCursor);
- makeBackupFile(layoutFile);
+//void LayoutEditor::on_actionSave_triggered()
+//{
+// if(layoutFile.isEmpty())
+// {
+//  //on_actionSave_as_triggered();
+//  savePanels->actionPerformed();
+// }
+// setCursor(Qt::WaitCursor);
+// makeBackupFile(layoutFile);
 
- savePanels->saveFile(layoutFile);
+// savePanels->saveFile(layoutFile);
 
- setCursor(Qt::ArrowCursor);
-}
+// setCursor(Qt::ArrowCursor);
+//}
 
 void LayoutEditor::on_actionSnap_to_grid_when_adding_toggled(bool bState)
 {
@@ -8754,17 +8780,17 @@ void LayoutEditor::on_actionSnap_to_grid_when_moving_toggled(bool bState)
  snapToGridOnMove = bState;
  snapToGridOnMoveCheckBoxMenuItem->setChecked(bState);
 }
-void LayoutEditor::OnZoom_selected(QAction *act)
-{
- double scale = act->data().toDouble();
- if(scale == xScale)
-  return;
- if(xScale > 1.0)
-  editPanel->scale(1.0/xScale, 1.0/yScale);
+//void LayoutEditor::OnZoom_selected(QAction *act)
+//{
+// double scale = act->data().toDouble();
+// if(scale == xScale)
+//  return;
+// if(xScale > 1.0)
+//  editPanel->scale(1.0/xScale, 1.0/yScale);
 
- editPanel->scale(scale, scale);
- xScale = yScale = scale;
-}
+// editPanel->scale(scale, scale);
+// xScale = yScale = scale;
+//}
 void LayoutEditor::setScale(double scaleX, double scaleY)
 {
 #if 0
@@ -8806,13 +8832,13 @@ painter.end();
 QIcon icon =  QIcon(QPixmap::fromImage(resultImage));
 return icon;
 }
-void LayoutEditor::OnDefaultTrackColorSelected(QAction *act)
-{
- QColor c = act->data().value<QColor>();
- Q_ASSERT(c.isValid());
+//void LayoutEditor::OnDefaultTrackColorSelected(QAction *act)
+//{
+// QColor c = act->data().value<QColor>();
+// Q_ASSERT(c.isValid());
 
- defaultTrackColor = c;
-}
+// defaultTrackColor = c;
+//}
 
 void LayoutEditor::setDefaultTextColor(QString color)
 {
@@ -8832,7 +8858,7 @@ void LayoutEditor::setDefaultTextColor(QString color)
         defaultBackgroundColor = ColorUtil::stringToColor(color);
         setOptionMenuBackgroundColor();
     }
-void LayoutEditor::OnDefaultTextColorSelected(/*int i*/)
+void LayoutEditor::on_defaultTextColorSelected(/*int i*/)
 {
 // QColor c = textColors->at(i);
 // defaultTextColor = c;
@@ -8899,24 +8925,24 @@ QColor LayoutEditor::getBackgroundColor()
   return QColor(Qt::white);
  return b.color();
 }
-void LayoutEditor::on_actionDelete_this_panel_triggered()
-{
- editScene->clear();
- _contents->clear();
- //turnoutList->clear();
- layoutTrackList->clear();
- //pointList->clear();
- //xingList->clear();
- //slipList->clear();
- //turntableList->clear();
- highlightRect = nullptr;
- panelGridGroup = nullptr;
-// leToolBarPanel->actionLoad_Other_XML->setEnabled(true);
-// leToolBarPanel->actionLoad_XML->setEnabled(true);
-// ui->actionSave->setEnabled(false);
-// ui->actionSave_as->setEnabled(false);
-// ?? InstanceManager::setLayoutBlockManager(new LayoutBlockManager());
-}
+//void LayoutEditor::on_actionDelete_this_panel_triggered()
+//{
+// editScene->clear();
+// _contents->clear();
+// //turnoutList->clear();
+// layoutTrackList->clear();
+// //pointList->clear();
+// //xingList->clear();
+// //slipList->clear();
+// //turntableList->clear();
+// highlightRect = nullptr;
+// panelGridGroup = nullptr;
+//// leToolBarPanel->actionLoad_Other_XML->setEnabled(true);
+//// leToolBarPanel->actionLoad_XML->setEnabled(true);
+//// ui->actionSave->setEnabled(false);
+//// ui->actionSave_as->setEnabled(false);
+//// ?? InstanceManager::setLayoutBlockManager(new LayoutBlockManager());
+//}
 
 void LayoutEditor::on_deletePanel()
 {
@@ -8957,15 +8983,15 @@ void LayoutEditor::on_deletePanel()
  return _newIcon;
 }
 
-void LayoutEditor::on_actionAdd_loco_from_roster_triggered()
-{
- locoMarkerFromRoster();
-}
+//void LayoutEditor::on_actionAdd_loco_from_roster_triggered()
+//{
+// locoMarkerFromRoster();
+//}
 
- void LayoutEditor::on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool bState)
- {
-  skipIncludedTurnout = bState;
- }
+// void LayoutEditor::on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool bState)
+// {
+//  skipIncludedTurnout = bState;
+// }
 
  void LayoutEditor::on_actionSet_Signals_at_Block_Boundary_triggered()
  {
@@ -9258,21 +9284,21 @@ void LayoutEditor::startMultiSensor() {
  //multiSensorFrame = nullptr;
 }
 
-void LayoutEditor::onChangeIconsButton()
-{
- if (leToolBarPanel->sensorButton->isChecked()) {
-     sensorFrame->setVisible(true);
- } else if (leToolBarPanel->signalButton->isChecked()) {
-     signalFrame->setVisible(true);
- } else if (leToolBarPanel->iconLabelButton->isChecked()) {
-     iconFrame->setVisible(true);
- } else {
-     //explain to the user why nothing happens
-     JOptionPane::showMessageDialog(nullptr, tr("This only works when a Sensor, Signal Head or\nLabel is selected to the right of this button."),
-             tr("Change Icons"), JOptionPane::INFORMATION_MESSAGE);
- }
+//void LayoutEditor::onChangeIconsButton()
+//{
+// if (leToolBarPanel->sensorButton->isChecked()) {
+//     sensorFrame->setVisible(true);
+// } else if (leToolBarPanel->signalButton->isChecked()) {
+//     signalFrame->setVisible(true);
+// } else if (leToolBarPanel->iconLabelButton->isChecked()) {
+//     iconFrame->setVisible(true);
+// } else {
+//     //explain to the user why nothing happens
+//     JOptionPane::showMessageDialog(nullptr, tr("This only works when a Sensor, Signal Head or\nLabel is selected to the right of this button."),
+//             tr("Change Icons"), JOptionPane::INFORMATION_MESSAGE);
+// }
 
-}
+//}
 void LayoutEditor::closeEvent(QCloseEvent *)
 {
  bool save = (isDirty() || (savedEditMode!=isEditable()) || (savedPositionable!=allPositionable()) || (savedControlLayout!=allControlling()) ||	(savedAnimatingLayout!=animatingLayout) ||	 (savedShowHelpBar!=showHelpBar) );
@@ -9825,7 +9851,7 @@ void LayoutEditor::undoMoveSelection() {
  setDirty(true);
 }
 
-/*public*/ void LayoutEditor::setDirectTurnoutControl(bool boo) {
+/*public*/ void LayoutEditor::on_setDirectTurnoutControl(bool boo) {
     useDirectTurnoutControl = boo;
 // TODO:     useDirectTurnoutControlItem->setChecked(useDirectTurnoutControl);
 
@@ -10002,8 +10028,13 @@ void LayoutEditor::undoMoveSelection() {
       }
   } else {
       if (helpBarPanel != nullptr) {
-          helpBarPanel->setVisible(isEditable() && showHelpBar);
-
+       helpBarPanel->setVisible(isEditable() && showHelpBar);
+       bool visible = isEditable() && getShowHelpBar();
+      if(visible)
+       borderLayout->addWidget(helpBarPanel, BorderLayout::South);
+      else
+       borderLayout->removeWidget(helpBarPanel);
+       adjustSize();
       }
   }
   UserPreferencesManager* prefsMgr=
@@ -11176,7 +11207,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     toolBarSideGroup->addAction(toolBarSideRightButton);
     toolBarSideGroup->addAction(toolBarSideFloatButton);
     toolBarMenu->addMenu(toolBarSideMenu);
-    connect(toolBarSideGroup, SIGNAL(triggered(QAction*)), this, SLOT(setToolBarSide(QAction*)));
+    connect(toolBarSideGroup, SIGNAL(triggered(QAction*)), this, SLOT(on_setToolBarSide(QAction*)));
     //
     //toolbar wide menu
     //
@@ -11187,7 +11218,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //    });
     wideToolBarCheckBoxMenuItem->setChecked(leToolBarPanel->toolBarIsWide);
     wideToolBarCheckBoxMenuItem->setEnabled((toolBarSide.getType() == eTOP) || (toolBarSide.getType() == eBOTTOM));
-    connect(wideToolBarCheckBoxMenuItem, SIGNAL(toggled(bool)), this, SLOT(setToolBarWide(bool)));
+    connect(wideToolBarCheckBoxMenuItem, SIGNAL(toggled(bool)), this, SLOT(on_setToolBarWide(bool)));
 #if 0
     //
     //create setup font size menu items
@@ -11387,7 +11418,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        tooltipsWithoutEditMode = false;
 //        setAllShowToolTip(false);
 //    });
-    connect(tooltipNoneMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTooltipNoneMenuItem()));
+    connect(tooltipNoneMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TooltipNoneMenuItem()));
     tooltipAlwaysMenuItem = new QAction(tr("Tooltips Always"),this);
     tooltipAlwaysMenuItem->setCheckable(true);
     tooltipGroup->addAction(tooltipAlwaysMenuItem);
@@ -11398,7 +11429,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        tooltipsWithoutEditMode = true;
 //        setAllShowToolTip(true);
 //    });
-    connect(tooltipAlwaysMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTooltipAlwaysMenuItem()));
+    connect(tooltipAlwaysMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TooltipAlwaysMenuItem()));
     tooltipInEditMenuItem = new QAction(tr("In Edit Mode only"),this);
     tooltipInEditMenuItem->setCheckable(true);
     tooltipGroup->addAction(tooltipInEditMenuItem);
@@ -11409,7 +11440,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        tooltipsWithoutEditMode = false;
 //        setAllShowToolTip(isEditable());
 //    });
-    connect(tooltipInEditMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTooltipInEditMenuItem()));
+    connect(tooltipInEditMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TooltipInEditMenuItem()));
     tooltipNotInEditMenuItem = new QAction(tr("Not in Edit Mode only"), this);
     tooltipNotInEditMenuItem->setCheckable(true);
     tooltipGroup->addAction(tooltipNotInEditMenuItem);
@@ -11420,7 +11451,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        tooltipsWithoutEditMode = true;
 //        setAllShowToolTip(!isEditable());
 //    });
-    connect(tooltipNotInEditMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTooltipNotInEditMenuItem()));
+    connect(tooltipNotInEditMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TooltipNotInEditMenuItem()));
 
     //
     // show edit help
@@ -11469,7 +11500,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //    useDirectTurnoutControlCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
 //        setDirectTurnoutControl(useDirectTurnoutControlCheckBoxMenuItem.isSelected());
 //    });
-    connect(useDirectTurnoutControlCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setDirectTurnoutControl(bool)));
+    connect(useDirectTurnoutControlCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_setDirectTurnoutControl(bool)));
     useDirectTurnoutControlCheckBoxMenuItem->setChecked(useDirectTurnoutControl);
 
     //
@@ -11574,7 +11605,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //            redrawPanel();
 //        }
 //    });
-    connect(textColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(OnDefaultTextColorSelected()));
+    connect(textColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_defaultTextColorSelected()));
 //    QMenu* textColorMenu = new QMenu(tr("Default Text Color"));
 //    textColorButtonGroup = new QActionGroup(this);
 //    textColorButtonMapper = new QSignalMapper();
@@ -11735,7 +11766,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //                        this, true, getLayoutTrackDrawingOptions());
 //        ltdod.setVisible(true);
 //    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onLayoutTrackDrawingOptionsDialog()));
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_layoutTrackDrawingOptionsDialog()));
     //set track width menu item
     // Note: Now set via LayoutTrackDrawingOptionsDialog (above)
     //TODO: Dead code strip this
@@ -11888,7 +11919,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        boolean mode = animationCheckBoxMenuItem.isSelected();
 //        setTurnoutAnimation(mode);
 //    });
-    connect(animationCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setTurnoutAnimation(bool)));
+    connect(animationCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_setTurnoutAnimation(bool)));
     animationCheckBoxMenuItem->setChecked(true);
 
     //circle on Turnouts
@@ -11899,7 +11930,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        turnoutCirclesWithoutEditMode = turnoutCirclesOnCheckBoxMenuItem.isSelected();
 //        redrawPanel();
 //    });
-    connect(turnoutCirclesOnCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutCirclesOnItem_triggered(bool)));
+    connect(turnoutCirclesOnCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutCirclesOnItem_triggered(bool)));
     turnoutCirclesOnCheckBoxMenuItem->setChecked(turnoutCirclesWithoutEditMode);
 
     //select turnout circle color
@@ -11915,7 +11946,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //            redrawPanel();
 //        }
 //    });
-    connect(turnoutCircleColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(onTurnoutCircleColorMenuItem()));
+    connect(turnoutCircleColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TurnoutCircleColorMenuItem()));
     turnoutOptionsMenu->addAction(turnoutCircleColorMenuItem);
 
     //select turnout circle size
@@ -11944,13 +11975,13 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //        turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegCheckBoxMenuItem.isSelected();
 //        redrawPanel();
 //    });
-    connect(turnoutDrawUnselectedLegCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(On_turnoutDrawUnselectedLegItem_triggered(bool)));
+    connect(turnoutDrawUnselectedLegCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutDrawUnselectedLegItem_triggered(bool)));
     turnoutDrawUnselectedLegCheckBoxMenuItem->setChecked(turnoutDrawUnselectedLeg);
 
     return optionMenu;
 }
 #endif
-void LayoutEditor::onTurnoutCircleColorMenuItem()
+void LayoutEditor::on_TurnoutCircleColorMenuItem()
 {
  QColor desiredColor = JmriColorChooser::showDialog(this,
          tr("Turnout Circle Color"),
@@ -11962,26 +11993,26 @@ void LayoutEditor::onTurnoutCircleColorMenuItem()
  }
 }
 
-void LayoutEditor::onTooltipNoneMenuItem()
+void LayoutEditor::on_TooltipNoneMenuItem()
 {
  tooltipsInEditMode = false;
  tooltipsWithoutEditMode = false;
  setAllShowToolTip(false);
 }
 
-void LayoutEditor::onTooltipAlwaysMenuItem()
+void LayoutEditor::on_TooltipAlwaysMenuItem()
 {
  tooltipsInEditMode = true;
  tooltipsWithoutEditMode = true;
  setAllShowToolTip(true);
 }
-void LayoutEditor::onTooltipInEditMenuItem()
+void LayoutEditor::on_TooltipInEditMenuItem()
 {
  tooltipsInEditMode = true;
  tooltipsWithoutEditMode = false;
  setAllShowToolTip(isEditable());
 }
-void LayoutEditor::onTooltipNotInEditMenuItem()
+void LayoutEditor::on_TooltipNotInEditMenuItem()
 {
  tooltipsInEditMode = false;
  tooltipsWithoutEditMode = true;
@@ -12083,7 +12114,7 @@ void LayoutEditor::on_locationItem()
 //        //undo previous move selection
 //        resetTurnoutSize();
 //    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(resetTurnoutSize()));
+    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_resetTurnoutSize()));
     toolsMenu->addSeparator();
 
     //skip turnout
@@ -12094,7 +12125,7 @@ void LayoutEditor::on_locationItem()
 //    skipTurnoutCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
 //        setIncludedTurnoutSkipped(skipTurnoutCheckBoxMenuItem.isSelected());
 //    });
-    connect(skipTurnoutCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setIncludedTurnoutSkipped(bool)));
+    connect(skipTurnoutCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_setIncludedTurnoutSkipped(bool)));
     skipTurnoutCheckBoxMenuItem->setChecked(isIncludedTurnoutSkipped());
 
     //set signals at turnout
@@ -12332,14 +12363,14 @@ void LayoutEditor::on_clearTrack()
 //
 //
 //
-/*private*/ void LayoutEditor::setToolBarSide(QAction* act)
+/*private*/ void LayoutEditor::on_setToolBarSide(QAction* act)
 {
  if(editToolBarContainerPanel)
    //removeDockWidget(editToolBarContainerPanel);
   editToolBarContainerPanel->layout()->removeWidget(editToolBarContainerPanel);
- setToolBarSide(act->text());
+ on_setToolBarSide(act->text());
 }
-/*private*/ void LayoutEditor::setToolBarSide(QString newToolBarSide)
+/*private*/ void LayoutEditor::on_setToolBarSide(QString newToolBarSide)
 {
  // null if edit toolbar is not setup yet...
  if (newToolBarSide !=(toolBarSide.getName()))
@@ -12368,7 +12399,7 @@ void LayoutEditor::on_clearTrack()
     if (floatEditHelpPanel != nullptr) {
         floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
     }
-   }
+  }
   else
   {
    if (floatingEditToolBoxFrame != nullptr)
@@ -12397,7 +12428,7 @@ void LayoutEditor::on_clearTrack()
 //
 //
 //
-/*private*/ void LayoutEditor::setToolBarWide(bool newToolBarIsWide)
+/*private*/ void LayoutEditor::on_setToolBarWide(bool newToolBarIsWide)
 {
  //null if edit toolbar not setup yet...
  if ((editModeCheckBoxMenuItem != nullptr) && (toolBarIsWide != newToolBarIsWide))
