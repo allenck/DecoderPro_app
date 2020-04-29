@@ -3070,6 +3070,7 @@ void TrackSegment::invalidate(EditScene *g2)
  item = invalidateItem(g2, item);
 }
 
+#if 0
 void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
 {
  invalidateItem(g2, hiddenItems);
@@ -3091,6 +3092,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
   editor->setTrackStrokeWidth(!editor->main);
  }
 }
+#endif
 //void TrackSegment::drawDashedTrack(LayoutEditor* editor, EditScene* g2, bool mainline)
 //{
 // QColor color;

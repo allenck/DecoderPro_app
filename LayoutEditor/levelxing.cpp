@@ -1679,6 +1679,7 @@ void LevelXing::invalidate(QGraphicsScene* g2)
  }
  rects = NULL;
 }
+#if 0
 void LevelXing::drawXings(LayoutEditor* editor, QGraphicsScene* g2)
 {
 // if(item != NULL)
@@ -1748,6 +1749,7 @@ void LevelXing::drawXings(LayoutEditor* editor, QGraphicsScene* g2)
   //g2->addItem(line);
   item->addToGroup(line);
 }
+#endif
 void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
 {
  QColor color;

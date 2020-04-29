@@ -65,7 +65,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -19488,11 +19487,6 @@ void PythonQtWrapper_LayoutEditor::setSnapOnAdd(LayoutEditor* theWrappedObject, 
 void PythonQtWrapper_LayoutEditor::setSnapOnMove(LayoutEditor* theWrappedObject, bool  state)
 {
   ( theWrappedObject->setSnapOnMove(state));
-}
-
-void PythonQtWrapper_LayoutEditor::setTrackStrokeWidth(LayoutEditor* theWrappedObject, bool  need)
-{
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setTrackStrokeWidth(need));
 }
 
 void PythonQtWrapper_LayoutEditor::setTurnoutBX(LayoutEditor* theWrappedObject, double  bx)

@@ -126,7 +126,7 @@ public:
     /*public*/ QVector<QString>* getBlockBoundaries();
 //    /*public*/ void removeSignalMastLogic(SignalMast* sm);
     void invalidate(QGraphicsScene* g2);
-    void drawXings(LayoutEditor* editor, QGraphicsScene* g2);
+//    void drawXings(LayoutEditor* editor, QGraphicsScene* g2);
     void drawXingRects(LayoutEditor* editor, QGraphicsScene* g2);
     /*public*/ void addSignalMastLogic(SignalMast* sm);
     /*public*/ void removeSignalMastLogic(SignalMast* sm);
@@ -246,8 +246,8 @@ void on_xingEditCancel_clicked();
  */
 /*protected*/ void editLevelXing(/*LevelXing* o*/);
 void on_removeAction_triggered();
-/*private*/ void drawXingAC(LayoutEditor* editor);
-/*private*/ void drawXingBD(LayoutEditor* editor);
+///*private*/ void drawXingAC(LayoutEditor* editor);
+///*private*/ void drawXingBD(LayoutEditor* editor);
 
 protected:
 /**

@@ -60,6 +60,12 @@ public:
  /*public*/ void setMainBlockLineDashPercentageX10(int val);
  /*public*/ int getMainBlockLineWidth();
  /*public*/ void setMainBlockLineWidth(int val);
+ /*public*/ QColor getBlockDefaultColor() ;
+ /*public*/ void setBlockDefaultColor(/*@Nonnull*/ QColor val);
+ /*public*/ QColor getBlockOccupiedColor();
+ /*public*/ void setBlockOccupiedColor(/*@Nonnull*/ QColor val);
+ /*public*/ QColor getBlockAlternativeColor();
+ /*public*/ void setBlockAlternativeColor(/*@Nonnull*/ QColor val);
  /*public*/ bool equalsAllButName(/*@Nonnull*/ LayoutTrackDrawingOptions* ltdo);
  /*public*/ bool equals(QObject* obj);
  /*public*/ int hashCode();
@@ -82,6 +88,11 @@ private:
  /*private*/ int mainTieWidth = 0;
  /*private*/ QColor mainTieColor;// = Color.BLACK;
  /*private*/ QColor mainBallastColor;// = Color.BLACK;
+ /*private*/ QColor blockDefaultColor = QColor(Qt::gray);
+ /*private*/ QColor blockOccupiedColor = QColor(Qt::red);
+ /*private*/ QColor blockAlternativeColor = QColor(Qt::gray);
+
+
  /*private*/ int mainBallastWidth = 0;   // defaults to zero (off)
  /*private*/ int sideBlockLineWidth = 2;
  /*private*/ int sideBlockLineDashPercentageX10 = 0;

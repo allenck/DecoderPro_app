@@ -30,11 +30,14 @@
 //#include "jmribeancombobox.h"
 #include <QPen>
 #include "borderlayout.h"
+#include "mathutil.h"
+#include "jtextfield.h"
 
 namespace Ui {
 class LayoutEditor;
 }
 
+class ToolBarSide;
 class EditToolBarContainerPanel;
 class NamedBeanComboBox;
 class LEBlockContentsIcon;
@@ -147,19 +150,8 @@ public:
     /*public*/ void addLayoutTurnout(int type);
     LayoutTurnout* addLayoutTurnout(QString name, int type, double rot, QPointF currentPoint);
     /*public*/ bool validatePhysicalTurnout(QString inTurnoutName, QWidget* openPane = 0);
-    // Lists of items that describe the Layout, and allow it to be drawn
-    //		Each of the items must be saved to disk over sessions
-    ///*public*/ QVector<LayoutTurnout*>* turnoutList;// = new QVector<LayoutTurnout>();  // LayoutTurnouts
-    /*public*/ QList<LayoutTrack*>* layoutTrackList;// = new QVector<TrackSegment>();  // TrackSegment list
-    ///*public*/ QVector<PositionablePoint*>* pointList;// = new QVector<PositionablePoint>();  // PositionablePoint list
     /*public*/ QVector<SensorIcon*>* sensorImage;// = new QVector<SensorIcon*>();  // sensor images
-
-    ///*public*/ QVector<LevelXing*>* xingList;// = new QVector<LevelXing>();  // LevelXing list
-    ///*public*/ QVector<LayoutSlip*>* slipList;// = new QVector<LayoutSlip>();  // Layout slip list
     /*public*/ QVector<LayoutTurntable*>* turntableList;// = new QVector<LayoutTurntable>(); // Turntable list
-
-   ///*public*/ PositionablePoint* findPositionablePointByName(QString name);
-    ///*public*/ PositionablePoint* findPositionablePointAtTrackSegments(TrackSegment* tr1, TrackSegment* tr2);
     /*public*/ TrackSegment* findTrackSegmentByName(QString name);
     /**
      * Return a layout block with the entered name, creating a new one if needed.
@@ -173,10 +165,6 @@ public:
     *   name in the block.  Else returns false, and does nothing to the block.
     */
     /*public*/ bool validateSensor(QString sensorName, LayoutBlock* blk, Component *openFrame);
-//    /*public*/ LevelXing* findLevelXingByName(QString name) ;
-//    /*public*/ LayoutSlip* findLayoutSlipByName(QString name);
-//    /*public*/ LayoutTurnout* findLayoutTurnoutByName(QString name);
-//    /*public*/ LayoutTurnout* findLayoutTurnoutByTurnoutName(QString name);
     /*public*/ QList <Positionable*> getContents();
     // accessor routines for turnout size parameters
     /*public*/ void setTurnoutBX(double bx);
@@ -249,9 +237,6 @@ public:
 //    /*public*/ bool allPositionable();
     /*public*/ bool allControlling() ;
     /*public*/ bool setShowAlignmentMenu(QMenu* popup);
-#if 0
-    /*public*/ QPointF getEndCoords(QObject* o, int type);
-#endif
     /*public*/ bool deletePanel();
 
     QGraphicsView* panel();
@@ -260,12 +245,9 @@ public:
     */
     void addLabel();
     void drawLabelImages(EditScene* g2);
-//    /*public*/ bool removeFromContents(Positionable* l);
     /*public*/ void putItem(Positionable *l);
-//    /*public*/ void super_putItem(Positionable* l);
     EditScene* getScene() {return editScene;}
     /*public*/ void putSensor(SensorIcon* l);
-    //void setDirty() { bDirty = true;}
     void redrawPanel() { paintTargetPanel(editScene);}
     /**
     * Display the X & Y coordinates of the Positionable item and provide a
@@ -346,7 +328,7 @@ public:
     void addSignalMast() ;
     /*public*/ void putSignalMast(SignalMastIcon* l) ;
     SignalMast* getSignalMast(QString name);
-    /*public*/ MultiIconEditor* signalIconEditor;// = nullptr;
+    /*public*/ MultiIconEditor* signalIconEditor = nullptr;
     /*public*/ ConnectivityUtil* getConnectivityUtil();
     /*public*/ LayoutEditorTools* getLETools();
     /*public*/ LayoutEditorAuxTools* getLEAuxTools();
@@ -379,8 +361,6 @@ public:
     /*public*/ void setXScale(double xSc) ;
     /*public*/ void setYScale(double ySc);
     /*public*/ void setTurnoutCircles(bool state);
-//    /*public*/ static QColor stringToColor(QString string);
-//    /*public*/ static QString colorToString(QColor color);
     /*public*/ void setSnapOnAdd(bool state);
     /*public*/ void setSnapOnMove(bool state);
     /*public*/ void setAntialiasingOn(bool state);
@@ -393,8 +373,6 @@ public:
     /*public*/ LayoutEditorFindItems* getFinder();
     void setDirty(bool b = true);
     /*public*/ void addTurntable(QPointF pt);
-//    /*public*/ QT_DEPRECATED LayoutTurntable* findLayoutTurntableByName(QString name);
-//    /*public*/ QMenu* setupTurnoutSubMenu();
     /*public*/ bool containsSignalHead(SignalHead* head) ;
     /*public*/ void removeSignalHead(SignalHead* head);
     /*public*/ QGraphicsEllipseItem* turnoutCircleAt(QPointF inPoint);
@@ -407,7 +385,6 @@ public:
     /*public*/ void setDefaultAlternativeTrackColor(QColor color);
     void setScale(double scaleX, double scaleY);
     /*public*/ QString getClassName();
-//    /*public*/ void setFilename(QString path);
     /*public*/ LayoutTrackDrawingOptions* getLayoutTrackDrawingOptions();
     /*public*/ void setLayoutTrackDrawingOptions(LayoutTrackDrawingOptions* ltdo);
     /*public*/ static void setupComboBox(/*@Nonnull*/ NamedBeanComboBox *inComboBox, bool inValidateMode, bool inEnable);
@@ -562,407 +539,64 @@ private:
  /*private*/ /*transient*/ QMenu* undoTranslateSelectionMenuItem;// = new JMenuItem(Bundle.getMessage("UndoTranslateSelection"));
  /*private*/ /*transient*/ QMenu* assignBlockToSelectionMenuItem;// = new JMenuItem(Bundle.getMessage("AssignBlockToSelectionTitle") + "...");
 
-
- QButtonGroup* buttonGroup;
- //QGraphicsView* editPanel;
- //EditScene* editScene;
- int xLoc, yLoc;
- /*private*/ /*transient*/ /*final*/ static Logger* log;
-
- QString layoutName;
- /*private*/ void calcLocation(QPointF pos, int dX, int dY);
- bool bIsEditable;
- QObject* selectedObject;
- QObject* prevSelectedObject;
- int selectedHitPointType;
- /*private*/ void createSelectionGroups();
- bool isDragging;
- // counts used to determine unique internal names
- /*private*/ int numAnchors = 0;
- /*private*/ int numEndBumpers = 0;
- /*private*/ int numEdgeConnectors= 0;
- /*private*/ int numTrackSegments = 0;
- /*private*/ int numLevelXings = 0;
- /*private*/ int numLayoutSlips = 0;
- /*private*/ int numLayoutTurnouts = 0;
- /*private*/ int numLayoutTurntables = 0;
- /*private*/ /*transient*/ int numShapes = 0;
- StoreXmlUserAction* savePanels;
- //bool bDirty;
- bool isDirty();
- void resetDirty();
- ///*private*/ QObject* beginObject;// = nullptr; // begin track segment connection object, NULL if none
- /*private*/ /*transient*/ QPointF currentLocation;// = new QPointF(0.0,0.0); // current location
- /*private*/ /*transient*/ QPointF foundLocation;// = new QPointF(0.0,0.0);  // location of found object
- /*private*/ void setLink(QObject* fromObject,int fromPointType, QObject* toObject,int toPointType);
- LayoutEditorAuxTools* auxTools;
- /*private*/ double xScale; //1.0;
- /*private*/ double yScale; //1.0;
- // selection variables
- /*private*/ QVector<Positionable*>* _positionableSelection;// = nullptr;
-
- /*private*/ QVector<LayoutTurnout*>* _turnoutSelection;// = nullptr; //new QVector<LayoutTurnout>();  // LayoutTurnouts
- /*private*/ QVector<LevelXing*>* _xingSelection; //new QVector<LevelXing>();  // LevelXing list
- /*private*/ QVector<LayoutSlip*>* _slipSelection;// = nullptr; //new QVector<LayoutSlip*>();  // LayoutSlip list
- /*private*/ QVector<LayoutTurntable*>* _turntableSelection;// = nullptr; //new ArrayList<LayoutTurntable>(); // Turntable list
- /*private*/ QVector<PositionablePoint*>* _pointSelection; //new QVector<PositionablePoint>();  // PositionablePoint list
- QVector<PositionableLabel*>* _labelSelection; //new QVector<PositionableLabel>();  // PositionableLabel list
-/*private*/ QList<LayoutTrack*> getLayoutTracksOfClass(QString type);
-
-  bool isDrawing = false;
-
- /*private*/ void clearSelectionGroups();
- QWidget* openFrame;
- // turnout size parameters - saved with panel
- /*private*/ double turnoutBX; //turnoutBXDefault;  // RH, LH, WYE
- /*private*/ double turnoutCX; //turnoutCXDefault;
- /*private*/ double turnoutWid; //turnoutWidDefault;
- /*private*/ double xOverLong; //xOverLongDefault;   // DOUBLE_XOVER, RH_XOVER, LH_XOVER
- /*private*/ double xOverHWid; //xOverHWidDefault;
- /*private*/ double xOverShort; //xOverShortDefault;
- // program default turnout size parameters
- /*private*/ double turnoutBXDefault;// = 20.0;  // RH, LH, WYE
- /*private*/ double turnoutCXDefault;// = 20.0;
- /*private*/ double turnoutWidDefault;// = 10.0;
- /*private*/ double xOverLongDefault;// = 30.0;   // DOUBLE_XOVER, RH_XOVER, LH_XOVER
- /*private*/ double xOverHWidDefault;// = 10.0;
- /*private*/ double xOverShortDefault;// = 10.0;
- /*private*/ QColor defaultTrackColor; //QColor::black();
- /*private*/ QColor defaultOccupiedTrackColor; //QColor.black;
- /*private*/ QColor defaultAlternativeTrackColor; //QColor.black;
- /*private*/ QColor defaultBackgroundColor; //QColor::lightGray;
- /*private*/ QColor defaultTextColor; //QColor.black;
-
- /*private*/ void drawXings(EditScene* g2);
-// /*private*/ void drawXingAC(EditScene* g2,LevelXing* x);
-// /*private*/ void drawXingBD(EditScene* g2,LevelXing* x);
-// /*private*/ void drawTurnoutCircles(EditScene* g2);
-// /*private*/ void drawSlipCircles(EditScene* g2);
-// /*private*/ void drawTurnoutRects(EditScene* g2);
-// /*private*/ void drawXingRects(EditScene* g2);
- ///*private*/ void drawSelectionRect(EditScene* editScene);
-// /*private*/ void drawPoints(EditScene* g2);
-// /*private*/ void drawSlips(QGraphicsScene* g2);
-// /*private*/ void drawTurntables(EditScene* g2);
-// /*private*/ void drawMemoryRects(EditScene* editScene);
-
- /*protected*/ void draw(EditScene* g2);
- /*private*/ void drawLayoutTracksHidden(EditScene* g2);
- /*private*/ void drawTrackSegmentsDashed(EditScene* g2);
- /*private*/ void drawLayoutTracksBallast(EditScene* g2);
- /*private*/ void drawLayoutTracksTies(EditScene* g2);
- /*private*/ void drawLayoutTracksRails(EditScene* g2);
- /*private*/ void drawLayoutTracksBlockLines(EditScene* g2);
- /*private*/ void draw1(EditScene* g2,
-         bool isMain,
-         bool isBlock,
-         bool isHidden, LayoutTrack::ITEMTYPE type);
- /*private*/ void draw1(EditScene* g2,
-         bool isMain,
-         bool isBlock, LayoutTrack::ITEMTYPE type);
- /*private*/ void draw1(EditScene* g2, bool isMain, LayoutTrack::ITEMTYPE type);
- /*private*/ void draw1(EditScene* g2,
-         bool isMain,
-         bool isBlock,
-         bool isHidden,
-         bool isDashed, LayoutTrack::ITEMTYPE itemType);
- /*private*/ void drawPositionablePoints(EditScene* g2, bool isMain);
- /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
- /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, bool isDashed);
- /*private*/ void drawDecorations(EditScene* g2);
- /*private*/ void drawTrackSegmentInProgress(EditScene* g2);
- /*private*/ void drawLayoutTrackEditControls(EditScene* g2);
- /*private*/ void drawTurnoutControls(EditScene* g2);
- /*private*/ QRectF getSelectionRect();
- /*private*/ void drawSelectionRect(EditScene* g2);
- /*private*/ void drawMemoryRects(EditScene* g2);
- /*private*/ void drawBlockContentsRects(EditScene* g2);
-// /*private*/ bool checkSelect(QPointF loc, bool requireUnconnected);
-// /*private*/ bool checkSelect(QPointF loc, bool requireUnconnected, QObject* avoid);
- /*private*/ void amendSelectionGroup(Positionable* p);
- /*private*/ void amendSelectionGroup(LayoutTurnout* p);
- /*private*/ void amendSelectionGroup(PositionablePoint* p);
- /*private*/ void amendSelectionGroup(LevelXing* p);
- /*private*/ void amendSelectionGroup(LayoutTrack *p);
- /*private*/ bool foundNeedsConnect;// = false; // true if found point needs a connection
- float mainlineTrackWidth;// = 4.0F;
- float sidelineTrackWidth;// = 2.0F;
- bool main;// = true;
- float trackWidth;// = sideTrackWidth;
- bool _editable;
- bool turnoutCirclesWithoutEditMode;// = false;
-// LocoNetSystemConnectionMemo * memo;// = new LocoNetSystemConnectionMemo();
-// LnSensorManager* lnSensorManager;
- friend class SensorIcon;
- InternalSensorManager* internalSensorManager;
- /*private*/ QPointF midpoint (QPointF p1,QPointF p2) ;
- /*protected*/ QPointF third (QPointF p1,QPointF p2) ;
- /*private*/ QPointF fourth (QPointF p1,QPointF p2);
- bool animatingLayout;
- /*private*/ bool showHelpBar = true;
- int panelWidth, panelHeight;
- int windowWidth, windowHeight;
- int upperLeftX, upperLeftY;
- int _scrollState;
- int _anchorX, _anchorY;
  QPointF startDelta;
- bool _positionable;
+ /*private*/ /*transient*/ int selectedHitPointType = 0;         //hit point type within the selected object
+
+ /*private*/ /*transient*/ QList<LayoutTrack*>* layoutTrackList;// = new ArrayList<>();         // LayoutTrack list
+
+ // counts used to determine unique internal names
+ /*private*/ /*transient*/ int numAnchors = 0;
+ /*private*/ /*transient*/ int numEndBumpers = 0;
+ /*private*/ /*transient*/ int numEdgeConnectors = 0;
+ /*private*/ /*transient*/ int numTrackSegments = 0;
+ /*private*/ /*transient*/ int numLevelXings = 0;
+ /*private*/ /*transient*/ int numLayoutSlips = 0;
+ /*private*/ /*transient*/ int numLayoutTurnouts = 0;
+ /*private*/ /*transient*/ int numLayoutTurntables = 0;
+ /*private*/ /*transient*/ int numShapes = 0;
+
+ //persistent instance variables - saved to disk with Save Panel
+ /*private*/ /*transient*/ int upperLeftX = 0; // Note: These are _WINDOW_ upper left x & y
+ /*private*/ /*transient*/ int upperLeftY = 0; // (not panel)
+
+ /*private*/ /*transient*/ int windowWidth = 0;
+ /*private*/ /*transient*/ int windowHeight = 0;
+
+ /*private*/ /*transient*/ QColor defaultTextColor = QColor(Qt::black);
+
+ /*private*/ /*transient*/ QString layoutName = "";
+ /*private*/ /*transient*/ double xScale = 1.0;
+ /*private*/ /*transient*/ double yScale = 1.0;
+ /*private*/ /*transient*/ bool animatingLayout = true;
+ /*private*/ /*transient*/ bool showHelpBar = true;
+ /*private*/ /*transient*/ bool drawGrid = true;
+
  /*private*/ /*transient*/ bool snapToGridOnAdd = false;
  /*private*/ /*transient*/ bool snapToGridOnMove = false;
  /*private*/ /*transient*/ bool snapToGridInvert = false;
- int _lastX, _lastY;
- /*private*/ void drawPanelGrid(EditScene* g2);
- /*private*/ bool drawGrid; //false;
-// /*private*/ void drawTrackInProgress(EditScene* g2);
-// /*private*/ void drawHiddenTrack(EditScene* g2);
-// /*private*/ void drawDashedTrack(EditScene* g2, bool mainline);
-// /*private*/ void drawSolidTrack(EditScene* g2, bool isMainline);
-// /*private*/ void CalculateTrackSegmentAngle(TrackSegment* t);
-// /*private*/ void drawTrackOvals(EditScene* g2);
- bool antialiasingOn;// = false;
-// /*private*/ void checkPopUp(QGraphicsSceneMouseEvent* event);
-// /*private*/ TrackSegment* checkTrackSegments(QPointF loc);
 
-// /*private*/ void drawTrackCircleCentre(EditScene* g2);
- double toRadians(double degrees);
- double toDegrees(double radians);
- /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event);
- bool _controlLayout= true;
- bool noWarnPositionablePoint;
- bool noWarnSlip;
- /*private*/ void disconnect(QObject* o, int type);
- ///*private*/ void drawMemoryRects(EditScene* g2);
- /**
- * Add a sensor indicator to the Draw Panel
- */
- void addSensor();
+ /*private*/ /*transient*/ bool tooltipsWithoutEditMode = false;
+ /*private*/ /*transient*/ bool tooltipsInEditMode = true;
 
-  bool bDirty;
-  InstanceManager* instanceManager;
-  /*private*/ bool _showCoordinates;// = true;
- Positionable* saveP;
- //bool selectedNeedsConnect;
- /*private*/ LocoIcon* checkMarkers(QPointF loc);
- /*private*/ MultiIconEditor* iconEditor;// = nullptr;
- QGraphicsItemGroup* panelGridGroup = nullptr;
- QGraphicsItem* trackInProgress;
- /*private*/ bool _globalSetsLocal;// = true;    // pre 2.9.6 behavior
- /*private*/ bool _useGlobalFlag;// = false;     // pre 2.9.6 behavior
- QGraphicsRectItem *rectItem; // selection rect.
- QGraphicsItemGroup* highlightRect = nullptr;
+ //turnout size parameters - saved with panel
+ /*private*/ /*transient*/ double turnoutBX = LayoutTurnout::turnoutBXDefault; //RH, LH, WYE
+ /*private*/ /*transient*/ double turnoutCX = LayoutTurnout::turnoutCXDefault;
+ /*private*/ /*transient*/ double turnoutWid = LayoutTurnout::turnoutWidDefault;
+ /*private*/ /*transient*/ double xOverLong = LayoutTurnout::xOverLongDefault; //DOUBLE_XOVER, RH_XOVER, LH_XOVER
+ /*private*/ /*transient*/ double xOverHWid = LayoutTurnout::xOverHWidDefault;
+ /*private*/ /*transient*/ double xOverShort = LayoutTurnout::xOverShortDefault;
+ /*private*/ /*transient*/ bool useDirectTurnoutControl = false; //Uses Left click for closing points, Right click for throwing.
 
- /*private*/ void highLightSelection(EditScene* g);
- bool noWarnGlobalDelete;
- bool noWarnLevelXing;
- bool noWarnLayoutTurnout;
- bool noWarnTurntable;// = false;
- QString _defaultToolTip;
- Positionable* currComp;
- LEMemoryIcon* checkMemoryMarkerIcons(QPointF loc);
- // /*private*/ int getNextBackgroundLeft();
- JFileChooser* inputFileChooser;
- //void setScale(double scaleX, double scaleY);
- //QStringList _Colors;
- //QList<QColor> _colors;
- bool tooltipsWithoutEditMode = false;
- bool tooltipsInEditMode = true;
- bool _loadFailed;// = false;
- bool _debug;
- bool _ignore;
- QMap<QString, QString>* _urlMap;// = new QMap<QString, QString>();
- NamedIcon* _newIcon;
- bool _delete;
- //QFormLayout* formLayout;
- RosterEntrySelectorPanel* rosterBox;
- //bool bTestMode;
- QString layoutFile;
- int _prevNumSel;
- LayoutEditorTools* tools;
- JFrame* signalFrame;
- JFrame* sensorFrame;
- ConnectivityUtil* conTools;
- /*private*/ int multiLocX;
- /*private*/ int multiLocY;
- void startMultiSensor();
- MultiSensorIconFrame* multiSensorFrame;
- // saved state of options when panel was loaded or created
- /*private*/ bool savedEditMode;// = true;
- /*private*/ bool savedPositionable;// = true;
- /*private*/ bool savedControlLayout;// = true;
- /*private*/ bool savedAnimatingLayout;// = true;
- /*private*/ bool savedShowHelpBar;// = false;
- void closeEvent(QCloseEvent *);
- bool openDispatcherOnLoad;// = false;
- /*private*/ bool useDirectTurnoutControl;// = false; //Uses Left click for closing points, Right click for throwing.
- JTextField* xMove;
- JTextField* yMove;
- /*private*/ void substituteAnchor(QPointF loc, QObject* o, TrackSegment* t);
- /*private*/ PositionablePoint* addAnchor(QPointF p);
- /*private*/ QPointF windowCenter();
-// /*private*/ void drawTurntableRects(EditScene* g2);
-// /*private*/ void drawSlipRects(EditScene* g2);
- QAction* turnoutCirclesOnItem;
- QActionGroup* backgroundColorButtonGroup;
- QSignalMapper* backgroundColorButtonMapper;
- QActionGroup* trackColorButtonGroup;
- QSignalMapper* trackColorButtonMapper;
- QActionGroup* trackOccupiedColorButtonGroup;
- QSignalMapper* trackOccupiedColorButtonMapper;
- QActionGroup* trackAlternativeColorButtonGroup;
- QSignalMapper* trackAlternativeColorButtonMapper;
- QActionGroup* textColorButtonGroup;
- QSignalMapper* textColorButtonMapper;
- QActionGroup* turnoutCircleColorButtonGroup;
- QSignalMapper* turnoutCircleColorButtonMapper;
- QSignalMapper* turnoutCircleSizeButtonMapper;
- QAction* turnoutDrawUnselectedLegItem;
- QAction* useDirectTurnoutControlItem;
- /*private*/ int backgroundColorCount;// = 0;
- /*private*/ int trackColorCount;// = 0;
- /*private*/ int trackOccupiedColorCount;// = 0;
- /*private*/ int trackAlternativeColorCount;// = 0;
- /*private*/ int textColorCount;// = 0;
- /*private*/ int turnoutCircleColorCount;// = 0;
- /*private*/ int turnoutCircleSizeCount;// = 0;
- /*private*/ QVector<QColor>* backgroundColors = new QVector<QColor>(13);
- /*private*/ QVector<QColor>* trackColors = new QVector<QColor>(13);
- /*private*/ QVector<QColor>* trackOccupiedColors = new QVector<QColor>(13);
- /*private*/ QVector<QColor>* trackAlternativeColors = new QVector<QColor>(13);
- /*private*/ QVector<QColor>* textColors = new QVector<QColor>(13);
- /*private*/ QVector<QColor>* turnoutCircleColors;// = new QVector<QColor>(14);
- /*private*/ QVector<int>* turnoutCircleSizes;// = new QVector<int>(10);
- /*private*/ void checkPointOfPositionable(PositionablePoint* p);
-// /*private*/ void checkPointsOfTurnout(LayoutTurnout* lt);
-// /*private*/ void checkPointsOfTurnoutSub(QPointF dLoc);
- /*private*/ void rotateTurnout(LayoutTurnout* t);
-// void addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size);
+ //saved state of options when panel was loaded or created
+ /*private*/ /*transient*/ bool savedEditMode = true;
+ /*private*/ /*transient*/ bool savedPositionable = true;
+ /*private*/ /*transient*/ bool savedControlLayout = true;
+ /*private*/ /*transient*/ bool savedAnimatingLayout = true;
+ /*private*/ /*transient*/ bool savedShowHelpBar = true;
 
- /*private*/ QVector<QAction*>* trackColorMenuItems;// = new QVector<QAction*>(13);
- /*private*/ QVector<QAction*>* trackOccupiedColorMenuItems;// = new QVector<QAction*>(13);
- /*private*/ QVector<QAction*>* trackAlternativeColorMenuItems;// = new QVector<QAction*>(13);
- /*private*/ QVector<QAction*>* backgroundColorMenuItems;// = new QVector<QAction*>(13);
- /*private*/ QVector<QAction*>* textColorMenuItems;// = new QVector<QAction*>(13);
- /*private*/ QVector<QAction*>* turnoutCircleColorMenuItems;// = new QVector<QAction*>(14);
- /*private*/ QVector<QAction*>* turnoutCircleSizeMenuItems;// = new QVector<QAction*>(10);
-
- /*private*/ /*transient*/ LayoutTrackDrawingOptions* layoutTrackDrawingOptions = nullptr;
- /*private*/ /*transient*/ JFrame* iconFrame = nullptr;
- /*private*/ /*transient*/ bool highlightSelectedBlockFlag = false;
- /*private*/ bool highlightBlockInComboBox(/*@Nonnull*/ NamedBeanComboBox *inComboBox);
- /*private*/ QRectF calculateMinimumLayoutBounds();
- /*private*/ QRectF resizePanelBounds(bool forceFlag);
  //zoom
- /*private*/ /*transient*/ double minZoom;// = 0.25;
- /*private*/ /*transient*/ double maxZoom;// = 8.0;
- // /*private*/ void adjustScrollBars();
- QLabel* zoomLabel;
- /*private*/ void selectZoomMenuItem(double zoomFactor);
-
- //grid size in pixels
- /*private*/ QString findBeanUsage(NamedBean* sm);
- /*private*/ void removeBeanRefs(NamedBean* sm);
- /*private*/ bool removeSignalMast(SignalMastIcon* si);
- /*private*/ void checkControls(bool useRectangles);
- /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc, bool requireUnconnected);
- /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc);
- /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc,
-         bool requireUnconnected, /*@Nullable*/ LayoutTrack* avoid);
- /*private*/ TrackSegment* checkTrackSegmentPopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ PositionableLabel* checkBackgroundPopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ SensorIcon* checkSensorIconPopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ SignalHeadIcon* checkSignalHeadIconPopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ SignalMastIcon* checkSignalMastIconPopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ PositionableLabel* checkLabelImagePopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ AnalogClock2Display* checkClockPopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ MultiSensorIcon* checkMultiSensorPopUps(/*@Nonnull */QPointF loc);
- /*private*/ LocoIcon* checkMarkerPopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ LayoutShape* checkLayoutShapePopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ /*transient*/ LayoutTrackEditors* layoutTrackEditors = nullptr;
- /*private*/ /*transient*/ LayoutEditorChecks* layoutEditorChecks = nullptr;
- //operational variables for enter track width pane
- /*private*/ /*transient*/ JmriJFrame* enterTrackWidthFrame = nullptr;
- /*private*/ bool enterTrackWidthOpen = false;
- /*private*/ bool trackWidthChange = false;
- /*private*/ /*transient*/ JTextField* sidelineTrackWidthField;// = new JTextField(6);
- /*private*/ /*transient*/ JTextField* mainlineTrackWidthField;// = new JTextField(6);
- /*private*/ /*transient*/ QPushButton* trackWidthDone;
- /*private*/ /*transient*/ QPushButton* trackWidthCancel;
- //operational variables for enter grid sizes pane
- /*private*/ /*transient*/ JmriJFrame* enterGridSizesFrame = nullptr;
- /*private*/ bool enterGridSizesOpen = false;
- /*private*/ bool gridSizesChange = false;
- /*private*/ /*transient*/ JTextField* primaryGridSizeField;// = new JTextField(6);
- /*private*/ /*transient*/ JTextField* secondaryGridSizeField;// = new JTextField(6);
- /*private*/ /*transient*/ QPushButton* gridSizesDone = nullptr;
- /*private*/ /*transient*/ QPushButton* gridSizesCancel = nullptr;
- //operational variables for enter reporter pane
- /*private*/ /*transient*/ JmriJFrame* enterReporterFrame = nullptr;
- /*private*/ bool reporterOpen = false;
- /*private*/ /*transient*/ JTextField* xPositionField;// = new JTextField(6);
- /*private*/ /*transient*/ JTextField* yPositionField;// = new JTextField(6);
- /*private*/ /*transient*/ JTextField* reporterNameField;// = new JTextField(6);
- /*private*/ /*transient*/ QPushButton* reporterDone;
- /*private*/ /*transient*/ QPushButton* reporterCancel;
- //operational variables for scale/translate track diagram pane
- /*private*/ /*transient*/ JmriJFrame* scaleTrackDiagramFrame = nullptr;
- /*private*/ bool scaleTrackDiagramOpen = false;
- /*private*/ /*transient*/ JTextField* xFactorField;// = new JTextField(6);
- /*private*/ /*transient*/ JTextField* yFactorField;// = new JTextField(6);
- /*private*/ /*transient*/ JTextField* xTranslateField;// = new JTextField(6);
- /*private*/ /*transient*/ JTextField* yTranslateField ;//= new JTextField(6);
- /*private*/ /*transient*/ QPushButton* scaleTrackDiagramDone = nullptr;
- /*private*/ /*transient*/ QPushButton* scaleTrackDiagramCancel =nullptr;
- /*private*/ /*transient*/ NamedBean::DisplayOptions gDDMDO ;//= JmriBeanComboBox.DisplayOptions.DISPLAYNAME;
- /*private*/ /*transient*/ QList<LayoutTrack*> _layoutTrackSelection;// = new ArrayList<>();
-
- // /*private*/ void updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent);
- // /*private*/ void updateDropDownMenuDisplayOrderMenu();
- ///*private*/ void updateAllComboBoxesDropDownListDisplayOrderFromPrefs();
- /*private*/ void showEditPopUps(/*@Nonnull */QGraphicsSceneMouseEvent* event);
- /*private*/ void hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt);
- /*private*/ void hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc);
- QPen drawingStroke;
-
- //operational variables for move selection pane
- /*private*/ /*transient*/ JmriJFrame* moveSelectionFrame = nullptr;
- /*private*/ bool moveSelectionOpen = false;
- /*private*/ /*transient*/ JTextField* xMoveField;// = new JTextField(6);
- /*private*/ /*transient*/ JTextField* yMoveField;// = new JTextField(6);
- /*private*/ /*transient*/ QPushButton* moveSelectionDone;
- /*private*/ /*transient*/ QPushButton* moveSelectionCancel;
- /*private*/ bool canUndoMoveSelection = false;
- /*private*/ QPointF undoDelta;// = MathUtil.zeroPoint2D;
-
- /*private*/ double undoDeltaX = 0.0;
- /*private*/ double undoDeltaY = 0.0;
- /*private*/ /*transient*/ QRectF undoRect;
- QAction* skipTurnoutCheckBoxMenuItem;
- /*private*/ bool includedTurnoutSkipped = false;
- /*private*/ void setupMarkerMenu(/*@Nonnull*/ QMenuBar *menuBar);
- /*private*/ void setupDispatcherMenu(/*@Nonnull*/ QMenuBar* menuBar);
- /*private*/ void setupZoomMenu(QMenuBar* menuBar);
-
-
-
- /*private*/ float toolBarFontSize = 12.0;
-
- /*private*/ void setupToolBar();
- /*private*/ void createfloatingEditToolBoxFrame();
- /*private*/ void deletefloatingEditToolBoxFrame();
- /*private*/ void createFloatingHelpPanel();
- /*private*/ void setScrollbarScale(double ratio);
-
- //QHBoxLayout* editPanelLayout;
- BorderLayout* borderLayout = nullptr;
- /*private*/ void alignToGrid(QVector<Positionable *> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes);
- /*private*/ long whenReleased = 0; //used to identify event that was popup trigger
- /*private*/ bool awaitingIconChange = false;
+ /*private*/ /*transient*/ double minZoom = 0.25;
+ /*private*/ /*transient*/ double maxZoom = 8.0;
  /*private*/ /*enum*/class ToolBarSide {
 
   TOOLBARSIDES type;
@@ -1028,6 +662,319 @@ private:
      }
  };
  /*private*/ /*transient*/ ToolBarSide toolBarSide = ToolBarSide("top");
+
+
+ QButtonGroup* buttonGroup;
+
+ // /*private*/ /*final*/ LayoutEditorComponent* layoutEditorComponent = new LayoutEditorComponent(this);
+
+
+ int xLoc, yLoc;
+ /*private*/ /*transient*/ /*final*/ static Logger* log;
+
+ /*private*/ void calcLocation(QPointF pos, int dX, int dY);
+ bool bIsEditable = true;
+ /*private*/ void createSelectionGroups();
+ bool isDragging = false;
+ StoreXmlUserAction* savePanels;
+ //bool bDirty;
+ bool isDirty();
+ void resetDirty();
+ ///*private*/ QObject* beginObject;// = nullptr; // begin track segment connection object, NULL if none
+ /*private*/ void setLink(QObject* fromObject,int fromPointType, QObject* toObject,int toPointType);
+ LayoutEditorAuxTools* auxTools;
+ // selection variables
+ /*private*/ QVector<Positionable*>* _positionableSelection = nullptr;
+
+ /*private*/ QVector<LayoutTurnout*>* _turnoutSelection = nullptr; //new QVector<LayoutTurnout>();  // LayoutTurnouts
+ /*private*/ QVector<LevelXing*>* _xingSelection = nullptr; //new QVector<LevelXing>();  // LevelXing list
+ /*private*/ QVector<LayoutSlip*>* _slipSelection = nullptr; //new QVector<LayoutSlip*>();  // LayoutSlip list
+ /*private*/ QVector<LayoutTurntable*>* _turntableSelection = nullptr; //new ArrayList<LayoutTurntable>(); // Turntable list
+ /*private*/ QVector<PositionablePoint*>* _pointSelection = nullptr; //new QVector<PositionablePoint>();  // PositionablePoint list
+ QVector<PositionableLabel*>* _labelSelection; //new QVector<PositionableLabel>();  // PositionableLabel list
+/*private*/ QList<LayoutTrack*> getLayoutTracksOfClass(QString type);
+
+  bool isDrawing = false;
+
+ /*private*/ void clearSelectionGroups();
+ QWidget* openFrame = this;
+
+ /*private*/ void drawXings(EditScene* g2);
+
+ // /*protected*/ void draw(EditScene* g2);
+ /*private*/ void drawLayoutTracksHidden(EditScene* g2);
+ /*private*/ void drawTrackSegmentsDashed(EditScene* g2);
+ /*private*/ void drawLayoutTracksBallast(EditScene* g2);
+ /*private*/ void drawLayoutTracksTies(EditScene* g2);
+ /*private*/ void drawLayoutTracksRails(EditScene* g2);
+ /*private*/ void drawLayoutTracksBlockLines(EditScene* g2);
+ /*private*/ void draw1(EditScene* g2,
+         bool isMain,
+         bool isBlock,
+         bool isHidden, LayoutTrack::ITEMTYPE type);
+ /*private*/ void draw1(EditScene* g2,
+         bool isMain,
+         bool isBlock, LayoutTrack::ITEMTYPE type);
+ /*private*/ void draw1(EditScene* g2, bool isMain, LayoutTrack::ITEMTYPE type);
+ /*private*/ void draw1(EditScene* g2,
+         bool isMain,
+         bool isBlock,
+         bool isHidden,
+         bool isDashed, LayoutTrack::ITEMTYPE itemType);
+ /*private*/ void drawPositionablePoints(EditScene* g2, bool isMain);
+ /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+ /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, bool isDashed);
+ /*private*/ void drawDecorations(EditScene* g2);
+ /*private*/ void drawShapes(EditScene* g2, bool isBackground);
+ /*private*/ void drawTrackSegmentInProgress(EditScene* g2);
+ /*private*/ void drawShapeInProgress(EditScene* g2);
+ /*private*/ void drawLayoutTrackEditControls(EditScene* g2);
+ /*private*/ void drawShapeEditControls(EditScene* g2);
+ /*private*/ void drawTurnoutControls(EditScene* g2);
+ /*private*/ QRectF getSelectionRect();
+ /*private*/ void drawSelectionRect(EditScene* g2);
+ /*private*/ void drawMemoryRects(EditScene* g2);
+ /*private*/ void drawBlockContentsRects(EditScene* g2);
+ /*private*/ void amendSelectionGroup(Positionable* p);
+ /*private*/ void amendSelectionGroup(LayoutTurnout* p);
+ /*private*/ void amendSelectionGroup(PositionablePoint* p);
+ /*private*/ void amendSelectionGroup(LevelXing* p);
+ /*private*/ void amendSelectionGroup(LayoutTrack *p);
+ bool main = true;
+ bool _editable = false;
+ friend class SensorIcon;
+ InternalSensorManager* internalSensorManager;
+ /*private*/ QPointF midpoint (QPointF p1,QPointF p2) ;
+ /*protected*/ QPointF third (QPointF p1,QPointF p2) ;
+ /*private*/ QPointF fourth (QPointF p1,QPointF p2);
+ int _scrollState;
+ int _anchorX = 0, _anchorY = 0;
+ bool _positionable = false;
+ int _lastX, _lastY;
+ /*private*/ void drawPanelGrid(EditScene* g2);
+
+// /*private*/ void drawTrackCircleCentre(EditScene* g2);
+ double toRadians(double degrees);
+ double toDegrees(double radians);
+ /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event);
+ bool _controlLayout= true;
+ bool noWarnPositionablePoint = false;
+ bool noWarnSlip = false;
+ /*private*/ void disconnect(QObject* o, int type);
+ ///*private*/ void drawMemoryRects(EditScene* g2);
+ /**
+ * Add a sensor indicator to the Draw Panel
+ */
+ void addSensor();
+
+  bool bDirty = false;
+  InstanceManager* instanceManager;
+  /*private*/ bool _showCoordinates = true;
+ Positionable* saveP;
+ //bool selectedNeedsConnect;
+ /*private*/ LocoIcon* checkMarkers(QPointF loc);
+ /*private*/ MultiIconEditor* iconEditor;// = nullptr;
+ QGraphicsItemGroup* panelGridGroup = nullptr;
+ QGraphicsItem* trackInProgress = nullptr;
+ /*private*/ bool _globalSetsLocal = true;    // pre 2.9.6 behavior
+ /*private*/ bool _useGlobalFlag = false;     // pre 2.9.6 behavior
+ QGraphicsRectItem *rectItem = nullptr; // selection rect.
+ QGraphicsItemGroup* highlightRect = nullptr;
+
+ /*private*/ void highLightSelection(EditScene* g);
+ /*private*/ QRectF clipBounds = QRectF();
+ bool noWarnGlobalDelete = false;
+ bool noWarnLevelXing = false;
+ bool noWarnLayoutTurnout;
+ bool noWarnTurntable = false;
+ QString _defaultToolTip = "";
+ Positionable* currComp;
+ LEMemoryIcon* checkMemoryMarkerIcons(QPointF loc);
+ JFileChooser* inputFileChooser;
+ bool _loadFailed = false;
+ bool _debug = true;
+ bool _ignore = false;
+ QMap<QString, QString>* _urlMap;// = new QMap<QString, QString>();
+ NamedIcon* _newIcon = nullptr;
+ bool _delete = false;
+ //QFormLayout* formLayout;
+ RosterEntrySelectorPanel* rosterBox;
+ //bool bTestMode;
+ QString layoutFile;
+ int _prevNumSel;
+ LayoutEditorTools* tools = nullptr;
+ JFrame* signalFrame;
+ JFrame* sensorFrame;
+ ConnectivityUtil* conTools;
+ /*private*/ int multiLocX;
+ /*private*/ int multiLocY;
+ void startMultiSensor();
+ MultiSensorIconFrame* multiSensorFrame = nullptr;
+ void closeEvent(QCloseEvent *);
+ bool openDispatcherOnLoad = false;
+ JTextField* xMove;
+ JTextField* yMove;
+ /*private*/ void substituteAnchor(QPointF loc, QObject* o, TrackSegment* t);
+ /*private*/ PositionablePoint* addAnchor(QPointF p);
+ /*private*/ QPointF windowCenter();
+ QAction* turnoutCirclesOnItem;
+ QActionGroup* backgroundColorButtonGroup;
+ QSignalMapper* backgroundColorButtonMapper;
+ QActionGroup* trackColorButtonGroup;
+ QSignalMapper* trackColorButtonMapper;
+ QActionGroup* trackOccupiedColorButtonGroup;
+ QSignalMapper* trackOccupiedColorButtonMapper;
+ QActionGroup* trackAlternativeColorButtonGroup;
+ QSignalMapper* trackAlternativeColorButtonMapper;
+ QActionGroup* textColorButtonGroup;
+ QSignalMapper* textColorButtonMapper;
+ QActionGroup* turnoutCircleColorButtonGroup;
+ QSignalMapper* turnoutCircleColorButtonMapper;
+ QSignalMapper* turnoutCircleSizeButtonMapper;
+ QAction* turnoutDrawUnselectedLegItem;
+ QAction* useDirectTurnoutControlItem;
+ /*private*/ int backgroundColorCount = 0;
+ /*private*/ int trackColorCount = 0;
+ /*private*/ int trackOccupiedColorCount = 0;
+ /*private*/ int trackAlternativeColorCount = 0;
+ /*private*/ int textColorCount = 0;
+ /*private*/ int turnoutCircleColorCount = 0;
+ /*private*/ int turnoutCircleSizeCount = 0;
+ /*private*/ QVector<QColor>* backgroundColors = new QVector<QColor>(13);
+ /*private*/ QVector<QColor>* trackColors = new QVector<QColor>(13);
+ /*private*/ QVector<QColor>* trackOccupiedColors = new QVector<QColor>(13);
+ /*private*/ QVector<QColor>* trackAlternativeColors = new QVector<QColor>(13);
+ /*private*/ QVector<QColor>* textColors = new QVector<QColor>(13);
+ /*private*/ QVector<QColor>* turnoutCircleColors;// = new QVector<QColor>(14);
+ /*private*/ QVector<int>* turnoutCircleSizes;// = new QVector<int>(10);
+ /*private*/ void checkPointOfPositionable(PositionablePoint* p);
+// /*private*/ void checkPointsOfTurnout(LayoutTurnout* lt);
+// /*private*/ void checkPointsOfTurnoutSub(QPointF dLoc);
+ /*private*/ void rotateTurnout(LayoutTurnout* t);
+// void addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+ void addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+ void addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+ void addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+ void addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+ void addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+ void addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size);
+
+ /*private*/ QVector<QAction*>* trackColorMenuItems;// = new QVector<QAction*>(13);
+ /*private*/ QVector<QAction*>* trackOccupiedColorMenuItems;// = new QVector<QAction*>(13);
+ /*private*/ QVector<QAction*>* trackAlternativeColorMenuItems;// = new QVector<QAction*>(13);
+ /*private*/ QVector<QAction*>* backgroundColorMenuItems;// = new QVector<QAction*>(13);
+ /*private*/ QVector<QAction*>* textColorMenuItems;// = new QVector<QAction*>(13);
+ /*private*/ QVector<QAction*>* turnoutCircleColorMenuItems;// = new QVector<QAction*>(14);
+ /*private*/ QVector<QAction*>* turnoutCircleSizeMenuItems;// = new QVector<QAction*>(10);
+
+ /*private*/ /*transient*/ LayoutTrackDrawingOptions* layoutTrackDrawingOptions = nullptr;
+ /*private*/ /*transient*/ JFrame* iconFrame = nullptr;
+ /*private*/ bool highlightBlockInComboBox(/*@Nonnull*/ NamedBeanComboBox *inComboBox);
+ /*private*/ QRectF calculateMinimumLayoutBounds();
+ /*private*/ QRectF resizePanelBounds(bool forceFlag);
+ QLabel* zoomLabel;
+ /*private*/ void selectZoomMenuItem(double zoomFactor);
+
+ //grid size in pixels
+ /*private*/ QString findBeanUsage(NamedBean* sm);
+ /*private*/ void removeBeanRefs(NamedBean* sm);
+ /*private*/ bool removeSignalMast(SignalMastIcon* si);
+ /*private*/ void checkControls(bool useRectangles);
+ /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc, bool requireUnconnected);
+ /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc);
+ /*private*/ bool findLayoutTracksHitPoint(/*@Nonnull*/ QPointF loc,
+         bool requireUnconnected, /*@Nullable*/ LayoutTrack* avoid);
+ /*private*/ TrackSegment* checkTrackSegmentPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ PositionableLabel* checkBackgroundPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ SensorIcon* checkSensorIconPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ SignalHeadIcon* checkSignalHeadIconPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ SignalMastIcon* checkSignalMastIconPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ PositionableLabel* checkLabelImagePopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ AnalogClock2Display* checkClockPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ MultiSensorIcon* checkMultiSensorPopUps(/*@Nonnull */QPointF loc);
+ /*private*/ LocoIcon* checkMarkerPopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ LayoutShape* checkLayoutShapePopUps(/*@Nonnull*/ QPointF loc);
+ /*private*/ /*transient*/ LayoutTrackEditors* layoutTrackEditors = nullptr;
+ /*private*/ /*transient*/ LayoutEditorChecks* layoutEditorChecks = nullptr;
+ //operational variables for enter track width pane
+ /*private*/ /*transient*/ JmriJFrame* enterTrackWidthFrame = nullptr;
+ /*private*/ bool enterTrackWidthOpen = false;
+ /*private*/ bool trackWidthChange = false;
+ /*private*/ /*transient*/ JTextField* sidelineTrackWidthField = new JTextField(6);
+ /*private*/ /*transient*/ JTextField* mainlineTrackWidthField;// = new JTextField(6);
+ /*private*/ /*transient*/ QPushButton* trackWidthDone;
+ /*private*/ /*transient*/ QPushButton* trackWidthCancel;
+ //operational variables for enter grid sizes pane
+ /*private*/ /*transient*/ JmriJFrame* enterGridSizesFrame = nullptr;
+ /*private*/ bool enterGridSizesOpen = false;
+ /*private*/ bool gridSizesChange = false;
+ /*private*/ /*transient*/ JTextField* primaryGridSizeField;// = new JTextField(6);
+ /*private*/ /*transient*/ JTextField* secondaryGridSizeField;// = new JTextField(6);
+ /*private*/ /*transient*/ QPushButton* gridSizesDone = nullptr;
+ /*private*/ /*transient*/ QPushButton* gridSizesCancel = nullptr;
+ //operational variables for enter reporter pane
+ /*private*/ /*transient*/ JmriJFrame* enterReporterFrame = nullptr;
+ /*private*/ bool reporterOpen = false;
+ /*private*/ /*transient*/ JTextField* xPositionField;// = new JTextField(6);
+ /*private*/ /*transient*/ JTextField* yPositionField;// = new JTextField(6);
+ /*private*/ /*transient*/ JTextField* reporterNameField;// = new JTextField(6);
+ /*private*/ /*transient*/ QPushButton* reporterDone;
+ /*private*/ /*transient*/ QPushButton* reporterCancel;
+ //operational variables for scale/translate track diagram pane
+ /*private*/ /*transient*/ JmriJFrame* scaleTrackDiagramFrame = nullptr;
+ /*private*/ bool scaleTrackDiagramOpen = false;
+ /*private*/ /*transient*/ JTextField* xFactorField;// = new JTextField(6);
+ /*private*/ /*transient*/ JTextField* yFactorField;// = new JTextField(6);
+ /*private*/ /*transient*/ JTextField* xTranslateField;// = new JTextField(6);
+ /*private*/ /*transient*/ JTextField* yTranslateField ;//= new JTextField(6);
+ /*private*/ /*transient*/ QPushButton* scaleTrackDiagramDone = nullptr;
+ /*private*/ /*transient*/ QPushButton* scaleTrackDiagramCancel =nullptr;
+ /*private*/ /*transient*/ NamedBean::DisplayOptions gDDMDO ;//= JmriBeanComboBox.DisplayOptions.DISPLAYNAME;
+ /*private*/ /*transient*/ QList<LayoutTrack*> _layoutTrackSelection;// = new ArrayList<>();
+
+ // /*private*/ void updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent);
+ // /*private*/ void updateDropDownMenuDisplayOrderMenu();
+ ///*private*/ void updateAllComboBoxesDropDownListDisplayOrderFromPrefs();
+ /*private*/ void showEditPopUps(/*@Nonnull */QGraphicsSceneMouseEvent* event);
+ /*private*/ void hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt);
+ /*private*/ void hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc);
+ QPen drawingStroke;
+
+ //operational variables for move selection pane
+ /*private*/ /*transient*/ JmriJFrame* moveSelectionFrame = nullptr;
+ /*private*/ bool moveSelectionOpen = false;
+ /*private*/ /*transient*/ JTextField* xMoveField;// = new JTextField(6);
+ /*private*/ /*transient*/ JTextField* yMoveField;// = new JTextField(6);
+ /*private*/ /*transient*/ QPushButton* moveSelectionDone;
+ /*private*/ /*transient*/ QPushButton* moveSelectionCancel;
+ /*private*/ bool canUndoMoveSelection = false;
+ /*private*/ QPointF undoDelta = MathUtil::zeroPoint2D;
+
+ /*private*/ double undoDeltaX = 0.0;
+ /*private*/ double undoDeltaY = 0.0;
+ /*private*/ /*transient*/ QRectF undoRect;
+ QAction* skipTurnoutCheckBoxMenuItem;
+ /*private*/ bool includedTurnoutSkipped = false;
+ /*private*/ void setupMarkerMenu(/*@Nonnull*/ QMenuBar *menuBar);
+ /*private*/ void setupDispatcherMenu(/*@Nonnull*/ QMenuBar* menuBar);
+ /*private*/ void setupZoomMenu(QMenuBar* menuBar);
+
+
+
+ /*private*/ float toolBarFontSize = 12.0;
+
+ /*private*/ void setupToolBar();
+ /*private*/ void createfloatingEditToolBoxFrame();
+ /*private*/ void deletefloatingEditToolBoxFrame();
+ /*private*/ void createFloatingHelpPanel();
+ /*private*/ void setScrollbarScale(double ratio);
+
+ //QHBoxLayout* editPanelLayout;
+ BorderLayout* borderLayout = nullptr;
+ /*private*/ void alignToGrid(QVector<Positionable *> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes);
+ /*private*/ long whenReleased = 0; //used to identify event that was popup trigger
+ /*private*/ bool awaitingIconChange = false;
+
  /*private*/ /*transient*/ bool toolBarIsWide = true;
  /*private*/ void on_setToolBarSide(QString);
  /*private*/ void setupMenuBar();
@@ -1045,53 +992,26 @@ private slots:
 
  void on_actionShow_grid_in_edit_mode_toggled(bool bChecked);
  void on_actionEnable_antialiasing_smoother_lines_toggled(bool bChecked);
- //void On_lockPosition_triggered(bool bChecked);
  void on_removeMenuAction_triggered();
- //void on_actionAdd_loco_triggered();
- //void on_actionAdd_loco_from_roster_triggered();
- //void on_actionRemove_markers_triggered();
- //void on_actionAllow_turnout_animation_toggled(bool bChecked);
- //void on_actionAllow_repositioning_toggled(bool bChecked);
  void on_actionAllow_layout_control_toggled(bool bChecked);
  /*private*/ void deleteSelectedItems(); // SLOT[]
- //void on_actionShow_turnout_circles_toggled(bool bState);
  void on_actionHidden_toggled(bool bState);
- //void on_actionEdit_track_width_triggered();
- //void on_colorBackgroundMenuItemSelected(/*int*/);
  void on_actionAdd_reporter_label_triggered();
  void on_actionAdd_background_image_2_triggered();
- //void on_actionLoad_XML_triggered();
- //void on_actionLoad_Other_XML_triggered();
- //void on_actionSave_triggered();
- //void on_actionSave_as_triggered();
- //void on_newSensor(QString,int,int);
  void on_actionSnap_to_grid_when_adding_toggled(bool bState);
  void on_actionSnap_to_grid_when_moving_toggled(bool bState);
- //void OnZoom_selected(QAction* act);
- //void on_actionEdit_mode_toggled(bool bState);
- //void OnDefaultTrackColorSelected(QAction * act);
  void on_defaultTextColorSelected();
- //void on_actionDelete_this_panel_triggered();
- //void on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool);
  void on_actionSet_Signals_at_Block_Boundary_triggered();
  void on_actionSet_Signals_at_Turnout_triggered();
  void on_actionSet_Signals_at_Crossover_triggered();
  void on_actionSet_Signals_at_Level_Crossing_triggered();
- //void locoMarkerFromRoster();
- //void on_rosterBoxSelectionChanged(QString propertyName,QObject* o,QObject* n);
- //void on_menuWindow_aboutToShow();
  void on_actionAdd_Fast_Clock_triggered();
- //void onChangeIconsButton();
  void on_actionSet_Signals_at_Slip_triggered();
  void on_actionSet_Signals_at_Throat_to_Throat_Turnouts_triggered();
  void on_actionEntry_Exit_triggered();
-// void on_actionMoveLayout_triggered();
-// void on_okMove_clicked();
  void on_actionAdd_Turntable_triggered();
  void on_turnoutCirclesOnItem_triggered(bool);
  void on_turnoutDrawUnselectedLegItem_triggered(bool);
- //void on_turnoutCircleColorButtonMapper_triggered(int);
- //void on_turnoutCircleSizeButtonMapper_triggered(int);
  void on_actionSet_Signals_at_Three_Way_Turnout();
  void on_autoAssignBlocksItem_triggered(bool b);
  void on_hideTrackSegmentConstructionLines_toggled(bool);
@@ -1099,20 +1019,10 @@ private slots:
  void on_addTrackColorMenuEntry_triggered();
  void on_addTrackOccupiedColorMenuEntry_triggered();
  void on_addTrackAlternativeColorMenuEntry_triggered(/*int*/);
- //void onChangeIcons();
- //void onTurnoutProperties();
- //void onSecondTurnoutProperties();
- //void onTrackSegmentProperties();
- //void onBlockProperties();
- //void onMiscFields();
- //void blockContentsComboBoxChanged();
  void on_actionBoth_scrollbars();
  void on_actionNo_scrollbars();
  void on_actionHorizontal_scrollbars();
  void on_actionVertical_scrollbars();
- //void onCalculateBounds();
-// void onZoomIn();
-// void onZoomOut();
  /*private*/ double on_zoomIn();
  /*private*/ double on_zoomOut();
  double on_zoomToFit();
@@ -1145,8 +1055,8 @@ protected:
  /*protected*/ static /*final*/ const double SIZE;// = 3.0;
  /*protected*/ static /*final*/ const double SIZE2;// = SIZE * 2.; //must be twice SIZE
 
- /*protected*/ QColor turnoutCircleColor;// = Color.black; //matches earlier versions
- /*protected*/ QColor turnoutCircleThrownColor;// = Color.black;
+ /*protected*/ QColor turnoutCircleColor = QColor(Qt::black); //matches earlier versions
+ /*protected*/ QColor turnoutCircleThrownColor= QColor(Qt::black);
  /*protected*/ bool turnoutFillControlCircles = false;
  /*protected*/ int turnoutCircleSize = 4; //matches earlier versions
 
@@ -1162,6 +1072,37 @@ protected:
  /*protected*/ /*transient*/ double selectionWidth = 0.0;
  /*protected*/ /*transient*/ double selectionHeight = 0.0;
 
+ /*protected*/ /*transient*/ QObject* selectedObject = nullptr;       //selected object, null if nothing selected
+ /*protected*/ /*transient*/ QObject* prevSelectedObject = nullptr;   //previous selected object, for undo
+
+ /*protected*/ /*transient*/ LayoutTrack* foundTrack = nullptr;      //found object, null if nothing found
+ /*protected*/ /*transient*/ QPointF foundLocation;// = new Point2D.Double(0.0, 0.0); //location of found object
+ /*protected*/ /*transient*/ int foundHitPointType = 0;          //connection type within the found object
+ ///private transient boolean foundNeedsConnect = false;    //true if found point needs a connection
+
+ /*protected*/ /*transient*/ LayoutTrack* beginTrack = nullptr;      //begin track segment connection object, null if none
+ /*protected*/ /*transient*/ QPointF beginLocation = QPointF(0.0, 0.0); //location of begin object
+ /*protected*/ /*transient*/ int beginHitPointType = LayoutTrack::NONE; //connection type within begin connection object
+
+ /*protected*/ /*transient*/ QPointF currentLocation;// = new Point2D.Double(0.0, 0.0); //current location
+
+ /*protected*/ /*transient*/ int panelWidth = 0;
+ /*protected*/ /*transient*/ int panelHeight = 0;
+
+ /*protected*/ /*transient*/ float mainlineTrackWidth = 4.0F;
+ /*protected*/ /*transient*/ float sidelineTrackWidth = 2.0F;
+
+ /*protected*/ /*transient*/ QColor mainlineTrackColor = QColor(Qt::darkGray);
+ /*protected*/ /*transient*/ QColor sidelineTrackColor = QColor(Qt::darkGray);
+ /*protected*/ /*transient*/ QColor defaultTrackColor = QColor(Qt::darkGray);
+ /*protected*/ /*transient*/ QColor defaultOccupiedTrackColor = QColor(Qt::red);
+ /*protected*/ /*transient*/ QColor defaultAlternativeTrackColor = QColor(Qt::white);
+
+ /*protected*/ /*transient*/ bool antialiasingOn = false;
+ /*protected*/ /*transient*/ bool highlightSelectedBlockFlag = false;
+
+ /*protected*/ /*transient*/ bool turnoutCirclesWithoutEditMode = false;
+
  /**
  * Return a List of all items whose bounding rectangle contain the mouse position.
  * ordered from top level to bottom
@@ -1169,7 +1110,7 @@ protected:
  /*protected*/ QList <Positionable*> getSelectedItems(QGraphicsSceneMouseEvent* event);
  ///*protected*/ QVector <Positionable*>* _contents;// = new QVector<Positionable*>();
  void init();
- /*protected*/ double _paintScale;// = 1.0;   // scale for _targetPanel drawing
+ /*protected*/ double _paintScale = 1.0;   // scale for _targetPanel drawing
  #if 0
  /*protected*/ static QPointF getCoords(QObject* o, int type);
 #endif
@@ -1181,7 +1122,7 @@ protected:
  *  This is the 'target' pane where the layout is displayed
  */
  /*protected*/ void paintTargetPanel(EditScene* g2);
- /*protected*/ void setTrackStrokeWidth(bool need);
+ // /*protected*/ void setTrackStrokeWidth(bool need);
  /**
  * Select the menu items to display for the Positionable's popup
  */
@@ -1230,7 +1171,7 @@ protected:
  /*protected*/ bool removeLayoutSlip (LayoutTurnout* o);
 // /*protected*/ LocoIcon* selectLoco(QString rosterEntryTitle);
 // /*protected*/ LocoIcon* selectLoco(RosterEntry* entry);
- /*protected*/ bool skipIncludedTurnout;// = false;
+ /*protected*/ bool skipIncludedTurnout = false;
  /*protected*/ void targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* e);
  /**
  * Remove marker icons from panel
@@ -1254,11 +1195,6 @@ protected:
  /*protected*/ bool removeLayoutShape(/*@Nonnull*/ LayoutShape* s);
  /*protected*/ void amendSelectionGroup(/*@Nonnull*/ LayoutShape* ls);
  /*protected*/ /*transient*/ QList<LayoutShape*> _layoutShapeSelection;// = new ArrayList<>();
- /*protected*/ /*transient*/ LayoutTrack* foundTrack = nullptr;      //found object, null if nothing found
- /*protected*/ /*transient*/ LayoutTrack* beginTrack = nullptr;      //begin track segment connection object, null if none
- /*protected*/ /*transient*/ QPointF beginLocation;// = new Point2D.Double(0.0, 0.0); //location of begin object
- /*protected*/ /*transient*/ int beginHitPointType;// = LayoutTrack.NONE; //connection type within begin connection object
- /*protected*/ /*transient*/ int foundHitPointType = 0;          //connection type within the found object
 
 protected slots:
  /*protected*/ void assignBlockToSelection();

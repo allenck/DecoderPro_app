@@ -284,7 +284,7 @@ private:
  QGraphicsItemGroup* rects = nullptr;
  void init(QString ident);
  static Logger* log;
- void drawHiddenTrack(LayoutEditor* editor, EditScene *g2);
+// void drawHiddenTrack(LayoutEditor* editor, EditScene *g2);
  void invalidate(EditScene *g2) override;
 // void drawDashedTrack(LayoutEditor* editor, EditScene *g2, bool mainline);
  /*private*/ void calculateTrackSegmentAngle();

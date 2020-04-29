@@ -412,7 +412,7 @@ private slots:
     /*protected*/ QRectF _selectRect;// = null;
     /*protected*/ QRectF _highlightcomponent;// = null;
     /*protected*/ bool _dragging;// = false;
-    /*protected*/ QList <Positionable*>* _selectionGroup;// = NULL;  // items gathered inside fence
+    /*protected*/ QList <Positionable*>* _selectionGroup = nullptr;  // items gathered inside fence
 
     /*protected*/ Positionable* _currentSelection;
     // Accessible to editor views

@@ -37,7 +37,6 @@
 #include "configxmlmanager.h"
 #include "borderlayout.h"
 #include "addentryexitpairaction.h"
-#include "jtextfield.h"
 #include "layouteditorfinditems.h"
 #include "jmriconfigurationmanager.h"
 #include "userpreferencesmanager.h"
@@ -69,7 +68,6 @@
 #include "dispatcherframe.h"
 #include "dispatcheraction.h"
 #include "activatetrainframe.h"
-#include "mathutil.h"
 #include <QActionGroup>
 #include "leblockcontentsicon.h"
 #include "guilafpreferencesmanager.h"
@@ -305,24 +303,23 @@ LayoutEditor::~LayoutEditor()
 
 /*private*/ void LayoutEditor::createfloatingEditToolBoxFrame()
 {
-#if 1
-    if (isEditable() && floatingEditToolBoxFrame == nullptr) {
-        //Create a scroll pane to hold the window content.
-        leToolBarPanel = new LayoutEditorFloatingToolBarPanel(this);
-        floatingEditContentScrollPane = new QScrollArea();//new JScrollPane(leToolBarPanel);
-        floatingEditContentScrollPane->setWidget(leToolBarPanel);
-        floatingEditContentScrollPane->setHorizontalScrollBarPolicy(/*JScrollPane.HORIZONTAL_SCROLLBAR_NEVER*/Qt::ScrollBarAlwaysOff);
-        floatingEditContentScrollPane->setVerticalScrollBarPolicy(/*JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED*/Qt::ScrollBarAsNeeded);
-        floatingEditContentScrollPane->setWidgetResizable(true);
-        //Create the window and add the toolbox content
-        floatingEditToolBoxFrame = new JmriJFrameX(tr("Tool Box: %1").arg(getLayoutName()));
-        floatingEditToolBoxFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
-        floatingEditToolBoxFrame->setContentPane(floatingEditContentScrollPane);
-        floatingEditToolBoxFrame->pack();
-        floatingEditToolBoxFrame->setAlwaysOnTop(true);
-        floatingEditToolBoxFrame->setVisible(true);
-    }
-#endif
+ if (isEditable() && floatingEditToolBoxFrame == nullptr)
+ {
+  //Create a scroll pane to hold the window content.
+  leToolBarPanel = new LayoutEditorFloatingToolBarPanel(this);
+  floatingEditContentScrollPane = new QScrollArea();//new JScrollPane(leToolBarPanel);
+  floatingEditContentScrollPane->setWidget(leToolBarPanel);
+  floatingEditContentScrollPane->setHorizontalScrollBarPolicy(/*JScrollPane.HORIZONTAL_SCROLLBAR_NEVER*/Qt::ScrollBarAlwaysOff);
+  floatingEditContentScrollPane->setVerticalScrollBarPolicy(/*JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED*/Qt::ScrollBarAsNeeded);
+  floatingEditContentScrollPane->setWidgetResizable(true);
+  //Create the window and add the toolbox content
+  floatingEditToolBoxFrame = new JmriJFrameX(tr("Tool Box: %1").arg(getLayoutName()));
+  floatingEditToolBoxFrame->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
+  floatingEditToolBoxFrame->setContentPane(floatingEditContentScrollPane);
+  floatingEditToolBoxFrame->pack();
+  floatingEditToolBoxFrame->setAlwaysOnTop(true);
+  floatingEditToolBoxFrame->setVisible(true);
+ }
 }
 
 /*private*/ void LayoutEditor::deletefloatingEditToolBoxFrame() {
@@ -376,57 +373,12 @@ void LayoutEditor::init()
  PanelEditor::init(layoutName);
  savePanels = new StoreXmlUserAction(tr("Save Panels..."), this);
  _contents = new QVector<Positionable*>();
- //pointList = new QVector<PositionablePoint*>();  // PositionablePoint list
- bIsEditable = true;
- //ui->actionEdit_mode->setChecked(bIsEditable);
-_globalSetsLocal = true;    // pre 2.9.6 behavior
-_useGlobalFlag = false;     // pre 2.9.6 behavior
- //ui->actionAllow_layout_control->setChecked(_controlLayout);
- snapToGridOnAdd = false;
- //ui->actionSnap_to_grid_when_adding->setChecked(snapToGridOnAdd);
- snapToGridOnMove = false;
- //ui->actionSnap_to_grid_when_moving->setChecked(snapToGridOnMove);
- numAnchors = 0;
- numEndBumpers = 0;
- numTrackSegments = 0;
- beginTrack = nullptr; // begin track segment connection object, nullptr if none
- foundTrack = nullptr; // found object, nullptr if nothing found
- foundTrack = 0;   // connection type within the found object
- newTrack = nullptr;
- numLevelXings = 0;
- numLayoutSlips = 0;
- numLayoutTurntables = 0;
- //zoom
- minZoom = 0.25;
- maxZoom = 8.0;
- toolBarSide = ToolBarSide("top");
- //leToolBarPanel = new LayoutEditorToolBarPanel(this); // temp until this is implemented fully!
 
  wideToolBarCheckBoxMenuItem = new QAction(tr("Wide ToolBar"));
  wideToolBarCheckBoxMenuItem->setCheckable(true);
  helpBarPanel = new JPanel();
 
- //ui->toolBarWidget->hide();
  editPanel = new QGraphicsView(/*ui->centralWidget*/);
-// borderLayout = new BorderLayout();
-// editPanelLayout = new QHBoxLayout();
-//  editPanel->setObjectName("LayoutEditor_editPanel");
-//  ui->verticalLayout->removeWidget(ui->editPanel);
-//  ui->verticalLayout->removeWidget(ui->textEdit);
-//  ui->verticalLayout->addLayout(borderLayout);
-//  ui->verticalLayout->addWidget(editPanel);
-//  editPanelLayout->addWidget(editPanel);
-//  ui->verticalLayout->addWidget(ui->textEdit);
-// QWidget* cw = new QWidget();
-// setCentralWidget(cw);
-// thisLayout = new BorderLayout(cw);
-  //ui->verticalLayout->addWidget(editPanel, BorderLayout::Center);
-// borderLayout = new BorderLayout();
-// borderLayout->addWidget(editPanel, BorderLayout::Center);
-
-// QWidget* borderWidget = new QWidget();
-// borderWidget->setLayout(borderLayout);
-// setCentralWidget(borderWidget);
 
  setupToolBar();
  setupMenuBar();
@@ -434,36 +386,6 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  //setup help bar
 
  helpBarPanel->setLayout(new QVBoxLayout());//helpBar, BoxLayout.PAGE_AXIS));
-#if 0
- JTextArea* helpTextArea1 = new JTextArea(tr("To add an item, check item type, enter needed data, then, with shift down, click on panel - except Track Segment."));
- helpBar->layout()->addWidget(helpTextArea1);
- JTextArea* helpTextArea2 = new JTextArea(tr("To add a Track Segment, with shift down press mouse on one connection point and drag to another connection point."));
- helpBar->layout()->addWidget(helpTextArea2);
-
- QString helpText3 = "";
-
-// switch (SystemType.getType()) {
-//     case SystemType.MACOSX: {
-#ifdef Q_OS_OSF
-         helpText3 = tr("Help3Mac");
-//         break;
-//     }
-#endif
-#ifdef Q_OS_LINUX  || Q_OS_Win32
-//     case SystemType.WINDOWS:
-//     case SystemType.LINUX: {
-         helpText3 = tr("To move an item, drag it with the right mouse button. To show its popup menu, right-click on it.");
-//         break;
-//     }
-#endif
-
-//     default:
-//         helpText3 = Bundle.getMessage("Help3");
-// }
-
- JTextArea* helpTextArea3 = new JTextArea(helpText3);
- helpBar->layout()->addWidget(helpTextArea3);
-#else
  QTextEdit* textEdit = new QTextEdit(/*centralWidget*/);
  textEdit->setObjectName(QLatin1String("textEdit"));
  QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -479,7 +401,6 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
 
  helpBarPanel->layout()->addWidget(textEdit);
-#endif
  if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
   log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
@@ -489,106 +410,17 @@ _useGlobalFlag = false;     // pre 2.9.6 behavior
  resetDirty();
  // establish link to LayoutEditorAuxTools
  auxTools = new LayoutEditorAuxTools(this);
- tools = nullptr;
  if (auxTools==nullptr) log->error("Unable to create link to LayoutEditorAuxTools");
- // counts used to determine unique internal names
- numAnchors = 0;
- numEndBumpers = 0;
- numEdgeConnectors = 0;
- numTrackSegments = 0;
- numLevelXings = 0;
- numLayoutSlips = 0;
- numLayoutTurnouts = 0;
- numLayoutTurntables = 0;
 
- xScale= 1.0;
- yScale = 1.0;
 _contents = new QVector<Positionable*>();
- // selection variables
- selectionActive = false;
- selectionX = 0.0;
- selectionY = 0.0;
- selectionWidth = 0.0;
- selectionHeight = 0.0;
- _positionableSelection = nullptr;
- _turnoutSelection = nullptr; //new QVector<LayoutTurnout*>();  // LayoutTurnouts
- _xingSelection = nullptr; //new QVector<LevelXing*>();  // LevelXing list
- _slipSelection = nullptr; //new QVector<LayoutSlip*>();  // LayoutSlip list
- _turntableSelection = nullptr;
- _pointSelection = nullptr; //new QVector<PositionablePoint*>();  // PositionablePoint list
- //_labelSelection = nullptr; //new QVector<PositionableLabel*>(); // PositionalLabel list
- _paintScale = 1.0;   // scale for _targetPanel drawing
- undoDelta = MathUtil::zeroPoint2D;
- beginLocation = QPointF(0.0, 0.0); //location of begin object
- beginHitPointType = LayoutTrack::NONE; //connection type within begin connection object
-
-  openFrame = this;
- // program default turnout size parameters
- turnoutBXDefault = 20.0;  // RH, LH, WYE
- turnoutCXDefault = 20.0;
- turnoutWidDefault = 10.0;
- xOverLongDefault = 30.0;   // DOUBLE_XOVER, RH_XOVER, LH_XOVER
- xOverHWidDefault = 10.0;
- xOverShortDefault = 10.0;
- turnoutBX= turnoutBXDefault;  // RH, LH, WYE
- turnoutCX=turnoutCXDefault;
- turnoutWid=turnoutWidDefault;
- xOverLong=xOverLongDefault;   // DOUBLE_XOVER, RH_XOVER, LH_XOVER
- xOverHWid=xOverHWidDefault;
- xOverShort=xOverShortDefault;
- prevSelectedObject = nullptr;
- _anchorX = 0;
- _anchorY = 0;
-//layoutBlockManager = new LayoutBlockManager(this);
  layoutBlockManager = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  blockManger = new BlockManager(this);
- defaultTrackColor =  QColor(Qt::black);;
- defaultOccupiedTrackColor =  QColor(Qt::red);
- defaultAlternativeTrackColor =  QColor(Qt::white);
 
- defaultTextColor =  QColor(Qt::black);
- turnoutCircleColor = defaultTrackColor; //matches earlier versions
- turnoutCircleSize=2;  //matches earlier versions
- turnoutCircleThrownColor =  QColor(Qt::black);
-
- //turnoutList = new QVector<LayoutTurnout*>();  // LayoutTurnouts
  turntableList = new QVector<LayoutTurntable*>(); // Turntable list
- noWarnTurntable = false;
-
- _positionableSelection = nullptr;//new QVector<Positionable*>();
- //_turnoutSelection = nullptr;//new menuAdd_background_image<LayoutTurnout*>();  // LayoutTurnouts
- foundNeedsConnect = false; // true if found point needs a connection
- //xingList = new QVector<LevelXing*>();  // LevelXing list
- //slipList = new QVector<LayoutSlip*>();  // Layout slip list
- _editable = false;
- _controlLayout = true;
- _positionable = false;
- animatingLayout = true;
- showHelpBar = true;
- bDirty = false;
- noWarnLevelXing = false;
- noWarnSlip = false;
- selectedObject = nullptr;
- selectedHitPointType = 0;
- skipIncludedTurnout = false;
- mainlineTrackWidth = 4.0F;
- sidelineTrackWidth = 2.0F;
- main = true;
- trackWidth = sidelineTrackWidth;
- _selectionGroup = nullptr;
- turnoutCirclesWithoutEditMode = false;
- //ui->actionShow_turnout_circles->setChecked(turnoutCirclesWithoutEditMode);
- isDragging = false;
- foundTrack = nullptr;
  layoutTrackList = new QList<LayoutTrack*>();  // TrackSegment list
- drawGrid =false;
- //ui->actionShow_grid_in_edit_mode->setChecked(drawGrid);
- antialiasingOn = false;
- noWarnPositionablePoint= false;
  memoryLabelList = new QVector<LEMemoryIcon*>(); // Memory Label List
 
 //makeBackgroundColorMenu(ui->menuSet_Background_color);
- signalIconEditor = nullptr;
  clocks = new QVector<AnalogClock2Display*>();  // fast clocks
  markerImage = new QVector<LocoIcon*>(); // marker images
  multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
@@ -631,31 +463,13 @@ _contents = new QVector<Positionable*>();
  signalMastImage = new QVector<SignalMastIcon*>();  // signal mast images
  signalList = new QVector<SignalHeadIcon*>();  // Signal Head Icons
  signalMastList = new QVector<SignalMastIcon*>();  // Signal Head Icons
- skipIncludedTurnout = false;
  layoutShapes = new QList<LayoutShape*>();               // LayoutShap list
 
 
  qApp->processEvents();
- panelGridGroup = nullptr;
- trackInProgress = nullptr;
- rectItem = nullptr;
- highlightRect = nullptr;
- noWarnGlobalDelete = false;
- multiSensorFrame = nullptr;
- openDispatcherOnLoad = false;
- useDirectTurnoutControl = false; // Uses Left click for closing points, Right click for throwing.
- turnoutDrawUnselectedLeg = true;
 
-// if(memo==nullptr)
-//  memo = new LocoNetSystemConnectionMemo();
-// lnSensorManager = memo->getSensorManager();
-
- turnoutDrawUnselectedLeg = true;
- _showCoordinates = true;
  sensorList = new QVector<SensorIcon*>();  // Sensor Icons
- delayedPopupTrigger = false;
- isDragging = false;
- _defaultToolTip = "";
+ //_defaultToolTip = "";
  toolBarFontSizeMenu = new QMenu(tr("Font Size"));
  wideToolBarCheckBoxMenuItem = new QAction(("Wide ToolBar"), this);
  wideToolBarCheckBoxMenuItem->setCheckable(true);
@@ -679,22 +493,6 @@ _contents = new QVector<Positionable*>();
  //_targetPanel = editScene;
  defaultBackgroundColor =  editScene->backgroundBrush().color();//QColor(Qt::lightGray);
 
-  // saved state of options when panel was loaded or created
-  savedEditMode = true;
-  savedPositionable = true;
-  savedControlLayout = true;
-  savedAnimatingLayout = true;
-  savedShowHelpBar = false;
-// }
-
- textColorCount = 0;
- trackColorCount = 0;
- trackOccupiedColorCount = 0;
- trackAlternativeColorCount = 0;
- textColorCount = 0;
- backgroundColorCount=0;
- turnoutCircleColorCount = 0;
- turnoutCircleSizeCount = 0;
  trackColors = new QVector<QColor>(13);
  trackOccupiedColors = new QVector<QColor>(13);
  trackAlternativeColors = new QVector<QColor>(13);
@@ -714,8 +512,6 @@ _contents = new QVector<Positionable*>();
 
  editPanel->setMouseTracking(true);
  editPanel->setScene(editScene);
- _turnoutSelection = nullptr;
-
 
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(on_scenePos(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)),this, SLOT(mouseClicked(QGraphicsSceneMouseEvent*)));
@@ -730,12 +526,6 @@ _contents = new QVector<Positionable*>();
  sensorIconEditor->setIcon(2, "Inconsistent:", ":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
  sensorIconEditor->setIcon(3, "Unknown:",":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
  sensorIconEditor->complete();
-
- //Signal icon & text
- //ui->signalButton->setToolTip(tr("Select to add a Signal Head icon when next clicking with shift down."));
-
-// setupComboBox(ui->signalHeadComboBox, true, false);
-// ui->signalHeadComboBox->setToolTip(tr("Enter name of Signal Head represented by a new signal head icon."));
 
  signalIconEditor = new MultiIconEditor(10);
  signalIconEditor->setIcon(0, "Red:",":/resources/icons/smallschematics/searchlights/left-red-short.gif");
@@ -769,26 +559,6 @@ _contents = new QVector<Positionable*>();
  signalFrame->pack();
  signalFrame->setVisible(false);
 
- //icon label
- //ui->iconLabelButton->setToolTip(tr("Select to add a general purpose icon when next clicking with shift down."));
-
- //change icons...
- //this is enabled/disabled via selectionListAction above
-// changeIconsButton.addActionListener((ActionEvent event) -> {
-//     if (sensorButton->isChecked()) {
-//         sensorFrame.setVisible(true);
-//     } else if (signalButton->isChecked()) {
-//         signalFrame.setVisible(true);
-//     } else if (iconLabelButton->isChecked()) {
-//         iconFrame.setVisible(true);
-//     } else {
-//         //explain to the user why nothing happens
-//         JOptionPane.showMessageDialog(null, tr("ChangeIconNotApplied"),
-//                 tr("ChangeIcons"), JOptionPane.INFORMATION_MESSAGE);
-//     }
-// });
-// connect(ui->changeIconsButton, SIGNAL(clicked(bool)), this, SLOT(onChangeIconsButton()));
-
  iconEditor = new MultiIconEditor(1);
  iconEditor->setIcon(0, "",":/resources/icons/smallschematics/tracksegments/block.gif");
  iconEditor->complete();
@@ -798,17 +568,8 @@ _contents = new QVector<Positionable*>();
  iconFrameLayout->addWidget(iconEditor);
  iconFrame->pack();
 
- autoAssignBlocks = true;
- tooltipsInEditMode = true;
- tooltipsWithoutEditMode = false;
- _loadFailed = false;
- _debug = true;
- _ignore = false;
  _urlMap = new QMap<QString, QString>();
- _newIcon = nullptr;
- _delete = false;
  finder = new LayoutEditorFindItems(this);
- //ui->menuOptions->addMenu( setupTurnoutSubMenu());
 
 // register the resulting panel for later configuration
  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
@@ -822,30 +583,18 @@ _contents = new QVector<Positionable*>();
  {
   log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
  }
- //operational variables for enter track width pane
- enterTrackWidthFrame = nullptr;
- enterTrackWidthOpen = false;
- trackWidthChange = false;
  sidelineTrackWidthField = new JTextField(6);
  mainlineTrackWidthField = new JTextField(6);
 
- //operational variables for enter grid sizes pane
- enterGridSizesFrame = nullptr;
- enterGridSizesOpen = false;
- gridSizesChange = false;
  primaryGridSizeField = new JTextField(6);
  secondaryGridSizeField = new JTextField(6);
 
  //operational variables for enter reporter pane
- enterReporterFrame = nullptr;
- reporterOpen = false;
  xPositionField = new JTextField(6);
  yPositionField = new JTextField(6);
  reporterNameField = new JTextField(6);
 
  //operational variables for scale/translate track diagram pane
- scaleTrackDiagramFrame = nullptr;
- scaleTrackDiagramOpen = false;
  xFactorField = new JTextField(6);
  yFactorField = new JTextField(6);
  xTranslateField = new JTextField(6);
@@ -856,7 +605,7 @@ _contents = new QVector<Positionable*>();
 
  xMoveField = new JTextField(6);
  yMoveField = new JTextField(6);
-#if 1
+
  //initialize preferences
  UserPreferencesManager* prefsMgr= static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
  if(prefsMgr)
@@ -903,7 +652,7 @@ _contents = new QVector<Positionable*>();
      }
  }
 #endif
-#endif
+
 } // init
 
  void LayoutEditor::on_layoutTrackDrawingOptionsDialog()
@@ -3712,6 +3461,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
  return result;
 }
 
+
 /*private*/ void LayoutEditor::highLightSelection(EditScene* g)
 {
   //java.awt.Stroke stroke = g.getStroke();
@@ -4170,12 +3920,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*public*/ double LayoutEditor::getXOverShort() {return xOverShort;}
 // reset turnout sizes to program defaults
 /*private*/ void LayoutEditor::on_resetTurnoutSize() {
-  turnoutBX = turnoutBXDefault;
-  turnoutCX = turnoutCXDefault;
-  turnoutWid = turnoutWidDefault;
-  xOverLong = xOverLongDefault;
-  xOverHWid = xOverHWidDefault;
-  xOverShort = xOverShortDefault;
+  turnoutBX = LayoutTurnout::turnoutBXDefault;
+  turnoutCX = LayoutTurnout::turnoutCXDefault;
+  turnoutWid = LayoutTurnout::turnoutWidDefault;
+  xOverLong = LayoutTurnout::xOverLongDefault;
+  xOverHWid = LayoutTurnout::xOverHWidDefault;
+  xOverShort = LayoutTurnout::xOverShortDefault;
   setDirty(true);
 }
 
@@ -4452,49 +4202,68 @@ bool LayoutEditor::isDirty() {return bDirty;}
 */
 /*protected*/ void LayoutEditor::paintTargetPanel(EditScene* g2)
 {
-#if 0 //old draw routines
-  //Graphics2D g2 = (Graphics2D)g;
-  //g2->clear();
-  //drawPositionableLabelBorder(g2);
-  // Optional antialising, to eliminate (reduce) staircase on diagonal lines
-  if(antialiasingOn) /*g2.setRenderingHints(antialiasing);*/
-   editPanel->setRenderHint(QPainter::Antialiasing);
-  //if (isEditable() && drawGrid)
-  drawPanelGrid(g2);
-  drawLabelImages(g2);
-//  g2.setColor(defaultTrackColor);
-  main = false;
-//  g2.setStroke(new BasicStroke(sideTrackWidth,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-  drawHiddenTrack(g2);
-  drawDashedTrack(g2,false); // side track
-  drawDashedTrack(g2,true); // mainline
-  drawSolidTrack(g2,false);
-  drawSolidTrack(g2,true);
-  drawTurnouts(g2);
-  drawXings(g2);
-  drawSlips(g2);
-  drawTurntables(g2);
-  drawTrackInProgress(g2);
-//  g2.setStroke(new BasicStroke(1.0F,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-  drawPoints(g2);
-  if (isEditable())
-  {
-   drawTurnoutRects(g2);
-   drawXingRects(g2);
-   drawSlipRects(g2);
-   drawTrackOvals(g2);
-   drawSelectionRect(g2);
-   drawTurntableRects(g2);
-   drawMemoryRects(g2);
-   drawTrackCircleCentre(g2);
-   drawTurnoutCircles(g2);
-   highLightSelection(g2);
-  }
-  else if (turnoutCirclesWithoutEditMode)
-  {
-   drawTurnoutCircles(g2);
-   drawSlipCircles(g2);
-  }
+#if 1
+ if (qobject_cast<EditScene*>(g2))
+ {
+     //layoutEditor.draw((Graphics2D) g);
+
+     //Graphics2D g2 = (Graphics2D) g;
+
+//     if (clipBounds.isNull()) {
+//         if (!clipBounds == (g2->getClipBounds())) {
+//             g2.setClip(clipBounds);
+//         }
+//     }
+     //Optional antialising, to eliminate (reduce) staircase on diagonal lines
+//     if (layoutEditor.antialiasingOn) {
+//         g2.setRenderingHints(antialiasing);
+//     }
+
+     //drawPositionableLabelBorder(g2);
+     // things that only get drawn in edit mode
+     if (/*layoutEditor.*/isEditable()) {
+         if (/*layoutEditor.*/getDrawGrid()) {
+             drawPanelGrid(g2);
+         }
+         drawLayoutTracksHidden(g2);
+     }
+
+     drawShapes(g2, true);
+     drawTrackSegmentsDashed(g2);
+     drawLayoutTracksBallast(g2);
+     drawLayoutTracksTies(g2);
+     drawLayoutTracksRails(g2);
+     drawLayoutTracksBlockLines(g2);
+
+     drawPositionablePoints(g2, false);
+     drawPositionablePoints(g2, true);
+
+     drawShapes(g2, false);
+
+     drawDecorations(g2);
+
+     // things that only get drawn in edit mode
+     if (/*layoutEditor.*/isEditable()) {
+         drawLayoutTrackEditControls(g2);
+         drawShapeEditControls(g2);
+
+         drawMemoryRects(g2);
+         drawBlockContentsRects(g2);
+
+         if (/*layoutEditor.*/allControlling()) {
+             drawTurnoutControls(g2);
+         }
+         drawSelectionRect(g2);
+         highLightSelection(g2);
+
+         drawTrackSegmentInProgress(g2);
+         drawShapeInProgress(g2);
+     } else if (/*layoutEditor.*/turnoutCirclesWithoutEditMode) {
+         if (/*layoutEditor.*/allControlling()) {
+             drawTurnoutControls(g2);
+         }
+     }
+ }
 #else // new draw routines
  draw(editScene);
 #endif
@@ -4503,6 +4272,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //
 // this is called by the layoutEditorComponent
 //
+#if 0
 /*protected*/ void LayoutEditor::draw(EditScene* g2) {
   if(isDrawing) return;
   isDrawing = true;
@@ -4578,7 +4348,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
     }
     isDrawing = false;
 }   // draw
-
+#endif
 //
 //  draw hidden layout tracks
 //
@@ -4990,6 +4760,17 @@ bool LayoutEditor::isDirty() {return bDirty;}
     }
 }
 
+// draw shapes
+/*private*/ void LayoutEditor::drawShapes(EditScene* g2, bool isBackground) {
+    //layoutEditor.getLayoutShapes().forEach((s) ->
+ foreach(LayoutShape* s, *getLayoutShapes())
+ {
+     if (isBackground == (s->getLevel() < 3)) {
+         s->draw(g2);
+     }
+ }//);
+}
+
 // draw track segment (in progress)
 /*private*/ void LayoutEditor::drawTrackSegmentInProgress(EditScene* g2) {
     //check for segment in progress
@@ -5025,6 +4806,27 @@ bool LayoutEditor::isDirty() {return bDirty;}
     }
 }
 
+// draw shape (in progress)
+/*private*/ void LayoutEditor::drawShapeInProgress(EditScene* g2)
+{
+ //check for segment in progress
+ if (/*layoutEditor.*/getLayoutEditorToolBarPanel()->shapeButton->isChecked())
+ {
+  //log.warn("drawShapeInProgress: selectedObject: " + selectedObject);
+  if ((/*layoutEditor.*/selectedObject != nullptr)) {
+//      g2.setColor(Color.DARK_GRAY);
+//      g2.setStroke(new BasicStroke(3.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+//      g2.draw(new Line2D.Double(layoutEditor.beginLocation, layoutEditor.currentLocation));
+   QPen stroke = QPen(QColor(Qt::darkGray), 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+   drawingStroke = stroke;
+   QGraphicsLineItem* item = new QGraphicsLineItem(beginLocation.x(), beginLocation.y(), currentLocation.x(), currentLocation.y());
+   item->setPen(stroke);
+
+   g2->addItem(item);
+  }
+ }
+}
+
 // draw layout track edit controls
 /*private*/ void LayoutEditor::drawLayoutTrackEditControls(EditScene* g2) {
     //g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
@@ -5033,6 +4835,18 @@ bool LayoutEditor::isDirty() {return bDirty;}
     for (LayoutTrack* tr : *layoutTrackList) {
         tr->drawEditControls(g2);
     }
+}
+
+/*private*/ void LayoutEditor::drawShapeEditControls(EditScene* g2) {
+    //g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+ QPen stroke = QPen(turnoutCircleColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+ drawingStroke = stroke;
+
+ //layoutEditor.getLayoutShapes().forEach((s) ->
+ foreach(LayoutShape* s, *getLayoutShapes())
+ {
+     s->drawEditControls(g2);
+ }//);
 }
 
 // draw layout turnout controls
@@ -5267,6 +5081,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //            .collect(Collectors.toCollection(ArrayList<PositionablePoint>::new));
 }
 
+#if 0
 /*protected*/ void LayoutEditor::setTrackStrokeWidth(bool need)
 {
  if (main == need) return;
@@ -5283,7 +5098,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //      g2.setStroke(new BasicStroke(sideTrackWidth,BasicStroke.CAP_BUTT,                                                      BasicStroke.JOIN_ROUND));
  }
 }
-
+#endif
 /*protected*/ void LayoutEditor::drawTurnouts(EditScene* g2)
 {
  //float trackWidth = sideTrackWidth;
@@ -12080,18 +11895,22 @@ void LayoutEditor::on_locationItem()
 \*============================================*/
 
 //@Nonnull
-/*public*/ LayoutTrackDrawingOptions* LayoutEditor::getLayoutTrackDrawingOptions() {
-    if (layoutTrackDrawingOptions == nullptr) {
-        layoutTrackDrawingOptions = new LayoutTrackDrawingOptions(getLayoutName());
-        // integrate LayoutEditor drawing options with previous drawing options
-        layoutTrackDrawingOptions->setMainBlockLineWidth((int) mainlineTrackWidth);
-        layoutTrackDrawingOptions->setSideBlockLineWidth((int) sidelineTrackWidth);
-        layoutTrackDrawingOptions->setMainRailWidth((int) mainlineTrackWidth);
-        layoutTrackDrawingOptions->setSideRailWidth((int) sidelineTrackWidth);
-        layoutTrackDrawingOptions->setMainRailColor(defaultTrackColor);
-        layoutTrackDrawingOptions->setSideRailColor(defaultTrackColor);
-    }
-    return layoutTrackDrawingOptions;
+/*public*/ LayoutTrackDrawingOptions* LayoutEditor::getLayoutTrackDrawingOptions()
+{
+ if (layoutTrackDrawingOptions == nullptr)
+ {
+  layoutTrackDrawingOptions = new LayoutTrackDrawingOptions(getLayoutName());
+  // integrate LayoutEditor drawing options with previous drawing options
+  layoutTrackDrawingOptions->setMainBlockLineWidth((int) mainlineTrackWidth);
+  layoutTrackDrawingOptions->setSideBlockLineWidth((int) sidelineTrackWidth);
+  layoutTrackDrawingOptions->setMainRailWidth((int) mainlineTrackWidth);
+  layoutTrackDrawingOptions->setMainRailColor(mainlineTrackColor);
+  layoutTrackDrawingOptions->setSideRailColor(sidelineTrackColor);
+  layoutTrackDrawingOptions->setBlockDefaultColor(defaultTrackColor);
+  layoutTrackDrawingOptions->setBlockOccupiedColor(defaultOccupiedTrackColor);
+  layoutTrackDrawingOptions->setBlockAlternativeColor(defaultAlternativeTrackColor);
+ }
+ return layoutTrackDrawingOptions;
 }
 
 /*public*/ void LayoutEditor::setLayoutTrackDrawingOptions(LayoutTrackDrawingOptions* ltdo) {
@@ -12101,6 +11920,8 @@ void LayoutEditor::on_locationItem()
     mainlineTrackWidth = layoutTrackDrawingOptions->getMainBlockLineWidth();
     sidelineTrackWidth = layoutTrackDrawingOptions->getSideBlockLineWidth();
     defaultTrackColor = layoutTrackDrawingOptions->getMainRailColor();
+    sidelineTrackColor = layoutTrackDrawingOptions->getSideRailColor();
+
     redrawPanel();
 }
 /**

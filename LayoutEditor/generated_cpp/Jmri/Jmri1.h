@@ -79,7 +79,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1865,7 +1864,6 @@ inline void promoted_setOptionMenuTurnoutCircleSize() { this->setOptionMenuTurno
 inline void promoted_setSelectionsHidden(bool  enabled, Positionable*  p) { this->setSelectionsHidden(enabled, p); }
 inline void promoted_setSelectionsRotation(int  k, Positionable*  p) { this->setSelectionsRotation(k, p); }
 inline void promoted_setSelectionsScale(double  s, Positionable*  p) { this->setSelectionsScale(s, p); }
-inline void promoted_setTrackStrokeWidth(bool  need) { this->setTrackStrokeWidth(need); }
 inline QMenu*  promoted_setupOptionMenu(QMenuBar*  menuBar) { return this->setupOptionMenu(menuBar); }
 inline void promoted_setupToolsMenu(QMenuBar*  menuBar) { this->setupToolsMenu(menuBar); }
 inline bool  promoted_showAlignPopup() { return this->showAlignPopup(); }
@@ -2059,7 +2057,6 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void setSize(LayoutEditor* theWrappedObject, int  w, int  h);
    void setSnapOnAdd(LayoutEditor* theWrappedObject, bool  state);
    void setSnapOnMove(LayoutEditor* theWrappedObject, bool  state);
-   void setTrackStrokeWidth(LayoutEditor* theWrappedObject, bool  need);
    void setTurnoutBX(LayoutEditor* theWrappedObject, double  bx);
    void setTurnoutCX(LayoutEditor* theWrappedObject, double  cx);
    void setTurnoutCircleColor(LayoutEditor* theWrappedObject, QColor  color);
@@ -2101,8 +2098,6 @@ void py_set_labelImage(LayoutEditor* theWrappedObject, QList<PositionableLabel* 
 QList<PositionableLabel* >*  py_get_labelImage(LayoutEditor* theWrappedObject){ return theWrappedObject->labelImage; }
 void py_set_layoutBlockManager(LayoutEditor* theWrappedObject, LayoutBlockManager*  layoutBlockManager){ theWrappedObject->layoutBlockManager = layoutBlockManager; }
 LayoutBlockManager*  py_get_layoutBlockManager(LayoutEditor* theWrappedObject){ return theWrappedObject->layoutBlockManager; }
-void py_set_layoutTrackList(LayoutEditor* theWrappedObject, QList<LayoutTrack* >*  layoutTrackList){ theWrappedObject->layoutTrackList = layoutTrackList; }
-QList<LayoutTrack* >*  py_get_layoutTrackList(LayoutEditor* theWrappedObject){ return theWrappedObject->layoutTrackList; }
 void py_set_sensorIconEditor(LayoutEditor* theWrappedObject, MultiIconEditor*  sensorIconEditor){ theWrappedObject->sensorIconEditor = sensorIconEditor; }
 MultiIconEditor*  py_get_sensorIconEditor(LayoutEditor* theWrappedObject){ return theWrappedObject->sensorIconEditor; }
 void py_set_signalIconEditor(LayoutEditor* theWrappedObject, MultiIconEditor*  signalIconEditor){ theWrappedObject->signalIconEditor = signalIconEditor; }

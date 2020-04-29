@@ -257,6 +257,33 @@
     mainBlockLineWidth = val;
 }
 
+/*public*/ QColor LayoutTrackDrawingOptions::getBlockDefaultColor() {
+       return blockDefaultColor;
+}
+
+/*public*/ void LayoutTrackDrawingOptions::setBlockDefaultColor(/*@Nonnull*/ QColor val) {
+    blockDefaultColor = val;
+    JmriColorChooser::addRecentColor(val);
+}
+
+/*public*/ QColor LayoutTrackDrawingOptions::getBlockOccupiedColor() {
+        return blockOccupiedColor;
+}
+
+/*public*/ void LayoutTrackDrawingOptions::setBlockOccupiedColor(/*@Nonnull*/ QColor val) {
+    blockOccupiedColor = val;
+    JmriColorChooser::addRecentColor(val);
+}
+
+/*public*/ QColor LayoutTrackDrawingOptions::getBlockAlternativeColor() {
+    return blockAlternativeColor;
+}
+
+/*public*/ void LayoutTrackDrawingOptions::setBlockAlternativeColor(/*@Nonnull*/ QColor val) {
+    blockAlternativeColor = val;
+    JmriColorChooser::addRecentColor(val);
+}
+
 //
 /*public*/ bool LayoutTrackDrawingOptions::equalsAllButName(/*@Nonnull*/ LayoutTrackDrawingOptions* ltdo) {
     bool result = true;  // assume success (optimist!)
