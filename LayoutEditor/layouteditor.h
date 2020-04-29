@@ -194,12 +194,15 @@ public:
     // reset turnout sizes to program defaults
     /*public*/ double getXScale();
     /*public*/ double getYScale();
-    /*public*/ QColor getDefaultBackgroundColor();
     /*public*/ QString getDefaultTrackColor();
     /*public*/ QString getDefaultOccupiedTrackColor();
     /*public*/ QString getDefaultAlternativeTrackColor();
     /*public*/ QString getDefaultTextColor();
     /*public*/ QString getTurnoutCircleColor();
+    /*public*/ QString getTurnoutCircleThrownColor();
+    /*public*/ bool isTurnoutFillControlCircles();
+
+
     /*public*/ int getTurnoutCircleSize();
     QT_DEPRECATED/*public*/ bool getTurnoutDrawUnselectedLeg();
     /*public*/ bool isTurnoutDrawUnselectedLeg();
@@ -364,6 +367,7 @@ public:
     /*public*/ void setSideTrackWidth(int w);
     QT_DEPRECATED/*public*/ void setTurnoutCircleColor(QString color);
     /*public*/ void setTurnoutCircleColor(QColor color);
+    /*public*/ void setTurnoutCircleThrownColor(/*@CheckForNull*/ QColor color);
     /*public*/ void setTurnoutCircleSize(int size);
     /*public*/ void setTurnoutDrawUnselectedLeg(bool state);
     /*public*/ QVector<AnalogClock2Display*>* clocks;// = new QVector<AnalogClock2Display>();  // fast clocks
@@ -470,21 +474,104 @@ public slots:
 
 private:
  Ui::LayoutEditor *ui;
+ //Operational instance variables - not saved to disk
+ /*private*/ /*transient*/ JmriJFrame* floatingEditToolBoxFrame = nullptr;
+ /*private*/ /*transient*/ QScrollArea* floatingEditContentScrollPane = nullptr;
+ /*private*/ /*transient*/ JPanel* floatEditHelpPanel = nullptr;
+ /*private*/ /*transient*/ EditToolBarContainerPanel* editToolBarContainerPanel = nullptr;
+ /*private*/ /*transient*/ QScrollArea* editToolBarScrollPane = nullptr;
+ /*private*/ /*transient*/ JPanel* helpBarPanel = nullptr;
+ // /*private*/ /*transient*/ JPanel* helpBar;// = new JPanel();
+ /*private*/ /*transient*/ bool editorUseOldLocSize;
+ /*private*/ /*transient*/ LayoutEditorToolBarPanel* leToolBarPanel = nullptr;
+
+ //end of main panel controls
+ /*private*/ /*transient*/ bool delayedPopupTrigger = false;
+ /*private*/ /*transient*/ QPointF currentPoint;// = new Point2D.Double(100.0, 100.0);
+ /*private*/ /*transient*/ QPointF dLoc;// = new Point2D.Double(0.0, 0.0);
+
+ /*private*/ /*transient*/ int toolbarHeight = 100;
+ /*private*/ /*transient*/ int toolbarWidth = 100;
+
+ /*private*/ /*transient*/ TrackSegment* newTrack = nullptr;
+ /*private*/ /*transient*/ bool panelChanged = false;
+
+ /*private*/ /*transient*/ int gridSize1st = 10;    //grid size in pixels
+ /*private*/ /*transient*/ int gridSize2nd = 10;    // secondary grid
+
+ /*private*/ /*transient*/ double selectionX = 0.0;
+ /*private*/ /*transient*/ double selectionY = 0.0;
+
+ //Option menu items
+ /*private*/ /*transient*/ QAction* editModeCheckBoxMenuItem = nullptr;
+
+ /*private*/ /*transient*/ QAction* toolBarSideTopButton = nullptr;
+ /*private*/ /*transient*/ QAction* toolBarSideLeftButton = nullptr;
+ /*private*/ /*transient*/ QAction* toolBarSideBottomButton = nullptr;
+ /*private*/ /*transient*/ QAction* toolBarSideRightButton = nullptr;
+ /*private*/ /*transient*/ QAction* toolBarSideFloatButton = nullptr;
+
+ /*private*/ /*transient*/ QMenu* toolBarFontSizeMenu;// = new JMenu(Bundle.getMessage("FontSize"));
+ /*private*/ /*transient*/ QAction* wideToolBarCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("ToolBarWide"));
+ /*private*/ /*transient*/ QMenu* dropDownListsDisplayOrderMenu;// = new JMenu(Bundle.getMessage("DropDownListsDisplayOrder"));
+
+ /*private*/ /*transient*/ QAction* positionableCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* controlCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* animationCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* showHelpCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* showGridCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* autoAssignBlocksCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QMenu* scrollMenu = nullptr;
+ /*private*/ /*transient*/ QAction* scrollBothMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* scrollNoneMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* scrollHorizontalMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* scrollVerticalMenuItem = nullptr;
+ /*private*/ /*transient*/ QMenu* tooltipMenu = nullptr;
+ /*private*/ /*transient*/ QAction* tooltipAlwaysMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* tooltipNoneMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* tooltipInEditMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* tooltipNotInEditMenuItem = nullptr;
+
+ /*private*/ /*transient*/ QAction* snapToGridOnAddCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* snapToGridOnMoveCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* antialiasingOnCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* turnoutCirclesOnCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* turnoutDrawUnselectedLegCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* hideTrackSegmentConstructionLinesCheckBoxMenuItem = nullptr;
+ /*private*/ /*transient*/ QAction* useDirectTurnoutControlCheckBoxMenuItem = nullptr;
+ QActionGroup* turnoutCircleSizeButtonGroup;
+
+ /*private*/ /*transient*/ bool turnoutDrawUnselectedLeg = true;
+ /*private*/ /*transient*/ bool autoAssignBlocks = false;
+
+ //Tools menu items
+ /*private*/ /*transient*/ QMenu* zoomMenu;// = new JMenu(Bundle.getMessage("MenuZoom"));
+ /*private*/ /*transient*/ QAction* zoom025Item;// = new JRadioButtonMenuItem("x 0.25");
+ /*private*/ /*transient*/ QAction* zoom05Item;// = new JRadioButtonMenuItem("x 0.5");
+ /*private*/ /*transient*/ QAction* zoom075Item;// = new JRadioButtonMenuItem("x 0.75");
+ /*private*/ /*transient*/ QAction* noZoomItem;// = new JRadioButtonMenuItem(Bundle.getMessage("NoZoom"));
+ /*private*/ /*transient*/ QAction* zoom15Item;// = new JRadioButtonMenuItem("x 1.5");
+ /*private*/ /*transient*/ QAction* zoom20Item;// = new JRadioButtonMenuItem("x 2.0");
+ /*private*/ /*transient*/ QAction* zoom30Item;// = new JRadioButtonMenuItem("x 3.0");
+ /*private*/ /*transient*/ QAction* zoom40Item;// = new JRadioButtonMenuItem("x 4.0");
+ /*private*/ /*transient*/ QAction* zoom50Item;// = new JRadioButtonMenuItem("x 5.0");
+ /*private*/ /*transient*/ QAction* zoom60Item;// = new JRadioButtonMenuItem("x 6.0");
+ /*private*/ /*transient*/ QAction* zoom70Item;// = new JRadioButtonMenuItem("x 7.0");
+ /*private*/ /*transient*/ QAction* zoom80Item;// = new JRadioButtonMenuItem("x 8.0");
+
+ /*private*/ /*transient*/ QMenu* undoTranslateSelectionMenuItem;// = new JMenuItem(Bundle.getMessage("UndoTranslateSelection"));
+ /*private*/ /*transient*/ QMenu* assignBlockToSelectionMenuItem;// = new JMenuItem(Bundle.getMessage("AssignBlockToSelectionTitle") + "...");
+
+
  QButtonGroup* buttonGroup;
  //QGraphicsView* editPanel;
  //EditScene* editScene;
  int xLoc, yLoc;
- //QPointF dLoc;
- /*private*/ /*transient*/ int toolbarHeight = 100;
- /*private*/ /*transient*/ int toolbarWidth = 100;
-// double getPaintScale();
-// double paintScale;
  /*private*/ /*transient*/ /*final*/ static Logger* log;
 
  QString layoutName;
  /*private*/ void calcLocation(QPointF pos, int dX, int dY);
  bool bIsEditable;
- /*private*/ /*transient*/ QPointF currentPoint;// = new QPointF(100.0,100.0);
  QObject* selectedObject;
  QObject* prevSelectedObject;
  int selectedHitPointType;
@@ -507,17 +594,11 @@ private:
  ///*private*/ QObject* beginObject;// = nullptr; // begin track segment connection object, NULL if none
  /*private*/ /*transient*/ QPointF currentLocation;// = new QPointF(0.0,0.0); // current location
  /*private*/ /*transient*/ QPointF foundLocation;// = new QPointF(0.0,0.0);  // location of found object
- /*private*/ TrackSegment* newTrack;// = nullptr;
  /*private*/ void setLink(QObject* fromObject,int fromPointType, QObject* toObject,int toPointType);
  LayoutEditorAuxTools* auxTools;
  /*private*/ double xScale; //1.0;
  /*private*/ double yScale; //1.0;
  // selection variables
- /*private*/ bool selectionActive;// = false;
- /*private*/ double selectionX;// = 0.0;
- /*private*/ double selectionY;// = 0.0;
- /*private*/ double selectionWidth;// = 0.0;
- /*private*/ double selectionHeight;// = 0.0;
  /*private*/ QVector<Positionable*>* _positionableSelection;// = nullptr;
 
  /*private*/ QVector<LayoutTurnout*>* _turnoutSelection;// = nullptr; //new QVector<LayoutTurnout>();  // LayoutTurnouts
@@ -551,8 +632,6 @@ private:
  /*private*/ QColor defaultAlternativeTrackColor; //QColor.black;
  /*private*/ QColor defaultBackgroundColor; //QColor::lightGray;
  /*private*/ QColor defaultTextColor; //QColor.black;
- /*private*/ QColor turnoutCircleColor; //defaultTrackColor; //matches earlier versions
- /*private*/ int   turnoutCircleSize; //2;  //matches earlier versions
 
  /*private*/ void drawXings(EditScene* g2);
 // /*private*/ void drawXingAC(EditScene* g2,LevelXing* x);
@@ -606,8 +685,6 @@ private:
  /*private*/ void amendSelectionGroup(LevelXing* p);
  /*private*/ void amendSelectionGroup(LayoutTrack *p);
  /*private*/ bool foundNeedsConnect;// = false; // true if found point needs a connection
- /*private*/ static const double SIZE;// = 3.0;
- /*private*/ static const double SIZE2;// = 6.0;  // must be twice SIZE
  float mainlineTrackWidth;// = 4.0F;
  float sidelineTrackWidth;// = 2.0F;
  bool main;// = true;
@@ -633,7 +710,6 @@ private:
  /*private*/ /*transient*/ bool snapToGridOnAdd = false;
  /*private*/ /*transient*/ bool snapToGridOnMove = false;
  /*private*/ /*transient*/ bool snapToGridInvert = false;
- bool delayedPopupTrigger;
  int _lastX, _lastY;
  /*private*/ void drawPanelGrid(EditScene* g2);
  /*private*/ bool drawGrid; //false;
@@ -738,7 +814,6 @@ private:
  QSignalMapper* textColorButtonMapper;
  QActionGroup* turnoutCircleColorButtonGroup;
  QSignalMapper* turnoutCircleColorButtonMapper;
- QActionGroup* turnoutCircleSizeButtonGroup;
  QSignalMapper* turnoutCircleSizeButtonMapper;
  QAction* turnoutDrawUnselectedLegItem;
  QAction* useDirectTurnoutControlItem;
@@ -776,8 +851,6 @@ private:
  /*private*/ QVector<QAction*>* turnoutCircleColorMenuItems;// = new QVector<QAction*>(14);
  /*private*/ QVector<QAction*>* turnoutCircleSizeMenuItems;// = new QVector<QAction*>(10);
 
- /*private*/ double circleRadius;// = SIZE * getTurnoutCircleSize();
- /*private*/ double circleDiameter;// = 2.0 * circleRadius;
  /*private*/ /*transient*/ LayoutTrackDrawingOptions* layoutTrackDrawingOptions = nullptr;
  /*private*/ /*transient*/ JFrame* iconFrame = nullptr;
  /*private*/ /*transient*/ bool highlightSelectedBlockFlag = false;
@@ -790,23 +863,8 @@ private:
  // /*private*/ void adjustScrollBars();
  QLabel* zoomLabel;
  /*private*/ void selectZoomMenuItem(double zoomFactor);
- /*private*/ /*transient*/ QMenu* zoomMenu;// = new JMenu(Bundle.getMessage("MenuZoom"));
- /*private*/ /*transient*/ QAction* zoom025Item;// = new JRadioButtonMenuItem("x 0.25");
- /*private*/ /*transient*/ QAction* zoom05Item;// = new JRadioButtonMenuItem("x 0.5");
- /*private*/ /*transient*/ QAction* zoom075Item;// = new JRadioButtonMenuItem("x 0.75");
- /*private*/ /*transient*/ QAction* noZoomItem;// = new JRadioButtonMenuItem(Bundle.getMessage("NoZoom"));
- /*private*/ /*transient*/ QAction* zoom15Item;// = new JRadioButtonMenuItem("x 1.5");
- /*private*/ /*transient*/ QAction* zoom20Item;// = new JRadioButtonMenuItem("x 2.0");
- /*private*/ /*transient*/ QAction* zoom30Item;// = new JRadioButtonMenuItem("x 3.0");
- /*private*/ /*transient*/ QAction* zoom40Item;// = new JRadioButtonMenuItem("x 4.0");
- /*private*/ /*transient*/ QAction* zoom50Item;// = new JRadioButtonMenuItem("x 5.0");
- /*private*/ /*transient*/ QAction* zoom60Item;// = new JRadioButtonMenuItem("x 6.0");
- /*private*/ /*transient*/ QAction* zoom70Item;// = new JRadioButtonMenuItem("x 7.0");
- /*private*/ /*transient*/ QAction* zoom80Item;// = new JRadioButtonMenuItem("x 8.0");
+
  //grid size in pixels
- /*private*/ /*transient*/ int gridSize1st = 10;
- // secondary grid
- /*private*/ /*transient*/ int gridSize2nd = 10;
  /*private*/ QString findBeanUsage(NamedBean* sm);
  /*private*/ void removeBeanRefs(NamedBean* sm);
  /*private*/ bool removeSignalMast(SignalMastIcon* si);
@@ -890,64 +948,15 @@ private:
  /*private*/ void setupDispatcherMenu(/*@Nonnull*/ QMenuBar* menuBar);
  /*private*/ void setupZoomMenu(QMenuBar* menuBar);
 
- //Option menu items
- /*private*/ /*transient*/ QAction* editModeCheckBoxMenuItem = nullptr;
 
- /*private*/ /*transient*/ QAction* toolBarSideTopButton = nullptr;
- /*private*/ /*transient*/ QAction* toolBarSideLeftButton = nullptr;
- /*private*/ /*transient*/ QAction* toolBarSideBottomButton = nullptr;
- /*private*/ /*transient*/ QAction* toolBarSideRightButton = nullptr;
- /*private*/ /*transient*/ QAction* toolBarSideFloatButton = nullptr;
 
- /*private*/ /*transient*/ QMenu* toolBarFontSizeMenu;// = new JMenu(Bundle.getMessage("FontSize"));
- /*private*/ /*transient*/ QAction* wideToolBarCheckBoxMenuItem;// = new JCheckBoxMenuItem(Bundle.getMessage("ToolBarWide"));
- /*private*/ /*transient*/ QMenu* dropDownListsDisplayOrderMenu;// = new JMenu(Bundle.getMessage("DropDownListsDisplayOrder"));
-
- /*private*/ /*transient*/ QAction* positionableCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* controlCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* animationCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* showHelpCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* showGridCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* autoAssignBlocksCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QMenu* scrollMenu = nullptr;
- /*private*/ /*transient*/ QAction* scrollBothMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* scrollNoneMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* scrollHorizontalMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* scrollVerticalMenuItem = nullptr;
- /*private*/ /*transient*/ QMenu* tooltipMenu = nullptr;
- /*private*/ /*transient*/ QAction* tooltipAlwaysMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* tooltipNoneMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* tooltipInEditMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* tooltipNotInEditMenuItem = nullptr;
-
- /*private*/ /*transient*/ QAction* snapToGridOnAddCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* snapToGridOnMoveCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* antialiasingOnCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* turnoutCirclesOnCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* turnoutDrawUnselectedLegCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* hideTrackSegmentConstructionLinesCheckBoxMenuItem = nullptr;
- /*private*/ /*transient*/ QAction* useDirectTurnoutControlCheckBoxMenuItem = nullptr;
-
- /*private*/ /*transient*/ bool turnoutDrawUnselectedLeg = true;
- /*private*/ /*transient*/ bool autoAssignBlocks = false;
  /*private*/ float toolBarFontSize = 12.0;
- /*private*/ /*transient*/ bool editorUseOldLocSize;
- /*private*/ /*transient*/ LayoutEditorToolBarPanel* leToolBarPanel = nullptr;
- //Operational instance variables - not saved to disk
- /*private*/ /*transient*/ JmriJFrame* floatingEditToolBoxFrame = nullptr;
- /*private*/ /*transient*/ QScrollArea* floatingEditContentScrollPane = nullptr;
- /*private*/ /*transient*/ JPanel* floatEditHelpPanel = nullptr;
- /*private*/ /*transient*/ EditToolBarContainerPanel* editToolBarContainerPanel = nullptr;
- /*private*/ /*transient*/ QScrollArea* editToolBarScrollPane = nullptr;
- /*private*/ /*transient*/ JPanel* helpBarPanel = nullptr;
- // /*private*/ /*transient*/ JPanel* helpBar;// = new JPanel();
+
  /*private*/ void setupToolBar();
  /*private*/ void createfloatingEditToolBoxFrame();
  /*private*/ void deletefloatingEditToolBoxFrame();
  /*private*/ void createFloatingHelpPanel();
  /*private*/ void setScrollbarScale(double ratio);
- /*private*/ /*transient*/ QMenu* undoTranslateSelectionMenuItem;// = new JMenuItem(Bundle.getMessage("UndoTranslateSelection"));
- /*private*/ /*transient*/ QMenu* assignBlockToSelectionMenuItem;// = new JMenuItem(Bundle.getMessage("AssignBlockToSelectionTitle") + "...");
 
  //QHBoxLayout* editPanelLayout;
  BorderLayout* borderLayout = nullptr;
@@ -1123,6 +1132,7 @@ private slots:
  void on_Zoom40Item();
  /*private*/ void on_resetTurnoutSize();
  void on_TurnoutCircleColorMenuItem();
+ void on_turnoutCircleThrownColorMenuItem();
  void on_TooltipNoneMenuItem();
  void on_TooltipAlwaysMenuItem();
  void on_TooltipInEditMenuItem();
@@ -1131,6 +1141,27 @@ private slots:
  /*private*/ void on_setToolBarWide(bool newToolBarIsWide);
 
 protected:
+ //size of point boxes
+ /*protected*/ static /*final*/ const double SIZE;// = 3.0;
+ /*protected*/ static /*final*/ const double SIZE2;// = SIZE * 2.; //must be twice SIZE
+
+ /*protected*/ QColor turnoutCircleColor;// = Color.black; //matches earlier versions
+ /*protected*/ QColor turnoutCircleThrownColor;// = Color.black;
+ /*protected*/ bool turnoutFillControlCircles = false;
+ /*protected*/ int turnoutCircleSize = 4; //matches earlier versions
+
+ //use turnoutCircleSize when you need an int and these when you need a double
+ //note: these only change when setTurnoutCircleSize is called
+ //using these avoids having to call getTurnoutCircleSize() and
+ //the multiply (x2) and the int -> double conversion overhead
+ /*protected*/ /*transient*/ double circleRadius;// = SIZE * getTurnoutCircleSize();
+ /*protected*/ /*transient*/ double circleDiameter;// = 2.0 * circleRadius;
+
+ //selection variables
+ /*protected*/ /*transient*/ bool selectionActive = false;
+ /*protected*/ /*transient*/ double selectionWidth = 0.0;
+ /*protected*/ /*transient*/ double selectionHeight = 0.0;
+
  /**
  * Return a List of all items whose bounding rectangle contain the mouse position.
  * ordered from top level to bottom

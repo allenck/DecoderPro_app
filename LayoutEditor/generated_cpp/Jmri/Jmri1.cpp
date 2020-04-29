@@ -65,6 +65,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -18204,7 +18205,7 @@ if (_wrapper) {
 }
   LayoutEditor::resizeEvent(e0);
 }
-void PythonQtShell_LayoutEditor::setAllEditable(bool  state0)
+void PythonQtShell_LayoutEditor::setAllEditable(bool  editable0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -18214,7 +18215,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "bool"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&state0};
+      void* args[2] = {NULL, (void*)&editable0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -18224,7 +18225,7 @@ if (_wrapper) {
     }
   }
 }
-  LayoutEditor::setAllEditable(state0);
+  LayoutEditor::setAllEditable(editable0);
 }
 void PythonQtShell_LayoutEditor::setAllPositionable(bool  state0)
 {
@@ -18849,6 +18850,21 @@ void PythonQtWrapper_LayoutEditor::addTurntable(LayoutEditor* theWrappedObject, 
   ( theWrappedObject->addTurntable(pt));
 }
 
+void PythonQtWrapper_LayoutEditor::alignLayoutToGrid(LayoutEditor* theWrappedObject)
+{
+  ( theWrappedObject->alignLayoutToGrid());
+}
+
+void PythonQtWrapper_LayoutEditor::alignSelection(LayoutEditor* theWrappedObject, bool  alignX)
+{
+  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_alignSelection(alignX));
+}
+
+void PythonQtWrapper_LayoutEditor::alignSelectionToGrid(LayoutEditor* theWrappedObject)
+{
+  ( theWrappedObject->alignSelectionToGrid());
+}
+
 bool  PythonQtWrapper_LayoutEditor::allControlling(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->allControlling());
@@ -18934,11 +18950,6 @@ QString  PythonQtWrapper_LayoutEditor::getDefaultAlternativeTrackColor(LayoutEdi
   return ( theWrappedObject->getDefaultAlternativeTrackColor());
 }
 
-QColor  PythonQtWrapper_LayoutEditor::getDefaultBackgroundColor(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getDefaultBackgroundColor());
-}
-
 QString  PythonQtWrapper_LayoutEditor::getDefaultOccupiedTrackColor(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getDefaultOccupiedTrackColor());
@@ -18962,6 +18973,16 @@ bool  PythonQtWrapper_LayoutEditor::getDirectTurnoutControl(LayoutEditor* theWra
 bool  PythonQtWrapper_LayoutEditor::getDrawGrid(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getDrawGrid());
+}
+
+int  PythonQtWrapper_LayoutEditor::getGridSize(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getGridSize());
+}
+
+int  PythonQtWrapper_LayoutEditor::getGridSize2nd(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getGridSize2nd());
 }
 
 bool  PythonQtWrapper_LayoutEditor::getHighlightSelectedBlock(LayoutEditor* theWrappedObject)
@@ -19089,6 +19110,11 @@ int  PythonQtWrapper_LayoutEditor::getTurnoutCircleSize(LayoutEditor* theWrapped
   return ( theWrappedObject->getTurnoutCircleSize());
 }
 
+QString  PythonQtWrapper_LayoutEditor::getTurnoutCircleThrownColor(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getTurnoutCircleThrownColor());
+}
+
 bool  PythonQtWrapper_LayoutEditor::getTurnoutCircles(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getTurnoutCircles());
@@ -19184,6 +19210,21 @@ bool  PythonQtWrapper_LayoutEditor::isTurnoutDrawUnselectedLeg(LayoutEditor* the
   return ( theWrappedObject->isTurnoutDrawUnselectedLeg());
 }
 
+bool  PythonQtWrapper_LayoutEditor::isTurnoutFillControlCircles(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->isTurnoutFillControlCircles());
+}
+
+QRectF  PythonQtWrapper_LayoutEditor::layoutEditorControlCircleRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
+{
+  return ( theWrappedObject->layoutEditorControlCircleRectAt(inPoint));
+}
+
+QRectF  PythonQtWrapper_LayoutEditor::layoutEditorControlRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
+{
+  return ( theWrappedObject->layoutEditorControlRectAt(inPoint));
+}
+
 void PythonQtWrapper_LayoutEditor::loadFailed(LayoutEditor* theWrappedObject)
 {
   ( theWrappedObject->loadFailed());
@@ -19242,6 +19283,16 @@ void PythonQtWrapper_LayoutEditor::removeSelections(LayoutEditor* theWrappedObje
 void PythonQtWrapper_LayoutEditor::removeSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head)
 {
   ( theWrappedObject->removeSignalHead(head));
+}
+
+void PythonQtWrapper_LayoutEditor::rotateLayout90(LayoutEditor* theWrappedObject)
+{
+  ( theWrappedObject->rotateLayout90());
+}
+
+void PythonQtWrapper_LayoutEditor::rotateSelection90(LayoutEditor* theWrappedObject)
+{
+  ( theWrappedObject->rotateSelection90());
 }
 
 void PythonQtWrapper_LayoutEditor::scaleTrackDiagram(LayoutEditor* theWrappedObject)
@@ -19327,6 +19378,16 @@ void PythonQtWrapper_LayoutEditor::setDrawGrid(LayoutEditor* theWrappedObject, b
 void PythonQtWrapper_LayoutEditor::setGlobalSetsLocalFlag(LayoutEditor* theWrappedObject, bool  set)
 {
   ( theWrappedObject->setGlobalSetsLocalFlag(set));
+}
+
+int  PythonQtWrapper_LayoutEditor::setGridSize(LayoutEditor* theWrappedObject, int  newSize)
+{
+  return ( theWrappedObject->setGridSize(newSize));
+}
+
+int  PythonQtWrapper_LayoutEditor::setGridSize2nd(LayoutEditor* theWrappedObject, int  newSize)
+{
+  return ( theWrappedObject->setGridSize2nd(newSize));
 }
 
 void PythonQtWrapper_LayoutEditor::setHiddenMenu(LayoutEditor* theWrappedObject, Positionable*  p, QMenu*  popup)
@@ -19459,6 +19520,11 @@ void PythonQtWrapper_LayoutEditor::setTurnoutCircleSize(LayoutEditor* theWrapped
   ( theWrappedObject->setTurnoutCircleSize(size));
 }
 
+void PythonQtWrapper_LayoutEditor::setTurnoutCircleThrownColor(LayoutEditor* theWrappedObject, QColor  color)
+{
+  ( theWrappedObject->setTurnoutCircleThrownColor(color));
+}
+
 void PythonQtWrapper_LayoutEditor::setTurnoutCircles(LayoutEditor* theWrappedObject, bool  state)
 {
   ( theWrappedObject->setTurnoutCircles(state));
@@ -19519,6 +19585,11 @@ bool  PythonQtWrapper_LayoutEditor::showAlignPopup(LayoutEditor* theWrappedObjec
   return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_showAlignPopup());
 }
 
+void PythonQtWrapper_LayoutEditor::sortLayoutShapesByLevel(LayoutEditor* theWrappedObject)
+{
+  ( theWrappedObject->sortLayoutShapesByLevel());
+}
+
 QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::trackControlCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
 {
   return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_trackControlCircleAt(inPoint));
@@ -19537,6 +19608,11 @@ QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::trackEditControlCircleAt(La
 QRectF  PythonQtWrapper_LayoutEditor::trackEditControlRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
 {
   return ( theWrappedObject->trackEditControlRectAt(inPoint));
+}
+
+void PythonQtWrapper_LayoutEditor::translate(LayoutEditor* theWrappedObject, float  xTranslation, float  yTranslation)
+{
+  ( theWrappedObject->translate(xTranslation, yTranslation));
 }
 
 QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::turnoutCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint)

@@ -549,6 +549,8 @@ _contents = new QVector<Positionable*>();
  defaultTextColor =  QColor(Qt::black);
  turnoutCircleColor = defaultTrackColor; //matches earlier versions
  turnoutCircleSize=2;  //matches earlier versions
+ turnoutCircleThrownColor =  QColor(Qt::black);
+
  //turnoutList = new QVector<LayoutTurnout*>();  // LayoutTurnouts
  turntableList = new QVector<LayoutTurntable*>(); // Turntable list
  noWarnTurntable = false;
@@ -4181,10 +4183,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
 /*public*/ double LayoutEditor::getYScale() {return yScale;}
 
-/*public*/ QColor LayoutEditor::getDefaultBackgroundColor() {
-    return defaultBackgroundColor;
-}
-
+//    public Color getDefaultBackgroundColor() {
+//        return defaultBackgroundColor;
+//    }
 /*public*/ QString LayoutEditor::getDefaultTrackColor() {
     return ColorUtil::colorToColorName(defaultTrackColor);
 }
@@ -4204,6 +4205,15 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*public*/ QString LayoutEditor::getTurnoutCircleColor() {
     return ColorUtil::colorToColorName(turnoutCircleColor);
 }
+
+//@Nonnull
+/*public*/ QString LayoutEditor::getTurnoutCircleThrownColor() {
+    return ColorUtil::colorToColorName(turnoutCircleThrownColor);
+}
+
+/*public*/ bool LayoutEditor::isTurnoutFillControlCircles() {
+        return turnoutFillControlCircles;
+    }
 
 /*public*/ int LayoutEditor::getTurnoutCircleSize() {
     return turnoutCircleSize;
@@ -9989,6 +9999,18 @@ void LayoutEditor::undoMoveSelection() {
     }
 }
 
+/**
+ * @param color new color for turnout circle.
+ */
+/*public*/ void LayoutEditor::setTurnoutCircleThrownColor(/*@CheckForNull*/ QColor color) {
+    if (!color.isValid()) {
+        turnoutCircleThrownColor = getDefaultTrackColor();
+    } else {
+        turnoutCircleThrownColor = color;
+        JmriColorChooser::addRecentColor(color);
+    }
+}
+
 /*public*/ void LayoutEditor::setTurnoutCircleSize(int size) {
     turnoutCircleSize = size;
   setOptionMenuTurnoutCircleSize();
@@ -11949,6 +11971,22 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     connect(turnoutCircleColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TurnoutCircleColorMenuItem()));
     turnoutOptionsMenu->addAction(turnoutCircleColorMenuItem);
 
+    //select turnout circle thrown color
+    QAction* turnoutCircleThrownColorMenuItem = new QAction("Set Turnout Circle Thrown Color",this);
+//    turnoutCircleThrownColorMenuItem.addActionListener((ActionEvent event) -> {
+//        Color desiredColor = JmriColorChooser.showDialog(this,
+//                Bundle.getMessage("TurnoutCircleThrownColor"),
+//                turnoutCircleThrownColor);
+//        if (desiredColor != null && !turnoutCircleThrownColor.equals(desiredColor)) {
+//            setTurnoutCircleThrownColor(desiredColor);
+//            setDirty();
+//            redrawPanel();
+//        }
+//    });
+    connect(turnoutCircleThrownColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutCircleThrownColorMenuItem()));
+    turnoutOptionsMenu->addAction(turnoutCircleThrownColorMenuItem);
+
+
     //select turnout circle size
     QMenu* turnoutCircleSizeMenu = new QMenu(tr("Set Turnout Circle Size"));
 #if 1
@@ -11990,6 +12028,18 @@ void LayoutEditor::on_TurnoutCircleColorMenuItem()
      setTurnoutCircleColor(desiredColor);
      setDirty();
      redrawPanel();
+ }
+}
+
+void LayoutEditor::on_turnoutCircleThrownColorMenuItem()
+{
+ QColor desiredColor = JmriColorChooser::showDialog(this,
+        tr("Set Turnout Circle Thrown Color"),
+        turnoutCircleThrownColor);
+ if (!desiredColor.isValid() && turnoutCircleThrownColor!=(desiredColor)) {
+    setTurnoutCircleThrownColor(desiredColor);
+    setDirty();
+    redrawPanel();
  }
 }
 

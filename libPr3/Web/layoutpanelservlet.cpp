@@ -69,6 +69,8 @@ LayoutPanelServlet::LayoutPanelServlet()
   panel.setAttribute("defaultalternativetrackcolor", editor->getDefaultAlternativeTrackColor());
   panel.setAttribute("defaulttextcolor", editor->getDefaultTextColor());
   panel.setAttribute("turnoutcirclecolor", editor->getTurnoutCircleColor());
+  panel.setAttribute("turnoutcirclethrowncolor", editor->getTurnoutCircleThrownColor());
+  panel.setAttribute("turnoutfillcontrolcircles", (editor->isTurnoutFillControlCircles()) ? "yes" : "no");
 
   // include positionable elements
   QList<Positionable*> contents = editor->getContents();

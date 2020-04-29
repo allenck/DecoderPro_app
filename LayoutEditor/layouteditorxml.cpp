@@ -88,7 +88,17 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("defaultoccupiedtrackcolor", p->getDefaultOccupiedTrackColor());
  panel.setAttribute("defaultalternativetrackcolor", p->getDefaultAlternativeTrackColor());
  panel.setAttribute("defaulttextcolor", p->getDefaultTextColor());
+ QString turnoutCircleColor = p->getTurnoutCircleColor();
  panel.setAttribute("turnoutcirclecolor", p->getTurnoutCircleColor());
+ QString turnoutCircleThrownColor = p->getTurnoutCircleThrownColor();
+ // optional attributes
+ if (turnoutCircleColor!=(turnoutCircleThrownColor)) {
+     panel.setAttribute("turnoutcirclethrowncolor", turnoutCircleThrownColor);
+ }
+ if (p->isTurnoutFillControlCircles()) {
+     panel.setAttribute("turnoutfillcontrolcircles", "yes");
+ }
+
  panel.setAttribute("turnoutcirclesize", p->getTurnoutCircleSize());
  panel.setAttribute("turnoutdrawunselectedleg", (p->getTurnoutDrawUnselectedLeg() ? "yes" : "no"));
  panel.setAttribute("turnoutbx",  p->getTurnoutBX());
