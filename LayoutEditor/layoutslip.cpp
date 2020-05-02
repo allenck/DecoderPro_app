@@ -1919,12 +1919,21 @@ void LayoutSlip::updateState()
        //g2.draw(layoutEditor->trackControlCircleAt(leftCircleCenter));
        QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(leftCircleCenter);
        ellipseItem->setPen(layoutEditor->drawingStroke);
+       if (layoutEditor->isTurnoutFillControlCircles()) {
+        QBrush brush = QBrush(layoutEditor->drawingStroke.color());
+        ellipseItem->setBrush(brush);
+       }
        itemGroup->addToGroup(ellipseItem);
 
        QPointF rightCircleCenter = getCoordsRight();
        //g2.draw(layoutEditor->trackControlCircleAt(rightCircleCenter));
        ellipseItem = layoutEditor->trackControlCircleAt(rightCircleCenter);
        ellipseItem->setPen(layoutEditor->drawingStroke);
+       if (layoutEditor->isTurnoutFillControlCircles()) {
+        QBrush brush = QBrush(layoutEditor->drawingStroke.color());
+        ellipseItem->setBrush(brush);
+       }
+
        itemGroup->addToGroup(ellipseItem);
 
        circles = itemGroup;

@@ -424,6 +424,9 @@ private slots:
     //    /*private*/ bool delayedPopupTrigger = false; // Used to delay the request of a popup, on a mouse press as this may conflict with a drag event
 
     /*protected*/ double _paintScale = 1.0;   // scale for _targetPanel drawing
+    /*protected*/ double ratio = 1.0;   // ratio for _targetPanel drawing
+    /*protected*/ double getZoomRatio();
+
 
     /*protected*/ QColor defaultBackgroundColor;// = QColor(Qt::lightGray);
     /*protected*/ bool _pastePending;// = false;

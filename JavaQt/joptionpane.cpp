@@ -464,8 +464,8 @@
     //throws HeadlessException
 {
     JOptionPane*    pane = new JOptionPane(message, messageType,
-                                          OK_CANCEL_OPTION/*, icon,
-                                          QVariantList(), QVariant(), parentComponent*/);
+                                          OK_CANCEL_OPTION, icon,
+                                          QVariantList(),initialSelectionValue, parentComponent);
 
     pane->setWantsInput(true);
     pane->setSelectionValues(selectionValues);

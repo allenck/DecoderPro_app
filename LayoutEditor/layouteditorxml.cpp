@@ -100,7 +100,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
 
  panel.setAttribute("turnoutcirclesize", p->getTurnoutCircleSize());
- panel.setAttribute("turnoutdrawunselectedleg", (p->getTurnoutDrawUnselectedLeg() ? "yes" : "no"));
+ panel.setAttribute("turnoutdrawunselectedleg", (p->isTurnoutDrawUnselectedLeg() ? "yes" : "no"));
  panel.setAttribute("turnoutbx",  p->getTurnoutBX());
  panel.setAttribute("turnoutcx",  p->getTurnoutCX());
  panel.setAttribute("turnoutwid", p->getTurnoutWid());

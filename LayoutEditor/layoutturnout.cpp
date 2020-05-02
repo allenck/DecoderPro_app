@@ -5952,17 +5952,35 @@ void LayoutTurnout::remove()
 //@Override
 /*protected*/ void LayoutTurnout::drawTurnoutControls(EditScene* g2)
 {
- invalidateItem(g2,circles);
- QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
  if (!disabled && !(disableWhenOccupied && isOccupied()))
  {
-     //g2.draw(layoutEditor.trackControlCircleAt(center));
-  QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(center);
-  item->setPen(layoutEditor->drawingStroke);
-  itemGroup->addToGroup(item);
+  invalidateItem(g2,circles);
+  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+  if (!disabled && !(disableWhenOccupied && isOccupied()))
+  {
+   //QColor foregroundColor = g2.getColor();
+   //if turnout is not continuing state
+//   if (getState() != continuingSense) {
+//       //then switch to background color
+//       g2.setColor(g2.getBackground());
+//   }
 
-  circles = itemGroup;
-  g2->addItem(circles);
+      //g2.draw(layoutEditor.trackControlCircleAt(center));
+   QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(center);
+   item->setPen(layoutEditor->drawingStroke);
+   if (layoutEditor->isTurnoutFillControlCircles()) {
+    QBrush brush = QBrush(layoutEditor->drawingStroke.color());
+    item->setBrush(brush);
+   }
+   itemGroup->addToGroup(item);
+   //if turnout is not continuing state
+//   if (getState() != continuingSense) {
+//       //then restore foreground color
+//       g2.setColor(foregroundColor);
+//   }
+   circles = itemGroup;
+   g2->addItem(circles);
+  }
  }
 }
 

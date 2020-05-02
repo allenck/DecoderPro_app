@@ -32,6 +32,7 @@
 #include "borderlayout.h"
 #include "mathutil.h"
 #include "jtextfield.h"
+#include "layouttrack.h"
 
 namespace Ui {
 class LayoutEditor;
@@ -192,7 +193,6 @@ public:
 
 
     /*public*/ int getTurnoutCircleSize();
-    QT_DEPRECATED/*public*/ bool getTurnoutDrawUnselectedLeg();
     /*public*/ bool isTurnoutDrawUnselectedLeg();
 
     /* Return a layout block with the given name if one exists.
@@ -407,9 +407,9 @@ public:
     /*public*/ QList<TrackSegment *> getTrackSegments();
     /*public*/ QList<LayoutTurnout *> getLayoutTurnouts();
     /*public*/ QList<LayoutTurntable *> getLayoutTurntables();
-    /*public*/ QList<LevelXing *> getLevelXings();
-    /*public*/ QList<LayoutTrack *> *getLayoutTracks();
-    /*public*/ QList<LayoutTurnout *> getLayoutTurnoutsAndSlips();
+    /*public*/ QList<LevelXing*> getLevelXings();
+    /*public*/ QList<LayoutTrack*>* getLayoutTracks();
+    /*public*/ QList<LayoutTurnout*>* getLayoutTurnoutsAndSlips();
     /*public*/ /*@Nonnull*/ QList<LayoutShape *> *getLayoutShapes();
     /*public*/ void sortLayoutShapesByLevel();
     /*public*/ bool removeFromContents(Positionable* l);
@@ -448,6 +448,8 @@ public slots:
     /*public*/ void on_setAllEditable(bool state);
     /*public*/ void setShowHelpBar(bool state);
     void on_deletePanel();
+    void on_colorBackgroundMenuItemSelected();
+    void on_editTitle();
 
 private:
  Ui::LayoutEditor *ui;
@@ -692,7 +694,7 @@ private:
  /*private*/ QVector<LayoutTurntable*>* _turntableSelection = nullptr; //new ArrayList<LayoutTurntable>(); // Turntable list
  /*private*/ QVector<PositionablePoint*>* _pointSelection = nullptr; //new QVector<PositionablePoint>();  // PositionablePoint list
  QVector<PositionableLabel*>* _labelSelection; //new QVector<PositionableLabel>();  // PositionableLabel list
-/*private*/ QList<LayoutTrack*> getLayoutTracksOfClass(QString type);
+/*private*/ QList<LayoutTrack*>* getLayoutTracksOfClass(QString type);
 
   bool isDrawing = false;
 
@@ -832,6 +834,7 @@ private:
  QSignalMapper* turnoutCircleColorButtonMapper;
  QSignalMapper* turnoutCircleSizeButtonMapper;
  QAction* turnoutDrawUnselectedLegItem;
+ QAction* turnoutFillControlCirclesCheckBoxMenuItem = nullptr;
  QAction* useDirectTurnoutControlItem;
  /*private*/ int backgroundColorCount = 0;
  /*private*/ int trackColorCount = 0;
@@ -1049,6 +1052,7 @@ private slots:
  void on_TooltipNotInEditMenuItem();
  /*private*/ void on_setToolBarSide(QAction* act);
  /*private*/ void on_setToolBarWide(bool newToolBarIsWide);
+ /*private*/ void on_turnoutFillControlCirclesCheckBoxMenuItem(bool checked);
 
 protected:
  //size of point boxes

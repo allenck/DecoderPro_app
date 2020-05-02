@@ -8215,7 +8215,7 @@ void LayoutEditorTools::On_changeSensorAtBoundaryIcon_clicked()
  if (!result)
  {
   //check turnouts and slips
-  for (LayoutTurnout* to : layoutEditor->getLayoutTurnoutsAndSlips()) {
+  for (LayoutTurnout* to : *layoutEditor->getLayoutTurnoutsAndSlips()) {
       if (whereIsSensorAssigned(sensor, to) != LayoutTurnout::NONE) {
           result = true;
           break;

@@ -3066,6 +3066,11 @@ QSizeF  PythonQtWrapper_Editor::getTargetPanelSize(Editor* theWrappedObject)
   return ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_getTargetPanelSize());
 }
 
+double  PythonQtWrapper_Editor::getZoomRatio(Editor* theWrappedObject)
+{
+  return ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_getZoomRatio());
+}
+
 void PythonQtWrapper_Editor::init(Editor* theWrappedObject, QString  name)
 {
   ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_init(name));
@@ -19009,7 +19014,7 @@ QList<LayoutTurnout* >  PythonQtWrapper_LayoutEditor::getLayoutTurnouts(LayoutEd
   return ( theWrappedObject->getLayoutTurnouts());
 }
 
-QList<LayoutTurnout* >  PythonQtWrapper_LayoutEditor::getLayoutTurnoutsAndSlips(LayoutEditor* theWrappedObject)
+QList<LayoutTurnout* >*  PythonQtWrapper_LayoutEditor::getLayoutTurnoutsAndSlips(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getLayoutTurnoutsAndSlips());
 }
@@ -19117,11 +19122,6 @@ QString  PythonQtWrapper_LayoutEditor::getTurnoutCircleThrownColor(LayoutEditor*
 bool  PythonQtWrapper_LayoutEditor::getTurnoutCircles(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getTurnoutCircles());
-}
-
-bool  PythonQtWrapper_LayoutEditor::getTurnoutDrawUnselectedLeg(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getTurnoutDrawUnselectedLeg());
 }
 
 double  PythonQtWrapper_LayoutEditor::getTurnoutWid(LayoutEditor* theWrappedObject)

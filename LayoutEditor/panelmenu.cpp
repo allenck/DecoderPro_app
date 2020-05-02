@@ -293,15 +293,15 @@ void PanelMenu::menuSelected()
 /**
  * Rename an Editor type panel in Show Panels sub menu
  */
-/*public*/ void PanelMenu::renameEditorPanel (Editor* /*panel*/)
+/*public*/ void PanelMenu::renameEditorPanel (Editor* panel)
 {
-#if 0
-    if (panelsList.size()==0) return;
-    for (int i = 0; i<panelsList.size(); i++) {
-        Object o = panelsList.get(i);
+#if 1
+    if (panelsList->size()==0) return;
+    for (int i = 0; i<panelsList->size(); i++) {
+        Editor* o = panelsList->at(i);
         if (o == panel) {
-            JCheckBoxMenuItem r = (JCheckBoxMenuItem)panelsSubMenu.getItem(i);
-            r.setText(panel.getTitle());
+            QAction* r = panelsSubMenu->actions().at(i);
+            r->setText(panel->getTitle());
             return;
         }
     }

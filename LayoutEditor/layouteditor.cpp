@@ -694,8 +694,8 @@ void LayoutEditor::on_hideTrackSegmentConstructionLines_toggled(bool /*b*/)
       show = TrackSegment::HIDECONALL;
   }
 
-  for (LayoutTrack* t : *layoutTrackList) {
-      ((TrackSegment*)t)->hideConstructionLines(show);
+  for (TrackSegment* t : getTrackSegments()) {
+      t->hideConstructionLines(show);
   }
   repaint();
 }
@@ -2905,7 +2905,8 @@ void LayoutEditor::on_Zoom075Item()
 }
 void LayoutEditor::on_NoZoomItem()
 {
- setZoom(1.0);
+ //setZoom(1.0);
+ setZoom(1.0/ getZoomRatio());
 }
 
 void LayoutEditor::on_Zoom15Item()
@@ -2928,14 +2929,14 @@ void LayoutEditor::on_Zoom20Item()
 /*public*/ double LayoutEditor::setZoom(double zoomFactor) {
     //TODO: add code to re-calculate minZoom (so panel never smaller than view)
     double newZoom = MathUtil::pin(zoomFactor, minZoom, maxZoom);
+    selectZoomMenuItem(newZoom);
 
     if (!MathUtil::equals(newZoom, getPaintScale())) {
         log->debug(tr("zoom: %1").arg(zoomFactor));
         setPaintScale(newZoom);
 //        adjustScrollBars();
 
-        //zoomLabel->setText(QString("x%1$,.2f").arg(newZoom));
-        selectZoomMenuItem(newZoom);
+        leToolBarPanel->zoomLabel->setText(QString().sprintf("x%0.2f", getZoomRatio()));
 
         //save the window specific saved zoom user preference
         UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager")); //.ifPresent((prefsMgr) -> {
@@ -2957,23 +2958,6 @@ void LayoutEditor::on_Zoom20Item()
 /*private*/ double LayoutEditor::on_zoomOut() {
     return setZoom(getZoom() / 1.1);
 }
-
-//void LayoutEditor::onZoomIn()
-//{
-// //setPaintScale(getPaintScale()* 1.1);
-// xScale = xScale*1.1;
-// yScale = yScale*1.1;
-// editPanel->scale(xScale, yScale);
-
-//}
-//void LayoutEditor::onZoomOut()
-//{
-// //setPaintScale(getPaintScale()/ 1.1);
-// xScale = xScale/1.1;
-// yScale = yScale/1.1;
-// editPanel->scale(xScale, yScale);
-
-//}
 
 //
 // TODO: make this public? (might be useful!)
@@ -3969,15 +3953,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
     return turnoutCircleSize;
 }
 
-/**
- * @deprecated since 4.11.2 use {@link #isTurnoutDrawUnselectedLeg()}
- * instead.
- */
-//@Deprecated
-/*public*/ bool LayoutEditor::getTurnoutDrawUnselectedLeg() {
-    return turnoutDrawUnselectedLeg;
-}
-
 /*public*/ bool LayoutEditor::isTurnoutDrawUnselectedLeg() {
     return turnoutDrawUnselectedLeg;
 }
@@ -4215,9 +4190,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //         }
 //     }
      //Optional antialising, to eliminate (reduce) staircase on diagonal lines
-//     if (layoutEditor.antialiasingOn) {
-//         g2.setRenderingHints(antialiasing);
-//     }
+  if (antialiasingOn) {
+      editPanel->setRenderHint(QPainter::Antialiasing, antialiasingOn);
+  }
 
      //drawPositionableLabelBorder(g2);
      // things that only get drawn in edit mode
@@ -4854,6 +4829,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
 //    g2.setColor(turnoutCircleColor);
  QPen stroke = QPen(turnoutCircleColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
+ //g2.setBackground(layoutEditor.turnoutCircleThrownColor);
+ g2->setBackgroundBrush(QBrush(turnoutCircleThrownColor));
+
  drawingStroke = stroke;
     // loop over all turnouts
     bool editable = isEditable();
@@ -5052,13 +5030,13 @@ bool LayoutEditor::isDirty() {return bDirty;}
  g2->addItem(panelGridGroup);
 }
 
-/*private*/ QList<LayoutTrack*> LayoutEditor::getLayoutTracksOfClass(QString type)
+/*private*/ QList<LayoutTrack *> *LayoutEditor::getLayoutTracksOfClass(QString type)
 {
- QList<LayoutTrack*> list = QList<LayoutTrack*>();
+ QList<LayoutTrack*>* list = new QList<LayoutTrack*>();
  foreach(LayoutTrack* lt, *layoutTrackList)
  {
   if(QString(lt->metaObject()->className()) == type)
-   list.append(lt);
+   list->append(lt);
  }
  return list;
 }
@@ -5066,14 +5044,14 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*public*/ QList<PositionablePoint*> LayoutEditor::getPositionablePoints()
 {
     //return getLayoutTracksOfClass("PositionablePoint");
- QList<LayoutTrack*> list1 = getLayoutTracksOfClass("PositionablePoint");
+ QList<LayoutTrack*>* list1 = getLayoutTracksOfClass("PositionablePoint");
  QList<PositionablePoint*> list = QList<PositionablePoint*>();
  foreach(LayoutTrack* lt, *layoutTrackList)
  {
   if(qobject_cast<PositionablePoint*>(lt))
    list.append((PositionablePoint*)lt);
  }
- if(list.size() != list1.size())
+ if(list.size() != list1->size())
   log->debug(tr("list sizes differ"));
  return list;
 //    )
@@ -5641,9 +5619,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
 /*private*/ void LayoutEditor::drawHiddenTrack(EditScene* g2)
 {
- for (int i = 0; i<layoutTrackList->size();i++)
+ for (int i = 0; i<layoutTrackList.size();i++)
  {
-  LayoutTrack* t =layoutTrackList->at(i);
+  LayoutTrack* t =layoutTrackList->t(i);
   if (isEditable() && t->getHidden())
   {
    //((TrackSegment*)t)->invalidate(g2);
@@ -6299,9 +6277,9 @@ double LayoutEditor::toRadians(double degrees)
  return list;}
 
 /*public*/ QList<LevelXing*> LayoutEditor::getLevelXings() {
-    QList<LayoutTrack*> layoutTracks =  getLayoutTracksOfClass("LevelXing");
+    QList<LayoutTrack*>* layoutTracks =  getLayoutTracksOfClass("LevelXing");
     QList<LevelXing*> l = QList<LevelXing*>();
-    for(LayoutTrack* t : layoutTracks)
+    for(LayoutTrack* t : *layoutTracks)
      l.append((LevelXing*)t);
   return l;
 }
@@ -6310,13 +6288,13 @@ double LayoutEditor::toRadians(double degrees)
     return layoutTrackList;
 }
 
-/*public*/ QList<LayoutTurnout*> LayoutEditor::getLayoutTurnoutsAndSlips() {
+/*public*/ QList<LayoutTurnout *> *LayoutEditor::getLayoutTurnoutsAndSlips() {
 //    return getLayoutTracksOfClass("LayoutTurnout");
- QList<LayoutTurnout*> list = QList<LayoutTurnout*>();
+ QList<LayoutTurnout*>* list = new QList<LayoutTurnout*>();
  foreach(LayoutTrack* lt, *layoutTrackList)
  {
   if(qobject_cast<LayoutTurnout*>(lt))
-   list.append((LayoutTurnout*)lt);
+   list->append((LayoutTurnout*)lt);
  }
  return list;
 }
@@ -8473,20 +8451,20 @@ void LayoutEditor::addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*
     }
 }   //setOptionMenuBackgroundColor
 
-//void LayoutEditor::on_colorBackgroundMenuItemSelected()
-//{
-//// QColor color = backgroundColors->at(i);
-//// editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
-// QColor desiredColor = JmriColorChooser::showDialog(this,
-//         tr("Set Background Color", ""),
-//         defaultBackgroundColor);
-// if (desiredColor.isValid() && defaultBackgroundColor!=(desiredColor)) {
-//     defaultBackgroundColor = desiredColor;
-//     setBackgroundColor(desiredColor);
-//     setDirty();
-//     redrawPanel();
-// }
-//}
+void LayoutEditor::on_colorBackgroundMenuItemSelected()
+{
+// QColor color = backgroundColors->at(i);
+// editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
+ QColor desiredColor = JmriColorChooser::showDialog(this,
+         tr("Set Background Color", ""),
+         defaultBackgroundColor);
+ if (desiredColor.isValid() && defaultBackgroundColor!=(desiredColor)) {
+     defaultBackgroundColor = desiredColor;
+     setBackgroundColor(desiredColor);
+     setDirty();
+     redrawPanel();
+ }
+}
 
 void LayoutEditor::on_actionAdd_reporter_label_triggered()
 {
@@ -8755,7 +8733,7 @@ QColor LayoutEditor::getBackgroundColor()
 // editScene->clear();
 // _contents->clear();
 // //turnoutList->clear();
-// layoutTrackList->clear();
+// layoutTrackList.clear();
 // //pointList->clear();
 // //xingList->clear();
 // //slipList->clear();
@@ -9017,7 +8995,7 @@ void LayoutEditor::on_deletePanel()
  //if (nb instanceof Turnout)
  if(qobject_cast<Turnout*>(nb)!=nullptr)
  {
-  for (LayoutTurnout* lt : getLayoutTurnoutsAndSlips()) {
+  for (LayoutTurnout* lt : *getLayoutTurnoutsAndSlips()) {
   {
    if(lt->getTurnout()==(nb))
    {
@@ -10937,7 +10915,6 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
  * @param menuBar to add the option menu to
  * @return option menu that was added
  */
-#if 1
 /*protected*/ QMenu* LayoutEditor::setupOptionMenu(/*@Nonnull*/ QMenuBar* menuBar) {
     QMenu* optionMenu = new QMenu(tr("Options"));
 
@@ -11389,7 +11366,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
         }
     });
 #endif
-
+    connect(titleItem, SIGNAL(triggered(bool)), this, SLOT(on_editTitle()));
 
     //
     // set background color
@@ -11801,10 +11778,19 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     connect(turnoutCircleThrownColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutCircleThrownColorMenuItem()));
     turnoutOptionsMenu->addAction(turnoutCircleThrownColorMenuItem);
 
+    turnoutFillControlCirclesCheckBoxMenuItem = new QAction(tr("Fill Turnout Circles"));
+    turnoutFillControlCirclesCheckBoxMenuItem->setCheckable(true);
+    turnoutOptionsMenu->addAction(turnoutFillControlCirclesCheckBoxMenuItem);
+//    turnoutFillControlCirclesCheckBoxMenuItem.addActionListener((ActionEvent event) ->
+//    {
+//        turnoutFillControlCircles = turnoutFillControlCirclesCheckBoxMenuItem.isSelected();
+//        redrawPanel();
+//    });
+    connect(turnoutFillControlCirclesCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutFillControlCirclesCheckBoxMenuItem(bool)));
+    turnoutFillControlCirclesCheckBoxMenuItem->setChecked(turnoutFillControlCircles);
 
     //select turnout circle size
     QMenu* turnoutCircleSizeMenu = new QMenu(tr("Set Turnout Circle Size"));
-#if 1
     turnoutCircleSizeButtonGroup = new QActionGroup(this);
     turnoutCircleSizeButtonMapper = new QSignalMapper(this);
     addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "1", 1);
@@ -11817,7 +11803,6 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "8", 8);
     addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "9", 9);
     addTurnoutCircleSizeMenuEntry(turnoutCircleSizeMenu, "10", 10);
-#endif
     turnoutOptionsMenu->addMenu(turnoutCircleSizeMenu);
 
     //add "enable drawing of unselected leg " menu item (helps when diverging angle is small)
@@ -11833,7 +11818,38 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 
     return optionMenu;
 }
-#endif
+
+/*public*/ void LayoutEditor::on_editTitle()
+{
+ //prompt for name
+ QString newName =  JOptionPane::showInputDialog(getTargetFrame(),
+         tr("%1").arg(tr("Enter New Title")),
+         tr("Edit Layout Name"),
+         JOptionPane::PLAIN_MESSAGE, QIcon(), QVariantList(), getLayoutName()).toString();
+
+ if (newName != "") {
+     if (newName != (getLayoutName())) {
+         if (((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(newName)) {
+             JOptionPane::showMessageDialog(nullptr, tr("Can not rename panel with the same name as an existing panel"), tr("Panel name already exists!"),
+                     JOptionPane::ERROR_MESSAGE);
+         } else {
+             JmriJFrame::setTitle(newName);
+             setLayoutName(newName);
+             getLayoutTrackDrawingOptions()->setName(newName);
+             ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->renameEditorPanel(this);
+             setDirty();
+
+             if (toolBarSide.getType() == (eFLOAT) && isEditable()) {
+                 // Rebuild the toolbox after a name change.
+                 deletefloatingEditToolBoxFrame();
+                 createfloatingEditToolBoxFrame();
+             }
+         }
+     }
+ }
+
+}
+
 void LayoutEditor::on_TurnoutCircleColorMenuItem()
 {
  QColor desiredColor = JmriColorChooser::showDialog(this,
@@ -11858,6 +11874,11 @@ void LayoutEditor::on_turnoutCircleThrownColorMenuItem()
  }
 }
 
+void LayoutEditor::on_turnoutFillControlCirclesCheckBoxMenuItem(bool checked)
+{
+ turnoutFillControlCircles = checked;//turnoutFillControlCirclesCheckBoxMenuItem.isSelected();
+ redrawPanel();
+}
 void LayoutEditor::on_TooltipNoneMenuItem()
 {
  tooltipsInEditMode = false;

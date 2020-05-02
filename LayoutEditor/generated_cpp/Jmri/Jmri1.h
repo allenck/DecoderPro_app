@@ -388,6 +388,7 @@ inline int  promoted_getItemY(Positionable*  p, int  deltaY) { return this->getI
 inline QList<Positionable* >*  promoted_getSelectedItems(QGraphicsSceneMouseEvent*  event) { return this->getSelectedItems(event); }
 inline QList<Positionable* >*  promoted_getSelectedItems(QPointF  pt) { return this->getSelectedItems(pt); }
 inline QSizeF  promoted_getTargetPanelSize() { return this->getTargetPanelSize(); }
+inline double  promoted_getZoomRatio() { return this->getZoomRatio(); }
 inline void promoted_init(QString  name) { this->init(name); }
 inline void promoted_locoMarkerFromInput() { this->locoMarkerFromInput(); }
 inline void promoted_locoMarkerFromRoster() { this->locoMarkerFromRoster(); }
@@ -489,6 +490,7 @@ void delete_Editor(Editor* obj) { delete obj; }
    EditScene*  getTargetPanel(Editor* theWrappedObject);
    QSizeF  getTargetPanelSize(Editor* theWrappedObject);
    QString  py_q_getTitle(Editor* theWrappedObject){  return (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_getTitle());}
+   double  getZoomRatio(Editor* theWrappedObject);
    void init(Editor* theWrappedObject, QString  name);
    void py_q_init(Editor* theWrappedObject, QString  name){  (((PythonQtPublicPromoter_Editor*)theWrappedObject)->py_q_init(name));}
    void initView(Editor* theWrappedObject);
@@ -1950,7 +1952,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    QString  getLayoutName(LayoutEditor* theWrappedObject);
    QList<LayoutTrack* >*  getLayoutTracks(LayoutEditor* theWrappedObject);
    QList<LayoutTurnout* >  getLayoutTurnouts(LayoutEditor* theWrappedObject);
-   QList<LayoutTurnout* >  getLayoutTurnoutsAndSlips(LayoutEditor* theWrappedObject);
+   QList<LayoutTurnout* >*  getLayoutTurnoutsAndSlips(LayoutEditor* theWrappedObject);
    int  getLayoutWidth(LayoutEditor* theWrappedObject);
    float  getMainlineTrackWidth(LayoutEditor* theWrappedObject);
    bool  getOpenDispatcherOnLoad(LayoutEditor* theWrappedObject);
@@ -1972,7 +1974,6 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    int  getTurnoutCircleSize(LayoutEditor* theWrappedObject);
    QString  getTurnoutCircleThrownColor(LayoutEditor* theWrappedObject);
    bool  getTurnoutCircles(LayoutEditor* theWrappedObject);
-   bool  getTurnoutDrawUnselectedLeg(LayoutEditor* theWrappedObject);
    double  getTurnoutWid(LayoutEditor* theWrappedObject);
    int  getUpperLeftX(LayoutEditor* theWrappedObject);
    int  getUpperLeftY(LayoutEditor* theWrappedObject);

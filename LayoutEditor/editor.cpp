@@ -455,12 +455,16 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
 /*public*/ /*const*/ double Editor::getPaintScale() {
     return _paintScale;
 }
+
 /*protected*/ /*const*/ void Editor::setPaintScale(double newScale) {
-    double ratio = newScale/_paintScale;
-    Q_UNUSED(ratio);
+     ratio = newScale * _paintScale;
+    //Q_UNUSED(ratio);
     _paintScale = newScale;
     //setScrollbarScale(ratio);
+    editPanel->scale(newScale, newScale);
 }
+
+/*protected*/ double Editor::getZoomRatio() { return ratio;}
 
 /*protected*/ void Editor::setToolTip(QString tt) {
 //    if (tt==NULL) {
