@@ -38,6 +38,7 @@ namespace Ui {
 class LayoutEditor;
 }
 
+class AddEntryExitPairAction;
 class ToolBarSide;
 class EditToolBarContainerPanel;
 class NamedBeanComboBox;
@@ -433,7 +434,7 @@ public:
 
 
 public slots:
-    /*public*/ void on_setIncludedTurnoutSkipped(bool boo);
+    /*public*/ void setIncludedTurnoutSkipped(bool boo);
     void on_locationItem();
     /*public*/ void on_setTurnoutAnimation(bool state) ;
     /*public*/ void on_setDirectTurnoutControl(bool boo);
@@ -957,6 +958,7 @@ private:
  /*private*/ double undoDeltaY = 0.0;
  /*private*/ /*transient*/ QRectF undoRect;
  QAction* skipTurnoutCheckBoxMenuItem;
+ /*private*/ AddEntryExitPairAction* addEntryExitPairAction = nullptr;
  /*private*/ bool includedTurnoutSkipped = false;
  /*private*/ void setupMarkerMenu(/*@Nonnull*/ QMenuBar *menuBar);
  /*private*/ void setupDispatcherMenu(/*@Nonnull*/ QMenuBar* menuBar);
@@ -1004,28 +1006,16 @@ private slots:
  void on_actionSnap_to_grid_when_adding_toggled(bool bState);
  void on_actionSnap_to_grid_when_moving_toggled(bool bState);
  void on_defaultTextColorSelected();
- void on_actionSet_Signals_at_Block_Boundary_triggered();
- void on_actionSet_Signals_at_Turnout_triggered();
- void on_actionSet_Signals_at_Crossover_triggered();
- void on_actionSet_Signals_at_Level_Crossing_triggered();
  void on_actionAdd_Fast_Clock_triggered();
- void on_actionSet_Signals_at_Slip_triggered();
- void on_actionSet_Signals_at_Throat_to_Throat_Turnouts_triggered();
- void on_actionEntry_Exit_triggered();
  void on_actionAdd_Turntable_triggered();
  void on_turnoutCirclesOnItem_triggered(bool);
  void on_turnoutDrawUnselectedLegItem_triggered(bool);
- void on_actionSet_Signals_at_Three_Way_Turnout();
  void on_autoAssignBlocksItem_triggered(bool b);
  void on_hideTrackSegmentConstructionLines_toggled(bool);
  //void on_useDirectTurnoutControlItem_triggered(bool);
  void on_addTrackColorMenuEntry_triggered();
  void on_addTrackOccupiedColorMenuEntry_triggered();
  void on_addTrackAlternativeColorMenuEntry_triggered(/*int*/);
- void on_actionBoth_scrollbars();
- void on_actionNo_scrollbars();
- void on_actionHorizontal_scrollbars();
- void on_actionVertical_scrollbars();
  /*private*/ double on_zoomIn();
  /*private*/ double on_zoomOut();
  double on_zoomToFit();
@@ -1034,7 +1024,6 @@ private slots:
  void on_translateSelections();
  void moveSelectionCancelPressed();
  void moveSelectionDonePressed(/*@Nonnull ActionEvent event*/);
- void on_NewTrain();
  void on_Zoom025Item();
  void on_Zoom05Item();
  void on_Zoom075Item();
@@ -1043,10 +1032,9 @@ private slots:
  void on_Zoom20Item();
  void on_Zoom30Item();
  void on_Zoom40Item();
- /*private*/ void on_resetTurnoutSize();
+ /*private*/ void resetTurnoutSize();
  void on_TurnoutCircleColorMenuItem();
  void on_turnoutCircleThrownColorMenuItem();
- void on_TooltipNoneMenuItem();
  void on_TooltipAlwaysMenuItem();
  void on_TooltipInEditMenuItem();
  void on_TooltipNotInEditMenuItem();

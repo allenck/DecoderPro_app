@@ -9,7 +9,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AddEntryExitPairAction : public AbstractActio
  Q_OBJECT
 public:
  //explicit AddEntryExitPairAction(QObject *parent = 0);
- /*public*/ AddEntryExitPairAction(QString s, LayoutEditor* panel, QObject *parent);
+ /*public*/ AddEntryExitPairAction(QString s, LayoutEditor* panel, QObject *parent = 0);
 
 signals:
 

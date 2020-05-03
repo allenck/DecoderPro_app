@@ -30,6 +30,7 @@ public:
     /*public*/ void rotate(int deg) override;
     Positionable* parent;
     void invalidate();
+    /*public*/ bool event(QEvent* event) override;
 
 signals:
     

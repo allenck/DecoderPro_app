@@ -7,7 +7,7 @@
 #include "layouttrackeditors.h"
 #include "mathutil.h"
 #include <cmath>
-
+#include <QToolTip>
 
 /**
  * A collection of tools to check various things on the layout editor panel.
@@ -23,9 +23,9 @@
  * @param layoutEditor the layout editor that uses this class
  */
 /*public*/ LayoutEditorChecks::LayoutEditorChecks(/*@Nonnull*/ LayoutEditor* layoutEditor, QObject* parent) : QObject(parent){
- checkMenu = new QMenu(tr("CheckMenuTitle"));
-  checkInProgressMenuItem = new QAction(tr("CheckInProgressMenuItemTitle"),this);
- checkNoResultsMenuItem = new QAction(tr("CheckNoResultsMenuItemTitle"),this);
+ checkMenu = new QMenu(tr("Check"));
+ checkInProgressMenuItem = new QAction(tr("Check In Progress..."),this);
+ checkNoResultsMenuItem = new QAction(tr("No Results"),this);
 
  // Check for Un-Connected Tracks
  checkUnConnectedTracksMenu = new QMenu(tr("Un-Connected Tracks"));
@@ -77,17 +77,24 @@
     connect(checkMenu, SIGNAL(aboutToShow()), this, SLOT(onMenuSelected()));
     checkMenu->setEnabled(layoutEditor->isEditable());
     checkMenu->setToolTip(tr("Select this menu to run layout editor checks"));
-
+    checkMenu->setToolTipsVisible(true);
     checkNoResultsMenuItem->setToolTip(tr("This check passed: there are no results to report"));
     checkNoResultsMenuItem->setEnabled(false);
+    connect(checkNoResultsMenuItem, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), checkNoResultsMenuItem->toolTip(), layoutEditor);
+    });
     checkInProgressMenuItem->setToolTip(tr("Checking is in progress... (please wait)"));
     checkInProgressMenuItem->setEnabled(false);
+    connect(checkInProgressMenuItem, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), checkInProgressMenuItem->toolTip(), layoutEditor);
+    });
 
     //
     //  check for tracks with free connections
     //
-    checkUnConnectedTracksMenu->setToolTip(tr("elect this to check for tracks that have unconnected ends"));
+    checkUnConnectedTracksMenu->setToolTip(tr("Select this to check for tracks that have unconnected ends"));
     checkUnConnectedTracksMenu->addAction(checkInProgressMenuItem);
+    checkUnBlockedTracksMenu->setToolTipsVisible(true);
     checkMenu->addMenu(checkUnConnectedTracksMenu);
 
 //    checkUnConnectedTracksMenu.addMenuListener(new MenuListener() {
@@ -114,6 +121,7 @@ connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnC
     //  check for tracks without assigned blocks
     //
     checkUnBlockedTracksMenu->setToolTip(tr("Select this to check for tracks that do not have an assigned block"));
+    checkUnBlockedTracksMenu->setToolTipsVisible(true);
     checkUnBlockedTracksMenu->addAction(checkInProgressMenuItem);
     checkMenu->addMenu(checkUnBlockedTracksMenu);
 

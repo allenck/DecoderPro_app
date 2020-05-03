@@ -264,3 +264,12 @@ void PositionableIcon::invalidate()
   _itemGroup->setName("PositionableIcon");
 }
 
+/*public*/ bool PositionableIcon::event(QEvent *event)
+{
+ if(event->type() == QEvent::ToolTip)
+ {
+  if(!showToolTip())
+   event->ignore();
+ }
+ return QWidget::event(event);
+}

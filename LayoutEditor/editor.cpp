@@ -761,23 +761,24 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
 /*protected*/ void Editor::setScroll(int state) {
  if(editPanel == nullptr) return; // TODO: handle for when JLayeredPane is used
     if (_debug) log->debug("setScroll "+ QString::number(state));
-    switch (state) {
-        case SCROLL_NONE:
-            editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-            editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-            break;
-        case SCROLL_BOTH:
-     editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-     editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-            break;
-        case SCROLL_HORIZONTAL:
-     editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-     editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-            break;
-        case SCROLL_VERTICAL:
-     editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-     editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-            break;
+    switch (state)
+    {
+     case SCROLL_NONE:
+      editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+      editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+      break;
+     case SCROLL_BOTH:
+      editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+      editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+         break;
+     case SCROLL_HORIZONTAL:
+      editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+      editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+      break;
+     case SCROLL_VERTICAL:
+      editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+      editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+      break;
     }
     _scrollState = state;
 }

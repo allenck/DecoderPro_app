@@ -27,6 +27,7 @@ class BeanDetails;
 class JmriBeanComboBox;
 class PositionableIcon;
 class SignallingGuiTools;
+class NamedBeanComboBox;
 class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditorTools : public QObject
 {
     Q_OBJECT
@@ -34,6 +35,12 @@ public:
  //explicit LayoutEditorTools(QObject *parent = 0);
  // constructor method
  /*public*/ LayoutEditorTools(LayoutEditor* thePanel, QObject *parent = 0);
+ /*public*/ void setSignalsAtThroatToThroatTurnoutsFromMenu(
+            /*@Nonnull*/ LayoutTurnout* to, /*@Nonnull*/ QString linkedTurnoutName,
+            /*@Nonnull*/ MultiIconEditor* theEditor, /*@Nonnull*/ JFrame* theFrame);
+ /*public*/ void setSignalsAtThroatToThroatTurnouts(
+         /*@Nonnull*/ MultiIconEditor* theEditor, /*@Nonnull*/ JFrame* theFrame);
+
 // display dialog for Set Signals at Turnout* tool
 /*public*/ void setSignalsAtTurnoutFromMenu( LayoutTurnout* to,
                 MultiIconEditor* theEditor, JFrame* theFrame ) ;
@@ -142,6 +149,86 @@ private:
 
     /*private*/ MultiIconEditor* sensorIconEditor;// = NULL;
 
+    //operational variables for Set Signals at Double Crossover Turnout tool
+        /*private*/ JmriJFrame* setSignalsAtThroatToThroatTurnoutsFrame = nullptr;
+        /*private*/ bool setSignalsAtThroatToThroatTurnoutsOpenFlag = false;
+        /*private*/ bool setSignalsAtThroatToThroatTurnoutsFromMenuFlag = false;
+
+        /*private*/ JLabel* ttotTurnoutName1Label = nullptr;
+        /*private*/ JLabel* ttotTurnoutName2Label = nullptr;
+
+        /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnout1ComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.turnoutManagerInstance(),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnout2ComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.turnoutManagerInstance(),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1TToTSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.getDefault(SignalHeadManager.class
+//                ),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2TToTSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.getDefault(SignalHeadManager.class
+//                ),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b1TToTSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.getDefault(SignalHeadManager.class
+//                ),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b2TToTSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.getDefault(SignalHeadManager.class
+//                ),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c1TToTSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.getDefault(SignalHeadManager.class
+//                ),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c2TToTSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.getDefault(SignalHeadManager.class
+//                ),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d1TToTSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.getDefault(SignalHeadManager.class
+//                ),
+//                null, DisplayOptions.DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d2TToTSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//                InstanceManager.getDefault(SignalHeadManager.class
+//                ),
+//                null, DisplayOptions.DISPLAYNAME);
+    /*private*/ /*final*/ QCheckBox* setA1TToTHead = new QCheckBox(tr("PlaceHead"));
+    /*private*/ /*final*/ QCheckBox* setA2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+    /*private*/ /*final*/ QCheckBox* setB1TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+    /*private*/ /*final*/ QCheckBox* setB2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+    /*private*/ /*final*/ QCheckBox* setC1TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+    /*private*/ /*final*/ QCheckBox* setC2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+    /*private*/ /*final*/ QCheckBox* setD1TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+    /*private*/ /*final*/ QCheckBox* setD2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+
+    /*private*/ /*final*/ QCheckBox* setupA1TToTLogic = new QCheckBox(tr("Set up SSL"));
+    /*private*/ /*final*/ QCheckBox* setupA2TToTLogic = new QCheckBox(tr("Set up SSL"));
+    /*private*/ /*final*/ QCheckBox* setupB1TToTLogic = new QCheckBox(tr("Set up SSL"));
+    /*private*/ /*final*/ QCheckBox* setupB2TToTLogic = new QCheckBox(tr("Set up SSL"));
+    /*private*/ /*final*/ QCheckBox* setupC1TToTLogic = new QCheckBox(tr("Set up SSL"));
+    /*private*/ /*final*/ QCheckBox* setupC2TToTLogic = new QCheckBox(tr("Set up SSL"));
+    /*private*/ /*final*/ QCheckBox* setupD1TToTLogic = new QCheckBox(tr("Set up SSL"));
+    /*private*/ /*final*/ QCheckBox* setupD2TToTLogic = new QCheckBox(tr("Set up SSL"));
+
+    /*private*/ QPushButton* getSavedTToTSignalHeads = nullptr;
+    /*private*/ QPushButton* changeTToTSignalIcon = nullptr;
+    /*private*/ QPushButton* setTToTSignalsDone = nullptr;
+    /*private*/ QPushButton* setTToTSignalsCancel = nullptr;
+
+    /*private*/ LayoutTurnout* layoutTurnout1 = nullptr;
+    /*private*/ LayoutTurnout* layoutTurnout2 = nullptr;
+
+    /*private*/ Turnout* turnout1 = nullptr;
+    /*private*/ Turnout* turnout2 = nullptr;
+
+    /*private*/ TrackSegment* connectorTrack = nullptr;
+
+    /*private*/ QString ttotTurnoutName1 = "";
+    /*private*/ QString ttotTurnoutName2 = "";
+
 
     // operational instance variables shared between tools
     /*private*/ LayoutEditor* layoutEditor; //NULL;
@@ -155,9 +242,29 @@ private:
     /*private*/ JmriJFrame* setSignalsAtTurnoutFrame = nullptr;
     /*private*/ bool setSignalsAtTurnoutOpenFlag = false;
     /*private*/ bool setSignalsAtTurnoutFromMenuFlag = false;
-    /*private*/ /*final*/ JmriBeanComboBox* turnoutComboBox;// = new JmriBeanComboBox(
-//            InstanceManager::turnoutManagerInstance(),
-//            nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+
+    /*private*/ QLabel* xoverTurnoutNameLabel;// = new QLabel("");
+
+    /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutComboBox;// = new NamedBeanComboBox<>(
+//            InstanceManager.turnoutManagerInstance(),
+//            null, DisplayOptions.DISPLAYNAME);
+
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* throatContinuingSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//            InstanceManager.getDefault(SignalHeadManager.class),
+//            null, DisplayOptions.DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* throatDivergingSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//            InstanceManager.getDefault(SignalHeadManager.class),
+//            null, DisplayOptions.DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* continuingSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//            InstanceManager.getDefault(SignalHeadManager.class),
+//            null, DisplayOptions.DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* divergingSignalHeadComboBox;// = new NamedBeanComboBox<>(
+//            InstanceManager.getDefault(SignalHeadManager.class),
+//            null, DisplayOptions.DISPLAYNAME);
+
+    /*private*/ /*final*/ QCheckBox* setPlaceAllHeads;// = new JCheckBox(Bundle.getMessage("PlaceAllHeads"));
+    /*private*/ /*final*/ QCheckBox* setupAllLogic;// = new JCheckBox(Bundle.getMessage("SetAllLogic"));
+
     /*private*/ /*final*/ JmriBeanComboBox* signalMastsTurnoutComboBox;// = new JmriBeanComboBox(
 //                InstanceManager.turnoutManagerInstance(), null,
 //                JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
@@ -265,7 +372,6 @@ private:
     /*private*/ SignalHead* d2Head;// = NULL;
     /*private*/ int xoverType;// = LayoutTurnout.DOUBLE_XOVER;  // changes to RH_XOVER or LH_XOVER as required
     /*private*/ QString xoverTurnoutName;// = "";
-    /*private*/ QLabel* xoverTurnoutNameLabel;// = new QLabel("");
 
     bool setSignalMastsOpen;// =false;
     bool turnoutMastFromMenu;// = false;
@@ -459,31 +565,7 @@ private:
     /*private*/ JTextField* c2TToTField;// = new JTextField(16);
     /*private*/ JTextField* d1TToTField;// = new JTextField(16);
     /*private*/ JTextField* d2TToTField;// = new JTextField(16);
-    /*private*/ QCheckBox*  setA1TToTHead;// = new JCheckBox(tr("PlaceHead"));
-    /*private*/ QCheckBox*  setupA1TToTLogic;// = new JCheckBox(tr("SetLogic"));
-    /*private*/ QCheckBox*  setA2TToTHead;// = new JCheckBox(tr("PlaceHead"));
-    /*private*/ QCheckBox*  setupA2TToTLogic;// = new JCheckBox(tr("SetLogic"));
-    /*private*/ QCheckBox*  setB1TToTHead;// = new JCheckBox(tr("PlaceHead"));
-    /*private*/ QCheckBox*  setupB1TToTLogic;// = new JCheckBox(tr("SetLogic"));
-    /*private*/ QCheckBox*  setB2TToTHead;// = new JCheckBox(tr("PlaceHead"));
-    /*private*/ QCheckBox*  setupB2TToTLogic;// = new JCheckBox(tr("SetLogic"));
-    /*private*/ QCheckBox*  setC1TToTHead;// = new JCheckBox(tr("PlaceHead"));
-    /*private*/ QCheckBox*  setupC1TToTLogic;// = new JCheckBox(tr("SetLogic"));
-    /*private*/ QCheckBox*  setC2TToTHead;// = new JCheckBox(tr("PlaceHead"));
-    /*private*/ QCheckBox*  setupC2TToTLogic;// = new JCheckBox(tr("SetLogic"));
-    /*private*/ QCheckBox*  setD1TToTHead;// = new JCheckBox(tr("PlaceHead"));
-    /*private*/ QCheckBox*  setupD1TToTLogic;// = new JCheckBox(tr("SetLogic"));
-    /*private*/ QCheckBox*  setD2TToTHead;// = new JCheckBox(tr("PlaceHead"));
-    /*private*/ QCheckBox*  setupD2TToTLogic;// = new JCheckBox(tr("SetLogic"));
-    /*private*/ QPushButton* getSavedTToTSignalHeads;// = NULL;
-    /*private*/ QPushButton* changeTToTSignalIcon;// = NULL;
-    /*private*/ QPushButton* setTToTSignalsDone;// = NULL;
-    /*private*/ QPushButton* setTToTSignalsCancel;// = NULL;
-    /*private*/ LayoutTurnout* layoutTurnout1;// = NULL;
-    /*private*/ LayoutTurnout* layoutTurnout2;// = NULL;
-    /*private*/ Turnout* turnout1;// = NULL;
-    /*private*/ Turnout* turnout2;// = NULL;
-    /*private*/ TrackSegment* connectorTrack;// = NULL;
+
     SignalHead* a1TToTHead;// = NULL;
     SignalHead* a2TToTHead;// = NULL;
     SignalHead* b1TToTHead;// = NULL;
@@ -745,6 +827,10 @@ private:
   /*private*/ void set3WayLogicContinuing();
   /*private*/ void set3WayLogicDivergingB();
 
+    /*private*/ void oneFrameToRuleThemAll(/*@Nonnull*/ JmriJFrame* goodFrame);
+    /*private*/ JmriJFrame* closeIfNotFrame(/*@Nonnull */JmriJFrame* goodFrame, /*@CheckForNull*/ JmriJFrame* badFrame);
+
+
  private slots:
     void changeSignalAtBoundaryIcon_clicked();
     /*private*/ void setSignalsAtBoundaryDonePressed (ActionEvent* /*a*/ = 0);
@@ -775,7 +861,7 @@ private:
     /*private*/ void setXingSensorsDonePressed (ActionEvent* /*a*/ = 0);
     /*private*/ void setTToTSignalsDonePressed (ActionEvent* /*a*/ = 0);
     /*private*/ void tToTTurnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
-    /*private*/ void setTToTSignalsCancelPressed (ActionEvent* /*a*/ = 0);
+    /*private*/ void setTToTSignalsCancelPressed ();
     void on_a1TToTField_textEdited(QString);
     void on_a2TToTField_textEdited(QString);
     void on_b1TToTField_textEdited(QString);
@@ -804,6 +890,9 @@ private:
     /*private*/ void set3WaySignalsCancelPressed (ActionEvent* a = 0);
     void On_change3WaySignalIconClicked();
     /*private*/ void set3WaySignalsDonePressed (ActionEvent* a = 0);
+
+    /*private*/ void setSignalsAtTToTTurnoutsGetSaved(/*ActionEvent* a*/);
+
 
     friend class SSWindowListener;
     friend class SXWindowListener;

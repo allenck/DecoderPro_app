@@ -84,6 +84,8 @@
 #include "layouteditorfloatingtoolbarpanel.h"
 #include <QScrollBar>
 #include "layoutshape.h"
+#include <QToolTip>
+#include "addentryexitpairaction.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -3903,7 +3905,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 }
 /*public*/ double LayoutEditor::getXOverShort() {return xOverShort;}
 // reset turnout sizes to program defaults
-/*private*/ void LayoutEditor::on_resetTurnoutSize() {
+/*private*/ void LayoutEditor::resetTurnoutSize() {
   turnoutBX = LayoutTurnout::turnoutBXDefault;
   turnoutCX = LayoutTurnout::turnoutCXDefault;
   turnoutWid = LayoutTurnout::turnoutWidDefault;
@@ -4190,9 +4192,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //         }
 //     }
      //Optional antialising, to eliminate (reduce) staircase on diagonal lines
-  if (antialiasingOn) {
       editPanel->setRenderHint(QPainter::Antialiasing, antialiasingOn);
-  }
 
      //drawPositionableLabelBorder(g2);
      // things that only get drawn in edit mode
@@ -7514,30 +7514,18 @@ void LayoutEditor::on_removeMenuAction_triggered()
 //    markerMenu.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("MenuMarkerMnemonic")));
     menuBar->addMenu(markerMenu);
     QAction* act;
-    markerMenu->addAction(act = new AbstractAction(tr("AddLoco") + "...",this));
-//    {
-//        @Override
-//        public void actionPerformed(ActionEvent event) {
-//            locoMarkerFromInput();
-//        }
-//    });
-    connect(act, SIGNAL(triggered()), this, SLOT(locoMarkerFromInput()));
-    markerMenu->addAction(act = new AbstractAction(tr("AddLocoRoster") + "...", this));
-//    {
-//        @Override
-//        public void actionPerformed(ActionEvent event) {
-//            locoMarkerFromRoster();
-//        }r
-//    });
-    connect(act, SIGNAL(triggered(bool)), this, SLOT(locoMarkerFromRoster()));
+    markerMenu->addAction(act = new AbstractAction(tr("Add Loco") + "...",this));
+    connect(act, &QAction::triggered, [=]{
+            locoMarkerFromInput();
+    });
+    markerMenu->addAction(act = new AbstractAction(tr("Add Loco from Roster") + "...", this));
+    connect(act, &QAction::triggered, [=]{
+            locoMarkerFromRoster();
+    });
     markerMenu->addAction(act =new AbstractAction(tr("Remove Markers"), this));
-//    {
-//        @Override
-//        public void actionPerformed(ActionEvent event) {
-//            removeMarkers();
-//        }
-//    });
-      connect(act, SIGNAL(triggered(bool)), this, SLOT(removeMarkers()));
+    connect(act, &QAction::triggered, [=]{
+            removeMarkers();
+    });
 }
 
 /*private*/ void LayoutEditor::setupDispatcherMenu(/*@Nonnull*/ QMenuBar* menuBar) {
@@ -7550,46 +7538,30 @@ void LayoutEditor::on_removeMenuAction_triggered()
     QAction* newTrainItem = new QAction(tr("New Train"), this);
     dispMenu->addAction(newTrainItem);
 //    newTrainItem.addActionListener((ActionEvent event) -> {
-//        if (InstanceManager.getDefault(TransitManager.class).getNamedBeanSet().size() <= 0) {
-//            //Inform the user that there are no Transits available, and don't open the window
-//            JOptionPane.showMessageDialog(null,
-//                    ResourceBundle.getBundle("jmri.jmrit.dispatcher.DispatcherBundle").
-//                            getString("NoTransitsMessage"));
-//        } else {
-//            DispatcherFrame df = InstanceManager.getDefault(DispatcherFrame.class);
-//            if (!df.getNewTrainActive()) {
-//                df.getActiveTrainFrame().initiateTrain(event, null, null);
-//                df.setNewTrainActive(true);
-//            } else {
-//                df.getActiveTrainFrame().showActivateFrame(null);
-//            }
-//        }
-//    });
-    connect(act, SIGNAL(triggered(bool)), this, SLOT(on_NewTrain()));
+    connect(newTrainItem, &QAction::triggered, [=]{
+
+     if (static_cast<TransitManager*>(InstanceManager::getDefault("TransitManager"))->getNamedBeanSet().size() <= 0) {
+         //Inform the user that there are no Transits available, and don't open the window
+         JOptionPane::showMessageDialog(nullptr,
+                 tr("Cannot open Dispatcher - no Transits found.\nPlease create Transits and try again."));
+     } else {
+         DispatcherFrame* df = static_cast<DispatcherFrame*>(InstanceManager::getDefault("DispatcherFrame"));
+         if (!df->getNewTrainActive()) {
+             df->getActiveTrainFrame()->initiateTrain(/*event*/nullptr, nullptr, nullptr);
+             df->setNewTrainActive(true);
+         } else {
+             df->getActiveTrainFrame()->showActivateFrame(nullptr);
+         }
+     }
+    });
 }
 
-void LayoutEditor::on_NewTrain()
-{
- if (static_cast<TransitManager*>(InstanceManager::getDefault("TransitManager"))->getNamedBeanSet().size() <= 0) {
-     //Inform the user that there are no Transits available, and don't open the window
-     JOptionPane::showMessageDialog(nullptr,
-             tr("Cannot open Dispatcher - no Transits found.\nPlease create Transits and try again."));
- } else {
-     DispatcherFrame* df = static_cast<DispatcherFrame*>(InstanceManager::getDefault("DispatcherFrame"));
-     if (!df->getNewTrainActive()) {
-         df->getActiveTrainFrame()->initiateTrain(/*event*/nullptr, nullptr, nullptr);
-         df->setNewTrainActive(true);
-     } else {
-         df->getActiveTrainFrame()->showActivateFrame(nullptr);
-     }
- }
-}
 
 /*public*/ bool LayoutEditor::isIncludedTurnoutSkipped() {
     return includedTurnoutSkipped;
 }
 
-/*public*/ void LayoutEditor::on_setIncludedTurnoutSkipped(bool boo) {
+/*public*/ void LayoutEditor::setIncludedTurnoutSkipped(bool boo) {
     includedTurnoutSkipped = boo;
 }
 
@@ -8785,89 +8757,6 @@ void LayoutEditor::on_deletePanel()
  if (_debug) log->debug("loadFailed icon nullptr= "+(_newIcon==nullptr));
  return _newIcon;
 }
-
-//void LayoutEditor::on_actionAdd_loco_from_roster_triggered()
-//{
-// locoMarkerFromRoster();
-//}
-
-// void LayoutEditor::on_actionSkip_unsignalled_Internal_Turnouts_toggled(bool bState)
-// {
-//  skipIncludedTurnout = bState;
-// }
-
- void LayoutEditor::on_actionSet_Signals_at_Block_Boundary_triggered()
- {
-  if (tools == nullptr)
-  {
-   tools = new LayoutEditorTools(this);
-  }
-  tools->setSignalsAtBlockBoundary(signalIconEditor, signalFrame);
- }
-
- void LayoutEditor::on_actionSet_Signals_at_Turnout_triggered()
- {
-  if (tools == nullptr)
-  {
-   tools = new LayoutEditorTools(this);
-  }
-  tools->setSignalsAtTurnout(signalIconEditor, signalFrame);
- }
-
- void LayoutEditor::on_actionSet_Signals_at_Crossover_triggered()
- {
-  if (tools == nullptr)
-  {
-   tools = new LayoutEditorTools(this);
-  }
-  tools->setSignalsAtXoverTurnout(signalIconEditor, signalFrame);
- }
-
- void LayoutEditor::on_actionSet_Signals_at_Level_Crossing_triggered()
- {
-  if (tools == nullptr)
-  {
-   tools = new LayoutEditorTools(this);
-  }
-  tools->setSignalsAtLevelXing(signalIconEditor, signalFrame);
- }
-
- void LayoutEditor::on_actionSet_Signals_at_Slip_triggered()
- {
-  if (tools == nullptr)
-  {
-   tools = new LayoutEditorTools(this);
-  }
-  tools->setSignalsAtSlip(signalIconEditor, signalFrame);
- }
-
- void LayoutEditor::on_actionSet_Signals_at_Throat_to_Throat_Turnouts_triggered()
- {
-  if (tools == nullptr)
-  {
-   tools = new LayoutEditorTools(this);
-  }
-  tools->setSignalsAtTToTTurnouts(signalIconEditor, signalFrame);
- }
-
- void LayoutEditor::on_actionSet_Signals_at_Three_Way_Turnout()
- {
-  if (tools == nullptr)
-  {
-   tools = new LayoutEditorTools(this);
-  }
-  tools->setSignalsAt3WayTurnout(signalIconEditor, signalFrame);
- }
-
- void LayoutEditor::on_actionEntry_Exit_triggered()
- {
-  if (tools == nullptr)
-  {
-   tools = new LayoutEditorTools(this);
-  }
-  AddEntryExitPairAction act("", this, this);
-  act.actionPerformed();
- }
 
  void LayoutEditor::on_actionAdd_Fast_Clock_triggered()
  {
@@ -11033,139 +10922,7 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     wideToolBarCheckBoxMenuItem->setChecked(leToolBarPanel->toolBarIsWide);
     wideToolBarCheckBoxMenuItem->setEnabled((toolBarSide.getType() == eTOP) || (toolBarSide.getType() == eBOTTOM));
     connect(wideToolBarCheckBoxMenuItem, SIGNAL(toggled(bool)), this, SLOT(on_setToolBarWide(bool)));
-#if 0
-    //
-    //create setup font size menu items
-    //
-    QActionGroup* toolBarFontSizeGroup = new QActionGroup(this);
 
-    QStringList fontSizes = QStringList() <<"9" << "10" << "11" << "12" << "13" << "14" << "15" << "16" << "17" << "18";
-
-    for (QString fontSize : fontSizes) {
-        float fontSizeFloat =fontSize.toFloat();
-        QAction* fontSizeButton = new QAction(fontSize);
-        fontSizeButton->setCheckable(true);
-//        fontSizeButton.addActionListener((ActionEvent event) -> {
-//            setupToolBarFontSizes(fontSizeFloat);
-
-//            //save it in the user preferences for the window
-//            String windowFrameRef = getWindowFrameRef();
-//            InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefsMgr) -> {
-//                prefsMgr.setProperty(windowFrameRef, "toolBarFontSize", fontSizeFloat);
-//            });
-
-//            ///doing this for now (since window prefs seem to be whacked)
-//            GuiLafPreferencesManager manager = InstanceManager.getDefault(GuiLafPreferencesManager.class);
-//            manager.setFontSize((int) fontSizeFloat);
-//        });
-        toolBarFontSizeMenu->addAction(fontSizeButton);
-        toolBarFontSizeGroup->addAction(fontSizeButton);
-        fontSizeButton->setChecked(MathUtil::equals(fontSizeFloat, toolBarFontSize));
-    }
-#endif
-#if 0
-    toolBarFontSizeMenu.addMenuListener(new MenuListener() {
-        @Override
-        public void menuSelected(MenuEvent event) {
-            String fontSizeString = String.valueOf((int) toolBarFontSize);
-
-            for (Component c : toolBarFontSizeMenu.getMenuComponents()) {
-                if (c instanceof JRadioButtonMenuItem) {
-                    JRadioButtonMenuItem crb = (JRadioButtonMenuItem) c;
-                    String menuItemFontSizeString = crb.getText();
-                    crb->setChecked(menuItemFontSizeString.equals(fontSizeString));
-                }
-            }
-        }
-
-        @Override
-        public void menuDeselected(MenuEvent event) {
-        }
-
-        @Override
-        public void menuCanceled(MenuEvent event) {
-        }
-    });
-
-    //toolBarMenu.add(toolBarFontSizeMenu); //<<== disabled as per
-    //<https://github.com/JMRI/JMRI/pull/3145#issuecomment-283940658>
-    //
-    //setup drop down list display order menu
-    //
-    QActionGroup* dropDownListsDisplayOrderGroup = new QActionGroup(this);
-
-    QStringList ddldoChoices = QStringList() << tr("Display Name (User else System)") << tr("UserName") <<
-        tr("SystemName") << tr("User Name followed by System Name") <<
-        tr("System Name followed by User Name");
-
-    for (QString ddldoChoice : ddldoChoices) {
-        QAction* ddldoChoiceMenuItem = new QAction(ddldoChoice, this);
-        ddldoChoiceMenuItem->setCheckable(true);
-        ddldoChoiceMenuItem.addActionListener((ActionEvent event) -> {
-            JRadioButtonMenuItem ddldoMenuItem = (JRadioButtonMenuItem) event.getSource();
-            JPopupMenu parentMenu = (JPopupMenu) ddldoMenuItem.getParent();
-            int ddldoInt = parentMenu.getComponentZOrder(ddldoMenuItem) + 1;
-            JmriBeanComboBox.DisplayOptions ddldo = JmriBeanComboBox.DisplayOptions.valueOf(ddldoInt);
-
-            InstanceManager.getOptionalDefault(UserPreferencesManager.class).ifPresent((prefsMgr) -> {
-                //change this comboboxes ddldo
-                String windowFrameRef = getWindowFrameRef();
-
-                //this is the preference name
-                String ddldoPrefName = "DropDownListsDisplayOrder";
-
-                //make a focused component specific preference name
-                Component focusedComponent = getFocusOwner();
-
-                if (focusedComponent instanceof JTextField) {
-                    focusedComponent = SwingUtilities.getUnwrappedParent(focusedComponent);
-                }
-
-                if (focusedComponent instanceof JmriBeanComboBox) {
-                    JmriBeanComboBox focusedJBCB = (JmriBeanComboBox) focusedComponent;
-
-                    //now try to get a preference specific to this combobox
-                    String ttt = focusedJBCB.getToolTipText();
-
-                    if (ttt != null) {
-                        //change the name of the preference based on the tool tip text
-                        ddldoPrefName = String.format("%s.%s", ddldoPrefName, ttt);
-                    }
-
-                    //now set the combo box display order
-                    focusedJBCB.setDisplayOrder(ddldo);
-                }
-
-                //update the users preference
-                String[] ddldoPrefs = {"DISPLAYNAME", "USERNAME", "SYSTEMNAME", "USERNAMESYSTEMNAME", "SYSTEMNAMEUSERNAME"};
-                prefsMgr.setProperty(windowFrameRef, ddldoPrefName, ddldoPrefs[ddldoInt]);
-            });
-        }); //addActionListener
-
-        dropDownListsDisplayOrderMenu->addAction(ddldoChoiceMenuItem);
-        dropDownListsDisplayOrderGroup->addAction(ddldoChoiceMenuItem);
-
-        //if it matches the 1st choice then select it (for now; it will be updated later)
-        ddldoChoiceMenuItem->setChecked(ddldoChoice == (ddldoChoices[0]));
-    }
-    //TODO: update menu item based on focused combobox (if any)
-    //note: commented out to avoid findbug warning
-    //dropDownListsDisplayOrderMenu.addMenuListener(new MenuListener() {
-    //    @Override
-    //    public void menuSelected(MenuEvent event) {
-    //        log.debug("update menu item based on focused combobox");
-    //    }
-    //
-    //    @Override
-    //    public void menuDeselected(MenuEvent event) {
-    //    }
-    //
-    //    @Override
-    //    public void menuCanceled(MenuEvent event) {
-    //    }
-    //});
-    toolBarMenu->addMenu(dropDownListsDisplayOrderMenu);
-#endif
     //
     // Scroll Bars
     //
@@ -11177,44 +10934,47 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     scrollMenu->addAction(scrollBothMenuItem);
     scrollBothMenuItem->setChecked(_scrollState == Editor::SCROLL_BOTH);
 //    scrollBothMenuItem.addActionListener((ActionEvent event) -> {
-//        _scrollState = Editor.SCROLL_BOTH;
-//        setScroll(_scrollState);
-//        redrawPanel();
-//    });
-    connect(scrollBothMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionBoth_scrollbars()));
+    connect(scrollBothMenuItem, &QAction::triggered, [=]{
+        _scrollState = Editor::SCROLL_BOTH;
+        setScroll(_scrollState);
+        redrawPanel();
+    });
+
     scrollNoneMenuItem = new QAction(tr("No Scrollbars"), this);
     scrollNoneMenuItem->setCheckable(true);
     scrollGroup->addAction(scrollNoneMenuItem);
     scrollMenu->addAction(scrollNoneMenuItem);
     scrollNoneMenuItem->setChecked(_scrollState == Editor::SCROLL_NONE);
 //    scrollNoneMenuItem.addActionListener((ActionEvent event) -> {
-//        _scrollState = Editor.SCROLL_NONE;
-//        setScroll(_scrollState);
-//        redrawPanel();
-//    });
-    connect(scrollNoneMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionNo_scrollbars()));
+    connect(scrollNoneMenuItem, &QAction::triggered, [=]{
+        _scrollState = Editor::SCROLL_NONE;
+        setScroll(_scrollState);
+        redrawPanel();
+    });
+
     scrollHorizontalMenuItem = new QAction(tr("Horizontal Scrollbars"),this);
     scrollHorizontalMenuItem->setCheckable(true);
     scrollGroup->addAction(scrollHorizontalMenuItem);
     scrollMenu->addAction(scrollHorizontalMenuItem);
     scrollHorizontalMenuItem->setChecked(_scrollState == Editor::SCROLL_HORIZONTAL);
 //    scrollHorizontalMenuItem.addActionListener((ActionEvent event) -> {
-//        _scrollState = Editor.SCROLL_HORIZONTAL;
-//        setScroll(_scrollState);
-//        redrawPanel();
-//    });
-    connect(scrollHorizontalMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionHorizontal_scrollbars()));
+    connect(scrollHorizontalMenuItem, &QAction::triggered, [=]{
+        _scrollState = Editor::SCROLL_HORIZONTAL;
+        setScroll(_scrollState);
+        redrawPanel();
+    });
+
     scrollVerticalMenuItem = new QAction(tr("Vertical scrollbars"), this);
     scrollVerticalMenuItem->setCheckable(true);
     scrollGroup->addAction(scrollVerticalMenuItem);
     scrollMenu->addAction(scrollVerticalMenuItem);
     scrollVerticalMenuItem->setChecked(_scrollState == Editor::SCROLL_VERTICAL);
 //    scrollVerticalMenuItem.addActionListener((ActionEvent event) -> {
-//        _scrollState = Editor.SCROLL_VERTICAL;
-//        setScroll(_scrollState);
-//        redrawPanel();
-//    });
-    connect(scrollVerticalMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionVertical_scrollbars()));
+    connect(scrollVerticalMenuItem, &QAction::triggered, [=]{
+        _scrollState = Editor::SCROLL_VERTICAL;
+        setScroll(_scrollState);
+        redrawPanel();
+    });
 
     //
     // Tooltips
@@ -11228,11 +10988,12 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     tooltipMenu->addAction(tooltipNoneMenuItem);
     tooltipNoneMenuItem->setChecked((!tooltipsInEditMode) && (!tooltipsWithoutEditMode));
 //    tooltipNoneMenuItem.addActionListener((ActionEvent event) -> {
-//        tooltipsInEditMode = false;
-//        tooltipsWithoutEditMode = false;
-//        setAllShowToolTip(false);
-//    });
-    connect(tooltipNoneMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TooltipNoneMenuItem()));
+    connect(tooltipNoneMenuItem, &QAction::triggered, [=]{
+     tooltipsInEditMode = false;
+     tooltipsWithoutEditMode = false;
+     setAllShowToolTip(false);
+    });
+
     tooltipAlwaysMenuItem = new QAction(tr("Tooltips Always"),this);
     tooltipAlwaysMenuItem->setCheckable(true);
     tooltipGroup->addAction(tooltipAlwaysMenuItem);
@@ -11287,9 +11048,9 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     positionableCheckBoxMenuItem->setCheckable(true);
     optionMenu->addAction(positionableCheckBoxMenuItem);
 //    positionableCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        setAllPositionable(positionableCheckBoxMenuItem.isSelected());
-//    });
-    connect(positionableCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setAllPositionable(bool)));
+    connect(positionableCheckBoxMenuItem, &QAction::triggered, [=]{
+        setAllPositionable(positionableCheckBoxMenuItem->isChecked());
+    });
     positionableCheckBoxMenuItem->setChecked(allPositionable());
 
     //
@@ -11879,12 +11640,6 @@ void LayoutEditor::on_turnoutFillControlCirclesCheckBoxMenuItem(bool checked)
  turnoutFillControlCircles = checked;//turnoutFillControlCirclesCheckBoxMenuItem.isSelected();
  redrawPanel();
 }
-void LayoutEditor::on_TooltipNoneMenuItem()
-{
- tooltipsInEditMode = false;
- tooltipsWithoutEditMode = false;
- setAllShowToolTip(false);
-}
 
 void LayoutEditor::on_TooltipAlwaysMenuItem()
 {
@@ -11961,17 +11716,23 @@ void LayoutEditor::on_locationItem()
 
     //assign blocks to selection
     QAction* jmi = new QAction(tr("Assign Block To Selection") + "...");
-    setToolTip(tr("Select this to assign the block from the toolbar to all selected layout tracks."));
+    jmi->setToolTip(tr("Select this to assign the block from the toolbar to all selected layout tracks."));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up scale track diagram dialog
-//        assignBlockToSelection();
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(assignBlockToSelection()));
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up scale track diagram dialog
+        assignBlockToSelection();
+    });
 
     //scale track diagram
     jmi = new QAction(tr("Scale/Translate Track Diagram") + "...");
-    setToolTip(tr("Select this to scale and/or translate all layout track"));
+    jmi->setToolTip(tr("Select this to scale and/or translate all layout track"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
 //        //bring up scale track diagram dialog
@@ -11981,130 +11742,168 @@ void LayoutEditor::on_locationItem()
     //translate selection
     jmi = new QAction(tr("Translate Selection") + "...", this);
     jmi->setToolTip(tr("Click here to translate (move) the currently selected items"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up translate selection dialog
-//        moveSelection();
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(moveSelection()));
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up translate selection dialog
+        moveSelection();
+    });
 
     //undo translate selection
     jmi = new QAction(tr("Undo Translate Selection"),this);
     jmi->setToolTip(tr("Click here to undo the translate (move) selection"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //undo previous move selection
-//        undoMoveSelection();
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(undoMoveSelection()));
+    connect(jmi, &QAction::triggered, [=]{
+        //undo previous move selection
+        undoMoveSelection();
+    });
 
     //reset turnout size to program defaults
     jmi = new QAction(tr("Use Program Default Turnout Size"),this);
     jmi->setToolTip(tr("Click here to reset to the default turnout size"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //undo previous move selection
-//        resetTurnoutSize();
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_resetTurnoutSize()));
+    connect(jmi, &QAction::triggered, [=]{
+        //undo previous move selection
+        resetTurnoutSize();
+    });
     toolsMenu->addSeparator();
 
     //skip turnout
     skipTurnoutCheckBoxMenuItem = new QAction(tr("Skip Unsignaled Internal Turnouts"), this);
     skipTurnoutCheckBoxMenuItem->setCheckable(true);
     skipTurnoutCheckBoxMenuItem->setToolTip(tr("SkipInternalTurnoutToolTip"));
+    connect(skipTurnoutCheckBoxMenuItem, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), skipTurnoutCheckBoxMenuItem->toolTip(), this);
+    });
     toolsMenu->addAction(skipTurnoutCheckBoxMenuItem);
 //    skipTurnoutCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        setIncludedTurnoutSkipped(skipTurnoutCheckBoxMenuItem.isSelected());
-//    });
-    connect(skipTurnoutCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_setIncludedTurnoutSkipped(bool)));
+    connect(skipTurnoutCheckBoxMenuItem, &QAction::triggered, [=]{
+        setIncludedTurnoutSkipped(skipTurnoutCheckBoxMenuItem->isChecked());
+    });
     skipTurnoutCheckBoxMenuItem->setChecked(isIncludedTurnoutSkipped());
 
     //set signals at turnout
     jmi = new QAction(tr("Set Signal Heads at Turnout") + "...");
     jmi->setToolTip(tr("Click here to set up the signal heads at a turnout"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up signals at turnout tool dialog
-//        getLETools()->setSignalsAtTurnout(signalIconEditor, signalFrame);
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Turnout_triggered()));
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up signals at turnout tool dialog
+        getLETools()->setSignalsAtTurnout(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
+    });
 
     //set signals at block boundary
     jmi = new QAction(tr("Set Signal Heads at Block Boundary") + "...", this);
     jmi->setToolTip(tr("Click here to set up the signal heads at a block boundary"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up signals at block boundary tool dialog
-//        getLETools().setSignalsAtBlockBoundary(signalIconEditor, signalFrame);
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Block_Boundary_triggered()));
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up signals at block boundary tool dialog
+        getLETools()->setSignalsAtBlockBoundary(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
+    });
 
     //set signals at crossover turnout
     jmi = new QAction(tr("Set Signal Heads at Crossover") + "...", this);
     jmi->setToolTip(tr("Click here to set up the signal heads at a crossover"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up signals at crossover tool dialog
-//        getLETools().setSignalsAtXoverTurnout(signalIconEditor, signalFrame);
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Crossover_triggered()));
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up signals at crossover tool dialog
+        getLETools()->setSignalsAtXoverTurnout(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
+    });
 
     //set signals at level crossing
     jmi = new QAction(tr("Set Signal Heads at Level Crossing") + "...", this);
     jmi->setToolTip(tr("Click here to set up the signal heads at a level crossing"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up signals at level crossing tool dialog
-//        getLETools().setSignalsAtLevelXing(signalIconEditor, signalFrame);
-//    });
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up signals at level crossing tool dialog
+        getLETools()->setSignalsAtLevelXing(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
+    });
     connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Level_Crossing_triggered()));
 
     //set signals at throat-to-throat turnouts
     jmi = new QAction(tr("Set Signal Heads at Throat-to-Throat Turnouts") + "...", this);
     jmi->setToolTip(tr("Click here to set up the signals on throat-to-throat turnouts"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up signals at throat-to-throat turnouts tool dialog
-//        getLETools().setSignalsAtThroatToThroatTurnouts(signalIconEditor, signalFrame);
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Throat_to_Throat_Turnouts_triggered()));
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up signals at throat-to-throat turnouts tool dialog
+        getLETools()->setSignalsAtThroatToThroatTurnouts(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
+    });
 
     //set signals at 3-way turnout
     jmi = new QAction(tr("Set Signal Heads at 3-Way Turnout") + "...", this);
     jmi->setToolTip(tr("Click here to set up the signal heads at a 3-way turnout"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up signals at 3-way turnout tool dialog
-//        getLETools().setSignalsAt3WayTurnout(signalIconEditor, signalFrame);
-//    });
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up signals at 3-way turnout tool dialog
+        getLETools()->setSignalsAt3WayTurnout(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
+    });
     connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Three_Way_Turnout()));
 
     jmi = new QAction(tr("Set Signal Heads at a Slip") + "...", this);
     jmi->setToolTip(tr("Click here to set up the signal heads at a single or double slip"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up signals at throat-to-throat turnouts tool dialog
-//        getLETools().setSignalsAtSlip(signalIconEditor, signalFrame);
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Slip_triggered()));
+    connect(jmi, &QAction::triggered, [=]{
+        //bring up signals at throat-to-throat turnouts tool dialog
+        getLETools()->setSignalsAtSlip(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
+    });
 
     jmi = new QAction(tr("Entry Exit") + "...", this);
     jmi->setToolTip(tr("Click here to set up Entry-Exit"));
+    connect(jmi, &QAction::hovered, [=]{
+        QToolTip::showText(QCursor::pos(), jmi->toolTip(), this);
+    });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        if (addEntryExitPairAction == null) {
-//            addEntryExitPairAction = new AddEntryExitPairAction("ENTRY EXIT", LayoutEditor.this);
-//        }
-//        addEntryExitPairAction.actionPerformed(event);
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionEntry_Exit_triggered()));
+    connect(jmi, &QAction::triggered, [=]{
+        if (addEntryExitPairAction == nullptr) {
+            addEntryExitPairAction = new AddEntryExitPairAction("ENTRY EXIT", this);
+        }
+        addEntryExitPairAction->actionPerformed(0);
+    });
 
-    toolsMenu->addSeparator();
-    QAction* clearAction = new QAction(tr("Clear track"), this);
-    toolsMenu->addAction(clearAction);
-    connect(clearAction, SIGNAL(triggered(bool)), this, SLOT(on_clearTrack()));
-}
+//    toolsMenu->addSeparator();
+//    QAction* clearAction = new QAction(tr("Clear track"), this);
+//    toolsMenu->addAction(clearAction);
+//    connect(clearAction, SIGNAL(triggered(bool)), this, SLOT(on_clearTrack()));
+}   // setupToolsMenu
 
 void LayoutEditor::on_translateSelections()
 {
@@ -12386,29 +12185,6 @@ void LayoutEditor::on_clearTrack()
 //@CheckReturnValue
 /*public*/ /*static*/ QPointF LayoutEditor::zeroQPointF() {
     return QPointF(0, 0);
-}
-
-void LayoutEditor::on_actionBoth_scrollbars()
-{
- editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
- editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-}
-void LayoutEditor::on_actionNo_scrollbars()
-{
- editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
- editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-}
-
-void LayoutEditor::on_actionHorizontal_scrollbars()
-{
- editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
- editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-}
-
-void LayoutEditor::on_actionVertical_scrollbars()
-{
- editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
- editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
 //    protected void rename(String inFrom, String inTo) {

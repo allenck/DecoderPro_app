@@ -80,12 +80,69 @@
 
  layoutEditor = thePanel;
 
+ //operational variables for Set Signals at Double Crossover Turnout tool
+ turnout1ComboBox = new NamedBeanComboBox(
+         InstanceManager::turnoutManagerInstance(),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ turnout2ComboBox = new NamedBeanComboBox(
+         InstanceManager::turnoutManagerInstance(),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ a1TToTSignalHeadComboBox = new NamedBeanComboBox(
+         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
+         ),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ a2TToTSignalHeadComboBox = new NamedBeanComboBox(
+         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
+         ),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ b1TToTSignalHeadComboBox = new NamedBeanComboBox(
+         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
+         ),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ b2TToTSignalHeadComboBox = new NamedBeanComboBox(
+         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
+         ),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ c1TToTSignalHeadComboBox = new NamedBeanComboBox(
+         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
+         ),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ c2TToTSignalHeadComboBox = new NamedBeanComboBox(
+         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
+         ),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ d1TToTSignalHeadComboBox = new NamedBeanComboBox(
+         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
+         ),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  d2TToTSignalHeadComboBox = new NamedBeanComboBox(
+         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
+         ),
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  setA2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+  setB1TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+  setB2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+  setC1TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+  setC2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+  setD1TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+  setD2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
+
+  setupA1TToTLogic = new QCheckBox(tr("Set up SSL"));
+  setupA2TToTLogic = new QCheckBox(tr("Set up SSL"));
+  setupB1TToTLogic = new QCheckBox(tr("Set up SSL"));
+  setupB2TToTLogic = new QCheckBox(tr("Set up SSL"));
+  setupC1TToTLogic = new QCheckBox(tr("Set up SSL"));
+  setupC2TToTLogic = new QCheckBox(tr("Set up SSL"));
+  setupD1TToTLogic = new QCheckBox(tr("Set up SSL"));
+  setupD2TToTLogic = new QCheckBox(tr("Set up SSL"));
+
+
  // operational variables for Set Signals at Turnout tool
  setSignalsFrame = NULL;
  setSignalsOpen = false;
- turnoutComboBox = new JmriBeanComboBox(
+ turnoutComboBox = new NamedBeanComboBox(
          InstanceManager::turnoutManagerInstance(),
-         nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  turnoutNameField = new JTextField(16);
  throatContinuingField = new JTextField(16);
  connect(throatContinuingField, SIGNAL(textChanged(QString)), this, SLOT(throatContinuingField_textChanged(QString)));
@@ -249,6 +306,27 @@
  xoverType = LayoutTurnout::DOUBLE_XOVER;  // changes to RH_XOVER or LH_XOVER as required
  QString xoverTurnoutName = "";
  xoverTurnoutNameLabel = new QLabel("");
+
+ turnoutComboBox = new NamedBeanComboBox(
+            InstanceManager::turnoutManagerInstance(),
+            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+
+ throatContinuingSignalHeadComboBox = new NamedBeanComboBox(
+            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ throatDivergingSignalHeadComboBox = new NamedBeanComboBox(
+            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ continuingSignalHeadComboBox = new NamedBeanComboBox(
+            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ divergingSignalHeadComboBox = new NamedBeanComboBox(
+            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+
+ setPlaceAllHeads = new QCheckBox(tr("Place All Signal Head Icons"));
+ setupAllLogic = new QCheckBox(tr("Set up all SSL's"));
+
 
  setSensorsOpen =false;
  turnoutSensorFromMenu = false;
@@ -578,6 +656,368 @@
  signalMastsTurnoutComboBox = new JmriBeanComboBox(
              InstanceManager::turnoutManagerInstance(), nullptr,
              JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
+}
+/*public*/ void LayoutEditorTools::setSignalsAtThroatToThroatTurnoutsFromMenu(
+        /*@Nonnull*/ LayoutTurnout* to, /*@Nonnull*/ QString linkedTurnoutName,
+        /*@Nonnull*/ MultiIconEditor* theEditor, /*@Nonnull*/ JFrame* theFrame) {
+    ttotTurnoutName1 = to->getTurnoutName();
+    ttotTurnoutName2 = linkedTurnoutName;
+
+    turnout1ComboBox->setSelectedItem(to->getTurnout());
+    turnout2ComboBox->setSelectedItem(to->getSecondTurnout());
+
+    a1TToTSignalHeadComboBox->setSelectedItem(nullptr);
+    a2TToTSignalHeadComboBox->setSelectedItem(nullptr);
+    b1TToTSignalHeadComboBox->setSelectedItem(nullptr);
+    b2TToTSignalHeadComboBox->setSelectedItem(nullptr);
+    c1TToTSignalHeadComboBox->setSelectedItem(nullptr);
+    c2TToTSignalHeadComboBox->setSelectedItem(nullptr);
+    d1TToTSignalHeadComboBox->setSelectedItem(nullptr);
+    d2TToTSignalHeadComboBox->setSelectedItem(nullptr);
+
+    setSignalsAtThroatToThroatTurnoutsFromMenuFlag = true;
+    setSignalsAtThroatToThroatTurnouts(theEditor, theFrame);
+    setSignalsAtThroatToThroatTurnoutsFromMenuFlag = false;
+}
+
+/*public*/ void LayoutEditorTools::setSignalsAtThroatToThroatTurnouts(
+        /*@Nonnull*/ MultiIconEditor* theEditor, /*@Nonnull*/ JFrame* theFrame) {
+    signalIconEditor = theEditor;
+    signalFrame = theFrame;
+
+    //Initialize if needed
+    if (setSignalsAtThroatToThroatTurnoutsFrame == nullptr) {
+        setSignalsAtThroatToThroatTurnoutsOpenFlag = false;
+        setSignalsAtThroatToThroatTurnoutsFrame = new JmriJFrameX(tr("Set Signal Heads at Throat-to-Throat Turnouts"), false, true);
+        oneFrameToRuleThemAll(setSignalsAtThroatToThroatTurnoutsFrame);
+        setSignalsAtThroatToThroatTurnoutsFrame->setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
+        setSignalsAtThroatToThroatTurnoutsFrame->addHelpMenu("package.jmri.jmrit.display.SetSignalsAtTToTTurnout", true);
+        setSignalsAtThroatToThroatTurnoutsFrame->setLocation(70, 30);
+        QWidget* theContentPane = setSignalsAtThroatToThroatTurnoutsFrame->getContentPane();
+        QVBoxLayout* theContentPaneLayout;
+        theContentPane->setLayout(theContentPaneLayout = new QVBoxLayout()); //theContentPane, BoxLayout.Y_AXIS));
+
+        JPanel* panel1a = new JPanel(new FlowLayout());
+        ttotTurnoutName1Label = new JLabel(tr("Turnout") + " 1 "
+                + tr("Name"));
+        panel1a->layout()->addWidget(ttotTurnoutName1Label);
+        panel1a->layout()->addWidget(turnout1ComboBox);
+        turnout1ComboBox->setToolTip(tr("Enter name (system or user) of turnout where signals are needed."));
+        theContentPaneLayout->addWidget(panel1a);
+
+        JPanel* panel1b = new JPanel(new FlowLayout());
+        ttotTurnoutName2Label = new JLabel(tr("Turnout") + " 2 "
+                + tr("Name"));
+        panel1b->layout()->addWidget(ttotTurnoutName2Label);
+        panel1b->layout()->addWidget(turnout2ComboBox);
+        turnout2ComboBox->setToolTip(tr("Enter name (system or user) of turnout where signals are needed."));
+        theContentPaneLayout->addWidget(panel1b);
+        theContentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+        //Provide for retrieval of names of previously saved signal heads
+
+        JPanel* panel20 = new JPanel(new FlowLayout());
+        JLabel* shTitle = new JLabel(tr("SignalHeads"));
+        panel20->layout()->addWidget(shTitle);
+        panel20->layout()->addWidget(new JLabel("		"));
+        panel20->layout()->addWidget(getSavedTToTSignalHeads = new QPushButton(tr("GetSaved")));
+        //getSavedTToTSignalHeads.addActionListener((ActionEvent e) -> {
+        connect(getSavedTToTSignalHeads, &QPushButton::clicked, [=] {
+            setSignalsAtTToTTurnoutsGetSaved();
+        });
+        getSavedTToTSignalHeads->setToolTip(tr("Select to retrieve signal heads previously stored."));
+        theContentPaneLayout->addWidget(panel20);
+        theContentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+
+        JPanel* panel2a = new JPanel(new FlowLayout());
+        panel2a->layout()->addWidget(new JLabel("   "));
+        panel2a->layout()->addWidget(setPlaceAllHeads);
+        setPlaceAllHeads->setToolTip(tr("Check to place all signal head icons"));
+        //setPlaceAllHeads.addActionListener((ActionEvent e) -> {
+        connect(setPlaceAllHeads, &QCheckBox::clicked, [=]{
+            bool isSelected = setPlaceAllHeads->isChecked();
+            //(de)select all checkboxes
+            setA1TToTHead->setChecked(isSelected);
+            setA2TToTHead->setChecked(isSelected);
+            setB1TToTHead->setChecked(isSelected);
+            setB2TToTHead->setChecked(isSelected);
+            setC1TToTHead->setChecked(isSelected);
+            setC2TToTHead->setChecked(isSelected);
+            setD1TToTHead->setChecked(isSelected);
+            setD2TToTHead->setChecked(isSelected);
+        });
+        panel2a->layout()->addWidget(new JLabel("  "));
+        panel2a->layout()->addWidget(setupAllLogic);
+        setupAllLogic->setToolTip(tr("Check to set up Simple Signal Logic for all Signal Heads"));
+        //setupAllLogic.addActionListener((ActionEvent e) -> {
+        connect(setupAllLogic, &QCheckBox::clicked, [=]{
+            bool isSelected = setupAllLogic->isChecked();
+            //(de)select all checkboxes
+            setupA1TToTLogic->setChecked(isSelected);
+            setupA2TToTLogic->setChecked(isSelected);
+            setupB1TToTLogic->setChecked(isSelected);
+            setupB2TToTLogic->setChecked(isSelected);
+            setupC1TToTLogic->setChecked(isSelected);
+            setupC2TToTLogic->setChecked(isSelected);
+            setupD1TToTLogic->setChecked(isSelected);
+            setupD2TToTLogic->setChecked(isSelected);
+        });
+        theContentPaneLayout->addWidget(panel2a);
+        theContentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+
+        //Signal heads located at turnout 1
+        JPanel* panel20a = new JPanel(new FlowLayout());
+        panel20a->layout()->addWidget(new JLabel(tr("SignalLocated")
+                + " " + tr("Turnout") + " 1 - "
+                + tr("ContinuingTrack")));
+        theContentPaneLayout->addWidget(panel20a);
+
+        JPanel* panel21 = new JPanel(new FlowLayout());
+        panel21->layout()->addWidget(new JLabel(tr("%1").arg(
+                tr("ProtectsTurnout") + " 2 - "
+                + tr("ContinuingTrack"))));
+        panel21->layout()->addWidget(a1TToTSignalHeadComboBox);
+        theContentPaneLayout->addWidget(panel21);
+        a1TToTSignalHeadComboBox->setToolTip(tr("Enter name (system or user) of signal head located here."));
+
+        JPanel* panel22 = new JPanel(new FlowLayout());
+        panel22->layout()->addWidget(new JLabel(tr("OrBoth") + " 2 " + tr("Tracks)") + "	  "));
+        panel22->layout()->addWidget(setA1TToTHead);
+        setA1TToTHead->setToolTip(tr("Check to place icon for above signal head on panel near turnout."));
+        panel22->layout()->addWidget(new JLabel("  "));
+        panel22->layout()->addWidget(setupA1TToTLogic);
+        setupA1TToTLogic->setToolTip(tr("Check to set up Simple Signal Logic for the above signal head."));
+        theContentPaneLayout->addWidget(panel22);
+
+        JPanel* panel23 = new JPanel(new FlowLayout());
+        panel23->layout()->addWidget(new JLabel(tr("%1").arg(
+                tr("ProtectsTurnout") + " 2 - "
+                + tr("DivergingTrack"))));
+        panel23->layout()->addWidget(a2TToTSignalHeadComboBox);
+        theContentPaneLayout->addWidget(panel23);
+        a2TToTSignalHeadComboBox->setToolTip(tr("Enter name (system or user) of signal head located here."));
+
+        JPanel* panel24 = new JPanel(new FlowLayout());
+        panel24->layout()->addWidget(new JLabel("				"));
+        panel24->layout()->addWidget(setA2TToTHead);
+        setA2TToTHead->setToolTip(tr("Check to place icon for above signal head on panel near turnout."));
+        panel24->layout()->addWidget(new JLabel("  "));
+        panel24->layout()->addWidget(setupA2TToTLogic);
+        setupA2TToTLogic->setToolTip(tr("Check to set up Simple Signal Logic for the above signal head."));
+        theContentPaneLayout->addWidget(panel24);
+
+        JPanel* panel31x = new JPanel(new FlowLayout());
+        panel31x->layout()->addWidget(new JLabel(tr("SignalLocated")
+                + " " + tr("Turnout") + " 1 - "
+                + tr("DivergingTrack")));
+        theContentPaneLayout->addWidget(panel31x);
+
+        JPanel* panel31 = new JPanel(new FlowLayout());
+        panel31->layout()->addWidget(new JLabel(tr("%1").arg(
+                tr("ProtectsTurnout") + " 2 - "
+                + tr("ContinuingTrack"))));
+        panel31->layout()->addWidget(b1TToTSignalHeadComboBox);
+        theContentPaneLayout->addWidget(panel31);
+        b1TToTSignalHeadComboBox->setToolTip(tr("Enter name (system or user) of signal head located here."));
+
+        JPanel* panel32 = new JPanel(new FlowLayout());
+        panel32->layout()->addWidget(new JLabel(tr("OrBoth") + " 2 " + tr("Tracks)") + "	  "));
+        panel32->layout()->addWidget(setB1TToTHead);
+        setB1TToTHead->setToolTip(tr("Check to place icon for above signal head on panel near turnout."));
+        panel32->layout()->addWidget(new JLabel("  "));
+        panel32->layout()->addWidget(setupB1TToTLogic);
+        setupB1TToTLogic->setToolTip(tr("Check to set up Simple Signal Logic for the above signal head."));
+        theContentPaneLayout->addWidget(panel32);
+
+        JPanel* panel33 = new JPanel(new FlowLayout());
+        panel33->layout()->addWidget(new JLabel(tr("%1").arg(
+                tr("ProtectsTurnout") + " 2 - "
+                + tr("DivergingTrack"))));
+        panel33->layout()->addWidget(b2TToTSignalHeadComboBox);
+        theContentPaneLayout->addWidget(panel33);
+        b2TToTSignalHeadComboBox->setToolTip(tr("Enter name (system or user) of signal head located here."));
+
+        JPanel* panel34 = new JPanel(new FlowLayout());
+        panel34->layout()->addWidget(new JLabel("				"));
+        panel34->layout()->addWidget(setB2TToTHead);
+        setB2TToTHead->setToolTip(tr("Check to place icon for above signal head on panel near turnout."));
+        panel34->layout()->addWidget(new JLabel("  "));
+        panel34->layout()->addWidget(setupB2TToTLogic);
+        setupB2TToTLogic->setToolTip(tr("Check to set up Simple Signal Logic for the above signal head."));
+        theContentPaneLayout->addWidget(panel34);
+        theContentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+        //Signal heads located at turnout 2
+
+        JPanel* panel41x = new JPanel(new FlowLayout());
+        panel41x->layout()->addWidget(new JLabel(tr("SignalLocated")
+                + " " + tr("Turnout") + " 2 - "
+                + tr("ContinuingTrack")));
+        theContentPaneLayout->addWidget(panel41x);
+
+        JPanel* panel41 = new JPanel(new FlowLayout());
+        panel33->layout()->addWidget(new JLabel(tr("%1").arg(
+                tr("ProtectsTurnout") + " 1 - "
+                + tr("ContinuingTrack"))));
+        panel41->layout()->addWidget(c1TToTSignalHeadComboBox);
+        theContentPaneLayout->addWidget(panel41);
+        c1TToTSignalHeadComboBox->setToolTip(tr("Enter name (system or user) of signal head located here."));
+
+        JPanel* panel42 = new JPanel(new FlowLayout());
+        panel42->layout()->addWidget(new JLabel(tr("OrBoth") + " 1 " + tr("Tracks)") + "	  "));
+        panel42->layout()->addWidget(setC1TToTHead);
+        setC1TToTHead->setToolTip(tr("Check to place icon for above signal head on panel near turnout."));
+        panel42->layout()->addWidget(new JLabel("  "));
+        panel42->layout()->addWidget(setupC1TToTLogic);
+        setupC1TToTLogic->setToolTip(tr("Check to set up Simple Signal Logic for the above signal head."));
+        theContentPaneLayout->addWidget(panel42);
+
+        JPanel* panel43 = new JPanel(new FlowLayout());
+        panel43->layout()->addWidget(new JLabel(tr("%1").arg(
+                tr("ProtectsTurnout") + " 1 - "
+                + tr("DivergingTrack"))));
+        panel43->layout()->addWidget(c2TToTSignalHeadComboBox);
+        theContentPaneLayout->addWidget(panel43);
+        c2TToTSignalHeadComboBox->setToolTip(tr("Enter name (system or user) of signal head located here."));
+
+        JPanel* panel44 = new JPanel(new FlowLayout());
+        panel44->layout()->addWidget(new JLabel("				"));
+        panel44->layout()->addWidget(setC2TToTHead);
+        setC2TToTHead->setToolTip(tr("Check to place icon for above signal head on panel near turnout."));
+        panel44->layout()->addWidget(new JLabel("  "));
+        panel44->layout()->addWidget(setupC2TToTLogic);
+        setupC2TToTLogic->setToolTip(tr("Check to set up Simple Signal Logic for the above signal head."));
+        theContentPaneLayout->addWidget(panel44);
+
+        JPanel* panel51x = new JPanel(new FlowLayout());
+        panel51x->layout()->addWidget(new JLabel(tr("SignalLocated")
+                + " " + tr("Turnout") + " 2 - "
+                + tr("DivergingTrack")));
+        theContentPaneLayout->addWidget(panel51x);
+
+        JPanel* panel51 = new JPanel(new FlowLayout());
+        panel51->layout()->addWidget(new JLabel(tr("%1").arg(
+                tr("ProtectsTurnout") + " 1 - "
+                + tr("ContinuingTrack"))));
+        panel51->layout()->addWidget(d1TToTSignalHeadComboBox);
+        theContentPaneLayout->addWidget(panel51);
+        d1TToTSignalHeadComboBox->setToolTip(tr("Enter name (system or user) of signal head located here."));
+
+        JPanel* panel52 = new JPanel(new FlowLayout());
+        panel52->layout()->addWidget(new JLabel(tr("OrBoth") + " 1 " + tr("Tracks)") + "	  "));
+        panel52->layout()->addWidget(setD1TToTHead);
+        setD1TToTHead->setToolTip(tr("Check to place icon for above signal head on panel near turnout."));
+        panel52->layout()->addWidget(new JLabel("  "));
+        panel52->layout()->addWidget(setupD1TToTLogic);
+        setupD1TToTLogic->setToolTip(tr("Check to set up Simple Signal Logic for the above signal head."));
+        theContentPaneLayout->addWidget(panel52);
+
+        JPanel* panel53 = new JPanel(new FlowLayout());
+        panel53->layout()->addWidget(new JLabel(tr("%1").arg(
+                tr("ProtectsTurnout") + " 1 - "
+                + tr("DivergingTrack"))));
+        panel53->layout()->addWidget(d2TToTSignalHeadComboBox);
+        theContentPaneLayout->addWidget(panel53);
+        d2TToTSignalHeadComboBox->setToolTip(tr("Enter name (system or user) of signal head located here."));
+
+        JPanel* panel54 = new JPanel(new FlowLayout());
+        panel54->layout()->addWidget(new JLabel("				"));
+        panel54->layout()->addWidget(setD2TToTHead);
+        setD2TToTHead->setToolTip(tr("Check to place icon for above signal head on panel near turnout."));
+        panel54->layout()->addWidget(new JLabel("  "));
+        panel54->layout()->addWidget(setupD2TToTLogic);
+        setupD2TToTLogic->setToolTip(tr("Check to set up Simple Signal Logic for the above signal head."));
+        theContentPaneLayout->addWidget(panel54);
+        theContentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
+
+        JPanel* panel6 = new JPanel(new FlowLayout());
+        panel6->layout()->addWidget(changeTToTSignalIcon = new QPushButton(tr("ChangeSignalIcon")));
+        //changeTToTSignalIcon.addActionListener((ActionEvent e) -> {
+        connect(changeTToTSignalIcon, &QPushButton::clicked, [=]{
+            signalFrame->setVisible(true);
+        });
+        changeTToTSignalIcon->setToolTip(tr("Select to change icons used to represent signal heads (Use left-facing icons)"));
+        panel6->layout()->addWidget(new JLabel("	 "));
+        panel6->layout()->addWidget(setTToTSignalsDone = new QPushButton(tr("ButtonDone")));
+        //setTToTSignalsDone.addActionListener((ActionEvent e) -> {
+        connect(setTToTSignalsDone, &QPushButton::clicked, [=]{
+            setTToTSignalsDonePressed();
+        });
+        setTToTSignalsDone->setToolTip(tr("Click [%1] to accept any changes made above and close this dialog.eHint").arg(tr("Done")));
+
+        //make this button the default button (return or enter activates)
+        //Note: We have to invoke this later because we don't currently have a root pane
+#if 0
+        SwingUtilities.invokeLater(() -> {
+            JRootPane rootPane = SwingUtilities.getRootPane(setTToTSignalsDone);
+            rootPane.setDefaultButton(setTToTSignalsDone);
+        });
+#endif
+        panel6->layout()->addWidget(setTToTSignalsCancel = new QPushButton(tr("Cancel")));
+        //setTToTSignalsCancel.addActionListener((ActionEvent e) -> {
+        connect(setTToTSignalsCancel, &QPushButton::clicked, [=]{
+            setTToTSignalsCancelPressed();
+        });
+        setTToTSignalsCancel->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));
+        theContentPaneLayout->addWidget(panel6);
+#if 0
+        setSignalsAtThroatToThroatTurnoutsFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                setTToTSignalsCancelPressed(null);
+            }
+        });
+#endif
+    }
+    setPlaceAllHeads->setChecked(false);
+    setupAllLogic->setChecked(false);
+
+    turnout1ComboBox->setVisible(!setSignalsAtThroatToThroatTurnoutsFromMenuFlag);
+    turnout2ComboBox->setVisible(!setSignalsAtThroatToThroatTurnoutsFromMenuFlag);
+
+    if (setSignalsAtThroatToThroatTurnoutsFromMenuFlag) {
+        ttotTurnoutName1Label->setText(tr("%1").arg(
+                tr("Turnout") + " 1 "
+                + tr("Name")) + ttotTurnoutName1);
+        ttotTurnoutName2Label->setText(tr("%1").arg(
+                tr("Turnout") + " 2 "
+                + tr("Name")) + ttotTurnoutName2);
+
+//        SwingUtilities.invokeLater(() -> {
+            setSignalsAtTToTTurnoutsGetSaved();
+//        });
+    } else {
+        ttotTurnoutName1Label->setText(
+                tr("Turnout") + " 1 "
+                + tr("Name"));
+        ttotTurnoutName2Label->setText(
+                tr("Turnout") + " 2 "
+                + tr("Name"));
+    }
+
+    if (!setSignalsAtThroatToThroatTurnoutsOpenFlag) {
+        setSignalsAtThroatToThroatTurnoutsFrame->resize(QSize());
+        setSignalsAtThroatToThroatTurnoutsFrame->pack();
+        setSignalsAtThroatToThroatTurnoutsOpenFlag = true;
+    }
+    setSignalsAtThroatToThroatTurnoutsFrame->setVisible(true);
+}   //setSignalsAtTToTTurnouts
+
+/*private*/ void LayoutEditorTools::setSignalsAtTToTTurnoutsGetSaved(/*ActionEvent* a*/) {
+    if (!getTToTTurnoutInformation()) {
+        return;
+    }
+    a1TToTSignalHeadComboBox->setSelectedItem(layoutTurnout1->getSignalB1());
+    a2TToTSignalHeadComboBox->setSelectedItem(layoutTurnout1->getSignalB2());
+    b1TToTSignalHeadComboBox->setSelectedItem(layoutTurnout1->getSignalC1());
+    b2TToTSignalHeadComboBox->setSelectedItem(layoutTurnout1->getSignalC2());
+    c1TToTSignalHeadComboBox->setSelectedItem(layoutTurnout2->getSignalB1());
+    c2TToTSignalHeadComboBox->setSelectedItem(layoutTurnout2->getSignalB2());
+    d1TToTSignalHeadComboBox->setSelectedItem(layoutTurnout2->getSignalC1());
+    d2TToTSignalHeadComboBox->setSelectedItem(layoutTurnout2->getSignalC2());
+}
+
+/*private*/ void LayoutEditorTools::setTToTSignalsCancelPressed(/*ActionEvent a*/) {
+    setSignalsAtThroatToThroatTurnoutsOpenFlag = false;
+    setSignalsAtThroatToThroatTurnoutsFrame->setVisible(false);
 }
 
 /**
@@ -1147,7 +1587,7 @@ else if (throatDivergingHead==nullptr)
              if (isCrossover) {
                  xoverTurnoutName = str;
              } else {
-                 turnoutComboBox->setText(str);
+                 turnoutComboBox->setCurrentText(str);
              }
          }
      }
@@ -5066,7 +5506,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
                                                          tr("Name") );
      panel1->layout()->addWidget(turnout1NameLabel);
      panel1->layout()->addWidget(turnout1NameField);
-     turnout1NameField->setToolTip(tr("SignalsTurnoutNameHint"));
+     turnout1NameField->setToolTip(tr("Enter name (system or user) of turnout where signals are needed."));
      centralWidgetLayout->addWidget(panel1);
      QWidget* panel11 = new QWidget();
      panel11->setLayout(new QHBoxLayout());
@@ -5074,7 +5514,7 @@ void LayoutEditorTools::on_changeXoverSignalIcon_clicked() // SLOT
                                                          tr("Name") );
      panel11->layout()->addWidget(turnout2NameLabel);
      panel11->layout()->addWidget(turnout2NameField);
-     turnout2NameField->setToolTip(tr("SignalsTurnoutNameHint"));
+     turnout2NameField->setToolTip(tr("Enter name (system or user) of turnout where signals are needed."));
      centralWidgetLayout->addWidget(panel11);
      centralWidgetLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
      // Provide for retrieval of names of previously saved signal heads
@@ -5289,11 +5729,7 @@ signalFrame->setVisible(true);
  d1TToTField->setText(layoutTurnout2->getSignalC1Name());
  d2TToTField->setText(layoutTurnout2->getSignalC2Name());
 }
-/*private*/ void LayoutEditorTools::setTToTSignalsCancelPressed (ActionEvent* /*a*/)
-{
- setSignalsAtTToTOpen = false;
- setSignalsAtTToTFrame->setVisible(false);
-}
+
 /*private*/ bool LayoutEditorTools::getTToTTurnoutInformation() {
  int type = 0;
  QObject* connect = NULL;
@@ -14536,4 +14972,35 @@ void LayoutEditorTools::commonTField(QString txt, JTextField* f)
  }
  completer = new QCompleter(c);
  f->setCompleter(completer);
+}
+
+
+
+
+/*private*/ void LayoutEditorTools::oneFrameToRuleThemAll(/*@Nonnull*/ JmriJFrame* goodFrame) {
+    setSensorsAtBlockBoundaryFrame = closeIfNotFrame(goodFrame, setSensorsAtBlockBoundaryFrame);
+//    setSensorsAtLevelXingFrame = closeIfNotFrame(goodFrame, setSensorsAtLevelXingFrame);
+//    setSensorsAtSlipFrame = closeIfNotFrame(goodFrame, setSensorsAtSlipFrame);
+//    setSensorsAtTurnoutFrame = closeIfNotFrame(goodFrame, setSensorsAtTurnoutFrame);
+//    setSignalMastsAtBlockBoundaryFrame = closeIfNotFrame(goodFrame, setSignalMastsAtBlockBoundaryFrame);
+//    setSignalMastsAtLayoutSlipFrame = closeIfNotFrame(goodFrame, setSignalMastsAtLayoutSlipFrame);
+//    setSignalMastsAtLevelXingFrame = closeIfNotFrame(goodFrame, setSignalMastsAtLevelXingFrame);
+//    setSignalMastsAtTurnoutFrame = closeIfNotFrame(goodFrame, setSignalMastsAtTurnoutFrame);
+//    setSignalsAt3WayTurnoutFrame = closeIfNotFrame(goodFrame, setSignalsAt3WayTurnoutFrame);
+//    setSignalsAtBlockBoundaryFrame = closeIfNotFrame(goodFrame, setSignalsAtBlockBoundaryFrame);
+//    setSignalsAtLevelXingFrame = closeIfNotFrame(goodFrame, setSignalsAtLevelXingFrame);
+    setSignalsAtSlipFrame = closeIfNotFrame(goodFrame, setSignalsAtSlipFrame);
+    setSignalsAtThroatToThroatTurnoutsFrame = closeIfNotFrame(goodFrame, setSignalsAtThroatToThroatTurnoutsFrame);
+    setSignalsAtTurnoutFrame = closeIfNotFrame(goodFrame, setSignalsAtTurnoutFrame);
+    setSignalsAtXoverTurnoutFrame = closeIfNotFrame(goodFrame, setSignalsAtXoverTurnoutFrame);
+}
+
+/*private*/ JmriJFrame* LayoutEditorTools::closeIfNotFrame(/*@Nonnull */JmriJFrame* goodFrame, /*@CheckForNull*/ JmriJFrame* badFrame) {
+    JmriJFrame* result = badFrame;
+    if ((badFrame != nullptr) && (goodFrame != badFrame)) {
+        badFrame->setVisible(false);
+        badFrame->dispose();
+        result = nullptr;
+    }
+    return result;
 }
