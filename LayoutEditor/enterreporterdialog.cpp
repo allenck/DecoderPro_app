@@ -28,6 +28,16 @@
  layoutEditor = thePanel;
 }
 
+class MyWindowListener : public WindowListener
+{
+ EnterReporterDialog* dlg;
+public:
+ MyWindowListener(EnterReporterDialog* dlg) {this->dlg = dlg;}
+ void windowClosing(QCloseEvent*)
+ {
+  dlg->reporterCancelPressed();
+ }
+};
 
 //display dialog for entering Reporters
 //@InvokeOnGuiThread
@@ -49,7 +59,7 @@
         //setup reporter entry
         JPanel* panel2 = new JPanel();
         panel2->setLayout(new FlowLayout());
-        JLabel* reporterLabel = new JLabel(tr("ReporterName"));
+        JLabel* reporterLabel = new JLabel(tr("Reporter Name:"));
         panel2->layout()->addWidget(reporterLabel);
         reporterLabel->setLabelFor(reporterNameField);
         panel2->layout()->addWidget(reporterNameField);
@@ -85,7 +95,7 @@
         reporterDone->setToolTip(tr("Select to add new Reporter Icon as specified above."));
 
         //Cancel
-        panel5->layout()->addWidget(reporterCancel = new JButton(tr("ButtonCancel")));
+        panel5->layout()->addWidget(reporterCancel = new JButton(tr("Cancel")));
 //        reporterCancel.addActionListener((ActionEvent event) -> {
 //            reporterCancelPressed();
 //        });
@@ -96,6 +106,7 @@
         //make this button the default button (return or enter activates)
 //        JRootPane* rootPane = SwingUtilities.getRootPane(reporterDone);
 //        rootPane->setDefaultButton(reporterDone);
+        reporterDone->setDefault(true);
     }
 
     //Set up for Entry of Reporter Icon
@@ -107,7 +118,7 @@
 //            reporterCancelPressed();
 //        }
 //    });
-    enterReporterFrame->addWindowListener(new ERDWindowListener(this));
+    enterReporterFrame->addWindowListener(new MyWindowListener(this));
     enterReporterFrame->pack();
     enterReporterFrame->setVisible(true);
     reporterOpen = true;

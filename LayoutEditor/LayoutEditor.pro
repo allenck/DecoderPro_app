@@ -482,7 +482,8 @@ SOURCES += \
     layouteditorverticaltoolbarpanel.cpp \
     layouteditorfloatingtoolbarpanel.cpp \
     layoutshape.cpp \
-    layoutshapexml.cpp
+    layoutshapexml.cpp \
+    scaletrackdiagramdialog.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -883,7 +884,8 @@ HEADERS += liblayouteditor_global.h \
     layouteditorverticaltoolbarpanel.h \
     layouteditorfloatingtoolbarpanel.h \
     layoutshape.h \
-    layoutshapexml.h
+    layoutshapexml.h \
+    scaletrackdiagramdialog.h
 
 FORMS    += \
     createeditblock.ui \

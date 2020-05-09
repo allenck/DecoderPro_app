@@ -167,6 +167,7 @@ static class ToolTipTimer : QTimer {
 };
 #endif
 
+class AnalogClock2Display;
 class JLayeredPane;
 class BlockContentsIcon;
 class Class;
@@ -278,7 +279,7 @@ public:
     /*public*/ void putLocoIcon(LocoIcon* l, QString name);
     /*public*/ virtual void putItem(Positionable* l);
     /*public*/ bool removeFromContents(Positionable* l);
-    /*public*/ bool deletePanel();
+    virtual /*public*/ bool deletePanel();
     QT_DEPRECATED/*public*/ void dispose(bool clear);
     /*public*/ void dispose();
     /*public*/ const static int VIEWPOPUPONLY = 0x00;
@@ -324,6 +325,29 @@ public:
      */
     /*abstract*/ /*public*/ virtual void initView() {}
     virtual void redrawPanel();
+    /*
+     * ********************* Abstract Methods ***********************
+     */
+    //@Override
+    /*abstract*/ virtual /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event){}
+
+    //@Override
+    /*abstract*/ virtual /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event){}
+
+    //@Override
+    /*abstract*/ virtual /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event){}
+
+    //@Override
+    /*abstract*/ virtual /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event){}
+
+    //@Override
+    /*abstract*/ virtual /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event){}
+
+    //@Override
+    /*abstract*/ virtual /*public*/ void mouseEntered(QGraphicsSceneMouseEvent* event){}
+
+    //@Override
+    /*abstract*/ virtual /*public*/ void mouseExited(QGraphicsSceneMouseEvent* event){}
 
 signals:
     
@@ -337,29 +361,29 @@ public slots:
     /*public*/ void setAllControlling(bool state) ;
 
 private:
-    /*private*/ bool _debug;// = false;
-    /*private*/ bool _loadFailed;// = false;
-    bool bDirty;
+    /*private*/ bool _debug = false;
+    /*private*/ bool _loadFailed = false;
+    bool bDirty = false;
 
-    bool showCloseInfoMessage;// = true;	//display info message when closing panel
+    bool showCloseInfoMessage = true;	//display info message when closing panel
     void commonInit();
     /*private*/ JFrame*      _targetFrame;
     /*private*/ QScrollArea* _panelScrollPane;
     // Option menu items
-    /*private*/ bool _positionable;// = true;
+    /*private*/ bool _positionable = true;
     /*private*/ bool _controlLayout = true;
-    /*private*/ bool _showHidden;// = true;
-    /*private*/ bool _showTooltip;// = true;
-    /*private*/ bool _globalSetsLocal;// = true;    // pre 2.9.6 behavior
-    /*private*/ bool _useGlobalFlag;// = false;     // pre 2.9.6 behavior
+    /*private*/ bool _showHidden = true;
+    /*private*/ bool _showTooltip = true;
+    /*private*/ bool _globalSetsLocal = true;    // pre 2.9.6 behavior
+    /*private*/ bool _useGlobalFlag = false;     // pre 2.9.6 behavior
 
 //    /*private*/ ToolTip* _defaultToolTip;
     QString _defaultToolTip;
     //    /*private*/ ToolTip* _tooltip = null;
     QString _toolTip;
     NamedIcon* _newIcon;
-    bool _ignore;// = false;
-    bool _delete;
+    bool _ignore = false;
+    bool _delete = false;
     QMap<QString, QString>* _urlMap;// = new QMap<QString, QString>();
     //ToolTipTimer* _tooltipTimer;
     QGraphicsView* editPanel;
@@ -389,6 +413,7 @@ private:
     /*private*/ bool panelMenuIsVisible;// = true;
     /*private*/ static /*volatile*/ QVector<Editor*>* editors;// = new ArrayList<Editor>();
     /*private*/ void setScrollbarScale(double ratio);
+    /*private*/ int _x, _y;
 
 private slots:
   void On_lockItemAction_toggled(bool);
@@ -400,8 +425,8 @@ private slots:
  protected:
     /*protected*/ QVector <Positionable*>* _contents;// = new QVector<Positionable*>();
     /*protected*/ JLayeredPane* _targetPanel;
-    /*protected*/ int _scrollState;// = SCROLL_NONE;
-    /*protected*/ bool _editable;// = true;
+    /*protected*/ int _scrollState = SCROLL_NONE;
+    /*protected*/ bool _editable = true;
     // mouse methods variables
     /*protected*/ int _lastX;
     /*protected*/ int _lastY;
@@ -409,9 +434,9 @@ private slots:
 //                                    BasicStroke.JOIN_BEVEL,
 //                                    10f, new float[] {10f, 10f}, 0f);
 
-    /*protected*/ QRectF _selectRect;// = null;
-    /*protected*/ QRectF _highlightcomponent;// = null;
-    /*protected*/ bool _dragging;// = false;
+    /*protected*/ QRectF _selectRect = QRectF();
+    /*protected*/ QRectF _highlightcomponent = QRectF();
+    /*protected*/ bool _dragging = false;
     /*protected*/ QList <Positionable*>* _selectionGroup = nullptr;  // items gathered inside fence
 
     /*protected*/ Positionable* _currentSelection;
@@ -428,8 +453,8 @@ private slots:
     /*protected*/ double getZoomRatio();
 
 
-    /*protected*/ QColor defaultBackgroundColor;// = QColor(Qt::lightGray);
-    /*protected*/ bool _pastePending;// = false;
+    /*protected*/ QColor defaultBackgroundColor = QColor(Qt::lightGray);
+    /*protected*/ bool _pastePending = false;
 
     // map of icon editor frames (incl, icon editor) keyed by name
 //    /*protected*/ QHash <QString, JFrameItem*> _iconEditorFrame = new QHash <QString, JFrameItem*>();
@@ -480,7 +505,7 @@ private slots:
   /*protected*/ int getItemX(Positionable* p, int deltaX) ;
   /*protected*/ int getItemY(Positionable* p, int deltaY);
   /*protected*/ virtual void setSelectionsRotation(int k, Positionable* p);
-  /*protected*/ void addClock();
+  /*protected*/ AnalogClock2Display* addClock();
 //  /*protected*/ void addRpsReporter();
   /*protected*/ void removeSelections(Positionable* p);
   /*protected*/ virtual void setSelectionsScale(double s, Positionable* p);

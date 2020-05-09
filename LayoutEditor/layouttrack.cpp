@@ -660,7 +660,7 @@
  item = nullptr;
  return item;
 }
-
+#if 0
 /*protected*/ QGraphicsItemGroup* LayoutTrack::selectItemGroup(ITEMTYPE type, bool isMain, bool isBlock)
 {
  if(!isBlock)
@@ -689,20 +689,21 @@
     return itemSide;
   case points:
    return itemPoints;
-
+  default:
+   return nullptr;
   }
  }
-  else
+ else
  {
-  switch (type)
-  {
- case block:
+//  switch (type)
+//  {
+// case block:
   if(isMain)
    return itemBlock;
   else
    return itemBlockSide;
   }
- }
+// }
 }
-
+#endif
 /*private*/ /*final*/ /*static*/ Logger* LayoutTrack::log = LoggerFactory::getLogger("LayoutTrack");

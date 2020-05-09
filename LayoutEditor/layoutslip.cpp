@@ -1272,7 +1272,7 @@ void LayoutSlip::updateState()
     QPointF midPointAD = MathUtil::midPoint(oneThirdPointAC, twoThirdsPointBD);
     QPointF midPointBC = MathUtil::midPoint(oneThirdPointBD, twoThirdsPointAC);
 
-    QGraphicsItemGroup* itemGroup = selectItemGroup(type, drawMain, isBlock);
+    //QGraphicsItemGroup* itemGroup = selectItemGroup(type, drawMain, isBlock);
 
 //    invalidateItemType(drawMain);
 //    if(itemMain)
@@ -1581,7 +1581,7 @@ void LayoutSlip::updateState()
     bool mainlineB = isMainlineB();
     bool mainlineC = isMainlineC();
     bool mainlineD = isMainlineD();
-    QGraphicsItemGroup* itemGroup = selectItemGroup(type, drawMain, false);
+    //QGraphicsItemGroup* itemGroup = selectItemGroup(type, drawMain, false);
 
 //    invalidateItemType(drawMain);
 //    if(type)

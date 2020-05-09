@@ -24,14 +24,16 @@
 /*public*/ AnalogClock2Display::AnalogClock2Display(Editor* editor, QObject *parent) :
     PositionableJComponent(editor, parent)
 {
- //super(editor);
- log = new Logger("AnalogClock2Display");
- clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
-
- rate = (int) ((SimpleTimebase*)clock)->userGetRate();
-
  common();
 }
+
+/*public*/AnalogClock2Display:: AnalogClock2Display(Editor* editor, QString url, QObject* parent) :
+  PositionableJComponent(editor, parent){
+        //this(editor);
+ common();
+ _url = url;
+}
+
 AnalogClock2Display::~AnalogClock2Display()
 {
  SimpleTimebase* t = (SimpleTimebase*)clock;
@@ -49,6 +51,11 @@ AnalogClock2Display::~AnalogClock2Display()
 /*public*/ Positionable* AnalogClock2Display::deepClone()
 {
  AnalogClock2Display* pos = new AnalogClock2Display(_editor);
+ if (_url == "" || _url.trimmed().length() == 0) {
+     pos = new AnalogClock2Display(_editor);
+ } else {
+     pos = new AnalogClock2Display(_editor, _url);
+ }
  return finishClone((Positionable*)pos);
 }
 
@@ -96,6 +103,10 @@ void AnalogClock2Display::common()
  //QPolygonF* pMinute = new QPolygonF(ptminute);
  minuteHand = new QGraphicsPolygonItem(QPolygonF(ptMinute));
  minuteHeight = minuteHand->boundingRect().size().height();
+ log = new Logger("AnalogClock2Display");
+ clock = static_cast<Timebase*>(InstanceManager::getDefault("Timebase"));
+
+ rate = (int) ((SimpleTimebase*)clock)->userGetRate();
 
  amPm = "AM";
  _itemGroup = NULL;

@@ -5,7 +5,6 @@
 #include "borderlayout.h"
 #include <QComboBox>
 #include "box.h"
-#include "jtextfield.h"
 #include "itempalette.h"
 #include <QLabel>
 #include "imagepanel.h"

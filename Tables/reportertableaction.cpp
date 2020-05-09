@@ -63,7 +63,7 @@ void ReporterTableAction::common()
  addFrame = NULL;
  //sysName = new JTextField(10);
  hardwareAddressTextField = new JTextField(20);
- hardwareAddressTextField->setValidator(new RTAValidator(hardwareAddressTextField, this));
+ //hardwareAddressTextField->setValidator(new RTAValidator(hardwareAddressTextField, this));
  userNameTextField = new JTextField(20);
  prefixBox = new QComboBox();
  numberToAdd = new QSpinBox();
@@ -666,9 +666,12 @@ QValidator::State RTAValidator::validate(QString &s, int &pos) const
  QString value = s.trimmed();
  if ((value.length() < 1) && (allow0Length == false)) {
      return QValidator::Invalid;
- } else if ((allow0Length == true) && (value.length() == 0)) {
+ }
+ else if ((allow0Length == true) && (value.length() == 0))
+ {
      return QValidator::Acceptable;
- } else {
+ }
+ else {
      bool validFormat = false;
          // try {
          validFormat = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->validSystemNameFormat(prefix + "R" + value) == Manager::NameValidity::VALID;
@@ -682,6 +685,10 @@ QValidator::State RTAValidator::validate(QString &s, int &pos) const
      } else {
          act->addButton->setEnabled(false); // directly update Create button
          fld->setBackground(QColor(mark));
+         if(value.length() > -1 && value.toInt()>0)
+         {
+          return QValidator::Intermediate;
+         }
          return QValidator::Invalid;
      }
  }

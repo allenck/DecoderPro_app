@@ -51,6 +51,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -11320,6 +11321,39 @@ if (_wrapper) {
 }
   PanelEditor::customEvent(event0);
 }
+bool  PythonQtShell_PanelEditor::deletePanel()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("deletePanel");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("deletePanel", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return PanelEditor::deletePanel();
+}
 int  PythonQtShell_PanelEditor::devType() const
 {
 if (_wrapper) {
@@ -12145,6 +12179,28 @@ if (_wrapper) {
 }
   return PanelEditor::minimumSizeHint();
 }
+void PythonQtShell_PanelEditor::mouseClicked(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseClicked");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PanelEditor::mouseClicked(event0);
+}
 void PythonQtShell_PanelEditor::mouseDoubleClickEvent(QMouseEvent*  event0)
 {
 if (_wrapper) {
@@ -12166,6 +12222,72 @@ if (_wrapper) {
   }
 }
   PanelEditor::mouseDoubleClickEvent(event0);
+}
+void PythonQtShell_PanelEditor::mouseDragged(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseDragged");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PanelEditor::mouseDragged(event0);
+}
+void PythonQtShell_PanelEditor::mouseEntered(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseEntered");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PanelEditor::mouseEntered(event0);
+}
+void PythonQtShell_PanelEditor::mouseExited(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseExited");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PanelEditor::mouseExited(event0);
 }
 void PythonQtShell_PanelEditor::mouseMoveEvent(QMouseEvent*  event0)
 {
@@ -12189,6 +12311,28 @@ if (_wrapper) {
 }
   PanelEditor::mouseMoveEvent(event0);
 }
+void PythonQtShell_PanelEditor::mouseMoved(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseMoved");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PanelEditor::mouseMoved(event0);
+}
 void PythonQtShell_PanelEditor::mousePressEvent(QMouseEvent*  event0)
 {
 if (_wrapper) {
@@ -12211,6 +12355,28 @@ if (_wrapper) {
 }
   PanelEditor::mousePressEvent(event0);
 }
+void PythonQtShell_PanelEditor::mousePressed(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mousePressed");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PanelEditor::mousePressed(event0);
+}
 void PythonQtShell_PanelEditor::mouseReleaseEvent(QMouseEvent*  event0)
 {
 if (_wrapper) {
@@ -12232,6 +12398,28 @@ if (_wrapper) {
   }
 }
   PanelEditor::mouseReleaseEvent(event0);
+}
+void PythonQtShell_PanelEditor::mouseReleased(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseReleased");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PanelEditor::mouseReleased(event0);
 }
 void PythonQtShell_PanelEditor::moveEvent(QMoveEvent*  e0)
 {
@@ -16932,7 +17120,7 @@ if (_wrapper) {
 }
   return Positionable::maxWidth();
 }
-void PythonQtShell_Positionable::paint(QGraphicsScene*  arg__1)
+void PythonQtShell_Positionable::paint(EditScene*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16940,7 +17128,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("paint");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "QGraphicsScene*"};
+      static const char* argumentList[] ={"" , "EditScene*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
@@ -18081,7 +18269,7 @@ int  PythonQtWrapper_Positionable::maxWidth(Positionable* theWrappedObject)
   return ( theWrappedObject->maxWidth());
 }
 
-void PythonQtWrapper_Positionable::paint(Positionable* theWrappedObject, QGraphicsScene*  arg__1)
+void PythonQtWrapper_Positionable::paint(Positionable* theWrappedObject, EditScene*  arg__1)
 {
   ( theWrappedObject->paint(arg__1));
 }
@@ -20246,6 +20434,11 @@ int  PythonQtWrapper_PositionableLabel::getHeight(PositionableLabel* theWrappedO
   return ( theWrappedObject->getHeight());
 }
 
+QPointF  PythonQtWrapper_PositionableLabel::getLocation(PositionableLabel* theWrappedObject)
+{
+  return ( theWrappedObject->getLocation());
+}
+
 QString  PythonQtWrapper_PositionableLabel::getNameString(PositionableLabel* theWrappedObject)
 {
   return ( theWrappedObject->getNameString());
@@ -20479,6 +20672,11 @@ void PythonQtWrapper_PositionableLabel::setHidden(PositionableLabel* theWrappedO
 void PythonQtWrapper_PositionableLabel::setLevel(PositionableLabel* theWrappedObject, int  l)
 {
   ( theWrappedObject->setLevel(l));
+}
+
+void PythonQtWrapper_PositionableLabel::setLocation(PositionableLabel* theWrappedObject, QPointF  arg__1)
+{
+  ( theWrappedObject->setLocation(arg__1));
 }
 
 void PythonQtWrapper_PositionableLabel::setLocation(PositionableLabel* theWrappedObject, int  x, int  y)

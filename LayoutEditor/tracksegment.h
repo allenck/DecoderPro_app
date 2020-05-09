@@ -211,6 +211,7 @@ public:
     /*public*/ int getNumberOfBezierControlPoints();
     /*public*/ QPointF getBezierControlPoint(int index);
     /*public*/ void setBezierControlPoint(/*@Nullable*/ QPointF p, int index);
+    /*public*/ QList<QPointF> getBezierControlPoints();
     /*public*/ double getDirectionRAD();
     /*public*/ double getDirectionDEG();
     /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock) override;
@@ -282,6 +283,8 @@ private:
 // QGraphicsItem* trackOval;
  QGraphicsItemGroup* decorationItems = nullptr;
  QGraphicsItemGroup* rects = nullptr;
+ QGraphicsItemGroup* itemGroup = nullptr;
+
  void init(QString ident);
  static Logger* log;
 // void drawHiddenTrack(LayoutEditor* editor, EditScene *g2);

@@ -424,7 +424,6 @@ TrackSegment::getLayoutBlock()
 /*public*/ LayoutTrack* TrackSegment::getConnection(int /*connectionType*/) throw (JmriException) {
     // nothing to see here, move along
  throw JmriException("Use getConnect1() or getConnect2() instead.");
-
 }
 
 /**
@@ -467,6 +466,11 @@ TrackSegment::getLayoutBlock()
         }
     }
 }
+
+/*public*/ QList<QPointF> TrackSegment::getBezierControlPoints() {
+        return bezierControlPoints;
+    }
+
 
 /**
  * Set up a Layout Block for a Track Segment.
@@ -3255,17 +3259,17 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
 
  QColor color;
 
- QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, isBlock);
- itemGroup = invalidateItem(g2, itemGroup);
- if(itemGroup == nullptr)
- {
-  itemGroup = new QGraphicsItemGroup();
-  itemGroup->setZValue(Editor::HANDLES+1);
-  g2->addItem(itemGroup);
- }
 
  if(isMain == mainline)
  {
+  itemGroup = invalidateItem(g2, itemGroup);
+  if(itemGroup == nullptr)
+  {
+   itemGroup = new QGraphicsItemGroup();
+   itemGroup->setZValue(Editor::HANDLES+1);
+   g2->addItem(itemGroup);
+  }
+
   if (isBlock)
   {
       color = setColorForTrackBlock(g2, getLayoutBlock());
@@ -3323,16 +3327,16 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
         // This removes random rail fragments from between the block dashes
         return;
     }
-    QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, false);
-
-    if(itemGroup == nullptr)
-    {
-     itemGroup = new QGraphicsItemGroup();
-     itemGroup->setZValue(Editor::HANDLES+1);
-     g2->addItem(itemGroup);
-    }
 
     if (isMain == mainline) {
+     itemGroup = invalidateItem(g2, itemGroup);
+     if(itemGroup == nullptr)
+     {
+      itemGroup = new QGraphicsItemGroup();
+      itemGroup->setZValue(Editor::HANDLES+1);
+      g2->addItem(itemGroup);
+     }
+
         if (isArc()) {
             calculateTrackSegmentAngle();
             QRectF cRectangle2D =  QRectF(

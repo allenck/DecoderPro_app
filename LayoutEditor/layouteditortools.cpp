@@ -950,6 +950,8 @@
             JRootPane rootPane = SwingUtilities.getRootPane(setTToTSignalsDone);
             rootPane.setDefaultButton(setTToTSignalsDone);
         });
+#else
+        setTToTSignalsDone->setDefault(true);
 #endif
         panel6->layout()->addWidget(setTToTSignalsCancel = new QPushButton(tr("Cancel")));
         //setTToTSignalsCancel.addActionListener((ActionEvent e) -> {
@@ -965,6 +967,17 @@
                 setTToTSignalsCancelPressed(null);
             }
         });
+#else
+        class MyWindowListener : public WindowListener
+        {
+         LayoutEditorTools* let;
+        public:
+         MyWindowListener(LayoutEditorTools* let) {this->let = let;}
+         void windowClosing(QCloseEvent *)
+         {
+          let->setTToTSignalsCancelPressed();
+         }
+        };
 #endif
     }
     setPlaceAllHeads->setChecked(false);

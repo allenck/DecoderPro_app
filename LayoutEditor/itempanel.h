@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "displayframe.h"
 #include "imagepanel.h"
+#include "jtextfield.h"
 
 class QGroupBox;
 class ActionListener;
@@ -63,7 +64,7 @@ protected:
     /*protected*/ bool   _initialized = false;    // Has init() been run
     /*protected*/ bool   _update = false;    // Editing existing icon, do not allow icon dragging. set in init()
     /*protected*/ bool _suppressDragging;
-    /*protected*/ JTextField* _linkName;//= new JTextField(30);
+    /*protected*/ JTextField* _linkName= new JTextField(30);
     static QColor _grayColor;// = QColor(235, 235, 235);
     static QColor _darkGrayColor;// = QColor(150, 150, 150);
     static /*protected*/ QVector<QColor> colorChoice;// = new Color[]{Color.white, _grayColor, _darkGrayColor}; // panel bg color picked up directly

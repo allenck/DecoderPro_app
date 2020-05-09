@@ -191,6 +191,7 @@ private:
   QGraphicsItemGroup* rects = nullptr;
   QGraphicsItemGroup* circles = nullptr;
   PropertyChangeListener* mTurnoutListener = nullptr;
+  QGraphicsItemGroup* itemGroup= nullptr;
 
 private slots:
   void turntableEditDonePressed(ActionEvent* a = 0);

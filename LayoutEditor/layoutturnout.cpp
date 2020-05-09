@@ -4509,7 +4509,7 @@ void LayoutTurnout::remove()
   log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
 
  int toType = getTurnoutType();
- QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, isBlock);
+ //QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, isBlock);
 
  QGraphicsLineItem* lineItem;
 
@@ -5117,7 +5117,7 @@ void LayoutTurnout::remove()
             state = to->getKnownState();
         }
     }
-    QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, false);
+    //itemGroup = selectItemGroup(type, isMain, false);
 
     //if(!isMain && itemGroup)
      itemGroup = invalidateItem(g2,itemGroup);

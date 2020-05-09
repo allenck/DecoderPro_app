@@ -34,9 +34,9 @@
 #include "jtextfield.h"
 #include "layouttrack.h"
 
-namespace Ui {
-class LayoutEditor;
-}
+//namespace Ui {
+//class LayoutEditor;
+//}
 
 class AddEntryExitPairAction;
 class ToolBarSide;
@@ -246,7 +246,7 @@ public:
     */
     void addLabel();
     void drawLabelImages(EditScene* g2);
-    /*public*/ void putItem(Positionable *l);
+    /*public*/ void putItem(Positionable *l) override;
     EditScene* getScene() {return editScene;}
     /*public*/ void putSensor(SensorIcon* l);
     void redrawPanel() { paintTargetPanel(editScene);}
@@ -283,7 +283,6 @@ public:
     * Does global flag sets Positionable and Control for individual items
     */
     /*public*/ void setGlobalSetsLocalFlag(bool set);
-    /*public*/ void setHiddenMenu(Positionable* p, QMenu* popup);
     /**
      * Add a Reporter Icon to the panel
      */
@@ -335,8 +334,6 @@ public:
     /*public*/ LayoutEditorAuxTools* getLEAuxTools();
     /*public*/ LayoutTrackEditors* getLayoutTrackEditors();
     /*public*/ LayoutEditorChecks* getLEChecks();
-
-
     /*public*/ void addToPopUpMenu(NamedBean* nb, QMenu* item, int menu);
     /*public*/ void addMultiSensor(MultiSensorIcon* l);
     /*public*/ void makeBackupFile(QString name);
@@ -348,7 +345,6 @@ public:
     /*public*/ bool getDirectTurnoutControl();
     /*public*/ void setMainlineTrackWidth(int w);
     /*public*/ void setSideTrackWidth(int w);
-    QT_DEPRECATED/*public*/ void setTurnoutCircleColor(QString color);
     /*public*/ void setTurnoutCircleColor(QColor color);
     /*public*/ void setTurnoutCircleThrownColor(/*@CheckForNull*/ QColor color);
     /*public*/ void setTurnoutCircleSize(int size);
@@ -378,13 +374,9 @@ public:
     /*public*/ void removeSignalHead(SignalHead* head);
     /*public*/ QGraphicsEllipseItem* turnoutCircleAt(QPointF inPoint);
     /*public*/ void addBackground();
-    QT_DEPRECATED/*public*/ void setDefaultTrackColor(QString color);
     /*public*/ void setDefaultTrackColor(QColor color);
-    QT_DEPRECATED/*public*/ void setDefaultOccupiedTrackColor(QString color);
     /*public*/ void setDefaultOccupiedTrackColor(QColor color);
-    QT_DEPRECATED/*public*/ void setDefaultAlternativeTrackColor(QString color);
     /*public*/ void setDefaultAlternativeTrackColor(QColor color);
-    void setScale(double scaleX, double scaleY);
     /*public*/ QString getClassName();
     /*public*/ LayoutTrackDrawingOptions* getLayoutTrackDrawingOptions();
     /*public*/ void setLayoutTrackDrawingOptions(LayoutTrackDrawingOptions* ltdo);
@@ -396,11 +388,9 @@ public:
     /*public*/ void setPanelBounds(QRectF newBounds);
     /*public*/ double setZoom(double zoomFactor);
     /*public*/ double getZoom();
-    ///*public*/ static QPointF zeroPoint2D();
     /*public*/ QVector<SignalHeadIcon*>* signalList;// = new QVector<SignalHeadIcon*>();  // Signal Head Icons
     /*public*/ QVector<SignalMastIcon*>* signalMastList;// = new QVector<SignalMastIcon*>();  // Signal Head Icons
     /*private*/ /*transient*/ QList<LayoutShape*>* layoutShapes;// = new ArrayList<>();               // LayoutShap list
-
     /*public*/ QVector<MultiSensorIcon*>* multiSensors; // = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
     /*public*/ void dispose();
     /*public*/ QList<PositionablePoint *> getPositionablePoints();
@@ -431,29 +421,21 @@ public:
     /*public*/ void alignLayoutToGrid();
     /*public*/ void alignSelectionToGrid() ;
     /*public*/ void translate(float xTranslation, float yTranslation);
+    /*public*/ void setTurnoutAnimation(bool state);
+    /*public*/ void setDirectTurnoutControl(bool boo);
+    /*public*/ void setIncludedTurnoutSkipped(bool boo);
+    /*public*/ void setAllEditable(bool editable);
+    /*public*/ void setShowHelpBar(bool state);
+    /*public*/ bool translateTrack(float xDel, float yDel);
+    /*public*/ bool scaleTrack(float xFactor, float yFactor);
+    /*public*/ void clearSelectionGroups();
+    /*public*/ void keyPressEvent(QKeyEvent *event);
 
 
 public slots:
-    /*public*/ void setIncludedTurnoutSkipped(bool boo);
-    void on_locationItem();
-    /*public*/ void on_setTurnoutAnimation(bool state) ;
-    /*public*/ void on_setDirectTurnoutControl(bool boo);
-    /**
-    *  Control whether target panel items are editable.
-    *  Does this by invoke the {@link Positionable#setEditable(bool)} function of
-    *  each item on the target panel. This also controls the relevant pop-up menu items
-    *  (which are the primary way that items are edited).
-    * @param state true for editable.
-    */
-    /*public*/ void setAllEditable(bool editable);
-    /*public*/ void on_setAllEditable(bool state);
-    /*public*/ void setShowHelpBar(bool state);
-    void on_deletePanel();
-    void on_colorBackgroundMenuItemSelected();
-    void on_editTitle();
 
 private:
- Ui::LayoutEditor *ui;
+ //Ui::LayoutEditor *ui;
  //Operational instance variables - not saved to disk
  /*private*/ /*transient*/ JmriJFrame* floatingEditToolBoxFrame = nullptr;
  /*private*/ /*transient*/ QScrollArea* floatingEditContentScrollPane = nullptr;
@@ -665,6 +647,8 @@ private:
      }
  };
  /*private*/ /*transient*/ ToolBarSide toolBarSide = ToolBarSide("top");
+ /*private*/ double returnDeltaPositionX(/*@Nonnull*/ QKeyEvent* event);
+ /*private*/ double returnDeltaPositionY(/*@Nonnull*/ QKeyEvent* event);
 
 
  QButtonGroup* buttonGroup;
@@ -675,7 +659,9 @@ private:
  int xLoc, yLoc;
  /*private*/ /*transient*/ /*final*/ static Logger* log;
 
- /*private*/ void calcLocation(QPointF pos, int dX, int dY);
+ /*private*/ QPointF calcLocation(QGraphicsSceneMouseEvent *event, int dX, int dY);
+ /*private*/ QPointF calcLocation(QGraphicsSceneMouseEvent* event);
+
  bool bIsEditable = true;
  /*private*/ void createSelectionGroups();
  bool isDragging = false;
@@ -699,7 +685,6 @@ private:
 
   bool isDrawing = false;
 
- /*private*/ void clearSelectionGroups();
  QWidget* openFrame = this;
 
  /*private*/ void drawXings(EditScene* g2);
@@ -752,14 +737,13 @@ private:
  /*private*/ QPointF fourth (QPointF p1,QPointF p2);
  int _scrollState;
  int _anchorX = 0, _anchorY = 0;
- bool _positionable = false;
  int _lastX, _lastY;
  /*private*/ void drawPanelGrid(EditScene* g2);
 
 // /*private*/ void drawTrackCircleCentre(EditScene* g2);
  double toRadians(double degrees);
  double toDegrees(double radians);
- /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event);
+ /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event) override;
  bool _controlLayout= true;
  bool noWarnPositionablePoint = false;
  bool noWarnSlip = false;
@@ -856,11 +840,11 @@ private:
 // /*private*/ void checkPointsOfTurnoutSub(QPointF dLoc);
  /*private*/ void rotateTurnout(LayoutTurnout* t);
 // void addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
- void addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+ //void addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+// void addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+// void addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+// void addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
+// void addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color);
  void addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size);
 
  /*private*/ QVector<QAction*>* trackColorMenuItems;// = new QVector<QAction*>(13);
@@ -977,7 +961,7 @@ private:
  //QHBoxLayout* editPanelLayout;
  BorderLayout* borderLayout = nullptr;
  /*private*/ void alignToGrid(QVector<Positionable *> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes);
- /*private*/ long whenReleased = 0; //used to identify event that was popup trigger
+ /*private*/ qint64 whenReleased = 0; //used to identify event that was popup trigger
  /*private*/ bool awaitingIconChange = false;
 
  /*private*/ /*transient*/ bool toolBarIsWide = true;
@@ -986,40 +970,20 @@ private:
 
 
 private slots:
- void on_scenePos(QGraphicsSceneMouseEvent*);
- /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event);
- /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);
+ void on_scenePos(QGraphicsSceneMouseEvent*event);
+ /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event) override;
  /**
   * Handle a mouse pressed event
   */
- /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
- /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event);
+ /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event) override;
 
- void on_actionShow_grid_in_edit_mode_toggled(bool bChecked);
- void on_actionEnable_antialiasing_smoother_lines_toggled(bool bChecked);
  void on_removeMenuAction_triggered();
- void on_actionAllow_layout_control_toggled(bool bChecked);
  /*private*/ void deleteSelectedItems(); // SLOT[]
- void on_actionHidden_toggled(bool bState);
- void on_actionAdd_reporter_label_triggered();
- void on_actionAdd_background_image_2_triggered();
- void on_actionSnap_to_grid_when_adding_toggled(bool bState);
- void on_actionSnap_to_grid_when_moving_toggled(bool bState);
- void on_defaultTextColorSelected();
- void on_actionAdd_Fast_Clock_triggered();
- void on_actionAdd_Turntable_triggered();
- void on_turnoutCirclesOnItem_triggered(bool);
- void on_turnoutDrawUnselectedLegItem_triggered(bool);
- void on_autoAssignBlocksItem_triggered(bool b);
- void on_hideTrackSegmentConstructionLines_toggled(bool);
- //void on_useDirectTurnoutControlItem_triggered(bool);
- void on_addTrackColorMenuEntry_triggered();
- void on_addTrackOccupiedColorMenuEntry_triggered();
- void on_addTrackAlternativeColorMenuEntry_triggered(/*int*/);
  /*private*/ double on_zoomIn();
  /*private*/ double on_zoomOut();
  double on_zoomToFit();
- void on_layoutTrackDrawingOptionsDialog();
  void on_clearTrack(); // for testing
  void on_translateSelections();
  void moveSelectionCancelPressed();
@@ -1033,14 +997,11 @@ private slots:
  void on_Zoom30Item();
  void on_Zoom40Item();
  /*private*/ void resetTurnoutSize();
- void on_TurnoutCircleColorMenuItem();
- void on_turnoutCircleThrownColorMenuItem();
  void on_TooltipAlwaysMenuItem();
  void on_TooltipInEditMenuItem();
  void on_TooltipNotInEditMenuItem();
  /*private*/ void on_setToolBarSide(QAction* act);
  /*private*/ void on_setToolBarWide(bool newToolBarIsWide);
- /*private*/ void on_turnoutFillControlCirclesCheckBoxMenuItem(bool checked);
 
 protected:
  //size of point boxes
@@ -1157,7 +1118,7 @@ protected:
  /*protected*/ void setSelectionsRotation(int k, Positionable* p);
  friend class CoordinateEdit;
  /*protected*/ void removeSelections(Positionable* p);
- /*protected*/ void setSelectionsHidden(bool enabled, Positionable* p);
+ // /*protected*/ void setSelectionsHidden(bool enabled, Positionable* p);
  ///*protected*/ void makeBackgroundColorMenu(QMenu* colorMenu);
 // /*protected*/ void addBackgroundColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color);
  /*protected*/ bool removeLayoutSlip (LayoutTurnout* o);
@@ -1177,9 +1138,8 @@ protected:
  /*protected*/ void removeBackground(PositionableLabel* b);
  /*protected*/ void drawTurnouts(EditScene* g2);
  /*protected*/ void setupToolsMenu(/*@Nonnull*/ QMenuBar* menuBar);
- /*protected*/ void scaleTrackDiagram();
+ // /*protected*/ void scaleTrackDiagram();
  /*protected*/ void enterTrackWidth();
- /*protected*/ void enterReporter(int defaultX, int defaultY);
  /*protected*/ void showPopUp(/*@Nonnull*/ Positionable* p, /*@Nonnull */QGraphicsSceneMouseEvent* event);
  /*protected*/ QMenu* setupOptionMenu(/*@Nonnull*/ QMenuBar* menuBar);
 // /*protected*/ /*final*/ void setPaintScale(double newScale);
@@ -1194,10 +1154,6 @@ protected slots:
  void trackWidthCancelPressed(/*ActionEvent event*/);
  void gridSizesDonePressed(/*ActionEvent event*/);
  void gridSizesCancelPressed(/*ActionEvent event*/);
- void reporterDonePressed(/*@Nonnull ActionEvent event*/);
- void reporterCancelPressed();
- void scaleTrackDiagramDonePressed(/*ActionEvent event*/);
- void scaleTrackDiagramCancelPressed(/*ActionEvent event*/);
  /*protected*/ void moveSelection();
 
  void undoMoveSelection();
@@ -1268,6 +1224,7 @@ public:
         return pointD;
     }
 };
+
 class EnterTrackWidthFrameWindowListener : public WindowListener
 {
  Q_OBJECT
@@ -1276,6 +1233,7 @@ public:
  EnterTrackWidthFrameWindowListener(LayoutEditor* layoutEditor) { this->layoutEditor = layoutEditor;}
  void windowClosing(QCloseEvent*) {layoutEditor->trackWidthCancelPressed();}
 };
+
 class EnterGridSizesFrameWindowListener : public WindowListener
 {
  Q_OBJECT

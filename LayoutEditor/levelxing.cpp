@@ -598,7 +598,7 @@
 //@Override
 /*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock, LayoutTrack::ITEMTYPE itemType) {
 
- QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
+ //QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
  invalidateItem(g2,itemGroup);
  if(itemGroup == nullptr)
@@ -670,7 +670,7 @@
     QPointF pKR = MathUtil::add(pM, vDisK);
     QPointF pVL = MathUtil::subtract(pM, vDisV);
     QPointF pVR = MathUtil::add(pM, vDisV);
-    QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
+    //QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
     invalidateItem(g2,itemGroup);
     if(itemGroup == nullptr)

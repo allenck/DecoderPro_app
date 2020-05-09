@@ -1387,6 +1387,13 @@ QColor PositionableLabel::getBackground()
 #endif
     setBackgroundColor(bg);
 }
+QPointF PositionableLabel::getLocation(){return QPointF(_x, _y);}
+void PositionableLabel::setLocation(QPointF pt)
+{
+ this->_x = (int)pt.x();
+ this->_y = (int)pt.y();
+}
+
 void PositionableLabel::setLocation(int x, int y)
 {
  this->_x = x;

@@ -236,19 +236,19 @@ void PositionableJComponent::cleanup() {}
 //{
 //  return  QRect(getX(), getY(), getWidth(), getHeight());
 //}
-QRectF PositionableJComponent::getBounds(QRectF rv)
-{
- if (rv.isNull())
- {
-    return  QRectF(getX(), getY(), getWidth(), getHeight());
- }
- else
- {
-    rv.setCoords(getX(), getY(), getWidth(), getHeight());
-    return rv;
- }
+//QRectF PositionableJComponent::getBounds(QRectF rv)
+//{
+// if (rv.isNull())
+// {
+//    return  QRectF(getX(), getY(), getWidth(), getHeight());
+// }
+// else
+// {
+//    rv.setCoords(getX(), getY(), getWidth(), getHeight());
+//    return rv;
+// }
 
-}
+//}
 
 bool PositionableJComponent::contains(int /*x*/, int /*y*/)
 {
@@ -344,4 +344,14 @@ bool PositionableJComponent::requestFocusInWindow()
 /*public*/ void PositionableJComponent::setFont(QFont)
 {
 
+}
+/*public*/ QRectF PositionableJComponent::getBounds(QRectF r)
+{
+ if(r.isNull())
+  return QRectF(((Positionable*)this)->getX(), ((Positionable*)this)->getY(), getWidth(), getHeight());
+ else
+ {
+  r.setCoords(((Positionable*)this)->getX(), ((Positionable*)this)->getY(), getWidth(), getHeight());
+  return  r;
+ }
 }

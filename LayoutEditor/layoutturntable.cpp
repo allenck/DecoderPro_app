@@ -946,7 +946,7 @@ void LayoutTurntable::dispose() {
     float trackWidth = 2.0;
     float halfTrackWidth = trackWidth / 2.f;
     double radius = getRadius(), diameter = radius + radius;
-    QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
+    //QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
     invalidateItem(g2,itemGroup);
     if(itemGroup == nullptr)
@@ -1000,7 +1000,8 @@ void LayoutTurntable::dispose() {
                 delta = MathUtil::normalize(delta, radius - halfTrackWidth);
                 pt1 = MathUtil::subtract(center, delta);
                 //g2.draw(new Line2D.Double(pt1, pt2));
-            lineItem = new QGraphicsLineItem(pt1.x(), pt1.y(), pt2.x(), pt2.y());}
+            lineItem = new QGraphicsLineItem(pt1.x(), pt1.y(), pt2.x(), pt2.y());
+            }
         }
     }
 }   // draw1
@@ -1012,9 +1013,9 @@ void LayoutTurntable::dispose() {
 /*protected*/ void LayoutTurntable::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType) {
     float trackWidth = 2.F;
     float halfTrackWidth = trackWidth / 2.f;
-    QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
+    //QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
-    invalidateItem(g2,itemGroup);
+    invalidateItem(g2, itemGroup);
     if(itemGroup == nullptr)
     {
      itemGroup = new QGraphicsItemGroup();
@@ -1057,10 +1058,10 @@ void LayoutTurntable::dispose() {
                 //g2.draw(new Line2D.Double(pt1R, pt2R));
                 lineItem = new QGraphicsLineItem(pt1R.x(), pt1R.y(), pt2R.x(), pt2R.y());
                 lineItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(lineItem);}
+                itemGroup->addToGroup(lineItem);
+            }
         }
     }
-
 }   // draw2
 
 /**

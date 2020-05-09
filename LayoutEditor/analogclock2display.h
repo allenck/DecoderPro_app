@@ -21,6 +21,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT AnalogClock2Display : public PositionableJCom
 public:
     //explicit AnalogClock2Display(QWidget *parent = 0);
     /*public*/ AnalogClock2Display(Editor* editor, QObject *parent=0);
+    /*public*/ AnalogClock2Display(Editor* editor, QString url, QObject *parent=0);
     ~AnalogClock2Display();
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(Positionable* p);

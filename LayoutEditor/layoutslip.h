@@ -211,6 +211,7 @@ private:
  bool active;// = true;
  QHash <int, TurnoutState*> turnoutStates;// = new QHash<int, TurnoutState>(4);
  /*private*/ bool isTurnoutInconsistent();
+ QGraphicsItemGroup* itemGroup = nullptr;
 
 protected:
  /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);

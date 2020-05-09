@@ -21,7 +21,9 @@ protected:
     /*protected*/ QWidget* instructions();
     /*protected*/ void addIconsToPanel(QHash<QString, NamedIcon*>* iconMap);
 
+    friend class ClockDragJLabel;
 };
+
 /*public*/ class ClockDragJLabel : public DragJLabel
 {
 

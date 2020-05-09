@@ -190,6 +190,7 @@ public:
  RTAValidator(JTextField* fld, ReporterTableAction* act);
  QValidator::State validate(QString &, int &) const;
  //void fixup(QString &input) const;
+
 public slots:
  void prefixBoxChanged(QString txt);
 

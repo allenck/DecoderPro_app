@@ -37,6 +37,11 @@ private:
 
  // Check for Unnecessary Anchors
  /*private*/ QMenu* checkUnnecessaryAnchorsMenu;// = new JMenu(Bundle.getMessage("CheckUnnecessaryAnchorsMenuTitle"));
+ // Check for Linear Bezier Track Segments
+ /*private*/ QMenu* checkLinearBezierTrackSegmentsMenu;// = new JMenu(Bundle.getMessage("CheckLinearBezierTrackSegmentsMenuTitle"));
+
+ // Check for Fixed Radius Bezier Track Segments
+ /*private*/ QMenu* checkFixedRadiusBezierTrackSegmentsMenu;// = new JMenu(Bundle.getMessage("CheckFixedRadiusBezierTrackSegmentsMenuTitle"));
 
  /*private*/ QSet<QString> getCheckMarkedMenuItemNames(/*@Nonnull*/ QMenu* menu);
  /*private*/ void setupCheckUnConnectedTracksMenu();
@@ -46,7 +51,12 @@ private:
          /*@Nonnull*/ QString blockName,
          /*@Nullable*/ QSet<QString> trackNameSet);
  /*private*/ void setupCheckUnnecessaryAnchorsMenu();
-
+ /*private*/ void doCheckUnnecessaryAnchorsMenuItem(
+         /*@Nonnull*/ QString anchorName);
+ /*private*/ void setupCheckLinearBezierTrackSegmentsMenu();
+ /*private*/ void doCheckLinearBezierTrackSegmentsMenuItem(/*@Nonnull*/ QString trackSegmentName);
+ /*private*/ void setupCheckFixedRadiusBezierTrackSegmentsMenu();
+ /*private*/ void doCheckFixedRadiusBezierTrackSegmentsMenuItem(/*@Nonnull*/ QString trackSegmentName);
 
 private slots:
  /*private*/ void doCheckUnConnectedTracksMenuItem(/*@Nonnull String menuItemName*/);

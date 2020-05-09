@@ -757,7 +757,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
     }
     return this->panelMenuIsVisible;
 }
-#if 1
+
 /*protected*/ void Editor::setScroll(int state) {
  if(editPanel == nullptr) return; // TODO: handle for when JLayeredPane is used
     if (_debug) log->debug("setScroll "+ QString::number(state));
@@ -812,7 +812,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
     return value;
 }
 /************************* end Options setup ***********************/
-#endif
+
 void Editor::closeEvent(QCloseEvent */*e*/)
 {
  targetWindowClosing(true);
@@ -1028,34 +1028,207 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
 }
 
 /**
-* Offer actions to align the selected Positionable items either
-* Horizontally (at avearage y coord) or Vertically (at avearage x coord).
-*/
+ * Offer actions to align the selected Positionable items either
+ * Horizontally (at average y coordinates) or Vertically (at average x
+ * coordinates).
+ *
+ * @param p     The positionable item
+ * @param popup The menu to add entries to
+ * @return true if entries added to menu
+ */
 /*public*/ bool Editor::setShowAlignmentMenu(Positionable* p, QMenu* popup)
 {
-    if (showAlignPopup(p))
-    {
-     /*JMenu*/QMenu* edit = new /*JMenu*/QMenu(tr("EditAlignment"));
+ if (showAlignPopup(p))
+ {
+  QMenu* edit = new QMenu(tr("Alignment"));
+  AbstractAction* act;
+  edit->addAction(act = new AbstractAction(tr("Align Vertically to Left Edge"), this));
+  _x = p->getX();
+//  {
+//      int _x;
 
-   //     edit.add(new AbstractAction(rb.getQString("AlignX")) {
-   //         /*public*/ void actionPerformed(ActionEvent e) {
-   //             alignSelection(true);
-   //         }
-   //     });
-     QAction* alignXAction = new QAction("AlignX",this);
-     popup->addAction(alignXAction);
-   //     edit.add(new AbstractAction(rb.getQString("AlignY")) {
-   //         /*public*/ void actionPerformed(ActionEvent e) {
-   //             alignSelection(false);
-   //         }
-   //     });
-     QAction* alignYAction = new QAction("AlignY",this);
-     popup->addAction(alignYAction);
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &AbstractAction::triggered, [=]{
+          if (_selectionGroup == nullptr) {
+              return;
+          }
+          for (Positionable* comp : *_selectionGroup) {
+              if (!getFlag(OPTION_POSITION, comp->isPositionable())) {
+                  continue;
+              }
+              comp->setLocation(_x, comp->getY());
+          }
+      });
 
-     popup->addMenu(edit);
-     return true;
-    }
-    return false;}
+//      AbstractAction init(int x) {
+//          _x = x;
+//          return this;
+//      }
+//  }.init(p.getX()));
+  edit->addAction(act = new AbstractAction(tr("Align Vertically to Midpoint"),this));
+  _x = p->getX() + p->getWidth() / 2;
+//  {
+//      int _x;
+
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &AbstractAction::triggered, [=]{
+          if (_selectionGroup == nullptr) {
+              return;
+          }
+          for (Positionable* comp : *_selectionGroup) {
+              if (!getFlag(OPTION_POSITION, comp->isPositionable())) {
+                  continue;
+              }
+              comp->setLocation(_x - comp->getWidth() / 2, comp->getY());
+          }
+      });
+
+//    AbstractAction init(int x) {
+//        _x = x;
+//        return this;
+//    }
+//}.init(p.getX() + p.getWidth() / 2));
+  edit->addAction(act = new AbstractAction(tr("Align Vertically to Right Edge"),this));
+  _x = p->getX() + p->getWidth();
+//  {
+//      int _x;
+
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &AbstractAction::triggered, [=]{
+          if (_selectionGroup == nullptr) {
+              return;
+          }
+          for (Positionable* comp : *_selectionGroup) {
+              if (!getFlag(OPTION_POSITION, comp->isPositionable())) {
+                  continue;
+              }
+              comp->setLocation(_x - comp->getWidth(), comp->getY());
+          }
+      });
+
+//      AbstractAction init(int x) {
+//          _x = x;
+//          return this;
+//      }
+//  }.init(p.getX() + p.getWidth()));
+  edit->addAction(act = new AbstractAction(tr("Align Horizontally to Top Edge"),this));
+  _y = p->getY();
+//  {
+//      int _y;
+
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &AbstractAction::triggered, [=]{
+          if (_selectionGroup == nullptr) {
+              return;
+          }
+          for (Positionable* comp : *_selectionGroup) {
+              if (!getFlag(OPTION_POSITION, comp->isPositionable())) {
+                  continue;
+              }
+              comp->setLocation(comp->getX(), _y);
+          }
+      });
+
+//      AbstractAction init(int y) {
+//          _y = y;
+//          return this;
+//      }
+//  }.init(p.getY()));
+  edit->addAction(act = new AbstractAction(tr("Align Horizontally to Midpoint"),this));
+  _y = p->getY() + p->getHeight() / 2;
+//  {
+//      int _y;
+
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &AbstractAction::triggered, [=]{
+          if (_selectionGroup == nullptr) {
+              return;
+          }
+          for (Positionable* comp : *_selectionGroup) {
+              if (!getFlag(OPTION_POSITION, comp->isPositionable())) {
+                  continue;
+              }
+              comp->setLocation(comp->getX(), _y - comp->getHeight() / 2);
+          }
+      });
+
+//      AbstractAction init(int y) {
+//          _y = y;
+//          return this;
+//      }
+//  }.init(p.getY() + p.getHeight() / 2));
+  edit->addAction(act = new AbstractAction(tr("Align Horizontally to Bottom Edge"),this));
+  _y = p->getY() + p->getHeight();
+//  {
+//      int _y;
+
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &AbstractAction::triggered, [=]{
+          if (_selectionGroup == nullptr) {
+              return;
+          }
+          for (Positionable* comp : *_selectionGroup) {
+              if (!getFlag(OPTION_POSITION, comp->isPositionable())) {
+                  continue;
+              }
+              comp->setLocation(comp->getX(), _y - comp->getHeight());
+          }
+      });
+
+//      AbstractAction init(int y) {
+//          _y = y;
+//          return this;
+//      }
+//  }.init(p.getY() + p.getHeight()));
+  edit->addAction(act = new AbstractAction(tr("Align Vertically to 1st selected"),this));
+//  {
+
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &AbstractAction::triggered, [=]{
+          if (_selectionGroup == nullptr) {
+              return;
+          }
+          int x = _selectionGroup->at(0)->getX();
+          for (int i = 1; i < _selectionGroup->size(); i++) {
+              Positionable* comp = _selectionGroup->at(i);
+              if (!getFlag(OPTION_POSITION, comp->isPositionable())) {
+                  continue;
+              }
+              comp->setLocation(x, comp->getY());
+          }
+//      };
+  });
+  edit->addAction(act = new AbstractAction(tr("Align Horizontally to 1st selected"),this));
+//  {
+
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &AbstractAction::triggered, [=]{
+          if (_selectionGroup == nullptr) {
+              return;
+          }
+          int y = _selectionGroup->at(0)->getX();
+          for (int i = 1; i < _selectionGroup->size(); i++) {
+              Positionable* comp = _selectionGroup->at(i);
+              if (!getFlag(OPTION_POSITION, comp->isPositionable())) {
+                  continue;
+              }
+              comp->setLocation(comp->getX(), y);
+          }
+//      };
+  });
+  popup->addMenu(edit);
+  return true;
+ }
+ return false;
+}
 
 /**
 * Display display 'z' level of the Positionable item and provide a
@@ -1064,9 +1237,9 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
 /*public*/ void Editor::setDisplayLevelMenu(Positionable* p, QMenu* popup)
 {
  QMenu* edit = new QMenu(tr("Edit Level"));
- PositionableLabel* ps = qobject_cast<PositionableLabel*>(p->self());
- if(ps != nullptr)
-  edit->addAction(new QAction(tr("level= ") + QString("%1").arg(ps->getDisplayLevel()),this));
+ //PositionableLabel* ps = qobject_cast<PositionableLabel*>(p->self());
+ if(p != nullptr)
+  edit->addAction(new QAction(tr("level= ") + QString("%1").arg(p->getDisplayLevel()),this));
  edit->addAction(CoordinateEdit::getLevelEditAction(p, this));
  popup->addMenu(edit);
 }
@@ -2418,20 +2591,17 @@ void Editor::putBackground() {
  return m;
 }
 
-/*protected*/ void Editor::addClock()
+/*protected*/ AnalogClock2Display* Editor::addClock()
 {
- AnalogClock2Display* l = new AnalogClock2Display(this);
- ((PositionableIcon*)l)->setOpaque(false);
- l->update();
- ((PositionableIcon*)l)->setDisplayLevel(CLOCK);
- setNextLocation((PositionableIcon*)l);
- //l->setLocation(200,200);
- ((PositionableIcon*)l)->setVisible(true);
- l->setScale(1.0);
- putItem((PositionableIcon*)l);
- l->paint(editScene);
+ AnalogClock2Display* result = new AnalogClock2Display(this);
+ result->setOpaque(false);
+ result->update();
+ result->setDisplayLevel(CLOCK);
+ setNextLocation(result);
+ putItem(result);
+ return result;
 }
-#if 1
+
 /*protected*/ void Editor::addRpsReporter() {
     RpsPositionIcon* l = new RpsPositionIcon(this);
     l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
@@ -2444,7 +2614,6 @@ void Editor::putBackground() {
 
 /*********************** Icon Editors utils ****************************/
 
-#endif
 /*public*/ void Editor::setTitle()
 {
  #if 1
@@ -2852,7 +3021,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  //addToTarget(p);
  p->updateScene();
  if(qobject_cast<AnalogClock2Display*>(p->self())!=nullptr)
-  ((PositionableIcon*)p)->update();
+  ((AnalogClock2Display*)p->self())->update();
 }
 
 /**
@@ -3084,40 +3253,31 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  QList <Positionable*> list = getContents();
  if (event->modifiers()&Qt::ShiftModifier)
  {
-  for (int i=0; i < list.size(); i++)
+  for(Positionable* comp : list)
   {
-   Positionable* comp = list.at(i);
-//   if (comp instanceof PositionableShape && !event.isShiftDown())
-//   {
-//    continue;
-//   }
    if (_selectRect.intersects(comp->getBounds(test)) &&
                             (event->modifiers()&Qt::ControlModifier || ((PositionableLabel*)comp)->getDisplayLevel()>BKG))
    {
      _selectionGroup->append(comp);
-              /*  if (_debug) {
-                    log->debug("makeSelectionGroup: selection: "+ comp.getNameQString()+
-                                ", class= "+comp.getClass().getName());
-                } */
+    /*  if (_debug) {
+          log->debug("makeSelectionGroup: selection: "+ comp.getNameQString()+
+                      ", class= "+comp.getClass().getName());
+      } */
    }
   }
  }
  else
  {
-  for (int i=0; i < list.size(); i++)
+  for (Positionable* comp : list)
   {
-   Positionable* comp = list.at(i);
-//            if (comp instanceof PositionableShape && !event.isShiftDown()) {
-//                continue;
-//            }
-   if (_selectRect.contains(((PositionableLabel*)comp)->getBounds()) &&
+   if (_selectRect.contains(comp->getBounds()) &&
                             (event->modifiers()&Qt::ControlModifier || ((PositionableLabel*)comp)->getDisplayLevel()>BKG))
    {
     _selectionGroup->append(comp);
-              /*  if (_debug) {
-                    log->debug("makeSelectionGroup: selection: "+ comp.getNameQString()+
-                                ", class= "+comp.getClass().getName());
-                } */
+    /*  if (_debug) {
+          log->debug("makeSelectionGroup: selection: "+ comp.getNameQString()+
+                      ", class= "+comp.getClass().getName());
+      } */
    }
   }
  }

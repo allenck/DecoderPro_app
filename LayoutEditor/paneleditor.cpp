@@ -922,7 +922,7 @@ protected void paintTargetPanel(Graphics g) {
   {
    //_currentSelection->doMousePressed(event);
    if(dynamic_cast<AnalogClock2Display*>(_currentSelection->self())!=NULL)
-    ((PositionableIcon*)_currentSelection)->doMousePressed(event);
+    _currentSelection->doMousePressed(event);
    else
    if(dynamic_cast<SensorIcon*>(_currentSelection->self())!=NULL)
     ((SensorIcon*)_currentSelection)->doMousePressed(event);
@@ -1126,19 +1126,19 @@ protected void paintTargetPanel(Graphics g) {
    {
     if (selections->at(0)!=_currentSelection)
     {
-     ((PositionableLabel*)_currentSelection)->doMouseReleased(event);
+     _currentSelection->doMouseReleased(event);
     }
    }
    else
    {
-    ((PositionableLabel*)_currentSelection)->doMouseReleased(event);
+    _currentSelection->doMouseReleased(event);
    }
   }
   //return;
  }
 
 //moveIt:
- if (_currentSelection!=NULL && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable()))
+ if (_currentSelection!=NULL && getFlag(OPTION_POSITION, _currentSelection->isPositionable()))
  {
   int deltaX = event->scenePos().x() - _lastX;
   int deltaY = event->scenePos().y() - _lastY;
@@ -1204,7 +1204,7 @@ protected void paintTargetPanel(Graphics g) {
  //paint(_targetPanel);
  if(_currentSelection != NULL)
  {
-  ((PositionableLabel*) _currentSelection)->updateScene();
+   _currentSelection->updateScene();
  }
 }
 
@@ -1386,7 +1386,8 @@ protected void paintTargetPanel(Graphics g) {
  QAction* copy = new QAction("Copy",this); // changed "edit" to "copy"
  if(p == NULL)
   return;
- if (((PositionableLabel*)p)->isPositionable())
+ //if (((PositionableLabel*)p)->isPositionable())
+ if(p->isPositionable())
  {
   setShowAlignmentMenu(p, popup);
  }

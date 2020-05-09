@@ -232,9 +232,10 @@ private:
     QVector<QMenu*>* viewAdditionalMenu;// = new QVector<QMenuItem*>(0);
  QGraphicsItemGroup* item;
  QGraphicsItemGroup* rects;
-Logger log;
-/*private*/ void updateBlockInfo();
+ Logger log;
+ /*private*/ void updateBlockInfo();
  /*final*/ QVector<QString>* boundaryBetween;
+ QGraphicsItemGroup* itemGroup =nullptr;
 
 private slots:
 void on_xingEdit1Block_clicked();

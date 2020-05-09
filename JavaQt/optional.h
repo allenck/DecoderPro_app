@@ -14,8 +14,9 @@ class JAVAQTSHARED_EXPORT Optional : public QObject
 public:
  explicit Optional(QObject *parent = 0) : QObject(parent) {this->value = nullptr;}
  /*public*/  Optional<T> empty()
- {    Optional<T> t = (Optional<T>) Optional::EMPTY;
-                                     return t;
+ {
+  Optional<T> t = (Optional<T>) Optional::EMPTY;
+  return t;
  }
  /*public*/ T get()
  {

@@ -166,7 +166,9 @@ public:
  MyGraphicsProxyWidget* widget;
  /* public*/ void setStyleSheet();
  /*public*/ void finishItemUpdate(DisplayFrame* paletteFrame, ItemPanel* itemPanel);
+ QPointF getLocation();
  void setLocation(int x, int y);
+ void setLocation(QPointF);
  int getX();
  int getY();
  QObject* self() {return (QObject*)this;}

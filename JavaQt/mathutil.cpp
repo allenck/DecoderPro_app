@@ -703,6 +703,77 @@ MathUtil::MathUtil()
 /*public*/ /*static*/ QRectF MathUtil::rectangleAtPoint(/*@Nonnull*/ QPointF p, double width, double height) {
     return QRectF(p.x(), p.y(), width, height);
 }
+// recursive routine to plot a Bezier curve...
+// (also returns distance!)
+/*private*/ /*static*/ double MathUtil::plotBezier(
+        QPainterPath path,
+        /*@Nonnull*/ QList<QPointF> points,
+        int depth,
+        double displacement)
+{
+    int len = points.length(), idx, jdx;
+    double result;
+
+    // calculate flatness to determine if we need to recurse...
+    double outer_distance = 0;
+    for (idx = 1; idx < len; idx++) {
+        outer_distance += distance(points[idx - 1], points[idx]);
+    }
+    double inner_distance = distance(points[0], points[len - 1]);
+    double flatness = outer_distance / inner_distance;
+
+    // depth prevents stack overflow
+    // (I picked 12 because 2^12 = 2048 is larger than most monitors ;-)
+    // the flatness comparison value is somewhat arbitrary.
+    // (I just kept moving it closer to 1 until I got good results. ;-)
+    if ((depth > 12) || (flatness <= 1.001)) {
+        QPointF p0 = points[0], pN = points[len - 1];
+        QPointF vO = normalize(orthogonal(subtract(pN, p0)), displacement);
+        if (path.currentPosition().isNull()) {   // if this is the 1st point
+            QPointF p0P = add(p0, vO);
+            path.moveTo(p0P.x(), p0P.y());
+        }
+        QPointF pNP = add(pN, vO);
+        path.lineTo(pNP.x(), pNP.y());
+        result = inner_distance;
+    } else {
+#if 0
+        // calculate (len - 1) order of points
+        // (zero'th order are the input points)
+        QPointF[][] nthOrderPoints = QPointF[len - 1][];
+        for (idx = 0; idx < len - 1; idx++) {
+            nthOrderPoints[idx] = QPointF[len - 1 - idx];
+            for (jdx = 0; jdx < len - 1 - idx; jdx++) {
+                if (idx == 0) {
+                    nthOrderPoints[idx][jdx] = midPoint(points[jdx], points[jdx + 1]);
+                } else {
+                    nthOrderPoints[idx][jdx] = midPoint(nthOrderPoints[idx - 1][jdx], nthOrderPoints[idx - 1][jdx + 1]);
+                }
+            }
+        }
+
+        // collect left points
+        QPointF[] leftPoints = new Point2D[len];
+        leftPoints[0] = points[0];
+        for (idx = 0; idx < len - 1; idx++) {
+            leftPoints[idx + 1] = nthOrderPoints[idx][0];
+        }
+        // draw left side Bezier
+        result = plotBezier(path, leftPoints, depth + 1, displacement);
+
+        // collect right points
+        QPointF[] rightPoints = new Point2D[len];
+        for (idx = 0; idx < len - 1; idx++) {
+            rightPoints[idx] = nthOrderPoints[len - 2 - idx][idx];
+        }
+        rightPoints[idx] = points[len - 1];
+
+        // draw right side Bezier
+        result += plotBezier(path, rightPoints, depth + 1, displacement);
+#endif
+    }
+    return result;
+}
 
 // recursive routine to plot a cubic Bezier...
 // (also returns distance!)
@@ -755,6 +826,41 @@ MathUtil::MathUtil()
         // draw right side Bezier
         result += MathUtil::plotBezier(path, s, r1, q2, p3, depth + 1, displacement);
     }
+    return result;
+}
+
+/*
+ * Plot a Bezier curve.
+ *
+ * @param g2 the Graphics2D context to draw to
+ * @param p  the control points
+ * @param displacement right/left to draw a line parallel to the Bezier
+ * @param fillFlag     false to draw / true to fill
+ * @return the length of the Bezier curve
+ */
+/*private*/ /*static*/ double MathUtil::plotBezier(
+        QGraphicsScene* g2,
+        /*@Nonnull*/ QList<QPointF> p,
+        double displacement,
+        bool fillFlag) {
+    double result;
+    QPainterPath path = QPainterPath();
+    if (p.length() == 4) {    // draw cubic bezier?
+        result = plotBezier(path, p[0], p[1], p[2], p[3], 0, displacement);
+    } else {    // (nope)
+        result = plotBezier(path, p, 0, displacement);
+    }
+    QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+    QColor fillColor = QColor(Qt::darkGray);
+    QBrush fillBrush = QBrush(fillColor);
+    if (fillFlag) {
+        //g2->fill(path);
+     pathItem->setBrush(fillBrush);
+    } else {
+        //g2->draw(path);
+    }
+    g2->addItem(pathItem);
+
     return result;
 }
 
@@ -893,6 +999,71 @@ MathUtil::MathUtil()
     }
 
 /*private*/ /*static*/ bool MathUtil::bezier1st = false;
+
+/**
+ * Fill a Bezier curve.
+ *
+ * @param g2 the Graphics2D context to draw to
+ * @param p  the control points
+ * @return the length of the Bezier curve
+ */
+/*public*/ /*static*/ double MathUtil::fillBezier(QGraphicsScene* g2, /*@Nonnull*/ QList<QPointF> p) {
+    return plotBezier(g2, p, 0.0, true);
+}
+
+/**
+ * Find intersection of two lines.
+ *
+ * @param p1 the first point on the first line
+ * @param p2 the second point on the first line
+ * @param p3 the first point on the second line
+ * @param p4 the second point on the second line
+ * @return the intersection point of the two lines or null if one doesn't
+ *         exist
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ QPointF MathUtil::intersect(
+        /*@Nonnull*/ QPointF p1,
+        /*@Nonnull*/ QPointF p2,
+        /*@Nonnull*/ QPointF p3,
+        /*@Nonnull*/ QPointF p4) {
+    QPointF result = QPointF();  // assume failure (pessimist!)
+
+    QPointF delta31 = MathUtil::subtract(p3, p1);    //p
+    QPointF delta21 = MathUtil::subtract(p2, p1);    //q
+    QPointF delta43 = MathUtil::subtract(p4, p3);    //r
+
+    double det = delta21.x() * delta43.y() - delta21.y() * delta43.x();
+    if (!MathUtil::equals(det, 0.0)) {
+        double t = (delta21.y() * delta31.x() - delta21.x() * delta31.y()) / det;
+        result = lerp(p1, p2, t);
+    }
+    return result;
+}
+
+/**
+ * get (signed) distance p3 is from line segment defined by p1 and p2
+ *
+ * @param p1 the first point on the line segment
+ * @param p2 the second point on the line segment
+ * @param p3 the point whose distance from the line segment you wish to
+ *           calculate
+ * @return the distance (note: plus/minus determines the (left/right) side
+ *         of the line)
+ */
+/*public*/ /*static*/ double MathUtil::distance(/*@Nonnull*/ QPointF p1,
+        /*@Nonnull*/  QPointF p2,
+        /*@Nonnull*/  QPointF p3) {
+    double p1X = p1.x(), p1Y = p1.y();
+    double p2X = p2.x(), p2Y = p2.y();
+    double p3X = p3.x(), p3Y = p3.y();
+
+    double a = p1Y - p2Y;
+    double b = p2X - p1X;
+    double c = (p1X * p2Y) - (p2X * p1Y);
+
+    return (a * p3X + b * p3Y + c) / qSqrt(a * a + b * b);
+}
 
 /*private*/ /*final*/ /*static*/ Logger* MathUtil::log = LoggerFactory::getLogger("MathUtil");
 

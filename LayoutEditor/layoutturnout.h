@@ -348,6 +348,7 @@ public:
                              to control one cross-over
                              */
  /*private*/ bool secondTurnoutInverted = false;
+ QGraphicsItemGroup* itemGroup = nullptr;
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -427,7 +428,6 @@ private:
     void setTrackSegmentBlocks();
     void setTrackSegmentBlock(int pointType, bool isAutomatic);
     /*private*/ bool isOccupied();
-    QGraphicsItemGroup* itemGroup = nullptr;// = new QGraphicsItemGroup();
     /*private*/ void reCalculateCenter();
 
 

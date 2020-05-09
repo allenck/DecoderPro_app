@@ -90,8 +90,8 @@
 
   try
   {
-   //JLabel* label = new ClockDragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR),this);
-   JLabel* label = new JLabel("to be implemented"); //new AnalogClock2Display((Editor*)parent());
+   ClockDragJLabel* label = new ClockDragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR),this);
+   //JLabel* label = new JLabel("to be implemented"); //new AnalogClock2Display((Editor*)parent());
    ((AnalogClock2Display*)label)->setOpaque(false);
    ((AnalogClock2Display*)label)->update();
    ((AnalogClock2Display*)label)->setLevel(Editor::CLOCK);
@@ -147,7 +147,13 @@ void ClockItemPanel::sceneClicked(QGraphicsSceneMouseEvent *)
         }
 //        QString url = ((NamedIcon*)getIcon())->getURL();
 //        if (log->isDebugEnabled()) log->debug("DragJLabel.getTransferData url= "+url);
-        AnalogClock2Display* c = new AnalogClock2Display((Editor*)parent());
+        AnalogClock2Display* c;
+        QString link = ((ClockItemPanel*)parent())->_linkName->text().trimmed();
+        if (link.length() == 0) {
+            c = new AnalogClock2Display(((ClockItemPanel*)parent())->_editor);
+        } else {
+            c = new AnalogClock2Display(((ClockItemPanel*)parent())->_editor, link);
+        }
         c->setOpaque(false);
         c->update();
         c->setLevel(Editor::CLOCK);

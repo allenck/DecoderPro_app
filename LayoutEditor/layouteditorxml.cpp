@@ -377,7 +377,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->setSideTrackWidth(sidetrackwidth);
  // panel->setXScale(xScale);
  // panel->setYScale(yScale);
- panel->setScale(xScale, yScale);
+ //panel->setScale(xScale, yScale);
  QString defaultColor = ColorUtil::ColorDarkGray;
  if ((a = shared.attribute("defaulttrackcolor")) != "") {
      defaultColor = a;
@@ -499,6 +499,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      value = false;
  }
  panel->setAllPositionable(value);
+ panel->positionableCheckBoxMenuItem->setChecked(value);
 
  value = true;
  if ((a = shared.attribute("controlling")) != nullptr && a==("no")) {
@@ -510,7 +511,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  if ((a = shared.attribute("animating")) != nullptr && a==("no")) {
      value = false;
  }
- panel->on_setTurnoutAnimation(value);
+ panel->setTurnoutAnimation(value);
 
  bool hbValue = true;
  if ((a = shared.attribute("showhelpbar")) != nullptr && a==("no")) {
@@ -590,7 +591,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  {
   if (shared.attribute("useDirectTurnoutControl")==("yes"))
   {
-   panel->on_setDirectTurnoutControl(true);
+   panel->setDirectTurnoutControl(true);
   }
  }
 

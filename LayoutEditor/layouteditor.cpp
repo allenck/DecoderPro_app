@@ -86,6 +86,7 @@
 #include "layoutshape.h"
 #include <QToolTip>
 #include "addentryexitpairaction.h"
+#include "scaletrackdiagramdialog.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -138,11 +139,11 @@ LayoutEditor::~LayoutEditor()
     QAction* deleteItem = new QAction(tr("Delete Panel"), this);
     fileMenu->addAction(deleteItem);
 //        deleteItem.addActionListener((ActionEvent event) -> {
-//            if (deletePanel()) {
-//                dispose();
-//            }
-//        });
-    connect(deleteItem, SIGNAL(triggered(bool)), this, SLOT(on_deletePanel()));
+    connect(deleteItem, &QAction::triggered, [=]{
+            if (deletePanel()) {
+                dispose();
+            }
+        });
     setMenuBar(menuBar);
 
     //setup Options menu
@@ -657,97 +658,12 @@ _contents = new QVector<Positionable*>();
 
 } // init
 
- void LayoutEditor::on_layoutTrackDrawingOptionsDialog()
- {
-  LayoutTrackDrawingOptionsDialog* ltdod
-          = new LayoutTrackDrawingOptionsDialog(
-                  this, true, getLayoutTrackDrawingOptions());
-  ltdod->setVisible(true);
-
- }
 /*public*/ void LayoutEditor::setSize(int w, int h)
 {
  log->debug("Frame size now w=" + QString::number(w) + ", h=" + QString::number(h));
  Editor::resize(w, h);
 }
 
-void LayoutEditor::on_turnoutCirclesOnItem_triggered(bool)
-{
- turnoutCirclesWithoutEditMode = turnoutCirclesOnItem->isChecked();
- repaint();
-}
-
-void LayoutEditor::on_turnoutDrawUnselectedLegItem_triggered(bool)
-{
- turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegItem->isChecked();
- repaint();
-}
-
-void LayoutEditor::on_autoAssignBlocksItem_triggered(bool b)
-{
- autoAssignBlocks = b;
-}
-
-void LayoutEditor::on_hideTrackSegmentConstructionLines_toggled(bool /*b*/)
-{
-  int show = TrackSegment::SHOWCON;
-
-  if (hideTrackSegmentConstructionLinesCheckBoxMenuItem->isChecked()) {
-      show = TrackSegment::HIDECONALL;
-  }
-
-  for (TrackSegment* t : getTrackSegments()) {
-      t->hideConstructionLines(show);
-  }
-  repaint();
-}
-
-//void LayoutEditor::on_useDirectTurnoutControlItem_triggered(bool)
-//{
-// useDirectTurnoutControl = false;
-
-// if (useDirectTurnoutControlItem->isChecked()) {
-//     useDirectTurnoutControl = true;
-// }
-
-//}
-void LayoutEditor::addTurnoutCircleColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color)
-{
-//        ActionListener a = new ActionListener() {
-//            final Color desiredColor = color;
-
-//            public void actionPerformed(ActionEvent e) {
-//                turnoutCircleColor = desiredColor;
-//                setDirty(true);
-//                repaint();
-//            }
-//        };
- const QIcon icon = getColourIcon(color);
- QAction* r = new QAction(icon, name, this);
- r->setCheckable(true);
- //r->setData(_colors.indexOf(color));
- turnoutCircleColorButtonGroup->addAction(r);
- turnoutCircleColorButtonMapper->setMapping(r, turnoutCircleColorCount);
- //r.addActionListener(a);
- connect(r, SIGNAL(triggered()), turnoutCircleColorButtonMapper, SLOT(map()));
- if (turnoutCircleColor==(color)) {
-     r->setChecked(true);
- } else {
-     r->setChecked(false);
- }
- menu->addAction(r);
- turnoutCircleColorMenuItems->replace(turnoutCircleColorCount, r);
- turnoutCircleColors->replace(turnoutCircleColorCount, color);
- turnoutCircleColorCount++;
-}
-
-//void LayoutEditor::on_turnoutCircleColorButtonMapper_triggered(int i)
-//{
-// turnoutCircleColor = /*desiredColor*/turnoutCircleColors->at(i);
-// setDirty(true);
-// repaint();
-
-//}
 
 void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size)
 {
@@ -844,35 +760,34 @@ void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString 
     inComboBox->setCurrentIndex(-1);
 }
 
-void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
+void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 {
- calcLocation(e->scenePos(), 0,0);
+ calcLocation(event, 0,0);
  leToolBarPanel->xLabel->setText(QString("%1").arg(xLoc));
  leToolBarPanel->yLabel->setText(QString("%1").arg(yLoc));
- Qt::MouseButtons b = e->buttons();
- if (b == Qt::RightButton || e->modifiers()&Qt::ShiftModifier)
-  mouseDragged(e);
-
+ Qt::MouseButtons b = event->buttons();
+ if (b == Qt::RightButton || event->modifiers()&Qt::ShiftModifier)
+  mouseDragged(event);
 }
+
 /*
- * Get mouse coordinates and adjust for zoom
+ * Get mouse coordinates and adjust for zoom.
+ * <p>
+ * Side effects on xLoc, yLoc and dLoc
  */
-/*private*/ void LayoutEditor::calcLocation(QPointF scenePos, int dX, int dY)
+//@Nonnull
+/*private*/ QPointF LayoutEditor::calcLocation(QGraphicsSceneMouseEvent* event, int dX, int dY)
 {
- xLoc = (int)((scenePos.x() + dX)/getPaintScale());
- yLoc = (int)((scenePos.y() + dY)/getPaintScale());
- dLoc = scenePos;
+ xLoc = (int) ((event->scenePos().x() + dX) / getZoom());
+ yLoc = (int) ((event->scenePos().y() + dY) / getZoom());
+ dLoc = QPointF(xLoc, yLoc);
+ return dLoc;
 }
-//double LayoutEditor::getPaintScale()
-//{
-// return paintScale;
-//}
 
-///*protected*/ /*final*/ void LayoutEditor::setPaintScale(double newScale) {
-//    double ratio = newScale / _paintScale;
-//    _paintScale = newScale;
-//    setScrollbarScale(ratio);
-//}
+/*private*/ QPointF LayoutEditor::calcLocation(QGraphicsSceneMouseEvent* event) {
+    return calcLocation(event, 0, 0);
+}
+
 /**
  * Handle a mouse pressed event
  */
@@ -889,16 +804,19 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
  _anchorY = yLoc;
  _lastX = _anchorX;
  _lastY = _anchorY;
- delayedPopupTrigger= false;
- isDragging = false;
- calcLocation(event->scenePos(),0,0);
+// delayedPopupTrigger= false;
+// isDragging = false;
+ calcLocation(event);
+
+ //TODO: Add command-click on nothing to pan view?
  if (isEditable())
  {
   bool prevSelectionActive = selectionActive;
   selectionActive = false;
   leToolBarPanel->xLabel->setText(QString("%1").arg(xLoc));
   leToolBarPanel->yLabel->setText(QString("%1").arg(yLoc));
-  if (/*event.isPopupTrigger()*/ bPopupTrigger && !bShift)
+
+  if (/*event.isPopupTrigger()*/ bPopupTrigger)
   {
 //   if (event.isMetaDown() || event.isAltDown())
    if(bMeta || bAlt)
@@ -912,7 +830,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
     showEditPopUps(event);
    }
   }
-  if (bMeta || (!bAlt && !bShift))
+  if (bMeta || /*(!bAlt && !bShift)*/ bAlt)
   {
    //if dragging an item, identify the item for mouseDragging
    selectedObject = nullptr;
@@ -931,13 +849,15 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
     if (selectedObject != nullptr)
     {
      selectedHitPointType = LayoutTrack::MARKER;
-     //startDelta.setLocation(MathUtil.subtract(((LocoIcon) selectedObject).getLocation(), dLoc));
-     startDelta= QPointF((((LocoIcon*)selectedObject)->x()-dLoc.y()),(((LocoIcon*)selectedObject)->y()-dLoc.y()));       } else {
+     startDelta = MathUtil::subtract(((LocoIcon*) selectedObject)->getLocation(), dLoc);
+    }
+    else
+    {
      selectedObject = checkClockPopUps(dLoc);
      if (selectedObject != nullptr)
      {
       selectedHitPointType = LayoutTrack::LAYOUT_POS_JCOMP;
-      startDelta = QPointF(MathUtil::subtract(((PositionableJComponent*) selectedObject)->getLocation(), dLoc));
+      startDelta = (MathUtil::subtract(((PositionableJComponent*) selectedObject)->getLocation(), dLoc));
      }
      else
      {
@@ -945,10 +865,10 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
       if (selectedObject != nullptr)
       {
        selectedHitPointType = LayoutTrack::MULTI_SENSOR;
-       startDelta= QPointF((((MultiSensorIcon*)selectedObject)->x()-dLoc.y()), (((MultiSensorIcon*)selectedObject)->x()-dLoc.y()));               }
+       startDelta = (MathUtil::subtract(((MultiSensorIcon*) selectedObject)->getLocation(), dLoc));
       }
      }
-
+    }
      if (selectedObject == nullptr)
      {
       selectedObject = checkSensorIconPopUps(dLoc);
@@ -967,7 +887,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
      if (selectedObject != nullptr)
      {
       selectedHitPointType = LayoutTrack::LAYOUT_POS_LABEL;
-      startDelta = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),(((PositionableLabel*)selectedObject)->getY()-dLoc.y()));               //if (selectedObject instanceof MemoryIcon)
+      startDelta = (MathUtil::subtract(((PositionableLabel*) selectedObject)->getLocation(), dLoc));
       if(qobject_cast<LEMemoryIcon*>(selectedObject))
       {
        LEMemoryIcon* pm = (LEMemoryIcon*) selectedObject;
@@ -978,6 +898,12 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
                 (pm->getOriginalY() - dLoc.y()));
        }
       }
+      // ACK added
+      if (!_positionableSelection->contains((Positionable*)selectedObject))
+      {
+          _positionableSelection->append((Positionable*)selectedObject);
+      }
+
      }
      else
      {
@@ -986,8 +912,9 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
       if (selectedObject != nullptr)
       {
        selectedHitPointType = LayoutTrack::LAYOUT_POS_LABEL;
-       startDelta = QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
-                                 (((PositionableLabel*)selectedObject)->getY()-dLoc.y())); } else {
+       startDelta = (MathUtil::subtract(((PositionableLabel*) selectedObject)->getLocation(), dLoc));
+
+      } else {
        //dragging a shape?
        QListIterator<LayoutShape*> listIterator(*layoutShapes);// = layoutShapes.listIterator(layoutShapes.size());
        listIterator.toBack();
@@ -1027,8 +954,24 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
    }
    else
    {
-    foundTrack = nullptr;
+    //TODO: auto-add anchor point?
     beginTrack = nullptr;
+   }
+  }
+  else if (bShift && leToolBarPanel->shapeButton->isChecked() && !bPopupTrigger)
+  {
+   //adding or extending a shape
+   selectedObject = nullptr;  // assume we're adding...
+   for (LayoutShape* ls : *layoutShapes)
+   {
+       selectedHitPointType = ls->findHitPointType(dLoc, true);
+       if (LayoutShape::isShapePointOffsetHitPointType(selectedHitPointType)) {
+           //log.warn("extend selectedObject: ", lt);
+           selectedObject = ls;    // nope, we're extending
+           beginLocation = dLoc;
+           currentLocation = beginLocation;
+           break;
+       }
    }
   }
   else if ( (!bShift) && (!bControl) /*&& (!event.isPopupTrigger())*/ && !bPopupTrigger)
@@ -1049,16 +992,16 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
   if (prevSelectionActive) /*repaint();*/
    paintTargetPanel(editScene);
  } // isEditable
- else if (allControlling() && /*(!event.isMetaDown()) && (!event.isPopupTrigger()) &&*/
-          (!(event->modifiers()&Qt::AltModifier)) &&(!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
+ else if (allControlling()
+          && !bMeta && !bPopupTrigger
+          && !bAlt && !bShift && !bControl)
  {
   // not in edit mode - check if mouse is on a turnout (using wider search range)
   selectedObject = nullptr;
   checkControls(true);
  }
- else if ( (/*event.isMetaDown() ||*/ /*event.isAltDown()*/event->modifiers()&Qt::AltModifier) &&
-               (!(/*event.isShiftDown()*/event->modifiers()&Qt::ShiftModifier)) && (!(/*event.isControlDown()*/event->modifiers()&Qt::ControlModifier)) )
- {
+ else if ((bMeta || bAlt)
+                && !bShift && !bControl) {
   // not in edit mode - check if moving a marker if there are any
   selectedObject = checkMarkers(dLoc);
   if (selectedObject!=nullptr)
@@ -1069,27 +1012,21 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
    //selectedNeedsConnect = false;
   }
  }
- else if ( /*event.isPopupTrigger() && */!/*event.isShiftDown()*/(event->modifiers()&Qt::ShiftModifier) )
+ else if (bPopupTrigger&& !bShift)
  {
   // not in edit mode - check if a marker popup menu is being requested
   LocoIcon* lo = checkMarkers(dLoc);
-  if (lo!=nullptr) delayedPopupTrigger = true;
+  if (lo!=nullptr)
+   delayedPopupTrigger = true;
  }
  if (/*!event.isPopupTrigger() &&*/ !isDragging)
  {
   QList <Positionable*> selections = getSelectedItems(event);
   if (selections.size() > 0)
   {
-//   if(static_cast<SignalHeadIcon*>(selections.at(0))!=  nullptr)
-//    ((SignalHeadIcon*)selections.at(0))->doMousePressed(event);
-//   else
-//   if(qobject_cast<SensorIcon*>(selection->self()s.at(0))!=  nullptr)
-//    ((SensorIcon*)selections.at(0))->doMousePressed(event);
-//   else
    selections.at(0)->doMousePressed(event);
   }
  }
- //thisPanel.setFocusable(true);
  //thisPanel.requestFocusInWindow();
  return;
 }
@@ -1134,11 +1071,11 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
 
     foundTrack = nullptr;
     foundHitPointType = LayoutTrack::NONE;
-#if 1
+
     Optional<LayoutTrack*> opt;// = layoutTrackList.stream().filter(layoutTrack ->
     for(LayoutTrack* layoutTrack : *layoutTrackList)
     {
-        if ((layoutTrack != avoid) && (layoutTrack != selectedObject)) {
+        if ((layoutTrack != avoid) && (layoutTrack != selectedObject))
             foundHitPointType = layoutTrack->findHitPointType(loc, false, requireUnconnected);
 
 //        return (LayoutTrack::NONE != foundPointType);
@@ -1147,9 +1084,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
          foundTrack = layoutTrack;
          break;
         }
-      }
     }//).findFirst();
-    //opt.findFirst();
 
     LayoutTrack* layoutTrack = foundTrack;
 //    if (opt.isPresent()) {
@@ -1161,7 +1096,6 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
         //foundNeedsConnect = layoutTrack->isDisconnected(foundTrack);
         result = true;
     }
-#endif
     return result;
 }
 
@@ -1341,124 +1275,123 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
 // mouse pressed and released.
 /*public*/ void LayoutEditor::mouseClicked(QGraphicsSceneMouseEvent* event)
 {
- Qt::MouseButtons buttons = event->buttons();
- Q_UNUSED(buttons);
- if ( /*(!event.isMetaDown()) &&*/ (!((event->buttons()&Qt::RightButton)==Qt::RightButton )) && !(event->modifiers()&Qt::AltModifier) &&
-                    /*(!awaitingIconChange) && */(!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
+ bool bMeta = event->modifiers()&Qt::MetaModifier;
+ bool bAlt = event->modifiers()&Qt::AltModifier;
+ bool bShift =  event->modifiers()&Qt::ShiftModifier;
+ bool bPopupTrigger = event->button() & Qt::RightButton;
+ bool bControl = event->modifiers()&Qt::ControlModifier;
+
+ //initialize mouse position
+ calcLocation(event);
+
+ // if alt modifier is down invert the snap to grid behaviour
+ snapToGridInvert = bAlt;
+
+ if (!bMeta && !bPopupTrigger && !bAlt
+                 && !awaitingIconChange && !bShift && !bControl)
  {
-  calcLocation(event->scenePos(), 0, 0);
   QList <Positionable*> selections = getSelectedItems(event);
   if (selections.size() > 0)
-  { // don't think this cast is needed as long as doMouseClicked is public
-//   if(qobject_cast<SensorIcon*>(selections.at(0))!= nullptr)
-//    ((SensorIcon*)selections.at(0))->doMouseClicked(event);
-//   else
-   //((PositionableLabel*)selections.at(0))->doMouseClicked(event);
+  {
    selections.at(0)->doMouseClicked(event);
   }
  }
- else if ( (event->buttons()&Qt::RightButton/*==Qt::RightButton*/ ) /*&& whenReleased != event.getWhen()*/)
+ else if (bPopupTrigger && (whenReleased != QDateTime::currentMSecsSinceEpoch()))
  {
-  calcLocation(event->scenePos(), 0, 0);
-  if (isEditable())
-  {
-   selectedObject = nullptr;
-   selectedHitPointType = NONE;
-   showEditPopUps(event);
-  }
-  else
-  {
-   LocoIcon* lo = checkMarkers(dLoc);
-   if (lo!=nullptr) showPopUp((Positionable*)lo, event);
-  }
+   if (isEditable())
+   {
+    selectedObject = nullptr;
+    selectedHitPointType = LayoutTrack::NONE;
+    showEditPopUps(event);
+   } else {
+    LocoIcon* lo = checkMarkerPopUps(dLoc);
+
+    if (lo != nullptr) {
+        showPopUp(lo, event);
+    }
+   }
  }
- if ((event->modifiers()&Qt::ControlModifier) /*&&*/ /*!event.isPopupTrigger()*/)
+ if (bControl && !bPopupTrigger)
  {
   if (findLayoutTracksHitPoint(dLoc))
   {
    // show popup menu
    switch (foundHitPointType)
    {
-    case POS_POINT:
-        amendSelectionGroup((PositionablePoint*)foundTrack);
-        break;
-    case TURNOUT_CENTER:
-        amendSelectionGroup((LayoutTurnout*)foundTrack);
-        break;
-    case LEVEL_XING_CENTER:
-        amendSelectionGroup((LevelXing*)foundTrack);
-        break;
-    case SLIP_CENTER:
-        amendSelectionGroup((LayoutSlip*)foundTrack);
-        break;
-    case TURNTABLE_CENTER:
-        amendSelectionGroup((LayoutTurntable*)foundTrack);
-        break;
-    default: break;
+   case LayoutTrack::POS_POINT:
+   case LayoutTrack::TURNOUT_CENTER:
+   case LayoutTrack::LEVEL_XING_CENTER:
+   case LayoutTrack::SLIP_LEFT:
+   case LayoutTrack::SLIP_RIGHT:
+   case LayoutTrack::TURNTABLE_CENTER: {
+       amendSelectionGroup(foundTrack);
+       break;
+   }
+   default: {
+    break;
    }
   }
-  else
-  {
-
+ }
+ else
+ {
    PositionableLabel* s = checkSensorIconPopUps(dLoc);
    if (s!=nullptr)
    {
-    amendSelectionGroup((Positionable*)s);
+    amendSelectionGroup(s);
    }
-
    else
    {
     PositionableLabel* sh = checkSignalHeadIconPopUps(dLoc);
     if (sh!=nullptr)
     {
-     amendSelectionGroup((Positionable*)sh);
+     amendSelectionGroup(sh);
     }
     else
     {
      PositionableLabel* ms = checkMultiSensorPopUps(dLoc);
      if (ms!=nullptr)
      {
-      amendSelectionGroup((Positionable*)ms);
+      amendSelectionGroup(ms);
      }
      else
      {
       PositionableLabel* lb = checkLabelImagePopUps(dLoc);
       if (lb!=nullptr)
       {
-       amendSelectionGroup((Positionable*)lb);
+       amendSelectionGroup(lb);
       }
-//      else
-//      {
-//       PositionableLabel* b = checkBackgrounds(dLoc);
-//       if (b!=nullptr)
-//       {
-//        amendSelectionGroup(b);
-//       }
+      else
+      {
+       PositionableLabel* b = checkBackgroundPopUps(dLoc);
+       if (b!=nullptr)
+       {
+        amendSelectionGroup(b);
+       }
        else
        {
         PositionableLabel* sm = checkSignalMastIconPopUps(dLoc);
         if (sm!=nullptr)
         {
-         amendSelectionGroup((Positionable*)sm);
+         amendSelectionGroup(sm);
         }
-        else {
+        else
+        {
          LayoutShape* ls = checkLayoutShapePopUps(dLoc);
          if (ls != nullptr) {
              amendSelectionGroup(ls);
          }
-     }
+        }
        }
-//      }
+      }
      }
     }
    }
   }
  }
- else if(selectionWidth==0 || selectionHeight==0)
+ else if((selectionWidth==0) || (selectionHeight == 0))
  {
   clearSelectionGroups();
  }
- //thisPanel.setFocusable(true);
  //thisPanel.requestFocusInWindow();
  return;
 }
@@ -1504,9 +1437,6 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
     }
     break;
    }
-
-
-
   default:
   {
    if (foundHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET)
@@ -1869,11 +1799,12 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
  bool isAltDown = event->modifiers()&Qt::AltModifier;
  bool isMetaDown = event->modifiers()&Qt::MetaModifier;
  bool bShift =  event->modifiers()&Qt::ShiftModifier;
+ bool bPopupTrigger = event->button() & Qt::RightButton;
 
  //super.setToolTip(nullptr);
 
  // initialize mouse position
- calcLocation(event->scenePos(), 0, 0);
+ calcLocation(event);
 
  // if alt modifier is down invert the snap to grid behaviour
  snapToGridInvert = isAltDown;
@@ -1883,23 +1814,18 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
   leToolBarPanel->xLabel->setText(QString("%1").arg(xLoc));
   leToolBarPanel->yLabel->setText(QString("%1").arg(yLoc));
 
-  // !ALT and SHIFT_DOWN
-  Qt::KeyboardModifiers k = event->modifiers();
-  Q_UNUSED(k)
-  if(delayedPopupTrigger && bShift)
-   delayedPopupTrigger = false;
-
   // released the mouse with shift down... see what we're adding
-  if (/*(!event.isPopupTrigger()) && (!event.isMetaDown()) &&*/ !delayedPopupTrigger && !isMetaDown && (!isAltDown) && bShift)
+  if (!bPopupTrigger && !isMetaDown && bShift)
   {
    currentPoint = QPointF(xLoc, yLoc);
+
    if (snapToGridOnAdd)
    {
-    xLoc = ((xLoc+4)/10)*10;
-    yLoc = ((yLoc+4)/10)*10;
-    //currentPoint.setLocation(xLoc,yLoc);
-    currentPoint.setX(xLoc);
-    currentPoint.setY(yLoc);
+    currentPoint = MathUtil::granulize(currentPoint, gridSize1st);
+    xLoc = (int) currentPoint.x();
+    yLoc = (int) currentPoint.y();
+    leToolBarPanel->xLabel->setText(QString::number(xLoc));
+    leToolBarPanel->yLabel->setText(QString::number(yLoc));
    }
    if (leToolBarPanel->turnoutRHButton->isChecked())
    {
@@ -2010,15 +1936,13 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
    //repaint();
    redrawPanel();
   }
-  else if ( (/*event->isPopupTrigger() ||*/ delayedPopupTrigger)  && !isDragging)
+  else if ( (bPopupTrigger || delayedPopupTrigger)  && !isDragging)
   {
    selectedObject = nullptr;
    selectedHitPointType = LayoutTrack::NONE;
-   //whenReleased = event->timestamp();
+   whenReleased = QDateTime::currentMSecsSinceEpoch();
    showEditPopUps(event);
-   delayedPopupTrigger = false;
   }
-   // check if controlling turnouts
   else if ( ( selectedObject!=nullptr) && (selectedHitPointType==TURNOUT_CENTER)
              && allControlling() /*&& (!(event->modifiers()&Qt::ControlModifier))*/ /*&& (!(event->modifiers()&Qt::AltModifier)) *//*&& (!event.isPopupTrigger())*/
              && (!(event->modifiers()&Qt::ShiftModifier))
@@ -2075,15 +1999,14 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
     //repaint();
     paintTargetPanel(editScene);
    }
-
    createSelectionGroups();
   }
   // check if controlling turnouts out of edit mode
-  else if ( ( selectedObject!=nullptr) && (selectedHitPointType==TURNOUT_CENTER) /*&&
-            allControlling() && (!event.isMetaDown())*/ && (!(event->modifiers()&Qt::AltModifier)) /*&& (!event.isPopupTrigger()) */&&
-                (!(event->modifiers()&Qt::ShiftModifier)) && (!delayedPopupTrigger) )
+  else if ( ( selectedObject!=nullptr) && (selectedHitPointType==TURNOUT_CENTER)
+            && allControlling() && !isMetaDown && !isAltDown
+            && !bShift && !delayedPopupTrigger )
   {
-   // controlling layout, not in edit mode
+   // controlling layout, out of edit mode
    LayoutTurnout* t = (LayoutTurnout*)selectedObject;
    t->toggleTurnout();
   }
@@ -2151,8 +2074,6 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
        {
         showPopUp((Positionable*)im, event);
        }
-//       }
-//      }
     }
    }
 
@@ -2161,8 +2082,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
     QList <Positionable*> selections = getSelectedItems(event);
     if (selections.size() > 0)
     {
-       ((PositionableLabel*)selections.at(0))->doMouseReleased(event);
-//            whenReleased = event->getWhen();
+     selections.at(0)->doMouseReleased(event);
     }
    }
    if (selectedObject!=nullptr)
@@ -2173,7 +2093,6 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
    }
    isDragging = false;
    delayedPopupTrigger = false;
-//    thisPanel.requestFocusInWindow();
    return;
   }
  }
@@ -2190,7 +2109,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
    else if (foundHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
        LayoutTurntable* t = (LayoutTurntable*) foundTrack;
        if (t->isTurnoutControlled()) {
-           ((LayoutTurntable*) foundHitPointType)->showRayPopUp(event, foundHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
+           ((LayoutTurntable*) foundTrack)->showRayPopUp(event, foundHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
        }
    }
    else if (LayoutTrack::isPopupHitType(foundHitPointType)) {
@@ -2279,20 +2198,19 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
 //      return; //component must be showing on the screen to determine its location
 //  }
   QMenu* popup = new QMenu();
-#if 1
-
-  if (p->isEditable()) {
+  if (p->isEditable())
+  {
       QAction* jmi = nullptr;
-      if (showAlignPopup()) {
+      if (showAlignPopup())
+      {
           setShowAlignmentMenu(popup);
-//          popup.add(new AbstractAction(Bundle.getMessage("ButtonDelete")) {
+          popup->addAction(jmi =new QAction(tr("Delete"),this));
+//          {
 //              @Override
 //              public void actionPerformed(ActionEvent event) {
-//                  deleteSelectedItems();
-//              }
-//          });
-          AbstractAction* act = new AbstractAction(tr("Delete"), this);
-          connect(act, SIGNAL(triggered(bool)), this, SLOT(deleteSelectedItems()));
+          connect(jmi, &QAction::triggered, [=]{
+                  deleteSelectedItems();
+          });
       }
       else
       {
@@ -2368,14 +2286,114 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
 //          p.getHeight() / 2 + (int) ((getZoom() - 1.0) * p.getY()));
   popup->exec(QCursor::pos());
   /*popup.show((Component)pt, event.getX(), event.getY());*/
-#endif
 }
+
+/*private*/ double LayoutEditor::returnDeltaPositionX(/*@Nonnull*/ QKeyEvent* event) {
+    double result = 0.0;
+    double amount = /*event->isShiftDown()*/event->modifiers()&Qt::ShiftModifier ? 5.0 : 1.0;
+
+    switch (event->key()) {
+        case Qt::Key_Left: {
+            result = -amount;
+            break;
+        }
+
+        case Qt::Key_Right: {
+            result = +amount;
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+    return result;
+}
+
+/*private*/ double LayoutEditor::returnDeltaPositionY(/*@Nonnull*/ QKeyEvent* event) {
+    double result = 0.0;
+    double amount = /*event->isShiftDown()*/event->modifiers()&Qt::ShiftModifier ? 5.0 : 1.0;
+
+    switch (event->key()) {
+        case Qt::Key_Up: {
+            result = -amount;
+            break;
+        }
+
+        case Qt::Key_Down: {
+            result = +amount;
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+    return result;
+}
+
+
+/*public*/ void LayoutEditor::mouseMoved(QGraphicsSceneMouseEvent* event)
+{
+ bool bMeta = event->modifiers()&Qt::MetaModifier;
+ bool bAlt = event->modifiers()&Qt::AltModifier;
+ bool bShift =  event->modifiers()&Qt::ShiftModifier;
+ bool bPopupTrigger = event->button() & Qt::RightButton;
+ bool bControl = event->modifiers()&Qt::ControlModifier;
+
+ calcLocation(event);
+
+ // if alt modifier is down invert the snap to grid behaviour
+ snapToGridInvert = /*event.isAltDown()*/ bAlt;
+
+ if (isEditable())
+ {
+  leToolBarPanel->xLabel->setText(QString::number(xLoc));
+  leToolBarPanel->yLabel->setText(QString::number(yLoc));
+ }
+ QList <Positionable*> selections = getSelectedItems(event);
+ Positionable* selection = nullptr;
+ int numSel = selections.size();
+
+ if (numSel > 0)
+ {
+  selection = selections.at(0);
+ }
+
+// if (selection!=nullptr && selection.getDisplayLevel()>BKG && selection.showTooltip())
+// {
+//  showToolTip(selection, event);
+// }
+// else
+// {
+//  super.setToolTip(nullptr);
+// }
+
+ if (numSel != _prevNumSel)
+ {
+     redrawPanel();
+     _prevNumSel = numSel;
+ }
+} // mouseMoved
+
+//@Override
 /*public*/ void LayoutEditor::mouseDragged(QGraphicsSceneMouseEvent* event)
 {
+ bool bMeta = event->modifiers()&Qt::MetaModifier;
+ bool bAlt = event->modifiers()&Qt::AltModifier;
+ bool bShift =  event->modifiers()&Qt::ShiftModifier;
+ bool bPopupTrigger = event->button() & Qt::RightButton;
+ bool bControl = event->modifiers()&Qt::ControlModifier;
+
  // initialize mouse position
- calcLocation(event->scenePos(), 0, 0);
+ calcLocation(event);
+
  // ignore this event if still at the original point
- if ((!isDragging) && (xLoc == getAnchorX()) && (yLoc==getAnchorY())) return;
+ if ((!isDragging) && (xLoc == getAnchorX()) && (yLoc==getAnchorY()))
+  return;
+
+ // if alt modifier is down invert the snap to grid behaviour
+ snapToGridInvert = /*event.isAltDown()*/ bAlt;
 
  // process this mouse dragged event
  if (isEditable())
@@ -2383,42 +2401,41 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
   leToolBarPanel->xLabel->setText(QString("%1").arg(xLoc));
   leToolBarPanel->yLabel->setText(QString("%1").arg(yLoc));
  }
- QPointF newPos = currentPoint = QPointF(dLoc.x() + startDelta.y(), dLoc.y() + startDelta.y());
+ currentPoint = MathUtil::add(dLoc, startDelta);
  //don't allow negative placement, objects could become unreachable
  currentPoint = MathUtil::max(currentPoint, MathUtil::zeroPoint2D);
 
- if ((selectedObject!=nullptr) && (/*event.isMetaDown() ||*/ ((event->modifiers()&Qt::MetaModifier)!=0) || (selectedHitPointType==MARKER)))
-  {
+ if ((selectedObject != nullptr) && ((bMeta || bAlt)
+                                   && (selectedHitPointType==MARKER)))
+ {
    // marker moves regardless of editMode or positionable
    PositionableLabel* pl = (PositionableLabel*)selectedObject;
-   int xint = (int)newPos.x();
-   int yint = (int)newPos.y();
-   // don't allow negative placement, object could become unreachable
-   if (xint<0) xint = 0;
-   if (yint<0) yint = 0;
-   ((Positionable*)pl)->setLocation(xint, yint);
+   pl->setLocation((int)currentPoint.x(), (int)currentPoint.y());
    isDragging = true;
    //repaint();
    pl->updateScene();
-   paintTargetPanel(editScene);
+   //paintTargetPanel(editScene);
+   pl->paint(editScene);
    return;
   }
 
   if (isEditable())
   {
-   if ((selectedObject!=nullptr) && (/*event.isMetaDown() ||*/ !(event->modifiers()&Qt::AltModifier))|| allPositionable())
+   if ((selectedObject != nullptr) /*&& bMeta*/ && allPositionable())
    {
-    // moving a point
-    if (snapToGridOnMove)
+    if (snapToGridOnMove != snapToGridInvert)
     {
-     int xx = (((int)newPos.x()+4)/10)*10;
-     int yy = (((int)newPos.y()+4)/10)*10;
-     //newPos.setLocation(xx,yy);
-     newPos.setX(xx);
-     newPos.setY(yy);
+      // this snaps currentPoint to the grid
+      currentPoint = MathUtil::granulize(currentPoint, gridSize1st);
+      xLoc = (int) currentPoint.x();
+      yLoc = (int) currentPoint.y();
+      leToolBarPanel->xLabel->setText(QString::number(xLoc));
+      leToolBarPanel->yLabel->setText(QString::number(yLoc));
     }
+
     if ((_positionableSelection && _positionableSelection->size() > 0)
-           || (_layoutTrackSelection.size() > 0) || (_layoutShapeSelection.size() > 0))
+        || (_layoutTrackSelection.size() > 0)
+        || (_layoutShapeSelection.size() > 0))
     {
        QPointF lastPoint = QPointF(_lastX, _lastY);
        QPointF offset = MathUtil::subtract(currentPoint, lastPoint);
@@ -2435,7 +2452,8 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
            //don't allow negative placement, objects could become unreachable
            newPoint = MathUtil::max(newPoint, MathUtil::zeroPoint2D);
            //c.setLocation(MathUtil.point2DToPoint(newPoint));
-           c->setLocation(newPoint);
+           ((PositionableLabel*)c->self())->setLocation((int)currentPoint.x(), (int)currentPoint.y());
+           ((PositionableLabel*)c->self())->updateScene();
        }
 
        for (LayoutTrack* lt : _layoutTrackSelection) {
@@ -2610,7 +2628,9 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
        }
    }
   }
-  else if ( (beginTrack!=nullptr) && event->modifiers()&Qt::ShiftModifier && leToolBarPanel->trackButton->isChecked() )
+  else if ( (beginTrack!=nullptr)
+            && bShift
+            && leToolBarPanel->trackButton->isChecked() )
   {
    // dragging from first end of Track Segment
    currentLocation= QPointF(xLoc,yLoc);
@@ -2628,7 +2648,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
    //repaint();
    paintTargetPanel(editScene);
   }
-  else if ( selectionActive && (!event->modifiers()&Qt::ShiftModifier) && (!event->modifiers()&Qt::AltModifier) /*&& (!event.isMetaDown())*/ )
+  else if ( selectionActive && (!bShift) && (!bAlt) /*&& (!event.isMetaDown())*/ )
   {
    selectionWidth = xLoc - selectionX;
    selectionHeight = yLoc - selectionY;
@@ -2636,79 +2656,18 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* e)
    paintTargetPanel(editScene);
   }
  }
-  else if (/*event.isShiftDown()*/ (event->modifiers()&Qt::ShiftModifier)
+  else if (/*event.isShiftDown()*/ (bShift)
          && leToolBarPanel->shapeButton->isChecked() && (selectedObject != nullptr)) {
      //dragging from end of shape
      currentLocation = QPointF(xLoc,yLoc);
  }
- else if (selectionActive && !(event->modifiers()&Qt::ShiftModifier) && ((event->modifiers()&Qt::MetaModifier)==0))
+ else if (selectionActive && !(bShift) && (!bMeta))
  {
   QRect r =  QRect(event->scenePos().x(), event->scenePos().y(), 1, 1);
       //((JComponent) event->getSource()).scrollRectToVisible(r);
   Q_UNUSED(r);
- }
+ }  // isEditable
  return;
-}
-
-/*public*/ void LayoutEditor::mouseMoved(QGraphicsSceneMouseEvent* event)
-{
- calcLocation(event->scenePos(), 0, 0);
-// if (isEditable())
-//  {
-//   leToolBarPanel->xLabel->setText(QString::number(xLoc));
-//   leToolBarPanel->yLabel->setText(QString::number(yLoc));
-//  }
- QList <Positionable*> selections = getSelectedItems(event);
- Positionable* selection = nullptr;
- int numSel = selections.size();
- if (numSel > 0)
- {
-  selection = selections.at(0);
- }
-// if (selection!=nullptr && selection.getDisplayLevel()>BKG && selection.showTooltip())
-// {
-//  showToolTip(selection, event);
-// }
-// else
-// {
-//  super.setToolTip(nullptr);
-// }
- if (numSel != _prevNumSel)
- {
-  //repaint();
-  //highLightSelection(editScene);
-  if(highlightRect != nullptr && highlightRect->scene() != 0)
-  {
-   editScene->removeItem(highlightRect);
-  }
-  highlightRect = new QGraphicsItemGroup();
-
-  if(static_cast<PositionableLabel*>(selection) != nullptr)
-  {
-   PositionableLabel* l = (PositionableLabel*)selection;
-   if(l == nullptr || l->_itemGroup == nullptr)
-   {
-   QGraphicsRectItem* item = new QGraphicsRectItem(l->_itemGroup->boundingRect());
-   item->setPen(QPen(QBrush(_highlightColor),1,Qt::SolidLine));
-
-   highlightRect->addToGroup(item);
-   if(highlightRect && highlightRect->scene())
-    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-   editScene->addItem(highlightRect);
-   }
-  }
-  else
-  if(selection != nullptr && qobject_cast<LayoutTurnout*>(selection->self()) != nullptr)
-  {
-   LayoutTurnout* t = (LayoutTurnout*)selection;
-   QGraphicsRectItem* item = new QGraphicsRectItem(t->item->boundingRect());
-   highlightRect->addToGroup(item);
-   if(highlightRect && highlightRect->scene())
-    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-   editScene->addItem(highlightRect);
-  }
-  _prevNumSel = numSel;
- }
 }
 
 bool LayoutEditor::isEditable() {return bIsEditable;}
@@ -3472,7 +3431,7 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
    SensorIcon* si;
    LocoIcon* li;
    LEMemoryIcon* mi;
-   if((si = static_cast<SensorIcon*>(c))!=nullptr)
+   if((si = static_cast<SensorIcon*>(c->self()))!=nullptr)
     item = new QGraphicsRectItem(QRectF(si->getX(), si->getY(), si->maxWidth(), si->maxHeight()));
    else if((li = static_cast<LocoIcon*>(c))!=nullptr)
     item = new QGraphicsRectItem(QRectF(li->getX(), li->getY(), li->maxWidth(), li->maxHeight()));
@@ -3581,14 +3540,16 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 /*private*/ void LayoutEditor::createSelectionGroups()
 {
   QList <Positionable*> contents = getContents();
-  QRectF selectionRect(selectionX, selectionY, selectionWidth, selectionHeight);
+  QRectF selectionRect = getSelectionRect();
   for (Positionable* o : contents)
   {
-     if (selectionRect.contains(o->getLocation())) {
-         if (!_positionableSelection->contains(o)) {
-             _positionableSelection->append(o);
-         }
-     }
+   if (selectionRect.contains(o->getLocation()))
+   {
+    if (!_positionableSelection->contains(o))
+    {
+        _positionableSelection->append(o);
+    }
+   }
  }
 
  for (LayoutTrack* lt : *layoutTrackList) {
@@ -3614,20 +3575,14 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 }
 
 
-/*private*/ void LayoutEditor::clearSelectionGroups(){
-//  _pointSelection=nullptr;
-//  _turntableSelection=nullptr;
-//  _xingSelection=nullptr;
-//  _slipSelection=nullptr;
-//  _turnoutSelection=nullptr;
-
+/*public*/ void LayoutEditor::clearSelectionGroups(){
   selectionActive = false;
   _positionableSelection->clear();
   _layoutTrackSelection.clear();
   assignBlockToSelectionMenuItem->setEnabled(false);
   _layoutShapeSelection.clear();
-  //_labelSelection=nullptr;
 }
+
 /**
 * Return a List of all items whose bounding rectangle contain the mouse position.
 * ordered from top level to bottom
@@ -3645,19 +3600,20 @@ LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot
 //            	continue;
 //            }
 
-   rect= ((PositionableLabel*)p)->getBounds();
+   //rect= ((PositionableLabel*)p)->getBounds();
+   rect = p->getBounds();
    //if (_debug && !_dragging) log->debug("getSelectedItems: rect= ("+rect.x+","+rect.y+
    //                      ") width= "+rect.width+", height= "+rect.height+
    //                                    " isPositionable= "+p.isPositionable());
    QRectF rect2D(rect.x()*_paintScale, rect.y()*_paintScale, rect.width()*_paintScale,                                                        rect.height()*_paintScale);
-   if (rect2D.contains(x, y) && (((PositionableLabel*)p)->getDisplayLevel()>BKG || event->modifiers()&Qt::ControlModifier))
+   if (rect2D.contains(x, y) && (p->getDisplayLevel()>BKG || event->modifiers()&Qt::ControlModifier))
    {
     //qDebug() << tr("rect %1,%2,%3,%4 contains %5,%6").arg(rect2D.x()).arg(rect2D.y()).arg(rect2D.width()).arg(rect2D.height()).arg(x).arg(y);
     bool added =false;
-    int level = ((PositionableLabel*)p)->getDisplayLevel();
+    int level = p->getDisplayLevel();
     for (int k=0; k<selections->size(); k++)
     {
-     if (level >= ((PositionableLabel*)selections->at(k))->getDisplayLevel())
+     if (level >= selections->at(k)->getDisplayLevel())
      {
       selections->insert(k, p);
       added = true;       // OK to lie in the case of background icon
@@ -3873,37 +3829,50 @@ bool LayoutEditor::isDirty() {return bDirty;}
 {
  return _contents->toList();
 }
+
 // accessor routines for turnout size parameters
 /*public*/ void LayoutEditor::setTurnoutBX(double bx) {
   turnoutBX = bx;
   setDirty(true);
 }
+
 /*public*/ double LayoutEditor::getTurnoutBX() {return turnoutBX;}
+
 /*public*/ void LayoutEditor::setTurnoutCX(double cx) {
   turnoutCX = cx;
   setDirty(true);
 }
+
 /*public*/ double LayoutEditor::getTurnoutCX() {return turnoutCX;}
+
 /*public*/ void LayoutEditor::setTurnoutWid(double wid) {
   turnoutWid = wid;
   setDirty(true);
 }
+
 /*public*/ double LayoutEditor::getTurnoutWid() {return turnoutWid;}
+
 /*public*/ void LayoutEditor::setXOverLong(double lg) {
   xOverLong = lg;
   setDirty(true);
 }
+
 /*public*/ double LayoutEditor::getXOverLong() {return xOverLong;}
+
 /*public*/ void LayoutEditor::setXOverHWid(double hwid) {
   xOverHWid =  hwid;
   setDirty(true);
 }
+
 /*public*/ double LayoutEditor::getXOverHWid() {return xOverHWid;}
+
 /*public*/ void LayoutEditor::setXOverShort(double sh) {
   xOverShort =  sh;
   setDirty(true);
 }
+
 /*public*/ double LayoutEditor::getXOverShort() {return xOverShort;}
+
 // reset turnout sizes to program defaults
 /*private*/ void LayoutEditor::resetTurnoutSize() {
   turnoutBX = LayoutTurnout::turnoutBXDefault;
@@ -5660,28 +5629,12 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 
 /*private*/ void LayoutEditor::amendSelectionGroup(Positionable* p)
 {
- if (_positionableSelection==nullptr)
- {
-   _positionableSelection = new QVector <Positionable*>();
+ if (_positionableSelection->contains(p)) {
+     _positionableSelection->removeOne(p);
+ } else {
+     _positionableSelection->append(p);
  }
- bool removed = false;
- for(int i=0; i<_positionableSelection->size();i++)
- {
-  if (_positionableSelection->at(i)==p)
-  {
-   _positionableSelection->remove(i);
-   removed = true;
-   break;
-  }
- }
- if(!removed)
-  _positionableSelection->append(p);
- if (_positionableSelection->isEmpty())
- {
-  _positionableSelection=nullptr;
- }
-  //repaint();
-  paintTargetPanel(editScene);
+ redrawPanel();
 }
 
 /*private*/ void LayoutEditor::amendSelectionGroup(LayoutTurnout* p){
@@ -5839,89 +5792,59 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
  redrawPanel();
 }
 
-/*public*/ void LayoutEditor::on_setAllEditable(bool state)
-{
- setAllEditable(state);
-
- //show/hide the help bar
- if (toolBarSide.getType() == eFLOAT) {
-     if (floatEditHelpPanel != nullptr) {
-         floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
-     }
- }
- else {
-  if(helpBarPanel)
-  {
-     //helpBarPanel->setVisible(isEditable() && getShowHelpBar());
-   bool visible = isEditable() && getShowHelpBar();
-  if(visible)
-  {
-   borderLayout->removeWidget(helpBarPanel);
-   borderLayout->addWidget(helpBarPanel, BorderLayout::South);
-  }
-  else
-   borderLayout->removeWidget(helpBarPanel);
-  }
- }
-
- if (isEditable()) {
-     setAllShowToolTip(tooltipsInEditMode);
-
-     //redo using the "Extra" color to highlight the selected block
-     if (highlightSelectedBlockFlag) {
-         if (!highlightBlockInComboBox(leToolBarPanel->blockIDComboBox)) {
-             highlightBlockInComboBox(leToolBarPanel->blockContentsComboBox);
-         }
-     }
- } else {
-     setAllShowToolTip(tooltipsWithoutEditMode);
-
-     //undo using the "Extra" color to highlight the selected block
-     if (highlightSelectedBlockFlag) {
-         highlightBlock(nullptr);
-     }
- }
- awaitingIconChange = false;
-}
 
 /**
-*  Control whether target panel items are controlling layout items.
-*  Does this by invoke the {@link Positionable#setControlling} function of
-*  each item on the target panel. This also controls the relevant pop-up menu items.
-* @param state true for controlling.
-*/
-/*public*/ void LayoutEditor::on_setTurnoutAnimation(bool state) {
-  if (animationCheckBoxMenuItem->isChecked()!=state) animationCheckBoxMenuItem->setChecked(state);
-  animatingLayout = state;
-  //repaint();
-  paintTargetPanel(editScene);
+ * Control whether target panel items are controlling layout items. Does
+ * this by invoke the {@link Positionable#setControlling} function of each
+ * item on the target panel. This also controls the relevant pop-up menu
+ * items.
+ *
+ * @param state true for controlling.
+ */
+/*public*/ void LayoutEditor::setTurnoutAnimation(bool state) {
+    if (animationCheckBoxMenuItem->isChecked() != state) {
+        animationCheckBoxMenuItem->setChecked(state);
+    }
+
+    if (animatingLayout != state) {
+        animatingLayout = state;
+        redrawPanel();
+    }
 }
 
 /*public*/ bool LayoutEditor::isAnimating() {
   return animatingLayout;
 }
+
 /*public*/ int LayoutEditor::getLayoutWidth() {return panelWidth;}
+
 /*public*/ int LayoutEditor::getLayoutHeight() {return panelHeight;}
+
 /*public*/ int LayoutEditor::getWindowWidth()
 {
  windowWidth = this->size().width();
  windowHeight= this->size().height();
  return windowWidth;
 }
+
 /*public*/ int LayoutEditor::getWindowHeight()
 {
  windowWidth = this->size().width();
  windowHeight= this->size().height();
  return windowHeight;
 }
+
 /*public*/ int LayoutEditor::getUpperLeftX() {return upperLeftX;}
+
 /*public*/ int LayoutEditor::getUpperLeftY() {return upperLeftY;}
+
 /*public*/ bool LayoutEditor::getScroll() {
   // deprecated but kept to allow opening files
   // on version 2.5.1 and earlier
   if (_scrollState==SCROLL_NONE) return false;
   else return true;
 }
+
 /*public*/ int LayoutEditor::setGridSize(int newSize) {
     gridSize1st = newSize;
     return gridSize1st;
@@ -5955,20 +5878,6 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 {
   return _controlLayout;
 }
-void LayoutEditor::on_actionShow_grid_in_edit_mode_toggled(bool bChecked)
-{
- drawGrid = bChecked;
- showGridCheckBoxMenuItem->setChecked(bChecked);
- drawPanelGrid(editScene);
- paintTargetPanel(editScene);
-}
-//void LayoutEditor::on_actionEdit_mode_toggled(bool bState)
-//{
-// bIsEditable = bState;
-// editModeCheckBoxMenuItem->setChecked(bState);
-// drawPanelGrid(editScene);
-// paintTargetPanel(editScene);
-//}
 
 double LayoutEditor::toDegrees(double radians)
 {
@@ -5978,255 +5887,6 @@ double LayoutEditor::toRadians(double degrees)
 {
  return (degrees/180)*M_PI;
 }
-#if 0
-/*private*/ void LayoutEditor::checkPopUp(QGraphicsSceneMouseEvent* event)
-{
- if (checkSelect(dLoc, false))
- {
-  // show popup menu
-  switch (foundPointType)
-  {
-  case POS_POINT:
-      ((PositionablePoint*)foundObject)->showPopUp(event);
-      break;
-  case LAYOUT_POS_LABEL:
-   // TODO:
-      break;
-  case TURNOUT_CENTER:
-      ((LayoutTurnout*)foundObject)->showPopUp(event, isEditable());
-      break;
-  case LEVEL_XING_CENTER:
-     ((LevelXing*)foundObject)->showPopUp(event, isEditable());
-      break;
-  case SLIP_CENTER:
-      ((LayoutSlip*)foundObject)->showPopUp(event, isEditable());
-      break;
-  case TURNTABLE_CENTER:
-      ((LayoutTurntable*)foundObject)->showPopUp(event);
-      break;
-  default: break;
-  }
-  if(foundPointType>=TURNTABLE_RAY_OFFSET)
-  {
-   LayoutTurntable* t = (LayoutTurntable*)foundObject;
-   if(t->isTurnoutControlled())
-   {
-     ((LayoutTurntable*)foundObject)->showRayPopUp(event, foundPointType-TURNTABLE_RAY_OFFSET);
-   }
-  }
- }
- else
- {
-  TrackSegment* tr = checkTrackSegments(dLoc);
-  if (tr!=nullptr)
-  {
-   tr->showPopUp(event);
-  }
-  else
-  {
-   SensorIcon* s = checkSensorIcons(dLoc);
-   if (s!=nullptr)
-   {
-    showPopUp((Positionable*)s, event);
-   }
-   else
-   {
-    LocoIcon* lo = checkMarkers(dLoc);
-    if (lo!=nullptr)
-    {
-     showPopUp((Positionable*)lo, event);
-    }
-    else
-    {
-     SignalHeadIcon* sh = checkSignalHeadIcons(dLoc);
-     if (sh!=nullptr)
-     {
-      showPopUp((Positionable*)sh, event);
-     }
-     else
-     {
-      AnalogClock2Display* c = checkClocks(dLoc);
-      if (c!=nullptr)
-      {
-       showPopUp((Positionable*)c, event);
-      }
-      else
-      {
-       MultiSensorIcon* ms = checkMultiSensors(dLoc);
-       if (ms!=nullptr)
-       {
-        showPopUp((Positionable*)ms, event);
-       }
-       else
-       {
-        PositionableLabel* lb = checkLabelImages(dLoc);
-        if (lb!=nullptr)
-        {
-         showPopUp((Positionable*)lb, event);
-        }
-        else
-        {
-         PositionableLabel* b = checkBackgrounds(dLoc);
-         if (b!=nullptr)
-         {
-          showPopUp((Positionable*)b, event);
-         }
-         else
-         {
-          SignalMastIcon* sm = checkSignalMastIcons(dLoc);
-          if (sm!=nullptr)
-          {
-            showPopUp((Positionable*)sm, event);
-          }
-          else
-          {
-           MemoryIcon* mi = checkMemoryMarkerIcons(dLoc);
-           if(mi != nullptr)
-            showPopUp((Positionable*)mi, event);
-          }
-         }
-        }
-       }
-      }
-     }
-    }
-   }
-  }
- }
-}
-#endif
-#if 0
-/**
-* Select the menu items to display for the Positionable's popup
-*/
-/*protected*/ void LayoutEditor::showPopUp(Positionable* p, QGraphicsSceneMouseEvent* /*event*/)
-{
-// if (!((JComponent)p).isVisible())
-// {
-//      return;     // component must be showing on the screen to determine its location
-// }
- QMenu* popup = new QMenu();
- PositionableLabel* positionableLabel = static_cast<PositionableLabel*>(p);
- Q_ASSERT(positionableLabel != nullptr);
-// SensorIcon* pSensor = qobject_cast<SensorIcon*>(p);
-// LocoIcon* locoIcon = qobject_cast<LocoIcon*>(p);
-// MemoryIcon* memoryIcon = qobject_cast<MemoryIcon*>(p);
-// SignalHeadIcon* signalHeadIcon = qobject_cast<SignalHeadIcon*>(p);
-// SignalMastIcon* signalMastIcon = qobject_cast<SignalMastIcon*>(p);
-// ReporterIcon* rp = qobject_cast<ReporterIcon*>(p);
- if (positionableLabel->isEditable())
- {
-  if(showAlignPopup())
-  {
-   setShowAlignmentMenu(popup);
-   QAction* actRemove = new QAction(tr("Remove"),this);
-   connect(actRemove, SIGNAL(triggered()), this, SLOT(deleteSelectedItems()));
-   popup->addAction(actRemove);
-  }
-  else
-  {
-   if(positionableLabel->doViemMenu())
-   {
-    popup->addAction(new QAction(positionableLabel->getNameString(),this));
-    if (positionableLabel->isPositionable())
-    {
-     setShowCoordinatesMenu(p, popup);
-    }
-    setDisplayLevelMenu(p, popup);
-    setPositionableMenu(p, popup);
-   }
-   bool popupSet =false;
-   popupSet |= ((PositionableLabel*)p)->setRotateOrthogonalMenu(popup);
-   popupSet |= ((PositionableLabel*)p)->setRotateMenu(popup);
-
-   if (popupSet)
-   {
-    popup->addSeparator();
-    popupSet = false;
-   }
-   popupSet = positionableLabel->setEditIconMenu(popup);
-   popupSet = positionableLabel->setTextEditMenu(popup);
-
-   PositionablePopupUtil* util = ((PositionableLabel*)p)->getPopupUtility();
-   if (util!=nullptr)
-   {
-    util->setFixedTextMenu(popup);
-    util->setTextMarginMenu(popup);
-    util->setTextBorderMenu(popup);
-    util->setTextFontMenu(popup);
-    util->setBackgroundMenu(popup);
-    util->setTextJustificationMenu(popup);
-    util->setTextOrientationMenu(popup);
-    popup->addSeparator();
-    util->propertyUtil(popup);
-    util->setAdditionalEditPopUpMenu(popup);
-    popupSet = true;
-   }
-   if (popupSet)
-   {
-    popup->addSeparator();
-    popupSet = false;
-   }
-   ((PositionableLabel*)p)->setDisableControlMenu(popup);
-   setShowAlignmentMenu(popup);
-   positionableLabel->showPopUp(popup);
-    //popup->exec(QCursor::pos());
-   setShowToolTipMenu(p, popup);
-
-   setRemoveMenu(p, popup);
-   if (positionableLabel->doViemMenu())
-   {
-    setHiddenMenu(p, popup);
-   }
-  }
- }
- else
- { // icon is not editable
-  positionableLabel->showPopUp(popup);
-  PositionablePopupUtil* util = positionableLabel->getPopupUtility();
-  if(util!=nullptr)
-   util->setAdditionalViewPopUpMenu(popup);
- }
-#if 0 // TODO:
- popup->show((Component)p, p.getWidth()/2+(int)((getPaintScale()-1.0)*p.getX()),
-              p.getHeight()/2+(int)((getPaintScale()-1.0)*p.getY()));
-  /*popup.show((Component)p, event.getX(), event.getY());*/
-#endif
-//  popup->exec(QPoint(p->getWidth()/2+(int)((getPaintScale()-1.0)*p->getX()),                        p->getHeight()/2+(int)((getPaintScale()-1.0)*p->getY())));
- popup->exec(QCursor::pos());
-}
-
-#endif
-#if 0
-/*private*/ TrackSegment* LayoutEditor::checkTrackSegments(QPointF loc)
-{
- // check Track Segments, if any
- for (TrackSegment* tr : getTrackSegments()) {
-
-  QObject* o = tr->getConnect1();
-  int type = tr->getType1();
-  // get coordinates of first end point
-  QPointF pt1 = getEndCoords(o,type);
-  o = tr->getConnect2();
-  type = tr->getType2();
-  // get coordinates of second end point
-  QPointF pt2 = getEndCoords(o,type);
-  // construct a detection rectangle
-  double cX = (pt1.x() + pt2.x())/2.0;
-  double cY = (pt1.y() + pt2.y())/2.0;
-  QRectF r = QRectF(cX - SIZE2,cY - SIZE2,SIZE2+SIZE2,SIZE2+SIZE2);
-  // Test this detection rectangle
-  if (r.contains(loc))
-  {
-   // mouse was pressed in detection rectangle
-   return tr;
-  }
- }
- return nullptr;
-}
-#endif
-
-
 
 /*public*/ QList<LayoutSlip*> LayoutEditor::getLayoutSlips() {
 //    return getLayoutTracksOfClass("LayoutSlip");
@@ -6390,35 +6050,9 @@ double LayoutEditor::toRadians(double degrees)
 
 /*protected*/ bool LayoutEditor::showAlignPopup()
 {
- if (_positionableSelection!=nullptr)
- {
-  return true;
- }
- else if (_pointSelection!=nullptr)
- {
-  return true;
- }
- else if (_turnoutSelection!=nullptr && !_turnoutSelection->isEmpty())
- {
-     return true;
- }
- #if 1 // TODO:
- else if (_turntableSelection!=nullptr)
- {
-     return true;
- }
- #endif
- else if (_xingSelection!=nullptr)
- {
-     return true;
- }
- else if (_slipSelection!=nullptr && !_slipSelection->isEmpty())
- {
-     return true;
- }
-// else if(_labelSelection !=nullptr)
-//  return true;
- return false;
+ return ((_positionableSelection->size() > 0)
+         || (_layoutTrackSelection.size() > 0)
+         || (_layoutShapeSelection.size() > 0));
 }
 
  /**
@@ -6429,32 +6063,32 @@ double LayoutEditor::toRadians(double degrees)
 {
  if (showAlignPopup())
  {
-  /*JMenu*/QMenu* edit = new /*JMenu*/QMenu(tr("EditAlignment"));
+  /*JMenu*/QMenu* edit = new /*JMenu*/QMenu(tr("Alignment"));
 
 //     edit.add(new AbstractAction(rb.getQString("AlignX")) {
+  QAction* alignXAction = new QAction("Align Vertically to Left Edge",this);
 //         /*public*/ void actionPerformed(ActionEvent e) {
-//             alignSelection(true);
-//         }
-//     });
-  QAction* alignXAction = new QAction("AlignX",this);
-  popup->addAction(alignXAction);
+  connect(alignXAction, &QAction::triggered, [=]{
+    alignSelection(true);
+  });
+  edit->addAction(alignXAction);
 //     edit.add(new AbstractAction(rb.getQString("AlignY")) {
+  QAction* alignYAction = new QAction("Align Horizontally to Top Edge",this);
 //         /*public*/ void actionPerformed(ActionEvent e) {
-//             alignSelection(false);
-//         }
-//     });
-  QAction* alignYAction = new QAction("AlignY",this);
-  popup->addAction(alignYAction);
+  connect(alignYAction, &QAction::triggered, [=]{
+   alignSelection(false);
+  });
+  edit->addAction(alignYAction);
 
   popup->addMenu(edit);
   return true;
  }
  return false;
 }
-#if 0
-@Override
-    public void keyPressed(@Nonnull KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.VK_DELETE) {
+#if 1
+//@Override
+    /*public*/ void LayoutEditor::keyPressEvent(QKeyEvent *event) {
+        if (event->key() == Qt::Key_Delete) {
             deleteSelectedItems();
             return;
         }
@@ -6466,38 +6100,41 @@ double LayoutEditor::toRadians(double degrees)
             selectionX += deltaX;
             selectionY += deltaY;
 
-            Point2D delta = new Point2D.Double(deltaX, deltaY);
-            _positionableSelection.forEach((c) -> {
-                Point2D newPoint = c.getLocation();
-                if ((c instanceof MemoryIcon) && (c.getPopupUtility().getFixedWidth() == 0)) {
-                    MemoryIcon pm = (MemoryIcon) c;
-                    newPoint = new Point2D.Double(pm.getOriginalX(), pm.getOriginalY());
+            QPointF delta = QPointF(deltaX, deltaY);
+            //_positionableSelection.forEach((c) ->
+            foreach(Positionable* c, *_positionableSelection)
+            {
+                QPointF newPoint = c->getLocation();
+                //if ((c instanceof MemoryIcon) && (c.getPopupUtility().getFixedWidth() == 0))
+                if(qobject_cast<LEMemoryIcon*>(c->self()) && c->getPopupUtility()->getFixedWidth()==0)
+                {
+                    LEMemoryIcon* pm = (LEMemoryIcon*) c;
+                    newPoint = QPointF(pm->getOriginalX(), pm->getOriginalY());
                 }
-                newPoint = MathUtil.add(newPoint, delta);
-                newPoint = MathUtil.max(MathUtil.zeroPoint2D, newPoint);
-                c.setLocation(MathUtil.point2DToPoint(newPoint));
-            });
+                newPoint = MathUtil::add(newPoint, delta);
+                newPoint = MathUtil::max(MathUtil::zeroPoint2D, newPoint);
+                c->setLocation(MathUtil::point2DToPoint(newPoint));
+            }//);
 
-            _layoutTrackSelection.forEach((lt) -> {
-                Point2D newPoint = MathUtil.add(lt.getCoordsCenter(), delta);
-                newPoint = MathUtil.max(MathUtil.zeroPoint2D, newPoint);
-                lt.setCoordsCenter(newPoint);
-            });
+            //_layoutTrackSelection.forEach((lt) ->
+            foreach(LayoutTrack*lt, _layoutTrackSelection)
+            {
+                QPointF newPoint = MathUtil::add(lt->getCoordsCenter(), delta);
+                newPoint = MathUtil::max(MathUtil::zeroPoint2D, newPoint);
+                lt->setCoordsCenter(newPoint);
+            }//);
 
-            _layoutShapeSelection.forEach((ls) -> {
-                Point2D newPoint = MathUtil.add(ls.getCoordsCenter(), delta);
-                newPoint = MathUtil.max(MathUtil.zeroPoint2D, newPoint);
-                ls.setCoordsCenter(newPoint);
-            });
+            //_layoutShapeSelection.forEach((ls) -> {
+            foreach(LayoutShape* ls, _layoutShapeSelection)
+            {
+                QPointF newPoint = MathUtil::add(ls->getCoordsCenter(), delta);
+                newPoint = MathUtil::max(MathUtil::zeroPoint2D, newPoint);
+                ls->setCoordsCenter(newPoint);
+            }//);
             redrawPanel();
         }
     }
 #endif
-void LayoutEditor::on_actionEnable_antialiasing_smoother_lines_toggled(bool bChecked)
-{
- antialiasingOn = bChecked;
- paintTargetPanel(editScene);
-}
 
 QGraphicsView* LayoutEditor::panel()
 {
@@ -6730,55 +6367,41 @@ LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
   double w = 10.0;
   double h = 5.0;
   if (s->isIcon() || s->isRotated())
-    {
-     w = s->maxWidth();
-     h = s->maxHeight();
-    }
-    else
-    if (s->isText())
-    {
-     //h = s->getFont().getSize();
-     h = s->getFont().pointSizeF();
-
-     w = (h*2*(s->getText().length()))/3;
-     if(s->getItem() != nullptr)
-     {
-      QPointF pt = s->getItem()->mapFromParent(loc);
-      if(s->getItem()->contains(pt))
-       return s;
-     }
-    }
-    QRectF r =  QRectF(x ,y ,w ,h);
-    // Test this detection rectangle
-    if (r.contains(loc))
-    {
-     // mouse was pressed in label image
-     if (s->getDisplayLevel()>=level)
-     {
-      //Check to make sure that we are returning the highest level label.
-      l = s;
-      level = s->getDisplayLevel();
-     }
-    }
-   }
-   return l;
+  {
+   w = s->maxWidth();
+   h = s->maxHeight();
   }
-#if 0
-/*public*/ PositionableLabel* LayoutEditor::setUpBackground(QString name)
-{
-  NamedIcon* icon = NamedIcon::getIconByName(name);
-  PositionableLabel* l = new PositionableLabel(icon, (Editor*)this);
-  l->setPopupUtility(nullptr);        // no text
-  l->setPositionable(false);
-  l->setShowTooltip(false);
-  l->setSize(icon->getIconWidth(), icon->getIconHeight());
-  l->setDisplayLevel(BKG);
-  l->setLocation(getNextBackgroundLeft(),0);
-  putItem((Positionable*)l);
-  return l;
+  else
+  if (s->isText())
+  {
+   //h = s->getFont().getSize();
+   h = s->getFont().pointSizeF();
+
+   w = (h*2*(s->getText().length()))/3;
+   if(s->getItem() != nullptr)
+   {
+    QPointF pt = s->getItem()->mapFromParent(loc);
+    if(s->getItem()->contains(pt))
+     return s;
+   }
+  }
+  QRectF r =  QRectF(x ,y ,w ,h);
+  // Test this detection rectangle
+  if (r.contains(loc))
+  {
+   // mouse was pressed in label image
+   if (s->getDisplayLevel()>=level)
+   {
+    //Check to make sure that we are returning the highest level label.
+    l = s;
+    level = s->getDisplayLevel();
+   }
+  }
+ }
+ return l;
 }
-#endif
- /**
+
+/**
   * Add a signal head to the Panel
   */
  void LayoutEditor::addSignalHead() {
@@ -6938,36 +6561,36 @@ void LayoutEditor::addLabel()
   ((JLabel*)l)->hide();
  }
  Editor::putItem(l);
- if (static_cast<SensorIcon*>(l)!= nullptr)
+ if (qobject_cast<SensorIcon*>(l->self())!= nullptr)
  {
   sensorImage->append((SensorIcon*)l);
   sensorList->append((SensorIcon*)l);
  }
- else if (static_cast<LocoIcon*>(l)!= nullptr)
+ else if (qobject_cast<LocoIcon*>(l->self())!= nullptr)
  {
   markerImage->append((LocoIcon*)l);
  }
- else if (static_cast<SignalHeadIcon*>(l)!=nullptr)
+ else if (qobject_cast<SignalHeadIcon*>(l->self())!=nullptr)
  {
      signalHeadImage->append((SignalHeadIcon*)l);
      signalList->append((SignalHeadIcon*)l);
  }
- else if (static_cast<SignalMastIcon*>(l)!=nullptr)
+ else if (qobject_cast<SignalMastIcon*>(l->self())!=nullptr)
  {
      signalMastImage->append((SignalMastIcon*)l);
      signalMastList->append((SignalMastIcon*)l);
  }
  else
   //if (l instanceof MemoryIcon*)
- if(static_cast<LEMemoryIcon*>(l)!= nullptr)
+ if(qobject_cast<LEMemoryIcon*>(l->self())!= nullptr)
  {
   memoryLabelList->append((LEMemoryIcon*)l);
  }
- else if (static_cast<AnalogClock2Display*>(l)!=nullptr)
+ else if (qobject_cast<AnalogClock2Display*>(l->self())!=nullptr)
  {
   clocks->append((AnalogClock2Display*)l);
  }
- else if (static_cast<MultiSensorIcon*>(l) != nullptr)
+ else if (qobject_cast<MultiSensorIcon*>(l->self()) != nullptr)
  {
   multiSensors->append((MultiSensorIcon*)l);
  }
@@ -7407,20 +7030,7 @@ void LayoutEditor::on_removeMenuAction_triggered()
   }
   return nullptr;
 }
-//void LayoutEditor::on_actionAdd_loco_triggered()
-//{
-// InputDialog* dlg = new InputDialog("Enter loco id", "0", nullptr, this);
-// if(dlg->exec() == QDialog::Accepted)
-// {
-//  QString nameID= dlg->value();
-//  if(!nameID.isNull())
-//  {
-//   LocoIcon* icon = addLocoIcon(nameID.trimmed());
-//   icon->setLocation(200,100);
-//  }
-// }
-// paintTargetPanel(editScene);
-//}
+
 /**
 * Add a loco marker to the target
 */
@@ -7609,15 +7219,36 @@ void LayoutEditor::on_removeMenuAction_triggered()
     }
 }
 
-//void LayoutEditor::on_actionRemove_markers_triggered()
-//{
-// removeMarkers();
-//}
-void LayoutEditor::on_actionAdd_Turntable_triggered()
-{
- addTurntable(windowCenter());
- setDirty(true);
- repaint();
+/*public*/ bool LayoutEditor::translateTrack(float xDel, float yDel) {
+    QPointF delta = QPointF(xDel, yDel);
+    //layoutTrackList.forEach((lt) ->
+    foreach (LayoutTrack*lt, *layoutTrackList)
+    {
+        lt->setCoordsCenter(MathUtil::add(lt->getCoordsCenter(), delta));
+    }//);
+    resizePanelBounds(true);
+    return true;
+}
+
+/**
+ * scale all LayoutTracks coordinates by the x and y factors
+ *
+ * @param xFactor the amount to scale X coordinates
+ * @param yFactor the amount to scale Y coordinates
+ */
+/*public*/ bool LayoutEditor::scaleTrack(float xFactor, float yFactor) {
+    //layoutTrackList.forEach((lt) -> {
+ foreach (LayoutTrack*lt, *layoutTrackList)
+ {
+     lt->scaleCoords(xFactor, yFactor);
+ }//);
+
+ //update the overall scale factors
+ xScale *= xFactor;
+ yScale *= yFactor;
+
+ resizePanelBounds(true);
+ return true;
 }
 
 /**
@@ -7692,6 +7323,7 @@ void LayoutEditor::addReporter(Reporter* textReporter,int xx,int yy) {
   l->setDisplayLevel(LABELS);
   setDirty(true);
   putItem((Positionable*)l);
+  l->paint(editScene);
 }
 /**
 * Add an icon to the target
@@ -7705,28 +7337,6 @@ void LayoutEditor::addIcon() {
   l->updateSize();
 }
 
-//void LayoutEditor::on_actionAllow_turnout_animation_toggled(bool bChecked)
-//{
-// animatingLayout = bChecked;
-// animationCheckBoxMenuItem->setChecked(bChecked);
-//}
-/**
- *  Control whether panel items are positionable.
- *  Markers are always positionable.
- * @param state true for positionable.
- */
-//void LayoutEditor::on_actionAllow_repositioning_toggled(bool bChecked)
-//{
-// setAllPositionable(bChecked);
-// for (int i = 0; i<markerImage->size(); i++)
-// {
-//  ((PositionableLabel*)markerImage->at(i))->setPositionable(true);
-// }
-//}
-void LayoutEditor::on_actionAllow_layout_control_toggled(bool bChecked)
-{
- setAllControlling(bChecked);
-}
 /**
 *  Control whether target panel items are controlling layout items.
 *  Does this by invoke the {@link Positionable#setControlling} function of
@@ -8062,171 +7672,8 @@ switch(QMessageBox::question(this,tr("Warning"),tr("Are you sure that you want t
  }
  return(false);
 }
-//void LayoutEditor::on_actionShow_turnout_circles_toggled(bool bState)
-//{
-// turnoutCirclesWithoutEditMode = bState;
-// turnoutCirclesOnCheckBoxMenuItem->setChecked(bState);
-// paintTargetPanel(editScene);
-//}
-/**
-* Add a checkbox to set visibility of the Positionable item
-*/
-/*public*/ void LayoutEditor::setHiddenMenu(Positionable* p, QMenu* popup)
-{
-  if (p->getDisplayLevel() == BKG ) {
-      return;
-  }
-//  JCheckBoxMenuItem hideItem = new JCheckBoxMenuItem(tr("SetHidden"));
-//  hideItem->setChecked(p->isHidden());
-//  hideItem.addActionListener(new ActionListener(){
-//      Positionable comp;
-//      JCheckBoxMenuItem checkBox;
-//      /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//          comp.setHidden(checkBox->isChecked());
-//          setSelectionsHidden(checkBox->isChecked(), comp);
-//      }
-//      ActionListener init(Positionable pos, JCheckBoxMenuItem cb) {
-//          comp = pos;
-//          checkBox = cb;
-//          return this;
-//      }
-//  }.init(p, hideItem));
-//  popup.add(hideItem);
-  QAction* hiddenAction = new QAction(tr("Hide when not editing"),this);
-  hiddenAction->setCheckable(true);
-  hiddenAction->setChecked(p->isHidden());
-  connect(hiddenAction, SIGNAL(toggled(bool)), this, SLOT(on_actionHidden_toggled(bool)));
-  popup->addAction(hiddenAction);
-  saveP = p;
-}
-void LayoutEditor::on_actionHidden_toggled(bool bState)
-{
- Positionable* comp =saveP;
- //comp.setHidden(checkBox->isChecked());
- setSelectionsHidden(bState, comp);
-}
-/*protected*/ void LayoutEditor::setSelectionsHidden(bool enabled, Positionable* p)
-{
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
- Q_ASSERT(pl != nullptr);
- if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
- {
-  for (int i=0; i<_selectionGroup->size(); i++)
-  {
-   ((PositionableLabel*)_selectionGroup->at(i))->setHidden(enabled);
-  }
- }
-}
-//void LayoutEditor::on_actionEdit_track_width_triggered()
-//{
-// SetTrackWidthDlg dlg(sidelineTrackWidth, mainlineTrackWidth, this);
-// if(dlg.exec() == QDialog::Accepted)
-// {
-//  sidelineTrackWidth = dlg.sidetrackWidth();
-//  mainlineTrackWidth = dlg.mainlineTrackWidth();
-// }
-//}
 
-///*protected*/ void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color)
-//{
-// QVariant var = color;
-// QAction* act = new QAction( name, this);
-// act->setCheckable(true);
-// if( defaultBackgroundColor == color)
-//  act->setChecked(true);
-// act->setData(var);
-// colorButtonGroup->addAction(act);
-// menu->addAction(act);
-//}
-
-//void LayoutEditor::addBackgroundColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
-//    ActionListener a = new ActionListener() {
-//        //final String desiredName = name;
-//        final Color desiredColor = color;
-
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            if (!defaultBackgroundColor.equals(desiredColor)) {
-//                defaultBackgroundColor = desiredColor;
-//                setBackgroundColor(desiredColor);
-//                setDirty(true);
-//                repaint();
-//            }
-//        }   //actionPerformed
-//    };
-//    QAction* r = new QAction(getColourIcon(color),name,this);
-//    r->setCheckable(true);
-//    backgroundColorButtonMapper->setMapping(r, backgroundColorCount);
-//    //r.addActionListener(a);
-//    connect(r, SIGNAL(triggered()), backgroundColorButtonMapper, SLOT(map()));
-//    backgroundColorButtonGroup->addAction(r);
-
-//    if (defaultBackgroundColor == (color)) {
-//        r->setChecked(true);
-//    } else {
-//        r->setChecked(false);
-//    }
-//    menu->addAction(r);
-//    backgroundColorMenuItems->replace(backgroundColorCount, r);
-//    backgroundColors->replace(backgroundColorCount, color);
-//    backgroundColorCount++;
-//}   //addBackgroundColorMenuEntry
-
-
-void LayoutEditor::addTrackColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
-//    ActionListener a = new ActionListener() {
-//        /*final*/ QColor desiredColor = color;
-
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            if (!defaultTrackQColor(Qt::equals(desiredColor)) {
-//                LayoutTrack::setDefaultTrackColor(desiredColor);
-//                defaultTrackColor = desiredColor;
-//                setDirty(true);
-//                repaint();
-//            }
-//        }   //actionPerformed
-//    };
-    //QAction r = new QAction(name);
-    QAction* r = new QAction(getColourIcon(color), name, this);
-    r->setCheckable(true);
-    trackColorButtonMapper->setMapping(r, trackColorCount);
-    connect(r, SIGNAL(triggered(bool)), trackColorButtonMapper, SLOT(map()));
-    r->setCheckable(true);
-
-    //r.addActionListener(a);
-    trackColorButtonGroup->addAction(r);
-
-    if (defaultTrackColor == (color)) {
-        r->setChecked(true);
-    } else {
-        r->setChecked(false);
-    }
-    menu->addAction(r);
-    trackColorMenuItems->replace(trackColorCount, r);
-    trackColors->replace(trackColorCount, color);
-    trackColorCount++;
-}   //addTrackColorMenuEntry
-
-void LayoutEditor::on_addTrackColorMenuEntry_triggered(/*int i*/)
-{
-// QColor desiredColor = trackColors->at(i);
-// if (defaultTrackColor!=(desiredColor)) {
-//     LayoutTrack::setDefaultTrackColor(desiredColor);
-//     defaultTrackColor = desiredColor;
-//     setDirty(true);
-//     repaint();
-// }
-         QColor desiredColor = JmriColorChooser::showDialog(this,
-                 tr("Defaul tTrack Color"),
-                 defaultTrackColor);
-         if (desiredColor.isValid() && defaultTrackColor != (desiredColor)) {
-             setDefaultTrackColor(desiredColor);
-             setDirty();
-             redrawPanel();
-         }
-}
-
+#if 0
 void LayoutEditor::addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
 //    ActionListener a = new ActionListener() {
 //        //final String desiredName = name;
@@ -8259,24 +7706,6 @@ void LayoutEditor::addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString
     trackOccupiedColorCount++;
 }   //addTrackOccupiedColorMenuEntry
 
-void LayoutEditor::on_addTrackOccupiedColorMenuEntry_triggered(/*int i*/)
-{
-// QColor desiredColor = trackOccupiedColors->at(i);
-// if (defaultOccupiedTrackColor != desiredColor)
-// {
-//     defaultOccupiedTrackColor = desiredColor;
-//     setDirty(true);
-//     repaint();
-// }
-         QColor desiredColor = JmriColorChooser::showDialog(this,
-                 tr("Default Occupied Track Color"),
-                 defaultOccupiedTrackColor);
-         if (desiredColor.isValid() && defaultOccupiedTrackColor != (desiredColor)) {
-             setDefaultOccupiedTrackColor(desiredColor);
-             setDirty();
-             redrawPanel();
-         }
-}
 void LayoutEditor::addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
 //    ActionListener a = new ActionListener() {
 //        //final String desiredName = name;
@@ -8308,24 +7737,6 @@ void LayoutEditor::addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QStr
     trackAlternativeColors->replace(trackAlternativeColorCount,color);
     trackAlternativeColorCount++;
 }   //addTrackAlternativeColorMenuEntry
-
-void LayoutEditor::on_addTrackAlternativeColorMenuEntry_triggered()
-{
-// QColor desiredColor = trackAlternativeColors->at(i);
-// if (defaultAlternativeTrackColor != (desiredColor)) {
-//     defaultAlternativeTrackColor = desiredColor;
-//     setDirty(true);
-//     repaint();
-// }
- QColor desiredColor = JmriColorChooser::showDialog(this,
-         tr("Default Alternative Track Color"),
-         defaultAlternativeTrackColor);
- if (desiredColor.isValid() && defaultAlternativeTrackColor != (desiredColor)) {
-     setDefaultAlternativeTrackColor(desiredColor);
-     setDirty();
-     redrawPanel();
- }
-}
 
 /*protected*/ void LayoutEditor::setOptionMenuTrackColor() {
     for (int i = 0; i < trackColorCount; i++) {
@@ -8373,7 +7784,7 @@ void LayoutEditor::addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*
     textColorCount++;
 }   //addTextColorMenuEntry
 
-
+#endif
 /*protected*/ void LayoutEditor::setOptionMenuTurnoutCircleColor()
 {
  for (int i = 0; i < turnoutCircleColorCount; i++)
@@ -8423,169 +7834,6 @@ void LayoutEditor::addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*
     }
 }   //setOptionMenuBackgroundColor
 
-void LayoutEditor::on_colorBackgroundMenuItemSelected()
-{
-// QColor color = backgroundColors->at(i);
-// editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
- QColor desiredColor = JmriColorChooser::showDialog(this,
-         tr("Set Background Color", ""),
-         defaultBackgroundColor);
- if (desiredColor.isValid() && defaultBackgroundColor!=(desiredColor)) {
-     defaultBackgroundColor = desiredColor;
-     setBackgroundColor(desiredColor);
-     setDirty();
-     redrawPanel();
- }
-}
-
-void LayoutEditor::on_actionAdd_reporter_label_triggered()
-{
- QPointF pt = windowCenter();
- if (selectionActive) {
-     pt = MathUtil::midPoint(getSelectionRect());
- }
- EnterReporterDialog* d = new EnterReporterDialog(this);
- d->enterReporter((int) pt.x(), (int) pt.y());
- //note: panel resized in enterReporter
- setDirty();
- redrawPanel();
-}
-
-void LayoutEditor::on_actionAdd_background_image_2_triggered()
-{
- addBackground();
- setDirty(true);
- repaint();
-}
-#if 0
-/**
- * Determine right side x of furthest right background
- */
-/*private*/ int LayoutEditor::getNextBackgroundLeft()
-{
-  int left = 0;
-  // place to right of background images, if any
-  for (int i=0; i<_contents->size(); i++)
-  {
-   Positionable* p = _contents->at(i);
-   if (qobject_cast<PositionableLabel*>(p)!= nullptr)
-   {
-    PositionableLabel* l = (PositionableLabel*)p;
-    if (l->isBackground())
-    {
-     int test = l->getX() + l->maxWidth();
-     if (test>left) left = test;
-    }
-   }
-  }
-  return left;
-}
-
-void LayoutEditor::on_actionLoad_Other_XML_triggered()
-{
- setCursor(Qt::WaitCursor);
- QString fileName = QFileDialog::getOpenFileName(this,tr("Load XML file"), QDir::homePath(), tr("Layout XML files (*.xml)"));
- setCursor(Qt::ArrowCursor);
- if(!fileName.isEmpty())
- {
-  LoadXml xml(this);
-  setCursor(Qt::WaitCursor);
-  xml.loadfile(fileName);
-  setCursor(Qt::ArrowCursor);
-  //ui->actionSave->setEnabled(true);
-  //ui->actionSave_as->setEnabled(true);
-  ui->actionLoad_Other_XML->setEnabled(false);
-  ui->actionLoad_XML->setEnabled(false);
- }
-}
-
-void LayoutEditor::on_actionLoad_XML_triggered()
-{
-//  LoadXml xml(this);
-// connect(&xml, SIGNAL(newSensor(QString,int,int)), this, SLOT(on_newSensor(QString,int,int)));
- setCursor(Qt::WaitCursor);
-//  xml.loadfile(QDir::homePath() + "/.jmri/mylayout.xml");
- bool bResult = static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->load(new File(QDir::homePath() + "/.jmri/mylayout.xml"));
- layoutFile = QDir::homePath() + "/.jmri/mylayout.xml";
- setCursor(Qt::ArrowCursor);
-// ui->actionSave->setEnabled(true);
-// ui->actionSave_as->setEnabled(true);
- ui->actionLoad_Other_XML->setEnabled(false);
- ui->actionLoad_XML->setEnabled(false);
-}
-
-void LayoutEditor::on_newSensor(QString name, int x, int y)
-{
- QPoint p(x,y);
- xLoc = p.x();
- yLoc = p.y();
-
- addSensor(name);
-}
-#endif
-//void LayoutEditor::setFilename(QString path)
-//{
-// layoutFile = path;
-// if(path != nullptr)
-//  leToolBarPanel->actionSave->setEnabled(true);
-//}
-
-//void LayoutEditor::on_actionSave_triggered()
-//{
-// if(layoutFile.isEmpty())
-// {
-//  //on_actionSave_as_triggered();
-//  savePanels->actionPerformed();
-// }
-// setCursor(Qt::WaitCursor);
-// makeBackupFile(layoutFile);
-
-// savePanels->saveFile(layoutFile);
-
-// setCursor(Qt::ArrowCursor);
-//}
-
-void LayoutEditor::on_actionSnap_to_grid_when_adding_toggled(bool bState)
-{
- snapToGridOnAdd = bState;
- snapToGridOnAddCheckBoxMenuItem->setChecked(bState);
-}
-void LayoutEditor::on_actionSnap_to_grid_when_moving_toggled(bool bState)
-{
- snapToGridOnMove = bState;
- snapToGridOnMoveCheckBoxMenuItem->setChecked(bState);
-}
-//void LayoutEditor::OnZoom_selected(QAction *act)
-//{
-// double scale = act->data().toDouble();
-// if(scale == xScale)
-//  return;
-// if(xScale > 1.0)
-//  editPanel->scale(1.0/xScale, 1.0/yScale);
-
-// editPanel->scale(scale, scale);
-// xScale = yScale = scale;
-//}
-void LayoutEditor::setScale(double scaleX, double scaleY)
-{
-#if 0
- if(scaleX == 1.0)
-  leToolBarPanel->actionNo_zoom->setChecked(true);
- else if(scaleX == 1.5)
-  leToolBarPanel->actionX_1_5->setChecked(true);
- else if(scaleX == 2.0)
-  leToolBarPanel->actionX_2_0->setChecked(true);
- else if(scaleX == 3.0)
-  leToolBarPanel->actionX_3_0->setChecked(true);
- else if(scaleX == 4.0)
-  leToolBarPanel->actionX_4_0->setChecked(true);
- xScale = scaleX;
- yScale = scaleY;
-#endif
-// editPanel->scale(scaleX, scaleY);
-}
-
-
 const QIcon LayoutEditor::getColourIcon(QColor color)
 {
  Q_ASSERT(color.isValid());
@@ -8633,21 +7881,6 @@ void LayoutEditor::setDefaultTextColor(QString color)
         defaultBackgroundColor = ColorUtil::stringToColor(color);
         setOptionMenuBackgroundColor();
     }
-void LayoutEditor::on_defaultTextColorSelected(/*int i*/)
-{
-// QColor c = textColors->at(i);
-// defaultTextColor = c;
-         QColor desiredColor = JmriColorChooser::showDialog(this,
-                 tr("Default Text Color", ""),
-                 defaultTextColor);
-         if (desiredColor.isValid() && defaultTextColor != (desiredColor)) {
-             setDefaultTextColor(desiredColor);
-             setDirty();
-             redrawPanel();
-         }
-}
-
-
 /*public*/ QString LayoutEditor::getLayoutName() {return layoutName;}
 
 //TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
@@ -8700,31 +7933,6 @@ QColor LayoutEditor::getBackgroundColor()
   return QColor(Qt::white);
  return b.color();
 }
-//void LayoutEditor::on_actionDelete_this_panel_triggered()
-//{
-// editScene->clear();
-// _contents->clear();
-// //turnoutList->clear();
-// layoutTrackList.clear();
-// //pointList->clear();
-// //xingList->clear();
-// //slipList->clear();
-// //turntableList->clear();
-// highlightRect = nullptr;
-// panelGridGroup = nullptr;
-//// leToolBarPanel->actionLoad_Other_XML->setEnabled(true);
-//// leToolBarPanel->actionLoad_XML->setEnabled(true);
-//// ui->actionSave->setEnabled(false);
-//// ui->actionSave_as->setEnabled(false);
-//// ?? InstanceManager::setLayoutBlockManager(new LayoutBlockManager());
-//}
-
-void LayoutEditor::on_deletePanel()
-{
- if (deletePanel()) {
-     dispose();
- }
-}
 
 /*public*/ void LayoutEditor::loadFailed() {
  _loadFailed = true;
@@ -8758,11 +7966,7 @@ void LayoutEditor::on_deletePanel()
  return _newIcon;
 }
 
- void LayoutEditor::on_actionAdd_Fast_Clock_triggered()
- {
-  addClock();
- }
- /*public*/ ConnectivityUtil* LayoutEditor::getConnectivityUtil() {
+/*public*/ ConnectivityUtil* LayoutEditor::getConnectivityUtil() {
      if (conTools == nullptr) {
          conTools = new ConnectivityUtil(/*thisPanel*/this);
      }
@@ -9543,9 +8747,9 @@ void LayoutEditor::undoMoveSelection() {
  setDirty(true);
 }
 
-/*public*/ void LayoutEditor::on_setDirectTurnoutControl(bool boo) {
+/*public*/ void LayoutEditor::setDirectTurnoutControl(bool boo) {
     useDirectTurnoutControl = boo;
-// TODO:     useDirectTurnoutControlItem->setChecked(useDirectTurnoutControl);
+    useDirectTurnoutControlItem->setChecked(useDirectTurnoutControl);
 
 }
 
@@ -9624,10 +8828,7 @@ void LayoutEditor::undoMoveSelection() {
 /*public*/ void LayoutEditor::setSideTrackWidth(int w) {
     sidelineTrackWidth = w;
 }
-/*public*/ void LayoutEditor::setDefaultTrackColor(QString color) {
-    defaultTrackColor = ColorUtil::stringToColor(color);
-    setOptionMenuTrackColor();
-}
+
 /**
  * @param color value to set the default track color to.
  */
@@ -9635,11 +8836,6 @@ void LayoutEditor::undoMoveSelection() {
     LayoutTrack::setDefaultTrackColor(color);
     defaultTrackColor = color;
     JmriColorChooser::addRecentColor(color);
-}
-
-/*public*/ void LayoutEditor::setDefaultOccupiedTrackColor(QString color) {
-    defaultOccupiedTrackColor = ColorUtil::stringToColor(color);
-    setOptionMenuTrackColor();
 }
 
 /**
@@ -9650,23 +8846,12 @@ void LayoutEditor::undoMoveSelection() {
     JmriColorChooser::addRecentColor(color);
 }
 
-/*public*/ void LayoutEditor::setDefaultAlternativeTrackColor(QString color) {
-    defaultAlternativeTrackColor = ColorUtil::stringToColor(color);
-    setOptionMenuTrackColor();
-}
-
 /**
  * @param color value to set the default alternate track color to.
  */
 /*public*/ void LayoutEditor::setDefaultAlternativeTrackColor(/*@Nonnull*/ QColor color) {
     defaultAlternativeTrackColor = color;
     JmriColorChooser::addRecentColor(color);
-}
-
-/*public*/ void LayoutEditor::setTurnoutCircleColor(QString color)
-{
- turnoutCircleColor = ColorUtil::stringToColor(color);
- setOptionMenuTurnoutCircleColor();
 }
 
 /**
@@ -9730,16 +8915,19 @@ void LayoutEditor::undoMoveSelection() {
       if (floatEditHelpPanel != nullptr) {
           floatEditHelpPanel->setVisible(isEditable() && showHelpBar);
       }
-  } else {
-      if (helpBarPanel != nullptr) {
-       helpBarPanel->setVisible(isEditable() && showHelpBar);
-       bool visible = isEditable() && getShowHelpBar();
-      if(visible)
-       borderLayout->addWidget(helpBarPanel, BorderLayout::South);
-      else
-       borderLayout->removeWidget(helpBarPanel);
-       adjustSize();
-      }
+  }
+  else
+  {
+   if (helpBarPanel != nullptr)
+   {
+    helpBarPanel->setVisible(isEditable() && showHelpBar);
+    bool visible = isEditable() && getShowHelpBar();
+    if(visible)
+     borderLayout->addWidget(helpBarPanel, BorderLayout::South);
+    else
+     borderLayout->removeWidget(helpBarPanel);
+    adjustSize();
+   }
   }
   UserPreferencesManager* prefsMgr=
    ((UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager"));
@@ -9757,9 +8945,9 @@ void LayoutEditor::undoMoveSelection() {
   drawGrid = state;
   //showGridItem->setChecked(drawGrid);
   showGridCheckBoxMenuItem->setChecked(drawGrid);
-  on_actionShow_grid_in_edit_mode_toggled(state);
  }
 }
+
 /*public*/ void LayoutEditor::setSnapOnAdd(bool state)
 {
  if (snapToGridOnAdd != state)
@@ -9767,7 +8955,6 @@ void LayoutEditor::undoMoveSelection() {
   snapToGridOnAdd = state;
   //snapToGridOnAddItem->setChecked(snapToGridOnAdd);
   snapToGridOnAddCheckBoxMenuItem->setChecked(snapToGridOnAdd);
-  on_actionSnap_to_grid_when_adding_toggled(state);
  }
 }
 
@@ -9778,7 +8965,6 @@ void LayoutEditor::undoMoveSelection() {
   snapToGridOnMove = state;
   //snapToGridOnMoveItem->setChecked(snapToGridOnMove);
   snapToGridOnMoveCheckBoxMenuItem->setChecked(snapToGridOnMove);
-  on_actionSnap_to_grid_when_moving_toggled(state);
  }
 }
 
@@ -10224,408 +9410,6 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
     }
 }
 
-/*=======================================*\
-|* Dialog box to enter new reporter info *|
-\*=======================================*/
-
-//display dialog for entering Reporters
-/*protected*/ void LayoutEditor::enterReporter(int defaultX, int defaultY) {
-    if (reporterOpen) {
-        enterReporterFrame->setVisible(true);
-
-        return;
-    }
-#if 0
-    //Initialize if needed
-    if (enterReporterFrame == nullptr) {
-        enterReporterFrame = new JmriJFrame(tr("AddReporter"));
-
-//enterReporterFrame.addHelpMenu("package.jmri.jmrit.display.AddReporterLabel", true);
-        enterReporterFrame.setLocation(70, 30);
-        Container theContentPane = enterReporterFrame.getContentPane();
-        theContentPane.setLayout(new BoxLayout(theContentPane, BoxLayout.PAGE_AXIS));
-
-        //setup reporter entry
-        JPanel panel2 = new JPanel();
-        panel2.setLayout(new FlowLayout());
-        JLabel reporterLabel = new JLabel(tr("ReporterName"));
-        panel2.add(reporterLabel);
-        panel2.add(reporterNameField);
-        reporterNameField.setToolTipText(tr("ReporterNameHint"));
-        theContentPane.add(panel2);
-
-        //setup coordinates entry
-        JPanel panel3 = new JPanel();
-        panel3.setLayout(new FlowLayout());
-        JLabel xCoordLabel = new JLabel(tr("ReporterLocationX"));
-        panel3.add(xCoordLabel);
-        panel3.add(xPositionField);
-        xPositionField.setToolTipText(tr("ReporterLocationXHint"));
-        JLabel yCoordLabel = new JLabel(tr("ReporterLocationY"));
-        panel3.add(yCoordLabel);
-        panel3.add(yPositionField);
-        yPositionField.setToolTipText(tr("ReporterLocationYHint"));
-        theContentPane.add(panel3);
-
-        //set up Add and Cancel buttons
-        JPanel panel5 = new JPanel();
-        panel5.setLayout(new FlowLayout());
-        panel5.add(reporterDone = new JButton(tr("AddNewLabel")));
-        reporterDone.addActionListener((ActionEvent event) -> {
-            reporterDonePressed(event);
-        });
-        reporterDone.setToolTipText(tr("ReporterDoneHint"));
-
-        //make this button the default button (return or enter activates)
-        //Note: We have to invoke this later because we don't currently have a root pane
-        SwingUtilities.invokeLater(() -> {
-            JRootPane rootPane = SwingUtilities.getRootPane(reporterDone);
-            rootPane.setDefaultButton(reporterDone);
-        });
-
-        //Cancel
-        panel5.add(reporterCancel = new JButton(tr("ButtonCancel")));
-        reporterCancel.addActionListener((ActionEvent event) -> {
-            reporterCancelPressed();
-        });
-        reporterCancel.setToolTipText(tr("CancelHint", tr("ButtonCancel")));
-        theContentPane.add(panel5);
-    }
-
-    //Set up for Entry of Reporter Icon
-    xPositionField.setText(Integer.toString(defaultX));
-    yPositionField.setText(Integer.toString(defaultY));
-    enterReporterFrame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent event) {
-            reporterCancelPressed();
-        }
-    });
-    enterReporterFrame.pack();
-    enterReporterFrame.setVisible(true);
-    reporterOpen = true;
-#endif
-}
-
-void LayoutEditor::reporterDonePressed(/*@Nonnull ActionEvent event*/) {
-    //get size of current panel
-    QSizeF dim = getTargetPanelSize();
-
-    //get x coordinate
-    QString newX = "";
-    int xx = 0;
-#if 0
-    newX = xPositionField->text().trimmed();
-    try {
-        xx = Integer.parseInt(newX);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(enterReporterFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    if ((xx <= 0) || (xx > dim.width)) {
-        JOptionPane.showMessageDialog(enterReporterFrame,
-                MessageFormat.format(tr("Error2a"),
-                        new Object[]{String.format(" %s ", xx)}),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    // get y coordinate
-    String newY = "";
-    int yy = 0;
-    newY = yPositionField.getText().trim();
-    try {
-        yy = Integer.parseInt(newY);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(enterReporterFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    if ((yy <= 0) || (yy > dim.height)) {
-        JOptionPane.showMessageDialog(enterReporterFrame,
-                MessageFormat.format(tr("Error2a"),
-                        new Object[]{String.format(" %s ", yy)}),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    // get reporter name
-    Reporter reporter = null;
-    String rName = reporterNameField.getText().trim();
-
-    if (InstanceManager.getNullableDefault(ReporterManager.class) != null) {
-        try {
-            reporter = InstanceManager.getDefault(ReporterManager.class).provideReporter(rName);
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(enterReporterFrame,
-                    MessageFormat.format(tr("Error18"),
-                            new Object[]{rName}), tr("ErrorTitle"),
-                    JOptionPane.ERROR_MESSAGE);
-
-            return;
-        }
-
-        if (!rName.equals(reporter.getDisplayName())) {
-            rName = rName.toUpperCase();
-        }
-    } else {
-        JOptionPane.showMessageDialog(enterReporterFrame,
-                tr("Error17"), tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    //add the reporter icon
-    addReporter(rName, xx, yy);
-
-    //success - repaint the panel
-    redrawPanel();
-    enterReporterFrame.setVisible(true);
-#endif
-}
-
-void LayoutEditor::reporterCancelPressed() {
-    reporterOpen = false;
-    enterReporterFrame->setVisible(false);
-    enterReporterFrame->dispose();
-    enterReporterFrame = nullptr;
-    redrawPanel();
-}
-
-/*===============================*\
-|*  Dialog box to enter scale /  *|
-|*  translate track diagram info *|
-\*===============================*/
-
-//display dialog for scaling the track diagram
-/*protected*/ void LayoutEditor::scaleTrackDiagram() {
-    if (scaleTrackDiagramOpen) {
-        scaleTrackDiagramFrame->setVisible(true);
-        return;
-    }
-#if 0
-    // Initialize if needed
-    if (scaleTrackDiagramFrame == null) {
-        scaleTrackDiagramFrame = new JmriJFrame(tr("ScaleTrackDiagram"));
-        scaleTrackDiagramFrame.addHelpMenu("package.jmri.jmrit.display.ScaleTrackDiagram", true);
-        scaleTrackDiagramFrame.setLocation(70, 30);
-        Container theContentPane = scaleTrackDiagramFrame.getContentPane();
-        theContentPane.setLayout(new BoxLayout(theContentPane, BoxLayout.PAGE_AXIS));
-
-        // setup x translate
-        JPanel panel31 = new JPanel();
-        panel31.setLayout(new FlowLayout());
-        JLabel xTranslateLabel = new JLabel(tr("XTranslateLabel"));
-        panel31.add(xTranslateLabel);
-        panel31.add(xTranslateField);
-        xTranslateField.setToolTipText(tr("XTranslateHint"));
-        theContentPane.add(panel31);
-
-        //setup y translate
-        JPanel panel32 = new JPanel();
-        panel32.setLayout(new FlowLayout());
-        JLabel yTranslateLabel = new JLabel(tr("YTranslateLabel"));
-        panel32.add(yTranslateLabel);
-        panel32.add(yTranslateField);
-        yTranslateField.setToolTipText(tr("YTranslateHint"));
-        theContentPane.add(panel32);
-
-        //setup information message 1
-        JPanel panel33 = new JPanel();
-        panel33.setLayout(new FlowLayout());
-        JLabel message1Label = new JLabel(tr("Message1Label"));
-        panel33.add(message1Label);
-        theContentPane.add(panel33);
-
-        //setup x factor
-        JPanel panel21 = new JPanel();
-        panel21.setLayout(new FlowLayout());
-        JLabel xFactorLabel = new JLabel(tr("XFactorLabel"));
-        panel21.add(xFactorLabel);
-        panel21.add(xFactorField);
-        xFactorField.setToolTipText(tr("FactorHint"));
-        theContentPane.add(panel21);
-
-        //setup y factor
-        JPanel panel22 = new JPanel();
-        panel22.setLayout(new FlowLayout());
-        JLabel yFactorLabel = new JLabel(tr("YFactorLabel"));
-        panel22.add(yFactorLabel);
-        panel22.add(yFactorField);
-        yFactorField.setToolTipText(tr("FactorHint"));
-        theContentPane.add(panel22);
-
-        //setup information message 2
-        JPanel panel23 = new JPanel();
-        panel23.setLayout(new FlowLayout());
-        JLabel message2Label = new JLabel(tr("Message2Label"));
-        panel23.add(message2Label);
-        theContentPane.add(panel23);
-
-        //set up Done and Cancel buttons
-        JPanel panel5 = new JPanel();
-        panel5.setLayout(new FlowLayout());
-        panel5.add(scaleTrackDiagramDone = new JButton(tr("ScaleTranslate")));
-        scaleTrackDiagramDone.addActionListener((ActionEvent event) -> {
-            scaleTrackDiagramDonePressed(event);
-        });
-        scaleTrackDiagramDone.setToolTipText(tr("ScaleTranslateHint"));
-
-        //make this button the default button (return or enter activates)
-        //Note: We have to invoke this later because we don't currently have a root pane
-        SwingUtilities.invokeLater(() -> {
-            JRootPane rootPane = SwingUtilities.getRootPane(scaleTrackDiagramDone);
-            rootPane.setDefaultButton(scaleTrackDiagramDone);
-        });
-
-        panel5.add(scaleTrackDiagramCancel = new JButton(tr("ButtonCancel")));
-        scaleTrackDiagramCancel.addActionListener((ActionEvent event) -> {
-            scaleTrackDiagramCancelPressed(event);
-        });
-        scaleTrackDiagramCancel.setToolTipText(tr("CancelHint", tr("ButtonCancel")));
-        theContentPane.add(panel5);
-    }
-
-    // Set up for Entry of Scale and Translation
-    xFactorField.setText("1.0");
-    yFactorField.setText("1.0");
-    xTranslateField.setText("0");
-    yTranslateField.setText("0");
-    scaleTrackDiagramFrame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent event) {
-            scaleTrackDiagramCancelPressed(null);
-        }
-    });
-    scaleTrackDiagramFrame.pack();
-    scaleTrackDiagramFrame.setVisible(true);
-    scaleTrackDiagramOpen = true;
-#endif
-}
-
-void LayoutEditor::scaleTrackDiagramDonePressed(/*ActionEvent event*/) {
-    QString newText = "";
-    bool changeFlag = false;
-    bool translateError = false;
-    float xTranslation = 0.0F;
-    float yTranslation = 0.0F;
-    float xFactor = 1.0F;
-    float yFactor = 1.0F;
-#if 0
-    // get x translation
-    newText = xTranslateField->text().trimmed();
-    try {
-        xTranslation = Float.parseFloat(newText);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(scaleTrackDiagramFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    // get y translation
-    newText = yTranslateField.getText().trim();
-    try {
-        yTranslation = Float.parseFloat(newText);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(scaleTrackDiagramFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    // get x factor
-    newText = xFactorField.getText().trim();
-    try {
-        xFactor = Float.parseFloat(newText);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(scaleTrackDiagramFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    // get y factor
-    newText = yFactorField.getText().trim();
-    try {
-        yFactor = Float.parseFloat(newText);
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(scaleTrackDiagramFrame,
-                String.format("%s: %s %s", tr("EntryError"),
-                        e, tr("TryAgain")),
-                tr("ErrorTitle"),
-                JOptionPane.ERROR_MESSAGE);
-
-        return;
-    }
-
-    // here when all numbers read in successfully - check for translation
-    if ((xTranslation != 0.0F) || (yTranslation != 0.0F)) {
-        //apply translation
-        if (translateTrack(xTranslation, yTranslation)) {
-            changeFlag = true;
-        } else {
-            log.error("Error translating track diagram");
-            translateError = true;
-        }
-    }
-
-    if (!translateError && ((xFactor != 1.0) || (yFactor != 1.0))) {
-        //apply scale change
-        if (scaleTrack(xFactor, yFactor)) {
-            changeFlag = true;
-        } else {
-            log.error("Error scaling track diagram");
-        }
-    }
-    selectionActive = false;
-    clearSelectionGroups();
-
-    // success - dispose of the dialog and repaint if needed
-    scaleTrackDiagramOpen = false;
-    scaleTrackDiagramFrame.setVisible(false);
-    scaleTrackDiagramFrame.dispose();
-    scaleTrackDiagramFrame = null;
-
-    if (changeFlag) {
-        redrawPanel();
-        setDirty();
-    }
-#endif
-}
-
-void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
-    scaleTrackDiagramOpen = false;
-    scaleTrackDiagramFrame->setVisible(false);
-    scaleTrackDiagramFrame->dispose();
-    scaleTrackDiagramFrame = nullptr;
-}
-
 /*public*/ void LayoutEditor::setScroll(int state)
 {
  if (isEditable())
@@ -10821,35 +9605,35 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //    editModeCheckBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(
 //            stringsToVTCodes.get(Bundle.getMessage("EditModeAccelerator")), primary_modifier));
 //    editModeCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        setAllEditable(editModeCheckBoxMenuItem.isSelected());
+    connect(editModeCheckBoxMenuItem, &QAction::triggered, [=]{
+        setAllEditable(editModeCheckBoxMenuItem->isChecked());
 
-//        //show/hide the help bar
-//        if (toolBarSide.equals(ToolBarSide.eFLOAT)) {
-//            floatEditHelpPanel.setVisible(isEditable() && getShowHelpBar());
-//        } else {
-//            helpBarPanel.setVisible(isEditable() && getShowHelpBar());
-//        }
+        //show/hide the help bar
+        if (toolBarSide.getType() == eFLOAT) {
+            floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
+        } else {
+            helpBarPanel->setVisible(isEditable() && getShowHelpBar());
+        }
 
-//        if (isEditable()) {
-//            setAllShowToolTip(tooltipsInEditMode);
+        if (isEditable()) {
+            setAllShowToolTip(tooltipsInEditMode);
 
-//            //redo using the "Extra" color to highlight the selected block
-//            if (highlightSelectedBlockFlag) {
-//                if (!highlightBlockInComboBox(blockIDComboBox)) {
-//                    highlightBlockInComboBox(blockContentsComboBox);
-//                }
-//            }
-//        } else {
-//            setAllShowToolTip(tooltipsWithoutEditMode);
+            //redo using the "Extra" color to highlight the selected block
+            if (highlightSelectedBlockFlag) {
+                if (!highlightBlockInComboBox(leToolBarPanel->blockIDComboBox)) {
+                    highlightBlockInComboBox(leToolBarPanel->blockContentsComboBox);
+                }
+            }
+        } else {
+            setAllShowToolTip(tooltipsWithoutEditMode);
 
-//            //undo using the "Extra" color to highlight the selected block
-//            if (highlightSelectedBlockFlag) {
-//                highlightBlock(null);
-//            }
-//        }
-//        awaitingIconChange = false;
-//    });
-    connect(editModeCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_setAllEditable(bool)));
+            //undo using the "Extra" color to highlight the selected block
+            if (highlightSelectedBlockFlag) {
+                highlightBlock(nullptr);
+            }
+        }
+        awaitingIconChange = false;
+    });
     editModeCheckBoxMenuItem->setChecked(isEditable());
 
     //
@@ -11035,10 +9819,10 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     showHelpCheckBoxMenuItem->setCheckable(true);
     optionMenu->addAction(showHelpCheckBoxMenuItem);
 //    showHelpCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        boolean newShowHelpBar = showHelpCheckBoxMenuItem.isSelected();
-//        setShowHelpBar(newShowHelpBar);
-//    });
-    connect(showHelpCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(setShowHelpBar(bool)));
+    connect(showHelpCheckBoxMenuItem, &QAction::triggered, [=]{
+        bool newShowHelpBar = showHelpCheckBoxMenuItem->isChecked();
+        setShowHelpBar(newShowHelpBar);
+    });
     showHelpCheckBoxMenuItem->setChecked(getShowHelpBar());
 
     //
@@ -11060,9 +9844,10 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     controlCheckBoxMenuItem->setCheckable(true);
     optionMenu->addAction(controlCheckBoxMenuItem);
 //    controlCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        setAllControlling(controlCheckBoxMenuItem.isSelected());
-//        redrawPanel();
-//    });
+    connect(controlCheckBoxMenuItem, &QAction::triggered, [=]{
+        setAllControlling(controlCheckBoxMenuItem->isChecked());
+        redrawPanel();
+    });
     connect(controlCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionAllow_layout_control_toggled(bool)));
     controlCheckBoxMenuItem->setChecked(allControlling());
 
@@ -11073,9 +9858,9 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     useDirectTurnoutControlCheckBoxMenuItem->setCheckable(true);
     optionMenu->addAction(useDirectTurnoutControlCheckBoxMenuItem);
 //    useDirectTurnoutControlCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        setDirectTurnoutControl(useDirectTurnoutControlCheckBoxMenuItem.isSelected());
-//    });
-    connect(useDirectTurnoutControlCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_setDirectTurnoutControl(bool)));
+    connect(useDirectTurnoutControlCheckBoxMenuItem, &QAction::triggered, [=]{
+        setDirectTurnoutControl(useDirectTurnoutControlCheckBoxMenuItem->isChecked());
+    });
     useDirectTurnoutControlCheckBoxMenuItem->setChecked(useDirectTurnoutControl);
 
     //
@@ -11085,10 +9870,10 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     antialiasingOnCheckBoxMenuItem->setCheckable(true);
     optionMenu->addAction(antialiasingOnCheckBoxMenuItem);
 //    antialiasingOnCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        antialiasingOn = antialiasingOnCheckBoxMenuItem.isSelected();
-//        redrawPanel();
-//    });
-    connect(antialiasingOnCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionEnable_antialiasing_smoother_lines_toggled(bool)));
+    connect(antialiasingOnCheckBoxMenuItem, &QAction::triggered, [=]{
+        antialiasingOn = antialiasingOnCheckBoxMenuItem->isChecked();
+        redrawPanel();
+    });
     antialiasingOnCheckBoxMenuItem->setChecked(antialiasingOn);
 
     //
@@ -11097,37 +9882,35 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     optionMenu->addSeparator();
     QAction* titleItem = new QAction(tr("Edit Title") + "...",this);
     optionMenu->addAction(titleItem);
-#if 0
-    titleItem.addActionListener((ActionEvent event) -> {
-        //prompt for name
-        String newName = (String) JOptionPane.showInputDialog(getTargetFrame(),
-                Bundle.getMessage("MakeLabel", Bundle.getMessage("EnterTitle")),
-                Bundle.getMessage("EditTitleMessageTitle"),
-                JOptionPane.PLAIN_MESSAGE, null, null, getLayoutName());
+    //titleItem.addActionListener((ActionEvent event) -> {
+    connect(titleItem, &QAction::triggered, [=]{
+    //prompt for name
+    QString newName =  JOptionPane::showInputDialog(getTargetFrame(),
+            tr("%1").arg(tr("Enter New Title")),
+            tr("Edit Layout Name"),
+            JOptionPane::PLAIN_MESSAGE, QIcon(), QVariantList(), getLayoutName()).toString();
 
-        if (newName != null) {
-            if (!newName.equals(getLayoutName())) {
-                if (InstanceManager.getDefault(PanelMenu.class).isPanelNameUsed(newName)) {
-                    JOptionPane.showMessageDialog(null, Bundle.getMessage("CanNotRename"), Bundle.getMessage("PanelExist"),
-                            JOptionPane.ERROR_MESSAGE);
-                } else {
-                    setTitle(newName);
-                    setLayoutName(newName);
-                    getLayoutTrackDrawingOptions().setName(newName);
-                    InstanceManager.getDefault(PanelMenu.class).renameEditorPanel(LayoutEditor.this);
-                    setDirty();
+    if (newName != "") {
+        if (newName != (getLayoutName())) {
+            if (((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(newName)) {
+                JOptionPane::showMessageDialog(nullptr, tr("Can not rename panel with the same name as an existing panel"), tr("Panel name already exists!"),
+                        JOptionPane::ERROR_MESSAGE);
+            } else {
+                JmriJFrame::setTitle(newName);
+                setLayoutName(newName);
+                getLayoutTrackDrawingOptions()->setName(newName);
+                ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->renameEditorPanel(this);
+                setDirty();
 
-                    if (toolBarSide.equals(ToolBarSide.eFLOAT) && isEditable()) {
-                        // Rebuild the toolbox after a name change.
-                        deleteFloatingEditToolBox();
-                        createFloatingEditToolBox();
-                    }
+                if (toolBarSide.getType() == (eFLOAT) && isEditable()) {
+                    // Rebuild the toolbox after a name change.
+                    deletefloatingEditToolBoxFrame();
+                    createfloatingEditToolBoxFrame();
                 }
             }
         }
+     }
     });
-#endif
-    connect(titleItem, SIGNAL(triggered(bool)), this, SLOT(on_editTitle()));
 
     //
     // set background color
@@ -11135,35 +9918,17 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     QAction* backgroundColorMenuItem = new QAction(tr("Set Background Color", "..."),this);
     optionMenu->addAction(backgroundColorMenuItem);
 //    backgroundColorMenuItem.addActionListener((ActionEvent event) -> {
-//        Color desiredColor = JmriColorChooser.showDialog(this,
-//                Bundle.getMessage("SetBackgroundColor", ""),
-//                defaultBackgroundColor);
-//        if (desiredColor != null && !defaultBackgroundColor.equals(desiredColor)) {
-//            defaultBackgroundColor = desiredColor;
-//            setBackgroundColor(desiredColor);
-//            setDirty();
-//            redrawPanel();
-//        }
-//    });
-    connect(backgroundColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_colorBackgroundMenuItemSelected()));
-//    QMenu* backgroundColorMenu = new QMenu(tr("Set Background Color"));
-//    backgroundColorButtonGroup = new QActionGroup(this);
-//    backgroundColorButtonMapper = new QSignalMapper();
-//    connect(backgroundColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_colorBackgroundMenuItemSelected(int)));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Black"),     QColor(Qt::black));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("DarkGray"),  QColor(Qt::darkGray));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Gray"),      QColor(Qt::gray));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("LightGray"), QColor(Qt::lightGray));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("White"),     QColor(Qt::white));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Red"),       QColor(Qt::red));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Pink"),      QColor(255,192,203));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Orange"),    QColor(255, 170, 0));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Yellow"),    QColor(Qt::yellow));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Green"),     QColor(Qt::green));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Blue"),      QColor(Qt::blue));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Magenta"),   QColor(Qt::magenta));
-//    addBackgroundColorMenuEntry(backgroundColorMenu,    tr("Cyan"),      QColor(Qt::cyan));
-//    optionMenu->addMenu(backgroundColorMenu);
+    connect(backgroundColorMenuItem, &QAction::triggered, [=]{
+        QColor desiredColor = JmriColorChooser::showDialog(this,
+                tr("Set Background Color%1").arg(""),
+                defaultBackgroundColor);
+        if (!desiredColor.isValid() && defaultBackgroundColor != (desiredColor)) {
+            defaultBackgroundColor = desiredColor;
+            setBackgroundColor(desiredColor);
+            setDirty();
+            redrawPanel();
+        }
+    });
 
     //
     // set default text color
@@ -11171,34 +9936,16 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     QAction* textColorMenuItem = new QAction(tr("Default Text Color", "..."),this);
     optionMenu->addAction(textColorMenuItem);
 //    textColorMenuItem.addActionListener((ActionEvent event) -> {
-//        Color desiredColor = JmriColorChooser.showDialog(this,
-//                Bundle.getMessage("DefaultTextColor", ""),
-//                defaultTextColor);
-//        if (desiredColor != null && !defaultTextColor.equals(desiredColor)) {
-//            setDefaultTextColor(desiredColor);
-//            setDirty();
-//            redrawPanel();
-//        }
-//    });
-    connect(textColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_defaultTextColorSelected()));
-//    QMenu* textColorMenu = new QMenu(tr("Default Text Color"));
-//    textColorButtonGroup = new QActionGroup(this);
-//    textColorButtonMapper = new QSignalMapper();
-//    connect(textColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(OnDefaultTextColorSelected(int)));
-//    addTextColorMenuEntry(textColorMenu,  tr("Black"),     QColor(Qt::black));
-//    addTextColorMenuEntry(textColorMenu,  tr("DarkGray"),  QColor(Qt::darkGray));
-//    addTextColorMenuEntry(textColorMenu,  tr("Gray"),      QColor(Qt::gray));
-//    addTextColorMenuEntry(textColorMenu,  tr("LightGray"), QColor(Qt::lightGray));
-//    addTextColorMenuEntry(textColorMenu,  tr("White"),     QColor(Qt::white));
-//    addTextColorMenuEntry(textColorMenu,  tr("Red"),       QColor(Qt::red));
-//    addTextColorMenuEntry(textColorMenu,  tr("Pink"),      QColor(255,192,203));
-//    addTextColorMenuEntry(textColorMenu,  tr("Orange"),    QColor(255, 170, 0));
-//    addTextColorMenuEntry(textColorMenu,  tr("Yellow"),    QColor(Qt::yellow));
-//    addTextColorMenuEntry(textColorMenu,  tr("Green"),     QColor(Qt::green));
-//    addTextColorMenuEntry(textColorMenu,  tr("Blue"),      QColor(Qt::blue));
-//    addTextColorMenuEntry(textColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
-//    addTextColorMenuEntry(textColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
-//    optionMenu->addMenu(textColorMenu);
+    connect(textColorMenuItem, &QAction::triggered, [=]{
+        QColor desiredColor = JmriColorChooser::showDialog(this,
+                tr("Set Default Text Color%1").arg(""),
+                defaultTextColor);
+        if (!desiredColor.isValid() && defaultTextColor != (desiredColor)) {
+            setDefaultTextColor(desiredColor);
+            setDirty();
+            redrawPanel();
+        }
+    });
 
     if (editorUseOldLocSize)
     {
@@ -11208,10 +9955,10 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
      QAction* locationItem = new QAction(tr("Set Location"), this);
      optionMenu->addAction(locationItem);
  //    locationItem.addActionListener((ActionEvent event) -> {
- //        setCurrentPositionAndSize();
- //        log.debug("Bounds:{}, {}, {}, {}, {}, {}", upperLeftX, upperLeftY, windowWidth, windowHeight, panelWidth, panelHeight);
- //    });
-     connect(locationItem, SIGNAL(triggered(bool)), this, SLOT(on_locationItem()));
+     connect(locationItem, &QAction::triggered, [=] {
+     setCurrentPositionAndSize();
+     log->debug(tr("Bounds:%1, %2, %3, %4, %5, %6").arg(upperLeftX).arg(upperLeftY).arg(windowWidth).arg(windowHeight).arg(panelWidth).arg(panelHeight));
+     });
     }
 
     //
@@ -11224,53 +9971,56 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     QAction* backgroundItem = new QAction(tr("Add Background Image") + "...", this);
     optionsAddMenu->addAction(backgroundItem);
 //    backgroundItem.addActionListener((ActionEvent event) -> {
-//        addBackground();
-//        //note: panel resized in addBackground
-//        setDirty();
-//        redrawPanel();
-//    });
-    connect(backgroundItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionAdd_background_image_2_triggered()));
+    connect(backgroundItem, &QAction::triggered, [=]{
+        addBackground();
+        //note: panel resized in addBackground
+        setDirty();
+        redrawPanel();
+    });
 
     // add fast clock
     QAction* clockItem = new QAction(tr("Add %1").arg(tr("Fast Clock")), this);
     optionsAddMenu->addAction(clockItem);
 //    clockItem.addActionListener((ActionEvent event) -> {
-//        AnalogClock2Display c = addClock();
-//        unionToPanelBounds(c.getBounds());
-//        setDirty();
-//        redrawPanel();
-//    });
-    connect(clockItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionAdd_Fast_Clock_triggered()));
+    connect(clockItem, &QAction::triggered, [=]{
+        AnalogClock2Display* c = addClock();
+        unionToPanelBounds(c->getBounds());
+        setDirty();
+        c->paint(editScene);
+        redrawPanel();
+    });
 
     //add turntable
     QAction* turntableItem = new QAction(tr("Add Turntable"),this);
     optionsAddMenu->addAction(turntableItem);
 //    turntableItem.addActionListener((ActionEvent event) -> {
-//        Point2D pt = windowCenter();
-//        if (selectionActive) {
-//            pt = MathUtil.midPoint(getSelectionRect());
-//        }
-//        addTurntable(pt);
-//        //note: panel resized in addTurntable
-//        setDirty();
-//        redrawPanel();
-//    });
-    connect(turntableItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionAdd_Turntable_triggered()));
+    connect(turntableItem, &QAction::triggered, [=]{
+        QPointF pt = windowCenter();
+        if (selectionActive) {
+            pt = MathUtil::midPoint(getSelectionRect());
+        }
+        addTurntable(pt);
+        //note: panel resized in addTurntable
+        setDirty();
+        redrawPanel();
+    });
 
     // add reporter
-    QAction* reporterItem = new QAction(tr("AddReporter") + "...", this);
+    QAction* reporterItem = new QAction(tr("Add Reporter Label") + "...", this);
     optionsAddMenu->addAction(reporterItem);
 //    reporterItem.addActionListener((ActionEvent event) -> {
-//        Point2D pt = windowCenter();
-//        if (selectionActive) {
-//            pt = MathUtil.midPoint(getSelectionRect());
-//        }
-//        enterReporter((int) pt.getX(), (int) pt.getY());
-//        //note: panel resized in enterReporter
-//        setDirty();
-//        redrawPanel();
-//    });
-    connect(reporterItem, SIGNAL(triggered(bool)), this, SLOT(on_actionAdd_reporter_label_triggered()));
+    connect(reporterItem, &QAction::triggered, [=]{
+        QPointF pt = windowCenter();
+        if (selectionActive) {
+            pt = MathUtil::midPoint(getSelectionRect());
+        }
+        EnterReporterDialog* d = new EnterReporterDialog(this);
+        d->enterReporter((int) pt.x(), (int) pt.y());
+        //note: panel resized in enterReporter        //note: panel resized in enterReporter
+        setDirty();
+        redrawPanel();
+    });
+
     //
     // grid menu
     //
@@ -11284,10 +10034,10 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //            Bundle.getMessage("ShowEditGridAccelerator")), primary_modifier));
     gridMenu->addAction(showGridCheckBoxMenuItem);
 //    showGridCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        drawGrid = showGridCheckBoxMenuItem.isSelected();
-//        redrawPanel();
-//    });
-    connect(showGridCheckBoxMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionShow_grid_in_edit_mode_toggled(bool)));
+    connect(showGridCheckBoxMenuItem, &QAction::triggered, [=]{
+        drawGrid = showGridCheckBoxMenuItem->isChecked();
+        redrawPanel();
+    });
     showGridCheckBoxMenuItem->setChecked(getDrawGrid());
 
     //snap to grid on add
@@ -11298,10 +10048,10 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //            primary_modifier | ActionEvent.SHIFT_MASK));
     gridMenu->addAction(snapToGridOnAddCheckBoxMenuItem);
 //    snapToGridOnAddCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        snapToGridOnAdd = snapToGridOnAddCheckBoxMenuItem.isSelected();
-//        redrawPanel();
-//    });
-    connect(snapToGridOnAddCheckBoxMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionSnap_to_grid_when_adding_toggled(bool)));
+    connect(snapToGridOnAddCheckBoxMenuItem, &QAction::triggered, [=]{
+        snapToGridOnAdd = snapToGridOnAddCheckBoxMenuItem->isChecked();
+        redrawPanel();
+    });
     snapToGridOnAddCheckBoxMenuItem->setChecked(snapToGridOnAdd);
 
     //snap to grid on move
@@ -11312,19 +10062,20 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
 //            primary_modifier | ActionEvent.SHIFT_MASK));
     gridMenu->addAction(snapToGridOnMoveCheckBoxMenuItem);
 //    snapToGridOnMoveCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        snapToGridOnMove = snapToGridOnMoveCheckBoxMenuItem.isSelected();
-//        redrawPanel();
-//    });
-    connect(snapToGridOnMoveCheckBoxMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_actionSnap_to_grid_when_moving_toggled(bool) ));
+    connect(snapToGridOnMoveCheckBoxMenuItem, &QAction::triggered, [=]{
+        snapToGridOnMove = snapToGridOnMoveCheckBoxMenuItem->isChecked();
+        redrawPanel();
+    });
     snapToGridOnMoveCheckBoxMenuItem->setChecked(snapToGridOnMove);
 
     //specify grid square size
     QAction* gridSizeItem = new QAction(tr("SetGridSizes") + "...", this);
     gridMenu->addAction(gridSizeItem);
 //    gridSizeItem.addActionListener((ActionEvent event) -> {
-//        enterGridSizes();
-//    });
-    connect(gridSizeItem,  SIGNAL(triggered(bool)), this, SLOT(enterGridSizes()));
+    connect(gridSizeItem, &QAction::triggered, [=]{
+        enterGridSizes();
+    });
+
     //
     // track menu
     //
@@ -11336,12 +10087,13 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     trackMenu->addAction(jmi);
     jmi->setToolTip(tr("Select this item to change your track drawing options"));
 //    jmi.addActionListener((ActionEvent event) -> {
-//        LayoutTrackDrawingOptionsDialog ltdod
-//                = new LayoutTrackDrawingOptionsDialog(
-//                        this, true, getLayoutTrackDrawingOptions());
-//        ltdod.setVisible(true);
-//    });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_layoutTrackDrawingOptionsDialog()));
+    connect(jmi, &QAction::triggered, [=]{
+        LayoutTrackDrawingOptionsDialog* ltdod
+                = new LayoutTrackDrawingOptionsDialog(
+                        this, true, getLayoutTrackDrawingOptions());
+        ltdod->setVisible(true);
+    });
+
     //set track width menu item
     // Note: Now set via LayoutTrackDrawingOptionsDialog (above)
     //TODO: Dead code strip this
@@ -11358,107 +10110,52 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     QAction* trackColorMenuItem = new QAction(tr("Set Default Track Color"),this);
     trkColourMenu->addAction(trackColorMenuItem);
 //    trackColorMenuItem.addActionListener((ActionEvent event) -> {
-//        Color desiredColor = JmriColorChooser.showDialog(this,
-//                Bundle.getMessage("DefaultTrackColor"),
-//                defaultTrackColor);
-//        if (desiredColor != null && !defaultTrackColor.equals(desiredColor)) {
-//            setDefaultTrackColor(desiredColor);
-//            setDirty();
-//            redrawPanel();
-//        }
-//    });
-    connect(trackColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_addTrackColorMenuEntry_triggered()));
-//    QMenu* trackColorMenu = new QMenu(tr("Default Track Color"));
-//    trackColorButtonGroup = new QActionGroup(this);
-//    trackColorButtonMapper = new QSignalMapper();
-//    connect(trackColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackColorMenuEntry_triggered(int)));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Black"),     QColor(Qt::black));
-//    addTrackColorMenuEntry(trackColorMenu, tr("DarkGray"),  QColor(Qt::darkGray));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Gray"),      QColor(Qt::gray));
-//    addTrackColorMenuEntry(trackColorMenu, tr("LightGray"), QColor(Qt::lightGray));
-//    addTrackColorMenuEntry(trackColorMenu, tr("White"),     QColor(Qt::white));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Red"),       QColor(Qt::red));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Pink"),      QColor(255,192,203));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Orange"),    QColor(255, 170, 0));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Yellow"),    QColor(Qt::yellow));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Green"),     QColor(Qt::green));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Blue"),      QColor(Qt::blue));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Magenta"),   QColor(Qt::magenta));
-//    addTrackColorMenuEntry(trackColorMenu, tr("Cyan"),      QColor(Qt::cyan));
-//    optionMenu->addMenu(trackColorMenu);
+    connect(trackColorMenuItem, &QAction::triggered, [=]{
+        QColor desiredColor = JmriColorChooser::showDialog(this,
+                tr("Set Default Track Color"),
+                defaultTrackColor);
+        if (!desiredColor .isValid() && defaultTrackColor != (desiredColor)) {
+            setDefaultTrackColor(desiredColor);
+            setDirty();
+            redrawPanel();
+        }
+    });
 
     QAction* trackOccupiedColorMenuItem = new QAction(tr("Set Default Occupied Track Color"),this);
     trkColourMenu->addAction(trackOccupiedColorMenuItem);
 //    trackOccupiedColorMenuItem.addActionListener((ActionEvent event) -> {
-//        Color desiredColor = JmriColorChooser.showDialog(this,
-//                Bundle.getMessage("DefaultOccupiedTrackColor"),
-//                defaultOccupiedTrackColor);
-//        if (desiredColor != null && !defaultOccupiedTrackColor.equals(desiredColor)) {
-//            setDefaultOccupiedTrackColor(desiredColor);
-//            setDirty();
-//            redrawPanel();
-//        }
-//    });
-    connect(trackOccupiedColorMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_addTrackOccupiedColorMenuEntry_triggered()));
-//    QMenu* trackOccupiedColorMenu = new QMenu(tr("Default Occupied Track Color"));
-//    trackOccupiedColorButtonGroup = new QActionGroup(this);
-//    trackOccupiedColorButtonMapper = new QSignalMapper();
-//    connect(trackOccupiedColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackOccupiedColorMenuEntry_triggered(int)));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Black"),     QColor(Qt::black));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("DarkGray"),  QColor(Qt::darkGray));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Gray"),      QColor(Qt::gray));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("LightGray"), QColor(Qt::lightGray));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("White"),     QColor(Qt::white));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Red"),       QColor(Qt::red));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Pink"),      QColor(255,192,203));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Orange"),    QColor(255, 170, 0));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Yellow"),    QColor(Qt::yellow));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Green"),     QColor(Qt::green));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Blue"),      QColor(Qt::blue));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Magenta"),   QColor(Qt::magenta));
-//    addTrackOccupiedColorMenuEntry(trackOccupiedColorMenu, tr("Cyan"),      QColor(Qt::cyan));
-//    optionMenu->addMenu(trackOccupiedColorMenu);
+    connect(trackOccupiedColorMenuItem, &QAction::triggered, [=]{
+        QColor desiredColor = JmriColorChooser::showDialog(this,
+                tr("Set Default Occupied Track Color"),
+                defaultOccupiedTrackColor);
+        if (!desiredColor.isValid() && defaultOccupiedTrackColor != (desiredColor)) {
+            setDefaultOccupiedTrackColor(desiredColor);
+            setDirty();
+            redrawPanel();
+        }
+    });
 
     QAction* trackAlternativeColorMenuItem = new QAction(tr("Set Default Alternative Track Color"),this);
     trkColourMenu->addAction(trackAlternativeColorMenuItem);
 //    trackAlternativeColorMenuItem.addActionListener((ActionEvent event) -> {
-//        Color desiredColor = JmriColorChooser.showDialog(this,
-//                Bundle.getMessage("DefaultAlternativeTrackColor"),
-//                defaultAlternativeTrackColor);
-//        if (desiredColor != null && !defaultAlternativeTrackColor.equals(desiredColor)) {
-//            setDefaultAlternativeTrackColor(desiredColor);
-//            setDirty();
-//            redrawPanel();
-//        }
-//    });
-    connect(trackAlternativeColorMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_addTrackAlternativeColorMenuEntry_triggered()));
-//    QMenu* trackAlternativeColorMenu = new QMenu(tr("Default Alternative Track Color"));
-//    trackAlternativeColorButtonGroup = new QActionGroup(this);
-//    trackAlternativeColorButtonMapper = new QSignalMapper();
-//    connect(trackAlternativeColorButtonMapper, SIGNAL(mapped(int)), this, SLOT(on_addTrackAlternativeColorMenuEntry_triggered(int)));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Black"),     QColor(Qt::black));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("DarkGray"),  QColor(Qt::darkGray));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Gray"),      QColor(Qt::gray));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("LightGray"), QColor(Qt::lightGray));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("White"),     QColor(Qt::white));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Red"),       QColor(Qt::red));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Pink"),      QColor(255,192,203));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Orange"),    QColor(255, 170, 0));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Yellow"),    QColor(Qt::yellow));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Green"),     QColor(Qt::green));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Blue"),      QColor(Qt::blue));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Magenta"),   QColor(Qt::magenta));
-//    addTrackAlternativeColorMenuEntry(trackAlternativeColorMenu,  tr("Cyan"),      QColor(Qt::cyan));
-//    optionMenu->addMenu(trackAlternativeColorMenu);
-
+    connect(trackAlternativeColorMenuItem, &QAction::triggered, [=]{
+        QColor desiredColor = JmriColorChooser::showDialog(this,
+                tr("Set Default Alternative Track Color"),
+                defaultAlternativeTrackColor);
+        if (!desiredColor.isValid() && defaultAlternativeTrackColor != (desiredColor)) {
+            setDefaultAlternativeTrackColor(desiredColor);
+            setDirty();
+            redrawPanel();
+        }
+    });
     //Automatically Assign Blocks to Track
     autoAssignBlocksCheckBoxMenuItem = new QAction(tr("Automatically Assign Blocks to Track"),this);
     autoAssignBlocksCheckBoxMenuItem->setCheckable(true);
     trackMenu->addAction(autoAssignBlocksCheckBoxMenuItem);
 //    autoAssignBlocksCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        autoAssignBlocks = autoAssignBlocksCheckBoxMenuItem.isSelected();
-//    });
-    connect(autoAssignBlocksCheckBoxMenuItem,  SIGNAL(triggered(bool)), this, SLOT(on_autoAssignBlocksItem_triggered(bool)));
+    connect(autoAssignBlocksCheckBoxMenuItem, &QAction::triggered, [=]{
+        autoAssignBlocks = autoAssignBlocksCheckBoxMenuItem->isChecked();
+    });
     autoAssignBlocksCheckBoxMenuItem->setChecked(autoAssignBlocks);
 
     //add hideTrackSegmentConstructionLines menu item
@@ -11466,18 +10163,18 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     hideTrackSegmentConstructionLinesCheckBoxMenuItem->setCheckable(true);
     trackMenu->addAction(hideTrackSegmentConstructionLinesCheckBoxMenuItem);
 //    hideTrackSegmentConstructionLinesCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        int show = TrackSegment.SHOWCON;
+    connect(hideTrackSegmentConstructionLinesCheckBoxMenuItem, &QAction::triggered, [=]{
+        int show = TrackSegment::SHOWCON;
 
-//        if (hideTrackSegmentConstructionLinesCheckBoxMenuItem.isSelected()) {
-//            show = TrackSegment.HIDECONALL;
-//        }
+        if (hideTrackSegmentConstructionLinesCheckBoxMenuItem->isChecked()) {
+            show = TrackSegment::HIDECONALL;
+        }
 
-//        for (TrackSegment ts : getTrackSegments()) {
-//            ts.hideConstructionLines(show);
-//        }
-//        redrawPanel();
-//    });
-    connect(hideTrackSegmentConstructionLinesCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_hideTrackSegmentConstructionLines_toggled(bool) ));
+        for (TrackSegment* ts : getTrackSegments()) {
+            ts->hideConstructionLines(show);
+        }
+        redrawPanel();
+    });
     hideTrackSegmentConstructionLinesCheckBoxMenuItem->setChecked(autoAssignBlocks);
 
     //
@@ -11491,10 +10188,10 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     animationCheckBoxMenuItem->setCheckable(true);
     turnoutOptionsMenu->addAction(animationCheckBoxMenuItem);
 //    animationCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        boolean mode = animationCheckBoxMenuItem.isSelected();
-//        setTurnoutAnimation(mode);
-//    });
-    connect(animationCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_setTurnoutAnimation(bool)));
+    connect(animationCheckBoxMenuItem, &QAction::triggered, [=]{
+        bool mode = animationCheckBoxMenuItem->isChecked();
+        setTurnoutAnimation(mode);
+    });
     animationCheckBoxMenuItem->setChecked(true);
 
     //circle on Turnouts
@@ -11502,52 +10199,52 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     turnoutCirclesOnCheckBoxMenuItem->setCheckable(true);
     turnoutOptionsMenu->addAction(turnoutCirclesOnCheckBoxMenuItem);
 //    turnoutCirclesOnCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        turnoutCirclesWithoutEditMode = turnoutCirclesOnCheckBoxMenuItem.isSelected();
-//        redrawPanel();
-//    });
-    connect(turnoutCirclesOnCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutCirclesOnItem_triggered(bool)));
+    connect(turnoutCirclesOnCheckBoxMenuItem, &QAction::triggered, [=]{
+        turnoutCirclesWithoutEditMode = turnoutCirclesOnCheckBoxMenuItem->isChecked();
+        redrawPanel();
+    });
     turnoutCirclesOnCheckBoxMenuItem->setChecked(turnoutCirclesWithoutEditMode);
 
     //select turnout circle color
     QAction* turnoutCircleColorMenuItem = new QAction(tr("Set Turnout Circle Color"), this);
 
 //    turnoutCircleColorMenuItem.addActionListener((ActionEvent event) -> {
-//        Color desiredColor = JmriColorChooser.showDialog(this,
-//                Bundle.getMessage("TurnoutCircleColor"),
-//                turnoutCircleColor);
-//        if (desiredColor != null && !turnoutCircleColor.equals(desiredColor)) {
-//            setTurnoutCircleColor(desiredColor);
-//            setDirty();
-//            redrawPanel();
-//        }
-//    });
-    connect(turnoutCircleColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TurnoutCircleColorMenuItem()));
+    connect(turnoutCircleColorMenuItem, &QAction::triggered, [=]{
+        QColor desiredColor = JmriColorChooser::showDialog(this,
+                tr("Set Turnout Circle Color"),
+                turnoutCircleColor);
+        if (!desiredColor.isValid() && turnoutCircleColor != (desiredColor)) {
+            setTurnoutCircleColor(desiredColor);
+            setDirty();
+            redrawPanel();
+        }
+    });
     turnoutOptionsMenu->addAction(turnoutCircleColorMenuItem);
 
     //select turnout circle thrown color
     QAction* turnoutCircleThrownColorMenuItem = new QAction("Set Turnout Circle Thrown Color",this);
 //    turnoutCircleThrownColorMenuItem.addActionListener((ActionEvent event) -> {
-//        Color desiredColor = JmriColorChooser.showDialog(this,
-//                Bundle.getMessage("TurnoutCircleThrownColor"),
-//                turnoutCircleThrownColor);
-//        if (desiredColor != null && !turnoutCircleThrownColor.equals(desiredColor)) {
-//            setTurnoutCircleThrownColor(desiredColor);
-//            setDirty();
-//            redrawPanel();
-//        }
-//    });
-    connect(turnoutCircleThrownColorMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutCircleThrownColorMenuItem()));
+    connect(turnoutCircleThrownColorMenuItem, &QAction::triggered, [=]{
+        QColor desiredColor = JmriColorChooser::showDialog(this,
+                tr("TurnoutCircleThrownColor"),
+                turnoutCircleThrownColor);
+        if (!desiredColor.isValid() && turnoutCircleThrownColor != (desiredColor)) {
+            setTurnoutCircleThrownColor(desiredColor);
+            setDirty();
+            redrawPanel();
+        }
+    });
     turnoutOptionsMenu->addAction(turnoutCircleThrownColorMenuItem);
 
     turnoutFillControlCirclesCheckBoxMenuItem = new QAction(tr("Fill Turnout Circles"));
     turnoutFillControlCirclesCheckBoxMenuItem->setCheckable(true);
     turnoutOptionsMenu->addAction(turnoutFillControlCirclesCheckBoxMenuItem);
 //    turnoutFillControlCirclesCheckBoxMenuItem.addActionListener((ActionEvent event) ->
+    connect(turnoutFillControlCirclesCheckBoxMenuItem, &QAction::triggered, [=]{
 //    {
-//        turnoutFillControlCircles = turnoutFillControlCirclesCheckBoxMenuItem.isSelected();
-//        redrawPanel();
-//    });
-    connect(turnoutFillControlCirclesCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutFillControlCirclesCheckBoxMenuItem(bool)));
+        turnoutFillControlCircles = turnoutFillControlCirclesCheckBoxMenuItem->isChecked();
+        redrawPanel();
+    });
     turnoutFillControlCirclesCheckBoxMenuItem->setChecked(turnoutFillControlCircles);
 
     //select turnout circle size
@@ -11571,74 +10268,13 @@ void LayoutEditor::scaleTrackDiagramCancelPressed(/*ActionEvent event*/) {
     turnoutDrawUnselectedLegCheckBoxMenuItem->setCheckable(true);
     turnoutOptionsMenu->addAction(turnoutDrawUnselectedLegCheckBoxMenuItem);
 //    turnoutDrawUnselectedLegCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegCheckBoxMenuItem.isSelected();
-//        redrawPanel();
-//    });
-    connect(turnoutDrawUnselectedLegCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_turnoutDrawUnselectedLegItem_triggered(bool)));
+    connect(turnoutDrawUnselectedLegCheckBoxMenuItem, &QAction::triggered, [=]{
+        turnoutDrawUnselectedLeg = turnoutDrawUnselectedLegCheckBoxMenuItem->isChecked();
+        redrawPanel();
+    });
     turnoutDrawUnselectedLegCheckBoxMenuItem->setChecked(turnoutDrawUnselectedLeg);
 
     return optionMenu;
-}
-
-/*public*/ void LayoutEditor::on_editTitle()
-{
- //prompt for name
- QString newName =  JOptionPane::showInputDialog(getTargetFrame(),
-         tr("%1").arg(tr("Enter New Title")),
-         tr("Edit Layout Name"),
-         JOptionPane::PLAIN_MESSAGE, QIcon(), QVariantList(), getLayoutName()).toString();
-
- if (newName != "") {
-     if (newName != (getLayoutName())) {
-         if (((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(newName)) {
-             JOptionPane::showMessageDialog(nullptr, tr("Can not rename panel with the same name as an existing panel"), tr("Panel name already exists!"),
-                     JOptionPane::ERROR_MESSAGE);
-         } else {
-             JmriJFrame::setTitle(newName);
-             setLayoutName(newName);
-             getLayoutTrackDrawingOptions()->setName(newName);
-             ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->renameEditorPanel(this);
-             setDirty();
-
-             if (toolBarSide.getType() == (eFLOAT) && isEditable()) {
-                 // Rebuild the toolbox after a name change.
-                 deletefloatingEditToolBoxFrame();
-                 createfloatingEditToolBoxFrame();
-             }
-         }
-     }
- }
-
-}
-
-void LayoutEditor::on_TurnoutCircleColorMenuItem()
-{
- QColor desiredColor = JmriColorChooser::showDialog(this,
-         tr("Turnout Circle Color"),
-         turnoutCircleColor);
- if (desiredColor != nullptr && turnoutCircleColor!=(desiredColor)) {
-     setTurnoutCircleColor(desiredColor);
-     setDirty();
-     redrawPanel();
- }
-}
-
-void LayoutEditor::on_turnoutCircleThrownColorMenuItem()
-{
- QColor desiredColor = JmriColorChooser::showDialog(this,
-        tr("Set Turnout Circle Thrown Color"),
-        turnoutCircleThrownColor);
- if (!desiredColor.isValid() && turnoutCircleThrownColor!=(desiredColor)) {
-    setTurnoutCircleThrownColor(desiredColor);
-    setDirty();
-    redrawPanel();
- }
-}
-
-void LayoutEditor::on_turnoutFillControlCirclesCheckBoxMenuItem(bool checked)
-{
- turnoutFillControlCircles = checked;//turnoutFillControlCirclesCheckBoxMenuItem.isSelected();
- redrawPanel();
 }
 
 void LayoutEditor::on_TooltipAlwaysMenuItem()
@@ -11658,12 +10294,6 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
  tooltipsInEditMode = false;
  tooltipsWithoutEditMode = true;
  setAllShowToolTip(!isEditable());
-}
-
-void LayoutEditor::on_locationItem()
-{
- setCurrentPositionAndSize();
- log->debug(tr("Bounds:%1, %2, %3, %4, %5, %6").arg(upperLeftX).arg(upperLeftY).arg(windowWidth).arg(windowHeight).arg(panelWidth).arg(panelHeight));
 }
 
 /*============================================*\
@@ -11735,9 +10365,11 @@ void LayoutEditor::on_locationItem()
     });
     toolsMenu->addAction(jmi);
 //    jmi.addActionListener((ActionEvent event) -> {
-//        //bring up scale track diagram dialog
-//        scaleTrackDiagram();
-//    });
+    connect(jmi, &QAction::triggered, [=]{
+    //bring up scale track diagram dialog
+    ScaleTrackDiagramDialog* d = new ScaleTrackDiagramDialog(this);
+    d->scaleTrackDiagram();
+    });
 
     //translate selection
     jmi = new QAction(tr("Translate Selection") + "...", this);

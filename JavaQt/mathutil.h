@@ -82,10 +82,27 @@ public:
              double displacement);
  /*public*/ static QRect rectangle2DToRectangle(/*@Nonnull*/ QRectF r);
  /*public*/ static QPainterPath drawBezier(/*@Nonnull*/ QVector<QPointF> p);
+ /*public*/ static double fillBezier(QGraphicsScene* g2, /*@Nonnull*/ QList<QPointF> p);
+ /*public*/ static QPointF intersect(
+         /*@Nonnull*/ QPointF p1,
+         /*@Nonnull*/ QPointF p2,
+         /*@Nonnull*/ QPointF p3,
+         /*@Nonnull*/ QPointF p4);
+
  /*public*/ static QRectF rectangleAtPoint(/*@Nonnull*/ QPointF p, double width, double height);
+ /*public*/ static double distance(
+         /*@Nonnull*/ QPointF p1,
+         /*@Nonnull*/ QPointF p2,
+         /*@Nonnull*/ QPointF p3);
 
 private:
  MathUtil();
+ /*private*/ static double plotBezier(
+         QPainterPath path,
+         /*@Nonnull*/ QList<QPointF> points,
+         int depth,
+         double displacement);
+
  /*private*/ static double plotBezier(QPainterPath &path,
          /*@Nonnull*/ QPointF p0,
          /*@Nonnull*/ QPointF p1,
@@ -93,6 +110,11 @@ private:
          /*@Nonnull*/ QPointF p3,
          int depth,
          double displacement);
+ /*private*/ static double plotBezier(
+         QGraphicsScene* g2,
+         /*@Nonnull*/ QList<QPointF> p,
+         double displacement,
+         bool fillFlag);
 
  /*private*/ static bool bezier1st;// = false;
  static Logger* log;

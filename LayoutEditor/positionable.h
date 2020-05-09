@@ -12,6 +12,7 @@
 #include <QGraphicsItemGroup>
 #include "exceptions.h"
 #include "jcomponent.h"
+#include "editscene.h"
 
 class Border;
 class MyGraphicsItemGroup : public QGraphicsItemGroup
@@ -178,7 +179,7 @@ public:
         /*public*/ virtual void doMouseExited(QGraphicsSceneMouseEvent* /*event*/) {}
 
         // The following are common for all JComponents
-    /*public*/ virtual QRectF getBounds(QRectF /*r*/) {return QRectF();}
+    /*public*/ virtual QRectF getBounds(QRectF /*r*/ = QRectF()) {return QRectF();}
     /*public*/ virtual bool contains(int /*x*/, int /*y*/) {return false;}
         /*public*/ virtual int getX() = 0;
         /*public*/ virtual int getY() = 0;
@@ -215,7 +216,7 @@ public:
 #endif
     virtual bool updateScene() { return false;}
     virtual void setLevel(int /*level*/) {}
-    virtual void paint(QGraphicsScene*) {}
+    virtual void paint(EditScene*) {}
 signals:
     
 public slots:

@@ -42,18 +42,7 @@ private slots:
  /*private*/ void reporterDonePressed(/*@Nonnull*/ /*ActionEvent event*/);
  /*private*/ void reporterCancelPressed();
 
- friend class ERDWindowListener;
+ friend class MyWindowListener;
 };
 
-class ERDWindowListener : public WindowListener
-{
- Q_OBJECT
- EnterReporterDialog* dlg;
-public:
- ERDWindowListener(EnterReporterDialog* dlg) {this->dlg = dlg;}
- /*public*/ void windowClosing(QCloseEvent* event) {
-     dlg->reporterCancelPressed();
- }
-
-};
 #endif // ENTERREPORTERDIALOG_H

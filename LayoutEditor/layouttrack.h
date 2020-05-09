@@ -112,7 +112,8 @@ public:
   block,
   dashed
  };
- QGraphicsItemGroup* selectItemGroup(ITEMTYPE, bool isMain, bool isBlock);
+
+ //QGraphicsItemGroup* selectItemGroup(ITEMTYPE, bool isMain, bool isBlock);
  /**
   * rotate this LayoutTrack's coordinates by angleDEG's
   *
@@ -169,6 +170,7 @@ protected:
  friend class LayoutEditorAuxTools;
  friend class LayoutEditor;
  friend class TrackSegment;
+ friend class LayoutEditorChecks;
 };
 
 #endif // LAYOUTTRACK_H

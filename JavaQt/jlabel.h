@@ -269,7 +269,7 @@ public:
     /*public*/ int getHorizontalAlignment() ;
     void setLocation(double x, double y);
     void setLocation(int x, int y);
-    QPointF getLocation();
+    virtual QPointF getLocation();
 
     void setSize(double x, double y);
 //    int getX();

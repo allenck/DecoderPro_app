@@ -39,6 +39,12 @@
  // Check for Unnecessary Anchors
  checkUnnecessaryAnchorsMenu = new QMenu(tr("Unnecessary Anchors"));
 
+ // Check for Linear Bezier Track Segments
+ checkLinearBezierTrackSegmentsMenu = new QMenu(tr("Linear Bezier Track Segments"));
+
+ // Check for Fixed Radius Bezier Track Segments
+ checkFixedRadiusBezierTrackSegmentsMenu = new QMenu(tr("Fixed Radius Bezier Track Segments"));
+
  this->layoutEditor = layoutEditor;
 }
 
@@ -200,6 +206,64 @@ connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnC
 //        }
 //    });
  connect(checkUnnecessaryAnchorsMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnnecessaryAnchorsMenu()));
+
+ //
+ // Check for linear bezier track segments
+ //
+ checkLinearBezierTrackSegmentsMenu->setToolTip(tr("Select this to check if bezier track segments are linear (strait lines)"));
+ checkLinearBezierTrackSegmentsMenu->setToolTipsVisible(true);
+ checkLinearBezierTrackSegmentsMenu->addAction(checkInProgressMenuItem);
+ checkMenu->addMenu(checkLinearBezierTrackSegmentsMenu);
+
+// checkLinearBezierTrackSegmentsMenu.addMenuListener(new MenuListener() {
+//     @Override
+//     public void menuSelected(@Nonnull MenuEvent menuEvent) {
+ connect(checkLinearBezierTrackSegmentsMenu, &QMenu::aboutToShow, [=]{
+         log->debug("menuSelected");
+         setupCheckLinearBezierTrackSegmentsMenu();
+     });
+
+//     @Override
+//     public void menuDeselected(@Nonnull MenuEvent menuEvent) {
+//         log.debug("menuDeselected");
+//         //nothing to see here... move along...
+//     }
+
+//     @Override
+//     public void menuCanceled(@Nonnull MenuEvent menuEvent) {
+//         log.debug("menuCanceled");
+//         //nothing to see here... move along...
+//     }
+// });
+
+ //
+ // Check for fixed radius bezier track segments (circle arcs)
+ //
+ checkFixedRadiusBezierTrackSegmentsMenu->setToolTip(tr("Select this to check if bezier track segments are of fixed radius (arc of circle)"));
+ checkFixedRadiusBezierTrackSegmentsMenu->setToolTipsVisible(true);
+ checkFixedRadiusBezierTrackSegmentsMenu->addAction(checkInProgressMenuItem);
+ checkMenu->addMenu(checkFixedRadiusBezierTrackSegmentsMenu);
+
+// checkFixedRadiusBezierTrackSegmentsMenu.addMenuListener(new MenuListener() {
+//     @Override
+//     public void menuSelected(@Nonnull MenuEvent menuEvent) {
+ connect(checkFixedRadiusBezierTrackSegmentsMenu, &QMenu::aboutToShow, [=]{
+         log->debug("menuSelected");
+         setupCheckFixedRadiusBezierTrackSegmentsMenu();
+     });
+
+//     @Override
+//     public void menuDeselected(@Nonnull MenuEvent menuEvent) {
+//         log.debug("menuDeselected");
+//         //nothing to see here... move along...
+//     }
+
+//     @Override
+//     public void menuCanceled(@Nonnull MenuEvent menuEvent) {
+//         log.debug("menuCanceled");
+//         //nothing to see here... move along...
+//     }
+// });
 }
 
 void LayoutEditorChecks::onMenuSelected()
@@ -553,28 +617,255 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onCheckUnnecessaryAnchorsMenu()
         checkUnnecessaryAnchorsMenu->addAction(checkNoResultsMenuItem);
     }
 }   // setupCheckUnnecessaryAnchorsMenu
-#if 0
+
 //
 // action to be performed when CheckUnnecessaryAnchorsMenu item is clicked
 //
-/*private*/ void doCheckUnnecessaryAnchorsMenuItem(
-        @Nonnull String anchorName) {
-    log.debug("doCheckUnnecessaryAnchorsMenuItem({})", anchorName);
+/*private*/ void LayoutEditorChecks::doCheckUnnecessaryAnchorsMenuItem(
+     /*@Nonnull*/ QString anchorName) {
+ log->debug(tr("doCheckUnnecessaryAnchorsMenuItem(%1)").arg(anchorName));
 
-    LayoutTrack layoutTrack = layoutEditor.getFinder().findObjectByName(anchorName);
-    if (layoutTrack != null) {
-        layoutEditor.setSelectionRect(layoutTrack.getBounds());
+ LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(anchorName);
+ if (layoutTrack != nullptr) {
+     layoutEditor->setSelectionRect(layoutTrack->getBounds());
+     // setSelectionRect calls createSelectionGroups...
+     // so we have to clear it before amending to it
+     layoutEditor->clearSelectionGroups();
+     layoutEditor->amendSelectionGroup(layoutTrack);
+     // show its popup menu
+     layoutTrack->showPopup();
+ } else {
+     layoutEditor->clearSelectionGroups();
+ }
+}   // doCheckUnnecessaryAnchorsMenuItem
+
+//
+// run the linear bezier track segments check and
+// populate the checkLinearBezierTrackSegmentsMenu
+//
+/*private*/ void LayoutEditorChecks::setupCheckLinearBezierTrackSegmentsMenu() {
+    log->debug("setupCheckLinearBezierTrackSegmentsMenu");
+
+    // collect the names of all menu items with checkmarks
+    QSet<QString> checkMarkedMenuItemNamesSet = getCheckMarkedMenuItemNames(checkLinearBezierTrackSegmentsMenu);
+    // mark our menu as "in progress..."
+    checkLinearBezierTrackSegmentsMenu->clear();
+    checkLinearBezierTrackSegmentsMenu->addAction(checkInProgressMenuItem);
+
+    // check all TrackSegments
+    QList<TrackSegment*> linearBezierTrackSegments;// = new ArrayList<>();
+    for (TrackSegment* ts : layoutEditor->getTrackSegments()) {
+        // has to be a bezier
+        if (ts->isBezier()) {
+//                if (ts.getName().equals("T104")) {
+//                    log.debug("T104");
+//                }
+            // adjacent connections must be defined...
+            LayoutTrack* c1 = ts->getConnect1();
+            LayoutTrack* c2 = ts->getConnect2();
+            if ((c1 != nullptr) && (c2 != nullptr)) {
+                // if length is zero...
+                QPointF end1 = LayoutEditor::getCoords(ts->getConnect1(), ts->getType1());
+                QPointF end2 = LayoutEditor::getCoords(ts->getConnect2(), ts->getType2());
+                if (MathUtil::distance(end1, end2) <= 4.0) {
+                    linearBezierTrackSegments.append(ts);
+                    continue;   // so we don't get added again
+                }
+                // if control points are collinear...
+                bool good = true; //assume success (optimist!)
+                for (QPointF cp : ts->getBezierControlPoints()) {
+                    if (qAbs(MathUtil::distance(end1, end2, cp)) > 1.0) {
+                        good = false;
+                        break;
+                    }
+                }
+                if (good) {
+                    linearBezierTrackSegments.append(ts);
+//                        ts.setBezier(false);
+                }
+            }   // c1 & c2 aren't null
+        }   // is bezier
+    }   // for ts
+
+    // clear the "in progress..." menu item
+    checkLinearBezierTrackSegmentsMenu->clear();
+    // if we didn't find any...
+    if (linearBezierTrackSegments.size() == 0) {
+        checkLinearBezierTrackSegmentsMenu->addAction(checkNoResultsMenuItem);
+    } else {
+        // for each linear bezier track segment we found
+        for (TrackSegment* ts : linearBezierTrackSegments) {
+            QString name = ts->getName();
+            QAction* jmi = new QAction(name, this);
+            jmi->setCheckable(true);
+            checkLinearBezierTrackSegmentsMenu->addAction(jmi);
+            //jmi.addActionListener((ActionEvent event) -> {
+            connect(jmi, &QAction::triggered, [=]{
+                doCheckLinearBezierTrackSegmentsMenuItem(name);
+            });
+
+            // if it's in the check marked set then (re-)checkmark it
+            if (checkMarkedMenuItemNamesSet.contains(name)) {
+                jmi->setChecked(true);
+            }
+            //ts.setBezier(false);
+        }
+    }   //count == 0
+}   // setupCheckLinearBezierTrackSegmentsMenu
+
+//
+// action to be performed when checkLinearBezierTrackSegmentsMenu item is clicked
+//
+/*private*/ void LayoutEditorChecks::doCheckLinearBezierTrackSegmentsMenuItem(
+        /*@Nonnull*/ QString trackSegmentName) {
+    log->debug(tr("doCheckLinearBezierTrackSegmentsMenuItem(%1)").arg(trackSegmentName));
+
+    LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(trackSegmentName);
+    if (layoutTrack != nullptr) {
+        layoutEditor->setSelectionRect(layoutTrack->getBounds());
         // setSelectionRect calls createSelectionGroups...
         // so we have to clear it before amending to it
-        layoutEditor.clearSelectionGroups();
-        layoutEditor.amendSelectionGroup(layoutTrack);
+        layoutEditor->clearSelectionGroups();
+        layoutEditor->amendSelectionGroup(layoutTrack);
         // show its popup menu
-        layoutTrack.showPopup();
+        layoutTrack->showPopup();
     } else {
-        layoutEditor.clearSelectionGroups();
+        layoutEditor->clearSelectionGroups();
     }
-}   // doCheckUnnecessaryAnchorsMenuItem
-#endif
+}   // doCheckLinearBezierTrackSegmentsMenuItem
+
+//
+// run the linear bezier track segments check and
+// populate the checkFixedRadiusBezierTrackSegmentsMenu
+//
+/*private*/ void LayoutEditorChecks::setupCheckFixedRadiusBezierTrackSegmentsMenu() {
+    log->debug("setupCheckFixedRadiusBezierTrackSegmentsMenu");
+
+    // collect the names of all menu items with checkmarks
+    QSet<QString> checkMarkedMenuItemNamesSet = getCheckMarkedMenuItemNames(checkFixedRadiusBezierTrackSegmentsMenu);
+    // mark our menu as "in progress..."
+    checkFixedRadiusBezierTrackSegmentsMenu->clear();
+    checkFixedRadiusBezierTrackSegmentsMenu->addAction(checkInProgressMenuItem);
+
+    // check all TrackSegments
+    QList<TrackSegment*> linearBezierTrackSegments = QList<TrackSegment*>();
+    for (TrackSegment* ts : layoutEditor->getTrackSegments()) {
+        // has to be a bezier
+        if (ts->isBezier()) {
+            // adjacent connections must be defined...
+            LayoutTrack* c1 = ts->getConnect1();
+            LayoutTrack* c2 = ts->getConnect2();
+            if ((c1 != nullptr) && (c2 != nullptr)) {
+                QPointF end1 = LayoutEditor::getCoords(c1, ts->getType1());
+                QPointF end2 = LayoutEditor::getCoords(c2, ts->getType2());
+                double chordLength = MathUtil::distance(end1, end2);
+                if (chordLength <= 4.0) {
+                    continue;   //skip short segments
+                }
+
+                //get first and last control points
+                int cnt = ts->getNumberOfBezierControlPoints();
+                if (cnt > 0) {
+                    QPointF cp0 = ts->getBezierControlPoint(0);
+                    QPointF cpN = ts->getBezierControlPoint(cnt - 1);
+                    //calculate orthoginal points
+                    QPointF op1 = MathUtil::add(end1, MathUtil::orthogonal(MathUtil::subtract(cp0, end1)));
+                    QPointF op2 = MathUtil::subtract(end2, MathUtil::orthogonal(MathUtil::subtract(cpN, end2)));
+                    //use them to find center point
+                    QPointF ip = MathUtil::intersect(end1, op1, end2, op2);
+                    if (!ip.isNull()) {   //single intersection point found
+                        double r1 = MathUtil::distance(ip, end1);
+                        double r2 = MathUtil::distance(ip, end2);
+                        if (qAbs(r1 - r2) <= 1.0) {
+                            // the sign of the distance tells what side of the line the center point is on
+                            //double ipSide = Math.signum(MathUtil.distance(end1, end2, ip));
+                            double ipSide;
+                            if(MathUtil::distance(end1, end2, ip)>0) ipSide = 1;
+                            if(MathUtil::distance(end1, end2, ip)<0) ipSide = -1;
+
+                            // if all control midpoints are equal distance from intersection point
+                            bool good = true; //assume success (optimist!)
+
+                            for (int idx = 0; idx < cnt - 1; idx++) {
+                                QPointF cp1 = ts->getBezierControlPoint(idx);
+                                QPointF cp2 = ts->getBezierControlPoint(idx + 1);
+                                QPointF mp = MathUtil::midPoint(cp1, cp2);
+                                double rM = MathUtil::distance(ip, mp);
+                                if (qAbs(r1 - rM) > 1.0) {
+                                    good = false;
+                                    break;
+                                }
+                                // the sign of the distance tells what side of line the midpoint is on
+                                //double cpSide = qSignum(MathUtil::distance(end1, end2, mp));
+                                double cpSide;
+                                if(MathUtil::distance(end1, end2, mp)>0) cpSide = 1;
+                                if(MathUtil::distance(end1, end2, mp)<0) cpSide = -1;
+                                if (MathUtil::equals(ipSide, cpSide)) {
+                                    //can't be on same side as center point (if so then not circular)
+                                    good = false;
+                                    break;
+                                }
+                            }
+                            if (good) {
+                                linearBezierTrackSegments.append(ts);
+                                ts->setCircle(true);
+                            }
+                        } else {
+                            log->error("checkFixedRadiusBezierTrackSegments(): unequal radius");
+                        }
+                    }
+                }
+            }   // c1 & c2 aren't null
+        }   // is bezier
+    }   // for ts
+
+    // clear the "in progress..." menu item
+    checkFixedRadiusBezierTrackSegmentsMenu->clear();
+    // if we didn't find any...
+    if (checkFixedRadiusBezierTrackSegmentsMenu->actions().count() == 0) {
+        checkFixedRadiusBezierTrackSegmentsMenu->addAction(checkNoResultsMenuItem);
+    } else {
+        // for each linear bezier track segment we found
+        for (TrackSegment* ts : linearBezierTrackSegments) {
+            QString name = ts->getName();
+            QAction* jmi = new QAction(name, this);
+            jmi->setCheckable(true);
+            checkFixedRadiusBezierTrackSegmentsMenu->addAction(jmi);
+            //jmi.addActionListener((ActionEvent event) -> {
+            connect(jmi, &QAction::triggered, [=]{
+                doCheckFixedRadiusBezierTrackSegmentsMenuItem(name);
+            });
+
+            // if it's in the check marked set then (re-)checkmark it
+            if (checkMarkedMenuItemNamesSet.contains(name)) {
+                jmi->setChecked(true);
+            }
+            ///ts.setBezier(false);
+        }
+    }   //count == 0
+}   // setupCheckFixedRadiusBezierTrackSegmentsMenu
+
+//
+// action to be performed when checkFixedRadiusBezierTrackSegmentsMenu item is clicked
+//
+/*private*/ void LayoutEditorChecks::doCheckFixedRadiusBezierTrackSegmentsMenuItem(
+        /*@Nonnull*/ QString trackSegmentName) {
+    log->debug(tr("doCheckFixedRadiusBezierTrackSegmentsMenuItem({})").arg(trackSegmentName));
+
+    LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(trackSegmentName);
+    if (layoutTrack != nullptr) {
+        layoutEditor->setSelectionRect(layoutTrack->getBounds());
+        // setSelectionRect calls createSelectionGroups...
+        // so we have to clear it before amending to it
+        layoutEditor->clearSelectionGroups();
+        layoutEditor->amendSelectionGroup(layoutTrack);
+        // show its popup menu
+        layoutTrack->showPopup();
+    } else {
+        layoutEditor->clearSelectionGroups();
+    }
+}   // doCheckFixedRadiusBezierTrackSegmentsMenuItem
+
 //
 // collect the names of all checkbox menu items with checkmarks
 //

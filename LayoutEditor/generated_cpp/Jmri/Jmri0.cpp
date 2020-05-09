@@ -48,6 +48,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -31905,6 +31906,39 @@ if (_wrapper) {
 }
   ControlPanelEditor::customEvent(event0);
 }
+bool  PythonQtShell_ControlPanelEditor::deletePanel()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("deletePanel");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("deletePanel", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return ControlPanelEditor::deletePanel();
+}
 int  PythonQtShell_ControlPanelEditor::devType() const
 {
 if (_wrapper) {
@@ -32664,6 +32698,28 @@ if (_wrapper) {
 }
   return ControlPanelEditor::minimumSizeHint();
 }
+void PythonQtShell_ControlPanelEditor::mouseClicked(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseClicked");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::mouseClicked(event0);
+}
 void PythonQtShell_ControlPanelEditor::mouseDoubleClickEvent(QMouseEvent*  event0)
 {
 if (_wrapper) {
@@ -32685,6 +32741,72 @@ if (_wrapper) {
   }
 }
   ControlPanelEditor::mouseDoubleClickEvent(event0);
+}
+void PythonQtShell_ControlPanelEditor::mouseDragged(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseDragged");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::mouseDragged(event0);
+}
+void PythonQtShell_ControlPanelEditor::mouseEntered(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseEntered");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::mouseEntered(event0);
+}
+void PythonQtShell_ControlPanelEditor::mouseExited(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseExited");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::mouseExited(event0);
 }
 void PythonQtShell_ControlPanelEditor::mouseMoveEvent(QMouseEvent*  event0)
 {
@@ -32708,6 +32830,28 @@ if (_wrapper) {
 }
   ControlPanelEditor::mouseMoveEvent(event0);
 }
+void PythonQtShell_ControlPanelEditor::mouseMoved(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseMoved");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::mouseMoved(event0);
+}
 void PythonQtShell_ControlPanelEditor::mousePressEvent(QMouseEvent*  event0)
 {
 if (_wrapper) {
@@ -32730,6 +32874,28 @@ if (_wrapper) {
 }
   ControlPanelEditor::mousePressEvent(event0);
 }
+void PythonQtShell_ControlPanelEditor::mousePressed(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mousePressed");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::mousePressed(event0);
+}
 void PythonQtShell_ControlPanelEditor::mouseReleaseEvent(QMouseEvent*  event0)
 {
 if (_wrapper) {
@@ -32751,6 +32917,28 @@ if (_wrapper) {
   }
 }
   ControlPanelEditor::mouseReleaseEvent(event0);
+}
+void PythonQtShell_ControlPanelEditor::mouseReleased(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseReleased");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ControlPanelEditor::mouseReleased(event0);
 }
 void PythonQtShell_ControlPanelEditor::moveEvent(QMoveEvent*  e0)
 {
@@ -33701,16 +33889,6 @@ void PythonQtWrapper_ControlPanelEditor::makeWarrantMenu(ControlPanelEditor* the
 void PythonQtWrapper_ControlPanelEditor::makeZoomMenu(ControlPanelEditor* theWrappedObject)
 {
   ( ((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->promoted_makeZoomMenu());
-}
-
-void PythonQtWrapper_ControlPanelEditor::mouseEntered(ControlPanelEditor* theWrappedObject, QGraphicsSceneMouseEvent*  event)
-{
-  ( theWrappedObject->mouseEntered(event));
-}
-
-void PythonQtWrapper_ControlPanelEditor::mouseExited(ControlPanelEditor* theWrappedObject, QGraphicsSceneMouseEvent*  event)
-{
-  ( theWrappedObject->mouseExited(event));
 }
 
 void PythonQtWrapper_ControlPanelEditor::resetEditor(ControlPanelEditor* theWrappedObject)
