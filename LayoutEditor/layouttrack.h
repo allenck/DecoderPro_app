@@ -81,10 +81,9 @@ public:
  /*public*/ virtual bool isDisconnected(int connectionType);
  /*public*/ /*abstract*/ virtual QList<int> checkForFreeConnections();
  /*public*/ /*abstract*/ virtual bool checkForUnAssignedBlocks();
- /*public*/ /*abstract*/ virtual void checkForNonContiguousBlocks(
-         /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetMaps);
+ /*public*/ /*abstract*/ virtual void checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetMaps);
  /*public*/ /*abstract*/ virtual void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-         /*@Nonnull*/ QSet<QString> trackNameSet);
+         /*@Nonnull*/ QSet<QString> *trackNameSet);
  /*public*/ /*abstract*/ virtual void setAllLayoutBlocks(LayoutBlock* /*layoutBlock*/);
  QGraphicsItemGroup* item = nullptr;
  QGraphicsItemGroup* itemMain = nullptr;
@@ -113,7 +112,6 @@ public:
   dashed
  };
 
- //QGraphicsItemGroup* selectItemGroup(ITEMTYPE, bool isMain, bool isBlock);
  /**
   * rotate this LayoutTrack's coordinates by angleDEG's
   *
@@ -138,7 +136,7 @@ protected:
  /*protected*/ static /*final*/ double controlPointSize2;// = 2.0 * controlPointSize; // LayoutEditor.SIZE2;
  /*protected*/ static QColor defaultTrackColor;// = Color.black;
  /*protected*/ /*abstract*/ virtual void reCheckBlockBoundary() const;
- /*protected*/ /*abstract*/ virtual QList<LayoutConnectivity*> getLayoutConnectivity();
+ /*protected*/ /*abstract*/ virtual QList<LayoutConnectivity*>* getLayoutConnectivity();
  /*protected*/ /*abstract*/ virtual QMenu* showPopup(/*@Nullable */QGraphicsSceneMouseEvent* mouseEvent);
  /*protected*/ QMenu* showPopup(QPointF where);
  /*protected*/ QMenu* showPopup();

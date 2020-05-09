@@ -47,9 +47,8 @@ private:
  /*private*/ void setupCheckUnConnectedTracksMenu();
  /*private*/ void setupCheckUnBlockedTracksMenu();
  /*private*/ void setupCheckNonContiguousBlocksMenu();
- /*private*/ void doCheckNonContiguousBlocksMenuItem(
-         /*@Nonnull*/ QString blockName,
-         /*@Nullable*/ QSet<QString> trackNameSet);
+ /*private*/ void doCheckNonContiguousBlocksMenuItem(/*@Nonnull*/ QString blockName,
+         /*@Nullable*/ QSet<QString> *trackNameSet);
  /*private*/ void setupCheckUnnecessaryAnchorsMenu();
  /*private*/ void doCheckUnnecessaryAnchorsMenuItem(
          /*@Nonnull*/ QString anchorName);
@@ -61,11 +60,6 @@ private:
 private slots:
  /*private*/ void doCheckUnConnectedTracksMenuItem(/*@Nonnull String menuItemName*/);
  /*private*/ void doCheckUnBlockedTracksMenuItem(/*@Nonnull String menuItemName*/) ;
- void onMenuSelected();
- void onCheckUnConnectedTracksMenuSelected();
- void onCheckUnBlockedTracksMenu();
- void onCheckNonContiguousBlocksMenu();
- void onCheckUnnecessaryAnchorsMenu();
 
 protected:
  /*protected*/ void setupChecksMenu(/*@Nonnull*/ QMenu* toolsMenu);
@@ -73,15 +67,15 @@ protected:
  friend class SubMenuActionListener;
 };
 
-class SubMenuActionListener : public ActionListener
-{
- Q_OBJECT
- LayoutEditorChecks* layoutEditorChecks;
- QString blockName;
- QSet<QString> trackNameSet;
-public:
- SubMenuActionListener(QString blockName, QSet<QString> trackNameSet, LayoutEditorChecks* layoutEditorChecks);
-public slots:
- void actionPerformed();
-};
+//class SubMenuActionListener : public ActionListener
+//{
+// Q_OBJECT
+// LayoutEditorChecks* layoutEditorChecks;
+// QString blockName;
+// QSet<QString> trackNameSet;
+//public:
+// SubMenuActionListener(QString blockName, QSet<QString> trackNameSet, LayoutEditorChecks* layoutEditorChecks);
+//public slots:
+// void actionPerformed();
+//};
 #endif // LAYOUTEDITORCHECKS_H

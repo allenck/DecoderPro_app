@@ -331,9 +331,9 @@ public:
  /*public*/ QRectF getBounds() override;
  /*public*/ QList<int> checkForFreeConnections() override;
  /*public*/ bool checkForUnAssignedBlocks() override;
- /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) override;
+ /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetsMap) override;
  /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-   /*@Nonnull*/ QSet<QString> TrackNameSet) override;
+   /*@Nonnull*/ QSet<QString>* TrackNameSet) override;
  /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock) override;
  /*public*/ void setState(int state);
  /*public*/ int getState();
@@ -466,7 +466,7 @@ protected:
  /*protected*/ LayoutBlock* block;// = NULL;
  /*protected*/ void rotateCoords(double angleDEG);
  /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e) override;
- /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity() override;
+ /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity() override;
 
  /*protected*/ JmriJFrame* editLayoutTurnoutFrame;// = NULL;
  /*protected*/ JTextField* blockNameField;// = new QLineEdit(16);

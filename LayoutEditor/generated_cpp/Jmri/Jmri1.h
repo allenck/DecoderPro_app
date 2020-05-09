@@ -79,7 +79,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2149,9 +2148,9 @@ public:
    ~PythonQtShell_LayoutTurnout();
 
 virtual QList<int >  checkForFreeConnections();
-virtual void checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap);
+virtual void checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap);
 virtual bool  checkForUnAssignedBlocks();
-virtual void collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >  TrackNameSet);
+virtual void collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >*  TrackNameSet);
 virtual void drawEditControls(EditScene*  g2);
 virtual void drawTurnoutControls(EditScene*  g2);
 virtual int  findHitPointType(QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected);
@@ -2182,9 +2181,9 @@ inline void promoted_rotateCoords(double  angleDEG) { this->rotateCoords(angleDE
 inline QPointF  promoted_rotatePoint(QPointF  p, double  sineAng, double  cosineAng) { return this->rotatePoint(p, sineAng, cosineAng); }
 inline QMenu*  promoted_showPopup(QGraphicsSceneMouseEvent*  e) { return this->showPopup(e); }
 inline QList<int >  py_q_checkForFreeConnections() { return LayoutTurnout::checkForFreeConnections(); }
-inline void py_q_checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap) { LayoutTurnout::checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap); }
+inline void py_q_checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap) { LayoutTurnout::checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap); }
 inline bool  py_q_checkForUnAssignedBlocks() { return LayoutTurnout::checkForUnAssignedBlocks(); }
-inline void py_q_collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >  TrackNameSet) { LayoutTurnout::collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet); }
+inline void py_q_collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<QString >*  TrackNameSet) { LayoutTurnout::collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet); }
 inline void py_q_drawEditControls(EditScene*  g2) { LayoutTurnout::drawEditControls(g2); }
 inline void py_q_drawTurnoutControls(EditScene*  g2) { LayoutTurnout::drawTurnoutControls(g2); }
 inline int  py_q_findHitPointType(QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected) { return LayoutTurnout::findHitPointType(hitPoint, useRectangles, requireUnconnected); }
@@ -2213,12 +2212,12 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    void addViewPopUpMenu(LayoutTurnout* theWrappedObject, QObject*  menu);
    QList<int >  checkForFreeConnections(LayoutTurnout* theWrappedObject);
    QList<int >  py_q_checkForFreeConnections(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForFreeConnections());}
-   void checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap);
-   void py_q_checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap));}
+   void checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap);
+   void py_q_checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap));}
    bool  checkForUnAssignedBlocks(LayoutTurnout* theWrappedObject);
    bool  py_q_checkForUnAssignedBlocks(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForUnAssignedBlocks());}
-   void collectContiguousTracksNamesInBlockNamed(LayoutTurnout* theWrappedObject, QString  blockName, QSet<QString >  TrackNameSet);
-   void py_q_collectContiguousTracksNamesInBlockNamed(LayoutTurnout* theWrappedObject, QString  blockName, QSet<QString >  TrackNameSet){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet));}
+   void collectContiguousTracksNamesInBlockNamed(LayoutTurnout* theWrappedObject, QString  blockName, QSet<QString >*  TrackNameSet);
+   void py_q_collectContiguousTracksNamesInBlockNamed(LayoutTurnout* theWrappedObject, QString  blockName, QSet<QString >*  TrackNameSet){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet));}
    void dispose(LayoutTurnout* theWrappedObject);
    void drawEditControls(LayoutTurnout* theWrappedObject, EditScene*  g2);
    void py_q_drawEditControls(LayoutTurnout* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_drawEditControls(g2));}
@@ -2403,6 +2402,8 @@ void py_set_dispA(LayoutTurnout* theWrappedObject, QPointF  dispA){ theWrappedOb
 QPointF  py_get_dispA(LayoutTurnout* theWrappedObject){ return theWrappedObject->dispA; }
 void py_set_dispB(LayoutTurnout* theWrappedObject, QPointF  dispB){ theWrappedObject->dispB = dispB; }
 QPointF  py_get_dispB(LayoutTurnout* theWrappedObject){ return theWrappedObject->dispB; }
+void py_set_itemGroup(LayoutTurnout* theWrappedObject, QGraphicsItemGroup*  itemGroup){ theWrappedObject->itemGroup = itemGroup; }
+QGraphicsItemGroup*  py_get_itemGroup(LayoutTurnout* theWrappedObject){ return theWrappedObject->itemGroup; }
 void py_set_linkType(LayoutTurnout* theWrappedObject, int  linkType){ theWrappedObject->linkType = linkType; }
 int  py_get_linkType(LayoutTurnout* theWrappedObject){ return theWrappedObject->linkType; }
 void py_set_linkedTurnoutName(LayoutTurnout* theWrappedObject, QString  linkedTurnoutName){ theWrappedObject->linkedTurnoutName = linkedTurnoutName; }

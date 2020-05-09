@@ -153,6 +153,12 @@ public:
     /*public*/ void setAdditionalEditPopUpMenu(QMenu* popup);
     /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
     /*public*/ void translateCoords(double xFactor, double yFactor)override;
+    /*public*/ QList<int> checkForFreeConnections() override;
+    /*public*/ bool checkForUnAssignedBlocks() override;
+    /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap) override;
+    /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
+            /*@Nonnull*/ QSet<QString>* TrackNameSet);
+    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
 
 signals:
     
@@ -234,6 +240,7 @@ private:
  QGraphicsItemGroup* rects;
  Logger log;
  /*private*/ void updateBlockInfo();
+ void removeSML(SignalMast* signalMast);
  /*final*/ QVector<QString>* boundaryBetween;
  QGraphicsItemGroup* itemGroup =nullptr;
 
@@ -274,6 +281,7 @@ protected:
 /*protected*/ void drawEditControls(EditScene* g2)override;
 /*protected*/ void drawTurnoutControls(EditScene* g2)override;
 /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected)override;
+/*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity() override;
 
 friend class LayoutEditor;
 friend class LoadXml;

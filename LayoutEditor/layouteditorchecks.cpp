@@ -29,21 +29,26 @@
 
  // Check for Un-Connected Tracks
  checkUnConnectedTracksMenu = new QMenu(tr("Un-Connected Tracks"));
-
+ checkUnConnectedTracksMenu->setEnabled(false);
  // Check for Un-Blocked Tracks
  checkUnBlockedTracksMenu = new QMenu(tr("Un-Blocked Tracks"));
+ checkUnBlockedTracksMenu->setEnabled(false);
 
  // Check for Non-Contiguous Blocks
  checkNonContiguousBlocksMenu = new QMenu(tr("Non-Contiguous Blocks"));
+ checkNonContiguousBlocksMenu->setEnabled(false);
 
  // Check for Unnecessary Anchors
  checkUnnecessaryAnchorsMenu = new QMenu(tr("Unnecessary Anchors"));
+ checkUnnecessaryAnchorsMenu->setEnabled(false);
 
  // Check for Linear Bezier Track Segments
  checkLinearBezierTrackSegmentsMenu = new QMenu(tr("Linear Bezier Track Segments"));
+ checkLinearBezierTrackSegmentsMenu->setEnabled(false);
 
  // Check for Fixed Radius Bezier Track Segments
  checkFixedRadiusBezierTrackSegmentsMenu = new QMenu(tr("Fixed Radius Bezier Track Segments"));
+ checkFixedRadiusBezierTrackSegmentsMenu->setEnabled(false);
 
  this->layoutEditor = layoutEditor;
 }
@@ -58,13 +63,16 @@
 //    checkMenu.addMenuListener(new MenuListener() {
 //        @Override
 //        /*public*/ void menuSelected(@Nonnull MenuEvent menuEvent) {
-//            log.debug("menuSelected");
-//            boolean enabled = layoutEditor.isEditable();
-//            checkUnConnectedTracksMenu.setEnabled(enabled);
-//            checkUnBlockedTracksMenu.setEnabled(enabled);
-//            checkNonContiguousBlocksMenu.setEnabled(enabled);
-//            checkUnnecessaryAnchorsMenu.setEnabled(enabled);
-//        }
+    connect(checkMenu, &QMenu::aboutToShow, [=]{
+            log->debug("menuSelected");
+            bool enabled = layoutEditor->isEditable();
+            checkUnConnectedTracksMenu->setEnabled(enabled);
+            checkUnBlockedTracksMenu->setEnabled(enabled);
+//            checkNonContiguousBlocksMenu->setEnabled(enabled);
+            checkUnnecessaryAnchorsMenu->setEnabled(enabled);
+            checkLinearBezierTrackSegmentsMenu->setEnabled(enabled);
+            checkFixedRadiusBezierTrackSegmentsMenu->setEnabled(enabled);
+        });
 
 //        @Override
 
@@ -80,7 +88,7 @@
 //        }
 //    }
 //    );
-    connect(checkMenu, SIGNAL(aboutToShow()), this, SLOT(onMenuSelected()));
+
     checkMenu->setEnabled(layoutEditor->isEditable());
     checkMenu->setToolTip(tr("Select this menu to run layout editor checks"));
     checkMenu->setToolTipsVisible(true);
@@ -106,9 +114,10 @@
 //    checkUnConnectedTracksMenu.addMenuListener(new MenuListener() {
 //        @Override
 //        /*public*/ void menuSelected(@Nonnull MenuEvent menuEvent) {
-//            log.debug("menuSelected");
-//            setupCheckUnConnectedTracksMenu();
-//        }
+    connect(checkUnConnectedTracksMenu, &QMenu::aboutToShow, [=]{
+            log->debug("menuSelected");
+            setupCheckUnConnectedTracksMenu();
+        });
 
 //        @Override
 //        /*public*/ void menuDeselected(@Nonnull MenuEvent menuEvent) {
@@ -122,7 +131,7 @@
 //            //nothing to see here... move along...
 //        }
 //    });
-connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnConnectedTracksMenuSelected()));
+ \
     //
     //  check for tracks without assigned blocks
     //
@@ -134,9 +143,10 @@ connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnC
 //    checkUnBlockedTracksMenu.addMenuListener(new MenuListener() {
 //        @Override
 //        /*public*/ void menuSelected(@Nonnull MenuEvent menuEvent) {
-//            log.debug("menuSelected");
-//            setupCheckUnBlockedTracksMenu();
-//        }
+    connect(checkUnBlockedTracksMenu, &QMenu::aboutToShow, [=]{
+            log->debug("menuSelected");
+            setupCheckUnBlockedTracksMenu();
+        });
 
 //        @Override
 //        /*public*/ void menuDeselected(@Nonnull MenuEvent menuEvent) {
@@ -161,9 +171,10 @@ connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnC
 //    checkNonContiguousBlocksMenu.addMenuListener(new MenuListener() {
 //        @Override
 //        /*public*/ void menuSelected(@Nonnull MenuEvent menuEvent) {
-//            log.debug("menuSelected");
-//            setupCheckNonContiguousBlocksMenu();
-//        }
+    connect(checkNonContiguousBlocksMenu, &QMenu::aboutToShow, [=]{
+            log->debug("menuSelected");
+            setupCheckNonContiguousBlocksMenu();
+        });
 
 //        @Override
 //        /*public*/ void menuDeselected(@Nonnull MenuEvent menuEvent) {
@@ -177,7 +188,6 @@ connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnC
 //            //nothing to see here... move along...
 //        }
 //    });
-    connect(checkNonContiguousBlocksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckNonContiguousBlocksMenu()));
 
     //
     // Check for Unnecessary Anchors
@@ -189,9 +199,10 @@ connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnC
 //    checkUnnecessaryAnchorsMenu.addMenuListener(new MenuListener() {
 //        @Override
 //        /*public*/ void menuSelected(@Nonnull MenuEvent menuEvent) {
-//            log.debug("menuSelected");
-//            setupCheckUnnecessaryAnchorsMenu();
-//        }
+    connect(checkUnnecessaryAnchorsMenu, &QMenu::aboutToShow, [=]{
+            log->debug("menuSelected");
+            setupCheckUnnecessaryAnchorsMenu();
+        });
 
 //        @Override
 //        /*public*/ void menuDeselected(@Nonnull MenuEvent menuEvent) {
@@ -205,7 +216,6 @@ connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnC
 //            //nothing to see here... move along...
 //        }
 //    });
- connect(checkUnnecessaryAnchorsMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnnecessaryAnchorsMenu()));
 
  //
  // Check for linear bezier track segments
@@ -266,39 +276,7 @@ connect(checkUnConnectedTracksMenu, SIGNAL(aboutToShow()), this, SLOT(onCheckUnC
 // });
 }
 
-void LayoutEditorChecks::onMenuSelected()
-{
- log->debug("menuSelected");
- bool enabled = layoutEditor->isEditable();
- checkUnConnectedTracksMenu->setEnabled(enabled);
- checkUnBlockedTracksMenu->setEnabled(enabled);
- checkNonContiguousBlocksMenu->setEnabled(enabled);
- checkUnnecessaryAnchorsMenu->setEnabled(enabled);
-}
 
-void LayoutEditorChecks::onCheckUnConnectedTracksMenuSelected()
-{
- log->debug("menuSelected");
- setupCheckUnConnectedTracksMenu();
-}
-
-void LayoutEditorChecks::onCheckUnBlockedTracksMenu()
-{
- log->debug("menuSelected");
- setupCheckUnBlockedTracksMenu();
-}
-
-void LayoutEditorChecks::onCheckNonContiguousBlocksMenu()
-{
-  log->debug("menuSelected");
-  setupCheckNonContiguousBlocksMenu();
-}
-
-void LayoutEditorChecks::onCheckUnnecessaryAnchorsMenu()
-{
- log->debug("menuSelected");
- setupCheckUnnecessaryAnchorsMenu();
-}
 //
 // run the un-connected tracks check and populate the checkUnConnectedTracksMenu
 //
@@ -443,9 +421,9 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
     // mark our menu as "in progress..."
     checkNonContiguousBlocksMenu->clear();
     checkNonContiguousBlocksMenu->addAction(checkInProgressMenuItem);
-
+#if 1
     // collect all contiguous blocks
-    QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetMaps =  QMap<QString, QList<QSet<QString> > >();
+    QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetMaps =  new QMap<QString, QList<QSet<QString>*>*>();
     for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
         layoutTrack->checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps);
     }
@@ -455,63 +433,66 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 
     // for each bad block we found...
     //for (Map.Entry<String, List<Set<String>>> entry : blockNamesToTrackNameSetMaps.entrySet())
-    QMapIterator<QString, QList<QSet<QString> > > entry(blockNamesToTrackNameSetMaps);
+    QMapIterator<QString, QList<QSet<QString>*>*> entry(*blockNamesToTrackNameSetMaps);
     while(entry.hasNext())
     {
      entry.next();
         QString blockName = entry.key();
-        QList<QSet<QString> > trackNameSets = entry.value();
-        if (trackNameSets.size() > 1) {
+        QList<QSet<QString>*>* trackNameSets = entry.value();
+        if (trackNameSets->size() > 1) {
             QMenu* jmi = new QMenu(blockName);
             checkNonContiguousBlocksMenu->addMenu(jmi);
 
             int idx = 1;
-            for (QSet<QString> trackNameSet : trackNameSets) {
+            for (QSet<QString>* trackNameSet : *trackNameSets) {
                 QAction* subMenuItem = new QAction(
                         tr("MakeLabel %1").arg(blockName) + "#" + QString::number(idx++),this);
                 jmi->addAction(subMenuItem);
 //                subMenuItem.addActionListener((ActionEvent event) -> {
-//                    doCheckNonContiguousBlocksMenuItem(blockName, trackNameSet);
-//                });
-                SubMenuActionListener* listener = new SubMenuActionListener(blockName, trackNameSet, this);
-                connect(subMenuItem, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
+                connect(subMenuItem, &QAction::triggered, [=]{
+                    doCheckNonContiguousBlocksMenuItem(blockName, trackNameSet);
+                });
+//                SubMenuActionListener* listener = new SubMenuActionListener(blockName, trackNameSet, this);
+//                connect(subMenuItem, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
             }
         }
     }
+#endif
     // if we didn't find any...
     if (checkNonContiguousBlocksMenu->children().count() == 0) {
         checkNonContiguousBlocksMenu->addAction(checkNoResultsMenuItem);
     }
 }   // setupCheckNonContiguousBlocksMenu
 
-SubMenuActionListener::SubMenuActionListener(QString blockName, QSet<QString> trackNameSet, LayoutEditorChecks *layoutEditorChecks)
-{
- this->blockName = blockName;
- this->trackNameSet = trackNameSet;
- this->layoutEditorChecks = layoutEditorChecks;
-}
-void SubMenuActionListener::actionPerformed()
-{
- layoutEditorChecks->doCheckNonContiguousBlocksMenuItem(blockName, trackNameSet);
-}
+//SubMenuActionListener::SubMenuActionListener(QString blockName, QSet<QString> trackNameSet, LayoutEditorChecks *layoutEditorChecks)
+//{
+// this->blockName = blockName;
+// this->trackNameSet = trackNameSet;
+// this->layoutEditorChecks = layoutEditorChecks;
+//}
+//void SubMenuActionListener::actionPerformed()
+//{
+// layoutEditorChecks->doCheckNonContiguousBlocksMenuItem(blockName, trackNameSet);
+//}
+
 //
 // action to be performed when checkNonContiguousBlocksMenu item is clicked
 //
 /*private*/ void LayoutEditorChecks::doCheckNonContiguousBlocksMenuItem(
         /*@Nonnull*/ QString blockName,
-        /*@Nullable*/ QSet<QString> trackNameSet) {
+        /*@Nullable*/ QSet<QString>* trackNameSet) {
     log->debug(tr("doCheckNonContiguousBlocksMenuItem(%1)").arg(blockName));
 
-    if (!trackNameSet.isEmpty()) {
+    if (!trackNameSet->isEmpty()) {
         // collect all the bounds...
         QRectF bounds = QRectF();
         for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
-            if (trackNameSet.contains(layoutTrack->getName())) {
+            if (trackNameSet->contains(layoutTrack->getName())) {
                 QRectF trackBounds = layoutTrack->getBounds();
                 if (bounds.isNull()) {
                     bounds =QRectF(trackBounds.x(), trackBounds.y(), trackBounds.width(), trackBounds.height());
                 } else {
-                    bounds.united(trackBounds);
+                    bounds = bounds.united(trackBounds);
                 }
             }
         }
@@ -523,7 +504,7 @@ void SubMenuActionListener::actionPerformed()
 
         // amend all tracks in this block to the layout editor selection group
         for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
-            if (trackNameSet.contains(layoutTrack->getName())) {
+            if (trackNameSet->contains(layoutTrack->getName())) {
                 layoutEditor->amendSelectionGroup(layoutTrack);
             }
         }

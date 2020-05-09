@@ -65,7 +65,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -19981,7 +19980,7 @@ if (_wrapper) {
 }
   return LayoutTurnout::checkForFreeConnections();
 }
-void PythonQtShell_LayoutTurnout::checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap0)
+void PythonQtShell_LayoutTurnout::checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19989,7 +19988,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("checkForNonContiguousBlocks");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "QMap<QString , QList<QSet<QString >  >  >"};
+      static const char* argumentList[] ={"" , "QMap<QString , QList<QSet<QString >* >* >*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       void* args[2] = {NULL, (void*)&blockNamesToTrackNameSetsMap0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
@@ -20036,7 +20035,7 @@ if (_wrapper) {
 }
   return LayoutTurnout::checkForUnAssignedBlocks();
 }
-void PythonQtShell_LayoutTurnout::collectContiguousTracksNamesInBlockNamed(QString  blockName0, QSet<QString >  TrackNameSet1)
+void PythonQtShell_LayoutTurnout::collectContiguousTracksNamesInBlockNamed(QString  blockName0, QSet<QString >*  TrackNameSet1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20044,7 +20043,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("collectContiguousTracksNamesInBlockNamed");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "QString" , "QSet<QString >"};
+      static const char* argumentList[] ={"" , "QString" , "QSet<QString >*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
       void* args[3] = {NULL, (void*)&blockName0, (void*)&TrackNameSet1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
@@ -20472,7 +20471,7 @@ QList<int >  PythonQtWrapper_LayoutTurnout::checkForFreeConnections(LayoutTurnou
   return ( theWrappedObject->checkForFreeConnections());
 }
 
-void PythonQtWrapper_LayoutTurnout::checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >  >  >  blockNamesToTrackNameSetsMap)
+void PythonQtWrapper_LayoutTurnout::checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap)
 {
   ( theWrappedObject->checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap));
 }
@@ -20482,7 +20481,7 @@ bool  PythonQtWrapper_LayoutTurnout::checkForUnAssignedBlocks(LayoutTurnout* the
   return ( theWrappedObject->checkForUnAssignedBlocks());
 }
 
-void PythonQtWrapper_LayoutTurnout::collectContiguousTracksNamesInBlockNamed(LayoutTurnout* theWrappedObject, QString  blockName, QSet<QString >  TrackNameSet)
+void PythonQtWrapper_LayoutTurnout::collectContiguousTracksNamesInBlockNamed(LayoutTurnout* theWrappedObject, QString  blockName, QSet<QString >*  TrackNameSet)
 {
   ( theWrappedObject->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet));
 }

@@ -107,9 +107,9 @@ public:
     /*public*/ QList<int> checkForFreeConnections()override;
     /*public*/ bool checkForUnAssignedBlocks()override;
     /*public*/ void checkForNonContiguousBlocks(
-            /*@Nonnullptr*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap)override;
+            /*@Nonnullptr*/ QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetsMap)override;
     /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnullptr*/ QString blockName,
-            /*@Nonnullptr*/ QSet<QString> TrackNameSet)override;
+            /*@Nonnullptr*/ QSet<QString>* TrackNameSet)override;
     /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock)override;
 
 signals:
@@ -189,7 +189,7 @@ protected:
  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
  /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
- /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
+ /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity();
  /*protected*/ int maxWidth();
  /*protected*/ int maxHeight();
 

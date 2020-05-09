@@ -36,7 +36,7 @@
     * This provides a method to display a message to the user asking them to confirm if they wish to update
     * the signal mast logic from the old signal mast to the new one..
     */
-    /*static*/ /*public*/ void SignallingGuiTools::updateSignalMastLogic(QMainWindow* frame, SignalMast* oldMast, SignalMast* newMast){
+    /*static*/ /*public*/ void SignallingGuiTools::updateSignalMastLogic(JmriJFrame *frame, SignalMast* oldMast, SignalMast* newMast){
 //        Object[] options = {rb.getString("UpdateButton"),
 //            rb.getString("LeaveButton")};
 //        int n = JOptionPane.showOptionDialog(frame,
@@ -64,7 +64,7 @@
     * This provides a method to display a message to the user asking them to confirm if they wish to update
     * the signal mast logic for swapping two signal masts over.
     */
-    /*static*/ /*public*/ void SignallingGuiTools::swapSignalMastLogic(QMainWindow* frame, SignalMast* oldMast, SignalMast* newMast){
+    /*static*/ /*public*/ void SignallingGuiTools::swapSignalMastLogic(JmriJFrame* frame, SignalMast* oldMast, SignalMast* newMast){
 //        Object[] options = {rb.getString("UpdateButton"),
 //            rb.getString("LeaveButton")};
 //        int n = JOptionPane.showOptionDialog(frame,
@@ -92,7 +92,7 @@
     * This provides a method to display a message to the user asking them to confirm if they wish to remove
     * the signal mast logic for a given signal.
     */
-    /*static*/ /*public*/ bool SignallingGuiTools::removeSignalMastLogic(QMainWindow* frame, SignalMast* mast){
+    /*static*/ /*public*/ bool SignallingGuiTools::removeSignalMastLogic(JmriJFrame* frame, SignalMast* mast){
 //        Object[] options = {rb.getString("RemoveButton"),
 //            rb.getString("LeaveButton")};
 //        int n = JOptionPane.showOptionDialog(frame,
@@ -123,7 +123,7 @@
     * This provides a method to display a message to the user asking them to confirm if they wish to remove
     * the signal mast logic for a given signal, this is the same as removeSignalMastLogic, but with altered text
     */
-    /*static*/ /*public*/ void SignallingGuiTools::removeAlreadyAssignedSignalMastLogic(QMainWindow *frame, SignalMast* mast){
+    /*static*/ /*public*/ void SignallingGuiTools::removeAlreadyAssignedSignalMastLogic(JmriJFrame *frame, SignalMast* mast){
 //            Object[] options = {rb.getString("RemoveButton"),
 //            rb.getString("LeaveButton")};
 //        int n = JOptionPane.showOptionDialog(frame,

@@ -95,7 +95,7 @@
         return;
     }
     cList = new QVector<LayoutConnectivity*>();
-    QList<LayoutConnectivity*> lcs;
+    QList<LayoutConnectivity*>* lcs;
 
     for (LayoutTrack* lt : *layoutEditor->getLayoutTracks()) {
         if ((qobject_cast<PositionablePoint*>(lt))
@@ -104,7 +104,7 @@
         { // <== includes LayoutSlips
             lcs = lt->getLayoutConnectivity();
             //cList->addAll(lcs); // append to list
-            foreach(LayoutConnectivity* lc, lcs)
+            foreach(LayoutConnectivity* lc, *lcs)
              cList->append(lc);
         }
     }
@@ -120,12 +120,12 @@
  QVector<bool> found = QVector<bool>(sz,false);
  //Arrays.fill(found, false);
 
- QList<LayoutConnectivity*> lcs;
+ QList<LayoutConnectivity*>* lcs;
 
  // Check for block boundaries at positionable points.
  for (PositionablePoint* p : layoutEditor->getPositionablePoints()) {
      lcs = p->getLayoutConnectivity();
-     for (LayoutConnectivity* lc : lcs) {
+     for (LayoutConnectivity* lc : *lcs) {
          // add to list, if not already present
          checkConnectivity(lc, found);
      }
@@ -134,7 +134,7 @@
  // Check for block boundaries at layout turnouts and level crossings
  for (TrackSegment* ts : layoutEditor->getTrackSegments()) {
      lcs = ts->getLayoutConnectivity();
-     for (LayoutConnectivity* lc : lcs) {
+     for (LayoutConnectivity* lc : *lcs) {
          // add to list, if not already present
          checkConnectivity(lc, found);
      }
@@ -143,7 +143,7 @@
  // check for block boundaries internal to crossover turnouts
  for (LayoutTrack* lt : layoutEditor->getLayoutTurnouts()) {
      lcs = lt->getLayoutConnectivity();
-     for (LayoutConnectivity* lc : lcs) {
+     for (LayoutConnectivity* lc : *lcs) {
          // add to list, if not already present
          checkConnectivity(lc, found);
      }
@@ -152,7 +152,7 @@
  // check for block boundaries internal to slips
  for (LayoutSlip* ls : layoutEditor->getLayoutSlips()) {
      lcs = ls->getLayoutConnectivity();
-     for (LayoutConnectivity* lc : lcs) {
+     for (LayoutConnectivity* lc : *lcs) {
          // add to list, if not already present
          checkConnectivity(lc, found);
      }

@@ -4132,9 +4132,9 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ QList<LayoutConnectivity*> LayoutTurnout::getLayoutConnectivity()
+/*protected*/ QList<LayoutConnectivity *> *LayoutTurnout::getLayoutConnectivity()
 {
- QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
+ QList<LayoutConnectivity*>* results = new QList<LayoutConnectivity*>();
 
  LayoutConnectivity* lc = nullptr;
 
@@ -4149,7 +4149,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
              lc = new LayoutConnectivity(lbA, lbB);
              lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_AB);
              lc->setDirection(Path::computeDirection(getCoordsA(), getCoordsB()));
-             results.append(lc);
+             results->append(lc);
          }
          if ((getTurnoutType() != LayoutTurnout::LH_XOVER) && (lbA != lbC)) {
              // have a AC block boundary, create a LayoutConnectivity
@@ -4157,7 +4157,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
              lc = new LayoutConnectivity(lbA, lbC);
              lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_AC);
              lc->setDirection(Path::computeDirection(getCoordsA(), getCoordsC()));
-             results.append(lc);
+             results->append(lc);
          }
          if (lbC != lbD) {
              // have a CD block boundary, create a LayoutConnectivity
@@ -4165,7 +4165,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
              lc = new LayoutConnectivity(lbC, lbD);
              lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_CD);
              lc->setDirection(Path::computeDirection(getCoordsC(), getCoordsD()));
-             results.append(lc);
+             results->append(lc);
          }
          if ((getTurnoutType() != LayoutTurnout::RH_XOVER) && (lbB != lbD)) {
              // have a BD block boundary, create a LayoutConnectivity
@@ -4173,7 +4173,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
              lc = new LayoutConnectivity(lbB, lbD);
              lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_BD);
              lc->setDirection(Path::computeDirection(getCoordsB(), getCoordsD()));
-             results.append(lc);
+             results->append(lc);
          }
      }
  }
@@ -4227,8 +4227,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void LayoutTurnout::checkForNonContiguousBlocks(
-        /*@Nonnull*/QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) {
+/*public*/ void LayoutTurnout::checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap) {
     /*
      * For each (non-null) blocks of this track do:
      * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
@@ -4263,8 +4262,8 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
             blocksAndTracksMap.insert(connectD, getBlockDName());
         }
     }
-    QList<QSet<QString> > TrackNameSets;// = nullptr;
-    QSet<QString> TrackNameSet;// = nullptr;
+    QList<QSet<QString>* >* TrackNameSets = nullptr;
+    QSet<QString>* TrackNameSet = nullptr;
     //for (Map.Entry<LayoutTrack, String> entry : blocksAndTracksMap.entrySet()) {
     QHashIterator<LayoutTrack*, QString> entry(blocksAndTracksMap);
     while(entry.hasNext())
@@ -4272,26 +4271,26 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
         LayoutTrack* theConnect = entry.key();
         QString theBlockName = entry.value();
 
-        TrackNameSet = QSet<QString>();    // assume not found (pessimist!)
-        TrackNameSets = blockNamesToTrackNameSetsMap.value(theBlockName);
-        if (!TrackNameSets.isEmpty()) { // (#1)
-            for (QSet<QString> checkTrackNameSet : TrackNameSets) {
-                if (checkTrackNameSet.contains(getName())) { // (#2)
+        TrackNameSet = new QSet<QString>();    // assume not found (pessimist!)
+        TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
+        if (!TrackNameSets->isEmpty()) { // (#1)
+            for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
+                if (checkTrackNameSet->contains(getName())) { // (#2)
                     TrackNameSet = checkTrackNameSet;
                     break;
                 }
             }
         } else {    // (#3)
             log->debug(tr("*New block ('%1') trackNameSets").arg(theBlockName));
-            TrackNameSets = QList<QSet<QString> >();
-            blockNamesToTrackNameSetsMap.insert(theBlockName, TrackNameSets);
+            TrackNameSets = new QList<QSet<QString>* >();
+            blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
         }
-        if (TrackNameSet.isEmpty()) {
-            TrackNameSet = QSet<QString>();
-            TrackNameSets.append(TrackNameSet);
+        if (TrackNameSet->isEmpty()) {
+            TrackNameSet = new QSet<QString>();
+            TrackNameSets->append(TrackNameSet);
         }
-        TrackNameSet.insert(getName());
-        if (TrackNameSet.contains(getName())) {
+        TrackNameSet->insert(getName());
+        if (TrackNameSet->contains(getName())) {
             log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(theBlockName));
         }
         theConnect->collectContiguousTracksNamesInBlockNamed(theBlockName, TrackNameSet);
@@ -4302,10 +4301,9 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void LayoutTurnout::collectContiguousTracksNamesInBlockNamed(
-        /*@Nonnull*/ QString blockName,
-        /*@Nonnull*/ QSet<QString> TrackNameSet) {
-    if (!TrackNameSet.contains(getName())) {
+/*public*/ void LayoutTurnout::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
+        /*@Nonnull*/ QSet<QString> *TrackNameSet) {
+    if (!TrackNameSet->contains(getName())) {
 
         // create list of our connects
         QList<LayoutTrack*> connects = QList<LayoutTrack*>();
@@ -4334,8 +4332,8 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
 
         for (LayoutTrack* connect : connects) {
             // if we are added to the TrackNameSet
-         TrackNameSet.insert(getName());
-            if (TrackNameSet.contains(getName())) {
+         TrackNameSet->insert(getName());
+            if (TrackNameSet->contains(getName())) {
                 log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
             }
             // it's time to play... flood your neighbour!
@@ -4509,7 +4507,6 @@ void LayoutTurnout::remove()
   log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
 
  int toType = getTurnoutType();
- //QGraphicsItemGroup* itemGroup = selectItemGroup(type, isMain, isBlock);
 
  QGraphicsLineItem* lineItem;
 
@@ -5117,7 +5114,6 @@ void LayoutTurnout::remove()
             state = to->getKnownState();
         }
     }
-    //itemGroup = selectItemGroup(type, isMain, false);
 
     //if(!isMain && itemGroup)
      itemGroup = invalidateItem(g2,itemGroup);

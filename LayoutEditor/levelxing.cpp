@@ -7,6 +7,7 @@
 #include "signalmastmanager.h"
 #include "layoutblockroutetableaction.h"
 #include "mathutil.h"
+#include "signallingguitools.h"
 
 //LevelXing::LevelXing(QObject *parent) :
 //    QObject(parent)
@@ -590,6 +591,40 @@
     }
     reCheckBlockBoundary();
 }
+
+void LevelXing::removeSML(SignalMast* signalMast) {
+    if (signalMast == nullptr) {
+        return;
+    }
+    if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled() && ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->isSignalMastUsed(signalMast)) {
+        SignallingGuiTools::removeSignalMastLogic(nullptr, signalMast);
+    }
+}
+
+/**
+ * Methods to test if mainline track or not
+ *  Returns true if either connecting track segment is mainline
+ *  Defaults to not mainline if connecting track segments are missing
+ */
+/*public*/ bool LevelXing::isMainlineAC() {
+    if ( ((connectA != NULL) && (((TrackSegment*)connectA)->isMainline())) ||
+        ((connectB != NULL) && (((TrackSegment*)connectB)->isMainline())) ) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+/*public*/ bool LevelXing::isMainlineBD() {
+    if ( ((connectB != NULL) && (((TrackSegment*)connectB)->isMainline())) ||
+        ((connectD != NULL) && (((TrackSegment*)connectD)->isMainline())) ) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 /**
  * draw this level crossing
  *
@@ -598,7 +633,6 @@
 //@Override
 /*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock, LayoutTrack::ITEMTYPE itemType) {
 
- //QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
  invalidateItem(g2,itemGroup);
  if(itemGroup == nullptr)
@@ -670,7 +704,6 @@
     QPointF pKR = MathUtil::add(pM, vDisK);
     QPointF pVL = MathUtil::subtract(pM, vDisV);
     QPointF pVR = MathUtil::add(pM, vDisV);
-    //QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
     invalidateItem(g2,itemGroup);
     if(itemGroup == nullptr)
@@ -873,29 +906,6 @@
     // nothing to see here... move along...
 }
 
-/**
- * Methods to test if mainline track or not
- *  Returns true if either connecting track segment is mainline
- *  Defaults to not mainline if connecting track segments are missing
- */
-/*public*/ bool LevelXing::isMainlineAC() {
-    if ( ((connectA != NULL) && (((TrackSegment*)connectA)->isMainline())) ||
-        ((connectB != NULL) && (((TrackSegment*)connectB)->isMainline())) ) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-/*public*/ bool LevelXing::isMainlineBD() {
-    if ( ((connectB != NULL) && (((TrackSegment*)connectB)->isMainline())) ||
-        ((connectD != NULL) && (((TrackSegment*)connectD)->isMainline())) ) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
 
 /**
  * Modify coordinates methods
@@ -1868,4 +1878,173 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
 //    result.united(getCoordsD());
 //    return result;
  return item->boundingRect();
+}
+
+/*
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ QList<LayoutConnectivity*>* LevelXing::getLayoutConnectivity() {
+    // nothing to see here... move along...
+    return nullptr;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QList<int> LevelXing::checkForFreeConnections() {
+    QList<int> result = QList<int>();
+
+    //check the A connection point
+    if (getConnectA() == nullptr) {
+        result.append((LEVEL_XING_A));
+    }
+
+    //check the B connection point
+    if (getConnectB() == nullptr) {
+        result.append((LEVEL_XING_B));
+    }
+
+    //check the C connection point
+    if (getConnectC() == nullptr) {
+        result.append((LEVEL_XING_C));
+    }
+
+    //check the D connection point
+    if (getConnectD() == nullptr) {
+        result.append((LEVEL_XING_D));
+    }
+    return result;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool LevelXing::checkForUnAssignedBlocks() {
+    return ((getLayoutBlockAC() != nullptr) && (getLayoutBlockBD() != nullptr));
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LevelXing::checkForNonContiguousBlocks(
+        /*@Nonnull*/ QMap<QString, QList<QSet<QString>* >* >* blockNamesToTrackNameSetsMap) {
+    /*
+     * For each (non-null) blocks of this track do:
+     * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
+     * #2) If this track is already in the TrackNameSet for this block
+     *     then return (done!)
+     * #3) else add a new set (with this block/track) to
+     *     blockNamesToTrackNameSetMap and check all the connections in this
+     *     block (by calling the 2nd method below)
+     * <p>
+     *     Basically, we're maintaining contiguous track sets for each block found
+     *     (in blockNamesToTrackNameSetMap)
+     */
+
+    // We're only using a map here because it's convient to
+    // use it to pair up blocks and connections
+    QMap<LayoutTrack*, QString> blocksAndTracksMap =QMap<LayoutTrack*, QString>();
+    if ((getLayoutBlockAC() != nullptr) && (connectA != nullptr)) {
+        blocksAndTracksMap.insert(connectA, getLayoutBlockAC()->getDisplayName());
+    }
+    if ((getLayoutBlockAC() != nullptr) && (connectC != nullptr)) {
+        blocksAndTracksMap.insert(connectC, getLayoutBlockAC()->getDisplayName());
+    }
+    if ((getLayoutBlockBD() != nullptr) && (connectB != nullptr)) {
+        blocksAndTracksMap.insert(connectB, getLayoutBlockBD()->getDisplayName());
+    }
+    if ((getLayoutBlockBD() != nullptr) && (connectD != nullptr)) {
+        blocksAndTracksMap.insert(connectD, getLayoutBlockBD()->getDisplayName());
+    }
+
+    QList<QSet<QString>*>* TrackNameSets = nullptr;
+    QSet<QString>* TrackNameSet = nullptr;
+    //for (Map.Entry<LayoutTrack*, QString> entry : blocksAndTracksMap.entrySet())
+    QMapIterator<LayoutTrack*, QString> entry(blocksAndTracksMap);
+    while(entry.hasNext())
+    {
+     entry.next();
+        LayoutTrack* theConnect = entry.key();
+        QString theBlockName = entry.value();
+
+        TrackNameSet = nullptr;    // assume not found (pessimist!)
+        TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
+        if (TrackNameSets != nullptr) { // (#1)
+            for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
+                if (checkTrackNameSet->contains(getName())) { // (#2)
+                    TrackNameSet = checkTrackNameSet;
+                    break;
+                }
+            }
+        } else {    // (#3)
+            log.debug(tr("*New block ('%1') trackNameSets").arg(theBlockName));
+            TrackNameSets = new QList<QSet<QString>*>();
+            blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
+        }
+        if (TrackNameSet == nullptr) {
+            TrackNameSet = new QSet<QString>();
+            TrackNameSets->append(TrackNameSet);
+        }
+//        if (TrackNameSet->insert(getName())) {
+//            log.debug(tr("*    Add track ''%1'' to trackNameSet for block ''%2''").arg(getName()).arg(theBlockName));
+//        }
+        TrackNameSet->insert(getName());
+        theConnect->collectContiguousTracksNamesInBlockNamed(theBlockName, TrackNameSet);
+    }
+}   // collectContiguousTracksNamesInBlockNamed
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LevelXing::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
+        /*@Nonnull*/ QSet<QString>* TrackNameSet) {
+    if (!TrackNameSet->contains(getName())) {
+        // check all the matching blocks in this track and...
+        //  #1) add us to TrackNameSet and...
+        //  #2) flood them
+        //check the AC blockName
+        if (getBlockNameAC()==(blockName)) {
+            // if we are added to the TrackNameSet
+         TrackNameSet->insert(getName());
+            if (TrackNameSet->contains(getName())) {
+                log.debug(tr("*    Add track ''%1'for block ''%2''").arg(getName()).arg(blockName));
+            }
+            // it's time to play... flood your neighbours!
+            if (connectA != nullptr) {
+                connectA->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            }
+            if (connectC != nullptr) {
+                connectC->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            }
+        }
+        //check the BD blockName
+        if (getBlockNameBD() == (blockName)) {
+            // if we are added to the TrackNameSet
+         TrackNameSet->insert(getName());
+            if (TrackNameSet->contains(getName())) {
+                log.debug(tr("*    Add track ''%1''for block ''%2''").arg(getName()).arg(blockName));
+            }
+            // it's time to play... flood your neighbours!
+            if (connectB != nullptr) {
+                connectB->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            }
+            if (connectD != nullptr) {
+                connectD->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            }
+        }
+    }
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void LevelXing::setAllLayoutBlocks(LayoutBlock* layoutBlock) {
+    setLayoutBlockAC(layoutBlock);
+    setLayoutBlockBD(layoutBlock);
 }

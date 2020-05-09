@@ -554,7 +554,7 @@
  *
  * @return the list of Layout Connectivity objects
  */
-/*protected*/ /*abstract*/ QList<LayoutConnectivity*> LayoutTrack::getLayoutConnectivity() {return QList<LayoutConnectivity*>();}
+/*protected*/ /*abstract*/ QList<LayoutConnectivity*>* LayoutTrack::getLayoutConnectivity() {return nullptr;}
 
 /**
  * return true if this connection type is disconnected
@@ -614,8 +614,7 @@
  * <p>
  * note: used by LayoutEditorChecks.setupCheckNonContiguousBlocksMenu()
  */
-/*public*/ /*abstract*/ void LayoutTrack::checkForNonContiguousBlocks(
-  /*@Nonnull*/ QMap<QString, QList<QSet<QString > > > blockNamesToTrackNameSetMaps)  {}
+/*public*/ /*abstract*/ void LayoutTrack::checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetMaps)  {}
 
 /**
  * recursive routine to check for all contiguous tracks in this blockName
@@ -625,7 +624,7 @@
  */
 /*public*/ /*abstract*/ void LayoutTrack::collectContiguousTracksNamesInBlockNamed(
         /*@Nonnull*/ QString blockName,
-  /*@Nonnull*/ QSet<QString> trackNameSet) {}
+  /*@Nonnull*/ QSet<QString>* trackNameSet) {}
 
 /**
  * Assign all the layout blocks in this track
@@ -660,50 +659,4 @@
  item = nullptr;
  return item;
 }
-#if 0
-/*protected*/ QGraphicsItemGroup* LayoutTrack::selectItemGroup(ITEMTYPE type, bool isMain, bool isBlock)
-{
- if(!isBlock)
- {
-  switch (type)
-  {
-  case dashed:
-   if(isMain)
-    return itemDashed;
-   else
-    return itemDashedSide;
-  case ties:
-   if(isMain)
-    return itemTies;
-   else
-    return itemTiesSide;
-  case ballast:
-   if(isMain)
-    return itemBallast;
-  else
-   return itemBallastSide;
-  case track:
-   if(isMain)
-    return itemMain;
-   else
-    return itemSide;
-  case points:
-   return itemPoints;
-  default:
-   return nullptr;
-  }
- }
- else
- {
-//  switch (type)
-//  {
-// case block:
-  if(isMain)
-   return itemBlock;
-  else
-   return itemBlockSide;
-  }
-// }
-}
-#endif
 /*private*/ /*final*/ /*static*/ Logger* LayoutTrack::log = LoggerFactory::getLogger("LayoutTrack");

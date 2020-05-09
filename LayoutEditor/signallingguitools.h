@@ -3,17 +3,17 @@
 
 #include <QObject>
 
-class QMainWindow;
+class JmriJFrame;
 class SignalMast;
 class SignallingGuiTools : public QObject
 {
     Q_OBJECT
 public:
     //explicit SignallingGuiTools(QObject *parent = 0);
-    static /*public*/ void updateSignalMastLogic(QMainWindow* frame, SignalMast* oldMast, SignalMast* newMast);
-    static /*public*/ void swapSignalMastLogic(QMainWindow* frame, SignalMast* oldMast, SignalMast* newMast);
-    static /*public*/ bool removeSignalMastLogic(QMainWindow* frame, SignalMast* mast);
-    static /*public*/ void removeAlreadyAssignedSignalMastLogic(QMainWindow* frame, SignalMast* mast);
+    static /*public*/ void updateSignalMastLogic(JmriJFrame* frame, SignalMast* oldMast, SignalMast* newMast);
+    static /*public*/ void swapSignalMastLogic(JmriJFrame* frame, SignalMast* oldMast, SignalMast* newMast);
+    static /*public*/ bool removeSignalMastLogic(JmriJFrame *frame, SignalMast* mast);
+    static /*public*/ void removeAlreadyAssignedSignalMastLogic(JmriJFrame* frame, SignalMast* mast);
 
 signals:
 

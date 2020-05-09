@@ -454,7 +454,7 @@
  * @param yFactor the amount to translate Y coordinates
  */
 //@Override
-/*public*/ void LayoutTurntable::translateCoords(float xFactor, float yFactor) {
+/*public*/ void LayoutTurntable::translateCoords(double xFactor, double yFactor) {
     QPointF factor = QPointF(xFactor, yFactor);
     center = MathUtil::add(center, factor);
 }
@@ -946,7 +946,6 @@ void LayoutTurntable::dispose() {
     float trackWidth = 2.0;
     float halfTrackWidth = trackWidth / 2.f;
     double radius = getRadius(), diameter = radius + radius;
-    //QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
     invalidateItem(g2,itemGroup);
     if(itemGroup == nullptr)
@@ -1013,7 +1012,6 @@ void LayoutTurntable::dispose() {
 /*protected*/ void LayoutTurntable::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType) {
     float trackWidth = 2.F;
     float halfTrackWidth = trackWidth / 2.f;
-    //QGraphicsItemGroup* itemGroup = selectItemGroup(itemType, isMain, false);
 
     invalidateItem(g2, itemGroup);
     if(itemGroup == nullptr)
@@ -1169,9 +1167,9 @@ void LayoutTurntable::dispose() {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ QList<LayoutConnectivity*> LayoutTurntable::getLayoutConnectivity() {
+/*protected*/ QList<LayoutConnectivity *> *LayoutTurntable::getLayoutConnectivity() {
     // nothing to see here... move along...
-    return QList<LayoutConnectivity*>();
+    return nullptr;
 }
 
 /**
@@ -1204,7 +1202,7 @@ void LayoutTurntable::dispose() {
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void LayoutTurntable::checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) {
+/*public*/ void LayoutTurntable::checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap) {
     /*
      * For each (non-null) blocks of this track do:
      * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
@@ -1229,8 +1227,8 @@ void LayoutTurntable::dispose() {
         }
     }
 
-    QList<QSet<QString> > TrackNameSets;// = null;
-    QSet<QString> TrackNameSet;// = null;
+    QList<QSet<QString>*>* TrackNameSets = nullptr;
+    QSet<QString>* TrackNameSet = nullptr;
     QHashIterator<LayoutTrack*, QString> entry(blocksAndTracksMap);
     //for (Map.Entry<LayoutTrack, String> entry : blocksAndTracksMap.entrySet())
     while(entry.hasNext())
@@ -1239,26 +1237,26 @@ void LayoutTurntable::dispose() {
         LayoutTrack* theConnect = entry.key();
         QString theBlockName = entry.value();
 
-        TrackNameSet = QSet<QString>();    // assume not found (pessimist!)
-        TrackNameSets = blockNamesToTrackNameSetsMap.value(theBlockName);
-        if (!TrackNameSets.isEmpty()) { // (#1)
-            for (QSet<QString> checkTrackNameSet : TrackNameSets) {
-                if (checkTrackNameSet.contains(getName())) { // (#2)
+        TrackNameSet = new QSet<QString>();    // assume not found (pessimist!)
+        TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
+        if (!TrackNameSets->isEmpty()) { // (#1)
+            for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
+                if (checkTrackNameSet->contains(getName())) { // (#2)
                     TrackNameSet = checkTrackNameSet;
                     break;
                 }
             }
         } else {    // (#3)
             log->debug(tr("*New block ('%1') trackNameSets").arg(theBlockName));
-            TrackNameSets = QList<QSet<QString> >();
-            blockNamesToTrackNameSetsMap.insert(theBlockName, TrackNameSets);
+            TrackNameSets = new QList<QSet<QString>*>();
+            blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
         }
-        if (TrackNameSet.isEmpty()) {
-            TrackNameSet = QSet<QString>();
-            TrackNameSets.append(TrackNameSet);
+        if (TrackNameSet->isEmpty()) {
+            TrackNameSet = new QSet<QString>();
+            TrackNameSets->append(TrackNameSet);
         }
-        TrackNameSet.insert(getName());
-        if (TrackNameSet.contains(getName())) {
+        TrackNameSet->insert(getName());
+        if (TrackNameSet->contains(getName())) {
             log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(theBlockName));
         }
         theConnect->collectContiguousTracksNamesInBlockNamed(theBlockName, TrackNameSet);
@@ -1270,8 +1268,8 @@ void LayoutTurntable::dispose() {
  */
 //@Override
 /*public*/ void LayoutTurntable::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-        /*@Nonnull*/ QSet<QString> TrackNameSet) {
-    if (!TrackNameSet.contains(getName())) {
+        /*@Nonnull*/ QSet<QString> *TrackNameSet) {
+    if (!TrackNameSet->contains(getName())) {
         // for all the rays with matching blocks in this turnout
         //  #1) if it's track segment's block is in this block
         //  #2)     add turntable to TrackNameSet (if not already there)
@@ -1283,8 +1281,8 @@ void LayoutTurntable::dispose() {
                 QString blk = ts->getBlockName();
                 if ((blk != nullptr) && (blk ==(blockName))) { // (#1)
                     // if we are added to the TrackNameSet
-                  TrackNameSet.insert(getName());
-                 if (TrackNameSet.contains(getName())) {
+                  TrackNameSet->insert(getName());
+                 if (TrackNameSet->contains(getName())) {
                         log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
                     }
                     // it's time to play... flood your neighbours!

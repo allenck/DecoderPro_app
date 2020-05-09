@@ -129,15 +129,15 @@ public:
  /*public*/  int getPosition();
  /*public*/  double diffAngle(double a, double b);
  /*public*/  bool isActive();
- /*public*/ QRectF getBounds();
- /*public*/ void translateCoords(float xFactor, float yFactor);
- /*public*/ QList<int> checkForFreeConnections();
- /*public*/ bool checkForUnAssignedBlocks();
+ /*public*/ QRectF getBounds()override;
+ /*public*/ void translateCoords(double xFactor, double yFactor)override;
+ /*public*/ QList<int> checkForFreeConnections()override;
+ /*public*/ bool checkForUnAssignedBlocks()override;
  /*public*/ void checkForNonContiguousBlocks(
-         /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap);
+         /*@Nonnull*/ QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetsMap) override;
  /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-                                                          /*@Nonnull*/ QSet<QString> TrackNameSet);
- /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
+                                                          /*@Nonnull*/ QSet<QString>* TrackNameSet) override;
+ /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock)override;
 
 signals:
 
@@ -209,7 +209,7 @@ private slots:
   /*protected*/ void drawTurnoutControls(EditScene* g2);
   /*protected*/ void drawEditControls(EditScene* g2);
   /*protected*/ void reCheckBlockBoundary();
-  /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
+  /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity();
   /*protected*/ QList<RayTrack*> getRayList();
 
  friend class RayTrack;

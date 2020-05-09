@@ -1522,8 +1522,8 @@ void PositionablePoint::draw(EditScene* g2)
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ QList<LayoutConnectivity*> PositionablePoint::getLayoutConnectivity() {
-    QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
+/*protected*/ QList<LayoutConnectivity *> *PositionablePoint::getLayoutConnectivity() {
+    QList<LayoutConnectivity*>* results = new QList<LayoutConnectivity*>();
     LayoutConnectivity* lc = nullptr;
     LayoutBlock* blk1 = nullptr, *blk2 = nullptr;
     TrackSegment* ts1 = getConnect1();
@@ -1552,7 +1552,7 @@ void PositionablePoint::draw(EditScene* g2)
                 lc->setDirection(Path::computeDirection(p1, p2));
                 // save Connections
                 lc->setConnections(ts1, ts2, TRACK, this);
-                results.append(lc);
+                results->append(lc);
             }
         }
     } else if (getType() == EDGE_CONNECTOR) {
@@ -1580,7 +1580,7 @@ void PositionablePoint::draw(EditScene* g2)
                 lc->setDirection(Path::computeDirection(p1, getCoordsCenter()));
                 // save Connections
                 lc->setConnections(ts1, ts2, TRACK, this);
-                results.append(lc);
+                results->append(lc);
             }
         }
     }
@@ -1615,8 +1615,7 @@ void PositionablePoint::draw(EditScene* g2)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void PositionablePoint::checkForNonContiguousBlocks(
-        /*@Nonnullptr*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) {
+/*public*/ void PositionablePoint::checkForNonContiguousBlocks(/*@Nonnullptr*/ QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap) {
     /*
      * For each (non-nullptr) blocks of this track do:
      * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
@@ -1632,31 +1631,31 @@ void PositionablePoint::draw(EditScene* g2)
     //check the 1st connection points block
     TrackSegment* ts1 = getConnect1();
     QString blk1 = nullptr;
-    QList<QSet<QString> > TrackNameSets;// = nullptr;
-    QSet<QString> TrackNameSet;// = nullptr;    // assume not found (pessimist!)
+    QList<QSet<QString>*>* TrackNameSets = nullptr;
+    QSet<QString>* TrackNameSet = nullptr;    // assume not found (pessimist!)
 
     // this should never be nullptr... but just in case...
     if (ts1 != nullptr) {
         blk1 = ts1->getBlockName();
         if (blk1 != nullptr) {
-            TrackNameSets = blockNamesToTrackNameSetsMap.value(blk1);
-            if (!TrackNameSets.isEmpty()) { // (#1)
-                for (QSet<QString> checkTrackNameSet : TrackNameSets) {
-                    if (checkTrackNameSet.contains(getName())) { // (#2)
+            TrackNameSets = blockNamesToTrackNameSetsMap->value(blk1);
+            if (!TrackNameSets->isEmpty()) { // (#1)
+                for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
+                    if (checkTrackNameSet->contains(getName())) { // (#2)
                         TrackNameSet = checkTrackNameSet;
                         break;
                     }
                 }
             } else {    // (#3)
                 log->debug(tr("*New block ('%1') trackNameSets").arg(blk1));
-                TrackNameSets = QList<QSet<QString> >();
-                blockNamesToTrackNameSetsMap.insert(blk1, TrackNameSets);
+                TrackNameSets = new QList<QSet<QString>*>();
+                blockNamesToTrackNameSetsMap->insert(blk1, TrackNameSets);
             }
-            if (TrackNameSet.isEmpty()) {
-                TrackNameSet = QSet<QString>();
+            if (TrackNameSet->isEmpty()) {
+                TrackNameSet = new QSet<QString>();
                 log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(blk1));
-                TrackNameSet.insert(getName());
-                TrackNameSets.append(TrackNameSet);
+                TrackNameSet->insert(getName());
+                TrackNameSets->append(TrackNameSet);
             }
             if (connect1 != nullptr) { // (#4)
                 connect1->collectContiguousTracksNamesInBlockNamed(blk1, TrackNameSet);
@@ -1671,25 +1670,25 @@ void PositionablePoint::draw(EditScene* g2)
         if (ts2 != nullptr) {
             QString blk2 = ts2->getBlockName();
             if (blk2 != nullptr) {
-                TrackNameSet =QSet<QString>();    // assume not found (pessimist!)
-                TrackNameSets = blockNamesToTrackNameSetsMap.value(blk2);
-                if (!TrackNameSets.isEmpty()) { // (#1)
-                    for (QSet<QString> checkTrackNameSet : TrackNameSets) {
-                        if (checkTrackNameSet.contains(getName())) { // (#2)
+                TrackNameSet = new QSet<QString>();    // assume not found (pessimist!)
+                TrackNameSets = blockNamesToTrackNameSetsMap->value(blk2);
+                if (!TrackNameSets->isEmpty()) { // (#1)
+                    for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
+                        if (checkTrackNameSet->contains(getName())) { // (#2)
                             TrackNameSet = checkTrackNameSet;
                             break;
                         }
                     }
                 } else {    // (#3)
                     log->debug(tr("*New block ('%1') trackNameSets").arg(blk2));
-                    TrackNameSets = QList<QSet<QString> >();
-                    blockNamesToTrackNameSetsMap.insert(blk2, TrackNameSets);
+                    TrackNameSets = new QList<QSet<QString>*>();
+                    blockNamesToTrackNameSetsMap->insert(blk2, TrackNameSets);
                 }
-                if (TrackNameSet.isEmpty()) {
-                    TrackNameSet = QSet<QString>();
+                if (TrackNameSet->isEmpty()) {
+                    TrackNameSet = new QSet<QString>();
                     log->debug(tr("*    Add track '%1' to TrackNameSet for block '%2'").arg(getName()).arg(blk2));
-                    TrackNameSets.append(TrackNameSet);
-                    TrackNameSet.insert(getName());
+                    TrackNameSets->append(TrackNameSet);
+                    TrackNameSet->insert(getName());
                 }
                 if (connect2 != nullptr) { // (#4)
                     connect2->collectContiguousTracksNamesInBlockNamed(blk2, TrackNameSet);
@@ -1704,8 +1703,8 @@ void PositionablePoint::draw(EditScene* g2)
  */
 //@Override
 /*public*/ void PositionablePoint::collectContiguousTracksNamesInBlockNamed(/*@Nonnullptr*/ QString blockName,
-        /*@Nonnullptr*/ QSet<QString> TrackNameSet) {
-    if (!TrackNameSet.contains(getName())) {
+        /*@Nonnullptr*/ QSet<QString> *TrackNameSet) {
+    if (!TrackNameSet->contains(getName())) {
         TrackSegment* ts1 = getConnect1();
         // this should never be nullptr... but just in case...
         if (ts1 != nullptr) {
@@ -1713,8 +1712,8 @@ void PositionablePoint::draw(EditScene* g2)
             // is this the blockName we're looking for?
             if (blk1 == (blockName)) {
                 // if we are added to the TrackNameSet
-             TrackNameSet.insert(getName());
-                if (TrackNameSet.contains(getName())) {
+             TrackNameSet->insert(getName());
+                if (TrackNameSet->contains(getName())) {
                     log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
                 }
                 // this should never be nullptr... but just in case...
@@ -1731,8 +1730,8 @@ void PositionablePoint::draw(EditScene* g2)
                 // is this the blockName we're looking for?
                 if (blk2 == (blockName)) {
                     // if we are added to the TrackNameSet
-                 TrackNameSet.insert(getName());
-                    if (TrackNameSet.contains(getName())) {
+                 TrackNameSet->insert(getName());
+                    if (TrackNameSet->contains(getName())) {
                         log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
                     }
                     // this should never be nullptr... but just in case...

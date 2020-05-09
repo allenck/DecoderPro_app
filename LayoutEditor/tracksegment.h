@@ -216,9 +216,8 @@ public:
     /*public*/ double getDirectionDEG();
     /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock) override;
     /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-                   /*@Nonnull*/ QSet<QString> trackNameSet) override;
-    /*public*/ void checkForNonContiguousBlocks(
-            /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) override;
+                   /*@Nonnull*/ QSet<QString>* trackNameSet) override;
+    /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString>*>*> *blockNamesToTrackNameSetsMap) override;
     /*public*/ bool checkForUnAssignedBlocks() override;
     /*public*/ QList<int> checkForFreeConnections() override;
 
@@ -408,7 +407,7 @@ protected:
  /*protected*/ void drawTurnoutControls(EditScene* g2) override;
  /*protected*/ void showBezierPopUp(QGraphicsSceneMouseEvent* e, int hitPointType);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) override;
- /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity();
+ /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity();
  /**
   * Display popup menu for information and editing
   */

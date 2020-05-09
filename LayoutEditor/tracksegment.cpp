@@ -4558,9 +4558,9 @@ double TrackSegment::degToRad(double degrees)
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ QList<LayoutConnectivity*> TrackSegment::getLayoutConnectivity()
+/*protected*/ QList<LayoutConnectivity *> *TrackSegment::getLayoutConnectivity()
 {
- QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
+ QList<LayoutConnectivity*>* results = new QList<LayoutConnectivity*>();
 
  LayoutConnectivity* lc = nullptr;
  LayoutBlock* lb1 = getLayoutBlock(), *lb2 = nullptr;
@@ -4598,7 +4598,7 @@ double TrackSegment::degToRad(double degrees)
      lc->setDirection(Path::computeDirection(
              LayoutEditor::getCoords(getConnect2(), type2),
              LayoutEditor::getCoords(getConnect1(), type1)));
-     results.append(lc);
+     results->append(lc);
     }
    }
    else {
@@ -4617,7 +4617,7 @@ double TrackSegment::degToRad(double degrees)
            lc->setDirection(Path::computeDirection(
                    LayoutEditor::getCoords(getConnect2(), type2),
                    LayoutEditor::getCoords(getConnect1(), type1)));
-           results.append(lc);
+           results->append(lc);
        }
    }
   } else if ((type1 >= SLIP_A) && (type1 <= SLIP_D)) {
@@ -4631,7 +4631,7 @@ double TrackSegment::degToRad(double degrees)
           lc->setConnections(this, ls, type1, nullptr);
           lc->setDirection(Path::computeDirection(LayoutEditor::getCoords(getConnect2(),
                   type2), LayoutEditor::getCoords(getConnect1(), type1)));
-          results.append(lc);
+          results->append(lc);
       }
   }
   // check second connection for turnout or level crossing
@@ -4663,7 +4663,7 @@ double TrackSegment::degToRad(double degrees)
         lc->setDirection(Path::computeDirection(
                 LayoutEditor::getCoords(getConnect1(), type1),
                 LayoutEditor::getCoords(getConnect2(), type2)));
-        results.append(lc);
+        results->append(lc);
     }
    }
    else
@@ -4683,7 +4683,7 @@ double TrackSegment::degToRad(double degrees)
         lc->setDirection(Path::computeDirection(
                 LayoutEditor::getCoords(getConnect1(), type1),
                 LayoutEditor::getCoords(getConnect2(), type2)));
-        results.append(lc);
+        results->append(lc);
     }
    }
   }
@@ -4700,7 +4700,7 @@ double TrackSegment::degToRad(double degrees)
        lc->setDirection(Path::computeDirection(
                LayoutEditor::getCoords(getConnect1(), type1),
                LayoutEditor::getCoords(getConnect2(), type2)));
-       results.append(lc);
+       results->append(lc);
    }
   } else {
       // this is routinely reached in normal operations
@@ -4733,8 +4733,7 @@ public*/ QList<int> TrackSegment::checkForFreeConnections() {
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void TrackSegment::checkForNonContiguousBlocks(
-        /*@Nonnull*/ QMap<QString, QList<QSet<QString> > > blockNamesToTrackNameSetsMap) {
+/*public*/ void TrackSegment::checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap) {
     /*
      * For each (non-null) blocks of this track do:
      * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
@@ -4747,29 +4746,29 @@ public*/ QList<int> TrackSegment::checkForFreeConnections() {
      *     Basically, we're maintaining contiguous track sets for each block found
      *     (in blockNamesToTrackNameSetMap)
      */
-    QList<QSet<QString> > trackNameSets = QList<QSet<QString> >();
-    QSet<QString> trackNameSet = QSet<QString>();    // assume not found (pessimist!)
+    QList<QSet<QString>*>* trackNameSets = new QList<QSet<QString>*>();
+    QSet<QString>* trackNameSet = new QSet<QString>();    // assume not found (pessimist!)
     QString blockName = getBlockName();
-    if (!blockName.isEmpty()) {
-        trackNameSets = blockNamesToTrackNameSetsMap.value(blockName);
-        if (!trackNameSets.isEmpty()) { // (#1)
-            for (QSet<QString> checkTrackNameSet : trackNameSets) {
-                if (checkTrackNameSet.contains(getName())) { // (#2)
+    if (blockName != "") {
+        trackNameSets = blockNamesToTrackNameSetsMap->value(blockName);
+        if (!trackNameSets->isEmpty()) { // (#1)
+            for (QSet<QString>* checkTrackNameSet : *trackNameSets) {
+                if (checkTrackNameSet->contains(getName())) { // (#2)
                     trackNameSet = checkTrackNameSet;
                     break;
                 }
             }
         } else {    // (#3)
             log->debug(tr("*New block ('%1') trackNameSets").arg(blockName));
-            trackNameSets = QList<QSet<QString> >();
-            blockNamesToTrackNameSetsMap.insert(blockName, trackNameSets);
+            trackNameSets = new QList<QSet<QString>*>();
+            blockNamesToTrackNameSetsMap->insert(blockName, trackNameSets);
         }
-        if (trackNameSet.isEmpty()) {
-            trackNameSet = QSet<QString>();//new LinkedHashSet<>();
-            trackNameSets.append(trackNameSet);
+        if (trackNameSet->isEmpty()) {
+            trackNameSet = new QSet<QString>();//new LinkedHashSet<>();
+            trackNameSets->append(trackNameSet);
         }
-        trackNameSet.insert(getName());
-        if (trackNameSet.contains(getName())) {
+        trackNameSet->insert(getName());
+        if (trackNameSet->contains(getName())) {
             log->debug(tr("*    Add track '%1' to TrackNameSets for block '%2'").arg(getName()).arg(blockName));
         }
         // (#4)
@@ -4787,13 +4786,13 @@ public*/ QList<int> TrackSegment::checkForFreeConnections() {
  */
 //@Override
 /*public*/ void TrackSegment::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-        /*@Nonnull*/ QSet<QString> trackNameSet) {
-    if (!trackNameSet.contains(getName())) {
+        /*@Nonnull*/ QSet<QString> *trackNameSet) {
+    if (!trackNameSet->contains(getName())) {
         // is this the blockName we're looking for?
         if (this->blockName == blockName) {
             // if we are added to the TrackNameSet
-            trackNameSet.insert(getName());
-            if (trackNameSet.contains(getName())) {
+            trackNameSet->insert(getName());
+            if (trackNameSet->contains(getName())) {
                 log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
             }
             // these should never be null... but just in case...
