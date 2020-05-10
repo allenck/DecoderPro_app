@@ -180,6 +180,7 @@ public:
     /*public*/ void toggleState();
     /*public*/ bool isActive();
     /*public*/ bool singleSlipStraightEqual();
+    /*public*/ QList<int> checkForFreeConnections() override;
 
 signals:
     
@@ -203,6 +204,7 @@ private:
      */
     /*private*/ void activateTurnout();
     /*private*/ void deactivateTurnout();
+    /*public*/ QRectF getBounds() override;
     /*private*/ void updateBlockInfo();
     QMenu* popup;// = NULL;
     LayoutEditorTools* tools;// = NULL;
@@ -214,8 +216,7 @@ private:
  QGraphicsItemGroup* itemGroup = nullptr;
 
 protected:
- /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e);
-// /*protected*/ void editLayoutSlip(LayoutTurnout* o);
+ /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e)override;
  /*protected*/ QPointF getCoordsLeft();
  /*protected*/ QPointF getCoordsRight();
  /*protected*/ int getConnectivityStateForLayoutBlocks(
@@ -223,18 +224,19 @@ protected:
          /*@Nullable*/ LayoutBlock* prevLayoutBlock,
          /*@Nullable*/ LayoutBlock* nextLayoutBlock,
          bool suppress);
- /*protected*/ void drawTurnoutControls(EditScene* g2);
+ /*protected*/ void drawTurnoutControls(EditScene* g2) override;
  /*protected*/ QHash<int, TurnoutState *> getTurnoutStates();
- /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected);
- /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
- /*protected*/ void draw1(EditScene* g2, bool drawMain, bool isBlock, ITEMTYPE type);
- /*protected*/ void draw2(EditScene* g2, bool drawMain, float railDisplacement, ITEMTYPE type);
+ /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected) override;
+ /*protected*/ void highlightUnconnected(EditScene* g2, int specificType)override;
+ /*protected*/ void draw1(EditScene* g2, bool drawMain, bool isBlock, ITEMTYPE type)override;
+ /*protected*/ void draw2(EditScene* g2, bool drawMain, float railDisplacement, ITEMTYPE type)override;
 
 friend class LoadXml;
 friend class LayoutEditor;
 friend class LayoutTrackEditors;
 friend class MSlipTurnoutListener;
 };
+
 class MSlipTurnoutListener : public PropertyChangeListener
 {
  Q_OBJECT

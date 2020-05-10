@@ -1639,7 +1639,8 @@ void PositionablePoint::draw(EditScene* g2)
         blk1 = ts1->getBlockName();
         if (blk1 != nullptr) {
             TrackNameSets = blockNamesToTrackNameSetsMap->value(blk1);
-            if (!TrackNameSets->isEmpty()) { // (#1)
+            if (TrackNameSets && !TrackNameSets->isEmpty())
+            { // (#1)
                 for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
                     if (checkTrackNameSet->contains(getName())) { // (#2)
                         TrackNameSet = checkTrackNameSet;
@@ -1651,7 +1652,7 @@ void PositionablePoint::draw(EditScene* g2)
                 TrackNameSets = new QList<QSet<QString>*>();
                 blockNamesToTrackNameSetsMap->insert(blk1, TrackNameSets);
             }
-            if (TrackNameSet->isEmpty()) {
+            if (TrackNameSet == nullptr || TrackNameSet->isEmpty()) {
                 TrackNameSet = new QSet<QString>();
                 log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(blk1));
                 TrackNameSet->insert(getName());
@@ -1672,7 +1673,7 @@ void PositionablePoint::draw(EditScene* g2)
             if (blk2 != nullptr) {
                 TrackNameSet = new QSet<QString>();    // assume not found (pessimist!)
                 TrackNameSets = blockNamesToTrackNameSetsMap->value(blk2);
-                if (!TrackNameSets->isEmpty()) { // (#1)
+                if (TrackNameSets && !TrackNameSets->isEmpty()) { // (#1)
                     for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
                         if (checkTrackNameSet->contains(getName())) { // (#2)
                             TrackNameSet = checkTrackNameSet;
@@ -1684,7 +1685,7 @@ void PositionablePoint::draw(EditScene* g2)
                     TrackNameSets = new QList<QSet<QString>*>();
                     blockNamesToTrackNameSetsMap->insert(blk2, TrackNameSets);
                 }
-                if (TrackNameSet->isEmpty()) {
+                if (TrackNameSet ==nullptr || TrackNameSet->isEmpty()) {
                     TrackNameSet = new QSet<QString>();
                     log->debug(tr("*    Add track '%1' to TrackNameSet for block '%2'").arg(getName()).arg(blk2));
                     TrackNameSets->append(TrackNameSet);

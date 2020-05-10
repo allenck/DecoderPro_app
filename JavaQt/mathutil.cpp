@@ -351,6 +351,39 @@ MathUtil::MathUtil()
     return QPointF(pA.x() - pB.x(), pA.y() - pB.y());
 }
 /**
+ * Modifies this rectangle so that it represents the smallest rectangle
+ * that contains both the existing rectangle and the specified point.
+ * However, if the point falls on one of the two borders which are not
+ * inside the rectangle, a subsequent call to <code>contains</code> may
+ * return false.
+ *
+ * @param newx the X coordinate of the point to add to this rectangle
+ * @param newy the Y coordinate of the point to add to this rectangle
+ */
+ /*public*/ QRectF MathUtil::add(QRectF r, double newx, double newy)
+ {
+      double minx = qMin(r.x(), newx);
+      double maxx = qMax(r.right(), newx);
+      double miny = qMin(r.y(), newy);
+      double maxy = qMax(r.bottom(), newy);
+      return QRectF(minx, miny, maxx - minx, maxy - miny);
+  }
+
+ /**
+  * Modifies this rectangle so that it represents the smallest rectangle
+  * that contains both the existing rectangle and the specified point.
+  * However, if the point falls on one of the two borders which are not
+  * inside the rectangle, a subsequent call to <code>contains</code> may
+  * return false.
+  *
+  * @param p the point to add to this rectangle
+  * @throws NullPointerException if p is null
+  */
+  /*public*/ QRectF MathUtil::add(QRectF r, QPointF p)
+  {
+     return add(r, p.x(), p.y());
+  }
+/**
  * multiply a point times a scalar
  *
  * @param p the point

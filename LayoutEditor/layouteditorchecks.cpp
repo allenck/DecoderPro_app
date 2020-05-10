@@ -68,7 +68,7 @@
             bool enabled = layoutEditor->isEditable();
             checkUnConnectedTracksMenu->setEnabled(enabled);
             checkUnBlockedTracksMenu->setEnabled(enabled);
-//            checkNonContiguousBlocksMenu->setEnabled(enabled);
+            checkNonContiguousBlocksMenu->setEnabled(enabled);
             checkUnnecessaryAnchorsMenu->setEnabled(enabled);
             checkLinearBezierTrackSegmentsMenu->setEnabled(enabled);
             checkFixedRadiusBezierTrackSegmentsMenu->setEnabled(enabled);
@@ -274,6 +274,13 @@
 //         //nothing to see here... move along...
 //     }
 // });
+
+ QAction* testAct = new QAction(tr("test"),this);
+ connect(testAct, &QAction::triggered, [=]{
+  testFunct();
+ });
+ checkMenu->addSeparator();
+ checkMenu->addAction(testAct);
 }
 
 
@@ -395,7 +402,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 // action to be performed when checkUnBlockedTracksMenuItem is clicked
 //
 /*private*/ void LayoutEditorChecks::doCheckUnBlockedTracksMenuItem(/*@Nonnull String menuItemName*/) {
- QString menuItemName = ((QAction)sender()).text();
+ QString menuItemName = ((QAction*)sender())->text();
     log->debug(tr("doCheckUnBlockedTracksMenuItem(%1)").arg(menuItemName));
 
     LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(menuItemName);
@@ -421,7 +428,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
     // mark our menu as "in progress..."
     checkNonContiguousBlocksMenu->clear();
     checkNonContiguousBlocksMenu->addAction(checkInProgressMenuItem);
-#if 1
+
     // collect all contiguous blocks
     QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetMaps =  new QMap<QString, QList<QSet<QString>*>*>();
     for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
@@ -446,7 +453,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
             int idx = 1;
             for (QSet<QString>* trackNameSet : *trackNameSets) {
                 QAction* subMenuItem = new QAction(
-                        tr("MakeLabel %1").arg(blockName) + "#" + QString::number(idx++),this);
+                        tr("%1").arg(blockName) + "#" + QString::number(idx++),this);
                 jmi->addAction(subMenuItem);
 //                subMenuItem.addActionListener((ActionEvent event) -> {
                 connect(subMenuItem, &QAction::triggered, [=]{
@@ -457,7 +464,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
             }
         }
     }
-#endif
+
     // if we didn't find any...
     if (checkNonContiguousBlocksMenu->children().count() == 0) {
         checkNonContiguousBlocksMenu->addAction(checkNoResultsMenuItem);
@@ -585,9 +592,9 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
         jmi->setCheckable(true);
         checkUnnecessaryAnchorsMenu->addAction(jmi);
 //        jmi.addActionListener((ActionEvent event) -> {
-//            doCheckUnnecessaryAnchorsMenuItem(anchorName);
-//        });
-connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onCheckUnnecessaryAnchorsMenu()));
+        connect(jmi, &QAction::triggered, [=]{
+            doCheckUnnecessaryAnchorsMenuItem(anchorName);
+        });
         // if it's in the check marked set then (re-)checkmark it
         if (checkMarkedMenuItemNamesSet.contains(anchorName)) {
             jmi->setChecked(true);
@@ -866,6 +873,15 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(onCheckUnnecessaryAnchorsMenu()
     }
     return results;
 }   // getCheckMarkedMenuItemNames
+
+void LayoutEditorChecks::testFunct()
+{
+ QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetMaps =  new QMap<QString, QList<QSet<QString>*>*>();
+ for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
+     layoutTrack->checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps);
+ }
+ log->debug(tr("count = %1").arg(blockNamesToTrackNameSetMaps->count()));
+}
 
 /*private*/ /*final*/ /*static*/ Logger* LayoutEditorChecks::log
         = LoggerFactory::getLogger("LayoutEditorChecks");

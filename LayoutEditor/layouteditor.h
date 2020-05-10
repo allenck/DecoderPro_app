@@ -1134,7 +1134,7 @@ protected:
  /*protected*/ void setOptionMenuTurnoutCircleColor();
  /*protected*/ void setOptionMenuTextColor();
  /*protected*/ void setOptionMenuBackgroundColor();
- /*protected*/ void setOptionMenuTrackColor();
+ ///*protected*/ void setOptionMenuTrackColor();
  /*protected*/ void removeBackground(PositionableLabel* b);
  /*protected*/ void drawTurnouts(EditScene* g2);
  /*protected*/ void setupToolsMenu(/*@Nonnull*/ QMenuBar* menuBar);

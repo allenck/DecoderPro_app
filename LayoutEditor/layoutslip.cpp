@@ -426,6 +426,15 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     }
     return result;
 }
+ /**
+ * {@inheritDoc}
+ */
+// just here for testing; should be removed when I'm done...
+//@Override
+/*public*/ QRectF LayoutSlip::getBounds() {
+    return LayoutTurnout::getBounds();
+}
+
 /*private*/ void LayoutSlip::updateBlockInfo()
 {
  LayoutBlock* b1 = nullptr;
@@ -1937,7 +1946,39 @@ void LayoutSlip::updateState()
        circles = itemGroup;
        g2->addItem(circles);
    }   // drawTurnoutControls
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QList<int> LayoutSlip::checkForFreeConnections() {
+   QList<int> result =  QList<int>();
 
+    //check the A connection point
+    if (getConnectA() == nullptr) {
+        result.append((SLIP_A));
+    }
+
+    //check the B connection point
+    if (getConnectB() == nullptr) {
+        result.append((SLIP_B));
+    }
+
+    //check the C connection point
+    if (getConnectC() == nullptr) {
+        result.append((SLIP_C));
+    }
+
+    //check the D connection point
+    if (getConnectD() == nullptr) {
+        result.append((SLIP_D));
+    }
+    return result;
+}
+
+//NOTE: LayoutSlip uses the checkForNonContiguousBlocks
+//      and collectContiguousTracksNamesInBlockNamed methods
+//      inherited from LayoutTurnout
+//
 
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LayoutSlip::class.getName());
 

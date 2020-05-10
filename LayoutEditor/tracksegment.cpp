@@ -3726,17 +3726,12 @@ double TrackSegment::degToRad(double degrees)
         ep2 = LayoutEditor::getCoords(getConnect2(), getType2());
     }
 
-//    result = QRectF(ep1.x(), ep1.y(), 0, 0);
-//    //result.add(ep2);
-//    result.setWidth(qAbs(ep1.x() - ep2.x()));
-//    result.setHeight(qAbs(ep1.y() - ep2.y()));
-    result = QRectF(QPointF(qMin(ep1.x(), ep2.x()),qMin(ep1.y(), ep2.y())), QPointF(qMax(ep1.x(), ep2.x()),qMax(ep1.y(), ep2.y())));
+    result = QRectF(ep1.x(), ep1.y(), 0, 0);
+    result= MathUtil::add(result, ep2);
 
     return result;
-// if(itemMain == nullptr)
-//  return QRectF();
-// return itemMain->boundingRect();
 }
+
 /*======================*\
 |* decoration accessors *|
 \*======================*/
@@ -4751,7 +4746,7 @@ public*/ QList<int> TrackSegment::checkForFreeConnections() {
     QString blockName = getBlockName();
     if (blockName != "") {
         trackNameSets = blockNamesToTrackNameSetsMap->value(blockName);
-        if (!trackNameSets->isEmpty()) { // (#1)
+        if (trackNameSets && !trackNameSets->isEmpty()) { // (#1)
             for (QSet<QString>* checkTrackNameSet : *trackNameSets) {
                 if (checkTrackNameSet->contains(getName())) { // (#2)
                     trackNameSet = checkTrackNameSet;
@@ -4763,7 +4758,7 @@ public*/ QList<int> TrackSegment::checkForFreeConnections() {
             trackNameSets = new QList<QSet<QString>*>();
             blockNamesToTrackNameSetsMap->insert(blockName, trackNameSets);
         }
-        if (trackNameSet->isEmpty()) {
+        if (trackNameSet==nullptr || trackNameSet->isEmpty()) {
             trackNameSet = new QSet<QString>();//new LinkedHashSet<>();
             trackNameSets->append(trackNameSet);
         }

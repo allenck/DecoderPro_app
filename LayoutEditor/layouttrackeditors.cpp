@@ -430,7 +430,7 @@ void LayoutTrackEditors::showSensorMessage() {
     if (editLayoutTurnoutOpen) {
         editLayoutTurnoutFrame->setVisible(true);
     } else if (editLayoutTurnoutFrame ==  nullptr) { // Initialize if needed
-        editLayoutTurnoutFrame = new JmriJFrameX(tr("EditTurnout"), false, true);  // NOI18N
+        editLayoutTurnoutFrame = new JmriJFrameX(tr("Edit Turnout"), false, true);  // NOI18N
         editLayoutTurnoutFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutTurnout", true);  // NOI18N
         editLayoutTurnoutFrame->setLocation(50, 30);
         QWidget* contentPane = editLayoutTurnoutFrame->getContentPane(true);
@@ -649,7 +649,7 @@ void LayoutTrackEditors::showSensorMessage() {
         connect(editLayoutTurnoutDoneButton, SIGNAL(clicked(bool)), this, SLOT(editLayoutTurnoutDonePressed()));
         editLayoutTurnoutDoneButton->setToolTip(tr("Click [{0}] to accept any changes made above and close this dialog. %1").arg(tr("Done")));  // NOI18N
         // Cancel
-        panel5Layout->addWidget(editLayoutTurnoutCancelButton = new QPushButton(tr("ButtonCancel")));  // NOI18N
+        panel5Layout->addWidget(editLayoutTurnoutCancelButton = new QPushButton(tr("Cancel")));  // NOI18N
 //        editLayoutTurnoutCancelButton.addActionListener((ActionEvent e) -> {
 //            editLayoutTurnoutCancelPressed(e);
 //        });
@@ -1375,9 +1375,9 @@ int state;
 * disabled
 */
 /*public*/ void LayoutTrackEditors::toggleStateTest() {
-int turnAState;
-int turnBState;
-switch (testState) {
+ int turnAState;
+ int turnBState;
+ switch (testState) {
     default:
     case LayoutTurnout::STATE_AC: {
         testState = LayoutTurnout::STATE_AD;
@@ -1402,16 +1402,16 @@ switch (testState) {
         testState = LayoutTurnout::STATE_AC;
         break;
     }
-}
-turnAState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutAState();
-turnBState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutBState();
+ }
+ turnAState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutAState();
+ turnBState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutBState();
 
-if (editLayoutSlipTurnoutAComboBox->getSelectedItem() !=  nullptr) {
-    ((Turnout*) editLayoutSlipTurnoutAComboBox->getSelectedItem())->setCommandedState(turnAState);
-}
-if (editLayoutSlipTurnoutBComboBox->getSelectedItem() !=  nullptr) {
-    ((Turnout*) editLayoutSlipTurnoutBComboBox->getSelectedItem())->setCommandedState(turnBState);
-}
+ if (editLayoutSlipTurnoutAComboBox->getSelectedItem() !=  nullptr) {
+     ((Turnout*) editLayoutSlipTurnoutAComboBox->getSelectedItem())->setCommandedState(turnAState);
+ }
+ if (editLayoutSlipTurnoutBComboBox->getSelectedItem() !=  nullptr) {
+     ((Turnout*) editLayoutSlipTurnoutBComboBox->getSelectedItem())->setCommandedState(turnBState);
+ }
     if (testPanel !=  nullptr) {
         testPanel->repaint();
     }
@@ -1432,52 +1432,52 @@ class TestState extends QWidget* {
 
 /*private*/ void LayoutTrackEditors::editLayoutSlipEditBlockPressed(/*ActionEvent a*/) {
 // check if a block name has been entered
-QString newName = editLayoutSlipBlockNameComboBox->getSelectedItemDisplayName();
-if (layoutSlip->getBlockName() !=(newName)) {
-    // get new block, or  nullptr if block has been removed
-    try {
-        layoutSlip->setLayoutBlock(layoutEditor->provideLayoutBlock(newName));
-    } catch (IllegalArgumentException ex) {
-        layoutSlip->setLayoutBlock( nullptr);
-    }
-    editLayoutSlipNeedsRedraw = true;
-    editLayoutSlipNeedsBlockUpdate = true;
-}
-// check if a block exists to edit
-if (layoutSlip->getLayoutBlock() ==  nullptr) {
-    JOptionPane::showMessageDialog(editLayoutSlipFrame,
-            tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."),
-            tr("Error"), JOptionPane::ERROR_MESSAGE);
-    return;
-}
-layoutSlip->getLayoutBlock()->editLayoutBlock(editLayoutSlipFrame);
-editLayoutSlipNeedsRedraw = true;
-layoutEditor->setDirty();
+ QString newName = editLayoutSlipBlockNameComboBox->getSelectedItemDisplayName();
+ if (layoutSlip->getBlockName() !=(newName)) {
+     // get new block, or  nullptr if block has been removed
+     try {
+         layoutSlip->setLayoutBlock(layoutEditor->provideLayoutBlock(newName));
+     } catch (IllegalArgumentException ex) {
+         layoutSlip->setLayoutBlock( nullptr);
+     }
+     editLayoutSlipNeedsRedraw = true;
+     editLayoutSlipNeedsBlockUpdate = true;
+ }
+ // check if a block exists to edit
+ if (layoutSlip->getLayoutBlock() ==  nullptr) {
+     JOptionPane::showMessageDialog(editLayoutSlipFrame,
+             tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."),
+             tr("Error"), JOptionPane::ERROR_MESSAGE);
+     return;
+ }
+ layoutSlip->getLayoutBlock()->editLayoutBlock(editLayoutSlipFrame);
+ editLayoutSlipNeedsRedraw = true;
+ layoutEditor->setDirty();
 }   // editLayoutSlipEditBlockPressed(
 
 /*private*/ void LayoutTrackEditors::editLayoutSlipDonePressed(/*ActionEvent a*/) {
-QString newName = editLayoutSlipTurnoutAComboBox->getSelectedItemDisplayName();
-if (layoutSlip->getTurnoutName() != (newName)) {
-    if (layoutEditor->validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
-        layoutSlip->setTurnout(newName);
-    } else {
-        layoutSlip->setTurnout("");
-    }
-    editLayoutSlipNeedsRedraw = true;
-}
+ QString newName = editLayoutSlipTurnoutAComboBox->getSelectedItemDisplayName();
+ if (layoutSlip->getTurnoutName() != (newName)) {
+     if (layoutEditor->validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
+         layoutSlip->setTurnout(newName);
+     } else {
+         layoutSlip->setTurnout("");
+     }
+     editLayoutSlipNeedsRedraw = true;
+ }
 
-newName = editLayoutSlipTurnoutBComboBox->getSelectedItemDisplayName();
-if (layoutSlip->getTurnoutBName() != (newName)) {
+ newName = editLayoutSlipTurnoutBComboBox->getSelectedItemDisplayName();
+ if (layoutSlip->getTurnoutBName() != (newName)) {
     if (layoutEditor->validatePhysicalTurnout(newName, editLayoutSlipFrame)) {
         layoutSlip->setTurnoutB(newName);
     } else {
         layoutSlip->setTurnoutB("");
     }
     editLayoutSlipNeedsRedraw = true;
-}
+ }
 
-newName = editLayoutSlipBlockNameComboBox->getSelectedItemDisplayName();
-if (layoutSlip->getBlockName() !=(newName)) {
+ newName = editLayoutSlipBlockNameComboBox->getSelectedItemDisplayName();
+ if (layoutSlip->getBlockName() !=(newName)) {
     // get new block, or  nullptr if block has been removed
     try {
         layoutSlip->setLayoutBlock(layoutEditor->provideLayoutBlock(newName));
@@ -1489,45 +1489,45 @@ if (layoutSlip->getBlockName() !=(newName)) {
     editLayoutSlipNeedsRedraw = true;
     layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
     editLayoutSlipNeedsBlockUpdate = true;
-}
-for (TurnoutState* ts : layoutSlip->getTurnoutStates().values()) {
-    ts->updateStatesFromCombo();
-}
+ }
+ for (TurnoutState* ts : layoutSlip->getTurnoutStates().values()) {
+     ts->updateStatesFromCombo();
+ }
 
-// set hidden
-bool oldHidden = layoutSlip->isHidden();
-layoutSlip->setHidden(editLayoutSlipHiddenBox->isChecked());
-if (oldHidden != layoutSlip->isHidden()) {
-    editLayoutSlipNeedsRedraw = true;
-}
+ // set hidden
+ bool oldHidden = layoutSlip->isHidden();
+ layoutSlip->setHidden(editLayoutSlipHiddenBox->isChecked());
+ if (oldHidden != layoutSlip->isHidden()) {
+     editLayoutSlipNeedsRedraw = true;
+ }
 
-editLayoutSlipOpen = false;
-editLayoutSlipFrame->setVisible(false);
-editLayoutSlipFrame->dispose();
-editLayoutSlipFrame =  nullptr;
-if (editLayoutSlipNeedsBlockUpdate) {
-    layoutSlip->updateBlockInfo();
-}
-if (editLayoutSlipNeedsRedraw) {
-    layoutEditor->redrawPanel();
-    layoutEditor->setDirty();
-    editLayoutSlipNeedsRedraw = false;
-}
+ editLayoutSlipOpen = false;
+ editLayoutSlipFrame->setVisible(false);
+ editLayoutSlipFrame->dispose();
+ editLayoutSlipFrame =  nullptr;
+ if (editLayoutSlipNeedsBlockUpdate) {
+     layoutSlip->updateBlockInfo();
+ }
+ if (editLayoutSlipNeedsRedraw) {
+     layoutEditor->redrawPanel();
+     layoutEditor->setDirty();
+     editLayoutSlipNeedsRedraw = false;
+ }
 }   // editLayoutSlipDonePressed
 
 /*private*/ void LayoutTrackEditors::editLayoutSlipCancelPressed(/*ActionEvent a*/) {
-editLayoutSlipOpen = false;
-editLayoutSlipFrame->setVisible(false);
-editLayoutSlipFrame->dispose();
-editLayoutSlipFrame =  nullptr;
-if (editLayoutSlipNeedsBlockUpdate) {
-    layoutSlip->updateBlockInfo();
-}
-if (editLayoutSlipNeedsRedraw) {
-    layoutEditor->redrawPanel();
-    layoutEditor->setDirty();
-    editLayoutSlipNeedsRedraw = false;
-}
+ editLayoutSlipOpen = false;
+ editLayoutSlipFrame->setVisible(false);
+ editLayoutSlipFrame->dispose();
+ editLayoutSlipFrame =  nullptr;
+ if (editLayoutSlipNeedsBlockUpdate) {
+     layoutSlip->updateBlockInfo();
+ }
+ if (editLayoutSlipNeedsRedraw) {
+     layoutEditor->redrawPanel();
+     layoutEditor->setDirty();
+     editLayoutSlipNeedsRedraw = false;
+ }
 }
 
 #if 0
@@ -1622,12 +1622,12 @@ if (editLayoutSlipNeedsRedraw) {
     editLevelXingDoneButton->setDefault(true);
 
     // Cancel
-    panel5Layout->addWidget(editLevelXingCancelButton = new QPushButton(tr("ButtonCancel")));  // NOI18N
+    panel5Layout->addWidget(editLevelXingCancelButton = new QPushButton(tr("Cancel")));  // NOI18N
 //    editLevelXingCancelButton.addActionListener((ActionEvent e) -> {
 //        editLevelXingCancelPressed(e);
 //    });
     connect(editLevelXingCancelButton, SIGNAL(clicked(bool)), this, SLOT(editLevelXingCancelPressed()));
-    editLevelXingCancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("ButtonCancel")));  // NOI18N
+    editLevelXingCancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));  // NOI18N
     contentPane->layout()->addWidget(panel5);
 }
 
@@ -1811,7 +1811,7 @@ if (editLayoutTurntableOpen) {
     editLayoutTurntableFrame->setVisible(true);
 } else // Initialize if needed
 if (editLayoutTurntableFrame ==  nullptr) {
-    editLayoutTurntableFrame = new JmriJFrameX(tr("EditTurntable"), false, true);  // NOI18N
+    editLayoutTurntableFrame = new JmriJFrameX(tr("Edit Turntable"), false, true);  // NOI18N
     editLayoutTurntableFrame->addHelpMenu("package.jmri.jmrit.display.EditTurntable", true);  // NOI18N
     editLayoutTurntableFrame->setLocation(50, 30);
 
@@ -1878,7 +1878,7 @@ if (editLayoutTurntableFrame ==  nullptr) {
 
     editLayoutTurntableDoneButton->setToolTip(tr("Click [{0}] to accept any changes made above and close this dialog.").arg(tr("Done")));  // NOI18N
     // Cancel
-    panel5Layout->addWidget(editLayoutTurntableCancelButton = new QPushButton(tr("ButtonCancel")));  // NOI18N
+    panel5Layout->addWidget(editLayoutTurntableCancelButton = new QPushButton(tr("Cancel")));  // NOI18N
 //    editLayoutTurntableCancelButton.addActionListener((ActionEvent e) -> {
 //        turntableEditCancelPressed(e);
 //    });

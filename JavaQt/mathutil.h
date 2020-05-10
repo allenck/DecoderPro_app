@@ -40,6 +40,8 @@ public:
  /*public*/ static double pin(double inValue, double inMin, double inMax);
  /*public*/ static QPointF add(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
  /*public*/ static QPointF subtract(/*@Nonnull*/ QPointF pA, /*@Nonnull*/ QPointF pB);
+ /*public*/ static QRectF add(QRectF r, double newx, double newy);
+ /*public*/ static QRectF add(QRectF r, QPointF p);
  /*public*/ static QPointF multiply(/*@Nonnull*/ QPointF p, double s);
  /*public*/ static QPointF multiply(/*@Nonnull*/ QPointF p, double x, double y);
  /*public*/ static QPointF multiply(double s, /*@Nonnull*/ QPointF p);

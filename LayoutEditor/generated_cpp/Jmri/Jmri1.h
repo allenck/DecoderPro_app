@@ -1889,7 +1889,6 @@ inline void promoted_removeSelections(Positionable*  p) { this->removeSelections
 inline void promoted_setNextLocation(Positionable*  obj) { this->setNextLocation(obj); }
 inline void promoted_setOptionMenuBackgroundColor() { this->setOptionMenuBackgroundColor(); }
 inline void promoted_setOptionMenuTextColor() { this->setOptionMenuTextColor(); }
-inline void promoted_setOptionMenuTrackColor() { this->setOptionMenuTrackColor(); }
 inline void promoted_setOptionMenuTurnoutCircleColor() { this->setOptionMenuTurnoutCircleColor(); }
 inline void promoted_setOptionMenuTurnoutCircleSize() { this->setOptionMenuTurnoutCircleSize(); }
 inline void promoted_setSelectionsRotation(int  k, Positionable*  p) { this->setSelectionsRotation(k, p); }
@@ -2071,7 +2070,6 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void setOpenDispatcherOnLoad(LayoutEditor* theWrappedObject, bool  boo);
    void setOptionMenuBackgroundColor(LayoutEditor* theWrappedObject);
    void setOptionMenuTextColor(LayoutEditor* theWrappedObject);
-   void setOptionMenuTrackColor(LayoutEditor* theWrappedObject);
    void setOptionMenuTurnoutCircleColor(LayoutEditor* theWrappedObject);
    void setOptionMenuTurnoutCircleSize(LayoutEditor* theWrappedObject);
    void setPanelBounds(LayoutEditor* theWrappedObject, QRectF  newBounds);

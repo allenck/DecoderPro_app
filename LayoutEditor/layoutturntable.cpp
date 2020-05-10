@@ -1239,7 +1239,7 @@ void LayoutTurntable::dispose() {
 
         TrackNameSet = new QSet<QString>();    // assume not found (pessimist!)
         TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
-        if (!TrackNameSets->isEmpty()) { // (#1)
+        if (TrackNameSets && !TrackNameSets->isEmpty()) { // (#1)
             for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
                 if (checkTrackNameSet->contains(getName())) { // (#2)
                     TrackNameSet = checkTrackNameSet;
@@ -1251,7 +1251,7 @@ void LayoutTurntable::dispose() {
             TrackNameSets = new QList<QSet<QString>*>();
             blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
         }
-        if (TrackNameSet->isEmpty()) {
+        if (TrackNameSets== nullptr || TrackNameSet->isEmpty()) {
             TrackNameSet = new QSet<QString>();
             TrackNameSets->append(TrackNameSet);
         }

@@ -246,7 +246,7 @@ public:
     /*public*/ LayoutBlock* getLayoutBlockB();
     /*public*/ LayoutBlock* getLayoutBlockC() ;
     /*public*/ LayoutBlock* getLayoutBlockD();
-    /*public*/ QPointF getCoordsCenter();
+//    /*public*/ QPointF getCoordsCenter();
     /*public*/ QPointF getCoordsA();
     /*public*/ QPointF getCoordsB();
     /*public*/ QPointF getCoordsC();

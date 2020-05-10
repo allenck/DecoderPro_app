@@ -19741,11 +19741,6 @@ void PythonQtWrapper_LayoutEditor::setOptionMenuTextColor(LayoutEditor* theWrapp
   ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setOptionMenuTextColor());
 }
 
-void PythonQtWrapper_LayoutEditor::setOptionMenuTrackColor(LayoutEditor* theWrappedObject)
-{
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setOptionMenuTrackColor());
-}
-
 void PythonQtWrapper_LayoutEditor::setOptionMenuTurnoutCircleColor(LayoutEditor* theWrappedObject)
 {
   ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_setOptionMenuTurnoutCircleColor());

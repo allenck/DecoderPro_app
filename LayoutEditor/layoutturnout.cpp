@@ -1262,23 +1262,29 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
   log->error("unexpected type of D connection to layoutturnout - "+QString("%1").arg(type));
  }
 }
-/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlock()const {return block;}
+
+/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlock()const
+{
+ return (namedLayoutBlockA != nullptr) ? namedLayoutBlockA->getBean() : nullptr;
+}
+
 /*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockB()
 {
- if (blockB!=nullptr) return blockB;
- return block;
+ return (namedLayoutBlockB != nullptr) ? namedLayoutBlockB->getBean() : getLayoutBlock();
+
 }
+
 /*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockC()
 {
- if (blockC!=nullptr) return blockC;
- return block;
+ return (namedLayoutBlockC != nullptr) ? namedLayoutBlockC->getBean() : getLayoutBlock();
 }
+
 /*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockD()
 {
- if (blockD!=nullptr) return blockD;
- return block;
+ return (namedLayoutBlockD != nullptr) ? namedLayoutBlockD->getBean() : getLayoutBlock();
 }
-/*public*/ QPointF LayoutTurnout::getCoordsCenter() {return center;}
+
+///*public*/ QPointF LayoutTurnout::getCoordsCenter() {return center;}
 /*public*/ QPointF LayoutTurnout::getCoordsA()
 {
  if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) || (type==DOUBLE_SLIP) || (type==SINGLE_SLIP))
@@ -1356,23 +1362,18 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
  */
 //@Override
 /*public*/ QRectF LayoutTurnout::getBounds() {
-// QRectF result;
+ QRectF result;
 
-// QPointF POINTA1 = getCoordsA();
-// result = QRectF(POINTA1.x(), POINTA1.y(), 0, 0);
-// //result.united(getCoordsB());
-// result.adjust(0,0,getCoordsB().x(),getCoordsB().y());
-// result.united(getCoordsC());
-// if ((getTurnoutType() == DOUBLE_XOVER)
-//     || (getTurnoutType() == LH_XOVER)
-//     || (getTurnoutType() == RH_XOVER)
-//     || (getTurnoutType() == SINGLE_SLIP)
-//     || (getTurnoutType() == DOUBLE_SLIP)) {
-//  result.united(getCoordsD());
-// }
-// return result;
- return item->boundingRect();
+ QPointF pointA = getCoordsA();
+ result = QRectF(pointA.x(), pointA.y(), 0, 0);
+ result = MathUtil::add(result, getCoordsB());
+ result = MathUtil::add(result,getCoordsC());
+ if (isTurnoutTypeXover() || isTurnoutTypeSlip()) {
+     result = MathUtil::add(result, getCoordsD());
+ }
+ return result;
 }
+
 // updates connectivity for blocks assigned to this turnout and connected track segments
 /*private*/ void LayoutTurnout::updateBlockInfo()
 {
@@ -4268,12 +4269,13 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
     QHashIterator<LayoutTrack*, QString> entry(blocksAndTracksMap);
     while(entry.hasNext())
     {
+     entry.next();
         LayoutTrack* theConnect = entry.key();
         QString theBlockName = entry.value();
 
         TrackNameSet = new QSet<QString>();    // assume not found (pessimist!)
         TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
-        if (!TrackNameSets->isEmpty()) { // (#1)
+        if (TrackNameSets && !TrackNameSets->isEmpty()) { // (#1)
             for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
                 if (checkTrackNameSet->contains(getName())) { // (#2)
                     TrackNameSet = checkTrackNameSet;
@@ -4285,7 +4287,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
             TrackNameSets = new QList<QSet<QString>* >();
             blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
         }
-        if (TrackNameSet->isEmpty()) {
+        if (TrackNameSet == nullptr || TrackNameSet->isEmpty()) {
             TrackNameSet = new QSet<QString>();
             TrackNameSets->append(TrackNameSet);
         }

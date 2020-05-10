@@ -1869,15 +1869,14 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
  */
 //@Override
 /*public*/ QRectF LevelXing::getBounds() {
-//    QRectF result;
+ QRectF result;
 
-//    QPointF pointA = getCoordsA();
-//    result = QRectF(pointA.x(), pointA.y(), 0, 0);
-//    result.united(getCoordsB());
-//    result.united(getCoordsC());
-//    result.united(getCoordsD());
-//    return result;
- return item->boundingRect();
+ QPointF pointA = getCoordsA();
+ result = QRectF(pointA.x(), pointA.y(), 0, 0);
+ result = MathUtil::add(result,getCoordsB());
+ result = MathUtil::add(result,getCoordsC());
+ result = MathUtil::add(result,getCoordsD());
+ return result;
 }
 
 /*
@@ -2010,7 +2009,7 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
         //check the AC blockName
         if (getBlockNameAC()==(blockName)) {
             // if we are added to the TrackNameSet
-         TrackNameSet->insert(getName());
+            TrackNameSet->insert(getName());
             if (TrackNameSet->contains(getName())) {
                 log.debug(tr("*    Add track ''%1'for block ''%2''").arg(getName()).arg(blockName));
             }
