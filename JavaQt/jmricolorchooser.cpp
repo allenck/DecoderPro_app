@@ -28,14 +28,21 @@
      * Null values and duplicates are not added.
      * @param color The color object to be added.
      */
-    /*static*/ /*public*/ void JmriColorChooser::addRecentColor(QColor color) {
+    /*static*/ /*public*/ void JmriColorChooser::addRecentColor(QColor color)
+    {
 //        if (color == QColor() || !color.toString().contains("java.awt.Color")) {
 //            // Ignore null or default system colors
 //            return;
 //        }
-        if (!recentColors.contains(color)) {
-            recentColors.append(color);
-        }
+//        if (!recentColors.contains(color)) {
+//            recentColors.append(color);
+//        }
+     foreach(QColor c, recentColors)
+     {
+      if(c.name() == color.name())
+       return;
+     }
+     recentColors.append(color);
     }
 
     /**

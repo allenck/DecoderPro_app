@@ -2,6 +2,7 @@
 #define JMRICOLORCHOOSERPANEL_H
 #include "abstractcolorchooserpanel.h"
 
+class Logger;
 class GridBagLayout;
 class QGroupBox;
 class QPushButton;
@@ -30,6 +31,7 @@ private:
  const QIcon getColorIcon(QColor color);
  GridBagLayout* recentPanelLayout = nullptr;
  QSignalMapper* signalMapper = nullptr;
+ static Logger* log;
 
 protected:
  /*protected*/ void buildChooser();

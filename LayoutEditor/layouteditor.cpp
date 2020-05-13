@@ -7212,11 +7212,16 @@ void LayoutEditor::on_removeMenuAction_triggered()
  * Assign the block from the toolbar to all selected layout tracks
  */
 /*protected*/ void LayoutEditor::assignBlockToSelection() {
-    QString newName = leToolBarPanel->blockIDComboBox->currentText();
-    LayoutBlock* b = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
-    for (LayoutTrack* lt : _layoutTrackSelection) {
-        lt->setAllLayoutBlocks(b);
-    }
+ QString newName = leToolBarPanel->blockIDComboBox->getSelectedItemDisplayName();
+ if (newName.isNull()) {
+     newName = "";
+ }
+ LayoutBlock* b = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
+ //_layoutTrackSelection.forEach((lt) ->
+ foreach(LayoutTrack* lt, _layoutTrackSelection)
+ {
+     lt->setAllLayoutBlocks(b);
+ }//);
 }
 
 /*public*/ bool LayoutEditor::translateTrack(float xDel, float yDel) {

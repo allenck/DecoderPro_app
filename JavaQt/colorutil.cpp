@@ -46,14 +46,14 @@ ColorUtil::ColorUtil()
 //@Nonnull
 /*public*/ /*static*/ QString ColorUtil::colorToString(/*@Nullable*/ QColor color) {
     if (!color.isValid()) {
-        return "track";
+        return ColorTrack;
     }
     QString colorName = colorToName(color);
     if (colorName != "") {
         return colorName;
     }
     log->error("unknown color sent to colorToString");
-    return "black";
+    return ColorBlack;
 }
 
 /**
@@ -71,37 +71,41 @@ ColorUtil::ColorUtil()
     if (colorName != "") {
         return colorName;
     }
-    return colorToHexString(color);
+    //return colorToHexString(color);
+    return color.name();
 }
 
-/*public*/ /*static*/ QColor ColorUtil::stringToColor(QString string) {
-    if(string == "black")
+/*public*/ /*static*/ QColor ColorUtil::stringToColor(QString string)
+{
+    if(string == ColorBlack)
             return Qt::black;
-     else if(string == "darkGray")
+     else if(string == ColorDarkGray)
             return Qt::darkGray;
-     else if(string == "gray")
+     else if(string == ColorGray)
             return Qt::gray;
-     else if(string == "lightGray")
+     else if(string == ColorLightGray)
             return Qt::lightGray;
-     else if(string == "white")
+     else if(string == ColorWhite)
             return Qt::white;
-     else if(string == "red")
+     else if(string == ColorRed)
             return Qt::red;
-     else if(string == "pink")
+     else if(string == ColorPink)
             return QColor(255,233,236);
-     else if(string == "orange")
+     else if(string == ColorOrange)
             return QColor(255,170,0);
-     else if(string == "yellow")
+     else if(string == ColorYellow)
             return Qt::yellow;
-     else if(string == "green")
+     else if(string == ColorGreen)
             return Qt::green;
-     else if(string == "blue")
+     else if(string == ColorBlue)
             return Qt::blue;
-     else if(string == "magenta")
+     else if(string == ColorMagenta)
             return Qt::magenta;
-     else if(string == "cyan")
+     else if(string == ColorCyan)
             return Qt::cyan;
-     else if(string == "track")
+     else if(string == ColorBrown)
+            return BROWN;
+     else if(string == ColorTrack)
             return "";
     log->error("unknown color text '" + string + "' sent to stringToColor");
     return Qt::black;
@@ -118,7 +122,8 @@ ColorUtil::ColorUtil()
     if (!color.isValid()) {
         return "";
     }
-    return QString("#%1%2%3").arg(color.red(),2,16).arg( color.green(),2,16).arg(color.blue(),2,16).replace(' ','0');
+    //return QString("#%1%2%3").arg(color.red(),2,16).arg( color.green(),2,16).arg(color.blue(),2,16).replace(' ','0');
+    return color.name();
 }
 
 /**
@@ -129,52 +134,47 @@ ColorUtil::ColorUtil()
  * @return the color name or null if not known
  */
 //'@CheckForNull
-/*private*/ /*static*/ QString ColorUtil::colorToName(/*@Nullable*/ QColor colorIn) {
-    if (!colorIn.isValid()) {
+/*private*/ /*static*/ QString ColorUtil::colorToName(/*@Nullable*/ QColor color) {
+    if (!color.isValid()) {
         return "";
     }
-    int r, g, b, a;
-    QRgb rgb = colorIn.rgba();
-    QString name = colorIn.name();
-    r = qRed(rgb)&0x0F;
-    g = qGreen(rgb)&0x0F;
-    b = qBlue(rgb)&0x0F;
-    a = qAlpha(rgb)&0x0F;
-    QColor color = QColor(r, g, b);
     if (color == QColor(Qt::black)) {
-        return "black";
+        return ColorBlack;
     } else if (color== QColor(Qt::darkGray)) {
-        return "darkGray";
+        return ColorDarkGray;
     } else if (color == QColor(Qt::gray)) {
-        return "gray";
+        return ColorGray;
     } else if (color==QColor(Qt::lightGray)) {
-        return "lightGray";
+        return ColorLightGray;
     } else if (color== QColor(Qt::white)) {
-        return "white";
+        return ColorWhite;
     } else if (color== QColor(Qt::red)) {
-        return "red";
+        return ColorRed;
     }
     else if (color == (QColor(255,233,236)))
     {
-     return "pink";
+     return ColorPink;
     }
     else if (color == (QColor(255,170,0)))
     {
-        return "orange";
+        return ColorOrange;
     }
     else if (color== QColor(Qt::yellow)) {
-        return "yellow";
+        return ColorYellow;
     } else if (color== QColor(Qt::green)) {
-        return "green";
+        return ColorGreen;
     } else if (color == QColor(Qt::blue)) {
-        return "blue";
+        return ColorBlue;
     } else if (color== QColor(Qt::magenta)) {
-        return "magenta";
+        return ColorMagenta;
     } else if (color== QColor(Qt::cyan)) {
-        return "cyan";
-    }
-    else
-    return QString("rgb(%1,%2,%3,%4) '%5'").arg(r).arg(g).arg(b).arg(a).arg(name);
+        return ColorCyan;
+    } else if (color == (BROWN)) {
+     return ColorBrown;
+ }
+//    else
+//    return QString("rgb(%1,%2,%3,%4) '%5'").arg(colorIn.red()).arg(colorIn.green()).arg(colorIn.blue()).arg(colorIn.alpha()).arg(name);
+    return "";
 }
 
 /**

@@ -87,6 +87,8 @@ _self= this;\
  util->setOrientation(getOrientation());
  util->setBackgroundColor(getBackground());
  util->setForeground(getForeground());
+ util->setHasBackground(hasBackground());     // must do this AFTER setBackgroundColor
+
  return util;
 }
 
@@ -129,14 +131,10 @@ void PositionablePopupUtil::init()
 //        /*public*/ void actionPerformed(ActionEvent e) { _propertiesUtil.display(); }
 //    });
  QAction* propertiesAction = new QAction(tr("Properties"),this);
+ connect(propertiesAction, &QAction::triggered, [=]{
+  _propertiesUtil->display();
+         });
  popup->addAction(propertiesAction);
- connect(propertiesAction, SIGNAL(triggered()), this, SLOT(on_propertiesAction()));
-}
-
-void PositionablePopupUtil::on_propertiesAction()
-{
- //_propertiesUtil->setCurrentValues();
- _propertiesUtil->display();
 }
 
 /*public*/ void PositionablePopupUtil::setFixedTextMenu(QMenu* popup) {
@@ -167,20 +165,21 @@ void PositionablePopupUtil::on_propertiesAction()
     popup->addMenu(edit);
 }
 
-/*public*/ void PositionablePopupUtil::setBackgroundMenu(QMenu* popup){
-    QAction* edit = new QAction(tr("Background color"), this);
-    connect(edit, SIGNAL(triggered(bool)), this, SLOT(onSetBackgroundColor()));
-    popup->addAction(edit);
-}
-
-void PositionablePopupUtil::onSetBackgroundColor()
+/*public*/ void PositionablePopupUtil::setBackgroundMenu(QMenu* popup)
 {
- QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent,
-                      tr("Font BackgroundColor"),
-                      getBackground());
- if (desiredColor.isValid() ) {
-    setBackgroundColor(desiredColor);
- }
+    QAction* edit = new QAction(("Background Color"));
+    //edit.addActionListener((ActionEvent event) ->
+    connect(edit, &QAction::triggered, [=]
+    {
+        QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent,
+                             tr("Background Color"),
+                             getBackground());
+        if (!desiredColor.isValid() ) {
+           setBackgroundColor(desiredColor);
+       }
+    });
+
+    popup->addAction(edit);
 }
 
 /*public*/ void PositionablePopupUtil::setTextBorderMenu(QMenu* popup) {
@@ -189,18 +188,17 @@ void PositionablePopupUtil::onSetBackgroundColor()
     QAction* act = CoordinateEdit::getBorderEditAction((Positionable*)_parent,this);
     edit->addAction(act);
     QAction* colorMenu = new QAction(tr("Border Color"), this);
-    connect(colorMenu, SIGNAL(triggered(bool)), this, SLOT(onSetBorderColor()));
+    //colorMenu.addActionListener((ActionEvent event) -> {
+    connect(colorMenu, &QAction::triggered, [=]{
+        QColor desiredColor = JmriColorChooser::showDialog(_textComponent,
+                             tr("Border Color"),
+                             defaultBorderColor);
+        if (!desiredColor.isValid() ) {
+           setBorderColor(desiredColor);
+       }
+    });
     edit->addAction(colorMenu);
     popup->addMenu(edit);
-}
-void PositionablePopupUtil::onSetBorderColor()
-{
- QColor desiredColor = JmriColorChooser::showDialog((QWidget*)_textComponent,
-                      tr("Border Color "),
-                      defaultBorderColor);
- if (desiredColor.isValid() ) {
-    setBorderColor(desiredColor);
- }
 }
 
 /*public*/ void PositionablePopupUtil::setTextFontMenu(QMenu* popup) {
@@ -393,18 +391,16 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
 
 /*public*/ QColor PositionablePopupUtil::getBackground()
 {
- QColor c;
-// QPalette p = (QWidget*)(_textComponent)->palette();
-// c= p.background().color();
-// if(!c.isValid())
-//  c = QColor(Qt::white);
-// if (!_hasBackground) {
-//     // make sure the alpha value is set to 0
-//     c = ColorUtil::setAlpha(c,0);
-// }
- if(qobject_cast<PositionableLabel*>(_textComponent))
-  c = ((JLabel*)_textComponent)->getBackground();
+ QColor c = ((Positionable*)_textComponent)->getBackground();
+ if (!c.isValid()) {
+     c = QColor(Qt::white);
+ }
+ if (!_hasBackground) {
+     // make sure the alpha value is set to 0
+     c = ColorUtil::setAlpha(c,0);
+ }
  return c;
+
 }
 
 /*protected*/ QMenu* PositionablePopupUtil::makeFontSizeMenu()

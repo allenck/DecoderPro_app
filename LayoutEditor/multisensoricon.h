@@ -25,8 +25,8 @@ public:
     /*public*/ MultiSensorIcon(Editor* editor, QObject *parent = 0);
     /*public*/ void setUpDown(bool b);
     /*public*/ bool getUpDown();
-    /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* deepClone()override;
+    /*public*/ Positionable* finishClone(Positionable* p)override;
     /*public*/ void addEntry(NamedBeanHandle<Sensor*>* sensor, NamedIcon* icon);
     /*public*/ void addEntry(QString pName, NamedIcon* icon);
     /*public*/ int getNumEntries();
@@ -37,17 +37,17 @@ public:
     /*public*/ NamedIcon* getInactiveIcon();
     /*public*/ NamedIcon* getInconsistentIcon() ;
     /*public*/ NamedIcon* getUnknownIcon();
-    /*public*/ QString getNameString();
-    /*public*/ void setScale(double s) ;
-    /*public*/ void rotate(int deg);
-    /*public*/ bool setEditItemMenu(QMenu* popup);
-    /*public*/ bool setEditIconMenu(QMenu* popup);
+    /*public*/ QString getNameString() override;
+    /*public*/ void setScale(double s) override;
+    /*public*/ void rotate(int deg)override;
+    /*public*/ bool setEditItemMenu(QMenu* popup)override;
+    /*public*/ bool setEditIconMenu(QMenu* popup)override;
     /*public*/ void displayState();
-    /*public*/ int maxHeight();
-    /*public*/ int maxWidth();
+    /*public*/ int maxHeight()override;
+    /*public*/ int maxWidth()override;
     /*public*/ void performMouseClicked(QGraphicsSceneMouseEvent* e, int xx, int yy);
-    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e);
-    /*public*/ void dispose();
+    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e)override;
+    /*public*/ void dispose()override;
     /*static*/ class Entry
     {
     public:
@@ -59,7 +59,7 @@ public:
          NamedBeanHandle<Sensor*>* namedSensor;
          NamedIcon* icon;
     };
- /*public*/ QString getGroupName();
+ /*public*/ QString getGroupName()override;
 
 public slots:
     // update icon as state of turnout changes
@@ -106,9 +106,9 @@ private:
     };
 
 protected:
-    /*protected*/ void rotateOrthogonal();
+    /*protected*/ void rotateOrthogonal()override;
 protected slots:
-    /*protected*/ void edit();
+    /*protected*/ void edit()override;
     /*protected*/ void editItem();
 
 friend class MultiSensorIconWidget;

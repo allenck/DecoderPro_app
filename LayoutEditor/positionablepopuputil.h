@@ -112,8 +112,6 @@ public slots:
  //void on_actionMarginEdit_triggered();
  //void on_actionGetFixedSizeEdit_triggered();
  void on_setTextOrientation_triggered(QAction* act);
- void onSetBackgroundColor();
- void onSetBorderColor();
  void onSetTeaxtFontColor();
 
 private:
@@ -142,7 +140,6 @@ private:
 private slots:
  void on_italicAction_triggered();
  void on_boldAction_triggered();
- void on_propertiesAction();
 
 protected:
  /*protected*/ QWidget* _textComponent;    // closest ancestor for JLabel and JTextField

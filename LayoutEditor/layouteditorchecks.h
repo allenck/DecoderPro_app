@@ -56,7 +56,7 @@ private:
  /*private*/ void doCheckLinearBezierTrackSegmentsMenuItem(/*@Nonnull*/ QString trackSegmentName);
  /*private*/ void setupCheckFixedRadiusBezierTrackSegmentsMenu();
  /*private*/ void doCheckFixedRadiusBezierTrackSegmentsMenuItem(/*@Nonnull*/ QString trackSegmentName);
- void testFunct();
+ //void testFunct();
 
 private slots:
  /*private*/ void doCheckUnConnectedTracksMenuItem(/*@Nonnull String menuItemName*/);
