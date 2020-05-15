@@ -9,6 +9,7 @@
 #include "propertychangesupport.h"
 #include "editscene.h"
 
+class LayoutEditorToolBarPanel;
 class QGraphcsScene;
 class LayoutBlock;
 class LayoutConnectivity;
@@ -64,6 +65,7 @@ public:
  /*public*/ virtual bool hasDecorations() ;
  /*public*/ virtual QMap<QString, QString> *getDecorations();
  /*public*/ virtual void setDecorations(QMap<QString, QString>* decorations) ;
+ /*public*/ LayoutEditorToolBarPanel* getLayoutEditorToolBarPanel();
  /*public*/ static void setDefaultTrackColor(QColor color);
  /*public*/ bool isHidden();
  //@Deprecated // Java standard pattern for bool getters is "isHidden()"
@@ -71,6 +73,9 @@ public:
  /*public*/ void setHidden(bool hide);
  PropertyChangeSupport* propertyChangeSupport;
  /*public*/ QString getTurnoutStateString(int turnoutState);
+ /*public*/ /*abstract*/virtual  bool canRemove();
+ /*public*/ void displayRemoveWarningDialog(QList<QString> itemList, QString typeKey);
+
  /*public*/ /*abstract*/virtual void setObjects(/*@Nonnull*/ LayoutEditor* le);
  /*public*/ /*abstract*/ virtual void scaleCoords(double xFactor, double yFactor);
  /*public*/ /*abstract*/ virtual void translateCoords(double xFactor, double yFactor);
@@ -169,6 +174,7 @@ protected:
  friend class LayoutEditor;
  friend class TrackSegment;
  friend class LayoutEditorChecks;
+ friend class LayoutTurnout;
 };
 
 #endif // LAYOUTTRACK_H

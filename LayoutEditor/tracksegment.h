@@ -347,25 +347,6 @@ private:
 int bezierControlPointIndex;
 
 private slots:
- void onMakeLabel1();
- void onMakeLabel2();
- void onMainlineCheckBox();
- void onHiddenChecKBox();
- void onDashedCheckBox();
- void onFlippedCheckBox();
- void onSetArrowStyle();
- void onArrowEnd();
- void onArrowDirection();
- void onArrowColor();
- void onArrowWidth();
- void onArrowLength();
- void onArrowGap();
- void onEdit();
- void onDelete();
- void onChangeTo();
- void onConstruct();
- void onViewBlockRouting();
- void onBridgeSideNone();
  void onBridgeSideLeft();
  void onBridgeSideRight();
  void onBridgeSideBoth();
@@ -373,16 +354,9 @@ private slots:
  void onBridgeEndEntry();
  void onBridgeEndExit();
  void onBridgeEndBoth();
- void onBridgeColor();
  void onBridgeLineWidth();
  void onBridgeApproachWidth();
  void onBridgeDeckWidth();
- void onBumperEndStart();
- void onBumperEndStop();
- void onBumperEndNone();
- void onBumperColor();
- void onBumperLineWidth();
- void onBumperLineLength();
  void onTunnelSideNone();
  void onTunnelSideLeft();
  void onTunnelSideRight();

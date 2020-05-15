@@ -112,9 +112,11 @@ QString headName, JmriJFrame* frame);
     /*public*/ void setSignalMastsAtLevelXing(JFrame* theFrame);
     /*public*/ void setSensorsAtLevelXingFromMenu (LevelXing* xing, QVector<QString>* blocks, MultiIconEditor* theEditor,JFrame* theFrame);
     /*public*/ void setSensorsAtLevelXing(MultiIconEditor* theEditor, JFrame* theFrame);
-    /*public*/ void set3WayFromMenu(QString aName, QString bName,
-                    MultiIconEditor* theEditor, JFrame* theFrame );
-    /*public*/ void setSignalsAt3WayTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
+    /*public*/ void setSignalsAt3WayTurnoutFromMenu(
+                /*@Nonnull*/ QString aName, /*@Nonnull*/ QString bName,
+                /*@Nonnull*/ MultiIconEditor* theEditor, /*@Nonnull*/ JFrame* theFrame);
+    /*public*/ void setSignalsAt3WayTurnout(/*@Nonnull */MultiIconEditor* theEditor,
+            /*@Nonnull*/ JFrame* theFrame);
 
 
 signals:
@@ -763,7 +765,38 @@ private:
   QGridLayout* signalMastTurnoutPanelLayout;
 
   // operational variables for Set Signals at 3-Way Turnout tool
-  /*private*/ JmriJFrame* setSignalsAt3WayFrame;// =NULL;
+  /*private*/ JmriJFrame* setSignalsAt3WayTurnoutFrame =nullptr;
+  /*private*/ bool setSignalsAt3WayTurnoutOpenFlag = false;
+  /*private*/ bool setSignalsAt3WayTurnoutFromMenuFlag = false;
+
+  /*private*/ QLabel* turnoutANameLabel = nullptr;
+  /*private*/ QLabel* turnoutBNameLabel = nullptr;
+
+  /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutAComboBox;// = new NamedBeanComboBox(
+//          InstanceManager::turnoutManagerInstance(),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutBComboBox;// = new NamedBeanComboBox(
+//          InstanceManager::turnoutManagerInstance(),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1_3WaySignalHeadComboBox;// = new NamedBeanComboBox(
+//          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2_3WaySignalHeadComboBox;// = new NamedBeanComboBox(
+//          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a3_3WaySignalHeadComboBox;// = new NamedBeanComboBox(
+//          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b_3WaySignalHeadComboBox;// = new NamedBeanComboBox(
+//          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c_3WaySignalHeadComboBox;// = new NamedBeanComboBox(
+//          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d_3WaySignalHeadComboBox;// = new NamedBeanComboBox(
+//          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+
   /*private*/ bool setSignalsAt3WayOpen;// =false;
   JTextField* turnoutANameField;// =new JTextField(16);
   JTextField* turnoutBNameField;// =new JTextField(16);
@@ -829,6 +862,20 @@ private:
 
     /*private*/ void oneFrameToRuleThemAll(/*@Nonnull*/ JmriJFrame* goodFrame);
     /*private*/ JmriJFrame* closeIfNotFrame(/*@Nonnull */JmriJFrame* goodFrame, /*@CheckForNull*/ JmriJFrame* badFrame);
+  //convenience strings
+  /*private*/ /*final*/ QString eastString = tr("East");
+  /*private*/ /*final*/ QString westString = tr("West");
+  /*private*/ /*final*/ QString continuingString = tr("Continuing");
+  /*private*/ /*final*/ QString divergingString = tr("Diverging");
+  /*private*/ /*final*/ QString throatString = tr("Throat");
+  /*private*/ /*final*/ QString throatContinuingString = tr("Throat Continuing");
+  /*private*/ /*final*/ QString throatDivergingString = tr("Throat Diverging");
+
+  /*private*/ /*final*/ QString divergingAString = tr("Diverging %1").arg("A");
+  /*private*/ /*final*/ QString divergingBString = tr("Diverging %1").arg("B");
+  /*private*/ void addInfoToMenu(/*@CheckForNull*/ QString title,
+          /*@CheckForNull*/ QString info, /*@Nonnull*/ QMenu* menu) ;
+  /*private*/ void addInfoToMenu(/*@CheckForNull*/ QString info, /*@Nonnull*/ QMenu* menu);
 
 
  private slots:
@@ -892,6 +939,10 @@ private:
     /*private*/ void set3WaySignalsDonePressed (ActionEvent* a = 0);
 
     /*private*/ void setSignalsAtTToTTurnoutsGetSaved(/*ActionEvent* a*/);
+protected:
+    /*protected*/ bool addLayoutTurnoutSignalHeadInfoToMenu(
+                /*@Nonnull*/ QString inTurnoutNameA, /*@Nonnull*/ QString inTurnoutNameB,
+                /*@Nonnull*/ QMenu* inMenu);
 
 
     friend class SSWindowListener;
@@ -902,7 +953,9 @@ private:
     friend class SASWindowListener;
     friend class SSFWindowListener;
     friend class S3WWindowListener;
+    friend class LayoutTurnout;
 };
+
 /*static*/ class BeanDetails : public QObject
 {
     QString beanString;

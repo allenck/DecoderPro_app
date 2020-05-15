@@ -210,6 +210,7 @@ friend class SampleStates;
 friend class LevelXingEditWindowListener;
 friend class TurntableEditWindowListener;
 friend class TurntableRayPanel;
+friend class LayoutTurnout;
 };
 
 class SlipPopupMenuListener : public PopupMenuListener

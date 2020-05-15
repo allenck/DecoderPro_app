@@ -24,6 +24,9 @@
 #include <cmath>
 #include <QApplication>
 #include "signalheadmanager.h"
+#include "joptionpane.h"
+#include "layouttrackeditors.h"
+#include "layouteditortoolbarpanel.h"
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
 //    QObject(parent)
@@ -804,6 +807,90 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
             }
         }
     }
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool LayoutTurnout::canRemove() {
+    QList<QString> beanReferences = getBeanReferences("All");  // NOI18N
+    if (!beanReferences.isEmpty()) {
+        displayRemoveWarningDialog(beanReferences, "BeanNameTurnout");  // NOI18N
+    }
+    return beanReferences.isEmpty();
+}
+
+/**
+ * Build a list of sensors, signal heads, and signal masts attached to a
+ * turnout point.
+ *
+ * @param pointName Specify the point (A-D) or all (All) points.
+ * @return a list of bean reference names.
+ */
+/*public*/ QList<QString> LayoutTurnout::getBeanReferences(QString pointName) {
+    QList<QString> references = QList<QString>();
+    if (pointName == ("A") || pointName == ("All")) {  // NOI18N
+        if (!getSignalAMastName().isEmpty()) {
+            references.append(getSignalAMastName());
+        }
+        if (!getSensorAName().isEmpty()) {
+            references.append(getSensorAName());
+        }
+        if (!getSignalA1Name().isEmpty()) {
+            references.append(getSignalA1Name());
+        }
+        if (!getSignalA2Name().isEmpty()) {
+            references.append(getSignalA2Name());
+        }
+        if (!getSignalA3Name().isEmpty()) {
+            references.append(getSignalA3Name());
+        }
+    }
+    if (pointName == ("B") || pointName == ("All")) {  // NOI18N
+        if (!getSignalBMastName().isEmpty()) {
+            references.append(getSignalBMastName());
+        }
+        if (!getSensorBName().isEmpty()) {
+            references.append(getSensorBName());
+        }
+        if (!getSignalB1Name().isEmpty()) {
+            references.append(getSignalB1Name());
+        }
+        if (!getSignalB2Name().isEmpty()) {
+            references.append(getSignalB2Name());
+        }
+    }
+    if (pointName == ("C") || pointName == ("All")) {  // NOI18N
+        if (!getSignalCMastName().isEmpty()) {
+            references.append(getSignalCMastName());
+        }
+        if (!getSensorCName().isEmpty()) {
+            references.append(getSensorCName());
+        }
+        if (!getSignalC1Name().isEmpty()) {
+            references.append(getSignalC1Name());
+        }
+        if (!getSignalC2Name().isEmpty()) {
+            references.append(getSignalC2Name());
+        }
+    }
+    if (pointName == ("D") || pointName == ("All")) {  // NOI18N
+        if (!getSignalDMastName().isEmpty()) {
+            references.append(getSignalDMastName());
+        }
+        if (!getSensorDName().isEmpty()) {
+            references.append(getSensorDName());
+        }
+        if (!getSignalD1Name().isEmpty()) {
+            references.append(getSignalD1Name());
+        }
+        if (!getSignalD2Name().isEmpty()) {
+            references.append(getSignalD2Name());
+        }
+    }
+    return references;
+}
+
 /*public*/ QString LayoutTurnout::getSignalAMastName() {
     if (signalAMastNamed != nullptr) {
         return signalAMastNamed->getName();
@@ -2548,6 +2635,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  {
   popup = new QMenu();
  }
+
  if(layoutEditor->isEditable())
  {
   switch (getTurnoutType())
@@ -2585,383 +2673,340 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
    default : break;
   }
   //popup.add(ident);
-  actionIdent = new QAction(ident, this);
-  popup->addAction(actionIdent);
+  QAction* jmi;
 
   if (getTurnout()==nullptr)
   {
    //popup.add(tr("NoTurnout"));
-   actionNoTurnout = new QAction(tr("No Turnout set"), this);
-   popup->addAction(actionNoTurnout);
+   jmi = popup->addSection(tr("No Turnout set"));
   }
   else
   {
    //popup.add(tr("Turnout")+": "+turnoutName);
-   actionNewTurnout = new QAction(QString("Turnout")+": "+turnoutName,this);
-   popup->addAction(actionNewTurnout);
+   QString stateString = getTurnoutStateString(getTurnout()->getKnownState());
+   stateString = tr(" (%1)").arg(stateString);
+   jmi = popup->addSection(QString("Turnout")+": "+getTurnoutName() + stateString);
   }
+  jmi->setEnabled(false);
+
+  if (getSecondTurnout() != nullptr) {
+      QString stateString = getTurnoutStateString(getSecondTurnout()->getKnownState());
+      stateString = tr(" (%1)").arg(stateString);
+      jmi = popup->addSection(tr("Supporting %1:").arg(
+             tr("Turnout"))
+              + ": " + getSecondTurnoutName() + stateString);
+  }
+  jmi->setEnabled(false);
+
+  QAction* act;
+
+  // if there are any track connections
+  if ((connectA != nullptr) || (connectB != nullptr)
+          || (connectC != nullptr) || (connectD != nullptr)) {
+      QMenu* connectionsMenu = new QMenu(tr("Connections")); // there is no pane opening (which is what ... implies)
+      if (connectA != nullptr)
+      {
+          connectionsMenu->addAction(act = new AbstractAction("A" + connectA->getName(),this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+          connect(act, &QAction::triggered, [=]{
+                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+                  LayoutTrack* lt = lf->findObjectByName(connectA->getName());
+                  // this shouldn't ever be null... however...
+                  if (lt != nullptr) {
+                      layoutEditor->setSelectionRect(lt->getBounds());
+                      lt->showPopup();
+                  }
+//              }
+          });
+      }
+      if (connectB != nullptr) {
+          connectionsMenu->addAction(act = new AbstractAction( "B" + connectB->getName(),this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+            connect(act, &QAction::triggered, [=]{
+                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+                  LayoutTrack* lt = lf->findObjectByName(connectB->getName());
+                  // this shouldn't ever be null... however...
+                  if (lt != nullptr) {
+                      layoutEditor->setSelectionRect(lt->getBounds());
+                      lt->showPopup();
+                  }
+//              }
+          });
+      }
+      if (connectC != nullptr) {
+          connectionsMenu->addAction(act = new AbstractAction( "C" + connectC->getName(),this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+          connect(act, &QAction::triggered, [=]{
+                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+                  LayoutTrack* lt = lf->findObjectByName(connectC->getName());
+                  // this shouldn't ever be null... however...
+                  if (lt != nullptr) {
+                      layoutEditor->setSelectionRect(lt->getBounds());
+                      lt->showPopup();
+                  }
+//              }
+          });
+      }
+      if (connectD != nullptr) {
+          connectionsMenu->addAction(jmi = new AbstractAction("D" + connectD->getName(),this));
+          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+           connect(act, &QAction::triggered, [=]{
+                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+                  LayoutTrack* lt = lf->findObjectByName(connectD->getName());
+                  // this shouldn't ever be null... however...
+                  if (lt != nullptr) {
+                      layoutEditor->setSelectionRect(lt->getBounds());
+                      lt->showPopup();
+                  }
+//              }
+          });
+      }
+      popup->addMenu(connectionsMenu);
+  }
+  popup->addSeparator(); //new JSeparator(JSeparator.HORIZONTAL));
+
+  QAction* hiddenCheckBoxMenuItem = new QAction(tr("Hidden"),this);
+  hiddenCheckBoxMenuItem->setCheckable(true);
+  hiddenCheckBoxMenuItem->setChecked(hidden);
+  popup->addAction(hiddenCheckBoxMenuItem);
+  //hiddenCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e1) -> {
+  connect(hiddenCheckBoxMenuItem, &QAction::triggered, [=]{
+//      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e1.getSource();
+      setHidden(hiddenCheckBoxMenuItem->isChecked());
+  });
+
+  QAction* cbmi = new QAction(tr("Disabled"), this);
+  cbmi->setCheckable(true);
+  cbmi->setChecked(disabled);
+  popup->addAction(cbmi);
+  //cbmi.addActionListener((java.awt.event.ActionEvent e2) -> {
+  connect(cbmi, &QAction::triggered, [=]{
+//      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e2.getSource();
+      setDisabled(cbmi->isChecked());
+  });
+
+  cbmi = new QAction(tr("Disable When Occupied"),this);
+  if (getTurnout() == nullptr || getBlockName().isEmpty()) {
+      cbmi->setEnabled(false);
+  }
+  cbmi->setChecked(disableWhenOccupied);
+  popup->addAction(cbmi);
+//  cbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+//      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e3.getSource();
+  connect(cbmi, &QAction::triggered, [=]{
+      setDisableWhenOccupied(cbmi->isChecked());
+  });
 
   // Rotate if there are no track connections
-  if ( (connectA==nullptr) && (connectB==nullptr) &&
-                (connectC==nullptr) && (connectD==nullptr) )
+  if ((connectA == nullptr) && (connectB == nullptr)
+          && (connectC == nullptr)
+          && (connectD == nullptr))
   {
-//   JMenuItem rotateItem = new JMenuItem(tr("Rotate")+"...");
-  QAction* rotateItem = new QAction(tr("Rotate..."),this);
-  popup->addAction(rotateItem);
-  connect(rotateItem, SIGNAL(triggered()), this, SLOT(on_rotateItemAction_triggered()));
-
-//   rotateItem.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent event) {
-//                bool entering = true;
-//                bool error = false;
-//                QString newAngle = "";
-//                while (entering) {
-//                    // prompt for rotation angle
-//                    error = false;
-//                    newAngle = JOptionPane.showInputDialog(layoutEditor,
-//                                        tr("EnterRotation")+" :");
-//                    if (newAngle.length()<1) return;  // cancelled
-//                    double rot = 0.0;
-//                    try {
-//                        rot = Double.parseDouble(newAngle);
-//                    }
-//                    catch (Exception e) {
-//                        JOptionPane.showMessageDialog(layoutEditor,tr("Error3")+
-//                            " "+e,tr("Error"),JOptionPane.ERROR_MESSAGE);
-//                        error = true;
-//                        newAngle = "";
-//                    }
-//                    if (!error) {
-//                        entering = false;
-//                        if (rot!=0.0) {
-//                           rotateCoords(rot);
-//                           layoutEditor.redrawPanel();
-//                        }
-//                    }
-//                }
-//            }
-//        });
+      QAction* rotateItem = new QAction(tr("Rotate") + "...",this);
+      popup->addAction(rotateItem);
+//      rotateItem.addActionListener((ActionEvent event) -> {
+      connect(rotateItem, &QAction::triggered, [=]{
+          bool entering = true;
+          bool error = false;
+          QString newAngle = "";
+          while (entering) {
+              // prompt for rotation angle
+              error = false;
+              newAngle = JOptionPane::showInputDialog(layoutEditor,
+                      tr("Enter Rotation Angle (degrees CW)"));
+              if (newAngle.isEmpty()) {
+                  return;  // cancelled
+              }
+              double rot = 0.0;
+              bool bok;
+                  rot = newAngle.toDouble(&bok);
+              if(!bok) {
+                  JOptionPane::showMessageDialog(layoutEditor, tr("Error in rotation entry:")
+                          + " " /*+ e1*/, tr("Error"), JOptionPane::ERROR_MESSAGE);
+                  error = true;
+                  newAngle = "";
+              }
+              if (!error) {
+                  entering = false;
+                  if (rot != 0.0) {
+                      rotateCoords(rot);
+                      layoutEditor->redrawPanel();
+                  }
+              }
+          }
+      });
   }
 
-//  if (disableItem==nullptr)
-//   disableItem = new JCheckBoxMenuItem(tr("Disabled"));
-//  disableItem.setSelected(disabled);
-//  popup.add(disableItem);
-//    disableItem.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//                disabled = disableItem.isSelected();
-//            }
-//        });
-  QAction* disableItemAct = new QAction(tr("Disabled"),this);
-  disableItemAct->setCheckable(true);
-  disableItemAct->setChecked(disabled);
-  popup->addAction(disableItemAct);
-  connect(disableItemAct, SIGNAL(toggled(bool)), this, SLOT(setDisabled(bool)));
+  popup->addAction(act = new AbstractAction(tr("Use Size As Default"),this));
+//  {
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &QAction::triggered, [=]{
+          setUpDefaultSize();
+//      }
+  });
+  popup->addAction(act = new AbstractAction(tr("Edit"),this));
+//  {
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &QAction::triggered, [=]{
+          layoutEditor->getLayoutTrackEditors()->editLayoutTurnout(this);
+//      }
+  });
+  popup->addAction(act = new AbstractAction(tr("Delete"),this));
+//  {
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+   connect(act, &QAction::triggered, [=]{
+          if (canRemove() && layoutEditor->removeLayoutTurnout(this)) {
+              // Returned true if user did not cancel
+              remove();
+              dispose();
+          }
+//      }
+  });
 
-//    if (disableWhenOccupiedItem==nullptr)
-//        disableWhenOccupiedItem = new JCheckBoxMenuItem(tr("DisabledWhenOccupied"));
-//    disableWhenOccupiedItem.setSelected(disableWhenOccupied);
-//    popup.add(disableWhenOccupiedItem);
-//    disableWhenOccupiedItem.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//                disableWhenOccupied = disableWhenOccupiedItem.isSelected();
-//            }
-//        });
-  QAction* disableWhenOccupiedItemAct = new QAction(tr("Disable When Occupied"),this);
-  disableWhenOccupiedItemAct->setCheckable(true);
-  disableWhenOccupiedItemAct->setChecked(disableWhenOccupied);
-  popup->addAction(disableWhenOccupiedItemAct);
-  connect(disableWhenOccupiedItemAct, SIGNAL(toggled(bool)), this, SLOT(setDisableWhenOccupied(bool)));
-
-  if (blockName==("")) popup->addAction(new QAction(tr("NoBlock"),this));
-  else popup->addAction(new QAction(tr("Block: ")+getLayoutBlock()->getId(),this));
-  if ( (type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER) )
+  if (getTurnout() != nullptr)
   {
-   // check if extra blocks have been entered
-   if (blockB!=nullptr) popup->addAction(new QAction(tr("Block2ID")+": "+blockBName,this));
-   if (blockC!=nullptr) popup->addAction(new QAction(tr("Block3ID")+": "+blockCName,this));
-   if (blockD!=nullptr) popup->addAction(new QAction(tr("Block4ID")+": "+blockDName,this));
-  }
-  if (hidden) popup->addAction(new QAction(tr("Hidden"),this));
-  else popup->addAction(new QAction(tr("Not Hidden"),this));
-  popup->addSeparator();
-
-//    popup.add(new AbstractAction(tr("UseSizeAsDefault")) {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                setUpDefaultSize();
-//            }
-//        });
-  QAction* useSizeAsDefaultAction = new QAction("Use Size As Default",this);
-  popup->addAction(useSizeAsDefaultAction);
-  connect(useSizeAsDefaultAction, SIGNAL(triggered()), this, SLOT(setUpDefaultSize()));
-
-//    popup.add(new AbstractAction(tr("Edit")) {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                editLayoutTurnout();
-//            }
-//        });
-  QAction* editAction = new QAction(tr("Edit"),this);
-  popup->addAction(editAction);
-  connect(editAction, SIGNAL(triggered()), this, SLOT(editLayoutTurnout()));
-
-//    popup.add(new AbstractAction(tr("Remove")) {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                if (layoutEditor.removeLayoutTurnout(instance)) {
-//                    // Returned true if user did not cancel
-//                    remove();
-//                    dispose();
-//                }
-//            }
-//        });
-  QAction* removeAction = new QAction(tr("Remove"),this);
-  popup ->addAction(removeAction);
-  connect(removeAction, SIGNAL(triggered()), this, SLOT(on_removeAction_triggered()));
-  if (getTurnout()!=nullptr)
-  {
-//        popup.add(new AbstractAction(tr("SetSignals")) {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                if (tools == nullptr) {
-//                    tools = new LayoutEditorTools(layoutEditor);
-//                }
-//                if ( (getTurnoutType()==DOUBLE_XOVER) || (getTurnoutType()==RH_XOVER) ||
-//                                        (getTurnoutType()==LH_XOVER) ) {
-//                    tools.setSignalsAtXoverTurnoutFromMenu(instance,
-//                        layoutEditor.signalIconEditor,layoutEditor.signalFrame);
-//                }
-//                else if (linkType==NO_LINK) {
-//                    tools.setSignalsAtTurnoutFromMenu(instance,
-//                        layoutEditor.signalIconEditor,layoutEditor.signalFrame);
-//                }
-//                else if (linkType==THROAT_TO_THROAT) {
-//                    tools.setThroatToThroatFromMenu(instance,linkedTurnoutName,
-//                        layoutEditor.signalIconEditor,layoutEditor.signalFrame);
-//                }
-//                else if (linkType==FIRST_3_WAY) {
-//                    tools.set3WayFromMenu(turnoutName, linkedTurnoutName,
-//                        layoutEditor.signalIconEditor,layoutEditor.signalFrame);
-//                }
-//                else if (linkType==SECOND_3_WAY) {
-//                    tools.set3WayFromMenu(linkedTurnoutName, turnoutName,
-//                        layoutEditor.signalIconEditor,layoutEditor.signalFrame);
-//                }
-//            }
-//        });
-   QAction* setSignals = new QAction(tr("Set Signals"),this);
-   popup->addAction(setSignals);
-   connect(setSignals, SIGNAL(triggered()), this, SLOT(on_setSignalsAct_triggered()));
-  }
-
-  if (blockName!=(""))
-  {
-   /*final*/ boundaryBetween = getBlockBoundaries().toVector();
-   bool blockBoundaries = false;
-   for (int i = 0; i<4; i++)
-   {
-    if(boundaryBetween.at(i)!="")
-     blockBoundaries=true;
-   }
-//        if (InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
-   if(layoutEditor->layoutBlockManager->isAdvancedRoutingEnabled())
-   {
-
-    if(blockBName==("") && blockCName==("") && blockDName==(""))
-    {
-     AbstractAction* viewBlockRouting;
-     popup->addAction(viewBlockRouting =new AbstractAction(tr("View Block Routing"),this));
-//     {
-//                    /*public*/ void actionPerformed(ActionEvent e) {
-//                        AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction("ViewRouting", getLayoutBlock());
-//                        routeTableAction.actionPerformed(e);
-//                    }
-//                });
-     connect(viewBlockRouting, SIGNAL(triggered()), this, SLOT(on_viewBlockRouting()));
-     AbstractAction* viewRoutingAction = new AbstractAction("View Routing", this);
-     popup->addAction(viewRoutingAction);
-     connect(viewRoutingAction, SIGNAL(triggered()), viewRoutingAction, SLOT(actionPerformed()));
-    }
-    else
-    {
-     QMenu* viewRouting = new QMenu(tr("View Block Routing"));
-     AbstractAction* viewRoutingAAct;
-     viewRouting->addAction(viewRoutingAAct = new AbstractAction(blockName, this));
-//     {
-//                    /*public*/ void actionPerformed(ActionEvent e) {
-//                        AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction(blockName, getLayoutBlock());
-//                        routeTableAction.actionPerformed(e);
-//                    }
-//                });
-     connect(viewRoutingAAct, SIGNAL(triggered()), this, SLOT(on_viewRoutingAAct()));
-     QAction* viewRoutingActA = new QAction(blockName, this);
-     connect(viewRoutingActA, SIGNAL(triggered()), this, SLOT(on_viewRoutingAct_triggered()));
-     if(blockBName!=("") && blockBName!=(blockName))
-     {
-      AbstractAction* viewRoutingBAct;
-      viewRouting->addAction(viewRoutingBAct = new AbstractAction(blockBName, this));
+      AbstractAction* ssaa = new AbstractAction(tr("Set Signal Heads..."),this);
 //      {
-//                        /*public*/ void actionPerformed(ActionEvent e) {
-//                            AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction(blockBName, getLayoutBlockB());
-//                            routeTableAction.actionPerformed(e);
-//                        }
-//                    });
-      connect(viewRoutingBAct, SIGNAL(triggered()), this, SLOT(on_viewRoutingBAct()));
-     }
+//          @Override
+//          public void actionPerformed(ActionEvent e) {
+      connect(ssaa, &AbstractAction::triggered, [=]{
+              LayoutEditorTools* tools = layoutEditor->getLETools();
+              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+              if (isTurnoutTypeXover()) {
+                  tools->setSignalsAtXoverTurnoutFromMenu(this,
+                          letbp->signalIconEditor, letbp->signalFrame);
+              } else if (linkType == NO_LINK) {
+                  tools->setSignalsAtTurnoutFromMenu(this,
+                          letbp->signalIconEditor, letbp->signalFrame);
+              } else if (linkType == THROAT_TO_THROAT) {
+                  tools->setSignalsAtThroatToThroatTurnoutsFromMenu(this, linkedTurnoutName,
+                          letbp->signalIconEditor, letbp->signalFrame);
+              } else if (linkType == FIRST_3_WAY) {
+                  tools->setSignalsAt3WayTurnoutFromMenu(getTurnoutName(), linkedTurnoutName,
+                          letbp->signalIconEditor, letbp->signalFrame);
+              } else if (linkType == SECOND_3_WAY) {
+                  tools->setSignalsAt3WayTurnoutFromMenu(linkedTurnoutName, getTurnoutName(),
+                          letbp->signalIconEditor, letbp->signalFrame);
+              }
+//          }
+      });
 
-     if(blockCName!=("") && blockCName!=(blockName) && blockCName!=(blockBName))
-     {
-      AbstractAction* viewRoutingCAct;
-      viewRouting->addAction(viewRoutingCAct = new AbstractAction(blockCName,this));
-//      {
-//                        /*public*/ void actionPerformed(ActionEvent e) {
-//                            AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction(blockCName, getLayoutBlockC());
-//                            routeTableAction.actionPerformed(e);
-//                        }
-//                    });
-        connect(viewRoutingCAct, SIGNAL(triggered()), this, SLOT(on_viewRoutingCAct()));
-     }
-
-     if(blockDName!=("")  && blockDName!=(blockName) && blockDName!=(blockBName) && blockDName!=(blockCName))
-     {
-      AbstractAction* viewRoutingDAct;
-      viewRouting->addAction(viewRoutingDAct = new AbstractAction(blockDName, this));
-//      {
-//                        /*public*/ void actionPerformed(ActionEvent e) {
-//                            AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction(blockDName, getLayoutBlockD());
-//                            routeTableAction.actionPerformed(e);
-//                        }
-//                    });
-       connect(viewRoutingDAct, SIGNAL(triggered()), this, SLOT(on_viewRoutingDAct()));
-     }
-
-     popup->addMenu(viewRouting);
-    }
-   }
-
-   if (blockBoundaries)
-   {
-//            popup.add(new AbstractAction(tr("SetSignalMasts")) {
-//                /*public*/ void actionPerformed(ActionEvent e) {
-//                    if (tools == nullptr) {
-//                        tools = new LayoutEditorTools(layoutEditor);
-//                    }
-
-//                    tools.setSignalMastsAtTurnoutFromMenu(instance,
-//                    boundaryBetween);
-//                }
-//            });
-   QAction* setSignalMastsAct = new QAction(tr("Set SignalMasts..."),this);
-   connect(setSignalMastsAct, SIGNAL(triggered()), this, SLOT(on_setSignalMastsAct_triggered()));
-   popup->addAction(setSignalMastsAct);
-//            popup.add(new AbstractAction(tr("SetSensors")) {
-//                /*public*/ void actionPerformed(ActionEvent e) {
-//                    if (tools == nullptr) {
-//                        tools = new LayoutEditorTools(layoutEditor);
-//                    }
-
-//                    tools.setSensorsAtTurnoutFromMenu(instance,
-//                    boundaryBetween, layoutEditor.sensorIconEditor, layoutEditor.sensorFrame);
-//                }
-//            });
-   QAction* setSensorsAct = new QAction(tr("Set Sensors..."),this);
-   popup->addAction(setSensorsAct);
-   connect(setSensorsAct, SIGNAL(triggered()), this, SLOT(on_setSensorsAct_triggered()));}
+      QMenu* jm = new QMenu(tr("Set Signal Heads..."));
+      if (layoutEditor->getLETools()->addLayoutTurnoutSignalHeadInfoToMenu(
+              getTurnoutName(), linkedTurnoutName, jm)) {
+          jm->addAction(ssaa);
+          popup->addMenu(jm);
+      } else {
+          popup->addAction(ssaa);
+      }
   }
-  setAdditionalEditPopUpMenu(popup);
-//  layoutEditor.setShowAlignmentMenu(popup);
-//  popup.show(e.getComponent(), e->x(), e->y());
-  popup->exec(QCursor::pos());
- }
- else if(!viewAdditionalMenu->isEmpty())
- {
-  setAdditionalViewPopUpMenu(popup);
-  //popup.show(e.getComponent(), e->x(), e->y());
-  popup->exec(QCursor::pos());
+  if (!getBlockName().isEmpty())
+  {
+      /*final*/ QStringList boundaryBetween = getBlockBoundaries();
+      bool blockBoundaries = false;
+      for (int i = 0; i < 4; i++) {
+          if (boundaryBetween[i] != "") {
+              blockBoundaries = true;
+
+          }
+      }
+
+      if (blockBoundaries) {
+          popup->addAction(act = new AbstractAction(tr("Set Signal Masts..."),this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+           connect(act, &QAction::triggered, [=]{
+
+                  layoutEditor->getLETools()->setSignalMastsAtTurnoutFromMenu(this,
+                          boundaryBetween);
+//              }
+          });
+          popup->addAction(act =new AbstractAction(tr("Set Sensors..."),this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+           connect(act, &QAction::triggered, [=]{
+                  LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+                  layoutEditor->getLETools()->setSensorsAtTurnoutFromMenu(
+                          this,
+                          boundaryBetween,
+                          letbp->sensorIconEditor,
+                          letbp->sensorFrame);
+//              }
+          });
+
+      }
+
+      if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
+      {
+          QMap<QString, LayoutBlock*> map = QMap<QString, LayoutBlock*>();
+          if (!getBlockName().isEmpty()) {
+              map.insert(getBlockName(), getLayoutBlock());
+          }
+          if (!getBlockBName().isEmpty()) {
+              map.insert(getBlockBName(), getLayoutBlockB());
+          }
+          if (!getBlockCName().isEmpty()) {
+              map.insert(getBlockCName(), getLayoutBlockC());
+          }
+          if (!getBlockDName().isEmpty()) {
+              map.insert(getBlockDName(), getLayoutBlockD());
+          }
+          if (blockBoundaries)
+          {
+              if (map.size() == 1) {
+                  popup->addAction(act = new AbstractAction(tr("View Block Routing"),this));
+//                  {
+//                      @Override
+//                      public void actionPerformed(ActionEvent e) {
+                   connect(act, &QAction::triggered, [=]{
+                          AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("View Block Routing", getLayoutBlock());
+                          routeTableAction->actionPerformed(/*e*/);
+//                      }
+                  });
+              } else if (map.size() > 1) {
+                  QMenu* viewRouting = new QMenu(tr("View Block Routing"));
+                  //for (Map.Entry<String, LayoutBlock> entry : map.entrySet())
+                  QMapIterator<QString, LayoutBlock*> entry(map);
+                  while(entry.hasNext())
+                  {
+                   entry.next();
+                      QString blockName = entry.key();
+                      LayoutBlock* layoutBlock = entry.value();
+                      viewRouting->addAction(new AbstractActionImpl(blockName, getBlockBName(), layoutBlock, this));
+                  }
+                  popup->addMenu(viewRouting);
+              }
+          }   // if (blockBoundaries)
+      }   // .isAdvancedRoutingEnabled()
+   }   // getBlockName().isEmpty()
+   setAdditionalEditPopUpMenu(popup);
+   layoutEditor->setShowAlignmentMenu(popup);
+   //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+   popup->exec(QCursor::pos());
+ } else if (!viewAdditionalMenu->isEmpty()) {
+   setAdditionalViewPopUpMenu(popup);
+   //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+   popup->exec(QCursor::pos());
  }
  return popup;
-}
-
-void LayoutTurnout::on_viewBlockRouting()
-{
- AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction("View Routing", getLayoutBlock());
- routeTableAction->actionPerformed();
-}
-void LayoutTurnout::on_viewRoutingAAct()
-{
- AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction(blockName, getLayoutBlock());
- routeTableAction->actionPerformed();
-}
-
-void LayoutTurnout::on_viewRoutingBAct()
-{
- AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction(blockBName, getLayoutBlockB());
- routeTableAction->actionPerformed();
-}
-
-void LayoutTurnout::on_viewRoutingCAct()
-{
- AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction(blockCName, getLayoutBlockC());
- routeTableAction->actionPerformed();
-}
-void LayoutTurnout::on_viewRoutingDAct()
-{
- AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction(blockDName, getLayoutBlockC());
- routeTableAction->actionPerformed();
-}
-
-void LayoutTurnout::on_viewRoutingAct_triggered()
-{
- LayoutBlockRouteTableAction*  routeTableAction = new  LayoutBlockRouteTableAction("ViewRouting", getLayoutBlock());
- routeTableAction->actionPerformed();
-}
-
-void LayoutTurnout::on_setSignalMastsAct_triggered()
-{
- if (tools == nullptr)
- {
-   tools = new LayoutEditorTools(layoutEditor);
- }
- tools->setSignalMastsAtTurnoutFromMenu(this,  boundaryBetween.toList());
-}
-
-void LayoutTurnout::on_setSensorsAct_triggered()
-{
- if (tools == nullptr) {
-    tools = new LayoutEditorTools(layoutEditor);
- }
+} // showPopup
 
  tools->setSensorsAtTurnoutFromMenu(this, boundaryBetween.toList(), layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
 }
 
-void LayoutTurnout::on_setSignalsAct_triggered()
-{
- if (tools == nullptr)
- {
-  tools = new LayoutEditorTools(layoutEditor);
- }
- if ( (getTurnoutType()==DOUBLE_XOVER) || (getTurnoutType()==RH_XOVER) ||
-                        (getTurnoutType()==LH_XOVER) )
- {
-  tools->setSignalsAtXoverTurnoutFromMenu(this,
-        layoutEditor->signalIconEditor,layoutEditor->signalFrame);
- }
- else if (linkType==NO_LINK)
- {
-  tools->setSignalsAtTurnoutFromMenu(this,
-        layoutEditor->signalIconEditor,layoutEditor->signalFrame);
- }
- else if (linkType==THROAT_TO_THROAT)
- {
-  tools->setThroatToThroatFromMenu(this,linkedTurnoutName,
-        layoutEditor->signalIconEditor,layoutEditor->signalFrame);
- }
- else if (linkType==FIRST_3_WAY) {
-    tools->set3WayFromMenu(turnoutName, linkedTurnoutName,
-        layoutEditor->signalIconEditor,layoutEditor->signalFrame);
- }
- else if (linkType==SECOND_3_WAY) {
-    tools->set3WayFromMenu(linkedTurnoutName, turnoutName,
-        layoutEditor->signalIconEditor,layoutEditor->signalFrame);
- }
-}
 
 /*public*/ QStringList LayoutTurnout::getBlockBoundaries()
 {
@@ -7118,5 +7163,7 @@ void LayoutTurnout::redrawPanel()
  invalidate(layoutEditor->getTargetPanel());
  layoutEditor->redrawPanel();
 }
+
+
 
 /*static*/ Logger* LayoutTurnout::log = LoggerFactory::getLogger("LayoutTurnout");

@@ -9,8 +9,9 @@
 #include <QVector>
 #include "windowlistener.h"
 #include "exceptions.h"
+#include "abstractaction.h"
+#include "layoutblockroutetableaction.h"
 
-//class MTurnoutListener;
 class SignalHead;
 class QGraphicsEllipseItem;
 class QCloseEvent;
@@ -190,7 +191,8 @@ public:
     /*public*/ QString getSignalD2Name();
     /*public*/ void setSignalD2Name(QString signalHead);
     /*public*/ void removeBeanReference(NamedBean* nb);
-
+    /*public*/ bool canRemove() override;
+    /*public*/ QList<QString> getBeanReferences(QString pointName);
     /*public*/ QString getSignalAMastName();
     /*public*/ SignalMast* getSignalAMast() const;
     /*public*/ void setSignalAMast(QString signalMast);
@@ -354,12 +356,6 @@ signals:
  void propertyChange(PropertyChangeEvent*);
 
 public slots:
- void on_setSignalsAct_triggered();
- void on_viewBlockRouting();
- void on_viewRoutingAAct();
- void on_viewRoutingBAct();
- void on_viewRoutingCAct();
- void on_viewRoutingDAct();
 
 private:
  int version;
@@ -394,9 +390,6 @@ private:
     QAction* actionXOverTurnout = nullptr;
     QAction* actionRHXOverTurnout = nullptr;
     QAction* actionLHXOverTurnout = nullptr;
-    QAction* actionIdent = nullptr;
-    QAction* actionNoTurnout = nullptr;
-    QAction* actionNewTurnout = nullptr;
     // variables for Edit Layout Turnout pane
     /*private*/ QLineEdit* turnoutNameField;// = new QLineEdit(16);
     /*private*/ QComboBox* secondTurnoutComboBox = nullptr;
@@ -440,9 +433,6 @@ private slots:
  void on_rotateItemAction_triggered();
  void redrawPanel();
  void on_viewRoutingAct_triggered();
- void on_setSignalMastsAct_triggered();
- void on_setSensorsAct_triggered();
- //void on_secondTurnoutComboBox_textChanged(QString);
  void on_additionalTurnout_toggled(bool);
  void turnoutEditBlockPressed(ActionEvent* a = 0);
  void turnoutEditBlockBPressed(ActionEvent* a = 0);
@@ -536,4 +526,24 @@ public slots:
  void propertyChange(PropertyChangeEvent* e) override;
 };
 
+/*private*/ /*static*/ class AbstractActionImpl : public AbstractAction
+{
+ Q_OBJECT
+    /*private*/ /*final*/ QString blockName;
+    /*private*/ /*final*/ LayoutBlock* layoutBlock;
+public:
+    /*public*/ AbstractActionImpl(QString name, QString blockName, LayoutBlock* layoutBlock, QObject* parent)
+  : AbstractAction(name, parent)
+    {
+        //super(name);
+        this->blockName = blockName;
+        this->layoutBlock = layoutBlock;
+    }
+public slots:
+    //@Override
+    /*public*/ void actionPerformed(/*ActionEvent e*/) {
+        AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(blockName, layoutBlock);
+        routeTableAction->actionPerformed(/*e*/);
+    }
+};
 #endif // LAYOUTTURNOUT_H

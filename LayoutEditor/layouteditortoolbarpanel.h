@@ -148,6 +148,7 @@ protected:
 
  friend class LayoutEditorToolsTest;
  friend class LayoutEditor;
+ friend class LayoutTurnout;
 };
 
 #endif // LAYOUTEDITORTOOLBARPANEL_H

@@ -3,6 +3,7 @@
 #include "turnout.h"
 #include "layouteditor.h"
 #include "colorutil.h"
+#include "joptionpane.h"
 
 /**
  * Abstract base class for all layout track objects (LayoutTurnout, LayoutSlip,
@@ -100,6 +101,15 @@
  */
 /*public*/ void LayoutTrack::setDecorations(QMap<QString, QString>* decorations) {
     this->decorations = decorations;
+}
+
+/**
+ * convenience method for accessing...
+ * @return the layout editor's toolbar panel
+ */
+//@Nonnull
+/*public*/ LayoutEditorToolBarPanel* LayoutTrack::getLayoutEditorToolBarPanel() {
+    return layoutEditor->getLayoutEditorToolBarPanel();
 }
 
 /*public*/ /*static*/ void LayoutTrack::setDefaultTrackColor(/*@Nullable*/ QColor color) {
@@ -266,6 +276,33 @@
         result = tr("Unknown");
     }
     return result;
+}
+
+/**
+ * Check for active block boundaries.
+ * <p>
+ * If any connection point of a layout track object has attached objects, such as
+ * signal masts, signal heads or NX sensors, the layout track object cannot be deleted.
+ * @return true if the layout track object can be deleted.
+ */
+ /*public*/ /*abstract*/ bool LayoutTrack::canRemove() {return false;}
+
+/**
+ * Display the attached items that prevent removing the layout track item.
+ * @param itemList A list of the attached heads, masts and/or sensors.
+ * @param typeKey The object type such as Turnout, Level Crossing, etc.
+ */
+/*public*/ void LayoutTrack::displayRemoveWarningDialog(QList<QString> itemList, QString typeKey) {
+//        itemList.sort(null);
+    QString msg =
+            tr("Unable to delete the %1.\nThe following items will need to be removed first").arg(typeKey);  // NOI18N
+    for (QString item : itemList) {
+        msg.append("\n    " + item);  // NOI18N
+    }
+    JOptionPane::showMessageDialog(layoutEditor,
+            msg/*.toString()*/,
+            tr("Warning"),  // NOI18N
+            JOptionPane::WARNING_MESSAGE);
 }
 
 /**
