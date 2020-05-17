@@ -214,6 +214,7 @@ private:
  QHash <int, TurnoutState*> turnoutStates;// = new QHash<int, TurnoutState>(4);
  /*private*/ bool isTurnoutInconsistent();
  QGraphicsItemGroup* itemGroup = nullptr;
+ /*private*/ QString getSlipStateString(int slipState);
 
 protected:
  /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e)override;

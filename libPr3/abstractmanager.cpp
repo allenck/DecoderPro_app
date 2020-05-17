@@ -660,38 +660,38 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 /*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) //throw PropertyVetoException
 {
 #if 1 // TODO:
-    if ("CanDelete" == (evt->getPropertyName())) { //IN18N
-        QString message;// = new StringBuilder();
-        message.append(tr("Found in the following <b>%1s</b>").arg(getBeanTypeHandled()))
-                .append("<ul>");
-        bool found = false;
-        for (NamedBean* nb : _beans) {
-            try {
-                nb->vetoableChange(evt);
-            } catch (PropertyVetoException e) {
-                if (e.getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { //IN18N
-                    throw e;
-                }
-                found = true;
-                message.append("<li>")
-                        .append(e.getMessage())
-                        .append("</li>");
-            }
-        }
-        message.append("</ul>")
-                .append(tr("It will be removed from the %1s").arg(getBeanTypeHandled()));
-        if (found) {
-            throw  PropertyVetoException(message, evt);
-        }
-    } else {
-        for (NamedBean* nb : _beans) {
-            try {
-                nb->vetoableChange(evt);
-            } catch (PropertyVetoException e) {
-                throw e;
-            }
-        }
-    }
+ if ("CanDelete" == (evt->getPropertyName())) { //IN18N
+     QString message;// = new StringBuilder();
+     message.append(tr("Found in the following <b>%1s</b>").arg(getBeanTypeHandled()))
+             .append("<ul>");
+     bool found = false;
+     for (NamedBean* nb : _beans) {
+         try {
+             nb->vetoableChange(evt);
+         } catch (PropertyVetoException e) {
+             if (e.getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { //IN18N
+                 throw e;
+             }
+             found = true;
+             message.append("<li>")
+                     .append(e.getMessage())
+                     .append("</li>");
+         }
+     }
+     message.append("</ul>")
+             .append(tr("It will be removed from the %1s").arg(getBeanTypeHandled()));
+     if (found) {
+         throw  PropertyVetoException(message, evt);
+     }
+ } else {
+     for (NamedBean* nb : _beans) {
+         try {
+             nb->vetoableChange(evt);
+         } catch (PropertyVetoException e) {
+             throw e;
+         }
+     }
+ }
 #endif
 }
 /**

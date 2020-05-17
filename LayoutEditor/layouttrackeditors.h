@@ -211,6 +211,7 @@ friend class LevelXingEditWindowListener;
 friend class TurntableEditWindowListener;
 friend class TurntableRayPanel;
 friend class LayoutTurnout;
+friend class LevelXing;
 };
 
 class SlipPopupMenuListener : public PopupMenuListener

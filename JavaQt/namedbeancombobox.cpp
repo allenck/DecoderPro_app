@@ -385,7 +385,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
  if(count() >0)
   return VPtr<NamedBean>::asPtr(itemData(0));
 }
-#if 0
+
 /**
  * Get the localized message to display in a tooltip when a typed in bean
  * name matches a named bean has been included in a call to
@@ -399,8 +399,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
  *                    with the options in {@link #getDisplayOrder()}
  * @return the localized message
  */
-/*public*/ String getBeanInUseMessage(String beanType, String displayName) {
-    return Bundle.getMessage("NamedBeanComboBoxBeanInUse", beanType, displayName);
+/*public*/ QString NamedBeanComboBox::getBeanInUseMessage(QString beanType, QString displayName) {
+    return tr("%1 %2 is not selectable and cannot be used in this context.").arg(beanType).arg(displayName);
 }
 
 /**
@@ -414,8 +414,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
  *                  {@link Manager#validateSystemNameFormat(java.lang.String, java.util.Locale)}
  * @return the localized message
  */
-/*public*/ String getInvalidNameFormatMessage(String beanType, String text, String exception) {
-    return Bundle.getMessage("NamedBeanComboBoxInvalidNameFormat", beanType, text, exception);
+/*public*/ QString NamedBeanComboBox::getInvalidNameFormatMessage(QString beanType, QString text, QString exception) {
+    return tr("<html>%1 \"%2\" is not a valid system name.<br>%3</html>").arg(beanType).arg(text).arg(exception);
 }
 
 /**
@@ -428,8 +428,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
  * @param text     the typed in name
  * @return the localized message
  */
-/*public*/ String getNoMatchingBeanMessage(String beanType, String text) {
-    return Bundle.getMessage("NamedBeanComboBoxNoMatchingBean", beanType, text);
+/*public*/ QString NamedBeanComboBox::getNoMatchingBeanMessage(QString beanType, QString text) {
+    return tr("No %1 named \"%2\" exists.").arg(beanType).arg(text);
 }
 
 /**
@@ -442,10 +442,10 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
  * @param text     the typed in name
  * @return the localized message
  */
-/*public*/ String getWillCreateBeanMessage(String beanType, String text) {
-    return Bundle.getMessage("NamedBeanComboBoxWillCreateBean", beanType, text);
+/*public*/ QString NamedBeanComboBox::getWillCreateBeanMessage(QString beanType, QString text) {
+    return tr("Will create a %1 named \"%2\".").arg(beanType).arg(text);
 }
-#endif
+
 /*public*/ QSet<NamedBean*> NamedBeanComboBox::getExcludedItems() {
     return excludedItems;
 }
@@ -463,6 +463,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     this->excludedItems.unite(excludedItems);
     sort();
 }
+
+
 #if 0
 /*private*/ class NamedBeanEditor implements ComboBoxEditor {
 

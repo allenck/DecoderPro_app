@@ -32,6 +32,10 @@ public:
  /*public*/ NamedBean* getNamedBean();
  /*public*/ QSet<NamedBean*> getExcludedItems();
  /*public*/ void setExcludedItems(QSet<NamedBean*> excludedItems);
+ /*public*/ QString getBeanInUseMessage(QString beanType, QString displayName);
+ /*public*/ QString getInvalidNameFormatMessage(QString beanType, QString text, QString exception);
+ /*public*/ QString getNoMatchingBeanMessage(QString beanType, QString text);
+ /*public*/ QString getWillCreateBeanMessage(QString beanType, QString text);
 
 private:
  static Logger* log;

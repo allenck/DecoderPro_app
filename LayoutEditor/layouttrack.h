@@ -175,6 +175,8 @@ protected:
  friend class TrackSegment;
  friend class LayoutEditorChecks;
  friend class LayoutTurnout;
+ friend class LevelXing;
+ friend class LayoutSlip;
 };
 
 #endif // LAYOUTTRACK_H

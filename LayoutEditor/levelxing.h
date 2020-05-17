@@ -163,11 +163,7 @@ public:
 signals:
     
 public slots:
-    void On_viewBlockRoutingAC();
-    void On_viewBlockRoutingBD();
-    void on_set_signals();
-    void on_setSignalMasts();
-    void on_setSensors();
+
 private:
     // defined constants
 

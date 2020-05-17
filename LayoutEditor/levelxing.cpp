@@ -8,6 +8,9 @@
 #include "layoutblockroutetableaction.h"
 #include "mathutil.h"
 #include "signallingguitools.h"
+#include "layouteditorfinditems.h"
+#include "layouttrackeditors.h"
+#include "layouteditortoolbarpanel.h"
 
 //LevelXing::LevelXing(QObject *parent) :
 //    QObject(parent)
@@ -1087,211 +1090,260 @@ double LevelXing::round (double x) {
  {
   popup = new QMenu();
  }
+
+ AbstractAction* act;
+
  if(layoutEditor->isEditable())
  {
-  popup->addAction(new QAction(tr("LevelCrossing"),this));
+  QAction* jmi = popup->addSection(tr("Level Crossing"));
   bool blockACAssigned = false;
   bool blockBDAssigned = false;
-  if ( (blockNameAC==NULL) || (blockNameAC==("")) )
-   popup->addAction(new QAction(tr("NoBlock1"),this));
+  if (getLayoutBlockAC() == nullptr)
+  {
+   popup->addAction(new QAction(tr("Block %1 Not Set").arg("AC"),this));
+  }
   else
   {
-   popup->addAction(new QAction(tr("Block1ID")+": "+getLayoutBlockAC()->getId(),this));
+   jmi = popup->addSection( tr("Block %1").arg("AC") + getLayoutBlockAC()->getDisplayName());
    blockACAssigned = true;
   }
-  if ( (blockNameBD==NULL) || (blockNameBD==("")) ) popup->addAction(new QAction(tr("NoBlock2"),this));
+  jmi->setEnabled(false);
+
+  if (getLayoutBlockBD() == nullptr) {
+   jmi = popup->addSection(tr("Block %1 Not Set").arg("BD"));
+  }
   else
   {
-   popup->addAction(new QAction(tr("Block2ID")+": "+getLayoutBlockBD()->getId(),this));
+   jmi = popup->addSection(tr("Block %1").arg("BD") + getLayoutBlockBD()->getDisplayName());
    blockBDAssigned = true;
   }
-  popup->addSeparator();
+  jmi->setEnabled(false);
 
-//    popup.add(new AbstractAction(rb.getQString("Edit")) {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                editLevelXing(instance);
+  // if there are any track connections
+
+  if ((connectA != nullptr) || (connectB != nullptr)
+          || (connectC != nullptr) || (connectD != nullptr))
+  {
+   QMenu* connectionsMenu = new QMenu(tr("Connections")); // there is no pane opening (which is what ... implies)
+   if (connectA != nullptr)
+   {
+       connectionsMenu->addAction(act = new AbstractAction( "A" + connectA->getName(),this));
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+       connect(act, &QAction::triggered, [=]{
+               LayoutEditorFindItems* lf = layoutEditor->getFinder();
+               LayoutTrack* lt = lf->findObjectByName(connectA->getName());
+               // this shouldn't ever be null... however...
+               if (lt != nullptr) {
+                   layoutEditor->setSelectionRect(lt->getBounds());
+                   lt->showPopup();
+               }
 //            }
-//        });
-  QAction* editAction = new QAction(tr("Edit"),this);
-  popup->addAction(editAction);
-  connect(editAction, SIGNAL(triggered()), this, SLOT(editLevelXing(/*LevelXing**/)));
-
-//    popup.add(new AbstractAction(rb.getQString("Remove")) {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                if (layoutEditor.removeLevelXing(instance)) {
-//                    // Returned true if user did not cancel
-//                    remove();
-//                    dispose();
-//                }
+       });
+   }
+   if (connectB != nullptr) {
+       connectionsMenu->addAction(act = new AbstractAction( "B" + connectB->getName(), this));
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+       connect(act, &QAction::triggered, [=]{
+               LayoutEditorFindItems* lf = layoutEditor->getFinder();
+               LayoutTrack* lt = lf->findObjectByName(connectB->getName());
+               // this shouldn't ever be null... however...
+               if (lt != nullptr) {
+                   layoutEditor->setSelectionRect(lt->getBounds());
+                   lt->showPopup();
+               }
 //            }
-//        });
-  QAction* removeAction = new QAction(tr("Remove"), this);
-  popup->addAction(removeAction);
-  connect(removeAction, SIGNAL(triggered()), this, SLOT(on_removeAction_triggered()));
-#if 1
-  if (blockACAssigned && blockBDAssigned)
-  {
-//            popup.add(new AbstractAction(rb.getQString("SetSignals")) {
-//                /*public*/ void actionPerformed(ActionEvent e) {
-//                    if (tools == NULL) {
-//                        tools = new LayoutEditorTools(layoutEditor);
-//                    }
-//                    // bring up signals at level crossing tool dialog
-//                    tools.setSignalsAtLevelXingFromMenu(instance,
-//                        layoutEditor.signalIconEditor,layoutEditor.signalFrame);
-//                }
-//            });
-   AbstractAction* setSignals = new AbstractAction(tr("Set Signals"),this);
-   popup->addAction(setSignals);
-   connect(setSignals, SIGNAL(triggered()), this, SLOT(on_set_signals()));
+       });
+   }
+   if (connectC != nullptr) {
+       connectionsMenu->addAction(new AbstractAction("C" + connectC->getName(),this));
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+       connect(act, &QAction::triggered, [=]{
+               LayoutEditorFindItems* lf = layoutEditor->getFinder();
+               LayoutTrack* lt = lf->findObjectByName(connectC->getName());
+               // this shouldn't ever be null... however...
+               if (lt != nullptr) {
+                   layoutEditor->setSelectionRect(lt->getBounds());
+                   lt->showPopup();
+               }
+//            }
+       });
+   }
+   if (connectD != nullptr) {
+       connectionsMenu->addAction(act = new AbstractAction("D" + connectD->getName(), this));
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+       connect(act, &QAction::triggered, [=]{
+               LayoutEditorFindItems* lf = layoutEditor->getFinder();
+               LayoutTrack* lt = lf->findObjectByName(connectD->getName());
+               // this shouldn't ever be null... however...
+               if (lt != nullptr) {
+                   layoutEditor->setSelectionRect(lt->getBounds());
+                   lt->showPopup();
+               }
+//            }
+       });
+   }
+   popup->addMenu(connectionsMenu);
   }
 
-  boundaryBetween = getBlockBoundaries();
-  bool blockBoundaries = false;
-  if (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled())
-  {
-   if(blockACAssigned && !blockBDAssigned)
-   {
-    //       popup.add(new AbstractAction(rb.getQString("ViewBlockRouting")) {
-    //           /*public*/ void actionPerformed(ActionEvent e) {
-    //               AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockAC());
-    //               routeTableAction.actionPerformed(e);
-    //           }
-    //       });
-    AbstractAction* viewBlockRouting = new AbstractAction(tr("View Block Routing AC"),this);
-    popup->addAction(viewBlockRouting);
-    connect(viewBlockRouting, SIGNAL(triggered()), this, SLOT(On_viewBlockRoutingAC()));
-   }
-   else if(!blockACAssigned && blockBDAssigned)
-   {
-//    popup.add(new AbstractAction(rb.getQString("ViewBlockRouting")) {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockBD());
-//            routeTableAction.actionPerformed(e);
-//        }
-//    });
-    AbstractAction* viewBlockRouting1 = new AbstractAction(tr("View BlockRouting BD"), this);
-      popup->addAction(viewBlockRouting1);
-      connect(viewBlockRouting1, SIGNAL(triggered()),this, SLOT(On_viewBlockRoutingBD()));
-   }
-   else if(blockACAssigned && blockBDAssigned)
-   {
-    QMenu* viewRouting = new QMenu(tr("View Block Routing"));
-//    viewRouting.add(new AbstractAction( blockNameAC) {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction( blockNameAC, getLayoutBlockAC());
-//            routeTableAction.actionPerformed(e);
-//        }
-//    });
-    AbstractAction* viewBlockRoutingAct = new AbstractAction(tr("View Block Routing"),this);
-    viewRouting->addAction(viewBlockRoutingAct);
-    connect( viewBlockRoutingAct, SIGNAL(triggered()),this, SLOT(On_viewBlockRoutingAC()));
+  popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
 
-//    viewRouting.add(new AbstractAction(blockNameBD) {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            AbstractAction  routeTableAction = new  LayoutBlockRouteTableAction(blockNameBD, getLayoutBlockBD());
-//            routeTableAction.actionPerformed(e);
-//        }
-//    });
-    viewBlockRoutingAct = new AbstractAction(tr("View Block Routing"),this);
-    viewRouting->addAction(viewBlockRoutingAct);
-    connect( viewBlockRoutingAct, SIGNAL(triggered()),this, SLOT(On_viewBlockRoutingBD()));
+  QAction* hiddenCheckBoxMenuItem = new QAction(tr("Hidden"), this);
+  hiddenCheckBoxMenuItem->setCheckable(true);
+  hiddenCheckBoxMenuItem->setChecked(hidden);
+  popup->addAction(hiddenCheckBoxMenuItem);
+  //hiddenCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
+  connect(hiddenCheckBoxMenuItem, &QAction::triggered, [=]{
+      setHidden(hiddenCheckBoxMenuItem->isChecked());
+  });
 
-    popup->addMenu(viewRouting);
-   }
-  }
-
-  for (int i = 0; i<4; i++)
-  {
-   if(boundaryBetween->at(i)!=NULL)
-    blockBoundaries=true;
-  }
-  if (blockBoundaries)
-  {
-   //   popup.add(new AbstractAction(rb.getQString("SetSignalMasts")) {
-   //      /*public*/ void actionPerformed(ActionEvent e) {
-   //          if (tools == NULL) {
-   //              tools = new LayoutEditorTools(layoutEditor);
-   //          }
-
-   //          tools.setSignalMastsAtLevelXingFromMenu(instance, boundaryBetween, layoutEditor.signalFrame);
-   //      }
-   //  });
-   AbstractAction* setSignalMastsAct = new AbstractAction(tr("Set SignalMasts"),this);
-   popup->addAction(setSignalMastsAct);
-   connect(setSignalMastsAct, SIGNAL(triggered()), this, SLOT(on_setSignalMasts()));
-//   popup.add(new AbstractAction(rb.getQString("SetSensors")) {
-//      /*public*/ void actionPerformed(ActionEvent e) {
-//          if (tools == NULL) {
-//              tools = new LayoutEditorTools(layoutEditor);
-//          }
-
-//          tools.setSensorsAtLevelXingFromMenu(instance, boundaryBetween, layoutEditor.sensorIconEditor, layoutEditor.sensorFrame);
+  popup->addAction(act = new AbstractAction(tr("Edit"), this));
+//  {
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+  connect(act, &QAction::triggered, [=]{
+          layoutEditor->getLayoutTrackEditors()->editLevelXing(this);
 //      }
-//  });
-   AbstractAction* setSensorsAct = new AbstractAction(tr("Set Sensors"),this);
-   popup->addAction(setSensorsAct);
-   connect(setSensorsAct, SIGNAL(triggered()), this, SLOT(on_setSensors()));
-#endif
-
+  });
+  popup->addAction(act = new AbstractAction(tr("Delete"),this));
+//  {
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+   connect(act, &QAction::triggered, [=]{
+          if (canRemove() && layoutEditor->removeLevelXing(this)) {
+              // Returned true if user did not cancel
+              remove();
+              dispose();
+          }
+//      }
+  });
+  if (blockACAssigned && blockBDAssigned) {
+      AbstractAction* ssaa = new AbstractAction(tr("Set Signal Heads..."), this);
+//      {
+//          @Override
+//          public void actionPerformed(ActionEvent e) {
+      connect(ssaa, &AbstractAction::triggered, [=]{
+              // bring up signals at level crossing tool dialog
+              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+              layoutEditor->getLETools()->
+                      setSignalsAtLevelXingFromMenu(this,
+                              letbp->signalIconEditor,
+                              letbp->signalFrame);
+//          }
+      });
+      QMenu* jm = new QMenu(tr("Signal Heads"));
+      if (layoutEditor->getLETools()->
+              addLevelXingSignalHeadInfoToMenu(this, jm)) {
+          jm->addAction(ssaa);
+          popup->addMenu(jm);
+      } else {
+          popup->addAction(ssaa);
+      }
   }
 
-//  layoutEditor.setShowAlignmentMenu(popup);
-//  popup.show(e.getComponent(), e.x(), e.y());
+  /*final*/ QVector<QString>* boundaryBetween = getBlockBoundaries();
+  bool blockBoundaries = false;
+  if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
+  {
+      if (blockACAssigned && !blockBDAssigned) {
+          popup->addAction(act = new AbstractAction(tr("View Block Routing"), this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+          connect(act, &QAction::triggered, [=]{
+                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockAC());
+                  routeTableAction->actionPerformed(/*e*/);
+//              }
+          });
+      } else if (!blockACAssigned && blockBDAssigned) {
+          popup->addAction(act = new AbstractAction(tr("View Block Routing"), this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+          connect(act, &QAction::triggered, [=]{
+                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockBD());
+                  routeTableAction->actionPerformed(/*e*/);
+//              }
+          });
+      } else if (blockACAssigned && blockBDAssigned) {
+          QMenu* viewRouting = new QMenu(tr("View Block Routing"));
+          viewRouting->addAction(act = new AbstractAction(getLayoutBlockAC()->getDisplayName(), this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+          connect(act, &QAction::triggered, [=]{
+                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(getLayoutBlockAC()->getDisplayName(), getLayoutBlockAC());
+                  routeTableAction->actionPerformed(/*e*/);
+//              }
+          });
+
+          viewRouting->addAction(act = new AbstractAction(getLayoutBlockBD()->getDisplayName(), this));
+//          {
+//              @Override
+//              public void actionPerformed(ActionEvent e) {
+          connect(act, &QAction::triggered, [=]{
+                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(getLayoutBlockBD()->getDisplayName(), getLayoutBlockBD());
+                  routeTableAction->actionPerformed(/*e*/);
+//              }
+          });
+
+          popup->addMenu(viewRouting);
+      }
+  }
+
+  for (int i = 0; i < 4; i++) {
+      if (boundaryBetween->at(i) != "") {
+          blockBoundaries = true;
+      }
+  }
+  if (blockBoundaries) {
+      popup->addAction(act = new AbstractAction(tr("Set Signal Masts..."), this));
+//      {
+//          @Override
+//          public void actionPerformed(ActionEvent e) {
+      connect(act, &QAction::triggered, [=]{
+              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+              layoutEditor->getLETools()->
+                      setSignalMastsAtLevelXingFromMenu(
+                              this, boundaryBetween,
+                              letbp->signalFrame);
+//          }
+      });
+      popup->addAction(act = new AbstractAction(tr("Set Sensors..."), this));
+//      {
+//          @Override
+//          public void actionPerformed(ActionEvent e) {
+      connect(act, &QAction::triggered, [=]{
+              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+              layoutEditor->getLETools()->setSensorsAtLevelXingFromMenu(
+                      this, boundaryBetween,
+                      letbp->sensorIconEditor,
+                      letbp->sensorFrame);
+//          }
+      });
+  }
+
+  layoutEditor->setShowAlignmentMenu(popup);
+  //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
   popup->exec(QCursor::pos());
-  return popup;
+ } else if (!viewAdditionalMenu->isEmpty()) {
+    setAdditionalViewPopUpMenu(popup);
+    //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+    popup->exec(QCursor::pos());
  }
-// else if(!viewAdditionalMenu.isEmpty())
-// {
-//        setAdditionalViewPopUpMenu(popup);
-//        popup.show(e.getComponent(), e.x(), e.y());
-// }
-}
- void LevelXing::on_set_signals()
- {
-  if (tools == NULL)
-  {
-   tools = new LayoutEditorTools(layoutEditor);
-  }
-  // bring up signals at level crossing tool dialog
-  tools->setSignalsAtLevelXingFromMenu(instance,layoutEditor->signalIconEditor,layoutEditor->signalFrame);
- }
+ return popup;
+}   // showPopup
 
- void LevelXing::On_viewBlockRoutingAC()
- {
-  AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockAC());
-  routeTableAction->actionPerformed();
- }
-
- void LevelXing::On_viewBlockRoutingBD()
- {
-  AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockAC());
-  routeTableAction->actionPerformed();
- }
-
- void LevelXing::on_setSignalMasts()
- {
-  if (tools == NULL)
-  {
-   tools = new LayoutEditorTools(layoutEditor);
-  }
-
-  tools->setSensorsAtLevelXingFromMenu(instance, boundaryBetween, layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
-
- }
-
- void LevelXing::on_setSensors()
- {
-  if (tools == NULL)
-  {
-  tools = new LayoutEditorTools(layoutEditor);
-  }
-
-  tools->setSensorsAtLevelXingFromMenu(instance, boundaryBetween, layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
- }
 
 /*public*/ QVector<QString>* LevelXing::getBlockBoundaries()
- {
+{
   /*final*/ QVector<QString>* boundaryBetween = new QVector<QString>(4,"");
   if ( (blockNameAC!=NULL) && (blockNameAC!=("")) && (blockAC!=NULL) )
   {
