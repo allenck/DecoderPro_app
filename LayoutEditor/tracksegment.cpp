@@ -1476,7 +1476,6 @@ TrackSegment::getLayoutBlock()
  connect(dashedCheckBoxMenuItem, &QAction::triggered, [=]{
      setDashed(dashedCheckBoxMenuItem->isChecked());
  });
- connect(dashedCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(onDashedCheckBox()));
  dashedCheckBoxMenuItem->setToolTip(tr("Sets track segment style - checked for dashed, unchecked for solid."));
  dashedCheckBoxMenuItem->setChecked(dashed);
 
@@ -1744,7 +1743,6 @@ TrackSegment::getLayoutBlock()
      setArrowDirIn(true);
      setArrowDirOut(true);
  });
- connect(jcbmi, SIGNAL(triggered(bool)), this, SLOT(onArrowDirection()));
  jcbmi->setChecked(arrowDirIn && arrowDirOut);
 
  arrowsMenu->addAction(jmi = new QAction(tr("Color"),this));

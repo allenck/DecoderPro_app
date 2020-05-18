@@ -73,155 +73,9 @@
  D1 = 8;
  D2 = 9;
  // operational instance variables shared between tools
- layoutEditor = NULL;
- signalIconEditor = NULL;
- signalFrame = NULL;
- needRedraw = false;
- logic = NULL;
- auxSignal = NULL;
- hitEndBumper = false;
 
  layoutEditor = thePanel;
 
- //operational variables for Set Signals at Double Crossover Turnout tool
- turnout1ComboBox = new NamedBeanComboBox(
-         InstanceManager::turnoutManagerInstance(),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- turnout2ComboBox = new NamedBeanComboBox(
-         InstanceManager::turnoutManagerInstance(),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- a1TToTSignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
-         ),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- a2TToTSignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
-         ),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- b1TToTSignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
-         ),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- b2TToTSignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
-         ),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- c1TToTSignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
-         ),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- c2TToTSignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
-         ),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- d1TToTSignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
-         ),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  d2TToTSignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"
-         ),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-
-
- // operational variables for Set Signals at Turnout tool
- setSignalsFrame = NULL;
- setSignalsOpen = false;
- turnoutComboBox = new NamedBeanComboBox(
-         InstanceManager::turnoutManagerInstance(),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-// turnoutNameField = new JTextField(16);
-// throatContinuingField = new JTextField(16);
-// connect(throatContinuingField, SIGNAL(textChanged(QString)), this, SLOT(throatContinuingField_textChanged(QString)));
-// throatDivergingField = new JTextField(16);
-// connect(throatDivergingField, SIGNAL(textChanged(QString)), this, SLOT(throatDivergingField_textChanged(QString)));
-// continuingField = new JTextField(16);
-// connect(continuingField, SIGNAL(textChanged(QString)), this, SLOT(continuingField_textChanged(QString)));
-// divergingField = new JTextField(16);
-// connect(divergingField, SIGNAL(textChanged(QString)), this, SLOT(divergingField_textChanged(QString)));
- setThroatContinuing = new QCheckBox(tr("Add Signal Head Icon to Panel"));
- setupLogicThroatContinuing = new QCheckBox(tr("Set up Logic"));
- setThroatDiverging = new QCheckBox(tr("Add Signal Head Icon to Panel"));
- setupLogicThroatDiverging = new QCheckBox(tr("Set up Logic"));
- setContinuing = new QCheckBox(tr("Add Signal Head Icon to Panel"));
- setupLogicContinuing = new QCheckBox(tr("Set up Logic"));
- setDiverging = new QCheckBox(tr("Add Signal Head Icon to Panel"));
- setupLogicDiverging = new QCheckBox(tr("Set up Logic"));
- getSavedSignalHeads = NULL;
- changeSignalIcon = NULL;
- setSignalsDone = NULL;
- setSignalsCancel = NULL;
- layoutTurnout = NULL;
- layoutTurnoutHorizontal = false;
- layoutTurnoutVertical = false;
- layoutTurnoutThroatLeft = false;
- layoutTurnoutThroatUp = false;
- layoutTurnoutBUp = false;
- layoutTurnoutBLeft = false;
- turnoutFromMenu = false;
- turnout = NULL;
- throatContinuingHead = NULL;
- throatDivergingHead = NULL;
- continuingHead = NULL;
- divergingHead = NULL;
-
- //operational variables for Set Signals at 3-Way Turnout tool
- turnoutAComboBox = new NamedBeanComboBox(
-         InstanceManager::turnoutManagerInstance(),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- turnoutBComboBox = new NamedBeanComboBox(
-         InstanceManager::turnoutManagerInstance(),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- a1_3WaySignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- a2_3WaySignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- a3_3WaySignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- b_3WaySignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- c_3WaySignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- d_3WaySignalHeadComboBox = new NamedBeanComboBox(
-         (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-
-
- // operational variables for Set Signals at Block Boundary tool
- setSignalsAtBlockBoundaryFrame = NULL;
- setSignalsAtBlockBoundaryOpenFlag = false;
-// block1NameField = new JTextField(16);
-// connect(block1NameField, SIGNAL(textChanged(QString)), this, SLOT(block1NameField_textChanged(QString)));
-// block2NameField = new JTextField(16);
-// connect(block2NameField, SIGNAL(textChanged(QString)), this, SLOT(block2NameField_textChanged(QString)));
-// eastBoundField = new JTextField(16);
-// connect(eastBoundField, SIGNAL(textChanged(QString)), this, SLOT(eastBoundField_textChanged(QString)));
-// westBoundField = new JTextField(16);
-// connect(westBoundField, SIGNAL(textChanged(QString)), this, SLOT(westBoundField_textChanged(QString)));
- setEastBound = new QCheckBox(tr("Add Signal Head Icon to Panel"));
- setupLogicEastBound = new QCheckBox(tr("Set up Logic"));
- setWestBound = new QCheckBox(tr("Add Signal Head Icon to Panel"));
- setupLogicWestBound = new QCheckBox(tr("Set up Logic"));
- getAnchorSavedSignalHeads = NULL;
- changeSignalAtBoundaryIcon = NULL;
- setSignalsAtBlockBoundaryDone = NULL;
- setSignalsAtBlockBoundaryCancel = NULL;
- block1 = NULL;
- block2 = NULL;
- eastTrack = NULL;
- westTrack = NULL;
-// trackHorizontal = false;
-// trackVertical = false;
-// boundaryFromMenu = false;
- boundary = NULL;
- eastBoundHead = NULL;
- westBoundHead = NULL;
- testIcon = NULL;
 
  // operational variables for Set Signals at Double Crossover Turnout tool
 
@@ -233,39 +87,6 @@
  signalMastTurnoutPanel = new QWidget();
  turnoutBlocks =  QVector<QString>(4);
  usedMasts = QList<NamedBean*>();
-
-
-
- turnoutComboBox = new NamedBeanComboBox(
-            InstanceManager::turnoutManagerInstance(),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-
- throatContinuingSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- throatDivergingSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- continuingSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
- divergingSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-
- setPlaceAllHeads = new QCheckBox(tr("Place All Signal Head Icons"));
- setupAllLogic = new QCheckBox(tr("Set up all SSL's"));
-
-
-// setSensorsOpen =false;
-// turnoutSensorFromMenu = false;
-// setSensorsAtTurnoutFrame = NULL;
- turnoutSensorFrame = NULL;
-
- //turnoutSensorNameField = new JTextField(16);
-// sensorsTurnoutComboBox = new JmriBeanComboBox(
-//    InstanceManager::turnoutManagerInstance(),
-//    nullptr, JmriBeanComboBox::DisplayOptions::DISPLAYNAME);
 
  changeSensorIcon = NULL;
 
@@ -1102,11 +923,11 @@
   panel6->layout()->addWidget(new QLabel("  "));
   panel6->layout()->addWidget(setSignalsDone = new QPushButton(tr("Done")));
 //    setSignalsDone->layout()->addWidgetActionListener(new ActionListener() {
+  connect(setSignalsDone, &QPushButton::clicked, [=]{
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            setSignalsDonePressed(e);
+            setSignalsDonePressed(/*e*/);
 //        }
-//    });
-  connect(setSignalsDone, SIGNAL(clicked()), this, SLOT(setSignalsDonePressed()));
+    });
   setSignalsDone->setToolTip( tr("Click Done to perform tasks requested above and dismiss this dialog.") );
   panel6->layout()->addWidget(setSignalsCancel = new QPushButton(tr("Cancel")));
 //    setSignalsCancel->layout()->addWidgetActionListener(new ActionListener() {
@@ -2801,7 +2622,7 @@ else if (throatDivergingHead==nullptr)
   theContentPane->setLayout(centralWidgetLayout=new QVBoxLayout(theContentPane/*, BoxLayout.Y_AXIS)*/));
   JPanel* panel11 = new JPanel(new FlowLayout());
   block1NameLabel = new JLabel(
-          tr("BeanNameBlock") + " 1 ");
+          tr("Block") + " 1 ");
   panel11->layout()->addWidget(block1NameLabel);
   panel11->layout()->addWidget(block1IDComboBox);
   block1IDComboBox->setToolTip(tr("Enter name of one block where signals are needed at block boundary."));
@@ -2831,10 +2652,10 @@ else if (throatDivergingHead==nullptr)
   panel2->layout()->addWidget(getAnchorSavedSignalHeads = new QPushButton(tr("Get Saved")));
 //        getAnchorSavedSignalHeads->layout()->addWidgetActionListener(new ActionListener() {
 //                /*public*/ void actionPerformed(ActionEvent e) {
-//                    getSavedAnchorSignals(e);
+  connect(getAnchorSavedSignalHeads, &QPushButton::clicked, [=]{
+          getSavedAnchorSignals(/*e*/);
 //                }
-//            });
-  connect(getAnchorSavedSignalHeads, SIGNAL(clicked()), this, SLOT(getSavedAnchorSignals(ActionEvent* /*e*/)));
+  });
   getAnchorSavedSignalHeads->setToolTip( tr("Click to retrieve signal heads previously stored.") );
   centralWidgetLayout->addWidget(panel2);
   if (showEast) {
@@ -2882,11 +2703,11 @@ else if (throatDivergingHead==nullptr)
   panel6->setLayout(new QHBoxLayout());
   panel6->layout()->addWidget(changeSignalAtBoundaryIcon = new QPushButton(tr("Change Signal Head Icon")));
 //    changeSignalAtBoundaryIcon->layout()->addWidgetActionListener(new ActionListener() {
+  connect(changeSignalAtBoundaryIcon, &QPushButton::clicked, [=]{
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                signalFrame->setVisible(true);
+                signalFrame->setVisible(true);
 //            }
-//        });
-  connect(changeSignalAtBoundaryIcon, SIGNAL(clicked()), this, SLOT(changeSignalAtBoundaryIcon_clicked()));
+        });
   changeSignalAtBoundaryIcon->setToolTip( tr("Click to change icons used to represent signal heads. (Use left-facing icons.)") );
   panel6->layout()->addWidget(new QLabel("  "));
   panel6->layout()->addWidget(setSignalsAtBlockBoundaryDone = new QPushButton(tr("Done")));
@@ -2910,7 +2731,7 @@ else if (throatDivergingHead==nullptr)
   //make this button the default button (return or enter activates)
 //  JRootPane rootPane = SwingUtilities.getRootPane(setSignalsDone);
 //  rootPane.setDefaultButton(setSignalsDone);
-  setSignalsDone->setDefault(true);
+  setSignalsAtBlockBoundaryDone->setDefault(true);
 
 //  setSignalsAtBlockBoundaryFrame.addWindowListener(new WindowAdapter() {
 //      @Override
@@ -2946,7 +2767,8 @@ else if (throatDivergingHead==nullptr)
 
 /*private*/ void LayoutEditorTools::getSavedAnchorSignals (ActionEvent* /*a*/) // SLOT[]
 {
-    if ( !getBlockInformation() ) return;
+    if ( !getBlockInformation() ) 
+     return;
     eastBoundSignalHeadComboBox->setSelectedItem(boundary->getEastBoundSignalHead());
     westBoundSignalHeadComboBox->setSelectedItem(boundary->getWestBoundSignalHead());
 }
@@ -3092,11 +2914,10 @@ else if (throatDivergingHead==nullptr)
             }
         }
         if (boundary==nullptr) {
-//            JOptionPane::showMessageDialog(setSignalsAtBlockBoundaryFrame,
-//                        tr("Error - The two blocks entered do not join at an anchor point.\nPlease enter the correct blocks and try again."),
-//                                tr("Error"),JOptionPane::ERROR_MESSAGE);
-            QMessageBox::critical(0, tr("Error"), tr("Error - The two blocks entered do not join at an anchor point.\nPlease enter the correct blocks and try again."));
-            return false;
+            JOptionPane::showMessageDialog(setSignalsAtBlockBoundaryFrame,
+                        tr("Error - The two blocks entered do not join at an anchor point.\nPlease enter the correct blocks and try again."),
+                                tr("Error"),JOptionPane::ERROR_MESSAGE);
+           return false;
         }
     }
     // set track orientation at boundary
@@ -7084,7 +6905,7 @@ setSignalsAtTToTOpen = true;
 
         JPanel* panel40 = new JPanel(new FlowLayout());
         panel40->layout()->addWidget(new JLabel(tr("Signal located at")
-                + " " + tr("BeanNameTurnout") + " B "));
+                + " " + tr("Turnout") + " B "));
         theContentPane->layout()->addWidget(panel40);
 
         JPanel* panel41 = new JPanel(new FlowLayout());
@@ -8306,7 +8127,7 @@ setSignalsAtTToTOpen = true;
   header->layout()->addWidget(panel11);
 
   JPanel* panel12 = new JPanel(new FlowLayout());
-  block2NameLabel = new JLabel(tr("BeanNameBlock") + " 2 - "
+  block2NameLabel = new JLabel(tr("Block") + " 2 - "
           + tr("Name"));
   panel12->layout()->addWidget(block2NameLabel);
 
@@ -9044,7 +8865,7 @@ void LayoutEditorTools::setBoundarySensor(Sensor* newSensor, Sensor* currSensor,
            + tr("Name")
            + " " + boundary->getConnect1()->getLayoutBlock()->getId());
    if (boundary->getConnect2() != nullptr) {
-       block2NameLabel->setText(tr("BeanNameBlock") + " 2 "
+       block2NameLabel->setText(tr("Block") + " 2 "
                + tr("Name")
                + " " + boundary->getConnect2()->getLayoutBlock()->getId());
        block2NameLabel->setVisible(true);
@@ -13135,7 +12956,7 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
   theContentPane->setLayout(new QVBoxLayout());//theContentPane, BoxLayout.Y_AXIS));
 
   JPanel* panel11A = new JPanel(new FlowLayout());
-  slipSignalBlockANameLabel = new JLabel(tr("BeanNameBlock") + " A "
+  slipSignalBlockANameLabel = new JLabel(tr("Block") + " A "
           + tr("Name"));
   panel11A->layout()->addWidget(slipSignalBlockANameLabel);
   panel11A->layout()->addWidget(slipSensorsBlockAComboBox);
@@ -13907,7 +13728,7 @@ QWidget* BeanDetails::addIconPanel()
   //Signal heads located at turnout 1
   JPanel* panel21x = new JPanel(new FlowLayout());
   panel21x->layout()->addWidget(new JLabel(tr("Signal located at")
-          + " " + tr("BeanNameTurnout") + " 1 - "
+          + " " + tr("Turnout") + " 1 - "
           + tr("continuing track")));
   theContentPane->layout()->addWidget(panel21x);
 
@@ -13947,7 +13768,7 @@ QWidget* BeanDetails::addIconPanel()
 
   JPanel* panel31x = new JPanel(new FlowLayout());
   panel31x->layout()->addWidget(new JLabel(tr("Signal located at")
-          + " " + tr("BeanNameTurnout") + " 1 - "
+          + " " + tr("Turnout") + " 1 - "
           + tr("Protects Turnout")));
   theContentPane->layout()->addWidget(panel31x);
 
@@ -13995,7 +13816,7 @@ QWidget* BeanDetails::addIconPanel()
 
   JPanel* panel41x = new JPanel(new FlowLayout());
   panel41x->layout()->addWidget(new JLabel(tr("Signal located at")
-          + " " + tr("BeanNameTurnout") + " 2 - "
+          + " " + tr("Turnout") + " 2 - "
           + tr("continuing track")));
   theContentPane->layout()->addWidget(panel41x);
 
@@ -14038,7 +13859,7 @@ QWidget* BeanDetails::addIconPanel()
 
   JPanel* panel51x = new JPanel(new FlowLayout());
   panel51x->layout()->addWidget(new JLabel(tr("Signal located at")
-          + " " + tr("BeanNameTurnout") + " 2 - "
+          + " " + tr("Turnout") + " 2 - "
           + tr("Protects Turnout")));
   theContentPane->layout()->addWidget(panel51x);
 
