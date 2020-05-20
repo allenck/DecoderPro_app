@@ -248,16 +248,22 @@ void LayoutSlip::init()
 
 /*public*/ QString LayoutSlip::getDisplayName()
 {
- QString name = "Slip :";
- if(getTurnoutName()!=nullptr)
- {
-  name += "("+getTurnoutName();
-  if(getTurnoutBName()!=nullptr)
-   name+=":"+getTurnoutBName()+")";
+ QString name = "Slip " + getId();
+ QString tnA = getTurnoutName();
+ QString tnB = getTurnoutBName();
+ if ((!tnA.isNull()) && !tnA.isEmpty()) {
+     name += " (" + tnA;
  }
- else if(getTurnoutBName()!=nullptr)
- {
-  name += "("+getTurnoutBName()+")";
+ if ((!tnB.isNull()) && !tnB.isEmpty()) {
+     if (name.contains(" (")) {
+         name += ", ";
+     } else {
+         name += "(";
+     }
+     name += tnB;
+ }
+ if (name.contains("(")) {
+     name += ")";
  }
  return name;
 }

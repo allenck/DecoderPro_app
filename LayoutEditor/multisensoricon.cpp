@@ -105,7 +105,17 @@ MultiSensorIconEntry::MultiSensorIconEntry(NamedIcon *icon, NamedBeanHandle<Sens
  }
  addEntry(sensor, icon);
 }
+
 /*public*/ int MultiSensorIcon::getNumEntries() { return entries->size(); }
+
+/*public*/ QList<Sensor*> MultiSensorIcon::getSensors() {
+    QList<Sensor*> list = QList<Sensor*>();//new ArrayList<>(getNumEntries());
+    for (Entry* handle : *entries) {
+        list.append(handle->namedSensor->getBean());
+    }
+    return list;
+}
+
 /*public*/ QString MultiSensorIcon::getSensorName(int i) {
     return entries->at(i)->namedSensor->getName();
 }

@@ -30,6 +30,7 @@ public:
     /*public*/ void addEntry(NamedBeanHandle<Sensor*>* sensor, NamedIcon* icon);
     /*public*/ void addEntry(QString pName, NamedIcon* icon);
     /*public*/ int getNumEntries();
+    /*public*/ QList<Sensor*> getSensors();
     /*public*/ QString getSensorName(int i);
     /*public*/ NamedIcon* getSensorIcon(int i);
     /*public*/ QString getFamily();
@@ -90,7 +91,6 @@ private:
     MultiSensorItemPanel* _itemPanel;
     int displaying;// = -1;
     bool buttonLive();
-
     class AddIconActionListener : public ActionListener
     {
      MultiSensorIcon* parent;

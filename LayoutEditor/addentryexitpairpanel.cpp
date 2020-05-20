@@ -12,8 +12,9 @@
 #include "jtable.h"
 #include <QSortFilterProxyModel>
 #include "layoutblockmanager.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "jtextfield.h"
+#include "propertychangeevent.h"
 
 //AddEntryExitPairPanel::AddEntryExitPairPanel(QWidget *parent) :
 //  JmriPanel(parent)
@@ -171,16 +172,11 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
 
 /*private*/ void AddEntryExitPairPanel::autoDiscovery()
 {
- if (!((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
- {
-//  int response = JOptionPane.showConfirmDialog(NULL, tr("EnableLayoutBlockRouting"));
-  int response = QMessageBox::question(NULL, tr("Question"), tr("Layout block routing is not enabled\nDo you want to enable it?"), QMessageBox::Yes | QMessageBox::No);
-//  if (response == 0)
-  if(response == QMessageBox::Yes)
-  {
-   ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->enableAdvancedRouting(true);
-   //JOptionPane.showMessageDialog(NULL, tr("LayoutBlockRoutingEnabled"));
-   QMessageBox::information(NULL, tr("Information"), tr("Layout Block routing has been enabled."));
+ if (!((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled()) {
+  int response = JOptionPane::showConfirmDialog(nullptr, tr("Layout Block Routing is not enabled.\nDo you want to enable it?"));  // NOI18N
+  if (response == 0) {
+      ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->enableAdvancedRouting(true);
+      JOptionPane::showMessageDialog(nullptr, tr(" Please close and reopen this window for the changes to take effect."));  // NOI18N
   }
  }
  entryExitFrame = new JmriJFrameX(tr("Discover Entry Exit Pairs"), false, false);
@@ -201,14 +197,12 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
  centralWidgetLayout->addLayout(panel1Layout);
  entryExitFrame->adjustSize();
  entryExitFrame->setVisible(true);
-//    int retval = JOptionPane.showOptionDialog(NULL, tr("AutoGenEntryExitMessage"), tr("AutoGenEntryExitTitle"),
-//            JOptionPane.YES_NO_OPTION,
-//            JOptionPane.QUESTION_MESSAGE, NULL, NULL, NULL);
-//    if (retval == 0) {
- int retval = QMessageBox::question(NULL, tr("Auto Generate Entry Exit Pairs"), tr("Do you want to automatically generate\nthe Entry Exit Pairs and Logic, based \nupon the track plan in the layout editor?"), QMessageBox::Yes | QMessageBox::No);
- if(retval == QMessageBox::Yes)
- {
-//        final PropertyChangeListener propertyNXListener = new PropertyChangeListener() {
+    int retval = JOptionPane::showOptionDialog(NULL, tr("Do you want to automatically generate \nthe Entry Exit Pairs and Logic, based /nupon the track plan in the layout editor?"), tr("AutoGenEntryExitTitle"),
+            JOptionPane::YES_NO_OPTION,
+            JOptionPane::QUESTION_MESSAGE/*, QIcon(), NULL, NULL*/);
+    if (retval == 0) {
+        /*final*/ PropertyChangeListener* propertyNXListener = new PropertyNXListener(this);
+//     {
 //            /*public*/ void propertyChange(PropertyChangeEvent evt) {
 //                if (evt.getPropertyName()==("autoGenerateComplete")) {
 //                    if (entryExitFrame != NULL) {
@@ -222,14 +216,14 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
 //        };
   try
   {
-            //nxPairs.addPropertyChangeListener(propertyNXListener);
-   connect(nxPairs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   //nxPairs.addPropertyChangeListener(propertyNXListener);
+   connect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
    nxPairs->automaticallyDiscoverEntryExitPairs(panels->at(selectPanel->currentIndex()), typeBox->currentIndex());
   }
   catch (JmriException e)
   {
    //nxPairs->removePropertyChangeListener(propertyNXListener);
-   disconnect(nxPairs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   disconnect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
    //OptionPane.showMessageDialog(NULL, e.toString());
    entryExitFrame->setVisible(false);
   }
@@ -240,19 +234,18 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
  }
 }
 
-void AddEntryExitPairPanel::propertyChange(PropertyChangeEvent * evt)
+void PropertyNXListener::propertyChange(PropertyChangeEvent * evt)
 {
  if (evt->getPropertyName()==("autoGenerateComplete"))
  {
-  if (entryExitFrame != NULL)
+  if (panel->entryExitFrame != NULL)
   {
-      entryExitFrame->setVisible(false);
-      entryExitFrame->close();
+      panel->entryExitFrame->setVisible(false);
+      panel->entryExitFrame->close();
   }
   //nxPairs.removePropertyChangeListener(this);
-  disconnect(nxPairs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //JOptionPane.showMessageDialog(NULL, "Generation of Entry Exit Pairs Completed");
-  QMessageBox::information(NULL, tr("Information"), tr("Generation of Entry Exit Pairs Completed"));
+  disconnect(panel->nxPairs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+  JOptionPane::showMessageDialog(NULL, "Generation of Entry Exit Pairs Completed");
  }
 }
 
@@ -373,7 +366,7 @@ AEPTableModel::AEPTableModel(LayoutEditor* panel, AddEntryExitPairPanel* parent)
 
  setPanel(panel);
  //nxPairs.addPropertyChangeListener(this);
- connect(parent->nxPairs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(parent->nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  source = parent->nxPairs->getNxSource(panel);
  dest = parent->nxPairs->getNxDestination();
  log = new Logger("AEPTableModel");
@@ -435,7 +428,7 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
 {
  if(role == Qt::DisplayRole)
  {
-  int row = index.column();
+  int row = index.row();
   int col = index.column();
     // get roster entry for row
     if (panel == NULL) {
@@ -544,17 +537,17 @@ QString AEPTableModel::isPairActive(int row) const
 
     switch (section) {
         case FROMPOINTCOL:
-            return tr("ColumnFrom");
+            return tr("From");
         case TOPOINTCOL:
-            return tr("ColumnTo");
+            return tr("To");
         case ACTIVECOL:
-            return tr("ColumnActive");
+            return tr("Active");
         case DELETECOL:
             return "";
         case CLEARCOL:
             return "";
         case BOTHWAYCOL:
-            return tr("ColumnBoth");
+            return tr("Both");
         case TYPECOL:
             return "NX Type";
         case ENABLEDCOL:
@@ -599,15 +592,13 @@ QString AEPTableModel::isPairActive(int row) const
     PositionablePoint* point = (PositionablePoint*) obj;
     if (point->getType() == PositionablePoint::END_BUMPER)
     {
-     //OptionPane.showMessageDialog(NULL, tr("EndBumperPoint"));
-     QMessageBox::information(NULL, tr("Information"), tr("Destination location is at an End Bumper, it is not possible to do Both Way NX at this location"));
+     JOptionPane::showMessageDialog(NULL, tr("Destination location is at an End Bumper, it is not possible to do Both Way NX at this location"));
      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
    }
    if (!parent->nxPairs->canBeBiDirectional(source.at(row), panel, dest.at(row)))
    {
-    //JOptionPane.showMessageDialog(NULL, tr("BothWayTurnoutOnly"));
-    QMessageBox::information(NULL, tr("Information"), tr("Both Way Operation can not be used if a Signal is present at both Entry and Exit points"));
+    JOptionPane::showMessageDialog(NULL, tr("Both Way Operation can not be used if a Signal is present at both Entry and Exit points"));
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
    }
       /*if(nxPairs.getEntryExitType(source.get(row), panel, dest.get(row))!=0x00){
@@ -829,8 +820,7 @@ void AddEntryExitPairPanel::optionSaveButton()\
  settingTimer = durationSetting->text().toInt(&bOk);
  if(!bOk)
  {
-     //JOptionPane.showMessageDialog(NULL, ->tr("ValueBeNumber"));
-  QMessageBox::critical(NULL, tr("Error"), tr("Duration of setting colour should be a number!"));
+  JOptionPane::showMessageDialog(NULL, tr("Duration of setting color should be a number!"));
      return;
  }
  nxPairs->setSettingTimer(settingTimer);

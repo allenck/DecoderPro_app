@@ -123,7 +123,7 @@ bool checking;// = false;
 bool stabilised;// = false;
 QThread* thr;// = NULL;
 
-/*private*/ NamedBeanHandle<Sensor*>* namedStabilisedIndicator;
+/*private*/ NamedBeanHandle<Sensor*>* namedStabilisedIndicator = nullptr;
 ///*private*/ LayoutTurnout* getLayoutTurnoutFromTurnoutName(QString turnoutName,LayoutEditor* panel);
 LayoutBlockConnectivityTools* lbct;// = new LayoutBlockConnectivityTools();
 /*private*/ QList<LayoutBlock*> getProtectingBlocksByBeanByPanel(/*@Nullable*/ NamedBean* bean,/*@Nullable*/ LayoutEditor* panel);
@@ -146,9 +146,11 @@ class MyRunnable : public Runnable
     LayoutBlockManager* self;
 public:
     MyRunnable(QObject* as, LayoutBlockManager* self);
+  public slots:
   /*public*/ void run();
 signals:
     void propertyChange(PropertyChangeEvent*);
+    void finished();
 private:
  Logger* log;
 };

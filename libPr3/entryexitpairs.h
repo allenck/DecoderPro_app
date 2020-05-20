@@ -225,7 +225,7 @@ private:
     Logger* log;
     QObjectList destinationList;// = new ArrayList<Object>();
     /*private*/ PointDetails* providePoint(LayoutBlock* source, QList<LayoutBlock *> protecting, LayoutEditor* panel);
-    bool runWhenStablised;// = false;
+    bool runWhenStablised = false;
     LayoutEditor* toUseWhenStable;
     int interlockTypeToUseWhenStable;
     SignalMastLogicManager* smlm;
@@ -270,6 +270,8 @@ protected:
  friend class DeletePair;
  friend class PickListModel;
  friend class EntryExitTestTools;
+ friend class AddEntryExitPairPanel;
+ friend class AEPTableModel;
 };
 Q_DECLARE_METATYPE(EntryExitPairs)
 

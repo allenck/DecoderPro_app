@@ -6,6 +6,7 @@
 #include "javaqt_global.h"
 #include "exceptions.h"
 #include "namedbean.h"
+#include "namedbeanusagereport.h"
 
 class JAVAQTSHARED_EXPORT NamedBean : public  QObject
 {
@@ -383,6 +384,14 @@ public:
          * @param comment Null means no comment associated.
          */
         virtual void setComment(QString /*comment*/);
+
+        /**
+         * Get a list of references for the specified bean.
+         *
+         * @param bean The bean to be checked.
+         * @return a list of NamedBeanUsageReports or an empty ArrayList.
+         */
+        /*default*/ virtual QList<NamedBeanUsageReport*> getUsageReport(/*@CheckForNull*/ NamedBean* bean) { return (QList<NamedBeanUsageReport*>()); }
 
         /**
          * Attach a key/value pair to the

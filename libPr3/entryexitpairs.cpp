@@ -1325,7 +1325,8 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
  firePropertyChange("autoGenerateComplete", QVariant(), QVariant());
 }
 // /*protected*/ PropertyChangeListener propertyBlockManagerListener = new PropertyChangeListener(){
-    /*public*/ void EntryExitPairs::propertyChange(PropertyChangeEvent* e)
+
+/*public*/ void EntryExitPairs::propertyChange(PropertyChangeEvent* e)
 {
  if(e->getPropertyName()==("topology"))
  {

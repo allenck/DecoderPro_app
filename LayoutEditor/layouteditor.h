@@ -981,21 +981,11 @@ private slots:
 
  void on_removeMenuAction_triggered();
  /*private*/ void deleteSelectedItems(); // SLOT[]
- /*private*/ double on_zoomIn();
- /*private*/ double on_zoomOut();
- double on_zoomToFit();
+ double zoomToFit();
  void on_clearTrack(); // for testing
  void on_translateSelections();
  void moveSelectionCancelPressed();
  void moveSelectionDonePressed(/*@Nonnull ActionEvent event*/);
- void on_Zoom025Item();
- void on_Zoom05Item();
- void on_Zoom075Item();
- void on_NoZoomItem();
- void on_Zoom15Item();
- void on_Zoom20Item();
- void on_Zoom30Item();
- void on_Zoom40Item();
  /*private*/ void resetTurnoutSize();
  void on_TooltipAlwaysMenuItem();
  void on_TooltipInEditMenuItem();

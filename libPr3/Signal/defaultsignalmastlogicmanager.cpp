@@ -288,9 +288,9 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ QSet<NamedBean*> DefaultSignalMastLogicManager::getNamedBeanSet(){
-    throw new UnsupportedOperationException("Not supported yet.");
-}
+///*public*/ QSet<NamedBean*> DefaultSignalMastLogicManager::getNamedBeanSet(){
+//    throw new UnsupportedOperationException("Not supported yet.");
+//}
 /*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::addPropertyChangeListener(PropertyChangeListener* l) {
     QMutexLocker locker(&mutex);
 

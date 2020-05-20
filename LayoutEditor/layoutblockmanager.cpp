@@ -2319,6 +2319,8 @@ void LayoutBlockManager::setLastRoutingChange()
  // TODO: why is this here?
  connect(r, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(passPropertyChange(PropertyChangeEvent*)));
  thr = new QThread(r);
+ connect(thr, SIGNAL(started()), r, SLOT(run()));
+ connect(r, SIGNAL(finished()), thr, SLOT(quit()));
  thr->start();
 }
 MyRunnable::MyRunnable(QObject *as, LayoutBlockManager *self) : Runnable(as)
@@ -2330,8 +2332,8 @@ void MyRunnable::run()
 {
  try
  {
-  //firePropertyChange("topology", true, false);
-  emit propertyChange(new PropertyChangeEvent((QObject*)this, "topology", true, false));
+  self->firePropertyChange("topology", true, false);
+  //emit propertyChange(new PropertyChangeEvent((QObject*)this, "topology", true, false));
   long oldvalue = self->lastRoutingChange;
   while (!self->stabilised)
   {
@@ -2341,8 +2343,8 @@ void MyRunnable::run()
     log->debug("routing table has now been stable for 2 seconds");
     self->checking=false;
     self->stabilised=true;
-    //firePropertyChange("topology", false, true);
-    emit propertyChange(new PropertyChangeEvent((QObject*)this, "topology", false, true));
+    self->firePropertyChange("topology", false, true);
+    //emit propertyChange(new PropertyChangeEvent((QObject*)this, "topology", false, true));
     if(self->namedStabilisedIndicator!=NULL)
     {
      self->namedStabilisedIndicator->getBean()->setState(Sensor::ACTIVE);

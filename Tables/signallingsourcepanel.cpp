@@ -46,7 +46,7 @@
  if (sml!=NULL)
  {
   _signalMastList = ((DefaultSignalMastLogic*)sml)->getDestinationList();
-        }
+ }
 
   //InstanceManager::layoutBlockManagerInstance().addPropertyChangeListener(this);
   LayoutBlockManager* lbm = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"));
@@ -247,13 +247,18 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
 
  void SignalMastAppearanceModel::updateSignalMastLogic(SignalMastLogic* smlOld, SignalMastLogic* smlNew)
  {
-  if(smlOld!=NULL)
+  if(smlOld!=NULL){
    //smlOld.removePropertyChangeListener(this);
-   disconnect(smlOld->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+   DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)smlOld->self();
+   disconnect(sml->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+  }
 
   if(smlNew!=NULL)
+  {
    //smlNew.addPropertyChangeListener(this);
-   disconnect(smlNew->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+   DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)smlNew->self();
+   disconnect(sml->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
+  }
 
    fireTableDataChanged();
  }
@@ -346,7 +351,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
    if(length==0)
    {
     //((DefaultSignalMastLogic*)self->sml)->removePropertyChangeListener(this);
-    disconnect(((DefaultSignalMastLogic*)self->sml->pcs), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    disconnect(((DefaultSignalMastLogic*)self->sml)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     self->sml = NULL;
    }
         //fireTableDataChanged();

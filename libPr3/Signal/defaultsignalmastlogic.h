@@ -28,9 +28,10 @@ class PropertyBlockListener;
 class PropertySignalMastListener;
 class SignalSpeedMap;
 
-class LIBPR3SHARED_EXPORT DefaultSignalMastLogic : public SignalMastLogic
+class LIBPR3SHARED_EXPORT DefaultSignalMastLogic : public AbstractNamedBean, public SignalMastLogic
 {
     Q_OBJECT
+ Q_INTERFACES(SignalMastLogic)
 public:
     //explicit DefaultSignalMastLogic(QObject *parent = 0);
     /*public*/ DefaultSignalMastLogic (SignalMast* source, QObject *parent = 0);
@@ -107,9 +108,15 @@ public:
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
     /*public*/ /*synchronized*/ int getNumPropertyChangeListeners() override;
     /*public*/ void dispose() override;
+    /*public*/ QString getBeanType() override;
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+
     /*public*/ Section* getAssociatedSection(SignalMast* destination) override;
     /*public*/ void setAssociatedSection(Section* sec, SignalMast* destination) override;
     /*public*/ QMap<Block*, int> setupLayoutEditorTurnoutDetails(QList<LayoutBlock*> blks, SignalMast* destination);
+    /*public*/ int getState() override;
+    /*public*/ void setState(int i) override;
+    QObject* self() override {return this;}
 
 signals:
     void propertyChange(PropertyChangeEvent*);

@@ -68,6 +68,7 @@
 #include "decoderindexfile.h"
 #include "rfid/proxyidtagmanager.h"
 #include "proxylightmanager.h"
+#include "editormanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -201,6 +202,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   DefaultSignalMastLogicManager* smlm = new DefaultSignalMastLogicManager(memo);
   InstanceManager::store(smlm, type);
   return smlm;
+ }
+
+ if (type == "EditorManager")
+ {
+  EditorManager* em = new EditorManager();
+  InstanceManager::store(em, type);
+  return em;
  }
 
  if (type == "SignalMastManager")

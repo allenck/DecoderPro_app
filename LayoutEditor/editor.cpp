@@ -74,6 +74,7 @@
 #include "textitempanel.h" // for DragDecoratorLabel
 #include <QPointer>
 #include <QScrollBar>
+#include "editormanager.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -193,7 +194,13 @@ void Editor::commonInit()
  _iconEditorFrame = new QHash <QString, JFrameItem*>();
  _spinCols = new SpinnerNumberModel(3,1,100,1);
   panelMenuIsVisible = true;
-
+  ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+  ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+  InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+  InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+  InstanceManager::memoryManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+  ((BlockManager*)InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+  ((EditorManager*)InstanceManager::getDefault("EditorManager"))->addEditor(this);
 }
 
 /*public*/ Editor::Editor(QString name, bool saveSize, bool savePosition, QWidget* parent)
@@ -2883,6 +2890,8 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  // delete panel - deregister the panel for saving
  ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->deregister(this);
  ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->deletePanel(this);
+ ((EditorManager*)InstanceManager::getDefault("EditorManager"))->removeEditor(this);
+
  editors->removeOne(this);
  setVisible(false);
  _contents->clear();
@@ -4212,5 +4221,65 @@ void UrlErrorDialog::cancelButton_clicked()
         }
     }
 }
+/*public*/ QList<NamedBeanUsageReport*> Editor::getUsageReport(NamedBean* bean) {
+        QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+        if (bean != nullptr) {
+            //getContents().forEach((pos) -> {
+         foreach(Positionable* pos, getContents())
+         {
+                QString data = getUsageData(pos);
+                if (qobject_cast<MultiSensorIcon*>(pos->self())) {
+                    MultiSensorIcon* multi = (MultiSensorIcon*) pos->self();
+                    //multi.getSensors().forEach((sensor) -> {
+                    foreach(Sensor* sensor, multi->getSensors())
+                    {
+                        if (bean->equals(sensor)) {
+                            report.append(new NamedBeanUsageReport("PositionalIcon", data));
+                        }
+                    }//);
+
+                } else if (qobject_cast<SlipTurnoutIcon*>(pos->self())) {
+                    SlipTurnoutIcon* slip3Scissor = (SlipTurnoutIcon*) pos;
+                    if (bean->equals(slip3Scissor->getTurnout(SlipTurnoutIcon::EAST))) {
+                        report.append(new NamedBeanUsageReport("PositionalIcon", data));
+                    }
+                    if (bean->equals(slip3Scissor->getTurnout(SlipTurnoutIcon::WEST))) {
+                        report.append(new NamedBeanUsageReport("PositionalIcon", data));
+                    }
+                    if (slip3Scissor->getNamedTurnout(SlipTurnoutIcon::LOWEREAST) != nullptr) {
+                        if (bean->equals(slip3Scissor->getTurnout(SlipTurnoutIcon::LOWEREAST))) {
+                            report.append(new NamedBeanUsageReport("PositionalIcon", data));
+                        }
+                    }
+                    if (slip3Scissor->getNamedTurnout(SlipTurnoutIcon::LOWERWEST) != nullptr) {
+                        if (bean->equals(slip3Scissor->getTurnout(SlipTurnoutIcon::LOWERWEST))) {
+                            report.append(new NamedBeanUsageReport("PositionalIcon", data));
+                        }
+                    }
+
+                } else if (qobject_cast<LightIcon*>(pos->self())) {
+                    LightIcon* icon = (LightIcon*) pos->self();
+                    if (bean->equals(icon->getLight())) {
+                        report.append(new NamedBeanUsageReport("PositionalIcon", data));
+                    }
+
+                } else {
+                    if (bean->equals(pos->getNamedBean())) {
+                        report.append(new NamedBeanUsageReport("PositionalIcon", data));
+                    }
+               }
+            }//);
+        }
+        return report;
+    }
+
+    QString Editor::getUsageData(Positionable* pos) {
+        QPointF point = pos->getLocation();
+        QString data = tr("%1 :: x=%2, y=%3").arg(
+                /*pos.getClass().getSimpleName()*/ pos->self()->metaObject()->className()).arg(
+                qRound(point.x())).arg(
+                qRound(point.y()));
+        return data;
+    }
 // initialize logging
 /*private*/ /*final*/ /*static*/ Logger* Editor::log = LoggerFactory::getLogger("Editor");

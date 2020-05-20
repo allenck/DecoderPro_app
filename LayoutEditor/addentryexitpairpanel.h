@@ -4,6 +4,7 @@
 #include "jmripanel.h"
 #include "abstracttablemodel.h"
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
 
 class QPushButton;
 class JTextField;
@@ -98,6 +99,7 @@ protected slots:
 
  friend class AddEntryExitPairFrame;
  friend class AEPTableModel;
+ friend class PropertyNXListener;
 };
 /*static*/ class ValidPoints : public QObject
 {
@@ -168,6 +170,17 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 
     friend class AddEntryExitPairPanel;
+
+};
+
+class PropertyNXListener : public PropertyChangeListener
+{
+ Q_OBJECT
+ AddEntryExitPairPanel* panel;
+public:
+ PropertyNXListener(AddEntryExitPairPanel* panel) {this->panel = panel;}
+public slots:
+ void propertyChange(PropertyChangeEvent*);
 };
 
 #endif // ADDENTRYEXITPAIRPANEL_H

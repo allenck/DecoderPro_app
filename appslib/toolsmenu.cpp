@@ -35,6 +35,7 @@
 #include "loaddefaultxmlthrottleslayoutaction.h"
 #include "ampmeteraction.h"
 #include "cabsignalaction.h"
+#include "whereusedaction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -167,17 +168,18 @@ addAction(ta);
 
  addAction(new PowerPanelAction(tr("Power Control..."),this));
  addAction(new SimpleTurnoutCtrlAction(tr("Turnout Control..."),this));
- addAction(new BlockBossAction(tr("Simple Signal Logic"),this));
- addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
+ addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
  addAction(new SpeedometerAction(tr("Speedometer..."),this));
  addAction(new AmpMeterAction(tr("Amp Meter"),this));
- addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
+ addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
+ addAction(new BlockBossAction(tr("Simple Signal Logic"),this));
+ addAction(new SendPacketAction(tr("Send DCC Packet"),this));
  addSeparator();
  // operations menu
  addMenu(new OperationsMenu());
  addAction(new DispatcherAction(tr("Dispatcher..."),this));
- addSeparator();
- addAction(new SendPacketAction(tr("Send DCC Packet"),this));
+// addAction(new TimeTableAction(tr("Timetable"), this));
+ addAction(new WhereUsedAction(tr("Where Used"), this));
  addSeparator();
 #if 0 // TODO:
  // US&S CTC subsystem tools

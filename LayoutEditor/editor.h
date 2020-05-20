@@ -18,6 +18,8 @@
 #include "flowlayout.h"
 #include "jlayeredpane.h"
 #include <QPointer>
+/*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
+
 
 #if 0
 class UrlErrorDialog : QDialog {
@@ -348,6 +350,7 @@ public:
 
     //@Override
     /*abstract*/ virtual /*public*/ void mouseExited(QGraphicsSceneMouseEvent* event){}
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
 signals:
     
@@ -414,6 +417,8 @@ private:
     /*private*/ static /*volatile*/ QVector<Editor*>* editors;// = new ArrayList<Editor>();
     /*private*/ void setScrollbarScale(double ratio);
     /*private*/ int _x, _y;
+    QString getUsageData(Positionable *pos);
+
 
 private slots:
   void On_lockItemAction_toggled(bool);

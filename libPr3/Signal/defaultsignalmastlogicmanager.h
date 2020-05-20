@@ -44,7 +44,7 @@ public:
     /*public*/ QString makeSystemName(QString s)const override ;
     /*public*/ QStringList getSystemNameArray()  override;
     /*public*/ QStringList getSystemNameList() override;
-    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;
+//    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
     /*public*/ void Register(NamedBean* n)const override ;
@@ -58,7 +58,6 @@ public:
     /*public*/ QString getNamedBeanClass()const override {
         return "SignalMastLogic";
     }
-
 signals:
     void on_newSignalMastLogicCreated(SignalMastLogic*);
     void propertyChange(PropertyChangeEvent*);

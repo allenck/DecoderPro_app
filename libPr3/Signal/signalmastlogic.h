@@ -37,9 +37,9 @@ class PropertyChangeListener;
  * @author			Kevin Dickerson Copyright (C) 2011
  * @version			$Revision: 21218 $
  */
-/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogic : public QObject
+/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogic //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     SignalMastLogic(){}
     /**
@@ -198,8 +198,13 @@ public:
     /*public*/virtual SignalMast* getActiveDestination() {return NULL;}
 
     /*public*/ virtual bool isBlockIncluded(Block* block, SignalMast* destination) = 0;
-
-    /*public*/ virtual bool isDestinationValid(SignalMast* dest) = 0;
+    /**
+     * Check if signal mast is a destination signal mast in one of the logics
+     *
+     * @param destination controlled signal mast
+     * @return true if destination is a destination mast in this object
+     */
+    /*public*/ virtual bool isDestinationValid(SignalMast* destination) =0;
 
     /**
      * Query if the signalmast logic to the destination signal mast is enabled or disabled.
@@ -370,6 +375,8 @@ public:
     /*public*/ virtual LayoutBlock* getFacingBlock() = 0;
     
     /*public*/ virtual LayoutBlock* getProtectingBlock(SignalMast* /*destination*/) = 0;
-    PropertyChangeSupport* pcs = NULL;
+
+    virtual QObject* self() =0;
 };
+Q_DECLARE_INTERFACE(SignalMastLogic, "SignalMastLogic")
 #endif // SIGNALMASTLOGIC_H

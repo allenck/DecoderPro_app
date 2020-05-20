@@ -357,8 +357,8 @@ LayoutSlipXml::LayoutSlipXml(QObject *parent) :
  l->setSensorC(getElement(element, "sensorC"));
  l->setSensorD(getElement(element, "sensorD"));
 
-// l->setTurnout(getElement(element, "turnout"));
-// l->setTurnoutB(getElement(element, "turnoutB"));
+ l->setTurnout(getElement(element, "turnout"));
+ l->setTurnoutB(getElement(element, "turnoutB"));
 
  if (!element.firstChildElement("states") .isNull())
  {

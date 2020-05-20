@@ -146,21 +146,21 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
          while (en.hasNext()) {
              SignalMastLogic* sm = en.next();
              SignalMast* dest = b->value(sm);
-             //sm.removePropertyChangeListener(this);
-             disconnect(sm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-             //sm.getSourceMast().removePropertyChangeListener(this);
-             disconnect(sm->getSourceMast()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-             //dest.removePropertyChangeListener(this);
-             disconnect(dest, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             sm->removePropertyChangeListener((PropertyChangeListener*)this);
+//             disconnect(sm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             sm->getSourceMast()->removePropertyChangeListener((PropertyChangeListener*)this);
+//             disconnect(sm->getSourceMast()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             dest->removePropertyChangeListener((PropertyChangeListener*)this);
+//             disconnect(dest, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
      }
  }
  for (int i = 0; i < source.size(); i++) {
      QList<SignalMast*> destList = source.at(i)->getDestinationList();
-     //source.at(i).addPropertyChangeListener(this);
-     connect(source.at(i)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //source.get(i).getSourceMast().addPropertyChangeListener(this);
-     connect(source.at(i)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     source.at(i)->addPropertyChangeListener((PropertyChangeListener*)this);
+     //connect(source.at(i)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     source.at(i)->getSourceMast()->addPropertyChangeListener((PropertyChangeListener*)this);
+     //connect(source.at(i)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      for (int j = 0; j < destList.size(); j++) {
          QHash<SignalMastLogic*, SignalMast*>* hash = new QHash<SignalMastLogic*, SignalMast*>(/*1*/);
          hash->insert(source.at(i), destList.at(j));
@@ -444,8 +444,8 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
          for (int i = 0; i < act->signalMastLogicList->size(); i++) {
              SignalMastLogic* b = getLogicFromRow(i);
              if (b != NULL) {
-                 //b.removePropertyChangeListener(this);
-                 disconnect(b->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 b->removePropertyChangeListener((PropertyChangeListener*)this);
+//                 disconnect(b->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              }
          }
      }

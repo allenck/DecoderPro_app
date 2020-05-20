@@ -2746,9 +2746,10 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  //zoomInItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(zoomInAccelerator), primary_modifier));
  zoomMenu->addAction(zoomInItem);
 // zoomInItem.addActionListener((ActionEvent event) -> {
-//     zoomIn();
-// });
- connect(zoomInItem, SIGNAL(triggered(bool)), this, SLOT(on_zoomIn()));
+ connect(zoomInItem, &QAction::triggered, [=]{
+     //zoomIn();
+  return setZoom(getZoom() * 1.1);
+ });
 
  QAction* zoomOutItem = new QAction(tr("Zoom Out"));
 // zoomOutItem.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("zoomOutMnemonic")));
@@ -2757,16 +2758,17 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 // zoomOutItem.setAccelerator(KeyStroke.getKeyStroke(stringsToVTCodes.get(zoomOutAccelerator), primary_modifier));
  zoomMenu->addAction(zoomOutItem);
 // zoomOutItem.addActionListener((ActionEvent event) -> {
+ connect(zoomOutItem, &QAction::triggered, [=]{
 //     zoomOut();
-// });
- connect(zoomOutItem, SIGNAL(triggered(bool)), this, SLOT(on_zoomOut()));
+  return setZoom(getZoom() / 1.1);
+ });
 
  QAction* zoomFitItem = new QAction(tr("Zoom To Fit"));
  zoomMenu->addAction(zoomFitItem);
 // zoomFitItem.addActionListener((ActionEvent event) -> {
-//     zoomToFit();
-// });
- connect(zoomFitItem, SIGNAL(triggered(bool)), this, SLOT(on_zoomToFit()));
+ connect(zoomFitItem, &QAction::triggered, [=]{
+     zoomToFit();
+ });
  zoomMenu->addSeparator();
 
  zoomButtonGroup->setExclusive(true);
@@ -2776,115 +2778,82 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  zoomMenu->addAction(zoom025Item);
 // zoom025Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
-//         setZoom(0.25);
+ connect(zoom025Item, &QAction::triggered, [=]{
+         setZoom(0.25);
 //     }
-// });
- connect(zoom025Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom025Item()));
+ });
  zoomButtonGroup->addAction(zoom025Item);
  QAction* zoom05Item = new QAction("x 0.5", this);
  zoom05Item->setCheckable(true);
  zoomMenu->addAction(zoom05Item);
 // zoom05Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
-//         setZoom(0.5);
+ connect(zoom05Item, &QAction::triggered, [=]{
+         setZoom(0.5);
 //     }
-// });
- connect(zoom05Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom05Item()));
+ });
  zoomButtonGroup->addAction(zoom05Item);
  QAction* zoom075Item = new QAction("x 0.75", this);
  zoom075Item->setCheckable(true);
  zoomMenu->addAction(zoom075Item);
 // zoom075Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
-//         setZoom(0.75);
+ connect(zoom075Item, &QAction::triggered, [=]{
+         setZoom(0.75);
 //     }
-// });
- connect(zoom075Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom075Item()));
+ });
  zoomButtonGroup->addAction(zoom075Item);
  QAction* noZoomItem = new QAction(tr("No Zoom"), this);
  noZoomItem->setCheckable(true);
  zoomMenu->addAction(noZoomItem);
 // noZoomItem.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
+ connect(noZoomItem, &QAction::triggered, [=]{
+
 //         setZoom(1.0);
+  setZoom(1.0/ getZoomRatio());
 //     }
-// });
- connect(noZoomItem, SIGNAL(triggered(bool)), this, SLOT(on_NoZoomItem()));
+ });
  zoomButtonGroup->addAction(noZoomItem);
  QAction* zoom15Item = new QAction("x 1.5", this);
  zoom15Item->setCheckable(true);
  zoomMenu->addAction(zoom15Item);
 // zoom15Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
-//         setZoom(1.5);
+ connect(zoom15Item, &QAction::triggered, [=]{
+         setZoom(1.5);
 //     }
-// });
- connect(zoom15Item, SIGNAL(triggered(bool)), this, SLOT(onZoom15Item()));
+ });
  zoomButtonGroup->addAction(zoom15Item);
  QAction* zoom20Item = new QAction("x 2.0",this);
  zoom20Item->setCheckable(true);
  zoomMenu->addAction(zoom20Item);
 // zoom20Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
-//         setZoom(2.0);
+ connect(zoom20Item, &QAction::triggered, [=]{
+         setZoom(2.0);
 //     }
-// });
- connect(zoom20Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom20Item()));
+ });
  zoomButtonGroup->addAction(zoom20Item);
  QAction* zoom30Item = new QAction("x 3.0", this);
  zoomMenu->addAction(zoom30Item);
 // zoom30Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
-//         setZoom(3.0);
+ connect(zoom30Item, &QAction::triggered, [=]{
+         setZoom(3.0);
 //     }
-// });
- connect(zoom30Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom30Item()));
+ });
  zoomButtonGroup->addAction(zoom30Item);
  QAction* zoom40Item = new QAction("x 4.0", this);
  zoomMenu->addAction(zoom40Item);
 // zoom40Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
-//         setZoom(4.0);
+ connect(zoom40Item, &QAction::triggered, [=]{
+         setZoom(4.0);
 //     }
-// });
- connect(zoom40Item, SIGNAL(triggered(bool)), this, SLOT(on_Zoom40Item()));
+ });
  zoomButtonGroup->addAction(zoom40Item);
  noZoomItem->setChecked(true);
-}
-
-void LayoutEditor::on_Zoom025Item()
-{
- setZoom(0.25);
-}
-void LayoutEditor::on_Zoom05Item()
-{
- setZoom(0.5);
-}
-void LayoutEditor::on_Zoom075Item()
-{
- setZoom(0.75);
-}
-void LayoutEditor::on_NoZoomItem()
-{
- //setZoom(1.0);
- setZoom(1.0/ getZoomRatio());
-}
-
-void LayoutEditor::on_Zoom15Item()
-{
- setZoom(1.5);
-}
-void LayoutEditor::on_Zoom30Item()
-{
- setZoom(3.0);
-}
-void LayoutEditor::on_Zoom40Item()
-{
- setZoom(4.0);
-}
-void LayoutEditor::on_Zoom20Item()
-{
- setZoom(2.0);
 }
 
 /*public*/ double LayoutEditor::setZoom(double zoomFactor) {
@@ -2910,14 +2879,6 @@ void LayoutEditor::on_Zoom20Item()
 
 /*public*/ double LayoutEditor::getZoom() {
     return getPaintScale();
-}
-
-/*private*/ double LayoutEditor::on_zoomIn() {
-    return setZoom(getZoom() * 1.1);
-}
-
-/*private*/ double LayoutEditor::on_zoomOut() {
-    return setZoom(getZoom() / 1.1);
 }
 
 //
@@ -2964,7 +2925,7 @@ void LayoutEditor::on_Zoom20Item()
     return panelBounds;
 }
 
-/*private*/ double LayoutEditor::on_zoomToFit() {
+/*private*/ double LayoutEditor::zoomToFit() {
     QRectF layoutBounds = resizePanelBounds(true);
 
     // calculate the bounds for the scroll pane
@@ -9853,7 +9814,6 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
         setAllControlling(controlCheckBoxMenuItem->isChecked());
         redrawPanel();
     });
-    connect(controlCheckBoxMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_actionAllow_layout_control_toggled(bool)));
     controlCheckBoxMenuItem->setChecked(allControlling());
 
     //
@@ -10481,7 +10441,6 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
         //bring up signals at level crossing tool dialog
         getLETools()->setSignalsAtLevelXing(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
     });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Level_Crossing_triggered()));
 
     //set signals at throat-to-throat turnouts
     jmi = new QAction(tr("Set Signal Heads at Throat-to-Throat Turnouts") + "...", this);
@@ -10508,7 +10467,6 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
         //bring up signals at 3-way turnout tool dialog
         getLETools()->setSignalsAt3WayTurnout(leToolBarPanel->signalIconEditor, leToolBarPanel->signalFrame);
     });
-    connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_actionSet_Signals_at_Three_Way_Turnout()));
 
     jmi = new QAction(tr("Set Signal Heads at a Slip") + "...", this);
     jmi->setToolTip(tr("Click here to set up the signal heads at a single or double slip"));

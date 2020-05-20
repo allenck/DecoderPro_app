@@ -1,7 +1,7 @@
 #include "storexmluseraction.h"
 #include "instancemanager.h"
 #include "configxmlmanager.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "fileutil.h"
 #include "jfilechooser.h"
 
@@ -32,6 +32,8 @@
 //            .getString("MenuItemStore"));
  s = tr("Save Panels...");
  log = new Logger("StoreXmlUserAction");
+ disconnect((this, SIGNAL(triggered())));
+ connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
 /*public*/ StoreXmlUserAction::StoreXmlUserAction(QString s, QObject *parent) : StoreXmlConfigAction(s, parent)
@@ -44,7 +46,6 @@
 
 /*public*/ void StoreXmlUserAction::actionPerformed(/*ActionEvent e*/)
 {
-#if 1
  JFileChooser* userFileChooser = getUserFileChooser();
  userFileChooser->setDialogType(JFileChooser::SAVE_DIALOG);
  userFileChooser->setApproveButtonText(tr("Save")); // is in jmri.NBBundle
@@ -54,13 +55,6 @@
  if (file == nullptr)
      return;
   saveFile(file->absoluteFilePath());
-
-#else
- QString selectedFile = QFileDialog::getSaveFileName(NULL, tr("Save File"), FileUtil::getUserFilesPath(),tr("Xml files (*.xml);;All files (*.*)"));
-
- if (selectedFile == "") return;
- saveFile(selectedFile);
-#endif
 }
 
 void StoreXmlUserAction::saveFile(QString selectedFile)
@@ -73,14 +67,11 @@ void StoreXmlUserAction::saveFile(QString selectedFile)
  log->debug(results?"store was successful":"store failed");
  if (!results)
  {
-//        JOptionPane.showMessageDialog(NULL,
-//                rb.getString("StoreHasErrors")+"\n"
-//                +rb.getString("StoreIncomplete")+"\n"
-//                +rb.getString("ConsoleWindowHasInfo"),
-//                rb.getString("StoreError"),	JOptionPane.ERROR_MESSAGE);
-  QMessageBox::information(NULL,   tr("Errors experienced during store."),
-                tr("The storing of your information is incomplete and may result in missing items")+"\n"
-                +tr("The console window contains error details."));
+  JOptionPane::showMessageDialog(NULL,
+          tr("Errors experienced during store.")+"\n"
+          +tr("The storing of your information is incomplete and may result in missing items")+"\n"
+          +tr("The Console window contains error details."),
+          tr("Error Storing Information!"),	JOptionPane::ERROR_MESSAGE);
 
  }
 

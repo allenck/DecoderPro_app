@@ -26,6 +26,7 @@ public:
     /*public*/ BlockBossLogic(QString name, QObject *parent=0);
     ~BlockBossLogic();
    /*public*/ QString getDrivenSignal();
+    /*public*/ /*@Nonnull*/ NamedBeanHandle<SignalHead *> *getDrivenSignalNamedBean();
    /*public*/ void setSensor1(QString name);
    /*public*/ void setSensor2(QString name);
    /*public*/ void setSensor3(QString name);
@@ -84,6 +85,7 @@ public:
     /*public*/ void retain();
     /*public*/ static BlockBossLogic* getStoppedObject(QString signal);
     /*public*/ static BlockBossLogic* getExisting(QString signal);
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
 signals:
 

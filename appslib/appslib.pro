@@ -185,7 +185,24 @@ SOURCES += appslib.cpp \
     nullprofile.cpp \
     jlisttablemodel.cpp \
     ampmeterframe.cpp \
-    ampmeteraction.cpp
+    ampmeteraction.cpp \
+    whereusedaction.cpp \
+    whereusedframe.cpp \
+    entryexitwhereused.cpp \
+    whereusedcollectors.cpp \
+    turnoutwhereused.cpp \
+    namedbeanusagereport.cpp \
+    sensorwhereused.cpp \
+    lightwhereused.cpp \
+    signalheadwhereused.cpp \
+    signalmastwhereused.cpp \
+    reporterwhereused.cpp \
+    blockwhereused.cpp \
+    memorywhereused.cpp \
+    oblockwhereused.cpp \
+    routewhereused.cpp \
+    sectionwhereused.cpp \
+    warrantwhereused.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -325,7 +342,24 @@ HEADERS += appslib.h\
     fileutilsupport.h \
     properties.h \
     ampmeterframe.h \
-    ampmeteraction.h
+    ampmeteraction.h \
+    whereusedaction.h \
+    whereusedframe.h \
+    entryexitwhereused.h \
+    whereusedcollectors.h \
+    turnoutwhereused.h \
+    namedbeanusagereport.h \
+    sensorwhereused.h \
+    lightwhereused.h \
+    signalheadwhereused.h \
+    signalmastwhereused.h \
+    reporterwhereused.h \
+    blockwhereused.h \
+    memorywhereused.h \
+    oblockwhereused.h \
+    routewhereused.h \
+    sectionwhereused.h \
+    warrantwhereused.h
 
 unix:!symbian {
     maemo5 {

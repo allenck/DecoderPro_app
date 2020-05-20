@@ -326,6 +326,7 @@
 #include "guilafpreferencesmanager.h"
 #include "webserverpreferences.h"
 #include "layoutshapexml.h"
+#include "editormanager.h"
 
 bool Metatypes::done = false;
 
@@ -669,6 +670,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<GuiLafPreferencesManager>("GuiLafPreferencesManager");
  qRegisterMetaType<WebServerPreferences>("WebServerPreferences");
  qRegisterMetaType<LayoutShapeXml>("LayoutShapeXml");
+ qRegisterMetaType<EditorManager>("EditorManager");
 
  Metatypes::done = true;
 }

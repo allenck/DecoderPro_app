@@ -2794,6 +2794,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
   });
 
   cbmi = new QAction(tr("Disable When Occupied"),this);
+  cbmi->setCheckable(true);
   if (getTurnout() == nullptr || getBlockName().isEmpty()) {
       cbmi->setEnabled(false);
   }
