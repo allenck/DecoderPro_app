@@ -6,6 +6,8 @@
 #include "logger.h"
 #include "javaqt_global.h"
 #include "jcomponent.h"
+#include "changelistener.h"
+#include "focuslistener.h"
 
 class PropertyChangeEvent;
 class InputVerifier;
@@ -44,7 +46,10 @@ public:
     /*public*/ Border* getBorder() {return _border;}
     /*public*/ void setData(QVariant v) {_data = v;}
     /*public*/ QVariant getDatat() {return _data;}
-
+    /*public*/ void addChangeListener(ChangeListener* l);
+    /*public*/ void removeChangeListener(ChangeListener* l);
+    /*public*/ void addFocusListener(FocusListener *l);
+    /*public*/ void removeFocusListener(FocusListener* l);
 signals:
  void enterField();
  void leaveField();

@@ -343,7 +343,20 @@ SOURCES += \
         yardmasterbytrackpanel.cpp \
         yardmasterbytrackframe.cpp \
         yardmasterbytrackaction.cpp \
-    optionsfile.cpp
+    optionsfile.cpp \
+    timetable/timetableprintgraph.cpp \
+    timetable/timetableaction.cpp \
+    timetable/timetabledatamanager.cpp \
+    timetable/timetableframe.cpp \
+    timetable/timetablexml.cpp \
+    timetable/layout.cpp \
+    timetable/station.cpp \
+    timetable/stop.cpp \
+    timetable/traintype.cpp \
+    timetable/segment.cpp \
+    timetable/tttrain.cpp \
+    timetable/ttschedule.cpp \
+    timetable/timetableimport.cpp
 
 HEADERS += \
         operations.h \
@@ -622,7 +635,20 @@ HEADERS += \
         traininfo.h \
         allocationplan.h \
         autotrainsframe.h \
-    optionsfile.h
+    optionsfile.h \
+    timetable/timetableprintgraph.h \
+    timetable/timetableaction.h \
+    timetable/timetabledatamanager.h \
+    timetable/timetableframe.h \
+    timetable/timetablexml.h \
+    timetable/layout.h \
+    timetable/station.h \
+    timetable/stop.h \
+    timetable/traintype.h \
+    timetable/segment.h \
+    timetable/ttschedule.h \
+    timetable/tttrain.h \
+    timetable/timetableimport.h
 
 unix {
     target.path = /usr/lib

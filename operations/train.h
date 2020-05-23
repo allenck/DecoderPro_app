@@ -16,6 +16,7 @@ class PrintWriter;
 class Calendar;
 class InstanceManager;
 class TrainIcon;
+
 namespace Operations
 {
  class Car;

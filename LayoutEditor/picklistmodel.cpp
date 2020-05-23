@@ -481,7 +481,7 @@ bool systemNameComparator(QString o1, QString o2)
   NamedBean* bean = (NamedBean*)e->getSource();
   for (int i=0; i<_pickList->size(); i++)
   {
-   if (bean==(_pickList->at(i)))
+   if (bean->equals(_pickList->at(i)))
    {
     fireTableRowsUpdated(i, i);
    }

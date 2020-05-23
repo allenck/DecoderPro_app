@@ -2,6 +2,8 @@
 #define JCOMBOBOX_H
 #include <qcombobox.h>
 #include "jcomponent.h"
+#include "changelistener.h"
+#include "focuslistener.h"
 
 class EventObject;
 class JComboBox : public QComboBox, public JComponent
@@ -21,6 +23,10 @@ public:
  QObject* jself() {return (QObject*)this;}
  /*public*/ void setBorder(Border* border) override {this->_border = border;}
  /*public*/ Border* getBorder() {return _border;}
+ /*public*/ void addChangeListener(ChangeListener* l);
+ /*public*/ void removeChangeListener(ChangeListener* l);
+ /*public*/ void addFocusListener(FocusListener *l);
+ /*public*/ void removeFocusListener(FocusListener* l);
 
 signals:
  void itemStateChanged(EventObject* e);

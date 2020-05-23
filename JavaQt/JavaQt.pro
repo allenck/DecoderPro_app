@@ -543,7 +543,10 @@ HEADERS += javaqt.h\
     splitbuttonactionlistener.h \
     externallinkcontentviewerui.h \
     namedbeancombobox.h \
-    namedbeanusernamecomparator.h
+    namedbeanusernamecomparator.h \
+    focuslistener.h \
+    focusevent.h \
+    itemevent.h
 
 unix {
     target.path = /usr/lib

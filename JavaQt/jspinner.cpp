@@ -88,6 +88,18 @@ JSpinner::JSpinner(SpinnerModel* model, QWidget* parent) : QSpinBox(parent)
  disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
 }
 
+/*public*/ void JSpinner::addFocusListener(FocusListener* l)
+{
+ //listeners.append(l);
+ connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+
+}
+/*public*/ void JSpinner::removeFocusListener(FocusListener *l)
+{
+ //listeners.removeOne(l);
+ disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+}
+
 ///*public*/ void JSpinner::setVisible(bool b)
 //{
 // //QSpinBox::setVisible(b);

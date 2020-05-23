@@ -45,11 +45,6 @@
 #include "traincustommanifest.h"
 #include "joptionpane.h"
 
-//Train::Train(QObject *parent) :
-//  QObject(parent)
-//{
-//}
-
 /**
  * Represents a train on the layout
  *

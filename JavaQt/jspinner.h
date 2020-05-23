@@ -3,6 +3,7 @@
 #include <QSpinBox>
 #include "jcomponent.h"
 #include "spinnermodel.h"
+#include "focuslistener.h"
 
 class ChangeEvent;
 class JSpinner : public QSpinBox, public JComponent
@@ -25,6 +26,8 @@ public:
  /*public*/ QObject* jself() {return (QObject*)this;}
  /*public*/ void addChangeListener(ChangeListener*);
  /*public*/ void removeChangeListener(ChangeListener*);
+ /*public*/ void addFocusListener(FocusListener *l);
+ /*public*/ void removeFocusListener(FocusListener* l);
 // /*public*/ void setVisible(bool b);
  /*public*/ void setBorder(Border* border) override {this->_border = border;}
  /*public*/ Border* getBorder() {return _border;}

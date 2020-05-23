@@ -306,7 +306,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
  }
  else if (qobject_cast<Turnout*>(bean)) {
      for (LayoutTurnout* t : layoutTurnouts) {
-         if (bean==(t->getTurnout())) {
+         if (bean->equals(t->getTurnout())) {
              return t;
          }
      }
@@ -428,10 +428,10 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
         }
     } else if (qobject_cast<Turnout*>(bean)) {
         for (LayoutSlip* l : layoutSlips) {
-            if (bean==(l->getTurnout())) {
+            if (bean->equals(l->getTurnout())) {
                 return l;
             }
-            if (bean==(l->getTurnoutB())) {
+            if (bean->equals(l->getTurnoutB())) {
                 return l;
             }
         }

@@ -43,3 +43,26 @@ void JComboBox::currentIndexChanged(int)
 {
  emit itemStateChanged(new EventObject(this));
 }
+
+/*public*/ void JComboBox::addChangeListener(ChangeListener* l)
+{
+ //listeners.append(l);
+ connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+
+}
+/*public*/ void JComboBox::removeChangeListener(ChangeListener* l)
+{
+ //listeners.removeOne(l);
+ disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+}
+/*public*/ void JComboBox::addFocusListener(FocusListener* l)
+{
+ //listeners.append(l);
+ connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+
+}
+/*public*/ void JComboBox::removeFocusListener(FocusListener *l)
+{
+ //listeners.removeOne(l);
+ disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+}

@@ -1106,3 +1106,26 @@ Document* JTextField::getDocument()
  return font();
 }
 
+/*public*/ void JTextField::addChangeListener(ChangeListener* l)
+{
+ //listeners.append(l);
+ connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+
+}
+/*public*/ void JTextField::removeChangeListener(ChangeListener* l)
+{
+ //listeners.removeOne(l);
+ disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+}
+/*public*/ void JTextField::addFocusListener(FocusListener* l)
+{
+ //listeners.append(l);
+ connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+
+}
+/*public*/ void JTextField::removeFocusListener(FocusListener *l)
+{
+ //listeners.removeOne(l);
+ disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+}
+

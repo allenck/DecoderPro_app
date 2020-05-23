@@ -36,6 +36,7 @@
 #include "ampmeteraction.h"
 #include "cabsignalaction.h"
 #include "whereusedaction.h"
+#include "timetable/timetableaction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -178,7 +179,7 @@ addAction(ta);
  // operations menu
  addMenu(new OperationsMenu());
  addAction(new DispatcherAction(tr("Dispatcher..."),this));
-// addAction(new TimeTableAction(tr("Timetable"), this));
+ addAction(new TimeTableAction(tr("Timetable"), this));
  addAction(new WhereUsedAction(tr("Where Used"), this));
  addSeparator();
 #if 0 // TODO:

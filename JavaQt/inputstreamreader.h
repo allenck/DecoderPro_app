@@ -13,6 +13,7 @@ class InputStreamReader : public Reader
 public:
  /*public*/ InputStreamReader(QDataStream* in, QObject* parent = nullptr);
  /*public*/ InputStreamReader(QDataStream* in, QString charsetName, QObject* parent = nullptr) throw (UnsupportedEncodingException);
+ QString readLine();
 
 
 private:
