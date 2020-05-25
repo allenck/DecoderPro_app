@@ -13058,28 +13058,6 @@ if (_wrapper) {
 }
   return JTextArea::eventFilter(arg__1, arg__2);
 }
-void PythonQtShell_JTextArea::focusInEvent(QFocusEvent*  e0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("focusInEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QFocusEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&e0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  JTextArea::focusInEvent(e0);
-}
 bool  PythonQtShell_JTextArea::focusNextPrevChild(bool  next0)
 {
 if (_wrapper) {
@@ -13112,28 +13090,6 @@ if (_wrapper) {
   }
 }
   return JTextArea::focusNextPrevChild(next0);
-}
-void PythonQtShell_JTextArea::focusOutEvent(QFocusEvent*  e0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("focusOutEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QFocusEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&e0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  JTextArea::focusOutEvent(e0);
 }
 bool  PythonQtShell_JTextArea::hasHeightForWidth() const
 {
@@ -19942,6 +19898,39 @@ PythonQtShell_LayoutTurnout::~PythonQtShell_LayoutTurnout() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
+bool  PythonQtShell_LayoutTurnout::canRemove()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("canRemove");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("canRemove", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::canRemove();
+}
 QList<int >  PythonQtShell_LayoutTurnout::checkForFreeConnections()
 {
 if (_wrapper) {
@@ -20461,6 +20450,11 @@ void PythonQtWrapper_LayoutTurnout::addViewPopUpMenu(LayoutTurnout* theWrappedOb
   ( theWrappedObject->addViewPopUpMenu(menu));
 }
 
+bool  PythonQtWrapper_LayoutTurnout::canRemove(LayoutTurnout* theWrappedObject)
+{
+  return ( theWrappedObject->canRemove());
+}
+
 QList<int >  PythonQtWrapper_LayoutTurnout::checkForFreeConnections(LayoutTurnout* theWrappedObject)
 {
   return ( theWrappedObject->checkForFreeConnections());
@@ -20499,6 +20493,11 @@ void PythonQtWrapper_LayoutTurnout::drawTurnoutControls(LayoutTurnout* theWrappe
 int  PythonQtWrapper_LayoutTurnout::findHitPointType(LayoutTurnout* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected)
 {
   return ( ((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->promoted_findHitPointType(hitPoint, useRectangles, requireUnconnected));
+}
+
+QList<QString >  PythonQtWrapper_LayoutTurnout::getBeanReferences(LayoutTurnout* theWrappedObject, QString  pointName)
+{
+  return ( theWrappedObject->getBeanReferences(pointName));
 }
 
 QString  PythonQtWrapper_LayoutTurnout::getBlockBName(LayoutTurnout* theWrappedObject)
@@ -20574,11 +20573,6 @@ QPointF  PythonQtWrapper_LayoutTurnout::getCoordsB(LayoutTurnout* theWrappedObje
 QPointF  PythonQtWrapper_LayoutTurnout::getCoordsC(LayoutTurnout* theWrappedObject)
 {
   return ( theWrappedObject->getCoordsC());
-}
-
-QPointF  PythonQtWrapper_LayoutTurnout::getCoordsCenter(LayoutTurnout* theWrappedObject)
-{
-  return ( theWrappedObject->getCoordsCenter());
 }
 
 QPointF  PythonQtWrapper_LayoutTurnout::getCoordsD(LayoutTurnout* theWrappedObject)

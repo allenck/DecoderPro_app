@@ -247,7 +247,8 @@ SOURCES += javaqt.cpp \
     colorlistpopupmenu.cpp \
     externallinkcontentviewerui.cpp \
     propertychangelistener.cpp \
-    namedbeancombobox.cpp
+    namedbeancombobox.cpp \
+    jcheckbox.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -546,7 +547,9 @@ HEADERS += javaqt.h\
     namedbeanusernamecomparator.h \
     focuslistener.h \
     focusevent.h \
-    itemevent.h
+    itemevent.h \
+    itemlistener.h \
+    jcheckbox.h
 
 unix {
     target.path = /usr/lib

@@ -37,12 +37,16 @@ public slots:
 
 signals:
  void stateChanged(ChangeEvent*);
+ /*public*/ void focusGained(FocusEvent* fe);
+ /*public*/ void focusLost(FocusEvent* fe);
 
 private:
  SpinnerModel* model = nullptr;
  bool _opaque = false;
  QVector<ChangeListener*> listeners;
  Border* _border = nullptr;
+ /*private*/ void focusInEvent(QFocusEvent* e);
+ /*private*/ void focusOutEvent(QFocusEvent* e);
 
 };
 

@@ -104,3 +104,12 @@ JSpinner::JSpinner(SpinnerModel* model, QWidget* parent) : QSpinBox(parent)
 //{
 // //QSpinBox::setVisible(b);
 //}
+/*private*/ void JSpinner::focusInEvent(QFocusEvent* e)
+{
+ emit focusGained(new FocusEvent());
+}
+
+/*private*/ void JSpinner::focusOutEvent(QFocusEvent* e)
+{
+ emit focusLost(new FocusEvent());
+}

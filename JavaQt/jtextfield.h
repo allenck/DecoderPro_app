@@ -50,10 +50,14 @@ public:
     /*public*/ void removeChangeListener(ChangeListener* l);
     /*public*/ void addFocusListener(FocusListener *l);
     /*public*/ void removeFocusListener(FocusListener* l);
+
 signals:
  void enterField();
  void leaveField();
  void propertyChange(PropertyChangeEvent*);
+ /*public*/ void focusGained(FocusEvent* fe);
+ /*public*/ void focusLost(FocusEvent* fe);
+ /*public*/ void stateChanged(ChangeEvent*);
 
 public slots:
 private:
@@ -73,9 +77,13 @@ private:
  InputVerifier* inputVerifier;
  Border* _border = nullptr;
  QVariant _data;
+ /*private*/ void focusInEvent(QFocusEvent* e);
+ /*private*/ void focusOutEvent(QFocusEvent* e);
 
 private slots:
  void updateShare();
+ void on_edited();
+
 protected:
  /*protected*/ Document* createDefaultModel();
  /*protected*/ int getColumnWidth();

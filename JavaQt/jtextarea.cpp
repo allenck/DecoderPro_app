@@ -854,3 +854,26 @@ void JTextArea::setEditable(bool b)
 {
  setEnabled(b);
 }
+
+/*public*/ void JTextArea::addFocusListener(FocusListener* l)
+{
+ //listeners.append(l);
+ connect(this, SIGNAL(focusGained(FocusEvent*)), l, SLOT(focusGained(FocusEvent*)));
+
+}
+
+/*public*/ void JTextArea::removeFocusListener(FocusListener *l)
+{
+ //listeners.removeOne(l);
+ disconnect(this, SIGNAL(focusLost(FocusEvent*)), l, SLOT(focusLost(FocusEvent*)));
+}
+
+/*protected*/ void JTextArea::focusInEvent(QFocusEvent* e)
+{
+ emit focusGained(new FocusEvent());
+}
+
+/*protected*/ void JTextArea::focusOutEvent(QFocusEvent* e)
+{
+ emit focusLost(new FocusEvent());
+}

@@ -248,6 +248,10 @@ void JTextField::init()
  ss = "";
  log = new Logger("JTextField");
  nameExplicitlySet = false;
+
+ connect(this, &JTextField::editingFinished, [=]{
+  emit stateChanged(new ChangeEvent(this));
+ });
 }
 
 #if 0
@@ -292,6 +296,7 @@ void JTextField::init()
  this->share = share;
  connect(this, SIGNAL(editingFinished()), this, SLOT(updateShare()));
 }
+
 /*public*/ void JTextField::updateShare()
 {
  disconnect(share, SIGNAL(textChanged(QString)), this, SLOT(setText(QString)));
@@ -1117,15 +1122,26 @@ Document* JTextField::getDocument()
  //listeners.removeOne(l);
  disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
 }
+
 /*public*/ void JTextField::addFocusListener(FocusListener* l)
 {
  //listeners.append(l);
- connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+ connect(this, SIGNAL(focusGained(FocusEvent*)), l, SLOT(focusGained(FocusEvent*)));
 
 }
+
 /*public*/ void JTextField::removeFocusListener(FocusListener *l)
 {
  //listeners.removeOne(l);
- disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+ disconnect(this, SIGNAL(focusLost(FocusEvent*)), l, SLOT(focusLost(FocusEvent*)));
 }
 
+/*private*/ void JTextField::focusInEvent(QFocusEvent* e)
+{
+ emit focusGained(new FocusEvent());
+}
+
+/*private*/ void JTextField::focusOutEvent(QFocusEvent* e)
+{
+ emit focusLost(new FocusEvent());
+}

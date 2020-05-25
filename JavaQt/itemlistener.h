@@ -1,15 +1,18 @@
 #ifndef ITEMLISTENER_H
 #define ITEMLISTENER_H
 #include "eventlistener.h"
-#include "libPr3_global.h"
+#include "javaqt_global.h"
 
 class ItemEvent;
-class LIBPR3SHARED_EXPORT ItemListener : public QObject, public EventListener
+class JAVAQTSHARED_EXPORT ItemListener : public QObject, public EventListener
 {
-    Q_OBJECT
+ Q_OBJECT
  Q_INTERFACES(EventListener)
 public:
  QObject* self() {return (QObject*)this;}
+
+public slots:
+
     /**
      * The listener interface for receiving item events.
      * The class that is interested in processing an item event
@@ -38,7 +41,6 @@ public:
 
 signals:
 
-public slots:
 
 };
 

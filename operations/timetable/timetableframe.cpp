@@ -25,6 +25,8 @@
 #include "timetableprintgraph.h"
 #include "scale.h"
 #include "timetableimport.h"
+#include <QTime>
+#include "timetabledisplaygraph.h"
 
 namespace TimeTable
 {
@@ -57,15 +59,17 @@ namespace TimeTable
         setTitle(tr("Timetable"));  // NOI18N
         InstanceManager::setDefault("TimeTableFrame", this);
         _dataMgr = TimeTableDataManager::getDataManager();
+        detailChangeEvent = new TTFChangeListener(this);
+        detailFocusEvent = new TTFFocusListener(this);
+        stopStationItemEvent = new StopStationItemEventListener(this);
+        layoutScaleItemEvent = new LayoutScaleItemEventListener(this);
+
         buildComponents();
         createFrame();
         createMenu();
         setEditMode(false);
         setShowReminder(false);
 
-        detailChangeEvent = new TTFChangeListener(this);
-        stopStationItemEvent = new StopStationItemEventListener(this);
-        layoutScaleItemEvent = new LayoutScaleItemEventListener(this);
     }
 
 
@@ -366,12 +370,12 @@ namespace TimeTable
         _editLayoutName,setObjectName("_editLayoutName");
         _editScale = new JComboBox();
         _editScale->setObjectName("_editScale");
-//        _editScale->addItemListener(layoutScaleItemEvent);
+        _editScale->addItemListener(layoutScaleItemEvent);
         _editFastClock = new JTextField(5);
         _editFastClock->setObjectName("_editFastClock");
         _editThrottles = new JTextField(5);
         _editThrottles->setObjectName("_editThrottles");
-        _editMetric = new QCheckBox();
+        _editMetric = new JCheckBox();
         _editMetric->setObjectName("_editMetric");
         _showScaleMK = new JLabel();
 
@@ -379,7 +383,7 @@ namespace TimeTable
         _editScale->addFocusListener(detailFocusEvent);
         _editFastClock->addFocusListener(detailFocusEvent);
         _editThrottles->addFocusListener(detailFocusEvent);
-#if 0
+#if 1
         _editMetric->addChangeListener(detailChangeEvent);
 #endif
         // TrainType
@@ -390,8 +394,8 @@ namespace TimeTable
         QVector<AbstractColorChooserPanel*> editTypeColorPanels = {new SplitButtonColorChooserPanel()};
         _editTrainTypeColor->setChooserPanels(&editTypeColorPanels);
 
-//        _editTrainTypeName.addFocusListener(detailFocusEvent);
-//        _editTrainTypeColor->getSelectionModel()->addChangeListener(detailChangeEvent);
+        _editTrainTypeName->addFocusListener(detailFocusEvent);
+        _editTrainTypeColor->getSelectionModel()->addChangeListener(detailChangeEvent);
 
         // Segment
         _editSegmentName = new JTextField(20);
@@ -403,13 +407,13 @@ namespace TimeTable
         _editStationName = new JTextField(20);
         _editStationName->setObjectName("_editStationName");
         _editDistance = new JTextField(5);
-        _editDoubleTrack = new QCheckBox();
+        _editDoubleTrack = new JCheckBox();
         _editSidings = new JSpinner(new SpinnerNumberModel(0, 0, QVariant(), 1));
         _editStaging = new JSpinner(new SpinnerNumberModel(0, 0, QVariant(), 1));
 
         _editStationName->addFocusListener(detailFocusEvent);
         _editDistance->addFocusListener(detailFocusEvent);
-#if 0
+#if 1
         _editDoubleTrack->addChangeListener(detailChangeEvent);
 #endif
         _editSidings->addChangeListener(detailChangeEvent);
@@ -443,7 +447,7 @@ namespace TimeTable
         _editDefaultSpeed->addFocusListener(detailFocusEvent);
         _editTrainStartTime->addFocusListener(detailFocusEvent);
         _editThrottle->addChangeListener(detailChangeEvent);
-#if 0
+#if 1
         _editTrainNotes->addFocusListener(detailFocusEvent);
 #endif
         // Stop
@@ -457,13 +461,13 @@ namespace TimeTable
         _showDepartTime = new JLabel();
 
         _editStopStation->addFocusListener(detailFocusEvent);
-#if 0
+#if 1
         _editStopStation->addItemListener(stopStationItemEvent);
 #endif
         _editStopDuration->addFocusListener(detailFocusEvent);
         _editNextSpeed->addFocusListener(detailFocusEvent);
         _editStagingTrack->addChangeListener(detailChangeEvent);
-#if 0
+#if 1
         _editStopNotes->addFocusListener(detailFocusEvent);
 #endif
     }
@@ -1281,24 +1285,23 @@ namespace TimeTable
             for (QString keyWord : exceptionList) {
                 if (keyWord.startsWith(TimeTableDataManager::TIME_OUT_OF_RANGE)) {
                      QStringList comps = keyWord.split("~");
-#if 0
-                    msg.append(tr(comps[0], comps[1], comps[2]));
+
+                    msg.append(tr("- Time outside of range for stop seq %1, train %2").arg(comps[1]).arg(comps[2]));
                 } else if (keyWord.startsWith(TimeTableDataManager::SCALE_NF)) {
                      QStringList scaleMsg = keyWord.split("~");
-                    msg.append(tr(scaleMsg[0], scaleMsg[1]));
+                    msg.append(tr("- Scale %1 is not available.").arg(scaleMsg[1]));
                 } else {
-                    msg.append(QString::asprintf("%n%s", tr(keyWord)));
+                    msg.append(QString::asprintf("%n%s", (keyWord)));
                     if (keyWord == (TimeTableDataManager::THROTTLES_IN_USE)) {
                         // Add the affected trains
-                        for (TimeTable::Schedule* schedule : _dataMgr->getSchedules(_curNodeId, true)) {
-                            for (Train train : _dataMgr->getTrains(schedule->getScheduleId(), 0, true)) {
+                        for (TTSchedule* schedule : _dataMgr->getSchedules(_curNodeId, true)) {
+                            for (TTTrain* train : _dataMgr->getTrains(schedule->getScheduleId(), 0, true)) {
                                 if (train->getThrottle() > newThrottles) {
                                     msg.append(QString::asprintf("%n      %s [ %d ]", train->getTrainName(), train->getThrottle()));
                                 }
                             }
                         }
                     }
-#endif
                 }
             }
             JOptionPane::showMessageDialog(nullptr,
@@ -1558,6 +1561,18 @@ namespace TimeTable
             exceptionList.add(TimeTableDataManager::START_TIME_FORMAT + "~" + ex.getParsedString());
             newStart = train->getStartTime();
         }
+#else
+        int newStart;
+        QTime newTime = QTime::fromString(_editTrainStartTime->text().trimmed(), "H:mm");
+        if(!newTime.isValid())
+        {
+         exceptionList.append(TimeTableDataManager::START_TIME_FORMAT + "~" + /*ex.getParsedString()*/_editTrainStartTime->text().trimmed());
+         newStart = train->getStartTime();
+        }
+        else
+        {
+         newStart = newTime.hour() * 60 + newTime.minute();
+        }
 #endif
         int newThrottle = (int) _editThrottle->getValue();
         QString newNotes = _editTrainNotes->toHtml();
@@ -1593,7 +1608,7 @@ namespace TimeTable
                 exceptionList.append(ex.getMessage());
             }
         }
-#if 0
+#if 1
         if (train->getStartTime() != newStart) {
             try {
                 train->setStartTime(newStart);
@@ -1794,7 +1809,7 @@ namespace TimeTable
         int selectedOption = JOptionPane::showOptionDialog( nullptr,
                 tr("Delete the Layout and ALL of its components?"), // NOI18N
                 tr("Question"),   // NOI18N
-                JOptionPane::DEFAULT_OPTION,
+                JOptionPane::YES_NO_OPTION,
                 JOptionPane::QUESTION_MESSAGE,
                 QIcon(), options, options[0]);
         if (selectedOption == 0) {
@@ -1899,9 +1914,9 @@ namespace TimeTable
             // Present the option to delete the stations and the segment
              QVariantList options = {tr("No"), tr("Yes")};  // NOI18N
             int selectedOption = JOptionPane::showOptionDialog( nullptr,
-                    tr("SegmentCascade"), // NOI18N
-                    tr("QuestionTitle"),   // NOI18N
-                    JOptionPane::DEFAULT_OPTION,
+                    tr("There are inactive Stations assigned.\nDelete the stations and the segment?"), // NOI18N
+                    tr("Question"),   // NOI18N
+                    JOptionPane::YES_NO_OPTION,
                     JOptionPane::QUESTION_MESSAGE,
                     QIcon(), options, options[0]);
             if (selectedOption == 0) {
@@ -1968,11 +1983,11 @@ namespace TimeTable
         if (!trainList.isEmpty()) {
             // The schedule still has trains.
             // Present the option to delete the stops, trains and the schedule
-             QVariantList options = {tr("ButtonNo"), tr("ButtonYes")};  // NOI18N
+             QVariantList options = {tr("No"), tr("Yes")};  // NOI18N
             int selectedOption = JOptionPane::showOptionDialog( nullptr,
-                    tr("ScheduleCascade"), // NOI18N
-                    tr("QuestionTitle"),   // NOI18N
-                    JOptionPane::DEFAULT_OPTION,
+                    tr("There are Trains assigned.\nDelete the trains, stops and the schedule?"), // NOI18N
+                    tr("Question"),   // NOI18N
+                    JOptionPane::YES_NO_OPTION,
                     JOptionPane::QUESTION_MESSAGE,
                      QIcon(), options, options[0]);
             if (selectedOption == 0) {
@@ -2008,11 +2023,11 @@ namespace TimeTable
         if (!stopList.isEmpty()) {
             // The trains still has stops.
             // Present the option to delete the stops and the train
-             QVariantList options = {tr("ButtonNo"), tr("ButtonYes")};  // NOI18N
+             QVariantList options = {tr("No"), tr("Yes")};  // NOI18N
             int selectedOption = JOptionPane::showOptionDialog( nullptr,
-                    tr("TrainCascade"), // NOI18N
-                    tr("QuestionTitle"),   // NOI18N
-                    JOptionPane::DEFAULT_OPTION,
+                    tr("There are Stops assigned.\nDelete the stops and the train?"), // NOI18N
+                    tr("Question"),   // NOI18N
+                    JOptionPane::YES_NO_OPTION,
                     JOptionPane::QUESTION_MESSAGE,
                     QIcon(), options, options[0]);
             if (selectedOption == 0) {
@@ -2180,56 +2195,70 @@ namespace TimeTable
         _moveButtonPanel->setVisible(true);
     }
 
-    void TimeTableFrame::graphPressed(QString graphType) {
-#if 0
-        // select a schedule if necessary
-        Segment* segment = _dataMgr->getSegment(_curNodeId);
-        Layout* layout = _dataMgr->getLayout(segment->getLayoutId());
-        int scheduleId;
-        QList<TimeTable::Schedule*> schedules = _dataMgr->getSchedules(layout->getLayoutId(), true);
+    void TimeTableFrame::graphPressed(QString graphType)
+    {
+     // select a schedule if necessary
+     Segment* segment = _dataMgr->getSegment(_curNodeId);
+     Layout* layout = _dataMgr->getLayout(segment->getLayoutId());
+     int scheduleId;
+     QList<TTSchedule*> schedules = _dataMgr->getSchedules(layout->getLayoutId(), true);
 
-        if (schedules.size() == 0) {
-            log->warn("no schedule");  // NOI18N
-            return;
-        } else {
-            scheduleId = schedules.at(0)->getScheduleId();
-            if (schedules.size() > 1) {
-                // do selection dialog
-                QVector<TimeTable::Schedule*> schedArr = QVector<TimeTable::Schedule*>(schedules.size());
-                schedArr = schedules.toArray(schedArr);
-                TimeTable::Schedule* schedSelected = (Schedule) JOptionPane::showInputDialog(
-                         nullptr,
-                        tr("GraphScheduleMessage"),  // NOI18N
-                        tr("QuestionTitle"),  // NOI18N
-                        JOptionPane::QUESTION_MESSAGE,
-                        QIcon(),
-                        schedArr,
-                        schedArr[0]
-                );
-                if (schedSelected ==  nullptr) {
-                    log->warn("Schedule not selected, graph request cancelled");  // NOI18N
-                    return;
-                }
-                scheduleId = schedSelected.getScheduleId();
-            }
+     if (schedules.size() == 0) {
+         log->warn("no schedule");  // NOI18N
+         return;
+     }
+     else
+     {
+      scheduleId = schedules.at(0)->getScheduleId();
+      if (schedules.size() > 1)
+      {
+       // do selection dialog
+       //QVector<TTSchedule*> schedArr = QVector<TTSchedule*>(schedules.size());
+       QVariantList schedArr = QVariantList();
+       //schedArr = schedules.toArray(schedArr);
+       foreach(TTSchedule* s, schedules)
+         schedArr.append(s->getScheduleName());
+       QString schedSelected = JOptionPane::showInputDialog(
+                nullptr,
+               tr("Select the Schedule to be used for the graph."),  // NOI18N
+               tr("Question"),  // NOI18N
+               JOptionPane::QUESTION_MESSAGE,
+               QIcon(),
+               schedArr,
+               schedArr[0]
+       ).toString();
+       if (schedSelected.isEmpty()) {
+           log->warn("Schedule not selected, graph request cancelled");  // NOI18N
+           return;
+       }
+       //scheduleId = schedSelected->getScheduleId();
+       foreach (TTSchedule* s, schedules)
+       {
+        if(s->getScheduleName() == schedSelected)
+        {
+         scheduleId = s->getScheduleId();
+         break;
         }
+       }
+      }
+     }
 
-        if (graphType == ("Display")) {
-            TimeTableDisplayGraph graph = new TimeTableDisplayGraph(_curNodeId, scheduleId, _showTrainTimes);
+     if (graphType == ("Display"))
+     {
+      TimeTableDisplayGraph* graph = new TimeTableDisplayGraph(_curNodeId, scheduleId, _showTrainTimes);
 
-            JmriJFrame f = new JmriJFrame(tr("TitleTimeTableGraph"), true, true);  // NOI18N
-            f.setMinimumSize(new Dimension(600, 300));
-            f.getContentPane().add(graph);
-            f.pack();
-            f.addHelpMenu("html.tools.TimeTable", true);  // NOI18N
-            f.setVisible(true);
-        }
+      JmriJFrame* f = new JmriJFrameX(tr("Timetable Graph"), true, true);  // NOI18N
+      f->setMinimumSize(QSize(600, 300));
+      f->getContentPane(true)->layout()->addWidget(graph);
+      f->pack();
+      f->addHelpMenu("html.tools.TimeTable", true);  // NOI18N
+      f->setVisible(true);
+     }
 
-        if (graphType == ("Print")) {
-            TimeTablePrintGraph print = new TimeTablePrintGraph(_curNodeId, scheduleId, _showTrainTimes, _twoPage);
-            print.printGraph();
-        }
-    #endif
+     if (graphType == ("Print")) {
+         TimeTablePrintGraph* print = new TimeTablePrintGraph(_curNodeId, scheduleId, _showTrainTimes, _twoPage);
+         print->printGraph();
+     }
     }
 
     void TimeTableFrame::importPressed() {
@@ -2442,7 +2471,7 @@ namespace TimeTable
             int selectedOption = JOptionPane::showOptionDialog(nullptr,
                     tr("Timetable changes have not been saved.\nDiscard changes and exit?"), // NOI18N
                     tr("Warning"),   // NOI18N
-                    JOptionPane::DEFAULT_OPTION,
+                    JOptionPane::YES_NO_OPTION,
                     JOptionPane::WARNING_MESSAGE,
                     QIcon(), options, options[0]);
             if (selectedOption == 0) {

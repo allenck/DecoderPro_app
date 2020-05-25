@@ -694,14 +694,16 @@ QModelIndex DefaultTreeModel::index(int row, int column, const QModelIndex &pare
 {
 // if (!hasIndex(row,column,parent))
 //  return QModelIndex();
- DefaultMutableTreeNode* parentItem;
- DefaultMutableTreeNode *childItem;
+ DefaultMutableTreeNode* parentItem= nullptr;
+ DefaultMutableTreeNode *childItem=nullptr;
  if (!parent.isValid())
   parentItem = (DefaultMutableTreeNode*)root;
  else
   parentItem = static_cast<DefaultMutableTreeNode*>(parent.internalPointer());
  try
  {
+  if(parentItem == nullptr)
+   return QModelIndex();
   int childCount = parentItem->getChildCount();
   if((row >= childCount) || (row < 0))
   {

@@ -50,88 +50,95 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
         root.appendChild(values = doc.createElement("layouts"));  // NOI18N
         for (Layout* layout : dataMgr->getLayouts(false)) {
             QDomElement e = doc.createElement("layout");  // NOI18N
-            e.appendChild(doc.createElement("layout_id").appendChild(doc.createTextNode(QString::number(layout->getLayoutId()))));  // NOI18N
-            e.appendChild(doc.createElement("layout_name").appendChild(doc.createTextNode(layout->getLayoutName())));  // NOI18N
-            e.appendChild(doc.createElement("scale").appendChild(doc.createTextNode(layout->getScale()->getScaleName())));  // NOI18N
-            e.appendChild(doc.createElement("fast_clock").appendChild(doc.createTextNode(QString::number(layout->getFastClock()))));  // NOI18N
-            e.appendChild(doc.createElement("throttles").appendChild(doc.createTextNode(QString::number(layout->getThrottles()))));  // NOI18N
-            e.appendChild(doc.createElement("metric").appendChild(doc.createTextNode((layout->getMetric()) ? "yes" : "no")));  // NOI18N
+            QDomElement e1;
+            e.appendChild(e1=doc.createElement("layout_id")); e1.appendChild(doc.createTextNode(QString::number(layout->getLayoutId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("layout_name")); e1.appendChild(doc.createTextNode(layout->getLayoutName()));  // NOI18N
+            e.appendChild(e1=doc.createElement("scale")); e1.appendChild(doc.createTextNode(layout->getScale()->getScaleName()));  // NOI18N
+            e.appendChild(e1=doc.createElement("fast_clock")); e1.appendChild(doc.createTextNode(QString::number(layout->getFastClock())));  // NOI18N
+            e.appendChild(e1=doc.createElement("throttles")); e1.appendChild(doc.createTextNode(QString::number(layout->getThrottles())));  // NOI18N
+            e.appendChild(e1=doc.createElement("metric")); e1.appendChild(doc.createTextNode((layout->getMetric()) ? "yes" : "no"));  // NOI18N
             values.appendChild(e);
         }
 
         root.appendChild(values = doc.createElement("train_types"));  // NOI18N
         for (TrainType* type : dataMgr->getTrainTypes(0, false)) {
             QDomElement e = doc.createElement("train_type");  // NOI18N
-            e.appendChild(doc.createElement("type_id").appendChild(doc.createTextNode(QString::number(type->getTypeId()))));  // NOI18N
-            e.appendChild(doc.createElement("layout_id").appendChild(doc.createTextNode(QString::number(type->getLayoutId()))));  // NOI18N
-            e.appendChild(doc.createElement("type_name").appendChild(doc.createTextNode(type->getTypeName())));  // NOI18N
-            e.appendChild(doc.createElement("type_color").appendChild(doc.createTextNode(type->getTypeColor())));  // NOI18N
+            QDomElement e1;
+            e.appendChild(e1=doc.createElement("type_id")); e1.appendChild(doc.createTextNode(QString::number(type->getTypeId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("layout_id")); e1.appendChild(doc.createTextNode(QString::number(type->getLayoutId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("type_name")); e1.appendChild(doc.createTextNode(type->getTypeName()));  // NOI18N
+            e.appendChild(e1=doc.createElement("type_color")); e1.appendChild(doc.createTextNode(type->getTypeColor()));  // NOI18N
             values.appendChild(e);
         }
 
         root.appendChild(values = doc.createElement("segments"));  // NOI18N
         for (Segment* segment : dataMgr->getSegments(0, false)) {
             QDomElement e = doc.createElement("segment");  // NOI18N
-            e.appendChild(doc.createElement("segment_id").appendChild(doc.createTextNode(QString::number(segment->getSegmentId()))));  // NOI18N
-            e.appendChild(doc.createElement("layout_id").appendChild(doc.createTextNode(QString::number(segment->getLayoutId()))));  // NOI18N
-            e.appendChild(doc.createElement("segment_name").appendChild(doc.createTextNode(segment->getSegmentName())));  // NOI18N
+            QDomElement e1;
+            e.appendChild(e1=doc.createElement("segment_id")); e1.appendChild(doc.createTextNode(QString::number(segment->getSegmentId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("layout_id")); e1.appendChild(doc.createTextNode(QString::number(segment->getLayoutId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("segment_name")); e1.appendChild(doc.createTextNode(segment->getSegmentName()));  // NOI18N
             values.appendChild(e);
         }
 
         root.appendChild(values = doc.createElement("stations"));  // NOI18N
         for (Station* station : dataMgr->getStations(0, false)) {
             QDomElement e = doc.createElement("station");  // NOI18N
-            e.appendChild(doc.createElement("station_id").appendChild(doc.createTextNode(QString::number(station->getStationId()))));  // NOI18N
-            e.appendChild(doc.createElement("segment_id").appendChild(doc.createTextNode(QString::number(station->getSegmentId()))));  // NOI18N
-            e.appendChild(doc.createElement("station_name").appendChild(doc.createTextNode(station->getStationName())));  // NOI18N
-            e.appendChild(doc.createElement("distance").appendChild(doc.createTextNode(QString::number(station->getDistance()))));  // NOI18N
-            e.appendChild(doc.createElement("double_track").appendChild(doc.createTextNode((station->getDoubleTrack()) ? "yes" : "no")));  // NOI18N
-            e.appendChild(doc.createElement("sidings").appendChild(doc.createTextNode(QString::number(station->getSidings()))));  // NOI18N
-            e.appendChild(doc.createElement("staging").appendChild(doc.createTextNode(QString::number(station->getStaging()))));  // NOI18N
+            QDomElement e1;
+            e.appendChild(e1=doc.createElement("station_id")); e1.appendChild(doc.createTextNode(QString::number(station->getStationId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("segment_id")); e1.appendChild(doc.createTextNode(QString::number(station->getSegmentId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("station_name")); e1.appendChild(doc.createTextNode(station->getStationName()));  // NOI18N
+            e.appendChild(e1=doc.createElement("distance")); e1.appendChild(doc.createTextNode(QString::number(station->getDistance())));  // NOI18N
+            e.appendChild(e1=doc.createElement("double_track")); e1.appendChild(doc.createTextNode((station->getDoubleTrack()) ? "yes" : "no"));  // NOI18N
+            e.appendChild(e1=doc.createElement("sidings")); e1.appendChild(doc.createTextNode(QString::number(station->getSidings())));  // NOI18N
+            e.appendChild(e1=doc.createElement("staging")); e1.appendChild(doc.createTextNode(QString::number(station->getStaging())));  // NOI18N
             values.appendChild(e);
         }
 
         root.appendChild(values = doc.createElement("schedules"));  // NOI18N
         for (TTSchedule* schedule : dataMgr->getSchedules(0, false)) {
             QDomElement e = doc.createElement("schedule");  // NOI18N
-            e.appendChild(doc.createElement("schedule_id").appendChild(doc.createTextNode(QString::number(schedule->getScheduleId()))));  // NOI18N
-            e.appendChild(doc.createElement("layout_id").appendChild(doc.createTextNode(QString::number(schedule->getLayoutId()))));  // NOI18N
-            e.appendChild(doc.createElement("schedule_name").appendChild(doc.createTextNode(schedule->getScheduleName())));  // NOI18N
-            e.appendChild(doc.createElement("eff_date").appendChild(doc.createTextNode(schedule->getEffDate())));  // NOI18N
-            e.appendChild(doc.createElement("start_hour").appendChild(doc.createTextNode(QString::number(schedule->getStartHour()))));  // NOI18N
-            e.appendChild(doc.createElement("duration").appendChild(doc.createTextNode(QString::number(schedule->getDuration()))));  // NOI18N
+            QDomElement e1;
+            e.appendChild(e1=doc.createElement("schedule_id")); e1.appendChild(doc.createTextNode(QString::number(schedule->getScheduleId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("layout_id")); e1.appendChild(doc.createTextNode(QString::number(schedule->getLayoutId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("schedule_name")); e1.appendChild(doc.createTextNode(schedule->getScheduleName()));  // NOI18N
+            e.appendChild(e1=doc.createElement("eff_date")); e1.appendChild(doc.createTextNode(schedule->getEffDate()));  // NOI18N
+            e.appendChild(e1=doc.createElement("start_hour")); e1.appendChild(doc.createTextNode(QString::number(schedule->getStartHour())));  // NOI18N
+            e.appendChild(e1=doc.createElement("duration")); e1.appendChild(doc.createTextNode(QString::number(schedule->getDuration())));  // NOI18N
             values.appendChild(e);
         }
 
         root.appendChild(values = doc.createElement("trains"));  // NOI18N
         for (TTTrain* train : dataMgr->getTrains(0, 0, false)) {
             QDomElement e = doc.createElement("train");  // NOI18N
-            e.appendChild(doc.createElement("train_id").appendChild(doc.createTextNode(QString::number(train->getTrainId()))));  // NOI18N
-            e.appendChild(doc.createElement("schedule_id").appendChild(doc.createTextNode(QString::number(train->getScheduleId()))));  // NOI18N
-            e.appendChild(doc.createElement("type_id").appendChild(doc.createTextNode(QString::number(train->getTypeId()))));  // NOI18N
-            e.appendChild(doc.createElement("train_name").appendChild(doc.createTextNode(train->getTrainName())));  // NOI18N
-            e.appendChild(doc.createElement("train_desc").appendChild(doc.createTextNode(train->getTrainDesc())));  // NOI18N
-            e.appendChild(doc.createElement("default_speed").appendChild(doc.createTextNode(QString::number(train->getDefaultSpeed()))));  // NOI18N
-            e.appendChild(doc.createElement("start_time").appendChild(doc.createTextNode(QString::number(train->getStartTime()))));  // NOI18N
-            e.appendChild(doc.createElement("throttle").appendChild(doc.createTextNode(QString::number(train->getThrottle()))));  // NOI18N
-            e.appendChild(doc.createElement("route_duration").appendChild(doc.createTextNode(QString::number(train->getRouteDuration()))));  // NOI18N
-            e.appendChild(doc.createElement("train_notes").appendChild(doc.createTextNode(train->getTrainNotes())));  // NOI18N
+            QDomElement e1;
+            e.appendChild(e1=doc.createElement("train_id")); e1.appendChild(doc.createTextNode(QString::number(train->getTrainId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("schedule_id")); e1.appendChild(doc.createTextNode(QString::number(train->getScheduleId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("type_id")); e1.appendChild(doc.createTextNode(QString::number(train->getTypeId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("train_name")); e1.appendChild(doc.createTextNode(train->getTrainName()));  // NOI18N
+            e.appendChild(e1=doc.createElement("train_desc")); e1.appendChild(doc.createTextNode(train->getTrainDesc()));  // NOI18N
+            e.appendChild(e1=doc.createElement("default_speed")); e1.appendChild(doc.createTextNode(QString::number(train->getDefaultSpeed())));  // NOI18N
+            e.appendChild(e1=doc.createElement("start_time")); e1.appendChild(doc.createTextNode(QString::number(train->getStartTime())));  // NOI18N
+            e.appendChild(e1=doc.createElement("throttle")); e1.appendChild(doc.createTextNode(QString::number(train->getThrottle())));  // NOI18N
+            e.appendChild(e1=doc.createElement("route_duration")); e1.appendChild(doc.createTextNode(QString::number(train->getRouteDuration())));  // NOI18N
+            e.appendChild(e1=doc.createElement("train_notes")); e1.appendChild(doc.createTextNode(train->getTrainNotes()));  // NOI18N
             values.appendChild(e);
         }
 
         root.appendChild(values = doc.createElement("stops"));  // NOI18N
         for (Stop* stop : dataMgr->getStops(0, 0, false)) {
             QDomElement e = doc.createElement("stop");  // NOI18N
-            e.appendChild(doc.createElement("stop_id").appendChild(doc.createTextNode(QString::number(stop->getStopId()))));  // NOI18N
-            e.appendChild(doc.createElement("train_id").appendChild(doc.createTextNode(QString::number(stop->getTrainId()))));  // NOI18N
-            e.appendChild(doc.createElement("station_id").appendChild(doc.createTextNode(QString::number(stop->getStationId()))));  // NOI18N
-            e.appendChild(doc.createElement("seq").appendChild(doc.createTextNode(QString::number(stop->getSeq()))));  // NOI18N
-            e.appendChild(doc.createElement("duration").appendChild(doc.createTextNode(QString::number(stop->getDuration()))));  // NOI18N
-            e.appendChild(doc.createElement("next_speed").appendChild(doc.createTextNode(QString::number(stop->getNextSpeed()))));  // NOI18N
-            e.appendChild(doc.createElement("arrive_time").appendChild(doc.createTextNode(QString::number(stop->getArriveTime()))));  // NOI18N
-            e.appendChild(doc.createElement("depart_time").appendChild(doc.createTextNode(QString::number(stop->getDepartTime()))));  // NOI18N
-            e.appendChild(doc.createElement("staging_track").appendChild(doc.createTextNode(QString::number(stop->getStagingTrack()))));  // NOI18N
-            e.appendChild(doc.createElement("stop_notes").appendChild(doc.createTextNode(stop->getStopNotes())));  // NOI18N
+            QDomElement e1;
+            e.appendChild(e1=doc.createElement("stop_id")); e1.appendChild(doc.createTextNode(QString::number(stop->getStopId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("train_id")); e1.appendChild(doc.createTextNode(QString::number(stop->getTrainId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("station_id")); e1.appendChild(doc.createTextNode(QString::number(stop->getStationId())));  // NOI18N
+            e.appendChild(e1=doc.createElement("seq")); e1.appendChild(doc.createTextNode(QString::number(stop->getSeq())));  // NOI18N
+            e.appendChild(e1=doc.createElement("duration")); e1.appendChild(doc.createTextNode(QString::number(stop->getDuration())));  // NOI18N
+            e.appendChild(e1=doc.createElement("next_speed")); e1.appendChild(doc.createTextNode(QString::number(stop->getNextSpeed())));  // NOI18N
+            e.appendChild(e1=doc.createElement("arrive_time")); e1.appendChild(doc.createTextNode(QString::number(stop->getArriveTime())));  // NOI18N
+            e.appendChild(e1=doc.createElement("depart_time")); e1.appendChild(doc.createTextNode(QString::number(stop->getDepartTime())));  // NOI18N
+            e.appendChild(e1=doc.createElement("staging_track")); e1.appendChild(doc.createTextNode(QString::number(stop->getStagingTrack())));  // NOI18N
+            e.appendChild(e1=doc.createElement("stop_notes")); e1.appendChild(doc.createTextNode(stop->getStopNotes()));  // NOI18N
             values.appendChild(e);
         }
 
@@ -216,8 +223,8 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                 log->error("Unable to find train types");  // NOI18N
                 return false;
             }
-            //for (QDomNode node : layouts.elementsByTagName("train_type")) {  // NOI18N
-            nl = layouts.elementsByTagName("layout");
+            //for (QDomNode node : train_types.elementsByTagName("train_type")) {  // NOI18N
+            nl = train_types.elementsByTagName("train_type");
             for(int i=0; i < nl.size(); i++)
             {  // NOI18N
              QDomElement train_type = nl.at(i).toElement();
@@ -233,7 +240,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
                 // Validate layoutId
                 if (!checkLayoutIds.contains(layoutId)) {
-                    log->warn("TrainType {} layout id not found", typeName);  // NOI18N
+                    log->warn(tr("TrainType %1 layout id not found").arg(typeName));  // NOI18N
                     continue;
                 }
 
@@ -250,7 +257,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                 return false;
             }
             //for (QDomElement segment : segments.firstChildElementren("segment")) {  // NOI18N
-            nl = layouts.elementsByTagName("segment");
+            nl = segments.elementsByTagName("segment");
             for(int i=0; i < nl.size(); i++)
             {  // NOI18N
              QDomElement segment = nl.at(i).toElement();
@@ -281,7 +288,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                 return false;
             }
             //for (QDomElement station : stations.firstChildElement("station")) {  // NOI18N
-            nl = layouts.elementsByTagName("station");
+            nl = stations.elementsByTagName("station");
             for(int i=0; i < nl.size(); i++)
             {  // NOI18N
             QDomElement station = nl.at(i).toElement();
@@ -319,7 +326,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                 return false;
             }
             //for (QDomElement schedule : schedules.firstChildElementren("schedule")) {  // NOI18N
-            nl = layouts.elementsByTagName("schedule");
+            nl = schedules.elementsByTagName("schedule");
             for(int i=0; i < nl.size(); i++)
             {  // NOI18N
             QDomElement schedule = nl.at(i).toElement();
@@ -355,7 +362,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                 return false;
             }
             //for (QDomElement train : trains.firstChildElementren("train")) {  // NOI18N
-            nl = layouts.elementsByTagName("train");
+            nl = trains.elementsByTagName("train");
             for(int i=0; i < nl.size(); i++)
             {  // NOI18N
             QDomElement train = nl.at(i).toElement();
@@ -406,7 +413,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                 return false;
             }
             //for (QDomElement stop : stops.firstChildElementren("stop")) {  // NOI18N
-             nl = layouts.elementsByTagName("stop");
+             nl = stops.elementsByTagName("stop");
              for(int i=0; i < nl.size(); i++)
              {  // NOI18N
               QDomElement stop = nl.at(i).toElement();

@@ -26,11 +26,12 @@ namespace TimeTable
         _twoPage = twoPage;
     }
 
-#if 0
+
     /**
      * Setup the printer selection and start the print job.
      */
-    void printGraph() {
+    void TimeTablePrintGraph::printGraph() {
+#if 0
          PrinterJob job = PrinterJob.getPrinterJob();
          job.setPrintable(this);
          bool ok = job.printDialog();
@@ -41,8 +42,9 @@ namespace TimeTable
                 log.warn("A printer exception occurred: ", ex);
              }
          }
+#endif
     }
-
+#if 0
     @Override
      /*public*/ int print(Graphics g, PageFormat pf, int page) throws PrinterException {
         int pageCount = _twoPage ? 2 : 1;

@@ -4,6 +4,7 @@
 #include "jcomponent.h"
 #include "changelistener.h"
 #include "focuslistener.h"
+#include "itemlistener.h"
 
 class EventObject;
 class JComboBox : public QComboBox, public JComponent
@@ -13,6 +14,8 @@ class JComboBox : public QComboBox, public JComponent
 public:
  JComboBox(QWidget* parent = nullptr);
  JComboBox(QStringList list, QWidget* parent = nullptr);
+ ~JComboBox() {}
+ JComboBox(const JComboBox&) : QComboBox() {}
 
  bool isOpaque();
  QColor getBackground();
@@ -27,15 +30,23 @@ public:
  /*public*/ void removeChangeListener(ChangeListener* l);
  /*public*/ void addFocusListener(FocusListener *l);
  /*public*/ void removeFocusListener(FocusListener* l);
+ /*public*/ void addItemListener(ItemListener* listener);
+
 
 signals:
- void itemStateChanged(EventObject* e);
+ void itemStateChanged(ItemEvent* e);
+ /*public*/ void focusGained(FocusEvent* fe);
+ /*public*/ void focusLost(FocusEvent* fe);
+
 private:
 bool _opaque = false;
 Border* _border = nullptr;
+/*private*/ void focusInEvent(QFocusEvent* e);
+/*private*/ void focusOutEvent(QFocusEvent* e);
 
 private slots:
  void currentIndexChanged(int);
+ void on_selected();
 };
-
+Q_DECLARE_METATYPE(JComboBox)
 #endif // JCOMBOBOX_H

@@ -1164,7 +1164,6 @@ HEADERS += \
     Roster/decoderindexfile.h \
     Roster/defaultcomboboxmodel.h \
     Roster/paneprogpane.h \
-    Roster/itemlistener.h \
     Roster/panecontainer.h \
     Roster/busyglasspane.h \
     Roster/dccaddresspanel.h \

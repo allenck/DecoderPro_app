@@ -20,6 +20,9 @@
 #include "focuslistener.h"
 #include "itemlistener.h"
 #include "itemevent.h"
+#include "jcheckbox.h"
+#include "spinnernumbermodel.h"
+#include "vptr.h"
 
 class File;
 class JFileChooser;
@@ -83,7 +86,7 @@ private:
  JComboBox* _editScale;
  JTextField* _editFastClock;
  JTextField* _editThrottles;
- QCheckBox* _editMetric;
+ JCheckBox* _editMetric;
  JLabel* _showScaleMK;
 
  // TrainType
@@ -96,7 +99,7 @@ private:
  // Station
  JTextField* _editStationName;
  JTextField* _editDistance;
- QCheckBox* _editDoubleTrack;
+ JCheckBox* _editDoubleTrack;
  JSpinner* _editSidings;
  JSpinner* _editStaging;
 
@@ -216,6 +219,7 @@ protected:
  friend class TTFTreeSelectionListener;
  friend class TTFFocusListener;
  friend class TTFChangeListener;
+ friend class StopStationItemEventListener;
 };
 
 class TTFWindowListener : public WindowListener
@@ -308,7 +312,7 @@ public:
 
  };
 
- class TTFFocusListener : FocusListener
+ class TTFFocusListener : public FocusListener
  {
   Q_OBJECT
   TimeTableFrame* frame;
@@ -352,13 +356,13 @@ public:
  public slots:
   //@Override
   /*public*/ void itemStateChanged(ItemEvent* e) {
-#if 0
-      if (e.getStateChange() == ItemEvent.SELECTED) {
-          TimeTableDataManager::SegmentStation segmentStation = (TimeTableDataManager::SegmentStation) e.getItem();
-          int stagingTracks = _dataMgr->getStation(segmentstation->getStationId()).getStaging();
-          Stop stop = _dataMgr->getStop(_curNodeId);
+#if 1
+      if (e->getStateChange() == ItemEvent::SELECTED) {
+          SegmentStation* segmentStation = VPtr<SegmentStation>::asPtr(e->getItem());
+          int stagingTracks = frame->_dataMgr->getStation(segmentStation->getStationId())->getStaging();
+          Stop* stop = frame->_dataMgr->getStop(frame->_curNodeId);
           if (stop->getStagingTrack() <= stagingTracks) {
-              _editStagingTrack.setModel(new SpinnerNumberModel(stop->getStagingTrack(), 0, stagingTracks, 1));
+              frame->_editStagingTrack->setModel(new SpinnerNumberModel(stop->getStagingTrack(), 0, stagingTracks, 1));
           }
       }
 #endif

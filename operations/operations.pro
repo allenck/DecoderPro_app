@@ -356,7 +356,9 @@ SOURCES += \
     timetable/segment.cpp \
     timetable/tttrain.cpp \
     timetable/ttschedule.cpp \
-    timetable/timetableimport.cpp
+    timetable/timetableimport.cpp \
+    timetable/timetabledisplaygraph.cpp \
+    timetable/timetablegraphcommon.cpp
 
 HEADERS += \
         operations.h \
@@ -648,7 +650,9 @@ HEADERS += \
     timetable/segment.h \
     timetable/ttschedule.h \
     timetable/tttrain.h \
-    timetable/timetableimport.h
+    timetable/timetableimport.h \
+    timetable/timetabledisplaygraph.h \
+    timetable/timetablegraphcommon.h
 
 unix {
     target.path = /usr/lib

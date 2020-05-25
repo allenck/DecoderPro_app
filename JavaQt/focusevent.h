@@ -2,15 +2,18 @@
 #define FOCUSEVENT_H
 #include "eventlistener.h"
 #include "focusevent.h"
+#include<QFocusEvent>
+#include <QObject>
 
-
-class FocusEvent :  public QObject, public EventListener
+class FocusEvent :  public QObject
 {
+ Q_OBJECT
+QFocusEvent* e;
+
 public:
- FocusEvent(QObject* parent = nullptr) : QObject(parent) {}
+ FocusEvent() : QObject() {this->e = e;}
  QObject* self() {return (QObject*)this;}
 public slots:
 
- /*public*/ virtual void stateChanged(FocusEvent* /*e*/) {}};
-
+};
 #endif // FOCUSEVENT_H

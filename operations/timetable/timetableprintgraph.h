@@ -13,6 +13,7 @@ class TimeTablePrintGraph : public QObject//, public Printable
  Q_OBJECT
 public:
  /*public*/ TimeTablePrintGraph(int segmentId, int scheduleId, bool showTrainTimes, bool twoPage);
+ void printGraph();
 
 private:
  static Logger* log;

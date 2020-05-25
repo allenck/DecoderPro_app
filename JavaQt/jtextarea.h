@@ -5,6 +5,8 @@
 #include "QTextEdit"
 #include <QTextDocument>
 #include "javaqt_global.h"
+#include "focusevent.h"
+#include "focuslistener.h"
 
 class Document : public QTextDocument
 {
@@ -34,8 +36,15 @@ public:
     /*public*/ bool getWrapStyleWord();
     /*public*/ void setOpaque(bool);
     QString text;
+    /*public*/ void addFocusListener(FocusListener *l);
+    /*public*/ void removeFocusListener(FocusListener* l);
 
 public slots:
+
+signals:
+    /*public*/ void focusGained(FocusEvent* fe);
+    /*public*/ void focusLost(FocusEvent* fe);
+
 private:
     // --- variables -------------------------------------------------
 
@@ -53,6 +62,8 @@ protected:
     /*protected*/ Document* createDefaultModel();
     /*protected*/ int getRowHeight();
     /*protected*/ int getColumnWidth();
+    /*protected*/ void focusInEvent(QFocusEvent* e);
+    /*protected*/ void focusOutEvent(QFocusEvent* e);
 
 };
 

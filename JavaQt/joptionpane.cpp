@@ -465,7 +465,7 @@
 {
     JOptionPane*    pane = new JOptionPane(message, messageType,
                                           OK_CANCEL_OPTION, icon,
-                                          QVariantList(),initialSelectionValue, parentComponent);
+                                          selectionValues,initialSelectionValue, parentComponent);
 
     pane->setWantsInput(true);
     pane->setSelectionValues(selectionValues);
@@ -2375,11 +2375,28 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
  }
  if(getWantsInput())
  {
-  f = new JTextField();
-  if(getInitialValue() != QVariant())
-   f->setText(getInitialValue().toString());
-  ll->addWidget(f);
-  connect(f, SIGNAL(editingFinished()), this, SLOT(handleTextInput()));
+  if(options.count() == 1)
+  {
+   f = new JTextField();
+   if(getInitialValue() != QVariant())
+    f->setText(getInitialValue().toString());
+   ll->addWidget(f);
+   connect(f, SIGNAL(editingFinished()), this, SLOT(handleTextInput()));
+  }
+  else
+  {
+   QListWidget* lw = new QListWidget();
+   foreach (QVariant v, options) {
+    lw->addItem(v.toString());
+   }
+   if(getInitialValue() != QVariant())
+    lw->setCurrentItem(new QListWidgetItem(getInitialValue().toString()));
+   ll->addWidget(lw);
+   connect(lw, &QListWidget::itemClicked, [=]{
+    setValue(lw->currentItem()->text());
+    inputValue = QVariant(lw->currentItem()->text());
+   });
+  }
  }
  pLayout->addLayout(ll);
  FlowLayout* fl = new FlowLayout();
@@ -2392,7 +2409,7 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
   pLayout->addLayout(fl);
   connect(btnOk, SIGNAL(clicked(bool)), this, SLOT(handleOk()));
  }
- else if(options.count()> 0)
+ else if(options.count()> 0 && (optionType != QUESTION_MESSAGE) && (optionType != OK_CANCEL_OPTION))
  {
   QSignalMapper* mapper = new QSignalMapper();
   for(int i = 0; i < options.count(); i ++)
@@ -2425,7 +2442,7 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
   }
   pLayout->addLayout(fl);
  }
- else if(getOptionType() == OK_CANCEL_OPTION)
+ else if(getOptionType() == OK_CANCEL_OPTION || optionType == OK_CANCEL_OPTION)
  {
    btnOk = new QPushButton(tr("Ok"));
    btnOk->setObjectName("btnOk");

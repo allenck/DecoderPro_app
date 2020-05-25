@@ -1426,9 +1426,7 @@ virtual void dropEvent(QDropEvent*  e);
 virtual void enterEvent(QEvent*  event);
 virtual bool  event(QEvent*  e);
 virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
-virtual void focusInEvent(QFocusEvent*  e);
 virtual bool  focusNextPrevChild(bool  next);
-virtual void focusOutEvent(QFocusEvent*  e);
 virtual bool  hasHeightForWidth() const;
 virtual int  heightForWidth(int  arg__1) const;
 virtual void hideEvent(QHideEvent*  event);
@@ -2145,6 +2143,7 @@ public:
 
    ~PythonQtShell_LayoutTurnout();
 
+virtual bool  canRemove();
 virtual QList<int >  checkForFreeConnections();
 virtual void checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap);
 virtual bool  checkForUnAssignedBlocks();
@@ -2178,6 +2177,7 @@ inline void promoted_highlightUnconnected(EditScene*  g2, int  specificType) { t
 inline void promoted_rotateCoords(double  angleDEG) { this->rotateCoords(angleDEG); }
 inline QPointF  promoted_rotatePoint(QPointF  p, double  sineAng, double  cosineAng) { return this->rotatePoint(p, sineAng, cosineAng); }
 inline QMenu*  promoted_showPopup(QGraphicsSceneMouseEvent*  e) { return this->showPopup(e); }
+inline bool  py_q_canRemove() { return LayoutTurnout::canRemove(); }
 inline QList<int >  py_q_checkForFreeConnections() { return LayoutTurnout::checkForFreeConnections(); }
 inline void py_q_checkForNonContiguousBlocks(QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap) { LayoutTurnout::checkForNonContiguousBlocks(blockNamesToTrackNameSetsMap); }
 inline bool  py_q_checkForUnAssignedBlocks() { return LayoutTurnout::checkForUnAssignedBlocks(); }
@@ -2208,6 +2208,8 @@ LayoutTurnout* new_LayoutTurnout(QString  id, int  t, QPointF  c, double  rot, d
 void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; } 
    void addEditPopUpMenu(LayoutTurnout* theWrappedObject, QObject*  menu);
    void addViewPopUpMenu(LayoutTurnout* theWrappedObject, QObject*  menu);
+   bool  canRemove(LayoutTurnout* theWrappedObject);
+   bool  py_q_canRemove(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_canRemove());}
    QList<int >  checkForFreeConnections(LayoutTurnout* theWrappedObject);
    QList<int >  py_q_checkForFreeConnections(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_checkForFreeConnections());}
    void checkForNonContiguousBlocks(LayoutTurnout* theWrappedObject, QMap<QString , QList<QSet<QString >* >* >*  blockNamesToTrackNameSetsMap);
@@ -2223,6 +2225,7 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    void py_q_drawTurnoutControls(LayoutTurnout* theWrappedObject, EditScene*  g2){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_drawTurnoutControls(g2));}
    int  findHitPointType(LayoutTurnout* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected);
    int  py_q_findHitPointType(LayoutTurnout* theWrappedObject, QPointF  hitPoint, bool  useRectangles, bool  requireUnconnected){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_findHitPointType(hitPoint, useRectangles, requireUnconnected));}
+   QList<QString >  getBeanReferences(LayoutTurnout* theWrappedObject, QString  pointName);
    QString  getBlockBName(LayoutTurnout* theWrappedObject);
    QStringList  getBlockBoundaries(LayoutTurnout* theWrappedObject);
    QString  getBlockCName(LayoutTurnout* theWrappedObject);
@@ -2240,7 +2243,6 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    QPointF  getCoordsA(LayoutTurnout* theWrappedObject);
    QPointF  getCoordsB(LayoutTurnout* theWrappedObject);
    QPointF  getCoordsC(LayoutTurnout* theWrappedObject);
-   QPointF  getCoordsCenter(LayoutTurnout* theWrappedObject);
    QPointF  getCoordsD(LayoutTurnout* theWrappedObject);
    QPointF  getCoordsForConnectionType(LayoutTurnout* theWrappedObject, int  connectionType);
    QPointF  py_q_getCoordsForConnectionType(LayoutTurnout* theWrappedObject, int  connectionType){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_getCoordsForConnectionType(connectionType));}

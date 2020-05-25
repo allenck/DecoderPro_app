@@ -1,6 +1,7 @@
 #include "jcombobox.h"
 #include "eventobject.h"
-
+#include "itemlistener.h"
+#include "itemevent.h"
 
 JComboBox::JComboBox(QWidget* parent) : QComboBox(parent)
 {
@@ -41,8 +42,11 @@ JComboBox::JComboBox(QStringList list, QWidget* parent) : QComboBox(parent)
 
 void JComboBox::currentIndexChanged(int)
 {
- emit itemStateChanged(new EventObject(this));
+ ItemEvent* itemEvent = new ItemEvent(this);
+ itemEvent->setItem(currentData());
+ emit itemStateChanged(itemEvent);
 }
+
 
 /*public*/ void JComboBox::addChangeListener(ChangeListener* l)
 {
@@ -50,6 +54,7 @@ void JComboBox::currentIndexChanged(int)
  connect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
 
 }
+
 /*public*/ void JComboBox::removeChangeListener(ChangeListener* l)
 {
  //listeners.removeOne(l);
@@ -65,4 +70,19 @@ void JComboBox::currentIndexChanged(int)
 {
  //listeners.removeOne(l);
  disconnect(this, SIGNAL(stateChanged(ChangeEvent*)), l, SLOT(stateChanged(ChangeEvent*)));
+}
+
+/*private*/ void JComboBox::focusInEvent(QFocusEvent* e)
+{
+ emit focusGained(new FocusEvent());
+}
+
+/*private*/ void JComboBox::focusOutEvent(QFocusEvent* e)
+{
+ emit focusLost(new FocusEvent());
+}
+
+/*public*/ void JComboBox::addItemListener(ItemListener* listener)
+{
+ connect(this, SIGNAL(itemStateChanged(ItemEvent*)), listener, SLOT(itemStateChanged(ItemEvent*)));
 }

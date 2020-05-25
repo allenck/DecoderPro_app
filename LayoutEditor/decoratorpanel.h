@@ -226,7 +226,7 @@ class ItemEvent : public QObject
  Q_OBJECT
  QObject* source;
 public:
- ItemEvent(QObject* source) {this->source = source;}
+ ItemEvent(QObject *source, QObject* parent = nullptr) :  QObject(parent) {this->source = source; }
  QObject* getSource() { return source;}
 };
 #if 0

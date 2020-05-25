@@ -12,6 +12,7 @@
 //#include "panecontainer.h"
 #include "propertychangesupport.h"
 #include "qualifieradder.h"
+#include "libPr3_global.h"
 
 class JPanel;
 class HardcopyWriter;
