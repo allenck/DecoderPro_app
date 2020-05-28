@@ -1073,7 +1073,7 @@ private:
     /*private*/ void setXingSignalsDonePressed (ActionEvent* /*a*/ = 0);
     /*private*/ void setXingSensorsDonePressed (ActionEvent* /*a*/ = 0);
     /*private*/ void setTToTSignalsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void tToTTurnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
+    ///*private*/ void tToTTurnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
     /*private*/ void setTToTSignalsCancelPressed ();
     /*private*/ void slipSensorsGetSaved (ActionEvent* a = 0);
     /*private*/ void setSlipSensorsCancelPressed (ActionEvent* a = 0);

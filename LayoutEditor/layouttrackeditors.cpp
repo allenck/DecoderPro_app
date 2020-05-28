@@ -26,6 +26,7 @@
 #include "levelxing.h"
 #include "jtextfield.h"
 #include "layoutturntable.h"
+#include "etchedborder.h"
 
 /**
  * Editors for all layout track objects (PositionablePoint, TrackSegment,
@@ -2107,9 +2108,9 @@ top->setLayout(new QHBoxLayout());
     rayTurnoutStateComboBox = new QComboBox(/*turnoutStates*/);
     rayTurnoutStateComboBox->addItems(turnoutStates);
     rayTurnoutStateLabel = new QLabel(tr("TurnoutState"));  // NOI18N
-    rayTurnoutPanel = new QWidget();
 
-//    rayTurnoutPanel.setBorder(new EtchedBorder());
+    rayTurnoutPanel = new JPanel();
+    rayTurnoutPanel->setBorder(new EtchedBorder());
     rayTurnoutPanel->layout()->addWidget(turnoutNameComboBox);
     rayTurnoutPanel->layout()->addWidget(rayTurnoutStateLabel);
     rayTurnoutPanel->layout()->addWidget(rayTurnoutStateComboBox);

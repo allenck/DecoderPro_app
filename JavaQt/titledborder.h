@@ -1,12 +1,13 @@
 #ifndef TITLEDBORDER_H
 #define TITLEDBORDER_H
 #include "abstractborder.h"
-#include <QLabel>
+#include "jlabel.h"
 
 class TitledBorder : public AbstractBorder
 {
+ Q_OBJECT
 public:
- TitledBorder(QObject* parent = nullptr);
+ TitledBorder(QWidget *parent = nullptr);
  /**
   * Use the default vertical orientation for the title text.
   */
@@ -49,38 +50,66 @@ public:
   */
   TRAILING = 5
  };
- /*public*/ TitledBorder(QString title, QObject* parent = 0);
- /*public*/ TitledBorder(Border* border, QObject* parent = 0);
- /*public*/ TitledBorder(Border* border, QString title, QObject* parent = 0);
- /*public*/ TitledBorder(Border* border, QString title, int titleJustification,int titlePosition, QObject* parent = 0);
+
+ /*public*/ TitledBorder(QString title, QWidget* parent = 0);
+ /*public*/ TitledBorder(Border* border, QWidget *parent = 0);
+ /*public*/ TitledBorder(Border* border, QString title, QWidget *parent = 0);
+ /*public*/ TitledBorder(Border* border, QString title, int titleJustification,int titlePosition, QWidget* parent = 0);
  /*public*/ TitledBorder(Border* border,
                      QString title,
                      int titleJustification,
                      int titlePosition,
-                     QFont titleFont, QObject* parent = 0);
+                     QFont *titleFont, QWidget *parent = 0);
  /*public*/ TitledBorder(Border* border,
                      QString title,
                      int titleJustification,
                      int titlePosition,
-                     QFont titleFont,
-                     QColor titleColor, QObject* parent = 0);
+                     QFont* titleFont,
+                     QColor titleColor, QWidget* parent = 0);
  /*public*/ void setTitleJustification(int titleJustification);
  /*public*/ void setTitlePosition(int titlePosition);
+#if 1
+ /*public*/ Insets* getBorderInsets(QWidget* c, Insets* insets);
+ /*public*/ bool isBorderOpaque();
+ /*public*/ QString getTitle();
+ /*public*/ Border* getBorder();
+ /*public*/ int getTitlePosition();
+ /*public*/ int getTitleJustification();
+ /*public*/ QFont *getTitleFont();
+ /*public*/ QColor getTitleColor();
+ /*public*/ void setTitle(QString title);
+ /*public*/ void setBorder(Border* border);
+ /*public*/ void setTitleFont(QFont *titleFont);
+ /*public*/ void setTitleColor(QColor titleColor);
+ /*public*/ QSize getMinimumSize(QWidget *c);
+ /*public*/ int getBaseline(QWidget *c, int width, int height);
+ /*public*/ void paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height);
+#endif
+ QWidget* self() {return (QWidget*)this;}
 
 private:
- /*private*/ /*final*/ QLabel* label;
+ /*private*/ /*final*/ JLabel* label;
  void common(Border* border,
               QString title,
               int titleJustification,
               int titlePosition,
-              QFont titleFont,
+              QFont* titleFont,
               QColor titleColor);
+#if 1
+ /*private*/ int getPosition();
+ /*private*/ int getJustification(QWidget* c);
+ /*private*/ QColor getColor(QWidget* c);
+ /*private*/ JLabel* getLabel(QWidget* c);
+ /*private*/ static Insets* getBorderInsets(Border* border, QWidget* c, Insets* insets);
+
+
+#endif
 protected:
  /*protected*/ QString title;
  /*protected*/ Border* border;
  /*protected*/ int titlePosition;
  /*protected*/ int titleJustification;
- /*protected*/ QFont titleFont;
+ /*protected*/ QFont* titleFont;
  /*protected*/ QColor titleColor;
  // Space between the border and the component's edge
  static /*protected*/ /*final*/ int EDGE_SPACING;// = 2;
@@ -90,6 +119,10 @@ protected:
 
  // Horizontal inset of text that is left or right justified
  static /*protected*/ /*final*/ int TEXT_INSET_H;// = 5;
+
+#if 1
+ /*protected*/ QFont *getFont(QWidget* c);
+#endif
 
 };
 

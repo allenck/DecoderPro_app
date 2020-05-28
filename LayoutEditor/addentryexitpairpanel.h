@@ -87,7 +87,7 @@ private:
 private slots:
  /*private*/ void addButton();
   /*private*/ void autoDiscovery();
-  void propertyChange(PropertyChangeEvent*);
+  //void propertyChange(PropertyChangeEvent*);
   void on_settingtrackColorBox_currentIndexChanged(QString);
   void optionSaveButton();
 

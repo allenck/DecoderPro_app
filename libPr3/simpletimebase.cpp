@@ -445,6 +445,32 @@ SimpleTimebase::~SimpleTimebase()
     startSetTime = set;
     startTime = time;
 }
+
+//@Override
+/*public*/ void SimpleTimebase::setStartRate(double factor) {
+    startupFactor = factor;
+    haveStartupFactor = true;
+}
+
+//@Override
+/*public*/ double SimpleTimebase::getStartRate() {
+    if (haveStartupFactor) {
+        return startupFactor;
+    } else {
+        return userGetRate();
+    }
+}
+
+//@Override
+/*public*/ void SimpleTimebase::setSetRateAtStart(bool set) {
+    startSetRate = set;
+}
+
+//@Override
+/*public*/ bool SimpleTimebase::getSetRateAtStart() {
+    return startSetRate;
+}
+
 /*public*/ bool SimpleTimebase::getStartSetTime() {return startSetTime;}
 
 /*public*/ QDateTime SimpleTimebase::getStartTime() {return  startTime;}

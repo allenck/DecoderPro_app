@@ -33,6 +33,14 @@
  * @author			Bob Jacobsen Copyright (C) 2004, 2007, 2008
  * @version			$Revision: 17977 $
  */
+enum ClockInitialRunState {
+    // Changes the clock to stopped when JMRI starts.
+    DO_STOP,
+    // Changes the clock to running when JMRI starts.
+    DO_START,
+    // Does not change the clock when JMRI starts.
+    DO_NOTHING
+};
 
 class Timebase :  public AbstractNamedBean
 {
@@ -107,10 +115,32 @@ virtual QString getMasterName() {return "";}
     virtual void setStartStopped(bool /*stopped*/) {}
     virtual bool getStartStopped() {return false;}
 
+ // methods for start up with clock stopped/started/nochange option
+ /*public*/ virtual void setClockInitialRunState(ClockInitialRunState initialState) {}
+ /**
+  * Defines what to do with the fast clock when JMRI starts up.
+  */
+
+ /*public*/ virtual ClockInitialRunState getClockInitialRunState() {return DO_NOTHING;}
+    // methods for start up with start/stop button displayed
+    /*public*/ virtual void setShowStopButton(bool displayed) {}
+
+    /*public*/ virtual bool getShowStopButton() {}
+
     // methods to get set time at start up option, and start up time
     virtual void setStartSetTime(bool /*set*/, QDateTime /*time*/) {}
     virtual bool getStartSetTime() {return false;}
-virtual QDateTime getStartTime() {return QDateTime();}
+
+    // What to set the rate at startup.
+    /*public*/ virtual void setStartRate(double factor) {}
+
+    /*public*/ virtual double getStartRate() {return 0;}
+    // If true, the rate at startup will be set to the value of getStartRate().
+    /*public*/ virtual void setSetRateAtStart(bool set) {}
+
+    /*public*/ virtual bool getSetRateAtStart() {return false;}
+
+    virtual QDateTime getStartTime() {return QDateTime();}
 
     // methods to get set clock start start up option
     virtual void setStartClockOption(int /*option*/) {}
@@ -124,6 +154,7 @@ virtual QDateTime getStartTime() {return QDateTime();}
     const static  int NIXIE_CLOCK     = 0x01;
     const static  int ANALOG_CLOCK	= 0x02;
     const static  int LCD_CLOCK       = 0x04;
+    const static  int PRAGOTRON_CLOCK = 0x08;
 
     /**
      * Initialize hardware clock at start up after all options are set up.<p>

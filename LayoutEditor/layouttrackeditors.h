@@ -7,6 +7,7 @@
 #include "layoutturnout.h"
 #include <QWidget>
 #include "decimalformat.h"
+#include "jpanel.h"
 
 class NamedBeanComboBox;
 class TestState;
@@ -357,7 +358,7 @@ class QGroupBox;
  Q_OBJECT
  // variables for Edit Turntable ray pane
  /*private*/ RayTrack* rayTrack =  nullptr;
- /*private*/ QWidget* rayTurnoutPanel;
+ /*private*/ JPanel* rayTurnoutPanel;
  /*private*/ /*transient*/ NamedBeanComboBox* turnoutNameComboBox;
  /*private*/ QGroupBox* rayTitledBorder;
  /*private*/ QComboBox* rayTurnoutStateComboBox;

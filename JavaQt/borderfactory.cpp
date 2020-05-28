@@ -464,7 +464,7 @@
                         QString title,
                         int titleJustification,
                         int titlePosition,
-                        QFont titleFont)
+                        QFont *titleFont)
     {
         return new TitledBorder(border, title, titleJustification,
                         titlePosition, titleFont);
@@ -506,7 +506,7 @@
                         QString title,
                         int titleJustification,
                         int titlePosition,
-                        QFont titleFont,
+                        QFont* titleFont,
                         QColor titleColor)
     {
         return new TitledBorder(border, title, titleJustification,
@@ -514,7 +514,7 @@
     }
 
 //// EmptyBorder ///////////////////////////////////////////////////////////
-    /*final*/ /*static*/ Border* BorderFactory::emptyBorder = new EmptyBorder(0, 0, 0, 0);
+    /*final*/ /*static*/ Border* BorderFactory::emptyBorder = nullptr; //new EmptyBorder(0, 0, 0, 0);
 
     /**
      * Creates an empty border that takes up no space. (The width
@@ -523,6 +523,8 @@
      * @return the <code>Border</code> object
      */
     /*public*/ /*static*/ Border* BorderFactory::createEmptyBorder() {
+     if(emptyBorder == nullptr)
+      emptyBorder = new EmptyBorder(0, 0, 0, 0);
         return emptyBorder;
     }
 

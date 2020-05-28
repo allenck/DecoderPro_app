@@ -178,7 +178,7 @@
   DefaultResetListener* resetListener = new DefaultResetListener(chooserPane);
   connect(reset, SIGNAL(clicked(bool)), resetListener, SLOT(actionPerformed()));
 
-  thisLayout->addWidget(chooserPane, 0, Qt::AlignTop);//BorderLayout.NORTH);
+  thisLayout->addWidget(chooserPane, 1, Qt::AlignTop);//BorderLayout.NORTH);
 
   panelLayout->addWidget(ok);
   panelLayout->addWidget(cancel);
@@ -234,9 +234,15 @@ void JColorChooser::common(ColorSelectionModel* model)
 // layout()->addWidget(dlg = new QColorDialog());
 // dlg->setOption(QColorDialog::NoButtons);
  tabWidget = new QTabWidget();
- layout()->addWidget(tabWidget);
+ ((QVBoxLayout*)layout())->addWidget(tabWidget, 1);
+ tabWidget->setMinimumHeight(300);
+  QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+  sizePolicy.setHorizontalStretch(1);
+  sizePolicy.setVerticalStretch(1);
+  sizePolicy.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
+  tabWidget->setSizePolicy(sizePolicy);
  if(getPreviewPanel())
-   layout()->addWidget(getPreviewPanel());
+   ((QVBoxLayout*)layout())->addWidget(getPreviewPanel(),0);
 }
 /**
  * Returns the L&amp;F object that renders this component.
@@ -527,6 +533,11 @@ void JColorChooser::stateChanged(ChangeEvent* evt)
       if(panel == nullptr)
        continue;
       panel->installChooserPanel(this);
+      QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+      sizePolicy.setHorizontalStretch(1);
+      sizePolicy.setVerticalStretch(1);
+      sizePolicy.setHeightForWidth(panel->sizePolicy().hasHeightForWidth());
+      panel->setSizePolicy(sizePolicy);
 
       tabWidget->addTab(panel, panel->getTitle());
 

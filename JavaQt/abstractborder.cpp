@@ -1,7 +1,8 @@
 #include "abstractborder.h"
 #include "exceptions.h"
+#include <QPaintEvent>
 
-AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
+AbstractBorder::AbstractBorder(QWidget* parent) : QWidget(parent)
 {
 
 }
@@ -47,9 +48,9 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * @param c  the component for which this border insets value applies
  * @return a new {@link Insets} object
  */
-/*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c)       {
-    return getBorderInsets(c, new Insets(0, 0, 0, 0));
-}
+///*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c)       {
+//    return getBorderInsets(c, new Insets(0, 0, 0, 0));
+//}
 
 /**
  * Reinitializes the insets parameter with this Border's current Insets.
@@ -58,8 +59,10 @@ AbstractBorder::AbstractBorder(QObject* parent) : Border(parent)
  * @return the <code>insets</code> object
  */
 /*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c, Insets* insets) {
-    insets->left = insets->top = insets->right = insets->bottom = 0;
-    return insets;
+ if(insets == nullptr)
+  insets = new Insets(0, 0, 0, 0);
+ insets->left = insets->top = insets->right = insets->bottom = 0;
+ return insets;
 }
 
 /**
@@ -172,3 +175,9 @@ static bool isLeftToRight( Component c ) {
     return c.getComponentOrientation().isLeftToRight();
 }
 #endif
+void AbstractBorder::paintEvent(QPaintEvent *event)
+{
+ QPainter* g = (QPainter*)this;
+ QRect r = event->rect();
+ //paintBorder(this, g, r.x(), r.y(), r.width(), r.height());
+}

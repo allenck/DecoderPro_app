@@ -3,6 +3,8 @@
 #include "jmrijframe.h"
 #include "exceptions.h"
 #include "liblayouteditor_global.h"
+#include "focuslistener.h"
+#include "jtextfield.h"
 
 class PropertyChangeEvent;
 class JLabel;
@@ -31,8 +33,15 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 private:
+ enum START
+ {
+  START_RUNNING = 0,
+  START_STOPPED = 1,
+  START_NORUNCHANGE = 2
+};
+
     /*private*/ Timebase* clock;
-    /*private*/ QString hardwareName;// = null;
+    /*private*/ QString hardwareName = nullptr;
     //private boolean synchronize = true;
     //private boolean correct = true;
     /*private*/ bool changed;// = false;
@@ -40,15 +49,19 @@ private:
     /*private*/ int internalSourceIndex;// = 0;
     /*private*/ int hardwareSourceIndex;// = 1;
 
-    /*private*/ int startNone;// = 0;
-    /*private*/ int startNixieClock;// = 1;
-    /*private*/ int startAnalogClock;// = 2;
-    /*private*/ int startLcdClock;// = 3;
+    /*private*/ int startNone = 0;
+    /*private*/ int startNixieClock = 1;
+    /*private*/ int startAnalogClock = 2;
+    /*private*/ int startLcdClock = 3;
+    /*private*/ int startPragotronClock = 4 ;
+
     Logger* log;
     void setTimeLabel();
     void closeEvent(QCloseEvent *);
     void updateRate();
+    /*private*/ void startSetRateChanged();
     void updateRunningButton();
+    /*private*/ void startFactorFieldChanged();
 
 private slots:
     /*private*/ void setTimeSourceChanged();
@@ -59,20 +72,26 @@ private slots:
     /*private*/ void startSetTimeChanged();
     void updateTime();
     /*private*/ void setClockStartChanged();
+    /*private*/ void startRunBoxChanged();
+    /*private*/ void showStopButtonChanged();
 
 protected:
     /*protected*/ bool showTime;// = false;
-    /*protected*/ QComboBox* timeSourceBox;// = NULL;
-    /*protected*/ QComboBox* clockStartBox;// = NULL;
+    /*protected*/ QComboBox* timeSourceBox = nullptr;
+    /*protected*/ QComboBox* clockStartBox = nullptr;
+    /*protected*/ QComboBox* startRunBox = nullptr;
 
-    /*protected*/ QCheckBox* synchronizeCheckBox;// = NULL;
-    /*protected*/ QCheckBox* correctCheckBox;// = NULL;
-    /*protected*/ QCheckBox* displayCheckBox;// = NULL;
-    /*protected*/ QCheckBox* showStartupCheckBox;// = NULL;
-    /*protected*/ QCheckBox* startStoppedCheckBox;// = NULL;
-    /*protected*/ QCheckBox* startSetTimeCheckBox;// = NULL;
+    /*protected*/ QCheckBox* synchronizeCheckBox = nullptr;
+    /*protected*/ QCheckBox* correctCheckBox = nullptr;
+    /*protected*/ QCheckBox* displayCheckBox = nullptr;
+    /*protected*/ QCheckBox* showStartupCheckBox = nullptr;
+    /*protected*/ QCheckBox* startStoppedCheckBox = nullptr;
+    /*protected*/ QCheckBox* startSetTimeCheckBox = nullptr;
+    /*protected*/ QCheckBox* startSetRateCheckBox = nullptr;
+    /*protected*/ QCheckBox* displayStartStopButton = nullptr;
 
     /*protected*/ JTextField* factorField;// = new JTextField(5);
+    /*protected*/ JTextField* startFactorField = new JTextField(5);
     /*protected*/ JTextField* hoursField;// = new JTextField(2);
     /*protected*/ JTextField* minutesField;// = new JTextField(2);
     /*protected*/ JTextField* startHoursField;// = new JTextField(2);
@@ -87,6 +106,22 @@ protected:
     /*protected*/ JLabel* clockStatus;// = new JLabel();
     /*protected*/ JLabel* timeLabel;// = new JLabel();
 
+    friend class SCFFocusListener;
 };
 
+class SCFFocusListener : public FocusListener
+{
+  Q_OBJECT
+  SimpleClockFrame* frame;
+ public:
+  SCFFocusListener(SimpleClockFrame* frame) {this->frame = frame;}
+     /*public*/ void focusLost(FocusEvent* focusEvent) {
+//         if (!focusEvent->isTemporary())
+         {
+             frame->startFactorFieldChanged();
+         }
+         //super.focusLost(focusEvent);
+     }
+
+ };
 #endif // SIMPLECLOCKFRAME_H

@@ -31,12 +31,12 @@ public:
                      QString title,
                      int titleJustification,
                      int titlePosition,
-                     QFont titleFont);
+                     QFont* titleFont);
  /*public*/ /*static*/ TitledBorder* createTitledBorder(Border* border,
                      QString title,
                      int titleJustification,
                      int titlePosition,
-                     QFont titleFont,
+                     QFont *titleFont,
                      QColor titleColor);
  /*public*/ static Border* createEmptyBorder();
  /*public*/ static Border* createEmptyBorder(int top, int left,                                                int bottom, int right);

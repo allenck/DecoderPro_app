@@ -13,6 +13,7 @@
 #include "colorselectionmodel.h"
 #include <QButtonGroup>
 #include "loggerfactory.h"
+#include "borderfactory.h"
 
 JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorChooserPanel(parent)
 {
@@ -20,7 +21,7 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
     QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red)<< QColor(255,233,236) << QColor(255,170,0)<<
     QColor(Qt::yellow)<< QColor(Qt::green)<< QColor(Qt::blue)<< QColor(Qt::magenta)<< QColor(Qt::cyan)<<
     ColorUtil::BROWN;
- recentPanel = new QGroupBox();
+ recentPanel = new JPanel();
  recentPanel->setLayout(recentPanelLayout = new GridBagLayout());
  //buildChooser();
 }
@@ -70,12 +71,10 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
  setLayout(thisLayout = new QHBoxLayout()); //this, BoxLayout.X_AXIS));
  signalMapper = new QSignalMapper(this);
 
- QGroupBox* stdColors = new QGroupBox();
+ JPanel* stdColors = new JPanel();
  GridBagLayout* stdColorsLayout = new GridBagLayout(stdColors);
  QButtonGroup* buttonGroup = new QButtonGroup();
- //stdColors.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("StandardColorLabel")));  // NOI18N
- //stdColors->setLayout(stdColorsLayout);
- stdColors->setTitle(tr("Standard Colors"));
+ //stdColors->setBorder(BorderFactory::createTitledBorder(tr("Standard Colors")));  // NOI18N
  ColorSelectionModel* model = getColorSelectionModel();
  GridBagConstraints c = GridBagConstraints();
  c.anchor = GridBagConstraints::WEST;
@@ -94,11 +93,12 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
      signalMapper->setMapping(button, colors.at(i).name());
      connect(button, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
  }
- thisLayout->addWidget(stdColors);
+ thisLayout->addWidget(stdColors,0);
+ stdColors->setBorder(BorderFactory::createTitledBorder(tr("Standard Colors")));  // NOI18N
  stdColors->setVisible(true);
 
- //recentPanel.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("RecentColorLabel")));  // NOI18N
- recentPanel->setTitle(tr("Recent Colors"));
+ recentPanel->setBorder(BorderFactory::createTitledBorder(tr("Recent Colors")));  // NOI18N
+ //recentPanel->setTitle(tr("Recent Colors"));
  QList<QColor> colors = JmriColorChooser::getRecentColors();
  int cols = qMax(3, (int)qCeil((double)colors.size() / 7));
  int idx = 0;

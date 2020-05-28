@@ -31,7 +31,7 @@
     /**
      * Creates a compound border with NULL outside and inside borders.
      */
-    /*public*/ CompoundBorder::CompoundBorder(QObject* parent) : AbstractBorder(parent) {
+    /*public*/ CompoundBorder::CompoundBorder(QWidget* parent) : AbstractBorder(parent) {
         this->outsideBorder = NULL;
         this->insideBorder = NULL;
     }
@@ -43,7 +43,7 @@
      * @param insideBorder the inside border to be nested
      */
     //@ConstructorProperties({"outsideBorder", "insideBorder"})
-    /*public*/ CompoundBorder::CompoundBorder(Border* outsideBorder, Border* insideBorder, QObject* parent) : AbstractBorder(parent)
+    /*public*/ CompoundBorder::CompoundBorder(Border* outsideBorder, Border* insideBorder, QWidget *parent) : AbstractBorder(parent)
 {
         this->outsideBorder = outsideBorder;
         this->insideBorder = insideBorder;
@@ -61,7 +61,7 @@
         return (outsideBorder == NULL || outsideBorder->isBorderOpaque()) &&
                (insideBorder == NULL || insideBorder->isBorderOpaque());
     }
-#if 0
+#if 1
     /**
      * Paints the compound border by painting the outside border
      * with the specified position and size and then painting the
@@ -74,8 +74,8 @@
      * @param width the width of the painted border
      * @param height the height of the painted border
      */
-    /*public*/ void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-        Insets  nextInsets;
+    /*public*/ void CompoundBorder::paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height) {
+        Insets*  nextInsets;
         int px, py, pw, ph;
 
         px = x;
@@ -84,16 +84,16 @@
         ph = height;
 
         if(outsideBorder != NULL) {
-            outsideBorder.paintBorder(c, g, px, py, pw, ph);
+            outsideBorder->paintBorder(c, g, px, py, pw, ph);
 
-            nextInsets = outsideBorder.getBorderInsets(c);
+            nextInsets = outsideBorder->getBorderInsets(c);
             px += nextInsets->left;
             py += nextInsets->top;
             pw = pw - nextInsets->right - nextInsets->left;
             ph = ph - nextInsets->bottom - nextInsets->top;
         }
         if(insideBorder != NULL)
-            insideBorder.paintBorder(c, g, px, py, pw, ph);
+            insideBorder->paintBorder(c, g, px, py, pw, ph);
 
     }
 #endif
@@ -136,4 +136,5 @@
     /*public*/ Border* CompoundBorder::getInsideBorder() {
         return insideBorder;
     }
+
 

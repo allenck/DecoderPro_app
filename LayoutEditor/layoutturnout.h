@@ -432,7 +432,7 @@ private slots:
  /*public*/ void setDisableWhenOccupied(bool state);
  void on_rotateItemAction_triggered();
  void redrawPanel();
- void on_viewRoutingAct_triggered();
+ //void on_viewRoutingAct_triggered();
  void on_additionalTurnout_toggled(bool);
  void turnoutEditBlockPressed(ActionEvent* a = 0);
  void turnoutEditBlockBPressed(ActionEvent* a = 0);

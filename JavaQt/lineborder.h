@@ -1,8 +1,8 @@
 #ifndef LINEBORDER_H
 #define LINEBORDER_H
-#include "border.h"
+#include "abstractborder.h"
 
-class LineBorder : public Border //temp use Border rather than AbstractBorder
+class LineBorder : public  AbstractBorder
 {
 public:
  /**
@@ -10,21 +10,23 @@ public:
  * thickness = 1.
  * @param color the color for the border
  */
- /*public*/ LineBorder(QColor color, QObject* parent = 0);
- /*public*/ LineBorder(QColor color, int thickness, QObject* parent = 0);
- /*public*/ LineBorder(QColor color, int thickness, bool roundedCorners, QObject* parent = 0) ;
- LineBorder(int top, int left, int bottom, int right, QObject* parent = 0);
- LineBorder(Insets* borderInsets, QObject* parent = 0);
+ /*public*/ LineBorder(QColor color, QWidget* parent = 0);
+ /*public*/ LineBorder(QColor color, int thickness, QWidget *parent = 0);
+ /*public*/ LineBorder(QColor color, int thickness, bool roundedCorners, QWidget* parent = 0) ;
+ LineBorder(int top, int left, int bottom, int right, QWidget *parent = 0);
+ LineBorder(Insets* borderInsets, QWidget *parent = 0);
  /*public*/ int lineWidth();
  /*public*/ QColor color();
  /*public*/ bool roundedCorners();
+ /*public*/ void paintBorder(QWidget* c, QPainter*  g,
+                         int x, int y, int width, int height);
+ QWidget* self() {return (QWidget*)this;}
 
 private:
  /*private*/ static Border* blackLine;
  /*private*/ static Border* grayLine;
  void common(QColor color, int thickness, bool roundedCorners);
-
-protected:
+ void paintEvent(QPaintEvent *event);
  /*protected*/ int thickness;
  /*protected*/ QColor lineColor;
  /*protected*/ bool _roundedCorners;

@@ -37,6 +37,10 @@ public:
     /*public*/ void setStartStopped(bool stopped) override;
     /*public*/ bool getStartStopped() override;
     /*public*/ void setStartSetTime(bool set, QDateTime time) override;
+    /*public*/ void setStartRate(double factor);
+    /*public*/ double getStartRate();
+    /*public*/ void setSetRateAtStart(bool set);
+    /*public*/ bool getSetRateAtStart();
     /*public*/ bool getStartSetTime() override;
     /*public*/ QDateTime getStartTime() override;
     /*public*/ void setStartClockOption(int option) override;
@@ -72,6 +76,11 @@ private:
     /*private*/ double hardwareFactor;// = 1.0;  // this is the rate factor for the hardware clock
     //  The above is necessary to support hardware clock Time Sources that fiddle with mFactor to
     //      synchronize, instead of sending over a new time to synchronize.
+    /*private*/ double startupFactor = 1.0; // this is the rate requested at startup
+    /*private*/ bool startSetRate = true; // if true, the hardware rate will be set to
+    /*private*/ bool haveStartupFactor = false; // true if startup factor was ever set.
+
+    // startupFactor at startup.
     /*private*/ QDateTime startAtTime;
     /*private*/ QDateTime setTimeValue;
     /*private*/ QDateTime pauseTime;   // NULL value indicates clock is running

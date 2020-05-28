@@ -1739,3 +1739,5 @@ QString JLabel::getName()
 {
  return QFontMetrics(font());
 }
+
+/*public*/ int JLabel::getBaseline(int w, int h) { return 0;}

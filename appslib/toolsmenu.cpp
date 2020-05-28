@@ -37,6 +37,8 @@
 #include "cabsignalaction.h"
 #include "whereusedaction.h"
 #include "timetable/timetableaction.h"
+#include "servermenu.h"
+#include "pragotronclockaction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -162,11 +164,12 @@ addAction(ta);
  clockMenu->addAction(new NixieClockAction(tr("Nixie Clock"), this));
  clockMenu->addAction(new LcdClockAction(tr("Lcd Clock"), this));
  clockMenu->addAction(new AnalogClockAction(tr("Analog Clock"),this));
+ clockMenu->addAction(new PragotronClockAction(tr("Pragotron Clock"),this));
 
  addMenu(clockMenu);
 
  addSeparator();
-
+ // single-pane tools
  addAction(new PowerPanelAction(tr("Power Control..."),this));
  addAction(new SimpleTurnoutCtrlAction(tr("Turnout Control..."),this));
  addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
@@ -175,21 +178,29 @@ addAction(ta);
  addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
  addAction(new BlockBossAction(tr("Simple Signal Logic"),this));
  addAction(new SendPacketAction(tr("Send DCC Packet"),this));
+
  addSeparator();
- // operations menu
+ // more complex multi-window tools
  addMenu(new OperationsMenu());
  addAction(new DispatcherAction(tr("Dispatcher..."),this));
  addAction(new TimeTableAction(tr("Timetable"), this));
  addAction(new WhereUsedAction(tr("Where Used"), this));
- addSeparator();
-#if 0 // TODO:
+ // CTC menu item with submenus
+#if 0
+ JMenu ctcMenu = new JMenu(Bundle.getMessage("MenuCTC"));
+ ctcMenu.add(new jmri.jmrit.ctc.editor.CtcEditorAction(Bundle.getMessage("MenuItemCTCEditor")));
+ ctcMenu.add(new jmri.jmrit.ctc.CtcRunAction(Bundle.getMessage("MenuItemCTCMain")));
+ add(ctcMenu);
  // US&S CTC subsystem tools
- addMenu(new jmri.jmrit.ussctc.ToolsMenu());
+ add(new jmri.jmrit.ussctc.ToolsMenu());
 #endif
+         // add cab signals
  addAction(new CabSignalAction(this));
  addSeparator();
  // add start web server
  addAction(new WebServerAction(this));
+ // add the server menu
+ addMenu(new ServerMenu());
 }
 
 

@@ -213,7 +213,7 @@ private:
  ItemListener* stopStationItemEvent = nullptr;
  ItemListener* layoutScaleItemEvent = nullptr;
 protected:
- QString getClassName();
+ QString getClassName() override;
 
  friend class TTFWindowListener;
  friend class TTFTreeSelectionListener;

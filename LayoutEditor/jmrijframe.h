@@ -86,7 +86,6 @@ public slots:
 
 private:
     static /*volatile*/ QList<JmriJFrame*>* frameList;// = new QList<JmriJFrame*>();
-    void reSizeToFitOnScreen();
     QString windowFrameRef;
     void offSetFrameOnScreen(JmriJFrame* f);
     /*private*/ AbstractShutDownTask* task;// = NULL;
@@ -120,6 +119,7 @@ protected:
     /*protected*/ void setShutDownTask();
     /*protected*/ virtual void handleModified();
     /*protected*/ virtual void storeValues();
+    void reSizeToFitOnScreen();
 
     friend class LayoutEditorTools;
     friend class MyAbstractShutDownTask;

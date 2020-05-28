@@ -26,7 +26,7 @@ private:
 //    Color.yellow, Color.green, Color.blue, Color.magenta, Color.cyan,
 //    jmri.util.ColorUtil.BROWN};
  /*private*/ int numColors = 14; //number of entries in the above array
- /*private*/ QGroupBox* recentPanel;// = new JPanel(new GridBagLayout());
+ /*private*/ JPanel* recentPanel;// = new JPanel(new GridBagLayout());
  QPushButton* createColorButton(QColor color, bool stdcolor);
  const QIcon getColorIcon(QColor color);
  GridBagLayout* recentPanelLayout = nullptr;

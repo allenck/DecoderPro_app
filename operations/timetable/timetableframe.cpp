@@ -27,6 +27,7 @@
 #include "timetableimport.h"
 #include <QTime>
 #include "timetabledisplaygraph.h"
+#include "exporttimetable.h"
 
 namespace TimeTable
 {
@@ -93,8 +94,10 @@ namespace TimeTable
 
         // ------------ Body - detail (right side) ------------
         JPanel* detailPane = new JPanel();
-        detailPane->setBorder(BorderFactory::createMatteBorder(0, 2, 0, 0, Qt::darkGray));
         detailPane->setLayout(new QVBoxLayout());//detailPane, Boxlayout->Y_AXIS));
+        //detailPane->setBorder(BorderFactory::createMatteBorder(0, 2, 0, 0, Qt::blue)); //dark gray
+        detailPane->setBorder(BorderFactory::createMatteBorder(2, 2, 2, 2, Qt::blue)); //dark gray
+        //detailPane->setBorder(BorderFactory::createLineBorder(Qt::darkGray));
 
         // ------------ Edit Detail Panel ------------
         makeDetailGrid(EMPTY_GRID);  // NOI18N
@@ -283,6 +286,7 @@ namespace TimeTable
         addWindowListener(new TTFWindowListener(this));
         setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
 
+        reSizeToFitOnScreen();
         pack();
         _addButtonPanel->setVisible(false);
         _deleteButtonPanel->setVisible(false);
@@ -2327,11 +2331,9 @@ namespace TimeTable
     }
 
     void TimeTableFrame::importFromOperationsPressed() {
-    #if 0
-        ExportTimetable ex = new ExportTimetable();
-        new ExportTimetable().writeOperationsTimetableFile();
-        completeImport(ex.getExportFile());
-    #endif
+        ExportTimetable* ex = new ExportTimetable();
+        (new ExportTimetable())->writeOperationsTimetableFile();
+        completeImport(ex->getExportFile());
     }
 
     void TimeTableFrame::exportCsvPressed() {

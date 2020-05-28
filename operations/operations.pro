@@ -358,7 +358,8 @@ SOURCES += \
     timetable/ttschedule.cpp \
     timetable/timetableimport.cpp \
     timetable/timetabledisplaygraph.cpp \
-    timetable/timetablegraphcommon.cpp
+    timetable/timetablegraphcommon.cpp \
+    timetable/exporttimetable.cpp
 
 HEADERS += \
         operations.h \
@@ -652,7 +653,8 @@ HEADERS += \
     timetable/tttrain.h \
     timetable/timetableimport.h \
     timetable/timetabledisplaygraph.h \
-    timetable/timetablegraphcommon.h
+    timetable/timetablegraphcommon.h \
+    timetable/exporttimetable.h
 
 unix {
     target.path = /usr/lib

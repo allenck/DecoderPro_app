@@ -6,7 +6,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include "jlabel.h"
-#include "jtextfield.h"
+
 #include "defaultclockcontrol.h"
 #include <QGroupBox>
 #include <QDateTime>
@@ -15,6 +15,8 @@
 #include "clockcontrol.h"
 #include <QBoxLayout>
 #include <QPushButton>
+#include "calendar.h"
+#include "borderfactory.h"
 
 SimpleClockFrame::SimpleClockFrame(QWidget *parent) :
     JmriJFrame(parent)
@@ -90,7 +92,7 @@ SimpleClockFrame::~SimpleClockFrame()
  setTitle(tr("Fast Clock Setup"));
  resize(400,500);
 
- QWidget* contentPane = getContentPane();
+ QWidget* contentPane = getContentPane(true);
  QVBoxLayout* l = (QVBoxLayout*)contentPane->layout();
  l->setMargin(2);
  l->setContentsMargins(0,0,0,0);
@@ -244,91 +246,164 @@ SimpleClockFrame::~SimpleClockFrame()
  connect(setTimeButton, SIGNAL(clicked()), this, SLOT(setTimeButtonActionPerformed()));
  panel2->layout()->addWidget(setTimeButton);
  l->addWidget(panel2);
+
  QString gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
 
-
  // Set up startup options panel
- QGroupBox* panel6 = new QGroupBox();
- QVBoxLayout* l2;
- panel6->setLayout(l2 = new QVBoxLayout(panel6/*, BoxLayout.Y_AXIS*/));
- l2->setMargin(0);
- l2->setContentsMargins(0,1,0,1);
- l2->setSpacing(0);
- panel6->setStyleSheet(gbStyleSheet);
+ JPanel* startupOptionsPane = new JPanel();
+ startupOptionsPane->setLayout(new QVBoxLayout());//startupOptionsPane, BoxLayout.Y_AXIS));
+ JPanel* panel61 = new JPanel(new FlowLayout());
+ panel61->layout()->addWidget(new JLabel(tr("Start with Fast Clock") + " "));
+ startRunBox = new QComboBox();
+ startRunBox->addItem(tr("Running"));
+ startRunBox->addItem(tr("Stopped"));
+ startRunBox->addItem(tr("NoChange"));
+ startRunBox->setToolTip(tr("Select whether you want to start or stop the clock when loading the configuration. You can also choose to not change the running of the clock, which is useful when JMRI is not the clock master."));
+ switch (clock->getClockInitialRunState()) {
+     case DO_STOP:
+         startRunBox->setCurrentIndex(START_STOPPED);
+         break;
+     case DO_START:
+         startRunBox->setCurrentIndex(START_RUNNING);
+         break;
+     case DO_NOTHING:
+         startRunBox->setCurrentIndex(START_NORUNCHANGE);
+         break;
+     default:
+//         jmri.util.Log4JUtil.warnOnce(log, "Unexpected initial run state = {}", clock.getClockInitialRunState());
+         break;
+ }
+// startRunBox.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent actionEvent) {
+ connect(startRunBox, &QComboBox::currentTextChanged, [=]{
+         startRunBoxChanged();
+//     }
+ });
+ panel61->layout()->addWidget(startRunBox);
+ startupOptionsPane->layout()->addWidget(panel61);
 
- QWidget* panel61 = new QWidget();
- panel61->setLayout(new QHBoxLayout);
- startStoppedCheckBox = new QCheckBox(tr("Start with Fast Clock Stopped"));
- startStoppedCheckBox->setToolTip(tr("Check if clock is to be stopped when configuration is loaded."));
- startStoppedCheckBox->setChecked(clock->getStartStopped());
-//    startStoppedCheckBox.addActionListener(new java.awt.event.ActionListener() {
-//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//            startStoppedChanged();
-//        }
-//    });
- connect(startStoppedCheckBox, SIGNAL(clicked()), this, SLOT(startStoppedChanged()));
- panel61->layout()->addWidget(startStoppedCheckBox);
- panel6->layout()->addWidget(panel61);
- QWidget* panel62 = new QWidget();
- panel62->setLayout(new QHBoxLayout);
+ JPanel* panel62 = new JPanel(new FlowLayout);
  startSetTimeCheckBox = new QCheckBox(tr("Set Fast Clock Time to"));
  startSetTimeCheckBox->setToolTip(tr("Check after entering start time at right if time should be set at start up."));
  startSetTimeCheckBox->setChecked(clock->getStartSetTime());
-//    startSetTimeCheckBox.addActionListener(new java.awt.event.ActionListener() {
-//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//            startSetTimeChanged();
-//        }
-//    });
- connect(startSetTimeCheckBox, SIGNAL(clicked()), this, SLOT(startSetTimeChanged()));
+// startSetTimeCheckBox.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+ connect(startSetTimeCheckBox, &QCheckBox::toggled, [=]{
+         startSetTimeChanged();
+//     }
+ });
  panel62->layout()->addWidget(startSetTimeCheckBox);
- QDateTime tem = clock->getStartTime();
- startHoursField->setText(QString::number(tem.time().hour()));
+ Calendar* cal = Calendar::getInstance();
+ cal->setTime(clock->getStartTime());
+ startHoursField->setText(QString::number(cal->get(Calendar::HOUR_OF_DAY)));
  startHoursField->setToolTip(tr("Enter start time hours (0-23) for a 24-hour clock."));
  panel62->layout()->addWidget(startHoursField);
  panel62->layout()->addWidget(new JLabel(":"));
- startMinutesField->setText(QString::number(tem.time().minute()));
- startMinutesField->setToolTip(tr("TipStartMinutes"));
+ startMinutesField->setText(QString::number(cal->get(Calendar::MINUTE)));
+ startMinutesField->setToolTip(tr("Enter start time minutes (0-59) for a 24-hour clock."));
  panel62->layout()->addWidget(startMinutesField);
  setStartTimeButton->setToolTip(tr("Click to set start up Fast Clock Time to entered value."));
-//    setStartTimeButton.addActionListener(new java.awt.event.ActionListener() {
-//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//            startSetTimeChanged();
-//        }
-//    });
- connect(setStartTimeButton, SIGNAL(clicked()), this, SLOT(startSetTimeChanged()));
+// setStartTimeButton.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+ connect(setStartTimeButton, &QPushButton::clicked, [=]{
+         startSetTimeChanged();
+//     }
+ });
  panel62->layout()->addWidget(setStartTimeButton);
- panel6->layout()->addWidget(panel62);
- QWidget* panel63 = new QWidget();
- panel63->setLayout(new QHBoxLayout);
- panel63->layout()->addWidget(new JLabel(tr("Start Selected Clock")+" "));
+ startupOptionsPane->layout()->addWidget(panel62);
+
+ JPanel* panelStartSetRate = new JPanel(new FlowLayout());
+ startSetRateCheckBox = new QCheckBox(tr("Set Fast Clock Rate to") + " ");
+ startSetRateCheckBox->setToolTip(tr("Click to set the rate of clock at startup to the entered value."));
+ startSetRateCheckBox->setChecked(clock->getSetRateAtStart());
+// startSetRateCheckBox.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+ connect(startSetRateCheckBox, &QCheckBox::toggled, [=]{
+         startSetRateChanged();
+//     }
+ });
+ panelStartSetRate->layout()->addWidget(startSetRateCheckBox);
+ panelStartSetRate->layout()->addWidget(startFactorField);
+ startFactorField->setText(threeDigits->format(clock->getStartRate()));
+ startFactorField->setToolTip(tr("TipFactorField"));
+// startFactorField.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvefocusnt actionEvent) {
+ connect(startFactorField, &JTextField::editingFinished, [=]{
+         startFactorFieldChanged();
+//     }
+ });
+ startFactorField->addFocusListener(/*new FocusAdapter()*/new SCFFocusListener(this) );
+// {
+//     @Override
+//     public void focusLost(FocusEvent focusEvent) {
+//         if (!focusEvent.isTemporary()) {
+//             startFactorFieldChanged();
+//         }
+//         super.focusLost(focusEvent);
+//     }
+// });
+ panelStartSetRate->layout()->addWidget(new JLabel(":1 "));
+ startupOptionsPane->layout()->addWidget(panelStartSetRate);
+
+
+ JPanel* panel63 = new JPanel(new FlowLayout());
+ panel63->layout()->addWidget(new JLabel(tr("Display Selected Clock") + " "));
  clockStartBox = new QComboBox();
  panel63->layout()->addWidget(clockStartBox);
  clockStartBox->addItem(tr("None"));
  clockStartBox->addItem(tr("Nixie Clock"));
  clockStartBox->addItem(tr("Analog Clock"));
  clockStartBox->addItem(tr("Lcd Clock"));
+ clockStartBox->addItem(tr("Pragotron Clock"));
  clockStartBox->setCurrentIndex(startNone);
- if (clock->getStartClockOption()==Timebase::NIXIE_CLOCK)
-  clockStartBox->setCurrentIndex(startNixieClock);
- else if (clock->getStartClockOption()==Timebase::ANALOG_CLOCK)
-  clockStartBox->setCurrentIndex(startAnalogClock);
- else if (clock->getStartClockOption()==Timebase::LCD_CLOCK)
-  clockStartBox->setCurrentIndex(startLcdClock);
- clockStartBox->setToolTip(tr("Select the fast clock display you want started automatically at start up."));
-//    clockStartBox.addActionListener(new java.awt.event.ActionListener() {
-//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//            setClockStartChanged();
-//        }
-//    });
- connect(clockStartBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setClockStartChanged()));
- panel6->layout()->addWidget(panel63);
+ if (clock->getStartClockOption() == Timebase::NIXIE_CLOCK) {
+     clockStartBox->setCurrentIndex(startNixieClock);
+ } else {
+     if (clock->getStartClockOption() == Timebase::ANALOG_CLOCK) {
+         clockStartBox->setCurrentIndex(startAnalogClock);
+     } else {
+         if (clock->getStartClockOption() == Timebase::LCD_CLOCK) {
+             clockStartBox->setCurrentIndex(startLcdClock);
+         } else {
+             if (clock->getStartClockOption() == Timebase::PRAGOTRON_CLOCK) {
+                 clockStartBox->setCurrentIndex(startPragotronClock);
+             }
+         }
+     }
+ }
+ clockStartBox->setToolTip(tr("TipClockStartOption"));
+// clockStartBox.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+ connect(clockStartBox, &QComboBox::currentTextChanged, [=]{
+         setClockStartChanged();
+//     }
+ });
+ startupOptionsPane->layout()->addWidget(panel63);
+ JPanel* panel64 = new JPanel(new FlowLayout());
+ displayStartStopButton= new QCheckBox(tr("Display Start/Stop button on clock"));
+ displayStartStopButton->setChecked(clock->getShowStopButton());
+// displayStartStopButton.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+ connect(displayStartStopButton, &QCheckBox::toggled, [=]{
+         showStopButtonChanged();
+//     }
+ });
+ panel64->layout()->addWidget(displayStartStopButton);
+ startupOptionsPane->layout()->addWidget(panel64);
 
-//    Border panel6Border = BorderFactory.createEtchedBorder();
-//    Border panel6Titled = BorderFactory.createTitledBorder(panel6Border,
-//                                            tr("Start Up Options"));
- panel6->setTitle( tr("Start Up Options"));
- //panel6.setBorder(panel6Titled);
- l->addWidget(panel6);
+ Border* panel6Border = BorderFactory::/*createEtchedBorder*/createLineBorder(Qt::red);
+ Border* panel6Titled = BorderFactory::createTitledBorder(panel6Border,
+         tr("BoxLabelStartUp"));
+ startupOptionsPane->setBorder(panel6Titled);
+ contentPane->layout()->addWidget(startupOptionsPane);
+
 
  // Set up clock information panel
  QGroupBox* panel3 = new QGroupBox();
@@ -408,13 +483,25 @@ SimpleClockFrame::~SimpleClockFrame()
  return;
 }
 
+/*private*/ void SimpleClockFrame::startFactorFieldChanged() {
+    double v = startFactorField->text().toDouble();
+    if (v != 0 && !v == (clock->getStartRate())) {
+        clock->setStartRate(v);
+        changed = true;
+    }
+    startFactorField->setText(threeDigits->format(clock->getStartRate()));
+}
+
+/*private*/ void SimpleClockFrame::startSetRateChanged() {
+    clock->setSetRateAtStart(startSetRateCheckBox->isChecked());
+    changed = true;
+}
+
 /**
- * Method to adjust to rate changes
+ * Adjust to rate changes.
  */
-void SimpleClockFrame::updateRate()
-{
- factorField->setText(threeDigits->format(clock->userGetRate()));
- changed = true;
+void SimpleClockFrame::updateRate() {
+    factorField->setText(threeDigits->format(clock->userGetRate()));
 }
 
 /**
@@ -484,7 +571,32 @@ void SimpleClockFrame::updateRunningButton()
 //    }
     changed = true;
 }
+/**
+ * Handle start run combo box change
+ */
+/*private*/ void SimpleClockFrame::startRunBoxChanged() {
+    switch (startRunBox->currentIndex()) {
+        case START_STOPPED:
+            clock->setClockInitialRunState(ClockInitialRunState::DO_STOP);
+            break;
+        case START_RUNNING:
+            clock->setClockInitialRunState(ClockInitialRunState::DO_START);
+            break;
+        default:
+        case START_NORUNCHANGE:
+            clock->setClockInitialRunState(ClockInitialRunState::DO_NOTHING);
+            break;
+    }
+    changed = true;
+}
 
+/**
+ * Handle Show on/off button check box change
+ */
+/*private*/ void SimpleClockFrame::showStopButtonChanged() {
+    clock->setShowStopButton(displayStartStopButton->isChecked());
+    changed = true;
+}
 /**
  * Method to handle time source change
  */

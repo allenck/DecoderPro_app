@@ -484,7 +484,9 @@ SOURCES += \
     layoutshape.cpp \
     layoutshapexml.cpp \
     scaletrackdiagramdialog.cpp \
-    editormanager.cpp
+    editormanager.cpp \
+    pragotronclockframe.cpp \
+    pragotronclockaction.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -887,7 +889,9 @@ HEADERS += liblayouteditor_global.h \
     layoutshape.h \
     layoutshapexml.h \
     scaletrackdiagramdialog.h \
-    editormanager.h
+    editormanager.h \
+    pragotronclockframe.h \
+    pragotronclockaction.h
 
 FORMS    += \
     createeditblock.ui \

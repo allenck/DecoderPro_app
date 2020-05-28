@@ -3,16 +3,22 @@
 #include "border.h"
 #include <QWidget>
 
-class AbstractBorder : public Border
+class AbstractBorder : public QWidget, public Border
 {
+ Q_OBJECT
+ Q_INTERFACES(Border)
+
 public:
- AbstractBorder(QObject* parent = nullptr);
- /*public*/ virtual Insets* getBorderInsets(QWidget* c);
- /*public*/ virtual Insets* getBorderInsets(QWidget* c, Insets* insets);
+ AbstractBorder(QWidget *parent = nullptr);
+ ///*public*/ virtual Insets* getBorderInsets(QWidget* c);
+ /*public*/ virtual Insets* getBorderInsets(QWidget* c, Insets* insets= nullptr);
  /*public*/ virtual bool isBorderOpaque();
  /*public*/ virtual QRect getInteriorRectangle(QWidget* c, int x, int y, int width, int height);
  /*public*/ static QRect getInteriorRectangle(QWidget* c, Border* b, int x, int y, int width, int height);
  /*public*/ virtual int getBaseline(QWidget c, int width, int height);
+
+private:
+ void paintEvent(QPaintEvent *event);
 
 };
 

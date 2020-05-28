@@ -46,7 +46,7 @@ Border* _border = nullptr;
 
 private slots:
  void currentIndexChanged(int);
- void on_selected();
+ //void on_selected();
 };
 Q_DECLARE_METATYPE(JComboBox)
 #endif // JCOMBOBOX_H

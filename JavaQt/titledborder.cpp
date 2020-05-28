@@ -1,6 +1,9 @@
 #include "titledborder.h"
 #include "insets.h"
 #include "exceptions.h"
+#include "jlabel.h"
+#include "borderfactory.h".h"
+
 
 /**
  * A class which implements an arbitrary border
@@ -34,6 +37,11 @@
 ///*public*/ class TitledBorder extends AbstractBorder
 //{
 
+TitledBorder::TitledBorder(QWidget* parent) : AbstractBorder(parent)
+{
+ common(nullptr, "", LEADING, DEFAULT_POSITION, nullptr, QColor());
+
+}
 
 
 
@@ -52,8 +60,8 @@
  *
  * @param title  the title the border should display
  */
-/*public*/ TitledBorder::TitledBorder(QString title, QObject* parent) {
-    common(NULL, title, LEADING, DEFAULT_POSITION, QFont(), QColor());
+/*public*/ TitledBorder::TitledBorder(QString title, QWidget *parent) : AbstractBorder(parent) {
+    common(NULL, title, LEADING, DEFAULT_POSITION, nullptr, QColor());
 }
 
 /**
@@ -62,10 +70,10 @@
  *
  * @param border  the border
  */
-/*public*/ TitledBorder::TitledBorder(Border* border, QObject* parent)
+/*public*/ TitledBorder::TitledBorder(Border* border, QWidget* parent)
  : AbstractBorder(parent)
 {
-    common(border, "", LEADING, DEFAULT_POSITION, QFont(), QColor());
+    common(border, "", LEADING, DEFAULT_POSITION, nullptr, QColor());
 }
 
 /**
@@ -75,10 +83,10 @@
  * @param border  the border
  * @param title  the title the border should display
  */
-/*public*/ TitledBorder::TitledBorder(Border* border, QString title, QObject* parent)
+/*public*/ TitledBorder::TitledBorder(Border* border, QString title, QWidget* parent)
  : AbstractBorder(parent)
 {
-    common(border, title, LEADING, DEFAULT_POSITION, QFont(), QColor());
+    common(border, title, LEADING, DEFAULT_POSITION, nullptr, QColor());
 }
 
 /**
@@ -93,11 +101,11 @@
 /*public*/ TitledBorder::TitledBorder(Border* border,
                     QString title,
                     int titleJustification,
-                    int titlePosition, QObject* parent)
+                    int titlePosition, QWidget *parent)
  : AbstractBorder(parent)
 {
     common(border, title, titleJustification,
-         titlePosition, QFont(), QColor());
+         titlePosition, nullptr, QColor());
 }
 
 /**
@@ -114,7 +122,7 @@
                     QString title,
                     int titleJustification,
                     int titlePosition,
-                    QFont titleFont, QObject* parent)
+                    QFont* titleFont, QWidget* parent)
 {
     common(border, title, titleJustification,
          titlePosition, titleFont, QColor());
@@ -137,13 +145,13 @@
                     QString title,
                     int titleJustification,
                     int titlePosition,
-                    QFont titleFont,
-                    QColor titleColor, QObject* parent) : AbstractBorder(parent)
+                    QFont* titleFont,
+                    QColor titleColor, QWidget *parent) : AbstractBorder(parent)
 {
  common(border, title, titleJustification, titlePosition, titleFont, titleColor);
 }
 
-void TitledBorder::common(Border *border, QString title, int titleJustification, int titlePosition, QFont titleFont, QColor titleColor)
+void TitledBorder::common(Border *border, QString title, int titleJustification, int titlePosition, QFont* titleFont, QColor titleColor)
 {
     this->title = title;
     this->border = border;
@@ -153,11 +161,11 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
     setTitleJustification(titleJustification);
     setTitlePosition(titlePosition);
 
-    this->label = new QLabel();
+    this->label = new JLabel(title);
 //    this->label->setOpaque(false);
 //    this->label.putClientProperty(BasicHTML.propertyKey, NULL);
 }
-#if 0
+#if 1
 /**
  * Paints the border for the specified component with the
  * specified position and size.
@@ -168,14 +176,14 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  * @param width the width of the painted border
  * @param height the height of the painted border
  */
-/*public*/ void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-    Border border = getBorder();
-    String title = getTitle();
-    if ((title != NULL) && !title.isEmpty()) {
-        int edge = (border instanceof TitledBorder) ? 0 : EDGE_SPACING;
-        JLabel label = getLabel(c);
-        Dimension size = label.getPreferredSize();
-        Insets insets = getBorderInsets(border, c, new Insets(0, 0, 0, 0));
+/*public*/ void TitledBorder::paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height) {
+    Border* border = getBorder();
+    QString title = getTitle();
+    if ((!title.isNull()) && !title.isEmpty()) {
+        int edge = (qobject_cast<TitledBorder*>(border->self())) ? 0 : EDGE_SPACING;
+        JLabel* label = getLabel(c);
+        QSize size = label->sizeHint();
+        Insets* insets = getBorderInsets(border, c, new Insets(0, 0, 0, 0));
 
         int borderX = x + edge;
         int borderY = y + edge;
@@ -183,62 +191,62 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
         int borderH = height - edge - edge;
 
         int labelY = y;
-        int labelH = size.height;
+        int labelH = size.height();
         int position = getPosition();
         switch (position) {
             case ABOVE_TOP:
-                insets.left = 0;
-                insets.right = 0;
+                insets->left = 0;
+                insets->right = 0;
                 borderY += labelH - edge;
                 borderH -= labelH - edge;
                 break;
             case TOP:
-                insets.top = edge + insets.top/2 - labelH/2;
-                if (insets.top < edge) {
-                    borderY -= insets.top;
-                    borderH += insets.top;
+                insets->top = edge + insets->top/2 - labelH/2;
+                if (insets->top < edge) {
+                    borderY -= insets->top;
+                    borderH += insets->top;
                 }
                 else {
-                    labelY += insets.top;
+                    labelY += insets->top;
                 }
                 break;
             case BELOW_TOP:
-                labelY += insets.top + edge;
+                labelY += insets->top + edge;
                 break;
             case ABOVE_BOTTOM:
-                labelY += height - labelH - insets.bottom - edge;
+                labelY += height - labelH - insets->bottom - edge;
                 break;
             case BOTTOM:
                 labelY += height - labelH;
-                insets.bottom = edge + (insets.bottom - labelH) / 2;
-                if (insets.bottom < edge) {
-                    borderH += insets.bottom;
+                insets->bottom = edge + (insets->bottom - labelH) / 2;
+                if (insets->bottom < edge) {
+                    borderH += insets->bottom;
                 }
                 else {
-                    labelY -= insets.bottom;
+                    labelY -= insets->bottom;
                 }
                 break;
             case BELOW_BOTTOM:
-                insets.left = 0;
-                insets.right = 0;
+                insets->left = 0;
+                insets->right = 0;
                 labelY += height - labelH;
                 borderH -= labelH - edge;
                 break;
         }
-        insets.left += edge + TEXT_INSET_H;
-        insets.right += edge + TEXT_INSET_H;
+        insets->left += edge + TEXT_INSET_H;
+        insets->right += edge + TEXT_INSET_H;
 
         int labelX = x;
-        int labelW = width - insets.left - insets.right;
-        if (labelW > size.width) {
-            labelW = size.width;
+        int labelW = width - insets->left - insets->right;
+        if (labelW > size.width()) {
+            labelW = size.width();
         }
         switch (getJustification(c)) {
             case LEFT:
-                labelX += insets.left;
+                labelX += insets->left;
                 break;
             case RIGHT:
-                labelX += width - insets.right - labelW;
+                labelX += width - insets->right - labelW;
                 break;
             case CENTER:
                 labelX += (width - labelW) / 2;
@@ -246,79 +254,91 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
         }
 
         if (border != NULL) {
-            if ((position != TOP) && (position != BOTTOM)) {
-                border.paintBorder(c, g, borderX, borderY, borderW, borderH);
+            if ((position != TOP) && (position != BOTTOM))
+            {
+                border->paintBorder(c, g, borderX, borderY, borderW, borderH);
             }
+#if 1
             else {
-                Graphics g2 = g.create();
-                if (g2 instanceof Graphics2D) {
-                    Graphics2D g2d = (Graphics2D) g2;
-                    Path2D path = new Path2D.Float();
-                    path.append(new Rectangle(borderX, borderY, borderW, labelY - borderY), false);
-                    path.append(new Rectangle(borderX, labelY, labelX - borderX - TEXT_SPACING, labelH), false);
-                    path.append(new Rectangle(labelX + labelW + TEXT_SPACING, labelY, borderX - labelX + borderW - labelW - TEXT_SPACING, labelH), false);
-                    path.append(new Rectangle(borderX, labelY + labelH, borderW, borderY - labelY + borderH - labelH), false);
-                    g2d.clip(path);
+//                Graphics g2 = g.create();
+//                if (g2 instanceof Graphics2D) {
+//                    Graphics2D g2d = (Graphics2D) g2;
+                    QPainterPath path = QPainterPath();
+                    path.addRect(borderX, borderY, borderW, labelY - borderY);//, false);
+                    path.addRect(borderX, labelY, labelX - borderX - TEXT_SPACING, labelH);//, false);
+                    path.addRect(labelX + labelW + TEXT_SPACING, labelY, borderX - labelX + borderW - labelW - TEXT_SPACING, labelH);//, false);
+                    path.addRect(borderX, labelY + labelH, borderW, borderY - labelY + borderH - labelH);//, false);
+                    g->setClipPath(path);
                 }
-                border.paintBorder(c, g2, borderX, borderY, borderW, borderH);
-                g2.dispose();
+                border->paintBorder(c, g, borderX, borderY, borderW, borderH);
+                //g2.dispose();
             }
-        }
-        g.translate(labelX, labelY);
-        label.setSize(labelW, labelH);
-        label.paint(g);
-        g.translate(-labelX, -labelY);
+#endif
+//        }
+
+        g->translate(labelX, labelY);
+#if 0
+        label->setSize(labelW, labelH);
+        label->repaint();//paint(g);
+        g->translate(-labelX, -labelY);
+#else
+        QColor oldColor = g->pen().color();
+        g->setPen(border->color());
+        g->drawText(labelX, labelY, labelW, labelH, Qt::AlignCenter, title);
+        g->setPen(oldColor);
+#endif
+
     }
     else if (border != NULL) {
-        border.paintBorder(c, g, x, y, width, height);
+        border->paintBorder(c, g, x, y, width, height);
     }
 }
 
 /**
- * Reinitialize the insets parameter with this Border's current Insets.
+ * Reinitialize the insets parameter with this Border's current insets->
  * @param c the component for which this border insets value applies
  * @param insets the object to be reinitialized
  */
-/*public*/ Insets getBorderInsets(Component c, Insets insets) {
-    Border border = getBorder();
+/*public*/ Insets* TitledBorder::getBorderInsets(QWidget* c, Insets* insets) {
+    Border* border = getBorder();
     insets = getBorderInsets(border, c, insets);
 
-    String title = getTitle();
-    if ((title != NULL) && !title.isEmpty()) {
-        int edge = (border instanceof TitledBorder) ? 0 : EDGE_SPACING;
-        JLabel label = getLabel(c);
-        Dimension size = label.getPreferredSize();
+    QString title = getTitle();
+    if ((!title.isNull()) && !title.isEmpty()) {
+        int edge = (qobject_cast<TitledBorder*>(border->self())) ? 0 : EDGE_SPACING;
+        JLabel* label = getLabel(c);
+        QSize size = label->sizeHint();
 
         switch (getPosition()) {
             case ABOVE_TOP:
-                insets.top += size.height - edge;
+                insets->top += size.height() - edge;
                 break;
             case TOP: {
-                if (insets.top < size.height) {
-                    insets.top = size.height - edge;
+                if (insets->top < size.height()) {
+                    insets->top = size.height() - edge;
                 }
                 break;
             }
             case BELOW_TOP:
-                insets.top += size.height;
+                insets->top += size.height();
                 break;
             case ABOVE_BOTTOM:
-                insets.bottom += size.height;
+                insets->bottom += size.height();
                 break;
             case BOTTOM: {
-                if (insets.bottom < size.height) {
-                    insets.bottom = size.height - edge;
+                if (insets->bottom < size.height()) {
+                    insets->bottom = size.height() - edge;
                 }
                 break;
             }
             case BELOW_BOTTOM:
-                insets.bottom += size.height - edge;
+                insets->bottom += size.height() - edge;
                 break;
         }
-        insets.top += edge + TEXT_SPACING;
-        insets.left += edge + TEXT_SPACING;
-        insets.right += edge + TEXT_SPACING;
-        insets.bottom += edge + TEXT_SPACING;
+        insets->top += edge + TEXT_SPACING;
+        insets->left += edge + TEXT_SPACING;
+        insets->right += edge + TEXT_SPACING;
+        insets->bottom += edge + TEXT_SPACING;
     }
     return insets;
 }
@@ -326,7 +346,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
 /**
  * Returns whether or not the border is opaque.
  */
-/*public*/ boolean isBorderOpaque() {
+/*public*/ bool TitledBorder::isBorderOpaque() {
     return false;
 }
 
@@ -335,7 +355,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  *
  * @return the title of the titled border
  */
-/*public*/ String getTitle() {
+/*public*/ QString TitledBorder::getTitle() {
     return title;
 }
 
@@ -344,10 +364,10 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  *
  * @return the border of the titled border
  */
-/*public*/ Border getBorder() {
-    return border != NULL
+/*public*/ Border* TitledBorder::getBorder() {
+    return border != nullptr
             ? border
-            : UIManager.getBorder("TitledBorder.border");
+            : (Border*) BorderFactory::createLineBorder(titleColor);//UIManager.getBorder("TitledBorder.border");
 }
 
 /**
@@ -355,7 +375,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  *
  * @return the title-position of the titled border
  */
-/*public*/ int getTitlePosition() {
+/*public*/ int TitledBorder::getTitlePosition() {
     return titlePosition;
 }
 
@@ -364,7 +384,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  *
  * @return the title-justification of the titled border
  */
-/*public*/ int getTitleJustification() {
+/*public*/ int TitledBorder::getTitleJustification() {
     return titleJustification;
 }
 
@@ -373,8 +393,9 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  *
  * @return the title-font of the titled border
  */
-/*public*/ Font getTitleFont() {
-    return titleFont == NULL ? UIManager.getFont("TitledBorder.font") : titleFont;
+/*public*/ QFont* TitledBorder::getTitleFont() {
+    //return titleFont == NULL ? UIManager.getFont("TitledBorder.font") : titleFont;
+ titleFont;
 }
 
 /**
@@ -382,8 +403,9 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  *
  * @return the title-color of the titled border
  */
-/*public*/ Color getTitleColor() {
-    return titleColor == NULL ? UIManager.getColor("TitledBorder.titleColor") : titleColor;
+/*public*/ QColor TitledBorder::getTitleColor() {
+    //return titleColor == NULL ? UIManager.getColor("TitledBorder.titleColor") : titleColor;
+ return titleColor;
 }
 
 
@@ -393,7 +415,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  * Sets the title of the titled border.
  * @param title  the title for the border
  */
-/*public*/ void setTitle(String title) {
+/*public*/ void TitledBorder::setTitle(QString title) {
     this->title = title;
 }
 
@@ -401,7 +423,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  * Sets the border of the titled border.
  * @param border the border
  */
-/*public*/ void setBorder(Border border) {
+/*public*/ void TitledBorder::setBorder(Border* border) {
     this->border = border;
 }
 #endif
@@ -445,12 +467,12 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
                     " is not a valid title justification.");
     }
 }
-#if 0
+#if 1
 /**
  * Sets the title-font of the titled border.
  * @param titleFont the font for the border title
  */
-/*public*/ void setTitleFont(Font titleFont) {
+/*public*/ void TitledBorder::setTitleFont(QFont* titleFont) {
     this->titleFont = titleFont;
 }
 
@@ -458,7 +480,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  * Sets the title-color of the titled border.
  * @param titleColor the color for the border title
  */
-/*public*/ void setTitleColor(Color titleColor) {
+/*public*/ void TitledBorder::setTitleColor(QColor titleColor) {
     this->titleColor = titleColor;
 }
 
@@ -468,21 +490,23 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  * @param c the component where this border will be drawn
  * @return the {@code Dimension} object
  */
-/*public*/ Dimension getMinimumSize(Component c) {
-    Insets insets = getBorderInsets(c);
-    Dimension minSize = new Dimension(insets.right+insets.left,
-                                      insets.top+insets.bottom);
-    String title = getTitle();
-    if ((title != NULL) && !title.isEmpty()) {
-        JLabel label = getLabel(c);
-        Dimension size = label.getPreferredSize();
+/*public*/ QSize TitledBorder::getMinimumSize(QWidget* c) {
+    Insets* insets = getBorderInsets(c, nullptr);
+    QSize minSize = QSize(insets->right+insets->left,
+                                      insets->top+insets->bottom);
+    QString title = getTitle();
+    if ((!title.isNull()) && !title.isEmpty()) {
+        JLabel* label = getLabel(c);
+        QSize size = label->sizeHint();
 
         int position = getPosition();
         if ((position != ABOVE_TOP) && (position != BELOW_BOTTOM)) {
-            minSize.width += size.width;
+            //minSize.width() += size.width();
+         minSize.setWidth(minSize.width() + size.width());
         }
-        else if (minSize.width < size.width) {
-            minSize.width += size.width;
+        else if (minSize.width() < size.width()) {
+            //minSize.width() += size.width();
+         minSize.setWidth(minSize.width() + size.width());
         }
     }
     return minSize;
@@ -496,49 +520,49 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  * @see javax.swing.JComponent#getBaseline(int, int)
  * @since 1.6
  */
-/*public*/ int getBaseline(Component c, int width, int height) {
+/*public*/ int TitledBorder::getBaseline(QWidget* c, int width, int height) {
     if (c == NULL) {
-        throw new NullPointerException("Must supply non-NULL component");
+        throw  NullPointerException("Must supply non-NULL component");
     }
     if (width < 0) {
-        throw new IllegalArgumentException("Width must be >= 0");
+        throw  IllegalArgumentException("Width must be >= 0");
     }
     if (height < 0) {
-        throw new IllegalArgumentException("Height must be >= 0");
+        throw  IllegalArgumentException("Height must be >= 0");
     }
-    Border border = getBorder();
-    String title = getTitle();
-    if ((title != NULL) && !title.isEmpty()) {
-        int edge = (border instanceof TitledBorder) ? 0 : EDGE_SPACING;
-        JLabel label = getLabel(c);
-        Dimension size = label.getPreferredSize();
-        Insets insets = getBorderInsets(border, c, new Insets(0, 0, 0, 0));
+    Border* border = getBorder();
+    QString title = getTitle();
+    if ((!title.isNull()) && !title.isEmpty()) {
+        int edge = (qobject_cast<TitledBorder*>(border->self())) ? 0 : EDGE_SPACING;
+        JLabel* label = getLabel(c);
+        QSize size = label->sizeHint();
+        Insets* insets = getBorderInsets(border, c, new Insets(0, 0, 0, 0));
 
-        int baseline = label.getBaseline(size.width, size.height);
+        int baseline = label->getBaseline(size.width(), size.height());
         switch (getPosition()) {
             case ABOVE_TOP:
                 return baseline;
             case TOP:
-                insets.top = edge + (insets.top - size.height) / 2;
-                return (insets.top < edge)
+                insets->top = edge + (insets->top - size.height()) / 2;
+                return (insets->top < edge)
                         ? baseline
-                        : baseline + insets.top;
+                        : baseline + insets->top;
             case BELOW_TOP:
-                return baseline + insets.top + edge;
+                return baseline + insets->top + edge;
             case ABOVE_BOTTOM:
-                return baseline + height - size.height - insets.bottom - edge;
+                return baseline + height - size.height() - insets->bottom - edge;
             case BOTTOM:
-                insets.bottom = edge + (insets.bottom - size.height) / 2;
-                return (insets.bottom < edge)
-                        ? baseline + height - size.height
-                        : baseline + height - size.height + insets.bottom;
+                insets->bottom = edge + (insets->bottom - size.height()) / 2;
+                return (insets->bottom < edge)
+                        ? baseline + height - size.height()
+                        : baseline + height - size.height() + insets->bottom;
             case BELOW_BOTTOM:
-                return baseline + height - size.height;
+                return baseline + height - size.height();
         }
     }
     return -1;
 }
-
+#if 0
 /**
  * Returns an enum indicating how the baseline of the border
  * changes as the size changes.
@@ -551,7 +575,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
         Component c) {
     super.getBaselineResizeBehavior(c);
     switch (getPosition()) {
-        case TitledBorder.ABOVE_TOP:
+        case TitledBorder::ABOVE_TOP:
         case TitledBorder.TOP:
         case TitledBorder.BELOW_TOP:
             return Component.BaselineResizeBehavior.CONSTANT_ASCENT;
@@ -562,12 +586,13 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
     }
     return Component.BaselineResizeBehavior.OTHER;
 }
-
-/*private*/ int getPosition() {
+#endif
+/*private*/ int TitledBorder::getPosition() {
     int position = getTitlePosition();
     if (position != DEFAULT_POSITION) {
         return position;
     }
+#if 0
     Object value = UIManager.get("TitledBorder.position");
     if (value instanceof Integer) {
         int i = (Integer) value;
@@ -596,64 +621,70 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
             return BELOW_BOTTOM;
         }
     }
-    return TOP;
+#endif
+    return ABOVE_TOP;
 }
 
-/*private*/ int getJustification(Component c) {
+/*private*/ int TitledBorder::getJustification(QWidget* c) {
     int justification = getTitleJustification();
+#if 0
     if ((justification == LEADING) || (justification == DEFAULT_JUSTIFICATION)) {
-        return c.getComponentOrientation().isLeftToRight() ? LEFT : RIGHT;
+        return c->getComponentOrientation().isLeftToRight() ? LEFT : RIGHT;
     }
     if (justification == TRAILING) {
-        return c.getComponentOrientation().isLeftToRight() ? RIGHT : LEFT;
+        return c->getComponentOrientation().isLeftToRight() ? RIGHT : LEFT;
     }
+#endif
     return justification;
 }
 
-/*protected*/ Font getFont(Component c) {
-    Font font = getTitleFont();
-    if (font != NULL) {
+/*protected*/ QFont* TitledBorder::getFont(QWidget* c) {
+    QFont* font = getTitleFont();
+
+    if (font ) {
         return font;
     }
-    if (c != NULL) {
-        font = c.getFont();
+    if (c != nullptr) {
+
+        font = new QFont(c->font());
         if (font != NULL) {
             return font;
         }
     }
-    return new Font(Font.DIALOG, Font.PLAIN, 12);
+    return new QFont("Ubuntu",12); //Font.DIALOG, Font.PLAIN, 12);
+
 }
 
-/*private*/ Color getColor(Component c) {
-    Color color = getTitleColor();
-    if (color != NULL) {
+/*private*/ QColor TitledBorder::getColor(QWidget* c) {
+    QColor color = getTitleColor();
+    if (color.isValid()) {
         return color;
     }
-    return (c != NULL)
-            ? c.getForeground()
-            : NULL;
+    return (c != nullptr)
+            ? Qt::black//c->getForeground()
+            : QColor();
 }
 
-/*private*/ JLabel getLabel(Component c) {
-    this->label.setText(getTitle());
-    this->label.setFont(getFont(c));
-    this->label.setForeground(getColor(c));
-    this->label.setComponentOrientation(c.getComponentOrientation());
-    this->label.setEnabled(c.isEnabled());
+/*private*/ JLabel* TitledBorder::getLabel(QWidget* c) {
+    this->label->setText(getTitle());
+    //this->label->setFont(*getFont(c));
+//    this->label->setForeground(getColor(c));
+//    this->label.setComponentOrientation(c.getComponentOrientation());
+    this->label->setEnabled(c->isEnabled());
     return this->label;
 }
 
-/*private*/ static Insets getBorderInsets(Border border, Component c, Insets insets) {
+/*private*/ /*static*/ Insets* TitledBorder::getBorderInsets(Border* border, QWidget* c, Insets* insets) {
     if (border == NULL) {
-        insets.set(0, 0, 0, 0);
+        insets->set(0, 0, 0, 0);
     }
-    else if (border instanceof AbstractBorder) {
-        AbstractBorder ab = (AbstractBorder) border;
-        insets = ab.getBorderInsets(c, insets);
+    else if (qobject_cast<AbstractBorder*>(border->self())) {
+        AbstractBorder* ab = (AbstractBorder*) border;
+        insets = ab->getBorderInsets(c, insets);
     }
     else {
-        Insets i = border.getBorderInsets(c);
-        insets.set(i.top, i.left, i.bottom, i.right);
+        Insets* i = border->getBorderInsets(c);
+        insets->set(i->top, i->left, i->bottom, i->right);
     }
     return insets;
 }

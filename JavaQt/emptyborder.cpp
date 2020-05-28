@@ -30,7 +30,7 @@
      * @param bottom the bottom inset of the border
      * @param right the right inset of the border
      */
-    /*public*/ EmptyBorder::EmptyBorder(int top, int left, int bottom, int right, QObject* parent)
+    /*public*/ EmptyBorder::EmptyBorder(int top, int left, int bottom, int right, QWidget* parent)
  : AbstractBorder(parent){
         this->top = top;
         this->right = right;
@@ -43,7 +43,7 @@
      * @param borderInsets the insets of the border
      */
     //@ConstructorProperties({"borderInsets"})
-    /*public*/ EmptyBorder::EmptyBorder(Insets* borderInsets, QObject* parent)
+    /*public*/ EmptyBorder::EmptyBorder(Insets* borderInsets, QWidget* parent)
  : AbstractBorder(parent)
 {
         this->top = borderInsets->top;
@@ -85,3 +85,6 @@
      */
     /*public*/ bool EmptyBorder::isBorderOpaque() { return false; }
 
+/*public*/ void EmptyBorder::paintBorder(QWidget* c, QPainter*  g, int x, int y, int width,
+                        int height)
+{}

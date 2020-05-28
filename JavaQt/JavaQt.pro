@@ -248,7 +248,8 @@ SOURCES += javaqt.cpp \
     externallinkcontentviewerui.cpp \
     propertychangelistener.cpp \
     namedbeancombobox.cpp \
-    jcheckbox.cpp
+    jcheckbox.cpp \
+    etchedborder.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -549,7 +550,8 @@ HEADERS += javaqt.h\
     focusevent.h \
     itemevent.h \
     itemlistener.h \
-    jcheckbox.h
+    jcheckbox.h \
+    etchedborder.h
 
 unix {
     target.path = /usr/lib

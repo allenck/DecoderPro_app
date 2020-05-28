@@ -21,7 +21,7 @@ EntryExitWhereUsed::EntryExitWhereUsed(QObject *parent) : QObject(parent)
      * @param entryexit The entry/exit bean.
      * @return a populated textarea.
      */
-    /*static*/ /*public*/ JTextArea* getWhereUsed(NamedBean* entryexit) {
+    /*static*/ /*public*/ JTextArea* EntryExitWhereUsed::getWhereUsed(NamedBean* entryexit) {
         JTextArea* textArea = new JTextArea();
         QString label = ("EntryExit");  // NOI18N
         textArea->append(QString("\t\t%1 %2").arg(label).arg(entryexit->getDisplayName()));  // NOI18N

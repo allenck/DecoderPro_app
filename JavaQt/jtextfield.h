@@ -82,7 +82,7 @@ private:
 
 private slots:
  void updateShare();
- void on_edited();
+ //void on_edited();
 
 protected:
  /*protected*/ Document* createDefaultModel();

@@ -1709,14 +1709,14 @@ void LevelXing::remove() {
 //    }
 }
 
-///*public*/ void LevelXing::setAdditionalViewPopUpMenu(JPopupMenu popup){
-//    if(viewAdditionalMenu.isEmpty())
-//        return;
-//    popup.addSeparator();
+/*public*/ void LevelXing::setAdditionalViewPopUpMenu(QMenu* popup){
+    if(viewAdditionalMenu->isEmpty())
+        return;
+    popup->addSeparator();
 //    for(JMenuItem mi:viewAdditionalMenu){
 //        popup.add(mi);
 //    }
-//}
+}
 
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LevelXing.class.getName());
 void LevelXing::on_removeAction_triggered()

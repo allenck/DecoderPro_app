@@ -332,6 +332,7 @@ public:
     /*public*/ QFontMetrics getFontMetrics();
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder() {return _border;}
+    /*public*/ int getBaseline(int w, int h);
 
 signals:
     

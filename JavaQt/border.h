@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QPainter>
 #include "insets.h"
+#include <QWidget>
 
 /**
  * Interface describing an object capable of rendering a border
@@ -36,10 +37,10 @@
  * @see EmptyBorder
  * @see CompoundBorder
  */
-/*public*/ /*interface*/class Border : public QObject
+/*public*/ /*interface*/class Border //: public QWidget
 {
 public:
- Border(QObject* parent = 0) : QObject(parent) {}
+ //Border(QObject* parent = 0) : QObject(parent) {}
     /**
      * Paints the border for the specified component with the specified
      * position and size.
@@ -67,7 +68,10 @@ public:
     virtual /*public*/ int lineWidth() {return 1;}
     virtual /*public*/ QColor color() {return QColor(Qt::black);}
     virtual /*public*/ bool roundedCorners() {return false;}
-
+    virtual void paintEvent(QPaintEvent*){}
+    
+ virtual QWidget* self() =0;
 
 };
+Q_DECLARE_INTERFACE(Border, "Border")
 #endif // BORDER_H
