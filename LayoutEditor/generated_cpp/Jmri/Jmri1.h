@@ -294,7 +294,6 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -870,7 +869,6 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
-virtual QWidget*  getContentPane(bool  addLayout = true);
 virtual QString  getTitle();
 virtual bool  hasHeightForWidth() const;
 virtual int  heightForWidth(int  arg__1) const;
@@ -912,7 +910,6 @@ class PythonQtPublicPromoter_JFrame : public JFrame
 { public:
 inline void promoted_frameInit() { this->frameInit(); }
 inline void py_q_dispose() { JFrame::dispose(); }
-inline QWidget*  py_q_getContentPane(bool  addLayout = true) { return JFrame::getContentPane(addLayout); }
 inline QString  py_q_getTitle() { return JFrame::getTitle(); }
 inline void py_q_languageChange() { JFrame::languageChange(); }
 inline void py_q_pack() { JFrame::pack(); }
@@ -933,8 +930,6 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void py_q_dispose(JFrame* theWrappedObject){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_dispose());}
    void frameInit(JFrame* theWrappedObject);
    QColor  getBackground(JFrame* theWrappedObject);
-   QWidget*  getContentPane(JFrame* theWrappedObject, bool  addLayout = true);
-   QWidget*  py_q_getContentPane(JFrame* theWrappedObject, bool  addLayout = true){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_getContentPane(addLayout));}
    QFont  getFont(JFrame* theWrappedObject);
    QPoint  getLocation(JFrame* theWrappedObject);
    QPoint  getLocationOnScreen(JFrame* theWrappedObject);
@@ -1070,6 +1065,7 @@ void delete_JLabel(JLabel* obj) { delete obj; }
    int  checkHorizontalKey(JLabel* theWrappedObject, int  key, QString  message);
    int  checkVerticalKey(JLabel* theWrappedObject, int  key, QString  message);
    QColor  getBackground(JLabel* theWrappedObject);
+   int  getBaseline(JLabel* theWrappedObject, int  w, int  h);
    int  getDisplayedMnemonic(JLabel* theWrappedObject);
    QFont  getFont(JLabel* theWrappedObject);
    QFontMetrics  getFontMetrics(JLabel* theWrappedObject);
@@ -1426,7 +1422,9 @@ virtual void dropEvent(QDropEvent*  e);
 virtual void enterEvent(QEvent*  event);
 virtual bool  event(QEvent*  e);
 virtual bool  eventFilter(QObject*  arg__1, QEvent*  arg__2);
+virtual void focusInEvent(QFocusEvent*  e);
 virtual bool  focusNextPrevChild(bool  next);
+virtual void focusOutEvent(QFocusEvent*  e);
 virtual bool  hasHeightForWidth() const;
 virtual int  heightForWidth(int  arg__1) const;
 virtual void hideEvent(QHideEvent*  event);
@@ -1469,8 +1467,12 @@ virtual void wheelEvent(QWheelEvent*  e);
 
 class PythonQtPublicPromoter_JTextArea : public JTextArea
 { public:
+inline void promoted_focusInEvent(QFocusEvent*  e) { this->focusInEvent(e); }
+inline void promoted_focusOutEvent(QFocusEvent*  e) { this->focusOutEvent(e); }
 inline int  promoted_getColumnWidth() { return this->getColumnWidth(); }
 inline int  promoted_getRowHeight() { return this->getRowHeight(); }
+inline void py_q_focusInEvent(QFocusEvent*  e) { JTextArea::focusInEvent(e); }
+inline void py_q_focusOutEvent(QFocusEvent*  e) { JTextArea::focusOutEvent(e); }
 };
 
 class PythonQtWrapper_JTextArea : public QObject
@@ -1483,6 +1485,8 @@ JTextArea* new_JTextArea(QWidget*  parent = 0);
 JTextArea* new_JTextArea(int  rows, int  columns, QWidget*  parent = 0);
 void delete_JTextArea(JTextArea* obj) { delete obj; } 
    void append(JTextArea* theWrappedObject, QString  str);
+   void py_q_focusInEvent(JTextArea* theWrappedObject, QFocusEvent*  e){  (((PythonQtPublicPromoter_JTextArea*)theWrappedObject)->py_q_focusInEvent(e));}
+   void py_q_focusOutEvent(JTextArea* theWrappedObject, QFocusEvent*  e){  (((PythonQtPublicPromoter_JTextArea*)theWrappedObject)->py_q_focusOutEvent(e));}
    int  getColumnWidth(JTextArea* theWrappedObject);
    int  getColumns(JTextArea* theWrappedObject);
    bool  getLineWrap(JTextArea* theWrappedObject);
@@ -1536,7 +1540,6 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -1582,6 +1585,7 @@ virtual void windowClosing(QCloseEvent*  e);
 class PythonQtPublicPromoter_JmriJFrame : public JmriJFrame
 { public:
 inline void promoted_handleModified() { this->handleModified(); }
+inline void promoted_reSizeToFitOnScreen() { this->reSizeToFitOnScreen(); }
 inline void promoted_setShutDownTask() { this->setShutDownTask(); }
 inline void promoted_storeValues() { this->storeValues(); }
 inline void py_q_addHelpMenu(QString  ref, bool  direct) { JmriJFrame::addHelpMenu(ref, direct); }
@@ -1590,7 +1594,6 @@ inline void py_q_componentResized(QResizeEvent*  e) { JmriJFrame::componentResiz
 inline void py_q_dispose() { JmriJFrame::dispose(); }
 inline bool  py_q_eventFilter(QObject*  target, QEvent*  event) { return JmriJFrame::eventFilter(target, event); }
 inline QString  py_q_getClassName() { return this->getClassName(); }
-inline QWidget*  py_q_getContentPane(bool  addLayout) { return JmriJFrame::getContentPane(addLayout); }
 inline QVariant  py_q_getProperty(QString  key) { return JmriJFrame::getProperty(key); }
 inline QString  py_q_getTitle() { return JmriJFrame::getTitle(); }
 inline void py_q_handleModified() { JmriJFrame::handleModified(); }
@@ -1622,8 +1625,6 @@ void delete_JmriJFrame(JmriJFrame* obj) { delete obj; }
    bool  getAllowInFrameServlet(JmriJFrame* theWrappedObject);
    QString  getClassName(JmriJFrame* theWrappedObject);
    QString  py_q_getClassName(JmriJFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JmriJFrame*)theWrappedObject)->py_q_getClassName());}
-   QWidget*  getContentPane(JmriJFrame* theWrappedObject);
-   QWidget*  py_q_getContentPane(JmriJFrame* theWrappedObject, bool  addLayout){  return (((PythonQtPublicPromoter_JmriJFrame*)theWrappedObject)->py_q_getContentPane(addLayout));}
    bool  getEscapeKeyClosesWindow(JmriJFrame* theWrappedObject);
    JmriJFrame*  static_JmriJFrame_getFrame(QString  name);
    QList<JmriJFrame* >*  static_JmriJFrame_getFrameList();
@@ -1644,6 +1645,7 @@ void delete_JmriJFrame(JmriJFrame* obj) { delete obj; }
    void makePrivateWindow(JmriJFrame* theWrappedObject);
    void markWindowModified(JmriJFrame* theWrappedObject, bool  yes);
    void py_q_moveEvent(JmriJFrame* theWrappedObject, QMoveEvent*  e){  (((PythonQtPublicPromoter_JmriJFrame*)theWrappedObject)->py_q_moveEvent(e));}
+   void reSizeToFitOnScreen(JmriJFrame* theWrappedObject);
    void py_q_resizeEvent(JmriJFrame* theWrappedObject, QResizeEvent*  e){  (((PythonQtPublicPromoter_JmriJFrame*)theWrappedObject)->py_q_resizeEvent(e));}
    void setAllowInFrameServlet(JmriJFrame* theWrappedObject, bool  allow);
    void setAlwaysOnTop(JmriJFrame* theWrappedObject, bool  checked);
@@ -1801,7 +1803,6 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();

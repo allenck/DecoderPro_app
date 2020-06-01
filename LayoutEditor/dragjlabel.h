@@ -1,6 +1,6 @@
 #ifndef DRAGJLABEL_H
 #define DRAGJLABEL_H
-#include <QGroupBox>
+#include "jlabel.h"
 #include "exceptions.h"
 #include "logger.h"
 #include "namedicon.h"
@@ -8,7 +8,7 @@
 
 class QDrag;
 class DataFlavor;
-class DragJLabel : public QGroupBox
+class DragJLabel : public JLabel
 {
     Q_OBJECT
 public:

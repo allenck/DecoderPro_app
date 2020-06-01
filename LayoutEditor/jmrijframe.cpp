@@ -1145,9 +1145,9 @@ QString JmriJFrame::getTitle() { return windowTitle();}
  //return Beans.getIntrospectedProperty(this, key);
  return QVariant();
 }
-QWidget* JmriJFrame::getContentPane() {getContentPane(false);}
+JPanel* JmriJFrame::getContentPane() {getContentPane(false);}
 
-QWidget *JmriJFrame::getContentPane(bool addLayout)
+JPanel *JmriJFrame::getContentPane(bool addLayout)
 {
  if(centralWidget() == nullptr)
  {
@@ -1158,8 +1158,9 @@ QWidget *JmriJFrame::getContentPane(bool addLayout)
    centralWidget->setLayout(new QVBoxLayout);
   setCentralWidget(centralWidget);
  }
- return centralWidget();
+ return (JPanel*)centralWidget();
 }
+
 void JmriJFrame::setAlwaysOnTop(bool checked)
 {
  JFrame::setAlwaysOnTop(checked);

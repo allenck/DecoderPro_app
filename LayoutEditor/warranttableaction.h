@@ -37,23 +37,23 @@ public:
     static QMenu* _warrantMenu;
     /*public*/ WarrantTableAction(QString menuOption, QObject *parent = 0);
     ~WarrantTableAction() {}
+    /*public*/ static WarrantTableAction* getDefault();
     WarrantTableAction(const WarrantTableAction& other) :AbstractAction(other.text(), other.parent()) {}
-    /*public*/ static void initPathPortalCheck();
-    /*public*/ static void checkPathPortals(OBlock* b);
-    /*public*/ static bool showPathPortalErrors();
-    /*synchronized*/ /*public*/ static QMenu* makeWarrantMenu(bool edit, QObject* parent);
+    /*public*/ QString checkPathPortals(OBlock* b);
+    /*public*/ bool showPathPortalErrors(JTextArea *ta);
+    /*synchronized*/ /*public*/ QMenu* makeWarrantMenu(bool edit);
     static /*final*/ QString halt;// = tr("Halt");
     static /*final*/ QString resume;// = tr("Resume");
     static /*final*/ QString abort;// = tr("Abort");
     static /*final*/ QStringList controls;// = {halt, resume, abort};
     /*public*/ void actionPerformed(ActionEvent* e = 0);
-    /*synchronized*/ /*public*/ static void updateWarrantMenu(QObject* parent);
-    /*synchronized*/ /*public*/ static void closeWarrantFrame(QString key);
+//    /*synchronized*/ /*public*/ static void closeWarrantFrame(QString key);
     /*synchronized*/ static /*public*/ void mouseClickedOnBlock(OBlock* block);
     /*public*/ static bool checkSharedTurnouts(OBlock* block);
+    /*public*/ bool errorCheck();
 
  public slots:
-    /*synchronized*/ /*public*/ static void openWarrantFrame(QString key);
+    /*synchronized*/ /*public*/ void openWarrantFrame(QString key);
     void setStatusText(QString msg, QColor c);
     //void actionPerformed(QString);
 signals:
@@ -79,12 +79,12 @@ private:
     QString command;
 
     /*private*/ static WarrantTableFrame* _tableFrame;
-    static WarrantTableAction* getInstance();
     /*private*/ static OpSessionLog* _log;
     /*private*/ static bool _edit;
     static ShutDownTask*     _shutDownTask;
     /*private*/ static bool sharedTO(OPath* myPath, OPath* path);
     void on_createWarrant_triggered();
+    /*private*/ bool _logging = false;
 
 protected:
     /*protected*/ static TrackerTableAction* _trackerTable;
@@ -93,10 +93,15 @@ protected:
 
     /*protected*/ static WarrantFrame* _openFrame;
     /*protected*/ static NXFrame* _nxFrame;
-    /*protected*/ static QAction* makeLogMenu();
-    /*synchronized*/ /*protected*/ static void writetoLog(QString text);
-    /*synchronized*/ /*protected*/ static void newWarrantFrame(WarrantFrame* frame);
-    /*synchronized*/ /*protected*/ static void closeWarrantFrame(WarrantFrame* frame);
+//    /*synchronized*/ /*protected*/ static void closeWarrantFrame(WarrantFrame* frame);
+    /*protected*/ void closeWarrantFrame();
+    /*protected*/ void editWarrantFrame(Warrant* w);
+    /*synchronized*/ /*protected*/ void updateWarrantMenu();
+    /*protected*/ QAction* makeLogMenu();
+    /*protected*/ void closeNXFrame();
+    /*protected*/ void makeWarrantFrame(Warrant* startW, Warrant* endW);
+    /*protected*/ NXFrame* makeNXFrame();
+    /*synchronized*/ /*protected*/ void writetoLog(QString text);
 
 
     friend class CreateWarrantFrame;
@@ -127,16 +132,9 @@ public:
 //         }  */
  /*public*/ void actionPerformed(ActionEvent* /*e*/)
  {
-     WarrantTableAction::getInstance()->_hasErrors = false;
-     WarrantTableAction::getInstance()->_textArea = NULL;
-     _errorDialog->close();
+     WarrantTableFrame::getDefault();
  }
-//         /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//             _hasErrors = false;
-//             _textArea = NULL;
-//             _errorDialog.dispose();
-//         }
-    };
+};
 /*static*/ class CreateWarrantFrame : public JFrame
 {
  Q_OBJECT
@@ -168,9 +166,9 @@ class EditWarrantActionListener : public QObject
 {
  Q_OBJECT
  QSignalMapper* editWarrantMapper;
-
+ WarrantTableAction* act;
 public:
- EditWarrantActionListener(QSignalMapper* editWarrantMapper);
+ EditWarrantActionListener(QSignalMapper* editWarrantMapper, WarrantTableAction* act);
 public slots:
  void on_editWarrantMapper(QString);
  void on_createNXWarrantAct();
@@ -190,85 +188,9 @@ public:
 
 };
 
-class StartLogActionListener : public ActionListener
-{
- Q_OBJECT
-
-public:
- StartLogActionListener()
- {
-  WarrantTableAction::_log = OpSessionLog::getInstance();
-//  if (!WarrantTableAction::_log->showFileChooser(OpSessionLog::getInstance()))
-//  {
-//   WarrantTableAction::_log = NULL;
-//   return;
-//  }
-  if (WarrantTableAction::_shutDownTask == NULL)
-  {
-   WarrantTableAction::_shutDownTask = new WTAShutDownTask("PanelPro Save default icon check", NULL, NULL, NULL, (QObject*)this);
-//      {
-//          public bool checkPromptNeeded() {
-//              _log.close();
-//              _log = NULL;
-//              return true;
-//          }
-//      };
-   ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(WarrantTableAction::_shutDownTask);
-  }
-  WarrantTableAction::updateWarrantMenu( this);
-}
 
 
-public slots:
- void actionPerformed(ActionEvent */*e*/ = 0)
- {
-  WarrantTableAction::_log = OpSessionLog::getInstance();
-   if (!WarrantTableAction::_log->showFileChooser(WarrantTableFrame::getDefault()))
-   {
-    WarrantTableAction::_log = NULL;
-    return;
-   }
-#if 0  // TODO:
-   if (WarrantTableAction::_shutDownTask == NULL) {
-       WarrantTableAction::_shutDownTask = new SwingShutDownTask("PanelPro Save default icon check",
-               NULL, NULL, NULL)
-       {
-           public boolean checkPromptNeeded() {
-               _log.close();
-               _log = NULL;
-               return true;
-           }
-       };
-       jmri.InstanceManager.shutDownManagerInstance().register(_shutDownTask);
-   }
-#endif
-   if(WarrantTableAction::_shutDownTask == NULL)
-    WarrantTableAction::_shutDownTask = new WTAShutDownTask("PanelPro Save default icon check",
-            NULL, NULL, NULL);
 
-   WarrantTableAction::updateWarrantMenu(NULL);
-  }
-};
-
-class StopLogActionListener : public ActionListener
-{
- Q_OBJECT
-
-public:
- StopLogActionListener() {}
-
-public slots:
- void actionPerformed(ActionEvent */*e*/ = 0)
- {
-  WarrantTableAction::_log->close();
-  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->deregister(WarrantTableAction::_shutDownTask);
-  WarrantTableAction::_shutDownTask = NULL;
-  WarrantTableAction::_log = NULL;
-  WarrantTableAction::updateWarrantMenu(this);
-
- }
-
-};
 class CreateNXWarrantActionListener : public ActionListener
 {
  Q_OBJECT

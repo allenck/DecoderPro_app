@@ -14,6 +14,10 @@ public:
     /*public*/ void addListDataListener(ListDataListener* l);
     /*public*/ void removeListDataListener(ListDataListener* l);
     /*public*/ QList<ListDataListener*>* getListDataListeners();
+//    /*public*/ int rowCount(const QModelIndex &parent) const {return getSize();}
+//    /*public*/ QVariant data(const QModelIndex &index, int role) const {
+//     //return getElementAt(index.row());
+//    }
 
 signals:
  void contentsChanged(ListDataEvent*);

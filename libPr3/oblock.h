@@ -64,7 +64,7 @@ public:
     /*public*/ QList <Portal*> getPortals();
     /*public*/ OPath* getPathByName(QString name);
     /*public*/ bool addPath(OPath* path); // does not override!
-    /*public*/ void removePath(Path* path) override;
+    /*public*/ bool removeOPath(OPath *path);
     /*public*/ QString setPath(QString pathName, Warrant* warrant);
     /*public*/ void pseudoPropertyChange(QString propName, QVariant old, QVariant n);
     /*public*/ void goingInactive() override;

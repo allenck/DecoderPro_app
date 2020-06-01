@@ -15,6 +15,8 @@
 //class OpSessionLog {
 
 /*private*/ /*static*/ OpSessionLog*  OpSessionLog::_instance = NULL;
+/*static*/ QTextStream* OpSessionLog::_outBuff = nullptr;
+/*static*/ QFile* OpSessionLog::qFile = nullptr;
 
 
 /*private*/ OpSessionLog::OpSessionLog(QObject *parent) :

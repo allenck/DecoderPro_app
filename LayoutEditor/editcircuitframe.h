@@ -1,7 +1,9 @@
 #ifndef EDITCIRCUITFRAME_H
 #define EDITCIRCUITFRAME_H
-#include "jmrijframe.h"
+#include "editframe.h"
 
+class OpenPickListButton;
+class LengthPanel;
 class Sensor;
 class Positionable;
 class QFrame;
@@ -9,12 +11,12 @@ class QPushButton;
 class JTextField;
 class OBlock;
 class CircuitBuilder;
-class EditCircuitFrame : public JmriJFrame
+class EditCircuitFrame : public EditFrame
 {
     Q_OBJECT
 public:
     //explicit EditCircuitFrame(QWidget *parent = 0);
-    /*public*/ EditCircuitFrame(QString _title, CircuitBuilder* parent, OBlock* block, QWidget *parentWidget = 0);
+    /*public*/ EditCircuitFrame(QString _title, CircuitBuilder* parent, OBlock* block);
     static int STRUT_SIZE;// = 10;
     static bool _firstInstance;// = true;
     static QPoint _loc;// = null;
@@ -24,10 +26,13 @@ public:
 signals:
 
 public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* e);
+
  private:
     /*private*/ OBlock* _block;
     /*private*/ CircuitBuilder* _parent;
 
+    /*private*/ JTextField* _systemName;
     /*private*/ JTextField*  _blockName;// = new JTextField();
     /*private*/ JTextField*  _detectorSensorName;// = new JTextField();
     /*private*/ JTextField*  _errorSensorName;// = new JTextField();
@@ -38,23 +43,38 @@ public slots:
     // Sensor list
     /*private*/ JmriJFrame*      _pickFrame;
     /*private*/ QPushButton* _openPicklistButton;
-    /*private*/ void makeContentPanel();
+    /*private*/ JPanel* makeContentPanel();
     /*private*/ QWidget* MakePickListPanel();
     void openPickList();
     void closePickList();
     /*private*/ QWidget* MakeButtonPanel();
     /*private*/ QWidget* MakeDoneButtonPanel();
     Logger* log;
-    /*private*/ Sensor* getSensor(QString sensorName);
+//    /*private*/ Sensor* getSensor(QString sensorName);
+    LengthPanel* _lengthPanel;
+    JPanel* _namePanel;
+
+    // Sensor list
+    OpenPickListButton/*<Sensor>*/* _pickTable;
+    /*private*/ QString checkForSensors();
+    /*private*/ JPanel* makeCreateBlockPanel();
+    /*private*/ void createBlock();
+    bool _create = false;
+    /*private*/ void deleteCircuit();
+    /*private*/ void changeBlockName();
+    /*private*/ JPanel* makeEditBlockPanel();
+    /*private*/ void closeCreate();
 
 private slots:
     void openPickListButton_clicked();
 protected:
-    /*protected*/ void updateContentPanel();
-    /*protected*/ OBlock* getBlock();
+    /*protected*/ void updateContentPanel(bool create);
+//    /*protected*/ OBlock* getBlock();
     /*protected*/ void updateIconList(QList<Positionable*>* icons);
+    /*protected*/ void closingEvent(bool close);
+
 protected slots:
-    /*protected*/ void closingEvent();
+
 friend class CircuitBuilder;
 };
 

@@ -10724,7 +10724,7 @@ if (_wrapper) {
     }
   }
 }
-  return SignalHead::getAppearance();
+  return int();
 }
 QString  PythonQtShell_SignalHead::getAppearanceName()
 {

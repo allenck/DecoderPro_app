@@ -11,8 +11,8 @@ class OpSessionLog : public QObject
 public:
  //explicit OpSessionLog(QObject *parent = 0);
  /*public*/ static OpSessionLog* getInstance();
- /*synchronized*/ /*public*/ void writeLn(QString text);
- /*synchronized*/ /*public*/ void close();
+ static /*synchronized*/ /*public*/ void writeLn(QString text);
+ static /*synchronized*/ /*public*/ void close();
  /*public*/ /*synchronized*/ bool showFileChooser(QObject* parent);
 
 signals:
@@ -20,10 +20,10 @@ signals:
 public slots:
 private:
  /*private*/ static OpSessionLog* _instance;
- QTextStream* _outBuff;
+ static QTextStream* _outBuff;
  /*private*/ OpSessionLog(QObject *parent = 0);
  void writeHeader(QString fileName);
- QFile* qFile;
+ static QFile* qFile;
 };
 
 #endif // OPSESSIONLOG_H

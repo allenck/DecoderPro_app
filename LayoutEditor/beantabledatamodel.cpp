@@ -30,6 +30,7 @@
 #include "buttoncolumndelegate.h"
 #include "jtablepersistencemanager.h"
 #include <QSignalMapper>
+#include "borderfactory.h"
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -405,8 +406,8 @@ void BeanTableDataModel::On_deleteBean_triggered()
   dialog->setWindowTitle(tr("Warning"));
   //dialog.setLocationRelativeTo(NULL);
   //dialog.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-  QWidget* container = new QWidget();
-  //container.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+  JPanel* container = new JPanel();
+  container->setBorder(BorderFactory::createEmptyBorder(10,10,10,10));
   container->setLayout(new QVBoxLayout(container/*, BoxLayout.Y_AXIS*/));
   if (count>0)
   { // warn of listeners attached before delete

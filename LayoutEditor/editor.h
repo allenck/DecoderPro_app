@@ -18,6 +18,8 @@
 #include "flowlayout.h"
 #include "jlayeredpane.h"
 #include <QPointer>
+#include <QPen>
+
 /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
 
@@ -624,7 +626,6 @@ protected slots:
   /*protected*/ void deselectSelectionGroup();
   /*protected*/ void addBlockContentsEditor();
 
-
   friend class CoordinateEdit;
   friend class LayoutEditor;
   friend class LoadXml;
@@ -911,78 +912,78 @@ protected:
       //LayeredPane::setSize(width, height);
    resize(w,h);
   }
+
+  //@Override
+   /*public*/ QSize getSize() {
+      return QSize(w, h);
+  }
+
+  //@Override
+   /*public*/ QSize getPreferredSize() {
+      return QSize(w, h);
+  }
+
+  //@Override
+   /*public*/ QSize getMinimumSize() {
+      return getPreferredSize();
+  }
+
+  //@Override
+   /*public*/ QSize getMaximumSize() {
+      return getPreferredSize();
+  }
 #if 0
-  @Override
-   /*public*/ Dimension getSize() {
-      return new Dimension(w, h);
-  }
-
-  @Override
-   /*public*/ Dimension getPreferredSize() {
-      return new Dimension(w, h);
-  }
-
-  @Override
-   /*public*/ Dimension getMinimumSize() {
-      return getPreferredSize();
-  }
-
-  @Override
-   /*public*/ Dimension getMaximumSize() {
-      return getPreferredSize();
-  }
-
-  @Override
-   /*public*/ Component add(Component c, int i) {
-      int hnew = Math.max(this.h, c.getLocation().y + c.getSize().height);
-      int wnew = Math.max(this.w, c.getLocation().x + c.getSize().width);
+  //@Override
+   /*public*/ QWidget* add(QWidget* c, int i) {
+      int hnew = qMax(this->h, c->pos().y + c->size().height());
+      int wnew = qMax(this.w, c->pos().x + c->size().width());
       if (hnew > h || wnew > w) {
 //                log.debug("size was {},{} - i =", w, h, i);
           setSize(wnew, hnew);
       }
-      return super.add(c, i);
+      return JmriJFrame::add(c, i);
   }
 
-  @Override
-   /*public*/ void add(Component c, Object o) {
+  //@Override
+   /*public*/ void add(QWidget* c, QObject* o) {
       super.add(c, o);
-      int hnew = Math.max(h, c.getLocation().y + c.getSize().height);
-      int wnew = Math.max(w, c.getLocation().x + c.getSize().width);
+      int hnew = qMax(h, c.pos().y() + c.getSize().height);
+      int wnew = qMax(w, c.getLocation().x + c.getSize().width);
       if (hnew > h || wnew > w) {
           // log.debug("adding of {} with Object - i=", c.getSize(), o);
           setSize(wnew, hnew);
       }
   }
+#endif
+  /*private*/ QColor _highlightColor = Editor::HIGHLIGHT_COLOR;
+  /*private*/ QColor _selectGroupColor = Editor::HIGHLIGHT_COLOR;
+  /*private*/ QColor _selectRectColor = Qt::red;
+  // /*private*/ /*transient*/ QPen _selectRectStroke = DASHED_LINE;
 
-  private Color _highlightColor = HIGHLIGHT_COLOR;
-  private Color _selectGroupColor = HIGHLIGHT_COLOR;
-  private Color _selectRectColor = Color.red;
-  private transient Stroke _selectRectStroke = DASHED_LINE;
-
-   /*public*/ void setHighlightColor(Color color) {
+   /*public*/ void setHighlightColor(QColor color) {
       _highlightColor = color;
   }
 
-   /*public*/ void setSelectGroupColor(Color color) {
+   /*public*/ void setSelectGroupColor(QColor color) {
       _selectGroupColor = color;
   }
 
-   /*public*/ void setSelectRectColor(Color color) {
+   /*public*/ void setSelectRectColor(QColor color) {
       _selectRectColor = color;
   }
 
-   /*public*/ void setSelectRectStroke(Stroke stroke) {
-      _selectRectStroke = stroke;
+   /*public*/ void setSelectRectStroke(QPen stroke) {
+//      _selectRectStroke = stroke;
   }
 
    /*public*/ void setDefaultColors() {
-      _highlightColor = HIGHLIGHT_COLOR;
-      _selectGroupColor = HIGHLIGHT_COLOR;
-      _selectRectColor = Color.red;
-      _selectRectStroke = DASHED_LINE;
+      _highlightColor = Editor::HIGHLIGHT_COLOR;
+      _selectGroupColor = Editor::HIGHLIGHT_COLOR;
+      _selectRectColor = Qt::red;
+      //_selectRectStroke = Editor::DASHED_LINE;
   }
-
-  @Override
+#if 0
+  //@Override
    /*public*/ void paint(Graphics g) {
       Graphics2D g2d = null;
       if (g instanceof Graphics2D) {
@@ -1057,6 +1058,7 @@ protected:
 #endif
   friend class SwitchboardEditor;
   friend class Editor;
+  friend class CircuitBuilder;
  };
 
   class AddBlockActionListener : public ActionListener

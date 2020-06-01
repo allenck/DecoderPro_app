@@ -2,6 +2,9 @@
 #include "portalicon.h"
 #include "portal.h"
 #include "controlpaneleditor.h"
+#include "oblockmanager.h"
+#include "instancemanager.h"
+#include "oblock.h"
 
 PortalIconXml::PortalIconXml(QObject *parent) :
     PositionableLabelXml(parent)
@@ -66,53 +69,67 @@ PortalIconXml::PortalIconXml(QObject *parent) :
  */
 /*public*/ void PortalIconXml::load(QDomElement element, QObject* o) throw (Exception)
 {
-    //if (!(o instanceof ControlPanelEditor))
-    if(qobject_cast<ControlPanelEditor*>(o)==NULL)
-    {
-        log-> error("Can't load portalIcon.  Panel editor must use ControlPanelEditor.");
-        return;
-    }
-    ControlPanelEditor* ed = (ControlPanelEditor*) o;
+  //if (!(o instanceof ControlPanelEditor))
+  if(qobject_cast<ControlPanelEditor*>(o)==NULL)
+  {
+      log-> error("Can't load portalIcon.  Panel editor must use ControlPanelEditor.");
+      return;
+  }
+  ControlPanelEditor* ed = (ControlPanelEditor*) o;
 
-    QString fromBlk;
-    try {
-        fromBlk=element.attribute("fromBlockName");
-    } catch ( NullPointerException e) {
-        log-> error("incorrect information for portalIcon; must use fromBlockName.");
-        ed->loadFailed();
-        return;
-    }
-    QString portalName;
-    try {
-        portalName=element.attribute("portalName");
-    } catch ( NullPointerException e) {
-        log-> error("incorrect information for portalIcon; must use portalName.");
-        ed->loadFailed();
-        return;
-    }
-    PortalIcon* l= new PortalIcon(fromBlk, portalName, ed);
+  QString fromBlk;
+  try {
+      fromBlk=element.attribute("fromBlockName");
+  } catch ( NullPointerException e) {
+      log-> error("incorrect information for portalIcon; must use fromBlockName.");
+      ed->loadFailed();
+      return;
+  }
+  QString portalName;
+  try {
+      portalName=element.attribute("portalName");
+  } catch ( NullPointerException e) {
+      log-> error("incorrect information for portalIcon; must use portalName.");
+      ed->loadFailed();
+      return;
+  }
+  OBlock* block = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock(fromBlk);
+  Portal* portal = block->getPortalByName(portalName);
 
-    try {
-        QDomElement icons = element.firstChildElement("icons");
-        //@SuppressWarnings("unchecked")
-        QDomNodeList iconList = icons.childNodes();
-        for (int i=0; i<iconList.size(); i++) {
-            QDomElement iconElem = iconList.at(i).toElement();
-            QString name = iconElem.tagName();
-            NamedIcon* icon = loadIcon(l, name, icons, "PortalIcon \""+portalName+"\": icon \""+name+"\" ", ed);
-            if (icon!=NULL) {
-                l->setIcon(name, icon);
-            } else {
-                log-> info("PortalIcon \""+portalName+"\": icon \""+name+"\" removed");
-            }
-        }
-    } catch ( NullPointerException e) {
-        log-> error("incorrect information for portalIcon; missing icons.");
-        ed->loadFailed();
-        return;
-    }
+  PortalIcon* l = new PortalIcon(ed, portal);
+  ed->putItem(l);
+  // load individual item's option settings after editor has set its global settings
+  loadCommonAttributes(l, ControlPanelEditor::MARKERS, element);
+  QString a = element.attribute("scale");
+  double scale = 1.0;
+  if (a != "") {
+      bool ok;
+          scale = a.toDouble(&ok);
+      if(!ok) {
+          log->error(l->getNameString() + " can't convert scale " /*+ dce*/);
+      }
+  }
+  l->setScale(scale);
 
-    ed->putPortalIcon(l);
-    // load individual item's option settings after editor has set its global settings
-    loadCommonAttributes((Positionable*)l, ControlPanelEditor::MARKERS, element);
+  a = element.attribute("rotate");
+  int deg = 0;
+  if (a != "") {
+      bool ok;
+          deg = a.toInt(&ok);
+      if(!ok) {
+          log->error(l->getNameString() + " can't convert rotate " /*+ dce*/);
+      }
+  }
+  l->rotate(deg);
+
+  bool value = true;
+  if ((a = element.attribute("arrowSwitch")) != "" && a == ("no")) {
+      value = false;
+  }
+  l->setArrowOrientatuon(value);
+  value = false;
+  if ((a = element.attribute("arrowHide")) != "" && a == ("yes")) {
+      value = true;
+  }
+  l->setHideArrows(value);
  }

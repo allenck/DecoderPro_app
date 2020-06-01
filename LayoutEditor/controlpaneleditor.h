@@ -19,7 +19,6 @@ public:
     /*public*/ bool _debug;
     /*public*/ ControlPanelEditor(QString name, QWidget *parent = 0);
     /*public*/ void setCopyMenu(Positionable* p, QMenu* popup);
-    /*public*/ void putPortalIcon(PortalIcon* pos);
     /*public*/ static /*final*/ QString POSITIONABLE_LIST_FLAVOR;// = java.awt.datatransfer.DataFlavor.javaJVMLocalObjectMimeType + ";class=jmri.jmrit.display.controlPanelEditor.ControlPanelEditor";
 
 
@@ -29,7 +28,7 @@ public:
     //    /*public*/ static final String POSITIONABLE_LIST_FLAVOR = java.awt.datatransfer.DataFlavor.javaJVMLocalObjectMimeType +
     //               ";class=jmri.jmrit.display.controlPanelEditor.ControlPanelEditor";
     /*public*/ void initView();
-    /*public*/ void setSelectionGroup(QList<Positionable*>* group);
+    /*public*/ void setSelectionGroup(QList<Positionable *> *group);
     /*public*/ void resetEditor();
     /*public*/ QList <Positionable*>* getClipGroup();
     /*public*/ void setTitle();
@@ -145,7 +144,7 @@ protected:
  /*protected*/ void makeMarkerMenu();
  /*protected*/ void makeOptionMenu();
  /*protected*/ void makeEditMenu();
- /*protected*/ void makeWarrantMenu(bool );
+ /*protected*/ void makeWarrantMenu(bool, bool );
 /*protected*/ Positionable* getCurrentSelection(QGraphicsSceneMouseEvent* event);
 /*protected*/ Positionable* getCopySelection(QGraphicsSceneMouseEvent* event);
 /*protected*/ void makeCircuitMenu();
@@ -170,6 +169,10 @@ friend class DuplicateActionListener;
 friend class EditPortalDirection;
 friend class EditPortalFrame;
 friend class CPEActionListener;
+friend class IconDragJLabel;
+friend class EditSignalFrame;
+friend class ConvertDialog;
+friend class EPIconDragJLabel;
 };
 Q_DECLARE_METATYPE(ControlPanelEditor)
 

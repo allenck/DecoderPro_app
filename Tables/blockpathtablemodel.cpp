@@ -509,7 +509,7 @@ bool BlockPathTableModel::deletePath(OPath* path)
 //            == JOptionPane.YES_OPTION)
  if(QMessageBox::warning(NULL, tr("Warning"), tr("Do you want to delete path \"%1\"?").arg(path->getName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
  {
-  _block->removePath(path);
+  _block->removeOPath(path);
   return true;
  }
  return false;

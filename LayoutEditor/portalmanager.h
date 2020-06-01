@@ -3,6 +3,7 @@
 
 #include "abstractmanager.h"
 #include "liblayouteditor_global.h"
+#include "propertychangesupport.h"
 
 class Portal;
 class LIBLAYOUTEDITORSHARED_EXPORT PortalManager : public AbstractManager
@@ -15,7 +16,7 @@ public:
  /*public*/ int getXMLOrder()const override;
  /*public*/ QString getSystemPrefix() const override;
  /*public*/ char typeLetter() const override;
- /*public*/ Portal* createNewPortal(QString sName, QString userName);
+ /*public*/ Portal* createNewPortal(QString sName);
  /*public*/ QString generateSystemName();
  /*public*/ Portal* getPortal(QString name);
  /*public*/ NamedBean* getBySystemName(QString name)const override;
@@ -27,6 +28,7 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Portal";
  }
+ /*public*/ QSet<Portal*> getPortalSet();
 
 signals:
 
@@ -34,6 +36,10 @@ public slots:
 private:
  /*private*/ static int _nextSName;// = 1;
  static PortalManager* _instance;// = NULL;
+ /*private*/ PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+ /*private*/ QList<Portal*> _nameList =QList<Portal*>();          // stores Portal in loaded order
+ /*private*/ QMap<QString, Portal*> _portalMap = QMap<QString, Portal*>(); // stores portal by current name
+ /*private*/ int _nextIndex = 1;
 
 protected:
  /*protected*/ void registerSelf();

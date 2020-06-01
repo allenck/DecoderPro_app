@@ -15,7 +15,7 @@
 #include <QMimeData>
 #include "borderlayout.h"
 #include "box.h"
-
+#include "borderfactory.h"
 
 //ClockItemPanel::ClockItemPanel(QWidget *parent) :
 //    IconItemPanel(parent)
@@ -55,7 +55,7 @@
 {
  if (_iconPanel == nullptr) {
      _iconPanel = new ImagePanel();
-//     _iconPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+     _iconPanel->setBorder(BorderFactory::createLineBorder(Qt::black));
  } else {
      //_iconPanel.removeAll();
   QObjectList ol = _iconPanel->layout()->children();
@@ -75,14 +75,14 @@
   //Entry<String, NamedIcon> entry = it.next();
   it.next();
   NamedIcon* icon = new NamedIcon(it.value());    // make copy for possible reduction
-  QGroupBox* panel = new QGroupBox();
+  JPanel* panel = new JPanel();
   panel->setLayout(new QHBoxLayout);
   QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
 
   QString borderName = ItemPalette::convertText(it.key());
-  //panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
-  //                                                 borderName));
-  panel->setTitle(borderName);
+  panel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
+                                                   borderName));
+  //panel->setTitle(borderName);
   panel->setStyleSheet(gbStyleSheet);
   EditScene* scene = new EditScene(QRectF(0,0,200,200));
   connect(scene, SIGNAL(sceneMouseRelease(QGraphicsSceneMouseEvent*)), this,SLOT(sceneClicked(QGraphicsSceneMouseEvent*)));

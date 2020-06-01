@@ -36,6 +36,7 @@
 #include "flowlayout.h"
 #include "iconitempanel.h"
 #include <QMenu>
+#include "borderfactory.h"
 
 //CatalogPanel::CatalogPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -692,7 +693,7 @@ void CatalogPanel::onBgColorBox(int index)
         deselectIcon();
     }
     if (panel != nullptr) {
-//        panel.setBorder(BorderFactory.createLineBorder(Color.red, 2));
+        panel->setBorder(BorderFactory::createLineBorder(Qt::red, 2));
         _selectedImage = panel;
     } else {
         deselectIcon();
@@ -1272,7 +1273,7 @@ void CPIconDisplayPanel::setBorderAndIcon(NamedIcon* icon) {
 //                label.setHorizontalAlignment(JLabel.CENTER);
 //                label.addMouseListener(new IconListener());
         ((QVBoxLayout*)layout())->addWidget(label, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
-//                setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+                setBorder(BorderFactory::createEmptyBorder(2,2,2,2));
     } catch (ClassNotFoundException cnfe) {
         catalogPanel->log->error(tr("Unable to find class supporting %1").arg( /*Editor.POSITIONABLE_FLAVOR),*/ cnfe.getMessage()));
     }

@@ -229,7 +229,7 @@ void PortalTableModel::initTempRow()
        msg = tr("Portal cannot have block \"%1\"\non both sides. (i.e. portal goes nowhere.)").arg(fromBlock->getDisplayName());
    }
    if (msg==NULL) {
-       Portal* portal = _manager->createNewPortal(NULL, tempRow[NAME_COLUMN]);
+       Portal* portal = _manager->createNewPortal( tempRow[NAME_COLUMN]);
        if (portal != NULL) {
            portal->setToBlock(toBlock, false);
            portal->setFromBlock(fromBlock, false);

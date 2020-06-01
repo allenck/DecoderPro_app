@@ -92,13 +92,14 @@ WarrantTableAction::WarrantTableAction(QObject *parent) :
  //    super(tr(menuOption));
  common();
 }
-/*static*/ WarrantTableAction* WarrantTableAction::getInstance()
-{
- if (_instance==NULL)
- {
-  _instance = new WarrantTableAction(tr("Warrant List"));
- }
- return _instance;
+
+/*public*/ /*static*/ WarrantTableAction* WarrantTableAction::getDefault() {
+    if(! InstanceManager::getOptionalDefault("WarrantTableAction")) //.orElseGet(() ->
+    {
+        WarrantTableAction* wta = new WarrantTableAction("Show Warrants"); // NOI18N
+        wta->errorCheck();
+        return (WarrantTableAction*)InstanceManager::setDefault("WarrantTableAction", wta);
+    }//);
 }
 
 void WarrantTableAction::common()
@@ -113,106 +114,156 @@ void WarrantTableAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  command = this->text();
 }
+
+/*public*/ static WarrantTableAction* getDefault() {
+    if( InstanceManager::getOptionalDefault("WarrantTableAction"))/*.orElseGet(() -> */
+    {
+     return (WarrantTableAction*) InstanceManager::getOptionalDefault("WarrantTableAction");
+    }
+    else
+    {
+        WarrantTableAction* wta = new WarrantTableAction("ShowWarrants"); // NOI18N
+        wta->errorCheck();
+        InstanceManager::setDefault("WarrantTableAction", wta);
+        return wta;
+    }//);
+}
 /*public*/ void WarrantTableAction::actionPerformed(ActionEvent* /*e*/)
 {
- //QString command = editWarrantAction->text();
- if (tr("Warrant List")==(command))
- {
-  if (_tableFrame==NULL)
-  {
-   _tableFrame = new WarrantTableFrame();
-   try
-   {
-    _tableFrame->initComponents();
-    _tableFrame->setVisible(true);
-   }
-   catch (Exception ex ) {/*bogus*/ }
-  }
-  else
-  {
-   _tableFrame->setVisible(true);
-   _tableFrame->pack();
-  }
- }
- else if (tr("Create New Warrant")==(command))
- {
-  CreateWarrantFrame* f = new CreateWarrantFrame(this);
-   try
-  {
-   f->initComponents();
-  } catch (Exception ex ) {/*bogus*/ }
-  f->setVisible(true);
- }
- initPathPortalCheck();
- OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
- QStringList sysNames = manager->getSystemNameArray();
- for (int i = 0; i < sysNames.length(); i++)
- {
-  OBlock* block = (OBlock*)manager->getBySystemName(sysNames[i]);
-        checkPathPortals(block);
- }
- showPathPortalErrors();
+ WarrantTableFrame::getDefault();
+}
+/**
+ * @param edit true if portal errors should be shown in window created from
+ *             menu item
+ * @return a menu containing warrant actions
+ */
+/*public*/ QMenu* WarrantTableAction::makeWarrantMenu(bool edit) {
+    if (((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getNamedBeanSet().size() > 1) {
+        _warrantMenu = new QMenu(tr("Warrant"));
+        updateWarrantMenu();
+        return _warrantMenu;
+    }
+    return nullptr;
 }
 
-/*synchronized*/ /*public*/ /*static*/ void WarrantTableAction::updateWarrantMenu(QObject* parent)
-{
- Logger* log = new Logger("WarrantTableAction");
- _warrantMenu->clear();
-// _warrantMenu->addAction(editWarrantAction = new WarrantTableAction("Warrant List"));
- _warrantMenu->addAction(getInstance());
- QMenu* editWarrantMenu = new QMenu(tr("Edit Warrant..."));
- _warrantMenu->addMenu(editWarrantMenu);
-//    ActionListener editWarrantAction = new ActionListener()
-//    {
-//        /*public*/ void actionPerformed(ActionEvent e) {
+//@InvokeOnGuiThread
+    /*synchronized*/ /*protected*/ void WarrantTableAction::updateWarrantMenu() {
+        _warrantMenu->clear();
+        _warrantMenu->addAction(getDefault());
+        QMenu* editWarrantMenu = new QMenu(tr("Edit Warrant"));
+        _warrantMenu->addMenu(editWarrantMenu);
+//        ActionListener editWarrantAction = (ActionEvent e) -> {
 //            openWarrantFrame(e.getActionCommand());
-//        }
-//    };
-//connect(editWarrantAction, SIGNAL(triggered()), parent, SLOT(openWarrantFrame()));
- QSignalMapper* editWarrantMapper = new QSignalMapper();
-// editWarrantMapper->setMapping(editWarrantAction, editWarrantAction->text());
-// connect(editWarrantAction, SIGNAL(triggered()), editWarrantMapper, SLOT(map()));
- EditWarrantActionListener* editWarrantActionListener = new EditWarrantActionListener(editWarrantMapper);
+//        };
+        WarrantManager* manager = (WarrantManager*)InstanceManager::getDefault("WarrantManager");
+        if (manager->getObjectCount() == 0) { // when there are no Warrants, enter the word "None" to the submenu
+            QAction* _noWarrants;// = new JMenuItem(Bundle.getMessage("None"));
+            _noWarrants = editWarrantMenu->addSection(tr("None"));
+            // disable it
+            _noWarrants->setEnabled(false);
+        } else { // when there are warrants, add them to the submenu
+            for (NamedBean* nb : manager->getNamedBeanSet()) {
+             Warrant* warrant = (Warrant*)nb;
+                // Warrant warrent = (Warrant) object;
+                QAction* mi = new QAction(warrant->getDisplayName());
+                //mi.setActionCommand(warrant.getDisplayName());
+                //mi.addActionListener(editWarrantAction);
+                connect(mi, &QAction::triggered, [=]{
+                 QAction*act = (QAction*)QObject::sender();
+                 openWarrantFrame(act->text());
+                });
+                editWarrantMenu->addAction(mi);
+            }
+        }
+        QAction* act;
+         _warrantMenu->addAction(act =new AbstractAction(tr("Create Warrant"),this));
+//         {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+           connect(act, &QAction::triggered, [=]{
+                makeWarrantFrame(nullptr, nullptr);
+//            }
+         });
+        _warrantMenu->addAction((TrackerTableAction*)InstanceManager::getDefault("TrackerTableAction"));
+        _warrantMenu->addAction(act =new AbstractAction(tr("Create NX Warrant"),this));
+//        {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+        connect(act, &QAction::triggered, [=]{
+                makeNXFrame();
+//            }
+        });
+        _warrantMenu->addAction(makeLogMenu());
 
+        log->debug(tr("updateMenu to %1 warrants.").arg(manager->getObjectCount()));
+    }
+/*synchronized*/ /*protected*/ void WarrantTableAction::writetoLog(QString text) {
+        if (_logging) {
+            OpSessionLog::writeLn(text);
+        }
+    }
 
- WarrantManager* manager = (WarrantManager*)InstanceManager::getDefault("WarrantManager");
- QStringList sysNames = manager->getSystemNameArray();
-
- for (int i = 0; i < sysNames.length(); i++)
- {
-  Warrant* warrant = (Warrant*)manager->getBySystemName(sysNames[i]);
-  QAction* mi = new QAction(warrant->getDisplayName(),parent);
-  editWarrantMapper->setMapping(mi, warrant->getDisplayName());
-  //mi.setActionCommand(warrant.getDisplayName());
-  //mi.addActionListener(editWarrantAction);
-  connect(mi, SIGNAL(triggered()), editWarrantMapper, SLOT(map()));
-  editWarrantMenu->addAction(mi);
- }
- connect(editWarrantMapper, SIGNAL(mapped(QString)), editWarrantActionListener, SLOT(on_editWarrantMapper(QString)));
- QAction* createNewWarrantAction;
- _warrantMenu->addAction(createNewWarrantAction = new WarrantTableAction("Create New Warrant"));
- //CreateNewWarrantActionListener* createNewWarrantActionListener = new CreateNewWarrantActionListener();
-// editWarrantMapper->setMapping(createNewWarrantAction, createNewWarrantAction->text());
- //connect(createNewWarrantAction, SIGNAL(triggered()), createNewWarrantActionListener, SLOT(actionPerformed()));
- if (log->isDebugEnabled()) log->debug("updateMenu to "+QString::number(sysNames.length())+" warrants.");
- _warrantMenu->addAction(_trackerTable);
- AbstractAction* createNXWarrantAct;
- _warrantMenu->addAction(createNXWarrantAct = new AbstractAction(tr("Create NX Warrant"),parent));
- CreateNXWarrantActionListener* createNXWarrantActionListener = new CreateNXWarrantActionListener();
-// {
-//     private static final long serialVersionUID = 4129760191508866189L;
-
-//     public void actionPerformed(ActionEvent e) {
-//         WarrantTableFrame.nxAction();
-//     }
-// });
-   connect(createNXWarrantAct, SIGNAL(triggered()), createNXWarrantActionListener, SLOT(actionPerformed()));
- _warrantMenu->addAction(makeLogMenu());
+  //@InvokeOnGuiThread
+/*protected*/ void WarrantTableAction::closeNXFrame() {
+    if (_nxFrame != nullptr) {
+        _nxFrame->clearTempWarrant();
+        _nxFrame->dispose();
+        _nxFrame = nullptr;
+    }
 }
 
-EditWarrantActionListener::EditWarrantActionListener(QSignalMapper* editWarrantMapper)
+//@InvokeOnGuiThread
+/*protected*/ NXFrame* WarrantTableAction::makeNXFrame() {
+    if (_nxFrame == nullptr) {
+        _nxFrame = new NXFrame();
+    }
+//    _nxFrame->setState(java.awt.Frame.NORMAL);
+    _nxFrame->setVisible(true);
+    _nxFrame->toFront();
+    return _nxFrame;
+}
+
+/*protected*/ void WarrantTableAction::closeWarrantFrame() {
+    if (_openFrame != nullptr) {
+        _openFrame->close();
+        _openFrame->dispose();
+        _openFrame = nullptr;
+    }
+}
+
+/*protected*/ void WarrantTableAction::makeWarrantFrame(Warrant* startW, Warrant* endW) {
+    if (_openFrame != nullptr && _openFrame->isRunning()) {
+        return;
+    }
+    closeWarrantFrame();
+    _openFrame = new WarrantFrame(startW, endW);
+//    _openFrame.setState(java.awt.Frame.NORMAL);
+    _openFrame->setVisible(true);
+    _openFrame->toFront();
+}
+
+/*protected*/ void WarrantTableAction::editWarrantFrame(Warrant* w) {
+    if (_openFrame != nullptr && _openFrame->isRunning()) {
+        return;
+    }
+    closeWarrantFrame();
+    _openFrame = new WarrantFrame(w);
+//    _openFrame.setState(java.awt.Frame.NORMAL);
+    _openFrame->setVisible(true);
+    _openFrame->toFront();
+}
+
+/*private*/ void WarrantTableAction::openWarrantFrame(QString key) {
+    Warrant* w = ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getWarrant(key);
+    if (w != nullptr) {
+        editWarrantFrame(w);
+    }
+}
+
+EditWarrantActionListener::EditWarrantActionListener(QSignalMapper* editWarrantMapper, WarrantTableAction *act)
 {
  this->editWarrantMapper = editWarrantMapper;
+ this->act = act;
  connect(editWarrantMapper, SIGNAL(mapped(QString)), this, SLOT(on_editWarrantMapper(QString)));
 }
 
@@ -259,97 +310,55 @@ void EditWarrantActionListener::on_editWarrantMapper(QString cmd)
 //         WarrantTableAction::getInstance()->checkPathPortals(block);
 //  }
 //  WarrantTableAction::getInstance()->showPathPortalErrors();}
- WarrantTableAction::openWarrantFrame(cmd);
+ act->openWarrantFrame(cmd);
 }
-/*protected*/ /*static*/ QAction* WarrantTableAction::makeLogMenu()
+/*protected*/  QAction* WarrantTableAction::makeLogMenu()
 {
  QAction* mi;
- if (_log==NULL)
- {
-  mi = new QAction(tr("Open Session Log"),getInstance());
-//        mi.addActionListener( new ActionListener()
-  StartLogActionListener* startlog = new StartLogActionListener();
-  connect(mi, SIGNAL(triggered()), startlog, SLOT(actionPerformed()));
-//            {
-//                public void actionPerformed(ActionEvent e) {
-//                    _log = OpSessionLog.getInstance();
-//                    if (!_log.showFileChooser(WarrantTableFrame.getInstance())) {
-//                        _log = null;
-//                        return;
-//                    }
-//                    if (_shutDownTask == null) {
-//                        _shutDownTask = new SwingShutDownTask("PanelPro Save default icon check",
-//                                null, null, null)
-//                        {
-//                            public boolean checkPromptNeeded() {
-//                                _log.close();
-//                                _log = null;
-//                                return true;
-//                            }
-//                        };
-//                        jmri.InstanceManager.shutDownManagerInstance().register(_shutDownTask);
-//                    }
-//                    updateWarrantMenu();
-//                }
-//            });
- }
- else
- {
-  mi = new QAction(tr("Close Session Log"),getInstance());
-  StopLogActionListener* stopLog = new StopLogActionListener();
-  connect(mi, SIGNAL(triggered()), stopLog, SLOT(actionPerformed()));
-//        mi.addActionListener( new ActionListener()
-//            {
-//                public void actionPerformed(ActionEvent e) {
-//                    _log.close();
-//                    jmri.InstanceManager.shutDownManagerInstance().deregister(_shutDownTask);
-//                    _shutDownTask = null;
-//                    _log = null;
-//                    updateWarrantMenu();
-//                }
-//            });
+ if (!_logging) {
+     mi = new QAction(tr("Open Session Log"),this);
+     //mi.addActionListener((ActionEvent e) -> {
+     connect(mi, &QAction::triggered, [=]{
+//         if (!OpSessionLog::makeLogFile(WarrantTableFrame::getDefault())) {
+//             return;
+//         }
+         _logging = true;
+         _shutDownTask = new WTAShutDownTask("PanelPro Save default icon check",
+                 nullptr, nullptr, nullptr);
+//         {
+//             @Override
+//             public boolean checkPromptNeeded() {
+//                 OpSessionLog.close();
+//                 _logging = false;
+//                 return true;
+//             }
+//         };
+         ((ShutDownManager*) InstanceManager::getDefault("ShutDownManager"))->_register(_shutDownTask);
+         updateWarrantMenu();
+     });
+ } else {
+     mi = new QAction(tr("Flush data to Session Log"));
+     //mi.addActionListener((ActionEvent e) -> {
+     connect(mi, &QAction::triggered, [=]{
+//         OpSessionLog::flush();
+     });
+     _warrantMenu->addAction(mi);
+     mi = new QAction(tr("Close Session Log"));
+     //mi.addActionListener((ActionEvent e) -> {
+     connect(mi, &QAction::triggered, [=]{
+
+         OpSessionLog::close();
+         ((ShutDownManager*) InstanceManager::getDefault("ShutDownManager"))->deregister(_shutDownTask);
+         _shutDownTask = nullptr;
+         _logging = false;
+         updateWarrantMenu();
+     });
  }
  return mi;
 }
 
-/*synchronized*/ /*protected*/ /*static*/ void WarrantTableAction::writetoLog(QString text)
-{
- if (_log!=NULL)
- {
-  _log->writeLn(text);
- }
-}
-/*synchronized*/ /*public*/ /*static*/ void WarrantTableAction::closeWarrantFrame(QString key) {
-    _frameMap->remove(key);
-}
-/*synchronized*/ /*protected*/ /*static*/ void WarrantTableAction::closeWarrantFrame(WarrantFrame* frame) {
-    if (frame!=NULL) {
-        if  (frame==(_openFrame)) {
-            _openFrame = NULL;
-        }
-        frame->dispose();
-    }
-}
 
-/*synchronized*/ /*protected*/ /*static*/ void WarrantTableAction::newWarrantFrame(WarrantFrame* frame) {
-    closeWarrantFrame(_openFrame);
-    _openFrame = frame;
-}
 
-/*synchronized*/ /*public*/ /*static*/ void WarrantTableAction::openWarrantFrame(QString key)
-{
- Logger* log = new Logger("WarrantTableAction");
-
- WarrantFrame* frame = _frameMap->value(key);
- if (frame==NULL)
- {
-  frame = new WarrantFrame(key);
-  _frameMap->insert(key, frame);
- }
- if (log->isDebugEnabled()) log->debug("openWarrantFrame for "+key+", size= "+QString::number(_frameMap->size()));
- frame->setVisible(true);
- frame->toFront();
-}
 
 /*synchronized*/ /*protected*/ /*static*/ void WarrantTableAction::portalNameChange(QString oldName, QString newName)
 {
@@ -424,121 +433,141 @@ InstanceManager::getDefault("WarrantManager");
 
 /******************** Error checking ************************/
 
-/*public*/ /*static*/ void WarrantTableAction::initPathPortalCheck()
-{
- if (_errorDialog!=NULL)
- {
-  _hasErrors = false;
-  _textArea = NULL;
-  _errorDialog->close();
- }
+/*public*/ bool WarrantTableAction::errorCheck() {
+    _hasErrors = false;
+    JTextArea* textArea = new JTextArea(10, 50);
+    textArea->setEditable(false);
+    textArea->setTabSize(4);
+    textArea->append(tr("ErrWarnAreaMsg"));
+    textArea->append("\n\n");
+    OBlockManager* manager = (OBlockManager*) InstanceManager::getDefault("OBlockManager");
+    for (NamedBean* nb : manager->getNamedBeanSet()) {
+     OBlock* block = (OBlock*)nb;
+        textArea->append(checkPathPortals(block));
+    }
+    return showPathPortalErrors(textArea);
 }
+
 
 /**
-*  Validation of paths within a block.
-*  Gathers messages in a text area that can be displayed after all
-* are written.
-*/
-/*public*/ /*static*/ void WarrantTableAction::checkPathPortals(OBlock* b)
-{
- // warn user of incomplete blocks and portals
- if (_textArea==NULL)
- {
-  _textArea = new JTextArea(10, 50);
-  _textArea->setReadOnly(true);
-  _textArea->setTabSize(4);
-  _textArea->append(tr("The following are possible sources for errors:"));
-  _textArea->append("\n\n");
- }
- QVector <Path*>* pathList = b->getPaths();
- if (pathList->size()==0)
- {
-  _textArea->append(tr("No Paths in Block \"%1\"").arg( b->getDisplayName()));
-  _textArea->append("\n");
-  _hasErrors = true;
-  return;
- }
- QList <Portal*> pList = b->getPortals();
- // make list of names of all portals.  Then remove those we check, leaving the orphans
- QStringList* portalList =new QStringList();
- for (int i=0; i<pList.size(); i++)
- {
-  Portal* portal = pList.at(i);
-  if (portal->getFromPaths()->size()==0)
-  {
-   _textArea->append( tr("Portal \"%1\" has no path into block \"%2\".").arg(portal->getName()).arg( portal->getFromBlockName()));
-   _textArea->append("\n");
-   _hasErrors = true;
-   return;
-  }
-  if (portal->getToPaths()->size()==0)
-  {
-   _textArea->append( tr("Portal \"%1\" has no path into block \"%2\".").arg( portal->getName()).arg(portal->getToBlockName()));
-   _textArea->append("\n");
-   _hasErrors = true;
-   return;
-  }
-  portalList->append(portal->getName());
- }
- for (int i=0; i<pathList->size(); i++)
- {
-  OPath* path = (OPath*)pathList->at(i);
-  OBlock* block = (OBlock*)path->getBlock();
-  if  (block==NULL || block!=(b))
-  {
-   _textArea->append(tr("Path \"%1\" belonging to block \"%2\" does not have \"%2\" as its owner.  Please delete this path.   ").arg( path->getName()).arg( b->getDisplayName()));
-   _textArea->append("\n");
-   _hasErrors = true;
-   return;
-  }
-  QString msg;
-  bool hasPortal = false;
-  Portal* fromPortal = path->getFromPortal();
-  if (fromPortal!=NULL)
-  {
-   if (!fromPortal->isValid())
-   {
-    msg = fromPortal->getName();
-   }
-   hasPortal = true;
-   portalList->removeOne(fromPortal->getName());
-  }
-  Portal* toPortal = path->getToPortal();
-  if (toPortal!=NULL)
-  {
-   if (!toPortal->isValid())
-   {
-    msg = toPortal->getName();
-   }
-   hasPortal = true;
-   portalList->removeOne(toPortal->getName());
-   if (fromPortal!=NULL && fromPortal==(toPortal))
-   {
-    _textArea->append(tr("Entrance portal cannot equal exit portal for path \"%1\" in block \"%2\". (ambiguous turnout settings)").arg(path->getName()).arg( b->getDisplayName()));
-    _textArea->append("\n");
-   }
-  }
+ * Validation of paths within a block. Gathers messages in a text area that
+ * can be displayed after all are written.
+ *
+ * @param b the block to validate
+ * @return error/warning message, if any
+ */
+//@SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE", justification = "OPath extends Path")
+/*public*/ QString WarrantTableAction::checkPathPortals(OBlock* b) {
+    if (log->isDebugEnabled()) {
+        log->debug("checkPathPortals for " + b->getDisplayName());
+    }
+    QString sb;// = new StringBuffer();
+    QVector<Path*>* pathList = b->getPaths();
+    if (pathList->isEmpty()) {
+        sb.append(tr("No Paths in Block \"%1\"").arg(b->getDisplayName()));
+        sb.append("\n");
+        _hasErrors = true;
+        return sb;
+    }
+    QList<Portal*> portalList = b->getPortals();
+    // make list of names of all portals.  Then remove those we check, leaving the orphans
+    QList<QString> portalNameList = QStringList();
+    for (int i = 0; i < portalList.size(); i++) {
+        Portal* portal = portalList.at(i);
+        if (portal->getFromPaths()->isEmpty()) {
+            sb.append(tr("Portal \"%1\" has no path into block \"%2\".").arg(portal->getName()).arg(
+                    portal->getFromBlockName()));
+            sb.append("\n");
+            _hasErrors = true;
+            return sb;
+        }
 
-  if (msg != NULL )
-  {
-   _textArea->append(tr("Portal \"%1\" needs to have a Block specified on each side.").arg( msg));
-   _textArea->append("\n");
-   _hasErrors = true;
-  }
-  else if (!hasPortal)
-  {
-   _textArea->append( tr("Path \"%1\" in block \"%2\" needs to have at least one Portal.").arg( path->getName()).arg( b->getDisplayName()));
-   _textArea->append("\n");
-   _hasErrors = true;
-  }
- }
- if (portalList->size() > 0)
- {
-   _textArea->append( tr("Portal \"%1\" has no path into block \"%2\".").arg( portalList->at(0)).arg( b->getDisplayName()));
-  _textArea->append("\n");
-  _hasErrors = true;
- }
+        if (portal->getToPaths()->isEmpty()) {
+            sb.append(tr("Portal \"%1\" has no path into block \"%2\".").arg(portal->getName()).arg(
+                    portal->getToBlockName()));
+            sb.append("\n");
+            _hasErrors = true;
+            return sb;
+        }
+        portalNameList.append(portal->getName());
+    }
+    QVectorIterator<Path*> iter(*pathList);
+    while (iter.hasNext()) {
+        OPath* path = (OPath*) iter.next();
+        OBlock* block = (OBlock*) path->getBlock();
+        if (block == nullptr || !block->equals(b)) {
+            sb.append(tr("Path \"%1\" belonging to block \"%2\" does not have\n \"%2\" as its owner.  Please delete this path.   ").arg(path->getName()).arg(b->getDisplayName()));
+            sb.append("\n");
+            _hasErrors = true;
+            return sb;
+        }
+        QString msg = nullptr;
+        bool hasPortal = false;
+        Portal* fromPortal = path->getFromPortal();
+        if (fromPortal != nullptr) {
+            if (!fromPortal->isValid()) {
+                msg = fromPortal->getName();
+            }
+            hasPortal = true;
+            portalNameList.removeOne(fromPortal->getName());
+        }
+        Portal* toPortal = path->getToPortal();
+        if (toPortal != nullptr) {
+            if (!toPortal->isValid()) {
+                msg = toPortal->getName();
+            }
+            hasPortal = true;
+            portalNameList.removeOne(toPortal->getName());
+            if (fromPortal != nullptr && fromPortal == (toPortal)) {
+                sb.append(tr("Entrance portal cannot equal exit portal for path \"%1\" in block \"%2\". (ambiguous turnout settings)").arg(
+                        path->getName()).arg(b->getDisplayName()));
+                sb.append("\n");
+            }
+        }
+        if (msg != "") {
+            sb.append(tr("Portal \"%1\" needs to have a block specified on each side.").arg(msg));
+            sb.append("\n");
+            _hasErrors = true;
+        } else if (!hasPortal) {
+            sb.append(tr("Path \"%1\" in block \"%2\" needs to have at least one Portal.").arg(
+                    path->getName()).arg(b->getDisplayName()));
+            sb.append("\n");
+            _hasErrors = true;
+        }
+        // check that the path's portals have the path in their lists
+        bool validPath;
+        if (toPortal != nullptr) {
+            if (fromPortal != nullptr) {
+                validPath = toPortal->isValidPath(path) && fromPortal->isValidPath(path);
+            } else {
+                validPath = toPortal->isValidPath(path);
+            }
+        } else {
+            if (fromPortal != nullptr) {
+                validPath = fromPortal->isValidPath(path);
+            } else {
+                validPath = false;
+            }
+        }
+        if (!validPath) {
+            sb.append(tr("Path \"%1\" in block \"%2\" is not registered in its portals.  (re-enter the path)").arg(
+                    path->getName()).arg(b->getDisplayName()));
+            sb.append("\n");
+            _hasErrors = true;
+        }
+    }
+    for (int i = 0; i < portalNameList.size(); i++) {
+        sb.append(tr("Portal \"%1\" has no path into block \"%2\".").arg(
+                portalNameList.at(i)).arg(b->getDisplayName()));
+        sb.append("\n");
+        _hasErrors = true;
+    }
+    // check whether any turnouts are shared between two blocks;
+    checkSharedTurnouts(b);
+
+    return sb;
 }
+
 /*public*/ /*static*/ bool WarrantTableAction::checkSharedTurnouts(OBlock* block)
 {
  bool hasShared = false;
@@ -599,7 +628,7 @@ QListIterator <BeanSetting*> iter(myTOs);
  }
  return ret;
 }
-/*public*/ /*static*/ bool WarrantTableAction::showPathPortalErrors()
+/*public*/ /*static*/ bool WarrantTableAction::showPathPortalErrors(JTextArea* ta)
 {
  Logger* log = new Logger("WarrantTableAction");
  if (!_hasErrors) { return false; }
@@ -809,21 +838,6 @@ void CreateWarrantFrame::makeWarrant()
 }
 
 //};
-
-/**
-*  Note: _warrantMenu is static
-*/
-/*synchronized*/ /*public*/ /*static*/ QMenu* WarrantTableAction::makeWarrantMenu(bool edit, QObject* parent)
-{
- if (((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getSystemNameList().size() > 1)
- {
-  _edit = edit;
-  _warrantMenu = new QMenu(tr("Warrants"));
-  updateWarrantMenu(parent);
-  return _warrantMenu;
- }
- return new QMenu();
-}
 
 
 void WarrantTableAction::on_createWarrant_triggered()

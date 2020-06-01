@@ -63,40 +63,33 @@ PortalManager::PortalManager(QObject *parent) :
     return 'P';
 }
 
-/**
- * Method to create a new Portal if it does not exist Returns NULL if a
- * Portal with the same systemName or userName already exists, or if there
- * is trouble creating a new Portal. Generate a systemName if called with
- * sName==NULL
+/*
+ * Create a new Portal with a given user name.
+ *
+ * @return null if a Portal with the same userName already exists,
+ * or if an empty userName was requested
  */
-/*public*/ Portal* PortalManager::createNewPortal(QString sName, QString userName) {
+/*public*/ Portal* PortalManager::createNewPortal(/*@Nonnull*/ QString userName) {
+    //java.util.Objects.requireNonNull(userName, "Name cannot be null");
     // Check that Portal does not already exist
     Portal* portal;
-    if (userName != NULL && userName.trimmed().length() > 0) {
-        portal = (Portal*)getByUserName(userName);
-        if (portal != NULL) {
-            return NULL;
+    if (userName.trimmed().length() > 0) {
+        portal = _portalMap.value(userName);
+        if (portal != nullptr) {
+            return nullptr;
         }
     } else {  // must have a user name for backward compatibility
-        return NULL;
-    }
-    if (sName == NULL) {
-        sName = generateSystemName();
-    }
-    if (!sName.startsWith("IP")) {
-        sName = "IP" + sName;
-    }
-    if (sName.length() < 3) {
-        return NULL;
-    }
-    portal = (Portal*)getBySystemName(sName);
-    if (portal != NULL) {
-        return NULL;
+        return nullptr;
     }
     // Portal does not exist, create a new Portal
-    portal = new Portal(sName, userName);
+    portal = new Portal(userName);
     // save in the maps
-    Register(portal);
+    _nameList.append(portal);
+    _portalMap.insert(userName, portal);
+    _nextIndex = _nextIndex + 1;
+    pcs->firePropertyChange("numPortals", QVariant(), _nameList.size());
+    // listen for name and state changes to forward
+    portal->addPropertyChangeListener((PropertyChangeListener*)this);
     return portal;
 }
 
@@ -125,14 +118,19 @@ PortalManager::PortalManager(QObject *parent) :
     if (name == NULL || name.trimmed().length() == 0) {
         return NULL;
     }
-    return (Portal*) _tsys->value(name);
+    return (NamedBean*) _tsys->value(name);
 }
+
+/*public*/ QSet<Portal*> PortalManager::getPortalSet() {
+        //return Collections.unmodifiableCollection(_nameList);
+ return _nameList.toSet();
+    }
 
 /*public*/ NamedBean *PortalManager::getByUserName(QString key) const{
     if (key == NULL || key.trimmed().length() == 0) {
         return NULL;
     }
-    return (Portal*) _tuser->value(key);
+    return (NamedBean*) _tuser->value(key);
 }
 
 /*public*/ Portal* PortalManager::providePortal(QString name) {
@@ -141,7 +139,7 @@ PortalManager::PortalManager(QObject *parent) :
     }
     Portal* portal = (Portal*)getByUserName(name);
     if (portal == NULL) {
-        portal = createNewPortal(NULL, name);
+        portal = createNewPortal( name);
     }
     return portal;
 }

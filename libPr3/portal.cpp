@@ -11,6 +11,9 @@
 #include "abstractsignalheadmanager.h"
 #include "signalspeedmap.h"
 #include "warranttableaction.h"
+#include "warrantmanager.h"
+#include "portalmanager.h"
+#include "loggerfactory.h"
 
 //Portal::Portal(QObject *parent) :
 //    QObject(parent)
@@ -25,8 +28,12 @@
  * @author	Pete Cressman  Copyright (C) 2009
  */
 // /*public*/ class Portal  {
+/*private*/ /*static*/ /*final*/ QString Portal::NAME_CHANGE = "NameChange";
+/*private*/ /*static*/ /*final*/ QString Portal::SIGNAL_CHANGE = "signalChange";
+/*private*/ /*static*/ /*final*/ QString Portal::ENTRANCE = "entrance";
 
-/*public*/ Portal::Portal(QString sysName, QString userName, QObject *parent) : AbstractNamedBean(sysName, userName, parent)
+
+/*public*/ Portal::Portal(QString userName, QObject *parent) : QObject(parent)//AbstractNamedBean(sysName, userName, parent)
 {
   _fromPaths = new QList <OPath*>();
   _toPaths = new QList <OPath*>();
@@ -39,6 +46,8 @@
  _toSignalDelay = 0;
  _toSignalOffset = 0;
  _fromSignalOffset = 0;
+
+ _name = userName;
 }
 
 /**
@@ -82,28 +91,22 @@
 */
 /*private*/ bool Portal::addPath(QList <OPath*>* list, OPath* path)
 {
- if (list->contains(path))
- {
-  return true;    //OK already there
+ Block* block = path->getBlock();
+ if (block == nullptr) {
+     log->error(tr("Path \"%1\" has no block.").arg(path->getName()));
+     return false;
  }
- QString pName = path->getName();
- for (int i = 0; i < list->size(); i++)
- {
-  OPath* p = list->at(i);
-  if (pName==(p->getName()))
-  {
-   log->error("Path \"" + path->getName()
-           + "\" is duplicate name for another path in Portal \"" + getUserName() + "\".");
-   return false;
-  }
-  if (p->equals(path))
-  {
-   log->warn("Path \""+path->getName()+"\" is duplicate of path \""+p->getName()+ " in Portal \""+getUserName()+"\".");
-   return false;
-  }
+ if (this != (path->getFromPortal())
+         && this != (path->getToPortal())) {
+     return false;
  }
- list->append(path);
- return true;
+ if ((_fromBlock != nullptr) && _fromBlock->equals(block)) {
+     return addPath(_fromPaths, path);
+ } else if ((_toBlock != nullptr) && _toBlock->equals(block)) {
+     return addPath(_toPaths, path);
+ }
+ // portal is incomplete or path block not in this portal
+ return false;
 }
 
 /*public*/ void Portal::removePath(OPath* path) {
@@ -130,24 +133,30 @@
 */
 /*public*/ QString Portal::setName(QString newName)
 {
- if (newName == NULL || newName.length()==0) { return NULL; }
- QString oldName = getUserName();
- if (oldName==(newName)) {
-  return "";
+ if (newName == "" || newName.length() == 0) {
+     return "";
  }
+ QString oldName = _name;
+ if (newName == (oldName)) {
+     return "";
+ }
+ Portal* p = ((PortalManager*)InstanceManager::getDefault("PortalManager"))->getPortal(newName);
+ if (p != nullptr) {
+     return tr("Cannot change name \"%1\" to %2.").arg(oldName).arg(p->getDescription());
+ }
+ _name = newName;
+ ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->portalNameChange(oldName, newName);
 
- QString msg = checkName(newName, _fromBlock);
- if (msg == NULL) {
-     msg = checkName(newName, _toBlock);
+ // for some unknown reason, PortalManager firePropertyChange is not read by PortalTableModel
+ // so let OBlock do it
+ if (_toBlock != nullptr) {
+     _toBlock->pseudoPropertyChange(NAME_CHANGE, oldName, _name);
+ } else if (_fromBlock != nullptr) {
+     _fromBlock->pseudoPropertyChange(NAME_CHANGE, oldName, _name);
  }
- if (msg == NULL)
- {
-  setUserName(newName);
-  WarrantTableAction::portalNameChange(oldName, newName);
- } else {
-     msg = tr("Another portal in OBlock \"%1\" is named \"%2\".").arg( msg).arg( newName);
- }
- return msg;
+ // CircuitBuilder PortalList needs this property change
+ pcs->firePropertyChange(NAME_CHANGE, oldName, newName);
+ return "";
 }
 /*private*/ QString Portal::checkName(QString name, OBlock* block) {
     QList<Portal*> list = block->getPortals();
@@ -159,7 +168,7 @@
     return NULL;
 }
 
-/*public*/ QString Portal::getName() { return getUserName(); }
+/*public*/ QString Portal::getName() { return _name; }
 
 /**
 * Set block name. Verify that all toPaths are contained in the block.
@@ -230,6 +239,24 @@
         //log->debug("setSignal: _fromSignal= \""+name+", protectedBlock= "+protectedBlock);
     }
     return false;
+}
+
+/**
+ * Get the block protected by a signal.
+ *
+ * @param signal is the signal, either a SignalMast or a SignalHead
+ * @return Protected OBlock, if it is protected, otherwise null.
+ */
+/*public*/ OBlock* Portal::getProtectedBlock(NamedBean* signal) {
+    if (signal == nullptr) {
+        return nullptr;
+    }
+    if (signal->equals(_fromSignal)) {
+        return _toBlock;
+    } else if (signal->equals(_toSignal)) {
+        return _fromBlock;
+    }
+    return nullptr;
 }
 
 /*public*/ NamedBean* Portal::getFromSignal() {
@@ -318,6 +345,41 @@
 }
 
 /**
+ * Call is from BlockOrder when setting the path.
+ *
+ * @param block OBlock
+ */
+/*protected*/ void Portal::setEntryState(OBlock* block) {
+    if (block == nullptr) {
+        _state = UNKNOWN;
+    } else if (block->equals(_fromBlock)) {
+        setState(ENTER_FROM_BLOCK);
+    } else if (block->equals(_toBlock)) {
+        setState(ENTER_TO_BLOCK);
+    }
+}
+
+/*public*/ void Portal::setState(int s) {
+    int old = _state;
+    _state = s;
+    pcs->firePropertyChange("Direction", old, _state);
+}
+
+/*public*/ int Portal::getState() {
+    return _state;
+}
+
+//@OverridingMethodsMustInvokeSuper
+/*public*/ /*synchronized*/ void Portal::addPropertyChangeListener(PropertyChangeListener* listener) {
+    pcs->addPropertyChangeListener(listener);
+}
+
+//@OverridingMethodsMustInvokeSuper
+/*public*/ /*synchronized*/ void Portal::removePropertyChangeListener(PropertyChangeListener* listener) {
+    pcs->removePropertyChangeListener(listener);
+}
+
+/**
 * @param block is the direction of entry
 * @return signal protecting block
 */
@@ -339,49 +401,27 @@
 */
 /*public*/ QString Portal::getPermissibleEntranceSpeed(OBlock* block)
 {
- QString speed = NULL;
- QString blockName = block->getDisplayName();
- if (block==(_toBlock))
- {
-  if (_fromSignal!=NULL)
-  {
-   //if (_fromSignal instanceof SignalHead)
-   if(qobject_cast<SignalHead*>(_fromSignal)!=NULL)
-   {
-    speed = getPermissibleSignalEntranceSpeed((SignalHead*)_fromSignal);
-   }
-   else
-   {
-    speed = getPermissibleSignalEntranceSpeed((SignalMast*)_fromSignal);
-   }
-  }
- }
- else if (block==(_fromBlock))
- {
-  if (_toSignal!=NULL)
-  {
-   //if (_toSignal instanceof SignalHead)
-   if(qobject_cast<SignalHead*>(_toSignal)!=NULL)
-   {
-    speed = getPermissibleSignalEntranceSpeed((SignalHead*)_toSignal);
-   }
-   else
-   {
-    speed = getPermissibleSignalEntranceSpeed((SignalMast*)_toSignal);
-   }
-  }
- }
- else
- {
-  log->error("Block \""+blockName+"\" is not in Portal \""+getUserName()+"\".");
- }
- if (log->isDebugEnabled() && speed != NULL)
- {
-     log->debug("Portal \"" + getUserName() + "\","
-             + " has ENTRANCE speed= " + speed + " into \"" + blockName + "\" from signal.");
- }
- // no signals, proceed at recorded speed
- return speed;
+ return getPermissibleSpeed(block, true);
+
+}
+
+/**
+ * Set the distance (plus or minus) in millimeters from the portal gap
+ * where the speed change indicated by the signal should be completed.
+ *
+ * @param block a protected OBlock
+ * @param distance length in millimeters
+ */
+/*public*/ void Portal::setEntranceSpaceForBlock(/*@Nonnull*/ OBlock* block, float distance) {
+    if (block->equals(_toBlock)) {
+        if (_fromSignal != nullptr) {
+            _fromSignalOffset = distance;
+        }
+    } else if (block->equals(_fromBlock)) {
+        if (_toSignal != nullptr) {
+            _toSignalOffset = distance;
+        }
+    }
 }
 
 /*public*/ long Portal::getEntranceSpeedChangeWaitForBlock(OBlock* block) {
@@ -420,95 +460,92 @@
 */
 /*public*/ QString Portal::getPermissibleExitSpeed(OBlock* block)
 {
- QString speed = NULL;
- if (block==(_toBlock))
- {
-  if (_fromSignal!=NULL)
-  {
-   //if (_fromSignal instanceof SignalHead)
-   if(qobject_cast<SignalHead*>(_fromSignal)!=NULL)
-   {
-    speed = getPermissibleSignalExitSpeed((SignalHead*)_fromSignal);
-   }
-   else
-   {
-    speed = getPermissibleSignalExitSpeed((SignalMast*)_fromSignal);
-   }
-  }
- }
- else if (block==(_fromBlock))
- {
-  if (_toSignal!=NULL)
-  {
-   //if (_toSignal instanceof SignalHead)
-   if(qobject_cast<SignalHead*>(_toSignal)!=NULL)
-   {
-    speed = getPermissibleSignalExitSpeed((SignalHead*)_toSignal);
-   }
-   else
-   {
-    speed = getPermissibleSignalExitSpeed((SignalMast*)_toSignal);
-   }
-  }
- }
- else
- {
-  log->error("Block \""+block->getDisplayName()+"\" is not in Portal \""+getUserName()+"\".");
- }
- // no signals, proceed at recorded speed
- return speed;
+ return getPermissibleSpeed(block, false);
 }
 
-
-/*private*/ QString Portal::getPermissibleSignalEntranceSpeed(SignalHead* signal) {
-    int appearance = ((AbstractSignalHead*)signal)->getAppearance();
-    QString speed = Warrant::getSpeedMap()->getAppearanceSpeed(((AbstractSignalHead*)signal)->getAppearanceName(appearance));
-    if (speed==NULL) {
-        log->error("SignalHead \""+ ((AbstractSignalHead*)signal)->getDisplayName()+"\" has no speed specified for appearance \""+
-                        ((AbstractSignalHead*)signal)->getAppearanceName(appearance)+"\"! - Restricting Movement!");
-        speed = "Restricted";
+/**
+ * Check signals, if any, for speed into/out of a given block. The signal that protects
+ * the "to" block is the signal facing the "from" Block, i.e. the "from"
+ * signal. (and vice-versa)
+ *
+ * @param block is the direction of entry, "from" block
+ * @param entrance true for EntranceSpeed, false for ExitSpeed
+ * @return permissible speed, null if no signal
+ */
+/*public*/ QString Portal::getPermissibleSpeed(/*@Nonnull*/ OBlock* block, bool entrance) {
+    QString speed = "";
+    QString blockName = block->getDisplayName();
+    if (block->equals(_toBlock)) {
+        if (_fromSignal != nullptr) {
+            if (qobject_cast<SignalHead*>(_fromSignal)) {
+                speed = getPermissibleSignalSpeed((SignalHead*) _fromSignal, entrance);
+            } else {
+                speed = getPermissibleSignalSpeed((SignalMast*) _fromSignal, entrance);
+            }
+        }
+    } else if (block->equals(_fromBlock)) {
+        if (_toSignal != nullptr) {
+            if (qobject_cast<SignalHead*>(_toSignal)) {
+                speed = getPermissibleSignalSpeed((SignalHead*) _toSignal, entrance);
+            } else {
+                speed = getPermissibleSignalSpeed((SignalMast*) _toSignal, entrance);
+            }
+        }
+    } else {
+        log->error(tr("Block \"%1\" is not in Portal \"%2\".").arg(blockName).arg(_name));
     }
-    if (log->isDebugEnabled()) log->debug(((AbstractSignalHead*)signal)->getDisplayName()+" has speed notch= "+speed+" from appearance \""+
-                                            ((AbstractSignalHead*)signal)->getAppearanceName(appearance)+"\"");
+    if (log->isDebugEnabled()) {
+        if (speed != nullptr) {
+            log->debug(tr("Portal \"%1\" has %2 speed= %3 into \"%4\" from signal.").arg(
+                    _name).arg((entrance ? "ENTRANCE" : "EXIT")).arg(speed).arg(blockName));
+        }
+    }
+    // no signals, proceed at recorded speed
     return speed;
 }
 
-/*private*/ QString Portal::getPermissibleSignalEntranceSpeed(SignalMast* signal) {
-    QString aspect = ((AbstractSignalMast*)signal)->getAspect();
-    QString speed = Warrant::getSpeedMap()->getAspectSpeed(aspect, ((AbstractSignalMast*)signal)->getSignalSystem());
-    if (speed==NULL) {
-        log->error("SignalMast \""+ ((AbstractSignalMast*)signal)->getDisplayName()+"\" has no speed specified for aspect \""+
-                                            aspect+"\"! - Restricting Movement!");
-        speed = "Restricted";
-    }
-    if (log->isDebugEnabled()) log->debug(((AbstractSignalMast*)signal)->getDisplayName()+" has speed notch= "+speed+
-                " from aspect \""+aspect+"\"");
+/**
+ * Get entrance or exit speed set on signal head.
+ *
+ * @param signal signal head to query
+ * @param entrance true for EntranceSpeed, false for ExitSpeed
+ * @return permissible speed, Restricted if no speed set on signal
+ */
+/*private*/ /*static*/ /*@Nonnull*/ QString Portal::getPermissibleSignalSpeed(/*@Nonnull */SignalHead* signal, bool entrance) {
+ int appearance = signal->getAppearance();
+ QString speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getAppearanceSpeed(signal->getAppearanceName(appearance));
+ // on head, speed is the same for entry and exit
+ if (speed == "") {
+     log->error(tr("SignalHead \"%1\" has no %2 speed specified for appearance \"%3\"! - Restricting Movement!").arg(
+             signal->getDisplayName()).arg((entrance ? ENTRANCE : "exit")).arg(signal->getAppearanceName(appearance)));
+     speed = "Restricted";
+ } log->debug(tr("SignalMast \"%1\" has %2 speed notch= %3 from aspect \"%4\"").arg(
+       signal->getDisplayName()).arg((entrance ? ENTRANCE : "exit")).arg(speed).arg(signal->getAppearanceName(appearance)));
     return speed;
 }
 
-/*private*/ QString Portal::getPermissibleSignalExitSpeed(SignalHead* signal) {
-    int appearance = ((AbstractSignalHead*)signal)->getAppearance();
-    QString speed = Warrant::getSpeedMap()->getAppearanceSpeed(((AbstractSignalHead*)signal)->getAppearanceName(appearance));
-    if (speed=="") {
-        log->error("SignalHead \""+ ((AbstractSignalHead*)signal)->getDisplayName()+"\" has no (exit) speed specified for appearance \""+
-                        ((AbstractSignalHead*)signal)->getAppearanceName(appearance)+"\"! - Restricting Movement!");
+/**
+ * Get entrance or exit speed set on signal mast.
+ *
+ * @param signal signal mast to query
+ * @param entrance true for EntranceSpeed, false for ExitSpeed
+ * @return permissible speed, Restricted if no speed set on signal
+ */
+/*private*/ /*static*/ /*@Nonnull*/ QString Portal::getPermissibleSignalSpeed(/*@Nonnull*/ SignalMast* signal, bool entrance) {
+    QString aspect = signal->getAspect();
+    QString speed;
+    if (entrance) {
+        speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getAspectSpeed(aspect, signal->getSignalSystem());
+    } else {
+        speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getAspectExitSpeed(aspect, signal->getSignalSystem());
+    }
+    if (speed == nullptr) {
+        log->error(tr("SignalMast \"%1\" has no %2 speed specified for aspect \"%3\"! - Restricting Movement!").arg(
+                signal->getDisplayName()).arg((entrance ? ENTRANCE : "exit")).arg(aspect));
         speed = "Restricted";
     }
-    if (log->isDebugEnabled()) log->debug(((AbstractSignalHead*)signal)->getDisplayName()+" has exit speed notch= "+speed+
-            " from appearance \""+((AbstractSignalHead*)signal)->getAppearanceName(appearance)+"\"");
-    return speed;
-}
-
-/*private*/ QString Portal::getPermissibleSignalExitSpeed(SignalMast* signal) {
-    QString aspect = ((AbstractSignalMast*)signal)->getAspect();
-    QString speed = Warrant::getSpeedMap()->getAspectExitSpeed(aspect, ((AbstractSignalMast*)signal)->getSignalSystem());
-    if (speed==NULL) {
-        log->error("SignalMast \""+ ((AbstractSignalMast*)signal)->getDisplayName()+"\" has no exit speed specified for aspect \""+
-                                            aspect+"\"! - Restricting Movement!");
-        speed = "Restricted";
-    }
-    if (log->isDebugEnabled()) log->debug(((AbstractSignalMast*)signal)->getDisplayName()+" has exit speed notch= "+
-                    speed+" from aspect \""+aspect+"\"");
+    log->debug(tr("SignalMast \"%1\" has %2 speed notch= %3 from aspect \"%4\"").arg(
+            signal->getDisplayName()).arg((entrance ? ENTRANCE : "exit")).arg(speed).arg(aspect));
     return speed;
 }
 
@@ -559,17 +596,34 @@
     return (_fromBlock!=NULL && _toBlock!=NULL);
 }
 
-/*public*/ void Portal::dispose() {
-    if (_fromBlock!=NULL) _fromBlock->removePortal(this);
-    if (_toBlock!=NULL) _toBlock->removePortal(this);
+//@OverridingMethodsMustInvokeSuper
+    /*public*/ bool Portal::dispose() {
+    if (!((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->okToRemovePortal(this)) {
+        return false;
+    }
+    if (_toBlock != nullptr) {
+        _toBlock->removePortal(this);
+    } else if (_fromBlock != nullptr) {
+        _fromBlock->removePortal(this);
+    }
+    pcs->firePropertyChange("portalDelete", true, false);
+    QVector<PropertyChangeListener*> listeners = pcs->getPropertyChangeListeners();
+    for (PropertyChangeListener* l : listeners) {
+        pcs->removePropertyChangeListener(l);
+    }
+    return true;
 }
 
 /*public*/QString Portal::getDescription() {
 //    return java.text.MessageFormat.format(WarrantTableAction.rb.getString("PortalDescription"),
 //                    _portalName, getFromBlockName(), getToBlockName());
-    return tr("\"%1\" between OBlocks \"%2\" and \"%3\"").arg(getUserName()).arg(getFromBlockName()).arg(getToBlockName());
+    return tr("\"%1\" between OBlocks \"%2\" and \"%3\"").arg(_name).arg(getFromBlockName()).arg(getToBlockName());
 }
 
 /*public*/ QString Portal::toString() {
-    return ("Portal \""+getUserName()+"\" from block \""+getFromBlockName()+"\" to block \""+getToBlockName()+"\"");
+    return ("Portal \""+_name+"\" from block \""+getFromBlockName()+"\" to block \""+getToBlockName()+"\"");
 }
+
+/*private*/ /*static*/ /*final*/ Logger* Portal::log = LoggerFactory::getLogger("Portal");
+
+

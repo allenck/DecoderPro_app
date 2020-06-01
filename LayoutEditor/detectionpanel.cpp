@@ -18,6 +18,7 @@
 #include "borderlayout.h"
 #include "itempanel.h"
 #include "systemnamecomparator.h"
+#include "borderfactory.h"
 
 //DetectionPanel::DetectionPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -87,7 +88,7 @@
   pLayout = new QHBoxLayout;
   pLayout->addWidget(new JLabel(tr("Select the path(s) that include this icon")));
   blockPathPanelLayout->addLayout(pLayout);
-  _checkBoxPanel = new QWidget();
+  _checkBoxPanel = new JPanel();
   _checkBoxPanel->setLayout(new QHBoxLayout);
   blockPathPanelLayout->addWidget(_checkBoxPanel);
   blockPathPanelLayout->addStrut(ItemPalette::STRUT_SIZE);
@@ -326,11 +327,11 @@ void DetectionPanel::OnTextChanged(QString text)
 {
  _blockPathPanel->layout()->removeWidget(_checkBoxPanel);
 
- _checkBoxPanel = new QFrame();
+ _checkBoxPanel = new JPanel();
  QVBoxLayout* checkBoxPanelLayout;
  _checkBoxPanel->setLayout(checkBoxPanelLayout = new QVBoxLayout(_checkBoxPanel/*, BoxLayout.Y_AXIS*/));
-    //_checkBoxPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(java.awt.Color.black), tr("circuitPaths")));
- _checkBoxPanel->  setStyleSheet("QFrame { border: 1px solid black; }");
+ _checkBoxPanel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black), tr("Circuit Paths")));
+ //_checkBoxPanel->  setStyleSheet("QFrame { border: 1px solid black; }");
 
  _block = block;
  _pathBoxes =  QList<QCheckBox*>();

@@ -18,6 +18,15 @@
 #include "sensor.h"
 #include "instancemanager.h"
 #include "QMessageBox"
+#include "lengthpanel.h"
+#include "openpicklistbutton.h"
+#include "joptionpane.h"
+#include "box.h"
+#include "oblockmanager.h"
+#include "portalicon.h"
+#include "portal.h"
+#include "indicatortrack.h"
+
 
 //EditCircuitFrame::EditCircuitFrame(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -37,7 +46,8 @@
 /*static*/ QPoint EditCircuitFrame::_loc  = QPoint();
 /*static*/ QSize EditCircuitFrame::_dim = QSize(200,500);
 
-/*public*/ EditCircuitFrame::EditCircuitFrame(QString title, CircuitBuilder* parent, OBlock* block, QWidget* parentWidget) : JmriJFrame(false, false, parentWidget)
+/*public*/ EditCircuitFrame::EditCircuitFrame(QString title, CircuitBuilder* parent, OBlock* block)
+ : EditFrame(title, parent, block)
 {
  _blockName = new JTextField(5);
  _detectorSensorName = new JTextField(5);
@@ -53,16 +63,15 @@
  _firstInstance = true;
 
  _block = block;
- setWindowTitle(QString(title).arg(_block->getDisplayName()));
- addHelpMenu("package.jmri.jmrit.display.CircuitBuilder", true);
- _parent = parent;
- makeContentPanel();
- updateContentPanel();
+ _create = (block == nullptr);
+ updateContentPanel(_create);
+ _homeBlock->addPropertyChangeListener("deleted", (PropertyChangeListener*)this);
+ pack();
 }
 
-/*private*/ void EditCircuitFrame::makeContentPanel()
+/*private*/ JPanel *EditCircuitFrame::makeContentPanel()
 {
- QWidget* contentPane = new QWidget();
+ JPanel* contentPane = new JPanel();
  contentPane->setLayout(new QVBoxLayout(contentPane/*, BoxLayout.Y_AXIS*/));
     //contentPane->layout()->setSpacing(2);
 
@@ -158,6 +167,7 @@
         resize(_dim);
     }
     setVisible(true);
+    return contentPane;
 }
 
 /*private*/ QWidget* EditCircuitFrame::MakePickListPanel() {
@@ -275,6 +285,66 @@ void EditCircuitFrame::closePickList() {
     return buttonPanel;
 }
 
+/*private*/ JPanel* EditCircuitFrame::makeCreateBlockPanel() {
+        _systemName = new JTextField();
+        _systemName->setText(_homeBlock->getSystemName());
+        _blockName->setText(_homeBlock->getUserName());
+        JPanel* panel = new JPanel();
+        panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
+        panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
+                false, _systemName, "ColumnSystemName", true, "TooltipBlockName"));
+        _systemName->resize(QSize(300, _systemName->sizeHint().height()));
+        panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
+                false, _blockName, "blockName", true, "TooltipBlockName"));
+        _blockName->resize(QSize(300, _blockName->sizeHint().height()));
+
+        JPanel* buttonPanel = new JPanel();
+        buttonPanel->setLayout(new FlowLayout());
+        QPushButton* createButton = new QPushButton(tr("Create"));
+        //createButton.addActionListener((ActionEvent a) -> {
+        connect(createButton, &QPushButton::clicked, [=]{
+            createBlock();
+        });
+        createButton->setToolTip(tr("Create an OBlock track circuit"));
+        buttonPanel->layout()->addWidget(createButton);
+
+        panel->layout()->addWidget(buttonPanel);
+        panel->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+        return panel;
+    }
+
+    /*private*/ JPanel* EditCircuitFrame::makeEditBlockPanel() {
+        _blockName->setText(_homeBlock->getUserName());
+        JPanel* panel = new JPanel();
+        panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
+        panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
+                false, _blockName, "blockName", true, "TooltipBlockName"));
+        _blockName->resize(QSize(300, _blockName->sizeHint().height()));
+
+        JPanel* buttonPanel = new JPanel();
+        buttonPanel->setLayout(new FlowLayout());
+
+        QPushButton* changeButton = new QPushButton(tr("Change Name"));
+        //changeButton.addActionListener((ActionEvent a) -> {
+        connect(changeButton, &QPushButton::clicked, [=]{
+            changeBlockName();
+        });
+        changeButton->setToolTip(tr("Enter another name to change the name of a selection in the above list."));
+        buttonPanel->layout()->addWidget(changeButton);
+
+        QPushButton* deleteButton = new QPushButton(tr("Delete"));
+        //deleteButton.addActionListener((ActionEvent a) -> {
+        connect(deleteButton, &QPushButton::clicked, [=]{
+            deleteCircuit();
+        });
+        deleteButton->setToolTip(tr("Delete this track circuit but keep its icons, if any."));
+        buttonPanel->layout()->addWidget(deleteButton);
+
+        panel->layout()->addWidget(buttonPanel);
+        panel->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+        return panel;
+     }
+
 /*private*/ QWidget* EditCircuitFrame::MakeDoneButtonPanel() {
     QWidget* buttonPanel = new QWidget();
     buttonPanel->setLayout(new QVBoxLayout);//(buttonPanel/*, BoxLayout.Y_AXIS*/));
@@ -310,43 +380,80 @@ void EditCircuitFrame::closePickList() {
 
     return buttonPanel;
 }
-#if 0
+
 /************************* end setup **************************/
+/*private*/ void EditCircuitFrame::createBlock() {
+       QString userName = _blockName->text().trimmed();
+       QString systemName = _systemName->text().trimmed();
+       OBlockManager* mgr = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
+       QString  sb;// = new StringBuilder ();
+       if (userName.length() > 0) {
+            OBlock* block = (OBlock*)mgr->getByUserName(userName);
+           if (block != nullptr) {
+               sb.append(tr("\"%1\" is a duplicate name for circuit %2.").arg(userName).arg(block->getSystemName()));
+               sb.append("\n");
+           }
+       }
+       if (!mgr->isValidSystemNameFormat(systemName)) {
+           sb.append(tr("OBlock System Name must begin with \"OB\" with at least 3 characters."));
+           sb.append("\n");
+       } else {
+           OBlock* block = (OBlock*)mgr->getBySystemName(systemName);
+           if (block != nullptr) {
+               sb.append(tr("\"%1\" is a duplicate name for circuit %2.").arg(systemName).arg(block->getUserName()));
+               sb.append("\n");
+           }
+       }
+       if (sb.length() > 0) {
+           JOptionPane::showMessageDialog(this, sb,
+                   tr("Edit Ciruit"), JOptionPane::INFORMATION_MESSAGE);
+           _systemName->setText(_homeBlock->getSystemName());
+           return;
+       }
+       _homeBlock = mgr->createNewOBlock(systemName, userName);
+       updateContentPanel(false);
+   }
 
-/*private*/ void changeBlockName() {
-    String name = _blockName.getText();
-    if (name==NULL || name.trim().length()==0) {
-        JOptionPane.showMessageDialog(this, tr("changeBlockName"),
-                        tr("editCiruit"), JOptionPane.INFORMATION_MESSAGE);
-        return;
-    }
-    _block.setUserName(name);
-    // block user name change will change portal names.  Change PortalIcon names to match
-    java.util.List<Positionable> list = _parent.getCircuitIcons(_block);
-    if (list!=NULL) {
-        for (int i=0; i<list.size(); i++) {
-            if (list.get(i) instanceof PortalIcon) {
-                PortalIcon icon = (PortalIcon)list.get(i);
-                Portal portal = icon.getPortal();
-                icon.setName(portal.getName());
-                icon.setTooltip(new ToolTip(portal.getDescription(), 0, 0));
-            }
-        }
-    }
+/*private*/ void EditCircuitFrame::changeBlockName() {
+ QString name = _blockName->text().trimmed();
+ QString msg = "";
+ if (name.length() == 0) {
+     msg = tr("Enter a name to change the User Name of the OBlock for this Circuit.");
+ } else {
+     OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getByUserName(name);
+     if (block != nullptr) {
+         msg = tr("\"%1\" is a duplicate name for circuit %2.").arg(name).arg(block->getDisplayName(NamedBean::DisplayOptions::QUOTED_USERNAME_SYSTEMNAME));
+     }
+ }
+ if (msg != nullptr) {
+     JOptionPane::showMessageDialog(this, msg,
+             tr("Edit Ciruit"), JOptionPane::INFORMATION_MESSAGE);
+     return;
+
+ }
+ _homeBlock->setUserName(name);
+ // block user name change will change portal names.  Change PortalIcon names to match
+ for (Positionable* p : *_parent->getCircuitIcons(_homeBlock)) {
+     if (qobject_cast<PortalIcon*>(p->self())) {
+         PortalIcon* icon = (PortalIcon*)p->self();
+         Portal* portal = icon->getPortal();
+         icon->setName(portal->getName());
+         icon->setToolTip(/*new ToolTip(*/portal->getDescription()/*, 0, 0)*/);
+     }
+ }
 }
 
-/*private*/ void deleteCircuit() {
-    int result = JOptionPane.showConfirmDialog(this, tr("confirmBlockDelete"),
-                    tr("editCiruit"), JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
-    if (result==JOptionPane.YES_OPTION) {
-        _parent.removeBlock(_block);
-        _parent.closeCircuitFrame();
-        dispose();
-    }
+/*private*/ void EditCircuitFrame::deleteCircuit() {
+ int result = JOptionPane::showConfirmDialog(this, tr("Are you sure you want to delete the circuit and all its paths and all its portals?"),
+              tr("Edit Ciruit"), JOptionPane::YES_NO_OPTION,
+              JOptionPane::QUESTION_MESSAGE);
+      if (result == JOptionPane::YES_OPTION) {
+          _parent->removeBlock(_homeBlock);
+          EditFrame::closingEvent(true, "");   // No Messages, just close
+      }
 }
-#endif
-/*protected*/ void EditCircuitFrame::updateContentPanel()
+
+/*protected*/ void EditCircuitFrame::updateContentPanel(bool create)
 {
     updateIconList(_parent->_editor->getSelectionGroup());
     QString name = "";
@@ -398,70 +505,150 @@ void EditCircuitFrame::closePickList() {
     }
     if (log->isDebugEnabled()) log->debug("updateContentPanel: state= "+stateText);
     _blockState->setText(stateText);
-}
 
-/*private*/ Sensor* EditCircuitFrame::getSensor(QString sensorName) {
-    try {
-        if (sensorName!=NULL && sensorName.trimmed().length()>0) {
-            return ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->provideSensor(sensorName);
-        }
-    } catch (Throwable t) {
-//        JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(
-//                        tr("sensorFail"), sensorName, t.toString()),
-//                        tr("noSensor"), JOptionPane.INFORMATION_MESSAGE);
-        QMessageBox::information(this, tr("No Detection Sensor"), tr("Sensor failed for \"%1\" due to %2.").arg(sensorName).arg(t.getMessage()));
-    }
-    return NULL;
-}
-
-/*protected*/ void EditCircuitFrame::closingEvent() {
-    // check Sensors
-    QString sensorName = _detectorSensorName->text();
-    Sensor* sensor = getSensor(sensorName);
-    if (sensor==NULL) {
-//        JOptionPane.showMessageDialog(this, tr("noDetecterSensor"),
-//                        tr("noSensor"), JOptionPane.INFORMATION_MESSAGE);
-        QMessageBox::information(this, tr("No Detection Sensor"), tr("No detector Sensor specified.  This will be a Dark block and cannot be included in an interlock."));
+    JPanel* panel;
+    if (create) {
+        panel = makeCreateBlockPanel();
     } else {
-        try {
-            _block->setSensor(sensorName);
-        } catch (Throwable t) {
-//            JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(tr("badSensorName"),
-//                    sensorName, t.toString()),
-//                    tr("noSensor"), JOptionPane.INFORMATION_MESSAGE);
-            QMessageBox::information(this, tr("No Detection Sensor"),tr("\"%1\" cannot be used as a Sensor name. (%2)").arg(sensorName).arg(t.getMessage()));
-        }
+        panel = makeEditBlockPanel();
+        _create = false;
     }
-
-    QString errorName = _errorSensorName->text();
-    Sensor* errSensor = getSensor(errorName);
-    _block->setErrorSensor(errorName);
-    if (errSensor!=NULL && sensor==NULL)
-    {
-//        int result = JOptionPane.showConfirmDialog(this, tr("mixedSensors"),
-//                        tr("noSensor"), JOptionPane.YES_NO_OPTION,
-//                        JOptionPane.QUESTION_MESSAGE);
-//        if (result==JOptionPane.YES_OPTION)
-        int result = QMessageBox::question(this, tr("No Detection Sensor"),tr("No detector Sensor specified.  Do you want to use the error sensor for occupancy?"),QMessageBox::Yes | QMessageBox::No);
-        if(result == QMessageBox::Yes)
-        {
-            _block->setSensor(errorName);
-            _block->setErrorSensor(NULL);
-            _detectorSensorName->setText(errSensor->getDisplayName());
-        }
-    }
-    closePickList();
-
-    _parent->checkCircuitFrame(_block);
-    _loc = pos();
-    _dim = size();
-    //dispose();
-    close();
+    _namePanel->removeAll();
+    _namePanel->layout()->addWidget(panel);
+    _namePanel->update();
+    pack();
 }
 
-/*protected*/ OBlock* EditCircuitFrame::getBlock() {
-    return _block;
+/*private*/ void EditCircuitFrame::closeCreate() {
+    QString  sb;// = new StringBuilder ();
+    QString sysName = _homeBlock->getSystemName();
+    OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
+    if (block == nullptr) {
+        // get rid of icon selections
+        for (Positionable* pos : *_parent->getCircuitIcons(_homeBlock)) {
+            if (qobject_cast< IndicatorTrack*>(pos->self())) {
+                ((IndicatorTrack*) pos)->setOccBlockHandle(nullptr);
+            }
+        }
+        _parent->_editor->getSelectionGroup()->clear();
+        sb.append( tr("OBlock circuit \"%1\" has not been created.").arg(_systemName->text().trimmed()));
+        EditFrame::closingEvent(false, sb);
+        if (_pickTable != nullptr) {
+            _pickTable->closePickList();
+        }
+    } else {
+        closingEvent(false);
+    }
 }
+
+///*private*/ Sensor* EditCircuitFrame::getSensor(QString sensorName) {
+//    try {
+//        if (sensorName!=NULL && sensorName.trimmed().length()>0) {
+//            return ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->provideSensor(sensorName);
+//        }
+//    } catch (Throwable t) {
+////        JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(
+////                        tr("sensorFail"), sensorName, t.toString()),
+////                        tr("noSensor"), JOptionPane.INFORMATION_MESSAGE);
+//        QMessageBox::information(this, tr("No Detection Sensor"), tr("Sensor failed for \"%1\" due to %2.").arg(sensorName).arg(t.getMessage()));
+//    }
+//    return NULL;
+//}
+
+/*protected*/ void EditCircuitFrame::closingEvent(bool close) {
+ QString sb;// = new StringBuffer();
+ QString msg = checkForSensors();
+ if (msg != "") {
+     sb.append(msg);
+     sb.append("\n");
+ }
+ QString name = _blockName->text().trimmed();
+ if (name.length() == 0) {
+     msg = tr("A non-blank user name is recommended.");
+     if (msg != "") {
+         sb.append(msg);
+         sb.append("\n");
+     }
+ } else if (name !=(_homeBlock->getUserName())) {
+     msg = tr("User name \"%1\" for the circuit %2has not been saved.").arg(name).arg(_homeBlock->getDisplayName(NamedBean::DisplayOptions::QUOTED_USERNAME_SYSTEMNAME));
+     if (msg != "null") {
+         sb.append(msg);
+         sb.append("\n");
+     }
+ }
+ _parent->setIconGroup(_homeBlock);
+ msg = _parent->checkForTrackIcons(_homeBlock, "PortalOrPath");
+ if (msg.length() > 0) {
+     sb.append(msg);
+     sb.append("\n");
+ }
+ if (_lengthPanel->getLength() <= 0.001) {
+     msg = tr("Block circuits should have a default length to insure its paths have lengths.");
+     if (msg != "") {
+         sb.append(msg);
+         sb.append("\n");
+     }
+ } else {
+     _homeBlock->setLength(_lengthPanel->getLength());
+ }
+
+ EditFrame::closingEvent(close, sb);
+ if (_pickTable != nullptr) {
+     _pickTable->closePickList();
+ }
+}
+
+/*private*/ QString EditCircuitFrame::checkForSensors() {
+    QString name = _detectorSensorName->text();
+    QString errName = _errorSensorName->text();
+    if (!_homeBlock->setSensor(name)) {
+       return tr("\"%1\" is not a valid Sensor name.").arg(name);
+    }
+    if (errName.length() > 2) {
+        if (_homeBlock->getSensor() == nullptr) {
+            int result = JOptionPane::showConfirmDialog(this, tr("No detector Sensor specified. Do you want to use the Error Sensor for occupancy::"),
+                    tr("No Detection Sensor"), JOptionPane::YES_NO_OPTION,
+                    JOptionPane::QUESTION_MESSAGE);
+            if (result == JOptionPane::YES_OPTION) {
+                if (!_homeBlock->setSensor(errName)) {
+                    return tr("\"%1\" is not a valid Sensor name.").arg(errName);
+                } else {
+                    _homeBlock->setErrorSensor(nullptr);
+                    _detectorSensorName->setText(_homeBlock->getSensor()->getDisplayName());
+                    _errorSensorName->setText("");
+                }
+            } else {
+                if (!_homeBlock->setErrorSensor(errName)) {
+                    return tr("\"%1\" is not a valid Sensor name.").arg(errName);
+                }
+            }
+        } else {
+            if (!_homeBlock->setErrorSensor(errName)) {
+                return tr("\"%1\" is not a valid Sensor name.").arg(errName);
+            }
+        }
+    } else if (errName.trimmed().length() == 0){ {
+        _homeBlock->setErrorSensor(nullptr);
+    }
+
+    }
+    Sensor* sensor = _homeBlock->getSensor();
+    if (sensor == nullptr) {
+        return tr("No detector Sensor specified. This will be a Dark block and cannot be included in an interlock.");
+    } else if (sensor->equals(_homeBlock->getErrorSensor())) {
+        _homeBlock->setErrorSensor(nullptr);
+        _errorSensorName->setText("");
+        return tr("Duplicate track error sensor %1removed.").arg(
+                sensor->getDisplayName(NamedBean::DisplayOptions::QUOTED_DISPLAYNAME));
+    }
+    return nullptr;
+}
+
+///*protected*/ OBlock* EditCircuitFrame::getBlock() {
+//    return _block;
+//}
+
+
 
 /*protected*/ void EditCircuitFrame::updateIconList(QList<Positionable*>* icons) {
     //if (log.isDebugEnabled()) log.debug(
@@ -494,6 +681,14 @@ void EditCircuitFrame::closePickList() {
     _numTrackSeg->setText(QString::number(segments));
     _numTurnouts->setText(QString::number(turnouts));
 }
+
+//@Override
+/*public*/ void EditCircuitFrame::propertyChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() == ("deleted")) {
+        EditFrame::closingEvent(true, "");   // No Messages, just close
+    }
+}
+
 
 /*public*/ QString EditCircuitFrame::getClassName()
 {

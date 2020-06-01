@@ -486,7 +486,13 @@ SOURCES += \
     scaletrackdiagramdialog.cpp \
     editormanager.cpp \
     pragotronclockframe.cpp \
-    pragotronclockaction.cpp
+    pragotronclockaction.cpp \
+    editframe.cpp \
+    portallist.cpp \
+    editsignalframe.cpp \
+    openpicklistbutton.cpp \
+    lengthpanel.cpp \
+    convertdialog.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -891,7 +897,13 @@ HEADERS += liblayouteditor_global.h \
     scaletrackdiagramdialog.h \
     editormanager.h \
     pragotronclockframe.h \
-    pragotronclockaction.h
+    pragotronclockaction.h \
+    editframe.h \
+    portallist.h \
+    editsignalframe.h \
+    openpicklistbutton.h \
+    lengthpanel.h \
+    convertdialog.h
 
 FORMS    += \
     createeditblock.ui \

@@ -18,7 +18,7 @@ class SwitchboardEditor;
 class NamedBean;
 class NamedBeanHandleManager;
 class Logger;
-class BeanSwitch : public QFrame
+class BeanSwitch : public JPanel
 {
  Q_OBJECT
 public:

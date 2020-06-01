@@ -37,6 +37,7 @@
 #include "speedutil.h"
 #include "decimalformat.h"
 #include "learnthrottleframe.h"
+#include "joptionpane.h"
 
 #include <QSizePolicy>
 //WarrantFrame::WarrantFrame(QWidget *parent) :
@@ -96,7 +97,6 @@
  _warrant = new Warrant(_saveWarrant->getSystemName(), _saveWarrant->getUserName());
  _create = false;
  setup(_saveWarrant);
- WarrantTableAction::newWarrantFrame(this);
  init();
  if (routeIsValid() != NULL)
  {
@@ -839,7 +839,7 @@ void WarrantFrame::on_deleteButtonClicked()
  ((WarrantManager*)
  InstanceManager::getDefault("WarrantManager"))->deregister(_warrant);
  _warrant->dispose();
- WarrantTableAction::updateWarrantMenu(this);
+ //WarrantTableAction::updateWarrantMenu();
   close();
 }
 
@@ -1627,12 +1627,27 @@ endResetModel();
  dispose();
 }
 
+// shut down, but don't dispose
+
 /*private*/ void WarrantFrame::close() {
  clearTempWarrant();
  stopRunTrain();
- WarrantTableAction::closeWarrantFrame(this);
 }
 //};
+
+/**
+ * Called by WarrantTableAction before closing the editing of this warrant
+ * @return true if this warrant or its pre-editing version is running
+ */
+/*public*/ bool WarrantFrame::isRunning() {
+    if (_warrant->getRunMode() != Warrant::MODE_NONE ||
+            (_saveWarrant != nullptr && _saveWarrant->getRunMode() != Warrant::MODE_NONE)) {
+        JOptionPane::showMessageDialog(this, tr("Cannot create or edit this warrant while warrant \"%1\" is running. ").arg(_warrant->getDisplayName()),
+                tr("Warning"), JOptionPane::WARNING_MESSAGE);
+        return true;
+    }
+    return false;
+}
 
 /*private*/ bool WarrantFrame::save()
 {
@@ -1675,7 +1690,7 @@ endResetModel();
 
  if (_create) {((WarrantManager*)
     InstanceManager::getDefault("WarrantManager"))->Register(_warrant);
-  WarrantTableAction::updateWarrantMenu(this);
+  //WarrantTableAction::updateWarrantMenu();
  }
  WarrantTableFrame::getDefault()->getModel()->fireTableDataChanged();
  return true;

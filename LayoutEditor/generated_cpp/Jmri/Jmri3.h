@@ -1141,7 +1141,7 @@ virtual void setLit(bool  arg__1);
 
 class PythonQtPublicPromoter_SignalHead : public SignalHead
 { public:
-inline int  py_q_getAppearance() { return SignalHead::getAppearance(); }
+inline int  py_q_getAppearance() { return this->getAppearance(); }
 inline QString  py_q_getAppearanceName() { return SignalHead::getAppearanceName(); }
 inline QString  py_q_getAppearanceName(int  arg__1) { return SignalHead::getAppearanceName(arg__1); }
 inline bool  py_q_getHeld() { return SignalHead::getHeld(); }

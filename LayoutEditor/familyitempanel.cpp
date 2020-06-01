@@ -26,6 +26,7 @@
 #include "jpanel.h"
 #include "gridbaglayout.h"
 #include "placewindow.h"
+#include "borderfactory.h"
 
 //FamilyItemPanel::FamilyItemPanel(QWidget *parent) :
 //    ItemPanel(parent)
@@ -51,7 +52,7 @@
  _dragIconPanel = nullptr;
  _updateButton = new QPushButton(tr("Update Panel"));
  setObjectName("FamilyItemPanel");
- gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+ //gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
  log->setDebugEnabled(true);
 }
 
@@ -126,6 +127,14 @@
  // If families are missing _bottom2Panel will be made visible.
  _bottom2Panel->setVisible(false);
  thisLayout->addWidget(bottomPanel);
+}
+
+/*public*/ JPanel* FamilyItemPanel::getBottomPanel() {
+    return _bottom1Panel;
+}
+
+/*public*/ QPushButton* FamilyItemPanel::getUpdateButton() {
+    return _updateButton;
 }
 
 /**
@@ -606,9 +615,9 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
         _iconPanel = new ImagePanel();
         FlowLayout* _iconPanelLayout;
         _iconPanel->setLayout(_iconPanelLayout = new FlowLayout());
-//        _iconPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-        _iconPanel->setStyleSheet(gbStyleSheet);
+        _iconPanel->setBorder(BorderFactory::createLineBorder(Qt::black));
+        //QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+        //_iconPanel->setStyleSheet(gbStyleSheet);
 
         makeBgBoxPanel = true;
     }
@@ -654,8 +663,8 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
         _dragIconPanel->
         setLayout(_dragIconPanelLayout = new FlowLayout());
         _dragIconPanelLayout->setObjectName("FlowLayout");
-        //_dragIconPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        _dragIconPanel->setStyleSheet(gbStyleSheet);
+        _dragIconPanel->setBorder(BorderFactory::createLineBorder(Qt::black));
+        //_dragIconPanel->setStyleSheet(gbStyleSheet);
         _dragIconPanel->setToolTip(tr("Drag an icon from the Preview pane to add it to the Control Panel"));
         _iconFamilyPanel->layout()->addWidget(_dragIconPanel/*, position*/); // place icons over background
     } else {
@@ -730,14 +739,13 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
   it.next();
   NamedIcon* icon = new NamedIcon(it.value());    // make copy for possible reduction
   icon->reduceTo(100, 100, 0.2);
-  QGroupBox*  panel = new QGroupBox(/*new FlowLayout()*/);
-  panel->setLayout(/*new FlowLayout()*/new QHBoxLayout);
+  JPanel*  panel = new JPanel(new FlowLayout());
   QString borderName = ItemPalette::convertText(it.key());
-     //panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
-//                                                        borderName));
-  panel->setTitle(borderName);
+  panel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
+                                                        borderName));
+  //panel->setTitle(borderName);
   panel->setToolTip(borderName);
-  panel->setStyleSheet(gbStyleSheet);
+  //panel->setStyleSheet(gbStyleSheet);
   QLabel* image;
   if (dropIcon)
   {
@@ -807,14 +815,14 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
   if (ic!=NULL)
   {
    NamedIcon* icon = new NamedIcon(ic);
-   QGroupBox*  panel = new QGroupBox(/*new FlowLayout()*/);
-   panel ->setLayout(new QHBoxLayout());
+   JPanel*  panel = new JPanel(new FlowLayout());
+   //panel ->setLayout(new QHBoxLayout());
    QString borderName = tr("Drag to Panel");
-//  panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
-//                                                    borderName));
-   QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-   panel->setTitle(borderName);
-   panel->setStyleSheet(gbStyleSheet);
+   panel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
+                                                    borderName));
+   //QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+   //panel->setTitle(borderName);
+   //panel->setStyleSheet(gbStyleSheet);
    DragJLabel* label;
    try
    {

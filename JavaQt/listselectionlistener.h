@@ -17,7 +17,7 @@
  Q_OBJECT
  Q_INTERFACES(EventListener)
 public:
- ListSelectionListener(QObject* /*parent*/ = 0) {}
+ //ListSelectionListener(QObject* /*parent*/ = 0) {}
 public slots:
 /**
  * Called whenever the value of the selection changes.
@@ -25,5 +25,5 @@ public slots:
  */
  virtual void valueChanged(ListSelectionEvent* /*e*/) {}
 };
-
+//Q_DECLARE_INTERFACE(ListSelectionListener, "ListSelectionListener")
 #endif // LISTSELECTIONLISTENER_H

@@ -186,7 +186,7 @@ ControlPanelEditor::~ControlPanelEditor()
  _circuitBuilder = new CircuitBuilder(this);
  _shapeDrawer = new ShapeDrawer(this);
  makeDrawMenu();
- makeWarrantMenu(false);
+ makeWarrantMenu(true, true);
  makeIconMenu();
  makeZoomMenu();
  makeMarkerMenu();
@@ -353,33 +353,49 @@ void ControlPanelEditor::on_disableShapeSelect(bool)
  connect(addItem, SIGNAL(triggered()), this, SLOT(zoomToFit()));
 }
 
-/*protected*/ void ControlPanelEditor::makeWarrantMenu(bool edit)
+/*protected*/ void ControlPanelEditor::makeWarrantMenu(bool edit, bool addMenu)
 {
- _warrantMenu = WarrantTableAction::makeWarrantMenu(edit, this);
- if (_warrantMenu == nullptr)
- {
-  _warrantMenu = new QMenu(tr("Warrants"),this);
-  QAction* aboutItem = new QAction(tr("About Warrants"),this);
-  HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.Warrant", nullptr);
-  _warrantMenu->addAction(aboutItem);
-  aboutItem = new QAction(tr("About OBlocks&Portals"),this);
-  HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", nullptr);
-  _warrantMenu->addAction(aboutItem);
-  aboutItem = new QAction(tr("Open Circuit Menu"),this);
-  _warrantMenu->addAction(aboutItem);
-//  aboutItem.addActionListener(new ActionListener() {
-//      @Override
-//      public void actionPerformed(ActionEvent event) {
-//          makeCircuitMenu(true);
-//      }
-//  });
-  connect(aboutItem, SIGNAL(triggered()), this, SLOT(on_makeCircuitMenu()));
+ QMenu* oldMenu = _warrantMenu;
+ _warrantMenu = WarrantTableAction::getDefault()->makeWarrantMenu(edit);
+ if (_warrantMenu == nullptr) {
+     _warrantMenu = new QMenu(tr("Warrant"));
+#if 0 // TODO:
+     QAction aboutItem = new QAction(Bundle.getMessage("AboutWarrant"));
+     HelpUtil.getGlobalHelpBroker().enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.Warrant", null);
+     _warrantMenu.add(aboutItem);
+     aboutItem = new JMenuItem(Bundle.getMessage("AboutOBlock"));
+     HelpUtil.getGlobalHelpBroker().enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", null);
+     _warrantMenu.add(aboutItem);
+     aboutItem = new JMenuItem(Bundle.getMessage("AboutCircuitMenu"));
+     HelpUtil.getGlobalHelpBroker().enableHelpOnButton(aboutItem, "package.jmri.jmrit.display.CircuitBuilder", null);
+     _warrantMenu.add(aboutItem);
+     aboutItem.addActionListener((ActionEvent event) -> {
+         makeCircuitMenu(true);
+//                openCircuitWindow();
+     });
+#endif
+ } else {
+     makeCircuitMenu(edit);
  }
- else
- {
-  makeCircuitMenu(edit);
+ if (edit) {
+     QAction* item = new QAction(tr("Open Circuit Builder"));
+     _warrantMenu->addAction(item);
+     //item.addActionListener((ActionEvent event) -> {
+     connect(item, &QAction::triggered, [=]{
+         _circuitBuilder->openCBWindow();
+     });
  }
- _menuBar->insertMenu(_menuBar->actions().at(0),_warrantMenu/*, 0*/);
+#if 0 // TODO:
+ if (addMenu) {
+     _menuBar->addMenu(_warrantMenu, 0);
+ } else if (oldMenu != nullptr) {
+     int idx = _menuBar->getComponentIndex(oldMenu);
+     _menuBar->remove(oldMenu);
+     _menuBar->addMenu(_warrantMenu, idx);
+
+ }
+ //_menuBar->revalidate();
+#endif
 }
 
 void ControlPanelEditor::on_makeCircuitMenu()
@@ -913,7 +929,7 @@ void ControlPanelEditor::selectAllAction()
    //_circuitMenu->setVisible(true);
   }
   if(_warrantMenu == nullptr)
-   makeWarrantMenu(edit);
+   makeWarrantMenu(true, true);
 
   if (_iconMenu==nullptr)
   {
@@ -1005,7 +1021,7 @@ void ControlPanelEditor::selectAllAction()
   }
   if (((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getSystemNameList().size() > 1)
   {
-   makeWarrantMenu(edit);
+   makeWarrantMenu(true, true);
   }
   if (_markerMenu==nullptr)
   {
@@ -2161,9 +2177,6 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
  }
 }
 
-/*public*/ void ControlPanelEditor::putPortalIcon(PortalIcon* pos) {
-    _circuitBuilder->addPortalIcon(pos);
-}
 
 /**************************** DnD **************************************/
 

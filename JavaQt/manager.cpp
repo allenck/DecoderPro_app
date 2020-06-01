@@ -300,6 +300,18 @@
         return this->validateIntegerSystemNameFormat(name, NmraPacket::accIdLowLimit, NmraPacket::accIdHighLimit, locale);
     }
 
+    /**
+     * Test if a given name is in a valid format for this Manager.
+     *
+     * @param systemName the name to check
+     * @return {@code true} if {@link #validSystemNameFormat(java.lang.String)}
+     *         equals {@link NameValidity#VALID}; {@code false} otherwise
+     */
+    /*public*/ /*default*/ bool Manager::isValidSystemNameFormat(/*@Nonnull*/ QString systemName) {
+        return validSystemNameFormat(systemName) == NameValidity::VALID;
+    }
+
+
 // needed for deprecationWarning call above
 /*static*/ /*final*/ Logger* Manager::deprecatedManagerLogger = LoggerFactory::getLogger("Manager");
 

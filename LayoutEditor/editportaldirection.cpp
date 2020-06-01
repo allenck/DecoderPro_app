@@ -11,6 +11,7 @@
 #include "controlpaneleditor.h"
 #include "portal.h"
 #include <QPoint>
+#include "borderfactory.h"
 
 //EditPortalDirection::EditPortalDirection(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -35,7 +36,7 @@
 /*static*/ QSize EditPortalDirection::_dim = QSize();
 
 /*public*/ EditPortalDirection::EditPortalDirection(QString title, CircuitBuilder* parent, OBlock* block) :
-  JmriJFrame((QWidget*)parent)
+  EditFrame(title, parent, block)
 {
     _homeBlock = block;
     _parent = parent;
@@ -105,13 +106,13 @@
 
 /*private:*/ QWidget*  EditPortalDirection::makeArrowPanel()
 {
- QGroupBox* panel = new QGroupBox("Entry Icon");
+ JPanel* panel = new JPanel();
  //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
  QVBoxLayout* panelLayout = new QVBoxLayout(panel);
- //panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(java.awt.Color.black),
-//         Bundle.getMessage("ArrowIconsTitle")));
- QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
- panel->setStyleSheet(gbStyleSheet);
+ panel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
+         tr("Entry Icon")));
+// QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+// panel->setStyleSheet(gbStyleSheet);
  panelLayout->addStrut(200);
 
  QSignalMapper* group = new QSignalMapper();
@@ -254,12 +255,22 @@
     }
 }
 
-/*protected*/ void EditPortalDirection::closingEvent()
+/*protected*/ void EditPortalDirection::closingEvent(bool close)
 {
- _parent->closePortalDirection(_homeBlock);
-// _loc = pos(_loc.x(), _loc.y());
-// _dim = size(_dim.x(), _dim.y());
- dispose();
+ QString sb;// = new StringBuffer();
+  QString msg = _parent->checkForPortals(_homeBlock, "BlockPaths");
+  if (msg.length() > 0) {
+      sb.append(msg);
+      sb.append("\n");
+      close = true;
+  }
+  msg = _parent->checkForPortalIcons(_homeBlock, "DirectionArrow");
+  if (msg.length() > 0) {
+      sb.append(msg);
+      sb.append("\n");
+      close = true;
+  }
+  EditFrame::closingEvent(close, sb);
 }
 
 /*protected*/ OBlock* EditPortalDirection::getHomeBlock() {

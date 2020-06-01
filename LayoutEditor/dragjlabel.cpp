@@ -36,7 +36,7 @@
  *
  */
 // /*public*/ class DragJLabel extends JLabel implements DragGestureListener, DragSourceListener, Transferable {
-/*public*/ DragJLabel::DragJLabel(DataFlavor* flavor, QWidget *parent) : QGroupBox(parent)
+/*public*/ DragJLabel::DragJLabel(DataFlavor* flavor, QWidget *parent) : JLabel(parent)
 {
      //super();
 //     DragSource dragSource = DragSource.getDefaultDragSource();
@@ -47,7 +47,7 @@
  icon = NULL;
 }
 
-/*public*/ DragJLabel::DragJLabel(DataFlavor* flavor, NamedIcon *icon, QWidget *parent) : QGroupBox(parent)
+/*public*/ DragJLabel::DragJLabel(DataFlavor* flavor, NamedIcon *icon, QWidget *parent) : JLabel(parent)
 {
      //super();
 //     DragSource dragSource = DragSource.getDefaultDragSource();
@@ -189,7 +189,7 @@ NamedIcon* DragJLabel::getIcon() { return icon;}
 void DragJLabel::setName(QString name)
 {
  this->name = name;
- setTitle(name);
+ //setTitle(name);
 }
 
 /**

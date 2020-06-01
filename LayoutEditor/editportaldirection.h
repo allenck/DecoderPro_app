@@ -1,6 +1,6 @@
 #ifndef EDITPORTALDIRECTION_H
 #define EDITPORTALDIRECTION_H
-#include "jmrijframe.h"
+#include "editframe.h"
 
 class ListSelectionEvent;
 class PortalList;
@@ -8,7 +8,7 @@ class QRadioButton;
 class OBlock;
 class CircuitBuilder;
 class PortalIcon;
-class EditPortalDirection : public JmriJFrame
+class EditPortalDirection : public EditFrame
 {
  Q_OBJECT
 public:
@@ -40,9 +40,10 @@ private:
  /*private:*/ QWidget* makeArrowPanel();
 protected:
  /*protected*/ void setPortalIcon(PortalIcon* icon, bool setValue);
- /*protected*/ void closingEvent();
+ /*protected*/ void closingEvent(bool close);
  /*protected*/ OBlock* getHomeBlock();
 
+ friend class CircuitBuilder;
 };
 
 #endif // EDITPORTALDIRECTION_H

@@ -4,6 +4,7 @@
 #include <QMimeData>
 #include "dataflavor.h"
 #include <QVBoxLayout>
+#include "borderfactory.h"
 
 //DragJComponent::DragJComponent(QWidget *parent) :
 //    QWidget(parent)
@@ -32,12 +33,12 @@
  */
 // /*public*/ abstract class DragJComponent extends JPanel implements DragGestureListener, DragSourceListener, Transferable {
 
- /*public*/ DragJComponent::DragJComponent(DataFlavor* flavor, QWidget *comp, QWidget *parent) : QGroupBox(parent){
+ /*public*/ DragJComponent::DragJComponent(DataFlavor* flavor, QWidget *comp, QWidget *parent) : JPanel(parent){
      //super();
      QString borderName = tr("Drag to Panel");
-//     setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
-//                                                      borderName));
-     setTitle(borderName);
+     setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
+                                                      borderName));
+     //setTitle(borderName);
      setLayout(new QVBoxLayout());
      QSize dim = comp->sizeHint();
      this->layout()->addWidget(comp);

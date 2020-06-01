@@ -704,6 +704,7 @@ void delete_Manager(Manager* obj) { delete obj; }
    int  getXMLOrder(Manager* theWrappedObject) const;
    int  py_q_getXMLOrder(Manager* theWrappedObject) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getXMLOrder());}
    bool  static_Manager_isLegacySystemPrefix(QString  prefix);
+   bool  isValidSystemNameFormat(Manager* theWrappedObject, QString  systemName);
    QString  makeSystemName(Manager* theWrappedObject, QString  name) const;
    QString  py_q_makeSystemName(Manager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_makeSystemName(name));}
    QString  makeSystemName(Manager* theWrappedObject, QString  name, bool  arg__2, QLocale  locale) const;
@@ -1249,7 +1250,6 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();

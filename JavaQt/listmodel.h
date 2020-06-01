@@ -12,7 +12,7 @@ public:
        * Returns the length of the list.
        * @return the length of the list
        */
-      virtual int getSize() {return 0;}
+      virtual int getSize() const {return 0;}
 
       /**
        * Returns the value at the specified index.
@@ -20,7 +20,7 @@ public:
        * @return the value at <code>index</code>
        */
 //    template <class E>
-//      virtual E getElementAt(int index);
+      virtual QVariant getElementAt(int /*index*/) {return QVariant();}
 
       /**
        * Adds a listener to the list that's notified each time a change

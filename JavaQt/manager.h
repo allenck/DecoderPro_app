@@ -517,6 +517,7 @@ public:
      /*public*/ /*default*/ QString validateUppercaseTrimmedSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale);
      /*public*/ /*default*/ QString validateIntegerSystemNameFormat(/*@Nonnull*/ QString name, int min, int max, /*@Nonnull*/ QLocale locale);
      /*public*/ /*default*/ QString validateNmraAccessorySystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale);
+     /*public*/ /*default*/ bool isValidSystemNameFormat(/*@Nonnull*/ QString systemName);
 
      /**
        * Defines an event that encapsulates changes to a list.

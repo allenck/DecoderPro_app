@@ -9,8 +9,8 @@ class LIBPREFSHARED_EXPORT ProfileListModel : public AbstractListModel
     Q_OBJECT
 public:
     explicit ProfileListModel(QObject *parent = 0);
-    /*public*/ int getSize() ;
-    /*public*/ QObject* getElementAt(int index);
+    /*public*/ int getSize() const ;
+    /*public*/ QVariant getElementAt(int index);
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
     void reset();

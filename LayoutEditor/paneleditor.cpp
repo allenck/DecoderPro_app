@@ -433,7 +433,10 @@ PanelEditor::~PanelEditor()
 // addSignalMastDlg = NULL;
 // addMultiSensorDlg = NULL;
 // addBackgroundDlg = NULL;
- menuBar()->addMenu(WarrantTableAction::makeWarrantMenu(isEditable(),this));
+ QMenu* warrantMenu = WarrantTableAction::getDefault()->makeWarrantMenu(isEditable());
+         if (warrantMenu != nullptr) {
+            ui->menuWindow->addMenu(warrantMenu);
+         }
 
  //connect(ui->actionOpenEditor, SIGNAL(triggered()), this, SLOT(on_actionOpenEditor_triggered()));
 

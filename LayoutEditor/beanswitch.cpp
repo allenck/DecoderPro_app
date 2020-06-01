@@ -21,6 +21,7 @@
 #include "light.h"
 #include <QPaintDevice>
 #include "colorutil.h"
+#include "borderfactory.h"
 
 /**
  * Class for a switchboard interface object.
@@ -43,7 +44,7 @@
  *                    display in switch tooltip, i.e. LT1
  * @param shapeChoice Button, Icon (static) or Drawing (vector graphics)
  */
-/*public*/ BeanSwitch::BeanSwitch(int index, NamedBean* bean, QString switchName, int shapeChoice, SwitchboardEditor* editor) : QFrame(){
+/*public*/ BeanSwitch::BeanSwitch(int index, NamedBean* bean, QString switchName, int shapeChoice, SwitchboardEditor* editor) : JPanel(){
  setObjectName("BeanSwitch_"+ switchName);
  stateClosed = tr("C"); // StateClosedShort
  stateThrown = tr("T"); // StateThrownShort
@@ -224,7 +225,7 @@
             }
             beanSymbol->setBackground(_editor->getDefaultBackgroundColor());
             //remove the line around icon switches?
-//            this.setBorder(BorderFactory.createLineBorder(_editor.getDefaultBackgroundColor(), 3));
+            this->setBorder(BorderFactory::createLineBorder(_editor->getDefaultBackgroundColor(), 3));
             thisLayout->addWidget(beanSymbol);
             beanSymbol->setVisible(true);
             break;

@@ -167,3 +167,14 @@ QModelIndex JList::locationToIndex(QPoint p)
 //    }
  scrollTo(model()->index(index,0), QAbstractItemView::EnsureVisible);
 }
+
+/*public*/void JList::addListSelectionListener(ListSelectionListener* l)
+{
+ // TODO:
+}
+
+/*public*/ void JList::setVisibleRowCount(int count)
+{
+ visibleRowCount = count;
+
+}

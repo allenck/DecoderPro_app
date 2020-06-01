@@ -30,6 +30,9 @@
 #include "pathturnouttablemodel.h"
 #include "internalframeevent.h"
 #include "signalspeedmap.h"
+#include "joptionpane.h"
+#include "jcombobox.h"
+#include "jlabel.h"
 
 //TableFrames::TableFrames(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -62,6 +65,7 @@
 //private static /*final*/ long serialVersionUID = 5328547694482485128L;
 /*static*/ int TableFrames::ROW_HEIGHT = 0;
 /*public*/ /*static*/ /*final*/ int TableFrames::STRUT_SIZE = 10;
+/*private*/ /*static*/ QString TableFrames::oblockPrefix;
 
 /*public*/ TableFrames::TableFrames(QWidget *parent) :
   JmriJFrame(tr("OBlock Table"), parent)
@@ -234,7 +238,7 @@ void TableFrames::common()
  setLocation(10, 30);
  setVisible(true);
  adjustSize();
- errorCheck();
+ WarrantTableAction::getDefault()->errorCheck();
 }
 
 ///*protected*/ /*final*/ JTable* TableFrames::getBlockTablePane() {
@@ -298,24 +302,24 @@ void TableFrames::common()
 //@Override
 /*public*/ void TableFrames::windowClosing(QCloseEvent* e)
 {
-  errorCheck();
+  WarrantTableAction::getDefault()->errorCheck();
   setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   if (log->isDebugEnabled()) {
       log->debug("windowClosing: " + toString());
     }
 }
 #endif
-/*private*/ void TableFrames::errorCheck() {
-    WarrantTableAction::initPathPortalCheck();
-    OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
-    QStringList sysNames = manager->getSystemNameArray();
-    for (int i = 0; i < sysNames.length(); i++) {
-        WarrantTableAction::checkPathPortals((OBlock*)manager->getBySystemName(sysNames[i]));
-    }
-    if (_showWarnings) {
-        WarrantTableAction::showPathPortalErrors();
-    }
-}
+///*private*/ void TableFrames::errorCheck() {
+//    WarrantTableAction::initPathPortalCheck();
+//    OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
+//    QStringList sysNames = manager->getSystemNameArray();
+//    for (int i = 0; i < sysNames.length(); i++) {
+//        WarrantTableAction::checkPathPortals((OBlock*)manager->getBySystemName(sysNames[i]));
+//    }
+//    if (_showWarnings) {
+//        WarrantTableAction::showPathPortalErrors();
+//    }
+//}
 
 /*protected*/ void TableFrames::updateOpenMenu()
 {
@@ -830,69 +834,7 @@ _portalTable->setSortingEnabled(true);
  return frame;
 }
 
-/**
- * ********************* PathTurnoutFrame *****************************
- */
-/*protected*/ JInternalFrame* TableFrames::makePathTurnoutFrame(OBlock* block, QString pathName)
-{
- QString title = tr("Turnout Table for Path \"%2\" in Block \"%1\"").arg( block->getDisplayName()).arg( pathName);
- JInternalFrame* frame = new JInternalFrame(title, true, true, false, true);
- if (log->isDebugEnabled())
- {
-  log->debug("makePathTurnoutFrame for Block " + block->getDisplayName() + " and Path " + pathName);
- }
- frame->setName(makePathTurnoutName(block->getSystemName(), pathName));
- OPath* path = block->getPathByName(pathName);
- if (path == NULL)
- {
-  return NULL;
- }
 
- PathTurnoutTableModel* pathTurnoutModel = new PathTurnoutTableModel(path);
- pathTurnoutModel->init();
- JTable* pathTurnoutTable = new DnDJTable(pathTurnoutModel, QList<int>() << PathTurnoutTableModel::SETTINGCOLUMN <<
-     PathTurnoutTableModel::DELETE_COL);
-//    JComboBox<String> box = new JComboBox<String>(PathTurnoutTableModel.turnoutStates);
- //PathTurnoutTable.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
-//    pathTurnoutTable.getColumnModel().getColumn(PathTurnoutTableModel.SETTINGCOLUMN).setCellEditor(new DefaultCellEditor(box));
- pathTurnoutTable->setItemDelegateForColumn(PathTurnoutTableModel::SETTINGCOLUMN, new OBSComboBoxDelegate(pathTurnoutModel, PathTurnoutTableModel::turnoutStates));
-
-//    pathTurnoutTable.getColumnModel().getColumn(PathTurnoutTableModel.DELETE_COL).setCellEditor(new ButtonEditor(new JButton()));
-//    pathTurnoutTable.getColumnModel().getColumn(PathTurnoutTableModel.DELETE_COL).setCellRenderer(new ButtonRenderer());
- pathTurnoutModel->setColumnToHoldButton(pathTurnoutTable, PathTurnoutTableModel::DELETE_COL,NULL);
- //PathTurnoutTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
- pathTurnoutTable->createDefaultColumnModel();
- if(pathTurnoutTable->getColumnModel()->getColumnCount() == 0)
-  for(int i =0; i < pathTurnoutModel->columnCount(QModelIndex()); i++)
-   pathTurnoutTable->getColumnModel()->addColumn(new TableColumn());
- for (int i = 0; i < pathTurnoutModel->columnCount(QModelIndex()); i++)
- {
-  int width = pathTurnoutModel->getPreferredWidth(i);
-  pathTurnoutTable->getColumnModel()->getColumn(i)->setPreferredWidth(width);
- }
- pathTurnoutTable->resizeColumnsToContents();
- pathTurnoutTable->setDragEnabled(true);
- //PathTurnoutTable.setDropMode(DropMode.USE_SELECTION);
- setActionMappings(pathTurnoutTable);
-//    int tableWidth = pathTurnoutTable.getPreferredSize().width;
-//    pathTurnoutTable.setPreferredScrollableViewportSize(new java.awt.Dimension(tableWidth, ROW_HEIGHT * 5));
-//            PathTurnoutTable.setPreferredScrollableViewportSize( new java.awt.Dimension(397, ROW_HEIGHT*5));
-//    JScrollPane tablePane = new JScrollPane(pathTurnoutTable);
-
- QWidget* contentPane = new QWidget();
- //contentPane.setLayout(new BorderLayout(5, 5));
- QVBoxLayout* contentPaneLayout = new QVBoxLayout(contentPane);
- QLabel* prompt = new QLabel(tr("Enter a Turnout Name into the last row"));
- contentPaneLayout->addWidget(prompt, /*BorderLayout.NORTH*/0, Qt::AlignTop);
- contentPaneLayout->addWidget(pathTurnoutTable, /*BorderLayout.CENTER*/ 0, Qt::AlignVCenter);
-
- frame->addInternalFrameListener((InternalFrameListener*)this);
- frame->setContentPane(contentPane);
- frame->setLocation(10, 270);
- frame->pack();
-
- return frame;
-}
 
 /*protected*/ void TableFrames::openBlockPathFrame(QString sysName)
 {
@@ -995,6 +937,62 @@ static class MyBooleanRenderer extends javax.swing.table.DefaultTableCellRendere
     }
 }
 #endif
+
+
+ /*
+  * ********************* PathTurnoutFrame *****************************
+  */
+ /*protected*/ PathTurnoutFrame* TableFrames::makePathTurnoutFrame(OBlock* block, QString pathName) {
+     QString title = tr("Path \"%2\" in Block \"%1\"").arg(block->getDisplayName()).arg(pathName);
+     PathTurnoutFrame* frame = new PathTurnoutFrame(title, true, true, false, true);
+     if (log->isDebugEnabled()) {
+         log->debug(tr("makePathTurnoutFrame for Block %1 and Path %2").arg(block->getDisplayName()).arg(pathName));
+     }
+     frame->setName(makePathTurnoutName(block->getSystemName(), pathName));
+     OPath* path = block->getPathByName(pathName);
+     if (path == nullptr) {
+         return nullptr;
+     }
+     frame->init(path);
+     PathTurnoutTableModel* PathTurnoutModel = frame->getModel();
+     JTable* pathTurnoutTable = new JTable(PathTurnoutModel);
+#if 0
+     PathTurnoutTable.setTransferHandler(new jmri.util.DnDTableImportExportHandler(
+             new int[]{PathTurnoutTableModel.SETTINGCOLUMN, PathTurnoutTableModel.DELETE_COL}));
+#endif
+     pathTurnoutTable->setDragEnabled(true);
+
+     JComboBox* box = new JComboBox(PathTurnoutTableModel::turnoutStates);
+#if 0
+     pathTurnoutTable.getColumnModel()->getColumn(PathTurnoutTableModel::SETTINGCOLUMN).setCellEditor(new DefaultCellEditor(box));
+     pathTurnoutTable.getColumnModel().getColumn(PathTurnoutTableModel.DELETE_COL).setCellEditor(new ButtonEditor(new JButton()));
+     pathTurnoutTable.getColumnModel().getColumn(PathTurnoutTableModel.DELETE_COL).setCellRenderer(new ButtonRenderer());
+#endif
+     //PathTurnoutTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+     for (int i = 0; i < PathTurnoutModel->getColumnCount(); i++) {
+         int width = PathTurnoutModel->getPreferredWidth(i);
+         pathTurnoutTable->getColumnModel()->getColumn(i)->setPreferredWidth(width);
+     }
+     pathTurnoutTable->resizeColumnsToContents();//sizeColumnsToFit(-1);
+     int tableWidth = pathTurnoutTable->sizeHint().width();
+//     pathTurnoutTable.setPreferredScrollableViewportSize(new java.awt.Dimension(tableWidth, TableFrames.ROW_HEIGHT * 5));
+//     JScrollPane tablePane = new JScrollPane(pathTurnoutTable);
+
+     JPanel* contentPane = new JPanel();
+     contentPane->setLayout(new QVBoxLayout());//new BorderLayout(5, 5));
+     JLabel* prompt = new JLabel(tr("Enter a Turnout Name into the last row"));
+     ((QVBoxLayout*)contentPane->layout())->addWidget(prompt, 0, Qt::AlignTop);//BorderLayout.NORTH);
+     ((QVBoxLayout*)contentPane->layout())->addWidget(/*tablePane*/pathTurnoutTable, 0, Qt::AlignCenter);// BorderLayout.CENTER);
+#if 0
+     frame->layout()->addInternalFrameListener(this);
+#endif
+     frame->setContentPane(contentPane);
+     frame->setLocation(10, 270);
+     frame->pack();
+     return frame;
+ }
+
+
 /**
  * ********************* InternalFrameListener implementatiom
  * *****************
@@ -1015,18 +1013,24 @@ static class MyBooleanRenderer extends javax.swing.table.DefaultTableCellRendere
           + frame->getTitle() + ", name= " + name + " size ("
           + QString::number(frame->size().width()) + ", " + QString::number(frame->size().height()) + ")");
  }
- if (name != NULL && name.startsWith("OB"))
+ if (name != "" && name.startsWith("OB"))
  {
-  _blockPathMap.remove(name);
-  WarrantTableAction::initPathPortalCheck();
-  WarrantTableAction::checkPathPortals(((BlockPathFrame*) frame)->getModel()->getBlock());
-  ((BlockPathFrame*) frame)->getModel()->removeListener();
-  if (_showWarnings) {
-      WarrantTableAction::showPathPortalErrors();
-  }
- }
- else {
-  _PathTurnoutMap.remove(name);
+     _blockPathMap.remove(name);
+     if (qobject_cast<BlockPathFrame*>(frame)) {
+         QString msg = WarrantTableAction::getDefault()->checkPathPortals(((BlockPathFrame*) frame)->getModel()->getBlock());
+         if (msg != "") {
+             JOptionPane::showMessageDialog(this, msg,
+                     tr("Info"), JOptionPane::INFORMATION_MESSAGE);
+         }
+         ((BlockPathFrame*) frame)->getModel()->removeListener();
+     }
+ } else {
+     if (qobject_cast<PathTurnoutFrame*>(frame)) {
+#if 0
+         ((PathTurnoutFrame*) frame)->getModel()->removeListener();
+#endif
+     }
+     _PathTurnoutMap.remove(name);
  }
 }
 
@@ -1046,13 +1050,15 @@ static class MyBooleanRenderer extends javax.swing.table.DefaultTableCellRendere
              + frame->getTitle() + ", name= " + name + " size ("
              + QString::number(frame->size().width()) + ", " + QString::number(frame->size().height()) + ")");
  }
- if (name != NULL && name.startsWith("OB")) {
-     WarrantTableAction::initPathPortalCheck();
-     WarrantTableAction::checkPathPortals(((BlockPathFrame*) frame)->getModel()->getBlock());
-     if (_showWarnings) {
-         WarrantTableAction::showPathPortalErrors();
-     }
- }
+ if (name != "" && name.startsWith(oblockPrefix)) {
+             if (qobject_cast<BlockPathFrame*>(frame)) {
+                 QString msg = WarrantTableAction::getDefault()->checkPathPortals(((BlockPathFrame*) frame)->getModel()->getBlock());
+                 if (msg != "" ){
+                     JOptionPane::showMessageDialog(this, msg,
+                     tr("Info"), JOptionPane::INFORMATION_MESSAGE);
+                 }
+             }
+         }
 }
 
 /*public*/ void TableFrames::internalFrameDeiconified(InternalFrameEvent* e) {

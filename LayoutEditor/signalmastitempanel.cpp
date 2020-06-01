@@ -17,6 +17,7 @@
 #include "signalmasticonxml.h"
 #include "imagepanel.h"
 #include "jpanel.h"
+#include "borderfactory.h"
 
 //SignalMastItemPanel::SignalMastItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -95,8 +96,8 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIc
  }
  if (_iconPanel == nullptr) { // keep an existing panel
      _iconPanel = new ImagePanel();
-//     _iconPanel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-     _iconPanel->setStyleSheet(gbStyleSheet);
+     _iconPanel->setBorder(BorderFactory::createLineBorder(Qt::black, 1));
+     //_iconPanel->setStyleSheet(gbStyleSheet);
      _promptLabel = new QLabel();
      QWidget* panel = new QWidget();
      QHBoxLayout* panelLayout = new QHBoxLayout(panel);

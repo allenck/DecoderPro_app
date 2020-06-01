@@ -3,7 +3,7 @@
 #include "exceptions.h"
 #include "jlabel.h"
 #include "borderfactory.h".h"
-
+#include <QLayout>
 
 /**
  * A class which implements an arbitrary border
@@ -689,3 +689,14 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
     return insets;
 }
 #endif
+
+/*protected*/ void TitledBorder::adjustLayout(QLayout* layout)
+{
+ int left,top, right, bottom;
+ layout->getContentsMargins(&left,&top, &right, &bottom);
+ QFont f =font();
+ QFontMetrics fm(f);
+ top +=fm.height();
+ layout->setContentsMargins(left,top, right, bottom);
+}
+

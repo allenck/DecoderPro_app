@@ -59,7 +59,7 @@ public:
     QPoint getLocation();
     void setLocation(int x, int y);
     virtual void dispose();
-    virtual QWidget* getContentPane(bool addLayout = true);
+    virtual JPanel* getContentPane(bool addLayout = true);
     void toFront();
     virtual /*public*/ void setTitle(QString _title);
     /*public*/ QString title();

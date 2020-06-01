@@ -263,6 +263,8 @@ void FileDrop::common(PrintStream* out, Component* c, Border* dragBorder, bool r
  log = new Logger("FileDrop");
  this->out = out;
  this->listener = listener;
+ this->c = c;
+ this->dragBorder = dragBorder;
 
  if (supportsDnD())
  {   // Make a drop listener
@@ -656,13 +658,13 @@ MyDropTargetListener::MyDropTargetListener( FileDrop* fileDrop, QObject* parent)
     if (fileDrop->isDragOk(fileDrop->out, evt))
     {
         // If it's a Swing component, set its border
-#if 0 // TODO: when Borders are implemented
-        if (c instanceof javax.swing.JComponent) {
-            javax.swing.JComponent jc = (javax.swing.JComponent) c;
-            normalBorder = jc.getBorder();
-            log(out, "FileDrop: normal border saved.");
-            jc.setBorder(dragBorder);
-            log(out, "FileDrop: drag border set.");
+#if 1 // TODO: when Borders are implemented
+        if (qobject_cast<JComponent*>(fileDrop->c)) {
+            JComponent* jc = (JComponent*) fileDrop->c;
+            fileDrop->normalBorder = jc->getBorder();
+//            log(fileDrop->out, "FileDrop: normal border saved.");
+            jc->setBorder(fileDrop->dragBorder);
+//            log(fileDrop->out, "FileDrop: drag border set.");
         }   // end if: JComponent
 #endif
         // Acknowledge that it's okay to enter

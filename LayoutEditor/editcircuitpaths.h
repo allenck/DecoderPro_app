@@ -1,19 +1,20 @@
 #ifndef EDITCIRCUITPATHS_H
 #define EDITCIRCUITPATHS_H
-#include "jmrijframe.h"
+#include "editframe.h"
 #include <QAbstractListModel>
 
+class LengthPanel;
 class JToggleButton;
 class Path;
 class ListSelectionEvent;
-class QListView;
+class JList;
 class OPath;
 class PathListModel;
 class JTextField;
 class Positionable;
 class CircuitBuilder;
 class OBlock;
-class EditCircuitPaths : public JmriJFrame
+class EditCircuitPaths : public EditFrame
 {
     Q_OBJECT
 public:
@@ -23,7 +24,7 @@ public:
     static QPoint _loc;// = null;
     static QSize _dim;// = null;
     /*public*/ static /*final*/ QString TEST_PATH;// = "TEST_PATH";
-    /*public*/ EditCircuitPaths(QString _title, CircuitBuilder* builder, OBlock* block, QWidget *parent = 0);
+    /*public*/ EditCircuitPaths(QString _title, CircuitBuilder* parent, OBlock* block);
     /*public*/ QString getClassName();
 
 
@@ -39,43 +40,48 @@ private:
     /*private*/ CircuitBuilder*  _parent;
     // mouse selections of track icons that define the path
     /*private*/ QList<Positionable*>* _pathGroup;// = new ArrayList<Positionable>();
+    /*private*/ QList<Positionable*>* _savePathGroup;// = new ArrayList<>();
 
     /*private*/ JTextField*  _pathName;// = new JTextField();
 //    /*private*/ QList*       _pathList;
     /*private*/ PathListModel* _pathListModel;
-    QListView* _pathList;
+    /*private*/ OPath* _currentPath;
+    /*private*/ LengthPanel* _lengthPanel;
+    JList* _pathList;
 
     /*private*/ bool _pathChange;// = false;
     /*private*/ JTextField* _length;// = new JTextField();
     /*private*/ JToggleButton* _units;
-    /*private*/ QWidget*  MakeButtonPanel();
-    /*private*/ QWidget* makeContentPanel();
-    /*private*/ void clearPath();
-    /*private*/ void showPath(OPath* path);
-    /*private*/ void makePath(OPath* path);
-    /*private*/ bool checkForSavePath();
+    /*private*/ JPanel* makeContentPanel();
+    /*private*/ void clearPath(bool);
+    /*private*/ QList<Positionable *> *showPath(OPath* path);
+    /*private*/ QString checkForSavePath();
     /*private*/ void clearListSelection();
-    /*private*/ void addPath();
+    /*private*/ void addNewPath(bool prompt);
     /*private*/ OPath* getBlockPath(QString name);\
     Logger* log;
     /*private*/ OPath* makeOPath(QString name, QList<Positionable*>* pathGp, bool showMsg);
-    /*private*/ bool findErrors();
+    /*private*/ QString findErrors();
     /*private*/ QList<Positionable*>* makePathGroup(OPath* path);
     /*private*/ bool setPathLength(OPath* path);
     /*private*/ static bool pathsEqual(OPath* p1, OPath* p2);
     /*private*/ void changePathNameInIcons(QString name, OPath* path);
+    /*private*/ bool okPath(Positionable* pos);
+    /*private*/ bool pathIconsEqual(QList<Positionable*>* pathGp1, QList<Positionable*>* pathGp2);
+    /*private*/ QString checkIcons(QString name, QList<Positionable*>* pathGp);
 
 private slots:
     /*private*/ void changePathName();
     /*private*/ void deletePath();
-    void on_doneClicked();
+
 protected:
     /*protected*/ QList<Positionable*>* getPathGroup();
     /*protected*/ OBlock* getBlock();
-    /*protected*/ void updatePath(bool pathChanged);
+    /*protected*/ void updateSelections(bool noShift, Positionable* selection);
+    /*protected*/ void updatePath();
 
 protected slots:
-    /*protected*/ void closingEvent();
+    /*protected*/ void closingEvent(bool);
 friend class PathListModel;
 friend class CircuitBuilder;
 

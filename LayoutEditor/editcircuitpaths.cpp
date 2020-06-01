@@ -15,6 +15,9 @@
 #include "rosterentry.h"
 #include "portal.h"
 #include "jtogglebutton.h"
+#include "joptionpane.h"
+#include "jlist.h"
+#include "lengthpanel.h"
 
 //EditCircuitPaths::EditCircuitPaths(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -36,10 +39,10 @@
 static QSize _dim = QSize();
     /*public*/ /*static*/ /*final*/ QString EditCircuitPaths::TEST_PATH = "TEST_PATH";
 
-/*public*/ EditCircuitPaths::EditCircuitPaths(QString title, CircuitBuilder* builder, OBlock* block, QWidget *parent) :
-JmriJFrame(parent)
+/*public*/ EditCircuitPaths::EditCircuitPaths(QString title, CircuitBuilder* parent, OBlock* block) :
+EditFrame(title, parent, block)
 {
- _parent = builder;
+ _parent = parent;
  _block = block;
  _length = new JTextField();
  log = new Logger("EditCircuitPaths");
@@ -77,42 +80,9 @@ JmriJFrame(parent)
 #endif
     setVisible(true);
 }
-#if 1
-/*private*/ QWidget*  EditCircuitPaths::MakeButtonPanel() {
-    QWidget* buttonPanel = new QWidget();
-    buttonPanel->setLayout(new QVBoxLayout);//(buttonPanel/*, BoxLayout.Y_AXIS*/));
-    QWidget* panel = new QWidget();
-    panel->setLayout(new FlowLayout());
 
-    QPushButton* doneButton = new QPushButton(tr("Done"));
-//    doneButton.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//    if(!findErrors)
-//    {
-//                closingEvent();
-//    }
-//            }
-//    });
-    connect(doneButton, SIGNAL(clicked()), this, SLOT(on_doneClicked()));
-    panel->layout()->addWidget(doneButton);
-
-    buttonPanel->layout()->addWidget(panel);
-
-    panel = new QWidget();
-    panel->setLayout(new FlowLayout());
-    panel->layout()->addWidget(buttonPanel);
-
-    return panel;
-}
-
-void EditCircuitPaths::on_doneClicked()
-{
- if(!findErrors())
-  closingEvent();
-}
-
-/*private*/ QWidget* EditCircuitPaths::makeContentPanel() {
-    QWidget* pathPanel = new QWidget();
+/*private*/ JPanel *EditCircuitPaths::makeContentPanel() {
+    JPanel* pathPanel = new JPanel();
     QVBoxLayout* pathPanelLayout;
     pathPanel->setLayout(pathPanelLayout = new QVBoxLayout(pathPanel/*, BoxLayout.Y_AXIS*/));
 
@@ -122,7 +92,7 @@ void EditCircuitPaths::on_doneClicked()
     pathPanel->layout()->addWidget(panel);
 
     _pathListModel = new PathListModel(this);
-    _pathList = new QListView;
+    _pathList = new JList();
     _pathList->setModel(_pathListModel);
     //_pathList.addListSelectionListener(this);
     connect(_pathList, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
@@ -210,7 +180,7 @@ void EditCircuitPaths::on_doneClicked()
     l = new JLabel(tr("throwPathTO"));
     l->setAlignment(Qt::AlignLeft);
     panel->layout()->addWidget(l);
-    l = new JLabel(tr("holdShiftDown"));
+    l = new JLabel(tr("click the turnout with the Shift key down."));
     l->setAlignment(Qt::AlignLeft);
     panel->layout()->addWidget(l);
     QWidget* p = new QWidget();
@@ -218,7 +188,7 @@ void EditCircuitPaths::on_doneClicked()
     pathPanel->layout()->addWidget(p);
 
     ((QBoxLayout*)pathPanel->layout())->addStrut((STRUT_SIZE));
-    pathPanel->layout()->addWidget(MakeButtonPanel());
+    pathPanel->layout()->addWidget(makeDoneButtonPanel());
     return pathPanel;
 }
 #if 0
@@ -289,75 +259,53 @@ void EditCircuitPaths::on_doneClicked()
 */
 /*public*/ void EditCircuitPaths::valueChanged(ListSelectionEvent* /*e*/)
 {
- clearPath();
- OPath* path = (OPath*)_block->getPaths()->at(_pathList->currentIndex().row());
- if (path!=NULL)
- {
-  _pathName->setText(path->getName());
-  showPath(path);
+ OPath* path = VPtr<OPath>::asPtr(_pathList->getSelectedValue());
+ if (log->isDebugEnabled()) {
+     log->debug(tr("valueChanged from _currentPath \"%1\" to path \"%2\"").arg(
+             (_currentPath==nullptr?"null":_currentPath->getName())), (path==nullptr?"null":path->getName()));
  }
- else
- {
-  checkForSavePath();
-  _pathName->setText("");
- }
- int state = _block->getState() | OBlock::ALLOCATED;
- _block->pseudoPropertyChange("state", (0), (state));
-}
-
-/*private*/ void EditCircuitPaths::showPath(OPath* path)
-{
-    path->setTurnouts(0, true, 0, false);
-    makePath(path);
-    updatePath(false);
-}
-
-/**
- * Construct the array of icons that displays the path
- * @param path
- */
-/*private*/ void EditCircuitPaths::makePath(OPath* path)
-{
- Portal* fromPortal = path->getFromPortal();
- Portal* toPortal = path->getToPortal();
- QString name = path->getName();
-
- QList<Positionable*>* list = _parent->getCircuitGroup();
- if (log->isDebugEnabled()) log->debug("showPath for "+name+" CircuitGroup size= "+QString::number(list->size()));
- _pathGroup = new QList<Positionable*>();
- for (int i=0; i<list->size(); i++)
- {
-  Positionable* pos = list->at(i);
-  //if (pos instanceof IndicatorTrack)
-  if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
-  {
-   QStringList* paths = ((IndicatorTrack*)pos)->getPaths();
-   if (paths!=NULL)
-   {
-    for (int j=0; j<paths->size(); j++)
-    {
-     if (name==(paths->at(j)))
-     {
-      _pathGroup->append(pos);
+ QString msg = checkForSavePath();
+ if (msg.length() > 0) {
+     QString  sb;// = new StringBuilder (msg);
+     sb.append("\n");
+     sb.append(tr("Make and save changes?"));
+     int answer = JOptionPane::showConfirmDialog(this, sb, tr("Make Path"),
+             JOptionPane::YES_NO_OPTION, JOptionPane::QUESTION_MESSAGE);
+     if (answer == JOptionPane::YES_OPTION) {
+         addNewPath(false);
      }
-    }
-   }
-  }
-  else
-  {
-   PortalIcon* icon = (PortalIcon*)pos;
-   Portal* portal = icon->getPortal();
-   if (portal==(fromPortal))
-   {
-    _pathGroup->append(icon);
-   }
-   else if (portal==(toPortal))
-   {
-    _pathGroup->append(icon);
-   }
-  }
  }
+ clearPath(false);
+ _currentPath = path;
+ if (path != nullptr) {
+     _pathName->setText(path->getName());
+     _lengthPanel->setLength(path->getLengthMm());
+     _pathGroup = showPath(path);
+     updatePath();
+ } else {
+     _pathName->setText("null");
+     _lengthPanel->setLength(0);
+ }
+ int oldState = _homeBlock->getState();
+ int newState = oldState | OBlock::ALLOCATED;
+ _homeBlock->pseudoPropertyChange("state", oldState, newState);
 }
+
+/*private*/ QList<Positionable*>* EditCircuitPaths::showPath(OPath* path)
+{
+     if (log->isDebugEnabled()) {
+         log->debug(tr("showPath  \"%1\"").arg(path->getName()));
+     }
+     path->setTurnouts(0, true, 0, false);
+     QList<Positionable*>* pathGp = makePathGroup(path);
+     _savePathGroup = new QList<Positionable*>();
+     for (Positionable* pos : *pathGp) {
+         _savePathGroup->append(pos);
+     }
+     return pathGp;
+}
+
+
 /**
  * Construct the array of icons that displays the path
  *
@@ -369,7 +317,7 @@ void EditCircuitPaths::on_doneClicked()
  Portal* toPortal = path->getToPortal();
  QString name = path->getName();
 
- QList<Positionable*>* list = _parent->getCircuitGroup();
+ QList<Positionable*>* list = _parent->getCircuitIcons(_homeBlock);
  if (log->isDebugEnabled()) {
      log->debug("makePathGroup for " + name + " CircuitGroup size= " + list->size());
  }
@@ -410,100 +358,151 @@ void EditCircuitPaths::on_doneClicked()
 }
 
 /**
+ * Can a path in this circuit be drawn through this icon?
+ */
+/*private*/ bool EditCircuitPaths::okPath(Positionable* pos) {
+    if (qobject_cast<PortalIcon*>(pos->self())) {
+        Portal* portal = ((PortalIcon*) pos)->getPortal();
+        if (portal != nullptr) {
+            if (_homeBlock->equals(portal->getFromBlock()) || _homeBlock->equals(portal->getToBlock())) {
+                ((PortalIcon*) pos)->setStatus(PortalIcon::PATH);
+                return true;
+            }
+        }
+        JOptionPane::showMessageDialog(this, tr("This Portal is not part of track circuit %1...").arg(_homeBlock->getDisplayName()),
+                tr("Invalid Path"), JOptionPane::WARNING_MESSAGE);
+        return false;
+    }
+    QList<Positionable*>* icons = _parent->getCircuitIcons(_homeBlock);
+    if (!icons->contains(pos)) {
+        JOptionPane::showMessageDialog(this, tr("This icon is not part of track circuit \"%1\".").arg(_homeBlock->getDisplayName()),
+                tr("Invalid Path"), JOptionPane::WARNING_MESSAGE);
+        return false;
+    }
+    return true;
+}
+
+/*
+ * CircuitBuilder calls from handleSelection to update icon display
+ */
+/*protected*/ void EditCircuitPaths::updateSelections(bool noShift, Positionable* selection) {
+    // A temporary path "TEST_PATH" is used to display the icons representing a path
+    // the OBlock has allocated TEST_PATH
+    // pathGroup collects the icons and the actual path is edited or
+    // created with a save in _editPathsFrame
+    if (!canEdit()) {
+        return;
+    }
+    if (noShift) {
+        if (_pathGroup->contains(selection)) {
+            _pathGroup->removeOne(selection);
+            if (qobject_cast<PortalIcon*>(selection->self())) {
+                ((PortalIcon*) selection)->setStatus(PortalIcon::VISIBLE);
+            } else {
+                ((IndicatorTrack*) selection)->setStatus(Sensor::INACTIVE);
+                ((IndicatorTrack*) selection)->removePath(TEST_PATH);
+                log->debug("removePath TEST_PATH");
+            }
+        } else if (okPath(selection)) {
+            _pathGroup->append(selection);
+            // okPath() sets PortalIcons to status PortalIcon.PATH
+            if (qobject_cast<IndicatorTrack*>(selection->self())) {
+                ((IndicatorTrack*) selection)->addPath(TEST_PATH);
+            }
+        } else {
+            return;
+        }
+    } else {
+        if (qobject_cast< PortalIcon*>(selection->self())) {
+            ((PortalIcon*) selection)->setStatus(PortalIcon::VISIBLE);
+        }
+    }
+    int oldState = _homeBlock->getState();
+    int newState = oldState | OBlock::ALLOCATED;
+    _homeBlock->pseudoPropertyChange("state", oldState, newState);
+    log->debug("updateSelections ALLOCATED _homeBlock");
+}
+
+/**
  * sets the path for display
  * @param pathChanged
  */
-/*protected*/ void EditCircuitPaths::updatePath(bool pathChanged)
+/*protected*/ void EditCircuitPaths::updatePath()
 {
  // to avoid ConcurrentModificationException now set data
- for (int i=0; i<_pathGroup->size(); i++)
- {
-  Positionable* pos = _pathGroup->at(i);
-  //if (pos instanceof IndicatorTrack)
-  if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
-  {
-    ((IndicatorTrack*)pos)->addPath(TEST_PATH);
-  }
-  else
-  {
-   ((PortalIcon*)pos)->setStatus(PortalIcon::PATH);
-  }
+ QListIterator<Positionable*> iter(*_pathGroup);
+ while (iter.hasNext()) {
+     Positionable* pos = iter.next();
+     if (qobject_cast<IndicatorTrack*>(pos->self())) {
+         ((IndicatorTrack*) pos)->addPath(TEST_PATH);
+     } else {
+         ((PortalIcon*) pos)->setStatus(PortalIcon::PATH);
+     }
  }
- _pathChange = pathChanged;
  QString name = _pathName->text();
- if (name == NULL || name.length() == 0)
- {
-//  JOptionPane.showMessageDialog(this, Bundle.getMessage("needPathName"),
-//             Bundle.getMessage("makePath"), JOptionPane.INFORMATION_MESSAGE);
-  QMessageBox::information(this, tr("Make Path"), tr("Enter the name for a new path or select a path from the above list."));
- }
- else
- {
+ if (!_pathGroup->isEmpty() && (name.isNull() || name.length() == 0)) {
+     JOptionPane::showMessageDialog(this, tr("Enter the name for a new path or select a path from the above list."),
+             tr("Make Path"), JOptionPane::INFORMATION_MESSAGE);
  }
 }
 
-/*private*/ bool EditCircuitPaths::findErrors()
+/*private*/ QString EditCircuitPaths::findErrors()
 {
-  bool error = false;
-  if (checkForSavePath()) {
-      return true;
-  }
-  QVector<Path*>* list = _block->getPaths();
-  if (list->size() == 0)
-  {
-//      JOptionPane.showMessageDialog(this, Bundle.getMessage("noPaths", _block.getDisplayName()),
-//              Bundle.getMessage("makePath"), JOptionPane.INFORMATION_MESSAGE);
-   QMessageBox::information(this, tr("Make Path"), tr("Circuit Block \"%1\" has no paths.").arg(_block->getDisplayName()));
-   return NULL;
-  }
-  for (int i = 0; i < list->size(); i++)
-  {
-      OPath* path = (OPath*) list->at(i);
-      QList<Positionable*>* pathGp = makePathGroup(path);
-      if (pathGp->size() == 0) {
-          error = true;
-          break;
-      }
-      OPath* p = makeOPath(path->getName(), pathGp, false);
-      if (p == NULL) {
-          error = true;
-          break;
-      }
-  }
-  if (error)
-  {
-//      int result = JOptionPane.showConfirmDialog(this, Bundle.getMessage("hasPathErrors"),
-//              Bundle.getMessage("makePath"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//      if (result == JOptionPane.YES_OPTION) {
-   if(QMessageBox::information(this, tr("Make Path"), tr("Circuit Block has incomplete Path definitions.  Do you want to Exit?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-   {
-    error = false;
-   }
-  }
-  return error;
+ QString  sb;// = new StringBuilder();
+ QVector<Path*>* list = _homeBlock->getPaths();
+ if (list->isEmpty()) {
+     sb.append(tr("Circuit Block \"%1\" has no paths.").arg(_homeBlock->getDisplayName()));
+ } else {
+     for (int i = 0; i < list->size(); i++) {
+         OPath* path = (OPath*) list->at(i);
+         QList<Positionable*>* pathGp = makePathGroup(path);
+         if (pathGp->isEmpty()) {
+             sb.append(tr("To display a path in a circuit at least one track icon must be selected."/*, path->getName()*/));
+             sb.append("\n");
+         } else {
+             QString msg = checkIcons(path->getName(), pathGp);
+             if (msg != nullptr) {
+                 sb.append(msg);
+                 sb.append("\n");
+             }
+         }
+     }
+ }
+ return sb;
 }
 
-/*private*/ bool EditCircuitPaths::checkForSavePath()
+/*private*/ bool EditCircuitPaths::pathIconsEqual(QList<Positionable*>* pathGp1, QList<Positionable*>* pathGp2) {
+    if (pathGp1->size() != pathGp2->size()) {
+        return false;
+    }
+    for (Positionable* pos : *pathGp1) {
+        if (!pathGp2->contains(pos)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/*private*/ QString EditCircuitPaths::checkForSavePath()
 {
  QString name = _pathName->text();
- if (!_pathChange || name.trimmed().length() == 0)
- {
-  return false;
+ QString  sb;// = new StringBuilder();
+ if (_currentPath != nullptr) {
+     QString curName = _currentPath->getName();
+     if (!pathIconsEqual(_pathGroup, _savePathGroup)) {
+         sb.append(tr("The icons that display path \"%1\" are changed.").arg(curName));
+         sb.append("\n");
+     }
+     if (_lengthPanel->isChanged(_currentPath->getLengthMm())) {
+         sb.append(tr("Length of path \"%1\" is changed.").arg(curName));
+         sb.append("\n");
+     }
+     if (name.length() > 0 && name !=(_currentPath->getName())) {
+         sb.append(tr("Path %1 is named \"%2\". Change the name to \"%1\"?").arg(name).arg(curName));
+         sb.append("\n");
+     }
  }
-//        int result = JOptionPane.showConfirmDialog(this, java.text.MessageFormat.format(
-//                        tr("savePath"), _pathName.getText()),
-//                        tr("makePath"), JOptionPane.YES_NO_OPTION,
-//                        JOptionPane.QUESTION_MESSAGE);
-//        if (result==JOptionPane.YES_OPTION) {
-//           	deletePath();
-  if(QMessageBox::question(this, tr("Make Path"), tr("Do you want to save the path \"%1\"?"), QMessageBox::Yes |QMessageBox::No) == QMessageBox::Yes)
-  {
-   addPath();
-   return true;
-  }
-  _pathChange = false;
-  return false;
-
+ return sb;
 }
 /*private*/ /*static*/ bool EditCircuitPaths::pathsEqual(OPath* p1, OPath* p2) {
     Portal* toPortal1 = p1->getToPortal();
@@ -563,6 +562,27 @@ void EditCircuitPaths::on_doneClicked()
     int state = _block->getState() & ~OBlock::ALLOCATED;
     _block->pseudoPropertyChange("state", QVariant(0), QVariant(state));
 }
+
+/*private*/ QString EditCircuitPaths::checkIcons(QString name, QList<Positionable*>* pathGp) {
+    QListIterator<Positionable*> it(*pathGp);
+    bool hasTrack = false;
+    bool hasPortal = false;
+    while (it.hasNext()) {
+        Positionable* pos = it.next();
+        if (qobject_cast<IndicatorTrack*>(pos->self())) {
+            hasTrack = true;
+        } else if (qobject_cast<PortalIcon*>(pos->self())) {
+            hasPortal = true;
+        }
+    }
+    if (!hasTrack) {
+        return tr("Path \"%1\" has no track icons selected. At least one is needed.").arg(name);
+    } else if (!hasPortal) {
+        return tr("Path \"%1\" has no portal icons selected. At least one is needed.").arg(name);
+    }
+    return "";
+}
+
 /**
  * Make the OPath from the icons in the Iterator
  */
@@ -655,7 +675,7 @@ void EditCircuitPaths::on_doneClicked()
 
 /*private*/ void EditCircuitPaths::changePathNameInIcons(QString name, OPath* path) {
     // add or remove path name from IndicatorTrack icons
-    QListIterator<Positionable*> iter(*_parent->getCircuitGroup());
+    QListIterator<Positionable*> iter(*_parent->getCircuitIcons(_homeBlock));
     while (iter.hasNext()) {
         Positionable* pos = iter.next();
         if (_pathGroup->contains(pos)) {
@@ -680,14 +700,16 @@ void EditCircuitPaths::on_doneClicked()
  * Create or update the selected path named in the text field
  * Checks that icons have been selected for the path
  */
-/*private*/ void EditCircuitPaths::addPath()
+/*private*/ void EditCircuitPaths::addNewPath(bool prompt)
 {
  QString name = _pathName->text();
+ if (log->isDebugEnabled()) {
+     log->debug(tr("addPath(%1) for path \"%2\"").arg((prompt?"true":"false")).arg(name));
+ }
  if (name == NULL || name.trimmed().length() == 0)
  {
-//  JOptionPane.showMessageDialog(this, Bundle.getMessage("TooltipPathName"),
-//          Bundle.getMessage("makePath"), JOptionPane.INFORMATION_MESSAGE);
-  QMessageBox::information(this, tr("Make Path"), tr("Enter the name of the path through this track circuit."));
+  JOptionPane::showMessageDialog(this, tr("Enter the name of the path through this track circuit."),
+          tr("Make Path"), JOptionPane::INFORMATION_MESSAGE);
   return;
  }
  OPath* otherPath = _block->getPathByName(name);
@@ -884,7 +906,7 @@ void EditCircuitPaths::on_doneClicked()
  }
  path->setName(name);
 
- QList<Positionable*>* list = _parent->getCircuitGroup();
+ QList<Positionable*>* list = _parent->getCircuitIcons(_homeBlock);
  // cannot do remove/add path on the fly due to conncurrent access with Iterator
  QList<IndicatorTrack*>* changeGroup = new QList<IndicatorTrack*>();
  for (int i=0; i<list->size(); i++)
@@ -917,49 +939,64 @@ void EditCircuitPaths::on_doneClicked()
 }
 
 /*private*/ void EditCircuitPaths::deletePath() {
-    OPath* path = (OPath*)_block->getPaths()->at(_pathList->currentIndex().row());
-    if (path==NULL) {
-        // check that name was typed in and not selected
-        path = _block->getPathByName(_pathName->text());
-    }
-    if (path==NULL) {
-        return;
-    }
-    _pathChange = false;
-    _block->removePath(path);
-    _pathListModel->dataChange();
-    // Get icons for path
-    makePath(path);
-    clearPath();
-}
-
-/*protected*/ void EditCircuitPaths::closingEvent()
-{
- checkForSavePath();
- clearPath();
- _parent->closePathFrame(_block);
-// _loc = getLocation(_loc);
-// _dim = getSize(_dim);
- dispose();
-}
-
-/*private*/ void EditCircuitPaths::clearPath()
-{
- for (int i=0; i<_pathGroup->size(); i++)
- {
-  Positionable* pos = _pathGroup->at(i);
-  //if (pos instanceof PortalIcon)
-  if(qobject_cast<PortalIcon*>((QObject*)pos) != NULL)
-  {
-   ((PortalIcon*)pos)->setStatus(PortalIcon::VISIBLE);
-  }
-  else
-  {
-   ((IndicatorTrack*)pos)->removePath(TEST_PATH);
-  }
+ OPath* path = VPtr<OPath>::asPtr(_pathList->getSelectedValue());
+ if (path == nullptr) {
+     // check that name was typed in and not selected
+     path = _homeBlock->getPathByName(_pathName->text());
  }
- int state = _block->getState() & ~OBlock::ALLOCATED;
- _block->pseudoPropertyChange("state", 0, state);
+ if (path == nullptr) {
+     return;
+ }
+ if (_homeBlock->removeOPath(path)) {
+     clearListSelection();
+     _pathListModel->dataChange();
+ }
+}
+
+/*protected*/ void EditCircuitPaths::closingEvent(bool close) {
+    QString  sb;// = new StringBuilder ();
+    QString msg = checkForSavePath();
+    if(msg.length() > 0) {
+        sb.append(msg);
+        sb.append("\n");
+    }
+    msg = findErrors();
+    if (msg.length() > 0) {
+        sb.append(msg);
+    }
+    if (EditFrame::closingEvent(close, sb)) {
+        _pathName->setText("");
+        clearPath(true);
+        int oldState = _homeBlock->getState();
+        int newState = oldState | OBlock::ALLOCATED;
+        _homeBlock->pseudoPropertyChange("state", oldState, newState);
+        _homeBlock->removePropertyChangeListener((PropertyChangeListener*)_pathListModel);
+    }// else...  Don't clear current selections, if continuing to edit
+}
+
+/*private*/ void EditCircuitPaths::clearPath(bool hidePortals) {
+    if (_pathGroup != nullptr) {
+        log->debug(tr("clearPath deAllocate _pathGroup with %1 icons").arg(_pathGroup->size()));
+        for (Positionable* pos : *_pathGroup) {
+            if (qobject_cast<PortalIcon*>(pos->self())) {
+                PortalIcon* pi = (PortalIcon*) pos;
+                if (hidePortals) {
+                    pi->setStatus(PortalIcon::HIDDEN);
+                } else {
+                    pi->setStatus(PortalIcon::VISIBLE);
+                }
+            } else if (qobject_cast<IndicatorTrack*>(pos->self())) {
+                ((IndicatorTrack*)pos)->removePath(TEST_PATH);
+            }
+        }
+        _pathGroup->clear();
+        int oldState = _homeBlock->getState();
+        int newState = oldState & ~OBlock::ALLOCATED;
+        _homeBlock->pseudoPropertyChange("state", oldState, newState);
+        _currentPath = nullptr;
+    } else {
+        log->debug("clearPath pathGroup null");
+    }
 }
 
 /************** callbacks from main frame *****************/
@@ -972,7 +1009,6 @@ void EditCircuitPaths::on_doneClicked()
 /*protected*/ OBlock* EditCircuitPaths::getBlock() {
     return _block;
 }
-#endif
 
 /*public*/ QString EditCircuitPaths::getClassName()
 {

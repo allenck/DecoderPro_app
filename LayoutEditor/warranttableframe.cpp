@@ -261,7 +261,7 @@
 //     }
 // });
    connect(act, SIGNAL(triggered()), this, SLOT(on_nxButtonClicked()));
- warrantMenu->addAction(WarrantTableAction::makeLogMenu());
+ warrantMenu->addAction(WarrantTableAction::getDefault()->makeLogMenu());
  menuBar->addMenu(warrantMenu);
  setMenuBar(menuBar);
  addHelpMenu("package.jmri.jmrit.logix.WarrantTable", true);
@@ -484,7 +484,7 @@ void WarrantTableFrame::setStatusText(QString msg, QColor c, bool save)
     _status->setForeground(c);
     _status->setText(msg);
     if (save && msg!=NULL && msg.length()>0) {
-        WarrantTableAction::writetoLog(msg);
+        WarrantTableAction::getDefault()->writetoLog(msg);
         _statusHistory.append(msg);
         while (_statusHistory.size()>_maxHistorySize) {
             _statusHistory.removeAt(0);

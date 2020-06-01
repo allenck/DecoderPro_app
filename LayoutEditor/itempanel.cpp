@@ -17,6 +17,8 @@
 #include <QGroupBox>
 #include "portalicon.h"
 #include "jpanel.h"
+#include "familyitempanel.h"
+#include "iconitempanel.h"
 
 //ItemPanel::ItemPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -388,4 +390,15 @@ Logger* log = new Logger("ItemPanel");
     }
 }
 
+/*public*/ QSize ItemPanel::shellDimension(ItemPanel* panel) {
+    if (qobject_cast<FamilyItemPanel*>(panel)) {
+        if (panel->_itemType == ("SignalMast") || panel->_itemType == ("Reporter")) {
+            return QSize(23, 138);
+        }
+        return QSize(23, 122);
+    } else if (qobject_cast<IconItemPanel*>(panel)) {
+        return QSize(23, 106);
+    }
+    return QSize(25, 140);
+}
 /*private*/ /*final*/ /*static*/ Logger* ItemPanel::log = LoggerFactory::getLogger("ItemPanel");

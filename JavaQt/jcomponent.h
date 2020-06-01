@@ -40,6 +40,7 @@ private:
 
  friend class JFrame;
  friend class DiagramComponent;
+ friend class JPanel;
 };
 Q_DECLARE_INTERFACE(JComponent, "JComponent")
 #endif // JCOMPONENT_H

@@ -211,6 +211,7 @@ int _y;
 
 friend class LinkingLabel;
 friend class DragDecoratorLabel;
+friend class ConvertDialog;
 
 class AddIconActionListener : public ActionListener
 {

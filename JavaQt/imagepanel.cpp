@@ -1,7 +1,7 @@
 #include "imagepanel.h"
 #include "loggerfactory.h"
 
-ImagePanel::ImagePanel(QWidget *parent) : QGroupBox(parent)
+ImagePanel::ImagePanel(QWidget *parent) : JPanel(parent)
 {
  back = NULL;
  clip = NULL;

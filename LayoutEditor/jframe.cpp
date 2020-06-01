@@ -221,7 +221,7 @@ void JFrame::dispose()
   log->error(tr("dispose() called but window isn't closing!"));
 }
 
-QWidget* JFrame:: getContentPane(bool addLayout)
+JPanel* JFrame:: getContentPane(bool addLayout)
 {
  if(centralWidget() == nullptr)
  {
@@ -235,7 +235,7 @@ QWidget* JFrame:: getContentPane(bool addLayout)
   }
   setCentralWidget(centralWidget);
  }
- return centralWidget();
+ return (JPanel*)centralWidget();
 }
 
 void JFrame::toFront()

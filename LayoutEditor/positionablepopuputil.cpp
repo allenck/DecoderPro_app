@@ -375,7 +375,7 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
     //if (_textComponent instanceof PositionableJPanel)
     if(qobject_cast<PositionableJPanel*>(_textComponent) != NULL)
     {
-        ((PositionableJPanel*)_textComponent)->setOpaque(_hasBackground);
+        ((Positionable*)_textComponent)->setOpaque(_hasBackground);
     }
     if (!_hasBackground) {
         _parent->setOpaque(false);

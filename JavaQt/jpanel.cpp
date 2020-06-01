@@ -44,15 +44,21 @@ JPanel::JPanel(FlowLayout* layout, QWidget* parent) :  QFrame(parent)
     return;
 
   border = newBorder;
-  if(qobject_cast<TitledBorder*>(border->self()))
+//  if(qobject_cast<TitledBorder*>(border->self()))
+//  {
+//   int left,top, right, bottom;
+//   this->layout()->getContentsMargins(&left,&top, &right, &bottom);
+//   QFont f =font();
+//   QFontMetrics fm(f);
+//   top +=fm.height();
+//    this->layout()->setContentsMargins(left,top, right, bottom);
+//  }
+  if(qobject_cast<AbstractBorder*>(border->self()))
   {
-   int left,top, right, bottom;
-   this->layout()->getContentsMargins(&left,&top, &right, &bottom);
-   QFont f =font();
-   QFontMetrics fm(f);
-   top +=fm.height();
-    this->layout()->setContentsMargins(left,top, right, bottom);
+   // make any ajustment to the layout such as for adding space for a titled border title.
+   qobject_cast<AbstractBorder*>(border->self())->adjustLayout(this->layout());
   }
+  //  {
 //  QLayout* layout = this->layout();
 //  if(layout == nullptr)
 //  {

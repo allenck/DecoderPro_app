@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "logger.h"
 
+class JPanel;
 class JFrame;
 class ItemPanel;
 class JTextField;
@@ -38,7 +39,7 @@ private:
     /*private*/ QWidget*      _blockPathPanel;
     /*private*/ ItemPanel*   _parent;
     /*private*/ QList<QCheckBox*> _pathBoxes;
-    /*private*/ QWidget*      _checkBoxPanel;
+    /*private*/ JPanel*      _checkBoxPanel;
     QWidget* makeSensorPanel(JTextField* field, QString text, QString toolTip);
     Logger * log;
     void openPickList();

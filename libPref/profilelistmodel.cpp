@@ -2,6 +2,7 @@
 #include "profilemanager.h"
 #include "indexedpropertychangeevent.h"
 #include "profile.h"
+#include "vptr.h"
 
 //ProfileListModel::ProfileListModel(QObject *parent) :
 //    AbstractListModel(parent)
@@ -64,14 +65,14 @@
 }
 
 //@Override
-/*public*/ int ProfileListModel::getSize() {
+/*public*/ int ProfileListModel::getSize() const {
     return ProfileManager::defaultManager()->getProfiles().length();
 }
 
 //@Override
-/*public*/ QObject* ProfileListModel::getElementAt(int index)
+/*public*/ QVariant ProfileListModel::getElementAt(int index)
 {
- return ProfileManager::defaultManager()->getProfiles(index);
+ return VPtr<Profile>::asQVariant( ProfileManager::defaultManager()->getProfiles(index));
 }
 
 /*private*/ void ProfileListModel::fireContentsChanged(int index0, int index1) {

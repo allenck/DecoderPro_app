@@ -14,6 +14,7 @@ public:
                          int height);
 
  QWidget* self() {return (QWidget*)this;}
+ void adjustLayout(QLayout *layout);
 
 protected:
  /*protected*/ int left, right, top, bottom;

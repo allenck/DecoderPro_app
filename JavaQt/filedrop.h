@@ -50,6 +50,8 @@ private:
  void common(PrintStream* out, Component* c, Border* dragBorder, bool recursive, Listener* listener);
  /*private*/ static bool supportsDnD();   // Static Boolean
  /*private*/ void makeDropTarget(PrintStream* out, Component* c, bool recursive);
+ Component* c;
+ Border* dragBorder;
 
  /**
   * Discover if the running JVM is modern enough to have drag and drop.

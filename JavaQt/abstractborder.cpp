@@ -175,9 +175,3 @@ static bool isLeftToRight( Component c ) {
     return c.getComponentOrientation().isLeftToRight();
 }
 #endif
-void AbstractBorder::paintEvent(QPaintEvent *event)
-{
- QPainter* g = (QPainter*)this;
- QRect r = event->rect();
- //paintBorder(this, g, r.x(), r.y(), r.width(), r.height());
-}

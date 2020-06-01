@@ -405,7 +405,7 @@ QRectF PositionableJPanel::getBounds(QRectF r)
   return QRectF(getX(), getY(), /*getWidth()*/_itemGroup->boundingRect().width(), /*getHeight()*/_itemGroup->boundingRect().height());
     //return QRectF(getX(), getY(), _itemGroup->boundingRect().width(), _itemGroup->boundingRect().height());
 
- r.setCoords(getX(), getY(), getWidth(), getHeight());
+ r.setCoords(getX(), getY(), ((JComponent*)this)->getWidth(), ((JComponent*)this)->getHeight());
  return r;
 }
 

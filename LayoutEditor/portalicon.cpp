@@ -128,7 +128,7 @@
 /* currently Portals do not have an instance manager - !!!todo? */
 /*public*/ NamedBean* PortalIcon::getNamedBean()
 {
-    return getPortal();
+    return (NamedBean*)getPortal();
 }
 
 /*public*/ void PortalIcon::displayState(int state) {
@@ -167,6 +167,8 @@
     //if (source instanceof Portal) {
     if(qobject_cast<PortalIcon*>(source) != NULL)
     {
+     QString propertyName = e->getPropertyName();
+
         if ("Direction"==(e->getPropertyName())) {
             if (_hide) {
                 setStatus(HIDDEN);
@@ -183,13 +185,14 @@
                     setStatus(FROM_ARROW);
                     break;
             }
-        } else if ("UserName"==(e->getPropertyName())) {
-         setName( e->getNewValue().toString());
-            ((ControlPanelEditor*) getEditor())->getCircuitBuilder()->changePortalName(
-                     e->getOldValue().toString(),  e->getNewValue().toString());
-        }
+        } else if ("NameChange" == (propertyName)) {
+                        setName((QString) e->getNewValue().toString());
+                    } else if ("portalDelete" == (propertyName)) {
+                        remove();
+                    }
     }
 }
+
 /*public*/ QString PortalIcon::getNameString() {
     return _portal->getDescription();
 }

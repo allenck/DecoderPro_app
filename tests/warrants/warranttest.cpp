@@ -250,17 +250,17 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
         bSouth = _OBlockMgr->createNewOBlock("OB4", "South");
 
         _portalMgr = (PortalManager*)InstanceManager::getDefault("PortalManager");
-        Portal* pNorthWest = _portalMgr->createNewPortal(nullptr, "NorthWest");
+        Portal* pNorthWest = _portalMgr->createNewPortal("NorthWest");
         pNorthWest->setToBlock(bWest, false);
         pNorthWest->setFromBlock(bNorth, false);
-        Portal* pSouthWest = _portalMgr->createNewPortal(nullptr, "SouthWest");
+        Portal* pSouthWest = _portalMgr->createNewPortal("SouthWest");
         pSouthWest->setToBlock(bWest, false);
         pSouthWest->setFromBlock(bSouth, false);
 
-        Portal* pNorthEast = _portalMgr->createNewPortal(nullptr, "NorthEast");
+        Portal* pNorthEast = _portalMgr->createNewPortal("NorthEast");
         pNorthEast->setToBlock(_OBlockMgr->getOBlock("OB2"), false);
         pNorthEast->setFromBlock(_OBlockMgr->getOBlock("North"), false);
-        Portal* pSouthEast = _portalMgr->createNewPortal(nullptr, "SouthEast");
+        Portal* pSouthEast = _portalMgr->createNewPortal("SouthEast");
         OBlock* east = _OBlockMgr->getOBlock("OB2");
         pSouthEast->setToBlock(east, false);
         pSouthEast->setFromBlock(_OBlockMgr->getOBlock("South"), false);

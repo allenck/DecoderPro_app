@@ -7,6 +7,9 @@
 #include "portal.h"
 #include <QColor>
 #include "sensor.h"
+#include "warrantmanager.h"
+#include "opath.h"
+#include "vptr.h"
 
 //OBlock::OBlock(QObject *parent) :
 //    Block(parent)
@@ -743,7 +746,7 @@ return _statusNameMap.value(str);
    }
    if (path->getFromPortal()==NULL && path->getToPortal()==NULL)
    {
-    removePath(path);
+    removeOPath(path);
     if (log->isDebugEnabled()) log->debug("removed Path "+
                               path->getName()+" in block "+getSystemName());
    }
@@ -844,22 +847,29 @@ return _statusNameMap.value(str);
  return true;
 }
 
-/*public*/ void OBlock::removePath(Path* path)
+/*public*/ bool OBlock::removeOPath(OPath* path)
 {
- if (getSystemName()!=(path->getBlock()->getSystemName()))
- {
-  return;
+ Block* block = path->getBlock();
+ if (block != nullptr && (getSystemName() != block->getSystemName())) {
+     return false;
  }
-//        if (log->isDebugEnabled()) log->debug("Path "+((OPath)path).getName()+" removed from "+getSystemName());
+ if (!((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->okToRemoveBlockPath(this, path)) {
+     return false;
+ }
  path->clearSettings();
- int oldSize = getPaths()->size();
  Block::removePath(path);
- //if (path instanceof OPath)
- if(qobject_cast<OPath*>(path)!= NULL)
- {
-     ((OPath*)path)->dispose();
+ // remove path from its portals
+ Portal* portal = path->getToPortal();
+ if (portal != nullptr) {
+     portal->removePath(path);
  }
- firePropertyChange("pathCount", QVariant(oldSize), QVariant(getPaths()->size()));
+ portal = path->getFromPortal();
+ if (portal != nullptr) {
+     portal->removePath(path);
+ }
+ path->dispose();
+ firePropertyChange("pathCount", VPtr<OPath>::asQVariant(path), getPaths()->size());
+ return true;
 }
 
 /**
@@ -984,7 +994,7 @@ return _statusNameMap.value(str);
     }
     QVector <Path*>* pathList = getPaths();
     for (int i=0; i<pathList->size(); i++) {
-        removePath(pathList->at(i));
+        removeOPath((OPath*)pathList->at(i));
     }
     //InstanceManager::oBlockManagerInstance().deregister(this);
     Block::dispose();

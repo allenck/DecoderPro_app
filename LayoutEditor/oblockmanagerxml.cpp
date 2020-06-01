@@ -101,7 +101,6 @@ OBlockManagerXml::OBlockManagerXml(QObject *parent) :
 QDomElement OBlockManagerXml::storePortal(Portal* portal)
 {
  QDomElement elem = doc.createElement("portal");
- elem.setAttribute("systemName", portal->getSystemName());
  elem.setAttribute("portalName", portal->getName());
  OBlock* block = portal->getFromBlock();
  if (block!=NULL)
@@ -220,19 +219,19 @@ OBlock* OBlockManagerXml::getBlock(QString sysName)
  return block;
 }
 
-Portal* OBlockManagerXml::getPortal(QString name)
-{
- Portal* portal = _portalMgr->providePortal(name);
- if (portal == NULL)
- {
-  portal = _portalMgr->createNewPortal(NULL, name);
-  if (log->isDebugEnabled())
-  {
-   log->debug("create Portal: (" + portal->getSystemName() + ", " + name + ")");
-  }
- }
- return portal;
-}
+//Portal* OBlockManagerXml::getPortal(QString name)
+//{
+// Portal* portal = _portalMgr->providePortal(name);
+// if (portal == NULL)
+// {
+//  portal = _portalMgr->createNewPortal(NULL, name);
+//  if (log->isDebugEnabled())
+//  {
+//   log->debug("create Portal: (" + portal->getSystemName() + ", " + name + ")");
+//  }
+// }
+// return portal;
+//}
 
 OPath* OBlockManagerXml::getPath(OBlock* block, QString name)
 {
@@ -437,7 +436,8 @@ Portal* OBlockManagerXml::loadPortal(QDomElement elem)
  }
  if (log->isDebugEnabled())
  {
-  log->debug("create Portal: (" + portal->getSystemName() + ", " + portal->getUserName() + ")");
+  log->debug(tr("create Portal: (%1)").arg(userName));
+
  }
 
  OBlock* fromBlock = NULL;
@@ -599,15 +599,21 @@ OPath* OBlockManagerXml::loadPath(QDomElement elem, OBlock* block)
   }
  }
  attr = elem.attribute("fromPortal");
- if (attr != NULL)
- {
-  path->setFromPortal(getPortal(attr));
- }
- attr = elem.attribute("toPortal");
- if (attr != NULL)
- {
-  path->setToPortal(getPortal(attr));
- }
+ if (attr != "") {
+    Portal* portal = _portalMgr->providePortal(attr);
+    if (portal != nullptr) {
+        path->setFromPortal(portal);
+        portal->addPath(path);
+    }
+  }
+  attr = elem.attribute("toPortal");
+  if (attr != "") {
+    Portal* portal = _portalMgr->providePortal(attr);
+    if (portal != nullptr) {
+        path->setToPortal(portal);
+        portal->addPath(path);
+    }
+}
 
  QDomNodeList settings = elem.elementsByTagName("setting");
  if (log->isDebugEnabled()) log->debug("Path ("+pName+") has "+QString::number(settings.size())+" settings.");

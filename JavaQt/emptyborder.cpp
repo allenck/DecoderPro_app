@@ -1,4 +1,5 @@
 #include "emptyborder.h"
+#include <QLayout>
 
 //EmptyBorder::EmptyBorder()
 //{
@@ -88,3 +89,17 @@
 /*public*/ void EmptyBorder::paintBorder(QWidget* c, QPainter*  g, int x, int y, int width,
                         int height)
 {}
+
+/*public*/ void EmptyBorder::adjustLayout(QLayout *layout)
+{
+ // called by JPanel::setBorder
+ int left,top, right, bottom;
+
+ layout->getContentsMargins(&left,&top, &right, &bottom);
+ left+= this->left;
+ right += this->right;
+ top += this->top;
+ bottom += this->bottom;
+ layout->setContentsMargins(left,top, right, bottom);
+
+}

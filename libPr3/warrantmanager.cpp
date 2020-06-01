@@ -7,6 +7,11 @@
 #include "warrantshutdowntask.h"
 #include "loggerfactory.h"
 #include "scwarrant.h"
+#include "oblock.h"
+#include "portal.h"
+#include "joptionpane.h"
+#include "blockorder.h"
+#include "opath.h"
 
 WarrantManager::WarrantManager(QObject *parent) :
     AbstractManager(parent)
@@ -126,12 +131,234 @@ WarrantManager::WarrantManager(QObject *parent) :
     return w;
 }
 
-/*static*/ WarrantManager* WarrantManager::_instance = NULL;
-/*static*/ /*public*/ WarrantManager* WarrantManager::instance() {
-    if (_instance == NULL) {
-        _instance = new WarrantManager();
+/*protected*/ bool WarrantManager::okToRemoveBlock(OBlock* block) {
+    QString name = block->getDisplayName();
+    QList<Warrant*> list = warrantsUsing(block);
+    bool ok = true;
+    if (!list.isEmpty()) {
+//            ok = false;   Last setting was OK = true when _suppressWarnings was set to true
+        if (!_suppressWarnings) {
+            QString sb;// = new StringBuilder();
+            for (Warrant* w : list) {
+                sb.append(tr("Deleting block \"%1\" will disable warrant%2\{1}\".").arg(name).arg(w->getDisplayName()));
+            }
+            sb.append(tr("Do you want to delete \"%1\" and remove these disabled warrants?").arg(name));
+            ok = okToRemove(name, sb);
+        }
     }
-    return (_instance);
+    if (ok) {
+        removeWarrants(list);
+    }
+    return ok;
+}
+
+/*protected*/ bool WarrantManager::okToRemovePortal(Portal* portal) {
+    QString name = portal->getName();
+    bool ok = true;
+    QList<Warrant*> wList = warrantsUsing(portal);
+    if (!wList.isEmpty()) {
+//          ok = false;   Last setting was OK = true when _suppressWarnings was set to true
+        if (!_suppressWarnings) {
+            QString sb;// = new StringBuilder();
+            for (Warrant* w : wList) {
+                sb.append(tr("Deleting portal \"%1\" will disable warrant \"%2\".").arg(name).arg(w->getDisplayName()));
+             }
+            sb.append(tr("Do you want to delete \"%1\" and remove these disabled warrants?").arg(name));
+            ok = okToRemove(name, sb);
+        }
+    }
+    QList<NamedBean*> sList = signalsUsing(portal);
+    if (!sList.isEmpty()) {
+//          ok = false;   Last setting was OK = true when _suppressWarnings was set to true
+        if (!_suppressWarnings) {
+            QString sb;// = new StringBuilder();
+            for (NamedBean* s : sList) {
+                sb.append(tr("If portal \"%1\" is deleted, signal \"%2\" cannot protect block \"%3\".").arg(
+                        name).arg(s->getDisplayName()).arg(portal->getProtectedBlock(s)->getDescription()));
+             }
+            sb.append(tr("Do you want to delete \"%1\"and undo configuration of these signals?").arg(name));
+            ok = okToRemove(name, sb);
+        }
+    }
+
+    if (ok) {
+        removeWarrants(wList);
+        for (NamedBean* s : sList) {
+            portal->deleteSignal(s);
+        }
+    }
+    return ok;
+}
+
+/*protected*/ bool WarrantManager::okToRemoveBlockPath(OBlock* block, OPath* path) {
+    QString pathName = path->getName();
+    QString blockName = block->getDisplayName();
+    bool ok = true;
+    QList<Warrant*> list = warrantsUsing(block, path);
+    if (!list.isEmpty()) {
+//          ok = false;   Last setting was OK = true when _suppressWarnings was set to true
+        if (!_suppressWarnings) {
+            QString sb;// = new StringBuilder();
+            for (Warrant* w : list) {
+                sb.append(tr("Deleting path \"%1\" in block \"%2\" will disable warrant \"{%3\".").arg(
+                        pathName).arg(blockName).arg(w->getDisplayName()));
+             }
+            sb.append(tr("Do you want to delete \"%1\" and remove these disabled warrants?").arg(pathName));
+            ok = okToRemove(pathName, sb);
+        }
+    }
+    if (ok) {
+        removeWarrants(list);
+    }
+    return ok;
+}
+
+/*private*/ void WarrantManager::removeWarrants(QList<Warrant*> list) {
+    for (Warrant* w : list) {
+        if (w->getRunMode() != Warrant::MODE_NONE) {
+            w->controlRunTrain(Warrant::ABORT);
+        }
+        deregister(w);
+        w->dispose();
+    }
+}
+
+/*private*/ bool WarrantManager::okToRemove(QString name, QString message) {
+//    if (!ThreadingUtil.isLayoutThread()) {  //need GUI
+//        log.warn("Cannot delete portal \"{}\" from this thread", name);
+//        return false;
+//    }
+ QVariantList object = {tr("Yes"), tr("YesPlus"), tr("no")};
+    int val = JOptionPane::showOptionDialog(nullptr, message,
+            tr("Warning"), JOptionPane::YES_NO_CANCEL_OPTION,
+            JOptionPane::QUESTION_MESSAGE, QIcon(),
+            object,
+            QVariant("No")); // default NO
+    if (val == 2) {
+        return false;
+    }
+    if (val == 1) { // suppress future warnings
+        _suppressWarnings = true;
+    }
+    return true;
+}
+/*synchronized*/ /*protected*/ void WarrantManager::portalNameChange(QString oldName, QString newName) {
+    for (NamedBean* nb : getNamedBeanSet()) {
+     Warrant* w = (Warrant*)nb;
+        QList<BlockOrder*>* orders = w->getBlockOrders();
+        QListIterator<BlockOrder*> it(*orders);
+        while (it.hasNext()) {
+            BlockOrder* bo = it.next();
+            if (oldName == (bo->getEntryName())) {
+                bo->setEntryName(newName);
+            }
+            if (oldName == (bo->getExitName())) {
+                bo->setExitName(newName);
+            }
+        }
+    }
+}
+
+/*protected*/ QList<Warrant*> WarrantManager::warrantsUsing(OBlock* block) {
+    QList<Warrant*> list = QList<Warrant*>();
+    for (NamedBean* nb : getNamedBeanSet()) {
+     Warrant* w = (Warrant*)nb;
+        QList<BlockOrder*>* orders = w->getBlockOrders();
+        QListIterator<BlockOrder*> it(*orders);
+        while (it.hasNext()) {
+            if (block->equals(it.next()->getBlock()))
+                list.append(w);
+        }
+    }
+    return list;
+}
+
+/*protected*/QList<Warrant*> WarrantManager::warrantsUsing(Portal* portal) {
+    QList<Warrant*> list = QList<Warrant*>();
+    QString name = portal->getName();
+    for (NamedBean* nb : getNamedBeanSet()) {
+     Warrant* w = (Warrant*)nb;
+        QList<BlockOrder*>* orders = w->getBlockOrders();
+        QListIterator<BlockOrder*> it(*orders);
+        while (it.hasNext()) {
+            BlockOrder* bo = it.next();
+            if (name == (bo->getEntryName()) && !list.contains(w)) {
+                list.append(w);
+            } else if (name == (bo->getExitName()) && !list.contains(w)) {
+                list.append(w);
+            }
+        }
+    }
+    return list;
+}
+
+/*protected*/ QList<NamedBean*> WarrantManager::signalsUsing(Portal* portal) {
+    QList<NamedBean*> list = QList<NamedBean*>();
+    NamedBean* signal = portal->getToSignal();
+    if (signal != nullptr) {
+        list.append(signal);
+    }
+    signal = portal->getFromSignal();
+    if (signal != nullptr) {
+        list.append(signal);
+    }
+    return list;
+}
+
+/*protected*/ QList<Warrant*> WarrantManager::warrantsUsing(OBlock* block, OPath* path) {
+    QList<Warrant*> list = QList<Warrant*>();
+    QString name = path->getName();
+    for (NamedBean* nb : getNamedBeanSet()) {
+     Warrant* w = (Warrant*)nb;
+        QList<BlockOrder*>* orders = w->getBlockOrders();
+        QListIterator<BlockOrder*> it(*orders);
+        while (it.hasNext()) {
+            BlockOrder* bo = it.next();
+            if (block->equals(bo->getBlock()) && name == (bo->getPathName())) {
+                list.append(w);
+            }
+        }
+    }
+    return list;
+}
+/*synchronized*/ /*protected*/ void WarrantManager::pathNameChange(OBlock* block, QString oldName, QString newName) {
+ for (NamedBean* nb : getNamedBeanSet()) {
+  Warrant* w = (Warrant*)nb;
+        QList<BlockOrder*>* orders = w->getBlockOrders();
+        QListIterator<BlockOrder*> it(*orders);
+        while (it.hasNext()) {
+            BlockOrder* bo = it.next();
+            if (bo->getBlock()->equals(block) && bo->getPathName()==(oldName)) {
+                bo->setPathName(newName);
+            }
+        }
+    }
+}
+
+/**
+ * Get the default WarrantManager.
+ *
+ * @return the default WarrantManager, creating it if necessary
+ */
+/*public*/ /*static*/ WarrantManager* WarrantManager::getDefault() {
+     WarrantManager* result = (WarrantManager*)InstanceManager::getOptionalDefault("WarrantManager");//.orElseGet(() -> {
+     if(!result)
+        return (WarrantManager*)InstanceManager::setDefault("WarrantManager", new WarrantManager());
+    else
+        return result;
+}
+
+//@Override
+//@Nonnull
+/*public*/ QString WarrantManager::getBeanTypeHandled(bool plural) {
+    return tr(plural ? "Warrants" : "Warrant");
+}
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString WarrantManager::getNamedBeanClass() {
+    return "Warrant";
 }
 
 /*protected*/ void WarrantManager::setSpeedProfiles(QString id, RosterSpeedProfile* merge, RosterSpeedProfile* session) {

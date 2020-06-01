@@ -6,7 +6,9 @@
 #include <QItemEditorFactory>
 #include <QComboBox>
 #include "libtables_global.h"
+#include "pathturnouttablemodel.h"
 
+class PathTurnoutFrame;
 class InternalFrameEvent;
 class OBlock;
 class BlockPathTableModel;
@@ -44,6 +46,8 @@ signals:
 public slots:
 private:
  static int ROW_HEIGHT;
+ /*private*/ static QString oblockPrefix;
+
  void common();
  QMdiArea* mdiArea;
  JTable* _oBlockTable;
@@ -73,7 +77,7 @@ private:
  Logger* log;
  QSignalMapper* warningMapper;
  void showPopup(QMouseEvent* me);
- /*private*/ void errorCheck();
+ // /*private*/ void errorCheck();
  static /*private*/ void setActionMappings(JTable* table);
 
 private slots:
@@ -99,7 +103,10 @@ protected:
  /*protected*/ JInternalFrame* makeSignalFrame();
  /*protected*/ BlockPathFrame* makeBlockPathFrame(OBlock* block);
  /*protected*/ void openPathTurnoutFrame(QString pathTurnoutName);
- /*protected*/ JInternalFrame* makePathTurnoutFrame(OBlock* block, QString pathName);
+ ///*protected*/ JInternalFrame* makePathTurnoutFrame(OBlock* block, QString pathName);
+ /*protected*/ PathTurnoutFrame* makePathTurnoutFrame(OBlock* block, QString pathName);
+ /*protected*/ void disposeBlockPathFrame(OBlock* block);
+
 
 friend class OBlockTableModel;
 friend class BlockPathTableModel;
@@ -178,4 +185,31 @@ void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex 
 
 };
 
+/**
+ * ********************* PathTurnoutFrame *****************************
+ */
+/*protected*/ /*static*/ class PathTurnoutFrame : public JInternalFrame {
+ Q_OBJECT
+    /**
+     *
+     */
+    PathTurnoutTableModel* pathTurnoutModel;
+public:
+
+    PathTurnoutFrame(QString title, bool resizable, bool closable,
+            bool maximizable, bool iconifiable)
+     :         JInternalFrame(title, resizable, closable, maximizable, iconifiable)
+
+    {
+        //super(title, resizable, closable, maximizable, iconifiable);
+    }
+
+    void init(OPath* path) {
+        pathTurnoutModel = new PathTurnoutTableModel(path, this);
+    }
+
+    PathTurnoutTableModel* getModel() {
+        return pathTurnoutModel;
+    }
+};
 #endif // TABLEFRAMES_H

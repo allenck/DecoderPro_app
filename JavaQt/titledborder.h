@@ -124,6 +124,8 @@ protected:
  /*protected*/ QFont *getFont(QWidget* c);
 #endif
 
+ /*protected*/ void adjustLayout(QLayout *layout) override;
+
 };
 
 #endif // TITLEDBORDER_H

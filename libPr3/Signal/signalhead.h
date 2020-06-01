@@ -99,10 +99,15 @@ public:
       };
       Q_ENUM(eState)
 
-        /**
-         * Appearance is a bound parameter.
-         */
-        virtual int  getAppearance() {return 0;}
+      /**
+       * Get the Signal Head Appearance.
+       * Changes in this value can be listened to using the
+       * {@literal Appearance} property.
+       *
+       * @return the appearance
+       */
+      /*public*/virtual int getAppearance() =0;
+
 
       /**
        * Set the Signal Head Appearance.

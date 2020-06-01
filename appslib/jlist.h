@@ -4,6 +4,7 @@
 #include <QListView>
 #include "javaqt_global.h"
 #include "abstracttablemodel.h"
+#include "listselectionlistener.h"
 
 class JAVAQTSHARED_EXPORT JList : public QListView
 {
@@ -18,9 +19,13 @@ public:
  /*public*/ QVariant getSelectedValue();
  /*public*/ void setSelectedIndex(int index);
  /*public*/ void ensureIndexIsVisible(int index);
+ /*public*/ void addListSelectionListener(ListSelectionListener*l);
+ /*public*/ void setVisibleRowCount(int count);
 
 private:
  void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+ /*private*/ int visibleRowCount;
+
 };
 #if 0
 class JAVAQTSHARED_EXPORT JListTableModel : public AbstractTableModel

@@ -60,6 +60,7 @@ friend class NXFrame;
 friend class Calibrater;
 friend class SpeedUtil;
 friend class SCWarrant;
+friend class WarrantManager;
 };
 
 #endif // BLOCKORDER_H

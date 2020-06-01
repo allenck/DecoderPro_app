@@ -47,6 +47,7 @@ public:
     static QString redX;// = "resources/icons/misc/X-red.gif";
     virtual /*public*/ bool oktoUpdate();
     QVBoxLayout* thisLayout;
+    /*public*/ QSize shellDimension(ItemPanel* panel);
 
 signals:
 

@@ -37,6 +37,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QPointF>
+#include "borderfactory.h"
+#include "compoundborder.h"
 
 //DecoratorPanel::DecoratorPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -75,8 +77,8 @@
   _previewPanel = new ImagePanel();
   QVBoxLayout* _previewPanelLayout;
   _previewPanel->setLayout(_previewPanelLayout = new QVBoxLayout()); //new BorderLayout());
-//  _previewPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 1),
-//          Bundle.getMessage("PreviewBorderTitle")));
+  _previewPanel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black, 1),
+          tr("Preview")));
   
   _previewPanelLayout->addWidget(Box::createVerticalStrut(STRUT), 0, Qt::AlignTop);//BorderLayout.PAGE_START);
   _previewPanelLayout->addWidget(Box::createVerticalStrut(STRUT), 0, Qt::AlignBottom);//, BorderLayout.PAGE_END);
@@ -428,25 +430,25 @@ void DecoratorPanel::AJRadioButton_toggled(bool b)
 }
 
 /*private*/ QWidget* DecoratorPanel::makeTextPanel(QString state, JLabel* sample, bool addTextField) {
-    QGroupBox* panel = new QGroupBox();
+    JPanel* panel = new JPanel();
     // use NamedBeanBundle property for basic beans like "Turnout" I18N
     if ("Active" == (state)) {
         bundleCaption = tr("Active"); // "SensorStateActive"
     } else if ("InActive" == (state)) {
-        bundleCaption = "Inactive"; // "SensorStateInactive"
+        bundleCaption = tr("Inactive"); // "SensorStateInactive"
     } else if ("Unknown" == (state)) {
-        bundleCaption = "Unknown"; // "BeanStateUnknown"
+        bundleCaption = tr("Unknown"); // "BeanStateUnknown"
     } else if ("Inconsistent" == (state)) {
-        bundleCaption = "Inconsistent"; // "BeanStateInconsistent"
+        bundleCaption = tr("Inconsistent"); // "BeanStateInconsistent"
     } else {
         //bundleCaption = state;
      if(state == "Text")
-      bundleCaption = "Text Decoration";
+      bundleCaption = tr("Text Decoration");
      else
       bundleCaption = state;
     }
-    //panel.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage(bundleCaption)));
-    panel->setTitle(bundleCaption);
+    panel->setBorder(BorderFactory::createTitledBorder((bundleCaption)));
+    //panel->setTitle(bundleCaption);
     panel->setLayout(new QVBoxLayout()); //panel, BoxLayout.Y_AXIS));
     QWidget* p = new QWidget();
     p->setLayout(new FlowLayout());
@@ -740,10 +742,10 @@ void DecoratorPanel::mappedButton(QWidget* b)
  PositionablePopupUtil* util = getPositionablePopupUtil();
  int mar = util->getMargin();
  int bor = util->getBorderSize();
-#if 0
-    Border outlineBorder;
+#if 1
+    Border* outlineBorder;
     if (bor==0) {
-        outlineBorder = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+        outlineBorder = BorderFactory::createEmptyBorder(0, 0, 0, 0);
     }else {
         outlineBorder = new LineBorder(util->getBorderColor(), bor);
     }
@@ -756,14 +758,14 @@ void DecoratorPanel::mappedButton(QWidget* b)
   PositionableLabel* sam = it.next();
   sam->setOpaque(_isOpaque);
   sam->setFont(font);
-#if 0
-        Border borderMargin;
+#if 1
+        Border* borderMargin;
         if (_isOpaque){
             borderMargin = new LineBorder(sam->getBackground(),mar);
         } else{
-            borderMargin = BorderFactory.createEmptyBorder(mar, mar, mar, mar);
+            borderMargin = BorderFactory::createEmptyBorder(mar, mar, mar, mar);
         }
-        sam->setBorder(new CompoundBorder(outlineBorder, borderMargin));
+        ((Positionable*)sam)->setBorder(new CompoundBorder(outlineBorder, borderMargin));
 #endif
   if(bor > 0)
   {

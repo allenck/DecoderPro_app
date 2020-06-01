@@ -2712,7 +2712,6 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -3115,7 +3114,6 @@ virtual void focusInEvent(QFocusEvent*  event);
 virtual bool  focusNextPrevChild(bool  next);
 virtual void focusOutEvent(QFocusEvent*  event);
 virtual QString  getClassName();
-virtual QWidget*  getContentPane(bool  addLayout);
 virtual QVariant  getProperty(QString  key);
 virtual QString  getTitle();
 virtual void handleModified();
@@ -3202,7 +3200,7 @@ inline void promoted_makeEditMenu() { this->makeEditMenu(); }
 inline void promoted_makeIconMenu() { this->makeIconMenu(); }
 inline void promoted_makeMarkerMenu() { this->makeMarkerMenu(); }
 inline void promoted_makeOptionMenu() { this->makeOptionMenu(); }
-inline void promoted_makeWarrantMenu(bool  arg__1) { this->makeWarrantMenu(arg__1); }
+inline void promoted_makeWarrantMenu(bool  arg__1, bool  arg__2) { this->makeWarrantMenu(arg__1, arg__2); }
 inline void promoted_makeZoomMenu() { this->makeZoomMenu(); }
 inline void promoted_paintTargetPanel(QGraphicsScene*  g) { this->paintTargetPanel(g); }
 inline void promoted_setSecondSelectionGroup(QList<Positionable* >*  list) { this->setSecondSelectionGroup(list); }
@@ -3261,7 +3259,7 @@ void delete_ControlPanelEditor(ControlPanelEditor* obj) { delete obj; }
    void makeIconMenu(ControlPanelEditor* theWrappedObject);
    void makeMarkerMenu(ControlPanelEditor* theWrappedObject);
    void makeOptionMenu(ControlPanelEditor* theWrappedObject);
-   void makeWarrantMenu(ControlPanelEditor* theWrappedObject, bool  arg__1);
+   void makeWarrantMenu(ControlPanelEditor* theWrappedObject, bool  arg__1, bool  arg__2);
    void makeZoomMenu(ControlPanelEditor* theWrappedObject);
    void py_q_mouseClicked(ControlPanelEditor* theWrappedObject, QGraphicsSceneMouseEvent*  event){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_mouseClicked(event));}
    void py_q_mouseDragged(ControlPanelEditor* theWrappedObject, QGraphicsSceneMouseEvent*  event){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_mouseDragged(event));}

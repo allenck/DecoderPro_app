@@ -24,7 +24,8 @@ public:
     /*public*/ virtual QMap<QString, NamedIcon *> *getIconMap();
     /*public*/ QString getFamilyName();
     virtual /*public*/ void updateFamilyIcons();
-
+    /*public*/ JPanel* getBottomPanel() ;
+    /*public*/ QPushButton* getUpdateButton();
 signals:
 
 public slots:
@@ -47,7 +48,7 @@ private:
     /*private*/ QString findFamilyOfMap(QMap<QString, NamedIcon*>* iconMap, QMap<QString, QMap<QString, NamedIcon*>*>* families);
     /*private*/ void addShowButtonToBottom();
     /*private*/ void addFamilyButtonListener (QRadioButton* button, QString family);
-    QString     gbStyleSheet;
+    //QString     gbStyleSheet;
 
 private slots:
     /*private*/ QWidget* makeCreateNewFamilyPanel();

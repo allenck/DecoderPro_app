@@ -1,10 +1,10 @@
 #ifndef DRAGJCOMPONENT_H
 #define DRAGJCOMPONENT_H
 
-#include <QGroupBox>
+#include "jpanel.h"
 
 class DataFlavor;
-class DragJComponent : public QGroupBox
+class DragJComponent : public JPanel
 {
     Q_OBJECT
 public:

@@ -44,7 +44,7 @@ private:
     OBlockManager* _manager;
     PortalManager* _portalMgr;
     Logger* log;
-    Portal* getPortal(QString name);
+//    Portal* getPortal(QString name);
     void loadBlock(QDomElement elem);
 
 };

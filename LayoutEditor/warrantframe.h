@@ -34,6 +34,7 @@ public:
     /*public*/ WarrantFrame(QString warrantName, QWidget *parent = 0);
     /*public*/ WarrantFrame(Warrant* warrant, bool create, QWidget *parent = 0);
     /*public*/ QString getClassName();
+    /*public*/ bool isRunning();
 
 signals:
 

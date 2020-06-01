@@ -3,10 +3,12 @@
 #include <QFrame>
 #include "border.h"
 #include "flowlayout.h"
+#include "jcomponent.h"
 
-class JPanel : public QFrame
+class JPanel : public QFrame, public JComponent
 {
  Q_OBJECT
+ Q_INTERFACES(JComponent)
 public:
  JPanel(QWidget* parent = nullptr);
  JPanel(QLayout* layout, QWidget* parent=nullptr);
@@ -21,6 +23,11 @@ public:
 
 // void paintEvent(QPaintEvent*);
 // void virtual paintComponent(QPainter*);
+ /*public*/ bool isOpaque(){return _opaque;}
+ /*public*/ void setOpaque(bool b){_opaque = b;}
+ /*public*/ QFont getFont() {return QFrame::font();}
+ /*public*/ void setFont(QFont f) {QFrame::setFont(f);}
+ /*public*/ QObject* jself() {return (QObject*)this;}
 
 private:
  Border* border = nullptr;

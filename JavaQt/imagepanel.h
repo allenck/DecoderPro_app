@@ -4,10 +4,10 @@
 #include <QFrame>
 #include "bufferedimage.h"
 #include <QPainter>
-#include <QGroupBox>
+#include "jpanel.h"
 
 class Logger;
-class ImagePanel : public QGroupBox
+class ImagePanel : public JPanel
 {
  Q_OBJECT
 public:

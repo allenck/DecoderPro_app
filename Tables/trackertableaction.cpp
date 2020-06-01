@@ -741,7 +741,7 @@ void TableFrame::openPickList() {
 /*private*/ void TableFrame::setStatus(QString msg) {
     _status->setText(msg);
     if (msg != NULL && msg.length() > 0) {
-        WarrantTableAction::writetoLog(msg);
+        WarrantTableAction::getDefault()->writetoLog(msg);
         _statusHistory.append(msg);
         while (_statusHistory.size() > _maxHistorySize) {
             _statusHistory.removeAt(0);

@@ -28,6 +28,20 @@
 #include "instancemanager.h"
 #include "inputdialog.h"
 #include <QComboBox>
+#include "loggerfactory.h"
+#include "defaultlistselectionmodel.h"
+#include "borderfactory.h"
+#include "editframe.h"
+#include "joptionpane.h"
+#include "placewindow.h"
+#include "gridbagconstraints.h"
+#include "gridbaglayout.h"
+#include "helputil.h"
+#include "editsignalframe.h"
+#include "convertdialog.h"
+#include "portalmanager.h"
+#include "portal.h"
+#include "warranttableaction.h"
 
 //CircuitBuilder::CircuitBuilder(QObject *parent) :
 //    QObject(parent)
@@ -63,6 +77,8 @@
     log = new Logger("CircuitBuilder");
  common();
  _editor = ed;
+ _oblockModel = PickListModel::oBlockPickModelInstance();
+ _blockTable = _oblockModel->makePickTable();
 }
 
 void CircuitBuilder::common()
@@ -72,7 +88,6 @@ void CircuitBuilder::common()
  _sysNameBox = new JTextField();
  _userNameBox = new JTextField();
  _portalIcons = new QList<PortalIcon*>();
- hasOBlocks = false;
  _editPathsFrame = NULL;
  _editCircuitFrame = NULL;
  _editPortalFrame = NULL;
@@ -86,10 +101,6 @@ void CircuitBuilder::common()
  _unconvertedTrack =  QList<Positionable*>();
 // list of OBlocks whose icons need converting
  _convertBlock = new QList<OBlock*>();
- // map of Portals without PortalIcons or misplaced icons
- _badPortalIcon = QMap<QString, Portal*>();
- // map of PortalIcons by portal name
- _portalIconMap = QHash<QString, PortalIcon*>();
  _sysNameBox = new JTextField();
  _userNameBox = new JTextField();
 }
@@ -102,23 +113,89 @@ CircuitBuilder::~CircuitBuilder()
 
 /*protected*/ QMenu* CircuitBuilder::makeMenu()
 {
- _circuitMap =  new QHash<OBlock*, QList<Positionable*>* >();
- OBlockManager* manager = (OBlockManager*) InstanceManager::getDefault("OBlockManager");
- QStringList sysNames = manager->getSystemNameArray();
- for (int i = 0; i < sysNames.length(); i++)
- {
-  OBlock* block = (OBlock*)manager->getBySystemName(sysNames.at(i));
-  _circuitMap->insert(block,  new QList<Positionable*>());
- }
-
- // make menus
- checkCircuits();
- _todoMenu =  new QMenu(tr("Error Checks..."));
- makeToDoMenu();
  _circuitMenu = new QMenu(tr("Circuit Builder"));
- makeCircuitMenu();
- connect(_circuitMenu, SIGNAL(aboutToShow()), this, SLOT(makeCircuitMenu()));
+ OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
+ QSet<NamedBean*> oblocks = manager->getNamedBeanSet();
+ for (NamedBean* nb : oblocks) {
+  OBlock* block = (OBlock*)nb;
+     _circuitMap->insert(block, new  QList<Positionable*>());
+ }
+ checkCircuits();  // need content for this
+ int num = qMin(manager->getObjectCount(), 20) + 5;
+// _blockTable.setPreferredScrollableViewportSize(new java.awt.Dimension(300, _blockTable.getRowHeight() * num));
  return _circuitMenu;
+}
+
+/*protected*/ void CircuitBuilder::openCBWindow() {
+    if (_cbFrame != nullptr) {
+        _cbFrame->toFront();
+    } else {
+        _cbFrame = new CBFrame(tr("Circuit Builder"),this);
+    }
+}
+
+/*private*/ void CircuitBuilder::makeNoOBlockMenu() {
+    QAction* circuitItem = new QAction(tr("Add New Detector Circuit"),this);
+    _circuitMenu->addAction(circuitItem);
+//    circuitItem.addActionListener((ActionEvent event) -> {
+    connect(circuitItem, &QAction::triggered, [=]{
+        newCircuit();
+    });
+    _circuitMenu->addSection(tr("At least two track circuits are needed"));
+    QAction* helpItem = new QAction(tr("CircuitBuilder Help"),this);
+//    HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(helpItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
+    _circuitMenu->addAction(helpItem);
+
+}
+/*private*/ void CircuitBuilder::makeCircuitMenu() {
+    QAction* editItem = new QAction(tr("Add New Detector Circuit"));
+    _circuitMenu->addAction(editItem);
+    //editItem.addActionListener((ActionEvent event) -> {
+    connect(editItem, &QAction::triggered, [=]{
+        closeCBWindow();
+        newCircuit();
+    });
+    editItem = new QAction(tr("Edit Circuit OBlock"));
+    _circuitMenu->addAction(editItem);
+    //editItem.addActionListener((ActionEvent event) -> {
+    connect(editItem, &QAction::triggered, [=]{
+        closeCBWindow();
+        editCircuit("editCircuitItem", true);
+    });
+    editItem = new QAction(tr("Add/Edit Circuit Portals"));
+    _circuitMenu->addAction(editItem);
+    //editItem.addActionListener((ActionEvent event) -> {
+    connect(editItem, &QAction::triggered, [=]{
+        closeCBWindow();
+        editPortals("editPortalsItem", true);
+    });
+    editItem = new QAction(tr("Add/Edit Circuit Paths"));
+    _circuitMenu->addAction(editItem);
+    //editItem.addActionListener((ActionEvent event) -> {
+    connect(editItem, &QAction::triggered, [=]{
+        closeCBWindow();
+        editCircuitPaths("editCircuitPathsItem", true);
+    });
+    editItem = new QAction(tr("Edit Portal Direction Icons"));
+    _circuitMenu->addAction(editItem);
+    //editItem.addActionListener((ActionEvent event) -> {
+    connect(editItem, &QAction::triggered, [=]{
+        closeCBWindow();
+        editPortalDirection("editDirectionItem", true);
+    });
+    editItem = new QAction(tr("Add/Edit Signal Masts"));
+    _circuitMenu->addAction(editItem);
+    //editItem.addActionListener((ActionEvent event) -> {
+    connect(editItem, &QAction::triggered, [=]{
+        closeCBWindow();
+        editSignalFrame("editSignalItem", true);
+    });
+    _todoMenu = new QMenu(tr("Error Checks"));
+    _circuitMenu->addMenu(_todoMenu);
+    QAction* helpItem = new QAction(tr("CircuitBuilder Help"));
+    //HelpUtil::getGlobalHelpBroker().enableHelpOnButton(helpItem, "package.jmri.jmrit.display.CircuitBuilder", null);
+    _circuitMenu->addAction(helpItem);
+    makeToDoMenu();
 }
 
 /**
@@ -126,33 +203,30 @@ CircuitBuilder::~CircuitBuilder()
 */
 /*private*/ void CircuitBuilder::addIcon(OBlock* block, Positionable* pos) {
     QList<Positionable*>* icons = _circuitMap->value(block);
-    if (icons->isEmpty()) {
-        icons = NULL;
-    }
     if (pos!=NULL) {
         if (!icons->contains(pos)) {
             icons->append(pos);
         }
-        _iconMap->insert(pos, block);
     }
-    _circuitMap->insert(block, icons);
     _darkTrack.removeOne(pos);
-    if (log->isDebugEnabled()) log->debug("addIcon: block "+block->getDisplayName()+" has "+QString::number(icons->size())+" icons.");
+    // if (log.isDebugEnabled()) log.debug("addIcon: block "+block.getDisplayName()+" has "+icons.size()+" icons.");
 }
 
 // display "todo" (Error correction) items
 /*private*/ void CircuitBuilder::makeToDoMenu()
 {
- _todoMenu->clear();
+ if (_todoMenu == nullptr) {
+     _todoMenu = new QMenu(tr("Error Checks"));
+     _circuitMenu->addMenu(_todoMenu);
+ } else {
+     _todoMenu->clear();
+ }
 
- QMenu* blockNeeds = new QMenu(tr("Circuits without icons"));
- _todoMenu->addMenu(blockNeeds);
-//    ActionListener editCircuitAction = new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent event) {
-//                String sysName = event.getActionCommand();
-//                editCircuitError(sysName);
-//            }
-//    };
+ QMenu* blockNeeds = new QMenu(tr("Circuits without icons on this panel"));
+// ActionListener editCircuitAction = (ActionEvent event) -> {
+//     QString sysName = event.getActionCommand();
+//     editCircuitError(sysName);
+// };
  if (_bareBlock->size()>0)
  {
   for (int i=0; i<_bareBlock->size(); i++)
@@ -160,24 +234,18 @@ CircuitBuilder::~CircuitBuilder()
    OBlock* block = _bareBlock->at(i);
    QAction* mi = new QAction(tr("Edit \"%1\" Circuit").arg(block->getDisplayName()),this);
 //            mi->setActionCommand(block->getSystemName());
-//            mi->addActionListener(editCircuitAction);
-   EditCircuitActionListener* editCircuitAction = new EditCircuitActionListener(block->getSystemName(), this);
-
-   connect(mi, SIGNAL(triggered()), editCircuitAction, SLOT(actionPerformed()));
+   connect(mi, &QAction::triggered, [=]{
+    editCircuitError(block->getSystemName());
+   });
    blockNeeds->addAction(mi);
   }
  }
  else
  {
-  if (hasOBlocks)
-  {
-   blockNeeds->addMenu(new QMenu(tr("All circuits (OBlocks) are represented by icons")));
-  }
-  else
-  {
-   blockNeeds->addMenu(new QMenu(tr("No Track Circuits (OBlocks) are defined")));
-  }
+  blockNeeds->addSection(tr("All Circuits (OBlocks) are represented by icons"));
+
  }
+_todoMenu->addMenu(blockNeeds);  // #1
 
  blockNeeds = new QMenu(tr("Circuits whose icons need conversion"));
  _todoMenu->addMenu(blockNeeds);
@@ -189,42 +257,36 @@ CircuitBuilder::~CircuitBuilder()
    QAction* mi = new QAction( tr("Edit \"%1\" Circuit").arg( block->getDisplayName()),this);
 //            mi->setActionCommand(block->getSystemName());
 //            mi->layout()->addWidgetActionListener(editCircuitAction);
-   EditCircuitActionListener* editCircuitAction = new EditCircuitActionListener(block->getSystemName(), this);
-   connect(mi,SIGNAL(triggered()), editCircuitAction, SLOT(actionPerformed()));
+   connect(mi, &QAction::triggered, [=]{
+    editCircuitError(block->getSystemName());
+   });
    blockNeeds->addAction(mi);
   }
  }
  else
  {
-  if (hasOBlocks)
-  {
-   blockNeeds->addAction(new QAction(tr("All circuits (OBlocks) are represented by Indicator Track icons"),this));
-  }
-  else
-  {
-   blockNeeds->addAction(new QAction(tr("No Track Circuits (OBlocks) are defined"),this));
-  }
+  blockNeeds->addSection(tr("All Circuits (OBlocks) are represented by Indicator Track icons"));
+
  }
- QAction* iconNeeds;
- if (_unconvertedTrack.size()>0)
- {
-  iconNeeds = new QAction(tr("Highlight track icons needing conversion"),this);
-//        iconNeeds->addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent event) {
-//                QList<Positionable> group = new QList<Positionable>();
-//                for (int i=0; i<_unconvertedTrack.size(); i++) {
-//                    group->layout()->addWidget(_unconvertedTrack.get(i));
-//                }
-//                _editor.setSelectionGroup(group);
-//            }
-//         });
-  connect(iconNeeds, SIGNAL(triggered()), this, SLOT(OnIconNeeds1()));
+ _todoMenu->addMenu(blockNeeds);  // #2
+
+ QAction* iconNeeds = new QAction(tr("Highlight circuit track icons needing conversion"));
+ if (_unconvertedTrack.size() > 0) {
+     //iconNeeds.addActionListener((ActionEvent event) -> {
+  connect(iconNeeds, &QAction::triggered, [=]{
+         if (editingOK()) {
+             hidePortalIcons();
+             QList<Positionable*> group = QList<Positionable*>();
+             for (int i = 0; i < _unconvertedTrack.size(); i++) {
+                 group.append(_unconvertedTrack.at(i));
+             }
+             _editor->setSelectionGroup(&group);
+         }
+     });
+ } else {
+     iconNeeds = new QAction(("No track icons need conversion"),this);
  }
- else
- {
-  iconNeeds = new QAction(tr("All track icons are Indicator Track icons"),this);
- }
- _todoMenu->addAction(iconNeeds);
+ _todoMenu->addAction(iconNeeds);   // #3
 
  if (_darkTrack.size()>0)
  {
@@ -242,14 +304,11 @@ CircuitBuilder::~CircuitBuilder()
  }
  else
  {
-  if (hasOBlocks)
-  {
-   iconNeeds = new QAction(tr("Each indicator track icon belongs to a Track Circuit"),this);
-  }
-  else
-  {
-   iconNeeds = new QAction(tr("No Track Circuits (OBlocks) are defined"),this);
-  }
+  if (_hasIndicatorTrackIcons) {
+                 iconNeeds = new QAction(tr("Each indicator track icon belongs to a Track Circuit"),this);
+             } else {
+                 iconNeeds = new QAction(tr("No Indicator Track icons on the panel"));
+             }
  }
  _todoMenu->addAction(iconNeeds);
 
@@ -279,12 +338,11 @@ CircuitBuilder::~CircuitBuilder()
  }
  else
  {
-  if (hasOBlocks) {
-      blockNeeds->addAction(new QAction(tr("All circuits (OBlocks) are represented by Indicator Track icons"),this));
-  } else {
-      blockNeeds->addAction(new QAction(tr("No Track Circuits (OBlocks) are defined"),this));
-  }
+  blockNeeds = new QMenu(tr("All circuits have Portals and Paths"));
+
  }
+ _todoMenu->addMenu(blockNeeds);  // #5
+
  //QAction* iconNeeds;
  if (_unconvertedTrack.size() > 0)
  {
@@ -293,7 +351,7 @@ CircuitBuilder::~CircuitBuilder()
 //      public void actionPerformed(ActionEvent event) {
 //          ArrayList<Positionable> group = new ArrayList<Positionable>();
 //          for (int i = 0; i < _unconvertedTrack.size(); i++) {
-//              group.add(_unconvertedTrack.get(i));
+//              group->layout()->addWidget(_unconvertedTrack.get(i));
 //          }
 //          _editor.setSelectionGroup(group);
 //      }
@@ -302,7 +360,7 @@ CircuitBuilder::~CircuitBuilder()
  }
  else
  {
-  iconNeeds = new QAction(tr("circuitIconsConverted"), this);
+  iconNeeds = new QAction(tr("All Circuits (OBlocks) are represented by Indicator Track icons"), this);
  }
  _todoMenu->addAction(iconNeeds);
 
@@ -312,7 +370,7 @@ CircuitBuilder::~CircuitBuilder()
 //      public void actionPerformed(ActionEvent event) {
 //          ArrayList<Positionable> group = new ArrayList<Positionable>();
 //          for (int i = 0; i < _darkTrack.size(); i++) {
-//              group.add(_darkTrack.get(i));
+//              group->layout()->addWidget(_darkTrack.get(i));
 //          }
 //          _editor.setSelectionGroup(group);
 //      }
@@ -321,369 +379,275 @@ CircuitBuilder::~CircuitBuilder()
  }
  else
  {
-  if (hasOBlocks)
-  {
-   iconNeeds = new QAction(tr("Each indicator track icon belongs to a Track Circuit"),this);
-  }
-  else
-  {
-   iconNeeds = new QAction(tr("No Track Circuits (OBlocks) are defined"),this);
-  }
- }
- _todoMenu->addAction(iconNeeds);
-
- blockNeeds = new QMenu(tr("Portals with no icons or misplaced icons"));
- _todoMenu->addMenu(blockNeeds);
-// ActionListener portalCircuitAction = new ActionListener()
-// {
-//  public void actionPerformed(ActionEvent event) {
-//      String portalName = event.getActionCommand();
-//      portalCircuitError(portalName);
-//  }
-// };
- if (_badPortalIcon.size() > 0)
- {
-  QSignalMapper* mapper = new QSignalMapper();
-  QListIterator<QString> it(_badPortalIcon.keys());
-  while (it.hasNext())
-  {
-   QString portalName = it.next();
-   QAction* mi = new QAction(tr("Edit \"%1\" Portals").arg(portalName),this);
-      mapper->setMapping(mi, portalName);
-      connect(mi, SIGNAL(triggered()), mapper, SLOT(map()));
-      //mi.addActionListener(portalCircuitAction);
-      blockNeeds->addAction(mi);
-  }
-  connect(mapper, SIGNAL(mapped(QString)), this, SLOT(portalCircuitError(QString)));
- }
- else
- {
-  if (hasOBlocks) {
+  if (_hasPortalIcons) {
       blockNeeds->addAction(new QAction(tr("Portal icons positioned OK"),this));
   } else {
-      blockNeeds->addAction(new QAction(tr("No Track Circuits (OBlocks) are defined"),this));
+      blockNeeds->addAction(new QAction(tr("There are no icons for Portals."),this));
   }
  }
+ _todoMenu->addAction(iconNeeds); //#6
+
+ if (_misplacedPortalIcon.size() > 0) {
+     iconNeeds = new QAction(tr("Highlight misplaced Portal icons"),this);
+     //iconNeeds.addActionListener((ActionEvent event) -> {
+     connect(iconNeeds, &QAction::triggered, [=]{
+         if (editingOK()) {
+             QList<Positionable*> group = QList<Positionable*>();
+             for (int i = 0; i < _misplacedPortalIcon.size(); i++) {
+                 PortalIcon* pi = _misplacedPortalIcon.at(i);
+                 group.append(pi);
+                 pi->setStatus(PortalIcon::VISIBLE);
+             }
+             _editor->setSelectionGroup(&group);
+         }
+     });
+ } else {
+     if (_hasPortalIcons) {
+         iconNeeds = new QAction(tr("All Portal icons positioned OK"),this);
+     } else {
+         iconNeeds = new QAction(tr("There are no icons for Portals."),this);
+     }
+ }
+ _todoMenu->addAction(iconNeeds);   // #7
+
+ if (_unattachedMastIcon.size() > 0) {
+     iconNeeds = new QAction(tr("UnattachedMasts"),this);
+     //iconNeeds.addActionListener((ActionEvent event) -> {
+     connect(iconNeeds, &QAction::triggered, [=]{
+         if (editingOK()) {
+             QList<Positionable*> group = QList<Positionable*>();
+             for (int i = 0; i < _unattachedMastIcon.size(); i++) {
+                 PositionableIcon* pi = _unattachedMastIcon.at(i);
+                 group.append(pi);
+             }
+             _editor->setSelectionGroup(&group);
+         }
+     });
+ } else {
+     if (_hasMastIcons) {
+         iconNeeds = new QAction(tr("All Signal Mast icons are configured to portals"),this);
+     } else {
+         iconNeeds = new QAction(tr("There are no icons for Signal Masts."));
+     }
+ }
+ _todoMenu->addAction(iconNeeds);   // #8
+
+ blockNeeds = new QMenu(tr("Portals without icons on this panel"));
+// ActionListener editPortalAction = (ActionEvent event) -> {
+//     QString portalName = event.getActionCommand();
+//     editPortalError(portalName);
+//     };
+ QSignalMapper* map = new QSignalMapper(this);
+ if (_noPortalIcon.size() > 0) {
+     for (int i = 0; i < _noPortalIcon.size(); i++) {
+         Portal* portal = _noPortalIcon.at(i);
+         QAction* mi = new QAction(portal->toString());
+         //mi.setActionCommand(portal.getName());
+         map->setMapping(mi, portal->getName());
+         connect(mi, SIGNAL(triggered(bool)), map, SLOT(map()));
+         //mi.addActionListener(editPortalAction);
+         blockNeeds->addAction(mi);
+     }
+     connect(map, SIGNAL(mapped(QString)), this, SLOT(editPortalError(QString)));
+ } else {
+     blockNeeds->addAction(new QAction(tr("All portals have portal icons"),this));
+ }
+ _todoMenu->addMenu(blockNeeds);  // #9
 
  QAction* pError = new QAction(tr("Check Portal & Path Errors"),this);
- _todoMenu->addAction(pError);
- //pError.addActionListener(new ActionListener() {
- //  public void actionPerformed(ActionEvent event) {
- //      errorCheck();
- //  }
- //});
- connect(pError, SIGNAL(triggered()), this, SLOT(errorCheck()));
+ _todoMenu->addAction(pError);      // #10
+ //pError.addActionListener((ActionEvent event) -> {
+ connect(pError, &QAction::triggered, [=]{
+     if (WarrantTableAction::getDefault()->errorCheck()) {
+         JOptionPane::showMessageDialog(_editFrame,
+                 tr("Currently defined OBlocks, Portals and Paths are consistent without errors."), tr("OK"),
+                 JOptionPane::INFORMATION_MESSAGE);
+     }
+ });
 }
-void CircuitBuilder::OnIconNeeds1()
+
+// used for testing only
+/*protected*/ EditFrame* CircuitBuilder::getEditFrame() {
+    return _editFrame;
+}
+
+/**
+ * ************** Set up editing Frames ****************
+ */
+/*protected*/ void CircuitBuilder::newCircuit() {
+    if (editingOK()) {
+        _blockTable->clearSelection();
+        setUpEditCircuit();
+        _editFrame = new EditCircuitFrame(tr("Add New Detector Circuit"), this, nullptr);
+    }
+}
+
+/*protected*/ void CircuitBuilder::editCircuit(QString title, bool fromMenu)
 {
- QList<Positionable*>* group = new QList<Positionable*>();
- for (int i=0; i<_unconvertedTrack.size(); i++)
+ if (editingOK())
  {
-  group->append(_unconvertedTrack.value(i));
- }
- _editor->setSelectionGroup(group);
-}
-
-void CircuitBuilder::OnIconNeeds2()
-{
- QList<Positionable*>* group = new QList<Positionable*>();
- for (int i=0; i<_darkTrack.size(); i++)
- {
-  group->append(_darkTrack.value(i));
- }
- _editor->setSelectionGroup(group);
-}
-
-/*private*/ void CircuitBuilder::errorCheck() // SLOT[]
-{
- WarrantTableAction::initPathPortalCheck();
- OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
- QStringList sysNames = manager->getSystemNameArray();
- for (int i = 0; i < sysNames.length(); i++)
- {
-  WarrantTableAction::checkPathPortals((OBlock*)manager->getBySystemName(sysNames[i]));
- }
- if (!WarrantTableAction::showPathPortalErrors())
- {
-//        JOptionPane.showMessageDialog(_editCircuitFrame,
-//                tr("blocksEtcOK"), Bundle.getMessage("OK"),
-//                javax.swing.JOptionPane.INFORMATION_MESSAGE);
-     QMessageBox::information(_editCircuitFrame, tr("Ok"), tr("Currently defined OBlocks, Portals and Paths are consistent without errors."));
+  if (fromMenu) {
+   editCircuitDialog(title);
+  }
+  if (_currentBlock!=NULL)
+   if (_currentBlock != nullptr) {
+       setUpEditCircuit();
+       _editFrame = new EditCircuitFrame(tr("Edit \"%1\" Circuit Track").arg(_currentBlock->getDisplayName()),this, _currentBlock);
+   } else if (!fromMenu) {
+       selectPrompt();
+   }
  }
 }
 
+/*private*/ void CircuitBuilder::setUpEditCircuit() {
+    _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, false));
+    _editor->disableMenus();
 
-/*private*/ void  CircuitBuilder::makeCircuitMenu() {
-    _circuitMenu->clear();
+    TargetPane* targetPane = (TargetPane*) _editor->getTargetPanel();
+    targetPane->setSelectGroupColor(_editGroupColor);
+    targetPane->setHighlightColor(_highlightColor);
+}
 
-    QAction* circuitItem = new QAction(tr("Add Detector Circuit"),this);
-    _circuitMenu->addAction(circuitItem);
-//    circuitItem->layout()->addWidgetActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent event) {
-//                newCircuit();
-//            }
-//        });
-    connect(circuitItem, SIGNAL(triggered()), this, SLOT(newCircuit()));
-    QAction* editCircuitItem = new QAction(tr("Edit Circuit OBlock"),this);
-    _circuitMenu->addAction(editCircuitItem);
-    QAction* editPortalsItem = new QAction(tr("Edit Circuit Portals"),this);
-    _circuitMenu->addAction(editPortalsItem);
-    QAction* editCircuitPathsItem = new QAction(tr("Edit Circuit paths"), this);
-    _circuitMenu->addAction(editCircuitPathsItem);
-    QAction* editDirectionItem = new QAction(tr("Edit Portal Direction Icons"),this);
-            _circuitMenu->addAction(editDirectionItem);
-    if ( _circuitMap->keys().size()>0) {
-//        editCircuitItem->addActionListener(new ActionListener() {
-//                /*public*/ void actionPerformed(ActionEvent event) {
-//                    editCircuit("editCircuitItem");
-//                }
-//            });
-        connect(editCircuitItem, SIGNAL(triggered()), this, SLOT(editCircuitItem_triggered()));
-//        editPortalsItem->layout()->addWidgetActionListener(new ActionListener() {
-//                /*public*/ void actionPerformed(ActionEvent event) {
-//                    editPortals("editPortalsItem");
-//                }
-//            });
-        connect(editPortalsItem, SIGNAL(triggered()), this, SLOT(editPortalItem_triggered()));
-//        editCircuitPathsItem->layout()->addWidgetActionListener(new ActionListener() {
-//                /*public*/ void actionPerformed(ActionEvent event) {
-//                    editCircuitPaths("editCircuitPathsItem");
-//                }
-//            });
-        connect(editCircuitPathsItem, SIGNAL(triggered()), this, SLOT(editCircuitPaths_triggered()));
+/*protected*/ void CircuitBuilder::editCircuitError(QString sysName) {
+    hidePortalIcons();
+    if (editingOK()) {
+        _currentBlock = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
+        if (_currentBlock != nullptr) {
+            _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, false));
+            _editor->disableMenus();
+            _editFrame = new EditCircuitFrame(tr("Edit \"%1\" Circuit Track").arg(_currentBlock->getDisplayName()),this, _currentBlock);
+        }
+    }
+}
+
+/*protected*/ void CircuitBuilder::editPortals(QString title, bool fromMenu) {
+    if (editingOK()) {
+        if (fromMenu) {
+            editCircuitDialog(title);
+        }
+        if (_currentBlock != nullptr) {
+            // check icons to be indicator type
+            _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, true));
+            _editor->disableMenus();
+            TargetPane* targetPane = (TargetPane*) _editor->getTargetPanel();
+            targetPane->setSelectGroupColor(_editGroupColor);
+            targetPane->setHighlightColor(_highlightColor);
+            setPortalsPositionable(_currentBlock, true);
+            _editFrame = new EditPortalFrame(tr("Edit \"%1\" Portals").arg(_currentBlock->getDisplayName()), this, _currentBlock);
+            _editFrame->canEdit();   // will close _editFrame if editing cannot be done
+        } else if (!fromMenu) {
+            selectPrompt();
+        }
+    }
+}
+
+/*protected*/ void CircuitBuilder::editPortalError(QString name) {
+    if (editingOK()) {
+        Portal* portal = ((PortalManager*)InstanceManager::getDefault("PortalManager"))->getPortal(name);
+        _currentBlock = portal->getFromBlock();
+        if (_currentBlock == nullptr) {
+            _currentBlock = portal->getToBlock();
+        }
+        editPortals(nullptr, false);
+    }
+}
+
+/*protected*/ void CircuitBuilder::editPortalError(OBlock* block, Portal* portal, PortalIcon* icon) {
+    if (editingOK()) {
+        _currentBlock = block;
+        if (_currentBlock != nullptr) {
+            _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, true));
+            _editor->disableMenus();
+            TargetPane* targetPane = (TargetPane*) _editor->getTargetPanel();
+            targetPane->setSelectGroupColor(_editGroupColor);
+            targetPane->setHighlightColor(_highlightColor);
+            setPortalsPositionable(_currentBlock, true);
+            _editFrame = new EditPortalFrame(tr("Edit \"%1\" Portals").arg(_currentBlock->getDisplayName()),this,_currentBlock, portal, icon);
+        }
+    }
+}
+
+/*protected*/ void CircuitBuilder::editPortalDirection(QString title, bool fromMenu) {
+    if (editingOK()) {
+        if (fromMenu) {
+            editCircuitDialog(title);
+        }
+        if (_currentBlock != nullptr) {
+            _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, true));
+            _editor->disableMenus();
+            TargetPane* targetPane = (TargetPane*) _editor->getTargetPanel();
+            targetPane->setSelectGroupColor(_editGroupColor);
+            targetPane->setHighlightColor(_highlightColor);
+            setPortalsPositionable(_currentBlock, true);
+            _editFrame = new EditPortalDirection(tr("Edit \"%1\" Portal Direction Arrows").arg(_currentBlock->getDisplayName()),this, _currentBlock);
+            _editFrame->canEdit();   // will close _editFrame if editing cannot be done
+        } else if (!fromMenu) {
+            selectPrompt();
+        }
+    }
+}
+
+/*protected*/ void CircuitBuilder::editSignalFrame(QString title, bool fromMenu) {
+    if (editingOK()) {
+        if (fromMenu) {
+            editCircuitDialog(title);
+        }
+        if (_currentBlock != nullptr) {
+            // check icons to be indicator type
+            _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, true));
+            _editor->disableMenus();
+#if 0
+            TargetPane* targetPane = (TargetPane*) _editor->getTargetPanel();
+            targetPane->setSelectGroupColor(_editGroupColor);
+            targetPane->setHighlightColor(_highlightColor);
+#endif
+            _editFrame = new EditSignalFrame(tr("Edit \"%1\" Signal Masts").arg(_currentBlock->getDisplayName()),this, _currentBlock);
+            _editFrame->canEdit();   // will close _editFrame if editing cannot be done
+        } else if (!fromMenu) {
+            selectPrompt();
+        }
+    }
+}
+
+/*protected*/ void CircuitBuilder::editCircuitPaths(QString title, bool fromMenu) {
+ if (editingOK())
+ {
+   if(fromMenu)
+   {
+    editCircuitDialog(title);
+   }
+   if (_currentBlock != nullptr) {
+         // check icons to be indicator type
+         // must have converted icons for paths
+         _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, true));
+         // A temporary path "TEST_PATH" is used to display the icons representing a path
+         _currentBlock->allocate(EditCircuitPaths::TEST_PATH);
+         _editor->disableMenus();
+         TargetPane* targetPane = (TargetPane*) _editor->getTargetPanel();
+         targetPane->setSelectGroupColor(_editGroupColor);
+         targetPane->setHighlightColor(_editGroupColor);
+         _currentBlock->setState(OBlock::UNOCCUPIED);
+         _editFrame = new EditCircuitPaths(tr("Add/Edit \"%1\" Paths").arg(_currentBlock->getDisplayName()),this, _currentBlock);
+         _editFrame->canEdit();   // will close _editFrame if editing cannot be done
+     } else if (!fromMenu) {
+         selectPrompt();
+     }
+ }
+}
+
+/*protected*/ void CircuitBuilder::setCurrentBlock(OBlock* b) {
+    _currentBlock = b;
+}
+
+/*protected*/ void CircuitBuilder::hidePortalIcons() {
+    if (_editFrame != nullptr) {
+        _editFrame->clearListSelection();
     } else {
-        editCircuitItem->setText(tr("No Detector Circuits are defined"));
-        editPortalsItem->setText(tr("No Detector Circuits are defined"));
-        editCircuitPathsItem->setText(tr("No Detector Circuits are defined"));
-    }
-
-    _circuitMenu->addMenu(_todoMenu);
-}
-void CircuitBuilder::editCircuitItem_triggered()
-{
- editCircuit(tr("Edit Circuit OBlock"));
-}
-void CircuitBuilder::editPortalItem_triggered()
-{
- editPortals(tr("Edit Circuit Portals"));
-}
-void CircuitBuilder::editCircuitPaths_triggered()
-{
- editCircuitPaths("Edit Circuit paths");
-}
-
-/**************** Set up editing Frames *****************/
-
-/*protected*/ void CircuitBuilder::newCircuit()
-{
- if (editingOK())
- {
-  addCircuitDialog();
-  if (_currentBlock!=NULL)
-  {
-   if (_editCircuitFrame==NULL)
-   {
-    checkCircuits();
-    _editor->setSelectionGroup(NULL);
-    _editor->disableMenus();
-//    EditScene* targetPane = (EditScene*)_editor->getTargetPanel();
-//    targetPane->setSelectGroupColor(_editGroupColor);
-//    targetPane.setHighlightColor(_editGroupColor);
-    _editCircuitFrame = new EditCircuitFrame(tr("Add Detector Circuit"), this, _currentBlock);
-   }
-  }
- }
-}
-
-/*protected*/ void CircuitBuilder::editCircuit(QString title)
-{
- if (editingOK())
- {
-  editCircuitDialog(title);
-  if (_currentBlock!=NULL)
-  {
-   checkCircuits();
-   makeSelectionGroup(_currentBlock, NULL);
-   _editor->disableMenus();
-   EditScene* targetPane = (/*TargetPane*/EditScene*)_editor->getTargetPanel();
-//   targetPane.setSelectGroupColor(_editGroupColor);
-//   targetPane.setHighlightColor(_editGroupColor);
-   _editCircuitFrame = new EditCircuitFrame(tr("Edit \"%1\" Circuit"), this, _currentBlock);
-  }
- }
-}
-#if 1
-/*private*/ void CircuitBuilder::editCircuitError(QString sysName)
-{
- if (editingOK())
- {
-  //_currentBlock = InstanceManager::oBlockManagerInstance().getBySystemName(sysName);
-  _currentBlock = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
-  if (_currentBlock!=NULL)
-  {
-   checkCircuits();
-   makeSelectionGroup(_currentBlock, NULL);
-   _editor->disableMenus();
-   _editCircuitFrame = new EditCircuitFrame(tr("OpenCircuitItem"), this, _currentBlock);
-  }
- }
-}
-#endif
-/*protected*/ void CircuitBuilder::editPortals(QString title)
-{
- if (editingOK())
- {
-#if 1
-  editCircuitDialog(title);
-  if (_currentBlock != NULL)
-  {
-   checkCircuits();
-   _circuitIcons = _circuitMap->value(_currentBlock);
-   // check icons to be indicator type
-   if (!iconsConverted(_currentBlock)) {
-       queryConvertIcons(_currentBlock);
-   }
-   _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, true));
-   _editor->disableMenus();
-#if 0
-   EditScene* targetPane =  _editor->getTargetPanel();
-   targetPane->setSelectGroupColor(_editGroupColor);
-   targetPane->setHighlightColor(_highlightColor);
-#endif
-   _editPortalFrame = new EditPortalFrame("Edit \"%1\" Portals",this, _currentBlock, false);
-  }
-#endif
- }
-}
-
-/*private*/ void CircuitBuilder::portalCircuitError(QString portalName)
-{
- if (editingOK())
- {
-  PortalManager* portalMgr = (PortalManager*)InstanceManager::getDefault("PortalManager");
-  Portal* portal = (Portal*)portalMgr->getByUserName(portalName);
-  if (portal == NULL)
-  {
-//      JOptionPane.showMessageDialog(_editor, Bundle.getMessage("noSuchPortal", portalName),
-//              Bundle.getMessage("ErrorPortal"), JOptionPane.INFORMATION_MESSAGE);
-   QMessageBox::critical(_editor, tr("Error Portal"), tr("There is no portal called \"%1\".").arg(portalName));
-      return;
-  }
-  _currentBlock = portal->getToBlock();
-  OBlock* adjacentBlock = NULL;
-  if (_currentBlock == NULL) {
-      _currentBlock = portal->getFromBlock();
-  } else {
-      adjacentBlock = portal->getFromBlock();
-  }
-  if (adjacentBlock == NULL) {
-//      JOptionPane.showMessageDialog(_editor, Bundle.getMessage("invalidPortal", portalName, _currentBlock),
-//              Bundle.getMessage("ErrorPortal"), JOptionPane.INFORMATION_MESSAGE);
-   QMessageBox::critical(_editor, tr("Error Portal"), tr("Portal \"%1\" attached to OBlock \"%2\" invalid - only one block. ").arg(portalName).arg(_currentBlock->getDisplayName()));
-      return;
-  }
-  if (_currentBlock != NULL) {
-      // check icons to be indicator type
-      _circuitIcons = _circuitMap->value(_currentBlock);
-      if (!iconsConverted(_currentBlock)) {
-          queryConvertIcons(_currentBlock);
-      }
-      _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, false));
-      _editor->setSecondSelectionGroup(makeSelectionGroup(adjacentBlock, false));
-      _editor->disableMenus();
-#if 0
-      TargetPane targetPane = (TargetPane) _editor.getTargetPanel();
-      targetPane.setSelectGroupColor(_editGroupColor);
-      targetPane.setHighlightColor(_highlightColor);
-#endif
-      PortalIcon* icon = _portalIconMap.value(portalName);
-      if (icon != NULL) {
-          icon->setStatus(PortalIcon::VISIBLE);
-      }
-      setPortalsPositionable(_currentBlock, true);
-      _editPortalFrame = new EditPortalFrame("Edit \"&1\" Portals", this,
-              _currentBlock, portal, adjacentBlock);
-  }
-}
-}
-/*protected*/ void CircuitBuilder::editPortalDirection(QString title)
-{
- if (editingOK())
- {
-  editCircuitDialog(title);
-  if (_currentBlock != NULL)
-  {
-   checkCircuits();
-   _circuitIcons = _circuitMap->value(_currentBlock);
-   // check icons to be indicator type
-   if (!iconsConverted(_currentBlock)) {
-       queryConvertIcons(_currentBlock);
-   }
-   _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, true));
-   _editor->disableMenus();
-#if 0 // TODO:
-   TargetPane targetPane = (TargetPane) _editor.getTargetPanel();
-   targetPane.setSelectGroupColor(_editGroupColor);
-   targetPane.setHighlightColor(_highlightColor);
-#endif
-   setPortalsPositionable(_currentBlock, true);
-   _editDirectionFrame = new EditPortalDirection(tr("Edit \"%1\" Portal Direction Arrows"), this, _currentBlock);
-  }
- }
-}
-/*protected*/ void CircuitBuilder::editCircuitPaths(QString title) {
- if (editingOK())
- {
-#if 1
-  editCircuitDialog(title);
-  if (_currentBlock!=NULL)
-  {
-   checkCircuits();
-   // check icons to be indicator type
-   _circuitIcons = _circuitMap->value(_currentBlock);
-   if( !iconsConverted(_currentBlock))
-   {
-    queryConvertIcons(_currentBlock);
-   }
-   // must have converted icons for paths
-   if (!iconsConverted(_currentBlock))
-   {
-//    JOptionPane.showMessageDialog(_editor, Bundle.getMessage("needConversion", _currentBlock.getDisplayName()),
-//               Bundle.getMessage("noIcons"), JOptionPane.INFORMATION_MESSAGE);
-    QMessageBox::information(_editor, tr("No Icons"), tr("Block circuit \"%1\" needs to convert track icons to Indicator Track icons\nUse \"Edit Track Circuit\" menu to convert icons.").arg(_currentBlock->getDisplayName()));
-   }
-   else
-   {
-    _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, true));
-    _currentBlock->setState(OBlock::UNOCCUPIED);
-    // A temporary path "TEST_PATH" is used to display the icons representing a path
-    _currentBlock->allocate(EditCircuitPaths::TEST_PATH);
-    _editor->disableMenus();
-    EditScene* targetPane = (EditScene*)_editor->getTargetPanel();
-//                targetPane->setSelectGroupColor(_editGroupColor);
-//                targetPane->setHighlightColor(_editGroupColor);
-    _editPathsFrame = new EditCircuitPaths(tr("OpenPathTitle"), this, _currentBlock);
-   }
-  }
-#endif
- }
-}
-
-/*
-private void addPortalIcons() {
-    Iterator<PortalIcon> it = _portalIcons.iterator();
-    while (it.hasNext()) {
-        PortalIcon pi = it.next();
-        pi.setStatus(PortalIcon.HIDDEN);
-        _editor.putItem(pi);
-    }
-}
-*/
-
-/*private*/ void CircuitBuilder::removePortalIcons() {
-    QListIterator<PortalIcon*> it(*_portalIcons);
-    while (it.hasNext()) {
-        _editor->removeFromContents((Positionable*)it.next());
+        for (QList<PortalIcon*>* array : _portalIconMap.values()) {
+            for (PortalIcon* pi : *array) {
+                pi->setStatus(PortalIcon::HIDDEN);
+            }
+        }
     }
 }
 
@@ -714,41 +678,6 @@ private void addPortalIcons() {
   return false;
  }
  return true;
-}
-
-/**
-* Create a new OBlock
-* Used by New to set up _editCircuitFrame
-* Sets _currentBlock to created new OBlock
-*/
-/*private*/ void CircuitBuilder::addCircuitDialog()
-{
- //_dialog = new QDialog(_editor, tr("New Track Circuit (OBlock)"), true);
- _dialog = new JDialog();
- _dialog->setWindowTitle(tr("New Track Circuit (OBlock)"));
- _dialog->setLayout(new QVBoxLayout);
-    QWidget* panel = new QWidget();
-    panel->setLayout(new BorderLayout(10));
-    QWidget* mainPanel = new QWidget();
-    mainPanel->setLayout(new QVBoxLayout(mainPanel/*, BoxLayout.Y_AXIS*/));
-
-    ((QBoxLayout*)mainPanel->layout())->addStrut(STRUT_SIZE);
-    QWidget* p = new QWidget();
-    p->setLayout(new FlowLayout);
-    p->layout()->addWidget(new QLabel(tr("Create an OBlock track circuit")));
-    mainPanel->layout()->addWidget(p);
-
-    ((QBoxLayout*)mainPanel->layout())->addStrut(STRUT_SIZE);
-    mainPanel->layout()->addWidget(makeSystemNamePanel());
-    ((QBoxLayout*)mainPanel->layout())->addStrut(STRUT_SIZE);
-    mainPanel->layout()->addWidget(makeDoneButtonPanel(true));
-    panel->layout()->addWidget(mainPanel);
-    _dialog->layout()->addWidget(panel);
-    _dialog->move(_editor->pos().x()+100, _editor->pos().y()+100);
-    _dialog->pack();
-    _dialog->setVisible(true);
-    _dialog->resize(300,250);
-    _dialog->exec();
 }
 
 /**
@@ -785,36 +714,6 @@ private void addPortalIcons() {
     _dialog->resize(300,400);
     _dialog->setVisible(true);
     _dialog->exec();
-}
-
-/*private*/ QWidget* CircuitBuilder::makeSystemNamePanel() {
-    _sysNameBox->setText("");
-    _sysNameBox->setToolTip(tr("OBlock name, i.e. OB1; \"OB\" will be prepended if not present!"));
-    _userNameBox->setText("");
-    QWidget* namePanel = new QWidget();
-    namePanel->setLayout(new QVBoxLayout(namePanel/*, BoxLayout.Y_AXIS*/));
-    QWidget* p = new QWidget();
-    QGridLayout* g;
-    p->setLayout(g =new QGridLayout());
-//    java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
-//    c.gridwidth  = 1;
-//    c.gridheight = 1;
-//    c.gridx = 0;
-//    c.gridy = 0;
-//    c.anchor = java.awt.GridBagConstraints.EAST;
-    g->addWidget(new QLabel(tr("System Name")), 0,0, 1,1);
-//    c.gridy = 1;
-    g->addWidget(new QLabel(tr("User Name")),1,0,1,1);
-//    c.gridx = 1;
-//    c.gridy = 0;
-//    c.anchor = java.awt.GridBagConstraints.WEST;
-//    c.weightx = 1.0;
-//    c.fill = java.awt.GridBagConstraints.HORIZONTAL;  // text field will expand
-    g->addWidget(_sysNameBox,0,1,1,1);
-//    c.gridy = 1;
-    g->addWidget(_userNameBox,1,1,1,1);
-    namePanel->layout()->addWidget(p);
-    return namePanel;
 }
 
 /*private*/ QWidget*  CircuitBuilder::makeDoneButtonPanel(bool add) {
@@ -879,79 +778,6 @@ private void addPortalIcons() {
     buttonPanel->layout()->addWidget(panel0);
     return buttonPanel;
 }
-void CircuitBuilder::cancelButton_clicked()
-{
- _sysNameBox->setText("");
- _currentBlock = NULL;
- //_dialog->dispose();
- _dialog->reject();
- _dialog->close();
-}
-void CircuitBuilder::doneButton_clicked()
-{
- if (doAddAction())
- {
-  //_dialog->dispose();
-  _dialog->accept();
-  _dialog->close();
- }
-}
-
-void CircuitBuilder::showDoneButton_clicked()
-{
- if (doOpenAction())
- {
-  //_dialog->dispose();
-  _dialog->accept();
-  _dialog->close();
- }
-}
-
-/*private*/ bool CircuitBuilder::doAddAction()
-{
- bool retOK = false;
- QString sysname = _sysNameBox->text();
- if (sysname != "" && sysname.length() >= 1)
- {
-  QString uname = _userNameBox->text();
-  if (uname!="" && uname.trimmed().length()==0)
-  {
-   uname = "";
-  }
-  _currentBlock =((OBlockManager*) InstanceManager::getDefault("OBlockManager"))->createNewOBlock(sysname, uname);
-  if (_currentBlock!=NULL)
-  {
-   retOK = true;
-  }
-  else
-  {
-//            int result = JOptionPane.showConfirmDialog(_editor, java.text.MessageFormat.format(
-//                            tr("blockExists"), sysname),
-//                            tr("AskTitle"), JOptionPane.YES_NO_OPTION,
-//                            JOptionPane.QUESTION_MESSAGE);
-//            if (result==JOptionPane.YES_OPTION) {
-   int result = QMessageBox::question(_editor, tr("What shall we do?"), tr("Circuit \"%1\" already exists.  Do you want to edit it?").arg(sysname), QMessageBox::Yes | QMessageBox::No);
-   if(result == QMessageBox::Yes)
-   {
-    _currentBlock = (OBlock*)((OBlockManager*) InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysname);
-    if (_currentBlock==NULL) {
-        retOK = false;
-    }
-    checkCircuits();
-    _editor->setSelectionGroup(_circuitMap->value(_currentBlock));
-    _editCircuitFrame = new EditCircuitFrame(tr("Edit \"%1\" Circuit"), this, _currentBlock);
-    retOK = true;
-   }
-  }
- }
- if (!retOK)
- {
-//        JOptionPane.showMessageDialog(_editor, tr("createOBlock"),
-//                tr("NeedDataTitle"), JOptionPane.INFORMATION_MESSAGE);
-  QMessageBox::information(_editor, tr("Create an OBlock track circuit"),tr("Please Enter Data"));
- }
- return retOK;
-}
 
 /*private*/ bool CircuitBuilder::doOpenAction()
 {
@@ -966,6 +792,11 @@ void CircuitBuilder::showDoneButton_clicked()
  }
  _currentBlock = NULL;
  return false;
+}
+
+/*private*/ void CircuitBuilder::selectPrompt() {
+    JOptionPane::showMessageDialog(_editor, tr("Select an OBlock track circuit:"),
+            tr("Please enter Data"), JOptionPane::INFORMATION_MESSAGE);
 }
 
 /**
@@ -986,236 +817,261 @@ void CircuitBuilder::showDoneButton_clicked()
  }
 }
 
-/************************* Closing Editing Frames ********************/
-
+////////////////////////// Closing Editing Frames //////////////////////////
 /**
-* Update block data in menus
-*/
-/*protected*/ void CircuitBuilder::checkCircuitFrame(OBlock* block)
-{
- if (block!=NULL)
- {
-  QList<Positionable*>* group = _editor->getSelectionGroup();
-  // check icons to be indicator type
-  setIconGroup(block, group);
-  if (!iconsConverted(block))
-  {
-   queryConvertIcons(block);
-  }
- }
- closeCircuitFrame();
-}
-
-/*protected*/ void CircuitBuilder::closeCircuitFrame() {
-    _editCircuitFrame = NULL;
-    closeCircuitBuilder();
-}
-
-/**
-*  Edit frame closing, set block's icons
-*/
-/*private*/ void CircuitBuilder::setIconGroup(OBlock* block, QList<Positionable*>* selections)
-{
- QList<Positionable*>* oldIcons = _circuitMap->value(block);
- if (oldIcons!=NULL)
- {
-  for (int i=0; i<oldIcons->size(); i++)
-  {
-   Positionable* pos = oldIcons->value(i);
-   //if (pos instanceof IndicatorTrack)
-   if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
-   {
-    ((IndicatorTrack*)pos)->setOccBlockHandle(NULL);
-   }
-   _iconMap->remove(pos);
-  }
- }
- // the selectionGroup for all edit frames is full collection of icons
- // comprising the block.  Gather them and store in the block's hashMap
- QList<Positionable*>* icons = new QList<Positionable*>();
- if (selections!=NULL)
- {
-  if (log->isDebugEnabled()) log->debug("setIconGroup: selectionGroup has "+
-                QString::number(selections->size())+" icons.");
-  NamedBeanHandle<OBlock*>* handle = new NamedBeanHandle<OBlock*>(block->getSystemName(), block);
-  for (int i=0; i<selections->size(); i++)
-  {
-   Positionable* pos = selections->value(i);
-   //if (pos instanceof IndicatorTrack)
-   if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
-   {
-                ((IndicatorTrack*)pos)->setOccBlockHandle(handle);
-            }
-            icons->append(pos);
-            _iconMap->insert(pos, block);
-        }
-        QList<Portal*> portals = block->getPortals();
-        for (int i=0; i<portals.size(); i++) {
-            PortalIcon* icon = _portalIconMap.value(portals.value(i)->getName());
-            if (icon!=NULL) {
-                _iconMap->insert((Positionable*)icon, block);
-            }
+ * Edit frame closing, set block's icons to support OBlock's state changes
+ * @param block OBlock to set icon selections into data maps
+ */
+/*protected*/ void CircuitBuilder::setIconGroup(OBlock* block) {
+    for (Positionable* pos : *getCircuitIcons(block)) {
+        if (qobject_cast<IndicatorTrack*>(pos->self())) {
+            ((IndicatorTrack*) pos->self())->setOccBlockHandle(nullptr);
         }
     }
-    _circuitMap->insert(block, icons);
-    if (log->isDebugEnabled()) log->debug("setIconGroup: block "+block->getDisplayName()+
-                                        " has "+QString::number(icons->size())+" icons.");
+    // the selectionGroup for all edit frames is full collection of icons
+    // comprising the block.  Gather them and store in the block's hashMap
+    QList<Positionable*>* selections = _editor->getSelectionGroup();
+    QList<Positionable*>* icons = getCircuitIcons(block);
+    icons->clear();
+    if (selections != nullptr && !selections->isEmpty()) {
+        NamedBeanHandle<OBlock*>* handle = ((NamedBeanHandleManager*)
+                InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(block->getSystemName(), block);
+         for (Positionable* pos : *selections) {
+             if (qobject_cast<IndicatorTrack*>(pos->self())) {
+                 ((IndicatorTrack*) pos->self())->setOccBlockHandle(handle);
+             }
+             icons->append(pos);
+         }
+    }
+    if (log->isDebugEnabled()) {
+        log->debug(tr("setIconGroup: block \"%1\" has %2 icons.").arg(block->getDisplayName()).arg(icons->size()));
+    }
 }
 
-/*protected*/ void CircuitBuilder::closePathFrame(OBlock* /*block*/) {
-    _currentBlock->deAllocate(NULL);
-    _editPathsFrame = NULL;
-    closeCircuitBuilder();
-}
-
-/*protected*/ void CircuitBuilder::closePortalFrame(OBlock* /*block*/) {
-    _editPortalFrame = NULL;
-    closeCircuitBuilder();
-}
-
-/*protected*/ void CircuitBuilder::closePortalDirection(OBlock* block)
-{
- setPortalsPositionable(block, false);
- _editDirectionFrame = NULL;
- closeCircuitBuilder();
-}
-/*private*/ void CircuitBuilder::closeCircuitBuilder() {
-    _circuitIcons = new QList<Positionable*>();
-    _currentBlock = NULL;
+/*private*/ void CircuitBuilder::closeCircuitBuilder(OBlock* block) {
+   _currentBlock = NULL;
+   _editFrame = nullptr;
     checkCircuits();
-    makeToDoMenu();
-    makeCircuitMenu();
-    removePortalIcons();
+    setPortalsPositionable(block, false);
+    hidePortalIcons();
+    _editor->setSecondSelectionGroup(nullptr);
     _editor->resetEditor();
 }
 /**************** end closing frames ********************/
 
-
 /**
-* Find the blocks with no icons and the blocks with icons that need conversion
-* Setup for main Frame - used in both initialization and close of an editing frame
-* Build Lists that are used to create menu items
-*/
-/*private*/ void CircuitBuilder::checkCircuits()
-{
- _portalIconMap.clear();
- _darkTrack.clear();
- _unconvertedTrack.clear();
- PortalManager* portalMgr = (PortalManager*)InstanceManager::getDefault("PortalManager");
+ * Find the blocks with no icons and the blocks with icons that need
+ * conversion Setup for main Frame - used in both initialization and close
+ * of an editing frame Build Lists that are used to create menu items
+ */
+/*private*/ void CircuitBuilder::checkCircuits() {
 
- QListIterator<Positionable*> it(_editor->getContents());
- while (it.hasNext())
- {
-  Positionable* pos = it.next();
-//            if (log->isDebugEnabled()) log->debug("class: "+pos.getClass().getName());
-  //if (pos instanceof IndicatorTrack)
-  if(qobject_cast<IndicatorTrack*>((QObject*)pos) != NULL)
-  {
-   OBlock* block = ((IndicatorTrack*)pos)->getOccBlock();
-//            ((IndicatorTrack*)pos)->removePath(EditCircuitPaths::TEST_PATH);
-   if (block!=NULL)
-   {
-    addIcon(block, pos);
-   }
-   else
-   {
-    _darkTrack.append(pos);
-   }
-  }
-  //else if (pos instanceof PortalIcon)
-  else if(qobject_cast<PortalIcon*>((QObject*)pos)!= NULL)
-  {
-   PortalIcon* pIcon = (PortalIcon*) pos;
-   QString name = pIcon->getName();
-   Portal* portal = (Portal*)portalMgr->getByUserName(name);
-   if (portal == NULL)
-   {
-    log->error("No Portal for PortalIcon called \"" + name + "\". Discarding icon.");
-    pIcon->remove();
-   }
-   else
-   {
-    PortalIcon* pi = _portalIconMap.value(name);
-    if (pi != NULL) {
-        log->error("Removing duplicate PortalIcon for Portal \"" + name + "\".");
-        pi->remove();
+    _portalIconMap.clear();
+    _signalIconMap.clear();
+    _signalMap.clear();
+    _unattachedMastIcon.clear();
+    _darkTrack.clear();
+    _unconvertedTrack.clear();
+    _hasIndicatorTrackIcons = false;
+    _hasPortalIcons = false;
+    _hasMastIcons = false;
+    QList<Positionable*> removeList = QList<Positionable*>();
+    PortalManager* portalMgr = (PortalManager*)InstanceManager::getDefault("PortalManager");
+
+    QListIterator<Positionable*> it = (_editor->getContents());
+    while (it.hasNext()) {
+        Positionable* pos = it.next();
+        if (qobject_cast<IndicatorTrack*>(pos->self())) {
+            _hasIndicatorTrackIcons = true;
+            OBlock* block = ((IndicatorTrack*) pos)->getOccBlock();
+            ((IndicatorTrack*) pos)->removePath(EditCircuitPaths::TEST_PATH);
+            if (block != nullptr) {
+                addIcon(block, pos);
+            } else {
+                _darkTrack.append(pos);
+            }
+        } else if (qobject_cast<PortalIcon*>(pos->self())) {
+            _hasPortalIcons = true;
+            PortalIcon* pIcon = (PortalIcon*) pos;
+            Portal* portal = pIcon->getPortal();
+            if (portal == nullptr) {
+                log->error(tr("No Portal for PortalIcon called \"%1\". Discarding icon.").arg(pIcon->getName()));
+                removeList.append(pIcon);
+            } else {
+                QList<PortalIcon*>* piArray = getPortalIconMap(portal);
+                piArray->append(pIcon);
+            }
+        } else if (qobject_cast<SignalMastIcon*>(pos->self())) {
+            _hasMastIcons = true;
+            SignalMastIcon* sIcon = (SignalMastIcon*)pos;
+            NamedBean* mast = (NamedBean*)sIcon->getSignalMast();
+            if (mast == nullptr) {
+                log->error(tr("No SignalMast for SignalMastIcon called \"%1\".").arg(sIcon->getNameString()));
+                removeList.append(sIcon);
+            } else {
+                QList<PositionableIcon*>* siArray = getSignalIconMap(mast);
+                siArray->append(sIcon);
+                _unattachedMastIcon.append(sIcon);
+            }
+        } else if (qobject_cast<SignalHeadIcon*>(pos->self())) {
+            _hasMastIcons =true;
+            SignalHeadIcon* sIcon = (SignalHeadIcon*)pos;
+            NamedBean* mast = sIcon->getSignalHead();
+            if (mast == nullptr) {
+                log->error(tr("No SignalHead for SignalHeadIcon called \"%1\".").arg(sIcon->getNameString()));
+                removeList.append(sIcon);
+            } else {
+                QList<PositionableIcon*>* siArray = getSignalIconMap(mast);
+                siArray->append(sIcon);
+                _unattachedMastIcon.append(sIcon);
+            }
+        } else if (isUnconvertedTrack(pos)) {
+            if (!_unconvertedTrack.contains(pos)) {
+                _unconvertedTrack.append(pos);
+            }
+        }
     }
-    _portalIconMap.insert(name, pIcon);
-   }
-  } else if (isUnconvertedTrack(pos)) {
-   if (!_unconvertedTrack.contains(pos)) {
-       _unconvertedTrack.append(pos);
-   }
-  }
- }
- QListIterator<QList<Positionable*>* > iters(_circuitMap->values());
- while (iters.hasNext())
- {
-  //iters.next();
-  QListIterator<Positionable*> iter( *iters.next());
-  while (iter.hasNext())
-  {
-   Positionable* pos = iter.next();
-   if (isUnconvertedTrack(pos))
-   {
-    if (!_unconvertedTrack.contains(pos)) {
-        _unconvertedTrack.append(pos);
+    QListIterator<Positionable*> its(removeList);
+    while (its.hasNext()) {
+        its.next()->remove();
     }
-   }
-  }
- }
- _bareBlock = new QList<OBlock*>();
- _convertBlock = new QList<OBlock*>();
- _badPortalIcon =  QMap<QString, Portal*>();
- OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
- QStringList sysNames = manager->getSystemNameArray();
- hasOBlocks = (sysNames.length()>0);
- for (int i = 0; i < sysNames.length(); i++) {
-     OBlock* block = (OBlock*)manager->getBySystemName(sysNames[i]);
-     QList<Positionable*>* icons = _circuitMap->value(block);
-     if (log->isDebugEnabled()) log->debug("checkCircuits: block "+block->getDisplayName()
-                                         +" has "+QString::number(icons->size())+" icons.");
-     if (icons==NULL || icons->size()==0) {
-         _bareBlock->append(block);
-     } else {
-         for (int k=0; k<icons->size(); k++) {
-             Positionable* pos = icons->at(k);
-             //if (!(pos instanceof IndicatorTrack) && !(pos instanceof PortalIcon))
-             if(qobject_cast<IndicatorTrack*>((QObject*)pos) == NULL && qobject_cast<PortalIcon*>((QObject*)pos)== NULL)
-             {
-                 if (!_convertBlock->contains(block)) {
-                     _convertBlock->append(block);
-                     break;
-                 }
-             }
-         }
-         QList<Portal*> list = block->getPortals();
-         //int iconCount = 0;
-         if (/*list!=NULL &&*/ list.size()>0) {
-             for (int k=0; k<list.size(); k++) {
-                 PortalIcon* pi = _portalIconMap.value(list.at(k)->getName());
-                 if (pi!=NULL) {
-                     //iconCount++;
-                     addIcon(block, (Positionable*)pi);
-//                        if (!EditPortalFrame::portalIconOK(icons, pi)) {
-//                            if (!_portalMisplacedBlock->contains(block)) {
-//                                _portalMisplacedBlock->add(block);
-//                            }
-//                        }
-                 }
-             }
-         }
-         // make map of all Portals
-         QList <Portal*> pList = block->getPortals();
-         for (int k=0; k<pList.size(); k++) {
-             Portal* portal = pList.at(k);
-             _portalMap.insert(portal->getName(), portal);
-         }
-}
+
+    _bareBlock->clear();         // blocks with no track icons
+    _convertBlock->clear();      // blocks with at least one unconverted track icon
+    _misplacedPortalIcon.clear();
+    _noPortalIcon.clear();
+    _noPortals.clear();
+    _noPaths.clear();
+    OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
+    QSet<NamedBean*> oblocks = manager->getNamedBeanSet();
+    for (NamedBean* nb : oblocks) {
+     OBlock* block = (OBlock*)nb;
+        QList<Portal*> portals = block->getPortals();
+        if (portals.isEmpty()) {
+            _noPortals.append(block);
+        } else {
+            // first add PortalIcons and SignalIcons to circuitMap
+            for (Portal* portal : portals) {
+                QList<PortalIcon*>* piArray = getPortalIconMap(portal);
+                for (PortalIcon* pi : *piArray) {
+                    addIcon(block, pi);
+                }
+                NamedBean* mast = portal->getSignalProtectingBlock(block);
+                if (mast != nullptr) {
+                    QList<PositionableIcon*>* siArray = getSignalIconMap(mast);
+                    for (PositionableIcon* si : *siArray) {
+                        addIcon(block, si);
+                        _unattachedMastIcon.removeOne(si);
+
+                    }
+                    _signalMap.insert(mast, portal);
+                }
+                if (log->isDebugEnabled()) {
+                    log->debug(tr("Portal %1 in block %2 has %3 icons").arg(portal->getName()).arg(block->getDisplayName()).arg(piArray->size()));
+                }
+            }
+        }
+        QVector<Path*>* paths = block->getPaths();
+        if (paths ==nullptr || paths->isEmpty()) {
+            _noPaths.append(block);
+        }
+
+        QList<Positionable*>* icons = getCircuitIcons(block);
+        if (log->isDebugEnabled()) {
+            log->debug("checkCircuits: block " + block->getDisplayName()
+                    + " has " + QString::number(icons->size()) + " icons.");
+        }
+        if (icons->isEmpty()) {
+            _bareBlock->append(block);
+        } else {
+            bool hasTrackIcon = false;
+            bool iconNeedsConversion = false;
+            for (int k = 0; k < icons->size(); k++) {
+                Positionable* pos = icons->at(k);
+                if (!(qobject_cast<PortalIcon*>(pos->self())) && !(qobject_cast<SignalMastIcon*>(pos->self())) && !(qobject_cast<SignalHeadIcon*>(pos->self())) ) {
+                    hasTrackIcon = true;
+                    if (!(qobject_cast<IndicatorTrack*>(pos->self()))) {
+                        iconNeedsConversion = true;
+                    }
+                }
+            }
+            if (hasTrackIcon) {
+                _bareBlock->removeOne(block);
+            } else if (!_bareBlock->contains(block)) {
+                _bareBlock->append(block);
+            }
+            if (iconNeedsConversion && !_convertBlock->contains(block)) {
+                _convertBlock->append(block);
+            }
+        }
+    }
+
+    // check positioning of portal icons for 'direction arrow' state.
+    for (Portal* portal : portalMgr->getPortalSet()) {
+        QList<PortalIcon*>* piArray = getPortalIconMap(portal);
+        if (piArray->isEmpty()) {
+            _noPortalIcon.append(portal);
+        } else {
+            PortalIcon* icon1 = piArray->at(0);
+            if (piArray->size() == 1) {
+                if (!iconIntersectsBlock(icon1, portal->getToBlock()) ||
+                        !iconIntersectsBlock(icon1, portal->getFromBlock())) {
+                    _misplacedPortalIcon.append(icon1);
+                }
+            } else {
+                bool fromOK = false;
+                bool toOK = false;
+                PortalIcon* icon = nullptr;
+                for (PortalIcon* ic : *piArray) {
+                    if (!toOK && iconIntersectsBlock(ic, portal->getToBlock()) &&
+                            !iconIntersectsBlock(ic, portal->getFromBlock())) {
+                        toOK = true;
+                    } else if (!fromOK && !iconIntersectsBlock(ic, portal->getToBlock()) &&
+                            iconIntersectsBlock(ic, portal->getFromBlock())) {
+                        fromOK = true;
+                    } else {
+                        icon = ic;
+                    }
+                }
+                if (!toOK || !fromOK) {
+                    _misplacedPortalIcon.append(icon);
+                }
+            }
+        }
+    }
+
+    if (oblocks.size() > 1) {
+        if (_circuitMenu->actions().count() <= 3) {
+            _circuitMenu->clear();
+            makeCircuitMenu();
+        } else {
+            makeToDoMenu();
+        }
+    } else {
+        _circuitMenu->clear();
+        makeNoOBlockMenu();
     }
 }   // end checkCircuits
 
-/*************** Frame Utilities **************/
+/*protected*/ bool CircuitBuilder::iconIntersectsBlock(Positionable* icon, OBlock* block) {
+        QList<Positionable*>* list = getCircuitIcons(block);
+        if (list->isEmpty()) {
+            return false;
+        }
+        QRectF rect = QRectF();
+        QRectF iconRect = icon->getBounds(QRectF());
+        for (int i = 0; i < list->size(); i++) {
+            Positionable* comp = list->value(i);
+            if (CircuitBuilder::isTrack(comp)) {
+                rect = list->value(i)->getBounds(rect);
+                if (iconRect.intersects(rect)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+////////////////////////// Frame Utilities //////////////////////////
 
 /**
 * Used by Portal Frame
@@ -1224,365 +1080,227 @@ void CircuitBuilder::showDoneButton_clicked()
     return _circuitMap->value(block);
 }
 
-/**
-* Used by Portal Frame
-*/
-/*protected*/ OBlock* CircuitBuilder::getBlock(Positionable* pos) {
-    return _iconMap->value(pos);
-}
-
-/**
-* Used by Path Frame
-*/
-/*protected*/ QList<Positionable*>* CircuitBuilder::getCircuitGroup() {
-    return _circuitIcons;
-}
-#if 1
-/**
-* Used by Portal Frame
-*/
-/*protected*/ QHash<QString, PortalIcon*> CircuitBuilder::getPortalIconMap() {
-    return _portalIconMap;
-}
-
-/*protected*/ Portal* CircuitBuilder::getPortalByName(QString name) {
-    return _portalMap.value(name);
-}
-
-/*protected*/ void CircuitBuilder::changePortalName(QString oldName, QString newName) {
-    PortalIcon* icon = _portalIconMap.value(oldName);
-    Portal* portal = _portalMap.value(oldName);
-    _portalMap.remove(oldName);
-    _portalIconMap.remove(oldName);
-    _portalMap.insert(newName, portal);
-    _portalIconMap.insert(newName, icon);
-}
-
-/*protected*/ void CircuitBuilder::removePortal(QString name) {
-    _portalMap.remove(name);
-    _portalIconMap.remove(name);
-}
-#endif
-/*protected*/ void CircuitBuilder::addPortalIcon(PortalIcon* icon) {
-    //Portal portal = icon.getPortal();
-    QString name = icon->getName();
-    // Eliminate possible duplicate icons for this portal
-    if(!_portalIconMap.contains(name)) {
-        _portalMap.insert(name, icon->getPortal());
-        _portalIconMap.insert(name, icon);
-        _portalIcons->append(icon);
+//@Nonnull
+/*protected*/ QList<PortalIcon *>* CircuitBuilder::getPortalIconMap(/*@Nonnull*/ Portal* portal) {
+    QList<PortalIcon*>* array = _portalIconMap.value(portal);
+    if (array->isEmpty()) {
+        array = new QList<PortalIcon*>();
+        _portalIconMap.insert(portal, array);
     }
-    //
-    if (_circuitIcons!=NULL) {
-        _circuitIcons->append((Positionable*)icon);
-    }
+    return array;
 }
 
-/*public*/ QList<PortalIcon*>* CircuitBuilder::getPortalIcons() {
-    return _portalIcons;
+//@Nonnull
+/*protected*/ QList<PositionableIcon*>* CircuitBuilder::getSignalIconMap(/*@Nonnull*/ NamedBean* mast) {
+    QList<PositionableIcon*>* array = _signalIconMap.value(mast);
+    if (array == nullptr) {
+        array = new QList<PositionableIcon*>();
+        _signalIconMap.insert(mast, array);
+    }
+    return array;
 }
-#if 0
+
+/*protected*/ Portal* CircuitBuilder::getSignalPortal(/*@Nonnull*/ NamedBean* mast) {
+    return _signalMap.value(mast);
+}
+
+/*protected*/ void CircuitBuilder::putSignalPortal(/*@Nonnull*/ NamedBean* mast, Portal* portal) {
+    if (portal == nullptr) {
+        _signalMap.remove(mast);
+    }
+    _signalMap.insert(mast, portal);
+}
+
 /**
-* Remove block, but keep the track icons. Set block reference in icon NULL
-*/
-protected void removeBlock (OBlock block) {
-    java.util.List<Positionable> list = _circuitMap->get(block);
-    if (list!=NULL) {
-        for (int i=0; i<list.size(); i++) {
-            Positionable pos = list.get(i);
-            if (pos instanceof IndicatorTrack) {
-                ((IndicatorTrack)pos).setOccBlockHandle(NULL);
-            } else if (pos instanceof PortalIcon) {
-                pos.remove();
-            }
-            _darkTrack.add(pos);
-        }
-    }
-//        InstanceManager.oBlockManagerInstance().deregister(block);
-    _circuitMap->remove(block);
-    block.dispose();
-}
-
-/***************** Overriden methods of Editor *******************/
-
-/*public*/ void paintTargetPanel(Graphics g) {
-    Graphics2D g2d = (Graphics2D)g;
-    if (_circuitIcons!=NULL){
-        java.awt.Stroke stroke = g2d.getStroke();
-        Color color = g2d.getColor();
-        g2d.setColor(_editGroupColor);
-        g2d.setStroke(new java.awt.BasicStroke(2.0f));
-        for(int i=0; i<_circuitIcons->size();i++){
-            g.drawRect(_circuitIcons->get(i).getX(), _circuitIcons->get(i).getY(),
-                       _circuitIcons->get(i).maxWidth(), _circuitIcons->get(i).maxHeight());
-        }
-        g2d.setColor(color);
-        g2d.setStroke(stroke);
-    }
-}
-/*
-public void setAllEditable(boolean state) {
-    _editable = state;
-    for (int i = 0; i<_contents.size(); i++) {
-        _contents.get(i).setEditable(state);
-    }
-    _editor.setSelectionGroup(NULL);
-}
-
-/********************* convert plain track to indicator track **************/
-
-#endif
-/**
- * Check if the block being edited has all its icons converted to indicator
- * icons
+ * Remove block, but keep the track icons. Sets block reference in icon to
+ * null.
+ *
+ * @param block the block to remove
  */
-/*private*/ bool CircuitBuilder::iconsConverted(OBlock* block) {
-    if (block == NULL) {
+/*protected*/ void CircuitBuilder::removeBlock(OBlock* block) {
+    QList<Positionable*>* list = getCircuitIcons(block);
+    for (Positionable* pos : *list) {
+        if (qobject_cast<IndicatorTrack*>(pos->self())) {
+            ((IndicatorTrack*) pos->self())->setOccBlockHandle(nullptr);
+        }
+        _darkTrack.append(pos);
+    }
+    block->dispose();
+    if (((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getNamedBeanSet().size() < 2) {
+        _editor->makeWarrantMenu(true, false);
+    }
+}
+
+/*protected*/ QString CircuitBuilder::checkForPortals(/*@Nonnull*/ OBlock* block, QString key) {
+    QString sb;// = new StringBuffer();
+    QList<Portal*> portals = block->getPortals();
+    if (portals.isEmpty()) {
+        sb.append(tr("Block circuit (OBlock) \"%1\" has no portals.\nPortals are needed to add a %2 in CircuitBuilder.").arg(block->getDisplayName()).arg((key)));
+    } else {
+        for (Portal* portal : portals) {
+            if (portal->getToBlock() == nullptr || portal->getFromBlock() == nullptr) {
+                if (sb.length() > 0) {
+                    sb.append("\n");
+                }
+                sb.append(tr("Portal \"%1\" is incomplete! It must have an OBlock on each side.").arg(portal->getName()));
+            }
+        }
+        for (Portal* portal : portals) {
+            if (sb.length() > 0) {
+                sb.append("\n");
+            }
+            if (!block->equals(portal->getToBlock()) && !block->equals(portal->getFromBlock())) {
+                sb.append(tr("Portal \"%1\" does not connect to track circuit (OBlock) \"%2\".").arg(portal->getName()).arg(block->getDisplayName()));
+            }
+        }
+    }
+    return sb/*.toString()*/;
+}
+
+
+/**
+ * Check that there is at least one PortalIcon
+ * @param block check icons of this block
+ * @param key properties key
+ * @return true if at least one PortalIcon found
+ */
+/*protected*/ QString CircuitBuilder::checkForPortalIcons(/*@Nonnull*/ OBlock* block, QString key) {
+    QString sb;// = new StringBuffer();
+    QList<Portal*> portals = block->getPortals();
+    for (Portal* portal : portals) {
+        QList<PortalIcon*>* iconMap = getPortalIconMap(portal);
+        if (iconMap->isEmpty()) {
+            if (sb.length() > 0) {
+                sb.append("\n");
+            }
+            sb.append(tr("Portal \"%1\" does not have an icon.\nPortal Icons are needed to add a %2 in CircuitBuilder.").arg(portal->getName()).arg((key)));
+        } else {
+            for (PortalIcon* icon : *iconMap) {
+                Portal* p = icon->getPortal();
+                if (p == nullptr) {
+                    deletePortalIcon(icon);
+                } else if (qobject_cast<EditPortalFrame*>(_editFrame)){
+                    QString msg = ((EditPortalFrame*)_editFrame)->checkPortalIconForUpdate(icon, false);
+                    if (msg != nullptr) {
+                        if (sb.length() > 0) {
+                            sb.append("\n");
+                        }
+                        sb.append(msg);
+                    }
+                }
+            }
+        }
+    }
+    // block has pPortals
+    bool ok = false;
+    QList<Positionable*>* list = getCircuitIcons(block);
+    if (!list->isEmpty()) {
+        for (Positionable* pos : *list) {
+            if (qobject_cast<PortalIcon*>(pos->self())) {
+                ok = true;
+            }
+        }
+    }
+    if (!ok) {
+        if (sb.length() > 0) {
+            sb.append("\n");
+        }
+        sb.append(tr("Block circuit \"%1\" needs portal icons.\nPortal Icons are needed to add a %2 in CircuitBuilder.").arg(block->getDisplayName()).arg((key)));
+    }
+    return sb;
+}
+
+/*protected*/ QString CircuitBuilder::checkForTrackIcons(/*@Nonnull*/ OBlock* block, QString key) {
+    QString sb;// = new StringBuilder();
+    QList<Positionable*>* list = getCircuitIcons(block);
+    if (list->isEmpty()) {
+        sb.append(tr("Block circuit (OBlock) \"%1\" needs Indicator Track icons to add a {1} in CircuitBuilder.").arg(block->getDisplayName()).arg((key)));
+    } else {
+        bool ok = true;
+        for (Positionable* p : *list) {
+            PositionableLabel* pos = (PositionableLabel*) p;
+            if (CircuitBuilder::isUnconvertedTrack(pos)) {
+                ok = false;
+                break;
+            }
+        }
+        if (!ok) {
+            sb.append(tr("Track icons in circuit (OBlock) \"%1\" need conversion before saving the panel file.").arg(block->getDisplayName()));
+            sb.append("\n");
+            sb.append(tr("Block circuit (OBlock) \"%1\" needs Indicator Track icons to add a %2 in CircuitBuilder.").arg(block->getDisplayName()).arg((key)));
+        }
+    }
+    return  sb;
+}
+
+/*protected*/ void CircuitBuilder::deletePortalIcon(PortalIcon* icon) {
+    if (log->isDebugEnabled()) {
+        log->debug("deletePortalIcon: " + icon->getName());
+    }
+    Portal* portal = icon->getPortal();
+    if (portal != nullptr) {
+        getCircuitIcons(portal->getToBlock())->removeOne(icon);
+        getCircuitIcons(portal->getFromBlock())->removeOne(icon);
+        getPortalIconMap(portal)->removeOne(icon);
+    }
+    QList<Positionable*>* selections = _editor->getSelectionGroup();
+    if (selections != nullptr) {
+        _editor->getSelectionGroup()->removeOne(icon);
+    }
+    _editor->repaint();
+}
+
+/**
+  * Check if the block being edited has all its track icons converted to indicator icons
+ * If icons need conversion. ask if user wants to convert them
+ * @param block OBlock to check
+ * @param key properties key
+ * @return true if all track icons are IndicatorTrack icons
+ */
+/*protected*/ bool CircuitBuilder::queryConvertTrackIcons(/*@Nonnull*/ OBlock* block, QString key) {
+    // since iconList will be modified, use a copy to find unconverted icons
+    QList<Positionable*> list = QList<Positionable*>(*getCircuitIcons(block));
+    QString msg = "";
+    if (list.isEmpty()) {
+        msg = tr("Block circuit (OBlock) \"%1\" needs Indicator Track icons to add a %2 in CircuitBuilder.").arg(block->getDisplayName()).arg(key);
+    } else {
+        for (Positionable* p : list) {
+            PositionableLabel* pos = (PositionableLabel*) p->self();
+            if (CircuitBuilder::isUnconvertedTrack(pos)) {
+                _editor->highlight(pos);
+                new ConvertDialog(this, pos, block);
+                _editor->highlight(nullptr);
+            }
+        }
+    }
+    if (msg != nullptr) {
+        JOptionPane::showMessageDialog(_editFrame, msg,
+                tr("no Icons"), JOptionPane::INFORMATION_MESSAGE);
+        return false;
+    } else {
         return true;
     }
-    QList<Positionable*>* list = _circuitMap->value(block);
-    if (list != NULL && list->size() > 0)
-    {
-        for (int i = 0; i < list->size(); i++)
-        {
-            Positionable* pos = list->at(i);
-            //if (!(pos instanceof IndicatorTrack) && !(pos instanceof PortalIcon))
-            if(qobject_cast<IndicatorTrack*>((QObject*)pos) != NULL && qobject_cast<PortalIcon*>((QObject*)pos) != NULL)
-            {
-                if (log->isDebugEnabled()) {
-                    log->debug("icon needs Convertion " + QString(((QObject*)pos)->metaObject()->className()));
-                }
-                return false;
-            }
-        }
-    }
-    return true;
 }
 
+//////////////// select - deselect track icons //////////
 /**
- * Icons need conversion. ask if user wants to convert them
+ * Select block's track icons for editing. filter for what icon types to show and highlight
  */
-/*private*/ void CircuitBuilder::queryConvertIcons(OBlock* block) {
-    if (block == NULL) {
-        return;
-    }
-    QList<Positionable*>* list = _circuitMap->value(block);
-    if (list != NULL && list->size() > 0)
-    {
-//        int result = JOptionPane.showConfirmDialog(_editor, Bundle.getMessage("notIndicatorIcon"),
-//                Bundle.getMessage("incompleteCircuit"), JOptionPane.YES_NO_OPTION,
-//                JOptionPane.QUESTION_MESSAGE);
-     int result = QMessageBox::question(_editor,tr("Track Circuit Incomplete"), tr("Not all of the track icons are indicator icons.  Do you want to convert them?"), QMessageBox::Yes | QMessageBox::No);
-        if (result == QMessageBox::Yes) {
-            convertIcons(_circuitMap->value(block));
-        }
-    } else {
-//        JOptionPane.showMessageDialog(_editor, Bundle.getMessage("needIcons", block.getDisplayName()),
-//                Bundle.getMessage("noIcons"), JOptionPane.INFORMATION_MESSAGE);
-     QMessageBox::information(_editor, tr("Information"), tr("Block circuit \"%1\" needs at least one track icon.\n Use \"Edit Track Circuit\" to add Indicator Track icons.").arg(block->getDisplayName()));
-    }
-}
-
-
-/*protected*/ void CircuitBuilder::convertIcons(QList<Positionable*>* iconList)
-{
-    if (iconList == NULL || iconList->size() == 0) {
-        return;
-    }
-    // use global member for finishConvert to remove and add converted icons,
-    _circuitIcons = iconList;
-    // since iconList will be modified, use a copy to find unconverted icons
-    QList<Positionable*>* list =  new QList<Positionable*>();
-    for (int i = 0; i < iconList->size(); i++) {
-        list->append(iconList->at(i));
-    }
-    if (list->size() > 0)
-    {
-//        TargetPane targetPane = (TargetPane) _editor.getTargetPanel();
-//        targetPane.setHighlightColor(_highlightColor);
-
-        for (int i = 0; i < list->size(); i++) {
-            Positionable* pos = list->at(i);
-            //if (!(pos instanceof IndicatorTrack) && !(pos instanceof PortalIcon))
-            if(qobject_cast<IndicatorTrack*>((QObject*)pos) == NULL && qobject_cast<PortalIcon*>((QObject*)pos) == NULL)
-            {
-                if (log->isDebugEnabled()) {
-                    log->debug("convertIcons: #" + QString::number(i) + " pos= " + QString(((QObject*)pos)->metaObject()->className()));
-                }
-                convertIcon(pos);
+/*private*/ QList<Positionable*>* CircuitBuilder::makeSelectionGroup(OBlock* block, bool showPortal) {
+    QList<Positionable*> group = QList<Positionable*>();
+    for (Positionable* p : *getCircuitIcons(block)) {
+        if (qobject_cast<PortalIcon*>(p->self())) {
+            if (showPortal) {
+                ((PortalIcon*) p)->setStatus(PortalIcon::VISIBLE);
+                group.append(p);
             }
-        }
-//        targetPane.setHighlightColor(_editGroupColor);
-//        _editor.highlight(NULL);
-    }
-}
-
-/*private*/ void CircuitBuilder::convertIcon(Positionable* pos)
-{
- _oldIcon = (PositionableLabel*)pos;
- _editor->highlight((Positionable*)_oldIcon);
- _editor->toFront();
-//    _editor.repaint();
-    //if (pos instanceof TurnoutIcon)
- if(qobject_cast<TurnoutIcon*>((QObject*)pos)!= NULL)
- {
-  _convertFrame = new ConvertFrame("IndicatorTO", (PositionableLabel*)pos, this);
-  _trackTOPanel = new IndicatorTOItemPanel(_convertFrame->_paletteFrame, "IndicatorTO", NULL, NULL, _editor, (QWidget*)this);
-  _convertDialog->layout()->addWidget(_trackTOPanel);
-//        ActionListener updateAction = new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                convertTO();
-//            }
-//        };
-  TOPActionListener* updateAction = new TOPActionListener(true, this);
-     _trackTOPanel->init(updateAction);
-     _convertDialog->layout()->addWidget(_trackTOPanel);
-    } else {
-        _convertFrame = new ConvertFrame("IndicatorTrack", (PositionableLabel*)pos, this);
-        _trackPanel = new IndicatorItemPanel(_convertFrame->_paletteFrame, "IndicatorTrack", NULL, _editor, (QWidget*)this);
-//            _convertDialog->add(_trackPanel);
-//        ActionListener updateAction = new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                convertSeg();
-//            }
-//        };
-        TOPActionListener* updateAction = new TOPActionListener(false, this);
-        _trackPanel->init(updateAction);
-        _convertDialog->layout()->addWidget(_trackPanel);
-  }
-  // _convertDialog->pack();
-  _convertDialog->setVisible(true);
- _editor->repaint();
-}
-TOPActionListener::TOPActionListener(bool bIsTO, CircuitBuilder *parent)
-{
- this->bIsTO = bIsTO;
- this->parent = parent;
-}
-void TOPActionListener::actionPerformed(ActionEvent */*e*/)
-{
- if(bIsTO)
-  parent->convertTO();
- else
-  parent->convertSeg();
-}
-
-/*
- * gimmick to get JDialog to re-layout contents and repaint
- */
-//static class convertFrame extends JmriJFrame {
-//    JDialog _dialog;
-ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder* circuitBuilder) : JmriJFrame(false, false)
-{
- //super(false, false);
- ItemPalette::loadIcons(circuitBuilder->_editor);
- _paletteFrame = pos->makePaletteFrame(title);
- _dialog = new JDialog(circuitBuilder->_editor, tr("Edit Item %1").arg(title), true);
-
- _dialog->setLocationRelativeTo(circuitBuilder->_editor);
- _dialog->toFront();
-}
-
-/*public*/ void ConvertFrame::dispose() {
-    _dialog->dispose();
-}
-//};
-
-
-/*private*/ void CircuitBuilder::convertTO() {
-    IndicatorTurnoutIcon* t = new IndicatorTurnoutIcon(_editor);
-    t->setOccBlockHandle(new NamedBeanHandle<OBlock*>(_currentBlock->getSystemName(), _currentBlock));
-    t->setTurnout( ((TurnoutIcon*)_oldIcon)->getNamedTurnout());
-    t->setFamily(_trackTOPanel->getFamilyName());
-
-    QMap <QString, QMap <QString, NamedIcon*>*>* iconMap = _trackTOPanel->getIconMaps();
-    QMapIterator<QString, QMap<QString, NamedIcon*>*> it(*iconMap);
-    while (it.hasNext())
-    {
-        //Entry<String, QHash<String, NamedIcon>> entry = it.next();
-        it.next();
-        QString status = it.key();
-        QMapIterator<QString, NamedIcon*> iter(* it.value());
-        while (iter.hasNext())
-        {
-            //Entry<String, NamedIcon> ent = iter.next();
-            iter.next();
-            t->setIcon(status, iter.key(), new NamedIcon(iter.value()));
+        } else if (!(qobject_cast<SignalMastIcon*>(p->self())) && !(qobject_cast<SignalHeadIcon*>(p->self()))) {
+            group.append(p);
         }
     }
-    t->setLevel(Editor::TURNOUTS);
-    t->setScale(_oldIcon->getScale());
-    t->rotate(_oldIcon->getDegrees());
-    finishConvert((Positionable*)t);
-}
-/*private*/ void CircuitBuilder::convertSeg() // SLOT[]
-{
-    IndicatorTrackIcon* t = new IndicatorTrackIcon(_editor);
-    t->setOccBlockHandle(new NamedBeanHandle<OBlock*>(_currentBlock->getSystemName(), _currentBlock));
-    t->setFamily(_trackPanel->getFamilyName());
-
-    QMap<QString, NamedIcon*>* iconMap = _trackPanel->getIconMap();
-    if (iconMap!=NULL) {
-        QMapIterator<QString, NamedIcon*> it( * iconMap);
-        while (it.hasNext()) {
-            //QHash<QString, NamedIcon*>* entry = it.next();
-            it.next();
-            if (log->isDebugEnabled()) log->debug("key= "+it.key());
-            t->setIcon(it.key(), new NamedIcon(it.value()));
-        }
-    }
-    t->setLevel(Editor::TURNOUTS);
-    t->setScale(_oldIcon->getScale());
-    t->rotate(_oldIcon->getDegrees());
-    finishConvert((Positionable*)t);
+    return &group;
 }
 
-/*private*/ void CircuitBuilder::finishConvert(Positionable* pos) {
-    _circuitIcons->removeOne(_oldIcon);
-    _oldIcon->remove();
-    ((Positionable*)pos)->setLocation(((Positionable*)_oldIcon)->getLocation());
-    _editor->putItem(pos);
-    _circuitIcons->append(pos);
-    pos->updateSize();
-
-    _oldIcon = NULL;
-    _trackPanel = NULL;
-    _trackTOPanel = NULL;
-    //_convertDialog->dispose();
-    _convertDialog->close();
-    _convertDialog = NULL;
-    _convertFrame = NULL;
-}
-/*************** end convert icons *******************/
-
-/**************** select - deselect track icons ************************/
-
-/**
-* select block's track icons for editing
-*/
-/*private*/ QList<Positionable*>* CircuitBuilder::makeSelectionGroup(OBlock* block, bool showPortal)
-{
- QList<Positionable*>* group =  new QList<Positionable*>();
- QListIterator<Positionable*> iter(*_circuitMap->value(block));
- while (iter.hasNext())
- {
-  Positionable* p = iter.next();
-  //if (p instanceof PortalIcon)
-  if(qobject_cast<PortalIcon*>((QObject*)p) != NULL)
-  {
-   if (showPortal) {
-       ((PortalIcon*) p)->setStatus(PortalIcon::VISIBLE);
-       group->append(p);
-   }
-  }
-  else
-  {
-   group->append(p);
-  }
-  }
- return group;
-}
-#if 1
 /*protected*/ bool CircuitBuilder::isTrack(Positionable* pos) {
     if (qobject_cast<IndicatorTrack*>((QObject*)pos)) {
         return true;
@@ -1606,7 +1324,6 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
     }
     return false;
 }
-#endif
 /*private*/ bool CircuitBuilder::isUnconvertedTrack(Positionable* pos) {
     //if (pos instanceof IndicatorTrack)
     if(qobject_cast<IndicatorTrack*>((QObject*)pos)!= NULL)
@@ -1638,35 +1355,6 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
 
     }
     return false;
-}
-#if 1
-/**
-* Can a path in this circuit be drawn through this icon?
-*/
-/*private*/ bool CircuitBuilder::okPath(Positionable* pos, OBlock* block) {
-    QList<Positionable*>* icons = _circuitMap->value(block);
-    if (qobject_cast<PortalIcon*>((QObject*)pos)) {
-        Portal* portal = ((PortalIcon*)pos)->getPortal();
-        if (portal!=NULL) {
-            if (block==(portal->getFromBlock()) || block==(portal->getToBlock())) {
-                ((PortalIcon*)pos)->setStatus(PortalIcon::PATH);
-                return true;
-            }
-        }
-//        JOptionPane.showMessageDialog(_editor, java.text.MessageFormat.format(
-//                            tr("portalNotInCircuit"),block.getDisplayName()),
-//                        tr("badPath"), JOptionPane.WARNING_MESSAGE);
-        QMessageBox::warning(_editor, tr("Invalid Path"), tr("This Portal is not part of track circuit \"%1\".").arg(block->getDisplayName()));
-        return false;
-    }
-    if (!icons->contains(pos)) {
-//        JOptionPane.showMessageDialog(_editor, java.text.MessageFormat.format(
-//                            tr("iconNotInCircuit"),block.getDisplayName()),
-//                        tr("badPath"), JOptionPane.WARNING_MESSAGE);
-        QMessageBox::warning(_editor, tr("Invalid Path"), tr("This icon is not part of track circuit \"%1\".").arg(block->getDisplayName()));
-        return false;
-    }
-    return true;
 }
 
 /**
@@ -1701,7 +1389,8 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
     }
     return true;
 }
-#endif
+
+
 /**************************** Mouse *************************/
 
 /**
@@ -1816,81 +1505,53 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
 /*public*/ bool CircuitBuilder::dragPortal() {
     return (_editPortalFrame != NULL || _editDirectionFrame != NULL);
 }
-#if 1
+
 /*
 * For the param, selection, Add to or delete from selectionGroup.
 * If not there, add.
 * If there, delete.
 */
 /*private*/ void CircuitBuilder::handleSelection(Positionable* selection, QGraphicsSceneMouseEvent* event) {
-    if (_editCircuitFrame!=NULL) {
-        QList<Positionable*>* selectionGroup = _editor->getSelectionGroup();
-        if (isTrack(selection)) {
-            if (selectionGroup==NULL) {
-                selectionGroup = new QList<Positionable*>();
-            }
-            if (selectionGroup->contains(selection)) {
-                selectionGroup->removeOne(selection);
-            } else if (okToAdd(selection, _editCircuitFrame->getBlock())) {
-                selectionGroup->append(selection);
-            }
-        }
-        _editCircuitFrame->updateIconList(selectionGroup);
-        _editCircuitFrame->toFront();
-        _editor->setSelectionGroup(selectionGroup);
-    } else if (_editPathsFrame!=NULL)
-    {
-        //if (selection instanceof IndicatorTrack || selection instanceof PortalIcon)
-     if(qobject_cast<IndicatorTrack*>((QObject*)selection) || qobject_cast<PortalIcon*>((QObject*)selection))
-        {
-            OBlock* block = _editPathsFrame->getBlock();
-            // A temporary path "TEST_PATH" is used to display the icons representing a path
-            // the OBlock has allocated TEST_PATH
-            // pathGroup collects the icons and the actual path is edited or
-            // created with a save in _editPathsFrame
-            QList<Positionable*>* pathGroup = _editPathsFrame->getPathGroup();
-            if (!event->modifiers()&Qt::ShiftModifier) {
-                if (pathGroup->contains(selection)) {
-                    pathGroup->removeOne(selection);
-                    if (qobject_cast<PortalIcon*>((QObject*)selection)) {
-                        ((PortalIcon*)selection)->setStatus(PortalIcon::VISIBLE);
-                    } else {
-                        ((IndicatorTrack*)selection)->setStatus(Sensor::INACTIVE);
-                        ((IndicatorTrack*)selection)->removePath(EditCircuitPaths::TEST_PATH);
-                        if (log->isDebugEnabled()) log->debug("removePath TEST_PATH");
-                    }
-                } else if (okPath(selection, block)) {
-                    pathGroup->append(selection);
-                    // okPath() sets PortalIcons to status PortalIcon.PATH
-                    if (qobject_cast<IndicatorTrack*>((QObject*)selection)) {
-                        ((IndicatorTrack*)selection)->addPath(EditCircuitPaths::TEST_PATH);
-                    }
-                } else {
-                    return;
-                }
-            } else {
-                if (qobject_cast<PortalIcon*>((QObject*)selection)) {
-                    ((PortalIcon*)selection)->setStatus(PortalIcon::VISIBLE);
-                }
-            }
-            int state = block->getState() | OBlock::ALLOCATED;
-            block->pseudoPropertyChange("state", (0), (state));
-            _editPathsFrame->updatePath(true);
-        }
-         _editPathsFrame->toFront();
-    } else if (_editPortalFrame!=NULL) {
-        if (log->isDebugEnabled()) log->debug("selection= "+(selection==NULL?"NULL":
-                                                        QString(((QObject*)selection)->metaObject()->className())));
-        if (qobject_cast<PortalIcon*>((QObject*)selection) && _circuitIcons->contains(selection))
-        {
-            _editPortalFrame->checkPortalIconForUpdate((PortalIcon*)selection, false);
-            //_editor.getSelectionGroup()->layout()->addWidget(selection);
-            _editor->highlight(getPortalIconMap().value(((PortalIcon*)selection)->getName()));
-        }
-        _editPortalFrame->toFront();
+ if (_editFrame == nullptr) {
+     return;
+ }
+ if (qobject_cast<EditCircuitFrame*>(_editFrame)) {
+     EditCircuitFrame* editCircuitFrame = (EditCircuitFrame*)_editFrame;
+     QList<Positionable*>* selectionGroup = _editor->getSelectionGroup();
+     if (selectionGroup == nullptr) {
+         selectionGroup = new QList<Positionable*>();
+     }
+     if (selectionGroup->contains(selection)) {
+         selectionGroup->removeOne(selection);
+     } else if (okToAdd(selection, editCircuitFrame->_homeBlock)) {
+         selectionGroup->append(selection);
+     }
+     editCircuitFrame->updateIconList(selectionGroup);
+     _editor->setSelectionGroup(selectionGroup);
+ } else if (qobject_cast< EditCircuitPaths*>(_editFrame)) {
+     EditCircuitPaths* editPathsFrame = (EditCircuitPaths*)_editFrame;
+     editPathsFrame->updateSelections(!(event->modifiers()&Qt::ShiftModifier), selection);
+ } else if (qobject_cast<EditPortalFrame*>(_editFrame)) {
+     EditPortalFrame* editPortalFrame = (EditPortalFrame*)_editFrame;
+     if (qobject_cast< PortalIcon*>(selection->self())) {
+         editPortalFrame->setSelected((PortalIcon*)selection);
+     }
+ } else if (qobject_cast<EditPortalDirection*>(_editFrame)) {
+     EditPortalDirection* editDirectionFrame = (EditPortalDirection*)_editFrame;
+     if (qobject_cast< PortalIcon*>(selection->self())) {
+         editDirectionFrame->setPortalIcon((PortalIcon*)selection, true);
+     }
+ } else if (qobject_cast< EditSignalFrame*>(_editFrame)) {
+     EditSignalFrame* editSignalFrame = (EditSignalFrame*)_editFrame;
+     editSignalFrame->setSelected((PositionableIcon*)selection);
+ }
+}
+
+/*protected*/ void CircuitBuilder::closeCBWindow() {
+    if (_cbFrame !=nullptr) {
+        _cbFrame->dispose();
     }
 }
-#endif
 /**************************** static methods ************************/
 
 /*protected*/ /*static*/ void CircuitBuilder::doSize(QWidget* comp, int max, int min) {
@@ -1901,21 +1562,21 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
     comp->setMinimumSize(dim);
 }
 
-/*protected*/ /*static*/ QWidget* CircuitBuilder::makeTextBoxPanel(bool vertical, JTextField* textField, QString label, bool editable, QString tooltip) {
-    QWidget* panel = makeBoxPanel(vertical, textField, label, tooltip);
+/*protected*/ /*static*/ JPanel* CircuitBuilder::makeTextBoxPanel(bool vertical, JTextField* textField, QString label, bool editable, QString tooltip) {
+    JPanel* panel = makeBoxPanel(vertical, textField, label, tooltip);
     textField->setEnabled(editable);
     textField->setBackground(QColor(Qt::white));
     return panel;
 }
 
-/*protected*/ /*static*/ QWidget* CircuitBuilder::makeBoxPanel(bool vertical, JTextField* textField, QString label, QString tooltip)
+/*protected*/ /*static*/ JPanel* CircuitBuilder::makeBoxPanel(bool vertical, QWidget *textField, QString label, QString tooltip)
 {
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed, QSizePolicy::LineEdit);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth(textField->sizePolicy().hasWidthForHeight());
 
- QWidget* panel = new QWidget();
+ JPanel* panel = new JPanel();
  panel->setLayout(new QVBoxLayout);
  QGridLayout* g = new QGridLayout();
  panel->setSizePolicy(sizePolicy);
@@ -2011,7 +1672,124 @@ ConvertFrame::ConvertFrame (QString title, PositionableLabel* pos,CircuitBuilder
  return NULL;
 }
 
-/*public*/ QString ConvertFrame::getClassName()
+/*public*/ QString CircuitBuilder::getClassName()
 {
- return "jmri.jmrit.display.controlPanelEditor.ConvertFrame";
+ return "jmri.jmrit.display.controlPanelEditor.CircuitBuilder";
 }
+
+
+//    class CBFrame extends jmri.util.JmriJFrame implements ListSelectionListener  {
+
+//        ButtonGroup _buttonGroup = new ButtonGroup();
+//        int _which = 0;
+//        JRadioButton _newCircuitButton = makeButton("newCircuitItem", NONE);
+
+       CBFrame::CBFrame(QString title, CircuitBuilder*cb) : JmriJFrame(false, false){
+            //super(false, false);
+            setTitle(title);
+            addHelpMenu("package.jmri.jmrit.display.CircuitBuilder", true);
+
+            cb->_blockTable->getSelectionModel()->addListSelectionListener((ListSelectionListener*)this);
+
+            JPanel* contentPane = new JPanel();
+            contentPane->setLayout(new QVBoxLayout());//contentPane, BoxLayout.Y_AXIS));
+            Border* padding = BorderFactory::createEmptyBorder(10, 5, 4, 5);
+            contentPane->setBorder(padding);
+
+            JPanel* panel0 = new JPanel();
+            panel0->setLayout(new QHBoxLayout());//panel0, BoxLayout.X_AXIS));
+            JPanel* panel = new JPanel();
+            panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
+            panel->layout()->addWidget(_newCircuitButton);
+            panel->layout()->addWidget(makeButton("editCircuitItem", CircuitBuilder::OBLOCK));
+            panel->layout()->addWidget(makeButton("editPortalsItem", CircuitBuilder::PORTAL));
+            panel->layout()->addWidget(makeButton("editCircuitPathsItem", CircuitBuilder::OPATH));
+            panel->layout()->addWidget(makeButton("editDirectionItem", CircuitBuilder::ARROW));
+            panel->layout()->addWidget(makeButton("editSignalItem", CircuitBuilder::_SIGNAL));
+            _newCircuitButton->setChecked(true);
+            panel0->layout()->addWidget(panel);
+
+            panel = new JPanel();
+            panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
+            panel->layout()->addWidget(/*new JScrollPane*/(cb->_blockTable));
+            panel0->layout()->addWidget(panel);
+            contentPane->layout()->addWidget(panel0);
+
+            panel0 = new JPanel();
+            panel0->setLayout(new QHBoxLayout());//panel0, BoxLayout.X_AXIS));
+            panel = new JPanel();
+            QPushButton* button = new QPushButton(tr("Open"));
+//            button.addActionListener((ActionEvent event) -> {
+            connect(button, &QPushButton::clicked, [=]{
+                if (cb->editingOK()) {
+                    setCurrentBlock();
+                    if (_which == CircuitBuilder::NONE) {
+                        cb->newCircuit();
+                    } else if (_which == CircuitBuilder::OBLOCK) {
+                        cb->editCircuit("editCircuitItem", false);
+                    } else if (_which == CircuitBuilder::PORTAL) {
+                        cb->editPortals("editPortalsItem", false);
+                    } else if (_which == CircuitBuilder::OPATH) {
+                        cb->editCircuitPaths("editCircuitPathsItem", false);
+                    } else if (_which ==CircuitBuilder:: ARROW) {
+                        cb->editPortalDirection("editDirectionItem", false);
+                    } else if (_which == CircuitBuilder::_SIGNAL) {
+                        cb->editSignalFrame("SignalTitle", false);
+                    }
+                }
+            });
+            panel->layout()->addWidget(button);
+
+            button = new QPushButton(tr("Done"));
+            //button.addActionListener((ActionEvent a) -> {
+            connect(button, &QPushButton::clicked, [=]{
+                cb->_currentBlock = nullptr;
+                this->dispose();
+            });
+            panel->layout()->addWidget(button);
+            panel->setMaximumSize(QSize(300, panel->sizeHint().height()));
+            panel0->layout()->addWidget(panel);
+            contentPane->layout()->addWidget(panel0);
+
+            setContentPane(contentPane);
+            cb->_blockTable->clearSelection();
+            pack();
+            ((PlaceWindow*)InstanceManager::getDefault("PlaceWindow"))->nextTo(cb->_editor, nullptr, this);
+            setVisible(true);
+        }
+
+        //@Override
+        /*public*/ void CBFrame::valueChanged(ListSelectionEvent* e) {
+            setCurrentBlock();
+        }
+        /*private*/ void CBFrame::setCurrentBlock() {
+            int row = cb->_blockTable->getSelectedRow();
+            if (row >= 0) {
+                row = cb->_blockTable->convertRowIndexToModel(row);
+                cb->_currentBlock = (OBlock*)cb->_oblockModel->getBeanAt(row);
+            } else {
+                cb->_currentBlock = nullptr;
+            }
+        }
+
+        QRadioButton* CBFrame::makeButton(QString title, int which) {
+            QRadioButton* button = new QRadioButton((title));
+//            button.addActionListener((ActionEvent event) -> {
+            connect(button, &QPushButton::clicked, [=]{
+
+                _which = which;
+            });
+            _buttonGroup->addButton(button);
+            return button;
+        }
+
+        //@Override
+        /*public*/ void CBFrame::dispose() {
+            cb->_cbFrame = nullptr;
+            JmriJFrame::dispose();
+        }
+//    }
+
+
+
+    /*private*/ /*final*/ /*static*/ Logger* CircuitBuilder::log = LoggerFactory::getLogger("CircuitBuilder");
