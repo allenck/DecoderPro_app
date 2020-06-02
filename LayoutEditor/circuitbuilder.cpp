@@ -141,12 +141,13 @@ CircuitBuilder::~CircuitBuilder()
     connect(circuitItem, &QAction::triggered, [=]{
         newCircuit();
     });
-    _circuitMenu->addSection(tr("At least two track circuits are needed"));
+    _circuitMenu->addSection(tr("At least two track circuits are needed "));
     QAction* helpItem = new QAction(tr("CircuitBuilder Help"),this);
 //    HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(helpItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
     _circuitMenu->addAction(helpItem);
 
 }
+
 /*private*/ void CircuitBuilder::makeCircuitMenu() {
     QAction* editItem = new QAction(tr("Add New Detector Circuit"));
     _circuitMenu->addAction(editItem);
@@ -160,35 +161,35 @@ CircuitBuilder::~CircuitBuilder()
     //editItem.addActionListener((ActionEvent event) -> {
     connect(editItem, &QAction::triggered, [=]{
         closeCBWindow();
-        editCircuit("editCircuitItem", true);
+        editCircuit(tr("Edit Circuit OBlock"), true);
     });
     editItem = new QAction(tr("Add/Edit Circuit Portals"));
     _circuitMenu->addAction(editItem);
     //editItem.addActionListener((ActionEvent event) -> {
     connect(editItem, &QAction::triggered, [=]{
         closeCBWindow();
-        editPortals("editPortalsItem", true);
+        editPortals(tr("Add/Edit Circuit Portals"), true);
     });
     editItem = new QAction(tr("Add/Edit Circuit Paths"));
     _circuitMenu->addAction(editItem);
     //editItem.addActionListener((ActionEvent event) -> {
     connect(editItem, &QAction::triggered, [=]{
         closeCBWindow();
-        editCircuitPaths("editCircuitPathsItem", true);
+        editCircuitPaths(tr("Add/Edit Circuit Paths"), true);
     });
     editItem = new QAction(tr("Edit Portal Direction Icons"));
     _circuitMenu->addAction(editItem);
     //editItem.addActionListener((ActionEvent event) -> {
     connect(editItem, &QAction::triggered, [=]{
         closeCBWindow();
-        editPortalDirection("editDirectionItem", true);
+        editPortalDirection(tr("Edit Portal Direction Icons"), true);
     });
     editItem = new QAction(tr("Add/Edit Signal Masts"));
     _circuitMenu->addAction(editItem);
     //editItem.addActionListener((ActionEvent event) -> {
     connect(editItem, &QAction::triggered, [=]{
         closeCBWindow();
-        editSignalFrame("editSignalItem", true);
+        editSignalFrame(tr("Add/Edit Signal Masts"), true);
     });
     _todoMenu = new QMenu(tr("Error Checks"));
     _circuitMenu->addMenu(_todoMenu);
@@ -1077,17 +1078,23 @@ _todoMenu->addMenu(blockNeeds);  // #1
 * Used by Portal Frame
 */
 /*protected*/ QList<Positionable*>* CircuitBuilder::getCircuitIcons(OBlock* block) {
-    return _circuitMap->value(block);
+ // return empty array when block == null
+ QList<Positionable*>* array = _circuitMap->value(block, nullptr);
+ if (array == nullptr) {
+     array = new QList<Positionable*>();
+     _circuitMap->insert(block, array);
+ }
+ return array;
 }
 
 //@Nonnull
 /*protected*/ QList<PortalIcon *>* CircuitBuilder::getPortalIconMap(/*@Nonnull*/ Portal* portal) {
-    QList<PortalIcon*>* array = _portalIconMap.value(portal);
-    if (array->isEmpty()) {
-        array = new QList<PortalIcon*>();
-        _portalIconMap.insert(portal, array);
-    }
-    return array;
+ QList<PortalIcon*>* array = _portalIconMap.value(portal);
+ if (array == nullptr) {
+     array = new QList<PortalIcon*>();
+     _portalIconMap.insert(portal, array);
+ }
+ return array;
 }
 
 //@Nonnull
@@ -1590,11 +1597,11 @@ _todoMenu->addMenu(blockNeeds);  // #1
     if (vertical) {
 //        c.anchor = java.awt.GridBagConstraints.SOUTH;
         l->setAlignment(Qt::AlignHCenter);
-        textField->setAlignment(Qt::AlignHCenter);
+//        textField->setAlignment(Qt::AlignHCenter);
     } else {
 //        c.anchor = java.awt.GridBagConstraints.EAST;
         l->setAlignment(Qt::AlignLeft);
-        textField->setAlignment(Qt::AlignRight);
+//        textField->setAlignment(Qt::AlignRight);
     }
     g->addWidget(l,0,0,1,1);
 //    if (vertical) {
@@ -1726,15 +1733,15 @@ _todoMenu->addMenu(blockNeeds);  // #1
                     if (_which == CircuitBuilder::NONE) {
                         cb->newCircuit();
                     } else if (_which == CircuitBuilder::OBLOCK) {
-                        cb->editCircuit("editCircuitItem", false);
+                        cb->editCircuit(tr("Edit Circuit OBlock"), false);
                     } else if (_which == CircuitBuilder::PORTAL) {
-                        cb->editPortals("editPortalsItem", false);
+                        cb->editPortals(tr("Add/Edit Circuit Portals"), false);
                     } else if (_which == CircuitBuilder::OPATH) {
-                        cb->editCircuitPaths("editCircuitPathsItem", false);
+                        cb->editCircuitPaths(tr("Add/Edit Circuit Paths"), false);
                     } else if (_which ==CircuitBuilder:: ARROW) {
-                        cb->editPortalDirection("editDirectionItem", false);
+                        cb->editPortalDirection(tr("Edit Portal Direction Icons"), false);
                     } else if (_which == CircuitBuilder::_SIGNAL) {
-                        cb->editSignalFrame("SignalTitle", false);
+                        cb->editSignalFrame(tr("Edit Signal masts protecting block %1").arg("?"), false);
                     }
                 }
             });

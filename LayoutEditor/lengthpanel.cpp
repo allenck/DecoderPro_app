@@ -14,7 +14,9 @@
 
 //public class LengthPanel extends JPanel
 //{
-    LengthPanel::LengthPanel(OBlock* block, QString label, QObject* parent) {
+    LengthPanel::LengthPanel(OBlock* block, QString label, QObject* parent)
+    {
+     setLayout(new QVBoxLayout());
         _block = block;
 
         JPanel* pp = new JPanel(new FlowLayout);

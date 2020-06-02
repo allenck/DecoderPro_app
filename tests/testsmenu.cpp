@@ -79,6 +79,7 @@
 #include "entryexit/sectiontestaction.h"
 #include "layouteditor/layouteditortoolstestaction.h"
 #include "layouteditor/layoutshapetestaction.h"
+#include "entryexit/circuitbuildertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -90,11 +91,12 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 
     QMenu* entryExitMenu = new QMenu(tr("EntryExit"));
     addMenu(entryExitMenu);
-    entryExitMenu->addAction(new EntryExitPairsTestAction(this));
+    entryExitMenu->addAction(new CircuitBuilderTestAction(this));
     entryExitMenu->addAction(new DestinationPointsTestAction(this));
+    entryExitMenu->addAction(new EntryExitPairsTestAction(this));
     entryExitMenu->addAction(new PointDetailsTestAction(this));
-    entryExitMenu->addAction(new SourceTestAction(this));
     entryExitMenu->addAction(new SectionTestAction(this));
+    entryExitMenu->addAction(new SourceTestAction(this));
 
     QMenu* rosterTestMenu = new QMenu(tr("Roster Tests"));
     addMenu(rosterTestMenu);

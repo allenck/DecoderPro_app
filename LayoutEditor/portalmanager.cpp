@@ -50,6 +50,18 @@ PortalManager::PortalManager(QObject *parent) :
  return _nextSName;
  }
  */
+/*public*/ int PortalManager::getPortalCount() {
+        return _nameList.size();
+}
+
+/*public*/ Portal* PortalManager::getPortal(int idx) {
+ if(_nameList.size() == 0)
+  return nullptr;
+    return _nameList.at(idx);
+}
+/*public*/ int PortalManager::getIndexOf(Portal* portal) {
+    return _nameList.indexOf(portal);
+}
 
 /*public*/ int PortalManager::getXMLOrder() const{
     return Manager::OBLOCKS;
@@ -72,7 +84,7 @@ PortalManager::PortalManager(QObject *parent) :
 /*public*/ Portal* PortalManager::createNewPortal(/*@Nonnull*/ QString userName) {
     //java.util.Objects.requireNonNull(userName, "Name cannot be null");
     // Check that Portal does not already exist
-    Portal* portal;
+    Portal* portal = nullptr;
     if (userName.trimmed().length() > 0) {
         portal = _portalMap.value(userName);
         if (portal != nullptr) {

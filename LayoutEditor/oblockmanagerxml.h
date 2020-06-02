@@ -13,8 +13,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT OBlockManagerXml : public AbstractXmlAdapter
     Q_OBJECT
 public:
     Q_INVOKABLE explicit OBlockManagerXml(QObject *parent = 0);
- ~OBlockManagerXml() override {}
- OBlockManagerXml(const OBlockManagerXml&) : AbstractXmlAdapter() {}
+    ~OBlockManagerXml() override {}
+    OBlockManagerXml(const OBlockManagerXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);
     QDomElement storePortal(Portal* portal);
     QDomElement storePathKey(OPath* path);

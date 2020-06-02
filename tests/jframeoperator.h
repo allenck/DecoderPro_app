@@ -24,6 +24,7 @@ class JFrameOperator : public QObject
  Q_OBJECT
 public:
  explicit JFrameOperator(QObject *parent = nullptr);
+ JFrameOperator(QWidget *widget, QObject *parent = nullptr);
  JFrameOperator(QString chooser);
  JmriJFrame* getFrame();
  void requestClose() { }

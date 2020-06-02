@@ -10,6 +10,7 @@ class EditFrame : public JmriJFrame
 public:
  EditFrame();
  /*public*/ EditFrame(QString title, CircuitBuilder* parent, OBlock* block);
+ void initContents();
 
 private:
  static int STRUT_SIZE;// = 10;

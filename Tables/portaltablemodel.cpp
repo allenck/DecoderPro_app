@@ -136,36 +136,27 @@ void PortalTableModel::initTempRow()
   {
    return tempRow[col];
   }
-  if (row > sysNameList.size())
-  {
-   return "";
-  }
-  Portal* portal = NULL;
-  if (row < sysNameList.size())
-  {
-   QString name = sysNameList.at(row);
-   portal = (Portal*)_manager->getBySystemName(name);
-  }
-  if (portal == NULL)
-  {
-   if (col == DELETE_COL)
-   {
-    return tr("Clear");
-   }
-   return tempRow[col];
+  Portal* portal = _manager->getPortal(row);
+  if (portal == nullptr) {
+      if (col == DELETE_COL) {
+          return tr("Clear");
+      }
+      return tempRow[col];
   }
   else
   {
-   switch (col)
-   {
-    case FROM_BLOCK_COLUMN:
-        return portal->getFromBlockName();
-    case NAME_COLUMN:
-        return portal->getName();
-    case TO_BLOCK_COLUMN:
-        return portal->getToBlockName();
-    case DELETE_COL:
-        return tr("Delete");
+   switch (col) {
+       case FROM_BLOCK_COLUMN:
+           return portal->getFromBlockName();
+       case NAME_COLUMN:
+           return portal->getName();
+       case TO_BLOCK_COLUMN:
+           return portal->getToBlockName();
+       case DELETE_COL:
+           return tr("Delete");
+       default:
+           // fall through
+           break;
    }
   }
   return "";

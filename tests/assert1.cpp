@@ -961,6 +961,13 @@ private static bool floatIsDifferent(float f1, float f2, float delta) {
   fail(tr("QByteArray is null %1").arg(message), file, line);
 }
 
+/*public*/ /*static*/ void Assert::assertNotNull(QString message, QWidget* object, QString file, int line)
+{
+ if(object == nullptr)
+  fail(tr("QObject is null %1").arg(message), file, line);
+}
+
+
 
 /*public*/ /*static*/ void Assert::assertNotNull(QObject* object, QString file, int line) {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">

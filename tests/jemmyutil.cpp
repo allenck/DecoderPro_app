@@ -61,12 +61,12 @@ JemmyUtil::JemmyUtil(QObject *parent) : QObject(parent)
         JToggleButtonOperator jtbo = new JToggleButtonOperator(comp);
         jtbo.doClick();
     }
-
-    static /*public*/ void pressButton(WindowOperator frame, String text) {
-        JButtonOperator jbo = new JButtonOperator(frame, text);
-        jbo.push();
+#endif
+    /*static*/ /*public*/ void JemmyUtil::pressButton(/*WindowOperator*/JFrameOperator* frame, QString text) {
+        JButtonOperator* jbo = new JButtonOperator(frame, text);
+        jbo->push();
     }
-
+#if 0
     static /*public*/ void confirmJOptionPane(WindowOperator wo, String title, String message, String buttonLabel) {
         // the previous version of this message verified the text string
         // if the dialog matched the passed message value.  We need to

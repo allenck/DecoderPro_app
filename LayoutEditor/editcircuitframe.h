@@ -29,8 +29,8 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 
  private:
-    /*private*/ OBlock* _block;
-    /*private*/ CircuitBuilder* _parent;
+    /*private*/ OBlock* _block = nullptr;
+    ///*private*/ CircuitBuilder* _parent;
 
     /*private*/ JTextField* _systemName;
     /*private*/ JTextField*  _blockName;// = new JTextField();
@@ -39,6 +39,10 @@ public slots:
     /*private*/ JTextField*  _blockState;//  = new JTextField();
     /*private*/ JTextField*  _numTrackSeg;// = new JTextField();
     /*private*/ JTextField*  _numTurnouts;// = new JTextField();
+    LengthPanel* _lengthPanel;
+    JPanel* _namePanel;
+    /*private*/ JPanel* _buttonPanel;
+    bool _create = false;
 
     // Sensor list
     /*private*/ JmriJFrame*      _pickFrame;
@@ -51,15 +55,12 @@ public slots:
     /*private*/ QWidget* MakeDoneButtonPanel();
     Logger* log;
 //    /*private*/ Sensor* getSensor(QString sensorName);
-    LengthPanel* _lengthPanel;
-    JPanel* _namePanel;
 
     // Sensor list
     OpenPickListButton/*<Sensor>*/* _pickTable;
     /*private*/ QString checkForSensors();
     /*private*/ JPanel* makeCreateBlockPanel();
     /*private*/ void createBlock();
-    bool _create = false;
     /*private*/ void deleteCircuit();
     /*private*/ void changeBlockName();
     /*private*/ JPanel* makeEditBlockPanel();

@@ -273,17 +273,24 @@ void CPEActionListener::actionPerformed()
     }
     _menuBar->insertMenu(_menuBar->actions().at(0),_circuitMenu/*, 0*/);
 }
+
 /*protected*/ void ControlPanelEditor::makeCircuitMenu(bool edit)
 {
- _circuitMenu = _circuitBuilder->makeMenu();
- if (edit)
- {
-  //int idx = _menuBar.getComponentIndex(_warrantMenu);
-  //_menuBar->addMenu(_circuitMenu, ++idx);
-  _menuBar->insertMenu(_warrantMenu->menuAction(), _circuitMenu);
-  //_menuBar.revalidate();
+ if (edit) {
+  if (_circuitMenu == nullptr)
+  {
+      _circuitMenu = _circuitBuilder->makeMenu();
+      //int idx = _menuBar->getComponentIndex(_warrantMenu);
+      //_menuBar->insertMenu(_circuitMenu, _warrantMenu);
+      _menuBar->addMenu(_circuitMenu);
+     // _menuBar.revalidate();
+  }
+ } else if (_circuitMenu != nullptr) {
+     _circuitBuilder->closeCBWindow();
+     _circuitMenu = nullptr;
  }
 }
+
 /*protected*/ void ControlPanelEditor::makeDrawMenu()
 {
  if (_drawMenu==nullptr)

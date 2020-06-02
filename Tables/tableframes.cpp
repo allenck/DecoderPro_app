@@ -128,7 +128,7 @@ void TableFrames::common()
 //            }
 //        }
 //    });
- printItem = new QAction(tr("PrintSignalTable"),this);
+ printItem = new QAction(tr("Print Signal Table"),this);
  fileMenu->addAction(printItem);
  // TODO:
 //    printItem.addActionListener(new ActionListener() {

@@ -47,7 +47,9 @@ EditFrame::EditFrame()
         });
 #endif
         addHelpMenu("package.jmri.jmrit.display.CircuitBuilder", true);
-
+}
+/*public*/ void EditFrame::initContents()
+{
         JPanel* contentPane = new JPanel();
         contentPane->setLayout(new QVBoxLayout());//contentPane, BoxLayout.Y_AXIS));
         Border* padding = BorderFactory::createEmptyBorder(10, 5, 4, 5);

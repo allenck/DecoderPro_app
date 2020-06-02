@@ -13,6 +13,9 @@ public:
  explicit PortalManager(QObject *parent = 0);
  ~PortalManager() {}
  PortalManager(const PortalManager &) : AbstractManager() {}
+ /*public*/ int getPortalCount();
+ /*public*/ Portal* getPortal(int idx);
+ /*public*/ int getIndexOf(Portal* portal);
  /*public*/ int getXMLOrder()const override;
  /*public*/ QString getSystemPrefix() const override;
  /*public*/ char typeLetter() const override;

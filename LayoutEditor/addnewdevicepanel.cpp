@@ -27,7 +27,7 @@
  userNameLabel = new QLabel(tr("User Name:"));
 
  sysName = sys;
- setLayout(new QVBoxLayout(this));
+ setLayout(new QVBoxLayout(/*this*/));
  QWidget* p;
  p = new QWidget();
  //p.setLayout(new FlowLayout());

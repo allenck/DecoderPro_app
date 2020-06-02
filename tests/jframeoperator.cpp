@@ -13,6 +13,13 @@ JFrameOperator::JFrameOperator(QObject *parent) : QObject()
   _frame = (JmriJFrame*)parent;
 }
 
+JFrameOperator::JFrameOperator(QWidget *widget, QObject *parent) : QObject(parent)
+{
+ if(qobject_cast<JmriJFrame*>(widget))
+  _frame = (JmriJFrame*)widget;
+}
+
+
 JFrameOperator::JFrameOperator(QString chooser) : QObject()
 {
  QList<JmriJFrame*>* frameList = JmriJFrame::getFrameList();

@@ -32,6 +32,7 @@
 #include "blockmanager.h"
 #include "logixmanager.h"
 #include "defaultlistselectionmodel.h"
+#include "vptr.h"
 
 //PickListModel::PickListModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -471,12 +472,20 @@ bool systemNameComparator(QString o1, QString o2)
   makePickList();
   fireTableDataChanged();
  }
- else if (e->getPropertyName()==("DisplayListName"))
+ //  ACK added
+ if(e->getPropertyName() == "beans")
  {
-  //This is a call from the manager, which can be ignored
+  // a value changed.  Find it, to avoid complete redraw
+  NamedBean* bean = VPtr<NamedBean>::asPtr(e->getNewValue());
+  for (int i=0; i<_pickList->size(); i++)
+  {
+   if (bean->equals(_pickList->at(i)))
+   {
+    fireTableRowsUpdated(i, i);
+   }
+  }
  }
- else
- {
+ else if (qobject_cast< NamedBean*>(e->getSource())) {
   // a value changed.  Find it, to avoid complete redraw
   NamedBean* bean = (NamedBean*)e->getSource();
   for (int i=0; i<_pickList->size(); i++)

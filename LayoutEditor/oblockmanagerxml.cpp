@@ -39,63 +39,65 @@ OBlockManagerXml::OBlockManagerXml(QObject *parent) :
 /*public*/ QDomElement OBlockManagerXml::store(QObject* o) {
     QDomElement blocks = doc.createElement("oblocks");
     blocks.setAttribute("class","jmri.jmrit.logix.configurexml.OBlockManagerXml");
-    OBlockManager* manager = (OBlockManager*) o;
-    QStringListIterator iter( manager->getSystemNameList());
-    while (iter.hasNext()) {
-        QString sname = iter.next();
-        OBlock* block = (OBlock*)manager->getBySystemName(sname);
-        QString uname = block->getUserName();
-        if (log->isDebugEnabled())
-            log->debug("OBlock: sysName= "+sname+", userName= "+uname);
-        QDomElement elem = doc.createElement("oblock");
-        //elem.setAttribute("systemName", sname);
-        if (uname.isNull()) uname = "";
-//        elem.setAttribute("userName", uname); // doing this for compatibility during 2.9.* series
-        QDomElement e3;
-        elem.appendChild(e3 = doc.createElement("userName"));
-        e3.appendChild(doc.createTextNode(uname));
-        QString comment = block->getComment();
-        if (comment != NULL) {
-            QDomElement c = doc.createElement("comment");
-            c.appendChild(doc.createTextNode(comment));
-            elem.appendChild(c);
-        }
-        elem.setAttribute("length", block->getLengthMm());
-        elem.setAttribute("units", block->isMetric() ? "true" : "false");
-        elem.setAttribute("curve", block->getCurvature());
-        if (block->getNamedSensor()!=NULL) {
-            QDomElement se = doc.createElement("sensor");
-            se.setAttribute("systemName", block->getNamedSensor()->getName());
-            elem.appendChild(se);
-        }
-        if (block->getNamedErrorSensor()!=NULL) {
-            QDomElement se = doc.createElement("errorSensor");
-            se.setAttribute("systemName", block->getNamedErrorSensor()->getName());
-            elem.appendChild(se);
-        }
-        if (block->getReporter() != NULL)
-        {
-         QDomElement se = doc.createElement("reporter");
-         se.setAttribute("systemName", block->getReporter()->getSystemName());
-         se.setAttribute("reportCurrent", block->isReportingCurrent() ? "true" : "false");
-         elem.appendChild(se);
-        }
-        elem.setAttribute("permissive", block->getPermissiveWorking() ? "true" : "false");
-        elem.setAttribute("speedNotch", block->getBlockSpeed());
+    OBlockManager* obm = (OBlockManager*) o;
+ if (obm != nullptr) {
+     QSet<NamedBean*> oblockList = obm->getNamedBeanSet();
+     // don't return an element if there are no oblocks to include
+     if (oblockList.isEmpty()) {
+         return QDomElement();
+     }
+     for (NamedBean* nb : oblockList) {
+      OBlock* block = (OBlock*)nb;
+         QString sName = block->getSystemName();
+         QString uName = block->getUserName();
+         log->debug(tr("OBlock: sysName= %1, userName= %2").arg(sName).arg(uName));
+         QDomElement elem = doc.createElement("oblock");
+         elem.setAttribute("systemName", sName);
+         if (!uName.isNull() && !uName.isEmpty()) {
+             elem.setAttribute("userName", uName); // doing this for compatibility during 2.9.* series
+             elem.appendChild(doc.createElement("userName").appendChild(doc.createTextNode(uName)));
+         }
+         QString comment = block->getComment();
+         if (!comment.isNull() && !comment.isEmpty()) {
+             QDomElement c = doc.createElement("comment");
+             c.appendChild(doc.createTextNode(comment));
+             elem.appendChild(c);
+         }
+         elem.setAttribute("length", QString::number(block->getLengthMm()));
+         elem.setAttribute("units", block->isMetric() ? "true" : "false");
+         elem.setAttribute("curve", QString::number(block->getCurvature()));
+         if (block->getNamedSensor() != nullptr) {
+             QDomElement se = doc.createElement("sensor");
+             se.setAttribute("systemName", block->getNamedSensor()->getName());
+             elem.appendChild(se);
+         }
+         if (block->getNamedErrorSensor() != nullptr) {
+             QDomElement se = doc.createElement("errorSensor");
+             se.setAttribute("systemName", block->getNamedErrorSensor()->getName());
+             elem.appendChild(se);
+         }
+         if (block->getReporter() != nullptr) {
+             QDomElement se = doc.createElement("reporter");
+             se.setAttribute("systemName", block->getReporter()->getSystemName());
+             se.setAttribute("reportCurrent", block->isReportingCurrent() ? "true" : "false");
+             elem.appendChild(se);
+         }
+         elem.setAttribute("permissive", block->getPermissiveWorking() ? "true" : "false");
+         elem.setAttribute("speedNotch", block->getBlockSpeed());
 
-        QVector<Path*>* paths = block->getPaths();
-        for (int j=0; j<paths->size(); j++) {
-            elem.appendChild(storePath((OPath*)paths->at(j)));
-        }
-        QList <Portal*> portals = block->getPortals();
-        for (int i=0; i<portals.size(); i++) {
-            elem.appendChild(storePortal(portals.at(i)));
-        }
-        // and put this element out
-        blocks.appendChild(elem);
-    }
-
-    return blocks;
+         QVector<Path*>* paths = block->getPaths();
+         for (Path* op : *paths) {
+             elem.appendChild(storePath((OPath*) op));
+         }
+         QList<Portal*> portals = block->getPortals();
+         for (Portal* po : portals) {
+             elem.appendChild(storePortal(po));
+         }
+         // and put this element out
+         blocks.appendChild(elem);
+     }
+ }
+ return blocks;
 }
 
 QDomElement OBlockManagerXml::storePortal(Portal* portal)
@@ -403,21 +405,9 @@ void OBlockManagerXml::loadBlock(QDomElement elem)
 //@SuppressWarnings("NULL")
 Portal* OBlockManagerXml::loadPortal(QDomElement elem)
 {
- QString sysName = NULL;
  QString userName = elem.attribute("portalName");
- if (elem.attribute("systemName") == NULL)
- {
-  if (log->isDebugEnabled())
-  {
-   log->debug("Portal systemName is NULL");
-  }
- }
- else
- {
-  sysName = elem.attribute("systemName");
- }
- QString fromBlockName = NULL;
- QString toBlockName = NULL;
+ QString fromBlockName = "";
+ QString toBlockName = "";
  // Portals must have user names.
  Portal* portal = (Portal*)_portalMgr->getByUserName(userName);
  if (portal != NULL)
@@ -431,7 +421,16 @@ Portal* OBlockManagerXml::loadPortal(QDomElement elem)
  }
  if (portal == NULL)
  {
-  log->error("unable to create Portal ('" + sysName + "', " + userName + ") " + elem.tagName() + " " /*+ elem.attributes()*/);
+   QDomNamedNodeMap map = elem.attributes();
+   QString attributes;
+   for(int i=0; i < map.count(); i++)
+   {
+    if(i > 0) attributes.append("|");
+    attributes.append(map.item(i).nodeName());
+   }
+
+  log->error(tr("unable to create Portal (%1) elem attrs= %2").arg(
+                userName).arg(attributes));
   return NULL;
  }
  if (log->isDebugEnabled())
@@ -440,131 +439,100 @@ Portal* OBlockManagerXml::loadPortal(QDomElement elem)
 
  }
 
- OBlock* fromBlock = NULL;
- QDomElement eFromBlk = elem.firstChildElement("fromBlock");
- if (!eFromBlk.isNull() && eFromBlk.attribute("blockName") != NULL)
- {
+ OBlock* fromBlock = nullptr;
+QDomElement eFromBlk = elem.firstChildElement("fromBlock");
+if (!eFromBlk.isNull() && eFromBlk.attribute("blockName") != "") {
   QString name = eFromBlk.attribute("blockName");
-  if (fromBlockName != NULL && fromBlockName!=(name))
-  {
-   log->error("Portal has user name \"" + userName + "\" conflicting with " + portal->toString());
+  if (fromBlockName != "" && fromBlockName != (name)) {
+      log->error(tr("Portal user name \"%1\" has conflicting fromBlock \"%2\". Should be \"%3\"").arg(
+              userName).arg(fromBlockName).arg(name));
   }
-  else
-  {
+  else {
    fromBlock = getBlock(name);
-   if (fromBlock != NULL)
+   if (fromBlock != nullptr)
    {
     portal->setFromBlock(fromBlock, false);
     fromBlock->addPortal(portal);
 
     QDomNodeList ePathsFromBlock = eFromBlk.elementsByTagName("path");
-    for (int i = 0; i < ePathsFromBlock.size(); i++)
+    for(int i=0; i <  ePathsFromBlock.count(); i++)
     {
      QDomElement e = ePathsFromBlock.at(i).toElement();
      QString pathName = e.attribute("pathName");
      QString blockName = e.attribute("blockName");
-     if (log->isDebugEnabled())
-     {
-      log->debug("Load portal= " + userName + " fromBlock= " + fromBlock->getSystemName()
-              + " pathName= " + pathName + " blockName= " + blockName);
-     }
-     /*(if (fromBlock.getSystemName().equals(blockName))*/
-     {
-      // path is in the fromBlock
-      OPath* path = getPath(fromBlock, pathName);
-      portal->addPath(path);
-     }
+     log->debug(tr("Load portal= \"%1\" fromBlock= %2, pathName= %3, blockName= %4").arg(
+             userName).arg(fromBlock->getSystemName()).arg(pathName).arg(blockName));
+     OPath* path = getPath(fromBlock, pathName);
+     portal->addPath(path);
     }
    }
   }
+ } else {
+   log->error(tr("Portal \"%1\" has no fromBlock!").arg(userName));
  }
- else
- {
-  log->error("Portal \"" + userName + "\" has no fromBlock!");
- }
-
- OBlock* toBlock = NULL;
- QDomElement eToBlk = elem.firstChildElement("toBlock");
- if (eToBlk != QDomElement() && eToBlk.attribute("blockName") != NULL)
- {
-  QString name = eToBlk.attribute("blockName");
-  if (toBlockName != NULL && toBlockName!=(name))
-  {
-   log->error("Portal has user name \"" + userName + "\" conflicting with " + portal->toString());
-  }
-  else
-  {
-   toBlock = getBlock(name);
-   if (toBlock != NULL)
-   {
-    portal->setToBlock(toBlock, false);
-    toBlock->addPortal(portal);
-
-    QDomNodeList ePathsToBlock = eToBlk.elementsByTagName("path");
-    for (int i = 0; i < ePathsToBlock.size(); i++)
-    {
-     QDomElement e = ePathsToBlock.at(i).toElement();
-     QString pathName = e.attribute("pathName");
-     QString blockName = e.attribute("blockName");
-     if (log->isDebugEnabled())
+ OBlock* toBlock = nullptr;
+     QDomElement eToBlk = elem.firstChildElement("toBlock");
+     if (!eToBlk.isNull() && eToBlk.attribute("blockName") != "")
      {
-      log->debug("Load portal= " + userName + " toBlock= " + toBlock->getSystemName()
-                 + " pathName= " + pathName + " blockName= " + blockName);
-     }
-     /*if (toBlock.getSystemName().equals(blockName))*/
-     {
-      // path is in the toBlock
-      OPath* path = getPath(toBlock, pathName);
-      portal->addPath(path);
-     }
-    }
-   }
-  }
- }
- else
- {
-  log->error("Portal \"" + userName + "\" has no toBlock!");
- }
- QDomElement eSignal = elem.firstChildElement("fromSignal");
- if (eSignal != QDomElement())
- {
-  QString name = eSignal.attribute("signalName");
-  float length = 0.0f;
-  bool bok = true;
-  QString attr = eSignal.attribute("signalDelay");
-  if (attr != NULL)
-  {
-   length = attr.toFloat(&bok);
-  }
-  if(!bok)
-  {
-   log->error("Could not parse signalDelay for signal (" + name + ") in portal (" + userName + ")");
-  }
-  portal->setProtectSignal(Portal::getSignal(name), length, toBlock);
- }
- eSignal = elem.firstChildElement("toSignal");
- if (eSignal != QDomElement())
- {
-  QString name = eSignal.attribute("signalName");
-  float length = 0.0f;
-  bool bok = true;
-  QString attr = eSignal.attribute("signalDelay");
-  if (attr != NULL) {
-      length = attr.toFloat(&bok);
-  }
-  if(!bok)
-  {
-   log->error("Could not parse signalDelay for signal (" + name + ") in portal (" + userName + ")");
-  }
-  portal->setProtectSignal(Portal::getSignal(name), length, fromBlock);
- }
+      QString name = eToBlk.attribute("blockName");
+      if (toBlockName != "" && toBlockName != (name)) {
+          log->error(tr("Portal user name \"%1\" has conflicting toBlock \"%2\". Should be \"%3\"").arg(
+                  userName).arg(toBlockName).arg(name));
+      } else {
+          toBlock = getBlock(name);
+          if (toBlock != nullptr) {
+              portal->setToBlock(toBlock, false);
+              toBlock->addPortal(portal);
 
- if (log->isDebugEnabled())
- {
-  log->debug("End Load portal " + userName);
- }
- return portal;
-}
+              QDomNodeList ePathsToBlock = eToBlk.elementsByTagName("path");
+              for(int i=0; i <  ePathsToBlock.count(); i++)
+              {
+               QDomElement ePath = ePathsToBlock.at(i).toElement();
+                  QString pathName = ePath.attribute("pathName");
+                  QString blockName = ePath.attribute("blockName");
+                  log->debug(tr("Load portal= \"%1\" toBlock= %2, pathName= %3, blockName= %4").arg(userName).arg(toBlock->getSystemName()).arg(pathName).arg(blockName));
+                  // path is in the toBlock
+                  OPath* path = getPath(toBlock, pathName);
+                  portal->addPath(path);
+              }
+          }
+      }
+     } else {
+         log->error(tr("Portal \"%1\" has no toBlock!").arg(userName));
+     }
+     QDomElement eSignal = elem.firstChildElement("fromSignal");
+     if (!eSignal.isNull()) {
+         QString name = eSignal.attribute("signalName");
+         float length = 0.0f;
+         bool ok = true;
+             QString attr = eSignal.attribute("signalDelay");
+             if (attr != "") {
+                 length = attr.toFloat(&ok);
+             }
+         if(!ok) {
+             log->error(tr("Could not parse signalDelay fromSignal (%1) in portal (%2)").arg(name).arg(userName));
+         }
+         portal->setProtectSignal(Portal::getSignal(name), length, toBlock);
+     }
+     eSignal = elem.firstChildElement("toSignal");
+     if (!eSignal.isNull()) {
+         QString name = eSignal.attribute("signalName");
+         float length = 0.0f;
+         bool ok = true;
+             QString attr = eSignal.attribute("signalDelay");
+             if (attr != "") {
+                 length = attr.toFloat(&ok);
+             }
+         if(!ok) {
+             log->error(tr("Could not parse signalDelay toSignal (%1) in portal (%2)").arg(name).arg(userName));
+         }
+         portal->setProtectSignal(Portal::getSignal(name), length, fromBlock);
+     }
+
+     log->debug(tr("End Load portal %1").arg(userName));
+     return portal;
+ }   // loadPortal
+
 
 //@SuppressWarnings("unchecked")
 OPath* OBlockManagerXml::loadPath(QDomElement elem, OBlock* block)

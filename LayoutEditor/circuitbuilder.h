@@ -59,22 +59,22 @@ private:
     /*private*/ QMenu* _todoMenu;
 
     // map track icon to OBlock to which it belongs
-    /*private*/ QHash<Positionable*, OBlock*>* _iconMap;// = new QHash<Positionable*, OBlock*>();
+    /*private*/ QHash<Positionable*, OBlock*>* _iconMap = new QHash<Positionable*, OBlock*>();
 
     // map OBlock to List of icons that represent it
-    /*private*/ QHash<OBlock*, QList<Positionable*>*>* _circuitMap;
+    /*private*/ QHash<OBlock*, QList<Positionable*>*>* _circuitMap = new QHash<OBlock*, QList<Positionable*>*>();
 
     // list of track icons not belonging to an OBlock
-    /*private*/ QList<Positionable*> _darkTrack;
+    /*private*/ QList<Positionable*> _darkTrack = QList<Positionable*>();
 
     // list of OBlocks with no icons
-    /*private*/ QList<OBlock*>* _bareBlock;
+    /*private*/ QList<OBlock*>* _bareBlock= new QList<OBlock*>();
 
     // list of icons needing converting
     /*private*/ QList<Positionable*> _unconvertedTrack;
 
     // list of OBlocks whose icons need converting
-    /*private*/ QList<OBlock*>* _convertBlock;
+    /*private*/ QList<OBlock*>* _convertBlock = new QList<OBlock*>();
 
     // list of Portals with no PortalIcon
     /*private*/ /*final*/ QList<Portal*> _noPortalIcon = QList<Portal*>();
@@ -123,20 +123,20 @@ private:
     /*private*/ JTextField* _userNameBox;// = new JTextField();
 
     // "Editing Frames" - Called from menu in Main Frame
-    /*private*/ EditFrame* _editFrame;
+    /*private*/ EditFrame* _editFrame = nullptr;
 
-    /*private*/ OBlock*  _currentBlock;
+    /*private*/ OBlock*  _currentBlock = nullptr;
     /*private*/ JDialog* _dialog;
     static Logger* log;
     /*private*/ void addIcon(OBlock* block, Positionable* pos);
     /*private*/ void makeToDoMenu();
     /*private*/ void checkCircuits();
     /*private*/ bool isUnconvertedTrack(Positionable* pos);
-    IndicatorItemPanel* _trackPanel;
-    IndicatorTOItemPanel* _trackTOPanel;
-    PositionableLabel* _oldIcon;
-    ConvertFrame* _convertFrame;     // must be modal dialog to halt convetIcons loop
-    QDialog* _convertDialog;     // must be modal dialog to halt convetIcons loop
+    IndicatorItemPanel* _trackPanel = nullptr;
+    IndicatorTOItemPanel* _trackTOPanel = nullptr;
+    PositionableLabel* _oldIcon = nullptr;
+    ConvertFrame* _convertFrame = nullptr;     // must be modal dialog to halt convetIcons loop
+    QDialog* _convertDialog = nullptr;     // must be modal dialog to halt convetIcons loop
     /*private*/ bool editingOK();
     /*private*/ QList<Positionable *> *makeSelectionGroup(OBlock* block, bool showPortal);
     /*private*/ void editCircuitDialog(QString title);
@@ -232,6 +232,7 @@ protected slots:
  friend class LengthPanel;
  friend class ConvertDialog;
  friend class EPIconDragJLabel;
+ friend class CircuitBuilderTest;
 };
 
 

@@ -4,6 +4,7 @@
 #include <QObject>
 #include "jframeoperator.h"
 
+class WindowOperator;
 class JmriJFrame;
 class JemmyUtil : public QObject
 {
@@ -12,6 +13,7 @@ public:
  static /*public*/ void pressDialogButton(JmriJFrame* f, QString buttonName);
  static /*public*/ void pressDialogButton(QString title, QString text);
  /*public*/ static QThread* createModalDialogOperatorThread(QString dialogTitle, QString buttonText);
+ static /*public*/ void pressButton(JFrameOperator *frame, QString text);
 
 signals:
 

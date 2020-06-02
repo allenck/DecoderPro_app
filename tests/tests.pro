@@ -235,7 +235,9 @@ SOURCES += \
     layouteditor/layouteditortoolstest.cpp \
     layouteditor/layouteditortoolstestaction.cpp \
     layouteditor/layoutshapetest.cpp \
-    layouteditor/layoutshapetestaction.cpp
+    layouteditor/layoutshapetestaction.cpp \
+    entryexit/circuitbuildertest.cpp \
+    entryexit/circuitbuildertestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -448,7 +450,9 @@ HEADERS += \
     layouteditor/layouteditortoolstest.h \
     layouteditor/layouteditortoolstestaction.h \
     layouteditor/layoutshapetest.h \
-    layouteditor/layoutshapetestaction.h
+    layouteditor/layoutshapetestaction.h \
+    entryexit/circuitbuildertest.h \
+    entryexit/circuitbuildertestaction.h
 
 unix {
     target.path = /usr/lib

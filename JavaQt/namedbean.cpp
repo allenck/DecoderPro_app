@@ -268,7 +268,10 @@ QVariant NamedBean::getProperty(QString /*key*/)
     }
 }
 
-/*public*/ bool NamedBean::equals(QObject* /*obj*/) {return false;}
+/*public*/ bool NamedBean::equals(QObject* /*obj*/)
+{
+ return false;
+}
 
 
 /**

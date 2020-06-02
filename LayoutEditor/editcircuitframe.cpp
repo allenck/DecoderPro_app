@@ -62,8 +62,11 @@
  _pickFrame = NULL;
  _firstInstance = true;
 
+ initContents(); // finish setting up EditFrame content
+
  _block = block;
  _create = (block == nullptr);
+
  updateContentPanel(_create);
  _homeBlock->addPropertyChangeListener("deleted", (PropertyChangeListener*)this);
  pack();
@@ -72,102 +75,86 @@
 /*private*/ JPanel *EditCircuitFrame::makeContentPanel()
 {
  JPanel* contentPane = new JPanel();
- contentPane->setLayout(new QVBoxLayout(contentPane/*, BoxLayout.Y_AXIS*/));
-    //contentPane->layout()->setSpacing(2);
+ contentPane->setLayout(new QVBoxLayout());//contentPane, BoxLayout.Y_AXIS));
+ _blockName = new JTextField();
+ _detectorSensorName = new JTextField();
+ _errorSensorName = new JTextField();
+ _blockState = new JTextField();
+ _numTrackSeg = new JTextField();
+ _numTurnouts = new JTextField();
+ JPanel* p = new JPanel(new FlowLayout());
 
-//    addWindowListener(new java.awt.event.WindowAdapter() {
-//        /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//            closingEvent();
-//        }
-//    });
- //contentPane.add(Box.createVerticalStrut(STRUT_SIZE));
- ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
- QWidget* p = new QWidget();
- p->setLayout(new QHBoxLayout);
- p->layout()->addWidget(new QLabel(tr("Select (or deselect) all the track icons that display this OBlock track circuit")));
+ p->layout()->addWidget(new JLabel(tr("Select (or deselect) all the track icons that display this OBlock track circuit")));
  contentPane->layout()->addWidget(p);
- //contentPane.add(Box.createVerticalStrut(STRUT_SIZE));
- ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
+ contentPane->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
 
- QWidget* panel = new QWidget();
- panel->setLayout(new QHBoxLayout(panel/*, BoxLayout.X_AXIS*/));
- panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(false, _blockState, tr("Circuit (OBlock) State"), false, NULL));
- _blockState->setMinimumSize( QSize(150, _blockState->getPreferredSize().height()));
+ JPanel* panel = new JPanel(new FlowLayout());
+ // panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+ panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(false, _blockState, "Circuit (OBlock) State:", false, nullptr));
+ _blockState->resize(QSize(150, _blockState->getPreferredSize().height()));
  contentPane->layout()->addWidget(panel);
 
- panel = new QWidget();
- panel->setLayout(new QHBoxLayout);
- _blockName->setText(_block->getDisplayName());
- panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
-                false, _blockName, tr("Circuit Name"), true, tr("Enter a name to change the user name of the OBlock for this circuit.")));
- _blockName->setMinimumSize( QSize(300, _blockName->getPreferredSize().height()));
+ _namePanel = new JPanel();
+ _namePanel->setLayout(new QVBoxLayout());//_namePanel, BoxLayout.Y_AXIS));
+ contentPane->layout()->addWidget(_namePanel);
+
+ panel = new JPanel();
+ panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
+ _buttonPanel = new JPanel();
+ _buttonPanel->setLayout(new FlowLayout());
+ panel->layout()->addWidget(_buttonPanel);
  contentPane->layout()->addWidget(panel);
 
- contentPane->layout()->addWidget(MakeButtonPanel());
- //contentPane.add(Box.createVerticalStrut(STRUT_SIZE));
- ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
-
- p = new QWidget();
- p->setLayout(new QHBoxLayout);
- p->layout()->addWidget(new QLabel(tr("Number of Track Icons in circuit")));
+ contentPane->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+ p = new JPanel(new FlowLayout());
+ p->layout()->addWidget(new JLabel(tr("Number of Track Icons in circuit:")));
  contentPane->layout()->addWidget(p);
 
- panel = new QWidget();
- panel->setLayout(new QHBoxLayout(panel/*, BoxLayout.X_AXIS*/));
-//    panel.add(Box.createHorizontalGlue());
+ panel = new JPanel(new FlowLayout);
+ // panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+ panel->layout()->addWidget(Box::createHorizontalGlue());
  panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
-                false, _numTrackSeg, "Segments", false, NULL));
- _numTrackSeg->setMinimumSize( QSize(20, _numTrackSeg->getPreferredSize().height()));
- //contentPane.add(Box.createVerticalStrut(STRUT_SIZE));
- ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
+         false, _numTrackSeg, "Segments", false, nullptr));
+ _numTrackSeg->resize(QSize(20, _numTrackSeg->getPreferredSize().height()));
+ panel->layout()->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
 
  panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
-                false, _numTurnouts, "Turnouts", false, NULL));
-    _numTurnouts->setMinimumSize(QSize(20, _numTurnouts->getPreferredSize().height()));
-    //contentPane.add(Box.createVerticalStrut(STRUT_SIZE));
-    ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
-    contentPane->layout()->addWidget(panel);
-    //contentPane.add(Box.createVerticalStrut(STRUT_SIZE));
-    ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
+         false, _numTurnouts, "Turnouts:", false, nullptr));
+ _numTurnouts->resize(QSize(20, _numTurnouts->getPreferredSize().height()));
+ panel->layout()->addWidget(Box::createHorizontalStrut(STRUT_SIZE));
+ contentPane->layout()->addWidget(panel);
+ contentPane->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
 
-    panel = new QWidget();
-    panel->setLayout(new QHBoxLayout(panel/*, BoxLayout.X_AXIS*/));
-    _detectorSensorName->setMaximumSize( QSize(300, _detectorSensorName->getPreferredSize().height()));
-    panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
-                false, _detectorSensorName, "Detection Sensor", true, "detectorSensorName"));
-    _detectorSensorName->setToolTip(tr("Enter the name of the sensor that detects occupancy for this track citcuit"));
-    contentPane->layout()->addWidget(panel);
+ panel = new JPanel(new FlowLayout());
+ // panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+ _detectorSensorName->resize(QSize(300, _detectorSensorName->getPreferredSize().height()));
+ panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
+         false, _detectorSensorName, tr("Detection Sensor"), true, "Enter the name of the sensor that detects occupancy for this track circuit"));
+ _detectorSensorName->setToolTip(tr("Enter the name of the sensor that detects occupancy for this track circuit"));
+ contentPane->layout()->addWidget(panel);
 
-    panel = new QWidget();
-    panel->setLayout(new QHBoxLayout(panel/*, BoxLayout.X_AXIS*/));
-    _errorSensorName->setMaximumSize( QSize(300, _errorSensorName->getPreferredSize().height()));
-    panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
-                false, _errorSensorName, "Error Sensor", true, "detectorErrorName"));
-    _errorSensorName->setToolTip(tr("Enter the name of the sensor that indicates power problems for this track citcuit"));
-    contentPane->layout()->addWidget(panel);
-    //contentPane.add(Box.createVerticalStrut(STRUT_SIZE));
-    ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
+ panel = new JPanel(new FlowLayout());
+ // panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+ _errorSensorName->resize(QSize(300, _errorSensorName->getPreferredSize().height()));
+ panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
+         false, _errorSensorName, tr("Error Sensor"), true, "Enter the name of the sensor that indicates power problems for this track circuit"));
+ _errorSensorName->setToolTip(tr("Enter the name of the sensor that indicates power problems for this track circuit"));
+ contentPane->layout()->addWidget(panel);
 
-    contentPane->layout()->addWidget(MakePickListPanel());
-    //contentPane.add(Box.createVerticalStrut(STRUT_SIZE));
-    ((QBoxLayout*)contentPane->layout())->addStrut(STRUT_SIZE);
+ QStringList blurbLines = { tr("Drag name of a sensor that can detect occupancy to the \"%1\" field.").arg(tr("Detection Sensor")),
+                         tr("Drag name of a sensor to show an error condition to the \"%1\" field.").arg(tr("Error Sensor"))};
+ _pickTable = new OpenPickListButton/*<Sensor>*/(blurbLines, PickListModel::sensorPickModelInstance(), this);
+ contentPane->layout()->addWidget(_pickTable->getButtonPanel());
+ contentPane->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
 
-    contentPane->layout()->addWidget(MakeDoneButtonPanel());
-    QWidget* border = new QWidget();
-    border->setLayout(new BorderLayout(20));
-    border->layout()->addWidget(contentPane);
-    setCentralWidget(border);
-    reSizeToFitOnScreen();
-    pack();
-    if (_firstInstance) {
-//        setLocationRelativeTo(_parent->_editor);
-        _firstInstance = false;
-    } else {
-        setLocation(_loc.x(), _loc.y());
-        resize(_dim);
-    }
-    setVisible(true);
-    return contentPane;
+ _lengthPanel = new LengthPanel(_homeBlock, "Block Length:");
+ _lengthPanel->changeUnits();
+ _lengthPanel->setLength(_homeBlock->getLengthMm());
+ contentPane->layout()->addWidget(_lengthPanel);
+ contentPane->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+
+ contentPane->layout()->addWidget(makeDoneButtonPanel());
+ return contentPane;
 }
 
 /*private*/ QWidget* EditCircuitFrame::MakePickListPanel() {
@@ -292,11 +279,11 @@ void EditCircuitFrame::closePickList() {
         JPanel* panel = new JPanel();
         panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
         panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
-                false, _systemName, "ColumnSystemName", true, "TooltipBlockName"));
-        _systemName->resize(QSize(300, _systemName->sizeHint().height()));
+                false, _systemName, tr("System Name:"), true, "Enter a name to change the User Name of the OBlock for this Circuit."));
+        _systemName->resize(QSize(300, _systemName->getPreferredSize().height()));
         panel->layout()->addWidget(CircuitBuilder::makeTextBoxPanel(
-                false, _blockName, "blockName", true, "TooltipBlockName"));
-        _blockName->resize(QSize(300, _blockName->sizeHint().height()));
+                false, _blockName, tr("Circuit Name:"), true, "Enter a name to change the User Name of the OBlock for this Circuit."));
+        _blockName->resize(QSize(300, _blockName->getPreferredSize().height()));
 
         JPanel* buttonPanel = new JPanel();
         buttonPanel->setLayout(new FlowLayout());
@@ -457,13 +444,13 @@ void EditCircuitFrame::closePickList() {
 {
     updateIconList(_parent->_editor->getSelectionGroup());
     QString name = "";
-    Sensor* sensor = _block->getSensor();
+    Sensor* sensor = _homeBlock->getSensor();
     if (sensor!=NULL) {
         name = sensor->getDisplayName();
     }
     _detectorSensorName->setText(name);
 
-    sensor = _block->getErrorSensor();
+    sensor = _homeBlock->getErrorSensor();
     if (sensor!=NULL) {
         name = sensor->getDisplayName();
     } else {
@@ -471,7 +458,7 @@ void EditCircuitFrame::closePickList() {
     }
     _errorSensorName->setText(name);
 
-    int state = _block->getState();
+    int state = _homeBlock->getState();
     QString stateText;// = new StringBuffer();
     if ((state & OBlock::UNKNOWN) > 0) {
         stateText.append("Unknown ");
@@ -514,6 +501,7 @@ void EditCircuitFrame::closePickList() {
         _create = false;
     }
     _namePanel->removeAll();
+    _namePanel->setLayout(new QVBoxLayout());
     _namePanel->layout()->addWidget(panel);
     _namePanel->update();
     pack();

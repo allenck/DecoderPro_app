@@ -93,13 +93,16 @@ WarrantTableAction::WarrantTableAction(QObject *parent) :
  common();
 }
 
-/*public*/ /*static*/ WarrantTableAction* WarrantTableAction::getDefault() {
-    if(! InstanceManager::getOptionalDefault("WarrantTableAction")) //.orElseGet(() ->
-    {
-        WarrantTableAction* wta = new WarrantTableAction("Show Warrants"); // NOI18N
-        wta->errorCheck();
-        return (WarrantTableAction*)InstanceManager::setDefault("WarrantTableAction", wta);
-    }//);
+/*public*/ /*static*/ WarrantTableAction* WarrantTableAction::getDefault()
+{
+  WarrantTableAction* wta = (WarrantTableAction*)InstanceManager::getOptionalDefault("WarrantTableAction");
+ if(! wta) //.orElseGet(() ->
+ {
+     wta = new WarrantTableAction("Show Warrants"); // NOI18N
+     wta->errorCheck();
+     return (WarrantTableAction*)InstanceManager::setDefault("WarrantTableAction", wta);
+ }//);
+ return wta;
 }
 
 void WarrantTableAction::common()

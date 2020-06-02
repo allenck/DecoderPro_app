@@ -14,11 +14,11 @@ public:
  /*public*/ QString getSystemName()const {}
 
 private:
- /*private*/ JPanel* _buttonPanel;
- /*private*/ JFrame* _pickFrame;
+ /*private*/ JPanel* _buttonPanel = nullptr;
+ /*private*/ JFrame* _pickFrame = nullptr;
  /*private*/ QPushButton* _openPicklistButton;
  QStringList _blurbLines;
- PickListModel/*<T>*/* _model;
+ PickListModel/*<T>*/* _model = nullptr;
  QWidget* _parent;
  /*private*/ JPanel* makePickListPanel();
  void openPickList();
