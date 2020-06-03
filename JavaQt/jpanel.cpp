@@ -56,7 +56,7 @@ JPanel::JPanel(FlowLayout* layout, QWidget* parent) :  QFrame(parent)
   if(qobject_cast<AbstractBorder*>(border->self()))
   {
    // make any ajustment to the layout such as for adding space for a titled border title.
-   qobject_cast<AbstractBorder*>(border->self())->adjustLayout(this->layout());
+   ((AbstractBorder*)border)->adjustLayout(this->layout());
   }
   //  {
 //  QLayout* layout = this->layout();

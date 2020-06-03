@@ -9700,6 +9700,7 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
  * @since 1.6
  */
 /*public*/ int JTable::convertRowIndexToModel(int viewRowIndex) {
+ QAbstractItemModel* model = this->model();
     RowSorter* sorter = getRowSorter();
     if (sorter != NULL) {
         return sorter->convertRowIndexToModel(viewRowIndex);

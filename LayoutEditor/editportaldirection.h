@@ -23,8 +23,6 @@ public slots:
  /*public*/ void actionPerformed(QString actionCmd);
 
 private:
- /*private:*/ OBlock* _homeBlock;
- /*private:*/ CircuitBuilder* _parent;
  /*private:*/ PortalIcon* _icon;
  /*private:*/ QRadioButton* _toButton;
  /*private:*/ QRadioButton* _fromButton;
@@ -35,14 +33,14 @@ private:
  static bool _firstInstance;// = true;
  static QPoint _loc;// = null;
  static QSize _dim;// = null;
- /*private:*/ QWidget* makeDoneButtonPanel();
- /*private:*/ QWidget* makePortalPanel();
+ ///*private:*/ QWidget* makePortalPanel();
  /*private:*/ QWidget* makeArrowPanel();
 protected:
  /*protected*/ void setPortalIcon(PortalIcon* icon, bool setValue);
  /*protected*/ void closingEvent(bool close);
  /*protected*/ OBlock* getHomeBlock();
-
+ /*protected*/ JPanel* makeContentPanel();
+ /*protected*/ void clearListSelection();
  friend class CircuitBuilder;
 };
 

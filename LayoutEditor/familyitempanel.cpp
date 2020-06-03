@@ -763,7 +763,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
   image->setAlignment(Qt::AlignCenter);
   image->setMargin(6);
 
-  ((/*FlowLayout**/QHBoxLayout*)panel->layout())->addWidget(image,0,Qt::AlignCenter);
+  panel->layout()->addWidget(image);
   int width = qMax(100, panel->minimumSize().width());
   panel->setMinimumSize(QSize(width, panel->minimumSize().height()));
   panel->setMaximumWidth(150);
@@ -839,7 +839,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
      label->setObjectName(borderName);
      label->setAlignment(Qt::AlignCenter);
      label->setMargin(6);
-     ((QBoxLayout*)panel->layout())->addWidget(label, 0, Qt::AlignHCenter);
+     panel->layout()->addWidget(label);
     }
    } catch (ClassNotFoundException cnfe)
    {

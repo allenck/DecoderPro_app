@@ -11,6 +11,7 @@
 #include "listselectionevent.h"
 #include "jmrijframe.h"
 #include "jtable.h"
+#include "jtextfield.h"
 
 class NamedBean;
 class PositionableIcon;
@@ -105,28 +106,28 @@ private:
     /*private*/ bool _hasMastIcons;
 
     // OBlock list to open edit frames
-    /*private*/ PickListModel* _oblockModel;
-    /*private*/ JTable* _blockTable;
-    JmriJFrame* _cbFrame;
+    /*private*/ PickListModel* _oblockModel= nullptr;
+    /*private*/ JTable* _blockTable = nullptr;
+    JmriJFrame* _cbFrame = nullptr;
 
 //    /*private*/ bool hasOBlocks;// = false;
 
 //    // "Editing Frames" - Called from menu in Main Frame
-    /*private*/ EditCircuitFrame* _editCircuitFrame;
-    /*private*/ EditPortalFrame*  _editPortalFrame;
-    /*private*/ EditCircuitPaths* _editPathsFrame;
+    /*private*/ EditCircuitFrame* _editCircuitFrame = nullptr;
+    /*private*/ EditPortalFrame*  _editPortalFrame = nullptr;
+    /*private*/ EditCircuitPaths* _editPathsFrame = nullptr;
 
     // list of icons making a circuit - used by editing frames to indicate block(s) being worked on
-    /*private*/ QList<Positionable*>* _circuitIcons;      // Dark Blue
+    /*private*/ QList<Positionable*>* _circuitIcons = nullptr;      // Dark Blue
 
-    /*private*/ JTextField* _sysNameBox;// = new JTextField();
-    /*private*/ JTextField* _userNameBox;// = new JTextField();
+    /*private*/ JTextField* _sysNameBox = new JTextField();
+    /*private*/ JTextField* _userNameBox = new JTextField();
 
     // "Editing Frames" - Called from menu in Main Frame
     /*private*/ EditFrame* _editFrame = nullptr;
 
     /*private*/ OBlock*  _currentBlock = nullptr;
-    /*private*/ JDialog* _dialog;
+    /*private*/ JDialog* _dialog = nullptr;
     static Logger* log;
     /*private*/ void addIcon(OBlock* block, Positionable* pos);
     /*private*/ void makeToDoMenu();
@@ -140,7 +141,7 @@ private:
     /*private*/ bool editingOK();
     /*private*/ QList<Positionable *> *makeSelectionGroup(OBlock* block, bool showPortal);
     /*private*/ void editCircuitDialog(QString title);
-    /*private*/ QWidget* makeDoneButtonPanel(bool add);
+    /*private*/ JPanel *makeDoneButtonPanel();
     /*private*/ bool doOpenAction();
     /*private*/ void closeCircuitBuilder(OBlock *block);
     /*private*/ void setIconGroup(OBlock* block);
@@ -194,7 +195,7 @@ protected:
     /*protected*/ QString checkForTrackIcons(/*@Nonnull*/ OBlock* block, QString key);
     /*protected*/ void openCBWindow();
     /*protected*/ void closeCBWindow();
-    /*protected*/ static JPanel* makeBoxPanel(bool vertical, QWidget* textField, QString label,
+    /*protected*/ static JPanel* makeBoxPanel(bool vertical, JTextField *textField, QString label,
             QString tooltip);
     /*protected*/ void editSignalFrame(QString title, bool fromMenu);
     /*protected*/ EditFrame* getEditFrame();

@@ -47,12 +47,13 @@ public slots:
     // Sensor list
     /*private*/ JmriJFrame*      _pickFrame;
     /*private*/ QPushButton* _openPicklistButton;
-    /*private*/ JPanel* makeContentPanel();
-    /*private*/ QWidget* MakePickListPanel();
-    void openPickList();
-    void closePickList();
-    /*private*/ QWidget* MakeButtonPanel();
+    /*private*/ JPanel* makeContentPanel() override;
+//    /*private*/ QWidget* MakePickListPanel();
+//    void openPickList();
+//    void closePickList();
+//    /*private*/ QWidget* MakeButtonPanel();
     /*private*/ QWidget* MakeDoneButtonPanel();
+    /*private*/ void convertIcons();
     Logger* log;
 //    /*private*/ Sensor* getSensor(QString sensorName);
 
@@ -67,7 +68,7 @@ public slots:
     /*private*/ void closeCreate();
 
 private slots:
-    void openPickListButton_clicked();
+//    void openPickListButton_clicked();
 protected:
     /*protected*/ void updateContentPanel(bool create);
 //    /*protected*/ OBlock* getBlock();

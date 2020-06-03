@@ -44,6 +44,9 @@
  :   EditFrame()
 {
  common(title, parent, block);
+
+ initContents();
+
  QString name = portal->getName();
  _portalName->setText(name);
  _adjacentBlock = portal->getOpposingBlock(block);

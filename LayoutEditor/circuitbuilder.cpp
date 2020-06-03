@@ -42,6 +42,8 @@
 #include "portalmanager.h"
 #include "portal.h"
 #include "warranttableaction.h"
+#include "box.h"
+#include <QSortFilterProxyModel>
 
 //CircuitBuilder::CircuitBuilder(QObject *parent) :
 //    QObject(parent)
@@ -690,108 +692,80 @@ _todoMenu->addMenu(blockNeeds);  // #1
 {
  //_dialog = new QDialog(_editor, tr(title), true);
  _dialog = new JDialog();
-    _dialog->setWindowTitle(title);
-    _dialog->setLayout(new QVBoxLayout);
-    QWidget* panel = new QWidget();
-    panel->setLayout(new BorderLayout(10));
-    QWidget* mainPanel = new QWidget();
-    mainPanel->setLayout(new QVBoxLayout(mainPanel/*, BoxLayout.Y_AXIS*/));
+ _dialog->setWindowTitle(title);
+ _dialog->setLayout(new QVBoxLayout);
+ QWidget* panel = new QWidget();
+ panel->setLayout(new BorderLayout(10));
+ QWidget* mainPanel = new QWidget();
+ mainPanel->setLayout(new QVBoxLayout(mainPanel/*, BoxLayout.Y_AXIS*/));
 
-    ((QBoxLayout*)mainPanel->layout())->addStrut(STRUT_SIZE);
-    QWidget* p = new QWidget();
-    p->setLayout(new FlowLayout);
-    p->layout()->addWidget(new QLabel(tr("Select an OBlock track circuit")));
-    mainPanel->layout()->addWidget(p);
+ mainPanel->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+ JPanel* p = new JPanel(new FlowLayout());
+ p->layout()->addWidget(new QLabel(tr("Select an OBlock track circuit")));
+ mainPanel->layout()->addWidget(p);
 
-    _oblockModel = PickListModel::oBlockPickModelInstance();
-    QTableView* table = _oblockModel->makePickTable();
-    mainPanel->layout()->addWidget(/*new JScrollPane*/(table));
-    ((QBoxLayout*)mainPanel->layout())->addStrut(STRUT_SIZE);
-    mainPanel->layout()->addWidget(makeDoneButtonPanel(false));
-    panel->layout()->addWidget(mainPanel);
-    _dialog->/*getContentPane()->*/layout()->addWidget(panel);
-    _dialog->move(_editor->pos().x()+100, _editor->pos().y()+100);
-    _dialog->pack();
-    _dialog->resize(300,400);
-    _dialog->setVisible(true);
-    _dialog->exec();
+ mainPanel->layout()->addWidget(/*new JScrollPane*/(_blockTable));
+ mainPanel->layout()->addWidget(Box::createVerticalStrut(STRUT_SIZE));
+ mainPanel->layout()->addWidget(makeDoneButtonPanel());
+ panel->layout()->addWidget(mainPanel);
+ _dialog->/*getContentPane()->*/layout()->addWidget(panel);
+ _dialog->move(_editor->pos().x()+100, _editor->pos().y()+100);
+ _dialog->pack();
+ _dialog->resize(300,400);
+ _dialog->setVisible(true);
+ _dialog->exec();
 }
 
-/*private*/ QWidget*  CircuitBuilder::makeDoneButtonPanel(bool add) {
-    QWidget* buttonPanel = new QWidget();
-    buttonPanel->setLayout(new QHBoxLayout);
-    QWidget* panel0 = new QWidget();
-    panel0->setLayout(new FlowLayout());
-    QPushButton* doneButton;
-    if (add)
-    {
-     doneButton = new QPushButton(tr("Add OBlock Circuit"));
-//        doneButton->layout()->addWidgetActionListener(new ActionListener() {
-//                /*public*/ void actionPerformed(ActionEvent a) {
-//                    if (doAddAction()) {
-//                        _dialog->dispose();
-//                    }
-//                }
-//        });
-     connect(doneButton, SIGNAL(clicked()), this, SLOT(doneButton_clicked()));
-     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-     sizePolicy.setHorizontalStretch(0);
-     sizePolicy.setVerticalStretch(0);
-     sizePolicy.setHeightForWidth(doneButton->sizePolicy().hasHeightForWidth());
-     doneButton->setSizePolicy(sizePolicy);
+/*private*/ JPanel*  CircuitBuilder::makeDoneButtonPanel() {
+ JPanel* buttonPanel = new JPanel(new QVBoxLayout());
+ JPanel* panel0 = new JPanel();
+ panel0->setLayout(new FlowLayout());
+ QPushButton* doneButton;
+ doneButton = new QPushButton(tr("Show OBlock"));
+ //doneButton.addActionListener((ActionEvent a) -> {
+ connect(doneButton, &QPushButton::clicked, [=]{
+     if (doOpenAction()) {
+         _dialog->dispose();
+     }
+ });
+ panel0->layout()->addWidget(doneButton);
 
-    }
-    else
-    {
-     doneButton = new QPushButton(tr("Show OBlock"));
-//        doneButton->layout()->addWidgetActionListener(new ActionListener() {
-//                /*public*/ void actionPerformed(ActionEvent a) {
-//                    if (doOpenAction()) {
-//                        _dialog->dispose();
-//                    }
-//                }
-//        });
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(doneButton->sizePolicy().hasHeightForWidth());
-        doneButton->setSizePolicy(sizePolicy);
-        connect(doneButton, SIGNAL(clicked()), this, SLOT(showDoneButton_clicked()));
-        doneButton->setSizePolicy(sizePolicy);
-    }
-    panel0->layout()->addWidget(doneButton);
-
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
-//    cancelButton->layout()->addWidgetActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                _sysNameBox.setText("");
-//                _currentBlock = NULL;
-//                _dialog->dispose();
-//            }
-//    });
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton_clicked()));
-    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(cancelButton->sizePolicy().hasHeightForWidth());
-    cancelButton->setSizePolicy(sizePolicy);
-    panel0->layout()->addWidget(cancelButton);
-    buttonPanel->layout()->addWidget(panel0);
-    return buttonPanel;
+ QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+ //cancelButton.addActionListener((ActionEvent a) -> {
+ connect(cancelButton, &QPushButton::clicked, [=]{
+     _dialog->dispose();
+ });
+ panel0->layout()->addWidget(cancelButton);
+ buttonPanel->layout()->addWidget(panel0);
+ buttonPanel->setMaximumSize(QSize(300, buttonPanel->sizeHint().height()));
+ return buttonPanel;
 }
 
 /*private*/ bool CircuitBuilder::doOpenAction()
 {
- int row = _oblockModel->getTable()->currentIndex().row();
- if (row >= 0) {
-    _currentBlock = (OBlock*)_oblockModel->getBeanAt(row);
-    return true;
- } else {
-//        JOptionPane.showMessageDialog(_editor, tr("selectOBlock"),
-//                        tr("NeedDataTitle"), JOptionPane.INFORMATION_MESSAGE);
-     QMessageBox::information(_editor, tr("Please Enter Data"), tr("Select an OBlock track circuit"));
+ int row;
+ QModelIndex modelIndex = _blockTable->currentIndex();
+ QAbstractItemModel* model =  _blockTable->model();
+ if(row >= 0)
+ {
+  if(qobject_cast<QSortFilterProxyModel*>(model))
+  {
+   QSortFilterProxyModel* smodel = (QSortFilterProxyModel*)(modelIndex.model());
+   row = smodel->mapToSource(modelIndex).row();
+  }
+  else
+   row = modelIndex.row();
+  _currentBlock = (OBlock*)_oblockModel->getBeanAt(row);
+  return true;
  }
- _currentBlock = NULL;
+// int row = _blockTable->getSelectedRow();
+// if (row >= 0) {
+//     row = _blockTable->convertRowIndexToModel(row);
+//     _currentBlock = (OBlock*)_oblockModel->getBeanAt(row);
+//     return true;
+// }
+ _currentBlock = nullptr;
+ selectPrompt();
  return false;
 }
 
@@ -1562,7 +1536,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
 /**************************** static methods ************************/
 
 /*protected*/ /*static*/ void CircuitBuilder::doSize(QWidget* comp, int max, int min) {
-    QSize dim = comp->size();
+    QSize dim = comp->sizeHint();
     dim.setWidth( max);
     comp->setMaximumSize(dim);
     dim.setWidth(min);
@@ -1576,17 +1550,17 @@ _todoMenu->addMenu(blockNeeds);  // #1
     return panel;
 }
 
-/*protected*/ /*static*/ JPanel* CircuitBuilder::makeBoxPanel(bool vertical, QWidget *textField, QString label, QString tooltip)
+/*protected*/ /*static*/ JPanel* CircuitBuilder::makeBoxPanel(bool vertical, JTextField *textField, QString label, QString tooltip)
 {
-    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed, QSizePolicy::LineEdit);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(textField->sizePolicy().hasWidthForHeight());
+//    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed, QSizePolicy::LineEdit);
+//    sizePolicy.setHorizontalStretch(0);
+//    sizePolicy.setVerticalStretch(0);
+//    sizePolicy.setHeightForWidth(textField->sizePolicy().hasWidthForHeight());
 
  JPanel* panel = new JPanel();
  panel->setLayout(new QVBoxLayout);
  QGridLayout* g = new QGridLayout();
- panel->setSizePolicy(sizePolicy);
+ //panel->setSizePolicy(sizePolicy);
 //    java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
 //    c.gridwidth  = 1;
 //    c.gridheight = 1;
@@ -1614,7 +1588,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
 //    c.fill = java.awt.GridBagConstraints.HORIZONTAL;  // text field will expand
     doSize(textField, 9000, 200);    // default
     g->addWidget(textField, 0,1,1,1);
-    textField->setSizePolicy(sizePolicy);
+//    textField->setSizePolicy(sizePolicy);
     ((QVBoxLayout*)panel->layout())->addLayout(g);
     if (tooltip!=NULL) {
         textField->setToolTip((tooltip));
@@ -1769,6 +1743,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
         /*public*/ void CBFrame::valueChanged(ListSelectionEvent* e) {
             setCurrentBlock();
         }
+
         /*private*/ void CBFrame::setCurrentBlock() {
             int row = cb->_blockTable->getSelectedRow();
             if (row >= 0) {

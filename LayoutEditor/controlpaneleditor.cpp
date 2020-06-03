@@ -73,6 +73,7 @@
 #include <QGraphicsView>
 #include "linkingobject.h"
 #include "joptionpane.h"
+#include <QSignalMapper>
 
 ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
     Editor(parent)
@@ -231,27 +232,41 @@ ControlPanelEditor::~ControlPanelEditor()
 }
 
 /*protected*/ void ControlPanelEditor::makeIconMenu() {
-    _iconMenu = new QMenu(tr("Add Items"));
-    _menuBar->insertMenu(_menuBar->actions().at(0), _iconMenu/*, 0*/);
+ _iconMenu = new QMenu(tr("Add Items"));
+ _menuBar->addMenu(_iconMenu/*, 0*/);
+ QAction* mi = new QAction(tr("Item Palette"),this);
+// mi.addActionListener(new ActionListener() {
+//     Editor editor;
 
-    QAction* mi = new QAction(tr("Item Palette"),this);
-//    mi.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                _itemPalette.setVisible(true);
-//            }
-//        });
-    CPEActionListener* actionListener = new CPEActionListener(this);
-    actionListener->init(this);
+//     ActionListener init(Editor ed) {
+//         editor = ed;
+//         return this;
+//     }
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+ connect(mi, &QAction::triggered, [=]{
+         _itemPalette = ItemPalette::getDefault(tr("Item Palette"), this);
+         _itemPalette->setVisible(true);
+ });
+//     }
+// }.init(this));
+// setMenuAcceleratorKey(mi, KeyEvent.VK_P);
+ _iconMenu->addAction(mi);
 
-    _iconMenu->addAction(mi);
-    connect(mi, SIGNAL(triggered()), actionListener, SLOT(actionPerformed()));
-    _iconMenu->addAction(new OBlockTableAction(tr("OBlock Table"),this));
+ _iconMenu->addAction(new OBlockTableAction(tr("Occupancy Blocks"),this));
+ mi = (QAction*) _iconMenu->actions().at(1);
+ //setMenuAcceleratorKey(mi, KeyEvent.VK_O);
+ mi = new QAction(tr("Circuit Builder"),this);
+ //mi.addActionListener((ActionEvent event) -> {
+ connect(mi, &QAction::triggered, [=]{
+     _circuitBuilder->openCBWindow();
+ });
+ //setMenuAcceleratorKey(mi, KeyEvent.VK_B);
+ _iconMenu->addAction(mi);
 
-//    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
-    _iconMenu->addAction(new ListedTableAction(tr("Item Table List"),this));
-//    mi = (JMenuItem)_iconMenu.getMenuComponent(1);
-//    mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
-//    connect(lt, SIGNAL(triggered()), this, SLOT(onItemTableList()));
+ _iconMenu->addAction(new ListedTableAction(tr("Item Tables"),this));
+ mi = (QAction*) _iconMenu->actions().at(3);
+// setMenuAcceleratorKey(mi, KeyEvent.VK_T);
 }
 
 void CPEActionListener::actionPerformed()
@@ -366,20 +381,26 @@ void ControlPanelEditor::on_disableShapeSelect(bool)
  _warrantMenu = WarrantTableAction::getDefault()->makeWarrantMenu(edit);
  if (_warrantMenu == nullptr) {
      _warrantMenu = new QMenu(tr("Warrant"));
-#if 0 // TODO:
-     QAction aboutItem = new QAction(Bundle.getMessage("AboutWarrant"));
-     HelpUtil.getGlobalHelpBroker().enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.Warrant", null);
-     _warrantMenu.add(aboutItem);
-     aboutItem = new JMenuItem(Bundle.getMessage("AboutOBlock"));
-     HelpUtil.getGlobalHelpBroker().enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", null);
-     _warrantMenu.add(aboutItem);
-     aboutItem = new JMenuItem(Bundle.getMessage("AboutCircuitMenu"));
-     HelpUtil.getGlobalHelpBroker().enableHelpOnButton(aboutItem, "package.jmri.jmrit.display.CircuitBuilder", null);
-     _warrantMenu.add(aboutItem);
-     aboutItem.addActionListener((ActionEvent event) -> {
-         makeCircuitMenu(true);
-//                openCircuitWindow();
-     });
+#if 1 // TODO:
+     QSignalMapper* sm = new QSignalMapper(this);
+     QAction* aboutItem = new QAction(tr("About Warrants"),this);
+     sm->setMapping(aboutItem,aboutItem);
+     HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.Warrant", nullptr);
+     _warrantMenu->addAction(aboutItem);
+     aboutItem = new QAction(tr("About OBlocks & Portals"),this);
+     sm->setMapping(aboutItem,aboutItem);
+     HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", nullptr);
+     _warrantMenu->addAction(aboutItem);
+     aboutItem = new QAction(tr("AboutCircuitMenu"),this);
+     sm->setMapping(aboutItem,aboutItem);
+     HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
+     _warrantMenu->addAction(aboutItem);
+     //aboutItem.addActionListener((ActionEvent event) -> {
+//     connect(sm, &QSignalMapper::mapped, [=]{
+//         makeCircuitMenu(true);
+////                openCircuitWindow();
+//     });
+     connect(sm, SIGNAL(mapped(QObject*)), this, SLOT(on_makeCircuitMenu()));
 #endif
  } else {
      makeCircuitMenu(edit);
@@ -392,13 +413,13 @@ void ControlPanelEditor::on_disableShapeSelect(bool)
          _circuitBuilder->openCBWindow();
      });
  }
-#if 0 // TODO:
+#if 1 // TODO:
  if (addMenu) {
-     _menuBar->addMenu(_warrantMenu, 0);
+     _menuBar->addMenu(_warrantMenu/*, 0*/);
  } else if (oldMenu != nullptr) {
-     int idx = _menuBar->getComponentIndex(oldMenu);
-     _menuBar->remove(oldMenu);
-     _menuBar->addMenu(_warrantMenu, idx);
+     int idx = _menuBar->actions().indexOf((QAction*)oldMenu);
+     _menuBar->removeAction((QAction*)oldMenu);
+     _menuBar->addMenu(_warrantMenu/*, idx*/);
 
  }
  //_menuBar->revalidate();

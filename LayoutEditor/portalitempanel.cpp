@@ -41,7 +41,7 @@
     QWidget* panel = new QWidget();
     FlowLayout* panelLayout;
     panel->setLayout(panelLayout =new FlowLayout());
-    QPushButton* setDefaultsButton = new QPushButton(tr("setDefaultIcons"));
+    QPushButton* setDefaultsButton = new QPushButton(tr("Set Default Icons"));
 //    setDefaultsButton.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent a) {

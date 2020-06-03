@@ -447,9 +447,9 @@ void DecoratorPanel::AJRadioButton_toggled(bool b)
      else
       bundleCaption = state;
     }
+    panel->setLayout(new QVBoxLayout()); //panel, BoxLayout.Y_AXIS));
     panel->setBorder(BorderFactory::createTitledBorder((bundleCaption)));
     //panel->setTitle(bundleCaption);
-    panel->setLayout(new QVBoxLayout()); //panel, BoxLayout.Y_AXIS));
     QWidget* p = new QWidget();
     p->setLayout(new FlowLayout());
     if (addTextField) {

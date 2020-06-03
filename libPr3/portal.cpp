@@ -91,22 +91,23 @@
 */
 /*private*/ bool Portal::addPath(QList <OPath*>* list, OPath* path)
 {
- Block* block = path->getBlock();
- if (block == nullptr) {
-     log->error(tr("Path \"%1\" has no block.").arg(path->getName()));
-     return false;
+ QString pName = path->getName();
+ for (OPath* p : *list)
+ {
+  if (p->equals(path)) {
+      if (pName == (p->getName())) {
+          return true;    // OK, everything equal
+      } else {
+          log->warn(tr("Path \"%1\" is duplicate of path \"%2\" in Portal \"%3\" from block %4.").arg(path->getName()).arg(p->getName()).arg(_name).arg(path->getBlock()->getDisplayName()));
+          return false;
+      }
+  } else if (pName == (p->getName())) {
+      log->warn(tr("Path \"%1\" is duplicate name for another path in Portal \"%2\" from block %3.").arg(path->getName()).arg(_name).arg(path->getBlock()->getDisplayName()));
+      return false;
+  }
  }
- if (this != (path->getFromPortal())
-         && this != (path->getToPortal())) {
-     return false;
- }
- if ((_fromBlock != nullptr) && _fromBlock->equals(block)) {
-     return addPath(_fromPaths, path);
- } else if ((_toBlock != nullptr) && _toBlock->equals(block)) {
-     return addPath(_toPaths, path);
- }
- // portal is incomplete or path block not in this portal
- return false;
+ list->append(path);
+ return true;
 }
 
 /*public*/ void Portal::removePath(OPath* path) {

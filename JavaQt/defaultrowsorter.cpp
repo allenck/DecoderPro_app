@@ -416,7 +416,7 @@
 /*public*/ int DefaultRowSorter::convertRowIndexToModel(int index) {
     if (viewToModel == NULL) {
         if (index < 0 || index >= getModelWrapper()->getRowCount()) {
-            throw new IndexOutOfBoundsException("Invalid index");
+            throw IndexOutOfBoundsException("Invalid index");
         }
         return index;
     }

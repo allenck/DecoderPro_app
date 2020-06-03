@@ -36,10 +36,10 @@
  /*public*/ DragJComponent::DragJComponent(DataFlavor* flavor, QWidget *comp, QWidget *parent) : JPanel(parent){
      //super();
      QString borderName = tr("Drag to Panel");
+     setLayout(new QVBoxLayout());
      setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
                                                       borderName));
      //setTitle(borderName);
-     setLayout(new QVBoxLayout());
      QSize dim = comp->sizeHint();
      this->layout()->addWidget(comp);
      // guestimate border is about 5 pixels thick. plus some margin

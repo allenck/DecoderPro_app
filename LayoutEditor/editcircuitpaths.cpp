@@ -42,6 +42,7 @@ static QSize _dim = QSize();
 /*public*/ EditCircuitPaths::EditCircuitPaths(QString title, CircuitBuilder* parent, OBlock* block) :
 EditFrame(title, parent, block)
 {
+ initContents();
  _parent = parent;
  _block = block;
  _length = new JTextField();

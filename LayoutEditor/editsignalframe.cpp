@@ -32,6 +32,7 @@
 
     /*public*/ EditSignalFrame::EditSignalFrame(QString title, CircuitBuilder* parent, OBlock* block) : EditFrame(title, parent, block){
         //super(title, parent, block);
+ initContents();
         checkCircuitIcons("BlockSignal");
         pack();
     }
