@@ -232,7 +232,6 @@ void TableItemPanel::cancelPressed(/*ActionEvent e*/) {
  {
   NamedBean* b = _model->getBeanAt(row);
   _table->clearSelection();
-  _updateButton->setEnabled(false);
   if(log->isDebugEnabled()) log->debug("getTableSelection: row= "+QString::number(row)+", bean= "+b->getDisplayName());
   return b;
  }

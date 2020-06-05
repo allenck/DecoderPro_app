@@ -47,7 +47,7 @@
 }
 
 /*protected*/ void ReporterItemPanel::initIconFamiliesPanel() {
-    _iconFamilyPanel = new QWidget();
+    _iconFamilyPanel = new JPanel();
     _iconFamilyPanel->setLayout(new QVBoxLayout(_iconFamilyPanel/*, QVBoxLayout.Y_AXIS*/));
     if (!_update) {
         _iconFamilyPanel->layout()->addWidget(instructions());
@@ -67,13 +67,10 @@
   return;
  }
  _reporter = new ReporterIcon(_editor);
- QGroupBox*  panel = new QGroupBox();
- QString borderName = tr("Drag to Panel");
- QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+ JPanel*  panel = new JPanel();
  panel->setLayout(new QHBoxLayout);
- panel->setTitle(borderName);
- panel->setStyleSheet(gbStyleSheet);
- QWidget*  comp;
+ panel->setOpaque(false);
+ JPanel*  comp;
  DataFlavor* flavor;
  try {
      //comp = getDragger(flavor = new DataFlavor(Editor::POSITIONABLE_FLAVOR));
@@ -82,7 +79,7 @@
      comp->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
  } catch (ClassNotFoundException cnfe) {
      //cnfe.printStackTrace();
-     comp = new QWidget();
+     comp = new JPanel();
  }
  comp->setLayout(new FlowLayout);
  comp->layout()->addWidget(_reporter);

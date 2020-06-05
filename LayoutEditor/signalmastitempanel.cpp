@@ -18,6 +18,7 @@
 #include "imagepanel.h"
 #include "jpanel.h"
 #include "borderfactory.h"
+#include "joptionpane.h"
 
 //SignalMastItemPanel::SignalMastItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -82,7 +83,7 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIc
  }
  if (_iconFamilyPanel == nullptr) {
   log->debug("new _iconFamilyPanel created");
-  _iconFamilyPanel = new QWidget();
+  _iconFamilyPanel = new JPanel();
   _iconFamilyPanel->setLayout(new QVBoxLayout()); //(_iconFamilyPanel, BoxLayout.Y_AXIS));
   //_iconFamilyPanel->setOpaque(true);
   if (!_update) {
@@ -123,41 +124,28 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIc
   _iconPanel->setVisible(false);
 }
 
-/*protected*/ void SignalMastItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* /*iconMap*/, QString /*displayKey*/) {
+/*protected*/ void SignalMastItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* /*iconMap*/, QString displayKey) {
     if (_update) {
         return;
     }
     _dragIconPanel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
 
-    NamedIcon* icon = getDragIcon();
-    QGroupBox* panel = new QGroupBox();
-    panel->setLayout(new QVBoxLayout);
-    QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-    QString borderName = ItemPalette::convertText("Drag to Pane");
-    //panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
-//                                                     borderName));
-    panel->setTitle(borderName);
-    panel->setStyleSheet(gbStyleSheet);
-
-    DragJLabel* label;
-    try {
-        label = getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR));
-        label->setToolTip(tr("ToolTipDragIcon"));
-    } catch (ClassNotFoundException cnfe) {
-        //cnfe.printStackTrace();
-        label = new DragJLabel(NULL);
+    //_dragIconPanel.removeAll();
+    QList<QWidget*> widgets = _dragIconPanel->findChildren<QWidget*>();
+    foreach(QWidget* widget, widgets)
+    {
+     _dragIconPanel->layout()->removeWidget(widget);
+     widget->deleteLater();
     }
-    label->setIcon(icon);
-    label->setName(borderName);
-    label->setAlignment(Qt::AlignCenter);
-    label->setMargin(6);
-    ((QBoxLayout*)panel->layout())->addWidget(label,0, Qt::AlignCenter);
-    int width = qMax(100, panel->minimumSize().width());
-    panel->setMinimumSize(QSize(width, panel->minimumSize().height()));
-    panel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
-    if(_dragIconPanel->layout() == NULL)
-        _dragIconPanel->setLayout(new FlowLayout);
-    _dragIconPanel->layout()->addWidget(panel);
+
+    NamedIcon* icon = getDragIcon();
+    try {
+        JLabel* label = getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), icon);
+        JPanel* panel = makeDragIcon(icon, label);
+        _dragIconPanel->layout()->addWidget(panel);
+    } catch (ClassNotFoundException cnfe) {
+        log->warn(tr("no DndIconPanel for %1, %2 created. %3").arg(_itemType).arg(displayKey).arg(cnfe.getMessage()));
+    }
 }
 
 //@Override
@@ -396,18 +384,30 @@ void SignalMastItemPanel::_showIconsButton_clicked()
 
 }
 
-/*protected*/ DragJLabel* SignalMastItemPanel::getDragger(DataFlavor* flavor) {
-    return new SMIconDragJLabel(flavor, this);
+/*protected*/ JLabel* SignalMastItemPanel::getDragger(DataFlavor* flavor, NamedIcon* icon) {
+ return new SMIconDragJLabel(flavor, icon, this);
 }
 
 // /*protected*/ class SMIconDragJLabel extends DragJLabel {
 
-/*public*/ SMIconDragJLabel::SMIconDragJLabel(DataFlavor* flavor, SignalMastItemPanel* self):DragJLabel(flavor, self)
+/*public*/ SMIconDragJLabel::SMIconDragJLabel(DataFlavor* flavor, NamedIcon *icon, SignalMastItemPanel* self)
+  : DragJLabel(flavor, icon, self)
 {
  //super(flavor);
  this->self = self;
     log = new Logger("SMIconDragJLabel");
 }
+//@Override
+/*protected*/ bool SMIconDragJLabel::okToDrag() {
+    NamedBean* bean = self->getDeviceNamedBean();
+    if (bean == nullptr) {
+        JOptionPane::showMessageDialog(this, tr("Select a row in the table to provide a device for this icon."),
+                tr("Warning"), JOptionPane::WARNING_MESSAGE);
+        return false;
+    }
+    return true;
+}
+
 /*public*/ QObject* SMIconDragJLabel::getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException)
 {
  if (!isDataFlavorSupported(flavor))

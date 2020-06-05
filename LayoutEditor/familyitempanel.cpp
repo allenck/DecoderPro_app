@@ -48,14 +48,12 @@
     : ItemPanel(parentFrame, type, editor, parent)
 {
  //super(parentFrame, type, family, editor);
- _family = family;
- log = new Logger("FamilyItemPanel");
- _currentIconMap = nullptr;
- _dragIconPanel = nullptr;
- _updateButton = new QPushButton(tr("Update Panel"));
  setObjectName("FamilyItemPanel");
- //gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+ log = new Logger("FamilyItemPanel");
  log->setDebugEnabled(true);
+
+ _family = family;
+
 }
 
 /**
@@ -80,6 +78,7 @@
       log->debug(tr("init done for %1, family= %2").arg(_itemType).arg(_family));
   }
  }
+ hideIcons();
 }
 
 /**
@@ -97,7 +96,6 @@
  initIconFamiliesPanel();
  thisLayout->addWidget(_iconFamilyPanel);
  makeBottomPanel(doneAction);
-//    setMinimumSize(getPreferredSize());
 }
 
 /**
@@ -113,6 +111,7 @@
  initIconFamiliesPanel();
  thisLayout->addWidget(_iconFamilyPanel);
  thisLayout->addWidget(_bottom1Panel);
+ _initialized = true;
 }
 
 /*protected*/ void FamilyItemPanel::makeBottomPanel(ActionListener* doneAction)
@@ -648,20 +647,21 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
  * Position initial Preview component on _iconFamilyPanel. If already present, keep and clear it.
  * @param position Positional order of DragIconPanel on IconFamilyPanel
  */
-/*protected*/ void FamilyItemPanel::makeDragIconPanel(int position) {
+/*protected*/ void FamilyItemPanel::makeDragIconPanel(int position)
+{
     if (_dragIconPanel == nullptr) {
         _dragIconPanel = new ImagePanel();
         _dragIconPanel->setObjectName("DragIconPanel");
-        //_dragIconPanel.setOpaque(true); // to show background color/squares
+        _dragIconPanel->setOpaque(true); // to show background color/squares
         FlowLayout* _dragIconPanelLayout;
-        _dragIconPanel->
-        setLayout(_dragIconPanelLayout = new FlowLayout());
+        _dragIconPanel->setLayout(_dragIconPanelLayout = new FlowLayout());
         _dragIconPanelLayout->setObjectName("FlowLayout");
         _dragIconPanel->setBorder(BorderFactory::createLineBorder(Qt::black));
-        //_dragIconPanel->setStyleSheet(gbStyleSheet);
         _dragIconPanel->setToolTip(tr("Drag an icon from the Preview pane to add it to the Control Panel"));
         _iconFamilyPanel->layout()->addWidget(_dragIconPanel/*, position*/); // place icons over background
-    } else {
+    }
+    else
+    {
         //_dragIconPanel.removeAll();
      QList<QWidget*> widgets = _dragIconPanel->findChildren<QWidget*>();
      foreach(QWidget* widget, widgets)
@@ -680,7 +680,6 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
         log->error("FamilyItemPanel - no value for previewBgSet");
     }
     _dragIconPanel->setVisible(true);
-
 }
 
 /*protected*/ void FamilyItemPanel::familiesMissing() {
@@ -853,7 +852,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
     panel->setOpaque(false);
     if (label != nullptr) {
         label->setToolTip(tr("Drag an icon from the Preview pane to add it to the Control Panel"));
-        // label.setIcon(icon);
+        label->setIcon(icon);
         label->setName(borderName);
         label->setOpaque(false);
         panel->layout()->addWidget(label);
@@ -861,7 +860,8 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
     QFontMetrics fm(panel->font());
     int width = fm.size(Qt::TextSingleLine, borderName).width();
     width = qMax(CatalogPanel::ICON_WIDTH, qMax(width, icon->getIconWidth())+10);
-    panel->resize(QSize(width, panel->sizeHint().height()));
+    //panel->resize(QSize(width, panel->sizeHint().height()));
+    panel->setMinimumWidth(width);
     return panel;
 }
 
@@ -888,44 +888,38 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
 }
 
 /*protected*/ void FamilyItemPanel::showIcons() {
-//    if (!jmri.util.ThreadingUtil.isGUIThread()) log.error("Not on GUI thread", new Exception("traceback"));
-    if (log->isDebugEnabled()) {
-        log->debug(tr("showIcons for= %1, %2").arg(_itemType).arg(_family));
-    }
-    bool isPalette = (qobject_cast<ItemPalette*>(_paletteFrame));
-    QSize totalDim;
-    if (isPalette) {
-        totalDim = ItemPalette::_tabPane->size();
-    } else {
-        totalDim = _paletteFrame->size();
-    }
-    QSize oldDim = size();
-    if (_update) {
-        _previewPanel->setVisible(true);
-//        _previewPanel->update(); // force redraw
-    }
-    _iconPanel->setVisible(true);
-    _iconPanel->update(); // force redraw
-    if (!_suppressDragging) {
-        _dragIconPanel->setVisible(false);
-        _dragIconPanel->update();
-    } else {
-        _previewPanel->setVisible(true);
-        _previewPanel->update(); // force redraw
-    }
-    reSizeDisplay(isPalette, oldDim, totalDim);
-    _showIconsButton->setText(tr("Hide Icons"));
-    reset();
+ bool isPalette = ( qobject_cast<ItemPalette*>(_paletteFrame));
+ QSize totalDim = _paletteFrame->size();
+ QSize oldDim = size();
+ if (_update) {
+     _previewPanel->setVisible(true);
+ }
+ _iconPanel->setVisible(true);
+ _iconPanel->update(); // force redraw
+ if (!_suppressDragging) {
+     _dragIconPanel->setVisible(false);
+     _dragIconPanel->update();
+ } else {
+     _previewPanel->setVisible(true);
+ }
+ _previewPanel->update(); // force redraw
+ reSizeDisplay(isPalette, oldDim, totalDim);
+ _showIconsButton->setText(tr("Hide Icons"));
+ reset();
 }
 
 /**
  * Action item for deletion of an icon family.
  */
 /*protected*/ void FamilyItemPanel::deleteFamilySet() {
-    ItemPalette::removeIconMap(_itemType, _family);
-    _family = "";
-    _currentIconMap = NULL;
-    updateFamiliesPanel();
+ if (JOptionPane::showConfirmDialog(_paletteFrame, tr("Are you sure you want to delete the \"%1\" icon set?").arg(_family),
+         tr("Question"), JOptionPane::YES_NO_OPTION, JOptionPane::QUESTION_MESSAGE)
+         == JOptionPane::YES_OPTION) {
+     ItemPalette::removeIconMap(_itemType, _family);
+     _family = "";
+     _currentIconMap = nullptr;
+     updateFamiliesPanel();
+ }
 }
 
 /**
@@ -1094,6 +1088,8 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
         if (_family != "") {
             setFamily(_family);
         }
+        if(!_showIconsButton) // ACK added!
+         return;
         if (visible) {
             _showIconsButton->setText(tr("Hide Icons"));
         } else {

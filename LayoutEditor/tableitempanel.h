@@ -47,6 +47,7 @@ protected:
     /*protected*/ virtual QWidget* initTablePanel(PickListModel* model, Editor* editor);
     /*protected*/ void addToTable();
     /*protected*/ NamedBean* getDeviceNamedBean();
+
 protected slots:
     /*protected*/ void makeAddToTableWindow();
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);

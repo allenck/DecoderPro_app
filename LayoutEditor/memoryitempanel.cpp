@@ -103,7 +103,7 @@
 
 /*protected*/ void MemoryItemPanel::initIconFamiliesPanel()
 {
- _iconFamilyPanel = new QWidget();
+ _iconFamilyPanel = new JPanel();
  _iconFamilyPanel->setLayout(new QVBoxLayout());
  if (!_update)
  {

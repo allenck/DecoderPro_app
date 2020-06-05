@@ -60,9 +60,9 @@
 //    /*public*/ static final ResourceBundle rbean = ResourceBundle.getBundle("jmri.NamedBeanBundle");
 
 /*public*/ /*static*/ /*final*/ int ItemPalette::STRUT_SIZE = 10;
-/*static*/ QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>* ItemPalette::_iconMaps = new QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>();
-/*static*/ QMap<QString, QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>*>*ItemPalette:: _indicatorTOMaps = new QMap<QString, QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>*>();
-/*static*/ QMap<QString, ItemPanel*>* ItemPalette::_tabIndex = 0;
+/*static*/ QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>* ItemPalette::_iconMaps = nullptr; //new QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>();
+/*static*/ QMap<QString, QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>*>*ItemPalette:: _indicatorTOMaps = nullptr; //new QMap<QString, QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>*>();
+/*static*/ QMap<QString, ItemPanel*>* ItemPalette::_tabIndex = nullptr;
 /*static*/ QTabWidget* ItemPalette::_tabPane = NULL;
 
 
@@ -464,14 +464,15 @@ void ItemPalette::changeEvent(QEvent * e)
     return instance;
 }
 
-/*public*/ ItemPalette::ItemPalette(QWidget* parent) : DisplayFrame(true, true, parent)
+/*public*/ ItemPalette::ItemPalette(QWidget* parent) : DisplayFrame(false, false, parent)
 {
  // super(true, true);
  init("", NULL);
  //loadIcons();
 }
 
-/*public*/ ItemPalette::ItemPalette(QString title, Editor* editor, QWidget* parent) : DisplayFrame(title, true, true, parent)
+/*public*/ ItemPalette::ItemPalette(QString title, Editor* editor, QWidget* parent)
+ : DisplayFrame(title, false, false, parent)
 {
  //(title, true, true);
 //        long t = System.currentTimeMillis();
@@ -485,6 +486,8 @@ void ItemPalette::init(QString title, Editor* ed)
   //resize(551, 600);
   //setMinimumSize(500,600);
   _currentItemPanel = NULL;
+
+  setDefaultCloseOperation(HIDE_ON_CLOSE);
 
  _tabIndex = new QMap<QString, ItemPanel*>();
  this->setTitle(title);
@@ -523,9 +526,9 @@ void ItemPalette::init(QString title, Editor* ed)
 }
 
 IPWindowListener::IPWindowListener(ItemPalette *palette) {this->palette = palette;}
-void IPWindowListener::windowClosing(QCloseEvent *)
+void IPWindowListener::windowClosing(QCloseEvent * e)
 {
- palette->closePanels();
+ palette->closePanels(e);
 }
 
 /**
@@ -689,7 +692,7 @@ void IPEditItemActionListener::actionPerformed()
 
 }
 
-/*public*/ void ItemPalette::closePanels(/*java.awt.event.WindowEvent e*/) {
+/*public*/ void ItemPalette::closePanels(QCloseEvent * e) {
     //java.awt.Component[] comps = _tabPane.getComponents();
     QObjectList comps = _tabPane->children();
     if (log->isDebugEnabled())
@@ -700,10 +703,10 @@ void IPEditItemActionListener::actionPerformed()
         if(qobject_cast<ItemPanel*>(comps.at(i))!= NULL)
         {
             //log->debug("windowClosing "+i+"th panel= "+comps[i].getClass().getName());
-// TODO:           ((ItemPanel*)comps.at(i))->dispose();
+           ((ItemPanel*)comps.at(i))->closeDialogs();
         }
     }
-    JmriJFrame::windowClosing(NULL);
+    JmriJFrame::windowClosing(e);
 }
 
 /**

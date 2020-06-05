@@ -39,9 +39,9 @@ private:
     JPanel*    _bottom1Panel = nullptr;  // Typically _showIconsButton and editIconsButton
     QWidget*    _bottom2Panel = nullptr;  // createIconFamilyButton - when all families deleted
     Logger* log;
-    QPushButton*   _showIconsButton = nullptr;
+    QPushButton* _showIconsButton = nullptr;
     QPushButton* _editIconsButton = nullptr;
-    QPushButton*   _updateButton = nullptr;
+    QPushButton*  _updateButton = nullptr;
     /*private*/ QMap<QString, NamedIcon*>* _currentIconMap = nullptr;
     /*private*/ QMap<QString, NamedIcon*>* _unstoredMap =  nullptr;
     /*private*/ void checkCurrentMap(QMap<QString, NamedIcon*>* iconMap);
@@ -58,11 +58,11 @@ private slots:
 
 protected:
     /*protected*/ QString    _family;
-    /*protected*/ QWidget*    _iconFamilyPanel = nullptr;
-    /*protected*/ ImagePanel* _dragIconPanel = nullptr; // contained in _iconFamilyPanel - sample to drag to control panel
-    /*protected*/ ImagePanel* _iconPanel = nullptr;     // panel contained in _iconFamilyPanel - all icons in family
-    /*protected*/ QWidget* _previewPanel = nullptr;
-    /*protected*/ JPanel* _familyButtonPanel = nullptr;    // panel of radioButtons to select icon family
+    /*protected*/ JPanel* _iconFamilyPanel = nullptr;  // Holds preview of _iconPanel & _dragIconPanel. They alternate being empty
+    /*protected*/ ImagePanel* _dragIconPanel = nullptr; // a panel on _iconFamilyPanel - to drag to control panel, hidden upon [Show Icons]
+    /*protected*/ ImagePanel* _iconPanel = nullptr;     // a panel on _iconFamilyPanel - all icons in family, shown upon [Show Icons]
+    /*protected*/ JPanel* _previewPanel = nullptr;
+    /*protected*/ JPanel* _familyButtonPanel;    // panel of radioButtons to select icon family
 
     /*protected*/ int _buttonPosition = 0;      // position of _iconFamilyPanel (TableItemPanels use 1)
     /*protected*/ static bool _suppressNamePrompts;// = false;
@@ -78,7 +78,6 @@ protected:
     /*protected*/ JPanel* makeDragIcon(NamedIcon* icon, JLabel* label);
     /*protected*/ virtual void setFamily(QString family) ;
     /*protected*/ virtual void openDialog(QString type, QString family, QMap<QString, NamedIcon *> *iconMap);
-    /*protected*/ bool _suppressDragging= false;
     /*protected*/ QString getValidFamilyName(QString family);
     /*protected*/ void addUpdateButtonToBottom(ActionListener* doneAction);
     /*protected*/ virtual JPanel* makeItemButtonPanel();
@@ -88,21 +87,19 @@ protected:
     /*protected*/ QString getIconBorderName(QString key);
 
 protected slots:
-//    /*protected*/ void openEditDialog();
     /*protected*/ virtual bool newFamilyDialog();
     /*protected*/ void updateFamiliesPanel();
     /*protected*/ void makeDragIconPanel(int position);
     /*protected*/ void familiesMissing();
     /*protected*/ bool isUnstoredMap();
     /*protected*/ void setFamilyButton();
-    /*protected*/ void setEditor(Editor* ed);
+    /*protected*/ void setEditor(Editor* ed) override;
     /*protected*/ void setIconMap(QMap<QString, NamedIcon *> *map);
     /*protected*/ bool addFamily(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
     /*protected*/ bool mapsAreEqual(QMap<QString, NamedIcon*>* map1, QMap<QString, NamedIcon*>* map2);
     /*protected*/ void deleteFamilySet();
     /*protected*/ virtual void hideIcons();
     /*protected*/ virtual void showIcons();
-//    void on_editIconsButton();
 
 friend class ItemPalette;
 friend class TableItemPanel;

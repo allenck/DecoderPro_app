@@ -68,7 +68,8 @@ jmri.util.swing.ImagePanel -- preview
  * @param saveSize     set true to save the last known size
  * @param savePosition set true to save the last known location
  */
-/*public*/ DisplayFrame::DisplayFrame(bool saveSize, bool savePosition, QWidget* parent) : JmriJFrame(saveSize, savePosition, parent){
+/*public*/ DisplayFrame::DisplayFrame(bool saveSize, bool savePosition, QWidget* parent)
+ : JmriJFrame(saveSize, savePosition, parent){
     //super(saveSize, savePosition);
  previewBgSet = 0;
 }
@@ -81,7 +82,8 @@ jmri.util.swing.ImagePanel -- preview
  * @param saveSize     set true to save the last knowm size
  * @param savePosition set true to save the last known location
  */
-/*public*/ DisplayFrame::DisplayFrame(QString name, bool saveSize, bool savePosition, QWidget* parent) : JmriJFrame(saveSize, savePosition, parent) {
+/*public*/ DisplayFrame::DisplayFrame(QString name, bool saveSize, bool savePosition, QWidget* parent)
+ : JmriJFrame(saveSize, savePosition, parent) {
     //super(name, saveSize, savePosition);
  previewBgSet = 0;
 }

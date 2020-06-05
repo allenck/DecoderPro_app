@@ -31,7 +31,7 @@ protected:
     /*protected*/ void initIconFamiliesPanel();
     /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
     /*protected*/ void makeBottomPanel(ActionListener* doneAction);
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor);
+    /*protected*/ JLabel* getDragger(DataFlavor* flavor, NamedIcon* icon);
     /*protected*/ void setFamily(QString family);
     /*protected*/ void showIcons();
     /*protected*/ void hideIcons();
@@ -43,11 +43,14 @@ friend class SMIconDragJLabel;
      Q_OBJECT
      SignalMastItemPanel* self;
         public:
-        /*public*/ SMIconDragJLabel(DataFlavor* flavor, SignalMastItemPanel* self);
+        /*public*/ SMIconDragJLabel(DataFlavor* flavor, NamedIcon* icon, SignalMastItemPanel* self);
      /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
      QByteArray mimeData();
 private:
      Logger* log;
+protected:
+     /*protected*/ bool okToDrag();
+
 };
 
 #endif // SIGNALMASTITEMPANEL_H

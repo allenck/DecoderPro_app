@@ -41,7 +41,7 @@ public:
 
     /*public*/ ItemPalette(QString _title, Editor* editor, QWidget* parent = 0);
     /*public*/ void stateChanged(ChangeEvent* e);
-    /*public*/ void closePanels(/*WindowEvent* e*/);
+    /*public*/ void closePanels(QCloseEvent *e);
     static bool familyNameOK(QWidget* frame, QString type, QString family, QStringListIterator it);
     static /*public*/ QString convertText(QString name);
     static void loadMissingItemType(QString itemType, Editor* ed);
@@ -57,7 +57,7 @@ public slots:
   void init(QString title, Editor* ed);
   /*private*/ void makeMenus(Editor* editor);
   void changeEvent(QEvent *);
-/*private*/ ItemPanel* _currentItemPanel;
+  /*private*/ ItemPanel* _currentItemPanel = nullptr;
 
 protected:
   static /*protected*/ bool addFamily(QWidget* frame, QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
@@ -103,6 +103,6 @@ class IPWindowListener : public WindowListener
  ItemPalette* palette;
 public:
  IPWindowListener(ItemPalette* palette);
- void windowClosing(QCloseEvent*);
+ void windowClosing(QCloseEvent*e) override;
 };
 #endif // ITEMPALETTE_H

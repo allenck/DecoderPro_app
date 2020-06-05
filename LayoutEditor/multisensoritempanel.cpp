@@ -25,7 +25,6 @@
  : TableItemPanel(parentFrame, type, family, model, editor, parent)
 {
   //super(parentFrame, type, family, model, editor);
-  _upDown = false;
   setToolTip(tr("Drag the sensor selections from the table to add the multisensor to the panel"));
   setObjectName("MultiSensorItemPanel");
   log->setDebugEnabled(true);
@@ -63,9 +62,12 @@
     panel->layout()->addWidget(_addTableButton);
 
     int size = 6;
-    if (_family!=NULL) {
+    if (_family!= "") {
         QMap<QString, NamedIcon*>* map = ItemPalette::getIconMap(_itemType, _family);
-        size = map->size();
+        if (map != nullptr)
+        {
+            size = map->size();
+        }
     }
     _selectionModel->setPositionRange(size-3);
     QPushButton* clearSelectionButton = new QPushButton(tr("Clear Table Selections"));
@@ -77,13 +79,10 @@
     connect(clearSelectionButton, SIGNAL(clicked()), this, SLOT(clearSelections()));
     clearSelectionButton->setToolTip(tr("Clear selected table rows"));
     panel->layout()->addWidget(clearSelectionButton);
-     topPanelLayout->addWidget(panel,0, Qt::AlignBottom);
+    topPanelLayout->addWidget(panel,0, Qt::AlignBottom);
     _table->setToolTip(tr("Drag a row from the table to add a label of the item to the panel"));
     //_scrollPane.setToolTipText(tr("Drag a row from the table to add a label of the item to the panel"));
     topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the panel"));
-
-    updateFamilyIcons();
-
     return topPanel;
 }
 

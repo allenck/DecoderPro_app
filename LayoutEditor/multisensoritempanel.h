@@ -30,8 +30,8 @@ public slots:
 
 private:
     QWidget* _multiSensorPanel = nullptr;
-    MultiSensorSelectionModel* _selectionModel;
-    bool _upDown;// = false;
+    MultiSensorSelectionModel* _selectionModel = nullptr;
+    bool _upDown = false;
     /*private*/ void makeMultiSensorPanel();
 
 protected:

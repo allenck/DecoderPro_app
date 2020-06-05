@@ -226,9 +226,6 @@ void ItemPanel::on_bgColorBox()
     JPanel* previewPanel = new JPanel();
     QVBoxLayout* previewPanelLayout;
     previewPanel->setLayout(previewPanelLayout =new QVBoxLayout());//(previewPanel, BoxLayout.Y_AXIS));
-//    QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-//    previewPanel->setStyleSheet(gbStyleSheet);
-//    previewPanel->setTitle(tr("Preview"));
     previewPanel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black, 1),
                  tr("Preview")));
 
