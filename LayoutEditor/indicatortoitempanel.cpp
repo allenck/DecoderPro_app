@@ -465,7 +465,7 @@ void IndicatorTOItemPanel::createNewFamily(QString family)
  if (_iconPanel == nullptr) {
      _iconPanel = new ImagePanel();
      log->error(tr("setFamily called with _iconPanel == null type= %1").arg(_itemType));
-     _iconFamilyPanel->layout()->addWidget(_iconPanel/*, 0*/);
+     ((QVBoxLayout*)_iconFamilyPanel->layout())->insertWidget(0, _iconPanel);
  }
  else {
      //_iconPanel.removeAll();

@@ -27,6 +27,8 @@
 #include "gridbaglayout.h"
 #include "placewindow.h"
 #include "borderfactory.h"
+#include <QFontMetrics>
+#include "catalogpanel.h"
 
 //FamilyItemPanel::FamilyItemPanel(QWidget *parent) :
 //    ItemPanel(parent)
@@ -801,7 +803,6 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
  {
   return;
  }
- _dragIconPanel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
  if (iconMap!=nullptr)
  {
   if (iconMap->value(displayKey)== nullptr)
@@ -812,18 +813,9 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
   if (ic!=NULL)
   {
    NamedIcon* icon = new NamedIcon(ic);
-   JPanel*  panel = new JPanel(new FlowLayout());
-   //panel ->setLayout(new QHBoxLayout());
-   QString borderName = tr("Drag to Panel");
-   panel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
-                                                    borderName));
-   //QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-   //panel->setTitle(borderName);
-   //panel->setStyleSheet(gbStyleSheet);
-   DragJLabel* label;
    try
    {
-    label = getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), iconMap, icon);
+    JLabel* label = getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), iconMap, icon);
     if (label != nullptr)
     {
      label->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
@@ -833,33 +825,44 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
      //label->setIcon(icon);
      label->setPixmap(QPixmap::fromImage(icon->getImage()));
 
-     label->setObjectName(borderName);
+     //label->setObjectName(borderName);
      label->setAlignment(Qt::AlignCenter);
      label->setMargin(6);
-     panel->layout()->addWidget(label);
+     JPanel* panel = makeDragIcon(icon, label);
+     _dragIconPanel->layout()->addWidget(panel);
     }
    } catch (ClassNotFoundException cnfe)
    {
-    log->warn(tr("no DndIconPanel %1 created").arg(borderName), cnfe);
+    log->warn(tr("no DndIconPanel for %1, %2 created. %3").arg(_itemType).arg(displayKey).arg(cnfe.getMessage()));
    }
-   int width = qMax(100, panel->minimumSize().width());
-   panel->setMinimumSize( QSize(width, panel->minimumSize().height()));
-   panel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
-   QLayout* l = _dragIconPanel->layout();
-   if(l == NULL)
-    _dragIconPanel->setLayout(l = new QHBoxLayout);
-//   ((FlowLayout*)_dragIconPanel->layout())->addWidget(panel);
-  l->addWidget(panel);
-  return;
+
   }
  }
  else
  {
-  JOptionPane::showMessageDialog(_paletteFrame,
-        tr("Icon Set \"%2\" not found in type \"%1\".").arg(_itemType).arg(_family),
-         tr("Warning"), JOptionPane::WARNING_MESSAGE);
-  log->warn(tr("Icon Set \"%2\" not found in type \"%1\".").arg(_itemType).arg(_family));
+  log->error(tr("No iconMap for makeDndIconPanel of %1").arg(_itemType));
  }
+}
+
+/*protected*/ JPanel* FamilyItemPanel::makeDragIcon(NamedIcon* icon, JLabel* label) {
+    JPanel* panel = new JPanel(new QHBoxLayout());
+    QString borderName = tr("Drag to Pane     "); //ItemPalette.convertText("dragToPanel");
+    panel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
+            borderName));
+    panel->setToolTip(tr("Drag an icon from the Preview pane to add it to the Control Panel"));
+    panel->setOpaque(false);
+    if (label != nullptr) {
+        label->setToolTip(tr("Drag an icon from the Preview pane to add it to the Control Panel"));
+        // label.setIcon(icon);
+        label->setName(borderName);
+        label->setOpaque(false);
+        panel->layout()->addWidget(label);
+    }
+    QFontMetrics fm(panel->font());
+    int width = fm.size(Qt::TextSingleLine, borderName).width();
+    width = qMax(CatalogPanel::ICON_WIDTH, qMax(width, icon->getIconWidth())+10);
+    panel->resize(QSize(width, panel->sizeHint().height()));
+    return panel;
 }
 
 /*protected*/ void FamilyItemPanel::hideIcons()

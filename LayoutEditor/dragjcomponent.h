@@ -10,7 +10,7 @@ class DragJComponent : public JPanel
 public:
     //explicit DragJComponent(QWidget *parent = 0);
     /*public*/ DragJComponent(DataFlavor* flavor, QWidget* comp, QWidget *parent);
-    void mousePressEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *) override;
     //void mouseMoveEvent(QMouseEvent *);
     virtual QByteArray mimeData() { QByteArray();}
     /*public*/ QList<DataFlavor*> getTransferDataFlavors();
@@ -21,6 +21,10 @@ signals:
 public slots:
 private:
     DataFlavor* _dataFlavor;
+
+protected:
+    /*protected*/ bool okToDrag();
+
 friend class RIconDragJComponent;
 friend class MemoryItemPanel;
 friend class MemoryIconDragJComponent;

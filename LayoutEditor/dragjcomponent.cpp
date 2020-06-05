@@ -39,9 +39,8 @@
      setLayout(new QVBoxLayout());
      setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
                                                       borderName));
-     //setTitle(borderName);
-     QSize dim = comp->sizeHint();
      this->layout()->addWidget(comp);
+     QSize dim = comp->sizeHint();
      // guestimate border is about 5 pixels thick. plus some margin
      int width = qMax(100, dim.width()+20);
      int height = qMax(65, dim.height()+20);
@@ -52,6 +51,10 @@
 //                 DnDConstants.ACTION_COPY, this);
      _dataFlavor = flavor;
  }
+
+/*protected*/ bool DragJComponent::okToDrag() {
+        return true;
+    }
 #if 0
  /**************** DragGestureListener ***************/
  /*public*/ void dragGestureRecognized(DragGestureEvent e) {

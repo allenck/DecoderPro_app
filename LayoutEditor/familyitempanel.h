@@ -5,6 +5,7 @@
 #include "actionlistener.h"
 #include "logger.h"
 
+class JLabel;
 class QRadioButton;
 class JPanel;
 class QGroupBox;
@@ -74,6 +75,7 @@ protected:
     /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon *> *iconMap, ImagePanel *iconPanel, bool dropIcon);
     /*abstract*/ virtual /*protected*/ DragJLabel* getDragger(DataFlavor* /*flavor*/, QMap <QString, NamedIcon*>* /*map*/, NamedIcon* /*icon*/);
     /*protected*/ virtual void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
+    /*protected*/ JPanel* makeDragIcon(NamedIcon* icon, JLabel* label);
     /*protected*/ virtual void setFamily(QString family) ;
     /*protected*/ virtual void openDialog(QString type, QString family, QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ bool _suppressDragging= false;
