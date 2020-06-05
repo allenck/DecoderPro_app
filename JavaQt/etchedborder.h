@@ -10,7 +10,7 @@ public:
  /*public*/ EtchedBorder(int etchType, QWidget *parent = nullptr);
  /*public*/ EtchedBorder(int etchType, QColor highlight, QColor shadow, QWidget* parent  = nullptr);
  /*public*/ EtchedBorder(QColor highlight, QColor shadow, QWidget* parent= nullptr);
- /*public*/ void paintBorder(QWidget* c, QPainter*  g, int x, int y, int width,
+ /*public*/ void paintBorder(QWidget* c, int x, int y, int width,
                          int height);
  /*public*/ Insets* getBorderInsets(QWidget* c);
  enum ETCHTYPE
@@ -30,7 +30,7 @@ public:
 
 private:
  static /*final*/ long serialVersionUID;// = 4001244046866360638L;
- /*private*/ /*static*/ void paintEtchedBorder(QPainter* g, int x, int y, int width,
+ /*private*/ /*static*/ void paintEtchedBorder(QWidget *c, int x, int y, int width,
                                        int height, QColor a, QColor b);
  QPainter* g;
  QWidget* self() {return (QWidget*)this;}

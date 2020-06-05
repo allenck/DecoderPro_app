@@ -18,12 +18,12 @@ public:
  /*public*/ QColor getMatteColor();
  /*public*/ QIcon getTileIcon();
  /*public*/ bool isBorderOpaque();
- /*public*/ void paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height);
+ /*public*/ void paintBorder(QWidget* c, int x, int y, int width, int height);
  QWidget* self() {return (QWidget*)this;}
 
 private:
  /*private*/ Insets* computeInsets(Insets* insets);
- /*private*/ void paintEdge(QWidget* c, QPainter* g, int x, int y, int width, int height, int tileW, int tileH);
+ /*private*/ void paintEdge(QWidget* c, /*QPainter g,*/ int x, int y, int width, int height, int tileW, int tileH);
 
 protected:
  /*protected*/ QColor color;

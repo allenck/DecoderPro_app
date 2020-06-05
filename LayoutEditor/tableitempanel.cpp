@@ -60,7 +60,7 @@
  if (!_initialized)
  {
   FamilyItemPanel::init();
-  thisLayout->addWidget(/*0,*/initTablePanel(_model, _editor), 0, Qt::AlignTop);
+  thisLayout->insertWidget(0,/*0,*/initTablePanel(_model, _editor), 0, Qt::AlignTop);
   _buttonPosition = 1;
  }
 }
@@ -71,9 +71,9 @@
 */
 /*public*/ void TableItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
- FamilyItemPanel::init(doneAction, iconMap);
- thisLayout->addWidget(initTablePanel(_model, _editor)/*, 0*/);
+ thisLayout->insertWidget(0, initTablePanel(_model, _editor)/*, 0*/);
  _buttonPosition = 1;
+ FamilyItemPanel::init(doneAction, iconMap);
 }
 
 /**

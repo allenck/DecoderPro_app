@@ -23,14 +23,16 @@ public:
     /*public*/ void init(ActionListener* doneAction);
     /*public*/ virtual QMap<QString, NamedIcon *> *getIconMap();
     /*public*/ QString getFamilyName();
-    virtual /*public*/ void updateFamilyIcons();
+    //virtual /*public*/ void updateFamilyIcons();
     /*public*/ JPanel* getBottomPanel() ;
     /*public*/ QPushButton* getUpdateButton();
+    /*public*/ void closeDialogs() override;
+    /*public*/ virtual void dispose();
+
+
 signals:
 
 public slots:
-//    void on_showIconsButton_clicked();
-    void on_newFamilyButton_clicked();
 
 private:
     JPanel*    _bottom1Panel = nullptr;  // Typically _showIconsButton and editIconsButton
@@ -52,13 +54,12 @@ private:
 
 private slots:
     /*private*/ QWidget* makeCreateNewFamilyPanel();
-    void on_showIconsButton();
 
 protected:
     /*protected*/ QString    _family;
-    /*protected*/ QWidget*    _iconFamilyPanel =nullptr;
-    /*protected*/ ImagePanel* _dragIconPanel=nullptr; // contained in _iconFamilyPanel - sample to drag to control panel
-    /*protected*/ ImagePanel* _iconPanel =nullptr;     // panel contained in _iconFamilyPanel - all icons in family
+    /*protected*/ QWidget*    _iconFamilyPanel = nullptr;
+    /*protected*/ ImagePanel* _dragIconPanel = nullptr; // contained in _iconFamilyPanel - sample to drag to control panel
+    /*protected*/ ImagePanel* _iconPanel = nullptr;     // panel contained in _iconFamilyPanel - all icons in family
     /*protected*/ QWidget* _previewPanel = nullptr;
     /*protected*/ JPanel* _familyButtonPanel = nullptr;    // panel of radioButtons to select icon family
 
@@ -73,24 +74,20 @@ protected:
     /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon *> *iconMap, ImagePanel *iconPanel, bool dropIcon);
     /*abstract*/ virtual /*protected*/ DragJLabel* getDragger(DataFlavor* /*flavor*/, QMap <QString, NamedIcon*>* /*map*/, NamedIcon* /*icon*/);
     /*protected*/ virtual void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
-//    /*protected*/ virtual QWidget* makeBottom1Panel();
-//    /*protected*/ virtual QWidget* makeBottom2Panel();
-//    /*protected*/ virtual QWidget* makeBottom3Panel(ActionListener* doneAction, QWidget* bottom1Panel) ;
     /*protected*/ virtual void setFamily(QString family) ;
     /*protected*/ virtual void openDialog(QString type, QString family, QMap<QString, NamedIcon *> *iconMap);
-    /*protected*/ void closeDialogs();
     /*protected*/ bool _suppressDragging= false;
     /*protected*/ QString getValidFamilyName(QString family);
     /*protected*/ void addUpdateButtonToBottom(ActionListener* doneAction);
-    /*protected*/ JPanel* makeItemButtonPanel();
-    /*protected*/ void addCreateDeleteFamilyButtons();
+    /*protected*/ virtual JPanel* makeItemButtonPanel();
+    /*protected*/ virtual void addCreateDeleteFamilyButtons();
     /*protected*/ void setPreviewBg(int index);
     /*protected*/ void updateBackground0(BufferedImage* im);
     /*protected*/ QString getIconBorderName(QString key);
 
 protected slots:
 //    /*protected*/ void openEditDialog();
-    /*protected*/ bool newFamilyDialog();
+    /*protected*/ virtual bool newFamilyDialog();
     /*protected*/ void updateFamiliesPanel();
     /*protected*/ void makeDragIconPanel(int position);
     /*protected*/ void familiesMissing();
@@ -103,7 +100,7 @@ protected slots:
     /*protected*/ void deleteFamilySet();
     /*protected*/ virtual void hideIcons();
     /*protected*/ virtual void showIcons();
-    void on_editIconsButton();
+//    void on_editIconsButton();
 
 friend class ItemPalette;
 friend class TableItemPanel;
@@ -118,6 +115,7 @@ friend class MultiSensorIconDialog;
 friend class MultiSensorItemPanel;
 friend class TIconDragJLabel;
 friend class IndicatorDragJLabel;
+friend class IndicatorTOIconDialog;
 };
 
 class ButtonListener : public QObject

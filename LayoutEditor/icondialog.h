@@ -3,6 +3,7 @@
 #include <itemdialog.h>
 #include "logger.h"
 
+class JPanel;
 class QLabel;
 class ImagePanel;
 class JTextField;
@@ -40,8 +41,8 @@ protected:
     /*protected*/ QPushButton*   _deleteButton;
     /*protected*/ void makeAddSetButtonPanel(QWidget* buttonPanel);
     // Only multiSensor adds and deletes icons
-    /*protected*/ void makeAddIconButtonPanel(QWidget* buttonPanel, QString addTip, QString deleteTip);
-    /*protected*/ bool doDoneAction();
+    /*protected*/ virtual void makeAddIconButtonPanel(JPanel* buttonPanel, QString addTip, QString deleteTip);
+    /*protected*/ virtual bool doDoneAction();
     /*protected*/ void addFamilySet();
     /*protected*/ void deleteFamilySet();
     /*protected*/ virtual void makeDoneButtonPanel(QWidget* buttonPanel, QMap<QString, NamedIcon *> *iconMap);

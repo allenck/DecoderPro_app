@@ -91,7 +91,7 @@ protected:
     ImagePanel* preview2 = nullptr;
     /*protected*/ void updateBackgrounds(Editor* ed);
     static /*protected*/ QVector<BufferedImage*>* makeBackgrounds(QVector<BufferedImage*> *backgrounds, QColor panelBackground);
-    /*protected*/ QGroupBox *makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2);
+    /*protected*/ JPanel *makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2);
     static /*protected*/ void checkIconMap(QString type, QMap<QString, NamedIcon*>* map);
     /*protected*/ DisplayFrame* getParentFrame();
     /*protected*/ void reSizeDisplay(bool isPalette, QSize oldDim, QSize totalDim);
@@ -109,6 +109,7 @@ friend class ItemPalette;
 friend class MultiSensorIconDialog;
 friend class PositionableLabel;
 friend class DecoratorPanel;
+friend class IndicatorTOIconDialog;
 };
 
 #endif // ITEMPANEL_H

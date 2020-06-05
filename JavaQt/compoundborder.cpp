@@ -74,7 +74,7 @@
      * @param width the width of the painted border
      * @param height the height of the painted border
      */
-    /*public*/ void CompoundBorder::paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height) {
+    /*public*/ void CompoundBorder::paintBorder(QWidget* c, /*QPainter g,*/ int x, int y, int width, int height) {
         Insets*  nextInsets;
         int px, py, pw, ph;
 
@@ -84,7 +84,7 @@
         ph = height;
 
         if(outsideBorder != NULL) {
-            outsideBorder->paintBorder(c, g, px, py, pw, ph);
+            outsideBorder->paintBorder(c, /*g,*/ px, py, pw, ph);
 
             nextInsets = outsideBorder->getBorderInsets(c);
             px += nextInsets->left;
@@ -93,7 +93,7 @@
             ph = ph - nextInsets->bottom - nextInsets->top;
         }
         if(insideBorder != NULL)
-            insideBorder->paintBorder(c, g, px, py, pw, ph);
+            insideBorder->paintBorder(c, /*g,*/ px, py, pw, ph);
 
     }
 #endif

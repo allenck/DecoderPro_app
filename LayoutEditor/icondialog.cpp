@@ -15,6 +15,7 @@
 #include "joptionpane.h"
 #include "box.h"
 #include <QScrollArea>
+#include "borderfactory.h"
 
 //IconDialog::IconDialog(QWidget *parent) :
 //    ItemDialog(parent)
@@ -56,7 +57,7 @@
  _nameLabel = new JLabel(tr("Icon Set \"%1\".").arg(family));
  pLayout->addWidget(_nameLabel);
  panel->layout()->addWidget(p);
- QWidget* buttonPanel = new QWidget();
+ JPanel* buttonPanel = new JPanel();
  buttonPanel->setLayout(new QVBoxLayout()); //(buttonPanel, BoxLayout.Y_AXIS));
  makeDoneButtonPanel(buttonPanel, iconMap);
  // null method for all except multisensor.
@@ -155,7 +156,7 @@ void IconDialog::deleteButtonAction()
 }
 
 // Only multiSensor adds and deletes icons
-/*protected*/ void IconDialog::makeAddIconButtonPanel(QWidget* buttonPanel, QString addTip, QString deleteTip)
+/*protected*/ void IconDialog::makeAddIconButtonPanel(JPanel */*buttonPanel*/, QString /*addTip*/, QString /*deleteTip*/)
 {
 }
 
@@ -300,6 +301,8 @@ void IconDialog::doneAction()
     }
     log->debug(tr("iconMap size = %1").arg(_iconMap->size()));
     _parent->addIconsToPanel(iconMap, iconPanel, true);
+    iconPanel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black, 1),
+                tr("Preview")));
 }
 
 void IconDialog::checkIconSizes()

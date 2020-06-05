@@ -2,6 +2,7 @@
 #include "exceptions.h"
 #include "imageicon.h"
 #include <QGraphicsItemGroup>
+#include <QDebug>
 
 //JLabel::JLabel(QWidget *parent) :
 //    QLabel(parent)
@@ -1741,3 +1742,4 @@ QString JLabel::getName()
 }
 
 /*public*/ int JLabel::getBaseline(int w, int h) { return 0;}
+

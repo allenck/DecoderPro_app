@@ -88,11 +88,11 @@ JPanel::JPanel(FlowLayout* layout, QWidget* parent) :  QFrame(parent)
 void JPanel::paintEvent(QPaintEvent * evt)
 {
  QFrame::paintEvent(evt);
+ QFrame::update();
  if(border)
  {
-  QPainter* g = new QPainter(this);
-  QRect r = evt->rect();
-  border->paintBorder(this, g, r.x(), r.y(), r.width(), r.height());
+  QRect r = this->rect();
+  border->paintBorder(this, r.x(), r.y(), r.width(), r.height());
  }
 }
 #endif
@@ -100,17 +100,6 @@ void JPanel::paintEvent(QPaintEvent * evt)
 {
  setStyleSheet(tr("QFrame {background-color: rgb(%1, %2, %3)}").arg(color.red()).arg(color.green()).arg(color.blue()));
 }
-
-//void JPanel::paintEvent(QPaintEvent *e)
-//{
-// QPainter* painter = new QPainter(this);
-// paintComponent(painter);
-// painter->end();
-//}
-///*public*/ void JPanel::paintComponent(QPainter *)
-//{
-
-//}
 
 // remove and hide all child widgets and delete layout.
 /*public*/ void JPanel::removeAll()
@@ -160,4 +149,4 @@ QLayout* JPanel::findParentLayout(QWidget* w, QLayout* topLevelLayout)
      }
   }
   return nullptr;
-};
+}

@@ -492,7 +492,8 @@ SOURCES += \
     editsignalframe.cpp \
     openpicklistbutton.cpp \
     lengthpanel.cpp \
-    convertdialog.cpp
+    convertdialog.cpp \
+    indicatortoicondialog.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -903,7 +904,8 @@ HEADERS += liblayouteditor_global.h \
     editsignalframe.h \
     openpicklistbutton.h \
     lengthpanel.h \
-    convertdialog.h
+    convertdialog.h \
+    indicatortoicondialog.h
 
 FORMS    += \
     createeditblock.ui \

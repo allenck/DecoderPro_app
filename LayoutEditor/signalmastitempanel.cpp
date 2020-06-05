@@ -133,7 +133,7 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIc
     QGroupBox* panel = new QGroupBox();
     panel->setLayout(new QVBoxLayout);
     QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-    QString borderName = ItemPalette::convertText("dragToPanel");
+    QString borderName = ItemPalette::convertText("Drag to Pane");
     //panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
 //                                                     borderName));
     panel->setTitle(borderName);

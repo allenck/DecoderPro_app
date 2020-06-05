@@ -19,6 +19,7 @@
 #include "jpanel.h"
 #include "familyitempanel.h"
 #include "iconitempanel.h"
+#include "borderfactory.h"
 
 //ItemPanel::ItemPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -221,13 +222,16 @@ void ItemPanel::on_bgColorBox()
 /*static*/ QColor ItemPanel::_darkGrayColor = QColor(150, 150, 150);
 /*static*/ /*protected*/ QVector<QColor> ItemPanel::colorChoice = QVector<QColor>() <<QColor(Qt::white) << ItemPanel::_grayColor << ItemPanel::_darkGrayColor; // panel bg color picked up directly
 
-/*protected*/ QGroupBox* ItemPanel::makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2) {
-    QGroupBox* previewPanel = new QGroupBox();
+/*protected*/ JPanel* ItemPanel::makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2) {
+    JPanel* previewPanel = new JPanel();
     QVBoxLayout* previewPanelLayout;
     previewPanel->setLayout(previewPanelLayout =new QVBoxLayout());//(previewPanel, BoxLayout.Y_AXIS));
-    QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+//    QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
+//    previewPanel->setStyleSheet(gbStyleSheet);
+//    previewPanel->setTitle(tr("Preview"));
+    previewPanel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black, 1),
+                 tr("Preview")));
 
-    previewPanel->setStyleSheet(gbStyleSheet);
 #if 0 // for testing ACK
     QWidget* testWidget = new QWidget();
     QHBoxLayout* testLayout = new QHBoxLayout(testWidget);
@@ -239,9 +243,6 @@ void ItemPanel::on_bgColorBox()
     }
     previewPanelLayout->addWidget(testWidget);
 #endif
-    //previewPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 1),
-//            tr("PreviewBorderTitle")));
-    previewPanel->setTitle(tr("Preview"));
     makeBgButtonPanel(panel1, panel2);
     if (_bgColorBox != nullptr) {
         QWidget* bkgdBoxPanel = new QWidget();

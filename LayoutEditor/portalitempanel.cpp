@@ -14,7 +14,8 @@
 /**
  * Constructor types with multiple families and multiple icon families.
  */
-/*public*/ PortalItemPanel::PortalItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent) : FamilyItemPanel(parentFrame, type, family, editor, parent)
+/*public*/ PortalItemPanel::PortalItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent)
+ : FamilyItemPanel(parentFrame, type, family, editor, parent)
 {
     //super(parentFrame, type, family, editor);
  setObjectName("PortalItemPanel");
@@ -34,21 +35,22 @@
   FamilyItemPanel::init();
   _suppressDragging = true;
   thisLayout->addWidget(makeChangeDefaultIconsPanel());
- }
+  _previewPanel->setVisible(false);
+  _previewPanel->update();}
 }
 
 /*private*/ QWidget* PortalItemPanel::makeChangeDefaultIconsPanel() {
-    QWidget* panel = new QWidget();
+    JPanel* panel = new JPanel();
     FlowLayout* panelLayout;
     panel->setLayout(panelLayout =new FlowLayout());
     QPushButton* setDefaultsButton = new QPushButton(tr("Set Default Icons"));
 //    setDefaultsButton.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent a) {
-//            setDefaults();
+    connect(setDefaultsButton, &QPushButton::clicked, [=]{
+     setDefaults();
 //        }
-//    });
-    connect(setDefaultsButton, SIGNAL(clicked(bool)), this, SLOT(setDefaults()));
+    });
     setDefaultsButton->setToolTip(tr("Change the Default Portal Icons to the selected icon family."));
     panelLayout->addWidget(setDefaultsButton);
     return panel;

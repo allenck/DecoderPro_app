@@ -51,7 +51,7 @@ public:
      * @param width the width of the painted border
      * @param height the height of the painted border
      */
-    virtual void paintBorder(QWidget* /*c*/, QPainter* /*g*/, int /*x*/, int /*y*/, int /*width*/, int /*height*/) {}
+    virtual void paintBorder(QWidget* /*c*/, /*QPainter g,*/ int /*x*/, int /*y*/, int /*width*/, int /*height*/) {}
 
     /**
      * Returns the insets of the border.
@@ -68,7 +68,7 @@ public:
     virtual /*public*/ int lineWidth() {return 1;}
     virtual /*public*/ QColor color() {return QColor(Qt::black);}
     virtual /*public*/ bool roundedCorners() {return false;}
-    virtual void paintEvent(QPaintEvent*){}
+    //virtual void paintEvent(QPaintEvent*){}
     
  virtual QWidget* self() =0;
 

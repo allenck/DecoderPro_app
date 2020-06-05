@@ -11,7 +11,7 @@ public:
  /*public*/ bool isBorderOpaque();
  /*public*/ Border* getOutsideBorder();
  /*public*/ Border* getInsideBorder();
- /*public*/ void paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height);
+ /*public*/ void paintBorder(QWidget* c, int x, int y, int width, int height);
 
  QWidget* self() {return (QWidget*)this;}
 

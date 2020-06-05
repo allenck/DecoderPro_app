@@ -18,7 +18,7 @@ public:
  /*public*/ int lineWidth();
  /*public*/ QColor color();
  /*public*/ bool roundedCorners();
- /*public*/ void paintBorder(QWidget* c, QPainter*  g,
+ /*public*/ void paintBorder(QWidget* c, /*QPainter g,*/
                          int x, int y, int width, int height);
  QWidget* self() {return (QWidget*)this;}
 
@@ -26,7 +26,7 @@ private:
  /*private*/ static Border* blackLine;
  /*private*/ static Border* grayLine;
  void common(QColor color, int thickness, bool roundedCorners);
- void paintEvent(QPaintEvent *event);
+// void paintEvent(QPaintEvent *event);
  /*protected*/ int thickness;
  /*protected*/ QColor lineColor;
  /*protected*/ bool _roundedCorners;

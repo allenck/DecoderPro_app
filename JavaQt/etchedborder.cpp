@@ -166,18 +166,19 @@
     * @param width the width of the available area for painting the border.
     * @param height the height of the available area for painting the border.
     */
-   /*public*/ void EtchedBorder::paintBorder(QWidget* c, QPainter*  g, int x, int y, int width,
+   /*public*/ void EtchedBorder::paintBorder(QWidget* c, /*QPainter  g,*/ int x, int y, int width,
                            int height)
    {
+ QPainter  g(c);
      switch (etchType)
      {
      case RAISED:
-       paintEtchedBorder(g, x, y, width, height,
+       paintEtchedBorder(c, /*g,*/ x, y, width, height,
                          getHighlightColor(c), getShadowColor(c));
        break;
 
      case LOWERED:
-       paintEtchedBorder(g, x, y, width, height,
+       paintEtchedBorder(c, /*g,*/ x, y, width, height,
                          getShadowColor(c), getHighlightColor(c));
        break;
      }
@@ -357,13 +358,14 @@
     * @param a one of the two colors.
     * @param b the second of the two colors.
     */
-   /*private*/ /*static*/ void EtchedBorder::paintEtchedBorder(QPainter* g, int x, int y, int width,
+   /*private*/ /*static*/ void EtchedBorder::paintEtchedBorder(QWidget* c,/*QPainter g,*/ int x, int y, int width,
                                          int height, QColor a, QColor b)
    {
+ QPainter  g(c);
      QColor oldColor;
 
-     oldColor = g->pen().color();//g.getColor();
-     g->translate(x, y);
+     oldColor = g.pen().color();//g.getColor();
+     g.translate(x, y);
      width = width - 1;
      height = height - 1;
 
@@ -374,21 +376,21 @@
        // in the "doc-files" subdirectory. EtchedBorder-2.png might
        // be especially informative.
        //g.setColor(a);
-       g->setPen(a);
-       g->drawRect(0, 0, width - 1, height - 1);
+       g.setPen(a);
+       g.drawRect(0, 0, width - 1, height - 1);
 
        //g.setColor(b);
-       g->setPen(b);
-       g->drawLine(1, 1, width - 2, 1);            // top edge
-       g->drawLine(1, 2, 1, height - 2);           // left edge
-       g->drawLine(0, height, width, height);      // bottom edge
-       g->drawLine(width, 0, width, height - 1);   // right edge
+       g.setPen(b);
+       g.drawLine(1, 1, width - 2, 1);            // top edge
+       g.drawLine(1, 2, 1, height - 2);           // left edge
+       g.drawLine(0, height, width, height);      // bottom edge
+       g.drawLine(width, 0, width, height - 1);   // right edge
      }
      /*finally*/
      {
-       g->translate(-x, -y);
+       g.translate(-x, -y);
        //g.setColor(oldColor);
-       g->setPen(oldColor);
+       g.setPen(oldColor);
      }
    }
 

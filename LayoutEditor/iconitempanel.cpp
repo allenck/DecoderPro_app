@@ -513,27 +513,29 @@ void IconItemPanel::showCatalog() {
 
 //    int level;
 
-/*public*/ IconDragJLabel::IconDragJLabel(DataFlavor* flavor, int zLevel, QWidget* parent) : DragJLabel(flavor,parent) {
-        //super(flavor);
-        level = zLevel;
-        log = new Logger("IconDragJLabel");
-        this->parent = (IconItemPanel*)parent;
+/*public*/ IconDragJLabel::IconDragJLabel(DataFlavor* flavor, int zLevel, QWidget* parent)
+ : DragJLabel(flavor,parent) {
+    //super(flavor);
+    level = zLevel;
+    log = new Logger("IconDragJLabel");
+    this->parent = (IconItemPanel*)parent;
 
 //        new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
-        //if (log->isDebugEnabled()) log->debug("DropQLabel ctor");
-    }
+    //if (log->isDebugEnabled()) log->debug("DropQLabel ctor");
+}
 
 /*public*/ QObject* IconDragJLabel::getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) {
-        if (!isDataFlavorSupported(flavor)) {
-            return NULL;
-        }
-        QString url = ((NamedIcon*)getIcon())->getURL();
-//        if (log->isDebugEnabled()) log->debug("DragJLabel.getTransferData url= "+url);
-        PositionableLabel* l = new PositionableLabel(NamedIcon::getIconByName(url), /*_editor*/(Editor*)parent);
-        l->setPopupUtility(NULL);        // no text
-        l->setLevel(level);
-        return l;
+    if (!isDataFlavorSupported(flavor)) {
+        return NULL;
     }
+    QString url = ((NamedIcon*)getIcon())->getURL();
+//        if (log->isDebugEnabled()) log->debug("DragJLabel.getTransferData url= "+url);
+    PositionableLabel* l = new PositionableLabel(NamedIcon::getIconByName(url), /*_editor*/(Editor*)parent);
+    l->setPopupUtility(NULL);        // no text
+    l->setLevel(level);
+    return l;
+}
+
 /*public*/ QByteArray IconDragJLabel::mimeData()
 {
  QByteArray xmldata;

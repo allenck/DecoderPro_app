@@ -35,34 +35,37 @@ private:
     /*private*/ JTextField* 		_familyName;
     /*private*/ void checkCurrentMaps(QMap<QString, QMap<QString, NamedIcon *> *> *iconMaps);
     void createNewFamily(QString family);
+    /*private*/ void openStatusEditDialog(QString key);
+
  Logger* log;
 protected:
     /*protected*/ QMap<QString, QMap<QString, NamedIcon*>*>* _iconGroupsMap;
     /*protected*/ QMap<QString, QMap<QString, NamedIcon*>*>* _updateGroupsMap;
-    /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor, QWidget *parent);
+    /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor);
     /*protected*/ void initIconFamiliesPanel();
-//    /*protected*/ void updateFamiliesPanel();
     /*protected*/ void addIcons2Panel(QMap<QString, QMap<QString, NamedIcon*>*>* map);
-    /*protected*/ QWidget* makeBottom1Panel();
     /*protected*/ void hideIcons();
     /*protected*/ void updateIconGroupsMap(QString key, QMap<QString, NamedIcon*>* iconMap);
     /*protected*/ void setFamily(QString family) ;
-    /*protected*/ void openEditDialog(QString key);
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
     /**
     *  CENTER Panel
     */
-    /*protected*/ QWidget* makeBottom2Panel();
     /*protected*/ void showIcons();
+    /*protected*/ void addCreateDeleteFamilyButtons() override;
+    /*protected*/ void renameFamily();
+    /*protected*/ JPanel* makeItemButtonPanel() override;
+    /*protected*/ bool newFamilyDialog() override;
+
+
 protected slots:
  /*protected*/ void resetFamiliesPanel();
- void onDeleteButton();
- void onShowIconsButtons();
- void onNewFamilyButton();
 
 friend class ITOIconDragJLabel;
 friend class EditIconActionListener;
+friend class IndicatorTOIconDialog;
 };
+
 /*protected*/ class ITOIconDragJLabel : public DragJLabel
 {
     Q_OBJECT
@@ -84,6 +87,9 @@ public:
 void init(QString k, IndicatorTOItemPanel* parent);
 public slots:
 /*public*/ void actionPerformed(ActionEvent* a = 0);
+
+protected:
+
 };
 
 #endif // INDICATORTOITEMPANEL_H

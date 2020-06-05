@@ -17,11 +17,11 @@
  */
 
 ///*public*/ class PortalIcon extends jmri.jmrit.display.PositionableIcon {
-/*public*/ /*static*/ /*final*/ QString PortalIcon::HIDDEN = tr("Hidden");
-/*public*/ /*static*/ /*final*/ QString PortalIcon::VISIBLE = tr("Visible");
-/*public*/ /*static*/ /*final*/ QString PortalIcon::PATH = tr("Path Editing");
-/*public*/ /*static*/ /*final*/ QString PortalIcon::TO_ARROW = tr("Exit Arrow");
-/*public*/ /*static*/ /*final*/ QString PortalIcon::FROM_ARROW = tr("Entry Arrow");
+/*public*/ /*static*/ /*final*/ QString PortalIcon::HIDDEN = "hidden";
+/*public*/ /*static*/ /*final*/ QString PortalIcon::VISIBLE = "block";
+/*public*/ /*static*/ /*final*/ QString PortalIcon::PATH = "path";
+/*public*/ /*static*/ /*final*/ QString PortalIcon::TO_ARROW = "toArrow";
+/*public*/ /*static*/ /*final*/ QString PortalIcon::FROM_ARROW = "fromArrow";
 
 
 

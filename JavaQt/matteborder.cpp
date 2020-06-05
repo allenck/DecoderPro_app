@@ -98,11 +98,12 @@ public class MatteBorder extends EmptyBorder
 /**
  * Paints the matte border.
  */
-/*public*/ void MatteBorder::paintBorder(QWidget *c, QPainter* g, int x, int y, int width, int height) {
+/*public*/ void MatteBorder::paintBorder(QWidget *c, /*QPainter g, */int x, int y, int width, int height) {
+  QPainter  g(c);
     Insets* insets = getBorderInsets(c, new Insets());
-    QPen pen = g->pen();
+    QPen pen = g.pen();
     QColor oldColor = pen.color();//g.getColor();
-    g->translate(x, y);
+    g.translate(x, y);
 #if 0
     // If the tileIcon failed loading, paint as gray.
     if (!tileIcon.isNull()) {
@@ -110,11 +111,11 @@ public class MatteBorder extends EmptyBorder
     }
 #endif
     if (color.isValid()) {
-        g->setPen(color);
-        g->fillRect(0, 0, width - insets->right, insets->top, QBrush(color));
-        g->fillRect(0, insets->top, insets->left, height - insets->top, QBrush(color));
-        g->fillRect(insets->left, height - insets->bottom, width - insets->left, insets->bottom, QBrush(color));
-        g->fillRect(width - insets->right, 0, insets->right, height - insets->bottom, QBrush(color));
+        g.setPen(color);
+        g.fillRect(0, 0, width - insets->right, insets->top, QBrush(color));
+        g.fillRect(0, insets->top, insets->left, height - insets->top, QBrush(color));
+        g.fillRect(insets->left, height - insets->bottom, width - insets->left, insets->bottom, QBrush(color));
+        g.fillRect(width - insets->right, 0, insets->right, height - insets->bottom, QBrush(color));
 
     }
 #if 0
@@ -127,14 +128,14 @@ public class MatteBorder extends EmptyBorder
         paintEdge(c, g, width - insets->right, 0, insets->right, height - insets->bottom, tileW, tileH);
     }
 #endif
-    g->translate(-x, -y);
-    g->setPen(oldColor);
+    g.translate(-x, -y);
+    g.setPen(oldColor);
 
 }
 
-/*private*/ void MatteBorder::paintEdge(QWidget* c, QPainter* g, int x, int y, int width, int height, int tileW, int tileH) {
+/*private*/ void MatteBorder::paintEdge(QWidget* c, /*QPainter g,*/ int x, int y, int width, int height, int tileW, int tileH) {
 #if 0
-    g = g->create(x, y, width, height);
+    g = g.create(x, y, width, height);
     int sY = -(y % tileH);
     for (x = -(x % tileW); x < width; x += tileW) {
         for (y = sY; y < height; y += tileH) {

@@ -120,7 +120,8 @@ public void setErrSensor(QString name) {
 //    Hashtable <QString, NamedIcon> iconMap;
 
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package
-/*public*/ IndicatorDragJLabel::IndicatorDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, IndicatorItemPanel* self) : DragJLabel(flavor, self)
+/*public*/ IndicatorDragJLabel::IndicatorDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, IndicatorItemPanel* self)
+ : DragJLabel(flavor, self)
 {
  //super(flavor);
  iconMap = map;
@@ -130,6 +131,7 @@ public void setErrSensor(QString name) {
 {
  return DragJLabel::isDataFlavorSupported(flavor);
 }
+
 /*public*/ QObject* IndicatorDragJLabel::getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException)
 {
     if (!isDataFlavorSupported(flavor)) {

@@ -82,6 +82,7 @@ friend class IndicatorTOItemPanel;
 friend class IconDialog;
 friend class NewFamilyActionListener;
 friend class SignalMastItemPanel;
+friend class IndicatorTOIconDialog;
 };
 
 class IPEditItemActionListener : public QObject

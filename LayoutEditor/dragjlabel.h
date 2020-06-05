@@ -22,7 +22,7 @@ public:
     /*public*/ QVariant getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
 //    void dragEnterEvent(QDragEnterEvent *);
 //    void dragMoveEvent(QDragMoveEvent *);
-    void mousePressEvent(QMouseEvent *e);
+    /*public*/ void mousePressEvent(QMouseEvent *e) override;
     virtual QByteArray mimeData();
     void setIcon(NamedIcon* icon);
     NamedIcon* getIcon();

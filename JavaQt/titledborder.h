@@ -83,7 +83,7 @@ public:
  /*public*/ void setTitleColor(QColor titleColor);
  /*public*/ QSize getMinimumSize(QWidget *c);
  /*public*/ int getBaseline(QWidget *c, int width, int height);
- /*public*/ void paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height);
+ /*public*/ void paintBorder(QWidget* c, int x, int y, int width, int height);
 #endif
  QWidget* self() {return (QWidget*)this;}
 

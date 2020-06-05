@@ -90,15 +90,16 @@ void LineBorder::common(QColor color, int thickness, bool roundedCorners)
  * @param width the width of the available area for painting the border.
  * @param height the height of the available area for painting the border.
  */
-/*public*/ void LineBorder::paintBorder(QWidget* c, QPainter*  g,
+/*public*/ void LineBorder::paintBorder(QWidget* c, /*QPainter  g,*/
                         int x, int y, int width, int height)
 {
-  QColor oldColor = g->pen().color();
+ QPainter  g(c);
+  QColor oldColor = g.pen().color();
 
   //try
   {
     //g.setColor(lineColor);
-   g->setPen(lineColor);
+   g.setPen(lineColor);
 
     // If width and height were not adjusted, the border would
     // appear one pixel too large in both directions.
@@ -124,9 +125,9 @@ void LineBorder::common(QColor color, int thickness, bool roundedCorners)
     for (int i = 0; i < thickness; i++)
     {
       if (_roundedCorners)
-        g->drawRoundRect(x, y, width, height, thickness, thickness);
+        g.drawRoundRect(x, y, width, height, thickness, thickness);
       else
-        g->drawRect(x, y, width, height);
+        g.drawRect(x, y, width, height);
 
       x += 1;
       y += 1;
@@ -137,14 +138,14 @@ void LineBorder::common(QColor color, int thickness, bool roundedCorners)
 //  finally
   {
     //g.setColor(oldColor);
-   g->setPen(oldColor);
+   g.setPen(oldColor);
   }
 }
 
-void LineBorder::paintEvent(QPaintEvent *event)
-{
- QPainter* g = (QPainter*)this;
- QRect r = rect();
- paintBorder(this, g, r.x(), r.y(), r.width(), r.height());
+//void LineBorder::paintEvent(QPaintEvent *event)
+//{
+// QPainter* g = (QPainter*)this;
+// QRect r = rect();
+// paintBorder(this, g, r.x(), r.y(), r.width(), r.height());
 
-}
+//}

@@ -124,6 +124,8 @@ static /*private*/ QSize getScreenSizeOf(int screenNum) {
     QDesktopWidget* desktopWidget = QApplication::desktop();
     QList<QScreen*> screens = QGuiApplication::screens();
     int screenNum = desktopWidget->screenNumber(target);
+    if(screenNum < 0)
+     return  QPoint(0, 0);
 //    QSize screen = getScreenSizeOf(screenNum);
     QSize screen = screens.at(screenNum)->availableSize();
     QSize targetDim = target->sizeHint();

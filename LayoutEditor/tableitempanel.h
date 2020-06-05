@@ -34,7 +34,7 @@ public slots:
 private:
     int ROW_HEIGHT;
     //JScrollPane _scrollPane;
-    JDialog*     _addTableDialog;
+    JDialog*     _addTableDialog = nullptr;
     JTextField*  _sysNametext;// = new JTextField();
     JTextField*  _userNametext;// = new JTextField();
     QPushButton* _addTableButton;
@@ -42,8 +42,8 @@ private:
     Logger* log;
 
 protected:
-    /*protected*/ JTable*    _table;
-    /*protected*/ PickListModel* _model;
+    /*protected*/ JTable*    _table = nullptr;
+    /*protected*/ PickListModel* _model = nullptr;
     /*protected*/ virtual QWidget* initTablePanel(PickListModel* model, Editor* editor);
     /*protected*/ void addToTable();
     /*protected*/ NamedBean* getDeviceNamedBean();

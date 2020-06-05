@@ -939,7 +939,16 @@ void IPEditItemActionListener::actionPerformed()
        return tr("Right Hand Turnout");
     if(name == "LeftTurnout")
        return tr("Left Hand Turnout");
-
+    if(name == "fromArrow")
+       return tr("Entry Arrow");
+    if(name == "toArrow")
+       return tr("Exit Arrow");
+    if(name == "path")
+       return tr("Path Editing");
+    if(name == "hidden")
+       return tr("Hidden");
+    if(name == "block")
+       return tr("Visible");
 
     return cName;
 }

@@ -149,31 +149,22 @@
     _bottom1Panel->layout()->addWidget(_updateButton);
 }
 /*private*/ void FamilyItemPanel::addShowButtonToBottom() {
-    _showIconsButton = new QPushButton(tr("Hide Icons"));
+    _showIconsButton = new QPushButton(tr("Show Icons"));
 //    _showIconsButton.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent a) {
-//            if (_iconPanel.isVisible()) {
-//                hideIcons();
-//            } else {
-//                showIcons();
-//            }
+    connect(_showIconsButton, &QPushButton::clicked, [=]{
+            if (_iconPanel->isVisible()) {
+                hideIcons();
+            } else {
+                showIcons();
+            }
 //        }
-//    });
-    connect(_showIconsButton, SIGNAL(clicked(bool)), this, SLOT(on_showIconsButton()));
+    });
     _showIconsButton->setToolTip(tr("Press to display the icons for the current Icon Set"));
     _bottom1Panel->layout()->addWidget(_showIconsButton);
 }
 
-void FamilyItemPanel::on_showIconsButton()
-{
- if (_iconPanel->isVisible()) {
-     hideIcons();
- } else {
-     showIcons();
- }
-
-}
 /*protected*/ JPanel* FamilyItemPanel::makeItemButtonPanel()
 {
     _bottom1Panel = new JPanel();
@@ -184,10 +175,11 @@ void FamilyItemPanel::on_showIconsButton()
 //    _editIconsButton.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent a) {
-//            openDialog(_itemType, _family, _currentIconMap);
+    connect(_editIconsButton, &QPushButton::clicked, [=]{
+            openDialog(_itemType, _family, _currentIconMap);
 //        }
-//    });
-    connect(_editIconsButton, SIGNAL(clicked(bool)), this, SLOT(on_editIconsButton()));
+    });
+//    connect(_editIconsButton, SIGNAL(clicked(bool)), this, SLOT(on_editIconsButton()));
     _editIconsButton->setToolTip(tr("Press to change the icons of the current Icon Set"));
     _bottom1PanelLayout->addWidget(_editIconsButton);
 
@@ -197,10 +189,10 @@ void FamilyItemPanel::on_showIconsButton()
     return _bottom1Panel;
 }
 
-void FamilyItemPanel::on_editIconsButton()
-{
- openDialog(_itemType, _family, _currentIconMap);
-}
+//void FamilyItemPanel::on_editIconsButton()
+//{
+// openDialog(_itemType, _family, _currentIconMap);
+//}
 
 /*protected*/ void FamilyItemPanel::addCreateDeleteFamilyButtons() {
     QPushButton* createIconsButton = new QPushButton(tr("Create New Family"));
@@ -212,7 +204,7 @@ void FamilyItemPanel::on_editIconsButton()
 //    });
     connect(createIconsButton, SIGNAL(clicked(bool)), this, SLOT(newFamilyDialog()));
     createIconsButton->setToolTip(tr("Create an additional set of icons for this device"));
-    ((QHBoxLayout*)_bottom1Panel->layout())->addWidget(createIconsButton);
+    _bottom1Panel->layout()->addWidget(createIconsButton);
 
     QPushButton* deleteButton = new QPushButton(tr("Delete Family"));
 //    deleteButton.addActionListener(new ActionListener() {
@@ -223,7 +215,7 @@ void FamilyItemPanel::on_editIconsButton()
 //    });
     connect(deleteButton, SIGNAL(clicked(bool)), this, SLOT(deleteFamilySet()));
     deleteButton->setToolTip(tr("Delete this set of icons"));
-    ((QHBoxLayout*)_bottom1Panel->layout())->addWidget(deleteButton);
+    _bottom1Panel->layout()->addWidget(deleteButton);
 }
 
 /**
@@ -418,7 +410,7 @@ void FamilyItemPanel::on_editIconsButton()
  }
 }
 // override to update icons in panel
-/*public*/ void FamilyItemPanel::updateFamilyIcons() {}
+///*public*/ void FamilyItemPanel::updateFamilyIcons() {}
 
 /*protected*/ void FamilyItemPanel::updateFamiliesPanel()
 {
@@ -716,9 +708,14 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
     log->error(tr("iconPanel is null for type %1").arg(_itemType));
     return;
  }
- QGridLayout* gridbag = new QGridLayout();
+ QGridLayout* gridbag;
+ gridbag = new QGridLayout();
  gridbag->setObjectName("gridbag");
- iconPanel->setLayout(gridbag); // QWidget::setLayout: Attempting to set QLayout "gridbag" on ImagePanel "ImagePanel", which already has a layout
+ if(iconPanel->layout() != nullptr)
+ {
+  delete iconPanel->layout();
+ }
+ iconPanel->setLayout(gridbag);
 
  int numCol = 4;
  GridBagConstraints* c = new GridBagConstraints();
@@ -849,9 +846,9 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
    panel->setMinimumSize( QSize(width, panel->minimumSize().height()));
    panel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
    QLayout* l = _dragIconPanel->layout();
-//   if(l == NULL)
-//    _dragIconPanel->setLayout(new QHBoxLayout);
-//   ((QVBoxLayout*)_dragIconPanel->layout())->addWidget(panel,0, Qt::AlignCenter);
+   if(l == NULL)
+    _dragIconPanel->setLayout(l = new QHBoxLayout);
+//   ((FlowLayout*)_dragIconPanel->layout())->addWidget(panel);
   l->addWidget(panel);
   return;
   }
@@ -865,35 +862,13 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
  }
 }
 
-
-
-void FamilyItemPanel::on_newFamilyButton_clicked()
-{
- newFamilyDialog();
-}
-
-
 /*protected*/ void FamilyItemPanel::hideIcons()
 {
- if (_iconPanel == nullptr) {
-     log->debug("hideIcons() _iconPanel = null");
-     return;
- }
-// if (!jmri.util.ThreadingUtil.isGUIThread()) log.error("Not on GUI thread", new Exception("traceback"));
- if (log->isDebugEnabled()) {
-     log->debug(tr("hideIcons for= %1, %2").arg(_itemType).arg(_family));
- }
- bool isPalette = (qobject_cast<ItemPalette*>(_paletteFrame) != nullptr);
- QSize totalDim;
- if (isPalette) {
-     totalDim = ItemPalette::_tabPane->size();
- } else {
-     totalDim = _paletteFrame->size();
- }
+ bool isPalette = (qobject_cast<ItemPalette*>(_paletteFrame));
+ QSize totalDim = _paletteFrame->size();
  QSize oldDim = size();
  if (_update) {
      _previewPanel->setVisible(false);
-     _previewPanel->update(); // force redraw
  }
  _iconPanel->setVisible(false);
  _iconPanel->update(); // force redraw
@@ -902,10 +877,10 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
      _dragIconPanel->update();
  } else {
      _previewPanel->setVisible(false);
-     _previewPanel->update(); // force redraw
  }
+ _previewPanel->update(); // force redraw
  reSizeDisplay(isPalette, oldDim, totalDim);
- _showIconsButton->setText(tr("Hide Icons"));
+ _showIconsButton->setText(tr("Show Icons"));
  reset();
 }
 
@@ -924,7 +899,7 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
     QSize oldDim = size();
     if (_update) {
         _previewPanel->setVisible(true);
-        _previewPanel->update(); // force redraw
+//        _previewPanel->update(); // force redraw
     }
     _iconPanel->setVisible(true);
     _iconPanel->update(); // force redraw
@@ -936,7 +911,7 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
         _previewPanel->update(); // force redraw
     }
     reSizeDisplay(isPalette, oldDim, totalDim);
-    _showIconsButton->setText(tr("Show Icons"));
+    _showIconsButton->setText(tr("Hide Icons"));
     reset();
 }
 
@@ -1001,14 +976,6 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
     return true;
 }
 
-///*protected*/ void FamilyItemPanel::openEditDialog()
-//{
-// if (log->isDebugEnabled()) log->debug("openEditDialog for family \""+_family+"\"");
-// IconDialog* dialog = new IconDialog(_itemType, _family, this, _currentIconMap);
-// // call super ItemDialog to size and locate dialog
-// dialog->sizeLocate();
-//}
-
 //@Override
 /*protected*/ void FamilyItemPanel::setPreviewBg(int index) {
     if (_dialog != nullptr) {
@@ -1039,12 +1006,17 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
 }
 
 //@Override
-/*protected*/ void FamilyItemPanel::closeDialogs() {
+/*public*/ void FamilyItemPanel::closeDialogs() {
     if (_dialog != nullptr) {
         _dialog->closeDialogs();
         _dialog->dispose();
     }
 }
+
+/*public*/ void FamilyItemPanel::dispose() {
+        closeDialogs();
+    }
+
 /**
 * Action of family radio button
 */
@@ -1058,6 +1030,7 @@ void FamilyItemPanel::on_newFamilyButton_clicked()
   _iconPanel = new ImagePanel();
   _iconFamilyPanel->layout()->addWidget(_iconPanel);
   log->error(tr("setFamily called with _iconPanel == null typs= %1").arg(_itemType));
+  _iconPanel->setVisible(false);
  }
  else
  {

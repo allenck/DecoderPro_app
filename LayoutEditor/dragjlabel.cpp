@@ -70,6 +70,7 @@ void DragJLabel::common()
  setAttribute(Qt::WA_DeleteOnClose);
  setLayout(new QVBoxLayout());
  this->layout()->addWidget(internalLabel = new QLabel);
+ setEnabled(true);
 }
 
 /*public*/ void DragJLabel::setPixmap(QPixmap pixmap)
@@ -107,7 +108,7 @@ void DragJLabel::common()
 // // The event needs to be accepted here
 // de->accept();
 //}
-void DragJLabel::mousePressEvent(QMouseEvent *e)
+/*public*/ void DragJLabel::mousePressEvent(QMouseEvent *e)
 {
  if(e->button()&Qt::LeftButton)
  {

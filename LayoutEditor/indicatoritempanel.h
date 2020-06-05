@@ -32,6 +32,7 @@ protected:
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon *> *map, NamedIcon* icon);
 friend class IndicatorDragJLabel;
 };
+
 /*protected*/ class IndicatorDragJLabel : public DragJLabel {
     Q_OBJECT
     IndicatorItemPanel* self;
@@ -40,7 +41,7 @@ public:
     /*public*/ IndicatorDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map,IndicatorItemPanel* self) ;
     /*public*/ bool isDataFlavorSupported(DataFlavor* flavor);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) ;
-  QByteArray mimeData();
+    QByteArray mimeData();
 };
 
 #endif // INDICATORITEMPANEL_H

@@ -176,7 +176,8 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  * @param width the width of the painted border
  * @param height the height of the painted border
  */
-/*public*/ void TitledBorder::paintBorder(QWidget* c, QPainter* g, int x, int y, int width, int height) {
+/*public*/ void TitledBorder::paintBorder(QWidget* c, /*QPainter g, */int x, int y, int width, int height) {
+    QRect r(x, y, width, height);
     Border* border = getBorder();
     QString title = getTitle();
     if ((!title.isNull()) && !title.isEmpty()) {
@@ -256,41 +257,44 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
         if (border != NULL) {
             if ((position != TOP) && (position != BOTTOM))
             {
-                border->paintBorder(c, g, borderX, borderY, borderW, borderH);
+                border->paintBorder(c, /*g,*/ borderX, borderY, borderW, borderH);
             }
 #if 1
             else {
 //                Graphics g2 = g.create();
 //                if (g2 instanceof Graphics2D) {
 //                    Graphics2D g2d = (Graphics2D) g2;
+             QPainter  g(c);
+
                     QPainterPath path = QPainterPath();
                     path.addRect(borderX, borderY, borderW, labelY - borderY);//, false);
                     path.addRect(borderX, labelY, labelX - borderX - TEXT_SPACING, labelH);//, false);
                     path.addRect(labelX + labelW + TEXT_SPACING, labelY, borderX - labelX + borderW - labelW - TEXT_SPACING, labelH);//, false);
                     path.addRect(borderX, labelY + labelH, borderW, borderY - labelY + borderH - labelH);//, false);
-                    g->setClipPath(path);
+                    g.setClipPath(path);
                 }
-                border->paintBorder(c, g, borderX, borderY, borderW, borderH);
+                border->paintBorder(c, /*g,*/ borderX, borderY, borderW, borderH);
                 //g2.dispose();
             }
 #endif
 //        }
+        QPainter  g(c);
 
-        g->translate(labelX, labelY);
+        g.translate(labelX, labelY);
 #if 0
         label->setSize(labelW, labelH);
         label->repaint();//paint(g);
         g->translate(-labelX, -labelY);
 #else
-        QColor oldColor = g->pen().color();
-        g->setPen(border->color());
-        g->drawText(labelX, labelY, labelW, labelH, Qt::AlignCenter, title);
-        g->setPen(oldColor);
+        QColor oldColor = g.pen().color();
+        g.setPen(border->color());
+        g.drawText(labelX, labelY, labelW, labelH, Qt::AlignCenter, title);
+        g.setPen(oldColor);
 #endif
 
     }
     else if (border != NULL) {
-        border->paintBorder(c, g, x, y, width, height);
+        border->paintBorder(c, /*g,*/ x, y, width, height);
     }
 }
 
