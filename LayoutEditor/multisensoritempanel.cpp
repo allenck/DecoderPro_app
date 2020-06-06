@@ -207,8 +207,12 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
 
 /*public*/ /*static*/ /*final*/ QStringList MultiSensorItemPanel::POSITION = QStringList() << "first" << "second"<< "third"<< "fourth"<< "fifth"<< "sixth"<< "seventh"<< "eighth"<< "nineth"<< "tenth" ;
 
+/*static*/ /*public*/ QString MultiSensorItemPanel::getPositionName(int index) {
+        return POSITION[index];
+    }
 // /*protected*/ class MultiSensorSelectionModel : DefaultListSelectionModel {
 
+#if 0
 /*public*/ void MultiSensorItemPanel::updateFamilyIcons()
 {
  if(_currentIconMap == nullptr)
@@ -227,6 +231,7 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
   }
  }
 }
+#endif
 
 MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, MultiSensorItemPanel* self)
  : DefaultListSelectionModel(self)
@@ -244,9 +249,6 @@ MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, 
 /*protected*/ QVector<NamedBean*> MultiSensorSelectionModel::getSelections() {
     if (log->isDebugEnabled()) log->debug("getSelections: size= "+QString::number(_selections.size())+
                                         ", _nextPosition= "+QString::number(_nextPosition));
-//    if (_nextPosition < _positions.length()) {
-//        return QVector<NamedBean*>() ;
-//    }
     return _selections;
 }
 

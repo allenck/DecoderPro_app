@@ -88,7 +88,7 @@ public:
  /*public*/ void setModel(QAbstractItemModel *dataModel);
  /*public*/ QAbstractItemModel *getModel();
  /*public*/ void setColumnModel(TableColumnModel* columnModel);
- /*public*/ void setSelectionModel(DefaultListSelectionModel *newModel);
+ /*public*/ void setSelectionModel(QItemSelectionModel *newModel);
  /*public*/ DefaultListSelectionModel* getSelectionModel();
  /*public*/ void addColumn(TableColumn* aColumn);
  /*public*/ void removeColumn(TableColumn* aColumn) ;

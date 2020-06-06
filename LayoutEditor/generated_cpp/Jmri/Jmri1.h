@@ -79,6 +79,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1218,6 +1219,7 @@ void delete_JList(JList* obj) { delete obj; }
    QModelIndex  locationToIndex(JList* theWrappedObject, QPoint  arg__1);
    void setSelectedIndex(JList* theWrappedObject, int  index);
    void setSelectedValue(JList* theWrappedObject, QString  anObject, bool  shouldScroll);
+   void setVisibleRowCount(JList* theWrappedObject, int  count);
 };
 
 
@@ -1296,7 +1298,7 @@ virtual QItemSelectionModel::SelectionFlags  selectionCommand(const QModelIndex&
 virtual void setModel(QAbstractItemModel*  dataModel);
 virtual void setRootIndex(const QModelIndex&  index);
 virtual void setSelection(const QRect&  rect, QItemSelectionModel::SelectionFlags  command);
-virtual void setSelectionModel(QItemSelectionModel*  selectionModel);
+virtual void setSelectionModel(QItemSelectionModel*  newModel);
 virtual void setVisible(bool  visible);
 virtual void setupViewport(QWidget*  viewport);
 virtual QPainter*  sharedPainter() const;
@@ -1330,6 +1332,7 @@ class PythonQtPublicPromoter_JTable : public JTable
 inline TableColumnModel*  promoted_createDefaultColumnModel() { return this->createDefaultColumnModel(); }
 inline void promoted_resizeAndRepaint() { this->resizeAndRepaint(); }
 inline void py_q_setModel(QAbstractItemModel*  dataModel) { JTable::setModel(dataModel); }
+inline void py_q_setSelectionModel(QItemSelectionModel*  newModel) { JTable::setSelectionModel(newModel); }
 };
 
 class PythonQtWrapper_JTable : public QObject
@@ -1385,6 +1388,7 @@ void delete_JTable(JTable* obj) { delete obj; }
    void setRowSelectionAllowed(JTable* theWrappedObject, bool  arg__1);
    void setRowSelectionInterval(JTable* theWrappedObject, int  index0, int  index1);
    void setSelectionMode(JTable* theWrappedObject, int  selectionMode);
+   void py_q_setSelectionModel(JTable* theWrappedObject, QItemSelectionModel*  newModel){  (((PythonQtPublicPromoter_JTable*)theWrappedObject)->py_q_setSelectionModel(newModel));}
    void setShowGrid(JTable* theWrappedObject, bool  showGrid);
    void setShowHorizontalLines(JTable* theWrappedObject, bool  showHorizontalLines);
    void setShowVerticalLines(JTable* theWrappedObject, bool  showVerticalLines);

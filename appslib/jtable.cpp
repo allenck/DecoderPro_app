@@ -3639,13 +3639,17 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
  *      bound: true
  *      description: The selection model for rows.
  */
-/*public*/ void JTable::setSelectionModel(DefaultListSelectionModel* newModel) // QItemSelectionModel
+/*public*/ void JTable::setSelectionModel(QItemSelectionModel* newModel) // QItemSelectionModel
 {
  if (newModel == NULL)
  {
   throw  IllegalArgumentException("Cannot set a NULL SelectionModel");
  }
-
+ if(!qobject_cast<DefaultListSelectionModel*>(newModel))
+ {
+  QTableView::setSelectionModel(newModel);
+  return;
+ }
  DefaultListSelectionModel* oldModel = _selectionModel;
 
  if (newModel != oldModel)
@@ -3655,10 +3659,10 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
 //    oldModel.removeListSelectionListener(this);
   }
 
-  _selectionModel = newModel;
+  _selectionModel = (DefaultListSelectionModel*)newModel;
 //    newModel.addListSelectionListener(this);
 
-  firePropertyChange("selectionModel", VPtr<DefaultListSelectionModel>::asQVariant(oldModel), VPtr<DefaultListSelectionModel>::asQVariant(newModel));
+  firePropertyChange("selectionModel", VPtr<QItemSelectionModel>::asQVariant(oldModel), VPtr<QItemSelectionModel>::asQVariant(newModel));
   update();
  }
 }

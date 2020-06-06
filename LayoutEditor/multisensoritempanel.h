@@ -19,7 +19,8 @@ public:
     /*public*/ void setSelection(NamedBean* bean);
     /*public*/ void setUpDown(bool upDown);
     /*public*/ bool oktoUpdate();
-    /*public*/ void updateFamilyIcons();
+//    /*public*/ void updateFamilyIcons();
+    static /*public*/ QString getPositionName(int index);
 
 signals:
 
@@ -77,7 +78,7 @@ friend class MSIconDragJLabel;
 /*protected*/ class MSIconDragJLabel : public DragJLabel
 {
  Q_OBJECT
-  QMap <QString, NamedIcon*>* iconMap;
+  QMap <QString, NamedIcon*>* iconMap = nullptr;
   MultiSensorItemPanel* self;
  public:
   //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // icon map is within package

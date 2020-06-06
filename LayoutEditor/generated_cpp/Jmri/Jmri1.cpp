@@ -65,6 +65,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -10052,6 +10053,11 @@ void PythonQtWrapper_JList::setSelectedValue(JList* theWrappedObject, QString  a
   ( theWrappedObject->setSelectedValue(anObject, shouldScroll));
 }
 
+void PythonQtWrapper_JList::setVisibleRowCount(JList* theWrappedObject, int  count)
+{
+  ( theWrappedObject->setVisibleRowCount(count));
+}
+
 
 
 PythonQtShell_JTable::~PythonQtShell_JTable() {
@@ -11675,7 +11681,7 @@ if (_wrapper) {
 }
   JTable::setSelection(rect0, command1);
 }
-void PythonQtShell_JTable::setSelectionModel(QItemSelectionModel*  selectionModel0)
+void PythonQtShell_JTable::setSelectionModel(QItemSelectionModel*  newModel0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -11685,7 +11691,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QItemSelectionModel*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&selectionModel0};
+      void* args[2] = {NULL, (void*)&newModel0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -11695,7 +11701,7 @@ if (_wrapper) {
     }
   }
 }
-  JTable::setSelectionModel((DefaultListSelectionModel*)selectionModel0);
+  JTable::setSelectionModel(newModel0);
 }
 void PythonQtShell_JTable::setVisible(bool  visible0)
 {
