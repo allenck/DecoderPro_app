@@ -391,7 +391,7 @@ void PositionablePopupUtil::onSetTeaxtFontColor()
 
 /*public*/ QColor PositionablePopupUtil::getBackground()
 {
- QColor c = ((Positionable*)_textComponent)->getBackground();
+ QColor c = ((PositionableLabel*)_textComponent)->getBackground();
  if (!c.isValid()) {
      c = QColor(Qt::white);
  }

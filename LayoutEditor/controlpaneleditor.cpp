@@ -74,6 +74,7 @@
 #include "linkingobject.h"
 #include "joptionpane.h"
 #include <QSignalMapper>
+#include "analogclock2displayxml.h"
 
 ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
     Editor(parent)
@@ -2541,8 +2542,23 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
    ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
    addToTarget(l);
   }
+  else if(representativeClass=="fastclock")
+  {
+   AnalogClock2DisplayXml* xml = new AnalogClock2DisplayXml;
+   xml->doc = doc;
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   AnalogClock2Display* l = new AnalogClock2Display(this);//  xml->getIcon();
+   ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setOpaque(false);
+   l->update();
+   l->setDisplayLevel(Editor::CLOCK);
+   addToTarget(l);
+  }
   else
-   log->warn(tr("representativeClass '%1' not found").arg(representativeClass));
+   log->warn(tr("representativeClass '%1' not found").arg((representativeClass==""?"'null'":representativeClass)));
+
  }
 #if 0
  else if(text.contains(";"))

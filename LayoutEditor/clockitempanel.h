@@ -26,9 +26,11 @@ protected:
 
 /*public*/ class ClockDragJLabel : public DragJLabel
 {
-
+ Q_OBJECT
+ ClockItemPanel* panel;
     /*public*/ ClockDragJLabel(DataFlavor* flavor, QWidget* parent) ;
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
+    /*public*/ QByteArray mimeData();
 private:
     Logger * log;
     friend class ClockItemPanel;

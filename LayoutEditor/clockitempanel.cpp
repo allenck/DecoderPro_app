@@ -15,6 +15,8 @@
 #include "borderlayout.h"
 #include "box.h"
 #include "borderfactory.h"
+#include "positionablelabelxml.h"
+#include "analogclock2displayxml.h"
 
 //ClockItemPanel::ClockItemPanel(QWidget *parent) :
 //    IconItemPanel(parent)
@@ -64,15 +66,18 @@
   QString borderName = ItemPalette::convertText(it.key());
   panel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
           borderName));
+
   try {
-      JLabel* label = new ClockDragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR),this);
+      DragJLabel* label = new ClockDragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR),this);
       if (icon->getIconWidth() < 1 || icon->getIconHeight() < 1) {
           label->setText(tr("invisible Icon"));
           label->setForeground(Qt::lightGray);
       } else {
           icon->reduceTo(100, 100, 0.2);
       }
-      label->setIcon(icon);
+      //label->setIcon(icon);
+      label->icon = icon;
+      ((JLabel*)label)->setIcon(icon);
       label->setName(borderName);
       panel->layout()->addWidget(label);
   } catch (ClassNotFoundException cnfe) {
@@ -104,6 +109,7 @@ void ClockItemPanel::sceneClicked(QGraphicsSceneMouseEvent *)
 /*public*/ ClockDragJLabel::ClockDragJLabel(DataFlavor* flavor, QWidget* parent) : DragJLabel(flavor, parent) {
         //super(flavor);
     log = new Logger("ClockDragJLabel");
+    this->panel = (ClockItemPanel*)parent;
     }
 /*public*/ QObject* ClockDragJLabel::getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException) {
     if (!isDataFlavorSupported(flavor)) {
@@ -125,3 +131,18 @@ void ClockItemPanel::sceneClicked(QGraphicsSceneMouseEvent *)
 }
 //};
 
+/*public*/ QByteArray ClockDragJLabel::mimeData()
+{
+ QByteArray xmldata;
+ QString url = ((NamedIcon*)getIcon())->getURL();
+ AnalogClock2Display* l = new AnalogClock2Display(panel->_editor);
+ l->setPopupUtility(NULL);        // no text
+ l->setLevel(Editor::CLOCK);
+ _dataFlavor = new DataFlavor(l, "PositionableLabel");
+// _dataFlavor->setMimeTypeParameter("family", parent->_family);
+ AnalogClock2DisplayXml* xml = new AnalogClock2DisplayXml();
+ QDomElement e = xml->store((QObject*)l);
+ xml->doc.appendChild(e);
+ xmldata.append(xml->doc.toString());
+ return xmldata;
+}
