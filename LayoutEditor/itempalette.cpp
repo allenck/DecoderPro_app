@@ -967,7 +967,7 @@ void IPEditItemActionListener::actionPerformed()
        return tr("Visible");
     if(name == "dragToPanel")
        return tr("Drag to Pane");
-
+    log->debug(tr("convertText: \"%1\" is missing conversion").arg(cName));
     return cName;
 }
 

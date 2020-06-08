@@ -3,7 +3,6 @@
 #include "catalogpanel.h"
 #include <QVBoxLayout>
 #include "itempalette.h"
-#include <QGroupBox>
 #include <QPushButton>
 #include <QMessageBox>
 #include "fileutil.h"
@@ -93,38 +92,7 @@
  panel->layout()->addWidget(blurb);
  return panel;
 }
-#if 0
-/*private*/ CatalogPanel* IconItemPanel::makeCatalog() {
-    CatalogPanel* catalog = CatalogPanel::makeDefaultCatalog(false, false, !_update);
-    ImagePanel* panel = catalog->getPreviewPanel();
-    if (!isUpdate()) {
-        panel->setImage(_frame->getPreviewBackground());
-    } else {
-        panel->setImage(_frame->getBackground(0));   //update always should be the panel background
-        catalog->setParent(this);
-    }
-    catalog->setToolTip(tr("Drag an icon directly from the Catalog Pane to add it to the Control Panel"));
-    catalog->setVisible(false);
-    return catalog;
-}
-//@Override
-/*protected*/ void IconItemPanel::setPreviewBg(int index) {
-    if (_catalog != nullptr) {
-        ImagePanel* iconPanel = _catalog->getPreviewPanel();
-        if (iconPanel != nullptr) {
-            iconPanel->setImage(_backgrounds->at(index));
-        }
-    }
-    if (_iconPanel != nullptr) {
-        _iconPanel->setImage(_backgrounds->at(index));
-    }
-}
 
-//@Override
-/*protected*/ void IconItemPanel::updateBackground0(BufferedImage* im) {
-    _backgrounds->replace(0, im);
-}
-#endif
 /**
 * Plain icons have only one family, usually named "set"
 * Override for plain icon & background and put all icons here
@@ -162,15 +130,11 @@
   //Entry<String, NamedIcon> entry = it.next();
   it.next();
   NamedIcon* icon = new NamedIcon(it.value());    // make copy for possible reduction
-  QGroupBox* panel = new QGroupBox();
+  JPanel* panel = new JPanel();
   panel->setLayout(new QVBoxLayout());
   QString borderName = ItemPalette::convertText(it.key());
-  //panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),
-  //                                                 borderName));
-  QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-
-  panel->setTitle(borderName);
-  panel->setStyleSheet(gbStyleSheet);
+  panel->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
+                                                   borderName));
   try
   {
    IconDragJLabel* label = new IconDragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR), _level, this);

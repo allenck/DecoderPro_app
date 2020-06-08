@@ -14,8 +14,8 @@ private:
  static Logger* log;
 
 protected:
- /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
- /*protected*/ DragJLabel *getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
+ /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey) override;
+ /*protected*/ DragJLabel *getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon) override;
  friend class RPSIconDragJLabel;
 };
 

@@ -30,11 +30,13 @@
 
 //    HashMap<String, NamedIcon> iconMap;
 
-    /*public*/ RPSIconDragJLabel::RPSIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon, RPSItemPanel* rpsItemPanel) : DragJLabel(flavor)
+    /*public*/ RPSIconDragJLabel::RPSIconDragJLabel(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon, RPSItemPanel* rpsItemPanel)
+     : DragJLabel(flavor)
     {
         //super(flavor, icon);
      this->rpsItemPanel = rpsItemPanel;
-     iconMap = new QMap<QString, NamedIcon*>(*map);
+     iconMap = map;
+     this->icon = icon;
     }
 
     //@Override
@@ -51,19 +53,12 @@
         if (rpsItemPanel->log->isDebugEnabled()) {
             rpsItemPanel->log->debug("IconDragJLabel.getTransferData");
         }
-        if (flavor->isMimeTypeEqual(Editor::POSITIONABLE_FLAVOR)) {
-            RpsPositionIcon* r = new RpsPositionIcon(rpsItemPanel->_editor);
-            r->setActiveIcon(new NamedIcon(iconMap->value("active")));
-            r->setErrorIcon(new NamedIcon(iconMap->value("error")));
-            r->setSize(r->getPreferredSize().width(), r->getPreferredSize().height());
-            r->setLevel(Editor::SENSORS);
-            return VPtr<RpsPositionIcon>::asQVariant(r);
-        } else if (DataFlavor::stringFlavor ==(flavor)) {
-            QString sb = rpsItemPanel->_itemType;//new StringBuilder(_itemType);
-            sb.append(" icons");
-            return  sb/*.toString()*/;
-        }
-        return QVariant();
+        RpsPositionIcon* r = new RpsPositionIcon(rpsItemPanel->_editor);
+        r->setActiveIcon(new NamedIcon(iconMap->value("active")));
+        r->setErrorIcon(new NamedIcon(iconMap->value("error")));
+        r->setSize(r->getPreferredSize().width(), r->getPreferredSize().height());
+        r->setLevel(Editor::SENSORS);
+        return VPtr<RpsPositionIcon>::asQVariant(r);
     }
 //}
 

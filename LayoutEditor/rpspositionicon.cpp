@@ -1,6 +1,8 @@
 #include "rpspositionicon.h"
 #include "distributor.h"
 #include "namedicon.h"
+#include "helputil.h"
+#include "joptionpane.h"
 /**
  * An icon to display the position of an RPS input.
  *
@@ -24,7 +26,7 @@
  error = new NamedIcon(errorName, errorName);
 
         _control = true;
-#if 0
+#if 1
         displayState();
 
         // blow up default font
@@ -34,7 +36,7 @@
         setFont(f);
 
         // connect
-        Distributor::instance()->addMeasurementListener(this);
+        Distributor::instance()->addMeasurementListener((MeasurementListener*)this);
 #endif
     }
 
@@ -56,14 +58,14 @@
         error = i;
         displayState();
     }
-#if 0
+#if 1
     //@Override
-    /*public*/ String getNameString() {
+    /*public*/ QString RpsPositionIcon::getNameString() {
         return "RPS Position Readout";
     }
 
     //@Override
-    /*public*/ boolean setEditIconMenu(JPopupMenu popup) {
+    /*public*/ bool RpsPositionIcon::setEditIconMenu(QMenu* popup) {
         return false;
     }
 
@@ -71,51 +73,61 @@
      * Pop-up contents
      */
     //@Override
-    /*public*/ boolean showPopUp(JPopupMenu popup) {
+    /*public*/ bool RpsPositionIcon::showPopUp(QMenu* popup) {
 
-        if (showIdItem == null) {
-            showIdItem = new JCheckBoxMenuItem("Show ID");
-            showIdItem.setSelected(false);
-            showIdItem.addActionListener(new ActionListener() {
-                //@Override
-                /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-                    toggleID(showIdItem.isSelected());
-                }
+        if (showIdItem == nullptr) {
+            showIdItem = new QAction("Show ID",this);
+            showIdItem->setCheckable(true);
+            showIdItem->setChecked(false);
+//            showIdItem.addActionListener(new ActionListener() {
+//                //@Override
+//                /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
+            connect(showIdItem, &QAction::toggled, [=]{
+                    toggleID(showIdItem->isChecked());
+//                }
             });
         }
-        popup.add(showIdItem);
+        popup->addAction(showIdItem);
 
-        popup.add(new AbstractAction("Set Origin") {
-            //@Override
-            /*public*/ void actionPerformed(ActionEvent e) {
+        AbstractAction* act;
+        popup->addAction(act = new AbstractAction("Set Origin", this));
+//        {
+//            //@Override
+//            /*public*/ void actionPerformed(ActionEvent e) {
+          connect(act, &AbstractAction::triggered, [=]{
                 setRpsOrigin();
-            }
+//            }
         });
 
-        popup.add(new AbstractAction("Set Current Location") {
-            //@Override
-              /*public*/ void actionPerformed(ActionEvent e) {
+        popup->addAction(act = new AbstractAction("Set Current Location", this));
+//        {
+//            //@Override
+//              /*public*/ void actionPerformed(ActionEvent e) {
+          connect(act, &AbstractAction::triggered, [=]{
                 setRpsCurrentLocation();
-            }
+//            }
         });
 
-        notify = new Notifier();
-        popup.add(notify);
+        _notify = new Notifier(this);
+        popup->addAction(_notify);
 
-        popup.add(new AbstractAction("Set Filter") {
-            //@Override
-            /*public*/ void actionPerformed(ActionEvent e) {
+        popup->addAction(act = new AbstractAction("Set Filter", this));
+//        {
+          connect(act, &AbstractAction::triggered, [=]{
                 setFilterPopup();
-            }
+//            }
         });
 
         // add help item
-        JMenuItem item = new JMenuItem("Help");
-        jmri.util.HelpUtil.addHelpToComponent(item, "package.jmri.jmrit.display.RpsIcon");
-        popup.add(item);
+        QAction* item = new QAction("Help", this);
+//        HelpUtil::addHelpToComponent(item, "package.jmri.jmrit.display.RpsIcon");
+        connect(item, &QAction::triggered, [=]{
+         HelpUtil::displayHelpRef("package.jmri.jmrit.display.RpsIcon");
+        });
+        popup->addAction(item);
 
         // update position
-        notify.setPosition(getX(), getY());
+        _notify->setPosition(getX(), getY());
         return false;
     }
 
@@ -123,46 +135,45 @@
      * ****** popup AbstractAction.actionPerformed method overrides ********
      */
     //@Override
-    protected void rotateOrthogonal() {
-        active.setRotation(active.getRotation() + 1, this);
-        error.setRotation(error.getRotation() + 1, this);
+    /*protected*/ void RpsPositionIcon::rotateOrthogonal() {
+        active->setRotation(active->getRotation() + 1, this);
+        error->setRotation(error->getRotation() + 1, this);
         displayState();
         //bug fix, must repaint icons that have same width and height
         repaint();
     }
 
     //@Override
-    /*public*/ void setScale(double s) {
-        active.scale(s, this);
-        error.scale(s, this);
+    /*public*/ void RpsPositionIcon::setScale(double s) {
+        active->scale(s, this);
+        error->scale(s, this);
         displayState();
     }
 
     //@Override
-    /*public*/ void rotate(int deg) {
-        active.rotate(deg, this);
-        error.rotate(deg, this);
+    /*public*/ void RpsPositionIcon::rotate(int deg) {
+        active->rotate(deg, this);
+        error->rotate(deg, this);
         displayState();
     }
-
-    JCheckBoxMenuItem showIdItem = null;
 
     /**
      * Internal class to show position in the popup menu.
      * <P>
      * This is updated before the menu is shown, and then appears in the menu.
      */
-    class Notifier extends AbstractAction {
+//    class Notifier extends AbstractAction {
 
-        /*public*/ Notifier() {
-            super();
+        /*public*/ Notifier::Notifier(RpsPositionIcon* icon) {
+            //super();
+         this->icon = icon;
         }
 
         /**
          * Does nothing, here to make this work
          */
         //@Override
-        >(c) !=NULL) void actionPerformed(ActionEvent e) {
+        /*>(c) !=NULL)*/ void Notifier::actionPerformed(/*ActionEvent e*/) {
         }
 
         /**
@@ -170,24 +181,21 @@
          * @param x display coordinate
          * @param y display coordinate
          */
-        void setPosition(int x, int y) {
+        void Notifier::setPosition(int x, int y) {
             // convert to RPS coordinates
             double epsilon = .00001;
-            if ((sxScale > -epsilon && sxScale < epsilon)
-                    || (syScale > -epsilon && syScale < epsilon)) {
+            if ((icon->sxScale > -epsilon && icon->sxScale < epsilon)
+                    || (icon->syScale > -epsilon && icon->syScale < epsilon)) {
                 putValue("Name", "Not Calibrated");
                 return;
             }
 
-            double xn = (x - sxOrigin) / sxScale;
-            double yn = (y - syOrigin) / syScale;
+            double xn = (x - icon->sxOrigin) / icon->sxScale;
+            double yn = (y - icon->syOrigin) / icon->syScale;
 
-            putValue("Name", "At: " + xn + "," + yn);
+            putValue("Name", "At: " + QString::number(xn) + "," + QString::number(yn));
         }
-    }
-    Notifier notify;
-
-    JCheckBoxMenuItem momentaryItem;
+//    }
 
 #endif
     /**
@@ -210,43 +218,41 @@
         update();
         return;
     }
-#if 0
+#if 1
     //@Override
-    /*public*/ int maxHeight() {
-        return getPreferredSize().height;
+    /*public*/ int RpsPositionIcon::maxHeight() {
+        return getPreferredSize().height();
     }
 
     //@Override
-    /*public*/ int maxWidth() {
-        return getPreferredSize().width;
+    /*public*/ int RpsPositionIcon::maxWidth() {
+        return getPreferredSize().width();
     }
 
-    boolean momentary = false;
-
-    /*public*/ boolean getMomentary() {
+    /*public*/ bool RpsPositionIcon::getMomentary() {
         return momentary;
     }
 
-    /*public*/ void setMomentary(boolean m) {
+    /*public*/ void RpsPositionIcon::setMomentary(bool m) {
         momentary = m;
     }
 
-    void toggleID(boolean value) {
+    void RpsPositionIcon::toggleID(bool value) {
         if (value) {
             _text = true;
         } else {
 
             _text = false;
-            setText(null);
+            setText("");
         }
         displayState();
     }
 
-    /*public*/ boolean isShowID() {
+    /*public*/ bool RpsPositionIcon::isShowID() {
         return _text;
     }
 
-    /*public*/ void setShowID(boolean mode) {
+    /*public*/ void RpsPositionIcon::setShowID(bool mode) {
         _text = mode;
         displayState();
     }
@@ -255,10 +261,10 @@
      * Respond to a measurement by moving to new position
      */
     //@Override
-    /*public*/ void notify(Measurement m) {
+    /*public*/ void RpsPositionIcon::notify(Measurement* m) {
         // only honor measurements to this icon if filtered
-        if (filterNumber != null && m.getReading() != null
-                && !filterNumber.equals(m.getReading().getID())) {
+        if (filterNumber != nullptr && m->getReading() != nullptr
+                && filterNumber != (m->getReading()->getID())) {
             return;
         }
 
@@ -267,14 +273,14 @@
         lastMeasurement = m;
 
         // update state based on if valid measurement, fiducial volume
-        if (!m.isOkPoint() || m.getZ() < -20 || m.getZ() > 20) {
+        if (!m->isOkPoint() || m->getZ() < -20 || m->getZ() > 20) {
             state = false;
         } else {
             state = true;
         }
 
         if (_text) {
-            super.setText("" + m.getReading().getID());
+            PositionableLabel::setText(m->getReading()->getID());
         }
         displayState();
 
@@ -285,8 +291,8 @@
 
         // Do a 2D, no-rotation conversion using the saved constants.
         // xn, yn are the RPS coordinates; x, y are the display coordinates.
-        double xn = m.getX();
-        double yn = m.getY();
+        double xn = m->getX();
+        double yn = m->getY();
 
         int x = sxOrigin + (int) (sxScale * xn);
         int y = syOrigin + (int) (syScale * yn);
@@ -295,62 +301,61 @@
         setLocation(x, y);
     }
 
-    /*public*/ void setFilterPopup() {
+    /*public*/ void RpsPositionIcon::setFilterPopup() {
         // Popup menu has trigger request for filter value
-        String inputValue = JOptionPane.showInputDialog("Please enter a filter value");
-        if (inputValue == null) {
+        QString inputValue = JOptionPane::showInputDialog("Please enter a filter value");
+        if (inputValue == "") {
             return; // cancelled
         }
         setFilter(inputValue);
     }
 
-    /*public*/ void setFilter(String val) {
+    /*public*/ void RpsPositionIcon::setFilter(QString val) {
         filterNumber = val;
     }
 
-    /*public*/ String getFilter() {
+    /*public*/ QString RpsPositionIcon::getFilter() {
         return filterNumber;
     }
-    String filterNumber = null;
 
     //@Override
-    /*public*/ void dispose() {
-        Distributor.instance().removeMeasurementListener(this);
-        active = null;
-        error = null;
+    /*public*/ void RpsPositionIcon::dispose() {
+        Distributor::instance()->removeMeasurementListener((MeasurementListener*)this);
+        active = nullptr;
+        error = nullptr;
 
-        super.dispose();
+        PositionableLabel::dispose();
     }
 
     /**
      * Set the current icon position as the origin (0,0) of the RPS space.
      */
-    /*public*/ void setRpsOrigin() {
+    /*public*/ void RpsPositionIcon::setRpsOrigin() {
         sxOrigin = getX();
         syOrigin = getY();
     }
 
-    /*public*/ double getXScale() {
+    /*public*/ double RpsPositionIcon::getXScale() {
         return sxScale;
     }
 
-    /*public*/ double getYScale() {
+    /*public*/ double RpsPositionIcon::getYScale() {
         return syScale;
     }
 
-    /*public*/ int getXOrigin() {
+    /*public*/ int RpsPositionIcon::getXOrigin() {
         return sxOrigin;
     }
 
-    /*public*/ int getYOrigin() {
+    /*public*/ int RpsPositionIcon::getYOrigin() {
         return syOrigin;
     }
 
-    /*public*/ void setTransform(double sxScale, double syScale, int sxOrigin, int syOrigin) {
-        this.sxScale = sxScale;
-        this.syScale = syScale;
-        this.sxOrigin = sxOrigin;
-        this.syOrigin = syOrigin;
+    /*public*/ void RpsPositionIcon::setTransform(double sxScale, double syScale, int sxOrigin, int syOrigin) {
+        this->sxScale = sxScale;
+        this->syScale = syScale;
+        this->sxOrigin = sxOrigin;
+        this->syOrigin = syOrigin;
     }
 
     /**
@@ -364,8 +369,8 @@
      * Requires the origin to have been set, and some other measurement to have
      * been made (and current).
      */
-    /*public*/ void setRpsCurrentLocation() {
-        if (lastMeasurement == null) {
+    /*public*/ void RpsPositionIcon::setRpsCurrentLocation() {
+        if (lastMeasurement == nullptr) {
             return;
         }
 
@@ -378,7 +383,7 @@
         // if (lastMeasurement.getX()<10. && lastMeasurement.getX()>-10) return;
         // if (lastMeasurement.getY()<10. && lastMeasurement.getY()>-10) return;
 
-        sxScale = (getX() - sxOrigin) / lastMeasurement.getX();
-        syScale = (getY() - syOrigin) / lastMeasurement.getY();
+        sxScale = (getX() - sxOrigin) / lastMeasurement->getX();
+        syScale = (getY() - syOrigin) / lastMeasurement->getY();
     }
 #endif

@@ -35,12 +35,12 @@
 //             Thread.yield();
      JPanel* blurb = new JPanel();
      blurb->setLayout(new QVBoxLayout());//blurb, BoxLayout.Y_AXIS));
-     blurb->layout()->addWidget(new JLabel(tr("addTextAndAttrs")));
-     blurb->layout()->addWidget(new JLabel(tr("ToolTipDragText")));
+     blurb->layout()->addWidget(new JLabel(tr("Enter text and choose attributes for the label in the Preview panel.  Then")));
+     blurb->layout()->addWidget(new JLabel(tr("Drag the label from the Preview panel to add it to the control panel")));
      blurb->layout()->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
-     blurb->layout()->addWidget(new JLabel(tr("ToLinkToURL", "Text")));
-     blurb->layout()->addWidget(new JLabel(tr("enterPanel")));
-     blurb->layout()->addWidget(new JLabel(tr("enterURL")));
+     blurb->layout()->addWidget(new JLabel(tr("To make clicking on this %1 link to another JMRI panel or URL, ").arg("Text")));
+     blurb->layout()->addWidget(new JLabel(tr("-- for a JMRI panel, type \"frame:<panel name>\" into the field at bottom.")));
+     blurb->layout()->addWidget(new JLabel(tr("-- for an URL, type the link (i.e. \"http://etc\") into the field at bottom.")));
      JPanel* p = new JPanel(new FlowLayout());
      p->layout()->addWidget(blurb);
      layout()->addWidget(p);
@@ -53,64 +53,7 @@
      ItemPanel::init();
  }
 }
-#if 0
-/*public*/ void TextItemPanel::init(ActionListener* /*doneAction*/, Positionable* pos) {
-    _decorator = new DecoratorPanel(_editor, _paletteFrame);
-    _decorator->initDecoratorPanel(pos);
-}
 
-//@Override
-/*public*/ void TextItemPanel::init(ActionListener* /*doneAction*/) {
-}
-
-//@Override
-/*protected*/ void TextItemPanel::updateBackground0(BufferedImage* /*im*/) {
-    if (_decorator != nullptr) {
-        _decorator->_bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg());
-    }
-}
-
-//@Override
-/*protected*/ void TextItemPanel::setPreviewBg(int /*index*/) {
-    if (_decorator != nullptr) {
-        _decorator->_bgColorBox->setCurrentIndex(_frame->getPreviewBg());
-    }
-}
-
-/*protected*/ QWidget* TextItemPanel::makeDoneButtonPanel(ActionListener* doneAction) {
-    QWidget* panel = new QWidget();
-    FlowLayout* panelLayout = new FlowLayout(panel);
-    QPushButton* updateButton = new QPushButton(tr("Update")); // custom update label
-    //updateButton.addActionListener(doneAction);
-    connect(updateButton, SIGNAL(clicked(bool)), doneAction, SLOT(actionPerformed(/*ActionEvent**/)));
-    updateButton->setToolTip(tr("Select an item from the table and an icon set to update the Panel"));
-    panelLayout->addWidget(updateButton);
-
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
-//    cancelButton.addActionListener(new ActionListener() {
-//        @Override
-//        public void actionPerformed(ActionEvent a) {
-//            closeDialogs();
-//        }
-//    });
-    connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(closeDialogs()));
-    panel->layout()->addWidget(cancelButton);
-    return panel;
-}
-
-//@Override
-/*protected*/ void TextItemPanel::setEditor(Editor* ed) {
-    ItemPanel::setEditor(ed);
-    if (_decorator != nullptr) {
-        QColor panelBackground;// = _editor.getTargetPanel().getBackground();
-        QBrush br = _editor->getTargetPanel()->backgroundBrush();
-        panelBackground = br.color();
-        // set Panel background color
-        _decorator->setBackgrounds(makeBackgrounds(_decorator->getBackgrounds(), panelBackground));
-        _decorator->_bgColorBox->setCurrentIndex(_frame->getPreviewBg());
-    }
-}
-#endif
 /*public*/ void TextItemPanel::updateAttributes(PositionableLabel* l)
 {
  _decorator->setAttributes(l);

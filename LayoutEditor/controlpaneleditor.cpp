@@ -1273,11 +1273,6 @@ void ControlPanelEditor::selectAllAction()
       }
       _manualSelection = false;
   }
- } else
- {
-  if (bControlDown && (bPopupTrigger || bMetaDown || bAltDown)) {
-      new ColorDialog(this, getTargetPanel()->views().at(0)->window(), ColorDialog::ONLY, nullptr);
-  }
  }
  if (!isEditable() && selection != nullptr && selection->isHidden()) {
      selection = nullptr;

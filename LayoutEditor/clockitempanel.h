@@ -18,8 +18,8 @@ private:
     QHash<QString, NamedIcon*>* _iconMap;
 
 protected:
-    /*protected*/ QWidget* instructions();
-    /*protected*/ void addIconsToPanel(QHash<QString, NamedIcon*>* iconMap);
+    /*protected*/ JPanel *instructions(bool)override;
+    /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon *> *iconMap) override;
 
     friend class ClockDragJLabel;
 };

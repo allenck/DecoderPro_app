@@ -50,6 +50,7 @@ protected:
 
 friend class IndicatorDragJLabel;
 friend class TIconDragJLabel;
+friend class RPSIconDragJLabel;
 };
 
 #endif // DRAGJLABEL_H

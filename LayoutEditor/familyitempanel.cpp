@@ -583,7 +583,7 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
      // label.setIcon(icon);
      label->setName(displayKey);
      label->setOpaque(false);
-     //label->setIcon(icon);
+     label->setIcon(icon);
      label->setPixmap(QPixmap::fromImage(icon->getImage()));
 
      //label->setObjectName(borderName);

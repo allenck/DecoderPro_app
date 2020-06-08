@@ -146,7 +146,7 @@ public:
      *    attribute: visualUpdate true
      *  description: The icon this component will display.
      */
-    /*public*/ void setIcon(ImageIcon *icon) ;
+    /*public*/ virtual void setIcon(ImageIcon *icon) ;
     /**
      * Returns the icon used by the label when it's disabled.
      * If no disabled icon has been set this will forward the call to

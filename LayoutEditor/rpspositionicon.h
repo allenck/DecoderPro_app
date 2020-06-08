@@ -1,7 +1,9 @@
 #ifndef RPSPOSITIONICON_H
 #define RPSPOSITIONICON_H
 #include "positionablelabel.h"
+#include "abstractaction.h"
 
+class Notifier;
 class Measurement;
 class RpsPositionIcon : public PositionableLabel
 {
@@ -12,6 +14,29 @@ public:
  /*public*/ void setActiveIcon(NamedIcon* i);
  /*public*/ NamedIcon* getErrorIcon();
  /*public*/ void setErrorIcon(NamedIcon* i);
+ /*public*/ QString getNameString();
+ /*public*/ bool setEditIconMenu(QMenu* popup);
+ /*public*/ bool showPopUp(QMenu* popup);
+ /*public*/ void setScale(double s);
+ /*public*/ void rotate(int deg);
+ /*public*/ int maxHeight();
+ /*public*/ int maxWidth();
+ /*public*/ bool getMomentary();
+ /*public*/ void setMomentary(bool m);
+ /*public*/ bool isShowID();
+ /*public*/ void setShowID(bool mode);
+ /*public*/ void notify(Measurement* m);
+ /*public*/ void setFilterPopup();
+ /*public*/ void setFilter(QString val);
+ /*public*/ QString getFilter();
+ /*public*/ void dispose();
+ /*public*/ void setRpsOrigin();
+ /*public*/ double getXScale();
+ /*public*/ double getYScale();
+ /*public*/ int getXOrigin();
+ /*public*/ int getYOrigin() ;
+ /*public*/ void setTransform(double sxScale, double syScale, int sxOrigin, int syOrigin);
+ /*public*/ void setRpsCurrentLocation();
 
 private:
  // store coordinate system information
@@ -29,7 +54,26 @@ private:
  void displayState();
  // true if valid message received last
  bool state = false;
+ QAction* showIdItem = nullptr;
+ Notifier* _notify = nullptr;
+ QAction* momentaryItem = nullptr;
+ bool momentary = false;
+ void toggleID(bool value);
+ QString filterNumber;// = null;
 
+protected:
+ /*protected*/ void rotateOrthogonal();
+
+ friend class Notifier;
+};
+
+class Notifier : public AbstractAction {
+Q_OBJECT
+ RpsPositionIcon* icon;
+public:
+    /*public*/ Notifier(RpsPositionIcon* icon);
+    /*>(c) !=NULL)*/ void actionPerformed();
+    void setPosition(int x, int y);
 };
 
 #endif // RPSPOSITIONICON_H
