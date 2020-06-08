@@ -39,18 +39,18 @@
     QPushButton* addSensor = new QPushButton(tr("Add Icon"));
 //    addSensor.addActionListener(new ActionListener() {
 //        @Override
-//        /*public*/ void actionPerformed(ActionEvent a) {
-//            if (addNewIcon(getIconName())) {
-//                InstanceManager.getDefault(ImageIndexEditor.class).indexChanged(true);
-//                JPanel p = (JPanel) (getContentPane().getComponent(0));
-//                p.remove(_iconPanel); // OK to replace on a Dialog
-//                _iconPanel = makeIconPanel(_iconMap);
-//                p.add(_iconPanel, 1);
-//                pack();
-//            }
-//        }
-//    });
-    connect(addSensor, SIGNAL(clicked(bool)), this, SLOT(onAddSensor_clicked()));
+//    public void actionPerformed(ActionEvent a) {
+    connect(addSensor, &QPushButton::clicked, [=]{
+     if (addNewIcon(getIconName())) {
+         ImageIndexEditor::indexChanged(true);
+         JPanel* p = (JPanel*) (getContentPane()->findChildren<JPanel*>().at(0));
+         p->layout()->removeWidget(_iconPanel);
+         _iconPanel = makeIconPanel(_iconMap);
+         p->layout()->addWidget(_iconPanel/*, 1*/);
+         pack();
+     }
+//               }
+    });
     addSensor->setToolTip(addTip);
     panel2Layout->addWidget(addSensor);
 
@@ -58,22 +58,22 @@
 //    deleteSensor.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent a) {
-//            if (deleteIcon()) {
-//                InstanceManager.getDefault(ImageIndexEditor.class).indexChanged(true);
-//                JPanel p = (JPanel) (getContentPane().getComponent(0));
-//                p.remove(_iconPanel); // OK to replace on a Dialog
-//                _iconPanel = makeIconPanel(_iconMap);
-//                p.add(_iconPanel, 1);
-//                pack();
-//            }
+    connect(deleteSensor, &QPushButton::clicked, [=]{
+    if (deleteIcon()) {
+        ImageIndexEditor::indexChanged(true);
+        JPanel* p = (JPanel*) (getContentPane()->findChildren<JPanel*>().at(0));
+        p->layout()->removeWidget(_iconPanel);
+        _iconPanel = makeIconPanel(_iconMap);
+        p->layout()->addWidget(_iconPanel/*, 1*/);
+        pack();
+    }
 //        }
-//    });
-    connect(deleteSensor, SIGNAL(clicked(bool)), this, SLOT(onDeleteSensor_clicked()));
+    });
     deleteSensor->setToolTip(deleteTip);
     panel2Layout->addWidget(deleteSensor);
     buttonPanel->layout()->addWidget(panel2);
 }
-
+#if 0
 void MultiSensorIconDialog::onAddSensor_clicked()
 {
  if (addNewIcon(getIconName())) {
@@ -109,6 +109,7 @@ void MultiSensorIconDialog::onDeleteSensor_clicked()
  }
 
 }
+#endif
 //@Override
 /*protected*/ bool MultiSensorIconDialog::doDoneAction() {
     MultiSensorItemPanel* parent = (MultiSensorItemPanel*) _parent;

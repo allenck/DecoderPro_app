@@ -2,6 +2,8 @@
 #include "loggerfactory.h"
 #include "editor.h"
 #include "placewindow.h"
+#include "drawsquares.h"
+#include "bufferedimage.h"
 /**
  * Extended JmriJFrame that allows to add an InitEventListener for display of
  * a tabbed frame in the CPE Add Item {@link jmri.jmrit.display.palette.ItemPalette} pane.
@@ -61,6 +63,11 @@ jmri.util.swing.ImagePanel -- preview
 */
 ///*public*/ class DisplayFrame extends JmriJFrame {
 
+/*static*/ QColor DisplayFrame::_grayColor = QColor(235, 235, 235);
+/*static*/ QColor DisplayFrame::_darkGrayColor = QColor(150, 150, 150);
+/*static*/ /*protected*/ QVector<QColor> DisplayFrame::colorChoice = QVector<QColor>() << Qt::white << DisplayFrame::_grayColor << DisplayFrame::_darkGrayColor; // panel bg color picked up directly
+
+
 /**
  * Create a JmriJFrame with standard settings, optional save/restore of size
  * and position.
@@ -72,6 +79,7 @@ jmri.util.swing.ImagePanel -- preview
  : JmriJFrame(saveSize, savePosition, parent){
     //super(saveSize, savePosition);
  previewBgSet = 0;
+ makeBackgrounds();
 }
 
 /**
@@ -103,10 +111,12 @@ jmri.util.swing.ImagePanel -- preview
  *
  * @param name title of the JFrame
  */
-/*public*/ DisplayFrame::DisplayFrame(QString name,QWidget* parent) : JmriJFrame(true, true, parent)
+/*public*/ DisplayFrame::DisplayFrame(QString name, Editor* editor, QWidget* parent) : JmriJFrame(true, true, parent)
 {
  //this(name, true, true);
  previewBgSet = 0;
+ _editor = editor;
+ makeBackgrounds();
 
 }
 
@@ -120,9 +130,62 @@ jmri.util.swing.ImagePanel -- preview
     return previewBgSet;
 }
 
-/*public*/ void DisplayFrame::updateBackground0(BufferedImage* im) {
+/*public*/ BufferedImage* DisplayFrame::getPreviewBackground() {
+    return _backgrounds->at(previewBgIndex);
+}
+/**
+ *
+ * @return the color of the background of editor display panel
+ */
+/*public*/ QColor DisplayFrame::getCurrentColor() {
+    // should be _editor.getTargetPanel().getBackground()
+    return _panelBackground;
 }
 
+/*public*/ BufferedImage* DisplayFrame::getBackground(int index) {
+    return _backgrounds->at(index);
+}
+/**
+ * Called when the background of the display panel is changed.
+ * @param ed the editor of the display panel
+ */
+/*public*/ void DisplayFrame::updateBackground(Editor* ed) {
+ if (ed == nullptr) {
+       log->error("updateBackground called for a null editor!");
+       return;
+   }
+   _editor = ed;
+   QColor color = ed->getTargetPanel()->getBackground();
+   if (color !=(_panelBackground)) {
+       _backgrounds->replace(0, DrawSquares::getImage(500, 400, 10, color, color));
+       _panelBackground = color;
+       if (previewBgIndex == 0) {
+           setPreviewBg(0);    // notify children
+       }
+   }
+}
+
+/*public*/ Editor* DisplayFrame::getEditor() {
+   return _editor;
+}
+
+/**
+* Make an array of background BufferedImages for the PreviewPanels
+*/
+/*private*/ void DisplayFrame::makeBackgrounds() {
+   _panelBackground = _editor->getTargetPanel()->getBackground(); // start using Panel background color
+   if (_backgrounds == nullptr) { // reduces load but will not redraw for new size
+       _backgrounds = new QVector<BufferedImage*>(5);
+       for (int i = 1; i <= 3; i++) {
+           _backgrounds->replace(i, DrawSquares::getImage(500, 400, 10, colorChoice[i - 1], colorChoice[i - 1]));
+           // [i-1] because choice 0 is not in colorChoice[]
+       }
+       _backgrounds->replace(4, DrawSquares::getImage(500, 400, 10, Qt::white, _grayColor));
+   }
+   // always update background from Panel Editor
+   _backgrounds->replace(0, DrawSquares::getImage(500, 400, 10, _panelBackground, _panelBackground));
+   log->debug(tr("makeBackgrounds backgrounds[0] = %1").arg(_backgrounds->at(0)->text()));
+}
 /**
  *
  * @param container Container to be resized

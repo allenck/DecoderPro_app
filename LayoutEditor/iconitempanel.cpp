@@ -14,7 +14,7 @@
 #include "positionablelabelxml.h"
 #include "joptionpane.h"
 #include "loggerfactory.h"
-
+#include "borderfactory.h"
 
 //IconItemPanel::IconItemPanel(QWidget *parent) :
 //    ItemPanel(parent)
@@ -29,70 +29,84 @@
 /**
  * Constructor for plain icons and backgrounds
  */
-/*public*/ IconItemPanel::IconItemPanel(DisplayFrame* parentFrame, QString type, Editor* editor, QWidget *parent) : ItemPanel(parentFrame, type, editor, parent)
+/*public*/ IconItemPanel::IconItemPanel(DisplayFrame* parentFrame, QString type, Editor* editor, QWidget *parent)
+ : ItemPanel(parentFrame, type, editor, parent)
 {
  //super(parentFrame,  type, family, editor);
  setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
  log = new Logger("IconItemPanel");
  setObjectName("IconItemPanel");
 
- _level = Editor::ICONS;      // sub classes can override (e.g. Background)
+// _level = Editor::ICONS;      // sub classes can override (e.g. Background)
 
 }
 
 /*public*/ void IconItemPanel::init()
 {
- if (!_initialized)
- {
-//        Thread.yield();
-  thisLayout->addWidget(instructions());
-  initIconFamiliesPanel();
-  initLinkPanel();
-  makeBottomPanel(nullptr);
-  _catalog = makeCatalog();
-  thisLayout->addWidget(_catalog);
-  ItemPanel::init();
+ if (!_initialized) {
+     //QThread::yield();
+     init(false);
+     resize(sizeHint());
+     ItemPanel::init();
  }
 }
 
-/*protected*/ QWidget* IconItemPanel::instructions()
+/*public*/ void IconItemPanel::init(bool isBackGround) {
+    layout()->addWidget(instructions(isBackGround));
+    initIconFamiliesPanel();
+    if (!isBackGround) {
+        initLinkPanel();
+    }
+    initButtonPanel();
+    _catalog = CatalogPanel::makeDefaultCatalog();
+    layout()->addWidget(_catalog);
+    _catalog->setVisible(false);
+    _catalog->setToolTip(tr("Drag an icon directly from the Catalog Panel to add it to the control panel  "));
+}
+
+/*protected*/ JPanel* IconItemPanel::instructions(bool isBackGround)
 {
- //QWidget* blurb = new QWidget();
- QVBoxLayout* blurbLayout = new QVBoxLayout;
+ JPanel* blurb = new JPanel();
+ QVBoxLayout* blurbLayout = new QVBoxLayout(blurb);
  //blurb->setLayout(blurbLayout = new QVBoxLayout(blurb/*, BoxLayout.Y_AXIS*/));
  //blurb.add(Box.createVerticalStrut(ItemPalette.STRUT_SIZE));
  blurbLayout->addStrut(ItemPalette::STRUT_SIZE);
- blurbLayout->addWidget(new QLabel(tr("To Add an Icon to your control panel:")));
- blurbLayout->addWidget(new QLabel(tr("--drag an icon from the display panel below to your control panel")));
- blurbLayout->addWidget(new QLabel(tr("--or press [%1] and drag an icon from the catalog to your control panel").arg(
+ blurbLayout->addWidget(new JLabel(tr("To Add an Icon to your control panel:")));
+ blurbLayout->addWidget(new JLabel(tr("--drag an icon from the display panel below to your control panel")));
+ blurbLayout->addWidget(new JLabel(tr("--or press [%1] and drag an icon from the catalog to your control panel").arg(
                                     tr("Icon Catalog"))));
  //blurb.add(Box.createVerticalStrut(ItemPalette.STRUT_SIZE));
  blurbLayout->addStrut(ItemPalette::STRUT_SIZE);
- blurbLayout->addWidget(new QLabel(tr("To modify an icon in the display panel below, drag an icon from the catalog.")));
- blurbLayout->addWidget(new QLabel(tr("To change the name of an icon below, Double Click on the name.")));
- blurbLayout->addWidget(new QLabel(tr("To delete the icon, Click on the name, then press [%1].").arg( tr("deleteIcon"))));
+ blurbLayout->addWidget(new JLabel(tr("To modify an icon in the display panel below, drag an icon from the catalog.")));
+ blurbLayout->addWidget(new JLabel(tr("To change the name of an icon below, Double Click on the name.")));
+ blurbLayout->addWidget(new JLabel(tr("To delete the icon, Click on the name, then press [%1].").arg( tr("deleteIcon"))));
+ if (!isBackGround) {
+     blurbLayout->addStrut(ItemPalette::STRUT_SIZE);
+     blurbLayout->addWidget(new JLabel(tr("To make clicking on this %1 link to another JMRI panel or URL, ").arg("Icon")));
+     blurbLayout->addWidget(new JLabel(tr("-- for a JMRI panel, type \"frame:<panel name>\" into the field at bottom.")));
+     blurbLayout->addWidget(new JLabel(tr("-- for an URL, type the link (i.e. \"http://etc\") into the field at bottom.")));
+ }
  //blurb.add(Box.createVerticalStrut(ItemPalette.STRUT_SIZE));
  blurbLayout->addStrut(ItemPalette::STRUT_SIZE);
- QWidget* panel = new QWidget();
-// panel->setLayout(new QVBoxLayout());
-//    panel->layout()->addWidget(blurb);
- panel->setLayout(blurbLayout);
+ JPanel* panel = new JPanel(new QVBoxLayout());
+ panel->setLayout(new QVBoxLayout());
+ panel->layout()->addWidget(blurb);
  return panel;
 }
+#if 0
 /*private*/ CatalogPanel* IconItemPanel::makeCatalog() {
     CatalogPanel* catalog = CatalogPanel::makeDefaultCatalog(false, false, !_update);
     ImagePanel* panel = catalog->getPreviewPanel();
     if (!isUpdate()) {
-        panel->setImage(_backgrounds->at(getParentFrame()->getPreviewBg()));
+        panel->setImage(_frame->getPreviewBackground());
     } else {
-        panel->setImage(_backgrounds->at(0));   //update always should be the panel background
+        panel->setImage(_frame->getBackground(0));   //update always should be the panel background
         catalog->setParent(this);
     }
     catalog->setToolTip(tr("Drag an icon directly from the Catalog Pane to add it to the Control Panel"));
     catalog->setVisible(false);
     return catalog;
 }
-
 //@Override
 /*protected*/ void IconItemPanel::setPreviewBg(int index) {
     if (_catalog != nullptr) {
@@ -110,24 +124,17 @@
 /*protected*/ void IconItemPanel::updateBackground0(BufferedImage* im) {
     _backgrounds->replace(0, im);
 }
-
+#endif
 /**
 * Plain icons have only one family, usually named "set"
 * Override for plain icon & background and put all icons here
 */
 /*protected*/ void IconItemPanel::initIconFamiliesPanel()
 {
- if (_iconPanel == nullptr) { // create a new one
-     _iconPanel = new ImagePanel();
-//     _iconPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-     thisLayout->addWidget((QWidget*)makePreviewPanel(_iconPanel, nullptr)/*, 1*/);
-//     _iconPanel->addMouseListener(new IconListener());
- }
-
  QMap<QString, QMap<QString, NamedIcon*>*>* families = ItemPalette::getFamilyMaps(_itemType);
  if (families != nullptr && families->size() > 0) {
      if (families->size() != 1) {
-         log->warn(tr("ItemType \"%1\" has %2").arg(_itemType).arg(families->size()));
+         log->warn("ItemType \"" + _itemType + "\" has " + QString::number(families->size()) + " families.");
      }
      QStringListIterator iter(families->keys());
      while (iter.hasNext()) {
@@ -136,8 +143,8 @@
          addIconsToPanel(_iconMap);
      }
  } else {
-     // make create message
-     log->error(tr("Item type \"%1\" has %2 families.").arg(_itemType).arg((families == nullptr ? "null" : QString::number(families->size()))));
+     // make create message todo!!!
+     log->error("Item type \"" + _itemType + "\" has " + (families == nullptr ? "null" : QString::number(families->size()) + " families."));
  }
 }
 
@@ -204,7 +211,7 @@
 //        remove(_iconPanel);
     }
 }
-
+#if 0
 //@Override
 /*protected*/ void IconItemPanel::setEditor(Editor* ed) {
     ItemPanel::setEditor(ed);
@@ -212,7 +219,7 @@
         addIconsToPanel(_iconMap);
     }
 }
-
+#endif
 /*protected*/ void IconItemPanel::updateFamiliesPanel() {
     if (log->isDebugEnabled()) log->debug("updateFamiliesPanel for "+_itemType);
     removeIconFamiliesPanel();
@@ -221,69 +228,60 @@
 }
 
 /**
-*  SOUTH Panel
-*/
-/*public*/ void IconItemPanel::makeBottomPanel(ActionListener* doneAction) {
- QWidget* bottomPanel = new QWidget();
- bottomPanel->setLayout(new FlowLayout());
+ * SOUTH Panel
+ */
+/*public*/ void IconItemPanel::initButtonPanel() {
+    JPanel* bottomPanel = new JPanel();
+    bottomPanel->setLayout(new FlowLayout());  //new BoxLayout(p, BoxLayout.Y_AXIS)
 
- _catalogButton = new QPushButton(tr("Show Catalog"));
-// _catalogButton.addActionListener(new ActionListener() {
-//     @Override
-//     public void actionPerformed(ActionEvent a) {
-//         if (_catalog.isVisible()) {
-//             hideCatalog();
-//         } else {
-//             showCatalog();
-//         }
-//     }
-// });
- _catalogButton->setToolTip(tr("Open the Icon Catalog and drag icons from there to the Panel"));
- bottomPanel->layout()->addWidget(_catalogButton);
- connect(_catalogButton, SIGNAL(clicked(bool)), this, SLOT(on_catalogButton_clicked()));
+    _catalogButton = new QPushButton(tr("Show Catalog"));
+//    _catalogButton.addActionListener(new ActionListener() {
+//        public void actionPerformed(ActionEvent a) {
+    connect(_catalogButton, &QPushButton::clicked, [=]{
+            if (_catalog->isVisible()) {
+                hideCatalog();
+            } else {
+                _catalog->setVisible(true);
+                _catalogButton->setText(tr("Hide Catalog"));
+            }
+            repaint();
+//        }
+    });
+    _catalogButton,setToolTip(tr("Open the Icon Catalog and drag icons from it to the panel"));
+    bottomPanel->layout()->addWidget(_catalogButton);
 
- if (doneAction == nullptr) {
-     QPushButton* renameButton = new QPushButton(tr("Rename Icon"));
-//     renameButton.addActionListener(new ActionListener() {
-//         @Override
-//         public void actionPerformed(ActionEvent a) {
-//             renameIcon();
-//         }
-//     });
-     connect(renameButton, SIGNAL(clicked(bool)), this, SLOT(renameIcon()));
-     bottomPanel->layout()->addWidget(renameButton);
+    QPushButton* addIconButton = new QPushButton(tr("Add Icon"));
+//    addIconButton.addActionListener(new ActionListener() {
+//        public void actionPerformed(ActionEvent a) {
+    connect(_catalogButton, &QPushButton::clicked, [=]{
+            addNewIcon();
+//        }
+    });
+    addIconButton->setToolTip(tr("Add another icon to your icon panel.  Enter a name for it.  "));
+    bottomPanel->layout()->addWidget(addIconButton);
 
-     QPushButton* addIconButton = new QPushButton(tr("Add Icon"));
-//     addIconButton.addActionListener(new ActionListener() {
-//         @Override
-//         public void actionPerformed(ActionEvent a) {
-//             addNewIcon();
-//         }
-//     });
-     connect(addIconButton, SIGNAL(clicked(bool)), this, SLOT(addNewIcon()));
-     addIconButton->setToolTip(tr("Add another icon to your Icon Set. Enter a name for it."));
-     bottomPanel->layout()->addWidget(addIconButton);
+    layout()->addWidget(bottomPanel);
 
-     _deleteIconButton = new QPushButton(tr("Delete Icon"));
-     //     _deleteIconButton.addActionListener(new ActionListener() {
-     //         @Override
-     //         public void actionPerformed(ActionEvent a) {
-     //             deleteIcon();
-     //         }
-     //     });
-     connect(_deleteIconButton, SIGNAL(clicked(bool)), this, SLOT(deleteIcon()));
-     _deleteIconButton->setToolTip(tr("Delete an icon from your Icon Set. Select the icon to be deleted."));
-     bottomPanel->layout()->addWidget(_deleteIconButton);
-     _deleteIconButton->setEnabled(false);
- } else {
-     QPushButton* updateButton = new QPushButton(tr("Update")); // custom update label
-     //updateButton.addActionListener(doneAction);
-     connect(updateButton, SIGNAL(clicked(bool)), doneAction, SLOT(actionPerformed(/*ActionEvent**/)));
-     bottomPanel->layout()->addWidget(updateButton);
- }
- thisLayout->addWidget(bottomPanel);
+    deleteIconButton = new QPushButton(tr("Delete Icon"));
+//    deleteIconButton.addActionListener(new ActionListener() {
+//        public void actionPerformed(ActionEvent a) {
+    connect(deleteIconButton, &QPushButton::clicked, [=] {
+            deleteIcon();
+//        }
+    });
+    deleteIconButton->setToolTip(tr("Delete an icon from your icon panel. Select the icon to be deleted. "));
+    bottomPanel->layout()->addWidget(deleteIconButton);
+    deleteIconButton->setEnabled(false);
+
+    layout()->addWidget(bottomPanel);
 }
 
+void IconItemPanel::hideCatalog() {
+    _catalog->setVisible(false);
+    _catalogButton->setText(tr("Show Catalog"));
+}
+
+#if 0
 void IconItemPanel::on_catalogButton_clicked()
 {
  if (_catalog->isVisible())
@@ -299,12 +297,12 @@ void IconItemPanel::on_catalogButton_clicked()
 
 void IconItemPanel::hideCatalog() {
  QSize oldDim = size();
- bool isPalette = (qobject_cast<ItemPalette*>(_paletteFrame ));
+ bool isPalette = (qobject_cast<ItemPalette*>(_frame ));
  QSize totalDim;
  if (isPalette) {
      totalDim = ItemPalette::_tabPane->size();
  } else {
-     totalDim = _paletteFrame->size();
+     totalDim = _frame->size();
  }
  _catalog->setVisible(false);
  _catalog->update();
@@ -314,12 +312,12 @@ void IconItemPanel::hideCatalog() {
 
 void IconItemPanel::showCatalog() {
     QSize oldDim = size();
-    bool isPalette = (qobject_cast<ItemPalette*>(_paletteFrame));
+    bool isPalette = (qobject_cast<ItemPalette*>(_frame));
     QSize totalDim;
     if (isPalette) {
         totalDim = ItemPalette::_tabPane->size();
     } else {
-        totalDim = _paletteFrame->size();
+        totalDim = _frame->size();
     }
 //        _catalog.setWidth(oldDim.width);
     _catalog->setVisible(true);
@@ -327,7 +325,7 @@ void IconItemPanel::showCatalog() {
     reSizeDisplay(isPalette, oldDim, totalDim);
     _catalogButton->setText(tr("Hide Catalog"));
 }
-
+#endif
 /**
 * Action item for initButtonPanel
 */
@@ -361,62 +359,16 @@ void IconItemPanel::showCatalog() {
 */
 /*protected*/ void IconItemPanel::deleteIcon() {
  if (_selectedIcon == nullptr) {
-     JOptionPane::showMessageDialog(_paletteFrame, tr("Select an Icon to rename or delete it."),
-             tr("Reminder"), JOptionPane::INFORMATION_MESSAGE);
      return;
  }
- _iconMap->remove(_selectedIcon->getIconName());
- addIconsToPanel(_iconMap);
- _deleteIconButton->setEnabled(false);
- _selectedIcon = nullptr;
- update();
+ if (_iconMap->remove(_selectedIcon->objectName()) != 0) {
+     removeIconFamiliesPanel();
+     addIconsToPanel(_iconMap);
+     deleteIconButton->setEnabled(false);
+     update();
+ }
 }
 
-/*private*/ void IconItemPanel::renameIcon() {
-        if (_selectedIcon != nullptr) {
-            QString name = JOptionPane::showInputDialog(_paletteFrame, tr("Please enter a name for the Icon:"),
-                    tr("Question"), JOptionPane::QUESTION_MESSAGE);
-            if (name != "") {
-                _iconMap->remove(_selectedIcon->_borderName);
-                putIcon(name, _selectedIcon->getIcon());
-                _deleteIconButton->setEnabled(false);
-                deselectIcon();
-            }
-        } else {
-            JOptionPane::showMessageDialog(_paletteFrame, tr("Select an Icon to rename or delete it."),
-                    tr("Reminder"), JOptionPane::INFORMATION_MESSAGE);
-        }
-    }
-
-/*protected*/ void IconItemPanel::setSelection(IconDisplayPanel* panel) {
-        if (_selectedIcon != nullptr && panel != (_selectedIcon)) {
-            deselectIcon();
-            setDeleteIconButton(false);
-        }
-        if (panel->_borderName != "") {
-//            panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red, 2), panel._borderName));
-            _selectedIcon = panel;
-            _catalog->deselectIcon();
-            setDeleteIconButton(true);
-        } else {    // click not on an "icon"
-            _selectedIcon = nullptr;
-            setDeleteIconButton(false);
-        }
-    }
-
-    /*public*/ void IconItemPanel::deselectIcon() {
-        if (_selectedIcon != nullptr) {
-//            _selectedIcon.setBorder(BorderFactory.createTitledBorder(
-//                    BorderFactory.createLineBorder(QColor(Qt::black) 1), _selectedIcon->getIconName()))
-            _selectedIcon = nullptr;
-        }
-    }
-
-/*private*/ void IconItemPanel::setDeleteIconButton(bool set) {
-    if (!_update) {
-        _deleteIconButton->setEnabled(set);
-    }
-}
 
 /*protected*/ QString IconItemPanel::setIconName(QString name)
 {
@@ -430,15 +382,11 @@ void IconItemPanel::showCatalog() {
     }
     while (_iconMap->value(name)!=NULL)
     {
-//        JOptionPane.showMessageDialog(this,
-//                java.text.MessageFormat.format(tr("DuplicateIconName"), name),
-//                ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
-        QMessageBox::warning(this, tr("Warning"), tr("Another icon is named %1.").arg(name));
-//        name = JOptionPane.showInputDialog(this,
-//                tr("NoIconName"), name);
-        InputDialog* dlg = new InputDialog(tr("Please enter a name for the Icon."),name);
-        dlg->exec();
-        name = dlg->value();
+        JOptionPane::showMessageDialog(this,
+                tr("Another icon is named %1.").arg(name),
+                tr("Warning"), JOptionPane::WARNING_MESSAGE);
+        name = JOptionPane::showInputDialog(this,
+                tr("Please enter a name for the Icon."), name);
         if ( name.isEmpty()) {
             return "";
         }
@@ -455,7 +403,7 @@ void IconItemPanel::showCatalog() {
   //if (comp[i] instanceof JPanel)
   if(qobject_cast<QWidget*>(comp.at(i))!= NULL)
   {
-   QWidget* panel = (QWidget*)comp.at(i);
+   JLabel* panel = (JLabel*)comp.at(i);
    //java.awt.Component[] com = panel.getComponents();
    QObjectList com = panel->children();
    for (int k=0; k<com.length(); k++)
@@ -478,21 +426,21 @@ void IconItemPanel::showCatalog() {
        }
        return;
       }
-#if 0
+#if 1
       if (icon==(_selectedIcon))
       {
-       panel.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createLineBorder(Color.black),
-                    icon.getName()));
+       panel->setBorder(BorderFactory::createTitledBorder(
+                    BorderFactory::createLineBorder(Qt::black),
+                    icon->getName()));
             _selectedIcon = NULL;
-            deleteIconButton.setEnabled(false);
+            deleteIconButton->setEnabled(false);
       }
       else
       {
-       panel.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createLineBorder(Color.red),
+       panel->setBorder(BorderFactory::createTitledBorder(
+                    BorderFactory::createLineBorder(Qt::red),
                     icon->getName()));
-            deleteIconButton.setEnabled(true);
+            deleteIconButton->setEnabled(true);
             _selectedIcon = icon;
       }
 #endif

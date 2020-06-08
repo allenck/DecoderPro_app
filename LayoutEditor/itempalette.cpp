@@ -438,20 +438,26 @@ void ItemPalette::changeEvent(QEvent * e)
  return familyTOMap;
 }
 
-/*static*/ /*public*/ ItemPalette* ItemPalette::getDefault(QString title,/* @Nonnull */Editor* ed) {
+/*static*/ /*public*/ ItemPalette* ItemPalette::getDefault(QString title,/* @Nonnull */ Editor* ed) {
 //        if (GraphicsEnvironment.isHeadless()) {
 //            return null;
 //        }
-    ItemPalette* instance = static_cast<ItemPalette*>( InstanceManager::getOptionalDefault("ItemPalette"));//.orElseGet(() -> {
+    ItemPalette* instance = static_cast<ItemPalette*>( InstanceManager::getOptionalDefault("ItemPalette"));//.orElseGet(() -> InstanceManager.setDefault(ItemPalette.class, new ItemPalette(title, ed)));
     if(instance == nullptr)
-     return (ItemPalette*)InstanceManager::setDefault("ItemPalette", new ItemPalette(title, ed));
-
-    QListIterator<ItemPanel*> iter(_tabIndex->values());
-    while (iter.hasNext())
     {
-     ItemPanel* panel =  iter.next();
-     panel->setEditor(ed);
+     instance = (ItemPalette*)InstanceManager::setDefault("ItemPalette", new ItemPalette(title, ed));
     }
+    if (ed != (instance->getEditor()))
+    {
+        instance->updateBackground(ed);
+        ((PlaceWindow*)InstanceManager::getDefault("PlaceWindow"))->nextTo(ed, nullptr, instance);
+    }
+//    QListIterator<ItemPanel*> iter(_tabIndex->values());
+//    while (iter.hasNext())
+//    {
+//     ItemPanel* panel =  iter.next();
+//     panel->setEditor(ed);
+//    }
     QString name = ed->getName();
     if (name == "" || name == ("")) {
         name = tr("Untitled");
@@ -464,6 +470,11 @@ void ItemPalette::changeEvent(QEvent * e)
     return instance;
 }
 
+/*public*/ void ItemPalette::setEditor(Editor* ed) {
+    updateBackground(ed);
+    ((PlaceWindow*)InstanceManager::getDefault("PlaceWindow"))->nextTo(ed, nullptr, this);
+}
+
 /*public*/ ItemPalette::ItemPalette(QWidget* parent) : DisplayFrame(false, false, parent)
 {
  // super(true, true);
@@ -472,7 +483,7 @@ void ItemPalette::changeEvent(QEvent * e)
 }
 
 /*public*/ ItemPalette::ItemPalette(QString title, Editor* editor, QWidget* parent)
- : DisplayFrame(title, false, false, parent)
+ : DisplayFrame(title, editor, parent)
 {
  //(title, true, true);
 //        long t = System.currentTimeMillis();
@@ -554,7 +565,7 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     addItemTab(itemPanel, ("SignalHead"), tr("Signal Head"));
     itemPanel->init();
 
-    itemPanel = new SignalMastItemPanel(palette, "SignalMast", NULL, PickListModel::signalMastPickModelInstance(), editor,palette);
+    itemPanel = new SignalMastItemPanel(palette, "SignalMast", NULL, PickListModel::signalMastPickModelInstance(), editor, palette);
     addItemTab(itemPanel, ("SignalMast"), tr("Signal Mast"));
     itemPanel->init();
 
@@ -570,11 +581,11 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     addItemTab(itemPanel, "Light", tr("Light"));
     itemPanel->init();
 
-    itemPanel = new MultiSensorItemPanel(palette, "MultiSensor", NULL, PickListModel::multiSensorPickModelInstance(), editor,palette);
+    itemPanel = new MultiSensorItemPanel(palette, "MultiSensor", NULL, PickListModel::multiSensorPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "MultiSensor", tr("MultiSensor"));
     itemPanel->init();
 
-    itemPanel = new IconItemPanel(palette, "Icon", editor,palette);
+    itemPanel = new IconItemPanel(palette, "Icon", editor, palette);
     addItemTab(itemPanel, "Icon", tr("Icon"));
     itemPanel->init();
 
@@ -591,11 +602,11 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     itemPanel->init();
 
 
-    itemPanel = new ClockItemPanel(palette, "FastClock", editor,palette);
+    itemPanel = new ClockItemPanel(palette, "FastClock", editor, palette);
     addItemTab(itemPanel, "FastClock", tr("FastClock"));
     itemPanel->init();
 
-    itemPanel = new IndicatorItemPanel(palette, "IndicatorTrack", NULL, editor,palette);
+    itemPanel = new IndicatorItemPanel(palette, "IndicatorTrack", NULL, editor, palette);
     addItemTab(itemPanel, "IndicatorTrack", tr("IndicatorTrack"));
     itemPanel->init();
 
@@ -603,7 +614,7 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     addItemTab(itemPanel, "IndicatorTO", tr("IndicatorTO"));
     itemPanel->init();
 
-    itemPanel = new PortalItemPanel(palette, "Portal", NULL, editor);
+    itemPanel = new PortalItemPanel(palette, "Portal", NULL , editor);
     addItemTab(itemPanel, tr("Portal"), tr("Portal"));
     itemPanel->init();
 
@@ -632,8 +643,10 @@ void ItemPalette::tabPaneChanged(int)
  // long t = System.currentTimeMillis();
  QTabWidget* tp = _tabPane;//(QTabWidget*) e->getSource();
 // JScrollPane sp = (JScrollPane) tp.getSelectedComponent();
+ QScrollArea* sp = (QScrollArea*)tp->widget(tp->currentIndex());
 // ItemPanel p = (ItemPanel) sp.getViewport().getView();
- ItemPanel* p = (ItemPanel*)tp->widget(tp->currentIndex());
+ //ItemPanel* p = (ItemPanel*)tp->widget(tp->currentIndex());
+ ItemPanel* p = (ItemPanel*)sp->widget();
  p->init(); // (re)initialize tab pane
  log->debug("different tab displayed");
  if (_currentItemPanel != nullptr) {
@@ -952,6 +965,8 @@ void IPEditItemActionListener::actionPerformed()
        return tr("Hidden");
     if(name == "block")
        return tr("Visible");
+    if(name == "dragToPanel")
+       return tr("Drag to Pane");
 
     return cName;
 }

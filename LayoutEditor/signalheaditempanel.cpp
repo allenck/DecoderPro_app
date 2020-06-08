@@ -22,7 +22,8 @@
 //}
 ///*public*/ class SignalHeadItemPanel extends TableItemPanel {//implements ListSelectionListener {
 
-    /*public*/ SignalHeadItemPanel::SignalHeadItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent): TableItemPanel(parentFrame, type, family, model, editor, parent)
+    /*public*/ SignalHeadItemPanel::SignalHeadItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor *editor, QWidget *parent)
+ : TableItemPanel(parentFrame, type, family, model, editor, parent)
 {
  //super(parentFrame, type, family, model, editor);
  log = new Logger("SignalHeadItemPanel");

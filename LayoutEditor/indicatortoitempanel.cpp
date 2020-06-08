@@ -37,7 +37,7 @@
 * Constructor for all table types.  When item is a bean, the itemType is the name  key
  * for the item in jmri.NamedBeanBundle.properties
  */
-/*public*/ IndicatorTOItemPanel::IndicatorTOItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent)
+/*public*/ IndicatorTOItemPanel::IndicatorTOItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor *editor, QWidget *parent)
  : TableItemPanel(parentFrame, type, family, model, editor, parent)
 {
     //super(parentFrame, type, family, model, editor);
@@ -181,51 +181,34 @@
 */
 /*protected*/ void IndicatorTOItemPanel::initIconFamiliesPanel()
 {
- if (_iconFamilyPanel == nullptr) { // keep existing panels
-     _iconFamilyPanel = new ImagePanel();
-     _iconFamilyPanel->setLayout(new QVBoxLayout());//_iconFamilyPanel, BoxLayout.Y_AXIS));
- }
- else {
-     if (_iconPanel!= nullptr)
-     {
-         //_iconPanel.removeAll();
-      QList<QWidget*> childList = _iconPanel->findChildren<QWidget*>();
-      foreach(QWidget* w, childList)
-      {
-       _iconPanel->layout()->removeWidget(w);
-       w->deleteLater();
+ _iconFamilyPanel = new JPanel();
+      _iconFamilyPanel->setLayout(new QVBoxLayout());//_iconFamilyPanel, BoxLayout.Y_AXIS));
+
+      QMap<QString, QMap<QString,QMap<QString, NamedIcon*>*>*>* families
+              = ItemPalette::getLevel4FamilyMaps(_itemType);
+      if (families != nullptr && families->size() > 0) {
+
+          JPanel* familyPanel = makeFamilyButtons(QStringListIterator(families->keys()), (_iconGroupsMap == nullptr));
+
+          if (_iconGroupsMap == nullptr) {
+              _iconGroupsMap = families->value(_family);
+          }
+          // make _iconPanel & _dragIconPanel before calls to add icons
+          addFamilyPanels(familyPanel);
+          if (_iconGroupsMap == nullptr) {
+              log->error("_iconGroupsMap is null in initIconFamiliesPanel");
+              _family = QString();
+          } else {
+              addIcons2Panel(_iconGroupsMap);  // need to have family iconMap identified before calling
+              makeDndIconPanel(_iconGroupsMap->value("ClearTrack"), "TurnoutStateClosed");
+          }
+      } else {
+          familiesMissing();
+          //createNewFamily();
       }
-      delete _iconPanel->layout();
-
-      if (_familyButtonPanel !=nullptr) {
-          _iconFamilyPanel->layout()->removeWidget(_familyButtonPanel);
+      if (log->isDebugEnabled()) {
+          log->debug("initIconFamiliesPanel done");
       }
-     }
- }
- QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>* families
-         = ItemPalette::getLevel4FamilyMaps(_itemType);
- if (families != nullptr && families->size() > 0) {
-
-     _familyButtonPanel = makeFamilyButtons(families->keys());
-
-     if (_iconGroupsMap == nullptr) {
-         _iconGroupsMap = families->value(_family);
-     }
-     // make _iconPanel + _dragIconPanel before calls to add icons
-     addFamilyPanels(_familyButtonPanel);
-
-     if (_iconGroupsMap == nullptr) {
-         log->error("_iconGroupsMap is null in initIconFamiliesPanel");
-         _family = "";
-     } else {
-         addIcons2Panel(_iconGroupsMap); // need to have family iconMap identified before calling
-         makeDndIconPanel(_iconGroupsMap->value("ClearTrack"), "TurnoutStateClosed");
-     }
- } else {
-     familiesMissing();
- }
-//        updateBackgrounds(); // create array of backgrounds
- log->debug("initIconFamiliesPanel done");
 }
 
 /*protected*/ void IndicatorTOItemPanel::resetFamiliesPanel() {
@@ -461,29 +444,21 @@ void IndicatorTOItemPanel::createNewFamily(QString family)
 /*protected*/ void IndicatorTOItemPanel::setFamily(QString family)
 {
  _family = family;
- if (log-> isDebugEnabled()) log-> debug("setFamily: for type \""+_itemType+"\", family \""+family+"\"");
- if (_iconPanel == nullptr) {
-     _iconPanel = new ImagePanel();
-     log->error(tr("setFamily called with _iconPanel == null type= %1").arg(_itemType));
-     ((QVBoxLayout*)_iconFamilyPanel->layout())->insertWidget(0, _iconPanel);
- }
- else {
-     //_iconPanel.removeAll();
-  QList<QWidget*> childList = _iconPanel->findChildren<QWidget*>();
-  foreach(QWidget* w, childList)
-  {
-   _iconPanel->layout()->removeWidget(w);
-   w->deleteLater();
-  }
-  delete _iconPanel->layout();
- }
- if (!_suppressDragging) {
-     makeDragIconPanel(1);
- }
- _iconGroupsMap = ItemPalette::getLevel4Family(_itemType, _family);
- addIcons2Panel(_iconGroupsMap);
- makeDndIconPanel(_iconGroupsMap->value("ClearTrack"), "TurnoutStateClosed");
- hideIcons();
+     if (log->isDebugEnabled()) {
+         log->debug("setFamily: for type \"" + _itemType + "\", family \"" + family + "\"");
+     }
+     _iconFamilyPanel->layout()->removeWidget(_iconPanel);
+     _iconPanel = new JPanel();
+     _iconFamilyPanel->layout()->addWidget(_iconPanel/*, 0*/);
+     if (!_supressDragging) {
+         _iconFamilyPanel->layout()->removeWidget(_dragIconPanel);
+         _dragIconPanel = new JPanel();
+         _iconFamilyPanel->layout()->addWidget(_dragIconPanel/*, 0*/);
+     }
+     _iconGroupsMap = ItemPalette::getLevel4Family(_itemType, _family);
+     addIcons2Panel(_iconGroupsMap);
+     makeDndIconPanel(_iconGroupsMap->value("ClearTrack"), "TurnoutStateClosed");
+     hideIcons();
 }
 
 /*private*/ void IndicatorTOItemPanel::openStatusEditDialog(QString key) {

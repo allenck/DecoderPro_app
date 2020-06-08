@@ -46,6 +46,7 @@ public:
     static /*public*/ QString convertText(QString name);
     static void loadMissingItemType(QString itemType, Editor* ed);
     static QDomNodeList getDefaultIconItemTypes() throw (JDOMException, IOException);
+    /*public*/ void setEditor(Editor* ed);
 
 signals:
 

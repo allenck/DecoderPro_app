@@ -75,6 +75,7 @@
 #include <QPointer>
 #include <QScrollBar>
 #include "editormanager.h"
+#include "placewindow.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -3337,142 +3338,87 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 
 /*protected*/ bool Editor::setTextAttributes(Positionable* p, QMenu* popup)
 {
- if(qobject_cast<PositionableJPanel*>(p->self()))
- {
-  if (((PositionableJPanel*)p->self())->getPopupUtility()==nullptr)
-  {
-   return false;
-  }
+ if (p->getPopupUtility() == nullptr) {
+             return false;
+         }
+ QAction* act;
+         popup->addAction(act =new AbstractAction(tr("Text Attributes"), this));
+//         {
+//             Positionable comp;
+//             Editor ed;
 
- }
- else
- if (((PositionableLabel*)p->self())->getPopupUtility()==nullptr)
- {
-  return false;
- }
-//    popup.add(new AbstractAction(tr("TextAttributes")){
-//        Positionable comp;
-//        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//            new TextAttrDialog(comp);
-//        }
-//        AbstractAction init(Positionable pos) {
-//            comp = pos;
-//            return this;
-//        }
-//    }.init(p));
- QAction* textAttributesAction = new QAction(tr("Text Attributes"),this);
- saveP=p;
- popup->addAction(textAttributesAction);
- connect(textAttributesAction, SIGNAL(triggered()), this, SLOT(On_textAttributesAction_triggered()));
-    return true;
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+           connect(act, &QAction::triggered, [=]{
+                 (new TextAttrDialog(p, this))->setVisible(true);
+             });
+
+//             AbstractAction init(Positionable pos, Editor e) { // e unused?
+//                 comp = pos;
+//                 ed = e;
+//                 return this;
+//             }
+//         }.init(p, this));
+         return true;
 }
 
-void Editor::On_textAttributesAction_triggered() // SLOT[]
-{
- TextAttrDialog* dlg = new TextAttrDialog(saveP, this);
- dlg->exec();
-}
+//void Editor::On_textAttributesAction_triggered() // SLOT[]
+//{
+// TextAttrDialog* dlg = new TextAttrDialog(saveP, this);
+// dlg->exec();
+//}
 
 //class TextAttrDialog extends JDialog {
 //    Positionable _pos;
 //    jmri.jmrit.display.palette.DecoratorPanel _decorator;
-TextAttrDialog::TextAttrDialog(Positionable* p, QWidget* _targetFrame) : JDialog(_targetFrame)
+TextAttrDialog::TextAttrDialog(Positionable* p, Editor* editor) : DisplayFrame(tr("Text Attributes"), editor)
 {
  //super(_targetFrame, tr("TextAttributes"), true);
-//    QFont f = font();
-//    f.setPointSize(8);
-//    setFont(f);
- setSizeGripEnabled(true);
- QVBoxLayout* thisLayout;
- editor = (Editor*)_targetFrame;
- setWindowTitle(tr("Text Attributes"));
  _pos = p;
- QWidget* panel = new QWidget();
- QVBoxLayout* panelLayout;
- panel->setLayout(panelLayout = new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
- DragDecoratorLabel* sample = new DragDecoratorLabel(tr("sample"), _pos->getEditor());
- PositionableLabel* pl = (PositionableLabel*)_pos;
- sample->setText(pl->getText());
- sample->setForeground(pl->getForeground());
- sample->setBackground(pl->getBackground());
- PositionablePopupUtil* util = pl->getPopupUtility();
- sample->setBorderColor(util->getBorderColor());
- sample->setBorderSize(util->getBorderSize());
- sample->setFont(util->getFont());
- sample->setMargin(util->getMargin());
- sample->setVisible(true);
- sample->setLevel(Editor::LABELS);
- PositionablePopupUtil* util2 = sample->getPopupUtility();
- util2->setBackgroundColor(pl->getBackground());
- _decorator = new DecoratorPanel(_pos->getEditor(), nullptr);
- _decorator->initDecoratorPanel(sample);
- panelLayout->addWidget(_decorator);
- panelLayout->addWidget(makeDoneButtonPanel());
-    //setContentPane(panel);
- setLayout(thisLayout = new QVBoxLayout);
+ JPanel* panel = new JPanel();
+ panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
+ _decorator = new DecoratorPanel(_pos->getEditor());
+ _decorator->initDecoratorPanel(_pos);
+ panel->layout()->addWidget(_decorator);
+ panel->layout()->addWidget(makeDoneButtonPanel());
  QSize dim = panel->sizeHint();
- dim = QSize(dim.width()+10, dim.height()+10 );
- resize(dim);
- //thisLayout->addLayout(panelLayout);
- QScrollArea* scrollArea;
- thisLayout->addWidget(scrollArea = new QScrollArea);
- scrollArea->setWidgetResizable(true);
- scrollArea->setWidget(panel);
-// QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-// sizePolicy.setHorizontalStretch(1);
-// sizePolicy.setVerticalStretch(0);
-// scrollArea->setSizePolicy(sizePolicy);
+ QScrollArea* sp = new QScrollArea(/*panel*/);
+ sp->setWidget(panel);
+ dim = QSize(dim.width() +10, dim.height() + 10);
+ sp->resize(dim);
+ setContentPane(sp);
+// ((PlaceWindow*)InstanceManager::getDefault("PlaceWindow"))->nextTo(_pos->getEditor(), (QWidget*)_pos, this);
  pack();
-//    setLocationRelativeTo((Component)_pos);
- setVisible(true);
 }
 
 /*protected*/ QWidget* TextAttrDialog::makeDoneButtonPanel() {
     QWidget* panel0 = new QWidget();
     panel0->setLayout(new /*FlowLayout()*/QHBoxLayout());
     QPushButton* doneButton = new QPushButton(tr("Done"));
-//    doneButton.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                PositionablePopupUtil util = _decorator.getPositionablePopupUtil();
-//                _decorator.getText(_pos);
-//                if (_selectionGroup==NULL) {
-//                    setAttributes(util, _pos, _decorator.isOpaque());
-//                } else {
-//                    setSelectionsAttributes(util, _pos, _decorator.isOpaque());
-//                }
-//                dispose();
-//            }
-//    });
-    connect(doneButton, SIGNAL(clicked()), this, SLOT(doneButton_clicked()));
+//    doneButton.addActionListener(a -> {
+    connect(doneButton, &QPushButton::clicked, [=]{
+        PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
+        _decorator->setAttributes(_pos);
+        if (editor->_selectionGroup != nullptr) {
+            editor->setSelectionsAttributes(util, _pos);
+        } else {
+            editor->setAttributes(util, _pos);
+        }
+        _decorator->close();
+       dispose();
+    });
     panel0->layout()->addWidget(doneButton);
 
     QPushButton* cancelButton = new QPushButton(tr("Cancel"));
-//    cancelButton.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                dispose();
-//            }
-//    });
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+//    cancelButton.addActionListener(a -> {
+    connect(cancelButton, &QPushButton::clicked, [=]{
+        _decorator->close();
+        dispose();
+    });
     panel0->layout()->addWidget(cancelButton);
     return panel0;
 }
 //};
-void TextAttrDialog::doneButton_clicked()
-{
- PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
- _decorator->getText(_pos);
- if (editor->_selectionGroup==nullptr)
- {
-  editor->setAttributes(util, _pos, _decorator->isOpaque());
- }
- else
- {
-  editor->setSelectionsAttributes(util, _pos, _decorator->isOpaque());
- }
- //dispose();
- editor->addToTarget(_pos);
- deleteLater();
-}
 
 /**
  * Called from setSelectionsAttributes - i.e. clone because maybe several Positionables use the data
@@ -3538,14 +3484,14 @@ void TextAttrDialog::doneButton_clicked()
  }
 }
 
-/*protected*/ void Editor::setSelectionsAttributes(PositionablePopupUtil* util, Positionable* pos, bool isOpaque) {
+/*protected*/ void Editor::setSelectionsAttributes(PositionablePopupUtil* util, Positionable* pos) {
     if (_selectionGroup!=nullptr && _selectionGroup->contains(pos)) {
         for (int i=0; i<_selectionGroup->size(); i++) {
             Positionable* p = _selectionGroup->at(i);
             //if ( p instanceof PositionableLabel )
             if(qobject_cast<PositionableLabel*>(p->self())!= nullptr)
             {
-                setAttributes(util, p, isOpaque);
+                setAttributes(util, p);
             }
          }
     }

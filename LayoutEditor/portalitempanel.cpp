@@ -14,7 +14,7 @@
 /**
  * Constructor types with multiple families and multiple icon families.
  */
-/*public*/ PortalItemPanel::PortalItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget* parent)
+/*public*/ PortalItemPanel::PortalItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor *editor, QWidget* parent)
  : FamilyItemPanel(parentFrame, type, family, editor, parent)
 {
     //super(parentFrame, type, family, editor);
@@ -35,8 +35,7 @@
   FamilyItemPanel::init();
   _suppressDragging = true;
   thisLayout->addWidget(makeChangeDefaultIconsPanel());
-  _previewPanel->setVisible(false);
-  _previewPanel->update();}
+ }
 }
 
 /*private*/ QWidget* PortalItemPanel::makeChangeDefaultIconsPanel() {

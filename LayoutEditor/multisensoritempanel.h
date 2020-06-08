@@ -10,7 +10,7 @@ class MultiSensorItemPanel : public TableItemPanel
     Q_OBJECT
 public:
     //explicit MultiSensorItemPanel(QWidget *parent = 0);
-    /*public*/ MultiSensorItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
+    /*public*/ MultiSensorItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor *editor, QWidget *parent = 0);
     /*public*/ static /*final*/ QStringList POSITION;//= {"first", "second", "third", "fourth", "fifth",
 //                                         "sixth", "seventh", "eighth", "nineth", "tenth" };
     /*public*/ QVector<NamedBean *> getTableSelections();

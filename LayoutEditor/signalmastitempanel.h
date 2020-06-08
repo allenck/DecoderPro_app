@@ -11,7 +11,7 @@ public:
     //explicit SignalMastItemPanel(QWidget *parent = 0);
     /*public*/ SignalMastItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent = 0);
     void init();
-    void init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap);
+//    void init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap);
 
 signals:
 
@@ -31,19 +31,21 @@ protected:
     /*protected*/ void initIconFamiliesPanel();
     /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
     /*protected*/ void makeBottomPanel(ActionListener* doneAction);
-    /*protected*/ JLabel* getDragger(DataFlavor* flavor, NamedIcon* icon);
-    /*protected*/ void setFamily(QString family);
-    /*protected*/ void showIcons();
-    /*protected*/ void hideIcons();
+    /*protected*/ JLabel* getDragger(DataFlavor* flavor);
+//    /*protected*/ void setFamily(QString family);
+//    /*protected*/ void showIcons();
+//    /*protected*/ void hideIcons();
+    /*protected*/ NamedBean* getNamedBean();
 
 friend class SMIconDragJLabel;
+
 };
     /*protected*/ class SMIconDragJLabel : public DragJLabel
 {
      Q_OBJECT
      SignalMastItemPanel* self;
         public:
-        /*public*/ SMIconDragJLabel(DataFlavor* flavor, NamedIcon* icon, SignalMastItemPanel* self);
+        /*public*/ SMIconDragJLabel(DataFlavor* flavor, SignalMastItemPanel* self);
      /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
      QByteArray mimeData();
 private:

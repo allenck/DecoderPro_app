@@ -13,6 +13,8 @@
 #include <QGraphicsView>
 #include "editscene.h"
 
+class JComboBox;
+class PreviewPanel;
 class PreviewScene;
 class DPChangeListener;
 class QGroupBox;
@@ -37,7 +39,7 @@ class PositionablePopupUtil;
 class Editor;
 class AJSpinner;
 class AJSpinner;
-class DecoratorPanel : public QWidget
+class DecoratorPanel : public JPanel
 {
     Q_OBJECT
 public:
@@ -80,7 +82,7 @@ enum VALUES
  TRANSPARENT_COLOR =31,
  BORDER_COLOR =32
 };
-    /*public*/ DecoratorPanel(Editor* editor, DisplayFrame* paletteFrame, QWidget *parent = 0);
+    /*public*/ DecoratorPanel(Editor *editor, QWidget *parent = 0);
     /*public*/ void initDecoratorPanel(Positionable* pos);
     /*public*/ PositionablePopupUtil* getPositionablePopupUtil();
     /*public*/ void getText(Positionable* pos);
@@ -125,37 +127,40 @@ private:
 
     JColorChooser* _chooser;
     /*private*/ QWidget* makeBgButtonPanel(/*@Nonnull*/ ImagePanel* preview1, ImagePanel* preview2, QVector<BufferedImage*>* imgArray);
+//    /*private*/ JPanel* makeColorPanel(bool addCaption);
+    /*private*/ JPanel* makeBoxPanel(QString caption, JComboBox* box);
 
     /*private*/ PositionablePopupUtil* _util;
     bool _isOpaque;			// transfer opaqueness from decorator label here to panel label being edited
+    /*private*/ QHash<QString, PositionableLabel*>* _sample = nullptr;
     /*private*/ QButtonGroup* _buttonGroup;
     /*private*/ int _selectedButton = -1;
     /*private*/ QString _selectedState;
-    /*private*/ QMap<QString, PositionableLabel*>* _samples = nullptr;
 
     Editor* _editor;
 //    /*private*/ QWidget* makeBoxPanel(QString caption, AJSpinner* box);
-    /*private*/ static JPanel *makeSpinPanel(QString caption, AJSpinner* spin, ChangeListener *listener);
-    /*private*/ QWidget* makeTextPanel(QString state, JLabel* sample, bool addTextField);
-//    /*private*/ AJRadioButton* makeButton(AJRadioButton* button);
+    /*private*/ JPanel* makeSpinPanel(QString caption, JSpinner* spin);
+    /*private*/ JPanel* makeTextPanel(QString caption, JLabel* sample, int state);
+    /*private*/ AJRadioButton* makeButton(AJRadioButton* button);
     /*private*/ void updateSamples();
     QString text;
     QVector<BufferedImage*>* imgArray;
     static Logger* log;
     ImagePanel* preview1;
-    ImagePanel* _previewPanel;
-    /*private*/ /*final*/ QWidget* _samplePanel;
+    JPanel* _previewPanel;
+    /*private*/ /*final*/ ImagePanel* _samplePanel;
     /*private*/ QGraphicsView* _sampleView;
     /*private*/ PreviewScene* _scene;
     /*private*/ bool _isPositionableLabel;
     /*protected*/ void fontChange();
-    /*private*/ void finishInit(bool addBgCombo);
-    /*private*/ void doPopupUtility(QString type, PositionableLabel* sample, bool editText);
+//    /*private*/ void finishInit(bool addBgCombo);
+//    /*private*/ void doPopupUtility(QString type, PositionableLabel* sample, bool editText);
     /*private*/ void makeFontPanels();
-    /*private*/ AJRadioButton* makeColorRadioButton(QString caption, int which, QString state);
+//    /*private*/ AJRadioButton* makeColorRadioButton(QString caption, int which);
     DragDecoratorLabel* sample = nullptr;
     DPChangeListener* listener = nullptr;
     /*private*/ void colorChange();
+    /*private*/ QWidget* _textEditComponent;
 
 private slots:
     void on_bgColorBox();
@@ -164,12 +169,12 @@ private slots:
 protected:
     /*protected*/ QVector<BufferedImage*>* _backgrounds; // array of Image backgrounds
     /*protected*/ QComboBox* _bgColorBox;
-    /*protected*/ DisplayFrame* _paletteFrame;
+    /*protected*/ DisplayFrame* _frame;
     /*protected*/ QVector<BufferedImage*>* getBackgrounds();
-    /*protected*/ void setBackgrounds(QVector<BufferedImage*>*  imgArray);
+//    /*protected*/ void setBackgrounds(QVector<BufferedImage*>*  imgArray);
     /*protected*/ void initDecoratorPanel(DragDecoratorLabel* sample);
+    /*protected*/ JPanel* getPreviewPanel();
 
-//    friend class AJRBActionListener;
     friend class TextFieldListener;
     friend class TextItemPanel;
     friend class ColorDialog;
@@ -192,11 +197,11 @@ public:
 /*static*/ class AJRadioButton : public QRadioButton {
     Q_OBJECT
     int _which;
-    QString _state;
+    //QString _state;
 
 public:
-    AJRadioButton(QString text, int w, QString state);
-    QString getState();
+    AJRadioButton(QString text, int w);
+    //QString getState();
     friend class DecoratorPanel;
     friend class AJRBActionListener;
 };

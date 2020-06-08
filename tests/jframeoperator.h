@@ -182,6 +182,7 @@ public:
  JDialogOperator( QString text);
  JDialogOperator(JFrameOperator *frame, int number);
  JDialog* getDialog() { return dialog;}
+ JDialogOperator(JFrameOperator *frame, QString text);
 };
 
 class JSliderOperator : public QObject

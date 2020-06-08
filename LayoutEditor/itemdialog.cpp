@@ -11,15 +11,18 @@
 
 // /*public*/ class ItemDialog extends JDialog {
 
+/*private*/ /*static*/ ItemDialog* ItemDialog::_instance = nullptr;		// only let one dialog at a time
 
 /**
 */
-/*public*/ ItemDialog::ItemDialog(QString type, QString family, QString title, FamilyItemPanel* parent, bool mode) : JDialog((QWidget*)parent->_paletteFrame, title, mode)
+/*public*/ ItemDialog::ItemDialog(QString type, QString title)
+ : JmriJFrame(title, true, true)
 {
- //super(parent._paletteFrame, title, mode);
+ if (_instance != nullptr) {
+     _instance->dispose();
+ }
+ _instance = this;
  _type = type;
- _family = family;
- _parent = parent;
 }
 
 /*protected*/ void ItemDialog::sizeLocate()
@@ -42,5 +45,7 @@
 //@Override
 /*public*/ void ItemDialog::dispose() {
     closeDialogs();
-    JDialog::dispose();
+    JmriJFrame::dispose();
 }
+
+/*public*/ QString ItemDialog::getClassName() {return "jmri.jmrit.display.palette.ItemDialog";}

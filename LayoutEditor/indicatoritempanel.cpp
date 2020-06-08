@@ -19,7 +19,8 @@
 /**
 * Constructor for plain icons and backgrounds
 */
-/*public*/ IndicatorItemPanel::IndicatorItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, QWidget *parent) : FamilyItemPanel(parentFrame, type, family, editor, parent)
+/*public*/ IndicatorItemPanel::IndicatorItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor *editor, QWidget *parent)
+ : FamilyItemPanel(parentFrame, type, family, editor, parent)
 {
     //super(parentFrame, type, family, editor);
     log = new Logger("IndicatorItemPanel");

@@ -7,7 +7,7 @@
 
 ///*public*/ class RPSItemPanel extends FamilyItemPanel {
 
-/*public*/ RPSItemPanel::RPSItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor)
+/*public*/ RPSItemPanel::RPSItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor *editor)
  : FamilyItemPanel(parentFrame, type, family, editor)
 {
     //super(parentFrame, type, family, editor);

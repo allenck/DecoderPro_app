@@ -49,6 +49,8 @@ public:
     /*public*/ static CatalogPanel* makeDefaultCatalog();
     /*public*/ NamedIcon* getIcon();
     /*public*/ void deselectIcon();
+    /*public*/ void setSelectedNode(QStringList names);
+    /*public*/ void scrollPathToVisible(QStringList names);
 
 signals:
     void newDirectorySelected(QString);

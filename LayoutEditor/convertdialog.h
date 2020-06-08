@@ -57,7 +57,7 @@ class CDIndicatorItemPanel : public IndicatorItemPanel
  ConvertDialog* cd;
 public:
  CDIndicatorItemPanel(DisplayFrame* parentFrame, QString type, QString family, Editor* editor, ConvertDialog* cd)
-  : IndicatorItemPanel(parentFrame, type, family,editor, cd)
+  : IndicatorItemPanel(parentFrame, type, family, editor, cd)
  {
   this->cd = cd;
  }

@@ -15,7 +15,8 @@
 //}
 ///*public*/ class ReporterItemPanel extends TableItemPanel {
 
-/*public*/ ReporterItemPanel::ReporterItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor* editor, QWidget *parent) : TableItemPanel(parentFrame, type, family, model, editor,parent){
+/*public*/ ReporterItemPanel::ReporterItemPanel(DisplayFrame* parentFrame, QString  type, QString family, PickListModel* model, Editor *editor, QWidget *parent)
+ : TableItemPanel(parentFrame, type, family, model, editor, parent){
         //super(parentFrame, type, family, model, editor);
     log = new Logger("ReporterItemPanel");
     }
@@ -52,7 +53,6 @@
     if (!_update) {
         _iconFamilyPanel->layout()->addWidget(instructions());
     }
-    makeDragIconPanel(1);
     makeDndIconPanel(NULL, NULL);
     if (_iconPanel == nullptr) { // keep an existing panel
      _iconPanel = new ImagePanel(); // never shown, so don't bother to configure, but element must exist
@@ -88,7 +88,7 @@
  int width = qMax(100, panel->sizeHint().width());
  panel->setMinimumSize( QSize(width, panel->minimumSize().height()));
  panel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
- _dragIconPanel->layout()->addWidget( panel);
+ _dragIconPanel= panel;
  _dragIconPanel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
 }
 

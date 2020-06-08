@@ -10,6 +10,7 @@
 #include "positionablepopuputil.h"
 #include "positionablelabelxml.h"
 #include <QDrag>
+#include "box.h"
 
 //TextItemPanel::TextItemPanel(QWidget *parent) :
 //    ItemPanel(parent)
@@ -22,35 +23,37 @@
 
 //    JTextField _text;
 
-/*public*/ TextItemPanel::TextItemPanel(ItemPalette* parentFrame, QString  type, Editor* editor, QWidget *parent) : ItemPanel(parentFrame, type, editor,parent) {
+/*public*/ TextItemPanel::TextItemPanel(ItemPalette* parentFrame, QString  type, Editor* editor, QWidget *parent)
+ : ItemPanel(parentFrame, type, editor, parent) {
         //super(parentFrame,  type, family, editor);
         setToolTip(tr("Drag the label from the Preview panel to add it to the control panel"));
         setObjectName("TextItemPanel");
     }
 
 /*public*/ void TextItemPanel::init() {
-    if (!_initialized) {
-        QThread::yieldCurrentThread();
-        QWidget* panel = new QWidget();
-        panel->setLayout(new QVBoxLayout(panel/*, BoxLayout.Y_AXIS*/));
-        panel->layout()->addWidget(new JLabel(tr("Enter text and choose attributes for the label in the Preview panel.  Then")));
-        panel->layout()->addWidget(new JLabel(tr("drag the label from the Preview panel to add it to the control panel")));
-        QWidget* p = new QWidget();
-        p->setLayout(new FlowLayout);
-        p->layout()->addWidget(panel);
-        thisLayout->addWidget(p);
-        DragDecoratorLabel* sample = new DragDecoratorLabel(tr("sample"), _editor);
-        _decorator = new DecoratorPanel(_editor, _paletteFrame);
-        _decorator->initDecoratorPanel(sample);
-        thisLayout->addWidget(_decorator);
-        _paletteFrame->pack();
-        ItemPanel::init();
-    }
-    log->debug(tr("init panel '%1', layout %2 contains %3 items, objectName = %4").arg("TextItemPanel").arg(thisLayout == nullptr?"null layout": thisLayout->metaObject()->className()).arg(thisLayout->children().size()).arg(thisLayout->objectName()));
-    if (_decorator != nullptr) {
-        _decorator->_bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg());
-    }
+ if (!_initialized) {
+//             Thread.yield();
+     JPanel* blurb = new JPanel();
+     blurb->setLayout(new QVBoxLayout());//blurb, BoxLayout.Y_AXIS));
+     blurb->layout()->addWidget(new JLabel(tr("addTextAndAttrs")));
+     blurb->layout()->addWidget(new JLabel(tr("ToolTipDragText")));
+     blurb->layout()->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
+     blurb->layout()->addWidget(new JLabel(tr("ToLinkToURL", "Text")));
+     blurb->layout()->addWidget(new JLabel(tr("enterPanel")));
+     blurb->layout()->addWidget(new JLabel(tr("enterURL")));
+     JPanel* p = new JPanel(new FlowLayout());
+     p->layout()->addWidget(blurb);
+     layout()->addWidget(p);
+     DragDecoratorLabel* sample = new DragDecoratorLabel(("sample"), _editor);
+     _decorator = new DecoratorPanel(_editor);
+     _decorator->initDecoratorPanel(sample);
+     layout()->addWidget(_decorator);
+     initLinkPanel();
+     _paletteFrame->pack();
+     ItemPanel::init();
+ }
 }
+#if 0
 /*public*/ void TextItemPanel::init(ActionListener* /*doneAction*/, Positionable* pos) {
     _decorator = new DecoratorPanel(_editor, _paletteFrame);
     _decorator->initDecoratorPanel(pos);
@@ -70,7 +73,7 @@
 //@Override
 /*protected*/ void TextItemPanel::setPreviewBg(int /*index*/) {
     if (_decorator != nullptr) {
-        _decorator->_bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg());
+        _decorator->_bgColorBox->setCurrentIndex(_frame->getPreviewBg());
     }
 }
 
@@ -104,10 +107,10 @@
         panelBackground = br.color();
         // set Panel background color
         _decorator->setBackgrounds(makeBackgrounds(_decorator->getBackgrounds(), panelBackground));
-        _decorator->_bgColorBox->setCurrentIndex(_paletteFrame->getPreviewBg());
+        _decorator->_bgColorBox->setCurrentIndex(_frame->getPreviewBg());
     }
 }
-
+#endif
 /*public*/ void TextItemPanel::updateAttributes(PositionableLabel* l)
 {
  _decorator->setAttributes(l);

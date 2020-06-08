@@ -432,6 +432,12 @@ JDialogOperator::JDialogOperator(JFrameOperator* frame, int number)
  this->frameOperator = frame;
 }
 
+JDialogOperator::JDialogOperator(JFrameOperator *frame, QString text)
+{
+ this->text = text;
+ this->frameOperator = frame;
+}
+
 
 JTextFieldOperator::JTextFieldOperator(QObject *parent, QString name)
 {

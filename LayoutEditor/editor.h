@@ -19,6 +19,7 @@
 #include "jlayeredpane.h"
 #include <QPointer>
 #include <QPen>
+#include "displayframe.h"
 
 /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
@@ -426,7 +427,7 @@ private slots:
   void On_lockItemAction_toggled(bool);
   void On_actionHidden_toggled(bool bState); // [slot]
   void On_rosterBoxSelectionChanged(QString propertyName,QObject* o,QObject* n);
-  void On_textAttributesAction_triggered();
+  //void On_textAttributesAction_triggered();
   void On_removeMenuAction_triggered();
 
  protected:
@@ -506,7 +507,7 @@ private slots:
   /*protected*/ /*const*/ void setPaintScale(double newScale);
   /*protected*/ void setToolTip(QString tt);
   /*protected*/ bool showAlignPopup(Positionable* p);
-  /*protected*/ void setSelectionsAttributes(PositionablePopupUtil* util, Positionable* pos, bool isOpaque);
+  /*protected*/ void setSelectionsAttributes(PositionablePopupUtil* util, Positionable* pos);
   /*protected*/ void setSelectionsHidden(bool enabled, Positionable* p);
   /*protected*/ void addToTarget(Positionable* l);
   /*protected*/ int getItemX(Positionable* p, int deltaX) ;
@@ -791,15 +792,14 @@ class TextAttributesActionListener : public QObject
 
 };
 
-class TextAttrDialog : public JDialog {
+class TextAttrDialog : public DisplayFrame {
     Q_OBJECT
     Positionable* _pos;
     DecoratorPanel* _decorator;
     Editor* editor;
 public:
-    TextAttrDialog(Positionable* p, QWidget* parent);
+    TextAttrDialog(Positionable* p, Editor* editor);
 public slots:
-    void doneButton_clicked();
 
 protected:
     /*protected*/ QWidget* makeDoneButtonPanel();

@@ -19,7 +19,12 @@ void CircuitBuilderTestAction::actionPerformed()
     << "testEditCircuitFrame"
     << "testEditCircuitError"
     << "testEditPortals"
-       ;
+    << "testEditCircuitPaths"
+    << "testEditPortalDirection"
+    << "testEditSignalFrame"
+    << "testEditPortalError"
+    << "testEditPortalErrorIcon"
+    << "testNoBlock";
 
  JUnitUtil::runTests(test, testList);
  }

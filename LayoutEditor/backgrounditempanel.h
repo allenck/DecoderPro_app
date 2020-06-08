@@ -7,6 +7,7 @@
 #include <QVector>
 #include "imagepanel.h"
 
+class JColorChooser;
 class ActionListener;
 class ChangeEvent;
 class QColorDialog;
@@ -22,25 +23,29 @@ public:
 signals:
 
 public slots:
-    void backgroundButton_clicked();
-    //void colorChanged(QColor);
+
 private:
+    JColorChooser* _chooser;
+    QPushButton*       _colorButton;
+    JPanel*        _colorPanel;
+    QColor         _color;
+    /*private*/ JPanel* initBottomPanel();
+
 private slots:
     void colorChanged();
 
 protected:
-    /*protected*/ QWidget* instructions();
-    /*protected*/ QWidget* makeBgButtonPanel(ImagePanel*, ImagePanel*);
+    /*protected*/ JPanel *instructions(bool isBackGround);
  friend class BGIPActionListener;
 };
-#if 0
+#if 1
 class BGIPColorDialog : public JDialog //implements ChangeListener
 {
  Q_OBJECT
 
-    QColorDialog* _chooser;
+    JColorChooser* _chooser;
     Editor*        _editor;
-    QWidget*        _preview;
+    JPanel*        _preview;
     BackgroundItemPanel* parent;
 public:
     BGIPColorDialog(Editor* editor, BackgroundItemPanel* parent) ;
@@ -51,15 +56,6 @@ public slots:
     friend class BGIPCDActionListener;
 };
 
-class BGIPCDActionListener : public ActionListener
-{
-    Q_OBJECT
-    BGIPColorDialog* dialog;
-public:
-    BGIPCDActionListener* init(BGIPColorDialog* d) ;
-public slots:
-    /*public*/ void actionPerformed(ActionEvent* e =0);
-};
 #endif
 class BGIPActionListener : public ActionListener
 {

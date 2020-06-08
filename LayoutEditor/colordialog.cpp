@@ -88,8 +88,8 @@ ColorDialog::ColorDialog(QWidget *parent) : JDialog(parent)
          title = tr("Edit Border settings (onpanel)");
          _saveColor = _util->getBorderColor();
          SpinnerNumberModel* model = new SpinnerNumberModel(_util->getBorderSize(), 0, 100, 1);
-         JPanel* p = makePanel(DecoratorPanel::makeSpinPanel(tr("Border Size"), new AJSpinner(model, BORDER),nullptr));
-         panel->layout()->addWidget(p);
+//         JPanel* p = makePanel(DecoratorPanel::makeSpinPanel(tr("Border Size"), new AJSpinner(model, BORDER)));
+//         panel->layout()->addWidget(p);
      }
          break;
      case MARGIN:
@@ -97,8 +97,8 @@ ColorDialog::ColorDialog(QWidget *parent) : JDialog(parent)
          title = tr("Edit Margin settings (onpanel)");
          _saveColor = _util->getBackground();
          SpinnerNumberModel* model = new SpinnerNumberModel(_util->getMargin(), 0, 100, 1);
-         JPanel* p = makePanel(DecoratorPanel::makeSpinPanel(tr("Margin Size"), new AJSpinner(model, MARGIN),nullptr));
-         panel->layout()->addWidget(p);
+//         JPanel* p = makePanel(DecoratorPanel::makeSpinPanel(tr("Margin Size"), new AJSpinner(model, MARGIN)));
+//         panel->layout()->addWidget(p);
      }
          break;
      case FONT:
@@ -170,10 +170,10 @@ JPanel* ColorDialog::makeTextSpinnerPanel() {
     JPanel* panel = new JPanel();
     panel->setLayout(new QHBoxLayout());//(panel, BoxLayout.X_AXIS));
     SpinnerNumberModel* model = new SpinnerNumberModel(_util->getFixedWidth(), 0, 1000, 1);
-    panel->layout()->addWidget(DecoratorPanel::makeSpinPanel("fixedWidth", new AJSpinner(model, FWIDTH), (ChangeListener*)this));
+//    panel->layout()->addWidget(DecoratorPanel::makeSpinPanel("fixedWidth", new AJSpinner(model, FWIDTH)));
     panel->layout()->addWidget(Box::createHorizontalStrut(STRUT));
     model = new SpinnerNumberModel(_util->getFixedHeight(), 0, 1000, 1);
-    panel->layout()->addWidget(DecoratorPanel::makeSpinPanel("fixedHeight", new AJSpinner(model, FHEIGHT), (ChangeListener*)this));
+//    panel->layout()->addWidget(DecoratorPanel::makeSpinPanel("fixedHeight", new AJSpinner(model, FHEIGHT)));
     return panel;
 }
 

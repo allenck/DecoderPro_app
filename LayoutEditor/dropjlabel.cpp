@@ -11,7 +11,7 @@
 #include "fileutil.h"
 
 DropJLabel::DropJLabel(QWidget *parent) :
-    QLabel(parent)
+    JLabel(parent)
 {
  init(NULL);
 }
@@ -24,7 +24,7 @@ DropJLabel::DropJLabel(QWidget *parent) :
 // /*public*/ class DropJLabel extends JLabel implements DropTargetListener {
 
 
-DropJLabel::DropJLabel (NamedIcon* icon,QWidget *parent) : QLabel(/*icon,*/ parent)
+DropJLabel::DropJLabel (NamedIcon* icon,QWidget *parent) : JLabel(/*icon,*/ parent)
 {
     //super(icon);
     init(icon);
@@ -51,7 +51,7 @@ void DropJLabel::init(NamedIcon* icon)
  _update = false;
 
 }
-DropJLabel::DropJLabel (NamedIcon* icon,  QMap<QString, NamedIcon *> *iconMap, bool update, QWidget *parent) : QLabel(/*icon,*/ parent)
+DropJLabel::DropJLabel (NamedIcon* icon,  QMap<QString, NamedIcon *> *iconMap, bool update, QWidget *parent) : JLabel(/*icon,*/ parent)
 {
  log = new Logger("DropJLabel");
  log->setDebugEnabled(true);

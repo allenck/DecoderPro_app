@@ -698,7 +698,7 @@ void CatalogPanel::onBgColorBox(int index)
     } else {
         deselectIcon();
     }
-    _parent->deselectIcon();
+//    _parent->deselectIcon();
 }
 
 #if 0
@@ -968,24 +968,24 @@ void CatalogPanel::onBgColorBox(int index)
 #if 0
 /**
 */
-/*public*/ void setSelectedNode(String[] names) {
-    _dTree.setExpandsSelectedPaths(true);
-    CatalogTreeNode[] path = new CatalogTreeNode[names.length];
-    for (int i=0; i<names.length; i++) {
-        path[i] = new CatalogTreeNode(names[i]);
+/*public*/ void CatalogPanel::setSelectedNode(QStringList names) {
+    _dTree->setExpandsSelectedPaths(true);
+    QVector<CatalogTreeNode*>* path = new QVector<CatalogTreeNode*>(names.length());
+    for (int i=0; i<names.length(); i++) {
+        path->replace(i,new CatalogTreeNode(names[i]));
     }
-    _dTree.setSelectionPath(new TreePath(path));
+    _dTree->setSelectionPath(new TreePath(path));
 }
 
 /**
 */
-/*public*/ void scrollPathToVisible(String[] names) {
-    _dTree.setExpandsSelectedPaths(true);
-    CatalogTreeNode[] path = new CatalogTreeNode[names.length];
-    for (int i=0; i<names.length; i++) {
-        path[i] = new CatalogTreeNode(names[i]);
+/*public*/ void CatalogPanel::scrollPathToVisible(QStringList names) {
+    _dTree->setExpandsSelectedPaths(true);
+    QVector<CatalogTreeNode*> path = QVector<CatalogTreeNode*>(names.length());
+    for (int i=0; i<names.length(); i++) {
+        path.replace(i, new CatalogTreeNode(names[i]));
     }
-    _dTree.scrollPathToVisible(new TreePath(path));
+//    _dTree->scrollPathToVisible(new TreePath(path));
 }
 
 #endif

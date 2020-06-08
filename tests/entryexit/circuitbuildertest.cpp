@@ -11,6 +11,7 @@
 #include "oblock.h"
 #include "oblockmanager.h"
 #include "jemmyutil.h"
+#include "portalmanager.h"
 
 CircuitBuilderTest::CircuitBuilderTest(QObject *parent) : QObject(parent)
 {
@@ -79,96 +80,96 @@ CircuitBuilderTest::CircuitBuilderTest(QObject *parent) : QObject(parent)
         JFrameOperator* nfo = new JFrameOperator((JmriJFrame*)cb->getEditFrame());
         JemmyUtil::pressButton(nfo, tr("Done"));
     }
-#if 0
+#if 1
     //@Test
-    /*public*/ void testEditCircuitPaths() {
+    /*public*/ void CircuitBuilderTest::testEditCircuitPaths() {
         getCPEandCB();
 
-        OBlock ob3 = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock("OB3");
-        cb.setCurrentBlock(ob3);
+        OBlock* ob3 = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock("OB3");
+        cb->setCurrentBlock(ob3);
 
-        cb.editCircuitPaths("editCircuitPathsItem", false);
+        cb->editCircuitPaths("editCircuitPathsItem", false);
 
-        JFrameOperator nfo = new JFrameOperator(cb.getEditFrame());
-        JemmyUtil.pressButton(nfo, Bundle.getMessage("ButtonDone"));
+        JFrameOperator* nfo = new JFrameOperator((JmriJFrame*)cb->getEditFrame());
+        JemmyUtil::pressButton(nfo, tr("Done"));
     }
 
     //@Test
-    /*public*/ void testEditPortalDirection() {
+    /*public*/ void CircuitBuilderTest::testEditPortalDirection() {
         getCPEandCB();
 
-        OBlock ob3 = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock("OB5");
-        cb.setCurrentBlock(ob3);
+        OBlock* ob3 = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock("OB5");
+        cb->setCurrentBlock(ob3);
 
-        cb.editPortalDirection("editDirectionItem", false);
+        cb->editPortalDirection("editDirectionItem", false);
 
-        JFrameOperator nfo = new JFrameOperator(cb.getEditFrame());
-        JemmyUtil.pressButton(nfo, Bundle.getMessage("ButtonDone"));
+        JFrameOperator* nfo = new JFrameOperator((JmriJFrame*)cb->getEditFrame());
+        JemmyUtil::pressButton(nfo, tr("Done"));
     }
 
     //@Test
-    /*public*/ void testEditSignalFrame() {
+    /*public*/ void CircuitBuilderTest::testEditSignalFrame() {
         getCPEandCB();
 
-        OBlock ob3 = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock("OB4");
-        cb.setCurrentBlock(ob3);
+        OBlock* ob3 = ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock("OB4");
+        cb->setCurrentBlock(ob3);
 
-        cb.editSignalFrame("editSignalItem", false);
+        cb->editSignalFrame("editSignalItem", false);
 
-        JFrameOperator nfo = new JFrameOperator(cb.getEditFrame());
-        JemmyUtil.pressButton(nfo, Bundle.getMessage("ButtonDone"));
+        JFrameOperator* nfo = new JFrameOperator((JmriJFrame*)cb->getEditFrame());
+        JemmyUtil::pressButton(nfo, tr("Done"));
     }
 
     //@Test
 //    @org.junit.Ignore ("'OK' button does not dismiss dialog.")
-    /*public*/ void testEditPortalError() {
+    /*public*/ void CircuitBuilderTest::testEditPortalError() {
         getCPEandCB();
 
-        new Thread(() -> {
-            JFrameOperator jfo = new JFrameOperator("Edit \"WestSiding\" Portals");
-            JDialogOperator jdo = new JDialogOperator(jfo, Bundle.getMessage("incompleteCircuit"));
-            JButtonOperator jbo = new JButtonOperator(jdo, "OK");
-            jbo.push();
-        }).start();
+//        new Thread(() -> {
+            JFrameOperator* jfo = new JFrameOperator("Edit \"WestSiding\" Portals");
+            JDialogOperator* jdo = new JDialogOperator(jfo, tr("Track Circuit Incomplete"));
+            JButtonOperator* jbo = new JButtonOperator(jdo, "OK");
+            jbo->push();
+//        }).start();
 
-        cb.editPortalError("EastExit-EastJunction");
+        cb->editPortalError("EastExit-EastJunction");
 
-        JFrameOperator nfo = new JFrameOperator(cb.getEditFrame());
-        JemmyUtil.pressButton(nfo, Bundle.getMessage("ButtonDone"));
-        new org.netbeans.jemmy.QueueTool().waitEmpty(100);
-        cpe.dispose();
+        JFrameOperator* nfo = new JFrameOperator((JmriJFrame*)cb->getEditFrame());
+        JemmyUtil::pressButton(nfo, tr("Done"));
+//        new org.netbeans.jemmy.QueueTool().waitEmpty(100);
+        cpe->dispose();
     }
 
     //@Test
-    /*public*/ void testEditPortalErrorIcon() throws Exception{
+    /*public*/ void CircuitBuilderTest::testEditPortalErrorIcon() throw (Exception){
         getCPEandCB();
 
-        OBlock block = InstanceManager.getDefault(OBlockManager.class).getByUserName("WestSiding");
-        Portal portal = InstanceManager.getDefault(jmri.jmrit.logix.PortalManager.class).getPortal("Crapolla");
-        new Thread(() -> {
-            JFrameOperator jfo = new JFrameOperator("Edit \"WestSiding\" Portals");
-            JDialogOperator jdo = new JDialogOperator(jfo, Bundle.getMessage("incompleteCircuit"));
-            JButtonOperator jbo = new JButtonOperator(jdo, "OK");
-            jbo.push();
-        }).start();
+        OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getByUserName("WestSiding");
+        Portal* portal = ((PortalManager*)InstanceManager::getDefault("PortalManager"))->getPortal("Crapolla");
+//        new Thread(() -> {
+            JFrameOperator* jfo = new JFrameOperator("Edit \"WestSiding\" Portals");
+            JDialogOperator* jdo = new JDialogOperator(jfo, tr("Track Circuit Incomplete"));
+            JButtonOperator* jbo = new JButtonOperator(jdo, "OK");
+            jbo->push();
+//        }).start();
 
-        cb.editPortalError(block, portal, null);
+        cb->editPortalError(block, portal, nullptr);
 
-        JFrameOperator nfo = new JFrameOperator(cb.getEditFrame());
-        JemmyUtil.pressButton(nfo, Bundle.getMessage("ButtonDone"));
+        JFrameOperator* nfo = new JFrameOperator((JmriJFrame*)cb->getEditFrame());
+        JemmyUtil::pressButton(nfo, tr("Done"));
     }
 
     //@Test
-    @org.junit.Ignore("Cannot get button pushed!")
-    /*public*/ void testNoBlock() {
+    //@org.junit.Ignore("Cannot get button pushed!")
+    /*public*/ void CircuitBuilderTest::testNoBlock() {
         getCPEandCB();
-        cb.editCircuitPaths("editCircuitPathsItem", false);
+        cb->editCircuitPaths("editCircuitPathsItem", false);
 
 //        JFrameOperator frame = new JFrameOperator(cb.getEditFrame());
 //        JDialogOperator jdo = new JDialogOperator(frame, Bundle.getMessage("NeedDataTitle"));
-        JDialogOperator jdo = new JDialogOperator(Bundle.getMessage("NeedDataTitle"));
-        JButtonOperator ok = new JButtonOperator(jdo, "OK");
-        ok.push();
+        JDialogOperator* jdo = new JDialogOperator(tr("Please enter Data"));
+        JButtonOperator* ok = new JButtonOperator(jdo, "OK");
+        ok->push();
     }
 #endif
     void CircuitBuilderTest::getCPEandCB() {

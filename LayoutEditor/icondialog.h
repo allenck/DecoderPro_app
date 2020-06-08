@@ -2,6 +2,7 @@
 #define ICONDIALOG_H
 #include <itemdialog.h>
 #include "logger.h"
+#include <QPushButton>
 
 class JPanel;
 class QLabel;
@@ -18,28 +19,25 @@ public:
 signals:
 
 public slots:
-    void doneAction();
-    void addFamilyButtonAction();
-    void deleteButtonAction();
+//    void doneAction();
+//    void addFamilyButtonAction();
+//    void deleteButtonAction();
     /*public*/ void dispose();
 
 
 private:
     /*private*/ bool		_newIconSet;// = false;
     Logger* log;
-    /*private*/ CatalogPanel* makeCatalog();
+//    /*private*/ CatalogPanel* makeCatalog();
     void checkIconSizes();
 
 protected:
     /*protected*/ QMap <QString, NamedIcon*>*  _iconMap;
-//    /*protected*/ QWidget*       _iconPanel;
+    /*protected*/ JPanel*       _iconPanel;
     /*protected*/ ImagePanel*    _iconEditPanel;
     /*protected*/ CatalogPanel*  _catalog;
     /*private*/ /*final*/ QLabel* _nameLabel;
     /*protected*/ JTextField*    _familyName;
-    /*protected*/ QPushButton*   _addFamilyButton;
-    /*protected*/ QPushButton*   _deleteButton;
-    /*protected*/ void makeAddSetButtonPanel(QWidget* buttonPanel);
     // Only multiSensor adds and deletes icons
     /*protected*/ virtual void makeAddIconButtonPanel(JPanel* buttonPanel, QString addTip, QString deleteTip);
     /*protected*/ virtual bool doDoneAction();
@@ -47,13 +45,14 @@ protected:
     /*protected*/ void deleteFamilySet();
     /*protected*/ virtual void makeDoneButtonPanel(QWidget* buttonPanel, QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void makeDoneButtonPanel(QWidget* buttonPanel, QString text);
-    /*protected*/ void makeIconPanel(QMap<QString, NamedIcon*>* iconMap, ImagePanel* iconPanel);
+    /*protected*/ JPanel *makeIconPanel(QMap<QString, NamedIcon*>* iconMap);
     /*protected*/ QMap<QString, NamedIcon *> *clone(QMap<QString, NamedIcon *> *map);
     /*protected*/ ImagePanel* getIconEditPanel() ;
     /*protected*/ ImagePanel* getCatalogPreviewPanel();
+    /*protected*/ void makeDoneButtonPanel(JPanel* buttonPanel, QString text);
 
 protected slots:
-    /*protected*/ void renameFamily();
+//    /*protected*/ void renameFamily();
 
     friend class FamilyItemPanel;
 };

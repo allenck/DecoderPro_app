@@ -1273,7 +1273,8 @@ void ControlPanelEditor::selectAllAction()
       }
       _manualSelection = false;
   }
- } else {
+ } else
+ {
   if (bControlDown && (bPopupTrigger || bMetaDown || bAltDown)) {
       new ColorDialog(this, getTargetPanel()->views().at(0)->window(), ColorDialog::ONLY, nullptr);
   }

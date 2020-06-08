@@ -13,8 +13,8 @@ public:
     //explicit TextItemPanel(QWidget *parent = 0);
     /*public*/ TextItemPanel(ItemPalette* parentFrame, QString  type, Editor* editor, QWidget *parent = 0);
     /*public*/ void init();
-    /*public*/ void init(ActionListener* doneAction, Positionable* pos);
-    /*public*/ void init(ActionListener* doneAction);
+//    /*public*/ void init(ActionListener* doneAction, Positionable* pos);
+//    /*public*/ void init(ActionListener* doneAction);
     /*public*/ void updateAttributes(PositionableLabel* l);
     /*public*/ void closeDialogs();
 
@@ -25,10 +25,10 @@ private:
     DecoratorPanel* _decorator;
     static Logger* log;
 protected:
-    /*protected*/ void updateBackground0(BufferedImage* im);
-    /*protected*/ void setPreviewBg(int index);
-    /*protected*/ QWidget *makeDoneButtonPanel(ActionListener* doneAction);
-    /*protected*/ void setEditor(Editor* ed);
+//    /*protected*/ void updateBackground0(BufferedImage* im);
+//    /*protected*/ void setPreviewBg(int index);
+//    /*protected*/ QWidget *makeDoneButtonPanel(ActionListener* doneAction);
+//    /*protected*/ void setEditor(Editor* ed);
 
 friend class DragDecoratorLabel;
 };

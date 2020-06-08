@@ -4,7 +4,6 @@
 #include "itempalette.h"
 #include <QPushButton>
 #include "editor.h"
-#include "QColorDialog"
 #include "borderlayout.h"
 #include "editor.h"
 #include <QBrush>
@@ -13,6 +12,10 @@
 #include "displayframe.h"
 #include "drawsquares.h"
 #include "colordialog.h"
+#include "jcolorchooser.h"
+#include "box.h"
+#include "colorselectionmodel.h"
+#include "borderfactory.h"
 
 //BackgroundItemPanel::BackgroundItemPanel(QWidget *parent) :
 //    IconItemPanel(parent)
@@ -27,7 +30,8 @@
 /**
 * Constructor for plain icons and backgrounds
 */
-/*public*/ BackgroundItemPanel::BackgroundItemPanel(DisplayFrame* parentFrame, QString type, Editor* editor, QWidget* parent) : IconItemPanel(parentFrame, type, editor, parent)
+/*public*/ BackgroundItemPanel::BackgroundItemPanel(DisplayFrame* parentFrame, QString type, Editor *editor, QWidget* parent)
+ : IconItemPanel(parentFrame, type, editor, parent)
 {
  // super(parentFrame, type, family, editor);
   _level = Editor::BKG;
@@ -36,52 +40,53 @@
 
 /*public*/ void BackgroundItemPanel::init()
 {
- if (!_initialized)
- {
-  QThread::yieldCurrentThread();
-  IconItemPanel::init();
-  resize(sizeHint());
+ if (!_initialized) {
+             //Thread.yield();
+   IconItemPanel::init(true);
+   thisLayout->insertWidget(2, initBottomPanel());
+   resize(sizeHint());
+   _initialized = true;
  }
 }
 
-/*protected*/ QWidget* BackgroundItemPanel::instructions()
+/*protected*/ JPanel* BackgroundItemPanel::instructions(bool isBackGround)
 {
- QWidget* panel = IconItemPanel::instructions();
-//        QWidget* blurb = (QWidget*)panel->layout()->children().at(0);
-//        blurb->setLayout(new QVBoxLayout);
- panel->layout()->addWidget(new QLabel(tr("To Choose a Color Background: Press [%1]").arg(                                                     tr("Background Color"))));
-//        ((QVBoxLayout*)blurb->layout())->addStrut(ItemPalette::STRUT_SIZE);
+ JPanel* panel = IconItemPanel::instructions(isBackGround);
+ QList<QWidget*> lst = panel->findChildren<QWidget*>();
+ JPanel* blurb = (JPanel*) panel->findChildren<QWidget*>().at(0);
+ blurb->layout()->addWidget(new JLabel(tr("To Choose a Color Background: Press [%1]").arg("Background Color")));
+ blurb->layout()->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
  return panel;
 }
 
-void BackgroundItemPanel::backgroundButton_clicked()
+/*private*/ JPanel* BackgroundItemPanel::initBottomPanel()
 {
- hideCatalog();
- // TODO: replace with ColorDialog
-// BGIPColorDialog dlg(_editor, this);
-// dlg.exec();
-// ActionListener colorAction = ((ActionEvent event) -> {
-// colorChanged(); // callback
-//});
- BGIPActionListener* colorAction = new BGIPActionListener(this);
- new ColorDialog(_editor, (QWidget*)_editor->getTargetPanel(), ColorDialog::ONLY, colorAction);
-
+    JPanel* bottomPanel = new JPanel(new FlowLayout());
+    QPushButton* backgroundButton = new QPushButton(tr("Background Color"));
+//    backgroundButton.addActionListener(new ActionListener() {
+//        public void actionPerformed(ActionEvent a) {
+    connect(backgroundButton, &QPushButton::clicked, [=]{
+            hideCatalog();
+            new BGIPColorDialog(_editor, this);
+//        }
+    });
+    backgroundButton->setToolTip(tr("Choose a color for the background panel"));
+    bottomPanel->layout()->addWidget(backgroundButton);
+    return bottomPanel;
 }
 
-//@Override
-/*protected*/ QWidget* BackgroundItemPanel::makeBgButtonPanel(ImagePanel* /*preview1*/, ImagePanel* /*preview2*/) {
-        return NULL; // no button to set Preview Bg on BackgroundItemPanel
-    }
 void BackgroundItemPanel::colorChanged()
 {
- QColor c = _editor->getTargetPanel()->getBackground();
- QBrush b = _editor->editPanel->backgroundBrush();
- if(b == Qt::NoBrush)
-  c = QColor(Qt::white);
- c = b.color();
- BufferedImage* im = DrawSquares::getImage(500, 400, 10, c, c);
- _paletteFrame->updateBackground0(im);
-
+// QColor c = _editor->getTargetPanel()->getBackground();
+// QBrush b = _editor->editPanel->backgroundBrush();
+// if(b == Qt::NoBrush)
+//  c = QColor(Qt::white);
+// c = b.color();
+// BufferedImage* im = DrawSquares::getImage(500, 400, 10, c, c);
+// _paletteFrame->updateBackground0(im);
+ _color = _chooser->getColor();
+ _iconPanel->setImage(DrawSquares::getImage(500, 400, 10, _color, _color));
+ _iconPanel->update();
 }
 
 
@@ -90,7 +95,7 @@ void BackgroundItemPanel::colorChanged()
 //        JColorChooser _chooser;
 //        Editor        _editor;
 //        JPanel        _preview;
-#if 0
+#if 1
 BGIPColorDialog::BGIPColorDialog(Editor* editor, BackgroundItemPanel* parent) : JDialog(parent)
 {
     //super(_paletteFrame, ItemPalette.rbp.getString("ColorChooser"), true);
@@ -98,101 +103,77 @@ BGIPColorDialog::BGIPColorDialog(Editor* editor, BackgroundItemPanel* parent) : 
     this->parent = parent;
     resize(300,400);
 
-    //QWidget* panel = new QWidget();
-//    BorderLayout* borderLayout = new BorderLayout(this);
-//    setLayout(borderLayout);
-    setLayout(new QVBoxLayout);
-    setSizeGripEnabled(true);
+    /*public*/JPanel* panel = new JPanel();
+    panel->setLayout(new QVBoxLayout());// new BorderLayout(5, 5));
 
-    _chooser = new QColorDialog(_editor->getBackgroundColor());
-    //_chooser.getSelectionModel().addChangeListener(this);
-    connect(_chooser, SIGNAL(currentColorChanged(QColor)), this, SLOT(stateChanged()));
-    _chooser->setOption(QColorDialog::NoButtons);
-    _preview = new QWidget();
-    //_preview->setLayout(new QVBoxLayout(preview/*, BoxLayout.Y_AXIS*/));
-    //BorderLayout* previewLayout = new BorderLayout(_preview);
-    //_preview->setLayout(previewLayout);
-    _preview->setLayout(new QHBoxLayout);
-    //_preview.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black, 4),
-//                                                     ItemPalette.rbp.getString("PanelColor")));
-    _preview->setObjectName("myObject");
-    _preview->setStyleSheet("#myObject { border: 2px solid black; }");
-    QLabel* label = new QLabel();
-    NamedIcon* icon =new NamedIcon("resources/logo.gif", "resources/logo.gif");
-    label->setPixmap(QPixmap::fromImage(icon->getImage()));
-    ((QBoxLayout*)_preview->layout())->addWidget(label,0,Qt::AlignHCenter/*, BorderLayout::Center*/);
-    //_chooser.setPreviewPanel(_preview);
-//    borderLayout->addWidget(_chooser, BorderLayout::Center);
-//    borderLayout->addWidget(makeDoneButtonPanel(), BorderLayout::South);
-    layout()->addWidget(_chooser);
-    layout()->addWidget(makeDoneButtonPanel());
-    layout()->addWidget(_preview);
+    _chooser = new JColorChooser(editor->getTargetPanel()->getBackground());
+    _chooser->getSelectionModel()->addChangeListener((ChangeListener*)this);
+    _preview = new JPanel(new FlowLayout());
+    _preview->setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black, 4),
+            tr("Control Panel Color")));
+    ((QVBoxLayout*)_preview->layout())->addWidget(new JLabel(new NamedIcon("resources/logo.gif", "resources/logo.gif")), 0, Qt::AlignVCenter);//BorderLayout.CENTER);
+    _chooser->setPreviewPanel(_preview);
+    ((QVBoxLayout*)panel->layout())->addWidget(_chooser, 0, Qt::AlignVCenter);//BorderLayout.CENTER);
+    ((QVBoxLayout*)panel->layout())->addWidget(makeDoneButtonPanel(), 0, Qt::AlignBottom);//BorderLayout.SOUTH);
+
     //setContentPane(panel);
-
-//    _preview.setBackground(_editor.getBackground());
-    //_preview->setStyleSheet("QWidget {background-color : rgb(137,255,236); font-size : 7pt; }");
-    QColor c = _chooser->currentColor();
-    _preview->setStyleSheet(QString("QWidget {background-color : rgb(%1,%2,%3); font-size : 7pt; }").arg(c.red()).arg(c.green()).arg(c.blue()));
-//    _preview.getParent().setBackground(_editor.getBackground());
-//    setSize(_paletteFrame.getSize().width, this.getPreferredSize().height);
-//    setLocationRelativeTo(_paletteFrame);
+    setLayout(new QVBoxLayout());
+    this->layout()->addWidget(panel);
+    _preview->setBackground(_editor->getBackground());
+    ((JPanel*)_preview->parent())->setBackground(_editor->getBackground());
+    resize(parent->_paletteFrame->size().width(), this->getPreferredSize().height());
+    setLocationRelativeTo(parent->_paletteFrame);
     pack();
     setVisible(true);
 }
 
 /*protected*/ QWidget* BGIPColorDialog::makeDoneButtonPanel() {
-    QWidget* panel = new QWidget();
-    panel->setLayout(new FlowLayout());
-    QPushButton* doneButton = new QPushButton(tr("Done"));
-//    doneButton.addActionListener(new ActionListener() {
-//            ColorDialog dialog;
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                _editor.setBackgroundColor(_chooser.getColor());
-//                dialog.dispose();
-//            }
-//            ActionListener init(ColorDialog d) {
-//                dialog = d;
-//                return this;
-//            }
-//    }.init(this));
-    BGIPCDActionListener* l = new BGIPCDActionListener();
-    l->init(this);
-    connect(doneButton, SIGNAL(clicked()), l, SLOT(actionPerformed()));
-    panel->layout()->addWidget(doneButton);
+ JPanel* panel = new JPanel();
+ panel->setLayout(new FlowLayout());
+ QPushButton* doneButton = new QPushButton(tr("Done"));
+// doneButton.addActionListener(new ActionListener() {
+//     ColorDialog dialog;
 
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
-//    cancelButton.addActionListener(new ActionListener() {
-//            ColorDialog dialog;
-//            /*public*/ void actionPerformed(ActionEvent a) {
-//                dialog.dispose();
-//            }
-//            ActionListener init(ColorDialog d) {
-//                dialog = d;
-//                return this;
-//            }
-//    }.init(this));
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    panel->layout()->addWidget(cancelButton);
+//     public void actionPerformed(ActionEvent a) {
+ connect(doneButton, &QPushButton::clicked, [=]{
+         _editor->setBackgroundColor(_chooser->getColor());
+         /*dialog.*/dispose();
+         accept();
+     });
 
-    return panel;
+//     ActionListener init(ColorDialog d) {
+//         dialog = d;
+//         return this;
+//     }
+// }.init(this));
+ panel->layout()->addWidget(doneButton);
+
+ QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+// cancelButton.addActionListener(new ActionListener() {
+//     ColorDialog dialog;
+
+//     public void actionPerformed(ActionEvent a) {
+ connect(cancelButton, &QPushButton::clicked, [=]{
+         //dialog.dispose();
+  reject();
+     });
+
+//     ActionListener init(ColorDialog d) {
+//         dialog = d;
+//         return this;
+//     }
+// }.init(this));
+ panel->layout()->addWidget(cancelButton);
+
+ return panel;
 }
 
 /*public*/ void BGIPColorDialog::stateChanged(ChangeEvent* e)
 {
-//    _preview->setBackground(_chooser->currentColor());
-    QColor c = _chooser->currentColor();
-//    _preview->getParent()->setBackground(_chooser->currentColor());
-    _preview->setStyleSheet(QString("QWidget {background-color : rgb(%1,%2,%3); font-size : 7pt; }").arg(c.red()).arg(c.green()).arg(c.blue()));
+ _preview->setBackground(_chooser->getColor());
+ ((JPanel*)_preview->parent())->setBackground(_chooser->getColor());
 }
 
-/*public*/ void BGIPCDActionListener::actionPerformed(ActionEvent* a) {
-    dialog->_editor->setBackgroundColor(dialog->_chooser->currentColor());
-    dialog->close();
-}
-BGIPCDActionListener* BGIPCDActionListener::init(BGIPColorDialog* d) {
-    dialog = d;
-    return this;
-}
 #endif
 //};
 

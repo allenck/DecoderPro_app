@@ -40,7 +40,7 @@ private:
  Logger log;
  void common(Editor* editor, Positionable* parent);
 protected:
- /*protected*/ QMap<QString, NamedIcon*>* _iconMap;
+ /*protected*/ QMap<QString, NamedIcon*>* _iconMap = nullptr;
  /*protected*/ QString  _iconFamily;
  /*protected*/ double _scale;// = 1.0;			// getScale, come from net result found in one of the icons
  /*protected*/ int _rotate;// = 0;

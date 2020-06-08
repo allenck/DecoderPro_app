@@ -1111,6 +1111,227 @@ _todoMenu->addMenu(blockNeeds);  // #1
         _editor->makeWarrantMenu(true, false);
     }
 }
+/**
+ * *************** Overriden methods of Editor *******************
+ *
+ * public void paintTargetPanel(Graphics g) { Graphics2D g2d =
+ * (Graphics2D)g; if (_circuitIcons!=null){ java.awt.Stroke stroke =
+ * g2d.getStroke(); Color color = g2d.getColor();
+ * g2d.setColor(_editGroupColor); g2d.setStroke(new
+ * java.awt.BasicStroke(2.0f)); for(int i=0; i<_circuitIcons.size();i++){
+ * g.drawRect(_circuitIcons.get(i).getX(), _circuitIcons.get(i).getY(),
+ * _circuitIcons.get(i).maxWidth(), _circuitIcons.get(i).maxHeight()); }
+ * g2d.setColor(color); g2d.setStroke(stroke); } }
+ *
+ * /********************* convert plain track to indicator track
+ * *************
+ */
+
+/**
+ * Check if the block being edited has all its icons converted to indicator
+ * icons
+ */
+/*private*/ bool CircuitBuilder::iconsConverted(OBlock* block) {
+    if (block == nullptr) {
+        return true;
+    }
+    QList<Positionable*>* list = _circuitMap->value(block);
+    if (list != nullptr && list->size() > 0) {
+        for (int i = 0; i < list->size(); i++) {
+            Positionable* pos = list->at(i);
+            if (!(qobject_cast<IndicatorTrack*>(pos->self())) && !(qobject_cast<PortalIcon*>(pos->self()))) {
+                if (log->isDebugEnabled()) {
+                    log->debug(QString("icon needs Convertion ") + pos->self()->metaObject()->className());
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/**
+ * Icons need conversion. ask if user wants to convert them
+ */
+/*private*/ void CircuitBuilder::queryConvertIcons(OBlock* block) {
+    if (block == nullptr) {
+        return;
+    }
+    QList<Positionable*>* list = _circuitMap->value(block);
+    if (list != nullptr && list->size() > 0) {
+        int result = JOptionPane::showConfirmDialog(_editor, tr("Not all of the track icons are indicator icons.  Do you want to convert them?"),
+                tr("Track Circuit Incomplete"), JOptionPane::YES_NO_OPTION,
+                JOptionPane::QUESTION_MESSAGE);
+        if (result == JOptionPane::YES_OPTION) {
+            convertIcons(_circuitMap->value(block));
+        }
+    } else {
+        JOptionPane::showMessageDialog(_editor, tr("Block circuit \"%1\" needs at least one track icon.\nUse \"Edit Track Circuit\" to add Indicator Track icons.").arg(block->getDisplayName()),
+                tr("No Icons"), JOptionPane::INFORMATION_MESSAGE);
+    }
+}
+
+/*protected*/ void CircuitBuilder::convertIcons(QList<Positionable*>* iconList) {
+    if (iconList == nullptr || iconList->size() == 0) {
+        return;
+    }
+    // use global member for finishConvert to remove and add converted icons,
+    _circuitIcons = iconList;
+    // since iconList will be modified, use a copy to find unconverted icons
+    QList<Positionable*> list = QList<Positionable*>();
+    for (int i = 0; i < iconList->size(); i++) {
+        list.append(iconList->at(i));
+    }
+    if (list.size() > 0) {
+        TargetPane* targetPane = (TargetPane*) _editor->getTargetPanel();
+        targetPane->setHighlightColor(_highlightColor);
+
+        for (int i = 0; i < list.size(); i++) {
+            Positionable* pos = list.at(i);
+            if (!(qobject_cast<IndicatorTrack*>(pos->self()) && !(qobject_cast<PortalIcon*>(pos->self())))) {
+                if (log->isDebugEnabled()) {
+                    log->debug(QString("convertIcons: #") + QString::number(i) + " pos= " + pos->self()->metaObject()->className());
+                }
+                convertIcon(pos);
+            }
+        }
+        targetPane->setHighlightColor(_editGroupColor);
+        _editor->highlight(nullptr);
+    }
+}
+
+/**
+ * Converts icon to IndicatorTrack
+ */
+/*private*/ void CircuitBuilder::convertIcon(Positionable* pos) {
+    _oldIcon = (PositionableLabel*) pos;
+    _editor->highlight(_oldIcon);
+    _editor->toFront();
+    _editor->repaint();
+#if 0
+    if (qobject_cast<TurnoutIcon*>(pos->self())) {
+        makePalettteFrame("IndicatorTO");
+        _trackTOPanel = new IndicatorTOItemPanel(_convertFrame, "IndicatorTO", QString(), nullptr, _editor);
+//        ActionListener updateAction = new ActionListener() {
+//            public void actionPerformed(ActionEvent a) {
+                convertTO();
+            }
+        };
+        _trackTOPanel.init(updateAction);
+        _convertDialog.add(_trackTOPanel);
+    } else {
+        makePalettteFrame("IndicatorTrack");
+        _trackPanel = new IndicatorItemPanel(_convertFrame, "IndicatorTrack", null, _editor);
+        ActionListener updateAction = new ActionListener() {
+            public void actionPerformed(ActionEvent a) {
+                convertSeg();
+            }
+        };
+        _trackPanel.init(updateAction);
+        _convertDialog.add(_trackPanel);
+    }
+#endif
+    _convertDialog->adjustSize();
+    _convertDialog->setVisible(true);
+    _editor->repaint();
+}
+
+/*private*/ void CircuitBuilder::makePalettteFrame(QString title) {
+    ItemPalette::loadIcons(_editor);
+    _convertDialog = new JDialog(_editor, tr("EditItem %1").arg(title), true);
+    _convertFrame = new convertFrame(_convertDialog);
+
+//    _convertDialog->setLocationRelativeTo(_editor);
+//    _convertDialog->toFront();
+}
+
+/*
+ * gimmick to get JDialog to re-layout contents and repaint
+ */
+//static class convertFrame extends JmriJFrame {
+
+//    /**
+//     *
+//     */
+//    private static final long serialVersionUID = -6547026117570145767L;
+//    JDialog _dialog;
+
+    convertFrame::convertFrame(JDialog *dialog)
+         : JmriJFrame(false, false)
+    {
+        _dialog = dialog;
+    }
+
+    /*public*/ void convertFrame::pack() {
+        JmriJFrame::pack();
+        _dialog->pack();
+    }
+//}
+
+/*private*/ void CircuitBuilder::convertTO() {
+    IndicatorTurnoutIcon* t = new IndicatorTurnoutIcon(_editor);
+    t->setOccBlockHandle(new NamedBeanHandle<OBlock*>(_currentBlock->getSystemName(), _currentBlock));
+    t->setTurnout(((TurnoutIcon*) _oldIcon)->getNamedTurnout());
+    t->setFamily(_trackTOPanel->getFamilyName());
+
+    QMap<QString, QMap<QString, NamedIcon*>*>* iconMap = _trackTOPanel->getIconMaps();
+    QMapIterator<QString, QMap<QString, NamedIcon*>*> it(*iconMap);
+    while (it.hasNext()) {
+        /*Entry<String, HashMap<String, NamedIcon>> entry =*/ it.next();
+        QString status = it.key();
+        QMapIterator<QString, NamedIcon*> iter( *it.value());
+        while (iter.hasNext()) {
+            /*Entry<String, NamedIcon> ent = */iter.next();
+            t->setIcon(status, iter.key(), new NamedIcon(iter.value()));
+        }
+    }
+    t->setLevel(Editor::TURNOUTS);
+    t->setScale(_oldIcon->getScale());
+    t->rotate(_oldIcon->getDegrees());
+    finishConvert(t);
+}
+
+/*private*/ void CircuitBuilder::convertSeg() {
+    IndicatorTrackIcon* t = new IndicatorTrackIcon(_editor);
+    t->setOccBlockHandle(new NamedBeanHandle<OBlock*>(_currentBlock->getSystemName(), _currentBlock));
+    t->setFamily(_trackPanel->getFamilyName());
+
+    QMap<QString, NamedIcon*>* iconMap = _trackPanel->getIconMap();
+    if (iconMap != nullptr) {
+        QMapIterator<QString, NamedIcon*> it(*iconMap);
+        while (it.hasNext()) {
+            /*Entry<String, NamedIcon> entry = */it.next();
+            if (log->isDebugEnabled()) {
+                log->debug("key= " + it.key());
+            }
+            t->setIcon(it.key(), new NamedIcon(it.value()));
+        }
+    }
+    t->setLevel(Editor::TURNOUTS);
+    t->setScale(_oldIcon->getScale());
+    t->rotate(_oldIcon->getDegrees());
+    finishConvert(t);
+}
+
+/*private*/ void CircuitBuilder::finishConvert(Positionable* pos) {
+    _circuitIcons->removeOne(_oldIcon);
+    _oldIcon->remove();
+    pos->setLocation(_oldIcon->getLocation());
+    _editor->putItem(pos);
+    _circuitIcons->append(pos);
+    pos->updateSize();
+
+    _oldIcon = nullptr;
+    _trackPanel = nullptr;
+    _trackTOPanel = nullptr;
+    _convertDialog->dispose();
+    _convertDialog = nullptr;
+    _convertFrame = nullptr;
+}
+
+/**
+ * ************* end convert icons ******************
+ */
 
 /*protected*/ QString CircuitBuilder::checkForPortals(/*@Nonnull*/ OBlock* block, QString key) {
     QString sb;// = new StringBuffer();

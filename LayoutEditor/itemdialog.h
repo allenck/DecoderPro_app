@@ -1,21 +1,24 @@
 #ifndef ITEMDIALOG_H
 #define ITEMDIALOG_H
 
-#include "jdialog.h"
+#include "jmrijframe.h"
 
 class ItemPanel;
 class FamilyItemPanel;
-class ItemDialog : public JDialog
+class ItemDialog : public JmriJFrame
 {
     Q_OBJECT
 public:
     //explicit ItemDialog(QWidget *parent = 0);
-    /*public*/ ItemDialog(QString type, QString family, QString title, FamilyItemPanel *parent, bool mode);
+    /*public*/ ItemDialog(QString type, QString title);
  /*public*/ void dispose();
-
+ /*public*/ QString getClassName();
 signals:
 
 public slots:
+private:
+ /*private*/ static ItemDialog* _instance;// = null;		// only let one dialog at a time
+
 protected:
     /*protected*/ FamilyItemPanel* _parent;
     /*protected*/ QString    _type;

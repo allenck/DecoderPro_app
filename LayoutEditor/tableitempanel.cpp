@@ -71,9 +71,9 @@
 */
 /*public*/ void TableItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
- thisLayout->insertWidget(0, initTablePanel(_model, _editor)/*, 0*/);
- _buttonPosition = 1;
  FamilyItemPanel::init(doneAction, iconMap);
+ thisLayout->insertWidget(0, initTablePanel(_model, _editor));
+ _buttonPosition = 1;
 }
 
 /**
@@ -95,7 +95,7 @@
  _table->setFont(font);
  _table->getSelectionModel()->addListSelectionListener((ListSelectionListener*)this);
  ROW_HEIGHT = _table->getRowHeight();
- QWidget* topPanel = new QWidget();
+ JPanel* topPanel = new JPanel();
  QVBoxLayout* topPanelLayout;
  topPanel->setLayout(topPanelLayout = new QVBoxLayout());//BorderLayout());
  topPanelLayout->addWidget(new QLabel(model->getName()), 0, Qt::AlignCenter);//SwingConstants.CENTER), BorderLayout.NORTH);
@@ -105,27 +105,27 @@
  topPanelLayout->addWidget(/*_scrollPane*/_table,1, Qt::AlignCenter);// BorderLayout.CENTER);
  topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the Panel"));
 
- QWidget* panel = new QWidget();
+ JPanel* panel = new JPanel();
  FlowLayout* panelLayout = new FlowLayout(panel);
  _addTableButton = new QPushButton(tr("Add New Table Item..."));
 // _addTableButton.addActionListener(new ActionListener() {
 //     @Override
 //     public void actionPerformed(ActionEvent a) {
-//         makeAddToTableWindow();
+ connect(_addTableButton, &QPushButton::clicked, [=] {
+         makeAddToTableWindow();
 //     }
-// });
- connect(_addTableButton, SIGNAL(clicked(bool)), this, SLOT(makeAddToTableWindow()));
+ });
  _addTableButton->setToolTip(tr("Press to add a new item to the table"));
  panelLayout->addWidget(_addTableButton);
  QPushButton* clearSelectionButton = new QPushButton(tr("Clear Table Selections"));
 // clearSelectionButton.addActionListener(new ActionListener() {
 //     @Override
 //     public void actionPerformed(ActionEvent a) {
+ connect(clearSelectionButton, &QPushButton::clicked, [=]{
 //         _table.clearSelection();
-//         hideIcons();
+         hideIcons();
 //     }
-// });
- connect(clearSelectionButton, SIGNAL(clicked(bool)), this, SLOT(hideIcons()));
+ });
  clearSelectionButton->setToolTip(tr("Clear selected table rows"));
  panelLayout->addWidget(clearSelectionButton);
  topPanelLayout->addWidget(panel, 0, Qt::AlignBottom); //BorderLayout.SOUTH);

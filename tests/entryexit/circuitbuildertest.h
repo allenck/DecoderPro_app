@@ -2,6 +2,7 @@
 #define CIRCUITBUILDERTEST_H
 
 #include <QObject>
+#include "exceptions.h"
 
 class Logger;
 class ControlPanelEditor;
@@ -21,6 +22,12 @@ public slots:
  /*public*/ void testEditCircuitFrame();
  /*public*/ void testEditCircuitError();
  /*public*/ void testEditPortals();
+ /*public*/ void testEditCircuitPaths();
+ /*public*/ void testEditPortalDirection();
+ /*public*/ void testEditSignalFrame();
+ /*public*/ void testEditPortalError();
+ /*public*/ void testEditPortalErrorIcon() throw (Exception);
+ /*public*/ void testNoBlock();
 
 private:
  static Logger* log;

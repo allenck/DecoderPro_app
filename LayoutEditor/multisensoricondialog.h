@@ -11,8 +11,8 @@ public:
 
 
 public slots:
- void onAddSensor_clicked();
- void onDeleteSensor_clicked();
+// void onAddSensor_clicked();
+// void onDeleteSensor_clicked();
 
 private:
      /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("MultiSensorIconDialog");

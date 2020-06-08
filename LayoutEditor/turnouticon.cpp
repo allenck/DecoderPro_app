@@ -446,7 +446,7 @@ void TurnoutIcon::on_tristateItem_toggled(bool bState)
 /*protected*/ void TurnoutIcon::editItem()
 {
  makePaletteFrame(tr("Edit %1 Icon").arg("Turnout"));
- _itemPanel = new TableItemPanel(_paletteFrame, "Turnout", _iconFamily, PickListModel::turnoutPickModelInstance(), _editor,this);
+ _itemPanel = new TableItemPanel(_paletteFrame, "Turnout", _iconFamily, PickListModel::turnoutPickModelInstance(), _editor, this);
 //    ActionListener updateAction = new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent a) {
 //            updateItem();

@@ -18,20 +18,19 @@ class IconItemPanel : public ItemPanel
     Q_OBJECT
 public:
     //explicit IconItemPanel(QWidget *parent = 0);
-    /*public*/ IconItemPanel(DisplayFrame* parentFrame, QString type, Editor* editor, QWidget *parent =0);
+    /*public*/ IconItemPanel(DisplayFrame* parentFrame, QString type, Editor *editor, QWidget *parent =0);
     /*public*/ void init();
-    /*public*/ virtual void makeBottomPanel(ActionListener* doneAction);
+    /*public*/ void initButtonPanel();
     /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
     /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event);
     /*public*/ void mouseEntered(QGraphicsSceneMouseEvent* event);
     /*public*/ void mouseExited(QGraphicsSceneMouseEvent* event);
- /*public*/ void deselectIcon();
+ /*public*/ void init(bool isBackGround);
 
 signals:
 
 public slots:
- void renameIcon();
 
 private:
     QMap<QString, NamedIcon*>* _iconMap;
@@ -39,35 +38,29 @@ private:
     ImagePanel* _iconPanel;
     QPushButton* _catalogButton;
     CatalogPanel* _catalog;
-    IconDisplayPanel* _selectedIcon;
-    QPushButton* _deleteIconButton;
+    JLabel* _selectedIcon;
+    QPushButton* deleteIconButton;
     static Logger* log;
     void hideCatalog();
     /*private*/ void putIcon(QString name, NamedIcon* icon);
     /*private*/ void clickEvent(QGraphicsSceneMouseEvent* event);
-    void showCatalog();
-    /*private*/ CatalogPanel* makeCatalog();
-    /*private*/ void setDeleteIconButton(bool set);
 
 private slots:
-    void on_catalogButton_clicked();
+   // void on_catalogButton_clicked();
     /*protected*/ void deleteIcon();
 
 protected:
     /*protected*/ int _level;// = Editor::ICONS;      // sub classes can override (e.g. Background)
-    /*protected*/ virtual QWidget* instructions();
+    /*protected*/ virtual JPanel *instructions(bool isBackGround);
     /*protected*/ void initIconFamiliesPanel();
     /*protected*/ virtual void addIconsToPanel(QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void removeIconFamiliesPanel();
     /*protected*/ void updateFamiliesPanel();
     /*protected*/ QString setIconName(QString name);
-    /*protected*/ void setEditor(Editor* ed);
+//    /*protected*/ void setEditor(Editor* ed);
 
 protected slots:
     /*protected*/ void addNewIcon();
-    /*protected*/ void setSelection(IconDisplayPanel* panel);
-    /*protected*/ void setPreviewBg(int index);
-    /*protected*/ void updateBackground0(BufferedImage* im);
 
 
 friend class ClockItemPanel;

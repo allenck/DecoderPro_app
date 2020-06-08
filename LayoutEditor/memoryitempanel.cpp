@@ -39,7 +39,7 @@
 ///*public*/ class MemoryItemPanel extends TableItemPanel implements ChangeListener, ListSelectionListener {
 
 
-/*public*/ MemoryItemPanel::MemoryItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor* editor, QWidget *parent)
+/*public*/ MemoryItemPanel::MemoryItemPanel(DisplayFrame* parentFrame, QString type, QString family, PickListModel* model, Editor *editor, QWidget *parent)
     : TableItemPanel(parentFrame, type, family, model, editor, parent)
 {
  //super(parentFrame, type, family, model, editor);
@@ -49,15 +49,11 @@
 
 /*public*/ void MemoryItemPanel::init()
 {
- if(!_initialized)
- {
-  thisLayout->addWidget(initTablePanel(_model, _editor));
-  this->initIconFamiliesPanel();
-  thisLayout->addWidget(_iconFamilyPanel);
-  thisLayout->addWidget(makeBgButtonPanel(_dragIconPanel, _iconPanel));
-  connect(_table, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
-  _initialized = true;
-  update();
+ if (!_initialized) {
+     layout()->addWidget(initTablePanel(_model, _editor));
+     initIconFamiliesPanel();
+     layout()->addWidget(_iconFamilyPanel);
+     _initialized = true;
  }
 }
 
@@ -109,11 +105,9 @@
  {
   _iconFamilyPanel->layout()->addWidget(instructions());
  }
- makeDragIconPanel(1);
- this->makeDndIconPanel(NULL, "");
+ makeDndIconPanel(NULL, "");
 
- //_iconFamilyPanel->layout()->addWidget(_dragIconPanel);
- log->debug("initIconFamiliesPanel done");
+ _iconFamilyPanel->layout()->addWidget(_dragIconPanel);
 }
 
 /*protected*/ void MemoryItemPanel::makeDndIconPanel(QMap<QString, NamedIcon *> * /*iconMap*/, QString /*displayKey*/)
@@ -122,7 +116,7 @@
  {
   return;
  }
- QWidget* panel = new QWidget();
+ JPanel* panel = new JPanel();
   //panel.setOpaque(false);
  GridBagLayout* panelLayout;
   panel->setLayout(panelLayout = new GridBagLayout());
@@ -192,8 +186,7 @@
   sample << "selection 1" << "selection 2";
   panelLayout->addWidget(makeDragIcon(_comboMem, Type::COMBO), c);
 
-  _dragIconPanel->layout()->addWidget(panel);
-  _dragIconPanel->update();
+  _dragIconPanel = panel;
 }
 
 /*private*/ QWidget* MemoryItemPanel::makeDragIcon(QWidget* mem, Type type)

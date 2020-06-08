@@ -39,7 +39,7 @@ ConvertDialog::ConvertDialog(CircuitBuilder* cb, PositionableLabel* pos, OBlock*
     ActionListener* updateAction;
     if (qobject_cast<TurnoutIcon*>(pos->self())) {
         title = "IndicatorTO";
-        _panel = new CDIndicatorTOItemPanel(_filler, title, nullptr, nullptr, cb->_editor, this);
+        _panel = new CDIndicatorTOItemPanel(_filler, title, nullptr, nullptr, _parent->_editor, this);
 //        {
 //            @Override
 //            protected void showIcons() {
@@ -57,7 +57,7 @@ ConvertDialog::ConvertDialog(CircuitBuilder* cb, PositionableLabel* pos, OBlock*
 //        };
     } else {
         title = "IndicatorTrack";
-        _panel = new CDIndicatorItemPanel(_filler, title, nullptr, cb->_editor, this);
+        _panel = new CDIndicatorItemPanel(_filler, title, nullptr,  _parent->_editor,this);
 //        {
 //            @Override
 //            protected void showIcons() {
@@ -114,9 +114,9 @@ ConvertDialog::ConvertDialog(CircuitBuilder* cb, PositionableLabel* pos, OBlock*
  */
 /*private*/ void ConvertDialog::displayIcons() {
     QSize newDim = _panel->sizeHint();
-    QSize deltaDim = _panel->shellDimension(_panel);
-    QSize dim = QSize(deltaDim.width() + newDim.width(), deltaDim.height() + newDim.height());
-    resize(dim);
+//    QSize deltaDim = _panel->shellDimension(_panel);
+//    QSize dim = QSize(deltaDim.width() + newDim.width(), deltaDim.height() + newDim.height());
+//    resize(dim);
     update();
     pack();
 }

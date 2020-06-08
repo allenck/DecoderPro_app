@@ -7,7 +7,7 @@
 class NamedIcon;
 class DropTargetDropEvent;
 class DataFlavor;
-class LIBLAYOUTEDITORSHARED_EXPORT DropJLabel : public QLabel
+class LIBLAYOUTEDITORSHARED_EXPORT DropJLabel : public JLabel
 {
     Q_OBJECT
 public:
