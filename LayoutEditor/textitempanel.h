@@ -1,7 +1,8 @@
-#ifndef TEXTITEMPANEL_H
+﻿#ifndef TEXTITEMPANEL_H
 #define TEXTITEMPANEL_H
 #include "itempanel.h"
 #include "positionablelabel.h"
+#include "dragjlabel.h"
 
 class DataFlavor;
 class ItemPalette;
@@ -35,14 +36,13 @@ friend class DragDecoratorLabel;
 /**
  * Export a Positionable item from panel.
  */
-class DragDecoratorLabel : public PositionableLabel // implements DragGestureListener, DragSourceListener, Transferable
+class DragDecoratorLabel : public DragJLabel // implements DragGestureListener, DragSourceListener, Transferable
 {
  Q_OBJECT
     DataFlavor* dataFlavor;
 public:
     /*public*/ DragDecoratorLabel(QString s, Editor* editor);
 //    /*public*/ void dragGestureRecognized(DragGestureEvent e);
-    void mousePressEvent(QMouseEvent *e);
 //    void setBackground(QColor bg);
     void setMargin(int);
     void setFixedWidth(int);
@@ -51,7 +51,9 @@ public:
     void setBorderSize(int);
     void setForeground(QColor);
     /*public*/ void setAttributes();
-
+    void setDisplayLevel(int);
+    QColor getForeground();
+    PositionablePopupUtil* getPopupUtility();
 public slots:
     void setFontSize(int);
     void setFontFamily(QString family);
@@ -79,6 +81,15 @@ private:
     int style = 0;
     int pointsize;
     static Logger* log;
+    Editor* editor;
+    QColor _foreground;
+    int _level;
+    PositionablePopupUtil* util = nullptr;
+
+protected:
+    void mousePressEvent(QMouseEvent *e);
+
+    friend class PreviewScene;
 };
 
 #endif // TEXTITEMPANEL_H

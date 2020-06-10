@@ -16,6 +16,7 @@ public:
  /*public*/ QString getDisplayName();
  /*public*/ QIcon getSmallDisplayIcon();
  /*public*/ QIcon getLargeDisplayIcon();
+ QColor getForeground();
 public slots:
  void onColorButton(QString s);
  QString getTitle();

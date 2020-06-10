@@ -43,6 +43,10 @@ JSpinner::JSpinner(SpinnerModel* model, QWidget* parent) : QSpinBox(parent)
  return _opaque;
 }
 
+/*public*/ QColor JSpinner::getForeground()
+{
+ return palette().color(QWidget::foregroundRole());
+}
 /*public*/ QColor JSpinner::getBackground()
 {
  return palette().color(QWidget::backgroundRole());

@@ -323,6 +323,7 @@ public:
     /*public*/ bool isOpaque();
     /*public*/ QColor getBackground();
     /*public*/ void setBackground(QColor);
+    QColor getForeground();
     /*public*/ void setForeground(QColor);
 
     /*public*/ QFont getFont();

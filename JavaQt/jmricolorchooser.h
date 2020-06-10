@@ -14,8 +14,10 @@ public:
  explicit JmriColorChooser(QObject *parent = nullptr);
  static /*public*/ void addRecentColor(QColor color);
  static /*public*/ QList<QColor> getRecentColors();
- static /*public*/ QColor showDialog(QWidget* comp, QString dialogTitle, QColor currentColor);
+ static /*public*/ QColor showDialog(QWidget *comp, QString dialogTitle, QColor currentColor);
  static /*public*/ JColorChooser* extendColorChooser(JColorChooser* chooser);
+ QColor getForeground();
+
 signals:
 
 public slots:

@@ -12,7 +12,7 @@ class DragJLabel : public JLabel
 {
     Q_OBJECT
 public:
-    //explicit DragJLabel(QWidget *parent = 0);
+    explicit DragJLabel(QString s, QWidget *parent = 0);
     /*public*/ DragJLabel(DataFlavor* flavor, QWidget *parent = 0);
     /*public*/ DragJLabel(DataFlavor* flavor, NamedIcon* icon, QWidget *parent = 0);
 

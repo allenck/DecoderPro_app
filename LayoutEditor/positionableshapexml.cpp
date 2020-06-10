@@ -47,7 +47,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
     element.setAttribute("forcecontroloff", !p->isControlling()?"true":"false");
     element.setAttribute("hidden", p->isHidden()?"yes":"no");
     element.setAttribute("positionable", p->isPositionable()?"true":"false");
-    element.setAttribute("showtooltip", p->showTooltip()?"true":"false");
+    element.setAttribute("showtooltip", p->showToolTip()?"true":"false");
     element.setAttribute("editable", p->isEditable()?"true":"false");
     QString tip = p->getToolTip();
     QString txt = tip;

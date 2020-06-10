@@ -59,6 +59,7 @@ public:
  /*public*/ QObject* jself() {return (QObject*)this;}
 
  /*public*/ bool isOpaque() {return true;}
+ QColor getForeground();
  /*public*/ QColor getBackground() {return QColor();}
  /*public*/ void setBackground(QColor) {}
  /*public*/ void setOpaque(bool) {}

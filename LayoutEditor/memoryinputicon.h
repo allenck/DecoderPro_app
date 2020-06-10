@@ -21,7 +21,7 @@ public:
     /*public*/ MemoryInputIcon(int nCols, Editor* editor, QWidget *parent = 0);
     /*public*/ Positionable* deepClone();
     /*public*/ Positionable* finishClone(MemoryInputIcon *pos);
-    /*public*/ QWidget *getTextComponent();
+    /*public*/ JComponent *getTextComponent();
     /*public*/ void mouseExited(QGraphicsSceneMouseEvent* e);
      /*public*/ void setMemory(QString pName);
     /*public*/ void setMemory(NamedBeanHandle<Memory*>* m);

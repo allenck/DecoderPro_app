@@ -10,7 +10,7 @@ class AbstractReporter;
 {
  Q_OBJECT
   public:
-    ReporterPopupUtil(Positionable* parent, QWidget* textComp) : PositionablePopupUtil(parent, textComp)
+    ReporterPopupUtil(Positionable* parent, JComponent* textComp) : PositionablePopupUtil(parent, textComp)
     {
         //super(parent, textComp);
     }

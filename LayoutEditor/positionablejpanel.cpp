@@ -45,7 +45,8 @@
     return finishClone(pos);
 }
 
-/*public*/ Positionable* PositionableJPanel::finishClone(PositionableJPanel* pos) {
+/*public*/ Positionable* PositionableJPanel::finishClone(Positionable *p) {
+ PositionableJPanel* pos = (PositionableJPanel*)p;
     pos->setLocation(getX(), getY());
     pos->_displayLevel = _displayLevel;
     pos->_controlling = _controlling;
@@ -104,7 +105,7 @@
 /*public*/ void PositionableJPanel::setShowToolTip(bool set) {
     _showTooltip = set;
 }
-/*public*/ bool PositionableJPanel::showTooltip() {
+/*public*/ bool PositionableJPanel::showToolTip() {
     return _showTooltip;
 }
 /*public*/ void PositionableJPanel::setToolTip(QString tip) {
@@ -129,8 +130,8 @@
 /*public*/ bool PositionableJPanel::getSaveOpaque() {
     return isOpaque();
 }
-/*public*/ QWidget* PositionableJPanel::getTextComponent() {
-    return (QWidget*)this;
+/*public*/ JComponent *PositionableJPanel::getTextComponent() {
+    return this;
 }
 
 /*public*/ QString PositionableJPanel::getNameString() {

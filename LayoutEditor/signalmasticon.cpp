@@ -685,7 +685,7 @@ void SignalMastIcon::updateItem() {
  else
   item = new QGraphicsPixmapItem(pixmap,_itemGroup);
  //item->setPos(getX(), getY());
- if(showTooltip()) item->setToolTip(getToolTip());
+ if(showToolTip()) item->setToolTip(getToolTip());
  //_itemGroup->addToGroup(item);
  _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
  //if(showTooltip()) _itemGroup->setToolTip(getTooltip());

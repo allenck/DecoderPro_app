@@ -70,7 +70,7 @@
      * @param currentColor The color that will be set as the starting value for the dialog.
      * @return the selected color for a OK response, the orignal color for a Cancel response.
      */
-    /*static*/ /*public*/ QColor JmriColorChooser::showDialog(QWidget* comp, QString dialogTitle, QColor currentColor) {
+    /*static*/ /*public*/ QColor JmriColorChooser::showDialog(QWidget *comp, QString dialogTitle, QColor currentColor) {
         color = currentColor == QColor() ? QColor(Qt::white) : currentColor;
         QString title = dialogTitle == "" ? "" : dialogTitle;
         JColorChooser* chooser = extendColorChooser(new JColorChooser(color));
@@ -112,3 +112,13 @@
         chooser->setChooserPanels(newPanels);
         return chooser;
     }
+
+QColor JmriColorChooser::getForeground()
+{
+ QColor c;
+// QPalette p = palette();
+// QString ss = styleSheet();
+// c = p.color(QPalette::Foreground);
+// if(ss == "")
+   return c;
+}

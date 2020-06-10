@@ -19,6 +19,7 @@ public:
  /*public*/ virtual QString getTitle() {return "";}
  /*public*/ void setBackground(QColor color);
  /*public*/ void removeAll();
+ /*public*/ QColor getForeground();
  /*public*/ QColor getBackground();
 
 // void paintEvent(QPaintEvent*);

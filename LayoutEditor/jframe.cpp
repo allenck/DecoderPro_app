@@ -538,6 +538,10 @@ void JFrame::setVisible(bool visible)
 {
  return _opaque;
 }
+/*public*/ QColor JFrame::getForeground()
+{
+ return palette().color(QWidget::foregroundRole());
+}
 /*public*/ QColor JFrame::getBackground()
 {
  return palette().color(QWidget::backgroundRole());

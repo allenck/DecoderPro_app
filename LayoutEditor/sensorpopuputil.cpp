@@ -1,7 +1,7 @@
 #include "sensorpopuputil.h"
 #include "sensoricon.h"
 
-SensorPopupUtil::SensorPopupUtil(Positionable *parent, QWidget* textComp) :
+SensorPopupUtil::SensorPopupUtil(Positionable *parent, JComponent* textComp) :
     PositionablePopupUtil(parent, textComp)
 {
  this->parent = parent;

@@ -17,8 +17,8 @@ class PositionablePopupUtil : public QObject
     Q_OBJECT
 public:
  //explicit PositionablePopupUtil(QObject *parent = 0);
-    /*public*/ PositionablePopupUtil(Positionable* parent, QWidget *textComp);
-    /*public*/ PositionablePopupUtil* clone(Positionable* parent, QWidget *textComp);
+    /*public*/ PositionablePopupUtil(Positionable* parent, JComponent *textComp);
+    /*public*/ PositionablePopupUtil* clone(Positionable* parent, JComponent *textComp);
     /*public*/ QString toString();
     static const /*public*/ int FONT_COLOR =             0x00;
     static const /*public*/ int BACKGROUND_COLOR =       0x01;
@@ -142,7 +142,7 @@ private slots:
  void on_boldAction_triggered();
 
 protected:
- /*protected*/ QWidget* _textComponent;    // closest ancestor for JLabel and JTextField
+ /*protected*/ JComponent* _textComponent;    // closest ancestor for JLabel and JTextField
  /*protected*/ int _textType;                // JComponent does not have text, used for casting
  /*protected*/ Positionable* _parent;
  /*protected*/ PositionablePopupUtil* _self;

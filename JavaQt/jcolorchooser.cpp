@@ -853,3 +853,12 @@ void JColorChooser::firePropertyChange(QString propertyName, QVariant oldVal, QV
 {
  pcs->firePropertyChange(propertyName, oldVal, newVal);
 }
+QColor JColorChooser::getForeground()
+{
+ QColor c;
+ QPalette p = palette();
+ QString ss = styleSheet();
+ c = p.color(QPalette::Foreground);
+ if(ss == "")
+   return c;
+}

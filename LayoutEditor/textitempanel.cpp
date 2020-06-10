@@ -81,11 +81,13 @@
 //    DataFlavor dataFlavor;
 
 /*public*/DragDecoratorLabel::DragDecoratorLabel(QString s, Editor* editor)
- : PositionableLabel(s, editor){
+ : DragJLabel(s) //PositionableLabel(s, editor)
+{
+ this->editor = editor;
     //super(s, editor);
  QLabel::setVisible(false);
  QLabel::setAutoFillBackground(true);
- setLevel(Editor::LABELS);
+ setDisplayLevel(Editor::LABELS);
  _foreground = QColor(Qt::black);
  QSizePolicy sizePolicy = QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
  sizePolicy.setHorizontalStretch(1);
@@ -96,7 +98,6 @@
  bg = getBackground();
  f = getFont();
  this->pointsize = f.pointSize();
-
 
 #if 0
     DragSource dragSource = DragSource.getDefaultDragSource();
@@ -125,7 +126,7 @@ void DragDecoratorLabel::setBackground(QColor bg)
 #endif
 void DragDecoratorLabel::setForeground(QColor fg)
 {
- PositionableLabel::setForeground(fg);
+ //PositionableLabel::setForeground(fg);
  this->fg = fg;
  setAttributes();
 }
@@ -205,6 +206,12 @@ void DragDecoratorLabel::setFontStyle(int style)
  }
  setAttributes();
 }
+void DragDecoratorLabel::setDisplayLevel(int l) { _level = l;}
+
+QColor DragDecoratorLabel::getForeground() { return fg;}
+
+PositionablePopupUtil* DragDecoratorLabel::getPopupUtility() { return util;}
+
 /*public*/ void DragDecoratorLabel::setAttributes()
 {
 #if 1
@@ -237,7 +244,7 @@ void DragDecoratorLabel::setFontStyle(int style)
 #endif
  QLabel::repaint();
  QLabel::update();
- updateScene();
+ //updateScene();
 }
 
 void DragDecoratorLabel::mousePressEvent(QMouseEvent *e)

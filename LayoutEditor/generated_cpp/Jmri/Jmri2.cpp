@@ -51,7 +51,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -15891,7 +15890,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::deepClone();
+  return 0;
 }
 void PythonQtShell_Positionable::doMouseClicked(QGraphicsSceneMouseEvent*  arg__1)
 {
@@ -16111,7 +16110,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::finishClone(arg__1);
+  return 0;
 }
 QColor  PythonQtShell_Positionable::getBackground()
 {
@@ -16276,7 +16275,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::getDisplayLevel();
+  return int();
 }
 Editor*  PythonQtShell_Positionable::getEditor()
 {
@@ -16309,7 +16308,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::getEditor();
+  return 0;
 }
 QFont  PythonQtShell_Positionable::getFont()
 {
@@ -16608,39 +16607,6 @@ if (_wrapper) {
 }
   return Positionable::getScale();
 }
-QWidget*  PythonQtShell_Positionable::getTextComponent()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getTextComponent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"QWidget*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QWidget* returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getTextComponent", methodInfo, result);
-          } else {
-            returnValue = *((QWidget**)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return Positionable::getTextComponent();
-}
 QString  PythonQtShell_Positionable::getToolTip()
 {
 if (_wrapper) {
@@ -16837,7 +16803,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::isControlling();
+  return bool();
 }
 bool  PythonQtShell_Positionable::isEditable()
 {
@@ -16870,7 +16836,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::isEditable();
+  return bool();
 }
 bool  PythonQtShell_Positionable::isHidden()
 {
@@ -16903,7 +16869,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::isHidden();
+  return bool();
 }
 bool  PythonQtShell_Positionable::isOpaque()
 {
@@ -16969,7 +16935,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::isPositionable();
+  return bool();
 }
 bool  PythonQtShell_Positionable::isVisible()
 {
@@ -17057,7 +17023,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::maxHeight();
+  return int();
 }
 int  PythonQtShell_Positionable::maxWidth()
 {
@@ -17090,7 +17056,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::maxWidth();
+  return int();
 }
 void PythonQtShell_Positionable::paint(EditScene*  arg__1)
 {
@@ -17266,7 +17232,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setControlling(arg__1);
+  
 }
 bool  PythonQtShell_Positionable::setDisableControlMenu(QMenu*  arg__1)
 {
@@ -17321,7 +17287,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setDisplayLevel(arg__1);
+  
 }
 bool  PythonQtShell_Positionable::setEditIconMenu(QMenu*  arg__1)
 {
@@ -17409,7 +17375,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setEditable(arg__1);
+  
 }
 void PythonQtShell_Positionable::setEditor(Editor*  arg__1)
 {
@@ -17431,7 +17397,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setEditor(arg__1);
+  
 }
 void PythonQtShell_Positionable::setForeground(QColor  arg__1)
 {
@@ -17475,7 +17441,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setHidden(arg__1);
+  
 }
 void PythonQtShell_Positionable::setLevel(int  arg__1)
 {
@@ -17585,7 +17551,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setPositionable(arg__1);
+  
 }
 bool  PythonQtShell_Positionable::setRotateMenu(QMenu*  arg__1)
 {
@@ -17728,7 +17694,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::setShowToolTip(arg__1);
+  
 }
 void PythonQtShell_Positionable::setSize(int  arg__1, int  arg__2)
 {
@@ -17871,7 +17837,7 @@ if (_wrapper) {
     }
   }
 }
-  Positionable::showHidden();
+  
 }
 bool  PythonQtShell_Positionable::showPopUp(QMenu*  arg__1)
 {
@@ -17937,7 +17903,7 @@ if (_wrapper) {
     }
   }
 }
-  return Positionable::showToolTip();
+  return bool();
 }
 bool  PythonQtShell_Positionable::storeItem()
 {
@@ -18164,11 +18130,6 @@ bool  PythonQtWrapper_Positionable::getSaveOpaque(Positionable* theWrappedObject
 double  PythonQtWrapper_Positionable::getScale(Positionable* theWrappedObject)
 {
   return ( theWrappedObject->getScale());
-}
-
-QWidget*  PythonQtWrapper_Positionable::getTextComponent(Positionable* theWrappedObject)
-{
-  return ( theWrappedObject->getTextComponent());
 }
 
 QString  PythonQtWrapper_Positionable::getToolTip(Positionable* theWrappedObject)
@@ -19136,39 +19097,6 @@ if (_wrapper) {
 }
   return PositionableLabel::getScale();
 }
-QWidget*  PythonQtShell_PositionableLabel::getTextComponent()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getTextComponent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"QWidget*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QWidget* returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getTextComponent", methodInfo, result);
-          } else {
-            returnValue = *((QWidget**)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return PositionableLabel::getTextComponent();
-}
 QString  PythonQtShell_PositionableLabel::getToolTip()
 {
 if (_wrapper) {
@@ -19531,6 +19459,28 @@ if (_wrapper) {
   }
 }
   return PositionableLabel::maxWidth();
+}
+void PythonQtShell_PositionableLabel::mousePressEvent(QMouseEvent*  ev0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mousePressEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&ev0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PositionableLabel::mousePressEvent(ev0);
 }
 void PythonQtShell_PositionableLabel::remove()
 {
@@ -20441,11 +20391,6 @@ QSize  PythonQtWrapper_PositionableLabel::getSize(PositionableLabel* theWrappedO
   return ( theWrappedObject->getSize());
 }
 
-QWidget*  PythonQtWrapper_PositionableLabel::getTextComponent(PositionableLabel* theWrappedObject)
-{
-  return ( theWrappedObject->getTextComponent());
-}
-
 QString  PythonQtWrapper_PositionableLabel::getToolTip(PositionableLabel* theWrappedObject)
 {
   return ( theWrappedObject->getToolTip());
@@ -20554,6 +20499,11 @@ int  PythonQtWrapper_PositionableLabel::maxWidth(PositionableLabel* theWrappedOb
 int  PythonQtWrapper_PositionableLabel::maxWidthTrue(PositionableLabel* theWrappedObject)
 {
   return ( theWrappedObject->maxWidthTrue());
+}
+
+void PythonQtWrapper_PositionableLabel::mousePressEvent(PositionableLabel* theWrappedObject, QMouseEvent*  ev)
+{
+  ( theWrappedObject->mousePressEvent(ev));
 }
 
 void PythonQtWrapper_PositionableLabel::remove(PositionableLabel* theWrappedObject)
@@ -20741,9 +20691,9 @@ bool  PythonQtWrapper_PositionableLabel::showPopUp(PositionableLabel* theWrapped
   return ( theWrappedObject->showPopUp(popup));
 }
 
-bool  PythonQtWrapper_PositionableLabel::showTooltip(PositionableLabel* theWrappedObject)
+bool  PythonQtWrapper_PositionableLabel::showToolTip(PositionableLabel* theWrappedObject)
 {
-  return ( theWrappedObject->showTooltip());
+  return ( theWrappedObject->showToolTip());
 }
 
 bool  PythonQtWrapper_PositionableLabel::storeItem(PositionableLabel* theWrappedObject)

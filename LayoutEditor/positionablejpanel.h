@@ -24,7 +24,7 @@ public:
     //explicit PositionableJPanel(QObject *parent = 0);
     /*public*/ PositionableJPanel(Editor* editor, QObject *parent = 0);
     /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(PositionableJPanel* pos);
+    /*public*/ Positionable* finishClone(Positionable* p);
     /*public*/ void setPositionable(bool enabled);
     /*public*/ bool isPositionable();
     /*public*/ void setEditable(bool enabled);
@@ -40,7 +40,7 @@ public:
     /*public*/ void setDisplayLevel(int l);
     /*public*/ int getDisplayLevel();
     /*public*/ void setShowToolTip(bool set) ;
-    /*public*/ bool showTooltip();
+    /*public*/ bool showToolTip();
     /*public*/ void setToolTip(QString tip);
     /*public*/ QString getToolTip();
     /*public*/ void setScale(double s);
@@ -49,7 +49,7 @@ public:
     /*public*/ void rotate(int deg) ;
     /*public*/ int getDegrees();
     /*public*/ bool getSaveOpaque();
-    /*public*/ QWidget *getTextComponent();
+    /*public*/ JComponent *getTextComponent();
     /*public*/ QString getNameString();
     /*public*/ Editor* getEditor();
     /*public*/ void setEditor(Editor* ed);

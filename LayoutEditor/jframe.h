@@ -73,6 +73,7 @@ public:
     /*public*/ /*synchronized*/ void removeWindowListener(WindowListener* l);
     QVector<WindowListener*> getWindowListeners();
     bool isOpaque();
+    /*public*/ QColor getForeground();
     QColor getBackground();
     void setBackground(QColor);
     void setOpaque(bool);

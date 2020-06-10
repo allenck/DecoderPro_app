@@ -412,7 +412,7 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
    item = new QGraphicsPixmapItem(pixmap, _itemGroup);
   setSize(pixmap.width(),pixmap.height());
   item->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
-  if(showTooltip()) item->setToolTip(getToolTip());
+  if(showToolTip()) item->setToolTip(getToolTip());
   //_itemGroup->addToGroup(item);
   //_itemGroup->setPos(getX(), getY());
   currRotation = getIcon()->getRotation()*90;
@@ -439,7 +439,7 @@ DockMenuListener* DockMenuListener::init(Editor* e, LocoIcon* l)
 
   QGraphicsTextItem* item = new QGraphicsTextItem(getUnRotatedText(),_itemGroup);
   //item->setPos(getX(), getY());
-  if(showTooltip()) item->setToolTip(getToolTip());
+  if(showToolTip()) item->setToolTip(getToolTip());
   _itemGroup->addToGroup(item);
   _itemGroup->setPos(((Positionable*)this)->getX(), ((Positionable*)this)->getY());
   if(getDegrees() != 0)

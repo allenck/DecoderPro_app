@@ -77,6 +77,12 @@ ColorUtil::ColorUtil()
 
 /*public*/ /*static*/ QColor ColorUtil::stringToColor(QString string)
 {
+ if(string.startsWith('#'))
+ {
+  QColor c = QColor(string);
+  if(c.isValid())
+   return c;
+ }
     if(string == ColorBlack)
             return Qt::black;
      else if(string == ColorDarkGray)

@@ -1719,6 +1719,16 @@ QString JLabel::getName()
 /*public*/ void JLabel::setBackground(QColor c){
  setStyleSheet(tr("QLabel{background-color: rgb(%1,%2,%3);}").arg(c.red()).arg(c.green()).arg(c.blue()));
 }
+QColor JLabel::getForeground()
+{
+ QColor c;
+ QPalette p = palette();
+ QString ss = styleSheet();
+ c = p.color(QPalette::Foreground);
+ if(ss == "")
+   return c;
+}
+
 /*public*/ void JLabel::setForeground(QColor c){
  setStyleSheet(tr("QLabel{color: rgb(%1,%2,%3);}").arg(c.red()).arg(c.green()).arg(c.blue()));
 }
@@ -1742,4 +1752,5 @@ QString JLabel::getName()
 }
 
 /*public*/ int JLabel::getBaseline(int w, int h) { return 0;}
+
 

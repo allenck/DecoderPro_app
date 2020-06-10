@@ -9,10 +9,10 @@
 #include <QVBoxLayout>
 #include "positionablelabelxml.h"
 
-//DragJLabel::DragJLabel(QWidget *parent) :
-//    JLabel(parent)
-//{
-//}
+DragJLabel::DragJLabel(QString s, QWidget *parent) :
+    JLabel(s, parent)
+{
+}
 /**
  * Gives a JLabel the capability to Drag and Drop
  * <P>
@@ -211,5 +211,6 @@ void DragJLabel::setName(QString name)
 
 /*public*/ void DragJLabel::setText(QString txt)
 {
- internalLabel->setText(txt);
+ //internalLabel->setText(txt);
+ JLabel::setText(txt);
 }

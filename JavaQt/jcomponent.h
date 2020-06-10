@@ -12,6 +12,7 @@ public:
  //explicit JComponent(QWidget *parent = nullptr);
  //virtual void dispose() {}
  virtual bool isOpaque() = 0;
+ virtual QColor getForeground() = 0;
  virtual QColor getBackground() =0;
  virtual void setBackground(QColor) = 0;
  virtual void setOpaque(bool) =0;

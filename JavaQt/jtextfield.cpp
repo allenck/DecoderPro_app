@@ -1055,6 +1055,16 @@ void JTextField::setBackground(QColor c )
  }
 }
 
+QColor JTextField::getForeground()
+{
+ QColor c;
+ QPalette p = palette();
+ QString ss = styleSheet();
+ c = p.color(QPalette::Foreground);
+ if(ss == "")
+   return c;
+}
+
 void JTextField::setForeground(QColor c)
 {
     //QLineEdit::setForeground(c);

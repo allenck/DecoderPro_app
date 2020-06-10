@@ -18,6 +18,7 @@ public:
  JComboBox(const JComboBox&) : QComboBox() {}
 
  bool isOpaque();
+ /*public*/ QColor getForeground();
  QColor getBackground();
  void setBackground(QColor);
  void setOpaque(bool);

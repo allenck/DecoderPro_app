@@ -182,7 +182,7 @@ PositionableTestBase::PositionableTestBase(QObject *parent) : QObject(parent)
 //@Test
 /*public*/ void PositionableTestBase::testGetTextComponent(){
     //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
-    Assert::assertNotNull("text component",p->getTextComponent(), __FILE__,  __LINE__);
+    Assert::assertNotNull("text component",p->getTextComponent()->jself(), __FILE__,  __LINE__);
 }
 
 //@Test

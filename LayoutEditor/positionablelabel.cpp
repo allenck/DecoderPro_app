@@ -199,7 +199,7 @@ return _displayLevel; }
 {
  _showTooltip = set;
 }
-/*public*/ bool PositionableLabel::showTooltip()
+/*public*/ bool PositionableLabel::showToolTip()
 {
  return _showTooltip;
 }
@@ -275,9 +275,9 @@ return _displayLevel; }
  return pos;
 }
 
-/*public*/ QWidget* PositionableLabel::getTextComponent()
+/*public*/ JComponent* PositionableLabel::getTextComponent()
 {
- return (QWidget*)this;
+ return (JComponent*)this;
 }
 
 /*protected*/ NamedIcon* PositionableLabel::cloneIcon(NamedIcon* icon, PositionableLabel* pos)
@@ -1206,7 +1206,7 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
    item = new QGraphicsPixmapItem(pixmap,_itemGroup);
   item->setScale(getScale());
   //item->setPos(getX(), getY());
-  if(showTooltip()) item->setToolTip(getToolTip());
+  if(showToolTip()) item->setToolTip(getToolTip());
   //_itemGroup->addToGroup(item);
   _itemGroup->setPos(getX(), getY());
   if(_itemGroup->name() == "")
@@ -1231,7 +1231,7 @@ bool PositionableLabel::updateScene() // TODO: this function not in Java
   //itemText->setPos(getX(), getY());
   itemText->setFont(getFont());
   itemText->setDefaultTextColor(getForeground());
-  if(showTooltip()) itemText->setToolTip(getToolTip());
+  if(showToolTip()) itemText->setToolTip(getToolTip());
 
   QRectF ir = itemText->boundingRect();
   int margin = getPopupUtility()->getMargin();
@@ -1405,6 +1405,11 @@ int PositionableLabel::getX() {return _x;}
 int PositionableLabel::getY() {return _y;}
 
 /*public*/ QString PositionableLabel::getClassName() { return QString(metaObject()->className());}
+
+/*public*/ void PositionableLabel::mousePressEvent(QMouseEvent *ev)
+{
+ JLabel::mousePressEvent(ev);
+}
 
 
 /*private*/ /*final*/ /*static*/ Logger* PositionableLabel::log = LoggerFactory::getLogger("PositionableLabel");

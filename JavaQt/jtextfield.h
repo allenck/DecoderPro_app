@@ -29,6 +29,7 @@ public:
     /*public*/ int getColumns();
     /*public*/ void setColumns(int columns);
     /*public*/ /*synchronized*/ void addActionListener(ActionListener* l);
+    QColor getForeground();
     QColor getBackground();
     void setBackground(QColor);
     /*public*/ QSize getPreferredSize();

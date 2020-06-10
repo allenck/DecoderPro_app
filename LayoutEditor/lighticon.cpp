@@ -394,7 +394,7 @@ NamedIcon* LightIcon::getIcon(QString sState)
   //_itemGroup->addToGroup(item);
   //item->setPos(getX(),getY());
   _itemGroup->setPos(((Positionable*)this)->getX(),((Positionable*)this)->getY());
-  if(showTooltip()) _itemGroup->setToolTip(getToolTip());
+  if(showToolTip()) _itemGroup->setToolTip(getToolTip());
   if(pixmap.isNull())
    qDebug() << "No pixmap";
   if(getDegrees() != 0)

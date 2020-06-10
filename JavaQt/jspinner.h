@@ -16,6 +16,7 @@ public:
  SpinnerModel* getModel();
  void setModel(SpinnerModel* model);
  bool isOpaque();
+ /*public*/ QColor getForeground();
  QColor getBackground();
  void setBackground(QColor);
  void setOpaque(bool);

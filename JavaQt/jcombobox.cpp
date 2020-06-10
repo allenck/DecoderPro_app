@@ -18,6 +18,10 @@ JComboBox::JComboBox(QStringList list, QWidget* parent) : QComboBox(parent)
 {
  return _opaque;
 }
+/*public*/ QColor JComboBox::getForeground()
+{
+ return palette().color(QWidget::foregroundRole());
+}
 /*public*/ QColor JComboBox::getBackground()
 {
  return palette().color(QWidget::backgroundRole());

@@ -12,7 +12,15 @@
 #include "jspinner.h"
 #include <QGraphicsView>
 #include "editscene.h"
+#include "jtextfield.h"
+#include <QDrag>
+#include <QMimeData>
+#include "positionablelabelxml.h"
+#include "editor.h"
+#include "jcombobox.h"
 
+class AJComboBox;
+class DragJTextField;
 class JComboBox;
 class PreviewPanel;
 class PreviewScene;
@@ -90,21 +98,30 @@ enum VALUES
 //    /*public*/ void itemStateChanged(ItemEvent* e);
     /*public*/ void setSuppressRecentColor(bool b);
     /*public*/ void setAttributes(Positionable* pos);
-
+//    /*public*/ void mousePressEvent(QMouseEvent *event);
+//    /*public*/ QByteArray mimeData();
+    /*public*/ DragJTextField* getDragJTextField();
+    enum Font
+    {
+     PLAIN = 0,
+     BOLD = 1,
+     ITALIC = 2
+    };
 signals:
 
 public slots:
     void AJRadioButton_toggled(bool);
     void currentColorChanged(QColor);
     ///*public*/ void AJRBListener();
-    void mappedButton(QWidget*);
+//    void mappedButton(QWidget*);
     /*public*/ void stateChanged(ChangeEvent* e);
+    /*public*/ void itemStateChanged(ItemEvent* e);
 
 private:
     /*private*/ FontPanel* _fontPanel;
-    AJSpinner* _fontSizeBox;
-    AJSpinner* _fontStyleBox;
-    AJSpinner* _fontJustBox;
+    AJComboBox* _fontSizeBox;
+    AJComboBox* _fontStyleBox;
+    AJComboBox* _fontJustBox;
 
     AJSpinner* _borderSpin;
     AJSpinner* _marginSpin;
@@ -112,10 +129,10 @@ private:
     AJSpinner* _heightSpin;
     enum BUTTONS
     {
-     FOREGROUND_BUTTON = 1,
-     BACKGROUND_BUTTON = 2,
-     TRANSPARENT_BUTTON = 3,
-     BORDERCOLOR_BUTTON = 4
+     FOREGROUND_BUTTON = 10,
+     BACKGROUND_BUTTON = 20,
+     TRANSPARENT_BUTTON = 31,
+     BORDERCOLOR_BUTTON = 32
     };
 
     /*private*/ AJRadioButton* _fontButton;
@@ -161,6 +178,11 @@ private:
     DPChangeListener* listener = nullptr;
     /*private*/ void colorChange();
     /*private*/ QWidget* _textEditComponent;
+    PositionableLabel* _label = nullptr;
+    QDrag* dr;
+    DragJTextField* _dragJTextField = nullptr;
+    QString fontStyle(QFont f);
+    void updateDragJText();
 
 private slots:
     void on_bgColorBox();
@@ -204,6 +226,13 @@ public:
     //QString getState();
     friend class DecoratorPanel;
     friend class AJRBActionListener;
+signals:
+    void stateChanged(ChangeEvent*);
+public slots:
+    void onClick()
+    {
+     emit stateChanged(new ChangeEvent(this));
+    }
 };
 #if 0
 class AJRBActionListener : public QObject
@@ -249,6 +278,7 @@ public slots:
  }
 };
 #endif
+
 class DPDragDecoratorLabel : public PositionableLabel //implements DragGestureListener, DragSourceListener, Transferable
 {
     Q_OBJECT
@@ -310,6 +340,7 @@ public slots:
  }
 };
 
+#if 0
 class PreviewScene : public QGraphicsScene
 {
  Q_OBJECT
@@ -327,11 +358,69 @@ private:
  /*private*/ BufferedImage* back;// = null;
  /*private*/  QPixmap bkgnd;
 };
+#endif
+/*
+ * Draggable text field that can maintain properties for a PositionableLabel
+ *
+ */
+class DragJTextField : public JTextField
+{
+ Q_OBJECT
+ QDrag* dr;
+ Logger* log;
+ Editor* editor;
+public:
+ DragJTextField(QString text, int cols, Editor* editor, QWidget* parent = 0) : JTextField(text, cols, parent)
+ {
+  log = new Logger("DragJTextField");
+  this->editor = editor;
+  setFrame(false);
+ }
+ void mousePressEvent(QMouseEvent * event)
+ {
+  if(event->button()&Qt::LeftButton)
+  {
+   dr = new QDrag(this);
+   QMimeData *data = new QMimeData;
+   QByteArray s_mimeData = mimeData();
+   log->debug(tr("xmldata: %1").arg(s_mimeData.data()));
+   data->setData("object/x-myApplication-object", s_mimeData);
+   // Assign ownership of the QMimeData object to the QDrag object.
+   dr->setMimeData(data);
+   dr->exec();
+  }
+ }
+ /*public*/ QByteArray mimeData()
+ {
+  QByteArray xmldata;
+  PositionableLabelXml* xml = new PositionableLabelXml();
+  PositionableLabel* label = new PositionableLabel(text(), editor);
+  label->setPopupUtility(NULL);        // no text
+  label->setLevel(Editor::LABELS);
+  QDomElement e = xml->store((QObject*)label);
+  xml->doc.appendChild(e);
+  xmldata.append(xml->doc.toString());
+  log->info(tr("xml data: %1").arg(xml->doc.toString()));
+  return xmldata;
+ }
+};
 
-//class MyMouseEvent : public QMouseEvent
-//{
-// Q_OBJECT
-// MyMouseEvent(QEvent::Type type, const QPointF &localPos, const QPointF &screenPos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers keyboardModifiers)
-//  : QMouseEvent(type, localPos, screenPos, button, buttons, keyboardModifiers) {}
-//};
+class AJComboBox : public JComboBox
+{
+ Q_OBJECT
+public:
+ int _which;
+ AJComboBox(QStringList items, int which, QWidget* parent = nullptr) : JComboBox(items, parent)
+ {
+  _which = which;
+  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+ }
+signals:
+ void itemStateChanged(ItemEvent *e);
+public slots:
+ void currentIndexChanged(int)
+ {
+  emit itemStateChanged(new ItemEvent(this));
+ }
+};
 #endif // DECORATORPANEL_H

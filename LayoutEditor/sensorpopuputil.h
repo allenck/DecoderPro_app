@@ -27,7 +27,7 @@ class SensorPopupUtil : public PositionablePopupUtil
 {
     Q_OBJECT
 public:
- explicit SensorPopupUtil(Positionable *parent, QWidget *textComp);
+ explicit SensorPopupUtil(Positionable *parent, JComponent *textComp);
  /*public*/ void setTextJustificationMenu(QMenu* popup);
  /*public*/ void setTextOrientationMenu(QMenu* popup) ;
  /*public*/ void setFixedTextMenu(QMenu* popup) ;

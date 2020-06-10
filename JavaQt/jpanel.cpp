@@ -117,6 +117,11 @@ void JPanel::paintEvent(QPaintEvent * evt)
   _layout = nullptr;
  }
 }
+/*public*/ QColor JPanel::getForeground()
+{
+ return palette().color(QWidget::foregroundRole());
+}
+
 /*public*/ QColor JPanel::getBackground()
 {
  return palette().color(QWidget::backgroundRole());

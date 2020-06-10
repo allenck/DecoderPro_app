@@ -201,5 +201,15 @@ return icon;
 }
 
 /*public*/ QString JmriColorChooserPanel::getTitle() {return "JMRI";}
+QColor JmriColorChooserPanel::getForeground()
+{
+ QColor c;
+ QPalette p = palette();
+ QString ss = styleSheet();
+ c = p.color(QPalette::Foreground);
+ if(ss == "")
+   return c;
+}
+
 
 Logger* JmriColorChooserPanel::log = LoggerFactory::getLogger("JmriColorChooserPanel");

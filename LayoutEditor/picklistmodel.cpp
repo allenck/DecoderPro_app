@@ -1104,7 +1104,7 @@ LightPickModel::LightPickModel (QObject *parent) : PickListModel(parent)
  foreach(Manager*m, list)
  {
   AbstractLightManager* mgr = (AbstractLightManager*)m;
-  connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newLightCreated(NamedBean*)));
+  connect(mgr->pcs, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newLightCreated(NamedBean*)));
  }
 }
 /*public*/ Manager* LightPickModel::getManager() {

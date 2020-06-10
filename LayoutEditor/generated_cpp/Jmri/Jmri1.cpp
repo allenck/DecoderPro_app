@@ -65,7 +65,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -6270,6 +6269,11 @@ QFont  PythonQtWrapper_JFrame::getFont(JFrame* theWrappedObject)
   return ( theWrappedObject->getFont());
 }
 
+QColor  PythonQtWrapper_JFrame::getForeground(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->getForeground());
+}
+
 QPoint  PythonQtWrapper_JFrame::getLocation(JFrame* theWrappedObject)
 {
   return ( theWrappedObject->getLocation());
@@ -7644,6 +7648,11 @@ QFont  PythonQtWrapper_JLabel::getFont(JLabel* theWrappedObject)
 QFontMetrics  PythonQtWrapper_JLabel::getFontMetrics(JLabel* theWrappedObject)
 {
   return ( theWrappedObject->getFontMetrics());
+}
+
+QColor  PythonQtWrapper_JLabel::getForeground(JLabel* theWrappedObject)
+{
+  return ( theWrappedObject->getForeground());
 }
 
 int  PythonQtWrapper_JLabel::getHorizontalAlignment(JLabel* theWrappedObject)

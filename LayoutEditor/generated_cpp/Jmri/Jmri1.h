@@ -79,7 +79,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -932,6 +931,7 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void frameInit(JFrame* theWrappedObject);
    QColor  getBackground(JFrame* theWrappedObject);
    QFont  getFont(JFrame* theWrappedObject);
+   QColor  getForeground(JFrame* theWrappedObject);
    QPoint  getLocation(JFrame* theWrappedObject);
    QPoint  getLocationOnScreen(JFrame* theWrappedObject);
    QSize  getMaximumSize(JFrame* theWrappedObject);
@@ -1070,6 +1070,7 @@ void delete_JLabel(JLabel* obj) { delete obj; }
    int  getDisplayedMnemonic(JLabel* theWrappedObject);
    QFont  getFont(JLabel* theWrappedObject);
    QFontMetrics  getFontMetrics(JLabel* theWrappedObject);
+   QColor  getForeground(JLabel* theWrappedObject);
    int  getHorizontalAlignment(JLabel* theWrappedObject);
    int  getHorizontalTextPosition(JLabel* theWrappedObject);
    QWidget*  getLabelFor(JLabel* theWrappedObject);
