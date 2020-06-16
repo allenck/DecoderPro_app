@@ -246,42 +246,34 @@ ControlPanelEditor::~ControlPanelEditor()
 //     @Override
 //     public void actionPerformed(ActionEvent e) {
  connect(mi, &QAction::triggered, [=]{
-         _itemPalette = ItemPalette::getDefault(tr("Item Palette"), this);
-         _itemPalette->setVisible(true);
+  if (_itemPalette==nullptr) {
+      _itemPalette = new ItemPalette(tr("Item Pallette"), this);
+  }
+  _itemPalette->setVisible(true);
  });
 //     }
 // }.init(this));
-// setMenuAcceleratorKey(mi, KeyEvent.VK_P);
+//         mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+
  _iconMenu->addAction(mi);
 
  _iconMenu->addAction(new OBlockTableAction(tr("Occupancy Blocks"),this));
  mi = (QAction*) _iconMenu->actions().at(1);
- //setMenuAcceleratorKey(mi, KeyEvent.VK_O);
+ //        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
+
  mi = new QAction(tr("Circuit Builder"),this);
  //mi.addActionListener((ActionEvent event) -> {
  connect(mi, &QAction::triggered, [=]{
      _circuitBuilder->openCBWindow();
  });
- //setMenuAcceleratorKey(mi, KeyEvent.VK_B);
+ //        mi.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+
  _iconMenu->addAction(mi);
 
  _iconMenu->addAction(new ListedTableAction(tr("Item Tables"),this));
  mi = (QAction*) _iconMenu->actions().at(3);
 // setMenuAcceleratorKey(mi, KeyEvent.VK_T);
 }
-
-void CPEActionListener::actionPerformed()
-{
- cpe->_itemPalette = ItemPalette::getDefault(tr("Item Palette"), editor);
- cpe->_itemPalette->setVisible(true);
-}
-
-//void ControlPanelEditor::onItemTableList()
-//{
-// if(libTables == NULL)
-//     libTables = new LibTables();
-//  libTables->show();
-//}
 
 /*protected*/ void ControlPanelEditor::makeCircuitMenu() {
     if (_circuitMenu==nullptr) {

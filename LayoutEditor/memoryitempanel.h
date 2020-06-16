@@ -10,7 +10,7 @@ class MemoryComboIcon;
 class MemorySpinnerIcon;
 class MemoryInputIcon;
 class MemoryIcon;
-class QSpinBox;
+class JSpinner;
 class MemoryItemPanel : public TableItemPanel
 {
     Q_OBJECT
@@ -27,23 +27,24 @@ public slots:
     /*public*/ void valueChanged(/*ListSelectionEvent e*/);
 
 private:
-    QSpinBox* _spinner;
+    JSpinner* _spinner;
     /**
     *  CENTER Panel
     */
-    MemoryIcon*      	_readMem;
-    MemoryInputIcon* 	_writeMem;
-    QWidget*			_writePanel;
-    MemorySpinnerIcon*   _spinMem;
-    MemoryComboIcon* 	_comboMem;
-    /*private*/ QWidget* makeDragIcon(QWidget* mem, Type type);
+    MemoryIcon*      	_readMem = nullptr;
+    MemoryInputIcon* 	_writeMem = nullptr;
+    QWidget*			_writePanel = nullptr;
+    MemorySpinnerIcon*   _spinMem = nullptr;
+    MemoryComboIcon* 	_comboMem = nullptr;
+    /*private*/ JPanel* makeDragIcon(QWidget* mem, Type type);
     Logger* log;
 
 protected:
-    /*protected*/ QWidget* instructions();
+    /*protected*/ JPanel *instructions();
     /*protected*/ void initIconFamiliesPanel() override;
     /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString displayKey) override;
     /*protected*/ MemoryIconDragJComponent* getDragger(DataFlavor* flavor, Type type, QWidget *comp );
+
 friend class MemoryIconDragJComponent;
 };
 
@@ -55,7 +56,7 @@ friend class MemoryIconDragJComponent;
 public:
     /*public*/ MemoryIconDragJComponent(DataFlavor* flavor, MemoryItemPanel::Type type, QWidget *comp, QWidget* parent = 0);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
-    QByteArray mimeData();
+    QByteArray mimeData() override;
 };
 
 #endif // MEMORYITEMPANEL_H

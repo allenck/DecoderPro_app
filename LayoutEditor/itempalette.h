@@ -37,7 +37,6 @@ public:
     static void buildTabPane(ItemPalette* palette, Editor* editor);
     static void addItemTab(ItemPanel* itemPanel, QString key, QString tabTitle);
     static void loadFamilies(QString typeName, QDomNodeList families, Editor* ed);
-    static /*public*/ ItemPalette* getDefault(QString title,/* @Nonnull */Editor* ed);
 
     /*public*/ ItemPalette(QString _title, Editor* editor, QWidget* parent = 0);
     /*public*/ void stateChanged(ChangeEvent* e);

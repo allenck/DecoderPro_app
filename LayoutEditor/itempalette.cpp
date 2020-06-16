@@ -254,66 +254,19 @@ void ItemPalette::changeEvent(QEvent * e)
     return familyMap;
 }
 /*static*/ QDomNodeList ItemPalette::getDefaultIconItemTypes() throw (JDOMException, IOException) {
-        QUrl file = FileUtil::findURL("xml/defaultPanelIcons.xml");
-        if (!file.isValid()) {
-            log->error("defaultPanelIcons file (xml/defaultPanelIcons.xml) doesn't exist.");
-            throw new IllegalArgumentException("defaultPanelIcons file (xml/defaultPanelIcons.xml) doesn't exist.");
-        }
-         XmlFile* xf = new XmlFile();
-        QDomElement root = xf->rootFromURL(&file);
-        QDomNodeList typeList = root.firstChildElement("ItemTypes").childNodes();
-        return typeList;
+    QUrl file = FileUtil::findURL("xml/defaultPanelIcons.xml");
+    if (!file.isValid()) {
+        log->error("defaultPanelIcons file (xml/defaultPanelIcons.xml) doesn't exist.");
+        throw new IllegalArgumentException("defaultPanelIcons file (xml/defaultPanelIcons.xml) doesn't exist.");
     }
+     XmlFile* xf = new XmlFile();
+    QDomElement root = xf->rootFromURL(&file);
+    QDomNodeList typeList = root.firstChildElement("ItemTypes").childNodes();
+    return typeList;
+}
 
 /*static*/ void ItemPalette::loadDefaultIcons(Editor *ed)
 {
-#if 0
- QFile* file = new QFile(FileUtil::getProgramPath()+ QString("xml")+QDir::separator()+"defaultPanelIcons.xml");
- if (!file->exists())
- {
-  log->error("defaultPanelIcons file doesn't exist: "+file->fileName());
-  throw  IllegalArgumentException("defaultPanelIcons file doesn't exist: "+file->fileName());
- }
- try
- {
-  XmlFile* xf = new XmlFile();
-  QDomElement root = xf->rootFromFile(file);
-        //@SuppressWarnings("unchecked")
-  QDomNodeList typeList = root.firstChildElement("ItemTypes").childNodes();
-  for (int i = 0; i < typeList.size(); i++)
-  {
-   QString typeName = typeList.at(i).toElement().tagName();
-            //@SuppressWarnings("unchecked")
-   QDomNodeList families = typeList.at(i).toElement().childNodes();
-   // detect this is a 4 level map collection.
-   // not very elegant (i.e. extensible), but maybe all that's needed.
-   if (typeName==("IndicatorTO"))
-   {
-    QMap<QString, QMap<QString, QMap<QString, NamedIcon*>*>*>* familyTOMap =
-                                    loadDefaultIndicatorTOMap(families,ed);
-    _indicatorTOMaps->insert(typeName, familyTOMap);
-    if (log->isDebugEnabled()) log->debug("Add "+QString::number(familyTOMap->size())+
-                        " indicatorTO families to item type "+typeName+" to _indicatorTOMaps.");
-   }
-   else
-   {
-    QMap<QString, QMap<QString, NamedIcon*>*>* familyMap = loadDefaultFamilyMap(families, ed);
-    _iconMaps->insert(typeName, familyMap);
-    if (log->isDebugEnabled()) log->debug("Add "+QString::number(familyMap->size())+
-                                            " families to item type "+typeName+" to _iconMaps.");
-   }
-   QThread::yieldCurrentThread();
-  }
- }
- catch (JDOMException e)
- {
-  log->error("error reading file \""+file->fileName()+"\" due to: "+e.getMessage());
- }
- catch (IOException ioe)
- {
-  log->error("error reading file \""+file->fileName()+"\" due to: "+ioe.getMessage());
- }
-#else
  try {
      QDomNodeList typeList = getDefaultIconItemTypes();
      for (int i = 0; i < typeList.size(); i++) {
@@ -327,7 +280,6 @@ void ItemPalette::changeEvent(QEvent * e)
  } catch (IOException ioe) {
      log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe.getMessage());
  }
-#endif
 }
 
 /*static*/ void ItemPalette::loadFamilies(QString typeName, QDomNodeList families, Editor* ed)
@@ -353,23 +305,24 @@ void ItemPalette::changeEvent(QEvent * e)
 }
 
 /*static*/ void ItemPalette::loadMissingItemType(QString itemType, Editor* ed) {
-        try {
-            QDomNodeList typeList = getDefaultIconItemTypes();
-            for (int i = 0; i < typeList.size(); i++) {
-                QString typeName = typeList.at(i).toElement().tagName();
-                if (typeName!=(itemType)) {
-                    continue;
-                }
-                QDomNodeList families = typeList.at(i).toElement().childNodes();
-                loadFamilies(itemType, families, ed);
-                static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"))->indexChanged(true);
+    try {
+        QDomNodeList typeList = getDefaultIconItemTypes();
+        for (int i = 0; i < typeList.size(); i++) {
+            QString typeName = typeList.at(i).toElement().tagName();
+            if (typeName!=(itemType)) {
+                continue;
             }
-        } catch (JDOMException e) {
-            log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e.getMessage());
-        } catch (IOException ioe) {
-            log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe.getMessage());
+            QDomNodeList families = typeList.at(i).toElement().childNodes();
+            loadFamilies(itemType, families, ed);
+            static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"))->indexChanged(true);
         }
+    } catch (JDOMException e) {
+        log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e.getMessage());
+    } catch (IOException ioe) {
+        log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe.getMessage());
     }
+}
+
 /*static*/ QMap<QString, QMap<QString, NamedIcon*>*>* ItemPalette::loadDefaultFamilyMap(QDomNodeList families, Editor *ed)
 {
 
@@ -438,37 +391,6 @@ void ItemPalette::changeEvent(QEvent * e)
  return familyTOMap;
 }
 
-/*static*/ /*public*/ ItemPalette* ItemPalette::getDefault(QString title,/* @Nonnull */ Editor* ed) {
-//        if (GraphicsEnvironment.isHeadless()) {
-//            return null;
-//        }
-    ItemPalette* instance = static_cast<ItemPalette*>( InstanceManager::getOptionalDefault("ItemPalette"));//.orElseGet(() -> InstanceManager.setDefault(ItemPalette.class, new ItemPalette(title, ed)));
-    if(instance == nullptr)
-    {
-     instance = (ItemPalette*)InstanceManager::setDefault("ItemPalette", new ItemPalette(title, ed));
-    }
-    if (ed != (instance->getEditor()))
-    {
-        instance->updateBackground(ed);
-        ((PlaceWindow*)InstanceManager::getDefault("PlaceWindow"))->nextTo(ed, nullptr, instance);
-    }
-//    QListIterator<ItemPanel*> iter(_tabIndex->values());
-//    while (iter.hasNext())
-//    {
-//     ItemPanel* panel =  iter.next();
-//     panel->setEditor(ed);
-//    }
-    QString name = ed->getName();
-    if (name == "" || name == ("")) {
-        name = tr("Untitled");
-    }
-    instance->setTitle(tr("Item Palette") + " - " + name);
-    // pack before setLocation
-    instance->pack();
-    instance->move(PlaceWindow::nextTo(ed, nullptr, instance));
-    instance->setVisible(true);
-    return instance;
-}
 
 /*public*/ void ItemPalette::setEditor(Editor* ed) {
     updateBackground(ed);
@@ -551,7 +473,7 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     _tabPane->setObjectName(QString::fromUtf8("_tabPane"));
     _tabIndex = new QMap<QString, ItemPanel*>();
 
-    ItemPanel* itemPanel;
+    ItemPanel* itemPanel = nullptr;
 
     itemPanel = new TableItemPanel(palette, "Turnout", NULL, PickListModel::turnoutPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Turnout", tr("Turnout"));
@@ -568,11 +490,11 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     itemPanel = new SignalMastItemPanel(palette, "SignalMast", NULL, PickListModel::signalMastPickModelInstance(), editor, palette);
     addItemTab(itemPanel, ("SignalMast"), tr("Signal Mast"));
     itemPanel->init();
-
+#if 1 // note inoperable phantom window caused by MemoryItemPanel
     itemPanel = new MemoryItemPanel(palette, "Memory", NULL,PickListModel::memoryPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Memory", tr("Memory"));
     itemPanel->init();
-
+#endif
     itemPanel = new ReporterItemPanel(palette, "Reporter", NULL, PickListModel::reporterPickModelInstance(), editor, palette);
     addItemTab(itemPanel, "Reporter", tr("Reporter"));
     itemPanel->init();

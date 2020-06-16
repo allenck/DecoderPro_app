@@ -213,19 +213,5 @@ public slots:
  void actionPerformed() { new ColorDialog(edit, pos, type, nullptr);}
 };
 
-class CPEActionListener : public ActionListener
-{
- Q_OBJECT
- Editor* editor;
- ControlPanelEditor* cpe;
-public:
- CPEActionListener(ControlPanelEditor* cpe) : ActionListener() {this->cpe = cpe;}
- CPEActionListener* init(Editor* ed)
- {
-  editor = ed;
-  return this;
- }
-public slots:
- void actionPerformed();
-};
+
 #endif // CONTROLPANELEDITOR_H

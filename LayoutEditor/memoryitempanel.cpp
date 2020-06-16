@@ -9,7 +9,7 @@
 #include <QSpinBox>
 #include "spinnernumbermodel.h"
 #include "jtextfield.h"
-//#include "jspinner.h"
+#include "jspinner.h"
 #include "editor.h"
 #include "dataflavor.h"
 #include "memoryinputicon.h"
@@ -20,7 +20,7 @@
 #include "namedbean.h"
 #include "editor.h"
 #include "flowlayout.h"
-#include <QGroupBox>
+#include "jcombobox.h"
 #include <QWidget>
 #include "picklistmodel.h"
 #include "lememoryiconxml.h"
@@ -31,6 +31,7 @@
 #include "gridbaglayout.h"
 #include "imagepanel.h"
 #include <QComboBox>
+#include "box.h"
 
 //MemoryItemPanel::MemoryItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -57,43 +58,25 @@
  }
 }
 
-/*protected*/ QWidget* MemoryItemPanel::instructions() {
-    QWidget* instructions = new QWidget();
-    instructions->setObjectName(QString::fromUtf8("instructions"));
-    QFont font;
-    font.setPointSize(8);
-    instructions->setFont(font);
-    QVBoxLayout* verticalLayout_instructions = new QVBoxLayout(instructions);
-    verticalLayout_instructions->setObjectName(QString::fromUtf8("verticalLayout_instructions"));
-    verticalLayout_instructions->addWidget(new QLabel(tr("To Add an Icon to your control panel:")));
-    verticalLayout_instructions->addWidget(new QLabel(tr("--drag an icon from the display panel below to your control panel")));
-    QHBoxLayout* blurb3Layout = new QHBoxLayout();
-    blurb3Layout->setObjectName(QString::fromUtf8("blurb3Layout"));
-    QLabel* blurb3Icon = new QLabel(instructions);
-    blurb3Icon->setObjectName(QString::fromUtf8("blurb3Icon"));
-    QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    sizePolicy1.setHorizontalStretch(0);
-    sizePolicy1.setVerticalStretch(0);
-    sizePolicy1.setHeightForWidth(blurb3Icon->sizePolicy().hasHeightForWidth());
-    blurb3Icon->setSizePolicy(sizePolicy1);
-    blurb3Icon->setPixmap(QPixmap(QString::fromUtf8(":/resources/icons/misc/X-red.gif")));
-
-    blurb3Layout->addWidget(blurb3Icon);
-
-    QLabel* blurb3Text = new QLabel("is displayed for the Display Memory Icon when Memory is null.", instructions);
-    blurb3Text->setObjectName(QString::fromUtf8("blurb3Text"));
-
-    blurb3Layout->addWidget(blurb3Text);
-    verticalLayout_instructions->addLayout(blurb3Layout);
-    verticalLayout_instructions->addWidget(new QLabel(tr("When Memory is an empty string i.e. "" , the Display Memory Icon is blank.")));
-    verticalLayout_instructions->addWidget(new QLabel(tr("When blank, enter a value in the other memory icons to view and drag it.")));
-    QSpacerItem* horizontalSpacer_instructions = new QSpacerItem(438, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    verticalLayout_instructions->addItem(horizontalSpacer_instructions);
-    verticalLayout_instructions->addWidget(new QLabel(tr("The ComboBox Memory Icon sets a memory by selecting an item from the ComboBox.")));
-    verticalLayout_instructions->addWidget(new QLabel(tr("Use the \"Edit Memory Icon\" popup to add or delete items. ")));
-
-    return instructions;
+/*protected*/ JPanel* MemoryItemPanel::instructions() {
+ JPanel* blurb = new JPanel();
+ blurb->setLayout(new QVBoxLayout());//blurb, BoxLayout.Y_AXIS));
+ blurb->layout()->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
+ blurb->layout()->addWidget(new JLabel(tr("To Add an Icon to your control panel:")));
+ blurb->layout()->addWidget(new JLabel(tr("-- drag an icon from the display panel below to your control panel")));
+ blurb->layout()->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
+ blurb->layout()->addWidget(new JLabel(tr("is displayed for the Display Memory Icon when Memory is null ."),
+         NamedIcon::getIconByName("resources/icons/misc/X-red.gif"),
+         SwingConstants::TRAILING));
+ blurb->layout()->addWidget(new JLabel(tr("When Memory is an empty string i.e. "" , the Display Memory Icon is blank.")));
+ blurb->layout()->addWidget(new JLabel(tr("When blank, enter a value in the other memory icons to view and drag it.")));
+ blurb->layout()->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
+ blurb->layout()->addWidget(new JLabel(tr("The ComboBox Memory Icon sets a memory by selecting an item from the ComboBox.")));
+ blurb->layout()->addWidget(new JLabel(tr("Use the \"Edit Memory Icon\" popup to add or delete items. ")));
+ blurb->layout()->addWidget(Box::createVerticalStrut(ItemPalette::STRUT_SIZE));
+ JPanel* panel = new JPanel(new FlowLayout());
+ panel->layout()->addWidget(blurb);
+ return panel;
 }
 
 
@@ -131,45 +114,37 @@
   QLabel* label = new QLabel(tr("Input Box Memory")); // "ReadWriteMemory"
   //label.setOpaque(false);
   panelLayout->addWidget(label, c);
+
   c.gridy = 1;
   _writeMem = new MemoryInputIcon(5, _editor);
-  panelLayout->addWidget(makeDragIcon(_writeMem, Type::READWRITE), c);
-
-  _spinner = new QSpinBox(); //new SpinnerNumberModel(0, 0, 100, 1));
-  _spinner->setMinimum(0);
-  _spinner->setMaximum(100);
-  _spinner->setSingleStep(1);
-  _spinner->setValue(0);
+  JPanel* p0 =makeDragIcon(_writeMem, Type::READWRITE);
+  _spinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
 //  JTextField* field = ((JSpinner.DefaultEditor) _spinner.getEditor()).getTextField();
 //  field.setColumns(2);
 //  field.setText("5");
   _spinner->setMaximumSize(_spinner->sizeHint());
   //_spinner.addChangeListener(this);
   connect(_spinner, SIGNAL(valueChanged(int)), this, SLOT(stateChanged()));
-  c.gridy = 2;
-  panelLayout->addWidget(_spinner, c);
-
-  c.gridy = 3;
-  c.anchor = GridBagConstraints::NORTH;
-  label = new QLabel(tr("Col Width"));
-  //label.setOpaque(false);
-  panelLayout->addWidget(label, c);
+  JPanel* p1 = new JPanel(new FlowLayout());
+  p1->layout()->addWidget(new JLabel(tr("Col Width")));
+  p1->layout()->addWidget(_spinner);
+  JPanel* p2 = new JPanel();
+  p2->setLayout(new QVBoxLayout());//p2, BoxLayout.Y_AXIS));
+  p2->layout()->addWidget(p0);
+  p2->layout()->addWidget(p1);
+  c.gridy = 1;
+  panelLayout->addWidget(p2, c);
 
   c.gridx = 1;
   c.gridy = 0;
-  c.anchor = GridBagConstraints::CENTER;
-  label = new QLabel(tr("Display Memory"));
-  //label.setOpaque(false);
-  panelLayout->addWidget(label, c);
+  panelLayout->addWidget(new JLabel(tr("Display Memory")), c);
   c.gridy = 1;
-  _readMem = new MemoryIcon(NamedIcon::getIconByName(":/resources/icons/misc/X-red.gif"), _editor);
+  _readMem = new MemoryIcon(NamedIcon::getIconByName("resources/icons/misc/X-red.gif"), _editor);
   panelLayout->addWidget(makeDragIcon(_readMem, Type::READONLY), c);
 
   c.gridx = 2;
   c.gridy = 0;
-  label = new JLabel(tr("Spinner Memory"));
-//  label.setOpaque(false);
-  panelLayout->addWidget(label, c);
+  panelLayout->addWidget(new JLabel(tr("Spinner Memory")), c);
   c.gridy = 1;
   _spinMem = new MemorySpinnerIcon(_editor);
   panelLayout->addWidget(makeDragIcon(_spinMem, Type::SPINNER), c);
@@ -177,43 +152,39 @@
   c.gridx = 0;
   c.gridy = 2;
   c.gridwidth = 4;
-  label = new JLabel(tr("ComboBox Memory"));
-//  label->setOpaque(false);
-  panelLayout->addWidget(label, c);
+  panelLayout->addWidget(new JLabel(tr("ComboBox Memory")), c);
   c.gridy = 3;
-  QStringList sample = QStringList();
-  _comboMem = new MemoryComboIcon(_editor, sample);
-  sample << "selection 1" << "selection 2";
+  _comboMem = new MemoryComboIcon(_editor, QStringList() << "A" << "B" << "C");
   panelLayout->addWidget(makeDragIcon(_comboMem, Type::COMBO), c);
 
   _dragIconPanel = panel;
 }
 
-/*private*/ QWidget* MemoryItemPanel::makeDragIcon(QWidget* mem, Type type)
+/*private*/ JPanel* MemoryItemPanel::makeDragIcon(QWidget* mem, Type type)
 {
- QWidget*  panel = new QWidget(/*new FlowLayout()*/);
+ JPanel*  panel = new JPanel(/*new FlowLayout()*/);
  QVBoxLayout* panelLayout;
  panel->setLayout(panelLayout = new QVBoxLayout);
  //panel->setOpaque(false);
- QWidget* comp = NULL;
+ JPanel* comp = NULL;
     try {
         comp = this->getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), type, mem);
         comp->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
     }
     catch (ClassNotFoundException cnfe) {
         //cnfe.printStackTrace();
-        comp = new QWidget();
+        comp = new JPanel();
     }
  switch (type)
  {
  case READONLY:
-  comp->layout()->addWidget(new QLabel("text"));
+  comp->layout()->addWidget(new JLabel("text"));
   break;
  case SPINNER:
-  comp->layout()->addWidget(new QSpinBox());
+  comp->layout()->addWidget(new JSpinner());
   break;
  case COMBO:
-  comp->layout()->addWidget(new QComboBox());
+  comp->layout()->addWidget(new JComboBox());
   break;
 default:
   comp->layout()->addWidget(mem);
@@ -350,7 +321,7 @@ default:
 }
 QByteArray MemoryIconDragJComponent::mimeData()
 {
- NamedBean* bean = self->getTableSelection();
+ NamedBean* bean = self->getNamedBean();//self->getTableSelection();
  QByteArray xmldata;
  if(bean != NULL)
  {

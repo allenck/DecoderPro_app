@@ -86,11 +86,6 @@
  _table->setMinimumWidth(300);
  _table->setSelectionBehavior(QAbstractItemView::SelectRows);
  _table->setSelectionMode(QAbstractItemView::SingleSelection);
- QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
- sizePolicy.setHorizontalStretch(2);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(_table->sizePolicy().hasHeightForWidth());
- _table->setSizePolicy(sizePolicy);
  QFont font = _table->font();
  font.setPointSize(8);
  _table->setFont(font);
@@ -103,7 +98,7 @@
 // _scrollPane = new JScrollPane(_table);
 // int cnt = Math.min(8, _table.getRowCount()) + 2;
 // _scrollPane.setPreferredSize(new Dimension(_scrollPane.getPreferredSize().width, cnt*ROW_HEIGHT));
- topPanelLayout->addWidget(/*_scrollPane*/_table,1, Qt::AlignCenter);// BorderLayout.CENTER);
+ topPanelLayout->addWidget(/*_scrollPane*/_table,2, Qt::AlignHCenter);// BorderLayout.CENTER);
  topPanel->setToolTip(tr("Drag a row from the table to add a label of the item to the Panel"));
 
  JPanel* panel = new JPanel();

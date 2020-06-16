@@ -13,6 +13,7 @@
 #include "joptionpane.h"
 #include "multisensoriconxml.h"
 #include "joptionpane.h"
+#include "loggerfactory.h"
 
 //MultiSensorItemPanel::MultiSensorItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -54,10 +55,10 @@
     _addTableButton = new QPushButton(tr("Create New Item"));
 //    _addTableButton.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent a) {
-//                makeAddToTableWindow();
+    connect(_addTableButton, &QPushButton::clicked, [=]{
+                makeAddToTableWindow();
 //            }
-//    });
-    connect(_addTableButton, SIGNAL(clicked()), this, SLOT(makeAddToTableWindow()));
+    });
     _addTableButton->setToolTip(tr("Press to add a new item to the above table"));
     panel->layout()->addWidget(_addTableButton);
 
@@ -73,10 +74,10 @@
     QPushButton* clearSelectionButton = new QPushButton(tr("Clear Table Selections"));
 //    clearSelectionButton.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent a) {
-//                clearSelections();
+    connect(clearSelectionButton, &QPushButton::clicked, [=]{
+                clearSelections();
 //            }
-//    });
-    connect(clearSelectionButton, SIGNAL(clicked()), this, SLOT(clearSelections()));
+    });
     clearSelectionButton->setToolTip(tr("Clear selected table rows"));
     panel->layout()->addWidget(clearSelectionButton);
     topPanelLayout->addWidget(panel,0, Qt::AlignBottom);
@@ -94,29 +95,24 @@
 //            Hashtable<String, NamedIcon> map = ItemPalette.getIconMap(_itemType, _family);
 //            size = map.size();
 //        }
-    QMap<QString, NamedIcon*>* map = getIconMap();
-    if (map != nullptr) {
-        size = map->size();
+    if (_currentIconMap != nullptr) {
+        size = _currentIconMap->size();
     }
-    _selectionModel->setPositionRange(size-3);
+    _selectionModel->setPositionRange(size - 3);
 }
-
 
 /*protected*/ void MultiSensorItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString /*displayKey*/) {
     TableItemPanel::makeDndIconPanel(iconMap, "second");
 }
 
 /*protected*/ void MultiSensorItemPanel::initIconFamiliesPanel() {
-    TableItemPanel::initIconFamiliesPanel();
-    if (_multiSensorPanel == nullptr)
-    {
-     makeMultiSensorPanel();
-     _iconFamilyPanel->layout()->addWidget(_multiSensorPanel); // Panel containing up-dn, le-ri radio buttons
-    }
+ TableItemPanel::initIconFamiliesPanel();
+ makeMultiSensorPanel();
+ _iconFamilyPanel->layout()->addWidget(_multiSensorPanel);
 }
 
 /*private*/ void MultiSensorItemPanel::makeMultiSensorPanel() {
-    _multiSensorPanel = new QWidget();
+    _multiSensorPanel = new JPanel();
     _multiSensorPanel->setLayout(new QVBoxLayout(_multiSensorPanel/*, BoxLayout.Y_AXIS*/));
     QWidget* panel2 = new QWidget();
     panel2->setLayout(new QHBoxLayout);
@@ -124,38 +120,38 @@
     QRadioButton* button = new QRadioButton(tr("Click Left/Right"));
 //    button.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                _upDown = false;
+    connect(button, &QRadioButton::clicked, [=]{
+                _upDown = false;
 //            }
-//        });
-    connect(button, SIGNAL(clicked()), this, SLOT(buttonLR_clicked()));
+        });
     group2->addButton(button);
     panel2->layout()->addWidget(button);
     button->setChecked(true);
     button = new QRadioButton(tr("Click Up/Down"));
 //    button.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                _upDown = true;
+    connect(button, &QRadioButton::clicked, [=]{
+                _upDown = true;
 //            }
-//        });
-    connect(button, SIGNAL(clicked()), this, SLOT(buttonLR_clicked()));
+        });
     group2->addButton(button);
     panel2->layout()->addWidget(button);
     _multiSensorPanel->layout()->addWidget(panel2);
     _multiSensorPanel->repaint();
 }
-void MultiSensorItemPanel::buttonLR_clicked() { _upDown=false;}
-void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
 
 /*protected*/ void MultiSensorItemPanel::setFamily(QString family) {
     TableItemPanel::setFamily(family);
-    if (_multiSensorPanel==NULL) {
-      makeMultiSensorPanel();
-      _iconFamilyPanel->layout()->addWidget(_multiSensorPanel);
+    if (_multiSensorPanel != nullptr) {
+            _iconFamilyPanel->layout()->removeWidget(_multiSensorPanel);
     }
+    makeMultiSensorPanel();
+    _iconFamilyPanel->layout()->addWidget(_multiSensorPanel);
     _iconFamilyPanel->repaint();
     updateFamiliesPanel();
     setSelections();
 }
+
 /*protected*/ void MultiSensorItemPanel::setSelections() {
     QVector<int> positions = _selectionModel->getPositions();
     clearSelections();
@@ -170,10 +166,9 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
 //@OverrideQMap
 /*protected*/ IconDialog *MultiSensorItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap)
 {
- closeDialogs();
- _dialog = new MultiSensorIconDialog(type, family, this, iconMap);
- _dialog->sizeLocate();
- return _dialog;
+ IconDialog* dialog = new MultiSensorIconDialog(type, family, this, iconMap);
+ dialog->sizeLocate();
+ return dialog;
 }
 
 /**
@@ -213,32 +208,10 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
     }
 // /*protected*/ class MultiSensorSelectionModel : DefaultListSelectionModel {
 
-#if 0
-/*public*/ void MultiSensorItemPanel::updateFamilyIcons()
-{
- if(_currentIconMap == nullptr)
-  return;
- QStringList keys = _currentIconMap->keys();
- if(_selectionModel->_positions.isEmpty())
-  _selectionModel->_positions= QVector<int>(MultiSensorItemPanel::POSITION.count());
- for(int i =0; i < MultiSensorItemPanel::POSITION.count(); i++)
- {
-  QString name = MultiSensorItemPanel::POSITION.at(i);
-  int j = keys.indexOf(name);
-  if(j >= 0)
-  {
-   _selectionModel->_positions.replace(i, j);
-   //_selectionModel->_selections.replace(i, _currentIconMap->value(name));
-  }
- }
-}
-#endif
-
 MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, MultiSensorItemPanel* self)
  : DefaultListSelectionModel(self)
 {
  //super();
- log = new Logger("MultiSensorSelectionModel");
  setObjectName("MultiSensorSelectionModel");
  log->setDebugEnabled(true);
 
@@ -250,6 +223,9 @@ MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, 
 /*protected*/ QVector<NamedBean*> MultiSensorSelectionModel::getSelections() {
     if (log->isDebugEnabled()) log->debug("getSelections: size= "+QString::number(_selections.size())+
                                         ", _nextPosition= "+QString::number(_nextPosition));
+    if (_nextPosition < _positions.length()) {
+        return QVector<NamedBean*>();
+    }
     return _selections;
 }
 
@@ -268,7 +244,8 @@ MultiSensorSelectionModel::MultiSensorSelectionModel(PickListModel* tableModel, 
 
 /*protected*/ void MultiSensorSelectionModel::setPositionRange(int size)
 {
- if (log->isDebugEnabled()) log->debug("setPositionRange: size= "+ QString::number(size));
+ if (log->isDebugEnabled())
+  log->debug("setPositionRange: size= "+ QString::number(size));
  if (size > self->POSITION.length()) {
      size = self->POSITION.length();
  }
@@ -462,3 +439,7 @@ QByteArray MSIconDragJLabel::mimeData()
  xmldata.append(xml->doc.toString());
  return xmldata;
 }
+
+/*static*/ Logger* MultiSensorItemPanel::log = LoggerFactory::getLogger("MultiSensorItemPanel");
+
+/*static*/ Logger* MultiSensorSelectionModel::log = LoggerFactory::getLogger("MultiSensorSelectionModel");

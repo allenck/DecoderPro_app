@@ -26,14 +26,13 @@ signals:
 
 public slots:
     /*public*/ void clearSelections();
-    void buttonLR_clicked();
-    void buttonUD_clicked();
 
 private:
-    QWidget* _multiSensorPanel = nullptr;
+    JPanel* _multiSensorPanel = nullptr;
     MultiSensorSelectionModel* _selectionModel = nullptr;
     bool _upDown = false;
     /*private*/ void makeMultiSensorPanel();
+    static Logger* log;
 
 protected:
     /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor) override;
@@ -57,7 +56,6 @@ friend class MultiSensorIconDialog;
     int _nextPosition;
     PickListModel* _tableModel;
     MultiSensorItemPanel* self;
-
 public:
     MultiSensorSelectionModel(PickListModel* tableModel, MultiSensorItemPanel* self);
     /*public*/ bool isSelectedIndex(int index);
@@ -65,7 +63,7 @@ public:
     /*public*/ void addSelectionInterval(int index0, int index1);
     /*public*/ void setSelectionInterval(int row, int index1);
 private:
-    Logger* log;
+    static Logger* log;
 protected:
     /*protected*/ QVector<NamedBean *> getSelections();
     /*protected*/ QVector<int> getPositions();
