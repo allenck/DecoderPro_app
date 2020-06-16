@@ -1385,6 +1385,7 @@ QColor PositionableLabel::getBackground()
         repaint();
     }
 #endif
+    IS_OPAQUE = true;
     setBackgroundColor(bg);
 }
 QPointF PositionableLabel::getLocation(){return QPointF(_x, _y);}

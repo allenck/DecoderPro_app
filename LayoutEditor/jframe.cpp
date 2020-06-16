@@ -556,12 +556,12 @@ void JFrame::setVisible(bool visible)
 }
 /*public*/ QFont JFrame::getFont()
 {
- return font();
+ return QWidget::font();
 }
 
 /*public*/ void JFrame::setFont(QFont f)
 {
- QMainWindow::setFont(f);
+ QWidget::setFont(f);
 }
 
 // remove and hide all child widgets and delete layout.

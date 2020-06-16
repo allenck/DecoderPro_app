@@ -11,6 +11,7 @@
 #include "positionablelabel.h"
 #include "jcomponent.h"
 
+class JComponent;
 class PositionablePropertiesUtil;
 class PositionablePopupUtil : public QObject
 {
@@ -98,9 +99,7 @@ public:
     */
     /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
     const QIcon getColourIcon(QColor color);
-    /*public*/ void setHasBackground(bool set);
-    /*public*/ bool hasBackground();
-    /*public*/ void setSuppressRecentColor(bool b);
+    void setTextComponent(JComponent* jcomp);
 
 
 signals:
@@ -108,7 +107,7 @@ signals:
 public slots:
  /*public*/ void setOrientation(int ori);
  void on_setFontSize(QAction* act);
-// void on_colorMenuItemSelected(QAction* act);
+ void on_colorMenuItemSelected(QAction* act);
  //void on_actionMarginEdit_triggered();
  //void on_actionGetFixedSizeEdit_triggered();
  void on_setTextOrientation_triggered(QAction* act);
@@ -156,9 +155,31 @@ protected:
  /*protected*/ QMenu* makeFontSizeMenu();
  void addFontMenuEntry(QMenu* menu, QActionGroup* fontButtonGroup, const int size);
  /*protected*/ QAction* newStyleMenuItem(QAction* a, int mask);
+ /*protected*/ void setColorButton(QColor color, QColor buttonColor, QAction* r);
+ /*protected*/ void makeColorMenu(QMenu* colorMenu, int type);
+ /*protected*/ void addColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup, const QString name, QColor color, const int colorType);
 
  friend class PositionablePropertiesUtil;
  friend class DragDecoratorLabel;
+ friend class SensorIcon;
+ friend class AddColorMenuEntryActionListener;
+ friend class DecoratorPanel;
 };
 
+class AddColorMenuEntryActionListener : public ActionListener
+{
+ Q_OBJECT
+ QColor desiredColor;
+ PositionablePopupUtil* util;
+ int colorType;
+public:
+ AddColorMenuEntryActionListener(QColor c, int colorType, PositionablePopupUtil* util) : ActionListener()
+ {
+  this->util = util;
+  desiredColor = c;
+  this->colorType = colorType;
+ }
+public slots:
+ void actionPerformed();
+};
 #endif // POSITIONABLEPOPUPUTIL_H

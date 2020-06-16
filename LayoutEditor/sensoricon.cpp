@@ -945,110 +945,16 @@ void SensorIcon::updateSensor()
 
 QMenu* SensorIcon::stateMenu(const QString name, int state)
 {
- _state = state;
  QMenu* menu = new QMenu(name);
- QAction* colorMenu = new QAction(tr("FontColor"),this);
- connect(colorMenu, SIGNAL(triggered(QAction*)), this, SLOT(onColorMenu()));
- menu->addAction(colorMenu);
- colorMenu = new QAction(tr("FontBackgroundColor"));
- connect(colorMenu, SIGNAL(triggered(QAction*)), this, SLOT(onColorMenu1()));
- menu->addAction(colorMenu);
+ QMenu* colorMenu = new QMenu(tr("Font Color"));
+ getPopupUtility()->makeColorMenu(colorMenu, state);
+ menu->addMenu(colorMenu);
+ colorMenu = new QMenu(tr("Font Background Color"));
+ getPopupUtility()->makeColorMenu(colorMenu, state + 1);
+ menu->addMenu(colorMenu);
  return menu;
 }
-void SensorIcon::onColorMenu()
-{
- QColor desiredColor = JmriColorChooser::showDialog(this,
-                      tr("Font Color"),
-                      getColor(_state));
- if (desiredColor.isValid() ) {
-      setColor(desiredColor,_state);
- }
-}
 
-void SensorIcon::onColorMenu1()
-{
- QColor desiredColor = JmriColorChooser::showDialog(this,
-                      tr("Font Background Color"),
-                      getColor(_state+1));
- if (desiredColor.isValid() ) {
-      setColor(desiredColor,_state+1);
- }
-}
-
-/*private*/ void SensorIcon::setColor(QColor desiredColor, int state){
-    SensorPopupUtil* util = (SensorPopupUtil*) getPopupUtility();
-    switch (state) {
-       case PositionablePopupUtil::FONT_COLOR:
-          util->setForeground(desiredColor);
-          break;
-       case PositionablePopupUtil::BACKGROUND_COLOR:
-          util->setBackgroundColor(desiredColor);
-          break;
-       case PositionablePopupUtil::BORDER_COLOR:
-          util->setBorderColor(desiredColor);
-          break;
-       case UNKNOWN_FONT_COLOR:
-          setTextUnknown(desiredColor);
-          break;
-       case UNKOWN_BACKGROUND_COLOR:
-          util->setHasBackground(desiredColor.isValid());
-          setBackgroundUnknown(desiredColor);
-          break;
-       case ACTIVE_FONT_COLOR:
-          setTextActive(desiredColor);
-          break;
-       case ACTIVE_BACKGROUND_COLOR:
-          util->setHasBackground(desiredColor.isValid());
-          setBackgroundActive(desiredColor);
-          break;
-       case INACTIVE_FONT_COLOR:
-          setTextInActive(desiredColor);
-          break;
-       case INACTIVE_BACKGROUND_COLOR:
-          util->setHasBackground(desiredColor.isValid());
-          setBackgroundInActive(desiredColor);
-          break;
-       case INCONSISTENT_FONT_COLOR:
-          setTextInconsistent(desiredColor);
-          break;
-       case INCONSISTENT_BACKGROUND_COLOR:
-          util->setHasBackground(desiredColor.isValid());
-          setBackgroundInconsistent(desiredColor);
-          break;
-       default:
-          break;
-   }
-}
-
-/*private*/ QColor SensorIcon::getColor(int state){
-    SensorPopupUtil* util = (SensorPopupUtil*) getPopupUtility();
-    switch (state) {
-       case PositionablePopupUtil::FONT_COLOR:
-          return util->getForeground();
-       case PositionablePopupUtil::BACKGROUND_COLOR:
-          return util->getBackground();
-       case PositionablePopupUtil::BORDER_COLOR:
-          return util->getBorderColor();
-       case UNKNOWN_FONT_COLOR:
-          return getTextUnknown();
-       case UNKOWN_BACKGROUND_COLOR:
-          return getBackgroundUnknown();
-       case ACTIVE_FONT_COLOR:
-          return getTextActive();
-       case ACTIVE_BACKGROUND_COLOR:
-          return getBackgroundActive();
-       case INACTIVE_FONT_COLOR:
-          return getTextInActive();
-       case INACTIVE_BACKGROUND_COLOR:
-          return getBackgroundInActive();
-       case INCONSISTENT_FONT_COLOR:
-          return getTextInconsistent();
-       case INCONSISTENT_BACKGROUND_COLOR:
-          return getBackgroundInconsistent();
-       default:
-          return QColor();
-   }
-}
 
 void SensorIcon::changeLayoutSensorType()
 {

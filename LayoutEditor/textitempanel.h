@@ -16,8 +16,8 @@ public:
     /*public*/ void init();
 //    /*public*/ void init(ActionListener* doneAction, Positionable* pos);
 //    /*public*/ void init(ActionListener* doneAction);
-    /*public*/ void updateAttributes(PositionableLabel* l);
-    /*public*/ void closeDialogs();
+//    /*public*/ void updateAttributes(PositionableLabel* l);
+//    /*public*/ void closeDialogs();
 
 signals:
 

@@ -57,29 +57,18 @@ private:
     static /*private*/ QStringList getNames(QString type);
 
 protected:
-    /*protected*/ JmriJFrame* _paletteFrame;
+    /*protected*/ JmriJFrame* _paletteFrame = nullptr;
     /*protected*/ QString    _itemType;
     /*protected*/ Editor*    _editor = nullptr;
     /*protected*/ bool   _initialized = false;    // Has init() been run
     /*protected*/ bool   _update = false;    // Editing existing icon, do not allow icon dragging. set in init()
-    /*protected*/ bool _suppressDragging;
+    /*protected*/ bool _suppressDragging = false;
     /*protected*/ JTextField* _linkName= new JTextField(30);
-    /**
-     * Array of BufferedImage backgrounds loaded as background image in Preview (not shared across tabs)
-     */
-    /*protected*/ QVector<BufferedImage*>* _backgrounds = nullptr;
-    /**
-     * JComboBox to choose the above backgrounds
-     */
-    /*protected*/ QComboBox* _bgColorBox = nullptr;
     /*protected*/ void initLinkPanel();
     /*protected*/ virtual void closeDialogs();
     /*protected*/ void reset();
     /*protected*/ /*final*/ bool isUpdate();
     static /*protected*/ QMap<QString, NamedIcon*>* makeNewIconMap(QString type);
-    ImagePanel* preview1 = nullptr;
-    ImagePanel* preview2 = nullptr;
-    ///*protected*/ JPanel *makePreviewPanel(ImagePanel* panel1, ImagePanel* panel2);
     static /*protected*/ void checkIconMap(QString type, QMap<QString, NamedIcon*>* map);
 
 friend class TIconDragJLabel;

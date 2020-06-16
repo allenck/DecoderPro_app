@@ -46,7 +46,7 @@ protected:
     /*protected*/ PickListModel* _model = nullptr;
     /*protected*/ virtual QWidget* initTablePanel(PickListModel* model, Editor* editor);
     /*protected*/ void addToTable();
-    /*protected*/ NamedBean* getDeviceNamedBean();
+    /*protected*/ NamedBean* getNamedBean();
 
 protected slots:
     /*protected*/ void makeAddToTableWindow();

@@ -462,14 +462,13 @@ void IndicatorTOItemPanel::createNewFamily(QString family)
 }
 
 /*private*/ void IndicatorTOItemPanel::openStatusEditDialog(QString key) {
-        if (log->isDebugEnabled()) {
-            log->debug(tr("openStatusEditDialog for family \"%1\" and \"%2\"").arg(_family).arg(key));
-        }
-        closeDialogs();
-        QMap<QString, NamedIcon*>* map = _iconGroupsMap->value(key);
-        setIconMap(map);
-        _dialog = new IndicatorTOIconDialog(_itemType, _family, this, key, map);
+    if (log->isDebugEnabled()) {
+        log->debug(tr("openStatusEditDialog for family \"%1\" and \"%2\"").arg(_family).arg(key));
     }
+    _currentIconMap = _iconGroupsMap->value(key);
+    _dialog = new IndicatorTOIconDialog(_itemType, _family, this, key, _currentIconMap);
+}
+
 /****************** pseudo inheritance *********************/
 
 /*public*/ bool IndicatorTOItemPanel::getShowTrainName() {
@@ -538,7 +537,7 @@ void IndicatorTOItemPanel::createNewFamily(QString family)
  {
   return NULL;
  }
- NamedBean* bean = parent->getDeviceNamedBean();
+ NamedBean* bean = parent->getNamedBean();
  if (bean==NULL)
  {
   parent->log-> error("IconDragJLabel.getTransferData: NamedBean is NULL!");

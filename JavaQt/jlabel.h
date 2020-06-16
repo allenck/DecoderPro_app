@@ -7,7 +7,9 @@
 #include <QLabel>
 #include "jcomponent.h"
 #include "border.h"
+#include "propertychangesupport.h"
 
+class Logger;
 class ImageIcon;
 class JLabel : public QLabel, public JComponent
 {
@@ -212,7 +214,7 @@ public:
      * @see #setLabelFor
      */
     /*public*/ int getDisplayedMnemonic();
- /*public*/ QWidget* getLabelFor() {return labelFor;}
+// /*public*/ QWidget* getLabelFor() {return labelFor;}
 /*public*/ void setHorizontalAlignment(int alignment);
 
 /*public*/ void setAlignmentX(float alignmentX);
@@ -316,7 +318,7 @@ public:
      *               relative to its image.
      */
     /*public*/ void setHorizontalTextPosition(int textPosition);
-    void setName(QString name);
+    virtual void setName(QString name);
     QString getName();
     /*public*/ void setBounds(int x, int y, int w, int h);
     /*public*/ QObject* jself() {return (QObject*)this;}
@@ -329,11 +331,16 @@ public:
     /*public*/ QFont getFont();
     /*public*/ void setOpaque(bool);
     /*public*/ void setFont(QFont);
-    /*public*/ void setLabelFor(QWidget* labelFor) {this->labelFor = labelFor;}
+//    /*public*/ void setLabelFor(QWidget* labelFor) {this->labelFor = labelFor;}
     /*public*/ QFontMetrics getFontMetrics();
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder() {return _border;}
     /*public*/ int getBaseline(int w, int h);
+
+    PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+    /*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
+    /*public*/ QWidget* getLabelFor();
+    /*public*/ void setLabelFor(QWidget* c);
 
 signals:
     
@@ -360,6 +367,7 @@ private:
  QMutex* mutex;
  bool nameExplicitlySet;
 static /*final*/ QString LABELED_BY_PROPERTY;// = "labeledBy";
+static Logger* log;
  double _x, _y;
  double _w, _h;
  bool _opaque = false;

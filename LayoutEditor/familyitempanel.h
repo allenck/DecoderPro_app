@@ -37,7 +37,7 @@ public slots:
 
 private:
     JPanel*    _bottom1Panel = nullptr;  // Typically _showIconsButton and editIconsButton
-    QWidget*    _bottom2Panel = nullptr;  // createIconFamilyButton - when all families deleted
+    JPanel*    _bottom2Panel = nullptr;  // createIconFamilyButton - when all families deleted
     Logger* log;
     QPushButton* _showIconsButton = nullptr;
     QPushButton* _editIconsButton = nullptr;
@@ -51,17 +51,17 @@ private:
     /*private*/ QString findFamilyOfMap(QMap<QString, NamedIcon*>* iconMap, QMap<QString, QMap<QString, NamedIcon*>*>* families);
     /*private*/ void addShowButtonToBottom();
     /*private*/ void addFamilyButtonListener (QRadioButton* button, QString family);
-    //QString     gbStyleSheet;
+    /*private*/ void openEditDialog();
 
 private slots:
-    /*private*/ QWidget* makeCreateNewFamilyPanel();
+    /*private*/ JPanel* makeCreateNewFamilyPanel();
 
 protected:
     /*protected*/ QString _family;
     /*protected*/ JPanel* _iconFamilyPanel = nullptr;
     /*protected*/ JPanel* _iconPanel = nullptr;     // panel contained in _iconFamilyPanel - all icons in family
     /*protected*/ JPanel* _dragIconPanel = nullptr; // contained in _iconFamilyPanel - to drag to control panel
-    /*protected*/ bool _supressDragging;
+    /*protected*/ bool _supressDragging = false;
     /*protected*/ int _buttonPosition = 0;      // position of _iconFamilyPanel (TableItemPanels use 1)
     /*protected*/ static bool _suppressNamePrompts;// = false;
     /*protected*/ bool _isUnstoredMap = false;
@@ -74,7 +74,7 @@ protected:
     /*protected*/ virtual void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
     /*protected*/ JPanel* makeDragIcon(NamedIcon* icon, JLabel* label);
     /*protected*/ virtual void setFamily(QString family) ;
-    /*protected*/ virtual void openDialog(QString type, QString family, QMap<QString, NamedIcon *> *iconMap);
+    /*protected*/ virtual IconDialog *openDialog(QString type, QString family, QMap<QString, NamedIcon *> *iconMap);
     /*protected*/ void addUpdateButtonToBottom(ActionListener* doneAction);
     /*protected*/ virtual JPanel* makeItemButtonPanel();
     /*protected*/ virtual void addCreateDeleteFamilyButtons();
@@ -88,7 +88,6 @@ protected slots:
     /*protected*/ void familiesMissing();
     /*protected*/ bool isUnstoredMap();
     /*protected*/ void setFamilyButton();
-    /*protected*/ void setIconMap(QMap<QString, NamedIcon *> *map);
     /*protected*/ bool mapsAreEqual(QMap<QString, NamedIcon*>* map1, QMap<QString, NamedIcon*>* map2);
     /*protected*/ void deleteFamilySet();
     /*protected*/ virtual void hideIcons();

@@ -54,24 +54,24 @@
  }
 }
 
-/*public*/ void TextItemPanel::updateAttributes(PositionableLabel* l)
-{
- _decorator->setAttributes(l);
- PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
- l->setPopupUtility(util->clone(l, l->getTextComponent()));
-//    l->setFont(util->getFont().deriveFont(util.getFontStyle()));
- if (util->hasBackground()) { // unrotated
-     l->setOpaque(true);
- }
-}
+///*public*/ void TextItemPanel::updateAttributes(PositionableLabel* l)
+//{
+// _decorator->setAttributes(l);
+// PositionablePopupUtil* util = _decorator->getPositionablePopupUtil();
+// l->setPopupUtility(util->clone(l, l->getTextComponent()));
+////    l->setFont(util->getFont().deriveFont(util.getFontStyle()));
+// if (util->hasBackground()) { // unrotated
+//     l->setOpaque(true);
+// }
+//}
 
 //@Override
-/*public*/ void TextItemPanel::closeDialogs() {
-    if (_decorator != nullptr) {
-        _decorator->setSuppressRecentColor(false);
-    }
-    ItemPanel::closeDialogs();
-}
+///*public*/ void TextItemPanel::closeDialogs() {
+//    if (_decorator != nullptr) {
+//        _decorator->setSuppressRecentColor(false);
+//    }
+//    ItemPanel::closeDialogs();
+//}
 
 /**
  * Export a Positionable item from panel.

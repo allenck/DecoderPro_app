@@ -255,7 +255,7 @@ default:
    _updateButton->setEnabled(true);
    _updateButton->setToolTip("");
   }
-  NamedBean* bean = getDeviceNamedBean();
+  NamedBean* bean = getNamedBean();
   _readMem->setMemory(bean->getDisplayName());
   _writeMem->setMemory(bean->getDisplayName());
   _spinMem->setMemory(bean->getDisplayName());
@@ -294,7 +294,7 @@ default:
 //        if (!isDataFlavorSupported(flavor)) {
 //            return NULL;
 //        }
- NamedBean* bean = self->getDeviceNamedBean();
+ NamedBean* bean = self->getNamedBean();
  if (bean==NULL)
  {
   self->log->error("IconDragJComponent.getTransferData: NamedBean is NULL!");

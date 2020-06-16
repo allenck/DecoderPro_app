@@ -69,7 +69,7 @@ void DragJLabel::common()
  log = new Logger("DragJLabel");
  setAttribute(Qt::WA_DeleteOnClose);
  setLayout(new QVBoxLayout());
- this->layout()->addWidget(internalLabel = new QLabel);
+ this->layout()->addWidget(internalLabel = new JLabel());
  setEnabled(true);
 }
 

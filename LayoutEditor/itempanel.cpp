@@ -80,7 +80,7 @@
 }
 
 /*protected*/ void ItemPanel::reset() {
-    closeDialogs();
+    _paletteFrame->repaint();
 }
 
 /*protected*/ /*final*/ bool ItemPanel::isUpdate() {

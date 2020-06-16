@@ -41,7 +41,7 @@ protected:
     /*protected*/ void initIconFamiliesPanel() override;
     /*protected*/ void setFamily(QString family) override;
     /*protected*/ void setSelections();
-    /*protected*/ void openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
+    /*protected*/ IconDialog* openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
     /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
 friend class MultiSensorSelectionModel;
 friend class MSIconDragJLabel;

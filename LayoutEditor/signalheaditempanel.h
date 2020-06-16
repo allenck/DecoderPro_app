@@ -20,16 +20,15 @@ private:
 protected:
     /*protected*/ QWidget* initTablePanel(PickListModel* model, Editor* editor);
     /*protected*/ void makeDndIconPanel(QMap<QString, NamedIcon *> *iconMap, QString displayKey);
-//    /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon*>* allIconsMap);
+    /*protected*/ void addIconsToPanel(QMap<QString, NamedIcon*>* allIconsMap);
     /*protected*/ QMap<QString, NamedIcon*>* getFilteredIconMap(QMap<QString, NamedIcon *> *allIconsMap);
-//    /*protected*/ QLabel* getDragger(DataFlavor flavor, QHash<QString, NamedIcon*>* map);
-//    /*protected*/ void showIcons();
-    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon);
-    /*protected*/ void openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap);
+    /*protected*/ void showIcons();
+    /*protected*/ DragJLabel* getDragger(DataFlavor* flavor, QMap<QString, NamedIcon*>* map, NamedIcon* icon) override;
 
 friend class SHIconDragJLabel;
 friend class SignalHeadIconDialog;
 };
+
 /*protected*/ class SHIconDragJLabel : public DragJLabel {
     QMap <QString, NamedIcon*>* iconMap;
     Logger* log;

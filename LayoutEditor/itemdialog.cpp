@@ -15,8 +15,8 @@
 
 /**
 */
-/*public*/ ItemDialog::ItemDialog(QString type, QString title)
- : JmriJFrame(title, true, true)
+/*public*/ ItemDialog::ItemDialog(QString type, QString title, QWidget *parent)
+ : JmriJFrame(title, true, true, parent)
 {
  if (_instance != nullptr) {
      _instance->dispose();
@@ -25,27 +25,19 @@
  _type = type;
 }
 
-/*protected*/ void ItemDialog::sizeLocate()
-{
- //setSize(_parent->size().width(), this->sizeHint().height());
- resize(_parent->size().width(), this->sizeHint().height());
-// setLocationRelativeTo(_parent);
- setVisible(true);
- pack();
-}
-
 /*protected*/ QString ItemDialog::getDialogType()
 {
  return _type;
 }
 
 /*protected*/ void ItemDialog::closeDialogs() {
-    }
+}
 
 //@Override
 /*public*/ void ItemDialog::dispose() {
     closeDialogs();
     JmriJFrame::dispose();
+    _instance = nullptr;	// remove reference to allow gc
 }
 
 /*public*/ QString ItemDialog::getClassName() {return "jmri.jmrit.display.palette.ItemDialog";}

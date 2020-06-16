@@ -23,8 +23,8 @@ public:
     /*public*/ void dropEvent(QDropEvent *);
     /*public*/ void drop(DropTargetDropEvent* e);
     void mouseMoveEvent(QMouseEvent *ev);
-    void setName(QString name);
-    QString getName();
+//    void setName(QString name);
+//    QString getName();
     void setIcon(NamedIcon* _icon);
     NamedIcon* icon();
     void setIconFn(QString, QSize);
@@ -42,7 +42,7 @@ private:
     /*private*/ bool 		_update;
     /*private*/ void accept(DropTargetDropEvent* e, NamedIcon* newIcon);
  Logger* log;
- QString name;
+ //QString name;
  NamedIcon* _icon;
  void init(NamedIcon* icon);
  friend class FunctionLabelsPane;

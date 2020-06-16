@@ -59,7 +59,7 @@ ColorDialog::ColorDialog(QWidget *parent) : JDialog(parent)
   _util = pos->getPopupUtility();
   if (_util != nullptr)
   {
-   _util->setSuppressRecentColor(true);
+   //_util->setSuppressRecentColor(true);
    Positionable* p = pos->deepClone();
    _saveUtil = p->getPopupUtility();
    p->remove();
@@ -237,9 +237,9 @@ void ColorDialog::onDoneButton()
     if (_colorAction != nullptr) {
         _colorAction->actionPerformed();
     }
-    if (_util != nullptr) {
-        _util->setSuppressRecentColor(false);
-    }
+//    if (_util != nullptr) {
+//        _util->setSuppressRecentColor(false);
+//    }
     JmriColorChooser::addRecentColor(_chooser->getColor());
     _done=true;
     dispose();
@@ -249,7 +249,7 @@ void ColorDialog::cancel() {
     if (_util != nullptr) {
         PositionableLabel* pl = (PositionableLabel*)_target;
         pl->getEditor()->setAttributes(_saveUtil, (Positionable*)pl);
-        _util->setSuppressRecentColor(false);
+//        _util->setSuppressRecentColor(false);
         pl->updateSize();
         if (_type == TEXT) {
             ((PositionableLabel*)_target)->setText(_saveText);

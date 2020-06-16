@@ -75,19 +75,19 @@
     return bottomPanel;
 }
 
-void BackgroundItemPanel::colorChanged()
-{
-// QColor c = _editor->getTargetPanel()->getBackground();
-// QBrush b = _editor->editPanel->backgroundBrush();
-// if(b == Qt::NoBrush)
-//  c = QColor(Qt::white);
-// c = b.color();
-// BufferedImage* im = DrawSquares::getImage(500, 400, 10, c, c);
-// _paletteFrame->updateBackground0(im);
- _color = _chooser->getColor();
- _iconPanel->setImage(DrawSquares::getImage(500, 400, 10, _color, _color));
- _iconPanel->update();
-}
+//void BackgroundItemPanel::colorChanged()
+//{
+//// QColor c = _editor->getTargetPanel()->getBackground();
+//// QBrush b = _editor->editPanel->backgroundBrush();
+//// if(b == Qt::NoBrush)
+////  c = QColor(Qt::white);
+//// c = b.color();
+//// BufferedImage* im = DrawSquares::getImage(500, 400, 10, c, c);
+//// _paletteFrame->updateBackground0(im);
+// _color = _chooser->getColor();
+// _iconPanel->setImage(DrawSquares::getImage(500, 400, 10, _color, _color));
+// _iconPanel->update();
+//}
 
 
 //    class ColorDialog extends JDialog implements ChangeListener {

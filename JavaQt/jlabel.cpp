@@ -3,6 +3,8 @@
 #include "imageicon.h"
 #include <QGraphicsItemGroup>
 #include <QDebug>
+#include "loggerfactory.h"
+#include "vptr.h"
 
 //JLabel::JLabel(QWidget *parent) :
 //    QLabel(parent)
@@ -195,6 +197,8 @@ float JLabel::LEFT_ALIGNMENT = 0.0f;
     //this(NULL, image, CENTER);
     init();
     setText("");
+    if(image)
+     log->debug(tr("setIcon: w=%1, h=%2 %3x%4").arg(image->getIconHeight()).arg(image->getIconWidth()).arg(size().width()).arg(size().height()));
     setIcon(image);
     setHorizontalAlignment(CENTER);
 
@@ -333,7 +337,7 @@ void JLabel::init()
     QString oldValue = this->_text;
     this->_text = text;
     QLabel::setText(text);
-//    firePropertyChange("text", oldValue, text);
+    firePropertyChange("text", oldValue, text);
 
 //    setDisplayedMnemonicIndex(                  SwingUtilities.findDisplayedMnemonicIndex(                                      text,getDisplayedMnemonic()));
 
@@ -393,7 +397,7 @@ void JLabel::init()
         disabledIcon = NULL;
     }
 
-//    firePropertyChange("icon", oldValue, defaultIcon);
+    firePropertyChange("icon", VPtr<ImageIcon>::asQVariant(oldValue), VPtr<ImageIcon>::asQVariant(defaultIcon));
 
 //    if ((accessibleContext != NULL) && (oldValue != defaultIcon)) {
 //            accessibleContext.firePropertyChange(
@@ -460,7 +464,7 @@ void JLabel::init()
     ImageIcon* oldValue = this->disabledIcon;
     this->disabledIcon = disabledIcon;
     disabledIconSet = (disabledIcon != NULL);
-//    firePropertyChange("disabledIcon", oldValue, disabledIcon);
+    firePropertyChange("disabledIcon", VPtr<ImageIcon>::asQVariant(oldValue), VPtr<ImageIcon>::asQVariant(disabledIcon));
 //    if (disabledIcon != oldValue) {
 //        if (disabledIcon == NULL || oldValue == NULL ||
 //            disabledIcon.getIconWidth() != oldValue.getIconWidth() ||
@@ -491,7 +495,7 @@ void JLabel::init()
 /*public*/ void JLabel::setDisplayedMnemonic(int key) {
     int oldKey = mnemonic;
     mnemonic = key;
-//    firePropertyChange("displayedMnemonic", oldKey, mnemonic);
+    firePropertyChange("displayedMnemonic", oldKey, mnemonic);
 
 //    setDisplayedMnemonicIndex(
 //        SwingUtilities.findDisplayedMnemonicIndex(getText(), mnemonic));
@@ -718,7 +722,7 @@ void JLabel::init()
     if (alignment == verticalAlignment) return;
     int oldValue = verticalAlignment;
     verticalAlignment = checkVerticalKey(alignment, "verticalAlignment");
-//    firePropertyChange("verticalAlignment", oldValue, verticalAlignment);
+    firePropertyChange("verticalAlignment", oldValue, verticalAlignment);
 //    repaint();
 }
 
@@ -768,7 +772,7 @@ void JLabel::init()
  */
 /*public*/ void JLabel::setHorizontalAlignment(int alignment) {
     if (alignment == horizontalAlignment) return;
-//    int oldValue = horizontalAlignment;
+    int oldValue = horizontalAlignment;
     horizontalAlignment = checkHorizontalKey(alignment,
                                              "horizontalAlignment");
    Qt::AlignmentFlag flag = Qt::AlignLeft;
@@ -785,8 +789,8 @@ void JLabel::init()
      break;
    }
     QLabel::setAlignment(flag);
-//    firePropertyChange("horizontalAlignment",
-//                       oldValue, horizontalAlignment);
+    firePropertyChange("horizontalAlignment",
+                       oldValue, horizontalAlignment);
     repaint();
 }
 
@@ -924,10 +928,10 @@ void JLabel::setSize(double w, double h)
     int old = horizontalTextPosition;
     this->horizontalTextPosition = checkHorizontalKey(textPosition,
                                             "horizontalTextPosition");
-//    firePropertyChange("horizontalTextPosition",
-//                       old, horizontalTextPosition);
-//    revalidate();
-//    repaint();
+    firePropertyChange("horizontalTextPosition",
+                       old, horizontalTextPosition);
+    update();
+    repaint();
 }
 #if 0
 
@@ -1041,7 +1045,7 @@ void JLabel::setSize(double w, double h)
     ",verticalTextPosition=" + verticalTextPositionQString;
 }
 #endif
-#if 0 // TODO:
+
 /**
  * --- Accessibility Support ---
  */
@@ -1058,7 +1062,7 @@ void JLabel::setSize(double w, double h)
  * @see #getDisplayedMnemonic
  * @see #setDisplayedMnemonic
  */
-/*public*/ Component getLabelFor() {
+/*public*/ QWidget *JLabel::getLabelFor() {
     return labelFor;
 }
 
@@ -1079,19 +1083,20 @@ void JLabel::setSize(double w, double h)
  *        bound: true
  *  description: The component this is labelling.
  */
-/*public*/ void setLabelFor(Component c) {
-    Component oldC = labelFor;
+/*public*/ void JLabel::setLabelFor(QWidget *c) {
+    QWidget* oldC = labelFor;
     labelFor = c;
-    firePropertyChange("labelFor", oldC, c);
-
+    firePropertyChange("labelFor", VPtr<QWidget>::asQVariant(oldC), VPtr<QWidget>::asQVariant(c));
+#if 0
     if (oldC instanceof JComponent) {
-        ((JComponent)oldC).putClientProperty(LABELED_BY_PROPERTY, NULL);
+        ((JComponent*)oldC)->putClientProperty(LABELED_BY_PROPERTY, NULL);
     }
     if (c instanceof JComponent) {
         ((JComponent)c).putClientProperty(LABELED_BY_PROPERTY, this);
     }
+#endif
 }
-
+#if 0
 /**
  * Get the AccessibleContext of this object
  *
@@ -1699,8 +1704,9 @@ void JLabel::setSize(double w, double h)
  this->name = name;
  nameExplicitlySet = true;
 //        }
-//        firePropertyChange("name", oldName, name);
+        firePropertyChange("name", oldName, name);
 }
+
 QString JLabel::getName()
 {
  return name;
@@ -1753,4 +1759,10 @@ QColor JLabel::getForeground()
 
 /*public*/ int JLabel::getBaseline(int w, int h) { return 0;}
 
+/*public*/ void JLabel::firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue)
+{
+ pcs->firePropertyChange(propertyName, oldValue, newValue);
+}
 
+
+Logger* JLabel::log = LoggerFactory::getLogger("JLabel");

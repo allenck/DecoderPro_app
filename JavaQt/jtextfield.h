@@ -80,6 +80,9 @@ private:
  QVariant _data;
  /*private*/ void focusInEvent(QFocusEvent* e);
  /*private*/ void focusOutEvent(QFocusEvent* e);
+ QColor backgroundColor = Qt::white;
+ QColor textColor = Qt::black;
+ bool _opaque = true;
 
 private slots:
  void updateShare();

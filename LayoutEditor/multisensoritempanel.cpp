@@ -168,11 +168,12 @@ void MultiSensorItemPanel:: buttonUD_clicked() {_upDown = true;}
 }
 
 //@OverrideQMap
-/*protected*/ void MultiSensorItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap)
+/*protected*/ IconDialog *MultiSensorItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap)
 {
  closeDialogs();
  _dialog = new MultiSensorIconDialog(type, family, this, iconMap);
  _dialog->sizeLocate();
+ return _dialog;
 }
 
 /**

@@ -69,7 +69,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
   element.setAttribute("green", util->getForeground().green());
   element.setAttribute("blue", util->getForeground().blue());
  }
- if((p->isOpaque() || p->getSaveOpaque())&& p->getPopupUtility()->getBackground() != QColor(Qt::transparent))
+ if(/*(p->isOpaque() || p->getSaveOpaque())&& */util->getBackground() != QColor(Qt::transparent))
  {
   element.setAttribute("redBack", util->getBackground().red());
   element.setAttribute("greenBack", util->getBackground().green());

@@ -110,7 +110,7 @@
    _updateButton->setEnabled(true);
    _updateButton->setToolTip("");
   }
-  NamedBean* bean = getDeviceNamedBean();
+  NamedBean* bean = getNamedBean();
   _reporter->setReporter(bean->getDisplayName());
  }
  else
@@ -142,7 +142,7 @@ this->self = self;
  {
   return NULL;
  }
- NamedBean* bean = self->getDeviceNamedBean();
+ NamedBean* bean = self->getNamedBean();
  if (bean==NULL)
  {
   self->log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");

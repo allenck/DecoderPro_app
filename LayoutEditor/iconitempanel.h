@@ -35,7 +35,7 @@ public slots:
 private:
     QMap<QString, NamedIcon*>* _iconMap;
     QMap<QString, NamedIcon*>* _tmpIconMap;
-    ImagePanel* _iconPanel;
+    JPanel* _iconPanel;
     QPushButton* _catalogButton;
     CatalogPanel* _catalog;
     JLabel* _selectedIcon;

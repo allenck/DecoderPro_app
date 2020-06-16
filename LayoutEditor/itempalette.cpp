@@ -601,7 +601,6 @@ void IPWindowListener::windowClosing(QCloseEvent * e)
     addItemTab(itemPanel, "RPSReporter", tr("RPSReporter"));
     itemPanel->init();
 
-
     itemPanel = new ClockItemPanel(palette, "FastClock", editor, palette);
     addItemTab(itemPanel, "FastClock", tr("FastClock"));
     itemPanel->init();

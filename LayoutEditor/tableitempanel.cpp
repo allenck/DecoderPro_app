@@ -23,6 +23,7 @@
 #include "turnouticonxml.h"
 #include "lighticonxml.h"
 #include "defaultlistselectionmodel.h"
+#include "joptionpane.h"
 
 //TableItemPanel::TableItemPanel(QWidget *parent) :
 //    FamilyItemPanel(parent)
@@ -290,15 +291,16 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
 
 }
 
-/*protected*/ NamedBean* TableItemPanel::getDeviceNamedBean() {
-    if (_table == NULL) {
-        return NULL;
+/*protected*/ NamedBean* TableItemPanel::getNamedBean() {
+    if (_table == nullptr) {
+        return nullptr;
     }
-    //int row = _table->getSelectedRow();
-    int row = _table->currentIndex().row();
-    if(log->isDebugEnabled()) log->debug("getNamedBean: from table \""+_itemType+ "\" at row "+QString::number(row));
-    if (row<0) {
-        return NULL;
+    int row = _table->getSelectedRow();
+    if (log->isDebugEnabled()) {
+        log->debug("getNamedBean: from table \"" + _itemType + "\" at row " + QString::number(row));
+    }
+    if (row < 0) {
+        return nullptr;
     }
     return _model->getBeanAt(row);
 }
@@ -333,11 +335,12 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
   log->error("IconDragJLabel.getTransferData: iconMap is NULL!");
   return NULL;
  }
- NamedBean* bean = self->getDeviceNamedBean();
+ NamedBean* bean = self->getNamedBean();
  if (bean==NULL)
  {
-  log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");
-  return NULL;
+  JOptionPane::showMessageDialog(nullptr, tr("Select a row in the table to provide a device for this icon."),
+             tr("Warning"), JOptionPane::WARNING_MESSAGE);
+     return nullptr;
  }
 
  if (self->_itemType==("Turnout"))
@@ -396,7 +399,7 @@ QByteArray TIconDragJLabel::mimeData()
  if(self->_itemType == "Turnout")
  {
   TurnoutIcon* icon;
-  _dataFlavor = new DataFlavor(icon = new TurnoutIcon(NULL),"TurnoutIcon");
+  _dataFlavor = new DataFlavor(icon = new TurnoutIcon(self->_editor),"TurnoutIcon");
   icon->setTurnout(bean->getSystemName());
   icon->setFamily(self->_family);
   QMapIterator<QString, NamedIcon*> iter(*self->_currentIconMap);
@@ -417,7 +420,7 @@ QByteArray TIconDragJLabel::mimeData()
  {
   //return bean->getSystemName()+ ";SensorIcon";
   SensorIcon* icon;
-  _dataFlavor = new DataFlavor(icon = new SensorIcon(NULL),"SensorIcon");\
+  _dataFlavor = new DataFlavor(icon = new SensorIcon(self->_editor),"SensorIcon");\
   icon->setSensor(bean->getSystemName());
   icon->setFamily(self->_family);
   QMapIterator<QString, NamedIcon*> iter(*self->_currentIconMap);

@@ -121,7 +121,7 @@
 */
 /*protected*/ void IconItemPanel::addIconsToPanel(QMap<QString, NamedIcon*>* iconMap)
 {
- _iconPanel = new ImagePanel();
+ _iconPanel = new JPanel();
  _iconPanel->setLayout(new QHBoxLayout());
  //Iterator<Entry<QString, NamedIcon*>*> it = iconMap.entrySet().iterator();
  QMapIterator<QString, NamedIcon*> it(*iconMap);
@@ -137,13 +137,14 @@
                                                    borderName));
   try
   {
-   IconDragJLabel* label = new IconDragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR), _level, this);
+   JLabel* label = new IconDragJLabel(new DataFlavor(Editor::POSITIONABLE_FLAVOR), _level, this);
    label->setName(borderName);
-   //panel->layout()->addWidget(label);
+   label->setToolTip(icon->getName());
+   panel->layout()->addWidget(label);
    if (icon->getIconWidth()<1 || icon->getIconHeight()<1)
    {
     label->setText(tr("invisibleIcon"));
-//               label->setForeground(QColor(Qt::lightGray);
+    label->setForeground(QColor(Qt::lightGray));
    }
    else
    {

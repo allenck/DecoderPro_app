@@ -12,7 +12,7 @@ public:
 private:
  static Logger* log;
 protected:
- /*protected*/ void makeDoneButtonPanel(QWidget* buttonPanel, QMap<QString, NamedIcon*>* iconMap);
+ /*protected*/ void makeDoneButtonPanel(JPanel *buttonPanel, QMap<QString, NamedIcon*>* iconMap);
 
 };
 

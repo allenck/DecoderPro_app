@@ -41,7 +41,7 @@ private:
   NamedIcon* icon;
   QString name;
   QDrag *dr;
-  QLabel* internalLabel;
+  JLabel* internalLabel;
   void common();
 
 protected:

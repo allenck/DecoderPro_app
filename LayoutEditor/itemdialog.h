@@ -10,7 +10,8 @@ class ItemDialog : public JmriJFrame
     Q_OBJECT
 public:
     //explicit ItemDialog(QWidget *parent = 0);
-    /*public*/ ItemDialog(QString type, QString title);
+    /*public*/ ItemDialog(QString type, QString title, QWidget*parent = nullptr);
+ ~ItemDialog() {dispose();}
  /*public*/ void dispose();
  /*public*/ QString getClassName();
 signals:
@@ -20,10 +21,7 @@ private:
  /*private*/ static ItemDialog* _instance;// = null;		// only let one dialog at a time
 
 protected:
-    /*protected*/ FamilyItemPanel* _parent;
     /*protected*/ QString    _type;
-    /*protected*/ QString    _family;
-    /*protected*/ void sizeLocate();
     /*protected*/ QString getDialogType();
     /*protected*/ virtual void closeDialogs();
 

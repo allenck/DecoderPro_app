@@ -17,7 +17,7 @@
 }
 
 //@Override
-/*protected*/ void SignalHeadIconDialog::makeDoneButtonPanel(QWidget* buttonPanel, QMap<QString, NamedIcon*>* iconMap) {
+/*protected*/ void SignalHeadIconDialog::makeDoneButtonPanel(JPanel* buttonPanel, QMap<QString, NamedIcon*>* iconMap) {
     if (iconMap != nullptr) {
         QMap<QString, NamedIcon*>* map = ((SignalHeadItemPanel*)_parent)->getFilteredIconMap(iconMap);
         _iconMap = IconDialog::clone(map);

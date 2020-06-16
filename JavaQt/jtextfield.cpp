@@ -1016,27 +1016,27 @@ protected class AccessibleJTextField extends AccessibleJTextComponent {
 #endif
 QColor JTextField::getBackground()
 {
- QColor c;
- QPalette p = palette();
- QString ss = styleSheet();
- c = p.color(QPalette::Background);
- if(ss == "")
+ QColor c = backgroundColor;
+// QPalette p = palette();
+// //QString ss = styleSheet();
+// c = p.color(QPalette::Background);
+// if(ss == "")
    return c;
- int i = ss.indexOf("background-color:");
- int j;
- if(i > 0)
- {
-  i= ss.indexOf("rgb(")+4;
-  j= ss.indexOf(",",i);
-  int red =ss. mid(i,j-i).toInt();
-  i=j+1;
-  j = ss.indexOf(",",i);
-  int green = ss.mid(i,j-i).toInt();
-  i=j+1;
-  j = ss.indexOf(")");
-  int blue =  ss.mid(i,j-i).toInt();
-  return QColor(red,green,blue);
- }
+// int i = ss.indexOf("background-color:");
+// int j;
+// if(i > 0)
+// {
+//  i= ss.indexOf("rgb(")+4;
+//  j= ss.indexOf(",",i);
+//  int red =ss. mid(i,j-i).toInt();
+//  i=j+1;
+//  j = ss.indexOf(",",i);
+//  int green = ss.mid(i,j-i).toInt();
+//  i=j+1;
+//  j = ss.indexOf(")");
+//  int blue =  ss.mid(i,j-i).toInt();
+//  return QColor(red,green,blue);
+// }
 }
 void JTextField::setBackground(QColor c )
 {
@@ -1044,12 +1044,18 @@ void JTextField::setBackground(QColor c )
 // p.setColor(QPalette::Inactive, QPalette::Background, c);
 // setPalette(p);
  QColor oldC = getBackground();
+ backgroundColor = c;
+ _opaque = true;
  if(oldC != c)
  {
   if (log->isDebugEnabled()) log->debug("old stylesheet = " + styleSheet());
-  ss = QString("QLineEdit{  background-color: rgb(%1,%2,%3); selection-background-color: darkgray;} QLineEdit:read-only { background: lightblue;}").arg(c.red()).arg(c.green()).arg(c.blue());
-  setStyleSheet(ss);
-  if (log->isDebugEnabled())log->debug("new stylesheet = " + ss + " value = '"+ text() + "'");
+//  ss = QString("QLineEdit{  background-color: rgb(%1,%2,%3); selection-background-color: darkgray;} QLineEdit:read-only { background: lightblue;}").arg(c.red()).arg(c.green()).arg(c.blue());
+//  setStyleSheet(ss);
+  QPalette p = palette();
+  p.setColor(QPalette::Background,c);
+  setPalette(p);
+  setOpaque(true);
+//  if (log->isDebugEnabled())log->debug("new stylesheet = " + ss + " value = '"+ text() + "'");
   update();
   emit propertyChange(new PropertyChangeEvent(this, "background", QVariant(oldC), QVariant(c)));
  }
@@ -1057,23 +1063,29 @@ void JTextField::setBackground(QColor c )
 
 QColor JTextField::getForeground()
 {
- QColor c;
+ QColor c = textColor;
  QPalette p = palette();
  QString ss = styleSheet();
  c = p.color(QPalette::Foreground);
- if(ss == "")
-   return c;
+// if(ss == "")
+//   return c;
+ return c;
 }
 
 void JTextField::setForeground(QColor c)
 {
     //QLineEdit::setForeground(c);
- ss = QString("QLineEdit { color: rgb(%1, %2 ,%3);}").arg(c.red()).arg(c.green()).arg(c.blue());
- setStyleSheet(ss);
+// ss = QString("QLineEdit { color: rgb(%1, %2 ,%3);}").arg(c.red()).arg(c.green()).arg(c.blue());
+// setStyleSheet(ss);
+ QPalette p = QPalette();
+ p.setColor(QPalette::Foreground, c);
+ setPalette(p);
+ textColor = c;
 }
-void JTextField::setOpaque(bool)
+
+void JTextField::setOpaque(bool b)
 {
-    // TODO:
+ _opaque = b;
 }
 void JTextField::enterEvent(QEvent *)
 {
@@ -1113,7 +1125,7 @@ Document* JTextField::getDocument()
  //allowing the pixels underneath it to "show through". Therefore, a component
  //that does not fully paint its pixels provides a degree of transparency.
 
- return false;
+ return _opaque;
 }
 
 /*public*/ QFont JTextField::getFont()

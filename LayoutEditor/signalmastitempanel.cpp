@@ -393,7 +393,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
 }
 //@Override
 /*protected*/ bool SMIconDragJLabel::okToDrag() {
-    NamedBean* bean = self->getDeviceNamedBean();
+    NamedBean* bean = self->getNamedBean();
     if (bean == nullptr) {
         JOptionPane::showMessageDialog(this, tr("Select a row in the table to provide a device for this icon."),
                 tr("Warning"), JOptionPane::WARNING_MESSAGE);
@@ -423,7 +423,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
 
 QByteArray SMIconDragJLabel::mimeData()
 {
- NamedBean* bean = self->getDeviceNamedBean();
+ NamedBean* bean = self->getNamedBean();
  if (bean==NULL)
  {
   log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");

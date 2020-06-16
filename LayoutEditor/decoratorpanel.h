@@ -18,6 +18,7 @@
 #include "positionablelabelxml.h"
 #include "editor.h"
 #include "jcombobox.h"
+#include "positionablepopuputil.h"
 
 class AJComboBox;
 class DragJTextField;
@@ -96,7 +97,7 @@ enum VALUES
     /*public*/ void getText(Positionable* pos);
     /*public*/ bool isOpaque();
 //    /*public*/ void itemStateChanged(ItemEvent* e);
-    /*public*/ void setSuppressRecentColor(bool b);
+//    /*public*/ void setSuppressRecentColor(bool b);
     /*public*/ void setAttributes(Positionable* pos);
 //    /*public*/ void mousePressEvent(QMouseEvent *event);
 //    /*public*/ QByteArray mimeData();
@@ -222,18 +223,21 @@ public:
     //QString _state;
 
 public:
-    AJRadioButton(QString text, int w);
+    AJRadioButton(QString text, int w) : QRadioButton(text)
+    {
+     //super(text);
+     _which = w;
+     //_state = state;
+
+    }
     //QString getState();
     friend class DecoratorPanel;
     friend class AJRBActionListener;
 signals:
     void stateChanged(ChangeEvent*);
 public slots:
-    void onClick()
-    {
-     emit stateChanged(new ChangeEvent(this));
-    }
 };
+
 #if 0
 class AJRBActionListener : public QObject
 {
@@ -327,6 +331,7 @@ public slots:
   dc->fontChange();
  }
 };
+
 class DPChangeListener :public ChangeListener
 {
  Q_OBJECT
@@ -368,14 +373,17 @@ class DragJTextField : public JTextField
  Q_OBJECT
  QDrag* dr;
  Logger* log;
- Editor* editor;
+ Editor* editor = nullptr;
+ PositionablePopupUtil* util;
 public:
- DragJTextField(QString text, int cols, Editor* editor, QWidget* parent = 0) : JTextField(text, cols, parent)
+ DragJTextField(QString text, int cols, Editor* editor, PositionablePopupUtil* util, QWidget* parent = 0) : JTextField(text, cols, parent)
  {
   log = new Logger("DragJTextField");
   this->editor = editor;
+  this->util = util;
   setFrame(false);
  }
+
  void mousePressEvent(QMouseEvent * event)
  {
   if(event->button()&Qt::LeftButton)
@@ -395,7 +403,7 @@ public:
   QByteArray xmldata;
   PositionableLabelXml* xml = new PositionableLabelXml();
   PositionableLabel* label = new PositionableLabel(text(), editor);
-  label->setPopupUtility(NULL);        // no text
+  label->setPopupUtility(util);        // no text
   label->setLevel(Editor::LABELS);
   QDomElement e = xml->store((QObject*)label);
   xml->doc.appendChild(e);
@@ -403,6 +411,7 @@ public:
   log->info(tr("xml data: %1").arg(xml->doc.toString()));
   return xmldata;
  }
+ void setUtil(PositionablePopupUtil* util) {this->util = util;}
 };
 
 class AJComboBox : public JComboBox

@@ -32,7 +32,7 @@ private:
     /*private*/ JPanel* initBottomPanel();
 
 private slots:
-    void colorChanged();
+    //void colorChanged();
 
 protected:
     /*protected*/ JPanel *instructions(bool isBackGround);
@@ -57,13 +57,13 @@ public slots:
 };
 
 #endif
-class BGIPActionListener : public ActionListener
-{
- Q_OBJECT
- BackgroundItemPanel* panel;
-public:
- BGIPActionListener(BackgroundItemPanel* panel) {this->panel = panel;}
-public slots:
- void actionPerformed() { panel->colorChanged();}
-};
+//class BGIPActionListener : public ActionListener
+//{
+// Q_OBJECT
+// BackgroundItemPanel* panel;
+//public:
+// BGIPActionListener(BackgroundItemPanel* panel) {this->panel = panel;}
+//public slots:
+// void actionPerformed() { panel->colorChanged();}
+//};
 #endif // BACKGROUNDITEMPANEL_H

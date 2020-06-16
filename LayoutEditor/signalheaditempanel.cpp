@@ -15,6 +15,7 @@
 #include "abstractsignalhead.h"
 #include "imagepanel.h"
 #include "signalheadicondialog.h"
+#include "joptionpane.h"
 
 //SignalHeadItemPanel::SignnalHeadItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -63,15 +64,34 @@
  return topPanel;
 }
 
-/*protected*/ void SignalHeadItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString displayKey)
-{
- TableItemPanel::makeDndIconPanel(iconMap, "SignalHeadStateRed");
+/*protected*/ void SignalHeadItemPanel::makeDndIconPanel(QMap<QString, NamedIcon*>* iconMap, QString displayKey) {
+    TableItemPanel::makeDndIconPanel(iconMap, "SignalHeadStateRed");
 }
 
-//@Override
-/*protected*/ void SignalHeadItemPanel::openDialog(QString type, QString family, QMap<QString, NamedIcon*>* iconMap) {
-    closeDialogs();
-    _dialog = new SignalHeadIconDialog(type, family, this, iconMap);
+/*protected*/ void SignalHeadItemPanel::showIcons() {
+    //updateFamiliesPanel();
+    _iconFamilyPanel->layout()->removeWidget(_iconPanel);
+    _iconPanel = new JPanel(new FlowLayout());
+    ((QVBoxLayout*)_iconFamilyPanel->layout())->insertWidget(0, _iconPanel);
+    addIconsToPanel(_currentIconMap);
+    _iconPanel->setVisible(true);
+    if (!_update) {
+        _dragIconPanel->setVisible(false);
+    }
+    _showIconsButton->setText(tr("Hide Icons"));
+}
+
+/*protected*/ void SignalHeadItemPanel::addIconsToPanel(QMap<QString, NamedIcon*>* allIconsMap) {
+    QMap<QString, NamedIcon*>* iconMap = getFilteredIconMap(allIconsMap);
+    if (iconMap == nullptr) {
+        iconMap = ItemPalette::getIconMap(_itemType, _family);
+        if (iconMap == nullptr) {
+            _updateButton->setEnabled(false);
+            _updateButton->setToolTip(tr("Select an item from the table and an icon set to update the panel"));
+        }
+    } else {
+        TableItemPanel::addIconsToPanel(iconMap);
+    }
 }
 
 /**
@@ -120,7 +140,7 @@
   return allIconsMap;
  }
 
- SignalHead* sh = (SignalHead*)getDeviceNamedBean();
+ SignalHead* sh = (SignalHead*)getNamedBean();
  if (sh!=NULL)
  {
   QStringList states = ((AbstractSignalHead*)sh)->getValidStateNames().toList();
@@ -169,6 +189,7 @@
     log = new Logger("IconDragJLabel");
     this->self = self;
 }
+
 /*public*/ QObject* SHIconDragJLabel::getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException)
 {
  if (!isDataFlavorSupported(flavor))
@@ -180,11 +201,12 @@
   log->error("IconDragJLabel.getTransferData: iconMap is NULL!");
   return NULL;
  }
- NamedBean* bean = self->getDeviceNamedBean();
+ NamedBean* bean = self->getNamedBean();
  if (bean==NULL)
  {
-  log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");
-  return NULL;
+  JOptionPane::showMessageDialog(nullptr, tr("Select a row in the table to provide a device for this icon."),
+             tr("Warning"), JOptionPane::WARNING_MESSAGE);
+     return nullptr;
  }
 
  SignalHeadIcon* sh = new SignalHeadIcon(self->_editor);
@@ -203,7 +225,7 @@
 }
 QByteArray SHIconDragJLabel::mimeData()
 {
- NamedBean* bean = self->getDeviceNamedBean();
+ NamedBean* bean = self->getNamedBean();
  if (bean==NULL)
  {
   log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");

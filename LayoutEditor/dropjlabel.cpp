@@ -24,17 +24,18 @@ DropJLabel::DropJLabel(QWidget *parent) :
 // /*public*/ class DropJLabel extends JLabel implements DropTargetListener {
 
 
-DropJLabel::DropJLabel (NamedIcon* icon,QWidget *parent) : JLabel(/*icon,*/ parent)
+DropJLabel::DropJLabel (NamedIcon* icon,QWidget *parent) : JLabel(icon, parent)
 {
     //super(icon);
     init(icon);
 }
+
 void DropJLabel::init(NamedIcon* icon)
 {
  log = new Logger("DropJLabel");
  log->setDebugEnabled(true);
- if(icon !=NULL)
-  setIcon(icon);
+// if(icon !=NULL)
+//  setIcon(icon);
  bRightClick = false;
  try
  {
@@ -49,26 +50,25 @@ void DropJLabel::init(NamedIcon* icon)
  setAcceptDrops(true);
  _iconMap = NULL;
  _update = false;
-
 }
-DropJLabel::DropJLabel (NamedIcon* icon,  QMap<QString, NamedIcon *> *iconMap, bool update, QWidget *parent) : JLabel(/*icon,*/ parent)
-{
- log = new Logger("DropJLabel");
- log->setDebugEnabled(true);
- _dataFlavor = new DataFlavor(ImageIndexEditor::IconDataFlavorMime);
- setIcon(icon);
 
- _iconMap = iconMap;
+DropJLabel::DropJLabel (NamedIcon* icon,  QMap<QString, NamedIcon *> *iconMap, bool update, QWidget *parent)
+ : JLabel(icon, parent)
+{
+init(icon);
+
+_iconMap = iconMap;
  _update = update;
- setAcceptDrops(true);
 }
 
 ///*public*/ void dragExit(DropTargetEvent dte) {
 //    //if (log.isDebugEnabled()) log.debug("DropJLabel.dragExit ");
 //}
+
 ///*public*/ void dragEnter(DropTargetDragEvent dtde) {
 //    //if (log.isDebugEnabled()) log.debug("DropJLabel.dragEnter ");
 //}
+
 /*public*/ void DropJLabel::dragEnterEvent(QDragEnterEvent *event)
 {
  if (log->isDebugEnabled()) log->debug("DropJLabel.dragEnter ");  
@@ -92,6 +92,34 @@ DropJLabel::DropJLabel (NamedIcon* icon,  QMap<QString, NamedIcon *> *iconMap, b
 {
 // DropTargetDropEvent* dtde = new DropTargetDropEvent((DropTargetContext*)this, de->pos(),DnDConstants::ACTION_COPY, 0);
 // drop(dtde);
+ QByteArray objectData = de->mimeData()->data("object/x-myApplication-object");
+ QDomDocument doc("myDocument");
+ doc.setContent(objectData, true);
+ QString representativeClass;
+ QDomNodeList list = doc.childNodes();
+ QDomElement e = list.at(0).toElement();
+ representativeClass= e.tagName();
+ if(representativeClass=="positionablelabel")
+ {
+  QDomElement el = e.firstChildElement("icon");
+  QString url = el.attribute("url");
+  NamedIcon* icon = new NamedIcon(url,url);
+  setIcon(icon);
+  QImage img = icon->getImage();
+  if(size().height() < img.height() || size().width()< img.width())
+   resize(img.width(), img.height());
+  _icon->setImage(img);
+  setPixmap(QPixmap::fromImage(img));
+  QString name = getName();
+  if(_iconMap->value(name))
+  {
+   _iconMap->remove(name);
+   _iconMap->insert(name, icon);
+  }
+  update();
+  return;
+ }
+
  QString text = de->mimeData()->text();
  if(text.startsWith("file://"))
  {
@@ -167,6 +195,7 @@ DropJLabel::DropJLabel (NamedIcon* icon,  QMap<QString, NamedIcon *> *iconMap, b
   e->rejectDrop();
  }
 }
+
 /*private*/ void DropJLabel::accept(DropTargetDropEvent* e, NamedIcon* newIcon)
 {
  e->acceptDrop(DnDConstants::ACTION_COPY_OR_MOVE);
@@ -194,13 +223,14 @@ DropJLabel::DropJLabel (NamedIcon* icon,  QMap<QString, NamedIcon *> *iconMap, b
  e->dropComplete(true);
  if (log->isDebugEnabled()) log->debug("DropJLabel.drop COMPLETED for "+label->getName()+ ", "+(newIcon!=NULL ? newIcon->getURL()/*.toString()*/:" newIcon==NULL "));
 }
+
 void DropJLabel::mouseMoveEvent(QMouseEvent */*ev*/)
 {
  qDebug() << tr("mouse over, accept drops = ")+ (acceptDrops()?"true":"false");
 
 }
-void DropJLabel::setName(QString name) { this->name = name;}
-QString DropJLabel::getName() { return name;}
+//void DropJLabel::setName(QString name) { this->name = name;}
+//QString DropJLabel::getName() { return name;}
 
 void DropJLabel::setIcon(NamedIcon *icon)
 {
@@ -231,6 +261,7 @@ void DropJLabel::setIconFn(QString fileName, QSize sz)
   setPixmap(QPixmap::fromImage(img));
  }
 }
+
 void DropJLabel::mousePressEvent(QMouseEvent *ev)
 {
  if(ev->button() == Qt::RightButton)
@@ -238,6 +269,7 @@ void DropJLabel::mousePressEvent(QMouseEvent *ev)
   bRightClick = true;
  }
 }
+
 void DropJLabel::mouseReleaseEvent(QMouseEvent *ev)
 {
  if(bRightClick)
