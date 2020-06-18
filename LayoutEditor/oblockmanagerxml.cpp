@@ -409,39 +409,30 @@ Portal* OBlockManagerXml::loadPortal(QDomElement elem)
  QString fromBlockName = "";
  QString toBlockName = "";
  // Portals must have user names.
- Portal* portal = (Portal*)_portalMgr->getByUserName(userName);
- if (portal != NULL)
- {
-  fromBlockName = portal->getFromBlock()->getSystemName();
-  toBlockName = portal->getToBlock()->getSystemName();
+ Portal* portal = _portalMgr->getPortal(userName);
+ if (portal != nullptr) {
+     OBlock* block = portal->getFromBlock();
+     if (block != nullptr) {
+         fromBlockName = block->getSystemName();
+     }
+     block = portal->getToBlock();
+     if (block != nullptr) {
+         toBlockName = block->getSystemName();
+     }
+ } else {
+     portal = _portalMgr->providePortal(userName);
  }
- else
+ if (portal == nullptr)
  {
-  portal = _portalMgr->providePortal(userName);
+     log->error(tr("unable to create Portal (%1) elem attrs= %2").arg(
+             userName).arg("attributes()"));
+     return nullptr;
  }
- if (portal == NULL)
- {
-   QDomNamedNodeMap map = elem.attributes();
-   QString attributes;
-   for(int i=0; i < map.count(); i++)
-   {
-    if(i > 0) attributes.append("|");
-    attributes.append(map.item(i).nodeName());
-   }
-
-  log->error(tr("unable to create Portal (%1) elem attrs= %2").arg(
-                userName).arg(attributes));
-  return NULL;
- }
- if (log->isDebugEnabled())
- {
-  log->debug(tr("create Portal: (%1)").arg(userName));
-
- }
+ log->debug(tr("create Portal: (%1)").arg(userName));
 
  OBlock* fromBlock = nullptr;
-QDomElement eFromBlk = elem.firstChildElement("fromBlock");
-if (!eFromBlk.isNull() && eFromBlk.attribute("blockName") != "") {
+ QDomElement eFromBlk = elem.firstChildElement("fromBlock");
+ if (!eFromBlk.isNull() && eFromBlk.attribute("blockName") != "") {
   QString name = eFromBlk.attribute("blockName");
   if (fromBlockName != "" && fromBlockName != (name)) {
       log->error(tr("Portal user name \"%1\" has conflicting fromBlock \"%2\". Should be \"%3\"").arg(

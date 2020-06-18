@@ -61,15 +61,15 @@
  if (!_initialized)
  {
   FamilyItemPanel::init();
-  thisLayout->insertWidget(0,/*0,*/initTablePanel(_model, _editor), 0, Qt::AlignTop);
+  thisLayout->insertWidget(0, initTablePanel(_model, _editor), 0, Qt::AlignTop); // top of Panel
   _buttonPosition = 1;
  }
 }
 
 /**
-* Init for update of existing indicator turnout
-* _bottom3Panel has "Update Panel" button put into _bottom1Panel
-*/
+ * Init for update of existing indicator turnout _bottom3Panel has "Update
+ * Panel" button put into _bottom1Panel
+ */
 /*public*/ void TableItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
  FamilyItemPanel::init(doneAction, iconMap);

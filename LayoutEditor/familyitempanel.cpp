@@ -122,7 +122,7 @@
  layout()->addWidget(_iconFamilyPanel);
  JPanel* bottomPanel = new JPanel();
  FlowLayout* bottomPanelLayout = new FlowLayout(bottomPanel);
- bottomPanelLayout->addWidget(_bottom1Panel);
+ if(_bottom1Panel) bottomPanelLayout->addWidget(_bottom1Panel);
  bottomPanelLayout->addWidget(_bottom2Panel);
  thisLayout->addWidget(bottomPanel);
  if (log->isDebugEnabled()) {

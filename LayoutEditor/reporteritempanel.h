@@ -26,13 +26,15 @@ protected:
     /*protected*/ void initIconFamiliesPanel();
     /*protected*/ void makeDndIconPanel(QHash<QString, NamedIcon*>* iconMap, QString displayKey);
     /*protected*/ RIconDragJComponent* getDragger(DataFlavor* flavor);
+    /*protected*/ JPanel* makeItemButtonPanel();
+    
     friend class RIconDragJComponent;
 };
 /*protected*/ class RIconDragJComponent : public DragJComponent {
 Q_OBJECT
     ReporterItemPanel* self;
 public:
-    /*public*/ RIconDragJComponent(DataFlavor* flavor, QWidget *comp, ReporterItemPanel* self);
+    /*public*/ RIconDragJComponent(DataFlavor* flavor, QSize dim, ReporterItemPanel* self);
     /*public*/ QObject* getTransferData(DataFlavor* flavor) throw (UnsupportedFlavorException,IOException);
     QByteArray mimeData();
 };

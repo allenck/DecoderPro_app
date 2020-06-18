@@ -569,11 +569,13 @@ void EditCircuitFrame::closePickList() {
      }
  }
  _parent->setIconGroup(_homeBlock);
+#if 0
  msg = _parent->checkForTrackIcons(_homeBlock, "PortalOrPath");
  if (msg.length() > 0) {
      sb.append(msg);
      sb.append("\n");
  }
+#endif
  if (_lengthPanel->getLength() <= 0.001) {
      msg = tr("Block circuits should have a default length to insure its paths have lengths.");
      if (msg != "") {

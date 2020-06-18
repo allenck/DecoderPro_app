@@ -1,17 +1,19 @@
 #include "addnewhardwaredevicepanel.h"
 #include "actionlistener.h"
-#include <QGridLayout>
+#include "gridbaglayout.h"
 #include "gridbagconstraints.h"
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QLabel>
 #include <QSpinBox>
 #include "flowlayout.h"
 #include "jtextfield.h"
 #include <QFont>
 #include "loggerfactory.h"
+#include "jpanel.h"
+
 
 //AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(QWidget *parent) :
 //    QWidget(parent)
@@ -19,101 +21,75 @@
 //}
 ///*public*/ class AddNewHardwareDevicePanel extends jmri.util.swing.JmriPanel {
 
-/*public*/ AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, QComboBox* prefixBox, QSpinBox* endRange, QCheckBox* addRange,
-            QPushButton* addButton, ActionListener* cancelListener, ActionListener* rangeListener, QLabel* statusBar, QWidget *parent) : QWidget(parent)
+/*public*/ AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, JComboBox/*<String>*/* prefixBox, JTextField* endRange, QCheckBox* addRange,
+            QString addButtonLabel, ActionListener* listener, ActionListener* rangeListener)
 {
  setObjectName("AddNewHardwareDevicePanel");
- sysNameLabel = new QLabel(tr("System:"));
- sysAddressLabel = new QLabel(tr("Hardware Address:"));
- if(sysAddress->validator() == nullptr)
-  sysAddress->setValidator(new QIntValidator(1,2047));
- userNameLabel = new QLabel(tr("User Name:"));
- finishLabel = new QLabel(tr("Number to Add:"));
- QVBoxLayout* thisLayout;
-
- if(statusBar == nullptr)
-  statusBar = new QLabel("");
- setLayout(thisLayout = new QVBoxLayout(this/*, BoxLayout.Y_AXIS*/));
- _endRange=endRange;
- _range=addRange;
-//        JPanel p;
-//        p = new JPanel();
-//        p.setLayout(new FlowLayout());
- QGridLayout* g  = new QGridLayout();
-//        p.setLayout(g = new QGridLayout());
- GridBagConstraints c;// =  GridBagConstraints();
- c.gridwidth  = 1;
+ setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
+ _endRange = endRange;
+ _range = addRange;
+ JPanel* p;
+ p = new JPanel();
+ //p.setLayout(new FlowLayout());
+ GridBagLayout* pLayout;
+ p->setLayout(pLayout = new GridBagLayout());
+ GridBagConstraints c = GridBagConstraints();
+ c.gridwidth = 1;
  c.gridheight = 1;
  c.gridx = 0;
  c.gridy = 0;
  c.anchor = GridBagConstraints::EAST;
- g->addWidget(sysNameLabel,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
- c.gridx =0;
+ pLayout->addWidget(sysNameLabel, c);
+ c.gridx = 0;
  c.gridy = 1;
- g->addWidget(sysAddressLabel,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
+ pLayout->addWidget(sysAddressLabel, c);
  c.gridy = 2;
- g->addWidget(userNameLabel,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
+ pLayout->addWidget(userNameLabel, c);
  c.gridx = 2;
  c.gridy = 1;
  c.anchor = GridBagConstraints::WEST;
  c.weightx = 1.0;
  c.fill = GridBagConstraints::HORIZONTAL;  // text field will expand
  c.gridy = 0;
- g->addWidget(prefixBox,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
+ pLayout->addWidget(prefixBox, c);
  c.gridx = 3;
- g->addWidget(addRange,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
+ pLayout->addWidget(addRange, c);
  c.gridx = 2;
  c.gridy = 1;
- g->addWidget(sysAddress,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
+ pLayout->addWidget(sysAddress, c);
  c.gridx = 3;
- g->addWidget(finishLabel,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
+ pLayout->addWidget(finishLabel, c);
  c.gridx = 4;
- g->addWidget(endRange,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
- c.gridx=2;
+ pLayout->addWidget(endRange, c);
+ c.gridx = 2;
  c.gridy = 2;
- g->addWidget(userName,c.gridy, c.gridx, c.rowSpan(), c.colSpan());
- //add(p);
- thisLayout->addLayout(g);
-
- finishLabel->setEnabled(false);
- _endRange->setEnabled(false);
-
- // add status bar above buttons
- QWidget* panelStatus = new QWidget();
- panelStatus->setLayout(new FlowLayout());
- //statusBar->setFont(statusBar->getFont().deriveFont(0.9f * sysAddressLabel.getFont().getSize())); // a bit smaller
- QFont f = statusBar->font();
- f.setPointSizeF(sysAddressLabel->font().pointSizeF()*.9);
- statusBar->setFont(f);
- statusBar->setStyleSheet("QLabel {color: gray}");
- panelStatus->layout()->addWidget(statusBar);
- thisLayout->addWidget(panelStatus);
-
- QWidget* panelBottom = new QWidget();
- FlowLayout* panelBottomLayout = new FlowLayout(panelBottom);
- panelBottomLayout->addWidget(cancel = new QPushButton(tr("Cancel")));
- connect(cancel, SIGNAL(clicked(bool)), cancelListener, SLOT(actionPerformed()));
- panelBottom->layout()->addWidget(addButton);
- thisLayout->addWidget(panelBottom);
-
- connect(addRange, SIGNAL(clicked()), this, SLOT(rangeState()));
-//        new ItemListener() {
-//            /*public*/ void itemStateChanged(ItemEvent e){
-//                rangeState();
-//            }
-//        });
+ pLayout->addWidget(userName, c);
+ layout()->addWidget(p);
+ QPushButton* ok;
+ layout()->addWidget(ok = new QPushButton((addButtonLabel)));
+ //ok.addActionListener(listener);
+ connect(ok, SIGNAL(clicked(bool)), listener, SLOT(actionPerformed(/*ActionEvent**/)));
+// addRange.addItemListener(
+//         new ItemListener() {
+//             public void itemStateChanged(ItemEvent e) {
+ connect(addRange, &QCheckBox::clicked, [=]{
+                 rangeState();
+//             }
+         });
  //prefixBox.addActionListener(rangeListener);
  connect(prefixBox, SIGNAL(currentIndexChanged(int)), rangeListener, SLOT(actionPerformed()));
 
-       /* System.out.println(jmri.InstanceManager.getList(jmri.jmrix.SystemConnectionMemo.class));
-        java.util.List<Object> list
-            = jmri.InstanceManager.getList(jmri.jmrix.SystemConnectionMemo.class);
-        if (list != null) {
-            for (Object memo : list) {
-                System.out.println(((jmri.jmrix.SystemConnectionMemo)memo).getUserName());
-                //if (menu != null) m.add(menu);
-            }
-        }*/
+ finishLabel->setEnabled(false);
+ _endRange->setEnabled(false);
+ /* System.out.println(jmri.InstanceManager.getList(jmri.jmrix.SystemConnectionMemo.class));
+  java.util.List<jmri.jmrix.SystemConnectionMemo> list
+  = jmri.InstanceManager.getList(jmri.jmrix.SystemConnectionMemo.class);
+  if (list != null) {
+  for (jmri.jmrix.SystemConnectionMemo memo : list) {
+  System.out.println(memo.getUserName());
+  //if (menu != null) m.add(menu);
+  }
+  }*/
 }
 /*public*/ void AddNewHardwareDevicePanel::addLabels(QString labelSystemName, QString labelUserName) {
     sysAddressLabel->setText(labelSystemName);

@@ -25,7 +25,7 @@ class SensorManager;
 class QLabel;
 class QCheckBox;
 class UserPreferencesManager;
-class QComboBox;
+class JComboBox;
 class JmriJFrame;
 class JTextField;
 class LIBTABLESSHARED_EXPORT SensorTableAction : public AbstractTableAction
@@ -49,16 +49,15 @@ signals:
 //    void propertyChange(PropertyChangeEvent*);
 public slots:
 //    void onDebounce();
-    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
+//    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
 
 private:
     JmriJFrame* addFrame;// = NULL;
 
     JTextField* hardwareAddressTextField;// = new JTextField(40);
     JTextField* userNameField;// = new JTextField(40);
-    QComboBox* prefixBox;// = new JComboBox();
+    JComboBox* prefixBox;// = new JComboBox();
     JTextField* numberToAdd;// = new JTextField(5);
-    QSpinBox* numberToAddSpinner;// = new JSpinner(rangeSpinner);
     QCheckBox* rangeBox;// = new JCheckBox("Add a range");
     QLabel* sysNameLabel;// = new JLabel("Hardware Address");
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
@@ -73,7 +72,6 @@ private:
     QCheckBox* showDebounceBox;// = new JCheckBox(tr("SensorDebounceCheckBox"));
     bool enabled;
     QString connectionChoice;// = "";
-    QPushButton* addButton;
     QString  addEntryToolTip;
     QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
     STAValidator* validator;
@@ -119,15 +117,15 @@ public slots:
 
 };
 
-class STCancelActionListener : public ActionListener
-{
- Q_OBJECT
- SensorTableAction* act;
-public:
- STCancelActionListener(SensorTableAction* act);
-public slots:
- void actionPerformed();
-};
+//class STCancelActionListener : public ActionListener
+//{
+// Q_OBJECT
+// SensorTableAction* act;
+//public:
+// STCancelActionListener(SensorTableAction* act);
+//public slots:
+// void actionPerformed();
+//};
 
 class STRangeActionListener : public ActionListener
 {

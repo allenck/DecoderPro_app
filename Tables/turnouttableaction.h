@@ -20,7 +20,7 @@ class ActionEvent;
 class JmriJFrame;
 class QLabel;
 class JTextField;
-class QComboBox;
+class JComboBox;
 class UserPreferencesManager;
 class TurnoutManager;
 //class QTableView;
@@ -74,8 +74,8 @@ private:
     JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
     QLabel* statusBar;
 
-    QComboBox* prefixBox;// = new QComboBox();
-    QSpinBox* numberToAddSpinner;// = new JTextField(5);
+    JComboBox* prefixBox;// = new QComboBox();
+    JTextField* numberToAdd;// = new JTextField(5);
     QCheckBox* rangeBox;// = new QCheckBox("Add a range");
     QLabel* sysNameLabel;// = new JLabel("Hardware Address");
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));

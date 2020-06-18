@@ -52,7 +52,7 @@
   {
    setReporter(reporter);
    AbstractReporter* aR = (AbstractReporter*)reporter;
-   connect(aR, SIGNAL(propertyChange(AbstractReporter*,QString,QObject*,QObject*)), this, SLOT(on_propertyChange(AbstractReporter*,QString,QObject*,QObject*)));
+   connect(aR->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
   }
   else
   {

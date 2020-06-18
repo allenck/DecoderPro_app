@@ -9,7 +9,7 @@ class DragJComponent : public JPanel
     Q_OBJECT
 public:
     //explicit DragJComponent(QWidget *parent = 0);
-    /*public*/ DragJComponent(DataFlavor* flavor, QWidget* comp, QWidget *parent);
+    /*public*/ DragJComponent(DataFlavor* flavor, QSize dim, QWidget *parent);
     void mousePressEvent(QMouseEvent *) override;
     //void mouseMoveEvent(QMouseEvent *);
     virtual QByteArray mimeData() { QByteArray();}

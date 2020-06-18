@@ -8,6 +8,7 @@
 #include <QTableView>
 #include <QGroupBox>
 #include "imagepanel.h"
+#include "reportericonxml.h"
 
 //ReporterItemPanel::ReporterItemPanel(QWidget *parent) :
 //    TableItemPanel(parent)
@@ -25,9 +26,7 @@
 {
  if (!_initialized)
  {
-  layout()->addWidget(initTablePanel(_model, _editor));        // NORTH Panel
-  initIconFamiliesPanel();
-  layout()->addWidget(_iconFamilyPanel);
+  TableItemPanel::init();
  }
 }
 
@@ -53,10 +52,9 @@
     if (!_update) {
         _iconFamilyPanel->layout()->addWidget(instructions());
     }
+    _iconPanel = new JPanel(new FlowLayout());
+    _iconFamilyPanel->layout()->addWidget(_iconPanel);
     makeDndIconPanel(NULL, NULL);
-    if (_iconPanel == nullptr) { // keep an existing panel
-     _iconPanel = new ImagePanel(); // never shown, so don't bother to configure, but element must exist
-    }
     _iconFamilyPanel->layout()->addWidget(_dragIconPanel);
 }
 
@@ -90,6 +88,10 @@
  panel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
  _dragIconPanel= panel;
  _dragIconPanel->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
+}
+
+/*protected*/ JPanel* ReporterItemPanel::makeItemButtonPanel() {
+    return new JPanel();
 }
 
 /**
@@ -126,13 +128,13 @@
 
 /*protected*/ RIconDragJComponent* ReporterItemPanel::getDragger(DataFlavor* flavor)
 {
- return new RIconDragJComponent(flavor, _reporter, this);
+ return new RIconDragJComponent(flavor, _reporter->size(), this);
 }
 
 ///*protected*/ class RIconDragJComponent extends DragJComponent {
 
-/*public*/ RIconDragJComponent::RIconDragJComponent(DataFlavor* flavor, QWidget* comp, ReporterItemPanel* self)
- : DragJComponent(flavor, comp,self){
+/*public*/ RIconDragJComponent::RIconDragJComponent(DataFlavor* flavor, QSize dim, ReporterItemPanel* self)
+ : DragJComponent(flavor, dim,self){
     //super(flavor, dim);
 this->self = self;
 }
@@ -157,15 +159,34 @@ this->self = self;
 
 /*public*/ QByteArray RIconDragJComponent::mimeData()
 {
- QByteArray itemData;
- if(self->_table->currentIndex().isValid())
+// QByteArray itemData;
+// if(self->_table->currentIndex().isValid())
+// {
+//  QModelIndex index = self->_table->model()->index( self->_table->currentIndex().row(), 0);
+//  QString name = index.data(Qt::DisplayRole).toString();
+//  _dataFlavor->setMimeTypeParameter("reporter", name);
+//  itemData.append(_dataFlavor->toString());
+// }
+// return itemData;
+ NamedBean* bean = self->getNamedBean();
+ if (bean==NULL)
  {
-  QModelIndex index = self->_table->model()->index( self->_table->currentIndex().row(), 0);
-  QString name = index.data(Qt::DisplayRole).toString();
-  _dataFlavor->setMimeTypeParameter("reporter", name);
-  itemData.append(_dataFlavor->toString());
+  self->log->error("IconDragJLabel.getTransferData: NamedBean is NULL!");
+  return NULL;
  }
- return itemData;
-}
+ QByteArray xmldata;
+// QString url = ((NamedIcon*)getIcon())->getURL();
+// ReporterIcon* l = new ReporterIcon(NamedIcon::getIconByName(url), /*_editor*/(Editor*)self->_editor);
+ ReporterIcon* l = new ReporterIcon(self->_editor);
+ l->setReporter(bean->getDisplayName());
+ //l->setPopupUtility(NULL);        // no text
+ l->setLevel(Editor::REPORTERS);
+ _dataFlavor = new DataFlavor(l, "PositionableLabel");
+// _dataFlavor->setMimeTypeParameter("family", parent->_family);
+ ReporterIconXml* xml = new ReporterIconXml();
+ QDomElement e = xml->store((QObject*)l);
+ xml->doc.appendChild(e);
+ xmldata.append(xml->doc.toString());
+ return xmldata;}
 
 //};

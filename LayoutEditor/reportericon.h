@@ -72,5 +72,4 @@ public slots:
  void actionPerformed(ActionEvent */*e*/ = 0) { self->editReporter();}
 };
 
-//Q_DECLARE_METATYPE(ReporterIcon)
 #endif // REPORTERICON_H

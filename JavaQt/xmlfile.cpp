@@ -413,7 +413,7 @@ XmlFile::XmlFile(QObject *parent) :
  {
   QFileInfo info(file->getPath());
   QString backupFullName = directory + QDir::separator() + createFileNameWithDate(info.fileName());
-  if (log->isDebugEnabled())
+  //if (log->isDebugEnabled())
   {
    log->debug("new backup file: " + backupFullName);
   }

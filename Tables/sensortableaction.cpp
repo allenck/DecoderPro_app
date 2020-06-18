@@ -1,6 +1,6 @@
 #include "sensortableaction.h"
 #include "jtextfield.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QCheckBox>
 #include "addnewhardwaredevicepanel.h"
 #include "proxysensormanager.h"
@@ -56,14 +56,14 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
  hardwareAddressTextField = new JTextField(40);
  userNameField = new JTextField(40);
- prefixBox = new QComboBox();
+ prefixBox = new JComboBox();
  numberToAdd = new JTextField(5);
  numberToAdd->setValidator(new QIntValidator(1,100));
- numberToAddSpinner = new QSpinBox(/*rangeSpinner*/);
- numberToAddSpinner->setMinimum(1);
- numberToAddSpinner->setMaximum(100);
- numberToAddSpinner->setValue(1);
- numberToAddSpinner->setSingleStep(1);
+// numberToAddSpinner = new QSpinBox(/*rangeSpinner*/);
+// numberToAddSpinner->setMinimum(1);
+// numberToAddSpinner->setMaximum(100);
+// numberToAddSpinner->setValue(1);
+// numberToAddSpinner->setSingleStep(1);
  rangeBox = new QCheckBox(tr("Add a range:"));
  sysNameLabel = new QLabel("Hardware Address:");
  userNameLabel = new QLabel(tr("User Name:"));
@@ -146,7 +146,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 //                    canAddRange(e);
 //                }
 //            };
-  STCancelActionListener* cancelListener = new STCancelActionListener(this);
+//  STCancelActionListener* cancelListener = new STCancelActionListener(this);
   STRangeActionListener* rangeListener = new STRangeActionListener(this);
   if (QString(InstanceManager::sensorManagerInstance()->metaObject()->className()).contains("ProxySensorManager"))
   {
@@ -175,8 +175,6 @@ SensorTableAction::SensorTableAction(QObject *parent) :
   hardwareAddressTextField->setObjectName("sysName");
   userNameField->setObjectName("userName");
   prefixBox->setObjectName("prefixBox");
-  addButton = new QPushButton("Create");
-  connect(addButton, SIGNAL(clicked()), this, SLOT(createPressed()));
   // Define PropertyChangeListener
 //  colorChangeListener = new PropertyChangeListener()
 //  {
@@ -198,7 +196,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
   // create panel
   addFrame->getContentPane()->layout()->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameField, prefixBox,
-      numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBarLabel));
+      numberToAdd, rangeBox, tr("Ok"), listener, rangeListener));
 // tooltip for hwAddressTextField will be assigned later by canAddRange()
   canAddRange();
  }
@@ -206,8 +204,8 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
  hardwareAddressTextField->setObjectName("hwAddressTextField"); // for GUI test NOI18N
  hardwareAddressTextField->setBackground(QColor(Qt::yellow));
- addButton->setEnabled(false); // start as disabled (false) until a valid entry is typed in
- addButton->setObjectName("createButton"); // for GUI test NOI18N
+// addButton->setEnabled(false); // start as disabled (false) until a valid entry is typed in
+// addButton->setObjectName("createButton"); // for GUI test NOI18N
  // reset statusBar text
  statusBar->setText(tr("HardwareAddStatusEnter"));
  statusBar->setStyleSheet("QLabel {color: gray}");
@@ -216,16 +214,16 @@ SensorTableAction::SensorTableAction(QObject *parent) :
  addFrame->setVisible(true);
 }
 
-/*public*/ void SensorTableAction::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
-    QString property = propertyChangeEvent->getPropertyName();
-    if ("background" == (property)) {
-        if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
-            addButton->setEnabled(true);
-        } else { // invalid
-            addButton->setEnabled(false);
-        }
-    }
-}
+///*public*/ void SensorTableAction::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
+//    QString property = propertyChangeEvent->getPropertyName();
+//    if ("background" == (property)) {
+//        if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
+//            addButton->setEnabled(true);
+//        } else { // invalid
+//            addButton->setEnabled(false);
+//        }
+//    }
+//}
 
 STOkButtonActionListener::STOkButtonActionListener(SensorTableAction *act)
 {
@@ -235,11 +233,11 @@ void STOkButtonActionListener::actionPerformed()
 {
  act->createPressed();
 }
-STCancelActionListener::STCancelActionListener(SensorTableAction *act) { this->act = act;}
-void STCancelActionListener::actionPerformed()
-{
- act->cancelPressed();
-}
+//STCancelActionListener::STCancelActionListener(SensorTableAction *act) { this->act = act;}
+//void STCancelActionListener::actionPerformed()
+//{
+// act->cancelPressed();
+//}
 
 STRangeActionListener::STRangeActionListener(SensorTableAction *act)
 {
@@ -415,7 +413,7 @@ void SensorTableAction::createPressed()
          + tr("For %1 %2 use one of these patterns:").arg(connectionChoice).arg(tr("Sensors"))
          + "<br>" + addEntryToolTip + "</html>");
  hardwareAddressTextField->setBackground(QColor(Qt::yellow)); // reset
- addButton->setEnabled(true); // ambiguous, so start enabled
+ //addButton->setEnabled(true); // ambiguous, so start enabled
 
 }
 
@@ -672,11 +670,11 @@ QValidator::State STAValidator::validate(QString& s, int& pos) const
  // use it for the status bar?
  // }
  if (validFormat) {
-  act->addButton->setEnabled(true); // directly update Create button
+  //act->addButton->setEnabled(true); // directly update Create button
   fld->setBackground(QColor(Qt::white));
   return QValidator::Acceptable;
  } else {
-  act->addButton->setEnabled(false); // directly update Create button
+  //act->addButton->setEnabled(false); // directly update Create button
   fld->setBackground(QColor(mark));
   return QValidator::Invalid;
  }

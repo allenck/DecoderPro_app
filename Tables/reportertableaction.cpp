@@ -2,7 +2,7 @@
 #include "jmrijframe.h"
 #include <QCheckBox>
 #include <QBoxLayout>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QLabel>
 #include "connectionnamefromsystemname.h"
 #include "userpreferencesmanager.h"
@@ -65,13 +65,9 @@ void ReporterTableAction::common()
  hardwareAddressTextField = new JTextField(20);
  //hardwareAddressTextField->setValidator(new RTAValidator(hardwareAddressTextField, this));
  userNameTextField = new JTextField(20);
- prefixBox = new QComboBox();
- numberToAdd = new QSpinBox();
- numberToAdd->setMinimum(1);
- numberToAdd->setMaximum(100);
- numberToAdd->setValue(1);
- numberToAdd->setSingleStep(1);
- range = new QCheckBox(tr("AddRangeBox"));
+ prefixBox = new JComboBox();
+ numberToAdd = new JTextField(10);
+ range = new QCheckBox(tr("Add a range"));
  sysNameLabel = new QLabel("Hardware Address");
  userNameLabel = new QLabel(tr("User Name"));
  systemSelectionCombo = QString(metaObject()->className()) + ".SystemSelected";
@@ -301,17 +297,13 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
         }
         userNameTextField->setObjectName("userName");
         prefixBox->setObjectName("prefixBox");
-        addButton = new QPushButton(tr("Create"));
-        addButton->setObjectName("createButton"); // for GUI test NOI18N
-        connect(addButton, SIGNAL(clicked(bool)), createListener, SLOT(actionPerformed()));
-        addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAdd, range, addButton, cancelListener, rangeListener, statusBar));
+        addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAdd, range, "Create", createListener, rangeListener));
         canAddRange(NULL);
     }
     hardwareAddressTextField->setObjectName("hwAddressTextField"); // for GUI test NOI18N
     //hardwareAddressTextField->setBackground(Color.yellow);
     hardwareAddressTextField->setBackground(QColor(Qt::yellow));
     //addButton.addActionListener(createListener);
-    addButton->setEnabled(false); // start as disabled (false) until a valid entry is typed in
     // reset statusBar text
     statusBar->setText(tr("Enter a Hardware Address and (optional) User Name."));
     statusBar->setStyleSheet("QEditLine {color: gray}");
@@ -331,16 +323,6 @@ ReporterRangeListener::ReporterRangeListener(ReporterTableAction *act) { this->a
     act->canAddRange();
 }
 
-/*public*/ void ReporterTableAction::propertyChange(PropertyChangeEvent* propertyChangeEvent) {
-    QString property = propertyChangeEvent->getPropertyName();
-    if ("background" == (property)) {
-        if ( propertyChangeEvent->getNewValue().value<QColor>() == QColor(Qt::white)) { // valid entry
-            addButton->setEnabled(true);
-        } else { // invalid
-            addButton->setEnabled(false);
-        }
-    }
-}
 
 void ReporterTableAction::cancelPressed(ActionEvent* /*e*/) {
     addFrame->setVisible(false);
@@ -452,7 +434,6 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
  addFrame->setVisible(false);
  addFrame->dispose();
  addFrame = nullptr;
- //addButton.removePropertyChangeListener(colorChangeListener);
 }
 
 /*private*/ void ReporterTableAction::canAddRange(ActionEvent* /*e*/)
@@ -492,7 +473,6 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
          + tr("For %1 %2 use one of these patterns:").arg(connectionChoice).arg(tr("Sensors"))
          + "<br>" + addEntryToolTip + "</html>");
  hardwareAddressTextField->setStyleSheet("QEditLine { background-color: yellow};"); // reset
- addButton->setEnabled(true); // ambiguous, so start enabled
 }
 
 void ReporterTableAction::handleCreateException(QString sysName) {
@@ -679,11 +659,9 @@ QValidator::State RTAValidator::validate(QString &s, int &pos) const
          // use it for the status bar?
          // }
      if (validFormat) {
-         act->addButton->setEnabled(true); // directly update Create button
          fld->setBackground(QColor(Qt::white));
          return QValidator::Acceptable;
      } else {
-         act->addButton->setEnabled(false); // directly update Create button
          fld->setBackground(QColor(mark));
          if(value.length() > -1 && value.toInt()>0)
          {

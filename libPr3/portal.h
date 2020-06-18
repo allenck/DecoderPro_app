@@ -10,12 +10,12 @@ class SignalHead;
 class NamedBean;
 class OBlock;
 class OPath;
-class LIBPR3SHARED_EXPORT Portal : public QObject//AbstractNamedBean
+class LIBPR3SHARED_EXPORT Portal : public QObject
 {
     Q_OBJECT
 public:
     //explicit Portal(QObject *parent = 0);
- /*public*/ Portal(QString userName, QObject* parent = 0);
+    /*public*/ Portal(QString uName, QObject* parent = 0);
     ///*public*/ Portal(OBlock* fromBlock, QString portalName, OBlock* toBlock, QObject *parent = 0);
     /*public*/ bool addPath(OPath* path);
     /*public*/ void removePath(OPath* path);

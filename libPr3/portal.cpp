@@ -20,12 +20,18 @@
 //{
 //}
 /**
- * An Portal is a boundary between two Blocks.
+ * A Portal is a boundary between two Blocks.
  *
  * <P>
- * A Portal has Lists of the OPaths that connect through it.
+ * A Portal has Lists of the OPaths that connect through it. The direction of
+ * trains passing through the portal is managed from the BlockOrders of the
+ * Warrant the train is running under. The Portal fires a PropertyChangeEvent
+ * that a PortIcon can listen for to set direction arrows for a given route.
  *
- * @author	Pete Cressman  Copyright (C) 2009
+ * The Portal also supplies speed information from any signals set at its
+ * location that the Warrant passes on the Engineer.
+ *
+ * @author  Pete Cressman Copyright (C) 2009
  */
 // /*public*/ class Portal  {
 /*private*/ /*static*/ /*final*/ QString Portal::NAME_CHANGE = "NameChange";
@@ -33,7 +39,7 @@
 /*private*/ /*static*/ /*final*/ QString Portal::ENTRANCE = "entrance";
 
 
-/*public*/ Portal::Portal(QString userName, QObject *parent) : QObject(parent)//AbstractNamedBean(sysName, userName, parent)
+/*public*/ Portal::Portal( QString uName, QObject *parent) : QObject(parent)
 {
   _fromPaths = new QList <OPath*>();
   _toPaths = new QList <OPath*>();
@@ -47,7 +53,7 @@
  _toSignalOffset = 0;
  _fromSignalOffset = 0;
 
- _name = userName;
+ _name = uName;
 }
 
 /**
@@ -598,21 +604,21 @@
 }
 
 //@OverridingMethodsMustInvokeSuper
-    /*public*/ bool Portal::dispose() {
-    if (!((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->okToRemovePortal(this)) {
-        return false;
-    }
-    if (_toBlock != nullptr) {
-        _toBlock->removePortal(this);
-    } else if (_fromBlock != nullptr) {
-        _fromBlock->removePortal(this);
-    }
-    pcs->firePropertyChange("portalDelete", true, false);
-    QVector<PropertyChangeListener*> listeners = pcs->getPropertyChangeListeners();
-    for (PropertyChangeListener* l : listeners) {
-        pcs->removePropertyChangeListener(l);
-    }
-    return true;
+/*public*/ bool Portal::dispose() {
+ if (!((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->okToRemovePortal(this)) {
+     return false;
+ }
+ if (_toBlock != nullptr) {
+     _toBlock->removePortal(this);
+ } else if (_fromBlock != nullptr) {
+     _fromBlock->removePortal(this);
+ }
+ pcs->firePropertyChange("portalDelete", true, false);
+ QVector<PropertyChangeListener*> listeners = pcs->getPropertyChangeListeners();
+ for (PropertyChangeListener* l : listeners) {
+     pcs->removePropertyChangeListener(l);
+ }
+ return true;
 }
 
 /*public*/QString Portal::getDescription() {

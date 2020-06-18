@@ -33,7 +33,7 @@
  */
 // /*public*/ abstract class DragJComponent extends JPanel implements DragGestureListener, DragSourceListener, Transferable {
 
- /*public*/ DragJComponent::DragJComponent(DataFlavor* flavor, QWidget *comp, QWidget *parent) : JPanel(parent){
+ /*public*/ DragJComponent::DragJComponent(DataFlavor* flavor, QSize dim, QWidget *parent) : JPanel(parent){
      //super();
      QString borderName = tr("Drag to Pane");
      QFont f = font();
@@ -42,14 +42,13 @@
      setLayout(new QVBoxLayout());
      setBorder(BorderFactory::createTitledBorder(BorderFactory::createLineBorder(Qt::black),
                                                       borderName));
-     this->layout()->addWidget(comp);
-     QSize dim = comp->sizeHint();
      // guestimate border is about 5 pixels thick. plus some margin
      int tw = fm.width(borderName)+20;
      int width = qMax(100, dim.width()+20);
       width = qMax(width, tw);
      int height = qMax(65, dim.height()+20);
      //resize(QSize(width, height));
+     setMinimumSize(width, height);
      setMinimumWidth(width);
      setToolTip(tr("Drag an icon from the Catalog to replace an icon in the item group"));
 //     DragSource dragSource = DragSource.getDefaultDragSource();

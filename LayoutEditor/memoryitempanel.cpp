@@ -168,7 +168,7 @@
  //panel->setOpaque(false);
  JPanel* comp = NULL;
     try {
-        comp = this->getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), type, mem);
+        comp = this->getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), type, mem->sizeHint());
         comp->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
     }
     catch (ClassNotFoundException cnfe) {
@@ -199,13 +199,11 @@ default:
 * Set column width for InputMemoryIcon
 */
 /*public*/ void MemoryItemPanel::stateChanged(/*ChangeEvent* e*/) {
-//    if (log->isDebugEnabled()) log->debug("stateChanged: class= "+_spinner.value().getClass().getName()+
-//                                        ", value= "+_spinner.getValue());
+//    if (log->isDebugEnabled()) log->debug("stateChanged: class= "+_spinner->value().getClass().getName()+
+//                                        ", value= "+_spinner->value());
 
     int nCols = _spinner->value();
     _writeMem->setNumColumns(nCols);
-//        _writeMem.validate();
-//    _writePanel.validate();
 }
 
 /**
@@ -230,7 +228,7 @@ default:
   _readMem->setMemory(bean->getDisplayName());
   _writeMem->setMemory(bean->getDisplayName());
   _spinMem->setMemory(bean->getDisplayName());
-  _spinner->setValue(_writeMem->getNumColumns());
+  //_spinner->setValue(_writeMem->getNumColumns());
  }
  else
  {
@@ -244,22 +242,23 @@ default:
 }
 
 
-/*protected*/ MemoryIconDragJComponent* MemoryItemPanel::getDragger(DataFlavor* flavor, MemoryItemPanel::Type type, QWidget* comp )
+/*protected*/ MemoryIconDragJComponent* MemoryItemPanel::getDragger(DataFlavor* flavor, MemoryItemPanel::Type type, QSize dim )
 {
- return new MemoryIconDragJComponent(flavor, type, comp,this);
+ return new MemoryIconDragJComponent(flavor, type, dim,this);
 }
 
 ///*protected*/ class IconDragJComponent :public  DragJComponent {
 //    Type _memType;
 
-/*public*/ MemoryIconDragJComponent::MemoryIconDragJComponent(DataFlavor* flavor, MemoryItemPanel::Type type, QWidget* comp, QWidget* parent)
-    : DragJComponent(flavor, comp, parent)
+/*public*/ MemoryIconDragJComponent::MemoryIconDragJComponent(DataFlavor* flavor, MemoryItemPanel::Type type, QSize dim, QWidget* parent)
+    : DragJComponent(flavor, dim, parent)
 {
  //super(flavor, dim);
  _memType = type;
  setObjectName("MemoryIconDragJComponent");
  self = (MemoryItemPanel*)parent;
 }
+
 /*public*/ QObject* MemoryIconDragJComponent::getTransferData(DataFlavor* /*flavor*/) throw (UnsupportedFlavorException,IOException )
 {
 //        if (!isDataFlavorSupported(flavor)) {
@@ -319,6 +318,7 @@ default:
  }
  return NULL;
 }
+
 QByteArray MemoryIconDragJComponent::mimeData()
 {
  NamedBean* bean = self->getNamedBean();//self->getTableSelection();

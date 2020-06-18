@@ -694,6 +694,8 @@ return _statusNameMap.value(str);
 */
 /*public*/ void OBlock::addPortal(Portal* portal)
 {
+ if(portal == nullptr)
+  return;
  QString name = getDisplayName();
  if (name!=(portal->getFromBlockName()) && name!=(portal->getToBlockName()))
  {

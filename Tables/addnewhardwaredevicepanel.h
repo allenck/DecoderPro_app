@@ -2,11 +2,12 @@
 #define ADDHARDWAREDEVICEPANEL_H
 
 #include <QWidget>
+#include <QLabel>
 
 class Logger;
 class JTextField;
 class QPushButton;
-class QComboBox;
+class JComboBox;
 class ActionListener;
 class QLabel;
 class QCheckBox;
@@ -16,21 +17,21 @@ class AddNewHardwareDevicePanel : public QWidget
     Q_OBJECT
 public:
     //explicit AddHardwareDevicePanel(QWidget *parent = 0);
-    /*public*/ AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, QComboBox* prefixBox, QSpinBox* endRange, QCheckBox* addRange,
-                QPushButton* addButton, ActionListener* cancelListener, ActionListener* rangeListener, QLabel* statusBar, QWidget* parent = nullptr);
+ /*public*/ AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, JComboBox/*<String>*/* prefixBox,
+                                      JTextField* endRange, QCheckBox* addRange,
+                                      QString addButtonLabel, ActionListener* listener, ActionListener* rangeListener);
     /*public*/ void addLabels(QString labelSystemName, QString labelUserName);
 
 signals:
 
 public slots:
 private:
-    QSpinBox* _endRange;
+    JTextField* _endRange;
     QCheckBox* _range;
-    QLabel* sysNameLabel;// = new JLabel("System");
-    QLabel* sysAddressLabel;// = new JLabel("Hardware Address");
-    QLabel* userNameLabel;// = new JLabel(rb.getString("LabelUserName"));
-    QLabel* finishLabel;// = new JLabel("Number to Add");
-    QPushButton* cancel;
+    QLabel* sysNameLabel = new QLabel(tr("System Name:"));
+    QLabel* sysAddressLabel = new QLabel(tr("Hardware Address:"));
+    QLabel* userNameLabel = new QLabel(tr("User Name:"));
+    QLabel* finishLabel = new QLabel(tr("Number to Add:"));
     static Logger* log;
 
 private slots:

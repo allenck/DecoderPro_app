@@ -2,7 +2,7 @@
 #include "turnoutmanager.h"
 #include "turnout.h"
 #include "instancemanager.h"
-#include <QComboBox>
+#include  "jcombobox.h"
 #include "signalspeedmap.h"
 #include "userpreferencesmanager.h"
 #include "../LayoutEditor/beantableframe.h"
@@ -103,12 +103,8 @@ void TurnoutTableAction::common()
  statusBar = new QLabel(tr("Enter a Hardware Address and (optional) User Name."));
 
 
- prefixBox = new QComboBox();
- numberToAddSpinner = new QSpinBox();
- numberToAddSpinner->setMinimum(1);
- numberToAddSpinner->setMaximum(100);
- numberToAddSpinner->setSingleStep(1);
- numberToAddSpinner->setValue(1);
+ prefixBox = new JComboBox();
+ numberToAdd = new JTextField(5);
  rangeBox = new QCheckBox("Add a range");
  sysNameLabel = new QLabel("Hardware Address");
  userNameLabel = new QLabel(tr("User Name"));
@@ -1119,11 +1115,11 @@ TableSorter sorter;
   hardwareAddressTextField->setName("sysName");
   userNameTextField->setName("userName");
   prefixBox->setObjectName("prefixBox");
-  addButton = new QPushButton(tr("Create"));
-  connect(addButton, SIGNAL(clicked(bool)), this, SLOT(createPressed()));
+//  addButton = new QPushButton(tr("Create"));
+//  connect(addButton, SIGNAL(clicked(bool)), this, SLOT(createPressed()));
   connect(hardwareAddressTextField, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
-  centralWidgetLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBar));
+  centralWidgetLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAdd, rangeBox, tr("Create"), cancelListener, rangeListener));
 
   canAddRange(NULL);
  }
@@ -1823,14 +1819,13 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
 
  if(rangeBox->isChecked())
  {
-  try
+  bool ok;
+
+  numberOfTurnouts = numberToAdd->text().toInt(&ok);
+  if(!ok)
   {
-   numberOfTurnouts = numberToAddSpinner->value();
-  }
-  catch (NumberFormatException ex)
-  {
-   log->error(QString("Unable to convert ") + QString::number(numberToAddSpinner->value()) + " to a number");
-   ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage("Error","Number to turnouts to Add must be a number!",""+ex.getMessage(), "",true, false);
+   log->error(QString("Unable to convert ") + numberToAdd->text() + " to a number");
+   ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage("Error","Number to turnouts to Add must be a number!","", "",true, false);
    return;
   }
  }

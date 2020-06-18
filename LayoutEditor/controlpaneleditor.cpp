@@ -2548,6 +2548,20 @@ void ControlPanelEditor::dropEvent(QGraphicsSceneDragDropEvent *event)
    l->setDisplayLevel(Editor::CLOCK);
    addToTarget(l);
   }
+  else if(representativeClass=="reportericon")
+  {
+   ReporterIconXml* xml = new ReporterIconXml;
+   xml->doc = doc;
+   QDomNodeList list = xml->doc.childNodes();
+   QDomElement e = list.at(0).toElement();
+   xml->load(e,this);
+   ReporterIcon* l =  xml->getIcon();
+   ((Positionable*)l)->setLocation(event->scenePos().x(), event->scenePos().y());
+   l->setOpaque(false);
+   l->update();
+   l->setDisplayLevel(Editor::ICONS);
+   addToTarget(l);
+  }
   else
    log->warn(tr("representativeClass '%1' not found").arg((representativeClass==""?"'null'":representativeClass)));
 
