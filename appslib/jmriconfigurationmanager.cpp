@@ -27,6 +27,10 @@
 #include "jfilechooser.h"
 #include <QVector>
 #include "vptr.h"
+#include "transferactionlistener.h"
+#include "jlisttablemodel.h"
+#include "system.h"
+#include <QClipboard>
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -321,89 +325,108 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 
     errorList->append(" "); // blank line below errors
     errorList->append(tr("Please check the logs for more details."));
-#if 0 // TODO:
-    Object[] options = new Object[] {
-        tr("Quit {0}", QApplication.applicationName()),
-        tr("Continue"),
-        tr("Edit connections")
-    };
+#if 1 // TODO:
+    QVariantList options = QVariantList {
+                tr("Quit %1").arg(QApplication::applicationName()),
+                tr("Continue"),
+                tr("Edit connections")
+            };
 
-    if (list instanceof JList) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem copyMenuItem = new JMenuItem(Bundle.getMessage("MenuItemCopy"));
-        TransferActionListener copyActionListener = new TransferActionListener();
-        copyMenuItem.setActionCommand((String) TransferHandler.getCopyAction().getValue(Action.NAME));
-        copyMenuItem.addActionListener(copyActionListener);
-        if (SystemType.isMacOSX()) {
-            copyMenuItem.setAccelerator(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.META_MASK));
-        } else {
-            copyMenuItem.setAccelerator(
-                    KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
-        }
-        copyMenuItem.setMnemonic(KeyEvent.VK_C);
-        copyMenuItem.setEnabled(((JList)list).getSelectedIndex() != -1);
-        popupMenu.add(copyMenuItem);
+ JList* jlist = nullptr;
+ if (jlist = VPtr<JList>::asPtr(list))
+ {
+     QMenu* popupMenu = new QMenu();
+     QAction* copyMenuItem = new QAction(tr("Copy"),this);
+     TransferActionListener* copyActionListener = new TransferActionListener();
+     //copyMenuItem->setActionCommand( TransferHandler.getCopyAction().getValue(Action::NAME));
+     copyMenuItem->setData("copyAll");
+     //copyMenuItem.addActionListener(copyActionListener);
+     connect(copyMenuItem, SIGNAL(triggered(bool)), copyActionListener, SLOT(actionPerformed(ActionEvent*)));
+//     if (SystemType.isMacOSX()) {
+//         copyMenuItem.setAccelerator(
+//                 KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.META_MASK));
+//     } else
+     {
+//         copyMenuItem.setAccelerator(
+//                 KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+      copyMenuItem->setShortcut(Qt::Key_C | Qt::ControlModifier);
+     }
+//     copyMenuItem->setMnemonic(KeyEvent.VK_C);
+     copyMenuItem->setEnabled(jlist->getSelectedIndex() != -1);
+     popupMenu->addAction(copyMenuItem);
 
-        JMenuItem copyAllMenuItem = new JMenuItem(Bundle.getMessage("MenuItemCopyAll"));
-        ActionListener copyAllActionListener = (ActionEvent e) -> {
-            StringBuilder text = new StringBuilder();
-            for (int i=0; i < ((JList)list).getModel().getSize(); i++) {
-                text.append(((JList)list).getModel().getElementAt(i).toString());
-                text.append(System.getProperty("line.separator")); // NOI18N
-            }
-            Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            systemClipboard.setContents(new StringSelection(text.toString()), null);
-        };
-        copyAllMenuItem.setActionCommand("copyAll"); // NOI18N
-        copyAllMenuItem.addActionListener(copyAllActionListener);
-        popupMenu.add(copyAllMenuItem);
+     QAction* copyAllMenuItem = new QAction(tr("Copy all"), this);
+//     ActionListener copyAllActionListener = (ActionEvent e) -> {
+//         StringBuilder text = new StringBuilder();
+//         for (int i=0; i < ((JList)list).getModel().getSize(); i++) {
+//             text.append(((JList)list).getModel().getElementAt(i).toString());
+//             text.append(System.getProperty("line.separator")); // NOI18N
+//         }
+//         Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//         systemClipboard.setContents(new StringSelection(text.toString()), null);
+//     };
+     //copyAllMenuItem.setActionCommand("copyAll"); // NOI18N
+     copyAllMenuItem->setData("copyAll");
+     //copyAllMenuItem.addActionListener(copyAllActionListener);
+     connect(copyAllMenuItem, &QAction::triggered, [=]{
+      QString text;// = new StringBuilder();
+      for (int i=0; i < ((JListTableModel*)jlist->getModel())->getSize(); i++) {
+          text.append(((JListTableModel*)jlist->getModel())->getElementAt(i).toString());
+          text.append(System::getProperty("line.separator")); // NOI18N
+      }
+//      Clipboard systemClipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//      systemClipboard.setContents(new StringSelection(text.toString()), null);
+      QClipboard* systemClipboard = QGuiApplication::clipboard();
+      systemClipboard->setText(text);
+     });
+     popupMenu->addAction(copyAllMenuItem);
 
-        ((JList) list).setComponentPopupMenu(popupMenu);
+     jlist->setComponentPopupMenu(popupMenu);
 
-        ((JList) list).addListSelectionListener((ListSelectionEvent e) -> {
-            copyMenuItem.setEnabled(((JList)e.getSource()).getSelectedIndex() != -1);
-        });
-    }
+     //jlist->addListSelectionListener((ListSelectionEvent e) -> {
+//         copyMenuItem->setEnabled(((JList*)e.getSource()).getSelectedIndex() != -1);
+//     });
+     jlist->addListSelectionListener(new ListSelectionListener1(copyMenuItem, this));
+ }
 
-    JOptionPane pane = new JOptionPane(
-            new Object[] {
-                (list instanceof JList) ? Bundle.getMessage("InitExMessageListHeader") : null,
-                list,
-                "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
-                Bundle.getMessage("InitExMessageLogs"), // NOI18N
-                Bundle.getMessage("ErrorDialogConnectLayout"), // NOI18N
-            },
-            JOptionPane.ERROR_MESSAGE,
-            JOptionPane.DEFAULT_OPTION,
-            null,
-            options
-    );
+ JOptionPane* pane = new JOptionPane(
+         QVariantList() = {
+             (VPtr<JList>::asPtr(list)) ? tr("The following errors occurred in the order listed:") : nullptr,
+             list,
+             "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
+             tr("Please check the logs for more details."), // NOI18N
+             tr("If you need to plug in or turn on anything, do so before restarting"), // NOI18N
+         },
+         JOptionPane::ERROR_MESSAGE,
+         JOptionPane::DEFAULT_OPTION,
+         QIcon(),
+         options
+ );
 
-    JDialog dialog = pane.createDialog(null, Bundle.getMessage("InitExMessageTitle", Application.getApplicationName())); // NOI18N
-    dialog.setVisible(true);
-    Object selectedValue = pane.getValue();
+ JDialog* dialog = pane->createDialog(nullptr, tr("Error initializing %1").arg(QApplication::applicationName())); // NOI18N
+ dialog->setVisible(true);
+ QVariant selectedValue = pane->getValue();
 
-    if (Bundle.getMessage("ErrorDialogButtonQuitProgram", Application.getApplicationName()).equals(selectedValue)) {
-        // Exit program
-        AppsBase.handleQuit();
+ if (tr("Quit %1").arg(QApplication::applicationName()) == (selectedValue)) {
+     // Exit program
+     AppsBase::handleQuit();
 
-    } else if (Bundle.getMessage("ErrorDialogButtonContinue").equals(selectedValue)) {
-        // Do nothing. Let the program continue
+ } else if (tr("Continue") == (selectedValue)) {
+     // Do nothing. Let the program continue
 
-    } else if (Bundle.getMessage("ErrorDialogButtonEditConnections").equals(selectedValue)) {
-       if (EditConnectionPreferencesDialog.showDialog()) {
-            // Restart program
-            AppsBase.handleRestart();
-        } else {
-            // Quit program
-            AppsBase.handleQuit();
-        }
+ } else if (tr("Edit connections") == (selectedValue)) {
+    if (EditConnectionPreferencesDialog::showDialog()) {
+         // Restart program
+         AppsBase::handleRestart();
+     } else {
+         // Quit program
+         AppsBase::handleQuit();
+     }
 
-    } else {
-        // Exit program
-        AppsBase.handleQuit();
-    }
+ } else {
+     // Exit program
+     AppsBase::handleQuit();
+ }
 #endif
 }
 

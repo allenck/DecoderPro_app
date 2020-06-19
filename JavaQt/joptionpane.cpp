@@ -809,7 +809,7 @@ if(options.count() >0)
  return -1;
 #endif
 }
-#if 0
+#if 1
 /**
  * Creates and returns a new <code>JDialog</code> wrapping
  * <code>this</code> centered on the <code>parentComponent</code>
@@ -836,8 +836,8 @@ if(options.count() >0)
  *   <code>true</code>
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
-/*public*/ JDialog createDialog(Component parentComponent, QString title)
-    throws HeadlessException {
+/*public*/ JDialog* JOptionPane::createDialog(QWidget* parentComponent, QString title)
+    /*throw HeadlessException*/ {
     int style = styleFromMessageType(getMessageType());
     return createDialog(parentComponent, title, style);
 }
@@ -864,9 +864,9 @@ if(options.count() >0)
  * @see java.awt.GraphicsEnvironment#isHeadless
  * @since 1.6
  */
-/*public*/ JDialog createDialog(QString title) throws HeadlessException {
+/*public*/ JDialog* JOptionPane::createDialog(QString title) /*throws HeadlessException */{
     int style = styleFromMessageType(getMessageType());
-    JDialog dialog = new JDialog((Dialog) NULL, title, true);
+    JDialog* dialog = new JDialog( NULL, title, true);
     initDialog(dialog, style, NULL);
     return dialog;
 }

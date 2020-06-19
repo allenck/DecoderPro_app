@@ -202,7 +202,8 @@ SOURCES += appslib.cpp \
     oblockwhereused.cpp \
     routewhereused.cpp \
     sectionwhereused.cpp \
-    warrantwhereused.cpp
+    warrantwhereused.cpp \
+    transferactionlistener.cpp
 
 HEADERS += appslib.h\
     appslib_global.h \
@@ -359,7 +360,8 @@ HEADERS += appslib.h\
     oblockwhereused.h \
     routewhereused.h \
     sectionwhereused.h \
-    warrantwhereused.h
+    warrantwhereused.h \
+    transferactionlistener.h
 
 unix:!symbian {
     maemo5 {

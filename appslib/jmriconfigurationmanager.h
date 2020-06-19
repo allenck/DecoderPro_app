@@ -3,6 +3,10 @@
 #include "configxmlmanager.h"
 #include "xmlfile.h"
 #include "jdialog.h"
+#include "listselectionevent.h"
+#include "listselectionlistener.h"
+#include "jlist.h"
+#include <QMenu>
 
 class Profile;
 class InitializationException;
@@ -72,6 +76,25 @@ public slots:
     void onNewProfile();
     void onEditConnections();
 
+};
+
+class ListSelectionListener1 : public ListSelectionListener
+{
+ Q_OBJECT
+ JmriConfigurationManager* mgr;
+ QAction * copyMenuItem;
+public:
+ ListSelectionListener1(QAction * copyMenuItem, JmriConfigurationManager* mgr) {
+  this->mgr = mgr;
+  this->copyMenuItem = copyMenuItem;
+ }
+ QObject* self() {return (QObject*)this;}
+
+public slots:
+ void valueChanged(ListSelectionEvent *e )
+ {
+  copyMenuItem->setEnabled(((JList*)e->getSource())->getSelectedIndex() != -1);
+ }
 };
 
 Q_DECLARE_METATYPE(JmriConfigurationManager)

@@ -170,6 +170,8 @@ public:
      QVariant message, QString title, int optionType,
      int messageType, QIcon icon) throw (HeadlessException);
  static QWidget* getWindowForComponent(QWidget* parentComponent) throw (HeadlessException);
+ /*public*/ JDialog* createDialog(QWidget* parentComponent, QString title);
+ /*public*/ JDialog* createDialog(QString title);
 
 signals:
 

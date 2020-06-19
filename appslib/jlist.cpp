@@ -1,5 +1,6 @@
 #include "jlist.h"
 #include "jlisttablemodel.h"
+#include <QMenu>
 
 JList::JList(QWidget* parent) : QListView(parent)
 {
@@ -10,6 +11,7 @@ JList::JList(QAbstractListModel* model, QWidget* parent) : QListView(parent)
  setModel(model);
 }
 
+QAbstractListModel* JList::getModel() {return(QAbstractListModel*) model();}
 
 JList::JList(QList<QString> list, QWidget *parent) : QListView(parent)
 {
@@ -176,5 +178,19 @@ QModelIndex JList::locationToIndex(QPoint p)
 /*public*/ void JList::setVisibleRowCount(int count)
 {
  visibleRowCount = count;
+}
 
+/*public*/ void JList::setComponentPopupMenu(QMenu* menu)
+{
+ setContextMenuPolicy(Qt::ContextMenuPolicy::CustomContextMenu);
+ this->menu = menu;
+ connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(on_menu(QPoint)));
+}
+
+void JList::on_menu(QPoint pos)
+{
+ if(this->menu)
+ {
+  this->menu->exec(pos);
+ }
 }
