@@ -145,7 +145,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
       QString english = tr("Unable to create connection \"%1\" (%2).").arg(userName).arg(systemName);
       //QString localized = Bundle.getMessage("ErrorSingleConnection", userName, systemName); // NOI18N
       QString localized = tr("Unable to create connection \"%1\" (%2).").arg(userName).arg(systemName);
-      this->addInitializationException(profile, new InitializationException(english, localized, NULL));
+      this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, NULL));
      }
     }
 
@@ -154,7 +154,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
      log-> error(tr("Unable to create %1 for %2").arg(className).arg(shared.tagName()), ex);
      QString english = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
      QString localized = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
-     this->addInitializationException(profile, new InitializationException(english, localized, NULL));
+     this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, NULL));
     }
     catch (Exception ex)
     {
@@ -164,7 +164,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
      QString english = tr("Unable to create connection \"%1\" (%2).").arg(userName).arg(systemName);
      QString localized = tr("Unable to create connection \"%1\" (%2).").arg(userName).arg(systemName);
      Exception* ex1 = new Exception(ex);
-     this->addInitializationException(profile, new InitializationException(english, localized, ex1));
+     this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, ex1));
     }
    }
   }
@@ -172,7 +172,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
   QList<Exception*>* exceptions = this->getInitializationExceptions(profile);
   if (exceptions->size() == 1)
   {
-#if 0
+#if 1
    if (dynamic_cast<HasConnectionButUnableToConnectException*>(exceptions->at(0)) )
    {
     throw (HasConnectionButUnableToConnectException*) exceptions->at(0);
@@ -187,7 +187,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 //      QString localized = Bundle.getMessage("ErrorMultipleConnections"); // NOI18N
    QString english = tr("Unable to create connection \"%1\" (%2).");
    QString localized = tr("Unable to create connection \"%1\" (%2).");
-      throw  InitializationException(english, localized, nullptr);
+      throw  HasConnectionButUnableToConnectException(english, localized, nullptr);
   }
 
   log-> debug("Initialized...");
@@ -487,7 +487,7 @@ Logger* ProxyConnectionTypeList::log = LoggerFactory::getLogger("ProxyConnection
 #endif
     }
 
-#if 0
+#if 1
 //    /*private*/ /*static*/ class ConnectionConfigManagerErrorHandler extends ErrorHandler {
 
 //        ArrayList<HasConnectionButUnableToConnectException> exceptions = new ArrayList<>();

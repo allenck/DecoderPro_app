@@ -28,7 +28,7 @@ ErrorHandler::ErrorHandler(QObject *parent) :
     if (e->userName!=NULL && e->userName!=("")) m += " User name \""+e->userName+"\"";
     if (e->operation!=NULL) m += " while "+e->operation;
     if (e->adapter!=NULL) m += tr(" in adaptor of type ")+e->adapter->metaObject()->className();
-     m += " Exception: "+e->exception.getMessage();
+     m += " Exception: "+e->exception->getMessage();
 
 //    if (e->exception != Throwable())
 //    {

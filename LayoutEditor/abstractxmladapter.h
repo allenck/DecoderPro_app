@@ -9,12 +9,11 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractXmlAdapter : public XmlAdapter
     Q_OBJECT
 public:
     explicit AbstractXmlAdapter(QObject *parent = 0);
-    /*public*/ void handleException (
-                QString description,
+    /*public*/ void handleException (QString description,
                 QString operation,
                 QString systemName,
                 QString userName,
-                Exception exception
+                Exception *exception
             ) /*throw (JmriConfigureXmlException)*/ override;
     /*public*/ bool loadDeferred()const  override;
     /*public*/ int loadOrder()const override;

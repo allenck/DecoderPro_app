@@ -54,21 +54,19 @@ public:
     /*public*/ bool loadDeferred(QUrl url) throw (JmriConfigureXmlException) override;
     /*public*/ QUrl find(QString f) override;
     virtual void locateFileFailed(QString f) ;
-    static /*public*/ void creationErrorEncountered(
-            XmlAdapter* adapter,
+    static /*public*/ void creationErrorEncountered(XmlAdapter* adapter,
             QString operation,
             QString description,
             QString systemName,
             QString userName,
-            Throwable exception);
-    static /*public*/ void storingErrorEncountered(
-            XmlAdapter* adapter,
+            Throwable *exception);
+    static /*public*/ void storingErrorEncountered(XmlAdapter* adapter,
             QString operation,
             Level* level,
             QString description,
             QString systemName,
             QString userName,
-            Throwable exception
+            Throwable *exception
             );
     /*static*/ /*public*/ void setErrorHandler(ErrorHandler handler);
 

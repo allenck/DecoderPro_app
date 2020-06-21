@@ -404,7 +404,7 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
      root.appendChild(e);
   } catch (Exception e) {
       storingErrorEncountered (nullptr, "storing to file", Level::_ERROR,
-                                "Unknown error (Exception)", "","",e);
+                                "Unknown error (Exception)", "","",&e);
       result = false;
   }
  }
@@ -449,7 +449,7 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
   {
    result = false;
    storingErrorEncountered ((XmlAdapter*)o, "storing to file", Level::_ERROR,
-                                      "Unknown error (Exception)", NULL,NULL,e);
+                                      "Unknown error (Exception)", NULL,NULL,&e);
   }
  }
  return result;
@@ -495,13 +495,13 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
  }
  catch (FileNotFoundException ex3)
  {
-  storingErrorEncountered (nullptr, "storing to file "+file->getPath(), Level::_ERROR, "File not found " + file->getPath(), NULL,NULL,ex3);
+  storingErrorEncountered (nullptr, "storing to file "+file->getPath(), Level::_ERROR, "File not found " + file->getPath(), NULL,NULL,&ex3);
   log->error("FileNotFound error writing file: "+ex3.getMessage());
   return false;
  }
  catch (IOException ex2)
  {
-  storingErrorEncountered (NULL, "storing to file "+file->getPath(), Level::_ERROR, "IO error writing file " + file->getPath(), NULL,NULL,ex2);
+  storingErrorEncountered (NULL, "storing to file "+file->getPath(), Level::_ERROR, "IO error writing file " + file->getPath(), NULL,NULL,&ex2);
   log->error("IO error writing file: "+ex2.getMessage());
   return false;
  }
@@ -967,13 +967,13 @@ File userPrefsFile;*/
     catch (Exception e)
     {
      creationErrorEncountered(adapter, "load(" + url.toString() + ")",
-                 "Unexpected error (Exception)", nullptr, nullptr, e);
+                 "Unexpected error (Exception)", nullptr, nullptr, &e);
 
          result = false;  // keep going, but return false to signal problem
     }
     catch (Throwable et) {
          creationErrorEncountered(adapter, "in load(" + url.toString() + ")",
-                 "Unexpected error (Throwable)", nullptr, nullptr, et);
+                 "Unexpected error (Throwable)", nullptr, nullptr, &et);
 
          result = false;  // keep going, but return false to signal problem
     }
@@ -982,7 +982,7 @@ File userPrefsFile;*/
   catch (IllegalArgumentException e)
   {
     creationErrorEncountered(adapter, "load(" + url.path() + ")",
-                        "Unexpected error (IllegalArgumentException)", nullptr, nullptr, e);
+                        "Unexpected error (IllegalArgumentException)", nullptr, nullptr, &e);
        result = false;  // keep going, but return false to signal problem
   }
   catch (FileNotFoundException e1)
@@ -990,25 +990,25 @@ File userPrefsFile;*/
         // this returns false to indicate un-success, but not enough
         // of an error to require a message
         creationErrorEncountered(nullptr, "opening file " + url.path(),
-                "File not found", nullptr, nullptr, e1);
+                "File not found", nullptr, nullptr, &e1);
         result = false;
   }
   catch (JDOMException e)
   {
         creationErrorEncountered(nullptr, "parsing file " + url.path(),
-                "Parse error", nullptr, nullptr, e);
+                "Parse error", nullptr, nullptr, &e);
         result = false;
   }
   catch (Exception e)
   {
         creationErrorEncountered(nullptr, "loading from file " + url.path(),
-                "Unknown error (Exception)", nullptr, nullptr, e);
+                "Unknown error (Exception)", nullptr, nullptr, &e);
         result = false;
   }
   catch (Throwable et)
   {
    creationErrorEncountered(adapter, "in load(" + url.path() + ")",
-                       "Unexpected error (Throwable)", nullptr, nullptr, et);
+                       "Unexpected error (Throwable)", nullptr, nullptr, &et);
 
    result = false;  // keep going, but return false to signal problem
   }
@@ -1091,13 +1091,13 @@ File userPrefsFile;*/
    catch (Exception e)
    {
     creationErrorEncountered(adapter, "deferred load(" + url.path() + ")",
-                                         "Unexpected error (Exception)", NULL, NULL, e);
+                                         "Unexpected error (Exception)", NULL, NULL, &e);
     result = false;  // keep going, but return false to signal problem
    }
    catch (Throwable et)
    {
     creationErrorEncountered(adapter, "in deferred load(" + url.path() + ")",
-                        "Unexpected error (Throwable)", NULL, NULL, et);
+                        "Unexpected error (Throwable)", NULL, NULL, &et);
     result = false;  // keep going, but return false to signal problem
    }
   }
@@ -1166,7 +1166,7 @@ void ConfigXmlManager::locateFileFailed(QString f) {
             QString description,
             QString systemName,
             QString userName,
-            Throwable exception)
+            Throwable* exception)
 {
     // format and log a message (note reordered from arguments)
     ErrorMemo* e = new ErrorMemo(
@@ -1204,7 +1204,7 @@ void ConfigXmlManager::locateFileFailed(QString f) {
             QString description,
             QString systemName,
             QString userName,
-            Throwable exception)
+            Throwable* exception)
 {
     // format and log a message (note reordered from arguments)
     ErrorMemo* e = new ErrorMemo(

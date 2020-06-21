@@ -4,7 +4,8 @@
 
 class HasConnectionButUnableToConnectException : public InitializationException
 {
-
+// Q_OBJECT
+// Q_INTERFACES(InitializationException)
 public:
  HasConnectionButUnableToConnectException(QString message, QString localized);
  /*public*/ HasConnectionButUnableToConnectException(QString message, QString localized, Throwable *cause);

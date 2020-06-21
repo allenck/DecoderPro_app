@@ -417,7 +417,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
         log->error("Could not parse path attribute");
     } catch (NullPointerException e) {
      handleException("Block Path entry in file missing required attribute",
-          QString(), block->getSystemName(), block->getUserName(), Exception());
+          QString(), block->getSystemName(), block->getUserName(), new Exception());
     }
 
     Block* toBlock = NULL;

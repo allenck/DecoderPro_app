@@ -31,6 +31,7 @@
 #include "jlisttablemodel.h"
 #include "system.h"
 #include <QClipboard>
+#include "hasconnectionbutunabletoconnectexception.h"
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -256,7 +257,10 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
          //exceptions.forEach((exception) ->
       foreach(Exception* exception, *exceptions)
       {
-          errors->append(exception->getLocalizedMessage());
+       if (static_cast<HasConnectionButUnableToConnectException*>(exception)) {
+           isUnableToConnect/*.set*/ =(true);
+       }
+       errors->append(exception->getLocalizedMessage());
       } //);
      } else if (this->initializationExceptions->value(provider) != NULL)
      {

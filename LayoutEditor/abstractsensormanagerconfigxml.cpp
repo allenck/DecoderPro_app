@@ -205,7 +205,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
    s = tm->newSensor(sysName, userName);
   }
   catch (IllegalArgumentException e) {
-      handleException("Could not create sensor", "", sysName, userName, Exception());
+      handleException("Could not create sensor", "", sysName, userName, new Exception());
       result = false;
       continue;
   }

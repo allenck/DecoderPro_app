@@ -38,7 +38,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
             QString systemName,
             QString operation,
             QString userName,
-            Exception exception
+            Exception* exception
         ) /*throw (JmriConfigureXmlException)*/
 {
  if (errorHandler != nullptr)

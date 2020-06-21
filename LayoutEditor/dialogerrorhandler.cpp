@@ -46,7 +46,7 @@ DialogErrorHandler::DialogErrorHandler(QObject *parent) :
   }
   //if (e->exception != NULL)
   {
-    m += "<br> Exception: " + e->exception.getMessage();
+    m += "<br> Exception: " + e->exception->getMessage();
   }
   m += "</html>";
 

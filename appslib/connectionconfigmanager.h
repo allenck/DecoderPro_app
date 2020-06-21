@@ -73,7 +73,7 @@ private:
  static Logger*log;
 };
 #endif
-#if 0
+#if 1
 /*private*/ /*static*/ class ConnectionConfigManagerErrorHandler : public ErrorHandler
 {
  Q_OBJECT

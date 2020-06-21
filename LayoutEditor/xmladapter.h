@@ -133,7 +133,7 @@ QT_DEPRECATED/*public*/ virtual void creationErrorEncountered (
             QString description,
             QString systemName,
             QString userName,
-            Exception exception
+            Exception* exception
         ) /*throw (JmriConfigureXmlException)*/
  {
   this->handleException(description, nullptr, systemName, userName, exception);
@@ -161,7 +161,7 @@ QT_DEPRECATED/*public*/ virtual void creationErrorEncountered (
              /*@Nullable*/ QString /*operation*/,
              /*@Nullable*/ QString /*systemName*/,
              /*@Nullable*/ QString /*userName*/,
-             /*@Nullable*/ Exception /*exception*/)  { }/*throws JmriConfigureXmlException*/
+             /*@Nullable*/ Exception* /*exception*/)  { }/*throws JmriConfigureXmlException*/
 
      /**
       * Set the error handler that will handle any errors encountered while

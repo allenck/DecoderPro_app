@@ -72,8 +72,11 @@ public:
     }
     Throwable* cause;
 };
+
 class Exception : public Throwable
 {
+// Q_OBJECT
+// Q_INTERFACES(Throwable)
 public:
  Exception() : Throwable() {}
  Exception(QString msg) : Throwable(msg) {}
@@ -437,5 +440,6 @@ public:
    ~TransformerFactoryConfigurationError() throw() {}
 };
 
-
+//Q_DECLARE_INTERFACE(InitializationException, "InitializationException")
+//Q_DECLARE_INTERFACE(Throwable, "Throwable")
 #endif // EXCEPTIONS_H

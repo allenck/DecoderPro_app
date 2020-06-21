@@ -18,7 +18,7 @@
         QString description,
         QString systemName,
         QString userName,
-        Throwable exception, QObject *parent)  : QObject(parent)
+        Throwable* exception, QObject *parent)  : QObject(parent)
 {
     this->level = level;
     this->adapter = adapter;
@@ -35,7 +35,7 @@
         QString description,
         QString systemName,
         QString userName,
-        Throwable exception,
+        Throwable *exception,
         QString title, QObject *parent)  : QObject(parent)
 {
     //this(level, adapter, operation, description, systemName, userName, exception);
