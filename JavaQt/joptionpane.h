@@ -7,6 +7,7 @@
 #include "jdialog.h"
 #include "propertychangesupport.h"
 #include "exceptions.h"
+#include <QValidator>
 
 class Component;
 class JTextField;
@@ -172,6 +173,7 @@ public:
  static QWidget* getWindowForComponent(QWidget* parentComponent) throw (HeadlessException);
  /*public*/ JDialog* createDialog(QWidget* parentComponent, QString title);
  /*public*/ JDialog* createDialog(QString title);
+ /*public*/ void setValidator(QValidator* val);
 
 signals:
 

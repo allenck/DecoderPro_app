@@ -551,7 +551,8 @@ HEADERS += javaqt.h\
     itemevent.h \
     itemlistener.h \
     jcheckbox.h \
-    etchedborder.h
+    etchedborder.h \
+    supplier.h
 
 unix {
     target.path = /usr/lib

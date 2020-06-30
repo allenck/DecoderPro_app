@@ -468,6 +468,8 @@
                                           selectionValues,initialSelectionValue, parentComponent);
 
     pane->setWantsInput(true);
+    if(selectionValues.count() == 1 && VPtr<QValidator>::asPtr(selectionValues.at(0)))
+     pane->setValidator(VPtr<QValidator>::asPtr(selectionValues.at(0)));
     pane->setSelectionValues(selectionValues);
     pane->setInitialSelectionValue(initialSelectionValue);
 //    pane->setComponentOrientation(((parentComponent == NULL) ?
@@ -2456,6 +2458,14 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
  }
  return p;
 }
+
+/*public*/ void JOptionPane::setValidator(QValidator* val)
+{
+ if(!getWantsInput())
+  throw IllegalArgumentException(tr("can't set validator if not wanting input"));
+ f->setValidator(val);
+}
+
 void JOptionPane::handleTextInput()
 {
  setValue(f->text());

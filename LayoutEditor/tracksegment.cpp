@@ -1371,6 +1371,42 @@ TrackSegment::getLayoutBlock()
 }   // drawArrow
 
 /**
+ * Helper method, which adds "Set value" item to the menu. The value can be
+ * optionally range-checked. Item will be appended at the end of the menu.
+ *
+ * @param menu       the target menu.
+ * @param titleKey   bundle key for the menu title/dialog title
+ * @param toolTipKey bundle key for the menu item tooltip
+ * @param val        value getter
+ * @param set        value setter
+ * @param predicate  checking predicate, possibly null.
+ */
+/*private*/ void TrackSegment::addNumericMenuItem(/*@Nonnull*/ QMenu* menu,
+        /*@Nonnull*/ QString titleKey, /*@Nonnull*/ QString toolTipKey,
+        /*@Nonnull*/ Supplier<int> val,
+        /*@Nonnull*/ Consumer<int> set,
+        /*@CheckForNull*/ Predicate<int> predicate) {
+    int oldVal = val.get();
+    QAction* jmi;
+    menu->addAction(jmi = new QAction(tr("%1").arg(
+            (titleKey) + QString::number(oldVal)),this));
+    jmi->setToolTip((toolTipKey));
+    //jmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+#if 0
+    connect(jmi, &QAction::triggered, [=]{
+        //prompt for lineWidth
+        int newValue = QuickPromptUtil::promptForInteger(layoutEditor,
+                /*Bundle.getMessage*/(titleKey),
+                /*Bundle.getMessage*/(titleKey),
+                //getting again, maybe something changed from the menu construction ?
+                val.get(), predicate);
+        set.accept(newValue);
+        layoutEditor->repaint();
+    });
+#endif
+}
+
+/**
  * Display popup menu for information and editing
  */
 /*protected*/ QMenu* TrackSegment::showPopup(QGraphicsSceneMouseEvent* /*e*/)

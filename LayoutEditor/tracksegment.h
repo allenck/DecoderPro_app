@@ -5,6 +5,9 @@
 #include "layoutblock.h"
 #include "layouteditor.h"
 #include "abstractaction.h"
+#include "consumer.h"
+#include "supplier.h"
+#include "predicate.h"
 
 class LayoutBlock;
 class LayoutEditor;
@@ -236,9 +239,9 @@ private:
     // operational instance variables (not saved between sessions)
     /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlock = nullptr;
 
-    /*private*/ LayoutBlock* block;// = NULL;
+    /*private*/ LayoutBlock* block = nullptr;
 //    /*private*/ TrackSegment* instance;// = NULL;
-    /*private*/ LayoutEditor* layoutEditor;// = NULL;
+    /*private*/ LayoutEditor* layoutEditor = nullptr;
 
     // persistent instances variables (saved between sessions)
 //    /*private*/ QString ident;// = "";
@@ -344,7 +347,12 @@ private:
                            double angleRAD,
                            bool dirOut,
                            int offset, QPen stroke, QGraphicsItemGroup *itemGroup);
-int bezierControlPointIndex;
+ int bezierControlPointIndex;
+ /*private*/ void addNumericMenuItem(/*@Nonnull*/ QMenu* menu,
+        /*@Nonnull*/ QString titleKey, /*@Nonnull*/ QString toolTipKey,
+        /*@Nonnull*/ Supplier<int> val,
+        /*@Nonnull*/ Consumer<int> set,
+        /*@CheckForNull*/ Predicate<int> predicate);
 
 private slots:
  void onBridgeSideLeft();

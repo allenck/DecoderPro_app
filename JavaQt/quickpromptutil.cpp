@@ -2,7 +2,7 @@
 #include "component.h"
 #include "joptionpane.h"
 #include <QIntValidator>
-
+#include "vptr.h"
 
 QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
 {
@@ -88,11 +88,61 @@ QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
 //            throw new NumberFormatException(Bundle.getMessage("InputDialogNotNumber"));
 //        }
 //    });
+    QVariantList l = QVariantList() << VPtr<QValidator>::asQVariant(validator);
+    QVariant val = JOptionPane::showInputDialog(parentComponent, message, title, JOptionPane::PLAIN_MESSAGE, QIcon(), l, oldValue);
+    newValue = val.toInt();
     if (newValue != 0) {
         result = newValue;
     }
     return result;
 }
+
+/**
+     * Utility function to prompt for new integer value. Allows to constrain
+     * values using a Predicate (validator).
+     * <p>
+     * The validator may throw an {@link IllegalArgumentException} whose
+     * {@link IllegalArgumentException#getLocalizedMessage()} will be displayed.
+     * The Predicate may also simply return {@code false}, which causes just
+     * general message (the value is invalid) to be printed. If the Predicate
+     * rejects the input, the OK button is disabled and the user is unable to
+     * confirm the dialog.
+     * <p>
+     * The function returns the original value if the dialog was cancelled or
+     * the entered value was empty or invalid. Otherwise, it returns the new
+     * value entered by the user.
+     *
+     * @param parentComponent the parent component
+     * @param message         the prompt message.
+     * @param title           title for the dialog
+     * @param oldValue        the original value
+     * @param validator       the validator instance. May be {@code null}
+     * @return the updated value, or the original one.
+     */
+    /*public*/ /*static*/ int QuickPromptUtil::promptForInteger(Component* parentComponent, /*@Nonnull*/ QString message, /*@Nonnull*/ QString title,
+                                           int oldValue, /*@CheckForNull*/ Predicate<int> validator) {
+        int result = oldValue;
+        int newValue = 0;
+//        int newValue = promptForData(parentComponent, message, title, oldValue, validator, (val) -> {
+//            try {
+//                return Integer.valueOf(Integer.parseInt(val));
+//            } catch (NumberFormatException ex) {
+//                // original exception ignored; wrong message.
+//                throw new NumberFormatException(Bundle.getMessage("InputDialogNotNumber"));
+//            }
+//        });
+        QVariant val = JOptionPane::showInputDialog(parentComponent, message, title, JOptionPane::PLAIN_MESSAGE, QIcon(), QList<QVariant>(), oldValue);
+        newValue = val.toInt();
+        if (newValue != 0) {
+            result = newValue;
+        }
+        return result;
+
+        if (newValue != 0) {
+            result = newValue;
+        }
+        return result;
+    }
 #if 0
 template<class T>
 /*private*/ static  T promptForData(Component* parentComponent,
