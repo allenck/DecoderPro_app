@@ -65,6 +65,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -7414,6 +7415,28 @@ if (_wrapper) {
 }
   JLabel::resizeEvent(event0);
 }
+void PythonQtShell_JLabel::setName(QString  name0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&name0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JLabel::setName(name0);
+}
 void PythonQtShell_JLabel::setVisible(bool  visible0)
 {
 if (_wrapper) {
@@ -7625,6 +7648,11 @@ int  PythonQtWrapper_JLabel::checkVerticalKey(JLabel* theWrappedObject, int  key
   return ( ((PythonQtPublicPromoter_JLabel*)theWrappedObject)->promoted_checkVerticalKey(key, message));
 }
 
+void PythonQtWrapper_JLabel::firePropertyChange(JLabel* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue)
+{
+  ( theWrappedObject->firePropertyChange(propertyName, oldValue, newValue));
+}
+
 QColor  PythonQtWrapper_JLabel::getBackground(JLabel* theWrappedObject)
 {
   return ( theWrappedObject->getBackground());
@@ -7745,9 +7773,9 @@ void PythonQtWrapper_JLabel::setHorizontalTextPosition(JLabel* theWrappedObject,
   ( theWrappedObject->setHorizontalTextPosition(textPosition));
 }
 
-void PythonQtWrapper_JLabel::setLabelFor(JLabel* theWrappedObject, QWidget*  labelFor)
+void PythonQtWrapper_JLabel::setLabelFor(JLabel* theWrappedObject, QWidget*  c)
 {
-  ( theWrappedObject->setLabelFor(labelFor));
+  ( theWrappedObject->setLabelFor(c));
 }
 
 void PythonQtWrapper_JLabel::setLocation(JLabel* theWrappedObject, double  x, double  y)
@@ -10032,6 +10060,11 @@ void PythonQtWrapper_JList::ensureIndexIsVisible(JList* theWrappedObject, int  i
   ( theWrappedObject->ensureIndexIsVisible(index));
 }
 
+QAbstractListModel*  PythonQtWrapper_JList::getModel(JList* theWrappedObject)
+{
+  return ( theWrappedObject->getModel());
+}
+
 int  PythonQtWrapper_JList::getSelectedIndex(JList* theWrappedObject)
 {
   return ( theWrappedObject->getSelectedIndex());
@@ -10050,6 +10083,11 @@ QList<QModelIndex >  PythonQtWrapper_JList::getSelectedValues(JList* theWrappedO
 QModelIndex  PythonQtWrapper_JList::locationToIndex(JList* theWrappedObject, QPoint  arg__1)
 {
   return ( theWrappedObject->locationToIndex(arg__1));
+}
+
+void PythonQtWrapper_JList::setComponentPopupMenu(JList* theWrappedObject, QMenu*  menu)
+{
+  ( theWrappedObject->setComponentPopupMenu(menu));
 }
 
 void PythonQtWrapper_JList::setSelectedIndex(JList* theWrappedObject, int  index)

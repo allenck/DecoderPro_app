@@ -79,6 +79,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1035,6 +1036,7 @@ virtual QPaintEngine*  paintEngine() const;
 virtual void paintEvent(QPaintEvent*  arg__1);
 virtual QPaintDevice*  redirected(QPoint*  offset) const;
 virtual void resizeEvent(QResizeEvent*  event);
+virtual void setName(QString  name);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
 virtual void showEvent(QShowEvent*  event);
@@ -1053,6 +1055,7 @@ class PythonQtPublicPromoter_JLabel : public JLabel
 inline int  promoted_checkHorizontalKey(int  key, QString  message) { return this->checkHorizontalKey(key, message); }
 inline int  promoted_checkVerticalKey(int  key, QString  message) { return this->checkVerticalKey(key, message); }
 inline QPointF  py_q_getLocation() { return JLabel::getLocation(); }
+inline void py_q_setName(QString  name) { JLabel::setName(name); }
 };
 
 class PythonQtWrapper_JLabel : public QObject
@@ -1065,6 +1068,7 @@ JLabel* new_JLabel(QWidget*  parent = 0);
 void delete_JLabel(JLabel* obj) { delete obj; } 
    int  checkHorizontalKey(JLabel* theWrappedObject, int  key, QString  message);
    int  checkVerticalKey(JLabel* theWrappedObject, int  key, QString  message);
+   void firePropertyChange(JLabel* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue);
    QColor  getBackground(JLabel* theWrappedObject);
    int  getBaseline(JLabel* theWrappedObject, int  w, int  h);
    int  getDisplayedMnemonic(JLabel* theWrappedObject);
@@ -1090,14 +1094,17 @@ void delete_JLabel(JLabel* obj) { delete obj; }
    void setForeground(JLabel* theWrappedObject, QColor  arg__1);
    void setHorizontalAlignment(JLabel* theWrappedObject, int  alignment);
    void setHorizontalTextPosition(JLabel* theWrappedObject, int  textPosition);
-   void setLabelFor(JLabel* theWrappedObject, QWidget*  labelFor);
+   void setLabelFor(JLabel* theWrappedObject, QWidget*  c);
    void setLocation(JLabel* theWrappedObject, double  x, double  y);
    void setLocation(JLabel* theWrappedObject, int  x, int  y);
    void setName(JLabel* theWrappedObject, QString  name);
+   void py_q_setName(JLabel* theWrappedObject, QString  name){  (((PythonQtPublicPromoter_JLabel*)theWrappedObject)->py_q_setName(name));}
    void setOpaque(JLabel* theWrappedObject, bool  arg__1);
    void setSize(JLabel* theWrappedObject, double  x, double  y);
    void setText(JLabel* theWrappedObject, QString  text);
    void setVerticalAlignment(JLabel* theWrappedObject, int  alignment);
+void py_set_pcs(JLabel* theWrappedObject, PropertyChangeSupport*  pcs){ theWrappedObject->pcs = pcs; }
+PropertyChangeSupport*  py_get_pcs(JLabel* theWrappedObject){ return theWrappedObject->pcs; }
 };
 
 
@@ -1214,10 +1221,12 @@ JList* new_JList(QList<QString >  arg__1, QWidget*  parent = 0);
 JList* new_JList(QWidget*  parent = 0);
 void delete_JList(JList* obj) { delete obj; } 
    void ensureIndexIsVisible(JList* theWrappedObject, int  index);
+   QAbstractListModel*  getModel(JList* theWrappedObject);
    int  getSelectedIndex(JList* theWrappedObject);
    QVariant  getSelectedValue(JList* theWrappedObject);
    QList<QModelIndex >  getSelectedValues(JList* theWrappedObject);
    QModelIndex  locationToIndex(JList* theWrappedObject, QPoint  arg__1);
+   void setComponentPopupMenu(JList* theWrappedObject, QMenu*  menu);
    void setSelectedIndex(JList* theWrappedObject, int  index);
    void setSelectedValue(JList* theWrappedObject, QString  anObject, bool  shouldScroll);
    void setVisibleRowCount(JList* theWrappedObject, int  count);
