@@ -41,7 +41,7 @@ public slots:
  void on_connectionNameField_leave();
  /*public*/ void setAutoNetworkConfig();
  void showAdvancedItems();
- void autoConfig();
+ //void autoConfig();
 
 private:
  void common();

@@ -3,7 +3,7 @@
 #include "jmriclientsystemconnectionmemo.h"
 #include "jmriclienttrafficcontroller.h"
 #include "zeroconfclient.h"
-
+#include "serviceinfo.h"
 /**
  * Implements NetworkPortAdapter for the jmriclient system network connection.
  * <P>
@@ -77,33 +77,32 @@
  */
 //@Override
 /*public*/ void NetworkDriverAdapter::autoConfigure() {
-    log->info("Configuring JMRIClient interface via JmDNS");
-    if (getHostName() == (tr("localhost"))) {
-        setHostName(""); // reset the hostname to none.
-    }
-    QString serviceType = tr("_jmri-simple._tcp.local.");
-    log->debug("Listening for service: " + serviceType);
-#if 0
-    if (mdnsClient == nullptr) {
-        mdnsClient = new ZeroConfClient();
-        mdnsClient->startServiceListener(serviceType);
-    }
-    try {
-        // if there is a hostname set, use the host name (which can
-        // be changed) to find the service.
-        QString qualifiedHostName = m_HostName
-                + "." + tr("local.");
-        setHostAddress(mdnsClient->getServiceOnHost(serviceType,
-                qualifiedHostName).getHostAddresses()[0]);
-    } catch (NullPointerException npe) {
-        // if there is no hostname set, use the service name (which can't
-        // be changed) to find the service.
-        QString qualifiedServiceName = tr("local.")
-                + "." + serviceType;
-        setHostAddress(mdnsClient->getServicebyAdName(serviceType,
-                qualifiedServiceName).getHostAddresses()[0]);
-    }
-#endif
+ log->info("Configuring JMRIClient interface via JmDNS");
+ if (getHostName() == (tr("localhost"))) {
+     setHostName(""); // reset the hostname to none.
+ }
+ QString serviceType = tr("_jmri-simple._tcp.local.");
+ log->debug("Listening for service: " + serviceType);
+
+ if (mdnsClient == nullptr) {
+     mdnsClient = new ZeroConfClient();
+     mdnsClient->startServiceListener(serviceType);
+ }
+ try {
+     // if there is a hostname set, use the host name (which can
+     // be changed) to find the service.
+     QString qualifiedHostName = m_HostName
+             + "." + tr("local.");
+     setHostAddress(mdnsClient->getServiceOnHost(serviceType,
+             qualifiedHostName)->getHostAddresses().at(0));
+ } catch (NullPointerException npe) {
+     // if there is no hostname set, use the service name (which can't
+     // be changed) to find the service.
+     QString qualifiedServiceName = tr("My JMRI Railroad")
+             + "." + serviceType;
+     setHostAddress(mdnsClient->getServicebyAdName(serviceType,
+             qualifiedServiceName)->getHostAddresses()[0]);
+ }
 }
 
 /*

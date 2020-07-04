@@ -319,6 +319,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());
  }
 }
+
 //Override
 /*public*/ void AbstractNetworkConnectionConfig::updateAdapter()
 {
@@ -691,6 +692,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   portField->setEnabled(false);
   portFieldLabel->setEnabled(false);
   adapter->setMdnsConfigure(true);
+  updateAdapter();
  }
  else
  {
@@ -746,9 +748,9 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
     AbstractConnectionConfig::dispose();
 }
 
-/*public*/ void AbstractNetworkConnectionConfig::autoConfig()
-{
- // called when adapter has been auto configured. Update UI
- hostNameField->setText(adapter->getHostName());
- portField->setText(QString::number(adapter->getPort()));
-}
+///*public*/ void AbstractNetworkConnectionConfig::autoConfig()
+//{
+// // called when adapter has been auto configured. Update UI
+// hostNameField->setText(adapter->getHostName());
+// portField->setText(QString::number(adapter->getPort()));
+//}

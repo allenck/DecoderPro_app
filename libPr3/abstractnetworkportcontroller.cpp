@@ -9,7 +9,6 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-
 //AbstractNetworkPortController::AbstractNetworkPortController(QObject *parent) :
 //  AbstractPortController(parent)
 //{
@@ -27,8 +26,8 @@
 
 
 
-/*protected*/ AbstractNetworkPortController::AbstractNetworkPortController(SystemConnectionMemo* connectionMemo, QObject *parent) :
-  AbstractPortController(connectionMemo, parent) \
+/*protected*/ AbstractNetworkPortController::AbstractNetworkPortController(SystemConnectionMemo* connectionMemo, QObject *parent)
+ :  AbstractPortController(connectionMemo, parent)
 {
  //super(connectionMemo);
  log = new Logger("AbstractNetworkPortController");
@@ -67,10 +66,10 @@
  opened = false;
  if (getHostAddress() == "" || m_port == 0)
  {
-  log->error("No host name or port set :" + m_HostName + ":" + m_port);
+  log->error("No host name or port set: " + m_HostName + ":" + QString::number(m_port));
   return;
  }
- log->debug(tr("Attempting to connect to host: %1 on port %2").arg(m_HostName).arg(QString::number(m_port)));
+ log->debug(tr("Attempting to connect to host: %1 on port %2").arg(m_HostName).arg(m_port));
  try
  {
   if(socketConn == NULL)
@@ -531,21 +530,22 @@ void Reconnectwait::checkSocket() // [slot]
 // {
 //  AbstractPortController::safeSleep(reconnectinterval, "Waiting");
   count++;
-//  try
-//  {
-//   // if the device allows autoConfiguration,
-//   // we need to run the autoConfigure() call
-//   // before we try to reconnect.
-//   if (self->getMdnsConfigure())
-//   {
-//    AbstractNetworkPortController* selfautoConfigure();
-//   }
-//   //self->_connect();
-//   //emit _connect();
-//  }
-//  catch (Exception e)
-//  {
-//  }
+  try
+  {
+   // if the device allows autoConfiguration,
+   // we need to run the autoConfigure() call
+   // before we try to reconnect.
+   if (self->getMdnsConfigure())
+   {
+    //AbstractNetworkPortController* selfautoConfigure();
+    self->autoConfigure();
+   }
+   //self->_connect();
+   //emit _connect();
+  }
+  catch (Exception e)
+  {
+  }
 
   //self->socketConn->waitForConnected();
   QAbstractSocket::SocketState s = self->socketConn->state();
