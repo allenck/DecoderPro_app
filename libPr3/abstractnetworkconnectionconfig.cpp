@@ -16,7 +16,6 @@
 #include "abstractnetworkportcontroller.h"
 #include <QSignalMapper>
 
-
 AbstractNetworkConnectionConfig::AbstractNetworkConnectionConfig(QObject *parent) :
   AbstractConnectionConfig(parent)
 {
@@ -50,6 +49,7 @@ void AbstractNetworkConnectionConfig::common()
  init = false;
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  hostNameField = new JTextField(15);
+ connect(hostNameField, SIGNAL(textChanged(QString)),this, SLOT(on_hostNameField_leave()));
  portField = new JTextField(10);
 
  showAutoConfig = new QCheckBox(tr("Automatic Configuration"));
@@ -257,8 +257,19 @@ void AbstractNetworkConnectionConfig::on_hostNameField_leave()
  adapter->setHostName(hostNameField->text());
  //p->addComboBoxLastSelection(QString(adapter->metaObject()->className()) + ".hostname", hostNameField->text());
  p->setComboBoxLastSelection(adapter->className() + ".hostname", hostNameField->text());
+ hostNameField->setStyleSheet("QLineEdit{color: yellow;}");
+ QHostInfo::lookupHost(hostNameField->text(), this, SLOT(on_lookupHost(QHostInfo)));
 }
 
+void AbstractNetworkConnectionConfig::on_lookupHost(QHostInfo info)
+{
+ QList<QHostAddress> addr = info.addresses();
+ if(addr.isEmpty())
+  hostNameField->setStyleSheet("QLineEdit{color: red;}");
+ else
+  hostNameField->setStyleSheet("QLineEdit{color: green;}");
+
+}
 void AbstractNetworkConnectionConfig::on_optionCb_currentIndexChanged(QWidget * widget)
 {
  foreach (QString i, options.keys())
@@ -432,8 +443,6 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  portField->setEnabled(true);
  portField->setText(QString::number(adapter->getPort()));
  portFieldLabel = new QLabel(tr("TCP/UDP Port: "));
- //portField->setVisible(true);
- //portFieldLabel->setVisible(true);
 
  adNameField->setToolTip(tr("Expected ZeroConf/mDNS Advertisement Identifier"));
  adNameField->setEnabled(false);
@@ -455,10 +464,10 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //            new ItemListener() {
 //            //Override
 //                /*public*/ void itemStateChanged(ItemEvent e) {
-//                    setAutoNetworkConfig();
+ connect(showAutoConfig, &QCheckBox::clicked, [=]{
+                    setAutoNetworkConfig();
 //                }
-//            });
- connect(showAutoConfig, SIGNAL(toggled(bool)), this, SLOT(setAutoNetworkConfig()));
+            });
  showAutoConfig->setChecked(adapter->getMdnsConfigure());
  setAutoNetworkConfig();
 
@@ -472,10 +481,10 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 //            new ItemListener() {
 //            //Override
 //                /*public*/ void itemStateChanged(ItemEvent e) {
-//                    showAdvancedItems();
+ connect(showAdvanced, &QCheckBox::clicked, [=]{
+                    showAdvancedItems();
 //                }
-//            });
- connect(showAdvanced, SIGNAL(toggled(bool)), this, SLOT(showAdvancedItems()));
+            });
  showAdvancedItems();
 
  init = false;		// need to reload action listeners
@@ -632,9 +641,10 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
   cL->gridy = i;
 //     gbLayout->setConstraints(showAutoConfig, cR);
 //     _details.add(showAutoConfig);
-  gbLayout->addWidget(showAutoConfig,*cL);
+  gbLayout->addWidget(showAutoConfig,*cR);
 //     _details.add(showAutoConfig);
 //     gbLayout->setConstraints(showAutoConfig, cR);
+
   i++;
   showAutoConfig->setVisible(true);
  }

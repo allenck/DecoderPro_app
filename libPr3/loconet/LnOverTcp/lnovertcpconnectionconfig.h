@@ -13,6 +13,7 @@ public:
  /*public*/ LnOverTcpConnectionConfig(NetworkPortAdapter* p, QObject *parent = 0) ;
  /*public*/ QString name();
  /*public*/ bool isOptList1Advanced();
+ /*public*/ bool isAutoConfigPossible();
 
 signals:
 

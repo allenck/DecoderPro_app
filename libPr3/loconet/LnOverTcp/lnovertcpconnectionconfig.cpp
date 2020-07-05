@@ -62,3 +62,7 @@ LnOverTcpConnectionConfig::LnOverTcpConnectionConfig(QObject *parent) :
 //{
 // AbstractNetworkConnectionConfig::autoConfig();
 //}
+//@Override
+   /*public*/ bool LnOverTcpConnectionConfig::isAutoConfigPossible() {
+       return true;
+   }
