@@ -71,7 +71,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
   }
   if (adapter->getServiceType() != "")
   {
-   e.setAttribute("serviceType", adapter->getServiceType());
+   e.setAttribute("serviceType", adapter->getServiceType()); // e.g. "_loconetovertcpserver._tcp"
   }
 
  }
@@ -175,7 +175,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
 
   // get the host IP and port number
   // via mdns
-  adapter->autoConfigure();
+   adapter->autoConfigure();
 
  }
  else
@@ -211,6 +211,10 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
      return result;
  }
  try {
+  if(this->adapter->getMdnsConfigure())
+  {
+   this->adapter->autoConfigure();
+  }
   ((PortAdapter*)this->adapter)->_connect();
  }
  catch (Exception ex) {

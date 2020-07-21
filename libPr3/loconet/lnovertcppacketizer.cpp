@@ -86,7 +86,10 @@
  }
  networkController = p;
 
- p->getSocket()->waitForConnected();
+ if(p->getSocket())
+  p->getSocket()->waitForConnected();
+ else
+  throw IOException(tr("no socket"));
 
  xmtHandler = new LnTcpXmtHandler(this);
  rcvHandler = new LnTcpRcvHandler(this);

@@ -5,17 +5,18 @@
 class ZeroConfClient;
 class NetworkDriverAdapter : public JMRIClientPortController
 {
+ Q_OBJECT
 public:
  NetworkDriverAdapter(QObject* parent = nullptr);
- /*public*/ void configure();
- /*public*/ bool status();
+ /*public*/ void configure() override;
+ /*public*/ bool status() override;
  QT_DEPRECATED static /*public*/ NetworkDriverAdapter* instance();
- /*public*/ void setMdnsConfigure(bool autoconfig);
- /*public*/ bool getMdnsConfigure();
- /*public*/ void autoConfigure();
- /*public*/ QString getAdvertisementName();
- /*public*/ QString getServiceType();
- /*public*/ QString className();
+ /*public*/ void setMdnsConfigure(bool autoconfig) override;
+ /*public*/ bool getMdnsConfigure() override;
+ /*public*/ void autoConfigure() override;
+ /*public*/ QString getAdvertisementName() override;
+ /*public*/ QString getServiceType() override;
+ /*public*/ QString className() override;
 
 private:
  static Logger* log;

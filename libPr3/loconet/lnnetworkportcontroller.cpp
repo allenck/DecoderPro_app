@@ -4,6 +4,7 @@
 #include "exceptions.h"
 #include "loconetsystemconnectionmemo.h"
 #include "lnovertcppacketizer.h"
+#include "sleeperthread.h"
 
 //LnNetworkPortController::LnNetworkPortController(QObject *parent) :
 //  AbstractNetworkPortController(parent)
@@ -20,8 +21,8 @@
     // base class. Implementations will provide InputStream and OutputStream
     // objects to LnTrafficController classes, who in turn will deal in messages.
 
-/*protected*/ LnNetworkPortController::LnNetworkPortController(LocoNetSystemConnectionMemo*  connectionMemo,QObject *parent) :
-AbstractNetworkPortController((SystemConnectionMemo*)connectionMemo, parent)
+/*protected*/ LnNetworkPortController::LnNetworkPortController(LocoNetSystemConnectionMemo*  connectionMemo,QObject *parent)
+ : AbstractNetworkPortController((SystemConnectionMemo*)connectionMemo, parent)
 {
  //super(connectionMemo);
  log = new Logger("LnNetworkPortController");
@@ -128,10 +129,10 @@ QTcpSocket* LnNetworkPortController::getSocket() {return socketConn;}
  this->serviceType = serviceType;
  if(zClient == nullptr)
   zClient = new ZeroConfClient();
+ connect(zClient, SIGNAL(serviceAdded(QString)), this, SLOT(autoConfigure()));
  zClient->startServiceListener(serviceType);
  setMdnsConfigure(true);
- connect(zClient, SIGNAL(serviceAdded(QString)), this, SLOT(autoConfigure()));
-
+ SleeperThread::msleep(100);
 }
 /*public*/ QString LnNetworkPortController::getServiceType() { return serviceType;}
 
@@ -144,6 +145,10 @@ QTcpSocket* LnNetworkPortController::getSocket() {return socketConn;}
 
 /*public*/ void LnNetworkPortController::autoConfigure()
 {
+ if(zClient->getServices().isEmpty())
+ {
+  qApp->processEvents(QEventLoop::AllEvents, 1000);
+ }
  if(!zClient->getServices().isEmpty())
  {
   setHostName(zClient->getServices().at(0).host());

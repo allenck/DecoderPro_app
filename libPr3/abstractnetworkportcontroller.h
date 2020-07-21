@@ -13,33 +13,33 @@ class LIBPR3SHARED_EXPORT AbstractNetworkPortController : public AbstractPortCon
  Q_OBJECT
 public:
  //explicit AbstractNetworkPortController(QObject *parent = 0);
- /*public*/ void setHostName(QString s);
- /*public*/ QString getHostName();
- /*public*/ bool getMdnsConfigure();
- /*public*/ void _connect(QString host, int port) throw (Exception);
+ /*public*/ void setHostName(QString s) override;
+ /*public*/ QString getHostName() override;
+ /*public*/ bool getMdnsConfigure() override;
+ /*public*/ void _connect(QString host, int port) throw (Exception) override;
  ///*public*/ void _connect(); //throws Exception
- /*public*/  bool status();
- /*public*/  void setPort(int p);
- /*public*/  void setPort(QString p);
- /*public*/  int getPort();
- /*public*/ QString getCurrentPortName();
- /*public*/  void setMdnsConfigure(bool autoconfig);
- /*public*/  void autoConfigure();
- /*public*/  void setAdvertisementName(QString AdName);
- /*public*/  QString getAdvertisementName();
- /*public*/  void setServiceType(QString ServiceType);
+ /*public*/  bool status() override;
+ /*public*/  void setPort(int p) override;
+ /*public*/  void setPort(QString p) override;
+ /*public*/  int getPort() override;
+ /*public*/ QString getCurrentPortName() override;
+ /*public*/  void setMdnsConfigure(bool autoconfig) override;
+ /*public*/  void setAdvertisementName(QString AdName) override;
+ /*public*/  QString getAdvertisementName() override;
+ /*public*/  void setServiceType(QString ServiceType) override;
  /*public*/  QString getServiceType();
- /*public*/ QDataStream* getInputStream();
- /*public*/ QDataStream* getOutputStream();
- /*public*/ void dispose();
- /*public*/ void recover();
+ /*public*/ QDataStream* getInputStream() override;
+ /*public*/ QDataStream* getOutputStream() override;
+ /*public*/ void dispose() override;
+ /*public*/ void recover() override;
  /*public*/ void reconnect();
  /*public*/ void displayMsg();
- \
+ /*public*/ virtual void autoConfigure()  override;
+
 signals:
 
 public slots:
- /*public*/ void _connect(); //throws Exception
+ /*public*/ void _connect() override; //throws Exception
 
 private:
  /*private*/ QString m_HostAddress;// = "";  // Internal IP address for  ZeroConf

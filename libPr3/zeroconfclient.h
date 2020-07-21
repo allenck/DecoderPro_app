@@ -4,7 +4,9 @@
 #include <QObject>
 //#include "../../../../Projects/QtZeroConf-master/qzeroconf.h"
 #include "qzeroconf.h"
+#include "networktopologyevent.h"
 
+class ServiceInfo;
 class NetworkServiceListener;
 class QZeroConfService;
 class QZeroConf;
@@ -16,8 +18,8 @@ class ZeroConfClient : public QObject
 public:
  explicit ZeroConfClient(QObject *parent = nullptr);
  /*public*/ void startServiceListener(/*@Nonnull*/ QString service);
- /*public*/ QString getServiceOnHost(QString serviceType, QString Address);
- /*public*/ QString getServicebyAdName(QString serviceType, QString Address);
+ /*public*/ ServiceInfo *getServiceOnHost(QString serviceType, QString Address);
+ /*public*/ ServiceInfo* getServicebyAdName(QString serviceType, QString Address);
  /*public*/ QList<QZeroConfService> getServices();
 
 signals:
@@ -38,21 +40,21 @@ private:
 {
 Q_OBJECT
     /*private*/ /*final*/ QString service;
-    /*private*/ /*final*/ ZeroConfClient* client;
- QZeroConf* zeroConf;
+    /*private*/ /*final*/ ZeroConfClient* client = nullptr;
+ QZeroConf* zeroConf = nullptr;
 protected:
     /*protected*/ NetworkServiceListener(QString service, ZeroConfClient* client);
 public slots:
 
-#if 0
+#if 1
     //@Override
-    /*public*/ void inetAddressAdded(NetworkTopologyEvent nte) {
-        nte.getDNS().addServiceListener(service, this);
+    /*public*/ void inetAddressAdded(NetworkTopologyEvent* nte) {
+//        nte->getDNS()->addServiceListener(service, this);
     }
 
-    @Override
-    /*public*/ void inetAddressRemoved(NetworkTopologyEvent nte) {
-        nte.getDNS().removeServiceListener(service, this);
+    //@Override
+    /*public*/ void inetAddressRemoved(NetworkTopologyEvent* nte) {
+//        nte->getDNS()->removeServiceListener(service, this);
     }
 #endif
 

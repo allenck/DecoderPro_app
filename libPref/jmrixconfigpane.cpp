@@ -276,6 +276,7 @@
 
  //initialPanelLayout->addWidget(new JTitledSeparator(tr("Settings"))); // NOI18N
  QScrollArea* scroll = new QScrollArea(/*details*/);
+ scroll->setWidgetResizable(true);
  //scroll->setMinimumSize( 300, 200);
  GridBagLayout* gbLayout;
  details->setLayout(gbLayout = new GridBagLayout());
@@ -284,8 +285,8 @@
  gbLayout->setObjectName("detailsLayout");
  //scroll.setBorder(BorderFactory.createEmptyBorder());
  //layout->addWidget(scroll, 0, Qt::AlignCenter);
- settingsPanelLayout->addWidget(scroll);
- layout->addWidget(settingsPanel);
+ settingsPanelLayout->addWidget(scroll,1);
+ layout->addWidget(settingsPanel,1);
 
  selection();  // first time through, pretend we've selected a value
  // to load the rest of the GUI

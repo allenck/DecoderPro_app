@@ -3,6 +3,8 @@
 #include "qzeroconf.h"
 #include "jmdns.h"
 #include "zeroconfservice.h"
+#include "zeroconfservicemanager.h"
+#include "instancemanager.h"
 
 ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
 {
@@ -20,8 +22,8 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
         mdnsServiceListener = new NetworkServiceListener(service, this);
     }
 #if 0
-    for (JmDNS server : ZeroConfService::netServices().values()) {
-        server.addServiceListener(service, mdnsServiceListener);
+    for (JmDNS* server : ZeroConfService::netServices().values()) {
+        server->addServiceListener(service, mdnsServiceListener);
     }
 #endif
 }
@@ -30,8 +32,10 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
 {
 
  if(!services.contains(se))
+ {
   services.append(se);
- emit serviceAdded( se.host());
+  emit serviceAdded( se.host());
+ }
 }
 /*public*/ void ZeroConfClient::removeService(QZeroConfService se)
 {
@@ -151,14 +155,16 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
 /*protected*/ NetworkServiceListener::NetworkServiceListener(QString service, ZeroConfClient* client) {
     this->service = service;
     this->client = client;
- zeroConf = new QZeroConf();
- connect(zeroConf, SIGNAL(serviceAdded(QZeroConfService)), this, SLOT(serviceAdded(QZeroConfService)));
- connect(zeroConf, SIGNAL(serviceRemoved(QZeroConfService)), this, SLOT(serviceRemoved(QZeroConfService)));
- connect(zeroConf, SIGNAL(serviceUpdated(QZeroConfService)), this, SLOT(serviceUpdated(QZeroConfService)));
- connect(zeroConf, SIGNAL(error(QZeroConf::error_t)), this, SLOT(error(QZeroConf::error_t)));
-
- zeroConf->startBrowser(service);
-
+ if(zeroConf == nullptr)
+ {
+  zeroConf = new QZeroConf();
+  connect(zeroConf, SIGNAL(serviceAdded(QZeroConfService)), this, SLOT(serviceAdded(QZeroConfService)));
+  connect(zeroConf, SIGNAL(serviceRemoved(QZeroConfService)), this, SLOT(serviceRemoved(QZeroConfService)));
+  connect(zeroConf, SIGNAL(serviceUpdated(QZeroConfService)), this, SLOT(serviceUpdated(QZeroConfService)));
+  connect(zeroConf, SIGNAL(error(QZeroConf::error_t)), this, SLOT(error(QZeroConf::error_t)));
+ }
+ if (!zeroConf->browserExists())
+  zeroConf->startBrowser(service);
 }
 #if 0
 @Override
@@ -211,12 +217,58 @@ ZeroConfClient::ZeroConfClient(QObject *parent) : QObject(parent)
  client->log->debug(tr("QZeroConf error %1").arg(err));
 }
 
-/*public*/ QString ZeroConfClient::getServiceOnHost(QString serviceType, QString Address)
-{
- return "";
+/**
+ * Request the first service of a particular service on a specified host.
+ *
+ * @param service  string service service
+ * @param hostname string host name
+ * @return JmDNS service entry for the first service of a particular service
+ *         on the specified host..
+ */
+/*public*/ ServiceInfo* ZeroConfClient::getServiceOnHost(/*@Nonnull*/ QString service, /*@Nonnull*/ QString hostname) {
+//    for (JmDNS* server : ((ZeroConfServiceManager*)InstanceManager::getDefault("ZeroConfServiceManager"))->getDNSes().values()) {
+//        QList<ServiceInfo*> infos = server->list(service);
+//        for (ServiceInfo* info : infos) {
+//            if (info->getServer() == (hostname)) {
+//                return info;
+//            }
+//        }
+//    }
+    for(QZeroConfService svc: services)
+    {
+     if(svc.host() == hostname && svc.type() == service)
+     {
+//      return ServiceInfo::create(svc.type(), svc.name(), svc.port(), 1, )
+     }
+    }
+    return nullptr;
 }
 
-/*public*/ QString ZeroConfClient::getServicebyAdName(QString serviceType, QString Address)
-{
- return "";
+/**
+ * Request the first service of a particular service with a particular
+ * service name.
+ *
+ * @param service string service service
+ * @param adName  string qualified service advertisement name
+ * @return JmDNS service entry for the first service of a particular service
+ *         on the specified host..
+ */
+/*public*/ ServiceInfo* ZeroConfClient::getServicebyAdName(/*@Nonnull*/ QString service, /*@Nonnull*/ QString adName) {
+//    for (JmDNS* server : ((ZeroConfServiceManager*)InstanceManager::getDefault("ZeroConfServiceManager")).getDNSes().values()) {
+//        ServiceInfo[] infos = server.list(service);
+//        for (ServiceInfo info : infos) {
+//            log.debug("Found Name: {}", info.getQualifiedName());
+//            if (info.getQualifiedName().equals(adName)) {
+//                return info;
+//            }
+//        }
+//    }
+ for(QZeroConfService svc: services)
+ {
+  if(svc.name() == adName && svc.type() == service)
+  {
+//   return ServiceInfo::create(svc.type(), svc.name(), svc.port(), 1, );
+  }
+ }
+    return nullptr;
 }

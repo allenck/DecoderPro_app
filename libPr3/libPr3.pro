@@ -977,7 +977,9 @@ SOURCES += \
     defaultcabsignalmanager.cpp \
     timerutil.cpp \
     cabsignalpane.cpp \
-    cabsignalaction.cpp
+    cabsignalaction.cpp \
+    zeroconfservicemanager.cpp \
+    zeroconfpreferences.cpp
 
 
  !contains(FTDI, 1) {
@@ -1958,7 +1960,11 @@ HEADERS += \
     defaultcabsignalmanager.h \
     timerutil.h \
     cabsignalpane.h \
-    cabsignalaction.h
+    cabsignalaction.h \
+    zeroconfservicemanager.h \
+    networktopologylistener.h \
+    networktopologyevent.h \
+    zeroconfpreferences.h
 
 
  !contains(FTDI, 1) {
