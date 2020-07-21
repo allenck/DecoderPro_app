@@ -1932,7 +1932,7 @@ if (editLayoutTurntableFrame ==  nullptr) {
  }
 
  editLayoutTurntableRayPanel->setLayout(new QVBoxLayout());//editLayoutTurntableRayPanel, BoxLayout.Y_AXIS));
- for (RayTrack* rt : layoutTurntable->getRayList()) {
+ for (RayTrack* rt : layoutTurntable->getRayTrackList()) {
      editLayoutTurntableRayPanel->layout()->addWidget(new TurntableRayPanel(rt, this));
  }
  editLayoutTurntableRayPanel->update();

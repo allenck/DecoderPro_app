@@ -26,7 +26,7 @@
 #include "routemanager.h"
 #include "blockmanager.h"
 #include "powermanager.h"
-#include "programmermanager.h"
+//#include "programmermanager.h"
 #include "shutdownmanager.h"
 #include "audiomanager.h"
 #include "layoutblockmanager.h"
@@ -108,6 +108,6 @@
 #include "positionablelabel.h"
 #include "multiiconeditor.h"
 #include "jlabel.h"
-
+#include "tracksegment.h"
 
 

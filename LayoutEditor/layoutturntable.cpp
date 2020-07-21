@@ -14,7 +14,7 @@
 #include <QGroupBox>
 #include "mathutil.h"
 #include <QPen>
-
+#include "layoutturntableeditor.h"
 
 //LayoutTurntable::LayoutTurntable(QObject *parent) :
 //  QObject(parent)
@@ -75,7 +75,7 @@
 // ident = id;
 // center = c;
  radius = 25.0;
- rayList = QList<RayTrack*>(); // list of Ray Track objects.
+ rayTrackList = QList<RayTrack*>(); // list of Ray Track objects.
  active = true;
  item = NULL;
 
@@ -87,6 +87,8 @@
  oldRadius = "";
  editOpen = false;
  needsRedraw = false;
+ 
+ editor = new LayoutTurntableEditor(layoutEditor);
 }
 
 /**
@@ -109,6 +111,61 @@
 }
 
 /**
+ * @return the layout block name
+ */
+//@Nonnull
+/*public*/ QString LayoutTurntable::getBlockName() {
+    QString result = "";
+    if (namedLayoutBlock != nullptr) {
+        result = namedLayoutBlock->getName();
+    }
+    return ((result.isNull()) ? "" : result);
+}
+
+/**
+ * @return the layout block
+ */
+//@CheckForNull
+/*public*/ LayoutBlock* LayoutTurntable::getLayoutBlock() {
+    return (namedLayoutBlock != nullptr) ? (LayoutBlock*)namedLayoutBlock->getBean() : nullptr;
+}
+
+/**
+ * Set up a LayoutBlock for this LayoutTurntable.
+ *
+ * @param newLayoutBlock the LayoutBlock to set
+ */
+/*public*/ void LayoutTurntable::setLayoutBlock(/*@CheckForNull*/ LayoutBlock* newLayoutBlock) {
+    LayoutBlock* layoutBlock = getLayoutBlock();
+    if (layoutBlock != newLayoutBlock) {
+        /// block has changed, if old block exists, decrement use
+        if (layoutBlock != nullptr) {
+            layoutBlock->decrementUse();
+        }
+        if (newLayoutBlock != nullptr) {
+            QString newName = newLayoutBlock->getUserName();
+            if ((newName != "") && !newName.isEmpty()) {
+                namedLayoutBlock = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(newName, newLayoutBlock);
+            } else {
+                namedLayoutBlock = nullptr;
+            }
+        } else {
+            namedLayoutBlock = nullptr;
+        }
+    }
+}
+
+/**
+ * Set up a LayoutBlock for this LayoutTurntable.
+ *
+ * @param name the name of the new LayoutBlock
+ */
+/*public*/ void LayoutTurntable::setLayoutBlockByName(/*@CheckForNull*/ QString name) {
+    if ((name != "") && !name.isEmpty()) {
+        setLayoutBlock(layoutEditor->provideLayoutBlock(name));
+    }
+}
+/**
  * @return the bounds of this turntable
  */
 //@Override
@@ -127,7 +184,7 @@
 {
  RayTrack* ray = new RayTrack(angle, getNewIndex(), this);
  // (ray!=NULL) {
- rayList.append(ray);
+ rayTrackList.append(ray);
  //}
  return ray;
 }
@@ -135,7 +192,7 @@
 /*private*/ int LayoutTurntable::getNewIndex()
 {
  int index = -1;
- if (rayList.size() == 0) {
+ if (rayTrackList.size() == 0) {
      return 0;
  }
  bool found = true;
@@ -143,9 +200,9 @@
  {
   index++;
   found = false;
-  for (int i = 0; (i < rayList.size()) && !found; i++)
+  for (int i = 0; (i < rayTrackList.size()) && !found; i++)
   {
-   if (index == rayList.at(i)->getConnectionIndex())
+   if (index == rayTrackList.at(i)->getConnectionIndex())
    {
        found = true;
    }
@@ -158,15 +215,15 @@
 /*public*/  void LayoutTurntable::addRayTrack(double angle, int index, QString name) {
     RayTrack* ray = new RayTrack(angle, index, this);
     //if (ray!=NULL) {
-    rayList.append(ray);
+    rayTrackList.append(ray);
     ray->connectName = name;
     //}
 }
 
 /*public*/  TrackSegment* LayoutTurntable::getRayConnectIndexed(int index) {
     RayTrack* ray = NULL;
-    for (int i = 0; (i < rayList.size()) && (ray == NULL); i++) {
-        RayTrack* r = rayList.at(i);
+    for (int i = 0; (i < rayTrackList.size()) && (ray == NULL); i++) {
+        RayTrack* r = rayTrackList.at(i);
         if (r->getConnectionIndex() == index) {
             ray = r;
         }
@@ -178,10 +235,10 @@
 }
 
 /*public*/  TrackSegment* LayoutTurntable::getRayConnectOrdered(int i) {
-    if (i >= rayList.size()) {
+    if (i >= rayTrackList.size()) {
         return NULL;
     }
-    RayTrack* ray = rayList.at(i);
+    RayTrack* ray = rayTrackList.at(i);
     if (ray == NULL) {
         return NULL;
     }
@@ -190,8 +247,8 @@
 
 /*public*/  void LayoutTurntable::setRayConnect(TrackSegment* tr, int index) {
     RayTrack* ray = NULL;
-    for (int i = 0; (i < rayList.size()) && (ray == NULL); i++) {
-        RayTrack* r = rayList.at(i);
+    for (int i = 0; (i < rayTrackList.size()) && (ray == NULL); i++) {
+        RayTrack* r = rayTrackList.at(i);
         if (r->getConnectionIndex() == index) {
             ray = r;
         }
@@ -203,34 +260,34 @@
 }
 
 // should only be used by xml save code
-/*protected*/ QList<RayTrack*> LayoutTurntable::getRayList() {
-    return rayList;
+/*protected*/ QList<RayTrack*> LayoutTurntable::getRayTrackList() {
+    return rayTrackList;
 }
 
 /*public*/  int LayoutTurntable::getNumberRays() {
-    return rayList.size();
+    return rayTrackList.size();
 }
 
 /*public*/  int LayoutTurntable::getRayIndex(int i) {
-    if (i >= rayList.size()) {
+    if (i >= rayTrackList.size()) {
         return 0;
     }
-    RayTrack* ray = rayList.at(i);
+    RayTrack* ray = rayTrackList.at(i);
     return ray->getConnectionIndex();
 }
 
 /*public*/  double LayoutTurntable::getRayAngle(int i) {
-    if (i >= rayList.size()) {
+    if (i >= rayTrackList.size()) {
         return 0.0;
     }
-    RayTrack* ray = rayList.at(i);
+    RayTrack* ray = rayTrackList.at(i);
     return ray->getAngle();
 }
 
 /*public*/  void LayoutTurntable::setRayTurnout(int index, QString turnoutName, int state) {
     RayTrack* ray = NULL;
-    for (int i = 0; (i < rayList.size()) && (ray == NULL); i++) {
-        RayTrack* r = rayList.at(i);
+    for (int i = 0; (i < rayTrackList.size()) && (ray == NULL); i++) {
+        RayTrack* r = rayTrackList.at(i);
         if (r->getConnectionIndex() == index) {
             ray = r;
         }
@@ -243,33 +300,33 @@
 }
 
 /*public*/  QString LayoutTurntable::getRayTurnoutName(int i) {
-    if (i >= rayList.size()) {
+    if (i >= rayTrackList.size()) {
         return NULL;
     }
-    RayTrack* ray = rayList.at(i);
+    RayTrack* ray = rayTrackList.at(i);
     return ray->getTurnoutName();
 }
 
 /*public*/  Turnout* LayoutTurntable::getRayTurnout(int i) {
-    if (i >= rayList.size()) {
+    if (i >= rayTrackList.size()) {
         return NULL;
     }
-    RayTrack* ray = rayList.at(i);
+    RayTrack* ray = rayTrackList.at(i);
     return ray->getTurnout();
 }
 
 /*public*/  int LayoutTurntable::getRayTurnoutState(int i) {
-    if (i >= rayList.size()) {
+    if (i >= rayTrackList.size()) {
         return 0;
     }
-    RayTrack* ray = rayList.at(i);
+    RayTrack* ray = rayTrackList.at(i);
     return ray->getTurnoutState();
 }
 
 /*public*/  QPointF LayoutTurntable::getRayCoordsIndexed(int index) {
     RayTrack* ray = NULL;
-    for (int i = 0; (i < rayList.size()) && (ray == NULL); i++) {
-        RayTrack* r = rayList.at(i);
+    for (int i = 0; (i < rayTrackList.size()) && (ray == NULL); i++) {
+        RayTrack* r = rayTrackList.at(i);
         if (r->getConnectionIndex() == index) {
             ray = r;
         }
@@ -285,10 +342,10 @@
 }
 
 /*public*/  QPointF LayoutTurntable::getRayCoordsOrdered(int i) {
-    if (i >= rayList.size()) {
+    if (i >= rayTrackList.size()) {
         return QPointF(0.0, 0.0);
     }
-    RayTrack* ray = rayList.at(i);
+    RayTrack* ray = rayTrackList.at(i);
     if (ray == NULL) {
         return QPointF(0.0, 0.0);
     }
@@ -301,8 +358,8 @@
 
 /*public*/  void LayoutTurntable::setRayCoordsIndexed(double x, double y, int index) {
     RayTrack* ray = NULL;
-    for (int i = 0; (i < rayList.size()) && (ray == NULL); i++) {
-        RayTrack* r = rayList.at(i);
+    for (int i = 0; (i < rayTrackList.size()) && (ray == NULL); i++) {
+        RayTrack* r = rayTrackList.at(i);
         if (r->getConnectionIndex() == index) {
             ray = r;
         }
@@ -404,8 +461,8 @@
  */
 /*public*/  bool LayoutTurntable::isMainlineIndexed(int index) {
     RayTrack* ray = NULL;
-    for (int i = 0; (i < rayList.size()) && (ray == NULL); i++) {
-        RayTrack* r = rayList.at(i);
+    for (int i = 0; (i < rayTrackList.size()) && (ray == NULL); i++) {
+        RayTrack* r = rayTrackList.at(i);
         if (r->getConnectionIndex() == index) {
             ray = r;
         }
@@ -421,10 +478,10 @@
 }
 
 /*public*/  bool LayoutTurntable::isMainlineOrdered(int i) {
-    if (rayList.size() <= i) {
+    if (rayTrackList.size() <= i) {
         return false;
     }
-    RayTrack* ray = rayList.at(i);
+    RayTrack* ray = rayTrackList.at(i);
     if (ray == NULL) {
         return false;
     }
@@ -515,8 +572,8 @@ double LayoutTurntable::round(double x) {
  */
 /*public*/  void LayoutTurntable::setObjects(LayoutEditor* p)
 {
- for (int i = 0; i < rayList.size(); i++) {
-     RayTrack* ray = rayList.at(i);
+ for (int i = 0; i < rayTrackList.size(); i++) {
+     RayTrack* ray = rayTrackList.at(i);
      ray->setConnect(p->getFinder()->findTrackSegmentByName(ray->connectName));
  }
 }
@@ -553,7 +610,10 @@ double LayoutTurntable::round(double x) {
 //            editTurntable(instance);
 //        }
 //    });
-    connect(act, SIGNAL(triggered()),this, SLOT(onEdit_triggered()));
+    //connect(act, SIGNAL(triggered()),this, SLOT(onEdit_triggered()));
+    connect(act, &QAction::triggered, [=]{
+     editor->editLayoutTrack(this);
+    });
     popup->addAction(new AbstractAction(tr("Remove"),this));
 //    {
 //        /**
@@ -569,22 +629,29 @@ double LayoutTurntable::round(double x) {
 //            }
 //        }
 //    });
-      connect(act, SIGNAL(triggered(bool)), this, SLOT(on_remove_triggered()));
+      //connect(act, SIGNAL(triggered(bool)), this, SLOT(on_remove_triggered()));
+    connect(act, &QAction::triggered, [=]{
+     if (layoutEditor->removeTurntable(this)) {
+         // Returned true if user did not cancel
+         remove();
+         dispose();
+     }
+    });
     layoutEditor->setShowAlignmentMenu(popup);
     //popup.show(e.getComponent(), e.getX(), e.getY());
     popup->exec(QCursor::pos());
 }
 
-void LayoutTurntable::onEdit_triggered()
-{
- editTurntable(instance);
-}
+//void LayoutTurntable::onEdit_triggered()
+//{
+// editTurntable(instance);
+//}
 
-void LayoutTurntable::on_remove_triggered()
-{
- remove();
- dispose();
-}
+//void LayoutTurntable::on_remove_triggered()
+//{
+// remove();
+// dispose();
+//}
 
 /*protected*/ void LayoutTurntable::showRayPopUp(QGraphicsSceneMouseEvent* /*e*/, int index) {
     if (rayPopup != NULL) {
@@ -593,8 +660,8 @@ void LayoutTurntable::on_remove_triggered()
         rayPopup = new QMenu();
     }
     RayTrack* ray = NULL;
-    for (int i = 0; (i < rayList.size()) && (ray == NULL); i++) {
-        RayTrack* r = rayList.at(i);
+    for (int i = 0; (i < rayTrackList.size()) && (ray == NULL); i++) {
+        RayTrack* r = rayTrackList.at(i);
         if (r->getConnectionIndex() == index) {
             ray = r;
         }
@@ -617,9 +684,9 @@ void LayoutTurntable::on_remove_triggered()
      return;
  }
  RayTrack* ray = NULL;
- for (int i = 0; (i < rayList.size()) && (ray == NULL); i++)
+ for (int i = 0; (i < rayTrackList.size()) && (ray == NULL); i++)
  {
-  RayTrack* r = rayList.at(i);
+  RayTrack* r = rayTrackList.at(i);
   if (r->getConnectionIndex() == index)
   {
    ray = r;
@@ -641,7 +708,7 @@ void LayoutTurntable::on_remove_triggered()
     return lastKnownIndex;
 }
 
-
+#if 0
 /**
  * Edit a Turntable
  */
@@ -734,7 +801,7 @@ void LayoutTurntable::on_remove_triggered()
 
   rayPanel = new QWidget();
   rayPanel->setLayout(new QVBoxLayout); //(rayPanel, BoxLayout.Y_AXIS));
-  foreach (RayTrack* ray, rayList)
+  foreach (RayTrack* ray, rayTrackList)
   {
    rayPanel->layout()->addWidget(ray->getPanel());
   }
@@ -761,11 +828,11 @@ void LayoutTurntable::on_remove_triggered()
  editTurntableFrame->setVisible(true);
  editOpen = true;
 }
-
+#endif
 void LayoutTurntable::on_dccControled_clicked()
 {
  setTurnoutControlled(dccControlled->isChecked());
- foreach (RayTrack* ray, rayList)
+ foreach (RayTrack* ray, rayTrackList)
  {
   ray->showTurnoutDetails();
  }
@@ -789,7 +856,7 @@ void LayoutTurntable::on_dccControled_clicked()
   rayPanel->setLayout(new QVBoxLayout);//(rayPanel, BoxLayout.Y_AXIS));
  }
 
- foreach (RayTrack* ray, rayList)
+ foreach (RayTrack* ray, rayTrackList)
  {
   ray->panel = NULL;
   rayPanel->layout()->addWidget(ray->getPanel());
@@ -807,7 +874,7 @@ void LayoutTurntable::on_addRayTrack_clicked()
 
 /*private*/ void LayoutTurntable::saveRayPanelDetail()
 {
- foreach (RayTrack* ray, rayList)
+ foreach (RayTrack* ray, rayTrackList)
  {
   ray->updateDetails();
  }
@@ -846,11 +913,11 @@ void LayoutTurntable::deleteRayTrackPressed(ActionEvent* /*a*/) {
     // scan rays to find the one to delete
     RayTrack* closest = NULL;
     double bestDel = 360.0;
-    for (int i = 0; i < rayList.size(); i++) {
-        double del = diffAngle((rayList.at(i))->getAngle(), ang);
+    for (int i = 0; i < rayTrackList.size(); i++) {
+        double del = diffAngle((rayTrackList.at(i))->getAngle(), ang);
         if (del < bestDel) {
             bestDel = del;
-            closest = rayList.at(i);
+            closest = rayTrackList.at(i);
         }
     }
     if (bestDel > 30.0) {
@@ -868,7 +935,7 @@ void LayoutTurntable::deleteRay(RayTrack* closest) {
         log->error("closest is NULL!");
     } else {
         t = closest->getConnect();
-        rayList.removeAt(closest->getConnectionIndex());
+        rayTrackList.removeAt(closest->getConnectionIndex());
         closest->dispose();
     }
     if (t != NULL) {
@@ -934,7 +1001,7 @@ void LayoutTurntable::dispose() {
         popup->clear();
     }
     popup = NULL;
-    foreach (RayTrack* ray, rayList) {
+    foreach (RayTrack* ray, rayTrackList) {
         ray->dispose();
     }
 }
@@ -1101,7 +1168,7 @@ void LayoutTurntable::dispose() {
         // draw control circles at all but current position ray tracks
         for (int j = 0; j < getNumberRays(); j++) {
             if (getPosition() != j) {
-                RayTrack* rt = rayList.at(j);
+                RayTrack* rt = rayTrackList.at(j);
                 if (!rt->isDisabled() && !(rt->isDisabledWhenOccupied() && rt->isOccupied())) {
                     QPointF pt = getRayCoordsOrdered(j);
                     //g2.draw(layoutEditor.trackControlCircleAt(pt));

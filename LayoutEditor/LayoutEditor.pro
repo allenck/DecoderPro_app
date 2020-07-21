@@ -95,6 +95,7 @@ message("Qt path=" + $$(QTDIR))
 
 SOURCES += \
     jmrijframe.cpp \
+    layouteditorviewcontext.cpp \
     layoutturnout.cpp \
     levelxing.cpp \
     layoutblock.cpp \
@@ -459,7 +460,6 @@ SOURCES += \
     generated_cpp/test/test0.cpp \
     colordialog.cpp \
     linkinglabel.cpp \
-    layouttrackeditors.cpp \
     layouteditorchecks.cpp \
     layouttrackdrawingoptionsdialog.cpp \
     rpssystemconnectionmemo.cpp \
@@ -494,11 +494,54 @@ SOURCES += \
     lengthpanel.cpp \
     convertdialog.cpp \
     indicatortoicondialog.cpp \
-    previewpanel.cpp
+    previewpanel.cpp \
+    layoutrhturnout.cpp \
+    layoutlhturnout.cpp \
+    layoutwye.cpp \
+    layoutrhxover.cpp \
+    layoutlhxover.cpp \
+    layoutdoubleslip.cpp \
+    layoutsingleslip.cpp \
+    layoutdoublexover.cpp \
+    layoutdoubleslipeditor.cpp \
+    layoutslipeditor.cpp \
+    layoutturnouteditor.cpp \
+    layouttrackeditor.cpp \
+    layoutrhturnouteditor.cpp \
+    layoutlhturnouteditor.cpp \
+    layoutwyeeditor.cpp \
+    layoutsingleslipeditor.cpp \
+    layouttrackview.cpp \
+    layoutrhturnoutview.cpp \
+    layoutxover.cpp \
+    layoutxovereditor.cpp \
+    layoutlhxovereditor.cpp \
+    layoutturnoutview.cpp \
+    layoutrhxovereditor.cpp \
+    layoutdoublexovereditor.cpp \
+    tracksegmenteditor.cpp \
+    positionablepointeditor.cpp \
+    levelxingeditor.cpp \
+    layoutturntableeditor.cpp \
+    layoutlhturnoutview.cpp \
+    layoutwyeview.cpp \
+    layoutrhxoverview.cpp \
+    layoutxoverview.cpp \
+    layoutlhxoverview.cpp \
+    layoutdoublexoverview.cpp \
+    layoutslipview.cpp \
+    layoutsingleslipview.cpp \
+    layoutdoubleslipview.cpp \
+    tracksegmentview.cpp \
+    levelxingview.cpp \
+    positionablepointview.cpp \
+    layoutturntableview.cpp \
+    layouteditorcomponent.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
     jmrijframe.h \
+    layouteditorviewcontext.h \
     layoutturnout.h \
     levelxing.h \
     layoutblock.h \
@@ -871,7 +914,6 @@ HEADERS += liblayouteditor_global.h \
     calculator.h \
     colordialog.h \
     linkinglabel.h \
-    layouttrackeditors.h \
     layouteditorchecks.h \
     layouttrackdrawingoptionsdialog.h \
     rpssystemconnectionmemo.h \
@@ -907,7 +949,49 @@ HEADERS += liblayouteditor_global.h \
     lengthpanel.h \
     convertdialog.h \
     indicatortoicondialog.h \
-    previewpanel.h
+    previewpanel.h \
+    layoutrhturnout.h \
+    layoutlhturnout.h \
+    layoutwye.h \
+    layoutrhxover.h \
+    layoutlhxover.h \
+    layoutdoubleslip.h \
+    layoutsingleslip.h \
+    layoutdoublexover.h \
+    layoutdoubleslipeditor.h \
+    layoutslipeditor.h \
+    layoutturnouteditor.h \
+    layouttrackeditor.h \
+    layoutrhturnouteditor.h \
+    layoutlhturnouteditor.h \
+    layoutwyeeditor.h \
+    layoutsingleslipeditor.h \
+    layouttrackview.h \
+    layoutrhturnoutview.h \
+    layoutxover.h \
+    layoutxovereditor.h \
+    layoutlhxovereditor.h \
+    layoutturnoutview.h \
+    layoutrhxovereditor.h \
+    layoutdoublexovereditor.h \
+    tracksegmenteditor.h \
+    positionablepointeditor.h \
+    levelxingeditor.h \
+    layoutturntableeditor.h \
+    layoutlhturnoutview.h \
+    layoutwyeview.h \
+    layoutrhxoverview.h \
+    layoutxoverview.h \
+    layoutlhxoverview.h \
+    layoutdoublexoverview.h \
+    layoutslipview.h \
+    layoutsingleslipview.h \
+    layoutdoubleslipview.h \
+    tracksegmentview.h \
+    levelxingview.h \
+    positionablepointview.h \
+    layoutturntableview.h \
+    layouteditorcomponent.h
 
 FORMS    += \
     createeditblock.ui \

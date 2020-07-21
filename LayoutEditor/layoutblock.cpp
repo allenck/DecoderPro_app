@@ -985,13 +985,13 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
  */
 /*protected*/ void  LayoutBlock::editLayoutBlock(/*Component*/ QWidget* /*callingPane*/)
 {
-#if 0
+#if 1
  if (editOpen)
  {
   editLayoutBlockFrame->setVisible(true);
   return;
  }
-#if 1
+#if 0
  // Initialize if needed
  if (editLayoutBlockFrame == NULL)
  {

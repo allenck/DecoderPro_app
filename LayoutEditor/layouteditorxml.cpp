@@ -80,10 +80,10 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("turnoutcircles", (p->getTurnoutCircles() ? "yes" : "no"));
  panel.setAttribute("tooltipsnotedit", (p->getTooltipsNotEdit() ? "yes" : "no"));
  panel.setAttribute("tooltipsinedit", (p->getTooltipsInEdit() ? "yes" : "no"));
- panel.setAttribute("mainlinetrackwidth", p->getMainlineTrackWidth());
+ panel.setAttribute("mainlinetrackwidth", p->gContext->getMainlineTrackWidth());
  panel.setAttribute("xscale",  p->getXScale());
  panel.setAttribute("yscale", p->getYScale());
- panel.setAttribute("sidetrackwidth", p->getSideTrackWidth());
+ panel.setAttribute("sidetrackwidth", p->gContext->getSidelineTrackWidth());
  panel.setAttribute("defaulttrackcolor", p->getDefaultTrackColor());
  panel.setAttribute("defaultoccupiedtrackcolor", p->getDefaultOccupiedTrackColor());
  panel.setAttribute("defaultalternativetrackcolor", p->getDefaultAlternativeTrackColor());
@@ -659,8 +659,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->setSnapOnMove(sgmValue);
  panel->setAntialiasingOn(aaValue);
  //panel->setScroll(slValue);
- panel->panelWidth = panelWidth;
- panel->panelHeight = panelHeight;
+ panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
  panel->editScene->setSceneRect(0,0,panelWidth, panelHeight);
  panel->editPanel->scale(xScale, yScale); // added ACK
  panel->pack();

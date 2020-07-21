@@ -9,6 +9,7 @@
 #include "exceptions.h"
 #include "liblayouteditor_global.h"
 #include "windowlistener.h"
+#include "jrootpane.h"
 
 class WindowInterface;
 class UserPreferencesManager;
@@ -76,6 +77,7 @@ public:
     /*public*/ void setGlassPane(QWidget* glassPane);
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder() {return _border;}
+    /*public*/ JRootPane* getRootPane() {return (JRootPane*)centralWidget();}
 
 
 signals:

@@ -22,10 +22,10 @@ public:
  /*public*/ QColor getForeground();
  /*public*/ QColor getBackground();
 
-// void paintEvent(QPaintEvent*);
-// void virtual paintComponent(QPainter*);
+ //void paintEvent(QPaintEvent*);
+ /*public*/void virtual paintComponent(QPainter*) {}
  /*public*/ bool isOpaque(){return _opaque;}
- /*public*/ void setOpaque(bool b){_opaque = b;}
+ /*public*/ /*public*/ void setOpaque(bool b){_opaque = b;}
  /*public*/ QFont getFont() {return QFrame::font();}
  /*public*/ void setFont(QFont f) {QFrame::setFont(f);}
  /*public*/ QObject* jself() {return (QObject*)this;}

@@ -94,6 +94,7 @@
 {
  // called by JPanel::setBorder
  int left,top, right, bottom;
+ if(layout == nullptr) return;
 
  layout->getContentsMargins(&left,&top, &right, &bottom);
  left+= this->left;

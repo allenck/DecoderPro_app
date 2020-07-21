@@ -3210,7 +3210,7 @@ EditScene*  PythonQtWrapper_Editor::getTargetPanel(Editor* theWrappedObject)
   return ( theWrappedObject->getTargetPanel());
 }
 
-QSizeF  PythonQtWrapper_Editor::getTargetPanelSize(Editor* theWrappedObject)
+QSize  PythonQtWrapper_Editor::getTargetPanelSize(Editor* theWrappedObject)
 {
   return ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_getTargetPanelSize());
 }
@@ -7414,6 +7414,28 @@ if (_wrapper) {
 }
   JLabel::resizeEvent(event0);
 }
+void PythonQtShell_JLabel::setName(QString  name0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&name0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JLabel::setName(name0);
+}
 void PythonQtShell_JLabel::setVisible(bool  visible0)
 {
 if (_wrapper) {
@@ -7625,6 +7647,11 @@ int  PythonQtWrapper_JLabel::checkVerticalKey(JLabel* theWrappedObject, int  key
   return ( ((PythonQtPublicPromoter_JLabel*)theWrappedObject)->promoted_checkVerticalKey(key, message));
 }
 
+void PythonQtWrapper_JLabel::firePropertyChange(JLabel* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue)
+{
+  ( theWrappedObject->firePropertyChange(propertyName, oldValue, newValue));
+}
+
 QColor  PythonQtWrapper_JLabel::getBackground(JLabel* theWrappedObject)
 {
   return ( theWrappedObject->getBackground());
@@ -7745,9 +7772,9 @@ void PythonQtWrapper_JLabel::setHorizontalTextPosition(JLabel* theWrappedObject,
   ( theWrappedObject->setHorizontalTextPosition(textPosition));
 }
 
-void PythonQtWrapper_JLabel::setLabelFor(JLabel* theWrappedObject, QWidget*  labelFor)
+void PythonQtWrapper_JLabel::setLabelFor(JLabel* theWrappedObject, QWidget*  c)
 {
-  ( theWrappedObject->setLabelFor(labelFor));
+  ( theWrappedObject->setLabelFor(c));
 }
 
 void PythonQtWrapper_JLabel::setLocation(JLabel* theWrappedObject, double  x, double  y)
@@ -10032,6 +10059,11 @@ void PythonQtWrapper_JList::ensureIndexIsVisible(JList* theWrappedObject, int  i
   ( theWrappedObject->ensureIndexIsVisible(index));
 }
 
+QAbstractListModel*  PythonQtWrapper_JList::getModel(JList* theWrappedObject)
+{
+  return ( theWrappedObject->getModel());
+}
+
 int  PythonQtWrapper_JList::getSelectedIndex(JList* theWrappedObject)
 {
   return ( theWrappedObject->getSelectedIndex());
@@ -10050,6 +10082,11 @@ QList<QModelIndex >  PythonQtWrapper_JList::getSelectedValues(JList* theWrappedO
 QModelIndex  PythonQtWrapper_JList::locationToIndex(JList* theWrappedObject, QPoint  arg__1)
 {
   return ( theWrappedObject->locationToIndex(arg__1));
+}
+
+void PythonQtWrapper_JList::setComponentPopupMenu(JList* theWrappedObject, QMenu*  menu)
+{
+  ( theWrappedObject->setComponentPopupMenu(menu));
 }
 
 void PythonQtWrapper_JList::setSelectedIndex(JList* theWrappedObject, int  index)
@@ -19014,14 +19051,9 @@ void PythonQtWrapper_LayoutEditor::addLabel(LayoutEditor* theWrappedObject)
   ( theWrappedObject->addLabel());
 }
 
-void PythonQtWrapper_LayoutEditor::addLayoutSlip(LayoutEditor* theWrappedObject, int  type)
+void PythonQtWrapper_LayoutEditor::addLayoutTrack(LayoutEditor* theWrappedObject, LayoutTrack*  trk)
 {
-  ( theWrappedObject->addLayoutSlip(type));
-}
-
-LayoutTurnout*  PythonQtWrapper_LayoutEditor::addLayoutTurnout(LayoutEditor* theWrappedObject, QString  name, int  type, double  rot, QPointF  currentPoint)
-{
-  return ( theWrappedObject->addLayoutTurnout(name, type, rot, currentPoint));
+  ( theWrappedObject->addLayoutTrack(trk));
 }
 
 void PythonQtWrapper_LayoutEditor::addLayoutTurnout(LayoutEditor* theWrappedObject, int  type)
@@ -19229,11 +19261,6 @@ int  PythonQtWrapper_LayoutEditor::getLayoutWidth(LayoutEditor* theWrappedObject
   return ( theWrappedObject->getLayoutWidth());
 }
 
-float  PythonQtWrapper_LayoutEditor::getMainlineTrackWidth(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getMainlineTrackWidth());
-}
-
 bool  PythonQtWrapper_LayoutEditor::getOpenDispatcherOnLoad(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getOpenDispatcherOnLoad());
@@ -19262,11 +19289,6 @@ QList<Positionable* >  PythonQtWrapper_LayoutEditor::getSelectedItems(LayoutEdit
 bool  PythonQtWrapper_LayoutEditor::getShowHelpBar(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getShowHelpBar());
-}
-
-float  PythonQtWrapper_LayoutEditor::getSideTrackWidth(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getSideTrackWidth());
 }
 
 SignalHead*  PythonQtWrapper_LayoutEditor::getSignalHead(LayoutEditor* theWrappedObject, QString  name)
@@ -19441,7 +19463,7 @@ void PythonQtWrapper_LayoutEditor::makeBackupFile(LayoutEditor* theWrappedObject
 
 void PythonQtWrapper_LayoutEditor::paintTargetPanel(LayoutEditor* theWrappedObject, EditScene*  g2)
 {
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_paintTargetPanel(g2));
+  ( theWrappedObject->paintTargetPanel(g2));
 }
 
 QGraphicsView*  PythonQtWrapper_LayoutEditor::panel(LayoutEditor* theWrappedObject)
@@ -19469,6 +19491,16 @@ bool  PythonQtWrapper_LayoutEditor::removeLayoutSlip(LayoutEditor* theWrappedObj
   return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_removeLayoutSlip(o));
 }
 
+void PythonQtWrapper_LayoutEditor::removeLayoutTrack(LayoutEditor* theWrappedObject, LayoutTrack*  trk)
+{
+  ( theWrappedObject->removeLayoutTrack(trk));
+}
+
+bool  PythonQtWrapper_LayoutEditor::removeLayoutTrackAndRedraw(LayoutEditor* theWrappedObject, LayoutTrack*  trk)
+{
+  return ( theWrappedObject->removeLayoutTrackAndRedraw(trk));
+}
+
 bool  PythonQtWrapper_LayoutEditor::removeLayoutTurnout(LayoutEditor* theWrappedObject, LayoutTurnout*  o)
 {
   return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_removeLayoutTurnout(o));
@@ -19487,6 +19519,11 @@ void PythonQtWrapper_LayoutEditor::removeSelections(LayoutEditor* theWrappedObje
 void PythonQtWrapper_LayoutEditor::removeSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head)
 {
   ( theWrappedObject->removeSignalHead(head));
+}
+
+void PythonQtWrapper_LayoutEditor::resetTargetSize(LayoutEditor* theWrappedObject)
+{
+  ( theWrappedObject->resetTargetSize());
 }
 
 void PythonQtWrapper_LayoutEditor::rotateLayout90(LayoutEditor* theWrappedObject)
@@ -19771,7 +19808,7 @@ void PythonQtWrapper_LayoutEditor::sortLayoutShapesByLevel(LayoutEditor* theWrap
 
 QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::trackControlCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
 {
-  return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_trackControlCircleAt(inPoint));
+  return ( theWrappedObject->trackControlCircleAt(inPoint));
 }
 
 QRectF  PythonQtWrapper_LayoutEditor::trackControlCircleRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
@@ -19967,6 +20004,50 @@ if (_wrapper) {
   }
 }
   LayoutTurnout::collectContiguousTracksNamesInBlockNamed(blockName0, TrackNameSet1);
+}
+void PythonQtShell_LayoutTurnout::draw1(EditScene*  g20, bool  isMain1, bool  isBlock2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("draw1");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&isBlock2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::draw1(g20, isMain1, isBlock2);
+}
+void PythonQtShell_LayoutTurnout::draw2(EditScene*  g20, bool  isMain1, float  railDisplacement2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("draw2");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "EditScene*" , "bool" , "float"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&g20, (void*)&isMain1, (void*)&railDisplacement2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutTurnout::draw2(g20, isMain1, railDisplacement2);
 }
 void PythonQtShell_LayoutTurnout::drawEditControls(EditScene*  g20)
 {
@@ -20346,13 +20427,9 @@ LayoutTurnout* PythonQtWrapper_LayoutTurnout::new_LayoutTurnout(QString  id, QPo
 { 
 return new PythonQtShell_LayoutTurnout(id, c, layoutEditor); }
 
-LayoutTurnout* PythonQtWrapper_LayoutTurnout::new_LayoutTurnout(QString  id, int  t, QPointF  c, double  rot, double  xFactor, double  yFactor, LayoutEditor*  layoutEditor)
+LayoutTurnout* PythonQtWrapper_LayoutTurnout::new_LayoutTurnout(QString  id, QPointF  c, LayoutEditor*  layoutEditor, int  t)
 { 
-return new PythonQtShell_LayoutTurnout(id, t, c, rot, xFactor, yFactor, layoutEditor); }
-
-LayoutTurnout* PythonQtWrapper_LayoutTurnout::new_LayoutTurnout(QString  id, int  t, QPointF  c, double  rot, double  xFactor, double  yFactor, LayoutEditor*  layoutEditor, int  version)
-{ 
-return new PythonQtShell_LayoutTurnout(id, t, c, rot, xFactor, yFactor, layoutEditor, version); }
+return new PythonQtShell_LayoutTurnout(id, c, layoutEditor, t); }
 
 const QMetaObject* PythonQtShell_LayoutTurnout::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -20405,6 +20482,16 @@ void PythonQtWrapper_LayoutTurnout::collectContiguousTracksNamesInBlockNamed(Lay
 void PythonQtWrapper_LayoutTurnout::dispose(LayoutTurnout* theWrappedObject)
 {
   ( theWrappedObject->dispose());
+}
+
+void PythonQtWrapper_LayoutTurnout::draw1(LayoutTurnout* theWrappedObject, EditScene*  g2, bool  isMain, bool  isBlock)
+{
+  ( ((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->promoted_draw1(g2, isMain, isBlock));
+}
+
+void PythonQtWrapper_LayoutTurnout::draw2(LayoutTurnout* theWrappedObject, EditScene*  g2, bool  isMain, float  railDisplacement)
+{
+  ( ((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->promoted_draw2(g2, isMain, railDisplacement));
 }
 
 void PythonQtWrapper_LayoutTurnout::drawEditControls(LayoutTurnout* theWrappedObject, EditScene*  g2)
@@ -20732,14 +20819,19 @@ QString  PythonQtWrapper_LayoutTurnout::getTurnoutName(LayoutTurnout* theWrapped
   return ( theWrappedObject->getTurnoutName());
 }
 
-int  PythonQtWrapper_LayoutTurnout::getTurnoutType(LayoutTurnout* theWrappedObject)
-{
-  return ( theWrappedObject->getTurnoutType());
-}
-
 int  PythonQtWrapper_LayoutTurnout::getVersion(LayoutTurnout* theWrappedObject)
 {
   return ( theWrappedObject->getVersion());
+}
+
+bool  PythonQtWrapper_LayoutTurnout::hasEnteringDoubleTrack(LayoutTurnout* theWrappedObject)
+{
+  return ( theWrappedObject->hasEnteringDoubleTrack());
+}
+
+bool  PythonQtWrapper_LayoutTurnout::hasEnteringSingleTrack(LayoutTurnout* theWrappedObject)
+{
+  return ( theWrappedObject->hasEnteringSingleTrack());
 }
 
 void PythonQtWrapper_LayoutTurnout::highlightUnconnected(LayoutTurnout* theWrappedObject, EditScene*  g2, int  specificType)
@@ -20765,6 +20857,11 @@ bool  PythonQtWrapper_LayoutTurnout::isDisabled(LayoutTurnout* theWrappedObject)
 bool  PythonQtWrapper_LayoutTurnout::isDisabledWhenOccupied(LayoutTurnout* theWrappedObject)
 {
   return ( theWrappedObject->isDisabledWhenOccupied());
+}
+
+bool  PythonQtWrapper_LayoutTurnout::isInContinuingSenseState(LayoutTurnout* theWrappedObject)
+{
+  return ( theWrappedObject->isInContinuingSenseState());
 }
 
 bool  PythonQtWrapper_LayoutTurnout::isMainline(LayoutTurnout* theWrappedObject)
@@ -20800,6 +20897,11 @@ bool  PythonQtWrapper_LayoutTurnout::isSecondTurnoutInverted(LayoutTurnout* theW
 bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeSlip(LayoutTurnout* theWrappedObject)
 {
   return ( theWrappedObject->isTurnoutTypeSlip());
+}
+
+bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeTurnout(LayoutTurnout* theWrappedObject)
+{
+  return ( theWrappedObject->isTurnoutTypeTurnout());
 }
 
 bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeXover(LayoutTurnout* theWrappedObject)

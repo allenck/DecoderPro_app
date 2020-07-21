@@ -2,13 +2,17 @@
 #define TRACKSEGMENT_H
 
 #include <QObject>
-#include "layoutblock.h"
-#include "layouteditor.h"
+#include "layouttrack.h"
+
 #include "abstractaction.h"
 #include "consumer.h"
 #include "supplier.h"
 #include "predicate.h"
-
+//#include "tracksegmenteditor.h"
+#include "liblayouteditor_global.h"
+#include "namedbeanhandle.h"
+class TrackSegmentEditor;
+class LayoutEditor;
 class LayoutBlock;
 class LayoutEditor;
 class LIBLAYOUTEDITORSHARED_EXPORT TrackSegment : public LayoutTrack
@@ -250,7 +254,7 @@ private:
     /*private*/ bool mainline = false;
     /*private*/ bool arc = false;
     /*private*/ bool flip = false;
-    /*private*/ double angle;// =0.0D;
+    /*private*/ double angle =0.0;
     /*private*/ bool circle=false;
     /*private*/ bool changed=false;
     /*private*/ bool bezier = false;
@@ -286,6 +290,9 @@ private:
  QGraphicsItemGroup* decorationItems = nullptr;
  QGraphicsItemGroup* rects = nullptr;
  QGraphicsItemGroup* itemGroup = nullptr;
+
+ // temporary reference to the Editor that will eventually be part of View
+ /*private*/ /*final*/ TrackSegmentEditor* editor;
 
  void init(QString ident);
  static Logger* log;
@@ -382,8 +389,8 @@ protected:
  /*protected*/ LayoutTrack* connect2 = nullptr;
  /*protected*/ int type2 = 0;
  /*protected*/ void drawDecorations(EditScene* g2) override;
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemMain) override;
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type) override;
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock) override;
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement) override;
  /*protected*/ void highlightUnconnected(EditScene* g2, int selectedType) override;
  /*protected*/ void drawEditControls(EditScene* g2) override;
  /*protected*/ void drawTurnoutControls(EditScene* g2) override;
@@ -400,8 +407,10 @@ protected:
  friend class LoadXml;
  friend class PositionablePoint;
  friend class LayoutEditorAuxTools;
- friend class LayoutTrackEditors;
+ //friend class LayoutTrackEditors;
+ friend class TrackSegmentEditor;
 };
+
 class TSAbstractAction : public AbstractAction
 {
  Q_OBJECT

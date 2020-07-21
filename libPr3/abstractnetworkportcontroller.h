@@ -46,7 +46,7 @@ private:
  Logger* log;
  QString statetoString(QAbstractSocket::SocketState socketState);
  QMessageBox* msg;
- int connTimeout;
+ int connTimeout = 0;
 
 private slots:
  void on_socketConn_error(QAbstractSocket::SocketError);
@@ -60,9 +60,9 @@ protected:
  // talking to.
  /*protected*/ QString m_HostName;// = "";
  // configured clients.
- /*protected*/ int m_port;// = 0;
+ /*protected*/ int m_port = 0;
  // keep the socket provides our connection.
- /*protected*/ QTcpSocket* socketConn;// = NULL;
+ /*protected*/ QTcpSocket* socketConn= nullptr;
  /*protected*/ AbstractNetworkPortController(SystemConnectionMemo* connectionMemo, QObject *parent = 0);
  /*protected*/ void setHostAddress(QString s);
  /*protected*/ QString getHostAddress();
@@ -74,6 +74,7 @@ protected:
  friend class AMRTRcvHandler;
  friend class AMRTXmtHandler;
 };
+
 class Reconnectwait : public QObject
 {
  Q_OBJECT
@@ -87,8 +88,8 @@ private:
     AbstractNetworkPortController* self;
     QTimer* timer;
     bool reply;
-    int count;// = 0;
-    int secondCount;// = 0;
+    int count = 0;
+    int secondCount = 0;
     int reconnectinterval;
     bool bFirstTime;
     int connTimeout;

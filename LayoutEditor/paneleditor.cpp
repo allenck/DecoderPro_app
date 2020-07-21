@@ -447,11 +447,12 @@ PanelEditor::~PanelEditor()
     ui->verticalLayout->addWidget(editPanel);
     editPanel->setMouseTracking(true);
     editPanel->setRenderHint(QPainter::Antialiasing);
-    panelWidth = 600;
-    panelHeight =400;
+//    panelWidth = 600;
+
+//    panelHeight =400;
     if(editScene == nullptr)
     {
-     editScene = new EditScene(QRectF(0, 0, panelWidth, panelHeight), this);
+     editScene = new EditScene(QRectF(0, 0, /*panelWidth*/600, /*panelHeight*/400), this);
      //_targetPanel = editScene;
      editPanel->setScene(editScene);
     }

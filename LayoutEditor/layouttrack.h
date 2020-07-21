@@ -102,6 +102,7 @@ public:
  QGraphicsItemGroup* itemPoints = nullptr;
  QGraphicsItemGroup* itemBlock = nullptr;
  QGraphicsItemGroup* itemBlockSide = nullptr;
+ /*public*/ /*abstract*/ virtual bool isMainline();
 
 
  /*public*/ virtual void invalidate(EditScene* /*g2*/) {}
@@ -152,9 +153,8 @@ protected:
  /*protected*/ static bool isConnectionHitType(int hitType);
  /*protected*/ static bool isControlHitType(int hitType);
  /*protected*/ static bool isPopupHitType(int hitType);
- /*public*/ /*abstract*/ virtual bool isMainline();
- /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE );
- /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool, float, ITEMTYPE );
+ /*protected*/ /*abstract*/ virtual void draw1(EditScene* g2, bool isMain, bool isBlock);
+ /*protected*/ /*abstract*/ virtual void draw2(EditScene *g2, bool, float);
  /*protected*/ void drawHidden(EditScene* g2);
  /*protected*/ /*abstract*/ virtual void highlightUnconnected(EditScene *g2, int specificType);
  /*protected*/ virtual void highlightUnconnected(EditScene* g2);
@@ -177,6 +177,8 @@ protected:
  friend class LayoutTurnout;
  friend class LevelXing;
  friend class LayoutSlip;
+ friend class LayoutTrackView;
+ friend class LayoutEditorComponent;
 };
 
 #endif // LAYOUTTRACK_H

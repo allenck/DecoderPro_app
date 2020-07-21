@@ -9,8 +9,10 @@
 #include "mathutil.h"
 #include "signallingguitools.h"
 #include "layouteditorfinditems.h"
-#include "layouttrackeditors.h"
+//#include "layouttrackeditors.h"
 #include "layouteditortoolbarpanel.h"
+#include "levelxingeditor.h"
+
 
 //LevelXing::LevelXing(QObject *parent) :
 //    QObject(parent)
@@ -128,6 +130,8 @@
  layoutEditor = myPanel;
 // ident = id;
 // center = c;
+ editor = new LevelXingEditor(layoutEditor);
+
 }
 
 /*public*/ void LevelXing::removeBeanReference(NamedBean* nb) {
@@ -634,7 +638,7 @@ void LevelXing::removeSML(SignalMast* signalMast) {
  * @param g2 the graphics port to draw to
  */
 //@Override
-/*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock, LayoutTrack::ITEMTYPE itemType) {
+/*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock) {
 
 
  invalidateItem(g2,itemGroup);
@@ -670,7 +674,7 @@ void LevelXing::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LevelXing::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType) {
+/*protected*/ void LevelXing::draw2(EditScene* g2, bool isMain, float railDisplacement) {
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
     QPointF pC = getCoordsC();
@@ -1209,7 +1213,8 @@ double LevelXing::round (double x) {
 //      @Override
 //      public void actionPerformed(ActionEvent e) {
   connect(act, &QAction::triggered, [=]{
-          layoutEditor->getLayoutTrackEditors()->editLevelXing(this);
+//          layoutEditor->getLayoutTrackEditors()->editLevelXing(this);
+      editor->editLayoutTrack(this);
 //      }
   });
   popup->addAction(act = new AbstractAction(tr("Delete"),this));

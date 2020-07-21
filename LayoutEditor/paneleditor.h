@@ -77,7 +77,7 @@ public slots:
 private:
     Ui::PanelEditor *ui;
  Logger* log;
- int panelWidth, panelHeight;
+ //int panelWidth, panelHeight;
  bool delayedPopupTrigger;
  /*private*/ void amendSelectionGroup(Positionable* p);
  void drawLabelImages(EditScene* g2);

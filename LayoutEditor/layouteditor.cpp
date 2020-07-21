@@ -58,7 +58,7 @@
 #include "positionablepoint.h"
 #include "optional.h"
 #include <limits>
-#include "layouttrackeditors.h"
+//#include "layouttrackeditors.h"
 #include "layouteditorchecks.h"
 #include "leblockcontentsicon.h"
 #include "layouttrackdrawingoptions.h"
@@ -87,6 +87,18 @@
 #include <QToolTip>
 #include "addentryexitpairaction.h"
 #include "scaletrackdiagramdialog.h"
+#include "editormanager.h"
+#include "layoutrhturnout.h"
+#include "layoutlhturnout.h"
+#include "layoutdoublexover.h"
+#include "layoutlhxover.h"
+#include "layoutrhxover.h"
+#include "layoutwye.h"
+#include "layoutdoubleslip.h"
+#include "layoutsingleslip.h"
+#include "layouttrackview.h"
+#include "positionablepointview.h"
+#include "layouteditorcomponent.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -196,7 +208,7 @@ LayoutEditor::~LayoutEditor()
     }
 
     deletefloatingEditToolBoxFrame();
-    if (toolBarSide.getType() == eFLOAT) {
+    if (toolBarSide->getType() == eFLOAT) {
         createfloatingEditToolBoxFrame();
         createFloatingHelpPanel();
         return;
@@ -220,7 +232,7 @@ LayoutEditor::~LayoutEditor()
     //QSize screenDim = Toolkit.getDefaultToolkit().getScreenSize();
     QDesktopWidget* desktop = QApplication::desktop();
     QSize screenDim = desktop->screen()->size();
-    bool toolBarIsVertical = ((toolBarSide.getType() == eRIGHT) || (toolBarSide.getType() == eLEFT));
+    bool toolBarIsVertical = ((toolBarSide->getType() == eRIGHT) || (toolBarSide->getType() == eLEFT));
     if (toolBarIsVertical)
     {
      leToolBarPanel = new LayoutEditorVerticalToolBarPanel(this);
@@ -274,7 +286,7 @@ LayoutEditor::~LayoutEditor()
      //editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
 //     addDockWidget(Qt::TopDockWidgetArea, editToolBarContainerPanel);
     }
-    switch (toolBarSide.getType())
+    switch (toolBarSide->getType())
     {
     case eLEFT:
      //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignLeft);
@@ -367,8 +379,8 @@ LayoutEditor::~LayoutEditor()
 
 void LayoutEditor::init()
 {
- editorUseOldLocSize = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize();
  setSaveSize(true);
+ editorUseOldLocSize = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize();
 
  //ui->setupUi(this);
  setObjectName("LayoutEditor");
@@ -410,17 +422,36 @@ void LayoutEditor::init()
  }
 
  //HelpUtil::instance()->helpMenu(menuBar(), "package.jmri.jmrit.display.LayoutEditor", true);
+ // set to full screen
+ QDesktopWidget* desktop = QApplication::desktop();
+    QSize screenDim = desktop->screen()->size();
+    gContext->setWindowWidth(screenDim.width() - 20);
+    gContext->setWindowHeight(screenDim.height() - 120);
+
+    // Let Editor make target, and use this frame
+    PanelEditor::setTargetPanel((EditScene*)nullptr, (JmriJFrame*)nullptr);
+    PanelEditor::setTargetPanelSize(gContext->getWindowWidth(), gContext->getWindowHeight());
+    setSize(screenDim.width(), screenDim.height());
+
+    // register the resulting panel for later configuration
+    ConfigureManager* cm = ((ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager"));
+            if(cm) cm->registerUser(this);
+
+    // confirm that panel hasn't already been loaded
+    if (this != ((EditorManager*)(InstanceManager::getDefault("EditorManager")))->get(name)) {
+        log->warn("File contains a panel with the same name ({}) as an existing panel", name);
+    }
+//    setFocusable(true);
+//    addKeyListener(this);
  resetDirty();
  // establish link to LayoutEditorAuxTools
- auxTools = new LayoutEditorAuxTools(this);
- if (auxTools==nullptr) log->error("Unable to create link to LayoutEditorAuxTools");
+ auxTools = getLEAuxTools();
 
 _contents = new QVector<Positionable*>();
  layoutBlockManager = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  blockManger = new BlockManager(this);
 
  turntableList = new QVector<LayoutTurntable*>(); // Turntable list
- layoutTrackList = new QList<LayoutTrack*>();  // TrackSegment list
  memoryLabelList = new QVector<LEMemoryIcon*>(); // Memory Label List
 
 //makeBackgroundColorMenu(ui->menuSet_Background_color);
@@ -487,11 +518,13 @@ _contents = new QVector<Positionable*>();
  circleRadius = SIZE * getTurnoutCircleSize();
  circleDiameter = 2.0 * circleRadius;
 
- panelWidth = 600;
- panelHeight =400;
+ //panelWidth = 600;
+ gContext->setLayoutWidth(600);
+ //panelHeight =400;
+ gContext->setLayoutHeight(400);
 
  //editScene = new EditScene(QRectF(-100, -100, 400, 400), this);
- editScene = new EditScene(QRectF(0, 0, panelWidth, panelHeight), this);
+ editScene = new EditScene(QRectF(0, 0, gContext->getLayoutWidth(), gContext->getLayoutWidth()), this);
  editScene->setObjectName("LayoutEditor_editScene");
  //_targetPanel = editScene;
  defaultBackgroundColor =  editScene->backgroundBrush().color();//QColor(Qt::lightGray);
@@ -575,7 +608,7 @@ _contents = new QVector<Positionable*>();
  finder = new LayoutEditorFindItems(this);
 
 // register the resulting panel for later configuration
- ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ //ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
 
  if (cm != nullptr) {
      cm->registerUser(this);
@@ -655,8 +688,14 @@ _contents = new QVector<Positionable*>();
      }
  }
 #endif
-
+ //QTimer::singleShot(100, this,  SLOT(trigger_menu()));
+ setupToolBar();
 } // init
+
+void LayoutEditor::trigger_menu()
+{
+on_setToolBarSide(toolBarSide->getName().toUpper());
+}
 
 /*public*/ void LayoutEditor::setSize(int w, int h)
 {
@@ -1072,7 +1111,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     foundTrack = nullptr;
     foundHitPointType = LayoutTrack::NONE;
 
-    Optional<LayoutTrack*> opt;// = layoutTrackList.stream().filter(layoutTrack ->
+    Optional<LayoutTrack*> opt;// = layoutTrackList->stream().filter(layoutTrack ->
     for(LayoutTrack* layoutTrack : *layoutTrackList)
     {
         if ((layoutTrack != avoid) && (layoutTrack != selectedObject))
@@ -1821,8 +1860,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 
    if (snapToGridOnAdd)
    {
-    currentPoint = MathUtil::granulize(currentPoint, gridSize1st);
-    xLoc = (int) currentPoint.x();
+    currentPoint = MathUtil::granulize(currentPoint, gContext->getGridSize());
     yLoc = (int) currentPoint.y();
     leToolBarPanel->xLabel->setText(QString::number(xLoc));
     leToolBarPanel->yLabel->setText(QString::number(yLoc));
@@ -2426,7 +2464,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     if (snapToGridOnMove != snapToGridInvert)
     {
       // this snaps currentPoint to the grid
-      currentPoint = MathUtil::granulize(currentPoint, gridSize1st);
+      currentPoint = MathUtil::granulize(currentPoint, gContext->getGridSize());
       xLoc = (int) currentPoint.x();
       yLoc = (int) currentPoint.y();
       leToolBarPanel->xLabel->setText(QString::number(xLoc));
@@ -2957,13 +2995,15 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
     // and scroll to it
     //scrollPane->scrollRectToVisible(MathUtil::QRectFToRectangle(scrollBounds));
     //scrollPane->ensureVisible(scrollBounds.x(), scrollBounds.y());
-    if(result == xScale)
+    if(result == gContext->getXScale())
      return result;
 //    if(xScale > 1.0)
 //     editPanel->scale(1.0/xScale, 1.0/yScale);
 
     editPanel->scale(result, result);
-    xScale = yScale = result;
+    //xScale = yScale = result;
+   gContext->setXScale(result);
+   gContext->setYScale(result);
     return result;
 }
 
@@ -3103,7 +3143,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 /**
  * Add a LayoutSlip
  */
-/*public*/ void LayoutEditor::addLayoutSlip(int type)
+/*public*/ void LayoutEditor::addLayoutSlip(LayoutTurnout::TurnoutType type)
 {
  double rot = 0.0;
  QString s = leToolBarPanel->rotationComboBox->currentText().trimmed();
@@ -3131,8 +3171,20 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  // get unique name
  QString name = finder->uniqueName("SL", ++numLayoutSlips);
  // create object
- LayoutSlip* o = new LayoutSlip(name,currentPoint, rot, this, type);
- layoutTrackList->append(o);
+ LayoutSlip* o;
+ switch(type) {
+     case LayoutTurnout::TurnoutType::DOUBLE_SLIP :
+         o = new LayoutDoubleSlip(name, currentPoint, rot, this);
+         break;
+     case LayoutTurnout::TurnoutType::SINGLE_SLIP :
+         o = new LayoutSingleSlip(name, currentPoint, rot, this);
+         break;
+     default:
+         log->error(tr("can't create slip %1 with type %2").arg(name).arg(type));
+         return; // without creating
+ }
+
+ addLayoutTrack(o);
  setDirty();
 
  // check on layout block
@@ -3219,56 +3271,141 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  numLayoutTurnouts ++;
  // get unique name
  QString name = finder->uniqueName("TO", ++numLayoutTurnouts);
- addLayoutTurnout(name, type, rot, currentPoint);
-}
+ // create object - check all types, although not clear all actually reach here
+ LayoutTurnout* o;
+ switch(type) {
 
-LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot, QPointF currentPoint)
-{
- // create object
- LayoutTurnout* o = new LayoutTurnout(name,type,                                   currentPoint,rot,xScale,yScale,this);
- //if (o!=nullptr) {
- //turnoutList->append(o);
- layoutTrackList->append(o);
- setDirty(true);
- // check on layout block
- LayoutBlock* b = provideLayoutBlock(leToolBarPanel->blockLabel->text().trimmed());
- if (b!=nullptr)
- {
-  o->setLayoutBlock(b);
-  // check on occupancy sensor
-  QString sensorName = (leToolBarPanel->blockSensorLabel->text().trimmed());
-  if (sensorName.length()>0)
-  {
-   if (!validateSensor(sensorName,b,(Component*)this))
-   {
-    b->setOccupancySensorName("");
-   }
-   else
-   {
-    leToolBarPanel->blockSensorLabel->setText( b->getOccupancySensorName() );
-   }
-  }
+     case LayoutTurnout::RH_TURNOUT :
+         o = new LayoutRHTurnout(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+         break;
+     case LayoutTurnout::LH_TURNOUT :
+         o = new LayoutLHTurnout(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+         break;
+     case LayoutTurnout::WYE_TURNOUT :
+         o = new LayoutWye(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+         break;
+     case LayoutTurnout::DOUBLE_XOVER :
+         o = new LayoutDoubleXOver(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+         break;
+     case LayoutTurnout::RH_XOVER :
+         o = new LayoutRHXOver(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+         break;
+     case LayoutTurnout::LH_XOVER :
+         o = new LayoutLHXOver(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+         break;
+
+     case LayoutTurnout::DOUBLE_SLIP :
+         o = new LayoutDoubleSlip(name, currentPoint, rot, this);
+         log->error(tr("Found SINGLE_SLIP in addLayoutTurnout for element %1").arg(name));
+         break;
+     case LayoutTurnout::SINGLE_SLIP :
+         o = new LayoutSingleSlip(name, currentPoint, rot, this);
+         log->error(tr("Found SINGLE_SLIP in addLayoutTurnout for element %1").arg(name));
+         break;
+
+     default:
+         log->error(tr("can't create LayoutTrack %1 with type %2").arg(name).arg(type));
+         return; // without creating
  }
+
+ addLayoutTrack(o);
+ setDirty();
+
+ // check on layout block
+ QString newName = leToolBarPanel->blockIDComboBox->getSelectedItemDisplayName();
+ if (newName.isNull()) {
+     newName = "";
+ }
+ LayoutBlock* b = provideLayoutBlock(newName);
+
+ if (b != nullptr) {
+     o->setLayoutBlock(b);
+
+     // check on occupancy sensor
+     QString sensorName = leToolBarPanel->blockSensorComboBox->getSelectedItemDisplayName();
+     if (sensorName.isNull()) {
+         sensorName = "";
+     }
+
+     if (!sensorName.isEmpty()) {
+         if (!validateSensor(sensorName, b, this)) {
+             b->setOccupancySensorName("");
+         } else {
+             leToolBarPanel->blockSensorComboBox->setSelectedItem(b->getOccupancySensor());
+         }
+     }
+ }
+
  // set default continuing route Turnout State
  o->setContinuingSense(Turnout::CLOSED);
+
  // check on a physical turnout
- QString turnoutName = leToolBarPanel->turnoutNameComboBox->currentText().trimmed();
- if ( validatePhysicalTurnout(turnoutName/*, this*/) )
- {
-  // turnout is valid and unique.
-  o->setTurnout(turnoutName);
-  if (o->getTurnout()->getSystemName()==(turnoutName.toUpper()))
-  {
-   leToolBarPanel->turnoutNameComboBox->setSelectedItemByName(turnoutName.toUpper());
-  }
+ QString turnoutName = leToolBarPanel->turnoutNameComboBox->getSelectedItemDisplayName();
+ if (turnoutName.isNull()) {
+     turnoutName = "";
  }
- else
- {
-  o->setTurnout("");
-  leToolBarPanel->turnoutNameComboBox->setSelectedItemByName("");
+
+ if (validatePhysicalTurnout(turnoutName, this)) {
+     // turnout is valid and unique.
+     o->setTurnout(turnoutName);
+
+     if (o->getTurnout()->getSystemName() == (turnoutName)) {
+         leToolBarPanel->turnoutNameComboBox->setSelectedItem(o->getTurnout());
+     }
+ } else {
+     o->setTurnout("");
+     leToolBarPanel->turnoutNameComboBox->setSelectedItem(nullptr);
+     leToolBarPanel->turnoutNameComboBox->setCurrentIndex(-1);
  }
- return o;
 }
+
+//LayoutTurnout* LayoutEditor::addLayoutTurnout(QString name, int type, double rot, QPointF currentPoint)
+//{
+// // create object
+// LayoutTurnout* o = new LayoutTurnout(name,type,                                   currentPoint,rot,xScale,yScale,this);
+// //if (o!=nullptr) {
+// //turnoutList->append(o);
+// layoutTrackList->append(o);
+// setDirty(true);
+// // check on layout block
+// LayoutBlock* b = provideLayoutBlock(leToolBarPanel->blockLabel->text().trimmed());
+// if (b!=nullptr)
+// {
+//  o->setLayoutBlock(b);
+//  // check on occupancy sensor
+//  QString sensorName = (leToolBarPanel->blockSensorLabel->text().trimmed());
+//  if (sensorName.length()>0)
+//  {
+//   if (!validateSensor(sensorName,b,(Component*)this))
+//   {
+//    b->setOccupancySensorName("");
+//   }
+//   else
+//   {
+//    leToolBarPanel->blockSensorLabel->setText( b->getOccupancySensorName() );
+//   }
+//  }
+// }
+// // set default continuing route Turnout State
+// o->setContinuingSense(Turnout::CLOSED);
+// // check on a physical turnout
+// QString turnoutName = leToolBarPanel->turnoutNameComboBox->currentText().trimmed();
+// if ( validatePhysicalTurnout(turnoutName/*, this*/) )
+// {
+//  // turnout is valid and unique.
+//  o->setTurnout(turnoutName);
+//  if (o->getTurnout()->getSystemName()==(turnoutName.toUpper()))
+//  {
+//   leToolBarPanel->turnoutNameComboBox->setSelectedItemByName(turnoutName.toUpper());
+//  }
+// }
+// else
+// {
+//  o->setTurnout("");
+//  leToolBarPanel->turnoutNameComboBox->setSelectedItemByName("");
+// }
+// return o;
+//}
 
 /**
  * Validates that a physical turnout exists and is unique among Layout Turnouts
@@ -3708,7 +3845,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 *   and is unique among all blocks.  If valid, returns true and sets the block sensor
 *   name in the block.  Else returns false, and does nothing to the block.
 */
-/*public*/ bool LayoutEditor::validateSensor(QString sensorName, LayoutBlock* blk, Component* openFrame)
+/*public*/ bool LayoutEditor::validateSensor(QString sensorName, LayoutBlock* blk, QWidget* openFrame)
 {
  // check if anything entered
  if (sensorName.length()<1)
@@ -3845,9 +3982,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
   setDirty(true);
 }
 
-/*public*/ double LayoutEditor::getXScale() {return xScale;}
+/*public*/ double LayoutEditor::getXScale() {return gContext->getXScale();}
 
-/*public*/ double LayoutEditor::getYScale() {return yScale;}
+/*public*/ double LayoutEditor::getYScale() {return gContext->getYScale();}
 
 //    public Color getDefaultBackgroundColor() {
 //        return defaultBackgroundColor;
@@ -4107,9 +4244,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
 *  Special internal class to allow drawing of layout to a JLayeredPane
 *  This is the 'target' pane where the layout is displayed
 */
-/*protected*/ void LayoutEditor::paintTargetPanel(EditScene* g2)
+//@Override
+/*public*/ void LayoutEditor::paintTargetPanel(EditScene* g2)
 {
-#if 1
+#if 0
  if (qobject_cast<EditScene*>(g2))
  {
      //layoutEditor.draw((Graphics2D) g);
@@ -4170,7 +4308,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
      }
  }
 #else // new draw routines
- draw(editScene);
+ if(layoutEditorComponent == nullptr)
+  layoutEditorComponent = new LayoutEditorComponent(this);
+ layoutEditorComponent->paintTargetPanel(g2);
 #endif
 }
 
@@ -4253,7 +4393,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
     }
     isDrawing = false;
 }   // draw
-#endif
+
 //
 //  draw hidden layout tracks
 //
@@ -4275,11 +4415,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //    g2.setStroke(stroke);
     drawingStroke = stroke;
     bool main = false, block = false, hidden = true, dashed = false;
-    draw1(g2, main, block, hidden, dashed,LayoutTrack::track);
+    draw1(g2, main, block, hidden, dashed/*,LayoutTrack::track*/);
     //g2.setStroke(dashedStroke);
     dashedStroke.setColor(ltdo->getSideRailColor());
     drawingStroke = dashedStroke;
-    draw1(g2, main, block, hidden, dashed = true,LayoutTrack::track);
+    draw1(g2, main, block, hidden, dashed = true/*,LayoutTrack::track*/);
 
     //setup for drawing mainline rails
     main = true;
@@ -4287,12 +4427,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
     stroke.setColor(ltdo->getMainRailColor());
     //g2.setStroke(stroke);
     drawingStroke = stroke;
-    draw1(g2, main, block, hidden, dashed = false, LayoutTrack::track);
+    draw1(g2, main, block, hidden, dashed = false/*, LayoutTrack::track*/);
     //g2.setStroke(dashedStroke);
     dashedStroke.setColor(ltdo->getMainRailColor());
     drawingStroke = dashedStroke;
     dashed = true;
-    draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
+    draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
 }
 
 //
@@ -4318,11 +4458,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
         stroke.setDashOffset(10.0);
         drawingStroke = stroke;
         if ((ltdo->getSideRailCount() & 1) == 1) {
-            draw1(g2, main, block, hidden, LayoutTrack::dashed);
+            draw1(g2, main, block, hidden/*, LayoutTrack::dashed*/);
         }
         if (ltdo->getSideRailCount() >= 2) {
             float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-            draw2(g2, main, railDisplacement, LayoutTrack::dashed);
+            draw2(g2, main, railDisplacement/*, LayoutTrack::dashed*/);
         }
     }
 
@@ -4342,11 +4482,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
         stroke.setDashOffset(10.0);
         drawingStroke = stroke;
         if ((ltdo->getMainRailCount() & 1) == 1) {
-            draw1(g2, main, block, hidden, dashed, LayoutTrack::dashed);
+            draw1(g2, main, block, hidden, dashed/*, LayoutTrack::dashed*/);
         }
         if (ltdo->getMainRailCount() >= 2) {
             float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-            draw2(g2, main, railDisplacement, LayoutTrack::dashed);
+            draw2(g2, main, railDisplacement/*, LayoutTrack::dashed*/);
         }
     }
 }   // drawTrackSegmentsDashed
@@ -4366,7 +4506,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //        g2.setColor(ltdo->getSideBallastColor());
      QPen stroke = QPen(ltdo->getSideBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
      drawingStroke = stroke;
-        draw1(g2, main, block, hidden, dashed, LayoutTrack::ballast);
+        draw1(g2, main, block, hidden, dashed/*, LayoutTrack::ballast*/);
     }
 
     //setup for drawing mainline ballast
@@ -4378,7 +4518,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
      QPen stroke = QPen(ltdo->getMainBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
      drawingStroke = stroke;
         main = true;
-        draw1(g2, main, block, hidden, dashed,LayoutTrack::ballast);
+        draw1(g2, main, block, hidden, dashed/*,LayoutTrack::ballast*/);
     }
 }
 
@@ -4442,7 +4582,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //        g2.setColor(railColor);
         QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         drawingStroke = stroke;
-        draw2(g2, main, railDisplacement, LayoutTrack::track);
+        draw2(g2, main, railDisplacement/*, LayoutTrack::track*/);
     }
 
     if ((ltdo->getSideRailCount() & 1) == 1) {
@@ -4453,7 +4593,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //        g2.setColor(railColor);
      QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
      drawingStroke = stroke;
-     draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
+     draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
     }
 
     main = true;
@@ -4479,7 +4619,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
         dashed = false;
         QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
         drawingStroke = stroke;
-        draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
+        draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
     }
 
 }   // drawLayoutTracksRails
@@ -4532,10 +4672,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
     //note: color is set in layout track's draw1 when isBlock is true
     bool main = false, block = true, hidden = false, dashed = true;
-    draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
+    draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
     //g2.setStroke(blockLineStroke);
     drawingStroke = blockLineStroke;
-    draw1(g2, main, block, hidden, dashed = false,LayoutTrack::track);
+    draw1(g2, main, block, hidden, dashed = false/*,LayoutTrack::track*/);
 
     //setup for drawing mainline block lines
     blockLineWidth = ltdo->getMainBlockLineWidth();
@@ -4569,31 +4709,31 @@ bool LayoutEditor::isDirty() {return bDirty;}
      drawingStroke.setDashOffset(10.0);
     }
     //note: color is set in layout track's draw1 when isBlock is true
-    draw1(g2, main = true, block, hidden, dashed = true,LayoutTrack::track);
+    draw1(g2, main = true, block, hidden, dashed = true/*,LayoutTrack::track*/);
     //g2.setStroke(blockLineStroke);
     drawingStroke = blockLineStroke;
     dashed = false;
-    draw1(g2, main, block, hidden, dashed, LayoutTrack::track);
+    draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
 }
 
 // isDashed defaults to false
 /*private*/ void LayoutEditor::draw1(EditScene* g2,
         bool isMain,
         bool isBlock,
-        bool isHidden, LayoutTrack::ITEMTYPE type) {
-    draw1(g2, isMain, isBlock, isHidden, false, type);
+        bool isHidden/*, LayoutTrack::ITEMTYPE type*/) {
+    draw1(g2, isMain, isBlock, isHidden, false/*, type*/);
 }
 
 // isHidden defaults to false
 /*private*/ void LayoutEditor::draw1(EditScene* g2,
         bool isMain,
-        bool isBlock, LayoutTrack::ITEMTYPE type) {
-    draw1(g2, isMain, isBlock, false, type);
+        bool isBlock/*, LayoutTrack::ITEMTYPE type*/) {
+    draw1(g2, isMain, isBlock, false/*, type*/);
 }
 
 // isBlock defaults to false
-/*private*/ void LayoutEditor::draw1(EditScene* g2, bool isMain, LayoutTrack::ITEMTYPE type) {
-    draw1(g2, isMain, false, type);
+/*private*/ void LayoutEditor::draw1(EditScene* g2, bool isMain) {
+    draw1(g2, isMain, false/*, type*/);
 }
 
 // draw single line (ballast, ties & block lines)
@@ -4601,7 +4741,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
         bool isMain,
         bool isBlock,
         bool isHidden,
-        bool isDashed, LayoutTrack::ITEMTYPE itemType)
+        bool isDashed/*, LayoutTrack::ITEMTYPE itemType*/)
 {
  for (LayoutTrack* layoutTrack : *layoutTrackList)
  {
@@ -4613,12 +4753,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
     {
      if (((TrackSegment*) layoutTrack)->isDashed() == isDashed)
      {
-      layoutTrack->draw1(g2, isMain, isBlock, itemType);
+      layoutTrack->draw1(g2, isMain, isBlock/*, itemType*/);
      }
     }
     else if (!isDashed)
     {
-     layoutTrack->draw1(g2, isMain, isBlock, itemType);
+     layoutTrack->draw1(g2, isMain, isBlock/*, itemType*/);
     }
    }
   }
@@ -4631,7 +4771,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  for (LayoutTrack* layoutTrack : *layoutTrackList)
  {
   if (qobject_cast<PositionablePoint*>(layoutTrack)) {
-      layoutTrack->draw1(g2, isMain, false, LayoutTrack::points);
+      layoutTrack->draw1(g2, isMain, false/*, LayoutTrack::points*/);
   }
  }
 }
@@ -4650,14 +4790,14 @@ bool LayoutEditor::isDirty() {return bDirty;}
   if ((qobject_cast<TrackSegment*>(layoutTrack)))
   {
    if (((TrackSegment*) layoutTrack)->isDashed() == isDashed) {
-       layoutTrack->draw2(g2, isMain, railDisplacement, LayoutTrack::dashed );
+       layoutTrack->draw2(g2, isMain, railDisplacement/*, LayoutTrack::dashed*/ );
    }
   } else if (!isDashed) {
-      layoutTrack->draw2(g2, isMain, railDisplacement, LayoutTrack::track );
+      layoutTrack->draw2(g2, isMain, railDisplacement/*, LayoutTrack::track*/ );
   }
  }
 }
-
+#endif
 // draw decorations
 /*private*/ void LayoutEditor::drawDecorations(EditScene* g2) {
     for (LayoutTrack* tr : *layoutTrackList) {
@@ -4969,6 +5109,15 @@ bool LayoutEditor::isDirty() {return bDirty;}
    list->append(lt);
  }
  return list;
+}
+
+/*@Nonnull*/
+/*public*/ QList<PositionablePointView*> LayoutEditor::getPositionablePointViews() {
+    QList<PositionablePointView*> list = QList<PositionablePointView*>();
+    for (PositionablePoint* p : getPositionablePoints()) {
+        list.append(new PositionablePointView(p));
+    }
+    return list;
 }
 
 /*public*/ QList<PositionablePoint*> LayoutEditor::getPositionablePoints()
@@ -5549,7 +5698,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
 /*private*/ void LayoutEditor::drawHiddenTrack(EditScene* g2)
 {
- for (int i = 0; i<layoutTrackList.size();i++)
+ for (int i = 0; i<layoutTrackList->size();i++)
  {
   LayoutTrack* t =layoutTrackList->t(i);
   if (isEditable() && t->getHidden())
@@ -5693,7 +5842,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 
   Editor::setAllEditable(editable);
 
-  if (toolBarSide.getType() == eFLOAT)
+  if (toolBarSide->getType() == eFLOAT)
   {
      if (editable) {
          createfloatingEditToolBoxFrame();
@@ -5708,7 +5857,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
      editToolBarContainerPanel->setVisible(editable);
 //     if(editable)
 //     {
-//      switch (toolBarSide.getType()) {
+//      switch (toolBarSide->getType()) {
 //      case eTOP:
 //       borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::North);
 //       break;
@@ -5740,7 +5889,7 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 
  //these may not be set up yet...
  if (helpBarPanel != nullptr) {
-     if (toolBarSide.getType() ==eFLOAT) {
+     if (toolBarSide->getType() ==eFLOAT) {
          if (floatEditHelpPanel != nullptr) {
              floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
          }
@@ -5777,9 +5926,9 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
   return animatingLayout;
 }
 
-/*public*/ int LayoutEditor::getLayoutWidth() {return panelWidth;}
+/*public*/ int LayoutEditor::getLayoutWidth() {return gContext->getLayoutWidth();}
 
-/*public*/ int LayoutEditor::getLayoutHeight() {return panelHeight;}
+/*public*/ int LayoutEditor::getLayoutHeight() {return gContext->getLayoutHeight();}
 
 /*public*/ int LayoutEditor::getWindowWidth()
 {
@@ -5807,21 +5956,21 @@ void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 }
 
 /*public*/ int LayoutEditor::setGridSize(int newSize) {
-    gridSize1st = newSize;
-    return gridSize1st;
+    gContext->setGridSize(newSize);
+    return gContext->getGridSize();
 }
 
 /*public*/ int LayoutEditor::getGridSize() {
-    return gridSize1st;
+    return gContext->getGridSize();
 }
 
 /*public*/ int LayoutEditor::setGridSize2nd(int newSize) {
-    gridSize2nd = newSize;
-    return gridSize2nd;
+ gContext->setGridSize2nd(newSize);
+ return gContext->getGridSize2nd();
 }
 
 /*public*/ int LayoutEditor::getGridSize2nd() {
-    return gridSize2nd;
+    return gContext->getGridSize2nd();
 }
 /*public*/ /*const*/ int LayoutEditor::getAnchorX() {
   return _anchorX;
@@ -5872,7 +6021,7 @@ double LayoutEditor::toRadians(double degrees)
 }
 
 /*public*/ QList<LayoutTurnout*> LayoutEditor::getLayoutTurnouts() {
-//    return layoutTrackList.stream() // next line excludes LayoutSlips
+//    return layoutTrackList->stream() // next line excludes LayoutSlips
 //            .filter((o) -> (!(o instanceof LayoutSlip) && (o instanceof LayoutTurnout)))
 //            .map(LayoutTurnout.class::cast).map(LayoutTurnout.class::cast)
 //            .collect(Collectors.toCollection(ArrayList<LayoutTurnout>::new));
@@ -5907,6 +6056,76 @@ double LayoutEditor::toRadians(double degrees)
 
 /*public*/ QList<LayoutTrack*>* LayoutEditor::getLayoutTracks() {
     return layoutTrackList;
+}
+
+/**
+ * Read-only access to the list of LayoutTrackView family objects.
+ * The returned list will throw UnsupportedOperationException
+ * if you attempt to modify it.
+ * @return unmodifiable copy of track views.
+ */
+//@Nonnull
+/*final*/ /*public*/ QList<LayoutTrackView*>* LayoutEditor::getLayoutTrackViews() {
+    return /*Collections.unmodifiableList*/(layoutTrackViewList);
+}
+
+/**
+ * Add a LayoutTrack to the list of LayoutTrack family objects.
+ * @param trk the layout track to add.
+ */
+/*final*/ /*public*/ void LayoutEditor::addLayoutTrack(/*@Nonnull*/ LayoutTrack* trk) {
+    log->trace(tr("addLayoutTrack %1").arg(trk->getName()));
+    if (layoutTrackList->contains(trk)) log->warn(tr("LayoutTrack %1 already being maintained").arg(trk->getName()));
+    layoutTrackList->append(trk);
+
+    // create the view on the fly
+    LayoutTrackView* v = LayoutTrackView::makeTrackView(trk);
+    layoutTrackViewList->append(v);
+    trkToView.insert(trk, v);
+    viewToTrk.insert(v, trk);
+    unionToPanelBounds(trk->getBounds());
+}
+
+/**
+ * If item present, delete from the list of LayoutTracks
+ * and force a dirty redraw.
+ * @param trk the layout track to remove and redraw.
+ * @return true is item was deleted and a redraw done.
+ */
+/*final*/ /*public*/ bool LayoutEditor::removeLayoutTrackAndRedraw(/*@Nonnull*/ LayoutTrack* trk) {
+    if (layoutTrackList->contains(trk)) {
+        removeLayoutTrack(trk);
+        setDirty();
+        redrawPanel();
+        log->trace(tr("removeLayoutTrackAndRedraw present %1").arg(trk->getId()));
+        return true;
+    }
+    log->trace(tr("removeLayoutTrackAndRedraw absent %1").arg(trk->getId()));
+    return false;
+}
+
+/**
+ * If item present, delete from the list of LayoutTracks
+ * and force a dirty redraw.
+ * @param trk the layout track to remove.
+ */
+/*final*/ /*public*/ void LayoutEditor::removeLayoutTrack(/*@Nonnull */LayoutTrack* trk) {
+    log->trace(tr("removeLayoutTrack %1").arg(trk->getId()));
+    layoutTrackList->removeOne(trk);
+    LayoutTrackView* v = trkToView.value(trk);
+    layoutTrackViewList->removeOne(v);
+    trkToView.remove(trk);
+    viewToTrk.remove(v);
+}
+/**
+ * Clear the list of layout tracks. Not intended for general use.
+ *
+ */
+/*private*/ void LayoutEditor::clearLayoutTracks() {
+    layoutTrackList->clear();
+    layoutTrackViewList->clear();
+    trkToView.clear();
+    viewToTrk.clear();
 }
 
 /*public*/ QList<LayoutTurnout *> *LayoutEditor::getLayoutTurnoutsAndSlips() {
@@ -6106,52 +6325,55 @@ QGraphicsView* LayoutEditor::panel()
 */
 /*protected*/ bool LayoutEditor::removePositionablePoint(PositionablePoint* o)
 {
-  // First verify with the user that this is really wanted
-  if (!noWarnPositionablePoint)
-  {
-//   int selectedValue = JOptionPane.showOptionDialog(this,
-//              rb.getQString("Question2"),rb.getQString("WarningTitle"),
-//              JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,nullptr,
-//              new Object[]{rb.getQString("ButtonYes"),rb.getQString("ButtonNo"),
-//              rb.getQString("ButtonYesPlus")},rb.getQString("ButtonNo"));
-      int selectedValue = QMessageBox::warning(this, "Warning", "Do you want to delete this point? Ignore will suppress future warnings and continue.",QMessageBox::Yes | QMessageBox::No | QMessageBox::Ignore);
-      if (selectedValue == QMessageBox::No) return(false);   // return without creating if "No" response
-      if (selectedValue == QMessageBox::Ignore) {
-          // Suppress future warnings, and continue
-          noWarnPositionablePoint = true;
-      }
-  }
-  // remove from selection information
-  if (selectedObject==o) selectedObject = nullptr;
-  if (prevSelectedObject==o) prevSelectedObject = nullptr;
-  // remove connections if any
-  TrackSegment* t = o->getConnect1();
-  if (t!=nullptr) removeTrackSegment(t);
-  t = o->getConnect2();
-  if (t!=nullptr) removeTrackSegment(t);
-  // delete from array
-//  for (int i = 0; i<pointList->size();i++)
-//  {
-//   PositionablePoint* p = pointList->at(i);
-//   if (p==o)
-//   {
-//    // found object
-//    pointList->remove(i);
-//    p->invalidate(editScene);
-//    setDirty(true);
-//    //repaint();
-//    paintTargetPanel(editScene);
-//    return(true);
-//   }
-//  }
-  if (layoutTrackList->contains(o))
-  {
-      layoutTrackList->removeOne(o);
-      setDirty();
-      redrawPanel();
-      return true;
-  }
-  return (false);
+ // First verify with the user that this is really wanted, only show message if there is a bit of track connected
+ if ((o->getConnect1() != nullptr) || (o->getConnect2() != nullptr)) {
+     if (!noWarnPositionablePoint) {
+         int selectedValue = JOptionPane::showOptionDialog(this,
+                 tr("Are you sure you want to remove this point from the panel, along with any connected Track Segments?"), tr("Warning"),
+                 JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
+                 QVariantList() <<QVariant("ButtonYes") <<
+                     QVariant("No") <<
+                     QVariant("YesPlus"),
+                 QVariant("No"));
+
+         if (selectedValue == JOptionPane::NO_OPTION) {
+             return false; // return without creating if "No" response
+         }
+
+         if (selectedValue == JOptionPane::CANCEL_OPTION) {
+             // Suppress future warnings, and continue
+             noWarnPositionablePoint = true;
+         }
+     }
+
+     // remove from selection information
+     if (selectedObject == o) {
+         selectedObject = nullptr;
+     }
+
+     if (prevSelectedObject == o) {
+         prevSelectedObject = nullptr;
+     }
+
+     // remove connections if any
+     TrackSegment* t1 = o->getConnect1();
+     TrackSegment* t2 = o->getConnect2();
+
+     if (t1 != nullptr) {
+         removeTrackSegment(t1);
+     }
+
+     if (t2 != nullptr) {
+         removeTrackSegment(t2);
+     }
+
+     // delete from array
+ }
+
+ if (removeLayoutTrackAndRedraw(o))
+  return true;
+
+ return false;
 }
 /**
 * Remove a Track Segment
@@ -7187,7 +7409,7 @@ void LayoutEditor::on_removeMenuAction_triggered()
 
 /*public*/ bool LayoutEditor::translateTrack(float xDel, float yDel) {
     QPointF delta = QPointF(xDel, yDel);
-    //layoutTrackList.forEach((lt) ->
+    //layoutTrackList->forEach((lt) ->
     foreach (LayoutTrack*lt, *layoutTrackList)
     {
         lt->setCoordsCenter(MathUtil::add(lt->getCoordsCenter(), delta));
@@ -7203,15 +7425,15 @@ void LayoutEditor::on_removeMenuAction_triggered()
  * @param yFactor the amount to scale Y coordinates
  */
 /*public*/ bool LayoutEditor::scaleTrack(float xFactor, float yFactor) {
-    //layoutTrackList.forEach((lt) -> {
+    //layoutTrackList->forEach((lt) -> {
  foreach (LayoutTrack*lt, *layoutTrackList)
  {
      lt->scaleCoords(xFactor, yFactor);
  }//);
 
  //update the overall scale factors
- xScale *= xFactor;
- yScale *= yFactor;
+ gContext->setXScale(gContext->getXScale() * xFactor);
+ gContext->setYScale(gContext->getYScale() * yFactor);
 
  resizePanelBounds(true);
  return true;
@@ -7955,12 +8177,12 @@ QColor LayoutEditor::getBackgroundColor()
     return auxTools;
 }
 
- /*public*/ LayoutTrackEditors* LayoutEditor::getLayoutTrackEditors() {
-    if (layoutTrackEditors == nullptr) {
-        layoutTrackEditors = new LayoutTrackEditors(this);
-    }
-    return layoutTrackEditors;
-}
+// /*public*/ LayoutTrackEditors* LayoutEditor::getLayoutTrackEditors() {
+//    if (layoutTrackEditors == nullptr) {
+//        layoutTrackEditors = new LayoutTrackEditors(this);
+//    }
+//    return layoutTrackEditors;
+//}
 
  /*public*/ LayoutEditorChecks* LayoutEditor::getLEChecks()
  {
@@ -8631,23 +8853,23 @@ void LayoutEditor::undoMoveSelection() {
 
 /*private*/ void LayoutEditor::alignToGrid(QVector<Positionable*> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes) {
     for (Positionable* positionable : positionables) {
-        QPointF newLocation = MathUtil::granulize(positionable->getLocation(), gridSize1st);
+        QPointF newLocation = MathUtil::granulize(positionable->getLocation(), gContext->getGridSize());
         positionable->setLocation((int) (newLocation.x()), (int) newLocation.y());
     }
     for (LayoutTrack* lt : tracks) {
-        lt->setCoordsCenter(MathUtil::granulize(lt->getCoordsCenter(), gridSize1st));
+        lt->setCoordsCenter(MathUtil::granulize(lt->getCoordsCenter(), gContext->getGridSize()));
         if (qobject_cast<LayoutTurntable*>(lt)) {
             LayoutTurntable* tt = (LayoutTurntable*) lt;
-            for (RayTrack* rt : tt->getRayList()) {
+            for (RayTrack* rt : tt->getRayTrackList()) {
                 int rayIndex = rt->getConnectionIndex();
-                tt->setRayCoordsIndexed(MathUtil::granulize(tt->getRayCoordsIndexed(rayIndex), gridSize1st), rayIndex);
+                tt->setRayCoordsIndexed(MathUtil::granulize(tt->getRayCoordsIndexed(rayIndex), gContext->getGridSize()), rayIndex);
             }
         }
     }
     for (LayoutShape* ls : shapes) {
-        ls->setCoordsCenter(MathUtil::granulize(ls->getCoordsCenter(), gridSize1st));
+        ls->setCoordsCenter(MathUtil::granulize(ls->getCoordsCenter(), gContext->getGridSize()));
         for (int idx = 0; idx < ls->getNumberPoints(); idx++) {
-            ls->setPoint(idx, MathUtil::granulize(ls->getPoint(idx), gridSize1st));
+            ls->setPoint(idx, MathUtil::granulize(ls->getPoint(idx), gContext->getGridSize()));
         }
     }
 
@@ -8662,55 +8884,21 @@ void LayoutEditor::undoMoveSelection() {
  QSize dim = size();
 
  // Compute window size based on LayoutEditor size
- windowHeight = dim.height();
- windowWidth = dim.width();
+ gContext->setWindowHeight(dim.height());
+ gContext->setWindowWidth(dim.width());
 
  // Compute layout size based on LayoutPane size
- QSizeF dimF = getTargetPanelSize();
- panelHeight = (int) (dimF.height() / getZoom());
- panelWidth = (int) (dimF.width() / getZoom());
+ dim = getTargetPanelSize();
+ gContext->setLayoutWidth( (int) (dim.width() / getZoom()) );
+ gContext->setLayoutHeight( (int) (dim.height() / getZoom()) );
+ //adjustScrollBars();
 
  QPoint pt = getLocationOnScreen();
- upperLeftX = pt.x();
- upperLeftY = pt.y();
-#if 0
- UserPreferencesManager* prefsMgr =(UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");
- if(prefsMgr != nullptr)
- {
-  QString windowFrameRef = getWindowFrameRef();
+ gContext->setUpperLeftY(pt.x());
+ gContext->setUpperLeftY(pt.y());
 
-  //the restore code for this isn't working…
-  prefsMgr->setWindowLocation(windowFrameRef, QPoint(upperLeftX, upperLeftY));
-  prefsMgr->setWindowSize(windowFrameRef, QSize(windowWidth, windowHeight));
-
-  if (true)
-  {
-   QPoint prefsWindowLocation = prefsMgr->getWindowLocation(windowFrameRef);
-
-   if ((prefsWindowLocation.x() != upperLeftX) || (prefsWindowLocation.y() != upperLeftY))
-   {
-    log->error("setWindowLocation failure.");
-   }
-   QSize prefsWindowSize = prefsMgr->getWindowSize(windowFrameRef);
-
-   if ((prefsWindowSize.width() != windowWidth) || (prefsWindowSize.height() != windowHeight)) {
-       log->error("setWindowSize failure.");
-   }
-  }
-
-  //we're going to use this instead
-  if (true)
-  { //(Nope, it's not working ether)
-    //save it in the user preferences for the window
-   QRectF windowQRectF =  QRectF(upperLeftX, upperLeftY, windowWidth, windowHeight);
-   prefsMgr->setProperty(windowFrameRef, "windowQRectF", windowQRectF);
-   QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "windowQRectF");
-   log->info(tr("testing prefsProp: ") + prefsProp.toString());
-  }
- } //);
-#endif
- log->debug("setCurrentPositionAndSize Position - " + QString::number(upperLeftX) + "," + QString::number(upperLeftY) + " WindowSize - " + QString::number(windowWidth) + "," + QString::number(windowHeight) + " PanelSize - " + QString::number(panelWidth) + "," + QString::number(panelHeight));
- setDirty(true);
+ log->debug(tr("setCurrentPositionAndSize Position - %1,%2 WindowSize - %3,%4 PanelSize - %5,%6").arg(gContext->getUpperLeftX()).arg(gContext->getUpperLeftY()).arg(gContext->getWindowWidth()).arg(gContext->getWindowHeight()).arg(gContext->getLayoutWidth()).arg(gContext->getLayoutHeight()));
+ setDirty();
 }
 
 /*public*/ void LayoutEditor::setDirectTurnoutControl(bool boo) {
@@ -8742,57 +8930,57 @@ void LayoutEditor::undoMoveSelection() {
 }   //setLayoutDimensions
 
 /*public*/ QRectF LayoutEditor::getPanelBounds() {
-        return QRectF(0.0, 0.0, panelWidth, panelHeight);
+        return QRectF(0.0, 0.0, gContext->getLayoutWidth(), gContext->getLayoutHeight());
 }
 
 /*public*/ void LayoutEditor::setPanelBounds(QRectF newBounds) {
     // don't let origin go negative
- QRectF zeroToInfinityQRectF(0.0, 0.0, std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
-
- newBounds = newBounds.intersected(zeroToInfinityQRectF);
+    newBounds = newBounds.intersected(QRectF(0.0, 0.0, INFINITY, INFINITY));
 
     if (getPanelBounds() !=(newBounds)) {
-        panelWidth = (int) newBounds.width();
-        panelHeight = (int) newBounds.height();
-
-        int newTargetWidth = (int) (panelWidth * getZoom());
-        int newTargetHeight = (int) (panelHeight * getZoom());
-
-        QSizeF targetPanelSize = getTargetPanelSize();
-        int oldTargetWidth = (int) targetPanelSize.width();
-        int oldTargetHeight = (int) targetPanelSize.height();
-
-        if ((newTargetWidth != oldTargetWidth) || (newTargetHeight != oldTargetHeight)) {
-            setTargetPanelSize(newTargetWidth, newTargetHeight);
-//            adjustScrollBars();
-        }
+     gContext->setLayoutWidth((int) newBounds.width());
+     gContext->setLayoutHeight( (int) newBounds.height());
+     resetTargetSize();
     }
     log->debug(tr("setPanelBounds((%1, %2, %3, %4)").arg(newBounds.x()).arg(newBounds.y()).arg(newBounds.width()).arg(newBounds.height()));
+}
+
+/*private*/ void LayoutEditor::resetTargetSize() {
+    int newTargetWidth = (int) (gContext->getLayoutWidth() * getZoom());
+    int newTargetHeight = (int) (gContext->getLayoutHeight() * getZoom());
+
+    QSize targetPanelSize = getTargetPanelSize();
+    int oldTargetWidth = (int) targetPanelSize.width();
+    int oldTargetHeight = (int) targetPanelSize.height();
+
+    if ((newTargetWidth != oldTargetWidth) || (newTargetHeight != oldTargetHeight)) {
+        setTargetPanelSize(newTargetWidth, newTargetHeight);
+//        adjustScrollBars();
+    }
 }
 
 // this will grow the panel bounds based on items added to the layout
 /*public*/ QRectF LayoutEditor::unionToPanelBounds(/*@Nonnull*/ QRectF bounds) {
     QRectF result = getPanelBounds();
-#if 0
     // make room to expand
-    QRectF b = Mathutil->inset(bounds, gridSize1st * gridSize2nd / -2.0);
+    QRectF b = MathUtil::inset(bounds, gContext->getGridSize() * gContext->getGridSize2nd() / -2.0);
 
     // don't let origin go negative
-    b = b.createIntersection(Mathutil->zeroToInfinityQRectF);
+    b = b.intersected(/*MathUtil::zeroToInfinityRectangle2D*/QRectF(0.0, 0.0, INFINITY, INFINITY));
 
-    result.add(b);
+    //result.add(b);
+    result.adjust(b.x(), b.y(), b.width(), b.height());
 
     setPanelBounds(result);
-#endif
     return result;
 }
 
 /*public*/ void LayoutEditor::setMainlineTrackWidth(int w) {
-    mainlineTrackWidth = w;
+    gContext->setMainlineTrackWidth(w);
 }
 
 /*public*/ void LayoutEditor::setSideTrackWidth(int w) {
-    sidelineTrackWidth = w;
+    gContext->setSidelineTrackWidth(w);
 }
 
 /**
@@ -8859,11 +9047,11 @@ void LayoutEditor::undoMoveSelection() {
 }
 
 /*public*/ void LayoutEditor::setXScale(double xSc) {
-    xScale = xSc;
+    gContext->setXScale(xSc);
 }
 
 /*public*/ void LayoutEditor::setYScale(double ySc) {
-    yScale = ySc;
+    gContext->setYScale(ySc);
 }
 
 /*public*/ void LayoutEditor::setShowHelpBar(bool state)
@@ -8877,7 +9065,7 @@ void LayoutEditor::undoMoveSelection() {
       showHelpCheckBoxMenuItem->setChecked(showHelpBar);
   }
 
-  if (toolBarSide.getType() == eFLOAT) {
+  if (toolBarSide->getType() == eFLOAT) {
       if (floatEditHelpPanel != nullptr) {
           floatEditHelpPanel->setVisible(isEditable() && showHelpBar);
       }
@@ -9110,8 +9298,8 @@ void LayoutEditor::undoMoveSelection() {
     }
 
     //Set up for Entry of Track Widths
-    mainlineTrackWidthField->setText(QString::number((int) mainlineTrackWidth));
-    sidelineTrackWidthField->setText(QString::number((int) sidelineTrackWidth));
+    mainlineTrackWidthField->setText(QString::number( gContext->getMainlineTrackWidth()));
+    sidelineTrackWidthField->setText(QString::number(gContext->getSidelineTrackWidth()));
 //    enterTrackWidthFrame.addWindowListener(new WindowAdapter() {
 //        @Override
 //        public void windowClosing(WindowEvent event) {
@@ -9151,8 +9339,8 @@ void LayoutEditor::trackWidthDonePressed(/*ActionEvent evemt*/) {
         return;
     }
 
-    if (!MathUtil::equals(sidelineTrackWidth, wid)) {
-        sidelineTrackWidth = wid;
+    if (!MathUtil::equals(gContext->getSidelineTrackWidth(), wid)) {
+        gContext->setSidelineTrackWidth(wid);
         trackWidthChange = true;
     }
 
@@ -9177,8 +9365,8 @@ void LayoutEditor::trackWidthDonePressed(/*ActionEvent evemt*/) {
              tr("Error"),
              JOptionPane::ERROR_MESSAGE);
     } else {
-        if (!MathUtil::equals(mainlineTrackWidth, wid)) {
-            mainlineTrackWidth = wid;
+        if (!MathUtil::equals(gContext->getMainlineTrackWidth(), wid)) {
+            gContext->setMainlineTrackWidth(wid);
             trackWidthChange = true;
         }
 
@@ -9191,10 +9379,10 @@ void LayoutEditor::trackWidthDonePressed(/*ActionEvent evemt*/) {
         if (trackWidthChange) {
             //Integrate-LayoutEditor-drawing-options-with-previous-drawing-options
             if (layoutTrackDrawingOptions != nullptr) {
-                layoutTrackDrawingOptions->setMainBlockLineWidth((int) mainlineTrackWidth);
-                layoutTrackDrawingOptions->setSideBlockLineWidth((int) sidelineTrackWidth);
-                layoutTrackDrawingOptions->setMainRailWidth((int) mainlineTrackWidth);
-                layoutTrackDrawingOptions->setSideRailWidth((int) sidelineTrackWidth);
+                layoutTrackDrawingOptions->setMainBlockLineWidth((int) gContext->getMainlineTrackWidth());
+                layoutTrackDrawingOptions->setSideBlockLineWidth((int) gContext->getSidelineTrackWidth());
+                layoutTrackDrawingOptions->setMainRailWidth((int) gContext->getMainlineTrackWidth());
+                layoutTrackDrawingOptions->setSideRailWidth((int) gContext->getSidelineTrackWidth());
             }
             redrawPanel();
             setDirty();
@@ -9278,8 +9466,8 @@ void LayoutEditor::trackWidthCancelPressed(/*ActionEvent event*/) {
     }
 
     //Set up for Entry of Track Widths
-    primaryGridSizeField->setText(QString::number(gridSize1st));
-    secondaryGridSizeField->setText(QString::number(gridSize2nd));
+    primaryGridSizeField->setText(QString::number(gContext->getGridSize()));
+    secondaryGridSizeField->setText(QString::number(gContext->getGridSize2nd()));
 //    enterGridSizesFrame.addWindowListener(new WindowAdapter() {
 //        @Override
 //        public void windowClosing(WindowEvent event) {
@@ -9321,8 +9509,8 @@ void LayoutEditor::gridSizesDonePressed(/*ActionEvent event*/) {
         return;
     }
 
-    if (!MathUtil::equals(gridSize2nd, siz)) {
-        gridSize2nd = (int) siz;
+    if (!MathUtil::equals(gContext->getGridSize2nd(), siz)) {
+        gContext->setGridSize2nd(siz);
         gridSizesChange = true;
     }
 
@@ -9346,8 +9534,8 @@ void LayoutEditor::gridSizesDonePressed(/*ActionEvent event*/) {
              tr("Error"),
              JOptionPane::ERROR_MESSAGE);
     } else {
-        if (!MathUtil::equals(gridSize1st, siz)) {
-            gridSize1st = (int) siz;
+        if (!MathUtil::equals(gContext->getGridSize(), siz)) {
+            gContext->setGridSize(siz);
             gridSizesChange = true;
         }
 
@@ -9575,7 +9763,7 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
         setAllEditable(editModeCheckBoxMenuItem->isChecked());
 
         //show/hide the help bar
-        if (toolBarSide.getType() == eFLOAT) {
+        if (toolBarSide->getType() == eFLOAT) {
             floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
         } else {
             helpBarPanel->setVisible(isEditable() && getShowHelpBar());
@@ -9615,36 +9803,41 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
     toolBarSideTopButton = new QAction(tr("Top"),this);
     toolBarSideTopButton->setCheckable(true);
 //    toolBarSideTopButton.addActionListener((ActionEvent event) -> {
-//        setToolBarSide(ToolBarSide.eTOP);
-//    });
-    toolBarSideTopButton->setChecked(toolBarSide.getName() == (/*ToolBarSide::eTOP*/"top"));
+    connect(toolBarSideTopButton, &QAction::triggered, [=]{
+        setToolBarSide(new ToolBarSide(eTOP));
+    });
+    toolBarSideTopButton->setChecked(toolBarSide->getName() == (/*ToolBarSide::eTOP*/"top"));
 
     toolBarSideLeftButton = new QAction(tr("Left"));
 //    toolBarSideLeftButton.addActionListener((ActionEvent event) -> {
-//        setToolBarSide(ToolBarSide.eLEFT);
+//    connect(toolBarSideLeftButton, &QAction::triggered, [=]{
+//        setToolBarSide( new ToolBarSide(eLEFT));
 //    });
-    toolBarSideLeftButton->setChecked(toolBarSide.getName()==(/*ToolBarSide::eLEFT)*/"left"));
+    toolBarSideLeftButton->setChecked(toolBarSide->getName()==(/*ToolBarSide::eLEFT)*/"left"));
 
     toolBarSideBottomButton = new QAction(tr("Bottom"));
     toolBarSideBottomButton->setCheckable(true);
 //    toolBarSideBottomButton.addActionListener((ActionEvent event) -> {
-//        setToolBarSide(ToolBarSide.eBOTTOM);
+//    connect(toolBarSideBottomButton, &QAction::triggered, [=]{
+//        setToolBarSide( new ToolBarSide(eBOTTOM));
 //    });
-    toolBarSideBottomButton->setChecked(toolBarSide.getName()==(/*ToolBarSide::eBOTTOM*/"bottom"));
+    toolBarSideBottomButton->setChecked(toolBarSide->getName()==(/*ToolBarSide::eBOTTOM*/"bottom"));
 
     toolBarSideRightButton = new QAction(tr("Right"));
     toolBarSideRightButton->setCheckable(true);
 //    toolBarSideRightButton.addActionListener((ActionEvent event) -> {
-//        setToolBarSide(ToolBarSide.eRIGHT);
+//    connect(toolBarSideRightButton, &QAction::triggered, [=]{
+//        setToolBarSide( new ToolBarSide(eRIGHT));
 //    });
-    toolBarSideRightButton->setChecked(toolBarSide.getName()==(/*ToolBarSide::eRIGHT*/"right"));
+    toolBarSideRightButton->setChecked(toolBarSide->getName()==(/*ToolBarSide::eRIGHT*/"right"));
 
     toolBarSideFloatButton = new QAction(tr("Float"));
     toolBarSideFloatButton->setCheckable(true);
 //    toolBarSideFloatButton.addActionListener((ActionEvent event) -> {
-//        setToolBarSide(ToolBarSide.eFLOAT);
+//    connect(toolBarSideFloatButton, &QAction::triggered, [=]{
+//        setToolBarSide( new ToolBarSide(eFLOAT));
 //    });
-    toolBarSideFloatButton->setChecked(toolBarSide.getName()==(/*ToolBarSide::eFLOAT*/"float"));
+    toolBarSideFloatButton->setChecked(toolBarSide->getName()==(/*ToolBarSide::eFLOAT*/"float"));
 
     QMenu* toolBarSideMenu = new QMenu(tr("ToolBar Side"));
     toolBarSideMenu->addAction(toolBarSideTopButton);
@@ -9661,6 +9854,7 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
     toolBarSideGroup->addAction(toolBarSideFloatButton);
     toolBarMenu->addMenu(toolBarSideMenu);
     connect(toolBarSideGroup, SIGNAL(triggered(QAction*)), this, SLOT(on_setToolBarSide(QAction*)));
+
     //
     //toolbar wide menu
     //
@@ -9670,7 +9864,7 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
 //        setToolBarWide(newToolBarIsWide);
 //    });
     wideToolBarCheckBoxMenuItem->setChecked(leToolBarPanel->toolBarIsWide);
-    wideToolBarCheckBoxMenuItem->setEnabled((toolBarSide.getType() == eTOP) || (toolBarSide.getType() == eBOTTOM));
+    wideToolBarCheckBoxMenuItem->setEnabled((toolBarSide->getType() == eTOP) || (toolBarSide->getType() == eBOTTOM));
     connect(wideToolBarCheckBoxMenuItem, SIGNAL(toggled(bool)), this, SLOT(on_setToolBarWide(bool)));
 
     //
@@ -9867,7 +10061,7 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
                 ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->renameEditorPanel(this);
                 setDirty();
 
-                if (toolBarSide.getType() == (eFLOAT) && isEditable()) {
+                if (toolBarSide->getType() == (eFLOAT) && isEditable()) {
                     // Rebuild the toolbox after a name change.
                     deletefloatingEditToolBoxFrame();
                     createfloatingEditToolBoxFrame();
@@ -9922,7 +10116,7 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
  //    locationItem.addActionListener((ActionEvent event) -> {
      connect(locationItem, &QAction::triggered, [=] {
      setCurrentPositionAndSize();
-     log->debug(tr("Bounds:%1, %2, %3, %4, %5, %6").arg(upperLeftX).arg(upperLeftY).arg(windowWidth).arg(windowHeight).arg(panelWidth).arg(panelHeight));
+     log->debug(tr("Bounds:%1, %2, %3, %4, %5, %6").arg(gContext->getUpperLeftX()).arg(gContext->getUpperLeftY()).arg(gContext->getWindowWidth()).arg(gContext->getWindowHeight()).arg(gContext->getLayoutWidth()).arg(gContext->getLayoutHeight()));
      });
     }
 
@@ -10272,9 +10466,10 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
  {
   layoutTrackDrawingOptions = new LayoutTrackDrawingOptions(getLayoutName());
   // integrate LayoutEditor drawing options with previous drawing options
-  layoutTrackDrawingOptions->setMainBlockLineWidth((int) mainlineTrackWidth);
-  layoutTrackDrawingOptions->setSideBlockLineWidth((int) sidelineTrackWidth);
-  layoutTrackDrawingOptions->setMainRailWidth((int) mainlineTrackWidth);
+  layoutTrackDrawingOptions->setMainBlockLineWidth(gContext->getMainlineTrackWidth());
+  layoutTrackDrawingOptions->setSideBlockLineWidth(gContext->getSidelineTrackWidth());
+  layoutTrackDrawingOptions->setMainRailWidth(gContext->getMainlineTrackWidth());
+  layoutTrackDrawingOptions->setSideRailWidth(gContext->getSidelineTrackWidth());
   layoutTrackDrawingOptions->setMainRailColor(mainlineTrackColor);
   layoutTrackDrawingOptions->setSideRailColor(sidelineTrackColor);
   layoutTrackDrawingOptions->setBlockDefaultColor(defaultTrackColor);
@@ -10288,8 +10483,8 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
     layoutTrackDrawingOptions = ltdo;
 
     // integrate LayoutEditor drawing options with previous drawing options
-    mainlineTrackWidth = layoutTrackDrawingOptions->getMainBlockLineWidth();
-    sidelineTrackWidth = layoutTrackDrawingOptions->getSideBlockLineWidth();
+    gContext->setMainlineTrackWidth( layoutTrackDrawingOptions->getMainBlockLineWidth() );
+    gContext->setSidelineTrackWidth( layoutTrackDrawingOptions->getSideBlockLineWidth() );
     defaultTrackColor = layoutTrackDrawingOptions->getMainRailColor();
     sidelineTrackColor = layoutTrackDrawingOptions->getSideRailColor();
 
@@ -10500,6 +10695,63 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
 //    connect(clearAction, SIGNAL(triggered(bool)), this, SLOT(on_clearTrack()));
 }   // setupToolsMenu
 
+/**
+ * get the toolbar side
+ *
+ * @return the side where to put the tool bar
+ */
+/*public*/ ToolBarSide* LayoutEditor::getToolBarSide() {
+    return toolBarSide;
+}
+
+/**
+ * set the tool bar side
+ *
+ * @param newToolBarSide on which side to put the toolbar
+ */
+/*public*/ void LayoutEditor::setToolBarSide(ToolBarSide* newToolBarSide) {
+    // null if edit toolbar is not setup yet...
+    if (newToolBarSide != (toolBarSide)) {
+        toolBarSide = newToolBarSide;
+        UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager");//.ifPresent((prefsMgr) -> prefsMgr.setProperty(getWindowFrameRef(), "toolBarSide", toolBarSide->getName()));
+        if(prefsMgr)
+         prefsMgr->setProperty(getWindowFrameRef(), "toolBarSide", toolBarSide->getName());
+        toolBarSideTopButton->setChecked(toolBarSide->getType() == eTOP);
+        toolBarSideLeftButton->setChecked(toolBarSide->getType() == eLEFT);
+        toolBarSideBottomButton->setChecked(toolBarSide->getType() == eBOTTOM);
+        toolBarSideRightButton->setChecked(toolBarSide->getType() == eRIGHT);
+        toolBarSideFloatButton->setChecked(toolBarSide->getType() == eFLOAT);
+
+        setupToolBar(); // re-layout all the toolbar items
+
+        if (toolBarSide->getType() == eFLOAT) {
+            if (editToolBarContainerPanel != nullptr) {
+                editToolBarContainerPanel->setVisible(false);
+            }
+            if (floatEditHelpPanel != nullptr) {
+                floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
+            }
+        } else {
+            if (floatingEditToolBoxFrame != nullptr) {
+                deletefloatingEditToolBoxFrame();
+            }
+            editToolBarContainerPanel->setVisible(isEditable());
+            if (getShowHelpBar()) {
+                helpBarPanel->setVisible(isEditable());
+                // not sure why... but this is the only way I could
+                // get everything to layout correctly
+                // when the helpbar is visible...
+                bool editMode = isEditable();
+                setAllEditable(!editMode);
+                setAllEditable(editMode);
+            }
+        }
+        wideToolBarCheckBoxMenuItem->setEnabled(
+                toolBarSide->getType() == eTOP
+                || toolBarSide->getType() == eBOTTOM);
+    }
+}   // setToolBarSide
+
 void LayoutEditor::on_translateSelections()
 {
  //bring up translate selection dialog
@@ -10523,6 +10775,8 @@ void LayoutEditor::on_clearTrack()
   }
  }
 }
+
+
 
 #if 0
 //
@@ -10656,28 +10910,29 @@ void LayoutEditor::on_clearTrack()
   editToolBarContainerPanel->layout()->removeWidget(editToolBarContainerPanel);
  on_setToolBarSide(act->text());
 }
+
 /*private*/ void LayoutEditor::on_setToolBarSide(QString newToolBarSide)
 {
  // null if edit toolbar is not setup yet...
- if (newToolBarSide !=(toolBarSide.getName()))
+ if (newToolBarSide !=(toolBarSide->getName()))
  {
-  if ((editModeCheckBoxMenuItem != nullptr) && !(newToolBarSide ==(toolBarSide.getName()))) {
-   //toolBarSide.getName() = newToolBarSide;
+  if ((editModeCheckBoxMenuItem != nullptr) && !(newToolBarSide ==(toolBarSide->getName()))) {
+   //toolBarSide->getName() = newToolBarSide;
    UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager")); //.ifPresent((prefsMgr) -> {
    if(prefsMgr)
-   prefsMgr->setProperty(getWindowFrameRef(), "toolBarSide", toolBarSide.getName());
+   prefsMgr->setProperty(getWindowFrameRef(), "toolBarSide", toolBarSide->getName());
   }//);
-  toolBarSide = ToolBarSide(newToolBarSide);
-  toolBarSideTopButton->setChecked(toolBarSide.getType() == (eTOP));
-  toolBarSideLeftButton->setChecked(toolBarSide.getType() == (eLEFT));
-  toolBarSideBottomButton->setChecked(toolBarSide.getType() == (eBOTTOM));
-  toolBarSideRightButton->setChecked(toolBarSide.getType() == (eRIGHT));
-  toolBarSideFloatButton->setChecked(toolBarSide.getType() == (eFLOAT));
+  toolBarSide = new ToolBarSide(newToolBarSide);
+  toolBarSideTopButton->setChecked(toolBarSide->getType() == (eTOP));
+  toolBarSideLeftButton->setChecked(toolBarSide->getType() == (eLEFT));
+  toolBarSideBottomButton->setChecked(toolBarSide->getType() == (eBOTTOM));
+  toolBarSideRightButton->setChecked(toolBarSide->getType() == (eRIGHT));
+  toolBarSideFloatButton->setChecked(toolBarSide->getType() == (eFLOAT));
 
  #if 1
   setupToolBar(); //re-layout all the toolbar items
 
-  if (toolBarSide.getType() == eFLOAT)
+  if (toolBarSide->getType() == eFLOAT)
   {
     if (editToolBarContainerPanel != nullptr) {
         editToolBarContainerPanel->setVisible(false);
@@ -10704,8 +10959,8 @@ void LayoutEditor::on_clearTrack()
 //   }
   }
   wideToolBarCheckBoxMenuItem->setEnabled(
-          toolBarSide.getType() == eTOP
-          || toolBarSide.getType() == eBOTTOM);
+          toolBarSide->getType() == eTOP
+          || toolBarSide->getType() == eBOTTOM);
  }
 }   // setToolBarSide
 #endif

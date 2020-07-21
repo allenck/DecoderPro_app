@@ -12,13 +12,15 @@
 #include "loggerfactory.h"
 #include "colorutil.h"
 #include <QAction>
-#include "layouttrackeditors.h"
+//#include "layouttrackeditors.h"
 #include "quickpromptutil.h"
 #include <climits>
 #include "path.h"
 #include "layouttrackdrawingoptions.h"
 #include <QApplication>
 #include <QToolTip>
+#include "tracksegmenteditor.h"
+#include "layoutblock.h"
 
 //TrackSegment::TrackSegment(QObject *parent) :
 //    QObject(parent)
@@ -86,6 +88,9 @@ TrackSegment::TrackSegment(QString id, LayoutTrack *c1, int t1, LayoutTrack *c2,
  circle = false;
  bezier = false;
  setupDefaultBumperSizes(layoutEditor);
+
+ editor = new TrackSegmentEditor(layoutEditor);
+
 }
 
 // alternate constructor for loading layout editor panels
@@ -2300,7 +2305,7 @@ TrackSegment::getLayoutBlock()
 //     @Override
 //     public void actionPerformed(ActionEvent e) {
  connect(act, &QAction::triggered, [=]{
-         layoutEditor->getLayoutTrackEditors()->editTrackSegment(this);
+     editor->editLayoutTrack(this);
  });
  popupMenu->addAction(act =new AbstractAction(tr("Delete"),this));
 // {
@@ -3176,7 +3181,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type)
+/*protected*/ void TrackSegment::draw1(EditScene* g2, bool isMain, bool isBlock)
 {
  if (!isBlock && isDashed() && getLayoutBlock() != nullptr) {
      // Skip the dashed rail layer, the block layer will display the dashed track
@@ -3249,7 +3254,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type) {
+/*protected*/ void TrackSegment::draw2(EditScene* g2, bool isMain, float railDisplacement) {
     if (isDashed() && getLayoutBlock() != nullptr) {
         // Skip the dashed rail layer, the block layer will display the dashed track
         // This removes random rail fragments from between the block dashes

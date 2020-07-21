@@ -147,6 +147,7 @@
 }
 
 /*public*/ /*abstract*/ bool LayoutTrack::isMainline() {return false;}
+
 /**
  * draw one line (Ballast, ties, center or 3rd rail, block lines)
  *
@@ -154,7 +155,7 @@
  * @param isMain  true if drawing mainlines
  * @param isBlock true if drawing block lines
  */
-/*protected*/ /*abstract*/ void LayoutTrack::draw1(EditScene * /*g2*/, bool /*isMain*/, bool /*isBlock*/, ITEMTYPE  /*type*/) {}
+/*protected*/ /*abstract*/ void LayoutTrack::draw1(EditScene * /*g2*/, bool /*isMain*/, bool /*isBlock*/) {}
 
 /**
  * draw two lines (rails)
@@ -163,7 +164,7 @@
  * @param isMain           true if drawing mainlines
  * @param railDisplacement the offset from center to draw the lines
  */
-/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool /*isMain*/, float /*railDisplacement*/, ITEMTYPE /*type*/ ) {}
+/*protected*/ /*abstract*/ void LayoutTrack::draw2(EditScene* g2, bool /*isMain*/, float /*railDisplacement*/ ) {}
 
 /**
  * draw hidden track

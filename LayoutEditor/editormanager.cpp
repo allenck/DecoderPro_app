@@ -1,12 +1,85 @@
 #include "editormanager.h"
 #include "editor.h"
+#include "vptr.h"
 
-EditorManager::EditorManager(QObject *parent) : QObject(parent)
+EditorManager::EditorManager(QObject *parent) : Bean(parent)
 {
 
 }
 ///*public*/ class EditorManager implements InstanceManagerAutoDefault {
 
+/*public*/ /*static*/ /*final*/ QString EditorManager::EDITORS = "editors";
+/*public*/ /*static*/ /*final*/ QString EditorManager::TITLE = "title";
+/**
+ * Add an editor to this manager.
+ *
+ * @param editor the editor to add
+ */
+/*public*/ void EditorManager::add(/*@Nonnull*/ Editor* editor) {
+    //bool result = set.insert(editor);
+    QSet<Editor*>::iterator it = set.insert(editor);
+    //if (result)
+//    if(it)
+//    {
+//        fireIndexedPropertyChange(EDITORS, set.size(), QVariant(), VPtr<Editor>::asQVariant(editor));
+//        editor->addPropertyChangeListener(TITLE, this);
+//    }
+}
+
+/**
+ * Check if an editor is in the manager.
+ *
+ * @param editor the editor to check for
+ * @return true if this manager contains an editor with name; false
+ * otherwise
+ */
+/*public*/ bool EditorManager::contains(/*@Nonnull*/ Editor* editor) {
+    return set.contains(editor);
+}
+
+/**
+ * Get all managed editors. This set is sorted by the title of the editor.
+ *
+ * @return the set of all editors
+ */
+//@Nonnull
+/*public*/ QSet<Editor*> EditorManager::getAll() {
+    return QSet<Editor*>(set);
+}
+#if 0
+/**
+ * Get all managed editors that implement the specified type. This set is
+ * sorted by the title of the editor.
+ *
+ * @param <T> the specified type
+ * @param type the specified type
+ * @return the set of all editors of the specified type
+ */
+//@Nonnull
+/*public*/ <T extends Editor> SortedSet<T> getAll(@Nonnull Class<T> type) {
+    return set.stream()
+            .filter(e -> type.isAssignableFrom(e.getClass()))
+            .map(type::cast)
+            .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Editor::getTitle))));
+}
+#endif
+/**
+ * Get the editor with the given name.
+ *
+ * @param name the name of the editor
+ * @return the editor with the given name or null if no editor by that name
+ * exists
+ */
+//@CheckForNull
+/*public*/ Editor* EditorManager::get(/*@Nonnull*/ QString name) {
+    //return getAll().stream().filter(e -> e.getTitle().equals(name)).findFirst().orElse(null);
+    foreach (Editor* e, getAll()) {
+        if(e->getTitle() == name)
+            return e;
+        else
+            return nullptr;
+    }
+}
 #if 0
     /*private*/ /*final*/ SortedSet<Editor> editors = new TreeSet<>(new Comparator<Editor>() {
 
@@ -24,7 +97,7 @@ EditorManager::EditorManager(QObject *parent) : QObject(parent)
      * @return a List of Editors
      */
     /*synchronized*/ /*public*/ QList<Editor *> EditorManager::getEditorsList() {
-        return QList<Editor*>(this->editors.toList());
+        return QList<Editor*>(this->set.toList());
     }
 #if 0
     /**
@@ -85,9 +158,9 @@ EditorManager::EditorManager(QObject *parent) : QObject(parent)
      * @return true if the set was changed; false otherwise
      */
     /*public*/ bool EditorManager::addEditor(/*@Nonnull*/ Editor* editor) {
-        if(!editors.contains(editor))
+        if(!set.contains(editor))
         {
-         this->editors.insert(editor);
+         this->set.insert(editor);
          return true;
         }
         return false;
@@ -101,5 +174,5 @@ EditorManager::EditorManager(QObject *parent) : QObject(parent)
      * @return true if the set was changed; false otherwise
      */
     /*public*/ bool EditorManager::removeEditor(/*@Nonnull*/ Editor* editor) {
-        return this->editors.remove(editor);
+        return this->set.remove(editor);
     }

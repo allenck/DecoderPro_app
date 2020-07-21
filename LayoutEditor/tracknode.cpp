@@ -1,4 +1,6 @@
 #include "tracknode.h"
+#include "tracksegment.h"
+#include "layouteditor.h"
 
 TrackNode::TrackNode(QObject *parent) :
     QObject(parent)

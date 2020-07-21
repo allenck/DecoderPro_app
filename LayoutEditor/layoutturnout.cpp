@@ -25,7 +25,8 @@
 #include <QApplication>
 #include "signalheadmanager.h"
 #include "joptionpane.h"
-#include "layouttrackeditors.h"
+//#include "layouttrackeditors.h"
+#include "layoutturnouteditor.h"
 #include "layouteditortoolbarpanel.h"
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
@@ -151,16 +152,25 @@
         /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor)
  : LayoutTrack(id, c, layoutEditor) {
     //super(id, c, layoutEditor);
+ editor = new LayoutTurnoutEditor(layoutEditor);
 }
 
-/*public*/ LayoutTurnout::LayoutTurnout(QString id, int t, QPointF c, double rot, double xFactor, double yFactor,
+/*protected*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id,
+        /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, int t)
+ : LayoutTrack(id, c, layoutEditor) {
+    //super(id, c, layoutEditor);
+ type - t;
+ editor = new LayoutTurnoutEditor(layoutEditor);
+}
+
+/*public*/ LayoutTurnout::LayoutTurnout(QString id, LayoutTurnout::TurnoutType t, QPointF c, double rot, double xFactor, double yFactor,
                                         LayoutEditor* layoutEditor)
  : LayoutTrack(id, c, layoutEditor)
 {
  common(id, t, c, rot, xFactor, yFactor, layoutEditor, 1);
 }
 
-/*public*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id, int t, /*@Nonnull*/ QPointF c, double rot,
+/*public*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ QPointF c, double rot,
            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
   : LayoutTrack(id, c, layoutEditor)
 {
@@ -168,11 +178,13 @@
 }
 
 
-void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor *layoutEditor, int v)
+void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor *layoutEditor, int v)
 {
  log = new Logger("LayoutTurnout");
  this->version = version;
  setObjectName(id);
+ editor = new LayoutTurnoutEditor(layoutEditor);
+
  editLayoutTurnoutFrame = nullptr;
  editOpen = false;
  turnoutName = "";   // should be the name (system or user) of
@@ -1139,14 +1151,99 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 
 /*public*/ int LayoutTurnout::getLinkType() {return linkType;}
 /*public*/ void LayoutTurnout::setLinkType(int type) {linkType = type;}
-/*public*/ int LayoutTurnout::getTurnoutType() {return type;}
+/*public*/ LayoutTurnout::TurnoutType LayoutTurnout::getTurnoutType() {return type;}
+/**
+ * Returns true if this is a turnout (not a crossover or slip)
+ *
+ * @param type the turnout type
+ * @return boolean true if this is a turnout
+ */
+/*public*/ /*static*/ bool LayoutTurnout::isTurnoutTypeTurnout(TurnoutType type) {
+    return (type == TurnoutType::RH_TURNOUT
+            || type == TurnoutType::LH_TURNOUT
+            || type == TurnoutType::WYE_TURNOUT);
+}
+
+/**
+ * Returns true if this is a turnout (not a crossover or slip)
+ *
+ * @return boolean true if this is a turnout
+ */
+/*public*/ bool LayoutTurnout::isTurnoutTypeTurnout() {
+    return isTurnoutTypeTurnout(getTurnoutType());
+}
+
+/**
+ * Returns true if this is a crossover
+ *
+ * @param type the turnout type
+ * @return boolean true if this is a crossover
+ */
+/*public*/ /*static*/ bool LayoutTurnout::isTurnoutTypeXover(TurnoutType type) {
+    return (type == TurnoutType::DOUBLE_XOVER
+            || type == TurnoutType::RH_XOVER
+            || type == TurnoutType::LH_XOVER);
+}
+
 /*public*/ bool LayoutTurnout::isTurnoutTypeXover() {
-    return ((type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER));
+ return hasEnteringDoubleTrack(getTurnoutType());
+}
+
+/**
+ * Returns true if this is a slip
+ *
+ * @param type the turnout type
+ * @return boolean true if this is a slip
+ */
+/*public*/ /*static*/ bool LayoutTurnout::isTurnoutTypeSlip(TurnoutType type) {
+    return (type == TurnoutType::SINGLE_SLIP
+            || type == TurnoutType::DOUBLE_SLIP);
 }
 
 /*public*/ bool LayoutTurnout::isTurnoutTypeSlip() {
-    return ((type == SINGLE_SLIP) || (type == DOUBLE_SLIP));
+ return isTurnoutTypeSlip(getTurnoutType());
 }
+
+/**
+ * Returns true if this has a single-track entrance end. (turnout or wye)
+ *
+ * @param type the turnout type
+ * @return boolean true if single track entrance
+ */
+/*public*/ /*static*/ bool LayoutTurnout::hasEnteringSingleTrack(TurnoutType type) {
+    return isTurnoutTypeTurnout(type);
+}
+
+/**
+ * Returns true if this has a single-track entrance end. (turnout or wye)
+ *
+ * @return boolean true if single track entrance
+ */
+/*public*/ bool LayoutTurnout::hasEnteringSingleTrack() {
+    return hasEnteringSingleTrack(getTurnoutType());
+}
+
+/**
+ * Returns true if this has double track on the entrance end (crossover or
+ * slip)
+ *
+ * @param type the turnout type
+ * @return boolean true if double track entrance
+ */
+/*public*/ /*static*/ bool LayoutTurnout::hasEnteringDoubleTrack(TurnoutType type) {
+    return isTurnoutTypeXover(type) || isTurnoutTypeSlip(type);
+}
+
+/**
+ * Returns true if this has double track on the entrance end (crossover or
+ * slip)
+ *
+ * @return boolean true if double track entrance
+ */
+/*public*/ bool LayoutTurnout::hasEnteringDoubleTrack() {
+    return hasEnteringDoubleTrack(getTurnoutType());
+}
+
 /*public*/ QObject* LayoutTurnout::getConnectA() {return connectA;}
 /*public*/ QObject* LayoutTurnout::getConnectB() {return connectB;}
 /*public*/ QObject* LayoutTurnout::getConnectC() {return connectC;}
@@ -1173,6 +1270,14 @@ void LayoutTurnout::common(QString id, int t, QPointF c, double rot, double xFac
 }
 
 /*public*/ int LayoutTurnout::getContinuingSense() {return continuingSense;}
+
+/**
+ *
+ * @return true is the continuingSense matches the known state
+ */
+/*public*/ bool LayoutTurnout::isInContinuingSenseState() {
+    return getState() == continuingSense;
+}
 
 /*public*/ void LayoutTurnout::setTurnout(QString tName)
 {
@@ -2350,6 +2455,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  }
 #endif
 }
+
 /*private*/ void LayoutTurnout::deactivateTurnout()
 {
  if (mTurnoutListener!=nullptr)
@@ -2859,7 +2965,8 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 //      @Override
 //      public void actionPerformed(ActionEvent e) {
   connect(act, &QAction::triggered, [=]{
-          layoutEditor->getLayoutTrackEditors()->editLayoutTurnout(this);
+          //layoutEditor->getLayoutTrackEditors()->editLayoutTurnout(this);
+      editor->editLayoutTrack(this);
 //      }
   });
   popup->addAction(act = new AbstractAction(tr("Delete"),this));
@@ -4488,7 +4595,7 @@ void LayoutTurnout::remove()
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type)
+/*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock)
 {
  if (isBlock && getLayoutBlock() == nullptr) {
      // Skip the block layer if there is no block assigned.
@@ -4563,8 +4670,8 @@ void LayoutTurnout::remove()
  {
   itemGroup = new QGraphicsItemGroup();
   itemGroup->setZValue(Editor::HANDLES+1);
-  g2->addItem(itemGroup);
  }
+ g2->addItem(itemGroup);
 
  if (toType == DOUBLE_XOVER)
  {
@@ -5095,7 +5202,7 @@ void LayoutTurnout::remove()
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type) {
+/*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement) {
     int toType = getTurnoutType();
 
     QPointF pA = getCoordsA();

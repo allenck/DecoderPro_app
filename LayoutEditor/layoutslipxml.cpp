@@ -392,7 +392,7 @@ LayoutSlipXml::LayoutSlipXml(QObject *parent) :
            bc.firstChildElement("turnoutB").text());
   }
  }
- p->getLayoutTracks()->append(l);
+ p->addLayoutTrack(l);
 }
 
 QString LayoutSlipXml::getElement(QDomElement el, QString child) {

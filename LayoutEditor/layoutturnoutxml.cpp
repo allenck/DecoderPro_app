@@ -2,7 +2,7 @@
 #include "layoutturnout.h"
 #include "tracksegment.h"
 #include "loggerfactory.h"
-
+#include "layouteditor.h"
 
 LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
   AbstractXmlAdapter(parent)
@@ -197,11 +197,11 @@ LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
     QString name = element.attribute("ident");
     double x = 0.0;
     double y = 0.0;
-    int tType = LayoutTurnout::RH_TURNOUT;
+    LayoutTurnout::TurnoutType tType = LayoutTurnout::RH_TURNOUT;
     try {
         x = element.attribute("xcen").toFloat();
         y = element.attribute("ycen").toFloat();
-        tType = element.attribute("type").toInt();
+        tType = (LayoutTurnout::TurnoutType)element.attribute("type").toInt();
     } catch (DataConversionException e) {
         Logger::error("failed to convert layoutturnout attribute");
     }
@@ -437,7 +437,8 @@ LayoutTurnoutXml::LayoutTurnoutXml(QObject *parent) :
         }
     }
 
-    p->getLayoutTracks()->append(l);
+    p->addLayoutTrack(l);
+
 }
 
 QString LayoutTurnoutXml::getElement(QDomElement el, QString child) {

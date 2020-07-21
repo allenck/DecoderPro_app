@@ -473,7 +473,7 @@ private slots:
     /*protected*/ void setTargetPanel(JLayeredPane* targetPanel, JmriJFrame* frame);
     /*protected*/ void setTargetPanel(EditScene* targetPanel, JmriJFrame* frame);
     /*protected*/ void setTargetPanelSize(int w, int h);
-    /*protected*/ QSizeF getTargetPanelSize();
+    /*protected*/ QSize getTargetPanelSize();
 
 
 //    ToolTipTimer* _tooltipTimer;
@@ -664,7 +664,7 @@ protected slots:
   friend class BackgroundItemPanel;
   friend class ColorDialog;
   friend class DecoratorPanel;
-
+  friend class LayoutEditorComponent;
 public:
   class AddRightTOActionListener : public ActionListener
   {

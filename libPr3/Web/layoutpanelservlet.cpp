@@ -51,8 +51,8 @@ LayoutPanelServlet::LayoutPanelServlet()
   panel.setAttribute("controlling", (editor->allControlling()) ? "yes" : "no");
   panel.setAttribute("xscale", ((float) editor->getXScale()));
   panel.setAttribute("yscale", ((float) editor->getYScale()));
-  panel.setAttribute("mainlinetrackwidth", (editor->getMainlineTrackWidth()));
-  panel.setAttribute("sidetrackwidth", (editor->getSideTrackWidth()));
+  panel.setAttribute("mainlinetrackwidth", (editor->gContext->getMainlineTrackWidth()));
+  panel.setAttribute("sidetrackwidth", (editor->gContext->getSidelineTrackWidth()));
   panel.setAttribute("turnoutcircles", (editor->getTurnoutCircles()) ? "yes" : "no");
   panel.setAttribute("turnoutcirclesize", (editor->getTurnoutCircleSize()));
   panel.setAttribute("turnoutdrawunselectedleg", (editor->isTurnoutDrawUnselectedLeg()) ? "yes" : "no");

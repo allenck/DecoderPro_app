@@ -4,10 +4,11 @@
 #include <QAction>
 #include <QSet>
 #include "layouteditorfinditems.h"
-#include "layouttrackeditors.h"
+//#include "layouttrackeditors.h"
 #include "mathutil.h"
 #include <cmath>
 #include <QToolTip>
+#include "layouttrackeditor.h"
 
 /**
  * A collection of tools to check various things on the layout editor panel.
@@ -422,7 +423,9 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
   layoutEditor->clearSelectionGroups();
   layoutEditor->amendSelectionGroup(layoutTrack);
 
-  layoutEditor->getLayoutTrackEditors()->editLayoutTrack(layoutTrack);
+  //layoutEditor->getLayoutTrackEditors()->editLayoutTrack(layoutTrack);
+  // temporary call, should be replaced by access through View class
+  LayoutTrackEditor::makeTrackEditor(layoutTrack, layoutEditor);
  } else {
   layoutEditor->clearSelectionGroups();
  }
@@ -916,7 +919,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 //void LayoutEditorChecks::testFunct()
 //{
 // QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetMaps =  new QMap<QString, QList<QSet<QString>*>*>();
-// for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
+// for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
 //     layoutTrack->checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps);
 // }
 // log->debug(tr("count = %1").arg(blockNamesToTrackNameSetMaps->count()));

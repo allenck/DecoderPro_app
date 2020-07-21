@@ -577,7 +577,7 @@ MathUtil::MathUtil()
  * @return a new rectangle {0.0, 0.0, POSITIVE_INFINITY, POSITIVE_INFINITY}
  */
 //@CheckReturnValue
-/*public*/ /*static*/ QRectF MathUtil::zeroToInfinityRectangle2D() {
+/*public*/ /*static*/ QRectF MathUtil::zeroToInfinityRectangle2D(){
     return QRectF(0.0, 0.0, INFINITY, INFINITY);
 }
 

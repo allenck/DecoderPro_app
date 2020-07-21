@@ -12,6 +12,7 @@
 #include "abstractaction.h"
 #include "layoutblockroutetableaction.h"
 
+class LayoutTurnoutEditor;
 class SignalHead;
 class QGraphicsEllipseItem;
 class QCloseEvent;
@@ -42,7 +43,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurnout : public LayoutTrack
 public:
     //explicit LayoutTurnout(QObject *parent = 0);
     // defined constants - turnout types
- enum TURNOUTTYPES
+ enum TurnoutType
  {
     RH_TURNOUT = 1,
     LH_TURNOUT = 2,
@@ -53,7 +54,7 @@ public:
     SINGLE_SLIP = 7, //used in LayoutSlip which extends this class
     DOUBLE_SLIP = 8 //used in LayoutSlip which extends this class
      };
- Q_ENUM(TURNOUTTYPES)
+ Q_ENUM(TurnoutType)
     // defined constants - link types
  enum LINKTYPES
  {
@@ -122,7 +123,7 @@ public:
     /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorBNamed = NULL; // Continuing
     /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorCNamed = NULL; // diverging
     /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorDNamed = NULL; // single or double crossover only
-    /*public*/ int type;// = RH_TURNOUT;
+    /*public*/ LayoutTurnout::TurnoutType type;// = RH_TURNOUT;
     /*public*/ LayoutTrack* connectA = NULL;		// throat of LH, RH, RH Xover, LH Xover, and WYE turnouts
     /*public*/ LayoutTrack* connectB = NULL;		// straight leg of LH and RH turnouts
     /*public*/ LayoutTrack* connectC = NULL;
@@ -141,9 +142,10 @@ public:
     /**
      * constructor method
      */
-    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, int t, /*@Nonnull*/ QPointF c, double rot,
+
+    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ QPointF c, double rot,
             double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor);
-    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, int t, /*@Nonnull*/ QPointF c, double rot,
+    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ QPointF c, double rot,
             double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int version);
     /*public*/ QString toString();
 
@@ -222,9 +224,17 @@ public:
 
     /*public*/ int getLinkType();
     /*public*/ void setLinkType(int type);
-    /*public*/ int getTurnoutType();
+    /*public*/ TurnoutType getTurnoutType();
+    /*public*/ static bool isTurnoutTypeTurnout(TurnoutType type);
+    /*public*/ bool isTurnoutTypeTurnout();
+    /*public*/ static bool isTurnoutTypeXover(TurnoutType type);
     /*public*/ bool isTurnoutTypeXover();
+    /*public*/ static bool isTurnoutTypeSlip(TurnoutType type);
     /*public*/ bool isTurnoutTypeSlip();
+    /*public*/ static bool hasEnteringSingleTrack(TurnoutType type);
+    /*public*/ bool hasEnteringSingleTrack();
+    /*public*/ static bool hasEnteringDoubleTrack(TurnoutType type);
+    /*public*/ bool hasEnteringDoubleTrack();
     /*public*/ QObject* getConnectA();
     /*public*/ QObject* getConnectB();
     /*public*/ QObject* getConnectC();
@@ -234,6 +244,7 @@ public:
      * Accessor methods
     */
     /*public*/ int getContinuingSense();
+    /*public*/ bool isInContinuingSenseState();
     /*public*/ void setTurnout(QString tName);
     /*public*/ Turnout* getSecondTurnout();
     /*public*/ void setSecondTurnout(QString tName);
@@ -359,7 +370,7 @@ public slots:
 
 private:
  int version;
- void common(QString id, int t, QPointF c, double rot, double xFactor, double yFactor,
+ void common(QString id, LayoutTurnout::TurnoutType t, QPointF c, double rot, double xFactor, double yFactor,
              LayoutEditor* myPanel, int v);
     /*private*/ LayoutBlock* blockB = NULL;  // Xover - second block, if there is one
     /*private*/ LayoutBlock* blockC = NULL;  // Xover - third block, if there is one
@@ -446,8 +457,14 @@ private slots:
  void on_blockDNameField_textEdited(QString);
 
 protected:
+ // temporary reference to the Editor that will eventually be part of View - should be moved to ctors and final
+  /*protected*/ LayoutTurnoutEditor* editor;
+
  /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id,
      /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor);
+ /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id,
+         /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, int t);
+
  // operational instance variables (not saved between sessions)
  //private Turnout turnout = NULL;
  /*protected*/ NamedBeanHandle<Turnout*>* namedTurnout;// = NULL;
@@ -486,8 +503,8 @@ protected:
  /*protected*/ NamedBeanHandle<SignalHead*>* signalC2HeadNamed = nullptr; // RH_Xover and double crossover only
  /*protected*/ NamedBeanHandle<SignalHead*>* signalD1HeadNamed = nullptr; // single or double crossover only
  /*protected*/ NamedBeanHandle<SignalHead*>* signalD2HeadNamed = nullptr; // LH_Xover and double crossover only
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type) override;
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type) override;
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock) override;
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement) override;
  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType) override;
  /*protected*/ void drawTurnoutControls(EditScene* g2) override;
  /*protected*/ void drawEditControls(EditScene* g2) override;
@@ -503,8 +520,11 @@ protected:
  friend class ETWindowListener;
  friend class ConnectivityUtil;
  friend class LayoutEditorAuxTools;
- friend class LayoutTrackEditors;
+ //friend class LayoutTrackEditors;
  friend class MTurnoutListener;
+ friend class LayoutTurnoutEditor;
+ friend class LayoutTurnoutView;
+ friend class LayoutEditorComponent;
 };
 
 class ETWindowListener : public WindowListener

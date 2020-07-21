@@ -33,18 +33,96 @@
 #include "mathutil.h"
 #include "jtextfield.h"
 #include "layouttrack.h"
+#include "layouteditorviewcontext.h"
 
 //namespace Ui {
 //class LayoutEditor;
 //}
+enum TOOLBARSIDES
+{
+   eTOP, //("top"),
+   eLEFT, //("left"),
+   eBOTTOM, //("bottom"),
+   eRIGHT, //("right"),
+   eFLOAT //("float");
+};
 
+/*private*/ /*enum*/class ToolBarSide  : public QObject
+{
+
+ TOOLBARSIDES type;
+ /*private*/ /*transient*/ QString name;
+
+public:
+    ToolBarSide(QString name) {
+        this->name = name;
+     this->type = getName(name);
+    }
+    ToolBarSide(TOOLBARSIDES type)
+    {
+     this->type = type;
+     switch (type) {
+     case eTOP:
+      name = "top";
+      break;
+     case eLEFT:
+      name = "left";
+      break;
+     case eRIGHT:
+      name = "right";
+      break;
+     case eBOTTOM:
+      name = "bottom";
+      break;
+     case eFLOAT:
+     default:
+      name = "float";
+      break;
+     }
+    }
+
+//     //Build an immutable map of String name to enum pairs.
+//     static {
+//         Map<String, ToolBarSide> map = new ConcurrentHashMap<>();
+
+//         for (ToolBarSide instance : ToolBarSide.values()) {
+//             map.put(instance.getName(), instance);
+//         }
+//         ENUM_MAP = Collections.unmodifiableMap(map);
+//     }
+
+    /*public*/ static TOOLBARSIDES getName(/*@Nullable*/ QString name) {
+     if(name.toLower() == "top")
+      return eTOP;
+     else if (name.toLower() == "left")
+      return eLEFT;
+     else if (name.toLower() == "bottom")
+      return eBOTTOM;
+     else if (name.toLower() == "right")
+      return eRIGHT;
+     else //if (name == "float")
+      return eFLOAT;
+    }
+
+    /*public*/ QString getName() {
+        return name;
+    }
+    TOOLBARSIDES getType()
+    {
+     return type;
+    }
+};
+
+class LayoutEditorComponent;
+class PositionablePointView;
+class LayoutTrackView;
 class AddEntryExitPairAction;
-class ToolBarSide;
+//class ToolBarSide;
 class EditToolBarContainerPanel;
 class NamedBeanComboBox;
 class LEBlockContentsIcon;
 class LayoutEditorChecks;
-class LayoutTrackEditors;
+//class LayoutTrackEditors;
 class LayoutTrackDrawingOptions;
 class StoreXmlUserAction;
 class TurnoutSelection;
@@ -70,6 +148,7 @@ class AnalogClock2Display;
 class JmriJFrame;
 class LayoutEditorToolBarPanel;
 class LayoutShape;
+
 class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditor : public PanelEditor
 {
  Q_OBJECT
@@ -82,7 +161,7 @@ public:
 //    LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name = "My Layout", bool bTest = false, QWidget *parent=0);
  ~LayoutEditor();
     LayoutEditor(const LayoutEditor&) : PanelEditor() {}
-    /*public*/ void newPanelDefaults();
+    /*public*/ void newPanelDefaults() override;
     /*public*/ LayoutEditorToolBarPanel* getLayoutEditorToolBarPanel();
 
     // connection types
@@ -135,22 +214,17 @@ public:
     const /*public*/ static int OPTION_HIDDEN = 3;
     const /*public*/ static int OPTION_TOOLTIP= 4;
 
-    enum TOOLBARSIDES
-    {
-       eTOP, //("top"),
-       eLEFT, //("left"),
-       eBOTTOM, //("bottom"),
-       eRIGHT, //("right"),
-       eFLOAT //("float");
-    };
+
+    /*public*/ /*final*/ LayoutEditorViewContext* gContext = new LayoutEditorViewContext(); // public for now, as things work access changes
+
 
     /*public*/ void addAnchor();
     /*public*/ void addEndBumper();
     /*public*/ void addTrackSegment();
     /*public*/ void addLevelXing();
-    /*public*/ void addLayoutSlip(int type);
+    /*public*/ void addLayoutSlip(LayoutTurnout::TurnoutType type);
     /*public*/ void addLayoutTurnout(int type);
-    LayoutTurnout* addLayoutTurnout(QString name, int type, double rot, QPointF currentPoint);
+//    LayoutTurnout* addLayoutTurnout(QString name, int type, double rot, QPointF currentPoint);
     /*public*/ bool validatePhysicalTurnout(QString inTurnoutName, QWidget* openPane = 0);
     /*public*/ QVector<SensorIcon*>* sensorImage;// = new QVector<SensorIcon*>();  // sensor images
     /*public*/ QVector<LayoutTurntable*>* turntableList;// = new QVector<LayoutTurntable>(); // Turntable list
@@ -166,7 +240,7 @@ public:
     *   and is unique among all blocks.  If valid, returns true and sets the block sensor
     *   name in the block.  Else returns false, and does nothing to the block.
     */
-    /*public*/ bool validateSensor(QString sensorName, LayoutBlock* blk, Component *openFrame);
+    /*public*/ bool validateSensor(QString sensorName, LayoutBlock* blk, QWidget *openFrame);
     /*public*/ QList <Positionable*> getContents();
     // accessor routines for turnout size parameters
     /*public*/ void setTurnoutBX(double bx);
@@ -303,8 +377,8 @@ public:
     bool getTurnoutCircles(){return turnoutCirclesWithoutEditMode;}
     bool getTooltipsNotEdit() {return tooltipsWithoutEditMode;}
     /*public*/ bool getTooltipsInEdit() {return tooltipsInEditMode;}
-    float getMainlineTrackWidth(){return mainlineTrackWidth;}
-    float getSideTrackWidth(){return sidelineTrackWidth;}
+//    float getMainlineTrackWidth(){return mainlineTrackWidth;}
+//    float getSideTrackWidth(){return sidelineTrackWidth;}
     bool getAutoBlockAssignment(){return autoAssignBlocks;}
     QColor getBackgroundColor();
     /*public*/ void loadFailed();
@@ -332,7 +406,7 @@ public:
     /*public*/ ConnectivityUtil* getConnectivityUtil();
     /*public*/ LayoutEditorTools* getLETools();
     /*public*/ LayoutEditorAuxTools* getLEAuxTools();
-    /*public*/ LayoutTrackEditors* getLayoutTrackEditors();
+//    /*public*/ LayoutTrackEditors* getLayoutTrackEditors();
     /*public*/ LayoutEditorChecks* getLEChecks();
     /*public*/ void addToPopUpMenu(NamedBean* nb, QMenu* item, int menu);
     /*public*/ void addMultiSensor(MultiSensorIcon* l);
@@ -386,6 +460,7 @@ public:
     /*public*/ QRectF getPanelBounds();
     /*public*/ bool highlightBlock(/*@Nullable*/ Block* inBlock);
     /*public*/ void setPanelBounds(QRectF newBounds);
+    /*private*/ void resetTargetSize();
     /*public*/ double setZoom(double zoomFactor);
     /*public*/ double getZoom();
     /*public*/ QVector<SignalHeadIcon*>* signalList;// = new QVector<SignalHeadIcon*>();  // Signal Head Icons
@@ -399,7 +474,8 @@ public:
     /*public*/ QList<LayoutTurnout *> getLayoutTurnouts();
     /*public*/ QList<LayoutTurntable *> getLayoutTurntables();
     /*public*/ QList<LevelXing*> getLevelXings();
-    /*public*/ QList<LayoutTrack*>* getLayoutTracks();
+    /*final*/ /*public*/ void addLayoutTrack(/*@Nonnull*/ LayoutTrack* trk);
+    /*public*/ QList<LayoutTrack *> *getLayoutTracks();
     /*public*/ QList<LayoutTurnout*>* getLayoutTurnoutsAndSlips();
     /*public*/ /*@Nonnull*/ QList<LayoutShape *> *getLayoutShapes();
     /*public*/ void sortLayoutShapesByLevel();
@@ -430,6 +506,14 @@ public:
     /*public*/ bool scaleTrack(float xFactor, float yFactor);
     /*public*/ void clearSelectionGroups();
     /*public*/ void keyPressEvent(QKeyEvent *event);
+    /*final*/ /*public*/ QList<LayoutTrackView *> *getLayoutTrackViews();
+    /*public*/ QGraphicsEllipseItem* trackControlCircleAt(/*@Nonnull */QPointF inPoint);
+    /*protected*/ void paintTargetPanel(EditScene* g2);
+    /*public*/ QList<PositionablePointView*> getPositionablePointViews();
+    /*final*/ /*public*/ bool removeLayoutTrackAndRedraw(/*@Nonnull*/ LayoutTrack* trk);
+    /*final*/ /*public*/ void removeLayoutTrack(/*@Nonnull */LayoutTrack* trk);
+    /*public*/ ToolBarSide *getToolBarSide();
+    /*public*/ void setToolBarSide(ToolBarSide* newToolBarSide);
 
 
 public slots:
@@ -458,8 +542,8 @@ private:
  /*private*/ /*transient*/ TrackSegment* newTrack = nullptr;
  /*private*/ /*transient*/ bool panelChanged = false;
 
- /*private*/ /*transient*/ int gridSize1st = 10;    //grid size in pixels
- /*private*/ /*transient*/ int gridSize2nd = 10;    // secondary grid
+// /*private*/ /*transient*/ int gridSize1st = 10;    //grid size in pixels
+// /*private*/ /*transient*/ int gridSize2nd = 10;    // secondary grid
 
  /*private*/ /*transient*/ double selectionX = 0.0;
  /*private*/ /*transient*/ double selectionY = 0.0;
@@ -527,8 +611,6 @@ private:
  QPointF startDelta;
  /*private*/ /*transient*/ int selectedHitPointType = 0;         //hit point type within the selected object
 
- /*private*/ /*transient*/ QList<LayoutTrack*>* layoutTrackList;// = new ArrayList<>();         // LayoutTrack list
-
  // counts used to determine unique internal names
  /*private*/ /*transient*/ int numAnchors = 0;
  /*private*/ /*transient*/ int numEndBumpers = 0;
@@ -550,8 +632,8 @@ private:
  /*private*/ /*transient*/ QColor defaultTextColor = QColor(Qt::black);
 
  /*private*/ /*transient*/ QString layoutName = "";
- /*private*/ /*transient*/ double xScale = 1.0;
- /*private*/ /*transient*/ double yScale = 1.0;
+// /*private*/ /*transient*/ double xScale = 1.0;
+// /*private*/ /*transient*/ double yScale = 1.0;
  /*private*/ /*transient*/ bool animatingLayout = true;
  /*private*/ /*transient*/ bool showHelpBar = true;
  /*private*/ /*transient*/ bool drawGrid = true;
@@ -582,73 +664,10 @@ private:
  //zoom
  /*private*/ /*transient*/ double minZoom = 0.25;
  /*private*/ /*transient*/ double maxZoom = 8.0;
- /*private*/ /*enum*/class ToolBarSide {
-
-  TOOLBARSIDES type;
-  /*private*/ /*transient*/ QString name;
-
- public:
-     ToolBarSide(QString name) {
-         this->name = name;
-      this->type = getName(name);
-     }
-     ToolBarSide(TOOLBARSIDES type)
-     {
-      this->type = type;
-      switch (type) {
-      case eTOP:
-       name = "top";
-       break;
-      case eLEFT:
-       name = "left";
-       break;
-      case eRIGHT:
-       name = "right";
-       break;
-      case eBOTTOM:
-       name = "bottom";
-       break;
-      case eFLOAT:
-      default:
-       name = "float";
-       break;
-      }
-     }
-
-//     //Build an immutable map of String name to enum pairs.
-//     static {
-//         Map<String, ToolBarSide> map = new ConcurrentHashMap<>();
-
-//         for (ToolBarSide instance : ToolBarSide.values()) {
-//             map.put(instance.getName(), instance);
-//         }
-//         ENUM_MAP = Collections.unmodifiableMap(map);
-//     }
-
-     /*public*/ static TOOLBARSIDES getName(/*@Nullable*/ QString name) {
-      if(name.toLower() == "top")
-       return eTOP;
-      else if (name.toLower() == "left")
-       return eLEFT;
-      else if (name.toLower() == "bottom")
-       return eBOTTOM;
-      else if (name.toLower() == "right")
-       return eRIGHT;
-      else //if (name == "float")
-       return eFLOAT;
-     }
-
-     /*public*/ QString getName() {
-         return name;
-     }
-     TOOLBARSIDES getType()
-     {
-      return type;
-     }
- };
- /*private*/ /*transient*/ ToolBarSide toolBarSide = ToolBarSide("top");
+ /*private*/ /*transient*/ ToolBarSide* toolBarSide = new ToolBarSide("top");
  /*private*/ double returnDeltaPositionX(/*@Nonnull*/ QKeyEvent* event);
  /*private*/ double returnDeltaPositionY(/*@Nonnull*/ QKeyEvent* event);
+ /*private*/ void clearLayoutTracks();
 
 
  QButtonGroup* buttonGroup;
@@ -671,7 +690,7 @@ private:
  void resetDirty();
  ///*private*/ QObject* beginObject;// = nullptr; // begin track segment connection object, NULL if none
  /*private*/ void setLink(QObject* fromObject,int fromPointType, QObject* toObject,int toPointType);
- LayoutEditorAuxTools* auxTools;
+ LayoutEditorAuxTools* auxTools = nullptr;
  // selection variables
  /*private*/ QVector<Positionable*>* _positionableSelection = nullptr;
 
@@ -690,28 +709,28 @@ private:
  /*private*/ void drawXings(EditScene* g2);
 
  // /*protected*/ void draw(EditScene* g2);
- /*private*/ void drawLayoutTracksHidden(EditScene* g2);
- /*private*/ void drawTrackSegmentsDashed(EditScene* g2);
- /*private*/ void drawLayoutTracksBallast(EditScene* g2);
- /*private*/ void drawLayoutTracksTies(EditScene* g2);
- /*private*/ void drawLayoutTracksRails(EditScene* g2);
- /*private*/ void drawLayoutTracksBlockLines(EditScene* g2);
- /*private*/ void draw1(EditScene* g2,
-         bool isMain,
-         bool isBlock,
-         bool isHidden, LayoutTrack::ITEMTYPE type);
- /*private*/ void draw1(EditScene* g2,
-         bool isMain,
-         bool isBlock, LayoutTrack::ITEMTYPE type);
- /*private*/ void draw1(EditScene* g2, bool isMain, LayoutTrack::ITEMTYPE type);
- /*private*/ void draw1(EditScene* g2,
-         bool isMain,
-         bool isBlock,
-         bool isHidden,
-         bool isDashed, LayoutTrack::ITEMTYPE itemType);
- /*private*/ void drawPositionablePoints(EditScene* g2, bool isMain);
- /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
- /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, bool isDashed);
+// /*private*/ void drawLayoutTracksHidden(EditScene* g2);
+// /*private*/ void drawTrackSegmentsDashed(EditScene* g2);
+// /*private*/ void drawLayoutTracksBallast(EditScene* g2);
+// /*private*/ void drawLayoutTracksTies(EditScene* g2);
+// /*private*/ void drawLayoutTracksRails(EditScene* g2);
+// /*private*/ void drawLayoutTracksBlockLines(EditScene* g2);
+// /*private*/ void draw1(EditScene* g2,
+//         bool isMain,
+//         bool isBlock,
+//         bool isHidden);
+// /*private*/ void draw1(EditScene* g2,
+//         bool isMain,
+//         bool isBlock);
+// /*private*/ void draw1(EditScene* g2, bool isMain/*, LayoutTrack::ITEMTYPE type*/);
+// /*private*/ void draw1(EditScene* g2,
+//         bool isMain,
+//         bool isBlock,
+//         bool isHidden,
+//         bool isDashed/*, LayoutTrack::ITEMTYPE itemType*/);
+// /*private*/ void drawPositionablePoints(EditScene* g2, bool isMain);
+// /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
+// /*private*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, bool isDashed);
  /*private*/ void drawDecorations(EditScene* g2);
  /*private*/ void drawShapes(EditScene* g2, bool isBackground);
  /*private*/ void drawTrackSegmentInProgress(EditScene* g2);
@@ -882,7 +901,7 @@ private:
  /*private*/ MultiSensorIcon* checkMultiSensorPopUps(/*@Nonnull */QPointF loc);
  /*private*/ LocoIcon* checkMarkerPopUps(/*@Nonnull*/ QPointF loc);
  /*private*/ LayoutShape* checkLayoutShapePopUps(/*@Nonnull*/ QPointF loc);
- /*private*/ /*transient*/ LayoutTrackEditors* layoutTrackEditors = nullptr;
+ // /*private*/ /*transient*/ LayoutTrackEditors* layoutTrackEditors = nullptr;
  /*private*/ /*transient*/ LayoutEditorChecks* layoutEditorChecks = nullptr;
  //operational variables for enter track width pane
  /*private*/ /*transient*/ JmriJFrame* enterTrackWidthFrame = nullptr;
@@ -927,7 +946,7 @@ private:
  /*private*/ void hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt);
  /*private*/ void hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc);
  QPen drawingStroke;
-
+ LayoutEditorComponent* layoutEditorComponent = nullptr;
  //operational variables for move selection pane
  /*private*/ /*transient*/ JmriJFrame* moveSelectionFrame = nullptr;
  /*private*/ bool moveSelectionOpen = false;
@@ -967,7 +986,10 @@ private:
  /*private*/ /*transient*/ bool toolBarIsWide = true;
  /*private*/ void on_setToolBarSide(QString);
  /*private*/ void setupMenuBar();
-
+ /*private*/ /*final*/ QList<LayoutTrack*>* layoutTrackList = new QList<LayoutTrack*>();
+ /*private*/ /*final*/ QList<LayoutTrackView*>* layoutTrackViewList =  new QList<LayoutTrackView*>();
+ /*private*/ /*final*/ QMap<LayoutTrack*, LayoutTrackView*> trkToView = QMap<LayoutTrack*, LayoutTrackView*>();
+ /*private*/ /*final*/ QMap<LayoutTrackView*, LayoutTrack*> viewToTrk = QMap<LayoutTrackView*, LayoutTrack*>();
 
 private slots:
  void on_scenePos(QGraphicsSceneMouseEvent*event);
@@ -992,6 +1014,8 @@ private slots:
  void on_TooltipNotInEditMenuItem();
  /*private*/ void on_setToolBarSide(QAction* act);
  /*private*/ void on_setToolBarWide(bool newToolBarIsWide);
+ void trigger_menu();
+
 
 protected:
  //size of point boxes
@@ -1029,11 +1053,11 @@ protected:
 
  /*protected*/ /*transient*/ QPointF currentLocation;// = new Point2D.Double(0.0, 0.0); //current location
 
- /*protected*/ /*transient*/ int panelWidth = 0;
- /*protected*/ /*transient*/ int panelHeight = 0;
+// /*protected*/ /*transient*/ int panelWidth = 0;
+// /*protected*/ /*transient*/ int panelHeight = 0;
 
- /*protected*/ /*transient*/ float mainlineTrackWidth = 4.0F;
- /*protected*/ /*transient*/ float sidelineTrackWidth = 2.0F;
+// /*protected*/ /*transient*/ float mainlineTrackWidth = 4.0F;
+// /*protected*/ /*transient*/ float sidelineTrackWidth = 2.0F;
 
  /*protected*/ /*transient*/ QColor mainlineTrackColor = QColor(Qt::darkGray);
  /*protected*/ /*transient*/ QColor sidelineTrackColor = QColor(Qt::darkGray);
@@ -1059,12 +1083,6 @@ protected:
 #endif
  /*public*/ QGraphicsEllipseItem* trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint);
  //compute the turnout circle at inPoint (used for drawing)
- /*public*/ QGraphicsEllipseItem* trackControlCircleAt(/*@Nonnull */QPointF inPoint);
- /**
- *  Special internal class to allow drawing of layout to a JLayeredPane
- *  This is the 'target' pane where the layout is displayed
- */
- /*protected*/ void paintTargetPanel(EditScene* g2);
  // /*protected*/ void setTrackStrokeWidth(bool need);
  /**
  * Select the menu items to display for the Positionable's popup
@@ -1170,8 +1188,10 @@ friend class EnterGridSizesFrameWindowListener;
 friend class LayoutEditorToolBarPanel;
 friend class LayoutShape;
 friend class EditToolBarContainerPanel;
+friend class LayoutEditorComponent;
 };
 Q_DECLARE_METATYPE(LayoutEditor)
+
 
 /*static*/ class TurnoutSelection
 {
@@ -1252,17 +1272,17 @@ public:
   if(visible && editor->borderLayout)
   {
    editor->borderLayout->removeWidget(this);
-   switch (editor->toolBarSide.getType()) {
-    case LayoutEditor::eTOP:
+   switch (editor->toolBarSide->getType()) {
+    case eTOP:
      editor->borderLayout->addWidget(this, BorderLayout::North);
      break;
-    case LayoutEditor::eBOTTOM:
+    case eBOTTOM:
      editor->borderLayout->addWidget(this, BorderLayout::South);
      break;
-    case LayoutEditor::eLEFT:
+    case eLEFT:
      editor->borderLayout->addWidget(this, BorderLayout::West);
      break;
-    case LayoutEditor::eRIGHT:
+    case eRIGHT:
      editor->borderLayout->addWidget(this, BorderLayout::East);
      break;
     default:

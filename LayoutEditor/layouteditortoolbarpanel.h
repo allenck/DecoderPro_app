@@ -151,6 +151,7 @@ protected:
  friend class LayoutTurnout;
  friend class LevelXing;
  friend class LayoutSlip;
+ friend class LayoutEditorComponent;
 };
 
 #endif // LAYOUTEDITORTOOLBARPANEL_H

@@ -1,10 +1,13 @@
 #ifndef LAYOUTTURNTABLE_H
 #define LAYOUTTURNTABLE_H
-
-#include "layouttrack.h"
+#include <QObject>
 #include <QPointF>
 #include "namedbeanhandle.h"
+#include "layouttrack.h"
 
+class EditScene;
+class LayoutBlock;
+class LayoutTurntableEditor;
 class QGraphicsSceneMouseEvent;
 class QGraphicsItemGroup;
 class ActionEvent;
@@ -100,6 +103,7 @@ public:
  /*public*/  QPointF getCoordsCenter() ;
  /*public*/  double getRadius() ;
  /*public*/  void setRadius(double r);
+ /*public*/ QString getBlockName();
  /*public*/  void setCoordsCenter(QPointF p) ;
  /*public*/  void scaleCoords(float xFactor, float yFactor);
  /*public*/  double normalizeAngle(double a);
@@ -138,21 +142,27 @@ public:
  /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
                                                           /*@Nonnull*/ QSet<QString>* TrackNameSet) override;
  /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock)override;
+ /*public*/ LayoutBlock* getLayoutBlock();
+ /*public*/ void setLayoutBlock(/*@CheckForNull*/ LayoutBlock* newLayoutBlock);
+ /*public*/ void setLayoutBlockByName(/*@CheckForNull*/ QString name);
 
 signals:
 
 public slots:
  void on_addRayTrack_clicked();
- void onEdit_triggered();
- void on_remove_triggered();
+// void onEdit_triggered();
+// void on_remove_triggered();
  void on_dccControled_clicked();
 
 private:
  Logger* log;
  // defined constants
  // operational instance variables (not saved between sessions)
+ /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlock = nullptr;
+
  /*private*/ LayoutTurntable* instance;// = null;
  /*private*/ LayoutEditor* layoutEditor;// = null;
+ LayoutTurntableEditor* editor = nullptr;
 
  /*private*/ bool dccControlledTurnTable;// = false;
 
@@ -160,7 +170,7 @@ private:
  ///*private*/ QString ident;// = "";
  /*private*/ double radius;// = 25.0;
  ///*private*/ QPointF center;// = new Point2D.Double(50.0, 50.0);
- /*private*/ QList<RayTrack*> rayList;// = new QList<RayTrack>(); // list of Ray Track objects.
+ /*private*/ QList<RayTrack*> rayTrackList;// = new QList<RayTrack>(); // list of Ray Track objects.
  /*private*/ int lastKnownIndex;// = -1;
  double round(double x);
   QMenu* popup;// = null;
@@ -201,7 +211,7 @@ private slots:
   /*protected*/ RayTrack* addRay(double angle);
   /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
   /*protected*/ void showRayPopUp(QGraphicsSceneMouseEvent* e, int index);
-  /*protected*/ void editTurntable(LayoutTurntable* x);
+//  /*protected*/ void editTurntable(LayoutTurntable* x);
   /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
   /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType);
   /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType);
@@ -210,12 +220,16 @@ private slots:
   /*protected*/ void drawEditControls(EditScene* g2);
   /*protected*/ void reCheckBlockBoundary();
   /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity();
-  /*protected*/ QList<RayTrack*> getRayList();
+  /*protected*/ QList<RayTrack*> getRayTrackList();
 
  friend class RayTrack;
  friend class LayoutEditor;
- friend class LayoutTrackEditors;
+ //friend class LayoutTrackEditors;
  friend class TurntableRayPanel;
+ friend class LayoutTurntableEditor;
+ friend class LayoutTurntableView;
+ friend class TurntableRayPanel01;
+ friend class LayoutEditorComponent;
 };
 
 #endif // LAYOUTTURNTABLE_H

@@ -243,6 +243,7 @@ protected:
 
  friend class LayoutEditor;
  friend class LayoutShapeTest;
+ friend class LayoutEditorComponent;
 };
 
 /**

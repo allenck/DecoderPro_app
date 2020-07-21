@@ -417,8 +417,8 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
     editPanel->resize(w,h);
 }
 
-/*protected*/ QSizeF Editor::getTargetPanelSize() {
-    return editScene->sceneRect().size();
+/*protected*/ QSize Editor::getTargetPanelSize() {
+    return QSize(editScene->sceneRect().size().width(), editScene->sceneRect().size().height());
 }
 
 /*public*/  EditScene* Editor::getTargetPanel() {

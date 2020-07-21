@@ -104,9 +104,9 @@ public:
      * constructor method
      */
     /*public*/ LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* myPanel, int type);
-    /*public*/ void setTurnoutType(int slipType);
-    /*public*/ void setSlipType(int slipType);
-    /*public*/ int getSlipType();
+    /*public*/ void setTurnoutType(TurnoutType slipType);
+    /*public*/ void setSlipType(TurnoutType slipType);
+    /*public*/ TurnoutType getSlipType();
     /*public*/ int getSlipState();
     /*public*/ QString getTurnoutBName() ;
     /*public*/ Turnout* getTurnoutB();
@@ -188,7 +188,7 @@ public slots:
   void on_removeAction_triggered();
   void on_rotate_triggered();
   void updateState();
-  void OnEditAction();
+//  void OnEditAction();
   void on_setSignalsAct_triggered();
   void on_setSignalMastsAct_triggered();
   void on_setSensorsAct_triggered();
@@ -229,13 +229,14 @@ protected:
  /*protected*/ QHash<int, TurnoutState *> getTurnoutStates();
  /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles, bool requireUnconnected) override;
  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType)override;
- /*protected*/ void draw1(EditScene* g2, bool drawMain, bool isBlock, ITEMTYPE type)override;
- /*protected*/ void draw2(EditScene* g2, bool drawMain, float railDisplacement, ITEMTYPE type)override;
+ /*protected*/ void draw1(EditScene* g2, bool drawMain, bool isBlock)override;
+ /*protected*/ void draw2(EditScene* g2, bool drawMain, float railDisplacement)override;
 
 friend class LoadXml;
 friend class LayoutEditor;
-friend class LayoutTrackEditors;
+//friend class LayoutTrackEditors;
 friend class MSlipTurnoutListener;
+friend class LayoutSlipEditor;
 };
 
 class MSlipTurnoutListener : public PropertyChangeListener

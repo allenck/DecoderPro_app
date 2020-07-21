@@ -184,8 +184,8 @@ protected:
  /*protected*/ NamedBeanHandle<SignalHead*>* signalEastHeadNamed = nullptr; // signal head for east (south) bound trains
  /*protected*/ NamedBeanHandle<SignalHead*>* signalWestHeadNamed = nullptr; // signal head for west (north) bound trains
  /*protected*/ void drawTurnoutControls(EditScene* g2)override;
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type);
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type);
+ /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type = track);
+ /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type = track);
  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
  /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2);
  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
@@ -198,6 +198,7 @@ friend class LayoutEditor;
 friend class LoadXml;
 friend class LayoutEditorAuxTools;
 friend class LayoutEditorTools;
+friend class PositionablePointView;
 };
 
 #endif // POSITIONABLEPOINT_H

@@ -117,7 +117,7 @@ protected:
  QString option2Name;
  QString option3Name;
  QString option4Name;
- /*protected*/ bool opened;
+ /*protected*/ bool opened = false;
  /*protected*/ void setOpened();
  /*protected*/ void setClosed();
  /*protected*/ bool mDisabled;

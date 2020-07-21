@@ -12,10 +12,12 @@
 #include "createeditblock.h"
 #include "mathutil.h"
 #include "signallingguitools.h"
-#include "layouttrackeditors.h"
+//#include "layouttrackeditors.h"
 #include "layouteditorfinditems.h"
 #include "joptionpane.h"
 #include "layouteditortoolbarpanel.h"
+#include "layoutturnouteditor.h"
+#include "layoutslipeditor.h"
 
 //LayoutSlip::LayoutSlip(QObject *parent) :
 //    LayoutTurnout(parent)
@@ -88,19 +90,34 @@ QComboBox* TurnoutState::getComboB()
 /**
  * constructor method
  */
-/*public*/ LayoutSlip::LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* myPanel, int type) : LayoutTurnout(id, -1, c,rot,0,0,myPanel)
+/*public*/ LayoutSlip::LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* layoutEditor, int type)
+ : LayoutTurnout(id, c, layoutEditor, type)
 {
  init();
  //instance = this;
- layoutEditor = myPanel;
 
  dispA = QPointF(-20.0, 0.0);
- pointA = MathUtil::add(center, dispA);
- pointC = MathUtil::subtract(center, dispA);
+ pointA = MathUtil::add(getCoordsCenter(), dispA);
+ pointC = MathUtil::subtract(getCoordsCenter(), dispA);
  dispB = QPointF(-14.0, 14.0);
- pointB = MathUtil::add(center, dispB);
- pointD = MathUtil::subtract(center, dispB); setTurnoutType(type);
+ pointB = MathUtil::add(getCoordsCenter(), dispB);
+ pointD = MathUtil::subtract(getCoordsCenter(), dispB);
+
+ turnoutStates.insert(STATE_AC, new TurnoutState(Turnout::CLOSED, Turnout::CLOSED));
+ turnoutStates.insert(STATE_AD, new TurnoutState(Turnout::CLOSED, Turnout::THROWN));
+ turnoutStates.insert(STATE_BD, new TurnoutState(Turnout::THROWN, Turnout::THROWN));
+ if (type == TurnoutType::SINGLE_SLIP) {
+     turnoutStates.remove(STATE_BC);
+ } else if (type == TurnoutType::DOUBLE_SLIP) {
+     turnoutStates.insert(STATE_BC, new TurnoutState(Turnout::THROWN, Turnout::CLOSED));
+ } else {
+     log.error(tr("%1.setSlipType(%2); invalid slip type").arg(getName()).arg(type)); // I18IN
+ }
+
  rotateCoords(rot);
+
+ editor = new LayoutSlipEditor(layoutEditor);
+
 }
 void LayoutSlip::init()
 {
@@ -130,13 +147,13 @@ void LayoutSlip::init()
  viewAdditionalMenu = new QVector<QObject*>();
 }
 
-/*public*/ void LayoutSlip::setTurnoutType(int slipType)
+/*public*/ void LayoutSlip::setTurnoutType(LayoutTurnout::TurnoutType slipType)
 {
  setSlipType(slipType);
  type = slipType;
 }
 
-/*public*/ void LayoutSlip::setSlipType(int slipType)
+/*public*/ void LayoutSlip::setSlipType(LayoutTurnout::TurnoutType slipType)
 {
  if(type==slipType)
   return;
@@ -157,7 +174,7 @@ void LayoutSlip::init()
  }
 }
 
-/*public*/ int LayoutSlip::getSlipType()
+/*public*/ LayoutTurnout::TurnoutType LayoutSlip::getSlipType()
 {
  return type;
 }
@@ -1010,7 +1027,8 @@ double LayoutSlip::round (double x) {
 //         @Override
 //         public void actionPerformed(ActionEvent e) {
        connect(act, &QAction::triggered, [=]{
-             layoutEditor->getLayoutTrackEditors()->editLayoutSlip(this);
+//             layoutEditor->getLayoutTrackEditors()->editLayoutSlip(this);
+           editor->editLayoutTrack(this);
 //         }
      });
      popup->addAction(act =new AbstractAction(tr("Delete"),this));
@@ -1145,10 +1163,10 @@ double LayoutSlip::round (double x) {
  return popup;
 }   // showPopup
 
-void LayoutSlip::OnEditAction()
-{
- layoutEditor->getLayoutTrackEditors()->editLayoutSlip(this);
-}
+//void LayoutSlip::OnEditAction()
+//{
+// layoutEditor->getLayoutTrackEditors()->editLayoutSlip(this);
+//}
 
 void LayoutSlip::on_setSignalsAct_triggered()
 {
@@ -1416,7 +1434,7 @@ void LayoutSlip::updateState()
 }
 
 //@Override
-/*protected*/ void LayoutSlip::draw1(EditScene *g2, bool drawMain, bool isBlock, ITEMTYPE type) {
+/*protected*/ void LayoutSlip::draw1(EditScene *g2, bool drawMain, bool isBlock) {
     if (isBlock && getLayoutBlock() == nullptr) {
         // Skip the block layer since there is no block assigned.
         return;
@@ -1692,13 +1710,14 @@ void LayoutSlip::updateState()
 //     itemSide = itemGroup;
 //     g2->addItem(itemSide);
 //    }
+    g2->addItem(itemGroup);
 }   // draw1
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutSlip::draw2(EditScene* g2, bool drawMain, float railDisplacement, ITEMTYPE type) {
+/*protected*/ void LayoutSlip::draw2(EditScene* g2, bool drawMain, float railDisplacement) {
     QPointF pA = getCoordsA();
     QPointF pB = getCoordsB();
     QPointF pC = getCoordsC();

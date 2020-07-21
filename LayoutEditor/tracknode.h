@@ -2,8 +2,11 @@
 #define TRACKNODE_H
 
 #include <QObject>
-#include "tracksegment.h"
+#include "liblayouteditor_global.h"
 
+class LayoutTrack;
+class LayoutEditor;
+class Block;
 class TrackSegment;
 class LIBLAYOUTEDITORSHARED_EXPORT TrackNode : public QObject
 {

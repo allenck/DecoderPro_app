@@ -16,6 +16,7 @@
 #include "liblayouteditor_global.h"
 #include <cmath>
 
+class LevelXingEditor;
 class QMenuItem;
 class LayoutBlock;
 class LayoutEditor;
@@ -35,7 +36,7 @@ public:
   POINTB = 0x10,
   POINTC = 0x20,
   POINTD = 0x30
-};
+ };
     /**
      * Accessor methods
     */
@@ -232,57 +233,62 @@ private:
     QVector<SignalMast*>* sml;// = new QVector<SignalMast*>();
     QVector<QMenu*>* editAdditionalMenu;// = new QVector<QMenuItem*>(0);
     QVector<QMenu*>* viewAdditionalMenu;// = new QVector<QMenuItem*>(0);
- QGraphicsItemGroup* item;
- QGraphicsItemGroup* rects;
- Logger log;
- /*private*/ void updateBlockInfo();
- void removeSML(SignalMast* signalMast);
- /*final*/ QVector<QString>* boundaryBetween;
- QGraphicsItemGroup* itemGroup =nullptr;
+    QGraphicsItemGroup* item;
+    QGraphicsItemGroup* rects;
+    Logger log;
+    /*private*/ void updateBlockInfo();
+    void removeSML(SignalMast* signalMast);
+    /*final*/ QVector<QString>* boundaryBetween;
+    QGraphicsItemGroup* itemGroup =nullptr;
+
+    // temporary reference to the Editor that will eventually be part of View
+    /*private*/ /*final*/ LevelXingEditor* editor;
+
 
 private slots:
-void on_xingEdit1Block_clicked();
-void on_xingEdit2Block_clicked();
-void on_xingEditDone_clicked();
-void on_xingEditCancel_clicked();
-/**
- * Edit a Level Crossing
- */
-/*protected*/ void editLevelXing(/*LevelXing* o*/);
-void on_removeAction_triggered();
-///*private*/ void drawXingAC(LayoutEditor* editor);
-///*private*/ void drawXingBD(LayoutEditor* editor);
+    void on_xingEdit1Block_clicked();
+    void on_xingEdit2Block_clicked();
+    void on_xingEditDone_clicked();
+    void on_xingEditCancel_clicked();
+    /**
+     * Edit a Level Crossing
+     */
+    /*protected*/ void editLevelXing(/*LevelXing* o*/);
+    void on_removeAction_triggered();
+    ///*private*/ void drawXingAC(LayoutEditor* editor);
+    ///*private*/ void drawXingBD(LayoutEditor* editor);
 
 protected:
-/**
- * Display popup menu for information and editing
- */
- /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e)override;
+    /**
+     * Display popup menu for information and editing
+     */
+     /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e)override;
 
- /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockAC = nullptr;
- /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockBD = nullptr;
+     /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockAC = nullptr;
+     /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockBD = nullptr;
 
- /*protected*/ NamedBeanHandle<SignalHead*>* signalAHeadNamed;// = NULL; // signal at A track junction
- /*protected*/ NamedBeanHandle<SignalHead*>* signalBHeadNamed;// = NULL; // signal at B track junction
- /*protected*/ NamedBeanHandle<SignalHead*>* signalCHeadNamed;// = NULL; // signal at C track junction
- /*protected*/ NamedBeanHandle<SignalHead*>* signalDHeadNamed;// = NULL; // signal at D track junction
+     /*protected*/ NamedBeanHandle<SignalHead*>* signalAHeadNamed;// = NULL; // signal at A track junction
+     /*protected*/ NamedBeanHandle<SignalHead*>* signalBHeadNamed;// = NULL; // signal at B track junction
+     /*protected*/ NamedBeanHandle<SignalHead*>* signalCHeadNamed;// = NULL; // signal at C track junction
+     /*protected*/ NamedBeanHandle<SignalHead*>* signalDHeadNamed;// = NULL; // signal at D track junction
 
- /*protected*/ NamedBeanHandle<SignalMast*>* signalAMastNamed;// = NULL; // signal at A track junction
- /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // signal at B track junction
- /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // signal at C track junction
- /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // signal at D track junction
-/*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType)override;
-/*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType)override;
-/*protected*/ void highlightUnconnected(EditScene* g2, int specificType)override;
-/*protected*/ void drawEditControls(EditScene* g2)override;
-/*protected*/ void drawTurnoutControls(EditScene* g2)override;
-/*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected)override;
-/*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity() override;
+     /*protected*/ NamedBeanHandle<SignalMast*>* signalAMastNamed;// = NULL; // signal at A track junction
+     /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // signal at B track junction
+     /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // signal at C track junction
+     /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // signal at D track junction
+     /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock)override;
+     /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement)override;
+     /*protected*/ void highlightUnconnected(EditScene* g2, int specificType)override;
+     /*protected*/ void drawEditControls(EditScene* g2)override;
+     /*protected*/ void drawTurnoutControls(EditScene* g2)override;
+     /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected)override;
+     /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity() override;
 
-friend class LayoutEditor;
-friend class LoadXml;
-friend class EditLevelXingDlg;
-friend class LayoutTrackEditors;
+     friend class LayoutEditor;
+     friend class LoadXml;
+     friend class EditLevelXingDlg;
+     //friend class LayoutTrackEditors;
+     friend class LevelXingEditor;
 };
 
 #endif // LEVELXING_H

@@ -429,7 +429,7 @@ private:
     /*private*/ void deactivateBlock();
 
     // variables for Edit Layout Block pane
-    /*JmriJFrame*/ JmriJFrame* editLayoutBlockFrame; //NULL;
+    /*JmriJFrame*/ QMainWindow* editLayoutBlockFrame; //NULL;
     /*Component*/ QWidget* callingPane;
     /*JTextField*/ QLineEdit* sensorNameField; //new /*JTextField*/ QLineEdit(16);
     /*JTextField*/ QLineEdit* sensorDebounceInactiveField; //new /*JTextField*/ QLineEdit(5);
@@ -541,12 +541,17 @@ protected:
     friend class LBWindowListener;
     friend class JsonLayoutBlockSocketService;
     friend class LayoutBlockListener;
-    friend class LayoutTrackEditors;
+//    friend class LayoutTrackEditors;
     friend class LayoutBlockEditAction;
     friend class RoutingSetSaveItemListener;
     friend class RoutingSetResetItemListener;
     friend class LayoutSetSaveItemListener;
     friend class LayoutSetResetItemListener;
+    friend class LayoutSlipEditor;
+    friend class LayoutTurnoutEditor;
+    friend class TrackSegmentEditor;
+    friend class LevelXingEditor;
+    friend class LayoutTurntableEditor;
 
 }; // end class LayoutBlock
 
