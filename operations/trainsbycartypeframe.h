@@ -46,7 +46,7 @@ namespace Operations
 
   // for padding out panel
   // combo boxes
-  QComboBox* typeComboBox;//= CarTypes.instance().getComboBox();
+  JComboBox* typeComboBox;//= CarTypes.instance().getComboBox();
   Logger* log;
   /*private*/ void save();
   /*private*/ void updateTrains();

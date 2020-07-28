@@ -10,7 +10,7 @@
 #include "logger.h"
 #include <QMessageBox>
 #include "control.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "vptr.h"
 #include "propertychangesupport.h"
 namespace Operations
@@ -56,7 +56,7 @@ namespace Operations
   QPushButton* copyButton = new QPushButton(tr("Copy"));
 
   // combo boxes
-  QComboBox* scheduleBox = scheduleManager->getComboBox();// general GUI config
+  JComboBox* scheduleBox = scheduleManager->getComboBox();// general GUI config
 
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());

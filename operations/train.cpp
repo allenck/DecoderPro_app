@@ -4208,7 +4208,7 @@ if (roads.length() == 0) {
  }
 
  /*public*/ void Train::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Train ({}) sees property change: (%1) old: (%2) new: (%3)").arg(
                  getName()).arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e->getNewValue().toString()));
      }

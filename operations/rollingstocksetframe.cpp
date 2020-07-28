@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QScrollArea>
 #include <QBoxLayout>
 #include <QGroupBox>
@@ -83,11 +83,11 @@ void RollingStockSetFrame::common()
 
  // combo boxes
  locationBox = LocationManager::instance()->getComboBox();
- trackLocationBox = new QComboBox();
+ trackLocationBox = new JComboBox();
  destinationBox = LocationManager::instance()->getComboBox();
- trackDestinationBox = new QComboBox();
+ trackDestinationBox = new JComboBox();
  finalDestinationBox = LocationManager::instance()->getComboBox();
- finalDestTrackBox = new QComboBox();
+ finalDestTrackBox = new JComboBox();
  trainBox = TrainManager::instance()->getTrainComboBox();
 
  // check boxes
@@ -764,7 +764,7 @@ void RollingStockSetFrame::common()
  // location combo box
  /*public*/ void RollingStockSetFrame::comboBoxActionPerformed(QWidget* ae)
  {
-  QComboBox* source = (QComboBox*)ae;
+  JComboBox* source = (JComboBox*)ae;
      if (source == locationBox) {
          updateLocationTrackComboBox();
      }

@@ -13,7 +13,7 @@ namespace Operations
   CarAttributeEditFrame* caef;
   Logger* log;
  public:
-  /*public*/ CarAttributeAction(QString actionName, CarAttributeEditFrame* caef);
+  /*public*/ CarAttributeAction( CarAttributeEditFrame* caef);
  public slots:
   /*public*/ void actionPerformed(ActionEvent* ae = 0);
 

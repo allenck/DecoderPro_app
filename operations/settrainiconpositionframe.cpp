@@ -6,7 +6,7 @@
 #include "gridbaglayout.h"
 #include <QPushButton>
 #include <QSpinBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "locationmanager.h"
 #include "setup.h"
 #include <QGroupBox>

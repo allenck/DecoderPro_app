@@ -1,7 +1,7 @@
 #include "alternatetrackframe.h"
 #include "track.h"
 #include <QPushButton>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include "trackeditframe.h"
@@ -31,7 +31,7 @@ namespace Operations
 
  /*public*/ AlternateTrackFrame::AlternateTrackFrame(TrackEditFrame* tef, QWidget* parent) : OperationsFrame(parent){
      //super();
- trackBox = new QComboBox();
+ trackBox = new JComboBox();
 
  saveButton = new QPushButton(tr("Save"));
 

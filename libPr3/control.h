@@ -11,6 +11,7 @@ public:
  //explicit Control(QObject *parent = 0);
  /*public*/ static /*final*/ bool showProperty;// = false;
  /*public*/ static /*final*/ bool showInstance;// = false;
+    /*public*/ static /*final*/ bool SHOW_PROPERTY;// = false;
 
  /*public*/ /*static*/ class Type : public QObject
  {

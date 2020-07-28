@@ -8,7 +8,7 @@
 #include "control.h"
 #include "xml.h"
 #include "stringutil.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "instancemanager.h"
 
 //EngineManager::EngineManager(QObject *parent) :
@@ -125,8 +125,8 @@ setProperty("InstanceManagerAutoInitialize", "true");
      *
      * @return a combo box with all of the consist names
      */
-    /*public*/ QComboBox* EngineManager::getConsistComboBox() {
-        QComboBox* box = new QComboBox();
+    /*public*/ JComboBox* EngineManager::getConsistComboBox() {
+        JComboBox* box = new JComboBox();
         box->addItem(NONE);
         foreach (QString name, getConsistNameList()) {
             box->addItem(name);
@@ -134,7 +134,7 @@ setProperty("InstanceManagerAutoInitialize", "true");
         return box;
     }
 
-    /*public*/ void EngineManager::updateConsistComboBox(QComboBox* box) {
+    /*public*/ void EngineManager::updateConsistComboBox(JComboBox* box) {
         box->clear();
         box->addItem(NONE);
         foreach (QString name, getConsistNameList()) {

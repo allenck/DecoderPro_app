@@ -56,8 +56,8 @@ namespace Operations
 
   // text field
   // combo boxes
-  QComboBox* comboBoxTypes;// =CarTypes.instance().getComboBox();
-  QComboBox* comboBoxLoads;// =CarLoads.instance().getComboBox(null);
+  JComboBox* comboBoxTypes;// =CarTypes.instance().getComboBox();
+  JComboBox* comboBoxLoads;// =CarLoads.instance().getComboBox(null);
   /*private*/ void updateLoadNames();
   /*private*/ void deleteAllLoads();
   /*private*/ void saveTrain();

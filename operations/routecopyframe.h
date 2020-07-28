@@ -38,7 +38,7 @@ namespace Operations
   QPushButton* copyButton;//= new JButton(Bundle.getMessage("Copy"));
 
   // combo boxes
-  QComboBox* routeBox;//= RouteManager.instance().getComboBox();
+  JComboBox* routeBox;//= RouteManager.instance().getComboBox();
   /*private*/ void reportRouteExists(QString s);
   /*private*/ void reportRouteDoesNotExist();
   /*private*/ bool checkName();

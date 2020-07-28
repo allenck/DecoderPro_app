@@ -8,7 +8,7 @@
 class QGroupBox;
 class QPushButton;
 class QLabel;
-class QComboBox;
+class JComboBox;
 class QCheckBox;
 class JTextField;
 
@@ -92,16 +92,16 @@ namespace Operations
   JTextField* valueTextField;//= new JTextField(8);
 
   // combo boxes
-  QComboBox* roadComboBox;//= CarRoads::instance().getComboBox();
-  QComboBox* typeComboBox;//= CarTypes.instance().getComboBox();
-  QComboBox* colorComboBox;//= CarColors.instance().getComboBox();
-  QComboBox* lengthComboBox;//= CarLengths.instance().getComboBox();
-  QComboBox* ownerComboBox;//= CarOwners.instance().getComboBox();
-  QComboBox* locationBox;//= locationManager.getComboBox();
-  QComboBox* trackLocationBox;//= new JComboBox<>();
-  QComboBox* loadComboBox;//= CarLoads::instance().getComboBox(NULL);
-  QComboBox* kernelComboBox;//= carManager.getKernelComboBox();
-  QComboBox* rfidComboBox;//= new JComboBox<IdTag>();
+  JComboBox* roadComboBox;//= CarRoads::instance().getComboBox();
+  JComboBox* typeComboBox;//= CarTypes.instance().getComboBox();
+  JComboBox* colorComboBox;//= CarColors.instance().getComboBox();
+  JComboBox* lengthComboBox;//= CarLengths.instance().getComboBox();
+  JComboBox* ownerComboBox;//= CarOwners.instance().getComboBox();
+  JComboBox* locationBox;//= locationManager.getComboBox();
+  JComboBox* trackLocationBox;//= new JComboBox<>();
+  JComboBox* loadComboBox;//= CarLoads::instance().getComboBox(NULL);
+  JComboBox* kernelComboBox;//= carManager.getKernelComboBox();
+  JComboBox* rfidComboBox;//= new JComboBox<IdTag>();
 
   // panels
   QGroupBox* pBlocking;//= new JPanel();

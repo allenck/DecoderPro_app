@@ -5,7 +5,7 @@
 #include "locationmanager.h"
 #include "logger.h"
 #include <QPushButton>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "jtextfield.h"
 #include "control.h"
 #include <QGroupBox>
@@ -105,9 +105,9 @@ namespace Operations
   lengthComboBox = engineLengths->getComboBox();
   ownerComboBox = CarOwners::instance()->getComboBox();
   locationBox = locationManager->getComboBox();
-  trackLocationBox = new QComboBox();
+  trackLocationBox = new JComboBox();
   consistComboBox = manager->getConsistComboBox();
-  rfidComboBox = new QComboBox();
+  rfidComboBox = new JComboBox();
   bUnitCheckBox = new QCheckBox(tr("B Unit"));
   editActive = false;
   buttonEditMapper = new QSignalMapper();
@@ -455,7 +455,7 @@ namespace Operations
  // combo boxes
  /*public*/ void EngineEditFrame::comboBoxActionPerformed(QWidget* ae)
 {
- QComboBox* source = (QComboBox*)ae;
+ JComboBox* source = (JComboBox*)ae;
   if (source == modelComboBox)
   {
       if (modelComboBox->currentText() != NULL) {
@@ -846,7 +846,7 @@ namespace Operations
  }
 
  /*public*/ void EngineEditFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg( e->getOldValue().toString()).arg(e->getNewValue().toString()));
      }
 

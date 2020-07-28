@@ -110,8 +110,6 @@
  connectBName = "";
  connectCName = "";
  connectDName = "";
- tBlockNameAC = "";
- tBlockNameBD = "";
  active = true;
  sml = new QVector<SignalMast*>();
  editAdditionalMenu = new QVector<QMenu*>(0);
@@ -123,7 +121,6 @@
  popup = NULL;
  block1Name = new QLineEdit();
  block2Name = new QLineEdit();
- tools = NULL;
  editLevelXingFrame = NULL;
 
  instance = this;
@@ -1055,27 +1052,36 @@ double LevelXing::round (double x) {
     connectB = p->findTrackSegmentByName(connectBName);
     connectC = p->findTrackSegmentByName(connectCName);
     connectD = p->findTrackSegmentByName(connectDName);
-    if (tBlockNameAC.length()>0) {
-        blockAC = p->getLayoutBlock(tBlockNameAC);
-        if (blockAC!=NULL) {
-            blockNameAC = tBlockNameAC;
-            if (blockAC!=blockBD)
-                blockAC->incrementUse();
+
+    LayoutBlock* lb;
+    if (!tLayoutBlockNameAC.isEmpty()) {
+        lb = p->provideLayoutBlock(tLayoutBlockNameAC);
+        QString userName = lb->getUserName();
+        if (userName != nullptr) {
+            namedLayoutBlockAC = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(userName, lb);
+            if (namedLayoutBlockBD != namedLayoutBlockAC) {
+                lb->incrementUse();
+            }
+        } else {
+            log.error(tr("LevelXing.setObjects(); bad blockname AC ''%1''").arg(tLayoutBlockNameAC));
+            namedLayoutBlockAC = nullptr;
         }
-        else {
-            log.error("bad blocknameac '"+tBlockNameAC+"' in levelxing "+ident);
-        }
+        tLayoutBlockNameAC = nullptr; //release this memory
     }
-    if (tBlockNameBD.length()>0) {
-        blockBD = p->getLayoutBlock(tBlockNameBD);
-        if (blockBD!=NULL) {
-            blockNameBD = tBlockNameBD;
-            if (blockAC!=blockBD)
-                blockBD->incrementUse();
+
+    if (!tLayoutBlockNameBD.isEmpty()) {
+        lb = p->provideLayoutBlock(tLayoutBlockNameBD);
+        QString userName = lb->getUserName();
+        if (userName != nullptr) {
+            namedLayoutBlockBD = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(userName, lb);
+            if (namedLayoutBlockBD != namedLayoutBlockAC) {
+                lb->incrementUse();
+            }
+        } else {
+            log.error(tr("%1.setObjects(); bad blockname BD ''%2''").arg(this->metaObject()->className()).arg(tLayoutBlockNameBD));
+            namedLayoutBlockBD = nullptr;
         }
-        else {
-            log.error("bad blocknamebd '"+tBlockNameBD+"' in levelxing "+ident);
-        }
+        tLayoutBlockNameBD = nullptr; //release this memory
     }
 }
 
@@ -1085,7 +1091,6 @@ double LevelXing::round (double x) {
  */
 /*protected*/ QMenu *LevelXing::showPopup(QGraphicsSceneMouseEvent* /*e*/)
 {
- // TODO: incorporate latest Java code!!
  if (popup != NULL )
  {
   popup->clear();
@@ -1124,7 +1129,6 @@ double LevelXing::round (double x) {
   jmi->setEnabled(false);
 
   // if there are any track connections
-
   if ((connectA != nullptr) || (connectB != nullptr)
           || (connectC != nullptr) || (connectD != nullptr))
   {
@@ -1346,6 +1350,11 @@ double LevelXing::round (double x) {
  return popup;
 }   // showPopup
 
+// this should only be used for debugging
+//@Override
+/*public*/ QString LevelXing::toString() {
+    return "LevelXing " + getName();
+}
 
 /*public*/ QVector<QString>* LevelXing::getBlockBoundaries()
 {
@@ -1394,246 +1403,6 @@ double LevelXing::round (double x) {
 }
 
 
-/**
- * Edit a Level Crossing
- */
-/*protected*/ void LevelXing::editLevelXing(/*LevelXing* o*/) {
-    if (editOpen) {
-        editLevelXingFrame->setVisible(true);
-        return;
-    }
-    // Initialize if needed
-    if (editLevelXingFrame == NULL)
-    {
-//        editLevelXingFrame = new JmriJFrame( tr("EditXing"), false, true );
-        editLevelXingFrame = new EditLevelXingDlg(this, layoutEditor);
-//        editLevelXingFrame.addHelpMenu("package.jmrit.display.EditLevelXing", true);
-//        editLevelXingFrame.setLocation(50,30);
-//        Container contentPane = editLevelXingFrame.getContentPane();
-//        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-//        // setup block 1 name
-//        JPanel panel1 = new JPanel();
-//        panel1.setLayout(new FlowLayout());
-//        JLabel block1NameLabel = new JLabel( rb.getQString("Block1ID") );
-//        panel1.add(block1NameLabel);
-//        panel1.add(block1Name);
-//        block1Name.setToolTipText( rb.getQString("EditBlockNameHint") );
-//        contentPane.add(panel1);
-//        // setup block 2 name
-//        JPanel panel2 = new JPanel();
-//        panel2.setLayout(new FlowLayout());
-//        JLabel block2NameLabel = new JLabel( rb.getQString("Block2ID"));
-//        panel2.add(block2NameLabel);
-//        panel2.add(block2Name);
-//        block2Name.setToolTipText( rb.getQString("EditBlockNameHint") );
-//        contentPane.add(panel2);
-//        // set up Edit 1 Block and Edit 2 Block buttons
-//        JPanel panel4 = new JPanel();
-//        panel4.setLayout(new FlowLayout());
-//        // Edit 1 Block
-//        panel4.add(xingEdit1Block = new JButton(rb.getQString("EditBlock1")));
-//        xingEdit1Block.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                on_xingEdit1Block_clicked(e);
-//            }
-//        });
-//        xingEdit1Block.setToolTipText( rb.getQString("EditBlockHint") );
-//        // Edit 2 Block
-//        panel4.add(xingEdit2Block = new JButton(rb.getQString("EditBlock2")));
-//        xingEdit2Block.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                on_xingEdit2Block_clicked(e);
-//            }
-//        });
-//        xingEdit2Block.setToolTipText( rb.getQString("EditBlockHint") );
-//        contentPane.add(panel4);
-//        // set up Done and Cancel buttons
-//        JPanel panel5 = new JPanel();
-//        panel5.setLayout(new FlowLayout());
-//        panel5.add(xingEditDone = new JButton(rb.getQString("Done")));
-//        xingEditDone.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                on_xingEditDone_clicked(e);
-//            }
-//        });
-//        xingEditDone.setToolTipText( rb.getQString("DoneHint") );
-//        // Cancel
-//        panel5.add(xingEditCancel = new JButton(rb.getQString("Cancel")));
-//        xingEditCancel.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                on_xingEditCancel_clicked(e);
-//            }
-//        });
-//        xingEditCancel.setToolTipText( rb.getQString("CancelHint") );
-//        contentPane.add(panel5);
-    }
-    // Set up for Edit
-    block1Name->setText(blockNameAC);
-    block2Name->setText(blockNameBD);
-//    editLevelXingFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-//            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                on_xingEditCancel_clicked(NULL);
-//            }
-//        });
-//    editLevelXingFrame->pack();
-    editLevelXingFrame->setVisible(true);
-    editOpen = true;
-    needsBlockUpdate = false;
-}
-void LevelXing::on_xingEdit1Block_clicked()
-{
-    // check if a block name has been entered
-    if (blockNameAC!=(block1Name->text().trimmed()) ) {
-        // block 1 has changed, if old block exists, decrement use
-        if ( (blockAC!=NULL) && (blockAC!=blockBD) ) {
-            blockAC->decrementUse();
-        }
-        // get new block, or NULL if block has been removed
-        blockNameAC = block1Name->text().trimmed();
-        if ( (blockNameAC!=NULL) && (blockNameAC.length()>0)) {
-            blockAC = layoutEditor->provideLayoutBlock(blockNameAC);
-            if (blockAC!=NULL) {
-                // decrement use if block was previously counted
-                if ( (blockAC!=NULL) && (blockAC==blockBD) ) blockAC->decrementUse();
-            }
-            else {
-                blockNameAC = "";
-                block1Name->setText("");
-            }
-        }
-        else {
-            blockAC = NULL;
-            blockNameAC = "";
-        }
-        needsRedraw = true;
-        layoutEditor->auxTools->setBlockConnectivityChanged();
-        needsBlockUpdate = true;
-    }
-    // check if a block exists to edit
-    if (blockAC==NULL) {
-//        JOptionPane.showMessageDialog(editLevelXingFrame,
-//                rb.getQString("Error1"),
-//                rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    blockAC->editLayoutBlock(editLevelXingFrame);
-    needsRedraw = true;
-}
-void LevelXing::on_xingEdit2Block_clicked()
-{
-    // check if a block name has been entered
-    if (blockNameBD!=(block2Name->text().trimmed()) ) {
-        // block has changed, if old block exists, decrement use
-        if ( (blockBD!=NULL) && (blockBD!=blockAC) ) {
-            blockBD->decrementUse();
-        }
-        // get new block, or NULL if block has been removed
-        blockNameBD = block2Name->text().trimmed();
-        if ( (blockNameBD!=NULL) && (blockNameBD.length()>0)) {
-            blockBD = layoutEditor->provideLayoutBlock(blockNameBD);
-            if (blockBD!=NULL) {
-                // decrement use if block was previously counted
-                if ( (blockBD!=NULL) && (blockAC==blockBD) ) blockBD->decrementUse();
-            }
-            else {
-                blockNameBD = "";
-                block2Name->setText("");
-            }
-        }
-        else {
-            blockBD = NULL;
-            blockNameBD = "";
-        }
-        needsRedraw = true;
-        layoutEditor->auxTools->setBlockConnectivityChanged();
-        needsBlockUpdate = true;
-    }
-    // check if a block exists to edit
-    if (blockBD==NULL) {
-//        JOptionPane.showMessageDialog(editLevelXingFrame,
-//                rb.getQString("Error1"),
-//                rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    blockBD->editLayoutBlock(editLevelXingFrame);
-    needsRedraw = true;
-}
-void LevelXing::on_xingEditDone_clicked() {
-    // check if Blocks changed
-    if ( blockNameAC!=(block1Name->text().trimmed()) ) {
-        // block 1 has changed, if old block exists, decrement use
-        if ( (blockAC!=NULL) && (blockAC!=blockBD) ) {
-            blockAC->decrementUse();
-        }
-        // get new block, or NULL if block has been removed
-        blockNameAC = block1Name->text().trimmed();
-        if ( (blockNameAC!=NULL) && (blockNameAC.length()>0)) {
-            blockAC = layoutEditor->provideLayoutBlock(blockNameAC);
-            if (blockAC!=NULL) {
-                // decrement use if block was previously counted
-                if ( (blockAC!=NULL) && (blockAC==blockBD) ) blockAC->decrementUse();
-            }
-            else {
-                blockNameAC = "";
-                block1Name->setText("");
-            }
-        }
-        else {
-            blockAC = NULL;
-            blockNameAC = "";
-        }
-        needsRedraw = true;
-        layoutEditor->auxTools->setBlockConnectivityChanged();
-        needsBlockUpdate = true;
-    }
-    if ( blockNameBD!=(block2Name->text().trimmed()) ) {
-        // block 2 has changed, if old block exists, decrement use
-        if ( (blockBD!=NULL) && (blockBD!=blockAC) ) {
-            blockBD->decrementUse();
-        }
-        // get new block, or NULL if block has been removed
-        blockNameBD = block2Name->text().trimmed();
-        if ( (blockNameBD!=NULL) && (blockNameBD.length()>0)) {
-            blockBD = layoutEditor->provideLayoutBlock(blockNameBD);
-            if (blockBD!=NULL) {
-                // decrement use if block was previously counted
-                if ( (blockBD!=NULL) && (blockAC==blockBD) ) blockBD->decrementUse();
-            }
-            else {
-                blockNameBD = "";
-                block2Name->setText("");
-            }
-        }
-        else {
-            blockBD = NULL;
-            blockNameBD = "";
-        }
-        needsRedraw = true;
-        layoutEditor->auxTools->setBlockConnectivityChanged();
-        needsBlockUpdate = true;
-    }
-    editOpen = false;
-    editLevelXingFrame->setVisible(false);
-    //editLevelXingFrame->dispose();
-    editLevelXingFrame = NULL;
-    if (needsBlockUpdate) updateBlockInfo();
-    if (needsRedraw) {
-//        layoutEditor->redrawPanel();
-//        layoutEditor->setDirty();
-    }
-}
-void LevelXing::on_xingEditCancel_clicked()
-{
-    editOpen = false;
-//    editLevelXingFrame->setVisible(false);
-//    editLevelXingFrame->dispose();
-    editLevelXingFrame = NULL;
-    if (needsBlockUpdate) updateBlockInfo();
-    if (needsRedraw) {
-//        layoutEditor->redrawPanel();
-//        layoutEditor->setDirty();
-    }
-}
 
 /**
  * Clean up when this object is no longer needed.  Should not
@@ -1724,14 +1493,6 @@ void LevelXing::remove() {
 }
 
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LevelXing.class.getName());
-void LevelXing::on_removeAction_triggered()
-{
- if( layoutEditor->removeLevelXing(this))
- {
-  remove();
-  dispose();
- }
-}
 void LevelXing::invalidate(QGraphicsScene* g2)
 {
  if(item != NULL && item->scene() != 0)

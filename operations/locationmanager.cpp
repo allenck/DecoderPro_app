@@ -5,7 +5,7 @@
 #include "logger.h"
 #include "xml.h"
 #include "propertychangesupport.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "rosterentry.h"
 #include "track.h"
 #include "carload.h"
@@ -281,13 +281,13 @@ QObject(parent)
   *
   * @return locations for this railroad
   */
- /*public*/ QComboBox* LocationManager::getComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* LocationManager::getComboBox() {
+     JComboBox* box = new JComboBox();
      updateComboBox(box);
      return box;
  }
 
- /*public*/ void LocationManager::updateComboBox(QComboBox* box) {
+ /*public*/ void LocationManager::updateComboBox(JComboBox* box) {
      box->clear();
      box->addItem("");
      foreach (Location* loc, getLocationsByNameList()) {

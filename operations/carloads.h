@@ -2,7 +2,7 @@
 #define CARLOADS_H
 #include "rollingstockattribute.h"
 #include "appslib_global.h"
-
+#include "jcombobox.h"
 namespace Operations
 {
  class CarLoad;
@@ -35,20 +35,20 @@ namespace Operations
   /*public*/ QString getPickupComment(QString type, QString name);
   /*public*/ QString getDefaultLoadName();
   /*public*/ void setDefaultLoadName(QString name);
-  /*public*/ void updateComboBox(QString type, QComboBox* box);
+  /*public*/ void updateComboBox(QString type, JComboBox* box);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ void load(QDomElement e);
   /*public*/ void setLoadType(QString type, QString name, QString loadType);
   /*public*/ QString getLoadType(QString type, QString name);
   /*public*/ QHash<QString, QList<CarLoad*>*>* getList();
-  /*public*/ void updateRweComboBox(QString type, QComboBox* box);
-  /*public*/ QComboBox* getComboBox(QString type);
-  /*public*/ QComboBox* getPriorityComboBox();
-  QComboBox* getComboBox();
+  /*public*/ void updateRweComboBox(QString type, JComboBox* box);
+  /*public*/ JComboBox* getComboBox(QString type);
+  /*public*/ JComboBox* getPriorityComboBox();
+  JComboBox* getComboBox();
   /*public*/ void deleteName(QString type, QString name);
   /*public*/ void replaceName(QString type, QString oldName, QString newName);
-  /*public*/ QComboBox* getLoadTypesComboBox();
-  /*public*/ QComboBox* getSelectComboBox(QString type);
+  /*public*/ JComboBox* getLoadTypesComboBox();
+  /*public*/ JComboBox* getSelectComboBox(QString type);
 
  private:
   /**

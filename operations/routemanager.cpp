@@ -6,7 +6,7 @@
 #include "control.h"
 #include "route.h"
 #include "propertychangeevent.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "rosterentry.h"
 #include "xml.h"
 #include "routelocation.h"
@@ -185,8 +185,8 @@ namespace Operations
      return out;
  }
 
- /*public*/ QComboBox* RouteManager::getComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* RouteManager::getComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(NULL);
      QList<Route*> routes = getRoutesByNameList();
      foreach (Route* route, routes) {
@@ -195,7 +195,7 @@ namespace Operations
      return box;
  }
 
- /*public*/ void RouteManager::updateComboBox(QComboBox* box) {
+ /*public*/ void RouteManager::updateComboBox(JComboBox* box) {
      box->clear();
      box->addItem(NULL);
      QList<Route*> routes = getRoutesByNameList();

@@ -278,9 +278,9 @@ LayoutSlipXml::LayoutSlipXml(QObject *parent) :
  {
   Logger::error("failed to convert layoutslip center  attribute");
  }
- int type = LayoutSlip::SINGLE_SLIP;
+ LayoutTurnout::TurnoutType type = LayoutSlip::SINGLE_SLIP;
  //try {
- type = element.attribute("slipType").toInt(&b1);
+ type = (LayoutTurnout::TurnoutType)element.attribute("slipType").toInt(&b1);
  //} catch (DataConversionException e) {
  if(!b1)
  {

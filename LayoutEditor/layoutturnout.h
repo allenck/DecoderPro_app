@@ -147,7 +147,7 @@ public:
             double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor);
     /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ QPointF c, double rot,
             double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int version);
-    /*public*/ QString toString();
+    /*public*/ QString toString() override;
 
     /**
      * Accessor methods
@@ -463,7 +463,7 @@ protected:
  /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id,
      /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor);
  /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id,
-         /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, int t);
+         /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, LayoutTurnout::TurnoutType t);
 
  // operational instance variables (not saved between sessions)
  //private Turnout turnout = NULL;

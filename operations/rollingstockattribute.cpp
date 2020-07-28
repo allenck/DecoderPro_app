@@ -1,7 +1,7 @@
 #include "rollingstockattribute.h"
 #include <QVector>
 #include "stringutil.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "logger.h"
 #include "propertychangesupport.h"
 #include <QtXml>
@@ -25,7 +25,7 @@ namespace Operations {
  /*protected*/ /*static*/ /*final*/ int RollingStockAttribute::MIN_NAME_LENGTH = 4;
 
  /*public*/ RollingStockAttribute::RollingStockAttribute(QObject *parent) :
-  QObject(parent)
+  PropertyChangeSupport(parent)
  {
   pcs = new PropertyChangeSupport(this);
   list = QStringList();
@@ -129,13 +129,13 @@ namespace Operations {
      return list.contains(name);
  }
 
- /*public*/ QComboBox* RollingStockAttribute::getComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* RollingStockAttribute::getComboBox() {
+     JComboBox* box = new JComboBox();
      updateComboBox(box);
      return box;
  }
 
- /*public*/ void RollingStockAttribute::updateComboBox(QComboBox* box)
+ /*public*/ void RollingStockAttribute::updateComboBox(JComboBox *box)
  {
   box->clear();
   foreach (QString name, getNames())

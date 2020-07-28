@@ -325,7 +325,7 @@ void JmriJFrame::setupWindowRef()
  */
 /*public*/ void JmriJFrame::generateWindowRef()
 {
- QString initref = metaObject()->className();
+ QString initref = getClassName();
  if(this->windowTitle()!=(""))
  {
   if (initref==("JmriJFrame"))
@@ -1132,7 +1132,8 @@ void JmriJFrame::setTitle(QString name)
 {
  this->name = name;
  JFrame::setTitle(name);
- QMainWindow::setWindowTitle(name);
+ JFrame::setWindowTitle(name);
+ QWidget::setWindowTitle(name);
 }
 QString JmriJFrame::getTitle() { return windowTitle();}
 

@@ -465,7 +465,7 @@ return out;
 
  /*public*/ void Route::propertyChange(PropertyChangeEvent* e)
  {
-  if (Control::showProperty) {
+  if (Control::SHOW_PROPERTY) {
    log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
            ->getNewValue().toString()));
   }

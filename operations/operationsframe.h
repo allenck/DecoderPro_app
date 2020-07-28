@@ -11,7 +11,7 @@ class ChangeEvent;
 class QSignalMapper;
 class QPushButton;
 class QRadioButton;
-class QComboBox;
+class JComboBox;
 class QCheckBox;
 class QSpinBox;
 namespace Operations
@@ -48,8 +48,8 @@ protected:
   /*protected*/ void addRadioButtonAction(QRadioButton* b);
   /*protected*/ void addCheckBoxAction(QCheckBox* b);
   /*protected*/ void addSpinnerChangeListerner(QSpinBox* s);
-  /*protected*/ void addComboBoxAction(QComboBox* b) ;
-  /*protected*/ void selectNextItemComboBox(QComboBox* b);
+  /*protected*/ void addComboBoxAction(JComboBox* b) ;
+  /*protected*/ void selectNextItemComboBox(JComboBox* b);
   /*protected*/ void clearTableSort(JTable* table);
 
   /*protected*/ void addItem(QWidget* p, QWidget* c, int x, int y) ;

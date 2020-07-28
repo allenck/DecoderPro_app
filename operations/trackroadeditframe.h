@@ -3,6 +3,7 @@
 
 #include "operationsframe.h"
 
+class JComboBox;
 class QLabel;
 class QGroupBox;
 namespace Operations
@@ -47,7 +48,7 @@ namespace Operations
   QRadioButton* roadNameExclude;//= new JRadioButton(Bundle.getMessage("Exclude"));
 
   // combo box
-  QComboBox* comboBoxRoads;//= CarRoads.instance().getComboBox();
+  JComboBox* comboBoxRoads;//= CarRoads.instance().getComboBox();
 
   // labels
   QLabel* trackName;//= new JLabel();

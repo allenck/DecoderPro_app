@@ -392,7 +392,7 @@ private:
     bool _delete = false;
     QMap<QString, QString>* _urlMap;// = new QMap<QString, QString>();
     //ToolTipTimer* _tooltipTimer;
-    QGraphicsView* editPanel;
+    QGraphicsView* editPanel = new QGraphicsView();
     EditScene* editScene;
     QGraphicsItemGroup* _selectRectItemGroup;
     QString name;
@@ -431,7 +431,7 @@ private slots:
   void On_removeMenuAction_triggered();
 
  protected:
-    /*protected*/ QVector <Positionable*>* _contents;// = new QVector<Positionable*>();
+    /*protected*/ QVector <Positionable*>* _contents = new QVector<Positionable*>();
     /*protected*/ JLayeredPane* _targetPanel;
     /*protected*/ int _scrollState = SCROLL_NONE;
     /*protected*/ bool _editable = true;

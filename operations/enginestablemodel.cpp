@@ -504,7 +504,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
 
  /*public*/ void EnginesTableModel::propertyChange(PropertyChangeEvent* e)
  {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
          log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
                  ->getNewValue().toString()));
      }
@@ -520,7 +520,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
                    else if (e->getSource()->metaObject()->className()==("Engine")) {
          Engine* engine = (Engine*) e->getSource();
          int row = sysList->indexOf(engine);
-         if (Control::showProperty) {
+         if (Control::SHOW_PROPERTY) {
              log->debug(tr("Update engine table row: %1").arg(row));
          }
          if (row >= 0) {

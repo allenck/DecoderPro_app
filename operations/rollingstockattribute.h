@@ -5,14 +5,14 @@
 #include <QStringList>
 #include <QtXml>
 #include "appslib_global.h"
+#include "propertychangesupport.h"
 
 class QDomElement;
-class QComboBox;
+class JComboBox;
 class Logger;
-class PropertyChangeSupport;
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT RollingStockAttribute : public QObject
+ class APPSLIBSHARED_EXPORT RollingStockAttribute : public PropertyChangeSupport
  {
   Q_OBJECT
  public:
@@ -25,8 +25,8 @@ namespace Operations
   /*public*/ void addName(QString name);
   /*public*/ void deleteName(QString name);
   /*public*/ bool containsName(QString name);
-  /*public*/ QComboBox* getComboBox();
-  /*public*/ void updateComboBox(QComboBox* box);
+  /*public*/ JComboBox* getComboBox();
+  /*public*/ void updateComboBox(JComboBox* box);
   /*public*/ int getMaxNameLength();
   /*public*/ void store(QDomElement root, QString eNames, QString eName, QString oldName, QDomDocument doc);
   /*public*/ void load(QDomElement root, QString eNames, QString eName, QString oldName);

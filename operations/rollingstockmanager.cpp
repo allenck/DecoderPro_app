@@ -579,15 +579,15 @@ namespace Operations
         return out;
     }
 
-
-    /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-        pcs.addPropertyChangeListener(l);
-    }
-
-    /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-        pcs.removePropertyChangeListener(l);
-    }
 #endif
+    /*public*/ /*synchronized*/ void RollingStockManager::addPropertyChangeListener(PropertyChangeListener* l) {
+        pcs->addPropertyChangeListener(l);
+    }
+
+    /*public*/ /*synchronized*/ void RollingStockManager::removePropertyChangeListener(PropertyChangeListener* l) {
+        pcs->removePropertyChangeListener(l);
+    }
+
     /*protected*/ void RollingStockManager::firePropertyChange(QString p, QVariant old, QVariant n) {
         pcs->firePropertyChange(p, old, n);
     }

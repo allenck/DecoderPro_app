@@ -9,7 +9,7 @@
 #include <QButtonGroup>
 #include "jtextfield.h"
 #include "jtextarea.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QMenu>
 #include <QMenuBar>
 #include "setup.h"
@@ -122,7 +122,7 @@ namespace Operations
   commentTextArea = new JTextArea(2, 60);
 
   // Reader selection dropdown.
-  readerSelector = new QComboBox();
+  readerSelector = new JComboBox();
 
   _location = location;
    chkBoxMapper = new QSignalMapper;
@@ -850,7 +850,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void LocationEditFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
          log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
                  ->getNewValue().toString()));
      }

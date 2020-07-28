@@ -31,9 +31,9 @@ namespace Operations
 
   // radio buttons
   // combo boxes
-  QComboBox* trainsComboBox;// = TrainManager.instance().getTrainComboBox();
-  QComboBox* typeComboBox;// = CarTypes.instance().getComboBox();
-  QComboBox* carsComboBox;// = new JComboBox<>();
+  JComboBox* trainsComboBox;// = TrainManager.instance().getTrainComboBox();
+  JComboBox* typeComboBox;// = CarTypes.instance().getComboBox();
+  JComboBox* carsComboBox;// = new JComboBox<>();
 
   // The car currently selected
   Car* _car;

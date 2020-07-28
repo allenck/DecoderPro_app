@@ -48,8 +48,8 @@ namespace Operations
   // radio buttons
   // text field
   // combo boxes
-  QComboBox* typeComboBox;//= CarTypes.instance().getComboBox();
-  QComboBox* loadComboBox;//= CarLoads.instance().getComboBox(null);
+  JComboBox* typeComboBox;//= CarTypes.instance().getComboBox();
+  JComboBox* loadComboBox;//= CarLoads.instance().getComboBox(null);
 
   // selected location
   Location* _location;

@@ -2,7 +2,7 @@
 #include "control.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "trainmanager.h"
 #include "train.h"
 #include <QRadioButton>
@@ -208,7 +208,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void TrainsTableSetColorFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

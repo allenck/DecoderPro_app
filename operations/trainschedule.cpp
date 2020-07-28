@@ -141,7 +141,7 @@ namespace Operations
  }
 
   /*public*/ void TrainSchedule::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("PropertyChange (%1) new (%2)").arg(e->getPropertyName()).arg(e->getNewValue().toString()));
      }
  }

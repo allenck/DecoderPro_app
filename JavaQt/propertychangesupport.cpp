@@ -339,7 +339,7 @@
   {
    if(listener != NULL)
    {
-    if(qobject_cast<PropertyChangeListener*>(listener) != NULL)
+    //if(qobject_cast<PropertyChangeListener*>(listener) != NULL)
     {
      //((PropertyChangeListener*)listener)->propertyChange(event);
      if(!QMetaObject::invokeMethod(listener, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
@@ -348,11 +348,11 @@
          return;
      }
     }
-    else
-    {
-     Logger::error(tr("not implemented %1").arg(listener->metaObject()->className()));
-    //Q_ASSERT(false);
-    }
+//    else
+//    {
+//     Logger::error(tr("not implemented %1").arg(listener->metaObject()->className()));
+//    //Q_ASSERT(false);
+//    }
      // NOTE: Class must have a Q_OBJECT macro otherwise you will get  a "void value not ignored as it ought to be error on Q_OBJECT!
    }
   }

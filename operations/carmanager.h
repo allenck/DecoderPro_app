@@ -5,7 +5,7 @@
 #include "appslib_global.h"
 
 //class QDomElement;
-class QComboBox;
+class JComboBox;
 class Logger;
 namespace Operations
 {
@@ -27,8 +27,8 @@ namespace Operations
   /*public*/ void deleteKernel(QString name);
   /*public*/ Kernel* getKernelByName(QString name);
   /*public*/ void replaceKernelName(QString oldName, QString newName);
-  /*public*/ QComboBox* getKernelComboBox();
-  /*public*/ void updateKernelComboBox(QComboBox* box);
+  /*public*/ JComboBox* getKernelComboBox();
+  /*public*/ void updateKernelComboBox(JComboBox* box);
   /*public*/ QStringList getKernelNameList();
   /*public*/ int getKernelMaxNameLength() ;
   /*public*/ QList<RollingStock*>* getByLocationList();

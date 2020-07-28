@@ -9,7 +9,7 @@
 #include <QGroupBox>
 #include <QScrollArea>
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "trainmanager.h"
 #include "route.h"
 #include "cartypes.h"
@@ -272,7 +272,7 @@ namespace Operations
  }
 
  /*public*/ void ShowTrainsServingLocationFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("PropertyChange (%1) new ({%2)").arg(e->getPropertyName()).arg(e->getNewValue().toString()));
      }
      if (e->getPropertyName()==(Location::TYPES_CHANGED_PROPERTY)

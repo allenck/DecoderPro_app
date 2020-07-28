@@ -23,7 +23,7 @@ namespace Operations
   JTextField* addTextBox;// = new JTextField(Control.max_len_string_attibute);
 
   // combo box
-  QComboBox* comboBox;
+  JComboBox* comboBox;
 
   // major buttons
   QPushButton* addButton;// = new JButton(Bundle.getMessage("Add"));

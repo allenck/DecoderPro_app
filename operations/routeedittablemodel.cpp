@@ -752,7 +752,7 @@ namespace Operations
 #endif
  // this table listens for changes to a route and it's locations
  /*public*/ void RouteEditTableModel::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }
@@ -764,7 +764,7 @@ namespace Operations
      if (e->getSource()->metaObject()->className()==("RouteLocation")) {
          RouteLocation* rl = (RouteLocation*) e->getSource();
          int row = routeList->indexOf(rl);
-         if (Control::showProperty) {
+         if (Control::SHOW_PROPERTY) {
              log->debug(tr("Update route table row: %1 id: %2").arg(row).arg(rl->getId()));
          }
          if (row >= 0) {

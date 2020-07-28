@@ -3,6 +3,7 @@
 
 #include "operationsframe.h"
 
+class JComboBox;
 class JTextField;
 namespace Operations
 {
@@ -30,7 +31,7 @@ namespace Operations
   QPushButton* saveButton;//= new javax.swing.JButton(Bundle.getMessage("Save"));
 
   // combo boxes
-  QComboBox* locationBox;//= locationManager.getComboBox();
+  JComboBox* locationBox;//= locationManager.getComboBox();
 
   // checkboxes
   QCheckBox* moveRollingStockCheckBox;//= new JCheckBox(Bundle.getMessage("MoveRollingStock"));

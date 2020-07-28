@@ -5,7 +5,7 @@
 #include "locationeditframe.h"
 #include "jtextfield.h"
 #include <QPushButton>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "control.h"
 #include <QCheckBox>
 #include "propertychangeevent.h"
@@ -49,7 +49,7 @@ namespace Operations
 
   // combo boxes
   locationBox = LocationManager::instance()->getComboBox();
-  trackBox = new QComboBox();
+  trackBox = new JComboBox();
 
   // checkboxes
   sameNameCheckBox = new QCheckBox(tr("SameName"));
@@ -140,7 +140,7 @@ namespace Operations
 
  // location combo box
  /*protected*/ void TrackCopyFrame::comboBoxActionPerformed(QWidget* ae) {
- QComboBox* source = (QComboBox*)ae;
+ JComboBox* source = (JComboBox*)ae;
      if (source == locationBox) {
          updateTrackComboBox();
      }

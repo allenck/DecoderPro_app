@@ -8,7 +8,7 @@
 #include "appslib_global.h"
 
 class Reporter;
-class QComboBox;
+class JComboBox;
 class PropertyChangeSupport;
 namespace Operations
 {
@@ -33,8 +33,8 @@ namespace Operations
   PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ Location* getLocationByReporter(Reporter* r);
   /*public*/ Location* newLocation(QString name);
-  /*public*/ QComboBox* getComboBox();
-  /*public*/ void updateComboBox(QComboBox* box);
+  /*public*/ JComboBox* getComboBox();
+  /*public*/ void updateComboBox(JComboBox *box);
   /*public*/ QList<Location*> getLocationsByNameList();
   /*public*/ void deregister(Location* location);
   /*public*/ void replaceLoad(QString type, QString oldLoadName,QString newLoadName);

@@ -723,7 +723,7 @@ namespace Operations
 
  /*public*/ void CarsTableModel::propertyChange(PropertyChangeEvent* e)
  {
-  if (Control::showProperty)
+  if (Control::SHOW_PROPERTY)
   {
    log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
            ->getNewValue().toString()));
@@ -737,7 +737,7 @@ namespace Operations
   {
    Car* car = (Car*) e->getSource();
    int row = sysList->indexOf(car);
-   if (Control::showProperty)
+   if (Control::SHOW_PROPERTY)
    {
     log->debug(tr("Update car table row: %1").arg(row));
    }

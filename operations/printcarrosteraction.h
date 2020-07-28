@@ -7,7 +7,7 @@
 class HardcopyWriter;
 class QPushButton;
 class QCheckBox;
-class QComboBox;
+class JComboBox;
 //class JFrame;
 namespace Operations
 {
@@ -34,9 +34,9 @@ namespace Operations
   CarPrintOptionFrame* cpof;// = null;
   int numberCharPerLine;
   /*private*/ void printCars();
-  QComboBox* sortByComboBox;// = new JComboBox<>();
-  QComboBox* manifestOrientationComboBox;// = new JComboBox<>();
-  QComboBox* fontSizeComboBox;// = new JComboBox<>();
+  JComboBox* sortByComboBox;// = new JComboBox<>();
+  JComboBox* manifestOrientationComboBox;// = new JComboBox<>();
+  JComboBox* fontSizeComboBox;// = new JComboBox<>();
 
 
   /*private*/ void printTitleLine(HardcopyWriter* writer);// //throws IOException
@@ -62,7 +62,7 @@ public:
      /*public*/ void buttonActionPerformed(QWidget* ae) ;
      /*public*/ void comboBoxActionPerformed(QWidget* ae);
  private:
-     /*private*/ void loadSortByComboBox(QComboBox* box);
+     /*private*/ void loadSortByComboBox(JComboBox* box);
      QCheckBox* printCarsWithLocation;// = new JCheckBox(Bundle.getMessage("PrintCarsWithLocation"));
      QCheckBox* printCarLength;// = new JCheckBox(Bundle.getMessage("PrintCarLength"));
      QCheckBox* printCarWeight;// = new JCheckBox(Bundle.getMessage("PrintCarWeight"));

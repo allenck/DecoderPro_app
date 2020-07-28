@@ -22,8 +22,8 @@ namespace Operations
  private:
   Logger* log;
   // combo box
-  QComboBox* typesComboBox;//= CarTypes.instance().getComboBox();
-  QComboBox* loadsComboBox;//= new JComboBox<>();
+  JComboBox* typesComboBox;//= CarTypes.instance().getComboBox();
+  JComboBox* loadsComboBox;//= new JComboBox<>();
 
   // panels
   QWidget* locationsPanel;

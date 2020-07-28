@@ -96,7 +96,7 @@ namespace Operations
 //          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
   // Reader selection dropdown.
-  QComboBox* readerSelector;// = new JComboBox<String>();
+  JComboBox* readerSelector;// = new JComboBox<String>();
   Logger* log;
   /*private*/ void updateCheckboxes();
   /*private*/ void enableButtons(bool enabled);

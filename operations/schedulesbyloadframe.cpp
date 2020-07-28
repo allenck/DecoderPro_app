@@ -1,7 +1,7 @@
 #include "schedulesbyloadframe.h"
 #include "locationmanager.h"
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "location.h"
 #include "track.h"
 #include "control.h"
@@ -40,7 +40,7 @@ namespace Operations
      //super(tr("MenuItemShowSchedulesByLoad"));
  // combo box
  typesComboBox= CarTypes::instance()->getComboBox();
- loadsComboBox = new QComboBox();
+ loadsComboBox = new JComboBox();
 
  // checkbox
  allLoadsCheckBox = new QCheckBox(tr("All Loads"));
@@ -121,7 +121,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void SchedulesByLoadFrame::comboBoxActionPerformed(QWidget* ae)
  {
-  QComboBox* source = (QComboBox*)ae;
+  JComboBox* source = (JComboBox*)ae;
      if (source == typesComboBox) {
          updateLoadComboBox();
      }

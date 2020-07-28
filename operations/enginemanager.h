@@ -4,7 +4,7 @@
 #include <QtXml>
 #include "appslib_global.h"
 
-class QComboBox;
+class JComboBox;
 class QDomElement;
 class Logger;
 namespace Operations
@@ -33,8 +33,8 @@ namespace Operations
   /*public*/ QList<RollingStock*>* getByModelList() ;
   /*public*/ QList<RollingStock*>* getByConsistList();
   /*public*/ QList<RollingStock*>* getByHpList();
-  /*public*/ QComboBox* getConsistComboBox();
-  /*public*/ void updateConsistComboBox(QComboBox* box);
+  /*public*/ JComboBox* getConsistComboBox();
+  /*public*/ void updateConsistComboBox(JComboBox* box);
   /*public*/ QList<Engine*>* getByTrainBlockingList(Train* train);
   /*public*/ QStringList getEngineRoadNames(QString model);
   /*public*/ void dispose();

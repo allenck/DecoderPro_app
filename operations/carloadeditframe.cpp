@@ -4,7 +4,7 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QBoxLayout>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "jtextfield.h"
 #include "control.h"
 #include "gridbaglayout.h"
@@ -397,7 +397,7 @@ namespace Operations
  }
 
  /*public*/ void CarLoadEditFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

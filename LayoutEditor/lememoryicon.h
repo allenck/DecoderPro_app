@@ -42,8 +42,10 @@ Logger* log;
  QAction* updateBlockItem;
 
 protected:
-/*protected*/ void setValue(QVariant obj);
-/*protected*/ void addRosterToIcon(RosterEntry* roster);
+ /*protected*/ void setValue(QVariant obj);
+ /*protected*/ void addRosterToIcon(RosterEntry* roster);
+ /*protected*/ QVariant getValue();
+
 friend class MIActionListener;
 };
 

@@ -220,7 +220,7 @@ namespace Operations
  }
 
  /*public*/ void RoutesTableModel::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }
@@ -232,7 +232,7 @@ namespace Operations
      } else if (e->getSource()->metaObject()->className()==("Route")) {
          Route* route = (Route*) e->getSource();
          int row = sysList.indexOf(route);
-         if (Control::showProperty) {
+         if (Control::SHOW_PROPERTY) {
              log->debug(tr("Update route table row: %1 id: %2").arg(row).arg(route->getId()));
          }
          if (row >= 0) {

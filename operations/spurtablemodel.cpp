@@ -64,7 +64,7 @@ namespace Operations {
  // this table listens for changes to a location and it's spurs
  /*public*/ void SpurTableModel::propertyChange(PropertyChangeEvent* e)
  {
-  if (Control::showProperty)
+  if (Control::SHOW_PROPERTY)
   {
    log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
                  ->getNewValue().toString()));
@@ -76,7 +76,7 @@ namespace Operations {
    if (track->getTrackType()==(Track::SPUR))
    {
     int row = tracksList.indexOf(track);
-    if (Control::showProperty)
+    if (Control::SHOW_PROPERTY)
     {
      log->debug(tr("Update spur table row: %1 track: %2").arg(row).arg(track->getName()));
     }

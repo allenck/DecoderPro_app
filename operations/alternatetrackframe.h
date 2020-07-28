@@ -19,7 +19,7 @@ namespace Operations
  private:
   Logger* log;
   // combo boxes
-  QComboBox* trackBox;// = new JComboBox<>();
+  JComboBox* trackBox;// = new JComboBox<>();
 
   // radio buttons
   // major buttons

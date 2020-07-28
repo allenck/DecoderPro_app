@@ -6,7 +6,7 @@
 #include <QStringList>
 #include "propertychangesupport.h"
 #include "logger.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "appslib_global.h"
 
 class PrintWriter;
@@ -35,8 +35,8 @@ namespace Operations
   /*public*/ bool isBuildMessagesEnabled();
   /*public*/ void setBuildMessagesEnabled(bool enable);
   /*public*/ static /*synchronized*/ TrainManager* instance();
-  /*public*/ QComboBox* getTrainComboBox();
-  /*public*/ void updateTrainComboBox(QComboBox* box);
+  /*public*/ JComboBox* getTrainComboBox();
+  /*public*/ void updateTrainComboBox(JComboBox* box);
   /*public*/ QList<Train*> getTrainsByNameList();
   /*public*/ Train* getTrainByName(QString name);
   /*public*/ Train* getTrainById(QString id);
@@ -53,7 +53,7 @@ namespace Operations
   /*public*/ void deleteShutDownScript(QString pathname);
   /*public*/ QStringList getShutDownScripts();
   PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
-  /*public*/ void updateTrainComboBox(QComboBox* box, Car* car);
+  /*public*/ void updateTrainComboBox(JComboBox* box, Car* car);
   /*public*/ int numEntries();
   /*public*/ QList<Train*> getTrainsArrivingThisLocationList(Location* location);
   /*public*/ QList<Train*> getTrainsByTimeList();
@@ -84,7 +84,7 @@ namespace Operations
   /*public*/ void setRowColorNameForTrainEnRoute(QString colorName);
   /*public*/ QString getRowColorNameForTerminated();
   /*public*/ void setRowColorNameForTerminated(QString colorName);
-  /*public*/ QComboBox* getRowColorComboBox();
+  /*public*/ JComboBox* getRowColorComboBox();
   /*public*/ Train* copyTrain(Train* train, QString trainName);
   /*public*/ QString getTrainScheduleActiveId();
   /*public*/ bool printSelectedTrains(QList<Train*> trains);

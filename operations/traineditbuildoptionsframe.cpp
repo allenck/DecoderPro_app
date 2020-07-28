@@ -4,7 +4,7 @@
 #include "enginemodels.h"
 #include "cartypes.h"
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QPushButton>
@@ -137,20 +137,20 @@ namespace Operations
   ownerBox = CarOwners::instance()->getComboBox();
 
   // train requirements 1st set
-  routePickup1Box = new QComboBox();
-  routeDrop1Box = new QComboBox();
-  roadCaboose1Box = new QComboBox();
+  routePickup1Box = new JComboBox();
+  routeDrop1Box = new JComboBox();
+  roadCaboose1Box = new JComboBox();
   roadEngine1Box = CarRoads::instance()->getComboBox();
   modelEngine1Box = EngineModels::instance()->getComboBox();
-  numEngines1Box = new QComboBox();
+  numEngines1Box = new JComboBox();
 
   // train requirements 2nd set
-  routePickup2Box = new QComboBox();
-  routeDrop2Box = new QComboBox();
-  roadCaboose2Box = new QComboBox();
+  routePickup2Box = new JComboBox();
+  routeDrop2Box = new JComboBox();
+  roadCaboose2Box = new JComboBox();
   roadEngine2Box = CarRoads::instance()->getComboBox();
   modelEngine2Box = EngineModels::instance()->getComboBox();
-  numEngines2Box = new QComboBox();
+  numEngines2Box = new JComboBox();
 }
 
 /*public*/ void TrainEditBuildOptionsFrame::initComponents(TrainEditFrame* parent)
@@ -573,7 +573,7 @@ QRadioButton* source = (QRadioButton*)ae;
 
 // Car type combo box has been changed, show loads associated with this car type
 /*public*/ void TrainEditBuildOptionsFrame::comboBoxActionPerformed(QWidget* ae) {
-QComboBox* source = (QComboBox*)ae;
+JComboBox* source = (JComboBox*)ae;
   if (source == numEngines1Box) {
       modelEngine1Box->setEnabled(numEngines1Box->currentText()!=("0"));
       roadEngine1Box->setEnabled(numEngines1Box->currentText()!=("0"));
@@ -962,7 +962,7 @@ QComboBox* source = (QComboBox*)ae;
 }
 
 // update caboose road box based on radio selection
-/*private*/ void TrainEditBuildOptionsFrame::updateCabooseRoadComboBox(QComboBox* box) {
+/*private*/ void TrainEditBuildOptionsFrame::updateCabooseRoadComboBox(JComboBox* box) {
   box->clear();
   box->addItem("");
   QStringList roads = CarManager::instance()->getCabooseRoadNames();
@@ -971,7 +971,7 @@ QComboBox* source = (QComboBox*)ae;
   }
 }
 
-/*private*/ void TrainEditBuildOptionsFrame::updateEngineRoadComboBox(QComboBox* box, QString engineModel) {
+/*private*/ void TrainEditBuildOptionsFrame::updateEngineRoadComboBox(JComboBox* box, QString engineModel) {
   if (engineModel == NULL) {
       return;
   }
@@ -1082,7 +1082,7 @@ while ( ( item = engine1caboose->layout()->takeAt( 0 ) ) != NULL )
 }
 
 /*public*/ void TrainEditBuildOptionsFrame::propertyChange(PropertyChangeEvent* e) {
-  if (Control::showProperty) {
+  if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
   }

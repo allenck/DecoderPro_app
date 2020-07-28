@@ -251,7 +251,7 @@ namespace Operations
  }
 
  /*public*/ void TrainsScheduleTableModel::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }
@@ -272,7 +272,7 @@ namespace Operations
          Train* train = (Train*) e->getSource();
          /*synchronized (this)*/ {
              int row = sysList.indexOf(train);
-             if (Control::showProperty) {
+             if (Control::SHOW_PROPERTY) {
                  log->debug("Update train table row: " + QString::number(row) + " name: " + train->getName());
              }
              if (row >= 0) {

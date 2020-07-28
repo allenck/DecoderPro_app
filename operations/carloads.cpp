@@ -4,7 +4,6 @@
 #include "carload.h"
 #include "xml.h"
 #include "carmanagerxml.h"
-#include <QComboBox>
 #include "cartypes.h"
 #include "stringutil.h"
 
@@ -99,8 +98,8 @@ namespace Operations
   * @param type
   * @return JComboBox with car loads starting with empty string.
   */
- /*public*/ QComboBox* CarLoads::getSelectComboBox(QString type) {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* CarLoads::getSelectComboBox(QString type) {
+     JComboBox* box = new JComboBox();
      box->addItem(NONE);
      foreach (QString load, getNames(type)) {
          box->addItem(load);
@@ -114,8 +113,8 @@ namespace Operations
   * @param type
   * @return JComboBox with car loads.
   */
- /*public*/ QComboBox* CarLoads::getComboBox(QString type) {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* CarLoads::getComboBox(QString type) {
+     JComboBox* box = new JComboBox();
      updateComboBox(type, box);
      return box;
 
@@ -126,8 +125,8 @@ namespace Operations
   *
   * @return JComboBox with car priorities.
   */
- /*public*/ QComboBox* CarLoads::getPriorityComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* CarLoads::getPriorityComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(CarLoad::PRIORITY_LOW);
      box->addItem(CarLoad::PRIORITY_HIGH);
      return box;
@@ -138,8 +137,8 @@ namespace Operations
   *
   * @return JComboBox with load types: LOAD_TYPE_EMPTY and LOAD_TYPE_LOAD
   */
- /*public*/ QComboBox* CarLoads::getLoadTypesComboBox() {
-     QComboBox*box = new QComboBox();
+ /*public*/ JComboBox* CarLoads::getLoadTypesComboBox() {
+     JComboBox*box = new JComboBox();
      box->addItem(CarLoad::LOAD_TYPE_EMPTY);
      box->addItem(CarLoad::LOAD_TYPE_LOAD);
      return box;
@@ -227,7 +226,7 @@ namespace Operations
      return names.contains(name);
  }
 
- /*public*/ void CarLoads::updateComboBox(QString type, QComboBox* box) {
+ /*public*/ void CarLoads::updateComboBox(QString type, JComboBox* box) {
      box->clear();
      QStringList loads = getNames(type);
      foreach (QString name, loads) {
@@ -235,7 +234,7 @@ namespace Operations
      }
  }
 
- /*public*/ void CarLoads::updateRweComboBox(QString type, QComboBox* box) {
+ /*public*/ void CarLoads::updateRweComboBox(QString type, JComboBox* box) {
      box->clear();
      QStringList loads = getNames(type);
      foreach (QString name, loads) {
@@ -617,7 +616,7 @@ namespace Operations
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 
- QComboBox* CarLoads::getComboBox()
+ JComboBox* CarLoads::getComboBox()
  {
   return RollingStockAttribute::getComboBox();
  }

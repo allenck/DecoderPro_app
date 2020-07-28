@@ -4,7 +4,7 @@
 #include "train.h"
 #include "control.h"
 #include "propertychangesupport.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "rosterentry.h"
 #include <QStringList>
 #include "xml.h"
@@ -610,13 +610,13 @@ namespace Operations
  return out;
 }
 
-/*public*/ QComboBox* TrainManager::getTrainComboBox() {
- QComboBox* box = new QComboBox();
+/*public*/ JComboBox* TrainManager::getTrainComboBox() {
+ JComboBox* box = new JComboBox();
  updateTrainComboBox(box);
  return box;
 }
 
-/*public*/ void TrainManager::updateTrainComboBox(QComboBox* box) {
+/*public*/ void TrainManager::updateTrainComboBox(JComboBox* box) {
  box->clear();
  box->addItem("");
  foreach (Train* train, getTrainsByNameList()) {
@@ -630,7 +630,7 @@ namespace Operations
   * @param box the combo box to update
   * @param car the car to be serviced
   */
- /*public*/ void TrainManager::updateTrainComboBox(QComboBox* box, Car* car) {
+ /*public*/ void TrainManager::updateTrainComboBox(JComboBox* box, Car* car) {
      box->clear();
      box->addItem("");
      foreach (Train* train, getTrainsByNameList()) {
@@ -701,8 +701,8 @@ namespace Operations
   *
   * @return the available text colors used for printing
   */
- /*public*/ QComboBox* TrainManager::getRowColorComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* TrainManager::getRowColorComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(NONE);
      box->addItem(Setup::BLACK);
      box->addItem(Setup::RED);

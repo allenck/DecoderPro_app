@@ -3,7 +3,7 @@
 #include "propertychangesupport.h"
 #include "trainmanagerxml.h"
 #include "trainschedule.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include "xml.h"
@@ -196,8 +196,8 @@ namespace Operations
   *
   * @return JComboBox with a list of schedules.
   */
- /*public*/ QComboBox* TrainScheduleManager::getComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* TrainScheduleManager::getComboBox() {
+     JComboBox* box = new JComboBox();
      updateComboBox(box);
      return box;
  }
@@ -207,8 +207,8 @@ namespace Operations
   *
   * @return JComboBox with a list of schedules starting with NULL.
   */
- /*public*/ QComboBox* TrainScheduleManager::getSelectComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* TrainScheduleManager::getSelectComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(NULL);
      foreach (TrainSchedule* sch, getSchedulesByIdList()) {
          box->addItem(sch->toString(), VPtr<TrainSchedule>::asQVariant(sch));
@@ -221,7 +221,7 @@ namespace Operations
   *
   * @param box the JComboBox needing an update.
   */
- /*public*/ void TrainScheduleManager::updateComboBox(QComboBox* box) {
+ /*public*/ void TrainScheduleManager::updateComboBox(JComboBox* box) {
      box->clear();
      foreach (TrainSchedule* sch, getSchedulesByNameList()) {
          box->addItem(sch->toString(), VPtr<TrainSchedule>::asQVariant(sch));

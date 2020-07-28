@@ -3,7 +3,7 @@
 #include "control.h"
 #include <QPushButton>
 #include <QRadioButton>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QSignalMapper>
@@ -215,7 +215,7 @@ common();
   Q_ASSERT(false); // must be overridden!
  }
 
- /*protected*/ void OperationsFrame::addComboBoxAction(QComboBox* b) {
+ /*protected*/ void OperationsFrame::addComboBoxAction(JComboBox* b) {
      //b.addActionListener(this::comboBoxActionPerformed);
   connect(b, SIGNAL(currentIndexChanged(int)), comboBoxMapper, SLOT(map()));
   comboBoxMapper->setMapping(b,b);
@@ -231,7 +231,7 @@ common();
   Q_ASSERT(false); // should be overridden!
  }
 
- /*protected*/ void OperationsFrame::selectNextItemComboBox(QComboBox* b) {
+ /*protected*/ void OperationsFrame::selectNextItemComboBox(JComboBox* b) {
      ((OperationsPanel*) this->getContentPane())->selectNextItemComboBox(b);
  }
 

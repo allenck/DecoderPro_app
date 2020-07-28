@@ -4,7 +4,7 @@
 #include "control.h"
 #include "xml.h"
 #include "logger.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "appslib_global.h"
 #include "autosave.h"
 #include "trainmanagerxml.h"
@@ -1654,16 +1654,16 @@ namespace Operations
      }
  }
 
- /*public*//*static*/QComboBox* Setup::getManifestFormatComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*//*static*/JComboBox* Setup::getManifestFormatComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(STANDARD_FORMAT);
      box->addItem(TWO_COLUMN_FORMAT);
      box->addItem(TWO_COLUMN_TRACK_FORMAT);
      return box;
  }
 
- /*public*//*static*/QComboBox* Setup::getOrientationComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*//*static*/JComboBox* Setup::getOrientationComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(PORTRAIT);
      box->addItem(LANDSCAPE);
      box->addItem(HALFPAGE);
@@ -1671,8 +1671,8 @@ namespace Operations
      return box;
  }
 
- /*public*//*static*/QComboBox* Setup::getSwitchListPageFormatComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*//*static*/JComboBox* Setup::getSwitchListPageFormatComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(PAGE_NORMAL);
      box->addItem(PAGE_PER_TRAIN);
      box->addItem(PAGE_PER_VISIT);
@@ -1683,8 +1683,8 @@ namespace Operations
   *
   * @return the available text colors used for printing
   */
- /*public*//*static*/QComboBox* Setup::getPrintColorComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*//*static*/JComboBox* Setup::getPrintColorComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(BLACK);
      box->addItem(RED);
      box->addItem(ORANGE);
@@ -1695,8 +1695,8 @@ namespace Operations
      return box;
  }
 
- /*public*//*static*/QComboBox* Setup::getEngineMessageComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*//*static*/JComboBox* Setup::getEngineMessageComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(BLANK);
      foreach (QString attribute, getEngineAttributes()) {
          box->addItem(attribute);
@@ -1709,8 +1709,8 @@ namespace Operations
      return box;
  }
 
- /*public*//*static*/QComboBox* Setup::getCarMessageComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*//*static*/JComboBox* Setup::getCarMessageComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(BLANK);
      foreach (QString attribute , getCarAttributes()) {
          box->addItem(attribute);
@@ -1728,8 +1728,8 @@ namespace Operations
   * @return JComboBox loaded with the strings (North, South, East, West)
   *         showing the available train directions for this railroad
   */
- /*public*//*static*/QComboBox* Setup::getTrainDirectionComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*//*static*/JComboBox* Setup::getTrainDirectionComboBox() {
+     JComboBox* box = new JComboBox();
      foreach (QString direction, getTrainDirectionList())
          box->addItem(direction);
      return box;

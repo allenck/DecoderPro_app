@@ -33,7 +33,7 @@ namespace Operations
   // load managers
   LocationManager* locationManager;// = LocationManager.instance();
   QList<QCheckBox*> locationCheckBoxes;// = new ArrayList<JCheckBox>();
-  QList<QComboBox*> locationComboBoxes;// = new ArrayList<JComboBox<String>>();
+  QList<JComboBox*> locationComboBoxes;// = new ArrayList<JComboBox<String>>();
   QWidget* locationPanelCheckBoxes;// = new JPanel();
 
   // checkboxes
@@ -54,7 +54,7 @@ namespace Operations
   QPushButton* resetButton;// = new JButton(Bundle.getMessage("ResetSwitchLists"));
   QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
-  QComboBox* switchListPageComboBox;// = Setup.getSwitchListPageFormatComboBox();
+  JComboBox* switchListPageComboBox;// = Setup.getSwitchListPageFormatComboBox();
 
   // panels
   QGroupBox* customPanel;

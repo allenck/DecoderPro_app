@@ -127,7 +127,7 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
 
 
  // temp code until fully implemented;
- signalIconEditor = layoutEditor->signalIconEditor;
+ signalIconEditor = layoutEditor->getLETools()->signalIconEditor;
 
  this->layoutEditor = layoutEditor;
 

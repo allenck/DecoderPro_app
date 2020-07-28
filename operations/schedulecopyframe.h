@@ -32,7 +32,7 @@ namespace Operations
   QPushButton* copyButton;//= new javax.swing.JButton(Bundle.getMessage("Copy"));
 
   // combo boxes
-  QComboBox* scheduleBox;//= scheduleManager.getComboBox();
+  JComboBox* scheduleBox;//= scheduleManager.getComboBox();
   Logger* log;
   void common(Schedule* );
 

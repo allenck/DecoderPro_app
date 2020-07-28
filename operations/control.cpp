@@ -20,7 +20,7 @@ namespace Operations
 ///*public*/ class Control {
 
     // debug flags
-    /*public*/ /*static*/ /*final*/ bool Control::showProperty = false;
+    /*public*/ /*static*/ /*final*/ bool Control::SHOW_PROPERTY = false;
     /*public*/ /*static*/ /*final*/ bool Control::showInstance = false;
 
     // Default panel width

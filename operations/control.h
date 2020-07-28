@@ -14,7 +14,7 @@ namespace Operations
  public:
   //explicit Control(QObject *parent = 0);
   // debug flags
-  /*public*/ static /*final*/ bool showProperty; //=false;
+  /*public*/ static /*final*/ bool SHOW_PROPERTY; //=false;
   /*public*/ static /*final*/ bool showInstance; //=false;
 
   // Default panel width

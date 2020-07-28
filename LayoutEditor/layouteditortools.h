@@ -1119,6 +1119,8 @@ protected:
     friend class LevelXing;
     friend class LayoutSlip;
     friend class SBBWindowListener;
+    friend class PositionablePoint;
+    friend class LayoutEditorToolBarPanel;
 };
 
 /*static*/ class BeanDetails : public QObject

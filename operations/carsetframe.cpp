@@ -1,6 +1,6 @@
 
 #include "carsetframe.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "carloads.h"
 #include "logger.h"
 #include "car.h"
@@ -11,7 +11,7 @@
 #include "gridbaglayout.h"
 #include <QGroupBox>
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QLabel>
 #include <QPushButton>
 #include <propertychangesupport.h>
@@ -68,7 +68,7 @@ namespace Operations
 
   askKernelChange = true;
   destReturnWhenEmptyBox = LocationManager::instance()->getComboBox();
-  trackReturnWhenEmptyBox = new QComboBox();
+  trackReturnWhenEmptyBox = new JComboBox();
   loadReturnWhenEmptyBox = CarLoads::instance()->getComboBox();
   loadComboBox = CarLoads::instance()->getComboBox();
   kernelComboBox = carManager->getKernelComboBox();
@@ -243,7 +243,7 @@ namespace Operations
  {
   _disableComboBoxUpdate = true; // stop updates
   RollingStockSetFrame::comboBoxActionPerformed(ae);
-  QComboBox* source = (QComboBox*)ae;
+  JComboBox* source = (JComboBox*)ae;
 
   if (source == finalDestinationBox) {
       updateFinalDestination();

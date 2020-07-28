@@ -160,11 +160,11 @@ LevelXingXml::LevelXingXml(QObject *parent) :
     // get remaining attributes
     QString a = element.attribute("blocknameac");
     if (a != NULL) {
-        l->tBlockNameAC = a;
+        l->tLayoutBlockNameAC = a;
     }
     a = element.attribute("blocknamebd");
     if (a != NULL) {
-        l->tBlockNameBD = a;
+        l->tLayoutBlockNameBD = a;
     }
     a = element.attribute("connectaname");
     if (a != NULL) {

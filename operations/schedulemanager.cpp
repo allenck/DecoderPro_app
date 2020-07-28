@@ -10,7 +10,7 @@
 #include "schedule.h"
 #include "scheduleitem.h"
 #include "vptr.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "locationmanager.h"
 #include "location.h"
 #include "track.h"
@@ -228,8 +228,8 @@ namespace Operations
   *
   * @return JComboBox with a list of schedules.
   */
- /*public*/ QComboBox* ScheduleManager::getComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* ScheduleManager::getComboBox() {
+     JComboBox* box = new JComboBox();
      updateComboBox(box);
      return box;
  }
@@ -239,7 +239,7 @@ namespace Operations
   *
   * @param box the JComboBox needing an update.
   */
- /*public*/ void ScheduleManager::updateComboBox(QComboBox* box) {
+ /*public*/ void ScheduleManager::updateComboBox(JComboBox* box) {
      box->clear();
      box->addItem(NULL);
      foreach (Schedule* schedule, getSchedulesByNameList()) {
@@ -316,9 +316,9 @@ namespace Operations
   * @param schedule The schedule for this JComboBox.
   * @return JComboBox with a list of spurs using schedule.
   */
- /*public*/ QComboBox* ScheduleManager::getSpursByScheduleComboBox(Schedule* schedule)
+ /*public*/ JComboBox* ScheduleManager::getSpursByScheduleComboBox(Schedule* schedule)
 {
-  QComboBox* box = new QComboBox();
+  JComboBox* box = new JComboBox();
   // search all spurs for that use schedule
   foreach (Location* location, LocationManager::instance()->getLocationsByNameList())
   {
@@ -366,7 +366,7 @@ namespace Operations
   *
   */
  /*public*/ void ScheduleManager::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

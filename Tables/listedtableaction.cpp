@@ -105,22 +105,22 @@ void ListedTableAction::common()
   f->gotoListItem(gotoListItem);
   return;
  }
-            f = new ListedTableFrame(title);
-            f->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
-//                /**
-//                 *
-//                 */
-//                private static final long serialVersionUID = -2029385586619585289L;
-//            };
-            f->initComponents();
-            addToFrame(f);
+  f = new ListedTableFrame(title);
+  f->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
+  //                /**
+  //                 *
+  //                 */
+  //                private static final long serialVersionUID = -2029385586619585289L;
+  //            };
+  f->initComponents();
+  addToFrame(f);
 
-            f->gotoListItem(gotoListItem);
-            f->adjustSize();
+  f->gotoListItem(gotoListItem);
+  f->adjustSize();
 
-            f->setDividerLocation(dividerLocation);
-            f->setVisible(true);
-            f->setFrameLocation();
+  f->setDividerLocation(dividerLocation);
+  f->setVisible(true);
+  f->setFrameLocation();
 //        }
 //    };
 //    Thread thr = new Thread(r, "Listed Table Generation");

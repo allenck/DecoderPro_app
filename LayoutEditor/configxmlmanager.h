@@ -68,7 +68,7 @@ public:
             QString userName,
             Throwable *exception
             );
-    /*static*/ /*public*/ void setErrorHandler(ErrorHandler handler);
+    static /*public*/ void setErrorHandler(ErrorHandler* handler);
 
 signals:
 
@@ -88,7 +88,6 @@ private:
     /*private*/ void storeVersion(QDomElement root) const;
     /*private*/ static /*final*/ QString fileLocation;// = "layout"+File.separator;
     static ErrorHandler* handler;// = new ErrorHandler();
-    static /*public*/ void setErrorHandler(ErrorHandler* handler);
     QMap<QString, QString> configXmlMap;
 //    /*private*/ void loadVersion(QDomElement root, XmlAdapter* adapter) ;
 

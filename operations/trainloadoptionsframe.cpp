@@ -1,6 +1,6 @@
 #include "trainloadoptionsframe.h"
 #include "control.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QBoxLayout>
@@ -270,7 +270,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  // Car type combo box has been changed, show loads associated with this car type
  /*public*/ void TrainLoadOptionsFrame::comboBoxActionPerformed(QWidget*ae) {
- QComboBox* source = (QComboBox*)ae;
+ JComboBox* source = (JComboBox*)ae;
      if (source == comboBoxTypes) {
          updateLoadComboBoxes();
      }
@@ -380,7 +380,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void TrainLoadOptionsFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

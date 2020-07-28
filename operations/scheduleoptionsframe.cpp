@@ -3,7 +3,7 @@
 #include "setup.h"
 #include "schedule.h"
 #include <jtextfield.h>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QBoxLayout>
 #include <QPushButton>
 #include "track.h"
@@ -41,7 +41,7 @@ namespace Operations
   factorTextField = new JTextField(5);
   factorTextField->setValidator(new QIntValidator(0,1000));
   // combo boxes
-  trackBox = new QComboBox();
+  trackBox = new JComboBox();
 
   // radio buttons
   // major buttons

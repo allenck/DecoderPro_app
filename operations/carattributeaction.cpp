@@ -21,11 +21,11 @@ namespace Operations
      */
     //private static final long serialVersionUID = -369749063288544953L;
 
-    /*public*/ CarAttributeAction::CarAttributeAction(QString actionName, CarAttributeEditFrame* caef) : AbstractAction(actionName, caef) {
+    /*public*/ CarAttributeAction::CarAttributeAction(CarAttributeEditFrame* caef) : AbstractAction(tr("Car Quantity"), caef) {
         //super(actionName);
         this->caef = caef;
- log = new Logger("CarAttributeAction");
- connect(this, SIGNAL(triggered(bool)), this,SLOT(actionPerformed()));
+        log = new Logger("CarAttributeAction");
+        connect(this, SIGNAL(triggered(bool)), this,SLOT(actionPerformed()));
     }
 
 

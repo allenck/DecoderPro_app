@@ -15,8 +15,8 @@ namespace Operations
   */
  //private static final long serialVersionUID = 6118522896008395241L;
 
- /*public*/ CarDeleteAttributeAction::CarDeleteAttributeAction(QString actionName, CarAttributeEditFrame* caef)
-: AbstractAction(actionName, caef)
+ /*public*/ CarDeleteAttributeAction::CarDeleteAttributeAction(CarAttributeEditFrame* caef)
+: AbstractAction(tr("Delete unused attribute names"), caef)
 {
      //super(actionName);
      this->caef = caef;
@@ -27,6 +27,6 @@ namespace Operations
 
  /*public*/ void CarDeleteAttributeAction::actionPerformed(ActionEvent* ae) {
      log->debug("Delete unused attributes");
-     caef->deleteUnusedAttribures();
+     caef->deleteUnusedAttributes();
  }
 }

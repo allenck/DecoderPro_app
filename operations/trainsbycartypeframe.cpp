@@ -1,7 +1,7 @@
 ﻿#include "trainsbycartypeframe.h"
 #include "trainmanager.h"
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include <QGroupBox>

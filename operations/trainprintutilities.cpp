@@ -11,7 +11,7 @@
 #include "traincommon.h"
 #include "trainmanagerxml.h"
 #include "printwriter.h"
-#include <QComboBox>
+#include "jcombobox.h"
 
 namespace Operations
 {
@@ -424,8 +424,8 @@ namespace Operations
      }
  }
 #endif
- /*public*/ /*static*/ QComboBox* TrainPrintUtilities::getPrinterJComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ /*static*/ JComboBox* TrainPrintUtilities::getPrinterJComboBox() {
+     JComboBox* box = new JComboBox();
 // TODO:     PrintService[] services = PrintServiceLookup.lookupPrintServices(NULL, NULL);
 //     for (PrintService printService : services) {
 //         box.addItem(printService.getName());

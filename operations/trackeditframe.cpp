@@ -63,7 +63,8 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString TrackEditFrame::DISPOSE = "dispose"; // NOI18N
  /*public*/ /*static*/ /*final*/ int TrackEditFrame::MAX_NAME_LENGTH = Control::max_len_string_track_name;
 
- /*public*/ TrackEditFrame::TrackEditFrame(QWidget* parent) : OperationsFrame(parent)
+ /*public*/ TrackEditFrame::TrackEditFrame(QWidget* parent)
+  : CarAttributeEditFrame(parent)
  {
      //super();
   log = new Logger("TrackEditFrame");
@@ -1104,7 +1105,7 @@ if (!anyDrops->isChecked())
  }
 
  // filter all trains not serviced by this track
- /*private*/ void TrackEditFrame::autoTrainComboBox(QComboBox* box) {
+ /*private*/ void TrackEditFrame::autoTrainComboBox(JComboBox* box) {
   for (int i = 1; i < box->count(); i++) {
       Train* train = VPtr<Train>::asPtr(box->itemData(i));
       if (!checkRoute(train->getRoute())) {
@@ -1125,7 +1126,7 @@ if (!anyDrops->isChecked())
  }
 
  // filter out all routes not serviced by this track
- /*private*/ void TrackEditFrame::autoRouteComboBox(QComboBox* box) {
+ /*private*/ void TrackEditFrame::autoRouteComboBox(JComboBox* box) {
   for (int i = 1; i < box->count(); i++) {
       Route* route = VPtr<Route>::asPtr(box->itemData(i));
       if (!checkRoute(route)) {
@@ -1382,7 +1383,7 @@ if (!anyDrops->isChecked())
  }
 
  /*public*/ void TrackEditFrame::propertyChange(PropertyChangeEvent* e) {
-  if (Control::showProperty) {
+  if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
   }

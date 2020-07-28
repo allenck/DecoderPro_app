@@ -5,7 +5,7 @@
 #include <QStyledItemDelegate>
 
 class Logger;
-class QComboBox;
+class JComboBox;
 class PropertyChangeEvent;
 namespace Operations
 {
@@ -61,7 +61,7 @@ namespace Operations
   /*private*/ void removePropertyChangeSchedules();
   /*private*/ void addPropertyChangeTracks() ;
   /*private*/ void removePropertyChangeTracks();
-  ///*private*/ QComboBox* getComboBox(int row, Schedule* schedule) const;
+  ///*private*/ JComboBox* getComboBox(int row, Schedule* schedule) const;
   Logger* log;
   /*private*/ QString getScheduleStatus(int row) const;
   /*private*/ QString getSpurStatus(int row) const;
@@ -69,7 +69,7 @@ namespace Operations
   /*private*/ LocationTrackPair* getLocationTrackPair(int row) const;
   /*private*/ void editSchedule(int row);
   /*private*/ void deleteSchedule(int row);
-  /*private*/ void selectJComboBox(QComboBox* box, int row);
+  /*private*/ void selectJComboBox(JComboBox* box, int row);
 
  protected:
   /*protected*/ QHash<Schedule*, QString> comboSelect;// = new Hashtable<Schedule, String>();
@@ -77,7 +77,7 @@ namespace Operations
  friend class STMSComboBoxDelegate;
  };
 
- typedef QComboBox* (*GETCOMBO1)(Schedule*, SchedulesTableModel* );
+ typedef JComboBox* (*GETCOMBO1)(Schedule*, SchedulesTableModel* );
 
  class STMSComboBoxDelegate : public QStyledItemDelegate
  {
@@ -93,7 +93,7 @@ namespace Operations
  private:
    SchedulesTableModel* model;
    QStringList items;
-   QComboBox* (*box)(Schedule*, SchedulesTableModel*);
+   JComboBox* (*box)(Schedule*, SchedulesTableModel*);
 
  };
 }

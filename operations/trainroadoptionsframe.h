@@ -51,7 +51,7 @@ private:
   // check boxes
   // text field
   // combo boxes
-  QComboBox* comboBoxRoads;// =CarRoads.instance().getComboBox();
+  JComboBox* comboBoxRoads;// =CarRoads.instance().getComboBox();
   /*private*/ static /*final*/ int NUMBER_ROADS_PER_LINE;// = 6;
   /*private*/ void updateRoadNames();
   /*private*/ void deleteAllRoads();

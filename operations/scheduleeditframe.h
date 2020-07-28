@@ -63,7 +63,7 @@ namespace Operations
   JTextField* commentTextField;//= new JTextField(35);
 
   // combo boxes
-  QComboBox* typeBox;//= new JComboBox<>();
+  JComboBox* typeBox;//= new JComboBox<>();
   /*private*/ void enableButtons(bool enabled);
   /*private*/ void loadTypeComboBox();
   Logger* log;

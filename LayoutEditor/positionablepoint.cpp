@@ -1130,13 +1130,13 @@ void PositionablePoint::On_setSignals()
 {
  // bring up signals at level crossing tool dialog
  layoutEditor->getLETools()->setSignalsAtBlockBoundaryFromMenu(this,
-                                 layoutEditor->signalIconEditor, layoutEditor->signalFrame);}
+                                 layoutEditor->getLETools()->signalIconEditor, layoutEditor->getLETools()->signalFrame);}
 
 void PositionablePoint::On_setSensors()
 {
  // bring up signals at block boundary tool dialog
  layoutEditor->getLETools()->setSensorsAtBlockBoundaryFromMenu(instance,
-     layoutEditor->sensorIconEditor,layoutEditor->sensorFrame);
+     layoutEditor->getLETools()->sensorIconEditor,layoutEditor->getLETools()->sensorFrame);
 
 }
 void PositionablePoint::On_setSignalMasts()

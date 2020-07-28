@@ -42,6 +42,7 @@
 #include "imageio.h"
 #include <QPixmap>
 #include "file.h"
+#include "fileutil.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -198,7 +199,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 {
  this->self = self;
  log = new Logger("TTBeanTableDataModel");
- rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
  beanTypeChar = 'T'; // for Turnout
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";

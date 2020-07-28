@@ -110,23 +110,23 @@ namespace Operations
   JTextField* builtBeforeTextField;//= new JTextField(10);
 
   // combo boxes
-  QComboBox* ownerBox;//= CarOwners.instance().getComboBox();
+  JComboBox* ownerBox;//= CarOwners.instance().getComboBox();
 
   // train requirements 1st set
-  QComboBox* routePickup1Box;//= new JComboBox<>();
-  QComboBox* routeDrop1Box;//= new JComboBox<>();
-  QComboBox* roadCaboose1Box;//= new JComboBox<>();
-  QComboBox* roadEngine1Box;//= CarRoads.instance().getComboBox();
-  QComboBox* modelEngine1Box;//= EngineModels.instance().getComboBox();
-  QComboBox* numEngines1Box;//= new JComboBox<>();
+  JComboBox* routePickup1Box;//= new JComboBox<>();
+  JComboBox* routeDrop1Box;//= new JComboBox<>();
+  JComboBox* roadCaboose1Box;//= new JComboBox<>();
+  JComboBox* roadEngine1Box;//= CarRoads.instance().getComboBox();
+  JComboBox* modelEngine1Box;//= EngineModels.instance().getComboBox();
+  JComboBox* numEngines1Box;//= new JComboBox<>();
 
   // train requirements 2nd set
-  QComboBox* routePickup2Box;//= new JComboBox<>();
-  QComboBox* routeDrop2Box;//= new JComboBox<>();
-  QComboBox* roadCaboose2Box;//= new JComboBox<>();
-  QComboBox* roadEngine2Box;//= CarRoads.instance().getComboBox();
-  QComboBox* modelEngine2Box;//= EngineModels.instance().getComboBox();
-  QComboBox* numEngines2Box;//= new JComboBox<>();
+  JComboBox* routePickup2Box;//= new JComboBox<>();
+  JComboBox* routeDrop2Box;//= new JComboBox<>();
+  JComboBox* roadCaboose2Box;//= new JComboBox<>();
+  JComboBox* roadEngine2Box;//= CarRoads.instance().getComboBox();
+  JComboBox* modelEngine2Box;//= EngineModels.instance().getComboBox();
+  JComboBox* numEngines2Box;//= new JComboBox<>();
   /*private*/ void updateOwnerNames();
   /*private*/ void setBuiltRadioButton();
   /*private*/ void updateBuilt();
@@ -137,8 +137,8 @@ namespace Operations
   /*private*/ void enableButtons(bool enabled);
   /*private*/ void updateModelComboBoxes();
   /*private*/ void updateOwnerComboBoxes();
-  /*private*/ void updateCabooseRoadComboBox(QComboBox* box);
-  /*private*/ void updateEngineRoadComboBox(QComboBox*box, QString engineModel);
+  /*private*/ void updateCabooseRoadComboBox(JComboBox* box);
+  /*private*/ void updateEngineRoadComboBox(JComboBox*box, QString engineModel);
   /*private*/ void createEngine1Panel();
   /*private*/ void createEngine2Panel();
   /*private*/ void createCaboose1Panel(bool withCombox);

@@ -3,7 +3,6 @@
 #include "propertychangeevent.h"
 #include "location.h"
 #include "track.h"
-#include <QComboBox>
 #include <QCheckBox>
 #include <QPushButton>
 #include <QRadioButton>
@@ -13,7 +12,7 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QScrollArea>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "carloads.h"
 #include "cartypes.h"
 #include "flowlayout.h"
@@ -586,7 +585,7 @@ namespace Operations
  }
 
  /*public*/ void TrackLoadEditFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

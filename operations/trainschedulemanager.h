@@ -8,7 +8,7 @@ class PropertyChangeSupport;
 class PropertyChangeEvent;
 class QDomDocument;
 class QDomElement;
-class QComboBox;
+class JComboBox;
 class Logger;
 namespace Operations
 {
@@ -30,9 +30,9 @@ namespace Operations
   /*public*/ void deregister(TrainSchedule* schedule);
   /*public*/ QList<TrainSchedule*> getSchedulesByNameList();
   /*public*/ QList<TrainSchedule*> getSchedulesByIdList();
-  /*public*/ QComboBox* getComboBox();
-  /*public*/ QComboBox* getSelectComboBox();
-  /*public*/ void updateComboBox(QComboBox* box);
+  /*public*/ JComboBox* getComboBox();
+  /*public*/ JComboBox* getSelectComboBox();
+  /*public*/ void updateComboBox(JComboBox* box);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ void load(QDomElement root);
   /*public*/ void createDefaultSchedules();

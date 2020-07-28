@@ -8,7 +8,7 @@
 #include <QtXml>
 #include "appslib_global.h"
 
-class QComboBox;
+class JComboBox;
 namespace Operations {
  class RouteLocation;
  class Route;
@@ -28,8 +28,8 @@ namespace Operations {
   /*public*/ void deregister(Route* route);
   /*public*/ QList<Route*> getRoutesByNameList();
   /*public*/ QList<Route*> getRoutesByIdList();
-  /*public*/ QComboBox* getComboBox();
-  /*public*/ void updateComboBox(QComboBox* box);
+  /*public*/ JComboBox* getComboBox();
+  /*public*/ void updateComboBox(JComboBox* box);
   /*public*/ int numEntries();
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);

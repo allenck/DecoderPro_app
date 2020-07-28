@@ -359,7 +359,8 @@ SOURCES += \
     timetable/timetableimport.cpp \
     timetable/timetabledisplaygraph.cpp \
     timetable/timetablegraphcommon.cpp \
-    timetable/exporttimetable.cpp
+    timetable/exporttimetable.cpp \
+    rollingstockattributeeditframe.cpp
 
 HEADERS += \
         operations.h \
@@ -654,7 +655,8 @@ HEADERS += \
     timetable/timetableimport.h \
     timetable/timetabledisplaygraph.h \
     timetable/timetablegraphcommon.h \
-    timetable/exporttimetable.h
+    timetable/exporttimetable.h \
+    rollingstockattributeeditframe.h
 
 unix {
     target.path = /usr/lib

@@ -1,6 +1,6 @@
 #ifndef TRACKEDITFRAME_H
 #define TRACKEDITFRAME_H
-#include "operationsframe.h"
+#include "carattributeeditframe.h"
 #include "appslib_global.h"
 
 class QGridLayout;
@@ -18,7 +18,7 @@ namespace Operations
  class RouteManager;
  class Location;
  class Track;
- class APPSLIBSHARED_EXPORT TrackEditFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT TrackEditFrame : public CarAttributeEditFrame
  {
   Q_OBJECT
  public:
@@ -101,10 +101,10 @@ namespace Operations
   QRadioButton* excludeTrainPickup;//= new JRadioButton(tr("ExcludeTrains"));
   QRadioButton* excludeRoutePickup;//= new JRadioButton(tr("ExcludeRoutes"));
 
-  QComboBox* comboBoxDropTrains;//= trainManager.getTrainComboBox();
-  QComboBox* comboBoxDropRoutes;//= routeManager.getComboBox();
-  QComboBox* comboBoxPickupTrains;//= trainManager.getTrainComboBox();
-  QComboBox* comboBoxPickupRoutes;//= routeManager.getComboBox();
+  JComboBox* comboBoxDropTrains;//= trainManager.getTrainComboBox();
+  JComboBox* comboBoxDropRoutes;//= routeManager.getComboBox();
+  JComboBox* comboBoxPickupTrains;//= trainManager.getTrainComboBox();
+  JComboBox* comboBoxPickupRoutes;//= routeManager.getComboBox();
 
   // text field
   JTextField* trackNameTextField;//= new JTextField(Control.max_len_string_track_name);
@@ -132,9 +132,9 @@ namespace Operations
   /*private*/ void updateDropOptions();
   /*private*/ void updatePickupOptions();
   /*private*/ void updateTrainComboBox();
-  /*private*/ void autoTrainComboBox(QComboBox* box);
+  /*private*/ void autoTrainComboBox(JComboBox* box);
   /*private*/ void updateRouteComboBox();
-  /*private*/ void autoRouteComboBox(QComboBox* box);
+  /*private*/ void autoRouteComboBox(JComboBox* box);
   /*private*/ bool checkRoute(Route* route);
   /*private*/ void reportTrackExists(QString s);
   /*private*/ bool checkUserInputs(Track* track);

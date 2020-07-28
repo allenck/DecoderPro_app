@@ -152,14 +152,16 @@
         /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor)
  : LayoutTrack(id, c, layoutEditor) {
     //super(id, c, layoutEditor);
+
  editor = new LayoutTurnoutEditor(layoutEditor);
 }
 
 /*protected*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id,
-        /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, int t)
+        /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, LayoutTurnout::TurnoutType t)
  : LayoutTrack(id, c, layoutEditor) {
     //super(id, c, layoutEditor);
- type - t;
+ type = t;
+
  editor = new LayoutTurnoutEditor(layoutEditor);
 }
 
@@ -181,7 +183,7 @@
 void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor *layoutEditor, int v)
 {
  log = new Logger("LayoutTurnout");
- this->version = version;
+
  setObjectName(id);
  editor = new LayoutTurnoutEditor(layoutEditor);
 
@@ -3112,7 +3114,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  return popup;
 } // showPopup
 
- tools->setSensorsAtTurnoutFromMenu(this, boundaryBetween.toList(), layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
+ tools->setSensorsAtTurnoutFromMenu(this, boundaryBetween.toList(), layoutEditor->getLETools()->sensorIconEditor, layoutEditor->getLETools()->sensorFrame);
 }
 
 

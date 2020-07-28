@@ -27,7 +27,7 @@
 #include "bufferedimage.h"
 #include "loggerfactory.h"
 #include "file.h"
-
+#include "fileutil.h"
 
 //LightTableAction::LightTableAction()
 //{
@@ -166,7 +166,7 @@ LTBeanTableDataModel::LTBeanTableDataModel(LightTableAction* lta)
  setObjectName("LTBeanTableDataModel");
  enabledString = tr("Enabled");
  intensityString = tr("Intensity");
- rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
  beanTypeChar = 'L'; // for Light
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";

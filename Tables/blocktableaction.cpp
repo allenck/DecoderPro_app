@@ -24,6 +24,7 @@
 #include "imageio.h"
 #include "file.h"
 #include <QPointer>
+#include "fileutil.h"
 
 BlockTableAction::BlockTableAction(QObject *parent) :
   AbstractTableAction(tr("Block Table"), parent)
@@ -139,7 +140,7 @@ void BlockTableAction::common()
  this->inchBox = inchBox;
  connect(inchBox, SIGNAL(toggled(bool)), this, SLOT(fireTableDataChanged()));
  twoDigit = new DecimalFormat("0.00");
- rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ rootPath = FileUtil::getProgramPath() +"resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
  beanTypeChar = 'S'; // for Sensor
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";

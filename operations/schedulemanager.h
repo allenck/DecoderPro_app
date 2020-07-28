@@ -7,7 +7,7 @@
 
 class QDomDocument;
 class QDomElement;
-class QComboBox;
+class JComboBox;
 class Logger;
 class PropertyChangeSupport;
 class PropertyChangeEvent;
@@ -33,12 +33,12 @@ namespace Operations
   /*public*/ QList<Schedule*> getSchedulesByIdList();
   /*public*/ Schedule* copySchedule (Schedule* schedule, QString newScheduleName);
   /*public*/ void resetHitCounts();
-  /*public*/ QComboBox* getComboBox() ;
-  /*public*/ void updateComboBox(QComboBox* box);
+  /*public*/ JComboBox* getComboBox() ;
+  /*public*/ void updateComboBox(JComboBox* box);
   /*public*/ void replaceType(QString oldType, QString newType);
   /*public*/ void replaceRoad(QString oldRoad, QString newRoad);
   /*public*/ void replaceLoad(QString type, QString oldLoad, QString newLoad);
-  /*public*/ QComboBox* getSpursByScheduleComboBox(Schedule* schedule);
+  /*public*/ JComboBox* getSpursByScheduleComboBox(Schedule* schedule);
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   Q_INVOKABLE /*public*/ void initialize();

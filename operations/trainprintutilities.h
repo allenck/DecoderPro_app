@@ -4,7 +4,7 @@
 #include <QString>
 #include <QObject>
 
-class QComboBox;
+class JComboBox;
 class Logger;
 class File;
 namespace Operations
@@ -17,7 +17,7 @@ namespace Operations
   /*public*/ static void printReport(File* file, QString name, bool isPreview, QString fontName,
           bool isBuildReport, QString logoURL, QString printerName, QString orientation, int fontSize);
   /*public*/ static QString getDefaultPrinterName();
-  /*public*/ static QComboBox* getPrinterJComboBox();
+  /*public*/ static JComboBox* getPrinterJComboBox();
   /*public*/ static void editReport(File* file, QString name);
 
  private:

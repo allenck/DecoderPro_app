@@ -5,7 +5,7 @@
 #include "rollingstock.h"
 #include "car.h"
 #include "carstablemodel.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QPushButton>
@@ -53,9 +53,9 @@ namespace Operations
   mFrame = frame;
   isPreview = preview;
   panel = (CarsTableFrame*) pWho;
-  sortByComboBox = new QComboBox();
-  manifestOrientationComboBox = new QComboBox();
-  fontSizeComboBox = new QComboBox();
+  sortByComboBox = new JComboBox();
+  manifestOrientationComboBox = new JComboBox();
+  fontSizeComboBox = new JComboBox();
 
 
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
@@ -456,7 +456,7 @@ namespace Operations
      }
  }
 
- /*private*/ void CarPrintOptionFrame::loadSortByComboBox(QComboBox* box) {
+ /*private*/ void CarPrintOptionFrame::loadSortByComboBox(JComboBox* box) {
      for (int i = pcr->panel->carsTableModel->SORTBY_NUMBER; i <= pcr->panel->carsTableModel->SORTBY_LAST; i++) {
          box->addItem(pcr->panel->carsTableModel->getSortByName(i));
      }

@@ -347,7 +347,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
 
  // If available, override location and size with machine dependent values
- if (!((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize()) {
+ if (!((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize())
+ {
      UserPreferencesManager* prefsMgr = (UserPreferencesManager*)InstanceManager::getNullableDefault("UserPreferencesManager");
      if (prefsMgr != nullptr) {
          QString windowFrameRef = "jmri.jmrit.display.layoutEditor.LayoutEditor:" + name;

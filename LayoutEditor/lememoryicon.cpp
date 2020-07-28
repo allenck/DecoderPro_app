@@ -13,6 +13,7 @@
 #include "activetrain.h"
 #include "activatetrainframe.h"
 #include "layouteditor.h"
+#include "joptionpane.h"
 
 //MemoryIcon::MemoryIcon(QObject *parent) :
 //    DisplayMemoryIcon(parent)
@@ -188,93 +189,41 @@ void LEMemoryIcon::on_updateBlockItemAction_toggled(bool bState)
  lBlock = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getBlockWithMemoryAssigned(getMemory());
 }
 
-
-//@Override
-/*protected*/ void LEMemoryIcon::setValue(QVariant obj)
-{
- if(updateBlockValue && lBlock!=NULL)
- {
-   lBlock->getBlock()->setValue(obj);
- }
- else
- {
-  getMemory()->setValue(obj);
-  updateSize();
- }
-}
-
 /*protected*/ void LEMemoryIcon::addRosterToIcon(RosterEntry* roster)
 {
- //if(!jmri.InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() || lBlock==NULL){
- LayoutEditor* myLayoutEditor = qobject_cast<LayoutEditor*>(LEMemoryIcon::getEditor());
-
- if(myLayoutEditor->layoutBlockManager->isAdvancedRoutingEnabled() || lBlock==NULL)
- {
-  LEMemoryIcon::addRosterToIcon(roster);
-  return;
+ QVariantList options = {"Facing West",
+             "Facing East",
+             "Do Not Add"};
+         int n = JOptionPane::showOptionDialog(this, // TODO I18N
+                 "Would you like to assign loco "
+                 + roster->titleString() + " to this location",
+                 "Assign Loco",
+                 JOptionPane::YES_NO_CANCEL_OPTION,
+                 JOptionPane::QUESTION_MESSAGE,
+                 QIcon(),
+                 options,
+                 options[2]);
+         if (n == 2) {
+             return;
+         }
+         flipRosterIcon = (n == 0);
+         if (VPtr<RosterEntry>::asPtr(getValue()) == roster) {
+             //No change in the loco but a change in direction facing might have occurred
+             updateIconFromRosterVal(roster);
+         } else {
+             setValue(VPtr<RosterEntry>::asQVariant(roster));
+         }
  }
 
- int paths = lBlock->getNumberOfThroughPaths();
- Block* srcBlock=NULL;
- Block* desBlock=NULL;
- for(int i = 0; i<paths; i++)
- {
-  if(lBlock->isThroughPathActive(i))
-  {
-   srcBlock = lBlock->getThroughPathSource(i);
-   desBlock = lBlock->getThroughPathDestination(i);
-   break;
-  }
- }
- int dirA;
- int dirB;
- if(srcBlock!=NULL && desBlock!=NULL)
- {
-  dirA = lBlock->getNeighbourDirection(srcBlock);
-  dirB = lBlock->getNeighbourDirection(desBlock);
- }
- else
- {
-  dirA = Path::EAST;
-  dirB = Path::WEST;
- }
+/*protected*/ QVariant LEMemoryIcon::getValue() {
+        if (getMemory() == nullptr) {
+            return QVariant();
+        }
+        return getMemory()->getValue();
+}
 
-// QList<QObject*> options;
-// options << "Facing "+Path::decodeDirection(dirB) << "Facing "+Path::decodeDirection(dirA) << "Do Not Add";
-// int n = JOptionPane.showOptionDialog(this,
-//        "Would you like to assign loco "
-//        +  roster.titleString() + " to this location",
-//        "Assign Loco",
-//        JOptionPane.YES_NO_CANCEL_OPTION,
-//        JOptionPane.QUESTION_MESSAGE,
-//        NULL,
-//        options,
-//        options[2]);
- int n = QMessageBox::question(LEMemoryIcon::getEditor(), tr("Assign Loco"), tr("Would you like to assign loco ")
-                                 +  roster->titleString() + tr(" to this location"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
- if(n==QMessageBox::Cancel)
-        return;
- if(n==QMessageBox::Yes)
- {
-  flipRosterIcon = true;
-  if(updateBlockValue)
-   lBlock->getBlock()->setDirection(dirB);
- }
- else
- {
-  flipRosterIcon = false;
-  if(updateBlockValue)
-    lBlock->getBlock()->setDirection(dirA);
- }
- if(getMemory()->getValue()==VPtr<RosterEntry>::asQVariant(roster))
- {
-  //No change in the loco but a change in direction facing might have occured
-  updateIconFromRosterVal(roster);
- }
- else
- {
-  setValue(VPtr<RosterEntry>::asQVariant(roster));
- }
+/*protected*/ void LEMemoryIcon::setValue(QVariant val) {
+    getMemory()->setValue(val);
 }
 
 // update icon as state of Memory changes

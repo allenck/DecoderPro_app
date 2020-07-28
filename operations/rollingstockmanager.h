@@ -6,6 +6,7 @@
 #include "appslib_global.h"
 
 class PropertyChangeSupport;
+class PropertyChangeListener;
 namespace Operations
 {
 
@@ -49,6 +50,8 @@ namespace Operations
   /*public*/ QList<RollingStock*>* getByLastDateList(QList<RollingStock*>* inList);
   /*public*/ QList<RollingStock*>* getByTrainList(Train* train);
   /*public*/ void resetMoves();
+  /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
+  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
 
  signals:
 

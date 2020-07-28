@@ -2,6 +2,7 @@
 #define CARLOADEDITFRAME_H
 #include "operationsframe.h"
 #include "appslib_global.h"
+#include "jcombobox.h"
 
 class PropertyChangeEvent;
 class JTextField;
@@ -38,9 +39,9 @@ namespace Operations
   QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
-  QComboBox* loadComboBox;
-  QComboBox* priorityComboBox;
-  QComboBox* loadTypeComboBox;//= carLoads.getLoadTypesComboBox();
+  JComboBox* loadComboBox;
+  JComboBox* priorityComboBox;
+  JComboBox* loadTypeComboBox;//= carLoads.getLoadTypesComboBox();
 
   // text boxes
   JTextField* addTextBox;//= new JTextField(10);

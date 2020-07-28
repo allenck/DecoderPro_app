@@ -24,7 +24,7 @@ namespace Operations {
   QLabel* textSchedule;// = new JLabel(Bundle.getMessage("DeliverySchedule"));
   QLabel* textSchError;// = new JLabel();
   QPushButton* editScheduleButton;// = new JButton();
-  QComboBox* comboBoxSchedules;// = ScheduleManager.instance().getComboBox();
+  JComboBox* comboBoxSchedules;// = ScheduleManager.instance().getComboBox();
   Logger* log;
   QGroupBox* panelSchedule;// = panelOpt4;
   /*private*/ void updateScheduleButtonText();

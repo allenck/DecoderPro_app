@@ -28,8 +28,8 @@ namespace Operations
   QPushButton* saveButton;// =new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
-  QComboBox* locationBox;// =LocationManager.instance().getComboBox();
-  QComboBox* trackBox;// =new JComboBox<>();
+  JComboBox* locationBox;// =LocationManager.instance().getComboBox();
+  JComboBox* trackBox;// =new JComboBox<>();
 
   // checkboxes
   QCheckBox* sameNameCheckBox;// =new JCheckBox(Bundle.getMessage("SameName"));

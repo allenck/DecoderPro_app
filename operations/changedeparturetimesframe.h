@@ -17,7 +17,7 @@ namespace Operations
   QPushButton* changeButton;// = new javax.swing.JButton(Bundle.getMessage("Change"));
 
   // combo boxes
-  QComboBox* hourBox;// = new javax.swing.JComboBox<>();
+  JComboBox* hourBox;// = new javax.swing.JComboBox<>();
   /*private*/ QString adjustHour(QString time);
   Logger* log;
  };

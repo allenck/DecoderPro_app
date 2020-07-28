@@ -103,7 +103,7 @@ public:
     /**
      * constructor method
      */
-    /*public*/ LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* myPanel, int type);
+    /*public*/ LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* myPanel, TurnoutType type);
     /*public*/ void setTurnoutType(TurnoutType slipType);
     /*public*/ void setSlipType(TurnoutType slipType);
     /*public*/ TurnoutType getSlipType();
@@ -152,7 +152,7 @@ public:
     /*public*/ void setCoordsD(QPointF p);
 //    /*public*/ void scaleCoords(float xFactor, float yFactor) override;
     double round (double x);
-    /*public*/ void setObjects(LayoutEditor* p) override;
+//    /*public*/ void setObjects(LayoutEditor* p) override;
     /**
      * Clean up when this object is no longer needed.  Should not
      * be called while the object is still displayed; see remove()

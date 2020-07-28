@@ -3,6 +3,7 @@
 
 #include "operationsframe.h"
 
+class JComboBox;
 class QGroupBox;
 namespace Operations
 {
@@ -34,7 +35,7 @@ namespace Operations
   // radio buttons
   // for padding out panel
   // combo boxes
-  QComboBox* typeComboBox;// = new JComboBox<>();
+  JComboBox* typeComboBox;// = new JComboBox<>();
 
   // check boxes
   QCheckBox* showAllTrainsCheckBox;// = new JCheckBox(Bundle.getMessage("ShowAllTrains"));

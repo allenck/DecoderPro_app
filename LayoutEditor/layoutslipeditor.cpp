@@ -4,7 +4,7 @@
 #include "joptionpane.h"
 #include "jmrijframe.h"
 #include "layouteditor.h"
-
+#include "layouttrack.h"
 
 /**
  * MVC Editor component for LayoutSlip objects.
@@ -219,16 +219,18 @@
          g2->drawLine(QLine(A.toPoint(), MathUtil::oneThirdPoint(A, D).toPoint()));
          g2->drawLine(QLine(D.toPoint(), MathUtil::oneThirdPoint(D, A).toPoint()));
 
-         if (layoutSlip->getSlipType() == LayoutTurnout::DOUBLE_SLIP) {
-             g2->drawLine(QLine(B.toPoint(), MathUtil::oneThirdPoint(B, C).toPoint()));
-             g2->drawLine(QLine(C.toPoint(), MathUtil::oneThirdPoint(C, B).toPoint()));
-         }
-     } else {
+         drawSlipStatePart1A(g2,state, A,B,C,D);
+     }
+     else
+     {
          g2->drawLine(QLine(B.toPoint(), MathUtil::oneThirdPoint(B, D).toPoint()));
          g2->drawLine(QLine(D.toPoint(), MathUtil::oneThirdPoint(D, B).toPoint()));
+     }
 
-        drawSlipStatePart2A(g2,state, A,B,C,D);
-    }
+     if(layoutSlip->getTurnoutType() == LayoutTurnout::DOUBLE_SLIP )
+      drawSlipStatePart2B(g2,state, A,B,C,D);
+     else
+      drawSlipStatePart2A(g2,state, A,B,C,D);
 }
 
     /*protected*/ void LayoutSlipEditor::drawSlipStatePart1A(QPainter* g2, int state, QPointF A, QPointF B, QPointF C, QPointF D) {
@@ -246,12 +248,15 @@
 
         QPen pen = QPen(Qt::black, 2, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin);
 
-        if (state == LayoutTurnout::STATE_AD) {
+        if (state == LayoutTurnout::STATE_AD)
+        {
             //g2.setColor(Color.red);
          pen.setColor(Qt::red);
          g2->setPen(pen);
-            g2->drawLine(QLineF(A, D));
-        } else if (state == LayoutTurnout::STATE_AC) {
+         g2->drawLine(QLineF(A, D));
+        }
+        else if (state == LayoutTurnout::STATE_AC)
+        {
             g2->drawLine(QLineF(B, MathUtil::oneThirdPoint(B, D)));
             g2->drawLine(QLineF(D, MathUtil::oneThirdPoint(D, B)));
 
@@ -259,12 +264,16 @@
             pen.setColor(Qt::red);
             g2->setPen(pen);
             g2->drawLine(QLineF(A, C));
-        } else if (state == LayoutTurnout::STATE_BD) {
+        }
+        else if (state == LayoutTurnout::STATE_BD)
+        {
             //g2.setColor(Color.red);
          pen.setColor(Qt::red);
          g2->setPen(pen);
             g2->drawLine(QLineF(B, D));
-        } else {
+        }
+        else
+        {
             g2->drawLine(QLineF(B, MathUtil::oneThirdPoint(B, D)));
             g2->drawLine(QLineF(D, MathUtil::oneThirdPoint(D, B)));
         }
@@ -274,7 +283,8 @@
     /*protected*/ void LayoutSlipEditor::drawSlipStatePart2B(QPainter* g2, int state, QPointF A, QPointF B, QPointF C, QPointF D) {
       QPen pen = QPen(Qt::black, 2, Qt::SolidLine, Qt::FlatCap, Qt::RoundJoin);
 
-        if (state == LayoutTurnout::STATE_AC) {
+        if (state == LayoutTurnout::STATE_AC)
+        {
             g2->drawLine(QLineF(B, MathUtil::oneThirdPoint(B, D)));
             g2->drawLine(QLineF(D, MathUtil::oneThirdPoint(D, B)));
 
@@ -282,12 +292,16 @@
             pen.setColor(Qt::red);
             g2->setPen(pen);
             g2->drawLine(QLineF(A, C));
-        } else if (state == LayoutTurnout::STATE_BD) {
+        }
+        else if (state == LayoutTurnout::STATE_BD)
+        {
             //g2.setColor(Color.red);
          pen.setColor(Qt::red);
          g2->setPen(pen);
             g2->drawLine(QLineF(B, D));
-        } else if (state == LayoutTurnout::STATE_AD) {
+        }
+        else if (state == LayoutTurnout::STATE_AD)
+        {
             g2->drawLine(QLineF(B, MathUtil::oneThirdPoint(B, C)));
 
             g2->drawLine(QLineF(C, MathUtil::oneThirdPoint(C, B)));
@@ -296,7 +310,9 @@
             pen.setColor(Qt::red);
             g2->setPen(pen);
             g2->drawLine(QLineF(A, D));
-        } else if (state == LayoutTurnout::STATE_BC) {
+        }
+        else if (state == LayoutTurnout::STATE_BC)
+        {
             g2->drawLine(QLineF(A, MathUtil::oneThirdPoint(A, D)));
 
             g2->drawLine(QLineF(D, MathUtil::oneThirdPoint(D, A)));
@@ -304,7 +320,9 @@
             pen.setColor(Qt::red);
             g2->setPen(pen);
             g2->drawLine(QLineF(B, C));
-        } else {
+        }
+        else
+        {
             g2->drawLine(QLineF(B, MathUtil::oneThirdPoint(B, D)));
             g2->drawLine(QLineF(D, MathUtil::oneThirdPoint(D, B)));
         }
@@ -345,7 +363,7 @@
             }
 
             case LayoutTurnout::STATE_BD: {
-                if (layoutSlip->getSlipType() == LayoutTurnout::TurnoutType::SINGLE_SLIP) {
+                if (layoutSlip->getSlipType() == LayoutTurnout::SINGLE_SLIP) {
                     testState = LayoutTurnout::STATE_AC;
                 } else {
                     testState = LayoutTurnout::STATE_BC;

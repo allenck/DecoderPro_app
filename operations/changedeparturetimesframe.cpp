@@ -1,7 +1,7 @@
 #include "changedeparturetimesframe.h"
 #include "schedule.h"
 #include <QPushButton>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QBoxLayout>
 #include <QGroupBox>
 #include "gridbaglayout.h"
@@ -38,7 +38,7 @@ namespace Operations
  changeButton = new QPushButton(tr("Change"));
 
 // combo boxes
- hourBox = new QComboBox();
+ hourBox = new JComboBox();
  log = new Logger("ChangeDepartureTimesFrame");
      // general GUI config
 

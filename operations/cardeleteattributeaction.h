@@ -11,7 +11,7 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  /*public*/ CarDeleteAttributeAction(QString actionName, CarAttributeEditFrame* caef);
+  /*public*/ CarDeleteAttributeAction(CarAttributeEditFrame* caef);
   public slots:
   /*public*/ void actionPerformed(ActionEvent* ae = 0);
  private:

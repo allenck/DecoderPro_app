@@ -2,6 +2,7 @@
 #define ROUTEEDITFRAME_H
 #include "operationsframe.h"
 
+class JComboBox;
 class QGroupBox;
 class JTextField;
 class QButtonGroup;
@@ -69,7 +70,7 @@ namespace Operations
   JTextField* commentTextField;// =  new JTextField(35);
 
   // combo boxes
-  QComboBox* locationBox;// =  LocationManager.instance().getComboBox();
+  JComboBox* locationBox;// =  LocationManager.instance().getComboBox();
   /*private*/ void enableButtons(bool enabled);
   /*private*/ void updateComboBoxes();
   Logger* log;

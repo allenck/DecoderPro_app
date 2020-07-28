@@ -763,7 +763,7 @@ namespace Operations
 
  // this table listens for changes to a schedule and it's car types
  /*public*/ void ScheduleTableModel::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }
@@ -783,7 +783,7 @@ namespace Operations
      if (e->getSource()->metaObject()->className()==("ScheduleItem")) {
          ScheduleItem* item = (ScheduleItem*) e->getSource();
          int row = _list.indexOf(item);
-         if (Control::showProperty) {
+         if (Control::SHOW_PROPERTY) {
              log->debug(tr("Update schedule item table row: %1").arg(row));
          }
          if (row >= 0) {

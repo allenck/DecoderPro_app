@@ -120,10 +120,9 @@ public:
     /*public*/ QString connectBName;// = "";
     /*public*/ QString connectCName;// = "";
     /*public*/ QString connectDName;// = "";
-    /*public*/ QString tBlockNameAC;// = "";
-    /*public*/ QString tBlockNameBD;// = "";
-    QMenu* popup;// = NULL;
-    LayoutEditorTools* tools;// = NULL;
+    /*public*/ QString tLayoutBlockNameAC = "";
+    /*public*/ QString tLayoutBlockNameBD = "";
+    QMenu* popup = nullptr;
     /*public*/ QVector<QString>* getBlockBoundaries();
 //    /*public*/ void removeSignalMastLogic(SignalMast* sm);
     void invalidate(QGraphicsScene* g2);
@@ -160,6 +159,7 @@ public:
     /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
             /*@Nonnull*/ QSet<QString>* TrackNameSet);
     /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
+    /*public*/ QString toString() override;
 
 signals:
     
@@ -246,17 +246,6 @@ private:
 
 
 private slots:
-    void on_xingEdit1Block_clicked();
-    void on_xingEdit2Block_clicked();
-    void on_xingEditDone_clicked();
-    void on_xingEditCancel_clicked();
-    /**
-     * Edit a Level Crossing
-     */
-    /*protected*/ void editLevelXing(/*LevelXing* o*/);
-    void on_removeAction_triggered();
-    ///*private*/ void drawXingAC(LayoutEditor* editor);
-    ///*private*/ void drawXingBD(LayoutEditor* editor);
 
 protected:
     /**

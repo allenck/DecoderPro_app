@@ -12,7 +12,7 @@
 #include "vptr.h"
 #include "locationtrackpair.h"
 #include "location.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "jtable.h"
 #include "xtablecolumnmodel.h"
 #include "tablecolumn.h"
@@ -20,9 +20,9 @@
 #include <QMessageBox>
 #include "operationsxml.h"
 
-/*private*/ QComboBox* getComboBox(Operations::Schedule* schedule, Operations::SchedulesTableModel* model)
+/*private*/ JComboBox* getComboBox(Operations::Schedule* schedule, Operations::SchedulesTableModel* model)
 {
- QComboBox* box = Operations::ScheduleManager::instance()->getSpursByScheduleComboBox(schedule);
+ JComboBox* box = Operations::ScheduleManager::instance()->getSpursByScheduleComboBox(schedule);
  return box;
 }
 
@@ -316,7 +316,7 @@ namespace Operations
      }
  }
 
- /*private*/ void SchedulesTableModel::selectJComboBox(QComboBox* box, int row) {
+ /*private*/ void SchedulesTableModel::selectJComboBox(JComboBox* box, int row) {
      Schedule* schedule = sysList.at(row);
      //JComboBox<?> box = (JComboBox<?>) value;
      if (box->currentIndex() >= 0) {
@@ -327,7 +327,7 @@ namespace Operations
 
  /*private*/ LocationTrackPair* SchedulesTableModel::getLocationTrackPair(int row) const {
      Schedule* s = sysList.at(row);
-     QComboBox* box = scheduleManager->getSpursByScheduleComboBox(s);
+     JComboBox* box = scheduleManager->getSpursByScheduleComboBox(s);
      QString index = comboSelect.value(sysList.at(row));
      LocationTrackPair* ltp;
      if (index != NULL ) {
@@ -340,7 +340,7 @@ namespace Operations
 
  /*private*/ QString SchedulesTableModel::getScheduleStatus(int row) const {
      Schedule* sch = sysList.at(row);
-     QComboBox* box = scheduleManager->getSpursByScheduleComboBox(sch);
+     JComboBox* box = scheduleManager->getSpursByScheduleComboBox(sch);
      for (int i = 0; i < box->count(); i++) {
          LocationTrackPair* ltp = (LocationTrackPair*) VPtr<LocationTrackPair>::asPtr(box->itemData(i));
          QString status = ltp->getTrack()->checkScheduleValid();
@@ -426,7 +426,7 @@ namespace Operations
  // check for change in number of schedules, or a change in a schedule
  /*public*/ void SchedulesTableModel::propertyChange(PropertyChangeEvent *e)
  {
-  if (Control::showProperty) {
+  if (Control::SHOW_PROPERTY) {
    log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
            ->getNewValue().toString()));
   }
@@ -439,7 +439,7 @@ namespace Operations
   {
    Schedule* schedule = (Schedule*) e->getSource();
    int row = sysList.indexOf(schedule);
-   if (Control::showProperty)
+   if (Control::SHOW_PROPERTY)
    {
     log->debug(tr("Update schedule table row: %1 name: %2").arg(row).arg(schedule->getName()));
    }
@@ -483,13 +483,13 @@ namespace Operations
 
  QWidget *STMSComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex &index ) const
  {
-  QComboBox* editor;
+  JComboBox* editor;
   if(box != NULL)
   {
    Schedule* schedule = model->sysList.at(index.row());
-   //editor = new QComboBox(box(si, this->model));
-   QComboBox* b = ScheduleManager::instance()->getSpursByScheduleComboBox(schedule);
-   editor = new QComboBox(parent);
+   //editor = new JComboBox(box(si, this->model));
+   JComboBox* b = ScheduleManager::instance()->getSpursByScheduleComboBox(schedule);
+   editor = new JComboBox(parent);
    for(int i=0; i < b->count(); i++)
    {
     editor->addItem(b->itemText(i), b->itemData(i));
@@ -497,7 +497,7 @@ namespace Operations
   }
   else
   {
-   editor = new QComboBox(parent);
+   editor = new JComboBox(parent);
    editor->addItems(items);
   }
   return editor;
@@ -505,14 +505,14 @@ namespace Operations
 
  void STMSComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
  {
-   QComboBox *comboBox = static_cast<QComboBox*>(editor);
+   JComboBox *comboBox = static_cast<JComboBox*>(editor);
    int value = index.model()->data(index, Qt::EditRole).toUInt();
    comboBox->setCurrentIndex(value);
  }
 
  void STMSComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
  {
-   QComboBox *comboBox = static_cast<QComboBox*>(editor);
+   JComboBox *comboBox = static_cast<JComboBox*>(editor);
    model->setData(index, comboBox->currentText(), Qt::EditRole);
  }
 

@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include "jtextfield.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "logger.h"
 #include "control.h"
 #include <QScrollArea>
@@ -74,7 +74,7 @@ common();
   trackMinLengthTextField = new JTextField(5);
 
   // combo box
-  comboBoxPools = new QComboBox();
+  comboBoxPools = new JComboBox();
 
   // major buttons
   addButton = new QPushButton(tr("Add"));
@@ -311,7 +311,7 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
      // This should move to the base class
      // Just call LogEvent(e); instead. It will figure out if logging is
      // enabled, etc.
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
          log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e->
                  getNewValue().toString()));
      }

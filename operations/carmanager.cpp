@@ -13,7 +13,7 @@
 #include "track.h"
 #include "carload.h"
 #include "carloads.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "instancemanager.h"
 
 //CarManager::CarManager(QObject *parent) :
@@ -163,8 +163,8 @@ RollingStockManager(parent)
   *
   * @return comboBox with Kernel names.
   */
- /*public*/ QComboBox* CarManager::getKernelComboBox() {
-     QComboBox* box = new QComboBox();
+ /*public*/ JComboBox* CarManager::getKernelComboBox() {
+     JComboBox* box = new JComboBox();
      box->addItem(NONE);
      foreach (QString kernelName, getKernelNameList()) {
          box->addItem(kernelName);
@@ -177,7 +177,7 @@ RollingStockManager(parent)
   *
   * @param box comboBox requesting update
   */
- /*public*/ void CarManager::updateKernelComboBox(QComboBox* box) {
+ /*public*/ void CarManager::updateKernelComboBox(JComboBox* box) {
      box->clear();
      box->addItem(NONE);
      foreach (QString kernelName, getKernelNameList()) {

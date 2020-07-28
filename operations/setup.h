@@ -5,7 +5,7 @@
 #include <QtXml>
 #include "propertychangesupport.h"
 
-class QComboBox;
+class JComboBox;
 namespace Operations
 {
  class Control;
@@ -262,13 +262,13 @@ namespace Operations
   /*public*/ static int  getAddWeight();
   /*public*/ static int  getScale() ;
   /*public*/ static void setScale(int  s);
-  /*public*/ static QComboBox* getManifestFormatComboBox();
-  /*public*/ static  QComboBox* getOrientationComboBox();
-  /*public*/ static  QComboBox* getSwitchListPageFormatComboBox() ;
-  /*public*/ static  QComboBox* getPrintColorComboBox();
-  /*public*/ static  QComboBox* getEngineMessageComboBox();
-  /*public*/ static  QComboBox* getCarMessageComboBox();
-  /*public*/ static  QComboBox* getTrainDirectionComboBox();
+  /*public*/ static JComboBox* getManifestFormatComboBox();
+  /*public*/ static  JComboBox* getOrientationComboBox();
+  /*public*/ static  JComboBox* getSwitchListPageFormatComboBox() ;
+  /*public*/ static  JComboBox* getPrintColorComboBox();
+  /*public*/ static  JComboBox* getEngineMessageComboBox();
+  /*public*/ static  JComboBox* getCarMessageComboBox();
+  /*public*/ static  JComboBox* getTrainDirectionComboBox();
   /*public*/ static QVector<QString> getTrainDirectionList();
   /*public*/ static QString  getDirectionString(int  direction);
   /*public*/ static QStringList getDirectionStrings(int  directions) ;

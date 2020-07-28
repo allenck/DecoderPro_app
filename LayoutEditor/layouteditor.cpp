@@ -99,6 +99,8 @@
 #include "layouttrackview.h"
 #include "positionablepointview.h"
 #include "layouteditorcomponent.h"
+#include "entergridsizesdialog.h"
+#include "moveselectiondialog.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -111,22 +113,10 @@
 LayoutEditor::LayoutEditor(QString name, QWidget *parent) :
     PanelEditor(name, parent)//, ui(new Ui::LayoutEditor)
 {
- init();
+ common();
  layoutName = name;
  setObjectName(name);
 }
-
-//LayoutEditor::LayoutEditor(LocoNetSystemConnectionMemo* memo, QString name,  bool bTest, QWidget *parent) :
-//    PanelEditor(name, parent),
-//    ui(new Ui::LayoutEditor)
-//{
-// setObjectName("LayoutEditor");
-// ui->setupUi(this);
-// this->bTestMode = bTest;
-// this->memo = memo;
-// layoutName = name;
-// init();
-//}
 
 LayoutEditor::~LayoutEditor()
 {
@@ -377,7 +367,7 @@ LayoutEditor::~LayoutEditor()
 #endif
 }
 
-void LayoutEditor::init()
+void LayoutEditor::common()
 {
  setSaveSize(true);
  editorUseOldLocSize = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize();
@@ -386,14 +376,6 @@ void LayoutEditor::init()
  setObjectName("LayoutEditor");
  JmriJFrame::initComponents();
  PanelEditor::init(layoutName);
- savePanels = new StoreXmlUserAction(tr("Save Panels..."), this);
- _contents = new QVector<Positionable*>();
-
- wideToolBarCheckBoxMenuItem = new QAction(tr("Wide ToolBar"));
- wideToolBarCheckBoxMenuItem->setCheckable(true);
- helpBarPanel = new JPanel();
-
- editPanel = new QGraphicsView(/*ui->centralWidget*/);
 
  setupToolBar();
  setupMenuBar();
@@ -413,7 +395,7 @@ void LayoutEditor::init()
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment. To add a track segment, with shift down, click mouse on one connection point and drag to another connection point. To move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment.\nTo add a track segment, with shift down, click mouse on one connection point and drag to another connection point.\nTo move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
 
  helpBarPanel->layout()->addWidget(textEdit);
  if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
@@ -447,76 +429,7 @@ void LayoutEditor::init()
  // establish link to LayoutEditorAuxTools
  auxTools = getLEAuxTools();
 
-_contents = new QVector<Positionable*>();
- layoutBlockManager = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
- blockManger = new BlockManager(this);
-
- turntableList = new QVector<LayoutTurntable*>(); // Turntable list
- memoryLabelList = new QVector<LEMemoryIcon*>(); // Memory Label List
-
-//makeBackgroundColorMenu(ui->menuSet_Background_color);
- clocks = new QVector<AnalogClock2Display*>();  // fast clocks
- markerImage = new QVector<LocoIcon*>(); // marker images
- multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
- backgroundImage = new QVector<PositionableLabel*>();  // background images
- labelImage = new QList<PositionableLabel*>();         //positionable label images
- blockContentsLabelList = new QVector<LEBlockContentsIcon*>(); //BlockContentsIcon Label List
- zoomMenu = new QMenu(tr("Zoom"));
- zoom025Item = new QAction("x 0.25");
- zoom025Item->setCheckable(true);
- zoom05Item = new QAction("x 0.5");
- zoom05Item->setCheckable(true);
- zoom075Item = new QAction("x 0.75");
- zoom075Item->setCheckable(true);
- noZoomItem = new QAction(tr("No Zoom"));
- noZoomItem->setCheckable(true);
- zoom15Item = new QAction("x 1.5");
- zoom15Item->setCheckable(true);
- zoom20Item = new QAction("x 2.0");
- zoom20Item->setCheckable(true);
- zoom30Item = new QAction("x 3.0");
- zoom30Item->setCheckable(true);
- zoom40Item = new QAction("x 4.0");
- zoom50Item = new QAction("x 5.0");
- zoom50Item->setCheckable(true);
- zoom60Item = new QAction("x 6.0");
- zoom60Item->setCheckable(true);
- zoom70Item = new QAction("x 7.0");
- zoom70Item->setCheckable(true);
- zoom80Item = new QAction("x 8.0");
- zoom80Item->setCheckable(true);
-
- undoTranslateSelectionMenuItem = new QMenu(tr("Undo Translate Selection"));
- assignBlockToSelectionMenuItem = new QMenu(tr("Assign Block To Selection") + "...");
-
-
- _labelImage = new QVector<PositionableLabel*>(); // layout positionable label images
- sensorImage = new QVector<SensorIcon*>();  // sensor images
- signalHeadImage = new QVector<SignalHeadIcon*>();  // signal head images
-
- signalMastImage = new QVector<SignalMastIcon*>();  // signal mast images
- signalList = new QVector<SignalHeadIcon*>();  // Signal Head Icons
- signalMastList = new QVector<SignalMastIcon*>();  // Signal Head Icons
- layoutShapes = new QList<LayoutShape*>();               // LayoutShap list
-
-
  qApp->processEvents();
-
- sensorList = new QVector<SensorIcon*>();  // Sensor Icons
- //_defaultToolTip = "";
- toolBarFontSizeMenu = new QMenu(tr("Font Size"));
- wideToolBarCheckBoxMenuItem = new QAction(("Wide ToolBar"), this);
- wideToolBarCheckBoxMenuItem->setCheckable(true);
- dropDownListsDisplayOrderMenu = new QMenu(tr("Drop Down Lists Display Order..."));
-
-
-
- //use turnoutCircleSize when you need an int and these when you need a double
-     //note: these only change when setTurnoutCircleSize is called
-     //using these avoids having to call getTurnoutCircleSize() and
-     //the multiply (x2) and the int -> double conversion overhead
- circleRadius = SIZE * getTurnoutCircleSize();
- circleDiameter = 2.0 * circleRadius;
 
  //panelWidth = 600;
  gContext->setLayoutWidth(600);
@@ -526,26 +439,6 @@ _contents = new QVector<Positionable*>();
  //editScene = new EditScene(QRectF(-100, -100, 400, 400), this);
  editScene = new EditScene(QRectF(0, 0, gContext->getLayoutWidth(), gContext->getLayoutWidth()), this);
  editScene->setObjectName("LayoutEditor_editScene");
- //_targetPanel = editScene;
- defaultBackgroundColor =  editScene->backgroundBrush().color();//QColor(Qt::lightGray);
-
- trackColors = new QVector<QColor>(13);
- trackOccupiedColors = new QVector<QColor>(13);
- trackAlternativeColors = new QVector<QColor>(13);
- textColors = new QVector<QColor>(13);
- backgroundColors = new QVector<QColor>(13);
- turnoutCircleColors = new QVector<QColor>(14);
- turnoutCircleSizes = new QVector<int>(10);
- trackColorMenuItems = new QVector<QAction*>(13);
- trackOccupiedColorMenuItems = new QVector<QAction*>(13);
- trackAlternativeColorMenuItems = new QVector<QAction*>(13);
- backgroundColorMenuItems = new QVector<QAction*>(13);
- textColorMenuItems = new QVector<QAction*>(13);
- turnoutCircleColorMenuItems = new QVector<QAction*>(14);
- turnoutCircleSizeMenuItems = new QVector<QAction*>(10);
- _layoutShapeSelection = QList<LayoutShape*>();
-
-
  editPanel->setMouseTracking(true);
  editPanel->setScene(editScene);
 
@@ -556,96 +449,13 @@ _contents = new QVector<Positionable*>();
  connect(editScene, SIGNAL(sceneMousePress(QGraphicsSceneMouseEvent*)), this, SLOT(mousePressed(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(mouseMoved(QGraphicsSceneMouseEvent*)));
 
- sensorIconEditor = new MultiIconEditor(4);
- sensorIconEditor->setIcon(0, "Active:",":/resources/icons/smallschematics/tracksegments/circuit-occupied.gif");
- sensorIconEditor->setIcon(1, "Inactive", ":/resources/icons/smallschematics/tracksegments/circuit-empty.gif");
- sensorIconEditor->setIcon(2, "Inconsistent:", ":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
- sensorIconEditor->setIcon(3, "Unknown:",":/resources/icons/smallschematics/tracksegments/circuit-error.gif");
- sensorIconEditor->complete();
-
- signalIconEditor = new MultiIconEditor(10);
- signalIconEditor->setIcon(0, "Red:",":/resources/icons/smallschematics/searchlights/left-red-short.gif");
- signalIconEditor->setIcon(1, "Flash red:", ":/resources/icons/smallschematics/searchlights/left-flashred-short.gif");
- signalIconEditor->setIcon(2, "Yellow:", ":/resources/icons/smallschematics/searchlights/left-yellow-short.gif");
- signalIconEditor->setIcon(3, "Flash yellow:", ":/resources/icons/smallschematics/searchlights/left-flashyellow-short.gif");
- signalIconEditor->setIcon(4, "Green:",":/resources/icons/smallschematics/searchlights/left-green-short.gif");
- signalIconEditor->setIcon(5, "Flash green:",":/resources/icons/smallschematics/searchlights/left-flashgreen-short.gif");
- signalIconEditor->setIcon(6, "Dark:",":/resources/icons/smallschematics/searchlights/left-dark-short.gif");
- signalIconEditor->setIcon(7, "Held:",":/resources/icons/smallschematics/searchlights/left-held-short.gif");
- signalIconEditor->setIcon(8, "Lunar",":/resources/icons/smallschematics/searchlights/left-lunar-short-marker.gif");
- signalIconEditor->setIcon(9, "Flash Lunar",":/resources/icons/smallschematics/searchlights/left-flashlunar-short-marker.gif");
- signalIconEditor->complete();
-
- sensorFrame = new JFrame(tr("Edit Sensor Icons"));
- QWidget* sensorFrameContentPane = sensorFrame->getContentPane();
- //QVBoxLayout* sensorFrameLayout = new QVBoxLayout(sensorFrameContentPane);
- ((QVBoxLayout*)sensorFrameContentPane->layout())->addWidget(new QLabel("  "+tr("Select new file, then click on icon to change.")+"  ")/*,BorderLayout::North*/,0,Qt::AlignTop);
- // sensorFrame.getContentPane().add(sensorIconEditor);
- ((QVBoxLayout*)sensorFrameContentPane->layout())->addWidget(sensorIconEditor/*,BorderLayout::Center*/,0,Qt::AlignCenter);
- sensorFrame->pack();
- sensorFrame->setVisible(false);
-
- signalFrame = new JFrame(tr("Edit Signal Icons"));
- QWidget* centralWidget = signalFrame->getContentPane();
- //centralWidget->setLayout(new QVBoxLayout());
- centralWidget->layout()->addWidget(new QLabel("</html>Select new image from file,<br>then click an upper preview icon to change it.</html>"));
- centralWidget->layout()->addWidget(signalIconEditor);
- signalFrame->resize(600, 400);
- //signalFrame->setAllowInFrameServlet(false);
- signalFrame->pack();
- signalFrame->setVisible(false);
-
- iconEditor = new MultiIconEditor(1);
- iconEditor->setIcon(0, "",":/resources/icons/smallschematics/tracksegments/block.gif");
- iconEditor->complete();
- iconFrame = new JFrame(tr("Edit Icon"));
- QWidget* iconFrameCentralWidget = getContentPane();
- QVBoxLayout* iconFrameLayout = new QVBoxLayout(iconFrameCentralWidget);
- iconFrameLayout->addWidget(iconEditor);
- iconFrame->pack();
-
- _urlMap = new QMap<QString, QString>();
- finder = new LayoutEditorFindItems(this);
-
-// register the resulting panel for later configuration
- //ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
-
- if (cm != nullptr) {
-     cm->registerUser(this);
- }
-
- // confirm that panel hasn't already been loaded
- if (((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
- {
-  log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
- }
- sidelineTrackWidthField = new JTextField(6);
- mainlineTrackWidthField = new JTextField(6);
-
- primaryGridSizeField = new JTextField(6);
- secondaryGridSizeField = new JTextField(6);
-
- //operational variables for enter reporter pane
- xPositionField = new JTextField(6);
- yPositionField = new JTextField(6);
- reporterNameField = new JTextField(6);
-
- //operational variables for scale/translate track diagram pane
- xFactorField = new JTextField(6);
- yFactorField = new JTextField(6);
- xTranslateField = new JTextField(6);
- yTranslateField = new JTextField(6);
- gDDMDO = NamedBean::DisplayOptions::DISPLAYNAME;
- _positionableSelection = new QVector<Positionable*>();
- _layoutTrackSelection = QList<LayoutTrack*>();
-
- xMoveField = new JTextField(6);
- yMoveField = new JTextField(6);
-
  //initialize preferences
  UserPreferencesManager* prefsMgr= static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
  if(prefsMgr)
  {
+  //QString name = JFrame::windowTitle();
+  setWindowTitle(name);
+  generateWindowRef();
      QString windowFrameRef = getWindowFrameRef();
 
      QVariant prefsProp = prefsMgr->getProperty(windowFrameRef, "toolBarSide");
@@ -674,7 +484,7 @@ _contents = new QVector<Positionable*>();
      //log.debug("{}.highlightSelectedBlock is {}", windowFrameRef, prefsHighlightSelectedBlockFlag);
      setHighlightSelectedBlock(prefsHighlightSelectedBlockFlag);
 
- }//); //Inst
+ }//);
  // make sure that the layoutEditorComponent is in the _targetPanel components
 #if 0
  QList<QWidget*> componentList = QList<QWidget*>(_targetPanel->getComponents());
@@ -690,7 +500,7 @@ _contents = new QVector<Positionable*>();
 #endif
  //QTimer::singleShot(100, this,  SLOT(trigger_menu()));
  setupToolBar();
-} // init
+} // common
 
 void LayoutEditor::trigger_menu()
 {
@@ -746,6 +556,15 @@ void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString 
 //  repaint();
 // }
 //}
+/*private*/ void LayoutEditor::setOptionMenuTurnoutCircleSize() {
+    QString tcs = QString::number(getTurnoutCircleSize());
+    QListIterator<QAction*> e(turnoutCircleSizeButtonGroup->actions());
+    while (e.hasNext()) {
+        QAction* button = e.next();
+        QString buttonName = button->text();
+        button->setChecked(buttonName == (tcs));
+    }
+}
 
 /*protected*/ void  LayoutEditor::targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* /*e*/)
 {
@@ -2811,7 +2630,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 
  zoomButtonGroup->setExclusive(true);
  // add zoom choices to menu
- QAction* zoom025Item = new QAction("x 0.25", this);
+ zoom025Item = new QAction("x 0.25", this);
  zoom025Item->setCheckable(true);
  zoomMenu->addAction(zoom025Item);
 // zoom025Item.addActionListener(new ActionListener() {
@@ -2821,7 +2640,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //     }
  });
  zoomButtonGroup->addAction(zoom025Item);
- QAction* zoom05Item = new QAction("x 0.5", this);
+ zoom05Item = new QAction("x 0.5", this);
  zoom05Item->setCheckable(true);
  zoomMenu->addAction(zoom05Item);
 // zoom05Item.addActionListener(new ActionListener() {
@@ -2831,7 +2650,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //     }
  });
  zoomButtonGroup->addAction(zoom05Item);
- QAction* zoom075Item = new QAction("x 0.75", this);
+ zoom075Item = new QAction("x 0.75", this);
  zoom075Item->setCheckable(true);
  zoomMenu->addAction(zoom075Item);
 // zoom075Item.addActionListener(new ActionListener() {
@@ -2841,7 +2660,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //     }
  });
  zoomButtonGroup->addAction(zoom075Item);
- QAction* noZoomItem = new QAction(tr("No Zoom"), this);
+ noZoomItem = new QAction(tr("No Zoom"), this);
  noZoomItem->setCheckable(true);
  zoomMenu->addAction(noZoomItem);
 // noZoomItem.addActionListener(new ActionListener() {
@@ -2853,7 +2672,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //     }
  });
  zoomButtonGroup->addAction(noZoomItem);
- QAction* zoom15Item = new QAction("x 1.5", this);
+ zoom15Item = new QAction("x 1.5", this);
  zoom15Item->setCheckable(true);
  zoomMenu->addAction(zoom15Item);
 // zoom15Item.addActionListener(new ActionListener() {
@@ -2863,7 +2682,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //     }
  });
  zoomButtonGroup->addAction(zoom15Item);
- QAction* zoom20Item = new QAction("x 2.0",this);
+ zoom20Item = new QAction("x 2.0",this);
  zoom20Item->setCheckable(true);
  zoomMenu->addAction(zoom20Item);
 // zoom20Item.addActionListener(new ActionListener() {
@@ -2873,7 +2692,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //     }
  });
  zoomButtonGroup->addAction(zoom20Item);
- QAction* zoom30Item = new QAction("x 3.0", this);
+ zoom30Item = new QAction("x 3.0", this);
  zoomMenu->addAction(zoom30Item);
 // zoom30Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
@@ -2882,7 +2701,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //     }
  });
  zoomButtonGroup->addAction(zoom30Item);
- QAction* zoom40Item = new QAction("x 4.0", this);
+ zoom40Item = new QAction("x 4.0", this);
  zoomMenu->addAction(zoom40Item);
 // zoom40Item.addActionListener(new ActionListener() {
 //     public void actionPerformed(ActionEvent event) {
@@ -3728,26 +3547,6 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
   return selections->toList();
 }
 
-///*public*/ PositionablePoint* LayoutEditor::findPositionablePointByName(QString name) {
-//  if (name.length()<=0) return nullptr;
-//  for (int i = 0; i<pointList->size(); i++) {
-//      PositionablePoint* p = pointList->at(i);
-//      if (p->getID()==(name)) {
-//          return p;
-//      }
-//  }
-//  return nullptr;
-//}
-///*public*/ PositionablePoint* LayoutEditor::findPositionablePointAtTrackSegments(TrackSegment* tr1, TrackSegment* tr2) {
-//  for (int i = 0; i<pointList->size(); i++) {
-//      PositionablePoint* p = pointList->at(i);
-//      if ( ( (p->getConnect1()==tr1) && (p->getConnect2()==tr2) ) ||
-//              ( (p->getConnect1()==tr2) && (p->getConnect2()==tr1) ) ) {
-//          return p;
-//      }
-//  }
-//  return nullptr;
-//}
 void LayoutEditor::setDirty(bool b) {bDirty = b;}
 bool LayoutEditor::isDirty() {return bDirty;}
 /**
@@ -3862,71 +3661,10 @@ bool LayoutEditor::isDirty() {return bDirty;}
  }
  return true;
 }
-///*public*/ LevelXing* LayoutEditor::findLevelXingByName(QString name)
-// {
-//  if (name.length()<=0) return nullptr;
-//  for (int i = 0; i<xingList->size(); i++)
-//  {
-//   LevelXing* x = xingList->at(i);
-//   if (x->getID()==(name))
-//   {
-//    return x;
-//   }
-//  }
-//  return nullptr;
-//}
-///*public*/ LayoutSlip* LayoutEditor::findLayoutSlipByName(QString name)
+///*public*/ QList <Positionable*> LayoutEditor::getContents()
 //{
-// if (name.length()<=0) return nullptr;
-// for (int i = 0; i<slipList->size(); i++)
-// {
-//  LayoutSlip* x = slipList->at(i);
-//  if (x->getName()==(name))
-//  {
-//   return x;
-//  }
-// }
-// return nullptr;
+// return _contents->toList();
 //}
-/**
- * @deprecated As of 3.9.2, ... use getFinder().find...
- */
-////@Deprecated
-///*public*/ LayoutTurntable* LayoutEditor::findLayoutTurntableByName(QString name) {
-//    return finder->findLayoutTurntableByName(name);
-//}
-
-///*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutByName(QString name)
-//{
-// if (name.length()<=0) return nullptr;
-// for (int i = 0; i<turnoutList->size(); i++)
-// {
-//  LayoutTurnout* t = turnoutList->at(i);
-//  if (t->getName()==(name))
-//  {
-//   return t;
-//  }
-// }
-// return nullptr;
-//}
-
-///*public*/ LayoutTurnout* LayoutEditor::findLayoutTurnoutByTurnoutName(QString name)
-//{
-// if (name.length()<=0) return nullptr;
-// for (int i = 0; i<turnoutList->size(); i++)
-// {
-//  LayoutTurnout* t = turnoutList->at(i);
-//  if (t->getTurnoutName()==(name))
-//  {
-//   return t;
-//  }
-// }
-// return nullptr;
-//}
-/*public*/ QList <Positionable*> LayoutEditor::getContents()
-{
- return _contents->toList();
-}
 
 // accessor routines for turnout size parameters
 /*public*/ void LayoutEditor::setTurnoutBX(double bx) {
@@ -4025,25 +3763,27 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*public*/ bool LayoutEditor::isTurnoutDrawUnselectedLeg() {
     return turnoutDrawUnselectedLeg;
 }
+
 /**
-* Return a layout block with the given name if one exists.
-* Registers this LayoutEditor with the layout block.
-* This method is designed to be used when a panel is loaded. The calling
-*		method must handle whether the use count should be incremented.
-*/
-/*public*/ LayoutBlock* LayoutEditor::getLayoutBlock(QString blockID)
-{
- // check if this Layout Block already exists
-//  LayoutBlock* blk = InstanceManager::layoutBlockManagerInstance().getByUserName(blockID);
- LayoutBlock* blk = (LayoutBlock*)layoutBlockManager->getByUserName(blockID);
- if (blk==nullptr)
- {
-  log->error("LayoutBlock '"+blockID+"' not found when panel loaded");
-  return nullptr;
- }
- blk->addLayoutEditor(this);
- return blk;
-}
+ * Return a layout block with the given name if one exists. Registers this
+ * LayoutEditor with the layout block. This method is designed to be used
+ * when a panel is loaded. The calling method must handle whether the use
+ * count should be incremented.
+ *
+ * @param blockID the given name
+ * @return null if blockID does not already exist
+ */
+///*public*/ LayoutBlock* LayoutEditor::getLayoutBlock(/*@Nonnull*/ QString blockID) {
+//    // check if this Layout Block already exists
+//    LayoutBlock* blk = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(blockID);
+//    if (blk == nullptr) {
+//        log->error(tr("LayoutBlock '%1' not found when panel loaded").arg(blockID));
+//        return nullptr;
+//    }
+//    blk->addLayoutEditor(this);
+//    return blk;
+//}
+
 /*public*/ QObject* LayoutEditor::findObjectByTypeAndName(int type,QString name)
 {
  return finder->findObjectByTypeAndName(type, name);
@@ -4084,115 +3824,95 @@ bool LayoutEditor::isDirty() {return bDirty;}
   }
   return nullptr;
 }
-#if 0
-/*static*/ /*protected*/ QPointF LayoutEditor::getCoords(QObject* o, int type)
-{
- if (o != nullptr)
- {
-  switch (type)
-  {
-  case POS_POINT:
-      return ((PositionablePoint*)o)->getCoordsCenter();
-  case TURNOUT_A:
-      return ((LayoutTurnout*)o)->getCoordsA();
-  case TURNOUT_B:
-      return ((LayoutTurnout*)o)->getCoordsB();
-  case TURNOUT_C:
-      return ((LayoutTurnout*)o)->getCoordsC();
-  case TURNOUT_D:
-      return ((LayoutTurnout*)o)->getCoordsD();
-  case LEVEL_XING_A:
-      return ((LevelXing*)o)->getCoordsA();
-  case LEVEL_XING_B:
-      return ((LevelXing*)o)->getCoordsB();
-  case LEVEL_XING_C:
-      return ((LevelXing*)o)->getCoordsC();
-  case LEVEL_XING_D:
-      return ((LevelXing*)o)->getCoordsD();
-  case SLIP_A:
-      return ((LayoutSlip*)o)->getCoordsA();
-  case SLIP_B:
-      return ((LayoutSlip*)o)->getCoordsB();
-  case SLIP_C:
-      return ((LayoutSlip*)o)->getCoordsC();
-  case SLIP_D:
-      return ((LayoutSlip*)o)->getCoordsD();
-  default:
-      if (type>=TURNTABLE_RAY_OFFSET)
-          return ((LayoutTurntable*)o)->getRayCoordsIndexed(type-TURNTABLE_RAY_OFFSET);
-    break;
-  }
- }
- else
- {
-  log->error("nullptr connection point of type "+QString("%1").arg(type));
- }
- return ( QPointF(0.0,0.0));
-}
-#endif
+
 /**
-* Return a layout block with the entered name, creating a new one if needed.
-*   Note that the entered name becomes the user name of the LayoutBlock, and
-*		a system name is automatically created by LayoutBlockManager if needed.
-*/
-/*public*/ LayoutBlock* LayoutEditor::provideLayoutBlock(QString s)
-{
- LayoutBlock* blk;
- if (s.length() < 1)
- {
-  if(!autoAssignBlocks)
-  {
-   // nothing entered
-   return nullptr;
-  }
-  else
-  {
-   //blk = InstanceManager::layoutBlockManagerInstance().createNewLayoutBlock();
-   blk = layoutBlockManager->createNewLayoutBlock();
-   if (blk == nullptr)
-   {
-    log->error("Unable to create a layout block");
-    return nullptr;
-   }
-   // initialize the new block
-   blk->initializeLayoutBlock();
-   blk->initializeLayoutBlockRouting();
-   blk->setBlockTrackColor(defaultTrackColor);
-   blk->setBlockOccupiedColor(defaultOccupiedTrackColor);
-   blk->setBlockExtraColor(defaultAlternativeTrackColor);
-  }
- }
- else
- {
-  // check if this Layout Block already exists
-  //blk = InstanceManager::layoutBlockManagerInstance().getByUserName(s);
-  blk = (LayoutBlock*)layoutBlockManager->getByUserName(s);
-  if (blk == nullptr)
-  {
-   //blk = InstanceManager::layoutBlockManagerInstance().createNewLayoutBlock(nullptr,s);
-   blk = layoutBlockManager->createNewLayoutBlock("",s);
-   if (blk == nullptr)
-   {
-    log->error("Failure to create LayoutBlock '"+s+"'.");
-    return nullptr;
-   }
-   else
-   {
-    // initialize the new block
-    blk->initializeLayoutBlock();
-    blk->initializeLayoutBlockRouting();
-    blk->setBlockTrackColor(defaultTrackColor);
-    blk->setBlockOccupiedColor(defaultOccupiedTrackColor);
-    blk->setBlockExtraColor(defaultAlternativeTrackColor);
-   }
-  }
- }
- // set both new and previously existing block
- blk->addLayoutEditor(this);
- setDirty(true);
- blk->incrementUse();
- return blk;
+ * Return a layout block with the entered name, creating a new one if
+ * needed. Note that the entered name becomes the user name of the
+ * LayoutBlock, and a system name is automatically created by
+ * LayoutBlockManager if needed.
+ * <p>
+ * If the block name is a system name, then the user will have to supply a
+ * user name for the block.
+ *
+ * @param inBlockName the entered name
+ * @return the provided LayoutBlock
+ */
+/*public*/ LayoutBlock* LayoutEditor::provideLayoutBlock(/*@Nonnull*/ QString inBlockName) {
+    LayoutBlock* result = nullptr; // assume failure (pessimist!)
+    LayoutBlock* newBlk = nullptr; // assume failure (pessimist!)
+
+    if (inBlockName.isEmpty()) {
+        // nothing entered, try autoAssign
+        if (autoAssignBlocks) {
+            newBlk = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->createNewLayoutBlock();
+            if (nullptr == newBlk) {
+                log->error(tr("provideLayoutBlock: Failure to auto-assign LayoutBlock '%1'.").arg(inBlockName));
+            }
+        }
+    } else {
+        // check if this Layout Block already exists
+        result = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(inBlockName);
+        if (result == nullptr) { //(no)
+            // The combo box name can be either a block system name or a block user name
+            Block* checkBlock = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(inBlockName);
+            if (checkBlock == nullptr) {
+                log->error(tr("provideLayoutBlock: The block name '%1' does not return a block.").arg(inBlockName));
+            } else {
+                QString checkUserName = checkBlock->getUserName();
+                if (checkUserName != "" && checkUserName ==(inBlockName)) {
+                    // Go ahead and use the name for the layout block
+                    newBlk = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->createNewLayoutBlock(nullptr, inBlockName);
+                    if (newBlk == nullptr) {
+                        log->error(tr("provideLayoutBlock: Failure to create new LayoutBlock '%1'.").arg(inBlockName));
+                    }
+                } else {
+                    // Appears to be a system name, request a user name
+                    QString blkUserName = JOptionPane::showInputDialog(getTargetFrame(),
+                            tr("The selected block does not have a user name.\nPlease enter a user name for the block."),
+                            tr("User Name Required"),
+                            JOptionPane::PLAIN_MESSAGE);
+                    if (blkUserName != "" && !blkUserName.isEmpty()) {
+                        // Verify the user name
+                        Block* checkDuplicate = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(blkUserName);
+                        if (checkDuplicate != nullptr) {
+                            JOptionPane::showMessageDialog(getTargetFrame(),
+                                    tr("User name %1 is already assigned to a block.").arg(blkUserName),
+                                    tr("Error"), JOptionPane::ERROR_MESSAGE);
+                        } else {
+                            // OK to use as a block user name
+                            checkBlock->setUserName(blkUserName);
+                            newBlk = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->createNewLayoutBlock(nullptr, blkUserName);
+                            if (newBlk == nullptr) {
+                                log->error(tr("provideLayoutBlock: Failure to create new LayoutBlock '%1' with a new user name.").arg(blkUserName));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // if we created a new block
+    if (newBlk != nullptr) {
+        // initialize the new block
+        // log.debug("provideLayoutBlock :: Init new block {}", inBlockName);
+        newBlk->initializeLayoutBlock();
+        newBlk->initializeLayoutBlockRouting();
+        newBlk->setBlockTrackColor(defaultTrackColor);
+        newBlk->setBlockOccupiedColor(defaultOccupiedTrackColor);
+        newBlk->setBlockExtraColor(defaultAlternativeTrackColor);
+        result = newBlk;
+    }
+
+    if (result != nullptr) {
+        // set both new and previously existing block
+        result->addLayoutEditor(this);
+        result->incrementUse();
+        setDirty();
+    }
+    return result;
 }
+
 /**
 * Returns an array list of track segments matching the block name.
 */
@@ -4247,677 +3967,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //@Override
 /*public*/ void LayoutEditor::paintTargetPanel(EditScene* g2)
 {
-#if 0
- if (qobject_cast<EditScene*>(g2))
- {
-     //layoutEditor.draw((Graphics2D) g);
-
-     //Graphics2D g2 = (Graphics2D) g;
-
-//     if (clipBounds.isNull()) {
-//         if (!clipBounds == (g2->getClipBounds())) {
-//             g2.setClip(clipBounds);
-//         }
-//     }
-     //Optional antialising, to eliminate (reduce) staircase on diagonal lines
-      editPanel->setRenderHint(QPainter::Antialiasing, antialiasingOn);
-
-     //drawPositionableLabelBorder(g2);
-     // things that only get drawn in edit mode
-     if (/*layoutEditor.*/isEditable()) {
-         if (/*layoutEditor.*/getDrawGrid()) {
-             drawPanelGrid(g2);
-         }
-         drawLayoutTracksHidden(g2);
-     }
-
-     drawShapes(g2, true);
-     drawTrackSegmentsDashed(g2);
-     drawLayoutTracksBallast(g2);
-     drawLayoutTracksTies(g2);
-     drawLayoutTracksRails(g2);
-     drawLayoutTracksBlockLines(g2);
-
-     drawPositionablePoints(g2, false);
-     drawPositionablePoints(g2, true);
-
-     drawShapes(g2, false);
-
-     drawDecorations(g2);
-
-     // things that only get drawn in edit mode
-     if (/*layoutEditor.*/isEditable()) {
-         drawLayoutTrackEditControls(g2);
-         drawShapeEditControls(g2);
-
-         drawMemoryRects(g2);
-         drawBlockContentsRects(g2);
-
-         if (/*layoutEditor.*/allControlling()) {
-             drawTurnoutControls(g2);
-         }
-         drawSelectionRect(g2);
-         highLightSelection(g2);
-
-         drawTrackSegmentInProgress(g2);
-         drawShapeInProgress(g2);
-     } else if (/*layoutEditor.*/turnoutCirclesWithoutEditMode) {
-         if (/*layoutEditor.*/allControlling()) {
-             drawTurnoutControls(g2);
-         }
-     }
- }
-#else // new draw routines
  if(layoutEditorComponent == nullptr)
   layoutEditorComponent = new LayoutEditorComponent(this);
  layoutEditorComponent->paintTargetPanel(g2);
-#endif
-}
-
-//
-// this is called by the layoutEditorComponent
-//
-#if 0
-/*protected*/ void LayoutEditor::draw(EditScene* g2) {
-  if(isDrawing) return;
-  isDrawing = true;
-    //drawPositionableLabelBorder(g2);
-    //Optional antialising, to eliminate (reduce) staircase on diagonal lines
-    //if (antialiasingOn) {
-        editPanel->setRenderHint(QPainter::Antialiasing, antialiasingOn);
-    //}
-#if 1
-    // remove existing items from scene
-    for(LayoutTrack* layoutTrack : *layoutTrackList)
-    {
-     layoutTrack->invalidate(g2);
-    }
-    QList<QGraphicsItem*> items = g2->items();
-    foreach(QGraphicsItem* item, items)
-    {
-     if(item->zValue() == Editor::HANDLES+1)
-     {
-      g2->removeItem(item);
-      delete item;
-     }
-    }
-    foreach (LayoutShape* ls, *layoutShapes) {
-     ls->draw(editScene);
-    }
-#endif
-    // things that only get drawn in edit mode
-    if (isEditable())
-    {
-     if (getDrawGrid())
-     {
-      drawPanelGrid(g2);
-     }
-     drawLayoutTracksHidden(g2);
-    }
-
-    drawTrackSegmentsDashed(g2);
-    drawLayoutTracksBallast(g2);
-    drawLayoutTracksTies(g2);
-    drawLayoutTracksRails(g2);
-    drawLayoutTracksBlockLines(g2);
-
-    QPen stroke = drawingStroke;
-    drawPositionablePoints(g2, false);
-    drawPositionablePoints(g2, true);
-
-    drawDecorations(g2);
-
-    // things that only get drawn in edit mode
-    if (isEditable()) {
-        drawLayoutTrackEditControls(g2);
-
-        drawMemoryRects(g2);
-        drawBlockContentsRects(g2);
-
-        if (allControlling()) {
-            drawTurnoutControls(g2);
-        }
-        drawSelectionRect(g2);
-        highLightSelection(g2);
-
-        drawTrackSegmentInProgress(g2);
-
-        foreach (LayoutShape* ls, *layoutShapes) {
-         ls->drawEditControls(editScene);
-        }
-
-    } else if (turnoutCirclesWithoutEditMode) {
-        if (allControlling()) {
-            drawTurnoutControls(g2);
-        }
-    }
-    isDrawing = false;
-}   // draw
-
-//
-//  draw hidden layout tracks
-//
-/*private*/ void LayoutEditor::drawLayoutTracksHidden(EditScene* g2) {
-    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
-//    Stroke stroke = new BasicStroke(1.F);
-    QPen stroke = QPen(ltdo->getSideRailColor(),1.0, Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
-    QVector<qreal> dashArray = QVector<qreal>() << 6.0 << 4.0;
-//            BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
-//            new float[]{6.F, 4.F}, 0);
-
-    QPen dashedStroke = QPen(ltdo->getMainRailColor(), 1.0, Qt::DashLine,Qt::RoundCap, Qt::RoundJoin);
-    dashedStroke.setDashOffset(10.);
-    dashedStroke.setDashPattern(dashArray);
-
-    //setup for drawing hidden sideline rails
-//    g2.setColor(ltdo->getSideRailColor());
-    stroke.setColor(ltdo->getSideRailColor());
-//    g2.setStroke(stroke);
-    drawingStroke = stroke;
-    bool main = false, block = false, hidden = true, dashed = false;
-    draw1(g2, main, block, hidden, dashed/*,LayoutTrack::track*/);
-    //g2.setStroke(dashedStroke);
-    dashedStroke.setColor(ltdo->getSideRailColor());
-    drawingStroke = dashedStroke;
-    draw1(g2, main, block, hidden, dashed = true/*,LayoutTrack::track*/);
-
-    //setup for drawing mainline rails
-    main = true;
-    //g2.setColor(ltdo->getMainRailColor());
-    stroke.setColor(ltdo->getMainRailColor());
-    //g2.setStroke(stroke);
-    drawingStroke = stroke;
-    draw1(g2, main, block, hidden, dashed = false/*, LayoutTrack::track*/);
-    //g2.setStroke(dashedStroke);
-    dashedStroke.setColor(ltdo->getMainRailColor());
-    drawingStroke = dashedStroke;
-    dashed = true;
-    draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
-}
-
-//
-//  draw dashed track segments
-//
-/*private*/ void LayoutEditor::drawTrackSegmentsDashed(EditScene* g2) {
-    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
-    bool main = false, block = false, hidden = false, dashed = true;
-
-    if (ltdo->getSideRailCount() > 0)
-    {
-        //setup for drawing dashed sideline rails
-        int railWidth = ltdo->getSideRailWidth();
-        //float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
-        QVector<qreal> dashArray = QVector<qreal>() << 6.0 + railWidth << 4.0 + railWidth;
-//        g2.setStroke(new BasicStroke(
-//                railWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-//                10.F, dashArray, 0));
-//        g2.setColor(ltdo->getSideRailColor());
-        QPen stroke = QPen(ltdo->getSideRailColor(), railWidth, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
-        stroke.setDashPattern(dashArray);
-        stroke.setDashOffset(10.0);
-        drawingStroke = stroke;
-        if ((ltdo->getSideRailCount() & 1) == 1) {
-            draw1(g2, main, block, hidden/*, LayoutTrack::dashed*/);
-        }
-        if (ltdo->getSideRailCount() >= 2) {
-            float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-            draw2(g2, main, railDisplacement/*, LayoutTrack::dashed*/);
-        }
-    }
-
-    if (ltdo->getMainRailCount() > 0) {
-        //setup for drawing dashed mainline rails
-        main = true;
-        int railWidth = ltdo->getMainRailWidth();
-        //float[] dashArray = new float[]{6.F + railWidth, 4.F + railWidth};
-        QVector<qreal> dashArray = QVector<qreal>() << 6.0 + railWidth << 4.0 + railWidth;
-//        g2.setStroke(new BasicStroke(
-//                railWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-//                10.F, dashArray, 0));
-//        g2.setColor(ltdo->getMainRailColor());
-        QPen stroke = QPen(ltdo->getMainRailColor(), railWidth,  Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
-        stroke.setDashPattern(dashArray);
-        stroke.setDashOffset(10.0);
-        drawingStroke = stroke;
-        if ((ltdo->getMainRailCount() & 1) == 1) {
-            draw1(g2, main, block, hidden, dashed/*, LayoutTrack::dashed*/);
-        }
-        if (ltdo->getMainRailCount() >= 2) {
-            float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-            draw2(g2, main, railDisplacement/*, LayoutTrack::dashed*/);
-        }
-    }
-}   // drawTrackSegmentsDashed
-
-//
-// draw layout track ballast
-//
-/*private*/ void LayoutEditor::drawLayoutTracksBallast(EditScene* g2) {
-    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
-    bool main = false, block = false, hidden = false, dashed = false;
-
-    //setup for drawing sideline ballast
-    int ballastWidth = ltdo->getSideBallastWidth();
-    if (ballastWidth > 0) {
-//        g2.setStroke(new BasicStroke(ballastWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-//        g2.setColor(ltdo->getSideBallastColor());
-     QPen stroke = QPen(ltdo->getSideBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-     drawingStroke = stroke;
-        draw1(g2, main, block, hidden, dashed/*, LayoutTrack::ballast*/);
-    }
-
-    //setup for drawing mainline ballast
-    ballastWidth = ltdo->getMainBallastWidth();
-    if (ballastWidth > 0) {
-//        g2.setStroke(new BasicStroke(ballastWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-//        g2.setColor(ltdo->getMainBallastColor());
-     QPen stroke = QPen(ltdo->getMainBallastColor(), ballastWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-     drawingStroke = stroke;
-        main = true;
-        draw1(g2, main, block, hidden, dashed/*,LayoutTrack::ballast*/);
-    }
-}
-
-//
-// draw layout track ties
-//
-/*private*/ void LayoutEditor::drawLayoutTracksTies(EditScene* g2) {
-    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
-
-    // setup for drawing sideline ties
-    int tieLength = ltdo->getSideTieLength();
-    int tieWidth = ltdo->getSideTieWidth();
-    int tieGap = ltdo->getSideTieGap();
-    if ((tieLength > 0) && (tieWidth > 0) && (tieGap > 0)) {
-//        g2.setStroke(new BasicStroke(tieLength,
-//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
-//                new float[]{tieWidth, tieGap}, 0));
-//        g2.setColor(ltdo->getSideTieColor());
-     QPen stroke = QPen(ltdo->getSideTieColor(), tieLength, Qt::DashLine, Qt::FlatCap, Qt::BevelJoin);
-     QVector<qreal> dashPattern = QVector<qreal>() << tieWidth << tieGap;
-     stroke.setDashPattern(dashPattern);
-     stroke.setDashOffset(10.);
-     drawingStroke = stroke;
-     draw1(g2, false, LayoutTrack::ties);  // main = false
-    }
-
-    // setup for drawing mainline ties
-    tieLength = ltdo->getMainTieLength();
-    tieWidth = ltdo->getMainTieWidth();
-    tieGap = ltdo->getMainTieGap();
-    if ((tieLength > 0) && (tieWidth > 0) && (tieGap > 0)) {
-//        g2.setStroke(new BasicStroke(tieLength,
-//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.F,
-//                new float[]{tieWidth, tieGap}, 0));
-//        g2.setColor(ltdo->getMainTieColor());
-     QPen stroke = QPen(ltdo->getMainTieColor(), tieLength, Qt::DashLine, Qt::FlatCap, Qt::BevelJoin);
-     QVector<qreal> dashPattern = QVector<qreal>() << tieWidth << tieGap;
-     stroke.setDashPattern(dashPattern);
-     stroke.setDashOffset(10.);
-     drawingStroke = stroke;
-
-        draw1(g2, true, LayoutTrack::ties); // main = true
-    }
-}
-
-//
-// draw layout track rails
-//
-/*private*/ void LayoutEditor::drawLayoutTracksRails(EditScene* g2) {
-    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
-    int railWidth = ltdo->getSideRailWidth();
-    QColor railColor = ltdo->getSideRailColor();
-
-    bool main = false, block = false, hidden = false, dashed = false;
-
-    if (ltdo->getSideRailCount() > 1) {
-        //setup for drawing sideline rails
-        float railDisplacement = railWidth + (ltdo->getSideRailGap() / 2.F);
-//        g2.setStroke(new BasicStroke(railWidth,
-//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-//        g2.setColor(railColor);
-        QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        drawingStroke = stroke;
-        draw2(g2, main, railDisplacement/*, LayoutTrack::track*/);
-    }
-
-    if ((ltdo->getSideRailCount() & 1) == 1) {
-        //setup for drawing sideline rails
-//        g2.setStroke(new BasicStroke(
-//                railWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-//        g2.setColor(railColor);
-     QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-     drawingStroke = stroke;
-     draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
-    }
-
-    main = true;
-
-    railWidth = ltdo->getMainRailWidth();
-    railColor = ltdo->getMainRailColor();
-    if (ltdo->getMainRailCount() > 1) {
-        //setup for drawing mainline rails
-        float railDisplacement = railWidth + (ltdo->getMainRailGap() / 2.F);
-//        g2.setStroke(new BasicStroke(railWidth,
-//                BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-//        g2.setColor(railColor);
-        QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        drawingStroke = stroke;
-        draw2(g2, main, railDisplacement);
-    }
-    if ((ltdo->getMainRailCount() & 1) == 1) {
-        //setup for drawing mainline rails
-//        g2.setStroke(new BasicStroke(
-//                railWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-//        g2.setColor(railColor);
-        dashed = false;
-        QPen stroke = QPen(railColor, railWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        drawingStroke = stroke;
-        draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
-    }
-
-}   // drawLayoutTracksRails
-
-//
-// draw layout track block lines
-//
-/*private*/ void LayoutEditor::drawLayoutTracksBlockLines(EditScene* g2) {
-    LayoutTrackDrawingOptions* ltdo = getLayoutTrackDrawingOptions();
-
-    //setup for drawing sideline block lines
-    int blockLineWidth = ltdo->getSideBlockLineWidth();
-    //float[] dashArray = new float[]{6.F + blockLineWidth, 4.F + blockLineWidth};
-    QVector<qreal> dashArray = QVector<qreal>() << 6.0 + blockLineWidth << 4.0 + blockLineWidth;
-
-    //Stroke blockLineStroke = null;
-    QPen blockLineStroke;
-    QPen stroke;
-    int dashPercentageX10 = ltdo->getSideBlockLineDashPercentageX10();
-    if (dashPercentageX10 > 0)
-    {
-     //float[] blockLineDashArray = new float[]{
-     QVector<qreal> blockLineDashArray = QVector<qreal>() <<
-     dashPercentageX10 + blockLineWidth <<
-            10.0 - dashPercentageX10 + blockLineWidth;
-//        blockLineStroke = new BasicStroke(
-//                blockLineWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-//                10.F, blockLineDashArray, 0);
-     //g2.setStroke(blockLineStroke);
-        blockLineStroke = QPen(defaultTrackColor, blockLineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        blockLineStroke.setDashOffset(10.0);
-        blockLineStroke.setDashPattern(blockLineDashArray);
-        stroke = blockLineStroke;
-    } else {
-//        blockLineStroke = new BasicStroke(
-//                ltdo->getSideBlockLineWidth(),
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-     blockLineStroke = QPen(defaultTrackColor, blockLineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-
-//        g2.setStroke(new BasicStroke(
-//                blockLineWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-//                10.F, dashArray, 0));
-     stroke = QPen(defaultTrackColor, ltdo->getSideBlockLineWidth(), Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
-     stroke.setDashPattern(dashArray);
-     stroke.setDashOffset(10.0);
-     drawingStroke = stroke;
-    }
-
-    //note: color is set in layout track's draw1 when isBlock is true
-    bool main = false, block = true, hidden = false, dashed = true;
-    draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
-    //g2.setStroke(blockLineStroke);
-    drawingStroke = blockLineStroke;
-    draw1(g2, main, block, hidden, dashed = false/*,LayoutTrack::track*/);
-
-    //setup for drawing mainline block lines
-    blockLineWidth = ltdo->getMainBlockLineWidth();
-    //dashArray = new float[]{6.F + blockLineWidth, 4.F + blockLineWidth};
-    dashArray = QVector<qreal>() << 6.0 + blockLineWidth << 4.0 + blockLineWidth;
-    dashPercentageX10 = ltdo->getMainBlockLineDashPercentageX10();
-    if (dashPercentageX10 > 0) {
-//        float[] blockLineDashArray = new float[]{
-//            dashPercentageX10 + blockLineWidth,
-//            10 - dashPercentageX10 + blockLineWidth};
-     QVector<qreal> blockLineDashArray = QVector<qreal>() << dashPercentageX10 + blockLineWidth << 10 - dashPercentageX10 + blockLineWidth;
-//        blockLineStroke = new BasicStroke(
-//                blockLineWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-//                10.F, blockLineDashArray, 0);
-     blockLineStroke = QPen(defaultTrackColor, blockLineWidth, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
-     blockLineStroke.setDashPattern(blockLineDashArray);
-     blockLineStroke.setDashOffset(10.0);
-//        g2.setStroke(blockLineStroke);
-     drawingStroke = blockLineStroke;
-    } else {
-//        blockLineStroke = new BasicStroke(
-//                ltdo->getMainBlockLineWidth(),
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-     blockLineStroke=QPen(defaultTrackColor, blockLineWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-//        g2.setStroke(new BasicStroke(
-//                blockLineWidth,
-//                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-//                10.F, dashArray, 0));
-     drawingStroke = QPen(defaultTrackColor, ltdo->getMainBlockLineWidth(), Qt::DashLine, Qt::RoundCap, Qt::RoundJoin);
-     drawingStroke.setDashOffset(10.0);
-    }
-    //note: color is set in layout track's draw1 when isBlock is true
-    draw1(g2, main = true, block, hidden, dashed = true/*,LayoutTrack::track*/);
-    //g2.setStroke(blockLineStroke);
-    drawingStroke = blockLineStroke;
-    dashed = false;
-    draw1(g2, main, block, hidden, dashed/*, LayoutTrack::track*/);
-}
-
-// isDashed defaults to false
-/*private*/ void LayoutEditor::draw1(EditScene* g2,
-        bool isMain,
-        bool isBlock,
-        bool isHidden/*, LayoutTrack::ITEMTYPE type*/) {
-    draw1(g2, isMain, isBlock, isHidden, false/*, type*/);
-}
-
-// isHidden defaults to false
-/*private*/ void LayoutEditor::draw1(EditScene* g2,
-        bool isMain,
-        bool isBlock/*, LayoutTrack::ITEMTYPE type*/) {
-    draw1(g2, isMain, isBlock, false/*, type*/);
-}
-
-// isBlock defaults to false
-/*private*/ void LayoutEditor::draw1(EditScene* g2, bool isMain) {
-    draw1(g2, isMain, false/*, type*/);
-}
-
-// draw single line (ballast, ties & block lines)
-/*private*/ void LayoutEditor::draw1(EditScene* g2,
-        bool isMain,
-        bool isBlock,
-        bool isHidden,
-        bool isDashed/*, LayoutTrack::ITEMTYPE itemType*/)
-{
- for (LayoutTrack* layoutTrack : *layoutTrackList)
- {
-  if (!(qobject_cast<PositionablePoint*>(layoutTrack)))
-  {
-   if (isHidden == layoutTrack->isHidden())
-   {
-    if ((qobject_cast<TrackSegment*>(layoutTrack)))
-    {
-     if (((TrackSegment*) layoutTrack)->isDashed() == isDashed)
-     {
-      layoutTrack->draw1(g2, isMain, isBlock/*, itemType*/);
-     }
-    }
-    else if (!isDashed)
-    {
-     layoutTrack->draw1(g2, isMain, isBlock/*, itemType*/);
-    }
-   }
-  }
- }
-}
-
-// draw positionable points
-/*private*/ void LayoutEditor::drawPositionablePoints(EditScene* g2, bool isMain)
-{
- for (LayoutTrack* layoutTrack : *layoutTrackList)
- {
-  if (qobject_cast<PositionablePoint*>(layoutTrack)) {
-      layoutTrack->draw1(g2, isMain, false/*, LayoutTrack::points*/);
-  }
- }
-}
-
-// isDashed defaults to false
-/*private*/ void LayoutEditor::draw2(EditScene* g2, bool isMain, float railDisplacement) {
-    draw2(g2, isMain, railDisplacement, false);
-}
-
-// draw parallel lines (rails)
-/*private*/ void LayoutEditor::draw2(EditScene* g2, bool isMain,
-        float railDisplacement, bool isDashed)
-{
- for (LayoutTrack* layoutTrack : *layoutTrackList)
- {
-  if ((qobject_cast<TrackSegment*>(layoutTrack)))
-  {
-   if (((TrackSegment*) layoutTrack)->isDashed() == isDashed) {
-       layoutTrack->draw2(g2, isMain, railDisplacement/*, LayoutTrack::dashed*/ );
-   }
-  } else if (!isDashed) {
-      layoutTrack->draw2(g2, isMain, railDisplacement/*, LayoutTrack::track*/ );
-  }
- }
-}
-#endif
-// draw decorations
-/*private*/ void LayoutEditor::drawDecorations(EditScene* g2) {
-    for (LayoutTrack* tr : *layoutTrackList) {
-        tr->drawDecorations(g2);
-    }
-}
-
-// draw shapes
-/*private*/ void LayoutEditor::drawShapes(EditScene* g2, bool isBackground) {
-    //layoutEditor.getLayoutShapes().forEach((s) ->
- foreach(LayoutShape* s, *getLayoutShapes())
- {
-     if (isBackground == (s->getLevel() < 3)) {
-         s->draw(g2);
-     }
- }//);
-}
-
-// draw track segment (in progress)
-/*private*/ void LayoutEditor::drawTrackSegmentInProgress(EditScene* g2) {
-    //check for segment in progress
-    if (isEditable() && (beginTrack != nullptr) && leToolBarPanel->trackButton->isChecked()) {
-//        g2.setColor(defaultTrackColor);
-//        g2.setStroke(new BasicStroke(sidelineTrackWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-     QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::FlatCap, Qt::RoundJoin);
-        //g2.draw(new Line2D.Double(beginLocation, currentLocation));
-     QGraphicsLineItem* item = new QGraphicsLineItem(beginLocation.x(), beginLocation.y(), currentLocation.x(), currentLocation.y());
-     item->setPen(stroke);
-
-        // highlight unconnected endpoints of all tracks
-        QColor highlightColor = ColorUtil::setAlpha(QColor(Qt::red), 0.25);
-        QColor connectColor = ColorUtil::setAlpha(QColor(Qt::green), 0.5);
-//        g2.setColor(highlightColor);
-//        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-        stroke = QPen(highlightColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
-
-        for (LayoutTrack* lt : *getLayoutTracks()) {
-            if (lt != beginTrack) {
-                if (lt == foundTrack) {
-                    lt->highlightUnconnected(g2);
-//                    g2.setColor(connectColor);
-                    drawingStroke.setColor(connectColor);
-                    lt->highlightUnconnected(g2, foundHitPointType);
-//                    g2.setColor(highlightColor);
-                    drawingStroke.setColor(highlightColor);
-                } else {
-                    lt->highlightUnconnected(g2);
-                }
-            }
-        }
-    }
-}
-
-// draw shape (in progress)
-/*private*/ void LayoutEditor::drawShapeInProgress(EditScene* g2)
-{
- //check for segment in progress
- if (/*layoutEditor.*/getLayoutEditorToolBarPanel()->shapeButton->isChecked())
- {
-  //log.warn("drawShapeInProgress: selectedObject: " + selectedObject);
-  if ((/*layoutEditor.*/selectedObject != nullptr)) {
-//      g2.setColor(Color.DARK_GRAY);
-//      g2.setStroke(new BasicStroke(3.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-//      g2.draw(new Line2D.Double(layoutEditor.beginLocation, layoutEditor.currentLocation));
-   QPen stroke = QPen(QColor(Qt::darkGray), 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
-   drawingStroke = stroke;
-   QGraphicsLineItem* item = new QGraphicsLineItem(beginLocation.x(), beginLocation.y(), currentLocation.x(), currentLocation.y());
-   item->setPen(stroke);
-
-   g2->addItem(item);
-  }
- }
-}
-
-// draw layout track edit controls
-/*private*/ void LayoutEditor::drawLayoutTrackEditControls(EditScene* g2) {
-    //g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
- QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
- drawingStroke = stroke;
-    for (LayoutTrack* tr : *layoutTrackList) {
-        tr->drawEditControls(g2);
-    }
-}
-
-/*private*/ void LayoutEditor::drawShapeEditControls(EditScene* g2) {
-    //g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
- QPen stroke = QPen(turnoutCircleColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
- drawingStroke = stroke;
-
- //layoutEditor.getLayoutShapes().forEach((s) ->
- foreach(LayoutShape* s, *getLayoutShapes())
- {
-     s->drawEditControls(g2);
- }//);
-}
-
-// draw layout turnout controls
-/*private*/ void LayoutEditor::drawTurnoutControls(EditScene* g2) {
-//    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-//    g2.setColor(turnoutCircleColor);
- QPen stroke = QPen(turnoutCircleColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
- //g2.setBackground(layoutEditor.turnoutCircleThrownColor);
- g2->setBackgroundBrush(QBrush(turnoutCircleThrownColor));
-
- drawingStroke = stroke;
-    // loop over all turnouts
-    bool editable = isEditable();
-    for (LayoutTrack* tr : *layoutTrackList) {
-        if (qobject_cast<LayoutTurnout*>(tr)) {  //<== this includes LayoutSlips
-            LayoutTurnout* lt = (LayoutTurnout*) tr;
-            if (editable || !(lt->isHidden() || lt->isDisabled())) {
-                lt->drawTurnoutControls(g2);
-            }
-        } else if (qobject_cast<LayoutTurntable*>(tr)) {
-            LayoutTurntable* lt = (LayoutTurntable*) tr;
-            if (editable || !lt->isHidden()) {
-                lt->drawTurnoutControls(g2);
-            }
-        }
-    }
 }
 
 // get selection rectangle
@@ -4986,118 +4038,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
     } else {
         _selectRect = QRectF(); // and clear it to turn it off
     }
-}
-
-
-/*private*/ void LayoutEditor::drawMemoryRects(EditScene* g2) {
-//    g2.setColor(defaultTrackColor);
-//    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
- QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
-
-    for (LEMemoryIcon* l : *memoryLabelList) {
-        //g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
-     QGraphicsRectItem* r = new QGraphicsRectItem(QRectF(l->x(), l->y(), l->getSize().width(), l->getSize().height()));
-     r->setPen(stroke);
-     r->setPos(((Positionable*)l)->getLocation());
-     g2->addItem(r);
-    }
-}
-
-/*private*/ void LayoutEditor::drawBlockContentsRects(EditScene* g2) {
-//    g2.setColor(defaultTrackColor);
-//    g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
- QPen stroke = QPen(defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
-
-    for (LEBlockContentsIcon* l : *blockContentsLabelList) {
-        //g2.draw(new Rectangle2D.Double(l.getX(), l.getY(), l.getSize().width, l.getSize().height));
-     QGraphicsRectItem* r = new QGraphicsRectItem(QRectF(l->x(), l->y(), l->getSize().width(), l->getSize().height()));
-     r->setPen(stroke);
-     r->setPos(((Positionable*)l)->getLocation());
-     g2->addItem(r);
-    }
-}
-
-/*private*/ void LayoutEditor::drawPanelGrid(EditScene* g2)
-{
-  //Dimension dim = getSize();
-  if(panelGridGroup != nullptr)
-  {
-   //Q_ASSERT(panelGridGroup->scene()!=0);
-   g2->removeItem(panelGridGroup);
-   delete panelGridGroup;
-   //g2->destroyItemGroup(panelGridGroup);
-  }
-  if(!isEditable() || !drawGrid)
-   return;
-  panelGridGroup = new QGraphicsItemGroup();
-  //g2->addItem(panelGridGroup);
-  QSizeF dim = g2->sceneRect().size();
-  double pix = 10.0;
-  double maxX = dim.width();
-  double maxY = dim.height();
-  QPointF startPt = QPointF(0.0, 10.0);
-  QPointF stopPt = QPointF(maxX, 10.0);
- //  BasicStroke narrow = new   BasicStroke(1.0F,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
- //  BasicStroke wide = new BasicStroke(2.0F,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND);
- //  g2.setColor(QColor::gray);
- //  g2.setStroke(narrow);
- QPen narrow = QPen(QColor(Qt::gray),1,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
- QPen wide = QPen(QColor(Qt::gray),2,  Qt::SolidLine,Qt::RoundCap,Qt::RoundJoin);
-
- // draw horizontal lines
- while (pix<maxY)
- {
-  startPt= QPointF(0,pix);
-  stopPt = QPointF(maxX,pix);
-  if ( (((int)pix) % 100) < 5.0)
-  {
-//  g2.setStroke(wide);
-//  g2.draw(new Line2D.Double(startPt,stopPt));
-//  g2.setStroke(narrow);
-   //g2->addLine(QLineF(startPt, stopPt),wide);
-   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
-   line->setPen(wide);
-   panelGridGroup->addToGroup(line);
-  }
-  else
-  {
-//  g2.draw(new Line2D.Double(startPt,stopPt));
-   //g2->addLine(QLineF(startPt, stopPt),narrow);
-   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
-   line->setPen(narrow);
-   panelGridGroup->addToGroup(line);
-  }
-  pix += 10.0;
- }
- // draw vertical lines
- pix = 10.0;
- while (pix<maxX)
- {
-  startPt=QPointF(pix,0.0);
-  stopPt= QPointF(pix,maxY);
-  if ( (((int)pix) % 100) < 5.0)
-  {
-//  g2.setStroke(wide);
-//  g2.draw(new Line2D.Double(startPt,stopPt));
-//  g2.setStroke(narrow);
-   //g2->addLine(QLineF(startPt, stopPt),wide);
-   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
-   line->setPen(wide);
-   panelGridGroup->addToGroup(line);
-  }
-  else
-  {
-  //g2.draw(new Line2D.Double(startPt,stopPt));
-   //g2->addLine(QLineF(startPt, stopPt),narrow);
-   QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPt, stopPt));
-   line->setPen(narrow);
-   panelGridGroup->addToGroup(line);
-  }
-  pix += 10.0;
- }
- if(panelGridGroup && panelGridGroup->scene())
-  log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
- g2->addItem(panelGridGroup);
 }
 
 /*private*/ QList<LayoutTrack *> *LayoutEditor::getLayoutTracksOfClass(QString type)
@@ -5181,534 +4121,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   return  QPointF( p1.x()+((p2.x()-p1.x())/4.0),
                   p1.y()+((p2.y()-p1.y())/4.0) );
 }
-/*private*/ void LayoutEditor::drawXings(EditScene* g2)
-{
- // loop over all defined level crossings
-// for (int i = 0; i<xingList->size();i++)
-// {
-//  LevelXing* x = xingList->at(i);
-//  x->invalidate(g2);
-//  x->drawXings(this, g2);
-// }
-}
 
-///*private*/ void LayoutEditor::drawSlips(QGraphicsScene* g2)
-//{
-// for (int i = 0; i<slipList->size();i++)
-// {
-//  LayoutSlip* x = slipList->at(i);
-//  LayoutBlock* b = x->getLayoutBlock();
-//  setTrackStrokeWidth(x->isMainline());
-//  QColor mainColour;
-//  QColor subColour;
-//  if (b!=nullptr)
-//  {
-//   mainColour = b->getBlockColor();
-//   subColour = b->getBlockTrackColor();
-//  }
-//  else
-//  {
-//   mainColour = defaultTrackColor;
-//   subColour = defaultTrackColor;
-//  }
-//  if(x->item != nullptr && x->item->scene()!=0)
-//  {
-//   g2->removeItem(x->item);
-//   x->item = nullptr;
-//  }
-//  if(x->rects != nullptr)
-//  {
-//   Q_ASSERT(x->rects->scene()!=0);
-//   g2->removeItem(x->rects);
-//   x->rects = nullptr;
-//  }
-//  x->item = new QGraphicsItemGroup();
-
-//  //g2.setColor(subColour);
-
-////  g2.draw(new Line2D.Double(x.getCoordsA(),
-////          third(x.getCoordsA(),x.getCoordsC())));
-//  QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsA(), third(x->getCoordsA(),x->getCoordsC())));
-//  line1->setPen(QPen(subColour,trackWidth));
-//  x->item->addToGroup(line1);
-
-////  g2.draw(new Line2D.Double(x.getCoordsC(),
-////          third(x.getCoordsC(),x.getCoordsA())));
-//  QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(x->getCoordsC(),third(x->getCoordsC(),x->getCoordsA())));
-//  line2->setPen(QPen(subColour,trackWidth));
-//  x->item->addToGroup(line2);
-
-////      g2.draw(new Line2D.Double(x.getCoordsB(),
-////          third(x.getCoordsB(),x.getCoordsD())));
-//  QGraphicsLineItem* line3 = new QGraphicsLineItem(QLineF(x->getCoordsB(),third(x->getCoordsB(),x->getCoordsD())));
-//  line3->setPen(QPen(subColour,trackWidth));
-//  x->item->addToGroup(line3);
-
-////      g2.draw(new Line2D.Double(x.getCoordsD(),
-////          third(x.getCoordsD(),x.getCoordsB())));
-//  QGraphicsLineItem* line4 = new QGraphicsLineItem(QLineF(x->getCoordsD(),third(x->getCoordsD(),x->getCoordsB())));
-//  line4->setPen(QPen(subColour,trackWidth));
-//  x->item->addToGroup(line4);
-
-
-//  if(x->getSlipType()==LayoutSlip::DOUBLE_SLIP)
-//  {
-//   if (x->getSlipState()==LayoutSlip::STATE_AC)
-//   {
-////          g2.draw(new Line2D.Double(x.getCoordsA(),
-////          third(x.getCoordsA(),x.getCoordsD())));
-//    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsA(), third(x->getCoordsA(),x->getCoordsD())));
-//    line1->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-////          g2.draw(new Line2D.Double(x.getCoordsD(),
-////              third(x.getCoordsD(),x.getCoordsA())));
-//    QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(x->getCoordsD(), third(x->getCoordsD(),x->getCoordsA())));
-//    line2->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line2);
-
-////          g2.draw(new Line2D.Double(x.getCoordsB(),
-////              third(x.getCoordsB(),x.getCoordsC())));
-//    QGraphicsLineItem* line3 = new QGraphicsLineItem(QLineF(x->getCoordsB(), third(x->getCoordsB(),x->getCoordsC())));
-//    line3->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line3);
-
-////          g2.draw(new Line2D.Double(x.getCoordsC(),
-////              third(x.getCoordsC(),x.getCoordsB())));
-//    QGraphicsLineItem* line4 = new QGraphicsLineItem(QLineF(x->getCoordsC(), third(x->getCoordsC(),x->getCoordsB())));
-//    line4->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line4);
-
-////          g2.setColor(mainColour);
-////          g2.draw(new Line2D.Double(x.getCoordsA(),x.getCoordsC()));
-//    QGraphicsLineItem* line5 = new QGraphicsLineItem(QLineF(x->getCoordsA(), x->getCoordsC()));
-//    line5->setPen(QPen(mainColour,trackWidth));
-//    x->item->addToGroup(line5);
-
-//   }
-//   else if (x->getSlipState()==LayoutSlip::STATE_BD)
-//   {
-////          g2.draw(new Line2D.Double(x.getCoordsB(),
-////              third(x.getCoordsB(),x.getCoordsC())));
-//    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsB(), third(x->getCoordsB(),x->getCoordsC())));
-//    line1->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-////          g2.draw(new Line2D.Double(x.getCoordsC(),
-////              third(x.getCoordsC(),x.getCoordsB())));
-//    QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(x->getCoordsC(), third(x->getCoordsC(),x->getCoordsB())));
-//    line2->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line2);
-
-
-////          g2.draw(new Line2D.Double(x.getCoordsA(),
-////          third(x.getCoordsA(),x.getCoordsD())));
-//    QGraphicsLineItem* line3 = new QGraphicsLineItem(QLineF(x->getCoordsA(), third(x->getCoordsA(),x->getCoordsD())));
-//    line3->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line3);
-
-////          g2.draw(new Line2D.Double(x.getCoordsD(),
-////              third(x.getCoordsD(),x.getCoordsA())));
-//    QGraphicsLineItem* line4 = new QGraphicsLineItem(QLineF(x->getCoordsD(), third(x->getCoordsD(),x->getCoordsA())));
-//    line4->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line4);
-
-////          g2.setColor(mainColour);
-////          g2.draw(new Line2D.Double(x.getCoordsB(),x.getCoordsD()));
-//    QGraphicsLineItem* line5 = new QGraphicsLineItem(QLineF(x->getCoordsB(), x->getCoordsD()));
-//    line5->setPen(QPen(mainColour,trackWidth));
-//    x->item->addToGroup(line5);
-
-//   }
-//   else if (x->getSlipState()==LayoutSlip::STATE_AD)
-//   {
-////          g2.draw(new Line2D.Double(x.getCoordsB(),
-////              third(x.getCoordsB(),x.getCoordsC())));
-//    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsB(), third(x->getCoordsB(),x->getCoordsC())));
-//    line1->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-////          g2.draw(new Line2D.Double(x.getCoordsC(),
-////              third(x.getCoordsC(),x.getCoordsB())));
-//    QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(x->getCoordsC(), third(x->getCoordsC(),x->getCoordsB())));
-//    line2->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line2);
-
-////          g2.setColor(mainColour);
-////          g2.draw(new Line2D.Double(x.getCoordsA(),x.getCoordsD()));
-//    QGraphicsLineItem* line3 = new QGraphicsLineItem(QLineF(x->getCoordsA(), x->getCoordsD()));
-//    line3->setPen(QPen(mainColour,trackWidth));
-//    x->item->addToGroup(line3);
-
-//   }
-//   else if (x->getSlipState()==LayoutSlip::STATE_BC)
-//   {
-////          g2.draw(new Line2D.Double(x.getCoordsA(),
-////          third(x.getCoordsA(),x.getCoordsD())));
-//    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsA(), third(x->getCoordsA(),x->getCoordsD())));
-//    line1->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-
-////          g2.draw(new Line2D.Double(x.getCoordsD(),
-////              third(x.getCoordsD(),x.getCoordsA())));
-//    QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(x->getCoordsD(), third(x->getCoordsD(),x->getCoordsA())));
-//    line2->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line2);
-
-////          g2.setColor(mainColour);
-////          g2.draw(new Line2D.Double(x.getCoordsB(),x.getCoordsC()));
-//    QGraphicsLineItem* line3 = new QGraphicsLineItem(QLineF(x->getCoordsB(), x->getCoordsC()));
-//    line3->setPen(QPen(mainColour,trackWidth));
-//    x->item->addToGroup(line3);
-
-//   }
-//   else
-//   {
-////          g2.draw(new Line2D.Double(x.getCoordsB(),
-////              third(x.getCoordsB(),x.getCoordsC())));
-//    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsB(), third(x->getCoordsB(),x->getCoordsC())));
-//    line1->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-
-////          g2.draw(new Line2D.Double(x.getCoordsC(),
-////              third(x.getCoordsC(),x.getCoordsB())));
-//    QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(x->getCoordsC(), third(x->getCoordsC(),x->getCoordsB())));
-//    line2->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line2);
-
-////          g2.draw(new Line2D.Double(x.getCoordsA(),
-////          third(x.getCoordsA(),x.getCoordsD())));
-//    QGraphicsLineItem* line3 = new QGraphicsLineItem(QLineF(x->getCoordsA(), third(x->getCoordsA(),x->getCoordsD())));
-//    line3->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line3);
-
-////          g2.draw(new Line2D.Double(x.getCoordsD(),
-////              third(x.getCoordsD(),x.getCoordsA())));
-//    QGraphicsLineItem* line4 = new QGraphicsLineItem(QLineF(x->getCoordsD(), third(x->getCoordsD(),x->getCoordsA())));
-//    line4->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line4);
-//   }
-//  }
-//  else
-//  {
-////      g2.draw(new Line2D.Double(x.getCoordsA(),
-////          third(x.getCoordsA(),x.getCoordsD())));
-//   QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsA(), third(x->getCoordsA(),x->getCoordsD())));
-//   line1->setPen(QPen(subColour,trackWidth));
-//   x->item->addToGroup(line1);
-
-////      g2.draw(new Line2D.Double(x.getCoordsD(),
-////          third(x.getCoordsD(),x.getCoordsA())));
-//   QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(x->getCoordsD(), third(x->getCoordsD(),x->getCoordsA())));
-//   line2->setPen(QPen(subColour,trackWidth));
-//   x->item->addToGroup(line2);
-//   if (x->getSlipState()==LayoutSlip::STATE_AD)
-//   {
-////          g2.setColor(mainColour);
-////          g2.draw(new Line2D.Double(x.getCoordsA(),x.getCoordsD()));
-//    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsA(), x->getCoordsD()));
-//    line1->setPen(QPen(mainColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-//   }
-//   else if (x->getSlipState()==LayoutSlip::STATE_BD)
-//   {
-////          g2.setColor(mainColour);
-////          g2.draw(new Line2D.Double(x.getCoordsB(),x.getCoordsD()));
-//    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsB(), x->getCoordsD()));
-//    line1->setPen(QPen(mainColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-//    if(x->singleSlipStraightEqual())
-//    {
-////              g2.setColor(mainColour);
-////              g2.draw(new Line2D.Double(x.getCoordsA(),x.getCoordsC()));
-//     QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsA(), x->getCoordsC()));
-//       line1->setPen(QPen(mainColour,trackWidth));
-//     x->item->addToGroup(line1);
-
-//    }
-//   }
-//   else if (x->getSlipState()==LayoutSlip::STATE_AC)
-//   {
-//             //          g2.setColor(mainColour);
-//             //          g2.draw(new Line2D.Double(x.getCoordsA(),x.getCoordsC()));
-//       QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsA(), x->getCoordsC()));
-//    line1->setPen(QPen(mainColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-//    if(x->singleSlipStraightEqual())
-//    {
-////              g2.setColor(mainColour);
-////              g2.draw(new Line2D.Double(x.getCoordsB(),x.getCoordsD()));
-//     QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsB(), x->getCoordsD()));
-//     line1->setPen(QPen(mainColour,trackWidth));
-//     x->item->addToGroup(line1);
-
-//    }
-//   }
-//   else
-//   {
-////          g2.draw(new Line2D.Double(x.getCoordsA(),
-////              third(x.getCoordsA(),x.getCoordsD())));
-//    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(x->getCoordsA(), third(x->getCoordsA(),x->getCoordsD())));
-//    line1->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line1);
-
-////          g2.draw(new Line2D.Double(x.getCoordsD(),
-////              third(x.getCoordsD(),x.getCoordsA())));
-//    QGraphicsLineItem* line2 = new QGraphicsLineItem(QLineF(x->getCoordsD(), third(x->getCoordsD(),x->getCoordsA())));
-//    line2->setPen(QPen(subColour,trackWidth));
-//    x->item->addToGroup(line2);
-
-//   }
-//  }
-//  if(x->item && x->item->scene())
-//   log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-//  g2->addItem(x->item);
-// }
-//}
-
-///*private*/ void LayoutEditor::drawTurnoutCircles(EditScene* g2)
-//{
-  // loop over all defined turnouts
-//  for (int i = 0; i<turnoutList->size();i++)
-//  {
-//   LayoutTurnout* t = turnoutList->at(i);
-//   if(!(t->getHidden() && !isEditable()))
-//   {
-//    t->drawTurnoutCircles(this, g2);
-//   }
-//  }
-//} //drawTurnoutCircles
-
-///*private*/ void LayoutEditor::drawSlipCircles(EditScene* g2)
-//{
- //loop over all defined slips
-
-// for (int i = 0; i<slipList->size();i++)
-// {
-//  LayoutSlip* sl = slipList->at(i);
-//  if(!(sl->getHidden() && !isEditable()))
-//  {
-//   sl->drawSlipCircles(g2);
-//  }
-// }
-//}  //drawSlipCircles
-
-///*private*/ void LayoutEditor::drawTurnoutRects(EditScene* g2)
-//{
-  // loop over all defined turnouts
-//  for (int i = 0; i<turnoutList->size();i++)
-//  {
-//   LayoutTurnout* t = turnoutList->at(i);
-//   t->drawTurnoutRects(this, g2);
-//  }
-//  for(int i=0; i < slipList->count(); i++)
-//  {
-//   LayoutSlip* s = slipList->at(i);
-//   s->drawTurnoutRects(this, g2);
-//  }
-//}
-#if 0
-/*private*/ void LayoutEditor::drawTurntables(EditScene* g2)
-{
-  // loop over all defined layout turntables
-  if (turntableList->size()<=0) return;
-  for (int i = 0; i<turntableList->size();i++)
-  {
-   LayoutTurntable* x = turntableList->at(i);
-   if(x->item != nullptr && x->item->scene()!=0)
-   {
-    g2->removeItem(x->item);
-    x->item = nullptr;
-   }
-   x->item = new QGraphicsItemGroup();
-
-   // draw turntable circle - default track color, side track width
-   setTrackStrokeWidth(/*g2,*/false);
-   QPointF c = x->getCoordsCenter();
-   double r = x->getRadius();
-   //g2.setColor(defaultTrackColor);
-//   g2.draw(new Ellipse2D.Double (
-//       c.x()-r, c.y()-r, r+r, r+r));
-   QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(c.x()-r, c.y()-r, r+r, r+r);
-   circle->setPen(QPen(defaultTrackColor, sidelineTrackWidth));
-   x->item->addToGroup(circle);
-
-   // draw ray tracks
-   QColor color;
-   for (int j = 0; j<x->getNumberRays(); j++)
-   {
-    QPointF pt = x->getRayCoordsOrdered(j);
-    TrackSegment* t = x->getRayConnectOrdered(j);
-    if (t!=nullptr)
-    {
-     setTrackStrokeWidth(/*g2,*/t->getMainline());
-     LayoutBlock* b = t->getLayoutBlock();
-     if (b!=nullptr) color = (b->getBlockColor());
-     else color = (defaultTrackColor);
-    }
-    else
-    {
-//              setTrackStrokeWidth(g2,false);
-     color =(defaultTrackColor);
-    }
-//          g2.draw(new Line2D.Double(new QPointF.Double(
-//                  pt.x()-((pt.x()-c.x())*0.2),
-//                      pt.y()-((pt.y()-c.y())*0.2)), pt));
-    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(QPointF(pt.x()-((pt.x()-c.x())*0.2),
-                                                                                  pt.y()-((pt.y()-c.y())*0.2)), pt));
-    line1->setPen(QPen(color,trackWidth));
-    x->item->addToGroup(line1);
-   }
-   if(x->isTurnoutControlled() && x->getPosition()!=-1)
-   {
-    QPointF pt = x->getRayCoordsIndexed(x->getPosition());
-//          g2.draw(new Line2D.Double(new QPointF.Double(
-//                  pt.x()-((pt.x()-c.x())*1.8/*2*/),
-//                      pt.y()-((pt.y()-c.y())*1.8/**2*/)), pt));
-    QGraphicsLineItem* line1 = new QGraphicsLineItem(QLineF(QPointF( pt.x()-((pt.x()-c.x())*1.8/*2*/),
-                                                                            pt.y()-((pt.y()-c.y())*1.8/**2*/)), pt));
-    line1->setPen(QPen(color,trackWidth));
-    x->item->addToGroup(line1);
-   }
-   if(x->item && x->item->scene())
-    log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-   g2->addItem(x->item);
-  }
-}
-#endif
-///*private*/ void LayoutEditor::drawXingRects(EditScene* g2)
-//{
- // loop over all defined level crossings
-// for (int i = 0; i<xingList->size();i++)
-// {
-//  LevelXing* x = xingList->at(i);
-//  x->drawXingRects(this, g2);
-// }
-//}
-#if 0// see drawSlips.
-///*private*/ void LayoutEditor::drawSlipRects(EditScene* /*g2*/)
-//{
-  // loop over all defined level crossings
-//  for (int i = 0; i<slipList->size();i++)
-//  {
-//   QColor color;
-//      LayoutSlip* x = slipList->at(i);
-//      QPointF pt = x->getCoordsCenter();
-////      g2.setColor(defaultTrackColor);
-////      g2.draw(new Ellipse2D.Double (
-////                      pt.x()-SIZE2, pt.y()-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2));
-//      QGraphicsEllipseItem* circle = new QGraphicsEllipseItem(pt.x()-SIZE2, pt.y()-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2);
-//      circle->setPen(QPen(defaultTrackColor,1));
-//      x->item->addToGroup(circle);
-//      pt = x->getCoordsA();
-//      if (x->getConnectA()==nullptr) {
-//          //g2.setColor(QColor::red);
-//       color = Qt::red;
-//      }
-//      else {
-//          //g2.setColor(QColor::green);
-//       color = Qt::green;
-//      }
-////      g2.draw(new QRectF.Double (
-////                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
-//      QGraphicsRectItem* rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
-//      rect->setPen(QPen(color, 1));
-//      x->item->addToGroup(rect);
-//      pt = x->getCoordsB();
-//      if (x->getConnectB()==nullptr) {
-//          //g2.setColor(QColor::red);
-//       color = Qt::red;
-//      }
-//      else {
-//          //g2.setColor(QColor::green);
-//       color = Qt::green;
-//      }
-////      g2.draw(new QRectF.Double (
-////                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
-//      rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
-//      rect->setPen(QPen(color, 1));
-//      x->item->addToGroup(rect);
-//      pt = x->getCoordsC();
-//      if (x->getConnectC()==nullptr) {
-//          //g2.setColor(QColor::red);
-//       color = Qt::red;
-//      }
-//      else {
-//          //g2.setColor(QColor::green);
-//       color = Qt::green;
-//      }
-////      g2.draw(new QRectF.Double (
-////                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
-//      rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
-//      rect->setPen(QPen(color, 1));
-//      x->item->addToGroup(rect);
-//      pt = x->getCoordsD();
-//      if (x->getConnectD()==nullptr) {
-//          //g2.setColor(QColor::red);
-//       color = Qt::red;
-//      }
-//      else {
-//          //g2.setColor(QColor::green);
-//       color = Qt::green;
-//      }
-////      g2.draw(new QRectF.Double (
-////                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
-//      rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
-//      rect->setPen(QPen(color, 1));
-//      x->item->addToGroup(rect);
-//  }
-//}
-/*private*/ void LayoutEditor::drawTurntableRects(EditScene* /*g2*/)
-{
-  // loop over all defined turntables
-  for (int i = 0; i<turntableList->size();i++) {
-      LayoutTurntable* x = turntableList->at(i);
-      QPointF pt = x->getCoordsCenter();
-      //g2.setColor(defaultTrackColor);
-//      g2.draw(new Ellipse2D.Double (
-//                      pt.x()-SIZE2, pt.y()-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2));
-      QGraphicsEllipseItem* line1 = new QGraphicsEllipseItem(pt.x()-SIZE2, pt.y()-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2);
-      line1->setPen(QPen(defaultTrackColor,1));
-      QColor color;
-      x->item->addToGroup(line1);
-      for (int j = 0; j<x->getNumberRays();j++)
-      {
-          pt = x->getRayCoordsOrdered(j);
-          if (x->getRayConnectOrdered(j)==nullptr) {
-              //g2.setColor(QColor::red);
-           color = Qt::red;
-          }
-          else {
-              //g2.setColor(QColor::green);
-           color = Qt::green;
-          }
-//          g2.draw(new QRectF.Double (
-//                      pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2));
-          QGraphicsRectItem* rect = new QGraphicsRectItem(pt.x()-SIZE, pt.y()-SIZE, SIZE2, SIZE2);
-          rect->setPen(QPen(color, trackWidth));
-          x->item->addToGroup(rect);
-      }
-  }
-}
-
-/*private*/ void LayoutEditor::drawHiddenTrack(EditScene* g2)
-{
- for (int i = 0; i<layoutTrackList->size();i++)
- {
-  LayoutTrack* t =layoutTrackList->t(i);
-  if (isEditable() && t->getHidden())
-  {
-   //((TrackSegment*)t)->invalidate(g2);
-   ((TrackSegment*)t)->drawHiddenTrack(this, g2);
-  }
- }
-}
-#endif
 void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
 {
  QColor color;
@@ -6611,16 +5024,16 @@ LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
      // create and set up signal icon
      SignalHeadIcon* l = new SignalHeadIcon(this);
      l->setSignalHead(newName);
-     l->setIcon(tr("Red"), signalIconEditor->getIcon(0));
-     l->setIcon(tr("Flashing Red"), signalIconEditor->getIcon(1));
-     l->setIcon(tr("Yellow"), signalIconEditor->getIcon(2));
-     l->setIcon(tr("Flashing Yellow"), signalIconEditor->getIcon(3));
-     l->setIcon(tr("Green "), signalIconEditor->getIcon(4));
-     l->setIcon(tr("Flashing Green"), signalIconEditor->getIcon(5));
-     l->setIcon(tr("Dark"), signalIconEditor->getIcon(6));
-     l->setIcon(tr("Held"), signalIconEditor->getIcon(7));
-     l->setIcon(tr("Lunar"), signalIconEditor->getIcon(8));
-     l->setIcon(tr("Flashing Lunar"), signalIconEditor->getIcon(9));
+     l->setIcon(tr("Red"), leToolBarPanel->signalIconEditor->getIcon(0));
+     l->setIcon(tr("Flashing Red"), leToolBarPanel->signalIconEditor->getIcon(1));
+     l->setIcon(tr("Yellow"), leToolBarPanel->signalIconEditor->getIcon(2));
+     l->setIcon(tr("Flashing Yellow"), leToolBarPanel->signalIconEditor->getIcon(3));
+     l->setIcon(tr("Green "), leToolBarPanel->signalIconEditor->getIcon(4));
+     l->setIcon(tr("Flashing Green"), leToolBarPanel->signalIconEditor->getIcon(5));
+     l->setIcon(tr("Dark"), leToolBarPanel->signalIconEditor->getIcon(6));
+     l->setIcon(tr("Held"), leToolBarPanel->signalIconEditor->getIcon(7));
+     l->setIcon(tr("Lunar"), leToolBarPanel->signalIconEditor->getIcon(8));
+     l->setIcon(tr("Flashing Lunar"), leToolBarPanel->signalIconEditor->getIcon(9));
      setNextLocation(l);
      setDirty(true);
      putSignal(l);
@@ -7052,10 +5465,10 @@ void LayoutEditor::addSensor()
 //        l.setInactiveIcon(sensorIconEditor.getIcon(1));
 //        l.setInconsistentIcon(sensorIconEditor.getIcon(2));
 //        l.setUnknownIcon(sensorIconEditor.getIcon(3));
-  l->setIcon("SensorStateActive", sensorIconEditor->getIcon(0));
-  l->setIcon("SensorStateInactive", sensorIconEditor->getIcon(1));
-  l->setIcon("BeanStateInconsistent", sensorIconEditor->getIcon(2));
-  l->setIcon("BeanStateUnknown", sensorIconEditor->getIcon(3));
+  l->setIcon("SensorStateActive", leToolBarPanel->sensorIconEditor->getIcon(0));
+  l->setIcon("SensorStateInactive", leToolBarPanel->sensorIconEditor->getIcon(1));
+  l->setIcon("BeanStateInconsistent", leToolBarPanel->sensorIconEditor->getIcon(2));
+  l->setIcon("BeanStateUnknown", leToolBarPanel->sensorIconEditor->getIcon(3));
   l->setSensor(newName);
   l->setDisplayLevel(SENSORS);
   //Sensor xSensor = l.getSensor();
@@ -7517,7 +5930,7 @@ void LayoutEditor::addReporter(Reporter* textReporter,int xx,int yy) {
 * Add an icon to the target
 */
 void LayoutEditor::addIcon() {
-  PositionableLabel* l = new PositionableLabel(iconEditor->getIcon(0), this);
+  PositionableLabel* l = new PositionableLabel(leToolBarPanel->iconEditor->getIcon(0), this);
   setNextLocation(l);
   l->setDisplayLevel(ICONS);
   setDirty(true);
@@ -7861,166 +6274,6 @@ switch(QMessageBox::question(this,tr("Warning"),tr("Are you sure that you want t
  return(false);
 }
 
-#if 0
-void LayoutEditor::addTrackOccupiedColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
-//    ActionListener a = new ActionListener() {
-//        //final String desiredName = name;
-//        final Color desiredColor = color;
-
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            if (!defaultOccupiedTrackQColor(Qt::equals(desiredColor)) {
-//                defaultOccupiedTrackColor = desiredColor;
-//                setDirty(true);
-//                repaint();
-//            }
-//        }   //actionPerformed
-//    };
-    QAction* r = new QAction(getColourIcon(color), name, this);
-    r->setCheckable(true);
-    trackColorButtonMapper->setMapping(r, trackOccupiedColorCount);
-    //r.addActionListener(a);
-    connect(r, SIGNAL(triggered(bool)), trackColorButtonMapper, SLOT(map()));
-    trackOccupiedColorButtonGroup->addAction(r);
-
-    if (defaultOccupiedTrackColor == (color)) {
-        r->setChecked(true);
-    } else {
-        r->setChecked(false);
-    }
-    menu->addAction(r);
-    trackOccupiedColorMenuItems->replace(trackOccupiedColorCount, r);
-    trackOccupiedColors->replace(trackOccupiedColorCount, color);
-    trackOccupiedColorCount++;
-}   //addTrackOccupiedColorMenuEntry
-
-void LayoutEditor::addTrackAlternativeColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
-//    ActionListener a = new ActionListener() {
-//        //final String desiredName = name;
-//        final Color desiredColor = color;
-
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            if (!defaultAlternativeTrackQColor(Qt::equals(desiredColor)) {
-//                defaultAlternativeTrackColor = desiredColor;
-//                setDirty(true);
-//                repaint();
-//            }
-//        }   //actionPerformed
-//    };
-    QAction* r = new QAction(getColourIcon(color), name, this);
-    r->setCheckable(true);
-    trackAlternativeColorButtonMapper->setMapping(r, trackAlternativeColorCount);
-    //r.addActionListener(a);
-    connect(r, SIGNAL(triggered()), trackAlternativeColorButtonMapper, SLOT(map()) );
-    trackAlternativeColorButtonGroup->addAction(r);
-
-    if (defaultAlternativeTrackColor ==(color)) {
-        r->setChecked(true);
-    } else {
-        r->setChecked(false);
-    }
-    menu->addAction(r);
-    trackAlternativeColorMenuItems->replace(trackAlternativeColorCount, r);
-    trackAlternativeColors->replace(trackAlternativeColorCount,color);
-    trackAlternativeColorCount++;
-}   //addTrackAlternativeColorMenuEntry
-
-/*protected*/ void LayoutEditor::setOptionMenuTrackColor() {
-    for (int i = 0; i < trackColorCount; i++) {
-        trackColorMenuItems->at(i)->setChecked(trackColors->at(i) == (defaultTrackColor));
-    }
-
-    for (int i = 0; i < trackOccupiedColorCount; i++) {
-        trackOccupiedColorMenuItems->at(i)->setChecked(trackOccupiedColors->at(i) == (defaultOccupiedTrackColor));
-    }
-
-    for (int i = 0; i < trackAlternativeColorCount; i++) {
-        trackAlternativeColorMenuItems->at(i)->setChecked(trackAlternativeColors->at(i) == (defaultAlternativeTrackColor));
-    }
-}   //setOptionMenuTrackColor
-
-void LayoutEditor::addTextColorMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ QColor color) {
-//    ActionListener a = new ActionListener() {
-//        //final String desiredName = name;
-//        final Color desiredColor = color;
-
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            if (!defaultTextColor == (desiredColor)) {
-//                defaultTextColor = desiredColor;
-//                setDirty(true);
-//                repaint();
-//            }
-//        }   //actionPerformed
-//    };
-    QAction* r = new QAction(getColourIcon(color), name, this);
-    r->setCheckable(true);
-    textColorButtonMapper->setMapping(r, textColorCount);
-    connect(r, SIGNAL(triggered()), textColorButtonMapper, SLOT(map()));
-    //r.addActionListener(a);
-    textColorButtonGroup->addAction(r);
-
-    if (defaultTextColor == (color)) {
-        r->setChecked(true);
-    } else {
-        r->setChecked(false);
-    }
-    menu->addAction(r);
-    textColorMenuItems->replace(textColorCount, r);
-    textColors->replace(textColorCount, color);
-    textColorCount++;
-}   //addTextColorMenuEntry
-
-#endif
-/*protected*/ void LayoutEditor::setOptionMenuTurnoutCircleColor()
-{
- for (int i = 0; i < turnoutCircleColorCount; i++)
- {
-     if ((turnoutCircleColors->at(i) == QColor()) && (turnoutCircleColor == QColor())) {
-         turnoutCircleColorMenuItems->at(i)->setChecked(true);
-     } else if ((turnoutCircleColors->at(i) != QColor()) && turnoutCircleColors->at(i) == (turnoutCircleColor)) {
-         turnoutCircleColorMenuItems->at(i)->setChecked(true);
-     } else {
-         turnoutCircleColorMenuItems->at(i)->setChecked(false);
-     }
- }
-}   //setOptionMenuTurnoutCircleColor
-
-/*protected*/ void LayoutEditor::setOptionMenuTurnoutCircleSize()
-{
- for (int i = 0; i < turnoutCircleSizeCount; i++)
- {
-  if (turnoutCircleSizes->at(i) == getTurnoutCircleSize())
-  {
-   turnoutCircleSizeMenuItems->at(i)->setChecked(true);
-  }
-  else
-  {
-   turnoutCircleSizeMenuItems->at(i)->setChecked(false);
-  }
- }
-}   //setOptionMenuTurnoutCircleSize
-
-/*protected*/ void LayoutEditor::setOptionMenuTextColor() {
-    for (int i = 0; i < textColorCount; i++) {
-        if (textColors->at(i) == (defaultTextColor)) {
-            textColorMenuItems->at(i)->setChecked(true);
-        } else {
-            textColorMenuItems->at(i)->setChecked(false);
-        }
-    }
-}   //setOptionMenuTextColor
-
-/*protected*/ void LayoutEditor::setOptionMenuBackgroundColor() {
-    for (int i = 0; i < backgroundColorCount; i++) {
-        if (backgroundColors->at(i) == (defaultBackgroundColor)) {
-            backgroundColorMenuItems->at(i)->setChecked(true);
-        } else {
-            backgroundColorMenuItems->at(i)->setChecked(false);
-        }
-    }
-}   //setOptionMenuBackgroundColor
 
 const QIcon LayoutEditor::getColourIcon(QColor color)
 {
@@ -8043,19 +6296,6 @@ painter.end();
 QIcon icon =  QIcon(QPixmap::fromImage(resultImage));
 return icon;
 }
-//void LayoutEditor::OnDefaultTrackColorSelected(QAction *act)
-//{
-// QColor c = act->data().value<QColor>();
-// Q_ASSERT(c.isValid());
-
-// defaultTrackColor = c;
-//}
-
-void LayoutEditor::setDefaultTextColor(QString color)
-{
- defaultTextColor = ColorUtil::stringToColor(color);
- setOptionMenuTextColor();
-}
 
 /**
  * @param color value to set the default text color to.
@@ -8065,10 +6305,11 @@ void LayoutEditor::setDefaultTextColor(QString color)
     JmriColorChooser::addRecentColor(color);
 }
 
-/*public*/ void LayoutEditor::setDefaultBackgroundColor(QString color) {
-        defaultBackgroundColor = ColorUtil::stringToColor(color);
-        setOptionMenuBackgroundColor();
-    }
+/*public*/ void LayoutEditor::setDefaultBackgroundColor(QColor color) {
+ defaultBackgroundColor = color;
+ JmriColorChooser::addRecentColor(color);
+}
+
 /*public*/ QString LayoutEditor::getLayoutName() {return layoutName;}
 
 //TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
@@ -8120,38 +6361,6 @@ QColor LayoutEditor::getBackgroundColor()
  if(b == Qt::NoBrush)
   return QColor(Qt::white);
  return b.color();
-}
-
-/*public*/ void LayoutEditor::loadFailed() {
- _loadFailed = true;
-}
-/**
-*
-*/
-/*public*/ NamedIcon* LayoutEditor::loadFailed(QString /*msg*/, QString url) {
- if (_debug) log->debug("loadFailed _ignore= "+QString(_ignore?"ignore":"accept"));
- QString goodUrl = _urlMap->value(url);
- if (goodUrl!=nullptr) {
-     return NamedIcon::getIconByName(goodUrl);
- }
- if (_ignore) {
-     _loadFailed = true;
-     return new NamedIcon(url, url);
- }
- _newIcon = nullptr;
- _delete = false;
- // TODO: new UrlErrorDialog(msg, url);
-
- if (_delete) {
-     if (_debug) log->debug("loadFailed _delete= "+_delete);
-     return nullptr;
- }
- if (_newIcon==nullptr) {
-     _loadFailed = true;
-     _newIcon =new NamedIcon(url, url);
- }
- if (_debug) log->debug("loadFailed icon nullptr= "+(_newIcon==nullptr));
- return _newIcon;
 }
 
 /*public*/ ConnectivityUtil* LayoutEditor::getConnectivityUtil() {
@@ -8420,190 +6629,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
   }
  }
 }
-/*=========================================*\
-|* Dialog box to enter move selection info *|
-\*=========================================*/
 
-//display dialog for translation a selection
-/*protected*/ void LayoutEditor::moveSelection()
-{
-    if (!selectionActive || (selectionWidth == 0.0) || (selectionHeight == 0.0)) {
-        //no selection has been made - nothing to move
-        JOptionPane::showMessageDialog(this, tr("Error - Cannot translate selection because no selection has been made.\nPlease select by dragging with the mouse and try again."),
-                tr("Error"), JOptionPane::ERROR_MESSAGE);
-
-        return;
-    }
-
-    if (moveSelectionOpen) {
-        moveSelectionFrame->setVisible(true);
-        return;
-    }
-
-    //Initialize if needed
-    if (moveSelectionFrame == nullptr) {
-        moveSelectionFrame = new JmriJFrameX(tr("Translate Selection"));
-        moveSelectionFrame->addHelpMenu("package.jmri.jmrit.display.TranslateSelection", true);
-        moveSelectionFrame->setLocation(70, 30);
-        QWidget* theContentPane = moveSelectionFrame->getContentPane(false);
-        theContentPane->setLayout(new QVBoxLayout());//theContentPane, BoxLayout.PAGE_AXIS));
-
-        //setup x translate
-        QWidget* panel31 = new QWidget();
-        panel31->setLayout(new FlowLayout());
-        QLabel* xMoveLabel = new QLabel(tr("Horizontal (x) Translation:"));
-        panel31->layout()->addWidget(xMoveLabel);
-        panel31->layout()->addWidget(xMoveField);
-        xMoveField->setToolTip(tr("Enter units to move (0 = don't move; negative = move left; positive = move right)."));
-        theContentPane->layout()->addWidget(panel31);
-
-        //setup y translate
-        QWidget* panel32 = new QWidget();
-        panel32->setLayout(new FlowLayout());
-        QLabel* yMoveLabel = new QLabel(tr("Vertical (y) Translation:"));
-        panel32->layout()->addWidget(yMoveLabel);
-        panel32->layout()->addWidget(yMoveField);
-        yMoveField->setToolTip(tr("Enter units to move (0 = don't move; negative = move up; positive = move down)."));
-        theContentPane->layout()->addWidget(panel32);
-
-        //setup information message
-        QWidget* panel33 = new QWidget();
-        panel33->setLayout(new FlowLayout());
-        QLabel* message1Label = new QLabel(tr("Only items within selection rectangle will be moved."));
-        panel33->layout()->addWidget(message1Label);
-        theContentPane->layout()->addWidget(panel33);
-
-        //set up Done and Cancel buttons
-        QWidget* panel5 = new QWidget();
-        panel5->setLayout(new FlowLayout());
-        panel5->layout()->addWidget(moveSelectionDone = new QPushButton(tr("Move Selection")));
-//        moveSelectionDone.addActionListener((ActionEvent event) -> {
-//            moveSelectionDonePressed(event);
-//        });
-        connect(moveSelectionDone, SIGNAL(clicked(bool)), this, SLOT(moveSelectionDonePressed()));
-        moveSelectionDone->setToolTip(tr("Click here to move items within the selection rectangle."));
-
-        //make this button the default button (return or enter activates)
-        //Note: We have to invoke this later because we don't currently have a root pane
-//        SwingUtilities.invokeLater(() -> {
-//            JRootPane rootPane = SwingUtilities.getRootPane(moveSelectionDone);
-//            rootPane.setDefaultButton(moveSelectionDone);
-//        });
-//        setDefaultButton(moveSelectionDone);
-        panel5->layout()->addWidget(moveSelectionCancel = new QPushButton(tr("Cancel")));
-//        moveSelectionCancel.addActionListener((ActionEvent event) -> {
-//            moveSelectionCancelPressed();
-//        });
-        connect(moveSelectionCancel, SIGNAL(clicked(bool)), this, SLOT(moveSelectionCancelPressed()));
-        moveSelectionCancel->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));
-        theContentPane->layout()->addWidget(panel5);
-    }
-
-    //Set up for Entry of Translation
-    xMoveField->setText("0");
-    yMoveField->setText("0");
-//    moveSelectionFrame.addWindowListener(new WindowAdapter() {
-//        @Override
-//        public void windowClosing(WindowEvent event) {
-//            moveSelectionCancelPressed();
-//        }
-//    });
-    moveSelectionFrame->addWindowListener((WindowListener*)this);
-    moveSelectionFrame->pack();
-    moveSelectionFrame->setVisible(true);
-    moveSelectionOpen = true;
-}
-
-/*public*/ void LayoutEditor::windowClosing(QCloseEvent* event) {
-    moveSelectionCancelPressed();
-}
-
-void LayoutEditor::moveSelectionDonePressed(/*@Nonnull ActionEvent event*/) {
-    QString newText = "";
-    double xTranslation = 0.0F;
-    double yTranslation = 0.0F;
-
-    //get x translation
-    newText = xMoveField->text().trimmed();
-    bool bok;
-        xTranslation = newText.toDouble(&bok);
-    if(!bok) {
-        JOptionPane::showMessageDialog(moveSelectionFrame,
-                QString("%1: %2 %3").arg(tr("Error in entry")).arg(
-                        tr("invalid floating point format")).arg(tr("Try Again")),
-                tr("Error"),
-                JOptionPane::ERROR_MESSAGE);
-
-        return;
-    }
-
-    //get y translation
-    newText = yMoveField->text().trimmed();
-    yTranslation = newText.toFloat(&bok);
-    if(!bok) {
-     JOptionPane::showMessageDialog(moveSelectionFrame,
-             QString("%1: %2 %3").arg(tr("Error in entry")).arg(
-                     tr("invalid floating point format")).arg(tr("Try Again")),
-             tr("Error"),
-             JOptionPane::ERROR_MESSAGE);
-
-
-        return;
-    }
-
-    //here when all numbers read in - translation if entered
-    if ((xTranslation != 0.0) || (yTranslation != 0.0)) {
-        QRectF selectionRect = getSelectionRect();
-
-        //set up undo information
-        undoRect = MathUtil::offset(selectionRect, xTranslation, yTranslation);
-        undoDeltaX = -xTranslation;
-        undoDeltaY = -yTranslation;
-        canUndoMoveSelection = true;
-
-        //apply translation to icon items within the selection
-        QList<Positionable*> contents = getContents();
-
-        for (Positionable* c : contents) {
-            QPointF upperLeft = c->getLocation();
-
-            if (selectionRect.contains(upperLeft)) {
-                int xNew = (int) (upperLeft.x() + xTranslation);
-                int yNew = (int) (upperLeft.y() + yTranslation);
-                c->setLocation(xNew, yNew);
-            }
-        }
-
-        QPointF delta = QPointF(xTranslation, yTranslation);
-        for (LayoutTrack* lt : *layoutTrackList) {
-            QPointF center = lt->getCoordsCenter();
-            if (selectionRect.contains(center)) {
-                lt->setCoordsCenter(MathUtil::add(center, delta));
-            }
-
-        }
-        selectionX = undoRect.x();
-        selectionY = undoRect.y();
-        selectionWidth = undoRect.width();
-        selectionHeight = undoRect.height();
-        resizePanelBounds(false);
-        setDirty();
-        redrawPanel();
-    }
-
-    //success - hide dialog
-    moveSelectionOpen = false;
-    moveSelectionFrame->setVisible(false);
-    moveSelectionFrame->dispose();
-    moveSelectionFrame = nullptr;
-}
-
-void LayoutEditor::moveSelectionCancelPressed() {
-    moveSelectionOpen = false;
-    moveSelectionFrame->setVisible(false);
-    moveSelectionFrame->dispose();
-    moveSelectionFrame = nullptr;
-}
 /**
  * Translate entire layout by x and y amounts.
  *
@@ -8911,22 +6937,26 @@ void LayoutEditor::undoMoveSelection() {
     return useDirectTurnoutControl;
 }
 
+/*public*/ void LayoutEditor::setLayoutDimensions(int windowWidth, int windowHeight, int windowX, int windowY, int panelWidth, int panelHeight) {
+    setLayoutDimensions(windowWidth, windowHeight, windowX, windowY, panelWidth, panelHeight, false);
+}
 
-/*public*/ void LayoutEditor::setLayoutDimensions(int windowWidth, int windowHeight, int x, int y, int panelWidth, int panelHeight, bool merge) {
-    upperLeftX = x;
-    upperLeftY = y;
-    setLocation(upperLeftX, upperLeftY);
 
-    this->windowWidth = windowWidth;
-    this->windowHeight = windowHeight;
-    setSize(windowWidth, windowHeight);
+/*public*/ void LayoutEditor::setLayoutDimensions(int windowWidth, int windowHeight, int windowX, int windowY, int panelWidth, int panelHeight, bool merge) {
+ gContext->setUpperLeftX(windowX);
+ gContext->setUpperLeftY(windowY);
+ setLocation(gContext->getUpperLeftX(), gContext->getUpperLeftY());
 
-    QRectF panelBounds = QRectF(0.0, 0.0, panelWidth, panelHeight);
+ gContext->setWindowWidth(windowWidth);
+ gContext->setWindowHeight(windowHeight);
+ setSize(windowWidth, windowHeight);
 
-    if (merge) {
-        panelBounds.united(calculateMinimumLayoutBounds());
-    }
-    setPanelBounds(panelBounds);
+ QRectF panelBounds = QRectF(0.0, 0.0, panelWidth, panelHeight);
+
+ if (merge) {
+     panelBounds.adjust(calculateMinimumLayoutBounds().x(), calculateMinimumLayoutBounds().y(), calculateMinimumLayoutBounds().width(), calculateMinimumLayoutBounds().height());
+ }
+ setPanelBounds(panelBounds);
 }   //setLayoutDimensions
 
 /*public*/ QRectF LayoutEditor::getPanelBounds() {
@@ -9233,336 +7263,6 @@ void LayoutEditor::undoMoveSelection() {
   }
  }
 }
-/*======================================*\
-|* Dialog box to enter new track widths *|
-\*======================================*/
-
-//display dialog for entering track widths
-/*protected*/ void LayoutEditor::enterTrackWidth() {
-    if (enterTrackWidthOpen) {
-        enterTrackWidthFrame->setVisible(true);
-        return;
-    }
-
-    //Initialize if needed
-    if (enterTrackWidthFrame == nullptr) {
-        enterTrackWidthFrame = new JmriJFrameX(tr("Set Track Line Width"));
-        enterTrackWidthFrame->addHelpMenu("package.jmri.jmrit.display.EnterTrackWidth", true);
-        enterTrackWidthFrame->setLocation(70, 30);
-        QWidget* theContentPane = enterTrackWidthFrame->getContentPane();
-        theContentPane->setLayout(new QVBoxLayout());//theContentPane, BoxLayout.PAGE_AXIS));
-
-        //setup mainline track width (placed above side track for clarity, name 'panel3' kept)
-        QWidget* panel3 = new QWidget();
-        panel3->setLayout(new FlowLayout());
-        QLabel* mainlineWidthLabel = new QLabel(tr("Mainline Track Width"));
-        panel3->layout()->addWidget(mainlineWidthLabel);
-        panel3->layout()->addWidget(mainlineTrackWidthField);
-        mainlineTrackWidthField->setToolTip(tr("Enter width for mainline track (1 - 10 allowed)."));
-        theContentPane->layout()->addWidget(panel3);
-
-        //setup side track width
-        QWidget* panel2 = new QWidget();
-        panel2->setLayout(new FlowLayout());
-        QLabel* sideWidthLabel = new QLabel(tr("sideline Track Width"));
-        panel2->layout()->addWidget(sideWidthLabel);
-        panel2->layout()->addWidget(sidelineTrackWidthField);
-        sidelineTrackWidthField->setToolTip(tr("sidelineTrackWidthHint"));
-        theContentPane->layout()->addWidget(panel2);
-
-        //set up Done and Cancel buttons
-        QWidget* panel5 = new QWidget();
-        panel5->setLayout(new FlowLayout());
-        panel5->layout()->addWidget(trackWidthDone = new QPushButton(tr("Done")));
-//        trackWidthDone.addActionListener((ActionEvent event) -> {
-//            trackWidthDonePressed(event);
-//        });
-        connect(trackWidthDone, SIGNAL(clicked(bool)), this, SLOT(trackWidthDonePressed()));
-        trackWidthDone->setToolTip(tr("Click [%1] to accept any changes made above and close this dialog.").arg(tr("Done")));
-
-        //make this button the default button (return or enter activates)
-        //Note: We have to invoke this later because we don't currently have a root pane
-//        SwingUtilities.invokeLater(() -> {
-//            JRootPane rootPane = SwingUtilities.getRootPane(trackWidthDone);
-//            rootPane.setDefaultButton(trackWidthDone);
-//        });
-
-        //Cancel
-        panel5->layout()->addWidget(trackWidthCancel = new QPushButton(tr("Cancel")));
-//        trackWidthCancel.addActionListener((ActionEvent event) -> {
-//            trackWidthCancelPressed(event);
-//        });
-        connect(trackWidthCancel, SIGNAL(clicked(bool)), this, SLOT(trackWidthCancelPressed()));
-        trackWidthCancel->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));
-        theContentPane->layout()->addWidget(panel5);
-    }
-
-    //Set up for Entry of Track Widths
-    mainlineTrackWidthField->setText(QString::number( gContext->getMainlineTrackWidth()));
-    sidelineTrackWidthField->setText(QString::number(gContext->getSidelineTrackWidth()));
-//    enterTrackWidthFrame.addWindowListener(new WindowAdapter() {
-//        @Override
-//        public void windowClosing(WindowEvent event) {
-//            trackWidthCancelPressed(null);
-//        }
-//    });
-    enterTrackWidthFrame->addWindowListener(new EnterTrackWidthFrameWindowListener(this));
-    enterTrackWidthFrame->pack();
-    enterTrackWidthFrame->setVisible(true);
-    trackWidthChange = false;
-    enterTrackWidthOpen = true;
-
-}
-
-void LayoutEditor::trackWidthDonePressed(/*ActionEvent evemt*/) {
-    //get side track width
-    QString newWidth = sidelineTrackWidthField->text().trimmed();
-    float wid = 0.0;
-    bool bok;
-        wid = (newWidth.toFloat(&bok));
-    if(!bok) {
-        JOptionPane::showMessageDialog(enterTrackWidthFrame,
-                QString("%1: %2 %3").arg(tr("Error in entry")).arg(
-                        tr("invalid floating point")).arg(tr("Please reenter or Cancel.")),
-                tr("Error"),
-                JOptionPane::ERROR_MESSAGE);
-        return;
-    }
-
-    if ((wid < 1.0) || (wid > 10.0)) {
-        JOptionPane::showMessageDialog(enterTrackWidthFrame,
-                tr("Error - Entered value \"%1\" is not in the allowed range.\nPlease enter a number from 1 to 10.").arg(
-                        tr(" %%1 ").arg(wid)),
-                tr("Error"),
-                JOptionPane::ERROR_MESSAGE);
-
-        return;
-    }
-
-    if (!MathUtil::equals(gContext->getSidelineTrackWidth(), wid)) {
-        gContext->setSidelineTrackWidth(wid);
-        trackWidthChange = true;
-    }
-
-    //get mainline track width
-    newWidth = mainlineTrackWidthField->text().trimmed();
-
-        wid = newWidth.toFloat(&bok);
-    if(!bok) {
-        JOptionPane::showMessageDialog(enterTrackWidthFrame,
-                QString("%1: %%2 %%3").arg(tr("Error in entry")).arg(tr("Invlid number format")).arg(
-                        tr("Please reenter or Cancel.")),
-                tr("ErrorTitle"),
-                JOptionPane::ERROR_MESSAGE);
-
-        return;
-    }
-
-    if ((wid < 1.0) || (wid > 10.0)) {
-     JOptionPane::showMessageDialog(enterTrackWidthFrame,
-             tr("Error - Entered value \"%1\" is not in the allowed range.\nPlease enter a number from 1 to 10.").arg(
-                     tr(" %%1 ").arg(wid)),
-             tr("Error"),
-             JOptionPane::ERROR_MESSAGE);
-    } else {
-        if (!MathUtil::equals(gContext->getMainlineTrackWidth(), wid)) {
-            gContext->setMainlineTrackWidth(wid);
-            trackWidthChange = true;
-        }
-
-        //success - hide dialog and repaint if needed
-        enterTrackWidthOpen = false;
-        enterTrackWidthFrame->setVisible(false);
-        enterTrackWidthFrame->dispose();
-        enterTrackWidthFrame = nullptr;
-
-        if (trackWidthChange) {
-            //Integrate-LayoutEditor-drawing-options-with-previous-drawing-options
-            if (layoutTrackDrawingOptions != nullptr) {
-                layoutTrackDrawingOptions->setMainBlockLineWidth((int) gContext->getMainlineTrackWidth());
-                layoutTrackDrawingOptions->setSideBlockLineWidth((int) gContext->getSidelineTrackWidth());
-                layoutTrackDrawingOptions->setMainRailWidth((int) gContext->getMainlineTrackWidth());
-                layoutTrackDrawingOptions->setSideRailWidth((int) gContext->getSidelineTrackWidth());
-            }
-            redrawPanel();
-            setDirty();
-        }
-    }
-}
-
-void LayoutEditor::trackWidthCancelPressed(/*ActionEvent event*/) {
-    enterTrackWidthOpen = false;
-    enterTrackWidthFrame->setVisible(false);
-    enterTrackWidthFrame->dispose();
-    enterTrackWidthFrame = nullptr;
-
-    if (trackWidthChange) {
-        redrawPanel();
-        setDirty();
-    }
-}
-
-/*====================================*\
-|* Dialog box to enter new grid sizes *|
-\*====================================*/
-
-//display dialog for entering grid sizes
-/*protected*/ void LayoutEditor::enterGridSizes() {
-    if (enterGridSizesOpen) {
-        enterGridSizesFrame->setVisible(true);
-        return;
-    }
-    //Initialize if needed
-    if (enterGridSizesFrame == nullptr) {
-        enterGridSizesFrame = new JmriJFrameX(tr("SetGridSizes"));
-        enterGridSizesFrame->addHelpMenu("package.jmri.jmrit.display.EnterGridSizes", true);
-        enterGridSizesFrame->setLocation(70, 30);
-        QWidget* theContentPane = enterGridSizesFrame->getContentPane();
-        theContentPane->setLayout(new QVBoxLayout());//theContentPane, BoxLayout.PAGE_AXIS));
-
-        //setup primary grid sizes
-        QWidget* panel3 = new QWidget();
-        panel3->setLayout(new FlowLayout());
-        QLabel* primaryGridSIzeLabel = new QLabel(tr("Primary Grid Size:"));
-        panel3->layout()->addWidget(primaryGridSIzeLabel);
-        panel3->layout()->addWidget(primaryGridSizeField);
-        primaryGridSizeField->setToolTip(tr("Enter width for primary grid size"));
-        theContentPane->layout()->addWidget(panel3);
-
-        //setup side track width
-        QWidget* panel2 = new QWidget();
-        panel2->setLayout(new FlowLayout());
-        QLabel* secondaryGridSizeLabel = new QLabel(tr("Secondary Grid Size:"));
-        panel2->layout()->addWidget(secondaryGridSizeLabel);
-        panel2->layout()->addWidget(secondaryGridSizeField);
-        secondaryGridSizeField->setToolTip(tr("Enter width for secondary grid size"));
-        theContentPane->layout()->addWidget(panel2);
-
-        //set up Done and Cancel buttons
-        QWidget* panel5 = new QWidget();
-        panel5->setLayout(new FlowLayout());
-        panel5->layout()->addWidget(gridSizesDone = new QPushButton(tr("Done")));
-//        gridSizesDone.addActionListener((ActionEvent event) -> {
-//            gridSizesDonePressed(event);
-//        });
-        connect(gridSizesDone, SIGNAL(clicked(bool)), this, SLOT(gridSizesDonePressed()));
-        gridSizesDone->setToolTip(tr("Click [%1] to accept any changes made above and close this dialog.").arg(tr("Done")));
-
-        //make this button the default button (return or enter activates)
-        //Note: We have to invoke this later because we don't currently have a root pane
-//        SwingUtilities.invokeLater(() -> {
-//            JRootPane rootPane = SwingUtilities.getRootPane(gridSizesDone);
-//            rootPane.setDefaultButton(gridSizesDone);
-//        });
-
-        //Cancel
-        panel5->layout()->addWidget(gridSizesCancel = new QPushButton(tr("Cancel")));
-//        gridSizesCancel.addActionListener((ActionEvent event) -> {
-//            gridSizesCancelPressed(event);
-//        });
-        connect(gridSizesCancel, SIGNAL(clicked(bool)), this, SLOT(gridSizesCancelPressed()));
-        gridSizesCancel->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));
-        theContentPane->layout()->addWidget(panel5);
-    }
-
-    //Set up for Entry of Track Widths
-    primaryGridSizeField->setText(QString::number(gContext->getGridSize()));
-    secondaryGridSizeField->setText(QString::number(gContext->getGridSize2nd()));
-//    enterGridSizesFrame.addWindowListener(new WindowAdapter() {
-//        @Override
-//        public void windowClosing(WindowEvent event) {
-//            gridSizesCancelPressed(null);
-//        }
-//    });
-    enterGridSizesFrame->addWindowListener(new EnterGridSizesFrameWindowListener(this));
-    enterGridSizesFrame->pack();
-    enterGridSizesFrame->setVisible(true);
-    gridSizesChange = false;
-    enterGridSizesOpen = true;
-}
-
-void LayoutEditor::gridSizesDonePressed(/*ActionEvent event*/) {
-    QString newGridSize = "";
-    float siz = 0.0;
-
-    //get secondary grid size
-    newGridSize = secondaryGridSizeField->text().trimmed();
-    bool bok;
-        siz = newGridSize.toFloat(&bok);
-    if(!bok) {
-     JOptionPane::showMessageDialog(enterTrackWidthFrame,
-             QString("%1: %%2 %%3").arg(tr("Error in entry")).arg(tr("Invlid number format")).arg(
-                     tr("Please reenter or Cancel.")),
-             tr("ErrorTitle"),
-             JOptionPane::ERROR_MESSAGE);
-
-        return;
-    }
-
-    if ((siz < 5.0) || (siz > 100.0)) {
-        JOptionPane::showMessageDialog(enterGridSizesFrame,
-                tr("Error - Entered value \"%1\" is not in the allowed range.").arg(
-                        tr(" %1 ").arg(siz)),
-                tr("Error"),
-                JOptionPane::ERROR_MESSAGE);
-
-        return;
-    }
-
-    if (!MathUtil::equals(gContext->getGridSize2nd(), siz)) {
-        gContext->setGridSize2nd(siz);
-        gridSizesChange = true;
-    }
-
-    //get mainline track width
-    newGridSize = primaryGridSizeField->text().trimmed();
-        siz = newGridSize.toFloat(&bok);
-    if(!bok) {
-     JOptionPane::showMessageDialog(enterTrackWidthFrame,
-             QString("%1: %%2 %%3").arg(tr("Error in entry")).arg(tr("Invlid number format")).arg(
-                     tr("Please reenter or Cancel.")),
-             tr("ErrorTitle"),
-             JOptionPane::ERROR_MESSAGE);
-
-        return;
-    }
-
-    if ((siz < 5) || (siz > 100.0)) {
-     JOptionPane::showMessageDialog(enterGridSizesFrame,
-             tr("Error - Entered value \"%1\" is not in the allowed range.").arg(
-                     tr(" %1 ").arg(siz)),
-             tr("Error"),
-             JOptionPane::ERROR_MESSAGE);
-    } else {
-        if (!MathUtil::equals(gContext->getGridSize(), siz)) {
-            gContext->setGridSize(siz);
-            gridSizesChange = true;
-        }
-
-        //success - hide dialog and repaint if needed
-        enterGridSizesOpen = false;
-        enterGridSizesFrame->setVisible(false);
-        enterGridSizesFrame->dispose();
-        enterGridSizesFrame = nullptr;
-
-        if (gridSizesChange) {
-            redrawPanel();
-            setDirty();
-        }
-    }
-}
-
-void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
-    enterGridSizesOpen = false;
-    enterGridSizesFrame->setVisible(false);
-    enterGridSizesFrame->dispose();
-    enterGridSizesFrame = nullptr;
-
-    if (gridSizesChange) {
-        redrawPanel();
-        setDirty();
-    }
-}
 
 /*public*/ void LayoutEditor::setScroll(int state)
 {
@@ -9637,78 +7337,7 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
     return QRectF(inPoint.x() - circleRadius,
             inPoint.y() - circleRadius, circleDiameter, circleDiameter);
 }
-//void LayoutEditor::on_actionMoveLayout_triggered()
-//{
-// JDialog* dlg = new JDialog();
-// dlg->setTitle(tr("Move layout"));
-// QVBoxLayout* dlgLayout = new QVBoxLayout(dlg);
-// QHBoxLayout* hLayout = new QHBoxLayout;
-// QLabel* xLabel = new QLabel(tr("X offset"));
-// hLayout->addWidget(xLabel);
-// xMove = new JTextField(4);
-// xMove->setValidator(new QIntValidator(-100, +100));
-// hLayout->addWidget(xMove);
-// QLabel* yLabel = new QLabel(tr("X offset"));
-// hLayout->addWidget(yLabel);
-// yMove = new JTextField(4);
-// yMove->setValidator(new QIntValidator(-100, +100));
-// hLayout->addWidget(yMove);
-// dlgLayout->addLayout(hLayout);
-// QPushButton* ok = new QPushButton(tr("Move"));
-// FlowLayout* buttonLayout = new FlowLayout();
-// buttonLayout->addWidget(ok);
-// dlgLayout->addLayout(buttonLayout);
-// connect(ok, SIGNAL(clicked()), this, SLOT(on_okMove_clicked()));
-// dlg->exec();
-//}
 
-//void LayoutEditor::on_okMove_clicked()
-//{
-// int dx = xMove->text().toInt();
-// int dy = yMove->text().toInt();
-// for(int i =0; i < _contents->size(); i++)
-// {
-//  moveItem(_contents->at(i), dx, dy);
-// }
-// for(int i = 0; i < pointList->size(); i++)
-// {
-//  PositionablePoint* pp = pointList->at(i);
-//  QPointF pt = pp->getCoords();
-//  pt.setX(pt.x()+ dx);
-//  pt.setY(pt.y()+dy);
-//  pp->setCoords(pt);
-// }
-// for (TrackSegment* seg : getTrackSegments()) {
-//  QPointF p = seg->getCoordsCenterCircle();
-//  seg->setCentreX(p.x()+dx);
-//  seg->setCentreY(p.y()+dy);
-// }
-// for(int i = 0; i < turnoutList->count(); i++)
-// {
-//  LayoutTurnout* to = turnoutList->at(i);
-//  QPointF p = to->getCoordsCenter();
-//  to->setCoordsCenter(QPointF(p.x()+dx, p.y()+dy));
-// }
-// for(int i = 0; i < slipList->count(); i++)
-// {
-//  LayoutSlip* to = slipList->at(i);
-//  QPointF p = to->getCoordsCenter();
-//  to->setCoordsCenter(QPointF(p.x()+dx, p.y()+dy));
-// }
-// for(int i = 0; i < xingList->count(); i++)
-// {
-//  LevelXing * to = xingList->at(i);
-//  QPointF p = to->getCoordsCenter();
-//  to->setCoordsCenter(QPointF(p.x()+dx, p.y()+dy));
-// }
-// for(int i = 0; i < turntableList->count(); i++)
-// {
-//  LayoutTurntable * to = turntableList->at(i);
-//  QPointF p = to->getCoordsCenter();
-//  to->setCoordsCenter(QPointF(p.x()+dx, p.y()+dy));
-// }
-// paintTargetPanel(editScene);
-//}
 /*public*/ LayoutEditorFindItems* LayoutEditor::getFinder() {
     return finder;
 }
@@ -10232,7 +7861,8 @@ void LayoutEditor::gridSizesCancelPressed(/*ActionEvent event*/) {
     gridMenu->addAction(gridSizeItem);
 //    gridSizeItem.addActionListener((ActionEvent event) -> {
     connect(gridSizeItem, &QAction::triggered, [=]{
-        enterGridSizes();
+     EnterGridSizesDialog* d = new EnterGridSizesDialog(this);
+        d->enterGridSizes();
     });
 
     //
@@ -10541,7 +8171,8 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
 //    jmi.addActionListener((ActionEvent event) -> {
     connect(jmi, &QAction::triggered, [=]{
         //bring up translate selection dialog
-        moveSelection();
+     MoveSelectionDialog* d = new MoveSelectionDialog(this);
+        d->moveSelection();
     });
 
     //undo translate selection
@@ -10752,12 +8383,6 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
     }
 }   // setToolBarSide
 
-void LayoutEditor::on_translateSelections()
-{
- //bring up translate selection dialog
- moveSelection();
-}
-
 void LayoutEditor::on_clearTrack()
 {
  // remove existing items from scene
@@ -10776,130 +8401,6 @@ void LayoutEditor::on_clearTrack()
  }
 }
 
-
-
-#if 0
-//
-//update drop down menu display order menu
-//
-
-/*private*/ void LayoutEditor::updateDropDownMenuDisplayOrderMenu() {
-#if 0
-    Component* focusedComponent = getFocusOwner();
-
-    if (qobject_cast<JmriBeanComboBox*>(focusedComponent)) {
-        JmriBeanComboBox* focusedJBCB = (JmriBeanComboBox*) focusedComponent;
-        gDDMDO = focusedJBCB->getDisplayOrder();
-    }
-
-    int idx = 0, ddmdoInt = gDDMDO.getValue();
-
-    for (Component* c : dropDownListsDisplayOrderMenu.getMenuComponents()) {
-        if (qobject_cast<QAction*>(c)) {
-            QAction* crb = (QAction*) c;
-            crb->setSelected(ddmdoInt == idx);
-            idx++;
-        }
-    }
-#endif
-}
-#endif
-//
-//update drop down menu display order for all combo boxes (from prefs)
-//
-///*private*/ void LayoutEditor::updateAllComboBoxesDropDownListDisplayOrderFromPrefs() {
-//    //1st call the recursive funtion starting from the edit toolbar container
-//#if 0
-//    updateComboBoxDropDownListDisplayOrderFromPrefs(editToolBarContainerPanel);
-//    updateComboBoxDropDownListDisplayOrderFromPrefs(floatingEditContentScrollPane);
-//#endif
-//    //and now that that's done update the drop down menu display order menu
-//    updateDropDownMenuDisplayOrderMenu();
-//}
-
-//
-//update drop down menu display order for all combo boxes (from prefs)
-//note: recursive function that walks down the component / container tree
-//
-///*private*/ void LayoutEditor::updateComboBoxDropDownListDisplayOrderFromPrefs(/*@Nonnull*/ Component* inComponent)
-//{
-//#if 0
-//    if (qobject_cast<JmriBeanComboBox*>(inComponent))
-//    {
-//        //try to get the preference
-//        //InstanceManager::getOptionalDefault("UserPreferencesManager").ifPresent((prefsMgr) ->
-//     UserPreferencesManager* prefsMgr = static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
-//     if(prefsMgr)
-//     {
-//            QString windowFrameRef = getWindowFrameRef();
-
-//            //this is the preference name
-//            QString ddldoPrefName = "DropDownListsDisplayOrder";
-
-//            //this is the default value if we can't find it in any preferences
-//            QString ddldoPref = "DISPLAYNAME";
-
-//            QVariant ddldoProp = prefsMgr->getProperty(windowFrameRef, ddldoPrefName);
-
-//            if (ddldoProp.isValid()) {
-//                //this will be the value if this combo box doesn't have a saved preference.
-//                ddldoPref = ddldoProp.toString();
-//            } else {
-//                //save a default preference
-//                prefsMgr->setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
-//            }
-
-//            //now try to get a preference specific to this combobox
-//            JmriBeanComboBox* jbcb = (JmriBeanComboBox*) inComponent;
-//            if (qobject_cast<JTextField*>(inComponent)
-//            {
-//                jbcb = (JmriBeanComboBox*) SwingUtilities.getUnwrappedParent(jbcb);
-//            }
-//            if (jbcb != null) {
-//                QString ttt = jbcb.getToolTipText();
-//                if (ttt != null) {
-//                    //change the name of the preference based on the tool tip text
-//                    ddldoPrefName = String.format("%s.%s", ddldoPrefName, ttt);
-//                    //try to get the preference
-//                    ddldoProp = prefsMgr.getProperty(getWindowFrameRef(), ddldoPrefName);
-//                    if (ddldoProp != null) { //if we found it...
-//                        ddldoPref = ddldoProp.toString(); //get it's (string value
-//                    } else { //otherwise...
-//                        //save it in the users preferences
-//                        prefsMgr.setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
-//                    }
-//                }
-
-//                //now set the combo box display order
-//                if (ddldoPref.equals("DISPLAYNAME")) {
-//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-//                } else if (ddldoPref.equals("USERNAME")) {
-//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.USERNAME);
-//                } else if (ddldoPref.equals("SYSTEMNAME")) {
-//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.SYSTEMNAME);
-//                } else if (ddldoPref.equals("USERNAMESYSTEMNAME")) {
-//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.USERNAMESYSTEMNAME);
-//                } else if (ddldoPref.equals("SYSTEMNAMEUSERNAME")) {
-//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.SYSTEMNAMEUSERNAME);
-//                } else {
-//                    //must be a bogus value... lets re-set everything to DISPLAYNAME
-//                    ddldoPref = "DISPLAYNAME";
-//                    prefsMgr.setProperty(windowFrameRef, ddldoPrefName, ddldoPref);
-//                    jbcb.setDisplayOrder(JmriBeanComboBox.DisplayOptions.DISPLAYNAME);
-//                }
-//            }
-//        });
-
-//    } else if (qobject_cast<Container*>(inComponent)) {
-//        for (Component* c : ((Container*) inComponent).getComponents()) {
-//            updateComboBoxDropDownListDisplayOrderFromPrefs(c);
-//        }
-//    } else {
-//        //nothing to do here... move along...
-//    }
-//#endif
-//}
-#if 1
 //
 //
 //
@@ -10929,7 +8430,7 @@ void LayoutEditor::on_clearTrack()
   toolBarSideRightButton->setChecked(toolBarSide->getType() == (eRIGHT));
   toolBarSideFloatButton->setChecked(toolBarSide->getType() == (eFLOAT));
 
- #if 1
+
   setupToolBar(); //re-layout all the toolbar items
 
   if (toolBarSide->getType() == eFLOAT)
@@ -10963,7 +8464,7 @@ void LayoutEditor::on_clearTrack()
           || toolBarSide->getType() == eBOTTOM);
  }
 }   // setToolBarSide
-#endif
+
 
 
 //
@@ -10983,7 +8484,7 @@ void LayoutEditor::on_clearTrack()
       //we invert it and save it as thin
       prefsMgr->setSimplePreferenceState(getWindowFrameRef() + ".toolBarThin", !toolBarIsWide);
   }//);
-#if 1
+
   setupToolBar(); //re-layout all the toolbar items
 
   if (getShowHelpBar()) {
@@ -10996,39 +8497,9 @@ void LayoutEditor::on_clearTrack()
   } else {
       helpBarPanel->setVisible(isEditable() && getShowHelpBar());
   }
-#endif
  }
 }
-#endif
-#if 0 // not necessary; QGraphicsView does this!
-/*private*/ void LayoutEditor::adjustScrollBars() {
-   QScrollArea* scrollPane = getPanelScrollPane();
-   //JViewport viewPort = scrollPane.getViewport();
-   //Dimension viewSize = viewPort.getViewSize();
-   QSize viewSize = scrollPane->size();
-   QSize panelSize = _targetPanel->size();
 
-   if ((panelWidth != (int) panelSize.width())
-           || (panelHeight != (int) panelSize.height())) {
-       log->debug(tr("viewSize: %1, %2, panelSize: %3, %4, panelWidth: %5, panelHeight: %6").arg(
-               viewSize.x()).arg(viewSize.y()).arg(panelSize.x()).arg(panelSize.y()).arg(panelWidth).arg(panelHeight));
-   }
-
-   QScrollBar* horScroll = scrollPane->horizontalScrollBar();
-   int w = (int) qMax((panelWidth * getZoom()) - viewSize.width(), 0.0);
-   int x = qMin(horScroll->value(), w);
-   horScroll->setMaximum(w);
-   horScroll->setValue(x);
-
-   QScrollBar* vertScroll = scrollPane->verticalScrollBar();
-   int h = (int) qMax((panelHeight * getZoom()) - viewSize.height(), 0.0);
-   int y = qMin(vertScroll->value(), h);
-   vertScroll->setMaximum(h);
-   vertScroll->setValue(y);
-
-   log->debug(tr("w: %1, x: %2, h: %3, y: %4").arg(w).arg(x).arg(h).arg(y));
-}
-#endif
 /**
  * @return the point {0, 0}
  */
@@ -11042,14 +8513,6 @@ void LayoutEditor::on_clearTrack()
 //    }
 //@Override
 /*public*/ void LayoutEditor::dispose() {
-    if (sensorFrame != nullptr) {
-        sensorFrame->dispose();
-        sensorFrame = nullptr;
-    }
-    if (signalFrame != nullptr) {
-        signalFrame->dispose();
-        signalFrame = nullptr;
-    }
     if (iconFrame != nullptr) {
         iconFrame->dispose();
         iconFrame = nullptr;

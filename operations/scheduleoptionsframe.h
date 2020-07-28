@@ -23,7 +23,7 @@ namespace Operations
   JTextField* factorTextField;// = new JTextField(5);
 
   // combo boxes
-  QComboBox* trackBox;// = new JComboBox<>();
+  JComboBox* trackBox;// = new JComboBox<>();
 
   // radio buttons
   // major buttons

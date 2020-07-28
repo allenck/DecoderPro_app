@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include "jtextfield.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QBoxLayout>
 #include <gridbaglayout.h>
 #include <QGroupBox>

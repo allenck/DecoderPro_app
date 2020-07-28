@@ -7,7 +7,7 @@
 #include <QScrollArea>
 #include <QRadioButton>
 #include <QButtonGroup>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "carroads.h"
 #include "traineditframe.h"
 #include "flowlayout.h"
@@ -333,7 +333,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void TrainRoadOptionsFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

@@ -66,6 +66,7 @@ namespace Operations
   /*public*/ static QString formatColorString(QString text, QColor color);
   /*public*/ static QString getTextColorString(QString string);
   /*public*/ static QColor getTextColor(QString string);
+  /*public*/ static /*final*/ QString HYPHEN;// = "-";
 
  signals:
 

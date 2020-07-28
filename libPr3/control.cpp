@@ -25,6 +25,7 @@
 /*public*/ /*static*/ /*final*/ bool Control::showProperty = false;
 /*public*/ /*static*/ /*final*/ bool Control::showInstance = false;
 
+/*public*/ /*static*/ /*final*/ bool Control::SHOW_PROPERTY = false;
 
 
 

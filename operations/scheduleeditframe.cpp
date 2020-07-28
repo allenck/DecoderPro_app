@@ -5,7 +5,7 @@
 #include <QRadioButton>
 #include <QGroupBox>
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "track.h"
 #include "location.h"
 #include "control.h"
@@ -86,7 +86,7 @@ namespace Operations
      commentTextField = new JTextField(35);
 
      // combo boxes
-     typeBox = new QComboBox();
+     typeBox = new JComboBox();
 
      _schedule = schedule;
      _location = track->getLocation();
@@ -432,7 +432,7 @@ namespace Operations
  }
 
  /*public*/ void ScheduleEditFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

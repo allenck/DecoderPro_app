@@ -536,7 +536,9 @@ SOURCES += \
     levelxingview.cpp \
     positionablepointview.cpp \
     layoutturntableview.cpp \
-    layouteditorcomponent.cpp
+    layouteditorcomponent.cpp \
+    entergridsizesdialog.cpp \
+    moveselectiondialog.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -991,7 +993,9 @@ HEADERS += liblayouteditor_global.h \
     levelxingview.h \
     positionablepointview.h \
     layoutturntableview.h \
-    layouteditorcomponent.h
+    layouteditorcomponent.h \
+    entergridsizesdialog.h \
+    moveselectiondialog.h
 
 FORMS    += \
     createeditblock.ui \

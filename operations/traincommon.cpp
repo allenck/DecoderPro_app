@@ -51,6 +51,7 @@ namespace Operations {
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::SPACE = " ";
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::BLANK_LINE = " ";
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::HORIZONTAL_LINE_CHAR = "-";
+ /*public*/ /*static*/ /*final*/ QString TrainCommon::HYPHEN = "-";
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::VERTICAL_LINE_CHAR = "|";
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::TEXT_COLOR_START = "<FONT color=\"";
  /*protected*/ /*static*/ /*final*/ QString TrainCommon::TEXT_COLOR_END = "</FONT>";

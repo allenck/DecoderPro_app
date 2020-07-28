@@ -6,7 +6,7 @@
 class Logger;
 class QSignalMapper;
 class JTextField;
-class QComboBox;
+class JComboBox;
 class QPushButton;
 namespace Operations
 {
@@ -84,15 +84,15 @@ namespace Operations
   JTextField* valueTextField; //=new JTextField(8);
 
   // combo boxes
-  QComboBox* roadComboBox; //=CarRoads.instance().getComboBox();
-  QComboBox* modelComboBox; //=engineModels.getComboBox();
-  QComboBox* typeComboBox; //=engineTypes.getComboBox();
-  QComboBox* lengthComboBox; //=engineLengths.getComboBox();
-  QComboBox* ownerComboBox; //=CarOwners.instance().getComboBox();
-  QComboBox* locationBox; //=locationManager.getComboBox();
-  QComboBox* trackLocationBox; //=new JComboBox<>();
-  QComboBox* consistComboBox; //=manager.getConsistComboBox();
-  QComboBox* rfidComboBox; //=new JComboBox<IdTag>();
+  JComboBox* roadComboBox; //=CarRoads.instance().getComboBox();
+  JComboBox* modelComboBox; //=engineModels.getComboBox();
+  JComboBox* typeComboBox; //=engineTypes.getComboBox();
+  JComboBox* lengthComboBox; //=engineLengths.getComboBox();
+  JComboBox* ownerComboBox; //=CarOwners.instance().getComboBox();
+  JComboBox* locationBox; //=locationManager.getComboBox();
+  JComboBox* trackLocationBox; //=new JComboBox<>();
+  JComboBox* consistComboBox; //=manager.getConsistComboBox();
+  JComboBox* rfidComboBox; //=new JComboBox<IdTag>();
   /*private*/ bool editActive;// = false;
   EngineAttributeEditFrame* f;
   /*private*/ void addEditButtonAction(QPushButton* b);

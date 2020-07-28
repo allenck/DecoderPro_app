@@ -2,7 +2,7 @@
 #include "car.h"
 #include "train.h"
 #include "locationmanager.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "gridbaglayout.h"
 #include <QBoxLayout>
 #include "trainmanager.h"
@@ -53,7 +53,7 @@ namespace Operations
      // combo boxes
      trainsComboBox = TrainManager::instance()->getTrainComboBox();
      typeComboBox = CarTypes::instance()->getComboBox();
-     carsComboBox = new QComboBox();
+     carsComboBox = new JComboBox();
  }
 
  /*public*/ void TrainByCarTypeFrame::initComponents(Train* train) {
@@ -132,7 +132,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void TrainByCarTypeFrame::comboBoxActionPerformed(QWidget* ae) {
      log->debug("combo box action");
-     QComboBox* source = (QComboBox*)ae;
+     JComboBox* source = (JComboBox*)ae;
      if (source == (typeComboBox)) {
          updateCarsComboBox();
      }

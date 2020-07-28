@@ -32,13 +32,13 @@ namespace Operations
   QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
-  QComboBox* trainBox;// = TrainManager.instance().getTrainComboBox();
-  QComboBox* colorBox;// = TrainManager.instance().getRowColorComboBox();
+  JComboBox* trainBox;// = TrainManager.instance().getTrainComboBox();
+  JComboBox* colorBox;// = TrainManager.instance().getRowColorComboBox();
 
-  QComboBox* colorBuiltBox;// = TrainManager.instance().getRowColorComboBox();
-  QComboBox* colorBuildFailedBox;// = TrainManager.instance().getRowColorComboBox();
-  QComboBox* colorTrainEnRouteBox;// = TrainManager.instance().getRowColorComboBox();
-  QComboBox* colorTerminatedBox;// = TrainManager::instance().getRowColorComboBox();
+  JComboBox* colorBuiltBox;// = TrainManager.instance().getRowColorComboBox();
+  JComboBox* colorBuildFailedBox;// = TrainManager.instance().getRowColorComboBox();
+  JComboBox* colorTrainEnRouteBox;// = TrainManager.instance().getRowColorComboBox();
+  JComboBox* colorTerminatedBox;// = TrainManager::instance().getRowColorComboBox();
 
   // display panels based on which option is selected
   QGroupBox* pTrains;

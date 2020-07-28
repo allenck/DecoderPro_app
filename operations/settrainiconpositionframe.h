@@ -4,6 +4,7 @@
 #include "operationsframe.h"
 #include "appslib_global.h"
 
+class JComboBox;
 class QLabel;
 class TrainIcon;
 namespace Operations
@@ -45,7 +46,7 @@ namespace Operations
   QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
-  QComboBox* locationBox;// = LocationManager.instance().getComboBox();
+  JComboBox* locationBox;// = LocationManager.instance().getComboBox();
 
   //Spinners
   QSpinBox* spinTrainIconEastX;// = new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1));

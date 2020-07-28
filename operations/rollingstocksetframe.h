@@ -2,12 +2,12 @@
 #define ROLLINGSTOCKSETFRAME_H
 #include "operationsframe.h"
 #include "appslib_global.h"
+#include "jcombobox.h"
 
 class ActionEvent;
 class QGroupBox;
 class QScrollArea;
 class QCheckbox;
-class QComboBox;
 class QPushButton;
 class QLabel;
 namespace Operations
@@ -67,13 +67,13 @@ public slots:
   /*protected*/ QPushButton* ignoreAllButton;// = new JButton(Bundle.getMessage("IgnoreAll"));
 
   // combo boxes
-  /*protected*/ QComboBox* locationBox;//= LocationManager.instance().getComboBox();
-  /*protected*/ QComboBox* trackLocationBox;//= new JComboBox<>();
-  /*protected*/ QComboBox* destinationBox;//= LocationManager.instance().getComboBox();
-  /*protected*/ QComboBox* trackDestinationBox;//= new JComboBox<>();
-  /*protected*/ QComboBox* finalDestinationBox;//= LocationManager.instance().getComboBox();
-  /*protected*/ QComboBox* finalDestTrackBox;//= new JComboBox<>();
-  /*protected*/ QComboBox* trainBox;//= TrainManager.instance().getTrainComboBox();
+  /*protected*/ JComboBox* locationBox;//= LocationManager.instance().getComboBox();
+  /*protected*/ JComboBox* trackLocationBox;//= new JComboBox<>();
+  /*protected*/ JComboBox* destinationBox;//= LocationManager.instance().getComboBox();
+  /*protected*/ JComboBox* trackDestinationBox;//= new JComboBox<>();
+  /*protected*/ JComboBox* finalDestinationBox;//= LocationManager.instance().getComboBox();
+  /*protected*/ JComboBox* finalDestTrackBox;//= new JComboBox<>();
+  /*protected*/ JComboBox* trainBox;//= TrainManager.instance().getTrainComboBox();
 
   // check boxes
   /*protected*/ QCheckBox* autoTrackCheckBox;//= new JCheckBox(Bundle.getMessage("Auto"));

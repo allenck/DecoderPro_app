@@ -50,7 +50,7 @@
  stateThrown = tr("T"); // StateThrownShort
  nbhm = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"));
  opac = 0.5f;
- rootPath = "program:resources/icons/misc/switchboard/";
+ rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/";
  iconOffPath = rootPath + "appslide-off-s.png";
  iconOnPath = rootPath + "appslide-on-s.png";
  keyOffPath = rootPath + "markl-off-s.png";
@@ -109,7 +109,7 @@
              JOptionPane::ERROR_MESSAGE);
      return;
     }
-#if 0
+#if 1
     beanIcon = new IconSwitch(iconOnPath, iconOffPath, this);
     beanKey = new IconSwitch(keyOnPath, keyOffPath, this);
     beanSymbol = new IconSwitch(rootPath + beanTypeChar + "-on-s.png", rootPath + beanTypeChar + "-off-s.png", this);

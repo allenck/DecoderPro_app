@@ -90,11 +90,12 @@ QComboBox* TurnoutState::getComboB()
 /**
  * constructor method
  */
-/*public*/ LayoutSlip::LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* layoutEditor, int type)
+/*public*/ LayoutSlip::LayoutSlip(QString id, QPointF c, double rot, LayoutEditor* layoutEditor, LayoutTurnout::TurnoutType type)
  : LayoutTurnout(id, c, layoutEditor, type)
 {
  init();
  //instance = this;
+ this->type = type;
 
  dispA = QPointF(-20.0, 0.0);
  pointA = MathUtil::add(getCoordsCenter(), dispA);
@@ -826,22 +827,22 @@ double LayoutSlip::round (double x) {
  *        method is called after the entire LayoutEditor is loaded to set the specific
  *        TrackSegment objects.
  */
-/*public*/ void LayoutSlip::setObjects(LayoutEditor* p) {
-    connectA = p->findTrackSegmentByName(connectAName);
-    connectB = p->findTrackSegmentByName(connectBName);
-    connectC = p->findTrackSegmentByName(connectCName);
-    connectD = p->findTrackSegmentByName(connectDName);
-    if (tBlockAName.length()>0) {
-        block = p->getLayoutBlock(tBlockAName);
-        if (block!=nullptr) {
-            blockName = tBlockAName;
-            block->incrementUse();
-        }
-        else {
-            log.error("bad blocknameac '"+tBlockAName+"' in slip "+ident);
-        }
-    }
-}
+///*public*/ void LayoutSlip::setObjects(LayoutEditor* p) {
+//    connectA = p->findTrackSegmentByName(connectAName);
+//    connectB = p->findTrackSegmentByName(connectBName);
+//    connectC = p->findTrackSegmentByName(connectCName);
+//    connectD = p->findTrackSegmentByName(connectDName);
+//    if (tBlockAName.length()>0) {
+//        block = p->getLayoutBlock(tBlockAName);
+//        if (block!=nullptr) {
+//            blockName = tBlockAName;
+//            block->incrementUse();
+//        }
+//        else {
+//            log.error("bad blocknameac '"+tBlockAName+"' in slip "+ident);
+//        }
+//    }
+//}
 
 /**
  * Display popup menu for information and editing
@@ -1175,7 +1176,7 @@ void LayoutSlip::on_setSignalsAct_triggered()
   tools = new LayoutEditorTools(layoutEditor);
  }
  tools->setSlipFromMenu(this,
- layoutEditor->signalIconEditor,layoutEditor->signalFrame);
+ layoutEditor->getLETools()->signalIconEditor,layoutEditor->getLETools()->signalFrame);
 }
 
 void LayoutSlip::on_setSignalMastsAct_triggered()
@@ -1184,7 +1185,7 @@ void LayoutSlip::on_setSignalMastsAct_triggered()
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
- tools->setSignalMastsAtSlipFromMenu(this, boundaryBetween, layoutEditor->signalFrame);
+ tools->setSignalMastsAtSlipFromMenu(this, boundaryBetween, layoutEditor->getLETools()->signalFrame);
 }
 
 void LayoutSlip::on_setSensorsAct_triggered()
@@ -1193,7 +1194,7 @@ void LayoutSlip::on_setSensorsAct_triggered()
  {
   tools = new LayoutEditorTools(layoutEditor);
  }
- tools->setSensorsAtSlipFromMenu(this, boundaryBetween, layoutEditor->sensorIconEditor, layoutEditor->sensorFrame);
+ tools->setSensorsAtSlipFromMenu(this, boundaryBetween, layoutEditor->getLETools()->sensorIconEditor, layoutEditor->getLETools()->sensorFrame);
 }
 
 void LayoutSlip::on_rotate_triggered()

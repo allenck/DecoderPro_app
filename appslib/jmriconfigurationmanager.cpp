@@ -83,14 +83,14 @@
  }
 #endif
  Profile* profile = ProfileManager::getDefault()->getActiveProfile();
-         if (profile != nullptr) {
-             this->legacy->setPrefsLocation(new File(profile->getPath(), Profile::CONFIG_FILENAME));
-         }
-#if 0
-    if (!GraphicsEnvironment.isHeadless()) {
-        ConfigXmlManager.setErrorHandler(new DialogErrorHandler());
-    }
-#endif
+ if (profile != nullptr) {
+     this->legacy->setPrefsLocation(new File(profile->getPath(), Profile::CONFIG_FILENAME));
+ }
+
+//    if (!GraphicsEnvironment.isHeadless()) {
+        ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
+//    }
+
 }
 
 //@Override

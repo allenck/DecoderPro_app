@@ -4,6 +4,7 @@
 #include "operationsframe.h"
 #include <QList>
 #include "appslib_global.h"
+#include "jcombobox.h"
 
 class QGroupBox;
 class QCheckBox;
@@ -55,7 +56,7 @@ namespace Operations
   QLabel* textCarType;// = new JLabel(Empty);
 
   // combo boxes
-  QComboBox* typeComboBox;// = CarTypes.instance().getComboBox();
+  JComboBox* typeComboBox;// = CarTypes.instance().getComboBox();
 
   // selected location
   Location* location;

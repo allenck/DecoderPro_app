@@ -15,7 +15,7 @@
 #include "vptr.h"
 #include <QPushButton>
 #include <QMessageBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "rollingstockmanager.h"
 #include "carmanager.h"
 #include "enginemanager.h"
@@ -56,7 +56,7 @@ namespace Operations
    saveButton = new QPushButton(tr("Save"));
 
    // combo boxes
-   QComboBox* locationBox = locationManager->getComboBox();
+   JComboBox* locationBox = locationManager->getComboBox();
 
    // checkboxes
    moveRollingStockCheckBox = new QCheckBox(tr("Move Rolling Stock to New Track"));

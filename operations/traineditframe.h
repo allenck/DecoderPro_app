@@ -3,6 +3,7 @@
 
 #include "operationsframe.h"
 
+class JComboBox;
 class HtmlTextEdit;
 class propertyChange;
 class JTextField;
@@ -91,13 +92,13 @@ namespace Operations
   QLabel* space5;//= new JLabel("       ");
 
   // combo boxes
-  QComboBox* hourBox;//= new JComboBox<>();
-  QComboBox* minuteBox;//= new JComboBox<>();
-  QComboBox* routeBox;//= RouteManager.instance().getComboBox();
-  QComboBox* roadCabooseBox;//= new JComboBox<>();
-  QComboBox* roadEngineBox;//= new JComboBox<>();
-  QComboBox* modelEngineBox;//= EngineModels.instance().getComboBox();
-  QComboBox* numEnginesBox;//= new JComboBox<>();
+  JComboBox* hourBox;//= new JComboBox<>();
+  JComboBox* minuteBox;//= new JComboBox<>();
+  JComboBox* routeBox;//= RouteManager.instance().getComboBox();
+  JComboBox* roadCabooseBox;//= new JComboBox<>();
+  JComboBox* roadEngineBox;//= new JComboBox<>();
+  JComboBox* modelEngineBox;//= EngineModels.instance().getComboBox();
+  JComboBox* numEnginesBox;//= new JComboBox<>();
   /*private*/ void packFrame();
   QList<JmriJFrame*> children;// = new ArrayList<Frame>();
   /*private*/ void updateDepartureTime();

@@ -2,7 +2,7 @@
 #include "train.h"
 #include "trainmanager.h"
 #include "routemanager.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QBoxLayout>
 #include "route.h"
 #include "location.h"
@@ -126,13 +126,13 @@ namespace Operations
   space5 = new QLabel("       ");
 
   // combo boxes
-   hourBox = new QComboBox();
-   minuteBox = new QComboBox();
+   hourBox = new JComboBox();
+   minuteBox = new JComboBox();
    routeBox = RouteManager::instance()->getComboBox();
-   roadCabooseBox = new QComboBox();
-   roadEngineBox = new QComboBox();
+   roadCabooseBox = new JComboBox();
+   roadEngineBox = new JComboBox();
    modelEngineBox = EngineModels::instance()->getComboBox();
-   numEnginesBox = new QComboBox();
+   numEnginesBox = new JComboBox();
    ref = NULL;
 
   // Set up the jtable in a Scroll Pane..
@@ -766,7 +766,7 @@ namespace Operations
      if (_train == NULL) {
          return;
      }
-     QComboBox* source = (QComboBox*)ae;
+     JComboBox* source = (JComboBox*)ae;
      if (source == numEnginesBox) {
          modelEngineBox->setEnabled(numEnginesBox->currentText()!=("0"));
          roadEngineBox->setEnabled(numEnginesBox->currentText()!=("0"));
@@ -1201,7 +1201,7 @@ namespace Operations
  }
 
  /*public*/ void TrainEditFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

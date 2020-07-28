@@ -1,7 +1,8 @@
 #ifndef CARATTRIBUTEEDITFRAME_H
 #define CARATTRIBUTEEDITFRAME_H
-#include "operationsframe.h"
+#include "rollingstockattributeeditframe.h"
 #include "appslib_global.h"
+#include "jcombobox.h"
 
 class ActionEvent;
 class JTextField;
@@ -11,7 +12,7 @@ class PropertyChangeSupport;
 namespace Operations
 {
  class CarManager;
- class APPSLIBSHARED_EXPORT CarAttributeEditFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT CarAttributeEditFrame : public RollingStockAttributeEditFrame
  {
   Q_OBJECT
  public:
@@ -22,47 +23,35 @@ namespace Operations
   /*public*/ void initComponents(QString comboboxName);
   /*public*/ void initComponents(QString comboboxName, QString select);
   /*public*/ QString getClassName();
+  // valid attributes for this frame
+  /*public*/ static /*final*/ QString ROAD;//  Bundle.getMessage("Road");
+  /*public*/ static /*final*/ QString TYPE;//  Bundle.getMessage("Type");
+  /*public*/ static /*final*/ QString COLOR;//  Bundle.getMessage("Color");
+  /*public*/ static /*final*/ QString LENGTH;//  Bundle.getMessage("Length");
+  /*public*/ static /*final*/ QString OWNER;//  Bundle.getMessage("Owner");
+  /*public*/ static /*final*/ QString KERNEL;//  Bundle.getMessage("Kernel");
+  /*public*/ void toggleShowQuanity();
+  /*public*/ void deleteUnusedAttributes();
+  /*public*/ void dispose();
 
 public slots:
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void deleteUnusedAttribures();
-  /*public*/ void dispose();
-  /*public*/ void toggleShowQuanity();
   /*public*/ void propertyChange(PropertyChangeEvent* e);
 
  private:
   CarManager* carManager;//= CarManager.instance();
+  static Logger* log;
 
-  // labels
-  QLabel* textAttribute;//= new JLabel();
-  QLabel* textSep;//= new JLabel();
-  QLabel* quanity;//= new JLabel("0");
-
-  // major buttons
-  QPushButton* addButton;//= new JButton();
-  QPushButton* deleteButton;//= new JButton();
-  QPushButton* replaceButton;//= new JButton();
-
-  // combo box
-  QComboBox* comboBox;
-
-  // text box
-  JTextField* addTextBox;//= new JTextField(Control.max_len_string_attibute);
-  QString _comboboxName; // used to determine which combo box is being edited
-  /*private*/ void firePcs(QString p, QVariant old, QVariant n);
-  Logger* log;
-  static bool showDialogBox;// = true;
-  /*private*/ void deleteItemFromCombobox(QString deleteItem);
-  bool showQuanity;// = false;
-  /*private*/ void loadCombobox();
-  /*private*/ void addItemToCombobox(QString addItem);
-  /*private*/ void replaceItem(QString oldItem, QString newItem);
+  bool deleteUnused = false;
+  bool cancel = false;
   /*private*/ void updateCarQuanity();
-  bool deleteUnused;// = false;
-  bool cancel;// = false;
 
  protected:
-  /*protected*/ void comboBoxActionPerformed(QWidget* ae);
+  /*protected*/ void comboBoxActionPerformed(QWidget* ae) override;
+  /*protected*/ void deleteAttributeName(QString deleteItem) override;
+  /*protected*/ void addAttributeName(QString addItem) override;
+  /*protected*/ void replaceItem(QString oldItem, QString newItem) override;
+  /*protected*/ void loadCombobox() override;
+
  friend class OperationsFrame;
  };
 }

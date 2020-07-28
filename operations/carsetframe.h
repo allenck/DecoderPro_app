@@ -2,6 +2,7 @@
 #define CARSETFRAME_H
 #include "rollingstocksetframe.h"
 #include "appslib_global.h"
+#include "jcombobox.h"
 
 namespace Operations
 {
@@ -43,11 +44,11 @@ namespace Operations
 
  protected:
   // combo boxes
-  /*protected*/ QComboBox* destReturnWhenEmptyBox;//= LocationManager.instance().getComboBox();
-  /*protected*/ QComboBox* trackReturnWhenEmptyBox;//= new JComboBox<>();
-  /*protected*/ QComboBox*loadReturnWhenEmptyBox;//= CarLoads.instance().getComboBox(null);
-  QComboBox* loadComboBox;//= CarLoads.instance().getComboBox(null);
-  QComboBox* kernelComboBox;//= carManager.getKernelComboBox();
+  /*protected*/ JComboBox* destReturnWhenEmptyBox;//= LocationManager.instance().getComboBox();
+  /*protected*/ JComboBox* trackReturnWhenEmptyBox;//= new JComboBox<>();
+  /*protected*/ JComboBox*loadReturnWhenEmptyBox;//= CarLoads.instance().getComboBox(null);
+  JComboBox* loadComboBox;//= CarLoads.instance().getComboBox(null);
+  JComboBox* kernelComboBox;//= carManager.getKernelComboBox();
 
   // buttons
   QPushButton* editLoadButton;//= new JButton(Bundle.getMessage("Edit"));

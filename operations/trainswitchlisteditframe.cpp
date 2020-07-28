@@ -7,7 +7,7 @@
 #include <gridbaglayout.h>
 #include <QGroupBox>
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "locationmanager.h"
 #include <QScrollArea>
 #include "flowlayout.h"
@@ -43,7 +43,7 @@ namespace Operations
   //super(tr("TitleSwitchLists"));
   locationManager = LocationManager::instance();
   locationCheckBoxes = QList<QCheckBox*>();
-  locationComboBoxes = QList<QComboBox*>();
+  locationComboBoxes = QList<JComboBox*>();
   locationPanelCheckBoxes = new QWidget();
 
   // checkboxes
@@ -278,7 +278,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      for (int i = 0; i < locationCheckBoxes.size(); i++) {
          QString locationName = locationCheckBoxes.at(i)->objectName();
          Location* location = locationManager->getLocationByName(locationName);
-         QComboBox* comboBox = locationComboBoxes.at(i);
+         JComboBox* comboBox = locationComboBoxes.at(i);
          QString printerName =  comboBox->currentText();
          if (printerName==(TrainPrintUtilities::getDefaultPrinterName())) {
              location->setDefaultPrinterName(Location::NONE);
@@ -405,7 +405,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          addCommentButtonAction(button);
          addItem(locationPanelCheckBoxes, button, 4, y);
 
-         QComboBox* comboBox = TrainPrintUtilities::getPrinterJComboBox();
+         JComboBox* comboBox = TrainPrintUtilities::getPrinterJComboBox();
          locationComboBoxes.append(comboBox);
          comboBox->setCurrentIndex(comboBox->findText(location->getDefaultPrinterName()));
          addComboBoxAction(comboBox);
@@ -556,7 +556,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void TrainSwitchListEditFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
       log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
               ->getNewValue().toString()));
      }

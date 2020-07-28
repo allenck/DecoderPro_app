@@ -70,10 +70,10 @@ namespace Operations
   QRadioButton* shipLoadNameExclude;//= new JRadioButton(Bundle.getMessage("Exclude"));
 
   // combo box
-  QComboBox* comboBoxLoads;//= CarLoads.instance().getComboBox(null);
-  QComboBox* comboBoxShipLoads;//= CarLoads.instance().getComboBox(null);
-  QComboBox* comboBoxTypes;//= CarTypes.instance().getComboBox();
-  QComboBox* comboBoxShipTypes;//= CarTypes.instance().getComboBox();
+  JComboBox* comboBoxLoads;//= CarLoads.instance().getComboBox(null);
+  JComboBox* comboBoxShipLoads;//= CarLoads.instance().getComboBox(null);
+  JComboBox* comboBoxTypes;//= CarTypes.instance().getComboBox();
+  JComboBox* comboBoxShipTypes;//= CarTypes.instance().getComboBox();
 
   // labels
   QLabel* trackName;//= new JLabel();

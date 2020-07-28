@@ -60,7 +60,7 @@ namespace Operations
 
     // this table listens for changes to a location and it's interchanges
     /*public*/ void InterchangeTableModel::propertyChange(PropertyChangeEvent* e) {
-        if (Control::showProperty) {
+        if (Control::SHOW_PROPERTY) {
             log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
                     ->getNewValue().toString()));
         }
@@ -69,7 +69,7 @@ namespace Operations
             Track* track = ((Track*) e->getSource());
             if (track->getTrackType()==(Track::INTERCHANGE)) {
                 int row = tracksList.indexOf(track);
-                if (Control::showProperty) {
+                if (Control::SHOW_PROPERTY) {
                     log->debug(tr("Update interchange table row: %1 track: %2").arg(row).arg(track->getName()));
                 }
                 if (row >= 0) {

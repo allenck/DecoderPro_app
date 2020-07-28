@@ -35,7 +35,7 @@ namespace Operations
   JTextField* trackMinLengthTextField;//= new JTextField(5);
 
   // combo box
-  QComboBox* comboBoxPools;//= new JComboBox<>();
+  JComboBox* comboBoxPools;//= new JComboBox<>();
 
   // major buttons
   QPushButton* addButton;//= new JButton(Bundle.getMessage("Add"));

@@ -16,7 +16,7 @@
 #include "cartypes.h"
 #include <QBoxLayout>
 #include <QGroupBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QScrollArea>
 #include "logger.h"
 #include "rosterentry.h"
@@ -107,12 +107,12 @@ namespace Operations
   typeComboBox = CarTypes::instance()->getComboBox();
   colorComboBox = CarColors::instance()->getComboBox();
   lengthComboBox = CarLengths::instance()->getComboBox();
-  ownerComboBox = new QComboBox(); //.instance().getComboBox();
+  ownerComboBox = new JComboBox(); //.instance().getComboBox();
   locationBox = locationManager->getComboBox();
-  trackLocationBox = new QComboBox();
+  trackLocationBox = new JComboBox();
   loadComboBox = CarLoads::instance()->getComboBox();
   kernelComboBox = carManager->getKernelComboBox();
-  rfidComboBox = new QComboBox();
+  rfidComboBox = new JComboBox();
 
   // panels
   pBlocking = new QGroupBox();
@@ -524,7 +524,7 @@ namespace Operations
  // combo boxes
  /*public*/ void CarEditFrame::comboBoxActionPerformed(QWidget* ae)
 {
- QComboBox* source = (QComboBox*)ae;
+ JComboBox* source = (JComboBox*)ae;
      if (source == typeComboBox && typeComboBox->currentText() != NULL) {
          log->debug("Type comboBox sees change, update car loads");
          CarLoads::instance()->updateComboBox( typeComboBox->currentText(), loadComboBox);
@@ -1057,7 +1057,7 @@ namespace Operations
  }
 
  /*public*/ void CarEditFrame::propertyChange(PropertyChangeEvent* e) {
-     if (Control::showProperty) {
+     if (Control::SHOW_PROPERTY) {
          log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
                  ->getNewValue().toString()));
      }

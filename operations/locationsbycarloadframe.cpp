@@ -7,7 +7,7 @@
 #include <QGroupBox>
 #include <QBoxLayout>
 #include "gridbaglayout.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include "cartypes.h"
 #include "carloads.h"
 #include "carload.h"
@@ -172,7 +172,7 @@ namespace Operations
  /*public*/ void LocationsByCarLoadFrame::comboBoxActionPerformed(QWidget* ae)
 {
      log->debug("combo box action");
-     QComboBox* source = (QComboBox*)ae;
+     JComboBox* source = (JComboBox*)ae;
      if (source == loadComboBox) {
          log->debug(tr("Load combobox change, selected load: (%1)").arg(loadComboBox->currentText()));
          if (loadComboBox->isEnabled() && loadComboBox->currentText() != NULL) {

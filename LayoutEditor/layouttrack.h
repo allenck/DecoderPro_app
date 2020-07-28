@@ -117,6 +117,7 @@ public:
   block,
   dashed
  };
+ /*public*/ virtual QString toString() { return QString(metaObject()->className()) + " " + getName();}
 
  /**
   * rotate this LayoutTrack's coordinates by angleDEG's
