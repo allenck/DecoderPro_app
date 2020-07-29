@@ -63,6 +63,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -3142,6 +3143,7 @@ virtual void mousePressEvent(QMouseEvent*  event);
 virtual void mousePressed(QGraphicsSceneMouseEvent*  event);
 virtual void mouseReleaseEvent(QMouseEvent*  event);
 virtual void mouseReleased(QGraphicsSceneMouseEvent*  event);
+virtual void mouseWheelMoved(QGraphicsSceneWheelEvent*  arg__1);
 virtual void moveEvent(QMoveEvent*  e);
 virtual bool  nativeEvent(const QByteArray&  eventType, void*  message, long*  result);
 virtual void newPanelDefaults();

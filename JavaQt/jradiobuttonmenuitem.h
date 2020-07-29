@@ -4,6 +4,7 @@
 
 class JRadioButtonMenuItem : public AbstractAction
 {
+    Q_OBJECT
 public:
     JRadioButtonMenuItem(QString text, QObject* parent);
 };

@@ -1486,11 +1486,11 @@ void LayoutBlock::setBlockMetric(){
             log->info("From " + this->getDisplayName() + " unable to set metric as we are not connected to a panel yet");
         return;
     }
-    QVector<TrackSegment*>* ts = panel->findTrackSegmentByBlock(blockName);
+    QList<TrackSegment*> ts = panel->getFinder()->findTrackSegmentByBlock(blockName);
     int mainline = 0;
     int side = 0;
-    for (int i = 0; i< ts->size(); i++){
-        if (ts->at(i)->isMainline())
+    for (int i = 0; i< ts.size(); i++){
+        if (ts.at(i)->isMainline())
             mainline++;
         else
             side++;

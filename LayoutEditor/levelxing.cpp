@@ -1048,10 +1048,10 @@ double LevelXing::round (double x) {
  *        TrackSegment objects.
  */
 /*public*/ void LevelXing::setObjects(LayoutEditor* p) {
-    connectA = p->findTrackSegmentByName(connectAName);
-    connectB = p->findTrackSegmentByName(connectBName);
-    connectC = p->findTrackSegmentByName(connectCName);
-    connectD = p->findTrackSegmentByName(connectDName);
+    connectA = p->getFinder()->findTrackSegmentByName(connectAName);
+    connectB = p->getFinder()->findTrackSegmentByName(connectBName);
+    connectC = p->getFinder()->findTrackSegmentByName(connectCName);
+    connectD = p->getFinder()->findTrackSegmentByName(connectDName);
 
     LayoutBlock* lb;
     if (!tLayoutBlockNameAC.isEmpty()) {

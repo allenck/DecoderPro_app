@@ -58,7 +58,6 @@
 #include "positionablepoint.h"
 #include "optional.h"
 #include <limits>
-//#include "layouttrackeditors.h"
 #include "layouteditorchecks.h"
 #include "leblockcontentsicon.h"
 #include "layouttrackdrawingoptions.h"
@@ -101,6 +100,7 @@
 #include "layouteditorcomponent.h"
 #include "entergridsizesdialog.h"
 #include "moveselectiondialog.h"
+#include <QButtonGroup>
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -448,6 +448,7 @@ void LayoutEditor::common()
  // connect(editScene,SIGNAL(sceneDragMove(QGraphicsSceneDragDropEvent*)),this, SLOT(mouseDragged(QGraphicsSceneDragDropEvent*)));
  connect(editScene, SIGNAL(sceneMousePress(QGraphicsSceneMouseEvent*)), this, SLOT(mousePressed(QGraphicsSceneMouseEvent*)));
  connect(editScene, SIGNAL(sceneMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(mouseMoved(QGraphicsSceneMouseEvent*)));
+ connect(editScene, SIGNAL(sceneWheelMoveEvent(QGraphicsSceneWheelEvent*)), this, SLOT(mouseWheelMoved(QGraphicsSceneWheelEvent*)));
 
  //initialize preferences
  UserPreferencesManager* prefsMgr= static_cast<UserPreferencesManager*>(InstanceManager::getOptionalDefault("UserPreferencesManager"));
@@ -513,49 +514,44 @@ on_setToolBarSide(toolBarSide->getName().toUpper());
  Editor::resize(w, h);
 }
 
+/*private*/ JRadioButtonMenuItem* LayoutEditor::addButtonGroupMenuEntry(
+        /*@Nonnull*/ QMenu* inMenu,
+        QActionGroup* inButtonGroup,
+        /*final*/ QString inName,
+        bool inSelected,
+        ActionListener* inActionListener) {
+    JRadioButtonMenuItem* result = new JRadioButtonMenuItem(inName, this);
+    if (inActionListener != nullptr) {
+//            result.addActionListener(inActionListener);
+     connect(result, SIGNAL(triggered(bool)), inActionListener, SLOT(actionPerformed()));
+    }
+    if (inButtonGroup != nullptr) {
+        inButtonGroup->addAction(result);
+    }
+    result->setChecked(inSelected);
 
-void LayoutEditor::addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size)
-{
-//        ActionListener a = new ActionListener() {
-//            final int desiredSize = size;
+    inMenu->addAction(result);
 
-//            public void actionPerformed(ActionEvent e) {
-//                if (turnoutCircleSize != desiredSize) {
-//                    turnoutCircleSize = desiredSize;
-//                    setDirty(true);
-//                    repaint();
-//                }
-//            }
-//        };
-
- QAction* r = new QAction(name, this);
- r->setCheckable(true);
- r->setData(size);
- //r.addActionListener(a);
- turnoutCircleSizeButtonGroup->addAction(r);
- turnoutCircleSizeButtonMapper->setMapping(r, size);
- connect(r, SIGNAL(triggered(bool)), turnoutCircleSizeButtonMapper, SLOT(map()));
- if (turnoutCircleSize == size) {
-     r->setChecked(true);
- } else {
-     r->setChecked(false);
- }
- menu->addAction(r);
-// turnoutCircleSizeMenuItems->replace(turnoutCircleSizeCount, r);
-// turnoutCircleSizes->replace(turnoutCircleSizeCount, size);
-// turnoutCircleSizeCount++;
+    return result;
 }
 
-//void LayoutEditor::on_turnoutCircleSizeButtonMapper_triggered(int size)
-//{
-// int desiredSize = size;//act->data().toInt();
-// if (turnoutCircleSize != desiredSize)
-// {
-//  turnoutCircleSize = desiredSize;
-//  setDirty(true);
-//  repaint();
-// }
-//}
+/*private*/ void LayoutEditor::addTurnoutCircleSizeMenuEntry(
+        /*@Nonnull*/ QMenu* inMenu,
+        /*@Nonnull*/ QString inName,
+        /*final*/ int inSize) {
+//    ActionListener* a = (ActionEvent event) -> {
+//        if (getTurnoutCircleSize() != inSize) {
+//            setTurnoutCircleSize(inSize);
+//            setDirty();
+//            redrawPanel();
+//        }
+//    };
+ ActionListener* a = new AddTurnoutCircleSizeMenuEntryCactionListener(inSize, this);
+    addButtonGroupMenuEntry(inMenu,
+            turnoutCircleSizeButtonGroup, inName,
+            getTurnoutCircleSize() == inSize, a);
+}
+
 /*private*/ void LayoutEditor::setOptionMenuTurnoutCircleSize() {
     QString tcs = QString::number(getTurnoutCircleSize());
     QListIterator<QAction*> e(turnoutCircleSizeButtonGroup->actions());
@@ -2560,7 +2556,93 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
     //}
     return o;
 }
+#if 1
+//@Override
+/*public*/ void LayoutEditor::mouseWheelMoved(/*@Nonnull*/ QGraphicsSceneWheelEvent* event) {
+    // log.warn("mouseWheelMoved");
+    if (/*event.isAltDown()*/event->modifiers()&Qt::AltModifier) {
+     QGraphicsItem* item = editScene->itemAt(event->scenePos(), QTransform());
+     if(item)
+      log->debug(tr("item = %1").arg(item->type()));
+#if 0
+      QItem  // get the mouse position from the event and convert to target panel coordinates
+        QWidget* component = (Component) event->getSource();
+        QPoint eventPoint = event.getPoint();
+        JComponent targetPanel = getTargetPanel();
+        QPointF mousePoint = SwingUtilities.convertPoint(component, eventPoint, targetPanel);
 
+        // get the old view port position
+        JScrollPane scrollPane = getPanelScrollPane();
+        JViewport viewPort = scrollPane.getViewport();
+        Point2D viewPosition = viewPort.getViewPosition();
+
+        // convert from oldZoom (scaled) coordinates to image coordinates
+        double zoom = getZoom();
+        Point2D imageMousePoint = MathUtil.divide(mousePoint, zoom);
+        Point2D imageViewPosition = MathUtil.divide(viewPosition, zoom);
+        // compute the delta (in image coordinates)
+        Point2D imageDelta = MathUtil.subtract(imageMousePoint, imageViewPosition);
+
+        // compute how much to change zoom
+        double amount = Math.pow(1.1, event.getScrollAmount());
+        if (event.getWheelRotation() < 0.0) {
+            // reciprocal for zoom out
+            amount = 1.0 / amount;
+        }
+        // set the new zoom
+        double newZoom = setZoom(zoom * amount);
+        // recalulate the amount (in case setZoom didn't zoom as much as we wanted)
+        amount = newZoom / zoom;
+
+        // convert the old delta to the new
+        Point2D newImageDelta = MathUtil.divide(imageDelta, amount);
+        // calculate the new view position (in image coordinates)
+        Point2D newImageViewPosition = MathUtil.subtract(imageMousePoint, newImageDelta);
+        // convert from image coordinates to newZoom (scaled) coordinates
+        Point2D newViewPosition = MathUtil.multiply(newImageViewPosition, newZoom);
+
+        // don't let origin go negative
+        newViewPosition = MathUtil.max(newViewPosition, MathUtil.zeroPoint2D);
+        // log.info("mouseWheelMoved: newViewPos2D: {}", newViewPosition);
+
+        // set new view position
+        viewPort.setViewPosition(MathUtil.point2DToPoint(newViewPosition));
+    } else {
+        JScrollPane scrollPane = getPanelScrollPane();
+        if (scrollPane != null) {
+            if (scrollPane.getVerticalScrollBar().isVisible()) {
+                // Redispatch the event to the original MouseWheelListeners
+                for (MouseWheelListener mwl : mouseWheelListeners) {
+                    mwl.mouseWheelMoved(event);
+                }
+            } else {
+                // proprogate event to ancestor
+                Component ancestor = SwingUtilities.getAncestorOfClass(JScrollPane.class,
+                        scrollPane);
+                if (ancestor != null) {
+                    MouseWheelEvent mwe = new MouseWheelEvent(
+                            ancestor,
+                            event.getID(),
+                            event.getWhen(),
+                            event.getModifiersEx(),
+                            event.getX(),
+                            event.getY(),
+                            event.getXOnScreen(),
+                            event.getYOnScreen(),
+                            event.getClickCount(),
+                            event.isPopupTrigger(),
+                            event.getScrollType(),
+                            event.getScrollAmount(),
+                            event.getWheelRotation());
+
+                    ancestor.dispatchEvent(mwe);
+                }
+            }
+        }
+#endif
+    }
+}
+#endif
 //
 //
 //
@@ -2875,14 +2957,8 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 {
  numTrackSegments ++;
  // get unique name
- QString name = "";
- bool duplicate = true;
- while (duplicate)
- {
-  name = "T"+QString::number(numTrackSegments);
-  if (findTrackSegmentByName(name)==nullptr) duplicate = false;
-  if (duplicate) numTrackSegments ++;
- }
+ QString name = finder->uniqueName("T", ++numTrackSegments);
+
  // create object
  newTrack = new TrackSegment(name,(LayoutTrack*)beginTrack,beginHitPointType,
                  (LayoutTrack*)foundTrack,foundHitPointType,leToolBarPanel->dashedLine->isChecked(), leToolBarPanel->mainlineTrack->isChecked(),this);
@@ -3562,16 +3638,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
   savedShowHelpBar = showHelpBar;
 }
 
-/*public*/ TrackSegment* LayoutEditor::findTrackSegmentByName(QString name)
-{
-  if (name.length()<=0) return nullptr;
-  for (TrackSegment* t : getTrackSegments()) {
-      if (t->getID()==(name)) {
-          return t;
-      }
-  }
-  return nullptr;
-}
 /**
 * Adds a link in the 'to' object to the 'from' object
 */
@@ -3764,30 +3830,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
     return turnoutDrawUnselectedLeg;
 }
 
-/**
- * Return a layout block with the given name if one exists. Registers this
- * LayoutEditor with the layout block. This method is designed to be used
- * when a panel is loaded. The calling method must handle whether the use
- * count should be incremented.
- *
- * @param blockID the given name
- * @return null if blockID does not already exist
- */
-///*public*/ LayoutBlock* LayoutEditor::getLayoutBlock(/*@Nonnull*/ QString blockID) {
-//    // check if this Layout Block already exists
-//    LayoutBlock* blk = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(blockID);
-//    if (blk == nullptr) {
-//        log->error(tr("LayoutBlock '%1' not found when panel loaded").arg(blockID));
-//        return nullptr;
-//    }
-//    blk->addLayoutEditor(this);
-//    return blk;
-//}
-
-/*public*/ QObject* LayoutEditor::findObjectByTypeAndName(int type,QString name)
-{
- return finder->findObjectByTypeAndName(type, name);
-}
 
 /*public*/ LayoutBlock* LayoutEditor::getAffectedBlock(QObject* o, int type) {
   if (o==nullptr)
@@ -3911,20 +3953,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
         setDirty();
     }
     return result;
-}
-
-/**
-* Returns an array list of track segments matching the block name.
-*/
-/*public*/ QVector<TrackSegment*>* LayoutEditor::findTrackSegmentByBlock(QString name) {
-  if (name.length()<=0) return nullptr;
-  QVector<TrackSegment*>* ts = new QVector<TrackSegment*>();
-  for (TrackSegment* t : getTrackSegments()) {
-      if (t->getBlockName()==(name)) {
-          ts->append(t);
-      }
-  }
-  return ts;
 }
 
 //compute the turnout circle at inPoint (used for drawing)
@@ -4105,48 +4133,6 @@ bool LayoutEditor::isDirty() {return bDirty;}
 //  LayoutTurnout* t = turnoutList->at(i);
 //  t->invalidate(g2);
 //  t->drawTurnouts(this, g2);
-// }
-}
-
-/*private*/ QPointF LayoutEditor::midpoint (QPointF p1,QPointF p2) {
-  return  QPointF((p1.x()+p2.x())/2.0,(p1.y()+p2.y())/2.0);
-}
-
-/*protected*/ QPointF LayoutEditor::third (QPointF p1,QPointF p2) {
-  return  QPointF( p1.x()+((p2.x()-p1.x())/3.0),
-                  p1.y()+((p2.y()-p1.y())/3.0) );
-}
-
-/*private*/ QPointF LayoutEditor::fourth (QPointF p1,QPointF p2) {
-  return  QPointF( p1.x()+((p2.x()-p1.x())/4.0),
-                  p1.y()+((p2.y()-p1.y())/4.0) );
-}
-
-void LayoutEditor::drawLabelImages(EditScene* /*g2*/)
-{
- QColor color;
- for (int i = 0; i<_contents->size();i++)
- {
-  PositionableLabel* l = (PositionableLabel*)_contents->at(i);
-  //addToTarget((Positionable*)l);
-  l->updateScene();
- }
-// for(int i=0; i < markerImage->size(); i++)
-// {
-//   LocoIcon* l = markerImage->at(i) ;
-//   if(l->item != nullptr)
-//   {
-//    g2->removeItem(l->item);
-//    l->item = nullptr;
-//   }
-//   QPixmap pixmap = QPixmap::fromImage(QImage((l->getIcon()->getOriginalImage())));
-//   l->item = g2->addPixmap(pixmap);
-//   l->item->setPos(l->getX(), l->getY());
-//   if(pixmap.isNull())
-//    qDebug() << "No pixmap";
-//   if(l->getDegrees() != 0)
-//    //l->item->rotate(l->getDegrees());
-//    l->item->setRotation(l->item->rotation()+ l->getDegrees());
 // }
 }
 

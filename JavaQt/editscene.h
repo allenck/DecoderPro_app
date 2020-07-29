@@ -28,6 +28,7 @@ signals:
  void sceneContextMenu(QGraphicsSceneContextMenuEvent *event);
  void sceneKeyPress(QKeyEvent*);
  void sceneKeyRelease(QKeyEvent*);
+ void sceneWheelMoveEvent(QGraphicsSceneWheelEvent* event);
 
 public slots:
 private:
@@ -42,6 +43,7 @@ private:
  void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
  void keyPressEvent(QKeyEvent *event);
  void keyReleaseEvent(QKeyEvent *event);
+ void wheelEvent(QGraphicsSceneWheelEvent* event);
 };
 
 class QGraphicsEllipseItem;

@@ -334,22 +334,25 @@ public:
      * ********************* Abstract Methods ***********************
      */
     //@Override
-    /*abstract*/ virtual /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event){}
+    /*abstract*/ virtual /*public*/ void mousePressed(QGraphicsSceneMouseEvent* /*event*/){}
 
     //@Override
-    /*abstract*/ virtual /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event){}
+    /*abstract*/ virtual /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* /*event*/){}
 
     //@Override
-    /*abstract*/ virtual /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event){}
+    /*abstract*/ virtual /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* /*event*/){}
 
     //@Override
-    /*abstract*/ virtual /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event){}
+    /*abstract*/ virtual /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* /*event*/){}
 
     //@Override
-    /*abstract*/ virtual /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event){}
+    /*abstract*/ virtual /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* /*event*/){}
 
     //@Override
-    /*abstract*/ virtual /*public*/ void mouseEntered(QGraphicsSceneMouseEvent* event){}
+    /*abstract*/ virtual /*public*/ void mouseEntered(QGraphicsSceneMouseEvent* /*event*/){}
+
+    //@override
+    /*abstract*/ virtual /*public*/ void mouseWheelMoved(QGraphicsSceneWheelEvent* /*event*/) {}
 
     //@Override
     /*abstract*/ virtual /*public*/ void mouseExited(QGraphicsSceneMouseEvent* event){}

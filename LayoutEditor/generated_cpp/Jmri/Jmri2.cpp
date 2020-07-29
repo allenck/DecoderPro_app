@@ -51,6 +51,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -12216,7 +12217,7 @@ if (_wrapper) {
 }
   PanelEditor::mouseDragged(event0);
 }
-void PythonQtShell_PanelEditor::mouseEntered(QGraphicsSceneMouseEvent*  event0)
+void PythonQtShell_PanelEditor::mouseEntered(QGraphicsSceneMouseEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -12226,7 +12227,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -12236,7 +12237,7 @@ if (_wrapper) {
     }
   }
 }
-  PanelEditor::mouseEntered(event0);
+  PanelEditor::mouseEntered(arg__1);
 }
 void PythonQtShell_PanelEditor::mouseExited(QGraphicsSceneMouseEvent*  event0)
 {
@@ -12391,6 +12392,28 @@ if (_wrapper) {
   }
 }
   PanelEditor::mouseReleased(event0);
+}
+void PythonQtShell_PanelEditor::mouseWheelMoved(QGraphicsSceneWheelEvent*  arg__1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseWheelMoved");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneWheelEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&arg__1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  PanelEditor::mouseWheelMoved(arg__1);
 }
 void PythonQtShell_PanelEditor::moveEvent(QMoveEvent*  e0)
 {

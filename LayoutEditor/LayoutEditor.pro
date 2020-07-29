@@ -538,7 +538,8 @@ SOURCES += \
     layoutturntableview.cpp \
     layouteditorcomponent.cpp \
     entergridsizesdialog.cpp \
-    moveselectiondialog.cpp
+    moveselectiondialog.cpp \
+    ../JavaQt/jradiobuttonmenuitem.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -995,7 +996,8 @@ HEADERS += liblayouteditor_global.h \
     layoutturntableview.h \
     layouteditorcomponent.h \
     entergridsizesdialog.h \
-    moveselectiondialog.h
+    moveselectiondialog.h \
+    ../JavaQt/jradiobuttonmenuitem.h
 
 FORMS    += \
     createeditblock.ui \

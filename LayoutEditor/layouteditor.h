@@ -27,7 +27,6 @@
 #include "paneleditor.h"
 #include "colorutil.h"
 #include "component.h"
-//#include "jmribeancombobox.h"
 #include <QPen>
 #include "borderlayout.h"
 #include "mathutil.h"
@@ -37,6 +36,7 @@
 #include "jcheckboxmenuitem.h"
 #include "storexmluseraction.h"
 #include "layouteditorfinditems.h"
+#include "jradiobuttonmenuitem.h"
 
 enum TOOLBARSIDES
 {
@@ -228,7 +228,6 @@ public:
     /*public*/ bool validatePhysicalTurnout(QString inTurnoutName, QWidget* openPane = 0);
     /*public*/ QVector<SensorIcon*>* sensorImage = new QVector<SensorIcon*>();  // sensor images
     /*public*/ QVector<LayoutTurntable*>* turntableList = new QVector<LayoutTurntable*>(); // Turntable list
-    /*public*/ TrackSegment* findTrackSegmentByName(QString name);
     /**
      * Return a layout block with the entered name, creating a new one if needed.
      *   Note that the entered name becomes the user name of the LayoutBlock, and
@@ -270,12 +269,7 @@ public:
     /*public*/ int getTurnoutCircleSize();
     /*public*/ bool isTurnoutDrawUnselectedLeg();
 
-    QT_DEPRECATED /*public*/ QObject* findObjectByTypeAndName(int type,QString name);
     /*public*/ LayoutBlock* getAffectedBlock(QObject* o, int type);
-    /**
-    * Returns an array list of track segments matching the block name.
-    */
-    /*public*/ QVector<TrackSegment*>* findTrackSegmentByBlock(QString name);
     /*public*/ QVector<LEMemoryIcon*>* memoryLabelList = new QVector<LEMemoryIcon*>(); // Memory Label List
     /*public*/ /*transient*/ QVector<LEBlockContentsIcon*>* blockContentsLabelList = new QVector<LEBlockContentsIcon*>(); //BlockContentsIcon Label List
 
@@ -311,7 +305,6 @@ public:
     * Add a label to the Draw Panel
     */
     void addLabel();
-    void drawLabelImages(EditScene* g2);
     /*public*/ void putItem(Positionable *l) override;
     EditScene* getScene() {return editScene;}
     /*public*/ void putSensor(SensorIcon* l);
@@ -692,7 +685,6 @@ private:
 
   bool isDrawing = false;
 
- QWidget* openFrame = this;
  /*private*/ void amendSelectionGroup(Positionable* p);
  /*private*/ void amendSelectionGroup(LayoutTurnout* p);
  /*private*/ void amendSelectionGroup(PositionablePoint* p);
@@ -701,10 +693,6 @@ private:
  bool main = true;
  bool _editable = false;
  friend class SensorIcon;
- InternalSensorManager* internalSensorManager;
- /*private*/ QPointF midpoint (QPointF p1,QPointF p2) ;
- /*protected*/ QPointF third (QPointF p1,QPointF p2) ;
- /*private*/ QPointF fourth (QPointF p1,QPointF p2);
  int _scrollState;
  int _anchorX = 0, _anchorY = 0;
  int _lastX, _lastY;
@@ -792,6 +780,11 @@ private:
  /*private*/ int turnoutCircleSizeCount = 0;
  /*private*/ void checkPointOfPositionable(PositionablePoint* p);
  /*private*/ void rotateTurnout(LayoutTurnout* t);
+ /*private*/ JRadioButtonMenuItem* addButtonGroupMenuEntry(/*@Nonnull*/ QMenu* inMenu,
+             QActionGroup *inButtonGroup,
+             /*final*/ QString inName,
+             bool inSelected,
+             ActionListener* inActionListener);
  void addTurnoutCircleSizeMenuEntry(QMenu* menu, /*final*/ QString name, /*final*/ int size);
  /*private*/ void setOptionMenuTurnoutCircleSize();
  /*private*/ /*transient*/ LayoutTrackDrawingOptions* layoutTrackDrawingOptions = nullptr;
@@ -886,6 +879,7 @@ private:
  /*private*/ /*final*/ QList<LayoutTrackView*>* layoutTrackViewList =  new QList<LayoutTrackView*>();
  /*private*/ /*final*/ QMap<LayoutTrack*, LayoutTrackView*> trkToView = QMap<LayoutTrack*, LayoutTrackView*>();
  /*private*/ /*final*/ QMap<LayoutTrackView*, LayoutTrack*> viewToTrk = QMap<LayoutTrackView*, LayoutTrack*>();
+ //QList<NamedBeanUsageReport*> usageReport;
 
 private slots:
  void on_scenePos(QGraphicsSceneMouseEvent*event);
@@ -896,6 +890,8 @@ private slots:
   */
  /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event) override;
  /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event) override;
+ /*public*/ void mouseWheelMoved(/*@Nonnull*/ QGraphicsSceneWheelEvent* event);
+
 
  void on_removeMenuAction_triggered();
  /*private*/ void deleteSelectedItems(); // SLOT[]
@@ -1163,5 +1159,28 @@ public:
     editor->borderLayout->removeWidget(this);
   }
 
+};
+
+class AddTurnoutCircleSizeMenuEntryCactionListener : public ActionListener
+{
+  Q_OBJECT
+  LayoutEditor* layoutEditor;
+  int inSize;
+ public:
+  AddTurnoutCircleSizeMenuEntryCactionListener(int inSize, LayoutEditor* layoutEditor)
+  {
+   this->inSize = inSize;
+   this->layoutEditor = layoutEditor;
+  }
+ public slots:
+  void actionPerformed()
+  {
+   if (layoutEditor->getTurnoutCircleSize() != inSize) {
+       layoutEditor->setTurnoutCircleSize(inSize);
+       layoutEditor->setDirty();
+       layoutEditor->redrawPanel();
+   }
+
+  }
 };
 #endif // LAYOUTEDITOR_H
