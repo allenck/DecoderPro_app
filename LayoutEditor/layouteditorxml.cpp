@@ -50,10 +50,10 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("name", p->getLayoutName());
  if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize())
  {
-   panel.setAttribute("x", "" + p->getUpperLeftX());
-   panel.setAttribute("y", "" + p->getUpperLeftY());
-   panel.setAttribute("windowheight", "" + p->getWindowHeight());
-   panel.setAttribute("windowwidth", "" + p->getWindowWidth());
+   panel.setAttribute("x", "" + p->gContext->getUpperLeftX());
+   panel.setAttribute("y", "" + p->gContext->getUpperLeftY());
+   panel.setAttribute("windowheight", "" + p->gContext->getWindowHeight());
+   panel.setAttribute("windowwidth", "" + p->gContext->getWindowWidth());
  } else {
    // Use real location and size
    QPoint loc = p->getLocation();
@@ -64,8 +64,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    panel.setAttribute("windowheight", "" + size.height());
    panel.setAttribute("windowwidth", "" + size.width());
  }
- panel.setAttribute("panelheight", p->getLayoutHeight());
- panel.setAttribute("panelwidth", p->getLayoutWidth());
+ panel.setAttribute("panelheight", p->gContext->getLayoutHeight());
+ panel.setAttribute("panelwidth", p->gContext->getLayoutWidth());
  panel.setAttribute("sliders", (p->getScroll() ? "yes" : "no")); // deprecated
  panel.setAttribute("scrollable", p->getScrollable());
  panel.setAttribute("editable", (p->isEditable() ? "yes" : "no"));
@@ -81,8 +81,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("tooltipsnotedit", (p->getTooltipsNotEdit() ? "yes" : "no"));
  panel.setAttribute("tooltipsinedit", (p->getTooltipsInEdit() ? "yes" : "no"));
  panel.setAttribute("mainlinetrackwidth", p->gContext->getMainlineTrackWidth());
- panel.setAttribute("xscale",  p->getXScale());
- panel.setAttribute("yscale", p->getYScale());
+ panel.setAttribute("xscale",  p->gContext->getXScale());
+ panel.setAttribute("yscale", p->gContext->getYScale());
  panel.setAttribute("sidetrackwidth", p->gContext->getSidelineTrackWidth());
  panel.setAttribute("defaulttrackcolor", p->getDefaultTrackColor());
  panel.setAttribute("defaultoccupiedtrackcolor", p->getDefaultOccupiedTrackColor());

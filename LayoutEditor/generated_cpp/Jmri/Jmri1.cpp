@@ -854,6 +854,11 @@ QColor  PythonQtWrapper_EditScene::getBackground(EditScene* theWrappedObject)
   return ( theWrappedObject->getBackground());
 }
 
+QWidget*  PythonQtWrapper_EditScene::getTopLevelAncestor(EditScene* theWrappedObject)
+{
+  return ( theWrappedObject->getTopLevelAncestor());
+}
+
 void PythonQtWrapper_EditScene::repaint(EditScene* theWrappedObject)
 {
   ( theWrappedObject->repaint());
@@ -3051,6 +3056,16 @@ PositionableLabel*  PythonQtWrapper_Editor::addLabel(Editor* theWrappedObject, Q
   return ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_addLabel(text));
 }
 
+void PythonQtWrapper_Editor::addPropertyChangeListener(Editor* theWrappedObject, PropertyChangeListener*  listener)
+{
+  ( theWrappedObject->addPropertyChangeListener(listener));
+}
+
+void PythonQtWrapper_Editor::addPropertyChangeListener(Editor* theWrappedObject, QString  name, PropertyChangeListener*  listener)
+{
+  ( theWrappedObject->addPropertyChangeListener(name, listener));
+}
+
 void PythonQtWrapper_Editor::addRpsReporter(Editor* theWrappedObject)
 {
   ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_addRpsReporter());
@@ -3334,6 +3349,16 @@ bool  PythonQtWrapper_Editor::removeFromContents(Editor* theWrappedObject, Posit
 void PythonQtWrapper_Editor::removeFromTarget(Editor* theWrappedObject, Positionable*  l)
 {
   ( ((PythonQtPublicPromoter_Editor*)theWrappedObject)->promoted_removeFromTarget(l));
+}
+
+void PythonQtWrapper_Editor::removePropertyChangeListener(Editor* theWrappedObject, PropertyChangeListener*  listener)
+{
+  ( theWrappedObject->removePropertyChangeListener(listener));
+}
+
+void PythonQtWrapper_Editor::removePropertyChangeListener(Editor* theWrappedObject, QString  name, PropertyChangeListener*  listener)
+{
+  ( theWrappedObject->removePropertyChangeListener(name, listener));
 }
 
 void PythonQtWrapper_Editor::removeSelections(Editor* theWrappedObject, Positionable*  p)
@@ -19189,11 +19214,6 @@ bool  PythonQtWrapper_LayoutEditor::getAutoBlockAssignment(LayoutEditor* theWrap
   return ( theWrappedObject->getAutoBlockAssignment());
 }
 
-QColor  PythonQtWrapper_LayoutEditor::getBackgroundColor(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getBackgroundColor());
-}
-
 const QIcon  PythonQtWrapper_LayoutEditor::getColourIcon(LayoutEditor* theWrappedObject, QColor  color)
 {
   return ( theWrappedObject->getColourIcon(color));
@@ -19234,24 +19254,9 @@ bool  PythonQtWrapper_LayoutEditor::getDrawGrid(LayoutEditor* theWrappedObject)
   return ( theWrappedObject->getDrawGrid());
 }
 
-int  PythonQtWrapper_LayoutEditor::getGridSize(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getGridSize());
-}
-
-int  PythonQtWrapper_LayoutEditor::getGridSize2nd(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getGridSize2nd());
-}
-
 bool  PythonQtWrapper_LayoutEditor::getHighlightSelectedBlock(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getHighlightSelectedBlock());
-}
-
-int  PythonQtWrapper_LayoutEditor::getLayoutHeight(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getLayoutHeight());
 }
 
 QString  PythonQtWrapper_LayoutEditor::getLayoutName(LayoutEditor* theWrappedObject)
@@ -19272,11 +19277,6 @@ QList<LayoutTurnout* >  PythonQtWrapper_LayoutEditor::getLayoutTurnouts(LayoutEd
 QList<LayoutTurnout* >*  PythonQtWrapper_LayoutEditor::getLayoutTurnoutsAndSlips(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getLayoutTurnoutsAndSlips());
-}
-
-int  PythonQtWrapper_LayoutEditor::getLayoutWidth(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getLayoutWidth());
 }
 
 bool  PythonQtWrapper_LayoutEditor::getOpenDispatcherOnLoad(LayoutEditor* theWrappedObject)
@@ -19379,26 +19379,6 @@ double  PythonQtWrapper_LayoutEditor::getTurnoutWid(LayoutEditor* theWrappedObje
   return ( theWrappedObject->getTurnoutWid());
 }
 
-int  PythonQtWrapper_LayoutEditor::getUpperLeftX(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getUpperLeftX());
-}
-
-int  PythonQtWrapper_LayoutEditor::getUpperLeftY(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getUpperLeftY());
-}
-
-int  PythonQtWrapper_LayoutEditor::getWindowHeight(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getWindowHeight());
-}
-
-int  PythonQtWrapper_LayoutEditor::getWindowWidth(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getWindowWidth());
-}
-
 double  PythonQtWrapper_LayoutEditor::getXOverHWid(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getXOverHWid());
@@ -19412,16 +19392,6 @@ double  PythonQtWrapper_LayoutEditor::getXOverLong(LayoutEditor* theWrappedObjec
 double  PythonQtWrapper_LayoutEditor::getXOverShort(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getXOverShort());
-}
-
-double  PythonQtWrapper_LayoutEditor::getXScale(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getXScale());
-}
-
-double  PythonQtWrapper_LayoutEditor::getYScale(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getYScale());
 }
 
 double  PythonQtWrapper_LayoutEditor::getZoom(LayoutEditor* theWrappedObject)
@@ -19467,11 +19437,6 @@ QRectF  PythonQtWrapper_LayoutEditor::layoutEditorControlCircleRectAt(LayoutEdit
 QRectF  PythonQtWrapper_LayoutEditor::layoutEditorControlRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
 {
   return ( theWrappedObject->layoutEditorControlRectAt(inPoint));
-}
-
-void PythonQtWrapper_LayoutEditor::makeBackupFile(LayoutEditor* theWrappedObject, QString  name)
-{
-  ( theWrappedObject->makeBackupFile(name));
 }
 
 void PythonQtWrapper_LayoutEditor::paintTargetPanel(LayoutEditor* theWrappedObject, EditScene*  g2)
@@ -19617,16 +19582,6 @@ void PythonQtWrapper_LayoutEditor::setDrawGrid(LayoutEditor* theWrappedObject, b
 void PythonQtWrapper_LayoutEditor::setGlobalSetsLocalFlag(LayoutEditor* theWrappedObject, bool  set)
 {
   ( theWrappedObject->setGlobalSetsLocalFlag(set));
-}
-
-int  PythonQtWrapper_LayoutEditor::setGridSize(LayoutEditor* theWrappedObject, int  newSize)
-{
-  return ( theWrappedObject->setGridSize(newSize));
-}
-
-int  PythonQtWrapper_LayoutEditor::setGridSize2nd(LayoutEditor* theWrappedObject, int  newSize)
-{
-  return ( theWrappedObject->setGridSize2nd(newSize));
 }
 
 void PythonQtWrapper_LayoutEditor::setHighlightSelectedBlock(LayoutEditor* theWrappedObject, bool  state)
@@ -19811,7 +19766,7 @@ QRectF  PythonQtWrapper_LayoutEditor::trackControlCircleRectAt(LayoutEditor* the
 
 QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::trackEditControlCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
 {
-  return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_trackEditControlCircleAt(inPoint));
+  return ( theWrappedObject->trackEditControlCircleAt(inPoint));
 }
 
 QRectF  PythonQtWrapper_LayoutEditor::trackEditControlRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)

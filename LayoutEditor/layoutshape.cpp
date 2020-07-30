@@ -799,7 +799,7 @@ void LayoutShape::on_changeName()
     LayoutShape* ls = new LayoutShape(this);
     ls->setName(layoutEditor->getFinder()->uniqueName("S"));
 
-    double gridSize = layoutEditor->getGridSize();
+    double gridSize = layoutEditor->gContext->getGridSize();
     QPointF delta = QPointF(gridSize, gridSize);
     for (LayoutShapePoint* lsp : ls->getPoints()) {
         lsp->setPoint(MathUtil::add(lsp->getPoint(), delta));

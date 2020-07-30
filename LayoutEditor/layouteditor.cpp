@@ -1,5 +1,4 @@
 #include "layouteditor.h"
-//#include "ui_layouteditor.h"
 #include <QGraphicsRectItem>
 #include "instancemanager.h"
 #include "QMessageBox"
@@ -337,6 +336,28 @@ LayoutEditor::~LayoutEditor()
         floatingEditToolBoxFrame = nullptr;
     }
 }
+//@Override
+/*public*/ void LayoutEditor::init(QString name) {
+}
+
+//@Override
+/*public*/ void LayoutEditor::initView() {
+   editModeCheckBoxMenuItem->setChecked(isEditable());
+
+   positionableCheckBoxMenuItem->setChecked(allPositionable());
+   controlCheckBoxMenuItem->setChecked(allControlling());
+
+   if (isEditable()) {
+       setAllShowToolTip(tooltipsInEditMode);
+   } else {
+       setAllShowToolTip(tooltipsWithoutEditMode);
+   }
+
+   scrollNoneMenuItem->setChecked(_scrollState == Editor::SCROLL_NONE);
+   scrollBothMenuItem->setChecked(_scrollState == Editor::SCROLL_BOTH);
+   scrollHorizontalMenuItem->setChecked(_scrollState == Editor::SCROLL_HORIZONTAL);
+   scrollVerticalMenuItem->setChecked(_scrollState == Editor::SCROLL_VERTICAL);
+}
 
 /*private*/ void LayoutEditor::createFloatingHelpPanel() {
 #if 0
@@ -395,7 +416,7 @@ void LayoutEditor::common()
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment.\nTo add a track segment, with shift down, click mouse on one connection point and drag to another connection point.\nTo move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment.\nTo add a track segment, with shift down, click mouse on one connection point and drag to another connection point->\nTo move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
 
  helpBarPanel->layout()->addWidget(textEdit);
  if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
@@ -463,14 +484,14 @@ void LayoutEditor::common()
      log->debug(tr("%1.toolBarSide is %2").arg(windowFrameRef).arg(prefsProp.toString()));
      if (prefsProp != QVariant()) {
          QString newToolBarSide = prefsProp.toString();
-         on_setToolBarSide(newToolBarSide);
+         setToolBarSide(newToolBarSide);
      }
 
      //Note: since prefs default to false and we want wide to be the default
      //we invert it and save it as thin
      bool prefsToolBarIsWide = prefsMgr->getSimplePreferenceState(windowFrameRef + ".toolBarThin");
      log->debug(tr("%1.toolBarThin is %2").arg(windowFrameRef).arg(prefsProp.toString()));
-     on_setToolBarWide(prefsToolBarIsWide);
+     setToolBarWide(prefsToolBarIsWide);
 
      bool prefsShowHelpBar = prefsMgr->getSimplePreferenceState(windowFrameRef + ".showHelpBar");
      //log.debug("{}.showHelpBar is {}", windowFrameRef, prefsShowHelpBar);
@@ -505,7 +526,7 @@ void LayoutEditor::common()
 
 void LayoutEditor::trigger_menu()
 {
-on_setToolBarSide(toolBarSide->getName().toUpper());
+ setToolBarSide(toolBarSide->getName().toUpper());
 }
 
 /*public*/ void LayoutEditor::setSize(int w, int h)
@@ -1431,7 +1452,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
  }
 }   //checkPointsOfTurnoutSub
 #endif
-// We just dropped a turnout... see if it will connect to anything
+// We just dropped a turnout->.. see if it will connect to anything
 /*private*/ void LayoutEditor::hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt) {
     beginTrack = lt;
 
@@ -2525,7 +2546,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 
 bool LayoutEditor::isEditable() {return bIsEditable;}
 /**
- * Add an Anchor point.
+ * Add an Anchor point->
  */
 /*public*/ void LayoutEditor::addAnchor()
 {
@@ -2820,6 +2841,24 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
     return getPaintScale();
 }
 
+/**
+ * getMinZoom
+ *
+ * @return the minimum zoom scale
+ */
+/*public*/ double LayoutEditor::getMinZoom() {
+    return minZoom;
+}
+
+/**
+ * getMaxZoom
+ *
+ * @return the maximum zoom scale
+ */
+/*public*/ double LayoutEditor::getMaxZoom() {
+    return maxZoom;
+}
+
 //
 // TODO: make this public? (might be useful!)
 //
@@ -2909,7 +2948,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 }
 
 /**
- * Add an End Bumper point.
+ * Add an End Bumper point->
  */
 /*public*/ void LayoutEditor::addEndBumper() {
     numEndBumpers ++;
@@ -2924,7 +2963,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 }
 
 /**
- * Add an Edge Connector point.
+ * Add an Edge Connector point->
  */
 /*public*/ void LayoutEditor::addEdgeConnector()
 {
@@ -3392,7 +3431,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  }
  if (!result && (inOpenPane != nullptr)) {
      JOptionPane::showMessageDialog(inOpenPane,
-             tr("Error - Physical turnout \"%1\" is already linked to a different Panel Turnout.\nPlease enter another turnout name and try again.")
+             tr("Error - Physical turnout \"%1\" is already linked to a different Panel turnout->\nPlease enter another turnout name and try again.")
                      .arg(inTurnoutName),
              tr("Error"), JOptionPane::ERROR_MESSAGE);
  }
@@ -3400,135 +3439,135 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 }
 
 
-/*private*/ void LayoutEditor::highLightSelection(EditScene* g)
-{
-  //java.awt.Stroke stroke = g.getStroke();
-//  Color color = g.getColor();
-//  g.setColor(new Color(204, 207, 88));
-//  g.setStroke(new java.awt.BasicStroke(2.0f));
- QColor color = QColor(204,207,88);
- QPen pen(color,2.0);
- if(highlightRect != nullptr && highlightRect->scene() != 0)
- {
-  g->removeItem(highlightRect);
- }
- highlightRect = new QGraphicsItemGroup();
+///*private*/ void LayoutEditor::highLightSelection(EditScene* g)
+//{
+//  //java.awt.Stroke stroke = g.getStroke();
+////  Color color = g.getColor();
+////  g.setColor(new Color(204, 207, 88));
+////  g.setStroke(new java.awt.BasicStroke(2.0f));
+// QColor color = QColor(204,207,88);
+// QPen pen(color,2.0);
+// if(highlightRect != nullptr && highlightRect->scene() != 0)
+// {
+//  g->removeItem(highlightRect);
+// }
+// highlightRect = new QGraphicsItemGroup();
 
- if (_positionableSelection!=nullptr)
- {
-  for (int i = 0; i<_positionableSelection->size(); i++)
-  {
-   Positionable* c = _positionableSelection->at(i);
-   //g.drawRect(c.getX(), c.getY(), c.maxWidth(), c.maxHeight());
-   QGraphicsRectItem* item;
-   SensorIcon* si;
-   LocoIcon* li;
-   LEMemoryIcon* mi;
-   if((si = static_cast<SensorIcon*>(c->self()))!=nullptr)
-    item = new QGraphicsRectItem(QRectF(si->getX(), si->getY(), si->maxWidth(), si->maxHeight()));
-   else if((li = static_cast<LocoIcon*>(c))!=nullptr)
-    item = new QGraphicsRectItem(QRectF(li->getX(), li->getY(), li->maxWidth(), li->maxHeight()));
-   else if((mi = static_cast<LEMemoryIcon*>(c))!=nullptr)
-    item = new QGraphicsRectItem(QRectF(mi->getX(), mi->getY(), mi->maxWidth(), mi->maxHeight()));
+// if (_positionableSelection!=nullptr)
+// {
+//  for (int i = 0; i<_positionableSelection->size(); i++)
+//  {
+//   Positionable* c = _positionableSelection->at(i);
+//   //g.drawRect(c.getX(), c.getY(), c.maxWidth(), c.maxHeight());
+//   QGraphicsRectItem* item;
+//   SensorIcon* si;
+//   LocoIcon* li;
+//   LEMemoryIcon* mi;
+//   if((si = static_cast<SensorIcon*>(c->self()))!=nullptr)
+//    item = new QGraphicsRectItem(QRectF(si->getX(), si->getY(), si->maxWidth(), si->maxHeight()));
+//   else if((li = static_cast<LocoIcon*>(c))!=nullptr)
+//    item = new QGraphicsRectItem(QRectF(li->getX(), li->getY(), li->maxWidth(), li->maxHeight()));
+//   else if((mi = static_cast<LEMemoryIcon*>(c))!=nullptr)
+//    item = new QGraphicsRectItem(QRectF(mi->getX(), mi->getY(), mi->maxWidth(), mi->maxHeight()));
 
-   item->setPen(pen);
-   highlightRect->addToGroup(item);
-  }
- }
- // loop over all defined turnouts
- if (_turnoutSelection!=nullptr)
- {
-  for (int i = 0; i<_turnoutSelection->size();i++)
-  {
-   LayoutTurnout* t = _turnoutSelection->at(i);
-   int minx = (int) qMin(qMin(t->getCoordsA().x(), t->getCoordsB().x()),qMin(t->getCoordsC().x(), t->getCoordsD().x()));
-   int miny = (int) qMin(qMin(t->getCoordsA().y(), t->getCoordsB().y()),qMin(t->getCoordsC().y(), t->getCoordsD().y()));
-   int maxx = (int) qMax(qMax(t->getCoordsA().x(), t->getCoordsB().x()),qMax(t->getCoordsC().x(), t->getCoordsD().x()));
-   int maxy = (int) qMax(qMax(t->getCoordsA().y(), t->getCoordsB().y()),qMax(t->getCoordsC().y(), t->getCoordsD().y()));
-   int width = maxx-minx;
-   int height = maxy-miny;
-   int x = (int) t->getCoordsCenter().x()-(width/2);
-   int y = (int) t->getCoordsCenter().y()-(height/2);
-   //g.drawRect(x, y, width, height);
-   QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width, height));
-   item->setPen(pen);
-   highlightRect->addToGroup(item);
-  }
- }
- if (_xingSelection!=nullptr)
- {
-  // loop over all defined level crossings
-  for (int i = 0; i<_xingSelection->size();i++)
-  {
-   LevelXing* xing = _xingSelection->at(i);
-   int minx = (int) qMin(qMin(xing->getCoordsA().x(), xing->getCoordsB().x()),qMin(xing->getCoordsC().x(), xing->getCoordsD().x()));
-   int miny = (int) qMin(qMin(xing->getCoordsA().y(), xing->getCoordsB().y()),qMin(xing->getCoordsC().y(), xing->getCoordsD().y()));
-   int maxx = (int) qMax(qMax(xing->getCoordsA().x(), xing->getCoordsB().x()),qMax(xing->getCoordsC().x(), xing->getCoordsD().x()));
-   int maxy = (int) qMax(qMax(xing->getCoordsA().y(), xing->getCoordsB().y()),qMax(xing->getCoordsC().y(), xing->getCoordsD().y()));
-   int width = maxx-minx;
-   int height = maxy-miny;
-   int x = (int) xing->getCoordsCenter().x()-(width/2);
-   int y = (int) xing->getCoordsCenter().y()-(height/2);
-   //g.drawRect(x, y, width, height);
-   QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width, height));
-   item->setPen(pen);
-   highlightRect->addToGroup(item);
-  }
- }
-  if (_slipSelection!=nullptr)
-  {
-  // loop over all defined level crossings
-   for (int i = 0; i<_slipSelection->size();i++)
-  {
-    LayoutSlip* xing = _slipSelection->at(i);
-    int minx = (int) qMin(qMin(xing->getCoordsA().x(), xing->getCoordsB().x()),qMin(xing->getCoordsC().x(), xing->getCoordsD().x()));
-    int miny = (int) qMin(qMin(xing->getCoordsA().y(), xing->getCoordsB().y()),qMin(xing->getCoordsC().y(), xing->getCoordsD().y()));
-    int maxx = (int) qMax(qMax(xing->getCoordsA().x(), xing->getCoordsB().x()),qMax(xing->getCoordsC().x(), xing->getCoordsD().x()));
-    int maxy = (int) qMax(qMax(xing->getCoordsA().y(), xing->getCoordsB().y()),qMax(xing->getCoordsC().y(), xing->getCoordsD().y()));
-    int width = maxx-minx;
-    int height = maxy-miny;
-    int x = (int) xing->getCoordsCenter().x()-(width/2);
-    int y = (int) xing->getCoordsCenter().y()-(height/2);
-    //g->drawRect(x, y, width, height);
-    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width, height));
-    item->setPen(pen);
-    highlightRect->addToGroup(item);
-   }
-  }
-  // loop over all defined turntables
-  if (_turntableSelection!=nullptr)
-  {
-   for (int i = 0; i<_turntableSelection->size();i++)
-   {
-       LayoutTurntable* tt = _turntableSelection->at(i);
-       QPointF center = tt->getCoordsCenter();
-       int x = (int) center.x() - (int)tt->getRadius();
-       int y = (int) center.y() - (int)tt->getRadius();
-       //g.drawRect(x, y, ((int)tt->getRadius()*2), ((int)tt->getRadius()*2));
-          QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width(), height()));
-          item->setPen(pen);
-          highlightRect->addToGroup(item);
-   }
-  }
-  // loop over all defined Anchor Points and End Bumpers
-  if (_pointSelection!=nullptr)
-  {
-   for (int i = 0; i<_pointSelection->size();i++)
-   {
-    PositionablePoint* p = _pointSelection->at(i);
-    QPointF coord = p->getCoordsCenter();
-    //g.drawRect((int)coord.getX()-4, (int)coord.getY()-4, 9, 9);
-    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF((int)coord.x()-4, (int)coord.y()-4, 9, 9));
-    item->setPen(pen);
-    highlightRect->addToGroup(item);
-   }
-  }
-//  g.setColor(color);
-//  g.setStroke(stroke);
-  if(highlightRect && highlightRect->scene())
-   log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-  g->addItem(highlightRect);
-}
+//   item->setPen(pen);
+//   highlightRect->addToGroup(item);
+//  }
+// }
+// // loop over all defined turnouts
+// if (_turnoutSelection!=nullptr)
+// {
+//  for (int i = 0; i<_turnoutSelection->size();i++)
+//  {
+//   LayoutTurnout* t = _turnoutSelection->at(i);
+//   int minx = (int) qMin(qMin(t->getCoordsA().x(), t->getCoordsB().x()),qMin(t->getCoordsC().x(), t->getCoordsD().x()));
+//   int miny = (int) qMin(qMin(t->getCoordsA().y(), t->getCoordsB().y()),qMin(t->getCoordsC().y(), t->getCoordsD().y()));
+//   int maxx = (int) qMax(qMax(t->getCoordsA().x(), t->getCoordsB().x()),qMax(t->getCoordsC().x(), t->getCoordsD().x()));
+//   int maxy = (int) qMax(qMax(t->getCoordsA().y(), t->getCoordsB().y()),qMax(t->getCoordsC().y(), t->getCoordsD().y()));
+//   int width = maxx-minx;
+//   int height = maxy-miny;
+//   int x = (int) t->getCoordsCenter().x()-(width/2);
+//   int y = (int) t->getCoordsCenter().y()-(height/2);
+//   //g.drawRect(x, y, width, height);
+//   QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width, height));
+//   item->setPen(pen);
+//   highlightRect->addToGroup(item);
+//  }
+// }
+// if (_xingSelection!=nullptr)
+// {
+//  // loop over all defined level crossings
+//  for (int i = 0; i<_xingSelection->size();i++)
+//  {
+//   LevelXing* xing = _xingSelection->at(i);
+//   int minx = (int) qMin(qMin(xing->getCoordsA().x(), xing->getCoordsB().x()),qMin(xing->getCoordsC().x(), xing->getCoordsD().x()));
+//   int miny = (int) qMin(qMin(xing->getCoordsA().y(), xing->getCoordsB().y()),qMin(xing->getCoordsC().y(), xing->getCoordsD().y()));
+//   int maxx = (int) qMax(qMax(xing->getCoordsA().x(), xing->getCoordsB().x()),qMax(xing->getCoordsC().x(), xing->getCoordsD().x()));
+//   int maxy = (int) qMax(qMax(xing->getCoordsA().y(), xing->getCoordsB().y()),qMax(xing->getCoordsC().y(), xing->getCoordsD().y()));
+//   int width = maxx-minx;
+//   int height = maxy-miny;
+//   int x = (int) xing->getCoordsCenter().x()-(width/2);
+//   int y = (int) xing->getCoordsCenter().y()-(height/2);
+//   //g.drawRect(x, y, width, height);
+//   QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width, height));
+//   item->setPen(pen);
+//   highlightRect->addToGroup(item);
+//  }
+// }
+//  if (_slipSelection!=nullptr)
+//  {
+//  // loop over all defined level crossings
+//   for (int i = 0; i<_slipSelection->size();i++)
+//  {
+//    LayoutSlip* xing = _slipSelection->at(i);
+//    int minx = (int) qMin(qMin(xing->getCoordsA().x(), xing->getCoordsB().x()),qMin(xing->getCoordsC().x(), xing->getCoordsD().x()));
+//    int miny = (int) qMin(qMin(xing->getCoordsA().y(), xing->getCoordsB().y()),qMin(xing->getCoordsC().y(), xing->getCoordsD().y()));
+//    int maxx = (int) qMax(qMax(xing->getCoordsA().x(), xing->getCoordsB().x()),qMax(xing->getCoordsC().x(), xing->getCoordsD().x()));
+//    int maxy = (int) qMax(qMax(xing->getCoordsA().y(), xing->getCoordsB().y()),qMax(xing->getCoordsC().y(), xing->getCoordsD().y()));
+//    int width = maxx-minx;
+//    int height = maxy-miny;
+//    int x = (int) xing->getCoordsCenter().x()-(width/2);
+//    int y = (int) xing->getCoordsCenter().y()-(height/2);
+//    //g->drawRect(x, y, width, height);
+//    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width, height));
+//    item->setPen(pen);
+//    highlightRect->addToGroup(item);
+//   }
+//  }
+//  // loop over all defined turntables
+//  if (_turntableSelection!=nullptr)
+//  {
+//   for (int i = 0; i<_turntableSelection->size();i++)
+//   {
+//       LayoutTurntable* tt = _turntableSelection->at(i);
+//       QPointF center = tt->getCoordsCenter();
+//       int x = (int) center.x() - (int)tt->getRadius();
+//       int y = (int) center.y() - (int)tt->getRadius();
+//       //g.drawRect(x, y, ((int)tt->getRadius()*2), ((int)tt->getRadius()*2));
+//          QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width(), height()));
+//          item->setPen(pen);
+//          highlightRect->addToGroup(item);
+//   }
+//  }
+//  // loop over all defined Anchor Points and End Bumpers
+//  if (_pointSelection!=nullptr)
+//  {
+//   for (int i = 0; i<_pointSelection->size();i++)
+//   {
+//    PositionablePoint* p = _pointSelection->at(i);
+//    QPointF coord = p->getCoordsCenter();
+//    //g.drawRect((int)coord.getX()-4, (int)coord.getY()-4, 9, 9);
+//    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF((int)coord.x()-4, (int)coord.y()-4, 9, 9));
+//    item->setPen(pen);
+//    highlightRect->addToGroup(item);
+//   }
+//  }
+////  g.setColor(color);
+////  g.setStroke(stroke);
+//  if(highlightRect && highlightRect->scene())
+//   log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
+//  g->addItem(highlightRect);
+//}
 
 /*private*/ void LayoutEditor::createSelectionGroups()
 {
@@ -3786,9 +3825,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
   setDirty(true);
 }
 
-/*public*/ double LayoutEditor::getXScale() {return gContext->getXScale();}
+///*public*/ double LayoutEditor::getXScale() {return gContext->getXScale();}
 
-/*public*/ double LayoutEditor::getYScale() {return gContext->getYScale();}
+///*public*/ double LayoutEditor::getYScale() {return gContext->getYScale();}
 
 //    public Color getDefaultBackgroundColor() {
 //        return defaultBackgroundColor;
@@ -4102,7 +4141,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   log->debug(tr("list sizes differ"));
  return list;
 //    )
-//            .map(PositionablePoint.class::cast)
+//            .map(Positionablepoint->class::cast)
 //            .collect(Collectors.toCollection(ArrayList<PositionablePoint>::new));
 }
 
@@ -4325,27 +4364,27 @@ bool LayoutEditor::isDirty() {return bDirty;}
   return animatingLayout;
 }
 
-/*public*/ int LayoutEditor::getLayoutWidth() {return gContext->getLayoutWidth();}
+///*public*/ int LayoutEditor::getLayoutWidth() {return gContext->getLayoutWidth();}
 
-/*public*/ int LayoutEditor::getLayoutHeight() {return gContext->getLayoutHeight();}
+///*public*/ int LayoutEditor::getLayoutHeight() {return gContext->getLayoutHeight();}
 
-/*public*/ int LayoutEditor::getWindowWidth()
-{
- windowWidth = this->size().width();
- windowHeight= this->size().height();
- return windowWidth;
-}
+///*public*/ int LayoutEditor::getWindowWidth()
+//{
+// windowWidth = this->size().width();
+// windowHeight= this->size().height();
+// return windowWidth;
+//}
 
-/*public*/ int LayoutEditor::getWindowHeight()
-{
- windowWidth = this->size().width();
- windowHeight= this->size().height();
- return windowHeight;
-}
+///*public*/ int LayoutEditor::getWindowHeight()
+//{
+// windowWidth = this->size().width();
+// windowHeight= this->size().height();
+// return windowHeight;
+//}
 
-/*public*/ int LayoutEditor::getUpperLeftX() {return upperLeftX;}
+///*public*/ int LayoutEditor::getUpperLeftX() {return upperLeftX;}
 
-/*public*/ int LayoutEditor::getUpperLeftY() {return upperLeftY;}
+///*public*/ int LayoutEditor::getUpperLeftY() {return upperLeftY;}
 
 /*public*/ bool LayoutEditor::getScroll() {
   // deprecated but kept to allow opening files
@@ -4354,23 +4393,23 @@ bool LayoutEditor::isDirty() {return bDirty;}
   else return true;
 }
 
-/*public*/ int LayoutEditor::setGridSize(int newSize) {
-    gContext->setGridSize(newSize);
-    return gContext->getGridSize();
-}
+///*public*/ int LayoutEditor::setGridSize(int newSize) {
+//    gContext->setGridSize(newSize);
+//    return gContext->getGridSize();
+//}
 
-/*public*/ int LayoutEditor::getGridSize() {
-    return gContext->getGridSize();
-}
+///*public*/ int LayoutEditor::getGridSize() {
+//    return gContext->getGridSize();
+//}
 
-/*public*/ int LayoutEditor::setGridSize2nd(int newSize) {
- gContext->setGridSize2nd(newSize);
- return gContext->getGridSize2nd();
-}
+///*public*/ int LayoutEditor::setGridSize2nd(int newSize) {
+// gContext->setGridSize2nd(newSize);
+// return gContext->getGridSize2nd();
+//}
 
-/*public*/ int LayoutEditor::getGridSize2nd() {
-    return gContext->getGridSize2nd();
-}
+///*public*/ int LayoutEditor::getGridSize2nd() {
+//    return gContext->getGridSize2nd();
+//}
 /*public*/ /*const*/ int LayoutEditor::getAnchorX() {
   return _anchorX;
 }
@@ -4422,7 +4461,7 @@ double LayoutEditor::toRadians(double degrees)
 /*public*/ QList<LayoutTurnout*> LayoutEditor::getLayoutTurnouts() {
 //    return layoutTrackList->stream() // next line excludes LayoutSlips
 //            .filter((o) -> (!(o instanceof LayoutSlip) && (o instanceof LayoutTurnout)))
-//            .map(LayoutTurnout.class::cast).map(LayoutTurnout.class::cast)
+//            .map(Layoutturnout->class::cast).map(Layoutturnout->class::cast)
 //            .collect(Collectors.toCollection(ArrayList<LayoutTurnout>::new));
  QList<LayoutTurnout*> list = QList<LayoutTurnout*>();
  foreach (LayoutTrack* lt, *layoutTrackList)
@@ -4664,7 +4703,7 @@ double LayoutEditor::toRadians(double degrees)
  }
  return false;
 }
-#if 1
+
 //@Override
     /*public*/ void LayoutEditor::keyPressEvent(QKeyEvent *event) {
         if (event->key() == Qt::Key_Delete) {
@@ -4713,7 +4752,6 @@ double LayoutEditor::toRadians(double degrees)
             redrawPanel();
         }
     }
-#endif
 
 QGraphicsView* LayoutEditor::panel()
 {
@@ -5189,6 +5227,26 @@ void LayoutEditor::addLabel()
    backgroundImage->append((PositionableLabel*)l->self());
   }
  }
+}
+
+/**
+ * Return a layout block with the given name if one exists. Registers this
+ * LayoutEditor with the layout block. This method is designed to be used
+ * when a panel is loaded. The calling method must handle whether the use
+ * count should be incremented.
+ *
+ * @param blockID the given name
+ * @return null if blockID does not already exist
+ */
+/*public*/ LayoutBlock* LayoutEditor::getLayoutBlock(/*@Nonnull*/ QString blockID) {
+    // check if this Layout Block already exists
+    LayoutBlock* blk = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(blockID);
+    if (blk == nullptr) {
+        log->error(tr("LayoutBlock '%1' not found when panel loaded").arg(blockID));
+        return nullptr;
+    }
+    blk->addLayoutEditor(this);
+    return blk;
 }
 
 /**
@@ -6332,22 +6390,6 @@ return icon;
  layoutName = name;
  setWindowTitle("LayoutEditor - "+name);
 }
-//QString MyLayoutEditor::colorToString(QColor c)
-//{
-// for(int i=0; i < _colors.size(); i++)
-// {
-//  if(c == _colors.at(i))
-//   return _Colors.at(i).toLower();
-// }
-// return "";
-//}
-QColor LayoutEditor::getBackgroundColor()
-{
- QBrush b = editPanel->backgroundBrush();
- if(b == Qt::NoBrush)
-  return QColor(Qt::white);
- return b.color();
-}
 
 /*public*/ ConnectivityUtil* LayoutEditor::getConnectivityUtil() {
      if (conTools == nullptr) {
@@ -6563,57 +6605,10 @@ void LayoutEditor::startMultiSensor() {
  //multiSensorFrame = nullptr;
 }
 
-//void LayoutEditor::onChangeIconsButton()
-//{
-// if (leToolBarPanel->sensorButton->isChecked()) {
-//     sensorFrame->setVisible(true);
-// } else if (leToolBarPanel->signalButton->isChecked()) {
-//     signalFrame->setVisible(true);
-// } else if (leToolBarPanel->iconLabelButton->isChecked()) {
-//     iconFrame->setVisible(true);
-// } else {
-//     //explain to the user why nothing happens
-//     JOptionPane::showMessageDialog(nullptr, tr("This only works when a Sensor, Signal Head or\nLabel is selected to the right of this button."),
-//             tr("Change Icons"), JOptionPane::INFORMATION_MESSAGE);
-// }
-
-//}
 void LayoutEditor::closeEvent(QCloseEvent *)
 {
  bool save = (isDirty() || (savedEditMode!=isEditable()) || (savedPositionable!=allPositionable()) || (savedControlLayout!=allControlling()) ||	(savedAnimatingLayout!=animatingLayout) ||	 (savedShowHelpBar!=showHelpBar) );
  targetWindowClosing(save);
-}
-
-/*public*/ void LayoutEditor::makeBackupFile(QString name)
-{
- XmlFile* xmlfile = new XmlFile;
- QFile* file = xmlfile->findFile(name);
- if (file == nullptr)
- {
-  log->info("No " + name + " file to backup");
- }
- else
- {
-  QFileInfo info(file->fileName());
-
-  QString backupName = xmlfile->backupFileName(info.absoluteFilePath());
-  QFile* backupFile = xmlfile->findFile(backupName);
-  if (backupFile != nullptr)
-  {
-   if (backupFile->remove())
-   {
-    log->debug("deleted backup file " + backupName);
-   }
-  }
-  if (file->rename(backupName))
-  {
-   log->debug("created new backup file " + backupName);
-  }
-  else
-  {
-   log->error("could not create backup file " + backupName);
-  }
- }
 }
 
 /**
@@ -7323,6 +7318,30 @@ void LayoutEditor::undoMoveSelection() {
     return QRectF(inPoint.x() - circleRadius,
             inPoint.y() - circleRadius, circleDiameter, circleDiameter);
 }
+//@Nonnull
+/*public*/ QList<SensorIcon*> LayoutEditor::getSensorList() {
+    return sensorList->toList();
+}
+
+//@Nonnull
+/*public*/ QList<LEBlockContentsIcon*> LayoutEditor::getBlockContentsLabelList() {
+    return blockContentsLabelList->toList();
+}
+
+//@Nonnull
+/*public*/ QList<LEMemoryIcon*> LayoutEditor::getMemoryLabelList() {
+    return memoryLabelList->toList();
+}
+
+//@Nonnull
+/*public*/ QList<SignalHeadIcon*> LayoutEditor::getSignalList() {
+    return signalList->toList();
+}
+
+//@Nonnull
+/*public*/ QList<SignalMastIcon *> LayoutEditor::getSignalMastList() {
+    return signalMastList->toList();
+}
 
 /*public*/ LayoutEditorFindItems* LayoutEditor::getFinder() {
     return finder;
@@ -7468,19 +7487,26 @@ void LayoutEditor::undoMoveSelection() {
     toolBarSideGroup->addAction(toolBarSideRightButton);
     toolBarSideGroup->addAction(toolBarSideFloatButton);
     toolBarMenu->addMenu(toolBarSideMenu);
-    connect(toolBarSideGroup, SIGNAL(triggered(QAction*)), this, SLOT(on_setToolBarSide(QAction*)));
+    connect(toolBarSideGroup, &QActionGroup::triggered, [=]{
+     if(editToolBarContainerPanel)
+       //removeDockWidget(editToolBarContainerPanel);
+      editToolBarContainerPanel->layout()->removeWidget(editToolBarContainerPanel);
+     QObject* o = QObject::sender();
+     QAction* act = (QAction*)o;
+     setToolBarSide(act->text());
+    });
 
     //
     //toolbar wide menu
     //
     toolBarMenu->addAction(wideToolBarCheckBoxMenuItem);
 //    wideToolBarCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
-//        bool newToolBarIsWide = wideToolBarCheckBoxMenuItem.isSelected();
-//        setToolBarWide(newToolBarIsWide);
-//    });
+    connect(wideToolBarCheckBoxMenuItem, &JCheckBoxMenuItem::triggered, [=]{
+        bool newToolBarIsWide = wideToolBarCheckBoxMenuItem->isChecked();
+        setToolBarWide(newToolBarIsWide);
+    });
     wideToolBarCheckBoxMenuItem->setChecked(leToolBarPanel->toolBarIsWide);
     wideToolBarCheckBoxMenuItem->setEnabled((toolBarSide->getType() == eTOP) || (toolBarSide->getType() == eBOTTOM));
-    connect(wideToolBarCheckBoxMenuItem, SIGNAL(toggled(bool)), this, SLOT(on_setToolBarWide(bool)));
 
     //
     // Scroll Bars
@@ -7559,33 +7585,33 @@ void LayoutEditor::undoMoveSelection() {
     tooltipMenu->addAction(tooltipAlwaysMenuItem);
     tooltipAlwaysMenuItem->setChecked((tooltipsInEditMode) && (tooltipsWithoutEditMode));
 //    tooltipAlwaysMenuItem.addActionListener((ActionEvent event) -> {
-//        tooltipsInEditMode = true;
-//        tooltipsWithoutEditMode = true;
-//        setAllShowToolTip(true);
-//    });
-    connect(tooltipAlwaysMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TooltipAlwaysMenuItem()));
+    connect(tooltipAlwaysMenuItem, &QAction::triggered, [=]{
+        tooltipsInEditMode = true;
+        tooltipsWithoutEditMode = true;
+        setAllShowToolTip(true);
+    });
     tooltipInEditMenuItem = new QAction(tr("In Edit Mode only"),this);
     tooltipInEditMenuItem->setCheckable(true);
     tooltipGroup->addAction(tooltipInEditMenuItem);
     tooltipMenu->addAction(tooltipInEditMenuItem);
     tooltipInEditMenuItem->setChecked((tooltipsInEditMode) && (!tooltipsWithoutEditMode));
 //    tooltipInEditMenuItem.addActionListener((ActionEvent event) -> {
-//        tooltipsInEditMode = true;
-//        tooltipsWithoutEditMode = false;
-//        setAllShowToolTip(isEditable());
-//    });
-    connect(tooltipInEditMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TooltipInEditMenuItem()));
+    connect(tooltipInEditMenuItem, &QAction::triggered, [=]{
+        tooltipsInEditMode = true;
+        tooltipsWithoutEditMode = false;
+        setAllShowToolTip(isEditable());
+    });
     tooltipNotInEditMenuItem = new QAction(tr("Not in Edit Mode only"), this);
     tooltipNotInEditMenuItem->setCheckable(true);
     tooltipGroup->addAction(tooltipNotInEditMenuItem);
     tooltipMenu->addAction(tooltipNotInEditMenuItem);
     tooltipNotInEditMenuItem->setChecked((!tooltipsInEditMode) && (tooltipsWithoutEditMode));
 //    tooltipNotInEditMenuItem.addActionListener((ActionEvent event) -> {
-//        tooltipsInEditMode = false;
-//        tooltipsWithoutEditMode = true;
-//        setAllShowToolTip(!isEditable());
-//    });
-    connect(tooltipNotInEditMenuItem, SIGNAL(triggered(bool)), this, SLOT(on_TooltipNotInEditMenuItem()));
+    connect(tooltipNotInEditMenuItem, &QAction::triggered, [=]{
+        tooltipsInEditMode = false;
+        tooltipsWithoutEditMode = true;
+        setAllShowToolTip(!isEditable());
+    });
 
     //
     // show edit help
@@ -8052,25 +8078,6 @@ void LayoutEditor::undoMoveSelection() {
     return optionMenu;
 }
 
-void LayoutEditor::on_TooltipAlwaysMenuItem()
-{
- tooltipsInEditMode = true;
- tooltipsWithoutEditMode = true;
- setAllShowToolTip(true);
-}
-void LayoutEditor::on_TooltipInEditMenuItem()
-{
- tooltipsInEditMode = true;
- tooltipsWithoutEditMode = false;
- setAllShowToolTip(isEditable());
-}
-void LayoutEditor::on_TooltipNotInEditMenuItem()
-{
- tooltipsInEditMode = false;
- tooltipsWithoutEditMode = true;
- setAllShowToolTip(!isEditable());
-}
-
 /*============================================*\
 |* LayoutTrackDrawingOptions accessor methods *|
 \*============================================*/
@@ -8309,7 +8316,6 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
 //    toolsMenu->addSeparator();
 //    QAction* clearAction = new QAction(tr("Clear track"), this);
 //    toolsMenu->addAction(clearAction);
-//    connect(clearAction, SIGNAL(triggered(bool)), this, SLOT(on_clearTrack()));
 }   // setupToolsMenu
 
 /**
@@ -8369,36 +8375,7 @@ void LayoutEditor::on_TooltipNotInEditMenuItem()
     }
 }   // setToolBarSide
 
-void LayoutEditor::on_clearTrack()
-{
- // remove existing items from scene
- for(LayoutTrack* layoutTrack : *layoutTrackList)
- {
-  layoutTrack->invalidate(editScene);
- }
- QList<QGraphicsItem*> items = editScene->items();
- foreach(QGraphicsItem* item, items)
- {
-  if(item->zValue() == Editor::HANDLES+1)
-  {
-   editScene->removeItem(item);
-   delete item;
-  }
- }
-}
-
-//
-//
-//
-/*private*/ void LayoutEditor::on_setToolBarSide(QAction* act)
-{
- if(editToolBarContainerPanel)
-   //removeDockWidget(editToolBarContainerPanel);
-  editToolBarContainerPanel->layout()->removeWidget(editToolBarContainerPanel);
- on_setToolBarSide(act->text());
-}
-
-/*private*/ void LayoutEditor::on_setToolBarSide(QString newToolBarSide)
+/*private*/ void LayoutEditor::setToolBarSide(QString newToolBarSide)
 {
  // null if edit toolbar is not setup yet...
  if (newToolBarSide !=(toolBarSide->getName()))
@@ -8451,12 +8428,10 @@ void LayoutEditor::on_clearTrack()
  }
 }   // setToolBarSide
 
-
-
 //
 //
 //
-/*private*/ void LayoutEditor::on_setToolBarWide(bool newToolBarIsWide)
+/*private*/ void LayoutEditor::setToolBarWide(bool newToolBarIsWide)
 {
  //null if edit toolbar not setup yet...
  if ((editModeCheckBoxMenuItem != nullptr) && (toolBarIsWide != newToolBarIsWide))
@@ -8505,7 +8480,264 @@ void LayoutEditor::on_clearTrack()
     }
     Editor::dispose();
 }
+// package protected
+//class TurnoutComboBoxPopupMenuListener implements PopupMenuListener {
 
+//    private final NamedBeanComboBox<Turnout> comboBox;
+//    private final List<Turnout> currentTurnouts;
+
+//    public TurnoutComboBoxPopupMenuListener(NamedBeanComboBox<Turnout> comboBox, List<Turnout> currentTurnouts) {
+//        this.comboBox = comboBox;
+//        this.currentTurnouts = currentTurnouts;
+//    }
+
+//    @Override
+//    public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
+//        // This method is called before the popup menu becomes visible.
+//        log.debug("PopupMenuWillBecomeVisible");
+//        Set<Turnout> l = new HashSet<>();
+//        comboBox.getManager().getNamedBeanSet().forEach((turnout) -> {
+//            if (!currentTurnouts.contains(turnout)) {
+//                if (!validatePhysicalTurnout(turnout.getDisplayName(), null)) {
+//                    l.add(turnout);
+//                }
+//            }
+//        });
+//        comboBox.setExcludedItems(l);
+//    }
+
+//    @Override
+//    public void popupMenuWillBecomeInvisible(PopupMenuEvent event) {
+//        // This method is called before the popup menu becomes invisible
+//        log.debug("PopupMenuWillBecomeInvisible");
+//    }
+
+//    @Override
+//    public void popupMenuCanceled(PopupMenuEvent event) {
+//        // This method is called when the popup menu is canceled
+//        log.debug("PopupMenuCanceled");
+//    }
+//}
+
+/**
+ * Create a listener that will exclude turnouts that are present in the
+ * current panel.
+ *
+ * @param comboBox The NamedBeanComboBox that contains the turnout list.
+ * @return A PopupMenuListener
+ */
+/*public*/ TurnoutComboBoxPopupMenuListener* LayoutEditor::newTurnoutComboBoxPopupMenuListener(NamedBeanComboBox/*<Turnout>*/* comboBox) {
+    return new TurnoutComboBoxPopupMenuListener(comboBox, QList<Turnout*>(), this);
+}
+
+/**
+ * Create a listener that will exclude turnouts that are present in the
+ * current panel. The list of current turnouts are not excluded.
+ *
+ * @param comboBox        The NamedBeanComboBox that contains the turnout
+ *                        list.
+ * @param currentTurnouts The turnouts to be left in the turnout list.
+ * @return A PopupMenuListener
+ */
+/*public*/ TurnoutComboBoxPopupMenuListener* LayoutEditor::newTurnoutComboBoxPopupMenuListener(NamedBeanComboBox/*<Turnout>*/* comboBox, QList<Turnout*> currentTurnouts) {
+    return new TurnoutComboBoxPopupMenuListener(comboBox, currentTurnouts, this);
+}
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> LayoutEditor::getUsageReport(NamedBean* bean) {
+    usageReport = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        usageReport = PanelEditor::getUsageReport(bean);
+
+        // LE Specific checks
+        // Turnouts
+        findTurnoutUsage(bean);
+
+        // Check A, EB, EC for sensors, masts, heads
+        findPositionalUsage(bean);
+
+        // Level Crossings
+        findXingWhereUsed(bean);
+
+        // Track segments
+        findSegmentWhereUsed(bean);
+    }
+    return usageReport;
+}
+
+void LayoutEditor::findTurnoutUsage(NamedBean* bean) {
+    for (LayoutTurnout* turnout : *getLayoutTurnoutsAndSlips()) {
+        QString data = getUsageData(turnout);
+
+        if (bean->equals(turnout->getTurnout())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnout", data));
+        }
+        if (bean->equals(turnout->getSecondTurnout())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnout2", data));
+        }
+
+        if (isLBLockUsed(bean, turnout->getLayoutBlock())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutBlock", data));
+        }
+        if (turnout->hasEnteringDoubleTrack()) {
+            if (isLBLockUsed(bean, turnout->getLayoutBlockB())) {
+                usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutBlock", data));
+            }
+            if (isLBLockUsed(bean, turnout->getLayoutBlockC())) {
+                usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutBlock", data));
+            }
+            if (isLBLockUsed(bean, turnout->getLayoutBlockD())) {
+                usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutBlock", data));
+            }
+        }
+
+        if (bean->equals(turnout->getSensorA())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSensor", data));
+        }
+        if (bean->equals(turnout->getSensorB())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSensor", data));
+        }
+        if (bean->equals(turnout->getSensorC())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSensor", data));
+        }
+        if (bean->equals(turnout->getSensorD())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSensor", data));
+        }
+
+        if (bean->equals(turnout->getSignalAMast())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalMast", data));
+        }
+        if (bean->equals(turnout->getSignalBMast())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalMast", data));
+        }
+        if (bean->equals(turnout->getSignalCMast())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalMast", data));
+        }
+        if (bean->equals(turnout->getSignalDMast())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalMast", data));
+        }
+
+        if (bean->equals(turnout->getSignalA1())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+        if (bean->equals(turnout->getSignalA2())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+        if (bean->equals(turnout->getSignalA3())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+        if (bean->equals(turnout->getSignalB1())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+        if (bean->equals(turnout->getSignalB2())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+        if (bean->equals(turnout->getSignalC1())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+        if (bean->equals(turnout->getSignalC2())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+        if (bean->equals(turnout->getSignalD1())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+        if (bean->equals(turnout->getSignalD2())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorTurnoutSignalHead", data));
+        }
+    }
+}
+
+void LayoutEditor::findPositionalUsage(NamedBean* bean) {
+    for (PositionablePoint* point : getPositionablePoints()) {
+        QString data = getUsageData(point);
+        if (bean->equals(point->getEastBoundSensor())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorPointSensor", data));
+        }
+        if (bean->equals(point->getWestBoundSensor())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorPointSensor", data));
+        }
+        if (bean->equals(point->getEastBoundSignalHead())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorPointSignalHead", data));
+        }
+        if (bean->equals(point->getWestBoundSignalHead())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorPointSignalHead", data));
+        }
+        if (bean->equals(point->getEastBoundSignalMast())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorPointSignalMast", data));
+        }
+        if (bean->equals(point->getWestBoundSignalMast())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorPointSignalMast", data));
+        }
+    }
+}
+
+void LayoutEditor::findSegmentWhereUsed(NamedBean* bean) {
+    for (TrackSegment* segment : getTrackSegments()) {
+        if (isLBLockUsed(bean, segment->getLayoutBlock())) {
+            QString data = getUsageData(segment);
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorSegmentBlock", data));
+        }
+    }
+}
+
+void LayoutEditor::findXingWhereUsed(NamedBean* bean) {
+    for (LevelXing* xing : getLevelXings()) {
+        QString data = getUsageData(xing);
+        if (isLBLockUsed(bean, xing->getLayoutBlockAC())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorXingBlock", data));
+        }
+        if (isLBLockUsed(bean, xing->getLayoutBlockBD())) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorXingBlock", data));
+        }
+        if (isUsedInXing(bean, xing, LevelXing::GEOMETRY::POINTA)) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorXingOther", data));
+        }
+        if (isUsedInXing(bean, xing, LevelXing::GEOMETRY::POINTB)) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorXingOther", data));
+        }
+        if (isUsedInXing(bean, xing, LevelXing::GEOMETRY::POINTC)) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorXingOther", data));
+        }
+        if (isUsedInXing(bean, xing, LevelXing::GEOMETRY::POINTD)) {
+            usageReport.append(new NamedBeanUsageReport("LayoutEditorXingOther", data));
+        }
+    }
+}
+
+QString LayoutEditor::getUsageData(LayoutTrack* track) {
+    QPointF point = track->getCoordsCenter();
+    if (qobject_cast<TrackSegment*>(track)) {
+        TrackSegment* segment = (TrackSegment*) track;
+        point = QPointF(segment->getCentreSegX(), segment->getCentreSegY());
+    }
+    return tr("%1 :: x=%d, y=%d").arg(
+            track->metaObject()->className()).arg(
+            qRound(point.x())).arg(
+            qRound(point.y()));
+}
+
+bool LayoutEditor::isLBLockUsed(NamedBean* bean, LayoutBlock* lblock) {
+    bool result = false;
+    if (lblock != nullptr) {
+        if (bean->equals(lblock->getBlock())) {
+            result = true;
+        }
+    }
+    return result;
+}
+
+bool LayoutEditor::isUsedInXing(NamedBean* bean, LevelXing* xing, int point) {
+    bool result = false;
+    if (bean->equals(xing->getSensor((LevelXing::GEOMETRY)point))) {
+        result = true;
+    }
+    if (bean->equals(xing->getSignalHead((LevelXing::GEOMETRY)point))) {
+        result = true;
+    }
+    if (bean->equals(xing->getSignalMast((LevelXing::GEOMETRY)point))) {
+        result = true;
+    }
+    return result;
+}
 //initialize logging
-    /*private*/ /*transient*/ /*final*/ /*static*/ Logger* LayoutEditor::log
-            = LoggerFactory::getLogger("LayoutEditor");
+/*private*/ /*transient*/ /*final*/ /*static*/ Logger* LayoutEditor::log = LoggerFactory::getLogger("LayoutEditor");

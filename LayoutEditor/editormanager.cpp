@@ -36,6 +36,16 @@ EditorManager::EditorManager(QObject *parent) : Bean(parent)
 /*public*/ bool EditorManager::contains(/*@Nonnull*/ Editor* editor) {
     return set.contains(editor);
 }
+/**
+ * Check if an editor with the specified name is in the manager.
+ *
+ * @param name the name to check for
+ * @return true if this manager contains an editor with name; false
+ * otherwise
+ */
+/*public*/ bool EditorManager::contains(QString name) {
+    return get(name) != nullptr;
+}
 
 /**
  * Get all managed editors. This set is sorted by the title of the editor.
@@ -80,6 +90,8 @@ EditorManager::EditorManager(QObject *parent) : Bean(parent)
             return nullptr;
     }
 }
+
+
 #if 0
     /*private*/ /*final*/ SortedSet<Editor> editors = new TreeSet<>(new Comparator<Editor>() {
 
@@ -176,3 +188,15 @@ EditorManager::EditorManager(QObject *parent) : Bean(parent)
     /*public*/ bool EditorManager::removeEditor(/*@Nonnull*/ Editor* editor) {
         return this->set.remove(editor);
     }
+/**
+ * Remove an editor from this manager.
+ *
+ * @param editor the editor to remove
+ */
+/*public*/ void EditorManager::remove(/*@Nonnull*/ Editor* editor) {
+    bool result = set.remove(editor);
+    if (result) {
+        fireIndexedPropertyChange(EDITORS, set.size(), VPtr<Editor>::asQVariant(editor), QVariant());
+        editor->removePropertyChangeListener(TITLE, (PropertyChangeListener*)this);
+    }
+}

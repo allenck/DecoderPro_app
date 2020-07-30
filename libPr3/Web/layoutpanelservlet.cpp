@@ -43,14 +43,14 @@ LayoutPanelServlet::LayoutPanelServlet()
 
   panel.setAttribute("name", name);
   panel.setAttribute("paneltype", getPanelType());
-  panel.setAttribute("height", (editor->getLayoutHeight()));
-  panel.setAttribute("width", (editor->getLayoutWidth()));
-  panel.setAttribute("panelheight", (editor->getLayoutHeight()));
-  panel.setAttribute("panelwidth", (editor->getLayoutWidth()));
+  panel.setAttribute("height", (editor->gContext->getLayoutHeight()));
+  panel.setAttribute("width", (editor->gContext->getLayoutWidth()));
+  panel.setAttribute("panelheight", (editor->gContext->getLayoutHeight()));
+  panel.setAttribute("panelwidth", (editor->gContext->getLayoutWidth()));
   panel.setAttribute("showtooltips", (editor->showToolTip()) ? "yes" : "no");
   panel.setAttribute("controlling", (editor->allControlling()) ? "yes" : "no");
-  panel.setAttribute("xscale", ((float) editor->getXScale()));
-  panel.setAttribute("yscale", ((float) editor->getYScale()));
+  panel.setAttribute("xscale", ((float) editor->gContext->getXScale()));
+  panel.setAttribute("yscale", ((float) editor->gContext->getYScale()));
   panel.setAttribute("mainlinetrackwidth", (editor->gContext->getMainlineTrackWidth()));
   panel.setAttribute("sidetrackwidth", (editor->gContext->getSidelineTrackWidth()));
   panel.setAttribute("turnoutcircles", (editor->getTurnoutCircles()) ? "yes" : "no");

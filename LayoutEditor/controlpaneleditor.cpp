@@ -616,10 +616,11 @@ void ControlPanelEditor::on_scrollVertical_triggered()
 
 //    editItem.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent event) {
-//                changeView("jmri.jmrit.display.panelEditor.PanelEditor");
-//                _itemPalette.dispose();
+    connect(editItem, &QAction::triggered, [=]{
+                changeView("jmri.jmrit.display.panelEditor.PanelEditor");
+                _itemPalette->dispose();
 //            }
-//        });
+        });
     connect(editItem, SIGNAL(triggered()), this, SLOT(changePEViewAction()));
     _fileMenu->addSeparator();
     QAction* deleteItem = new QAction(tr("Delete This Panel..."),this);
@@ -656,11 +657,7 @@ CPEditItemActionListener* CPEditItemActionListener::init(ControlPanelEditor *ed)
  return this;
 
 }
-void ControlPanelEditor::changePEViewAction()
-{
- changeView("PanelEditor");
- _itemPalette->dispose();
-}
+
 void ControlPanelEditor::deleteAction()
 {
  if (deletePanel() )

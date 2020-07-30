@@ -15,7 +15,8 @@ public:
  ~EditorManager() {}
  EditorManager(const EditorManager&) : Bean() {}
  /*public*/ void add(/*@Nonnull*/ Editor* editor);
- /*public*/ bool contains(/*@Nonnull*/ Editor* editor);
+ QT_DEPRECATED/*public*/ bool contains(/*@Nonnull*/ Editor* editor);
+ /*public*/ bool contains(QString name);
  /*public*/ QSet<Editor*> getAll();
  /*public*/ Editor* get(/*@Nonnull*/ QString name);
 
@@ -23,7 +24,8 @@ public:
  /*public*/ QList<Editor*> getEditorsList(QString type);
  /*public*/ Editor* getEditor(QString name);
  /*public*/ bool addEditor(/*@Nonnull*/ Editor* editor);
- /*public*/ bool removeEditor(/*@Nonnull*/ Editor *editor);
+ QT_DEPRECATED /*public*/ bool removeEditor(/*@Nonnull*/ Editor *editor);
+ /*public*/ void remove(/*@Nonnull*/ Editor* editor);
 
 signals:
 

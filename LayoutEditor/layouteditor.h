@@ -2,10 +2,8 @@
 #define LAYOUTEDITOR_H
 
 #include "editor.h"
-//#include <QMainWindow>
 #include <QButtonGroup>
 #include <QGraphicsView>
-//#include "editscene.h"
 #include "layoutturnout.h"
 #include "levelxing.h"
 #include "positionable.h"
@@ -37,7 +35,9 @@
 #include "storexmluseraction.h"
 #include "layouteditorfinditems.h"
 #include "jradiobuttonmenuitem.h"
-
+#include "popupmenulistener.h"
+#include "popupmenuevent.h"
+#include "namedbeancombobox.h"
 enum TOOLBARSIDES
 {
    eTOP, //("top"),
@@ -113,6 +113,7 @@ public:
     }
 };
 
+class TurnoutComboBoxPopupMenuListener;
 class LayoutEditorComponent;
 class PositionablePointView;
 class LayoutTrackView;
@@ -255,8 +256,8 @@ public:
     /*public*/ void setXOverShort(double sh);
     /*public*/ double getXOverShort();
     // reset turnout sizes to program defaults
-    /*public*/ double getXScale();
-    /*public*/ double getYScale();
+//    /*public*/ double getXScale();
+//    /*public*/ double getYScale();
     /*public*/ QString getDefaultTrackColor();
     /*public*/ QString getDefaultOccupiedTrackColor();
     /*public*/ QString getDefaultAlternativeTrackColor();
@@ -282,17 +283,17 @@ public:
     * @param state true for controlling.
     */
     /*public*/ bool isAnimating();
-    /*public*/ int getLayoutWidth() ;
-    /*public*/ int getLayoutHeight() ;
-    /*public*/ int getWindowWidth() ;
-    /*public*/ int getWindowHeight() ;
-    /*public*/ int getUpperLeftX() ;
-    /*public*/ int getUpperLeftY() ;
+//    /*public*/ int getLayoutWidth() ;
+//    /*public*/ int getLayoutHeight() ;
+//    /*public*/ int getWindowWidth() ;
+//    /*public*/ int getWindowHeight() ;
+//    /*public*/ int getUpperLeftX() ;
+//    /*public*/ int getUpperLeftY() ;
     QT_DEPRECATED /*public*/ bool getScroll();
-    /*public*/ int setGridSize(int newSize);
-    /*public*/ int getGridSize();
-    /*public*/ int setGridSize2nd(int newSize);
-    /*public*/ int getGridSize2nd();
+    ///*public*/ int setGridSize(int newSize);
+    ///*public*/ int getGridSize();
+    ///*public*/ int setGridSize2nd(int newSize);
+    ///*public*/ int getGridSize2nd();
     /*public*/ /*const*/ int getAnchorX();
     /*public*/ /*const*/ int getAnchorY();
 //    /*public*/ bool allPositionable();
@@ -362,23 +363,7 @@ public:
     bool getTurnoutCircles(){return turnoutCirclesWithoutEditMode;}
     bool getTooltipsNotEdit() {return tooltipsWithoutEditMode;}
     /*public*/ bool getTooltipsInEdit() {return tooltipsInEditMode;}
-//    float getMainlineTrackWidth(){return mainlineTrackWidth;}
-//    float getSideTrackWidth(){return sidelineTrackWidth;}
     bool getAutoBlockAssignment(){return autoAssignBlocks;}
-    QColor getBackgroundColor();
-//    int getTurnoutType(QString name);
-//    /*public*/ PositionablePoint* findPositionablePointByEastBoundSignal(QString signalName);
-//    /*public*/ PositionablePoint* findPositionablePointByWestBoundSignal(QString signalName);
-//    /*public*/ PositionablePoint* findPositionablePointByEastBoundSignalMast(QString signalMastName);
-//    /*public*/ PositionablePoint* findPositionablePointByWestBoundSignalMast(QString signalMastName);
-//    /*public*/ LayoutTurnout* findLayoutTurnoutBySignalMast(QString signalMastName);
-//    /*public*/ LayoutTurnout* findLayoutTurnoutBySensor(QString sensorName);
-//    /*public*/ LevelXing* findLevelXingBySignalMast(QString signalMastName);
-//    /*public*/ LevelXing* findLevelXingBySensor(QString sensorName);
-//    /*public*/ LayoutSlip* findLayoutSlipBySignalMast(QString signalMastName);
-//    /*public*/ LayoutSlip* findLayoutSlipBySensor(QString sensorName);
-//    /*public*/ PositionablePoint* findPositionablePointByEastBoundSensor(QString sensorName);
-//    /*public*/ PositionablePoint* findPositionablePointByWestBoundSensor(QString sensorName);
     void addSignalHead();
     /*public*/ void putSignal(SignalHeadIcon* l);
     SignalHead* getSignalHead(QString name) ;
@@ -388,11 +373,9 @@ public:
     /*public*/ ConnectivityUtil* getConnectivityUtil();
     /*public*/ LayoutEditorTools* getLETools();
     /*public*/ LayoutEditorAuxTools* getLEAuxTools();
-//    /*public*/ LayoutTrackEditors* getLayoutTrackEditors();
     /*public*/ LayoutEditorChecks* getLEChecks();
     /*public*/ void addToPopUpMenu(NamedBean* nb, QMenu* item, int menu);
     /*public*/ void addMultiSensor(MultiSensorIcon* l);
-    /*public*/ void makeBackupFile(QString name);
     /*public*/ void setSize(int w, int h);
     /*public*/ LocoIcon* addLocoIcon (QString name);
     /*public*/ void putLocoIcon(LocoIcon* l, QString name);
@@ -421,6 +404,11 @@ public:
     /*public*/ void setConnections();
     /*public*/ /*@Nonnull*/ QRectF layoutEditorControlRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ /*@Nonnull*/ QRectF layoutEditorControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
+    /*public*/ QList<SensorIcon*> getSensorList();
+    /*public*/ QList<LEBlockContentsIcon *> getBlockContentsLabelList();
+    /*public*/ QList<LEMemoryIcon *> getMemoryLabelList();
+    /*public*/ QList<SignalHeadIcon*> getSignalList();
+    /*public*/ QList<SignalMastIcon*> getSignalMastList();
     /*public*/ LayoutEditorFindItems* finder = new LayoutEditorFindItems(this);
     /*public*/ LayoutEditorFindItems* getFinder();
     void setDirty(bool b = true);
@@ -497,6 +485,12 @@ public:
     /*final*/ /*public*/ void removeLayoutTrack(/*@Nonnull */LayoutTrack* trk);
     /*public*/ ToolBarSide *getToolBarSide();
     /*public*/ void setToolBarSide(ToolBarSide* newToolBarSide);
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
+    /*public*/ QGraphicsEllipseItem* trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint);
+    /*public*/ TurnoutComboBoxPopupMenuListener* newTurnoutComboBoxPopupMenuListener(NamedBeanComboBox/*<Turnout>*/* comboBox);
+    /*public*/ TurnoutComboBoxPopupMenuListener* newTurnoutComboBoxPopupMenuListener(NamedBeanComboBox/*<Turnout>*/* comboBox, QList<Turnout*> currentTurnouts);
+    /*public*/ void init(QString name) override;
+    /*public*/ void initView() override;
 
 
 public slots:
@@ -722,7 +716,7 @@ private:
  QGraphicsRectItem *rectItem = nullptr; // selection rect.
  QGraphicsItemGroup* highlightRect = nullptr;
 
- /*private*/ void highLightSelection(EditScene* g);
+// /*private*/ void highLightSelection(EditScene* g);
  /*private*/ QRectF clipBounds = QRectF();
  bool noWarnGlobalDelete = false;
  bool noWarnLevelXing = false;
@@ -790,6 +784,8 @@ private:
  /*private*/ /*transient*/ LayoutTrackDrawingOptions* layoutTrackDrawingOptions = nullptr;
  /*private*/ /*transient*/ JFrame* iconFrame = nullptr;
  /*private*/ bool highlightBlockInComboBox(/*@Nonnull*/ NamedBeanComboBox *inComboBox);
+ /*public*/ double getMinZoom();
+ /*public*/ double getMaxZoom();
  /*private*/ QRectF calculateMinimumLayoutBounds();
  /*private*/ QRectF resizePanelBounds(bool forceFlag);
  QLabel* zoomLabel;
@@ -873,13 +869,20 @@ private:
  /*private*/ bool awaitingIconChange = false;
 
  /*private*/ /*transient*/ bool toolBarIsWide = true;
- /*private*/ void on_setToolBarSide(QString);
+ /*private*/ void setToolBarSide(QString);
  /*private*/ void setupMenuBar();
  /*private*/ /*final*/ QList<LayoutTrack*>* layoutTrackList = new QList<LayoutTrack*>();
  /*private*/ /*final*/ QList<LayoutTrackView*>* layoutTrackViewList =  new QList<LayoutTrackView*>();
  /*private*/ /*final*/ QMap<LayoutTrack*, LayoutTrackView*> trkToView = QMap<LayoutTrack*, LayoutTrackView*>();
  /*private*/ /*final*/ QMap<LayoutTrackView*, LayoutTrack*> viewToTrk = QMap<LayoutTrackView*, LayoutTrack*>();
- //QList<NamedBeanUsageReport*> usageReport;
+ QList<NamedBeanUsageReport*> usageReport;
+ void findTurnoutUsage(NamedBean* bean);
+ void findPositionalUsage(NamedBean* bean);
+ void findSegmentWhereUsed(NamedBean* bean);
+ void findXingWhereUsed(NamedBean* bean);
+ QString getUsageData(LayoutTrack* track);
+ bool isLBLockUsed(NamedBean* bean, LayoutBlock* lblock);
+ bool isUsedInXing(NamedBean* bean, LevelXing* xing, int point);
 
 private slots:
  void on_scenePos(QGraphicsSceneMouseEvent*event);
@@ -896,13 +899,8 @@ private slots:
  void on_removeMenuAction_triggered();
  /*private*/ void deleteSelectedItems(); // SLOT[]
  double zoomToFit();
- void on_clearTrack(); // for testing
  /*private*/ void resetTurnoutSize();
- void on_TooltipAlwaysMenuItem();
- void on_TooltipInEditMenuItem();
- void on_TooltipNotInEditMenuItem();
- /*private*/ void on_setToolBarSide(QAction* act);
- /*private*/ void on_setToolBarWide(bool newToolBarIsWide);
+ /*private*/ void setToolBarWide(bool newToolBarIsWide);
  void trigger_menu();
 
 
@@ -970,13 +968,9 @@ protected:
  #if 0
  /*protected*/ static QPointF getCoords(QObject* o, int type);
 #endif
- /*public*/ QGraphicsEllipseItem* trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint);
- //compute the turnout circle at inPoint (used for drawing)
- // /*protected*/ void setTrackStrokeWidth(bool need);
  /**
  * Select the menu items to display for the Positionable's popup
  */
-// /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
  /*public*/ void alignSelection(bool alignX);
  /*protected*/ bool showAlignPopup();
  /**
@@ -1004,9 +998,7 @@ protected:
  * from the fields where the user can spec it.
  */
  /*protected*/ void setNextLocation(Positionable *obj);
-// /*protected*/ void setNextLocation(PositionableLabel* obj);
-
-// /*protected*/ void addToTarget(Positionable* l);
+ /*public*/ LayoutBlock* getLayoutBlock(/*@Nonnull*/ QString blockID);
  /**
  * Remove object from all Layout Editor temmporary lists of items not part of track schematic
  */
@@ -1073,6 +1065,8 @@ friend class LayoutEditorToolBarPanel;
 friend class LayoutShape;
 friend class EditToolBarContainerPanel;
 friend class LayoutEditorComponent;
+friend class TurnoutComboBoxPopupMenuListener;
+
 };
 Q_DECLARE_METATYPE(LayoutEditor)
 
@@ -1182,5 +1176,49 @@ class AddTurnoutCircleSizeMenuEntryCactionListener : public ActionListener
    }
 
   }
+};
+
+// package protected
+class TurnoutComboBoxPopupMenuListener : public PopupMenuListener {
+Q_OBJECT
+    /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* comboBox;
+    /*private*/ /*final*/ QList<Turnout*> currentTurnouts;
+  LayoutEditor* layoutEditor;
+public:
+    /*public*/ TurnoutComboBoxPopupMenuListener(NamedBeanComboBox/*<Turnout>*/* comboBox, QList<Turnout*> currentTurnouts, LayoutEditor* layoutEditor) {
+        this->comboBox = comboBox;
+        this->currentTurnouts = currentTurnouts;
+        this->layoutEditor = layoutEditor;
+    }
+
+    //@Override
+    /*public*/ void popupMenuWillBecomeVisible(PopupMenuEvent* event) override{
+        // This method is called before the popup menu becomes visible.
+        layoutEditor->log->debug("PopupMenuWillBecomeVisible");
+        QSet<NamedBean*> l = QSet<NamedBean*>();
+        //comboBox->getManager()->getNamedBeanSet().forEach((turnout) ->
+        foreach(NamedBean* nb, comboBox->getManager()->getNamedBeanSet())
+        {
+         Turnout* turnout = (Turnout*)nb;
+            if (!currentTurnouts.contains(turnout)) {
+                if (!layoutEditor->validatePhysicalTurnout(turnout->getDisplayName(), nullptr)) {
+                    l.insert(nb);
+                }
+            }
+        }//);
+        comboBox->setExcludedItems(l);
+    }
+
+    //@Override
+    /*public*/ void popupMenuWillBecomeInvisible(PopupMenuEvent* event) {
+        // This method is called before the popup menu becomes invisible
+        layoutEditor->log->debug("PopupMenuWillBecomeInvisible");
+    }
+
+    //@Override
+    /*public*/ void popupMenuCanceled(PopupMenuEvent* event) {
+        // This method is called when the popup menu is canceled
+        layoutEditor->log->debug("PopupMenuCanceled");
+    }
 };
 #endif // LAYOUTEDITOR_H

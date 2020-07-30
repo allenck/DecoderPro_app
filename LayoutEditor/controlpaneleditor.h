@@ -119,7 +119,6 @@ private slots:
  /*private*/ void pasteFromClipboard();
  void selectAllAction();
  void storeImageIndexAction();
- void changePEViewAction();
  void deleteAction();
  void closeEditor();
  void sceneChanged(QList<QRectF>);

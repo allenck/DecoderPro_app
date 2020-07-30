@@ -1613,10 +1613,10 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
 /*private*/ void LayoutTurnout::setUpDefaultSize()
 {
  // remove the overall scale factor
- double bX = dispB.x()/layoutEditor->getXScale();
- double bY = dispB.y()/layoutEditor->getYScale();
- double cX = dispA.x()/layoutEditor->getXScale();
- double cY = dispA.y()/layoutEditor->getYScale();
+ double bX = dispB.x()/layoutEditor->gContext->getXScale();
+ double bY = dispB.y()/layoutEditor->gContext->getYScale();
+ double cX = dispA.x()/layoutEditor->gContext->getXScale();
+ double cY = dispA.y()/layoutEditor->gContext->getYScale();
  // calculate default parameters according to type of turnout
  double lenB = qSqrt((bX*bX) + (bY*bY));
  double lenC = qSqrt((cX*cX) + (cY*cY));

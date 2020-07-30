@@ -221,7 +221,9 @@ PanelEditor::~PanelEditor()
 //             return this;
 //         }
 //     }.init(this));
-     connect(labelAdd, SIGNAL(clicked(bool)), this, SLOT(onLabelAdd()));
+     connect(labelAdd, &QPushButton::clicked, [=]{
+      this->addLabel(nextLabel->text());
+     });
 //     nextLabel.addKeyListener(new KeyAdapter() {
 //         @Override
 //         public void keyReleased(KeyEvent a) {
@@ -274,10 +276,10 @@ PanelEditor::~PanelEditor()
 //     editableBox.addActionListener(new ActionListener() {
 //         @Override
 //         public void actionPerformed(ActionEvent event) {
-//             setAllEditable(editableBox.isSelected());
-//             hiddenCheckBoxListener();
-//         }
-//     });
+     connect(editableBox, &QCheckBox::clicked, [=]{
+             setAllEditable(editableBox->isChecked());
+             hiddenCheckBoxListener();
+     });
      connect(editableBox, SIGNAL(clicked(bool)), this, SLOT(onEditableBox()));
      editableBox->setChecked(isEditable());
      // positionable item
@@ -295,10 +297,9 @@ PanelEditor::~PanelEditor()
 //     controllingBox.addActionListener(new ActionListener() {
 //         @Override
 //         public void actionPerformed(ActionEvent event) {
-//             setAllControlling(controllingBox.isSelected());
-//         }
-//     });
-     connect(controllingBox, SIGNAL(clicked(bool)), this, SLOT(onControllingBox()));
+     connect(controllingBox, &QCheckBox::clicked, [=]{
+             setAllControlling(controllingBox->isChecked());
+     });
      controllingBox->setChecked(allControlling());
      // hidden item
      contentPaneLayout->addWidget(hiddenBox);
@@ -318,10 +319,9 @@ PanelEditor::~PanelEditor()
 //     showTooltipBox.addActionListener(new ActionListener() {
 //         @Override
 //         public void actionPerformed(ActionEvent e) {
-//             setAllShowToolTip(showTooltipBox.isSelected());
-//         }
-//     });
-     connect(showTooltipBox, SIGNAL(clicked(bool)), this, SLOT(onShowToolTipBox()));
+     connect(showTooltipBox, &QCheckBox::clicked, [=]{
+             setAllShowToolTip(showTooltipBox->isChecked());
+     });
      showTooltipBox->setChecked(showToolTip());
 
      contentPaneLayout->addWidget(menuBox);
@@ -349,10 +349,9 @@ PanelEditor::~PanelEditor()
 //     scrollableComboBox->addActionListener(new ActionListener() {
 //         @Override
 //         public void actionPerformed(ActionEvent e) {
-//             setScroll(scrollableComboBox.getSelectedIndex());
-//         }
-//     });
-     connect(scrollableComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onScrollableComboBox()));
+     connect(scrollableComboBox, &QComboBox::currentTextChanged, [=]{
+             setScroll(scrollableComboBox->currentIndex());
+     });
  }
  frame->setVisible(true);
  frame->pack();
@@ -362,14 +361,13 @@ PanelEditor::~PanelEditor()
  ui->menuFile->addAction(new StoreXmlUserAction(tr("Save Panels..."),this));
  QAction* storeIndexItem = new QAction(tr("Store Image Index"), this);
  ui->menuFile->addAction(storeIndexItem);
-#if 1 // TODO:
+
 // storeIndexItem.addActionListener(new ActionListener() {
 //     @Override
 //     public void actionPerformed(ActionEvent event) {
-//         jmri.jmrit.catalog.ImageIndexEditor.storeImageIndex();
-//     }
-// });
- connect(storeIndexItem, SIGNAL(triggered()), this, SLOT(on_storeIndexItem_triggered()));
+ connect(storeIndexItem, &QAction::triggered, [=]{
+         ImageIndexEditor::storeImageIndex();
+ });
  QAction* editItem = new QAction(tr("Create/Edit Image Index"),this);
 // editItem.addActionListener(new ActionListener() {
 //     PanelEditor panelEd;
@@ -397,12 +395,11 @@ PanelEditor::~PanelEditor()
 // editItem.addActionListener(new ActionListener() {
 //     @Override
 //     public void actionPerformed(ActionEvent event) {
-//                              while ( QWidget* w = findChild<QWidget*>() )
-//                                  delete w;("jmri.jmrit.display.controlPanelEditor.ControlPanelEditor");
-//     }
-// });
- connect(editItem, SIGNAL(triggered()), this, SLOT(on_CPEView_triggered()));
-#endif
+ connect(editItem, &QAction::triggered, [=]{
+//   while ( QWidget* w = findChild<QWidget*>() )
+//       delete w;("jmri.jmrit.display.controlPanelEditor.ControlPanelEditor");
+   changeView("ControlPanelEditor");
+ });
  ui->menuFile->addSeparator();
  QAction* deleteItem = new QAction(tr("Delete This Panel..."), this);
  ui->menuFile->addAction(deleteItem);
@@ -466,16 +463,6 @@ PanelEditor::~PanelEditor()
     if (_debug) log->debug("PanelEditor ctor done.");
 }  // end ctor
 
-void PanelEditor::on_storeIndexItem_triggered()
-{
- ImageIndexEditor::storeImageIndex();
-}
-
-void PanelEditor::on_CPEView_triggered()
-{
-changeView("ControlPanelEditor");
-}
-
 /*public*/ void RenameActionListener::actionPerformed(/*ActionEvent e*/) {
     // prompt for name
     QString newName = JOptionPane::showInputDialog(nullptr, tr("Enter new name:"));
@@ -497,32 +484,6 @@ changeView("ControlPanelEditor");
 ActionListener* RenameActionListener::init(PanelEditor* e) {
     editor = e;
     return this;
-}
-
-void PanelEditor::onLabelAdd()
-{
- addLabel(nextLabel->text());
-}
-
-void PanelEditor::onEditableBox()
-{
- setAllEditable(editableBox->isChecked());
- hiddenCheckBoxListener();
-}
-
-void PanelEditor::onControllingBox()
-{
- setAllControlling(controllingBox->isChecked());
-}
-
-void PanelEditor::onShowToolTipBox()
-{
- //setAllShowToolTip(showTooltipBox->isChecked());
-}
-
-void PanelEditor::onScrollableComboBox()
-{
- setScroll(scrollableComboBox->currentIndex());
 }
 
 /**

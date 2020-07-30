@@ -192,7 +192,7 @@ void Editor::commonInit()
  _selectRectItemGroup = new QGraphicsItemGroup();
  frameLocationX = 0;
  frameLocationY = 0;
- _iconEditorFrame = new QHash <QString, JFrameItem*>();
+ //_iconEditorFrame = new QHash <QString, JFrameItem*>();
  _spinCols = new SpinnerNumberModel(3,1,100,1);
   panelMenuIsVisible = true;
   ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
@@ -1773,7 +1773,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 * @param name Icon editor's name
 */
 /*public*/ JFrameItem* Editor::getIconFrame(QString name) {
-    JFrameItem* frame = _iconEditorFrame->value(name);
+    JFrameItem* frame = _iconEditorFrame.value(name);
 //    if (frame==nullptr)
     {
         if ("Sensor"==(name)) {
@@ -1809,7 +1809,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
             return NULL;
         }
         // frame added in the above switch
-        frame = _iconEditorFrame->value(name);
+        frame = _iconEditorFrame.value(name);
 
         if (frame==nullptr) { // addTextEditor does not create a usable frame
             return nullptr;
@@ -1824,7 +1824,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 }
 #endif
 /*public*/ IconAdder* Editor::getIconEditor(QString name) {
-    return _iconEditorFrame->value(name)->getEditor();
+    return _iconEditorFrame.value(name)->getEditor();
 }
 
 /**
@@ -1860,7 +1860,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  JFrameItem* frame = makeAddIconFrame("RightTurnout", true, true, editor);
  frame->resize(400,800);
  //frame->setMinimumHeight(600);
- _iconEditorFrame->insert("RightTurnout", frame);
+ _iconEditorFrame.insert("RightTurnout", frame);
  editor->setPickList(PickListModel::turnoutPickModelInstance());
 
 //    ActionListener addIconAction = new ActionListener() {
@@ -1891,7 +1891,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  JFrameItem* frame = makeAddIconFrame("LeftTurnout", true, true, editor);
  frame->resize(400,800);
  //frame->setMinimumHeight(600);
- _iconEditorFrame->insert("LeftTurnout", frame);
+ _iconEditorFrame.insert("LeftTurnout", frame);
  editor->setPickList(PickListModel::turnoutPickModelInstance());
 
 //    ActionListener addIconAction = new ActionListener() {
@@ -1929,7 +1929,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     QFont f = frame->font();
     f.setPointSize(8);
     frame->setFont(f);
-    _iconEditorFrame->insert("SlipTOEditor", frame);
+    _iconEditorFrame.insert("SlipTOEditor", frame);
     editor->setPickList(PickListModel::turnoutPickModelInstance());
 
 //    ActionListener addIconAction = new ActionListener() {
@@ -1961,7 +1961,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  frame->resize(550,850);
  frame->setMinimumHeight(600);
  frame->layout()->setSpacing(0);
- _iconEditorFrame->insert("Sensor", frame);
+ _iconEditorFrame.insert("Sensor", frame);
  editor->setPickList(PickListModel::sensorPickModelInstance());
 
 //    ActionListener addIconAction = new ActionListener() {
@@ -2017,7 +2017,7 @@ void AddPanelIconActionListener::actionPerformed(ActionEvent *)
  JFrameItem* frame = makeAddIconFrame("SignalHead", true, true, editor);
  frame->resize(400,800);
  //frame->setMinimumHeight(600);
- _iconEditorFrame->insert("SignalHead", frame);
+ _iconEditorFrame.insert("SignalHead", frame);
  editor->setPickList(PickListModel::signalHeadPickModelInstance());
 
 //    ActionListener addIconAction = new ActionListener() {
@@ -2041,7 +2041,7 @@ void AddPanelIconActionListener::actionPerformed(ActionEvent *)
  JFrameItem* frame = makeAddIconFrame("SignalMast", true, true, editor);
  frame->resize(400,800);
  //frame->setMinimumHeight(600);
- _iconEditorFrame->insert("SignalMast", frame);
+ _iconEditorFrame.insert("SignalMast", frame);
  editor->setPickList(PickListModel::signalMastPickModelInstance());
 
 //    ActionListener addIconAction = new ActionListener() {
@@ -2104,7 +2104,7 @@ void AddPanelIconActionListener::actionPerformed(ActionEvent *)
     MemoryActionListener* addIconAction = new MemoryActionListener(this);
     IconAdder* editor = new MemoryIconAdder(this);
     JFrameItem* frame = makeAddIconFrame("Memory", true, true, editor);
-    _iconEditorFrame->insert("Memory", frame);
+    _iconEditorFrame.insert("Memory", frame);
     editor->setPickList(PickListModel::memoryPickModelInstance());
     editor->makeIconPanel(true);
     editor->complete(addIconAction, false, true, false);
@@ -2176,7 +2176,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
 //        }
 //    };
     JFrameItem* frame = makeAddIconFrame("BlockLabel", true, true, editor);
-    _iconEditorFrame->insert("BlockLabel", QPointer<JFrameItem>(frame));
+    _iconEditorFrame.insert("BlockLabel", QPointer<JFrameItem>(frame));
     editor->setPickList(PickListModel::blockPickModelInstance());
     editor->makeIconPanel(true);
     editor->complete(new AddBlockActionListener(this), false, true, false);
@@ -2195,7 +2195,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
  JFrameItem* frame = makeAddIconFrame("Reporter", true, true, editor);
  frame->resize(400,800);
  //frame->setMinimumHeight(600);
- _iconEditorFrame->insert("Reporter", frame);
+ _iconEditorFrame.insert("Reporter", frame);
     editor->setPickList(PickListModel::reporterPickModelInstance());
     editor->makeIconPanel(true);
     editor->complete(addIconAction, false, true, false);
@@ -2217,7 +2217,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
         "resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif");
 
  JFrameItem* frame = makeAddIconFrame("Light", true, true, editor);
- _iconEditorFrame->insert("Light", frame);
+ _iconEditorFrame.insert("Light", frame);
  editor->setPickList(PickListModel::lightPickModelInstance());
 
 //    ActionListener addIconAction = new ActionListener() {
@@ -2241,7 +2241,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
  JFrameItem* frame = makeAddIconFrame("Background", true, false, editor);
  frame->resize(400,800);
  //frame->setMinimumHeight(600);
- _iconEditorFrame->insert("Background", frame);
+ _iconEditorFrame.insert("Background", frame);
 
 //    ActionListener addIconAction = new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent a) {
@@ -2275,7 +2275,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
  JFrameItem* frame = makeAddIconFrame("MultiSensor", true, false, editor);
  frame->resize(400,800);
  //frame->setMinimumHeight(600);
- _iconEditorFrame->insert("MultiSensor", frame);
+ _iconEditorFrame.insert("MultiSensor", frame);
  frame->addHelpMenu("package.jmri.jmrit.display.MultiSensorIconAdder", true);
 
  editor->setPickList(PickListModel::sensorPickModelInstance());
@@ -2300,7 +2300,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
  JFrameItem* frame = makeAddIconFrame("Icon", true, false, editor);
  //frame->resize(350,400);
  //frame->setMinimumHeight(300);
- _iconEditorFrame->insert("Icon", frame);
+ _iconEditorFrame.insert("Icon", frame);
 
 //    ActionListener addIconAction = new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent a) {
@@ -2456,7 +2456,7 @@ void Editor::addSlip()
 /*protected*/ SignalMastIcon* Editor::putSignalMast()
 {
  SignalMastIcon* l = new SignalMastIcon(this);
- IconAdder* editor = _iconEditorFrame->value("SignalMast")->getEditor();
+ IconAdder* editor = _iconEditorFrame.value("SignalMast")->getEditor();
  l->setSignalMast(editor->getTableSelection()->getDisplayName());
  l->setDisplayLevel(SIGNALS);
  //   setNextLocation(l);
@@ -2651,7 +2651,7 @@ void Editor::putBackground() {
   JmriJFrame::setTitle(name+" "+tr("Editor"));
 
  //Iterator <JFrameItem> iter = _iconEditorFrame.values().iterator();
- QListIterator<JFrameItem*> iter(_iconEditorFrame->values());
+ QListIterator<JFrameItem*> iter(_iconEditorFrame.values());
  while (iter.hasNext()) {
      JFrameItem* frame = iter.next();
      frame->setTitle(frame->title()+" ("+name+")");
@@ -2783,7 +2783,7 @@ void Editor::putBackground() {
  }
  if (add) {
      txt = tr("Add %1").arg(BundleName);
-     _iconEditorFrame->insert(name, frame);
+     _iconEditorFrame.insert(name, frame);
  } else {
      txt = tr("Edit %1").arg(BundleName);
  }
@@ -2881,7 +2881,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  */
 //@Override
 /*public*/ void Editor::dispose() {
- QListIterator <JFrameItem*> iter( _iconEditorFrame->values());
+ QListIterator <JFrameItem*> iter( _iconEditorFrame.values());
  while (iter.hasNext())
  {
   JFrameItem* frame = iter.next();
@@ -4227,5 +4227,26 @@ void UrlErrorDialog::cancelButton_clicked()
                 qRound(point.y()));
         return data;
     }
+
+    /*public*/ void Editor::addPropertyChangeListener(PropertyChangeListener* listener)
+    {
+     pcs->addPropertyChangeListener(listener);
+    }
+
+    /*public*/ void Editor::addPropertyChangeListener(QString name, PropertyChangeListener* listener)
+    {
+     pcs->addPropertyChangeListener(name, listener);
+    }
+
+    /*public*/ void Editor::removePropertyChangeListener(PropertyChangeListener* listener)
+    {
+     pcs->removePropertyChangeListener(listener);
+    }
+
+    /*public*/ void Editor::removePropertyChangeListener(QString name, PropertyChangeListener* listener)
+    {
+     pcs->removePropertyChangeListener(name,listener);
+    }
+
 // initialize logging
 /*private*/ /*final*/ /*static*/ Logger* Editor::log = LoggerFactory::getLogger("Editor");

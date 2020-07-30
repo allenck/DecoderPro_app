@@ -137,8 +137,8 @@ public:
         return;
     }
 
-    if ((xx <= 0) || (xx > layoutEditor->getLayoutWidth())) {
-        log->error("invalid x: " + QString::number(xx) + ", LayoutWidth: " + QString::number(layoutEditor->getLayoutWidth()));
+    if ((xx <= 0) || (xx > layoutEditor->gContext->getLayoutWidth())) {
+        log->error("invalid x: " + QString::number(xx) + ", LayoutWidth: " + QString::number(layoutEditor->gContext->getLayoutWidth()));
         JOptionPane::showMessageDialog(enterReporterFrame,
                 tr("Error - Entered value \"%1\" is not in the allowed range.").arg(
                         tr(" %%1 ").arg(xx)),
@@ -159,8 +159,8 @@ public:
         return;
     }
 
-    if ((yy <= 0) || (yy > layoutEditor->getLayoutHeight())) {
-        log->error("invalid y: " + QString::number(yy) + ", LayoutWidth: " + QString::number(layoutEditor->getLayoutHeight()));
+    if ((yy <= 0) || (yy > layoutEditor->gContext->getLayoutHeight())) {
+        log->error("invalid y: " + QString::number(yy) + ", LayoutWidth: " + QString::number(layoutEditor->gContext->getLayoutHeight()));
         JOptionPane::showMessageDialog(enterReporterFrame,
                 tr("Error - Entered value \"%1\" is not in the allowed range.").arg(
                         tr(" %%1 ").arg(xx)),

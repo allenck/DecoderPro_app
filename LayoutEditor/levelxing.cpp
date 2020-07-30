@@ -131,6 +131,190 @@
 
 }
 
+/*
+ * Accessor methods
+ */
+//@Nonnull
+/*public*/ QString LevelXing::getBlockNameAC() {
+    QString result = "";
+    if (namedLayoutBlockAC != nullptr) {
+        result = namedLayoutBlockAC->getName();
+    }
+    return ((result == nullptr) ? "" : result);
+}
+
+//@Nonnull
+/*public*/ QString LevelXing::getBlockNameBD() {
+    QString result = getBlockNameAC();
+    if (namedLayoutBlockBD != nullptr) {
+        result = namedLayoutBlockBD->getName();
+    }
+    return result;
+}
+
+/*public*/ SignalHead* LevelXing::getSignalHead(GEOMETRY loc) {
+    NamedBeanHandle<SignalHead*>* namedBean = nullptr;
+    switch (loc) {
+        case POINTA:
+            namedBean = signalAHeadNamed;
+            break;
+        case POINTB:
+            namedBean = signalBHeadNamed;
+            break;
+        case POINTC:
+            namedBean = signalCHeadNamed;
+            break;
+        case POINTD:
+            namedBean = signalDHeadNamed;
+            break;
+        default:
+            log.warn(tr("%1.getSignalHead(%2)").arg(getName()).arg(loc));
+            break;
+    }
+    if (namedBean != nullptr) {
+        return namedBean->getBean();
+    }
+    return nullptr;
+}
+
+/*public*/ SignalMast* LevelXing::getSignalMast(GEOMETRY loc) {
+    NamedBeanHandle<SignalMast*>* namedBean = nullptr;
+    switch (loc) {
+        case POINTA:
+            namedBean = signalAMastNamed;
+            break;
+        case POINTB:
+            namedBean = signalBMastNamed;
+            break;
+        case POINTC:
+            namedBean = signalCMastNamed;
+            break;
+        case POINTD:
+            namedBean = signalDMastNamed;
+            break;
+        default:
+            log.warn(tr("%1.getSignalMast(%2)").arg(getName()).arg(loc));
+            break;
+    }
+    if (namedBean != nullptr) {
+        return namedBean->getBean();
+    }
+    return nullptr;
+}
+
+/*public*/ Sensor* LevelXing::getSensor(GEOMETRY loc) {
+    NamedBeanHandle<Sensor*>* namedBean = nullptr;
+    switch (loc) {
+        case POINTA:
+            namedBean = sensorANamed;
+            break;
+        case POINTB:
+            namedBean = sensorBNamed;
+            break;
+        case POINTC:
+            namedBean = sensorCNamed;
+            break;
+        case POINTD:
+            namedBean = sensorDNamed;
+            break;
+        default:
+            log.warn(tr("%1.getSensor(%2)").arg(getName()).arg(loc));
+            break;
+    }
+    if (namedBean != nullptr) {
+        return namedBean->getBean();
+    }
+    return nullptr;
+}
+
+//@Nonnull
+/*public*/ QString LevelXing::getSignalAName() {
+    if (signalAHeadNamed != nullptr) {
+        return signalAHeadNamed->getName();
+    }
+    return "";
+}
+
+/*public*/ void LevelXing::setSignalAName(QString signalHead) {
+    if (signalHead == nullptr || signalHead.isEmpty()) {
+        signalAHeadNamed = nullptr;
+        return;
+    }
+
+    SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    if (head != nullptr) {
+        signalAHeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+    } else {
+        signalAHeadNamed = nullptr;
+    }
+}
+
+//@Nonnull
+/*public*/ QString LevelXing::getSignalBName() {
+    if (signalBHeadNamed != nullptr) {
+        return signalBHeadNamed->getName();
+    }
+    return "";
+}
+
+/*public*/ void LevelXing::setSignalBName(QString signalHead) {
+    if (signalHead == nullptr || signalHead.isEmpty()) {
+        signalBHeadNamed = nullptr;
+        return;
+    }
+
+    SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    if (head != nullptr) {
+        signalBHeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+    } else {
+        signalBHeadNamed = nullptr;
+    }
+}
+
+//@Nonnull
+/*public*/ QString LevelXing::getSignalCName() {
+    if (signalCHeadNamed != nullptr) {
+        return signalCHeadNamed->getName();
+    }
+    return "";
+}
+
+/*public*/ void LevelXing::setSignalCName(QString signalHead) {
+    if (signalHead == nullptr || signalHead.isEmpty()) {
+        signalCHeadNamed = nullptr;
+        return;
+    }
+
+    SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    if (head != nullptr) {
+        signalCHeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+    } else {
+        signalCHeadNamed = nullptr;
+    }
+}
+
+//@Nonnull
+/*public*/ QString LevelXing::getSignalDName() {
+    if (signalDHeadNamed != nullptr) {
+        return signalDHeadNamed->getName();
+    }
+    return "";
+}
+
+/*public*/ void LevelXing::setSignalDName(QString signalHead) {
+    if (signalHead == nullptr || signalHead.isEmpty()) {
+        signalDHeadNamed = nullptr;
+        return;
+    }
+
+    SignalHead* head = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    if (head != nullptr) {
+        signalDHeadNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
+    } else {
+        signalDHeadNamed = nullptr;
+    }
+}
+
 /*public*/ void LevelXing::removeBeanReference(NamedBean* nb) {
     if (nb == nullptr) {
         return;

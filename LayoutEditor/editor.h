@@ -357,6 +357,10 @@ public:
     //@Override
     /*abstract*/ virtual /*public*/ void mouseExited(QGraphicsSceneMouseEvent* event){}
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
+    /*public*/ void addPropertyChangeListener(QString name, PropertyChangeListener* listener);
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
+    /*public*/ void removePropertyChangeListener(QString name, PropertyChangeListener* listener);
 
 signals:
     
@@ -373,6 +377,7 @@ private:
     /*private*/ bool _debug = false;
     /*private*/ bool _loadFailed = false;
     bool bDirty = false;
+    PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
 
     bool showCloseInfoMessage = true;	//display info message when closing panel
     void commonInit();
@@ -402,7 +407,7 @@ private:
     static Logger* log;
     bool saveSize;
     bool savePosition;
-    bool _showCoordinates;
+    bool _showCoordinates = false;
     void closeEvent(QCloseEvent *);
     PositionableLabel* currItem;
     Positionable* saveP;
@@ -439,8 +444,8 @@ private slots:
     /*protected*/ int _scrollState = SCROLL_NONE;
     /*protected*/ bool _editable = true;
     // mouse methods variables
-    /*protected*/ int _lastX;
-    /*protected*/ int _lastY;
+    /*protected*/ int _lastX = 0;
+    /*protected*/ int _lastY =0;
 //    BasicStroke DASHED_LINE = new BasicStroke(1f, BasicStroke.CAP_BUTT,
 //                                    BasicStroke.JOIN_BEVEL,
 //                                    10f, new float[] {10f, 10f}, 0f);
@@ -450,7 +455,7 @@ private slots:
     /*protected*/ bool _dragging = false;
     /*protected*/ QList <Positionable*>* _selectionGroup = nullptr;  // items gathered inside fence
 
-    /*protected*/ Positionable* _currentSelection;
+    /*protected*/ Positionable* _currentSelection = nullptr;
     // Accessible to editor views
     /*protected*/ int xLoc;// = 0;     // x coord of selected Positionable
     /*protected*/ int yLoc;// = 0;     // y coord of selected Positionable
@@ -468,7 +473,7 @@ private slots:
     /*protected*/ bool _pastePending = false;
 
     // map of icon editor frames (incl, icon editor) keyed by name
-//    /*protected*/ QHash <QString, JFrameItem*> _iconEditorFrame = new QHash <QString, JFrameItem*>();
+    /*protected*/ QHash <QString, JFrameItem*> _iconEditorFrame = QHash <QString, JFrameItem*>();
     /**
     * An Editor may or may not choose to use 'this' as its frame or
     * the interior class 'TargetPane' for its targetPanel
@@ -524,7 +529,6 @@ private slots:
   /*protected*/ void setAttributes(PositionablePopupUtil* newUtil, Positionable* p, bool isOpaque =true);
   /*protected*/ void setSelectionsDockingLocation(Positionable* p);
   /*protected*/ void dockSelections(Positionable* p);
-  /*protected*/ QHash <QString, JFrameItem*>* _iconEditorFrame;// = new QHash <QString, JFrameItem*>();
   /*protected*/ Editor* changeView(QString className);
 //  /*protected*/ void setSecondSelectionGroup(QList<Positionable*> list);
   /*abstract*/ /*protected*/ virtual void init(QString name);

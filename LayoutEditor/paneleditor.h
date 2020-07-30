@@ -66,11 +66,6 @@ public slots:
     void on_addMultiSensor_triggered();
     void on_addBackground_triggered();
     void on_actionOpenEditor_triggered();
-    void onLabelAdd();
-    void onEditableBox();
-    void onControllingBox();
-    void onShowToolTipBox();
-    void onScrollableComboBox();
     /*public*/ void itemStateChanged(int index);
     /*public*/ void windowClosing(QCloseEvent* e);
 
@@ -119,8 +114,6 @@ private:
  /*private*/ void hiddenCheckBoxListener();
 
 private slots:
- void on_storeIndexItem_triggered();
- void on_CPEView_triggered();
 
 protected:
  /*protected*/ void init(QString name);

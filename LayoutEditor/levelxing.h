@@ -30,27 +30,15 @@ public:
      * constructor method
      */
     /*public*/ LevelXing(QString id, QPointF c, LayoutEditor* myPanel);
- enum POINTS
- {
-  POINTA = 0x01,
-  POINTB = 0x10,
-  POINTC = 0x20,
-  POINTD = 0x30
- };
+    /*public*/ enum GEOMETRY
+    {
+        POINTA, POINTB, POINTC, POINTD
+    };
+    Q_ENUM(GEOMETRY)
     /**
      * Accessor methods
     */
     /*public*/ QString getID() {return ident;}
-    /*public*/ QString getBlockNameAC() {return blockNameAC;}
-    /*public*/ QString getBlockNameBD() {return blockNameBD;}
-    /*public*/ QString getSignalAName() {return signalAName;}
-    /*public*/ void setSignalAName(QString signalName) {signalAName = signalName;}
-    /*public*/ QString getSignalBName() {return signalBName;}
-    /*public*/ void setSignalBName(QString signalName) {signalBName = signalName;}
-    /*public*/ QString getSignalCName() {return signalCName;}
-    /*public*/ void setSignalCName(QString signalName) {signalCName = signalName;}
-    /*public*/ QString getSignalDName() {return signalDName;}
-    /*public*/ void setSignalDName(QString signalName) {signalDName = signalName;}
     /*public*/ void removeBeanReference(NamedBean* nb);
     /*public*/ QString getSignalAMastName();
     /*public*/ void setSignalAMastName(QString signalName) {signalAMastName = signalName;}
@@ -160,7 +148,19 @@ public:
             /*@Nonnull*/ QSet<QString>* TrackNameSet);
     /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
     /*public*/ QString toString() override;
-
+    /*public*/ QString getBlockNameAC();
+    /*public*/ QString getBlockNameBD();
+    /*public*/ SignalHead* getSignalHead(GEOMETRY loc);
+    /*public*/ SignalMast* getSignalMast(GEOMETRY loc);
+    /*public*/ Sensor* getSensor(GEOMETRY loc);
+    /*public*/ QString getSignalAName();
+    /*public*/ void setSignalAName(QString signalHead);
+    /*public*/ QString getSignalBName();
+    /*public*/ void setSignalBName(QString signalHead);
+    /*public*/ QString getSignalCName();
+    /*public*/ void setSignalCName(QString signalHead);
+    /*public*/ QString getSignalDName();
+    /*public*/ void setSignalDName(QString signalHead);
 signals:
     
 public slots:

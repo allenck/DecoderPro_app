@@ -1,6 +1,8 @@
 #include "editscene.h"
 #include <QGraphicsView>
 
+#include <QMainWindow>
+
 EditScene::EditScene(QObject *parent) :
     QGraphicsScene(parent)
 {
@@ -80,4 +82,27 @@ QColor EditScene::getBackground()
  if(b == Qt::NoBrush)
   return QColor(Qt::white);
  return b.color();
+}
+
+/**
+ * Returns the top-level ancestor of this component (either the
+ * containing <code>Window</code> or <code>Applet</code>),
+ * or <code>null</code> if this component has not
+ * been added to any container.
+ *
+ * @return the top-level <code>Container</code> that this component is in,
+ *          or <code>null</code> if not in any container
+ */
+/*public*/ QWidget* EditScene::getTopLevelAncestor()
+{
+
+ for(QObject* p = this; p != nullptr; p = p->parent())
+ {
+  //if(p instanceof Window || p instanceof Applet)
+     if(qobject_cast<QMainWindow*>(p)!=nullptr)
+  {
+   return (QWidget*)p;
+  }
+ }
+ return nullptr;
 }
