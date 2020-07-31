@@ -983,10 +983,12 @@ protected void paintTargetPanel(Graphics g) {
 
  if (_dragging)
  {
-  mouseDragged(event);
-//  delayedPopupTrigger = false;
-//  _dragging = false;
-//  _selectRect = QRect();
+  //mouseDragged(event);
+  delayedPopupTrigger = false;
+  _dragging = false;
+  _selectRect = QRect();
+  _currentSelection = nullptr;
+  return;
  }
  if (selections->size() > 0)
  {
@@ -1074,6 +1076,7 @@ protected void paintTargetPanel(Graphics g) {
 /*public*/ void PanelEditor::mouseDragged(QGraphicsSceneMouseEvent* event)
 {
  bool bRightButton = ((event->buttons())&Qt::RightButton)==Qt::RightButton;
+ bool bLeftButton = ((event->buttons())&Qt::LeftButton)==Qt::LeftButton;
  bool bShift = ((event->modifiers())&Qt::ShiftModifier) == Qt::ShiftModifier;
  Q_UNUSED(bShift);
  bool bMeta = ((event->modifiers())&Qt::MetaModifier) == Qt::MetaModifier;
@@ -1105,7 +1108,7 @@ protected void paintTargetPanel(Graphics g) {
  }
 
 //moveIt:
- if (_currentSelection!=NULL && getFlag(OPTION_POSITION, _currentSelection->isPositionable()))
+ if (_currentSelection!=NULL && getFlag(OPTION_POSITION, _currentSelection->isPositionable()) && bLeftButton)
  {
   int deltaX = event->scenePos().x() - _lastX;
   int deltaY = event->scenePos().y() - _lastY;
@@ -1235,7 +1238,6 @@ protected void paintTargetPanel(Graphics g) {
 //  //_targetPanel->repaint();
 //  paint(_targetPanel);
 // }
- mouseDragged(event);
 }
 
 /*public*/ void PanelEditor::mouseClicked(QGraphicsSceneMouseEvent* event)
