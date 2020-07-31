@@ -135,6 +135,7 @@ ControlPanelEditor::~ControlPanelEditor()
  setObjectName("ControlPanelEditor");
  setProperty("JavaClassName", "jmri.jmrit.display.controlPanelEditor.ControlPanelEditor");
 
+ initComponents();
  _debug = true;
  setAcceptDrops(true);
  _fitX = 0;
@@ -1113,28 +1114,32 @@ void ControlPanelEditor::selectAllAction()
     getTargetPanel()->views().at(0)->scale(ratio,ratio);
 }
 
-/*public*/ void ControlPanelEditor::setTitle()
-{
- QString name = getName();
- if (name==nullptr || name.length()==0)
- {
-  name = tr("Control Panel");
- }
- if (isEditable())
- {
-  if(!name.contains( "Editor"))
-   JFrame::setTitle(name+" "+tr("Editor"));
-  else
-   JFrame::setTitle(name);
- }
- else
- {
-  JFrame::setTitle(name);
- }
+//@Override
+/*public*/ void ControlPanelEditor::setTitle() {
+    QString name = getName();
+    if (name.isNull() || name.length() == 0) {
+        name =tr("Untitled");
+    }
+    QString ending = " " + tr("Editor");
+    QString defaultName = tr("ControlPanelEditor");
+    defaultName = defaultName.mid(0, defaultName.length() - ending.length());
+    if (name.endsWith(ending)) {
+        name = name.mid(0, name.length() - ending.length());
+    }
+    if (name == (defaultName)) {
+        name = tr("Untitled") + "(" + name + ")";
+    }
+   if (isEditable()) {
+        JmriJFrame::setTitle(name + " " + tr("Editor"));
+    } else {
+        JmriJFrame::setTitle(name);
+    }
+    setName(name);
 }
 
 // all content loaded from file.
-/*public*/ void loadComplete() {
+/*public*/ void ControlPanelEditor::loadComplete() {
+ log->debug("loadComplete");
 }
 
 /**
@@ -1176,9 +1181,11 @@ void ControlPanelEditor::selectAllAction()
      return getCopySelection(event);
  }
  QList <Positionable*>* selections = getSelectedItems(event);
- if (_disableShapeSelection || _disablePortalSelection)
+ if(selections->count() > 0)
+  log->debug(tr("getCurrentSelection: %1 selections").arg(selections->count()));
+ if( (_disableShapeSelection || _disablePortalSelection) && selections->count())
  {
-  QList<Positionable*> list = QList<Positionable*>();
+  QList<Positionable*>* list = new QList<Positionable*>();
   QListIterator<Positionable*> it(*selections);
   while (it.hasNext())
   {
@@ -1189,9 +1196,9 @@ void ControlPanelEditor::selectAllAction()
    if (_disablePortalSelection && qobject_cast<PortalIcon*>(pos->self())) {
        continue;
    }
-   list.append(pos);
+   list->append(pos);
   }
-  selections = &list;
+  selections = list;
  }
  Positionable* selection = nullptr;
  if (selections->size() > 0)
@@ -1213,7 +1220,7 @@ void ControlPanelEditor::selectAllAction()
     {
      Positionable* pos = iter.next();
      if (qobject_cast<NamedBean*>(pos->self())) {
-         selects.replace(i++, ((NamedBean*) pos)->getDisplayName());
+         selects.replace(i++, ((NamedBean*) pos->self())->getDisplayName());
      } else {
          selects.replace(i++,pos->getNameString());
      }
@@ -1232,7 +1239,7 @@ void ControlPanelEditor::selectAllAction()
       Positionable* pos = iter.next();
       QString name;
       if (qobject_cast<NamedBean*>(pos->self())) {
-          name = ((NamedBean*) pos)->getDisplayName();
+          name = ((NamedBean*) pos->self())->getDisplayName();
       } else {
           name = pos->getNameString();
       }
@@ -1630,7 +1637,7 @@ void ControlPanelEditor::selectAllAction()
     && (isEditable() || qobject_cast<LocoIcon*>(_currentSelection->self())!=0))
  {
   moveIt:
-  if (_currentSelection!=nullptr
+  if (_currentSelection != nullptr
 //      && qobject_cast<PositionableLabel*>(_currentSelection->self())
 //      && getFlag(OPTION_POSITION, ((PositionableLabel*)_currentSelection)->isPositionable())
       && _currentSelection->isPositionable()

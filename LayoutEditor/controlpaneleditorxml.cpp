@@ -58,7 +58,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  QPoint posn = QPoint(p->geometry().x(), p->geometry().y());
 
  panel.setAttribute("class", "jmri.jmrit.display.controlPanelEditor.configurexml.ControlPanelEditorXml");
- panel.setAttribute("name", p->getName());
+ panel.setAttribute("name", p->getName()); // frame->getName());
  panel.setAttribute("x", posn.x());
  panel.setAttribute("y", posn.y());
  panel.setAttribute("height", size.height());
@@ -175,7 +175,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
          }
 
          QSize prefsWindowSize = prefsMgr->getWindowSize(windowFrameRef);
-         if (!prefsWindowSize.isNull() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
+         if (!prefsWindowSize.isNull() && prefsWindowSize.height() >= 0 && prefsWindowSize.width() >= 0) {
              height = (int) prefsWindowSize.height();
              width = (int) prefsWindowSize.width();
          }

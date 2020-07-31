@@ -95,7 +95,7 @@
  setWindowTitle(name);
  init(true, true);
  //this(name, true, true);
-// generateWindowRef();
+// generateWindowRef(); // must be done by subclass
 // if (metaObject()->className()==("JmriJFrame"))
 // {
 //  if ((this->windowTitle() == "") || (this->windowTitle() == (""))) {
@@ -330,9 +330,9 @@ void JmriJFrame::setupWindowRef()
  {
   if (initref==("JmriJFrame"))
   {
-      initref=this->windowTitle();
+      initref=this->getTitle();
   } else {
-      initref = initref + ":" + this->windowTitle();
+      initref = initref + ":" + this->getTitle();
   }
  }
  int refNo = 1;
@@ -464,8 +464,9 @@ our own insets have not been correctly built and always return a size of zero */
  */
 /*public*/ void JmriJFrame::initComponents() /*throw (Exception)*/
 {
- windowFrameRef = getClassName(); //metaObject()->className();
- if (windowFrameRef!=("JmriJFrame"))
+// windowFrameRef = getClassName(); //metaObject()->className();
+// if (windowFrameRef!=("JmriJFrame"))
+ if(windowFrameRef.isEmpty())
  {
      generateWindowRef();
      setFrameLocation();

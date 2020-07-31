@@ -44,8 +44,8 @@ public slots:
     void on_actionAdd_Loco_from_roster_triggered();
     void on_actionRemove_markers_triggered();
     void on_addClock_triggered();
-//    void on_addLcdClock_triggered();
-//    void on_addNixieClockAct_triggered();
+    void on_addLcdClock_triggered();
+    void on_addNixieClockAct_triggered();
     void on_addSensor_triggered();
     void on_addSignalHead_triggered();
     void on_addSignalMast_triggered();

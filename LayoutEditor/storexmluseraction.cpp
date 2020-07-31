@@ -54,7 +54,8 @@
 
  if (file == nullptr)
      return;
-  saveFile(file->absoluteFilePath());
+
+ saveFile(file->absoluteFilePath());
 }
 
 void StoreXmlUserAction::saveFile(QString selectedFile)

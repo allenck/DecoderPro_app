@@ -257,8 +257,9 @@ void PositionablePropertiesUtil::on_cancel_clicked()
 {
  undoChanges();
  reject();
- //close();
+ mFrame->close();
  //setVisible(false);
+ mFrame->dispose();
 }
 void PositionablePropertiesUtil::on_applyButton_clicked()
 {
@@ -268,8 +269,9 @@ void PositionablePropertiesUtil::on_okButton_clicked()
 {
  fontApply();
  accept();
- //close();
+ mFrame->close();
  //setVisible(false);
+ mFrame->dispose();
 
 }
 

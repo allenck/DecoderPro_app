@@ -39,6 +39,8 @@
 #include <QComboBox>
 #include "xmladapter.h"
 #include "class.h"
+#include "lcdclockframe.h"
+#include "nixieclockframe.h"
 
 PanelEditor::PanelEditor(QWidget *parent) :
     Editor("NoName", false, true, parent),
@@ -47,7 +49,7 @@ PanelEditor::PanelEditor(QWidget *parent) :
  ui->setupUi(this);
  // init("NoName");  must be called by subclass
  setTitle();
-
+ initComponents();
 }
 
 PanelEditor::~PanelEditor()
@@ -106,6 +108,7 @@ PanelEditor::~PanelEditor()
 
  // init("NoName");  must be called by subclass
  setTitle();
+ initComponents();
 }
 
 /*protected*/ void PanelEditor::init(QString name)
@@ -840,9 +843,10 @@ protected void paintTargetPanel(Graphics g) {
  bool bCtrl = ((event->modifiers())&Qt::ControlModifier) == Qt::ControlModifier;
 
  //setToolTip(NULL); // ends tooltip if displayed
- if (_debug) log->debug("mousePressed at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") _dragging="+(_dragging?"true":"false") + " right button="+(bRightButton?"Down":"up"));
- _anchorX = event->pos().x();
- _anchorY = event->pos().y();
+ if (_debug)
+  log->debug("mousePressed at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") _dragging="+(_dragging?"true":"false") + " right button="+(bRightButton?"Down":"up"));
+ _anchorX = event->scenePos().x();
+ _anchorY = event->scenePos().y();
  _lastX = _anchorX;
  _lastY = _anchorY;
  QList <Positionable*>* selections = getSelectedItems(event);
@@ -867,7 +871,6 @@ protected void paintTargetPanel(Graphics g) {
    {
     // if requesting a popup and it might conflict with moving, delay the request to mouseReleased
     delayedPopupTrigger = true;
-    //_dragging = true;
    }
    else
    {
@@ -890,21 +893,22 @@ protected void paintTargetPanel(Graphics g) {
     _currentSelection->doMousePressed(event);
    else
    if(dynamic_cast<SensorIcon*>(_currentSelection->self())!=NULL)
-    ((SensorIcon*)_currentSelection)->doMousePressed(event);
+    ((SensorIcon*)_currentSelection->self())->doMousePressed(event);
    else
    if(dynamic_cast<LightIcon*>(_currentSelection->self())!=NULL)
     ((LightIcon*)_currentSelection)->doMousePressed(event);
    else
    if(dynamic_cast<SignalHeadIcon*>(_currentSelection->self())!=NULL)
-    ((SignalHeadIcon*)_currentSelection)->doMousePressed(event);
+    ((SignalHeadIcon*)_currentSelection->self())->doMousePressed(event);
    else
    if(dynamic_cast<SignalMastIcon*>(_currentSelection->self())!=NULL)
-    ((SignalMastIcon*)_currentSelection)->doMousePressed(event);
+    ((SignalMastIcon*)_currentSelection->self())->doMousePressed(event);
    else
    if(dynamic_cast<MultiSensorIcon*>(_currentSelection->self())!=NULL)
-    ((MultiSensorIcon*)_currentSelection)->doMousePressed(event);
+    ((MultiSensorIcon*)_currentSelection->self())->doMousePressed(event);
    else
-    ((PositionableLabel*)_currentSelection)->doMousePressed(event);if (_multiItemCopyGroup!=NULL && !_multiItemCopyGroup->contains(_currentSelection))
+    ((PositionableLabel*)_currentSelection->self())->doMousePressed(event);
+   if (_multiItemCopyGroup!=NULL && !_multiItemCopyGroup->contains(_currentSelection))
     _multiItemCopyGroup = NULL;
 //    _selectionGroup = NULL;
   }
@@ -950,13 +954,11 @@ protected void paintTargetPanel(Graphics g) {
                 (!_selectRect.isNull() && !_selectRect.contains(_anchorX, _anchorY)))
  {
   _selectRect =  QRect(_anchorX, _anchorY, 0, 0);
-  //_selectionGroup = new  QList<Positionable*>();
   _selectionGroup = nullptr;
  }
  else
  {
   _selectRect = QRect();
-  //_selectionGroup = new QList<Positionable*>();
   _selectionGroup = nullptr;
  }
  //_targetPanel->repaint(); // needed for ToolTip
@@ -979,13 +981,13 @@ protected void paintTargetPanel(Graphics g) {
                           +" selectRect is "+(_selectRect.isNull()? "NULL":"not NULL"));
  QList <Positionable*>* selections = getSelectedItems(event);
 
-// if (_dragging)
-// {
-//  //mouseDragged(event);
+ if (_dragging)
+ {
+  mouseDragged(event);
 //  delayedPopupTrigger = false;
 //  _dragging = false;
 //  _selectRect = QRect();
-// }
+ }
  if (selections->size() > 0)
  {
   if (bShift && selections->size() > 1)
@@ -1039,12 +1041,12 @@ protected void paintTargetPanel(Graphics g) {
   if (_currentSelection != NULL && !_dragging && !bCtrl)
   {
    if(qobject_cast<SensorIcon*>(_currentSelection->self())!=NULL)
-    ((SensorIcon*)_currentSelection)->doMouseReleased(event);
+    ((SensorIcon*)_currentSelection->self())->doMouseReleased(event);
    else
    if(qobject_cast<PositionableJComponent*>(_currentSelection->self())!=NULL)
-    ((PositionableJComponent*)_currentSelection)->doMouseReleased(event);
+    ((PositionableJComponent*)_currentSelection->self())->doMouseReleased(event);
    else
-   ((PositionableLabel*)_currentSelection)->doMouseReleased(event);
+   ((PositionableLabel*)_currentSelection->self())->doMouseReleased(event);
    addToTarget(_currentSelection);
   }
   _currentSelection = NULL; // Added to prevent calls to updateScene ACK 10-13-15
@@ -1117,7 +1119,7 @@ protected void paintTargetPanel(Graphics g) {
     minY = qMin(getItemY(_selectionGroup->at(i), deltaY), minY);
    }
   }
-  if (minX<0 || minY<0 || !bRightButton)
+  if (minX<0 || minY<0 /*|| !bRightButton*/)
   {
     //break moveIt;
     goto moveIt2;
@@ -1142,7 +1144,7 @@ protected void paintTargetPanel(Graphics g) {
    if(qobject_cast<PositionableLabel*>(_currentSelection->self())!=NULL)
    {
     //_highlightcomponent =  QRect(((PositionableLabel*)_currentSelection)->getX(),((PositionableLabel*) _currentSelection)->getY(),((PositionableLabel*)_currentSelection)->maxWidth(), ((PositionableLabel*)_currentSelection)->maxHeight());
-    _highlightcomponent = ((PositionableLabel*) _currentSelection)->getBounds();
+    _highlightcomponent = ((PositionableLabel*) _currentSelection->self())->getBounds();
 
    }
 //   else
@@ -1160,7 +1162,7 @@ protected void paintTargetPanel(Graphics g) {
   }
  }
  moveIt2:
- if(bRightButton)
+ //if(bRightButton)
   _dragging = true;
  delayedPopupTrigger = false;
  _lastX = event->scenePos().x();
@@ -1185,8 +1187,12 @@ protected void paintTargetPanel(Graphics g) {
  Q_UNUSED(bCtrl);
 
  //if (_debug) log->debug("mouseMoved at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+")");
- ui->statusbar->showMessage(tr("mouseMoved at (%1,%2)").arg(event->scenePos().x()).arg(event->scenePos().y()));
- if (_dragging || bRightButton) { return; }
+ QString msg = tr("mouseMoved at (%1,%2)").arg(event->scenePos().x()).arg(event->scenePos().y());
+ if(_currentSelection)
+  msg += tr(" selected: %1").arg(_currentSelection->self()->metaObject()->className());
+ ui->statusbar->showMessage(msg);
+ if (_dragging || bRightButton)
+  return;
 
  QList <Positionable*>* selections = getSelectedItems(event);
  Positionable* selection = NULL;
@@ -1201,10 +1207,10 @@ protected void paintTargetPanel(Graphics g) {
    selection = selections->at(0);
   }
  }
- if (isEditable() && selection!=NULL && qobject_cast<PositionableLabel*>(selection->self()) && ((PositionableLabel*)selection)->getDisplayLevel()>BKG)
+ if (isEditable() && selection!=NULL && qobject_cast<PositionableLabel*>(selection->self()) && ((PositionableLabel*)selection->self())->getDisplayLevel()>BKG)
  {
   //_highlightcomponent = QRectF(((PositionableLabel*)selection)->getX(), ((PositionableLabel*)selection)->getY(), ((PositionableLabel*)selection)->maxWidth(), ((PositionableLabel*)selection)->maxHeight());
-  _highlightcomponent = ((PositionableLabel*)selection)->getBounds();
+  _highlightcomponent = ((PositionableLabel*)selection->self())->getBounds();
   //_targetPanel->repaint();
   paint(editScene);
  }
@@ -1229,6 +1235,7 @@ protected void paintTargetPanel(Graphics g) {
 //  //_targetPanel->repaint();
 //  paint(_targetPanel);
 // }
+ mouseDragged(event);
 }
 
 /*public*/ void PanelEditor::mouseClicked(QGraphicsSceneMouseEvent* event)
@@ -1991,34 +1998,37 @@ void PanelEditor::on_addClock_triggered()
  putItem((PositionableIcon*)l);
  l->paint(editScene);
 }
-//void PanelEditor::on_addLcdClock_triggered()
-//{
-// addItemViaMouseClick = true;
-// LcdClockFrame* l = new LcdClockFrame(this);
-// l->setOpaque(false);
-// l->update();
-// l->setDisplayLevel(CLOCK);
-////    setNextLocation(l);
-// l->setLocation(_lastX, _lastY);
-// l->setVisible(true);
-// l->setScale(1.0);
-// putItem((Positionable*)l);
-// l->paint(editScene);
-//}
-//void PanelEditor::on_addNixieClockAct_triggered()
-//{
-// addItemViaMouseClick = true;
-// NixieClockFrame* l = new NixieClockFrame(this);
-// l->setOpaque(false);
-// l->update();
-// l->setDisplayLevel(CLOCK);
-////    setNextLocation(l);
-// l->setLocation(_lastX, _lastY);
-// l->setVisible(true);
-// l->setScale(1.0);
-// putItem((Positionable*)l);
-// l->paint(editScene);
-//}
+
+void PanelEditor::on_addLcdClock_triggered()
+{
+ addItemViaMouseClick = true;
+ LcdClockFrame* l = new LcdClockFrame(this);
+ l->setOpaque(false);
+ l->update();
+ ((PositionableIcon*)l)->setDisplayLevel(CLOCK);
+//    setNextLocation(l);
+ l->setLocation(_lastX, _lastY);
+ l->setVisible(true);
+ ((PositionableIcon*)l)->setScale(1.0);
+ putItem((Positionable*)l);
+ ((PositionableIcon*)l)->paint(editScene);
+}
+
+void PanelEditor::on_addNixieClockAct_triggered()
+{
+ addItemViaMouseClick = true;
+ NixieClockFrame* l = new NixieClockFrame(this);
+ l->setOpaque(false);
+ l->update();
+ ((PositionableIcon*)l)->setDisplayLevel(CLOCK);
+//    setNextLocation(l);
+ l->setLocation(_lastX, _lastY);
+ l->setVisible(true);
+ ((PositionableIcon*)l)->setScale(1.0);
+ putItem((Positionable*)l);
+ ((PositionableIcon*)l)->paint(editScene);
+}
+
 void PanelEditor::on_addSensor_triggered()
 {
 // QPointF pt = QPoint(_lastX, _lastY);

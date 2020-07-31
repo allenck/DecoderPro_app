@@ -32,19 +32,20 @@ public:
     /*public*/ void resetEditor();
     /*public*/ QList <Positionable*>* getClipGroup();
     /*public*/ void setTitle();
+    /*public*/ void loadComplete();
     /*public*/ void setDefaultPortalIcons(QMap<QString, NamedIcon *> *map);
     /*public*/ QMap<QString, NamedIcon *> *getPortalIconMap();
     /*public*/ bool getShapeSelect() ;
     /*public*/ void setShapeSelect(bool set) ;
     /*public*/ ShapeDrawer* getShapeDrawer();
- /*public*/ CircuitBuilder* getCircuitBuilder();
- /*public*/ void mouseEntered(QGraphicsSceneMouseEvent * event);
- /*public*/ void mouseExited(QGraphicsSceneMouseEvent * event);
- /*public*/ void keyPressEvent(QKeyEvent* e);
- /*public*/ void keyReleaseEvent(QKeyEvent* e);
- /*public*/ void setNextLocation(Positionable* obj);
- /*public*/ void setColorMenu(QMenu* popup, /*JComponent*/QWidget *pos, int type);
- /*public*/ QString getClassName();
+    /*public*/ CircuitBuilder* getCircuitBuilder();
+    /*public*/ void mouseEntered(QGraphicsSceneMouseEvent * event);
+    /*public*/ void mouseExited(QGraphicsSceneMouseEvent * event);
+    /*public*/ void keyPressEvent(QKeyEvent* e);
+    /*public*/ void keyReleaseEvent(QKeyEvent* e);
+    /*public*/ void setNextLocation(Positionable* obj);
+    /*public*/ void setColorMenu(QMenu* popup, /*JComponent*/QWidget *pos, int type);
+    /*public*/ QString getClassName();
 
 
 signals:
@@ -54,13 +55,13 @@ public slots:
  /*public*/ void setUseGlobalFlag(bool set); // SLOT
 //    void onItemTableList();
     void actionCut();
-    /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
-    /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event);
-    /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event);
-    /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event);
-    /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);
+    /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event) override;
     ///*public*/ void mouseDoubleClicked(QGraphicsSceneMouseEvent* event);
-    /*public*/ void setAllEditable(bool edit);
+    /*public*/ void setAllEditable(bool edit) override;
 
 
 private:

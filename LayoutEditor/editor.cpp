@@ -149,6 +149,7 @@
 {
  commonInit();
 }
+
 void Editor::commonInit()
 {
  //commonInit();
@@ -555,6 +556,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
   _selectionGroup = new QList<Positionable*>();
  }
 }
+
 /*protected*/ void Editor::deselectSelectionGroup()
 {
  if (_selectionGroup == nullptr)
@@ -636,9 +638,9 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
   {
    Positionable* p = _contents->at(i);
    // don't allow backgrounds to be set positionable by global flag
-   if (!state || ((PositionableLabel*)p)->getDisplayLevel()!=BKG)
+   if (!state || ((PositionableLabel*)p->self())->getDisplayLevel()!=BKG)
    {
-    ((PositionableLabel*)p)->setPositionable(state);
+    ((PositionableLabel*)p->self())->setPositionable(state);
    }
   }
  }
@@ -3871,12 +3873,15 @@ void Editor::setName(QString name)
  this->name = name;
  setWindowTitle(name);
 }
+
 QString Editor::getName() { return name;}
 QString Editor::getTitle() { return name;}
+
 void Editor::repaint()
 {
  // TODO:
 }
+
 void Editor::redrawPanel() {}
 /*********************** Icon Editors utils ****************************/
 
