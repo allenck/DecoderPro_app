@@ -48,7 +48,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -33795,6 +33794,11 @@ bool  PythonQtWrapper_ControlPanelEditor::getShapeSelect(ControlPanelEditor* the
 void PythonQtWrapper_ControlPanelEditor::highlight(ControlPanelEditor* theWrappedObject, Positionable*  pos)
 {
   ( ((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->promoted_highlight(pos));
+}
+
+void PythonQtWrapper_ControlPanelEditor::loadComplete(ControlPanelEditor* theWrappedObject)
+{
+  ( theWrappedObject->loadComplete());
 }
 
 void PythonQtWrapper_ControlPanelEditor::makeCircuitMenu(ControlPanelEditor* theWrappedObject)

@@ -3373,9 +3373,11 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 //class TextAttrDialog extends JDialog {
 //    Positionable _pos;
 //    jmri.jmrit.display.palette.DecoratorPanel _decorator;
-TextAttrDialog::TextAttrDialog(Positionable* p, Editor* editor) : DisplayFrame(tr("Text Attributes"), editor)
+TextAttrDialog::TextAttrDialog(Positionable* p, Editor* ed)
+ : DisplayFrame(tr("Text Attributes"), ed)
 {
- //super(_targetFrame, tr("TextAttributes"), true);
+ //super(Bundle.getMessage("TextAttributes"), ed);
+ this->editor = ed;
  _pos = p;
  JPanel* panel = new JPanel();
  panel->setLayout(new QVBoxLayout());//panel, BoxLayout.Y_AXIS));
@@ -3408,6 +3410,7 @@ TextAttrDialog::TextAttrDialog(Positionable* p, Editor* editor) : DisplayFrame(t
         }
         _decorator->close();
        dispose();
+       close();
     });
     panel0->layout()->addWidget(doneButton);
 
@@ -3416,6 +3419,7 @@ TextAttrDialog::TextAttrDialog(Positionable* p, Editor* editor) : DisplayFrame(t
     connect(cancelButton, &QPushButton::clicked, [=]{
         _decorator->close();
         dispose();
+        close();
     });
     panel0->layout()->addWidget(cancelButton);
     return panel0;

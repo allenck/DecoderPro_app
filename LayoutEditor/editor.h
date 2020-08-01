@@ -801,9 +801,9 @@ class TextAttributesActionListener : public QObject
 
 class TextAttrDialog : public DisplayFrame {
     Q_OBJECT
-    Positionable* _pos;
-    DecoratorPanel* _decorator;
-    Editor* editor;
+    Positionable* _pos = nullptr;
+    DecoratorPanel* _decorator = nullptr;
+    Editor* editor = nullptr;
 public:
     TextAttrDialog(Positionable* p, Editor* editor);
 public slots:

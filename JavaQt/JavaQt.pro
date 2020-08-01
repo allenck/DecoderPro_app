@@ -250,7 +250,8 @@ SOURCES += javaqt.cpp \
     namedbeancombobox.cpp \
     jcheckbox.cpp \
     etchedborder.cpp \
-    jcheckboxmenuitem.cpp
+    jcheckboxmenuitem.cpp \
+    keyadapter.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -554,7 +555,9 @@ HEADERS += javaqt.h\
     jcheckbox.h \
     etchedborder.h \
     supplier.h \
-    jcheckboxmenuitem.h
+    jcheckboxmenuitem.h \
+    keyadapter.h \
+    keylistener.h
 
 unix {
     target.path = /usr/lib

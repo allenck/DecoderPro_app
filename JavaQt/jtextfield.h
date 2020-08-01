@@ -8,6 +8,8 @@
 #include "jcomponent.h"
 #include "changelistener.h"
 #include "focuslistener.h"
+#include "keyadapter.h"
+#include "keylistener.h"
 
 class PropertyChangeEvent;
 class InputVerifier;
@@ -15,10 +17,10 @@ class Document;
 class Action;
 class PropertyChangeListener;
 class ActionListener;
-class JAVAQTSHARED_EXPORT JTextField : public /*JTextComponent*/QLineEdit, public JComponent
+class JAVAQTSHARED_EXPORT JTextField : public /*JTextComponent*/QLineEdit, public JComponent, public KeyListener
 {
     Q_OBJECT
-    Q_INTERFACES(JComponent)
+    Q_INTERFACES(JComponent KeyListener)
 public:
     explicit JTextField(QWidget *parent = 0);
     /*public*/ JTextField(QString text, QWidget *parent = 0);
@@ -51,6 +53,10 @@ public:
     /*public*/ void removeChangeListener(ChangeListener* l);
     /*public*/ void addFocusListener(FocusListener *l);
     /*public*/ void removeFocusListener(FocusListener* l);
+    /*public*/ void addKeyListener(KeyAdapter*);
+    /*public*/ void removeKeyListener(KeyAdapter*);
+    QObject* self() {return (QObject*)this;}
+
 
 signals:
  void enterField();
@@ -83,6 +89,9 @@ private:
  QColor backgroundColor = Qt::white;
  QColor textColor = Qt::black;
  bool _opaque = true;
+// void keyPressEvent(QKeyEvent *);
+// void keyReleaseEvent(QKeyEvent*);
+ QList<KeyAdapter*> keyAdapterList = QList<KeyAdapter*>();
 
 private slots:
  void updateShare();

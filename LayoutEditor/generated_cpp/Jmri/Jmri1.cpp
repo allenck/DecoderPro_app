@@ -65,7 +65,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -19279,6 +19278,16 @@ QList<LayoutTurnout* >*  PythonQtWrapper_LayoutEditor::getLayoutTurnoutsAndSlips
   return ( theWrappedObject->getLayoutTurnoutsAndSlips());
 }
 
+double  PythonQtWrapper_LayoutEditor::getMaxZoom(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getMaxZoom());
+}
+
+double  PythonQtWrapper_LayoutEditor::getMinZoom(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getMinZoom());
+}
+
 bool  PythonQtWrapper_LayoutEditor::getOpenDispatcherOnLoad(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getOpenDispatcherOnLoad());
@@ -19444,11 +19453,6 @@ void PythonQtWrapper_LayoutEditor::paintTargetPanel(LayoutEditor* theWrappedObje
   ( theWrappedObject->paintTargetPanel(g2));
 }
 
-QGraphicsView*  PythonQtWrapper_LayoutEditor::panel(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->panel());
-}
-
 bool  PythonQtWrapper_LayoutEditor::remove(LayoutEditor* theWrappedObject, QObject*  s)
 {
   return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_remove(s));
@@ -19489,19 +19493,14 @@ void PythonQtWrapper_LayoutEditor::removeMarkers(LayoutEditor* theWrappedObject)
   ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_removeMarkers());
 }
 
-void PythonQtWrapper_LayoutEditor::removeSelections(LayoutEditor* theWrappedObject, Positionable*  p)
-{
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_removeSelections(p));
-}
-
 void PythonQtWrapper_LayoutEditor::removeSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head)
 {
   ( theWrappedObject->removeSignalHead(head));
 }
 
-void PythonQtWrapper_LayoutEditor::resetTargetSize(LayoutEditor* theWrappedObject)
+void PythonQtWrapper_LayoutEditor::resetAwaitingIconChange(LayoutEditor* theWrappedObject)
 {
-  ( theWrappedObject->resetTargetSize());
+  ( theWrappedObject->resetAwaitingIconChange());
 }
 
 void PythonQtWrapper_LayoutEditor::rotateLayout90(LayoutEditor* theWrappedObject)
@@ -19527,6 +19526,11 @@ void PythonQtWrapper_LayoutEditor::setAntialiasingOn(LayoutEditor* theWrappedObj
 void PythonQtWrapper_LayoutEditor::setAutoBlockAssignment(LayoutEditor* theWrappedObject, bool  boo)
 {
   ( theWrappedObject->setAutoBlockAssignment(boo));
+}
+
+void PythonQtWrapper_LayoutEditor::setAwaitingIconChange(LayoutEditor* theWrappedObject)
+{
+  ( theWrappedObject->setAwaitingIconChange());
 }
 
 void PythonQtWrapper_LayoutEditor::setConnections(LayoutEditor* theWrappedObject)

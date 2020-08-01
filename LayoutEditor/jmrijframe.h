@@ -88,25 +88,25 @@ public slots:
 
 private:
     static /*volatile*/ QList<JmriJFrame*>* frameList;// = new QList<JmriJFrame*>();
-    QString windowFrameRef;
+    QString windowFrameRef = QString();
     void offSetFrameOnScreen(JmriJFrame* f);
-    /*private*/ AbstractShutDownTask* task;// = NULL;
- Logger* log;
- /*private*/ bool modifiedFlag;// = false;
- QString name;
- //QMutex mutex;
- /*private*/ static QString escapeKeyAction;// = "escapeKeyAction";
- /*private*/ bool escapeKeyActionClosesWindow;// = false;
- //void closeEvent(QCloseEvent *);
- /*private*/ void saveWindowSize(UserPreferencesManager* p);
- /*private*/ bool mShown;// = false;
- QWidget* glassPane = nullptr;
- Border* _border = nullptr;
+    /*private*/ AbstractShutDownTask* task = nullptr;
+    Logger* log;
+    /*private*/ bool modifiedFlag = false;
+    QString name;
+    //QMutex mutex;
+    /*private*/ static QString escapeKeyAction;// = "escapeKeyAction";
+    /*private*/ bool escapeKeyActionClosesWindow = false;
+    //void closeEvent(QCloseEvent *);
+    /*private*/ void saveWindowSize(UserPreferencesManager* p);
+    /*private*/ bool mShown = false;
+    QWidget* glassPane = nullptr;
+    Border* _border = nullptr;
 
 protected:
-    /*protected*/ bool allowInFrameServlet;// = true;
-    /*protected*/ bool reuseFrameSavedPosition;// = true;
-    /*protected*/ bool reuseFrameSavedSized;// = true;
+    /*protected*/ bool allowInFrameServlet = true;
+    /*protected*/ bool reuseFrameSavedPosition = true;
+    /*protected*/ bool reuseFrameSavedSized = true;
  /*protected*/ WindowInterface* windowInterface;
     /*
      * This field contains a list of properties that do not correspond to the

@@ -175,7 +175,7 @@ public:
  /*public*/ JDialog* createDialog(QString title);
  /*public*/ void setValidator(QValidator* val);
 
-signals:
+ signals:
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* event);

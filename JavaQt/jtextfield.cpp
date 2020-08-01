@@ -3,6 +3,7 @@
 #include "../LayoutEditor/document.h"
 #include "propertychangeevent.h"
 #include "colorutil.h"
+#include <QMetaObject>
 
 //JTextField::JTextField(QWidget *parent) :
 //    QLineEdit(parent)
@@ -1167,3 +1168,41 @@ Document* JTextField::getDocument()
 {
  emit focusLost(new FocusEvent());
 }
+
+/*public*/ void JTextField::addKeyListener(KeyAdapter* l)
+{
+ if(!keyAdapterList.contains(l))
+  keyAdapterList.append(l);
+}
+
+/*public*/ void JTextField::removeKeyListener(KeyAdapter* l)
+{
+ if(keyAdapterList.contains(l))
+  keyAdapterList.removeOne(l);
+}
+
+//void JTextField::keyPressEvent(QKeyEvent *e)
+//{
+// foreach (KeyAdapter* a, keyAdapterList)
+// {
+//  if(!QMetaObject::invokeMethod(a, "keyPressed", Qt::AutoConnection, Q_ARG(QKeyEvent*, e)))
+//  {
+//      Logger::error(tr("invoke method 'keyPressed' failed for %1").arg(a->metaObject()->className()));
+//      return;
+//  }
+// }
+// e->ignore();
+//}
+//void JTextField::keyReleaseEvent(QKeyEvent* e)
+//{
+// foreach (KeyAdapter* a, keyAdapterList)
+// {
+//  if(!QMetaObject::invokeMethod(a, "keyReleased", Qt::AutoConnection, Q_ARG(QKeyEvent*, e)))
+//  {
+//      Logger::error(tr("invoke method 'keyReleased' failed for %1").arg(a->metaObject()->className()));
+//      return;
+//  }
+// }
+// e->ignore();
+//}
+

@@ -63,7 +63,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -3253,6 +3252,7 @@ void delete_ControlPanelEditor(ControlPanelEditor* obj) { delete obj; }
    void py_q_initView(ControlPanelEditor* theWrappedObject){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_initView());}
    void py_q_keyPressEvent(ControlPanelEditor* theWrappedObject, QKeyEvent*  e){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_keyPressEvent(e));}
    void py_q_keyReleaseEvent(ControlPanelEditor* theWrappedObject, QKeyEvent*  e){  (((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->py_q_keyReleaseEvent(e));}
+   void loadComplete(ControlPanelEditor* theWrappedObject);
    void makeCircuitMenu(ControlPanelEditor* theWrappedObject);
    void makeCircuitMenu(ControlPanelEditor* theWrappedObject, bool  edit);
    void makeDataFlavors(ControlPanelEditor* theWrappedObject);

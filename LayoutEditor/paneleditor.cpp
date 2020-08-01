@@ -140,8 +140,8 @@ PanelEditor::~PanelEditor()
 
  labelAdd = new QPushButton(tr("Add text:"));
  nextLabel = new JTextField(10);
- nextX = new JTextField(tr("Default X"),9);
- nextY = new JTextField(tr("Default Y"),9);
+ nextX = new JTextField(tr("0"),4);
+ nextY = new JTextField(tr("0"),4);
 
  JmriJFrame* frame = new JmriJFrameX(name + " " + (tr("Editor")));
  QWidget* contentPane = frame->getContentPane();
@@ -239,6 +239,16 @@ PanelEditor::~PanelEditor()
 //             }
 //         }
 //     });
+//     nextLabel->addKeyListener(new PEKeyListener(this));
+     connect(nextLabel, &JTextField::textChanged, [=]{
+      if (nextLabel->text() ==("")) {
+          labelAdd->setEnabled(false);
+          labelAdd->setToolTip(tr("This button will be active after you type text into the text box"));
+      } else {
+          labelAdd->setEnabled(true);
+          labelAdd->setToolTip("");
+      }
+     });
   contentPaneLayout->addWidget(panel);
  }
  // Selection of the type of entity for the icon to represent is done from a combobox
@@ -837,6 +847,8 @@ protected void paintTargetPanel(Graphics g) {
 /*public*/ void PanelEditor::mousePressed(QGraphicsSceneMouseEvent* event)
 {
  bool bRightButton = ((event->buttons())&Qt::RightButton)==Qt::RightButton;
+ bool bLefttButton = ((event->buttons())&Qt::LeftButton)==Qt::LeftButton;
+ bool bMiddleButton = ((event->buttons())&Qt::MiddleButton)==Qt::MiddleButton;
  bool bShift = ((event->modifiers())&Qt::ShiftModifier) == Qt::ShiftModifier;
  bool bMeta = ((event->modifiers())&Qt::MetaModifier) == Qt::MetaModifier;
  bool bAlt = ((event->modifiers())&Qt::AltModifier) == Qt::AltModifier;
@@ -896,7 +908,7 @@ protected void paintTargetPanel(Graphics g) {
     ((SensorIcon*)_currentSelection->self())->doMousePressed(event);
    else
    if(dynamic_cast<LightIcon*>(_currentSelection->self())!=NULL)
-    ((LightIcon*)_currentSelection)->doMousePressed(event);
+    ((LightIcon*)_currentSelection->self())->doMousePressed(event);
    else
    if(dynamic_cast<SignalHeadIcon*>(_currentSelection->self())!=NULL)
     ((SignalHeadIcon*)_currentSelection->self())->doMousePressed(event);
@@ -1140,15 +1152,13 @@ protected void paintTargetPanel(Graphics g) {
    moveItem(_currentSelection, deltaX, deltaY);
    if(qobject_cast<LightIcon*>(_currentSelection->self())!=NULL)
    {
-    _highlightcomponent =  QRectF(_currentSelection->getX(), _currentSelection->getY(),((LightIcon*)_currentSelection)->maxWidth(), ((LightIcon*)_currentSelection)->maxHeight());
-
+    _highlightcomponent =  QRectF(_currentSelection->getX(), _currentSelection->getY(),((LightIcon*)_currentSelection->self())->maxWidth(), ((LightIcon*)_currentSelection->self())->maxHeight());
    }
    else
    if(qobject_cast<PositionableLabel*>(_currentSelection->self())!=NULL)
    {
     //_highlightcomponent =  QRect(((PositionableLabel*)_currentSelection)->getX(),((PositionableLabel*) _currentSelection)->getY(),((PositionableLabel*)_currentSelection)->maxWidth(), ((PositionableLabel*)_currentSelection)->maxHeight());
     _highlightcomponent = ((PositionableLabel*) _currentSelection->self())->getBounds();
-
    }
 //   else
 //   _highlightcomponent =  QRect(_currentSelection->getX(), _currentSelection->getY(),

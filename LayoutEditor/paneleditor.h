@@ -6,6 +6,8 @@
 #include "editor.h"
 #include "actionlistener.h"
 #include "abstractaction.h"
+#include "keylistener.h"
+#include "jtextfield.h"
 
 namespace Ui {
 class PanelEditor;
@@ -107,7 +109,7 @@ private:
  QLabel* scrollableLabel;// = new JLabel(Bundle.getMessage("ComboBoxScrollable"));
  QComboBox* scrollableComboBox;// = new JComboBox();
 
- QPushButton* labelAdd;// = new JButton(Bundle.getMessage("ButtonAddText"));
+ QPushButton* labelAdd;// = new QPushButton(tr("Add text:"));
  JTextField* nextLabel;// = new JTextField(10);
 
  QComboBox* _addIconBox;
@@ -140,6 +142,7 @@ protected:
  friend class LockItemListener;
  friend class PanelEditorXml;
  friend class LayoutEditorXml;
+ friend class PEKeyListener;
 };
 Q_DECLARE_METATYPE(PanelEditor)
 
@@ -178,5 +181,25 @@ public slots:
  /*public*/ void actionPerformed(/*ActionEvent e*/);
 
  ActionListener* init(PanelEditor* e);
+};
+
+class PEKeyListener : public KeyAdapter
+{
+  Q_OBJECT
+  PanelEditor* editor;
+ public:
+  PEKeyListener(PanelEditor* editor) {this->editor = editor;}
+ public slots:
+  /*public*/ void keyReleased(QKeyEvent* a) override {
+      if (editor->nextLabel->text() == ("")) {
+          editor->labelAdd->setEnabled(false);
+          editor->labelAdd->setToolTip(tr("This button will be active after you type text into the text box"));
+      } else {
+          editor->labelAdd->setEnabled(true);
+          editor->labelAdd->setToolTip("");
+      }
+  }
+  QObject* self() {return (QObject*)this;}
+
 };
 #endif // PANELEDITOR_H

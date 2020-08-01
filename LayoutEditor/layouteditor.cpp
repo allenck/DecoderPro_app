@@ -100,6 +100,7 @@
 #include "entergridsizesdialog.h"
 #include "moveselectiondialog.h"
 #include <QButtonGroup>
+#include "limits.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -275,6 +276,10 @@ LayoutEditor::~LayoutEditor()
      //editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
 //     addDockWidget(Qt::TopDockWidgetArea, editToolBarContainerPanel);
     }
+
+    helpBarPanel = new JPanel(new QHBoxLayout());
+    ((QHBoxLayout*)helpBarPanel->layout())->addWidget(helpBar, 1);
+
     switch (toolBarSide->getType())
     {
     case eLEFT:
@@ -360,16 +365,16 @@ LayoutEditor::~LayoutEditor()
 }
 
 /*private*/ void LayoutEditor::createFloatingHelpPanel() {
-#if 0
-    if (leToolBarPanel instanceof LayoutEditorFloatingToolBarPanel) {
-        LayoutEditorFloatingToolBarPanel leftbp = (LayoutEditorFloatingToolBarPanel) leToolBarPanel;
+#if 1
+    if (qobject_cast<LayoutEditorFloatingToolBarPanel*>(leToolBarPanel)) {
+        LayoutEditorFloatingToolBarPanel* leftbp = (LayoutEditorFloatingToolBarPanel*) leToolBarPanel;
         floatEditHelpPanel = new JPanel();
-        leToolBarPanel.add(floatEditHelpPanel);
+        leToolBarPanel->layout()->addWidget(floatEditHelpPanel);
 
         //Notice: End tree structure indenting
         // Force the help panel width to the same as the tabs section
-        int tabSectionWidth = (int) leftbp.getPreferredSize().getWidth();
-
+        int tabSectionWidth = (int) leftbp->sizeHint().width();
+#if 0 // ??
         //Change the textarea settings
         for (Component c : helpBar.getComponents()) {
             if (c instanceof JTextArea) {
@@ -379,11 +384,11 @@ LayoutEditor::~LayoutEditor()
                 j.setWrapStyleWord(true);
             }
         }
-
+#endif
         //Change the width of the help panel section
-        floatEditHelpPanel.setMaximumSize(new Dimension(tabSectionWidth, Integer.MAX_VALUE));
-        floatEditHelpPanel.add(helpBar);
-        floatEditHelpPanel.setVisible(isEditable() && getShowHelpBar());
+        floatEditHelpPanel->setMaximumSize(QSize(tabSectionWidth, INT_MAX));
+        floatEditHelpPanel->layout()->addWidget(helpBar);
+        floatEditHelpPanel->setVisible(isEditable() && getShowHelpBar());
     }
 #endif
 }
@@ -403,14 +408,14 @@ void LayoutEditor::common()
 
  //setup help bar
 
- helpBarPanel->setLayout(new QVBoxLayout());//helpBar, BoxLayout.PAGE_AXIS));
- QTextEdit* textEdit = new QTextEdit(/*centralWidget*/);
+ helpBar->setLayout(new QVBoxLayout());//helpBar, BoxLayout.PAGE_AXIS));
+ JTextArea* textEdit = new JTextArea(/*centralWidget*/);
  textEdit->setObjectName(QLatin1String("textEdit"));
- QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(textEdit->sizePolicy().hasHeightForWidth());
- textEdit->setSizePolicy(sizePolicy);
+// QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+// sizePolicy.setHorizontalStretch(0);
+// sizePolicy.setVerticalStretch(0);
+// sizePolicy.setHeightForWidth(textEdit->sizePolicy().hasHeightForWidth());
+// textEdit->setSizePolicy(sizePolicy);
  textEdit->setMaximumSize(QSize(16777215, 42));
  textEdit->setHtml(QApplication::translate("LayoutEditor", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -418,7 +423,7 @@ void LayoutEditor::common()
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">To add an item check item type, enter needed data then with shift down, click on panel -except track segment.\nTo add a track segment, with shift down, click mouse on one connection point and drag to another connection point->\nTo move an item, drag it with the right mouse button. To show it's popup menu, right click on it. </span></p></body></html>", nullptr));
 
- helpBarPanel->layout()->addWidget(textEdit);
+ helpBar->layout()->addWidget(textEdit);
  if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
  {
   log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
@@ -3664,6 +3669,18 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 
 void LayoutEditor::setDirty(bool b) {bDirty = b;}
 bool LayoutEditor::isDirty() {return bDirty;}
+
+/**
+ * Allow external set/reset of awaitingIconChange
+ */
+/*public*/ void LayoutEditor::setAwaitingIconChange() {
+    awaitingIconChange = true;
+}
+
+/*public*/ void LayoutEditor::resetAwaitingIconChange() {
+    awaitingIconChange = false;
+}
+
 /**
 * Allow external reset of dirty bit
 */
@@ -4753,10 +4770,10 @@ double LayoutEditor::toRadians(double degrees)
         }
     }
 
-QGraphicsView* LayoutEditor::panel()
-{
- return editPanel;
-}
+//QGraphicsView* LayoutEditor::panel()
+//{
+// return editPanel;
+//}
 /**
 * Remove a PositionablePoint -- an Anchor or an End Bumper.
 */
@@ -5252,119 +5269,83 @@ void LayoutEditor::addLabel()
 /**
 * Remove object from all Layout Editor temmporary lists of items not part of track schematic
 */
-/*protected*/ bool LayoutEditor::remove(QObject* s)
+/*protected*/ bool LayoutEditor::remove(QObject* o)
 {
   bool found = false;
 
-  for (int i = 0; i<sensorImage->size();i++)
-  {
-   if (s == sensorImage->at(i))
-   {
-    sensorImage->remove(i);
-    found = true;
-    break;
-   }
-  }
+  PositionableLabel* s = (PositionableLabel*)o;
 
-  for (int i = 0; i<sensorList->size();i++)
+  if (backgroundImage->contains((PositionableLabel*)s))
   {
-   if (s == sensorList->at(i))
-   {
-    sensorList->remove(i);
-    found = true;
-    break;
-   }
-  }
+     backgroundImage->removeOne((PositionableLabel*)s);
+     found = true;
+ }
+ if (memoryLabelList->contains((LEMemoryIcon*)s)) {
+     memoryLabelList->removeOne((LEMemoryIcon*)s);
+     found = true;
+ }
+ if (blockContentsLabelList->contains((LEBlockContentsIcon*)s)) {
+     blockContentsLabelList->removeOne((LEBlockContentsIcon*)s);
+     found = true;
+ }
+ if (multiSensors->contains((MultiSensorIcon*)s)) {
+     multiSensors->removeOne((MultiSensorIcon*)s);
+     found = true;
+ }
+ if (clocks->contains((AnalogClock2Display*)s)) {
+     clocks->removeOne((AnalogClock2Display*)s);
+     found = true;
+ }
+ if (labelImage->contains((PositionableLabel*)s)) {
+     labelImage->removeOne((PositionableLabel*)s);
+     found = true;
+ }
 
-  for (int i = 0; i<backgroundImage->size();i++)
-  {
-   if (s == backgroundImage->at(i))
-   {
-    backgroundImage->remove(i);
-    found = true;
-    break;
-   }
-  }
-  for (int i = 0; i<memoryLabelList->size();i++)
-  {
-   if (s == memoryLabelList->at(i))
-   {
-    memoryLabelList->remove(i);
-    found = true;
-    break;
-   }
-  }
-  for (int i = 0; i < blockContentsLabelList->size(); i++)
-  {
-      if (s == (QObject*)blockContentsLabelList->at(i)) {
-          blockContentsLabelList->remove(i);
-          found = true;
-          break;
-      }
-  }
+ if (sensorImage->contains((SensorIcon*)s) || sensorList->contains((SensorIcon*)s)) {
+     Sensor* sensor = ((SensorIcon*) s)->getSensor();
+     if (sensor != nullptr) {
+         if (removeAttachedBean((sensor))) {
+             sensorImage->removeOne((SensorIcon*)s);
+             sensorList->removeOne((SensorIcon*)s);
+             found = true;
+         } else {
+             return false;
+         }
+     }
+ }
 
-  for (int i = 0; i<signalList->size();i++) {
-      if (s == signalList->at(i)) {
-          signalList->remove(i);
-          found = true;
-          break;
-      }
-  }
-  for (int i = 0; i<signalMastList->size();i++) {
-      if (s == signalMastList->at(i)) {
-          signalMastList->remove(i);
-          found = true;
-          break;
-      }
-  }
+ if (signalHeadImage->contains((SignalHeadIcon*)s) || signalList->contains((SignalHeadIcon*)s)) {
+     SignalHead* head = ((SignalHeadIcon*) s)->getSignalHead();
+     if (head != nullptr) {
+         if (removeAttachedBean((head))) {
+             signalHeadImage->removeOne((SignalHeadIcon*)s);
+             signalList->removeOne((SignalHeadIcon*)s);
+             found = true;
+         } else {
+             return false;
+         }
+     }
+ }
 
-  for (int i = 0; i<multiSensors->size();i++) {
-      if (s == multiSensors->at(i)) {
-          multiSensors->remove(i);
-          found = true;
-          break;
-      }
-  }
+ if (signalMastList->contains((SignalMastIcon*)s)) {
+     SignalMast* mast = ((SignalMastIcon*) s)->getSignalMast();
+     if (mast != nullptr) {
+         if (removeAttachedBean((mast))) {
+             signalMastList->removeOne((SignalMastIcon*)s);
+             found = true;
+         } else {
+             return false;
+         }
+     }
+ }
 
-  for (int i = 0; i<clocks->size();i++) {
-      if (s == clocks->at(i)) {
-          clocks->remove(i);
-          found = true;
-          break;
-      }
-  }
-//  for (int i = 0; i<signalMastImage->size();i++) {
-//      if (s == signalMastImage->at(i)) {
-//          signalMastImage->remove(i);
-//          found = true;
-//          break;
-//      }
-//  }
-  for (int i = 0; i<signalHeadImage->size();i++) {
-      if (s == signalHeadImage->at(i)) {
-          signalHeadImage->remove(i);
-          found = true;
-          break;
-      }
-  }
+ PanelEditor::removeFromContents((Positionable*) s);
 
-  for (int i = 0; i<_labelImage->size(); i++)
-  {
-   if (s == _labelImage->at(i))
-   {
-    _labelImage->remove(i);
-    found = true;
-    break;
-   }
-  }
-  Editor::removeFromContents((Positionable*)s);
-  if (found)
-  {
-   setDirty(true);
-   //repaint();
-   paintTargetPanel(editScene);
-  }
-  return found;
+ if (found) {
+     setDirty();
+     redrawPanel();
+ }
+ return found;
 }
 
 /*public*/ bool LayoutEditor::removeFromContents(Positionable* l)
@@ -5441,50 +5422,67 @@ void LayoutEditor::addLabel()
     return sb/*.toString()*/;
 }
 
-/*private*/ bool LayoutEditor::removeSignalMast(SignalMastIcon* si) {
-        SignalMast* sm = si->getSignalMast();
-        QString usage = findBeanUsage(sm);
-        if (usage != "") {
-            usage = "<html>" + usage + "</html>";
-            QVariantList buttons = QVariantList() << tr("Yes") << tr("No") << tr("Cancel");
-            int selectedValue = JOptionPane::showOptionDialog(this,
-                    usage, tr("Warning"),
-                    JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
-                    /*new Object[]{rb.getString("ButtonYes"), rb.getString("ButtonNo"), rb.getString("ButtonCancel")}, rb.getString("ButtonYes"))*/buttons);
-            if (selectedValue == 1) {
-                return (true); // return leaving the references in place but allow the icon to be deleted.
-            }
-            if (selectedValue == 2) {
-                return (false); // do not delete the item
-            }
-            removeBeanRefs(sm);
-        }
-        return true;
-    }
+/**
+ * NX Sensors, Signal Heads and Signal Masts can be attached to positional points,
+ * turnouts and level crossings.  If an attachment exists, present an option to cancel
+ * the remove action, remove the attachement or retain the attachment.
+ * @param bean The named bean to be removed.
+ * @return true if OK to remove the related icon.
+ */
+/*private*/ bool LayoutEditor::removeAttachedBean(/*@Nonnull*/ NamedBean* bean) {
+    QString usage = findBeanUsage(bean);
 
-    /*private*/ void LayoutEditor::removeBeanRefs(NamedBean* sm) {
-        PositionablePoint* pe;
-        PositionablePoint* pw;
-        LayoutTurnout* lt;
-        LevelXing* lx;
-        LayoutSlip* ls;
+    if (usage != "") {
+        usage = tr("<html>%1</html>").arg(usage);
+        int selectedValue = JOptionPane::showOptionDialog(this,
+                usage, tr("Warning"),
+                JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
+                QVariantList() = {tr("Yes"),
+                    tr("No"),
+                    tr("Cancel")},
+                tr("Yes"));
 
-        if ((pw = finder->findPositionablePointByWestBoundBean(sm)) != nullptr) {
-            pw->removeBeanReference(sm);
+        if (selectedValue == JOptionPane::NO_OPTION) {
+            return true; // return leaving the references in place but allow the icon to be deleted.
         }
-        if ((pe = finder->findPositionablePointByEastBoundBean(sm)) != nullptr) {
-            pe->removeBeanReference(sm);
+
+        if (selectedValue == JOptionPane::CANCEL_OPTION) {
+            return false; // do not delete the item
         }
-        if ((lt = finder->findLayoutTurnoutByBean(sm)) != nullptr) {
-            lt->removeBeanReference(sm);
-        }
-        if ((lx = finder->findLevelXingByBean(sm)) != nullptr) {
-            lx->removeBeanReference(sm);
-        }
-        if ((ls = finder->findLayoutSlipByBean(sm)) != nullptr) {
-            ls->removeBeanReference(sm);
+        if (qobject_cast<Sensor*>(bean)) {
+            // Additional actions for NX sensor pairs
+            return getLETools()->removeSensorAssignment((Sensor*) bean);
+        } else {
+            removeBeanRefs(bean);
         }
     }
+    return true;
+}
+
+/*private*/ void LayoutEditor::removeBeanRefs(NamedBean* sm) {
+    PositionablePoint* pe;
+    PositionablePoint* pw;
+    LayoutTurnout* lt;
+    LevelXing* lx;
+    LayoutSlip* ls;
+
+    if ((pw = finder->findPositionablePointByWestBoundBean(sm)) != nullptr) {
+        pw->removeBeanReference(sm);
+    }
+    if ((pe = finder->findPositionablePointByEastBoundBean(sm)) != nullptr) {
+        pe->removeBeanReference(sm);
+    }
+    if ((lt = finder->findLayoutTurnoutByBean(sm)) != nullptr) {
+        lt->removeBeanReference(sm);
+    }
+    if ((lx = finder->findLevelXingByBean(sm)) != nullptr) {
+        lx->removeBeanReference(sm);
+    }
+    if ((ls = finder->findLayoutSlipByBean(sm)) != nullptr) {
+        ls->removeBeanReference(sm);
+    }
+}
+
 void LayoutEditor::repaint()
 {
  paintTargetPanel(editScene);
@@ -5572,81 +5570,82 @@ void LayoutEditor::addSensor()
    ((PositionableLabel*)p)->rotate(k);
   }
 }
-/**
-* Add an action to remove the Positionable item.
-*/
-/*public*/ void LayoutEditor::setRemoveMenu(Positionable* p, QMenu* popup)
-{
-//  popup.add(new AbstractAction(tr("Remove")) {
-//      Positionable comp;
-//      /*public*/ void actionPerformed(ActionEvent e) {
-//          comp.remove();
-//          removeSelections(comp);
-//      }
-//      AbstractAction init(Positionable pos) {
-//          comp = pos;
-//          return this;
-//      }
-//  }.init(p));
- currComp = p;
- QAction* removeMenuAction = new QAction("Remove", this);
- connect(removeMenuAction, SIGNAL(triggered()), this, SLOT(on_removeMenuAction_triggered()));
- popup->addAction(removeMenuAction);
-}
 
-void LayoutEditor::on_removeMenuAction_triggered()
-{
- Positionable* comp = currComp;
- //comp->remove();
- SensorIcon* si = qobject_cast<SensorIcon*>(comp->self());
- if(si != nullptr)
- {
-  Q_ASSERT(si->_itemGroup->scene()!=0);
-  editScene->removeItem(si->_itemGroup);
-  si->_itemGroup = nullptr;
-  si->remove();
- }
- LocoIcon* li = qobject_cast<LocoIcon*>(comp->self());
- if(li != nullptr)
- {
-  Q_ASSERT(li->_itemGroup->scene()!=0);
-  editScene->removeItem(li->_itemGroup);
-  li->_itemGroup = nullptr;
-  li->remove();
- }
- LEMemoryIcon* mi = qobject_cast<LEMemoryIcon*>(comp->self());
- if(mi != nullptr)
- {
-  Q_ASSERT(mi->_itemGroup->scene()!=0);
-  editScene->removeItem(mi->_itemGroup);
-  mi->_itemGroup = nullptr;
-  mi->remove();
- }
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(comp->self());
- if(pl != nullptr)
- {
-  Q_ASSERT(pl->_itemGroup->scene()!=0);
-  editScene->removeItem(pl->_itemGroup);
-  pl->_itemGroup = nullptr;
-  pl->remove();
- }
- removeSelections(comp);
-}
+///**
+//* Add an action to remove the Positionable item.
+//*/
+///*public*/ void LayoutEditor::setRemoveMenu(Positionable* p, QMenu* popup)
+//{
+////  popup.add(new AbstractAction(tr("Remove")) {
+////      Positionable comp;
+////      /*public*/ void actionPerformed(ActionEvent e) {
+////          comp.remove();
+////          removeSelections(comp);
+////      }
+////      AbstractAction init(Positionable pos) {
+////          comp = pos;
+////          return this;
+////      }
+////  }.init(p));
+// currComp = p;
+// QAction* removeMenuAction = new QAction("Remove", this);
+// connect(removeMenuAction, SIGNAL(triggered()), this, SLOT(on_removeMenuAction_triggered()));
+// popup->addAction(removeMenuAction);
+//}
 
-/*protected*/ void LayoutEditor::removeSelections(Positionable* p)
-{
- PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
- Q_ASSERT(pl != nullptr);
+//void LayoutEditor::on_removeMenuAction_triggered()
+//{
+// Positionable* comp = currComp;
+// //comp->remove();
+// SensorIcon* si = qobject_cast<SensorIcon*>(comp->self());
+// if(si != nullptr)
+// {
+//  Q_ASSERT(si->_itemGroup->scene()!=0);
+//  editScene->removeItem(si->_itemGroup);
+//  si->_itemGroup = nullptr;
+//  si->remove();
+// }
+// LocoIcon* li = qobject_cast<LocoIcon*>(comp->self());
+// if(li != nullptr)
+// {
+//  Q_ASSERT(li->_itemGroup->scene()!=0);
+//  editScene->removeItem(li->_itemGroup);
+//  li->_itemGroup = nullptr;
+//  li->remove();
+// }
+// LEMemoryIcon* mi = qobject_cast<LEMemoryIcon*>(comp->self());
+// if(mi != nullptr)
+// {
+//  Q_ASSERT(mi->_itemGroup->scene()!=0);
+//  editScene->removeItem(mi->_itemGroup);
+//  mi->_itemGroup = nullptr;
+//  mi->remove();
+// }
+// PositionableLabel* pl = qobject_cast<PositionableLabel*>(comp->self());
+// if(pl != nullptr)
+// {
+//  Q_ASSERT(pl->_itemGroup->scene()!=0);
+//  editScene->removeItem(pl->_itemGroup);
+//  pl->_itemGroup = nullptr;
+//  pl->remove();
+// }
+// removeSelections(comp);
+//}
 
- if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
- {
-  for (int i=0; i<_selectionGroup->size(); i++)
-  {
-   ((PositionableLabel*)_selectionGroup->at(i)->self())->remove();
-  }
-  _selectionGroup = new QList<Positionable*>();
- }
-}
+///*protected*/ void LayoutEditor::removeSelections(Positionable* p)
+//{
+// PositionableLabel* pl = qobject_cast<PositionableLabel*>(p->self());
+// Q_ASSERT(pl != nullptr);
+
+// if (_selectionGroup!=nullptr && _selectionGroup->contains(p))
+// {
+//  for (int i=0; i<_selectionGroup->size(); i++)
+//  {
+//   ((PositionableLabel*)_selectionGroup->at(i)->self())->remove();
+//  }
+//  _selectionGroup = new QList<Positionable*>();
+// }
+//}
 
 
 /*private*/ LocoIcon* LayoutEditor::checkMarkers(QPointF loc)

@@ -98,13 +98,13 @@ void SplitButtonColorChooserPanel::stateChanged(ChangeEvent *)
 
 void SplitButtonColorChooserPanel::buttonClicked(ActionEvent*)
 {
- QColor desiredColor = JColorChooser::showDialog((Component*)setButton->parent(),
-        tr("SetColor"), // NOI18N
-        getColorFromModel());
- if (!desiredColor.isValid())
- {
-     getColorSelectionModel()->setSelectedColor(desiredColor);
- }
+// QColor desiredColor = JColorChooser::showDialog((Component*)setButton->parent(),
+//        tr("SetColor"), // NOI18N
+//        getColorFromModel());
+// if (!desiredColor.isValid())
+// {
+//     getColorSelectionModel()->setSelectedColor(desiredColor);
+// }
 }
 
 void SplitButtonColorChooserPanel::splitButtonClicked(ActionEvent* e)
