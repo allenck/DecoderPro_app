@@ -6070,21 +6070,21 @@ void LayoutTurnout::remove()
     if (((specificType == NONE) || (specificType == TURNOUT_A))
             && (getConnectA() == nullptr)) {
         //g2.fill(layoutEditor->trackControlCircleAt(getCoordsA()));
-     QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(getCoordsA());
+     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsA());
      item->setPen(QPen(defaultTrackColor, 1));
     }
 
     if (((specificType == NONE) || (specificType == TURNOUT_B))
             && (getConnectB() == nullptr)) {
         //g2.fill(layoutEditor->trackControlCircleAt(getCoordsB()));
-     QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(getCoordsB());
+     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsB());
      item->setPen(QPen(defaultTrackColor, 1));
     }
 
     if (((specificType == NONE) || (specificType == TURNOUT_C))
             && (getConnectC() == nullptr)) {
         //g2.fill(layoutEditor->trackControlCircleAt(getCoordsC()));
-     QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(getCoordsC());
+     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsC());
      item->setPen(QPen(defaultTrackColor, 1));
     }
     if ((getTurnoutType() == DOUBLE_XOVER)
@@ -6093,7 +6093,7 @@ void LayoutTurnout::remove()
         if (((specificType == NONE) || (specificType == TURNOUT_D))
                 && (getConnectD() == nullptr)) {
             //g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
-         QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(getCoordsD());
+         QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsD());
          item->setPen(QPen(defaultTrackColor, 1));
         }
     }
@@ -6119,7 +6119,7 @@ void LayoutTurnout::remove()
 //   }
 
       //g2.draw(layoutEditor.trackControlCircleAt(center));
-   QGraphicsEllipseItem* item = layoutEditor->trackControlCircleAt(center);
+   QGraphicsEllipseItem* item = trackControlCircleAt(center);
    item->setPen(layoutEditor->drawingStroke);
    if (layoutEditor->isTurnoutFillControlCircles()) {
     QBrush brush = QBrush(layoutEditor->drawingStroke.color());

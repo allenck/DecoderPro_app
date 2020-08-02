@@ -125,6 +125,9 @@ public:
   * @param angleDEG the amount to rotate in degrees
   */
  /*public*/ /*abstract*/ virtual void rotateCoords(double angleDEG) {}
+ /*final*/ /*public*/ QGraphicsEllipseItem* trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint);
+ /*final*/ /*public*/ QGraphicsEllipseItem* trackControlCircleAt(/*@Nonnull*/ QPointF inPoint);
+ /*final*/ /*public*/ QRectF trackControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
 
 signals:
 

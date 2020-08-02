@@ -986,7 +986,7 @@ void LevelXing::removeSML(SignalMast* signalMast) {
     if (((specificType == NONE) || (specificType == LEVEL_XING_A))
             && (getConnectA() == nullptr)) {
         //g2.fill(layoutEditor.trackControlCircleAt(getCoordsA()));
-     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsA());
+     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsA());
      ellipseItem->setPen(stroke);
      itemGroup->addToGroup(ellipseItem);
     }
@@ -994,7 +994,7 @@ void LevelXing::removeSML(SignalMast* signalMast) {
     if (((specificType == NONE) || (specificType == LEVEL_XING_B))
             && (getConnectB() == nullptr)) {
         //g2.fill(layoutEditor.trackControlCircleAt(getCoordsB()));
-     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsB());
+     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsB());
      ellipseItem->setPen(stroke);
      itemGroup->addToGroup(ellipseItem);
     }
@@ -1002,7 +1002,7 @@ void LevelXing::removeSML(SignalMast* signalMast) {
     if (((specificType == NONE) || (specificType == LEVEL_XING_C))
             && (getConnectC() == nullptr)) {
         //g2.fill(layoutEditor.trackControlCircleAt(getCoordsC()));
-     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsC());
+     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsC());
      ellipseItem->setPen(stroke);
      itemGroup->addToGroup(ellipseItem);
     }
@@ -1010,7 +1010,7 @@ void LevelXing::removeSML(SignalMast* signalMast) {
     if (((specificType == NONE) || (specificType == LEVEL_XING_D))
             && (getConnectD() == nullptr)) {
         //g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
-     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsD());
+     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsD());
      ellipseItem->setPen(stroke);
      itemGroup->addToGroup(ellipseItem);
     }

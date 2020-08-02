@@ -116,6 +116,27 @@
     defaultTrackColor = color;
 }
 
+// these are convenience methods to return circles & rectangle used to draw onscreen
+//
+// compute the control point rect at inPoint; use the turnout circle size
+/*final*/ /*public*/ QGraphicsEllipseItem* LayoutTrack::trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint) {
+    return trackControlCircleAt(inPoint);
+}
+
+// compute the turnout circle at inPoint (used for drawing)
+/*final*/ /*public*/ QGraphicsEllipseItem* LayoutTrack::trackControlCircleAt(/*@Nonnull*/ QPointF inPoint) {
+    return new QGraphicsEllipseItem(inPoint.x() - layoutEditor->circleRadius,
+            inPoint.y() - layoutEditor->circleRadius,
+            layoutEditor->circleDiameter, layoutEditor->circleDiameter);
+}
+
+// compute the turnout circle control rect at inPoint
+/*final*/ /*public*/ QRectF LayoutTrack::trackControlCircleRectAt(/*@Nonnull*/ QPointF inPoint) {
+    return QRectF(inPoint.x() - layoutEditor->circleRadius,
+            inPoint.y() - layoutEditor->circleRadius,
+            layoutEditor->circleDiameter, layoutEditor->circleDiameter);
+}
+
 /*protected*/ QColor LayoutTrack::getColorForTrackBlock(
         /*@Nullable*/ LayoutBlock* layoutBlock, bool forceBlockTrackColor) {
     QColor result = ColorUtil::CLEAR;  // transparent

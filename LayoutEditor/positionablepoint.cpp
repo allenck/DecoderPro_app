@@ -829,7 +829,7 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
         if ((getConnect1() == nullptr)
                 || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
  // TODO:           g2.fill(layoutEditor->trackControlCircleAt(getCoordsCenter()));
-         QGraphicsEllipseItem* circleItem = layoutEditor->trackControlCircleAt(getCoordsCenter());
+         QGraphicsEllipseItem* circleItem = trackControlCircleAt(getCoordsCenter());
          g2->addItem(circleItem);
         }
     }

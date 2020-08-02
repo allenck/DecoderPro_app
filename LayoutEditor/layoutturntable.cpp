@@ -1143,7 +1143,7 @@ void LayoutTurntable::dispose() {
          if (getRayConnectOrdered(j) == nullptr) {
              QPointF pt = getRayCoordsOrdered(j);
              //g2.fill(layoutEditor.trackControlCircleAt(pt));
-             QGraphicsEllipseItem* circleItem = layoutEditor->trackControlCircleAt(pt);
+             QGraphicsEllipseItem* circleItem = trackControlCircleAt(pt);
              circleItem->setPen(QPen(defaultTrackColor, 1));
              itemGroup->addToGroup(circleItem);
          }
@@ -1172,7 +1172,7 @@ void LayoutTurntable::dispose() {
                 if (!rt->isDisabled() && !(rt->isDisabledWhenOccupied() && rt->isOccupied())) {
                     QPointF pt = getRayCoordsOrdered(j);
                     //g2.draw(layoutEditor.trackControlCircleAt(pt));
-                    QGraphicsEllipseItem* circleItem = layoutEditor->trackControlCircleAt(pt);
+                    QGraphicsEllipseItem* circleItem = trackControlCircleAt(pt);
                     circleItem->setPen(QPen(defaultTrackColor, 1));
                     itemGroup->addToGroup(circleItem);}
             }
@@ -1199,7 +1199,7 @@ void LayoutTurntable::dispose() {
     //g2.setColor(defaultTrackColor);
     layoutEditor->drawingStroke.setColor(defaultTrackColor);
     //g2.draw(layoutEditor.trackControlCircleAt(pt));
-    QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(pt);
+    QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(pt);
     ellipseItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(ellipseItem);
 

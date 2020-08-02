@@ -2089,7 +2089,7 @@ void LayoutSlip::updateState()
  if (((specificType == NONE) || (specificType == SLIP_A))
             && (getConnectA() == nullptr)) {
         //g2.fill(layoutEditor->trackControlCircleAt(getCoordsA()));
-     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsA());
+     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsA());
      ellipseItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(ellipseItem);
     }
@@ -2097,7 +2097,7 @@ void LayoutSlip::updateState()
     if (((specificType == NONE) || (specificType == SLIP_B))
             && (getConnectB() == nullptr)) {
         //g2.fill(layoutEditor->trackControlCircleAt(getCoordsB()));
-     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsB());
+     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsB());
      ellipseItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(ellipseItem);
     }
@@ -2106,14 +2106,14 @@ void LayoutSlip::updateState()
             && (getConnectC() == nullptr)) {
         //g2.fill(layoutEditor->trackControlCircleAt(getCoordsC()));
     }
-    QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsC());
+    QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsC());
     ellipseItem->setPen(layoutEditor->drawingStroke);
     itemGroup->addToGroup(ellipseItem);
 
     if (((specificType == NONE) || (specificType == SLIP_D))
             && (getConnectD() == nullptr)) {
         //g2.fill(layoutEditor->trackControlCircleAt(getCoordsD()));
-     QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(getCoordsD());
+     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsD());
      ellipseItem->setPen(layoutEditor->drawingStroke);
      itemGroup->addToGroup(ellipseItem);
     }
@@ -2131,7 +2131,7 @@ void LayoutSlip::updateState()
        invalidateItem(g2,circles);
 
        //g2.draw(layoutEditor->trackControlCircleAt(leftCircleCenter));
-       QGraphicsEllipseItem* ellipseItem = layoutEditor->trackControlCircleAt(leftCircleCenter);
+       QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(leftCircleCenter);
        ellipseItem->setPen(layoutEditor->drawingStroke);
        if (layoutEditor->isTurnoutFillControlCircles()) {
         QBrush brush = QBrush(layoutEditor->drawingStroke.color());
@@ -2141,7 +2141,7 @@ void LayoutSlip::updateState()
 
        QPointF rightCircleCenter = getCoordsRight();
        //g2.draw(layoutEditor->trackControlCircleAt(rightCircleCenter));
-       ellipseItem = layoutEditor->trackControlCircleAt(rightCircleCenter);
+       ellipseItem = trackControlCircleAt(rightCircleCenter);
        ellipseItem->setPen(layoutEditor->drawingStroke);
        if (layoutEditor->isTurnoutFillControlCircles()) {
         QBrush brush = QBrush(layoutEditor->drawingStroke.color());

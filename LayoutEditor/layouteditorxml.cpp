@@ -374,8 +374,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  // create the objects
  //LayoutEditor* panel = new LayoutEditor(name);
  //panel->setFilename(LoadXmlConfigAction::currentFile);
- panel->setMainlineTrackWidth(mainlinetrackwidth);
- panel->setSideTrackWidth(sidetrackwidth);
+ panel->gContext->setMainlineTrackWidth(mainlinetrackwidth);
+ panel->gContext->setSidelineTrackWidth(sidetrackwidth);
  // panel->setXScale(xScale);
  // panel->setYScale(yScale);
  //panel->setScale(xScale, yScale);
@@ -549,7 +549,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  if ((a = shared.attribute("tooltipsnotedit")) != nullptr && a==("yes")) {
      value = true;
  }
-// TODO:    panel->setTooltipsNotEdit(value);
+ panel->setTooltipsNotEdit(value);
 
  value = false;
  if ((a = shared.attribute("autoblkgenerate")) != nullptr && a==("yes")) {
@@ -561,7 +561,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  if ((a = shared.attribute("tooltipsinedit")) != nullptr && a==("no")) {
      value = false;
  }
-// TODO:    panel->setTooltipsInEdit(value);
+ panel->setTooltipsInEdit(value);
+
  // set default track color
  if ((a = shared.attribute("defaulttrackcolor")) != nullptr) {
      panel->setDefaultTrackColor(a);

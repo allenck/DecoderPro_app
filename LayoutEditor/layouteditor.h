@@ -240,6 +240,8 @@ public:
     *   name in the block.  Else returns false, and does nothing to the block.
     */
     /*public*/ bool validateSensor(QString sensorName, LayoutBlock* blk, QWidget *openFrame);
+    /*public*/ void setTooltipsNotEdit(bool state);
+    /*public*/ void setTooltipsInEdit(bool state);
     // accessor routines for turnout size parameters
     /*public*/ void setTurnoutBX(double bx);
     /*public*/ double getTurnoutBX();
@@ -254,8 +256,11 @@ public:
     /*public*/ void setXOverShort(double sh);
     /*public*/ double getXOverShort();
     /*public*/ QString getDefaultTrackColor();
+    /*public*/ QColor getDefaultTrackColorColor();
     /*public*/ QString getDefaultOccupiedTrackColor();
+    /*public*/ QColor getDefaultOccupiedTrackColorColor();
     /*public*/ QString getDefaultAlternativeTrackColor();
+    /*public*/ QColor getDefaultAlternativeTrackColorColor();
     /*public*/ QString getDefaultTextColor();
     /*public*/ QString getTurnoutCircleColor();
     /*public*/ QString getTurnoutCircleThrownColor();
@@ -315,10 +320,6 @@ public:
     */
     void addIcon();
     /**
-    * Does global flag sets Positionable and Control for individual items
-    */
-    /*public*/ void setGlobalSetsLocalFlag(bool set);
-    /**
      * Add a Reporter Icon to the panel
      */
     void addReporter(Reporter *textReporter, int xx, int yy);
@@ -343,19 +344,23 @@ public:
     void addSignalMast() ;
     /*public*/ void putSignalMast(SignalMastIcon* l) ;
     SignalMast* getSignalMast(QString name);
+    /*public*/ bool containsSignalMast(/*@Nonnull*/ SignalMast* mast);
     /*public*/ ConnectivityUtil* getConnectivityUtil();
     /*public*/ LayoutEditorTools* getLETools();
     /*public*/ LayoutEditorAuxTools* getLEAuxTools();
     /*public*/ LayoutEditorChecks* getLEChecks();
     /*public*/ void addToPopUpMenu(NamedBean* nb, QMenu* item, int menu);
+    QString toString();
+    /*public*/ void vetoableChange(
+            /*@Nonnull*/ PropertyChangeEvent* evt)
+            /*throw (PropertyVetoException)*/;
     /*public*/ void addMultiSensor(MultiSensorIcon* l);
+    /*public*/ void setNextLocation(/*@Nonnull*/ Positionable* obj);
     /*public*/ void setSize(int w, int h);
     /*public*/ LocoIcon* addLocoIcon (QString name);
     /*public*/ void putLocoIcon(LocoIcon* l, QString name);
     /*public*/ void setCurrentPositionAndSize();
     /*public*/ bool getDirectTurnoutControl();
-    /*public*/ void setMainlineTrackWidth(int w);
-    /*public*/ void setSideTrackWidth(int w);
     /*public*/ void setTurnoutCircleColor(QColor color);
     /*public*/ void setTurnoutCircleThrownColor(/*@CheckForNull*/ QColor color);
     /*public*/ void setTurnoutCircleSize(int size);
@@ -388,7 +393,6 @@ public:
     /*public*/ void addTurntable(QPointF pt);
     /*public*/ bool containsSignalHead(SignalHead* head) ;
     /*public*/ void removeSignalHead(SignalHead* head);
-    /*public*/ QGraphicsEllipseItem* turnoutCircleAt(QPointF inPoint);
     /*public*/ void addBackground();
     /*public*/ void setDefaultTrackColor(QColor color);
     /*public*/ void setDefaultOccupiedTrackColor(QColor color);
@@ -424,7 +428,6 @@ public:
     /*public*/ static QPointF getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType);
     /*public*/ QRectF trackEditControlRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ QRectF trackControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
-    /*public*/ static QPointF zeroQPointF();
     /*public*/ void setSelectionRect(/*@Nonnull*/ QRectF selectionRect);
     /*private*/ void drawSelectionRect(EditScene* g2);
     /*public*/ void addEdgeConnector() ;
@@ -445,11 +448,11 @@ public:
     /*public*/ void setAllEditable(bool editable);
     /*public*/ void setShowHelpBar(bool state);
     /*public*/ bool translateTrack(float xDel, float yDel);
+    /*public*/ int setAllTracksToDefaultColors();
     /*public*/ bool scaleTrack(float xFactor, float yFactor);
     /*public*/ void clearSelectionGroups();
     /*public*/ void keyPressEvent(QKeyEvent *event);
     /*final*/ /*public*/ QList<LayoutTrackView *> *getLayoutTrackViews();
-    /*public*/ QGraphicsEllipseItem* trackControlCircleAt(/*@Nonnull */QPointF inPoint);
     /*protected*/ void paintTargetPanel(EditScene* g2);
     /*private*/ QRectF getSelectionRect();
     /*public*/ QList<PositionablePointView*> getPositionablePointViews();
@@ -458,7 +461,6 @@ public:
     /*public*/ ToolBarSide *getToolBarSide();
     /*public*/ void setToolBarSide(ToolBarSide* newToolBarSide);
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
-    /*public*/ QGraphicsEllipseItem* trackEditControlCircleAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ TurnoutComboBoxPopupMenuListener* newTurnoutComboBoxPopupMenuListener(NamedBeanComboBox/*<Turnout>*/* comboBox);
     /*public*/ TurnoutComboBoxPopupMenuListener* newTurnoutComboBoxPopupMenuListener(NamedBeanComboBox/*<Turnout>*/* comboBox, QList<Turnout*> currentTurnouts);
     /*public*/ void init(QString name) override;
@@ -662,8 +664,6 @@ private:
  int _scrollState;
  int _anchorX = 0, _anchorY = 0;
  int _lastX, _lastY;
- double toRadians(double degrees);
- double toDegrees(double radians);
  /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event) override;
  bool _controlLayout= true;
  bool noWarnPositionablePoint = false;
@@ -847,6 +847,7 @@ private:
  QString getUsageData(LayoutTrack* track);
  bool isLBLockUsed(NamedBean* bean, LayoutBlock* lblock);
  bool isUsedInXing(NamedBean* bean, LevelXing* xing, int point);
+ /*private*/ void setTooltipSubMenu();
 
 private slots:
  void on_scenePos(QGraphicsSceneMouseEvent*event);
@@ -940,20 +941,12 @@ protected:
  /*protected*/ bool removeLevelXing (LevelXing* o);
  /*protected*/ bool removeTurntable(LayoutTurntable* o);
 
-
- /**
- * Set object location and size for icon and label object as it is created.
- * Size comes from the preferredSize; location comes
- * from the fields where the user can spec it.
- */
- /*protected*/ void setNextLocation(Positionable *obj);
  /*public*/ LayoutBlock* getLayoutBlock(/*@Nonnull*/ QString blockID);
  /**
  * Remove object from all Layout Editor temmporary lists of items not part of track schematic
  */
  /*protected*/ bool remove(QObject* s);
  /*protected*/ void setSelectionsScale(double s, Positionable* p);
- /*protected*/ void setSelectionsRotation(int k, Positionable* p);
  friend class CoordinateEdit;
  /*protected*/ bool removeLayoutSlip (LayoutTurnout* o);
  /*protected*/ bool skipIncludedTurnout = false;
@@ -999,7 +992,7 @@ friend class LayoutShape;
 friend class EditToolBarContainerPanel;
 friend class LayoutEditorComponent;
 friend class TurnoutComboBoxPopupMenuListener;
-
+friend class LayoutTrack;
 };
 Q_DECLARE_METATYPE(LayoutEditor)
 

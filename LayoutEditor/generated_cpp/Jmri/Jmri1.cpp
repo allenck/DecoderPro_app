@@ -19183,6 +19183,11 @@ bool  PythonQtWrapper_LayoutEditor::containsSignalHead(LayoutEditor* theWrappedO
   return ( theWrappedObject->containsSignalHead(head));
 }
 
+bool  PythonQtWrapper_LayoutEditor::containsSignalMast(LayoutEditor* theWrappedObject, SignalMast*  mast)
+{
+  return ( theWrappedObject->containsSignalMast(mast));
+}
+
 void PythonQtWrapper_LayoutEditor::drawSelectionRect(LayoutEditor* theWrappedObject, EditScene*  g2)
 {
   ( theWrappedObject->drawSelectionRect(g2));
@@ -19228,9 +19233,19 @@ QString  PythonQtWrapper_LayoutEditor::getDefaultAlternativeTrackColor(LayoutEdi
   return ( theWrappedObject->getDefaultAlternativeTrackColor());
 }
 
+QColor  PythonQtWrapper_LayoutEditor::getDefaultAlternativeTrackColorColor(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getDefaultAlternativeTrackColorColor());
+}
+
 QString  PythonQtWrapper_LayoutEditor::getDefaultOccupiedTrackColor(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getDefaultOccupiedTrackColor());
+}
+
+QColor  PythonQtWrapper_LayoutEditor::getDefaultOccupiedTrackColorColor(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getDefaultOccupiedTrackColorColor());
 }
 
 QString  PythonQtWrapper_LayoutEditor::getDefaultTextColor(LayoutEditor* theWrappedObject)
@@ -19241,6 +19256,11 @@ QString  PythonQtWrapper_LayoutEditor::getDefaultTextColor(LayoutEditor* theWrap
 QString  PythonQtWrapper_LayoutEditor::getDefaultTrackColor(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getDefaultTrackColor());
+}
+
+QColor  PythonQtWrapper_LayoutEditor::getDefaultTrackColorColor(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getDefaultTrackColorColor());
 }
 
 bool  PythonQtWrapper_LayoutEditor::getDirectTurnoutControl(LayoutEditor* theWrappedObject)
@@ -19518,6 +19538,11 @@ bool  PythonQtWrapper_LayoutEditor::scaleTrack(LayoutEditor* theWrappedObject, f
   return ( theWrappedObject->scaleTrack(xFactor, yFactor));
 }
 
+int  PythonQtWrapper_LayoutEditor::setAllTracksToDefaultColors(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->setAllTracksToDefaultColors());
+}
+
 void PythonQtWrapper_LayoutEditor::setAntialiasingOn(LayoutEditor* theWrappedObject, bool  state)
 {
   ( theWrappedObject->setAntialiasingOn(state));
@@ -19583,11 +19608,6 @@ void PythonQtWrapper_LayoutEditor::setDrawGrid(LayoutEditor* theWrappedObject, b
   ( theWrappedObject->setDrawGrid(state));
 }
 
-void PythonQtWrapper_LayoutEditor::setGlobalSetsLocalFlag(LayoutEditor* theWrappedObject, bool  set)
-{
-  ( theWrappedObject->setGlobalSetsLocalFlag(set));
-}
-
 void PythonQtWrapper_LayoutEditor::setHighlightSelectedBlock(LayoutEditor* theWrappedObject, bool  state)
 {
   ( theWrappedObject->setHighlightSelectedBlock(state));
@@ -19611,11 +19631,6 @@ void PythonQtWrapper_LayoutEditor::setLayoutDimensions(LayoutEditor* theWrappedO
 void PythonQtWrapper_LayoutEditor::setLayoutName(LayoutEditor* theWrappedObject, QString  name)
 {
   ( theWrappedObject->setLayoutName(name));
-}
-
-void PythonQtWrapper_LayoutEditor::setMainlineTrackWidth(LayoutEditor* theWrappedObject, int  w)
-{
-  ( theWrappedObject->setMainlineTrackWidth(w));
 }
 
 void PythonQtWrapper_LayoutEditor::setOpenDispatcherOnLoad(LayoutEditor* theWrappedObject, bool  boo)
@@ -19643,11 +19658,6 @@ void PythonQtWrapper_LayoutEditor::setShowHelpBar(LayoutEditor* theWrappedObject
   ( theWrappedObject->setShowHelpBar(state));
 }
 
-void PythonQtWrapper_LayoutEditor::setSideTrackWidth(LayoutEditor* theWrappedObject, int  w)
-{
-  ( theWrappedObject->setSideTrackWidth(w));
-}
-
 void PythonQtWrapper_LayoutEditor::setSize(LayoutEditor* theWrappedObject, int  w, int  h)
 {
   ( theWrappedObject->setSize(w, h));
@@ -19661,6 +19671,16 @@ void PythonQtWrapper_LayoutEditor::setSnapOnAdd(LayoutEditor* theWrappedObject, 
 void PythonQtWrapper_LayoutEditor::setSnapOnMove(LayoutEditor* theWrappedObject, bool  state)
 {
   ( theWrappedObject->setSnapOnMove(state));
+}
+
+void PythonQtWrapper_LayoutEditor::setTooltipsInEdit(LayoutEditor* theWrappedObject, bool  state)
+{
+  ( theWrappedObject->setTooltipsInEdit(state));
+}
+
+void PythonQtWrapper_LayoutEditor::setTooltipsNotEdit(LayoutEditor* theWrappedObject, bool  state)
+{
+  ( theWrappedObject->setTooltipsNotEdit(state));
 }
 
 void PythonQtWrapper_LayoutEditor::setTurnoutAnimation(LayoutEditor* theWrappedObject, bool  state)
@@ -19758,19 +19778,14 @@ void PythonQtWrapper_LayoutEditor::sortLayoutShapesByLevel(LayoutEditor* theWrap
   ( theWrappedObject->sortLayoutShapesByLevel());
 }
 
-QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::trackControlCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
+QString  PythonQtWrapper_LayoutEditor::toString(LayoutEditor* theWrappedObject)
 {
-  return ( theWrappedObject->trackControlCircleAt(inPoint));
+  return ( theWrappedObject->toString());
 }
 
 QRectF  PythonQtWrapper_LayoutEditor::trackControlCircleRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
 {
   return ( theWrappedObject->trackControlCircleRectAt(inPoint));
-}
-
-QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::trackEditControlCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
-{
-  return ( theWrappedObject->trackEditControlCircleAt(inPoint));
 }
 
 QRectF  PythonQtWrapper_LayoutEditor::trackEditControlRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
@@ -19788,11 +19803,6 @@ bool  PythonQtWrapper_LayoutEditor::translateTrack(LayoutEditor* theWrappedObjec
   return ( theWrappedObject->translateTrack(xDel, yDel));
 }
 
-QGraphicsEllipseItem*  PythonQtWrapper_LayoutEditor::turnoutCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint)
-{
-  return ( theWrappedObject->turnoutCircleAt(inPoint));
-}
-
 QRectF  PythonQtWrapper_LayoutEditor::unionToPanelBounds(LayoutEditor* theWrappedObject, QRectF  bounds)
 {
   return ( theWrappedObject->unionToPanelBounds(bounds));
@@ -19803,11 +19813,7 @@ bool  PythonQtWrapper_LayoutEditor::validatePhysicalTurnout(LayoutEditor* theWra
   return ( theWrappedObject->validatePhysicalTurnout(inTurnoutName, openPane));
 }
 
-QPointF  PythonQtWrapper_LayoutEditor::static_LayoutEditor_zeroQPointF()
-{
-  return (LayoutEditor::zeroQPointF());
-}
-
+QString PythonQtWrapper_LayoutEditor::py_toString(LayoutEditor* obj) { return obj->toString(); }
 
 
 PythonQtShell_LayoutTurnout::~PythonQtShell_LayoutTurnout() {

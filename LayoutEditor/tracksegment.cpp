@@ -3386,7 +3386,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
    // Draw a circle and square at the circles centre, that
    // allows the user to change the angle by dragging the mouse.
    //g2.draw(layoutEditor->trackEditControlCircleAt(circleCenterPoint));
-   QGraphicsEllipseItem* circleItem = layoutEditor->trackEditControlCircleAt(circleCenterPoint);
+   QGraphicsEllipseItem* circleItem = trackEditControlCircleAt(circleCenterPoint);
    //circleItem->setPen(layoutEditor->drawingStroke);
    circleItem->setPen(QPen(QColor(Qt::magenta)));
    itemGroup->addToGroup(circleItem);
@@ -3421,7 +3421,7 @@ void TrackSegment::drawHiddenTrack(LayoutEditor* editor, EditScene *g2)
 #endif
  //g2.draw(layoutEditor.trackEditControlCircleAt(getCentreSeg()));
  QPointF ctr = getCentreSeg();
- QGraphicsEllipseItem* circleItem = layoutEditor->trackEditControlCircleAt(ctr);
+ QGraphicsEllipseItem* circleItem = trackEditControlCircleAt(ctr);
  circleItem->setPen(layoutEditor->drawingStroke);
  itemGroup->addToGroup(circleItem);
  rects = itemGroup;

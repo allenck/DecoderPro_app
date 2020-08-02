@@ -1900,8 +1900,6 @@ inline void promoted_removeBackground(PositionableLabel*  b) { this->removeBackg
 inline bool  promoted_removeLayoutSlip(LayoutTurnout*  o) { return this->removeLayoutSlip(o); }
 inline bool  promoted_removeLayoutTurnout(LayoutTurnout*  o) { return this->removeLayoutTurnout(o); }
 inline void promoted_removeMarkers() { this->removeMarkers(); }
-inline void promoted_setNextLocation(Positionable*  obj) { this->setNextLocation(obj); }
-inline void promoted_setSelectionsRotation(int  k, Positionable*  p) { this->setSelectionsRotation(k, p); }
 inline void promoted_setSelectionsScale(double  s, Positionable*  p) { this->setSelectionsScale(s, p); }
 inline QMenu*  promoted_setupOptionMenu(QMenuBar*  menuBar) { return this->setupOptionMenu(menuBar); }
 inline void promoted_setupToolsMenu(QMenuBar*  menuBar) { this->setupToolsMenu(menuBar); }
@@ -1923,10 +1921,10 @@ inline void py_q_setAllEditable(bool  editable) { LayoutEditor::setAllEditable(e
 inline void py_q_setAllPositionable(bool  state) { LayoutEditor::setAllPositionable(state); }
 inline void py_q_setNextLocation(Positionable*  obj) { LayoutEditor::setNextLocation(obj); }
 inline void py_q_setScroll(int  state) { LayoutEditor::setScroll(state); }
-inline void py_q_setSelectionsRotation(int  k, Positionable*  p) { LayoutEditor::setSelectionsRotation(k, p); }
 inline void py_q_setSelectionsScale(double  s, Positionable*  p) { LayoutEditor::setSelectionsScale(s, p); }
 inline void py_q_showPopUp(Positionable*  p, QGraphicsSceneMouseEvent*  event) { LayoutEditor::showPopUp(p, event); }
 inline void py_q_targetWindowClosingEvent(QCloseEvent*  e) { LayoutEditor::targetWindowClosingEvent(e); }
+inline void py_q_vetoableChange(PropertyChangeEvent*  evt) { LayoutEditor::vetoableChange(evt); }
 };
 
 class PythonQtWrapper_LayoutEditor : public QObject
@@ -1959,6 +1957,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void clearSelectionGroups(LayoutEditor* theWrappedObject);
    void common(LayoutEditor* theWrappedObject);
    bool  containsSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head);
+   bool  containsSignalMast(LayoutEditor* theWrappedObject, SignalMast*  mast);
    bool  py_q_deletePanel(LayoutEditor* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_deletePanel());}
    void py_q_dispose(LayoutEditor* theWrappedObject){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_dispose());}
    void drawSelectionRect(LayoutEditor* theWrappedObject, EditScene*  g2);
@@ -1971,9 +1970,12 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    const QIcon  getColourIcon(LayoutEditor* theWrappedObject, QColor  color);
    QPointF  static_LayoutEditor_getCoords(LayoutTrack*  layoutTrack, int  connectionType);
    QString  getDefaultAlternativeTrackColor(LayoutEditor* theWrappedObject);
+   QColor  getDefaultAlternativeTrackColorColor(LayoutEditor* theWrappedObject);
    QString  getDefaultOccupiedTrackColor(LayoutEditor* theWrappedObject);
+   QColor  getDefaultOccupiedTrackColorColor(LayoutEditor* theWrappedObject);
    QString  getDefaultTextColor(LayoutEditor* theWrappedObject);
    QString  getDefaultTrackColor(LayoutEditor* theWrappedObject);
+   QColor  getDefaultTrackColorColor(LayoutEditor* theWrappedObject);
    bool  getDirectTurnoutControl(LayoutEditor* theWrappedObject);
    bool  getDrawGrid(LayoutEditor* theWrappedObject);
    bool  getHighlightSelectedBlock(LayoutEditor* theWrappedObject);
@@ -2038,6 +2040,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    bool  scaleTrack(LayoutEditor* theWrappedObject, float  xFactor, float  yFactor);
    void py_q_setAllEditable(LayoutEditor* theWrappedObject, bool  editable){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setAllEditable(editable));}
    void py_q_setAllPositionable(LayoutEditor* theWrappedObject, bool  state){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setAllPositionable(state));}
+   int  setAllTracksToDefaultColors(LayoutEditor* theWrappedObject);
    void setAntialiasingOn(LayoutEditor* theWrappedObject, bool  state);
    void setAutoBlockAssignment(LayoutEditor* theWrappedObject, bool  boo);
    void setAwaitingIconChange(LayoutEditor* theWrappedObject);
@@ -2051,26 +2054,24 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void setDirectTurnoutControl(LayoutEditor* theWrappedObject, bool  boo);
    void setDirty(LayoutEditor* theWrappedObject, bool  b = true);
    void setDrawGrid(LayoutEditor* theWrappedObject, bool  state);
-   void setGlobalSetsLocalFlag(LayoutEditor* theWrappedObject, bool  set);
    void setHighlightSelectedBlock(LayoutEditor* theWrappedObject, bool  state);
    void setIncludedTurnoutSkipped(LayoutEditor* theWrappedObject, bool  boo);
    void setLayoutDimensions(LayoutEditor* theWrappedObject, int  windowW, int  windowH, int  x, int  y, int  panelW, int  panelH, bool  merge);
    void setLayoutDimensions(LayoutEditor* theWrappedObject, int  windowWidth, int  windowHeight, int  windowX, int  windowY, int  panelWidth, int  panelHeight);
    void setLayoutName(LayoutEditor* theWrappedObject, QString  name);
-   void setMainlineTrackWidth(LayoutEditor* theWrappedObject, int  w);
    void py_q_setNextLocation(LayoutEditor* theWrappedObject, Positionable*  obj){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setNextLocation(obj));}
    void setOpenDispatcherOnLoad(LayoutEditor* theWrappedObject, bool  boo);
    void setPanelBounds(LayoutEditor* theWrappedObject, QRectF  newBounds);
    void py_q_setScroll(LayoutEditor* theWrappedObject, int  state){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setScroll(state));}
    void setSelectionRect(LayoutEditor* theWrappedObject, QRectF  selectionRect);
-   void py_q_setSelectionsRotation(LayoutEditor* theWrappedObject, int  k, Positionable*  p){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setSelectionsRotation(k, p));}
    void py_q_setSelectionsScale(LayoutEditor* theWrappedObject, double  s, Positionable*  p){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_setSelectionsScale(s, p));}
    bool  setShowAlignmentMenu(LayoutEditor* theWrappedObject, QMenu*  popup);
    void setShowHelpBar(LayoutEditor* theWrappedObject, bool  state);
-   void setSideTrackWidth(LayoutEditor* theWrappedObject, int  w);
    void setSize(LayoutEditor* theWrappedObject, int  w, int  h);
    void setSnapOnAdd(LayoutEditor* theWrappedObject, bool  state);
    void setSnapOnMove(LayoutEditor* theWrappedObject, bool  state);
+   void setTooltipsInEdit(LayoutEditor* theWrappedObject, bool  state);
+   void setTooltipsNotEdit(LayoutEditor* theWrappedObject, bool  state);
    void setTurnoutAnimation(LayoutEditor* theWrappedObject, bool  state);
    void setTurnoutBX(LayoutEditor* theWrappedObject, double  bx);
    void setTurnoutCX(LayoutEditor* theWrappedObject, double  cx);
@@ -2092,16 +2093,15 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void py_q_showPopUp(LayoutEditor* theWrappedObject, Positionable*  p, QGraphicsSceneMouseEvent*  event){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_showPopUp(p, event));}
    void sortLayoutShapesByLevel(LayoutEditor* theWrappedObject);
    void py_q_targetWindowClosingEvent(LayoutEditor* theWrappedObject, QCloseEvent*  e){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_targetWindowClosingEvent(e));}
-   QGraphicsEllipseItem*  trackControlCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint);
+   QString  toString(LayoutEditor* theWrappedObject);
    QRectF  trackControlCircleRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint);
-   QGraphicsEllipseItem*  trackEditControlCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint);
    QRectF  trackEditControlRectAt(LayoutEditor* theWrappedObject, QPointF  inPoint);
    void translate(LayoutEditor* theWrappedObject, float  xTranslation, float  yTranslation);
    bool  translateTrack(LayoutEditor* theWrappedObject, float  xDel, float  yDel);
-   QGraphicsEllipseItem*  turnoutCircleAt(LayoutEditor* theWrappedObject, QPointF  inPoint);
    QRectF  unionToPanelBounds(LayoutEditor* theWrappedObject, QRectF  bounds);
    bool  validatePhysicalTurnout(LayoutEditor* theWrappedObject, QString  inTurnoutName, QWidget*  openPane = 0);
-   QPointF  static_LayoutEditor_zeroQPointF();
+   void py_q_vetoableChange(LayoutEditor* theWrappedObject, PropertyChangeEvent*  evt){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_vetoableChange(evt));}
+    QString py_toString(LayoutEditor*);
 void py_set__labelImage(LayoutEditor* theWrappedObject, QVector<PositionableLabel* >*  _labelImage){ theWrappedObject->_labelImage = _labelImage; }
 QVector<PositionableLabel* >*  py_get__labelImage(LayoutEditor* theWrappedObject){ return theWrappedObject->_labelImage; }
 void py_set_backgroundImage(LayoutEditor* theWrappedObject, QVector<PositionableLabel* >*  backgroundImage){ theWrappedObject->backgroundImage = backgroundImage; }
