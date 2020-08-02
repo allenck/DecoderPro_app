@@ -165,15 +165,6 @@ private:
     /*private*/ void makeCircuitMenu();
     /*private*/ void setUpEditCircuit();
 
-    /*private*/ bool iconsConverted(OBlock* block);
-    /*private*/ void queryConvertIcons(OBlock* block);
-    /*private*/ void convertIcon(Positionable* pos);
-    /*private*/ void makePalettteFrame(QString title);
-    /*private*/ void convertTO();
-    /*private*/ void convertSeg();
-    /*private*/ void finishConvert(Positionable* pos);
-
-
 private slots:
     /*private*/ void editCircuitError(QString sysName);
 
@@ -186,7 +177,7 @@ protected:
     /*protected*/ bool doMouseClicked(QList<Positionable*>* selections, QGraphicsSceneMouseEvent* event);
     /*protected*/ bool saveSelectionGroup(QList<Positionable*>* selectionGroup);
     /*protected*/ void doMousePressed(QGraphicsSceneMouseEvent* event, Positionable* selection);
-    /*protected*/ void convertIcons(QList<Positionable*>* iconList);
+//    /*protected*/ void convertIcons(QList<Positionable*>* iconList);
 
      protected slots:
     /*protected*/ void editCircuit(QString title, bool fromMenu);
@@ -285,6 +276,7 @@ private:
  QRadioButton* makeButton(QString title, int which);
 };
 
+#if 0
 /*static*/ class convertFrame : public JmriJFrame {
 Q_OBJECT
     /**
@@ -298,5 +290,5 @@ public:
     /*public*/ void pack();
     QString getClassName() {return "convertFrame";}
 };
-
+#endif
 #endif // CIRCUITBUILDER_H

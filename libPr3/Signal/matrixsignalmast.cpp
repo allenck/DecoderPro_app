@@ -8,8 +8,8 @@
 /**
  * SignalMast implemented via a Binary Matrix (Truth Table) of Apects x Turnout objects.
  * <p>
- * A Signalmast that is built up from an array of 1 - 6 turnouts to control each aspect.
- * System name specifies the creation information:
+ * A MatrixSignalMast is built up from an array of turnouts to control each aspect.
+ * System name specifies the creation information (except for the actual output beans):
  * <pre>
  * IF$xsm:basic:one-searchlight:($0001)-3t
  * </pre> The name is a colon-separated series of terms:
@@ -18,18 +18,25 @@
  * <li>basic - name of the signaling system
  * <li>one-searchlight - name of the particular aspect map/mast model
  * <li>($0001) - small ordinal number for telling various matrix signal masts apart
- * <li>name ending in -nt for (binary) Turnout outputs or [to do:] -nd for direct DCC packets,
- * where n = the number of binary outputs, between 1 and mastBitNum (= 6)</li>
+ * <li>name ending in -nt for (binary) Turnout outputs
+ * where n = the number of binary outputs, between 1 and mastBitNum i.e. -3t</li>
  * </ul>
  *
- * @author Bob Jacobsen Copyright (C) 2009, 2014
- * @author Egbert Broerse Copyright (C) 2016
+ * @author Bob Jacobsen Copyright (C) 2009, 2014, 2020
+ * @author Egbert Broerse Copyright (C) 2016, 2018, 2020
  */
 // /*public*/ class MatrixSignalMast extends AbstractSignalMast {
 
+/**
+ *  Number of columns in logix matrix, default to 6, set in Matrix Mast panel &amp; on loading xml.
+ *  Used to set size of char[] bitString.
+ *  See MAXMATRIXBITS in {@link jmri.jmrit.beantable.signalmast.MatrixSignalMastAddPane}.
+ */
 /*static*/ QString MatrixSignalMast::errorChars = "nnnnnn";
 
 /*static*/ QString MatrixSignalMast::emptyChars = "000000"; // default starting value
+
+/*private*/ /*static*/ /*final*/ QString MatrixSignalMast::mastType = "IF$xsm";
 
 /*public*/ MatrixSignalMast::MatrixSignalMast(QString systemName, QString userName, QObject *parent) : AbstractSignalMast(systemName, userName, parent)
 {
@@ -52,7 +59,6 @@ void MatrixSignalMast::common()
  emptyBits =emptyChars.toLocal8Bit();
  aspectToOutput = QMap<QString, QByteArray>(/*16*/); // "Clear" - 01001 char[] pairs
  outputsToBeans = QMap<QString, NamedBeanHandle<Turnout*>*>(/*6*/); // output# - bean pairs
- mastType = "IF$xsm";
 }
 
 /*protected*/ void MatrixSignalMast::configureFromName(QString systemName)
@@ -205,55 +211,68 @@ void MatrixSignalMast::common()
 }
 
 /**
- *  Hand unLitBits to xml
+ *  Hand unLitBits to xml.
+ *
  *  @return String for 1-n 1/0 chararacters setting an unlit aspect
  */
-/*@Nonnull*/ /*public*/ QString MatrixSignalMast::getUnLitChars() {
+//@Nonnull
+/*public*/ QString MatrixSignalMast::getUnLitChars() {
     if (!unLitBits.isNull()) {
-        //return String.valueOf(unLitBits);
-     return  QTextCodec::codecForMib(1015)->toUnicode(unLitBits);
+        return QString(unLitBits);
     } else {
         log->error("Returning 0 values because unLitBits is empty");
         return emptyChars.mid(0, (mastBitNum)); // should only be called when Unlit = true
     }
 }
 
-/*@CheckForNull*/ /*public*/ Turnout* MatrixSignalMast::getOutputBean(int colnum) { // as bean
-    QString key = "output" + QString::number(colnum);
-    if (colnum > 0 && colnum <= outputsToBeans.size()) {
+
+/**
+ *  Fetch output as Turnout from outputsToBeans hashmap.
+ *
+ *  @param colNum int index (1 up to mastBitNum) for the column of the desired output
+ *  @return Turnout object connected to configured output
+ */
+//@CheckForNull
+/*private*/ Turnout* MatrixSignalMast::getOutputBean(int colNum) { // as bean
+    QString key = "output" + QString::number(colNum);
+    if (colNum > 0 && colNum <= outputsToBeans.size()) {
         return outputsToBeans.value(key)->getBean();
     }
-    log->error("Trying to read bean for output " + QString::number(colnum) + " which has not been configured");
+    log->error("Trying to read bean for output {} which has not been configured", colNum);
     return nullptr;
 }
 
 /**
- *  Fetch output from outputsToBeans hashmap
- *  used in AddSignalMastMast panel line 427
- *  @param colnum int index (1 up to 6) for the column of the desired output
+ *  Fetch output from outputsToBeans hashmap.
+ *  Used?
+ *
+ *  @param colNum int index (1 up to mastBitNum) for the column of the desired output
  *  @return NamedBeanHandle to the configured turnout output
  */
-/*@CheckForNull*/ /*public*/ NamedBeanHandle<Turnout*>* MatrixSignalMast::getOutputHandle (int colnum) {
-    QString key = "output" + QString::number(colnum);
-    if (colnum > 0 && colnum <= outputsToBeans.size()) {
+//@CheckForNull
+/*public*/ NamedBeanHandle<Turnout*>* MatrixSignalMast::getOutputHandle(int colNum) {
+    QString key = "output" + QString::number(colNum);
+    if (colNum > 0 && colNum <= outputsToBeans.size()) {
         return outputsToBeans.value(key);
     }
-    log->error("Trying to read output NamedBeanHandle " + key + " which has not been configured");
+    log->error(tr("Trying to read output NamedBeanHandle %1 which has not been configured").arg(key));
     return nullptr;
 }
 
 /**
- *  Fetch output from outputsToBeans hashmap and provide to xml
+ *  Fetch output from outputsToBeans hashmap and provide to xml.
+ *
  *  @see jmri.implementation.configurexml.MatrixSignalMastXml#store(java.lang.Object)
- *  @param colnum int index (1 up to 6) for the column of the desired output
+ *  @param colnum int index (1 up to mastBitNum) for the column of the desired output
  *  @return String with the desplay name of the configured turnout output
  */
-/*@Nonnull*/ /*public*/ QString MatrixSignalMast::getOutputName(int colnum) {
+//@Nonnull
+/*public*/ QString MatrixSignalMast::getOutputName(int colnum) {
     QString key = "output" + QString::number(colnum);
     if (colnum > 0 && colnum <= outputsToBeans.size()) {
-            return outputsToBeans.value(key)->getName();
+        return outputsToBeans.value(key)->getName();
     }
-    log->error("Trying to read name of output " + QString::number(colnum) + " which has not been configured");
+    log->error(tr("Trying to read name of output %1 which has not been configured").arg(colnum));
     return "";
 }
 
@@ -397,27 +416,6 @@ void MatrixSignalMast::common()
     return _resetPreviousStates;
 }
 
-/*    Turnout getTurnoutBean(int i) { // as bean
-    String key = "output" + Integer.toString(i);
-    if (i < 1 || i > outputsToBeans.size() ) {
-        return null;
-    }
-    if (outputsToBeans.containsKey(key) && outputsToBeans.get(key) != null){
-        return outputsToBeans.get(key).getBean();
-    }
-    return null;
-}*/
-
-/*    public QString MatrixSignalMast::getTurnoutName(int i) {
-    String key = "output" + QString::number(i);
-    if (i < 1 || i > outputsToBeans.size() ) {
-        return "";
-    }
-    if (outputsToBeans.contains(key) && outputsToBeans.value(key) != "") {
-        return outputsToBeans.value(key)->getName();
-    }
-    return null;
-}*/
 
 bool MatrixSignalMast::isTurnoutUsed(Turnout* t) {
     for (int i = 1; i <= outputsToBeans.size(); i++) {

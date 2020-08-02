@@ -20,6 +20,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -124,11 +125,6 @@ void PythonQtWrapper_RosterEntry::ensureFilenameExists(RosterEntry* theWrappedOb
 void PythonQtWrapper_RosterEntry::firePropertyChange(RosterEntry* theWrappedObject, QString  p, QVariant  old, QVariant  n)
 {
   ( theWrappedObject->firePropertyChange(p, old, n));
-}
-
-LocoAddress*  PythonQtWrapper_RosterEntry::getAddress(RosterEntry* theWrappedObject, QDomElement  element)
-{
-  return ( theWrappedObject->getAddress(element));
 }
 
 QString  PythonQtWrapper_RosterEntry::getAttribute(RosterEntry* theWrappedObject, QString  key)

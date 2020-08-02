@@ -309,10 +309,10 @@ ControlPanelEditor::~ControlPanelEditor()
 //    disableShapeSelect.addActionListener(new ActionListener() {
 //        @Override
 //        public void actionPerformed(ActionEvent event) {
-//            _disableShapeSelection = disableShapeSelect.isSelected();
+  connect(disableShapeSelect, &QAction::triggered, [=]{
+            _disableShapeSelection = disableShapeSelect->isChecked();
 //        }
-//    });
-    connect(disableShapeSelect, SIGNAL(triggered(bool)), this, SLOT(on_disableShapeSelect(bool)));
+    });
  }
  if(_menuBar->actions().count() == 0)
   _menuBar->addMenu(_drawMenu);
@@ -320,20 +320,13 @@ ControlPanelEditor::~ControlPanelEditor()
   _menuBar->insertMenu(_menuBar->actions().at(0), _drawMenu/*, 0*/);
 }
 
-void ControlPanelEditor::on_disableShapeSelect(bool)
-{
- _disableShapeSelection = disableShapeSelect->isChecked();
+/*public*/ bool ControlPanelEditor::getShapeSelect() {
+    return !_disableShapeSelection;
 }
 
-/*public*/ bool ControlPanelEditor::getShapeSelect()
-{
- return !_disableShapeSelection;
-}
-
-/*public*/ void ControlPanelEditor::setShapeSelect(bool set)
-{
- _disableShapeSelection = !set;
- disableShapeSelect->setChecked(_disableShapeSelection);
+/*public*/ void ControlPanelEditor::setShapeSelect(bool set) {
+    _disableShapeSelection = !set;
+    disableShapeSelect->setChecked(_disableShapeSelection);
 }
 
 /*public*/ ShapeDrawer* ControlPanelEditor::getShapeDrawer()
@@ -420,31 +413,26 @@ void ControlPanelEditor::on_disableShapeSelect(bool)
 #endif
 }
 
-void ControlPanelEditor::on_makeCircuitMenu()
-{
- makeCircuitMenu(true);
-}
-
 /*protected*/ void ControlPanelEditor::makeMarkerMenu() {
     _markerMenu = new QMenu(tr("Marker"));
     _menuBar->addMenu(_markerMenu);
+    QAction* act = new QAction(tr("Add Loco"),this);
 //    _markerMenu.add(new AbstractAction(tr("AddLoco")){
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            locoMarkerFromInput();
+    connect(act, &QAction::triggered, [=]{
+            locoMarkerFromInput();
 //        }
-//    });
-    QAction* act = new QAction(tr("Add Loco"),this);
+    });
     _markerMenu->addAction(act);
     Editor* editor = (Editor*)this;
-    connect(act, SIGNAL(triggered()), editor, SLOT(locoMarkerFromInput()));
+    act = new QAction(tr("Add Loco from roster"),this);
 //    _markerMenu.add(new AbstractAction(tr("AddLocoRoster")){
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            locoMarkerFromRoster();
+    connect(act, &QAction::triggered, [=]{
+            locoMarkerFromRoster();
 //        }
-//    });
-    act = new QAction(tr("Add Loco from roster"),this);
+    });
     _markerMenu->addAction(act);
-    connect(act, SIGNAL(triggered()), editor, SLOT(locoMarkerFromRoster()));
 //    _markerMenu.add(new AbstractAction(tr("RemoveMarkers")){
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //            removeMarkers();
@@ -504,7 +492,7 @@ void ControlPanelEditor::on_makeCircuitMenu()
 //    });
  connect(showTooltipBox, SIGNAL(toggled(bool)), this, SLOT(setAllShowToolTip(bool)));
  showTooltipBox->setChecked(showToolTip());
-#if 1  // QGraphicsView already has scrollbars
+// QGraphicsView already has scrollbars
  // Show/Hide Scroll Bars
  QMenu* scrollMenu = new QMenu(tr("Panel scrollbars"));
  _optionMenu->addMenu(scrollMenu);
@@ -513,67 +501,41 @@ void ControlPanelEditor::on_makeCircuitMenu()
  scrollMenu->addAction(scrollBoth);
 // scrollBoth.addActionListener(new ActionListener() {
 //         /*public*/ void actionPerformed(ActionEvent event) {
-//             setScroll(SCROLL_BOTH);
-////                    repaint();
-//         }
-//     });
+ connect(scrollBoth, &QAction::triggered, [=]{
+  editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+  editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+ });
  connect(scrollBoth, SIGNAL(triggered()), this, SLOT(on_scrollBoth_triggered()));
  scrollGroup->addAction(scrollNone);
  scrollMenu->addAction(scrollNone);
 // scrollNone.addActionListener(new ActionListener() {
 //         /*public*/ void actionPerformed(ActionEvent event) {
-//             setScroll(SCROLL_NONE);
-////                    repaint();
-//         }
-//     });
- connect(scrollNone, SIGNAL(triggered()), this, SLOT(on_scrollNone_triggered()));
+ connect(scrollNone, &QAction::triggered, [=]{
+  editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+  editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+ });
  scrollGroup->addAction(scrollHorizontal);
  scrollMenu->addAction(scrollHorizontal);
 // scrollHorizontal.addActionListener(new ActionListener() {
 //         /*public*/ void actionPerformed(ActionEvent event) {
-//             setScroll(SCROLL_HORIZONTAL);
-////                    repaint();
-//         }
-//     });
- connect(scrollHorizontal, SIGNAL(triggered()), this, SLOT(on_scrollHorizontal_triggered()));
+ connect(scrollHorizontal, &QAction::triggered, [=]{
+  editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+  editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+ });
  scrollGroup->addAction(scrollVertical);
  scrollMenu->addAction(scrollVertical);
 // scrollVertical.addActionListener(new ActionListener() {
 //         /*public*/ void actionPerformed(ActionEvent event) {
-//             setScroll(SCROLL_VERTICAL);
-////                    repaint();
-//         }
-//     });
- connect(scrollVertical, SIGNAL(triggered()), this, SLOT(on_scrollVertical_triggered()));
-
-#endif
-}
-
-void ControlPanelEditor::on_scrollBoth_triggered()
-{
- editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
- editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-}
-void ControlPanelEditor::on_scrollNone_triggered()
-{
- editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
- editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-}
-void ControlPanelEditor::on_scrollHorizontal_triggered()
-{
- editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
- editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-}
-void ControlPanelEditor::on_scrollVertical_triggered()
-{
- editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
- editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+ connect(scrollVertical, &QAction::triggered, [=]{
+  editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+  editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
+ });
 }
 
 /*private*/ void ControlPanelEditor::makeFileMenu() {
     _fileMenu = new QMenu(tr("File"));
     _menuBar->insertMenu(_menuBar->actions().at(0),_fileMenu/*, 0*/);
-#if 1
+
 //    _fileMenu->addAction(new NewPanelAction(tr("New Panel...")));
 
     StoreXmlUserAction* act = new StoreXmlUserAction(tr("Save Panels..."),this);
@@ -640,11 +602,10 @@ void ControlPanelEditor::on_scrollVertical_triggered()
     _fileMenu->addAction(editItem);
 //    editItem.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent event) {
-//                setAllEditable(false);
+    connect(editItem, &QAction::triggered, [=]{
+                setAllEditable(false);
 //            }
-//        });
-    connect(editItem, SIGNAL(triggered()), this, SLOT(closeEditor()));
-#endif
+        });
 }
 void CPEditItemActionListener::actionPerformed(ActionEvent *)
 {
@@ -666,10 +627,7 @@ void ControlPanelEditor::deleteAction()
   dispose(true);
  }
 }
-void ControlPanelEditor::closeEditor()
-{
- setAllEditable(false);
-}
+
 void ControlPanelEditor::storeImageIndexAction()
 {
  ImageIndexEditor::storeImageIndex();

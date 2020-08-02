@@ -77,7 +77,6 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
   panel.setAttribute("greenBackground", p->getBackgroundColor().green());
   panel.setAttribute("blueBackground", p->getBackgroundColor().blue());
  }
-// panel.setAttribute("state", p->getExtendedState());
  panel.setAttribute("shapeSelect",  (p->getShapeSelect() ? "yes" : "no"));
 
  QDomElement elem = doc.createElement("icons");

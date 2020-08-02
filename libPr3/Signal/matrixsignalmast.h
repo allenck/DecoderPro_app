@@ -48,7 +48,7 @@ private:
  static Logger* log;
  static QString errorChars;// = "nnnnnn";
  static QString emptyChars;// = "000000"; // default starting value
-
+ /*private*/ static /*final*/ QString mastType;// = "IF$xsm";
  void common();
  QByteArray errorBits;// = errorChars.toCharArray();
  QByteArray emptyBits;// = emptyChars.toCharArray();
@@ -57,15 +57,10 @@ private:
  bool _resetPreviousStates = false;
  bool isTurnoutUsed(Turnout* t);
  static int lastRef;// = 0;
+ /*private*/ int mastBitNum = 6;
  int mDelay = 0;
 
 protected:
- /**
-  *  Number of columns in logix matrix, default to 6, set in Matrix Mast panel &amp; on loading xml
-  *  Used to set size of char[] bitString
-  *  Match to MAXMATRIXBITS in beantable.signalmast.AddSignalMastPanel.java
-  */
- /*protected*/ int mastBitNum = 6;
  /*protected*/ void configureFromName(QString systemName);
  /*protected*/ QMap<QString, NamedBeanHandle<Turnout*>*> outputsToBeans;// = new QMap<QString, NamedBeanHandle<Turnout*>*>(/*6*/); // output# - bean pairs
  /*protected*/ static void setLastRef(int newVal);

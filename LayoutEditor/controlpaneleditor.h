@@ -35,8 +35,8 @@ public:
     /*public*/ void loadComplete();
     /*public*/ void setDefaultPortalIcons(QMap<QString, NamedIcon *> *map);
     /*public*/ QMap<QString, NamedIcon *> *getPortalIconMap();
-    /*public*/ bool getShapeSelect() ;
-    /*public*/ void setShapeSelect(bool set) ;
+    /*public*/ bool getShapeSelect();
+    /*public*/ void setShapeSelect(bool set);
     /*public*/ ShapeDrawer* getShapeDrawer();
     /*public*/ CircuitBuilder* getCircuitBuilder();
     /*public*/ void mouseEntered(QGraphicsSceneMouseEvent * event);
@@ -121,14 +121,7 @@ private slots:
  void selectAllAction();
  void storeImageIndexAction();
  void deleteAction();
- void closeEditor();
  void sceneChanged(QList<QRectF>);
- void on_disableShapeSelect(bool);
- void on_makeCircuitMenu();
- void on_scrollBoth_triggered();
- void on_scrollNone_triggered();
- void on_scrollHorizontal_triggered();
- void on_scrollVertical_triggered();
 
 protected:
  /*protected*/ QMenuBar* _menuBar;

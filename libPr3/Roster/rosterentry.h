@@ -61,7 +61,8 @@ public:
     explicit RosterEntry(QObject *parent = 0);
     ~RosterEntry() {}
     RosterEntry(const RosterEntry& /*e*/, QObject* parent = 0 ) : ArbitraryBean(parent) {}
-    /*final*/const static int MAXFNNUM = 28;
+    QT_DEPRECATED /*final*/const static int MAXFNNUM = 28;
+
     /*public*/ int getMAXFNNUM() { return MAXFNNUM; }
     /**
      * Construct a blank object.
@@ -85,7 +86,7 @@ public:
      */
     /*public*/ void ensureFilenameExists();
     /*public*/ RosterEntry(QDomElement e, QObject *parent = 0);
-    /*public*/ LocoAddress* getAddress(QDomElement element);
+//    /*public*/ LocoAddress* getAddress(QDomElement element);
     /*public*/ void loadFunctions(QDomElement e3);
     /*public*/ void loadAttributes(QDomElement e3);
     /*public*/ void putAttribute(QString key, QString value);
@@ -188,7 +189,6 @@ private:
      */
     /*private*/ QDomElement mRootElement;// = NULL;
     PropertyChangeSupport* pcs;
-    QDomElement storeLocoAddress(QDomDocument doc, LocoAddress* addr);
     int openCounter;// =0;
     QMutex mutex;
     /*private*/ int blanks;//=0;
@@ -229,10 +229,10 @@ protected:
 
     QMap<QString,QString>* attributePairs;
 
-    /*protected*/ QString _imageFilePath;// = FileUtil.getUserResourcePath() ; // at DndImagePanel init will
-    /*protected*/ QString _iconFilePath;// = FileUtil.getUserResourcePath() ;  // force image copy to that folder
-    /*protected*/ QString _URL;// = "";
-    /*protected*/ RosterSpeedProfile* _sp;// = NULL;
+    /*protected*/ QString _imageFilePath = nullptr;// = FileUtil.getUserResourcePath() ; // at DndImagePanel init will
+    /*protected*/ QString _iconFilePath = nullptr;// = FileUtil.getUserResourcePath() ;  // force image copy to that folder
+    /*protected*/ QString _URL = "";
+    /*protected*/ RosterSpeedProfile* _sp = nullptr;
     QDomElement createTextElement(QDomDocument doc, QString tagName, QString text);
  friend class RosterFrame;
  friend class JsonRosterSocketService;

@@ -816,15 +816,11 @@ void RosterEntry::init()
 
  e.appendChild(d);
 
- if (_dccAddress==(""))
- {
-  //e.appendChild(new LocoAddressXml()).store(NULL));  // store a NULL address
-  e.appendChild(storeLocoAddress(doc,NULL));
- }
- else
- {
-  //e.appendChild(new LocoAddressXml()).store(new DccLocoAddress((_dccAddress), _protocol)));
-  e.appendChild(storeLocoAddress(doc,new DccLocoAddress((_dccAddress.toInt()), _protocol)));
+ if (_dccAddress.isEmpty()) {
+     e.appendChild((new LocoAddressXml())->store(nullptr)); // store a null address
+ } else {
+     e.appendChild((new LocoAddressXml())
+             ->store(new DccLocoAddress(_dccAddress.toInt(), _protocol)));
  }
 #if 1
  if (!functionLabels.isEmpty())
@@ -1647,24 +1643,24 @@ if (!(_decoderFamily==("")))
   }
  }
 }
-/*public*/ LocoAddress* RosterEntry::getAddress(QDomElement element)
-{
- if(!element.firstChildElement("dcclocoaddress").isNull())
- {
-  DccLocoAddressXml* adapter = new DccLocoAddressXml();
-  return adapter->getAddress(element.firstChildElement("dcclocoaddress"));
- }
- int addr = 0;
- bool bOk = false;
- addr = element.firstChildElement("number").text().toInt(&bOk);
- if(!bOk)
- {
-  return NULL;
- }
- QString protocol = element.firstChildElement("protocol").text();
- LocoAddress::Protocol prot = LocoAddress::getByShortName(protocol);
- return new DccLocoAddress(addr, prot);
-}
+///*public*/ LocoAddress* RosterEntry::getAddress(QDomElement element)
+//{
+// if(!element.firstChildElement("dcclocoaddress").isNull())
+// {
+//  DccLocoAddressXml* adapter = new DccLocoAddressXml();
+//  return adapter->getAddress(element.firstChildElement("dcclocoaddress"));
+// }
+// int addr = 0;
+// bool bOk = false;
+// addr = element.firstChildElement("number").text().toInt(&bOk);
+// if(!bOk)
+// {
+//  return NULL;
+// }
+// QString protocol = element.firstChildElement("protocol").text();
+// LocoAddress::Protocol prot = LocoAddress::getByShortName(protocol);
+// return new DccLocoAddress(addr, prot);
+//}
 /*public*/ void RosterEntry::putAttribute(QString key, QString value)
 {
  QString oldValue = getAttribute(key);
@@ -1695,29 +1691,6 @@ QDomElement RosterEntry::createTextElement(QDomDocument doc, QString tagName, QS
  QDomText t = doc.createTextNode(text);
  eText.appendChild(t);
  return eText;
-}
-QDomElement RosterEntry::storeLocoAddress(QDomDocument doc, LocoAddress* p)
-{
- QDomElement element = doc.createElement("locoaddress");
-
- // include contents, we shall also store the old format for backward compatability
- DccLocoAddressXml* adapter = new DccLocoAddressXml();
-
- element.appendChild(adapter->store(p));
-
- if (p!=NULL)
- {
-  element.appendChild(createTextElement(doc,QString("number"), QString("%1").arg(p->getNumber())));
-  //element.appendChild(createTextElement(doc,QString("protocol"),QString("%1").arg(p->getProtocol().getShortName())));
-  element.appendChild(createTextElement(doc,QString("protocol"),QString("%1").arg(LocoAddress::getShortName(p->getProtocol()))));
- }
- else
- {
-  element.appendChild(createTextElement(doc,"number",""));
-  element.appendChild(createTextElement(doc,"protocol",""));
- }
-
- return element;
 }
 qint32 RosterEntry::getRfidTag() {return _rfidTag;}
 void RosterEntry::setRfidTag(QString tag)

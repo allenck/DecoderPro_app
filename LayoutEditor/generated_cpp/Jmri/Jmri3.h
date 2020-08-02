@@ -18,6 +18,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -91,7 +92,6 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    void deleteAttribute(RosterEntry* theWrappedObject, QString  key);
    void ensureFilenameExists(RosterEntry* theWrappedObject);
    void firePropertyChange(RosterEntry* theWrappedObject, QString  p, QVariant  old, QVariant  n);
-   LocoAddress*  getAddress(RosterEntry* theWrappedObject, QDomElement  element);
    QString  getAttribute(RosterEntry* theWrappedObject, QString  key);
    QStringList  getAttributeList(RosterEntry* theWrappedObject);
    QList<QString >  getAttributes(RosterEntry* theWrappedObject);
