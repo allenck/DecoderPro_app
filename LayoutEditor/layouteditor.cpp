@@ -280,6 +280,15 @@ LayoutEditor::~LayoutEditor()
     helpBarPanel = new JPanel(new QHBoxLayout());
     ((QHBoxLayout*)helpBarPanel->layout())->addWidget(helpBar, 1);
 
+    for (QWidget* c : helpBar->findChildren<QWidget*>()) {
+        if (qobject_cast<JTextArea*>(c)) {
+            JTextArea* j = (JTextArea*) c;
+            j->resize(QSize(toolbarWidth, j->size().height()));
+            j->setLineWrap(toolBarIsVertical);
+            j->setWrapStyleWord(toolBarIsVertical);
+        }
+    }
+
     switch (toolBarSide->getType())
     {
     case eLEFT:
@@ -368,23 +377,22 @@ LayoutEditor::~LayoutEditor()
 #if 1
     if (qobject_cast<LayoutEditorFloatingToolBarPanel*>(leToolBarPanel)) {
         LayoutEditorFloatingToolBarPanel* leftbp = (LayoutEditorFloatingToolBarPanel*) leToolBarPanel;
-        floatEditHelpPanel = new JPanel();
+        floatEditHelpPanel = new JPanel(new FlowLayout());
         leToolBarPanel->layout()->addWidget(floatEditHelpPanel);
 
         //Notice: End tree structure indenting
         // Force the help panel width to the same as the tabs section
         int tabSectionWidth = (int) leftbp->sizeHint().width();
-#if 0 // ??
         //Change the textarea settings
-        for (Component c : helpBar.getComponents()) {
-            if (c instanceof JTextArea) {
-                JTextArea j = (JTextArea) c;
-                j.setSize(new Dimension(tabSectionWidth, j.getSize().height));
-                j.setLineWrap(true);
-                j.setWrapStyleWord(true);
+        for (QWidget* c : helpBar->findChildren<QWidget*>()) {
+            if (qobject_cast<JTextArea*>(c))
+            {
+                JTextArea* j = (JTextArea*) c;
+                j->resize(QSize(tabSectionWidth, j->size().height()));
+                j->setLineWrap(true);
+                j->setWrapStyleWord(true);
             }
         }
-#endif
         //Change the width of the help panel section
         floatEditHelpPanel->setMaximumSize(QSize(tabSectionWidth, INT_MAX));
         floatEditHelpPanel->layout()->addWidget(helpBar);
@@ -7490,8 +7498,8 @@ void LayoutEditor::undoMoveSelection() {
      if(editToolBarContainerPanel)
        //removeDockWidget(editToolBarContainerPanel);
       editToolBarContainerPanel->layout()->removeWidget(editToolBarContainerPanel);
-     QObject* o = QObject::sender();
-     QAction* act = (QAction*)o;
+     //QObject* o = QObject::sender();
+     QAction* act = toolBarSideGroup->checkedAction();
      setToolBarSide(act->text());
     });
 
