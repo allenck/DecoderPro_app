@@ -36,7 +36,7 @@
 #include "defaulttablecolumnmodel.h"
 #include "speedutil.h"
 #include "decimalformat.h"
-#include "learnthrottleframe.h"
+#include "logix/learnthrottleframe.h"
 #include "joptionpane.h"
 
 #include <QSizePolicy>

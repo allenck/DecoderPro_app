@@ -6,6 +6,12 @@
 #include "powermanager.h"
 #include "rosterentry.h"
 #include "powerpane.h"
+#include "logix/ltfcontrolpanel.h"
+#include "logix/ltffunctionpanel.h"
+#include "jdesktoppane.h"
+#include <QActionGroup>
+#include <QMenuBar>
+#include <QMenu>
 
 //LearnThrottleFrame::LearnThrottleFrame(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -60,68 +66,69 @@
            log->debug("notifyThrottleFound address= " +((DccLocoAddress*)((LocoNetThrottle*)t)->getLocoAddress())->toString());
         }
         _throttle = t;
-#if 0
-        _controlPanel.notifyThrottleFound(t);
-        _functionPanel.notifyThrottleFound(t);
-        _buttonPanel.notifyThrottleFound(t);
+#if 1
+        _controlPanel->notifyThrottleFound(t);
+        _functionPanel->notifyThrottleFound(t);
+        _buttonPanel->notifyThrottleFound(t);
         setSpeedSetting(0.0f);      // be sure loco is stopped.
 #endif
         RosterEntry* train = _warrantFrame->getTrain();
         QString name = "";
-        if (train != NULL) {
+        if (train != nullptr) {
             name = train->getId();
         }
         setWindowTitle(name+" ("+((DccLocoAddress*)((LocoNetThrottle*)t)->getLocoAddress())->toString()+")");
     }
-#if 0
-    private void initGUI()
+#if 1
+    /*private*/ void LearnThrottleFrame::initGUI()
     {
         setTitle("Throttle");
-        this.addWindowListener (new WindowAdapter() {
-                                   /*public*/ void windowClosing(WindowEvent e) {
-                                       _warrantFrame.stopRunTrain();
-                                       dispose();
-                                   }
-                               });
+//        this.addWindowListener (new WindowAdapter() {
+//                                   /*public*/ void windowClosing(WindowEvent e) {
+//                                       _warrantFrame.stopRunTrain();
+//                                       dispose();
+//                                   }
+//                               });
+        this->addWindowListener(new LTFWindowListener(this));
         initializeMenu();
-        _functionPanel = new FunctionPanel(_warrantFrame.getTrain(), this);
+        _functionPanel = new LTFFunctionPanel(_warrantFrame->getTrain(), this);
         // assumes button width of 54, height of 30 (set in class FunctionButton) with
         // horiz and vert gaps of 5 each (set in FunctionPanel class)
         // with 3 buttons across and 6 rows high
-        int width = 3*(FunctionButton.getButtonWidth()) + 2*3*5; 		// = 192
-        int height = 6*(FunctionButton.getButtonHeight()) + 2*6*5 +10;	// = 240 (another 10 needed?)
-        _functionPanel.setSize(width, height);
-        _functionPanel.setVisible(true);
-        _functionPanel.setEnabled(false);
+        int width = 3*(FunctionButton::getButtonWidth()) + 2*3*5; 		// = 192
+        int height = 6*(FunctionButton::getButtonHeight()) + 2*6*5 +10;	// = 240 (another 10 needed?)
+        _functionPanel->resize(width, height);
+        _functionPanel->setVisible(true);
+        _functionPanel->setEnabled(false);
         //functionPanel.addInternalFrameListener(InternalFrameAdapter);
 
-        _controlPanel = new ControlPanel(this);
-        _controlPanel.setVisible(true);
-        _controlPanel.setEnabled(false);
-        _controlPanel.setSize(_controlPanel.getPreferredSize().width, height);
+        _controlPanel = new LTFControlPanel(this);
+        _controlPanel->setVisible(true);
+        _controlPanel->setEnabled(false);
+        _controlPanel->resize(_controlPanel->sizeHint().width(), height);
 
-        _buttonPanel = new ButtonFrame();
-        _buttonPanel.setVisible(true);
-        _buttonPanel.setEnabled(false);
-        _buttonPanel.setSize(_controlPanel.getWidth()+_functionPanel.getWidth(), _buttonPanel.getPreferredSize().height);
+        _buttonPanel = new ButtonFrame(this);
+        _buttonPanel->setVisible(true);
+        _buttonPanel->setEnabled(false);
+        _buttonPanel->resize(_controlPanel->getWidth()+_functionPanel->getWidth(), _buttonPanel->sizeHint().height());
 
-        _buttonPanel.setLocation(0, 0);
-        _controlPanel.setLocation(0, _buttonPanel.getHeight());
-        _functionPanel.setLocation(_controlPanel.getWidth(), _buttonPanel.getHeight());
+//        _buttonPanel->setLocation(0, 0);
+        _controlPanel->setLocation(0, _buttonPanel->getHeight());
+        _functionPanel->setLocation(_controlPanel->getWidth(), _buttonPanel->getHeight());
 
-        getContentPane().add(_buttonPanel);
-        JDesktopPane desktop = new JDesktopPane();
-        getContentPane().add(desktop);
-        desktop.add(_controlPanel);
-        desktop.add(_functionPanel);
+        getContentPane()->layout()->addWidget(_buttonPanel);
+        JDesktopPane* desktop = new JDesktopPane();
+        getContentPane()->layout()->addWidget(desktop);
+        desktop->layout()->addWidget(_controlPanel);
+        desktop->layout()->addWidget(_functionPanel);
 
-        desktop.setPreferredSize(new Dimension(
-                    Math.max(_controlPanel.getWidth()+_functionPanel.getWidth(),_buttonPanel.getWidth()),
-                    Math.max(_functionPanel.getHeight(),_controlPanel.getHeight())+_buttonPanel.getHeight()));
+        desktop->resize(QSize(
+                    qMax(_controlPanel->getWidth()+_functionPanel->getWidth(),_buttonPanel->getWidth()),
+                    qMax(_functionPanel->getHeight(),_controlPanel->getHeight())+_buttonPanel->getHeight()));
 
         // Install the Key bindings on all Components
-        KeyListenerInstaller.installKeyListenerOnAllComponents(new ControlPadKeyListener(), this);
-        setResizable(false);
+//        KeyListenerInstaller.installKeyListenerOnAllComponents(new ControlPadKeyListener(), this);
+//        setResizable(false);
         pack();
     }
 
@@ -129,112 +136,68 @@
     /**
      *  Set up View, Edit and Power Menus
      */
-    private void initializeMenu() {
-        JMenu editControl = new JMenu("Speed Control... ");
-        ButtonGroup buttonGroup = new ButtonGroup();
-        JRadioButtonMenuItem displaySlider = new JRadioButtonMenuItem(Bundle.getMessage("ButtonDisplaySpeedSlider"));
-        displaySlider.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    _controlPanel.setSpeedController(true);
-                }
-            });
-        displaySlider.setSelected(true);
-        buttonGroup.add(displaySlider);
-        editControl.add(displaySlider);
-        JRadioButtonMenuItem displaySteps = new JRadioButtonMenuItem(Bundle.getMessage("ButtonDisplaySpeedSteps"));
-        displaySteps.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    _controlPanel.setSpeedController(false);
-                }
-            });
-        buttonGroup.add(displaySteps);
-        editControl.add(displaySteps);
+    /*private*/ void LearnThrottleFrame::initializeMenu()
+    {
+     QMenu* speedControl = new QMenu(tr("SpeedControl"));
+     QActionGroup* buttonGroup = new QActionGroup(this);
+     QAction* displaySlider = new QAction(tr("DisplaySpeedSlider"));
+     displaySlider->setCheckable(true);
+     //displaySlider.addActionListener((ActionEvent e)->_controlPanel.setSpeedController(true));
+     connect(displaySlider, &QAction::triggered, [=]{
+      _controlPanel->setSpeedController(true);
+     });
+     displaySlider->setChecked(true);
+     buttonGroup->addAction(displaySlider);
+     speedControl->addAction(displaySlider);
+     QAction* displaySteps = new QAction(tr("DisplaySpeedSteps"));
+     //displaySteps.addActionListener((ActionEvent e)->_controlPanel.setSpeedController(false));
+     connect(displaySteps, &QAction::triggered, [=]{
+      _controlPanel->setSpeedController(false);
+     });
+     buttonGroup->addAction(displaySteps);
+     speedControl->addAction(displaySteps);
+     this->setMenuBar(new QMenuBar());
+     this->menuBar()->addMenu(speedControl);
 
-        JCheckBoxMenuItem trackBox = new JCheckBoxMenuItem(Bundle.getMessage("CheckBoxTrackSliderInRealTime"), true);
-        trackBox.addActionListener(new ActionListener() {
-                JCheckBoxMenuItem trackBox;
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    _controlPanel.setSpeedController(trackBox.isSelected());
-                }
-                ActionListener init(JCheckBoxMenuItem tb) {
-                    trackBox = tb;
-                    return this;
-                }
-            }.init(trackBox));
-        editControl.add(trackBox);
+     if (powerMgr != nullptr) {
+         QMenu* powerMenu = new QMenu(tr("Power"));
+         QAction* powerOn = new QAction(tr("Power On"), this);
+         powerMenu->addAction(powerOn);
+         //powerOn.addActionListener((ActionEvent e)-> powerControl.onButtonPushed());
+         connect(powerOn, &QAction::triggered, [=]{
+          powerControl->onButtonPushed();
+         });
 
-        JMenuItem resetFuncButtonsItem = new JMenuItem("Reset Function Buttons");
-        resetFuncButtonsItem.addActionListener(new ActionListener() {
-            /*public*/ void actionPerformed(ActionEvent e) {
-                _functionPanel.resetFuncButtons();
-            }
-        });
+         QAction* powerOff = new QAction(tr("Power Off"));
+         powerMenu->addAction(powerOff);
+         //powerOff.addActionListener((ActionEvent e) -> powerControl.offButtonPushed());
+         connect(powerOff, &QAction::triggered, [=]{
+          powerControl->offButtonPushed();
+         });
 
-        JMenu editMenu = new JMenu("Edit");
-        editMenu.add(editControl);
-        editMenu.add(resetFuncButtonsItem);
-        this.setJMenuBar(new JMenuBar());
-        this.getJMenuBar().add(editMenu);
-
-        if (powerMgr != NULL) {
-            JMenu powerMenu = new JMenu("  Power");
-            JMenuItem powerOn = new JMenuItem("Power On");
-            powerMenu.add(powerOn);
-            powerOn.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    powerControl.onButtonPushed();
-                }
-            });
-
-            JMenuItem powerOff = new JMenuItem("Power Off");
-            powerMenu.add(powerOff);
-            powerOff.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    powerControl.offButtonPushed();
-                }
-            });
-
-            this.getJMenuBar().add(powerMenu);
-            powerLight = new JButton();
-            setPowerIcons();
-            // make the button itself invisible, just display the power LED
-            powerLight.setBorderPainted(false);
-            powerLight.setContentAreaFilled(false);
-            powerLight.setFocusPainted(false);
-            this.getJMenuBar().add(powerLight);
-            powerLight.addActionListener(new ActionListener() {
-                /*public*/ void actionPerformed(ActionEvent e) {
-                    try {
-                        if (powerMgr.getPower() == PowerManager.ON)
-                            powerControl.offButtonPushed();
-                        else if (powerMgr.getPower() == PowerManager.OFF)
-                            powerControl.onButtonPushed();
-                        else if (powerMgr.getPower() == PowerManager.UNKNOWN)
-                            powerControl.offButtonPushed();
-                    } catch (JmriException ex) {
-                        powerLight.setIcon(powerXIcon);
-                    }
-                }
-            });
-        }
-        // add help selection
-        addHelpMenu("package.jmri.jmrit.throttle.ThrottleFrame", true);
+         this->menuBar()->addMenu(powerMenu);
+         powerLight = new QAction(this);//new JButton();
+         setPowerIcons();
+         this->menuBar()->addAction(powerLight);
+     }
+     // add help selection
+     addHelpMenu("package.jmri.jmrit.throttle.ThrottleFrame", true);
     }
 
-    /*public*/ void dispose() {
-        if (powerMgr!=NULL) powerMgr.removePropertyChangeListener(this);
-        _controlPanel.dispose();
-        _functionPanel.dispose();
-        super.dispose();
+    /*public*/ void LearnThrottleFrame::dispose() {
+        if (powerMgr!=NULL) powerMgr->removePropertyChangeListener((PropertyChangeListener*)this);
+        _controlPanel->dispose();
+        _functionPanel->dispose();
+        JmriJFrame::dispose();
     }
 
     /**
      *  implement a property change listener for power and throttle
      *  Set the GUI's to correspond to the throttle settings
      */
-    /*public*/ void propertyChange(java.beans.PropertyChangeEvent evt) {
-        if (log->isDebugEnabled()) log->debug("propertyChange "+evt.getPropertyName()+"= "+evt.getNewValue());
-        if (evt.getPropertyName().equals("Power")) {
+    /*public*/ void LearnThrottleFrame::propertyChange(PropertyChangeEvent* evt) {
+        if (log->isDebugEnabled()) log->debug("propertyChange "+evt->getPropertyName()+"= "+evt->getNewValue().toString());
+        if (evt->getPropertyName() == "Power") {
             setPowerIcons();
         }
     }
@@ -248,70 +211,71 @@
         _warrantFrame->setThrottleCommand("Speed", QString::number(speed));
     }
     /* from ControlPanel */
-    /*protected*/ void LearnThrottleFrame::setSpeedStepMode(int speedStep) {
+    /*protected*/ void LearnThrottleFrame::setSpeedStepMode(SpeedStepMode::SSMODES speedStep) {
         _warrantFrame->setThrottleCommand("SpeedStep", QString::number(speedStep));
     }
-#if 0
+
     /* from FunctionPanel */
-    protected void setFunctionState(int num, boolean isSet) {
-        _warrantFrame.setThrottleCommand("F"+num, Boolean.toString(isSet));
+    /*protected*/ void LearnThrottleFrame::setFunctionState(int num, bool isSet) {
+        _warrantFrame->setThrottleCommand("F"+QString::number(num), /*Boolean.toString(isSet)*/ isSet?"true":"false");
     }
     /* from FunctionPanel */
-    protected void setFunctionState(String FNum, boolean isSet) {
-        _warrantFrame.setThrottleCommand(FNum, Boolean.toString(isSet));
+    /*protected*/ void LearnThrottleFrame::setFunctionState(QString FNum, bool isSet) {
+        _warrantFrame->setThrottleCommand(FNum, /*Boolean.toString(isSet)*/ isSet?"true":"false");
     }
     /* from FunctionPanel */
-    protected void setFunctionLock(int num, boolean isLockable) {
-        _warrantFrame.setThrottleCommand("LockF"+num, Boolean.toString(isLockable));
+    /*protected*/ void LearnThrottleFrame::setFunctionLock(int num, bool isLockable) {
+        _warrantFrame->setThrottleCommand("LockF"+num, /*Boolean.toString(isLockable)*/ isLockable?"true":"false");
     }
     /* from FunctionPanel */
-    protected void setFunctionLock(String FMom, boolean isLockable) {
-        _warrantFrame.setThrottleCommand(FMom, Boolean.toString(isLockable));
+    /*protected*/ void LearnThrottleFrame::setFunctionLock(QString FMom, bool isLockable) {
+        _warrantFrame->setThrottleCommand(FMom, /*Boolean.toString(isLockable)*/ isLockable?"true":"false");
     }
     /* from ControlPanel */
-    protected void setButtonForward(boolean isForward) {
-        _buttonPanel.setForwardDirection(isForward);
-        _warrantFrame.setThrottleCommand("Forward", Boolean.toString(isForward));
+    /*protected*/ void LearnThrottleFrame::setButtonForward(bool isForward) {
+        _buttonPanel->setForwardDirection(isForward);
+        _warrantFrame->setThrottleCommand("Forward", /*Boolean.toString(isForward)*/ isForward?"true":"false");
     }
     /* from ButtonPanel */
-    protected void setIsForward(boolean isForward) {
-        _throttle.setIsForward(isForward);
+    /*protected*/ void LearnThrottleFrame::setIsForward(bool isForward) {
+        _throttle->setIsForward(isForward);
         //setButtonForward(isForward);
     }
-    protected void stopRunTrain() {
-        _warrantFrame.setThrottleCommand("Speed", "-1.0");
-        _warrantFrame.stopRunTrain();
+    /*protected*/ void LearnThrottleFrame::stopRunTrain() {
+        _warrantFrame->setThrottleCommand("Speed", "-1.0");
+        _warrantFrame->stopRunTrain();
     }
 
     /**
      *  change the power LED displayed as appropriate and set corresponding tooltip
      *
      */
-    /*public*/ void setPowerIcons() {
+    /*public*/ void LearnThrottleFrame::setPowerIcons() {
         if (powerMgr==NULL) return;
         try {
-            if (powerMgr.getPower()==PowerManager.ON) {
-                powerLight.setIcon(powerOnIcon);
-                powerLight.setToolTipText("Layout Power On.  Click light to turn off, or use Power menu");
+            if (powerMgr->getPower()==PowerManager::ON) {
+                powerLight->setIcon(/*powerOnIcon*/QIcon(QPixmap::fromImage(powerOnIcon->getImage())));
+                powerLight->setToolTip(tr("Layout Power On.  Click light to turn off, or use Power menu"));
             }
-            else if (powerMgr.getPower()==PowerManager.OFF) {
-                powerLight.setIcon(powerOffIcon);
-                powerLight.setToolTipText("Layout Power Off.  Click light to turn on, or use Power menu");
+            else if (powerMgr->getPower()==PowerManager::OFF) {
+                powerLight->setIcon(QIcon(QPixmap::fromImage(powerOffIcon->getImage())));
+                powerLight->setToolTip(tr("Layout Power Off.  Click light to turn on, or use Power menu"));
             }
-            else if (powerMgr.getPower()==PowerManager.UNKNOWN) {
-                powerLight.setIcon(powerXIcon);
-                powerLight.setToolTipText("Layout Power state unknown.  Click light to turn off, or use Power menu");
+            else if (powerMgr->getPower()==PowerManager::UNKNOWN) {
+                powerLight->setIcon(QIcon(QPixmap::fromImage(powerXIcon->getImage())));
+                powerLight->setToolTip(tr("Layout Power state unknown.  Click light to turn off, or use Power menu"));
             }
             else {
-                powerLight.setIcon(powerXIcon);
-                powerLight.setToolTipText("Layout Power state unknown.  Click light to turn off, or use Power menu");
-                log->error("Unexpected state value: +"+powerMgr.getPower());
+                powerLight->setIcon(QIcon(QPixmap::fromImage(powerXIcon->getImage())));
+                powerLight->setToolTip(tr("Layout Power state unknown.  Click light to turn off, or use Power menu"));
+                log->error("Unexpected state value: +"+powerMgr->getPower());
             }
         } catch (JmriException ex) {
-            powerLight.setIcon(powerXIcon);
-            powerLight.setToolTipText("Layout Power state unknown.  Click light to turn off, or use Power menu");
+            powerLight->setIcon(QIcon(QPixmap::fromImage(powerXIcon->getImage())));
+            powerLight->setToolTip(tr("Layout Power state unknown.  Click light to turn off, or use Power menu"));
         }
     }
+#if 0
 
     /**
      *  A KeyAdapter that listens for the keys that work the control pad buttons

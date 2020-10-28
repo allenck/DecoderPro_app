@@ -113,6 +113,51 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 
 // functions - note that we use the naming for DCC, though that's not the implication;
 // see also DccThrottle interface
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QVector<bool> AbstractThrottle::getFunctions() {
+    //return Arrays.copyOf(FUNCTION_BOOLEAN_ARRAY,FUNCTION_BOOLEAN_ARRAY.length);
+ return QVector<bool>(FUNCTION_BOOLEAN_ARRAY);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QVector<bool> AbstractThrottle::getFunctionsMomentary() {
+//    return Arrays.copyOf(FUNCTION_MOMENTARY_BOOLEAN_ARRAY,
+//        FUNCTION_MOMENTARY_BOOLEAN_ARRAY.length);
+ return QVector<bool>(FUNCTION_MOMENTARY_BOOLEAN_ARRAY);
+
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool AbstractThrottle::getFunction(int fN) {
+    if (fN<0 || fN > FUNCTION_BOOLEAN_ARRAY.length()-1){
+        log->warn(tr("Unhandled get function: %1").arg(fN));
+        return false;
+    }
+    return FUNCTION_BOOLEAN_ARRAY[fN];
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool AbstractThrottle::getFunctionMomentary(int fN) {
+    if (fN<0 || fN > FUNCTION_MOMENTARY_BOOLEAN_ARRAY.length()-1){
+        log->warn(tr("Unhandled get momentary function: %1").arg(fN));
+        return false;
+    }
+    return FUNCTION_MOMENTARY_BOOLEAN_ARRAY[fN];
+
+}
+
 /*public*/ bool AbstractThrottle::getF0() {
     return f0;
 }

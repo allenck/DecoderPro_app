@@ -16,12 +16,17 @@ public:
     /*public final*/ static float SPEED_STEP_27_INCREMENT;//=1.0f/27.0f;
     /*public final*/ static float SPEED_STEP_28_INCREMENT;//=1.0f/28.0f;
     /*public final*/ static float SPEED_STEP_128_INCREMENT;//=1.0f/126.0f; // remember there are only 126 ;
-    /*public*/ float getSpeedSetting();
-    /*public*/ void setSpeedSetting(float speed);
+    /*public*/ float getSpeedSetting() override;
+    /*public*/ void setSpeedSetting(float speed) override;
     /*public*/ void setSpeedSetting(float speed, bool allowDuplicates, bool allowDuplicatesOnStop);
     /*public*/ void setSpeedSettingAgain(float speed);
     /*public*/ bool getIsForward();
     /*public*/ void setIsForward(bool forward);
+    /*public*/ QVector<bool> getFunctions() override;
+    /*public*/ QVector<bool> getFunctionsMomentary() override;
+    /*public*/ bool getFunction(int fN) override;
+    /*public*/ bool getFunctionMomentary(int fN) override;
+
     Q_INVOKABLE /*public*/ bool getF0();
     Q_INVOKABLE /*public*/ bool getF1();
     Q_INVOKABLE /*public*/ bool getF2();
@@ -151,7 +156,7 @@ public:
     /*public*/ void setF27Momentary(bool f27Momentary);
     /*public*/ void setF28Momentary(bool f28Momentary);
     /*public*/ void setSpeedStepMode(SpeedStepMode *newMode);
-     /*public*/ SpeedStepMode *getSpeedStepMode();
+     /*public*/ SpeedStepMode* getSpeedStepMode();
      /*public*/ void setRosterEntry(BasicRosterEntry* re);
      /*public*/ BasicRosterEntry* getRosterEntry();
 
@@ -169,6 +174,23 @@ public slots:
       qint64 start;
  QMutex mutex;
  QObject *parent;
+ /**
+      * Array of Function values.
+      * <p>
+      * Contains current Boolean value for functions.
+      * This array should not be accessed directly by Throttles,
+      * use setFunction / getFunction / updateFunction.
+      * Needs to be same length as FUNCTION_MOMENTARY_BOOLEAN_ARRAY.
+      */
+     /*private*/ /*final*/ QVector<bool> FUNCTION_BOOLEAN_ARRAY;
+
+     /**
+      * Array of Momentary Function values.
+      * <p>
+      * Contains current Boolean value for Momentary function settings.
+      * Needs to be same length as FUNCTION_BOOLEAN_ARRAY.
+      */
+     /*private*/ /*final*/ QVector<bool> FUNCTION_MOMENTARY_BOOLEAN_ARRAY;
 
 protected:
     /*protected*/ float speedSetting = 0.0;

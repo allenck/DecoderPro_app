@@ -323,7 +323,7 @@ void FunctionButton::init()
  */
 /*public*/ void FunctionButton::setFunctionListener(FunctionListener* l) {
     //addFunctionListener(l);
- connect(this, SIGNAL(notifyFunctionLockableChanged(int,bool)), l, SLOT(notifyFunctionLockableChanged(int,bool)));
+ //connect(this, SIGNAL(notifyFunctionLockableChanged(int,bool)), l, SLOT(notifyFunctionLockableChanged(int,bool)));
 }
 
 /**

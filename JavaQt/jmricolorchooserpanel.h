@@ -20,6 +20,7 @@ public:
 public slots:
  void onColorButton(QString s);
  QString getTitle();
+ void setEnabled(bool b) override {QWidget::setEnabled(b);}
 
 private:
  /*private*/ QList<QColor> colors;// = {Color.black, Color.darkGray, Color.gray,

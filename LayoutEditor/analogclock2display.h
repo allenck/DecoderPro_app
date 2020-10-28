@@ -48,7 +48,7 @@ public:
     QObject* jself() {return (QObject*)this;}
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder() {return _border;}
-
+    /*public*/ void setEnabled(bool b) {QWidget::setEnabled(b);}
 signals:
 
 public slots:

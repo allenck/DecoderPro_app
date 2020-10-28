@@ -32,7 +32,7 @@ public:
  /*public*/ void addFocusListener(FocusListener *l);
  /*public*/ void removeFocusListener(FocusListener* l);
  /*public*/ void addItemListener(ItemListener* listener);
-
+ /*public*/ void setEnabled(bool b) override {QComboBox::setEnabled(b);}
 
 signals:
  void itemStateChanged(ItemEvent* e);

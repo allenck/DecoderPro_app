@@ -580,3 +580,8 @@ void JFrame::setVisible(bool visible)
   _layout = nullptr;
  }
 }
+
+/*public*/ void setEnabled(bool b)
+{
+
+}

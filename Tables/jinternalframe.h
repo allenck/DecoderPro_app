@@ -4,14 +4,16 @@
 #include <QMdiSubWindow>
 #include "propertychangelistener.h"
 #include "rosterentry.h"
+#include "jcomponent.h"
 
 class InternalFrameListener;
 class QVBoxLayout;
 class JDesktopIcon;
 class JRootPane;
-class JInternalFrame : public QMdiSubWindow
+class JInternalFrame : public QMdiSubWindow, public JComponent
 {
  Q_OBJECT
+    Q_INTERFACES(JComponent)
 public:
  explicit JInternalFrame(QWidget *parent = 0);
  /*public*/ JInternalFrame(QString title, QWidget *parent = 0);
@@ -70,10 +72,22 @@ public:
  /*public*/ void doDefaultCloseAction();
  /*public*/ void setDefaultCloseOperation(int operation);
  /*public*/ int getDefaultCloseOperation();
- /*public*/ void dispose();
+ /*public*/ virtual void dispose();
  /*public*/ void toFront();
  /*public*/ void toBack();
  /*public*/ void moveToBack();
+
+    void setEnabled(bool b) override {setEnabled(b);}
+    bool isOpaque() {return true;}
+    QColor getForeground()  {return Qt::black;}
+    QColor getBackground() {return Qt::lightGray;}
+    void setBackground(QColor){return;}
+    void setOpaque(bool) {}
+    QFont getFont() {return font();}
+    void setFont(QFont f) {QWidget::setFont(f);}
+    QObject* jself() {(QObject*)this;}
+    void setBorder(Border* b) {}
+    Border* getBorder() {return nullptr;}
 
 signals:
  void propertyChange(PropertyChangeEvent*);

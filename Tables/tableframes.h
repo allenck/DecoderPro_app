@@ -211,5 +211,16 @@ public:
     PathTurnoutTableModel* getModel() {
         return pathTurnoutModel;
     }
+    void setEnabled(bool b) override {setEnabled(b);}
+    bool isOpaque() {return true;}
+    QColor getForeground()  {return Qt::black;}
+    QColor getBackground() {return Qt::lightGray;}
+    void setBackground(QColor){return;}
+    void setOpaque(bool) {}
+    QFont getFont() {return font();}
+    void setFont(QFont f) {QWidget::setFont(f);}
+    QObject* jself() {(QObject*)this;}
+    void setBorder(Border* b) {}
+    Border* getBorder() {return nullptr;}
 };
 #endif // TABLEFRAMES_H

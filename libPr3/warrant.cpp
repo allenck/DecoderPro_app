@@ -8,7 +8,7 @@
 #include "engineer.h"
 #include "instancemanager.h"
 #include "lnthrottlemanager.h"
-#include "learnthrottleframe.h"
+#include "logix/learnthrottleframe.h"
 #include "lnthrottlemanager.h"
 #include "loconetthrottle.h"
 #include "opath.h"

@@ -44,6 +44,11 @@ public:
      * @version			$Revision: 22484 $
      */
 //    public interface Throttle {
+  /*public*/ static /*final*/ QString SPEEDSTEPS;// = "SpeedSteps"; // speed steps NOI18N
+
+  /*public*/ static /*final*/ QString SPEEDSETTING;// = "SpeedSetting"; // speed setting NOI18N
+  /*public*/ static /*final*/ QString ISFORWARD;// = "IsForward"; // direction setting NOI18N
+  /*public*/ static /*final*/ QString SPEEDINCREMENT;// = "SpeedIncrement"; // direction setting NOI18N
 
         /**
          * Constants to represent the functions F0 through F28.
@@ -110,17 +115,89 @@ public:
         static QString F27Momentary; //F27Momentary"; // NOI18N
         static QString F28Momentary; //F28Momentary"; // NOI18N
 
-        /** Speed - expressed as a value 0.0 -> 1.0. Negative means emergency stop.
-         * This is an bound property.
+        /*public*/ static QString getFunctionString(int functionNum);
+        /*public*/ static QString getFunctionMomentaryString(int momentFunctionNum);
+        /*public*/ /*abstract*/ virtual QVector<bool> getFunctions() {return QVector<bool>();}
+        /*public*/ /*abstract*/ virtual QVector<bool> getFunctionsMomentary() {return QVector<bool>();}
+        /**
+         * Get the current speed setting, expressed as a value {@literal 0.0 -> 1.0.}
+         * This property is bound to the {@link #SPEEDSETTING} name.
+         *
+         * @return the speed as a {@literal 0.0 -> 1.0.}  fraction of maximum possible speed or -1 for emergency stop.
          */
-        virtual float getSpeedSetting() {return 0.0;}
-        virtual void setSpeedSetting(float /*speed*/) {}
+        /*public*/ virtual float getSpeedSetting() {return 0.0;}
+
+        /**
+         * Set the desired speed setting, expressed as a value {@literal 0.0 -> 1.0.} Negative means
+         * emergency stop.
+         * This property is bound to the {@link #SPEEDSETTING} name.
+         *
+         * @param speed the speed as a {@literal 0.0 -> 1.0.} fraction of maximum possible speed or -1 for emergency stop.
+         */
+        /*public*/ virtual void setSpeedSetting(float /*speed*/) {}
+
+        /**
+         * Set the desired speed, expressed as a value {@literal 0.0 -> 1.0.},
+         * with extra control over the messages to the layout. Negative means
+         * emergency stop.
+         * On systems which normally suppress the sending of a
+         * message if the new speed won't (appear to JMRI to) make any difference,
+         * the two extra options allow the calling method to insist the message is
+         * sent under some circumstances.
+         *
+         * @param speed the speed as a {@literal 0.0 -> 1.0.} fraction of maximum possible speed or -1 for emergency stop.
+         * @param allowDuplicates       if true, don't suppress messages that should
+         *                              have no effect
+         * @param allowDuplicatesOnStop if true, and the new speed is idle or estop,
+         *                              don't suppress messages
+         */
+        /*public*/ virtual void setSpeedSetting(float speed, bool allowDuplicates, bool allowDuplicatesOnStop) {}
+
+        /**
+         * Set the speed, and on systems which normally suppress the sending of a
+         * message make sure the message gets sent.
+         *
+         * @param speed the speed as a {@literal 0.0 -> 1.0.} fraction of maximum possible speed or -1 for emergency stop.
+         */
+        /*public*/ virtual void setSpeedSettingAgain(float speed) {}
 
         /** direction
          * This is an bound property.
          */
         virtual bool getIsForward() {return false;}
+
         virtual void setIsForward(bool  /*forward*/) {}
+
+        // functions - note that we use the naming for DCC, though that's not the implication;
+        // see also DccThrottle interface
+
+        /**
+         * Set Loco Function and send to Layout.
+         * @param functionNum Function Number, 0-28
+         * @param newState New Function State. True on, false off.
+         */
+        /*public*/ /*abstract*/ virtual void setFunction(int functionNum, bool newState) {}
+
+        /**
+         * Get Loco Function status.
+         * @param functionNum Function Number, 0-28
+         * @return Function State. True on, false off.
+         */
+        /*public*/ virtual bool getFunction(int functionNum) {return false;}
+
+        /**
+         * Set Momentary Loco Function and send to Layout.
+         * @param momFuncNum Momentary Function Number, 0-28
+         * @param state New Function State. True on, false off.
+         */
+        /*public*/ /*abstract*/ virtual void setFunctionMomentary(int momFuncNum, bool state) {}
+
+        /**
+         * Get the Momentary Function Value.
+         * @param fN Momentary function number
+         * @return true if momentary function is on, else false.
+         */
+        /*public*/ /*abstract*/virtual  bool getFunctionMomentary(int fN) {return false;}
 
         // functions - note that we use the naming for DCC, though that's not the implication;
         // see also DccThrottle interface
@@ -414,7 +491,7 @@ public:
 signals:
     void propertyChange(PropertyChangeEvent*);
 public slots:
-    
+    friend class FunctionPanel;
 };
 
 #endif // THROTTLE_H

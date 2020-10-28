@@ -22,7 +22,7 @@
 #include "throttlecreationaction.h"
 #include "smallpowermanagerbutton.h"
 #include "controlpanel.h"
-#include "learnthrottleframe.h"
+#include "logix/learnthrottleframe.h"
 #include "warrantframe.h"
 #include "functionpanel.h"
 #include "loconetsystemconnectionmemo.h"

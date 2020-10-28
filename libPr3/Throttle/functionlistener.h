@@ -2,10 +2,10 @@
 #define FUNCTIONLISTENER_H
 #include "eventlistener.h"
 
-class FunctionListener : public QObject, public EventListener
+class FunctionListener : /*public QObject,*/ public EventListener
 {
-    Q_OBJECT
- Q_INTERFACES(EventListener)
+//    Q_OBJECT
+// Q_INTERFACES(EventListener)
 public:
     explicit FunctionListener() : EventListener() {}
 public slots:
@@ -25,5 +25,5 @@ signals:
 public slots:
 
 };
-
+Q_DECLARE_INTERFACE(FunctionListener, "FunctionListener")
 #endif // FUNCTIONLISTENER_H

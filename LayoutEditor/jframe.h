@@ -80,6 +80,8 @@ public:
     QFont getFont();
     void setFont(QFont);
     QObject* jself() {return (QObject*)this;}
+    /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
+
 
     void setAlwaysOnTop(bool checked);
 #if QT_VERSION >= 0x050000

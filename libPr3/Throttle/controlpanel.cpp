@@ -6,7 +6,7 @@
 #include "abstractthrottle.h"
 #include <QLabel>
 #include "instancemanager.h"
-#include "learnthrottleframe.h"
+#include "logix/learnthrottleframe.h"
 #include <QVBoxLayout>
 #include "jframe.h"
 #include "gridbagconstraints.h"

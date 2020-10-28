@@ -2,14 +2,16 @@
 #define FUNCTIONBUTTON_H
 #include "jtogglebutton.h"
 #include "logger.h"
+#include "jcomponent.h"
 
 class QDomDocument;
 class ActionEvent;
 class QDomElement;
 class FunctionListener;
-class FunctionButton : public JToggleButton
+class FunctionButton : public JToggleButton, public JComponent
 {
     Q_OBJECT
+  Q_INTERFACES(JComponent)
 public:
     explicit FunctionButton(QWidget *parent = 0);
     /*public*/ static int getButtonHeight();
@@ -58,10 +60,21 @@ public:
     static int BUT_HGHT;// = 30;
     static int BUT_WDTH;// = 56;
     /*final*/ static int BUT_IMG_SIZE;// = 45;
+    QObject* jself() {return (QObject*)this;}
+    /*public*/ void setEnabled(bool b) {QWidget::setEnabled(b);}
+    /*public*/ bool isOpaque() {return true;}
+    /*public*/ QColor getForeground() {return Qt::black;}
+    /*public*/ QColor getBackground() {return Qt::lightGray;}
+    /*public*/ void setBackground(QColor) {}
+    /*public*/ void setOpaque(bool) {}
+    /*public*/ QFont getFont() {return QWidget::font();}
+    /*public*/ void setFont(QFont) {}
+    /*public*/ Border* getBorder() {return nullptr;}
+    /*public*/ void setBorder(Border*) {}
 
 signals:
-    void notifyFunctionLockableChanged(int identity, bool isLockable);
     void notifyFunctionStateChanged(int identity, bool isOn);
+    void notifyFunctionLockableChanged(int identity, bool isLockable);
 
 public slots:
     /*public*/ void popactionPerformed(ActionEvent* e = 0);

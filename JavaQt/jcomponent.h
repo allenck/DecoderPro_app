@@ -31,6 +31,8 @@ public:
  Insets* getInsets(Insets* insets) {return insets;}
  virtual void setBorder(Border*) =0;
  virtual Border* getBorder() =0;
+ virtual QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+ virtual void setEnabled(bool) =0;
 
 signals:
 

@@ -165,6 +165,7 @@ friend class ThrottleTableModel;
 friend class WarrantTableAction;
 friend class WarrantTableModel;
 friend class WFWindowListener;
+friend class LTFWindowListener;
 };
 /************************* Route Table ******************************/
 class WFRouteTableModel : public QAbstractTableModel

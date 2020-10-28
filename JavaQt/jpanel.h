@@ -29,7 +29,7 @@ public:
  /*public*/ QFont getFont() {return QFrame::font();}
  /*public*/ void setFont(QFont f) {QFrame::setFont(f);}
  /*public*/ QObject* jself() {return (QObject*)this;}
-
+ /*public*/ void setEnabled(bool b ) override {QWidget::setEnabled(b);}
 private:
  Border* border = nullptr;
 

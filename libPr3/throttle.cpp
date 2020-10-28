@@ -5,6 +5,19 @@
 //{
 //}
     /**
+     * Properties strings sent to property change listeners
+     */
+
+    /**
+     * Constant sent by Throttle on Property Change.
+     */
+    /*public*/ /*static*/ /*final*/ QString Throttle::SPEEDSTEPS = "SpeedSteps"; // speed steps NOI18N
+
+    /*public*/ /*static*/ /*final*/ QString Throttle::SPEEDSETTING = "SpeedSetting"; // speed setting NOI18N
+    /*public*/ /*static*/ /*final*/ QString Throttle::ISFORWARD = "IsForward"; // direction setting NOI18N
+    /*public*/ /*static*/ /*final*/ QString Throttle::SPEEDINCREMENT = "SpeedIncrement"; // direction setting NOI18N
+
+    /**
      * Constants to represent the functions F0 through F28.
      */
      QString Throttle::F0 = "F0"; // NOI18N
@@ -70,3 +83,47 @@
      QString Throttle::F28Momentary = "F28Momentary"; // NOI18N
 
 
+     /**
+      * Get the Function String for a particular Function number.
+      * Commonly used string in Throttle property change listeners.
+      * @param functionNum Function Number, minimum 0.
+      * @return function string, e.g. "F0" or "F7".
+      */
+     /*public*/ /*static*/ QString Throttle::getFunctionString(int functionNum){
+//         StringBuilder sb = new StringBuilder(3);
+//         sb.append("F"); // NOI18N
+//         sb.append(functionNum);
+//         return sb.toString();
+      return QString(tr("F%1").arg(functionNum));
+     }
+
+     /**
+      * Get the Momentary Function String for a particular Function number.
+      * Commonly used string in Throttle property change listeners.
+      * @param momentFunctionNum Momentary Function Number, minimum 0.
+      * @return momentary function string, e.g. "F0Momentary" or "F7Momentary".
+      */
+     /*public*/ /*static*/ QString Throttle::getFunctionMomentaryString(int momentFunctionNum){
+//         StringBuilder sb = new StringBuilder(12);
+//         sb.append("F"); // NOI18N
+//         sb.append(momentFunctionNum);
+//         sb.append("Momentary"); // NOI18N
+//         return sb.toString();
+      return QString(tr("F%1Momentary").arg(momentFunctionNum));
+     }
+
+     /**
+      * Get copy of function array.
+      * Typically returns array length of 29, i.e. 0-28.
+      * @return function array, length dependant by hardware type.
+      */
+     //@Nonnull
+     // /*public*/ abstract boolean[] getFunctions();
+
+     /**
+      * Get copy of function momentary status array.
+      * Typically returns array length of 29, i.e. 0-28.
+      * @return momentary function array, length dependant by hardware type.
+      */
+     //@Nonnull
+     ///*public*/ /*abstract*/ QVector<bool> getFunctionsMomentary();

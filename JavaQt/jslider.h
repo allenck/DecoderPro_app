@@ -25,7 +25,7 @@ public:
     /*public*/ void addChangeListener(ChangeListener*);
     /*public*/ void removeChangeListener(ChangeListener*);
     /*public*/ void setVisible(bool b);
-
+    /*public*/ bool getValueIsAdjusting() {return false;}
 signals:
 
 public slots:

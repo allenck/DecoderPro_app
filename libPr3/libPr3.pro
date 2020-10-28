@@ -302,7 +302,6 @@ SOURCES += \
     throttlesetting.cpp \
     oblockmanager.cpp \
     engineer.cpp \
-    Throttle/learnthrottleframe.cpp \
     warrantmanager.cpp \
     entryexitpairs.cpp \
     source.cpp \
@@ -979,7 +978,10 @@ SOURCES += \
     cabsignalpane.cpp \
     cabsignalaction.cpp \
     zeroconfservicemanager.cpp \
-    zeroconfpreferences.cpp
+    zeroconfpreferences.cpp \
+    logix/learnthrottleframe.cpp \
+    logix/ltfcontrolpanel.cpp \
+    logix/ltffunctionpanel.cpp
 
 
  !contains(FTDI, 1) {
@@ -1246,7 +1248,6 @@ HEADERS += \
     throttlesetting.h \
     oblockmanager.h \
     engineer.h \
-    Throttle/learnthrottleframe.h \
     warrantmanager.h \
     entryexitpairs.h \
     source.h \
@@ -1964,7 +1965,10 @@ HEADERS += \
     zeroconfservicemanager.h \
     networktopologylistener.h \
     networktopologyevent.h \
-    zeroconfpreferences.h
+    zeroconfpreferences.h \
+    logix/learnthrottleframe.h \
+    logix/ltfcontrolpanel.h \
+    logix/ltffunctionpanel.h
 
 
  !contains(FTDI, 1) {

@@ -341,6 +341,7 @@ public:
     /*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
     /*public*/ QWidget* getLabelFor();
     /*public*/ void setLabelFor(QWidget* c);
+    /*public*/ void setEnabled(bool b) override {QLabel::setEnabled(b);}
 
 signals:
     

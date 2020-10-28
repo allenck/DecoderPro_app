@@ -74,6 +74,7 @@ public:
     void cleanup();
     /*public*/ bool isActive();
     /*public*/ NamedBean* getNamedBean();
+    /*public*/ void setEnabled(bool b) {QWidget::setEnabled(b);}
 
 
     // JComponent stuff

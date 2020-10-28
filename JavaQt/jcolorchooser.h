@@ -67,7 +67,7 @@ public:
  /*public*/ void setFont(QFont) {}
  /*public*/ void setBorder(Border* border) override {this->_border = border;}
  /*public*/ Border* getBorder() {return _border;}
-
+ /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
 signals:
 
 public slots:
