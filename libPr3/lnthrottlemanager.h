@@ -37,7 +37,7 @@ public:
      * value should be xor of possible modes specifed by the
      * DccThrottle interface
      */
-    /*public*/ int supportedSpeedModes() override;
+    /*public*/ QSet<SpeedStepMode::SSMODES> supportedSpeedModes() override;
 
     /**
      * Address 128 and above is a long address

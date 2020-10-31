@@ -10,6 +10,7 @@
 #include "loggerfactory.h"
 #include "throttlelistener.h"
 #include "vptr.h"
+#include <QSet>
 
 /**
  * Abstract implementation of a ThrottleManager.
@@ -610,8 +611,12 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  * value should be xor of possible modes specifed by the
  * DccThrottle interface
  */
-/*public*/ int AbstractThrottleManager::supportedSpeedModes() {
-    return(DccThrottle::SpeedStepMode128);
+/*public*/ QSet<SpeedStepMode::SSMODES> AbstractThrottleManager::supportedSpeedModes() {
+    //return(DccThrottle::SpeedStepMode128);
+ QSet<SpeedStepMode::SSMODES>modes = QSet<SpeedStepMode::SSMODES>();
+ modes.insert(SpeedStepMode::NMRA_DCC_128);
+
+ return modes;
 }
 
 /*public*/ void AbstractThrottleManager::attachListener(BasicRosterEntry* re, PropertyChangeListener* p){

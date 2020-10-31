@@ -13,7 +13,7 @@ class LIBPR3SHARED_EXPORT AbstractSimulatorConnectionConfig : public AbstractCon
 public:
     explicit AbstractSimulatorConnectionConfig(QObject *parent = 0);
     /*public*/ AbstractSimulatorConnectionConfig(SerialPortAdapter* p,QObject *parent = 0);
-    /*public*/ PortAdapter* getAdapter();
+    /*public*/ PortAdapter* getAdapter() override;
     /*public*/ void updateAdapter();
     /*public*/ QString getInfo();
     /*public*/ void loadDetails(/*final*/ JPanel *details);

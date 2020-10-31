@@ -66,9 +66,11 @@ DebugThrottleManager::DebugThrottleManager(QObject *parent) : AbstractThrottleMa
  * value should be xor of possible modes specifed by the
  * DccThrottle interface
  */
-/*public*/ int DebugThrottleManager::supportedSpeedModes() {
-    return(DccThrottle::SpeedStepMode128|
-           DccThrottle::SpeedStepMode28|
-           DccThrottle::SpeedStepMode27|
-           DccThrottle::SpeedStepMode14);
+/*public*/ QSet<SpeedStepMode::SSMODES> DebugThrottleManager::supportedSpeedModes() {
+ QSet<SpeedStepMode::SSMODES> modes = QSet<SpeedStepMode::SSMODES>();
+    modes.insert(SpeedStepMode::NMRA_DCC_128);
+    modes.insert(SpeedStepMode::NMRA_DCC_28);
+    modes.insert(SpeedStepMode::NMRA_DCC_27);
+    modes.insert(SpeedStepMode::NMRA_DCC_14);
+    return modes;
 }

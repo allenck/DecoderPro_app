@@ -14,7 +14,7 @@ public:
     /*public*/ bool canBeShortAddress(int address);
     /*public*/ bool addressTypeUnique();
     /*public*/ bool disposeThrottle(DccThrottle* t, ThrottleListener* l);
-    /*public*/ int supportedSpeedModes();
+    /*public*/ QSet<SpeedStepMode::SSMODES> supportedSpeedModes();
 
 
 signals:

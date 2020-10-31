@@ -330,11 +330,11 @@ virtual LocoAddress* getAddress(QString /*value*/, LocoAddress::Protocol /*proto
 virtual int getMode(int /*address*/) {return 0;}
 
 /**
- * What speed modes are supported by this system?
- * value should be xor of possible modes specifed in the throttle
- * interface
+ * Get the supported speed modes.
+ *
+ * @return an XOR of the possible modes specified in the throttle interface
  */
-virtual int supportedSpeedModes() {return 0;}
+/*public*/ virtual QSet<SpeedStepMode::SSMODES> supportedSpeedModes() {return QSet<SpeedStepMode::SSMODES>();}
 
 /**
  * Provides a Proxy method to return the SpeedSetting, Direction, Function

@@ -225,6 +225,16 @@ void ThrottlesPreferences::init()
     _useFunctionIcon = useFunctionIcon;
     this->dirty = true;
 }
+/**
+ * Return true if throttle icons should be shown; this returns
+ * isUsingExThrottle() &quot;&quot; isUsingFunctionIcon()
+ *
+ * @return true if throttle icons should be used.
+ */
+/*public*/ bool ThrottlesPreferences::isUsingIcons() {
+    return (isUsingExThrottle() && isUsingFunctionIcon());
+}
+
 /*public*/ bool ThrottlesPreferences::isResizingWindow() {
     return _resizeWinImg;
 }

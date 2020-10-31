@@ -14551,6 +14551,138 @@ if (_wrapper) {
 }
   return Throttle::getF9Momentary();
 }
+bool  PythonQtShell_Throttle::getFunction(int  functionNum0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFunction");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&functionNum0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFunction", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Throttle::getFunction(functionNum0);
+}
+bool  PythonQtShell_Throttle::getFunctionMomentary(int  fN0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFunctionMomentary");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&fN0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFunctionMomentary", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Throttle::getFunctionMomentary(fN0);
+}
+QVector<bool >  PythonQtShell_Throttle::getFunctions()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFunctions");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QVector<bool >"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QVector<bool > returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFunctions", methodInfo, result);
+          } else {
+            returnValue = *((QVector<bool >*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Throttle::getFunctions();
+}
+QVector<bool >  PythonQtShell_Throttle::getFunctionsMomentary()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getFunctionsMomentary");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QVector<bool >"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QVector<bool > returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getFunctionsMomentary", methodInfo, result);
+          } else {
+            returnValue = *((QVector<bool >*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Throttle::getFunctionsMomentary();
+}
 bool  PythonQtShell_Throttle::getIsForward()
 {
 if (_wrapper) {
@@ -16014,6 +16146,50 @@ if (_wrapper) {
 }
   Throttle::setF9Momentary(arg__1);
 }
+void PythonQtShell_Throttle::setFunction(int  functionNum0, bool  newState1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setFunction");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&functionNum0, (void*)&newState1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Throttle::setFunction(functionNum0, newState1);
+}
+void PythonQtShell_Throttle::setFunctionMomentary(int  momFuncNum0, bool  state1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setFunctionMomentary");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&momFuncNum0, (void*)&state1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Throttle::setFunctionMomentary(momFuncNum0, state1);
+}
 void PythonQtShell_Throttle::setIsForward(bool  arg__1)
 {
 if (_wrapper) {
@@ -16079,6 +16255,50 @@ if (_wrapper) {
   }
 }
   Throttle::setSpeedSetting(arg__1);
+}
+void PythonQtShell_Throttle::setSpeedSetting(float  speed0, bool  allowDuplicates1, bool  allowDuplicatesOnStop2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSpeedSetting");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "float" , "bool" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      void* args[4] = {NULL, (void*)&speed0, (void*)&allowDuplicates1, (void*)&allowDuplicatesOnStop2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Throttle::setSpeedSetting(speed0, allowDuplicates1, allowDuplicatesOnStop2);
+}
+void PythonQtShell_Throttle::setSpeedSettingAgain(float  speed0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setSpeedSettingAgain");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "float"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&speed0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  Throttle::setSpeedSettingAgain(speed0);
 }
 void PythonQtShell_Throttle::timerEvent(QTimerEvent*  event0)
 {
@@ -16414,6 +16634,36 @@ bool  PythonQtWrapper_Throttle::getF9Momentary(Throttle* theWrappedObject)
   return ( theWrappedObject->getF9Momentary());
 }
 
+bool  PythonQtWrapper_Throttle::getFunction(Throttle* theWrappedObject, int  functionNum)
+{
+  return ( theWrappedObject->getFunction(functionNum));
+}
+
+bool  PythonQtWrapper_Throttle::getFunctionMomentary(Throttle* theWrappedObject, int  fN)
+{
+  return ( theWrappedObject->getFunctionMomentary(fN));
+}
+
+QString  PythonQtWrapper_Throttle::static_Throttle_getFunctionMomentaryString(int  momentFunctionNum)
+{
+  return (Throttle::getFunctionMomentaryString(momentFunctionNum));
+}
+
+QString  PythonQtWrapper_Throttle::static_Throttle_getFunctionString(int  functionNum)
+{
+  return (Throttle::getFunctionString(functionNum));
+}
+
+QVector<bool >  PythonQtWrapper_Throttle::getFunctions(Throttle* theWrappedObject)
+{
+  return ( theWrappedObject->getFunctions());
+}
+
+QVector<bool >  PythonQtWrapper_Throttle::getFunctionsMomentary(Throttle* theWrappedObject)
+{
+  return ( theWrappedObject->getFunctionsMomentary());
+}
+
 bool  PythonQtWrapper_Throttle::getIsForward(Throttle* theWrappedObject)
 {
   return ( theWrappedObject->getIsForward());
@@ -16734,6 +16984,16 @@ void PythonQtWrapper_Throttle::setF9Momentary(Throttle* theWrappedObject, bool  
   ( theWrappedObject->setF9Momentary(arg__1));
 }
 
+void PythonQtWrapper_Throttle::setFunction(Throttle* theWrappedObject, int  functionNum, bool  newState)
+{
+  ( theWrappedObject->setFunction(functionNum, newState));
+}
+
+void PythonQtWrapper_Throttle::setFunctionMomentary(Throttle* theWrappedObject, int  momFuncNum, bool  state)
+{
+  ( theWrappedObject->setFunctionMomentary(momFuncNum, state));
+}
+
 void PythonQtWrapper_Throttle::setIsForward(Throttle* theWrappedObject, bool  arg__1)
 {
   ( theWrappedObject->setIsForward(arg__1));
@@ -16747,6 +17007,16 @@ void PythonQtWrapper_Throttle::setRosterEntry(Throttle* theWrappedObject, BasicR
 void PythonQtWrapper_Throttle::setSpeedSetting(Throttle* theWrappedObject, float  arg__1)
 {
   ( theWrappedObject->setSpeedSetting(arg__1));
+}
+
+void PythonQtWrapper_Throttle::setSpeedSetting(Throttle* theWrappedObject, float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop)
+{
+  ( theWrappedObject->setSpeedSetting(speed, allowDuplicates, allowDuplicatesOnStop));
+}
+
+void PythonQtWrapper_Throttle::setSpeedSettingAgain(Throttle* theWrappedObject, float  speed)
+{
+  ( theWrappedObject->setSpeedSettingAgain(speed));
 }
 
 
@@ -17371,39 +17641,6 @@ if (_wrapper) {
 }
   ThrottleManager::removeListener(arg__1, arg__2);
 }
-int  PythonQtShell_ThrottleManager::supportedSpeedModes()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("supportedSpeedModes");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"int"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      int returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("supportedSpeedModes", methodInfo, result);
-          } else {
-            returnValue = *((int*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return ThrottleManager::supportedSpeedModes();
-}
 void PythonQtShell_ThrottleManager::timerEvent(QTimerEvent*  event0)
 {
 if (_wrapper) {
@@ -17526,11 +17763,6 @@ ThrottleManager*  PythonQtWrapper_ThrottleManager::static_ThrottleManager_instan
 void PythonQtWrapper_ThrottleManager::removeListener(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2)
 {
   ( theWrappedObject->removeListener(arg__1, arg__2));
-}
-
-int  PythonQtWrapper_ThrottleManager::supportedSpeedModes(ThrottleManager* theWrappedObject)
-{
-  return ( theWrappedObject->supportedSpeedModes());
 }
 
 

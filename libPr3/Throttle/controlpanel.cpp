@@ -1,5 +1,5 @@
 #include "controlpanel.h"
-#include <QSlider>
+#include "jslider.h"
 #include <QSpinBox>
 #include <QRadioButton>
 #include "dccthrottle.h"
@@ -9,7 +9,6 @@
 #include "logix/learnthrottleframe.h"
 #include <QVBoxLayout>
 #include "jframe.h"
-#include "gridbagconstraints.h"
 #include <QSlider>
 #include <QButtonGroup>
 #include "flowlayout.h"
@@ -22,12 +21,16 @@
 #include "throttleframemanager.h"
 #include "throttlespreferences.h"
 #include "fileutil.h"
-#include "gridbagconstraints.h"
 #include "gridbaglayout.h"
 #include "myslider.h"
 #include <QSize>
 #include "controlpanelpropertyeditor.h"
 #include "windowpreferences.h"
+#include "throttleframemanager.h"
+#include "jcombobox.h"
+#include <vptr.h>
+#include <QSet>
+#include <QHash>
 
 //ControlPanel::ControlPanel(QWidget *parent) :
 //    QDockWidget(parent)
@@ -72,9 +75,7 @@
  MAX_SPEED = 126;
 
  _throttleFrame = ltf;
- speedSlider = new MySlider(/*0, MAX_SPEED*/);
- speedSlider->setMinimum(0);
- speedSlider->setMaximum(MAX_SPEED);
+ speedSlider = new JSlider(0, MAX_SPEED);
  speedSlider->setValue(0);
   //speedSlider->setFocusable(false);
  trackSlider = false;
@@ -95,7 +96,7 @@
 //      }
 //    });
 
-    speedSpinner = new QSpinBox();
+    speedSpinner = new JSpinner();
 
 //    speedSpinnerModel = new SpinnerNumberModel(0, 0, MAX_SPEED, 1);
 //    speedSpinner->setModel(speedSpinnerModel);
@@ -135,6 +136,18 @@
         _throttle = NULL;
     }
 #endif
+}
+/*
+ * "Destructor"
+ */
+/*public*/ void ControlPanel::destroy() {
+    if (addressPanel != nullptr) {
+        addressPanel->removeAddressListener(this);
+    }
+    if (_throttle != nullptr) {
+        _throttle->removePropertyChangeListener((PropertyChangeListener*)this);
+        _throttle = nullptr;
+    }
 }
 
 //@Override
@@ -252,7 +265,7 @@
  }
  else if (e->getPropertyName()==("SpeedSteps")) {
    int steps = ( e->getNewValue()).toInt();
-   setSpeedStepsMode(steps);
+   setSpeedStepsMode((SpeedStepMode::SSMODES)steps);
  }
  else if (e->getPropertyName()==("IsForward")) {
    bool Forward = ( e->getNewValue()).toBool();
@@ -292,13 +305,7 @@
  //super.setEnabled(isEnabled);
  forwardButton->setEnabled(isEnabled);
  reverseButton->setEnabled(isEnabled);
- speedStep128Button->setEnabled(isEnabled);
- speedStep28Button->setEnabled(isEnabled);
- speedStep27Button->setEnabled(isEnabled);
- speedStep14Button->setEnabled(isEnabled);
- if (isEnabled) {
-     configureAvailableSpeedStepModes();
- }
+ speedStepBox->setEnabled(isEnabled);
  stopButton->setEnabled(isEnabled);
  idleButton->setEnabled(isEnabled);
  speedControllerEnable = isEnabled;
@@ -377,42 +384,26 @@
  *                      DccThrottle.SpeedStepMode27,
  *                      DccThrottle.SpeedStepMode14 step mode
  */
-/*private*/ void ControlPanel::setSpeedStepsMode(int speedStepMode)
+/*private*/ void ControlPanel::setSpeedStepsMode(SpeedStepMode::SSMODES speedStepMode)
 {
+ /*final*/ ThrottlesPreferences* preferences = ((ThrottleFrameManager*)
+                InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences();
  internalAdjust = true;
  int maxSpeedPCT = 100;
- if (addressPanel->getRosterEntry() != NULL) {
+ if (addressPanel != NULL) {
      maxSpeedPCT = addressPanel->getRosterEntry()->getMaxSpeedPCT();
  }
 
  // Save the old speed as a float
  float oldSpeed = (speedSlider->value() / (maxSpeed * 1.0f));
 
- if (speedStepMode == DccThrottle::SpeedStepMode14) {
-     speedStep14Button->setChecked(true);
-     speedStep27Button->setChecked(false);
-     speedStep28Button->setChecked(false);
-     speedStep128Button->setChecked(false);
-     intSpeedSteps = 14;
- } else if (speedStepMode == DccThrottle::SpeedStepMode27) {
-     speedStep14Button->setChecked(false);
-     speedStep27Button->setChecked(true);
-     speedStep28Button->setChecked(false);
-     speedStep128Button->setChecked(false);
-     intSpeedSteps = 27;
- } else if (speedStepMode == DccThrottle::SpeedStepMode28) {
-     speedStep14Button->setChecked(false);
-     speedStep27Button->setChecked(false);
-     speedStep28Button->setChecked(true);
-     speedStep128Button->setChecked(false);
-     intSpeedSteps = 28;
- } else {
-     speedStep14Button->setChecked(false);
-     speedStep27Button->setChecked(false);
-     speedStep28Button->setChecked(false);
-     speedStep128Button->setChecked(true);
-     intSpeedSteps = 126;
- }
+ if (speedStepMode == SpeedStepMode::UNKNOWN) {
+             speedStepMode = (SpeedStepMode::SSMODES) speedStepBox->currentData().toInt();
+         } else {
+             //speedStepBox->setSelectedItem(speedStepMode);
+          speedStepBox->setCurrentIndex(speedStepBox->findText(SpeedStepMode(speedStepMode).name));
+         }
+         intSpeedSteps = SpeedStepMode(speedStepMode).numSteps;
  /* Set maximum speed based on the max speed stored in the roster as a percentage of the maximum */
  maxSpeed = (int) ((float) intSpeedSteps * ((float) maxSpeedPCT) / 100);
 
@@ -424,13 +415,21 @@
 //    labelTable->insert((maxSpeed / 2), new QLabel("50%"));
 //    labelTable->insert((maxSpeed), new QLabel("100%"));
 //    labelTable->insert((0), new QLabel(tr("Stop")));
- QVector<QLabel*> labelTable = QVector<QLabel*>();
- labelTable.append(new QLabel("100%"));
- labelTable.append(new QLabel("50%"));
- labelTable.append(new QLabel(tr("Stop")));
+ QHash<int,QLabel*> labelTable = QHash<int,QLabel*>();
+ labelTable.insert((maxSpeed / 2),new QLabel("100%"));
+ labelTable.insert((maxSpeed),new QLabel("50%"));
+ labelTable.insert((0), new QLabel(tr("Stop")));
  speedSlider->setLabelTable(labelTable);
 //    speedSlider.setPaintTicks(true);
 //    speedSlider.setPaintLabels(true);
+
+// if (preferences.isUsingIcons()) {
+//     speedSlider->setPaintTicks(false);
+//     speedSlider->setPaintLabels(false);
+// } else {
+//     speedSlider->setPaintTicks(true);
+//     speedSlider->setPaintLabels(true);
+// }
 
  if (speedSliderContinuous != NULL)
  {
@@ -443,18 +442,12 @@
   }
   speedSliderContinuous->setValue((int) (oldSpeed * maxSpeed));
   speedSliderContinuous->setMajorTickSpacing(maxSpeed / 2);
-//        labelTable = new QMap<int, QLabel*>();
-//        labelTable->insert((maxSpeed / 2), new QLabel("50%"));
-//        labelTable->insert((maxSpeed), new QLabel("100%"));
-//        labelTable->insert((0), new QLabel(tr("Stop")));
-//        labelTable->insert((-maxSpeed / 2), new QLabel("-50%"));
-//        labelTable->insert((-maxSpeed), new QLabel("-100%"));
-  labelTable = QVector<QLabel*>();
-  labelTable.append(new QLabel("100%"));
-  labelTable.append(new QLabel("50%"));
-  labelTable.append(new QLabel(tr("Stop")));
-  labelTable.append(new QLabel("-50%"));
-  labelTable.append(new QLabel("-100%"));
+  QHash<int, QLabel*> labelTable =  QHash<int, QLabel*>();
+  labelTable.insert((maxSpeed / 2), new QLabel("50%"));
+  labelTable.insert((maxSpeed), new QLabel("100%"));
+  labelTable.insert((0), new QLabel(tr("Stop")));
+  labelTable.insert((-maxSpeed / 2), new QLabel("-50%"));
+  labelTable.insert((-maxSpeed), new QLabel("-100%"));
   speedSliderContinuous->setLabelTable(labelTable);
 //        speedSliderContinuous.setPaintTicks(true);
 //        speedSliderContinuous.setPaintLabels(true);
@@ -469,6 +462,7 @@
  speedSpinner->setValue(speedSlider->value());
  internalAdjust = false;
 }
+
 /**
  * Is this Speed Control selection method possible?
  *
@@ -575,20 +569,133 @@
 /*public*/ bool ControlPanel::getTrackSlider() {
     return trackSlider;
 }
+
 /**
- *  Set the GUI to match that the loco speed.
- *
- * @param  speedIncrement  : TODO
- * @param  speed           The speed value of the loco.
- */
-/*public*/ void ControlPanel::setSpeedValues(int speedIncrement, int speed)
-{
- //this->speedIncrement = speedIncrement;
- speedSlider->setValue(speed * speedIncrement);
- // Spinner Speed should be the raw integer speed value
- if(speedSpinner!=NULL)
-  //speedSpinnerModel->setValue(Integer.valueOf(speed));
-  speedSpinner->setValue(speed);
+  * Set the GUI to match that the loco speed.
+  *
+  *
+  * @param speedIncrement The throttle back end's speed increment value - %
+  *                       increase for each speed step.
+  * @param speed          The speed value of the loco.
+  */
+ /*private*/ void ControlPanel::setSpeedValues(float speedIncrement, float speed) {//This is an internal speed adjustment
+    internalAdjust = true;
+    //Translate the speed sent in to the max allowed by any set speed limit
+    speedSlider->setValue(qRound(speed / speedIncrement));
+     log->debug(tr("SpeedSlider value: %1").arg(speedSlider->value()));
+    // Spinner Speed should be the raw integer speed value
+    if (speedSpinner != nullptr) {
+        speedSpinnerModel->setValue(speedSlider->value());
+    }
+    if (speedSliderContinuous != nullptr) {
+        if (forwardButton->isChecked()) {
+            speedSliderContinuous->setValue(( speedSlider->value()));
+        } else {
+            speedSliderContinuous->setValue(-( speedSlider->value()));
+        }
+    }
+    internalAdjust = false;
+}
+
+/*private*/ GridBagConstraints ControlPanel::makeDefaultGridBagConstraints() {
+    GridBagConstraints constraints = GridBagConstraints();
+    constraints.anchor = GridBagConstraints::CENTER;
+    constraints.fill = GridBagConstraints::BOTH;
+    constraints.gridheight = 1;
+    constraints.gridwidth = 1;
+    constraints.ipadx = 0;
+    constraints.ipady = 0;
+    Insets* insets = new Insets(2, 2, 2, 2);
+    constraints.insets = insets;
+    constraints.weightx = 1;
+    constraints.weighty = 1;
+    constraints.gridx = 0;
+    constraints.gridy = 0;
+
+    return constraints;
+}
+
+/*private*/ void ControlPanel::layoutTopButtonPanel() {
+    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+
+    constraints.gridx = 0;
+    constraints.gridy = 0;
+    constraints.fill = GridBagConstraints::HORIZONTAL;
+    topButtonPanelLayout->addWidget(speedStepBox, constraints);
+}
+
+/*private*/ void ControlPanel::layoutButtonPanel() {
+    /*final*/ ThrottlesPreferences* preferences = ((ThrottleFrameManager*)
+            InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences();
+
+    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+    constraints.fill = GridBagConstraints::NONE;
+
+    constraints.gridy = 10;
+    if (preferences->isUsingIcons()) {
+        constraints.gridx = 2;
+    }
+    buttonPanelLayout->addWidget(forwardButton, constraints);
+
+    if (preferences->isUsingIcons()) {
+        constraints.gridx = 0;
+    } else {
+        constraints.gridy = 20;
+    }
+    buttonPanelLayout->addWidget(reverseButton, constraints);
+
+    if (preferences->isUsingIcons()) {
+        constraints.gridx = 1;
+    } else {
+        constraints.gridy = 30;
+    }
+    buttonPanelLayout->addWidget(idleButton, constraints);
+
+    if (preferences->isUsingIcons()) {
+        constraints.gridx = 1;
+    } else {
+        constraints.gridx = 0;
+    }
+    constraints.gridy = 40;
+    buttonPanelLayout->addWidget(stopButton, constraints);
+}
+
+/*private*/ void ControlPanel::layoutSliderPanel() {
+    sliderPanel->setLayout(sliderPanelLayout =new GridBagLayout());
+
+    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+
+    sliderPanelLayout->addWidget(speedSlider, constraints);
+}
+
+/*private*/ void ControlPanel::layoutSpeedSliderContinuous() {
+    speedSliderContinuousPanel->setLayout(speedSliderContinuousPanelLayout = new GridBagLayout());
+
+    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+
+    speedSliderContinuousPanelLayout->addWidget(speedSliderContinuous, constraints);
+}
+
+/*private*/ void ControlPanel::layoutSpinnerPanel() {
+    spinnerPanel->setLayout(spinnerPanelLayout = new GridBagLayout());
+    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+
+    spinnerPanelLayout->addWidget(speedSpinner, constraints);
+}
+
+/*private*/ void ControlPanel::setupButton(QAbstractButton* button, /*final*/ ThrottlesPreferences* preferences, /*final*/ QString iconPath,
+    /*final*/ QString selectedIconPath, /*final*/ QString message) {
+    if (preferences->isUsingIcons()) {
+//            button.setBorderPainted(false);
+//            button.setContentAreaFilled(false);
+        button->setText("");
+        button->setIcon(QIcon( QPixmap::fromImage((new ImageIcon(FileUtil::findURL(iconPath)))->getImage())));
+//            button->setSelectedIcon(new ImageIcon(FileUtil.findURL(selectedIconPath)));
+//            button->setPreferredSize(new Dimension(BUTTON_SIZE, BUTTON_SIZE));
+        button->setToolTip(/*Bundle.getMessage*/(message));
+    } else {
+        button->setText(/*Bundle.getMessage*/(message));
+    }
 }
 
 /**
@@ -596,6 +703,9 @@
  */
 /*private*/ void ControlPanel::initGUI()
 {
+ /*final*/ ThrottlesPreferences* preferences = ((ThrottleFrameManager*)
+         InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences();
+
  mainPanel = new QWidget();
  //this.setContentPane(mainPanel);
  this->setWidget(mainPanel);
@@ -603,7 +713,11 @@
  mainPanel->setLayout(mainPanelLayout = new QVBoxLayout());
  //((JFrame*)this->window())->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
 
- speedControlPanel = new QFrame();
+ topButtonPanel = new JPanel();
+ topButtonPanel->setLayout(topButtonPanelLayout = new GridBagLayout());
+ mainPanelLayout->addWidget(topButtonPanel, 0, Qt::AlignTop);//BorderLayout.NORTH);
+
+ speedControlPanel = new JPanel();
  //speedControlPanel->setMinimumHeight(200);
  //speedControlPanel->setFrameShape(QFrame::Box);
 // QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -618,12 +732,12 @@
  //sliderPanel->setLayout(sliderPanelLayout = new GridBagLayout());
  sliderPanel->setLayout(sliderPanelLayout = new QHBoxLayout());
  //sliderPanel.setOpaque(false);
- //sliderPanel->setFrameShape(QFrame::Box);
 
- speedSlider = new MySlider(); //0, intSpeedSteps);
- speedSlider->setMinimum(0);
- speedSlider->setMaximum(intSpeedSteps);
- //speedSlider.setOpaque(false);
+ speedSlider = new JSlider(0, intSpeedSteps);
+ if (preferences->isUsingIcons()) {
+//     speedSlider.setUI(new ControlPanelCustomSliderUI(speedSlider));
+ }
+ //speedSlider->setOpaque(false);
  speedSlider->setValue(0);
  //speedSlider.setFocusable(false);
 
@@ -643,9 +757,7 @@
 //     }
 // });
 
- speedSliderContinuous = new MySlider();//-intSpeedSteps, intSpeedSteps);
- speedSliderContinuous->setMinimum(-intSpeedSteps);
- speedSliderContinuous->setMaximum(intSpeedSteps);
+ speedSliderContinuous = new JSlider(-intSpeedSteps, intSpeedSteps);
  speedSliderContinuous->setValue(0);
 // speedSliderContinuous.setOpaque(false);
 // speedSliderContinuous.setFocusable(false);
@@ -666,19 +778,21 @@
 //     }
 // });
 
- speedSpinner = new QSpinBox();
+ speedSpinner = new JSpinner();
 
-// speedSpinnerModel = new SpinnerNumberModel(0, 0, intSpeedSteps, 1);
-// speedSpinner.setModel(speedSpinnerModel);
- speedSpinner->setRange(0,intSpeedSteps);
- speedSpinner->setValue(0);
- speedSpinner->setSingleStep(1);
-// speedSpinner.setFocusable(false);
+ speedSpinnerModel = new SpinnerNumberModel(0, 0, intSpeedSteps, 1);
+ speedSpinner->setModel(speedSpinnerModel);
+ //speedSpinner.setFocusable(false);
 
- speedStep128Button = new QRadioButton(tr("128 SS"));
- speedStep28Button = new QRadioButton(tr("28 SS"));
- speedStep27Button = new QRadioButton(tr("27 SS"));
- speedStep14Button = new QRadioButton(tr("14 SS"));
+ QSet<SpeedStepMode::SSMODES> speedStepModes = InstanceManager::throttleManagerInstance()->supportedSpeedModes();
+
+ speedStepBox = new JComboBox/*<>*/();//speedStepModes.ttoArray(new SpeedStepMode[speedStepModes.size()]));
+ QSetIterator<SpeedStepMode::SSMODES> iter(speedStepModes);
+ while(iter.hasNext())
+ {
+  SpeedStepMode::SSMODES mode = iter.next();
+  speedStepBox->addItem((SpeedStepMode(mode)).name, mode);
+ }
 
  forwardButton = new QRadioButton();
  if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
@@ -709,191 +823,157 @@
  }
 
  setContextMenuPolicy(Qt::CustomContextMenu);
+
  propertiesPopup = new QMenu();
 
- GridBagConstraints constraints = GridBagConstraints();
- constraints.anchor = GridBagConstraints::CENTER;
- constraints.fill = GridBagConstraints::BOTH;
- constraints.gridheight = 1;
- constraints.gridwidth = 1;
- constraints.ipadx = 0;
- constraints.ipady = 0;
- Insets* insets = new Insets(2, 2, 2, 2);
- constraints.insets = insets;
- constraints.weightx = 1;
- constraints.weighty = 1;
- constraints.gridx = 0;
- constraints.gridy = 0;
-
- //sliderPanelLayout->addWidget(speedSlider, constraints);
- sliderPanelLayout->addWidget(speedSlider, 0, Qt::AlignCenter);
- //this.getContentPane().add(sliderPanel,BorderLayout.CENTER);
- speedControlPanelLayout->addWidget(sliderPanel,0,Qt::AlignCenter);
+ layoutSliderPanel();
+ speedControlPanelLayout->addWidget(sliderPanel);
  speedSlider->setOrientation(Qt::Vertical);
- speedSlider->setMajorTickSpacing(maxSpeed / 2); //see https://stackoverflow.com/questions/27661877/qt-slider-widget-with-tick-text-labels
-// QMap<int, QLabel*>* labelTable = new QMap<int, QLabel*>();
- QVector<QLabel*> labelTable = QVector<QLabel*>();
-// labelTable->insert((maxSpeed / 2), new QLabel("50%"));
-// labelTable->insert((maxSpeed), new QLabel("100%"));
-// labelTable->insert((0), new QLabel(tr("Stop")));
- labelTable.append(new QLabel("100%"));
- labelTable.append(new QLabel("50%"));
- labelTable.append(new QLabel(tr("Stop")));
+ speedSlider->setMajorTickSpacing(maxSpeed / 2);
+ QHash<int, QLabel*>  labelTable = QHash<int, QLabel*>();
+ labelTable.insert(maxSpeed / 2, new JLabel("50%"));
+ labelTable.insert(maxSpeed, new JLabel("100%"));
+ labelTable.insert(0, new JLabel(tr("Stop")));
  speedSlider->setLabelTable(labelTable);
-
-// speedSlider.setPaintTicks(true);
-// speedSlider.setPaintLabels(true);
+ if (preferences->isUsingIcons()) {
+     speedSlider->setPaintTicks(false);
+     speedSlider->setPaintLabels(false);
+ } else {
+     speedSlider->setPaintTicks(true);
+     speedSlider->setPaintLabels(true);
+ }
  // remove old actions
- connect(speedSlider, SIGNAL(valueChanged(int)), this, SLOT(OnSpeedSliderChanged(int)));
- connect(speedSliderContinuous, SIGNAL(valueChanged(int)), this, SLOT(speedSliderContinuousChanged(int)));
+ //speedSlider.addChangeListener((ChangeEvent e) -> {
+ connect(speedSlider, &JSlider::valueChanged, [=]{
+     if (!internalAdjust) {
+         bool doIt = false;
+         if (!speedSlider->getValueIsAdjusting()) {
+             doIt = true;
+             lastTrackedSliderMovementTime = QDateTime::currentMSecsSinceEpoch() - trackSliderMinInterval;
+         } else if (trackSlider
+                 && QDateTime::currentMSecsSinceEpoch() - lastTrackedSliderMovementTime >= trackSliderMinInterval) {
+             doIt = true;
+             lastTrackedSliderMovementTime = QDateTime::currentMSecsSinceEpoch();
+         }
+         if (doIt) {
+             float newSpeed = (speedSlider->value() / (intSpeedSteps * 1.0f));
+             if (log->isDebugEnabled()) {
+                 log->debug("stateChanged: slider pos: " + QString::number(speedSlider->value()) + " speed: " + QString::number(newSpeed));
+             }
+             if (sliderPanel->isVisible() && _throttle != nullptr) {
+                 _throttle->setSpeedSetting(newSpeed);
+             }
+             if (speedSpinner != nullptr) {
+                 speedSpinnerModel->setValue(speedSlider->value());
+             }
+             if (speedSliderContinuous != nullptr) {
+                 if (forwardButton->isChecked()) {
+                     speedSliderContinuous->setValue(( speedSlider->value()));
+                 } else {
+                     speedSliderContinuous->setValue(-( speedSlider->value()));
+                 }
+             }
+         }
+     }
+ });
 
+ speedSliderContinuousPanel = new JPanel();
+ layoutSpeedSliderContinuous();
 
- speedSliderContinuousPanel = new QWidget();
- GridBagLayout* speedSliderContinuousPanelLayout;
- speedSliderContinuousPanel->setLayout(speedSliderContinuousPanelLayout = new GridBagLayout());
-
- constraints = GridBagConstraints();
- constraints.anchor = GridBagConstraints::CENTER;
- constraints.fill = GridBagConstraints::BOTH;
- constraints.gridheight = 1;
- constraints.gridwidth = 1;
- constraints.ipadx = 0;
- constraints.ipady = 0;
- insets = new Insets(2, 2, 2, 2);
- constraints.insets = insets;
- constraints.weightx = 1;
- constraints.weighty = 1;
- constraints.gridx = 0;
- constraints.gridy = 0;
-
- speedSliderContinuousPanelLayout->addWidget(speedSliderContinuous, constraints);
- //this.getContentPane().add(sliderPanel,BorderLayout.CENTER);
- speedControlPanelLayout->addWidget(speedSliderContinuousPanel, 0, Qt::AlignCenter);
+ speedControlPanelLayout->addWidget(speedSliderContinuousPanel);
  speedSliderContinuous->setOrientation(Qt::Vertical);
  speedSliderContinuous->setMajorTickSpacing(maxSpeed / 2);
-// labelTable = new QMap<int, QLabel*>();
-// labelTable->insert((maxSpeed / 2), new QLabel("50%"));
-// labelTable->insert((maxSpeed), new QLabel("100%"));
-// labelTable->insert((0), new QLabel(tr("Stop")));
-// labelTable->insert((-maxSpeed / 2), new QLabel("-50%"));
-// labelTable->insert((-maxSpeed), new QLabel("-100%"));
- labelTable = QVector<QLabel*>();
- labelTable.append(new QLabel("100%"));
- labelTable.append(new QLabel("50%"));
- labelTable.append(new QLabel(tr("Stop")));
- labelTable.append(new QLabel("-50%"));
- labelTable.append(new QLabel("-100%"));
+ labelTable = QHash<int,QLabel*> ();
+ labelTable.insert(maxSpeed / 2, new JLabel("50%"));
+ labelTable.insert(maxSpeed, new JLabel("100%"));
+ labelTable.insert(0, new JLabel(tr("Stop")));
+ labelTable.insert(-maxSpeed / 2, new JLabel("-50%"));
+ labelTable.insert(-maxSpeed, new JLabel("-100%"));
  speedSliderContinuous->setLabelTable(labelTable);
-// speedSliderContinuous.setPaintTicks(true);
-// speedSliderContinuous.setPaintLabels(true);
+ if (preferences->isUsingIcons()) {
+     speedSliderContinuous->setPaintTicks(false);
+     speedSliderContinuous->setPaintLabels(false);
+ } else {
+     speedSliderContinuous->setPaintTicks(true);
+     speedSliderContinuous->setPaintLabels(true);
+ }
  // remove old actions
-// speedSliderContinuous.addChangeListener(
-//         new ChangeListener() {
-//             @Override
-//             public void stateChanged(ChangeEvent e) {
-//                 if (!internalAdjust) {
-//                     boolean doIt = false;
-//                     if (!speedSliderContinuous.getValueIsAdjusting()) {
-//                         doIt = true;
-//                         lastTrackedSliderMovementTime = System.currentTimeMillis() - trackSliderMinInterval;
-//                     } else if (trackSlider
-//                     && System.currentTimeMillis() - lastTrackedSliderMovementTime >= trackSliderMinInterval) {
-//                         doIt = true;
-//                         lastTrackedSliderMovementTime = System.currentTimeMillis();
-//                     }
-//                     if (doIt) {
-//                         float newSpeed = (java.lang.Math.abs(speedSliderContinuous.getValue()) / (intSpeedSteps * 1.0f));
-//                         boolean newDir = (speedSliderContinuous.getValue() >= 0);
-//                         if (log.isDebugEnabled()) {
-//                             log.debug("stateChanged: slider pos: " + speedSliderContinuous.getValue() + " speed: " + newSpeed + " dir: " + newDir);
-//                         }
-//                         if (speedSliderContinuousPanel.isVisible() && throttle != null) {
-//                             throttle.setSpeedSetting(newSpeed);
-//                             if ((newSpeed > 0) && (newDir != forwardButton.isSelected())) {
-//                                 throttle.setIsForward(newDir);
-//                             }
-//                         }
-//                         if (speedSpinner != null) {
-//                             speedSpinnerModel.setValue(Integer.valueOf(java.lang.Math.abs(speedSliderContinuous.getValue())));
-//                         }
-//                         if (speedSlider != null) {
-//                             speedSlider.setValue(Integer.valueOf(java.lang.Math.abs(speedSliderContinuous.getValue())));
-//                         }
-//                     }
-//                 }
-//             }
-//         });
+ //speedSliderContinuous.addChangeListener((ChangeEvent e) -> {
+ connect(speedSliderContinuous, &JSlider::valueChanged, [=]{
+     if (!internalAdjust) {
+         bool doIt = false;
+         if (!speedSliderContinuous->getValueIsAdjusting()) {
+             doIt = true;
+             lastTrackedSliderMovementTime = QDateTime::currentMSecsSinceEpoch() - trackSliderMinInterval;
+         } else if (trackSlider
+                 && QDateTime::currentMSecsSinceEpoch() - lastTrackedSliderMovementTime >= trackSliderMinInterval) {
+             doIt = true;
+             lastTrackedSliderMovementTime = QDateTime::currentMSecsSinceEpoch();
+         }
+         if (doIt) {
+             float newSpeed = (qAbs(speedSliderContinuous->value()) / (intSpeedSteps * 1.0f));
+             bool newDir = (speedSliderContinuous->value() >= 0);
+             if (log->isDebugEnabled()) {
+                 log->debug("stateChanged: slider pos: " + QString::number(speedSliderContinuous->value()) + " speed: " + QString::number(newSpeed) + " dir: " + newDir);
+             }
+             if (speedSliderContinuousPanel->isVisible() && _throttle != nullptr) {
+                 _throttle->setSpeedSetting(newSpeed);
+                 if ((newSpeed > 0) && (newDir != forwardButton->isChecked())) {
+                     _throttle->setIsForward(newDir);
+                 }
+             }
+             if (speedSpinner != nullptr) {
+                 speedSpinnerModel->setValue(qAbs(speedSliderContinuous->value()));
+             }
+             if (speedSlider != nullptr) {
+                 speedSlider->setValue(qAbs(speedSliderContinuous->value()));
+             }
+         }
+     }
+ });
 
- spinnerPanel = new QWidget();
- GridBagLayout* spinnerPanelLayout;
- spinnerPanel->setLayout(spinnerPanelLayout = new GridBagLayout());
+ spinnerPanel = new JPanel();
+ layoutSpinnerPanel();
 
- spinnerPanelLayout->addWidget(speedSpinner, constraints);
-
- speedControlPanelLayout->addWidget(spinnerPanel, 0, Qt::AlignCenter);
+ speedControlPanelLayout->addWidget(spinnerPanel);
 
  // remove old actions
- connect(speedSpinner, SIGNAL(valueChanged(int)), this, SLOT(OnSpinnerChanged(int)));
-
- QButtonGroup* speedStepButtons = new QButtonGroup();
- speedStepButtons->addButton(speedStep128Button);
- speedStepButtons->addButton(speedStep28Button);
- speedStepButtons->addButton(speedStep27Button);
- speedStepButtons->addButton(speedStep14Button);
- constraints.fill = GridBagConstraints::NONE;
- constraints.gridy = 1;
- spinnerPanelLayout->addWidget(speedStep128Button, constraints);
- constraints.gridy = 2;
- spinnerPanelLayout->addWidget(speedStep28Button, constraints);
- constraints.gridy = 3;
- spinnerPanelLayout->addWidget(speedStep27Button, constraints);
- constraints.gridy = 4;
- spinnerPanelLayout->addWidget(speedStep14Button, constraints);
-
-// speedStep14Button.addActionListener(
-//         new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 setSpeedStepsMode(DccThrottle.SpeedStepMode14);
-//                 throttle.setSpeedStepMode(DccThrottle.SpeedStepMode14);
-//             }
-//         });
- connect(speedStep14Button, SIGNAL(clicked()), this, SLOT(OnSpeedStep14()));
-// speedStep27Button.addActionListener(
-//         new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 setSpeedStepsMode(DccThrottle.SpeedStepMode27);
-//                 throttle.setSpeedStepMode(DccThrottle.SpeedStepMode27);
-//             }
-//         });
- connect(speedStep27Button, SIGNAL(clicked()), this, SLOT(OnSpeedStep27()));
+ //speedSpinner.addChangeListener((ChangeEvent e) -> {
+ connect(speedSpinner, static_cast<void (QSpinBox::*)(int)>(&JSpinner::valueChanged), [=]{
+     if (!internalAdjust) {
+         float newSpeed = (/*(Integer)*/ speedSpinner->value())/*.floatValue()*/ / (intSpeedSteps * 1.0f);
+         if (log->isDebugEnabled()) {
+             log->debug("stateChanged: spinner pos: " + QString::number(speedSpinner->value()) + " speed: " + QString::number(newSpeed));
+         }
+         if (_throttle != nullptr) {
+             if (spinnerPanel->isVisible()) {
+                 _throttle->setSpeedSetting(newSpeed);
+             }
+             speedSlider->setValue((/*(Integer)*/ speedSpinner->value()));
+             if (speedSliderContinuous != nullptr) {
+                 if (forwardButton->isChecked()) {
+                     speedSliderContinuous->value(/*((Integer) speedSpinner->value())*/);
+                 } else {
+                     speedSliderContinuous->setValue(-(/*(Integer)*/ speedSpinner->value()));
+                 }
+             }
+         } else {
+             log->warn(tr("no throttle object in stateChanged, ignoring change of speed to %1").arg(newSpeed));
+         }
+     }
+ });
 
 
-// speedStep28Button.addActionListener(
-//         new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 setSpeedStepsMode(DccThrottle.SpeedStepMode28);
-//                 throttle.setSpeedStepMode(DccThrottle.SpeedStepMode28);
-//             }
-//         });
- connect(speedStep28Button, SIGNAL(clicked()), this, SLOT(OnSpeedStep28()));
+ //speedStepBox.addActionListener((ActionEvent e) -> {
+ connect(speedStepBox, &JComboBox::currentIndexChanged, [=]{
+     SpeedStepMode::SSMODES s = (SpeedStepMode::SSMODES)speedStepBox->currentData().toInt();//(SpeedStepMode)speedStepBox.getSelectedItem();
+     setSpeedStepsMode(s);
+     if (_throttle != nullptr) {
+       _throttle->setSpeedStepMode(s);
+     }
+ });
 
-
-// speedStep128Button.addActionListener(
-//         new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 setSpeedStepsMode(DccThrottle.SpeedStepMode128);
-//                 throttle.setSpeedStepMode(DccThrottle.SpeedStepMode128);
-//             }
-//         });
- connect(speedStep128Button, SIGNAL(clicked()), this, SLOT(OnSpeedStep128()));
-
-
- buttonPanel = new QWidget();
- GridBagLayout* buttonPanelLayout;
+ buttonPanel = new JPanel();
  buttonPanel->setLayout(buttonPanelLayout = new GridBagLayout());
 // QSizePolicy bpsp = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 // buttonPanel->setSizePolicy(bpsp);
@@ -904,145 +984,86 @@
  directionButtons->addButton(reverseButton);
 // forwardButton.setFocusable(false);
 // reverseButton.setFocusable(false);
- constraints.fill = GridBagConstraints::NONE;
 
- constraints.gridy = 1;
- if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
-         && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon()) {
-     constraints.gridx = 3;
- }
- buttonPanelLayout->addWidget(forwardButton, constraints);
+ //forwardButton.addActionListener((ActionEvent e) -> {
+ connect(forwardButton, &QRadioButton::clicked, [=]{
+  if (_throttle != nullptr) {
+    _throttle->setIsForward(true);
+  }
+  if (speedSliderContinuous != nullptr) {
+      speedSliderContinuous->setValue(qAbs(speedSliderContinuous->value()));
+  }
+ });
 
- if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
-         && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon()) {
-     constraints.gridx = 1;
- } else {
-     constraints.gridy = 2;
- }
- buttonPanelLayout->addWidget(reverseButton, constraints);
+ //reverseButton.addActionListener((ActionEvent e) -> {
+ connect(reverseButton, &QRadioButton::clicked, [=]{
+  if (_throttle != nullptr) {
+    _throttle->setIsForward(false);
+  }
+  if (speedSliderContinuous != nullptr) {
+      speedSliderContinuous->setValue(-qAbs(speedSliderContinuous->value()));
+  }
+ });
 
- if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
-         && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon()) {
-     constraints.gridx = 2;
- }
-// forwardButton.addActionListener(
-//         new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 throttle.setIsForward(true);
-//                 if (speedSliderContinuous != null) {
-//                     speedSliderContinuous.setValue(java.lang.Math.abs(speedSliderContinuous.getValue()));
-//                 }
-//             }
-//         });
- connect(forwardButton, SIGNAL(clicked(bool)), this, SLOT(forwardButtonClicked()));
+stopButton = new JButton();
+setupButton(stopButton, preferences, "resources/icons/throttles/estop.png",
+  "resources/icons/throttles/estop24.png", tr("EStop"));
 
-// reverseButton.addActionListener(
-//         new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 throttle.setIsForward(false);
-//                 if (speedSliderContinuous != null) {
-//                     speedSliderContinuous.setValue(-java.lang.Math.abs(speedSliderContinuous.getValue()));
-//                 }
-//             }
-//         });
-
- stopButton = new QPushButton();
- if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
-         && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon()) {
-//     stopButton.setBorderPainted(false);
-//     stopButton.setContentAreaFilled(false);
-     stopButton->setText("");
-//     stopButton.setIcon(new ImageIcon(FileUtil.findURL("resources/icons/throttles/estop.png")));
-//     stopButton.setPressedIcon(new ImageIcon(FileUtil.findURL("resources/icons/throttles/estop24.png")));
-     stopButton->resize(QSize(BUTTON_SIZE, BUTTON_SIZE));
-     stopButton->setToolTip(tr("EStop"));
- } else {
-     stopButton->setText(tr("EStop"));
- }
- constraints.gridy = 4;
- constraints.fill = GridBagConstraints::HORIZONTAL;
- buttonPanelLayout->addWidget(stopButton, constraints);
-// stopButton.addActionListener(
-//         new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 stop();
-//             }
-//         });
- connect(stopButton, SIGNAL(clicked(bool)), this, SLOT(stop()));
-
-// stopButton.addMouseListener(
-//         new MouseListener() {
-//             @Override
-//             public void mousePressed(MouseEvent e) {
-//                 stop();
-//             }
-
-//             @Override
-//             public void mouseExited(MouseEvent e) {
-//             }
-
-//             @Override
-//             public void mouseEntered(MouseEvent e) {
-//             }
-
-//             @Override
-//             public void mouseReleased(MouseEvent e) {
-//             }
-
-//             @Override
-//             public void mouseClicked(MouseEvent e) {
-//             }
-//         });
- idleButton = new QPushButton();
- if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
-         && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon()) {
-//     idleButton.setBorderPainted(false);
-//     idleButton.setContentAreaFilled(false);
-     idleButton->setText("");
-//     idleButton.setIcon(new ImageIcon(FileUtil.findURL("resources/icons/throttles/stop.png")));
-//     idleButton.setPressedIcon(new ImageIcon(FileUtil.findURL("resources/icons/throttles/stop24.png")));
-     idleButton->resize(QSize(BUTTON_SIZE, BUTTON_SIZE));
-     idleButton->setToolTip(tr("Idle"));
- } else {
-     idleButton->setText(tr("Idle"));
- }
-
- if (((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingExThrottle()
-         && ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences()->isUsingFunctionIcon()) {
-     constraints.gridy = 1;
- } else {
-     constraints.gridy = 3;
- }
- buttonPanelLayout->addWidget(idleButton, constraints);
- buttonPanel->setMaximumSize(buttonPanel->sizeHint());
-// idleButton.addActionListener(
-//         new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 speedSlider.setValue(0);
-//                 if (speedSpinner != null) {
-//                     speedSpinner.setValue(Integer.valueOf(0));
-//                 }
-//                 if (speedSliderContinuous != null) {
-//                     speedSliderContinuous.setValue(Integer.valueOf(0));
-//                 }
-//                 throttle.setSpeedSetting(0);
-//             }
-//         });
- connect(idleButton, SIGNAL(clicked(bool)), this, SLOT(idleButtonClicked()));
-
+//stopButton.addActionListener((ActionEvent e) -> {
+connect(stopButton, &QPushButton::clicked, [=]{
+  stop();
+});
 #if 0
- addComponentListener(
-         new ComponentAdapter() {
-             @Override
-             public void componentResized(ComponentEvent e) {
-                 changeOrientation();
-             }
-         });
+stopButton.addMouseListener(
+      new MouseListener() {
+          @Override
+          public void mousePressed(MouseEvent e) {
+              stop();
+          }
+
+          @Override
+          public void mouseExited(MouseEvent e) {
+          }
+
+          @Override
+          public void mouseEntered(MouseEvent e) {
+          }
+
+          @Override
+          public void mouseReleased(MouseEvent e) {
+          }
+
+          @Override
+          public void mouseClicked(MouseEvent e) {
+          }
+      });
 #endif
+         idleButton = new JButton();
+         setupButton(idleButton, preferences, "resources/icons/throttles/stop.png",
+             "resources/icons/throttles/stop24.png", tr("Idle"));
+
+         //idleButton.addActionListener((ActionEvent e) -> {
+         connect(idleButton, &QPushButton::clicked, [=]{
+             speedSlider->setValue(0);
+             if (speedSpinner != nullptr) {
+                 speedSpinner->setValue(0);
+             }
+             if (speedSliderContinuous != nullptr) {
+                 speedSliderContinuous->setValue(0);
+             }
+             _throttle->setSpeedSetting(0);
+         });
+#if 0
+         addComponentListener(
+                 new ComponentAdapter() {
+                     @Override
+                     public void componentResized(ComponentEvent e) {
+                         changeOrientation();
+                     }
+                 });
+#endif
+ layoutButtonPanel();
+ layoutTopButtonPanel();
 
  QAction* propertiesItem = new QAction(tr("Properties"), this);
 
@@ -1053,6 +1074,7 @@
  propertiesPopup->addAction(edit);
  connect(edit, SIGNAL(triggered(bool)), this, SLOT(on_editProperties()));
  connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(on_menu_requested()));
+
 
 #if 0
  // Add a mouse listener all components to trigger the popup menu.
@@ -1267,22 +1289,22 @@ void ControlPanel::OnSpinnerChanged(int)
 }
 void ControlPanel::OnSpeedStep28()
 {
-    setSpeedStepsMode(DccThrottle::SpeedStepMode28);
+    setSpeedStepsMode(SpeedStepMode::NMRA_DCC_28);
     _throttle->setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
 }
 void ControlPanel::OnSpeedStep14()
 {
- setSpeedStepsMode(DccThrottle::SpeedStepMode14);
+ setSpeedStepsMode(SpeedStepMode::NMRA_DCC_14);
  _throttle->setSpeedStepMode(SpeedStepMode::NMRA_DCC_14);
 }
 void ControlPanel::OnSpeedStep27()
 {
- setSpeedStepsMode(DccThrottle::SpeedStepMode27);
+ setSpeedStepsMode(SpeedStepMode::NMRA_DCC_27);
  _throttle->setSpeedStepMode(SpeedStepMode::NMRA_DCC_27);
 }
 void ControlPanel::OnSpeedStep128()
 {
- setSpeedStepsMode(DccThrottle::SpeedStepMode128);
+ setSpeedStepsMode(SpeedStepMode::NMRA_DCC_128);
  _throttle->setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
 }
 /*public*/ void ControlPanel::accelerate10()
@@ -1373,13 +1395,14 @@ else if (speedSpinner!=NULL && speedSpinner->isEnabled())
             = new ControlPanelPropertyEditor(this);
     editor->setVisible(true);
 }
+#if 0
 /**
  * Configure the active Speed Step modes based on what is supported by
  * the DCC system
  */
 /*private*/ void ControlPanel::configureAvailableSpeedStepModes()
 {
- int modes = InstanceManager::throttleManagerInstance()->supportedSpeedModes();
+ QSet<SpeedStepMode::SSMODES> modes = InstanceManager::throttleManagerInstance()->supportedSpeedModes();
  if((modes & DccThrottle::SpeedStepMode128) != 0)
  {
   speedStep128Button->setEnabled(true);
@@ -1413,7 +1436,7 @@ else if (speedSpinner!=NULL && speedSpinner->isEnabled())
   speedStep14Button->setEnabled(false);
  }
 }
-
+#endif
 void ControlPanel::on_menu_requested()
 {
  propertiesPopup->exec(QCursor::pos());

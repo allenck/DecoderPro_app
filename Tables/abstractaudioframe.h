@@ -7,7 +7,7 @@
 
 class QScrollArea;
 class QVBoxLayout;
-class QSlider;
+class JSlider;
 class QSpinBox;
 class QDoubleSpinBox;
 class Audio;
@@ -54,7 +54,7 @@ private:
 class QDoubleSlider : public QWidget
 {
  Q_OBJECT
- QSlider* slider;
+ JSlider* slider;
 public:
  QDoubleSlider(QWidget* parent = 0);
  void setMinimum(double min);

@@ -28,6 +28,7 @@ public:
     /*public*/ void setUsingToolBar(bool win4all);
     /*public*/ bool isUsingFunctionIcon();
     /*public*/ void setUsingFunctionIcon(bool useFunctionIcon);
+    /*public*/ bool isUsingIcons();
     /*public*/ bool isResizingWindow();
     /*public*/ void setResizeWindow(bool winImg);
     /*public*/ bool isUsingRosterImage();

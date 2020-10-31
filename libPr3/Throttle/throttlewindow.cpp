@@ -888,21 +888,14 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  */
 /*public*/ void ThrottleWindow::dispose()
 {
-#if 0 // why is this here?
- if ((throttleFrames!= NULL) && (! throttleFrames->isEmpty() ))
- {
-  //for (Iterator<ThrottleFrame> tfi = throttleFrames.values().iterator(); tfi.hasNext(); )
-     QListIterator<ThrottleWindow*> tfi(throttleFrames->values());
-  {
-   tfi.next()->dispose();
-  }
- }
- throttleFrames = NULL;
-#endif
- //throttlesPanel.removeAll();
-//    removeAll();
-//    super.dispose();
+ log->debug(tr("Disposing %1").arg(getTitle()));
+ addressPanel->removeAddressListener(this);
  ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(this, addressPanel->getCurrentAddress());
+ // check for any special disposing in InternalFrames
+ controlPanel->destroy();
+ functionPanel->destroy();
+ speedPanel->destroy();
+ // dispose of this last because it will release and destroy throttle.
  addressPanel->destroy();
 
 }

@@ -1295,6 +1295,7 @@ virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  state);
 virtual void setAllPositionable(bool  state);
+virtual void setEnabled(bool  b);
 virtual void setNextLocation(Positionable*  obj);
 virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(int  state);

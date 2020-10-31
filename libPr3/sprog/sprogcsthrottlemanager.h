@@ -11,7 +11,7 @@ class SprogCSThrottle;
  public:
   /*public*/ SprogCSThrottleManager(SprogSystemConnectionMemo* memo, QObject* parent = 0);
   /*public*/ void requestThrottleSetup(LocoAddress* a, bool control) ;
-  /*public*/ int supportedSpeedModes();
+  /*public*/ QSet<SpeedStepMode::SSMODES> supportedSpeedModes();
   /*public*/ bool canBeLongAddress(int address);
   /*public*/ bool canBeShortAddress(int address);
   /*public*/ bool addressTypeUnique() ;

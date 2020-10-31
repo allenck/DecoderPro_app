@@ -39,6 +39,9 @@ signals:
  /*public*/ void focusGained(FocusEvent* fe);
  /*public*/ void focusLost(FocusEvent* fe);
 
+ public slots:
+ void currentIndexChanged(int);
+
 private:
 bool _opaque = false;
 Border* _border = nullptr;
@@ -46,7 +49,6 @@ Border* _border = nullptr;
 /*private*/ void focusOutEvent(QFocusEvent* e);
 
 private slots:
- void currentIndexChanged(int);
  //void on_selected();
 };
 Q_DECLARE_METATYPE(JComboBox)

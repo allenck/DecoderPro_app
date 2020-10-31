@@ -33,8 +33,11 @@ using namespace Sprog;
  * possible modes specified by the DccThrottle interface
  */
 //@Override
-/*public*/ int SprogCSThrottleManager::supportedSpeedModes() {
-    return (DccThrottle::SpeedStepMode128 | DccThrottle::SpeedStepMode28);
+/*public*/ QSet<SpeedStepMode::SSMODES> SprogCSThrottleManager::supportedSpeedModes() {
+ QSet<SpeedStepMode::SSMODES> modes = QSet<SpeedStepMode::SSMODES>();
+    modes.insert(SpeedStepMode::NMRA_DCC_128);
+    modes.insert(SpeedStepMode::NMRA_DCC_28);
+    return modes;
 }
 
 /**

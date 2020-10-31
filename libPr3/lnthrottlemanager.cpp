@@ -1,7 +1,7 @@
 #include "lnthrottlemanager.h"
 //#include "loconetthrottle"
 #include "loggerfactory.h"
-
+#include "speedstepmode.h"
 /**
  * LocoNet implementation of a ThrottleManager.
  * <P>
@@ -169,12 +169,14 @@ bool LnThrottleManager::singleUse() { return false; }
  * value should be xor of possible modes specifed by the
  * DccThrottle interface
  */
-/*public*/ int LnThrottleManager::supportedSpeedModes()
+/*public*/ QSet<SpeedStepMode::SSMODES> LnThrottleManager::supportedSpeedModes()
 {
- return(DccThrottle::SpeedStepMode128|
-           DccThrottle::SpeedStepMode28|
-           DccThrottle::SpeedStepMode28Mot|
-           DccThrottle::SpeedStepMode14);
+ QSet<SpeedStepMode::SSMODES> modes = QSet<SpeedStepMode::SSMODES>();
+ modes.insert(SpeedStepMode::NMRA_DCC_128);
+ modes.insert(SpeedStepMode::NMRA_DCC_28);
+ modes.insert(SpeedStepMode::MOTOROLA_28);
+ modes.insert(SpeedStepMode::NMRA_DCC_14);
+ return modes;
 }
 
 /**

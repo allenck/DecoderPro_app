@@ -430,12 +430,11 @@
      * DCC system
      */
     /*private*/ void LTFControlPanel::configureAvailableSpeedStepModes() {
-        //EnumSet<SpeedStepMode> modes = InstanceManager::throttleManagerInstance()->supportedSpeedModes();
- int modes = InstanceManager::throttleManagerInstance()->supportedSpeedModes();
-            speedStep128Button->setEnabled(modes&(SpeedStepMode::NMRA_DCC_128));
-            speedStep28Button->setEnabled(modes&(SpeedStepMode::NMRA_DCC_28));
-            speedStep27Button->setEnabled(modes&(SpeedStepMode::NMRA_DCC_27));
-            speedStep14Button->setEnabled(modes&(SpeedStepMode::NMRA_DCC_14));
+ QSet<SpeedStepMode::SSMODES> modes = InstanceManager::throttleManagerInstance()->supportedSpeedModes();
+     speedStep128Button->setEnabled(modes.contains(SpeedStepMode::NMRA_DCC_128));
+     speedStep28Button->setEnabled(modes.contains(SpeedStepMode::NMRA_DCC_28));
+     speedStep27Button->setEnabled(modes.contains(SpeedStepMode::NMRA_DCC_27));
+     speedStep14Button->setEnabled(modes.contains(SpeedStepMode::NMRA_DCC_14));
     }
 
     // initialize logging

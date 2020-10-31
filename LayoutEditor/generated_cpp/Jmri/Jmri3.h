@@ -1514,6 +1514,10 @@ virtual bool  getF8();
 virtual bool  getF8Momentary();
 virtual bool  getF9();
 virtual bool  getF9Momentary();
+virtual bool  getFunction(int  functionNum);
+virtual bool  getFunctionMomentary(int  fN);
+virtual QVector<bool >  getFunctions();
+virtual QVector<bool >  getFunctionsMomentary();
 virtual bool  getIsForward();
 virtual QVector<PropertyChangeListener* >*  getListeners();
 virtual LocoAddress*  getLocoAddress();
@@ -1578,9 +1582,13 @@ virtual void setF8(bool  arg__1);
 virtual void setF8Momentary(bool  arg__1);
 virtual void setF9(bool  arg__1);
 virtual void setF9Momentary(bool  arg__1);
+virtual void setFunction(int  functionNum, bool  newState);
+virtual void setFunctionMomentary(int  momFuncNum, bool  state);
 virtual void setIsForward(bool  arg__1);
 virtual void setRosterEntry(BasicRosterEntry*  arg__1);
 virtual void setSpeedSetting(float  arg__1);
+virtual void setSpeedSetting(float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop);
+virtual void setSpeedSettingAgain(float  speed);
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -1649,6 +1657,10 @@ inline bool  py_q_getF8() { return Throttle::getF8(); }
 inline bool  py_q_getF8Momentary() { return Throttle::getF8Momentary(); }
 inline bool  py_q_getF9() { return Throttle::getF9(); }
 inline bool  py_q_getF9Momentary() { return Throttle::getF9Momentary(); }
+inline bool  py_q_getFunction(int  functionNum) { return Throttle::getFunction(functionNum); }
+inline bool  py_q_getFunctionMomentary(int  fN) { return Throttle::getFunctionMomentary(fN); }
+inline QVector<bool >  py_q_getFunctions() { return Throttle::getFunctions(); }
+inline QVector<bool >  py_q_getFunctionsMomentary() { return Throttle::getFunctionsMomentary(); }
 inline bool  py_q_getIsForward() { return Throttle::getIsForward(); }
 inline QVector<PropertyChangeListener* >*  py_q_getListeners() { return Throttle::getListeners(); }
 inline LocoAddress*  py_q_getLocoAddress() { return Throttle::getLocoAddress(); }
@@ -1713,9 +1725,13 @@ inline void py_q_setF8(bool  arg__1) { Throttle::setF8(arg__1); }
 inline void py_q_setF8Momentary(bool  arg__1) { Throttle::setF8Momentary(arg__1); }
 inline void py_q_setF9(bool  arg__1) { Throttle::setF9(arg__1); }
 inline void py_q_setF9Momentary(bool  arg__1) { Throttle::setF9Momentary(arg__1); }
+inline void py_q_setFunction(int  functionNum, bool  newState) { Throttle::setFunction(functionNum, newState); }
+inline void py_q_setFunctionMomentary(int  momFuncNum, bool  state) { Throttle::setFunctionMomentary(momFuncNum, state); }
 inline void py_q_setIsForward(bool  arg__1) { Throttle::setIsForward(arg__1); }
 inline void py_q_setRosterEntry(BasicRosterEntry*  arg__1) { Throttle::setRosterEntry(arg__1); }
 inline void py_q_setSpeedSetting(float  arg__1) { Throttle::setSpeedSetting(arg__1); }
+inline void py_q_setSpeedSetting(float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop) { Throttle::setSpeedSetting(speed, allowDuplicates, allowDuplicatesOnStop); }
+inline void py_q_setSpeedSettingAgain(float  speed) { Throttle::setSpeedSettingAgain(speed); }
 };
 
 class PythonQtWrapper_Throttle : public QObject
@@ -1842,6 +1858,16 @@ void delete_Throttle(Throttle* obj) { delete obj; }
    bool  py_q_getF9(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getF9());}
    bool  getF9Momentary(Throttle* theWrappedObject);
    bool  py_q_getF9Momentary(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getF9Momentary());}
+   bool  getFunction(Throttle* theWrappedObject, int  functionNum);
+   bool  py_q_getFunction(Throttle* theWrappedObject, int  functionNum){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getFunction(functionNum));}
+   bool  getFunctionMomentary(Throttle* theWrappedObject, int  fN);
+   bool  py_q_getFunctionMomentary(Throttle* theWrappedObject, int  fN){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getFunctionMomentary(fN));}
+   QString  static_Throttle_getFunctionMomentaryString(int  momentFunctionNum);
+   QString  static_Throttle_getFunctionString(int  functionNum);
+   QVector<bool >  getFunctions(Throttle* theWrappedObject);
+   QVector<bool >  py_q_getFunctions(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getFunctions());}
+   QVector<bool >  getFunctionsMomentary(Throttle* theWrappedObject);
+   QVector<bool >  py_q_getFunctionsMomentary(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getFunctionsMomentary());}
    bool  getIsForward(Throttle* theWrappedObject);
    bool  py_q_getIsForward(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getIsForward());}
    QVector<PropertyChangeListener* >*  getListeners(Throttle* theWrappedObject);
@@ -1970,12 +1996,20 @@ void delete_Throttle(Throttle* obj) { delete obj; }
    void py_q_setF9(Throttle* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setF9(arg__1));}
    void setF9Momentary(Throttle* theWrappedObject, bool  arg__1);
    void py_q_setF9Momentary(Throttle* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setF9Momentary(arg__1));}
+   void setFunction(Throttle* theWrappedObject, int  functionNum, bool  newState);
+   void py_q_setFunction(Throttle* theWrappedObject, int  functionNum, bool  newState){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setFunction(functionNum, newState));}
+   void setFunctionMomentary(Throttle* theWrappedObject, int  momFuncNum, bool  state);
+   void py_q_setFunctionMomentary(Throttle* theWrappedObject, int  momFuncNum, bool  state){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setFunctionMomentary(momFuncNum, state));}
    void setIsForward(Throttle* theWrappedObject, bool  arg__1);
    void py_q_setIsForward(Throttle* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setIsForward(arg__1));}
    void setRosterEntry(Throttle* theWrappedObject, BasicRosterEntry*  arg__1);
    void py_q_setRosterEntry(Throttle* theWrappedObject, BasicRosterEntry*  arg__1){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setRosterEntry(arg__1));}
    void setSpeedSetting(Throttle* theWrappedObject, float  arg__1);
    void py_q_setSpeedSetting(Throttle* theWrappedObject, float  arg__1){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setSpeedSetting(arg__1));}
+   void setSpeedSetting(Throttle* theWrappedObject, float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop);
+   void py_q_setSpeedSetting(Throttle* theWrappedObject, float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setSpeedSetting(speed, allowDuplicates, allowDuplicatesOnStop));}
+   void setSpeedSettingAgain(Throttle* theWrappedObject, float  speed);
+   void py_q_setSpeedSettingAgain(Throttle* theWrappedObject, float  speed){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setSpeedSettingAgain(speed));}
 };
 
 
@@ -2009,7 +2043,6 @@ virtual QVariant  getThrottleInfo(DccLocoAddress*  arg__1, QString  arg__2);
 virtual QString  getUserName();
 virtual bool  hasDispatchFunction();
 virtual void removeListener(DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2);
-virtual int  supportedSpeedModes();
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -2035,7 +2068,6 @@ inline QVariant  py_q_getThrottleInfo(DccLocoAddress*  arg__1, QString  arg__2) 
 inline QString  py_q_getUserName() { return ThrottleManager::getUserName(); }
 inline bool  py_q_hasDispatchFunction() { return ThrottleManager::hasDispatchFunction(); }
 inline void py_q_removeListener(DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2) { ThrottleManager::removeListener(arg__1, arg__2); }
-inline int  py_q_supportedSpeedModes() { return ThrottleManager::supportedSpeedModes(); }
 };
 
 class PythonQtWrapper_ThrottleManager : public QObject
@@ -2077,8 +2109,6 @@ void delete_ThrottleManager(ThrottleManager* obj) { delete obj; }
    ThrottleManager*  static_ThrottleManager_instance();
    void removeListener(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2);
    void py_q_removeListener(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2){  (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_removeListener(arg__1, arg__2));}
-   int  supportedSpeedModes(ThrottleManager* theWrappedObject);
-   int  py_q_supportedSpeedModes(ThrottleManager* theWrappedObject){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_supportedSpeedModes());}
 };
 
 

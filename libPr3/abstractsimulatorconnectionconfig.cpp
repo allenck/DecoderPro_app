@@ -41,6 +41,7 @@
 
 }
 
+//@Override
 /*public*/ PortAdapter* AbstractSimulatorConnectionConfig::getAdapter() { return adapter; }
 
 /**

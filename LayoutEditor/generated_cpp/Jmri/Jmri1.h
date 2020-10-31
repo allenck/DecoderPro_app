@@ -339,6 +339,7 @@ virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  state);
 virtual void setAllPositionable(bool  state);
+virtual void setEnabled(bool  b);
 virtual void setNextLocation(Positionable*  arg__1);
 virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(int  state);
@@ -901,6 +902,7 @@ virtual QPaintEngine*  paintEngine() const;
 virtual void paintEvent(QPaintEvent*  event);
 virtual QPaintDevice*  redirected(QPoint*  offset) const;
 virtual void resizeEvent(QResizeEvent*  event);
+virtual void setEnabled(bool  b);
 virtual void setTitle(QString  _title);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
@@ -922,6 +924,7 @@ inline void py_q_dispose() { JFrame::dispose(); }
 inline QString  py_q_getTitle() { return JFrame::getTitle(); }
 inline void py_q_languageChange() { JFrame::languageChange(); }
 inline void py_q_pack() { JFrame::pack(); }
+inline void py_q_setEnabled(bool  b) { JFrame::setEnabled(b); }
 inline void py_q_setTitle(QString  _title) { JFrame::setTitle(_title); }
 inline void py_q_setVisible(bool  visible) { JFrame::setVisible(visible); }
 };
@@ -961,6 +964,7 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void setAlwaysOnTop(JFrame* theWrappedObject, bool  checked);
    void setBackground(JFrame* theWrappedObject, QColor  arg__1);
    void setDefaultCloseOperation(JFrame* theWrappedObject, int  operation);
+   void py_q_setEnabled(JFrame* theWrappedObject, bool  b){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_setEnabled(b));}
    void setFont(JFrame* theWrappedObject, QFont  arg__1);
    void setLocation(JFrame* theWrappedObject, QPoint  p);
    void setLocation(JFrame* theWrappedObject, int  x, int  y);
@@ -1044,6 +1048,7 @@ virtual QPaintEngine*  paintEngine() const;
 virtual void paintEvent(QPaintEvent*  arg__1);
 virtual QPaintDevice*  redirected(QPoint*  offset) const;
 virtual void resizeEvent(QResizeEvent*  event);
+virtual void setEnabled(bool  b);
 virtual void setName(QString  name);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
@@ -1063,6 +1068,7 @@ class PythonQtPublicPromoter_JLabel : public JLabel
 inline int  promoted_checkHorizontalKey(int  key, QString  message) { return this->checkHorizontalKey(key, message); }
 inline int  promoted_checkVerticalKey(int  key, QString  message) { return this->checkVerticalKey(key, message); }
 inline QPointF  py_q_getLocation() { return JLabel::getLocation(); }
+inline void py_q_setEnabled(bool  b) { JLabel::setEnabled(b); }
 inline void py_q_setName(QString  name) { JLabel::setName(name); }
 };
 
@@ -1098,6 +1104,7 @@ void delete_JLabel(JLabel* obj) { delete obj; }
    void setBounds(JLabel* theWrappedObject, int  x, int  y, int  w, int  h);
    void setDisplayedMnemonic(JLabel* theWrappedObject, char  aChar);
    void setDisplayedMnemonic(JLabel* theWrappedObject, int  key);
+   void py_q_setEnabled(JLabel* theWrappedObject, bool  b){  (((PythonQtPublicPromoter_JLabel*)theWrappedObject)->py_q_setEnabled(b));}
    void setFont(JLabel* theWrappedObject, QFont  arg__1);
    void setForeground(JLabel* theWrappedObject, QColor  arg__1);
    void setHorizontalAlignment(JLabel* theWrappedObject, int  alignment);
@@ -1588,6 +1595,7 @@ virtual QPaintEngine*  paintEngine() const;
 virtual void paintEvent(QPaintEvent*  event);
 virtual QPaintDevice*  redirected(QPoint*  offset) const;
 virtual void resizeEvent(QResizeEvent*  e);
+virtual void setEnabled(bool  b);
 virtual void setTitle(QString  _title);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
@@ -1862,6 +1870,7 @@ virtual void repaint();
 virtual void resizeEvent(QResizeEvent*  e);
 virtual void setAllEditable(bool  editable);
 virtual void setAllPositionable(bool  state);
+virtual void setEnabled(bool  b);
 virtual void setNextLocation(Positionable*  obj);
 virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(int  state);
