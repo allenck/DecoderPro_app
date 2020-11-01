@@ -251,7 +251,8 @@ SOURCES += javaqt.cpp \
     jcheckbox.cpp \
     etchedborder.cpp \
     jcheckboxmenuitem.cpp \
-    keyadapter.cpp
+    keyadapter.cpp \
+    loggingutil.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -557,7 +558,8 @@ HEADERS += javaqt.h\
     supplier.h \
     jcheckboxmenuitem.h \
     keyadapter.h \
-    keylistener.h
+    keylistener.h \
+    loggingutil.h
 
 unix {
     target.path = /usr/lib

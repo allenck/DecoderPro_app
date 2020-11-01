@@ -22,6 +22,24 @@ MySlider::MySlider(QWidget *parent) : QWidget(parent)
  verticalLayout_2 = NULL;
  horizontalLayout = NULL;
 }
+MySlider::MySlider(int min, int max, QWidget *parent) : QWidget(parent)
+{
+ if(objectName().isEmpty())
+  setObjectName("MySlider");
+ resize(55, 600);
+ tickSpacing = 0;
+ orientation = Qt::Vertical;
+ max = 1;
+ min = 0;
+ isAdjusting = false;
+ labelTable = QVector<QLabel*>();
+ slider = new QSlider();
+ //slider->setMinimumHeight(200);
+ verticalLayout_2 = NULL;
+ horizontalLayout = NULL;
+ setMinimum(min);
+ setMaximum(max);
+}
 
 void MySlider::setMaximum(int i)
 {

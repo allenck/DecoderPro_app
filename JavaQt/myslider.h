@@ -12,6 +12,7 @@ class MySlider : public QWidget
  Q_OBJECT
 public:
  explicit MySlider(QWidget *parent = nullptr);
+  MySlider(int min, int max, QWidget *parent = nullptr);
  void setMaximum(int);
  void setMinimum(int);
  void setRange(int, int);
@@ -26,6 +27,8 @@ public:
  void setEnabled(bool);
  bool isEnabled();
  bool getValueIsAdjusting();
+ void setPaintTicks(bool) {}
+ void setPaintLabels(bool) {}
 
 signals:
 void valueChanged(int);

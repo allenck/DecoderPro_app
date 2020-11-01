@@ -18,6 +18,7 @@
 #include <QAbstractButton>
 
 class ThrottlesPreferences;
+class MySlider;
 class JSlider;
 class AddressPanel;
 class LocoAddress;
@@ -89,10 +90,10 @@ private:
     /*private*/ JSpinner* speedSpinner;
     /*private*/ SpinnerNumberModel* speedSpinnerModel;
     /*private*/ JComboBox/*<SpeedStepMode>*/* speedStepBox;
-    /*private*/ QRadioButton* speedStep128Button;
-    /*private*/ QRadioButton* speedStep28Button;
-    /*private*/ QRadioButton* speedStep27Button;
-    /*private*/ QRadioButton* speedStep14Button;
+//    /*private*/ QRadioButton* speedStep128Button;
+//    /*private*/ QRadioButton* speedStep28Button;
+//    /*private*/ QRadioButton* speedStep27Button;
+//    /*private*/ QRadioButton* speedStep14Button;
     /*private*/ QRadioButton *forwardButton, *reverseButton;
     /*private*/ QPushButton* stopButton;
     /*private*/ QPushButton* idleButton;

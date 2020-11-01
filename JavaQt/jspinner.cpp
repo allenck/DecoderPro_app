@@ -128,3 +128,8 @@ JSpinner::JSpinner(SpinnerModel* model, QWidget* parent) : QSpinBox(parent)
 {
 
 }
+
+/*public*/ void JSpinner::setEnabled(bool b)
+{
+ QSpinBox::setEnabled(b);
+}

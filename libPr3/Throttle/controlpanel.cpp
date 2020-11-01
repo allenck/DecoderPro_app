@@ -31,6 +31,7 @@
 #include <vptr.h>
 #include <QSet>
 #include <QHash>
+#include "loggingutil.h"
 
 //ControlPanel::ControlPanel(QWidget *parent) :
 //    QDockWidget(parent)
@@ -75,8 +76,8 @@
  MAX_SPEED = 126;
 
  _throttleFrame = ltf;
- speedSlider = new JSlider(0, MAX_SPEED);
- speedSlider->setValue(0);
+// speedSlider = new JSlider(0, MAX_SPEED);
+// speedSlider->setValue(0);
   //speedSlider->setFocusable(false);
  trackSlider = false;
  trackSliderDefault = false;
@@ -96,20 +97,20 @@
 //      }
 //    });
 
-    speedSpinner = new JSpinner();
+    //speedSpinner = new JSpinner();
 
 //    speedSpinnerModel = new SpinnerNumberModel(0, 0, MAX_SPEED, 1);
 //    speedSpinner->setModel(speedSpinnerModel);
 //    speedSpinner->setFocusable(false);
- speedSpinner->setMinimum(0);
- speedSpinner->setMaximum(MAX_SPEED);
- speedSpinner->setSingleStep(1);
- speedSpinner->setValue(0);
+// speedSpinner->setMinimum(0);
+// speedSpinner->setMaximum(MAX_SPEED);
+// speedSpinner->setSingleStep(1);
+// speedSpinner->setValue(0);
 
- speedStep128Button = new QRadioButton(tr("128 SS"));
- speedStep28Button = new QRadioButton(tr("28 SS"));
- speedStep27Button = new QRadioButton(tr("27 SS"));
- speedStep14Button= new QRadioButton(tr("14 SS"));
+// speedStep128Button = new QRadioButton(tr("128 SS"));
+// speedStep28Button = new QRadioButton(tr("28 SS"));
+// speedStep27Button = new QRadioButton(tr("27 SS"));
+// speedStep14Button= new QRadioButton(tr("14 SS"));
  log = new Logger("ControlPanel");
  log->setDebugEnabled(true);
  initGUI();
@@ -390,20 +391,22 @@
                 InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences();
  internalAdjust = true;
  int maxSpeedPCT = 100;
- if (addressPanel != NULL) {
+ if (addressPanel != nullptr && addressPanel->getRosterEntry() != nullptr)  {
      maxSpeedPCT = addressPanel->getRosterEntry()->getMaxSpeedPCT();
  }
 
  // Save the old speed as a float
  float oldSpeed = (speedSlider->value() / (maxSpeed * 1.0f));
 
- if (speedStepMode == SpeedStepMode::UNKNOWN) {
-             speedStepMode = (SpeedStepMode::SSMODES) speedStepBox->currentData().toInt();
-         } else {
-             //speedStepBox->setSelectedItem(speedStepMode);
-          speedStepBox->setCurrentIndex(speedStepBox->findText(SpeedStepMode(speedStepMode).name));
-         }
-         intSpeedSteps = SpeedStepMode(speedStepMode).numSteps;
+ if (speedStepMode == SpeedStepMode::UNKNOWN)
+ {
+  speedStepMode = (SpeedStepMode::SSMODES) speedStepBox->currentData().toInt();
+ } else {
+     //speedStepBox->setSelectedItem(speedStepMode);
+  speedStepBox->setCurrentIndex(speedStepBox->findText(SpeedStepMode(speedStepMode).name));
+ }
+ intSpeedSteps = SpeedStepMode(speedStepMode).numSteps;
+
  /* Set maximum speed based on the max speed stored in the roster as a percentage of the maximum */
  maxSpeed = (int) ((float) intSpeedSteps * ((float) maxSpeedPCT) / 100);
 
@@ -533,7 +536,14 @@
     return;
    }
    break;
-}
+  case SLIDERDISPLAY:
+     // normal, drop through
+     break;
+ default:
+     LoggingUtil::warnOnce(log, tr("Unexpected displaySlider = %1").arg(displaySlider));
+     break;
+ }
+
  sliderPanel->setVisible(true);
  speedSlider->setEnabled(speedControllerEnable);
  spinnerPanel->setVisible(false);
@@ -544,7 +554,6 @@
  if (speedSliderContinuous != NULL) {
      speedSliderContinuous->setEnabled(false);
  }
-
 }
 /**
  * Get the value indicating what speed input we're displaying
@@ -578,7 +587,9 @@
   *                       increase for each speed step.
   * @param speed          The speed value of the loco.
   */
- /*private*/ void ControlPanel::setSpeedValues(float speedIncrement, float speed) {//This is an internal speed adjustment
+ /*private*/ void ControlPanel::setSpeedValues(float speedIncrement, float speed)
+ {
+  //This is an internal speed adjustment
     internalAdjust = true;
     //Translate the speed sent in to the max allowed by any set speed limit
     speedSlider->setValue(qRound(speed / speedIncrement));
@@ -666,6 +677,7 @@
     GridBagConstraints constraints = makeDefaultGridBagConstraints();
 
     sliderPanelLayout->addWidget(speedSlider, constraints);
+
 }
 
 /*private*/ void ControlPanel::layoutSpeedSliderContinuous() {
@@ -706,11 +718,11 @@
  /*final*/ ThrottlesPreferences* preferences = ((ThrottleFrameManager*)
          InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences();
 
- mainPanel = new QWidget();
+ mainPanel = new JPanel();
  //this.setContentPane(mainPanel);
- this->setWidget(mainPanel);
  QVBoxLayout* mainPanelLayout;
  mainPanel->setLayout(mainPanelLayout = new QVBoxLayout());
+ this->setWidget(mainPanel);
  //((JFrame*)this->window())->setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
 
  topButtonPanel = new JPanel();
@@ -726,13 +738,8 @@
  speedControlPanel->setLayout(speedControlPanelLayout = new QHBoxLayout());//speedControlPanel, BoxLayout.X_AXIS));
  //speedControlPanel.setOpaque(false);
  mainPanelLayout->addWidget(speedControlPanel, 0, Qt::AlignCenter); //BorderLayout.CENTER);
- sliderPanel = new QFrame();
- //GridBagLayout* sliderPanelLayout;
- QHBoxLayout* sliderPanelLayout;
- //sliderPanel->setLayout(sliderPanelLayout = new GridBagLayout());
- sliderPanel->setLayout(sliderPanelLayout = new QHBoxLayout());
+ sliderPanel = new JPanel();
  //sliderPanel.setOpaque(false);
-
  speedSlider = new JSlider(0, intSpeedSteps);
  if (preferences->isUsingIcons()) {
 //     speedSlider.setUI(new ControlPanelCustomSliderUI(speedSlider));
@@ -827,6 +834,7 @@
  propertiesPopup = new QMenu();
 
  layoutSliderPanel();
+
  speedControlPanelLayout->addWidget(sliderPanel);
  speedSlider->setOrientation(Qt::Vertical);
  speedSlider->setMajorTickSpacing(maxSpeed / 2);

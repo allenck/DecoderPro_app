@@ -207,10 +207,10 @@ AddressPanel::~AddressPanel()
  ui->releaseButton->setEnabled(true);
  currentAddress = (DccLocoAddress*) t->getLocoAddress();
  addrSelector->setAddress(currentAddress);
- //throttle->addPropertyChangeListener((PropertyChangeListener*)this);
- connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- AbstractThrottle* at = (AbstractThrottle*)throttle;
- connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ //AbstractThrottle* at = (AbstractThrottle*)throttle;
+ //connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  // can we find a roster entry?
  if ((rosterEntry == NULL) &&

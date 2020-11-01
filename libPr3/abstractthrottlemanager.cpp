@@ -693,7 +693,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    break;
   }
  }
- if(f)
+ if(f && addressThrottles->value(la)->getThrottle())
  {
   addressThrottles->value(la)->getThrottle()->removePropertyChangeListener(p);
   p->propertyChange(new PropertyChangeEvent(this, "throttleRemoved", la, NULL));

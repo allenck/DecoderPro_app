@@ -27,12 +27,13 @@ void JSlider::common()
  //slider->setMinimumHeight(200);
  verticalLayout_2 = NULL;
  horizontalLayout = NULL;
-    sliderModel = new DefaultBoundedRangeModel(0,0,0,100);
-    setMinimum(0);
-    setMaximum(100);
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
-    setValue(0);
-    listeners = QVector<ChangeListener*>();
+
+ sliderModel = new DefaultBoundedRangeModel(0,0,0,100);
+ setMinimum(0);
+ setMaximum(100);
+ //connect(slider, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
+ setValue(0);
+ listeners = QVector<ChangeListener*>();
 }
 
 /**
@@ -85,7 +86,7 @@ void JSlider::common()
  case Qt::Horizontal:
    break;
  default:
-   throw new IllegalArgumentException("orientation must be one of: VERTICAL, HORIZONTAL");
+   throw IllegalArgumentException("orientation must be one of: VERTICAL, HORIZONTAL");
  }
 }
 /**
@@ -112,7 +113,7 @@ void JSlider::common()
  sliderModel->setMinimum(min);
  setMaximum(max);
  sliderModel->setMaximum(max);
- connect(this, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
+ //connect(this, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
 
 }
 /**
@@ -127,7 +128,7 @@ void JSlider::common()
     setModel(brm);
     setMaximum(brm->getMaximum());
     setMinimum(brm->getMinimum());
-    connect(this, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
+    //connect(this, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
     setValue(brm->getValue());
     //updateUI();
 }
@@ -183,13 +184,13 @@ void JSlider::common()
 /*public*/ BoundedRangeModel* JSlider::getModel() {
     return sliderModel;
 }
-void JSlider::valueChanged(int value)
-{
- sliderModel->setValue(value);
- foreach (ChangeListener* l, listeners) {
-  l->stateChanged(new ChangeEvent(this));
- }
-}
+//void JSlider::valueChanged(int value)
+//{
+// sliderModel->setValue(value);
+// foreach (ChangeListener* l, listeners) {
+//  l->stateChanged(new ChangeEvent(this));
+// }
+//}
 
 void JSlider::setMinimum(int i)
 {
@@ -210,19 +211,28 @@ void JSlider::setValue(int i)
  sliderModel->setValue(i);
  slider->setValue(i);
 }
+void JSlider::setSingleStep(int v) { slider->setSingleStep(v);}
+void JSlider::onValueChanged(int v)
+{
+ emit valueChanged(v);
+}
 
 /*public*/ void JSlider::addChangeListener(ChangeListener* l)
 {
  listeners.append(l);
 }
+
 /*public*/ void JSlider::removeChangeListener(ChangeListener* l)
 {
  listeners.removeOne(l);
 }
+
 /*public*/ void JSlider::setVisible(bool b)
 {
-// QSlider::setVisible(b);
+ slider->setVisible(b);
+ QWidget::setVisible(b);
 }
+
 void JSlider::setLabelTable(QHash<int,QLabel*> labelTable)
 {
  if(this->labelTable.isEmpty())
@@ -240,7 +250,7 @@ void JSlider::layoutWidget()
 {
  if(labelTable.isEmpty())
   return;
- if(verticalLayout_2!= NULL)
+ if(verticalLayout_2 != NULL)
  {
   QObjectList ol = verticalLayout_2->children();
   foreach(QObject* o, ol)
@@ -251,7 +261,7 @@ void JSlider::layoutWidget()
   delete verticalLayout_2;
   verticalLayout_2 = NULL;
  }
- if(horizontalLayout!= NULL)
+ if(horizontalLayout != NULL)
  {
   QObjectList ol = horizontalLayout->children();
   foreach(QObject* o, ol)
@@ -339,6 +349,38 @@ void JSlider::setOrientation(Qt::Orientation orientation)
 }
 int JSlider::maximum() { return slider->maximum();}
 int JSlider::minimum() { return slider->minimum();}
+void JSlider::setTickInterval(int i) {slider->setTickInterval(i);}
+void JSlider::setTickPosition(QSlider::TickPosition pos)
+{
+ slider->setTickPosition(pos);
+ switch (pos) {
+ case QSlider::NoTicks:
+  bSetPaintTicks = false;
+  break;
+ default:
+  bSetPaintTicks = true;
+  break;
+ }
+}
+void JSlider::setPaintTicks(bool b) {bPaintTicks = b;}
+void JSlider::setPaintLabels(bool b) {bPaintLabels = b;}
+
+void  JSlider::setEnabled(bool b)
+{
+ slider->setEnabled(b);
+ QWidget::setEnabled(b);
+}
+
+bool JSlider::isEnabled() { return slider->isEnabled();}
+
+bool JSlider::getValueIsAdjusting() {return isAdjusting;}
+
+void JSlider::sliderPressed(){isAdjusting = true;}
+void JSlider::sliderReleased() {isAdjusting = false;}
+
+bool JSlider::getPaintTicks() {return bSetPaintTicks;}
+bool JSlider::getPaintLabels() {return bSetPaintLabels;}
+
 
 void JSlider::resizeEvent(QResizeEvent* evt)
 {

@@ -92,7 +92,7 @@ private:
     /*private*/ RosterEntrySelectorPanel* rosterBox;
     /*private*/ QComboBox* conRosterBox;
 
-    /*private*/ RosterEntry* rosterEntry;
+    /*private*/ RosterEntry* rosterEntry = nullptr;
     /*private*/ void notifyListenersOfThrottleRelease();
     Logger* log;
     /*private*/ void changeOfAddress();

@@ -27,27 +27,38 @@ public:
     /*public*/ void addChangeListener(ChangeListener*);
     /*public*/ void removeChangeListener(ChangeListener*);
     /*public*/ void setVisible(bool b);
-    /*public*/ bool getValueIsAdjusting() {return isAdjusting;}
+    /*public*/ bool getValueIsAdjusting();
     void setLabelTable(QHash<int,QLabel*> labelTable);
     void setMajorTickSpacing(int v);
     void setOrientation(Qt::Orientation);
     int value();
     int  maximum();
     int  minimum();
-    void setTickInterval(int i) {slider->setTickInterval(i);}
-    void setTickPosition(QSlider::TickPosition pos){slider->setTickPosition(pos);}
-    void setPaintTicks(bool b) {bPaintTicks = b;}
-    void setPaintLabels(bool b) {bPaintLabels = b;}
+    void setTickInterval(int i);
+    void setTickPosition(QSlider::TickPosition pos);
+    void setPaintTicks(bool b);
+    void setPaintLabels(bool b);
+    void setSingleStep(int v);
+    void  setEnabled(bool b);
+    bool isEnabled();
+    void sliderPressed();
+    void sliderReleased();
+    bool getPaintTicks();
+    bool getPaintLabels();
 
  signals:
+    void valueChanged(int);
 
 public slots:
-    void valueChanged(int);
+    void onValueChanged(int v);
+
 private:
     /*private*/ void checkOrientation(int orientation);
     QVector<ChangeListener*> listeners;
     QHash<int,QLabel*> labelTable;
     bool isAdjusting;
+    bool bSetPaintTicks = true;
+    bool bSetPaintLabels = true;
     void resizeEvent(QResizeEvent *event);
     QVBoxLayout* verticalLayout_2;
     QHBoxLayout* horizontalLayout;
