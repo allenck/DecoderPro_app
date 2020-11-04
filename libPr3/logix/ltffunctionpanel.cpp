@@ -40,7 +40,8 @@
 /*public*/ void LTFFunctionPanel::notifyThrottleFound(DccThrottle* t) {
     log->debug("Throttle found");
     _throttle = t;
-    for (int i = 0; i < LTFFunctionPanel::NUM_FUNCTION_BUTTONS; i++) {
+    for (int i = 0; i < LTFFunctionPanel::NUM_FUNCTION_BUTTONS; i++)
+    {
         int functionNumber = functionButton[i]->getIdentity();
         functionButton[i]->setState(_throttle->getFunction(functionNumber));
         if (_rosterEntry != nullptr) {

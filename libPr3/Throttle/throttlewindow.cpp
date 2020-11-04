@@ -22,7 +22,6 @@
 #include "throttlecreationaction.h"
 #include "smallpowermanagerbutton.h"
 #include "controlpanel.h"
-#include "logix/learnthrottleframe.h"
 #include "warrantframe.h"
 #include "functionpanel.h"
 #include "loconetsystemconnectionmemo.h"
@@ -57,8 +56,7 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  this->addDockWidget(static_cast<Qt::DockWidgetArea>(Qt::RightDockWidgetArea ), addressPanel,Qt::Horizontal);
  connect(this, SIGNAL(throttleWindowupdate(PropertyChangeEvent*)), addressPanel, SLOT(propertyChange(PropertyChangeEvent*)));
 
- LearnThrottleFrame* lf = NULL; //new LearnThrottleFrame(new WarrantFrame("xxx",this));
- controlPanel = new ControlPanel(lf, this);
+ controlPanel = new ControlPanel(this);
  controlPanel->setObjectName(QString::fromUtf8("controlPanel"));
  controlPanel->setWindowTitle(tr("Control Panel"));
  controlPanel->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);

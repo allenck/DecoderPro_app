@@ -28,7 +28,6 @@ class NamedIcon;
 class QPushButton;
 class JLabel;
 class PropertyChangeEvent;
-class LearnThrottleFrame;
 class QSlider;
 class QSpinBox;
 class QRadioButton;
@@ -39,7 +38,7 @@ class ControlPanel : public QDockWidget, public AddressListener
  Q_INTERFACES(AddressListener)
 public:
     //explicit ControlPanel(QWidget *parent = 0);
-    /*public*/ ControlPanel(LearnThrottleFrame* ltf, QWidget *parent);
+    /*public*/ ControlPanel(QWidget *parent);
     /*public*/ void setAddressPanel(AddressPanel* addressPanel);
     /*public*/  ~ControlPanel();
     /*public*/ void destroy();
@@ -83,7 +82,6 @@ public slots:
  /*public*/ void actionPerformed(/*ActionEvent e*/);
 
 private:
- /*private*/ LearnThrottleFrame* _throttleFrame;
     /*private*/ QWidget* mainPanel;
     /*private*/ JSlider* speedSlider;
     /*private*/ JSlider* speedSliderContinuous;

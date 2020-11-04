@@ -6,7 +6,6 @@
 #include "abstractthrottle.h"
 #include <QLabel>
 #include "instancemanager.h"
-#include "logix/learnthrottleframe.h"
 #include <QVBoxLayout>
 #include "jframe.h"
 #include <QSlider>
@@ -58,7 +57,7 @@
 /**
  *  Constructor.
  */
-/*public*/ ControlPanel::ControlPanel(LearnThrottleFrame* ltf, QWidget *parent) : QDockWidget(tr("Speed"),parent)
+/*public*/ ControlPanel::ControlPanel(QWidget *parent) : QDockWidget(tr("Speed"),parent)
 {
  //super("Speed");
  _displaySlider = SLIDERDISPLAY;
@@ -75,7 +74,6 @@
  intSpeedSteps = 126;
  MAX_SPEED = 126;
 
- _throttleFrame = ltf;
 // speedSlider = new JSlider(0, MAX_SPEED);
 // speedSlider->setValue(0);
   //speedSlider->setFocusable(false);
@@ -1013,7 +1011,7 @@
   }
  });
 
-stopButton = new JButton();
+stopButton = new QPushButton();
 setupButton(stopButton, preferences, "resources/icons/throttles/estop.png",
   "resources/icons/throttles/estop24.png", tr("EStop"));
 
@@ -1046,7 +1044,7 @@ stopButton.addMouseListener(
           }
       });
 #endif
-         idleButton = new JButton();
+         idleButton = new QPushButton();
          setupButton(idleButton, preferences, "resources/icons/throttles/stop.png",
              "resources/icons/throttles/stop24.png", tr("Idle"));
 

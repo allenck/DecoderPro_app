@@ -16,6 +16,9 @@
 #include "windowpreferences.h"
 
 
+/**
+ * Constructor
+ */
 FunctionPanel::FunctionPanel(QWidget *parent) :
     QDockWidget(parent),
     ui(new Ui::FunctionPanel)
@@ -77,21 +80,14 @@ FunctionPanel::~FunctionPanel()
 {
     delete ui;
 }
+
 /**
  * A JInternalFrame that contains buttons for each decoder function.
  */
 ///*public*/ class FunctionPanel extends JInternalFrame implements FunctionListener, java.beans.PropertyChangeListener, AddressListener
 //{
-    /*public*/ /*static final*/ int FunctionPanel::NUM_FUNCTION_BUTTONS = 29;
-    /*public*/ /*static final*/ int FunctionPanel::NUM_FUNC_BUTTONS_INIT = 16;	//only show 16 function buttons at start
-
-    /**
-     * Constructor
-     */
-//    /*public*/ FunctionPanel()
-//    {
-//        initGUI();
-//    }
+/*public*/ /*static final*/ int FunctionPanel::NUM_FUNCTION_BUTTONS = 29;
+/*public*/ /*static final*/ int FunctionPanel::NUM_FUNC_BUTTONS_INIT = 16;	//only show 16 function buttons at start
 
 /*public*/ void FunctionPanel::destroy()
 {
