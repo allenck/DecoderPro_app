@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include "liblayouteditor_global.h"
 
+class Manager;
 class QTextEdit;
 class MDefaultListModel;
 class Logger;
@@ -27,6 +28,8 @@ signals:
 
 public slots:
 private:
+    /*private*/ static QList<QString> getSystemNameList(Manager* mgr);
+
 };
 
 class MDefaultListModel : public QAbstractListModel

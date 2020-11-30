@@ -5,6 +5,7 @@
 #include <QStringList>
 #include "turnout.h"
 #include "abstractmanager.h"
+#include "localdatetime.h"
 
 class TurnoutManager :  public AbstractManager
 {
@@ -174,6 +175,28 @@ public:
         virtual QString getDefaultThrownSpeed() const{return "";}
 
         virtual QString getDefaultClosedSpeed() const {return "";}
+        /**
+         * Get the Interval (in ms) to wait between output commands.
+         * Configured in AdapterConfig, stored in memo.
+         *
+         * @return the (Turnout) Output Interval in milliseconds
+         */
+        virtual /*public*/ int getOutputInterval() {return 0;}
+
+        /**
+         * Set the Interval (in ms) to wait between output commands.
+         *
+         * @param newInterval the new Output Interval in Milliseconds
+         */
+        virtual /*public*/ void setOutputInterval(int newInterval) {}
+
+        /**
+         * Get end time of latest OutputInterval, calculated from the current time.
+         *
+         * @return end time in milliseconds or current time if no interval was set or timer has completed
+         */
+        //@Nonnull
+        virtual /*public*/ LocalDateTime outputIntervalEnds() {}
 
 signals:
     

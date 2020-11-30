@@ -246,7 +246,7 @@ case Conditional::ITEM_TYPE_ENTRYEXIT:
    break;
 default:
    if (getType() == Conditional::ACTION_TRIGGER_ROUTE) {
-           bean = static_cast<RouteManager*>(InstanceManager::getDefault("RouteManager"))->getRoute(devName);
+           bean = (NamedBean*)static_cast<RouteManager*>(InstanceManager::getDefault("RouteManager"))->getRoute(devName);
            if (bean == NULL)
            {
            log->error(tr("invalid Route name= \"%1\" in conditional action").arg(devName));

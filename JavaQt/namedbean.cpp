@@ -22,6 +22,11 @@
  */
 /*public*/ /*static*/ /*final*/ QString NamedBean::QUOTED_NAME_FORMAT = "\"%1\" (%2)";
 
+/**
+ * Property of changed state.
+ */
+/*public*/ /*static*/ /*final*/ QString NamedBean::PROPERTY_STATE = "state";
+
 NamedBean::NamedBean(QObject *parent) : QObject(parent)
 {
 // _parent = parent;

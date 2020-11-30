@@ -138,8 +138,8 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
  bool mdnsConfig = false;
  try {
      mdnsConfig = (shared.attribute("mdnsConfigure") == ("true"));
- }
- catch (NullPointerException ex) {  // considered normal if the attributes are not present
+  }
+  catch (NullPointerException ex) {  // considered normal if the attributes are not present
  }
  adapter->setMdnsConfigure(mdnsConfig);
 

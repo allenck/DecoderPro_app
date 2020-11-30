@@ -5,6 +5,7 @@
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "controllerinterface.h"
+#include "defaultroute.h"
 
 //RouteController::RouteController()
 //{
@@ -43,7 +44,7 @@ bool RouteController::verifyCreation() {
     QStringList tempList = QStringList(0);
     foreach (QString sysName, sysNameList) {
         Route* r = manager->getBySystemName(sysName);
-        QVariant o = r->getProperty("WifiControllable");
+        QVariant o = ((DefaultRoute*)r)->getProperty("WifiControllable");
         if ((o == QVariant()) || (o.toString().toLower()!=("false"))) {
             //  Only skip if 'false'
             tempList.append(sysName);
@@ -121,8 +122,8 @@ void RouteController::handleMessage(QString message) {
         Route* r = manager->getBySystemName(sysName);
         list.append(QString("]\\[") + sysName);
         list.append("}|{");
-        if (r->getUserName() != NULL) {
-            list.append(r->getUserName());
+        if (((DefaultRoute*)r)->getUserName() != NULL) {
+            list.append(((DefaultRoute*)r)->getUserName());
         }
         list.append("}|{");
         QString turnoutsAlignedSensor = r->getTurnoutsAlignedSensor();
@@ -156,7 +157,7 @@ void RouteController::handleMessage(QString message) {
             NamedBeanHandle<Sensor*>* namedSensor = en.next();
             if (namedSensor->getBean() == s) {
                 Route* r = indication->value(namedSensor);
-                QString message = "PRA" + s->getKnownState() + r->getSystemName();
+                QString message = "PRA" + s->getKnownState() + ((DefaultRoute*)r)->getSystemName();
 
                 foreach (ControllerInterface* listener, *listeners) {
                     listener->sendPacketToDevice(message);
@@ -183,7 +184,7 @@ void RouteController::handleMessage(QString message) {
                 //sensor.addPropertyChangeListener(this, routeAligned.getName(), "Wi Throttle Route Controller");
                 connect(sensor, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
                 if (log->isDebugEnabled()) {
-                    log->debug("Add listener to Sensor: " + routeAligned->getName() + " for Route: " + r->getSystemName());
+                    log->debug("Add listener to Sensor: " + routeAligned->getName() + " for Route: " + ((DefaultRoute*)r)->getSystemName());
                 }
             }
         }
@@ -206,7 +207,7 @@ void RouteController::handleMessage(QString message) {
         //namedSensor->getBean().removePropertyChangeListener(this);
         connect(namedSensor->getBean(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         if (log->isDebugEnabled()) {
-            log->debug("Removing listener from Sensor: " + namedSensor->getName() + " for Route: " + (indication->value(namedSensor))->getSystemName());
+            log->debug("Removing listener from Sensor: " + namedSensor->getName() + " for Route: " + ((NamedBean*)(indication->value(namedSensor)))->getSystemName());
         }
     }
     indication = new QHash<NamedBeanHandle<Sensor*>*, Route*>();

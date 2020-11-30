@@ -531,8 +531,8 @@ public:
  /*public*/ void configureTable(JTable* table);
  void doDelete(NamedBean* bean);
  /*public*/ Manager* getManager();
- /*public*/ Route* getBySystemName(QString name) const;
- /*public*/ Route* getByUserName(QString name) ;
+ /*public*/ NamedBean* getBySystemName(QString name) const;
+ /*public*/ NamedBean* getByUserName(QString name) ;
  /*/*public*/ int getDisplayDeleteMsg();
  /*public*/ void clickOn(NamedBean* t);
  /*public*/ QString getValue(QString s) const;

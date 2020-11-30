@@ -32,6 +32,8 @@
 #include "lightmanager.h"
 //#include "rfid/transpondingtagmanager.h"
 #include "audiomanager.h"
+#include "metermanager.h"
+
 /**
  * Provides methods for locating various interface implementations.
  * These form the base for locating JMRI objects, including the key managers.
@@ -261,6 +263,7 @@ static /*public*/ T* getNullableDefaultT(QString type)
  return (T*)getDefault()->getInstance(type);
 }
 static /*public*/ void setIdTagManager(IdTagManager *p);
+static /*public*/ void setMeterManager(MeterManager* p);
 
 
 signals:

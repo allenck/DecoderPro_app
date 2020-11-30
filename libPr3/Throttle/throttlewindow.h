@@ -66,6 +66,7 @@ public:
     /*public*/ static void setTransparent(QObject* jcomp, bool transparency);
     QObject* self() {return (QObject*)this;}
     QString getClassName();
+    /*public*/ void saveRosterChanges();
 
 public slots:
     /*public*/ void saveThrottle();
@@ -172,7 +173,6 @@ private slots:
     void propertyChange(PropertyChangeEvent* e);
     /*private*/ void editPreferences();
     /*private*/ void switchMode();
-    void OnEditMenuExportRoster();
 
 friend class PropertyChangeSupport;
 friend class LocoNetSlot;

@@ -322,7 +322,7 @@ RouteTableDataModel::RouteTableDataModel(RouteTableAction *parent)
  {
   Route* r;
   QString name = data(index(mindex.row(), (int)SYSNAMECOL),Qt::DisplayRole).toString();
-  r = getBySystemName(name);
+  r = (Route*)getBySystemName(name);
   return r->canLock()? def | Qt::ItemIsUserCheckable: Qt::NoItemFlags;
  }
  else return BeanTableDataModel::flags(mindex);
@@ -470,12 +470,12 @@ void RouteTableDataModel::doDelete(NamedBean* bean)
 }
 
 /*public*/ Manager* RouteTableDataModel::getManager() { return InstanceManager::routeManagerInstance(); }
-/*public*/ Route* RouteTableDataModel::getBySystemName(QString name) const
+/*public*/ NamedBean *RouteTableDataModel::getBySystemName(QString name) const
 {
- return InstanceManager::routeManagerInstance()->getBySystemName(name);
+ return (NamedBean*)InstanceManager::routeManagerInstance()->getBySystemName(name);
 }
-/*public*/ Route* RouteTableDataModel::getByUserName(QString name) {
-    return InstanceManager::routeManagerInstance()->getByUserName(name);
+/*public*/ NamedBean *RouteTableDataModel::getByUserName(QString name) {
+    return (NamedBean*)InstanceManager::routeManagerInstance()->getByUserName(name);
 }
 
 /*protected*/ QString RouteTableDataModel::getMasterClassName()

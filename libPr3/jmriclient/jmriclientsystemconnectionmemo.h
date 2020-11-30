@@ -1,6 +1,6 @@
 #ifndef JMRICLIENTSYSTEMCONNECTIONMEMO_H
 #define JMRICLIENTSYSTEMCONNECTIONMEMO_H
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 
 class ReporterManager;
 class LightManager;
@@ -9,7 +9,7 @@ class TurnoutManager;
 class SensorManager;
 class ComponentFactory;
 class JMRIClientTrafficController;
-class JMRIClientSystemConnectionMemo : public SystemConnectionMemo
+class JMRIClientSystemConnectionMemo : public DefaultSystemConnectionMemo
 {
  Q_OBJECT
 public:
@@ -17,7 +17,7 @@ public:
  /*public*/ JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt);
  /*public*/ JMRIClientTrafficController* getJMRIClientTrafficController();
  ~JMRIClientSystemConnectionMemo() {}
- JMRIClientSystemConnectionMemo(const JMRIClientSystemConnectionMemo&) : SystemConnectionMemo() {}
+ JMRIClientSystemConnectionMemo(const JMRIClientSystemConnectionMemo&) : DefaultSystemConnectionMemo() {}
  /*public*/ void setJMRIClientTrafficController(JMRIClientTrafficController* jt);
  /*public*/ void dispose();
  /*public*/ void configureManagers();

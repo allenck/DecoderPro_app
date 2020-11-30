@@ -41,8 +41,6 @@ public:
     void setSingleStep(int v);
     void  setEnabled(bool b);
     bool isEnabled();
-    void sliderPressed();
-    void sliderReleased();
     bool getPaintTicks();
     bool getPaintLabels();
 
@@ -51,6 +49,8 @@ public:
 
 public slots:
     void onValueChanged(int v);
+    void sliderPressed();
+    void sliderReleased();
 
 private:
     /*private*/ void checkOrientation(int orientation);

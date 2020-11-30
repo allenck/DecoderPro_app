@@ -1,11 +1,11 @@
 #ifndef RPSSYSTEMCONNECTIONMEMO_H
 #define RPSSYSTEMCONNECTIONMEMO_H
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include "manager.h"
 
 class RpsReporterManager;
 class RpsSensorManager;
-class RpsSystemConnectionMemo : public SystemConnectionMemo
+class RpsSystemConnectionMemo : public DefaultSystemConnectionMemo
 {
 public:
  /*public*/ RpsSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name, QObject* parent = nullptr);
@@ -16,7 +16,7 @@ public:
  /*public*/ bool provides(/*Class<?>*/QString type)override;
  /*public*/ Manager* get(QString T);
  /*public*/ QString validateSystemNameFormat(QString name, Manager* manager, QLocale locale);
- /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName, char type)const ;
+ /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName, char type) ;
 
 private:
  static Logger* log;

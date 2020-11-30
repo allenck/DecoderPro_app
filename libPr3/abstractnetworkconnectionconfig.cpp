@@ -4,7 +4,7 @@
 #include "instancemanager.h"
 #include <QCheckBox>
 #include "jtextfield.h"
-#include <QLabel>
+#include "jlabel.h"
 #include "systemconnectionmemo.h"
 #include <QMessageBox>
 #include <QComboBox>
@@ -15,6 +15,7 @@
 #include "gridbagconstraints.h"
 #include "abstractnetworkportcontroller.h"
 #include <QSignalMapper>
+
 
 AbstractNetworkConnectionConfig::AbstractNetworkConnectionConfig(QObject *parent) :
   AbstractConnectionConfig(parent)
@@ -455,6 +456,22 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  serviceTypeField->setText(adapter->getServiceType());
  serviceTypeFieldLabel = new QLabel(tr("Service Type Name: "));
  serviceTypeFieldLabel->setEnabled(false);
+
+ // connection (memo) specific output command delay option, calls jmri.jmrix.SystemConnectionMemo#setOutputInterval(int)
+ outputIntervalLabel = new JLabel(tr("Output Interval (ms):"));
+ outputIntervalSpinner->setToolTip(tr("<html>Enter the additional interval in milliseconds to wait before sending a following (Turnout) output Command<br>Default = %1 ms<br>Interval applies to this %2 connection only, used in Routes and MatrixSignalMasts</html>").arg(
+         adapter->getSystemConnectionMemo()->getDefaultOutputInterval()).arg(adapter->getManufacturer()));
+// JTextField* field = ((JSpinner.DefaultEditor) outputIntervalSpinner.getEditor()).getTextField();
+// field.setColumns(6);
+ outputIntervalSpinner->setMaximumSize(outputIntervalSpinner->sizeHint()); // set spinner JTextField width
+ outputIntervalSpinner->setValue(adapter->getSystemConnectionMemo()->getOutputInterval());
+ outputIntervalSpinner->setEnabled(true);
+ //outputIntervalReset.addActionListener((ActionEvent event) -> {
+ connect(outputIntervalReset, &QPushButton::clicked, [=]{
+     outputIntervalSpinner->setValue(adapter->getSystemConnectionMemo()->getDefaultOutputInterval());
+     adapter->getSystemConnectionMemo()->setOutputInterval(adapter->getSystemConnectionMemo()->getDefaultOutputInterval());
+ });
+
  QFont f = showAutoConfig->font();
  f.setPointSizeF(9.0);
  showAutoConfig->setFont(f);

@@ -26,9 +26,10 @@
 #include "lnmultimeter.h"
 #include <QDebug>
 #include "lncabsignalmanager.h"
+#include "lnpredefinedmeters.h"
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
- : SystemConnectionMemo("L","LocoNet", parent)
+ : DefaultSystemConnectionMemo("L","LocoNet", parent)
 {
  //super("L", "LocoNet");
  common();
@@ -37,12 +38,12 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt
 }
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
- : SystemConnectionMemo("L","LocoNet", parent)
+ : DefaultSystemConnectionMemo("L","LocoNet", parent)
 {
  common();
 }
 /*public*/ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name)
- : SystemConnectionMemo(prefix, name)
+ : DefaultSystemConnectionMemo(prefix, name)
 {
  //super(prefix, name); // NOI18N
  common();
@@ -147,18 +148,18 @@ void LocoNetSystemConnectionMemo::setLnTrafficController(LnTrafficController* lt
      // store as CommandStation object
      InstanceManager::store(sm, "CommandStation");
     }
-    _register();
+//    _register();
 }
 
 /**
  * Provides access to the SlotManager for this
  * particular connection.
  */
-void LocoNetSystemConnectionMemo::setSlotManager(SlotManager* sm)
-{
- this->sm = sm;
- if (sm != NULL) sm->setThrottledTransmitter(tm, mTurnoutNoRetry);
-}
+//void LocoNetSystemConnectionMemo::setSlotManager(SlotManager* sm)
+//{
+// this->sm = sm;
+// if (sm != NULL) sm->setThrottledTransmitter(tm, mTurnoutNoRetry);
+//}
 
 LnMessageManager* LocoNetSystemConnectionMemo::getLnMessageManager()
 {
@@ -225,7 +226,7 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
  }
  return false; // nothing, by default
 }
-
+#if 0
 //@SuppressWarnings("unchecked")
 //@Override
 /*public*/ Manager*  LocoNetSystemConnectionMemo::get(QString T)
@@ -270,7 +271,7 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
 
  return NULL; // nothing, by default
 }
-
+#endif
 
 /**
  * Configure the common managers for LocoNet connections.
@@ -320,11 +321,16 @@ void LocoNetSystemConnectionMemo::configureManagers()
  // make sure InstanceManager knows about that
  InstanceManager::setDefault("ClockControl", cc);
 
- //MultiMeter mm = getMultiMeter();
- InstanceManager::store(getMultiMeter(), "MultiMeter");
+// //MultiMeter mm = getMultiMeter();
+// InstanceManager::store(getMultiMeter(), "MultiMeter");
 
  getIdTagManager();
 
+ // register this SystemConnectionMemo to connect to rest of system
+ _register();
+
+ // This must be done after the memo is registered
+ getPredefinedMeters();
 }
 
 LnPowerManager* LocoNetSystemConnectionMemo::getPowerManager()
@@ -399,6 +405,29 @@ LnLightManager* LocoNetSystemConnectionMemo::getLightManager()
  return lightManager;
 }
 
+/*public*/ LnPredefinedMeters* LocoNetSystemConnectionMemo::getPredefinedMeters() {
+    if (getDisabled()) {
+        log->warn("Aborting getPredefinedMeters account is disabled!");
+        return nullptr;
+    }
+//        switch (getSlotManager().commandStationType) {
+//            case COMMAND_STATION_USB_DCS240_ALONE:
+//            case COMMAND_STATION_DCS240:
+//            case COMMAND_STATION_DCS210:
+//            case COMMAND_STATION_USB_DCS52_ALONE:
+//            case COMMAND_STATION_DCS052:
+//                break;
+//            default:
+//                // The command station does not support these meters
+//                return null;
+//        }
+    if (predefinedMeters == nullptr) {
+        predefinedMeters = new LnPredefinedMeters(this);
+    }
+    return predefinedMeters;
+}
+
+#if 0
 LocoNetConsistManager* LocoNetSystemConnectionMemo::getConsistManager() {
     if (getDisabled())
         return NULL;
@@ -416,12 +445,18 @@ LocoNetConsistManager* LocoNetSystemConnectionMemo::getConsistManager() {
     }
     return multiMeter;
 }
-
+#endif
 ResourceBundle* LocoNetSystemConnectionMemo::getActionModelResourceBundle()
 {
  ResourceBundle* rb = new ResourceBundle;
  return rb->getBundle("src/jmri/jmrix/loconet/LocoNetActionListBundle.properties");
 }
+
+//@Override
+///*public*/ <B extends NamedBean> Comparator<B> getNamedBeanComparator(Class<B> type) {
+//    return new NamedBeanComparator<B>();
+//}
+
 // yes, tagManager is static.  Tags can move between system connections.
 // when readers are not all on the same LocoNet
 // this manager is loaded on demand.

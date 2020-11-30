@@ -252,7 +252,8 @@ SOURCES += javaqt.cpp \
     etchedborder.cpp \
     jcheckboxmenuitem.cpp \
     keyadapter.cpp \
-    loggingutil.cpp
+    loggingutil.cpp \
+    localdatetime.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -559,7 +560,8 @@ HEADERS += javaqt.h\
     jcheckboxmenuitem.h \
     keyadapter.h \
     keylistener.h \
-    loggingutil.h
+    loggingutil.h \
+    localdatetime.h
 
 unix {
     target.path = /usr/lib

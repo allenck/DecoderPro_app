@@ -6,6 +6,7 @@
 #include "startupactionsmanager.h"
 #include "../libPr3/route.h"
 #include "../libPr3/routemanager.h"
+#include "defaultroute.h"
 
 TriggerRouteModelFactory::TriggerRouteModelFactory()
 {
@@ -54,7 +55,7 @@ TriggerRouteModelFactory::TriggerRouteModelFactory()
   {
       Route* r = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(systemName);
       if (r != NULL) {
-          QString userName = r->getUserName();
+          QString userName = ((DefaultRoute*)r)->getUserName();
           if (userName != NULL && !userName.isEmpty()) {
               userNames.append(userName);
           }

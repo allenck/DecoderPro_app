@@ -39,6 +39,7 @@
 #include "oblock.h"
 #include "indicatorturnouticon.h"
 #include "multisensoricon.h"
+#include "namedbean.h"
 
 Maintenance::Maintenance(QObject *parent) :
     QObject(parent)
@@ -837,7 +838,7 @@ Maintenance::Maintenance(QObject *parent) :
     tempText = QString();
     found = false;
     empty = true;
-    RouteManager* routeManager = InstanceManager::routeManagerInstance();
+    RouteManager* routeManager = (RouteManager*)InstanceManager::getDefault("RouteManager");
     iter1 = QStringListIterator(((DefaultRouteManager*)routeManager)->getSystemNameList());
     while (iter1.hasNext()) {
         // get the next Logix
@@ -847,7 +848,7 @@ Maintenance::Maintenance(QObject *parent) :
             log->error("Error getting Route  - "+sName);
             break;
         }
-        QString uName = r->getUserName();
+        QString uName = ((DefaultRoute*)r)->getUserName();
         QString line1 = tr("%1%2: \"%3\" (%4)\n").arg(" ").arg(tr("Route")).arg(uName).arg(sName);
         for (int i=0; i<Route::MAX_CONTROL_SENSORS; i++)
         {

@@ -14,6 +14,7 @@
 #include "abstracttablemodel.h"
 #include "tablecolumnmodel.h"
 #include "tablecolumn.h"
+#include "defaultroute.h"
 /**
  * @author Brett Hoffman Copyright (C) 2010
  */
@@ -449,7 +450,7 @@ void ControllerFilterFrame::on_save()
          if (rt == nullptr) {
              return QVariant();
          }
-         QVariant o = rt->getProperty("WifiControllable");
+         QVariant o = ((DefaultRoute*)rt)->getProperty("WifiControllable");
          if ((!o.isNull()) && (o.toString().toLower()=="false")) {
              return Qt::CheckState::Unchecked;
          }
@@ -470,7 +471,7 @@ void ControllerFilterFrame::on_save()
              if (rt!=nullptr) {
                  return QVariant();
              }
-             return rt->getUserName();
+             return ((DefaultRoute*)rt)->getUserName();
          default:
              break;
       }
@@ -486,7 +487,7 @@ void ControllerFilterFrame::on_save()
             case INCLUDECOL:
                 Route* rt = mgr->getBySystemName(sysNameList.at(index.row()));
                 if (rt != NULL) {
-                    rt->setProperty("WifiControllable", type);
+                    ((DefaultRoute*)rt)->setProperty("WifiControllable", type);
                     if (!isDirty) {
                         this->fireTableChanged(new TableModelEvent(this));
                         isDirty = true;
@@ -503,7 +504,7 @@ void ControllerFilterFrame::on_save()
         for (QString sysName : sysNameList) {
             Route* rt = mgr->getBySystemName(sysName);
             if (rt != nullptr) {
-                rt->setProperty("WifiControllable", value);
+                ((DefaultRoute*)rt)->setProperty("WifiControllable", value);
             }
         }
         fireTableDataChanged();
@@ -512,7 +513,7 @@ void ControllerFilterFrame::on_save()
     //@Override
     /*public*/ void RouteFilterModel::SetIncludeToUserNamed() {
         for (QString sysName : sysNameList) {
-            NamedBean* bean = mgr->getBySystemName(sysName);
+            NamedBean* bean = (NamedBean*)mgr->getBySystemName(sysName);
             if (bean != nullptr) {
                 QString uname = bean->getUserName();
                 if ((uname != NULL) && (uname.length() > 0)) {

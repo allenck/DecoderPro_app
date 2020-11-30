@@ -981,7 +981,14 @@ SOURCES += \
     zeroconfpreferences.cpp \
     logix/learnthrottleframe.cpp \
     logix/ltfcontrolpanel.cpp \
-    logix/ltffunctionpanel.cpp
+    logix/ltffunctionpanel.cpp \
+    defaultsystemconnectionmemo.cpp \
+    lnpredefinedmeters.cpp \
+    meterupdatetask.cpp \
+    loconet/lnmeterinittask.cpp \
+    abstractanalogio.cpp \
+    defaultmeter.cpp \
+    loconet/lniplimplementation.cpp
 
 
  !contains(FTDI, 1) {
@@ -1968,7 +1975,19 @@ HEADERS += \
     zeroconfpreferences.h \
     logix/learnthrottleframe.h \
     logix/ltfcontrolpanel.h \
-    logix/ltffunctionpanel.h
+    logix/ltffunctionpanel.h \
+    defaultsystemconnectionmemo.h \
+    lnpredefinedmeters.h \
+    meterupdatetask.h \
+    meter.h \
+    loconet/lnmeterinittask.h \
+    metermanager.h \
+    currentmeter.h \
+    voltagemeter.h \
+    abstractanalogio.h \
+    defaultmeter.h \
+    analogio.h \
+    loconet/lniplimplementation.h
 
 
  !contains(FTDI, 1) {

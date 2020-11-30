@@ -918,6 +918,20 @@ private static bool floatIsDifferent(float f1, float f2, float delta) {
         fail(tr("Not equal, expected %1 vs actual: %2 delta:%3").arg(QString::number(expected)).arg(QString::number(actual)).arg(QString::number(delta)), file, line);
 
 }
+/*public*/ /*static*/ void Assert::assertEquals(float expected, double actual, double delta, QString file, int line) {
+    // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+    /* 0: aconst_null
+     * 1: fload_0
+     * 2: fload_1
+     * 3: fload_2
+     * 4: invokestatic  org/junit/Assert.assertEquals:(Ljava/lang/String;FFF)V
+     * 7: return
+     *  */
+    // </editor-fold>
+    if(! MathUtil::equals(expected, actual))
+        fail(tr("Not equal, expected %1 vs actual: %2 delta:%3").arg(QString::number(expected)).arg(QString::number(actual)).arg(QString::number(delta)), file, line);
+
+}
 
 /*public*/ /*static*/ void Assert::assertNotNull(QString message, QObject* object, QString file, int line) {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -1018,17 +1032,19 @@ if(object.isNull())
         fail(tr("object is not null"), file, line);
 
 }
-/*public*/ /*static*/ void Assert::assertNull(QString object, QString file, int line) {
-if(!object.isNull())
+/*public*/ /*static*/ void Assert::assertNull(QString object, QString file, int line)
+{
+ if(!(object.isNull() || object.isEmpty()))
  fail(tr("string not Null: '%1'").arg(object), file, line);
 }
-/*public*/ /*static*/ void Assert::assertNull(QDomElement object, QString file, int line) {
-if(!object.isNull())
- fail("element not empty", file, line);
+/*public*/ /*static*/ void Assert::assertNull(QDomElement object, QString file, int line)
+{
+    if(!object.isNull())
+     fail("element not empty", file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertNull(QString message, QString object, QString file, int line) {
-if(!object.isNull())
+if(!(object.isNull() || object.isEmpty()))
  fail(tr("%1, string not null: '%2'").arg(message).arg(object), file, line);
 }
 /*public*/ /*static*/ void Assert::assertNull(QString message, QVariant object, QString file, int line) {

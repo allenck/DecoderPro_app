@@ -26,7 +26,7 @@ public slots:
 private:
     LocoNetInterface* fastcontroller;
     LocoNetInterface* throttledcontroller;
-    bool mTurnoutNoRetry;
+    bool mTurnoutNoRetry = false;
 
     QString prefix;
     int address(int a1, int a2);

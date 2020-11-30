@@ -22,7 +22,7 @@
 // /*public*/ class JMRIClientSystemConnectionMemo extends jmri.jmrix.SystemConnectionMemo {
 
 /*public*/ JMRIClientSystemConnectionMemo::JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt)
- : SystemConnectionMemo("J", "JMRI Client")
+ : DefaultSystemConnectionMemo("J", "JMRI Client")
 {
     //super("J", "JMRI Client");
     this->jt = jt;
@@ -34,7 +34,7 @@
             "ComponentFactory");
 }
 
-/*public*/ JMRIClientSystemConnectionMemo::JMRIClientSystemConnectionMemo() : SystemConnectionMemo("J", "JMRI Client") {
+/*public*/ JMRIClientSystemConnectionMemo::JMRIClientSystemConnectionMemo() : DefaultSystemConnectionMemo("J", "JMRI Client") {
     //super("J", "JMRIClient");
     this->jt = new JMRIClientTrafficController();
     _register(); // registers general type

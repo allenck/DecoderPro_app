@@ -221,49 +221,29 @@ void delete_RosterObject(RosterObject* obj) { delete obj; }
 class PythonQtShell_Route : public Route
 {
 public:
-    PythonQtShell_Route(QString  systemName, QString  userName = "", QObject*  parent = 0):Route(systemName, userName, parent),_wrapper(NULL) {}
+    PythonQtShell_Route():Route(),_wrapper(NULL) {}
 
    ~PythonQtShell_Route();
 
 virtual void activateRoute();
 virtual bool  addOutputSensor(QString  arg__1, int  arg__2);
 virtual bool  addOutputTurnout(QString  arg__1, int  arg__2);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  addSensorToRoute(QString  arg__1, int  arg__2);
 virtual bool  canLock();
-virtual void childEvent(QChildEvent*  event);
 virtual void clearOutputSensors();
 virtual void clearOutputTurnouts();
 virtual void clearRouteSensors();
-virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
-virtual int  compareTo(NamedBean*  n2);
-virtual void customEvent(QEvent*  event);
 virtual void deActivateRoute();
-virtual QString  describeState(int  state);
-virtual void dispose();
-virtual bool  equals(QObject*  obj);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual QString  getBeanType();
-virtual QString  getComment();
 virtual QString  getControlTurnout();
 virtual int  getControlTurnoutState();
 virtual Turnout*  getCtlTurnout();
-virtual QString  getDisplayName();
 virtual bool  getEnabled();
-virtual QString  getFullyFormattedDisplayName();
-virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
 virtual QString  getLockControlTurnout();
 virtual int  getLockControlTurnoutState();
 virtual Turnout*  getLockCtlTurnout();
 virtual bool  getLocked();
 virtual int  getNumOutputSensors();
 virtual int  getNumOutputTurnouts();
-virtual int  getNumPropertyChangeListeners();
 virtual QString  getOutputScriptName();
 virtual Sensor*  getOutputSensor(int  arg__1);
 virtual QString  getOutputSensorByIndex(int  arg__1);
@@ -274,27 +254,15 @@ virtual Turnout*  getOutputTurnout(int  arg__1);
 virtual QString  getOutputTurnoutByIndex(int  arg__1);
 virtual int  getOutputTurnoutSetState(QString  arg__1);
 virtual int  getOutputTurnoutState(int  k);
-virtual QVariant  getProperty(QString  key);
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
-virtual QSet<QString >  getPropertyKeys();
 virtual int  getRouteCommandDelay();
 virtual Sensor*  getRouteSensor(int  arg__1);
 virtual int  getRouteSensorMode(int  index);
 virtual QString  getRouteSensorName(int  arg__1);
-virtual int  getState();
-virtual QString  getSystemName() const;
 virtual Sensor*  getTurnoutsAlgdSensor();
 virtual QString  getTurnoutsAlignedSensor();
-virtual QString  getUserName() const;
-virtual uint  hashCode();
 virtual bool  isOutputSensorIncluded(QString  arg__1);
 virtual bool  isOutputTurnoutIncluded(QString  arg__1);
-virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void setComment(QString  comment);
+virtual QObject*  self();
 virtual void setControlTurnout(QString  arg__1);
 virtual void setControlTurnoutState(int  arg__1);
 virtual void setEnabled(bool  arg__1);
@@ -303,78 +271,74 @@ virtual void setLockControlTurnoutState(int  arg__1);
 virtual void setLocked(bool  arg__1);
 virtual void setOutputScriptName(QString  arg__1);
 virtual void setOutputSoundName(QString  arg__1);
-virtual void setProperty(QString  key, QVariant  value);
 virtual void setRoute();
 virtual void setRouteCommandDelay(int  arg__1);
-virtual void setState(int  arg__1);
 virtual void setTurnoutsAlignedSensor(QString  arg__1);
-virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException) ;
-virtual void timerEvent(QTimerEvent*  event);
-virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException) ;
 
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
 class PythonQtPublicPromoter_Route : public Route
 { public:
-inline void py_q_activateRoute() { Route::activateRoute(); }
-inline bool  py_q_addOutputSensor(QString  arg__1, int  arg__2) { return Route::addOutputSensor(arg__1, arg__2); }
-inline bool  py_q_addOutputTurnout(QString  arg__1, int  arg__2) { return Route::addOutputTurnout(arg__1, arg__2); }
-inline bool  py_q_addSensorToRoute(QString  arg__1, int  arg__2) { return Route::addSensorToRoute(arg__1, arg__2); }
-inline bool  py_q_canLock() { return Route::canLock(); }
-inline void py_q_clearOutputSensors() { Route::clearOutputSensors(); }
-inline void py_q_clearOutputTurnouts() { Route::clearOutputTurnouts(); }
-inline void py_q_clearRouteSensors() { Route::clearRouteSensors(); }
-inline void py_q_deActivateRoute() { Route::deActivateRoute(); }
-inline QString  py_q_getControlTurnout() { return Route::getControlTurnout(); }
+inline void py_q_activateRoute() { this->activateRoute(); }
+inline bool  py_q_addOutputSensor(QString  arg__1, int  arg__2) { return this->addOutputSensor(arg__1, arg__2); }
+inline bool  py_q_addOutputTurnout(QString  arg__1, int  arg__2) { return this->addOutputTurnout(arg__1, arg__2); }
+inline bool  py_q_addSensorToRoute(QString  arg__1, int  arg__2) { return this->addSensorToRoute(arg__1, arg__2); }
+inline bool  py_q_canLock() { return this->canLock(); }
+inline void py_q_clearOutputSensors() { this->clearOutputSensors(); }
+inline void py_q_clearOutputTurnouts() { this->clearOutputTurnouts(); }
+inline void py_q_clearRouteSensors() { this->clearRouteSensors(); }
+inline void py_q_deActivateRoute() { this->deActivateRoute(); }
+inline QString  py_q_getControlTurnout() { return this->getControlTurnout(); }
 inline int  py_q_getControlTurnoutState() { return this->getControlTurnoutState(); }
-inline Turnout*  py_q_getCtlTurnout() { return Route::getCtlTurnout(); }
-inline bool  py_q_getEnabled() { return Route::getEnabled(); }
-inline QString  py_q_getLockControlTurnout() { return Route::getLockControlTurnout(); }
+inline Turnout*  py_q_getCtlTurnout() { return this->getCtlTurnout(); }
+inline bool  py_q_getEnabled() { return this->getEnabled(); }
+inline QString  py_q_getLockControlTurnout() { return this->getLockControlTurnout(); }
 inline int  py_q_getLockControlTurnoutState() { return this->getLockControlTurnoutState(); }
-inline Turnout*  py_q_getLockCtlTurnout() { return Route::getLockCtlTurnout(); }
-inline bool  py_q_getLocked() { return Route::getLocked(); }
-inline int  py_q_getNumOutputSensors() { return Route::getNumOutputSensors(); }
+inline Turnout*  py_q_getLockCtlTurnout() { return this->getLockCtlTurnout(); }
+inline bool  py_q_getLocked() { return this->getLocked(); }
+inline int  py_q_getNumOutputSensors() { return this->getNumOutputSensors(); }
 inline int  py_q_getNumOutputTurnouts() { return this->getNumOutputTurnouts(); }
-inline QString  py_q_getOutputScriptName() { return Route::getOutputScriptName(); }
-inline Sensor*  py_q_getOutputSensor(int  arg__1) { return Route::getOutputSensor(arg__1); }
-inline QString  py_q_getOutputSensorByIndex(int  arg__1) { return Route::getOutputSensorByIndex(arg__1); }
-inline int  py_q_getOutputSensorSetState(QString  arg__1) { return Route::getOutputSensorSetState(arg__1); }
+inline QString  py_q_getOutputScriptName() { return this->getOutputScriptName(); }
+inline Sensor*  py_q_getOutputSensor(int  arg__1) { return this->getOutputSensor(arg__1); }
+inline QString  py_q_getOutputSensorByIndex(int  arg__1) { return this->getOutputSensorByIndex(arg__1); }
+inline int  py_q_getOutputSensorSetState(QString  arg__1) { return this->getOutputSensorSetState(arg__1); }
 inline int  py_q_getOutputSensorState(int  k) { return this->getOutputSensorState(k); }
-inline QString  py_q_getOutputSoundName() { return Route::getOutputSoundName(); }
-inline Turnout*  py_q_getOutputTurnout(int  arg__1) { return Route::getOutputTurnout(arg__1); }
-inline QString  py_q_getOutputTurnoutByIndex(int  arg__1) { return Route::getOutputTurnoutByIndex(arg__1); }
+inline QString  py_q_getOutputSoundName() { return this->getOutputSoundName(); }
+inline Turnout*  py_q_getOutputTurnout(int  arg__1) { return this->getOutputTurnout(arg__1); }
+inline QString  py_q_getOutputTurnoutByIndex(int  arg__1) { return this->getOutputTurnoutByIndex(arg__1); }
 inline int  py_q_getOutputTurnoutSetState(QString  arg__1) { return this->getOutputTurnoutSetState(arg__1); }
 inline int  py_q_getOutputTurnoutState(int  k) { return this->getOutputTurnoutState(k); }
 inline int  py_q_getRouteCommandDelay() { return this->getRouteCommandDelay(); }
-inline Sensor*  py_q_getRouteSensor(int  arg__1) { return Route::getRouteSensor(arg__1); }
+inline Sensor*  py_q_getRouteSensor(int  arg__1) { return this->getRouteSensor(arg__1); }
 inline int  py_q_getRouteSensorMode(int  index) { return this->getRouteSensorMode(index); }
-inline QString  py_q_getRouteSensorName(int  arg__1) { return Route::getRouteSensorName(arg__1); }
-inline Sensor*  py_q_getTurnoutsAlgdSensor() { return Route::getTurnoutsAlgdSensor(); }
-inline QString  py_q_getTurnoutsAlignedSensor() { return Route::getTurnoutsAlignedSensor(); }
-inline bool  py_q_isOutputSensorIncluded(QString  arg__1) { return Route::isOutputSensorIncluded(arg__1); }
-inline bool  py_q_isOutputTurnoutIncluded(QString  arg__1) { return Route::isOutputTurnoutIncluded(arg__1); }
-inline void py_q_setControlTurnout(QString  arg__1) { Route::setControlTurnout(arg__1); }
-inline void py_q_setControlTurnoutState(int  arg__1) { Route::setControlTurnoutState(arg__1); }
-inline void py_q_setEnabled(bool  arg__1) { Route::setEnabled(arg__1); }
-inline void py_q_setLockControlTurnout(QString  arg__1) { Route::setLockControlTurnout(arg__1); }
-inline void py_q_setLockControlTurnoutState(int  arg__1) { Route::setLockControlTurnoutState(arg__1); }
-inline void py_q_setLocked(bool  arg__1) { Route::setLocked(arg__1); }
-inline void py_q_setOutputScriptName(QString  arg__1) { Route::setOutputScriptName(arg__1); }
-inline void py_q_setOutputSoundName(QString  arg__1) { Route::setOutputSoundName(arg__1); }
-inline void py_q_setRoute() { Route::setRoute(); }
-inline void py_q_setRouteCommandDelay(int  arg__1) { Route::setRouteCommandDelay(arg__1); }
-inline void py_q_setTurnoutsAlignedSensor(QString  arg__1) { Route::setTurnoutsAlignedSensor(arg__1); }
+inline QString  py_q_getRouteSensorName(int  arg__1) { return this->getRouteSensorName(arg__1); }
+inline Sensor*  py_q_getTurnoutsAlgdSensor() { return this->getTurnoutsAlgdSensor(); }
+inline QString  py_q_getTurnoutsAlignedSensor() { return this->getTurnoutsAlignedSensor(); }
+inline bool  py_q_isOutputSensorIncluded(QString  arg__1) { return this->isOutputSensorIncluded(arg__1); }
+inline bool  py_q_isOutputTurnoutIncluded(QString  arg__1) { return this->isOutputTurnoutIncluded(arg__1); }
+inline QObject*  py_q_self() { return this->self(); }
+inline void py_q_setControlTurnout(QString  arg__1) { this->setControlTurnout(arg__1); }
+inline void py_q_setControlTurnoutState(int  arg__1) { this->setControlTurnoutState(arg__1); }
+inline void py_q_setEnabled(bool  arg__1) { this->setEnabled(arg__1); }
+inline void py_q_setLockControlTurnout(QString  arg__1) { this->setLockControlTurnout(arg__1); }
+inline void py_q_setLockControlTurnoutState(int  arg__1) { this->setLockControlTurnoutState(arg__1); }
+inline void py_q_setLocked(bool  arg__1) { this->setLocked(arg__1); }
+inline void py_q_setOutputScriptName(QString  arg__1) { this->setOutputScriptName(arg__1); }
+inline void py_q_setOutputSoundName(QString  arg__1) { this->setOutputSoundName(arg__1); }
+inline void py_q_setRoute() { this->setRoute(); }
+inline void py_q_setRouteCommandDelay(int  arg__1) { this->setRouteCommandDelay(arg__1); }
+inline void py_q_setTurnoutsAlignedSensor(QString  arg__1) { this->setTurnoutsAlignedSensor(arg__1); }
 };
 
 class PythonQtWrapper_Route : public QObject
 { Q_OBJECT
 public:
+Q_ENUMS(ACTIONS )
+enum ACTIONS{
+  ONACTIVE = Route::ONACTIVE,   ONINACTIVE = Route::ONINACTIVE,   VETOACTIVE = Route::VETOACTIVE,   VETOINACTIVE = Route::VETOINACTIVE,   ONCHANGE = Route::ONCHANGE,   ONCLOSED = Route::ONCLOSED,   ONTHROWN = Route::ONTHROWN,   VETOCLOSED = Route::VETOCLOSED,   VETOTHROWN = Route::VETOTHROWN};
 public slots:
-Route* new_Route(QString  systemName, QString  userName = "", QObject*  parent = 0);
+Route* new_Route();
 void delete_Route(Route* obj) { delete obj; } 
    void activateRoute(Route* theWrappedObject);
    void py_q_activateRoute(Route* theWrappedObject){  (((PythonQtPublicPromoter_Route*)theWrappedObject)->py_q_activateRoute());}
@@ -450,6 +414,8 @@ void delete_Route(Route* obj) { delete obj; }
    bool  py_q_isOutputSensorIncluded(Route* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Route*)theWrappedObject)->py_q_isOutputSensorIncluded(arg__1));}
    bool  isOutputTurnoutIncluded(Route* theWrappedObject, QString  arg__1);
    bool  py_q_isOutputTurnoutIncluded(Route* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Route*)theWrappedObject)->py_q_isOutputTurnoutIncluded(arg__1));}
+   QObject*  self(Route* theWrappedObject);
+   QObject*  py_q_self(Route* theWrappedObject){  return (((PythonQtPublicPromoter_Route*)theWrappedObject)->py_q_self());}
    void setControlTurnout(Route* theWrappedObject, QString  arg__1);
    void py_q_setControlTurnout(Route* theWrappedObject, QString  arg__1){  (((PythonQtPublicPromoter_Route*)theWrappedObject)->py_q_setControlTurnout(arg__1));}
    void setControlTurnoutState(Route* theWrappedObject, int  arg__1);

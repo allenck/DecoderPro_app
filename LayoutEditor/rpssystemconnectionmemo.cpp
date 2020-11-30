@@ -14,7 +14,7 @@
 ///*public*/ class RpsSystemConnectionMemo extends SystemConnectionMemo {
 
 /*public*/ RpsSystemConnectionMemo::RpsSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name, QObject* parent)
-: SystemConnectionMemo(prefix, name, parent){
+: DefaultSystemConnectionMemo(prefix, name, parent){
     //super(prefix, name);
     _register(); // registers general type
     InstanceManager::store(this, "RpsSystemConnectionMemo"); // also register as specific type
@@ -26,7 +26,7 @@
     log->debug(tr("Created RpsSystemConnectionMemo with prefix %1").arg(prefix));
 }
 
-/*public*/ RpsSystemConnectionMemo::RpsSystemConnectionMemo(QObject* parent) : SystemConnectionMemo("R", "RPS", parent)
+/*public*/ RpsSystemConnectionMemo::RpsSystemConnectionMemo(QObject* parent) : DefaultSystemConnectionMemo("R", "RPS", parent)
 {
     //this("R", "RPS"); // default connection prefix, default RPS product name NOI18N
     log->debug("Created nameless RpsSystemConnectionMemo");
@@ -151,7 +151,7 @@
  *
  * @return VALID if system name has a valid format, else return INVALID
  */
-/*public*/ Manager::NameValidity RpsSystemConnectionMemo::validSystemNameFormat(QString systemName, char type) const{
+/*public*/ Manager::NameValidity RpsSystemConnectionMemo::validSystemNameFormat(QString systemName, char type) {
     // validate the system Name leader characters
     if (!(systemName.startsWith(getSystemPrefix() + type))) {
         // here if an illegal format

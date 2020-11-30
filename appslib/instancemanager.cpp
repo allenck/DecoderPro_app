@@ -875,6 +875,24 @@ void InstanceManager::setSensorManager(SensorManager* p)
 #endif
 }
 
+
+// Needs to have proxy manager converted to work
+// with current list of managers (and robust default
+// management) before this can be deprecated in favor of
+// store(p, MeterManager.class)
+//@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
+/*static*/ /*public*/ void InstanceManager::setMeterManager(MeterManager* p) {
+    log->debug(" setMeterManager");
+#if 0
+    MeterManager* apm = getDefault("MeterManager");
+    if (apm instanceof ProxyManager<?>) { // <?> due to type erasure
+        ((ProxyManager<Meter>) apm).addManager(p);
+    } else {
+        log->error("Incorrect setup: MeterManager default isn't an AbstractProxyManager<Meter>");
+    }
+#endif
+}
+
 // Needs to have proxy manager converted to work
 // with current list of managers (and robust default
 // management) before this can be deprecated in favor of

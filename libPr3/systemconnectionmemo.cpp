@@ -28,6 +28,7 @@
 /*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::DISABLED = "ConnectionDisabled";
 /*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::USER_NAME = "ConnectionNameChanged";
 /*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::SYSTEM_PREFIX = "ConnectionPrefixChanged";
+/*public*/ /*static*/ /*final*/ QString SystemConnectionMemo::INTERVAL = "OutputInterval";
 
 //QVector<PropertyChangeListener*>* SystemConnectionMemo::listeners = new QVector<PropertyChangeListener*>();
 //QStringList* SystemConnectionMemo::userNames = new QStringList();
@@ -47,6 +48,8 @@
 SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QObject *parent) :
     QObject(parent)
 {
+ propertyChangeSupport = new PropertyChangeSupport(this);
+
  disabled = false;
  disabledAsLoaded = /*null*/ false; // Boolean can be true, false, or null
 // _instance = this;
@@ -167,6 +170,23 @@ bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
     }
     return false;
 }
+/**
+  * Get the connection specific OutputInterval to wait between/before commands
+  * are sent, configured in AdapterConfig.
+  * Used in {@link jmri.implementation.AbstractTurnout#setCommandedStateAtInterval(int)}.
+  *
+  * @return the output interval time in ms
+  */
+int SystemConnectionMemo::getOutputInterval() {return 0;}
+
+ /**
+  * Get the Default connection specific OutputInterval to wait between/before commands
+  * are sent.
+  * @return the default output interval time in ms.
+  */
+int SystemConnectionMemo::getDefaultOutputInterval() {return 0;}
+
+void SystemConnectionMemo::setOutputInterval(int /*newInterval*/) {}
 
 /**
  * Does this connection provide a manager of this type?

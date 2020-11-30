@@ -44,6 +44,7 @@ public:
     /*public*/ static void assertEquals(QString message, long expected, long actual, QString file, int line);
     /*public*/ static void assertEquals(double expected, double actual, double delta, QString file, int line);
     /*public*/ static void assertEquals(float expected, float actual, float delta, QString file, int line);
+    /*public*/ static void assertEquals(float expected, double actual, double delta, QString file, int line);
     /*public*/ static void assertEquals(QDomElement expected, QDomElement actual, QDomElement delta, QString file, int line);
     /*public*/ static void assertEquals(QString expected, QString actual, QString file, int line);
     /*public*/ static void assertEquals(bool expected, bool actual, QString file, int line);

@@ -10,6 +10,7 @@ AbstractTurnoutManager::AbstractTurnoutManager(SystemConnectionMemo* memo, QObje
     TurnoutManager(memo, parent)
 {
  this->memo = memo;
+ turnoutInterval = memo->getOutputInterval();
  defaultClosedSpeed = "Normal";
  defaultThrownSpeed = "Restricted";
  //registerSelf(); //??
@@ -375,6 +376,48 @@ QString AbstractTurnoutManager::getDefaultThrownSpeed() const{
 
 QString AbstractTurnoutManager::getDefaultClosedSpeed() const{
     return defaultClosedSpeed;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString AbstractTurnoutManager::getEntryToolTip() {
+    return tr("EnterNumber1to9999ToolTip");
+}
+
+/*private*/ void AbstractTurnoutManager::handleIntervalChange(int newVal) {
+    turnoutInterval = newVal;
+    log->debug(tr("in memo turnoutInterval changed to %1").arg(turnoutInterval));
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ int AbstractTurnoutManager::getOutputInterval() {
+    return turnoutInterval;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractTurnoutManager::setOutputInterval(int newInterval) {
+    memo->setOutputInterval(newInterval);
+    turnoutInterval = newInterval; // local field will hear change and update automatically?
+    log->debug(tr("turnoutInterval set to: %1").arg(newInterval));
+}
+
+
+
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*public*/ LocalDateTime AbstractTurnoutManager::outputIntervalEnds() {
+#if 0 // TODO:
+    log->debug("outputIntervalEnds called in AbstractTurnoutManager");
+    if (waitUntil.isAfter(LocalDateTime.now())) {
+        waitUntil = waitUntil.plus(turnoutInterval, ChronoUnit.MILLIS);
+    } else {
+        waitUntil = LocalDateTime.now().plus(turnoutInterval, ChronoUnit.MILLIS); // default interval = 250 Msec
+    }
+#endif
+    return waitUntil;
 }
 
 /*private*/ /*final*/ /*static*/ Logger* AbstractTurnoutManager::log = LoggerFactory::getLogger("AbstractTurnoutManager");

@@ -237,7 +237,9 @@ SOURCES += \
     layouteditor/layoutshapetest.cpp \
     layouteditor/layoutshapetestaction.cpp \
     entryexit/circuitbuildertest.cpp \
-    entryexit/circuitbuildertestaction.cpp
+    entryexit/circuitbuildertestaction.cpp \
+    loconet/controlpaneltest.cpp \
+    loconet/controlpaneltestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -452,7 +454,9 @@ HEADERS += \
     layouteditor/layoutshapetest.h \
     layouteditor/layoutshapetestaction.h \
     entryexit/circuitbuildertest.h \
-    entryexit/circuitbuildertestaction.h
+    entryexit/circuitbuildertestaction.h \
+    loconet/controlpaneltest.h \
+    loconet/controlpaneltestaction.h
 
 unix {
     target.path = /usr/lib

@@ -415,6 +415,7 @@ protected slots:
 
  friend class SlotManagerTest;
  friend class LnDeferProgrammer;
+ friend class LnPredefinedMeters;
 };
 
 class SendProgrammingReplyDelay : public QObject

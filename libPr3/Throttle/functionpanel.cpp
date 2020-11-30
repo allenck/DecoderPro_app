@@ -222,7 +222,7 @@ FunctionPanel::~FunctionPanel()
     this->addressPanel = addressPanel;
 
 }
-#if 0
+
 /*public*/ void FunctionPanel::saveFunctionButtonsToRoster (RosterEntry* rosterEntry)
 {
  log->debug("saveFunctionButtonsToRoster");
@@ -255,9 +255,9 @@ FunctionPanel::~FunctionPanel()
    rosterEntry->setFunctionSelectedImage(functionNumber, imageSelectedPath);
   }
  }
- Roster::writeRosterFile();
+ Roster::getDefault()->writeRoster();
 }
-#endif
+
 /**
  * Place and initialize all the buttons.
  */

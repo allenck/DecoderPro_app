@@ -43,6 +43,7 @@
 #ifdef SCRIPTING_ENABLED
 #include "jynstrument.h"
 #endif
+#include "joptionpane.h"
 
 ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *parent) :
     JmriJFrame(parent),
@@ -325,10 +326,10 @@ ThrottleWindow::~ThrottleWindow()
 //    editMenuExportRoster.addActionListener(new ActionListener() {
 
 //        public void actionPerformed(ActionEvent e) {
-//            getCurrentThrottleFrame().saveRosterChanges();
+ connect(editMenuExportRoster, &QAction::triggered, [=]{
+   getCurrentThrottleFrame()->saveRosterChanges();
 //        }
-//    });
- connect(editMenuExportRoster, SIGNAL(triggered()), this, SLOT(OnEditMenuExportRoster()));
+ });
  editMenu->addSeparator();
  editMenu->addAction(new ThrottlesPreferencesAction(tr("Throttles Preferences"),this)); // now in tabbed preferences
 
@@ -383,12 +384,6 @@ ThrottleWindow::~ThrottleWindow()
  // add help selection
  addHelpMenu("package.jmri.jmrit.throttle.ThrottleFrame", true);
 }
-void ThrottleWindow::OnEditMenuExportRoster()
-{
- // TODO: getCurrentThrottleFrame()->saveRosterChanges();
-}
-
-
 
 //void ThrottleWindow::on_newThrottle_clicked() // not used?
 //{
@@ -897,6 +892,20 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  addressPanel->destroy();
 
 }
+
+/*public*/ void ThrottleWindow::saveRosterChanges() {
+    RosterEntry* rosterEntry = addressPanel->getRosterEntry();
+    if (rosterEntry == nullptr) {
+        JOptionPane::showMessageDialog(this, tr("Select loco using roster menu in Address Panel"), tr("No roster entry selected"), JOptionPane::ERROR_MESSAGE);
+        return;
+    }
+    if (JOptionPane::showConfirmDialog(this, tr("Update roster entry with function buttons changes?"), tr("Update roster entry"), JOptionPane::YES_NO_OPTION) != JOptionPane::YES_OPTION) {
+        return;
+    }
+    functionPanel->saveFunctionButtonsToRoster(rosterEntry);
+    controlPanel->saveToRoster(rosterEntry);
+}
+
 /*public*/ void ThrottleWindow::removeThrottleFrame(ThrottleWindow* tf)
 {
  if ( cardCounterNB > 1 ) // we don't like empty ThrottleWindow

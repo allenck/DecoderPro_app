@@ -490,3 +490,6 @@ int LnConstants::RE_DPLX_SCAN_QUERY_B3              = 0x08 ;
 int LnConstants::RE_DPLX_SCAN_QUERY_B4              = 0x00 ;
 int LnConstants::RE_DPLX_SCAN_REPORT_B2             = 0x10 ;
 int LnConstants::RE_DPLX_SCAN_REPORT_B3             = 0x10 ;
+
+/*public*/ /*final*/ /*static*/ QString LnConstants::DIGITRAX_STRING = "Digitrax"; // NOI18N
+/*public*/ /*final*/ /*static*/ QString LnConstants::RR_CIRKITS_STRING = "RR-CirKits"; // NOI18N};

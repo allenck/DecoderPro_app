@@ -65,7 +65,7 @@ DefaultRouteManagerXml::DefaultRouteManagerXml(QObject *parent) :
       elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
 
       // store common parts
-      storeCommon(r, elem);
+      storeCommon((NamedBean*)r, elem);
 
       if (cTurnout != NULL && cTurnout != "") {
           elem.setAttribute("controlTurnout", cTurnout);
@@ -315,7 +315,7 @@ return routes;
       return;
   }
   // load common parts
-  loadCommon(r, el);
+  loadCommon((NamedBean*)r, el);
 
   if (r != NULL)
   {

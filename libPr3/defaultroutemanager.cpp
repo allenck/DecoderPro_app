@@ -48,7 +48,7 @@ DefaultRouteManager::DefaultRouteManager(QObject *parent) : RouteManager(parent)
  // Route does not exist, create a new route
  r = (Route*)new DefaultRoute(systemName,userName);
  // save in the maps
- AbstractManager::Register(r);
+ AbstractManager::Register((NamedBean*)r);
  /*The following keeps trace of the last created auto system name.
   currently we do not reuse numbers, although there is nothing to stop the
   user from manually recreating them*/

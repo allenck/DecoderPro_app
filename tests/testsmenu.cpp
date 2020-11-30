@@ -80,6 +80,7 @@
 #include "layouteditor/layouteditortoolstestaction.h"
 #include "layouteditor/layoutshapetestaction.h"
 #include "entryexit/circuitbuildertestaction.h"
+#include "loconet/controlpaneltestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -185,6 +186,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addMenu(loconetThrottleMenu);
     loconetThrottleMenu->addAction(new LocoNetThrottleTestAction(this));
     loconetThrottleMenu->addAction(new NmraPacketTestAction(this));
+    loconetThrottleMenu->addAction(new ControlPanelTestAction(this));
 
     QMenu* signalMenu = new QMenu(tr("Signals ..."));
     addMenu(signalMenu);

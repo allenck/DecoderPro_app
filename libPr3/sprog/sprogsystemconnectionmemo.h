@@ -1,6 +1,6 @@
 #ifndef SPROGSYSTEMCONNECTIONMEMO_H
 #define SPROGSYSTEMCONNECTIONMEMO_H
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include "sprogconstants.h"
 #include "sprogtrafficcontroller.h"
 #include "sprogtype.h"
@@ -25,7 +25,7 @@ namespace Sprog
  class SprogThrottleManager;
  class SprogCSThrottleManager;
  class SprogCommandStation;
- class SprogSystemConnectionMemo : public SystemConnectionMemo
+ class SprogSystemConnectionMemo : public DefaultSystemConnectionMemo
  {
  public:
   SprogSystemConnectionMemo(QObject* parent = 0);

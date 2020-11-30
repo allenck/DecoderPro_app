@@ -31,6 +31,8 @@
 #include <QSet>
 #include <QHash>
 #include "loggingutil.h"
+#include "roster.h"
+#include "loggerfactory.h"
 
 //ControlPanel::ControlPanel(QWidget *parent) :
 //    QDockWidget(parent)
@@ -228,6 +230,45 @@
   _throttle = NULL;
  }
  //super.dispose();
+}
+
+/**
+ * Intended for throttle scripting
+ *
+ * @param fwd direction: true for forward; false for reverse.
+ */
+/*public*/ void ControlPanel::setForwardDirection(bool fwd) {
+    if (fwd) {
+        if (forwardButton->isEnabled()) {
+            forwardButton->click();
+        } else {
+            log->error("setForwardDirection(true) with forwardButton disabled, failed");
+        }
+    } else {
+        if (reverseButton->isEnabled()) {
+            reverseButton->click();
+        } else {
+            log->error("setForwardDirection(false) with reverseButton disabled, failed");
+        }
+    }
+}
+
+/**
+ * Intended for throttle scripting
+ *
+ * @return The speed slider.
+ */
+/*public*/ JSlider* ControlPanel::getSpeedSlider() {
+    return speedSlider;
+}
+
+/**
+ * Intended for throttle scripting and testing.
+ *
+ * @return The continuous (shunting) speed slider.
+ */
+/*public*/ JSlider* ControlPanel::getSpeedSliderContinuous() {
+    return speedSliderContinuous;
 }
 
 // update the state of this panel if any of the properties change
@@ -1596,3 +1637,20 @@ void ControlPanel::on_editProperties()
  editor->setVisible(true);
 
 }
+
+/*public*/ void ControlPanel::saveToRoster(RosterEntry* re) {
+    if (re == nullptr) {
+        return;
+    }
+    if ((re->getShuntingFunction() != nullptr) && (re->getShuntingFunction() != (getSwitchSliderFunction()))) {
+        re->setShuntingFunction(getSwitchSliderFunction());
+    } else if ((re->getShuntingFunction() == "") && (getSwitchSliderFunction() != "")) {
+        re->setShuntingFunction(getSwitchSliderFunction());
+    } else {
+        return;
+    }
+    Roster::getDefault()->writeRoster();
+}
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* ControlPanel::log = LoggerFactory::getLogger("ControlPanel");

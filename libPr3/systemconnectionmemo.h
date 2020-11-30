@@ -7,6 +7,7 @@
 #include "logger.h"
 #include "propertychangelistener.h"
 #include "libPr3_global.h"
+#include "propertychangesupport.h"
 
 /**
  * Lightweight abstract class to denote that a system is active,
@@ -46,6 +47,10 @@ public:
  QString getUserName()const;
  //This should probably throwing an exception
  virtual bool setUserName(QString name);
+ virtual int getOutputInterval();
+ virtual int getDefaultOutputInterval();
+ virtual void setOutputInterval(int newInterval);
+
  /**
   * Does this connection provide a manager of this type?
   */
@@ -65,6 +70,7 @@ public:
  /*public*/ static /*final*/ QString DISABLED;// = "ConnectionDisabled";
  /*public*/ static /*final*/ QString USER_NAME;// = "ConnectionNameChanged";
  /*public*/ static /*final*/ QString SYSTEM_PREFIX;// = "ConnectionPrefixChanged";
+ /*public*/ static /*final*/ QString INTERVAL;// = "OutputInterval";
  /*public*/ ConsistManager* getConsistManager();
  /*public*/ void setConsistManager(ConsistManager* c);
 
@@ -79,6 +85,9 @@ private:
  /*private*/ QString prefixAsLoaded;
  /*static*/ QString userName;
  /*private*/ QString userNameAsLoaded;
+
+ protected:
+ PropertyChangeSupport* propertyChangeSupport = nullptr;
 
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("SystemConnectionMemo");
  //const static bool initialised = false;

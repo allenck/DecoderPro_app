@@ -656,6 +656,7 @@ enum PCMD
         RE_IB2_SPECIAL_F20_MASK = 0x20,
         RE_IB2_SPECIAL_F28_MASK = 0x40
    };
+   /*public*/ /*final*/ static QString DIGITRAX_STRING;// = "Digitrax"; // NOI18N
+   /*public*/ /*final*/ static QString RR_CIRKITS_STRING;// = "RR-CirKits"; // NOI18N};
 };
-
 #endif // LNCONSTANTS_H

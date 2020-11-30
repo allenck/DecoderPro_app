@@ -145,6 +145,8 @@ QTcpSocket* LnNetworkPortController::getSocket() {return socketConn;}
 
 /*public*/ void LnNetworkPortController::autoConfigure()
 {
+ if(zClient == nullptr)
+  return;
  if(zClient->getServices().isEmpty())
  {
   qApp->processEvents(QEventLoop::AllEvents, 1000);

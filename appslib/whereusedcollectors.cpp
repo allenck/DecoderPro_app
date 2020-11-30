@@ -21,6 +21,7 @@
 #include "switchboardeditor.h"
 #include "destinationpoints.h"
 #include "transit.h"
+#include "defaultroute.h"
 
 WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
 {
@@ -138,10 +139,10 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
         {
          Route* route = (Route*)nb;
             //route.getUsageReport(bean).forEach((report) -> {
-         foreach(NamedBeanUsageReport* report, route->getUsageReport(bean))
+         foreach(NamedBeanUsageReport* report, ((DefaultRoute*)route)->getUsageReport(bean))
          {
                 if (report->usageKey.startsWith("Route")) {  // NOI18N
-                    QString name = route->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
+                    QString name = ((DefaultRoute*)route)->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
                     sb.append(tr("\n%1	").arg(name));  // NOI18N
                 }
             }//);

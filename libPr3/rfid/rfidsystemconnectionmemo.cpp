@@ -27,13 +27,13 @@
 // /*public*/ class RfidSystemConnectionMemo extends jmri.jmrix.SystemConnectionMemo {
 
 
-/*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo(RfidTrafficController* rt, QObject *parent) : SystemConnectionMemo("F", "Rfid", parent)
+/*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo(RfidTrafficController* rt, QObject *parent) : DefaultSystemConnectionMemo("F", "Rfid", parent)
 {
     //this();
     setRfidTrafficController(rt);
 }
 
-/*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo( QObject *parent) : SystemConnectionMemo("F", "Rfid", parent)
+/*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo( QObject *parent) : DefaultSystemConnectionMemo("F", "Rfid", parent)
 {
     //super("F", "Rfid");
     _register(); // registers general type

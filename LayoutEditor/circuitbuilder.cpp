@@ -44,6 +44,7 @@
 #include "warranttableaction.h"
 #include "box.h"
 #include <QSortFilterProxyModel>
+#include "helpbroker.h"
 
 //CircuitBuilder::CircuitBuilder(QObject *parent) :
 //    QObject(parent)
@@ -145,7 +146,7 @@ CircuitBuilder::~CircuitBuilder()
     });
     _circuitMenu->addSection(tr("At least two track circuits are needed "));
     QAction* helpItem = new QAction(tr("CircuitBuilder Help"),this);
-//    HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(helpItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
+    HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(helpItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
     _circuitMenu->addAction(helpItem);
 
 }

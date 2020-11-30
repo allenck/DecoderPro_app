@@ -89,6 +89,6 @@ void SensorGroup::addPressed() {
         }
         // make it persistant & activate
         r->activateRoute();
-        rm->Register(r);
+        rm->Register((NamedBean*)r);
     }
 }

@@ -30,7 +30,7 @@ public:
     /*public*/ void setEnabled(bool isEnabled);
     /*public*/ void setEnabled();
     /*public*/ void setAddressPanel(AddressPanel* addressPanel);
-//    /*public*/ void saveFunctionButtonsToRoster (RosterEntry* rosterEntry);
+    /*public*/ void saveFunctionButtonsToRoster (RosterEntry* rosterEntry);
     /*public*/ void resetFnButtons();
     /*public*/ void keyPressEvent(QKeyEvent* e);
     /*public*/ void keyReleaseEvent(QKeyEvent* e);
