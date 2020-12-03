@@ -328,6 +328,7 @@
 #include "layoutshapexml.h"
 #include "editormanager.h"
 #include "meterframemanagerxml.h"
+#include "internalmetermanagerxml.h"
 
 bool Metatypes::done = false;
 
@@ -673,6 +674,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LayoutShapeXml>("LayoutShapeXml");
  qRegisterMetaType<EditorManager>("EditorManager");
  qRegisterMetaType<MeterFrameManagerXml>("MeterFrameManagerXml");
+ qRegisterMetaType<InternalMeterManagerXml>("InternalMeterManagerXml");
 
  Metatypes::done = true;
 }

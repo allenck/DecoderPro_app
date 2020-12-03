@@ -997,7 +997,9 @@ SOURCES += \
     proxymetermanager.cpp \
     abstractproxymetermanager.cpp \
     internalmetermanager.cpp \
-    abstractmetermanager.cpp
+    abstractmetermanager.cpp \
+    internalmetermanagerxml.cpp \
+    abstractmetermanagerxml.cpp
 
 
  !contains(FTDI, 1) {
@@ -2007,7 +2009,9 @@ HEADERS += \
     proxymetermanager.h \
     abstractproxymetermanager.h \
     internalmetermanager.h \
-    abstractmetermanager.h
+    abstractmetermanager.h \
+    internalmetermanagerxml.h \
+    abstractmetermanagerxml.h
 
 
  !contains(FTDI, 1) {

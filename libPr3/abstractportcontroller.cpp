@@ -311,7 +311,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
  * @return a SystemConnectionMemo
  */
 //@Override
-/*public*/ SystemConnectionMemo* AbstractPortController::getSystemConnectionMemo()
+/*public*/ SystemConnectionMemo* AbstractPortController::getSystemConnectionMemo() const
 {
  return this->connectionMemo;
 }

@@ -82,7 +82,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxySensorManager::getManagerList()
+/*public*/ QList<Manager*> AbstractProxySensorManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
@@ -96,7 +96,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxySensorManager::getDisplayOrderManagerList() {
+/*public*/ QList<Manager*> AbstractProxySensorManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 

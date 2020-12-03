@@ -38,6 +38,7 @@ private:
  friend class LnDeferProgrammerTest;
  friend class LnTurnoutManagerTest;
  friend class LocoNetThrottleTest;
+ friend class LnPredefinedMetersTest;
 };
 
 #endif // LOCONETINTERFACESCAFFOLD_H

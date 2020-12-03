@@ -81,7 +81,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxyIdTagManager::getManagerList()
+/*public*/ QList<Manager*> AbstractProxyIdTagManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
@@ -95,7 +95,7 @@ AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxyIdTagManager::getDisplayOrderManagerList() {
+/*public*/ QList<Manager*> AbstractProxyIdTagManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 

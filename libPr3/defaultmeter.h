@@ -28,7 +28,7 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
   QObject* self() {return (QObject*)this;}
   /*public*/ void dispose();
   /*public*/ void requestUpdateFromLayout();
-  QString getSystemName() const {return NamedBean::getSystemName();}
+  QString getSystemName() const {return AbstractNamedBean::getSystemName();}
  private:
   static Logger* log;
   /*@Nonnull*/ /*private*/ /*final*/ MeterUpdateTask* _updateTask;

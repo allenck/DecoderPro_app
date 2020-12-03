@@ -14,6 +14,7 @@
 #include <QStringList>
 #include <QString>
 #include <QChar>
+#include "abstractmetermanager.h"
 
 /**
  * Frame providing a simple LCD-based display of track voltage.
@@ -642,20 +643,20 @@
         foreach(NamedBean* bean, mm->getNamedBeanSet())
         {
          DefaultMeter* m = (DefaultMeter*)bean;
-            if ((m != nullptr) && (qobject_cast<VoltageMeter*>(m->self()))) {
-                if (voltageMeters.contains(m)) {
-                    log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)meter)->getDisplayName()));
-                } else {
-                    voltageMeters.append(m);
-                    log->debug(tr("Added voltage meter %1").arg(((DefaultMeter*)meter)->getSystemName()));
-                }
-            } else if ((m != nullptr) && (qobject_cast<CurrentMeter*>(m->self()))) {
-                if (currentMeters.contains(m)) {
-                    log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)meter)->getDisplayName()));
-                } else {
-                    currentMeters.append(m);
-                }
-            }
+         if ((m != nullptr) && (qobject_cast<VoltageMeter*>(m->self()))) {
+             if (voltageMeters.contains(m)) {
+                 log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)meter)->getDisplayName()));
+             } else {
+                 voltageMeters.append(m);
+                 log->debug(tr("Added voltage meter %1").arg(((DefaultMeter*)meter)->getSystemName()));
+             }
+         } else if ((m != nullptr) && (qobject_cast<CurrentMeter*>(m->self()))) {
+             if (currentMeters.contains(m)) {
+                 log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)meter)->getDisplayName()));
+             } else {
+                 currentMeters.append(m);
+             }
+         }
         }//);
 
         if ((menuBar != nullptr) && (voltageMetersMenu != nullptr)) {

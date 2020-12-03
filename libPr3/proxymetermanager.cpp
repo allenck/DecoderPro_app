@@ -27,7 +27,7 @@
     }
 
     //@Override
-    /*protected*/ ProxyMeterManager* ProxyMeterManager::makeInternalManager() {
+    /*protected*/ ProxyMeterManager* ProxyMeterManager::makeInternalManager() const {
         return (ProxyMeterManager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getMeterManager();
     }
 

@@ -80,7 +80,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxyLightManager::getManagerList()
+/*public*/ QList<Manager*> AbstractProxyLightManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
@@ -94,7 +94,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxyLightManager::getDisplayOrderManagerList() {
+/*public*/ QList<Manager*> AbstractProxyLightManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 

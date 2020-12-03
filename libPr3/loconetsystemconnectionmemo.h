@@ -129,7 +129,7 @@ protected:
  // when readers are not all on the same LocoNet
  // this manager is loaded on demand.
  /*protected*/ static TranspondingTagManager* tagManager;
- /*protected*/ LnPredefinedMeters* predefinedMeters;
+ /*protected*/ LnPredefinedMeters* predefinedMeters = nullptr;
 
   friend class ManagerDefaultsConfigPane;
 };

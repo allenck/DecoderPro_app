@@ -239,7 +239,10 @@ SOURCES += \
     entryexit/circuitbuildertest.cpp \
     entryexit/circuitbuildertestaction.cpp \
     loconet/controlpaneltest.cpp \
-    loconet/controlpaneltestaction.cpp
+    loconet/controlpaneltestaction.cpp \
+    misc/meterframetest.cpp \
+    loconet/lnpredefinedmeterstest.cpp \
+    loconet/lnpredefinedmeterstestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -456,7 +459,10 @@ HEADERS += \
     entryexit/circuitbuildertest.h \
     entryexit/circuitbuildertestaction.h \
     loconet/controlpaneltest.h \
-    loconet/controlpaneltestaction.h
+    loconet/controlpaneltestaction.h \
+    misc/meterframetest.h \
+    loconet/lnpredefinedmeterstest.h \
+    loconet/lnpredefinedmeterstestaction.h
 
 unix {
     target.path = /usr/lib

@@ -81,7 +81,7 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxyReporterManager::getManagerList()
+/*public*/ QList<Manager*> AbstractProxyReporterManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
@@ -95,7 +95,7 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxyReporterManager::getDisplayOrderManagerList() {
+/*public*/ QList<Manager*> AbstractProxyReporterManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 

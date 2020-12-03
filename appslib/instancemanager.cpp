@@ -72,7 +72,7 @@
 #include <QApplication>
 //#include "proxymanager.h"
 #include "proxylightmanager.h"
-
+#include "proxymetermanager.h"
 
 class ManagerLists : public QHash<QString,QObjectList*>
 {
@@ -883,10 +883,10 @@ void InstanceManager::setSensorManager(SensorManager* p)
 //@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
 /*static*/ /*public*/ void InstanceManager::setMeterManager(MeterManager* p) {
     log->debug(" setMeterManager");
-#if 0
-    MeterManager* apm = getDefault("MeterManager");
-    if (apm instanceof ProxyManager<?>) { // <?> due to type erasure
-        ((ProxyManager<Meter>) apm).addManager(p);
+#if 1
+    MeterManager* apm = (ProxyMeterManager*)getDefault("MeterManager");
+    if (qobject_cast<ProxyManager*>(apm)) { // <?> due to type erasure
+        ((ProxyMeterManager/*<Meter*>*/*) apm)->addManager(p);
     } else {
         log->error("Incorrect setup: MeterManager default isn't an AbstractProxyManager<Meter>");
     }

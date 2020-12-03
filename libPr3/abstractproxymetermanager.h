@@ -17,8 +17,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
      * Returns a list of all managers, including the
      * internal manager.  This is not a live list.
      */
-    /*public*/ QList<Manager*> getManagerList() override;
-    /*public*/ QList<Manager*> getDisplayOrderManagerList() override;
+    /*public*/ QList<Manager*> getManagerList() const override;
+    /*public*/ QList<Manager*> getDisplayOrderManagerList() const override;
     /*public*/ Manager* getInternalManager() const;
     /*public*/ Manager* getDefaultManager()const override;
     /*public*/ void addManager(Manager* m) override;
@@ -124,6 +124,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
     QMap<QString, QVector<PropertyChangeListener*>*> namedPropertyListenerMap;// = new HashMap<>();
     QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
     QMap<QString, QVector<VetoableChangeListener*>*> namedPropertyVetoListenerMap;// = new HashMap<>();
+    /*private*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ QString systemPrefix) const;
+
  protected:
     /**
      * Number of managers available through
@@ -132,7 +134,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
      */
     /*protected*/ virtual int nMgrs() const;
     /*protected*/ virtual Manager* getMgr(int index) const;
-    virtual /*abstract protected*/ Manager* makeInternalManager() const /*=0*/;
+    virtual /*abstract protected*/ Manager* makeInternalManager() const =0;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new NamedBean: If the name
@@ -155,6 +157,9 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
     /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const override;
     /*public*/ NamedBean *getByUserName(/*@Nonnull*/ QString userName) const override;
 
+ private:
+    /*private*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ QString systemPrefix);
+ protected:
     /**
      * Find the index of a matching manager.
      * Returns -1 if there is no match, which is not considered an
@@ -170,6 +175,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
     /*protected*/ void updateOrderList();
     /*protected*/ void updateNamedBeanSet();
     /*protected*/ void recomputeNamedBeanSet();
+    /*protected*/ Manager/*<E>*/* getManager(/*@Nonnull*/ QString systemName) const;
+    /*protected*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const;
 
 
  friend class ProxyReporterManager;

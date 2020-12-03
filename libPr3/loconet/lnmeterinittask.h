@@ -28,7 +28,7 @@ class LnMeterInitTask : public QObject
   bool _enabled = false;
   /*private*/ UpdateTask01* _intervalTask = nullptr;
   /*private*/ /*final*/ int _sleepInterval;
-  /*private*/ /*final*/ LnTrafficController* tc;
+  /*private*/ /*final*/ LnTrafficController* tc = nullptr;
 
  protected:
   /*protected*/ void enable();

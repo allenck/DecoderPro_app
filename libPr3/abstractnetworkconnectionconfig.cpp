@@ -374,7 +374,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 
 
 //Override
-/*public*/ PortAdapter* AbstractNetworkConnectionConfig::getAdapter() {
+/*public*/ PortAdapter* AbstractNetworkConnectionConfig::getAdapter()  {
     return adapter;
 }
 

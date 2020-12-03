@@ -72,7 +72,7 @@
         int srcSerNum = msg->getElement(18)+128*msg->getElement(19);
 
         QString voltSysName = createSystemName(srcDeviceType, srcSerNum, "Voltage"); // NOI18N
-        Meter* m = (Meter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(voltSysName);
+        Meter* m = (DefaultMeter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(voltSysName);
         updateAddMeter(m, voltSysName, valVolts, true);
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
@@ -101,7 +101,7 @@
         if (devName.isNull()) {
             devName="["+QString::number(device)+"]"; // NOI18N
         }
-        return sm->getSystemPrefix()+"V"+ devName + "(s/n"+sn+")"+typeString; // NOI18N
+        return sm->getSystemPrefix()+"V"+ devName + "(s/n"+QString::number(sn)+")"+typeString; // NOI18N
     }
 
     /*private*/ void LnPredefinedMeters::updateAddMeter(Meter* m, QString sysName, float value, bool typeVolt ) {

@@ -43,6 +43,7 @@ public:
  explicit LocoNetMessage(int len, QObject *parent = 0);
  /*public*/ LocoNetMessage();
  /*public*/ LocoNetMessage(QString s);
+ /*public*/ LocoNetMessage(LocoNetMessage* original);
 
  ~LocoNetMessage();
  /**

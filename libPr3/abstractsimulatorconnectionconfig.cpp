@@ -42,7 +42,7 @@
 }
 
 //@Override
-/*public*/ PortAdapter* AbstractSimulatorConnectionConfig::getAdapter() { return adapter; }
+/*public*/ PortAdapter* AbstractSimulatorConnectionConfig::getAdapter()  { return adapter; }
 
 /**
  * Ctor for a functional object with no prexisting adapter.

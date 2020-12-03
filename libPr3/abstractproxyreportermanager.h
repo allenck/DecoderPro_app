@@ -22,8 +22,8 @@ public:
      * Returns a list of all managers, including the
      * internal manager.  This is not a live list.
      */
-    /*public*/ QList<Manager*> getManagerList() override;
-    /*public*/ QList<Manager*> getDisplayOrderManagerList() override;
+    /*public*/ QList<Manager*> getManagerList() const override;
+    /*public*/ QList<Manager*> getDisplayOrderManagerList() const override;
     /*public*/ Manager* getInternalManager() const ;
     /*public*/ Manager* getDefaultManager()const override;
     /*public*/ void addManager(Manager* m) override;

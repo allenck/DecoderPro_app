@@ -10,9 +10,10 @@ class SlotManager;
 class LnTrafficController;
 class LnMeterInitTask;
 class LocoNetSystemConnectionMemo;
-class LnPredefinedMeters : public QObject
+class LnPredefinedMeters : public QObject, public LocoNetListener
 {
   Q_OBJECT
+  Q_INTERFACES(LocoNetListener)
  public:
   explicit LnPredefinedMeters(LocoNetSystemConnectionMemo* scm, QObject *parent = nullptr);
   /*public*/ void message(LocoNetMessage* msg);

@@ -1,6 +1,10 @@
 #include "abstractproxymetermanager.h"
 #include "loggerfactory.h"
 #include "systemconnectionmemo.h"
+#include "defaultmeter.h"
+#include "connectionconfigmanager.h"
+#include "instancemanager.h"
+#include "connectionconfig.h"
 
 // NOTE: This class is a replacement for AbstractProxyManager that
 // implements MeterManager instead of AbstractManager
@@ -69,7 +73,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxyMeterManager::getManagerList()
+/*public*/ QList<Manager*> AbstractProxyMeterManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
@@ -83,7 +87,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxyMeterManager::getDisplayOrderManagerList() {
+/*public*/ QList<Manager*> AbstractProxyMeterManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 
@@ -114,8 +118,14 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
     return getInternalManager();
 }
 
-/*public*/ void AbstractProxyMeterManager::addManager(Manager* m)
+/**
+ * {@inheritDoc}
+ */
+//@Override
+//@SuppressWarnings("deprecation")
+/*public*/ void AbstractProxyMeterManager::addManager(/*@Nonnull*/ Manager* m)
 {
+ //Objects.requireNonNull(m, "Can only add non-null manager");
  // check for already present
  if (mgrs.contains(m))
  {
@@ -176,10 +186,10 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  return internalManager;
 }
 
-/*abstract protected*/ Manager* AbstractProxyMeterManager::makeInternalManager() const
-{
- return nullptr;
-}
+///*abstract protected*/ Manager* AbstractProxyMeterManager::makeInternalManager() const
+//{
+// return nullptr;
+//}
 
 /**
  * Locate via user name, then system name if needed.
@@ -366,6 +376,24 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
 }
 
 /**
+ * Get the manager for the given system name.
+ *
+ * @param systemName the given name
+ * @return the requested manager or null if there is no matching manager
+ */
+//@CheckForNull
+/*protected*/ Manager/*<E>*/* AbstractProxyMeterManager::getManager(/*@Nonnull*/ QString systemName) const {
+    // make sure internal present
+    initInternal();
+    for (Manager/*<E>*/* m : getManagerList()) {
+        if (systemName.startsWith(m->getSystemNamePrefix())) {
+            return m;
+        }
+    }
+    return nullptr;
+}
+
+/**
  * Find the index of a matching manager.
  * Returns -1 if there is no match, which is not considered an
  * error
@@ -399,15 +427,58 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
     if (index < 0) throw  IllegalArgumentException("System name "+systemname+" failed to match");
     return index;
 }
+/**
+ * Try to create a system manager. If this proxy manager is able to create
+ * a system manager, the concrete class must implement this method.
+ *
+ * @param memo the system connection memo for this connection
+ * @return the new manager or null if it's not possible to create the manager
+ */
+/*protected*/ Manager/*<E>*/* AbstractProxyMeterManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const{
+    return nullptr;
+}
 
+/**
+ * Try to create a system manager.
+ *
+ * @param systemPrefix the system prefix
+ * @return the new manager or null if it's not possible to create the manager
+ */
+/*private*/ Manager/*<E>*/* AbstractProxyMeterManager::createSystemManager(/*@Nonnull*/ QString systemPrefix) const{
+    Manager/*<E>*/* m = nullptr;
+
+    ConnectionConfigManager* manager = (ConnectionConfigManager*)InstanceManager::getNullableDefault("ConnectionConfigManager");
+    if (manager == nullptr) return nullptr;
+
+    QVector<ConnectionConfig*> connections = manager->getConnections();
+
+    for (ConnectionConfig* connection : connections) {
+        if (systemPrefix == (connection->getAdapter()->getSystemPrefix())) {
+            m = createSystemManager(connection->getAdapter()->getSystemConnectionMemo());
+        }
+        if (m != nullptr) break;
+    }
+//        if (m == null) throw new RuntimeException("Manager not created");
+    return m;
+}
 /**
  * Remember a NamedBean Object created outside the manager.
  * <P>
  * Forwards the register request to the matching system
  */
 /*public*/ void AbstractProxyMeterManager::Register(NamedBean* s) const {
-    QString systemName = s->getSystemName();
-    getMgr(match(systemName))->Register(s);
+//    QString systemName = ((DefaultMeter*)s)->getSystemName();
+//    getMgr(match(systemName))->Register(s);
+    Manager/*<E>*/* m = getManager(s->getSystemName());
+    if (m == nullptr) {
+        QString systemPrefix = Manager::getSystemPrefix(s->getSystemName());
+        m = createSystemManager(systemPrefix);
+    }
+    if (m != nullptr) {
+        m->Register(s);
+    } else {
+        log->error(tr("Unable to register %1 in this proxy manager. No system specific manager supports this bean.").arg(s->getSystemName()));
+    }
 }
 
 /**

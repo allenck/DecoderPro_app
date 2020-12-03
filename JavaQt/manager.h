@@ -483,6 +483,7 @@ public:
      //@CheckReturnValue
      static /*public*/
      int getSystemPrefixLength(/*@Nonnull*/ QString inputName) throw (NamedBean::BadSystemNameException);
+     /*public*/ static QString getSystemPrefix(/*@Nonnull*/ QString inputName);
 
      /**
           * Indicate whether a system-prefix is one of the legacy non-parsable ones

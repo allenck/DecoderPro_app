@@ -54,6 +54,23 @@
     }
     return i;
 }
+/**
+ * Provides the system prefix of the given system name.
+ * <p>
+ * This is a common operation across JMRI, as the system prefix can be
+ * parsed out without knowledge of the type of NamedBean involved.
+ *
+ * @param inputName System name to provide the prefix
+ * @throws NamedBean.BadSystemNameException If the inputName can't be
+ *                                          converted to normalized form
+ * @return The system-prefix part of the system name in standard normalized
+ *         form
+ */
+//@CheckReturnValue
+//@Nonnull
+/*public*/ /*static*/ QString Manager::getSystemPrefix(/*@Nonnull*/ QString inputName) {
+    return inputName.mid(0, getSystemPrefixLength(inputName));
+}
 
 /*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name) const {
         return makeSystemName(name, true);

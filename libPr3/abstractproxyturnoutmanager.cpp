@@ -80,7 +80,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxyTurnoutManager::getManagerList()
+/*public*/ QList<Manager*> AbstractProxyTurnoutManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
@@ -94,7 +94,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxyTurnoutManager::getDisplayOrderManagerList() {
+/*public*/ QList<Manager*> AbstractProxyTurnoutManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 

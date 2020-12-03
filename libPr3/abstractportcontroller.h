@@ -95,7 +95,7 @@ public:
     /*public*/ bool isDirty() override;
     /*public*/ bool isRestartRequired();
     /*public*/ void setSystemConnectionMemo(SystemConnectionMemo* connectionMemo);
-    /*public*/ SystemConnectionMemo* getSystemConnectionMemo();
+    /*public*/ SystemConnectionMemo* getSystemConnectionMemo() const;
 
 signals:
     

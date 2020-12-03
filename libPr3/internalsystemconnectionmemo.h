@@ -46,6 +46,7 @@ private:
  /*private*/ InternalSensorManager* sensorManager = nullptr;
  /*private*/ InternalReporterManager* reporterManager = nullptr;
  /*private*/ InternalTurnoutManager* turnoutManager = nullptr;
+ /*private*/ InternalMeterManager* meterManager = nullptr;
  /*private*/ DebugThrottleManager* throttleManager = nullptr;
  /*private*/ DefaultPowerManager* powerManager = nullptr;
  /*private*/ DebugProgrammerManager* programManager = nullptr;

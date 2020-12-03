@@ -29,7 +29,7 @@ class ProxyMeterManager : public AbstractProxyMeterManager
 
 
  protected:
-  /*protected*/ ProxyMeterManager* makeInternalManager();
+  /*protected*/ ProxyMeterManager* makeInternalManager() const;
   /*protected*/ MeterManager* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo);
 
 };

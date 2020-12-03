@@ -39,7 +39,7 @@ public:
      *
      * @return the list of managers
      */
- /*public*/ virtual QList<Manager*> getManagerList() {return QList<Manager*>();}
+ /*public*/ virtual QList<Manager*> getManagerList() const {return QList<Manager*>();}
 
     /**
      * Get a list of all managers, with the default as the first item and internal
@@ -47,7 +47,7 @@ public:
      *
      * @return the list of managers
      */
-    /*public*/ virtual QList<Manager*> getDisplayOrderManagerList() {return QList<Manager*>();}
+    /*public*/ virtual QList<Manager*> getDisplayOrderManagerList() const {return QList<Manager*>();}
 };
 Q_DECLARE_INTERFACE(ProxyManager, "ProxyManager")
 #endif // PROXYMANAGER_H

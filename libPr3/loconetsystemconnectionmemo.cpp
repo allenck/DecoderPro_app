@@ -312,7 +312,7 @@ void LocoNetSystemConnectionMemo::configureManagers()
  }
 
  InstanceManager::setReporterManager((ReporterManager*)getReporterManager());
-#if 0 // TOO
+#if 1 // TOO
  InstanceManager::setDefault("CabSignalManager",getCabSignalManager());
 #endif
  InstanceManager::setConsistManager(new LocoNetConsistManager(this));

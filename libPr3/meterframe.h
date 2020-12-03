@@ -165,7 +165,7 @@ private:
   /*private*/ /*final*/ QList<Meter*> currentMeters = QList<Meter*>();
 
   // GUI member declarations
-  /*private*/ QMenuBar* menuBar;
+  /*private*/ QMenuBar* menuBar = nullptr;
   QVector<JLabel*> integerDigitIcons;
   QVector<JLabel*> decimalDigitIcons;
   JLabel* decimal;

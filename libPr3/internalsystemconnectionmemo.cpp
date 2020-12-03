@@ -140,7 +140,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ InternalMeterManager* InternalSystemConnectionMemo::getMeterManager() {
-    InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager");
+    //InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager");
     if (meterManager == nullptr) {
         log->debug("Create InternalMeterManager by request", getSystemPrefix());
         meterManager = new InternalMeterManager(this);
