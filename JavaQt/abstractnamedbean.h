@@ -50,7 +50,7 @@ public:
     /*public synchronized*/ int getNumPropertyChangeListeners() override;
     /*public*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(QString propertyName) override;
 
-    /*public*/ QString getSystemName() const override;
+    /*public*/ QString getSystemName() const override ;
     /*public*/ QString getUserName() const override;
     /*public*/ void setUserName(QString s) throw (NamedBean::BadUserNameException)  override;
     /*public*/ void dispose() override;

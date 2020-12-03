@@ -39,6 +39,7 @@
 #include "timetable/timetableaction.h"
 #include "servermenu.h"
 #include "pragotronclockaction.h"
+#include "meteraction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -175,6 +176,7 @@ addAction(ta);
  addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
  addAction(new SpeedometerAction(tr("Speedometer..."),this));
  addAction(new AmpMeterAction(tr("Amp Meter"),this));
+ addAction(new MeterAction(tr("Meter"),this));
  addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
  addAction(new BlockBossAction(tr("Simple Signal Logic"),this));
  addAction(new SendPacketAction(tr("Send DCC Packet"),this));

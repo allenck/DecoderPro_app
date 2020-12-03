@@ -988,7 +988,16 @@ SOURCES += \
     loconet/lnmeterinittask.cpp \
     abstractanalogio.cpp \
     defaultmeter.cpp \
-    loconet/lniplimplementation.cpp
+    loconet/lniplimplementation.cpp \
+    loconet/lndplxgrpinfoimpl.cpp \
+    meterframe.cpp \
+    meterframemanager.cpp \
+    meterframemanagerxml.cpp \
+    meteraction.cpp \
+    proxymetermanager.cpp \
+    abstractproxymetermanager.cpp \
+    internalmetermanager.cpp \
+    abstractmetermanager.cpp
 
 
  !contains(FTDI, 1) {
@@ -1987,7 +1996,18 @@ HEADERS += \
     abstractanalogio.h \
     defaultmeter.h \
     analogio.h \
-    loconet/lniplimplementation.h
+    loconet/lniplimplementation.h \
+    loconet/lndplxgrpinfoimpl.h \
+    loconet/lndplxgrpinfoimplconstants.h \
+    loconet/duplexgroupmessagetype.h \
+    meterframe.h \
+    meterframemanager.h \
+    meterframemanagerxml.h \
+    meteraction.h \
+    proxymetermanager.h \
+    abstractproxymetermanager.h \
+    internalmetermanager.h \
+    abstractmetermanager.h
 
 
  !contains(FTDI, 1) {

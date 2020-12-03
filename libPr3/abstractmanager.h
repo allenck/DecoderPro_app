@@ -168,6 +168,7 @@ friend class RpsReporterManager;
 friend class RpsSensorManager;
 friend class InternalLightManager;
 friend class InternalReporterManager;
+friend class InternalMeterManager;
 protected:
 /**
  * Locate an instance based on a system name.  Returns NULL if no

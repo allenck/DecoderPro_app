@@ -17,7 +17,8 @@ public:
  /*public*/ JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt);
  /*public*/ JMRIClientTrafficController* getJMRIClientTrafficController();
  ~JMRIClientSystemConnectionMemo() {}
- JMRIClientSystemConnectionMemo(const JMRIClientSystemConnectionMemo&) : DefaultSystemConnectionMemo() {}
+ JMRIClientSystemConnectionMemo(const JMRIClientSystemConnectionMemo& other)
+  : DefaultSystemConnectionMemo(other.prefix, other.userName) {}
  /*public*/ void setJMRIClientTrafficController(JMRIClientTrafficController* jt);
  /*public*/ void dispose();
  /*public*/ void configureManagers();

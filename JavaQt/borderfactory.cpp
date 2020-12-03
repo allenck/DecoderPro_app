@@ -248,7 +248,6 @@
     /*public*/ static Border createSoftBevelBorder(int type, Color highlight, Color shadow) {
         return new SoftBevelBorder(type, highlight, shadow);
     }
-
     /**
      * Creates a beveled border of the specified type with softened corners,
      * using the specified colors for the inner and outer edges
@@ -267,14 +266,15 @@
      * @see BevelBorder#BevelBorder(int, Color, Color, Color, Color)
      * @since 1.7
      */
-    /*public*/ static Border createSoftBevelBorder(int type, Color highlightOuter, Color highlightInner, Color shadowOuter, Color shadowInner) {
+    /*public*/ static Border createSoftBevelBorder(int type, QColor highlightOuter, QColor highlightInner, QColor shadowOuter, QColor shadowInner) {
         return new SoftBevelBorder(type, highlightOuter, highlightInner, shadowOuter, shadowInner);
     }
-
+#endif
+#if 0
 //// EtchedBorder ///////////////////////////////////////////////////////////
 
-    static final Border sharedEtchedBorder = new EtchedBorder();
-    /*private*/ static Border sharedRaisedEtchedBorder;
+    /*static*/ /*final*/ Border* BorderFactory::sharedEtchedBorder = new EtchedBorder();
+    /*private*/ /*static*/ Border* BorderFactory::sharedRaisedEtchedBorder;
 
     /**
      * Creates a border with an "etched" look using
@@ -283,7 +283,7 @@
      *
      * @return the <code>Border</code> object
      */
-    /*public*/ static Border createEtchedBorder()    {
+    /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder()    {
         return sharedEtchedBorder;
     }
 
@@ -295,7 +295,7 @@
      * @param shadow     a <code>Color</code> object for the border shadows
      * @return the <code>Border</code> object
      */
-    /*public*/ static Border createEtchedBorder(Color highlight, Color shadow)    {
+    /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder(QColor highlight, QColor shadow)    {
         return new EtchedBorder(highlight, shadow);
     }
 
@@ -312,18 +312,18 @@
      *                  <code>EtchedBorder.LOWERED</code>
      * @since 1.3
      */
-    /*public*/ static Border createEtchedBorder(int type)    {
+    /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder(int type)    {
         switch (type) {
-        case EtchedBorder.RAISED:
-            if (sharedRaisedEtchedBorder == null) {
+        case EtchedBorder::RAISED:
+            if (sharedRaisedEtchedBorder == nullptr) {
                 sharedRaisedEtchedBorder = new EtchedBorder
-                                           (EtchedBorder.RAISED);
+                                           (EtchedBorder::RAISED);
             }
             return sharedRaisedEtchedBorder;
-        case EtchedBorder.LOWERED:
+        case EtchedBorder::LOWERED:
             return sharedEtchedBorder;
         default:
-            throw new IllegalArgumentException("type must be one of EtchedBorder.RAISED or EtchedBorder.LOWERED");
+            throw  IllegalArgumentException("type must be one of EtchedBorder.RAISED or EtchedBorder.LOWERED");
         }
     }
 
@@ -338,8 +338,8 @@
      * @return the <code>Border</code> object
      * @since 1.3
      */
-    /*public*/ static Border createEtchedBorder(int type, Color highlight,
-                                            Color shadow)    {
+    /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder(int type, QColor highlight,
+                                            QColor shadow)    {
         return new EtchedBorder(type, highlight, shadow);
     }
 #endif

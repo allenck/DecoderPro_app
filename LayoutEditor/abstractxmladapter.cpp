@@ -1,5 +1,6 @@
 #include "abstractxmladapter.h"
 #include "errormemo.h"
+#include "loggerfactory.h"
 
 AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
  :    XmlAdapter()
@@ -94,8 +95,154 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
 
 /*protected*/ ConfigXmlManager* AbstractXmlAdapter::getConfigXmlManager() { return c; }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ QDomElement AbstractXmlAdapter::store(/*@Nonnull*/ QObject* o, bool shared) {
+    if (shared) {
+        return XmlAdapter::store(o);
+    }
+    return QDomElement();
+}
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractXmlAdapter::setExceptionHandler(ErrorHandler* errorHandler) {
+    this->errorHandler = errorHandler;
+}
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractXmlAdapter.class.getName());
+/** {@inheritDoc} */
+//@Override
+/*public*/ ErrorHandler* AbstractXmlAdapter::getExceptionHandler() {
+    return this->errorHandler;
+}
+
+/**
+ * Service method to handle attribute input of
+ * boolean  (true/yes vs false/no) values.  Not being present
+ * is not an error. Not parsing (which shouldn't happen due to
+ * the XML Schema checks) invokes the default error handler.
+ * @param element the element to parse.
+ * @param name element attribute name.
+ * @param def default value if name not present in element.
+ * @return boolean value of attribute, else default if not present or error.
+ */
+ /*final*/ /*public*/ bool AbstractXmlAdapter::getAttributeBooleanValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, bool def) {
+    QString a;
+    QString val = QString();
+    try {
+        a = element.attribute(name);
+        if (a == "") return def;
+        val = a/*.getValue()*/;
+        if ( val == ("yes") || val == ("true") ) return true;  // non-externalized strings
+        if ( val == ("no") || val == ("false") ) return false;
+        return def;
+    } catch (Exception ex) {
+        log->debug("caught exception", ex);
+        ErrorMemo* em = new ErrorMemo(this,
+                                        "getAttributeBooleanValue threw exception",
+                                        "element: "+element.tagName(),
+                                        "attribute: "+name,
+                                        "value: "+val,
+                                        &ex);
+        getExceptionHandler()->handle(em);
+        return def;
+    }
+}
+
+/**
+ * Service method to handle attribute input of
+ * integer values.  Not being present
+ * is not an error. Not parsing (which shouldn't happen due to
+ * the XML Schema checks) invokes the default error handler.
+ * @param element the element to parse.
+ * @param name element attribute name.
+ * @param def default value if name not present in element.
+ * @return integer value of attribute, else default if not present or error.
+ */
+/*final*/ /*public*/ int AbstractXmlAdapter::getAttributeIntegerValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, int def) {
+    QString a;
+    QString val = QString();
+    bool bok;
+        a = element.attribute(name);
+        if (a == "") return def;
+        val = a/*.getValue()*/;
+        return a.toInt(&bok);
+    if(!bok) {
+        log->debug("caught exception"/*, ex*/);
+        ErrorMemo* em = new ErrorMemo(this,
+                                        "getAttributeIntegerValue threw exception",
+                                        "element: "+element.tagName(),
+                                        "attribute: "+name,
+                                        "value: "+val,
+                                        new Throwable());
+        getExceptionHandler()->handle(em);
+        return def;
+    }
+}
+#if 0
+/**
+ * Service method to handle attribute input of
+ * double values.  Not being present
+ * is not an error. Not parsing (which shouldn't happen due to
+ * the XML Schema checks) invokes the default error handler.
+ * @param element the element to parse.
+ * @param name element attribute name.
+ * @param def default value if name not present in element.
+ * @return double value of attribute, else default if not present or error.
+ */
+final public double getAttributeDoubleValue(@Nonnull Element element, @Nonnull String name, double def) {
+    Attribute a;
+    String val = null;
+    try {
+        a = element.getAttribute(name);
+        if (a == null) return def;
+        val = a.getValue();
+        return a.getDoubleValue();
+    } catch (Exception ex) {
+        log.debug("caught exception", ex);
+        ErrorMemo em = new ErrorMemo(this,
+                                        "getAttributeDoubleValue threw exception",
+                                        "element: "+element.getName(),
+                                        "attribute: "+name,
+                                        "value: "+val,
+                                        ex);
+        getExceptionHandler().handle(em);
+        return def;
+    }
+}
+
+/**
+ * Service method to handle attribute input of
+ * float values.  Not being present
+ * is not an error. Not parsing (which shouldn't happen due to
+ * the XML Schema checks) invokes the default error handler.
+ *
+ * @param element the element to parse.
+ * @param name element attribute name.
+ * @param def default value if name not present in element.
+ * @return float value of attribute, else default if not present or error.
+ */
+final public float getAttributeFloatValue(@Nonnull Element element, @Nonnull String name, float def) {
+    Attribute a;
+    String val = null;
+    try {
+        a = element.getAttribute(name);
+        if (a == null) return def;
+        val = a.getValue();
+        return a.getFloatValue();
+    } catch (Exception ex) {
+        log.debug("caught exception", ex);
+        ErrorMemo em = new ErrorMemo(this,
+                                        "getAttributeFloatValue threw exception",
+                                        "element: "+element.getName(),
+                                        "attribute: "+name,
+                                        "value: "+val,
+                                        ex);
+        getExceptionHandler().handle(em);
+        return def;
+    }
+}
+#endif
+/*private*/ /*final*/ /*static*/ Logger* AbstractXmlAdapter::log = LoggerFactory::getLogger("AbstractXmlAdapter");
 //}
 void AbstractXmlAdapter::setDoc(QDomDocument doc) { this->doc = doc;}

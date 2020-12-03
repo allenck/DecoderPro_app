@@ -69,6 +69,7 @@
 #include "rfid/proxyidtagmanager.h"
 #include "proxylightmanager.h"
 #include "editormanager.h"
+#include "proxymetermanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -158,6 +159,11 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
     return mm;
  }
 
+ if (type == "MeterManager") {
+  ProxyMeterManager* mm = new ProxyMeterManager();
+  InstanceManager::store(mm,type);
+  return mm;
+ }
 // if (type == RailComManager.class) {
 //             return new DefaultRailComManager();
 //         }

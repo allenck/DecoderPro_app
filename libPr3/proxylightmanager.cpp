@@ -2,6 +2,7 @@
 #include "lightmanager.h"
 #include "internallightmanager.h"
 #include "internalsystemconnectionmemo.h"
+#include "meter.h"
 
 ProxyLightManager::ProxyLightManager(QObject *parent) :
     AbstractProxyLightManager(parent)

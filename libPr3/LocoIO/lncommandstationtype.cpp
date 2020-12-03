@@ -52,7 +52,7 @@
     COMMAND_STATION_PR3_ALONE   ("PR3 standalone programmer",   true,   false,  "LnThrottleManager",    "SlotManager");
     COMMAND_STATION_STANDALONE  ("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager");  // NOI18N
 #endif
- /*static*/ QList<LnCommandStationType*> values =  QList<LnCommandStationType*>()
+ /*static*/ QList<LnCommandStationType*> LnCommandStationType::values =  QList<LnCommandStationType*>()
  <<  new LnCommandStationType(LnCommandStationType::COMMAND_STATION_DCS100, "DCS100 (Chief)",  // NOI18N
   LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
   LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
@@ -185,7 +185,7 @@
   LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT);
     // Note that the convention is that the first word (space-separated token) of the name is the
     // name of a configuration file for loconet.cmdstnconfig
-QList<LnCommandStationType*> LnCommandStationType::values = QList<LnCommandStationType*>();
+//QList<LnCommandStationType*> LnCommandStationType::values = QList<LnCommandStationType*>();
 
  LnCommandStationType::LnCommandStationType(LnCommandStationTypes type, QString name, ReadsFromServiceModeTrack canRead,
          ProgDepowersTrack progEndOp,

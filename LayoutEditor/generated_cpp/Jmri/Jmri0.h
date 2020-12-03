@@ -63,7 +63,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -505,7 +504,6 @@ inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners() { re
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(QString  name) { return AbstractNamedBean::getPropertyChangeListeners(name); }
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(QString  propertyName) { return AbstractNamedBean::getPropertyChangeListenersByReference(propertyName); }
 inline QSet<QString >  py_q_getPropertyKeys() { return AbstractNamedBean::getPropertyKeys(); }
-inline QString  py_q_getSystemName() const { return AbstractNamedBean::getSystemName(); }
 inline QString  py_q_getUserName() const { return AbstractNamedBean::getUserName(); }
 inline uint  py_q_hashCode() { return AbstractNamedBean::hashCode(); }
 inline void py_q_removeProperty(QString  key) { AbstractNamedBean::removeProperty(key); }
@@ -548,7 +546,6 @@ void delete_AbstractNamedBean(AbstractNamedBean* obj) { delete obj; }
    QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(AbstractNamedBean* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyChangeListeners(name));}
    QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(AbstractNamedBean* theWrappedObject, QString  propertyName){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyChangeListenersByReference(propertyName));}
    QSet<QString >  py_q_getPropertyKeys(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyKeys());}
-   QString  py_q_getSystemName(AbstractNamedBean* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getSystemName());}
    QString  py_q_getUserName(AbstractNamedBean* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getUserName());}
    uint  py_q_hashCode(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_hashCode());}
    bool  __lt__(AbstractNamedBean* theWrappedObject, const AbstractNamedBean&  e2);
@@ -1548,6 +1545,7 @@ virtual QString  getNamedBeanClass() const;
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
 virtual int  getObjectCount();
+virtual int  getOutputInterval();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
@@ -1570,6 +1568,7 @@ virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setDefaultClosedSpeed(QString  speed) const;
 virtual void setDefaultThrownSpeed(QString  speed) const;
+virtual void setOutputInterval(int  newInterval);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
@@ -1592,8 +1591,10 @@ inline QString  py_q_getBeanTypeHandled(bool  plural) const { return AbstractTur
 inline QString  py_q_getClosedText() { return AbstractTurnoutManager::getClosedText(); }
 inline QString  py_q_getDefaultClosedSpeed() const { return AbstractTurnoutManager::getDefaultClosedSpeed(); }
 inline QString  py_q_getDefaultThrownSpeed() const { return AbstractTurnoutManager::getDefaultThrownSpeed(); }
+inline QString  py_q_getEntryToolTip() { return AbstractTurnoutManager::getEntryToolTip(); }
 inline SystemConnectionMemo*  py_q_getMemo() { return AbstractTurnoutManager::getMemo(); }
 inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) const { return AbstractTurnoutManager::getNextValidAddress(curAddress, prefix); }
+inline int  py_q_getOutputInterval() { return AbstractTurnoutManager::getOutputInterval(); }
 inline QString  py_q_getThrownText() { return AbstractTurnoutManager::getThrownText(); }
 inline Turnout*  py_q_getTurnout(QString  name) const { return AbstractTurnoutManager::getTurnout(name); }
 inline QStringList  py_q_getValidOperationTypes() { return AbstractTurnoutManager::getValidOperationTypes(); }
@@ -1604,6 +1605,7 @@ inline Turnout*  py_q_newTurnout(QString  systemName, QString  userName) const {
 inline Turnout*  py_q_provideTurnout(QString  name) const { return AbstractTurnoutManager::provideTurnout(name); }
 inline void py_q_setDefaultClosedSpeed(QString  speed) const { AbstractTurnoutManager::setDefaultClosedSpeed(speed); }
 inline void py_q_setDefaultThrownSpeed(QString  speed) const { AbstractTurnoutManager::setDefaultThrownSpeed(speed); }
+inline void py_q_setOutputInterval(int  newInterval) { AbstractTurnoutManager::setOutputInterval(newInterval); }
 inline char  py_q_typeLetter() const { return AbstractTurnoutManager::typeLetter(); }
 };
 
@@ -1623,8 +1625,10 @@ void delete_AbstractTurnoutManager(AbstractTurnoutManager* obj) { delete obj; }
    QString  py_q_getClosedText(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getClosedText());}
    QString  py_q_getDefaultClosedSpeed(AbstractTurnoutManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getDefaultClosedSpeed());}
    QString  py_q_getDefaultThrownSpeed(AbstractTurnoutManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getDefaultThrownSpeed());}
+   QString  py_q_getEntryToolTip(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getEntryToolTip());}
    SystemConnectionMemo*  py_q_getMemo(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getMemo());}
    QString  py_q_getNextValidAddress(AbstractTurnoutManager* theWrappedObject, QString  curAddress, QString  prefix) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
+   int  py_q_getOutputInterval(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getOutputInterval());}
    QString  py_q_getThrownText(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getThrownText());}
    Turnout*  py_q_getTurnout(AbstractTurnoutManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getTurnout(name));}
    QStringList  py_q_getValidOperationTypes(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getValidOperationTypes());}
@@ -1635,6 +1639,7 @@ void delete_AbstractTurnoutManager(AbstractTurnoutManager* obj) { delete obj; }
    Turnout*  py_q_provideTurnout(AbstractTurnoutManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_provideTurnout(name));}
    void py_q_setDefaultClosedSpeed(AbstractTurnoutManager* theWrappedObject, QString  speed) const{  (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_setDefaultClosedSpeed(speed));}
    void py_q_setDefaultThrownSpeed(AbstractTurnoutManager* theWrappedObject, QString  speed) const{  (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_setDefaultThrownSpeed(speed));}
+   void py_q_setOutputInterval(AbstractTurnoutManager* theWrappedObject, int  newInterval){  (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_setOutputInterval(newInterval));}
    char  py_q_typeLetter(AbstractTurnoutManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_typeLetter());}
 };
 

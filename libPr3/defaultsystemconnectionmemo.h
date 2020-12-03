@@ -8,7 +8,7 @@ class DefaultSystemConnectionMemo : public SystemConnectionMemo
 {
   Q_OBJECT
  public:
-  DefaultSystemConnectionMemo(QObject *parent = 0);
+  DefaultSystemConnectionMemo(QObject* parent = nullptr) {}
   /*public*/ void _register();
   /*public*/ QString getSystemPrefix() const;
   /*public*/ /*final*/ bool setSystemPrefix(/*@Nonnull*/ QString systemPrefix);
@@ -56,6 +56,8 @@ class DefaultSystemConnectionMemo : public SystemConnectionMemo
   QT_DEPRECATED /*protected*/ /*final*/ void addToActionList();
   QT_DEPRECATED /*protected*/ /*final*/ void removeFromActionList();
 
+  friend class InternalSystemConnectionMemo;
+  friend class JMRIClientSystemConnectionMemo;
 };
 
 #endif // DEFAULTSYSTEMCONNECTIONMEMO_H

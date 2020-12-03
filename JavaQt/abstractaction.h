@@ -13,6 +13,7 @@ class JAVAQTSHARED_EXPORT AbstractAction : public Action
 public:
  //explicit AbstractAction(QObject *parent = 0);
  /*public*/  AbstractAction(QObject *parent = 0);
+ /*public*/  AbstractAction(const AbstractAction&)  {}
  static bool shouldReconfigure(PropertyChangeEvent* e);
  static void setEnabledFromAction(QWidget* c, Action* a);
  static void setToolTipTextFromAction(QWidget* c, Action* a);

@@ -8,7 +8,7 @@
 #include "meter.h"
 #include "lniplimplementation.h"
 #include "defaultmeter.h"
-
+#include "proxymetermanager.h"
 /**
  * Provide access to current and voltage meter from some LocoNet command stations
  *
@@ -76,7 +76,7 @@
         updateAddMeter(m, voltSysName, valVolts, true);
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
-        m = (Meter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
+        m = (Meter*)((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
         updateAddMeter(m, ampsSysName, valAmps, false);
     }
 

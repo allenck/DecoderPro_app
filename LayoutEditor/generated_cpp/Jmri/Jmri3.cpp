@@ -20,7 +20,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -10213,6 +10212,39 @@ if (_wrapper) {
 }
   return SystemConnectionMemo::get(T0);
 }
+int  PythonQtShell_SystemConnectionMemo::getDefaultOutputInterval()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getDefaultOutputInterval");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      int returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getDefaultOutputInterval", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return SystemConnectionMemo::getDefaultOutputInterval();
+}
 bool  PythonQtShell_SystemConnectionMemo::getDisabled()
 {
 if (_wrapper) {
@@ -10245,6 +10277,39 @@ if (_wrapper) {
   }
 }
   return SystemConnectionMemo::getDisabled();
+}
+int  PythonQtShell_SystemConnectionMemo::getOutputInterval()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getOutputInterval");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      int returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getOutputInterval", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return SystemConnectionMemo::getOutputInterval();
 }
 void PythonQtShell_SystemConnectionMemo::notifyPropertyChangeListener(QString  property0, QVariant  oldValue1, QVariant  newValue2)
 {
@@ -10322,6 +10387,28 @@ if (_wrapper) {
   }
 }
   SystemConnectionMemo::setDisabled(disabled0);
+}
+void PythonQtShell_SystemConnectionMemo::setOutputInterval(int  newInterval0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setOutputInterval");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&newInterval0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  SystemConnectionMemo::setOutputInterval(newInterval0);
 }
 bool  PythonQtShell_SystemConnectionMemo::setUserName(QString  name0)
 {
@@ -10419,9 +10506,19 @@ Manager*  PythonQtWrapper_SystemConnectionMemo::get(SystemConnectionMemo* theWra
   return ( theWrappedObject->get(T));
 }
 
+int  PythonQtWrapper_SystemConnectionMemo::getDefaultOutputInterval(SystemConnectionMemo* theWrappedObject)
+{
+  return ( theWrappedObject->getDefaultOutputInterval());
+}
+
 bool  PythonQtWrapper_SystemConnectionMemo::getDisabled(SystemConnectionMemo* theWrappedObject)
 {
   return ( theWrappedObject->getDisabled());
+}
+
+int  PythonQtWrapper_SystemConnectionMemo::getOutputInterval(SystemConnectionMemo* theWrappedObject)
+{
+  return ( theWrappedObject->getOutputInterval());
 }
 
 QString  PythonQtWrapper_SystemConnectionMemo::getSystemPrefix(SystemConnectionMemo* theWrappedObject) const
@@ -10462,6 +10559,11 @@ void PythonQtWrapper_SystemConnectionMemo::removeFromActionList(SystemConnection
 void PythonQtWrapper_SystemConnectionMemo::setDisabled(SystemConnectionMemo* theWrappedObject, bool  disabled)
 {
   ( theWrappedObject->setDisabled(disabled));
+}
+
+void PythonQtWrapper_SystemConnectionMemo::setOutputInterval(SystemConnectionMemo* theWrappedObject, int  newInterval)
+{
+  ( theWrappedObject->setOutputInterval(newInterval));
 }
 
 bool  PythonQtWrapper_SystemConnectionMemo::setSystemPrefix(SystemConnectionMemo* theWrappedObject, QString  systemPrefix)
@@ -20186,6 +20288,39 @@ if (_wrapper) {
 }
   return TurnoutManager::getObjectCount();
 }
+int  PythonQtShell_TurnoutManager::getOutputInterval()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getOutputInterval");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      int returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getOutputInterval", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return TurnoutManager::getOutputInterval();
+}
 QVector<PropertyChangeListener* >  PythonQtShell_TurnoutManager::getPropertyChangeListeners()
 {
 if (_wrapper) {
@@ -20846,6 +20981,28 @@ if (_wrapper) {
 }
   TurnoutManager::setDefaultThrownSpeed(arg__1);
 }
+void PythonQtShell_TurnoutManager::setOutputInterval(int  newInterval0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setOutputInterval");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&newInterval0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  TurnoutManager::setOutputInterval(newInterval0);
+}
 void PythonQtShell_TurnoutManager::timerEvent(QTimerEvent*  event0)
 {
 if (_wrapper) {
@@ -21013,6 +21170,11 @@ QString  PythonQtWrapper_TurnoutManager::getNextValidAddress(TurnoutManager* the
   return ( theWrappedObject->getNextValidAddress(arg__1, arg__2));
 }
 
+int  PythonQtWrapper_TurnoutManager::getOutputInterval(TurnoutManager* theWrappedObject)
+{
+  return ( theWrappedObject->getOutputInterval());
+}
+
 QString  PythonQtWrapper_TurnoutManager::getThrownText(TurnoutManager* theWrappedObject)
 {
   return ( theWrappedObject->getThrownText());
@@ -21061,6 +21223,11 @@ void PythonQtWrapper_TurnoutManager::setDefaultClosedSpeed(TurnoutManager* theWr
 void PythonQtWrapper_TurnoutManager::setDefaultThrownSpeed(TurnoutManager* theWrappedObject, QString  arg__1) const
 {
   ( theWrappedObject->setDefaultThrownSpeed(arg__1));
+}
+
+void PythonQtWrapper_TurnoutManager::setOutputInterval(TurnoutManager* theWrappedObject, int  newInterval)
+{
+  ( theWrappedObject->setOutputInterval(newInterval));
 }
 
 

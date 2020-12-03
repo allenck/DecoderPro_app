@@ -62,7 +62,8 @@ void SprogSystemConnectionMemo::common(SprogConstants::SprogMode sm)
  InstanceManager::store(cf = new SprogComponentFactory(this), "ComponentFactory");
 }
 
-/*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogConstants::SprogMode sm, SprogType* type, QObject* parent) : DefaultSystemConnectionMemo("S", SprogConnectionTypeList::SPROG, parent)
+/*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogConstants::SprogMode sm, SprogType* type, QObject* parent)
+ : DefaultSystemConnectionMemo("S", SprogConnectionTypeList::SPROG, parent)
 {
     //super("S", SprogConnectionTypeList::SPROG); // default to S
     common(sm);

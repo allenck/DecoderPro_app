@@ -7,5 +7,10 @@ class MeterManager : public AbstractManager
   Q_OBJECT
  public:
   MeterManager(QObject* parent = nullptr) : AbstractManager(parent) {}
+  MeterManager(SystemConnectionMemo*memo, QObject *parent = 0) : AbstractManager(memo, parent) {}
+  //  QString getNamedBeanClass() const override {return "jmri.MeterManager";}
+//  int getXMLOrder() const {return Manager::METERS;}
+  //virtual QObject* self() =0;
 };
+//Q_DECLARE_INTERFACE(MeterManager, "MeterManager")
 #endif // METERMANAGER_H

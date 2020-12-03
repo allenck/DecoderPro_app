@@ -79,7 +79,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2904,8 +2903,12 @@ void py_set_istream(LnPacketizer* theWrappedObject, QDataStream*  istream){ theW
 QDataStream*  py_get_istream(LnPacketizer* theWrappedObject){ return theWrappedObject->istream; }
 void py_set_ostream(LnPacketizer* theWrappedObject, QDataStream*  ostream){ theWrappedObject->ostream = ostream; }
 QDataStream*  py_get_ostream(LnPacketizer* theWrappedObject){ return theWrappedObject->ostream; }
+void py_set_rcvThread(LnPacketizer* theWrappedObject, QThread*  rcvThread){ theWrappedObject->rcvThread = rcvThread; }
+QThread*  py_get_rcvThread(LnPacketizer* theWrappedObject){ return theWrappedObject->rcvThread; }
 void py_set_xmtList(LnPacketizer* theWrappedObject, QLinkedList<QByteArray* >*  xmtList){ theWrappedObject->xmtList = xmtList; }
 QLinkedList<QByteArray* >*  py_get_xmtList(LnPacketizer* theWrappedObject){ return theWrappedObject->xmtList; }
+void py_set_xmtThread(LnPacketizer* theWrappedObject, QThread*  xmtThread){ theWrappedObject->xmtThread = xmtThread; }
+QThread*  py_get_xmtThread(LnPacketizer* theWrappedObject){ return theWrappedObject->xmtThread; }
 };
 
 

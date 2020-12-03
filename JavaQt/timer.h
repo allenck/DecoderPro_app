@@ -18,7 +18,7 @@ public:
  /*public*/ bool start();
  /*public*/ bool reStart();
  /*public*/ bool stop();
-
+ /*public*/ bool isRunning();
    private:
  int initialDelay;
 };

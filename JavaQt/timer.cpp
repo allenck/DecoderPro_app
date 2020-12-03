@@ -51,3 +51,8 @@ Timer::Timer(QObject *parent) : QTimer(parent)
  QTimer::stop();
  throw InterruptedException();
 }
+
+/*public*/ bool Timer::isRunning()
+{
+ return QTimer::isActive();
+}

@@ -61,7 +61,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -137,6 +136,7 @@ virtual QString  getNamedBeanClass() const;
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
 virtual int  getObjectCount();
+virtual int  getOutputInterval();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
@@ -159,6 +159,7 @@ virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setDefaultClosedSpeed(QString  speed) const;
 virtual void setDefaultThrownSpeed(QString  speed) const;
+virtual void setOutputInterval(int  newInterval);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
@@ -372,20 +373,9 @@ public:
 
    ~PythonQtShell_LocoNetSystemConnectionMemo();
 
-virtual void _register();
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
 virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual Manager*  get(QString  T);
-virtual bool  getDisabled();
 virtual LnSensorManager*  getSensorManager();
-virtual void notifyPropertyChangeListener(QString  property, QVariant  oldValue, QVariant  newValue);
 virtual bool  provides(QString  type);
-virtual void setDisabled(bool  disabled);
-virtual bool  setUserName(QString  name);
-virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -394,9 +384,7 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_LocoNetSystemConnectionMemo : public LocoNetSystemConnectionMemo
 { public:
-inline void py_q__register() { LocoNetSystemConnectionMemo::_register(); }
 inline void py_q_dispose() { LocoNetSystemConnectionMemo::dispose(); }
-inline Manager*  py_q_get(QString  T) { return LocoNetSystemConnectionMemo::get(T); }
 inline LnSensorManager*  py_q_getSensorManager() { return LocoNetSystemConnectionMemo::getSensorManager(); }
 inline bool  py_q_provides(QString  type) { return LocoNetSystemConnectionMemo::provides(type); }
 };
@@ -408,11 +396,11 @@ public slots:
 LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QObject*  parent = 0);
 LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QString  prefix, QString  name);
 void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { delete obj; } 
-   void py_q__register(LocoNetSystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q__register());}
+   void _register(LocoNetSystemConnectionMemo* theWrappedObject);
    void configureCommandStation(LocoNetSystemConnectionMemo* theWrappedObject, LnCommandStationType*  type, bool  mTurnoutNoRetry, bool  mTurnoutExtraSpace, bool  mTranspondingAvailable);
    void configureManagers(LocoNetSystemConnectionMemo* theWrappedObject);
+   void dispose(LocoNetSystemConnectionMemo* theWrappedObject);
    void py_q_dispose(LocoNetSystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_dispose());}
-   Manager*  py_q_get(LocoNetSystemConnectionMemo* theWrappedObject, QString  T){  return (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_get(T));}
    LnClockControl*  getClockControl(LocoNetSystemConnectionMemo* theWrappedObject);
    LnLightManager*  getLightManager(LocoNetSystemConnectionMemo* theWrappedObject);
    LnTrafficController*  getLnTrafficController(LocoNetSystemConnectionMemo* theWrappedObject);
@@ -423,6 +411,7 @@ void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { dele
    LnSensorManager*  py_q_getSensorManager(LocoNetSystemConnectionMemo* theWrappedObject){  return (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_getSensorManager());}
    ThrottleManager*  getThrottleManager(LocoNetSystemConnectionMemo* theWrappedObject);
    LnTurnoutManager*  getTurnoutManager(LocoNetSystemConnectionMemo* theWrappedObject);
+   bool  provides(LocoNetSystemConnectionMemo* theWrappedObject, QString  type);
    bool  py_q_provides(LocoNetSystemConnectionMemo* theWrappedObject, QString  type){  return (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_provides(type));}
    void resetProgrammer(LocoNetSystemConnectionMemo* theWrappedObject);
    void setLnTrafficController(LocoNetSystemConnectionMemo* theWrappedObject, LnTrafficController*  lt);
@@ -997,7 +986,7 @@ inline QVariant  py_q_getProperty(QString  key) { return NamedBean::getProperty(
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(QString  name) { return NamedBean::getPropertyChangeListenersByReference(name); }
 inline QSet<QString >  py_q_getPropertyKeys() { return NamedBean::getPropertyKeys(); }
 inline int  py_q_getState() { return NamedBean::getState(); }
-inline QString  py_q_getSystemName() const { return this->getSystemName(); }
+inline QString  py_q_getSystemName() const { return NamedBean::getSystemName(); }
 inline QString  py_q_getUserName() const { return NamedBean::getUserName(); }
 inline uint  py_q_hashCode() { return NamedBean::hashCode(); }
 inline void py_q_removeProperty(QString  arg__1) { NamedBean::removeProperty(arg__1); }

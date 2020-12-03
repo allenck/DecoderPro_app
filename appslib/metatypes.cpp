@@ -327,6 +327,7 @@
 #include "webserverpreferences.h"
 #include "layoutshapexml.h"
 #include "editormanager.h"
+#include "meterframemanagerxml.h"
 
 bool Metatypes::done = false;
 
@@ -671,6 +672,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<WebServerPreferences>("WebServerPreferences");
  qRegisterMetaType<LayoutShapeXml>("LayoutShapeXml");
  qRegisterMetaType<EditorManager>("EditorManager");
+ qRegisterMetaType<MeterFrameManagerXml>("MeterFrameManagerXml");
 
  Metatypes::done = true;
 }

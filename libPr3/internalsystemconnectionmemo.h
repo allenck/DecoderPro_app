@@ -2,6 +2,7 @@
 #define INTERNALSYSTEMCONNECTIONMEMO_H
 #include "defaultsystemconnectionmemo.h"
 
+class InternalMeterManager;
 class InternalConsistManager;
 class InternalLightManager;
 class InternalSensorManager;
@@ -19,7 +20,8 @@ public:
  /*public*/ InternalSystemConnectionMemo(QString prefix, QString name, QObject* parent = nullptr);
  /*public*/ InternalSystemConnectionMemo(bool defaultInstanceType, QObject* parent = nullptr);
  ~InternalSystemConnectionMemo() override{}
- InternalSystemConnectionMemo(const InternalSystemConnectionMemo&) : DefaultSystemConnectionMemo() {}
+ InternalSystemConnectionMemo(const InternalSystemConnectionMemo& other)
+  : DefaultSystemConnectionMemo(other.prefix, other.userName) {}
  /*public*/ bool isAssignableFromType() {return true;}
  /*public*/ void configureManagers();
  /*public*/ InternalConsistManager* getConsistManager();
@@ -27,6 +29,7 @@ public:
  /*public*/ InternalSensorManager* getSensorManager() ;
  /*public*/ InternalReporterManager* getReporterManager();
  /*public*/ InternalTurnoutManager* getTurnoutManager();
+ /*public*/ InternalMeterManager* getMeterManager();
  /*public*/ DebugThrottleManager* getThrottleManager();
  /*public*/ DefaultPowerManager* getPowerManager();
  /*public*/ DebugProgrammerManager* getProgrammerManager();

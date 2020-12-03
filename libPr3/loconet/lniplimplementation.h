@@ -3,6 +3,7 @@
 #include "jcomponent.h"
 #include "loconetlistener.h"
 #include "timer.h"
+#include "propertychangesupport.h"
 
 /*public*/ class DeviceTypes {
   //Q_OBJECT
@@ -46,7 +47,7 @@ private:
     /*private*/ int slaveDeviceIdNumber;
     /*private*/ QString manufacturerName;
     /*private*/ QString deviceName;
-
+public:
     /*private*/ DeviceTypes(int mfg, int devId, int slaveMfg, int slaveDevId,
             QString mfgName, QString devName) {
         this->manufacturer = mfg & 0x7f;
@@ -94,9 +95,64 @@ class LnIPLImplementation : public QObject, public JComponent, public LocoNetLis
   QObject* self() {return (QObject*)this;}
   /*public*/ static /*final*/ LocoNetMessage* createQueryAllIplDevicesPacket();
   /*public*/ void sendIplQueryAllDevices();
-
+  /*public*/ static /*final*/ LocoNetMessage* createIplSpecificHostQueryPacket(
+    int hostMfr,
+    int hostDevice);
+  /*public*/ static /*final*/ LocoNetMessage* createIplSpecificSlaveQueryPacket(
+    int slaveMfr,
+    int slaveDevice);
+  /*public*/ static /*final*/ LocoNetMessage* createIplSpecificSlaveQueryPacket(
+          int hostMfr,
+          int hostDevice,
+          int slaveMfr,
+          int slaveDevice);
+  /*public*/ static /*final*/ LocoNetMessage* createIplUr92QueryPacket();
+  /*public*/ static /*final*/ LocoNetMessage* createIplDt402QueryPacket();
+  /*public*/ static /*final*/ LocoNetMessage* createIplUt4QueryPacket();
+  /*public*/ static /*final*/ LocoNetMessage* createIplDcs51QueryPacket();
+  /*public*/ static /*final*/ LocoNetMessage* createIplDcs52QueryPacket();
+  /*public*/ static /*final*/ LocoNetMessage* createIplPr3QueryPacket();
+  /*public*/ static /*final*/ bool isIplIdentityQueryMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplIdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplSpecificIdentityReportMessage(LocoNetMessage* m,
+          int hostMfr, int hostDevice);
+  /*public*/ static /*final*/ bool isIplUr92IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDt402IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplUt4IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDcs51IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDcs52IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplPr3IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDt402DIdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplUt4DIdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplPr4IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplBxp88IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplLnwiIdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDcs240IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDcs210IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDcs210PlusIdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDt500DIdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ bool isIplDt500IdentityReportMessage(LocoNetMessage* m);
+  /*public*/ static /*final*/ QString extractInterpretedIplHostDevice(LocoNetMessage* m);
+  /*public*/ static /*final*/ QString extractInterpretedIplSlaveDevice(LocoNetMessage* m);
+  /*public*/ static /*final*/ int extractIplIdentityHostManufacturer(LocoNetMessage* m);
+  /*public*/ static /*final*/ int extractIplIdentityHostDevice(LocoNetMessage* m);
+  /*public*/ static /*final*/ int extractIplIdentitySlaveManufacturer(LocoNetMessage* m);
+  /*public*/ static /*final*/ int extractIplIdentitySlaveDevice(LocoNetMessage* m);
+  /*public*/ static /*final*/ QString extractIplIdentityHostFrimwareRev(LocoNetMessage* m);
+  /*public*/ static /*final*/ int extractIplIdentityHostFrimwareRevNum(LocoNetMessage* m);
+  /*public*/ static /*final*/ int extractIplIdentitySlaveFrimwareRevNum(LocoNetMessage* m);
+  /*public*/ static /*final*/ QString extractIplIdentitySlaveFrimwareRev(LocoNetMessage* m);
+  /*public*/ static /*final*/ long extractIplIdentityHostSerialNumber(LocoNetMessage* m);
+  /*public*/ static /*final*/ long extractIplIdentitySlaveSerialNumber(LocoNetMessage* m);
+  /*public*/ static /*final*/ QString interpretHostManufacturerDevice(int hostMfr, int hostDevice,
+          int slaveMfr, int slaveDevice);
+  /*public*/ static /*final*/ QString interpretHostManufacturerDevice(int hostMfr, int hostDevice);
+  /*public*/ static /*final*/ QString interpretSlaveManufacturerDevice(int slaveMfr, int slaveDevice);
   /*public*/ void connect(LnTrafficController* t);
-
+  /*public*/ void dispose();
+  /*public*/ void message(LocoNetMessage* m);
+  /*public*/ bool isIplQueryTimerRunning();
+  /*public*/ static bool isValidMfgDevice(int mfg, int deviceType);
   /*public*/ static QString getManufacturer(int manuf);
   /*public*/ static QString getDeviceName(int manuf, int device, int slaveManuf, int slave);
 
@@ -106,7 +162,31 @@ class LnIPLImplementation : public QObject, public JComponent, public LocoNetLis
   LnIPLImplementation* thisone;
   LocoNetSystemConnectionMemo* memo;
   /*private*/ Timer* swingTmrIplQuery;
+  /*private*/ bool handleMessageIplDeviceQuery(LocoNetMessage* m);
+  /*private*/ static /*final*/ bool isIplRf24SlaveIdentityReportMessage(LocoNetMessage* m);
+  /*private*/ bool handleMessageIplDeviceReport(LocoNetMessage* m);
+  static QMap<DeviceTypes::TYPES, DeviceTypes*>* deviceTypes;
+  PropertyChangeSupport* pcs;
 
+  friend class SwingTmr;
 };
 
+class SwingTmr : public Timer
+{
+  Q_OBJECT
+  LnIPLImplementation* thisone;
+public:
+  SwingTmr(int interval, ActionListener* listener, LnIPLImplementation* thisone)
+   : Timer(interval, listener)
+  {this->thisone = thisone;}
+  //@Override
+ public slots:
+  /*public*/ void actionPerformed(/*ActionEvent e*/) {
+      thisone->swingTmrIplQuery->stop();
+      thisone->waitingForIplReply = false;
+      int oldvalue = 9999;
+      int newvalue = 0;
+      thisone->pcs->firePropertyChange("LnIPLEndOfDeviceQuery", oldvalue, newvalue); // NOI18N
+  }
+};
 #endif // LNIPLIMPLEMENTATION_H

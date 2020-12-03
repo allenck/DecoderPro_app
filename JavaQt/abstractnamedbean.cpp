@@ -242,7 +242,12 @@ QString AbstractNamedBean::getDisplayName()
     return pcs->getPropertyChangeListeners();
 }
 
-/*public*/ QString AbstractNamedBean::getSystemName()const  {return mSystemName;}
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*final*/ /*public*/ QString AbstractNamedBean::getSystemName() const{
+    return mSystemName;
+}
 /*public*/ QString AbstractNamedBean::getUserName()const {return mUserName;}
 
 ///*public*/ void AbstractNamedBean::setSysName(QString s)

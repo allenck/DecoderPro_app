@@ -1,5 +1,6 @@
 #include "lniplimplementation.h"
 #include "loconetsystemconnectionmemo.h"
+#include "lndplxgrpinfoimplconstants.h"
 
 /**
  * Implements a class to handle message creation and message interpretation of
@@ -26,24 +27,90 @@
 
         moreInit();
     }
+    /*static*/ QMap<DeviceTypes::TYPES, DeviceTypes*>* LnIPLImplementation::deviceTypes = new QMap<DeviceTypes::TYPES, DeviceTypes*>();
 
     /*private*/ void LnIPLImplementation::moreInit() {
         waitingForIplReply = false;
         // connect to the LnTrafficController
         connect(memo->getLnTrafficController());
-#if 0
-        swingTmrIplQuery = new Timer(LnDplxGrpInfoImplConstants.IPL_QUERY_DELAY, new java.awt.event.ActionListener() {
-            @Override
-            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-                swingTmrIplQuery.stop();
-                waitingForIplReply = false;
-                int oldvalue = 9999;
-                int newvalue = 0;
-                thisone.firePropertyChange("LnIPLEndOfDeviceQuery", oldvalue, newvalue); // NOI18N
-            }
-        });
-#endif
-    }
+        pcs = new PropertyChangeSupport(this);
+
+//        swingTmrIplQuery = new Timer(LnDplxGrpInfoImplConstants.IPL_QUERY_DELAY, new ActionListener() {
+//            @Override
+//            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
+//                swingTmrIplQuery.stop();
+//                waitingForIplReply = false;
+//                int oldvalue = 9999;
+//                int newvalue = 0;
+//                thisone.firePropertyChange("LnIPLEndOfDeviceQuery", oldvalue, newvalue); // NOI18N
+//            }
+//        });
+        swingTmrIplQuery = new SwingTmr(LnDplxGrpInfoImplConstants::IPL_QUERY_DELAY, new ActionListener(), this);
+
+        deviceTypes->insert(DeviceTypes::UT4D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UT4,
+            LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
+            LnConstants::DIGITRAX_STRING, "UT4D"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::UT4X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UT4,
+            0,0,
+            LnConstants::DIGITRAX_STRING, "UT4(x)"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DCS51, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS51,
+            0,0,LnConstants::DIGITRAX_STRING, "DCS51"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DCS52, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS52,
+            0,0,LnConstants::DIGITRAX_STRING, "DCS52"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DT402D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT402,
+            LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
+            LnConstants::DIGITRAX_STRING, "DT402D"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DT402X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT402,
+            0,0, LnConstants::DIGITRAX_STRING, "DT402(x)"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::PR3, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_PR3,
+            0,0, LnConstants::DIGITRAX_STRING, "PR3"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::UR92, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UR92,
+            LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
+            LnConstants::DIGITRAX_STRING, "UR92"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DB210OPTO, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB210OPTO,
+            0,0, LnConstants::DIGITRAX_STRING, "DB210Opto"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DB210, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB210,
+            0,0, LnConstants::DIGITRAX_STRING, "DB210"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DB220, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB220,
+            0,0, LnConstants::DIGITRAX_STRING, "DB220"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::PR4, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_PR4,
+            0,0, LnConstants::DIGITRAX_STRING, "PR4"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::BXP88, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_BXP88,
+            0,0, LnConstants::DIGITRAX_STRING, "BXP88"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::LNWI, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_LNWI,
+            0,0, LnConstants::DIGITRAX_STRING, "LNWI"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DCS210, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS210,
+            0,0, LnConstants::DIGITRAX_STRING, "DCS210"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DCS240, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS240,
+            0,0, LnConstants::DIGITRAX_STRING, "DCS240"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DT500D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT500,
+            LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
+            LnConstants::DIGITRAX_STRING, "DT500D"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DT500X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT500,
+            0,0, LnConstants::DIGITRAX_STRING, "DT500(x)"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DT602X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT602,
+            0,0, LnConstants::DIGITRAX_STRING, "DT602(x)"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::BXPA1, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_BXPA1,
+            0,0, LnConstants::DIGITRAX_STRING, "BXPA1"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::DCS210plus, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS210PLUS,
+            0,0, LnConstants::DIGITRAX_STRING, "DCS210+"));   // NOI18N
+        deviceTypes->insert(DeviceTypes::RR_CKTS_TC64, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TC64,
+            0,0, LnConstants::RR_CIRKITS_STRING, "TC-64"));
+        deviceTypes->insert(DeviceTypes::RR_CKTS_TC_MKII, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TC64_MKII,
+            0,0, LnConstants::RR_CIRKITS_STRING, "TC-64 Mk-II"));
+        deviceTypes->insert(DeviceTypes::RR_CKTS_LNCP, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_LNCP,
+            0,0, LnConstants::RR_CIRKITS_STRING, "LNCP"));
+        deviceTypes->insert(DeviceTypes::RR_CKTS_MOTORMan, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_MOTORMAN,
+            0,0, LnConstants::RR_CIRKITS_STRING, "MotorMan"));
+        deviceTypes->insert(DeviceTypes::RR_CKTS_MOTORMANII, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_MOTORMAN_II,
+            0,0, LnConstants::RR_CIRKITS_STRING, "MotorMan-II"));
+        deviceTypes->insert(DeviceTypes::RR_CKTS_SIGNALMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_SIGNALMAN,
+            0,0, LnConstants::RR_CIRKITS_STRING, "SignalMan"));
+        deviceTypes->insert(DeviceTypes::RR_CKTS_TOWERMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TOWERMAN,
+            0,0, LnConstants::RR_CIRKITS_STRING, "TowerMan"));
+        deviceTypes->insert(DeviceTypes::RR_CKTS_WATCHMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_WATCHMAN,
+            0,0, LnConstants::RR_CIRKITS_STRING, "WatchMan"));
+    };
 
     /**
      * Create a LocoNet packet which queries UR92(s) for Duplex group
@@ -83,7 +150,7 @@
         tc->sendLocoNetMessage(createQueryAllIplDevicesPacket());
         waitingForIplReply = true;
     }
-#if 0
+
     /**
      * Create a LocoNet packet which queries IPL devices by specific host
      * manufacturer and specific host device type. The invoking method is
@@ -99,10 +166,10 @@
      *         identity information from devices of the specified host
      *         manufacturer and host device type.
      */
-    /*public*/ static final LocoNetMessage createIplSpecificHostQueryPacket(
-            Integer hostMfr,
-            Integer hostDevice) {
-        LocoNetMessage m = createQueryAllIplDevicesPacket();
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplSpecificHostQueryPacket(
+            int hostMfr,
+            int hostDevice) {
+        LocoNetMessage* m = createQueryAllIplDevicesPacket();
         m->setElement(4, hostMfr & 0x7F);
         m->setElement(5, hostDevice & 0x7F);
         return m;
@@ -123,10 +190,10 @@
      *         identity information from devices of the specified slave
      *         manufacturer and slave device type.
      */
-    /*public*/ static final LocoNetMessage createIplSpecificSlaveQueryPacket(
-            Integer slaveMfr,
-            Integer slaveDevice) {
-        LocoNetMessage m = createQueryAllIplDevicesPacket();
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplSpecificSlaveQueryPacket(
+            int slaveMfr,
+            int slaveDevice) {
+        LocoNetMessage* m = createQueryAllIplDevicesPacket();
         m->setElement(7, slaveMfr & 0x7F);
         m->setElement(6, slaveDevice & 0x7F);
         return m;
@@ -149,12 +216,12 @@
      *         identity information from devices of the specified host and slave
      *         manufacturers and host and slave device types.
      */
-    /*public*/ static final LocoNetMessage createIplSpecificSlaveQueryPacket(
-            Integer hostMfr,
-            Integer hostDevice,
-            Integer slaveMfr,
-            Integer slaveDevice) {
-        LocoNetMessage m = createQueryAllIplDevicesPacket();
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplSpecificSlaveQueryPacket(
+            int hostMfr,
+            int hostDevice,
+            int slaveMfr,
+            int slaveDevice) {
+        LocoNetMessage* m = createQueryAllIplDevicesPacket();
         m->setElement(4, hostMfr & 0x7F);
         m->setElement(5, hostDevice & 0x7F);
         m->setElement(7, slaveMfr & 0x7F);
@@ -170,7 +237,7 @@
      * @return a LocoNetMessage containing the packet required to query UR92
      *         devices for IPL identification information
      */
-    /*public*/ static final LocoNetMessage createIplUr92QueryPacket() {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplUr92QueryPacket() {
         return createIplSpecificHostQueryPacket(
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_UR92);
@@ -184,7 +251,7 @@
      * @return a LocoNetMessage containing the packet required to query DT402x
      *         devices for IPL identification information
      */
-    /*public*/ static final LocoNetMessage createIplDt402QueryPacket() {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplDt402QueryPacket() {
         return createIplSpecificHostQueryPacket(
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DT402);
@@ -201,7 +268,7 @@
      * @return a LocoNetMessage containing the packet required to query (some)
      *         UT4 devices for IPL identification information
      */
-    /*public*/ static final LocoNetMessage createIplUt4QueryPacket() {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplUt4QueryPacket() {
         return createIplSpecificHostQueryPacket(
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_UT4);
@@ -215,7 +282,7 @@
      * @return a LocoNetMessage containing the packet required to query DCS51
      *         devices for IPL identification information
      */
-    /*public*/ static final LocoNetMessage createIplDcs51QueryPacket() {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplDcs51QueryPacket() {
         return createIplSpecificHostQueryPacket(
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DCS51);
@@ -229,7 +296,7 @@
      * @return a LocoNetMessage containing the packet required to query DCS52
      *         devices for IPL identification information
      */
-    /*public*/ static final LocoNetMessage createIplDcs52QueryPacket() {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplDcs52QueryPacket() {
         return createIplSpecificHostQueryPacket(
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DCS52);
@@ -243,7 +310,7 @@
      * @return a LocoNetMessage containing the packet required to query PR3
      *         devices for IPL identification information
      */
-    /*public*/ static final LocoNetMessage createIplPr3QueryPacket() {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnIPLImplementation::createIplPr3QueryPacket() {
         return createIplSpecificHostQueryPacket(
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_PR3);
@@ -256,7 +323,7 @@
      * @param m  LocoNetMessage to be checked for an IPL Identity Query message
      * @return true if message is report of IPL Identity
      */
-    /*public*/ static final boolean isIplIdentityQueryMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplIdentityQueryMessage(LocoNetMessage* m) {
         if ((m->getOpCode() == LnConstants::OPC_PEER_XFER)
                 && (m->getElement(1) == LnConstants::RE_IPL_OP_LEN)) {
             // Message is a peer-to-peer message of appropriate length for
@@ -279,7 +346,7 @@
      * @param m  LocoNet message to check for an IPL Identity Report
      * @return true if message is report of IPL Identity
      */
-    /*public*/ static final boolean isIplIdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplIdentityReportMessage(LocoNetMessage* m) {
         if ((m->getOpCode() == LnConstants::OPC_PEER_XFER)
                 && (m->getElement(1) == LnConstants::RE_IPL_OP_LEN)) {
             // Message is a peer-to-peer message of appropriate length for
@@ -304,8 +371,8 @@
      * @param hostDevice the host device type number
      * @return true if message is report of UR92 IPL Identity
      */
-    /*public*/ static final boolean isIplSpecificIdentityReportMessage(LocoNetMessage m,
-            Integer hostMfr, Integer hostDevice) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplSpecificIdentityReportMessage(LocoNetMessage* m,
+            int hostMfr, int hostDevice) {
         if (!isIplIdentityReportMessage(m)) {
             return false;
         }
@@ -323,7 +390,7 @@
      * @param m message to analyse
      * @return true if message is report of UR92 IPL Identity
      */
-    /*public*/ static final boolean isIplUr92IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplUr92IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_UR92);
@@ -336,7 +403,7 @@
      * @param m message to analyse
      * @return true if message is report of DT402 IPL Identity
      */
-    /*public*/ static final boolean isIplDt402IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDt402IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DT402);
@@ -349,7 +416,7 @@
      * @param m message to analyse
      * @return true if message is report of UT4 IPL Identity
      */
-    /*public*/ static final boolean isIplUt4IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplUt4IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_UT4);
@@ -362,7 +429,7 @@
      * @param m message to analyse
      * @return true if message is report of DCS51 IPL Identity
      */
-    /*public*/ static final boolean isIplDcs51IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDcs51IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DCS51);
@@ -375,7 +442,7 @@
      * @param m message to analyse
      * @return true if message is report of DCS52 IPL Identity
      */
-    /*public*/ static final boolean isIplDcs52IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDcs52IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DCS52);
@@ -388,13 +455,13 @@
      * @param m message to analyse
      * @return true if message is report of PR3 IPL Identity
      */
-    /*public*/ static final boolean isIplPr3IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplPr3IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_PR3);
     }
 
-    /*public*/ static final boolean isIplDt402DIdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDt402DIdentityReportMessage(LocoNetMessage* m) {
         if (!isIplDt402IdentityReportMessage(m)) {
             return false;
         }
@@ -405,7 +472,7 @@
         }
     }
 
-    /*public*/ static final boolean isIplUt4DIdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplUt4DIdentityReportMessage(LocoNetMessage* m) {
         if (!isIplUt4IdentityReportMessage(m)) {
             return false;
         }
@@ -416,43 +483,43 @@
         }
     }
 
-    /*public*/ static final boolean isIplPr4IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplPr4IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_PR4);
     }
 
-    /*public*/ static final boolean isIplBxp88IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplBxp88IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_BXP88);
     }
 
-    /*public*/ static final boolean isIplLnwiIdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplLnwiIdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_LNWI);
     }
 
-    /*public*/ static final boolean isIplDcs240IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDcs240IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DCS240);
     }
 
-    /*public*/ static final boolean isIplDcs210IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDcs210IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DCS210);
     }
 
-    /*public*/ static final boolean isIplDcs210PlusIdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDcs210PlusIdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DCS210PLUS);
     }
 
-    /*public*/ static final boolean isIplDt500DIdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDt500DIdentityReportMessage(LocoNetMessage* m) {
         if (!isIplDt500IdentityReportMessage(m)) {
             return false;
         }
@@ -470,7 +537,7 @@
      * @param m message to analyse
      * @return true if message is report of DT500 IPL Identity
      */
-    /*public*/ static final boolean isIplDt500IdentityReportMessage(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplDt500IdentityReportMessage(LocoNetMessage* m) {
         return isIplSpecificIdentityReportMessage(m,
                 LnConstants::RE_IPL_MFR_DIGITRAX,
                 LnConstants::RE_IPL_DIGITRAX_HOST_DT500);
@@ -483,7 +550,7 @@
      * @return true if m contains IPL Identity Report with RF24 as slave, else
      *         false
      */
-    private static final boolean isIplRf24SlaveIdentityReportMessage(LocoNetMessage m) {
+    /*private*/ /*static*/ /*final*/ bool LnIPLImplementation::isIplRf24SlaveIdentityReportMessage(LocoNetMessage* m) {
         if ((extractIplIdentitySlaveManufacturer(m) == LnConstants::RE_IPL_MFR_DIGITRAX)
                 && (extractIplIdentitySlaveDevice(m) == LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24)) {
             return true;
@@ -500,9 +567,9 @@
      * @return String containing the interpreted IPL Host Manufacturer and
      *         Device. If m is not a valid IPL Identity report, returns null.
      */
-    /*public*/ static final String extractInterpretedIplHostDevice(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ QString LnIPLImplementation::extractInterpretedIplHostDevice(LocoNetMessage* m) {
         if (!isIplIdentityReportMessage(m)) {
-            return null;
+            return QString();
         }
         if (isIplDt402DIdentityReportMessage(m)) {
             return interpretHostManufacturerDevice(
@@ -543,9 +610,9 @@
      * @return String containing the interpreted IPL Slave Manufacturer and
      *         Device. If m is not a valid IPL Identity report, returns null.
      */
-    /*public*/ static final String extractInterpretedIplSlaveDevice(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ QString LnIPLImplementation::extractInterpretedIplSlaveDevice(LocoNetMessage* m) {
         if (!isIplIdentityReportMessage(m)) {
-            return null;
+            return QString();
         }
         return interpretSlaveManufacturerDevice(extractIplIdentitySlaveManufacturer(m), extractIplIdentitySlaveDevice(m));
 
@@ -561,7 +628,7 @@
      * @param m IPL Identity message
      * @return Integer containing the IPL host manufacturer number
      */
-    /*public*/ static final Integer extractIplIdentityHostManufacturer(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ int LnIPLImplementation::extractIplIdentityHostManufacturer(LocoNetMessage* m) {
         return m->getElement(4);
     }
 
@@ -574,7 +641,7 @@
      * @param m IPL Identity message
      * @return Integer containing the IPL device number
      */
-    /*public*/ static final Integer extractIplIdentityHostDevice(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ int LnIPLImplementation::extractIplIdentityHostDevice(LocoNetMessage* m) {
         return m->getElement(5);
     }
 
@@ -590,7 +657,7 @@
      * @param m IPL Identity message
      * @return Integer containing the IPL slave manufacturer number
      */
-    /*public*/ static final Integer extractIplIdentitySlaveManufacturer(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ int LnIPLImplementation::extractIplIdentitySlaveManufacturer(LocoNetMessage* m) {
         return m->getElement(7);
     }
 
@@ -605,7 +672,7 @@
      * @param m IPL Identity message
      * @return Integer containing the IPL slave device number
      */
-    /*public*/ static final Integer extractIplIdentitySlaveDevice(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ int LnIPLImplementation::extractIplIdentitySlaveDevice(LocoNetMessage* m) {
         return m->getElement(6);
     }
 
@@ -623,12 +690,12 @@
      * @return String containing the IPL host firmware revision in the format
      *         x.y
      */
-    /*public*/ static final String extractIplIdentityHostFrimwareRev(LocoNetMessage m) {
-        StringBuilder s = new StringBuilder();
-        s.append(Integer.toString((m->getElement(8) & 0x78) >> 3));
+    /*public*/ /*static*/ /*final*/ QString LnIPLImplementation::extractIplIdentityHostFrimwareRev(LocoNetMessage* m) {
+        QString s;// = new StringBuilder();
+        s.append(QString::number((m->getElement(8) & 0x78) >> 3));
         s.append(".");
-        s.append(Integer.toString((m->getElement(8) & 0x07)));
-        return s.toString();
+        s.append(QString::number((m->getElement(8) & 0x07)));
+        return s/*.toString()*/;
     }
 
     /**
@@ -644,7 +711,7 @@
      * @param m IPL Identity message
      * @return Integer containing the IPL host firmware revision
      */
-    /*public*/ static final Integer extractIplIdentityHostFrimwareRevNum(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ int LnIPLImplementation::extractIplIdentityHostFrimwareRevNum(LocoNetMessage* m) {
         return (m->getElement(8));
     }
 
@@ -661,7 +728,7 @@
      * @param m IPL Identity message
      * @return Integer containing the IPL Slave firmware revision
      */
-    /*public*/ static final Integer extractIplIdentitySlaveFrimwareRevNum(LocoNetMessage m) {
+    /*public*/ /*static*/ /*final*/ int LnIPLImplementation::extractIplIdentitySlaveFrimwareRevNum(LocoNetMessage* m) {
         return ((m->getElement(10) & 0x7F) + ((m->getElement(9) & 0x1) << 7));
     }
 
@@ -679,12 +746,12 @@
      * @return String containing the IPL slave firmware revision in the format
      *         x.y
      */
-    /*public*/ static final String extractIplIdentitySlaveFrimwareRev(LocoNetMessage m) {
-        StringBuilder s = new StringBuilder();
-        s.append(Integer.toString(((m->getElement(10) & 0x78) >> 3) + ((m->getElement(9) & 0x1) << 4)));
+    /*public*/ /*static*/ /*final*/ QString LnIPLImplementation::extractIplIdentitySlaveFrimwareRev(LocoNetMessage* m) {
+        QString s;// = new StringBuilder();
+        s.append(QString::number(((m->getElement(10) & 0x78) >> 3) + ((m->getElement(9) & 0x1) << 4)));
         s.append(".");
-        s.append(Integer.toString((m->getElement(10) & 0x07)));
-        return s.toString();
+        s.append(QString::number((m->getElement(10) & 0x07)));
+        return s/*.toString()*/;
     }
 
     /**
@@ -698,9 +765,9 @@
      * @param m IPL Identity message
      * @return Long containing the IPL host serial number
      */
-    /*public*/ static final Long extractIplIdentityHostSerialNumber(LocoNetMessage m) {
-        Long sn;
-        Integer di_f1;
+    /*public*/ /*static*/ /*final*/ long LnIPLImplementation::extractIplIdentityHostSerialNumber(LocoNetMessage* m) {
+        long sn;
+        int di_f1;
         di_f1 = m->getElement(9);
         sn = (long) (m->getElement(11) + ((di_f1 & 0x2) << 6));
         sn += (((long) m->getElement(12)) << 8) + (((long) di_f1 & 0x4) << 13);
@@ -719,9 +786,9 @@
      * @param m IPL Identity message
      * @return Long containing the IPL slave serial number
      */
-    /*public*/ static final Long extractIplIdentitySlaveSerialNumber(LocoNetMessage m) {
-        Long sn;
-        Integer di_f2;
+    /*public*/ /*static*/ /*final*/ long LnIPLImplementation::extractIplIdentitySlaveSerialNumber(LocoNetMessage* m) {
+        long sn;
+        int di_f2;
         di_f2 = m->getElement(14);
         sn = (long) (m->getElement(15) + ((di_f2 & 0x1) << 7));
         sn += (((long) m->getElement(16)) << 8) + (((long) di_f2 & 0x2) << 14);
@@ -750,17 +817,17 @@
      * @param slaveDevice  slave device number
      * @return String containing Manufacturer name and Device model.
      */
-    /*public*/ static final String interpretHostManufacturerDevice(Integer hostMfr, Integer hostDevice,
-            Integer slaveMfr, Integer slaveDevice) {
+    /*public*/ /*static*/ /*final*/ QString LnIPLImplementation::interpretHostManufacturerDevice(int hostMfr, int hostDevice,
+            int slaveMfr, int slaveDevice) {
         int manuf = hostMfr & 0x7f;
         int device = hostDevice & 0x7f;
         int slave = slaveDevice & 0x7f;
         int smanuf = slaveMfr & 0x7f;
-        String mfgName = getManufacturer(manuf);
-        String devName = getDeviceName(manuf, device, smanuf, slave);
-        if (mfgName == null) {
+        QString mfgName = getManufacturer(manuf);
+        QString devName = getDeviceName(manuf, device, smanuf, slave);
+        if (mfgName.isNull()) {
             return "Unknown Host Manufacturer/Device";
-        } else if (devName == null) {
+        } else if (devName.isNull()) {
             return mfgName+" Unknown Device";
         }
         return mfgName+" "+devName;
@@ -784,7 +851,7 @@
      * @param hostDevice  host device number
      * @return String containing Manufacturer name and Device model.
      */
-    /*public*/ static final String interpretHostManufacturerDevice(Integer hostMfr, Integer hostDevice) {
+    /*public*/ /*static*/ /*final*/ QString LnIPLImplementation::interpretHostManufacturerDevice(int hostMfr, int hostDevice) {
         return interpretHostManufacturerDevice(hostMfr, hostDevice, 0, 0);
     }
 
@@ -799,8 +866,8 @@
      * @param slaveDevice  slave device number
      * @return String containing Slave Manufacturer name and Device model.
      */
-    /*public*/ static final String interpretSlaveManufacturerDevice(Integer slaveMfr, Integer slaveDevice) {
-        String s;
+    /*public*/ /*static*/ /*final*/ QString LnIPLImplementation::interpretSlaveManufacturerDevice(int slaveMfr, int slaveDevice) {
+        QString s;
         s = "Unknown Slave Manufacturer/Device";
         int sMfr = slaveMfr & 0x7f;
         int sDevice = slaveDevice & 0x7F;
@@ -825,7 +892,7 @@
         }
         return s;
     }
-#endif
+
     /**
      * Connect this instance's LocoNetListener to the LocoNet Traffic Controller.
      *
@@ -837,16 +904,16 @@
             t->addLocoNetListener(~0, this);
         }
     }
-#if 0
+
     /**
      * Break connection with the LnTrafficController and stop timers.
      */
-    /*public*/ void dispose() {
-        if (swingTmrIplQuery != null) {
-            swingTmrIplQuery.stop();
+    /*public*/ void LnIPLImplementation::dispose() {
+        if (swingTmrIplQuery != nullptr) {
+            swingTmrIplQuery->stop();
         }
-        if (memo.getLnTrafficController() != null) {
-            memo.getLnTrafficController().removeLocoNetListener(~0, this);
+        if (memo->getLnTrafficController() != nullptr) {
+            memo->getLnTrafficController()->removeLocoNetListener(~0, this);
         }
     }
 
@@ -856,8 +923,8 @@
      *
      * @param m  incoming LocoNet message to be examined
      */
-    @Override
-    /*public*/ void message(LocoNetMessage m) {
+    //@Override
+    /*public*/ void LnIPLImplementation::message(LocoNetMessage* m) {
 
         if (handleMessageIplDeviceQuery(m)) {
             return;
@@ -868,46 +935,46 @@
         return;
     }
 
-    private boolean handleMessageIplDeviceQuery(LocoNetMessage m) {
+    /*private*/ bool LnIPLImplementation::handleMessageIplDeviceQuery(LocoNetMessage* m) {
         if (isIplIdentityQueryMessage(m)) {
-            Integer deviceType = 256 * extractIplIdentityHostManufacturer(m)
+            int deviceType = 256 * extractIplIdentityHostManufacturer(m)
                     + extractIplIdentityHostDevice(m);
             int oldvalue = 99999;
             int newvalue = deviceType;
-            thisone.firePropertyChange("IplDeviceTypeQuery", oldvalue, newvalue); // NOI18N
+            thisone->pcs->firePropertyChange("IplDeviceTypeQuery", oldvalue, newvalue); // NOI18N
             if (waitingForIplReply == true) {
-                swingTmrIplQuery.restart();
+                swingTmrIplQuery->reStart();
             }
             return true;
         }
         return false;
     }
 
-    private boolean handleMessageIplDeviceReport(LocoNetMessage m) {
+    /*private*/ bool LnIPLImplementation::handleMessageIplDeviceReport(LocoNetMessage* m) {
         if (isIplIdentityReportMessage(m)) {
-            Integer deviceType = 256 * extractIplIdentityHostManufacturer(m)
+            int deviceType = 256 * extractIplIdentityHostManufacturer(m)
                     + extractIplIdentityHostDevice(m);
             int oldvalue = 99999;
             int newvalue = deviceType;
-            thisone.firePropertyChange("IplDeviceTypeReport", oldvalue, newvalue); // NOI18N
+            thisone->pcs->firePropertyChange("IplDeviceTypeReport", oldvalue, newvalue); // NOI18N
             if (waitingForIplReply == true) {
                 waitingForIplReply = false;
-                swingTmrIplQuery.stop();
+                swingTmrIplQuery->stop();
             }
             return true;
         }
         return false;
     }
-    /*public*/ boolean isIplQueryTimerRunning() {
-        return swingTmrIplQuery.isRunning();
+    /*public*/ bool LnIPLImplementation::isIplQueryTimerRunning() {
+        return swingTmrIplQuery->isRunning();
     }
 
-    /*public*/ static boolean isValidMfgDevice(int mfg, int deviceType) {
-        return (LnIPLImplementation.interpretHostManufacturerDevice(mfg, deviceType)
-                .compareTo("Unknown Host Manufacturer/Device")
+    /*public*/ /*static*/ bool LnIPLImplementation::isValidMfgDevice(int mfg, int deviceType) {
+        return (LnIPLImplementation::interpretHostManufacturerDevice(mfg, deviceType)
+                .compare("Unknown Host Manufacturer/Device")
                 != 0);
     }
-#endif
+
     /**
      * provides string representation for an IPL manufacturer number
      * @param manuf IPL device manufacturer code number
@@ -918,8 +985,8 @@
         switch (manuf) {
             case LnConstants::RE_IPL_MFR_DIGITRAX:
                 return LnConstants::DIGITRAX_STRING;
-//            case LnConstants::RE_IPL_MFR_RR_CIRKITS:
-//                return LnConstants::RR_CIRKITS_STRING;
+            case LnConstants::RE_IPL_MFR_RR_CIRKITS:
+                return LnConstants::RR_CIRKITS_STRING;
             default:
                 return QString();
         }
@@ -930,13 +997,15 @@
         if (getManufacturer(manuf).isNull()) {
             return QString();
         }
-#if 0
-        for (DeviceTypes t: DeviceTypes.values()) {
-            if ((manuf == t.getManufacturer()) &&
-                    (device == t.getDeviceIdNumber()) &&
-                    (slaveManuf == t.getSlaveManufacturer()) &&
-                    (slave == t.getSlaveDeviceIdNumber())) {
-                return t.getDeviceName();
+#if 1
+        //for (DeviceTypes t: DeviceTypes.values()) {
+        for(DeviceTypes* t: deviceTypes->values())
+        {
+            if ((manuf == t->getManufacturer()) &&
+                    (device == t->getDeviceIdNumber()) &&
+                    (slaveManuf == t->getSlaveManufacturer()) &&
+                    (slave == t->getSlaveDeviceIdNumber())) {
+                return t->getDeviceName();
             }
         }
 #endif

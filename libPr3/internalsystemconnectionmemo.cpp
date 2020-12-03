@@ -9,6 +9,7 @@
 #include "internallightmanager.h"
 #include "loggerfactory.h"
 #include "internalconsistmanager.h"
+#include "internalmetermanager.h"
 
 //InternalSystemConnectionMemo::InternalSystemConnectionMemo()
 //{
@@ -136,6 +137,17 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
      InstanceManager::setTurnoutManager(turnoutManager);
     }
     return turnoutManager;
+}
+
+/*public*/ InternalMeterManager* InternalSystemConnectionMemo::getMeterManager() {
+    InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager");
+    if (meterManager == nullptr) {
+        log->debug("Create InternalMeterManager by request", getSystemPrefix());
+        meterManager = new InternalMeterManager(this);
+        // special due to ProxyManager support
+        InstanceManager::setMeterManager((MeterManager*)meterManager);
+    }
+    return meterManager;
 }
 
 /*public*/ DebugThrottleManager* InternalSystemConnectionMemo::getThrottleManager() {

@@ -2,7 +2,7 @@
 #define PROXYLIGHTMANAGER_H
 #include "abstractproxylightmanager.h"
 
-class Light;
+class Meter;
 class LIBPR3SHARED_EXPORT ProxyLightManager : public AbstractProxyLightManager
 {
     Q_OBJECT

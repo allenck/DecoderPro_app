@@ -14,7 +14,7 @@ class JAVAQTSHARED_EXPORT Action : public QAction
  Q_OBJECT
 public:
  //explicit Action();
- Action(QObject *parent = 0);
+ Action(QObject *parent = 0) : QAction(parent){};
  Action(QString text, QIcon icon, QObject* parent) : QAction(icon, text, parent) {}
  Action(QString text, QObject* parent) : QAction( text, parent) {}
  Action(const Action& other ) : QAction(other.icon(),other.text(), other.parent()) {}

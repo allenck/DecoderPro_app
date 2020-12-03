@@ -71,6 +71,8 @@ public:
   QByteArray* baStream;
   static QWaitCondition* dataAvailable;
 
+  QThread* rcvThread;
+  QThread* xmtThread;
  /*
   * Make connection to existing LnPortController object.
   * @param p Port controller for connected. Save this for a later

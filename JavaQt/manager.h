@@ -433,13 +433,17 @@ public:
      static const   int WARRANTS = ROUTES + 10;
      static const   int SIGNALMASTLOGICS = WARRANTS + 10;
      static const   int IDTAGS = SIGNALMASTLOGICS + 10;
-     static const   int LOGIXS = IDTAGS + 10;
+     static const   int ANALOGIOS = IDTAGS + 10;
+     static const   int METERS = ANALOGIOS + 10;
+     static const   int STRINGIOS = METERS + 10;
+     static const   int LOGIXS = STRINGIOS + 10;
      static const   int CONDITIONALS = LOGIXS + 10;
      static const   int AUDIO = LOGIXS + 10;
      static const   int TIMEBASE = AUDIO + 10;
      static const   int PANELFILES = TIMEBASE + 10;
      static const   int ENTRYEXIT = PANELFILES + 10;
-
+     static const /*final*/ int METERFRAMES = ENTRYEXIT + 10;
+     static const /*final*/ int CTCDATA = METERFRAMES + 10;
      virtual int getXMLOrder() const =0;
      /**
       * For instances in the code where we are dealing with just a bean and a

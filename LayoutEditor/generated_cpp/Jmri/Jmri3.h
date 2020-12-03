@@ -18,7 +18,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -1197,10 +1196,13 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual Manager*  get(QString  T);
+virtual int  getDefaultOutputInterval();
 virtual bool  getDisabled();
+virtual int  getOutputInterval();
 virtual void notifyPropertyChangeListener(QString  property, QVariant  oldValue, QVariant  newValue);
 virtual bool  provides(QString  c);
 virtual void setDisabled(bool  disabled);
+virtual void setOutputInterval(int  newInterval);
 virtual bool  setUserName(QString  name);
 virtual void timerEvent(QTimerEvent*  event);
 
@@ -1217,10 +1219,13 @@ inline void promoted_removeFromActionList() { this->removeFromActionList(); }
 inline void py_q__register() { SystemConnectionMemo::_register(); }
 inline void py_q_dispose() { SystemConnectionMemo::dispose(); }
 inline Manager*  py_q_get(QString  T) { return SystemConnectionMemo::get(T); }
+inline int  py_q_getDefaultOutputInterval() { return SystemConnectionMemo::getDefaultOutputInterval(); }
 inline bool  py_q_getDisabled() { return SystemConnectionMemo::getDisabled(); }
+inline int  py_q_getOutputInterval() { return SystemConnectionMemo::getOutputInterval(); }
 inline void py_q_notifyPropertyChangeListener(QString  property, QVariant  oldValue, QVariant  newValue) { SystemConnectionMemo::notifyPropertyChangeListener(property, oldValue, newValue); }
 inline bool  py_q_provides(QString  c) { return SystemConnectionMemo::provides(c); }
 inline void py_q_setDisabled(bool  disabled) { SystemConnectionMemo::setDisabled(disabled); }
+inline void py_q_setOutputInterval(int  newInterval) { SystemConnectionMemo::setOutputInterval(newInterval); }
 inline bool  py_q_setUserName(QString  name) { return SystemConnectionMemo::setUserName(name); }
 };
 
@@ -1238,8 +1243,12 @@ void delete_SystemConnectionMemo(SystemConnectionMemo* obj) { delete obj; }
    void py_q_dispose(SystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_dispose());}
    Manager*  get(SystemConnectionMemo* theWrappedObject, QString  T);
    Manager*  py_q_get(SystemConnectionMemo* theWrappedObject, QString  T){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_get(T));}
+   int  getDefaultOutputInterval(SystemConnectionMemo* theWrappedObject);
+   int  py_q_getDefaultOutputInterval(SystemConnectionMemo* theWrappedObject){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_getDefaultOutputInterval());}
    bool  getDisabled(SystemConnectionMemo* theWrappedObject);
    bool  py_q_getDisabled(SystemConnectionMemo* theWrappedObject){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_getDisabled());}
+   int  getOutputInterval(SystemConnectionMemo* theWrappedObject);
+   int  py_q_getOutputInterval(SystemConnectionMemo* theWrappedObject){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_getOutputInterval());}
    QString  getSystemPrefix(SystemConnectionMemo* theWrappedObject) const;
    QString  getUserName(SystemConnectionMemo* theWrappedObject) const;
    bool  isDirty(SystemConnectionMemo* theWrappedObject);
@@ -1251,6 +1260,8 @@ void delete_SystemConnectionMemo(SystemConnectionMemo* obj) { delete obj; }
    void removeFromActionList(SystemConnectionMemo* theWrappedObject);
    void setDisabled(SystemConnectionMemo* theWrappedObject, bool  disabled);
    void py_q_setDisabled(SystemConnectionMemo* theWrappedObject, bool  disabled){  (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_setDisabled(disabled));}
+   void setOutputInterval(SystemConnectionMemo* theWrappedObject, int  newInterval);
+   void py_q_setOutputInterval(SystemConnectionMemo* theWrappedObject, int  newInterval){  (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_setOutputInterval(newInterval));}
    bool  setSystemPrefix(SystemConnectionMemo* theWrappedObject, QString  systemPrefix);
    bool  setUserName(SystemConnectionMemo* theWrappedObject, QString  name);
    bool  py_q_setUserName(SystemConnectionMemo* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_SystemConnectionMemo*)theWrappedObject)->py_q_setUserName(name));}
@@ -2367,6 +2378,7 @@ virtual QString  getNamedBeanClass() const;
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual QString  getNextValidAddress(QString  arg__1, QString  arg__2) const;
 virtual int  getObjectCount();
+virtual int  getOutputInterval();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual QStringList  getSystemNameArray();
@@ -2389,6 +2401,7 @@ virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void setDefaultClosedSpeed(QString  arg__1) const;
 virtual void setDefaultThrownSpeed(QString  arg__1) const;
+virtual void setOutputInterval(int  newInterval);
 virtual void timerEvent(QTimerEvent*  event);
 virtual char  typeLetter() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
@@ -2409,6 +2422,7 @@ inline QString  py_q_getClosedText() { return TurnoutManager::getClosedText(); }
 inline QString  py_q_getDefaultClosedSpeed() const { return TurnoutManager::getDefaultClosedSpeed(); }
 inline QString  py_q_getDefaultThrownSpeed() const { return TurnoutManager::getDefaultThrownSpeed(); }
 inline QString  py_q_getNextValidAddress(QString  arg__1, QString  arg__2) const { return TurnoutManager::getNextValidAddress(arg__1, arg__2); }
+inline int  py_q_getOutputInterval() { return TurnoutManager::getOutputInterval(); }
 inline QString  py_q_getThrownText() { return TurnoutManager::getThrownText(); }
 inline Turnout*  py_q_getTurnout(QString  arg__1) const { return this->getTurnout(arg__1); }
 inline QStringList  py_q_getValidOperationTypes() { return TurnoutManager::getValidOperationTypes(); }
@@ -2419,6 +2433,7 @@ inline Turnout*  py_q_provide(QString  name) const throw (IllegalArgumentExcepti
 inline Turnout*  py_q_provideTurnout(QString  arg__1) const { return TurnoutManager::provideTurnout(arg__1); }
 inline void py_q_setDefaultClosedSpeed(QString  arg__1) const { TurnoutManager::setDefaultClosedSpeed(arg__1); }
 inline void py_q_setDefaultThrownSpeed(QString  arg__1) const { TurnoutManager::setDefaultThrownSpeed(arg__1); }
+inline void py_q_setOutputInterval(int  newInterval) { TurnoutManager::setOutputInterval(newInterval); }
 };
 
 class PythonQtWrapper_TurnoutManager : public QObject
@@ -2443,6 +2458,8 @@ void delete_TurnoutManager(TurnoutManager* obj) { delete obj; }
    QString  py_q_getDefaultThrownSpeed(TurnoutManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getDefaultThrownSpeed());}
    QString  getNextValidAddress(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    QString  py_q_getNextValidAddress(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getNextValidAddress(arg__1, arg__2));}
+   int  getOutputInterval(TurnoutManager* theWrappedObject);
+   int  py_q_getOutputInterval(TurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getOutputInterval());}
    QString  getThrownText(TurnoutManager* theWrappedObject);
    QString  py_q_getThrownText(TurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getThrownText());}
    Turnout*  getTurnout(TurnoutManager* theWrappedObject, QString  arg__1) const;
@@ -2463,6 +2480,8 @@ void delete_TurnoutManager(TurnoutManager* obj) { delete obj; }
    void py_q_setDefaultClosedSpeed(TurnoutManager* theWrappedObject, QString  arg__1) const{  (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_setDefaultClosedSpeed(arg__1));}
    void setDefaultThrownSpeed(TurnoutManager* theWrappedObject, QString  arg__1) const;
    void py_q_setDefaultThrownSpeed(TurnoutManager* theWrappedObject, QString  arg__1) const{  (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_setDefaultThrownSpeed(arg__1));}
+   void setOutputInterval(TurnoutManager* theWrappedObject, int  newInterval);
+   void py_q_setOutputInterval(TurnoutManager* theWrappedObject, int  newInterval){  (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_setOutputInterval(newInterval));}
 };
 
 
