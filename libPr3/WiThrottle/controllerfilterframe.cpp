@@ -1,4 +1,4 @@
-﻿#include "controllerfilterframe.h"
+#include "controllerfilterframe.h"
 #include "loggerfactory.h"
 #include <QTabWidget>
 #include "instancemanager.h"

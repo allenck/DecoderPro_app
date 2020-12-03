@@ -163,7 +163,7 @@
         voltageMetersMenu = new QMenu(tr("Voltage Meters"));
         menuBar->addMenu(voltageMetersMenu);
         for (Meter* m : voltageMeters) {
-            QAction* item = new QAction(new SelectMeterAction(((DefaultMeter*)meter)->getDisplayName(), m, this));
+            QAction* item = new SelectMeterAction(((DefaultMeter*)meter)->getDisplayName(), m, this);
             item->setCheckable(true);
             voltageMetersMenu->addAction(item);
             meter_MenuItemMap.insert(m, item);
@@ -172,7 +172,7 @@
         currentMetersMenu = new QMenu(tr("Current Meters"));
         menuBar->addMenu(currentMetersMenu);
         for (Meter* m : currentMeters) {
-            QAction* item = new QAction(new SelectMeterAction(((DefaultMeter*)meter)->getDisplayName(), m, this));
+            QAction* item = new SelectMeterAction(((DefaultMeter*)meter)->getDisplayName(), m, this);
             item->setCheckable(true);
             currentMetersMenu->addAction(item);
             meter_MenuItemMap.insert(m, item);
@@ -206,7 +206,7 @@
 
         for (int i=1; i <= MAX_INTEGER_DIGITS; i++) {
             /*final*/ int ii = i;
-            AbstractAction* item = new AbstractAction(new AbstractAction(tr("%1 integer digits").arg(i),this));
+            AbstractAction* item = new AbstractAction(tr("%1 integer digits").arg(i),this);
             item->setCheckable(true);
             connect(item, &AbstractAction::triggered, [=]{
 //                @Override
@@ -223,7 +223,7 @@
         settingsMenu->addSeparator();
         for (int i=0; i <= MAX_DECIMAL_DIGITS; i++) {
             /*final*/ int ii = i;
-            AbstractAction* item = new AbstractAction(new AbstractAction(tr("%1 decimal digits").arg(i),this));
+            AbstractAction* item = new AbstractAction(tr("%1 decimal digits").arg(i),this);
             item->setCheckable(true);
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -325,7 +325,7 @@
         if (meter != nullptr) {
             ((DefaultMeter*)meter)->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
         }
-#if 0
+#if 0 // TODO:
         // Add component listener to handle frame resizing event
         this->addComponentListener(
                 new ComponentAdapter() {

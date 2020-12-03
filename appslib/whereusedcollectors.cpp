@@ -1,4 +1,4 @@
-﻿#include "whereusedcollectors.h"
+#include "whereusedcollectors.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "turnoutmanager.h"

@@ -8,7 +8,7 @@
  * @author Daniel Bergqvist Copyright (C) 2018
  */
 /*public*/ /*interface*/class AnalogIO : public AbstractNamedBean {
-  Q_OBJECT
+  //Q_OBJECT
  public:
     AnalogIO(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
     AnalogIO(QString systemName, QObject* parent = nullptr) : AbstractNamedBean(systemName, parent) {}
