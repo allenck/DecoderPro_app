@@ -49,7 +49,7 @@
     //@Override
     //@CheckReturnValue
     //@CheckForNull
-    /*public*/ NamedBean* ProxyMeterManager::getBySystemName(/*@Nonnull*/ QString systemName) {
+    /*public*/ NamedBean* ProxyMeterManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
         NamedBean* meter = AbstractProxyMeterManager::getBySystemName(systemName);
         if (meter == nullptr) {
             meter = initInternal()->getBySystemName(systemName);
@@ -60,7 +60,7 @@
     /** {@inheritDoc} */
     //@Override
     //@CheckForNull
-    /*public*/ NamedBean* ProxyMeterManager::getByUserName(/*@Nonnull*/ QString userName) {
+    /*public*/ NamedBean* ProxyMeterManager::getByUserName(/*@Nonnull*/ QString userName) const {
         NamedBean* meter = AbstractProxyMeterManager::getByUserName(userName);
         if (meter == nullptr) {
             meter = initInternal()->getByUserName(userName);
@@ -76,8 +76,8 @@
      * @return the new manager or null if it's not possible to create the manager
      */
     //@Override
-    /*protected*/ MeterManager* ProxyMeterManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) {
-        MeterManager* m = new ProxyMeterManager();
+    /*protected*/ MeterManager* ProxyMeterManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const {
+        MeterManager* m = new AbstractMeterManager(memo);
         InstanceManager::setMeterManager(m);
         return m;
     }

@@ -156,6 +156,18 @@ class LnIPLImplementation : public QObject, public JComponent, public LocoNetLis
   /*public*/ static QString getManufacturer(int manuf);
   /*public*/ static QString getDeviceName(int manuf, int device, int slaveManuf, int slave);
 
+  /*public*/ bool isOpaque() {return true;}
+  /*public*/ QColor getForeground() {return QColor();}
+  /*public*/ QColor getBackground() {return QColor();}
+  /*public*/ void setBackground(QColor) {}
+  /*public*/ void setOpaque(bool) {}
+  /*public*/ QFont getFont() {return QFont();}
+  /*public*/ void setFont(QFont) {}
+  QObject* jself() {return (QObject*)this;}
+  /*public*/ void setBorder(Border*) {}
+  /*public*/ Border* getBorder() {return nullptr;}
+  /*public*/ void setEnabled(bool) {}
+
  private:
   /*private*/ bool waitingForIplReply;
   /*private*/ void moreInit();
@@ -165,10 +177,11 @@ class LnIPLImplementation : public QObject, public JComponent, public LocoNetLis
   /*private*/ bool handleMessageIplDeviceQuery(LocoNetMessage* m);
   /*private*/ static /*final*/ bool isIplRf24SlaveIdentityReportMessage(LocoNetMessage* m);
   /*private*/ bool handleMessageIplDeviceReport(LocoNetMessage* m);
-  static QMap<DeviceTypes::TYPES, DeviceTypes*>* deviceTypes;
+  static QMap<DeviceTypes::TYPES, DeviceTypes*> deviceTypes;
   PropertyChangeSupport* pcs;
 
   friend class SwingTmr;
+  friend class LnIplImplementationTest;
 };
 
 class SwingTmr : public Timer

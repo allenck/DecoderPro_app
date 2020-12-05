@@ -55,6 +55,7 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
     /*public*/ DefaultVoltageMeter(/*@Nonnull*/ QString sys, Unit unit, double min, double max, double resolution, MeterUpdateTask* updateTask)
    : DefaultMeter(sys, unit, min, max, resolution, updateTask){
         //super(sys, unit, min, max, resolution, updateTask);
+   setObjectName(sys);
     }
   QObject* self() {return (QObject*)this;}
 };
@@ -72,6 +73,7 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
    : DefaultMeter(sys, unit, min, max, resolution, updateTask)
   {
         //super(sys, unit, min, max, resolution, updateTask);
+   setObjectName(sys);
   }
   QObject* self() {return (QObject*)this;}
 };

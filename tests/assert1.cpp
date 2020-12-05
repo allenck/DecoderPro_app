@@ -74,7 +74,12 @@
     QString info = tr("Assert at line %1 in %2:\n %3\n").arg(line).arg(file).arg(JUnitUtil::getTestClassName());
         //throw AssertionError("unknown error");
     qDebug() << info;
-    JOptionPane::showMessageDialog(nullptr, info + message, "Assert error",  JOptionPane::WARNING_MESSAGE);
+    //JOptionPane::showMessageDialog(nullptr, info + message, "Assert error",  JOptionPane::WARNING_MESSAGE);
+    int retval = JOptionPane::showOptionDialog(NULL, info + message + "Continue testing?", tr("Assert error"),
+            JOptionPane::YES_NO_OPTION,
+            JOptionPane::QUESTION_MESSAGE/*, QIcon(), NULL, NULL*/);
+    if(retval != 0)
+     throw Exception("Testing terminated");
     return;
 }
 

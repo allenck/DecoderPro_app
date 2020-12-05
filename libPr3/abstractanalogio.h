@@ -9,13 +9,13 @@ class AbstractAnalogIO : public /*AbstractNamedBean*/ AnalogIO
  public:
   AbstractAnalogIO(/*@Nonnull*/ QString systemName, bool commandedValueSetsKnownValue, QObject* parent = nullptr);
   /*public*/ AbstractAnalogIO(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName, bool commandedValueSetsKnownValue, QObject *parent=nullptr);
-  /*public*/ void setCommandedAnalogValue(double value) throw (JmriException);
-  /*public*/ double getCommandedAnalogValue();
-  /*public*/ double getKnownAnalogValue();
-  /*public*/ double getState(double v);
-  /*public*/ void setState(double value) throw (JmriException);
-  /*public*/ QString getBeanType();
-  /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n);
+  /*public*/ void setCommandedAnalogValue(double value) throw (JmriException) override;
+  /*public*/ double getCommandedAnalogValue() override;
+  /*public*/ double getKnownAnalogValue() override;
+  /*public*/ double getState(double v) override;
+  /*public*/ void setState(double value) throw (JmriException) override;
+  /*public*/ QString getBeanType() override;
+  /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
 
  private:
   /*private*/ /*final*/ bool _commandedValueSetsKnownValue;

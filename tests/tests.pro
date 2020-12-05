@@ -242,7 +242,9 @@ SOURCES += \
     loconet/controlpaneltestaction.cpp \
     misc/meterframetest.cpp \
     loconet/lnpredefinedmeterstest.cpp \
-    loconet/lnpredefinedmeterstestaction.cpp
+    loconet/lnpredefinedmeterstestaction.cpp \
+    loconet/lniplimplementationtest.cpp \
+    loconet/lniplimplementationtestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -462,7 +464,9 @@ HEADERS += \
     loconet/controlpaneltestaction.h \
     misc/meterframetest.h \
     loconet/lnpredefinedmeterstest.h \
-    loconet/lnpredefinedmeterstestaction.h
+    loconet/lnpredefinedmeterstestaction.h \
+    loconet/lniplimplementationtest.h \
+    loconet/lniplimplementationtestaction.h
 
 unix {
     target.path = /usr/lib

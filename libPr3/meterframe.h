@@ -184,7 +184,7 @@ private:
   int widthOfAllIconsToDisplay = 0;
   int oldWidthOfAllIconsToDisplay = -1;
   bool frameIsInitialized = false;
-  Unit selectedUnit;
+  Unit selectedUnit = Unit::Volt;
 
   int digitIconWidth;
   int decimalIconWidth;

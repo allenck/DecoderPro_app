@@ -8,7 +8,7 @@
  * @author Daniel Bergqvist Copyright (C) 2018
  */
 /*public*/ /*interface*/class AnalogIO : public AbstractNamedBean {
-  //Q_OBJECT
+  Q_OBJECT
  public:
     AnalogIO(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
     AnalogIO(QString systemName, QObject* parent = nullptr) : AbstractNamedBean(systemName, parent) {}
@@ -104,7 +104,7 @@
      * @throws JmriException general error when setting the state fails
      */
     //@InvokeOnLayoutThread
-    /*public*/ void setState(double value) throw (JmriException);
+    virtual /*public*/ void setState(double value) throw (JmriException) =0;
 
     /**
      * Provide generic access to internal state.

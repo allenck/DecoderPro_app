@@ -44,8 +44,8 @@ LnPacketizer::LnPacketizer(LocoNetSystemConnectionMemo *m, QObject* parent)
 
 /*public*/ bool LnPacketizer::status()
 {
- bool returnVal = ( ostream != nullptr && istream != nullptr
-         && xmtThread != nullptr && xmtThread->isRunning() && xmtHandler != nullptr
+ bool returnVal = ( /*ostream != nullptr && istream != nullptr
+         &&*/ xmtThread != nullptr && xmtThread->isRunning() && xmtHandler != nullptr
          && rcvThread != nullptr && rcvThread->isRunning() && rcvHandler != nullptr
          );
  return returnVal;

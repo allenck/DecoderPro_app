@@ -16,6 +16,7 @@ class LnMeterInitTask : public QObject
   Q_OBJECT
  public:
   explicit LnMeterInitTask(LnTrafficController* tc, int interval, QObject *parent = nullptr);
+  ~LnMeterInitTask() { dispose();}
   /*public*/ void initTimer();
   /*public*/ void dispose();
 
@@ -46,12 +47,12 @@ class LnMeterInitTask : public QObject
  */
 /*private*/ class UpdateTask01 : public TimerTask {
 
-    /*private*/ bool _updateTaskIsEnabled;
-  LnMeterInitTask* task;
+    /*private*/ bool _updateTaskIsEnabled = false;
+    LnMeterInitTask* task;
 public:
     /*public*/ UpdateTask01(LnMeterInitTask* task) {
         //super();
-   this->task = task;
+        this->task = task;
         this->_updateTaskIsEnabled = false;
     }
 
@@ -77,10 +78,12 @@ public:
     //@Override
     /*public*/ void run() {
         if (!_updateTaskIsEnabled) {
+         if(LnMeterInitTask::log->isDebugEnabled())
             LnMeterInitTask::log->debug("LnMeter initialization timer finds task not enabled.");
             return;
         } else if (!task->tc->status()) {
-            LnMeterInitTask::log->debug("LnMeter initialization timer finds connection not ready.");
+            if(LnMeterInitTask::log->isDebugEnabled())
+             LnMeterInitTask::log->debug("LnMeter initialization timer finds connection not ready.");
             return;
         }
         LnMeterInitTask::log->debug("LnMeter initialization timer is sending query.");

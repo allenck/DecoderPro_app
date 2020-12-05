@@ -24,6 +24,7 @@ public:
     static /*public*/ void waitFor(ReleaseUntil *condition, QString name, QString file = __FILE__, int line = __LINE__);
     static /*public*/ bool waitFor(ReleaseUntil* condition, QString file = __FILE__, int line = __LINE__);
     static /*public*/ void waitFor(int time);
+    static /*public*/ bool fasterWaitFor(ReleaseUntil* condition, QString name, QString file, int line);
     /*public*/ static void runTests(QObject *test, QStringList testList);
     static QString getTestClassName();
     /*public*/ static void resetInstanceManager();

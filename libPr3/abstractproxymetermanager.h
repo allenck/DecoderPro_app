@@ -2,12 +2,13 @@
 #define ABSTRACTPROXYMETERMANAGER_H
 #include "metermanager.h"
 #include "proxymanager.h"
+#include "abstractmetermanager.h"
 
 // NOTE: This class is a replacement for AbstractProxyManager that
 // implements LightManager instead of AbstractManager
 
 
-class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, public ProxyManager
+class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public AbstractMeterManager, public ProxyManager
 {
   Q_OBJECT
   Q_INTERFACES(/*MeterManager*/ ProxyManager)
@@ -31,7 +32,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
      * @return Null if nothing by that name exists
      */
     /*public*/ NamedBean* getNamedBean(QString name) const override;
-    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) const override/*throw (NamedBean::BadSystemNameException)*/;
+//    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) const override/*throw (NamedBean::BadSystemNameException)*/;
 
     /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
     /*public*/ NamedBean* getBeanByUserName(QString userName) const  override;
@@ -63,7 +64,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
      * be looking them up.
      * @return requested NamedBean object (never null)
      */
-    /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
+//    /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
     /*public*/ void dispose() override;
     /**
      * Remember a NamedBean Object created outside the manager.
@@ -106,6 +107,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() override;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
     /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const override;
+    /*public*/ NamedBean *getByUserName(/*@Nonnull*/ QString userName) const override;
 
  signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
@@ -154,11 +157,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
      */
     virtual/*abstract protected*/ NamedBean* makeBean(int, QString /*systemName*/, QString /*userName*/) /*const*/ /*=0*/;
 
-    /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const override;
-    /*public*/ NamedBean *getByUserName(/*@Nonnull*/ QString userName) const override;
 
- private:
-    /*private*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ QString systemPrefix);
  protected:
     /**
      * Find the index of a matching manager.
@@ -176,7 +175,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
     /*protected*/ void updateNamedBeanSet();
     /*protected*/ void recomputeNamedBeanSet();
     /*protected*/ Manager/*<E>*/* getManager(/*@Nonnull*/ QString systemName) const;
-    /*protected*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const;
+    /*protected*/ virtual Manager/*<E>*/* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const;
 
 
  friend class ProxyReporterManager;
@@ -199,6 +198,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public MeterManager, publ
  friend class ReporterPickModel;
  friend class RegistersWidget;
  friend class ProxyMeterManager;
+ friend class LnPredefinedMeters;
 };
 
 #endif // ABSTRACTPROXYMETERMANAGER_H

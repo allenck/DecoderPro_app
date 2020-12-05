@@ -42,7 +42,11 @@ class MeterUpdateTask01 : public MeterUpdateTask
   Q_OBJECT
   LnPredefinedMeters* lnpm;
  public:
-  MeterUpdateTask01(int interval, LnPredefinedMeters* lnpm) : MeterUpdateTask(interval) {this->lnpm = lnpm;}
+  MeterUpdateTask01(int interval, LnPredefinedMeters* lnpm)
+   : MeterUpdateTask(interval)
+  {
+   this->lnpm = lnpm;
+  }
   //@Override
   /*public*/ void requestUpdateFromLayout() {
       lnpm->sm->sendReadSlot(249);

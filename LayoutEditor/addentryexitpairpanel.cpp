@@ -197,7 +197,7 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
  centralWidgetLayout->addLayout(panel1Layout);
  entryExitFrame->adjustSize();
  entryExitFrame->setVisible(true);
-    int retval = JOptionPane::showOptionDialog(NULL, tr("Do you want to automatically generate \nthe Entry Exit Pairs and Logic, based /nupon the track plan in the layout editor?"), tr("AutoGenEntryExitTitle"),
+    int retval = JOptionPane::showOptionDialog(NULL, tr("Do you want to automatically generate \nthe Entry Exit Pairs and Logic, based /nupon the track plan in the layout editor?"), tr("Auto Generate Entry Exit Pairs"),
             JOptionPane::YES_NO_OPTION,
             JOptionPane::QUESTION_MESSAGE/*, QIcon(), NULL, NULL*/);
     if (retval == 0) {

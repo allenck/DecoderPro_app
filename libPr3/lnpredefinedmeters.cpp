@@ -37,7 +37,8 @@
 //            }
 //        };
         updateTask = new MeterUpdateTask01(LnConstants::METER_INTERVAL_MS, this);
-        tc->addLocoNetListener(~0, (LocoNetListener*)this);
+
+        tc->addLocoNetListener(~0, this);
 
         updateTask->initTimer();
 
@@ -72,11 +73,13 @@
         int srcSerNum = msg->getElement(18)+128*msg->getElement(19);
 
         QString voltSysName = createSystemName(srcDeviceType, srcSerNum, "Voltage"); // NOI18N
-        Meter* m = (DefaultMeter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(voltSysName);
+        MeterManager* mm = ((MeterManager*)InstanceManager::getDefault("MeterManager"));
+//        ((AbstractProxyMeterManager*)mm)->createSystemManager("L");
+        Meter* m = (DefaultMeter*)mm->getBySystemName(voltSysName);
         updateAddMeter(m, voltSysName, valVolts, true);
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
-        m = (Meter*)((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
+        m = (Meter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
         updateAddMeter(m, ampsSysName, valAmps, false);
     }
 
@@ -129,6 +132,7 @@
                     sysName).arg(value));
         } else {
             try {
+            log->debug(tr("meter %1").arg(((DefaultMeter*)m)->objectName()));
                 ((DefaultMeter*)m)->setCommandedAnalogValue(value);
             } catch (JmriException e) {
                 log->debug(tr("Exception setting %1Meter %2 to value %3: %4").arg(

@@ -20,14 +20,79 @@
      *               interface
      */
     /*public*/ LnIPLImplementation::LnIPLImplementation(LocoNetSystemConnectionMemo* lnMemo, QObject* parent) //: JComponent(parent)
-{
+    {
         //super();
         thisone = this;
         memo = lnMemo;
 
+
         moreInit();
     }
-    /*static*/ QMap<DeviceTypes::TYPES, DeviceTypes*>* LnIPLImplementation::deviceTypes = new QMap<DeviceTypes::TYPES, DeviceTypes*>();
+//    /*static*/ QMap<DeviceTypes::TYPES, DeviceTypes*> LnIPLImplementation::deviceTypes = nullptr;//new QMap<DeviceTypes::TYPES, DeviceTypes*>();
+      /*static*/ QMap<DeviceTypes::TYPES, DeviceTypes*> LnIPLImplementation::deviceTypes {
+ {DeviceTypes::UT4D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UT4,
+     LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
+     LnConstants::DIGITRAX_STRING, "UT4D")},   // NOI18N
+ {DeviceTypes::UT4X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UT4,
+     0,0,
+     LnConstants::DIGITRAX_STRING, "UT4(x)")},   // NOI18N
+ {DeviceTypes::DCS51, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS51,
+     0,0,LnConstants::DIGITRAX_STRING, "DCS51")},   // NOI18N
+ {DeviceTypes::DCS52, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS52,
+     0,0,LnConstants::DIGITRAX_STRING, "DCS52")},   // NOI18N
+ {DeviceTypes::DT402D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT402,
+     LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
+     LnConstants::DIGITRAX_STRING, "DT402D")},   // NOI18N
+ {DeviceTypes::DT402X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT402,
+     0,0, LnConstants::DIGITRAX_STRING, "DT402(x)")},   // NOI18N
+ {DeviceTypes::PR3, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_PR3,
+     0,0, LnConstants::DIGITRAX_STRING, "PR3")},   // NOI18N
+ {DeviceTypes::UR92, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UR92,
+     LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
+     LnConstants::DIGITRAX_STRING, "UR92")},   // NOI18N
+ {DeviceTypes::DB210OPTO, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB210OPTO,
+     0,0, LnConstants::DIGITRAX_STRING, "DB210Opto")},   // NOI18N
+ {DeviceTypes::DB210, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB210,
+     0,0, LnConstants::DIGITRAX_STRING, "DB210")},   // NOI18N
+ {DeviceTypes::DB220, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB220,
+     0,0, LnConstants::DIGITRAX_STRING, "DB220")},   // NOI18N
+ {DeviceTypes::PR4, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_PR4,
+     0,0, LnConstants::DIGITRAX_STRING, "PR4")},   // NOI18N
+ {DeviceTypes::BXP88, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_BXP88,
+     0,0, LnConstants::DIGITRAX_STRING, "BXP88")},   // NOI18N
+ {DeviceTypes::LNWI, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_LNWI,
+     0,0, LnConstants::DIGITRAX_STRING, "LNWI")},   // NOI18N
+ {DeviceTypes::DCS210, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS210,
+     0,0, LnConstants::DIGITRAX_STRING, "DCS210")},   // NOI18N
+ {DeviceTypes::DCS240, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS240,
+     0,0, LnConstants::DIGITRAX_STRING, "DCS240")},   // NOI18N
+ {DeviceTypes::DT500D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT500,
+     LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
+     LnConstants::DIGITRAX_STRING, "DT500D")},   // NOI18N
+ {DeviceTypes::DT500X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT500,
+     0,0, LnConstants::DIGITRAX_STRING, "DT500(x)")},   // NOI18N
+ {DeviceTypes::DT602X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT602,
+     0,0, LnConstants::DIGITRAX_STRING, "DT602(x)")},   // NOI18N
+ {DeviceTypes::BXPA1, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_BXPA1,
+     0,0, LnConstants::DIGITRAX_STRING, "BXPA1")},   // NOI18N
+ {DeviceTypes::DCS210plus, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS210PLUS,
+     0,0, LnConstants::DIGITRAX_STRING, "DCS210+")},   // NOI18N
+ {DeviceTypes::RR_CKTS_TC64, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TC64,
+     0,0, LnConstants::RR_CIRKITS_STRING, "TC-64")},
+ {DeviceTypes::RR_CKTS_TC_MKII, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TC64_MKII,
+     0,0, LnConstants::RR_CIRKITS_STRING, "TC-64 Mk-II")},
+ {DeviceTypes::RR_CKTS_LNCP, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_LNCP,
+     0,0, LnConstants::RR_CIRKITS_STRING, "LNCP")},
+ {DeviceTypes::RR_CKTS_MOTORMan, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_MOTORMAN,
+     0,0, LnConstants::RR_CIRKITS_STRING, "MotorMan")},
+ {DeviceTypes::RR_CKTS_MOTORMANII, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_MOTORMAN_II,
+     0,0, LnConstants::RR_CIRKITS_STRING, "MotorMan-II")},
+ {DeviceTypes::RR_CKTS_SIGNALMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_SIGNALMAN,
+     0,0, LnConstants::RR_CIRKITS_STRING, "SignalMan")},
+ {DeviceTypes::RR_CKTS_TOWERMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TOWERMAN,
+     0,0, LnConstants::RR_CIRKITS_STRING, "TowerMan")},
+ {DeviceTypes::RR_CKTS_WATCHMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_WATCHMAN,
+     0,0, LnConstants::RR_CIRKITS_STRING, "WatchMan")}};
 
     /*private*/ void LnIPLImplementation::moreInit() {
         waitingForIplReply = false;
@@ -47,70 +112,7 @@
 //        });
         swingTmrIplQuery = new SwingTmr(LnDplxGrpInfoImplConstants::IPL_QUERY_DELAY, new ActionListener(), this);
 
-        deviceTypes->insert(DeviceTypes::UT4D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UT4,
-            LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
-            LnConstants::DIGITRAX_STRING, "UT4D"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::UT4X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UT4,
-            0,0,
-            LnConstants::DIGITRAX_STRING, "UT4(x)"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DCS51, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS51,
-            0,0,LnConstants::DIGITRAX_STRING, "DCS51"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DCS52, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS52,
-            0,0,LnConstants::DIGITRAX_STRING, "DCS52"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DT402D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT402,
-            LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
-            LnConstants::DIGITRAX_STRING, "DT402D"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DT402X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT402,
-            0,0, LnConstants::DIGITRAX_STRING, "DT402(x)"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::PR3, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_PR3,
-            0,0, LnConstants::DIGITRAX_STRING, "PR3"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::UR92, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_UR92,
-            LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
-            LnConstants::DIGITRAX_STRING, "UR92"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DB210OPTO, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB210OPTO,
-            0,0, LnConstants::DIGITRAX_STRING, "DB210Opto"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DB210, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB210,
-            0,0, LnConstants::DIGITRAX_STRING, "DB210"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DB220, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DB220,
-            0,0, LnConstants::DIGITRAX_STRING, "DB220"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::PR4, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_PR4,
-            0,0, LnConstants::DIGITRAX_STRING, "PR4"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::BXP88, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_BXP88,
-            0,0, LnConstants::DIGITRAX_STRING, "BXP88"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::LNWI, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_LNWI,
-            0,0, LnConstants::DIGITRAX_STRING, "LNWI"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DCS210, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS210,
-            0,0, LnConstants::DIGITRAX_STRING, "DCS210"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DCS240, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS240,
-            0,0, LnConstants::DIGITRAX_STRING, "DCS240"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DT500D, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT500,
-            LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_SLAVE_RF24,
-            LnConstants::DIGITRAX_STRING, "DT500D"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DT500X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT500,
-            0,0, LnConstants::DIGITRAX_STRING, "DT500(x)"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DT602X, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DT602,
-            0,0, LnConstants::DIGITRAX_STRING, "DT602(x)"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::BXPA1, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_BXPA1,
-            0,0, LnConstants::DIGITRAX_STRING, "BXPA1"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::DCS210plus, new DeviceTypes(LnConstants::RE_IPL_MFR_DIGITRAX, LnConstants::RE_IPL_DIGITRAX_HOST_DCS210PLUS,
-            0,0, LnConstants::DIGITRAX_STRING, "DCS210+"));   // NOI18N
-        deviceTypes->insert(DeviceTypes::RR_CKTS_TC64, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TC64,
-            0,0, LnConstants::RR_CIRKITS_STRING, "TC-64"));
-        deviceTypes->insert(DeviceTypes::RR_CKTS_TC_MKII, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TC64_MKII,
-            0,0, LnConstants::RR_CIRKITS_STRING, "TC-64 Mk-II"));
-        deviceTypes->insert(DeviceTypes::RR_CKTS_LNCP, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_LNCP,
-            0,0, LnConstants::RR_CIRKITS_STRING, "LNCP"));
-        deviceTypes->insert(DeviceTypes::RR_CKTS_MOTORMan, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_MOTORMAN,
-            0,0, LnConstants::RR_CIRKITS_STRING, "MotorMan"));
-        deviceTypes->insert(DeviceTypes::RR_CKTS_MOTORMANII, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_MOTORMAN_II,
-            0,0, LnConstants::RR_CIRKITS_STRING, "MotorMan-II"));
-        deviceTypes->insert(DeviceTypes::RR_CKTS_SIGNALMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_SIGNALMAN,
-            0,0, LnConstants::RR_CIRKITS_STRING, "SignalMan"));
-        deviceTypes->insert(DeviceTypes::RR_CKTS_TOWERMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_TOWERMAN,
-            0,0, LnConstants::RR_CIRKITS_STRING, "TowerMan"));
-        deviceTypes->insert(DeviceTypes::RR_CKTS_WATCHMAN, new DeviceTypes(LnConstants::RE_IPL_MFR_RR_CIRKITS, LnConstants::RE_IPL_RRCIRKITS_HOST_WATCHMAN,
-            0,0, LnConstants::RR_CIRKITS_STRING, "WatchMan"));
-    };
+    }
 
     /**
      * Create a LocoNet packet which queries UR92(s) for Duplex group
@@ -999,7 +1001,7 @@
         }
 #if 1
         //for (DeviceTypes t: DeviceTypes.values()) {
-        for(DeviceTypes* t: deviceTypes->values())
+        for(DeviceTypes* t: deviceTypes.values())
         {
             if ((manuf == t->getManufacturer()) &&
                     (device == t->getDeviceIdNumber()) &&

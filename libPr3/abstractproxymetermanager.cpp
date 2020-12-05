@@ -10,7 +10,7 @@
 // implements MeterManager instead of AbstractManager
 
 AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
-    : MeterManager(new SystemConnectionMemo(), parent)
+    : AbstractMeterManager(new SystemConnectionMemo(), parent)
 {
  mgrs = QList<Manager*>();
  internalManager = nullptr;
@@ -113,7 +113,8 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  * Returns the set default or, if not present, the internal manager as defacto default
  */
 /*public*/ Manager* AbstractProxyMeterManager::getDefaultManager() const {
-    if (defaultManager != nullptr) return defaultManager;
+    if (defaultManager != nullptr)
+     return defaultManager;
 
     return getInternalManager();
 }
@@ -205,7 +206,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  if (t != nullptr) return t;
  return getBySystemName(name);
 }
-
+#if 0
 /**
  * Enforces, and as a user convenience converts to, the standard form for a system name
  * for the NamedBeans handled by this manager and its submanagers.
@@ -227,7 +228,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
     log->debug("normalizeSystemName did not find manager for name " + inputName + ", defer to default");
     return getMgr(0)->normalizeSystemName(inputName);
 }
-
+#endif
 /**
  * Locate via user name, then system name if needed.
  * If that fails, create a new NamedBean: If the name
@@ -274,14 +275,21 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
 //@CheckReturnValue
 //@CheckForNull
 /*public*/ NamedBean *AbstractProxyMeterManager::getBySystemName(/*@Nonnull */ QString systemName) const {
-    // System names can be matched to managers by system and type at front of name
-    int index = matchTentative(systemName);
-    if (index >= 0) {
-        Manager* m = getMgr(index);
-        return (NamedBean*)m->getBySystemName(systemName);
-    }
-    log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
-    return (NamedBean*)getDefaultManager()->getBySystemName(systemName);
+//    // System names can be matched to managers by system and type at front of name
+//    int index = matchTentative(systemName);
+//    if (index >= 0) {
+//        Manager* m = getMgr(index);
+//        return (NamedBean*)m->getBySystemName(systemName);
+//    }
+//    log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
+//    return (NamedBean*)getDefaultManager()->getBySystemName(systemName);
+ Manager/*<E>*/* m = getManager(systemName);
+ if (m == nullptr) {
+     log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName));
+     m = getDefaultManager();
+ }
+ NamedBean* nb = ((AbstractMeterManager*)m)->getBySystemName(systemName);
+ return nb;
 }
 
 /** {@inheritDoc} */
@@ -322,7 +330,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  return nullptr;
 }
 
-
+#if 0
 /**
  * Return an instance with the specified system and user names.
  * Note that two calls with the same arguments will get the same instance;
@@ -367,7 +375,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
     //return makeBean(mgrs.entryIndex(getDefaultManager()), systemName, userName);
 
 }
-
+#endif
 /*public*/ void AbstractProxyMeterManager::dispose() {
     for (int i=0; i<mgrs.size(); i++)
         mgrs.value(i)->dispose();

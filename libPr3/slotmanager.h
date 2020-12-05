@@ -305,7 +305,7 @@ private:
  int lopsa; // low address for CV read/write
  ProgListener* _usingProgrammer;
  QTimer* mPowerTimer;
- LocoNetSystemConnectionMemo* adaptermemo;
+ LocoNetSystemConnectionMemo* adaptermemo = nullptr;
  ProgrammingMode* csOpSwProgrammingMode;// = new ProgrammingMode(
 //             "LOCONETCSOPSWMODE",
 //             Bundle.getMessage("LOCONETCSOPSWMODE"));

@@ -163,6 +163,7 @@ QObject* AbstractManager::getInstanceBySystemName(QString systemName)
 QObject* AbstractManager::getInstanceByUserName(QString userName) {
     return _tuser->value(userName);
 }
+
 /** {@inheritDoc} */
 //@Override
 /*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {

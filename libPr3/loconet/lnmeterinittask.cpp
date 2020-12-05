@@ -38,6 +38,8 @@
     {
         this->tc = tc;
        _sleepInterval = interval;
+
+       log->setDebugEnabled(true);
     }
 
     /**

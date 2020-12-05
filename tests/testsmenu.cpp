@@ -82,6 +82,7 @@
 #include "entryexit/circuitbuildertestaction.h"
 #include "loconet/controlpaneltestaction.h"
 #include "loconet/lnpredefinedmeterstestaction.h"
+#include "loconet/lniplimplementationtestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -120,6 +121,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new DefaultMemoryManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetMessageExceptionTestAction(this));
     loconetTestMenu->addAction(new LnPredefinedMetersTestAction(this));
+    loconetTestMenu->addAction(new LnIplImplementationTestAction(this));
 
     QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers ..."));
     loconetTestMenu->addMenu(loconetProgrammersMenu);

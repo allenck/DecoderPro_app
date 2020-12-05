@@ -12,7 +12,7 @@
 #include "meter.h"
 #include "connectionconfig.h"
 #include "LnOverTcp/lnovertcpconnectionconfig.h"
-
+#include "proxymetermanager.h"
 LnPredefinedMetersTest::LnPredefinedMetersTest(QObject *parent) : QObject(parent)
 {
 
