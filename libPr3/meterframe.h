@@ -168,16 +168,16 @@ private:
   /*private*/ QMenuBar* menuBar = nullptr;
   QVector<JLabel*> integerDigitIcons;
   QVector<JLabel*> decimalDigitIcons;
-  JLabel* decimal;
+  JLabel* decimal = nullptr;
   QMap<Unit::UNITS, JLabel*> unitLabels = QMap<Unit::UNITS, JLabel*>();
 
   QMap<Meter*, QAction*> meter_MenuItemMap = QMap<Meter*, QAction*>();
   QMap<Unit::UNITS, QAction*> units_MenuItemMap = QMap<Unit::UNITS, QAction*>();
   QMap<int, QAction*> integerDigits_MenuItemMap = QMap<int, QAction*>();
   QMap<int, QAction*> decimalDigits_MenuItemMap = QMap<int, QAction*>();
-  QAction* lastSelectedMeterMenuItem;
-  QAction* lastSelectedIntegerDigitsMenuItem;
-  QAction* lastSelectedDecimalDigitsMenuItem;
+  QAction* lastSelectedMeterMenuItem = nullptr;
+  QAction* lastSelectedIntegerDigitsMenuItem = nullptr;
+  QAction* lastSelectedDecimalDigitsMenuItem = nullptr;
   int numIntegerDigits = 3;
   int numDecimalDigits = 0;
   int lastNumDecimalDigits = -1;
@@ -191,7 +191,7 @@ private:
   int unitIconWidth;
   int iconHeight;
 
-  /*private*/ PropertyChangeListener* propertyChangeListener;
+  /*private*/ PropertyChangeListener* propertyChangeListener = nullptr;
 
   /*private*/ Meter* meter = nullptr;
 

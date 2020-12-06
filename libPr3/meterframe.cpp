@@ -118,15 +118,15 @@
 
         if (meter != nullptr) {
             meter->disable();
-            ((DefaultMeter*)meter)->removePropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
+            ((DefaultMeter*)meter->self())->removePropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
         }
 
         meter = m;
 
         if (meter == nullptr) return;
 
-        ((DefaultMeter*)meter)->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
-        meter->enable();
+        ((DefaultMeter*)meter->self())->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
+        ((DefaultMeter*)meter->self())->enable();
 
         if (frameIsInitialized) {
             // Initially we want to scale the icons to fit the previously saved window size
@@ -502,9 +502,10 @@
         // and we always want the dot to be able to split the string by the dot.
         int numChars = numIntegerDigits + numDecimalDigits + 2;
         QString formatStr = tr("%%0%1.%2f").arg(numChars).arg(numDecimalDigits+1);
-        QString valueStr = QString(formatStr).arg(meterValue);
+        QString valueStr1 = QString("%1").arg(meterValue, 0, 'f', numDecimalDigits+1);
+        //QString valueStr = QString(formatStr).arg(meterValue);
 
-        QStringList valueParts = valueStr.split("\\.");
+        QStringList valueParts = valueStr1.split(".");
 
         // Show error if we don't have enough integer digits to show the result
         if (valueParts[0].length() > MAX_INTEGER_DIGITS) {
@@ -645,14 +646,14 @@
          DefaultMeter* m = (DefaultMeter*)bean;
          if ((m != nullptr) && (qobject_cast<VoltageMeter*>(m->self()))) {
              if (voltageMeters.contains(m)) {
-                 log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)meter)->getDisplayName()));
+                 log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)m)->getDisplayName()));
              } else {
                  voltageMeters.append(m);
-                 log->debug(tr("Added voltage meter %1").arg(((DefaultMeter*)meter)->getSystemName()));
+                 log->debug(tr("Added voltage meter %1").arg(((DefaultMeter*)m)->getSystemName()));
              }
          } else if ((m != nullptr) && (qobject_cast<CurrentMeter*>(m->self()))) {
              if (currentMeters.contains(m)) {
-                 log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)meter)->getDisplayName()));
+                 log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)m)->getDisplayName()));
              } else {
                  currentMeters.append(m);
              }

@@ -66,7 +66,7 @@ void LnTrafficController::removeLocoNetListener(int mask,  LocoNetListener* l)
  }
 }
 
-#if 1 // not necessare; replaced by signal/slots logic
+#if 1 // not necessary; replaced by signal/slots logic
 void LnTrafficController::notify(LocoNetMessage* m)
 {
    // record statistics

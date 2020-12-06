@@ -39,6 +39,7 @@
         updateTask = new MeterUpdateTask01(LnConstants::METER_INTERVAL_MS, this);
 
         tc->addLocoNetListener(~0, this);
+        connect(tc, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
 
         updateTask->initTimer();
 
@@ -79,7 +80,7 @@
         updateAddMeter(m, voltSysName, valVolts, true);
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
-        m = (Meter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
+        m = (DefaultMeter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
         updateAddMeter(m, ampsSysName, valAmps, false);
     }
 
@@ -132,8 +133,8 @@
                     sysName).arg(value));
         } else {
             try {
-            log->debug(tr("meter %1").arg(((DefaultMeter*)m)->objectName()));
-                ((DefaultMeter*)m)->setCommandedAnalogValue(value);
+             log->debug(tr("meter %1").arg(((DefaultMeter*)m->self())->objectName()));
+             ((AnalogIO*)m->self())->setCommandedAnalogValue(value);
             } catch (JmriException e) {
                 log->debug(tr("Exception setting %1Meter %2 to value %3: %4").arg(
                         (typeVolt?"volt":"current")).arg( // NOI18N

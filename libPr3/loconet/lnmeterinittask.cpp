@@ -39,7 +39,7 @@
         this->tc = tc;
        _sleepInterval = interval;
 
-       log->setDebugEnabled(true);
+       log->setDebugEnabled(false);
     }
 
     /**
@@ -60,6 +60,7 @@
     /*protected*/ void LnMeterInitTask::disable() {
         if(_intervalTask != nullptr) {
             _intervalTask->enable(false);
+            _intervalTask->quit();
         }
     }
 
@@ -96,6 +97,5 @@
             _intervalTask = nullptr;
         }
     }
-
 
     /*private*/ /*final*/ /*static*/ Logger* LnMeterInitTask::log = LoggerFactory::getLogger("LnMeterInitTask");

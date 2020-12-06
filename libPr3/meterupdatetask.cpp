@@ -103,6 +103,4 @@
         }
     }
 
-
-
     /*private*/ /*final*/ /*static*/ Logger* MeterUpdateTask::log = LoggerFactory::getLogger("MeterUpdateTask");

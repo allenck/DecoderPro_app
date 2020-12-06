@@ -16,13 +16,13 @@ class LnPredefinedMeters : public QObject, public LocoNetListener
   Q_INTERFACES(LocoNetListener)
  public:
   explicit LnPredefinedMeters(LocoNetSystemConnectionMemo* scm, QObject *parent = nullptr);
-  /*public*/ void message(LocoNetMessage* msg);
   /*public*/ void dispose();
   /*public*/ void requestUpdateFromLayout();
 
  signals:
 
  public slots:
+  /*public*/ void message(LocoNetMessage* msg);
 
  private:
   static Logger* log;
@@ -43,7 +43,7 @@ class MeterUpdateTask01 : public MeterUpdateTask
   LnPredefinedMeters* lnpm;
  public:
   MeterUpdateTask01(int interval, LnPredefinedMeters* lnpm)
-   : MeterUpdateTask(interval)
+   : MeterUpdateTask(interval, lnpm)
   {
    this->lnpm = lnpm;
   }
