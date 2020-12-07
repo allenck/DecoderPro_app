@@ -262,17 +262,13 @@ public:
     /*private*/ /*final*/ Meter* m;
   MeterFrame* f;
  public:
-    /*public*/ SelectMeterAction(QString actionName, Meter* meter, MeterFrame* f) :AbstractAction(actionName, f) {
-        //super(actionName);
-        this->m = meter;
-        this->f = f;
-    }
+    /*public*/ SelectMeterAction(QString actionName, Meter* meter, MeterFrame* f);
  public slots:
     //@Override
     /*public*/ void actionPerformed(/*ActionEvent e*/) {
         f->setMeter(m);
 
-        QAction* selectedItem = (QAction*)f->sender();//(JMenuItem) e.valueSource();
+        AbstractAction* selectedItem = this;//(JMenuItem) e.valueSource();
         selectedItem->setChecked(true);
         f->lastSelectedMeterMenuItem = selectedItem;
     }

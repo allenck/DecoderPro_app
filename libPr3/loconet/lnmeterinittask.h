@@ -90,6 +90,7 @@ public:
         task->tc->sendLocoNetMessage(new LocoNetMessage(
                 QVector<int>() <<LnConstants::OPC_RQ_SL_DATA<< 0x79<< 0x01<< 0x00));
         task->disable();
+
     }
   friend class LnPredefinedMeters;
 };

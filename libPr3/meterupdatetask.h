@@ -4,6 +4,7 @@
 #include <QObject>
 #include "timertask.h"
 #include "logger.h"
+#include <QDateTime>
 
 class UpdateTask02;
 class Meter;
@@ -44,6 +45,7 @@ class MeterUpdateTask : public QObject
   Q_OBJECT
     /*private*/ bool _isEnabled = false;
   MeterUpdateTask* task;
+  qint64 prev = QDateTime::currentMSecsSinceEpoch();
  public:
     /*public*/ UpdateTask02(MeterUpdateTask* task) {
         //super();
@@ -61,8 +63,14 @@ class MeterUpdateTask : public QObject
     //@Override
     /*public*/ void run() {
         if (_isEnabled) {
+         qint64 now = QDateTime::currentMSecsSinceEpoch();
+         if((now-prev) >= task->_sleepInterval)
+         {
+          task->log->debug(tr("time since last: %1").arg(now-prev));
             task->log->debug("Timer Pop");
             task->requestUpdateFromLayout();
+            prev = now;
+         }
         }
     }
 };

@@ -33,7 +33,7 @@
 #include "storedefaultxmlthrottleslayoutaction.h"
 #include "loadxmlthrottleslayoutaction.h"
 #include "loaddefaultxmlthrottleslayoutaction.h"
-#include "ampmeteraction.h"
+//#include "ampmeteraction.h"
 #include "cabsignalaction.h"
 #include "whereusedaction.h"
 #include "timetable/timetableaction.h"
@@ -175,8 +175,8 @@ addAction(ta);
  addAction(new SimpleTurnoutCtrlAction(tr("Turnout Control..."),this));
  addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
  addAction(new SpeedometerAction(tr("Speedometer..."),this));
- addAction(new AmpMeterAction(tr("Amp Meter"),this));
- addAction(new MeterAction(tr("Meter"),this));
+ //addAction(new AmpMeterAction(tr("Amp Meter"),this));
+ addAction(new MeterAction(tr("Voltage / Current meter"),this));
  addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
  addAction(new BlockBossAction(tr("Simple Signal Logic"),this));
  addAction(new SendPacketAction(tr("Send DCC Packet"),this));

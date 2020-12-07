@@ -164,7 +164,7 @@
         voltageMetersMenu = new QMenu(tr("Voltage Meters"));
         menuBar->addMenu(voltageMetersMenu);
         for (Meter* m : voltageMeters) {
-            QAction* item = new SelectMeterAction(((DefaultMeter*)meter)->getDisplayName(), m, this);
+            QAction* item = new SelectMeterAction(((DefaultMeter*)m)->getDisplayName(), m, this);
             item->setCheckable(true);
             voltageMetersMenu->addAction(item);
             meter_MenuItemMap.insert(m, item);
@@ -173,7 +173,7 @@
         currentMetersMenu = new QMenu(tr("Current Meters"));
         menuBar->addMenu(currentMetersMenu);
         for (Meter* m : currentMeters) {
-            QAction* item = new SelectMeterAction(((DefaultMeter*)meter)->getDisplayName(), m, this);
+            QAction* item = new SelectMeterAction(((DefaultMeter*)m)->getDisplayName(), m, this);
             item->setCheckable(true);
             currentMetersMenu->addAction(item);
             meter_MenuItemMap.insert(m, item);
@@ -187,6 +187,7 @@
         {
             /*final*/ MeterFrame::Unit::UNITS u = unit.u;
             AbstractAction* item = new AbstractAction(tr("Meter_")+unit.name,this);
+            item->setCheckable(true);
 //            {
 //                @Override
 //                /*public*/ void actionPerformed(ActionEvent e) {
@@ -795,4 +796,12 @@
     }
 
 #endif
+/*public*/ SelectMeterAction::SelectMeterAction(QString actionName, Meter* meter, MeterFrame* f) :AbstractAction(actionName, f)
+{
+    //super(actionName);
+    this->m = meter;
+    this->f = f;
+
+ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
+}
     /*private*/ /*final*/ /*static*/ Logger* MeterFrame::log = LoggerFactory::getLogger("MeterFrame");
