@@ -66,7 +66,7 @@ class MeterUpdateTask : public QObject
          qint64 now = QDateTime::currentMSecsSinceEpoch();
          if((now-prev) >= task->_sleepInterval)
          {
-          task->log->debug(tr("time since last: %1").arg(now-prev));
+          task->log->debug(tr("time since last: %1ms, interval %2ms").arg(now-prev).arg(task->_sleepInterval));
             task->log->debug("Timer Pop");
             task->requestUpdateFromLayout();
             prev = now;

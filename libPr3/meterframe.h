@@ -262,7 +262,14 @@ public:
     /*private*/ /*final*/ Meter* m;
   MeterFrame* f;
  public:
-    /*public*/ SelectMeterAction(QString actionName, Meter* meter, MeterFrame* f);
+    /*public*/ SelectMeterAction(QString actionName, Meter* meter, MeterFrame* f)
+    {
+        //super(actionName);
+        this->m = meter;
+        this->f = f;
+
+     connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
+    }
  public slots:
     //@Override
     /*public*/ void actionPerformed(/*ActionEvent e*/) {

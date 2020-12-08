@@ -11,13 +11,12 @@
 #include <QSet>
 #include "exceptions.h"
 #include <QVector>
+#include "namedbean.h"
 
 class NamedBeanPropertyDescriptor;
 class Logger;
 class SystemConnectionMemo;
-class QString;
 class QStringList;
-class NamedBean;
 class PropertyChangeListener;
 class JAVAQTSHARED_EXPORT
   Manager : public QObject

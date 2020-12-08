@@ -999,7 +999,12 @@ SOURCES += \
     internalmetermanager.cpp \
     abstractmetermanager.cpp \
     internalmetermanagerxml.cpp \
-    abstractmetermanagerxml.cpp
+    abstractmetermanagerxml.cpp \
+    ctc/nbhsensor.cpp \
+    ctc/ctcexception.cpp \
+    ctc/ctcexceptionbuffer.cpp \
+    ctc/ctcmanager.cpp \
+    ctc/projectscommonsubs.cpp
 
 
  !contains(FTDI, 1) {
@@ -2011,7 +2016,12 @@ HEADERS += \
     internalmetermanager.h \
     abstractmetermanager.h \
     internalmetermanagerxml.h \
-    abstractmetermanagerxml.h
+    abstractmetermanagerxml.h \
+    ctc/nbhsensor.h \
+    ctc/ctcexception.h \
+    ctc/ctcexceptionbuffer.h \
+    ctc/ctcmanager.h \
+    ctc/projectscommonsubs.h
 
 
  !contains(FTDI, 1) {

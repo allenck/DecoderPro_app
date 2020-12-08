@@ -144,7 +144,7 @@
         if (qobject_cast<VoltageMeter*>(meter->self())) {
             setTitle(tr("Voltage Meter - %1").arg(((DefaultMeter*)meter)->getDisplayName()));
         } else {
-            setTitle(tr("Current MeterTitle - %1").arg(((DefaultMeter*)meter)->getDisplayName()));
+            setTitle(tr("Current Meter - %1").arg(((DefaultMeter*)meter)->getDisplayName()));
         }
     }
     /*public*/ /*static*/ QMap<MeterFrame::Unit::UNITS, MeterFrame::Unit>* MeterFrame::Unit::values = new QMap<MeterFrame::Unit::UNITS, MeterFrame::Unit>();
@@ -796,12 +796,4 @@
     }
 
 #endif
-/*public*/ SelectMeterAction::SelectMeterAction(QString actionName, Meter* meter, MeterFrame* f) :AbstractAction(actionName, f)
-{
-    //super(actionName);
-    this->m = meter;
-    this->f = f;
-
- connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
-}
     /*private*/ /*final*/ /*static*/ Logger* MeterFrame::log = LoggerFactory::getLogger("MeterFrame");
