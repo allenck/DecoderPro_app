@@ -1,5 +1,7 @@
 #include "projectscommonsubs.h"
 #include "loggerfactory.h"
+#include <QPushButton>
+
 /**
  *
  * @author Gregory J. Bedlek Copyright (C) 2018, 2019
@@ -53,27 +55,32 @@
         while (returnArray.size() < returnArrayListSize) returnArray.add("");
         return returnArray;
     }
-
-    static /*public*/ int getIntFromStringNoThrow(String aString, int defaultValueIfProblem) {
+#endif
+    /*static*/ /*public*/ int ProjectsCommonSubs::getIntFromStringNoThrow(QString aString, int defaultValueIfProblem) {
         int returnValue = defaultValueIfProblem;    // Default if error
-        try { returnValue = Integer.parseInt(aString); } catch (NumberFormatException e) {}
+        bool ok;
+         returnValue =(aString).toInt(&ok);
+    if(!ok) {}
         return returnValue;
     }
-#endif
+
     /*public*/ /*static*/ bool ProjectsCommonSubs::isNullOrEmptyString(QString aString) {
         return aString.isNull() || aString.trimmed().length() == 0;
     }
-#if 0
+
 //  If you used "CommonSubs.numberButtonGroup" above to setup the button group, then
 //  you can call this routine to get the switch value as an int value,
 //  since exception "NumberFormatException" should NEVER be thrown!
 //  If it does throw because you screwed something up, it will return -1.
-    /*public*/ static int getButtonSelectedInt(ButtonGroup buttonGroup) {
-        try { return Integer.parseInt(getButtonSelectedString(buttonGroup)); } catch (NumberFormatException e) { return -1; }
+    /*public*/ /*static*/ int ProjectsCommonSubs::getButtonSelectedInt(QButtonGroup* buttonGroup) {
+      bool ok;
+      return (getButtonSelectedString(buttonGroup).toInt(&ok));
+     if(!ok) { return -1; }
     }
 
-    /*public*/ static String getButtonSelectedString(ButtonGroup buttonGroup) {
-        return buttonGroup.getSelection().getActionCommand();
+    /*public*/ /*static*/ QString ProjectsCommonSubs::getButtonSelectedString(QButtonGroup* buttonGroup) {
+        //return buttonGroup.getSelection().getActionCommand();
+     return buttonGroup->checkedButton()->text();
     }
-#endif
+
     /*private*/ /*static*/ /*final*/ Logger* ProjectsCommonSubs::log = LoggerFactory::getLogger("ProjectsCommonSubs");

@@ -65,6 +65,10 @@ DefaultListModel::DefaultListModel(QObject *parent) :
     /*public*/ QVariant DefaultListModel::getElementAt(int index) {
         return delegate->at(index);
     }
+    /*public*/ QVariant DefaultListModel::get(int index) {
+     return delegate->at(index);
+    }
+
     QVariant DefaultListModel::data(const QModelIndex &index, int role) const{
         if(role == Qt::DisplayRole)
         {
@@ -464,7 +468,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
      * @param index index at which the specified element is to be inserted
      * @param element element to be inserted
      */
-    /*public*/ void DefaultListModel::add(int index, QString element) {
+    /*public*/ void DefaultListModel::add(int index, QVariant element) {
         beginInsertRows(QModelIndex(), index, index);
         delegate->insert(index,element);
         endInsertRows();

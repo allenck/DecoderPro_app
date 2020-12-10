@@ -1004,7 +1004,25 @@ SOURCES += \
     ctc/ctcexception.cpp \
     ctc/ctcexceptionbuffer.cpp \
     ctc/ctcmanager.cpp \
-    ctc/projectscommonsubs.cpp
+    ctc/projectscommonsubs.cpp \
+    ctc/programproperties.cpp \
+    ctc/ctcserialdata.cpp \
+    ctc/nbhsignal.cpp \
+    ctc/nbhturnout.cpp \
+    ctc/otherdata.cpp \
+    ctc/codebuttonhandlerdata.cpp \
+    ctc/trafficlockingdata.cpp \
+    ctc/frmtrl_rules.cpp \
+    ctc/ctcfiles.cpp \
+    ctc/callondata.cpp \
+    ctc/topologyinfo.cpp \
+    ctc/commonsubs.cpp \
+    ctc/awtwindowproperties.cpp \
+    ctc/checkjmriobject.cpp \
+    ctc/ctcmain.cpp \
+    ctc/codebuttonhandler.cpp \
+    ctc/lockedroutesmanager.cpp \
+    ctc/turnoutlock.cpp
 
 
  !contains(FTDI, 1) {
@@ -2021,7 +2039,27 @@ HEADERS += \
     ctc/ctcexception.h \
     ctc/ctcexceptionbuffer.h \
     ctc/ctcmanager.h \
-    ctc/projectscommonsubs.h
+    ctc/projectscommonsubs.h \
+    ../LayoutEditor/disposable.h \
+    ctc/programproperties.h \
+    ctc/ctcserialdata.h \
+    ctc/nbhsignal.h \
+    ctc/nbhturnout.h \
+    ctc/otherdata.h \
+    ctc/codebuttonhandlerdata.h \
+    ctc/trafficlockingdata.h \
+    ctc/frmtrl_rules.h \
+    ctc/ctcfiles.h \
+    ctc/callondata.h \
+    ctc/topologyinfo.h \
+    ctc/commonsubs.h \
+    ctc/awtwindowproperties.h \
+    ctc/checkjmriobject.h \
+    ctc/ctcmain.h \
+    ctc/codebuttonhandler.h \
+    ctc/ctcconstants.h \
+    ctc/lockedroutesmanager.h \
+    ctc/turnoutlock.h
 
 
  !contains(FTDI, 1) {

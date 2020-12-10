@@ -10,11 +10,14 @@ public:
     explicit DefaultListModel(QObject *parent = 0);
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ void add(int index, QString element);
+    /*public*/ void add(int index, QVariant element);
+    /*public*/ void set(int index, QVariant element) {add(index, element);}
     /*public*/ void removeElementAt(int index);
     /*public*/ int indexOf(QString elem);
     /*public*/ int getSize();
+    /*public*/ int size() {return getSize();}
     /*public*/ QVariant getElementAt(int index);
+    /*public*/ QVariant get(int index);
     /*public*/ void addElement(QVariant element);
     /*public*/ QVariant remove(int index);
     /*public*/ QVariant elementAt(int index);

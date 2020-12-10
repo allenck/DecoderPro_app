@@ -11,6 +11,7 @@ class NBHSensor : public QObject
 {
   Q_OBJECT
  public:
+  NBHSensor( QObject* parent= nullptr) : QObject(parent) {}
   /*public*/ NBHSensor(QString module, QString userIdentifier, QString parameter, QString sensor, bool optional,  QObject* parent= nullptr);
   /*public*/ NBHSensor(QString module, QString userIdentifier, QString parameter, QString sensorName, QObject* parent= nullptr);
 

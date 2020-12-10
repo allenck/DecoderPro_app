@@ -253,7 +253,8 @@ SOURCES += javaqt.cpp \
     jcheckboxmenuitem.cpp \
     keyadapter.cpp \
     loggingutil.cpp \
-    localdatetime.cpp
+    localdatetime.cpp \
+    jformattedtextfield.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -561,7 +562,8 @@ HEADERS += javaqt.h\
     keyadapter.h \
     keylistener.h \
     loggingutil.h \
-    localdatetime.h
+    localdatetime.h \
+    jformattedtextfield.h
 
 unix {
     target.path = /usr/lib

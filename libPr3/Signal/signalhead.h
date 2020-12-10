@@ -136,7 +136,14 @@ public:
         virtual void setHeld(bool /*newHeld*/) {}
 
         virtual QVector<int> getValidStates() {return QVector<int>();}
-        virtual QVector<QString> getValidStateNames() {return QVector<QString>();}
+      /**
+       * Get an array of non-localized appearance keys valid for the mast type.
+       * For GUI application consider using (capitalized) {@link #getValidStateNames()}
+       *
+       * @return array of translated appearance names available on this mast type
+       */
+      /*public*/ virtual QVector<QString> getValidStateKeys() {return QVector<QString>();}
+      virtual QVector<QString> getValidStateNames() {return QVector<QString>();}
 
 signals:
     

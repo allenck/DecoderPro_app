@@ -539,7 +539,8 @@ SOURCES += \
     layouteditorcomponent.cpp \
     entergridsizesdialog.cpp \
     moveselectiondialog.cpp \
-    ../JavaQt/jradiobuttonmenuitem.cpp
+    ../JavaQt/jradiobuttonmenuitem.cpp \
+    blockbosslogicprovider.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -997,7 +998,8 @@ HEADERS += liblayouteditor_global.h \
     layouteditorcomponent.h \
     entergridsizesdialog.h \
     moveselectiondialog.h \
-    ../JavaQt/jradiobuttonmenuitem.h
+    ../JavaQt/jradiobuttonmenuitem.h \
+    blockbosslogicprovider.h
 
 FORMS    += \
     createeditblock.ui \

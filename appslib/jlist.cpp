@@ -24,6 +24,11 @@ QModelIndexList JList::getSelectedValues()
  return list;
 }
 
+/*public*/ bool JList::isSelectionEmpty()
+{
+    return getSelectedValues().isEmpty();
+}
+
 /**
  * Selects the specified object from the list.
  *

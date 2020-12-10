@@ -2,6 +2,13 @@
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "configuremanager.h"
+#include "programproperties.h"
+#include "signalheadmanager.h"
+#include "signalmastmanager.h"
+#include "turnoutmanager.h"
+#include "blockmanager.h"
+#include "vptr.h"
+#include "ctcserialdata.h"
 
 /**
  * Start the CtcManager and register with the instance and configuration managers.
@@ -27,35 +34,33 @@
             cm->registerConfig(this, getXMLOrder());
 //        });
         ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
-#if 0
-        InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
-        InstanceManager.getDefault(jmri.SignalMastManager.class).addVetoableChangeListener(this);
-        InstanceManager.getDefault(jmri.TurnoutManager.class).addVetoableChangeListener(this);
-        InstanceManager.getDefault(jmri.BlockManager.class).addVetoableChangeListener(this);
-#endif
+        ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+        ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+        ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
         log->debug("CtcManager started");
     }
-#if 0
-    /*public*/ ProgramProperties getProgramProperties() {
-        if (programProperties == null) {
+
+    /*public*/ ProgramProperties* CtcManager::getProgramProperties() {
+        if (programProperties == nullptr) {
             programProperties = new ProgramProperties();
         }
         return programProperties;
     }
 
-    /*public*/ ProgramProperties newProgramProperties() {
+    /*public*/ ProgramProperties* CtcManager::newProgramProperties() {
         programProperties = new ProgramProperties();
         return programProperties;
     }
 
-    /*public*/ CTCSerialData getCTCSerialData() {
-        if (ctcSerialData == null) {
+    /*public*/ CTCSerialData* CtcManager::getCTCSerialData() {
+        if (ctcSerialData == nullptr) {
             ctcSerialData = new CTCSerialData();
         }
         return ctcSerialData;
     }
 
-    /*public*/ CTCSerialData newCTCSerialData() {
+    /*public*/ CTCSerialData* CtcManager::newCTCSerialData() {
         ctcSerialData = new CTCSerialData();
 
         nbhSensors.clear();
@@ -66,21 +71,23 @@
         return ctcSerialData;
     }
 
-    /*public*/ OtherData getOtherData() {
-        if (ctcSerialData == null) {
+    /*public*/ OtherData* CtcManager::getOtherData() {
+        if (ctcSerialData == nullptr) {
             ctcSerialData = getCTCSerialData();
         }
-        return ctcSerialData.getOtherData();
+        return ctcSerialData->getOtherData();
     }
 
-    /*public*/ NBHSensor getNBHSensor(String name) {
+    /*public*/ NBHSensor* CtcManager::getNBHSensor(QString name) {
         // check for new names
-        return nbhSensors.get(name);
+        return nbhSensors.value(name);
     }
-#endif
+
     /*public*/ void CtcManager::putNBHSensor(QString name, NBHSensor* nbh) {
-#if 0
-        NBHSensor* oldSensor = nbhSensors.insert(name, nbh);
+
+        //NBHSensor* oldSensor = nbhSensors.insert(name, nbh);
+        NBHSensor* oldSensor = nbhSensors.value(name);
+        nbhSensors.insert(name, nbh);
         log->debug(tr("sensor put = %1 -- %2").arg(name).arg(nbh->getHandleName()));
         if (oldSensor != nullptr) {
             log->debug(tr("---- duplicate sensor: %1 -- %2").arg(name).arg(nbh->getHandleName()));
@@ -88,90 +95,96 @@
         }
 //         nbh.getBean().addPropertyChangeListener(this, nbh.getHandleName(), "somethng");
 //                         _turnout.getBean().addPropertyChangeListener(this, getName(), "Route " + getDisplayName() + " Output Turnout");
-#endif
-    }
-#if 0
-    /*public*/ NBHSignal getNBHSignal(String name) {
-        // check for new names
-        return nbhSignals.get(name);
+
     }
 
-    /*public*/ void putNBHSignal(String name, NBHSignal nbh) {
-        NBHSignal oldSignal = nbhSignals.put(name, nbh);
-        log.debug("signal put = {} -- {}", name, nbh);
-        if (oldSignal != null) {
-            log.debug("---- duplicate signal: {} -- {}", name, nbh);
+    /*public*/ NBHSignal* CtcManager::getNBHSignal(QString name) {
+        // check for new names
+        return nbhSignals.value(name);
+    }
+
+    /*public*/ void CtcManager::putNBHSignal(QString name, NBHSignal* nbh) {
+        //NBHSignal* oldSignal = nbhSignals.insert(name, nbh);
+        NBHSignal* oldSignal = nbhSignals.value(name);
+        nbhSignals.insert(name, nbh);
+        log->debug(tr("signal put = %1 -- %2").arg(name).arg(nbh->getDisplayName()));
+        if (oldSignal != nullptr) {
+            log->debug(tr("---- duplicate signal: %1 -- %2").arg(name).arg(nbh->getDisplayName()));
             // cleanup after replace
         }
     }
 
-    /*public*/ NBHTurnout getNBHTurnout(String name) {
+    /*public*/ NBHTurnout* CtcManager::getNBHTurnout(QString name) {
         // check for new names
-        return nbhTurnouts.get(name);
+        return nbhTurnouts.value(name);
     }
 
-    /*public*/ void putNBHTurnout(String name, NBHTurnout nbh) {
-        NBHTurnout oldTurnout = nbhTurnouts.put(name, nbh);
-        log.debug("turnout put = {} -- {}", name, nbh);
-        if (oldTurnout != null) {
-            log.debug("---- duplicate turnout: {} -- {}", name, nbh);
+    /*public*/ void CtcManager::putNBHTurnout(QString name, NBHTurnout* nbh) {
+        //NBHTurnout* oldTurnout = nbhTurnouts.insert(name, nbh);
+         NBHTurnout* oldTurnout = nbhTurnouts.value(name);
+         nbhTurnouts.insert(name, nbh);
+        log->debug(tr("turnout put = %1 -- %2").arg(name).arg(nbh->getBean()->getDisplayName()));
+        if (oldTurnout != nullptr) {
+            log->debug(tr("---- duplicate turnout: %1 -- %2").arg(name).arg(nbh->getBean()->getDisplayName()));
             // cleanup after replace
         }
     }
 
-    /*public*/ NamedBeanHandle<Block> getBlock(String name) {
+    /*public*/ NamedBeanHandle<Block*>* CtcManager::getBlock(QString name) {
         // check for new names
-        return blocks.get(name);
+        return blocks.value(name);
     }
 
-    /*public*/ void putBlock(String name, NamedBeanHandle<Block> block) {
-        NamedBeanHandle<Block> oldBlock = blocks.put(name, block);
-        log.debug("block put = {} -- {}", name, block);
-        if (oldBlock != null) {
-            log.debug("---- duplicate block: {} -- {}", name, block);
+    /*public*/ void CtcManager::putBlock(QString name, NamedBeanHandle<Block*>* block) {
+//        NamedBeanHandle<Block*>* oldBlock = blocks.insert(name, block);
+        NamedBeanHandle<Block*>* oldBlock = blocks.value(name);
+        blocks.insert(name, block);
+        log->debug(tr("block put = %1 -- %2").arg(name).arg(block->getName()));
+        if (oldBlock != nullptr) {
+            log->debug(tr("---- duplicate block: %1 -- %2").arg(name).arg(block->getName()));
             // cleanup after replace
         }
     }
-#endif
+
     /*public*/ int CtcManager::getXMLOrder() {
         return Manager::CTCDATA;
     }
-#if 0
-    /*public*/ void vetoableChange(java.beans.PropertyChangeEvent evt) throws java.beans.PropertyVetoException {
-        jmri.NamedBean nb = (jmri.NamedBean) evt.getOldValue();
-        boolean found = false;
-        if ("CanDelete".equals(evt.getPropertyName())) { // NOI18N
 
-            if (nb instanceof jmri.Sensor) {
-                for (NBHSensor sensor : nbhSensors.values()) {
-                    if (nb.equals(sensor.getBean())) {
+    /*public*/ void CtcManager::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+        NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
+        bool found = false;
+        if ("CanDelete" == (evt->getPropertyName())) { // NOI18N
+
+            if (qobject_cast<Sensor*>(nb)) {
+                for (NBHSensor* sensor : nbhSensors.values()) {
+                    if (nb->equals(sensor->getBean())) {
                         found = true;
                         break;
                     }
                 }
             }
 
-            if (nb instanceof jmri.SignalHead || nb instanceof jmri.SignalMast) {
-                for (NBHSignal signal : nbhSignals.values()) {
-                    if (nb.equals(signal.getBean())) {
+            if (qobject_cast<SignalHead*>(nb) || qobject_cast<SignalMast*>(nb)) {
+                for (NBHSignal* signal : nbhSignals.values()) {
+                    if (nb->equals(signal->getBean())) {
                         found = true;
                         break;
                     }
                 }
             }
 
-            if (nb instanceof jmri.Turnout) {
-                for (NBHTurnout turnout : nbhTurnouts.values()) {
-                    if (nb.equals(turnout.getBean())) {
+            if (qobject_cast<Turnout*>(nb)) {
+                for (NBHTurnout* turnout : nbhTurnouts.values()) {
+                    if (nb->equals(turnout->getBean())) {
                         found = true;
                         break;
                     }
                 }
             }
 
-            if (nb instanceof Block) {
-                for (NamedBeanHandle<Block> block : blocks.values()) {
-                    if (nb.equals(block.getBean())) {
+            if (qobject_cast<Block*>(nb)) {
+                for (NamedBeanHandle<Block*>* block : blocks.values()) {
+                    if (nb->equals(block->getBean())) {
                         found = true;
                         break;
                     }
@@ -179,10 +192,10 @@
             }
 
             if (found) {
-                java.beans.PropertyChangeEvent e = new java.beans.PropertyChangeEvent(this, "DoNotDelete", null, null);  // NOI18N
-                throw new java.beans.PropertyVetoException(Bundle.getMessage("CtcManagerDeleteVetoed", nb.getBeanType()), e);   // NOI18N
+                PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
+                throw PropertyVetoException(tr("%1 is in use by CTC").arg(nb->getBeanType()), e);   // NOI18N
             }
         }
     }
-#endif
+
     /*private*/ /*static*/ /*final*/ Logger* CtcManager::log = LoggerFactory::getLogger("CtcManager");

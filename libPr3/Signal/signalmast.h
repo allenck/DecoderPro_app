@@ -119,6 +119,16 @@ public:
     /*public*/ virtual bool getHeld() {return false;}
     /*public*/ virtual void setHeld(bool /*newHeld*/) {}
 
+    /**
+     * Determine if the permissive SML logic should be disabled.  The default will be
+     * false which means that automatic permissive processing is allowed.  Prototypical
+     * CTC designs frequently require an additional action, such as Call-On, to enable permissive aspects.
+     * @return true if permissive SML is disabled.
+     */
+    /*public*/ virtual bool isPermissiveSmlDisabled() {return false;}
+
+    /*public*/ virtual void setPermissiveSmlDisabled(bool /*disabled*/) {}
+
     /*public*/ virtual bool isAspectDisabled(QString /*aspect*/) {return false;}
 
     /*public*/ virtual QString className() =0;

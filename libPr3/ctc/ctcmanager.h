@@ -6,7 +6,10 @@
 #include "vetoablechangelistener.h"
 #include "nbhsensor.h"
 #include "block.h"
+#include "nbhsignal.h"
+#include "nbhturnout.h"
 
+class OtherData;
 class CTCSerialData;
 class ProgramProperties;
 class CtcManager : public QObject, public InstanceManagerAutoDefault/*, public VetoableChangeListener*/
@@ -15,24 +18,34 @@ class CtcManager : public QObject, public InstanceManagerAutoDefault/*, public V
   Q_INTERFACES(InstanceManagerAutoDefault /*VetoableChangeListener*/)
  public:
   explicit CtcManager(QObject *parent = nullptr);
-
+  /*public*/ ProgramProperties* getProgramProperties();
+  /*public*/ ProgramProperties* newProgramProperties();
+  /*public*/ CTCSerialData* getCTCSerialData();
+  /*public*/ CTCSerialData* newCTCSerialData();
+  /*public*/ OtherData* getOtherData();
+  /*public*/ NBHSensor* getNBHSensor(QString name);
   /*public*/ void putNBHSensor(QString name, NBHSensor* nbh);
-
+  /*public*/ NBHSignal* getNBHSignal(QString name);
+  /*public*/ void putNBHSignal(QString name, NBHSignal* nbh);
+  /*public*/ NBHTurnout* getNBHTurnout(QString name);
+  /*public*/ void putNBHTurnout(QString name, NBHTurnout* nbh);
+  /*public*/ NamedBeanHandle<Block*>* getBlock(QString name);
+  /*public*/ void putBlock(QString name, NamedBeanHandle<Block*>* block);
   /*public*/ int getXMLOrder();
 
  signals:
 
  public slots:
+  /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 
  private:
   static Logger* log;
   ProgramProperties* programProperties = nullptr;
   CTCSerialData* ctcSerialData = nullptr;
   QMap<QString, NBHSensor*> nbhSensors = QMap<QString, NBHSensor*>();
-#if 0
-  HashMap<String, NBHSignal*> nbhSignals = new HashMap<>();
-  HashMap<String, NBHTurnout*> nbhTurnouts = new HashMap<>();
-#endif
+  QMap<QString, NBHSignal*> nbhSignals = QMap<QString, NBHSignal*>();
+  QMap<QString, NBHTurnout*> nbhTurnouts = QMap<QString, NBHTurnout*>();
+
   QMap<QString, NamedBeanHandle<Block*>*> blocks = QMap<QString, NamedBeanHandle<Block*>*>();
 
 };

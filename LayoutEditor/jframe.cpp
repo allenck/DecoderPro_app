@@ -581,7 +581,8 @@ void JFrame::setVisible(bool visible)
  }
 }
 
-/*public*/ void setEnabled(bool b)
+/*public*/ void JFrame::setBounds(QRect r)
 {
-
+ resize(r.width(), r.height());
+ setLocation(r.left(), r.top());
 }

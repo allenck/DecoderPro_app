@@ -94,6 +94,10 @@ public:
     /*public*/ Border* getBorder() {return _border;}
     /*public*/ void removeAll();
 
+    /*public*/ virtual void componentMoved(QMoveEvent* ) {}
+    /*public*/ virtual void componentResized(QResizeEvent* ) {}
+
+    /*public*/void setBounds(QRect r);
 
 
 signals:
@@ -110,8 +114,6 @@ private:
  //void resizeEvent(QResizeEvent *);
  void hideEvent(QHideEvent *);
  //void moveEvent(QMoveEvent*);
- /*public*/ virtual void componentMoved(QMoveEvent* ) {}
- /*public*/ virtual void componentResized(QResizeEvent* ) {}
  Border* _border = nullptr;
  bool _windowClosing = false;
 

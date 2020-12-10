@@ -25,6 +25,7 @@ public:
  /*public*/ void setVisibleRowCount(int count);
  QAbstractListModel *getModel();
  /*public*/ void setComponentPopupMenu(QMenu *menu);
+ /*public*/ bool isSelectionEmpty();
 
 public slots:
  void on_menu(QPoint pos);

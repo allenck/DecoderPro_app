@@ -21,6 +21,7 @@ public:
        */
 //    template <class E>
       virtual QVariant getElementAt(int /*index*/) {return QVariant();}
+      virtual QVariant get(int /*index*/) {return QVariant();}
 
       /**
        * Adds a listener to the list that's notified each time a change

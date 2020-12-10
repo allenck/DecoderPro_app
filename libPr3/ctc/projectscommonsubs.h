@@ -2,6 +2,7 @@
 #define PROJECTSCOMMONSUBS_H
 
 #include <QObject>
+#include <QButtonGroup>
 
 class Logger;
 class ProjectsCommonSubs : public QObject
@@ -14,7 +15,10 @@ class ProjectsCommonSubs : public QObject
   static /*public*/ QList<QString> getArrayListFromSSV(QString ssvString);// { return helper1(ssvString, SSV_SEPARATOR); }
   static /*private*/ QList<QString> helper1(QString ssvString, char separator);
 
+  static /*public*/ int getIntFromStringNoThrow(QString aString, int defaultValueIfProblem);
   /*public*/ static bool isNullOrEmptyString(QString aString);
+  /*public*/ static int getButtonSelectedInt(QButtonGroup* buttonGroup);
+  /*public*/ static QString getButtonSelectedString(QButtonGroup* buttonGroup);
 
  signals:
 

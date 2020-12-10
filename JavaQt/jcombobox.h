@@ -33,7 +33,9 @@ public:
  /*public*/ void removeFocusListener(FocusListener* l);
  /*public*/ void addItemListener(ItemListener* listener);
  /*public*/ void setEnabled(bool b) override {QComboBox::setEnabled(b);}
-
+ /*public*/ QString getSelectedItem() {return currentText();}
+ /*public*/ int getSelectedIndex() {return currentIndex();}
+ /*public*/ void setSelectedItem(QString t) {setCurrentText(t);}
 signals:
  void itemStateChanged(ItemEvent* e);
  /*public*/ void focusGained(FocusEvent* fe);

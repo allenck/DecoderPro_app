@@ -129,6 +129,6 @@ protected:
     /*protected*/ NamedBeanHandleManager* nbhm;// = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class);
 //    /*protected*/ static final java.util.ResourceBundle rb = java.util.ResourceBundle.getBundle("jmri.jmrit.blockboss.BlockBossBundle");
 
-
+ friend class BlockBossLogicProvider;
 };
 #endif // BLOCKBOSSLOGIC_H
