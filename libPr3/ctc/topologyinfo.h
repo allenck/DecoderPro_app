@@ -16,7 +16,7 @@ class TopologyInfo : public QObject
   Q_OBJECT
  public:
   explicit TopologyInfo(QObject *parent = nullptr);
-  /*public*/ TopologyInfo(CTCSerialData* CTCSerialData, QString destinationSignalMast, QString normal, QString reverse,QObject *parent);
+  /*public*/ TopologyInfo(CTCSerialData* CTCSerialData, QString destinationSignalMast, QString normal, QString reverse,QObject *parent = nullptr);
   /*public*/ QString getDestinationSignalMast();
   /*public*/ bool nonEmpty();
   /*public*/ QString getOSSectionText(int index);

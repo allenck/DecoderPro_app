@@ -13,7 +13,9 @@ class CTCExceptionBuffer : public QObject
       WARN = 1,
       ERROR = 2     // Order: The more severe, the HIGHER the number.  See function "getHighestExceptionBufferRecordSeverity" for why.
   };
-  /*public*/ CTCExceptionBuffer();
+  Q_INVOKABLE /*public*/ CTCExceptionBuffer();
+  ~CTCExceptionBuffer() {}
+  CTCExceptionBuffer(const CTCExceptionBuffer&) : QObject(){}
   /*public*/ void logString(ExceptionBufferRecordSeverity exceptionBufferRecordSeverity, QString string);
   /*public*/ bool isEmpty();
   /*public*/ void clear();
@@ -55,5 +57,5 @@ class CTCExceptionBuffer : public QObject
         }
     }
 };
-
+Q_DECLARE_METATYPE(CTCExceptionBuffer)
 #endif // CTCEXCEPTIONBUFFER_H

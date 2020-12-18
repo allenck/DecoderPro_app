@@ -81,7 +81,8 @@ public:
     void setFont(QFont);
     QObject* jself() {return (QObject*)this;}
     /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
-
+    bool _closed = false;
+    virtual bool closedNormally() {return _closed;}
 
     void setAlwaysOnTop(bool checked);
 #if QT_VERSION >= 0x050000

@@ -36,9 +36,9 @@ LayoutShapeXml::LayoutShapeXml(QObject* parent)
 
             // include attributes
             element.setAttribute("ident", s->getName());
-            element.setAttribute("type", "" + s->getName());
-            element.setAttribute("level", "" + s->getLevel());
-            element.setAttribute("linewidth", "" + s->getLineWidth());
+            element.setAttribute("type", s->getName());
+            element.setAttribute("level", s->getLevel());
+            element.setAttribute("linewidth", s->getLineWidth());
             element.setAttribute("lineColor", ColorUtil::colorToHexString(s->getLineColor()));
             element.setAttribute("fillColor", ColorUtil::colorToHexString(s->getFillColor()));
 
@@ -47,7 +47,7 @@ LayoutShapeXml::LayoutShapeXml(QObject* parent)
             for (LayoutShapePoint* p : shapePoints) {
                 QDomElement elementPoint = doc.createElement("point");
 
-                elementPoint.setAttribute("type", "" + p->getType());
+                elementPoint.setAttribute("type", p->getType());
 
                 QPointF pt = p->getPoint();
                 elementPoint.setAttribute("x",  pt.x());

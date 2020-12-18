@@ -42,7 +42,7 @@ public:
      * Invoked when a window has been closed as the result
      * of calling dispose on the window.
      */
- /*public*/ virtual void windowClosed(QCloseEvent /*e*/) {}
+ /*public*/ virtual void windowClosed(QCloseEvent* /*e*/) {}
 
     /**
      * Invoked when a window is changed from a normal to a

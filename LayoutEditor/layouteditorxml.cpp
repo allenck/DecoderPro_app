@@ -50,19 +50,19 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("name", p->getLayoutName());
  if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize())
  {
-   panel.setAttribute("x", "" + p->gContext->getUpperLeftX());
-   panel.setAttribute("y", "" + p->gContext->getUpperLeftY());
-   panel.setAttribute("windowheight", "" + p->gContext->getWindowHeight());
-   panel.setAttribute("windowwidth", "" + p->gContext->getWindowWidth());
+   panel.setAttribute("x", QString::number(p->gContext->getUpperLeftX()));
+   panel.setAttribute("y", QString::number(p->gContext->getUpperLeftY()));
+   panel.setAttribute("windowheight", QString::number(p->gContext->getWindowHeight()));
+   panel.setAttribute("windowwidth", QString::number(p->gContext->getWindowWidth()));
  } else {
    // Use real location and size
    QPoint loc = p->getLocation();
-   panel.setAttribute("x", "" + loc.x());
-   panel.setAttribute("y", "" + loc.y());
+   panel.setAttribute("x", QString::number(loc.x()));
+   panel.setAttribute("y", QString::number(loc.y()));
 
    QSize size = p->size();
-   panel.setAttribute("windowheight", "" + size.height());
-   panel.setAttribute("windowwidth", "" + size.width());
+   panel.setAttribute("windowheight", QString::number(size.height()));
+   panel.setAttribute("windowwidth", QString::number(size.width()));
  }
  panel.setAttribute("panelheight", p->gContext->getLayoutHeight());
  panel.setAttribute("panelwidth", p->gContext->getLayoutWidth());

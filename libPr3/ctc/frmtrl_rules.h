@@ -29,7 +29,7 @@ class FrmTRL_Rules : public JFrame
   /*public*/ bool closedNormally() { return _mClosedNormally; }
   /*public*/ FrmTRL_Rules(AwtWindowProperties* awtWindowProperties, CodeButtonHandlerData* codeButtonHandlerData,
                       bool isLeftTraffic,
-                      CTCSerialData* ctcSerialData, CheckJMRIObject* checkJMRIObject, QWidget *parent);
+                      CTCSerialData* ctcSerialData, CheckJMRIObject* checkJMRIObject, QWidget *parent = nullptr);
 
   /*public*/ static QString getRuleNumberString(int ruleNumber);
 

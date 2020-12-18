@@ -89,7 +89,9 @@ SOURCES +=  slotmonitor.cpp \
     conditionaleditbase.cpp \
     conditionallistedit.cpp \
     picksinglepanel.cpp \
-    addnewdevicepanel.cpp
+    addnewdevicepanel.cpp \
+    oblocktableframe.cpp \
+    oblocktablepanel.cpp
 
 HEADERS += libtables_global.h \
     slotmonitor.h \
@@ -167,7 +169,9 @@ HEADERS += libtables_global.h \
     conditionallistedit.h \
     signallingpanel.h \
     picksinglepanel.h \
-    addnewdevicepanel.h
+    addnewdevicepanel.h \
+    oblocktableframe.h \
+    oblocktablepanel.h
 
 unix:!symbian {
     maemo5 {

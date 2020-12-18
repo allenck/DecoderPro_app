@@ -63,6 +63,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -504,6 +505,7 @@ inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners() { re
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(QString  name) { return AbstractNamedBean::getPropertyChangeListeners(name); }
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(QString  propertyName) { return AbstractNamedBean::getPropertyChangeListenersByReference(propertyName); }
 inline QSet<QString >  py_q_getPropertyKeys() { return AbstractNamedBean::getPropertyKeys(); }
+inline QString  py_q_getSystemName() const { return AbstractNamedBean::getSystemName(); }
 inline QString  py_q_getUserName() const { return AbstractNamedBean::getUserName(); }
 inline uint  py_q_hashCode() { return AbstractNamedBean::hashCode(); }
 inline void py_q_removeProperty(QString  key) { AbstractNamedBean::removeProperty(key); }
@@ -546,6 +548,7 @@ void delete_AbstractNamedBean(AbstractNamedBean* obj) { delete obj; }
    QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(AbstractNamedBean* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyChangeListeners(name));}
    QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(AbstractNamedBean* theWrappedObject, QString  propertyName){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyChangeListenersByReference(propertyName));}
    QSet<QString >  py_q_getPropertyKeys(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getPropertyKeys());}
+   QString  py_q_getSystemName(AbstractNamedBean* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getSystemName());}
    QString  py_q_getUserName(AbstractNamedBean* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getUserName());}
    uint  py_q_hashCode(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_hashCode());}
    bool  __lt__(AbstractNamedBean* theWrappedObject, const AbstractNamedBean&  e2);
@@ -605,7 +608,7 @@ virtual QStringList  getOptions();
 virtual QDataStream*  getOutputStream();
 virtual int  getPort();
 virtual QString  getServiceType();
-virtual SystemConnectionMemo*  getSystemConnectionMemo();
+virtual SystemConnectionMemo*  getSystemConnectionMemo() const;
 virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
@@ -656,7 +659,7 @@ inline QString  py_q_getOptionDisplayName(QString  option) { return AbstractPort
 inline QString  py_q_getOptionState(QString  option) { return AbstractPortController::getOptionState(option); }
 inline QStringList  py_q_getOptions() { return AbstractPortController::getOptions(); }
 inline QDataStream*  py_q_getOutputStream() { return AbstractPortController::getOutputStream(); }
-inline SystemConnectionMemo*  py_q_getSystemConnectionMemo() { return AbstractPortController::getSystemConnectionMemo(); }
+inline SystemConnectionMemo*  py_q_getSystemConnectionMemo() const { return AbstractPortController::getSystemConnectionMemo(); }
 inline QString  py_q_getSystemPrefix() { return AbstractPortController::getSystemPrefix(); }
 inline QString  py_q_getUserName() { return AbstractPortController::getUserName(); }
 inline bool  py_q_isDirty() { return AbstractPortController::isDirty(); }
@@ -696,7 +699,7 @@ void delete_AbstractPortController(AbstractPortController* obj) { delete obj; }
    QString  py_q_getOptionState(AbstractPortController* theWrappedObject, QString  option){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_getOptionState(option));}
    QStringList  py_q_getOptions(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_getOptions());}
    QDataStream*  py_q_getOutputStream(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_getOutputStream());}
-   SystemConnectionMemo*  py_q_getSystemConnectionMemo(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_getSystemConnectionMemo());}
+   SystemConnectionMemo*  py_q_getSystemConnectionMemo(AbstractPortController* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_getSystemConnectionMemo());}
    QString  py_q_getSystemPrefix(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_getSystemPrefix());}
    QString  py_q_getUserName(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_getUserName());}
    bool  py_q_isDirty(AbstractPortController* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractPortController*)theWrappedObject)->py_q_isDirty());}
@@ -1144,7 +1147,7 @@ virtual QDataStream*  getOutputStream();
 virtual int  getPort();
 virtual QVector<QString >  getPortNames();
 virtual QString  getServiceType();
-virtual SystemConnectionMemo*  getSystemConnectionMemo();
+virtual SystemConnectionMemo*  getSystemConnectionMemo() const;
 virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
@@ -2700,6 +2703,7 @@ virtual void addHelpMenu(QString  ref, bool  direct);
 virtual void addToBottomBox(QWidget*  comp, QString  c);
 virtual void changeEvent(QEvent*  arg__1);
 virtual void childEvent(QChildEvent*  event);
+virtual bool  closedNormally();
 virtual void componentMoved(QMoveEvent*  e);
 virtual void componentResized(QResizeEvent*  e);
 virtual void contextMenuEvent(QContextMenuEvent*  event);
@@ -3105,6 +3109,7 @@ virtual void actionEvent(QActionEvent*  event);
 virtual void addHelpMenu(QString  ref, bool  direct);
 virtual void changeEvent(QEvent*  arg__1);
 virtual void childEvent(QChildEvent*  event);
+virtual bool  closedNormally();
 virtual void componentMoved(QMoveEvent*  e);
 virtual void componentResized(QResizeEvent*  e);
 virtual void contextMenuEvent(QContextMenuEvent*  event);

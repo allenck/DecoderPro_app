@@ -9,7 +9,7 @@ class LIBPREFSHARED_EXPORT ManagerDefaultsConfigPaneXml : public AbstractXmlAdap
 {
     Q_OBJECT
 public:
-    explicit ManagerDefaultsConfigPaneXml(QObject *parent = 0);
+    Q_INVOKABLE explicit ManagerDefaultsConfigPaneXml(QObject *parent = 0);
     ~ManagerDefaultsConfigPaneXml() {}
     ManagerDefaultsConfigPaneXml(const ManagerDefaultsConfigPaneXml&) :AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);

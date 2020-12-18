@@ -63,7 +63,7 @@ TrackSegmentXml::TrackSegmentXml(QObject *parent) :
      for (int i = 0; i < p->getNumberOfBezierControlPoints(); i++) {
          QDomElement elementControlpoint = doc.createElement("controlpoint");
 
-         elementControlpoint.setAttribute("index", "" + i);
+         elementControlpoint.setAttribute("index", i);
 
          QPointF pt = p->getBezierControlPoint(i);
          elementControlpoint.setAttribute("x",  pt.x());

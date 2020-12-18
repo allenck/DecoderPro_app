@@ -18,6 +18,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -850,7 +851,7 @@ virtual QDataStream*  getOutputStream();
 virtual int  getPort();
 virtual QVector<QString >  getPortNames();
 virtual QString  getServiceType();
-virtual SystemConnectionMemo*  getSystemConnectionMemo();
+virtual SystemConnectionMemo*  getSystemConnectionMemo() const;
 virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
@@ -1093,6 +1094,7 @@ virtual QString  getAppearanceName();
 virtual QString  getAppearanceName(int  arg__1);
 virtual bool  getHeld();
 virtual bool  getLit();
+virtual QVector<QString >  getValidStateKeys();
 virtual QVector<QString >  getValidStateNames();
 virtual QVector<int >  getValidStates();
 virtual void setAppearance(int  arg__1);
@@ -1111,6 +1113,7 @@ inline QString  py_q_getAppearanceName() { return SignalHead::getAppearanceName(
 inline QString  py_q_getAppearanceName(int  arg__1) { return SignalHead::getAppearanceName(arg__1); }
 inline bool  py_q_getHeld() { return SignalHead::getHeld(); }
 inline bool  py_q_getLit() { return SignalHead::getLit(); }
+inline QVector<QString >  py_q_getValidStateKeys() { return SignalHead::getValidStateKeys(); }
 inline QVector<QString >  py_q_getValidStateNames() { return SignalHead::getValidStateNames(); }
 inline QVector<int >  py_q_getValidStates() { return SignalHead::getValidStates(); }
 inline void py_q_setAppearance(int  arg__1) { SignalHead::setAppearance(arg__1); }
@@ -1136,6 +1139,8 @@ void delete_SignalHead(SignalHead* obj) { delete obj; }
    bool  py_q_getHeld(SignalHead* theWrappedObject){  return (((PythonQtPublicPromoter_SignalHead*)theWrappedObject)->py_q_getHeld());}
    bool  getLit(SignalHead* theWrappedObject);
    bool  py_q_getLit(SignalHead* theWrappedObject){  return (((PythonQtPublicPromoter_SignalHead*)theWrappedObject)->py_q_getLit());}
+   QVector<QString >  getValidStateKeys(SignalHead* theWrappedObject);
+   QVector<QString >  py_q_getValidStateKeys(SignalHead* theWrappedObject){  return (((PythonQtPublicPromoter_SignalHead*)theWrappedObject)->py_q_getValidStateKeys());}
    QVector<QString >  getValidStateNames(SignalHead* theWrappedObject);
    QVector<QString >  py_q_getValidStateNames(SignalHead* theWrappedObject){  return (((PythonQtPublicPromoter_SignalHead*)theWrappedObject)->py_q_getValidStateNames());}
    QVector<int >  getValidStates(SignalHead* theWrappedObject);
@@ -2600,7 +2605,7 @@ virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual void timerEvent(QTimerEvent*  event);
-virtual void windowClosed(QCloseEvent  arg__1);
+virtual void windowClosed(QCloseEvent*  arg__1);
 virtual void windowClosing(QCloseEvent*  arg__1);
 virtual void windowDeiconified(QResizeEvent*  arg__1);
 virtual void windowIconified(QResizeEvent*  arg__1);
@@ -2612,7 +2617,7 @@ virtual void windowIconified(QResizeEvent*  arg__1);
 
 class PythonQtPublicPromoter_WindowListener : public WindowListener
 { public:
-inline void py_q_windowClosed(QCloseEvent  arg__1) { WindowListener::windowClosed(arg__1); }
+inline void py_q_windowClosed(QCloseEvent*  arg__1) { WindowListener::windowClosed(arg__1); }
 inline void py_q_windowClosing(QCloseEvent*  arg__1) { this->windowClosing(arg__1); }
 inline void py_q_windowDeiconified(QResizeEvent*  arg__1) { WindowListener::windowDeiconified(arg__1); }
 inline void py_q_windowIconified(QResizeEvent*  arg__1) { WindowListener::windowIconified(arg__1); }
@@ -2624,8 +2629,8 @@ public:
 public slots:
 WindowListener* new_WindowListener();
 void delete_WindowListener(WindowListener* obj) { delete obj; } 
-   void windowClosed(WindowListener* theWrappedObject, QCloseEvent  arg__1);
-   void py_q_windowClosed(WindowListener* theWrappedObject, QCloseEvent  arg__1){  (((PythonQtPublicPromoter_WindowListener*)theWrappedObject)->py_q_windowClosed(arg__1));}
+   void windowClosed(WindowListener* theWrappedObject, QCloseEvent*  arg__1);
+   void py_q_windowClosed(WindowListener* theWrappedObject, QCloseEvent*  arg__1){  (((PythonQtPublicPromoter_WindowListener*)theWrappedObject)->py_q_windowClosed(arg__1));}
    void windowClosing(WindowListener* theWrappedObject, QCloseEvent*  arg__1);
    void py_q_windowClosing(WindowListener* theWrappedObject, QCloseEvent*  arg__1){  (((PythonQtPublicPromoter_WindowListener*)theWrappedObject)->py_q_windowClosing(arg__1));}
    void windowDeiconified(WindowListener* theWrappedObject, QResizeEvent*  arg__1);

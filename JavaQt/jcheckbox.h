@@ -4,6 +4,7 @@
 #include "focusevent.h"
 #include "focuslistener.h"
 #include "changelistener.h"
+#include "vptr.h"
 
 class JCheckBox : public QCheckBox
 {

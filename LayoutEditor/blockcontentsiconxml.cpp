@@ -38,8 +38,8 @@
     //If the fixed width option is not set and the justification is not left
     //Then we need to replace the x, y values with the original ones.
     if (p->getPopupUtility()->getFixedWidth() == 0 && p->getPopupUtility()->getJustification() != 0) {
-        element.setAttribute("x", "" + p->getOriginalX());
-        element.setAttribute("y", "" + p->getOriginalY());
+        element.setAttribute("x", p->getOriginalX());
+        element.setAttribute("y", p->getOriginalY());
     }
     element.setAttribute("selectable", (p->isSelectable() ? "yes" : "no"));
 

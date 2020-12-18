@@ -79,6 +79,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -275,6 +276,7 @@ virtual void actionEvent(QActionEvent*  event);
 virtual void addHelpMenu(QString  ref, bool  direct);
 virtual void changeEvent(QEvent*  arg__1);
 virtual void childEvent(QChildEvent*  event);
+virtual bool  closedNormally();
 virtual void componentMoved(QMoveEvent*  e);
 virtual void componentResized(QResizeEvent*  e);
 virtual void contextMenuEvent(QContextMenuEvent*  event);
@@ -863,6 +865,9 @@ public:
 virtual void actionEvent(QActionEvent*  event);
 virtual void changeEvent(QEvent*  arg__1);
 virtual void childEvent(QChildEvent*  event);
+virtual bool  closedNormally();
+virtual void componentMoved(QMoveEvent*  arg__1);
+virtual void componentResized(QResizeEvent*  arg__1);
 virtual void contextMenuEvent(QContextMenuEvent*  event);
 virtual QMenu*  createPopupMenu();
 virtual void customEvent(QEvent*  event);
@@ -919,6 +924,9 @@ virtual void wheelEvent(QWheelEvent*  event);
 class PythonQtPublicPromoter_JFrame : public JFrame
 { public:
 inline void promoted_frameInit() { this->frameInit(); }
+inline bool  py_q_closedNormally() { return JFrame::closedNormally(); }
+inline void py_q_componentMoved(QMoveEvent*  arg__1) { JFrame::componentMoved(arg__1); }
+inline void py_q_componentResized(QResizeEvent*  arg__1) { JFrame::componentResized(arg__1); }
 inline void py_q_dispose() { JFrame::dispose(); }
 inline QString  py_q_getTitle() { return JFrame::getTitle(); }
 inline void py_q_languageChange() { JFrame::languageChange(); }
@@ -937,6 +945,12 @@ JFrame* new_JFrame(QWidget*  parent = nullptr);
 JFrame* new_JFrame(const JFrame&  arg__1);
 void delete_JFrame(JFrame* obj) { delete obj; } 
    void addWindowListener(JFrame* theWrappedObject, WindowListener*  l);
+   bool  closedNormally(JFrame* theWrappedObject);
+   bool  py_q_closedNormally(JFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_closedNormally());}
+   void componentMoved(JFrame* theWrappedObject, QMoveEvent*  arg__1);
+   void py_q_componentMoved(JFrame* theWrappedObject, QMoveEvent*  arg__1){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_componentMoved(arg__1));}
+   void componentResized(JFrame* theWrappedObject, QResizeEvent*  arg__1);
+   void py_q_componentResized(JFrame* theWrappedObject, QResizeEvent*  arg__1){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_componentResized(arg__1));}
    void dispose(JFrame* theWrappedObject);
    void py_q_dispose(JFrame* theWrappedObject){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_dispose());}
    void frameInit(JFrame* theWrappedObject);
@@ -962,6 +976,7 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void removeWindowListener(JFrame* theWrappedObject, WindowListener*  l);
    void setAlwaysOnTop(JFrame* theWrappedObject, bool  checked);
    void setBackground(JFrame* theWrappedObject, QColor  arg__1);
+   void setBounds(JFrame* theWrappedObject, QRect  r);
    void setDefaultCloseOperation(JFrame* theWrappedObject, int  operation);
    void py_q_setEnabled(JFrame* theWrappedObject, bool  b){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_setEnabled(b));}
    void setFont(JFrame* theWrappedObject, QFont  arg__1);
@@ -974,6 +989,8 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void py_q_setVisible(JFrame* theWrappedObject, bool  visible){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_setVisible(visible));}
    QString  title(JFrame* theWrappedObject);
    void toFront(JFrame* theWrappedObject);
+void py_set__closed(JFrame* theWrappedObject, bool  _closed){ theWrappedObject->_closed = _closed; }
+bool  py_get__closed(JFrame* theWrappedObject){ return theWrappedObject->_closed; }
 };
 
 
@@ -1239,6 +1256,7 @@ void delete_JList(JList* obj) { delete obj; }
    int  getSelectedIndex(JList* theWrappedObject);
    QVariant  getSelectedValue(JList* theWrappedObject);
    QList<QModelIndex >  getSelectedValues(JList* theWrappedObject);
+   bool  isSelectionEmpty(JList* theWrappedObject);
    QModelIndex  locationToIndex(JList* theWrappedObject, QPoint  arg__1);
    void setComponentPopupMenu(JList* theWrappedObject, QMenu*  menu);
    void setSelectedIndex(JList* theWrappedObject, int  index);
@@ -1550,6 +1568,7 @@ virtual void actionEvent(QActionEvent*  event);
 virtual void addHelpMenu(QString  ref, bool  direct);
 virtual void changeEvent(QEvent*  arg__1);
 virtual void childEvent(QChildEvent*  event);
+virtual bool  closedNormally();
 virtual void componentMoved(QMoveEvent*  e);
 virtual void componentResized(QResizeEvent*  e);
 virtual void contextMenuEvent(QContextMenuEvent*  event);
@@ -1813,6 +1832,7 @@ virtual void actionEvent(QActionEvent*  event);
 virtual void addHelpMenu(QString  ref, bool  direct);
 virtual void changeEvent(QEvent*  arg__1);
 virtual void childEvent(QChildEvent*  event);
+virtual bool  closedNormally();
 virtual void componentMoved(QMoveEvent*  e);
 virtual void componentResized(QResizeEvent*  e);
 virtual void contextMenuEvent(QContextMenuEvent*  event);
@@ -3391,6 +3411,7 @@ void delete_LnTrafficController(LnTrafficController* obj) { delete obj; }
    int  getTransmittedMsgCount(LnTrafficController* theWrappedObject);
    bool  isXmtBusy(LnTrafficController* theWrappedObject);
    bool  py_q_isXmtBusy(LnTrafficController* theWrappedObject){  return (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_isXmtBusy());}
+   void notify(LnTrafficController* theWrappedObject, LocoNetMessage*  m);
    void resetStatistics(LnTrafficController* theWrappedObject);
    void py_q_sendLocoNetMessage(LnTrafficController* theWrappedObject, LocoNetMessage*  arg__1){  (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_sendLocoNetMessage(arg__1));}
    void py_q_setSystemConnectionMemo(LnTrafficController* theWrappedObject, LocoNetSystemConnectionMemo*  m){  (((PythonQtPublicPromoter_LnTrafficController*)theWrappedObject)->py_q_setSystemConnectionMemo(m));}

@@ -10,7 +10,7 @@ class AwtWindowProperties : public QObject
   Q_OBJECT
  public:
   explicit AwtWindowProperties(QObject *parent = nullptr);
-  /*public*/ AwtWindowProperties(JFrame* window, QString filename, QString windowName, QObject *parent);
+  /*public*/ AwtWindowProperties(JFrame* window, QString filename, QString windowName, QObject *parent=nullptr);
 
   /*public*/ void close();
   /*public*/ /*final*/ void setWindowState(JFrame* window, QString windowName);

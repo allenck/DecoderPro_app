@@ -437,6 +437,12 @@
     }
 #endif
     /*private*/ void PrintWriter::newLine() {
+     if(psOut)
+     {
+      *psOut << lineSeparator;
+     }
+     else
+     {
         try {
             /*synchronized (lock)*/ {
                 ensureOpen();
@@ -451,6 +457,7 @@
         catch (IOException x) {
             trouble = true;
         }
+     }
     }
 #if 0
     /* Methods that do not terminate lines */
@@ -563,7 +570,10 @@
         if (s == NULL) {
             s = "";
         }
-        write(s);
+        if(psOut)
+         *psOut << s;
+        else
+         write(s);
     }
 #if 0
     /**

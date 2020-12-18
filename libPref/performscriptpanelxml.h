@@ -7,7 +7,7 @@ class LIBPREFSHARED_EXPORT PerformScriptPanelXml : public AbstractXmlAdapter
 {
  Q_OBJECT
 public:
- explicit PerformScriptPanelXml(QObject *parent = 0);
+ Q_INVOKABLE explicit PerformScriptPanelXml(QObject *parent = 0);
  ~PerformScriptPanelXml() {}
  PerformScriptPanelXml(const PerformScriptPanelXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

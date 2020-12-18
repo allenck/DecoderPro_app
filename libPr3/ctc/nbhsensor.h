@@ -33,10 +33,10 @@ class NBHSensor : public QObject
  public slots:
 
  private:
-  /*private*/ NamedBeanHandle<Sensor*>* _mNamedBeanHandleSensor;
+  /*private*/ NamedBeanHandle<Sensor*>* _mNamedBeanHandleSensor = nullptr;
   /*private*/ /*final*/ QString _mUserIdentifier;
   /*private*/ /*final*/ QString _mParameter;
-  /*private*/ /*final*/ bool _mOptional;
+  /*private*/ /*final*/ bool _mOptional = false;
   /*private*/ /*final*/ QList<PropertyChangeListener*> _mArrayListOfPropertyChangeListeners = QList<PropertyChangeListener*>();
   void registerSensor(QString sensorName);
   /*private*/ static Sensor* getSafeExistingJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor);

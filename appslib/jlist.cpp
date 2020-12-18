@@ -178,6 +178,7 @@ QModelIndex JList::locationToIndex(QPoint p)
 /*public*/void JList::addListSelectionListener(ListSelectionListener* l)
 {
  // TODO:
+
 }
 
 /*public*/ void JList::setVisibleRowCount(int count)

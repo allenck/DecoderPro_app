@@ -19,6 +19,7 @@ class CTCMain : public QObject
   explicit CTCMain(QObject *parent = nullptr);
   /*public*/ void externalLockTurnout();
 
+
  signals:
 
  public slots:
@@ -36,10 +37,12 @@ class CTCMain : public QObject
   /*private*/ /*final*/ LockedRoutesManager* _mLockedRoutesManager = new LockedRoutesManager();
   /*private*/ Timer* _mLockTurnoutsTimer = nullptr;
   /*private*/ /*final*/ CTCExceptionBuffer* _mCTCExceptionBuffer = new CTCExceptionBuffer();
+  void startup();
 
  private slots:
   /*private*/ void handleCTCDebugSystemReload(PropertyChangeEvent* e);
 
+  friend class CtcRunAction;
 };
 
 #endif // CTCMAIN_H

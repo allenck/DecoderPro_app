@@ -36,26 +36,10 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::RAMP_INCREMENT = "rampIncrement"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::STEP_INCREMENTS = "stepIncrements"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_NAME_PREFS = "speedNames";   // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_NAMES = SPEED_NAME_PREFS;
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_NAMES = WarrantPreferences::SPEED_NAME_PREFS;
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::INTERPRETATION = "interpretation"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::APPEARANCE_PREFS = "appearancePrefs"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::APPEARANCES = "appearances"; // NOI18N
-
-
-WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
-  AbstractPreferencesManager(parent) {
- _scale = 87.1f;
- _searchDepth = 20;
-  _throttleScale = 0.5f;
-  log = new Logger("WarrantPreferences");
-
- _interpretation = SignalSpeedMap::PERCENT_NORMAL;    // Interpretation of values in speed name table
-
- _msIncrTime = 1000;         // time in milliseconds between speed changes ramping up or down
-  _throttleIncr = 0.04f;    // throttle increment for each ramp speed change
-
- //openFile(fileName);
-}
 
 /**
  * Get the default instance.

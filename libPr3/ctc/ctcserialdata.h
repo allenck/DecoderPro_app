@@ -55,6 +55,7 @@ class CTCSerialData : public QObject
   /*private*/ QList<CodeButtonHandlerData*> _mCodeButtonHandlerDataArrayList;
   /*private*/ void updateTrlUserText(QList<TrafficLockingData*> rulesToFix, int uniqueIDBeingModified, QString replacementString);
 
+  friend class FrmMainForm; // for testing
 };
 
 #endif // CTCSERIALDATA_H

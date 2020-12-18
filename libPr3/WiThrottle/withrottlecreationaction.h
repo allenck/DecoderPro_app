@@ -13,6 +13,8 @@ public:
  /*public*/ WiThrottleCreationAction(QString name, QObject* parent);
  ~WiThrottleCreationAction() {}
  WiThrottleCreationAction(const WiThrottleCreationAction&) : JmriAbstractAction() {}
+ /*public*/ JmriPanel* makePanel();
+
 public slots:
  void actionPerformed(ActionEvent* e = 0);
 

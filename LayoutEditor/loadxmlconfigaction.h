@@ -23,7 +23,7 @@ public slots:
 
 private:
  void common();
- Logger* log;
+ static Logger* log;
 protected:
  /*protected*/ bool loadFile(JFileChooser* fileChooser);
 

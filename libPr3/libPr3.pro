@@ -1022,7 +1022,37 @@ SOURCES += \
     ctc/ctcmain.cpp \
     ctc/codebuttonhandler.cpp \
     ctc/lockedroutesmanager.cpp \
-    ctc/turnoutlock.cpp
+    ctc/turnoutlock.cpp \
+    ctc/ctceditoraction.cpp \
+    ctc/frmmainform.cpp \
+    ctc/columns.cpp \
+    ctc/frmswdi.cpp \
+    ctc/codebuttonhandlerdataroutines.cpp \
+    ctc/ctcrunaction.cpp \
+    ctc/ctcmanagerxml.cpp \
+    ctc/frmaddmodifyctccolumn.cpp \
+    ctc/frmcb.cpp \
+    ctc/frmabout.cpp \
+    ctc/frmguidesign.cpp \
+    ctc/frmco.cpp \
+    ctc/importexternaldata.cpp \
+    ctc/importotherdata.cpp \
+    ctc/importcodebuttonhandlerdata.cpp \
+    ctc/callonentry.cpp \
+    ctc/trafficlockingentry.cpp \
+    ctc/createguiobjectsxmlfile.cpp \
+    ctc/frmdefaults.cpp \
+    ctc/frmdebugging.cpp \
+    ctc/frmsidi.cpp \
+    ctc/frmswdl.cpp \
+    ctc/frmtrl.cpp \
+    ctc/topology.cpp \
+    ctc/frmsidl.cpp \
+    ctc/frmtul.cpp \
+    ctc/frmil.cpp \
+    ctc/frmfleeting.cpp \
+    ctc/frmpatterns.cpp \
+    ctc/frmfixerrors.cpp
 
 
  !contains(FTDI, 1) {
@@ -2059,7 +2089,37 @@ HEADERS += \
     ctc/codebuttonhandler.h \
     ctc/ctcconstants.h \
     ctc/lockedroutesmanager.h \
-    ctc/turnoutlock.h
+    ctc/turnoutlock.h \
+    ctc/ctceditoraction.h \
+    ctc/frmmainform.h \
+    ctc/columns.h \
+    ctc/frmswdi.h \
+    ctc/codebuttonhandlerdataroutines.h \
+    ctc/ctcrunaction.h \
+    ctc/ctcmanagerxml.h \
+    ctc/frmaddmodifyctccolumn.h \
+    ctc/frmcb.h \
+    ctc/frmabout.h \
+    ctc/frmguidesign.h \
+    ctc/frmco.h \
+    ctc/importexternaldata.h \
+    ctc/importotherdata.h \
+    ctc/importcodebuttonhandlerdata.h \
+    ctc/callonentry.h \
+    ctc/trafficlockingentry.h \
+    ctc/createguiobjectsxmlfile.h \
+    ctc/frmdefaults.h \
+    ctc/frmdebugging.h \
+    ctc/frmsidi.h \
+    ctc/frmswdl.h \
+    ctc/frmtrl.h \
+    ctc/topology.h \
+    ctc/frmsidl.h \
+    ctc/frmtul.h \
+    ctc/frmil.h \
+    ctc/frmfleeting.h \
+    ctc/frmpatterns.h \
+    ctc/frmfixerrors.h
 
 
  !contains(FTDI, 1) {

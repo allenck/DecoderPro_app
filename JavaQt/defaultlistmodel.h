@@ -11,17 +11,21 @@ public:
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
     /*public*/ void add(int index, QVariant element);
-    /*public*/ void set(int index, QVariant element) {add(index, element);}
+    /*public*/ void set(int index, QVariant element);
     /*public*/ void removeElementAt(int index);
-    /*public*/ int indexOf(QString elem);
+    /*public*/ int indexOf(QVariant elem);
     /*public*/ int getSize();
     /*public*/ int size() {return getSize();}
     /*public*/ QVariant getElementAt(int index);
     /*public*/ QVariant get(int index);
     /*public*/ void addElement(QVariant element);
+    /*public*/ bool removeElement(QVariant obj);
+    /*public*/ void removeAllElements();
     /*public*/ QVariant remove(int index);
+//    /*public*/ QString toString();
     /*public*/ QVariant elementAt(int index);
     /*public*/ QListIterator<QVariant> elements();
+    /*public*/ bool contains(QVariant elem);
     /*public*/ void clear();
 
 signals:

@@ -50,9 +50,10 @@
         _mCTCDebugSystemReloadInternalSensor.removePropertyChangeListener(_mCTCDebugSystemReloadInternalSensorPropertyChangeListener);
         _mCTCDebug_TrafficLockingRuleTriggeredDisplayInternalSensor.removePropertyChangeListener(_mCTCDebug_TrafficLockingRuleTriggeredDisplayInternalSensorPropertyChangeListener);
     }
-
-    void startup() {
-        _mLockedRoutesManager.clearAllLockedRoutes();
+#endif
+    void CTCMain::startup() {
+#if 0
+        _mLockedRoutesManager->clearAllLockedRoutes();
         SignalDirectionIndicators.resetSignalsUsed();
 
 //  One of's:
@@ -235,8 +236,9 @@
             JOptionPane.showMessageDialog(null, _mCTCExceptionBuffer.getAllMessages(), Bundle.getMessage("CTCMainRuntimeStartupIssues"), messageType);  // NOI18N
         }
         log.info("CTC {} {}", OtherData.CTC_VERSION, Bundle.getMessage("CTCMainStarted"));   // NOI18N
+#endif
     }
-
+#if 0
 //  One shot routine:
     /*private*/ /*final*/ java.awt.event.ActionListener lockTurnoutsTimerTicked = new java.awt.event.ActionListener() {
         @Override

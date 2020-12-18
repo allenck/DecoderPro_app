@@ -19,6 +19,7 @@ public:
  int columnCount(const QModelIndex &parent) const;
  QVariant data(const QModelIndex &index, int role) const;
  /*public*/ void addColumn(QVariant columnName);
+ /*public*/ void setRowCount(int rowCount);
 
 signals:
 

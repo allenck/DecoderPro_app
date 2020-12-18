@@ -30,7 +30,6 @@ public:
 
  /*public*/ void savePreferences(Profile* profile);
 
- WarrantPreferences(QString fileName, QObject *parent = 0);
  ~WarrantPreferences() {}
  WarrantPreferences(const WarrantPreferences&) : AbstractPreferencesManager() {}
  /*public*/ static WarrantPreferences* getDefault();

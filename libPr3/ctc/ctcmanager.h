@@ -17,7 +17,9 @@ class CtcManager : public QObject, public InstanceManagerAutoDefault/*, public V
   Q_OBJECT
   Q_INTERFACES(InstanceManagerAutoDefault /*VetoableChangeListener*/)
  public:
-  explicit CtcManager(QObject *parent = nullptr);
+  Q_INVOKABLE explicit CtcManager(QObject *parent = nullptr);
+  ~CtcManager() {}
+  CtcManager(const CtcManager&): QObject(){}
   /*public*/ ProgramProperties* getProgramProperties();
   /*public*/ ProgramProperties* newProgramProperties();
   /*public*/ CTCSerialData* getCTCSerialData();
@@ -49,5 +51,5 @@ class CtcManager : public QObject, public InstanceManagerAutoDefault/*, public V
   QMap<QString, NamedBeanHandle<Block*>*> blocks = QMap<QString, NamedBeanHandle<Block*>*>();
 
 };
-
+Q_DECLARE_METATYPE(CtcManager)
 #endif // CTCMANAGER_H

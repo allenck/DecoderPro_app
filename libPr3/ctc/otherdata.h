@@ -27,8 +27,13 @@ class OtherData : public QObject
       /*private*/ CTC_PANEL_TYPE (int radioGroupValue = 0) { _mRadioGroupValue = radioGroupValue; }
 //      static { for (CTC_PANEL_TYPE value : CTC_PANEL_TYPE.values()) { map.put(value._mRadioGroupValue, value); }}
    public:
+    /*public*/ bool operator ==(const CTC_PANEL_TYPE &node) {return node._mRadioGroupValue == this->_mRadioGroupValue;}
+    /*public*/ bool operator !=(const CTC_PANEL_TYPE &node) {return node._mRadioGroupValue != this->_mRadioGroupValue;}
+
      /*public*/ int getRadioGroupValue() { return _mRadioGroupValue; }
      /*public*/ static CTC_PANEL_TYPE getRadioGroupValue(int radioGroupValue);// { return map.value(radioGroupValue); }
+     /*public*/ static CTC_PANEL_TYPE valueOf(QString);
+    /*public*/ QString toString();
    friend class OtherData;
   };
 
@@ -45,8 +50,12 @@ class OtherData : public QObject
       /*private*/ SIGNALS_ON_PANEL (int radioGroupValue = 0) { _mRadioGroupValue = radioGroupValue; }
 //      static { for (SIGNALS_ON_PANEL value : SIGNALS_ON_PANEL.values()) { map.put(value._mRadioGroupValue, value); }}
    public:
+      /*public*/ bool operator ==(const SIGNALS_ON_PANEL &node) {return node._mRadioGroupValue == this->_mRadioGroupValue;}
+      /*public*/ bool operator !=(const SIGNALS_ON_PANEL &node) {return node._mRadioGroupValue != this->_mRadioGroupValue;}
       /*public*/ int getRadioGroupValue() { return _mRadioGroupValue; }
       /*public*/ static SIGNALS_ON_PANEL getRadioGroupValue(int radioGroupValue);// { return map.value(radioGroupValue); }
+      /*public*/ static SIGNALS_ON_PANEL valueOf(QString);
+      /*public*/ /*static*/ QString toString();
       friend class OtherData;
   };
 
@@ -62,8 +71,14 @@ class OtherData : public QObject
       /*private*/ /*final*/ static QMap<int, VERTICAL_SIZE> map;// = new HashMap<>();
       /*private*/ VERTICAL_SIZE (int radioGroupValue = 0) { _mRadioGroupValue = radioGroupValue; }
 //      static { for (VERTICAL_SIZE value : VERTICAL_SIZE.values()) { map.put(value._mRadioGroupValue, value); }}
+   public:
+   /*public*/ bool operator ==(const VERTICAL_SIZE &node) {return node._mRadioGroupValue == this->_mRadioGroupValue;}
+   /*public*/ bool operator !=(const VERTICAL_SIZE &node) {return node._mRadioGroupValue != this->_mRadioGroupValue;}
       /*public*/ int getRadioGroupValue() { return _mRadioGroupValue; }
       /*public*/ static VERTICAL_SIZE getRadioGroupValue(int radioGroupValue);// { return map.value(radioGroupValue); }
+   /*public*/ static VERTICAL_SIZE valueOf(QString);
+   /*public*/ QString toString();
+
    friend class OtherData;
   };
 
@@ -85,9 +100,15 @@ class OtherData : public QObject
       /*public*/ int getInt() { return _mRadioGroupValue; }
       /*public*/ static SIGNAL_SYSTEM_TYPE getSignalSystemType(int radioGroupValue);// { return map.value(radioGroupValue); }
       /*public*/ static SIGNAL_SYSTEM_TYPE getSignalSystemType(QButtonGroup* buttonGroup);// { return map.value(ProjectsCommonSubs::getButtonSelectedInt(buttonGroup)); }
+      /*public*/ static SIGNAL_SYSTEM_TYPE valueOf(QString);
+    /*public*/ bool operator ==(const SIGNAL_SYSTEM_TYPE &node) {return node._mRadioGroupValue == this->_mRadioGroupValue;}
+    /*public*/ bool operator !=(const SIGNAL_SYSTEM_TYPE &node) {return node._mRadioGroupValue != this->_mRadioGroupValue;}
+      /*public*/ QString toString();
     friend class OtherData;
   };
-  explicit OtherData(QObject *parent = nullptr);
+  Q_INVOKABLE explicit OtherData(QObject *parent = nullptr);
+  ~OtherData() {}
+  OtherData(const OtherData&) : QObject() {}
   /*public*/ /*final*/ static QString CTC_VERSION;// = "v2.0";
   /*public*/ int getNextUniqueNumber();
   /*public*/ void possiblySetToHighest(int value);
@@ -96,7 +117,7 @@ class OtherData : public QObject
       /*public*/ bool  _mDefaultFleetingEnabled;
   //  Global startup:
       /*public*/ bool  _mTUL_EnabledAtStartup = true;
-      /*public*/ SIGNAL_SYSTEM_TYPE::SIGNAL_SYSTEM_TYPES _mSignalSystemType;
+      /*public*/ SIGNAL_SYSTEM_TYPE _mSignalSystemType;
       /*public*/ int      _mTUL_SecondsToLockTurnouts = 0;
   //  Next unique # for each created Column:
       /*public*/ int      _mNextUniqueNumber = 0;
@@ -120,5 +141,5 @@ class OtherData : public QObject
 
  public slots:
 };
-
+Q_DECLARE_METATYPE(OtherData)
 #endif // OTHERDATA_H

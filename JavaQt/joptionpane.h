@@ -199,7 +199,7 @@ private:
  /** Message type. */
  /*private*/ static int styleFromMessageType(int messageType);
  /*private*/ JDialog* createDialog(QWidget* parentComponent, QString title,
-         int style);
+         int style, int optionType =0);
  void common(QVariant message, int messageType = 0, int optionType = DEFAULT_OPTION,
              QIcon icon = QIcon(), QList<QVariant> options = QList<QVariant>(), QVariant initialValue = QVariant());
  /*private*/ void initDialog(/*final*/ JDialog* dialog, int style, QWidget* parentComponent);
@@ -223,7 +223,7 @@ protected:
   * <code>YES_NO_CANCEL_OPTION</code> or
   * <code>OK_CANCEL_OPTION</code>.
   */
- /*protected*/ int                   optionType;
+ /*protected*/ int                   optionType = 0;
  /** Currently selected value, will be a valid option, or
   * <code>UNINITIALIZED_VALUE</code> or <code>NULL</code>. */
  /*transient*/ /*protected*/ QVariant                value;

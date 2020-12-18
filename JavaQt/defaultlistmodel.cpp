@@ -65,6 +65,10 @@ DefaultListModel::DefaultListModel(QObject *parent) :
     /*public*/ QVariant DefaultListModel::getElementAt(int index) {
         return delegate->at(index);
     }
+    /*public*/ void DefaultListModel::set(int index, QVariant element) {
+      return delegate->replace(index, element);
+    }
+
     /*public*/ QVariant DefaultListModel::get(int index) {
      return delegate->at(index);
     }
@@ -170,7 +174,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
         //return delegate->elements();
      return QListIterator<QVariant>(delegate->toList());
     }
-#if 0
+
     /**
      * Tests whether the specified object is a component in this list.
      *
@@ -179,10 +183,10 @@ DefaultListModel::DefaultListModel(QObject *parent) :
      *          is the same as a component in this list
      * @see Vector#contains(Object)
      */
-    /*public*/ boolean contains(Object elem) {
-        return delegate.contains(elem);
+    /*public*/ bool DefaultListModel::contains(QVariant elem) {
+        return delegate->contains(elem);
     }
-#endif
+
     /**
      * Searches for the first occurrence of <code>elem</code>.
      *
@@ -191,7 +195,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
      *          list; returns <code>-1</code> if the object is not found
      * @see Vector#indexOf(Object)
      */
-    /*public*/ int DefaultListModel::indexOf(QString elem) {
+    /*public*/ int DefaultListModel::indexOf(QVariant elem) {
         return delegate->indexOf(elem);
     }
 #if 0
@@ -358,7 +362,7 @@ DefaultListModel::DefaultListModel(QObject *parent) :
         delegate->append(element);
         fireIntervalAdded(this, index, index);
     }
-#if 0
+
     /**
      * Removes the first (lowest-indexed) occurrence of the argument
      * from this list.
@@ -368,9 +372,9 @@ DefaultListModel::DefaultListModel(QObject *parent) :
      *          list; <code>false</code> otherwise
      * @see Vector#removeElement(Object)
      */
-    /*public*/ boolean removeElement(Object obj) {
+    /*public*/ bool DefaultListModel::removeElement(QVariant obj) {
         int index = indexOf(obj);
-        boolean rv = delegate.removeElement(obj);
+        bool rv = delegate->removeOne(obj);
         if (index >= 0) {
             fireIntervalRemoved(this, index, index);
         }
@@ -389,25 +393,24 @@ DefaultListModel::DefaultListModel(QObject *parent) :
      * @see #clear()
      * @see Vector#removeAllElements()
      */
-    /*public*/ void removeAllElements() {
-        int index1 = delegate.size()-1;
-        delegate.removeAllElements();
+    /*public*/ void DefaultListModel::removeAllElements() {
+        int index1 = delegate->size()-1;
+        delegate->clear();
         if (index1 >= 0) {
             fireIntervalRemoved(this, 0, index1);
         }
     }
 
-
+#if 0
     /**
      * Returns a string that displays and identifies this
      * object's properties.
      *
      * @return a String representation of this object
      */
-   /*public*/ String toString() {
-        return delegate.toString();
+   /*public*/ QString DefaultListModel::toString() {
+        return delegate->toString();
     }
-
 
     /* The remaining methods are included for compatibility with the
      * Java 2 platform Vector class.
@@ -435,8 +438,10 @@ DefaultListModel::DefaultListModel(QObject *parent) :
      *
      * @param index index of element to return
      */
-    /*public*/ E get(int index) {
-        return delegate.elementAt(index);
+//    /*public*/ E get(int index) {
+      /*public*/ QVariant DefaultListModel::get(int index) {
+
+        return delegate->at(index);
     }
 
     /**
@@ -451,9 +456,10 @@ DefaultListModel::DefaultListModel(QObject *parent) :
      * @param element element to be stored at the specified position
      * @return the element previously at the specified position
      */
-    /*public*/ E set(int index, E element) {
-        E rv = delegate.elementAt(index);
-        delegate.setElementAt(element, index);
+//    /*public*/ E set(int index, E element) {
+    /*public*/ QVariant DefaultListModel::set(int index, QVariant element) {
+        QVariant rv = delegate->at(index);
+        delegate->insert(index, element);
         fireContentsChanged(this, index, index);
         return rv;
     }

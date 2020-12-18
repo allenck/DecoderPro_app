@@ -8,7 +8,6 @@
 #include "codebuttonhandlerdata.h"
 #include "ctcmanager.h"
 #include "instancemanager.h"
-#include "jcombobox.h"
 #include "sensormanager.h"
 #include "sensor.h"
 #include "signalheadmanager.h"
@@ -269,7 +268,7 @@ CommonSubs::CommonSubs(QObject *parent) : QObject(parent)
         int index = ctcSerialData->getIndexOfUniqueID(uniqueID) + 1;   // Can be -1 if not found, index becomes 0, which is spaces!
         jComboBox->setCurrentIndex(index);
     }
-#if 0
+
 /*  Someday I'll create a better "ButtonGroup" than provided.  Until then:
 
     Cheat: We know that the implementation of ButtonGroup uses a Vector when elements
@@ -287,61 +286,67 @@ CommonSubs::CommonSubs(QObject *parent) : QObject(parent)
         case 0:
     ....
 */
-    /*public*/ static void numberButtonGroup(ButtonGroup buttonGroup) {
+    /*public*/ /*static*/ void CommonSubs::numberButtonGroup(QButtonGroup* buttonGroup) {
         int entry = 0;
-        Enumeration<AbstractButton> buttons = buttonGroup.getElements();
-        while (buttons.hasMoreElements()) {
-            AbstractButton button = buttons.nextElement();
-            button.setActionCommand(Integer.toString(entry++));
+        //Enumeration<AbstractButton> buttons = buttonGroup.getElements();
+        QListIterator<QAbstractButton*> buttons(buttonGroup->buttons());
+        while (buttons.hasNext()) {
+            QAbstractButton* button = buttons.next();
+            button->setText(QString::number(entry++));
         }
     }
 
-    /*public*/ static void setButtonSelected(ButtonGroup buttonGroup, int selected) {
-        ArrayList<AbstractButton> buttons = Collections.list(buttonGroup.getElements());
+    /*public*/ /*static*/ void CommonSubs::setButtonSelected(QButtonGroup* buttonGroup, int selected) {
+        QList<QAbstractButton*> buttons = /*Collections.list(*/buttonGroup->buttons();//.getElements());
         if (buttons.isEmpty()) return;    // Safety: The moron forgot to put radio buttons into this group!  Don't select any!
         if (selected < 0 || selected >= buttons.size()) selected = 0;   // Default is zero if you pass an out of range value.
-        AbstractButton buttonSelected = buttons.get(selected);
-        buttonSelected.setSelected(true);
+        QAbstractButton* buttonSelected = buttons.at(selected);
+        buttonSelected->setChecked(true);
 //  Be consistent, when set, do this also:
-        ActionEvent actionEvent = new ActionEvent(buttonSelected, ActionEvent.ACTION_PERFORMED, buttonSelected.getActionCommand());
-        for (ActionListener actionListener : buttonSelected.getActionListeners()) {
-            actionListener.actionPerformed(actionEvent);
+//        ActionEvent actionEvent = new ActionEvent(buttonSelected, ActionEvent::ACTION_PERFORMED, buttonSelected.getActionCommand());
+//        for (ActionListener actionListener : buttonSelected.getActionListeners()) {
+//            actionListener.actionPerformed(actionEvent);
+//        }
+        foreach (QAbstractButton* button, buttons) {
+         button->click();
         }
     }
 
 //  If the passed errors array has entries, put up a dialog and return true, if not no dialog, and return false.
-    /*public*/ static boolean missingFieldsErrorDialogDisplayed(Component parentComponent, ArrayList<String> errors, boolean isCancel) {
+    /*public*/ /*static*/ bool CommonSubs::missingFieldsErrorDialogDisplayed(JFrame* parentComponent, QList<QString> errors, bool isCancel) {
         if (errors.isEmpty()) return false;
-        StringBuilder stringBuffer = new StringBuilder(errors.size() > 1 ? Bundle.getMessage("CommonSubsFieldsPlural") : Bundle.getMessage("CommonSubsFieldSingular"));     // NOI18N
-        errors.forEach(error -> stringBuffer.append(error).append("\n")); // NOI18N
+        QString stringBuffer = QString(errors.size() > 1 ? tr("The following field(s) are required:\n") : tr("The following field is required:\n"));     // NOI18N
+        //errors.forEach(error -> stringBuffer.append(error).append("\n")); // NOI18N
+        foreach(QString error, errors)
+         stringBuffer.append(error);
         if (!isCancel) {
-            stringBuffer.append(Bundle.getMessage("CommonSubsPleaseFix1")); // NOI18N
+            stringBuffer.append(tr("Please fix before pressing \"Save and close\"\nor you may exit the editor screen without saving.")); // NOI18N
         } else {
-            stringBuffer.append(Bundle.getMessage("CommonSubsPleaseFix2")); // NOI18N
+            stringBuffer.append(tr("Please fix before pressing \"Save and close\"\nor you may press cancel.")); // NOI18N
         }
-        JOptionPane.showMessageDialog(parentComponent, stringBuffer.toString(),
-                Bundle.getMessage("ErrorTitle"), JOptionPane.ERROR_MESSAGE);   // NOI18N
+        JOptionPane::showMessageDialog(parentComponent, stringBuffer/*.toString()*/,
+                tr("Error"), JOptionPane::ERROR_MESSAGE);   // NOI18N
         return true;
     }
 
 //  Simple sub to see if field is not empty.  If empty, then it takes the prompt text and adds it to the end of the errors array.
-    /*public*/ static void checkJTextFieldNotEmpty(javax.swing.JTextField field, javax.swing.JLabel promptName, ArrayList<String> errors) {
-        if (!isJTextFieldNotEmpty(field)) errors.add(promptName.getText());
+    /*public*/ /*static*/ void CommonSubs::checkJTextFieldNotEmpty(JTextField* field, JLabel* promptName, QList<QString> errors) {
+        if (!isJTextFieldNotEmpty(field)) errors.append(promptName->text());
     }
 
-    /*public*/ static boolean isJTextFieldNotEmpty(javax.swing.JTextField field) {
-        return !(field.getText().trim().isEmpty());
+    /*public*/ /*static*/ bool CommonSubs::isJTextFieldNotEmpty(JTextField* field) {
+        return !(field->text().trimmed().isEmpty());
     }
 
 //  Simple sub to see if combo selection is not empty.  If empty, then it takes the prompt text and adds it to the end of the errors array.
-    /*public*/ static void checkJComboBoxNotEmpty(javax.swing.JComboBox<String> combo, javax.swing.JLabel promptName, ArrayList<String> errors) {
-        if (!isJComboBoxNotEmpty(combo)) errors.add(promptName.getText());
+    /*public*/ /*static*/ void CommonSubs::checkJComboBoxNotEmpty(JComboBox/*<String>*/* combo, JLabel* promptName, QList<QString> errors) {
+        if (!isJComboBoxNotEmpty(combo)) errors.append(promptName->text());
     }
 
-    /*public*/ static boolean isJComboBoxNotEmpty(javax.swing.JComboBox<String> combo) {
-        return !((String) combo.getSelectedItem()).trim().isEmpty();
+    /*public*/ /*static*/ bool CommonSubs::isJComboBoxNotEmpty(JComboBox/*<String>*/* combo) {
+        return !( combo->getSelectedItem()).trimmed().isEmpty();
     }
-#endif
+
     /**
      * Get a NBHSensor from the CtcManager NBHSensor map or create a new one.
      * @param newName The new name to be retrieved from the map or created.

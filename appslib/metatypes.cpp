@@ -329,6 +329,10 @@
 #include "editormanager.h"
 #include "meterframemanagerxml.h"
 #include "internalmetermanagerxml.h"
+#include "ctc/ctcmanager.h"
+#include "ctc/ctcmanagerxml.h"
+#include "ctc/ctcexceptionbuffer.h"
+#include "ctc/otherdata.h"
 
 bool Metatypes::done = false;
 
@@ -675,6 +679,10 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<EditorManager>("EditorManager");
  qRegisterMetaType<MeterFrameManagerXml>("MeterFrameManagerXml");
  qRegisterMetaType<InternalMeterManagerXml>("InternalMeterManagerXml");
+ qRegisterMetaType<CtcManager>("CtcManager");
+ qRegisterMetaType<CtcManagerXml>("CtcManagerXml");
+ qRegisterMetaType<CTCExceptionBuffer>("CTCExceptionBuffer");
+ qRegisterMetaType<OtherData>("OtherData");
 
  Metatypes::done = true;
 }

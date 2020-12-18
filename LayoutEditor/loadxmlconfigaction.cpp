@@ -6,6 +6,7 @@
 #include "logger.h"
 #include "configxmlmanager.h"
 #include "jmriconfigurationmanager.h"
+#include "loggerfactory.h"
 
 //LoadXmlConfigAction::LoadXmlConfigAction(QObject *parent) :
 //  LoadStoreBaseAction(parent)
@@ -107,7 +108,6 @@ void LoadXmlConfigAction::common()
 
 /*static*/ /*public*/ File* LoadXmlConfigAction::getFileCustom(JFileChooser* fileChooser)
 {
- Logger* log = new Logger("LoadXmlConfigAction");
  //fileChooser.rescanCurrentDirectory();
  int retVal = fileChooser->showDialog(nullptr, "");
  if (retVal != JFileChooser::APPROVE_OPTION) {
@@ -118,3 +118,6 @@ void LoadXmlConfigAction::common()
  }
  return fileChooser->getSelectedFile();
 }
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* LoadXmlConfigAction::log = LoggerFactory::getLogger("LoadXmlConfigAction");

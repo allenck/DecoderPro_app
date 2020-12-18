@@ -9,7 +9,9 @@ class LIBPR3SHARED_EXPORT AudioManager : public AbstractManager
 {
     Q_OBJECT
 public:
- explicit AudioManager(QObject *parent = 0) : AbstractManager(parent) {}
+   /*Q_INVOKABLE*/ explicit AudioManager(QObject *parent = 0) : AbstractManager(parent) {}
+//   ~AudioManager() {}
+//  AudioManager(const AudioManager&) : AbstractManager() {}
     /**
      * Locate an Audio object representing some specific audio information.
      *<P>
@@ -171,10 +173,12 @@ public:
          */
         virtual void cleanup() {}
 
+        int getXMLOrder() {return Manager::AUDIO;}
+        QString getNamedBeanClass() {return "Audio";}
 signals:
     
 public slots:
     
 };
-
+//Q_DECLARE_METATYPE(AudioManager) // don't want class to autoload this!
 #endif // AUDIOMANAGER_H

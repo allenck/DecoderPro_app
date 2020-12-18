@@ -24,14 +24,14 @@ private:
 
  /*private*/ /*final*/ bool autoFlush;
  /*private*/ bool trouble;// = false;
- /*private*/ Formatter* formatter;
- /*private*/ QTextStream* psOut;// = null;
+ /*private*/ Formatter* formatter = nullptr;
+ /*private*/ QTextStream* psOut = nullptr;
 
  /**
   * Line separator string.  This is the value of the line.separator
   * property at the moment that the stream was created.
   */
- /*private*/ /*final*/ QString lineSeparator;
+ /*private*/ /*final*/ QString lineSeparator = "\n";
  /*private*/ void newLine();
  /*private*/ void ensureOpen() throw (IOException);
 
@@ -42,7 +42,7 @@ protected:
   *
   * @since 1.2
   */
- /*protected*/ Writer* out;
+ /*protected*/ Writer* out =nullptr;
 
 };
 

@@ -70,6 +70,8 @@
 #include "proxylightmanager.h"
 #include "editormanager.h"
 #include "proxymetermanager.h"
+#include "ctc/ctcmanager.h"
+#include "ctc/ctcexceptionbuffer.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -580,7 +582,19 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 //  InstanceManager::store(lncm,type);
 //  return pitm;
 // }
+ if (type == "CtcManager")
+ {
+  CtcManager* m = new CtcManager();
+  InstanceManager::store(m, type);
+  return m;
+ }
 
+ if (type == "CTCExceptionBuffer")
+ {
+  CTCExceptionBuffer* m = new CTCExceptionBuffer();
+  InstanceManager::store(m, type);
+  return m;
+ }
 
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);

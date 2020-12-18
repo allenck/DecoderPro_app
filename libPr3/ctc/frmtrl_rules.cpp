@@ -12,6 +12,9 @@
 #include "ctcserialdata.h"
 #include "checkjmriobject.h"
 #include "joptionpane.h"
+#include "jpanel.h"
+#include <QBoxLayout>
+
 
 /**
  * Maintain the set of traffic locking rules.  There is an east set and a west set
@@ -456,6 +459,90 @@
                 .addComponent(_mSaveAndClose)
                 .addGap(13, 13, 13))
         );
+#else
+        QVBoxLayout* contentPaneLayout;
+        if(getContentPane()->layout() == nullptr)
+         getContentPane()->setLayout(contentPaneLayout = new QVBoxLayout());
+        JPanel* panel1 = new JPanel();
+        panel1->setLayout(new QHBoxLayout());
+        panel1->layout()->addWidget(jLabel2);
+        contentPaneLayout->addWidget(panel1);
+        JPanel* panel2 = new JPanel();
+        panel2->setLayout(new QVBoxLayout);
+        JPanel* panel2a = new JPanel();
+        panel2a->setLayout(new QHBoxLayout());
+        panel2a->layout()->addWidget(jLabel8);
+        panel2a->layout()->addWidget(_mSwitchAlignment1);
+        panel2a->layout()->addWidget(_mSwitchAlignment2);
+        panel2a->layout()->addWidget(_mSwitchAlignment3);
+        panel2a->layout()->addWidget(_mSwitchAlignment4);
+        panel2a->layout()->addWidget(_mSwitchAlignment5);
+        panel2->layout()->addWidget(panel2a);
+        JPanel* panel2b = new JPanel();
+        panel2b->setLayout(new QHBoxLayout());
+        panel2b->layout()->addWidget(jLabel7);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor1);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor4);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor7);
+        panel2->layout()->addWidget(panel2b);
+        JPanel* panel2c = new JPanel();
+        panel2c->setLayout(new QHBoxLayout());
+        panel2c->layout()->addWidget(jLabel1);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor2);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor5);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor8);
+        panel2->layout()->addWidget(panel2c);
+        JPanel* panel2d = new JPanel();
+        panel2d->setLayout(new QHBoxLayout());
+        panel2d->layout()->addWidget(jLabel5);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor3);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor6);
+        panel2b->layout()->addWidget(_mOccupancyExternalSensor9);
+        panel2->layout()->addWidget(panel2d);
+        contentPaneLayout->addWidget(panel2);
+        JPanel* panel3 = new JPanel();
+        panel3->layout()->addWidget(_mOptionalExternalSensor1);
+        panel3->layout()->addWidget(_mOptionalExternalSensor2);
+        JPanel* panel3a = new JPanel();
+        panel3a->layout()->addWidget(_mSaveAndClose);
+        JPanel* panel3a1 = new JPanel();
+        panel3a1->layout()->addWidget(_mGroupingListAddReplace);
+        panel3a1->layout()->addWidget(_mCancel);
+        panel3a->layout()->addWidget(panel3a);
+        panel3->layout()->addWidget(panel3a);
+        JPanel* panel3b = new JPanel();
+        panel3b->layout()->addWidget(_mOS_NumberEntry1);
+        panel3b->layout()->addWidget(_mOS_NumberEntry2);
+        panel3b->layout()->addWidget(_mOS_NumberEntry3);
+        panel3b->layout()->addWidget(_mOS_NumberEntry4);
+        panel3b->layout()->addWidget(_mOS_NumberEntry5);
+        panel3->layout()->addWidget(panel3b);
+        contentPaneLayout->addWidget(panel3);
+        contentPaneLayout->addWidget(jLabel10);
+        JPanel* panel4 = new JPanel();
+        panel4->setLayout(new QVBoxLayout());
+        QScrollArea* scrollArea = new QScrollArea();
+        JPanel* panel5 = new JPanel();
+        panel5->setLayout(new QHBoxLayout());
+        JPanel* panel5a = new JPanel();
+        panel5a->layout()->addWidget(_mRuleEnabled);
+        panel5a->layout()->addWidget(_mEnableALLRules);
+        panel5a->layout()->addWidget(_mDisableALLRules);
+        panel5a->layout()->addWidget(_mDestinationSignalOrCommentPrompt);
+        panel5a->layout()->addWidget(_mDestinationSignalOrComment);
+        panel5->layout()->addWidget(panel5a);
+        JPanel* panel5b = new JPanel();
+        panel5b->layout()->addWidget(_mRulesInfo);
+        panel5b->layout()->addWidget(jLabel4);
+        panel5->layout()->addWidget(panel5b);
+        scrollArea->setWidget(panel5);
+        panel4->layout()->addWidget(scrollArea);
+        contentPaneLayout->addWidget(panel4);
+        JPanel* panel6 = new JPanel();
+        panel6->layout()->addWidget(_mEditBelow);
+        panel6->layout()->addWidget(_mAddNew);
+        panel6->layout()->addWidget(_mDelete);
+        panel6->layout()->addWidget(_mDupToEnd);
 #endif
         pack();
     }// </editor-fold>
@@ -627,7 +714,7 @@
         enableTopPart(true);
         if (_mAddNewPressed) {
             trafficLockingData->_mUserRuleNumber = getRuleNumberString(_mTrafficLockingModel->size() + 1);
-            _mTrafficLockingModel->addElement(VPtr<TrafficLockingData>::asQVariant(trafficLockingData));
+//            _mTrafficLockingModel->addElement(VPtr<TrafficLockingData>::asQVariant(trafficLockingData));
         }
         else {
             int selectedIndex = _mTRL_TrafficLockingRules->currentIndex().row();

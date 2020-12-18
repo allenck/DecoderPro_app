@@ -61,6 +61,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -302,6 +303,7 @@ class PythonQtShell_LocoNetMessage : public LocoNetMessage
 {
 public:
     PythonQtShell_LocoNetMessage():LocoNetMessage(),_wrapper(NULL) {}
+    PythonQtShell_LocoNetMessage(LocoNetMessage*  original):LocoNetMessage(original),_wrapper(NULL) {}
     PythonQtShell_LocoNetMessage(QString  s):LocoNetMessage(s),_wrapper(NULL) {}
     PythonQtShell_LocoNetMessage(QVector<char >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(NULL) {}
     PythonQtShell_LocoNetMessage(QVector<int >  contents, QObject*  parent = 0):LocoNetMessage(contents, parent),_wrapper(NULL) {}
@@ -328,6 +330,7 @@ class PythonQtWrapper_LocoNetMessage : public QObject
 public:
 public slots:
 LocoNetMessage* new_LocoNetMessage();
+LocoNetMessage* new_LocoNetMessage(LocoNetMessage*  original);
 LocoNetMessage* new_LocoNetMessage(QString  s);
 LocoNetMessage* new_LocoNetMessage(QVector<char >  contents, QObject*  parent = 0);
 LocoNetMessage* new_LocoNetMessage(QVector<int >  contents, QObject*  parent = 0);
@@ -690,6 +693,7 @@ void delete_Manager(Manager* obj) { delete obj; }
    QString  getSystemNamePrefix(Manager* theWrappedObject) const;
    QString  getSystemPrefix(Manager* theWrappedObject) const;
    QString  py_q_getSystemPrefix(Manager* theWrappedObject) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getSystemPrefix());}
+   QString  static_Manager_getSystemPrefix(QString  inputName);
    int  static_Manager_getSystemPrefixLength(QString  inputName) throw (NamedBean::BadSystemNameException);
    int  getXMLOrder(Manager* theWrappedObject) const;
    int  py_q_getXMLOrder(Manager* theWrappedObject) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getXMLOrder());}
@@ -1117,7 +1121,7 @@ virtual QStringList  getOptions();
 virtual QDataStream*  getOutputStream();
 virtual int  getPort();
 virtual QString  getServiceType();
-virtual SystemConnectionMemo*  getSystemConnectionMemo();
+virtual SystemConnectionMemo*  getSystemConnectionMemo() const;
 virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
@@ -1221,6 +1225,7 @@ virtual void actionEvent(QActionEvent*  event);
 virtual void addHelpMenu(QString  ref, bool  direct);
 virtual void changeEvent(QEvent*  arg__1);
 virtual void childEvent(QChildEvent*  event);
+virtual bool  closedNormally();
 virtual void componentMoved(QMoveEvent*  e);
 virtual void componentResized(QResizeEvent*  e);
 virtual void contextMenuEvent(QContextMenuEvent*  event);
@@ -1491,7 +1496,7 @@ virtual QString  getOptionDisplayName(QString  arg__1);
 virtual QString  getOptionState(QString  arg__1);
 virtual QStringList  getOptions();
 virtual QDataStream*  getOutputStream();
-virtual SystemConnectionMemo*  getSystemConnectionMemo();
+virtual SystemConnectionMemo*  getSystemConnectionMemo() const;
 virtual QString  getSystemPrefix();
 virtual QString  getUserName();
 virtual bool  isDirty();
@@ -1534,7 +1539,7 @@ inline QString  py_q_getOptionDisplayName(QString  arg__1) { return PortAdapter:
 inline QString  py_q_getOptionState(QString  arg__1) { return PortAdapter::getOptionState(arg__1); }
 inline QStringList  py_q_getOptions() { return PortAdapter::getOptions(); }
 inline QDataStream*  py_q_getOutputStream() { return PortAdapter::getOutputStream(); }
-inline SystemConnectionMemo*  py_q_getSystemConnectionMemo() { return PortAdapter::getSystemConnectionMemo(); }
+inline SystemConnectionMemo*  py_q_getSystemConnectionMemo() const { return PortAdapter::getSystemConnectionMemo(); }
 inline QString  py_q_getSystemPrefix() { return PortAdapter::getSystemPrefix(); }
 inline QString  py_q_getUserName() { return PortAdapter::getUserName(); }
 inline bool  py_q_isDirty() { return PortAdapter::isDirty(); }
@@ -1596,8 +1601,8 @@ void delete_PortAdapter(PortAdapter* obj) { delete obj; }
    QStringList  py_q_getOptions(PortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_getOptions());}
    QDataStream*  getOutputStream(PortAdapter* theWrappedObject);
    QDataStream*  py_q_getOutputStream(PortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_getOutputStream());}
-   SystemConnectionMemo*  getSystemConnectionMemo(PortAdapter* theWrappedObject);
-   SystemConnectionMemo*  py_q_getSystemConnectionMemo(PortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_getSystemConnectionMemo());}
+   SystemConnectionMemo*  getSystemConnectionMemo(PortAdapter* theWrappedObject) const;
+   SystemConnectionMemo*  py_q_getSystemConnectionMemo(PortAdapter* theWrappedObject) const{  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_getSystemConnectionMemo());}
    QString  getSystemPrefix(PortAdapter* theWrappedObject);
    QString  py_q_getSystemPrefix(PortAdapter* theWrappedObject){  return (((PythonQtPublicPromoter_PortAdapter*)theWrappedObject)->py_q_getSystemPrefix());}
    QString  getUserName(PortAdapter* theWrappedObject);

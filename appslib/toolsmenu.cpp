@@ -40,6 +40,8 @@
 #include "servermenu.h"
 #include "pragotronclockaction.h"
 #include "meteraction.h"
+#include "ctc/ctceditoraction.h"
+#include "ctc/ctcrunaction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -188,13 +190,13 @@ addAction(ta);
  addAction(new TimeTableAction(tr("Timetable"), this));
  addAction(new WhereUsedAction(tr("Where Used"), this));
  // CTC menu item with submenus
-#if 0
- JMenu ctcMenu = new JMenu(Bundle.getMessage("MenuCTC"));
- ctcMenu.add(new jmri.jmrit.ctc.editor.CtcEditorAction(Bundle.getMessage("MenuItemCTCEditor")));
- ctcMenu.add(new jmri.jmrit.ctc.CtcRunAction(Bundle.getMessage("MenuItemCTCMain")));
- add(ctcMenu);
+#if 1
+ QMenu* ctcMenu = new QMenu(tr("CTC"));
+ ctcMenu->addAction(new CtcEditorAction(tr("Open CTC Configuration Editor."),this));
+ ctcMenu->addAction(new CtcRunAction(tr("Run CTC"),this));
+ addMenu(ctcMenu);
  // US&S CTC subsystem tools
- add(new jmri.jmrit.ussctc.ToolsMenu());
+ //add(new jmri.jmrit.ussctc.ToolsMenu());
 #endif
          // add cab signals
  addAction(new CabSignalAction(this));

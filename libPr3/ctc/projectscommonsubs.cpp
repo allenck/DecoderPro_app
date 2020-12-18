@@ -1,6 +1,10 @@
 #include "projectscommonsubs.h"
 #include "loggerfactory.h"
 #include <QPushButton>
+#include "nbhsignal.h"
+#include "namedbeanhandle.h"
+#include "ctcmanager.h"
+#include "instancemanager.h"
 
 /**
  *
@@ -23,39 +27,43 @@
 #endif
         return list;
     }
-#if 0
-    static /*public*/ ArrayList<String> getArrayListOfSignalNames(ArrayList<NBHSignal> array) {
-        ArrayList<String> stringList = new ArrayList<>();
-        array.forEach(row -> {
-            NamedBeanHandle handle = (NamedBeanHandle) row.getBeanHandle();
-            stringList.add(handle.getName());
-        });
+
+    /*static*/ /*public*/ QList<QString> ProjectsCommonSubs::getArrayListOfSignalNames(QList<NBHSignal*> array) {
+        QList<QString> stringList = QList<QString>();
+        //array.forEach(row ->
+        foreach(NBHSignal* row, array)
+        {
+            NamedBeanHandle<NamedBean*>* handle = (NamedBeanHandle<NamedBean*>*) row->getBeanHandle();
+            stringList.append(handle->getName());
+        }//);
         return stringList;
     }
 
-    static /*public*/ ArrayList<NBHSignal> getArrayListOfSignals(ArrayList<String> signalNames) {
-        CtcManager cm = InstanceManager.getDefault(CtcManager.class);
-        ArrayList<NBHSignal> newList = new ArrayList<>();
-        signalNames.forEach(name -> {
-            NBHSignal newSignal = cm.getNBHSignal(name);
-            if (newSignal == null) {
+    /*static*/ /*public*/ QList<NBHSignal*> ProjectsCommonSubs::getArrayListOfSignals(QList<QString> signalNames) {
+        CtcManager* cm = (CtcManager*)InstanceManager::getDefault("CtcManager");
+        QList<NBHSignal*> newList = QList<NBHSignal*>();
+        //signalNames.forEach(name ->
+        foreach(QString name, signalNames)
+        {
+            NBHSignal* newSignal = cm->getNBHSignal(name);
+            if (newSignal == nullptr) {
                 newSignal = new NBHSignal(name);
             }
-            if (newSignal.valid()) {
-                newList.add(newSignal);
+            if (newSignal->valid()) {
+                newList.append(newSignal);
             }
-        });
+        }//);
         return newList;
     }
 
 //  Returns an ArrayList guaranteed to have exactly "returnArrayListSize" entries,
 //  and if the passed "csvString" has too few entries, then those missing end values are set to "":
-    static /*public*/ ArrayList<String> getFixedArrayListSizeFromCSV(String csvString, int returnArrayListSize) {
-        ArrayList<String> returnArray = getArrayListFromCSV(csvString);
-        while (returnArray.size() < returnArrayListSize) returnArray.add("");
+    /*static*/ /*public*/ QList<QString> getFixedArrayListSizeFromCSV(QString csvString, int returnArrayListSize) {
+        QList<QString> returnArray = ProjectsCommonSubs::getArrayListFromCSV(csvString);
+        while (returnArray.size() < returnArrayListSize) returnArray.append("");
         return returnArray;
     }
-#endif
+
     /*static*/ /*public*/ int ProjectsCommonSubs::getIntFromStringNoThrow(QString aString, int defaultValueIfProblem) {
         int returnValue = defaultValueIfProblem;    // Default if error
         bool ok;

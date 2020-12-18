@@ -302,7 +302,7 @@
         fireTableRowsInserted(old, rowCount-1);
     }
 }
-
+#endif
 /**
  *  Sets the number of rows in the model.  If the new size is greater
  *  than the current size, new rows are added to the end of the model
@@ -312,10 +312,22 @@
  *  @see #setColumnCount
  * @since 1.3
  */
-/*public*/ void setRowCount(int rowCount) {
-    setNumRows(rowCount);
+/*public*/ void DefaultTableModel::setRowCount(int rowCount) {
+    //setNumRows(rowCount);
+    int old = getRowCount();
+    if (old == rowCount) {
+        return;
+    }
+    dataVector.resize(rowCount);
+    if (rowCount <= old) {
+        fireTableRowsDeleted(rowCount, old-1);
+    }
+    else {
+        justifyRows(old, rowCount);
+        fireTableRowsInserted(old, rowCount-1);
+    }
 }
-
+#if 0
 /**
  *  Adds a row to the end of the model.  The new row will contain
  *  <code>null</code> values unless <code>rowData</code> is specified.

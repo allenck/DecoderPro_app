@@ -65,6 +65,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -956,6 +957,39 @@ if (_wrapper) {
   }
 }
   Editor::childEvent(event0);
+}
+bool  PythonQtShell_Editor::closedNormally()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("closedNormally");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("closedNormally", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Editor::closedNormally();
 }
 void PythonQtShell_Editor::componentMoved(QMoveEvent*  e0)
 {
@@ -5083,6 +5117,83 @@ if (_wrapper) {
 }
   JFrame::childEvent(event0);
 }
+bool  PythonQtShell_JFrame::closedNormally()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("closedNormally");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("closedNormally", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JFrame::closedNormally();
+}
+void PythonQtShell_JFrame::componentMoved(QMoveEvent*  arg__1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("componentMoved");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QMoveEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&arg__1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JFrame::componentMoved(arg__1);
+}
+void PythonQtShell_JFrame::componentResized(QResizeEvent*  arg__1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("componentResized");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QResizeEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&arg__1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JFrame::componentResized(arg__1);
+}
 void PythonQtShell_JFrame::contextMenuEvent(QContextMenuEvent*  event0)
 {
 if (_wrapper) {
@@ -6323,6 +6434,21 @@ void PythonQtWrapper_JFrame::addWindowListener(JFrame* theWrappedObject, WindowL
   ( theWrappedObject->addWindowListener(l));
 }
 
+bool  PythonQtWrapper_JFrame::closedNormally(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->closedNormally());
+}
+
+void PythonQtWrapper_JFrame::componentMoved(JFrame* theWrappedObject, QMoveEvent*  arg__1)
+{
+  ( theWrappedObject->componentMoved(arg__1));
+}
+
+void PythonQtWrapper_JFrame::componentResized(JFrame* theWrappedObject, QResizeEvent*  arg__1)
+{
+  ( theWrappedObject->componentResized(arg__1));
+}
+
 void PythonQtWrapper_JFrame::dispose(JFrame* theWrappedObject)
 {
   ( theWrappedObject->dispose());
@@ -6426,6 +6552,11 @@ void PythonQtWrapper_JFrame::setAlwaysOnTop(JFrame* theWrappedObject, bool  chec
 void PythonQtWrapper_JFrame::setBackground(JFrame* theWrappedObject, QColor  arg__1)
 {
   ( theWrappedObject->setBackground(arg__1));
+}
+
+void PythonQtWrapper_JFrame::setBounds(JFrame* theWrappedObject, QRect  r)
+{
+  ( theWrappedObject->setBounds(r));
 }
 
 void PythonQtWrapper_JFrame::setDefaultCloseOperation(JFrame* theWrappedObject, int  operation)
@@ -10173,6 +10304,11 @@ QVariant  PythonQtWrapper_JList::getSelectedValue(JList* theWrappedObject)
 QList<QModelIndex >  PythonQtWrapper_JList::getSelectedValues(JList* theWrappedObject)
 {
   return ( theWrappedObject->getSelectedValues());
+}
+
+bool  PythonQtWrapper_JList::isSelectionEmpty(JList* theWrappedObject)
+{
+  return ( theWrappedObject->isSelectionEmpty());
 }
 
 QModelIndex  PythonQtWrapper_JList::locationToIndex(JList* theWrappedObject, QPoint  arg__1)
@@ -14301,6 +14437,39 @@ if (_wrapper) {
 }
   JmriJFrame::childEvent(event0);
 }
+bool  PythonQtShell_JmriJFrame::closedNormally()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("closedNormally");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("closedNormally", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return JmriJFrame::closedNormally();
+}
 void PythonQtShell_JmriJFrame::componentMoved(QMoveEvent*  e0)
 {
 if (_wrapper) {
@@ -17220,6 +17389,39 @@ if (_wrapper) {
   }
 }
   LayoutEditor::childEvent(event0);
+}
+bool  PythonQtShell_LayoutEditor::closedNormally()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("closedNormally");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("closedNormally", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutEditor::closedNormally();
 }
 void PythonQtShell_LayoutEditor::componentMoved(QMoveEvent*  e0)
 {
@@ -32133,6 +32335,11 @@ int  PythonQtWrapper_LnTrafficController::getTransmittedMsgCount(LnTrafficContro
 bool  PythonQtWrapper_LnTrafficController::isXmtBusy(LnTrafficController* theWrappedObject)
 {
   return ( theWrappedObject->isXmtBusy());
+}
+
+void PythonQtWrapper_LnTrafficController::notify(LnTrafficController* theWrappedObject, LocoNetMessage*  m)
+{
+  ( theWrappedObject->notify(m));
 }
 
 void PythonQtWrapper_LnTrafficController::resetStatistics(LnTrafficController* theWrappedObject)

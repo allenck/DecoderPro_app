@@ -1157,6 +1157,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
  */
 //@Nonnull
 /*public*/ /*static*/ QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType) {
+    if (layoutTrack == nullptr) throw NullPointerException("layoutTrack is marked @NonNull but is null");
     return layoutTrack->getCoordsForConnectionType(connectionType);
 }
 
@@ -6967,24 +6968,24 @@ void LayoutEditor::undoMoveSelection() {
                 }
                 positionableLabel->rotate(positionableLabel->getDegrees() + 90);
             } catch (NullPointerException ex) {
-            }
+            log->warn("previously-ignored NPE", ex);}
         }
         if (reLocateFlag) {
             try {
                 positionable->setLocation((int) (newTopLeft.x() - cBounds.height()), (int) newTopLeft.y());
             } catch (NullPointerException ex) {
-
+             log->warn("previously-ignored NPE", ex);
             }
         }
     }
 
-    for (LayoutTrack* lt : *layoutTrackList) {
+    for (LayoutTrack* ltv : *layoutTrackList) {
         try {
-            QPointF newPoint = MathUtil::subtract(MathUtil::rotateDEG(lt->getCoordsCenter(), lowerLeft, 90), lowerLeft);
-            lt->setCoordsCenter(newPoint);
-            lt->rotateCoords(90);
+            QPointF newPoint = MathUtil::subtract(MathUtil::rotateDEG(ltv->getCoordsCenter(), lowerLeft, 90), lowerLeft);
+            ltv->setCoordsCenter(newPoint);
+            ltv->rotateCoords(90);
         } catch (NullPointerException ex) {
-
+         log->warn("previously-ignored NPE", ex);
         }
     }
 

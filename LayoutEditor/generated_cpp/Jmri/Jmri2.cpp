@@ -51,6 +51,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -2479,6 +2480,10 @@ PythonQtShell_LocoNetMessage::~PythonQtShell_LocoNetMessage() {
 LocoNetMessage* PythonQtWrapper_LocoNetMessage::new_LocoNetMessage()
 { 
 return new PythonQtShell_LocoNetMessage(); }
+
+LocoNetMessage* PythonQtWrapper_LocoNetMessage::new_LocoNetMessage(LocoNetMessage*  original)
+{ 
+return new PythonQtShell_LocoNetMessage(original); }
 
 LocoNetMessage* PythonQtWrapper_LocoNetMessage::new_LocoNetMessage(QString  s)
 { 
@@ -5523,6 +5528,11 @@ QString  PythonQtWrapper_Manager::getSystemNamePrefix(Manager* theWrappedObject)
 QString  PythonQtWrapper_Manager::getSystemPrefix(Manager* theWrappedObject) const
 {
   return ( theWrappedObject->getSystemPrefix());
+}
+
+QString  PythonQtWrapper_Manager::static_Manager_getSystemPrefix(QString  inputName)
+{
+  return (Manager::getSystemPrefix(inputName));
 }
 
 int  PythonQtWrapper_Manager::static_Manager_getSystemPrefixLength(QString  inputName) throw (NamedBean::BadSystemNameException)
@@ -10257,7 +10267,7 @@ if (_wrapper) {
 }
   return NetworkPortAdapter::getServiceType();
 }
-SystemConnectionMemo*  PythonQtShell_NetworkPortAdapter::getSystemConnectionMemo()
+SystemConnectionMemo*  PythonQtShell_NetworkPortAdapter::getSystemConnectionMemo() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -10976,6 +10986,39 @@ if (_wrapper) {
   }
 }
   PanelEditor::childEvent(event0);
+}
+bool  PythonQtShell_PanelEditor::closedNormally()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("closedNormally");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("closedNormally", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return PanelEditor::closedNormally();
 }
 void PythonQtShell_PanelEditor::componentMoved(QMoveEvent*  e0)
 {
@@ -15043,7 +15086,7 @@ if (_wrapper) {
 }
   return PortAdapter::getOutputStream();
 }
-SystemConnectionMemo*  PythonQtShell_PortAdapter::getSystemConnectionMemo()
+SystemConnectionMemo*  PythonQtShell_PortAdapter::getSystemConnectionMemo() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15567,7 +15610,7 @@ QDataStream*  PythonQtWrapper_PortAdapter::getOutputStream(PortAdapter* theWrapp
   return ( theWrappedObject->getOutputStream());
 }
 
-SystemConnectionMemo*  PythonQtWrapper_PortAdapter::getSystemConnectionMemo(PortAdapter* theWrappedObject)
+SystemConnectionMemo*  PythonQtWrapper_PortAdapter::getSystemConnectionMemo(PortAdapter* theWrappedObject) const
 {
   return ( theWrappedObject->getSystemConnectionMemo());
 }

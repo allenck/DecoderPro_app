@@ -21,6 +21,9 @@
 #include <QUrl>
 #include "class.h"
 #include "errorhandler.h"
+#include "ctc/ctcexception.h"
+#include "joptionpane.h"
+
 //#include "classmigrationmanager.h"
 
 /**
@@ -771,6 +774,13 @@ File userPrefsFile;*/
   //root = super.rootFromURL(url);
   XmlFile::setValidate(validate);
   root = doc.documentElement(); // get the root element of the document
+  if(root.tagName() != "layout-config")
+  {
+   int ret = JOptionPane::showOptionDialog(nullptr, "This may not be a valid panel xml file.\nDo you want to continue>", "Warning",
+                                           JOptionPane::OK_CANCEL_OPTION, JOptionPane::WARNING_MESSAGE);
+   if(ret > 0)
+    return false;
+  }
   // get the objects to load
   QDomNodeList items = root.childNodes();
   for (int i = 0; i<items.size(); i++)
@@ -1011,6 +1021,12 @@ File userPrefsFile;*/
                        "Unexpected error (Throwable)", nullptr, nullptr, &et);
 
    result = false;  // keep going, but return false to signal problem
+  }
+  catch (CTCException e)
+  {
+        creationErrorEncountered(nullptr, "loading from file " + url.path(),
+                "Unknown error (Exception)", nullptr, nullptr, &e);
+        result = false;
   }
   /*finally */
 

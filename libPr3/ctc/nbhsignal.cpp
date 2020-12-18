@@ -66,7 +66,7 @@
      */
     /*private*/ bool NBHSignal::setSignalType() {
         OtherData* otherData = ((CtcManager*)InstanceManager::getDefault("CtcManager"))->getOtherData();
-        return otherData->_mSignalSystemType == OtherData::SIGNAL_SYSTEM_TYPE::SIGNAL_SYSTEM_TYPES::SIGNALMAST ? true : false;
+        return otherData->_mSignalSystemType == OtherData::SIGNAL_SYSTEM_TYPE::SIGNALMAST ? true : false;
 
     }
 

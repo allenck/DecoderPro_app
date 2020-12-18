@@ -14,6 +14,8 @@
 #include "vptr.h"
 #include "profile.h"
 #include "profilemanager.h"
+#include <QAbstractAnimation>
+#include <QCheckBox>
 
 /**
  * Support the {@link jmri.util.FileUtil } static API while providing
@@ -833,11 +835,14 @@ public URL getURL(URI uri) {
  }
 
  widget->layout()->addWidget(list);
+ QCheckBox* cb = new QCheckBox(tr("Don't show this again"));
+ widget->layout()->addWidget(cb);
+
  QVariantList buttons = QVariantList() << tr("Ok") << tr("Cancel");
  while (true)
  {
   int retval = JOptionPane::showOptionDialog(nullptr, VPtr<QWidget>::asQVariant(widget),
-                                             "Select path", JOptionPane::QUESTION_MESSAGE, JOptionPane::OK_CANCEL_OPTION, QIcon(), buttons, QVariant());
+                                             "Select path",  JOptionPane::OK_CANCEL_OPTION,JOptionPane::QUESTION_MESSAGE, QIcon(), /*buttons*/QVariantList(), QVariant());
   if(retval == JOptionPane::CANCEL_OPTION)
    return "";
   QList<QListWidgetItem*> items = list->selectedItems();

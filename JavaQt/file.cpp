@@ -307,7 +307,10 @@ int File::getPrefixLength() {
   {
 //   this->path = fs.resolve(fs.normalize(parent),
 //                                   fs.normalize(child));
-      this->path = QFileInfo(parent).absoluteFilePath() /*+ pathSeparator*/ + /*QFileInfo(child).canonicalFilePath()*/child;
+   if(QFileInfo(parent).absoluteFilePath().endsWith(pathSeparator))
+    this->path = QFileInfo(parent).absoluteFilePath() + child;
+   else
+    this->path = QFileInfo(parent).absoluteFilePath() + pathSeparator + /*QFileInfo(child).canonicalFilePath()*/child;
   }
  }
  else

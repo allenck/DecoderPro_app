@@ -20,6 +20,7 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -8046,7 +8047,7 @@ if (_wrapper) {
 }
   return SerialPortAdapter::getServiceType();
 }
-SystemConnectionMemo*  PythonQtShell_SerialPortAdapter::getSystemConnectionMemo()
+SystemConnectionMemo*  PythonQtShell_SerialPortAdapter::getSystemConnectionMemo() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -9778,6 +9779,39 @@ if (_wrapper) {
 }
   return SignalHead::getLit();
 }
+QVector<QString >  PythonQtShell_SignalHead::getValidStateKeys()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getValidStateKeys");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QVector<QString >"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QVector<QString > returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getValidStateKeys", methodInfo, result);
+          } else {
+            returnValue = *((QVector<QString >*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return SignalHead::getValidStateKeys();
+}
 QVector<QString >  PythonQtShell_SignalHead::getValidStateNames()
 {
 if (_wrapper) {
@@ -9958,6 +9992,11 @@ bool  PythonQtWrapper_SignalHead::getHeld(SignalHead* theWrappedObject)
 bool  PythonQtWrapper_SignalHead::getLit(SignalHead* theWrappedObject)
 {
   return ( theWrappedObject->getLit());
+}
+
+QVector<QString >  PythonQtWrapper_SignalHead::getValidStateKeys(SignalHead* theWrappedObject)
+{
+  return ( theWrappedObject->getValidStateKeys());
 }
 
 QVector<QString >  PythonQtWrapper_SignalHead::getValidStateNames(SignalHead* theWrappedObject)
@@ -21891,7 +21930,7 @@ if (_wrapper) {
 }
   WindowListener::timerEvent(event0);
 }
-void PythonQtShell_WindowListener::windowClosed(QCloseEvent  arg__1)
+void PythonQtShell_WindowListener::windowClosed(QCloseEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21899,7 +21938,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("windowClosed");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "QCloseEvent"};
+      static const char* argumentList[] ={"" , "QCloseEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
@@ -21996,7 +22035,7 @@ int PythonQtShell_WindowListener::qt_metacall(QMetaObject::Call call, int id, vo
   int result = WindowListener::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-void PythonQtWrapper_WindowListener::windowClosed(WindowListener* theWrappedObject, QCloseEvent  arg__1)
+void PythonQtWrapper_WindowListener::windowClosed(WindowListener* theWrappedObject, QCloseEvent*  arg__1)
 {
   ( theWrappedObject->windowClosed(arg__1));
 }
