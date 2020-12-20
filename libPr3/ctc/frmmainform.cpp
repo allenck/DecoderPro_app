@@ -882,7 +882,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);
     }
 
@@ -900,7 +900,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);  // MUST BE AFTER "addWindowListener"!  BUG IN AWT/SWING!
     }
 
@@ -924,7 +924,7 @@
 //            }
 //        });
 
-        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);  // MUST BE AFTER "addWindowListener"!  BUG IN AWT/SWING!
     }
 
@@ -942,7 +942,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);  // MUST BE AFTER "addWindowListener"!  BUG IN AWT/SWING!
     }
 
@@ -962,7 +962,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);  // MUST BE AFTER "addWindowListener"!  BUG IN AWT/SWING!
     }
 
@@ -980,7 +980,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);  // MUST BE AFTER "addWindowListener"!  BUG IN AWT/SWING!
 #endif
     }
@@ -1001,7 +1001,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);  // MUST BE AFTER "addWindowListener"!  BUG IN AWT/SWING!
 #endif
     }
@@ -1026,7 +1026,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);  // MUST BE AFTER "addWindowListener"!  BUG IN AWT/SWING!
     }
 
@@ -1044,7 +1044,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_FrmCBWindowListener(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogUpdateWindowListener(dialog, this));
         dialog->setVisible(true);  // MUST BE AFTER "addWindowListener"!  BUG IN AWT/SWING!
     }
 
@@ -1136,7 +1136,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener2(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
 #endif
     }
 
@@ -1152,7 +1152,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener2(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
 #endif
     }
 
@@ -1181,7 +1181,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener2(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
     }
 
     /*private*/ void FrmMainForm::_mGUIDesignActionPerformed(/*java.awt.event.ActionEvent evt*/) {
@@ -1195,7 +1195,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener2(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
     }
 
     /*private*/ void FrmMainForm::_mMoveUpActionPerformed(/*java.awt.event.ActionEvent evt*/) {
@@ -1230,7 +1230,7 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener2(dialog,this));
+        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog,this));
     }
 
     /*private*/ void FrmMainForm::_mHelpAboutActionPerformed(/*java.awt.event.ActionEvent evt*/) {
@@ -1245,6 +1245,6 @@
 //                _mAnySubFormOpen = false;
 //            }
 //        });
-        dialog->addWindowListener(new FrmMain_dialogWindowListener2(dialog, this));
+        dialog->addWindowListener(new FrmMain_dialogWindowListener(dialog, this));
     }
 

@@ -270,6 +270,7 @@
         JPanel* panel1a = new JPanel(new QVBoxLayout());
         panel1a->layout()->addWidget(jRadioButton1);
         panel1a->layout()->addWidget(jRadioButton2);
+        panel1->layout()->addWidget(jLabel7);
         panel1->layout()->addWidget(panel1a);
         contentPaneLayout->addWidget(panel1);
         contentPaneLayout->addWidget(new JLabel(" "));
@@ -291,6 +292,7 @@
         JPanel* panel9a = new JPanel(new FlowLayout());
         panel9a->layout()->addWidget(_mSaveAndClose);
         ((QHBoxLayout*)panel9->layout())->addWidget(panel9a, 0, Qt::AlignHCenter);
+        contentPaneLayout->addWidget(panel9);
 #endif
         pack();
     }// </editor-fold>

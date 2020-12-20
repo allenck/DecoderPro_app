@@ -3,13 +3,15 @@
 
 #include <QObject>
 #include "ctcconstants.h"
+#include "propertychangelistener.h"
+#include "signaldirectionindicators.h"
 
 class Sensor;
 class LockedRoute;
 class LockedRoutesManager;
 class NBHSensor;
 class PropertyChangeListener;
-class SignalDirectionIndicatorsInterface;
+//class SignalDirectionIndicatorsInterface;
 class SignalDirectionLever;
 class SwitchDirectionIndicators;
 class SwitchDirectionLever;
@@ -32,7 +34,7 @@ class CodeButtonHandler : public QObject
                               int codeButtonDelayInMilliseconds,                              // If 0, REAL code button, if > 0, tower operations (simulated code button).
                               NBHSensor* osSectionOccupiedExternalSensor,                      // Required, if ACTIVE prevents turnout, lock or call on from occuring.
                               NBHSensor* osSectionOccupiedExternalSensor2,                     // Optional, if ACTIVE prevents turnout, lock or call on from occuring.
-                              SignalDirectionIndicatorsInterface* signalDirectionIndicators,   // Required
+                              SignalDirectionIndicators* signalDirectionIndicators,   // Required
                               SignalDirectionLever* signalDirectionLever,
                               SwitchDirectionIndicators* switchDirectionIndicators,
                               SwitchDirectionLever* switchDirectionLever,
@@ -43,6 +45,10 @@ class CodeButtonHandler : public QObject
                               IndicationLockingSignals* indicationLockingSignals, QObject *parent);            // Needed for check of adjacent OS Section(s), and optionally turnoutLock.
 
   /*public*/ void externalLockTurnout();
+  /*public*/ void removeAllListeners();
+  /*public*/ void cancelLockedRoute();
+  /*public*/ bool uniqueIDMatches(int uniqueID);
+  /*public*/ NBHSensor* getOSSectionOccupiedExternalSensor();
 
  signals:
 
@@ -58,7 +64,7 @@ class CodeButtonHandler : public QObject
   /*private*/ /*final*/ NBHSensor* _mOSSectionOccupiedExternalSensor;
   /*private*/ /*final*/ NBHSensor* _mOSSectionOccupiedExternalSensor2;
   /*private*/ /*final*/ PropertyChangeListener* _mOSSectionOccupiedExternalSensorPropertyChangeListener;
-  /*private*/ /*final*/ SignalDirectionIndicatorsInterface* _mSignalDirectionIndicators;
+  /*private*/ /*final*/ SignalDirectionIndicators* _mSignalDirectionIndicators;
   /*private*/ /*final*/ SignalDirectionLever* _mSignalDirectionLever;
   /*private*/ /*final*/ SwitchDirectionIndicators* _mSwitchDirectionIndicators;
   /*private*/ /*final*/ SwitchDirectionLever* _mSwitchDirectionLever;
@@ -69,7 +75,7 @@ class CodeButtonHandler : public QObject
   /*private*/ /*final*/ IndicationLockingSignals* _mIndicationLockingSignals;
   /*private*/ /*final*/ CodeButtonSimulator* _mCodeButtonSimulator;
   /*private*/ LockedRoute* _mLockedRoute = nullptr;
-  /*private*/ /*static*/ Sensor* initializePreconditioningEnabledSensor();
+  /*private*/ static Sensor* initializePreconditioningEnabledSensor();
   /*private*/ static /*final*/ Sensor* _mPreconditioningEnabledSensor;// = initializePreconditioningEnabledSensor();
   /*private*/ /*static*/ class PreconditioningData {
    public:
@@ -79,7 +85,54 @@ class CodeButtonHandler : public QObject
    friend class CodeButtonHandler;
   };
   /*private*/ PreconditioningData* _mPreconditioningData = new PreconditioningData();
+  /*private*/ void doCodeButtonPress();
+  /*private*/ bool possiblyAllowCallOn();
+  /*private*/ bool allowCallOnChange();
+  /*private*/ int getCurrentSignalDirectionLever(bool allowMergeInPreconditioning);
+  /*private*/ void possiblyAllowTurnoutChange();
+  /*private*/ bool allowTurnoutChange();
+  /*private*/ void notifyTurnoutLockObjectOfNewAlignment(int requestedState);
+  /*private*/ int getSwitchDirectionLeverRequestedState(bool allowMergeInPreconditioning);
+  /*private*/ bool switchDirectionIndicatorsInCorrespondence();
+  /*private*/ void possiblyAllowSignalDirectionChange();
+  /*private*/ bool allowSignalDirectionChangePart1();
+  /*private*/ bool allowSignalDirectionChangePart2(int presentSignalDirectionLever);
+  /*private*/ bool trafficLockingValid(int presentSignalDirectionLever);
+  /*private*/ void possiblyAllowLockChange();
+  /*private*/ bool allowLockChange();
+  /*private*/ bool routeClearedAcross();
+  /*private*/ bool turnoutPresentlyLocked();
+  /*private*/ bool isEitherOSSectionOccupied();
+  /*private*/ bool isPrimaryOSSectionOccupied();
+  /*private*/ bool areOSSensorsAvailableInRoutes();
 
+
+ private slots:
+  /*private*/ void codeButtonStateChange(PropertyChangeEvent* e);
+  /*private*/ void osSectionPropertyChangeEvent(PropertyChangeEvent* e);
+
+  friend class CodeButtonStateChangeListener;
+  friend class OsSectionPropertyChangeEventListener;
+};
+
+class CodeButtonStateChangeListener : public PropertyChangeListener
+{
+  Q_OBJECT
+  CodeButtonHandler* cbh;
+ public:
+  CodeButtonStateChangeListener(CodeButtonHandler* cbh) {this->cbh = cbh;}
+ public slots:
+  void propertyChange(PropertyChangeEvent* e) {cbh->codeButtonStateChange(e); }
+};
+
+class OsSectionPropertyChangeEventListener  : public PropertyChangeListener
+{
+  Q_OBJECT
+  CodeButtonHandler* cbh;
+ public:
+  OsSectionPropertyChangeEventListener(CodeButtonHandler* cbh) {this->cbh = cbh;}
+ public slots:
+  void propertyChange(PropertyChangeEvent* e) {cbh->osSectionPropertyChangeEvent(e); }
 };
 
 #endif // CODEBUTTONHANDLER_H

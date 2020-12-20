@@ -141,7 +141,7 @@ Columns::Columns(QObject *parent) : QObject(parent)
 
 /*public*/ void Columns::updateCurrentlySelectedColumnErrorStatus() {
 #if 1
-//    lazy1(_mEdit_CB_Prompt, FrmCB::dialogCodeButtonHandlerDataValid(_mCheckJMRIObject, _mSelectedCodeButtonHandlerData) ? Qt::black : Qt::red);
+    lazy1(_mEdit_CB_Prompt, FrmCB::dialogCodeButtonHandlerDataValid(_mCheckJMRIObject, _mSelectedCodeButtonHandlerData) ? Qt::black : Qt::red);
     lazy1(_mEdit_SIDI_Prompt, FrmSIDI::dialogCodeButtonHandlerDataValid(_mCheckJMRIObject, _mSelectedCodeButtonHandlerData) ? Qt::black : Qt::red);
     lazy1(_mEdit_SWDI_Prompt, FrmSWDI::dialogCodeButtonHandlerDataValid(_mCheckJMRIObject, _mSelectedCodeButtonHandlerData) ? Qt::black : Qt::red);
     lazy1(_mEdit_CO_Prompt, FrmCO::dialogCodeButtonHandlerDataValid(_mCheckJMRIObject, _mSelectedCodeButtonHandlerData) ? Qt::black : Qt::red);

@@ -404,6 +404,8 @@ void JFrame::closeEvent(QCloseEvent* e)
 //      ((Apps*)l)->windowClosing(e);
 //  else
   l->windowClosing(e);
+  if(e->isAccepted())
+   l->windowClosed(e);
  }
  switch (defaultCloseOperation) {
   case HIDE_ON_CLOSE:

@@ -1,10 +1,12 @@
 #include "lockedroutesmanager.h"
+#include "loggerfactory.h"
+#include "lockedroute.h"
 
 LockedRoutesManager::LockedRoutesManager(QObject *parent) : QObject(parent)
 {
 
 }
-#if 0
+#if 1
 /**
  * This object manages all of the active routes.
  * As of 6/24/2020:
@@ -37,11 +39,10 @@ LockedRoutesManager::LockedRoutesManager(QObject *parent) : QObject(parent)
  *
  * @author Gregory J. Bedlek Copyright (C) 2018, 2019, 2020
  */
-public class LockedRoutesManager {
-    private final static Logger log = LoggerFactory.getLogger(LockedRoutesManager.class);
-    private final ArrayList<LockedRoute> _mArrayListOfLockedRoutes = new ArrayList<>();
+///*public*/ class LockedRoutesManager {
+    /*private*/ /*final*/ /*static*/ Logger* LockedRoutesManager::log = LoggerFactory::getLogger("LockedRoutesManager");
 
-    public void clearAllLockedRoutes() {
+    /*public*/ void LockedRoutesManager::clearAllLockedRoutes() {
         _mArrayListOfLockedRoutes.clear();
     }
 
@@ -60,8 +61,8 @@ public class LockedRoutesManager {
      * @param ruleDescription rule description.
      * @return true if there is no overlap of resources, else returns false.
      */
-    public boolean checkRoute(HashSet<Sensor> sensors, String osSectionDescription, String ruleDescription) {
-        return privateCheckRoute(sensors, osSectionDescription, ruleDescription, false, false) != null; /* Passed rightTraffic: Don't care because checkTraffic = false! */
+    /*public*/ bool LockedRoutesManager::checkRoute(QSet<Sensor*> sensors, QString osSectionDescription, QString ruleDescription) {
+        return /*private*/CheckRoute(sensors, osSectionDescription, ruleDescription, false, false) != nullptr; /* Passed rightTraffic: Don't care because checkTraffic = false! */
     }
 
     /**
@@ -83,13 +84,13 @@ public class LockedRoutesManager {
      * @param rightTraffic true if right traffic, else false if left traffic
      * @return locked route if success, null if failed.
      */
-    public LockedRoute checkRouteAndAllocateIfAvailable(HashSet<Sensor> sensors, String osSectionDescription, String ruleDescription, boolean rightTraffic) {
-        LockedRoute newLockedRoute = privateCheckRoute(sensors, osSectionDescription, ruleDescription, true, rightTraffic);
-        if (newLockedRoute == null) return null;
+    /*public*/ LockedRoute* LockedRoutesManager::checkRouteAndAllocateIfAvailable(QSet<Sensor*> sensors, QString osSectionDescription, QString ruleDescription, bool rightTraffic) {
+        LockedRoute* newLockedRoute = /*private*/CheckRoute(sensors, osSectionDescription, ruleDescription, true, rightTraffic);
+        if (newLockedRoute == nullptr) return nullptr;
 //  Ran the gambit, no collision.  However, we may need to merge if there are common elements, since this may be a fleeting request of some kind:
-        if (existingLockedRouteThatHasCommonSensors == null) { // No conflict, not fleeting:
-            newLockedRoute.allocateRoute();
-            _mArrayListOfLockedRoutes.add(newLockedRoute);
+        if (existingLockedRouteThatHasCommonSensors == nullptr) { // No conflict, not fleeting:
+            newLockedRoute->allocateRoute();
+            _mArrayListOfLockedRoutes.append(newLockedRoute);
             return newLockedRoute;
         } else { // Merge here:
 /*          Background:
@@ -99,7 +100,7 @@ public class LockedRoutesManager {
                 It would be easiest to merge "newLockedRoute" into "existingLockedRouteThatHadFleeting", since that is the least work.
                 That is what "mergeRoutes" ASSUMES!
 */
-            existingLockedRouteThatHasCommonSensors.mergeRoutes(newLockedRoute);
+            existingLockedRouteThatHasCommonSensors->mergeRoutes(newLockedRoute);
             return existingLockedRouteThatHasCommonSensors;
         }
     }
@@ -107,17 +108,16 @@ public class LockedRoutesManager {
 /*  We leave a breadcrumb trail for "checkRouteAndAllocateIfAvailable", if we see a LockedRoute.AnyInCommonReturn.FLEETING,
     we note which entry created it, and since there can be no overlap, that is fine.
 */
-    private LockedRoute existingLockedRouteThatHasCommonSensors;
-    private LockedRoute privateCheckRoute(HashSet<Sensor> sensors, String osSectionDescription, String ruleDescription, boolean checkTraffic, boolean rightTraffic) {
-        existingLockedRouteThatHasCommonSensors = null;  // Flag none found.
-        LockedRoute newLockedRoute = new LockedRoute(this, sensors, osSectionDescription, ruleDescription, rightTraffic);
-        for (LockedRoute existingLockedRoute : _mArrayListOfLockedRoutes) { // Check against ALL others:
+    /*private*/ LockedRoute* LockedRoutesManager::CheckRoute(QSet<Sensor*> sensors, QString osSectionDescription, QString ruleDescription, bool checkTraffic, bool rightTraffic) {
+        existingLockedRouteThatHasCommonSensors = nullptr;  // Flag none found.
+        LockedRoute* newLockedRoute = new LockedRoute(this, sensors, osSectionDescription, ruleDescription, rightTraffic);
+        for (LockedRoute* existingLockedRoute : _mArrayListOfLockedRoutes) { // Check against ALL others:
 //  As of this moment, newLockedRoute has NOT allocated any resource(s).
 //  Later, it will be locked down IF it doesn't conflict here with any other existing route:
-            LockedRoute.AnyInCommonReturn anyInCommonReturn = newLockedRoute.anyInCommon(existingLockedRoute, checkTraffic, rightTraffic);
-            if (anyInCommonReturn == LockedRoute.AnyInCommonReturn.YES) { // Collision, invalid!
-                return null;
-            } else if (anyInCommonReturn == LockedRoute.AnyInCommonReturn.FLEETING) { // Note which one:
+            LockedRoute::AnyInCommonReturn anyInCommonReturn = newLockedRoute->anyInCommon(existingLockedRoute, checkTraffic, rightTraffic);
+            if (anyInCommonReturn == LockedRoute::AnyInCommonReturn::YES) { // Collision, invalid!
+                return nullptr;
+            } else if (anyInCommonReturn == LockedRoute::AnyInCommonReturn::FLEETING) { // Note which one:
                 existingLockedRouteThatHasCommonSensors = existingLockedRoute;
                 break;  // Can only be one!
             }
@@ -136,31 +136,33 @@ public class LockedRoutesManager {
      * so we can delete it from our master list.
      * It's already de-allocated all of its resources, but for safety call "removeAllListeners" anyways.
      */
-    public void cancelLockedRoute(LockedRoute lockedRoute) {
-        if (lockedRoute != null)  lockedRoute.removeAllListeners();  // Safety
-        _mArrayListOfLockedRoutes.remove(lockedRoute);      // Even null, no throw!
+    /*public*/ void LockedRoutesManager::cancelLockedRoute(LockedRoute* lockedRoute) {
+        if (lockedRoute != nullptr)  lockedRoute->removeAllListeners();  // Safety
+        _mArrayListOfLockedRoutes.removeOne(lockedRoute);      // Even null, no throw!
     }
 
     /**
      * Primarily called when the CTC system is restarted from within JMRI,
      * nothing else external to this module should call this.
      */
-    public void removeAllListeners() {
-        _mArrayListOfLockedRoutes.forEach((existingLockedRoute) -> {
-            existingLockedRoute.removeAllListeners();
-        });
+    /*public*/ void LockedRoutesManager::removeAllListeners() {
+        //_mArrayListOfLockedRoutes.forEach((existingLockedRoute) ->
+        foreach(LockedRoute* existingLockedRoute, _mArrayListOfLockedRoutes)
+        {
+            existingLockedRoute->removeAllListeners();
+        }//);
     }
 
     /**
      * Simple routine to dump all locked routes information.  Called from
      * CTCMain when the debug sensor goes active.
      */
-    void dumpAllRoutes() {
-        log.info("Locked Routes:");
-        for (LockedRoute lockedRoute : _mArrayListOfLockedRoutes) {
-            log.info(lockedRoute.dumpRoute());
+    void LockedRoutesManager::dumpAllRoutes() {
+        log->info("Locked Routes:");
+        for (LockedRoute* lockedRoute : _mArrayListOfLockedRoutes) {
+            log->info(lockedRoute->dumpRoute());
         }
-        log.info("--------------");
+        log->info("--------------");
     }
-}
+
 #endif

@@ -154,8 +154,8 @@
         contentPaneLayout->addWidget(jLabel5, 0, Qt::AlignHCenter);
 
         JPanel* panel3 = new JPanel(new FlowLayout());
-        ((QHBoxLayout*)panel3->layout())->addWidget(_mSaveAndClose,0, Qt::AlignCenter);
-
+        panel3->layout()->addWidget(_mSaveAndClose);
+        contentPaneLayout->addWidget(panel3, 0, Qt::AlignHCenter);
 
 #endif
         pack();

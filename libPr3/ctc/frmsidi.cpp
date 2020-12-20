@@ -222,7 +222,7 @@
     _mSIDI_TableOfRightToLeftTrafficExternalSignalNames = new JTable();
 
     setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
-    setTitle(tr("TitleSIDI"));
+    setTitle(tr("Edit signal direction indicators"));
 //    addWindowListener(new java.awt.event.WindowAdapter() {
 //        @Override
 //        /*public*/ void windowClosing(java.awt.event.WindowEvent evt) {
@@ -232,17 +232,17 @@
     addWindowListener(new FrmSIDI_windowListener(this));
 
     _mSIDI_LeftInternalSensorPrompt->setHorizontalAlignment(/*SwingConstants.RIGHT*/Qt::AlignRight);
-    _mSIDI_LeftInternalSensorPrompt->setText(tr("LabelSIDILeft"));
+    _mSIDI_LeftInternalSensorPrompt->setText(tr("Left indicator sensor:"));
 
     //_mSIDI_LeftInternalSensor->setModel(new DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
     _mSIDI_LeftInternalSensor->addItems({ "Item 1", "Item 2", "Item 3", "Item 4" });
     _mSIDI_NormalInternalSensorPrompt->setHorizontalAlignment(/*SwingConstants.RIGHT*/Qt::AlignRight);
-    _mSIDI_NormalInternalSensorPrompt->setText(tr("LabelSIDINormal"));
+    _mSIDI_NormalInternalSensorPrompt->setText(tr("Normal indicator sensor:"));
 
     //_mSIDI_NormalInternalSensor.setModel(new DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
     _mSIDI_NormalInternalSensor->addItems({ "Item 1", "Item 2", "Item 3", "Item 4" });
     _mSIDI_RightInternalSensorPrompt->setHorizontalAlignment(/*SwingConstants.RIGHT*/Qt::AlignRight);
-    _mSIDI_RightInternalSensorPrompt->setText(tr("LabelSIDIRight"));
+    _mSIDI_RightInternalSensorPrompt->setText(tr("Right indicator sensor:"));
 
     //_mSIDI_RightInternalSensor.setModel(new DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
     _mSIDI_RightInternalSensor->addItems({ "Item 1", "Item 2", "Item 3", "Item 4" });
@@ -251,13 +251,13 @@
 
     //_mSIDI_CodingAndResponseTime.setFormatterFactory(new text.DefaultFormatterFactory(new text.NumberFormatter(new java.text.DecimalFormat("#0"))));
     _mSIDI_CodingAndResponseTime->setValidator(new QIntValidator(0,1));
-    _mSIDI_LockTimeLabel->setText(tr("LabelSIDILockTime"));
+    _mSIDI_LockTimeLabel->setText(tr("Time locking interval milliseconds:"));
 
     //_mSIDI_TimeLockingInterval.setFormatterFactory(new text.DefaultFormatterFactory(new text.NumberFormatter(new java.text.DecimalFormat("#0"))));
     _mSIDI_TimeLockingInterval->setValidator(new QIntValidator(0,1));
 
 //    jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-    jLabel1->setText(tr("LabelSIDITrafficDirection"));
+    jLabel1->setText(tr("Traffic Direction"));
     jLabel1->setToolTip("");
 //    jLabel1.setHorizontalTextPosition(SwingConstants.CENTER);
 
@@ -282,7 +282,7 @@
     });
 
     _mSIDI_TrafficDirection->addButton(_mSIDI_RightTrafficButton);
-    _mSIDI_RightTrafficButton->setText(tr("LabelSIDIRightTraffic"));
+    _mSIDI_RightTrafficButton->setText(tr("Right"));
 //    _mSIDI_RightTrafficButton.addActionListener(new java.awt.event.ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(/*java.awt.event.ActionEvent evt*/) {
@@ -320,16 +320,16 @@
                 .addComponent(_mSIDI_RightTrafficButton)))
     );
 #else
-    JPanel* contentPane = new JPanel();
-    QVBoxLayout* contentPaneLayout;
-    contentPane->setLayout(contentPaneLayout = new QVBoxLayout());
-    setCentralWidget(contentPane);
+//    JPanel* contentPane = new JPanel();
+//    QVBoxLayout* contentPaneLayout;
+//    contentPane->setLayout(contentPaneLayout = new QVBoxLayout());
+//    setCentralWidget(contentPane);
 
 
 #endif
-    _mSIDI_SaveCloseLabel->setText(tr("InfoSIDICompact"));
+    _mSIDI_SaveCloseLabel->setText(tr("<- Compact is automatically done"));
 
-    _mSaveAndClose->setText(tr("ButtonSaveClose"));
+    _mSaveAndClose->setText(tr("Save and Close"));
 //    _mSaveAndClose.addActionListener(new java.awt.event.ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(/*java.awt.event.ActionEvent evt*/) {
@@ -398,9 +398,40 @@
             .addContainerGap(98, Short.MAX_VALUE))
     );
 #else
+    JPanel* contentPane = new JPanel();
+    QGridLayout* grid;
+    contentPane->setLayout(grid = new QGridLayout());
+    setCentralWidget(contentPane);
+
+    grid->addWidget(_mSIDI_LeftInternalSensorPrompt, 0, 0, 1, 1, Qt::AlignLeft);
+    grid->addWidget(_mSIDI_LeftInternalSensor, 0, 1);
+    grid->addWidget(_mTableOfLeftToRightTrafficSignalNamesPrompt, 0, 2);
+    grid->addWidget(_mTableOfRightToLeftTrafficSignalNamesPrompt, 0, 3);
+
+    grid->addWidget(_mSIDI_NormalInternalSensorPrompt, 1, 0, 1, 1, Qt::AlignLeft);
+    grid->addWidget(_mSIDI_NormalInternalSensor, 1,1);
+    grid->addWidget(_mSIDI_TableOfLeftToRightTrafficExternalSignalNames, 1, 2, -1, 1);
+    grid->addWidget(_mSIDI_TableOfRightToLeftTrafficExternalSignalNames, 1, 3, -1, 1);
+
+    grid->addWidget(_mSIDI_NormalInternalSensorPrompt, 2, 0, 1, 1, Qt::AlignRight);
+    grid->addWidget(_mSIDI_NormalInternalSensor, 2,1);
+
+    grid->addWidget(_mSIDI_LableCodeTimeLabel, 3,0, 1,1, Qt::AlignRight);
+    grid->addWidget(_mSIDI_CodingAndResponseTime, 3, 1);
+
+    grid->addWidget(_mSIDI_LockTimeLabel, 4, 0, 1, 1, Qt::AlignRight);
+    grid->addWidget(_mSIDI_TimeLockingInterval, 4,1);
+
+    grid->addWidget(_mSaveAndClose, 16, 0);
+    grid->addWidget(_mSIDI_SaveCloseLabel, 16, 1,1, Qt::AlignLeft);
+
+    grid->addWidget(_mSIDI_CompactListsLabel, 20, 2, 1, 2, Qt::AlignHCenter);
+
+    grid->addWidget(_mSIDI_ReapplyPatterns, 21, 0);
+    grid->addWidget(_mSIDI_CompactListsButton, 21,3);
 
 #endif
-    _mSIDI_CompactListsButton->setText(tr("ButtonSIDIBoth"));
+    _mSIDI_CompactListsButton->setText(tr("Compact both lists"));
 //    _mSIDI_CompactListsButton.addActionListener(new java.awt.event.ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(/*java.awt.event.ActionEvent evt*/) {
@@ -411,7 +442,7 @@
 
     _mSIDI_CompactListsLabel->setText(tr("To remove signal(s), just blank out the line(s), then press:"));
 
-    _mSIDI_ReapplyPatterns->setText(tr("ButtonReapply"));
+    _mSIDI_ReapplyPatterns->setText(tr("Reapply patterns - this form ONLY!"));
 //    _mSIDI_ReapplyPatterns.addActionListener(new java.awt.event.ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(/*java.awt.event.ActionEvent evt*/) {
@@ -538,6 +569,8 @@
             return types [columnIndex];
         }
     });
+#else
+    _mSIDI_TableOfLeftToRightTrafficExternalSignalNames->setModel(new DefaultTableModel(100, 1));
 #endif
     _mSIDI_TableOfLeftToRightTrafficExternalSignalNames->setRowHeight(18);
 //    jScrollPane1.setViewportView(_mSIDI_TableOfLeftToRightTrafficExternalSignalNames);
@@ -565,7 +598,7 @@
 #else
 #endif
 
-    _mTableOfRightToLeftTrafficSignalNamesPrompt->setText(tr("LabelSIDIRLTraffic"));
+    _mTableOfRightToLeftTrafficSignalNamesPrompt->setText(tr("Right to left traffic signal list:"));
 #if 0
     _mSIDI_TableOfRightToLeftTrafficExternalSignalNames.setModel(new table.DefaultTableModel(
         new Object [][] {
@@ -683,6 +716,8 @@
             return types [columnIndex];
         }
     });
+#else
+    _mSIDI_TableOfRightToLeftTrafficExternalSignalNames->setModel(new DefaultTableModel(100, 1));
 #endif
     _mSIDI_TableOfRightToLeftTrafficExternalSignalNames->setRowHeight(18);
 //    jScrollPane2.setViewportView(_mSIDI_TableOfRightToLeftTrafficExternalSignalNames);

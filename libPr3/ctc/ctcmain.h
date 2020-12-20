@@ -8,7 +8,7 @@
 #include "ctcexceptionbuffer.h"
 #include "lockedroutesmanager.h"
 #include <QMap>
-
+#include "lockedroutesmanager.h"
 
 class CTCSerialData;
 class Logger;
@@ -18,6 +18,7 @@ class CTCMain : public QObject
  public:
   explicit CTCMain(QObject *parent = nullptr);
   /*public*/ void externalLockTurnout();
+  /*public*/ bool _mCTCDebug_TrafficLockingRuleTriggeredDisplayLoggingEnabled = false;
 
 
  signals:
@@ -38,9 +39,11 @@ class CTCMain : public QObject
   /*private*/ Timer* _mLockTurnoutsTimer = nullptr;
   /*private*/ /*final*/ CTCExceptionBuffer* _mCTCExceptionBuffer = new CTCExceptionBuffer();
   void startup();
+  /*private*/ void shutdown();
 
  private slots:
   /*private*/ void handleCTCDebugSystemReload(PropertyChangeEvent* e);
+  /*private*/ void handleLogging(PropertyChangeEvent* e);
 
   friend class CtcRunAction;
 };

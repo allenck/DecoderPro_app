@@ -121,10 +121,19 @@
             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
 #else
-JPanel* contentPane = new JPanel();
-QVBoxLayout* contentPaneLayout;
-contentPane->setLayout(contentPaneLayout = new QVBoxLayout());
-setCentralWidget(contentPane);
+    JPanel* contentPane = new JPanel();
+    QGridLayout* grid;
+    contentPane->setLayout(grid = new QGridLayout());
+    setCentralWidget(contentPane);
+    grid->addWidget(jLabel26, 0, 0, 1, 2, Qt::AlignLeft);
+
+    grid->addWidget(jLabel21, 2, 1, 1, 1, Qt::AlignRight);
+    grid->addWidget(_mFleetingToggleInternalSensor, 2,2);
+
+    grid->addWidget(jLabel29, 3,1,1, 1, Qt::AlignRight);
+    grid->addWidget(_mDefaultFleetingEnabled, 3, 2);
+
+    grid->addWidget(_mSaveAndClose, 5, 2);
 
 #endif
     pack();

@@ -140,8 +140,8 @@ class FrmMainForm : public JFrame
 
   friend class FrmMain_windowListener;
   friend class FrmMain_listSelectionListener;
+  friend class FrmMain_dialogUpdateWindowListener;
   friend class FrmMain_dialogWindowListener;
-  friend class FrmMain_dialogWindowListener2;
   friend class FrmMain_FrmAddModifyCTCColumnWindowListener;
   friend class FrmTRL;
   friend class FrmTRL_Rules_windowListener;
@@ -174,13 +174,13 @@ class FrmMain_listSelectionListener : public ListSelectionListener
   }
 };
 
-class FrmMain_dialogWindowListener : public WindowAdapter
+class FrmMain_dialogUpdateWindowListener : public WindowAdapter
 {
   Q_OBJECT
   FrmMainForm* form;
   JFrame* dialog;
  public:
-  FrmMain_dialogWindowListener(JFrame* dialog, FrmMainForm* form)
+  FrmMain_dialogUpdateWindowListener(JFrame* dialog, FrmMainForm* form)
   {
    this->dialog = dialog;
    this->form = form;
@@ -195,13 +195,13 @@ class FrmMain_dialogWindowListener : public WindowAdapter
   }
 
 };
-class FrmMain_dialogWindowListener2 : public WindowAdapter
+class FrmMain_dialogWindowListener : public WindowAdapter
 {
   Q_OBJECT
   FrmMainForm* form;
   JFrame* dialog;
  public:
-  FrmMain_dialogWindowListener2(JFrame* dialog, FrmMainForm* form)
+  FrmMain_dialogWindowListener(JFrame* dialog, FrmMainForm* form)
   {
    this->dialog = dialog;
    this->form = form;

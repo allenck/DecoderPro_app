@@ -123,7 +123,7 @@
     //_mGUIDesign_NumberOfEmptyColumnsAtEnd->setFormatterFactory(new DefaultFormatterFactory(new NumberFormatter(new DecimalFormat("#0"))));
     _mGUIDesign_NumberOfEmptyColumnsAtEnd->setValidator(new QIntValidator());
 
-    jLabel19->setText(tr("LabelDlgGUIBlanks"));
+    jLabel19->setText(tr("Extra blank columns after last defined column to create:"));
 
     _mSaveAndClose->setText(tr("Save and Close"));
 //    _mSaveAndClose.addActionListener(new java.awt.event.ActionListener() {
@@ -167,8 +167,7 @@
 
     _mGUIDesign_AnalogClockEtc->setText(tr("Analog clock and clock on toggle"));
 
-    _mGUIDesign_CreateTrackPieces->setText(tr("Create variety of track pieces")
-    );
+    _mGUIDesign_CreateTrackPieces->setText(tr("Create variety of track pieces"));
     _mGUIDesign_CreateTrackPieces->setEnabled(false);
 
     _mGUIDesign_VerticalSize->addButton(jRadioButton3);
@@ -177,8 +176,8 @@
     _mGUIDesign_VerticalSize->addButton(jRadioButton4);
     jRadioButton4->setText(tr("850 pixels"));
 
-    _mGUIDesign_VerticalSize->addButton(jRadioButton5);
     jRadioButton5->setText(tr("900 pixels"));
+    _mGUIDesign_VerticalSize->addButton(jRadioButton5);
 
     jLabel4->setText(tr("Vertical size:"));
 
@@ -305,9 +304,49 @@
     );
 #else
     JPanel* contentPane = new JPanel();
-    contentPane->setLayout(new QVBoxLayout());
+    QGridLayout* grid;
+    contentPane->setLayout(grid = new QGridLayout());
     setCentralWidget(contentPane);
 
+    JPanel* panel1 = new JPanel(new QHBoxLayout());
+    panel1->layout()->addWidget(jLabel19);
+    panel1->layout()->addWidget(_mGUIDesign_NumberOfEmptyColumnsAtEnd);
+    grid->addWidget(panel1, 0,0);
+
+    grid->addWidget(jLabel2, 2, 0, 1,1, Qt::AlignRight);
+    grid->addWidget(jRadioButton1, 2, 1);
+    grid->addWidget(jLabel4, 2, 2, 1, 1);
+    grid->addWidget(jRadioButton3, 2, 4); //718
+
+    grid->addWidget(jRadioButton2, 3, 1);
+    grid->addWidget(jRadioButton4, 3, 4);
+
+    grid->addWidget(jRadioButton5, 4, 4);
+
+    grid->addWidget(jLabel3, 6, 0, 1, 1, Qt::AlignRight); // "Signals on panel:"
+    grid->addWidget(_mAllSignals, 6, 1);
+    grid->addWidget(_mGUIDesign_BuilderPlate, 6, 4);
+
+    grid->addWidget(jLabel1, 7, 1, 1,1, Qt::AlignLeft); // "Prototype selections:"
+
+    grid->addWidget(_mGreenOffOnly, 8, 1);
+
+    grid->addWidget(_mNone, 9, 1);
+
+    grid->addWidget(jLabel6, 11, 0, 1.1, Qt::AlignRight);
+    grid->addWidget(_mGUIDesign_TurnoutsOnPanel, 11,1);
+
+    grid->addWidget(_mGUIDesign_FleetingToggleSwitch, 14, 0);
+    grid->addWidget(_mGUIDesign_AnalogClockEtc, 15, 0);
+
+    grid->addWidget(_mGUIDesign_ReloadCTCSystemButton, 17, 0);
+    grid->addWidget(_mGUIDesign_CTCDebugOnToggle, 17,2);
+
+    grid->addWidget(_mGUIDesign_CreateTrackPieces, 18,0);
+    grid->addWidget(_mGUIDesign_OSSectionUnknownInconsistentRedBlink, 18, 2);
+    grid->addWidget(jLabel5, 19, 2);
+
+    grid->addWidget(_mSaveAndClose, 20, 2);
 #endif
     pack();
 }// </editor-fold>

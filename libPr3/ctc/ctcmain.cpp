@@ -4,7 +4,8 @@
 #include "codebuttonhandler.h"
 #include "ctcmanager.h"
 #include "instancemanager.h"
-
+#include "propertychangeevent.h"
+#include "codebuttonhandler.h"
 
 ///*public*/ class CTCMain {
 
@@ -26,29 +27,28 @@
     /*private*/ void CTCMain::handleCTCDebugSystemReload(PropertyChangeEvent* e) {
         if (e->getPropertyName() == ("KnownState") && (int)e->getNewValue().toInt() == Sensor::ACTIVE) {    // NOI18N
             log->info(tr("Shutting down existing CTC system"));          // NOI18N
-#if 0
+#if 1
             shutdown();
             startup();
 #endif
         }
     }
-#if 0
-    /*public*/ boolean _mCTCDebug_TrafficLockingRuleTriggeredDisplayLoggingEnabled = false;
-    /*private*/ void handleLogging(PropertyChangeEvent e) {
-        if (e.getPropertyName().equals("KnownState")) {         // NOI18N
-            _mCTCDebug_TrafficLockingRuleTriggeredDisplayLoggingEnabled = (int)e.getNewValue() == Sensor.ACTIVE;
-            if (_mCTCDebug_TrafficLockingRuleTriggeredDisplayLoggingEnabled) _mLockedRoutesManager.dumpAllRoutes();
+#if 1
+    /*private*/ void CTCMain::handleLogging(PropertyChangeEvent* e) {
+        if (e->getPropertyName() == ("KnownState")) {         // NOI18N
+            _mCTCDebug_TrafficLockingRuleTriggeredDisplayLoggingEnabled = (int)e->getNewValue().toInt() == Sensor::ACTIVE;
+            if (_mCTCDebug_TrafficLockingRuleTriggeredDisplayLoggingEnabled) _mLockedRoutesManager->dumpAllRoutes();
         }
     }
 
 //  This will insure all objects are disconnected from propertyChangeListeners:
-    /*private*/ void shutdown() {
-        for (CodeButtonHandler codeButtonHandler : _mCodeButtonHandlersArrayList) {
-            codeButtonHandler.removeAllListeners();
+    /*private*/ void CTCMain::shutdown() {
+        for (CodeButtonHandler* codeButtonHandler : _mCodeButtonHandlersArrayList) {
+            codeButtonHandler->removeAllListeners();
         }
-        _mLockedRoutesManager.removeAllListeners();
-        _mCTCDebugSystemReloadInternalSensor.removePropertyChangeListener(_mCTCDebugSystemReloadInternalSensorPropertyChangeListener);
-        _mCTCDebug_TrafficLockingRuleTriggeredDisplayInternalSensor.removePropertyChangeListener(_mCTCDebug_TrafficLockingRuleTriggeredDisplayInternalSensorPropertyChangeListener);
+        _mLockedRoutesManager->removeAllListeners();
+        _mCTCDebugSystemReloadInternalSensor->removePropertyChangeListener(_mCTCDebugSystemReloadInternalSensorPropertyChangeListener);
+        _mCTCDebug_TrafficLockingRuleTriggeredDisplayInternalSensor->removePropertyChangeListener(_mCTCDebug_TrafficLockingRuleTriggeredDisplayInternalSensorPropertyChangeListener);
     }
 #endif
     void CTCMain::startup() {
@@ -240,7 +240,7 @@
     }
 #if 0
 //  One shot routine:
-    /*private*/ /*final*/ java.awt.event.ActionListener lockTurnoutsTimerTicked = new java.awt.event.ActionListener() {
+    /*private*/ /*final*/ ActionListener lockTurnoutsTimerTicked = new java.awt.event.ActionListener() {
         @Override
         /*public*/ void actionPerformed(java.awt.event.ActionEvent evt) {
 //  Shut down this timer so this doesn't happen again:

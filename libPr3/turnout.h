@@ -97,7 +97,6 @@ public:
       INCONSISTENT = 0x08
      };
      Q_ENUM(STATES)
-
         /**
          * Constant representing an "closed" state, either in readback
          * or as a commanded state. Note that it's possible to be

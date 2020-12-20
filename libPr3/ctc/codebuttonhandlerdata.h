@@ -93,18 +93,18 @@ class CodeButtonHandlerData : public QObject
   at the top for "automatic" JMRI object verification.
   */
 
-      /*public*/ NBHSensor*            _mCodeButtonInternalSensor;
-      /*public*/ NBHSensor*            _mOSSectionOccupiedExternalSensor;              // Required
-      /*public*/ NBHSensor*            _mOSSectionOccupiedExternalSensor2;             // Optional
+      /*public*/ NBHSensor*            _mCodeButtonInternalSensor= nullptr;
+      /*public*/ NBHSensor*            _mOSSectionOccupiedExternalSensor = nullptr;              // Required
+      /*public*/ NBHSensor*            _mOSSectionOccupiedExternalSensor2= nullptr;             // Optional
       /*public*/ int                  _mOSSectionSwitchSlavedToUniqueID;
       /*public*/ int                  _mGUIColumnNumber;
       /*public*/ bool              _mGUIGeneratedAtLeastOnceAlready =false;
       /*public*/ int                  _mCodeButtonDelayTime;
   //  Signal Direction Indicators:
       /*public*/ bool              _mSIDI_Enabled = false;
-      /*public*/ NBHSensor*            _mSIDI_LeftInternalSensor;
-      /*public*/ NBHSensor*            _mSIDI_NormalInternalSensor;
-      /*public*/ NBHSensor*            _mSIDI_RightInternalSensor;
+      /*public*/ NBHSensor*            _mSIDI_LeftInternalSensor= nullptr;
+      /*public*/ NBHSensor*            _mSIDI_NormalInternalSensor= nullptr;
+      /*public*/ NBHSensor*            _mSIDI_RightInternalSensor= nullptr;
       /*public*/ int                  _mSIDI_CodingTimeInMilliseconds;
       /*public*/ int                  _mSIDI_TimeLockingTimeInMilliseconds;
       /*public*/ TRAFFIC_DIRECTION    _mSIDI_TrafficDirection;
@@ -112,14 +112,14 @@ class CodeButtonHandlerData : public QObject
       /*public*/ QList<NBHSignal*> _mSIDI_RightLeftTrafficSignals = QList<NBHSignal*>();
   //  Signal Direction Lever:
       /*public*/ bool              _mSIDL_Enabled;
-      /*public*/ NBHSensor*            _mSIDL_LeftInternalSensor;
-      /*public*/ NBHSensor*            _mSIDL_NormalInternalSensor;
-      /*public*/ NBHSensor*            _mSIDL_RightInternalSensor;
+      /*public*/ NBHSensor*            _mSIDL_LeftInternalSensor= nullptr;
+      /*public*/ NBHSensor*            _mSIDL_NormalInternalSensor= nullptr;
+      /*public*/ NBHSensor*            _mSIDL_RightInternalSensor= nullptr;
   //  Switch Direction Indicators:
       /*public*/ bool              _mSWDI_Enabled;
-      /*public*/ NBHSensor*            _mSWDI_NormalInternalSensor;
-      /*public*/ NBHSensor*            _mSWDI_ReversedInternalSensor;
-      /*public*/ NBHTurnout*           _mSWDI_ExternalTurnout;
+      /*public*/ NBHSensor*            _mSWDI_NormalInternalSensor= nullptr;
+      /*public*/ NBHSensor*            _mSWDI_ReversedInternalSensor= nullptr;
+      /*public*/ NBHTurnout*           _mSWDI_ExternalTurnout= nullptr;
       /*public*/ int                  _mSWDI_CodingTimeInMilliseconds;
       /*public*/ bool              _mSWDI_FeedbackDifferent;
       /*public*/ TURNOUT_TYPE         _mSWDI_GUITurnoutType;
@@ -127,10 +127,10 @@ class CodeButtonHandlerData : public QObject
       /*public*/ bool              _mSWDI_GUICrossoverLeftHand;
   //  Switch Direction Lever:
       /*public*/ bool              _mSWDL_Enabled;
-      /*public*/ NBHSensor*            _mSWDL_InternalSensor;
+      /*public*/ NBHSensor*            _mSWDL_InternalSensor= nullptr;
   //  Call On:
       /*public*/ bool              _mCO_Enabled;
-      /*public*/ NBHSensor*            _mCO_CallOnToggleInternalSensor;
+      /*public*/ NBHSensor*            _mCO_CallOnToggleInternalSensor= nullptr;
       /*public*/ QList<CallOnData*> _mCO_GroupingsList = QList<CallOnData*>();
   //  Traffic Locking:
       /*public*/ bool              _mTRL_Enabled;
@@ -138,19 +138,19 @@ class CodeButtonHandlerData : public QObject
       /*public*/ QList<TrafficLockingData*> _mTRL_RightTrafficLockingRules = QList<TrafficLockingData*>();
   //  Turnout Locking:
       /*public*/ bool              _mTUL_Enabled;
-      /*public*/ NBHSensor*            _mTUL_DispatcherInternalSensorLockToggle;
-      /*public*/ NBHTurnout*           _mTUL_ExternalTurnout;
+      /*public*/ NBHSensor*            _mTUL_DispatcherInternalSensorLockToggle= nullptr;
+      /*public*/ NBHTurnout*           _mTUL_ExternalTurnout= nullptr;
       /*public*/ bool              _mTUL_ExternalTurnoutFeedbackDifferent;
-      /*public*/ NBHSensor*            _mTUL_DispatcherInternalSensorUnlockedIndicator;
+      /*public*/ NBHSensor*            _mTUL_DispatcherInternalSensorUnlockedIndicator= nullptr;
       /*public*/ bool              _mTUL_NoDispatcherControlOfSwitch;
       /*public*/ bool              _mTUL_ndcos_WhenLockedSwitchStateIsClosed;
       /*public*/ bool              _mTUL_GUI_IconsEnabled;
       /*public*/ LOCK_IMPLEMENTATION  _mTUL_LockImplementation;
-      /*public*/ NBHTurnout*           _mTUL_AdditionalExternalTurnout1;
+      /*public*/ NBHTurnout*           _mTUL_AdditionalExternalTurnout1= nullptr;
       /*public*/ bool              _mTUL_AdditionalExternalTurnout1FeedbackDifferent;
-      /*public*/ NBHTurnout*           _mTUL_AdditionalExternalTurnout2;
+      /*public*/ NBHTurnout*           _mTUL_AdditionalExternalTurnout2= nullptr;
       /*public*/ bool              _mTUL_AdditionalExternalTurnout2FeedbackDifferent;
-      /*public*/ NBHTurnout*           _mTUL_AdditionalExternalTurnout3;
+      /*public*/ NBHTurnout*           _mTUL_AdditionalExternalTurnout3= nullptr;
       /*public*/ bool              _mTUL_AdditionalExternalTurnout3FeedbackDifferent;
   //  Indication Locking (Signals):
       /*public*/ bool              _mIL_Enabled;

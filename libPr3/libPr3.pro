@@ -1052,7 +1052,21 @@ SOURCES += \
     ctc/frmil.cpp \
     ctc/frmfleeting.cpp \
     ctc/frmpatterns.cpp \
-    ctc/frmfixerrors.cpp
+    ctc/frmfixerrors.cpp \
+    ctc/lockedroute.cpp \
+    ctc/reentrantlock.cpp \
+    ctc/signaldirectionindicators.cpp \
+    ctc/requesteddirectionobserved.cpp \
+    ctc/codebuttonsimulator.cpp \
+    ctc/switchdirectionlever.cpp \
+    ctc/signaldirectionlever.cpp \
+    ctc/switchdirectionindicators.cpp \
+    ctc/trafficlockinginfo.cpp \
+    ctc/fleeting.cpp \
+    ctc/callon.cpp \
+    ctc/switchindicatorsroute.cpp \
+    ctc/indicationlockingsignals.cpp \
+    ctc/trafficlocking.cpp
 
 
  !contains(FTDI, 1) {
@@ -2119,7 +2133,23 @@ HEADERS += \
     ctc/frmil.h \
     ctc/frmfleeting.h \
     ctc/frmpatterns.h \
-    ctc/frmfixerrors.h
+    ctc/frmfixerrors.h \
+    ctc/lockedroute.h \
+    ctc/reentrantlock.h \
+    ctc/lock.h \
+    ctc/signaldirectionindicators.h \
+    ctc/signaldirectionindicatorsinterface.h \
+    ctc/requesteddirectionobserved.h \
+    ctc/codebuttonsimulator.h \
+    ctc/switchdirectionlever.h \
+    ctc/signaldirectionlever.h \
+    ctc/switchdirectionindicators.h \
+    ctc/trafficlockinginfo.h \
+    ctc/fleeting.h \
+    ctc/callon.h \
+    ctc/switchindicatorsroute.h \
+    ctc/indicationlockingsignals.h \
+    ctc/trafficlocking.h
 
 
  !contains(FTDI, 1) {

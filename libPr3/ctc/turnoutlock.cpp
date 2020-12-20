@@ -1,10 +1,7 @@
 #include "turnoutlock.h"
+#include "ctcconstants.h"
 
-TurnoutLock::TurnoutLock(QObject *parent) : QObject(parent)
-{
-
-}
-#if 0
+#if 1
 /**
 This only works with Digitrax DS54's and DS64's configured to LOCALLY change the switch via either
 a pushbutton or toggle switch.  Specifically in JMRI / DS64 programmer, OpSw 21 SHOULD
@@ -41,72 +38,73 @@ point to lock the turnout, since this starts up with the turnout unlocked!
 
 ///*public*/ class TurnoutLock {
 
-    /*public*/ TurnoutLock( String userIdentifier,
-                        NBHSensor dispatcherSensorLockToggle,          // Toggle switch that indicates lock/unlock on the panel.  If None, then PERMANENTLY locked by the Dispatcher!
-                        NBHTurnout actualTurnout,                       // The turnout being locked: LTxx a real turnout, like LT69.
+    /*public*/ TurnoutLock::TurnoutLock( QString userIdentifier,
+                        NBHSensor* dispatcherSensorLockToggle,          // Toggle switch that indicates lock/unlock on the panel.  If None, then PERMANENTLY locked by the Dispatcher!
+                        NBHTurnout* actualTurnout,                       // The turnout being locked: LTxx a real turnout, like LT69.
                         bool actualTurnoutFeedbackDifferent,     // True / False, in case feedback backwards but switch command above isn't!
-                        NBHSensor dispatcherSensorUnlockedIndicator,   // Display unlocked status (when ACTIVE) back to the Dispatcher.
+                        NBHSensor* dispatcherSensorUnlockedIndicator,   // Display unlocked status (when ACTIVE) back to the Dispatcher.
                         bool noDispatcherControlOfSwitch,        // Dispatcher doesn't control the switch.  If TRUE, then provide:
                         int ndcos_WhenLockedSwitchState,            // When Dispatcher does lock, switch should be set to: CLOSED/THROWN
-                        CodeButtonHandlerData.LOCK_IMPLEMENTATION _mLockImplementation,  // Someday, choose which one to implement.  Right now, my own.
+                        CodeButtonHandlerData::LOCK_IMPLEMENTATION _mLockImplementation,  // Someday, choose which one to implement.  Right now, my own.
                         bool turnoutLocksEnabledAtStartup,
-                        NBHTurnout additionalTurnout1,
+                        NBHTurnout* additionalTurnout1,
                         bool additionalTurnout1FeebackReversed,
-                        NBHTurnout additionalTurnout2,
+                        NBHTurnout* additionalTurnout2,
                         bool additionalTurnout2FeebackReversed,
-                        NBHTurnout additionalTurnout3,
-                        bool additionalTurnout3FeebackReversed) {
+                        NBHTurnout* additionalTurnout3,
+                        bool additionalTurnout3FeebackReversed, QObject *parent) : QObject(parent) {
         _mDispatcherSensorLockToggle = dispatcherSensorLockToggle;
         addTurnoutMonitored(userIdentifier, "actualTurnout", actualTurnout, actualTurnoutFeedbackDifferent, true);
         _mDispatcherSensorUnlockedIndicator = dispatcherSensorUnlockedIndicator;
-        _mDispatcherSensorLockToggle.setKnownState(turnoutLocksEnabledAtStartup ? Sensor.INACTIVE : Sensor.ACTIVE);
+        _mDispatcherSensorLockToggle->setKnownState(turnoutLocksEnabledAtStartup ? Sensor::INACTIVE : Sensor::ACTIVE);
         _mNoDispatcherControlOfSwitch = noDispatcherControlOfSwitch;
         _m_ndcos_WhenLockedSwitchState = ndcos_WhenLockedSwitchState;
         addTurnoutMonitored(userIdentifier, "additionalTurnout1", additionalTurnout1, additionalTurnout1FeebackReversed, false);    // NOI18N
         addTurnoutMonitored(userIdentifier, "additionalTurnout2", additionalTurnout2, additionalTurnout2FeebackReversed, false);    // NOI18N
         addTurnoutMonitored(userIdentifier, "additionalTurnout3", additionalTurnout3, additionalTurnout3FeebackReversed, false);    // NOI18N
         updateDispatcherSensorIndicator(turnoutLocksEnabledAtStartup);
-        _mTurnoutsMonitoredPropertyChangeListener = (PropertyChangeEvent e) -> { handleTurnoutChange(e); };
-        for (NBHTurnout tempTurnout : _mTurnoutsMonitored) {
-            if (tempTurnout.getKnownState() == Turnout.UNKNOWN) {
-                tempTurnout.setCommandedState(_mCommandedState);    // MUST be done before "addPropertyChangeListener":
+        //_mTurnoutsMonitoredPropertyChangeListener = (PropertyChangeEvent e) -> { handleTurnoutChange(e); };
+        _mTurnoutsMonitoredPropertyChangeListener = new TurnoutsMonitoredPropertyChangeListener(this);
+        for (NBHTurnout* tempTurnout : _mTurnoutsMonitored) {
+            if (tempTurnout->getKnownState() == Turnout::UNKNOWN) {
+                tempTurnout->setCommandedState(_mCommandedState);    // MUST be done before "addPropertyChangeListener":
             }
-            tempTurnout.addPropertyChangeListener(_mTurnoutsMonitoredPropertyChangeListener);
+            tempTurnout->addPropertyChangeListener(_mTurnoutsMonitoredPropertyChangeListener);
         }
     }
 
-    /*public*/ void removeAllListeners() {
-        for (NBHTurnout tempTurnout : _mTurnoutsMonitored) {
-            tempTurnout.removePropertyChangeListener(_mTurnoutsMonitoredPropertyChangeListener);
+    /*public*/ void TurnoutLock::removeAllListeners() {
+        for (NBHTurnout* tempTurnout : _mTurnoutsMonitored) {
+            tempTurnout->removePropertyChangeListener(_mTurnoutsMonitoredPropertyChangeListener);
         }
     }
 
-    /*public*/ NBHSensor getDispatcherSensorLockToggle() { return _mDispatcherSensorLockToggle; }
+    /*public*/ NBHSensor* TurnoutLock::getDispatcherSensorLockToggle() { return _mDispatcherSensorLockToggle; }
 
-    /*private*/ void addTurnoutMonitored(String userIdentifier, String parameter, NBHTurnout actualTurnout, bool FeedbackDifferent, bool required) {
-        bool actualTurnoutPresent = actualTurnout.valid();
+    /*private*/ void TurnoutLock::addTurnoutMonitored(QString userIdentifier, QString parameter, NBHTurnout* actualTurnout, bool FeedbackDifferent, bool required) {
+        bool actualTurnoutPresent = actualTurnout->valid();
         if (required && !actualTurnoutPresent) {
-            (new CTCException("TurnoutLock", userIdentifier, parameter, Bundle.getMessage("RequiredTurnoutMissing"))).logError();   // NOI18N
+            ( CTCException("TurnoutLock", userIdentifier, parameter, tr("Required turnout missing"))).logError();   // NOI18N
             return;
         }
         if (actualTurnoutPresent) { // IF there is something there, try it:
-            if (actualTurnout.valid()) _mTurnoutsMonitored.add(actualTurnout);
+            if (actualTurnout->valid()) _mTurnoutsMonitored.append(actualTurnout);
         }
     }
 
 //  Was propertyChange:
-    /*private*/ void handleTurnoutChange(PropertyChangeEvent e) {
-        if (e.getPropertyName().equals("KnownState")) { // NOI18N
+    /*private*/ void TurnoutLock::handleTurnoutChange(PropertyChangeEvent* e) {
+        if (e->getPropertyName() == ("KnownState")) { // NOI18N
             if (_mLocked) {                                                 // Act on locked only!
-                NBHTurnout turnout = null;  // Not found.
+                NBHTurnout* turnout = nullptr;  // Not found.
                 for (int index = 0; index < _mTurnoutsMonitored.size(); index++) { // Find matching entry:
-                    if (e.getSource() == _mTurnoutsMonitored.get(index).getBean()) { // Matched:
-                        turnout = _mTurnoutsMonitored.get(index);
+                    if (e->getSource() == _mTurnoutsMonitored.at(index)->getBean()) { // Matched:
+                        turnout = _mTurnoutsMonitored.at(index);
                         break;
                     }
                 }
-                if (turnout != null) { // Safety check:
-                    if (_mCommandedState != turnout.getKnownState()) {      // Someone in the field messed with it:
+                if (turnout != nullptr) { // Safety check:
+                    if (_mCommandedState != turnout->getKnownState()) {      // Someone in the field messed with it:
                         turnoutSetCommandedState(turnout, _mCommandedState);       // Just directly restore it
                     }
                 }
@@ -120,25 +118,25 @@ up the lock status is UNLOCKED so that initialization code can do whatever to th
 This routine DOES NOT modify the state of the switch, ONLY the lock!
 */
     /*public*/ void TurnoutLock::externalLockTurnout() {
-        _mDispatcherSensorLockToggle.setKnownState(Sensor::INACTIVE);
+        _mDispatcherSensorLockToggle->setKnownState(Sensor::INACTIVE);
         updateDispatcherSensorIndicator(true);
     }
-#if 0
+
 //  Ditto above routine, except opposite:
-    /*public*/ void externalUnlockTurnout() {
-        _mDispatcherSensorLockToggle.setKnownState(Sensor.ACTIVE);
+    /*public*/ void TurnoutLock::externalUnlockTurnout() {
+        _mDispatcherSensorLockToggle->setKnownState(Sensor::ACTIVE);
         updateDispatcherSensorIndicator(false);
     }
 
 //  External software calls this (from CodeButtonHandler typically) to inform us of a valid code button push:
-    /*public*/ void codeButtonPressed() {
+    /*public*/ void TurnoutLock::codeButtonPressed() {
         bool newLockedState = getNewLockedState();
         if (newLockedState == _mLocked) return; // Nothing changed
 //  The PROTOTYPE would not do this: Since the dispatcher CANNOT control the state of the switch, and
 //  our operating crews (for example: "brains go dead going down the stairs") MAY forget to normalize the switch
 //  for the main (for instance), we FORCE the state of the switch(s) to a known state (hopefully for the main)
         if (_mNoDispatcherControlOfSwitch && newLockedState == true) { // No dispatcher control of switch and LOCKING them, "normalize" the switch:
-            for (NBHTurnout turnout : _mTurnoutsMonitored) {
+            for (NBHTurnout* turnout : _mTurnoutsMonitored) {
                 turnoutSetCommandedState(turnout, _m_ndcos_WhenLockedSwitchState);     // Make it so.
             }
         }
@@ -146,23 +144,23 @@ This routine DOES NOT modify the state of the switch, ONLY the lock!
     }
 
 // External software calls this (from CodeButtonHandler typically) to tell us of the new state of the turnout:
-    /*public*/ void dispatcherCommandedState(int commandedState) {
-        if (commandedState == CTCConstants.SWITCHNORMAL) _mCommandedState = Turnout.CLOSED; else _mCommandedState = Turnout.THROWN;
+    /*public*/ void TurnoutLock::dispatcherCommandedState(int commandedState) {
+        if (commandedState == CTCConstants::SWITCHNORMAL) _mCommandedState = Turnout::CLOSED; else _mCommandedState = Turnout::THROWN;
     }
 
-    /*public*/ bool turnoutPresentlyLocked() { return _mLocked; }
+    /*public*/ bool TurnoutLock::turnoutPresentlyLocked() { return _mLocked; }
 
-    /*public*/ bool getNewLockedState() {
-        return _mDispatcherSensorLockToggle.getKnownState() == Sensor.INACTIVE;
+    /*public*/ bool TurnoutLock::getNewLockedState() {
+        return _mDispatcherSensorLockToggle->getKnownState() == Sensor::INACTIVE;
     }
 
-    /*public*/ bool tryingToChangeLockStatus() { return getNewLockedState() != _mLocked; }
+    /*public*/ bool TurnoutLock::tryingToChangeLockStatus() { return getNewLockedState() != _mLocked; }
 
-    /*private*/ void turnoutSetCommandedState(NBHTurnout turnout, int state) {
+    /*private*/ void TurnoutLock::turnoutSetCommandedState(NBHTurnout* turnout, int state) {
         _mCommandedState = state;
-        turnout.setCommandedState(state);
+        turnout->setCommandedState(state);
     }
-#endif
+
     /*private*/ void TurnoutLock::updateDispatcherSensorIndicator(bool newLockedState) {
         _mLocked = newLockedState;
         _mDispatcherSensorUnlockedIndicator->setKnownState(_mLocked ? Sensor::INACTIVE : Sensor::ACTIVE);
