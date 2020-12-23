@@ -49,7 +49,8 @@ private:
 
 protected:
  /*protected*/ QString getMasterClassName();
-
+ /*protected*/ int verifyWarning(QString message);
+friend class PortalEditFrame;
 };
 
 #endif // PORTALTABBLEMODEL_H

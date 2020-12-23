@@ -4,6 +4,10 @@
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
 #include "libtables_global.h"
+#include "jlabel.h"
+#include "jcheckbox.h"
+#include "spinnernumbermodel.h"
+#include "jspinner.h"
 
 class BufferedImage;
 class Block;
@@ -58,14 +62,17 @@ private:
  QLabel* sysNameLabel;// = new JLabel(tr("LabelSystemName"));
  QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
 
+
  QComboBox* cur;// = new QComboBox*(curveOptions);
  JTextField* lengthField;// = new JTextField(7);
  JTextField* blockSpeed;// = new JTextField(7);
  QCheckBox* checkPerm;// = new QCheckBox(tr("BlockPermColName"));
 
- JTextField* numberToAdd;// = new JTextField(10);
- QCheckBox* range;// = new JCheckBox(tr("LabelNumberToAdd"));
- QCheckBox* _autoSystemName ;//= new JCheckBox(tr("LabelAutoSysName"));
+ SpinnerNumberModel* numberToAddSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+ JSpinner* numberToAddSpinner = new JSpinner(numberToAddSpinnerNumberModel);
+ JCheckBox* addRangeCheckBox = new JCheckBox(tr("Add a sequential range"));
+ JCheckBox* _autoSystemNameCheckBox = new JCheckBox(tr("Automatically generate System Name"));
+ JLabel* statusBar = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
  UserPreferencesManager* pref;
 
  QComboBox* speeds;// = new QComboBox*();

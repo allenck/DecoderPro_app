@@ -295,16 +295,16 @@ Columns::Columns(QObject *parent) : QObject(parent)
     }
 }
 
-/*private*/ void Columns::checkThisList(int ourUniqueID, int otherUniqueID, QString lr, QList<TrafficLockingData*> trafficLockingRules, QSet<QString> setOfUniqueIDs) {
+/*private*/ void Columns::checkThisList(int ourUniqueID, int otherUniqueID, QString lr, QList<TrafficLockingData*>* trafficLockingRules, QSet<QString> setOfUniqueIDs) {
     //trafficLockingRules.forEach(rule ->
-    foreach(TrafficLockingData* rule, trafficLockingRules)
+    foreach(TrafficLockingData* rule, *trafficLockingRules)
     {
-        QList<int> idList = rule->getUniqueIDs();
-        lazy3(ourUniqueID, otherUniqueID, lr, idList.at(0), setOfUniqueIDs);
-        lazy3(ourUniqueID, otherUniqueID, lr, idList.at(1), setOfUniqueIDs);
-        lazy3(ourUniqueID, otherUniqueID, lr, idList.at(2), setOfUniqueIDs);
-        lazy3(ourUniqueID, otherUniqueID, lr, idList.at(3), setOfUniqueIDs);
-        lazy3(ourUniqueID, otherUniqueID, lr, idList.at(4), setOfUniqueIDs);
+        QList<int>* idList = rule->getUniqueIDs();
+        lazy3(ourUniqueID, otherUniqueID, lr, idList->at(0), setOfUniqueIDs);
+        lazy3(ourUniqueID, otherUniqueID, lr, idList->at(1), setOfUniqueIDs);
+        lazy3(ourUniqueID, otherUniqueID, lr, idList->at(2), setOfUniqueIDs);
+        lazy3(ourUniqueID, otherUniqueID, lr, idList->at(3), setOfUniqueIDs);
+        lazy3(ourUniqueID, otherUniqueID, lr, idList->at(4), setOfUniqueIDs);
     }//);
 }
 

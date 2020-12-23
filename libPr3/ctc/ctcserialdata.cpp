@@ -130,12 +130,12 @@
  * @param uniqueIDBeingModified The uniqueID being checked.
  * @param replacementString The new sw/sig string.
  */
-/*private*/ void CTCSerialData::updateTrlUserText(QList<TrafficLockingData*> rulesToFix, int uniqueIDBeingModified, QString replacementString) {
+/*private*/ void CTCSerialData::updateTrlUserText(QList<TrafficLockingData*>* rulesToFix, int uniqueIDBeingModified, QString replacementString) {
     //rulesToFix.forEach(rule ->
-    foreach(TrafficLockingData* rule, rulesToFix)
+    foreach(TrafficLockingData* rule, *rulesToFix)
     {
         //rule->_mSwitchAlignments.forEach(alignment ->
-        foreach(TrafficLockingData::TRLSwitch* alignment, rule->_mSwitchAlignments)
+        foreach(TrafficLockingData::TRLSwitch* alignment, *rule->_mSwitchAlignments)
         {
             if (uniqueIDBeingModified == alignment->_mUniqueID) {
                 alignment->_mUserText = replacementString;

@@ -9723,8 +9723,15 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
 }
 
 
+/*public*/ void JTable::setDefaultRenderer(QString, QObject *)
+{
 
+}
 
+/*public*/ void JTable::setDefaultEditor(QString, QObject *)
+{
+
+}
 
 
 

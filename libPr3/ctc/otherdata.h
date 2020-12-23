@@ -117,7 +117,7 @@ class OtherData : public QObject
       /*public*/ bool  _mDefaultFleetingEnabled;
   //  Global startup:
       /*public*/ bool  _mTUL_EnabledAtStartup = true;
-      /*public*/ SIGNAL_SYSTEM_TYPE _mSignalSystemType;
+      /*public*/ SIGNAL_SYSTEM_TYPE _mSignalSystemType = SIGNAL_SYSTEM_TYPE::SIGNALHEAD;
       /*public*/ int      _mTUL_SecondsToLockTurnouts = 0;
   //  Next unique # for each created Column:
       /*public*/ int      _mNextUniqueNumber = 0;

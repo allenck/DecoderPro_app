@@ -17,7 +17,7 @@ class CallOnData : public QObject
   /*public*/ QString _mSignalAspectToDisplay;
   /*public*/ NBHSensor* _mCalledOnExternalSensor;
   /*public*/ NamedBeanHandle<Block*>* _mExternalBlock;
-  /*public*/ QList<NBHSensor*> _mSwitchIndicators;      // Up to 6 entries
+  /*public*/ QList<NBHSensor*>* _mSwitchIndicators;      // Up to 6 entries
   /*public*/ QList<QString> _mSwitchIndicatorNames;     // Temporary names during XML loading
   /*public*/ QString toString();
 

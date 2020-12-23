@@ -2,7 +2,10 @@
 #define OBLOCKTABLEPANEL_H
 #include "jpanel.h"
 #include "box.h"
+#include <QMenu>
 
+class RowSorter;
+class TableModel;
 class OBlockTableModel;
 class PortalTableModel;
 class SignalTableModel;
@@ -11,7 +14,7 @@ class JTabbedPane;
 class JTable;
 class TableFrames;
 class Logger;
-class OBlockTablePanel : public QWidget
+class OBlockTablePanel : public JPanel
 {
     Q_OBJECT
 public:
@@ -21,10 +24,15 @@ public:
                             BlockPortalTableModel* blockportals,
                             TableFrames* tf,
                             QString helpTarget,
-                            QWidget *parent);
+                            QWidget *parent = nullptr);
 
     /*public*/ void dispose();
 
+    /*public*/ JTable* makeJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ TableModel* model, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter);
+    /*public*/ void configureWarrantTable(JTable* table);
+    /*public*/ QAction* getPrintItem();
+    /*public*/ QMenu* getOptionMenu();
+    /*public*/ QMenu* getTablesMenu();
 
 private:
     static Logger* log;
@@ -45,14 +53,17 @@ private:
 
     /*private*/ /*final*/ JTabbedPane* oblockTabs;
     TableFrames* _tf;
-    Box* bottomBox;                  // panel at bottom for extra buttons etc
+    QWidget* bottomBox;                  // panel at bottom for extra buttons etc
     int bottomBoxIndex;             // index to insert extra stuff
     /*private*/ static /*final*/ int bottomStrutWidth;// = 20;
     void extras();
 
 protected:
-    /*protected*/ Box* getBottomBox();
+    /*protected*/ QWidget* getBottomBox();
+    /*protected*/ JTable* configureJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ JTable* table, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter);
+    /*protected*/ void addToBottomBox(QWidget* comp);
 
+    friend class OBlockTableAction;
 };
 
 #endif // OBLOCKTABLEPANEL_H

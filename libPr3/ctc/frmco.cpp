@@ -66,7 +66,7 @@
 //  Once you specify a model, then functions like JList->setListData may update the screen, but the model
 //  DOES NOT SEE ANY OF THE DATA!  Therefore, I have to load the data via the model instead of directly:
         _mDefaultListModel->clear(); // Superflous but doesn't hurt in case GUI designer put something in there.....
-        for (CallOnData* callOnData : _mCodeButtonHandlerData->_mCO_GroupingsList) {
+        for (CallOnData* callOnData : *_mCodeButtonHandlerData->_mCO_GroupingsList) {
             _mDefaultListModel->addElement(VPtr<CallOnData>::asQVariant(callOnData));
         }
         initOrig();
@@ -103,7 +103,7 @@
      /*public*/ /*static*/ bool FrmCO::dialogCodeButtonHandlerDataValid(CheckJMRIObject* checkJMRIObject, CodeButtonHandlerData* codeButtonHandlerData) {
          if (!codeButtonHandlerData->_mCO_Enabled) return true;  // Not enabled, can be no error!
  //  Checks:
-         for (CallOnData* callOnDataRow : codeButtonHandlerData->_mCO_GroupingsList) {
+         for (CallOnData* callOnDataRow : *codeButtonHandlerData->_mCO_GroupingsList) {
              if (!checkJMRIObject->validClass(VPtr<CallOnData>::asQVariant( callOnDataRow))) return false;
          }
          return checkJMRIObject->validClassWithPrefix(PREFIX, VPtr<CodeButtonHandlerData>::asQVariant(codeButtonHandlerData));
@@ -282,7 +282,7 @@
 
         jLabel4->setText(tr("Block:"));
 
-        jLabel16->setText(tr("Block"));
+        jLabel16->setText(tr("Block:"));
 
         jLabel17->setText(tr("For Signal Masts: the \"Permissive\" aspect needs to be set in the specified block, and additionally the occupancy sensor associated with it MUST be occupied."));
 
@@ -468,7 +468,71 @@
     contentPane->setLayout(new QVBoxLayout());
     setCentralWidget(contentPane);
 
+    QGridLayout* grid;
+    JPanel* panel1 =  new JPanel(grid = new QGridLayout());
+    grid->addWidget(_mGroupingsListPrompt, 0, 1, 1, 2, Qt::AlignLeft);
+    grid->addWidget(_mGroupingsList, 0, 2, 1, -1);
+    grid->addWidget(_mAddNew);
 
+    grid->addWidget(_mCO_CallOnToggleInternalSensorPrompt, 2, 0);
+    grid->addWidget(_mCO_CallOnToggleInternalSensor, 2, 1);
+    grid->addWidget(_mEditBelow, 2, 3);
+
+    grid->addWidget(_mDelete, 4, 3);
+    contentPane->layout()->addWidget(panel1);
+
+    JPanel* panel2 = new JPanel(grid = new QGridLayout());
+    grid->addWidget(jLabel5, 0, 0, 1, 2);
+
+    grid->addWidget(jLabel6, 1, 0, 1, 1, Qt::AlignRight); // Signal
+    grid->addWidget(jLabel11, 1, 2);
+
+    grid->addWidget(jLabel7, 2, 0, 1, 1, Qt::AlignRight); // Signal dacing direction
+    grid->addWidget(jLabel12, 2, 2);
+
+    grid->addWidget(jLabel8, 3, 0, 1, 1, Qt::AlignRight); // Aspect
+    grid->addWidget(jLabel13, 3, 2);
+
+    grid->addWidget(jLabel10, 4, 0, 1, 1, Qt::AlignRight); // called on sensor
+    grid->addWidget(jLabel15, 4, 2);
+
+    grid->addWidget(jLabel4, 5, 0, 1, 1, Qt::AlignRight); // Block
+    grid->addWidget(jLabel17, 5, 2);
+    contentPane->layout()->addWidget(panel2);
+
+    JPanel* panel3 = new JPanel(new QHBoxLayout());
+    panel3->layout()->addWidget(jLabel1);
+    panel3->layout()->addWidget(_mExternalSignal);
+    panel3->layout()->addWidget(_mSignalFacingDirection);
+    panel3->layout()->addWidget(jLabel18);
+    panel3->layout()->addWidget(_mSignalAspectToDisplay);
+    panel3->layout()->addWidget(jLabel3);
+    panel3->layout()->addWidget(_mCalledOnExternalSensor);
+    panel3->layout()->addWidget(jLabel16);
+    panel3->layout()->addWidget(_mExternalBlock);
+    contentPane->layout()->addWidget(panel3);
+
+    contentPane->layout()->addWidget(jLabel9);
+
+    JPanel* panel4 = new JPanel(new QHBoxLayout());
+    panel4->layout()->addWidget(jLabel14);
+    panel4->layout()->addWidget(_mCancel);
+    contentPane->layout()->addWidget(panel4);
+
+    JPanel* panel5 = new JPanel(new QHBoxLayout());
+    panel5->layout()->addWidget(_mSwitchIndicator1);
+    panel5->layout()->addWidget(_mSwitchIndicator2);
+    panel5->layout()->addWidget(_mSwitchIndicator3);
+    panel5->layout()->addWidget(_mSwitchIndicator4);
+    panel5->layout()->addWidget(_mSwitchIndicator5);
+    panel5->layout()->addWidget(_mSwitchIndicator6);
+    panel5->layout()->addWidget(_mGroupingListAddReplace);
+    contentPane->layout()->addWidget(panel5);
+
+    JPanel* panel6 = new JPanel(new FlowLayout());
+    panel6->layout()->addWidget(_mSaveAndClose);
+    panel6->layout()->addWidget(jButton2);
+    contentPane->layout()->addWidget(panel6);
 
 #endif
 
@@ -483,10 +547,10 @@
         _mCodeButtonHandlerData->_mCO_CallOnToggleInternalSensor = CommonSubs::getNBHSensor( _mCO_CallOnToggleInternalSensor->getSelectedItem(), false);
 
         int size = _mDefaultListModel->size();
-        _mCodeButtonHandlerData->_mCO_GroupingsList.clear();
+        _mCodeButtonHandlerData->_mCO_GroupingsList->clear();
         for (int index = 0; index < size; index++) {
             CallOnData* thisEntry = VPtr<CallOnData>::asPtr(_mDefaultListModel->getElementAt(index));
-            _mCodeButtonHandlerData->_mCO_GroupingsList.append(thisEntry);
+            _mCodeButtonHandlerData->_mCO_GroupingsList->append(thisEntry);
         }
         _mClosedNormally = true;
         _mAwtWindowProperties->saveWindowState(this, FORM_PROPERTIES);
@@ -531,13 +595,13 @@
         _mGroupingListAddReplace->setText(tr("TextDlgCOUpdateInstructions")); // NOI18N
         _mGroupingListAddReplace->setEnabled(true);
 
-        for (int i = 0; i < callOnData->_mSwitchIndicators.size(); i++) {
-            if (i == 0) _mSwitchIndicator1->setSelectedItem(callOnData->_mSwitchIndicators.at(i)->getHandleName());
-            if (i == 1) _mSwitchIndicator2->setSelectedItem(callOnData->_mSwitchIndicators.at(i)->getHandleName());
-            if (i == 2) _mSwitchIndicator3->setSelectedItem(callOnData->_mSwitchIndicators.at(i)->getHandleName());
-            if (i == 3) _mSwitchIndicator4->setSelectedItem(callOnData->_mSwitchIndicators.at(i)->getHandleName());
-            if (i == 4) _mSwitchIndicator5->setSelectedItem(callOnData->_mSwitchIndicators.at(i)->getHandleName());
-            if (i == 5) _mSwitchIndicator6->setSelectedItem(callOnData->_mSwitchIndicators.at(i)->getHandleName());
+        for (int i = 0; i < callOnData->_mSwitchIndicators->size(); i++) {
+            if (i == 0) _mSwitchIndicator1->setSelectedItem(callOnData->_mSwitchIndicators->at(i)->getHandleName());
+            if (i == 1) _mSwitchIndicator2->setSelectedItem(callOnData->_mSwitchIndicators->at(i)->getHandleName());
+            if (i == 2) _mSwitchIndicator3->setSelectedItem(callOnData->_mSwitchIndicators->at(i)->getHandleName());
+            if (i == 3) _mSwitchIndicator4->setSelectedItem(callOnData->_mSwitchIndicators->at(i)->getHandleName());
+            if (i == 4) _mSwitchIndicator5->setSelectedItem(callOnData->_mSwitchIndicators->at(i)->getHandleName());
+            if (i == 5) _mSwitchIndicator6->setSelectedItem(callOnData->_mSwitchIndicators->at(i)->getHandleName());
         }
 
 //        _mExternalSignal->requestFocusInWindow();
@@ -604,7 +668,7 @@
         }
         newCallOnData->_mExternalBlock = blockHandle;
 
-        QList<NBHSensor*> indcators = QList<NBHSensor*>();
+        QList<NBHSensor*>* indcators = new QList<NBHSensor*>();
         CommonSubs::addSensorToSensorList(indcators, _mSwitchIndicator1->getSelectedItem());
         CommonSubs::addSensorToSensorList(indcators, _mSwitchIndicator2->getSelectedItem());
         CommonSubs::addSensorToSensorList(indcators, _mSwitchIndicator3->getSelectedItem());

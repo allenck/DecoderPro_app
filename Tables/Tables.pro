@@ -91,7 +91,9 @@ SOURCES +=  slotmonitor.cpp \
     picksinglepanel.cpp \
     addnewdevicepanel.cpp \
     oblocktableframe.cpp \
-    oblocktablepanel.cpp
+    oblocktablepanel.cpp \
+    portaleditframe.cpp \
+    signaleditframe.cpp
 
 HEADERS += libtables_global.h \
     slotmonitor.h \
@@ -171,7 +173,9 @@ HEADERS += libtables_global.h \
     picksinglepanel.h \
     addnewdevicepanel.h \
     oblocktableframe.h \
-    oblocktablepanel.h
+    oblocktablepanel.h \
+    portaleditframe.h \
+    signaleditframe.h
 
 unix:!symbian {
     maemo5 {

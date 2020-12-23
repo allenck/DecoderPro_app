@@ -48,7 +48,7 @@ class FrmTRL : public JFrame
   /*private*/ QList<QString> getListOfExternalSensorsSlaved(   CodeButtonHandlerData* currentCodeButtonHandlerData,
                                                               QList<CodeButtonHandlerData*> codeButtonHandlerDataArrayList);
   /*private*/ void updateRuleCounts();
-  /*private*/ static bool valid(CheckJMRIObject* checkJMRIObject, QList<TrafficLockingData*> trafficLockingRules);
+  /*private*/ static bool valid(CheckJMRIObject* checkJMRIObject, QList<TrafficLockingData*>* trafficLockingRules);
   /*private*/ void initComponents();
   /*private*/ void formWindowClosing(QCloseEvent* evt);
 

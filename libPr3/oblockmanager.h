@@ -15,6 +15,7 @@ public:
     /*public*/ QString getSystemPrefix() const override;
     /*public*/ char typeLetter()const  override ;
     /*public*/ OBlock* createNewOBlock(QString systemName, QString userName);
+    /*public*/ OBlock* createNewOBlock(/*@Nonnull*/ QString userName);
     /*public*/ OBlock* getOBlock(QString name);
     /*public*/ NamedBean* getBySystemName(QString name)const override;
     /*public*/ NamedBean* getByUserName(QString key)const override;

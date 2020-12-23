@@ -42,14 +42,11 @@
 void MemoryTableAction::common()
 {
  addFrame = NULL;
- sysName = new JTextField(5);
- userName = new JTextField(5);
+ sysNameField = new JTextField(5);
+ userNameField = new JTextField(5);
  sysNameLabel = new QLabel(tr("System Name:"));
  userNameLabel = new QLabel(tr("User Name:"));
 
- numberToAdd = new JTextField(10);
- range = new QCheckBox(tr("Add Range Box"));
- autoSystemName = new QCheckBox(tr("Auto Sys Name"));
  systemNameAuto = QString(getClassName()) + ".AutoSystemName";
 
  log = new Logger("MemoryTableAction");
@@ -198,13 +195,16 @@ return "package.jmri.jmrit.beantable.MemoryTable";
 //            /*public*/ void actionPerformed(ActionEvent e) { cancelPressed(e); }
 //        };
   MtCancelListener* cancelListener = new MtCancelListener(this);
-  addFrame->getContentPane()->layout()->addWidget(new AddNewBeanPanel(sysName, userName, numberToAdd, range, autoSystemName, "OK", okListener, cancelListener));
-    }
-    if (p->getSimplePreferenceState(systemNameAuto)) {
-        autoSystemName->setChecked(true);
-    }
-    addFrame->adjustSize();
-    addFrame->setVisible(true);
+  addFrame->layout()->addWidget(new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, "ButtonCreate", okListener, cancelListener, statusBarLabel));
+ }
+ sysNameField->setBackground(Qt::white);
+ // reset status bar text
+ statusBarLabel->setText(tr("Enter a System Name and (optional) User Name."));
+ statusBarLabel->setForeground(Qt::gray);if (p->getSimplePreferenceState(systemNameAuto)) {
+     autoSystemNameBox->setChecked(true);
+ }
+ addFrame->pack();
+ addFrame->setVisible(true);
 }
 
 MtOkListener::MtOkListener(MemoryTableAction *act) : ActionListener()
@@ -235,12 +235,12 @@ void MemoryTableAction::okPressed(ActionEvent* /*e*/) {
 
     int numberOfMemory = 1;
 
-    if (range->isChecked())
+    if (rangeBox->isChecked())
     {
         bool bOk;
-            numberOfMemory = numberToAdd->text().toInt(&bOk);
+            numberOfMemory = numberToAddSpinner->text().toInt(&bOk);
         if(!bOk){
-            log->error("Unable to convert " + numberToAdd->text() + " to a number");
+            log->error("Unable to convert " + numberToAddSpinner->text() + " to a number");
 
             ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage("Error", "Number to memory items to Add must be a number!", "" , "", true, false);
             return;
@@ -259,29 +259,29 @@ void MemoryTableAction::okPressed(ActionEvent* /*e*/) {
         }
     }
 
-    QString user = userName->text();
+    QString user = userNameField->text();
     if (user == ("")) {
         user = "";
     }
-    QString sName = sysName->text();
+    QString sName = sysNameField->text();
     QString b;
     for (int x = 0; x < numberOfMemory; x++) {
         if (x != 0) {
             if (user != NULL) {
-                b =  (userName->text());
+                b =  (userNameField->text());
                 b.append(":");
                 b.append(QString::number(x));
                 user = b;
             }
-            if (!autoSystemName->isChecked()) {
-                b = sysName->text();
+            if (!autoSystemNameBox->isChecked()) {
+                b = sysNameField->text();
                 b.append(":");
                 b.append(QString::number(x));
                 sName = b;
             }
         }
         //try {
-            if (autoSystemName->isChecked()) {
+            if (autoSystemNameBox->isChecked()) {
                 if(InstanceManager::memoryManagerInstance()->newMemory(user) == NULL)
                 {
                     handleCreateException(sName);
@@ -300,7 +300,7 @@ void MemoryTableAction::okPressed(ActionEvent* /*e*/) {
 //            return; // without creating
 //        }
     }
-    p->setSimplePreferenceState(systemNameAuto, autoSystemName->isChecked());
+    p->setSimplePreferenceState(systemNameAuto, autoSystemNameBox->isChecked());
 }
 //private bool noWarn = false;
 

@@ -174,7 +174,7 @@
     });
 
     jLabel2->setHorizontalAlignment(Qt::AlignRight);
-    jLabel2->setText(tr("LabelDlgTULSensor"));
+    jLabel2->setText(tr("Dispatcher sensor lock toggle:"));
 
     //_mTUL_DispatcherInternalSensorLockToggle->setModel(new DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
     _mTUL_DispatcherInternalSensorLockToggle->addItems({ "Item 1", "Item 2", "Item 3", "Item 4" });
@@ -184,10 +184,10 @@
     jLabel4->setText(tr("Feedbacks different"));
 
     _mTUL_ActualTurnoutPrompt->setHorizontalAlignment(Qt::AlignRight);
-    _mTUL_ActualTurnoutPrompt->setText(tr("LabelDlgTULToName"));
+    _mTUL_ActualTurnoutPrompt->setText(tr("Actual turnout (required):"));
 
     jLabel6->setHorizontalAlignment(Qt::AlignRight);
-    jLabel6->setText(tr("LabelDlgTULInd"));
+    jLabel6->setText(tr("Dispatcher sensor unlocked indicator:"));
 
     //_mTUL_DispatcherInternalSensorUnlockedIndicator->setModel(new DefaultComboBoxModel<>(new String[] ));
     _mTUL_DispatcherInternalSensorUnlockedIndicator->clear();
@@ -203,7 +203,7 @@
     });
 
     jLabel7->setHorizontalAlignment(Qt::AlignRight);
-    jLabel7->setText(tr("LabelDlgTULNoDisp"));
+    jLabel7->setText(tr("No Dispatcher control of switch:"));
 
     _mTUL_GUI_IconsEnabled->setText(" ");
     _mTUL_GUI_IconsEnabled->setToolTip(tr("<html>If checked, the GUI icons will be included when writing the xml panel file.<br>If unchecked, the dispatcher will not be able to unlock the turnout.</html>"));
@@ -272,7 +272,7 @@
     });
 
     _mLabelDlgTULClosed->setHorizontalAlignment(Qt::AlignRight);
-    _mLabelDlgTULClosed->setText(tr("LabelDlgTULClosed"));
+    _mLabelDlgTULClosed->setText(tr("When locked, switch state is \"Closed\":"));
 
     _mTUL_ndcos_WhenLockedSwitchStateIsClosed->setText(" ");
     _mTUL_ndcos_WhenLockedSwitchStateIsClosed->setToolTip(tr("When enabled, the turnout will be set to Closed when locking."));
@@ -284,7 +284,7 @@
         .addGroup(layout.createSequentialGroup()
             .addGap(71, 71, 71)
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                .addComponent(jLabel6)
+                .addComponent(->at)
                 .addComponent(jLabel1)
                 .addComponent(jLabel11)
                 .addComponent(_mTUL_ActualTurnoutPrompt)
@@ -355,7 +355,7 @@
                 .addComponent(_mTUL_AdditionalExternalTurnout3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
             .addGap(6, 6, 6)
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel6)
+                .addComponent(->at)
                 .addComponent(_mTUL_DispatcherInternalSensorUnlockedIndicator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -380,9 +380,48 @@
     );
 #else
     JPanel* contentPane = new JPanel();
-    QVBoxLayout* contentPaneLayout;
-    contentPane->setLayout(contentPaneLayout = new QVBoxLayout());
+    QGridLayout* grid;
+    contentPane->setLayout(grid = new QGridLayout());
     setCentralWidget(contentPane);
+
+    grid->addWidget(jLabel2, 0, 0, 1, 1, Qt::AlignRight);
+    grid->addWidget(_mTUL_DispatcherInternalSensorLockToggle, 0, 1, 1, 3, Qt::AlignLeft);
+
+    grid->addWidget(_mTUL_ActualTurnoutPrompt, 1, 0, 1,1, Qt::AlignRight);
+    grid->addWidget(_mTUL_ExternalTurnout, 1, 1, 1, 2);
+    grid->addWidget(_mTUL_ExternalTurnoutFeedbackDifferent, 1, 3);
+    grid->addWidget(jLabel4, 1, 4, 1, 2);   // "Feedbacks different"
+
+    grid->addWidget(jLabel11, 2, 0);
+    grid->addWidget(_mTUL_AdditionalExternalTurnout1, 2, 2, 1, 2);
+    grid->addWidget(_mTUL_AdditionalExternalTurnout1FeedbackDifferent, 2, 3);
+
+    //grid->addWidget(jButton2, 3, 0, 1, 1, Qt::AlignRight);
+    grid->addWidget(_mTUL_AdditionalExternalTurnout2, 3, 2, 1, 2);
+    grid->addWidget(_mTUL_AdditionalExternalTurnout2FeedbackDifferent, 3, 3);
+
+    grid->addWidget(_mTUL_AdditionalExternalTurnout3, 4, 2, 1, 2);
+    grid->addWidget(_mTUL_AdditionalExternalTurnout3FeedbackDifferent, 4, 3);
+
+    grid->addWidget(jLabel6, 5, 0, 1,1, Qt::AlignRight);
+    grid->addWidget(_mTUL_DispatcherInternalSensorUnlockedIndicator, 5, 1, 1, 3);
+
+    grid->addWidget(_mTUL_NoDispatcherControlOfSwitch, 7, 1);
+    grid->addWidget(jLabel7, 7,0, 1,2, Qt::AlignRight);
+    grid->addWidget(new JLabel(tr("If this is checked, then ...")), 7, 2, 1, 2);
+
+    grid->addWidget(_mLabelDlgTULClosed, 8, 0, 1, 1, Qt::AlignRight);
+    grid->addWidget(_mTUL_ndcos_WhenLockedSwitchStateIsClosed, 8, 1);
+    grid->addWidget(new JLabel(tr("<- this is important to configure properly")), 8, 2, 1, 3);
+
+    grid->addWidget(jLabel1, 9, 0, 1, 1, Qt::AlignRight);
+    JPanel* panel9 = new JPanel(new QHBoxLayout());
+    panel9->layout()->addWidget(jRadioButton1);
+    panel9->layout()->addWidget(jRadioButton2);
+    grid->addWidget(panel9, 9, 2, 1, 3);
+
+    grid->addWidget(_mSaveAndClose, 11, 2, 1, 2, Qt::AlignHCenter);
+    grid->addWidget(jButton2, 12, 1, 1, 2);
 
 #endif
     pack();

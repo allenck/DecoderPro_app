@@ -51,7 +51,7 @@
                     _mDangerAppearance = "Stop";            // NOI18N // Never used, just required for "/*final*/"
                     _mNamedBeanHandleSignalMast = nullptr;
                     if (valid()) ((CtcManager*)InstanceManager::getDefault("CtcManager"))->putNBHSignal(signal, this);
-                    return;
+                     return;
                 }
             }
         }

@@ -17,7 +17,7 @@
 
 
 
-    /*public*/ TrafficLocking::TrafficLocking(QString userIdentifier, QList<TrafficLockingData *> _mTRL_LeftTrafficLockingRules, QList<TrafficLockingData*> _mTRL_RightTrafficLockingRules,
+    /*public*/ TrafficLocking::TrafficLocking(QString userIdentifier, QList<TrafficLockingData *>* _mTRL_LeftTrafficLockingRules, QList<TrafficLockingData *> *_mTRL_RightTrafficLockingRules,
                                               LockedRoutesManager* lockedRoutesManager, QObject* parent)
     {
         _mUserIdentifier = userIdentifier;                                      // Squirrel it
@@ -35,26 +35,26 @@
         addAllTrafficLockingEntries(_mUserIdentifier, _mRightTrafficLockingRulesList, "rightTrafficLockingRulesList", cbHashMap, swdiHashMap, _mRightTrafficLockingRulesArrayList);  // NOI18N
     }
 
-    /*private*/ void TrafficLocking::addAllTrafficLockingEntries(   QString                                                  userIdentifier,
-                                                QList<TrafficLockingData*>             trafficLockingRulesList,
+    /*private*/ void TrafficLocking::addAllTrafficLockingEntries(QString                                                  userIdentifier,
+                                                QList<TrafficLockingData *> *trafficLockingRulesList,
                                                 QString                                parameter,
                                                 QMap<int, CodeButtonHandler*>          cbHashMap,
                                                 QMap<int, SwitchDirectionIndicators*>  swdiHashMap,
-                                                QList<TrafficLockingRecord*>           trafficLockingRecordsQList) {  // <- Output
+                                                QList<TrafficLockingRecord*>*           trafficLockingRecordsQList) {  // <- Output
         //trafficLockingRulesList.forEach(row ->
-        foreach(TrafficLockingData* row, trafficLockingRulesList)
+        foreach(TrafficLockingData* row, *trafficLockingRulesList)
         {
             // Convert TrafficLockingData into a set of fixed size QLists
-            QList<NBHSensor*> occupancySensors = row->getOccupancySensors();
-            QList<NBHSensor*> optionalSensors = row->getOptionalSensors();
-            QList<int> ids = row->getUniqueIDs();
+            QList<NBHSensor*>* occupancySensors = row->getOccupancySensors();
+            QList<NBHSensor*>* optionalSensors = row->getOptionalSensors();
+            QList<int>* ids = row->getUniqueIDs();
             QList<QString> alignments = row->getAlignments();
 
-            int osSection1UniqueID = ids.at(0);
-            int osSection2UniqueID = ids.at(1);
-            int osSection3UniqueID = ids.at(2);
-            int osSection4UniqueID = ids.at(3);
-            int osSection5UniqueID = ids.at(4);
+            int osSection1UniqueID = ids->at(0);
+            int osSection2UniqueID = ids->at(1);
+            int osSection3UniqueID = ids->at(2);
+            int osSection4UniqueID = ids->at(3);
+            int osSection5UniqueID = ids->at(4);
 
             TrafficLockingRecord* trafficLockingRecord
                 = new TrafficLockingRecord( userIdentifier,
@@ -64,20 +64,20 @@
                                             getSwitchDirectionIndicatorSensor(osSection3UniqueID, alignments.at(2), swdiHashMap),
                                             getSwitchDirectionIndicatorSensor(osSection4UniqueID, alignments.at(3), swdiHashMap),
                                             getSwitchDirectionIndicatorSensor(osSection5UniqueID, alignments.at(4), swdiHashMap),
-                                            occupancySensors.at(0),
-                                            occupancySensors.at(1),
-                                            occupancySensors.at(2),
-                                            occupancySensors.at(3),
-                                            occupancySensors.at(4),
-                                            occupancySensors.at(5),
-                                            occupancySensors.at(6),
-                                            occupancySensors.at(7),
-                                            occupancySensors.at(8),
-                                            optionalSensors.at(0),
-                                            optionalSensors.at(1),
+                                            occupancySensors->at(0),
+                                            occupancySensors->at(1),
+                                            occupancySensors->at(2),
+                                            occupancySensors->at(3),
+                                            occupancySensors->at(4),
+                                            occupancySensors->at(5),
+                                            occupancySensors->at(6),
+                                            occupancySensors->at(7),
+                                            occupancySensors->at(8),
+                                            optionalSensors->at(0),
+                                            optionalSensors->at(1),
                                             row->_mRuleEnabled);
             if (!trafficLockingRecord->getOccupancySensors().isEmpty()) {
-                trafficLockingRecordsQList.append(trafficLockingRecord);
+                trafficLockingRecordsQList->append(trafficLockingRecord);
             }
         }//);
     }
@@ -87,18 +87,18 @@
         return validForTraffic(_mRightTrafficLockingRulesArrayList, true, fleetingEnabled);
     }
 
-    /*private*/ TrafficLockingInfo* TrafficLocking::validForTraffic(QList<TrafficLockingRecord*> trafficLockingRecordList, bool rightTraffic, bool fleetingEnabled) {
+    /*private*/ TrafficLockingInfo* TrafficLocking::validForTraffic(QList<TrafficLockingRecord*>* trafficLockingRecordList, bool rightTraffic, bool fleetingEnabled) {
         TrafficLockingInfo* returnValue = new TrafficLockingInfo(true);          // ASSUME valid return status
-        if (trafficLockingRecordList.isEmpty()) return returnValue; // No rules, OK all of the time.
+        if (trafficLockingRecordList->isEmpty()) return returnValue; // No rules, OK all of the time.
 //  If ALL are disabled, then treat as if nothing in there, always allow, otherwise NONE would be valid!
         bool anyEnabled = false;
-        for (int index = 0; index < trafficLockingRecordList.size(); index++) {
-            if (trafficLockingRecordList.at(index)->isEnabled()) { anyEnabled = true; break; }
+        for (int index = 0; index < trafficLockingRecordList->size(); index++) {
+            if (trafficLockingRecordList->at(index)->isEnabled()) { anyEnabled = true; break; }
         }
         if (!anyEnabled) return returnValue; // None enabled, always allow.
 
-        for (int index = 0; index < trafficLockingRecordList.size(); index++) {
-            TrafficLockingRecord* trafficLockingRecord = trafficLockingRecordList.at(index);
+        for (int index = 0; index < trafficLockingRecordList->size(); index++) {
+            TrafficLockingRecord* trafficLockingRecord = trafficLockingRecordList->at(index);
             if (trafficLockingRecord->isValid(fleetingEnabled)) {
 //  Ah, we found a rule that matches the route.  See if that route
 //  is in conflict with any other routes presently in effect:

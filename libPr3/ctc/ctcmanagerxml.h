@@ -36,11 +36,11 @@ class CtcManagerXml : public AbstractNamedBeanManagerConfigXML
   QDomElement storeSignal(QString elementName, NBHSignal* signal);
   QDomElement storeTurnout(QString elementName, NBHTurnout* turnout);
   QDomElement storeBlock(QString elementName, NamedBeanHandle<Block*>* block);
-  QDomElement storeSensorList(QString elementName, QList<NBHSensor*> sensors);
-  QDomElement storeSignalList(QString elementName, QList<NBHSignal*> _signals);
-  QDomElement storeCallOnList(QString elementName, QList<CallOnData*> callOnList);
-  QDomElement storeTRLRules(QString elementName, QList<TrafficLockingData*> trlList);
-  QDomElement storeTRLSwitches(QString elementName, QList<TrafficLockingData::TRLSwitch*> trlSwitches);
+  QDomElement storeSensorList(QString elementName, QList<NBHSensor*>* sensors);
+  QDomElement storeSignalList(QString elementName, QList<NBHSignal*>* _signals);
+  QDomElement storeCallOnList(QString elementName, QList<CallOnData *> *callOnList);
+  QDomElement storeTRLRules(QString elementName, QList<TrafficLockingData*>* trlList);
+  QDomElement storeTRLSwitches(QString elementName, QList<TrafficLockingData::TRLSwitch*>* trlSwitches);
   QDomElement storeTULAdditionalTurnouts(QString elementName, CodeButtonHandlerData* cbhd);
   QDomElement createAdditionalTurnoutEntry(NBHTurnout* turnout, bool turnoutFeedback);
   void loadOtherData(CtcManager* cm,  QDomElement el);
@@ -51,13 +51,13 @@ class CtcManagerXml : public AbstractNamedBeanManagerConfigXML
   NBHSignal* loadSignal( QDomElement element);
   NBHTurnout* loadTurnout( QDomElement element,  QDomElement feedback);
   NamedBeanHandle<Block*>* loadBlock( QDomElement element);
-  QList<NBHSensor*> getSensorList( QDomElement element);
-  QList<NBHSignal *> getSignalList( QDomElement element);
-  QList<CallOnData*> getCallOnList( QDomElement element);
+  QList<NBHSensor*>* getSensorList( QDomElement element);
+  QList<NBHSignal *>* getSignalList( QDomElement element);
+  QList<CallOnData*>* getCallOnList( QDomElement element);
   QList<QString> getCallOnSensorNames( QDomElement element);
   void convertCallOnSensorNamesToNBHSensors(CtcManager* cm);
-  QList<TrafficLockingData*> getTrafficLocking( QDomElement element);
-  QList<TrafficLockingData::TRLSwitch*> getTRLSwitchList( QDomElement element);
+  QList<TrafficLockingData*>* getTrafficLocking( QDomElement element);
+  QList<TrafficLockingData::TRLSwitch*>* getTRLSwitchList( QDomElement element);
   void loadAdditionalTurnouts( QDomElement element, CodeButtonHandlerData* cbhd);      // TUL_AdditionalExternalTurnouts
 
 };

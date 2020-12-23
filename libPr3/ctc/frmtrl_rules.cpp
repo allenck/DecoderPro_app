@@ -38,15 +38,15 @@
 
     /*private*/ void FrmTRL_Rules::initOrig() {
         for (int index = 0; index < _mTrafficLockingModel->size(); index++) {
-            _mTrafficLockingRulesOrig.append(VPtr<TrafficLockingData>::asPtr(_mTrafficLockingModel->get(index)));
+            _mTrafficLockingRulesOrig->append(VPtr<TrafficLockingData>::asPtr(_mTrafficLockingModel->get(index)));
         }
     }
 
     /*private*/ bool FrmTRL_Rules::dataChanged() {
         int ruleListSize = _mTrafficLockingModel->size();
-        if (ruleListSize != _mTrafficLockingRulesOrig.size()) return true;
+        if (ruleListSize != _mTrafficLockingRulesOrig->size()) return true;
         for (int index = 0; index < ruleListSize; index++) {
-            if (VPtr<TrafficLockingData>::asPtr( _mTrafficLockingModel->get(index)) != (_mTrafficLockingRulesOrig.at(index))) return true;
+            if (VPtr<TrafficLockingData>::asPtr( _mTrafficLockingModel->get(index)) != (_mTrafficLockingRulesOrig->at(index))) return true;
         }
         return false;
     }
@@ -65,7 +65,7 @@
         _mArrayListOfSelectableOSSectionUniqueIDs = CommonSubs::getArrayListOfSelectableOSSectionUniqueIDs(_mCTCSerialData->getCodeButtonHandlerDataArrayList());
         QString identifier = codeButtonHandlerData->myShortStringNoComma();
 
-        QList<TrafficLockingData*> trafficLockingRules;
+        QList<TrafficLockingData*>* trafficLockingRules;
         if (isLeftTraffic) {
             this->setTitle(tr("Edit Left traffic locking rules for") + " " + identifier);    // NOI18N
             _mRulesInfo->setText(tr("If ANY of these rules are true, then the Left Traffic Direction Lever is allowed to be coded."));             // NOI18N
@@ -78,7 +78,7 @@
         _mTrafficLockingModel = new DefaultListModel();
         _mTRL_TrafficLockingRules->setModel(_mTrafficLockingModel);
         //trafficLockingRules.forEach(rule ->
-        foreach(TrafficLockingData*rule, trafficLockingRules)
+        foreach(TrafficLockingData*rule, *trafficLockingRules)
         {
             _mTrafficLockingModel->addElement(VPtr<TrafficLockingData>::asQVariant( rule));
         }//);
@@ -548,7 +548,7 @@
     }// </editor-fold>
 
     /*private*/ void FrmTRL_Rules::_mSaveAndCloseActionPerformed(/*java.awt.event.ActionEvent evt*/) {
-        QList<TrafficLockingData*> trafficLockingRules;
+        QList<TrafficLockingData*>* trafficLockingRules;
         if (_mIsLeftTraffic) {
             trafficLockingRules = _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules;
         } else {
@@ -556,9 +556,9 @@
         }
 
         int size = _mTrafficLockingModel->getSize();
-        trafficLockingRules.clear();
+        trafficLockingRules->clear();
         for (int index = 0; index < size; index++) {
-            trafficLockingRules.append(VPtr<TrafficLockingData>::asPtr( _mTrafficLockingModel->getElementAt(index)));
+            trafficLockingRules->append(VPtr<TrafficLockingData>::asPtr( _mTrafficLockingModel->getElementAt(index)));
         }
         _mClosedNormally = true;
         _mAwtWindowProperties->saveWindowState(this, FORM_PROPERTIES);
@@ -623,29 +623,29 @@
 
         TrafficLockingData* trafficLockingData = VPtr<TrafficLockingData>::asPtr( _mTrafficLockingModel->get(selectedIndex));
 
-        QList<NBHSensor*> occupancySensors = trafficLockingData->getOccupancySensors();
-        QList<NBHSensor*> optionalSensors = trafficLockingData->getOptionalSensors();
-        QList<int> ids = trafficLockingData->getUniqueIDs();
+        QList<NBHSensor*>* occupancySensors = trafficLockingData->getOccupancySensors();
+        QList<NBHSensor*>* optionalSensors = trafficLockingData->getOptionalSensors();
+        QList<int>* ids = trafficLockingData->getUniqueIDs();
         QList<QString> alignments = trafficLockingData->getAlignments();
 
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor1, "Sensor", occupancySensors.at(0)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor2, "Sensor", occupancySensors.at(1)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor3, "Sensor", occupancySensors.at(2)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor4, "Sensor", occupancySensors.at(3)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor5, "Sensor", occupancySensors.at(4)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor6, "Sensor", occupancySensors.at(5)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor7, "Sensor", occupancySensors.at(6)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor8, "Sensor", occupancySensors.at(7)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor9, "Sensor", occupancySensors.at(8)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor1, "Sensor", occupancySensors->at(0)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor2, "Sensor", occupancySensors->at(1)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor3, "Sensor", occupancySensors->at(2)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor4, "Sensor", occupancySensors->at(3)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor5, "Sensor", occupancySensors->at(4)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor6, "Sensor", occupancySensors->at(5)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor7, "Sensor", occupancySensors->at(6)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor8, "Sensor", occupancySensors->at(7)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOccupancyExternalSensor9, "Sensor", occupancySensors->at(8)->getHandleName(), true);
 
-        CommonSubs::populateJComboBoxWithBeans(_mOptionalExternalSensor1, "Sensor", optionalSensors.at(0)->getHandleName(), true);
-        CommonSubs::populateJComboBoxWithBeans(_mOptionalExternalSensor2, "Sensor", optionalSensors.at(1)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOptionalExternalSensor1, "Sensor", optionalSensors->at(0)->getHandleName(), true);
+        CommonSubs::populateJComboBoxWithBeans(_mOptionalExternalSensor2, "Sensor", optionalSensors->at(1)->getHandleName(), true);
 
-        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry1, _mCTCSerialData, ids.at(0));
-        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry2, _mCTCSerialData, ids.at(1));
-        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry3, _mCTCSerialData, ids.at(2));
-        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry4, _mCTCSerialData, ids.at(3));
-        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry5, _mCTCSerialData, ids.at(4));
+        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry1, _mCTCSerialData, ids->at(0));
+        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry2, _mCTCSerialData, ids->at(1));
+        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry3, _mCTCSerialData, ids->at(2));
+        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry4, _mCTCSerialData, ids->at(3));
+        CommonSubs::setSelectedIndexOfJComboBoxViaUniqueID(_mOS_NumberEntry5, _mCTCSerialData, ids->at(4));
 
         _mSwitchAlignment1->setSelectedItem(alignments.at(0));
         _mSwitchAlignment2->setSelectedItem(alignments.at(1));
@@ -672,7 +672,7 @@
         trafficLockingData->_mRuleEnabled = _mRuleEnabled->isChecked() ? tr("Enabled") : tr("Disabled");  // NOI18N
         trafficLockingData->_mDestinationSignalOrComment = _mDestinationSignalOrComment->text();
 
-        QList<NBHSensor*> occupancySensors = QList<NBHSensor*>();
+        QList<NBHSensor*>* occupancySensors = new QList<NBHSensor*>();
         CommonSubs::addSensorToSensorList(occupancySensors, /*(String)*/_mOccupancyExternalSensor1->getSelectedItem());
         CommonSubs::addSensorToSensorList(occupancySensors, /*(String)*/_mOccupancyExternalSensor2->getSelectedItem());
         CommonSubs::addSensorToSensorList(occupancySensors, /*(String)*/_mOccupancyExternalSensor3->getSelectedItem());
@@ -684,23 +684,23 @@
         CommonSubs::addSensorToSensorList(occupancySensors, /*(String)*/_mOccupancyExternalSensor9->getSelectedItem());
         trafficLockingData->_mOccupancyExternalSensors = occupancySensors;
 
-        QList<NBHSensor*> optionalSensors = QList<NBHSensor*>();
+        QList<NBHSensor*>* optionalSensors = new QList<NBHSensor*>();
         CommonSubs::addSensorToSensorList(optionalSensors, /*(String)*/_mOptionalExternalSensor1->getSelectedItem());
         CommonSubs::addSensorToSensorList(optionalSensors, /*(String)*/_mOptionalExternalSensor2->getSelectedItem());
         trafficLockingData->_mOptionalExternalSensors = optionalSensors;
 
         TrafficLockingData::TRLSwitch* trlSwitch;
-        QList<TrafficLockingData::TRLSwitch*> switchAlignments = QList<TrafficLockingData::TRLSwitch*>();
+        QList<TrafficLockingData::TRLSwitch*>* switchAlignments = new QList<TrafficLockingData::TRLSwitch*>();
         trlSwitch = getSwitchAllignment(_mOS_NumberEntry1, _mSwitchAlignment1);
-        if (trlSwitch != nullptr) switchAlignments.append(trlSwitch);
+        if (trlSwitch != nullptr) switchAlignments->append(trlSwitch);
         trlSwitch = getSwitchAllignment(_mOS_NumberEntry2, _mSwitchAlignment2);
-        if (trlSwitch != nullptr) switchAlignments.append(trlSwitch);
+        if (trlSwitch != nullptr) switchAlignments->append(trlSwitch);
         trlSwitch = getSwitchAllignment(_mOS_NumberEntry3, _mSwitchAlignment3);
-        if (trlSwitch != nullptr) switchAlignments.append(trlSwitch);
+        if (trlSwitch != nullptr) switchAlignments->append(trlSwitch);
         trlSwitch = getSwitchAllignment(_mOS_NumberEntry4, _mSwitchAlignment4);
-        if (trlSwitch != nullptr) switchAlignments.append(trlSwitch);
+        if (trlSwitch != nullptr) switchAlignments->append(trlSwitch);
         trlSwitch = getSwitchAllignment(_mOS_NumberEntry5, _mSwitchAlignment5);
-        if (trlSwitch != nullptr) switchAlignments.append(trlSwitch);
+        if (trlSwitch != nullptr) switchAlignments->append(trlSwitch);
         trafficLockingData->_mSwitchAlignments = switchAlignments;
 
         CheckJMRIObject::VerifyClassReturnValue* verifyClassReturnValue = _mCheckJMRIObject->verifyClass(VPtr<TrafficLockingData>::asQVariant(trafficLockingData));

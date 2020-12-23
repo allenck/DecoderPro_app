@@ -28,10 +28,10 @@
         return list;
     }
 
-    /*static*/ /*public*/ QList<QString> ProjectsCommonSubs::getArrayListOfSignalNames(QList<NBHSignal*> array) {
+    /*static*/ /*public*/ QList<QString> ProjectsCommonSubs::getArrayListOfSignalNames(QList<NBHSignal*>* array) {
         QList<QString> stringList = QList<QString>();
         //array.forEach(row ->
-        foreach(NBHSignal* row, array)
+        foreach(NBHSignal* row, *array)
         {
             NamedBeanHandle<NamedBean*>* handle = (NamedBeanHandle<NamedBean*>*) row->getBeanHandle();
             stringList.append(handle->getName());
@@ -39,9 +39,9 @@
         return stringList;
     }
 
-    /*static*/ /*public*/ QList<NBHSignal*> ProjectsCommonSubs::getArrayListOfSignals(QList<QString> signalNames) {
+    /*static*/ /*public*/ QList<NBHSignal*>* ProjectsCommonSubs::getArrayListOfSignals(QList<QString> signalNames) {
         CtcManager* cm = (CtcManager*)InstanceManager::getDefault("CtcManager");
-        QList<NBHSignal*> newList = QList<NBHSignal*>();
+        QList<NBHSignal*>* newList = new QList<NBHSignal*>();
         //signalNames.forEach(name ->
         foreach(QString name, signalNames)
         {
@@ -50,7 +50,7 @@
                 newSignal = new NBHSignal(name);
             }
             if (newSignal->valid()) {
-                newList.append(newSignal);
+                newList->append(newSignal);
             }
         }//);
         return newList;

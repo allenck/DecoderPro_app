@@ -846,6 +846,15 @@ return _signalList->size() + 1;
  return 5;
 }
 #endif
+
+/*public*/ bool SignalTableModel::editMode() {
+    return inEditMode;
+}
+
+/*public*/ void SignalTableModel::setEditMode(bool editing) {
+    inEditMode = editing;
+}
+
 /*public*/ void SignalTableModel::propertyChange(PropertyChangeEvent* e)
 {
  QString property = e->getPropertyName();

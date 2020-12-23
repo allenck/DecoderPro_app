@@ -14,6 +14,8 @@
 #include "signaltablemodel.h"
 #include "blockportaltablemodel.h"
 #include <QComboBox>
+#include "warrant.h"
+#include "signalspeedmap.h"
 
 OBlockTableModel::OBlockTableModel(QObject *parent) :
   BeanTableDataModel(parent)
@@ -340,7 +342,14 @@ void OBlockTableModel::initTempRow()
        return b->getBlockSpeed();
    }
    return tempRow[col];
-  case EDIT_COL:
+   case WARRANTCOL:
+    if (b != nullptr) {
+        Warrant* w = b->getWarrant();
+        if (w != nullptr) {
+            return w->getDisplayName();
+        }
+    }
+    return tempRow[col];case EDIT_COL:
    if (b != NULL) {
        return tr("Edit Paths");
    }
@@ -876,6 +885,37 @@ void OBlockTableModel::deleteBean(OBlock* bean)
  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
+/**
+ * Provide a static JComboBox element to display inside the JPanel
+ * CellEditor. When not yet present, create, store and return a new one.
+ *
+ * @param row Index number (in TableDataModel)
+ * @return A combobox containing the valid aspect names for this mast
+ */
+/*static*/ JComboBox* OBlockTableModel::getSpeedEditorBox(int row) {
+    // create dummy comboBox, override in extended classes for each bean
+    JComboBox* editCombo = new JComboBox(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList());
+#if 0 // TODO:
+    editCombo->putClientProperty("JComponent.sizeVariant", "small");
+    editCombo->putClientProperty("JComboBox.buttonType", "square");
+#endif
+    return editCombo;
+}
+
+/**
+ * Customize the Turnout column to show an appropriate ComboBox of
+ * available options.
+ *
+ * @param table a JTable of beans
+ */
+/*public*/ void OBlockTableModel::configSpeedColumn(JTable* table) {
+    // have the state column hold a JPanel with a JComboBox for Speeds
+#if 0
+    table->setDefaultEditor("OBlockTableModel::SpeedComboBoxPanel", new OBlockTableModel::SpeedComboBoxPanel());
+    table->setDefaultRenderer("OBlockTableModel::SpeedComboBoxPanel", new OBlockTableModel::SpeedComboBoxPanel()); // use same class as renderer
+#endif
+    // Set more things?
+}
 //@Override
 /*public*/ void OBlockTableModel::propertyChange(PropertyChangeEvent* e)
 {
@@ -925,4 +965,36 @@ void OBSComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *mode
 void OBSComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
   editor->setGeometry(option.rect);
+}
+
+/**
+* Provide a static JComboBox element to display inside the JPanel
+* CellEditor. When not yet present, create, store and return a new one.
+*
+* @param row Index number (in TableDataModel)
+* @return A combobox containing the valid aspect names for this mast
+*/
+/*static*/ JComboBox/*<String>*/* OBlockTableModel::getCurveEditorBox(int row) {
+ // create dummy comboBox, override in extended classes for each bean
+ JComboBox/*<String>*/* editCombo = new JComboBox(curveOptions);
+#if 0
+ editCombo->putClientProperty("JComponent.sizeVariant", "small");
+ editCombo->putClientProperty("JComboBox.buttonType", "square");
+#endif
+ return editCombo;
+}
+
+/**
+* Customize the Turnout column to show an appropriate ComboBox of
+* available options.
+*
+* @param table a JTable of beans
+*/
+/*public*/ void OBlockTableModel::configCurveColumn(JTable* table) {
+ // have the state column hold a JPanel with a JComboBox for Curvature
+#if 0
+ table->setDefaultEditor("OBlockTableModel::CurveComboBoxPanel", new OBlockTableModel::CurveComboBoxPanel());
+ table->setDefaultRenderer("OBlockTableModel::CurveComboBoxPanel", new OBlockTableModel::CurveComboBoxPanel()); // use same class as renderer
+#endif
+ // Set more things?
 }

@@ -53,6 +53,7 @@ class NBHSignal : public QObject
       /*private*/ /*final*/ QString _mDangerAppearance;  //  The string to determine "Is the Signal all Red":
   /*private*/ bool setSignalType();
 
+  friend class ProjectsCommonSubs;
 };
 
 #endif // NBHSIGNAL_H

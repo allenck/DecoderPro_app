@@ -25,7 +25,7 @@
                 _mExternalBlock != nullptr ? _mExternalBlock->getName() : "");
         QString buildString = /*new StringBuilder*/(formattedString);
         //_mSwitchIndicators.forEach(sw ->
-        foreach(NBHSensor* sw, _mSwitchIndicators)
+        foreach(NBHSensor* sw, *_mSwitchIndicators)
         {
             buildString.append(",");
             buildString.append(sw->getHandleName());

@@ -130,6 +130,7 @@ friend class Calibrater;
 friend class SpeedUtil;
 friend class SCWarrant;
 friend class WarrantTest;
+friend class OBlockTableModel;
 };
 
 #endif // OBLOCK_H

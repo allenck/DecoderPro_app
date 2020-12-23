@@ -40,6 +40,9 @@ public:
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  static /*public*/ int getPreferredWidth(int col);
+ /*public*/ bool editMode();
+ /*public*/ void setEditMode(bool editing);
+
 signals:
 
 public slots:
@@ -70,10 +73,12 @@ private:
   float getLength();
   void setMetric(bool isMetric);
   bool isMetric();
+  friend class SignalEditFrame;
  };
  /*private*/ QList<SignalRow*>* _signalList;// = new ArrayList<SignalRow>();
 
  /*private*/ QStringList tempRow;// = new String[NUMCOLS];
+ bool inEditMode = false;
  DecimalFormat* twoDigit;// = new java.text.DecimalFormat("0.00");
 
  TableFrames* _parent;
@@ -98,6 +103,7 @@ private:
 protected:
  /*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/ = NULL);
  friend class TableFrames;
+ friend class SignalEditFrame;
 };
 
 #endif // SIGNALTABLEMODEL_H

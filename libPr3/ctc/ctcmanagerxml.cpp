@@ -249,10 +249,10 @@
 
     // **** Create elements for ArrayList objects ****
 
-     QDomElement CtcManagerXml::storeSensorList(QString elementName, QList<NBHSensor*> sensors) {
+     QDomElement CtcManagerXml::storeSensorList(QString elementName, QList<NBHSensor*>* sensors) {
          QDomElement element =  doc.createElement(elementName);
         //sensors.forEach(sensor ->
-         foreach(NBHSensor* sensor, sensors)
+         foreach(NBHSensor* sensor, *sensors)
          {
             //element.appendChild(storeSensor("sensor", sensor));
           element.appendChild(storeSensor("sensor", sensor));
@@ -260,10 +260,10 @@
         return element;
     }
 
-     QDomElement CtcManagerXml::storeSignalList(QString elementName, QList<NBHSignal*> _signals) {
+     QDomElement CtcManagerXml::storeSignalList(QString elementName, QList<NBHSignal*>* _signals) {
          QDomElement element =  doc.createElement(elementName);
         //signals.forEach(signal ->
-        foreach(NBHSignal* signal, _signals)
+        foreach(NBHSignal* signal, *_signals)
         {
             //element.appendChild(storeSignal("signal", signal));
          element.appendChild(storeSignal("signal", signal));
@@ -271,10 +271,10 @@
         return element;
     }
 
-     QDomElement CtcManagerXml::storeCallOnList(QString elementName, QList<CallOnData*> callOnList) {
+     QDomElement CtcManagerXml::storeCallOnList(QString elementName, QList<CallOnData*>* callOnList) {
          QDomElement element =  doc.createElement(elementName);
         //callOnList.forEach(row ->
-         foreach(CallOnData* row, callOnList)
+         foreach(CallOnData* row, *callOnList)
         {
             QDomElement groupEntry =  doc.createElement("CO_GroupEntry");
             groupEntry.appendChild(storeSignal("ExternalSignal", row->_mExternalSignal));
@@ -288,10 +288,10 @@
         return element;
     }
 
-     QDomElement CtcManagerXml::storeTRLRules(QString elementName, QList<TrafficLockingData*> trlList) {
+     QDomElement CtcManagerXml::storeTRLRules(QString elementName, QList<TrafficLockingData*>* trlList) {
          QDomElement element =  doc.createElement(elementName);
         //trlList.forEach(row ->
-         foreach(TrafficLockingData* row, trlList)
+         foreach(TrafficLockingData* row, *trlList)
         {
              QDomElement ruleEntry =  doc.createElement("TRL_TrafficLockingRule");
             ruleEntry.appendChild(storeString("UserRuleNumber", row->_mUserRuleNumber));
@@ -307,10 +307,10 @@
         return element;
     }
 
-     QDomElement CtcManagerXml::storeTRLSwitches(QString elementName, QList<TrafficLockingData::TRLSwitch*> trlSwitches) {
+     QDomElement CtcManagerXml::storeTRLSwitches(QString elementName, QList<TrafficLockingData::TRLSwitch*>* trlSwitches) {
          QDomElement element =  doc.createElement(elementName);
         //trlSwitches.forEach(trlSwitch ->
-        foreach(TrafficLockingData::TRLSwitch* trlSwitch, trlSwitches)
+        foreach(TrafficLockingData::TRLSwitch* trlSwitch, *trlSwitches)
         {
              QDomElement elSwitch =  doc.createElement("switch");
             elSwitch.appendChild(storeString("UserText", trlSwitch->_mUserText));
@@ -668,8 +668,8 @@
 
     // **** Load ArrayList objects ****
 
-    QList<NBHSensor*> CtcManagerXml::getSensorList( QDomElement element) {
-        QList<NBHSensor*> sensorList = QList<NBHSensor*>();
+    QList<NBHSensor*>* CtcManagerXml::getSensorList( QDomElement element) {
+        QList<NBHSensor*>* sensorList = new QList<NBHSensor*>();
         if ( !element.isNull()) {
             //for ( QDomElement el : element.firstChildElement()) {
             QDomNodeList nl = element.childNodes();
@@ -677,14 +677,14 @@
             {
              QDomElement el = nl.at(i).toElement();
                 NBHSensor* sensor = loadSensor(el, false);
-                sensorList.append(sensor);
+                sensorList->append(sensor);
             }
         }
         return sensorList;
     }
 
-    QList<NBHSignal*> CtcManagerXml::getSignalList( QDomElement element) {
-        QList<NBHSignal*> signalList = QList<NBHSignal*>();
+    QList<NBHSignal*>* CtcManagerXml::getSignalList( QDomElement element) {
+        QList<NBHSignal*>* signalList = new QList<NBHSignal*>();
         if ( !element.isNull()) {
             QDomNodeList nl = element.childNodes();
             //for ( QDomElement el : element.firstChildElement())
@@ -692,14 +692,14 @@
             {
              QDomElement el = nl.at(i).toElement();
                 NBHSignal* signal = loadSignal(el);
-                signalList.append(signal);
+                signalList->append(signal);
             }
         }
         return signalList;
     }
 
-    QList<CallOnData*> CtcManagerXml::getCallOnList( QDomElement element) {
-        QList<CallOnData*> callOnList = QList<CallOnData*>();
+    QList<CallOnData*>* CtcManagerXml::getCallOnList( QDomElement element) {
+        QList<CallOnData*>* callOnList = new QList<CallOnData*>();
         if ( !element.isNull()) {
 //            for ( QDomElement elCallOn : element.firstChildElement())
 //            {
@@ -714,9 +714,9 @@
                 cod->_mSignalAspectToDisplay = loadString(elCallOn.firstChildElement("SignalAspectToDisplay"));
                 cod->_mCalledOnExternalSensor = loadSensor(elCallOn.firstChildElement("CalledOnExternalSensor"), false);
                 cod->_mExternalBlock = loadBlock(elCallOn.firstChildElement("ExternalBlock"));
-                cod->_mSwitchIndicators = QList<NBHSensor*>();
+                cod->_mSwitchIndicators = new QList<NBHSensor*>();
                 cod->_mSwitchIndicatorNames = getCallOnSensorNames(elCallOn.firstChildElement("SwitchIndicators"));
-                callOnList.append(cod);
+                callOnList->append(cod);
             }
         }
         return callOnList;
@@ -739,19 +739,19 @@
 
     void CtcManagerXml::convertCallOnSensorNamesToNBHSensors(CtcManager* cm) {
         for (CodeButtonHandlerData* cbhd : cm->getCTCSerialData()->getCodeButtonHandlerDataArrayList()) {
-            for (CallOnData* cod : cbhd->_mCO_GroupingsList) {
+            for (CallOnData* cod : *cbhd->_mCO_GroupingsList) {
                 for (QString sensorName : cod->_mSwitchIndicatorNames) {
                     NBHSensor* sensor = cm->getNBHSensor(sensorName);
                     if (sensor != nullptr) {
-                        cod->_mSwitchIndicators.append(sensor);
+                        cod->_mSwitchIndicators->append(sensor);
                     }
                 }
             }
         }
     }
 
-    QList<TrafficLockingData*> CtcManagerXml::getTrafficLocking( QDomElement element) {
-        QList<TrafficLockingData*> trlData = QList<TrafficLockingData*>();
+    QList<TrafficLockingData*>* CtcManagerXml::getTrafficLocking( QDomElement element) {
+        QList<TrafficLockingData*>* trlData = new QList<TrafficLockingData*>();
         if ( !element.isNull()) {
 //            for ( QDomElement elRule : element.getChildren())
             QDomNodeList list = element.childNodes();
@@ -767,14 +767,14 @@
 
                 trl->_mOccupancyExternalSensors = getSensorList(elRule.firstChildElement("OccupancyExternalSensors"));
                 trl->_mOptionalExternalSensors = getSensorList(elRule.firstChildElement("OptionalExternalSensors"));
-                trlData.append(trl);
+                trlData->append(trl);
             }
         }
         return trlData;
     }
 
-    QList<TrafficLockingData::TRLSwitch*> CtcManagerXml::getTRLSwitchList( QDomElement element) {
-        QList<TrafficLockingData::TRLSwitch*> trlSwitches = QList<TrafficLockingData::TRLSwitch*>();
+    QList<TrafficLockingData::TRLSwitch*>* CtcManagerXml::getTRLSwitchList( QDomElement element) {
+        QList<TrafficLockingData::TRLSwitch*>* trlSwitches = new QList<TrafficLockingData::TRLSwitch*>();
         if ( !element.isNull()) {
             //for ( QDomElement elSwitch : element.firstChildElement()) {
                QDomNodeList nl = element.childNodes();
@@ -787,7 +787,7 @@
                             userText,
                             loadString(elSwitch.firstChildElement("SwitchAlignment")),
                             loadInt(elSwitch.firstChildElement("UniqueID")));
-                    trlSwitches.append(newSwitch);
+                    trlSwitches->append(newSwitch);
                 }
             }
         }

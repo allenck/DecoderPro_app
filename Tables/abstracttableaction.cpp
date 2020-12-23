@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include "beantabledatamodel.h"
 #include "mysortfilterproxymodel.h"
+#include <QRegExp>
 
 AbstractTableAction::AbstractTableAction(QObject *parent) :
     AbstractAction(parent)
@@ -189,9 +190,29 @@ void ATABeanTableFrame::extras()
 }
 
 /*public*/ void AbstractTableAction::dispose() {
-//    if (m!=NULL){
-//        m.dispose();
-//    }
+    if (m!=NULL){
+        m->dispose();
+    }
+}
+
+/**
+ * Increments trailing digits of a system/user name (string) I.E. "Geo7"
+ * returns "Geo8" Note: preserves leading zeros: "Geo007" returns "Geo008"
+ * Also, if no trailing digits, appends "1": "Geo" returns "Geo1"
+ *
+ * @param name the system or user name string
+ * @return the same name with trailing digits incremented by one
+ */
+/*protected*/ /*@Nonnull*/ QString AbstractTableAction::nextName(/*@Nonnull*/ QString name) {
+    QStringList parts = name.split(QRegExp("(?=\\d+$)")/*, 2*/);
+    QString numString = "0";
+    if (parts.length() == 2) {
+        numString = parts[1];
+    }
+    /*final*/ int numStringLength = numString.length();
+    /*final*/ int num = numString.toInt() + 1;
+    //return parts[0] + String.format("%0" + numStringLength + "d", num);
+    return parts.at(0) + QStringLiteral("%1").arg(num, numStringLength, 10, QLatin1Char('0'));
 }
 
 /**

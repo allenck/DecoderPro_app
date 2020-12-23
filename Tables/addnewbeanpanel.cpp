@@ -2,9 +2,9 @@
 #include <QBoxLayout>
 #include "gridbagconstraints.h"
 #include <QGridLayout>
-#include <QLabel>
+#include "jlabel.h"
 #include <QPushButton>
-#include <QCheckBox>
+#include "jcheckbox.h"
 #include "jtextfield.h"
 #include "actionlistener.h"
 #include "flowlayout.h"
@@ -28,8 +28,8 @@
   */
  //private static final long serialVersionUID = -7238135491102630527L;
 
- /*public*/ AddNewBeanPanel::AddNewBeanPanel(JTextField* sys, JTextField* userName, JTextField* endRange, QCheckBox* addRange, QCheckBox* autoSystem,
-         QString addButtonLabel, ActionListener* listener, ActionListener* cancelListener , QWidget *parent) :
+ /*public*/ AddNewBeanPanel::AddNewBeanPanel(JTextField* sys, JTextField* userName, JSpinner* endRange, JCheckBox* addRange, JCheckBox* autoSystem,
+         QString addButtonLabel, ActionListener* listener, ActionListener* cancelListener, JLabel* statusBar, QWidget *parent) :
   JmriPanel(parent)
 {
  sysNameLabel = new QLabel(tr("System Name"));
@@ -83,7 +83,19 @@
      finishLabel->setEnabled(false);
      _endRange->setEnabled(false);
 
-     // cancel + add buttons at bottom of window
+     // add status bar above buttons
+     JPanel* panelStatus = new JPanel();
+     panelStatus->setLayout(new FlowLayout());
+     //statusBar.setFont(statusBar.getFont().deriveFont(0.9f * sysNameLabel.getFont().getSize())); // a bit smaller
+     QFont f = sysNameLabel->font();
+     float ps = f.pointSizeF();
+     QFont f2 = statusBar->font();
+     f2.setPointSizeF(.9 * ps);
+     statusBar->setFont(f2);
+     statusBar->setForeground(Qt::gray);
+     panelStatus->layout()->addWidget(statusBar);
+     thisLayout-> addWidget(panelStatus);// cancel + add buttons at bottom of window
+
      QWidget* panelBottom = new QWidget();
      panelBottom->setLayout(new FlowLayout(/*FlowLayout::TRAILING*/));
      QPushButton* cancel;

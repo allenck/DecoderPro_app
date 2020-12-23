@@ -151,6 +151,9 @@ public:
  /*public*/ void setShowVerticalLines(bool showVerticalLines);
  /*public*/ bool getShowHorizontalLines();
  /*public*/ bool getShowVerticalLines();
+ /*public*/ void setDefaultRenderer(QString, QObject*);
+ /*public*/ void setDefaultEditor(QString, QObject*);
+ /*public*/ void doLayout() {}
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -437,4 +440,40 @@ public:
     friend class SortManager;
 
 };
+
+class ButtonRenderer : public QObject
+{
+    Q_OBJECT
+public:
+    ButtonRenderer(QObject* parent = nullptr) : QObject(parent) {}
+};
+
+class ToggleButtonRenderer : public QObject
+{
+    Q_OBJECT
+public:
+    ToggleButtonRenderer(QString sq, QString s2, QObject* parent = nullptr) : QObject(parent) {}
+};
+
+class ValueRenderer : public QObject
+{
+    Q_OBJECT
+public:
+    ValueRenderer(QObject* parent = nullptr) : QObject(parent) {}
+};
+
+class ButtonEditor : public QObject
+{
+    Q_OBJECT
+public:
+    ButtonEditor(QObject* parent = nullptr) : QObject(parent) {}
+};
+
+class ToggleButtonEditor : public QObject
+{
+    Q_OBJECT
+public:
+    ToggleButtonEditor(QWidget* w, QString sq, QString s2, QObject* parent = nullptr) : QObject(parent) {}
+};
+
 #endif // JTABLE_H

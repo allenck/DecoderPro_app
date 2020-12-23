@@ -1,4 +1,4 @@
-#include "frmmainform.h"
+﻿#include "frmmainform.h"
 #include "instancemanager.h"
 #include "ctcmanager.h"
 #include "commonsubs.h"
@@ -39,6 +39,10 @@
 #include "frmpatterns.h"
 #include "frmtul.h"
 #include "frmfixerrors.h"
+#include "proxysensormanager.h"
+#include "namedbeanhandlemanager.h"
+#include "otherdata.h"
+
 /**
  *
  * @author Gregory J. Bedlek Copyright (C) 2018, 2019
@@ -63,14 +67,47 @@
 
         // for testing
         CTCSerialData* cTCSerialData = ctcManager->getCTCSerialData();
-        CodeButtonHandlerData* data;
+        CodeButtonHandlerData* cbhd;
+        OtherData* od = cTCSerialData->getOtherData();
+        od->_mSignalSystemType = OtherData::SIGNAL_SYSTEM_TYPE::SIGNALHEAD;
         if(cTCSerialData->_mCodeButtonHandlerDataArrayList.isEmpty())
         {
-         cTCSerialData->addCodeButtonHandlerData(data = new CodeButtonHandlerData(0, 1, 2,2 ));
-         data->_mCodeButtonInternalSensor = new NBHSensor("CtcManagerXml", "create internal = ", "IS2:CB", "IS2:CB");
-         cTCSerialData->addCodeButtonHandlerData(new CodeButtonHandlerData(3, 3, 4,3 ));
-         cTCSerialData->addCodeButtonHandlerData(new CodeButtonHandlerData(1, 5, 6,4 ));
-         cTCSerialData->addCodeButtonHandlerData(new CodeButtonHandlerData(2, 7, 8,5 ));
+         cTCSerialData->addCodeButtonHandlerData(cbhd = CodeButtonHandlerDataRoutines::createNewCodeButtonHandlerData(0, 1, 2, 2, _mProgramProperties));
+         ctcManager->putNBHSignal("Left-U",  new NBHSignal("Left-U"));
+         ctcManager->putNBHSignal("Left-L",  new NBHSignal("Left-L"));
+         ctcManager->putNBHSignal("Left-M",  new NBHSignal("Left-M"));
+         ctcManager->putNBHSignal("Left-S",  new NBHSignal("Left-S"));
+         ctcManager->putNBHSignal("Right-M",  new NBHSignal("Right-M"));
+         ctcManager->putNBHSignal("Right-S",  new NBHSignal("Right-S"));
+         ctcManager->putNBHSignal("Right-U",  new NBHSignal("Right-U"));
+         ctcManager->putNBHSignal("Right-L",  new NBHSignal("Right-L"));
+         ctcManager->putNBHSignal("Stub-M",  new NBHSignal("Stub-M"));
+         ctcManager->putNBHSignal("Stub-S",  new NBHSignal("Stub-S"));
+         ctcManager->putNBHSignal("Stub-U",  new NBHSignal("Stub-U"));
+         ctcManager->putNBHSignal("Stub-L",  new NBHSignal("Stub-L"));
+         cbhd->_mSIDI_LeftRightTrafficSignals->append(ctcManager->getNBHSignal("Left-U"));
+         cbhd->_mSIDI_LeftRightTrafficSignals->append(ctcManager->getNBHSignal("Left-L"));
+         cbhd->_mSIDI_RightLeftTrafficSignals->append(ctcManager->getNBHSignal("Left-M"));
+         cbhd->_mSIDI_RightLeftTrafficSignals->append(ctcManager->getNBHSignal("Left-S"));
+         ProxySensorManager* sensorManager = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
+         QList<NamedBean*>* list = sensorManager->getNamedBeanList();
+         NamedBeanHandleManager* namedBeanHandleManager = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
+         foreach (NamedBean* b, *list) {
+          Sensor* s = (Sensor*)b;
+          NamedBeanHandle<NamedBean*>* nbh = new NamedBeanHandle<NamedBean*>(s->getSystemName(), b);
+          ctcManager->putNBHSensor(s->getSystemName(), new NBHSensor(nbh));
+         }
+         //data->_mCodeButtonInternalSensor = new NBHSensor("CtcManagerXml", "create internal = ", "IS2:CB", "IS2:CB");
+         //cTCSerialData->addCodeButtonHandlerData(new CodeButtonHandlerData(3, 3, 4,3 ));
+         cTCSerialData->addCodeButtonHandlerData(CodeButtonHandlerDataRoutines::createNewCodeButtonHandlerData(3, 3, 4,3, _mProgramProperties));
+         //cTCSerialData->addCodeButtonHandlerData(new CodeButtonHandlerData(1, 5, 6,4 ));
+         cTCSerialData->addCodeButtonHandlerData(cbhd =CodeButtonHandlerDataRoutines::createNewCodeButtonHandlerData(1, 5, 6,4, _mProgramProperties));
+         cbhd->_mSIDI_LeftRightTrafficSignals->append(ctcManager->getNBHSignal("Right-M"));
+         cbhd->_mSIDI_LeftRightTrafficSignals->append(ctcManager->getNBHSignal("Right-S"));
+         cbhd->_mSIDI_RightLeftTrafficSignals->append(ctcManager->getNBHSignal("Right-U"));
+         cbhd->_mSIDI_RightLeftTrafficSignals->append(ctcManager->getNBHSignal("Right-L"));
+         //cTCSerialData->addCodeButtonHandlerData(new CodeButtonHandlerData(2, 7, 8,5 ));
+         cTCSerialData->addCodeButtonHandlerData(CodeButtonHandlerDataRoutines::createNewCodeButtonHandlerData(2, 7, 8,5 , _mProgramProperties));
         }
         _mColumns->updateFrame();
     }

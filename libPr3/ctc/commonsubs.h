@@ -37,7 +37,7 @@ class CommonSubs : public QObject
   /*public*/ static QList<int> getArrayListOfSelectableOSSectionUniqueIDs(QList<CodeButtonHandlerData*> codeButtonHandlerDataList);
   /*public*/ static void populateJComboBoxWithColumnDescriptionsAndSelectViaUniqueID(JComboBox/*<String>*/* jComboBox, CTCSerialData* ctcSerialData, int uniqueID);
   /*public*/ static void populateJComboBoxWithColumnDescriptions(JComboBox/*<String>*/* jComboBox, CTCSerialData* ctcSerialData);
-  /*public*/ static bool populateJComboBoxWithColumnDescriptionsExceptOurs(JComboBox/*<String>*/* jComboBox, CTCSerialData* ctcSerialData, int ourUniqueID, QList<int> uniqueIDS);
+  /*public*/ static bool populateJComboBoxWithColumnDescriptionsExceptOurs(JComboBox/*<String>*/* jComboBox, CTCSerialData* ctcSerialData, int ourUniqueID, QList<int>* uniqueIDS);
   /*public*/ static void populateJComboBoxWithBeans(JComboBox/*<String>*/* jComboBox, QString beanType, QString currentSelection, bool firstRowBlank);
   /*public*/ static void setSelectedIndexOfJComboBoxViaUniqueID(JComboBox/*<String>*/* jComboBox, CTCSerialData* ctcSerialData, int uniqueID);
   /*public*/ static void numberButtonGroup(QButtonGroup* buttonGroup);
@@ -50,7 +50,7 @@ class CommonSubs : public QObject
   /*public*/ static NBHSensor* getNBHSensor(QString newName, bool isInternal);
   /*public*/ static NBHTurnout* getNBHTurnout(QString newName, bool feedbackDifferent);
   /*public*/ static NBHSignal* getNBHSignal(QString newName);
-  /*public*/ static void addSensorToSensorList(QList<NBHSensor*> list, QString sensorName);
+  /*public*/ static void addSensorToSensorList(QList<NBHSensor*>* list, QString sensorName);
 
  signals:
 

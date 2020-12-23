@@ -108,8 +108,8 @@ class CodeButtonHandlerData : public QObject
       /*public*/ int                  _mSIDI_CodingTimeInMilliseconds;
       /*public*/ int                  _mSIDI_TimeLockingTimeInMilliseconds;
       /*public*/ TRAFFIC_DIRECTION    _mSIDI_TrafficDirection;
-      /*public*/ QList<NBHSignal*> _mSIDI_LeftRightTrafficSignals = QList<NBHSignal*>();
-      /*public*/ QList<NBHSignal*> _mSIDI_RightLeftTrafficSignals = QList<NBHSignal*>();
+      /*public*/ QList<NBHSignal*>* _mSIDI_LeftRightTrafficSignals = new QList<NBHSignal*>();
+      /*public*/ QList<NBHSignal*>* _mSIDI_RightLeftTrafficSignals = new QList<NBHSignal*>();
   //  Signal Direction Lever:
       /*public*/ bool              _mSIDL_Enabled;
       /*public*/ NBHSensor*            _mSIDL_LeftInternalSensor= nullptr;
@@ -131,11 +131,11 @@ class CodeButtonHandlerData : public QObject
   //  Call On:
       /*public*/ bool              _mCO_Enabled;
       /*public*/ NBHSensor*            _mCO_CallOnToggleInternalSensor= nullptr;
-      /*public*/ QList<CallOnData*> _mCO_GroupingsList = QList<CallOnData*>();
+      /*public*/ QList<CallOnData*>* _mCO_GroupingsList = new QList<CallOnData*>();
   //  Traffic Locking:
       /*public*/ bool              _mTRL_Enabled;
-      /*public*/ QList<TrafficLockingData*> _mTRL_LeftTrafficLockingRules = QList<TrafficLockingData*>();
-      /*public*/ QList<TrafficLockingData*> _mTRL_RightTrafficLockingRules = QList<TrafficLockingData*>();
+      /*public*/ QList<TrafficLockingData*>* _mTRL_LeftTrafficLockingRules = new QList<TrafficLockingData*>();
+      /*public*/ QList<TrafficLockingData*>* _mTRL_RightTrafficLockingRules = new QList<TrafficLockingData*>();
   //  Turnout Locking:
       /*public*/ bool              _mTUL_Enabled;
       /*public*/ NBHSensor*            _mTUL_DispatcherInternalSensorLockToggle= nullptr;
@@ -154,7 +154,7 @@ class CodeButtonHandlerData : public QObject
       /*public*/ bool              _mTUL_AdditionalExternalTurnout3FeedbackDifferent;
   //  Indication Locking (Signals):
       /*public*/ bool              _mIL_Enabled;
-      /*public*/ QList<NBHSignal*>      _mIL_Signals = QList<NBHSignal*>();
+      /*public*/ QList<NBHSignal*>*      _mIL_Signals = new QList<NBHSignal*>();
 
   //  This number NEVER changes, and is how this object is uniquely identified:
       /*public*/ int _mUniqueID = -1;         // FORCE serialization to write out the FIRST unique number 0 into the XML file (to make me happy!)

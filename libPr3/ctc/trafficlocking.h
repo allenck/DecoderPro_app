@@ -96,8 +96,8 @@ class TrafficLocking : public QObject
 
    friend class TrafficLocking;
   };public:
-  /*public*/ TrafficLocking(QString userIdentifier, QList<TrafficLockingData*> _mTRL_LeftTrafficLockingRules,
-                            QList<TrafficLockingData*> _mTRL_RightTrafficLockingRules,
+  /*public*/ TrafficLocking(QString userIdentifier, QList<TrafficLockingData *> *_mTRL_LeftTrafficLockingRules,
+                            QList<TrafficLockingData*>* _mTRL_RightTrafficLockingRules,
                             LockedRoutesManager* lockedRoutesManager, QObject *parent=nullptr);
   /*public*/ void removeAllListeners();
   /*public*/ void fileReadComplete(QMap<int, CodeButtonHandler*> cbHashMap,QMap<int, SwitchDirectionIndicators*> swdiHashMap);
@@ -109,21 +109,21 @@ class TrafficLocking : public QObject
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ QList<TrafficLockingRecord*> _mLeftTrafficLockingRulesArrayList = QList<TrafficLockingRecord*>();
-  /*private*/ /*final*/ QList<TrafficLockingRecord*> _mRightTrafficLockingRulesArrayList = QList<TrafficLockingRecord*>();
+  /*private*/ /*final*/ QList<TrafficLockingRecord*>* _mLeftTrafficLockingRulesArrayList = new QList<TrafficLockingRecord*>();
+  /*private*/ /*final*/ QList<TrafficLockingRecord*>* _mRightTrafficLockingRulesArrayList = new QList<TrafficLockingRecord*>();
   /*private*/ /*final*/ QString _mUserIdentifier;
-  /*private*/ /*final*/ QList<TrafficLockingData*> _mLeftTrafficLockingRulesList;
-  /*private*/ /*final*/ QList<TrafficLockingData*> _mRightTrafficLockingRulesList;
+  /*private*/ /*final*/ QList<TrafficLockingData*>* _mLeftTrafficLockingRulesList;
+  /*private*/ /*final*/ QList<TrafficLockingData*>* _mRightTrafficLockingRulesList;
   /*private*/ /*final*/ LockedRoutesManager* _mLockedRoutesManager;
   /*private*/ bool isOptionalSensorActive(NBHSensor* sensor);
-  /*private*/ void addAllTrafficLockingEntries(   QString                           userIdentifier,
-                                              QList<TrafficLockingData*>            trafficLockingRulesList,
+  /*private*/ void addAllTrafficLockingEntries(QString                           userIdentifier,
+                                              QList<TrafficLockingData*>*            trafficLockingRulesList,
                                               QString                               parameter,
                                               QMap<int, CodeButtonHandler*>         cbHashMap,
                                               QMap<int, SwitchDirectionIndicators*> swdiHashMap,
-                                              QList<TrafficLockingRecord*>          trafficLockingRecordsQList); // <- Output
+                                              QList<TrafficLockingRecord *> *trafficLockingRecordsQList); // <- Output
   /*public*/ TrafficLockingInfo* valid(int presentSignalDirectionLever, bool fleetingEnabled);
-  /*private*/ TrafficLockingInfo* validForTraffic(QList<TrafficLockingRecord*> trafficLockingRecordList, bool rightTraffic, bool fleetingEnabled);
+  /*private*/ TrafficLockingInfo* validForTraffic(QList<TrafficLockingRecord *> *trafficLockingRecordList, bool rightTraffic, bool fleetingEnabled);
   /*private*/ NBHSensor* getSwitchDirectionIndicatorSensor(int uniqueID, QString switchAlignment, QMap<int, SwitchDirectionIndicators*> swdiHashMap);
 
   friend class CodeButtonHandler;

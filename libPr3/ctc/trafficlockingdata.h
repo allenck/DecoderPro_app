@@ -30,12 +30,12 @@ class TrafficLockingData : public QObject
   /*public*/ QString _mUserRuleNumber;
   /*public*/ QString _mRuleEnabled;
   /*public*/ QString _mDestinationSignalOrComment;
-  /*public*/ QList<TrafficLockingData::TRLSwitch*> _mSwitchAlignments;              // Up to 5 entries
-  /*public*/ QList<NBHSensor*> _mOccupancyExternalSensors;      // Up to 9 entries
-  /*public*/ QList<NBHSensor*> _mOptionalExternalSensors;       // Up to 2 entries
-  /*public*/ QList<NBHSensor*> getOccupancySensors();
-  /*public*/ QList<NBHSensor*> getOptionalSensors();
-  /*public*/ QList<int> getUniqueIDs();
+  /*public*/ QList<TrafficLockingData::TRLSwitch*>* _mSwitchAlignments;              // Up to 5 entries
+  /*public*/ QList<NBHSensor*>* _mOccupancyExternalSensors;      // Up to 9 entries
+  /*public*/ QList<NBHSensor*>* _mOptionalExternalSensors;       // Up to 2 entries
+  /*public*/ QList<NBHSensor*>* getOccupancySensors();
+  /*public*/ QList<NBHSensor*>* getOptionalSensors();
+  /*public*/ QList<int>* getUniqueIDs();
   /*public*/ QList<QString> getAlignments();
   /*public*/ QString toString();
 

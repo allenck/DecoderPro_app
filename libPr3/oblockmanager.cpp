@@ -81,6 +81,19 @@ OBlockManager::OBlockManager(QObject *parent) :
 }
 
 /**
+ * Create a new OBlock using an automatically incrementing system
+ * name.
+ *
+ * @param userName the user name for the new OBlock
+ * @return null if an OBlock with the same systemName or userName already
+ *         exists, or if there is trouble creating a new OBlock.
+ */
+//@CheckForNull
+/*public*/ OBlock* OBlockManager::createNewOBlock(/*@Nonnull*/ QString userName) {
+    return createNewOBlock(getAutoSystemName(), userName);
+}
+
+/**
  * Method to get an existing OBlock.  First looks up assuming that
  *      name is a User Name.  If this fails looks up assuming
  *      that name is a System Name.  If both fail, returns NULL.

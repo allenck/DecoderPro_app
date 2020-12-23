@@ -60,7 +60,7 @@
 /*public*/ /*static*/ bool FrmIL::dialogCodeButtonHandlerDataValid(CheckJMRIObject* checkJMRIObject, CodeButtonHandlerData* codeButtonHandlerData) {
     if (!codeButtonHandlerData->_mIL_Enabled) return true; // Not enabled, can be no error!
 //  Checks:
-    if (codeButtonHandlerData->_mIL_Signals.isEmpty()) return false;
+    if (codeButtonHandlerData->_mIL_Signals->isEmpty()) return false;
     for (QString signalName : ProjectsCommonSubs::getArrayListOfSignalNames(codeButtonHandlerData->_mIL_Signals)) {
         if (checkJMRIObject->checkSignal(signalName) == false) return false;
     }
@@ -139,7 +139,7 @@
 //    });
     addWindowListener(new FrmIL_windowListener(this));
 
-    _mSaveAndClose->setText(tr("ButtonSaveClose"));
+    _mSaveAndClose->setText(tr("Save and close"));
 //    _mSaveAndClose.addActionListener(new java.awt.event.ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(/*java.awt.event.ActionEvent evt*/) {
@@ -264,6 +264,8 @@
             return types [columnIndex];
         }
     });
+#else
+    _mIL_TableOfExternalSignalNames->setModel(new DefaultTableModel(100, 1));
 #endif
     _mIL_TableOfExternalSignalNames->setRowHeight(18);
 //    jScrollPane1.setViewportView(_mIL_TableOfExternalSignalNames);
@@ -354,10 +356,25 @@
     );
 #else
     JPanel* contentPane = new JPanel();
-    QVBoxLayout* contentPaneLayout;
-    contentPane->setLayout(contentPaneLayout = new QVBoxLayout());
+    QGridLayout* grid;
+    contentPane->setLayout(grid = new QGridLayout());
     setCentralWidget(contentPane);
 
+    grid->addWidget(_mTableOfSignalNamesPrompt, 0, 0, 1, 1);
+    grid->addWidget(jLabel1, 0, 1, 1, 3); // "If ANY of these signals are NON RED,"
+
+    grid->addWidget(_mIL_TableOfExternalSignalNames, 1, 0, 18, 1);
+    grid->addWidget(jLabel5, 1, 1, 1, 3);
+
+    grid->addWidget(jLabel4, 4, 1, 1, 3);
+    grid->addWidget(jButton1, 5, 1);
+
+    grid->addWidget(jLabel2, 6, 1, 1, 3);
+    grid->addWidget(_mOS_NumberEntry, 7, 1);
+    grid->addWidget(BT_Replace, 7, 2);
+
+    grid->addWidget(_mSaveAndClose, 14, 1);
+    grid->addWidget(jLabel6, 14, 2);
 #endif
     pack();
 }// </editor-fold>
@@ -386,7 +403,7 @@
 /*private*/ void FrmIL::BT_ReplaceActionPerformed(/*java.awt.event.ActionEvent evt*/) {
     int index = _mOS_NumberEntry->getSelectedIndex();
     if (index != -1) { // Safety:
-        CodeButtonHandlerData* otherCodeButtonHandlerData = _mCTCSerialData->getCodeButtonHandlerDataViaUniqueID(_mUniqueIDS.at(index));
+        CodeButtonHandlerData* otherCodeButtonHandlerData = _mCTCSerialData->getCodeButtonHandlerDataViaUniqueID(_mUniqueIDS->at(index));
         loadUpSignalTable(ProjectsCommonSubs::getArrayListOfSignalNames(otherCodeButtonHandlerData->_mIL_Signals));
     }
 }

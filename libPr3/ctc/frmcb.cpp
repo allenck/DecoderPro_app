@@ -314,7 +314,7 @@
 
         JPanel* panel8 = new JPanel(new QHBoxLayout());
         JPanel* panel8a = new JPanel(new QVBoxLayout());
-        panel8a->layout()->addWidget(_mCodeButtonDelayTime);
+        ((QHBoxLayout*)panel8a->layout())->addWidget(_mCodeButtonDelayTime, 0);
         panel8a->layout()->addWidget(jLabel6);
         panel8a->layout()->addWidget(jLabel7);
         panel8->layout()->addWidget(jLabel5);

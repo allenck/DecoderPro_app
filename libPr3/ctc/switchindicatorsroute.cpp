@@ -34,15 +34,15 @@
     _mSwitchIndicator6 = switchIndicator6;
 }
 
-/*public*/ SwitchIndicatorsRoute::SwitchIndicatorsRoute(QList<NBHSensor*> switchIndicators,  QObject *parent) : QObject(parent){
-    int rows = switchIndicators.size();
+/*public*/ SwitchIndicatorsRoute::SwitchIndicatorsRoute(QList<NBHSensor *> *switchIndicators,  QObject *parent) : QObject(parent){
+    int rows = switchIndicators->size();
     int i = 0;
-    if (i < rows) _mSwitchIndicator1 = switchIndicators.at(i++); else _mSwitchIndicator1 = nullptr;
-    if (i < rows) _mSwitchIndicator2 = switchIndicators.at(i++); else _mSwitchIndicator2 = nullptr;
-    if (i < rows) _mSwitchIndicator3 = switchIndicators.at(i++); else _mSwitchIndicator3 = nullptr;
-    if (i < rows) _mSwitchIndicator4 = switchIndicators.at(i++); else _mSwitchIndicator4 = nullptr;
-    if (i < rows) _mSwitchIndicator5 = switchIndicators.at(i++); else _mSwitchIndicator5 = nullptr;
-    if (i < rows) _mSwitchIndicator6 = switchIndicators.at(i++); else _mSwitchIndicator6 = nullptr;
+    if (i < rows) _mSwitchIndicator1 = switchIndicators->at(i++); else _mSwitchIndicator1 = nullptr;
+    if (i < rows) _mSwitchIndicator2 = switchIndicators->at(i++); else _mSwitchIndicator2 = nullptr;
+    if (i < rows) _mSwitchIndicator3 = switchIndicators->at(i++); else _mSwitchIndicator3 = nullptr;
+    if (i < rows) _mSwitchIndicator4 = switchIndicators->at(i++); else _mSwitchIndicator4 = nullptr;
+    if (i < rows) _mSwitchIndicator5 = switchIndicators->at(i++); else _mSwitchIndicator5 = nullptr;
+    if (i < rows) _mSwitchIndicator6 = switchIndicators->at(i++); else _mSwitchIndicator6 = nullptr;
 }
 
 /*public*/ bool SwitchIndicatorsRoute::isRouteSelected() {

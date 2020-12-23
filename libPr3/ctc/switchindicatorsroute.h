@@ -17,7 +17,7 @@ class SwitchIndicatorsRoute : public QObject
                                   QString switchIndicator6, QObject *parent= nullptr);
 
   /*public*/ SwitchIndicatorsRoute(NBHSensor* switchIndicator1, NBHSensor* switchIndicator2, NBHSensor* switchIndicator3, NBHSensor* switchIndicator4, NBHSensor* switchIndicator5, NBHSensor* switchIndicator6,QObject *parent = nullptr);
-  /*public*/ SwitchIndicatorsRoute(QList<NBHSensor*> switchIndicators,  QObject *parent= nullptr);
+  /*public*/ SwitchIndicatorsRoute(QList<NBHSensor*>* switchIndicators,  QObject *parent= nullptr);
   /*public*/ bool isRouteSelected();
 
  signals:

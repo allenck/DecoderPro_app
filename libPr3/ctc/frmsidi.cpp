@@ -113,8 +113,8 @@
     bool leftTrafficDirection = codeButtonHandlerData->_mSIDI_TrafficDirection != CodeButtonHandlerData::TRAFFIC_DIRECTION::RIGHT;
     bool rightTrafficDirection = codeButtonHandlerData->_mSIDI_TrafficDirection != CodeButtonHandlerData::TRAFFIC_DIRECTION::LEFT;
 
-    bool entriesInLeftRightTrafficSignals = codeButtonHandlerData->_mSIDI_LeftRightTrafficSignals.size() != 0;
-    bool entriesInRightLeftTrafficSignals = codeButtonHandlerData->_mSIDI_RightLeftTrafficSignals.size() != 0;
+    bool entriesInLeftRightTrafficSignals = codeButtonHandlerData->_mSIDI_LeftRightTrafficSignals->size() != 0;
+    bool entriesInRightLeftTrafficSignals = codeButtonHandlerData->_mSIDI_RightLeftTrafficSignals->size() != 0;
 
 //  Checks:
     if (ProjectsCommonSubs::isNullOrEmptyString(codeButtonHandlerData->_mSIDI_NormalInternalSensor->getHandleName())) return false;
@@ -143,11 +143,11 @@
     bool entriesInLeftRightTrafficSignals =
             ProjectsCommonSubs::getArrayListOfSignals(
                 CommonSubs::getStringArrayFromDefaultTableModel(_mSIDI_TableOfLeftToRightTrafficExternalSignalNamesDefaultTableModel)
-                ).size() != 0;
+                )->size() != 0;
     bool entriesInRightLeftTrafficSignals =
             ProjectsCommonSubs::getArrayListOfSignals(
                 CommonSubs::getStringArrayFromDefaultTableModel(_mSIDI_TableOfRightToLeftTrafficExternalSignalNamesDefaultTableModel)
-                ).size() != 0;
+                )->size() != 0;
 
 //  Checks:
 
@@ -410,8 +410,8 @@
 
     grid->addWidget(_mSIDI_NormalInternalSensorPrompt, 1, 0, 1, 1, Qt::AlignLeft);
     grid->addWidget(_mSIDI_NormalInternalSensor, 1,1);
-    grid->addWidget(_mSIDI_TableOfLeftToRightTrafficExternalSignalNames, 1, 2, -1, 1);
-    grid->addWidget(_mSIDI_TableOfRightToLeftTrafficExternalSignalNames, 1, 3, -1, 1);
+    grid->addWidget(_mSIDI_TableOfLeftToRightTrafficExternalSignalNames, 1, 2, 18, 1);
+    grid->addWidget(_mSIDI_TableOfRightToLeftTrafficExternalSignalNames, 1, 3, 18, 1);
 
     grid->addWidget(_mSIDI_NormalInternalSensorPrompt, 2, 0, 1, 1, Qt::AlignRight);
     grid->addWidget(_mSIDI_NormalInternalSensor, 2,1);

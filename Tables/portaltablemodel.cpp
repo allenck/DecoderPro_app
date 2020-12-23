@@ -7,7 +7,7 @@
 #include <QMessageBox>
 #include "jtextfield.h"
 #include "QPushButton"
-
+#include "tableframes.h"
 
 //PortalTableModel::PortalTableModel(QObject *parent) :
 //  BeanTableDataModel(parent)
@@ -383,4 +383,8 @@ void PortalTableModel::initTempRow()
      return  QPushButton("DELETE").sizeHint().width();
     }
     return 5;
+}
+
+/*protected*/ int PortalTableModel::verifyWarning(QString message) {
+    return (_parent->verifyWarning(message));
 }

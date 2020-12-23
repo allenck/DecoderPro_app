@@ -25,6 +25,8 @@
 #include "file.h"
 #include <QPointer>
 #include "fileutil.h"
+#include "joptionpane.h"
+
 
 BlockTableAction::BlockTableAction(QObject *parent) :
   AbstractTableAction(tr("Block Table"), parent)
@@ -81,10 +83,6 @@ void BlockTableAction::common()
  lengthField = new JTextField(7);
  blockSpeed = new JTextField(7);
  checkPerm = new QCheckBox(tr("BlockPermColName"));
-
- numberToAdd = new JTextField(10);
- range = new QCheckBox(tr("Number to Add"));
- _autoSystemName = new QCheckBox(tr("Auto SysName"));
 
  speeds = new QComboBox();
  systemNameAuto = QString(getClassName()) + ".AutoSystemName";
@@ -952,11 +950,18 @@ void BlockTableAction::on_defaultSpeeds()
 //            }
 //        };
   BTCancelListener* cancelListener = new BTCancelListener(this);
-  centralWidgetLayout->addWidget(new AddNewBeanPanel(sysName, userName, numberToAdd, range, _autoSystemName, "OK", listener, cancelListener));
+  centralWidgetLayout->addWidget(new AddNewBeanPanel(sysName, userName, numberToAddSpinner, addRangeCheckBox, _autoSystemNameCheckBox, "OK", listener, cancelListener, statusBar));
  }
  if (pref->getSimplePreferenceState(systemNameAuto))
  {
-  _autoSystemName->setChecked(true);
+  _autoSystemNameCheckBox->setChecked(true);
+ }
+ sysName->setBackground(Qt::white);
+ // reset statusBar text
+ statusBar->setText(tr("Enter a System Name and (optional) User Name."));
+ statusBar->setForeground(Qt::gray);
+ if (pref->getSimplePreferenceState(systemNameAuto)) {
+     _autoSystemNameCheckBox->setChecked(true);
  }
  addFrame->adjustSize();
  addFrame->setVisible(true);
@@ -1046,64 +1051,94 @@ void BlockTableAction::cancelPressed(ActionEvent* /*e*/) {
 
 void BlockTableAction::okPressed(ActionEvent* /*e*/)
 {
- int intNumberToAdd = 1;
- if (range->isChecked())
- {
-  bool bOk;
-  intNumberToAdd = numberToAdd->text().toInt(&bOk);
+ int numberOfBlocks = 1;
 
-  if(!bOk)
-  {
-   log->error("Unable to convert " + numberToAdd->text() + " to a number");
-   QString msg = tr("Value entered into \%1\" must be a whole number").arg("Number to Add");
-   ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage(tr("ErrorTitle"), msg, "", "", true, false);
+ if (addRangeCheckBox->isChecked()) {
+     numberOfBlocks =  numberToAddSpinner->value();
+ }
+ if (numberOfBlocks >= 65) { // limited by JSpinnerModel to 100
+     if (JOptionPane::showConfirmDialog(addFrame,
+             tr("You are about to add %1 %2 into the configuration.\nAre you sure?eans").arg(tr("Blocks")).arg(numberOfBlocks),
+             tr("Warning"),
+             JOptionPane::YES_NO_OPTION) == 1) {
          return;
      }
  }
- if (intNumberToAdd >= 65)
- {
-  QString msg = tr("You are about to add %1 %2 Objects into the configuration\nAre you sure?").arg(intNumberToAdd).arg( tr("Block"));
-//     if (JOptionPane.showConfirmDialog(addFrame,
-//             msg, tr("WarningTitle"),
-//             JOptionPane.YES_NO_OPTION) == 1) {
-//         return;
-//     }
-  if(QMessageBox::warning(addFrame, tr("Warning"), msg, QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-   return;
- }
  QString user = userName->text();
-// if (user==("")) {
-//     user = NULL;
-// }
- QString sName = sysName->text().toUpper();
- QString b;
+ if (user == "null" || user.isEmpty()) {
+             user = QString();
+ }
+ QString uName = user; // keep result separate to prevent recursive manipulation
+ QString system = "";
 
- for (int x = 0; x < intNumberToAdd; x++) {
-     if (x != 0) {
-         if (user != NULL) {
-             b = QString(userName->text());
-             b.append(":");
-             b.append(QString::number(x));
-             user = b;
+ if (!_autoSystemNameCheckBox->isChecked()) {
+     system = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->makeSystemName(sysName->text());
+ }
+ QString sName = system; // keep result separate to prevent recursive manipulation
+ // initial check for empty entry using the raw name
+ if (sName.length() < 3 && !_autoSystemNameCheckBox->isChecked()) {  // Using 3 to catch a plain IB
+     statusBar->setText(tr("System Name field can not be left blank."));
+     statusBar->setForeground(Qt::red);
+     sysName->setBackground(Qt::red);
+     return;
+ } else {
+     sysName->setBackground(Qt::white);
+ }
+
+ // Add some entry pattern checking, before assembling sName and handing it to the blockManager
+ QString statusMessage = QString(tr("New %1(s) added:").arg(tr("Block")));
+
+ for (int x = 0; x < numberOfBlocks; x++) {
+     if (x != 0) { // start at 2nd Block
+         if (!_autoSystemNameCheckBox->isChecked()) {
+             // Find first block with unused system name
+             while (true) {
+                 system = nextName(system);
+                 // log.warn("Trying " + system);
+                 Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(system);
+                 if (blk == nullptr) {
+                     sName = system;
+                     break;
+                 }
+             }
          }
-         if (!_autoSystemName->isChecked()) {
-             b = QString(sysName->text());
-             b.append(":");
-             b.append(QString::number(x));
-             sName = b;
+         if (user != "") {
+             // Find first block with unused user name
+             while (true) {
+                 user = nextName(user);
+                 //log.warn("Trying " + user);
+                 Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(user);
+                 if (blk == nullptr) {
+                     uName = user;
+                     break;
+                 }
+             }
          }
      }
      Block* blk;
+     QString xName = "";
      try {
-         if (_autoSystemName->isChecked()) {
-             blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(user);
+         if (_autoSystemNameCheckBox->isChecked())
+         {
+            blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(user);
+            if (blk == nullptr)
+            {
+               xName = uName;
+               throw IllegalArgumentException();
+            }
          } else {
              blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(sName, user);
+             if (blk == nullptr) {
+                 xName = sName;
+                 throw IllegalArgumentException();
+             }
          }
      } catch (IllegalArgumentException ex) {
-         // user input no good
-         handleCreateException(sName);
-         return; // without creating
+      // user input no good
+      handleCreateException(xName);
+      statusBar->setText(tr("Check that number/name is OK and not in use."));
+      statusBar->setForeground(Qt::red);
+      return; // without creating
      }
      if (blk != NULL) {
          if (lengthField->text().length() != 0) {
@@ -1129,9 +1164,16 @@ void BlockTableAction::okPressed(ActionEvent* /*e*/)
          } else if (cName==(severeText)) {
              blk->setCurvature(Block::SEVERE);
          }
+         // add first and last names to statusMessage user feedback string
+         if (x == 0 || x == numberOfBlocks - 1) {
+             statusMessage.append(" ").append(sName).append(" (").append(user).append(")");
+         }
+         if (x == numberOfBlocks - 2) {
+             statusMessage.append(" ").append(tr("up to")).append(" ");
+         }
      }
  }
- pref->setSimplePreferenceState(systemNameAuto, _autoSystemName->isChecked());
+ pref->setSimplePreferenceState(systemNameAuto, _autoSystemNameCheckBox->isChecked());
  // ((BlockManager*)InstanceManager::getDefault("BlockManager")).createNewBlock(sName, user);
 }
 
@@ -1250,7 +1292,7 @@ void BlockTableAction::deletePaths(JmriJFrame* f) {
              log.debug("onIcon set");
          } else if (value.equals(Bundle.getMessage("BlockInconsistent"))) {
              label = new JLabel("X", JLabel.CENTER); // centered text alignment
-             label.setForeground(Color.red);
+             label.setForeground(Qt::red);
              log.debug("Block state inconsistent");
              iconHeight = 0;
          } else if (value.equals(Bundle.getMessage("BlockUnknown"))) {

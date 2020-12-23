@@ -98,7 +98,7 @@ class FrmTRL_Rules : public JFrame
   /*private*/ bool _mAddNewPressed;
 
   /*private*/ /*final*/ DefaultListModel/*<TrafficLockingData*>*/* _mTrafficLockingModel;
-  /*private*/ /*final*/ QList<TrafficLockingData*> _mTrafficLockingRulesOrig = QList<TrafficLockingData*>();
+  /*private*/ /*final*/ QList<TrafficLockingData*>* _mTrafficLockingRulesOrig = new QList<TrafficLockingData*>();
   /*private*/ void initOrig();
   /*private*/ bool dataChanged();
   /*private*/ void initComponents();

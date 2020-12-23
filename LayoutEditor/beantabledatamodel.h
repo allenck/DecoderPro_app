@@ -148,6 +148,7 @@ friend class LTFTabbedTableItem;
 friend class AbstractTableAction;
 friend class TurnoutTableDataModel;
 friend class SignalMastTableAction;
+friend class OBlockTableAction;
 };
 
 

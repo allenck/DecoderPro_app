@@ -2,6 +2,7 @@
 #define OBLOCKTABLEMODEL_H
 #include "beantabledatamodel.h"
 #include "jtable.h"
+#include "jcombobox.h"
 
 class OBlock;
 class TableFrames;
@@ -41,9 +42,10 @@ public:
   REPORT_CURRENTCOL = 10,
   PERMISSIONCOL = 11,
   SPEEDCOL = 12,
-  ERR_SENSORCOL = 13,
-  CURVECOL = 14,
-  NUMCOLS = 15
+  WARRANTCOL=13,
+  ERR_SENSORCOL = 14,
+  CURVECOL = 15,
+  NUMCOLS = 16
  };
 
  static /*public*/ /*final*/ QString noneText;// = AbstractTableAction.rb.getString("BlockNone");
@@ -51,7 +53,12 @@ public:
  static /*public*/ /*final*/ QString tightText;// = AbstractTableAction.rb.getString("BlockTight");
  static /*public*/ /*final*/ QString severeText;// = AbstractTableAction.rb.getString("BlockSevere");
  static /*final*/ QStringList curveOptions;// = {noneText, gradualText, tightText, severeText};
-signals:
+ static JComboBox/*<String>*/* getCurveEditorBox(int row);
+ /*public*/ void configCurveColumn(JTable* table);
+ static JComboBox* getSpeedEditorBox(int row);
+ /*public*/ void configSpeedColumn(JTable* table);
+
+ signals:
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
@@ -83,6 +90,7 @@ protected:
  friend class JInternalFrame;
  friend class TableFrames;
  friend class BlockPortalTableModel;
+ friend class OBlockTablePanel;
 };
 class OBSComboBoxDelegate : public QItemDelegate
 {

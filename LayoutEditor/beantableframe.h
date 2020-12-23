@@ -27,7 +27,7 @@ private:
     QWidget* bottomBox;		// panel at bottom for extra buttons etc
     int bottomBoxIndex;	// index to insert extra stuff
     static /*final*/ int bottomStrutWidth;// = 20;
-    void extras();
+    virtual void extras();
 
 protected:
     virtual /*protected*/ void addToBottomBox(QWidget* comp, QString c);

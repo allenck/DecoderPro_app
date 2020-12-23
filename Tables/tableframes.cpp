@@ -241,6 +241,126 @@ void TableFrames::common()
  WarrantTableAction::getDefault()->errorCheck();
 }
 
+/*public*/ OBlockTableModel* TableFrames::getOblockTableModel() {
+    return _oBlockModel;
+}
+
+/*public*/ PortalTableModel* TableFrames::getPortalTableModel() {
+    return _portalModel;
+}
+
+/*public*/ BlockPortalTableModel* TableFrames::getPortalXRefTableModel() {
+        return _blockPortalXRefModel;
+}
+/*public*/ BlockPathTableModel* TableFrames::getBlockPathTableModel(OBlock* block) {
+    return new BlockPathTableModel(block, this);
+}
+/*public*/ SignalTableModel* TableFrames::getSignalTableModel() {
+    return _signalModel;
+}
+
+/*public*/ QAction* TableFrames::getPrintMenuItems(JTable* oBlockTable, JTable* portalTable, JTable* signalTable, JTable* blockPortalTable) {
+#if 0
+    QMenu* print = new QMenu(tr("PrintTable"));
+        QAction* printItem = new QAction(tr("Print OBlock Table"));
+        print->addAction(printItem);
+//        printItem.addActionListener(e -> {
+        connect(printItem, &QAction::triggered, [=]{
+            try {
+                MessageFormat headerFormat = new MessageFormat(tr("OBlock Table"));
+                MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
+                oBlockTable.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+            } catch (java.awt.print.PrinterException e1) {
+                log.warn("error printing: {}", e1, e1);
+            }
+        });
+        printItem = new JMenuItem(tr("PrintPortalTable"));
+        print.add(printItem);
+        printItem.addActionListener(e -> {
+            try {
+                MessageFormat headerFormat = new MessageFormat(tr("TitlePortalTable"));
+                MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
+                portalTable.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+            } catch (java.awt.print.PrinterException e1) {
+                log.warn("error printing: {}", e1, e1);
+            }
+        });
+        printItem = new JMenuItem(tr("PrintSignalTable"));
+        print.add(printItem);
+        printItem.addActionListener(e -> {
+            try {
+                MessageFormat headerFormat = new MessageFormat(tr("TitleSignalTable"));
+                MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
+                signalTable.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+            } catch (java.awt.print.PrinterException e1) {
+                log.warn("error printing: {}", e1, e1);
+            }
+        });
+        printItem = new JMenuItem(tr("PrintXRef"));
+        print.add(printItem);
+        printItem.addActionListener(e -> {
+            try {
+                MessageFormat headerFormat = new MessageFormat(tr("OpenXRefMenu", ""));
+                MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
+                blockPortalTable.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+            } catch (java.awt.print.PrinterException e1) {
+                log.warn("error printing: {}", e1, e1);
+            }
+        });
+        return print;
+    }
+
+    // for desktop style interface, ignored for _tabbed
+    private void createDesktop() {
+        _desktop = new JDesktopPane();
+        _desktop.putClientProperty("JDesktopPane.dragMode", "outline"); // slower or faster?
+        _desktop.setPreferredSize(new Dimension(1100, 600));
+        _desktop.setBackground(new Color(180,180,180));
+        desktopframe.setContentPane(_desktop);
+
+        // placed at 0,0
+        _desktop.add(_blockTableFrame);
+        _portalTableFrame.setLocation(0, 320);
+        _desktop.add(_portalTableFrame);
+        _signalTableFrame.setLocation(350, 400);
+        _desktop.add(_signalTableFrame);
+        _blockPortalXRefFrame.setLocation(700, 20);
+        _desktop.add(_blockPortalXRefFrame);
+#endif
+    }
+
+    /*public*/ QMenu* TableFrames::getOptionMenu() {
+        // Options menu
+        QMenu* optionMenu = new QMenu(tr("Options"));
+        _showWarnItem = new QAction (tr("Suppress Warnings and Error Messages"),this);
+//        _showWarnItem.addActionListener(event -> {
+        connect(_showWarnItem, &QAction::triggered, [=]{
+            QString cmd = ((QAction*)QObject::sender())->text();//event.getActionCommand();
+            setShowWarnings(cmd);
+        });
+        optionMenu->addAction(_showWarnItem);
+        setShowWarnings("ShowWarning");
+
+        QAction* importBlocksItem = new QAction(tr("Import Blocks as Occupancy Blocks"), this);
+        //importBlocksItem.addActionListener((ActionEvent event) -> importBlocks());
+        connect(importBlocksItem, &QAction::triggered, [=]{
+        optionMenu->addAction(importBlocksItem);
+        });
+        // disable ourself if there is no primary Block manager available
+        if (InstanceManager::getNullableDefault("BlockManager.") == nullptr) { // means Block list is empty
+            importBlocksItem->setEnabled(false);
+        }
+        return optionMenu;
+    }
+
+    /*public*/ QMenu* TableFrames::getTablesMenu() {
+        // Tables menu
+        tablesMenu = new QMenu(tr("OpenMenu"));
+#if 0 // TODO:
+        updateOBlockTablesMenu(); // replaces the last 2 menu items with appropriate submenus
+#endif
+        return tablesMenu;
+    }
 ///*protected*/ /*final*/ JTable* TableFrames::getBlockTablePane() {
 //    return _blockTable;
 //}
@@ -991,7 +1111,28 @@ static class MyBooleanRenderer extends javax.swing.table.DefaultTableCellRendere
      frame->pack();
      return frame;
  }
+  /*
+ * ********************* End of tables and frames methods *****************************
+ */
 
+// Shared warning dialog method. Store user pref to suppress further mentions.
+/*protected*/ int TableFrames::verifyWarning(QString message) {
+    int val = 0;
+    if (_showWarnings) {
+        // verify deletion
+        val = JOptionPane::showOptionDialog(nullptr,
+                message, tr("Title"),
+                JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
+                QVariantList({tr("Yes"),
+                    tr("Plus"),
+                    tr("No")}),
+                tr("No")); // default choice = No
+        if (val == 1) { // suppress future warnings
+            _showWarnings = false;
+        }
+    }
+    return val;
+}
 
 /**
  * ********************* InternalFrameListener implementatiom

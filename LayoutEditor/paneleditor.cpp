@@ -293,8 +293,8 @@ PanelEditor::~PanelEditor()
              setAllEditable(editableBox->isChecked());
              hiddenCheckBoxListener();
      });
-     connect(editableBox, SIGNAL(clicked(bool)), this, SLOT(onEditableBox()));
      editableBox->setChecked(isEditable());
+
      // positionable item
      contentPaneLayout->addWidget(positionableBox);
 //     positionableBox.addActionListener(new ActionListener() {

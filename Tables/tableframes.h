@@ -29,7 +29,15 @@ public:
  explicit TableFrames(QWidget *parent = 0);
  /*public*/ static /*final*/ int STRUT_SIZE;// = 10;
  /*public*/ TableFrames(QString actionName, QWidget *parent = 0);
+ /*public*/ OBlockTableModel* getOblockTableModel() ;
+ /*public*/ PortalTableModel* getPortalTableModel();
+ /*public*/ BlockPortalTableModel* getPortalXRefTableModel();
+ /*public*/ BlockPathTableModel* getBlockPathTableModel(OBlock* block);
+ /*public*/ SignalTableModel* getSignalTableModel();
  /*public*/ void initComponents();
+ /*public*/ QAction *getPrintMenuItems(JTable* oBlockTable, JTable* portalTable, JTable* signalTable, JTable* blockPortalTable);
+ /*public*/ QMenu* getOptionMenu();
+ /*public*/ QMenu* getTablesMenu();
  /*public*/ void windowClosing(QCloseEvent* e);
  /*public*/ QString toString();
  /*public*/ void internalFrameClosing(InternalFrameEvent* e);
@@ -40,12 +48,12 @@ public:
  /*public*/ void internalFrameDeiconified(InternalFrameEvent* e) ;
  /*public*/ void internalFrameDeactivated(InternalFrameEvent* e);
  /*public*/ QString getClassName();
+  static int ROW_HEIGHT;
 
 signals:
 
 public slots:
 private:
- static int ROW_HEIGHT;
  /*private*/ static QString oblockPrefix;
 
  void common();
@@ -79,6 +87,7 @@ private:
  void showPopup(QMouseEvent* me);
  // /*private*/ void errorCheck();
  static /*private*/ void setActionMappings(JTable* table);
+ QMenu* tablesMenu;
 
 private slots:
  /*private*/ void setShowWarnings(QString cmd);
@@ -106,10 +115,13 @@ protected:
  ///*protected*/ JInternalFrame* makePathTurnoutFrame(OBlock* block, QString pathName);
  /*protected*/ PathTurnoutFrame* makePathTurnoutFrame(OBlock* block, QString pathName);
  /*protected*/ void disposeBlockPathFrame(OBlock* block);
+ /*protected*/ int verifyWarning(QString message);
 
 
 friend class OBlockTableModel;
 friend class BlockPathTableModel;
+friend class PortalTableModel;
+
 };
 
 /*static*/ class BlockPathFrame : public JInternalFrame

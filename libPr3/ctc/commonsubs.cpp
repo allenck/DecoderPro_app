@@ -178,14 +178,14 @@ CommonSubs::CommonSubs(QObject *parent) : QObject(parent)
 
 //  NO blank entry as the first selection, returns true if any in list, else false.
 //  Also populates "uniqueIDS" with corresponding values.
-    /*public*/ /*static*/ bool CommonSubs::populateJComboBoxWithColumnDescriptionsExceptOurs(JComboBox/*<String>*/* jComboBox, CTCSerialData* ctcSerialData, int ourUniqueID, QList<int> uniqueIDS) {
+    /*public*/ /*static*/ bool CommonSubs::populateJComboBoxWithColumnDescriptionsExceptOurs(JComboBox/*<String>*/* jComboBox, CTCSerialData* ctcSerialData, int ourUniqueID, QList<int>* uniqueIDS) {
         QList<QString> userDescriptions = QList<QString>();
-        uniqueIDS.clear();
+        uniqueIDS->clear();
         QList<int> arrayListOfSelectableOSSectionUniqueIDs = getArrayListOfSelectableOSSectionUniqueIDs(ctcSerialData->getCodeButtonHandlerDataArrayList());
         for (int uniqueID : arrayListOfSelectableOSSectionUniqueIDs) {
             if (ourUniqueID != uniqueID) {
                 userDescriptions.append(ctcSerialData->getMyShortStringNoCommaViaUniqueID(uniqueID));
-                uniqueIDS.append(uniqueID);
+                uniqueIDS->append(uniqueID);
             }
         }
 //      Collections.sort(userDescriptions);
@@ -411,9 +411,9 @@ CommonSubs::CommonSubs(QObject *parent) : QObject(parent)
      * @param list The NBHSensor array list.
      * @param sensorName The proposed sensor name.
      */
-    /*public*/ /*static*/ void CommonSubs::addSensorToSensorList(QList<NBHSensor*> list, QString sensorName) {
+    /*public*/ /*static*/ void CommonSubs::addSensorToSensorList(QList<NBHSensor*>* list, QString sensorName) {
         NBHSensor* sensor = getNBHSensor(sensorName, false);
-        if (sensor != nullptr && sensor->valid()) list.append(sensor);
+        if (sensor != nullptr && sensor->valid()) list->append(sensor);
     }
 
     /*private*/ /*static*/ /*final*/ Logger* CommonSubs::log = LoggerFactory::getLogger("CommonSubs");

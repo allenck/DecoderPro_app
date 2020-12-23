@@ -3,6 +3,10 @@
 #include "abstracttableaction.h"
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
+#include "spinnernumbermodel.h"
+#include "jspinner.h"
+#include "jcheckbox.h"
+#include "jlabel.h"
 
 class UserPreferencesManager;
 class JTextField;
@@ -21,18 +25,18 @@ public:
 private:
     void common();
     JmriJFrame* addFrame;// = NULL;
-    JTextField* sysName;// = new JTextField(5);
-    JTextField* userName;// = new JTextField(5);
+    JTextField* sysNameField;// = new JTextField(5);
+    JTextField* userNameField;// = new JTextField(5);
     QLabel* sysNameLabel;// = new JLabel(tr("LabelSystemName"));
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
-
-    JTextField* numberToAdd;// = new JTextField(10);
-    QCheckBox* range;// = new JCheckBox(tr("AddRangeBox"));
-    QCheckBox* autoSystemName;// = new JCheckBox(tr("LabelAutoSysName"));
-    UserPreferencesManager* p;
+    SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+    JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
+    JCheckBox* rangeBox = new JCheckBox(tr("Add Range Box"));
+    JCheckBox* autoSystemNameBox = new JCheckBox(tr("Auto Sys Name"));
+    JLabel* statusBarLabel = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);UserPreferencesManager* p;
     QString systemNameAuto;// = this.getClass().getName() + ".AutoSystemName";
     Logger* log;
-    void handleCreateException(QString sysName);
+    void handleCreateException(QString sysNameField);
 
 protected:
     /*protected*/ void createModel();

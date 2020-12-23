@@ -278,6 +278,59 @@ FrmSWDI::FrmSWDI(QWidget *parent)
                 .addComponent(jButton2)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+#else
+        JPanel* contentPane = new JPanel();
+        contentPane->setLayout(new QVBoxLayout());
+        setCentralWidget(contentPane);
+
+        JPanel* panel1 = new JPanel(new QHBoxLayout());
+        ((QHBoxLayout*)panel1->layout())->addWidget(_mSWDI_NormalInternalSensorPrompt, 0, Qt::AlignRight);
+        panel1->layout()->addWidget(_mSWDI_NormalInternalSensor);
+        contentPane->layout()->addWidget(panel1);
+
+        JPanel* panel2 = new JPanel(new QHBoxLayout());
+        ((QHBoxLayout*)panel2->layout())->addWidget(_mSWDI_ReversedInternalSensorPrompt, 0, Qt::AlignRight);
+        panel2->layout()->addWidget(_mSWDI_ReversedInternalSensor);
+        contentPane->layout()->addWidget(panel2);
+
+        JPanel* panel3 = new JPanel(new QHBoxLayout());
+        ((QHBoxLayout*)panel3->layout())->addWidget(_mSWDI_ActualTurnoutPrompt, 0, Qt::AlignRight);
+        panel3->layout()->addWidget(_mSWDI_ExternalTurnout);
+        contentPane->layout()->addWidget(panel3);
+
+        JPanel* panel4 = new JPanel(new QHBoxLayout());
+        ((QHBoxLayout*)panel4->layout())->addWidget(jLabel19, 0, Qt::AlignRight);
+        panel4->layout()->addWidget(_mSWDI_CodingTimeInMilliseconds);
+        contentPane->layout()->addWidget(panel4);
+
+        JPanel* panel5 = new JPanel(new QHBoxLayout());
+        ((QHBoxLayout*)panel5->layout())->addWidget(jLabel2, 0, Qt::AlignRight);
+        panel5->layout()->addWidget(_mSWDI_FeedbackDifferent);
+        contentPane->layout()->addWidget(panel5);
+
+        JPanel* panel6 = new JPanel(new QHBoxLayout());
+        ((QHBoxLayout*)panel6->layout())->addWidget(jLabel3, 0, Qt::AlignRight);
+        panel6->layout()->addWidget(_mTurnout);
+        panel6->layout()->addWidget(_mSWDI_GUITurnoutLeftHand);
+        contentPane->layout()->addWidget(panel6);
+
+        JPanel* panel7 = new JPanel(new QHBoxLayout());
+        ((QHBoxLayout*)panel7->layout())->addWidget(new JLabel(" "), 0, Qt::AlignRight);
+        panel7->layout()->addWidget(_mCrossover);
+        panel7->layout()->addWidget(_mSWDI_GUICrossoverLeftHand);
+        contentPane->layout()->addWidget(panel7);
+
+        JPanel* panel8 = new JPanel(new QHBoxLayout());
+        ((QHBoxLayout*)panel8->layout())->addWidget(new JLabel(" "), 0, Qt::AlignRight);
+        panel8->layout()->addWidget(_mDoubleCrossover);
+        panel8->layout()->addWidget(new JLabel(" "));
+        contentPane->layout()->addWidget(panel8);
+
+        JPanel* panel9 = new JPanel(new FlowLayout());
+        panel9->layout()->addWidget(_mSaveAndClose);
+        panel9->layout()->addWidget(jButton2);
+        contentPane->layout()->addWidget(panel9);
+
 #endif
         pack();
     }// </editor-fold>

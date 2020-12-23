@@ -50,14 +50,14 @@ class ImportExternalData : public XmlFile
   static NBHSignal* loadSignal(QString signalName);
   static NBHTurnout* loadTurnout(QString value, bool feedback);
   static NamedBeanHandle<Block*>* loadBlock(QString value);
-  static QList<NBHSignal*> getSignalList(QString value);
-  static QList<CallOnData*> getCallOnList(QString value);
+  static QList<NBHSignal *>* getSignalList(QString value);
+  static QList<CallOnData*>* getCallOnList(QString value);
   static QList<QString> getCallOnSensorNames(CallOnEntry* entry);
   static void convertCallOnSensorNamesToNBHSensors();
-  static QList<TrafficLockingData*> getTrafficLocking(QString value);
-  static QList<TrafficLockingData::TRLSwitch *> getTRLSwitchList(TrafficLockingEntry* entry);
+  static QList<TrafficLockingData*>* getTrafficLocking(QString value);
+  static QList<TrafficLockingData::TRLSwitch *>* getTRLSwitchList(TrafficLockingEntry* entry);
   static TrafficLockingData::TRLSwitch* createTRLSwitch(QString text, QString alignment, QString id);
-  static QList<NBHSensor*> getTRLSensorList(TrafficLockingEntry* entry, bool occupancy);
+  static QList<NBHSensor*>* getTRLSensorList(TrafficLockingEntry* entry, bool occupancy);
 
   /*private*/ static QList<ImportCodeButtonHandlerData*> readFile(QString fileName);
 };

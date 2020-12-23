@@ -410,19 +410,19 @@ log->debug("-------------  IL  ------------");
 
 // **** Load ArrayList objects ****
 
-/*static*/ QList<NBHSignal*> ImportExternalData::getSignalList(QString value) {
-    QList<NBHSignal*> signalList = QList<NBHSignal*>();
+/*static*/ QList<NBHSignal*>* ImportExternalData::getSignalList(QString value) {
+    QList<NBHSignal*>* signalList = new QList<NBHSignal*>();
     if (value != nullptr) {
         for (QString signalName : ProjectsCommonSubs::getArrayListFromCSV(value)) {
             NBHSignal* signal = loadSignal(signalName);
-            signalList.append(signal);
+            signalList->append(signal);
         }
     }
     return signalList;
 }
 
-/*static*/ QList<CallOnData*> ImportExternalData::getCallOnList(QString value) {
-    QList<CallOnData*> callOnList = QList<CallOnData*>();
+/*static*/ QList<CallOnData*>* ImportExternalData::getCallOnList(QString value) {
+    QList<CallOnData*>* callOnList = new QList<CallOnData*>();
     for (QString csvString : ProjectsCommonSubs::getArrayListFromSSV(value)) {
         CallOnData* cod = new CallOnData();
 
@@ -433,10 +433,10 @@ log->debug("-------------  IL  ------------");
         cod->_mCalledOnExternalSensor = loadSensor(entry->_mCalledOnExternalSensor, false);
         cod->_mExternalBlock = loadBlock(entry->_mExternalBlock);
 
-        cod->_mSwitchIndicators = QList<NBHSensor*>();
+        cod->_mSwitchIndicators = new QList<NBHSensor*>();
         cod->_mSwitchIndicatorNames = getCallOnSensorNames(entry);
 
-        callOnList.append(cod);
+        callOnList->append(cod);
     }
     return callOnList;
 }
@@ -454,19 +454,19 @@ log->debug("-------------  IL  ------------");
 
 /*static*/ void ImportExternalData::convertCallOnSensorNamesToNBHSensors() {
     for (CodeButtonHandlerData* cbhd : cm->getCTCSerialData()->getCodeButtonHandlerDataArrayList()) {
-        for (CallOnData* cod : cbhd->_mCO_GroupingsList) {
+        for (CallOnData* cod : *cbhd->_mCO_GroupingsList) {
             for (QString sensorName : cod->_mSwitchIndicatorNames) {
                 NBHSensor* sensor = cm->getNBHSensor(sensorName);
                 if (sensor != nullptr) {
-                    cod->_mSwitchIndicators.append(sensor);
+                    cod->_mSwitchIndicators->append(sensor);
                 }
             }
         }
     }
 }
 
-/*static*/ QList<TrafficLockingData*> ImportExternalData::getTrafficLocking(QString value) {
-    QList<TrafficLockingData*> trlData = QList<TrafficLockingData*>();
+/*static*/ QList<TrafficLockingData*>* ImportExternalData::getTrafficLocking(QString value) {
+    QList<TrafficLockingData*>* trlData = new QList<TrafficLockingData*>();
     for (QString csvString : ProjectsCommonSubs::getArrayListFromSSV(value)) {
         TrafficLockingData* trl = new TrafficLockingData();
 
@@ -480,18 +480,18 @@ log->debug("-------------  IL  ------------");
         trl->_mOccupancyExternalSensors = getTRLSensorList(entry, true);
         trl->_mOptionalExternalSensors = getTRLSensorList(entry, false);
 
-        trlData.append(trl);
+        trlData->append(trl);
     }
     return trlData;
 }
 
-/*static*/ QList<TrafficLockingData::TRLSwitch*> ImportExternalData::getTRLSwitchList(TrafficLockingEntry* entry) {
-    QList<TrafficLockingData::TRLSwitch*> trlSwitches = QList<TrafficLockingData::TRLSwitch*>();
-    if (!entry->_mUserText1.isEmpty()) trlSwitches.append(createTRLSwitch(entry->_mUserText1, entry->_mSwitchAlignment1, entry->_mUniqueID1));
-    if (!entry->_mUserText2.isEmpty()) trlSwitches.append(createTRLSwitch(entry->_mUserText2, entry->_mSwitchAlignment2, entry->_mUniqueID2));
-    if (!entry->_mUserText3.isEmpty()) trlSwitches.append(createTRLSwitch(entry->_mUserText3, entry->_mSwitchAlignment3, entry->_mUniqueID3));
-    if (!entry->_mUserText4.isEmpty()) trlSwitches.append(createTRLSwitch(entry->_mUserText4, entry->_mSwitchAlignment4, entry->_mUniqueID4));
-    if (!entry->_mUserText5.isEmpty()) trlSwitches.append(createTRLSwitch(entry->_mUserText5, entry->_mSwitchAlignment5, entry->_mUniqueID5));
+/*static*/ QList<TrafficLockingData::TRLSwitch*>* ImportExternalData::getTRLSwitchList(TrafficLockingEntry* entry) {
+    QList<TrafficLockingData::TRLSwitch*>* trlSwitches = new QList<TrafficLockingData::TRLSwitch*>();
+    if (!entry->_mUserText1.isEmpty()) trlSwitches->append(createTRLSwitch(entry->_mUserText1, entry->_mSwitchAlignment1, entry->_mUniqueID1));
+    if (!entry->_mUserText2.isEmpty()) trlSwitches->append(createTRLSwitch(entry->_mUserText2, entry->_mSwitchAlignment2, entry->_mUniqueID2));
+    if (!entry->_mUserText3.isEmpty()) trlSwitches->append(createTRLSwitch(entry->_mUserText3, entry->_mSwitchAlignment3, entry->_mUniqueID3));
+    if (!entry->_mUserText4.isEmpty()) trlSwitches->append(createTRLSwitch(entry->_mUserText4, entry->_mSwitchAlignment4, entry->_mUniqueID4));
+    if (!entry->_mUserText5.isEmpty()) trlSwitches->append(createTRLSwitch(entry->_mUserText5, entry->_mSwitchAlignment5, entry->_mUniqueID5));
     return trlSwitches;
 }
 
@@ -499,21 +499,21 @@ log->debug("-------------  IL  ------------");
     return new TrafficLockingData::TRLSwitch(text, alignment, loadInt(id));
 }
 
-/*static*/ QList<NBHSensor*> ImportExternalData::getTRLSensorList(TrafficLockingEntry* entry, bool occupancy) {
-    QList<NBHSensor*> sensorList = QList<NBHSensor*>();
+/*static*/ QList<NBHSensor*>* ImportExternalData::getTRLSensorList(TrafficLockingEntry* entry, bool occupancy) {
+    QList<NBHSensor*>* sensorList = new QList<NBHSensor*>();
     if (occupancy) {
-        if (!entry->_mOccupancyExternalSensor1.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor1, false));
-        if (!entry->_mOccupancyExternalSensor2.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor2, false));
-        if (!entry->_mOccupancyExternalSensor3.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor3, false));
-        if (!entry->_mOccupancyExternalSensor4.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor4, false));
-        if (!entry->_mOccupancyExternalSensor5.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor5, false));
-        if (!entry->_mOccupancyExternalSensor6.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor6, false));
-        if (!entry->_mOccupancyExternalSensor7.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor7, false));
-        if (!entry->_mOccupancyExternalSensor8.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor8, false));
-        if (!entry->_mOccupancyExternalSensor9.isEmpty()) sensorList.append(loadSensor(entry->_mOccupancyExternalSensor9, false));
+        if (!entry->_mOccupancyExternalSensor1.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor1, false));
+        if (!entry->_mOccupancyExternalSensor2.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor2, false));
+        if (!entry->_mOccupancyExternalSensor3.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor3, false));
+        if (!entry->_mOccupancyExternalSensor4.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor4, false));
+        if (!entry->_mOccupancyExternalSensor5.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor5, false));
+        if (!entry->_mOccupancyExternalSensor6.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor6, false));
+        if (!entry->_mOccupancyExternalSensor7.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor7, false));
+        if (!entry->_mOccupancyExternalSensor8.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor8, false));
+        if (!entry->_mOccupancyExternalSensor9.isEmpty()) sensorList->append(loadSensor(entry->_mOccupancyExternalSensor9, false));
     } else {
-        if (!entry->_mOptionalExternalSensor1.isEmpty()) sensorList.append(loadSensor(entry->_mOptionalExternalSensor1, false));
-        if (!entry->_mOptionalExternalSensor2.isEmpty()) sensorList.append(loadSensor(entry->_mOptionalExternalSensor2, false));
+        if (!entry->_mOptionalExternalSensor1.isEmpty()) sensorList->append(loadSensor(entry->_mOptionalExternalSensor1, false));
+        if (!entry->_mOptionalExternalSensor2.isEmpty()) sensorList->append(loadSensor(entry->_mOptionalExternalSensor2, false));
     }
     return sensorList;
 }

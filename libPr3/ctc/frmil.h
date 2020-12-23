@@ -48,7 +48,7 @@ class FrmIL : public JFrame
   /*private*/ /*final*/ CheckJMRIObject* _mCheckJMRIObject;
   /*private*/ /*final*/ bool _mSignalHeadSelected;
   /*private*/ /*final*/ CTCSerialData* _mCTCSerialData;
-  /*private*/ /*final*/QList<int> _mUniqueIDS = QList<int>();
+  /*private*/ /*final*/QList<int>* _mUniqueIDS = new QList<int>();
 
   /*private*/ QList<QString> _mSignalsArrayListOrig;
   /*private*/ void initOrig(QList<QString> signalsArrayList);

@@ -42,6 +42,8 @@ public:
  /*public*/ bool getResizable();
  /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* listener);
  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener);
+  /*public*/ void setCellRenderer(QObject* ) {}
+  /*public*/ void setCellEditor(QObject* ) {}
 
 signals:
  void propertyChange(PropertyChangeEvent*);

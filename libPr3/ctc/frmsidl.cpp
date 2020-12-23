@@ -66,7 +66,7 @@
     });
 
     _mSIDL_LeftInternalSensorPrompt->setHorizontalAlignment(/*SwingConstants.RIGHT*/Qt::AlignRight);
-    _mSIDL_LeftInternalSensorPrompt->setText(tr("LabelDlgSIDLLeft"));
+    _mSIDL_LeftInternalSensorPrompt->setText(tr("Left lever sensor:"));
 
     //_mSIDL_LeftInternalSensor->setModel(new DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
     _mSIDL_LeftInternalSensor->addItems({ "Item 1", "Item 2", "Item 3", "Item 4" });
@@ -144,6 +144,25 @@
     contentPane->setLayout(new QVBoxLayout());
     setCentralWidget(contentPane);
 
+    JPanel* panel1 = new JPanel(new QHBoxLayout());
+    ((QHBoxLayout*)panel1->layout())->addWidget(_mSIDL_LeftInternalSensorPrompt, 0, Qt::AlignRight);
+    panel1->layout()->addWidget(_mSIDL_LeftInternalSensor);
+    contentPane->layout()->addWidget(panel1);
+
+    JPanel* panel2 = new JPanel(new QHBoxLayout());
+    ((QHBoxLayout*)panel2->layout())->addWidget(_mSIDL_NormalInternalSensorPrompt, 0, Qt::AlignRight);
+    panel1->layout()->addWidget(_mSIDL_NormalInternalSensor);
+    contentPane->layout()->addWidget(panel2);
+
+    JPanel* panel3 = new JPanel(new QHBoxLayout());
+    ((QHBoxLayout*)panel3->layout())->addWidget(_mSIDL_RightInternalSensorPrompt, 0, Qt::AlignRight);
+    panel1->layout()->addWidget(_mSIDL_RightInternalSensor);
+    contentPane->layout()->addWidget(panel3);
+
+    JPanel* panel4 = new JPanel(new FlowLayout());
+    panel4->layout()->addWidget(_mSaveAndClose);
+    panel4->layout()->addWidget(jButton2);
+    contentPane->layout()->addWidget(panel4);
 #endif
     pack();
 }// </editor-fold>

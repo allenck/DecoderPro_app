@@ -51,8 +51,10 @@ protected:
     virtual /*protected*/ void setManager(Manager* man);
     virtual/*protected*/ QString helpTarget();
     virtual /*protected*/ /*abstract*/ QString getClassName();
-    /*protected*/ bool _includeAddButton;// = true;
+    /*protected*/ bool _includeAddButton = true;
     /*protected*/ JTable* table;
+    /*protected*/ /*@Nonnull*/ QString nextName(/*@Nonnull*/ QString name);
+
   protected slots:
     virtual /*protected*/ /*abstract*/ void addPressed(ActionEvent* e = 0);
 friend class TabbedTableItem;

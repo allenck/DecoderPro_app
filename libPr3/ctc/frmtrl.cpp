@@ -37,7 +37,7 @@
     //this->getRootPane()->setDefaultButton(_mOK);
     _mOK->setDefault(true);
     updateRuleCounts();
-    this->setTitle(tr("TitleDlgTRL") + " " + codeButtonHandlerData->myShortStringNoComma());   // NOI18N
+    this->setTitle(tr("Edit traffic locking") + " " + codeButtonHandlerData->myShortStringNoComma());   // NOI18N
     QList<QString> listOfOSSectionOccupiedExternalSensors = getListOfExternalSensorsSlaved(codeButtonHandlerData, _mCTCSerialData->getCodeButtonHandlerDataArrayList());
     _mTopology = new Topology(_mCTCSerialData, listOfOSSectionOccupiedExternalSensors, tr("TLE_Normal"), tr("TLE_Reverse"));  // NOI18N
     bool isMastSignalType = _mCTCSerialData->getOtherData()->_mSignalSystemType == OtherData::SIGNAL_SYSTEM_TYPE::SIGNALMAST;
@@ -69,14 +69,14 @@
 }
 
 /*private*/ void FrmTRL::updateRuleCounts() {
-    _mLeftNumberOfRules->setText(tr("InfoDlgTRLRules") + " " + QString::number(_mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules.size()));   // NOI18N
-    _mRightNumberOfRules->setText(tr("InfoDlgTRLRules") + " " + QString::number(_mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules.size()));      // NOI18N
+    _mLeftNumberOfRules->setText(tr("InfoDlgTRLRules") + " " + QString::number(_mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules->size()));   // NOI18N
+    _mRightNumberOfRules->setText(tr("InfoDlgTRLRules") + " " + QString::number(_mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules->size()));      // NOI18N
     _mLeftNumberOfRulesPrompt->setForeground(valid(_mCheckJMRIObject, _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules) ? Qt::black : Qt::red);
     _mRightNumberOfRulesPrompt->setForeground(valid(_mCheckJMRIObject, _mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules) ? Qt::black : Qt::red);
 }
 
-/*private*/ /*static*/ bool FrmTRL::valid(CheckJMRIObject* checkJMRIObject, QList<TrafficLockingData*> trafficLockingRules) {
-    for (TrafficLockingData* trafficLockingRule : trafficLockingRules) {
+/*private*/ /*static*/ bool FrmTRL::valid(CheckJMRIObject* checkJMRIObject, QList<TrafficLockingData*>* trafficLockingRules) {
+    for (TrafficLockingData* trafficLockingRule : *trafficLockingRules) {
         if (!checkJMRIObject->validClass(VPtr<TrafficLockingData>::asQVariant( trafficLockingRule))) return false; // Error
     }
     return true;    // All valid
@@ -130,9 +130,9 @@
 //        }
     });
 
-    _mLeftNumberOfRulesPrompt->setText(tr("Left"));
+    _mLeftNumberOfRulesPrompt->setText(tr("Left traffic locking rules:"));
 
-    _mRightNumberOfRulesPrompt->setText(tr("Right"));
+    _mRightNumberOfRulesPrompt->setText(tr("Right traffic locking rules:"));
 
     _mOK->setText(tr("OK"));
 //    _mOK.addActionListener(new java.awt.event.ActionListener() {
@@ -240,10 +240,23 @@
     );
 #else
     JPanel* contentPane = new JPanel();
-    QVBoxLayout* contentPaneLayout;
-    contentPane->setLayout(contentPaneLayout = new QVBoxLayout());
+    QGridLayout* grid;
+    contentPane->setLayout(grid = new QGridLayout());
     setCentralWidget(contentPane);
 
+    grid->addWidget(_mLeftNumberOfRulesPrompt, 0, 1, 1, 1, Qt::AlignRight);
+    grid->addWidget(_mEditLeftTrafficLockingRules, 0, 2);
+    grid->addWidget(_mLeftNumberOfRules);
+
+    grid->addWidget(_mRightNumberOfRulesPrompt, 1, 1, 1, 1, Qt::AlignRight);
+    grid->addWidget(_mEditRightTrafficLockingRules, 0, 2);
+    grid->addWidget(_mRightNumberOfRules);
+
+    grid->addWidget(jLabel4, 2, 0, 1, 4);
+    grid->addWidget(jLabel10, 3, 0, 1, 4);
+    grid->addWidget(jLabel11, 4, 0, 1, 4);
+
+    grid->addWidget(_mOK, 5,1);
 
 #endif
     pack();
@@ -301,7 +314,7 @@
 }
 
 /*private*/ void FrmTRL::_mReverseLeftRightActionPerformed(/*java.awt.event.ActionEvent evt*/) {
-    QList<TrafficLockingData*> blah = _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules;
+    QList<TrafficLockingData*>* blah = _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules;
     _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules = _mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules;
     _mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules = blah;
     updateRuleCounts();
@@ -310,19 +323,19 @@
 /*private*/ void FrmTRL::_mAutoGenerateActionPerformed(/*java.awt.event.ActionEvent evt*/) {
 
     QList<TopologyInfo*> topologyInfosArrayList = _mTopology->getTrafficLockingRules(true);        // Left traffic.
-    _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules.clear();
+    _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules->clear();
     for (int index = 0; index < topologyInfosArrayList.size(); index++) {
         TopologyInfo* topologyInfo = topologyInfosArrayList.at(index);
         TrafficLockingData* trafficLockingData = new TrafficLockingData(index + 1, topologyInfo->getDestinationSignalMast(), topologyInfo);
-        _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules.append(trafficLockingData);
+        _mCodeButtonHandlerData->_mTRL_LeftTrafficLockingRules->append(trafficLockingData);
     }
 
     topologyInfosArrayList = _mTopology->getTrafficLockingRules(false);        // Right traffic.
-    _mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules.clear();
+    _mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules->clear();
     for (int index = 0; index < topologyInfosArrayList.size(); index++) {
         TopologyInfo* topologyInfo = topologyInfosArrayList.at(index);
         TrafficLockingData* trafficLockingData = new TrafficLockingData(index + 1, topologyInfo->getDestinationSignalMast(), topologyInfo);
-        _mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules.append(trafficLockingData);
+        _mCodeButtonHandlerData->_mTRL_RightTrafficLockingRules->append(trafficLockingData);
     }
 
     updateRuleCounts();

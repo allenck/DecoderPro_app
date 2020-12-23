@@ -40,7 +40,7 @@
     _mSWDL_InternalSensor = new JComboBox();
 
     setDefaultCloseOperation(JFrame::DO_NOTHING_ON_CLOSE);
-    setTitle(tr("TitleDlgSWDL"));
+    setTitle(tr("Edit switch direction lever"));
 //    addWindowListener(new java.awt.event.WindowAdapter() {
 //        @Override
 //        /*public*/ void windowClosing(java.awt.event.WindowEvent evt) {

@@ -1,5 +1,5 @@
 #include "defaulttablemodel.h"
-
+#include "exceptions.h"
 
 //DefaultTableModel::DefaultTableModel(QObject *parent) :
 //  QAbstractTableModel(parent)
@@ -54,8 +54,8 @@
  setDataVector(newVector(0), newVector(0));
 }
 
-/*private*/ /*static*/ QVector<QObject*> DefaultTableModel::newVector(int size) {
-    QVector<QObject*> v =  QVector<QObject*>(size);
+/*private*/ /*static*/ QVector<QVariant>* DefaultTableModel::newVector(int size) {
+    QVector<QVariant>* v = new QVector<QVariant>(size);
     //v.setSize(size);
     return v;
 }
@@ -74,7 +74,9 @@
   AbstractTableModel(parent)
 {
   //this(newVector(columnCount), rowCount);
- setDataVector(newVector(rowCount), newVector(columnCount));
+    _rowCount = rowCount;
+ setDataVector(new QVector<QVariant>(columnCount*rowCount * columnCount), newVector(columnCount));
+
 }
 
 /**
@@ -91,7 +93,7 @@
  * @see #setDataVector
  * @see #setValueAt
  */
-/*public*/ DefaultTableModel::DefaultTableModel(QVector<QObject*> columnNames, int rowCount, QObject *parent) :
+/*public*/ DefaultTableModel::DefaultTableModel(QVector<QVariant>* columnNames, int rowCount, QObject *parent) :
   AbstractTableModel(parent)
 {
  setDataVector(newVector(rowCount), columnNames);
@@ -163,12 +165,12 @@
  * @see #newRowsAdded
  * @see #setDataVector
  */
-/*public*/ QVector<QObject*> DefaultTableModel::getDataVector() {
+/*public*/ QVector<QVariant>* DefaultTableModel::getDataVector() {
     return dataVector;
 }
 
-/*private*/ /*static*/ QVector<QObject*> DefaultTableModel::nonNullVector(QVector<QObject*> v) {
- return (!v.isEmpty()) ? v : QVector<QObject*>();
+/*private*/ /*static*/ QVector<QVariant>* DefaultTableModel::nonNullVector(QVector<QVariant>* v) {
+ return (!v->isEmpty()) ? v : new QVector<QVariant>();
 }
 
 /**
@@ -191,9 +193,9 @@
  * @param   columnIdentifiers     the names of the columns
  * @see #getDataVector
  */
-/*public*/ void DefaultTableModel::setDataVector(QVector<QObject*> dataVector, QVector<QObject*> columnIdentifiers)
+/*public*/ void DefaultTableModel::setDataVector(QVector<QVariant>* dataVector, QVector<QVariant>* columnIdentifiers)
 {
- this->dataVector = nonNullVector(dataVector);
+ this->dataVector = dataVector;// nonNullVector(dataVector);
  this->columnIdentifiers = nonNullVector(columnIdentifiers);
  justifyRows(0, getRowCount());
 // fireTableStructureChanged();
@@ -234,15 +236,16 @@
  // instead of the AbstractTableModel by mistake.
  // Set the number of rows for the case when getRowCount
  // is overridden.
- dataVector.resize(getRowCount());
+ dataVector->resize(getRowCount());
 
  for (int i = from; i < to; i++)
  {
-  if (dataVector.at(i) == NULL)
+  if (dataVector->at(i) == QVariant())
   {
-   dataVector.insert( i, new QObject());
+   dataVector->insert( i, QVariant());
   }
-  ((QVector<QObject*>*)dataVector.at(i))->resize(getColumnCount());
+  //((QVector<QVariant>)dataVector.at(i))->resize(getColumnCount());
+//  dataVector.at(i).resize(getColumnCount());
  }
 }
 #if 0
@@ -318,7 +321,7 @@
     if (old == rowCount) {
         return;
     }
-    dataVector.resize(rowCount);
+    dataVector->resize(rowCount);
     if (rowCount <= old) {
         fireTableRowsDeleted(rowCount, old-1);
     }
@@ -580,28 +583,45 @@
  * @return the number of rows in the model
  */
 /*public*/ int DefaultTableModel::getRowCount() {
-    return dataVector.size();
+    //return dataVector->size();
+    return _rowCount;
 }
 int DefaultTableModel::rowCount(const QModelIndex &parent) const
 {
- int i =dataVector.size();
- return i;
+// int i =dataVector.size();
+// return i;
+    return _rowCount;
 }
 /**
  * Returns the number of columns in this data table.
  * @return the number of columns in the model
  */
-/*public*/ int DefaultTableModel::getColumnCount() {
-    return columnIdentifiers.size();
+/*public*/ int DefaultTableModel::getColumnCount() const{
+    return columnIdentifiers->size();
 }
 int DefaultTableModel::columnCount(const QModelIndex &parent) const
 {\
- int i =  columnIdentifiers.size();
+ int i =  columnIdentifiers->size();
  return i;
 }
 
 QVariant DefaultTableModel::data(const QModelIndex &index, int role) const {
- return QVariant();
+    QVariant val = QVariant();
+    int row = index.row();
+    int col = index.column();
+    if(role == Qt::DisplayRole)
+     val = dataVector->at(row * getColumnCount()+ col);
+    return val;
+}
+
+bool DefaultTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if(role == Qt::EditRole)
+    {
+        dataVector->replace(index.row() * getColumnCount()+ index.column(), value);
+        return true;
+    }
+    return false;
 }
 #if 0
 /**
@@ -635,7 +655,7 @@ QVariant DefaultTableModel::data(const QModelIndex &index, int role) const {
 /*public*/ boolean isCellEditable(int row, int column) {
     return true;
 }
-
+#endif
 /**
  * Returns an attribute value for the cell at <code>row</code>
  * and <code>column</code>.
@@ -646,9 +666,9 @@ QVariant DefaultTableModel::data(const QModelIndex &index, int role) const {
  * @exception  ArrayIndexOutOfBoundsException  if an invalid row or
  *               column was given
  */
-/*public*/ Object getValueAt(int row, int column) {
-    Vector rowVector = (Vector)dataVector.elementAt(row);
-    return rowVector.elementAt(column);
+/*public*/ QVariant DefaultTableModel::getValueAt(int row, int column) {
+    QVariant value = dataVector->at(row* getColumnCount() + column);
+    return value;
 }
 
 /**
@@ -662,12 +682,16 @@ QVariant DefaultTableModel::data(const QModelIndex &index, int role) const {
  * @exception  ArrayIndexOutOfBoundsException  if an invalid row or
  *               column was given
  */
-/*public*/ void setValueAt(Object aValue, int row, int column) {
-    Vector rowVector = (Vector)dataVector.elementAt(row);
-    rowVector.setElementAt(aValue, column);
+/*public*/ void DefaultTableModel::setValueAt(QVariant aValue, int row, int column) {
+    if(column < 0 || column > getColumnCount())
+        throw ArrayIndexOutOfBoundsException("invalid column");
+    if(row < 0 || row > getRowCount())
+        throw ArrayIndexOutOfBoundsException("invalid row");
+    QVariant v = dataVector->at(row * getColumnCount()+ column);
+    dataVector->replace(row * getColumnCount()+ column, aValue);
     fireTableCellUpdated(row, column);
 }
-
+#if 0
 //
 // Protected Methods
 //

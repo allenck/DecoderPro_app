@@ -99,7 +99,7 @@ class Columns : public QObject
 
   /*private*/ QString getListOfTrafficLockingRulesOSSectionsReferenced(CodeButtonHandlerData* currentCodeButtonHandlerData,
                                                                   QList <CodeButtonHandlerData*> codeButtonHandlerDataArrayList);
-  /*private*/ void checkThisList(int ourUniqueID, int otherUniqueID, QString lr, QList<TrafficLockingData*> trafficLockingRules, QSet<QString> setOfUniqueIDs);
+  /*private*/ void checkThisList(int ourUniqueID, int otherUniqueID, QString lr, QList<TrafficLockingData *> *trafficLockingRules, QSet<QString> setOfUniqueIDs);
   /*private*/ void lazy3(int ourUniqueID, int otherUniqueID, QString lr, int uniqueID, QSet<QString> setOfUniqueIDs);
   /*private*/ QString getListOfSwitchSlavedToOSSectionsReferenced( CodeButtonHandlerData* currentCodeButtonHandlerData,
                                                               QList <CodeButtonHandlerData*> codeButtonHandlerDataArrayList);

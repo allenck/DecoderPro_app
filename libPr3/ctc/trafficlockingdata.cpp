@@ -36,7 +36,7 @@
         _mRuleEnabled = FrmTRL_Rules::getRuleEnabledString();
         _mDestinationSignalOrComment = topologyInfo->getDestinationSignalMast();
 
-        _mSwitchAlignments = QList<TRLSwitch*>();
+        _mSwitchAlignments = new QList<TRLSwitch*>();
         for (int i = 0; i < 5; i++) {
             if (topologyInfo->getOSSectionText(i) != "") {
                 int intID;
@@ -46,33 +46,33 @@
                     log->warn(tr("TrafficLockingData format exception: id = %1").arg(topologyInfo->getUniqueID(i)));
                     intID = 0;
                 }
-               _mSwitchAlignments.append(new TRLSwitch(topologyInfo->getOSSectionText(i), topologyInfo->getNormalReversed(i), intID));
+               _mSwitchAlignments->append(new TRLSwitch(topologyInfo->getOSSectionText(i), topologyInfo->getNormalReversed(i), intID));
             }
         }
 
-        _mOccupancyExternalSensors = QList<NBHSensor*>();
+        _mOccupancyExternalSensors = new QList<NBHSensor*>();
         for (int i = 0; i < 9; i++) {
             QString sensorName = topologyInfo->getSensorDisplayName(i);
             NBHSensor* sensor = CommonSubs::getNBHSensor(sensorName, false);
             if (sensor != nullptr && sensor->valid()) {
-                _mOccupancyExternalSensors.append(sensor);
+                _mOccupancyExternalSensors->append(sensor);
             }
         }
 
-        _mOptionalExternalSensors = QList<NBHSensor*>();
+        _mOptionalExternalSensors = new QList<NBHSensor*>();
     }
 
     /**
      * Create a list of occupancy sensors with 9 entries. Unused entries will be set to a dummy NBHSensor.
      * @return a list of occupancy sensors.
      */
-    /*public*/ QList<NBHSensor*> TrafficLockingData::getOccupancySensors() {
+    /*public*/ QList<NBHSensor*>* TrafficLockingData::getOccupancySensors() {
         NBHSensor* dummy = new NBHSensor("TrafficLockingData", "", "", "", true);  // NOI18N
         QVector<NBHSensor*> occupancyArray = QVector<NBHSensor*>(9,dummy);
         //Arrays.fill(occupancyArray, dummy);
-        QList<NBHSensor*> occupancyList = QList<NBHSensor*>((occupancyArray.toList()));
-        for (int index = 0; index < _mOccupancyExternalSensors.size(); index++) {
-            occupancyList.replace(index, _mOccupancyExternalSensors.at(index));
+        QList<NBHSensor*>* occupancyList =  new QList<NBHSensor*>((occupancyArray.toList()));
+        for (int index = 0; index < _mOccupancyExternalSensors->size(); index++) {
+            occupancyList->replace(index, _mOccupancyExternalSensors->at(index));
         }
         return occupancyList;
     }
@@ -81,13 +81,13 @@
      * Create a list of optional sensors with 2 entries. Unused entries will be set to a dummy NBHSensor.
      * @return a list of optional sensors.
      */
-    /*public*/ QList<NBHSensor*> TrafficLockingData::getOptionalSensors() {
+    /*public*/ QList<NBHSensor*>* TrafficLockingData::getOptionalSensors() {
         NBHSensor* dummy = new NBHSensor("TrafficLockingData", "", "", "", true);  // NOI18N
         QVector<NBHSensor*> optionalArray = QVector<NBHSensor*>(2, dummy);
         //Arrays.fill(optionalArray, dummy);
-        QList<NBHSensor*> optionalList = QList<NBHSensor*>(optionalArray.toList());
-        for (int index = 0; index < _mOptionalExternalSensors.size(); index++) {
-            optionalList.replace(index, _mOptionalExternalSensors.at(index));
+        QList<NBHSensor*>* optionalList = new QList<NBHSensor*>(optionalArray.toList());
+        for (int index = 0; index < _mOptionalExternalSensors->size(); index++) {
+            optionalList->replace(index, _mOptionalExternalSensors->at(index));
         }
         return optionalList;
     }
@@ -96,12 +96,12 @@
      * Create a list of unique ids with 5 entries.  Unused entries are set to -1.
      * @return a list of ids
      */
-    /*public*/ QList<int> TrafficLockingData::getUniqueIDs() {
-        QVector<int> ids = QVector<int>(5-1);
+    /*public*/ QList<int>* TrafficLockingData::getUniqueIDs() {
+        QVector<int>* ids = new QVector<int>(5-1);
         //Arrays.fill(ids, -1);
-        QList<int> idList = QList<int>(ids.toList());
-        for (int index = 0; index < _mSwitchAlignments.size(); index++) {
-            idList.replace(index, _mSwitchAlignments.at(index)->_mUniqueID);
+        QList<int>* idList = new QList<int>(ids->toList());
+        for (int index = 0; index < _mSwitchAlignments->size(); index++) {
+            idList->replace(index, _mSwitchAlignments->at(index)->_mUniqueID);
         }
         return idList;
     }
@@ -114,8 +114,8 @@
         QVector<QString> alignment = QVector<QString>(5, tr("Normal"));
         //Arrays.fill(alignment, Bundle.getMessage("TLE_Normal"));    // NOI18N
         QList<QString> alignmentList = QList<QString>(alignment.toList());
-        for (int index = 0; index < _mSwitchAlignments.size(); index++) {
-            alignmentList.replace(index, _mSwitchAlignments.at(index)->_mSwitchAlignment);
+        for (int index = 0; index < _mSwitchAlignments->size(); index++) {
+            alignmentList.replace(index, _mSwitchAlignments->at(index)->_mSwitchAlignment);
         }
         return alignmentList;
     }
@@ -128,7 +128,7 @@
                 _mDestinationSignalOrComment != "" ? _mDestinationSignalOrComment : "");
         QString buildString = formattedString;
         //_mSwitchAlignments.forEach(tlrSw ->
-        foreach(TRLSwitch* tlrSw, _mSwitchAlignments)
+        foreach(TRLSwitch* tlrSw, *_mSwitchAlignments)
         {
             buildString.append(",");
             buildString.append(tlrSw->_mUserText);
@@ -138,13 +138,13 @@
             buildString.append(tlrSw->_mUniqueID);
         }//);
         //_mOccupancyExternalSensors.forEach(sw ->
-        foreach(NBHSensor* sw, _mOccupancyExternalSensors)
+        foreach(NBHSensor* sw, *_mOccupancyExternalSensors)
         {
             buildString.append(",");
             buildString.append(sw->getHandleName());
         }//);
         //_mOptionalExternalSensors.forEach(sw -> {
-        foreach(NBHSensor* sw, _mOptionalExternalSensors)
+        foreach(NBHSensor* sw, *_mOptionalExternalSensors)
         {
             buildString.append(",");
             buildString.append(sw->getHandleName());

@@ -28,8 +28,8 @@ CodeButtonHandlerDataRoutines::CodeButtonHandlerDataRoutines(QObject *parent) : 
         returnValue->_mSIDI_CodingTimeInMilliseconds = programProperties->_mSIDI_CodingTimeInMilliseconds;
         returnValue->_mSIDI_TimeLockingTimeInMilliseconds = programProperties->_mSIDI_TimeLockingTimeInMilliseconds;
         returnValue->_mSIDI_TrafficDirection = CodeButtonHandlerData::TRAFFIC_DIRECTION::BOTH;
-        returnValue->_mSIDI_LeftRightTrafficSignals = QList<NBHSignal*>();
-        returnValue->_mSIDI_RightLeftTrafficSignals = QList<NBHSignal*>();
+        returnValue->_mSIDI_LeftRightTrafficSignals = new QList<NBHSignal*>();
+        returnValue->_mSIDI_RightLeftTrafficSignals = new QList<NBHSignal*>();
         returnValue->_mSIDL_Enabled = false;
         returnValue->_mSWDI_Enabled = false;
         returnValue->_mSWDI_ExternalTurnout = new NBHTurnout("CodeButtonHandlerDataRoutines", "Empty _mSWDI_ExternalTurnout", "");
@@ -40,9 +40,9 @@ CodeButtonHandlerDataRoutines::CodeButtonHandlerDataRoutines(QObject *parent) : 
         returnValue->_mSWDI_GUICrossoverLeftHand = false;
         returnValue->_mSWDL_Enabled = false;
         returnValue->_mCO_Enabled = false;
-        returnValue->_mCO_GroupingsList = QList<CallOnData*>();
-        returnValue->_mTRL_LeftTrafficLockingRules = QList<TrafficLockingData*>();
-        returnValue->_mTRL_RightTrafficLockingRules =QList<TrafficLockingData*>();
+        returnValue->_mCO_GroupingsList = new QList<CallOnData*>();
+        returnValue->_mTRL_LeftTrafficLockingRules = new QList<TrafficLockingData*>();
+        returnValue->_mTRL_RightTrafficLockingRules = new QList<TrafficLockingData*>();
         returnValue->_mTRL_Enabled = false;
         returnValue->_mTUL_Enabled = false;
         returnValue->_mTUL_ExternalTurnout = new NBHTurnout("CodeButtonHandlerDataRoutines", "Empty _mTUL_ExternalTurnout", "");
@@ -58,7 +58,7 @@ CodeButtonHandlerDataRoutines::CodeButtonHandlerDataRoutines(QObject *parent) : 
         returnValue->_mTUL_AdditionalExternalTurnout3 = new NBHTurnout("CodeButtonHandlerDataRoutines", "Empty _mTUL_AdditionalExternalTurnout3", "");
         returnValue->_mTUL_AdditionalExternalTurnout3FeedbackDifferent = false;
         returnValue->_mIL_Enabled = false;
-        returnValue->_mIL_Signals = QList<NBHSignal*>();
+        returnValue->_mIL_Signals = new QList<NBHSignal*>();
         return returnValue;
     }
 
