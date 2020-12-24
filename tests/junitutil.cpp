@@ -31,6 +31,7 @@
 #include "mockshutdownmanager.h"
 #include "jmriuserinterfaceconfigurationprovider.h"
 #include "debugprogrammermanager.h"
+#include "blockmanager.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -729,6 +730,14 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     }
 }
 
+/*public*/ /*static*/ void JUnitUtil::deregisterBlockManagerShutdownTask() {
+        if (! InstanceManager::isInitialized("ShutDownManager")) return;
+        if (! InstanceManager::isInitialized("BlockManager")) return;
+
+        ((ShutDownManager*)InstanceManager
+                ::getDefault("ShutDownManager"))
+                ->deregister(((BlockManager*)InstanceManager::getDefault("BlockManager"))->shutDownTask);
+    }
 /*public*/ /*static*/ void JUnitUtil::initWarrantManager() {
     WarrantManager* w = new WarrantManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {

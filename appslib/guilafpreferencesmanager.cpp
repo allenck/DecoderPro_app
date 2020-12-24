@@ -39,8 +39,9 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::LOCALE = "locale";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::LOOK_AND_FEEL = "lookAndFeel";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::NONSTANDARD_MOUSE_EVENT = "nonstandardMouseEvent";
-/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::GRAPHICTABLESTATE = "graphicTableState";
-/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::VERTICAL_TOOLBAR = "verticalToolBar";
+/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::GRAPHIC_TABLE_STATE = "graphicTableState";
+// Classic OBlock editor or tabbed tables
+/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::OBLOCK_EDIT_TABBED = "oblockEditTabbed";/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::VERTICAL_TOOLBAR = "verticalToolBar";
 /*public*/ /*final*/ /*static*/ QString GuiLafPreferencesManager::SHOW_TOOL_TIP_TIME = "showToolTipDismissDelay";
 /*public*/ /*final*/ /*static*/ QString GuiLafPreferencesManager::EDITOR_USE_OLD_LOC_SIZE= "editorUseOldLocSize";
 
@@ -74,7 +75,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
             this->setFontSize(this->getDefaultFontSize());
         }
         this->setNonStandardMouseEvent(preferences->getBoolean(NONSTANDARD_MOUSE_EVENT, this->isNonStandardMouseEvent()));
-        this->setGraphicTableState(preferences->getBoolean(GRAPHICTABLESTATE, this->isGraphicTableState()));
+        this->setGraphicTableState(preferences->getBoolean(GRAPHIC_TABLE_STATE, this->isGraphicTableState()));
         this->setEditorUseOldLocSize(preferences->getBoolean(EDITOR_USE_OLD_LOC_SIZE, this->isEditorUseOldLocSize()));
         this->setToolTipDismissDelay(preferences->getInt(SHOW_TOOL_TIP_TIME, this->getToolTipDismissDelay()));
 //        Locale.setDefault(this->getLocale());
@@ -120,7 +121,8 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
      preferences->putInt(FONT_SIZE, temp);
  }
  preferences->putBoolean(NONSTANDARD_MOUSE_EVENT, this->isNonStandardMouseEvent());
- preferences->putBoolean(GRAPHICTABLESTATE, this->isGraphicTableState()); // use graphic icons in bean table state column
+ preferences->putBoolean(GRAPHIC_TABLE_STATE, this->isGraphicTableState()); // use graphic icons in bean table state column
+ preferences->putBoolean(OBLOCK_EDIT_TABBED, this->isOblockEditTabbed());
  preferences->putBoolean(EDITOR_USE_OLD_LOC_SIZE, this->isEditorUseOldLocSize());
  preferences->putInt(SHOW_TOOL_TIP_TIME, this->getToolTipDismissDelay());
  try {
@@ -282,9 +284,24 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
     this->graphicTableState = graphicTableState;
     this->setDirty(true);
     this->setRestartRequired(true);
-    firePropertyChange(GRAPHICTABLESTATE, oldGraphicTableState, graphicTableState);
+    firePropertyChange(GRAPHIC_TABLE_STATE, oldGraphicTableState, graphicTableState);
 }
 
+/**
+* @return the graphicTableState
+*/
+/*public*/ bool GuiLafPreferencesManager::isOblockEditTabbed() {
+   return oblockEditTabbed;
+}
+
+/**
+* @param tabbed the Editor interface to set (fasle  = desktop)
+*/
+/*public*/ void GuiLafPreferencesManager::setOblockEditTabbed(bool tabbed) {
+   bool oldOblockTabbed = this->oblockEditTabbed;
+   this->oblockEditTabbed = tabbed;
+   firePropertyChange(OBLOCK_EDIT_TABBED, oldOblockTabbed, tabbed);
+}
 /**
  * @return the editorUseOldLocSize value
  */

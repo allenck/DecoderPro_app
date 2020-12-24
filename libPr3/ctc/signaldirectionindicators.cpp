@@ -228,11 +228,11 @@
         }//);
     }
 
-    /*private*/ void SignalDirectionIndicators::SensorSensorsetSignalDirectionIndicatorsToFieldSignalsState() {
+    /*private*/ void SignalDirectionIndicators::setSignalDirectionIndicatorsToFieldSignalsState() {
         setSignalDirectionIndicatorsToDirection(getSignalsInTheFieldDirection());
     }
 
-    /*private*/ void SignalDirectionIndicators::SensorSensorsetSignalDirectionIndicatorsToDirection(int direction) {
+    /*private*/ void SignalDirectionIndicators::setSignalDirectionIndicatorsToDirection(int direction) {
         switch (direction) {
             case CTCConstants::RIGHTTRAFFIC:
                 _mLeftSensor->setKnownState(Sensor::INACTIVE);

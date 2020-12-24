@@ -1391,6 +1391,7 @@ void delete_JTable(JTable* obj) { delete obj; }
    int  convertRowIndexToView(JTable* theWrappedObject, int  modelRowIndex);
    TableColumnModel*  createDefaultColumnModel(JTable* theWrappedObject);
    void createDefaultColumnsFromModel(JTable* theWrappedObject);
+   void doLayout(JTable* theWrappedObject);
    bool  getAutoCreateColumnsFromModel(JTable* theWrappedObject);
    int  getColumnCount(JTable* theWrappedObject);
    TableColumnModel*  getColumnModel(JTable* theWrappedObject);
@@ -1420,6 +1421,8 @@ void delete_JTable(JTable* obj) { delete obj; }
    void setAutoCreateColumnsFromModel(JTable* theWrappedObject, bool  autoCreateColumnsFromModel);
    void setAutoResizeMode(JTable* theWrappedObject, int  mode);
    void setColumnModel(JTable* theWrappedObject, TableColumnModel*  columnModel);
+   void setDefaultEditor(JTable* theWrappedObject, QString  arg__1, QObject*  arg__2);
+   void setDefaultRenderer(JTable* theWrappedObject, QString  arg__1, QObject*  arg__2);
    void setGridColor(JTable* theWrappedObject, QColor  gridColor);
    void setIntercellSpacing(JTable* theWrappedObject, QSize  intercellSpacing);
    void py_q_setModel(JTable* theWrappedObject, QAbstractItemModel*  dataModel){  (((PythonQtPublicPromoter_JTable*)theWrappedObject)->py_q_setModel(dataModel));}

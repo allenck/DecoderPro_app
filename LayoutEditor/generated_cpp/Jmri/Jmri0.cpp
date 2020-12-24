@@ -12152,6 +12152,39 @@ PythonQtShell_AbstractShutDownTask::~PythonQtShell_AbstractShutDownTask() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
+bool  PythonQtShell_AbstractShutDownTask::call() throw (Exception) 
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("call");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("call", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractShutDownTask::call();
+}
 void PythonQtShell_AbstractShutDownTask::childEvent(QChildEvent*  event0)
 {
 if (_wrapper) {
@@ -12393,6 +12426,61 @@ if (_wrapper) {
   }
 }
   return AbstractShutDownTask::isParallel();
+}
+bool  PythonQtShell_AbstractShutDownTask::isShutdownAllowed()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isShutdownAllowed");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isShutdownAllowed", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractShutDownTask::isShutdownAllowed();
+}
+void PythonQtShell_AbstractShutDownTask::run()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("run");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  AbstractShutDownTask::run();
 }
 void PythonQtShell_AbstractShutDownTask::timerEvent(QTimerEvent*  event0)
 {
@@ -21946,7 +22034,7 @@ if (_wrapper) {
     }
   }
 }
-  return QString();
+  return AudioManager::getNamedBeanClass();
 }
 QSet<NamedBean* >  PythonQtShell_AudioManager::getNamedBeanSet()
 {
@@ -22245,7 +22333,7 @@ if (_wrapper) {
 }
   return AudioManager::getSystemPrefix();
 }
-int  PythonQtShell_AudioManager::getXMLOrder() const
+int  PythonQtShell_AudioManager::getXMLOrder()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22276,7 +22364,7 @@ if (_wrapper) {
     }
   }
 }
-  return int();
+  return AudioManager::getXMLOrder();
 }
 void PythonQtShell_AudioManager::init()
 {

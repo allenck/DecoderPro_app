@@ -5,6 +5,7 @@
 #include "exceptions.h"
 #include <QCompleter>
 #include "decimalformat.h"
+#include "abstractshutdowntask.h"
 
 class RosterEntry;
 class LIBPR3SHARED_EXPORT BlockManager : public AbstractManager
@@ -48,6 +49,7 @@ public:
     QCompleter* getCompleter(QString text);
     virtual /*public*/ Block* provide(QString name) const throw (IllegalArgumentException) ;
     /*public*/ qint64 timeSinceLastLayoutPowerOn()const;
+    /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
 
 signals:
     void newBlockCreated(Block*) const;

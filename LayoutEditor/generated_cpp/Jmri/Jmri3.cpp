@@ -9039,6 +9039,39 @@ PythonQtShell_ShutDownTask::~PythonQtShell_ShutDownTask() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
+bool  PythonQtShell_ShutDownTask::call() throw (Exception) 
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("call");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("call", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return ShutDownTask::call();
+}
 void PythonQtShell_ShutDownTask::childEvent(QChildEvent*  event0)
 {
 if (_wrapper) {
@@ -9281,6 +9314,61 @@ if (_wrapper) {
 }
   return ShutDownTask::isParallel();
 }
+bool  PythonQtShell_ShutDownTask::isShutdownAllowed()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isShutdownAllowed");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isShutdownAllowed", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return ShutDownTask::isShutdownAllowed();
+}
+void PythonQtShell_ShutDownTask::run()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("run");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  ShutDownTask::run();
+}
 void PythonQtShell_ShutDownTask::timerEvent(QTimerEvent*  event0)
 {
 if (_wrapper) {
@@ -9320,6 +9408,11 @@ int PythonQtShell_ShutDownTask::qt_metacall(QMetaObject::Call call, int id, void
   int result = ShutDownTask::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
+bool  PythonQtWrapper_ShutDownTask::call(ShutDownTask* theWrappedObject) throw (Exception) 
+{
+  return ( theWrappedObject->call());
+}
+
 bool  PythonQtWrapper_ShutDownTask::execute(ShutDownTask* theWrappedObject)
 {
   return ( theWrappedObject->execute());
@@ -9338,6 +9431,16 @@ bool  PythonQtWrapper_ShutDownTask::isComplete(ShutDownTask* theWrappedObject)
 bool  PythonQtWrapper_ShutDownTask::isParallel(ShutDownTask* theWrappedObject)
 {
   return ( theWrappedObject->isParallel());
+}
+
+bool  PythonQtWrapper_ShutDownTask::isShutdownAllowed(ShutDownTask* theWrappedObject)
+{
+  return ( theWrappedObject->isShutdownAllowed());
+}
+
+void PythonQtWrapper_ShutDownTask::run(ShutDownTask* theWrappedObject)
+{
+  ( theWrappedObject->run());
 }
 
 
@@ -10826,6 +10929,16 @@ int  PythonQtWrapper_TableColumn::getWidth(TableColumn* theWrappedObject)
 void PythonQtWrapper_TableColumn::removePropertyChangeListener(TableColumn* theWrappedObject, PropertyChangeListener*  listener)
 {
   ( theWrappedObject->removePropertyChangeListener(listener));
+}
+
+void PythonQtWrapper_TableColumn::setCellEditor(TableColumn* theWrappedObject, QObject*  arg__1)
+{
+  ( theWrappedObject->setCellEditor(arg__1));
+}
+
+void PythonQtWrapper_TableColumn::setCellRenderer(TableColumn* theWrappedObject, QObject*  arg__1)
+{
+  ( theWrappedObject->setCellRenderer(arg__1));
 }
 
 void PythonQtWrapper_TableColumn::setHeaderValue(TableColumn* theWrappedObject, QVariant  headerValue)

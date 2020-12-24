@@ -89,7 +89,7 @@ private:
      /*protected*/ OBlockManager* oblockManager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
      //@Nonnull
      /*protected*/ PortalManager* portalManager = (PortalManager*)InstanceManager::getDefault("PortalManager");
-     /*protected*/ bool includeAddButton = true;
+     // /*protected*/ bool _includeAddButton = true;
      /*protected*/ void createModel() override; // Tabbed
      /*protected*/ void setTitle()override;
      /*protected*/ QString getClassName() override;
@@ -104,6 +104,7 @@ private:
 
      friend class OTAOkActionListener;
      friend class OTACancelListener;
+     friend class OBlockTableActionTest;
 };
 
 class OTAOBlockTableFrame : public OBlockTableFrame

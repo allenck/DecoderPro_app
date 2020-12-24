@@ -7,7 +7,7 @@
 class JSpinner;
 class JPanel;
 class ActionListener;
-class QCheckBox;
+class JCheckBox;
 class QButtonGroup;
 class JComboBox;
 class QLocale;
@@ -31,7 +31,6 @@ public:
     static int fontSize;// = 0;
     /*public*/ static void setFontSize(int size);
     /*public*/ static int getFontSize();
-    /*static*/ JComboBox* fontSizeComboBox;// = new JComboBox<>(fontSizes);
     //static ActionListener* listener;
     /*public*/ void doFontSize(QWidget* panel);
     /*public*/ QString getClassName() ;
@@ -58,11 +57,14 @@ public:
 
     /*public*/ QString className();
     void doGraphicState(JPanel* panel);
+    void doTabbedOblockEditor(JPanel* panel);
     void doEditorUseOldLocSize(JPanel* panel);
-    /*public*/ QCheckBox* graphicStateDisplay;
-    /*public*/ QCheckBox* editorUseOldLocSizeDisplay;
     /*public*/ void doToolTipDismissDelay(JPanel* panel);
     /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ JCheckBox* graphicStateDisplay;
+    /*public*/ JCheckBox* tabbedOblockEditor;
+    /*public*/ JCheckBox* editorUseOldLocSizeDisplay;
+    /*private*/ bool dirty;// = false;
 
 signals:
 
@@ -78,8 +80,8 @@ private:
 //        "(Please Wait)"});
     /*private*/ /*final*/ QMap<QString, QLocale*> locale;// = new HashMap<>();
     /*private*/ /*final*/ QButtonGroup* LAFGroup;// = new ButtonGroup();
-    /*public*/ QCheckBox* mouseEvent;
-    /*private*/ bool dirty;// = false;
+    /*public*/ JCheckBox* mouseEvent;
+    /*private*/ JComboBox/*<Integer>*/* fontSizeComboBox;
     void doClickSelection(QWidget* panel);
     void doLAF(QWidget* panel);
     /*private*/ int getDefaultFontSize();

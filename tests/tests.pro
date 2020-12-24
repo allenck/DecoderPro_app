@@ -244,7 +244,9 @@ SOURCES += \
     loconet/lnpredefinedmeterstest.cpp \
     loconet/lnpredefinedmeterstestaction.cpp \
     loconet/lniplimplementationtest.cpp \
-    loconet/lniplimplementationtestaction.cpp
+    loconet/lniplimplementationtestaction.cpp \
+    tables/oblocktableactiontest.cpp \
+    tables/oblocktableactiontestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -466,7 +468,9 @@ HEADERS += \
     loconet/lnpredefinedmeterstest.h \
     loconet/lnpredefinedmeterstestaction.h \
     loconet/lniplimplementationtest.h \
-    loconet/lniplimplementationtestaction.h
+    loconet/lniplimplementationtestaction.h \
+    tables/oblocktableactiontest.h \
+    tables/oblocktableactiontestaction.h
 
 unix {
     target.path = /usr/lib

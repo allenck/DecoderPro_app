@@ -83,6 +83,7 @@
 #include "loconet/controlpaneltestaction.h"
 #include "loconet/lnpredefinedmeterstestaction.h"
 #include "loconet/lniplimplementationtestaction.h"
+#include "tables/oblocktableactiontestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -232,6 +233,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     miscMenu->addAction(new DccLocoAddressTestAction(this));
     miscMenu->addAction(new ControllerFilterFrameTestAction(this));
     miscMenu->addAction(new ConsistToolFrameTestAction(this));
+    miscMenu->addAction(new OBlockTableActionTestAction(this));
 
     QMenu* layoutEditorMenu = new QMenu("LayoutEditor");
     addMenu(layoutEditorMenu);

@@ -254,7 +254,8 @@ SOURCES += javaqt.cpp \
     keyadapter.cpp \
     loggingutil.cpp \
     localdatetime.cpp \
-    jformattedtextfield.cpp
+    jformattedtextfield.cpp \
+    threadingutil.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -563,7 +564,8 @@ HEADERS += javaqt.h\
     keylistener.h \
     loggingutil.h \
     localdatetime.h \
-    jformattedtextfield.h
+    jformattedtextfield.h \
+    threadingutil.h
 
 unix {
     target.path = /usr/lib

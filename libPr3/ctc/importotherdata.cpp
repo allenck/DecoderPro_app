@@ -13,11 +13,24 @@
   return "USS";
  return "OTHER";
 }
-/*public*/ /*static*/ ImportOtherData::CTC_PANEL_TYPE valueOf(QString t)
+/*public*/ /*static*/ ImportOtherData::CTC_PANEL_TYPE ImportOtherData::CTC_PANEL_TYPE::valueOf(QString t)
 {
  if(t == "USS")
   return ImportOtherData::CTC_PANEL_TYPE(0);
  return ImportOtherData::CTC_PANEL_TYPE(1);
+}
+/*public*/ QString ImportOtherData::SIGNALS_ON_PANEL::toString()
+{
+ if(_mRadioGroupValue == ALL) return "ALL";
+ if(_mRadioGroupValue == GREEN_OFF) return "GREEN_OFF";
+ return "NONE";
+}
+
+/*public*/ /*static*/ ImportOtherData::SIGNALS_ON_PANEL ImportOtherData::SIGNALS_ON_PANEL::valueOf(QString t)
+{
+ if(t == "ALL") return ALL;
+ if(t == "GREEN_OFF") return GREEN_OFF;
+ return NONE;
 }
 
 /*private*/ /*final*/ /*static*/ QMap<int, ImportOtherData::SIGNALS_ON_PANEL> ImportOtherData::SIGNALS_ON_PANEL::map {{0, ImportOtherData::SIGNALS_ON_PANEL::ALL}, {1, ImportOtherData::SIGNALS_ON_PANEL::GREEN_OFF}, {2, ImportOtherData::SIGNALS_ON_PANEL::NONE}};

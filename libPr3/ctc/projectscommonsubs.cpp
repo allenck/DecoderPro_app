@@ -58,7 +58,7 @@
 
 //  Returns an ArrayList guaranteed to have exactly "returnArrayListSize" entries,
 //  and if the passed "csvString" has too few entries, then those missing end values are set to "":
-    /*static*/ /*public*/ QList<QString> getFixedArrayListSizeFromCSV(QString csvString, int returnArrayListSize) {
+    /*static*/ /*public*/ QList<QString> ProjectsCommonSubs::getFixedArrayListSizeFromCSV(QString csvString, int returnArrayListSize) {
         QList<QString> returnArray = ProjectsCommonSubs::getArrayListFromCSV(csvString);
         while (returnArray.size() < returnArrayListSize) returnArray.append("");
         return returnArray;

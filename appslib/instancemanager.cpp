@@ -577,6 +577,21 @@ void InstanceManager::deregister(QObject* item, QString type)
 }
 
 /**
+ * Check if a particular type has been initialized without
+ * triggering an automatic initialization. The existence or
+ * non-existence of the corresponding list is not changed, and
+ * no PropertyChangeEvent is fired.
+ *
+ * @param <T>  The type of the class
+ * @param type The class type
+ * @return true if an item is available as a default for the given type;
+ *         false otherwise
+ */
+/*public*/ /*static*/ /*<T>*/ bool InstanceManager::isInitialized(/*@Nonnull*/ QString type) {
+    return getDefault()->managerLists.value(type) != nullptr;
+}
+
+/**
  * Dump generic content of InstanceManager
  * by type.
  */

@@ -38,6 +38,7 @@ public:
     /*public*/ static void initMemoryManager();
     /*public*/ static void initReporterManager();
     /*public*/ static void initOBlockManager();
+    /*public*/ static void deregisterBlockManagerShutdownTask();
     /*public*/ static void initWarrantManager();
     /*public*/ static void initSignalMastLogicManager();
     /*public*/ static void initLayoutBlockManager();

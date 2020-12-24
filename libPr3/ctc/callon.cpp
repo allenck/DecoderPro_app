@@ -215,7 +215,7 @@ want.  After all, that's what the dispatcher asked for explicitly!
 //
 //  I SUSPECT (not verified) that "signal.getValidStateNames()" ALWAYS returns English no matter what language is selected.
 //  If I AM WRONG, then this routine can be removed, and the call to it removed:
-/*private*/ QString convertFromForeignLanguageColor(QString foreignLanguageColor) {
+/*private*/ QString CallOn::convertFromForeignLanguageColor(QString foreignLanguageColor) {
     QString color = "Red"; // should NEVER be used directly, but if programmers screw up, default to some "sane" value.
     if (foreignLanguageColor == (("SignalHeadStateDark"))) color = "Dark";     // NOI18N
     if (foreignLanguageColor == (("SignalHeadStateRed"))) color = "Red";       // NOI18N

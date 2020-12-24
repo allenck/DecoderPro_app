@@ -44,6 +44,10 @@ void JFrameOperator::waitClosed()
 {
  SleeperThread::msleep(10);
 }
+JmriJFrame* JFrameOperator::waitJFrame(QString t, bool b1, bool b2)
+{
+ return new JmriJFrameX(t, b1, b2);
+}
 
 JRadioButtonOperator::JRadioButtonOperator(QObject*parent, QString text)
 {
@@ -467,7 +471,13 @@ void JTextFieldOperator::typeText(QString text)
 {
  textField->setText(text);
 }
-
+void JTextFieldOperator::setText(QString text)
+{
+ textField->setText(text);
+}
+void JTextFieldOperator::clickMouse()
+{
+}
 JInternalFrameOperator::JInternalFrameOperator(QObject *parent, QString name)
 {
  this->parent = parent;
@@ -552,4 +562,35 @@ void JSpinnerOperator::scrollToMinimum()
 void JSpinnerOperator::setValue(int i)
 {
  spinner->setValue(i);
+}
+
+JComboBoxOperator::JComboBoxOperator(QObject *parent, int index)
+{
+
+}
+void JComboBoxOperator::setSelectedItem(QString s)
+{
+ comboBox->setCurrentText(s);
+}
+
+void JComboBoxOperator::setSelectedIndex(int i)
+{
+ comboBox->setSelectedIndex(i);
+}
+
+JTabbedPaneOperator::JTabbedPaneOperator(QObject *parent)
+{
+
+}
+QWidget* JTabbedPaneOperator::selectPage(QString title)
+{
+
+}
+JTableOperator::JTableOperator(QObject *parent)
+{
+
+}
+void JTableOperator::clickOnCell(int r, int col)
+{
+
 }

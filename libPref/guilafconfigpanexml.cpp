@@ -1,6 +1,6 @@
 #include "guilafconfigpanexml.h"
 #include "guilafconfigpane.h"
-#include <QCheckBox>
+#include "jcheckbox.h"
 #include "instancemanager.h"
 #include "tabbedpreferences.h"
 #include "guilafpreferencesmanager.h"

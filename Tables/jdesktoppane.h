@@ -13,6 +13,7 @@ public:
 // /*public*/ DesktopPaneUI getUI();
  /*public*/ static /*final*/ int LIVE_DRAG_MODE;// = 0;
  /*public*/ static /*final*/ int OUTLINE_DRAG_MODE;// = 1;
+  /*public*/ QList<JInternalFrame*> getAllFrames();
 
 signals:
 
@@ -27,6 +28,7 @@ private:
  /*private*/ /*transient*/ QList<JInternalFrame*> framesCache;
  /*private*/ bool componentOrderCheckingEnabled;// = true;
  /*private*/ bool componentOrderChanged;// = false;
+ /*private*/ static QList<JInternalFrame*> getAllFrames(JDesktopPane* parent);
 
 };
 

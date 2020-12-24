@@ -32,8 +32,8 @@ public:
     virtual /*public*/ void dispose();
     virtual /*public*/ QString getClassDescription();
     Q_INVOKABLE virtual /*public*/ void setMessagePreferencesDetails();
-    virtual/*public*/ bool includeAddButton();
-    virtual/*public*/ void print(JTable::PrintMode mode, QString headerFormat, QString footerFormat);
+    virtual /*public*/ bool includeAddButton();
+    virtual /*public*/ void print(JTable::PrintMode mode, QString headerFormat, QString footerFormat);
     virtual /*public*/ void addToPanel(AbstractTableTabAction* f);
     virtual void buildMenus(BeanTableFrame*) {}
 signals:
@@ -62,6 +62,7 @@ friend class ATABeanTableFrame;
 friend class AbstractTableTabAction;
 friend class SensorTableAction;
 friend class ListedTableFrame;
+friend class OBlockTableActionTest;
 };
 
 class ATABeanTableFrame : public BeanTableFrame

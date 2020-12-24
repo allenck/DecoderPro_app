@@ -220,6 +220,7 @@ Q_DECL_DEPRECATED static void setConsistManager(ConsistManager* p);
 //static InstanceManager* instance();
 static SignalMastLogicManager* signalMastLogicManagerInstance();
 static /*public*/  bool containsDefault(/*@Nonnull*/ QString type);
+/*public*/ static /*<T>*/ bool isInitialized(/*@Nonnull*/ QString type);
 
 Q_DECL_DEPRECATED static RouteManager* routeManagerInstance();
 

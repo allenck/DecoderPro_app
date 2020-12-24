@@ -12631,6 +12631,11 @@ void PythonQtWrapper_JTable::createDefaultColumnsFromModel(JTable* theWrappedObj
   ( theWrappedObject->createDefaultColumnsFromModel());
 }
 
+void PythonQtWrapper_JTable::doLayout(JTable* theWrappedObject)
+{
+  ( theWrappedObject->doLayout());
+}
+
 bool  PythonQtWrapper_JTable::getAutoCreateColumnsFromModel(JTable* theWrappedObject)
 {
   return ( theWrappedObject->getAutoCreateColumnsFromModel());
@@ -12774,6 +12779,16 @@ void PythonQtWrapper_JTable::setAutoResizeMode(JTable* theWrappedObject, int  mo
 void PythonQtWrapper_JTable::setColumnModel(JTable* theWrappedObject, TableColumnModel*  columnModel)
 {
   ( theWrappedObject->setColumnModel(columnModel));
+}
+
+void PythonQtWrapper_JTable::setDefaultEditor(JTable* theWrappedObject, QString  arg__1, QObject*  arg__2)
+{
+  ( theWrappedObject->setDefaultEditor(arg__1, arg__2));
+}
+
+void PythonQtWrapper_JTable::setDefaultRenderer(JTable* theWrappedObject, QString  arg__1, QObject*  arg__2)
+{
+  ( theWrappedObject->setDefaultRenderer(arg__1, arg__2));
 }
 
 void PythonQtWrapper_JTable::setGridColor(JTable* theWrappedObject, QColor  gridColor)

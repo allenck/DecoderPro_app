@@ -98,8 +98,8 @@ class SignalDirectionIndicators : public SignalDirectionIndicatorsInterface
   /*private*/ bool changedToUniversalRed(PropertyChangeEvent* e);
   /*private*/ void possiblyUpdateSignalIndicationSensors();
   /*private*/ void addSignal(QString userIdentifier, NBHSignal* signal) throw (CTCException);
-  /*private*/ void SensorSensorsetSignalDirectionIndicatorsToFieldSignalsState();
-  /*private*/ void SensorSensorsetSignalDirectionIndicatorsToDirection(int direction);
+//  /*private*/ void SensorSensorsetSignalDirectionIndicatorsToFieldSignalsState();
+//  /*private*/ void SensorSensorsetSignalDirectionIndicatorsToDirection(int direction);
 
   friend class CodeButtonHandler;
   friend class TimeLockingTimerActionListener;

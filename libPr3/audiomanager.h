@@ -173,8 +173,8 @@ public:
          */
         virtual void cleanup() {}
 
-        int getXMLOrder() {return Manager::AUDIO;}
-        QString getNamedBeanClass() {return "Audio";}
+        int getXMLOrder() const {return Manager::AUDIO;}
+        QString getNamedBeanClass() const {return "Audio";}
 signals:
     
 public slots:

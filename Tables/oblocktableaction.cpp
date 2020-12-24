@@ -44,7 +44,7 @@
 AbstractTableAction(actionName, parent){
     //super(actionName);
  common();
- includeAddButton = false; // not required per se as we override the actionPerformed method
+ _includeAddButton = false; // not required per se as we override the actionPerformed method
 }
 
 void OBlockTableAction::common()

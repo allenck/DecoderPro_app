@@ -16,7 +16,9 @@ public:
  /*public*/ static /*final*/ QString LOCALE;// = "locale";
  /*public*/ static /*final*/ QString LOOK_AND_FEEL;// = "lookAndFeel";
  /*public*/ static /*final*/ QString NONSTANDARD_MOUSE_EVENT;// = "nonstandardMouseEvent";
- /*public*/ static /*final*/ QString GRAPHICTABLESTATE;// = "graphicTableState";
+ /*public*/ static /*final*/ QString GRAPHIC_TABLE_STATE;// = "graphicTableState";
+ // Classic OBlock editor or tabbed tables
+ /*public*/ static /*final*/ QString OBLOCK_EDIT_TABBED;// = "oblockEditTabbed";
  /*public*/ static /*final*/ QString VERTICAL_TOOLBAR;// = "verticalToolBar";
  /*public*/ /*final*/ static QString SHOW_TOOL_TIP_TIME;// = "showToolTipDismissDelay";
  /*public*/ /*final*/ static QString EDITOR_USE_OLD_LOC_SIZE;//= "editorUseOldLocSize";
@@ -52,6 +54,8 @@ public:
  /*public*/ void setGraphicTableState(bool graphicTableState);
  /*public*/ bool isEditorUseOldLocSize();
  /*public*/ void setEditorUseOldLocSize(bool editorUseOldLocSize);
+ /*public*/ bool isOblockEditTabbed();
+ /*public*/ void setOblockEditTabbed(bool tabbed);
 
 private:
  Logger* log;
@@ -62,6 +66,7 @@ private:
  /*private*/ bool nonStandardMouseEvent;// = false;
  /*private*/ bool verticalToolBar;// = false;
  /*private*/ bool graphicTableState = false;
+ /*private*/ bool oblockEditTabbed = false;
  /*private*/ bool editorUseOldLocSize = false;
  /*private*/ QString lookAndFeel;// = UIManager.getLookAndFeel().getClass().getName();
  /*private*/ int toolTipDismissDelay;// = ToolTipManager.sharedInstance().getDismissDelay();

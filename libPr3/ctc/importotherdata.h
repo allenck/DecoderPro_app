@@ -21,7 +21,7 @@ class ImportOtherData : public QObject
       //static { for (CTC_PANEL_TYPE value : CTC_PANEL_TYPE.values()) { map.put(value._mRadioGroupValue, value); }}
    public:
     /*public*/  QString toString();
-    /*public*/ static CTC_PANEL_TYPE valueOf(CTC_PANEL_TYPES);
+    /*public*/ static CTC_PANEL_TYPE valueOf(QString t);
   };
 
   /*public*/ class SIGNALS_ON_PANEL {

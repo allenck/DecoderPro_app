@@ -18,7 +18,7 @@
      else
       return "OTHER";
     }
-    /*public*/ static CodeButtonHandlerData::LOCK_IMPLEMENTATION valueOf(QString t)
+    /*public*/ /*static*/ CodeButtonHandlerData::LOCK_IMPLEMENTATION CodeButtonHandlerData::LOCK_IMPLEMENTATION::valueOf(QString t)
     {
      if(t == "GREGS") return CodeButtonHandlerData::LOCK_IMPLEMENTATION::GREGS;
      else return CodeButtonHandlerData::LOCK_IMPLEMENTATION::OTHER;

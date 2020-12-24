@@ -981,6 +981,7 @@ public:
 
    ~PythonQtShell_ShutDownTask();
 
+virtual bool  call() throw (Exception) ;
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
@@ -989,6 +990,8 @@ virtual bool  execute();
 virtual QString  getName();
 virtual bool  isComplete();
 virtual bool  isParallel();
+virtual bool  isShutdownAllowed();
+virtual void run();
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -998,10 +1001,13 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_ShutDownTask : public ShutDownTask
 { public:
+inline bool  py_q_call() throw (Exception)  { return ShutDownTask::call(); }
 inline bool  py_q_execute() { return ShutDownTask::execute(); }
 inline QString  py_q_getName() { return ShutDownTask::getName(); }
 inline bool  py_q_isComplete() { return ShutDownTask::isComplete(); }
 inline bool  py_q_isParallel() { return ShutDownTask::isParallel(); }
+inline bool  py_q_isShutdownAllowed() { return ShutDownTask::isShutdownAllowed(); }
+inline void py_q_run() { ShutDownTask::run(); }
 };
 
 class PythonQtWrapper_ShutDownTask : public QObject
@@ -1010,6 +1016,8 @@ public:
 public slots:
 ShutDownTask* new_ShutDownTask();
 void delete_ShutDownTask(ShutDownTask* obj) { delete obj; } 
+   bool  call(ShutDownTask* theWrappedObject) throw (Exception) ;
+   bool  py_q_call(ShutDownTask* theWrappedObject) throw (Exception) {  return (((PythonQtPublicPromoter_ShutDownTask*)theWrappedObject)->py_q_call());}
    bool  execute(ShutDownTask* theWrappedObject);
    bool  py_q_execute(ShutDownTask* theWrappedObject){  return (((PythonQtPublicPromoter_ShutDownTask*)theWrappedObject)->py_q_execute());}
    QString  getName(ShutDownTask* theWrappedObject);
@@ -1018,6 +1026,10 @@ void delete_ShutDownTask(ShutDownTask* obj) { delete obj; }
    bool  py_q_isComplete(ShutDownTask* theWrappedObject){  return (((PythonQtPublicPromoter_ShutDownTask*)theWrappedObject)->py_q_isComplete());}
    bool  isParallel(ShutDownTask* theWrappedObject);
    bool  py_q_isParallel(ShutDownTask* theWrappedObject){  return (((PythonQtPublicPromoter_ShutDownTask*)theWrappedObject)->py_q_isParallel());}
+   bool  isShutdownAllowed(ShutDownTask* theWrappedObject);
+   bool  py_q_isShutdownAllowed(ShutDownTask* theWrappedObject){  return (((PythonQtPublicPromoter_ShutDownTask*)theWrappedObject)->py_q_isShutdownAllowed());}
+   void run(ShutDownTask* theWrappedObject);
+   void py_q_run(ShutDownTask* theWrappedObject){  (((PythonQtPublicPromoter_ShutDownTask*)theWrappedObject)->py_q_run());}
 };
 
 
@@ -1314,6 +1326,8 @@ void delete_TableColumn(TableColumn* obj) { delete obj; }
    bool  getResizable(TableColumn* theWrappedObject);
    int  getWidth(TableColumn* theWrappedObject);
    void removePropertyChangeListener(TableColumn* theWrappedObject, PropertyChangeListener*  listener);
+   void setCellEditor(TableColumn* theWrappedObject, QObject*  arg__1);
+   void setCellRenderer(TableColumn* theWrappedObject, QObject*  arg__1);
    void setHeaderValue(TableColumn* theWrappedObject, QVariant  headerValue);
    void setIdentifier(TableColumn* theWrappedObject, QVariant  identifier);
    void setMaxWidth(TableColumn* theWrappedObject, int  maxWidth);
