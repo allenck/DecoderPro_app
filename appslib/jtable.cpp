@@ -25,6 +25,7 @@
 #include "tablerowsorter.h"
 #include "qsortfilterproxymodel.h"
 #include <QPen>
+#include "beantabledatamodel.h"
 
 //JTable::JTable(QWidget *parent) :
 //  QTableView(parent)
@@ -9728,9 +9729,22 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
 
 }
 
-/*public*/ void JTable::setDefaultEditor(QString, QObject *)
+/*public*/ void JTable::setDefaultEditor(QString s, QObject *delegate)
 {
-
+ defaultItemDelegate = delegate;
+ for(int i = 0; i < getColumnCount(); i++)
+ {
+     if(qobject_cast<BeanTableDataModel*>(getModel()))
+     {
+        if(s == ((BeanTableDataModel*) getModel())->getColumnClass(i))
+        {
+            if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JButton")
+             ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, new PushButtonDelegate());
+            if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JToggleButton")
+             ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, new ToggleButtonDelegate());
+        }
+     }
+ }
 }
 
 

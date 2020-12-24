@@ -2040,7 +2040,7 @@ virtual QStringList  getSystemNameList();
 virtual QStringList  getSystemNameList(QChar  arg__1);
 virtual QStringList  getSystemNameList(char  arg__1);
 virtual QString  getSystemPrefix() const;
-virtual int  getXMLOrder();
+virtual int  getXMLOrder() const;
 virtual void init();
 virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
 virtual Audio*  newAudio(QString  arg__1, QString  arg__2);
@@ -2070,7 +2070,7 @@ inline QString  py_q_getNamedBeanClass() const { return AudioManager::getNamedBe
 inline QStringList  py_q_getSystemNameList() { return AudioManager::getSystemNameList(); }
 inline QStringList  py_q_getSystemNameList(QChar  arg__1) { return AudioManager::getSystemNameList(arg__1); }
 inline QStringList  py_q_getSystemNameList(char  arg__1) { return AudioManager::getSystemNameList(arg__1); }
-inline int  py_q_getXMLOrder() { return AudioManager::getXMLOrder(); }
+inline int  py_q_getXMLOrder() const { return AudioManager::getXMLOrder(); }
 inline void py_q_init() { AudioManager::init(); }
 inline Audio*  py_q_newAudio(QString  arg__1, QString  arg__2) { return AudioManager::newAudio(arg__1, arg__2); }
 inline Audio*  py_q_provideAudio(QString  arg__1) { return AudioManager::provideAudio(arg__1); }
@@ -2094,7 +2094,7 @@ void delete_AudioManager(AudioManager* obj) { delete obj; }
    QStringList  py_q_getSystemNameList(AudioManager* theWrappedObject, QChar  arg__1){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getSystemNameList(arg__1));}
    QStringList  getSystemNameList(AudioManager* theWrappedObject, char  arg__1);
    QStringList  py_q_getSystemNameList(AudioManager* theWrappedObject, char  arg__1){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getSystemNameList(arg__1));}
-   int  py_q_getXMLOrder(AudioManager* theWrappedObject){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getXMLOrder());}
+   int  py_q_getXMLOrder(AudioManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getXMLOrder());}
    void init(AudioManager* theWrappedObject);
    void py_q_init(AudioManager* theWrappedObject){  (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_init());}
    Audio*  newAudio(AudioManager* theWrappedObject, QString  arg__1, QString  arg__2);
@@ -3058,6 +3058,8 @@ void delete_BlockManager(BlockManager* obj) { delete obj; }
    qint64  timeSinceLastLayoutPowerOn(BlockManager* theWrappedObject) const;
    char  py_q_typeLetter(BlockManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_typeLetter());}
    void py_q_vetoableChange(BlockManager* theWrappedObject, PropertyChangeEvent*  arg__1){  (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_vetoableChange(arg__1));}
+void py_set_shutDownTask(BlockManager* theWrappedObject, ShutDownTask*  shutDownTask){ theWrappedObject->shutDownTask = shutDownTask; }
+ShutDownTask*  py_get_shutDownTask(BlockManager* theWrappedObject){ return theWrappedObject->shutDownTask; }
 };
 
 

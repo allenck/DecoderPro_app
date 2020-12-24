@@ -11,7 +11,7 @@ public:
     ~GuiLafConfigPaneXml() {}
     GuiLafConfigPaneXml(const GuiLafConfigPaneXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement e) throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode);
     /*public*/ void updateLookAndFeel(QString name, QString className);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
     /*public*/ void setUIFontSize(float size);

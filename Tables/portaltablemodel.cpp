@@ -8,6 +8,9 @@
 #include "jtextfield.h"
 #include "QPushButton"
 #include "tableframes.h"
+#include "guilafpreferencesmanager.h"
+#include "portaleditframe.h"
+#include "loggerfactory.h"
 
 //PortalTableModel::PortalTableModel(QObject *parent) :
 //  BeanTableDataModel(parent)
@@ -40,7 +43,13 @@
 {
  //super();
  _parent = _parent;
- tempRow = QStringList();
+ _tabbed = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed();
+ _manager = (PortalManager*)InstanceManager::getDefault("PortalManager");
+ _manager->addPropertyChangeListener((PropertyChangeListener*)this);
+ if (!_tabbed) {
+     // specific stuff for _desktop
+     initTempRow();
+ }
  for(int i = 0; i < NUMCOLS; i++)
   tempRow.append("");
  log = new Logger("PortalTableModel");
@@ -119,6 +128,8 @@ void PortalTableModel::initTempRow()
        return tr("Portal Name");
    case TO_BLOCK_COLUMN:
        return tr("Block Name");
+   case EDIT_COL:
+       return "  ";
   }
   return "";
  }
@@ -154,7 +165,8 @@ void PortalTableModel::initTempRow()
            return portal->getToBlockName();
        case DELETE_COL:
            return tr("Delete");
-       default:
+       case EDIT_COL:
+           return tr("Edit");default:
            // fall through
            break;
    }
@@ -326,6 +338,17 @@ void PortalTableModel::initTempRow()
     if (deletePortal(portal)) {
         fireTableDataChanged();
     }
+    break;
+   }
+   case EDIT_COL:
+   {
+    editPortal(portal);
+    break;
+   }
+   default:
+   {
+    log->warn(tr("Unhandled column: %1").arg(col));
+    break;
    }
   }
   if (msg != NULL) {
@@ -357,19 +380,29 @@ void PortalTableModel::initTempRow()
  return false;
 }
 
+/*private*/ void PortalTableModel::editPortal(Portal* portal) {
+    if (_tabbed) {
+        // open PortalEditFrame
+        PortalEditFrame* portalFrame = new PortalEditFrame(tr("Edit Portal %1").arg(portal->getName()), portal, this);
+        portalFrame->setVisible(true);
+    }
+}
 //@Override
 /*public*/ Qt::ItemFlags PortalTableModel::flags(const QModelIndex &index) const
 {
  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
-////@Override
-///*public*/ Class<?> getColumnClass(int col) {
-//    if (col == DELETE_COL) {
-//        return JButton.class;
-//    }
-//    return String.class;
-//}
+//@Override
+/*public*/ QString PortalTableModel::getColumnClass(int col) {
+ switch (col) {
+     case DELETE_COL:
+     case EDIT_COL:
+         return "JButton";
+     default:
+         return "String";
+ }
+}
 
 //@Override
 /*public*/ int PortalTableModel::getPreferredWidth(int col) {
@@ -388,3 +421,5 @@ void PortalTableModel::initTempRow()
 /*protected*/ int PortalTableModel::verifyWarning(QString message) {
     return (_parent->verifyWarning(message));
 }
+
+/*private*/ /*final*/ /*static*/ Logger* PortalTableModel::log = LoggerFactory::getLogger("PortalTableModel");

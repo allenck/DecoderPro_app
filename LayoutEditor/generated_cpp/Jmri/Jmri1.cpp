@@ -59,6 +59,7 @@
 #include <qgraphicsview.h>
 #include <qgraphicswidget.h>
 #include <qicon.h>
+#include <qitemdelegate.h>
 #include <qitemselectionmodel.h>
 #include <qkeysequence.h>
 #include <qlabel.h>
@@ -4953,6 +4954,11 @@ QObject*  PythonQtWrapper_InstanceManager::static_InstanceManager_getNullableDef
 QObject*  PythonQtWrapper_InstanceManager::static_InstanceManager_getOptionalDefault(QString  type)
 {
   return (InstanceManager::getOptionalDefault(type));
+}
+
+bool  PythonQtWrapper_InstanceManager::static_InstanceManager_isInitialized(QString  type)
+{
+  return (InstanceManager::isInitialized(type));
 }
 
 MemoryManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_memoryManagerInstance()
@@ -12781,7 +12787,7 @@ void PythonQtWrapper_JTable::setColumnModel(JTable* theWrappedObject, TableColum
   ( theWrappedObject->setColumnModel(columnModel));
 }
 
-void PythonQtWrapper_JTable::setDefaultEditor(JTable* theWrappedObject, QString  arg__1, QObject*  arg__2)
+void PythonQtWrapper_JTable::setDefaultEditor(JTable* theWrappedObject, QString  arg__1, QItemDelegate*  arg__2)
 {
   ( theWrappedObject->setDefaultEditor(arg__1, arg__2));
 }

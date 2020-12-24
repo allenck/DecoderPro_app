@@ -4,6 +4,9 @@
 #include <QTableView>
 #include "tablemodel.h"
 #include "javaqt_global.h"
+#include "pushbuttondelegate.h"
+#include "jtogglebutton.h"
+
 
 class AbstractTableModel;
 class DefaultListSelectionModel;
@@ -250,6 +253,7 @@ private:
  /*private*/ int convertRowIndexToView(int modelIndex, ModelChange *change);
  /*private*/ void notifySorter(ModelChange* change);
  /*private*/ SizeSequence* getRowModel();
+ /*private*/ QObject* defaultItemDelegate;
 
 private slots:
  void On_columnResized(int col, int oldWidth, int newWidth);
@@ -472,8 +476,18 @@ public:
 class ToggleButtonEditor : public QObject
 {
     Q_OBJECT
+    QWidget* button;
+    QString on;
+    QString off;
+
 public:
-    ToggleButtonEditor(QWidget* w, QString sq, QString s2, QObject* parent = nullptr) : QObject(parent) {}
+    ToggleButtonEditor(QWidget* button, QString on, QString off, QObject* parent = nullptr) : QObject(parent)
+    {
+        this->button = button;
+        this->on = on;
+        this->off = off;
+    }
+
 };
 
 #endif // JTABLE_H

@@ -2,6 +2,7 @@
 #define BLOCKPORTALTABLEMODEL_H
 #include "abstracttablemodel.h"
 
+class Logger;
 class PropertyChangeEvent;
 class OBlockTableModel;
 class BlockPortalTableModel : public AbstractTableModel
@@ -13,7 +14,8 @@ public:
  {
    BLOCK_NAME_COLUMN = 0,
    PORTAL_NAME_COLUMN = 1,
-   NUMCOLS = 2
+   OPPOSING_BLOCK_NAME = 2,
+   NUMCOLS = 3
  };
  /*public*/ BlockPortalTableModel(OBlockTableModel* oBlockModel);
  /*public*/ int columnCount(const QModelIndex &parent) const;
@@ -23,6 +25,7 @@ public:
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  /*public*/ int getPreferredWidth(int col) ;
+ /*public*/ QString getColumnClass(int col);
 
 signals:
 
@@ -31,7 +34,7 @@ public slots:
 
 private:
  OBlockTableModel* _oBlockModel;
-
+ static Logger* log;
 };
 
 #endif // BLOCKPORTALTABLEMODEL_H

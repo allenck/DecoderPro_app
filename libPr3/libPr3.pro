@@ -1066,7 +1066,8 @@ SOURCES += \
     ctc/callon.cpp \
     ctc/switchindicatorsroute.cpp \
     ctc/indicationlockingsignals.cpp \
-    ctc/trafficlocking.cpp
+    ctc/trafficlocking.cpp \
+    storemenu.cpp
 
 
  !contains(FTDI, 1) {
@@ -2149,7 +2150,8 @@ HEADERS += \
     ctc/callon.h \
     ctc/switchindicatorsroute.h \
     ctc/indicationlockingsignals.h \
-    ctc/trafficlocking.h
+    ctc/trafficlocking.h \
+    storemenu.h
 
 
  !contains(FTDI, 1) {

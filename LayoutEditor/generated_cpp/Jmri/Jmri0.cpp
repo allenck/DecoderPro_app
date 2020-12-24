@@ -22333,7 +22333,7 @@ if (_wrapper) {
 }
   return AudioManager::getSystemPrefix();
 }
-int  PythonQtShell_AudioManager::getXMLOrder()
+int  PythonQtShell_AudioManager::getXMLOrder() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

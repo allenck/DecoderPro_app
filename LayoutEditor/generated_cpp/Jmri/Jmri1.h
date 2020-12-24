@@ -73,6 +73,7 @@
 #include <qgraphicsview.h>
 #include <qgraphicswidget.h>
 #include <qicon.h>
+#include <qitemdelegate.h>
 #include <qitemselectionmodel.h>
 #include <qkeysequence.h>
 #include <qlabel.h>
@@ -829,6 +830,7 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    QString  static_InstanceManager_getListPropertyName(QString  clazz);
    QObject*  static_InstanceManager_getNullableDefault(QString  type);
    QObject*  static_InstanceManager_getOptionalDefault(QString  type);
+   bool  static_InstanceManager_isInitialized(QString  type);
    MemoryManager*  static_InstanceManager_memoryManagerInstance();
    void notifyPropertyChangeListener(InstanceManager* theWrappedObject, QString  property, QVariant  oldValue, QVariant  newValue);
    PowerManager*  static_InstanceManager_powerManagerInstance();
@@ -1421,7 +1423,7 @@ void delete_JTable(JTable* obj) { delete obj; }
    void setAutoCreateColumnsFromModel(JTable* theWrappedObject, bool  autoCreateColumnsFromModel);
    void setAutoResizeMode(JTable* theWrappedObject, int  mode);
    void setColumnModel(JTable* theWrappedObject, TableColumnModel*  columnModel);
-   void setDefaultEditor(JTable* theWrappedObject, QString  arg__1, QObject*  arg__2);
+   void setDefaultEditor(JTable* theWrappedObject, QString  arg__1, QItemDelegate*  arg__2);
    void setDefaultRenderer(JTable* theWrappedObject, QString  arg__1, QObject*  arg__2);
    void setGridColor(JTable* theWrappedObject, QColor  gridColor);
    void setIntercellSpacing(JTable* theWrappedObject, QSize  intercellSpacing);

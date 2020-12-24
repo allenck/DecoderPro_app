@@ -23,6 +23,7 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+ /*public*/ QString getColumnClass(int col);
  /*public*/ int getPreferredWidth(int col);
  enum COLUMNS
  {
@@ -30,8 +31,9 @@ public:
   NAME_COLUMN = 1,
   TO_BLOCK_COLUMN = 2,
   DELETE_COL = 3,
+  EDIT_COL = 4,
   NUMCOLS = 4
- };
+ };// reports + 1 for EDIT column if _tabbed
 
 signals:
 
@@ -40,12 +42,14 @@ private:
  ///*private*/ static final long serialVersionUID = -4467086483594717590L;
 
  PortalManager* _manager;
- /*private*/ QStringList tempRow;// = new String[NUMCOLS];
+ /*private*/ QVector<QString> tempRow = QVector<QString>(NUMCOLS);
+ /*private*/ /*final*/ bool _tabbed; // set from prefs (restart required)
 
  TableFrames* _parent;
  void initTempRow();
  /*private*/ static bool deletePortal(Portal* portal);
- Logger* log;
+ static Logger* log;
+ /*private*/ void editPortal(Portal* portal);
 
 protected:
  /*protected*/ QString getMasterClassName();

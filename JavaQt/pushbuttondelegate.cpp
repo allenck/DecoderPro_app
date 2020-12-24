@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QEvent>
 #include <QMouseEvent>
+#include "jtogglebutton.h"
 
 PushButtonDelegate::PushButtonDelegate(QObject *parent) : QItemDelegate(parent)
 {
@@ -39,6 +40,45 @@ void PushButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 }
 
 void PushButtonDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+{
+ editor->setGeometry(option.rect);
+}
+
+ToggleButtonDelegate::ToggleButtonDelegate(QObject *parent) : QItemDelegate(parent)
+{
+}
+
+QWidget* ToggleButtonDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & index ) const
+{
+
+ QPushButton* editor;
+#if QT_VERSION < 0x050000
+ if(index.data().canConvert<QString>())
+#else
+ if(index.data().canConvert(QMetaType::type("QString")))
+#endif
+  editor = new QPushButton(index.data().toString(),parent);
+ else
+ {
+  QIcon icon = index.data().value<QIcon>();
+  editor = new QPushButton(icon, "", parent);
+ }
+ return editor;
+}
+
+void ToggleButtonDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+ JToggleButton *button = static_cast<JToggleButton*>(editor);
+ int value = index.model()->data(index, Qt::EditRole).toUInt();
+}
+
+void ToggleButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+ JToggleButton *button = static_cast<JToggleButton*>(editor);
+ model->setData(index, QVariant(), Qt::EditRole);
+}
+
+void ToggleButtonDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
  editor->setGeometry(option.rect);
 }

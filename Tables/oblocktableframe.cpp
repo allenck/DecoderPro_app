@@ -1,6 +1,9 @@
 #include "oblocktableframe.h"
 #include "oblocktablepanel.h"
 #include <QBoxLayout>
+#include <QMenuBar>
+#include <QMenu>
+#include "storemenu.h"
 
 /**
  * Override to place the four OBlock tables in tabbed interface.
@@ -21,28 +24,28 @@
 
         // general GUI config
         getContentPane()->setLayout(new QVBoxLayout());//(getContentPane(), BoxLayout.Y_AXIS));
-#if 0
+#if 1
         // add save menu item
-        JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu(Bundle.getMessage("MenuFile"));
-        menuBar.add(fileMenu);
-        fileMenu.add(new jmri.configurexml.StoreMenu());
-        fileMenu.add(panel.getPrintItem());
+        QMenuBar* menuBar = new QMenuBar();
+        QMenu* fileMenu = new QMenu(tr("File"));
+        menuBar->addMenu(fileMenu);
+        fileMenu->addMenu(new StoreMenu());
+        fileMenu->addAction(panel->getPrintItem());
 
-        menuBar.add(panel.getOptionMenu()); // configure to show up on oblock.TableFrames when called from Tools menu
-        menuBar.add(panel.getTablesMenu());
+        menuBar->addMenu(panel->getOptionMenu()); // configure to show up on oblock.TableFrames when called from Tools menu
+        menuBar->addMenu(panel->getTablesMenu());
 
-        setJMenuBar(menuBar); // this menubar shows when table opened as unlisted/startup action
+        setMenuBar(menuBar); // this menubar shows when table opened as unlisted/startup action
 
         addHelpMenu(helpTarget, true);
 
         // install items in GUI
-        getContentPane().add(oblockPanel);
-        bottomBox = Box.createHorizontalBox();
-        bottomBox.add(Box.createHorizontalGlue()); // stays at end of box
+        getContentPane()->layout()->addWidget(oblockPanel);
+        bottomBox = Box::createHorizontalBox();
+        bottomBox->layout()->addWidget(Box::createHorizontalGlue()); // stays at end of box
         bottomBoxIndex = 0;
 
-        getContentPane().add(bottomBox);
+        getContentPane()->layout()->addWidget(bottomBox);
 
         // add extras, if desired by subclass
         extras();

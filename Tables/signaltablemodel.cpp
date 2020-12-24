@@ -4,7 +4,6 @@
 #include "portal.h"
 #include "instancemanager.h"
 #include "decimalformat.h"
-#include "tableframes.h"
 #include "oblock.h"
 #include "logger.h"
 #include "oblockmanager.h"
@@ -13,6 +12,8 @@
 #include "jtextfield.h"
 #include "pushbuttondelegate.h"
 #include "jtable.h"
+#include "signaleditframe.h"
+#include "comparatort.h"
 
 //SignalTableModel::SignalTableModel(QObject *parent) :
 //  AbstractTableModel(parent)
@@ -112,12 +113,12 @@ void SignalTableModel::initTempRow()
  }
  tempRow.replace(LENGTHCOL, twoDigit->format(0.0));
  tempRow.replace(UNITSCOL, tr("in"));
- tempRow.replace(DELETE_COL, tr("ButtonClear"));
+ tempRow.replace(DELETE_COL, tr("Clear"));
 }
 
 /*private*/ void SignalTableModel::makeList()
 {
- QList<SignalRow*>* tempList = new QList<SignalRow*>();
+ QList<SignalRow*> tempList = QList<SignalRow*>();
  // collect signals entered into Portals
  QStringList sysNames = _portalMgr->getSystemNameArray();
  for (int i = 0; i < sysNames.length(); i++)
@@ -137,31 +138,33 @@ void SignalTableModel::initTempRow()
    addToList(tempList, sr);
   }
  }
- _signalList = tempList;
+ //_signalList = tempList;
 
- if (log->isDebugEnabled())
- {
- log->debug("makeList exit: _signalList has "
-      + QString::number(_signalList->size()) + " rows.");
- }
+ _signalList = SignalArray(tempList);
+ _lastIdx = _signalList.numberOfSignals();
+ //log.debug("TempList copied, size = {}", tempList.numberOfSignals());
+ //_signalList.sort(new NameSorter());
+ qSort(_signalList.begin(), _signalList.end(), NameSorter::compare);
+ //log.debug("makeList exit: _signalList size {} items.", _signalList.numberOfSignals());
+
 }
 
-/*static*/ /*private*/ void SignalTableModel::addToList(QList<SignalRow*>* tempList, SignalRow* sr)
+/*static*/ /*private*/ void SignalTableModel::addToList(QList<SignalRow*> tempList, SignalRow* sr)
 {
  // not in list, for the sort, insert at correct position
  bool add = true;
- for (int j = 0; j < tempList->size(); j++)
+ for (int j = 0; j < tempList.size(); j++)
  {
-  if (sr->getSignal()->getDisplayName().compare(tempList->at(j)->getSignal()->getDisplayName()) < 0)
+  if (sr->getSignal()->getDisplayName().compare(tempList.at(j)->getSignal()->getDisplayName()) < 0)
   {
-   tempList->insert(j, sr);
+   tempList.insert(j, sr);
    add = false;
    break;
   }
  }
  if (add)
  {
-  tempList->append(sr);
+  tempList.append(sr);
  }
 }
 
@@ -255,9 +258,9 @@ void SignalTableModel::initTempRow()
  if (signal == NULL) {
  return NULL;
  }
- for (int i = 0; i < _signalList->size(); i++)
+ for (int i = 0; i < _signalList.size(); i++)
  {
-  SignalRow* srow = _signalList->at(i);
+  SignalRow* srow = _signalList.at(i);
   if (signal==(srow->getSignal()))
   {
    return tr("Signal \"%1\" is already in use protecting block \"%2\"\nthrough portal \"%3\" from block \"%4\".").arg(
@@ -275,9 +278,9 @@ void SignalTableModel::initTempRow()
  {
   return NULL;
  }
- for (int i = 0; i < _signalList->size(); i++)
+ for (int i = 0; i < _signalList.size(); i++)
  {
-  SignalRow* srow = _signalList->at(i);
+  SignalRow* srow = _signalList.at(i);
   if (srow==(row))
   {
    continue;
@@ -300,9 +303,9 @@ void SignalTableModel::initTempRow()
  {
   return NULL;
  }
- for (int i = 0; i < _signalList->size(); i++)
+ for (int i = 0; i < _signalList.size(); i++)
  {
-  SignalRow* srow = _signalList->at(i);
+  SignalRow* srow = _signalList.at(i);
   if (srow==(row))
   {
    continue;
@@ -322,7 +325,7 @@ return NUMCOLS;
 
 /*public*/ int SignalTableModel::rowCount(const QModelIndex &parent) const
 {
-return _signalList->size() + 1;
+return _signalList.size() + 1;
 }
 
 //@Override
@@ -344,6 +347,8 @@ return _signalList->size() + 1;
    return tr("Delay (ms)");
   case UNITSCOL:
    return "  ";
+  case EDIT_COL:
+   return "  ";
   }
   return "";
  }
@@ -354,7 +359,7 @@ return _signalList->size() + 1;
 {
  int rowIndex = index.row();
  int columnIndex = index.column();
- if (_signalList->size() == rowIndex)
+ if (_signalList.size() == rowIndex)
  {
   if (columnIndex==LENGTHCOL)
   {
@@ -370,7 +375,7 @@ return _signalList->size() + 1;
   }
   return tempRow[columnIndex];
  }
- SignalRow* signalRow = _signalList->at(rowIndex);
+ SignalRow* signalRow = _signalList.at(rowIndex);
 
  if(role == Qt::DisplayRole)
  {
@@ -406,7 +411,8 @@ return _signalList->size() + 1;
    return signalRow->isMetric()?"cm":"in";
   case DELETE_COL:
    return tr("Delete");
-  }
+  case EDIT_COL:
+   return tr("Edit");}
   return "";
  }
  return QVariant();
@@ -421,7 +427,7 @@ return _signalList->size() + 1;
   int col = index.column();
 
   QString msg = NULL;
-  if (_signalList->size() == row)
+  if (_signalList.size() == row)
   {
    if (col == DELETE_COL)
    {
@@ -573,7 +579,7 @@ return _signalList->size() + 1;
       msg = setSignal(signalRow, false);
       if (msg==NULL)
       {
-       _signalList->append(signalRow);
+       _signalList.append(signalRow);
       }
       initTempRow();
       fireTableDataChanged();
@@ -583,175 +589,180 @@ return _signalList->size() + 1;
   }
   else
   {	// Editing existing signal configurations
-   SignalRow* signalRow = _signalList->at(row);
+   SignalRow* signalRow = _signalList.at(row);
    Portal* portal;
    OBlock* block;
    OBlockManager* OBlockMgr = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
    switch (col)
    {
-   case NAME_COLUMN:
-   {
-    NamedBean* signal = Portal::getSignal( value.toString());
-    if (signal == NULL)
+    case NAME_COLUMN:
     {
-     msg = tr("There is no Signal Head or Signal Mast named \"%1\".").arg( value.toString());
-     //                        signalRow->setSignal(NULL);
+     NamedBean* signal = Portal::getSignal( value.toString());
+     if (signal == NULL)
+     {
+      msg = tr("There is no Signal Head or Signal Mast named \"%1\".").arg( value.toString());
+      //                        signalRow->setSignal(NULL);
+      break;
+     }
+     portal = signalRow->getPortal();
+     if (portal != NULL && signalRow->getToBlock() != NULL)
+     {
+      NamedBean* oldSignal = signalRow->getSignal();
+      signalRow->setSignal(signal);
+      msg = checkDuplicateSignal(signalRow);
+      if (msg == NULL)
+      {
+       deleteSignal(signalRow);    // delete old
+       msg = setSignal(signalRow, false);
+       fireTableRowsUpdated(row, row);
+      }
+      else
+      {
+       signalRow->setSignal(oldSignal);
+      }
+     }
      break;
     }
-    portal = signalRow->getPortal();
-    if (portal != NULL && signalRow->getToBlock() != NULL)
+    case FROM_BLOCK_COLUMN:
     {
-     NamedBean* oldSignal = signalRow->getSignal();
-     signalRow->setSignal(signal);
-     msg = checkDuplicateSignal(signalRow);
-     if (msg == NULL)
-     {
-      deleteSignal(signalRow);    // delete old
+     block = OBlockMgr->getOBlock( value.toString());
+     if (block == NULL) {
+      msg = tr("There is no Block named \"%1\".").arg( value.toString());
+      break;
+     }
+     if (block==(signalRow->getFromBlock())) {
+      break;      // no change
+     }
+     deleteSignal(signalRow);    // delete old
+     signalRow->setFromBlock(block);
+     portal = signalRow->getPortal();
+     if (checkPortalBlock(portal, block)) {
+      signalRow->setToBlock(NULL);
+     } else {
+      // get new portal
+      portal = getPortalwithBlocks(block, signalRow->getToBlock());
+      signalRow->setPortal(portal);
+     }
+     msg = checkSignalRow(signalRow);
+     if (msg == NULL) {
+      msg = checkDuplicateProtection(signalRow);
+     } else {
+      signalRow->setPortal(NULL);
+      break;
+     }
+     if (msg == NULL && signalRow->getPortal() != NULL) {
+      msg = setSignal(signalRow, true);
+     } else {
+      signalRow->setPortal(NULL);
+     }
+     fireTableRowsUpdated(row, row);
+     break;
+    }
+    case PORTAL_COLUMN:
+    {
+     portal = _portalMgr->getPortal( value.toString());
+     if (portal == NULL) {
+      msg = tr("There is no Portal named \"%1\".").arg(value.toString());
+      break;
+     }
+     deleteSignal(signalRow);    // delete old
+     signalRow->setPortal(portal);
+     block = signalRow->getToBlock();
+     if (checkPortalBlock(portal, block)) {
+      signalRow->setFromBlock(NULL);
+     } else {
+      block = signalRow->getFromBlock();
+      if (checkPortalBlock(portal, block)) {
+       signalRow->setToBlock(NULL);
+      }
+     }
+     msg = checkSignalRow(signalRow);
+     if (msg == NULL) {
+      msg = checkDuplicateProtection(signalRow);
+     } else {
+      signalRow->setToBlock(NULL);
+      break;
+     }
+     if (msg == NULL) {
+      signalRow->setPortal(portal);
       msg = setSignal(signalRow, false);
       fireTableRowsUpdated(row, row);
      }
-     else
-     {
-      signalRow->setSignal(oldSignal);
+     break;
+    }
+    case TO_BLOCK_COLUMN:
+    {
+     block = OBlockMgr->getOBlock( value.toString());
+     if (block == NULL) {
+      msg = tr("There is no Block named \"%1\".").arg( value.toString());
+      break;
      }
-    }
-    break;
-   }
-   case FROM_BLOCK_COLUMN:
-   {
-    block = OBlockMgr->getOBlock( value.toString());
-    if (block == NULL) {
-     msg = tr("There is no Block named \"%1\".").arg( value.toString());
-     break;
-    }
-    if (block==(signalRow->getFromBlock())) {
-     break;      // no change
-    }
-    deleteSignal(signalRow);    // delete old
-    signalRow->setFromBlock(block);
-    portal = signalRow->getPortal();
-    if (checkPortalBlock(portal, block)) {
-     signalRow->setToBlock(NULL);
-    } else {
-     // get new portal
-     portal = getPortalwithBlocks(block, signalRow->getToBlock());
-     signalRow->setPortal(portal);
-    }
-    msg = checkSignalRow(signalRow);
-    if (msg == NULL) {
-     msg = checkDuplicateProtection(signalRow);
-    } else {
-     signalRow->setPortal(NULL);
-     break;
-    }
-    if (msg == NULL && signalRow->getPortal() != NULL) {
-     msg = setSignal(signalRow, true);
-    } else {
-     signalRow->setPortal(NULL);
-    }
-    fireTableRowsUpdated(row, row);
-    break;
-   }
-   case PORTAL_COLUMN:
-   {
-    portal = _portalMgr->getPortal( value.toString());
-    if (portal == NULL) {
-     msg = tr("There is no Portal named \"%1\".").arg(value.toString());
-     break;
-    }
-    deleteSignal(signalRow);    // delete old
-    signalRow->setPortal(portal);
-    block = signalRow->getToBlock();
-    if (checkPortalBlock(portal, block)) {
-     signalRow->setFromBlock(NULL);
-    } else {
-     block = signalRow->getFromBlock();
+     if (block==(signalRow->getToBlock())) {
+      break;      // no change
+     }
+     deleteSignal(signalRow);    // delete old
+     signalRow->setToBlock(block);
+     portal = signalRow->getPortal();
      if (checkPortalBlock(portal, block)) {
-      signalRow->setToBlock(NULL);
+      signalRow->setFromBlock(NULL);
+     } else {
+      // get new portal
+      portal = getPortalwithBlocks(signalRow->getFromBlock(), block);
+      signalRow->setPortal(portal);
      }
-    }
-    msg = checkSignalRow(signalRow);
-    if (msg == NULL) {
-     msg = checkDuplicateProtection(signalRow);
-    } else {
-     signalRow->setToBlock(NULL);
-     break;
-    }
-    if (msg == NULL) {
-     signalRow->setPortal(portal);
-     msg = setSignal(signalRow, false);
+     msg = checkSignalRow(signalRow);
+     if (msg == NULL) {
+      msg = checkDuplicateProtection(signalRow);
+     } else {
+      signalRow->setPortal(NULL);
+      break;
+     }
+     if (msg == NULL && signalRow->getPortal() != NULL) {
+      msg = setSignal(signalRow, true);
+     } else {
+      signalRow->setPortal(NULL);
+     }
      fireTableRowsUpdated(row, row);
-    }
-    break;
-   }
-   case TO_BLOCK_COLUMN:
-   {
-    block = OBlockMgr->getOBlock( value.toString());
-    if (block == NULL) {
-     msg = tr("There is no Block named \"%1\".").arg( value.toString());
      break;
     }
-    if (block==(signalRow->getToBlock())) {
-     break;      // no change
-    }
-    deleteSignal(signalRow);    // delete old
-    signalRow->setToBlock(block);
-    portal = signalRow->getPortal();
-    if (checkPortalBlock(portal, block)) {
-     signalRow->setFromBlock(NULL);
-    } else {
-     // get new portal
-     portal = getPortalwithBlocks(signalRow->getFromBlock(), block);
-     signalRow->setPortal(portal);
-    }
-    msg = checkSignalRow(signalRow);
-    if (msg == NULL) {
-     msg = checkDuplicateProtection(signalRow);
-    } else {
-     signalRow->setPortal(NULL);
+    case LENGTHCOL:
+    {
+     bool bok;
+     float len = value.toFloat(&bok);
+     if (signalRow->isMetric()) {
+      signalRow->setLength(len * 10.0f);
+     } else {
+      signalRow->setLength(len * 25.4f);
+     }
+     fireTableRowsUpdated(row, row);
+     if(!bok) {
+      msg = tr("%1 is not a number.").arg(value.toString());
+     }
+     if (msg == NULL && signalRow->getPortal() != NULL) {
+      msg = setSignal(signalRow, false);
+     } else {
+      signalRow->setPortal(NULL);
+     }
+     fireTableRowsUpdated(row, row);
      break;
     }
-    if (msg == NULL && signalRow->getPortal() != NULL) {
-     msg = setSignal(signalRow, true);
-    } else {
-     signalRow->setPortal(NULL);
+    case UNITSCOL:
+    {
+     signalRow->setMetric(value.toBool());
+     fireTableRowsUpdated(row, row);
+     break;
     }
-    fireTableRowsUpdated(row, row);
-    break;
-   }
-   case LENGTHCOL:
-   {
-    bool bok;
-    float len = value.toFloat(&bok);
-    if (signalRow->isMetric()) {
-     signalRow->setLength(len * 10.0f);
-    } else {
-     signalRow->setLength(len * 25.4f);
+    case DELETE_COL:
+    {
+     deleteSignal(signalRow);
+     _signalList.removeOne(signalRow);
+     fireTableDataChanged();
     }
-    fireTableRowsUpdated(row, row);
-    if(!bok) {
-     msg = tr("%1 is not a number.").arg(value.toString());
+    case EDIT_COL:
+    {
+     editSignal(Portal::getSignal(signalRow->getSignal()->getDisplayName()), signalRow);
+     break;
     }
-    if (msg == NULL && signalRow->getPortal() != NULL) {
-     msg = setSignal(signalRow, false);
-    } else {
-     signalRow->setPortal(NULL);
-    }
-    fireTableRowsUpdated(row, row);
-    break;
-   }
-   case UNITSCOL:
-   {
-    signalRow->setMetric(value.toBool());
-    fireTableRowsUpdated(row, row);
-    break;
-   }
-   case DELETE_COL:
-   {
-    deleteSignal(signalRow);
-    _signalList->removeOne(signalRow);
-    fireTableDataChanged();
-   }
    }
   }
 
@@ -776,6 +787,17 @@ return _signalList->size() + 1;
   // remove signal from previous portal
   portal->deleteSignal(signalRow->getSignal());
  }
+}
+
+/*private*/ void SignalTableModel::editSignal(NamedBean* signal, SignalRow* sr) {
+    if (_tabbed && signal != nullptr && !inEditMode) {
+        inEditMode = true;
+        // open SignalEditFrame
+        SignalEditFrame* sef = new SignalEditFrame(tr("Edit Signal \"%1\"").arg(sr->getSignal()->getDisplayName()),
+                signal, sr, this);
+        // TODO run on separate thread?
+        sef->setVisible(true);
+    }
 }
 
 /*static*/ /*private*/ QString SignalTableModel::setSignal(SignalRow* signalRow, bool deletePortal)
@@ -817,14 +839,14 @@ return _signalList->size() + 1;
 }
 
 //@Override
-///*public*/ Class<?> getColumnClass(int col) {
-//if (col == DELETE_COL) {
-//    return JButton.class;
-//} else if (col == UNITSCOL ) {
-//    return Boolean.class;
-//}
-//return String.class;
-//}
+/*public*/ QString SignalTableModel::getColumnClass(int col) {
+if (col == DELETE_COL) {
+    return "JButton";
+} else if (col == UNITSCOL ) {
+    return "Boolean";
+}
+return "String";
+}
 
 /*static*/ /*public*/ int SignalTableModel::getPreferredWidth(int col) {
  switch (col) {

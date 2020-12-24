@@ -38,6 +38,7 @@ friend class AudioTableFrame;
 friend class BlockTableFrame;
 friend class BlockTableAction;
 friend class IdTagTableAction;
+friend class OBlockTableFrame;
 };
 
 #endif // BEANTABLEFRAME_H
