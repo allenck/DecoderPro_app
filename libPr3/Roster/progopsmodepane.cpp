@@ -311,7 +311,7 @@ void ProgOpsModePane::programmerSelected()
 /**
 * Listen to buttons for mode changes
 */
-/*public*/ void ProgOpsModePane::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void ProgOpsModePane::actionPerformed(JActionEvent* /*e*/)
 {
  // find selected button
  log->debug("Selected button: {}"/*, e.getActionCommand()*/);

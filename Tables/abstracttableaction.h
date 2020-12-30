@@ -9,7 +9,7 @@
 #include <QSortFilterProxyModel>
 
 class AbstractTableTabAction;
-class ActionEvent;
+class JActionEvent;
 class MessageFormat;
 //class PrintMode;
 class Manager;
@@ -39,7 +39,7 @@ public:
 signals:
 
 public slots:
-    virtual /*public*/ void actionPerformed(ActionEvent* e = 0);
+    virtual /*public*/ void actionPerformed(JActionEvent* e = 0);
 private:
     Logger* log;
     JTable* dataTable;
@@ -56,7 +56,7 @@ protected:
     /*protected*/ /*@Nonnull*/ QString nextName(/*@Nonnull*/ QString name);
 
   protected slots:
-    virtual /*protected*/ /*abstract*/ void addPressed(ActionEvent* e = 0);
+    virtual /*protected*/ /*abstract*/ void addPressed(JActionEvent* e = 0);
 friend class TabbedTableItem;
 friend class ATABeanTableFrame;
 friend class AbstractTableTabAction;

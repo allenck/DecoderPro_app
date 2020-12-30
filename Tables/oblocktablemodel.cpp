@@ -4,7 +4,6 @@
 #include "instancemanager.h"
 #include "treeset.h"
 #include "oblock.h"
-#include <QMessageBox>
 #include "jtextfield.h"
 #include "tableframes.h"
 #include "proxyreportermanager.h"
@@ -16,11 +15,13 @@
 #include <QComboBox>
 #include "warrant.h"
 #include "signalspeedmap.h"
+#include "portaltablemodel.h"
+#include "joptionpane.h"
 
-OBlockTableModel::OBlockTableModel(QObject *parent) :
-  BeanTableDataModel(parent)
-{
-}
+//OBlockTableModel::OBlockTableModel(QObject *parent) :
+//  BeanTableDataModel(parent)
+//{
+//}
 /**
  * Duplicates the JTable model for BlockTableAction and adds a column for the
  * occupancy sensor. Configured for use within an internal frame.
@@ -414,18 +415,16 @@ void OBlockTableModel::initTempRow()
        name = block->getDisplayName();
       }
      }
-//                    JOptionPane.showMessageDialog(NULL, tr("CreateDuplBlockErr", name),
-//                            tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-     QMessageBox::critical(NULL, tr("Error"),tr("Duplicate name, Block \"%1\" has been defined. ").arg(name)) ;
+     JOptionPane::showMessageDialog(NULL, tr("Duplicate name, Block \"%1\" has been defined. ").arg(name),
+             tr("Error"), JOptionPane::WARNING_MESSAGE);
      return true;
     }
     if (tempRow[SENSORCOL] != NULL)
     {
      if (!sensorExists(tempRow[SENSORCOL]))
      {
-//         JOptionPane.showMessageDialog(NULL, tr("NoSuchSensorErr", tempRow[SENSORCOL]),
-//                 tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-      QMessageBox::critical(NULL, tr("Error"),tr("There is no Sensor named \"%1\".").arg(tempRow[SENSORCOL])) ;
+      JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(tempRow[SENSORCOL]),
+              tr("Error"), JOptionPane::WARNING_MESSAGE);
      }
     }
     block->setComment(tempRow[COMMENTCOL]);
@@ -434,9 +433,8 @@ void OBlockTableModel::initTempRow()
     len = tempRow[LENGTHCOL].toFloat(&bok);
     if(!bok)
     {
-//     JOptionPane.showMessageDialog(NULL, tr("BadNumber", tempRow[LENGTHCOL]),
-//             tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-     QMessageBox::critical(NULL, tr("Error"),tr("%1 is not a number.").arg(tempRow[LENGTHCOL]));
+     JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(tempRow[LENGTHCOL]),
+             tr("ErrorT"), JOptionPane::WARNING_MESSAGE);
     }
     if (tempRow[UNITSCOL]==(tr("cm"))) {
         block->setLength(len * 10.0f);
@@ -462,9 +460,8 @@ void OBlockTableModel::initTempRow()
      {
       if (!sensorExists(tempRow[ERR_SENSORCOL]))
       {
-//          JOptionPane.showMessageDialog(NULL, tr("NoSuchSensorErr", tempRow[ERR_SENSORCOL]),
-//                  tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-       QMessageBox::warning(NULL, tr("Warning"),tr("There is no Sensor named \"%1\".").arg(tempRow[ERR_SENSORCOL])) ;
+       JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(tempRow[ERR_SENSORCOL]),
+               tr("Error"), JOptionPane::WARNING_MESSAGE);
       }
      }
     }
@@ -481,10 +478,10 @@ void OBlockTableModel::initTempRow()
          log->error("No Reporter named \"" + tempRow[REPORTERCOL] + "\" found. threw exception: " /*+ ex*/);
      }
      if (rep == NULL) {
-      //               JOptionPane.showMessageDialog(NULL, tr("NoSuchReporterErr", tempRow[REPORTERCOL]),
-      //                       tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
+      JOptionPane::showMessageDialog(NULL, tr("There is no Reporter named \"%1\".").arg(tempRow[REPORTERCOL]),
+              tr("ErrorTitle"), JOptionPane::WARNING_MESSAGE);
 
-     }QMessageBox::critical(NULL, tr("Error"),tr("There is no Reporter named \"%1\".").arg(tempRow[REPORTERCOL])) ;
+     }
      block->setReporter(rep);
     }
     initTempRow();
@@ -508,9 +505,8 @@ void OBlockTableModel::initTempRow()
     }
     if(!bok)
     {
-//           JOptionPane.showMessageDialog(NULL, tr("BadNumber", tempRow[LENGTHCOL]),
-//                   tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-     QMessageBox::critical(NULL, tr("Error"),tr("%1 is not a number.").arg(value.toString())) ;
+     JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(tempRow[LENGTHCOL]),
+             tr("Error"), JOptionPane::WARNING_MESSAGE);
     }
     return true;
    }
@@ -561,9 +557,8 @@ void OBlockTableModel::initTempRow()
    {
     OBlock* b = _manager->getOBlock( value.toString());
     if (b != NULL) {
-//                JOptionPane.showMessageDialog(NULL, tr("CreateDuplBlockErr", block->getDisplayName()),
-//                        tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-    QMessageBox::warning(NULL, tr("Warning"), tr("Duplicate name, Block \"%1\" has been defined. ").arg( block->getDisplayName()));
+                JOptionPane::showMessageDialog(NULL, tr("Duplicate name, Block \"%1\" has been defined. ").arg( block->getDisplayName()),
+                        tr("Error"), JOptionPane::WARNING_MESSAGE);
        return true;
    }
    block->setUserName( value.toString());
@@ -590,9 +585,8 @@ void OBlockTableModel::initTempRow()
   case SENSORCOL:
    if (!block->setSensor( value.toString()))
    {
-//       JOptionPane.showMessageDialog(NULL, tr("NoSuchSensorErr",  value),
-//               tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-    QMessageBox::critical(NULL, tr("Error"),tr("There is no Sensor named \"%1\".").arg(value.toString())) ;
+       JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(value.toString()),
+               tr("ErrorTitle"), JOptionPane::WARNING_MESSAGE);
    }
    fireTableRowsUpdated(row, row);
    return true;
@@ -608,9 +602,8 @@ void OBlockTableModel::initTempRow()
    fireTableRowsUpdated(row, row);
    if(!bok)
    {
-//       JOptionPane.showMessageDialog(NULL, tr("BadNumber", value),
-//               tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-    QMessageBox::critical(NULL, tr("Error"),tr("%1 is not a number.").arg(value.toString())) ;
+    JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(value.toString()),
+            tr("Error"), JOptionPane::WARNING_MESSAGE);
    }
    return true;
   }
@@ -650,9 +643,8 @@ void OBlockTableModel::initTempRow()
        log->error("getSensor(" +  value.toString() + ") threw exception: " /*+ ex*/);
    }
    if (err) {
-//             JOptionPane.showMessageDialog(NULL, tr("NoSuchSensorErr",  value.toString()),
-//                     tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-    QMessageBox::critical(NULL, tr("Error"),tr("There is no Sensor named \"%1\".").arg(value.toString())) ;
+             JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(value.toString()),
+                     tr("Error"), JOptionPane::WARNING_MESSAGE);
    }
    fireTableRowsUpdated(row, row);
    return true;
@@ -670,9 +662,8 @@ void OBlockTableModel::initTempRow()
        log->error("No Reporter named \"" +  value.toString() + "\" found. threw exception: " /*+ ex*/);
    }
    if (rep == NULL) {
-//       JOptionPane.showMessageDialog(NULL, tr("NoSuchReporterErr", tempRow[REPORTERCOL]),
-//               tr("ErrorTitle"), JOptionPane.WARNING_MESSAGE);
-    QMessageBox::critical(NULL, tr("Error"),tr("There is no Reporter named \"%1\".").arg(tempRow[REPORTERCOL])) ;
+       JOptionPane::showMessageDialog(NULL, tr("There is no Reporter named \"%1\".").arg(tempRow[REPORTERCOL]),
+               tr("Error"), JOptionPane::WARNING_MESSAGE);
    }
    block->setReporter(rep);
    fireTableRowsUpdated(row, row);
@@ -790,22 +781,17 @@ void OBlockTableModel::deleteBean(OBlock* bean)
   }
 
   // verify deletion
-//        int val = JOptionPane.showOptionDialog(NULL,
-//                msg, tr("WarningTitle"),
-//                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, NULL,
-//                new Object[]{tr("ButtonYes"),
-//                    tr("ButtonYesPlus"),
-//                    tr("ButtonNo")},
-//                tr("ButtonNo"));
-  QMessageBox* msgBox = new QMessageBox( tr("Warning"), msg, QMessageBox::Warning, QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel,NULL);
-  //msgBox->setIcon(QMessageBox::Warning);
-  QPushButton* buttonYesPlus = new QPushButton(tr("Yes - Stop Warnings"));
-  msgBox->addButton(buttonYesPlus,QMessageBox::ActionRole);
-  int val = msgBox->exec();
-  if (val == QMessageBox::Cancel || val == QMessageBox::No) {
+        int val = JOptionPane::showOptionDialog(NULL,
+                msg, tr("Warning"),
+                JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
+                QVariantList{tr("Yes"),
+                    tr("Yes - Stop Warnings"),
+                    tr("No")},
+                tr("No"));
+  if (val == 2) {
       return;  // return without deleting
   }
-  if (msgBox->clickedButton() == buttonYesPlus) { // suppress future warnings
+  if (val == 1) { // suppress future warnings
       noWarnDelete = true;
   }
  }
@@ -814,21 +800,25 @@ void OBlockTableModel::deleteBean(OBlock* bean)
 }
 
 //@Override
-///*public*/ Class<?> getColumnClass(int col) {
-//    switch (col) {
-//        case CURVECOL:
-//        case SPEEDCOL:
-//            return JComboBox.class;
-//        case DELETE_COL:
-//        case EDIT_COL:
-//            return JButton.class;
-//        case UNITSCOL:
-//        case REPORT_CURRENTCOL:
-//        case PERMISSIONCOL:
-//            return Boolean.class;
-//    }
-//    return String.class;
-//}
+/*public*/ QString OBlockTableModel::getColumnClass(int col) {
+    switch (col) {
+        case CURVECOL:
+            return "OBlockTableModel::CurveComboBoxPanel";
+        case SPEEDCOL:
+            return "OBlockTableModel::SpeedComboBoxPanel"; // apply real combo renderer
+        case DELETE_COL:
+        case EDIT_COL:
+            return "JButton";
+        case UNITSCOL:
+            return "JToggleButton";
+        case REPORT_CURRENTCOL:
+            return "JRadioButton";
+        case PERMISSIONCOL:
+            return "JCheckBox"; // return Boolean.class;
+        default:
+            return "String";
+    }
+}
 
 //@Override
 /*public*/ int OBlockTableModel::getPreferredWidth(int col)
@@ -913,6 +903,9 @@ void OBlockTableModel::deleteBean(OBlock* bean)
 #if 0
     table->setDefaultEditor("OBlockTableModel::SpeedComboBoxPanel", new OBlockTableModel::SpeedComboBoxPanel());
     table->setDefaultRenderer("OBlockTableModel::SpeedComboBoxPanel", new OBlockTableModel::SpeedComboBoxPanel()); // use same class as renderer
+#else
+    table->setDefaultEditor("OBlockTableModel::SpeedComboBoxPanel", new JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList()));
+    table->setDefaultRenderer("OBlockTableModel::SpeedComboBoxPanel", new JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList()));
 #endif
     // Set more things?
 }
@@ -921,17 +914,13 @@ void OBlockTableModel::deleteBean(OBlock* bean)
 {
  BeanTableDataModel::propertyChange(e);
  QString property = e->getPropertyName();
- if (log->isDebugEnabled())
- {
-  log->debug("PropertyChange = " + property);
- }
- _parent->getXRefModel()->propertyChange(e);
- _parent->getSignalModel()->propertyChange(e);
+ if (log->isDebugEnabled()) log->debug(tr("PropertyChange = %1").arg(property));
+ _parent->getPortalXRefTableModel()->propertyChange(e);
+ _parent->getSignalTableModel()->propertyChange(e);
+ _parent->getPortalTableModel()->propertyChange(e);
 
- if (property==("length") || property==("UserName")
-         || property==("portalCount"))
- {
-  _parent->updateOpenMenu();
+ if (property == ("length") || property ==("UserName")) {
+     _parent->updateOBlockTablesMenu();
  }
 }
 
@@ -995,6 +984,10 @@ void OBSComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOpti
 #if 0
  table->setDefaultEditor("OBlockTableModel::CurveComboBoxPanel", new OBlockTableModel::CurveComboBoxPanel());
  table->setDefaultRenderer("OBlockTableModel::CurveComboBoxPanel", new OBlockTableModel::CurveComboBoxPanel()); // use same class as renderer
+#else
+ table->setDefaultEditor("OBlockTableModel::CurveComboBoxPanel", new JComboBoxEditor(curveOptions));
+ table->setDefaultRenderer("OBlockTableModel::CurveComboBoxPanel", new JComboBoxEditor(curveOptions)); // use same class as renderer
+ // Set more things?
 #endif
  // Set more things?
 }

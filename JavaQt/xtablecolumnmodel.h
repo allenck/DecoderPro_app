@@ -16,7 +16,7 @@ public:
  /*public*/ void removeColumn(TableColumn* column);
  /*public*/ void moveColumn(int oldIndex, int newIndex);
  /*public*/ void moveColumn(int columnIndex, int newIndex, bool onlyVisible);
- /*public*/ int getColumnCount(bool onlyVisible = false);
+ /*public*/ int getColumnCount(bool onlyVisible);
  /*public*/ QListIterator<TableColumn*> getColumns(bool onlyVisible);
  /*public*/ int getColumnIndex(QVariant identifier, bool onlyVisible);
  /*public*/ TableColumn* getColumn(int columnIndex, bool onlyVisible = true);
@@ -24,6 +24,10 @@ public:
 signals:
 
 public slots:
+
+ private:
+  /*private*/ QVector<TableColumn*> getColumnList(bool onlyVisible);
+
 protected:
  /**
   * Array of TableColumn objects in this model. Holds all column objects,

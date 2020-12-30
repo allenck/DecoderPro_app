@@ -21,7 +21,7 @@ public:
     /*public*/ void setSiCv(QString siCv);
     /*public*/ void setRow(int row, QDomElement e);
     /*public*/ void setIndxRow(int row, QDomElement e);
-    /*public*/ void actionPerformed(ActionEvent* /*e*/);
+    /*public*/ void actionPerformed(JActionEvent* /*e*/);
     /*public*/ void indexedWrite() ;
     /*public*/ void dispose();
     /*public*/ int getRowCount() {return rowCount(QModelIndex());}

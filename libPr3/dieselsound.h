@@ -3,7 +3,7 @@
 #include "enginesound.h"
 #include <QMap>
 
-class ActionEvent;
+class JActionEvent;
 class Logger;
 class VSDFile;
 class NotchTransition;
@@ -44,10 +44,10 @@ private:
 
 
  private slots:
- /*private*/ void startToIdleAction(ActionEvent* e = 0);
+ /*private*/ void startToIdleAction(JActionEvent* e = 0);
 
 protected slots:
- /*protected*/ void handleNotchTimerPop(ActionEvent* e = 0);
+ /*protected*/ void handleNotchTimerPop(JActionEvent* e = 0);
 
 };
 

@@ -33,7 +33,7 @@ common();
  /*static*/ TrainsTableFrame* TrainsTableAction::f = NULL;
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
- /*public*/ void TrainsTableAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainsTableAction::actionPerformed(JActionEvent* /*e*/) {
      // create a train table frame
      if (f == NULL || !f->isVisible()) {
          f = new TrainsTableFrame();

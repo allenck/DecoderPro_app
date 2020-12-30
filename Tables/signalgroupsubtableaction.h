@@ -7,7 +7,7 @@
 #include "abstracttableaction.h"
 
 class PropertyChangeEvent;
-class ActionEvent;
+class JActionEvent;
 class QTableView;
 class Turnout;
 class Sensor;
@@ -36,7 +36,7 @@ public:
     void initializeIncludedList();
     int setTurnoutInformation(SignalGroup* g);
     int setSensorInformation(SignalGroup* g);
-    void updateSubPressed(ActionEvent* e, bool newSignalGroup );
+    void updateSubPressed(JActionEvent* e, bool newSignalGroup );
 signals:
 
 public slots:

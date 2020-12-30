@@ -874,7 +874,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     else return BeanTableDataModel::matchPropertyName(e);
 }
 
-/*public*/ void TurnoutTableDataModel::comboBoxAction(ActionEvent* /*e*/){
+/*public*/ void TurnoutTableDataModel::comboBoxAction(JActionEvent* /*e*/){
     if(log->isDebugEnabled()) log->debug("Combobox change");
 //    if(table!=NULL && table->getCellEditor()!=NULL){
 //        table->getCellEditor().stopCellEditing();
@@ -1147,12 +1147,12 @@ OkListener::OkListener(TurnoutTableAction *self)
 {
  this->self = self;
 }
-void OkListener::actionPerformed(ActionEvent */*e*/)
+void OkListener::actionPerformed(JActionEvent */*e*/)
 {
  self->createPressed();
 }
 ToCancelActionListener::ToCancelActionListener(TurnoutTableAction *self) { this->self = self;}
-void ToCancelActionListener::actionPerformed(ActionEvent *e)
+void ToCancelActionListener::actionPerformed(JActionEvent *e)
 {
  self->cancelPressed();
 }
@@ -1161,7 +1161,7 @@ RangeListener::RangeListener(TurnoutTableAction *self)
 {
  this->self = self;
 }
-void RangeListener::actionPerformed(ActionEvent */*e*/)
+void RangeListener::actionPerformed(JActionEvent */*e*/)
 {
  self->canAddRange();
 }
@@ -1792,7 +1792,7 @@ ItemListener1::ItemListener1(JmriJFrame *F)
  this->F = F;
 }
 
-void ItemListener1::actionPerformed(ActionEvent */*e*/)
+void ItemListener1::actionPerformed(JActionEvent */*e*/)
 {
    new TurnoutOperationFrame(/*final*/F);
 }
@@ -1801,7 +1801,7 @@ ItemListener2::ItemListener2(JmriJFrame *F, TurnoutTableAction* self)
  this->F = F;
  this->self = self;
 }
-void ItemListener2::actionPerformed(ActionEvent */*e*/)
+void ItemListener2::actionPerformed(JActionEvent */*e*/)
 {
  self->setDefaultSpeeds(/*final*/F);
 }

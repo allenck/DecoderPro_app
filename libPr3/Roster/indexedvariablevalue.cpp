@@ -115,7 +115,7 @@ void IndexedVariableValue::updatedTextField() {
 }
 
 /** ActionListener implementations */
-/*public*/ void IndexedVariableValue::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void IndexedVariableValue::actionPerformed(JActionEvent* /*e*/) {
     if (logit->isDebugEnabled()) logit->debug("actionPerformed");
     int newVal = _value->text().toInt();
     updatedTextField();

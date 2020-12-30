@@ -4,7 +4,7 @@
 #include "appslib_global.h"
 #include "propertychangeevent.h"
 
-class ActionEvent;
+class JActionEvent;
 class JTextArea;
 class JTextField;
 class QCheckBox;

@@ -89,7 +89,7 @@ ItActionListener::ItActionListener(PickPanel* self)
 {
  this->self = self;
 }
-void ItActionListener::actionPerformed(ActionEvent* a)
+void ItActionListener::actionPerformed(JActionEvent* a)
 {
   self->addToTable();
 }

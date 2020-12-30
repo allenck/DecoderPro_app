@@ -268,7 +268,7 @@ void AudioBufferFrame::On_loopEnd_valueChanged()
  this->_newBuffer = false;
 }
 
-void AudioBufferFrame::browsePressed(ActionEvent* /*e*/)
+void AudioBufferFrame::browsePressed(JActionEvent* /*e*/)
 {
 //    if (fileChooser == NULL) {
 //        fileChooser = new JFileChooser("resources" + File.separator + "sounds" + File.separator);
@@ -303,7 +303,7 @@ void AudioBufferFrame::browsePressed(ActionEvent* /*e*/)
     }
 }
 
-void AudioBufferFrame::okPressed(ActionEvent* /*e*/)
+void AudioBufferFrame::okPressed(JActionEvent* /*e*/)
 {
  QString user = userName->text();
  if (user==(""))

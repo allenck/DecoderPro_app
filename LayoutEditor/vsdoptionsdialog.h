@@ -3,7 +3,7 @@
 #include "jdialog.h"
 
 class PropertyChangeEvent;
-class ActionEvent;
+class JActionEvent;
 class QComboBox;
 class VSDOptionsDialog : public JDialog
 {
@@ -22,7 +22,7 @@ public slots:
 private:
 /*private*/ QComboBox* opsTrainComboBox;
 private slots:
- /*private*/ void closeButtonActionPerformed(ActionEvent* ae = 0);
+ /*private*/ void closeButtonActionPerformed(JActionEvent* ae = 0);
 
 };
 

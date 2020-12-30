@@ -125,7 +125,7 @@ VariableValue::setToolTipText(t);   // do default stuff
     return "enum: "+QString::number(_minVal)+" - "+QString::number(_maxVal);
 }
 
-/*public*/ void IndexedEnumVariableValue::actionPerformed(ActionEvent* e)
+/*public*/ void IndexedEnumVariableValue::actionPerformed(JActionEvent* e)
 {
  if(e != NULL)
  {

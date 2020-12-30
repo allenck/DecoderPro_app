@@ -143,17 +143,17 @@ namespace Operations
  }
 
  // Event handlers
- /*protected*/ void RestoreDialog::do_automaticBackupsRadioButton_actionPerformed(ActionEvent* /*e*/) {
+ /*protected*/ void RestoreDialog::do_automaticBackupsRadioButton_actionPerformed(JActionEvent* /*e*/) {
      backup = new AutoBackup();
      loadComboBox();
  }
 
- /*protected*/ void RestoreDialog::do_defaultBackupsRadioButton_actionPerformed(ActionEvent* /*e*/) {
+ /*protected*/ void RestoreDialog::do_defaultBackupsRadioButton_actionPerformed(JActionEvent* /*e*/) {
      backup = new DefaultBackup();
      loadComboBox();
  }
 
- /*protected*/ void RestoreDialog::do_cancelButton_actionPerformed(ActionEvent* /*arg0*/) {
+ /*protected*/ void RestoreDialog::do_cancelButton_actionPerformed(JActionEvent* /*arg0*/) {
      //dispose();
   reject();
   close();
@@ -185,11 +185,11 @@ namespace Operations
    \
  }
 
- /*protected*/ void RestoreDialog::do_helpButton_actionPerformed(ActionEvent* /*arg0*/) {
+ /*protected*/ void RestoreDialog::do_helpButton_actionPerformed(JActionEvent* /*arg0*/) {
      // Not implemented yet.
  }
 
- /*protected*/ void RestoreDialog::do_restoreButton_actionPerformed(ActionEvent* /*e*/) {
+ /*protected*/ void RestoreDialog::do_restoreButton_actionPerformed(JActionEvent* /*e*/) {
      log->debug("restore button activated");
 
      // check to see if files are dirty

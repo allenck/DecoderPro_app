@@ -27,7 +27,7 @@
 } // NO I18N
 
 //@Override
-/*public*/ void SwitchboardEditorAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SwitchboardEditorAction::actionPerformed(JActionEvent * /*e*/) {
     QString name = tr("Switchboard%1").arg("");
     for (int i = 2; i < 100; i++) {
         if (static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name)) {

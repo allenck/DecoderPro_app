@@ -29,7 +29,7 @@
 //    });
     connect(this, SIGNAL(clicked()), this, SLOT(actionPerformed()));
 }
-/*public*/ void StopAllButton::actionPerformed(ActionEvent* e)
+/*public*/ void StopAllButton::actionPerformed(JActionEvent* e)
 {
 #if 0
     Iterator<ThrottleFrame*> tpi = ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel().iterator();

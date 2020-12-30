@@ -345,7 +345,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
      //copyMenuItem->setActionCommand( TransferHandler.getCopyAction().getValue(Action::NAME));
      copyMenuItem->setData("copyAll");
      //copyMenuItem.addActionListener(copyActionListener);
-     connect(copyMenuItem, SIGNAL(triggered(bool)), copyActionListener, SLOT(actionPerformed(ActionEvent*)));
+     connect(copyMenuItem, SIGNAL(triggered(bool)), copyActionListener, SLOT(actionPerformed(JActionEvent*)));
 //     if (SystemType.isMacOSX()) {
 //         copyMenuItem.setAccelerator(
 //                 KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.META_MASK));

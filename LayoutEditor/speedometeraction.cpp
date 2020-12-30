@@ -55,7 +55,7 @@ void SpeedometerAction::common()
  common();
 }
 
-/*public*/ void SpeedometerAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SpeedometerAction::actionPerformed(JActionEvent * /*e*/) {
 
     // create a SimpleProgFrame
     SpeedometerFrame* f = new SpeedometerFrame();

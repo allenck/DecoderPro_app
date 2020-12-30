@@ -71,7 +71,7 @@ class ITOUpdateActionListener : public ActionListener
 public:
     ITOUpdateActionListener(IndicatorTurnoutIcon* parent);
 public slots:
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0);
 };
 
 #endif // INDICATORTURNOUTICON_H

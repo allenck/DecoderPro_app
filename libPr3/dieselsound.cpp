@@ -90,7 +90,7 @@
     }
 }
 
-/*protected*/ void DieselSound::handleNotchTimerPop(ActionEvent* /*e*/)
+/*protected*/ void DieselSound::handleNotchTimerPop(JActionEvent* /*e*/)
 {
     // notch value has already been changed
     log->debug("Notch timer pop. nt.next_notch = " + QString::number(notch_transition->getNextNotch())
@@ -143,7 +143,7 @@
     engine_started = false;
 }
 
-/*private*/ void DieselSound::startToIdleAction(ActionEvent* /*e*/) {
+/*private*/ void DieselSound::startToIdleAction(JActionEvent* /*e*/) {
     log->debug("Starting idle sound notch = " + QString::number(current_notch) + " sound = " + notch_sounds.value(current_notch)->getFileName());
     notch_sounds.value(current_notch)->loop();
     engine_started = true;

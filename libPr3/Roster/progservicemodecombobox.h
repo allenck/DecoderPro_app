@@ -4,7 +4,7 @@
 #include "logger.h"
 #include <QBoxLayout>
 
-class ActionEvent;
+class JActionEvent;
 class GlobalProgrammerManager;
 class PropertyChangeEvent;
 class QComboBox;
@@ -21,7 +21,7 @@ public slots:
 //    void On_boxCurrentIndexChanged(int);
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ void dispose();
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
 
 private:
     // GUI member declarations

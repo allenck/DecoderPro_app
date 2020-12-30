@@ -170,7 +170,7 @@ SetBorderSizeActionListener::SetBorderSizeActionListener(Positionable *pos, QObj
  this->parent = parent;
 }
 
-void SetBorderSizeActionListener::actionPerformed(ActionEvent */*e*/)
+void SetBorderSizeActionListener::actionPerformed(JActionEvent */*e*/)
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);

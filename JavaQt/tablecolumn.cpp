@@ -1,5 +1,6 @@
 #include "tablecolumn.h"
 #include "propertychangeevent.h"
+#include "vptr.h"
 
 //TableColumn::TableColumn(QObject *parent) :
 //  QObject(parent)
@@ -353,7 +354,7 @@ void TableColumn::common()
 /*public*/ TableCellRenderer getHeaderRenderer() {
     return headerRenderer;
 }
-
+#endif
 /**
  * Sets the <code>TableCellRenderer</code> used by <code>JTable</code>
  * to draw individual values for this column.
@@ -364,10 +365,10 @@ void TableColumn::common()
  *  bound: true
  *  description: The renderer to use for cell values.
  */
-/*public*/ void setCellRenderer(TableCellRenderer cellRenderer) {
-    TableCellRenderer old = this->cellRenderer;
+/*public*/ void TableColumn::setCellRenderer(TableCellRenderer* cellRenderer) {
+    TableCellRenderer* old = this->cellRenderer;
     this->cellRenderer = cellRenderer;
-    firePropertyChange("cellRenderer", old, cellRenderer);
+    firePropertyChange("cellRenderer", VPtr<TableCellRenderer>::asQVariant(old), VPtr<TableCellRenderer>::asQVariant(cellRenderer));
 }
 
 /**
@@ -385,7 +386,7 @@ void TableColumn::common()
  * @see     #setCellRenderer
  * @see     JTable#setDefaultRenderer
  */
-/*public*/ TableCellRenderer getCellRenderer() {
+/*public*/ TableCellRenderer* TableColumn::getCellRenderer() {
     return cellRenderer;
 }
 
@@ -398,10 +399,10 @@ void TableColumn::common()
  *  bound: true
  *  description: The editor to use for cell values.
  */
-/*public*/ void setCellEditor(TableCellEditor cellEditor){
-    TableCellEditor old = this->cellEditor;
+/*public*/ void TableColumn::setCellEditor(TableCellEditor* cellEditor){
+    TableCellEditor* old = this->cellEditor;
     this->cellEditor = cellEditor;
-    firePropertyChange("cellEditor", old, cellEditor);
+    firePropertyChange("cellEditor", VPtr<TableCellEditor>::asQVariant(old), VPtr<TableCellEditor>::asQVariant(cellEditor));
 }
 
 /**
@@ -416,10 +417,10 @@ void TableColumn::common()
  * @see     #setCellEditor
  * @see     JTable#setDefaultEditor
  */
-/*public*/ TableCellEditor getCellEditor() {
+/*public*/ TableCellEditor* TableColumn::getCellEditor() {
     return cellEditor;
 }
-#endif
+
 /**
  * This method should not be used to set the widths of columns in the
  * <code>JTable</code>, use <code>setPreferredWidth</code> instead.

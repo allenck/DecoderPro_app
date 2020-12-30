@@ -33,6 +33,7 @@
 #include <sensor.h>
 #include <shutdowntask.h>
 #include <systemconnectionmemo.h>
+#include <tablecelleditor.h>
 #include <tablecolumn.h>
 #include <throttlemanager.h>
 #include <turnout.h>
@@ -10720,6 +10721,16 @@ bool  PythonQtWrapper_SystemConnectionMemo::setUserName(SystemConnectionMemo* th
 
 
 
+PythonQtShell_TableCellEditor::~PythonQtShell_TableCellEditor() {
+  PythonQtPrivate* priv = PythonQt::priv();
+  if (priv) { priv->shellClassDeleted(this); }
+}
+TableCellEditor* PythonQtWrapper_TableCellEditor::new_TableCellEditor()
+{ 
+return new PythonQtShell_TableCellEditor(); }
+
+
+
 PythonQtShell_TableColumn::~PythonQtShell_TableColumn() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
@@ -10886,6 +10897,11 @@ void PythonQtWrapper_TableColumn::addPropertyChangeListener(TableColumn* theWrap
   ( theWrappedObject->addPropertyChangeListener(listener));
 }
 
+TableCellEditor*  PythonQtWrapper_TableColumn::getCellEditor(TableColumn* theWrappedObject)
+{
+  return ( theWrappedObject->getCellEditor());
+}
+
 QVariant  PythonQtWrapper_TableColumn::getHeaderValue(TableColumn* theWrappedObject)
 {
   return ( theWrappedObject->getHeaderValue());
@@ -10931,14 +10947,9 @@ void PythonQtWrapper_TableColumn::removePropertyChangeListener(TableColumn* theW
   ( theWrappedObject->removePropertyChangeListener(listener));
 }
 
-void PythonQtWrapper_TableColumn::setCellEditor(TableColumn* theWrappedObject, QObject*  arg__1)
+void PythonQtWrapper_TableColumn::setCellEditor(TableColumn* theWrappedObject, TableCellEditor*  cellEditor)
 {
-  ( theWrappedObject->setCellEditor(arg__1));
-}
-
-void PythonQtWrapper_TableColumn::setCellRenderer(TableColumn* theWrappedObject, QObject*  arg__1)
-{
-  ( theWrappedObject->setCellRenderer(arg__1));
+  ( theWrappedObject->setCellEditor(cellEditor));
 }
 
 void PythonQtWrapper_TableColumn::setHeaderValue(TableColumn* theWrappedObject, QVariant  headerValue)

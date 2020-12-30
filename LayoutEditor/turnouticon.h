@@ -97,7 +97,7 @@ public:
  }
 
 public slots:
- void actionPerformed(ActionEvent */*e*/ = 0)
+ void actionPerformed(JActionEvent */*e*/ = 0)
  {
   turnoutIcon->updateItem();
  }
@@ -113,7 +113,7 @@ public:
  }
 
 public slots:
- void actionPerformed(ActionEvent */*e*/ = 0)
+ void actionPerformed(JActionEvent */*e*/ = 0)
  {
   turnoutIcon->updateTurnout();
  }

@@ -14,7 +14,7 @@ public:
                             QString cvNum, QString mask, int minVal, int maxVal,
                             QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
     void updatedTextField();
-    /*public*/ void actionPerformed(ActionEvent* /*e*/);
+    /*public*/ void actionPerformed(JActionEvent* /*e*/);
     /*public*/ void setValue(int value);
 
 signals:

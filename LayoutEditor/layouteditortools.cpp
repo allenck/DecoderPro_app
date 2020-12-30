@@ -965,7 +965,7 @@ void LayoutEditorTools::windowClosing(QCloseEvent* /*e*/)
 
 }
 
-/*private*/ void LayoutEditorTools::turnoutSignalsGetSaved (ActionEvent* /*a*/) // SLOT[]
+/*private*/ void LayoutEditorTools::turnoutSignalsGetSaved (JActionEvent* /*a*/) // SLOT[]
 {
  if (getTurnoutInformation(false)) {
      throatContinuingSignalHeadComboBox->setSelectedItem(layoutTurnout->getSignalA1());
@@ -975,14 +975,14 @@ void LayoutEditorTools::windowClosing(QCloseEvent* /*e*/)
  }
 }
 
-/*private*/ void LayoutEditorTools::setSignalsCancelPressed (ActionEvent* /*a*/) // SLOT[]
+/*private*/ void LayoutEditorTools::setSignalsCancelPressed (JActionEvent* /*a*/) // SLOT[]
 {
  setSignalsOpen = false;
  turnoutFromMenu = false;
  setSignalsFrame->setVisible(false);
 }
 
-/*private*/ void LayoutEditorTools::setSignalsDonePressed (ActionEvent* /*a*/) // SLOT[]
+/*private*/ void LayoutEditorTools::setSignalsDonePressed (JActionEvent* /*a*/) // SLOT[]
 {
  // process turnout name
  if ( !getTurnoutInformation(false) )
@@ -2770,7 +2770,7 @@ else if (throatDivergingHead==nullptr)
 }   //setSignalsAtBlockBoundary
 
 
-/*private*/ void LayoutEditorTools::getSavedAnchorSignals (ActionEvent* /*a*/) // SLOT[]
+/*private*/ void LayoutEditorTools::getSavedAnchorSignals (JActionEvent* /*a*/) // SLOT[]
 {
     if ( !getBlockInformation() ) 
      return;
@@ -2778,13 +2778,13 @@ else if (throatDivergingHead==nullptr)
     westBoundSignalHeadComboBox->setSelectedItem(boundary->getWestBoundSignalHead());
 }
 
-/*private*/ void LayoutEditorTools::setSignalsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/) // SLOT() []
+/*private*/ void LayoutEditorTools::setSignalsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/) // SLOT() []
 {
     setSignalsAtBlockBoundaryOpenFlag = false;
     setSignalsAtBlockBoundaryFrame->setVisible(false);
 }
 
-/*private*/ void LayoutEditorTools::setSignalsAtBlockBoundaryDonePressed (ActionEvent* /*a*/) // SLOT[]
+/*private*/ void LayoutEditorTools::setSignalsAtBlockBoundaryDonePressed (JActionEvent* /*a*/) // SLOT[]
 {
  if ( !getBlockInformation() ) return;
  eastBoundHead = getSignalHeadFromEntry(eastBoundSignalHeadComboBox,false,setSignalsAtBlockBoundaryFrame);
@@ -3423,7 +3423,7 @@ else if (throatDivergingHead==nullptr)
  setSignalsAtXoverTurnoutFrame->setVisible(true);
 } //setSignalsAtXoverTurnout
 
-/*private*/ void LayoutEditorTools::xoverTurnoutSignalsGetSaved (ActionEvent* /*a*/)  // SLOT[]
+/*private*/ void LayoutEditorTools::xoverTurnoutSignalsGetSaved (JActionEvent* /*a*/)  // SLOT[]
 {
   a1SignalHeadComboBox->setSelectedItem(layoutTurnout->getSignalA1());
   a2SignalHeadComboBox->setSelectedItem(layoutTurnout->getSignalA2());
@@ -3435,13 +3435,13 @@ else if (throatDivergingHead==nullptr)
   d2SignalHeadComboBox->setSelectedItem(layoutTurnout->getSignalD2());
 }
 
-/*private*/ void LayoutEditorTools::setXoverSignalsCancelPressed (ActionEvent* /*a*/) // SLOT[]
+/*private*/ void LayoutEditorTools::setXoverSignalsCancelPressed (JActionEvent* /*a*/) // SLOT[]
 {
  setSignalsAtXoverTurnoutOpenFlag = false;
  setSignalsAtXoverTurnoutFrame->setVisible(false);
 }
 
-/*private*/ void LayoutEditorTools::setXoverSignalsDonePressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setXoverSignalsDonePressed (JActionEvent* /*a*/)
 {
  if ( !getXoverSignalHeadInformation() ) return;
  // place signal icons if requested, and assign signal heads to this turnout
@@ -4488,7 +4488,7 @@ else if (throatDivergingHead==nullptr)
     setSignalsAtLevelXingFrame->setVisible(true);
 }   //setSignalsAtLevelXing
 
-/*private*/ void LayoutEditorTools::xingSignalsGetSaved (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::xingSignalsGetSaved (JActionEvent* /*a*/)
 {
  if (!getLevelCrossingSensorInformation()) {
      return;
@@ -4535,13 +4535,13 @@ else if (throatDivergingHead==nullptr)
  setSensorsAtLevelXingFrame->pack();
 }
 
-/*private*/ void LayoutEditorTools::setXingSignalsCancelPressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setXingSignalsCancelPressed (JActionEvent* /*a*/) {
 
     setSignalsAtLevelXingFrame->setVisible(false);
     xingFromMenu = false;
 
 }
-/*private*/ void LayoutEditorTools::setXingSignalsDonePressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setXingSignalsDonePressed (JActionEvent* /*a*/)
 {
 #if 1
     if ( !getLevelCrossingInformation() ) return;
@@ -5620,7 +5620,7 @@ setSignalsAtTToTOpen = true;
     return true;
  }
 
-/*private*/ void LayoutEditorTools::setTToTSignalsDonePressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setTToTSignalsDonePressed (JActionEvent* /*a*/) {
     if ( !getTToTTurnoutInformation() ) return;
     if ( !getTToTSignalHeadInformation() ) return;
 
@@ -7028,7 +7028,7 @@ setSignalsAtTToTOpen = true;
     setSignalsAt3WayTurnoutFrame->setVisible(true);
 }   //setSignalsAt3WayTurnout
 
-/*private*/ void LayoutEditorTools::getSaved3WaySignals (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::getSaved3WaySignals (JActionEvent* /*a*/) {
  if (!get3WayTurnoutInformation()) {
      return;
  }
@@ -7040,7 +7040,7 @@ setSignalsAtTToTOpen = true;
  d_3WaySignalHeadComboBox->setSelectedItem(layoutTurnoutB->getSignalC1());
 }
 
-/*private*/ void LayoutEditorTools::set3WaySignalsCancelPressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::set3WaySignalsCancelPressed (JActionEvent* /*a*/) {
     setSignalsAt3WayOpen = false;
     setSignalsAt3WayTurnoutFrame->setVisible(false);
 }
@@ -7246,7 +7246,7 @@ setSignalsAtTToTOpen = true;
     return true;
 }
 
-/*private*/ void LayoutEditorTools::set3WaySignalsDonePressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::set3WaySignalsDonePressed (JActionEvent* /*a*/) {
     // process turnout names
     if ( !get3WayTurnoutInformation() )
      return;
@@ -8545,7 +8545,7 @@ bool LayoutEditorTools::sensorAssignedElseWhere(Sensor* sensor){
  return true;
 }
 
-/*private*/ void LayoutEditorTools::getSavedAnchorSensors (ActionEvent* /*a*/) // SLOT
+/*private*/ void LayoutEditorTools::getSavedAnchorSensors (JActionEvent* /*a*/) // SLOT
 {
     if ( !getSimpleBlockInformation() ) return;
     eastBoundSensor->setTextField(boundary->getEastBoundSensorName());
@@ -8577,12 +8577,12 @@ bool LayoutEditorTools::sensorAssignedElseWhere(Sensor* sensor){
 //    setSensorsAtBlockBoundaryFrame.pack();
 }
 
-/*private*/ void LayoutEditorTools::setSensorsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setSensorsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/) {
     setSensorsAtBoundaryOpen = false;
     setSensorsAtBlockBoundaryFrame->setVisible(false);
 }
 
-/*private*/ void LayoutEditorTools::setSensorsAtBlockBoundaryDonePressed (ActionEvent* /*a*/) // SLOT
+/*private*/ void LayoutEditorTools::setSensorsAtBlockBoundaryDonePressed (JActionEvent* /*a*/) // SLOT
 {
  if ( !getSimpleBlockInformation() ) return;
  Sensor* eastSensor = getSensorFromEntry(eastBoundSensor->getText(),false,setSensorsAtBlockBoundaryFrame);
@@ -9106,7 +9106,7 @@ void LayoutEditorTools::setBoundarySensor(Sensor* newSensor, Sensor* currSensor,
     }
 }
 
-/*private*/ void LayoutEditorTools::getSavedAnchorSignalMasts (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::getSavedAnchorSignalMasts (JActionEvent* /*a*/) {
     if ( !getSimpleBlockInformation() ) return;
     eastSignalMast->setTextField(boundary->getEastBoundSignalMastName());
     westSignalMast->setTextField(boundary->getWestBoundSignalMastName());
@@ -9133,7 +9133,7 @@ void LayoutEditorTools::setBoundarySensor(Sensor* newSensor, Sensor* currSensor,
 //    setSignalMastsAtBoundaryFrame.pack();
 }
 
-/*private*/ void LayoutEditorTools::setSignalMastsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setSignalMastsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/) {
     setSignalMastsAtBoundaryOpen = false;
     setSignalMastsAtBoundaryFrame->setVisible(false);
 }
@@ -9146,7 +9146,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
     westSignalMast->getCombo()->setExcludedItems(usedMasts.toSet());
 }
 
-/*private*/ void LayoutEditorTools::setSignalMastsAtBlockBoundaryDonePressed (ActionEvent* /*a*/) // SLOT[]
+/*private*/ void LayoutEditorTools::setSignalMastsAtBlockBoundaryDonePressed (JActionEvent* /*a*/) // SLOT[]
 {
  if ( !getSimpleBlockInformation() ) return;
  SignalMast* oldBlock1SignalMast = getSignalMastFromName(boundary->getEastBoundSignalMastName());
@@ -10083,7 +10083,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
     setSignalMastsAtTurnoutFrame->setVisible(true);
 }   //setSignalMastsAtTurnout
 
-/*private*/ void LayoutEditorTools::turnoutSignalMastsGetSaved (ActionEvent* /*a*/) // SLOT
+/*private*/ void LayoutEditorTools::turnoutSignalMastsGetSaved (JActionEvent* /*a*/) // SLOT
 {
  if ( !getTurnoutMastInformation() ) return;
  turnoutBlocks = layoutTurnout->getBlockBoundaries().toVector();
@@ -10193,7 +10193,7 @@ void LayoutEditorTools::refreshSignalMastAtTurnoutComboBox(){
              (x->getSignalDMastName()==(uName))))) x->setSignalDMastName("");
  }
 }
-/*private*/ void LayoutEditorTools::setSignalMastsDonePressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setSignalMastsDonePressed (JActionEvent* /*a*/) {
     // process turnout name
     if ( !getTurnoutMastInformation() ) return;
     // process signal head names
@@ -10539,7 +10539,7 @@ return;
     }
 }
 
-/*private*/ void LayoutEditorTools::setSignalMastsCancelPressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setSignalMastsCancelPressed (JActionEvent* /*a*/) {
  setSignalMastsAtTurnoutOpenFlag = false;
  setSignalMastsAtTurnoutFrame->setVisible(false);
 }
@@ -10778,7 +10778,7 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
  slipSignalMastD->getCombo()->setExcludedItems(usedMasts.toSet());
 }
 
-/*private*/ void LayoutEditorTools::slipSignalMastsGetSaved (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::slipSignalMastsGetSaved (JActionEvent* /*a*/) {
  if ( !getSlipMastInformation() ) return;
  slipBlocks = layoutSlip->getBlockBoundaries();
  slipSignalMastA->setTextField(layoutSlip->getSignalAMastName());
@@ -10890,12 +10890,12 @@ void LayoutEditorTools::refreshSignalMastAtSlipComboBox(){
     return true;
 }
 
-/*private*/ void LayoutEditorTools::setSlipSignalMastsCancelPressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setSlipSignalMastsCancelPressed (JActionEvent* /*a*/) {
  setSignalMastsAtLayoutSlipOpenFlag = false;
  setSignalMastsAtLayoutSlipFrame->setVisible(false);
 }
 
-/*private*/ void LayoutEditorTools::setSlipSignalMastsDonePressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setSlipSignalMastsDonePressed (JActionEvent* /*a*/)
 {
  if ( !getSlipMastInformation() ) return;
  SignalMast* aMast = getSignalMastFromEntry(slipSignalMastA->getText(),false,setSignalMastsAtLayoutSlipFrame);
@@ -11285,7 +11285,7 @@ void LayoutEditorTools::refreshSignalMastAtXingComboBox()
  xingSignalMastD->getCombo()->setExcludedItems(usedMasts.toSet());
 }
 
-/*private*/ void LayoutEditorTools::xingSignalMastsGetSaved (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::xingSignalMastsGetSaved (JActionEvent* /*a*/)
 {
  if ( !getLevelCrossingMastInformation() ) return;
  xingBlocks = levelXing->getBlockBoundaries();
@@ -11429,13 +11429,13 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
  return true;
 }
 
-/*private*/ void LayoutEditorTools::setXingSignalMastsCancelPressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setXingSignalMastsCancelPressed (JActionEvent* /*a*/)
 {
  setSignalMastsAtLevelXingOpenFlag = false;
  setSignalMastsAtLevelXingFrame->setVisible(false);
 }
 
-/*private*/ void LayoutEditorTools::setXingSignalMastsDonePressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setXingSignalMastsDonePressed (JActionEvent* /*a*/) {
     if ( !getLevelCrossingMastInformation() ) return;
     SignalMast* aMast = getSignalMastFromEntry(xingSignalMastA->getText(),false,setSignalsAtLevelXingFrame);
     SignalMast* bMast = getSignalMastFromEntry(xingSignalMastB->getText(),false,setSignalsAtLevelXingFrame);
@@ -11896,7 +11896,7 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
     setSensorsAtTurnoutFrame->setVisible(true);
 }   //setSensorsAtTurnout
 
-/*private*/ void LayoutEditorTools::turnoutSensorsGetSaved (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::turnoutSensorsGetSaved (JActionEvent* /*a*/) {
     if ( !getTurnoutSensorInformation() ) return;
     turnoutSenBlocks = layoutTurnout->getBlockBoundaries().toVector();
     turnoutSensorA->setTextField(layoutTurnout->getSensorAName());
@@ -12023,7 +12023,7 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
 //}
 
 
-/*private*/ void LayoutEditorTools::setSensorsDonePressed (ActionEvent* /*a*/) // SLOT
+/*private*/ void LayoutEditorTools::setSensorsDonePressed (JActionEvent* /*a*/) // SLOT
 {
 //Placing of turnouts needs to be better handled
     // process turnout name
@@ -12280,7 +12280,7 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
             return true;
 }
 
-/*private*/ void LayoutEditorTools::setSensorsCancelPressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setSensorsCancelPressed (JActionEvent* /*a*/) {
  setSensorsAtTurnoutOpenFlag = false;
  setSensorsAtTurnoutFrame->setVisible(false);
 }
@@ -12498,7 +12498,7 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
  setSensorsAtLevelXingFrame->setVisible(true);
 }
 
-/*private*/ void LayoutEditorTools::xingSensorsGetSaved (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::xingSensorsGetSaved (JActionEvent* /*a*/)
 {
  if ( !getLevelCrossingSensorInformation() ) return;
 
@@ -12638,13 +12638,13 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
  return true;
 }
 
-/*private*/ void LayoutEditorTools::setXingSensorsCancelPressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setXingSensorsCancelPressed (JActionEvent* /*a*/)
 {
  setSensorsAtLevelXingFrame->setVisible(false);
  setSignalsAtLevelXingFromMenuFlag = false;
 }
 
-/*private*/ void LayoutEditorTools::setXingSensorsDonePressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setXingSensorsDonePressed (JActionEvent* /*a*/)
 {
   log->trace("setXingSensorsDonePressed");  // NOI18N
 
@@ -13150,7 +13150,7 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
  setSensorsAtSlipFrame->pack();
 }
 
-/*private*/ void LayoutEditorTools::slipSensorsGetSaved (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::slipSensorsGetSaved (JActionEvent* /*a*/)
 {
  if ( !getSlipSensorInformation() ) return;
 
@@ -13272,14 +13272,14 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
  return true;
 }
 
-/*private*/ void LayoutEditorTools::setSlipSensorsCancelPressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setSlipSensorsCancelPressed (JActionEvent* /*a*/)
 {
     setSensorsAtSlipOpenFlag = false;
     setSensorsAtSlipFrame->setVisible(false);
     setSensorsAtSlipFromMenuFlag = false;
 }
 
-/*private*/ void LayoutEditorTools::setSlipSensorsDonePressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setSlipSensorsDonePressed (JActionEvent* /*a*/)
 {
  if ( !getSlipSensorInformation() ) return;
  Sensor* aSensor = getSensorFromEntry(slipSensorA->getText(),false,setSensorsAtSlipFrame);
@@ -13980,7 +13980,7 @@ QWidget* BeanDetails::addIconPanel()
  setSignalsAtSlipFrame->setVisible(true);
 }
 
-/*private*/ void LayoutEditorTools::getSlipTurnoutSignalsGetSaved (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::getSlipTurnoutSignalsGetSaved (JActionEvent* /*a*/)
 {
  if ( !getSlipTurnoutInformation() ) return;
  a1SlipSignalHeadComboBox->setSelectedItem(layoutSlip->getSignalA1());
@@ -13993,7 +13993,7 @@ QWidget* BeanDetails::addIconPanel()
  d2SlipSignalHeadComboBox->setSelectedItem(layoutSlip->getSignalD2());
 }
 
-/*private*/ void LayoutEditorTools::setSlipSignalsCancelPressed (ActionEvent* /*a*/)
+/*private*/ void LayoutEditorTools::setSlipSignalsCancelPressed (JActionEvent* /*a*/)
 {
  setSignalsAtSlipOpenFlag = false;
  setSignalsAtSlipFrame->setVisible(false);
@@ -14036,7 +14036,7 @@ QWidget* BeanDetails::addIconPanel()
  return true;
 }
 
-/*private*/ void LayoutEditorTools::setSlipSignalsDonePressed (ActionEvent* /*a*/) {
+/*private*/ void LayoutEditorTools::setSlipSignalsDonePressed (JActionEvent* /*a*/) {
     if ( !getSlipTurnoutInformation() ) return;
     if ( !getSlipSignalHeadInformation() ) return;
 

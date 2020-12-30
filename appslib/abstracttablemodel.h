@@ -16,9 +16,8 @@ class JAVAQTSHARED_EXPORT AbstractTableModel : public TableModel
 public:
     explicit AbstractTableModel(QObject *parent = 0);
     virtual /*public*/ QString getColumnName(int column) const;
-    /*public*/ int findColumn(QString columnName);
-//    /*public*/ Class<?> getColumnClass(int columnIndex);
-//    virtual int columnCount(const QModelIndex &parent) const = 0;
+    virtual /*public*/ int findColumn(QString columnName);
+    virtual /*public*/ QString getColumnClass(int columnIndex){return QString();}
     virtual /*public*/ bool isCellEditable(int rowIndex, int columnIndex) const;
     virtual /*public*/ void setValueAt(QVariant aValue, int rowIndex, int columnIndex);
     /*public*/ virtual void addTableModelListener(TableModelListener* l);

@@ -69,7 +69,7 @@ class AddReporterIconActionListener : public ActionListener
 public:
  AddReporterIconActionListener(ReporterIcon* self) {this->self = self;}
 public slots:
- void actionPerformed(ActionEvent */*e*/ = 0) { self->editReporter();}
+ void actionPerformed(JActionEvent */*e*/ = 0) { self->editReporter();}
 };
 
 #endif // REPORTERICON_H

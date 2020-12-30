@@ -9,7 +9,7 @@
 #include "actionlistener.h"
 
 class MyIconAdder;
-class ActionEvent;
+class JActionEvent;
 class QSpinBox;
 class QLineEdit;
 class JTextField;
@@ -82,7 +82,7 @@ class MiiActionListener : public ActionListener
 public:
     MiiActionListener(MemoryInputIcon* parent);
 public slots:
-  /*public*/ void actionPerformed(ActionEvent* a = 0);
+  /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
 
 #endif // MEMORYINPUTICON_H

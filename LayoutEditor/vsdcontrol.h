@@ -3,7 +3,7 @@
 
 #include <QFrame>
 #include "liblayouteditor_global.h"
-class ActionEvent;
+class JActionEvent;
 class QGridLayout;
 class Logger;
 class Insets;
@@ -57,9 +57,9 @@ private:
 protected:
  /*protected*/ void initComponents(QString title);
 protected slots:
- /*protected*/ void optionButtonPressed(ActionEvent* e = 0);
- /*protected*/ void configButtonPressed(ActionEvent* e = 0);
- /*protected*/ void deleteButtonPressed(ActionEvent* e = 0);
+ /*protected*/ void optionButtonPressed(JActionEvent* e = 0);
+ /*protected*/ void configButtonPressed(JActionEvent* e = 0);
+ /*protected*/ void deleteButtonPressed(JActionEvent* e = 0);
  /*protected*/ void configDialogPropertyChange(PropertyChangeEvent* event);
  /*protected*/ void optionsDialogPropertyChange(PropertyChangeEvent* event);
 

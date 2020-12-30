@@ -181,7 +181,7 @@ void ProgServiceModeComboBox::programmerSelected()
 /**
  * Listen to box for mode changes
  */
-/*public*/ void ProgServiceModeComboBox::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void ProgServiceModeComboBox::actionPerformed(JActionEvent* /*e*/) {
  // convey change to programmer
  log->debug("Selected mode: " + modeBox->currentText());
  getProgrammer()->setMode(VPtr<ProgrammingMode>::asPtr(modeBox->itemData(modeBox->currentIndex())));

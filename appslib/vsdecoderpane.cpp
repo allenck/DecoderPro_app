@@ -245,7 +245,7 @@ JmriPanel(p)
  * Handle a mute button press event
  */
 // NOTE: should this be /*public*/???
-/*public*/ void VSDecoderPane::muteButtonPressed(ActionEvent* /*e*/) {
+/*public*/ void VSDecoderPane::muteButtonPressed(JActionEvent* /*e*/) {
     JToggleButton* b = /*(JToggleButton) e.getSource()*/mute_button;
     log->debug(tr("Mute button pressed. value = ") +( b->isSelected()?"yes":"No"));
     firePropertyChange(MUTE, !b->isSelected(), b->isSelected());

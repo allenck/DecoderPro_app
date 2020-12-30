@@ -66,7 +66,7 @@ class ItiActionListener : public ActionListener
 public:
     ItiActionListener(IndicatorTrackIcon* self);
 public slots:
- /*public*/ void actionPerformed(ActionEvent* a = 0);
+ /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
 
 #endif // INDICATORTRACKICON_H

@@ -3,7 +3,7 @@
 
 #include "operationsframe.h"
 
-class ActionEvent;
+class JActionEvent;
 class QGroupBox;
 namespace Operations
 {
@@ -25,7 +25,7 @@ namespace Operations
   /*public*/ void buttonActionPerformed(QWidget* ae);
   /*public*/ void checkBoxActionPerformed(QWidget* ae);
   /*public*/ void locationCheckBoxActionPerformed(QWidget*);
-  /*public*/ void commentButtonActionPerformed(ActionEvent* ae = 0);
+  /*public*/ void commentButtonActionPerformed(JActionEvent* ae = 0);
 
  private:
   QScrollArea* switchPane;

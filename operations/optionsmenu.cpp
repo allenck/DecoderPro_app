@@ -167,13 +167,13 @@
         p2Layout->addWidget(trainsFromTrains);
         trainsFromTrains->setToolTip(tr("Select for Trains to be selected from JMRI trains in Operations."));
         //trainsFromTrainstrainsFromTrains.addActionListener(useRosterEntryListener);
-        connect(trainsFromRoster, SIGNAL(clicked(bool)), this, SLOT(useRosterEntry_actionPerformed(ActionEvent*)));
+        connect(trainsFromRoster, SIGNAL(clicked(bool)), this, SLOT(useRosterEntry_actionPerformed(JActionEvent*)));
         trainsGroup->addButton(trainsFromTrains);
         p2Layout->addWidget(new JLabel("     "));
         p2Layout->addWidget(trainsFromUser);
         trainsFromUser->setToolTip(tr("Select for Trains information to be entered by the user at creation time."));
         //trainsFromUser.addActionListener(useRosterEntryListener);
-        connect(trainsFromUser, SIGNAL(clicked(bool)), this, SLOT(useRosterEntry_actionPerformed(ActionEvent*)));
+        connect(trainsFromUser, SIGNAL(clicked(bool)), this, SLOT(useRosterEntry_actionPerformed(JActionEvent*)));
         trainsGroup->addButton(trainsFromUser);
         optionsPane->layout()->addWidget(p2);
         QWidget* p3 = new QWidget();
@@ -212,7 +212,7 @@
         p7Layout->addWidget(nameInBlockCheckBox);
         nameInBlockCheckBox->setToolTip(tr("Select to automatically place the name of new Trains in their starting Block value."));
         //nameInBlockCheckBox.addActionListener(useRosterEntryListener);
-        connect(nameInBlockCheckBox, SIGNAL(clicked(bool)), this, SLOT(useRosterEntry_actionPerformed(ActionEvent*)));
+        connect(nameInBlockCheckBox, SIGNAL(clicked(bool)), this, SLOT(useRosterEntry_actionPerformed(JActionEvent*)));
         optionsPane->layout()->addWidget(p7);
         QWidget* p7b = new QWidget();
         FlowLayout* p7bLayout;
@@ -220,7 +220,7 @@
         p7bLayout->addWidget(rosterInBlockCheckBox);
         rosterInBlockCheckBox->setToolTip(tr("Select to automatically place the Roster Entry of new Trains in their starting Block value."));
         //rosterInBlockCheckBox.addActionListener(useRosterEntryListener);
-        connect(rosterInBlockCheckBox, SIGNAL(clicked(bool)), this, SLOT(useRosterEntry_actionPerformed(ActionEvent*)));
+        connect(rosterInBlockCheckBox, SIGNAL(clicked(bool)), this, SLOT(useRosterEntry_actionPerformed(JActionEvent*)));
         optionsPane->layout()->addWidget(p7b);
 
         QWidget* p10 = new QWidget();

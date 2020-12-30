@@ -2,14 +2,14 @@
 #define STOPALLBUTTON_H
 #include <QPushButton>
 
-class ActionEvent;
+class JActionEvent;
 class StopAllButton : public QPushButton
 {
  Q_OBJECT
 public:
  StopAllButton();
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+ /*public*/ void actionPerformed(JActionEvent* e = 0) ;
 
 };
 

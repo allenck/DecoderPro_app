@@ -56,7 +56,7 @@ SignalMastTableAction::SignalMastTableAction(QObject*parent)
     return "package.jmri.jmrit.beantable.SignalMastTable";
 }
 
-/*public*/ void SignalMastTableAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SignalMastTableAction::actionPerformed(JActionEvent * /*e*/) {
     // create the JTable model, with changes for specific NamedBean
     createModel();
     MySortFilterProxyModel* sorter = new MySortFilterProxyModel(m);

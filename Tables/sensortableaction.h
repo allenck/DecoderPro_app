@@ -145,7 +145,7 @@ class DebounceActionListener : public ActionListener
 public:
  DebounceActionListener(JmriJFrame* finalF, SensorTableAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 class DefaultStateActionListener : public ActionListener
@@ -156,7 +156,7 @@ class DefaultStateActionListener : public ActionListener
 public:
  DefaultStateActionListener(JmriJFrame* finalF, SensorTableAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 class STAValidator : public QValidator

@@ -30,7 +30,7 @@ public:
 
     /*public*/ JTable* makeJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ TableModel* model, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter);
     /*public*/ void configureWarrantTable(JTable* table);
-    /*public*/ QAction* getPrintItem();
+    /*public*/ QMenu *getPrintItem();
     /*public*/ QMenu* getOptionMenu();
     /*public*/ QMenu* getTablesMenu();
 

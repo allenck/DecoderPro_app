@@ -90,7 +90,7 @@ class TimeSensor : public ActionListener
 public:
      TimeSensor(int index, DefaultConditional* self);
 public slots:
-     /*public*/ void actionPerformed(ActionEvent* event = 0);
+     /*public*/ void actionPerformed(JActionEvent* event = 0);
 
 };
 
@@ -103,7 +103,7 @@ class TimeTurnout : public ActionListener
 public:
     TimeTurnout(int index, DefaultConditional* self);
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* event = 0);
+    /*public*/ void actionPerformed(JActionEvent* event = 0);
 
 };
 

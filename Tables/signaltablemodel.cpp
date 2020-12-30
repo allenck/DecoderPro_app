@@ -838,16 +838,6 @@ return _signalList.size() + 1;
  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
-//@Override
-/*public*/ QString SignalTableModel::getColumnClass(int col) {
-if (col == DELETE_COL) {
-    return "JButton";
-} else if (col == UNITSCOL ) {
-    return "Boolean";
-}
-return "String";
-}
-
 /*static*/ /*public*/ int SignalTableModel::getPreferredWidth(int col) {
  switch (col) {
  case NAME_COLUMN:
@@ -868,6 +858,22 @@ return "String";
  return 5;
 }
 #endif
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString SignalTableModel::getColumnClass(int col) {
+    switch (col) {
+    case DELETE_COL:
+    case EDIT_COL:
+        return "JButton";
+    case UNITSCOL:
+        return "JToggleButton";
+    case NAME_COLUMN:
+    default:
+        return "String";
+    }
+}
 
 /*public*/ bool SignalTableModel::editMode() {
     return inEditMode;

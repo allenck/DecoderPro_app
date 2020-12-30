@@ -43,11 +43,11 @@ public:
  /*public*/ void mouseExited(QMouseEvent* e);
 
 signals:
- void buttonClicked(ActionEvent*);
- void splitButtonClicked(ActionEvent*);
+ void buttonClicked(JActionEvent*);
+ void splitButtonClicked(JActionEvent*);
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0);
 
 private:
  /*private*/ int separatorSpacing = 4;
@@ -63,8 +63,8 @@ private:
  /*private*/ QImage disabledImage;
  void common();
  /*private*/ BufferedImage rotate(BufferedImage img, int angle);
- /*private*/ void fireButtonClicked(ActionEvent* event);
- /*private*/ void fireSplitbuttonClicked(ActionEvent *event);
+ /*private*/ void fireButtonClicked(JActionEvent* event);
+ /*private*/ void fireSplitbuttonClicked(JActionEvent *event);
  EventListenerList listenerList;
 
 protected:

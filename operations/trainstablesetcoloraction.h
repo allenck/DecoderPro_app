@@ -13,7 +13,7 @@ namespace Operations
   TrainsTableSetColorAction(QObject* parent);
   /*public*/ TrainsTableSetColorAction(QString s, Train* train, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/);
 
  private:
   TrainsTableSetColorFrame* f;// = null;

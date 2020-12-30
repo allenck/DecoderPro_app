@@ -49,6 +49,8 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
     QObject(parent)
 {
  propertyChangeSupport = new PropertyChangeSupport(this);
+ if(log == nullptr)
+  log = LoggerFactory::getLogger("SystemConnectionMemo");
 
  disabled = false;
  disabledAsLoaded = /*null*/ false; // Boolean can be true, false, or null
@@ -124,7 +126,7 @@ bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
      if (this->prefixAsLoaded.isNull()) {
          this->prefixAsLoaded = systemPrefix;
      }
-     notifyPropertyChangeListener(SYSTEM_PREFIX, oldPrefix, systemPrefix);
+     notifyPropertyChangeListener(/*SYSTEM_PREFIX*/"ConnectionPrefixChanged", oldPrefix, systemPrefix);
      return true;
  }
  log->debug(tr("setSystemPrefix false for \"%1\"").arg(systemPrefix));

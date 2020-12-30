@@ -50,7 +50,7 @@ public slots:
     void textChanged();
     // handle incoming parameter notification
     /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
     /*public*/ void focusGained(/*FocusEvent*/QEvent* e = 0);
     /*public*/ void focusLost(/*FocusEvent*/QEvent* e = 0) ;
 

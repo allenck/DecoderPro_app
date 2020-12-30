@@ -86,7 +86,7 @@ class EditIconActionListener : public ActionListener
 public:
 void init(QString k, IndicatorTOItemPanel* parent);
 public slots:
-/*public*/ void actionPerformed(ActionEvent* a = 0);
+/*public*/ void actionPerformed(JActionEvent* a = 0);
 
 protected:
 

@@ -1171,7 +1171,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
         }
     }
 }
-
+#endif
 /**
  * Sets a default cell editor to be used if no editor has been set in
  * a <code>TableColumn</code>. If no editing is required in a table, or a
@@ -1187,15 +1187,31 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  * @see     #getDefaultEditor
  * @see     #setDefaultRenderer
  */
-/*public*/ void setDefaultEditor(Class<?> columnClass, TableCellEditor editor) {
-    if (editor != NULL) {
-        defaultEditorsByColumnClass.put(columnClass, editor);
-    }
-    else {
-        defaultEditorsByColumnClass.remove(columnClass);
+/*public*/ void JTable::setDefaultEditor(QString columnClass, QItemDelegate* editor) {
+//    if (editor != NULL) {
+//        defaultEditorsByColumnClass.put(columnClass, editor);
+//    }
+//    else {
+//        defaultEditorsByColumnClass.remove(columnClass);
+//    }
+    defaultItemDelegate = editor;
+    for(int i = 0; i < getColumnCount(); i++)
+    {
+        if(qobject_cast<BeanTableDataModel*>(getModel()))
+        {
+           if(columnClass == ((BeanTableDataModel*) getModel())->getColumnClass(i))
+           {
+               if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JButton")
+                ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
+               if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JToggleButton")
+                ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
+               if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JComboBox")
+                ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
+           }
+        }
     }
 }
-
+#if 0
 /**
  * Returns the editor to be used when no editor has been set in
  * a <code>TableColumn</code>. During the editing of cells the editor is fetched from
@@ -9729,26 +9745,25 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
 
 }
 
-/*public*/ void JTable::setDefaultEditor(QString s, QObject *delegate)
+
+/*public*/ int JTable::columnAtPoint(QPoint p)
 {
- defaultItemDelegate = delegate;
- for(int i = 0; i < getColumnCount(); i++)
- {
-     if(qobject_cast<BeanTableDataModel*>(getModel()))
-     {
-        if(s == ((BeanTableDataModel*) getModel())->getColumnClass(i))
-        {
-            if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JButton")
-             ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, new PushButtonDelegate());
-            if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JToggleButton")
-             ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, new ToggleButtonDelegate());
-        }
-     }
- }
+    return columnAt(p.x());
 }
 
+/*public*/ void JTable::doLayout()
+{
+ for (int i = 0; i < getModel()->columnCount(); i++) {
 
-
+    TableCellEditor* editor = getColumnModel()->getColumn(i)->getCellEditor();
+    if(editor)
+    {
+     QItemDelegate* delegate = qobject_cast<QItemDelegate*>(editor->self());
+     if(delegate != itemDelegateForColumn(i))
+       setItemDelegateForColumn(i, delegate);
+    }
+ }
+}
 
 
 

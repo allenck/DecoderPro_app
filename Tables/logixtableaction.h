@@ -52,7 +52,7 @@ class JTextField;
 class JmriJFrame;
 class PickFrame;
 class LogixManager;
-class ActionEvent;
+class JActionEvent;
 class ConditionalManager;
 class LIBTABLESSHARED_EXPORT LogixTableAction : public AbstractTableAction
 {
@@ -373,7 +373,7 @@ class LIBTABLESSHARED_EXPORT RefDialog : public JDialog
 public:
     RefDialog(BeanTableFrame* frame, LogixTableAction* action);
 public slots:
-    void deviceReportPressed(ActionEvent* e = 0);
+    void deviceReportPressed(JActionEvent* e = 0);
 };
 
 class LIBTABLESSHARED_EXPORT LogixTableModel : public BeanTableDataModel

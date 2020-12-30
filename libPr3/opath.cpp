@@ -250,7 +250,7 @@ void OPath::fireTurnouts(QList<BeanSetting*> list, bool set, int lockState, bool
         lock = l;
     }
 
-    /*public*/ void OPTimeTurnout::actionPerformed(ActionEvent* event)
+    /*public*/ void OPTimeTurnout::actionPerformed(JActionEvent* event)
     {
         self->fireTurnouts(list, set, lockState, lock);
         // Turn Timer OFF

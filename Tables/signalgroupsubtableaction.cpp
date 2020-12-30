@@ -580,7 +580,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     /**
      * Responds to the Update button - update to SignalGroup Table
      */
-    void SignalGroupSubTableAction::updateSubPressed(ActionEvent* /*e*/, bool /*newSignalGroup*/ ) {
+    void SignalGroupSubTableAction::updateSubPressed(JActionEvent* /*e*/, bool /*newSignalGroup*/ ) {
         ((DefaultSignalGroup*)curSignalGroup)->clearSignalTurnout(curSignalHead);
         ((DefaultSignalGroup*)curSignalGroup)->clearSignalSensor(curSignalHead);
 

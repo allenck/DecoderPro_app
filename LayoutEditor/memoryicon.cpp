@@ -680,7 +680,7 @@ MemoryIcon::AddIconActionListener::AddIconActionListener(MemoryIcon *parent)
  this->parent = parent;
 }
 
-void MemoryIcon::AddIconActionListener::actionPerformed(ActionEvent */*e*/)
+void MemoryIcon::AddIconActionListener::actionPerformed(JActionEvent */*e*/)
 {
  parent->editMemory();
 }

@@ -93,7 +93,9 @@ SOURCES +=  slotmonitor.cpp \
     oblocktableframe.cpp \
     oblocktablepanel.cpp \
     portaleditframe.cpp \
-    signaleditframe.cpp
+    signaleditframe.cpp \
+    oblockeditaction.cpp \
+    blockpatheditframe.cpp
 
 HEADERS += libtables_global.h \
     slotmonitor.h \
@@ -175,7 +177,9 @@ HEADERS += libtables_global.h \
     oblocktableframe.h \
     oblocktablepanel.h \
     portaleditframe.h \
-    signaleditframe.h
+    signaleditframe.h \
+    oblockeditaction.h \
+    blockpatheditframe.h
 
 unix:!symbian {
     maemo5 {
@@ -212,7 +216,7 @@ FORMS += \
 #    logixwidget.ui \
 #    sectionwidget.ui \
 #    transitwidget.ui \
-    editconditionalframe.ui \
+    editconditionalframe.ui
 #    addeditlightdialog1.ui \
 #    audiowidget.ui \
 #    tablesframe.ui

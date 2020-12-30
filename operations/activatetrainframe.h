@@ -26,7 +26,7 @@ public:
  //explicit ActivateTrainFrame(QObject *parent = 0);
  /*public*/ ActivateTrainFrame(DispatcherFrame* d);
  /*public*/ void showActivateFrame(RosterEntry* re);
- /*public*/ void initiateTrain(ActionEvent* e, RosterEntry* re, Block* b);
+ /*public*/ void initiateTrain(JActionEvent* e, RosterEntry* re, Block* b);
 
 signals:
 
@@ -102,7 +102,7 @@ private:
 
 protected:
  /*protected*/ void showActivateFrame();
- /*protected*/ void initiateTrain(ActionEvent* e = 0);
+ /*protected*/ void initiateTrain(JActionEvent* e = 0);
 
 friend class DispatcherFrame;
 };

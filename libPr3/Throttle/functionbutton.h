@@ -5,7 +5,7 @@
 #include "jcomponent.h"
 
 class QDomDocument;
-class ActionEvent;
+class JActionEvent;
 class QDomElement;
 class FunctionListener;
 class FunctionButton : public JToggleButton, public JComponent
@@ -77,7 +77,7 @@ signals:
     void notifyFunctionLockableChanged(int identity, bool isLockable);
 
 public slots:
-    /*public*/ void popactionPerformed(ActionEvent* e = 0);
+    /*public*/ void popactionPerformed(JActionEvent* e = 0);
 
 private:
     /*private*/ QList<FunctionListener*> listeners;// = new QList<FunctionListener>();

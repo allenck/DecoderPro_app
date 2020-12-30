@@ -23,7 +23,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrainsScheduleEditAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainsScheduleEditAction::actionPerformed(JActionEvent* /*e*/) {
      new TrainsScheduleEditFrame();
  }
 }

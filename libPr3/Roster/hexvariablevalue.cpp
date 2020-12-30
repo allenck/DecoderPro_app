@@ -39,7 +39,7 @@ void HexVariableValue::updatedTextField()
 }
 
 /** ActionListener implementations */
-/*public*/ void HexVariableValue::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void HexVariableValue::actionPerformed(JActionEvent* /*e*/)
 {
  if (log->isDebugEnabled()) log->debug("actionPerformed");
  int newVal = _value->text().toInt(0,16);

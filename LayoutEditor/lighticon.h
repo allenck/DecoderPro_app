@@ -70,7 +70,7 @@ class LightIconActionListener : public ActionListener
 public:
  LightIconActionListener(LightIcon*);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 #endif // LIGHTICON_H

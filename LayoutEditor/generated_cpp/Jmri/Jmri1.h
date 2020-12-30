@@ -1387,6 +1387,7 @@ JTable* new_JTable(QAbstractItemModel*  dm, QWidget*  parent = 0);
 JTable* new_JTable(QWidget*  parent = 0);
 void delete_JTable(JTable* obj) { delete obj; } 
    void addColumn(JTable* theWrappedObject, TableColumn*  aColumn);
+   int  columnAtPoint(JTable* theWrappedObject, QPoint  arg__1);
    int  convertColumnIndexToModel(JTable* theWrappedObject, int  viewColumnIndex);
    int  convertColumnIndexToView(JTable* theWrappedObject, int  modelColumnIndex);
    int  convertRowIndexToModel(JTable* theWrappedObject, int  viewRowIndex);

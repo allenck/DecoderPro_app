@@ -6,7 +6,7 @@
 
 class QVBoxLayout;
 class QLabel;
-class ActionEvent;
+class JActionEvent;
 class PerformFileModel;
 class QPushButton;
 class XmlFile;
@@ -63,6 +63,6 @@ public:
  PFItem(PerformFileModel* m, PerformFilePanel* self) ;
 /*public*/ PerformFileModel* getModel();
 public slots:
- /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0);
+ /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0);
 };
 #endif // PERFORMFILEPANEL_H

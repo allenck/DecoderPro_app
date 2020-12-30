@@ -3,7 +3,7 @@
 
 #include "operationsframe.h"
 
-class ActionEvent;
+class JActionEvent;
 class QButtonGroup;
 class QLabel;
 class QRadioButton;

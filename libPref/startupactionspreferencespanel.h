@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QLabel>
 
-class ActionEvent;
+class JActionEvent;
 class ListSelectionEvent;
 class StartupActionsManager;
 class StartupActionsPreferencesPanel : public QWidget, public PreferencesPanel
@@ -53,10 +53,10 @@ private:
 private slots:
  void on_listSelected(QModelIndex);
  void on_getAction(QObject* factory);
- /*private*/ void addBtnActionPerformed(ActionEvent* evt = 0);
- /*private*/ void removeBtnActionPerformed(ActionEvent* evt = 0);
- /*private*/ void upBtnActionPerformed(ActionEvent* evt = 0);
- /*private*/ void downBtnActionPerformed(ActionEvent* evt = 0);
+ /*private*/ void addBtnActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void removeBtnActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void upBtnActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void downBtnActionPerformed(JActionEvent* evt = 0);
 
 };
 Q_DECLARE_METATYPE(StartupActionsPreferencesPanel)

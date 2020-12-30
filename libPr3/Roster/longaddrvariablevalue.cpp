@@ -111,7 +111,7 @@ void LongAddrVariableValue::updatedTextField() {
 }
 
 /** ActionListener implementations */
-/*public*/ void LongAddrVariableValue::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LongAddrVariableValue::actionPerformed(JActionEvent* /*e*/)
 {
  if (logit->isDebugEnabled()) logit->debug("actionPerformed");
  int newVal = (_value->text()).toInt();

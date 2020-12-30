@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 
-class ActionEvent;
+class JActionEvent;
 class Logger;
 class JFileChooser;
 class ScriptButtonPanel : public QWidget
@@ -33,7 +33,7 @@ private:
  /*private*/ void initComponents();
 
 private slots:
- /*private*/ void scriptButtonActionPerformed(ActionEvent* evt = 0);
+ /*private*/ void scriptButtonActionPerformed(JActionEvent* evt = 0);
 protected:
  /*protected*/ QString getButtonName();
  /*protected*/ void setButtonName(QString name);

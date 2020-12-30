@@ -3,7 +3,7 @@
 #include "abstractcolorchooserpanel.h"
 
 class ChangeEvent;
-class ActionEvent;
+class JActionEvent;
 class JLabel;
 class JSplitButton;
 class SplitButtonColorChooserPanel : public AbstractColorChooserPanel
@@ -15,8 +15,8 @@ public:
  /*public*/ QString getDisplayName();
 
 public slots:
- void buttonClicked(ActionEvent*);
- void splitButtonClicked(ActionEvent*e);
+ void buttonClicked(JActionEvent*);
+ void splitButtonClicked(JActionEvent*e);
  void stateChanged(ChangeEvent*);
 
 private:

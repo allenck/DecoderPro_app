@@ -7,7 +7,7 @@
 class QSlider;
 class ChangeEvent;
 class JToggleButton;
-class ActionEvent;
+class JActionEvent;
 class QStatusBar;
 class VSDecoderEvent;
 class DccLocoAddress;
@@ -45,7 +45,7 @@ public:
 signals:
  void notifyProperyChange(PropertyChangeEvent*);
 public slots:
- /*public*/ void muteButtonPressed(ActionEvent* e =0);
+ /*public*/ void muteButtonPressed(JActionEvent* e =0);
  /*public*/ void volumeChange(ChangeEvent* e =0);
 
 private:

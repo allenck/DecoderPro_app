@@ -59,13 +59,13 @@ ComboCheckBox::ComboCheckBox(QComboBox* box, EnumVariableValue* var) {
     if (_box->currentIndex() == 1) setChecked(true);
 }
 
-void ComboCheckBox::thisActionPerformed(ActionEvent* /*e*/) {
+void ComboCheckBox::thisActionPerformed(JActionEvent* /*e*/) {
     // update original state to this state
     if (isChecked()) _box->setCurrentIndex(1);
     else  _box->setCurrentIndex(0);
 }
 
-void ComboCheckBox::originalActionPerformed(ActionEvent* /*e*/) {
+void ComboCheckBox::originalActionPerformed(JActionEvent* /*e*/) {
     // update this state to original state
     if (_box->currentIndex()==1) setChecked(true);
     else  setChecked(false);

@@ -4,7 +4,7 @@
 #include "jmrijframe.h"
 
 class CommandStation;
-class ActionEvent;
+class JActionEvent;
 class JToggleButton;
 class QCheckBox;
 class QLabel;
@@ -22,8 +22,8 @@ public:
 signals:
 
 public slots:
- /*public*/ void sendButtonActionPerformed(ActionEvent* /*e*/);
- /*public*/ void runButtonActionPerformed(ActionEvent* /*e*/);
+ /*public*/ void sendButtonActionPerformed(JActionEvent* /*e*/);
+ /*public*/ void runButtonActionPerformed(JActionEvent* /*e*/);
 
 private:
  // member declarations

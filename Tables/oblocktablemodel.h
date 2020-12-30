@@ -12,7 +12,7 @@ class OBlockTableModel : public BeanTableDataModel
 {
  Q_OBJECT
 public:
- explicit OBlockTableModel(QObject *parent = 0);
+// explicit OBlockTableModel(QObject *parent = 0);
  /*public*/ OBlockTableModel(TableFrames* parent);
  /*public*/ Manager* getManager();
  /*public*/ NamedBean* getBySystemName(QString name) const;
@@ -24,6 +24,7 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ static int numberOfLeadingZeros(int i);
  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+ /*public*/ QString getColumnClass(int col);
  /*public*/ int getPreferredWidth(int col);
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);

@@ -116,7 +116,7 @@
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-/*public*/ QString getColumnClass(int col) {
+/*public*/ QString BlockPortalTableModel::getColumnClass(int col) {
     return "String";
 }
 

@@ -3,7 +3,7 @@
 #include "jdialog.h"
 
 class QFrame;
-class ActionEvent;
+class JActionEvent;
 class Profile;
 class Logger;
 class QPushButton;
@@ -46,12 +46,12 @@ private:
  /*private*/ void initComponents();
 
 private slots:
- /*private*/ void profileNameActionPerformed(ActionEvent* evt = 0);
- /*private*/ void btnBrowseActionPerformed(ActionEvent* evt = 0);
- /*private*/ void profileFolderActionPerformed(ActionEvent* evt = 0);
- /*private*/ void profileLocationActionPerformed(ActionEvent* evt = 0);
- /*private*/ void btnCancelActionPerformed(ActionEvent* evt = 0);
- /*private*/ void btnOkActionPerformed(ActionEvent* evt = 0);
+ /*private*/ void profileNameActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void btnBrowseActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void profileFolderActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void profileLocationActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void btnCancelActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void btnOkActionPerformed(JActionEvent* evt = 0);
 
 };
 

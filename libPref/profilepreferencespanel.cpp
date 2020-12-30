@@ -355,7 +355,7 @@
 ////return null;
 //}
 
-/*private*/ void ProfilePreferencesPanel::renameMIActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void ProfilePreferencesPanel::renameMIActionPerformed(JActionEvent* /*evt*/) {
     // TODO add your handling code here:
 }
 #if 0
@@ -367,7 +367,7 @@
 }
 #endif
 
-/*private*/ void ProfilePreferencesPanel::btnAddSearchPathActionPerformed(ActionEvent* /*evt*/)
+/*private*/ void ProfilePreferencesPanel::btnAddSearchPathActionPerformed(JActionEvent* /*evt*/)
 {
 //    JFileChooser chooser = new JFileChooser(FileUtil.getPreferencesPath());
 //    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -395,7 +395,7 @@
  }
 }
 
-/*private*/ void ProfilePreferencesPanel::btnRemoveSearchPathActionPerformed(ActionEvent* /*evt*/)
+/*private*/ void ProfilePreferencesPanel::btnRemoveSearchPathActionPerformed(JActionEvent* /*evt*/)
 {
 #if 1
  foreach (QVariant value, this->searchPaths->selectionModel()->selectedRows())
@@ -428,7 +428,7 @@
  }
 }
 
-/*private*/ void ProfilePreferencesPanel::btnExportProfileActionPerformed(ActionEvent* /*evt*/)
+/*private*/ void ProfilePreferencesPanel::btnExportProfileActionPerformed(JActionEvent* /*evt*/)
 {
  Profile* p = ProfileManager::defaultManager()->getProfiles(profilesTbl->currentIndex().row());
 #if 1
@@ -525,7 +525,7 @@
 #endif
 }
 
-/*private*/ void ProfilePreferencesPanel::btnActivateProfileActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void ProfilePreferencesPanel::btnActivateProfileActionPerformed(JActionEvent* /*evt*/) {
 //    try {
         Profile* p = ProfileManager::defaultManager()->getProfiles(profilesTbl->currentIndex().row());
         ProfileManager::defaultManager()->setNextActiveProfile(p);
@@ -536,7 +536,7 @@
 //    }
 }
 
-/*private*/ void ProfilePreferencesPanel::btnCreateNewProfileActionPerformed(ActionEvent* /*evt*/)
+/*private*/ void ProfilePreferencesPanel::btnCreateNewProfileActionPerformed(JActionEvent* /*evt*/)
 {
 #if 0
     AddProfileDialog apd = new AddProfileDialog((Frame) SwingUtilities.getWindowAncestor(this), true, true);
@@ -548,7 +548,7 @@
     apd->setVisible(true);
 }
 
-/*private*/ void ProfilePreferencesPanel::btnDeleteProfileActionPerformed(ActionEvent* /*evt*/)
+/*private*/ void ProfilePreferencesPanel::btnDeleteProfileActionPerformed(JActionEvent* /*evt*/)
 {
  QModelIndexList mil = profilesTbl->selectionModel()->selectedIndexes();
 
@@ -593,7 +593,7 @@
     }
 }
 
-/*private*/ void ProfilePreferencesPanel::btnOpenExistingProfileActionPerformed(ActionEvent* /*evt*/)
+/*private*/ void ProfilePreferencesPanel::btnOpenExistingProfileActionPerformed(JActionEvent* /*evt*/)
 {
 // JFileChooser chooser = new JFileChooser(FileUtil.getPreferencesPath());
 // chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -621,7 +621,7 @@
  }
 }
 
-/*private*/ void ProfilePreferencesPanel::chkStartWithActiveProfileActionPerformed(ActionEvent* evt) {
+/*private*/ void ProfilePreferencesPanel::chkStartWithActiveProfileActionPerformed(JActionEvent* evt) {
     ProfileManager::defaultManager()->setAutoStartActiveProfile(this->chkStartWithActiveProfile->isChecked());
 //    try {
         ProfileManager::defaultManager()->saveActiveProfile();
@@ -630,7 +630,7 @@
 //    }
 }
 
-/*private*/ void ProfilePreferencesPanel::btnCopyProfileActionPerformed(ActionEvent* evt)
+/*private*/ void ProfilePreferencesPanel::btnCopyProfileActionPerformed(JActionEvent* evt)
 {
 #if 1
     QModelIndexList mil = profilesTbl->selectionModel()->selectedIndexes();

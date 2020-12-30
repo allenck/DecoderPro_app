@@ -544,7 +544,7 @@ DebounceActionListener::DebounceActionListener(JmriJFrame *finalF, SensorTableAc
  this->finalF = finalF;
  this->act = act;
 }
-void DebounceActionListener::actionPerformed(ActionEvent */*e*/)
+void DebounceActionListener::actionPerformed(JActionEvent */*e*/)
 {
  act->setDefaultDebounce(finalF);
 }
@@ -554,7 +554,7 @@ DefaultStateActionListener::DefaultStateActionListener(JmriJFrame *finalF, Senso
  this->act = act;
 }
 
-void DefaultStateActionListener::actionPerformed(ActionEvent */*e*/)
+void DefaultStateActionListener::actionPerformed(JActionEvent */*e*/)
 {
  act->setDefaultState(finalF);
 }

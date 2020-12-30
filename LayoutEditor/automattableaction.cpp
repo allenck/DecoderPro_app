@@ -39,7 +39,7 @@ void AutomatTableAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void AutomatTableAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void AutomatTableAction::actionPerformed(JActionEvent * /*e*/)
 { // create the frame
  f = new AutomatTableFrame(new AutomatTableDataModel());
  f->pack();

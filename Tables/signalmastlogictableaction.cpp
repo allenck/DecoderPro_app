@@ -18,6 +18,7 @@
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include "layoutblockmanager.h"
+#include "mysortfilterproxymodel.h"
 
 //SignalMastLogicTableAction::SignalMastLogicTableAction()
 //{
@@ -54,21 +55,21 @@ void SignalMastLogicTableAction::common()
 }
 
  //@Override
- /*public*/ void SignalMastLogicTableAction::actionPerformed(ActionEvent* /*e*/) {
-#if 0
+ /*public*/ void SignalMastLogicTableAction::actionPerformed(JActionEvent * /*e*/) {
+#if 1
      // create the JTable model, with changes for specific NamedBean
      createModel();
      MySortFilterProxyModel* sorter = new MySortFilterProxyModel(m);
-     JTable* dataTable = m.makeJTable(sorter);
+     JTable* dataTable = m->makeJTable(sorter);
      dataTable->setObjectName("SignalMastLogicTable");
      //sorter.setTableHeader(dataTable.getTableHeader());
      // create the frame
-     f = new jmri.jmrit.beantable.BeanTableFrame(m, helpTarget(), dataTable) {};
+     f = new BeanTableFrame(m, helpTarget(), dataTable);
      setMenuBar(f);
      setTitle();
      addToFrame(f);
-     f.pack();
-     f.setVisible(true);
+     f->pack();
+     f->setVisible(true);
 #endif
  }
 
@@ -526,7 +527,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      return "package.jmri.jmrit.beantable.SignalMastLogicTable";// NOI18N
  }
 
- /*protected*/ void SignalMastLogicTableAction::addPressed(ActionEvent* e) {
+ /*protected*/ void SignalMastLogicTableAction::addPressed(JActionEvent* e) {
      sigLog->setMast(NULL, NULL);
      sigLog->actionPerformed(e);
  }

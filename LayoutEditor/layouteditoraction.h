@@ -2,6 +2,7 @@
 #define LAYOUTEDITORACTION_H
 
 #include <QAction>
+#include "actionevent.h"
 
 class LayoutEditorAction : public QAction
 {
@@ -13,7 +14,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0);
 private:
  void common();
 };

@@ -55,7 +55,7 @@ TurnoutEditAction::TurnoutEditAction(QModelIndex index, QObject* parent) : BeanE
 } //IN18N
 
 //@Override
-/*public*/ void TurnoutEditAction::actionPerformed(ActionEvent*  e)
+/*public*/ void TurnoutEditAction::actionPerformed(JActionEvent *e)
 {
  oldAutomationSelection = ((Turnout*) bean)->getTurnoutOperation();
  oldModeSelection = ((Turnout*) bean)->getFeedbackModeName();
@@ -248,7 +248,7 @@ FeedbackSaveItemListener::FeedbackSaveItemListener(TurnoutEditAction *act)
  this->act = act;
 }
 
-/*public*/ void FeedbackSaveItemListener::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void FeedbackSaveItemListener::actionPerformed(JActionEvent* /*e*/)
 {
  Turnout* t = (Turnout*) act->bean;
  QString modeName = act->modeBox->currentText();
@@ -316,7 +316,7 @@ FeedbackResetItemListener::FeedbackResetItemListener(TurnoutEditAction *act)
  this->act = act;
 }
 
-/*public*/ void FeedbackResetItemListener::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void FeedbackResetItemListener::actionPerformed(JActionEvent* /*e*/)
 {
  Turnout* t = (Turnout*) act->bean;
 
@@ -345,7 +345,7 @@ AutomationSelectionListener::AutomationSelectionListener(TurnoutEditAction *act)
 {
  this->act = act;
 }
-void AutomationSelectionListener::actionPerformed(ActionEvent *)
+void AutomationSelectionListener::actionPerformed(JActionEvent *)
 {
  act->updateAutomationOptions();
 }
@@ -520,7 +520,7 @@ LockSaveItemListener::LockSaveItemListener(TurnoutEditAction *act)
 {
  this->act = act;
 }
-/*public*/ void LockSaveItemListener::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void LockSaveItemListener::actionPerformed(JActionEvent* /*e*/) {
     Turnout* t = (Turnout*) act->bean;
     QString lockOpName =  act->lockOperationBox->currentText();
     if (lockOpName==(act->bothText)) {
@@ -544,7 +544,7 @@ LockResetItemListener::LockResetItemListener(TurnoutEditAction *act)
  this->act = act;
 }
 
-/*public*/ void LockResetItemListener::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LockResetItemListener::actionPerformed(JActionEvent* /*e*/)
 {
  Turnout* t = (Turnout*) act->bean;
  act->lockBox->setCurrentIndex(act->lockBox->findText(t->getDecoderName()));
@@ -681,7 +681,7 @@ SpeedSaveItemListener::SpeedSaveItemListener(TurnoutEditAction *act)
 {
  this->act = act;
 }
-/*public*/ void SpeedSaveItemListener::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void SpeedSaveItemListener::actionPerformed(JActionEvent* /*e*/)
 {
  Turnout* t = (Turnout*) act->bean;
  QString speed =  act->closedSpeedBox->currentText();
@@ -709,7 +709,7 @@ SpeedResetItemListener::SpeedResetItemListener(TurnoutEditAction *act)
 {
  this->act = act;
 }
-/*public*/ void SpeedResetItemListener::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void SpeedResetItemListener::actionPerformed(JActionEvent* /*e*/)
 {
  Turnout* t = (Turnout*) act->bean;
 

@@ -31,7 +31,7 @@
 }
 
 //@Override
-/*public*/ void XmlFileLocationAction::actionPerformed(ActionEvent* ev) {
+/*public*/ void XmlFileLocationAction::actionPerformed(JActionEvent *ev) {
 
     /*final*/ QString user = FileUtil::getUserFilesPath();
     /*final*/ QString roster = Roster::getDefault()->getRosterLocation();
@@ -205,7 +205,7 @@ void XmlFileLocationAction::addLogFiles(QTextBrowser* pane, QString logDir) {
     }
 }
 
-/*public*/ void XmlFileLocationAction::on_openUserFilesButton(ActionEvent* event) {
+/*public*/ void XmlFileLocationAction::on_openUserFilesButton(JActionEvent* event) {
 //    try {
 //        Desktop.getDesktop().open(new File(user));
 //    } catch (IOException e) {
@@ -215,7 +215,7 @@ void XmlFileLocationAction::addLogFiles(QTextBrowser* pane, QString logDir) {
 //    }
 }
 
-/*public*/ void XmlFileLocationAction::on_openRosterButton(ActionEvent* event) {
+/*public*/ void XmlFileLocationAction::on_openRosterButton(JActionEvent *event) {
 //    try {
 //        Desktop.getDesktop().open(new java.io.File(roster));
 //    } catch (java.io.IOException e) {
@@ -225,7 +225,7 @@ void XmlFileLocationAction::addLogFiles(QTextBrowser* pane, QString logDir) {
 //    }
 }
 
-/*public*/ void XmlFileLocationAction::on_openProfileButton(ActionEvent* event) {
+/*public*/ void XmlFileLocationAction::on_openProfileButton(JActionEvent* event) {
 //    try {
 //        Desktop.getDesktop().open(new java.io.File(profile));
 //    } catch (java.io.IOException e) {
@@ -235,7 +235,7 @@ void XmlFileLocationAction::addLogFiles(QTextBrowser* pane, QString logDir) {
 //    }
 }
 
-/*public*/ void XmlFileLocationAction::on_openSettingsButton(ActionEvent* event) {
+/*public*/ void XmlFileLocationAction::on_openSettingsButton(JActionEvent* event) {
 //    try {
 //        Desktop.getDesktop().open(new java.io.File(settings));
 //    } catch (java.io.IOException e) {
@@ -245,7 +245,7 @@ void XmlFileLocationAction::addLogFiles(QTextBrowser* pane, QString logDir) {
 //    }
 }
 
-/*public*/ void XmlFileLocationAction::on_openScriptsButton(ActionEvent* event) {
+/*public*/ void XmlFileLocationAction::on_openScriptsButton(JActionEvent* event) {
 //    try {
 //        Desktop.getDesktop().open(new java.io.File(scripts));
 //    } catch (java.io.IOException e) {
@@ -255,7 +255,7 @@ void XmlFileLocationAction::addLogFiles(QTextBrowser* pane, QString logDir) {
 //    }
 }
 
-/*public*/ void XmlFileLocationAction::on_openProgramButton(ActionEvent* event) {
+/*public*/ void XmlFileLocationAction::on_openProgramButton(JActionEvent* event) {
 //    try {
 //        Desktop.getDesktop().open(new java.io.File(prog));
 //    } catch (java.io.IOException e) {
@@ -265,7 +265,7 @@ void XmlFileLocationAction::addLogFiles(QTextBrowser* pane, QString logDir) {
 //    }
 }
 
-/*public*/ void XmlFileLocationAction::on_openLogFilesButton(ActionEvent* event) {
+/*public*/ void XmlFileLocationAction::on_openLogFilesButton(JActionEvent *event) {
 //    try {
 //        Desktop.getDesktop().open(new java.io.File(log));
 //    } catch (java.io.IOException e) {

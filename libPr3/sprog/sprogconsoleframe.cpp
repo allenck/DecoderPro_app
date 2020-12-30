@@ -254,7 +254,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     addHelpMenu("package.jmri.jmrix.sprog.console.SprogConsoleFrame", true);
 }
 
-/*public*/ void SprogConsoleFrame::sendButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SprogConsoleFrame::sendButtonActionPerformed(JActionEvent* /*e*/) {
     SprogMessage* m = new SprogMessage(cmdTextField->text());
     // Messages sent by us will not be forwarded back so add to display manually
     nextLine("cmd: \"" + m->toString(_memo->getSprogTrafficController()->isSIIBootMode()) + "\"\n", "");
@@ -291,7 +291,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     }
 }
 
-/*synchronized*/ /*public*/ void SprogConsoleFrame::saveButtonActionPerformed(ActionEvent* e)
+/*synchronized*/ /*public*/ void SprogConsoleFrame::saveButtonActionPerformed(JActionEvent* e)
 {
  SprogMessage* saveMsg;
  int currentLimitForHardware;

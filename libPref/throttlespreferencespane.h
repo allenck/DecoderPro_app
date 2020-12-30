@@ -36,7 +36,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void jbSaveActionPerformed(ActionEvent* evt = 0);
+    /*public*/ void jbSaveActionPerformed(JActionEvent* evt = 0);
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
 
 private:
@@ -58,10 +58,10 @@ private:
     /*private*/ void initComponents();
     /*private*/ void setComponents(ThrottlesPreferences* tp);
 private slots:
-    /*private*/ void jbApplyActionPerformed(ActionEvent* evt = 0);
+    /*private*/ void jbApplyActionPerformed(JActionEvent* evt = 0);
     /*private*/ ThrottlesPreferences* getThrottlesPreferences();
     /*private*/ void checkConsistancy(bool);
-    /*private*/ void jbCancelActionPerformed(ActionEvent* evt = 0);
+    /*private*/ void jbCancelActionPerformed(JActionEvent* evt = 0);
     void common();
 };
 

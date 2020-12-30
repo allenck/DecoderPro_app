@@ -238,7 +238,7 @@ class YesButtonActionListener : public ActionListener
 public:
  YesButtonActionListener(JDialog* dlg, Section* s);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 class NoButtonActionListener : public ActionListener
 {
@@ -247,6 +247,6 @@ class NoButtonActionListener : public ActionListener
 public:
  NoButtonActionListener(JDialog* dlg);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 #endif // SECTIONTABLEACTION_H

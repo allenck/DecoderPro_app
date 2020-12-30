@@ -144,7 +144,7 @@ ASCCActionListener::ASCCActionListener(QString item, AbstractSimulatorConnection
     this->parent = parent;
 }
 
-void ASCCActionListener::actionPerformed(ActionEvent */*e*/)
+void ASCCActionListener::actionPerformed(JActionEvent */*e*/)
 {
     parent->adapter->setOptionState(item, parent->options.value(item)->getItem());
 }

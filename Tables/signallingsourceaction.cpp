@@ -45,7 +45,7 @@ void SignallingSourceAction::init()
     this->source = source;
 }
 
-/*public*/ void SignallingSourceAction::actionPerformed(ActionEvent* /*e*/) // SLOT
+/*public*/ void SignallingSourceAction::actionPerformed(JActionEvent * /*e*/) // SLOT
 {
  SignallingSourceFrame* f = new SignallingSourceFrame();
  try

@@ -164,7 +164,7 @@
     return "composite: "+QString::number(_minVal)+" - "+QString::number(_maxVal);
 }
 
-/*public*/ void CompositeVariableValue::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void CompositeVariableValue::actionPerformed(JActionEvent* /*e*/)
 {
  // see if this is from _value itself, or from an alternate rep.
  // if from an alternate rep, it will contain the value to select

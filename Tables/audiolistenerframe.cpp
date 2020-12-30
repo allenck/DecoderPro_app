@@ -141,7 +141,7 @@ AbstractAudioFrame(title, model, parent)
  metersPerUnit->setValue(l->getMetersPerUnit());
 }
 
-void  AudioListenerFrame::okPressed(ActionEvent* /*e*/)
+void  AudioListenerFrame::okPressed(JActionEvent* /*e*/)
 {
  QString user = userName->text();
  if (user==("")) {

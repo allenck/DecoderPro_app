@@ -256,7 +256,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
     adjustSize();
 }// </editor-fold>
 
-/*private*/ void AddProfileDialog::profileNameActionPerformed(ActionEvent* )
+/*private*/ void AddProfileDialog::profileNameActionPerformed(JActionEvent* )
 {
  QString location = this->profileLocation->text();
  if (!location.endsWith(File::separator)) {
@@ -266,7 +266,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
  this->profileFolder->setText(location + this->profileId);
 }
 
-/*private*/ void AddProfileDialog::btnBrowseActionPerformed(ActionEvent* )
+/*private*/ void AddProfileDialog::btnBrowseActionPerformed(JActionEvent* )
 {
  JFileChooser* chooser = new JFileChooser(this->profileLocation->text());
  chooser->setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY);
@@ -283,21 +283,21 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
  }
 }
 
-/*private*/ void AddProfileDialog::profileFolderActionPerformed(ActionEvent* ) {
+/*private*/ void AddProfileDialog::profileFolderActionPerformed(JActionEvent* ) {
     this->profileNameActionPerformed();
 }
 
-/*private*/ void AddProfileDialog::profileLocationActionPerformed(ActionEvent* ) {
+/*private*/ void AddProfileDialog::profileLocationActionPerformed(JActionEvent* ) {
     this->profileNameActionPerformed();
 }
 
-/*private*/ void AddProfileDialog::btnCancelActionPerformed(ActionEvent* )
+/*private*/ void AddProfileDialog::btnCancelActionPerformed(JActionEvent* )
 {
  this->reject();
  this->close();
 }
 
-/*private*/ void AddProfileDialog::btnOkActionPerformed(ActionEvent* evt)
+/*private*/ void AddProfileDialog::btnOkActionPerformed(JActionEvent* evt)
 {
  try
  {

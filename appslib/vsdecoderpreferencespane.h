@@ -5,7 +5,7 @@
 #include "appslib_global.h"
 
 class Insets;
-class ActionEvent;
+class JActionEvent;
 class GridBagConstraints;
 class JFrame;
 class VSDecoderPreferences;
@@ -28,7 +28,7 @@ signals:
 
 public slots:
  void checkConsistency();
- /*public*/ void jbSaveActionPerformed(ActionEvent* evt = 0);
+ /*public*/ void jbSaveActionPerformed(JActionEvent* evt = 0);
  /*public*/ void propertyChange(PropertyChangeEvent* evt);
 
 private:
@@ -53,10 +53,10 @@ private:
  /*private*/ VSDecoderPreferences* getVSDecoderPreferences();
 
 private slots:
- /*private*/ void jbPathBrowseActionPerformed(ActionEvent* evt = 0);
- /*private*/ void jbFileBrowseActionPerformed(ActionEvent* evt = 0);
- /*private*/ void jbApplyActionPerformed(ActionEvent* evt= 0);
- /*private*/ void jbCancelActionPerformed(ActionEvent* evt = 0);
+ /*private*/ void jbPathBrowseActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void jbFileBrowseActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void jbApplyActionPerformed(JActionEvent* evt= 0);
+ /*private*/ void jbCancelActionPerformed(JActionEvent* evt = 0);
 
 };
 

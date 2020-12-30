@@ -76,6 +76,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
         }
         this->setNonStandardMouseEvent(preferences->getBoolean(NONSTANDARD_MOUSE_EVENT, this->isNonStandardMouseEvent()));
         this->setGraphicTableState(preferences->getBoolean(GRAPHIC_TABLE_STATE, this->isGraphicTableState()));
+        this->setOblockEditTabbed(preferences->getBoolean(OBLOCK_EDIT_TABBED, this->isOblockEditTabbed()));
         this->setEditorUseOldLocSize(preferences->getBoolean(EDITOR_USE_OLD_LOC_SIZE, this->isEditorUseOldLocSize()));
         this->setToolTipDismissDelay(preferences->getInt(SHOW_TOOL_TIP_TIME, this->getToolTipDismissDelay()));
 //        Locale.setDefault(this->getLocale());

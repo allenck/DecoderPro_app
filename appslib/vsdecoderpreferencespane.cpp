@@ -307,7 +307,7 @@ QWidget(parent) {
      */
 }
 
-/*private*/ void VSDecoderPreferencesPane::jbPathBrowseActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void VSDecoderPreferencesPane::jbPathBrowseActionPerformed(JActionEvent* /*evt*/) {
     // Browse for a path.  Update the UI
     // use the path currently in the window text field, if possible.
     QString path;
@@ -328,7 +328,7 @@ QWidget(parent) {
     }
 }
 
-/*private*/ void VSDecoderPreferencesPane::jbFileBrowseActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void VSDecoderPreferencesPane::jbFileBrowseActionPerformed(JActionEvent* /*evt*/) {
     // Browse for a file. Update the UI
     QString path;
     if (tfDefaultVSDFilePath->text() != NULL) {
@@ -360,11 +360,11 @@ QWidget(parent) {
     }
 }
 
-/*private*/ void VSDecoderPreferencesPane::jbApplyActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void VSDecoderPreferencesPane::jbApplyActionPerformed(JActionEvent* /*evt*/) {
     VSDecoderManager::instance()->getVSDecoderPreferences()->set(getVSDecoderPreferences());
 }
 
-/*public*/ void VSDecoderPreferencesPane::jbSaveActionPerformed(ActionEvent* /*evt*/) {
+/*public*/ void VSDecoderPreferencesPane::jbSaveActionPerformed(JActionEvent* /*evt*/) {
     VSDecoderManager::instance()->getVSDecoderPreferences()->set(getVSDecoderPreferences());
     VSDecoderManager::instance()->getVSDecoderPreferences()->save();
     if (m_container != NULL) {
@@ -374,7 +374,7 @@ QWidget(parent) {
     }
 }
 
-/*private*/ void VSDecoderPreferencesPane::jbCancelActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void VSDecoderPreferencesPane::jbCancelActionPerformed(JActionEvent* /*evt*/) {
     setComponents(VSDecoderManager::instance()->getVSDecoderPreferences());
     checkConsistency();
     if (m_container != NULL) {

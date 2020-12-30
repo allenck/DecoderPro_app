@@ -33,7 +33,7 @@ class Turnout;
 class JTextField;
 class JmriJFrame;
 class JmriBeanComboBox;
-class ActionEvent;
+class JActionEvent;
 class RouteTurnout;
 class RouteSensor;
 //class RouteOutputModel;

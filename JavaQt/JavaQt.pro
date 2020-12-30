@@ -255,7 +255,8 @@ SOURCES += javaqt.cpp \
     loggingutil.cpp \
     localdatetime.cpp \
     jformattedtextfield.cpp \
-    threadingutil.cpp
+    threadingutil.cpp \
+    transferactionlistener.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -565,7 +566,11 @@ HEADERS += javaqt.h\
     loggingutil.h \
     localdatetime.h \
     jformattedtextfield.h \
-    threadingutil.h
+    threadingutil.h \
+    transferactionlistener.h \
+    tablecellrenderer.h \
+    tablecelleditor.h \
+    tabledelegates.h
 
 unix {
     target.path = /usr/lib

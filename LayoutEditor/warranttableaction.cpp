@@ -131,7 +131,7 @@ void WarrantTableAction::common()
         return wta;
     }//);
 }
-/*public*/ void WarrantTableAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void WarrantTableAction::actionPerformed(JActionEvent * /*e*/)
 {
  WarrantTableFrame::getDefault();
 }

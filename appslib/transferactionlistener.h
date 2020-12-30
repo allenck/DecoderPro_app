@@ -12,7 +12,7 @@ public:
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
- /*public*/ void actionPerformed(ActionEvent* e);
+ /*public*/ void actionPerformed(JActionEvent* e);
 
 private:
  /*private*/ JComponent* focusOwner = nullptr;

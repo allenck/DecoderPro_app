@@ -192,7 +192,7 @@
  }
 }
 
-/*public*/ void ResetTableModel::actionPerformed(ActionEvent* e)
+/*public*/ void ResetTableModel::actionPerformed(JActionEvent* e)
  {
   if (log->isDebugEnabled()) log->debug("action command: "+e->getActionCommand());
   QChar b = e->getActionCommand().at(0);

@@ -46,6 +46,16 @@ void PathTurnoutTableModel::common()
   tempRow.append("");
  log = new Logger("PathTurnoutTableModel");
 }
+/*public*/ void PathTurnoutTableModel::removeListener() {
+        Block* block = _path->getBlock();
+        if (block == nullptr) {
+            return;
+        }
+        try {
+            _path->getBlock()->removePropertyChangeListener((PropertyChangeListener*)this);
+        } catch (NullPointerException npe) { // OK when block is removed
+    }
+}
 
 /*public*/ void PathTurnoutTableModel::init() {
     initTempRow();
@@ -260,14 +270,28 @@ void PathTurnoutTableModel::initTempRow() {
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
-///*public*/ Class<?> getColumnClass(int col) {
-//    if (col == DELETE_COL) {
-//        return JButton.class;
-//    } else if (col == SETTINGCOLUMN) {
-//        return JComboBox.class;
-//    }
-//    return String.class;
-//}
+/*public*/ QString PathTurnoutTableModel::getColumnClass(int col) {
+    if (col == DELETE_COL) {
+        return "JButton";
+    } else if (col == SETTINGCOLUMN) {
+        return "JComboBox";
+    }
+    return "String";
+}
+/**
+ * Customize the Turnout State column to show an appropriate ComboBox of
+ * available options.
+ *
+ * @param table a JTable of beans
+ */
+/*protected*/ void PathTurnoutTableModel::configTurnoutStateColumn(JTable* table) {
+    // have the state column hold a JPanel with a JComboBox for States
+#if 0
+    table->setDefaultEditor("StateComboBoxPanel", new StateComboBoxPanel());
+    table->setDefaultRenderer("StateComboBoxPanel", new StateComboBoxPanel()); // use same class as renderer
+#endif
+    // Set more things?
+}
 
 /*public*/ int PathTurnoutTableModel::getPreferredWidth(int col) {
     switch (col) {
@@ -329,4 +353,8 @@ void PathTurnoutTableModel::fireTableRowsUpdated(int, int)
  beginResetModel();
  endResetModel();
  setPersistentButtons();
+}
+
+void PathTurnoutTableModel::dispose() {
+        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener((PropertyChangeListener*)this);
 }

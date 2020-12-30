@@ -252,8 +252,7 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
  * @see	#getColumns
  */
 /*public*/ int XTableColumnModel::getColumnCount(bool onlyVisible) {
-    QVector<TableColumn*> columns = (onlyVisible ? tableColumns : allTableColumns);
-    return columns.size();
+    return getColumnList(onlyVisible).size();
 }
 
 /**
@@ -263,13 +262,9 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
  *                    enumeration.
  * @return an <code>Enumeration</code> of the columns in the model
  */
-/*public*/ QListIterator<TableColumn*> XTableColumnModel::getColumns(bool onlyVisible)
+/*public*/ QListIterator<TableColumn *> XTableColumnModel::getColumns(bool onlyVisible)
 {
- QVector<TableColumn*> columns = (onlyVisible ? tableColumns : allTableColumns);
- QList<TableColumn*> colList = columns.toList();
-
- //return columns.elements();
- return QListIterator<TableColumn*>(colList);
+ return QListIterator<TableColumn*>(getColumnList(onlyVisible).toList());
 }
 
 /**
@@ -293,10 +288,10 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
 {
  if (identifier == QVariant())
  {
-  throw new IllegalArgumentException("Identifier is NULL");
+  throw IllegalArgumentException("Identifier is NULL");
  }
 
- QVector<TableColumn*> columns = (onlyVisible ? tableColumns : allTableColumns);
+ QVector<TableColumn*> columns = getColumnList(onlyVisible);
  int noColumns = columns.size();
  TableColumn* column;
 
@@ -326,5 +321,17 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
  *         <code>columnIndex</code>
  */
 /*public*/ TableColumn* XTableColumnModel::getColumn(int columnIndex, bool onlyVisible) {
-    return tableColumns.at(columnIndex);
+    return getColumnList(onlyVisible).at(columnIndex);
+}
+
+/**
+ * Get the list of columns. This list may be only the visible columns or may
+ * be the list of all columns.
+ *
+ * @param onlyVisible true if the list should only contain visible columns;
+ *                    false otherwise
+ * @return the list of columns
+ */
+/*private*/ QVector<TableColumn*> XTableColumnModel::getColumnList(bool onlyVisible) {
+    return (onlyVisible ? tableColumns : allTableColumns);
 }

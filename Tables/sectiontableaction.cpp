@@ -1195,7 +1195,7 @@ YesButtonActionListener::YesButtonActionListener(JDialog* dlg, Section *s)
  this->s = s;
 }
 
-void YesButtonActionListener::actionPerformed(ActionEvent* )
+void YesButtonActionListener::actionPerformed(JActionEvent* )
 {
  ((SectionManager*)InstanceManager::getDefault("SectionManager"))->deregister(s);
  s->dispose();
@@ -1206,7 +1206,7 @@ NoButtonActionListener::NoButtonActionListener(JDialog* dlg)
  this->dlg = dlg;
 }
 
-void NoButtonActionListener::actionPerformed(ActionEvent*)
+void NoButtonActionListener::actionPerformed(JActionEvent*)
 {
  dlg->close();
 }

@@ -8,7 +8,7 @@
 #include "actionlistener.h"
 #include "liblayouteditor_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class TableItemPanel;
 class NamedIcon;
 class Editor;
@@ -185,7 +185,7 @@ class UpdateActionListener : public ActionListener
  SensorIcon* parent;
 public:
  UpdateActionListener(SensorIcon* parent);
- /*public*/ void actionPerformed(ActionEvent* a = 0) override;
+ /*public*/ void actionPerformed(JActionEvent* a = 0) override;
 };
 class EditActionListener : public ActionListener
 {
@@ -193,7 +193,7 @@ class EditActionListener : public ActionListener
  SensorIcon* parent;
 public:
  EditActionListener(SensorIcon* parent);
- /*public*/ void actionPerformed(ActionEvent* a = 0);
+ /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
 
 #endif // SENSORICON_H

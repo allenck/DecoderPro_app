@@ -1336,7 +1336,7 @@ ShowToolTipActionListener::ShowToolTipActionListener(Positionable *pos, bool isC
  this->isChecked = isChecked;
  this->editor = editor;
 }
-void ShowToolTipActionListener::actionPerformed(ActionEvent */*e*/)
+void ShowToolTipActionListener::actionPerformed(JActionEvent */*e*/)
 {
  comp->setShowToolTip(!isChecked);
 }
@@ -1982,7 +1982,7 @@ AddPanelIconActionListener::AddPanelIconActionListener(Editor *parent)
 {
  this->parent = parent;
 }
-void AddPanelIconActionListener::actionPerformed(ActionEvent *)
+void AddPanelIconActionListener::actionPerformed(JActionEvent *)
 {
  parent->putSensor();
 }
@@ -2807,7 +2807,7 @@ AddIconFrameWindowListener::AddIconFrameWindowListener(Editor *editor)
     if (editor->log->isDebugEnabled()) editor->log->debug("windowClosing: HIDE "+editor->title());
 }
 
-void SearchItemActionListener::actionPerformed(ActionEvent */*e*/)
+void SearchItemActionListener::actionPerformed(JActionEvent */*e*/)
 {
     QDir* dir = DirectorySearcher::instance()->searchFS();
 if (dir != nullptr) {

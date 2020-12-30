@@ -108,7 +108,7 @@ PositionablePolygon::PositionablePolygon() : PositionableShape()
     return true;
 }
 
-/*public*/ void PolygonAction::actionPerformed(ActionEvent* e)
+/*public*/ void PolygonAction::actionPerformed(JActionEvent *e)
 {
  if (ps->_editFrame == NULL)
  {

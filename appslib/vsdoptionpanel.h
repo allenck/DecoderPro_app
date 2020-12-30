@@ -3,7 +3,7 @@
 #include "jmripanel.h"
 #include "appslib_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class VSDecoderPane;
 class Train;
 class QComboBox;
@@ -20,7 +20,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void opsTrainSelectAction(ActionEvent* e = 0);
+ /*public*/ void opsTrainSelectAction(JActionEvent* e = 0);
 
 private:
  /*private*/ QComboBox* hornOptionComboBox;

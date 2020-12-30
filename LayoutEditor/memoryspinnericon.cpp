@@ -209,7 +209,7 @@ MSIActionListener::MSIActionListener(MemorySpinnerIcon *parent)
  this->parent = parent;
 }
 
-/*public*/ void MSIActionListener::actionPerformed(ActionEvent* /*a*/) {
+/*public*/ void MSIActionListener::actionPerformed(JActionEvent* /*a*/) {
     parent->editMemory();
 }
 

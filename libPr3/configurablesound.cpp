@@ -114,7 +114,7 @@ VSDSound(name, parent) {
 }
 
 // Catch the timer pop after the start sound is played and trigger the (looped) sustain sound.
-/*protected*/ void ConfigurableSound::handleTimerPop(ActionEvent* /*e*/) {
+/*protected*/ void ConfigurableSound::handleTimerPop(JActionEvent* /*e*/) {
     log->info("Received timer pop after start sound played.");
     //TODO: Need to validate that this is the timer pop
     if (use_mid_sound) {

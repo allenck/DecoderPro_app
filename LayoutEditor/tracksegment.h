@@ -418,7 +418,7 @@ class TSAbstractAction : public AbstractAction
 public:
  TSAbstractAction(QString name, QObject* parent);
  public slots:
-   /*public*/ void actionPerformed(ActionEvent* e = 0) override;
+   /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 };
 
 #endif // TRACKSEGMENT_H

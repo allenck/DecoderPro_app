@@ -12,7 +12,7 @@ namespace Operations
  public:
   TrainsScriptAction(QString s, TrainsTableFrame* frame);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
  private:
   TrainsTableFrame* frame; // the parent frame that is launching the TrainScriptFrame.
   TrainsScriptFrame* f = nullptr;

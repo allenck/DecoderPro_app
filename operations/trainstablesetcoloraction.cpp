@@ -41,7 +41,7 @@ namespace Operations
 
  }
 
- /*public*/ void TrainsTableSetColorAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainsTableSetColorAction::actionPerformed(JActionEvent* /*e*/) {
      if (f == NULL || !f->isVisible()) {
          f = new TrainsTableSetColorFrame(_train);
      }

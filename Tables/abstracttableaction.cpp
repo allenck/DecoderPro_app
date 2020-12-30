@@ -37,7 +37,7 @@ AbstractTableAction::AbstractTableAction(QObject *parent) :
  log = new Logger("AbstractTableAction");
  m=NULL;
  table = NULL;
- connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
+ //connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
 ///*public*/ AbstractTableAction(QString actionName, QObject option, QObject *parent) :
@@ -64,7 +64,7 @@ AbstractTableAction::AbstractTableAction(QObject *parent) :
 /*protected*/ /*abstract*/ void AbstractTableAction::setTitle() {}
 
 
-/*public*/ void AbstractTableAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void AbstractTableAction::actionPerformed(JActionEvent * /*e*/)
 {
  // create the JTable model, with changes for specific NamedBean
  createModel();
@@ -246,6 +246,6 @@ void ATABeanTableFrame::extras()
 */
 /*public*/ void AbstractTableAction::print(JTable::PrintMode /*mode*/, QString /*headerFormat*/, QString /*footerFormat*/){ log->error("Caught here");}
 
-/*protected*/ /*abstract*/ void AbstractTableAction::addPressed(ActionEvent* /*e*/) {}
+/*protected*/ /*abstract*/ void AbstractTableAction::addPressed(JActionEvent * /*e*/) {}
 
 

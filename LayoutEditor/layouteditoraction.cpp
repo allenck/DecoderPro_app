@@ -38,7 +38,7 @@ void LayoutEditorAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void LayoutEditorAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LayoutEditorAction::actionPerformed(JActionEvent * /*e*/)
 {
  QString name = "My Layout";
  for (int i = 2; i < 100; i++)

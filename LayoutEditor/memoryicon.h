@@ -112,7 +112,7 @@ public:
  AddIconActionListener(MemoryIcon* parent);
 
 public:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 protected slots:

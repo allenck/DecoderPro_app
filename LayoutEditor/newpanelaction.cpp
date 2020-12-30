@@ -41,7 +41,7 @@ void NewPanelAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void NewPanelAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void NewPanelAction::actionPerformed(JActionEvent* /*e*/)
 {
  // allow user to choose a panel editor
  int response = JOptionPane::showOptionDialog(nullptr,

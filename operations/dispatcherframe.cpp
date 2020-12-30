@@ -629,7 +629,7 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
 
 // allocate extra window variables
 
-/*public*/ void DispatcherFrame::allocateExtraSection(ActionEvent* /*e*/, ActiveTrain* at) {
+/*public*/ void DispatcherFrame::allocateExtraSection(JActionEvent* /*e*/, ActiveTrain* at) {
     allocateExtraSection(/*e*/);
     if (_ShortActiveTrainNames) {
         atSelectBox->setCurrentText(at->getTrainName());
@@ -699,7 +699,7 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
     extraFrame->setVisible(true);
 }
 
-/*private*/ void DispatcherFrame::handleAutoAllocateChanged(ActionEvent* /*e*/) {
+/*private*/ void DispatcherFrame::handleAutoAllocateChanged(JActionEvent* /*e*/) {
     setAutoAllocate(autoAllocateBox->isChecked());
     if (optionsMenu != NULL) {
         optionsMenu->initializeMenu();
@@ -717,13 +717,13 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
 
 }
 
-/*private*/ void DispatcherFrame::handleAutoReleaseChanged(ActionEvent* /*e*/) {
+/*private*/ void DispatcherFrame::handleAutoReleaseChanged(JActionEvent* /*e*/) {
     if (autoReleaseBox->isChecked()) {
         checkAutoRelease();
     }
 }
 
-/*private*/ void DispatcherFrame::handleATSelectionChanged(ActionEvent* /*e*/) {
+/*private*/ void DispatcherFrame::handleATSelectionChanged(JActionEvent* /*e*/) {
     atSelectedIndex = atSelectBox->currentIndex();
     initializeExtraComboBox();
     extraFrame->adjustSize();
@@ -957,7 +957,7 @@ void cancelRestart(ActionEvent e) {
 }
 #endif
 // terminate an Active Train from the button in the Dispatcher window
-void DispatcherFrame::terminateTrain(ActionEvent* /*e*/) {
+void DispatcherFrame::terminateTrain(JActionEvent* /*e*/) {
     ActiveTrain* at = NULL;
     if (activeTrainsList->size() == 1) {
         at = activeTrainsList->at(0);

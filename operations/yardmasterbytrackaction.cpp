@@ -40,7 +40,7 @@ void YardmasterByTrackAction::common()
 }
 
 //@Override
-/*public*/ void YardmasterByTrackAction::actionPerformed(ActionEvent* e) {
+/*public*/ void YardmasterByTrackAction::actionPerformed(JActionEvent* e) {
     // create a frame
     if (f == NULL || !f->isVisible()) {
         f = new YardmasterByTrackFrame(_location);

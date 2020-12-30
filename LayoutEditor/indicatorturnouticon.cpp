@@ -536,7 +536,7 @@ ITOUpdateActionListener::ITOUpdateActionListener(IndicatorTurnoutIcon *parent)
 {
  this->parent = parent;
 }
-void ITOUpdateActionListener::actionPerformed(ActionEvent */*e*/)
+void ITOUpdateActionListener::actionPerformed(JActionEvent */*e*/)
 {
  parent->updateItem();
 }

@@ -46,7 +46,7 @@ public:
     static /*final*/ QString resume;// = tr("Resume");
     static /*final*/ QString abort;// = tr("Abort");
     static /*final*/ QStringList controls;// = {halt, resume, abort};
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 //    /*synchronized*/ /*public*/ static void closeWarrantFrame(QString key);
     /*synchronized*/ static /*public*/ void mouseClickedOnBlock(OBlock* block);
     /*public*/ static bool checkSharedTurnouts(OBlock* block);
@@ -130,7 +130,7 @@ public:
 //         myListener(java.awt.Window w) {
 //             _w = w;
 //         }  */
- /*public*/ void actionPerformed(ActionEvent* /*e*/)
+ /*public*/ void actionPerformed(JActionEvent* /*e*/)
  {
      WarrantTableFrame::getDefault();
  }
@@ -198,7 +198,7 @@ class CreateNXWarrantActionListener : public ActionListener
 public:
 
 public slots:
- void actionPerformed(ActionEvent */*e */= 0)
+ void actionPerformed(JActionEvent */*e */= 0)
  {
   WarrantTableFrame::nxAction();
  }

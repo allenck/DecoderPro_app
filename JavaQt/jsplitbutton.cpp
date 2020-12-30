@@ -364,7 +364,7 @@ void JSplitButton::common()
  */
 /*public*/ void JSplitButton::addButtonActionListener(ActionListener *l) {
 //    listenerList.add("SplitButtonActionListener", l);
- connect(this, SIGNAL(buttonClicked(ActionEvent*)), l, SLOT(buttonClicked(ActionEvent*)) );
+ connect(this, SIGNAL(buttonClicked(JActionEvent*)), l, SLOT(buttonClicked(JActionEvent*)) );
 }
 
 /**
@@ -373,7 +373,7 @@ void JSplitButton::common()
  */
 /*public*/ void JSplitButton::addSplitButtonActionListener(SplitButtonActionListener* l) {
 //    listenerList.add("SplitButtonActionListener", l);
- connect(this, SIGNAL(splitButtonClicked(ActionEvent*)), l, SLOT(splitButtonClicked(ActionEvent*)) );
+ connect(this, SIGNAL(splitButtonClicked(JActionEvent*)), l, SLOT(splitButtonClicked(JActionEvent*)) );
 }
 
 /**
@@ -390,7 +390,7 @@ void JSplitButton::common()
 //    } else {
 //        listenerList.remove(SplitButtonActionListener.class, l);
 //    }
- disconnect(this, SIGNAL(buttonClicked(ActionEvent*)), l, SLOT(buttonClicked(ActionEvent*)) );
+ disconnect(this, SIGNAL(buttonClicked(JActionEvent*)), l, SLOT(buttonClicked(JActionEvent*)) );
 }
 
 /*public*/ void JSplitButton::removeSplitButtonActionListener(SplitButtonActionListener* l) {
@@ -399,7 +399,7 @@ void JSplitButton::common()
 //    } else {
 //        listenerList.remove(SplitButtonActionListener.class, l);
 //    }
- disconnect(this, SIGNAL(splitButtonClicked(ActionEvent*)), l, SLOT(splitButtonClicked(ActionEvent*)) );
+ disconnect(this, SIGNAL(splitButtonClicked(JActionEvent*)), l, SLOT(splitButtonClicked(JActionEvent*)) );
 }
 
 /**
@@ -425,7 +425,7 @@ void JSplitButton::common()
  *
  * @param e
  */
-/*public*/ void JSplitButton::actionPerformed(ActionEvent* e)
+/*public*/ void JSplitButton::actionPerformed(JActionEvent* e)
 {
  if (popupMenu == nullptr)
  {
@@ -482,8 +482,8 @@ void JSplitButton::common()
  * @param event  the <code>ActionEvent</code> object
  * @see EventListenerList
  */
-/*private*/ void JSplitButton::fireButtonClicked(ActionEvent* event) {
- ActionEvent* e = nullptr;
+/*private*/ void JSplitButton::fireButtonClicked(JActionEvent* event) {
+ JActionEvent* e = nullptr;
 
 #if 0
     // Guaranteed to return a non-null array
@@ -501,8 +501,8 @@ void JSplitButton::common()
 //                    actionCommand = getActionCommand();
 //                }
 #endif
-                e = new ActionEvent(this,
-                        ActionEvent::ACTION_PERFORMED,
+                e = new JActionEvent(this,
+                        JActionEvent::ACTION_PERFORMED,
                         "clicked",
                         0l,//event->getWhen(),
                         0);//event->getModifiers());
@@ -524,8 +524,8 @@ void JSplitButton::common()
  * @param event  the <code>ActionEvent</code> object
  * @see EventListenerList
  */
-/*private*/ void JSplitButton::fireSplitbuttonClicked(ActionEvent* event) {
- ActionEvent* e = nullptr;
+/*private*/ void JSplitButton::fireSplitbuttonClicked(JActionEvent* event) {
+ JActionEvent* e = nullptr;
 #if 0
     // Guaranteed to return a non-null array
  QVector<EventListener*> listeners = listenerList.getListenerList();
@@ -541,8 +541,8 @@ void JSplitButton::common()
 //                    actionCommand = getActionCommand();
                 }
 #endif
-                e = new ActionEvent(this,
-                        ActionEvent::ACTION_PERFORMED,
+                e = new JActionEvent(this,
+                        JActionEvent::ACTION_PERFORMED,
                         "clicked",
                         0l,//event->getWhen(),
                         0);//event->getModifiers());

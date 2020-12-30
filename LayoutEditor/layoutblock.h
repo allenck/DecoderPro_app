@@ -30,7 +30,7 @@
 #include "beanedititem.h"
 
 class ConnectivityUtil;
-class ActionEvent;
+class JActionEvent;
 class JmriJFrame;
 class RoutingPacket;
 class LayoutEditorAuxTools;
@@ -855,7 +855,7 @@ public slots:
  void actionPerformed();
 };
 
-class RoutingSetSaveItemListener : public ActionListener
+class RoutingSetSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  LayoutBlock* lb;

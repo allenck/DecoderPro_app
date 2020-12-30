@@ -11,7 +11,7 @@
 class AbstractAction;
 class JmriAbstractAction;
 class QMetaMethod;
-class ActionEvent;
+class JActionEvent;
 class Action;
 class WindowInterface;
 class APPSLIBSHARED_EXPORT GuiUtilBase : public QObject

@@ -40,7 +40,7 @@ class PortalEditFrame : public JmriJFrame
   void status(QString message, bool warn);
 
  private slots:
-  /*private*/ void applyPressed(ActionEvent* e =0);
+  /*private*/ void applyPressed(JActionEvent* e =0);
 
 };
 

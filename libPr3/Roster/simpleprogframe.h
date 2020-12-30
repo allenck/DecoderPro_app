@@ -3,7 +3,7 @@
 #include "../../LayoutEditor/jmrijframe.h"
 #include "libPr3_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class JToggleButton;
 class JTextField;
 class ProgModePane;
@@ -21,9 +21,9 @@ signals:
 
 public slots:
     /*public*/ void programmingOpReply(int value, int status);
-    /*public*/ void readPushed(ActionEvent* e = 0);
-    /*public*/ void writePushed(ActionEvent* e = 0);
-    /*public*/ void decHexButtonChanged(ActionEvent* e = 0);
+    /*public*/ void readPushed(JActionEvent* e = 0);
+    /*public*/ void writePushed(JActionEvent* e = 0);
+    /*public*/ void decHexButtonChanged(JActionEvent* e = 0);
     /*public*/ void dispose();
     void On_read_programmerException(QString);
     void On_write_programmerException(QString);

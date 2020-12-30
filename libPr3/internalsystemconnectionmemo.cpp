@@ -65,6 +65,8 @@
 void InternalSystemConnectionMemo::common(QString prefix, QString name, bool defaultInstanceType)
 {
  setObjectName("InternalSystemConnectionMemo");
+ if(log == nullptr)
+  log = LoggerFactory::getLogger("InternalSystemConnectionMemo");
 
  InstanceManager::store(this, "InternalSystemConnectionMemo"); // also register as specific type
  _register();

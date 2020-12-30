@@ -4,6 +4,8 @@
 #include <QAction>
 #include "logger.h"
 #include "libtables_global.h"
+#include "actionevent.h"
+
 class SignalMast;
 class LIBTABLESSHARED_EXPORT SignallingSourceAction : public QAction
 {
@@ -17,10 +19,10 @@ public:
 signals:
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0); // SLOT
+    /*public*/ void actionPerformed(JActionEvent* e = 0); // SLOT
 
 private:
- SignalMast* source;// = null;
+ SignalMast* source = nullptr;
  void init();
  Logger* log;
 };

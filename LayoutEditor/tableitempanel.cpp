@@ -135,7 +135,7 @@ AddTableActionListener::AddTableActionListener(TableItemPanel *parent)
 {
  this->parent = parent;
 }
-void AddTableActionListener::actionPerformed(ActionEvent *e)
+void AddTableActionListener::actionPerformed(JActionEvent *e)
 {
  parent->addToTable();
 }

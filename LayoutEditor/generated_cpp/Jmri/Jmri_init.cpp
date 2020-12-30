@@ -111,6 +111,7 @@ PythonQt::priv()->registerClass(&Siglet::staticMetaObject, "Jmri", PythonQtCreat
 PythonQt::priv()->registerClass(&SignalHead::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_SignalHead>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_SignalHead>, module, 0);
 PythonQt::priv()->registerCPPClass("Sound", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_Sound>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Sound>, module, 0);
 PythonQt::priv()->registerClass(&SystemConnectionMemo::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_SystemConnectionMemo>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_SystemConnectionMemo>, module, 0);
+PythonQt::priv()->registerCPPClass("TableCellEditor", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_TableCellEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableCellEditor>, module, 0);
 PythonQt::priv()->registerClass(&TableColumn::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumn>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumn>, module, 0);
 PythonQt::priv()->registerClass(&TableColumnModel::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumnModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumnModel>, module, 0);
 PythonQt::priv()->registerClass(&Throttle::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Throttle>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Throttle>, module, 0);

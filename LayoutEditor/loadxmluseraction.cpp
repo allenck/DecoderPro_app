@@ -50,7 +50,7 @@ void LoadXmlUserAction::common()
 }
 
 //@Override
-/*public*/ void LoadXmlUserAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LoadXmlUserAction::actionPerformed(JActionEvent * /*e*/)
 {
  JFileChooser* userFileChooser = getUserFileChooser();
  userFileChooser->setDialogType(JFileChooser::OPEN_DIALOG);

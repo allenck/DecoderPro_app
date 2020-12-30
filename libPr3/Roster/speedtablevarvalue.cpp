@@ -575,7 +575,7 @@ void SpeedTableVarValue::initStepCheckBoxes() {
 /**
  * Set the values to a straight line from _min to _max
  */
-void SpeedTableVarValue::doForceStraight(ActionEvent* e) {
+void SpeedTableVarValue::doForceStraight(JActionEvent* e) {
     _cvMap->value(cvList->at(0))->setValue(_min);
     _cvMap->value(cvList->at(nValues-1))->setValue(_max);
     doMatchEnds(e);
@@ -583,7 +583,7 @@ void SpeedTableVarValue::doForceStraight(ActionEvent* e) {
 /**
  * Set the values to a straight line from existing ends
  */
-void SpeedTableVarValue::doMatchEnds(ActionEvent* /*e*/) {
+void SpeedTableVarValue::doMatchEnds(JActionEvent* /*e*/) {
     int first = _cvMap->value(cvList->at(0))->getValue();
     int last = _cvMap->value(cvList->at(nValues-1))->getValue();
     logit->debug(" first="+QString::number(first)+" last="+QString::number(last));
@@ -601,7 +601,7 @@ void SpeedTableVarValue::doMatchEnds(ActionEvent* /*e*/) {
 /**
  * Set a constant ratio curve
  */
-void SpeedTableVarValue::doRatioCurve(ActionEvent* /*e*/) {
+void SpeedTableVarValue::doRatioCurve(JActionEvent* /*e*/) {
     double first = _cvMap->value(cvList->at(0))->getValue();
     if (first<1.) first=1.;
     double last = _cvMap->value(cvList->at(nValues-1))->getValue();
@@ -622,7 +622,7 @@ void SpeedTableVarValue::doRatioCurve(ActionEvent* /*e*/) {
 /**
  * Set a log curve
  */
-void SpeedTableVarValue::doLogCurve(ActionEvent* /*e*/) {
+void SpeedTableVarValue::doLogCurve(JActionEvent* /*e*/) {
     double first = _cvMap->value(cvList->at(0))->getValue();
     double last = _cvMap->value(cvList->at(nValues-1))->getValue();
     if (last<first+1.) last = first+1.;
@@ -645,7 +645,7 @@ void SpeedTableVarValue::doLogCurve(ActionEvent* /*e*/) {
 /**
  * Shift the curve one CV to left.  The last entry is left unchanged.
  */
-void SpeedTableVarValue::doShiftLeft(ActionEvent* /*e*/) {
+void SpeedTableVarValue::doShiftLeft(JActionEvent* /*e*/) {
     for (int i = 0; i<nValues-1; i++) {
         int value = _cvMap->value(cvList->at(i)+1)->getValue();
         _cvMap->value(cvList->at(i))->setValue(value);
@@ -656,7 +656,7 @@ void SpeedTableVarValue::doShiftLeft(ActionEvent* /*e*/) {
 /**
  * Shift the curve one CV to right.  The first entry is left unchanged.
  */
-void SpeedTableVarValue::doShiftRight(ActionEvent* /*e*/)
+void SpeedTableVarValue::doShiftRight(JActionEvent* /*e*/)
 {
  for (int i = nValues-1; i>0; i--)
  {

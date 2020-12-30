@@ -69,7 +69,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      setVisible(true);
  }
 
- /*public*/ void AlternateTrackFrame::buttonActionPerformed(ActionEvent* ae) {
+ /*public*/ void AlternateTrackFrame::buttonActionPerformed(JActionEvent* ae) {
  QPushButton* source = (QPushButton*)ae;
      if (source == saveButton) {
          _track->setAlternateTrack((Track*) VPtr<Track>::asPtr(trackBox->currentData()));

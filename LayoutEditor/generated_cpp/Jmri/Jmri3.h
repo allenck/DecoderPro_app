@@ -39,6 +39,7 @@
 #include <signalhead.h>
 #include <sound.h>
 #include <systemconnectionmemo.h>
+#include <tablecelleditor.h>
 #include <tablecolumn.h>
 #include <tablecolumnmodel.h>
 #include <throttle.h>
@@ -1288,6 +1289,29 @@ void delete_SystemConnectionMemo(SystemConnectionMemo* obj) { delete obj; }
 
 
 
+class PythonQtShell_TableCellEditor : public TableCellEditor
+{
+public:
+    PythonQtShell_TableCellEditor():TableCellEditor(),_wrapper(NULL) {}
+
+   ~PythonQtShell_TableCellEditor();
+
+
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtWrapper_TableCellEditor : public QObject
+{ Q_OBJECT
+public:
+public slots:
+TableCellEditor* new_TableCellEditor();
+void delete_TableCellEditor(TableCellEditor* obj) { delete obj; } 
+};
+
+
+
+
+
 class PythonQtShell_TableColumn : public TableColumn
 {
 public:
@@ -1317,6 +1341,7 @@ TableColumn* new_TableColumn(int  modelIndex, QObject*  parent = 0);
 TableColumn* new_TableColumn(int  modelIndex, int  width, QObject*  parent = 0);
 void delete_TableColumn(TableColumn* obj) { delete obj; } 
    void addPropertyChangeListener(TableColumn* theWrappedObject, PropertyChangeListener*  listener);
+   TableCellEditor*  getCellEditor(TableColumn* theWrappedObject);
    QVariant  getHeaderValue(TableColumn* theWrappedObject);
    QVariant  getIdentifier(TableColumn* theWrappedObject);
    int  getMaxWidth(TableColumn* theWrappedObject);
@@ -1326,8 +1351,7 @@ void delete_TableColumn(TableColumn* obj) { delete obj; }
    bool  getResizable(TableColumn* theWrappedObject);
    int  getWidth(TableColumn* theWrappedObject);
    void removePropertyChangeListener(TableColumn* theWrappedObject, PropertyChangeListener*  listener);
-   void setCellEditor(TableColumn* theWrappedObject, QObject*  arg__1);
-   void setCellRenderer(TableColumn* theWrappedObject, QObject*  arg__1);
+   void setCellEditor(TableColumn* theWrappedObject, TableCellEditor*  cellEditor);
    void setHeaderValue(TableColumn* theWrappedObject, QVariant  headerValue);
    void setIdentifier(TableColumn* theWrappedObject, QVariant  identifier);
    void setMaxWidth(TableColumn* theWrappedObject, int  maxWidth);

@@ -12,9 +12,9 @@ PerformActionModel::PerformActionModel(QObject *parent) :
 /*protected*/ void PerformActionModel::performAction(Action* action) throw (JmriException)
 {
  QString prefs = QString("prefs");
- ActionEvent* event = new ActionEvent((QObject*)&prefs, 0, ""); // TODO:
+ JActionEvent* event = new JActionEvent((QObject*)&prefs, 0, ""); // TODO:
  //action->actionPerformed(event);
- connect(this, SIGNAL(actionPerformed(ActionEvent*)), action, SLOT(actionPerformed(ActionEvent*)));
+ connect(this, SIGNAL(actionPerformed(JActionEvent*)), action, SLOT(actionPerformed(JActionEvent*)));
  emit actionPerformed(event);
 }
 /**

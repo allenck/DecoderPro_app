@@ -6,7 +6,7 @@
 
 class VarTextField;
 class VariableValue;
-class ActionEvent;
+class JActionEvent;
 class PropertyChangeEvent;
 class LIBPR3SHARED_EXPORT VarTextField : public JTextField
 {
@@ -20,7 +20,7 @@ public:
 signals:
 
 public slots:
- void thisActionPerformed(ActionEvent* e = 0);
+ void thisActionPerformed(JActionEvent* e = 0);
  /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 private:

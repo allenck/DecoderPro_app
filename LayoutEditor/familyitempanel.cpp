@@ -145,7 +145,7 @@
 /*protected*/ void FamilyItemPanel::addUpdateButtonToBottom(ActionListener* doneAction) {
     _updateButton = new QPushButton(tr("Update")); // custom update label
     //_updateButton->addActionListener(doneAction);
-    connect(_updateButton, SIGNAL(clicked(bool)), doneAction, SLOT(actionPerformed(ActionEvent*)));
+    connect(_updateButton, SIGNAL(clicked(bool)), doneAction, SLOT(actionPerformed(JActionEvent*)));
     _updateButton->setToolTip(tr("Select an item from the table and an icon set to update the Panel"));
     _bottom1Panel->layout()->addWidget(_updateButton);
 }

@@ -5,7 +5,7 @@
 
 class DateFormat;
 class PrintStream;
-class ActionEvent;
+class JActionEvent;
 class QScrollArea;
 //class DefaultUserMessagePreferences;
 class JTextField;
@@ -25,11 +25,11 @@ public:
 signals:
 
 public slots:
-    /*public*/ /*synchronized*/ void clearButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ /*synchronized*/ void startLogButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ /*synchronized*/ void stopLogButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void openFileChooserButtonActionPerformed(ActionEvent*e = 0);
-    /*public*/ void enterButtonActionPerformed(ActionEvent* e = 0);
+    /*public*/ /*synchronized*/ void clearButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ /*synchronized*/ void startLogButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ /*synchronized*/ void stopLogButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void openFileChooserButtonActionPerformed(JActionEvent*e = 0);
+    /*public*/ void enterButtonActionPerformed(JActionEvent* e = 0);
     /*public*/ /*synchronized*/ QString getFrameText();
     void On_alwaysOnTopCheckBox(bool);
     void On_autoScrollCheckBox();

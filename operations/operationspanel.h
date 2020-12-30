@@ -15,7 +15,7 @@ class QCheckBox;
 class QRadioButton;
 class Logger;
 class QSignalMapper;
-class ActionEvent;
+class JActionEvent;
 class QPushButton;
 namespace Operations
 {

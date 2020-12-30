@@ -39,7 +39,7 @@ void PanelEditorAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void PanelEditorAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void PanelEditorAction::actionPerformed(JActionEvent* /*e*/)
 {
  QString name = "Panel";
  for (int i = 2; i < 100; i++)

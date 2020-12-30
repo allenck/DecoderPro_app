@@ -64,7 +64,7 @@ public:
  /*public*/ void newTrainDone(ActiveTrain* at);
  /*public*/ QList<ActiveTrain*>* getActiveTrainsList();
  /*public*/ ActiveTrain* getActiveTrainForRoster(RosterEntry* re);
- /*public*/ void allocateExtraSection(ActionEvent* e, ActiveTrain* at);
+ /*public*/ void allocateExtraSection(JActionEvent* e, ActiveTrain* at);
  /*public*/ QString getSectionName(Section* sec);
  /*public*/ QString getClassName();
 
@@ -156,10 +156,10 @@ private slots:
  void minuteChange(PropertyChangeEvent*);
  /*private*/ void handleActiveTrainChange(PropertyChangeEvent* e);
  /*private*/ void allocateExtraSection(/*ActionEvent* e*/);
- /*private*/ void handleAutoReleaseChanged(ActionEvent* e = 0);
- /*private*/ void handleATSelectionChanged(ActionEvent* e = 0);
- /*private*/ void handleAutoAllocateChanged(ActionEvent* e = 0);
- void terminateTrain(ActionEvent* e = 0);
+ /*private*/ void handleAutoReleaseChanged(JActionEvent* e = 0);
+ /*private*/ void handleATSelectionChanged(JActionEvent* e = 0);
+ /*private*/ void handleAutoAllocateChanged(JActionEvent* e = 0);
+ void terminateTrain(JActionEvent* e = 0);
 
 protected:
  /*protected*/ int getSignalType();

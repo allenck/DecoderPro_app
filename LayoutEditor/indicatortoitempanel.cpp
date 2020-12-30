@@ -357,7 +357,7 @@
     return true;
 }
 
-void EditIconActionListener::actionPerformed(ActionEvent */*a*/)
+void EditIconActionListener::actionPerformed(JActionEvent */*a*/)
 {
     parent->openStatusEditDialog(key);
 }

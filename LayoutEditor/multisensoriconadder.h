@@ -209,7 +209,7 @@ public:
        MultiSensorIconAdder* parent;
      QString key;
      public:
-     /*public*/ void actionPerformed(ActionEvent* a = 0)
+     /*public*/ void actionPerformed(JActionEvent* a = 0)
      {
       Q_UNUSED(a);
       parent->_delete(key);

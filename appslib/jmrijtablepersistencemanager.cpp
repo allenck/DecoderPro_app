@@ -143,7 +143,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
         SortOrder sorted = UNSORTED;
         if (sorter != NULL) {
             sorted = RowSorterUtil::getSortOrder(sorter, index);
-            log->trace(tr("Column %1 (model index %2) is %3").arg(name).arg(index, sorted));
+            log->trace(tr("Column %1 (model index %2) is %3").arg(name).arg(index).arg(sorted));
         }
          this->setPersistedState(table->getName(), name, index, width, sorted, hidden);
 #endif

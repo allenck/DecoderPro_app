@@ -39,7 +39,7 @@ void FileHistoryAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void FileHistoryAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void FileHistoryAction::actionPerformed(JActionEvent * /*e*/)
 {
  JFrame* frame = new JmriJFrameX("FileHistory");
 //    {

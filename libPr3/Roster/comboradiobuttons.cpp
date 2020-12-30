@@ -118,7 +118,7 @@ void ComboRadioButtons::addToPanel(QRadioButton* b, int i) {
  vLayout->addWidget(b);
 }
 
-void ComboRadioButtons::thisActionPerformed(ActionEvent* e)
+void ComboRadioButtons::thisActionPerformed(JActionEvent* e)
 {
     // update original state to selected button
 //    _box->setSelectedItem(e.getActionCommand());
@@ -136,7 +136,7 @@ void ComboRadioButtons::thisActionPerformed(ActionEvent* e)
  }
 }
 
-void ComboRadioButtons::originalActionPerformed(ActionEvent* /*e*/) {
+void ComboRadioButtons::originalActionPerformed(JActionEvent* /*e*/) {
     // update this state to original state if there's a button
     // that corresponds
     while (_box->currentIndex()+1>=v->size()) {

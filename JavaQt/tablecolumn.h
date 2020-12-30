@@ -6,9 +6,8 @@
 #include "javaqt_global.h"
 #include "propertychangelistener.h"
 #include "propertychangesupport.h"
+#include "tabledelegates.h"
 
-class TableCellRenderer;
-class TableCellEditor;
 class PropertyChangeEvent;
 class JAVAQTSHARED_EXPORT TableColumn : public QObject
 {
@@ -42,8 +41,10 @@ public:
  /*public*/ bool getResizable();
  /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* listener);
  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener);
-  /*public*/ void setCellRenderer(QObject* ) {}
-  /*public*/ void setCellEditor(QObject* ) {}
+ /*public*/ void setCellRenderer(TableCellRenderer* cellRenderer);
+ /*public*/ TableCellRenderer* getCellRenderer();
+ /*public*/ void setCellEditor(TableCellEditor* cellEditor);
+ /*public*/ TableCellEditor* getCellEditor();
 
 signals:
  void propertyChange(PropertyChangeEvent*);

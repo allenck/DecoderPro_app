@@ -7,7 +7,7 @@
 #include <QModelIndex>
 #include "liblayouteditor_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class ListSelectionEvent;
 class ChangeEvent;
 class PickListModel;
@@ -51,7 +51,7 @@ class ItActionListener : public ActionListener
 public:
   ItActionListener(PickPanel* self);
 public slots:
-  /*public*/ void actionPerformed(ActionEvent* a = 0) ;
+  /*public*/ void actionPerformed(JActionEvent* a = 0) ;
 };
 class PPCancelListener : public ActionListener
 {

@@ -241,13 +241,13 @@ void CmdStnConfigPane::updateVisibility(bool show)
  //revalidate();
 }
 
-/*public*/ void CmdStnConfigPane::readButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void CmdStnConfigPane::readButtonActionPerformed(JActionEvent* /*e*/)
 {
  // format and send request
  start();
 }
 
-/*public*/ void CmdStnConfigPane::writeButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void CmdStnConfigPane::writeButtonActionPerformed(JActionEvent* /*e*/)
 {
  LocoNetMessage* msg = new LocoNetMessage(14);
  msg->setElement(0, LnConstants::OPC_WR_SL_DATA);

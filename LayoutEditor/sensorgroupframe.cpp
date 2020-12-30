@@ -346,7 +346,7 @@ void SensorGroupFrame::clear()
 }
 
 
-void SensorGroupFrame::donePressed(ActionEvent* /*e*/) {
+void SensorGroupFrame::donePressed(JActionEvent* /*e*/) {
     _sensorModel->dispose();
     dispose();
 }

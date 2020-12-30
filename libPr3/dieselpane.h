@@ -2,7 +2,7 @@
 #define DIESELPANE_H
 #include "enginepane.h"
 
-class ActionEvent;
+class JActionEvent;
 class ChangeEvent;
 class EventListenerList;
 class EngineSoundEvent;
@@ -24,7 +24,7 @@ signals:
 
 public slots:
  /*public*/ void throttleChange(ChangeEvent* e = 0) ;
- /*public*/ void startButtonChange(ActionEvent*e = 0);
+ /*public*/ void startButtonChange(JActionEvent*e = 0);
 
 private:
  enum THROTTLES

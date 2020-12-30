@@ -324,7 +324,7 @@ DisableCheckboxListener::DisableCheckboxListener(JmrixConfigPane *configPane, QC
  this->checkBox = checkBox;
 }
 
-void DisableCheckboxListener::actionPerformed(ActionEvent *)
+void DisableCheckboxListener::actionPerformed(JActionEvent *)
 {
  configPane->setDisabled(checkBox->isChecked());
 }
@@ -335,7 +335,7 @@ CloseButtonListener::CloseButtonListener(int index, ConnectionsPreferencesPanel*
     this->parent = parent;
 }
 
-void CloseButtonListener::actionPerformed(ActionEvent *)
+void CloseButtonListener::actionPerformed(JActionEvent *)
 {
  parent->removeTab(index);
 }

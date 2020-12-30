@@ -23,13 +23,14 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  internalManager = nullptr;
  defaultManager = nullptr;
  addedOrderList = QStringList();
- log->setDebugEnabled(true);
+ //log->setDebugEnabled(true);
  propertyListenerList = QVector<PropertyChangeListener*>();
  namedPropertyListenerMap = QMap<QString, QVector<PropertyChangeListener*>*>();
  propertyVetoListenerList = QVector<VetoableChangeListener*>();
  namedPropertyVetoListenerMap = QMap<QString, QVector<VetoableChangeListener*>*>();
 
-
+ if(log == nullptr)
+  log = LoggerFactory::getLogger("AbstractProxyManager");
  //registerSelf();
 }
 /**
@@ -183,8 +184,9 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 /*private*/ Manager* AbstractProxyTurnoutManager::initInternal() const
 {
  if (internalManager == nullptr) {
+  if(log)
      log->debug("create internal manager when first requested");
-     internalManager = makeInternalManager();
+  internalManager = makeInternalManager();
  }
  return internalManager;
 }

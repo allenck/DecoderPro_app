@@ -880,7 +880,7 @@ void LayoutTurntable::on_addRayTrack_clicked()
  }
 }
 
-/*private*/ void LayoutTurntable::addRayTrackPressed(ActionEvent* /*a*/)
+/*private*/ void LayoutTurntable::addRayTrackPressed(JActionEvent* /*a*/)
 {
  double ang = 0.0;
  bool ok;
@@ -899,7 +899,7 @@ void LayoutTurntable::on_addRayTrack_clicked()
  needsRedraw = false;
 }
 
-void LayoutTurntable::deleteRayTrackPressed(ActionEvent* /*a*/) {
+void LayoutTurntable::deleteRayTrackPressed(JActionEvent* /*a*/) {
     double ang = 0.0;
     bool ok;
         ang = angleField->text().toFloat(&ok);
@@ -948,7 +948,7 @@ void LayoutTurntable::deleteRay(RayTrack* closest) {
     needsRedraw = false;
 }
 
-void LayoutTurntable::turntableEditDonePressed(ActionEvent* /*a*/)
+void LayoutTurntable::turntableEditDonePressed(JActionEvent* /*a*/)
 {
  // check if new radius was entered
  QString str = radiusField->text();
@@ -981,7 +981,7 @@ void LayoutTurntable::turntableEditDonePressed(ActionEvent* /*a*/)
  }
 }
 
-void LayoutTurntable::turntableEditCancelPressed(ActionEvent* /*a*/) {
+void LayoutTurntable::turntableEditCancelPressed(JActionEvent* /*a*/) {
     editOpen = false;
     editTurntableFrame->setVisible(false);
     editTurntableFrame->dispose();

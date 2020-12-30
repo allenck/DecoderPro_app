@@ -154,7 +154,7 @@ void SplitVariableValue::updatedTextField()
 }
 
 /** ActionListener implementations */
-/*public*/ void SplitVariableValue::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SplitVariableValue::actionPerformed(JActionEvent* /*e*/) {
     if (logit->isDebugEnabled()) logit->debug("CV "+(getCvNum())+","+QString::number(getSecondCvNum())+" actionPerformed");
     int newVal = (((_value->text()).toInt())-mOffset)/mFactor;
     updatedTextField();

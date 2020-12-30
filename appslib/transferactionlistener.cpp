@@ -31,7 +31,7 @@
     }
 
     //@Override
-    /*public*/ void TransferActionListener::actionPerformed(ActionEvent* e) {
+    /*public*/ void TransferActionListener::actionPerformed(JActionEvent* e) {
         if (focusOwner == nullptr) {
             return;
         }

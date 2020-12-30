@@ -49,7 +49,7 @@ void ReportContextAction::common()
  zeroConf = new QZeroConf();
 }
 
-/*public*/ void ReportContextAction::actionPerformed(ActionEvent* )
+/*public*/ void ReportContextAction::actionPerformed(JActionEvent * )
 {
 
     frame = new JmriJFrameX(tr("Context"));  // JmriJFrame to ensure fits on screen

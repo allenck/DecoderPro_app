@@ -7,14 +7,15 @@
 #include <QComboBox>
 #include "libtables_global.h"
 #include "pathturnouttablemodel.h"
+#include "jdesktoppane.h"
+#include "windowadapter.h"
+#include "warranttableaction.h"
 
-class PathTurnoutFrame;
+
 class InternalFrameEvent;
 class OBlock;
 class BlockPathTableModel;
-class BlockPathFrame;
 class QMdiArea;
-//class JDesktopPane;
 class QSignalMapper;
 class JInternalFrame;
 class SignalTableModel;
@@ -35,11 +36,12 @@ public:
  /*public*/ BlockPathTableModel* getBlockPathTableModel(OBlock* block);
  /*public*/ SignalTableModel* getSignalTableModel();
  /*public*/ void initComponents();
- /*public*/ QAction *getPrintMenuItems(JTable* oBlockTable, JTable* portalTable, JTable* signalTable, JTable* blockPortalTable);
+  /*public*/ QMenuBar* addMenus(QMenuBar* mBar);
+ /*public*/ QMenu *getPrintMenuItems(JTable* oBlockTable, JTable* portalTable, JTable* signalTable, JTable* blockPortalTable);
  /*public*/ QMenu* getOptionMenu();
  /*public*/ QMenu* getTablesMenu();
- /*public*/ void windowClosing(QCloseEvent* e);
- /*public*/ QString toString();
+ ///*public*/ void windowClosing(QCloseEvent* e);
+  /*public*/ QString toString() {return getTitle();}
  /*public*/ void internalFrameClosing(InternalFrameEvent* e);
  /*public*/ void internalFrameClosed(InternalFrameEvent* e);
  /*public*/ void internalFrameOpened(InternalFrameEvent* e);
@@ -47,80 +49,186 @@ public:
  /*public*/ void internalFrameActivated(InternalFrameEvent* e);
  /*public*/ void internalFrameDeiconified(InternalFrameEvent* e) ;
  /*public*/ void internalFrameDeactivated(InternalFrameEvent* e);
- /*public*/ QString getClassName();
+ /*public*/ QString getClassName() {return "jmri.jmrit.beantable.oblock.TableFrames";}
   static int ROW_HEIGHT;
+  /*public*/ void openPathTurnoutEditPane(QString pathTurnoutName);
+  /*public*/ /*static*/ class BlockPathJPanel : public JPanel {
+      BlockPathTableModel* blockPathModel;
+  public:
+      BlockPathJPanel(QString title, QWidget* parent=nullptr) : JPanel(parent) {
+          //super();
+          JPanel::setObjectName(title);
+      }
+
+      BlockPathTableModel* getModel() {
+          return blockPathModel;
+      }
+
+      void setModel(BlockPathTableModel* model, QString blockName) {
+          blockPathModel = model;
+          setObjectName(blockName);
+      }
+  };
+  /*public*/ void openBlockPathPane(QString blockSystemName, QString editorTabName);
 
 signals:
 
 public slots:
 private:
- /*private*/ static QString oblockPrefix;
+ /*private*/ static QString _oblockPrefix;
+ /*private*/ /*final*/ static QString portalPrefix;// = "IP";
+ /*private*/ QString _title;
+ static Logger* log;
+ void common(QString);
+ QMdiArea* mdiArea = nullptr;
+ JTable* _oBlockTable = nullptr;
+ OBlockTableModel* _oBlockModel = nullptr;
+ JTable* _portalTable = nullptr;
+ PortalTableModel* _portalModel = nullptr;
+ JTable* _blockPortalTable = nullptr;
+ BlockPortalTableModel* _blockPortalXRefModel = nullptr;
+ JTable* _signalTable = nullptr;
+ SignalTableModel* _signalModel = nullptr;
 
- void common();
- QMdiArea* mdiArea;
- JTable* _oBlockTable;
- OBlockTableModel* _oBlockModel;
- JTable* _portalTable;
- PortalTableModel* _portalModel;
- JTable* _blockPortalTable;
- BlockPortalTableModel* _blockPortalXRefModel;
- JTable* _signalTable;
- SignalTableModel* _signalModel;
+ /*private*/ /*final*/ bool _tabbed; // updated from prefs (restart required)
+ /*private*/ bool pathEdit = false;
 
-// JTable* _blockTablePane;
-// JTable* _portalTablePane;
-// JTable* _signalTablePane;
-
- //JDesktopPane* _desktop;
- JInternalFrame* _blockTableFrame;
- JInternalFrame* _portalTableFrame;
- JInternalFrame* _blockPortalXRefFrame;
- JInternalFrame* _signalTableFrame;
+ /*private*/ JmriJFrame* desktopframe = nullptr;
+ /*private*/ JDesktopPane* _desktop = nullptr;
+ JInternalFrame* _blockTableFrame = nullptr;
+ JInternalFrame* _portalTableFrame = nullptr;
+ JInternalFrame* _blockPortalXRefFrame = nullptr;
+ JInternalFrame* _signalTableFrame = nullptr;
 
  bool _showWarnings;// = true;
  QAction* _showWarnItem;
  QMenu* _openMenu;
  QMap<QString, JInternalFrame*> _blockPathMap;// = new HashMap<String, JInternalFrame>();
- QMap<QString, JInternalFrame*> _PathTurnoutMap;// = new HashMap<String, JInternalFrame>();
- Logger* log;
+ QMap<QString, JInternalFrame*> _pathTurnoutMap;// = new HashMap<String, JInternalFrame>();
  QSignalMapper* warningMapper;
  void showPopup(QMouseEvent* me);
  // /*private*/ void errorCheck();
- static /*private*/ void setActionMappings(JTable* table);
  QMenu* tablesMenu;
+ void addCloseListener(JmriJFrame* desktop);
+ /*private*/ void createDesktop();
+ /*private*/ QString getTitle() override;
+ /*private*/ void setTitle(QString title) override;
+ /*private*/ void showHideFrame(JInternalFrame* frame, QAction* menu, QString menuName);
+ /*private*/ QString oblockPrefix();
+ /*private*/ QAction* openBlock;
+ /*private*/ QAction* openPortal;
+ /*private*/ QAction* openXRef;
+ /*private*/ QAction* openSignal;
+ /*public*/ void mousePressEvent(QMouseEvent* me); // for macOS, Linux
+
 
 private slots:
  /*private*/ void setShowWarnings(QString cmd);
- void  on_openBlock_triggered();
- void on_openPortal_triggered();
- void on_openXRef_triggered();
- void on_openSignal_triggered();
+
 protected:
+ /*protected*/ static /*final*/ QString SET_CLOSED;// = jmri.InstanceManager.turnoutManagerInstance().getClosedText();
+ /*protected*/ static /*final*/ QString SET_THROWN;// = jmri.InstanceManager.turnoutManagerInstance().getThrownText();
  /*protected*/ void openBlockPathFrame(QString sysName);
- /*protected*/ /*final*/ SignalTableModel* getSignalModel();
- /*protected*/ /*final*/ BlockPortalTableModel* getXRefModel();
- /*protected*/ void updateOpenMenu();
  /*protected*/ QString makePathTurnoutName(QString blockSysName, QString pathName);
-// /*protected*/ /*final*/ JTable* getBlockTablePane() ;
-// /*protected*/ /*final*/ JTable* getPortalTablePane() ;
-// /*protected*/ /*final*/ JTable* getSignalTablePane();
- /*protected*/ /*final*/ OBlockTableModel* getBlockModel();
- /*protected*/ /*final*/ PortalTableModel* getPortalModel();
- /*protected*/ JInternalFrame* makeBlockFrame();
- /*protected*/ JInternalFrame* makePortalFrame();
- /*protected*/ JInternalFrame* makeBlockPortalFrame();
- /*protected*/ JInternalFrame* makeSignalFrame();
- /*protected*/ BlockPathFrame* makeBlockPathFrame(OBlock* block);
- /*protected*/ void openPathTurnoutFrame(QString pathTurnoutName);
- ///*protected*/ JInternalFrame* makePathTurnoutFrame(OBlock* block, QString pathName);
- /*protected*/ PathTurnoutFrame* makePathTurnoutFrame(OBlock* block, QString pathName);
  /*protected*/ void disposeBlockPathFrame(OBlock* block);
  /*protected*/ int verifyWarning(QString message);
+ /*protected*/ JmriJFrame* getDesktopFrame();
+ /*protected*/ void importBlocks() throw (IllegalArgumentException);
+ /*protected*/ void updateOBlockTablesMenu();
+ /*protected*/ JInternalFrame* buildFrame(AbstractTableModel* tableModel, QString title, QString prompt);
+ /*protected*/ JTable* makeOBlockTable(OBlockTableModel* model);
+ /*protected*/ bool openOBlockEditor(QString blockSystemName, QString tabname);
+ /*protected*/ BlockPathJPanel* makeBlockPathEditPanel(OBlock* block);
+ /*protected*/ void setPathEdit(bool edit);
+ /*protected*/ bool isPathEdit();
+ /*protected*/ JPanel* makeBlockPathTablePanel(BlockPathTableModel* _model);
+ /*protected*/ JTable* makeBlockPathTable(BlockPathTableModel* _model);
+ /*protected*/ JTable* makePathTurnoutTable(PathTurnoutTableModel* model);
+ /*protected*/ void openPathTurnoutFrame(QString pathTurnoutName);
+ /*protected*/ void openPathTurnoutEditor(QString pathTurnoutName);
+ /*protected*/ JTable* makeBlockPortalTable(BlockPortalTableModel* model);
+ /*protected*/ JTable* makePortalTable(PortalTableModel* model);
+ /*protected*/ JTable* makeSignalTable(SignalTableModel* model);
+ /*protected*/ bool openPathEditor(/*@Nonnull*/ QString blockName, /*@CheckForNull*/ QString pathName, BlockPathTableModel* bpmodel);
 
+ /**
+  * ********************* Path-Turnout JPanel class for _tabbed *****************
+  */
+ /*protected*/ /*static*/ class PathTurnoutJPanel : public JPanel {
+
+     /**
+      * Remember the tableModel
+      */
+     PathTurnoutTableModel* pathTurnoutModel;
+
+     PathTurnoutJPanel(QString pathname) {
+         //super();
+         this->setObjectName(pathname);
+     }
+
+     PathTurnoutTableModel* getModel() {
+         return pathTurnoutModel;
+     }
+
+     void setModel(PathTurnoutTableModel* model) {
+         pathTurnoutModel = model;
+     }
+     friend class TableFrames;
+     friend class BlockPathEditFrame;
+ };
+ // ********************* Path-Turnout Frame class for _desktop ****************
+ /*protected*/ /*static*/ class PathTurnoutFrame : public JInternalFrame {
+
+     /**
+      * Remember the tableModel
+      */
+     PathTurnoutTableModel* pathTurnoutModel;
+
+     PathTurnoutFrame(QString title, bool resizable, bool closable,
+             bool maximizable, bool iconifiable) : JInternalFrame(title, resizable, closable, maximizable, iconifiable){
+         //super(title, resizable, closable, maximizable, iconifiable);
+     }
+
+     PathTurnoutTableModel* getModel() {
+         return pathTurnoutModel;
+     }
+
+     void setModel(PathTurnoutTableModel* model) {
+         pathTurnoutModel = model;
+     }
+     friend class TableFrames;
+ };
+ // ***************** Block-Path Frame class for _desktop **************************
+ /*protected*/ /*static*/ class BlockPathFrame : public JInternalFrame {
+
+     BlockPathTableModel* blockPathModel;
+
+     BlockPathFrame(QString title, bool resizable, bool closable,
+                    bool maximizable, bool iconifiable): JInternalFrame(title, resizable, closable, maximizable, iconifiable){
+         //super(title, resizable, closable, maximizable, iconifiable);
+     }
+
+     BlockPathTableModel* getModel() {
+         return blockPathModel;
+     }
+
+     void setModel(BlockPathTableModel* model, QString blockName) {
+         blockPathModel = model;
+         setName(blockName);
+     }
+     friend class TableFrames;
+ };
+ /*protected*/ BlockPathFrame* makeBlockPathFrame(OBlock* block);
+ /*protected*/ PathTurnoutFrame* makePathTurnoutFrame(OBlock* block, QString pathName);
+ /*protected*/ PathTurnoutJPanel* makePathTurnoutPanel(/*@Nonnull*/ OBlock* block, /*@CheckForNull*/ QString pathName);
+ /*protected*/ void addTurnoutPane(OPath* path, PathTurnoutTableModel* pathTurnoutModel);
 
 friend class OBlockTableModel;
 friend class BlockPathTableModel;
 friend class PortalTableModel;
+friend class TFCloseWindowListener;
+friend class BlockPathEditFrame;
+friend class BPEFCloseListener;
 
 };
 
@@ -235,4 +343,27 @@ public:
     void setBorder(Border* b) {}
     Border* getBorder() {return nullptr;}
 };
+
+class TFCloseWindowListener : public WindowAdapter
+{
+  Q_OBJECT
+  TableFrames* tf;
+  JmriJFrame* desktop;
+ public:
+  TFCloseWindowListener(JmriJFrame* desktop, TableFrames* tf)
+  {
+   this->tf = tf;
+   this->desktop = desktop;
+  }
+  //@Override
+  /*public*/ void windowClosing(QCloseEvent* e) {
+      WarrantTableAction::getDefault()->errorCheck();
+      desktop->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
+      // closing instead of hiding removes name from Windows menu.handle menu to read Show...
+      tf->log->debug(tr("windowClosing: %1").arg(tf->toString()));
+      desktop->dispose();
+  }
+};
+
+
 #endif // TABLEFRAMES_H

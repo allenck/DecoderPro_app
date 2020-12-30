@@ -237,7 +237,7 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
  profilesKeyPressed(evt);
 }
 
-/*private*/ void ProfileManagerDialog::btnSelectActionPerformed(ActionEvent* /*evt*/)
+/*private*/ void ProfileManagerDialog::btnSelectActionPerformed(JActionEvent* /*evt*/)
 {
  timer->stop();
  countDown = -1;
@@ -256,7 +256,7 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
  }
 }
 
-/*private*/ void ProfileManagerDialog::btnCreateActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void ProfileManagerDialog::btnCreateActionPerformed(JActionEvent* /*evt*/) {
  timer->stop();
  countDownLbl->setVisible(false);
  AddProfileDialog* apd = new AddProfileDialog(this, true, false);
@@ -265,7 +265,7 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
  apd->exec();
 }
 
-/*private*/ void ProfileManagerDialog::btnUseExistingActionPerformed(ActionEvent* /*evt*/)
+/*private*/ void ProfileManagerDialog::btnUseExistingActionPerformed(JActionEvent* /*evt*/)
 {
  timer->stop();
  countDownLbl->setVisible(false);

@@ -4,7 +4,7 @@
 #include "appslib_global.h"
 #include "jcombobox.h"
 
-class ActionEvent;
+class JActionEvent;
 class QGroupBox;
 class QScrollArea;
 class QCheckbox;

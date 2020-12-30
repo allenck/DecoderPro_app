@@ -13,7 +13,7 @@ LocoNetMenuStartupAction::LocoNetMenuStartupAction(QString title, QObject* paren
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-void LocoNetMenuStartupAction::actionPerformed(ActionEvent *)
+void LocoNetMenuStartupAction::actionPerformed(JActionEvent *)
 {
 
  if(LocoNetMenu::instance() != nullptr)

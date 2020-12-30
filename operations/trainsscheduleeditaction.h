@@ -10,7 +10,7 @@ namespace Operations
  public:
   TrainsScheduleEditAction(QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/);
 
  };
 }

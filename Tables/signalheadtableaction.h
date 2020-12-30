@@ -16,7 +16,7 @@
 #include "beantabledatamodel.h"
 
 class PropertyChangeEvent;
-class ActionEvent;
+class JActionEvent;
 class BeanSelectCreatePanel;
 class JTextField;
 class JmriJFrame;

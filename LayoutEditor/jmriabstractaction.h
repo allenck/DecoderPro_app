@@ -27,7 +27,7 @@ public:
 signals:
 
 public slots:
- /*public*/  virtual void actionPerformed(ActionEvent* e = 0);
+ /*public*/  virtual void actionPerformed(JActionEvent* e = 0);
 
 private:
  //private static final long serialVersionUID = 373576744806206486L;

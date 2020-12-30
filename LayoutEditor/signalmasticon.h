@@ -95,7 +95,7 @@ protected:
      {
       this->parent = parent;
      }
-     void actionPerformed(ActionEvent */*e*/ = 0)
+     void actionPerformed(JActionEvent */*e*/ = 0)
      {
       parent->updateItem();
      }

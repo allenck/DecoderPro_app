@@ -158,7 +158,7 @@ class SlipTurnoutActionListener : public ActionListener
 public:
  SlipTurnoutActionListener(SlipTurnoutIcon* self) { this->self = self;}
 public slots:
- void actionPerformed(ActionEvent */*e*/ = 0) { self->updateTurnout();}
+ void actionPerformed(JActionEvent */*e*/ = 0) { self->updateTurnout();}
 };
 class STOWindowListener : public WindowListener
 {

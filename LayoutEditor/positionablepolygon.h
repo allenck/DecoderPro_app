@@ -46,7 +46,7 @@ public:
  PolygonAction* init(PositionablePolygon* p);
 
 public slots:
-/*public*/ void actionPerformed(ActionEvent* e = 0);
+/*public*/ void actionPerformed(JActionEvent* e = 0)override;
 };
 
 #endif // POSITIONABLEPOLYGON_H

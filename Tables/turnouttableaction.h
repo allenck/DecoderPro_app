@@ -16,7 +16,7 @@ class ItemListener;
 class TTComboBoxDelegate;
 class TTEditDelegate;
 class Turnout;
-class ActionEvent;
+class JActionEvent;
 class JmriJFrame;
 class QLabel;
 class JTextField;
@@ -137,7 +137,7 @@ class OkListener : public ActionListener
 public:
     OkListener(TurnoutTableAction* self);
 public slots:
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0);
 };
 
 class ToCancelActionListener : public ActionListener
@@ -147,7 +147,7 @@ class ToCancelActionListener : public ActionListener
 public:
     ToCancelActionListener(TurnoutTableAction* self);
 public slots:
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0);
 };
 
 class RangeListener : public ActionListener
@@ -157,7 +157,7 @@ class RangeListener : public ActionListener
 public:
     RangeListener(TurnoutTableAction* self);
 public slots:
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0);
 };
 class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
 {
@@ -200,7 +200,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ void configureTable(JTable* tbl) override;
     /*public*/ JTable* makeJTable(/*TableSorter srtr*/);
 public slots:
-    /*public*/ void comboBoxAction(ActionEvent* e = 0);
+    /*public*/ void comboBoxAction(JActionEvent* e = 0);
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
@@ -273,7 +273,7 @@ class ItemListener1 : public ActionListener
 public:
  ItemListener1(JmriJFrame* F);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 class ItemListener2 : public ActionListener
 {
@@ -283,7 +283,7 @@ class ItemListener2 : public ActionListener
 public:
  ItemListener2(JmriJFrame* F, TurnoutTableAction* self);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 /*protected*/ /*static*/ class TurnoutOperationEditor : public JDialog
 {

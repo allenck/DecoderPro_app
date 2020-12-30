@@ -294,7 +294,7 @@
 
 }
 
-/*public*/ void VSDConfigDialog::cancelButtonActionPerformed(ActionEvent* ae) {
+/*public*/ void VSDConfigDialog::cancelButtonActionPerformed(JActionEvent* ae) {
     //dispose();
  deleteLater();
 }
@@ -302,7 +302,7 @@
 /**
  * Handle the "Close" (or "OK") button action
  */
-/*public*/ void VSDConfigDialog::closeButtonActionPerformed(ActionEvent* ae)
+/*public*/ void VSDConfigDialog::closeButtonActionPerformed(JActionEvent* ae)
 {
  QString profileName = profileComboBox->currentText();
  if (profileComboBox->currentText() != "" && profileComboBox->currentText() != nullProfileName) {
@@ -346,7 +346,7 @@
  * ActionEventListener function for rosterSelector Chooses a RosterEntry
  * from the list and loads its relevant info.
  */
-/*private*/ void VSDConfigDialog::rosterItemSelectAction(ActionEvent* /*e*/)
+/*private*/ void VSDConfigDialog::rosterItemSelectAction(JActionEvent* /*e*/)
 {
  if (rosterSelector->getSelectedRosterEntries()->length() != 0)
  {
@@ -371,7 +371,7 @@
  * ActionEventListener method for rosterSaveButton Writes VSDecoder info to
  * the RosterEntry.
  */
-/*private*/ void VSDConfigDialog::rosterSaveButtonAction(ActionEvent* /*e*/) {
+/*private*/ void VSDConfigDialog::rosterSaveButtonAction(JActionEvent* /*e*/) {
     log->debug("rosterSaveButton pressed");
     if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
         RosterEntry* r = rosterSelector->getSelectedRosterEntries()->at(0);
@@ -400,7 +400,7 @@
     }
 }
 
-/*private*/ void VSDConfigDialog::profileComboBoxActionPerformed(ActionEvent* evt)
+/*private*/ void VSDConfigDialog::profileComboBoxActionPerformed(JActionEvent* evt)
 {
  // if there's also an Address entered, then enable the OK button.
  if (addressSelector->getAddress() != NULL && profileComboBox->currentText() != nullProfileName)
@@ -411,7 +411,7 @@
   closeButton->setEnabled(false);
 }
 
-/*private*/ void VSDConfigDialog::profileLoadButtonActionPerformed(ActionEvent* evt) {
+/*private*/ void VSDConfigDialog::profileLoadButtonActionPerformed(JActionEvent* evt) {
     LoadVSDFileAction* vfa = new LoadVSDFileAction();
     vfa->actionPerformed();
     // Note: This will trigger a PROFILE_LIST_CHANGE event from VSDecoderManager
@@ -420,7 +420,7 @@
 /**
  * handle the address "Set" button.
  */
-/*private*/ void VSDConfigDialog::addressSetButtonActionPerformed(ActionEvent* evt) {
+/*private*/ void VSDConfigDialog::addressSetButtonActionPerformed(JActionEvent* evt) {
     // If there's also a Profile selected, enable the OK button.
     if ((profileComboBox->currentIndex() != -1)
             //&& (!(profileComboBox.getSelectedItem() instanceof NullProfileBoxItem)))

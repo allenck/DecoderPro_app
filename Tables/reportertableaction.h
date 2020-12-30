@@ -112,7 +112,7 @@ class RTACreateListener : public ActionListener
     ReporterTableAction* act;
 public:
     RTACreateListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) ;
 };
 
 class RTACancelActionListener : public ActionListener
@@ -121,7 +121,7 @@ class RTACancelActionListener : public ActionListener
     ReporterTableAction* act;
    public:
     RTACancelActionListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
 };
 
 class ReporterRangeListener : public ActionListener
@@ -130,7 +130,7 @@ class ReporterRangeListener : public ActionListener
     ReporterTableAction* act;
    public:
      ReporterRangeListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
 };
 #if 0
 /**

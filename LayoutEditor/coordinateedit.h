@@ -140,7 +140,7 @@ class SetBorderSizeActionListener : public ActionListener
 public:
     SetBorderSizeActionListener(Positionable* pos, QObject* parent);
  public slots:
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0);
 };
 
 class LevelEditAction : public AbstractAction

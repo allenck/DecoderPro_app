@@ -11,7 +11,7 @@
 #include "qualifieradder.h"
 
 class EnumVariableValue;
-class ActionEvent;
+class JActionEvent;
 class LIBPR3SHARED_EXPORT VariableTableModel : public AbstractTableModel
 {
     Q_OBJECT
@@ -53,7 +53,7 @@ public:
     /*public*/ void setConstant(QDomElement e) ;
     /*public*/ void newDecVariableValue(QString name, QString CV, QString mask,
                                     bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly);
-    /*public*/ void actionPerformed(ActionEvent* /*e*/);
+    /*public*/ void actionPerformed(JActionEvent* /*e*/);
     /*public*/ void read(int i);
     /*public*/ void write(int i);
     /*public*/ void configDone() ;

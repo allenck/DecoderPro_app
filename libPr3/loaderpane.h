@@ -8,7 +8,7 @@
 
 class JFileChooser;
 class FlowLayout;
-class ActionEvent;
+class JActionEvent;
 class QFileDialog;
 class QLabel;
 class JTextField;
@@ -137,7 +137,7 @@ private:
 
 private slots:
  /*private*/ void selectInputFile();
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0);
  /*private*/ void updateDownloadVerifyButtons();
  void doLoad();
  void doVerify();

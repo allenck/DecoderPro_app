@@ -29,7 +29,7 @@
 
 
 BeanEditAction::BeanEditAction(QObject *parent) :
-  QAction("Bean Edit", parent)
+  AbstractAction("Bean Edit", parent)
 {
  common();
 }
@@ -48,7 +48,7 @@ BeanEditAction::BeanEditAction(QObject *parent) :
 //private static final long serialVersionUID = 8002894695517110179L;
 
 /*public*/ BeanEditAction::BeanEditAction(QString s,QObject *parent) :
-  QAction(s,parent){
+  AbstractAction(s,parent){
     //super(s);
  common();
 }
@@ -144,14 +144,14 @@ BasicSetSaveActionListener::BasicSetSaveActionListener(BeanEditAction *act)
 {
  this->act = act;
 }
-/*public*/ void BasicSetSaveActionListener::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void BasicSetSaveActionListener::actionPerformed(JActionEvent* /*e*/) {
  act->saveBasicItems();
 }
 BasicSetResetActionListener::BasicSetResetActionListener(BeanEditAction *act)
 {
  this->act = act;
 }
-/*public*/ void BasicSetResetActionListener::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void BasicSetResetActionListener::actionPerformed(JActionEvent* /*e*/) {
  act->resetBasicItems();
 }
 
@@ -238,7 +238,7 @@ PropertiesSetSaveActionListener::PropertiesSetSaveActionListener(BeanEditAction 
 {
  this->act = act;
 }
-/*public*/ void PropertiesSetSaveActionListener::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void PropertiesSetSaveActionListener::actionPerformed(JActionEvent* /*e*/)
 {
  act->propertiesModel->setModel(act->bean);
 }
@@ -246,7 +246,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
 {
  this->act = act;
 }
-/*public*/ void PropertiesSetResetActionListener::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void PropertiesSetResetActionListener::actionPerformed(JActionEvent* /*e*/) {
  act->propertiesModel->setModel(act->bean);
 }
 
@@ -283,7 +283,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
     selectedTab = c;
 }
 
-/*public*/ void BeanEditAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void BeanEditAction::actionPerformed(JActionEvent * /*e*/)
 {
  if (bean == NULL)
  {

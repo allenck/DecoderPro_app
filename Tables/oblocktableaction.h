@@ -37,7 +37,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0) override;
  /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 private:
@@ -85,9 +85,7 @@ private:
      /*protected*/ JPanel* dataPanel;
      /*protected*/ JTabbedPane* dataTabs;
      /*protected*/ bool init = false;
-     //@Nonnull
      /*protected*/ OBlockManager* oblockManager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
-     //@Nonnull
      /*protected*/ PortalManager* portalManager = (PortalManager*)InstanceManager::getDefault("PortalManager");
      // /*protected*/ bool _includeAddButton = true;
      /*protected*/ void createModel() override; // Tabbed
@@ -97,7 +95,7 @@ private:
 
 
  protected slots:
-     /*protected*/ void addPressed(ActionEvent* e = 0) override;
+     /*protected*/ void addPressed(JActionEvent* e = 0) override;
      /*protected*/ void addOBlockPressed(ActionEvent* e = 0);
      void addSignalPressed(ActionEvent* e =0);
      void addPortalPressed(ActionEvent* e =0);

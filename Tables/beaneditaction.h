@@ -1,7 +1,7 @@
 #ifndef BEANEDITACTION_H
 #define BEANEDITACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
 #include "abstracttablemodel.h"
 #include "actionlistener.h"
 #include "libtables_global.h"
@@ -21,7 +21,7 @@ class QScrollArea;
 class JTextArea;
 class JTextField;
 class NamedBean;
-class LIBTABLESSHARED_EXPORT BeanEditAction : public QAction
+class LIBTABLESSHARED_EXPORT BeanEditAction : public AbstractAction
 {
  Q_OBJECT
 public:
@@ -39,7 +39,7 @@ private:
  Logger* log;
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0)override;
  void On_okBut_clicked();
 
 private:
@@ -89,6 +89,14 @@ protected slots:
  friend class SensorDebounceEditAction;
  friend class SetResetItemAction;
  friend class SetSaveItemAction;
+ friend class OBlockEditAction;
+ friend class OBTSaveItemAction1;
+ friend class OBTResetItemAction1;
+ friend class OBTResetItemAction1a;
+ friend class OBTSaveItemAction2;
+ friend class OBTResetItemAction2;
+ friend class OBTSaveItemAction3;
+ friend class OBTResetItemAction3;
 };
 /*private*/ /*static*/ class LIBTABLESSHARED_EXPORT BeanPropertiesTableModel : public  AbstractTableModel
 {
@@ -122,41 +130,41 @@ protected slots:
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ bool wasModified() ;
 };
-class LIBTABLESSHARED_EXPORT BasicSetSaveActionListener : public ActionListener
+class LIBTABLESSHARED_EXPORT BasicSetSaveActionListener : public AbstractAction
 {
  Q_OBJECT
  BeanEditAction* act;
 public:
  BasicSetSaveActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
-class LIBTABLESSHARED_EXPORT BasicSetResetActionListener : public ActionListener
+class LIBTABLESSHARED_EXPORT BasicSetResetActionListener : public AbstractAction
 {
  Q_OBJECT
  BeanEditAction* act;
 public:
  BasicSetResetActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
-class LIBTABLESSHARED_EXPORT PropertiesSetSaveActionListener : public ActionListener
+class LIBTABLESSHARED_EXPORT PropertiesSetSaveActionListener : public AbstractAction
 {
  Q_OBJECT
  BeanEditAction* act;
 public:
  PropertiesSetSaveActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0) override;
+ void actionPerformed(JActionEvent *e = 0) /*override*/;
 };
-class LIBTABLESSHARED_EXPORT PropertiesSetResetActionListener : public ActionListener
+class LIBTABLESSHARED_EXPORT PropertiesSetResetActionListener : public AbstractAction
 {
  Q_OBJECT
  BeanEditAction* act;
 public:
  PropertiesSetResetActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0) override;
+ void actionPerformed(JActionEvent *e = 0) /*override*/;
 };
 
 #endif // BEANEDITACTION_H

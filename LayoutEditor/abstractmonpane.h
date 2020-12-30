@@ -11,7 +11,7 @@ class QFile;
 class JLabel;
 class QFileDialog;
 class QTextStream;
-class ActionEvent;
+class JActionEvent;
 class QScrollArea;
 class UserPreferencesManager;
 class JTextField;
@@ -39,11 +39,11 @@ public:
 signals:
 
 public slots:
-    /*public*/ /*synchronized*/ void clearButtonActionPerformed(ActionEvent* e = nullptr);
-    /*public*/ /*synchronized*/ void startLogButtonActionPerformed(ActionEvent* e = nullptr);
-    /*public*/ /*synchronized*/ void stopLogButtonActionPerformed(ActionEvent* e = nullptr);
-    /*public*/ void openFileChooserButtonActionPerformed(ActionEvent*e = nullptr);
-    /*public*/ void enterButtonActionPerformed(ActionEvent* e = nullptr);
+    /*public*/ /*synchronized*/ void clearButtonActionPerformed(JActionEvent* e = nullptr);
+    /*public*/ /*synchronized*/ void startLogButtonActionPerformed(JActionEvent* e = nullptr);
+    /*public*/ /*synchronized*/ void stopLogButtonActionPerformed(JActionEvent* e = nullptr);
+    /*public*/ void openFileChooserButtonActionPerformed(JActionEvent*e = nullptr);
+    /*public*/ void enterButtonActionPerformed(JActionEvent* e = nullptr);
     /*public*/ /*synchronized*/ QString getFrameText();
     void OnAutoScrollCheckBox(bool);
     void OnAlwaysOnTopCheckBox(bool);

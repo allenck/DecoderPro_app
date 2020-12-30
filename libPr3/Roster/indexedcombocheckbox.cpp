@@ -47,7 +47,7 @@ IndexedComboCheckBox::IndexedComboCheckBox(QComboBox* box, IndexedEnumVariableVa
     if (_box->currentIndex() == 1) setChecked(true);
 }
 
-void IndexedComboCheckBox::thisActionPerformed(ActionEvent* /*e*/) {
+void IndexedComboCheckBox::thisActionPerformed(JActionEvent* /*e*/) {
     // update original state to this state
     if (isChecked())
      _box->setCurrentIndex(1);
@@ -55,7 +55,7 @@ void IndexedComboCheckBox::thisActionPerformed(ActionEvent* /*e*/) {
      _box->setCurrentIndex(0);
 }
 
-void IndexedComboCheckBox::originalActionPerformed(ActionEvent* /*e*/) {
+void IndexedComboCheckBox::originalActionPerformed(JActionEvent* /*e*/) {
     // update this state to original state
     if (_box->currentIndex()==1) setChecked(true);
     else  setChecked(false);

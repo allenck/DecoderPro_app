@@ -33,7 +33,7 @@ public slots:
         /**
          * Invoked when an action occurs.
          */
-    virtual void actionPerformed(ActionEvent* e = 0){Q_UNUSED(e)}
+    virtual void actionPerformed(JActionEvent* e = 0){Q_UNUSED(e)}
 
 signals:
     

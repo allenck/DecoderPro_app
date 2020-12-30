@@ -8,7 +8,7 @@
 class JTextField;
 class JmriJFrame;
 class QMenu;
-class ActionEvent;
+class JActionEvent;
 class Turnout;
 class Sensor;
 class Light;
@@ -52,7 +52,7 @@ public:
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
- /*public*/ void actionPerformed(ActionEvent* e);
+ /*public*/ void actionPerformed(JActionEvent* e);
  void mouseClicked(QMouseEvent* e = nullptr);
  /*public*/ void doMouseClicked(QMouseEvent* e);
  void mousePressed(QMouseEvent*);
@@ -132,8 +132,8 @@ protected:
  ///*protected*/ void paintComponent(QPainter* g);
 
 protected slots:
- /*protected*/ void cancelAddPressed(ActionEvent* e = nullptr);
- /*protected*/ void okAddPressed(ActionEvent* e = nullptr);
+ /*protected*/ void cancelAddPressed(JActionEvent* e = nullptr);
+ /*protected*/ void okAddPressed(JActionEvent* e = nullptr);
 
  friend class IconSwitch;
  friend class OkActionListener;

@@ -180,7 +180,7 @@ void EnumVariableValue::on_currentIndex_changed(int i)
     actionPerformed();
 }
 
-/*public*/ void EnumVariableValue::actionPerformed(ActionEvent* e)
+/*public*/ void EnumVariableValue::actionPerformed(JActionEvent* e)
 {
  if(e != NULL)
  {

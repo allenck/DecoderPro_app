@@ -4895,7 +4895,7 @@ else if(itemType == Conditional::ITEM_TYPE_OTHER)
 //     int _itemType;
 CTEActionTypeListener::CTEActionTypeListener(ConditionalTreeEdit *cte) {this->cte = cte;}
      //@Override
-     /*public*/ void CTEActionTypeListener::actionPerformed(ActionEvent* /*e*/) {
+     /*public*/ void CTEActionTypeListener::actionPerformed(JActionEvent* /*e*/) {
          int select1 = cte->_actionItemBox->currentIndex();
          int select2 = cte->_actionTypeBox->currentIndex() - 1;
          if (cte->log->isDebugEnabled()) {
@@ -4926,7 +4926,7 @@ CTEActionTypeListener::CTEActionTypeListener(ConditionalTreeEdit *cte) {this->ct
 
  ActionSignalHeadNameListener::ActionSignalHeadNameListener(ConditionalTreeEdit *cte) { this->cte = cte;}
      //@Override
-     /*public*/ void ActionSignalHeadNameListener::actionPerformed(ActionEvent* /*e*/) {
+     /*public*/ void ActionSignalHeadNameListener::actionPerformed(JActionEvent* /*e*/) {
          // fired when signal head name changes, but only
          // while in signal head mode
          cte->log->debug("actionSignalHeadNameListener fires; _actionNameField : " + cte->_actionNameField->text().trimmed());  // NOI18N
@@ -4937,7 +4937,7 @@ CTEActionTypeListener::CTEActionTypeListener(ConditionalTreeEdit *cte) {this->ct
 ActionSignalMastNameListener::ActionSignalMastNameListener(ConditionalTreeEdit *cte) {this->cte = cte;}
 
 //@Override
-/*public*/ void ActionSignalMastNameListener::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void ActionSignalMastNameListener::actionPerformed(JActionEvent* /*e*/) {
     // fired when signal mast name changes, but only
     // while in signal mast mode
     cte->log->debug("actionSignalMastNameListener fires; _actionNameField : " + cte->_actionNameField->text().trimmed());  // NOI18N

@@ -159,7 +159,7 @@ namespace Operations
      }
  }
 
- /*protected*/ void BackupDialog::do_backupButton_actionPerformed(ActionEvent* /*e*/)
+ /*protected*/ void BackupDialog::do_backupButton_actionPerformed(JActionEvent* /*e*/)
  {
   // Do the backup of the files...
   QString setName = "";
@@ -225,7 +225,7 @@ namespace Operations
 //     }
  }
 
- /*protected*/ void BackupDialog::do_cancelButton_actionPerformed(ActionEvent* arg0) {
+ /*protected*/ void BackupDialog::do_cancelButton_actionPerformed(JActionEvent* arg0) {
      //dispose();
  close();
  }
@@ -237,7 +237,7 @@ namespace Operations
      backupButton->setEnabled(s.length() > 0);
  }
 
- /*protected*/ void BackupDialog::do_helpButton_actionPerformed(ActionEvent* /*e*/) {
+ /*protected*/ void BackupDialog::do_helpButton_actionPerformed(JActionEvent* /*e*/) {
      // Not implemented yet.
  }
 

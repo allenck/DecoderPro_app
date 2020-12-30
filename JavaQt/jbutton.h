@@ -4,7 +4,7 @@
 #include <QPushButton>
 
 class Action;
-class ActionEvent;
+class JActionEvent;
 class JButton : public QPushButton
 {
  Q_OBJECT
@@ -18,7 +18,7 @@ public:
 // /*public*/ void setIcon(const QIcon &icon);
 
 signals:
- void actionPerformed(ActionEvent*);
+ void actionPerformed(JActionEvent*);
 
 public slots:
  void on_clicked();

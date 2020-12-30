@@ -12607,6 +12607,11 @@ void PythonQtWrapper_JTable::addColumn(JTable* theWrappedObject, TableColumn*  a
   ( theWrappedObject->addColumn(aColumn));
 }
 
+int  PythonQtWrapper_JTable::columnAtPoint(JTable* theWrappedObject, QPoint  arg__1)
+{
+  return ( theWrappedObject->columnAtPoint(arg__1));
+}
+
 int  PythonQtWrapper_JTable::convertColumnIndexToModel(JTable* theWrappedObject, int  viewColumnIndex)
 {
   return ( theWrappedObject->convertColumnIndexToModel(viewColumnIndex));

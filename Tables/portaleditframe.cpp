@@ -150,7 +150,7 @@
     _newPortal = false;
 }
 
-/*private*/ void PortalEditFrame::applyPressed(ActionEvent* e) {
+/*private*/ void PortalEditFrame::applyPressed(JActionEvent* e) {
     QString user = portalUserName->text().trimmed();
     if (user ==("")) {
         // warn/help bar red

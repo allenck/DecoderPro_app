@@ -3,7 +3,7 @@
 #include "abstractaction.h"
 #include "appslib_global.h"
 
-class ActionEvent;
+class JActionEvent;
 namespace Operations
 {
  class CarsTableModel;

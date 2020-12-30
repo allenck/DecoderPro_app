@@ -269,7 +269,7 @@ void BlockPathTableModel::initTempRow()
        } else
        {
         initTempRow();
-        _parent->updateOpenMenu();
+        _parent->updateOBlockTablesMenu();
         fireTableDataChanged();
        }
       }
@@ -367,7 +367,7 @@ void BlockPathTableModel::initTempRow()
         }
        }
        portal->setFromBlock(_block, true);
-       _parent->getPortalModel()->fireTableDataChanged();
+       _parent->getPortalTableModel()->fireTableDataChanged();
       }
      }
      path->setFromPortal(portal);
@@ -436,7 +436,7 @@ void BlockPathTableModel::initTempRow()
         }
        }
        portal->setToBlock(_block, true);
-       _parent->getPortalModel()->fireTableDataChanged();
+       _parent->getPortalTableModel()->fireTableDataChanged();
       }
      }
      path->setToPortal(portal);

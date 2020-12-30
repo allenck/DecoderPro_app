@@ -99,7 +99,7 @@ private:
      {
       this->parent = parent;
      }
-     void actionPerformed(ActionEvent */*e*/ = 0)
+     void actionPerformed(JActionEvent */*e*/ = 0)
      {
       parent->updateSensor();
      }
@@ -124,7 +124,7 @@ public:
   this->parent = parent;
  }
 public slots:
- void actionPerformed(ActionEvent * = 0) { parent->updateItem();}
+ void actionPerformed(JActionEvent * = 0) { parent->updateItem();}
 };
 
 #endif // MULTISENSORICON_H

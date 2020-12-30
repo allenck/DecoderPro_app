@@ -56,7 +56,7 @@
 //            scriptButtonActionPerformed(evt);
 //        }
 //    });
-    connect(scriptButton, SIGNAL(clicked()), this, SLOT(scriptButtonActionPerformed(ActionEvent*)));
+    connect(scriptButton, SIGNAL(clicked()), this, SLOT(scriptButtonActionPerformed(JActionEvent*)));
 #if 0
     GroupLayout layout = new GroupLayout(this);
     this->setLayout(layout);
@@ -103,7 +103,7 @@
 
 }// </editor-fold>
 
-/*private*/ void ScriptButtonPanel::scriptButtonActionPerformed(ActionEvent* evt) {
+/*private*/ void ScriptButtonPanel::scriptButtonActionPerformed(JActionEvent* evt) {
     if (this->chooser->showOpenDialog(parent) == JFileChooser::APPROVE_OPTION) {
         try {
             this->script->setText(this->chooser->getSelectedFile()->getCanonicalPath());

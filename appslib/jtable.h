@@ -5,8 +5,7 @@
 #include "tablemodel.h"
 #include "javaqt_global.h"
 #include "pushbuttondelegate.h"
-#include "jtogglebutton.h"
-
+#include "tabledelegates.h"
 
 class AbstractTableModel;
 class DefaultListSelectionModel;
@@ -155,8 +154,9 @@ public:
  /*public*/ bool getShowHorizontalLines();
  /*public*/ bool getShowVerticalLines();
  /*public*/ void setDefaultRenderer(QString, QObject*);
- /*public*/ void setDefaultEditor(QString, QObject*);
- /*public*/ void doLayout() {}
+ /*public*/ void setDefaultEditor(QString, QItemDelegate *);
+ /*public*/ void doLayout();
+ /*public*/ int columnAtPoint(QPoint);
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -445,49 +445,6 @@ public:
 
 };
 
-class ButtonRenderer : public QObject
-{
-    Q_OBJECT
-public:
-    ButtonRenderer(QObject* parent = nullptr) : QObject(parent) {}
-};
 
-class ToggleButtonRenderer : public QObject
-{
-    Q_OBJECT
-public:
-    ToggleButtonRenderer(QString sq, QString s2, QObject* parent = nullptr) : QObject(parent) {}
-};
-
-class ValueRenderer : public QObject
-{
-    Q_OBJECT
-public:
-    ValueRenderer(QObject* parent = nullptr) : QObject(parent) {}
-};
-
-class ButtonEditor : public QObject
-{
-    Q_OBJECT
-public:
-    ButtonEditor(QObject* parent = nullptr) : QObject(parent) {}
-};
-
-class ToggleButtonEditor : public QObject
-{
-    Q_OBJECT
-    QWidget* button;
-    QString on;
-    QString off;
-
-public:
-    ToggleButtonEditor(QWidget* button, QString on, QString off, QObject* parent = nullptr) : QObject(parent)
-    {
-        this->button = button;
-        this->on = on;
-        this->off = off;
-    }
-
-};
 
 #endif // JTABLE_H

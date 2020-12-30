@@ -141,7 +141,7 @@ QString headName, JmriJFrame* frame);
 signals:
     
 public slots:
-    /*private*/ void getSavedAnchorSignals (ActionEvent* /*a*/ = 0);
+    /*private*/ void getSavedAnchorSignals (JActionEvent* /*a*/ = 0);
 
 private:
     // constants
@@ -1048,50 +1048,50 @@ private:
   JPanel* signalMastBlockPanel = new JPanel(new FlowLayout());
 
  private slots:
-    /*private*/ void setSignalsAtBlockBoundaryDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void turnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
-    void setSignalsDonePressed(ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXoverSignalsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void xoverTurnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXoverSignalsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void turnoutSensorsGetSaved (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSensorsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void turnoutSignalMastsGetSaved (ActionEvent* /*a*/ = 0); // SLOT
-    /*private*/ void getSavedAnchorSensors (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXingSensorsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSensorsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSensorsAtBlockBoundaryDonePressed (ActionEvent* a  = 0);
-    /*private*/ void setSignalMastsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalMastsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSensorsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void getSavedAnchorSignalMasts (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalMastsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalMastsAtBlockBoundaryDonePressed (ActionEvent* /*a*/ = 0) ;
-    /*private*/ void setXingSignalsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXingSignalsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXingSensorsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setTToTSignalsDonePressed (ActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalsAtBlockBoundaryDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void turnoutSignalsGetSaved (JActionEvent* /*a*/ = 0);
+    void setSignalsDonePressed(JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXoverSignalsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void xoverTurnoutSignalsGetSaved (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXoverSignalsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void turnoutSensorsGetSaved (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSensorsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void turnoutSignalMastsGetSaved (JActionEvent* /*a*/ = 0); // SLOT
+    /*private*/ void getSavedAnchorSensors (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXingSensorsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSensorsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSensorsAtBlockBoundaryDonePressed (JActionEvent* a  = 0);
+    /*private*/ void setSignalMastsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalMastsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSensorsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void getSavedAnchorSignalMasts (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalMastsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalMastsAtBlockBoundaryDonePressed (JActionEvent* /*a*/ = 0) ;
+    /*private*/ void setXingSignalsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXingSignalsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXingSensorsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setTToTSignalsDonePressed (JActionEvent* /*a*/ = 0);
     ///*private*/ void tToTTurnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
     /*private*/ void setTToTSignalsCancelPressed ();
-    /*private*/ void slipSensorsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setSlipSensorsCancelPressed (ActionEvent* a = 0);
-    /*private*/ void setSlipSensorsDonePressed (ActionEvent* a = 0);
-    /*private*/ void setSlipSignalsDonePressed (ActionEvent* a = 0);
-    /*private*/ void getSlipTurnoutSignalsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setSlipSignalsCancelPressed (ActionEvent* a = 0);
-    /*private*/ void xingSignalsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setSlipSignalMastsCancelPressed (ActionEvent* a = 0);
-    /*private*/ void slipSignalMastsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setSlipSignalMastsDonePressed (ActionEvent* a = 0);
-    /*private*/ void xingSignalMastsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setXingSignalMastsCancelPressed (ActionEvent*  = 0);
-    /*private*/ void setXingSignalMastsDonePressed (ActionEvent* a = 0);
-    /*private*/ void xingSensorsGetSaved (ActionEvent* a = 0);
-    /*private*/ void getSaved3WaySignals (ActionEvent* a = 0);
-    /*private*/ void set3WaySignalsCancelPressed (ActionEvent* a = 0);
-    /*private*/ void set3WaySignalsDonePressed (ActionEvent* a = 0);
+    /*private*/ void slipSensorsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setSlipSensorsCancelPressed (JActionEvent* a = 0);
+    /*private*/ void setSlipSensorsDonePressed (JActionEvent* a = 0);
+    /*private*/ void setSlipSignalsDonePressed (JActionEvent* a = 0);
+    /*private*/ void getSlipTurnoutSignalsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setSlipSignalsCancelPressed (JActionEvent* a = 0);
+    /*private*/ void xingSignalsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setSlipSignalMastsCancelPressed (JActionEvent* a = 0);
+    /*private*/ void slipSignalMastsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setSlipSignalMastsDonePressed (JActionEvent* a = 0);
+    /*private*/ void xingSignalMastsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setXingSignalMastsCancelPressed (JActionEvent*  = 0);
+    /*private*/ void setXingSignalMastsDonePressed (JActionEvent* a = 0);
+    /*private*/ void xingSensorsGetSaved (JActionEvent* a = 0);
+    /*private*/ void getSaved3WaySignals (JActionEvent* a = 0);
+    /*private*/ void set3WaySignalsCancelPressed (JActionEvent* a = 0);
+    /*private*/ void set3WaySignalsDonePressed (JActionEvent* a = 0);
 
     /*private*/ void setSignalsAtTToTTurnoutsGetSaved(/*ActionEvent* a*/);
 protected:

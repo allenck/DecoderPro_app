@@ -801,7 +801,7 @@ RefDialog::RefDialog(BeanTableFrame *frame, LogixTableAction* action) : JDialog(
  exec();
 }
 
-void RefDialog::deviceReportPressed(ActionEvent* /*e*/)
+void RefDialog::deviceReportPressed(JActionEvent* /*e*/)
 {
  Maintenance::deviceReportPressed(_devNameField->text(), NULL);
     //dispose();

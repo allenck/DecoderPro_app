@@ -14,7 +14,8 @@ public:
  /*public*/ static /*final*/ int LIVE_DRAG_MODE;// = 0;
  /*public*/ static /*final*/ int OUTLINE_DRAG_MODE;// = 1;
   /*public*/ QList<JInternalFrame*> getAllFrames();
-
+  /*public*/ void putClientProperty(QString, QString) {}
+  /*public*/ void setBackground(QColor);
 signals:
 
 public slots:

@@ -58,7 +58,7 @@ void InputWindowAction::common()
  *
  * @param e
  */
-/*public*/ void InputWindowAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void InputWindowAction::actionPerformed(JActionEvent * /*e*/)
 {
  //PythonInterp.getPythonInterpreter();
  PythonQt::self()->getMainModule();

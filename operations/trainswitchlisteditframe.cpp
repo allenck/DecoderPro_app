@@ -532,7 +532,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   connect(b, SIGNAL(clicked(bool)), this, SLOT(commentButtonActionPerformed()));
  }
 
- /*public*/ void TrainSwitchListEditFrame::commentButtonActionPerformed(ActionEvent* ae) {
+ /*public*/ void TrainSwitchListEditFrame::commentButtonActionPerformed(JActionEvent* ae) {
   QPushButton* b = (QPushButton*) ae;
      log->debug("button action " + b->objectName());
      Location* l = locationManager->getLocationByName(b->objectName());

@@ -96,7 +96,7 @@ void SplitButtonColorChooserPanel::stateChanged(ChangeEvent *)
     this->layout()->addWidget(setButton);
 }
 
-void SplitButtonColorChooserPanel::buttonClicked(ActionEvent*)
+void SplitButtonColorChooserPanel::buttonClicked(JActionEvent*)
 {
 // QColor desiredColor = JColorChooser::showDialog((Component*)setButton->parent(),
 //        tr("SetColor"), // NOI18N
@@ -107,7 +107,7 @@ void SplitButtonColorChooserPanel::buttonClicked(ActionEvent*)
 // }
 }
 
-void SplitButtonColorChooserPanel::splitButtonClicked(ActionEvent* e)
+void SplitButtonColorChooserPanel::splitButtonClicked(JActionEvent* e)
 {
  buttonClicked(e);
 }

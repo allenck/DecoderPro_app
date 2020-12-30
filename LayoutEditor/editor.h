@@ -548,21 +548,21 @@ private slots:
       Editor* editor;
   public:
       SignalHeadActionListener(Editor* editor) { this->editor = editor;}
-   void actionPerformed(ActionEvent */*e*/= 0) { editor->putSignalHead();}
+   void actionPerformed(JActionEvent */*e*/= 0) { editor->putSignalHead();}
   };
   class SignalMastActionListener : public ActionListener
   {
       Editor* editor;
   public:
       SignalMastActionListener(Editor* editor) { this->editor = editor;}
-   void actionPerformed(ActionEvent */*e*/= 0) { editor->putSignalMast();}
+   void actionPerformed(JActionEvent */*e*/= 0) { editor->putSignalMast();}
   };
   class MultisensorIconActionListener : public ActionListener
   {
       Editor* editor;
   public:
       MultisensorIconActionListener(Editor* editor) { this->editor = editor;}
-   void actionPerformed(ActionEvent */*e*/= nullptr) { editor->addMultiSensor();}
+   void actionPerformed(JActionEvent */*e*/= nullptr) { editor->addMultiSensor();}
   };
   class MemoryIconAdder : public IconAdder
   {
@@ -681,7 +681,7 @@ public:
    {
     this->parent = parent;
    }
-   void actionPerformed(ActionEvent *e = nullptr)
+   void actionPerformed(JActionEvent *e = nullptr)
    {
     Q_UNUSED(e);
     parent->  addTurnoutR();
@@ -695,7 +695,7 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  void actionPerformed(JActionEvent *e = 0)
   {
    Q_UNUSED(e);
    parent->  addTurnoutL();
@@ -709,7 +709,7 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  void actionPerformed(JActionEvent *e = 0)
   {
    Q_UNUSED(e);
    parent->  addSlip();
@@ -723,7 +723,7 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  void actionPerformed(JActionEvent *e = 0)
   {
    Q_UNUSED(e);
    parent->  addReporter();
@@ -738,7 +738,7 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  void actionPerformed(JActionEvent *e = 0)
   {
    Q_UNUSED(e);
    parent->  addLight();
@@ -752,7 +752,7 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  void actionPerformed(JActionEvent *e = 0)
   {
    Q_UNUSED(e);
    parent->  putBackground();
@@ -766,7 +766,7 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = nullptr)
+  void actionPerformed(JActionEvent *e = nullptr)
   {
    Q_UNUSED(e);
    parent->  putIcon();
@@ -780,7 +780,7 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = nullptr)
+  void actionPerformed(JActionEvent *e = nullptr)
   {
    Q_UNUSED(e);
    parent->  putMemory();
@@ -832,7 +832,7 @@ class SearchItemActionListener : public ActionListener
     Q_OBJECT
     IconAdder* ea;
 public slots:
-    /*public*/ void actionPerformed(ActionEvent *e = 0);
+    /*public*/ void actionPerformed(JActionEvent *e = 0);
 public:
     SearchItemActionListener* init(IconAdder* ed);
 };
@@ -852,7 +852,7 @@ class AddPanelIconActionListener : public ActionListener
     Editor* parent;
 public:
     AddPanelIconActionListener(Editor* parent);
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0);
 };
 class ShowToolTipActionListener : public ActionListener
 {
@@ -863,7 +863,7 @@ class ShowToolTipActionListener : public ActionListener
 public:
  ShowToolTipActionListener(Positionable* pos, bool isChecked, Editor* editor);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 class AddIconFrameWindowListener : public WindowListener
@@ -1076,7 +1076,7 @@ protected:
     AddBlockActionListener(Editor* editor) {this->editor = editor;}
    public slots:
       //@Override
-      /*public*/ void actionPerformed(ActionEvent*  /*a*/ = 0) {
+      /*public*/ void actionPerformed(JActionEvent*  /*a*/ = 0) {
           editor->putBlockContents();
       }
   };

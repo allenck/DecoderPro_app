@@ -39,7 +39,7 @@ BeanItemPanel::~BeanItemPanel() {}
 /**
  *  Set the action to be performed when the save button is pressed
  */
-/*public*/ void BeanItemPanel::setSaveItem(ActionListener* save)
+/*public*/ void BeanItemPanel::setSaveItem(AbstractAction* save)
 {
  this->save = save;
 }
@@ -47,7 +47,7 @@ BeanItemPanel::~BeanItemPanel() {}
 /**
  *  Set the action to be performed when the cancel button is pressed
  */
-/*public*/ void BeanItemPanel::setResetItem(ActionListener* reset){
+/*public*/ void BeanItemPanel::setResetItem(AbstractAction* reset){
     this->reset = reset;
 }
 

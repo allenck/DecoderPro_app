@@ -69,7 +69,7 @@ VarTextField::VarTextField(Document* doc, QString text, int col, VariableValue* 
 {
  originalPropertyChanged(e);
 }
-void VarTextField::thisActionPerformed(ActionEvent* e) {
+void VarTextField::thisActionPerformed(JActionEvent* e) {
     // tell original
     if(qobject_cast<DecVariableValue*>(_var)!=NULL)
     {

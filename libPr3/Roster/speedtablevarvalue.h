@@ -50,12 +50,12 @@ public:
 signals:
 
 public slots:
-    void doForceStraight(ActionEvent* e = 0);
-    void doMatchEnds(ActionEvent* e = 0);
-    void doRatioCurve(ActionEvent* e = 0);
-    void doLogCurve(ActionEvent* e = 0);
-    void doShiftLeft(ActionEvent* e = 0) ;
-    void doShiftRight(ActionEvent* e = 0);
+    void doForceStraight(JActionEvent* e = 0);
+    void doMatchEnds(JActionEvent* e = 0);
+    void doRatioCurve(JActionEvent* e = 0);
+    void doLogCurve(JActionEvent* e = 0);
+    void doShiftLeft(JActionEvent* e = 0) ;
+    void doShiftRight(JActionEvent* e = 0);
     /*public*/ void stateChanged(QWidget*);
     // handle incoming parameter notification
     /*public*/ void propertyChange(PropertyChangeEvent* e);

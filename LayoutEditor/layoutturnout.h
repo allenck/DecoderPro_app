@@ -445,12 +445,12 @@ private slots:
  void redrawPanel();
  //void on_viewRoutingAct_triggered();
  void on_additionalTurnout_toggled(bool);
- void turnoutEditBlockPressed(ActionEvent* a = 0);
- void turnoutEditBlockBPressed(ActionEvent* a = 0);
- void turnoutEditBlockCPressed(ActionEvent* a = 0);
- void turnoutEditBlockDPressed(ActionEvent* a = 0);
- void turnoutEditDonePressed(ActionEvent* a = 0);
- void turnoutEditCancelPressed(ActionEvent* a = 0);
+ void turnoutEditBlockPressed(JActionEvent* a = 0);
+ void turnoutEditBlockBPressed(JActionEvent* a = 0);
+ void turnoutEditBlockCPressed(JActionEvent* a = 0);
+ void turnoutEditBlockDPressed(JActionEvent* a = 0);
+ void turnoutEditDonePressed(JActionEvent* a = 0);
+ void turnoutEditCancelPressed(JActionEvent* a = 0);
  void on_blockNameField_textEdited(QString);
  void on_blockBNameField_textEdited(QString);
  void on_blockCNameField_textEdited(QString);

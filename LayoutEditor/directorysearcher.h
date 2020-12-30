@@ -53,7 +53,7 @@ class AActionListener : public  ActionListener {
     DirectorySearcher* s;
 public:
     /*public*/ AActionListener(QDir* d, DirectorySearcher* s);
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
 class MActionListener : public  ActionListener {
     Q_OBJECT
@@ -62,7 +62,7 @@ class MActionListener : public  ActionListener {
     DirectorySearcher* s;
 public:
     /*public*/ MActionListener(QDir* d, bool o, DirectorySearcher* s);
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
 class LActionListener : public  ActionListener {
     Q_OBJECT
@@ -70,14 +70,14 @@ class LActionListener : public  ActionListener {
 public:
     LActionListener(DirectorySearcher* s);
 
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
 class CActionListener : public  ActionListener {
     Q_OBJECT
     DirectorySearcher* s;
 public:
     CActionListener(DirectorySearcher* s);
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
 
 #endif // DIRECTORYSEARCHER_H

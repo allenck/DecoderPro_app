@@ -10,7 +10,7 @@
 class QSignalMapper;
 class QSignalMapper;
 class WindowMaker;
-class ActionEvent;
+class JActionEvent;
 class QButtonGroup;
 class QRadioButton;
 class QLabel;

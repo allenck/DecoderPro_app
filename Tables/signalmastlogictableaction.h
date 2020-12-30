@@ -19,7 +19,7 @@ public:
     /*public*/ void setMenuBar(BeanTableFrame* f);
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* /*e*/);
+    /*public*/ void actionPerformed(JActionEvent* /*e*/)override;
 
 private:
     void common();
@@ -42,7 +42,7 @@ private slots:
     /*protected*/ QString helpTarget() ;
 
     protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0) ;
+    /*protected*/ void addPressed(JActionEvent *e = 0)override;
 
 friend class SmlBeanTableDataModel;
 };

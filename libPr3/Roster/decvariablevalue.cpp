@@ -128,7 +128,7 @@ void DecVariableValue::updatedTextField()
 }
 
 /** ActionListener implementations */
-/*public*/ void DecVariableValue::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void DecVariableValue::actionPerformed(JActionEvent* /*e*/)
 {
  if (log->isDebugEnabled()) log->debug("actionPerformed");
 

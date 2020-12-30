@@ -229,7 +229,6 @@ private:
     /*private*/ QString _blockSpeed;// = "";
     /*private*/ int maxInfoMessages = 5;
     /*private*/ int infoMessageCount = 0;
-
 };
 
 class BlockSensorListener : public PropertyChangeListener

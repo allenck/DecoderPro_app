@@ -35,7 +35,7 @@ signals:
  void propertyChange(PropertyChangeEvent*);
 
 public slots:
- virtual void actionPerformed(ActionEvent* = 0) {}
+ virtual void actionPerformed(JActionEvent* = 0) {}
 
 private:
  /*private*/ static bool RECONFIGURE_ON_NULL;

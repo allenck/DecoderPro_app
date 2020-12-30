@@ -10,7 +10,7 @@
 class IVCBPropertyChangeListener;
 class IVarComboBox;
 class CvValue;
-class ActionEvent;
+class JActionEvent;
 class ComboRadioButtons;
 class IndexedComboCheckBox;
 class LIBPR3SHARED_EXPORT IndexedEnumVariableValue : public VariableValue
@@ -29,7 +29,7 @@ public:
     /*public*/ void lastItem();
     /*public*/ void setToolTipText(QString t);
     /*public*/ QVariant rangeVal();
-    /*public*/ void actionPerformed(ActionEvent* /*e*/);
+    /*public*/ void actionPerformed(JActionEvent* /*e*/);
     /*public*/ QString getValueString();
     /*public*/ void setIntValue(int i);
     /*public*/ QString getTextValue();

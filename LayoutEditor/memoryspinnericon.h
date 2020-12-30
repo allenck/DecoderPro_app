@@ -6,7 +6,7 @@
 #include "../libPr3/memory.h"
 #include "actionlistener.h"
 
-class ActionEvent;
+class JActionEvent;
 class JSpinner;
 class MemorySpinnerIcon : public PositionableJPanel
 {
@@ -60,7 +60,7 @@ class MSIActionListener : public ActionListener
 public:
     MSIActionListener(MemorySpinnerIcon* parent);
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
 
 #endif // MEMORYSPINNERICON_H

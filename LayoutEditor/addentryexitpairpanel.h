@@ -8,7 +8,7 @@
 
 class QPushButton;
 class JTextField;
-class ActionEvent;
+class JActionEvent;
 class QCheckBox;
 class NamedBean;
 class ValidPoints;
@@ -95,7 +95,7 @@ protected:
   /*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* sample);
 
 protected slots:
-  /*protected*/ void optionWindow(ActionEvent* e = 0);
+  /*protected*/ void optionWindow(JActionEvent* e = 0);
 
  friend class AddEntryExitPairFrame;
  friend class AEPTableModel;

@@ -174,7 +174,7 @@ class CPEditItemActionListener : public ActionListener
     Q_OBJECT
     ControlPanelEditor* panelEd;
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
 public:
     CPEditItemActionListener* init(ControlPanelEditor* pe);
 };
@@ -184,7 +184,7 @@ class DuplicateActionListener : public ActionListener
  Positionable* comp;
  ControlPanelEditor* edit;
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
 public:
     DuplicateActionListener* init(Positionable* pos, ControlPanelEditor* edit);
 };

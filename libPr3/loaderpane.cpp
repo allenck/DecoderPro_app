@@ -1574,7 +1574,7 @@ void Sender::updateGUI(/*final*/ int value) {
  }
 }
 
-/*public*/ void LoaderPane::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LoaderPane::actionPerformed(JActionEvent* /*e*/)
 {
  updateDownloadVerifyButtons();
  log->info("ActionListener");

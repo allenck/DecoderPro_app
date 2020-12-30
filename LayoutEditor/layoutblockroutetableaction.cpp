@@ -39,7 +39,7 @@ void LayoutBlockRouteTableAction::createModel()
  m = new LayoutBlockRouteTable(false, lBlock);
 }
 
-/*public*/ void LayoutBlockRouteTableAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LayoutBlockRouteTableAction::actionPerformed(JActionEvent * /*e*/)
 {
  // create the JTable model, with changes for specific NamedBean
  createModel();

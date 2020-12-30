@@ -312,14 +312,14 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
     addFrame->setVisible(true);
 }
 RTACreateListener::RTACreateListener(ReporterTableAction* act) { this->act = act;}
-/*public*/ void RTACreateListener::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void RTACreateListener::actionPerformed(JActionEvent* /*e*/) {
     act->createPressed();
 }
 RTACancelActionListener::RTACancelActionListener(ReporterTableAction *act) { this->act = act;}
-/*public*/ void RTACancelActionListener::actionPerformed(ActionEvent* /*e*/) { act->cancelPressed(); }
+/*public*/ void RTACancelActionListener::actionPerformed(JActionEvent* /*e*/) { act->cancelPressed(); }
 
 ReporterRangeListener::ReporterRangeListener(ReporterTableAction *act) { this->act = act;}
-/*public*/ void ReporterRangeListener::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void ReporterRangeListener::actionPerformed(JActionEvent* /*e*/) {
     act->canAddRange();
 }
 

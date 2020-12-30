@@ -3,7 +3,7 @@
 #include "abstractaudioframe.h"
 #include "libtables_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class LIBTABLESSHARED_EXPORT AudioListenerFrame : public AbstractAudioFrame
 {
  Q_OBJECT
@@ -18,7 +18,7 @@ public:
 signals:
 
 public slots:
- void okPressed(ActionEvent* /*e*/ = 0);
+ void okPressed(JActionEvent* /*e*/ = 0);
 private:
  JPanelVector3f* position;// = new JPanelVector3f(rba.getString("LabelPosition"),
 //         rba.getString("UnitUnits"));

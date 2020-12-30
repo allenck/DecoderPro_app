@@ -80,7 +80,7 @@ class AddTableActionListener : public ActionListener
     TableItemPanel* parent;
 public:
     AddTableActionListener(TableItemPanel* parent);
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0);
 };
 
 class AtCancelListener : public ActionListener

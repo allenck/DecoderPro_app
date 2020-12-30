@@ -24,7 +24,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0);
  void on_autoScroll_toggled(bool);
  void on_alwaysOnTopCheckBox_toggled(bool);
  void on_clearButton_clicked();

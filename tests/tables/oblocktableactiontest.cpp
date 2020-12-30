@@ -59,7 +59,7 @@ OBlockTableActionTest::OBlockTableActionTest(QObject *parent) : QObject(parent)
         ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setOblockEditTabbed(false);
 
         // ask for the window to open
-        a->actionPerformed((QAction::ActionEvent*)new ActionEvent(a, 1, ""));
+        a->actionPerformed(/*(QAction::ActionEvent*)*/new JActionEvent(a, 1, ""));
 
         // Find new table window by name
         JmriJFrame* doc = JmriJFrame::getFrame(tr("Occupancy Blocks, their Portals and Paths"));
@@ -88,7 +88,7 @@ OBlockTableActionTest::OBlockTableActionTest(QObject *parent) : QObject(parent)
         ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setOblockEditTabbed(true);
 
         // ask for the window to open
-        a->actionPerformed((QAction::ActionEvent*)new ActionEvent(a, 1, ""));
+        a->actionPerformed(/*(QAction::ActionEvent*)*/new JActionEvent(a, 1, ""));
 
         // Find new table window by name
         JmriJFrame* doc = JmriJFrame::getFrame(tr("Occupancy Block Tables"));
@@ -108,7 +108,7 @@ OBlockTableActionTest::OBlockTableActionTest(QObject *parent) : QObject(parent)
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         // use _tabbed interface
         ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setOblockEditTabbed(true);
-        a->actionPerformed((QAction::ActionEvent*)new ActionEvent(a, 2, "")); // show table
+        a->actionPerformed(/*(QAction::ActionEvent*)*/new JActionEvent(a, 2, "")); // show table
         JFrame* f = JFrameOperator::waitJFrame(tr("Occupancy Block Tables"), true, true);
         Assert::assertNotNull(f, __FILE__, __LINE__);
 
@@ -193,7 +193,7 @@ OBlockTableActionTest::OBlockTableActionTest(QObject *parent) : QObject(parent)
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         // use _tabbed interface
         ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setOblockEditTabbed(true);
-        a->actionPerformed((QAction::ActionEvent*)new ActionEvent(a, 2, "")); // show table
+        a->actionPerformed(/*(QAction::ActionEvent*)*/new JActionEvent(a, 2, "")); // show table
         JFrame* f = JFrameOperator::waitJFrame(tr("Occupancy Block Tables"), true, true);
         Assert::assertNotNull(f, __FILE__, __LINE__);
 
@@ -228,7 +228,7 @@ OBlockTableActionTest::OBlockTableActionTest(QObject *parent) : QObject(parent)
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         // use _tabbed interface
         ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setOblockEditTabbed(true);
-        a->actionPerformed((QAction::ActionEvent*)new ActionEvent(a, 2, "")); // show table
+        a->actionPerformed(/*(QAction::ActionEvent*)*/new JActionEvent(a, 2, "")); // show table
         JFrame* f = JFrameOperator::waitJFrame(tr("Occupancy Block Tables"), true, true);
         Assert::assertNotNull(f, __FILE__, __LINE__);
 

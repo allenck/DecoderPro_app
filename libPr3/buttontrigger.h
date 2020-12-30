@@ -4,7 +4,7 @@
 #include "libPr3_global.h"
 
 class Logger;
-class ActionEvent;
+class JActionEvent;
 class QMouseEvent;
 class LIBPR3SHARED_EXPORT ButtonTrigger : public Trigger
 {
@@ -31,7 +31,7 @@ signals:
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* event);
- /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+ /*public*/ void actionPerformed(JActionEvent* e = 0) ;
 
 private:
  enum ButtonAction

@@ -3,6 +3,7 @@
 
 #include <QAction>
 #include "javaqt_global.h"
+#include "actionevent.h"
 
 class QIcon;
 class QVariant;
@@ -41,7 +42,7 @@ public:
 signals:
 
 public slots:
- virtual void  actionPerformed(ActionEvent*) {}
+ virtual void  actionPerformed(JActionEvent*) {}
 
 private:
 

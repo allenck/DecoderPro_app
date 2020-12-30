@@ -250,7 +250,7 @@ public:
  this->command = command;
  }
 public slots:
- void actionPerformed(ActionEvent */*e*/ = 0)
+ void actionPerformed(JActionEvent */*e*/ = 0)
  {
   QString sysName = command;
   parent-> editCircuitError(sysName);

@@ -10,7 +10,7 @@ public:
 
 public slots:
  //@Override
- /*public*/ void actionPerformed(ActionEvent* /*e*/ = nullptr);
+ /*public*/ void actionPerformed(JActionEvent* /*e*/ = nullptr) override;
 
 };
 

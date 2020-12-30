@@ -427,7 +427,7 @@ void AudioSourceFrame::On_maxDistance_valueChanged()
     }
 }
 
-void AudioSourceFrame::okPressed(ActionEvent* /*e*/)
+void AudioSourceFrame::okPressed(JActionEvent* /*e*/)
 {
  QString user = userName->text();
  if (user==(""))

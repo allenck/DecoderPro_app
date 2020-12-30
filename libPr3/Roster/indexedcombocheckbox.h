@@ -26,8 +26,8 @@ signals:
     void propertyChange(PropertyChangeEvent*);
 
 public slots:
-    void thisActionPerformed(ActionEvent* e = 0);
-    void originalActionPerformed(ActionEvent* e = 0) ;
+    void thisActionPerformed(JActionEvent* e = 0);
+    void originalActionPerformed(JActionEvent* e = 0) ;
 
 private:
     /*transient*/ ActionListener* l1;

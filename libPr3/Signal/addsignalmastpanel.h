@@ -26,7 +26,7 @@ class JmriBeanComboBox;
 class Turnout;
 class BeanSelectCreatePanel;
 class DecimalFormat;
-class ActionEvent;
+class JActionEvent;
 class UserPreferencesManager;
 class LIBPR3SHARED_EXPORT AddSignalMastPanel : public QWidget
 {

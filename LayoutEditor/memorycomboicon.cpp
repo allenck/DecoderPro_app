@@ -426,7 +426,7 @@ MCIActionListener::MCIActionListener(MemoryComboIcon * parent)
 {
  this->parent = parent;
 }
-void MCIActionListener::actionPerformed(ActionEvent */*e*/)
+void MCIActionListener::actionPerformed(JActionEvent */*e*/)
 {
  parent->editMemory();
 }

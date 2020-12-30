@@ -24,7 +24,7 @@ class QPushButton;
 class QCheckBox;
 class QRadioButton;
 class QFrame;
-class ActionEvent;
+class JActionEvent;
 class LBeanTableDataModel;
 class JTable;
 class JmriJFrame;
@@ -311,7 +311,7 @@ public:
  /*public*/ void clickOn(NamedBean* t) ;
  /*public*/ QString getValue(QString s) const;
  // ovewrdife to get right width
- void setupEdit(ActionEvent* e = 0);
+ void setupEdit(JActionEvent* e = 0);
  void finishUpdate() ;
  void clearPage();
  void cancelIncludedOnly();

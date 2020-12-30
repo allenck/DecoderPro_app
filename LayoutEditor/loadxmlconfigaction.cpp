@@ -52,7 +52,7 @@ void LoadXmlConfigAction::common()
  log = new Logger("LoadXmlConfigAction");
 }
 
-/*public*/ void LoadXmlConfigAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LoadXmlConfigAction::actionPerformed(JActionEvent* /*e*/)
 {
  loadFile(this->getConfigFileChooser());
 }

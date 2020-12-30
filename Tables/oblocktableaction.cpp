@@ -8,30 +8,15 @@
 #include "userpreferencesmanager.h"
 #include "joptionpane.h"
 #include "loggerfactory.h"
-/**
- * GUI to define OBlocks, OPaths and Portals
- * <P>
- * <hr>
- * This file is part of JMRI.
- * <P>
- * JMRI is free software; you can redistribute it and/or modify it under the
- * terms of version 2 of the GNU General Public License as published by the Free
- * Software Foundation. See the "COPYING" file for a copy of this license.
- * <P>
- * JMRI is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
- * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * <P>
- *
- * @author	Pete Cressman (C) 2009, 2010
- * @version $Revision: 28746 $
- */
-///*public*/ class OBlockTableAction extends AbstractAction {
+#include "guilafpreferencesmanager.h"
 
 /**
+ * GUI to define OBlocks, OPaths and Portals. Overrides some of the AbstractTableAction methods as this is a hybrid pane.
+ * Relies on {@link jmri.jmrit.beantable.oblock.TableFrames}.
  *
+ * @author Pete Cressman (C) 2009, 2010
+ * @author Egbert Broerse (C) 2020
  */
-///*private*/ static final long serialVersionUID = 6331453045183182013L;
 
 /*public*/ OBlockTableAction::OBlockTableAction(QObject *parent)
  : AbstractTableAction(tr("OBlock Table"),parent)
@@ -93,10 +78,10 @@ void OBlockTableAction::common()
     });
 }
 
-/*public*/ void OBlockTableAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void OBlockTableAction::actionPerformed(JActionEvent * /*e*/)
 {
- TableFrames* f = new TableFrames();
- f->initComponents();
+ _tabbed = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed();
+ initTableFrames();
 }
 
 /*private*/ void OBlockTableAction::initTableFrames() {
@@ -205,7 +190,8 @@ void OBlockTableAction::common()
         //subElements = fileMenu.getSubElements();
         subElements = fileMenu->children();
 #if 0
-        for (QAction* subElement : subElements) {
+        for (Object* obj : subElements) {
+         QAction* subElement = (QAction*)obj;
             MenuElement[] popsubElements = subElement.getSubElements();
             for (MenuElement popsubElement : popsubElements) {
                 if (popsubElement instanceof JMenuItem) {
@@ -218,7 +204,7 @@ void OBlockTableAction::common()
             }
         }
 #endif
-        fileMenu->addAction(otp->getPrintItem());
+        fileMenu->addMenu(otp->getPrintItem());
 
         menuBar->addMenu(otp->getOptionMenu());
         menuBar->addMenu(otp->getTablesMenu());
@@ -276,7 +262,7 @@ void OBlockTableAction::common()
 // Three [Addx...] buttons on tabbed bottom box handlers
 
 //@Override
-/*protected*/ void OBlockTableAction::addPressed(ActionEvent *e) {
+/*protected*/ void OBlockTableAction::addPressed(JActionEvent *e) {
     log->warn("This should not have happened");
 }
 

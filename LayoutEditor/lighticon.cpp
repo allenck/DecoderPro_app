@@ -249,7 +249,7 @@ LightIconActionListener::LightIconActionListener(LightIcon * icon)
  this->icon = icon;
 }
 
-void LightIconActionListener::actionPerformed(ActionEvent *e)
+void LightIconActionListener::actionPerformed(JActionEvent *e)
 {
  icon->update();
 }

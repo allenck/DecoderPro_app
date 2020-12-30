@@ -17,7 +17,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* = 0);
+    /*public*/ void actionPerformed(JActionEvent* = 0) override;
 
 private:
     LayoutBlock* lBlock;

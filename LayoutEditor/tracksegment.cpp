@@ -2724,7 +2724,7 @@ void TrackSegment::changeType(int choice) {
 TSAbstractAction::TSAbstractAction(QString name, QObject *parent)
  : AbstractAction(name, parent) {}
 
-/*public*/ void TSAbstractAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void TSAbstractAction::actionPerformed(JActionEvent* /*e*/)
 {
  AbstractAction*  routeTableAction = new  LayoutBlockRouteTableAction("ViewRouting", ((TrackSegment*)parent())->getLayoutBlock());
  routeTableAction->actionPerformed();

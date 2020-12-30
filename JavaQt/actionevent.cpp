@@ -1,6 +1,6 @@
 #include "actionevent.h"
 
-ActionEvent::ActionEvent(QObject *parent) :
+JActionEvent::JActionEvent(QObject *parent) :
     QObject(parent)
 {
 }
@@ -34,6 +34,7 @@ ActionEvent::ActionEvent(QObject *parent) :
  */
  // /*public*/ class ActionEvent extends AWTEvent {
 
+// Note: renamed JActionEvent to avoid name collision with QAvtion's enum ActionEvent
 
 /**
  * Constructs an <code>ActionEvent</code> object.
@@ -55,7 +56,7 @@ ActionEvent::ActionEvent(QObject *parent) :
  * @see #getID()
  * @see #getActionCommand()
  */
-/*public*/ ActionEvent::ActionEvent(QObject* source, int id, QString command, QObject *parent)
+/*public*/ JActionEvent::JActionEvent(QObject* source, int id, QString command, QObject *parent)
 {
     //this(source, id, command, 0);
     this->source = source;
@@ -88,7 +89,7 @@ ActionEvent::ActionEvent(QObject *parent) :
  * @see #getActionCommand()
  * @see #getModifiers()
  */
-/*public*/ ActionEvent::ActionEvent(QObject* source, int id, QString command, int modifiers, QObject *parent)
+/*public*/ JActionEvent::JActionEvent(QObject* source, int id, QString command, int modifiers, QObject *parent)
 {
     //this(source, id, command, 0, modifiers);
     this->source = source;
@@ -129,7 +130,7 @@ ActionEvent::ActionEvent(QObject *parent) :
  *
  * @since 1.4
  */
-/*public*/ ActionEvent::ActionEvent(QObject* source, int id, QString command, long when, int modifiers, QObject *parent)
+/*public*/ JActionEvent::JActionEvent(QObject* source, int id, QString command, long when, int modifiers, QObject *parent)
 {
     //super(source, id);
     this->actionCommand = command;
@@ -152,7 +153,7 @@ ActionEvent::ActionEvent(QObject *parent) :
  *
  * @return the string identifying the command for this event
  */
-/*public*/ QString ActionEvent::getActionCommand() {
+/*public*/ QString JActionEvent::getActionCommand() {
     return actionCommand;
 }
 
@@ -164,7 +165,7 @@ ActionEvent::ActionEvent(QObject *parent) :
  * @return this event's timestamp
  * @since 1.4
  */
-/*public*/ long ActionEvent::getWhen() {
+/*public*/ long JActionEvent::getWhen() {
     return when;
 }
 
@@ -173,7 +174,7 @@ ActionEvent::ActionEvent(QObject *parent) :
  *
  * @return the bitwise-or of the modifier constants
  */
-/*public*/ int ActionEvent::getModifiers() {
+/*public*/ int JActionEvent::getModifiers() {
     return modifiers;
 }
 
@@ -183,7 +184,7 @@ ActionEvent::ActionEvent(QObject *parent) :
  *
  * @return a string identifying the event and its associated command
  */
-/*public*/ QString ActionEvent::paramString() {
+/*public*/ QString JActionEvent::paramString() {
     QString typeStr;
     switch(id) {
       case ACTION_PERFORMED:
@@ -196,7 +197,7 @@ ActionEvent::ActionEvent(QObject *parent) :
 //        KeyEvent.getKeyModifiersText(modifiers);
     return "";
 }
-/*public*/ QObject* ActionEvent::getSource()
+/*public*/ QObject* JActionEvent::getSource()
 {
  return source;
 }

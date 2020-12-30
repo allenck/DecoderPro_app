@@ -4,7 +4,7 @@
 #include "liblayouteditor_global.h"
 
 class VSDecoder;
-class ActionEvent;
+class JActionEvent;
 class PropertyChangeEvent;
 class VSDManagerEvent;
 class RosterEntry;
@@ -72,10 +72,10 @@ private:
 
 
 private slots:
- /*private*/ void addressSetButtonActionPerformed(ActionEvent* evt = 0);
- /*private*/ void profileComboBoxActionPerformed(ActionEvent* evt = 0);
- /*private*/ void rosterSaveButtonAction(ActionEvent* e = 0);
- /*private*/ void rosterItemSelectAction(ActionEvent* e = 0);
+ /*private*/ void addressSetButtonActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void profileComboBoxActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void rosterSaveButtonAction(JActionEvent* e = 0);
+ /*private*/ void rosterItemSelectAction(JActionEvent* e = 0);
 
 
 protected:

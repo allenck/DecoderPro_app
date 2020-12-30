@@ -3,7 +3,7 @@
 #include "jmrijframe.h"
 
 class Logger;
-class ActionEvent;
+class JActionEvent;
 class QCheckBox;
 class QPushButton;
 class DecimalFormat;
@@ -20,11 +20,11 @@ public:
 signals:
 
 public slots:
- /*public*/ void offButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void onButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void intensityButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void applyButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void statusButtonActionPerformed(ActionEvent* e = 0);
+ /*public*/ void offButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void onButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void intensityButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void applyButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void statusButtonActionPerformed(JActionEvent* e = 0);
  /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 private:

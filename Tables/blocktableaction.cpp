@@ -970,7 +970,7 @@ BTActionListener::BTActionListener(BlockTableAction *blockTableAction)
 {
  this->blockTableAction = blockTableAction;
 }
-void BTActionListener::actionPerformed(ActionEvent *)
+void BTActionListener::actionPerformed(JActionEvent *)
 {
  blockTableAction->okPressed();
 }
@@ -978,7 +978,7 @@ BTCancelListener::BTCancelListener(BlockTableAction *blockTableAction)
 {
  this->blockTableAction = blockTableAction;
 }
-void BTCancelListener::actionPerformed(ActionEvent *)
+void BTCancelListener::actionPerformed(JActionEvent *)
 {
  blockTableAction->cancelPressed();
 }

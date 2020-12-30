@@ -53,7 +53,7 @@ class ASCCActionListener : public ActionListener
 public:
  ASCCActionListener(QString item, AbstractSimulatorConnectionConfig* parent);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 #endif // ABSTRACTSIMULATORCONNECTIONCONFIG_H

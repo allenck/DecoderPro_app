@@ -38,6 +38,7 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
  */
 /*public*/ void SystemConnectionMemoManager::_register(SystemConnectionMemo* memo)
 {
+ if(log)
   log->debug(tr("registering connection %1").arg(memo->getUserName()));
 
   // check for special case

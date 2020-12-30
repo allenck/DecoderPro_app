@@ -79,7 +79,7 @@ class DisableCheckboxListener : public ActionListener
 public:
     DisableCheckboxListener(JmrixConfigPane* configPane, QCheckBox* checkBox);
 public slots:
-    void actionPerformed(ActionEvent * = 0);
+    void actionPerformed(JActionEvent * = 0);
 };
 class CloseButtonListener : public ActionListener
 {
@@ -89,7 +89,7 @@ class CloseButtonListener : public ActionListener
 public:
     CloseButtonListener(int index, ConnectionsPreferencesPanel* parent);
 public slots:
-    void actionPerformed(ActionEvent * = 0);
+    void actionPerformed(JActionEvent * = 0);
 };
 //class MyTabWidget: public QTabWidget
 //{

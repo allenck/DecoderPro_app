@@ -18,7 +18,7 @@ public:
  /*public*/ QString helpTarget();
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent*  e = 0);
+  /*public*/ void actionPerformed(JActionEvent*  e = 0)override;
  /*public*/ QString getBeanType();
  void updateFeedbackOptions();
  /*public*/ NamedBean* getByUserName(QString name);
@@ -79,24 +79,24 @@ protected slots:
  friend class AutomationSelectionListener;
 };
 
-class FeedbackSaveItemListener : public ActionListener
+class FeedbackSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  FeedbackSaveItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
 
-class FeedbackResetItemListener : public ActionListener
+class FeedbackResetItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  FeedbackResetItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
 class AutomationSelectionListener : public ActionListener
 {
@@ -105,43 +105,43 @@ class AutomationSelectionListener : public ActionListener
 public:
  AutomationSelectionListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
-class LockSaveItemListener : public ActionListener
+class LockSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  LockSaveItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
-class LockResetItemListener : public ActionListener
+class LockResetItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  LockResetItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
-class SpeedSaveItemListener : public ActionListener
+class SpeedSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  SpeedSaveItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
-class SpeedResetItemListener : public ActionListener
+class SpeedResetItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  SpeedResetItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
 
 #endif // TURNOUTEDITACTION_H

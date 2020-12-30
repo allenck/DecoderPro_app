@@ -11,7 +11,7 @@ class IndexedPropertyChangeEvent;
 class ListSelectionEvent;
 class Profile;
 class WindowEvent;
-class ActionEvent;
+class JActionEvent;
 class JFrame;
 class QScrollArea;
 class QLabel;
@@ -44,9 +44,9 @@ private:
     /*private*/ void initComponents();
     Logger* log;
 private slots:
-    /*private*/ void btnSelectActionPerformed(ActionEvent* /*evt*/ = 0);
-    /*private*/ void btnCreateActionPerformed(ActionEvent* /*evt*/= 0);
-    /*private*/ void btnUseExistingActionPerformed(ActionEvent* /*evt*/= 0);
+    /*private*/ void btnSelectActionPerformed(JActionEvent* /*evt*/ = 0);
+    /*private*/ void btnCreateActionPerformed(JActionEvent* /*evt*/= 0);
+    /*private*/ void btnUseExistingActionPerformed(JActionEvent* /*evt*/= 0);
     /*private*/ void profileNameChanged(Profile* p);
     /*private*/ void profilesValueChanged(QModelIndex);
     /*private*/ void profilesKeyPressed(QKeyEvent* evt);

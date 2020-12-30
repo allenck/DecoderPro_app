@@ -88,9 +88,9 @@ public:
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  static /*public*/ int getPreferredWidth(int col);
+ /*public*/ QString getColumnClass(int col);
  /*public*/ bool editMode();
  /*public*/ void setEditMode(bool editing);
- /*public*/ QString getColumnClass(int col);
 
 signals:
 

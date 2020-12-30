@@ -26,8 +26,8 @@ public:
 signals:
 
 public slots:
-    void originalActionPerformed(ActionEvent* e = NULL);
-    void thisActionPerformed(ActionEvent* e = NULL);
+    void originalActionPerformed(JActionEvent* e = NULL);
+    void thisActionPerformed(JActionEvent* e = NULL);
 
 private:
 //    /*transient*/ ActionListener* l1;

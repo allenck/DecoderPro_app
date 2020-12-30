@@ -190,7 +190,7 @@ JmriJFrame(parent)
     pack();
 }
 
-/*public*/ void SimpleTurnoutCtrlFrame::closeButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void SimpleTurnoutCtrlFrame::closeButtonActionPerformed(JActionEvent* /*e*/)
 {
  // load address from switchAddrTextField
  try {
@@ -228,7 +228,7 @@ JmriJFrame(parent)
     }
 }
 
-/*public*/ void SimpleTurnoutCtrlFrame::throwButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SimpleTurnoutCtrlFrame::throwButtonActionPerformed(JActionEvent* /*e*/) {
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)
@@ -263,7 +263,7 @@ JmriJFrame(parent)
     }
 }
 
-/*public*/ void SimpleTurnoutCtrlFrame::lockButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SimpleTurnoutCtrlFrame::lockButtonActionPerformed(JActionEvent* /*e*/) {
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)
@@ -297,7 +297,7 @@ JmriJFrame(parent)
     }
 }
 
-/*public*/ void SimpleTurnoutCtrlFrame::lockPushButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SimpleTurnoutCtrlFrame::lockPushButtonActionPerformed(JActionEvent* /*e*/) {
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)

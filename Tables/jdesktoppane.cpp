@@ -596,3 +596,9 @@ void setUIProperty(String propertyName, Object value) {
 }
 //}
 #endif
+
+void JDesktopPane::setBackground(QColor color)
+{
+ setStyleSheet(tr("JDesktopPane {background-color: rgb(%1, %2, %3)}").arg(color.red()).arg(color.green()).arg(color.blue()));
+
+}

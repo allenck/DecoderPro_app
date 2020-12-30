@@ -22,6 +22,7 @@ public:
  DELETE_COL = 2,
  NUMCOLS = 3
 };
+ /*public*/ void removeListener() ;
  /*public*/ void init();
  /*public*/ int columnCount(const QModelIndex &parent) const;
  /*public*/ int rowCount(const QModelIndex &parent) const;
@@ -30,6 +31,7 @@ public:
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  /*public*/ int getPreferredWidth(int col);
+ /*public*/ QString getColumnClass(int col);
 
 signals:
 
@@ -51,9 +53,15 @@ public slots:
   void common();
   void initTempRow();
   Logger* log;
+  void dispose();
+
  protected:
   /*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/);
- friend class TableFrames;
-};
+  /*protected*/ void configTurnoutStateColumn(JTable* table);
 
+ friend class TableFrames;
+ friend class BPEFCloseListener;
+ friend class BlockPathEditFrame;
+
+};
 #endif // PATHTURNOUTTABLEMODEL_H

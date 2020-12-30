@@ -175,7 +175,7 @@ class BTActionListener : public ActionListener
 public:
  BTActionListener(BlockTableAction* blockTableAction);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
 class BTCancelListener : public ActionListener
 {
@@ -184,7 +184,7 @@ class BTCancelListener : public ActionListener
 public:
  BTCancelListener(BlockTableAction* blockTableAction);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
 
 #endif // BLOCKTABLEACTION_H

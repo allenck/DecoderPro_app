@@ -4,7 +4,7 @@
 #include "libpref_global.h"
 
 class QVBoxLayout;
-class ActionEvent;
+class JActionEvent;
 class QLabel;
 class PerformScriptModel;
 class QPushButton;
@@ -63,7 +63,7 @@ private:
  QLabel* selected;
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+ /*public*/ void actionPerformed(JActionEvent* e = 0) ;
  friend class PerformScriptPanel;
 };
 

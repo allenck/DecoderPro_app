@@ -97,7 +97,7 @@
             if (this->prefixAsLoaded.isNull()) {
                 this->prefixAsLoaded = systemPrefix;
             }
-            this->propertyChangeSupport->firePropertyChange(SYSTEM_PREFIX, oldPrefix, systemPrefix);
+            this->propertyChangeSupport->firePropertyChange(/*SYSTEM_PREFIX*/"ConnectionPrefixChanged", oldPrefix, systemPrefix);
             return true;
         }
         log->debug(tr("setSystemPrefix false for \"%1\"").arg(systemPrefix));
@@ -136,7 +136,7 @@
             if (this->userNameAsLoaded.isNull()) {
                 this->userNameAsLoaded = userName;
             }
-            this->propertyChangeSupport->firePropertyChange(USER_NAME, oldUserName, userName);
+            this->propertyChangeSupport->firePropertyChange(/*USER_NAME*/"ConnectionNameChanged", oldUserName, userName);
             return true;
         }
         return false;

@@ -288,7 +288,7 @@ Q_OBJECT
     int _itemType;
  ConditionalTreeEdit* cte;
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) ;
 public:
     CTEActionTypeListener(ConditionalTreeEdit* cte);
     /*public*/ void setItemType(int type) ;
@@ -303,7 +303,7 @@ public:
 //transient ActionListener actionSignalHeadNameListener = new ActionListener() {
 public slots:
     //@Override
-    /*public*/ void actionPerformed(ActionEvent* e =0);
+    /*public*/ void actionPerformed(JActionEvent* e =0);
 };
 
 class ActionSignalMastNameListener : public ActionListener
@@ -315,7 +315,7 @@ public:
  ActionSignalMastNameListener(ConditionalTreeEdit* cte);
 public slots:
     //@Override
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) ;
 };
 
 // ============ Conditional Tree Node Definition ============

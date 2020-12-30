@@ -265,7 +265,7 @@ JmriJFrame(parent)
  adjustSize();
 }
 
-/*public*/ void SimpleLightCtrlFrame::offButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void SimpleLightCtrlFrame::offButtonActionPerformed(JActionEvent* /*e*/)
 {
  // load address from switchAddrTextField
  try {
@@ -295,7 +295,7 @@ JmriJFrame(parent)
  }
 }
 
-/*public*/ void SimpleLightCtrlFrame::onButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void SimpleLightCtrlFrame::onButtonActionPerformed(JActionEvent* /*e*/)
 {
  // load address from switchAddrTextField
  try
@@ -332,7 +332,7 @@ JmriJFrame(parent)
  }
 }
 
-/*public*/ void SimpleLightCtrlFrame::intensityButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void SimpleLightCtrlFrame::intensityButtonActionPerformed(JActionEvent* /*e*/)
 {
  // load address from switchAddrTextField
  try
@@ -370,7 +370,7 @@ JmriJFrame(parent)
 /**
  * handle changes for intensity, rate, etc...
  */
-/*public*/ void SimpleLightCtrlFrame::applyButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SimpleLightCtrlFrame::applyButtonActionPerformed(JActionEvent* /*e*/) {
     // load address from switchAddrTextField
     try {
         if (light != NULL) {
@@ -405,7 +405,7 @@ JmriJFrame(parent)
  *
  * @param e
  */
-/*public*/ void SimpleLightCtrlFrame::statusButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void SimpleLightCtrlFrame::statusButtonActionPerformed(JActionEvent* /*e*/)
 {
  // load address from switchAddrTextField
  try

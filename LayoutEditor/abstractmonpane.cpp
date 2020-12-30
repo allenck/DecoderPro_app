@@ -576,7 +576,7 @@ void AMPRunnable::run()
 }
 #endif
 
-/*public*/ /*synchronized*/ void AbstractMonPane::clearButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ /*synchronized*/ void AbstractMonPane::clearButtonActionPerformed(JActionEvent* /*e*/) {
     // clear the monitoring history
 //    synchronized( linesBuffer )
     {
@@ -585,7 +585,7 @@ void AMPRunnable::run()
     }
 }
 
-/*public*/ /*synchronized*/ void AbstractMonPane::startLogButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ /*synchronized*/ void AbstractMonPane::startLogButtonActionPerformed(JActionEvent* /*e*/) {
     // start logging by creating the stream
 #if 0
     if ( logStream==nullptr) {  // successive clicks don't restart the file
@@ -602,7 +602,7 @@ void AMPRunnable::run()
     stopLogButton->setEnabled(true);
 }
 
-/*public*/ /*synchronized*/ void AbstractMonPane::stopLogButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ /*synchronized*/ void AbstractMonPane::stopLogButtonActionPerformed(JActionEvent* /*e*/)
 {
  // stop logging by removing the stream
 #if 1
@@ -620,7 +620,7 @@ void AMPRunnable::run()
 #endif
 }
 
-/*public*/ void AbstractMonPane::openFileChooserButtonActionPerformed(ActionEvent* e)
+/*public*/ void AbstractMonPane::openFileChooserButtonActionPerformed(JActionEvent* e)
 {
  // start at current file, show dialog
 #if 0 // done
@@ -650,7 +650,7 @@ void AMPRunnable::run()
  setCursor(Qt::ArrowCursor);
 }
 
-/*public*/ void AbstractMonPane::enterButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void AbstractMonPane::enterButtonActionPerformed(JActionEvent* /*e*/) {
     nextLine(entryField->text(), "");
 }
 

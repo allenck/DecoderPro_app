@@ -29,11 +29,11 @@ public:
  /*public*/ ConditionalListEdit(QString sName, QObject* parent = 0);
 
 public slots:
- void calculatePressed(ActionEvent* e = 0);
- void donePressed(ActionEvent* e = 0);
- void deletePressed(ActionEvent* e = 0);
- /*public*/ void variableSignalTestStateListener(ActionEvent* /*e*/ = 0);
- /*public*/ void variableSignalHeadNameListener(ActionEvent* /*e*/ = 0);
+ void calculatePressed(JActionEvent* e = 0);
+ void donePressed(JActionEvent* e = 0);
+ void deletePressed(JActionEvent* e = 0);
+ /*public*/ void variableSignalTestStateListener(JActionEvent* /*e*/ = 0);
+ /*public*/ void variableSignalHeadNameListener(JActionEvent* /*e*/ = 0);
  /*public*/ void bringToFront();
 
 private:
@@ -184,20 +184,20 @@ CLESelectLogixBoxListener* selectLogixBoxListener = nullptr;
 CLESelectConditionalBoxListener* selectConditionalBoxListener = nullptr;
 
 private slots:
- void newConditionalPressed(ActionEvent* /*e*/ = 0);
+ void newConditionalPressed(JActionEvent* /*e*/ = 0);
  void editConditionalPressed(int rx);
- void addVariablePressed(ActionEvent* /*e*/ = 0);
- void checkVariablePressed(ActionEvent* /*e*/ = 0);
+ void addVariablePressed(JActionEvent* /*e*/ = 0);
+ void checkVariablePressed(JActionEvent* /*e*/ = 0);
  void variableNegationChanged(int row, QString oper);
  void variableOperatorChanged(int row, QString oper);
- void addActionPressed(ActionEvent* /*e*/ = 0);
- void reorderActionPressed(ActionEvent* /*e*/ = 0);
+ void addActionPressed(JActionEvent* /*e*/ = 0);
+ void reorderActionPressed(JActionEvent* /*e*/ = 0);
  void swapActions(int row);
  void updateConditionalPressed();
- void cancelConditionalPressed(ActionEvent* /*e*/= 0);
+ void cancelConditionalPressed(JActionEvent* /*e*/= 0);
  void on_deleteConditionalPressed();
- bool logicTypeChanged(ActionEvent* /*e*/= 0);
- void helpPressed(ActionEvent* /*e*/= 0);
+ bool logicTypeChanged(JActionEvent* /*e*/= 0);
+ void helpPressed(JActionEvent* /*e*/= 0);
  void updateVariablePressed();
  void cancelEditActionPressed();
  void deleteVariablePressed();
@@ -205,10 +205,10 @@ private slots:
  void variableSignalMastNameListener(); // SLOT[]
  void updateActionPressed();
  void cancelEditVariablePressed();
- void setFileLocation(ActionEvent* e =0);
+ void setFileLocation(JActionEvent* e =0);
  //void actionTypeListener(int type); // SLOT[]
  void actionSignalMastNameListener(); // SLOT[]
- void reorderPressed(ActionEvent* /*e*/ =0);
+ void reorderPressed(JActionEvent* /*e*/ =0);
  void variableItemStateChanged(int);
  void itemStateChanged(int);
  void deleteActionPressed();
@@ -352,7 +352,7 @@ class VariableSignalTestStateListener : public QObject
     ConditionalListEdit* self;
 public:
     VariableSignalTestStateListener(ConditionalListEdit* self);
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) ;
 };
 class EditLogixFrameWindowListener : public WindowListener
 {

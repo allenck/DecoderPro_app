@@ -81,7 +81,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
      {
       this->parent = parent;
      }
-     void actionPerformed(ActionEvent */*e*/ = 0)
+     void actionPerformed(JActionEvent */*e*/ = 0)
      {
       parent->updateSignal();
      }
@@ -108,7 +108,7 @@ class MyActionListener : public ActionListener
   {
    this->self = self;
   }
-  /*public*/ void actionPerformed(ActionEvent* /*a*/ = 0)
+  /*public*/ void actionPerformed(JActionEvent* /*a*/ = 0)
   {
    self->updateItem();
   }

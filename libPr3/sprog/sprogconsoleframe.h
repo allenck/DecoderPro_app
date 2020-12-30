@@ -24,8 +24,8 @@ namespace Sprog
 
  public slots:
   //void enterButtonActionPerformed(ActionEvent* e = 0);
-  void sendButtonActionPerformed(ActionEvent* e = 0);
-  void saveButtonActionPerformed(ActionEvent* e = 0);
+  void sendButtonActionPerformed(JActionEvent* e = 0);
+  void saveButtonActionPerformed(JActionEvent* e = 0);
   /*public*/ /*synchronized*/ void notifyReply(SprogReply* l);
   /*synchronized*/ /*public*/ void notifyVersion(SprogVersion* v);
   /*public*/ /*synchronized*/ void notifyMessage(SprogMessage* l); // receive a message and log it

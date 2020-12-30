@@ -244,7 +244,7 @@
 /**
  * Handle "Close" button press
  */
-/*protected*/ void VSDManagerFrame::closeButtonPressed(ActionEvent* /*e*/) {
+/*protected*/ void VSDManagerFrame::closeButtonPressed(JActionEvent* /*e*/) {
  firePropertyChange(CLOSE_WINDOW, QVariant(), QVariant());
     dispose();
 }
@@ -252,7 +252,7 @@
 /**
  * Handle "Mute" button press
  */
-/*protected*/ void VSDManagerFrame::muteButtonPressed(ActionEvent* e) {
+/*protected*/ void VSDManagerFrame::muteButtonPressed(JActionEvent* e) {
     JToggleButton* b = (JToggleButton*) e->getSource();
     log->debug("Mute button pressed. value = " + b->isSelected());
     firePropertyChange(MUTE, !b->isSelected(), b->isSelected());
@@ -261,7 +261,7 @@
 /**
  * Handle "Add" button press
  */
-/*protected*/ void VSDManagerFrame::addButtonPressed(ActionEvent* /*e*/) {
+/*protected*/ void VSDManagerFrame::addButtonPressed(JActionEvent* /*e*/) {
     log->debug("Add button pressed");
     config = new VSDConfig(); // Create a new Config for the new VSDecoder.
     // Do something here.  Create a new VSDecoder and add it to the window.

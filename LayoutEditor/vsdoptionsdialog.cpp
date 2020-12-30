@@ -84,7 +84,7 @@
     this->setVisible(true);
 }
 
-/*private*/ void VSDOptionsDialog::closeButtonActionPerformed(ActionEvent* ae)
+/*private*/ void VSDOptionsDialog::closeButtonActionPerformed(JActionEvent* ae)
 {
  if (opsTrainComboBox->currentText() != NULL) {
   //firePropertyChange(OPTIONS_PROPERTY, QVariant(), opsTrainComboBox->currentText());

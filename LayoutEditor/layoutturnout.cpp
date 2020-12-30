@@ -3708,7 +3708,7 @@ void LayoutTurnout::on_additionalTurnout_toggled(bool)
  }
 }
 
-void LayoutTurnout::turnoutEditBlockPressed(ActionEvent* /*a*/)
+void LayoutTurnout::turnoutEditBlockPressed(JActionEvent* /*a*/)
 {
  // check if a block name has been entered
  if (blockName!=(blockNameField->text().trimmed()))
@@ -3749,7 +3749,7 @@ void LayoutTurnout::turnoutEditBlockPressed(ActionEvent* /*a*/)
  layoutEditor->setDirty();
 }
 
-void LayoutTurnout::turnoutEditBlockBPressed(ActionEvent* /*a*/)
+void LayoutTurnout::turnoutEditBlockBPressed(JActionEvent* /*a*/)
 {
  // check if a block name has been entered
  if (blockBName != (blockBNameField->text().trimmed()))
@@ -3786,7 +3786,7 @@ void LayoutTurnout::turnoutEditBlockBPressed(ActionEvent* /*a*/)
  layoutEditor->setDirty();
 }
 
-void LayoutTurnout::turnoutEditBlockCPressed(ActionEvent* /*a*/) {
+void LayoutTurnout::turnoutEditBlockCPressed(JActionEvent* /*a*/) {
     // check if a block name has been entered
     if (blockCName != (blockCNameField->text().trimmed())) {
         // block has changed, if old block exists, decrement use
@@ -3821,7 +3821,7 @@ void LayoutTurnout::turnoutEditBlockCPressed(ActionEvent* /*a*/) {
     layoutEditor->setDirty();
 }
 
-void LayoutTurnout::turnoutEditBlockDPressed(ActionEvent* /*a*/) {
+void LayoutTurnout::turnoutEditBlockDPressed(JActionEvent* /*a*/) {
     // check if a block name has been entered
     if (blockDName!=(blockDNameField->text().trimmed())) {
         // block has changed, if old block exists, decrement use
@@ -3856,7 +3856,7 @@ void LayoutTurnout::turnoutEditBlockDPressed(ActionEvent* /*a*/) {
     layoutEditor->setDirty();
 }
 
-void LayoutTurnout::turnoutEditDonePressed(ActionEvent* /*a*/) {
+void LayoutTurnout::turnoutEditDonePressed(JActionEvent* /*a*/) {
     // check if Turnout changed
     if (turnoutName!=(turnoutNameField->text().trimmed())) {
         // turnout has changed
@@ -4008,7 +4008,7 @@ void LayoutTurnout::turnoutEditDonePressed(ActionEvent* /*a*/) {
     }
 }
 
-void LayoutTurnout::turnoutEditCancelPressed(ActionEvent* /*a*/) {
+void LayoutTurnout::turnoutEditCancelPressed(JActionEvent* /*a*/) {
     editOpen = false;
     editLayoutTurnoutFrame->setVisible(false);
     editLayoutTurnoutFrame->dispose();

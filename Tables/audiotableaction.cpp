@@ -114,7 +114,7 @@ void AudioTableAction::common()
 }
 
 //@Override
-/*public*/ void AudioTableAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void AudioTableAction::actionPerformed(JActionEvent * /*e*/)
 {
 
  // create the JTable model, with changes for specific NamedBean

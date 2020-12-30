@@ -1683,7 +1683,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
         this->self = self;
     }
 
-    /*public*/ void TimeSensor::actionPerformed(ActionEvent* /*event*/)
+    /*public*/ void TimeSensor::actionPerformed(JActionEvent* /*event*/)
     {
         // set sensor state
         ConditionalAction* action = self->_actionList->at(mIndex);
@@ -1718,7 +1718,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
     }
 
 
-    /*public*/ void TimeTurnout::actionPerformed(ActionEvent* /*event*/)
+    /*public*/ void TimeTurnout::actionPerformed(JActionEvent* /*event*/)
     {
         // set turnout state
         ConditionalAction* action = self->_actionList->at(mIndex);

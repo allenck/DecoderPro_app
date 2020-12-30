@@ -314,7 +314,7 @@ void VSDControl::common()
 /**
  * Handle "Option" button presses
  */
-/*protected*/ void VSDControl::optionButtonPressed(ActionEvent* /*e*/) {
+/*protected*/ void VSDControl::optionButtonPressed(JActionEvent* /*e*/) {
     log->debug("(" + address + ") Option Button Pressed");
 
     VSDOptionsDialog* d = new VSDOptionsDialog(this, tr("Options") + " " + this->address);
@@ -331,7 +331,7 @@ void VSDControl::common()
 /**
  * Handle "Config" button presses
  */
-/*protected*/ void VSDControl::configButtonPressed(ActionEvent* /*e*/) {
+/*protected*/ void VSDControl::configButtonPressed(JActionEvent* /*e*/) {
     log->debug("(" + address + ") Config Button Pressed");
     VSDConfigDialog* d = new VSDConfigDialog(this, tr("ConfigDialogTitlePrefix") + " " + this->address, config);
 //        d.addPropertyChangeListener(new PropertyChangeListener() {
@@ -347,7 +347,7 @@ void VSDControl::common()
 /**
  * Handle "Delete" button presses
  */
-/*protected*/ void VSDControl::deleteButtonPressed(ActionEvent* /*e*/) {
+/*protected*/ void VSDControl::deleteButtonPressed(JActionEvent* /*e*/) {
     log->debug("(" + address + ") Delete Button Pressed");
     firePropertyChange(_DELETE, address, address);
 }

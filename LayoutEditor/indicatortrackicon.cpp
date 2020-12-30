@@ -353,7 +353,7 @@ ItiActionListener::ItiActionListener(IndicatorTrackIcon *self)
 {
  this->self = self;
 }
-void ItiActionListener::actionPerformed(ActionEvent* /*a*/)
+void ItiActionListener::actionPerformed(JActionEvent* /*a*/)
 {
  self->updateItem();
 }

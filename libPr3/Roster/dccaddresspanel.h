@@ -13,7 +13,7 @@ class VariableTableModel;
 class PropertyChangeListener;
 class PropertyChangeEvent;
 class JTextField;
-class ActionEvent;
+class JActionEvent;
 class LIBPR3SHARED_EXPORT DccAddressPanel : public QWidget
 {
     Q_OBJECT

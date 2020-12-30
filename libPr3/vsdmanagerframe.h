@@ -8,7 +8,7 @@ class QSlider;
 class ChangeEvent;
 class QVBoxLayout;
 class PropertyChangeListener;
-class ActionEvent;
+class JActionEvent;
 class VSDConfig;
 class LIBPR3SHARED_EXPORT VSDManagerFrame : public JmriJFrame
 {
@@ -53,9 +53,9 @@ protected:
  /*protected*/ void vsdControlPropertyChange(PropertyChangeEvent* event);
 
 protected slots:
- /*protected*/ void closeButtonPressed(ActionEvent* e = 0);
- /*protected*/ void muteButtonPressed(ActionEvent* e = 0);
- /*protected*/ void addButtonPressed(ActionEvent* e = 0);
+ /*protected*/ void closeButtonPressed(JActionEvent* e = 0);
+ /*protected*/ void muteButtonPressed(JActionEvent* e = 0);
+ /*protected*/ void addButtonPressed(JActionEvent* e = 0);
  /*protected*/ void addButtonPropertyChange(PropertyChangeEvent* event);
  /*protected*/ void volumeChange(ChangeEvent* e = 0);
 

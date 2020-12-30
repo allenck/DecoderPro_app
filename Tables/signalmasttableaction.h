@@ -22,7 +22,7 @@ public:
     Q_INVOKABLE /*public*/ QString getClassDescription();
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
 
 private:

@@ -445,7 +445,7 @@ BeanSwitch::~BeanSwitch()
 // ******************* Display ***************************
 
 //@Override
-/*public*/ void BeanSwitch::actionPerformed(ActionEvent* e) {
+/*public*/ void BeanSwitch::actionPerformed(JActionEvent* e) {
     //updateBean();
 }
 
@@ -990,13 +990,13 @@ void BeanSwitch::alternateOnClick() {
     addFrame->pack();
     addFrame->setVisible(true);
 }
-/*protected*/ void BeanSwitch::cancelAddPressed(ActionEvent* e) {
+/*protected*/ void BeanSwitch::cancelAddPressed(JActionEvent* e) {
     addFrame->setVisible(false);
     addFrame->dispose();
     addFrame = nullptr;
 }
 
-/*protected*/ void BeanSwitch::okAddPressed(ActionEvent* e) {
+/*protected*/ void BeanSwitch::okAddPressed(JActionEvent* e) {
     NamedBean* nb;
     QString manuPrefix = _editor->getSwitchManu();
     QString user = userName->text().trimmed();

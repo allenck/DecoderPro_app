@@ -190,7 +190,7 @@ public:
 public slots:
 
     //@Override
-    /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0) {
+    /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0) {
         // Get the combo box and display name
         //QObject* src = e.getSource();
         //if (!(src instanceof JmriBeanComboBox))

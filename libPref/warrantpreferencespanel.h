@@ -157,7 +157,7 @@ class InsertActionListener : public ActionListener
 public:
  InsertActionListener(WarrantPreferencesPanel* panel);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 class DeleteActionListener : public ActionListener
 {
@@ -166,7 +166,7 @@ class DeleteActionListener : public ActionListener
 public:
  DeleteActionListener(WarrantPreferencesPanel* panel);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 class ButtonActionListener : public ActionListener
 {
@@ -177,7 +177,7 @@ class ButtonActionListener : public ActionListener
  public:
  ButtonActionListener* init(QRadioButton* b, int num, WarrantPreferencesPanel* panel);
 public slots:
- /*public*/ void actionPerformed(ActionEvent* /*e*/) ;
+ /*public*/ void actionPerformed(JActionEvent* /*e*/) ;
 };
 
 /************************* Throttle Step Increment Table ******************************/

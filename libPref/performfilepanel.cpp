@@ -183,7 +183,7 @@ PFItem::PFItem(PerformFileModel* m, PerformFilePanel* self) : QWidget()
 }
 
 //@Override
-/*public*/ void PFItem::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void PFItem::actionPerformed(JActionEvent* /*e*/) {
     /*synchronized (self)*/ {
         // remove this item from display
         QWidget* parent = (QWidget*)this->parent();  // have to do this before remove

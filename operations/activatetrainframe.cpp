@@ -120,7 +120,7 @@ transitsFromSpecificBlock = false;
  * Open up a new train window, for a given roster entry located in a
  * specific block
  */
-/*public*/ void ActivateTrainFrame::initiateTrain(ActionEvent* e, RosterEntry* re, Block* b) {
+/*public*/ void ActivateTrainFrame::initiateTrain(JActionEvent* e, RosterEntry* re, Block* b) {
     initiateTrain(e);
     if (_TrainsFromRoster && re != NULL) {
         setComboBox(trainSelectBox, re->getId());
@@ -160,7 +160,7 @@ transitsFromSpecificBlock = false;
  * Called by Dispatcher in response to the dispatcher clicking the New Train
  * button
  */
-/*protected*/ void ActivateTrainFrame::initiateTrain(ActionEvent* /*e*/) {
+/*protected*/ void ActivateTrainFrame::initiateTrain(JActionEvent* /*e*/) {
     // set Dispatcher defaults
 #if 0
     _TrainsFromRoster = _dispatcher.getTrainsFromRoster();

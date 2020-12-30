@@ -730,7 +730,7 @@ QString AEPTableModel::isPairActive(int row) const
  * Utility methods for converting between string and color Note: These names
  * are only used internally, so don't need a resource bundle
  */
-/*protected*/ void AddEntryExitPairPanel::optionWindow(ActionEvent* /*e*/)
+/*protected*/ void AddEntryExitPairPanel::optionWindow(JActionEvent* /*e*/)
 {
  if (optionsFrame == NULL)
  {

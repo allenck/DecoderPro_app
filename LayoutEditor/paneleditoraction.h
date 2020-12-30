@@ -2,6 +2,8 @@
 #define PANELEDITORACTION_H
 
 #include <QAction>
+#include "actionevent.h"
+
 
 class PanelEditorAction : public QAction
 {
@@ -14,7 +16,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = nullptr);
+ /*public*/ void actionPerformed(JActionEvent* e = nullptr);
 private:
  void common();
 };

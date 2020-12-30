@@ -25,7 +25,7 @@ public:
  ComboRadioButtons(QComboBox* box, EnumVariableValue* var, QWidget *parent = 0);
  ComboRadioButtons(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent = 0);
  virtual void addToPanel(QRadioButton* b, int i);
- void thisActionPerformed(ActionEvent* /*e*/);
+ void thisActionPerformed(JActionEvent* /*e*/);
  /*public*/ void setToolTipText(QString t);
  /*public*/ void dispose();
  QColor getBackground(QRadioButton* box);
@@ -38,7 +38,7 @@ public slots:
  /*public*/ void actionPerformed(int i);
  void on_valueChanged(EnumVariableValue*);
  void on_valueChanged(IndexedEnumVariableValue * v);
- void originalActionPerformed(ActionEvent* e = 0) ;
+ void originalActionPerformed(JActionEvent* e = 0) ;
  void originalPropertyChanged(PropertyChangeEvent* e = 0);
  void propertyChange(PropertyChangeEvent* e);
 

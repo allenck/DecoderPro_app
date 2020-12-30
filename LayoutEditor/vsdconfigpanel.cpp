@@ -396,7 +396,7 @@ rosterItemSelectAction(NULL);
 //
 // ActionEventListener function for rosterSelector
 // Chooses a RosterEntry from the list and loads its relevant info.
-/*private*/ void VSDConfigPanel::rosterItemSelectAction(ActionEvent* /*e*/) {
+/*private*/ void VSDConfigPanel::rosterItemSelectAction(JActionEvent* /*e*/) {
 if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
         log->debug("Roster Entry selected...");
         setRosterEntry(rosterSelector->getSelectedRosterEntries()->at(0));
@@ -408,7 +408,7 @@ if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
 //
 // ActionEventListener method for rosterSaveButton
 // Writes VSDecoder info to the RosterEntry.
-/*private*/ void VSDConfigPanel::rosterSaveButtonAction(ActionEvent* /*e*/) {
+/*private*/ void VSDConfigPanel::rosterSaveButtonAction(JActionEvent* /*e*/) {
     log->debug("rosterSaveButton pressed");
     if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
         RosterEntry* r = rosterSelector->getSelectedRosterEntries()->at(0);
@@ -478,7 +478,7 @@ if (rosterSelector->getSelectedRosterEntries()->length() != 0) {
 // profileComboBoxActionPerformed()
 //
 // User chose a Profile from the profileComboBox.
-/*private*/ void VSDConfigPanel::profileComboBoxActionPerformed(ActionEvent* evt)
+/*private*/ void VSDConfigPanel::profileComboBoxActionPerformed(JActionEvent* evt)
 {
  VSDecoder* dec;
  log->debug("Profile selected "+ profileComboBox->currentText());
@@ -572,7 +572,7 @@ profile_selected = true;
 //
 // ActionEventListener for addressSetButton
 // User just pressed "set" on a new address.
-/*private*/ void VSDConfigPanel::addressSetButtonActionPerformed(ActionEvent* evt) {
+/*private*/ void VSDConfigPanel::addressSetButtonActionPerformed(JActionEvent* evt) {
     updateAddress();
 }
 

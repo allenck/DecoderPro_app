@@ -15,7 +15,7 @@ namespace Operations
   /*public*/ TrainsTableAction(QString s, QObject* parent);
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/);
  private:
   void common();
   static TrainsTableFrame* f;// = null;

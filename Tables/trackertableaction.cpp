@@ -67,7 +67,7 @@ void TrackerTableAction::common()
     return _instance;
 }
 
-/*public*/ void TrackerTableAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void TrackerTableAction::actionPerformed(JActionEvent * /*e*/) {
     if (_frame != NULL) {
         _frame->setVisible(true);
     } else {

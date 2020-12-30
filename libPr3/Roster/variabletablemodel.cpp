@@ -1032,7 +1032,7 @@ void VariableTableModel::reportBogus() {
     connect(v->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
-/*public*/ void VariableTableModel::actionPerformed(ActionEvent* e) {
+/*public*/ void VariableTableModel::actionPerformed(JActionEvent* e) {
     if (log->isDebugEnabled()) log->debug("action performed,  command: "+e->getActionCommand());
     setFileDirty(true);
     QChar b = e->getActionCommand().at(0);

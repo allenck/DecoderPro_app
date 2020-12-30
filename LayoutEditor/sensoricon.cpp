@@ -538,7 +538,7 @@ void SensorIcon::on_editSensorItemAction_triggered()
   this->parent = parent;
  }
 
- /*public*/ void UpdateActionListener::actionPerformed(ActionEvent* /*a*/)
+ /*public*/ void UpdateActionListener::actionPerformed(JActionEvent* /*a*/)
  {
   parent->updateItem();
  }
@@ -660,7 +660,7 @@ EditActionListener::EditActionListener(SensorIcon *parent)
  this->parent = parent;
 }
 
-void EditActionListener::actionPerformed(ActionEvent */*a*/ )
+void EditActionListener::actionPerformed(JActionEvent */*a*/ )
 {
  parent->updateSensor();
 }

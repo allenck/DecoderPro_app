@@ -4531,7 +4531,7 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
         }
     });
 #endif
-    routing->setResetItem(new RoutingSetResetItemListener(lb));
+//    routing->setResetItem(new RoutingSetResetItemListener(lb));
 #if 0
     routing.setSaveItem(new AbstractAction() {
         @Override

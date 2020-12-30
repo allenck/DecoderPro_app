@@ -5,7 +5,7 @@
 #include "actionevent.h"
 #include <QSet>
 
-class ActionEvent;
+class JActionEvent;
 /**
  * Define objects to save and manipulate a particular setting
  */
@@ -112,7 +112,7 @@ public:
     /*public*/ void dispose();
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
 private:
     QHash<QString,SettingList*>* choiceHash;// = new QHash<QString,SettingList>();
     QSet<VariableValue*>*   variables;// = new QSet<VariableValue>(20);  // VariableValue; 20 is an arbitrary guess

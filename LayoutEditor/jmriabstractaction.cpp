@@ -99,7 +99,7 @@ void JmriAbstractAction::common()
 //}
 
 //@Override
-/*public*/  void JmriAbstractAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/  void JmriAbstractAction::actionPerformed(JActionEvent * /*e*/)
 {
  // we have to make a new panel if we don't have one yet
  // we don't make a new panel if the window interface is

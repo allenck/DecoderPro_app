@@ -67,6 +67,7 @@ protected:
  /*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/ = NULL);
 
  friend class TableFrames;
+ friend class BlockPathEditFrame;
 };
 
 #endif // BLOCKPATHTABLEMODEL_H

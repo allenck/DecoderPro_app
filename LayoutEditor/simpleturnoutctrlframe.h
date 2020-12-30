@@ -5,7 +5,7 @@
 
 class Exception;
 class AbstractTurnout;
-class ActionEvent;
+class JActionEvent;
 class QLabel;
 class QPushButton;
 class JTextField;
@@ -20,10 +20,10 @@ public:
 signals:
 
 public slots:
-    /*public*/ void closeButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void throwButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void lockButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void lockPushButtonActionPerformed(ActionEvent* e = 0);
+    /*public*/ void closeButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void throwButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void lockButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void lockPushButtonActionPerformed(JActionEvent* e = 0);
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 
 private:

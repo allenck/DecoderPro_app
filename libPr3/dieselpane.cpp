@@ -78,7 +78,7 @@ QGridLayout* g = new QGridLayout(this);
     throttle_setting = throttle_slider->value();
 }
 
-/*public*/ void DieselPane::startButtonChange(ActionEvent* /*e*/) {
+/*public*/ void DieselPane::startButtonChange(JActionEvent* /*e*/) {
     firePropertyChangeEvent(new PropertyChangeEvent(this, "start",
             engine_started,
             start_button->isSelected()));

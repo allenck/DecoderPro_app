@@ -82,7 +82,7 @@ class MCIActionListener : public ActionListener
 public:
     MCIActionListener(MemoryComboIcon*);
 public slots:
-    void actionPerformed(ActionEvent *e);
+    void actionPerformed(JActionEvent *e);
 };
 
 #endif // MEMORYCOMBOICON_H

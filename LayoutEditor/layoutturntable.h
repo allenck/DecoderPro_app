@@ -10,7 +10,7 @@ class LayoutBlock;
 class LayoutTurntableEditor;
 class QGraphicsSceneMouseEvent;
 class QGraphicsItemGroup;
-class ActionEvent;
+class JActionEvent;
 class QPushButton;
 class QCheckBox;
 class JmriJFrame;
@@ -191,8 +191,8 @@ private:
   bool needsRedraw;// = false;
   /*private*/ void updateRayPanel();
   /*private*/ void saveRayPanelDetail();
-  /*private*/ void addRayTrackPressed(ActionEvent* a = 0);
-  void deleteRayTrackPressed(ActionEvent* a = 0);
+  /*private*/ void addRayTrackPressed(JActionEvent* a = 0);
+  void deleteRayTrackPressed(JActionEvent* a = 0);
   void deleteRay(RayTrack* closest);
   void dispose();
   void remove();
@@ -204,8 +204,8 @@ private:
   QGraphicsItemGroup* itemGroup= nullptr;
 
 private slots:
-  void turntableEditDonePressed(ActionEvent* a = 0);
-  void turntableEditCancelPressed(ActionEvent* a = 0);
+  void turntableEditDonePressed(JActionEvent* a = 0);
+  void turntableEditCancelPressed(JActionEvent* a = 0);
 
  protected:
   /*protected*/ RayTrack* addRay(double angle);

@@ -607,7 +607,7 @@ ControlPanelEditor::~ControlPanelEditor()
 //            }
         });
 }
-void CPEditItemActionListener::actionPerformed(ActionEvent *)
+void CPEditItemActionListener::actionPerformed(JActionEvent *)
 {
     ImageIndexEditor* ii = ImageIndexEditor::instance(panelEd);
     ii->pack();
@@ -2055,7 +2055,7 @@ DuplicateActionListener* DuplicateActionListener::init(Positionable* pos, Contro
  this->edit = edit;
  return this;
 }
-void DuplicateActionListener::actionPerformed(ActionEvent *)
+void DuplicateActionListener::actionPerformed(JActionEvent *)
 {
  edit->copyItem(comp);
 }

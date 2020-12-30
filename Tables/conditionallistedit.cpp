@@ -441,7 +441,7 @@ bool ConditionalListEdit::validateTime(int actionType, float time) {
 /**
  * Responds to the Reorder Button in the Edit Logix window
  */
-void ConditionalListEdit::reorderPressed(ActionEvent* /*e*/) {
+void ConditionalListEdit::reorderPressed(JActionEvent* /*e*/) {
     if (checkEditConditional())
         return;
     // Check if reorder is reasonable
@@ -470,7 +470,7 @@ void ConditionalListEdit::swapConditional(int row) {
 /**
  * Responds to the Calculate Button in the Edit Logix window
  */
-void ConditionalListEdit::calculatePressed(ActionEvent* /*e*/)
+void ConditionalListEdit::calculatePressed(JActionEvent* /*e*/)
 {
  if (checkEditConditional())
   return;
@@ -515,7 +515,7 @@ void ConditionalListEdit::calculatePressed(ActionEvent* /*e*/)
  *
  * @param e The event heard
  */
-void ConditionalListEdit::donePressed(ActionEvent* /*e*/) {
+void ConditionalListEdit::donePressed(JActionEvent* /*e*/) {
     if (checkEditConditional()) {
         return;
     }
@@ -570,7 +570,7 @@ void ConditionalListEdit::finishDone()
  *
  * @param e The event heard
  */
-void ConditionalListEdit::deletePressed(ActionEvent* e) {
+void ConditionalListEdit::deletePressed(JActionEvent* e) {
     if (checkEditConditional()) {
         return;
     }
@@ -587,7 +587,7 @@ void ConditionalListEdit::deletePressed(ActionEvent* e) {
 /**
  * Responds to the New Conditional Button in Edit Logix Window
  */
-void ConditionalListEdit::newConditionalPressed(ActionEvent* /*e*/)
+void ConditionalListEdit::newConditionalPressed(JActionEvent* /*e*/)
 {
  if (checkEditConditional())
   return;
@@ -1124,7 +1124,7 @@ void ConditionalListEdit::on_deleteConditionalPressed()
 /**
  * Responds to the Add State Variable Button in the Edit Conditional window
  */
-void ConditionalListEdit::addVariablePressed(ActionEvent* /*e*/)
+void ConditionalListEdit::addVariablePressed(JActionEvent* /*e*/)
 {
  if (alreadyEditingActionOrVariable())
  {
@@ -1160,7 +1160,7 @@ void ConditionalListEdit::addVariablePressed(ActionEvent* /*e*/)
 /**
  * Responds to the Check State Variable Button in the Edit Conditional window
  */
-void ConditionalListEdit::checkVariablePressed(ActionEvent* /*e*/) {
+void ConditionalListEdit::checkVariablePressed(JActionEvent* /*e*/) {
     for (int i=0; i<_variableList->size(); i++)
     {
         _variableList->at(i)->evaluate();
@@ -1205,7 +1205,7 @@ void ConditionalListEdit::variableOperatorChanged(int row, QString oper) {
 /*
 * Responds to Add action button in the EditConditional window
 */
-void ConditionalListEdit::addActionPressed(ActionEvent* /*e*/) {
+void ConditionalListEdit::addActionPressed(JActionEvent* /*e*/) {
     if (alreadyEditingActionOrVariable()) {
         return;
     }
@@ -1220,7 +1220,7 @@ void ConditionalListEdit::addActionPressed(ActionEvent* /*e*/) {
 /**
  * Responds to the Reorder Button in the Edit Conditional window
  */
-void ConditionalListEdit::reorderActionPressed(ActionEvent* /*e*/) {
+void ConditionalListEdit::reorderActionPressed(JActionEvent* /*e*/) {
     if (alreadyEditingActionOrVariable()) {
         return;
     }
@@ -1336,7 +1336,7 @@ void ConditionalListEdit::updateConditionalPressed(/*ActionEvent* e*/) {
  * Does the cleanup from deleteConditionalPressed, updateConditionalPressed
  * and editConditionalFrame window closer.
  */
-void ConditionalListEdit::cancelConditionalPressed(ActionEvent* /*e*/) {
+void ConditionalListEdit::cancelConditionalPressed(JActionEvent* /*e*/) {
     if (_pickTables!=NULL) {
         _pickTables->dispose();
         _pickTables = NULL;
@@ -1411,7 +1411,7 @@ void ConditionalListEdit::deleteConditionalPressed(QString sName) {
 
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
-bool ConditionalListEdit::logicTypeChanged(ActionEvent* /*e*/) {
+bool ConditionalListEdit::logicTypeChanged(JActionEvent* /*e*/) {
     int type = _operatorBox->currentIndex() + 1;
     if (type == _logicType) {
             return false;
@@ -1439,7 +1439,7 @@ bool ConditionalListEdit::logicTypeChanged(ActionEvent* /*e*/) {
     return true;
 }
 
-void ConditionalListEdit::helpPressed(ActionEvent* /*e*/) {
+void ConditionalListEdit::helpPressed(JActionEvent* /*e*/) {
 #if 0
     javax.swing.JOptionPane.showMessageDialog(editConditionalFrame,
             new String[] {
@@ -2818,7 +2818,7 @@ bool ConditionalListEdit::validateVariable() {
 
 
 // ------------ Variable detail listeners ------------
-/*public*/ void ConditionalListEdit::variableSignalTestStateListener(ActionEvent* /*e*/) {
+/*public*/ void ConditionalListEdit::variableSignalTestStateListener(JActionEvent* /*e*/) {
     log->debug("variableSignalTestStateListener fires;  _variableItemBox->currentIndex()= "+
               QString::number( _variableItemBox->currentIndex())+
               "\" _variableStateBox->currentIndex()= \""+QString::number(_variableStateBox->currentIndex())+"\"");
@@ -2842,7 +2842,7 @@ bool ConditionalListEdit::validateVariable() {
     }
 }
 
-/*public*/ void ConditionalListEdit::variableSignalHeadNameListener(ActionEvent* /*e*/) {
+/*public*/ void ConditionalListEdit::variableSignalHeadNameListener(JActionEvent* /*e*/) {
         // fired when signal mast name changes, but only
         // while in signal mast mode
         log->debug("variableSignalHeadNameListener fires; _variableNameField : "+_variableNameField->text().trimmed());
@@ -3857,7 +3857,7 @@ void ConditionalListEdit::deleteActionPressed(int row) {
  *
  * @param e the event heard
  */
-void ConditionalListEdit::setFileLocation(ActionEvent* e)
+void ConditionalListEdit::setFileLocation(JActionEvent* e)
 {
  ConditionalAction* action = _actionList->value(_curActionRowNumber);
  JFileChooser* currentChooser;

@@ -2,7 +2,7 @@
 #define ALTERNATETRACKFRAME_H
 
 #include "operationsframe.h"
-class ActionEvent;
+class JActionEvent;
 namespace Operations
 {
  class Track;
@@ -15,7 +15,7 @@ namespace Operations
   /*public*/ QString getClassName();
 
  public slots:
-  /*public*/ void buttonActionPerformed(ActionEvent* ae = 0);
+  /*public*/ void buttonActionPerformed(JActionEvent* ae = 0);
  private:
   Logger* log;
   // combo boxes

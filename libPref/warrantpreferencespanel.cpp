@@ -374,7 +374,7 @@ QSize WarrantPreferencesPanel::sizeHint()
  {
   this->panel = panel;
  }
- void InsertActionListener::actionPerformed(ActionEvent */*e*/)
+ void InsertActionListener::actionPerformed(JActionEvent */*e*/)
  {
   panel->insertSpeedNameRow();
  }
@@ -382,7 +382,7 @@ QSize WarrantPreferencesPanel::sizeHint()
  {
   this->panel = panel;
  }
- void DeleteActionListener::actionPerformed(ActionEvent *e)
+ void DeleteActionListener::actionPerformed(JActionEvent *e)
  {
   panel->deleteSpeedNameRow();
  }
@@ -545,7 +545,7 @@ ButtonActionListener* ButtonActionListener::init(QRadioButton *b, int num, Warra
  connect(b, SIGNAL(clicked()), this, SLOT(actionPerformed()));
  return this;
 }
-void ButtonActionListener::actionPerformed(ActionEvent *e)
+void ButtonActionListener::actionPerformed(JActionEvent *e)
 {
  if (but->isChecked())
  {
