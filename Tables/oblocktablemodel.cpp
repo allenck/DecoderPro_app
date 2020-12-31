@@ -862,6 +862,8 @@ void OBlockTableModel::deleteBean(OBlock* bean)
 //@Override
 /*public*/ Qt::ItemFlags OBlockTableModel::flags(const QModelIndex &index) const
 {
+ if(getRowCount()== index.row()) // the new entry/bottom row is editable in all cells
+  return  Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
  if (BeanTableDataModel::rowCount(QModelIndex()) == index.row())
  {
   if(index.column() == UNITSCOL || index.column() == REPORT_CURRENTCOL || index.row() == PERMISSIONCOL)

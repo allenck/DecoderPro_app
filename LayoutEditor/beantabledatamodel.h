@@ -121,6 +121,7 @@ protected:
  /*protected*/ void showTableHeaderPopup(QMouseEvent* e, JTable* table);
  /*protected*/ int getPropertyColumnCount() const;
  /*protected*/ /*final*/ QList<NamedBeanPropertyDescriptor*>* propertyColumns = nullptr;
+ /*protected*/ NamedBeanPropertyDescriptor *getPropertyColumnDescriptor(int column);
 
 protected slots:
  void On_itemClicked(QModelIndex);

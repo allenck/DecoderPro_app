@@ -84,6 +84,7 @@
         int width = oblockDataModel->getPreferredWidth(i);
         tcm->getColumn(i)->setPreferredWidth(width);
     }
+    //oblockTable->doLayout();
     oblockDataModel->addHeaderListener(oblockTable); // HeaderListeners not set up for the other 3 small tables
 //        oblockTable->setPreferredScrollableViewportSize(QSize(550, 300)); // a wide table
     //oblockDataScroll = new JScrollPane(oblockTable);

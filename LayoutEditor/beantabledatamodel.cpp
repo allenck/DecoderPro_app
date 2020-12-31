@@ -31,6 +31,7 @@
 #include "jtablepersistencemanager.h"
 #include <QSignalMapper>
 #include "borderfactory.h"
+#include "namedbeanpropertydescriptor.h"
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -83,6 +84,15 @@ BeanTableDataModel::~BeanTableDataModel()
     return propertyColumns->size();
 }
 
+/*protected*/ NamedBeanPropertyDescriptor/*<?>*/* BeanTableDataModel::getPropertyColumnDescriptor(int column) {
+        int totalCount = getColumnCount();
+        int propertyCount = propertyColumns->size();
+        int tgt = column - (totalCount - propertyCount);
+        if (tgt < 0) {
+            return nullptr;
+        }
+        return propertyColumns->value(tgt);
+    }
 //template<class T>
 Manager* BeanTableDataModel::getManager() {return NULL;}
 
@@ -375,9 +385,18 @@ void BeanTableDataModel::setManager(Manager *) {}
    deleteBean(row, col);
    //endRemoveRows();
   }
-  //fireTableRowsUpdated(row, row);
-  //setPersistentButtons();
-  _table->update();
+  else
+  {
+   NamedBeanPropertyDescriptor/*<?>*/* desc = getPropertyColumnDescriptor(col);
+   if (desc == nullptr) {
+       return true;
+   }
+//   if (value instanceof JComboBox) {
+//       value = ((JComboBox<?>) value).getSelectedItem();
+//   }
+   NamedBean* b = getBySystemName(sysNameList.at(row));
+   b->setProperty(desc->propertyKey, value);
+  }
   return true;
  }
  return false;
@@ -855,7 +874,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
  * Updates the visibility settings of the property columns.
  *
  * @param table   the JTable object for the current display.
- * @param visible true to make the proeprty columns visible, false to hide.
+ * @param visible true to make the property columns visible, false to hide.
  */
 /*public*/ void BeanTableDataModel::setPropertyColumnsVisible(JTable* table, bool visible) {
     XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();

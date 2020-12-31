@@ -135,7 +135,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  QString txt = p->getToolTip();
  if (txt!=NULL)
  {
-  QDomElement elem = doc.createElement("toolTip");
+  QDomElement elem = doc.createElement("tooltip");
   elem.appendChild(doc.createTextNode(txt));
   element.appendChild(elem);
  }
@@ -511,7 +511,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  else
   l->setEditable(false);
 
- QDomElement elem = element.firstChildElement("toolTip");
+ QDomElement elem = element.firstChildElement("tooltip");
  if (!elem.isNull())
  {
 //  ToolTip tip = l->getTooltip();

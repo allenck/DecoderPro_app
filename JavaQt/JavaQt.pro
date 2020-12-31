@@ -256,7 +256,8 @@ SOURCES += javaqt.cpp \
     localdatetime.cpp \
     jformattedtextfield.cpp \
     threadingutil.cpp \
-    transferactionlistener.cpp
+    transferactionlistener.cpp \
+    togglebutton.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -570,7 +571,8 @@ HEADERS += javaqt.h\
     transferactionlistener.h \
     tablecellrenderer.h \
     tablecelleditor.h \
-    tabledelegates.h
+    tabledelegates.h \
+    togglebutton.h
 
 unix {
     target.path = /usr/lib

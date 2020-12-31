@@ -6,6 +6,8 @@
 #include "jtogglebutton.h"
 #include "jbutton.h"
 #include "jcombobox.h"
+#include <QPainter>
+#include "togglebutton.h"
 
 class ButtonRenderer : public QItemDelegate, public TableCellEditor, public TableCellRenderer
 {
@@ -122,6 +124,7 @@ public:
     {
      QPushButton *button = static_cast<QPushButton*>(editor);
      int value = index.model()->data(index, Qt::EditRole).toUInt();
+     button->setText(index.data().toString());
     }
 
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
@@ -132,6 +135,15 @@ public:
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
      editor->setGeometry(option.rect);
+    }
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+     QPushButton* widget = new QPushButton(index.data().toString());
+     setEditorData(widget, index);
+     widget->resize(option.rect.size());
+     QPixmap pixmap(option.rect.size());
+     widget->render(&pixmap);
+     painter->drawPixmap(option.rect,pixmap);
     }
 };
 
@@ -157,36 +169,60 @@ public:
     }
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        JToggleButton* editor;
+        ToggleButton* editor;
+        bool state;
        #if QT_VERSION < 0x050000
         if(index.data().canConvert<QString>())
        #else
         if(index.data().canConvert(QMetaType::type("QString")))
        #endif
-         editor = new JToggleButton(index.data().toString(),parent);
+        {
+         state = index.data().toString() == this->on;
+         editor = new ToggleButton(10,8,parent);
+         editor->setLabels(on, off);
+         editor->setChecked(state);
+        }
         else
         {
          QIcon icon = index.data().value<QIcon>();
-         editor = new JToggleButton(icon, "", parent);
+         editor = new ToggleButton(10,8, parent);
         }
         return editor;
     }
     void setEditorData(QWidget *editor, const QModelIndex &index) const
     {
-        JToggleButton *button = static_cast<JToggleButton*>(editor);
+        ToggleButton *button = static_cast<ToggleButton*>(editor);
         int value = index.model()->data(index, Qt::EditRole).toUInt();
+        if(button->isChecked())
+         button->setText(this->on);
+        else
+         button->setText(this->off);
 
     }
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
     {
-        JToggleButton *button = static_cast<JToggleButton*>(editor);
-        model->setData(index, QVariant(), Qt::EditRole);
-
+        ToggleButton *button = static_cast<ToggleButton*>(editor);
+//        if(button->isChecked())
+//         model->setData(index, this->on, Qt::EditRole);
+//        else
+//         model->setData(index, this->off, Qt::EditRole);
+        model->setData(index, button->isChecked(), Qt::EditRole);
     }
 
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const{
         editor->setGeometry(option.rect);
-
+    }
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+     bool state = index.data().toString() == this->on;
+     ToggleButton* widget = new ToggleButton(10,8);
+     widget->setLabels(on, off);
+     widget->setChecked(state);
+     setEditorData(widget, index);
+     widget->resize(option.rect.size());
+     QPixmap pixmap(option.rect.size());
+     widget->render(&pixmap);
+     painter->drawPixmap(option.rect,pixmap);
     }
 };
 
@@ -204,23 +240,35 @@ public:
     }
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        QComboBox* editor = new QComboBox(parent);
+        JComboBox* editor = new JComboBox(parent);
         editor->addItems(values);
         return editor;
     }
     void setEditorData(QWidget *editor, const QModelIndex &index) const{
-        QComboBox *comboBox = static_cast<QComboBox*>(editor);
+        JComboBox *comboBox = static_cast<JComboBox*>(editor);
         int value = index.model()->data(index, Qt::EditRole).toUInt();
         comboBox->setCurrentIndex(value);
     }
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
     {
-        QComboBox *comboBox = static_cast<QComboBox*>(editor);
+        JComboBox *comboBox = static_cast<JComboBox*>(editor);
         model->setData(index, comboBox->currentText(), Qt::EditRole);
     }
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const{
         editor->setGeometry(option.rect);
     }
     void setValues(QStringList values) {this->values = values;}
-};
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+     //bool state = index.data().toString() == this->on;
+     JComboBox* widget = new JComboBox(values);
+//     widget->setLabels(on, off);
+//     widget->setChecked(state);
+     setEditorData(widget, index);
+     widget->resize(option.rect.size());
+     QPixmap pixmap(option.rect.size());
+     widget->render(&pixmap);
+     painter->drawPixmap(option.rect,pixmap);
+    }};
 #endif // TABLEDELEGATES_H

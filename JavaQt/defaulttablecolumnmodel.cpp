@@ -331,7 +331,7 @@ TableColumnModel(parent)
 {
  if (newModel == NULL)
  {
-  throw new IllegalArgumentException("Cannot set a NULL SelectionModel");
+  throw  IllegalArgumentException("Cannot set a NULL SelectionModel");
  }
 
  ListSelectionModel* oldModel = selectionModel;

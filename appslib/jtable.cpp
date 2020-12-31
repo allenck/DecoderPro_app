@@ -9753,14 +9753,17 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
 
 /*public*/ void JTable::doLayout()
 {
- for (int i = 0; i < getModel()->columnCount(); i++) {
+ for (int i = 0; i < getModel()->columnCount(); i++)
+ {
 
     TableCellEditor* editor = getColumnModel()->getColumn(i)->getCellEditor();
     if(editor)
     {
      QItemDelegate* delegate = qobject_cast<QItemDelegate*>(editor->self());
      if(delegate != itemDelegateForColumn(i))
+     {
        setItemDelegateForColumn(i, delegate);
+     }
     }
  }
 }

@@ -734,7 +734,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
     //        box = new JComboBox<>(jmri.InstanceManager.getDefault(SignalSpeedMap.class).getValidSpeedNames());
 //        box.addItem("");
 //        _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::SPEEDCOL)->setCellRenderer(new DefaultCellRenderer(new _oBlockModel.SpeedComboBoxPanel()));
-     _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::SPEEDCOL)->setCellEditor(new /*DefaultCellEditor(box)*/JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList()));
+    _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::SPEEDCOL)->setCellEditor(new /*DefaultCellEditor(box)*/JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList()));
     _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::PERMISSIONCOL)->setCellRenderer(
             new ToggleButtonRenderer(tr("Permissive"), tr("Absolute")));
     _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::PERMISSIONCOL)->setCellEditor(
@@ -1026,6 +1026,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
         // store frame in Map
         _blockPathMap.insert(blockSystemName, frame);
         frame->setVisible(true);
+        if(desktopframe)
         desktopframe->getContentPane()->layout()->addWidget(frame);
     } else {
         frame->setVisible(true);
