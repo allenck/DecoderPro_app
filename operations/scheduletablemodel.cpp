@@ -96,7 +96,7 @@ namespace Operations
  /*private*/ void ScheduleTableModel::initTable(JTable* table) {
      // Install the button handlers
 
-  XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)table->model());
+  XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)table->model()*/table);
   table->setColumnModel(tcm);
   table->createDefaultColumnsFromModel();
 #if 0

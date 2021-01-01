@@ -34,9 +34,10 @@ public:
     virtual /*public*/ QVariant getValueAt(int row, int col) const;
     virtual /*public*/ QString getColumnClass(int col) const;
     virtual /*public*/ QVariant getToolTip(int /*col*/)const { return QString();}
- void setTable(JTable*);
- void setPersistentButtons();
- JTable* table();
+    void setTable(JTable*);
+//    void setPersistentButtons();
+    JTable* table();
+    virtual QString toString() {return metaObject()->className();}
 
 signals:
 
@@ -50,8 +51,8 @@ private:
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
-    JTable* _table;
-    QList<int> buttonMap;
+    JTable* _table = nullptr;
+//    QList<int> buttonMap;
 
 protected:
     /** List of listeners */

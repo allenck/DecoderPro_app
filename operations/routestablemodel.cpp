@@ -78,7 +78,7 @@ namespace Operations
 #if 1
      //TableColumnModel* tcm = table->getColumnModel();
   // Use XTableColumnModel so we can control which columns are visible
-  XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)table->model());
+  XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)table->model()*/table);
   table->setColumnModel(tcm);
   table->createDefaultColumnsFromModel();
 //     ButtonRenderer buttonRenderer = new ButtonRenderer();

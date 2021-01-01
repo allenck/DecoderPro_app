@@ -122,7 +122,7 @@
 //  comboEd = new ComboBoxCellEditor(new QComboBox*());
 // }
  // Use XTableColumnModel so we can control which columns are visible
- XTableColumnModel* tcm = new XTableColumnModel(_model);
+ XTableColumnModel* tcm = new XTableColumnModel(table);
  table->setColumnModel(tcm);
 // table->getTableHeader().setReorderingAllowed(true);
  table->createDefaultColumnsFromModel();
@@ -175,7 +175,7 @@
 //  table->openPersistentEditor( _model->index(i, WarrantTableModel::EDIT_COLUMN, QModelIndex()) );
 //  table->openPersistentEditor( _model->index(i, WarrantTableModel::DELETE_COLUMN, QModelIndex()) );
 // }
- _model->setPersistentButtons();
+ //_model->setPersistentButtons();
  _rowHeight = /*box.getPreferredSize().height;*/ table->getRowHeight();
 // table->setRowHeight(_rowHeight);
  table->setDragEnabled(true);

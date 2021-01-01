@@ -74,7 +74,7 @@ namespace Operations
      TableColumnModel tcm = table.getColumnModel();
 #endif
      // Use XTableColumnModel so we can control which columns are visible
-     XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)table->model());
+     XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)table->model()*/table);
      table->setColumnModel(tcm);
      table->createDefaultColumnsFromModel();
 #if 0

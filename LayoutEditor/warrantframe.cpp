@@ -660,7 +660,7 @@ void WarrantFrame::on_runButtonClicked()
 /*private*/ QWidget* WarrantFrame::makeThrottleTablePanel()
 {
  _commandTable = new JTable(_commandModel);
- _commandTable->setColumnModel(new DefaultTableColumnModel(_commandModel));
+ _commandTable->setColumnModel(new DefaultTableColumnModel(_commandTable));
  //_commandTable.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
  for (int i = 0; i < _commandModel->columnCount(QModelIndex()); i++)
  {

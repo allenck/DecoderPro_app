@@ -11,6 +11,7 @@
  * @author Philip Milne
  * @see DefaultTableColumnModel
  */
+class JTable;
 class TableColumnModelListener;
 class ListSelectionModel;
 class TableColumn;
@@ -21,7 +22,7 @@ class TableColumn;
 // Modifying the model
 //
 public:
- TableColumnModel(QObject* parent = 0) : QObject(parent) {}
+ TableColumnModel(JTable* parent) : QObject((QObject*)parent) {}
     /**
      *  Appends <code>aColumn</code> to the end of the
      *  <code>tableColumns</code> array.

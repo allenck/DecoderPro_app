@@ -157,6 +157,8 @@ public:
  /*public*/ void setDefaultEditor(QString, QItemDelegate *);
  /*public*/ void doLayout();
  /*public*/ int columnAtPoint(QPoint);
+ /*public*/ QAbstractItemDelegate *getCellRenderer(int row, int column);
+ /*public*/ QAbstractItemDelegate* getCellEditor(int row, int column);
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -370,6 +372,7 @@ friend class WarrantPreferencesPanel;
 friend class SortManager;
 friend class LocationsTableModel;
 friend class MultiSensorItemPanel;
+friend class TTJTable;
 };
 
 /**

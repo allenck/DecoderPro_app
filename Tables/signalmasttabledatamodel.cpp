@@ -278,7 +278,7 @@ void SignalMastTableDataModel::editMast(int row, int col) {
     table = new SignalMastJTable(sorter);
 
     //table->getTableHeader().setReorderingAllowed(true);
-    table->setColumnModel(new XTableColumnModel((AbstractTableModel*)sorter->sourceModel()));
+    table->setColumnModel(new XTableColumnModel(/*(AbstractTableModel*)sorter->sourceModel()*/table));
     table->createDefaultColumnsFromModel();
 
     addMouseListenerToHeader(table);

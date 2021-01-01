@@ -5,7 +5,10 @@
 #include "actionlistener.h"
 #include "jdialog.h"
 #include "libtables_global.h"
+#include <QHash>
+#include "namedbeancombobox.h"
 
+class Sensor;
 class BufferedImage;
 class TTAValidator;
 class QSpinBox;
@@ -83,7 +86,7 @@ private:
     QPushButton* addButton;
     QString userNameError;// = this.getName()+".DuplicateUserName";
     UserPreferencesManager* pref;
-    Logger* log;
+    static Logger* log;
     void editButton(Turnout* t, QModelIndex index);
     QCheckBox* showFeedbackBox;// = new JCheckBox("Show feedback information");
     QCheckBox* showLockBox;// = new JCheckBox("Show lock information");
@@ -117,6 +120,7 @@ protected slots:
  friend class TurnoutTableDataModel;
  friend class ItemListener2;
  friend class TTAValidator;
+ friend class TTComboBoxDelegate;
 };
 Q_DECLARE_METATYPE(TurnoutTableAction)
 //class CBActionListener : public ActionListener
@@ -159,10 +163,11 @@ public:
 public slots:
     void actionPerformed(JActionEvent *e = 0);
 };
+
 class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
-    TurnoutTableAction* self;
+    TurnoutTableAction* turnoutTableAction;
     //JTable* table;
 
  public:
@@ -185,9 +190,10 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
      QUERYCOL = FORGETCOL+1
     };
 
-    TurnoutTableDataModel(TurnoutTableAction* self);
+    TurnoutTableDataModel(TurnoutTableAction* turnoutTableAction);
     /*public*/ int columnCount(const QModelIndex &parent) const override;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ QString getColumnClass(int col) override;
     /*public*/ int getPreferredWidth(int col) override;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
@@ -198,7 +204,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ NamedBean* getByUserName(QString name) override;
     /*public*/ void clickOn(NamedBean* t) override;
     /*public*/ void configureTable(JTable* tbl) override;
-    /*public*/ JTable* makeJTable(/*TableSorter srtr*/);
+    /*public*/ JTable* makeJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ TableModel* model, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter);
 public slots:
     /*public*/ void comboBoxAction(JActionEvent* e = 0);
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
@@ -210,6 +216,7 @@ public slots:
     TTComboBoxDelegate* opsEditColDelegate = nullptr;
     TTComboBoxDelegate* opsOnOffColDelegate = nullptr;
     TTEditDelegate* sensorsColDelegate = nullptr;
+    /*private*/ JTable* makeJTable(TableModel* model);
 
  protected:
     /*protected*/ QString getMasterClassName() override;
@@ -225,6 +232,7 @@ public slots:
     /*protected*/ QPixmap offIcon;
     /*protected*/ int iconHeight = -1;
     /*protected*/ void loadIcons();
+    /*protected*/ void configValueColumn(JTable* table);
 
  protected slots:
 
@@ -235,7 +243,7 @@ class TTComboBoxDelegate : public QItemDelegate
 Q_OBJECT
 
 public:
-  TTComboBoxDelegate(QStringList items,  TurnoutTableAction* self, bool editable = false, QObject *parent = 0);
+  TTComboBoxDelegate(QStringList items,  TurnoutTableAction* turnoutTableAction, bool editable = false, QObject *parent = 0);
 
   QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
   void setEditorData(QWidget *editor, const QModelIndex &index) const;
@@ -245,8 +253,8 @@ public:
   void setItems(QStringList, QString);
 
 private:
-  TurnoutTableAction* self;
-  QStringList items;
+  TurnoutTableAction* turnoutTableAction;
+  mutable QStringList items;
   bool editable;
 };
 
@@ -285,6 +293,7 @@ public:
 public slots:
  void actionPerformed(JActionEvent *e = 0);
 };
+
 /*protected*/ /*static*/ class TurnoutOperationEditor : public JDialog
 {
  Q_OBJECT
@@ -322,5 +331,48 @@ public:
 
 public slots:
  void prefixBoxChanged(QString);
+};
+
+class TTJTable : public JTable{
+  Q_OBJECT
+  //TableModel* model;
+ public:
+  TTJTable(TableModel* model) : JTable(model){}
+  //@Override
+  /*public*/ QAbstractItemDelegate *getCellRenderer(int row, int column);
+  //@Override
+  /*public*/ QAbstractItemDelegate* getCellEditor(int row, int column);
+  TableCellRenderer* getRenderer(int row, int column);
+  TableCellEditor* getEditor(int row, int column);
+ protected:
+  /*protected*/ void loadRenderEditMaps(QHash<Turnout *, TableCellRenderer *> *r, QHash<Turnout *, TableCellEditor *> *e,
+          Turnout* t, Sensor* s) ;
+private:
+  QHash<Turnout*, TableCellRenderer*>* rendererMapSensor1 = new QHash<Turnout*, TableCellRenderer*>();
+  QHash<Turnout*, TableCellEditor*>* editorMapSensor1 = new QHash<Turnout*, TableCellEditor*>();
+
+  QHash<Turnout*, TableCellRenderer*>* rendererMapSensor2 = new QHash<Turnout*, TableCellRenderer*>();
+  QHash<Turnout*, TableCellEditor*>* editorMapSensor2 = new QHash<Turnout*, TableCellEditor*>();
+};
+
+class BeanBoxRenderer : public JComboBoxEditor
+{
+  Q_OBJECT
+ public:
+  BeanBoxRenderer(NamedBeanComboBox* beanBox)
+  {
+   setValues(beanBox->itemList());
+  }
+};
+
+
+class BeanComboBoxEditor : public JComboBoxEditor
+{
+  Q_OBJECT
+ public:
+  BeanComboBoxEditor(NamedBeanComboBox* beanBox)
+  {
+   setValues(beanBox->itemList());
+  }
 };
 #endif // TURNOUTTABLEACTION_H

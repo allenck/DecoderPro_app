@@ -70,7 +70,7 @@
     oblockTable->getColumnModel()->getColumn(OBlockTableModel::PERMISSIONCOL)->setCellEditor(
             new ToggleButtonEditor(tr("Permissive"), tr("Absolute")));
     // Use XTableColumnModel so we can control which columns are visible
-    XTableColumnModel* tcm = new XTableColumnModel();
+    XTableColumnModel* tcm = new XTableColumnModel(oblockTable);
     oblockTable->setColumnModel(tcm);
 //        oblockTable->getTableHeader()->setReorderingAllowed(true); // makeJTable not used for oblockTable
     oblockTable->createDefaultColumnsFromModel();
@@ -80,6 +80,12 @@
     tcm->setColumnVisible(tcm->getColumnByModelIndex(OBlockTableModel::WARRANTCOL), false);
     tcm->setColumnVisible(tcm->getColumnByModelIndex(OBlockTableModel::ERR_SENSORCOL), false);
     tcm->setColumnVisible(tcm->getColumnByModelIndex(OBlockTableModel::CURVECOL), false);
+//    oblockTable->setColumnHidden(OBlockTableModel::REPORTERCOL, true);
+//    oblockTable->setColumnHidden(OBlockTableModel::REPORT_CURRENTCOL, true);
+//    oblockTable->setColumnHidden(OBlockTableModel::PERMISSIONCOL, true);
+//    oblockTable->setColumnHidden(OBlockTableModel::WARRANTCOL, true);
+//    oblockTable->setColumnHidden(OBlockTableModel::ERR_SENSORCOL, true);
+//    oblockTable->setColumnHidden(OBlockTableModel::CURVECOL, true);
     for (int i = 0; i < ((DefaultTableColumnModel*)tcm)->getColumnCount(); i++) {
         int width = oblockDataModel->getPreferredWidth(i);
         tcm->getColumn(i)->setPreferredWidth(width);

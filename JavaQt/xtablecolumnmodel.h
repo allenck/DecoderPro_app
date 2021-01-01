@@ -7,7 +7,7 @@ class JAVAQTSHARED_EXPORT XTableColumnModel : public DefaultTableColumnModel
 {
  Q_OBJECT
 public:
- explicit XTableColumnModel(QObject *parent = 0);
+ explicit XTableColumnModel(JTable *parent);
  /*public*/ void setColumnVisible(TableColumn* column, bool visible);
  /*public*/ void setAllColumnsVisible();
  /*public*/ TableColumn* getColumnByModelIndex(int modelColumnIndex);

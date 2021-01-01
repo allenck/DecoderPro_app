@@ -5,6 +5,7 @@
 #include <basicrosterentry.h>
 #include <dcclocoaddress.h>
 #include <dccthrottle.h>
+#include <jtable.h>
 #include <listselectionmodel.h>
 #include <locoaddress.h>
 #include <manager.h>
@@ -1296,8 +1297,14 @@ public:
 
    ~PythonQtShell_TableCellEditor();
 
+virtual QObject*  self();
 
   PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_TableCellEditor : public TableCellEditor
+{ public:
+inline QObject*  py_q_self() { return TableCellEditor::self(); }
 };
 
 class PythonQtWrapper_TableCellEditor : public QObject
@@ -1306,6 +1313,8 @@ public:
 public slots:
 TableCellEditor* new_TableCellEditor();
 void delete_TableCellEditor(TableCellEditor* obj) { delete obj; } 
+   QObject*  self(TableCellEditor* theWrappedObject);
+   QObject*  py_q_self(TableCellEditor* theWrappedObject){  return (((PythonQtPublicPromoter_TableCellEditor*)theWrappedObject)->py_q_self());}
 };
 
 
@@ -1369,7 +1378,7 @@ void delete_TableColumn(TableColumn* obj) { delete obj; }
 class PythonQtShell_TableColumnModel : public TableColumnModel
 {
 public:
-    PythonQtShell_TableColumnModel(QObject*  parent = 0):TableColumnModel(parent),_wrapper(NULL) {}
+    PythonQtShell_TableColumnModel(JTable*  parent):TableColumnModel(parent),_wrapper(NULL) {}
 
    ~PythonQtShell_TableColumnModel();
 
@@ -1424,7 +1433,7 @@ class PythonQtWrapper_TableColumnModel : public QObject
 { Q_OBJECT
 public:
 public slots:
-TableColumnModel* new_TableColumnModel(QObject*  parent = 0);
+TableColumnModel* new_TableColumnModel(JTable*  parent);
 void delete_TableColumnModel(TableColumnModel* obj) { delete obj; } 
    void addColumn(TableColumnModel* theWrappedObject, TableColumn*  arg__1);
    void py_q_addColumn(TableColumnModel* theWrappedObject, TableColumn*  arg__1){  (((PythonQtPublicPromoter_TableColumnModel*)theWrappedObject)->py_q_addColumn(arg__1));}

@@ -35,7 +35,7 @@
 /**
  * Creates a default table column model.
  */
-/*public*/ DefaultTableColumnModel::DefaultTableColumnModel(QObject *parent) :
+/*public*/ DefaultTableColumnModel::DefaultTableColumnModel(JTable *parent) :
 TableColumnModel(parent)
 {
  //super();

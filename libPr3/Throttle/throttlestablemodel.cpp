@@ -56,7 +56,7 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
  beginRemoveRows(QModelIndex(), row, row);
  throttleFrames.removeAt(row);
  endRemoveRows();
- setPersistentButtons();
+ //setPersistentButtons();
  if(la!=NULL)
         ((AbstractThrottleManager*)InstanceManager::throttleManagerInstance())->removeListener(la, (PropertyChangeListener*)this);
 }

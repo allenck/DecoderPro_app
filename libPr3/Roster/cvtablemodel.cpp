@@ -294,7 +294,7 @@ void CvTableModel::configureTable(JTable *cvTable)
  setColumnToHoldButton(cvTable,READCOLUMN);
  setColumnToHoldButton(cvTable, WRITECOLUMN);
  setColumnToHoldButton(cvTable, COMPARECOLUMN);
- setPersistentButtons();
+ //setPersistentButtons();
 }
 
 /*public*/ bool CvTableModel::decoderDirty()

@@ -3,6 +3,8 @@
 #include "beantabledatamodel.h"
 #include "liblayouteditor_global.h"
 #include <QPixmap>
+#include "tablecelleditor.h"
+#include "tablecellrenderer.h"
 
 class ImageIconRenderer;
 class Component;
@@ -73,10 +75,12 @@ friend class SensorTableWidget;
 };
 Q_DECLARE_METATYPE(SensorTableDataModel)
 
-class ImageIconRenderer : public QObject //extends AbstractCellEditor implements TableCellEditor, TableCellRenderer {
+class ImageIconRenderer : public QItemDelegate , public TableCellEditor, public TableCellRenderer
 {
  Q_OBJECT
+  Q_INTERFACES(TableCellEditor TableCellRenderer)
  static Logger* log;
+ QObject* self() {return (QObject*)this;}
 protected:
     /*protected*/ QLabel* label;
     /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor

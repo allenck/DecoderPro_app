@@ -61,7 +61,7 @@ public:
 // /*public*/ void loadTableColumnDetails(JTable* table);
 // QT_DEPRECATED/*public*/ void loadTableColumnDetails(JTable* table, QString beantableref);
  /*public*/ void printTable(HardcopyWriter* w);
- /*public*/ JTable* makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* model, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter);
+ /*public*/ virtual JTable* makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* model, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter);
  QT_DEPRECATED/*public*/ JTable* makeJTable(QSortFilterProxyModel* sorter);
  /*public*/ void copyName(int);
  /*public*/ void renameBean(int);
@@ -122,6 +122,7 @@ protected:
  /*protected*/ int getPropertyColumnCount() const;
  /*protected*/ /*final*/ QList<NamedBeanPropertyDescriptor*>* propertyColumns = nullptr;
  /*protected*/ NamedBeanPropertyDescriptor *getPropertyColumnDescriptor(int column);
+ /*protected*/ JTable* configureJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ JTable* table, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter);
 
 protected slots:
  void On_itemClicked(QModelIndex);
@@ -150,6 +151,7 @@ friend class AbstractTableAction;
 friend class TurnoutTableDataModel;
 friend class SignalMastTableAction;
 friend class OBlockTableAction;
+friend class TTComboBoxDelegate;
 };
 
 

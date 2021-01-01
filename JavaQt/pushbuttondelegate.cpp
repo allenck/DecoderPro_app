@@ -4,6 +4,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include "jtogglebutton.h"
+#include <QPainter>
 
 PushButtonDelegate::PushButtonDelegate(QObject *parent) : QItemDelegate(parent)
 {
@@ -31,6 +32,7 @@ void PushButtonDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 {
  QPushButton *button = static_cast<QPushButton*>(editor);
  int value = index.model()->data(index, Qt::EditRole).toUInt();
+ button->setText(index.data().toString());
 }
 
 void PushButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
@@ -42,6 +44,16 @@ void PushButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 void PushButtonDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
  editor->setGeometry(option.rect);
+}
+
+void PushButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+ QPushButton* widget = new QPushButton();
+ setEditorData(widget, index);
+ widget->resize(option.rect.size());
+ QPixmap pixmap(option.rect.size());
+ widget->render(&pixmap);
+ painter->drawPixmap(option.rect,pixmap);
 }
 
 ToggleButtonDelegate::ToggleButtonDelegate(QObject *parent) : QItemDelegate(parent)
@@ -81,6 +93,18 @@ void ToggleButtonDelegate::setModelData(QWidget *editor, QAbstractItemModel *mod
 void ToggleButtonDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
 {
  editor->setGeometry(option.rect);
+}
+void ToggleButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+ //bool state = index.data().toString() == this->on;
+ JToggleButton* widget = new JToggleButton(index.data().toString());
+ //widget->setLabels(on, off);
+ //widget->setChecked(state);
+ setEditorData(widget, index);
+ widget->resize(option.rect.size());
+ QPixmap pixmap(option.rect.size());
+ widget->render(&pixmap);
+ painter->drawPixmap(option.rect,pixmap);
 }
 
 MyDelegate::MyDelegate(QObject *parent)

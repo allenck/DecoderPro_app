@@ -56,7 +56,7 @@
  setObjectName("BeanTableDataModel");
  sysNameList = QStringList();
  noWarnDelete = false;
- buttonMap = QList<int>();
+ //buttonMap = QList<int>();
  nbMan = (NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager");
  _table = NULL;
  // propertyColumns = new ArrayList<>(getManager().getKnownBeanProperties());
@@ -653,7 +653,7 @@ void BeanTableDataModel::On_itemClicked(QModelIndex index)
 //        .setPreferredWidth((sample.getPreferredSize().width)+4);
  this->_table = table;
  table->setItemDelegateForColumn(column, new PushButtonDelegate());
- buttonMap.append(column);
+ //buttonMap.append(column);
  //setPersistentButtons();
 }
 
@@ -833,7 +833,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 //    table->setRowSorter(sorter);
     table->horizontalHeader()->sectionsMovable();
     //table->getTableHeader().setReorderingAllowed(true);
-    table->setColumnModel(new XTableColumnModel(this));
+    table->setColumnModel(new XTableColumnModel(table));
     //table->createDefaultColumnsFromModel();
 //    table->resizeColumnsToContents();
 //    table->horizontalHeader()->setStretchLastSection(true);
@@ -859,11 +859,32 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 // };
 // table.getTableHeader().setReorderingAllowed(true);
  table->resizeRowsToContents();
- table->setColumnModel(new XTableColumnModel(this));
+ table->setColumnModel(new XTableColumnModel(table));
  table->createDefaultColumnsFromModel();
 
 // addMouseListenerToHeader(table);
  return table;
+}
+/**
+ * Configure a new table using the given model and row sorter.
+ *
+ * @param table  the table to configure
+ * @param name   the table name
+ * @param sorter the row sorter for the table; if null, the table will not
+ *               be sortable
+ * @return the table
+ * @throws NullPointerException if table or the table name is null
+ */
+/*protected*/ JTable* BeanTableDataModel::configureJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ JTable* table, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter) {
+//    Objects.requireNonNull(table, "the table must be nonnull");
+//    Objects.requireNonNull(name, "the table name must be nonnull");
+    table->setRowSorter(sorter);
+    table->setName(name);
+//    table->getTableHeader()->setReorderingAllowed(true);
+    table->setColumnModel(new XTableColumnModel(table));
+    table->createDefaultColumnsFromModel();
+//    addMouseListenerToHeader(table);
+    return table;
 }
 
 /*abstract*/ /*protected*/ QString BeanTableDataModel::getBeanType()

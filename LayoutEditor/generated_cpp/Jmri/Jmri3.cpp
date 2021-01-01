@@ -7,6 +7,7 @@
 #include <basicrosterentry.h>
 #include <dcclocoaddress.h>
 #include <dccthrottle.h>
+#include <jtable.h>
 #include <listselectionmodel.h>
 #include <locoaddress.h>
 #include <manager.h>
@@ -10725,9 +10726,47 @@ PythonQtShell_TableCellEditor::~PythonQtShell_TableCellEditor() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
+QObject*  PythonQtShell_TableCellEditor::self()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("self");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QObject*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QObject* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("self", methodInfo, result);
+          } else {
+            returnValue = *((QObject**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return TableCellEditor::self();
+}
 TableCellEditor* PythonQtWrapper_TableCellEditor::new_TableCellEditor()
 { 
 return new PythonQtShell_TableCellEditor(); }
+
+QObject*  PythonQtWrapper_TableCellEditor::self(TableCellEditor* theWrappedObject)
+{
+  return ( theWrappedObject->self());
+}
 
 
 
@@ -11592,7 +11631,7 @@ if (_wrapper) {
 }
   TableColumnModel::timerEvent(event0);
 }
-TableColumnModel* PythonQtWrapper_TableColumnModel::new_TableColumnModel(QObject*  parent)
+TableColumnModel* PythonQtWrapper_TableColumnModel::new_TableColumnModel(JTable*  parent)
 { 
 return new PythonQtShell_TableColumnModel(parent); }
 

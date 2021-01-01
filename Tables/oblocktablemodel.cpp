@@ -747,9 +747,11 @@ void OBlockTableModel::initTempRow()
    case SPEEDCOL:
        return tr("Speed Notch");
    case EDIT_COL:
-       return tr("Paths");
+       return "  ";
    case DELETE_COL:
        return tr("Delete");
+   case WARRANTCOL:
+       return tr("Allocated To");
   }
   return BeanTableDataModel::headerData(section,orientation, role);
  }
@@ -943,8 +945,8 @@ QWidget* OBSComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionVi
 void OBSComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
-  int value = index.model()->data(index, Qt::EditRole).toUInt();
-  comboBox->setCurrentIndex(value);
+  QString value = index.model()->data(index, Qt::EditRole).toString();
+  comboBox->setCurrentText(value);
 }
 
 void OBSComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
@@ -957,6 +959,16 @@ void OBSComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOpti
 {
   editor->setGeometry(option.rect);
 }
+
+//void OBSComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//{
+// JComboBox* widget = new JComboBox(items);
+// setEditorData(widget, index);
+// widget->resize(option.rect.size());
+// QPixmap pixmap(option.rect.size());
+// widget->render(&pixmap);
+// painter->drawPixmap(option.rect,pixmap);
+//}
 
 /**
 * Provide a static JComboBox element to display inside the JPanel

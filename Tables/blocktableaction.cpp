@@ -667,7 +667,7 @@ void BlockTableAction::common()
  curveOptions.insert(Block::TIGHT, tr("Tight"));
  curveOptions.insert(Block::SEVERE, tr("Severe"));
  table->setItemDelegateForColumn(CURVECOL, new OBSComboBoxDelegate(this, curveOptions.values() ));
- buttonMap.append(CURVECOL);
+ //buttonMap.append(CURVECOL);
 
  QString defaultBlockSpeedText = ("Use Global " + ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getDefaultSpeed());
  speedList.append(defaultBlockSpeedText);
@@ -678,7 +678,7 @@ void BlockTableAction::common()
      }
  }
  table->setItemDelegateForColumn(SPEEDCOL, new OBSComboBoxDelegate(this, speedList));
- buttonMap.append(SPEEDCOL);
+ //buttonMap.append(SPEEDCOL);
 
  QStringList nameList = InstanceManager::sensorManagerInstance()->getSystemNameArray();
 
@@ -703,7 +703,7 @@ void BlockTableAction::common()
  }
 
  table->setItemDelegateForColumn(SENSORCOL, new OBSComboBoxDelegate(this, sensorList.toList()));
- buttonMap.append(SENSORCOL);
+ //buttonMap.append(SENSORCOL);
 
  setColumnToHoldButton(table, EDITCOL);
  setColumnToHoldButton(table, DELETECOL);

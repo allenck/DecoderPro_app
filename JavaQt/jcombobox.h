@@ -5,6 +5,7 @@
 #include "changelistener.h"
 #include "focuslistener.h"
 #include "itemlistener.h"
+#include <QStringListModel>
 
 class EventObject;
 class JComboBox : public QComboBox, public JComponent
@@ -38,6 +39,8 @@ public:
  /*public*/ void setSelectedIndex(int i){setCurrentIndex(i);}
  /*public*/ void setSelectedItem(QString t) {setCurrentText(t);}
  /*public*/ int getItemCount() {return count();}
+ /*public*/ QStringList itemList();
+
 signals:
  void itemStateChanged(ItemEvent* e);
  /*public*/ void focusGained(FocusEvent* fe);
@@ -47,11 +50,11 @@ signals:
  void currentIndexChanged(int);
 
 private:
-bool _opaque = false;
-Border* _border = nullptr;
-/*private*/ void focusInEvent(QFocusEvent* e);
-/*private*/ void focusOutEvent(QFocusEvent* e);
-
+ bool _opaque = false;
+ Border* _border = nullptr;
+ /*private*/ void focusInEvent(QFocusEvent* e);
+ /*private*/ void focusOutEvent(QFocusEvent* e);
+ QStringListModel* cbModel;
 private slots:
  //void on_selected();
 };

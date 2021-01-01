@@ -52,6 +52,7 @@
 {
  //this(0, 0);
  setDataVector(newVector(0), newVector(0));
+ columnIdentifiers = new QVector<QVariant>();
 }
 
 /*private*/ /*static*/ QVector<QVariant>* DefaultTableModel::newVector(int size) {
@@ -76,7 +77,7 @@
   //this(newVector(columnCount), rowCount);
     _rowCount = rowCount;
  setDataVector(new QVector<QVariant>(columnCount*rowCount * columnCount), newVector(columnCount));
-
+ columnIdentifiers = new QVector<QVariant>(columnCount);
 }
 
 /**
@@ -97,6 +98,7 @@
   AbstractTableModel(parent)
 {
  setDataVector(newVector(rowCount), columnNames);
+ columnIdentifiers = columnNames;
 }
 #if 0
 /**

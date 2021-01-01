@@ -61,7 +61,7 @@
 //        };
 
  slotTable = new JTable(slotModel);
-
+tcm = new XTableColumnModel(slotTable);
  // Use XTableColumnModel so we can control which columns are visible
  slotTable->setColumnModel(tcm);
  slotTable->createDefaultColumnsFromModel();
@@ -284,7 +284,7 @@ void CabSignalPane::on_cabSigColMenuMapper(QObject* obj)
 {
     //super();
  setObjectName("CabSignalPane");
- tcm = new XTableColumnModel();
+ //tcm = new XTableColumnModel();
 
  cabSigColMenu = new QMenu(tr("Signal Data Columns"));
 
@@ -397,7 +397,7 @@ void CabSignalPane::onOffset(int i)
 
 
 /*private*/ TableCellRenderer* tableSignalAspectRenderer() {
-#if 0
+#if 0 // TODO:
     return new TableCellRenderer() {
         JLabel f = new JLabel();
         //@Override

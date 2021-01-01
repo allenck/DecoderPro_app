@@ -1,8 +1,9 @@
 #include "xtablecolumnmodel.h"
 #include "exceptions.h"
 #include "tablecolumn.h"
+#include "jtable.h"
 
-XTableColumnModel::XTableColumnModel(QObject *parent) :
+XTableColumnModel::XTableColumnModel(JTable *parent) :
   DefaultTableColumnModel(parent)
 {
  allTableColumns =  QVector<TableColumn*>();
@@ -53,10 +54,14 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
 // listeners will receive columnAdded()/columnRemoved() event
 /*public*/ void XTableColumnModel::setColumnVisible(TableColumn* column, bool visible)
 {
+ JTable* table = (JTable*)parent();
+ if(visible)
+  table->showColumn(column->getModelIndex());
+ else
+  table->hideColumn(column->getModelIndex());
  if (!visible)
  {
   DefaultTableColumnModel::removeColumn(column);
-
  }
  else
  {

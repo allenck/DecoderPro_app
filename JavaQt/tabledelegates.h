@@ -270,5 +270,6 @@ public:
      QPixmap pixmap(option.rect.size());
      widget->render(&pixmap);
      painter->drawPixmap(option.rect,pixmap);
-    }};
+    }
+};
 #endif // TABLEDELEGATES_H

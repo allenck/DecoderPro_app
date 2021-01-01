@@ -199,7 +199,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
  void EnginesTableModel::initTable()
  {
   // Install the button handlers
-  XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)_table->model());
+  XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)_table->model()*/_table);
   _table->setColumnModel(tcm);
   _table->createDefaultColumnsFromModel();
      // TODO:

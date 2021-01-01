@@ -1108,7 +1108,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
   // Create new columns from the data model info
   log->debug(QString("Table %3 contains %1 rows and %2 columns").arg(m->rowCount()).arg(m->columnCount()).arg(objectName()));
   //for (int i = 0; i < m->columnCount(QModelIndex()); i++)
-  for(int i = 0; i < m->columnCount(QModelIndex()); i++)
+  for(int i = 0; i < m->columnCount(/*QModelIndex()*/); i++)
   {
    TableColumn* newColumn = new TableColumn(i);
    newColumn->setHeaderValue(m->headerData(i,Qt::Horizontal));
@@ -5498,7 +5498,7 @@ static class BooleanEditor extends DefaultCellEditor {
  * @see javax.swing.table.DefaultTableColumnModel
  */
 /*protected*/ TableColumnModel* JTable::createDefaultColumnModel() {
- return new DefaultTableColumnModel((AbstractTableModel*)model());
+ return new DefaultTableColumnModel(/*(AbstractTableModel*)model()*/this);
 }
 
 /**
@@ -9768,5 +9768,10 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
  }
 }
 
+/*public*/ QAbstractItemDelegate* JTable::getCellRenderer(int row, int column){
+    return itemDelegate(model()->index(row, column));
+}
 
-
+/*public*/ QAbstractItemDelegate *JTable::getCellEditor(int row, int column){
+    return itemDelegate(model()->index(row, column));
+}

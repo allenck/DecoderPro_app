@@ -12,7 +12,7 @@ class JAVAQTSHARED_EXPORT DefaultTableColumnModel : public TableColumnModel
 {
  Q_OBJECT
 public:
- explicit DefaultTableColumnModel(QObject *parent = 0);
+ explicit DefaultTableColumnModel(JTable *parent);
  /*public*/ void setSelectionModel(ListSelectionModel* newModel);
  /*public*/ ListSelectionModel* getSelectionModel();
  /*public*/ void setColumnMargin(int newMargin);

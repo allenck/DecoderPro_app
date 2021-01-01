@@ -344,7 +344,7 @@ return _signalList.size() + 1;
   case TO_BLOCK_COLUMN:
    return tr("To (Protected) Block");
   case LENGTHCOL:
-   return tr("Delay (ms)");
+   return tr("Offset");
   case UNITSCOL:
    return "  ";
   case EDIT_COL:
@@ -816,7 +816,7 @@ return _signalList.size() + 1;
   } else {
    signalRow->setToBlock(NULL);
   }
-  return tr("Portal \"{0}\" does not connect to block \"%1\".").arg(portal->getName()).arg(
+  return tr("Portal \"%1\" does not connect to block \"%2\".").arg(portal->getName()).arg(
      signalRow->getToBlock()->getDisplayName());
  }
  return NULL;

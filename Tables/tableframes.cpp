@@ -708,7 +708,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
     _oBlockTable->setDragEnabled(true);
 
     // Use XTableColumnModel so we can control which columns are visible
-    XTableColumnModel* tcm = new XTableColumnModel();
+    XTableColumnModel* tcm = new XTableColumnModel(_oBlockTable);
     _oBlockTable->setColumnModel(tcm);
 //    _oBlockTable->getTableHeader()->setReorderingAllowed(true);
     _oBlockTable->createDefaultColumnsFromModel();
