@@ -80,7 +80,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -118,7 +117,6 @@
 #include <qvector.h>
 #include <qwidget.h>
 #include <reportermanager.h>
-#include <routemanager.h>
 #include <sensor.h>
 #include <sensormanager.h>
 #include <signalhead.h>
@@ -837,9 +835,7 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    void remove(InstanceManager* theWrappedObject, QObject*  item, QString  type);
    void static_InstanceManager_removePropertyChangeListener(PropertyChangeListener*  l);
    void static_InstanceManager_removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  l);
-   ReporterManager*  static_InstanceManager_reporterManagerInstance();
    void static_InstanceManager_reset(QString  type);
-   RouteManager*  static_InstanceManager_routeManagerInstance();
    QObject*  static_InstanceManager_setDefault(QString  type, QObject*  val);
    void static_InstanceManager_setLightManager(LightManager*  p);
    void static_InstanceManager_setReporterManager(ReporterManager*  p);
@@ -1396,6 +1392,8 @@ void delete_JTable(JTable* obj) { delete obj; }
    void createDefaultColumnsFromModel(JTable* theWrappedObject);
    void doLayout(JTable* theWrappedObject);
    bool  getAutoCreateColumnsFromModel(JTable* theWrappedObject);
+   QAbstractItemDelegate*  getCellEditor(JTable* theWrappedObject, int  row, int  column);
+   QAbstractItemDelegate*  getCellRenderer(JTable* theWrappedObject, int  row, int  column);
    int  getColumnCount(JTable* theWrappedObject);
    TableColumnModel*  getColumnModel(JTable* theWrappedObject);
    QString  getColumnName(JTable* theWrappedObject, int  column);

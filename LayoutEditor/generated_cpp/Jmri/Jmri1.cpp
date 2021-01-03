@@ -66,7 +66,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -104,7 +103,6 @@
 #include <qvector.h>
 #include <qwidget.h>
 #include <reportermanager.h>
-#include <routemanager.h>
 #include <sensor.h>
 #include <sensormanager.h>
 #include <signalhead.h>
@@ -4991,19 +4989,9 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_removePropertyChang
   (InstanceManager::removePropertyChangeListener(propertyName, l));
 }
 
-ReporterManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_reporterManagerInstance()
-{
-  return (InstanceManager::reporterManagerInstance());
-}
-
 void PythonQtWrapper_InstanceManager::static_InstanceManager_reset(QString  type)
 {
   (InstanceManager::reset(type));
-}
-
-RouteManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_routeManagerInstance()
-{
-  return (InstanceManager::routeManagerInstance());
 }
 
 QObject*  PythonQtWrapper_InstanceManager::static_InstanceManager_setDefault(QString  type, QObject*  val)
@@ -12650,6 +12638,16 @@ void PythonQtWrapper_JTable::doLayout(JTable* theWrappedObject)
 bool  PythonQtWrapper_JTable::getAutoCreateColumnsFromModel(JTable* theWrappedObject)
 {
   return ( theWrappedObject->getAutoCreateColumnsFromModel());
+}
+
+QAbstractItemDelegate*  PythonQtWrapper_JTable::getCellEditor(JTable* theWrappedObject, int  row, int  column)
+{
+  return ( theWrappedObject->getCellEditor(row, column));
+}
+
+QAbstractItemDelegate*  PythonQtWrapper_JTable::getCellRenderer(JTable* theWrappedObject, int  row, int  column)
+{
+  return ( theWrappedObject->getCellRenderer(row, column));
 }
 
 int  PythonQtWrapper_JTable::getColumnCount(JTable* theWrappedObject)

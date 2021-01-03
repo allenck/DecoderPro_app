@@ -14,7 +14,7 @@
 #include "tablecolumn.h"
 #include "defaultsignalmastlogicmanager.h"
 #include <QPushButton>
-#include <QMessageBox>
+#include "joptionpane.h"
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include "layoutblockmanager.h"
@@ -90,19 +90,13 @@ void SignalMastLogicTableAction::common()
      pathMenu->addAction(item);
 //     item.addActionListener(new ActionListener() {
 //         /*public*/ void actionPerformed(ActionEvent e) {
-//             ((jmri.managers.DefaultSignalMastLogicManager) InstanceManager::signalMastLogicManagerInstance()).generateSection();
-//             JOptionPane.showMessageDialog(NULL, tr("SectionGenerationComplete"));
+     connect(item, &QAction::triggered, [=]{
+             ((DefaultSignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->generateSection();
+             JOptionPane::showMessageDialog(NULL,tr("Generation of Sections Complete"));
 //         }
-//     });
-  connect(item, SIGNAL(triggered(bool)), this, SLOT(On_autoGenSections()));
+     });
  }
 
- void SignalMastLogicTableAction::On_autoGenSections()
- {
-  ((DefaultSignalMastLogicManager*) InstanceManager::signalMastLogicManagerInstance())->generateSection();
-  //JOptionPane.showMessageDialog(NULL, tr("Generation of Sections Complete"));
-  QMessageBox::information(NULL, tr("COmplete"), tr(""));
- }
 
  /*protected*/ void SignalMastLogicTableAction::createModel()
 {
@@ -119,7 +113,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
 }
  //We have to set a manager first off, but this gets replaced.
  /*protected*/ Manager* SmlBeanTableDataModel::getManager() {
-     return (Manager*)InstanceManager::signalMastLogicManagerInstance();
+     return (Manager*)InstanceManager::getDefault("SignalMastLogicManager");
  }
 
  /*public EcosLocoAddress getByDccAddress(int address) {return getManager().getByDccAddress(address);}*/
@@ -360,7 +354,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
 
  void SmlBeanTableDataModel::deleteLogic(int row, int /*col*/) {
      //This needs to be looked at
-     InstanceManager::signalMastLogicManagerInstance()->removeSignalMastLogic(getLogicFromRow(row), getDestMastFromRow(row));
+     ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->removeSignalMastLogic(getLogicFromRow(row), getDestMastFromRow(row));
  }
 
  /*public*/ SignalMast* SmlBeanTableDataModel::getDestMastFromRow(int row) const{
@@ -535,14 +529,11 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
 
  void SignalMastLogicTableAction::autoCreatePairs(/*jmri.util.JmriJFrame f*/) {
      if (!((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled()) {
-//         int response = JOptionPane.showConfirmDialog(NULL, tr("EnableLayoutBlockRouting"));
-//         if (response == 0) {
-         int response = QMessageBox::question(NULL, tr("Question"), tr("Layout Block routing is not enabled\nDo you want to enable it?"), QMessageBox::Yes | QMessageBox::No);
-         if(response == QMessageBox::No )
+         int response = JOptionPane::showConfirmDialog(NULL, tr("Layout Block routing is not enabled\nDo you want to enable it?"));
+         if (response == 0)
          {
              ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->enableAdvancedRouting(true);
-             //JOptionPane.showMessageDialog(NULL, tr("LayoutBlockRoutingEnabled"));
-         QMessageBox::information(NULL, tr("Enabled"), tr("Layout Block routing has been enabled."));
+             JOptionPane::showMessageDialog(NULL, tr("Layout Block routing has been enabled."));
          } else {
              return;
          }

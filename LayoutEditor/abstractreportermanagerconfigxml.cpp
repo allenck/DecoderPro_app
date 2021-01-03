@@ -90,7 +90,7 @@ AbstractReporterManagerConfigXML::AbstractReporterManagerConfigXML(QObject *pare
     bool result = true;
     QDomNodeList reporterList = reporters.elementsByTagName("reporter");
     if (log->isDebugEnabled()) log->debug("Found "+QString::number(reporterList.size())+" reporters");
-    ReporterManager* tm = InstanceManager::reporterManagerInstance();
+    ReporterManager* tm = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"));
 
     for (int i=0; i<reporterList.size(); i++) {
 
@@ -111,5 +111,5 @@ AbstractReporterManagerConfigXML::AbstractReporterManagerConfigXML(QObject *pare
 }
 
 /*public*/ int AbstractReporterManagerConfigXML::loadOrder() const{
-    return InstanceManager::reporterManagerInstance()->getXMLOrder();
+    return ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getXMLOrder();
 }

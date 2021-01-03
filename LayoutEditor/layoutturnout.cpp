@@ -1153,7 +1153,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
 
 /*public*/ int LayoutTurnout::getLinkType() {return linkType;}
 /*public*/ void LayoutTurnout::setLinkType(int type) {linkType = type;}
-/*public*/ LayoutTurnout::TurnoutType LayoutTurnout::getTurnoutType() {return type;}
+/*public*/ LayoutTurnout::TurnoutType LayoutTurnout::getTurnoutType() const {return type;}
 /**
  * Returns true if this is a turnout (not a crossover or slip)
  *
@@ -1171,7 +1171,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
  *
  * @return boolean true if this is a turnout
  */
-/*public*/ bool LayoutTurnout::isTurnoutTypeTurnout() {
+/*public*/ bool LayoutTurnout::isTurnoutTypeTurnout() const {
     return isTurnoutTypeTurnout(getTurnoutType());
 }
 
@@ -1187,7 +1187,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
             || type == TurnoutType::LH_XOVER);
 }
 
-/*public*/ bool LayoutTurnout::isTurnoutTypeXover() {
+/*public*/ bool LayoutTurnout::isTurnoutTypeXover() const{
  return hasEnteringDoubleTrack(getTurnoutType());
 }
 
@@ -1462,18 +1462,18 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
  return (namedLayoutBlockA != nullptr) ? namedLayoutBlockA->getBean() : nullptr;
 }
 
-/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockB()
+/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockB() const
 {
  return (namedLayoutBlockB != nullptr) ? namedLayoutBlockB->getBean() : getLayoutBlock();
 
 }
 
-/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockC()
+/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockC() const
 {
  return (namedLayoutBlockC != nullptr) ? namedLayoutBlockC->getBean() : getLayoutBlock();
 }
 
-/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockD()
+/*public*/ LayoutBlock* LayoutTurnout::getLayoutBlockD() const
 {
  return (namedLayoutBlockD != nullptr) ? namedLayoutBlockD->getBean() : getLayoutBlock();
 }
@@ -4172,62 +4172,55 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
 
 /*public*/ void LayoutTurnout::reCheckBlockBoundary() const
 {
- if(connectA==nullptr && connectB==nullptr && connectC==nullptr)
- {
-  if ((type==RH_TURNOUT) || (type==LH_TURNOUT) || (type==WYE_TURNOUT))
-  {
-   if(signalAMastNamed!= nullptr)
-    removeSML(getSignalAMast());
-   if(signalBMastNamed!=nullptr)
-      removeSML(getSignalBMast());
-   if(signalCMastNamed!=nullptr)
-      removeSML(getSignalCMast());
-   if(signalDMastNamed!=nullptr)
-      removeSML(getSignalDMast());
-   signalAMastNamed = nullptr;
-   signalBMastNamed = nullptr;
-   signalCMastNamed = nullptr;
-   sensorANamed=nullptr;
-   sensorBNamed=nullptr;
-   sensorCNamed=nullptr;
-   return;
-
-  }
-  else if (((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)) && connectD==nullptr)
-  {
-   if (signalAMastNamed != nullptr) {
-       removeSML(getSignalAMast());
-   }
-   if (signalBMastNamed != nullptr) {
-       removeSML(getSignalBMast());
-   }
-   if (signalCMastNamed != nullptr) {
-       removeSML(getSignalCMast());
-   }
-   if (signalDMastNamed != nullptr) {
-       removeSML(getSignalDMast());
-   }
-   signalAMastNamed = nullptr;
-   signalBMastNamed = nullptr;
-   signalCMastNamed = nullptr;
-   signalDMastNamed = nullptr;
-   sensorANamed=nullptr;
-   sensorBNamed=nullptr;
-   sensorCNamed=nullptr;
-   sensorDNamed=nullptr;
-   return;
-  }
+ if (connectA == nullptr && connectB == nullptr && connectC == nullptr) {
+     if (isTurnoutTypeTurnout()) {
+         if (signalAMastNamed != nullptr) {
+             removeSML(getSignalAMast());
+         }
+         if (signalBMastNamed != nullptr) {
+             removeSML(getSignalBMast());
+         }
+         if (signalCMastNamed != nullptr) {
+             removeSML(getSignalCMast());
+         }
+         signalAMastNamed = nullptr;
+         signalBMastNamed = nullptr;
+         signalCMastNamed = nullptr;
+         sensorANamed = nullptr;
+         sensorBNamed = nullptr;
+         sensorCNamed = nullptr;
+         return;
+     } else if (isTurnoutTypeXover() && connectD == nullptr) {
+         if (signalAMastNamed != nullptr) {
+             removeSML(getSignalAMast());
+         }
+         if (signalBMastNamed != nullptr) {
+             removeSML(getSignalBMast());
+         }
+         if (signalCMastNamed != nullptr) {
+             removeSML(getSignalCMast());
+         }
+         if (signalDMastNamed != nullptr) {
+             removeSML(getSignalDMast());
+         }
+         signalAMastNamed = nullptr;
+         signalBMastNamed = nullptr;
+         signalCMastNamed = nullptr;
+         signalDMastNamed = nullptr;
+         sensorANamed = nullptr;
+         sensorBNamed = nullptr;
+         sensorCNamed = nullptr;
+         sensorDNamed = nullptr;
+         return;
+     }
  }
 
- if(connectA==nullptr || connectB==nullptr || connectC==nullptr)
- {
-  //could still be in the process of rebuilding.
-  return;
- }
- else if ((connectD == nullptr) && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)))
- {
-  //could still be in the process of rebuilding.
-  return;
+ if (connectA == nullptr || connectB == nullptr || connectC == nullptr) {
+     // could still be in the process of rebuilding.
+     return;
+ } else if ((connectD == nullptr) && isTurnoutTypeXover()) {
+     // could still be in the process of rebuilding.
+     return;
  }
 
  TrackSegment* trkA;
@@ -4235,55 +4228,56 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  TrackSegment* trkC;
  TrackSegment* trkD;
 
-//    if(connectA instanceof TrackSegment){
- if(qobject_cast<TrackSegment*>(connectA)!= nullptr)
- {
-  trkA = (TrackSegment*)connectA;
-  if(trkA->getLayoutBlock()==getLayoutBlock())
-  {
-   signalAMastNamed = nullptr;
-   sensorANamed=nullptr;
-   if(!(signalAMastNamed == nullptr))
-   removeSML(getSignalAMast());
-  }
+ if (qobject_cast<TrackSegment*>(connectA )) {
+     trkA = (TrackSegment*) connectA;
+     if (trkA->getLayoutBlock() == getLayoutBlock()) {
+         if (signalAMastNamed != nullptr) {
+             removeSML(getSignalAMast());
+         }
+         signalAMastNamed = nullptr;
+         sensorANamed = nullptr;
+     }
  }
-//    if(connectB instanceof TrackSegment){
- if(qobject_cast<TrackSegment*>(connectB)!= nullptr)
- {
-  trkB = (TrackSegment*)connectB;
-  if(trkB->getLayoutBlock()==block || trkB->getLayoutBlock()==blockB)
-  {
-   signalBMastNamed = nullptr;
-   sensorBNamed=nullptr;
-   if(!(signalBMastNamed == nullptr))
-    removeSML(getSignalBMast());
-  }
+ if ( qobject_cast<TrackSegment*>(connectB)) {
+     trkB = (TrackSegment*) connectB;
+     if (trkB->getLayoutBlock() == getLayoutBlock() || trkB->getLayoutBlock() == getLayoutBlockB()) {
+         if (signalBMastNamed != nullptr) {
+             removeSML(getSignalBMast());
+         }
+         signalBMastNamed = nullptr;
+         sensorBNamed = nullptr;
+
+     }
  }
-//    if(connectC instanceof TrackSegment) {
- if(qobject_cast<TrackSegment*>(connectC)!= nullptr)
- {
-  trkC = (TrackSegment*)connectC;
-  if(trkC->getLayoutBlock()==block || trkC->getLayoutBlock()==blockB || trkC->getLayoutBlock()==blockC)
-  {
-   signalCMastNamed = nullptr;
-   sensorCNamed=nullptr;
-   if(!(signalCMastNamed == nullptr))
-    removeSML(getSignalCMast());
-  }
+ if (qobject_cast<TrackSegment*>(connectC)) {
+     trkC = (TrackSegment*) connectC;
+     if (trkC->getLayoutBlock() == getLayoutBlock()
+             || trkC->getLayoutBlock() == getLayoutBlockB()
+             || trkC->getLayoutBlock() == getLayoutBlockC()) {
+         if (signalCMastNamed != nullptr) {
+             removeSML(getSignalCMast());
+         }
+         signalCMastNamed = nullptr;
+         sensorCNamed = nullptr;
+
+     }
  }
-//    if(connectD!=nullptr && connectD instanceof TrackSegment && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER))){
- if(connectD != nullptr && qobject_cast<TrackSegment*>(connectD)!= nullptr && ((type==DOUBLE_XOVER)||(type==RH_XOVER)||(type==LH_XOVER)))
- {
-  trkD = (TrackSegment*)connectD;
-  if(trkD->getLayoutBlock()==block || trkD->getLayoutBlock()==blockB || trkD->getLayoutBlock()==blockC || trkD->getLayoutBlock()==blockD)
-  {
-   signalDMastNamed = nullptr;
-   sensorDNamed=nullptr;
-   if(!(signalDMastNamed == nullptr))
-    removeSML(getSignalDMast());
-  }
+ if (connectD != nullptr &&  qobject_cast<TrackSegment*>(connectD)
+         && isTurnoutTypeXover()) {
+     trkD = (TrackSegment*) connectD;
+     if (trkD->getLayoutBlock() == getLayoutBlock()
+             || trkD->getLayoutBlock() == getLayoutBlockB()
+             || trkD->getLayoutBlock() == getLayoutBlockC()
+             || trkD->getLayoutBlock() == getLayoutBlockD()) {
+         if (signalDMastNamed != nullptr) {
+             removeSML(getSignalDMast());
+         }
+         signalDMastNamed = nullptr;
+         sensorDNamed = nullptr;
+     }
  }
-}
+}   // reCheckBlockBoundary
+
 /*
  * {@inheritDoc}
  */

@@ -57,7 +57,7 @@
 }
 void ReporterTableAction::common()
 {
- reportManager = InstanceManager::reporterManagerInstance();
+ reportManager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
  log = new Logger("ReporterTableAction");
 
  addFrame = NULL;

@@ -5401,7 +5401,7 @@ void LayoutEditor::addLabel()
     if (qobject_cast<SignalMast*>(sm)) {
         sb.append("Signal Mast");
         sb.append(" is linked to the following items<br> do you want to remove those references");
-        if (InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed((SignalMast*) sm)) {
+        if (((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->isSignalMastUsed((SignalMast*) sm)) {
             SignalMastLogic* sml = qobject_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic((SignalMast*) sm);
             //jmri.SignalMastLogic sml = InstanceManager.signalMastLogicManagerInstance().getSignalMastLogic((SignalMast)sm);
             if (sml != nullptr && sml->useLayoutEditor(sml->getDestinationList().at(0))) {

@@ -354,7 +354,7 @@ void OBlockManagerXml::loadBlock(QDomElement elem)
   //Sensor sensor = InstanceManager.sensorManagerInstance().provideSensor(name);
   try
   {
-   Reporter* rep = InstanceManager::reporterManagerInstance()->getReporter(name);
+   Reporter* rep = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter(name);
    if (rep != NULL)
    {
     block->setReporter(rep);

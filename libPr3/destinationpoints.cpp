@@ -522,7 +522,7 @@ void DestinationPoints::setRoute(bool state){
         SignalMast* smSource = (SignalMast*) p->src->sourceSignal;
         SignalMast* smDest = (SignalMast*) p->getSignal();
         /*synchronized(this)*/{
-            p->sml = InstanceManager::signalMastLogicManagerInstance()->newSignalMastLogic(smSource);
+            p->sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->newSignalMastLogic(smSource);
             if(!p->sml->isDestinationValid(smDest)){
                 //if no signalmastlogic existed then created it, but set it not to be stored.
                 p->sml->setDestinationMast(smDest);

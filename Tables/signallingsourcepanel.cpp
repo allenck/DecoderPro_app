@@ -36,7 +36,7 @@
  //super();
  fixedSourceMastLabel = new QLabel();
  discoverPairs = new QPushButton(tr("Discover"));
- sml = ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->getSignalMastLogic(sourceMast);
+ sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(sourceMast);
  this->sourceMast = sourceMast;
  fixedSourceMastLabel = new QLabel(sourceMast->getDisplayName());
  signalMastLogicFrame = NULL;
@@ -438,7 +438,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
 }
 
 /*protected*/ void SignalMastAppearanceModel::deletePair(int r){
-    InstanceManager::signalMastLogicManagerInstance()->removeSignalMastLogic(self->sml, self->_signalMastList.at(r));
+    ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->removeSignalMastLogic(self->sml, self->_signalMastList.at(r));
 }
 
 

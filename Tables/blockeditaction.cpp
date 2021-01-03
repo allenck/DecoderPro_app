@@ -81,7 +81,7 @@ BeanItemPanel* BlockEditAction::reporterDetails()
     BeanItemPanel* reporter = new BeanItemPanel();
     reporter->setName(tr("Reporter"));
 
-    reporterComboBox = new NamedBeanComboBox(InstanceManager::reporterManagerInstance(), ((Block*) bean)->getReporter(), NamedBean::DISPLAYNAME);
+    reporterComboBox = new NamedBeanComboBox(((ReporterManager*)InstanceManager::getDefault("ReporterManager")), ((Block*) bean)->getReporter(), NamedBean::DISPLAYNAME);
     reporterComboBox->setAllowNull(true);
 
     reporter->addItem(new BeanEditItem(reporterComboBox, tr("BeanNameReporter"), tr("Set the reporter used to identify trains in the block")));

@@ -177,7 +177,7 @@ bool systemNameComparator(QString o1, QString o2)
 {
  //super(s);
  // disable ourself if there is no primary Route manager available
- if (InstanceManager::routeManagerInstance()==NULL) 
+ if ((RouteManager*)InstanceManager::getDefault("RouteManager")==NULL)
   setEnabled(false);
  init();
 
@@ -469,13 +469,13 @@ void RouteTableDataModel::doDelete(NamedBean* bean)
     else return BeanTableDataModel::matchPropertyName(e);
 }
 
-/*public*/ Manager* RouteTableDataModel::getManager() { return InstanceManager::routeManagerInstance(); }
+/*public*/ Manager* RouteTableDataModel::getManager() { return (RouteManager*)InstanceManager::getDefault("RouteManager"); }
 /*public*/ NamedBean *RouteTableDataModel::getBySystemName(QString name) const
 {
- return (NamedBean*)InstanceManager::routeManagerInstance()->getBySystemName(name);
+ return (NamedBean*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(name);
 }
 /*public*/ NamedBean *RouteTableDataModel::getByUserName(QString name) {
-    return (NamedBean*)InstanceManager::routeManagerInstance()->getByUserName(name);
+    return (NamedBean*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(name);
 }
 
 /*protected*/ QString RouteTableDataModel::getMasterClassName()
@@ -1819,7 +1819,7 @@ bool RouteTableAction::checkNewNamesOK()
     Route* g = NULL;
     // check if a Route with the same user name exists
     if (uName!=("")) {
-        g = (Route*)((DefaultRouteManager*)InstanceManager::routeManagerInstance())->getByUserName(uName);
+        g = (Route*)((DefaultRouteManager*)(RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(uName);
         if (g!=NULL) {
             // Route with this user name already exists
             status1->setText("Error - Route with this user name already exists.");
@@ -1830,7 +1830,7 @@ bool RouteTableAction::checkNewNamesOK()
         }
     }
     // check if a Route with this system name already exists
-    g = (Route*)((DefaultRouteManager*)InstanceManager::routeManagerInstance())->getBySystemName(sName);
+    g = (Route*)((DefaultRouteManager*)(RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(sName);
     if (g!=NULL) {
         // Route already exists
         status1->setText("Error - Route with this system name already exists.");
@@ -1847,13 +1847,13 @@ Route* RouteTableAction::checkNamesOK()
     QString uName = _userName->text();
     Route* g;
     if (_autoSystemName->isChecked() && !editMode){
-        g = (Route*)((DefaultRouteManager*)InstanceManager::routeManagerInstance())->newRoute(uName);
+        g = (Route*)((DefaultRouteManager*)(RouteManager*)InstanceManager::getDefault("RouteManager"))->newRoute(uName);
     } else {
         if (sName.length()==0) {
             status1->setText("Please enter a system name and user name.");
             return NULL;
         }
-        g = (Route*)((DefaultRouteManager*)InstanceManager::routeManagerInstance())->provideRoute(sName, uName);
+        g = (Route*)((DefaultRouteManager*)(RouteManager*)InstanceManager::getDefault("RouteManager"))->provideRoute(sName, uName);
     }
     if (g==NULL) {
         // should never get here
@@ -2010,10 +2010,10 @@ void RouteTableAction::editPressed(/*ActionEvent e*/) // SLOT[]
 {
     // identify the Route with this name if it already exists
     QString sName = _systemName->text();
-    Route* g = (Route*)((DefaultRouteManager*)InstanceManager::routeManagerInstance())->getBySystemName(sName);
+    Route* g = (Route*)((DefaultRouteManager*)(RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(sName);
     if (g==NULL) {
         sName = _userName->text();
-        g = (Route*)((DefaultRouteManager*)InstanceManager::routeManagerInstance())->getByUserName(sName);
+        g = (Route*)((DefaultRouteManager*)(RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(sName);
         if(g==NULL){
         // Route does not exist, so cannot be edited
             status1->setText("Route with the entered System or User Name was not found.");
@@ -2129,7 +2129,7 @@ void RouteTableAction::editPressed(/*ActionEvent e*/) // SLOT[]
 void RouteTableAction::deletePressed(/*ActionEvent e*/) // [slot]
 {
     // route is already deactivated, just delete it
-    ((DefaultRouteManager*)InstanceManager::routeManagerInstance())->deleteRoute(curRoute);
+    ((DefaultRouteManager*)(RouteManager*)InstanceManager::getDefault("RouteManager"))->deleteRoute(curRoute);
 
     curRoute = NULL;
     finishUpdate();
@@ -2455,7 +2455,7 @@ void RouteTableAction::exportPressed(/*ActionEvent* e*/)  // SLOT[]
     }
     logix->activateLogix();
     if (curRoute != NULL) {
-        ((DefaultRouteManager*) InstanceManager::routeManagerInstance())->deleteRoute(curRoute);
+        ((DefaultRouteManager*) (RouteManager*)InstanceManager::getDefault("RouteManager"))->deleteRoute(curRoute);
         curRoute = NULL;
     }
     status1->setText("Route \""+uName+"\" exported to Logix: "+ QString::number(_includedTurnoutList->size())

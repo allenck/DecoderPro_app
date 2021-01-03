@@ -297,7 +297,7 @@
          p->addSetting(bs);
      else
      {
-//                        static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager")).addBadBeanError();
+//                        static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")).addBadBeanError();
       log->error("BadBeanError: " + ltx->getName() + " " + ltx->getLayoutBlock()->getDisplayName());
      }
     }
@@ -355,7 +355,7 @@
        p->addSetting(bs);
       else
       {
-       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
           log->error("BadBeanError: " + lsz->getName() + " " + lsz->getLayoutBlock()->getDisplayName());
       }
       bs = new BeanSetting(lsz->getTurnoutB(), lsz->getTurnoutBName(), lsz->getTurnoutBState(LayoutSlip::STATE_AC));
@@ -363,7 +363,7 @@
           p->addSetting(bs);
       else
       {
-       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
        log->error("BadBeanError: " + lsz->getName() + " " + lsz->getLayoutBlock()->getDisplayName());
       }
      }
@@ -374,7 +374,7 @@
        p->addSetting(bs);
       else
       {
-       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
        log->error("BadBeanError: " + lsz->getName() + " " + lsz->getLayoutBlock()->getDisplayName());
       }
 
@@ -383,7 +383,7 @@
        p->addSetting(bs);
       else
       {
-       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
           log->error("BadBeanError: " + lsz->getName() + " " + lsz->getLayoutBlock()->getDisplayName());
       }
      }
@@ -473,7 +473,7 @@
     p->addSetting(bs);
    else
    {
-//                static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager")).addBadBeanError();
+//                static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")).addBadBeanError();
     log->error("BadBeanError: " + lt->getName() + " " + lt->getLayoutBlock()->getDisplayName());
    }
   }
@@ -570,7 +570,7 @@
          p->addSetting(bs);
      else
      {
-//                        static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager")).addBadBeanError();
+//                        static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")).addBadBeanError();
       log->error("BadBeanError: " + ((LayoutTurnout*)curConnection)->getName() + " " + ((LayoutTurnout*)curConnection)->getLayoutBlock()->getDisplayName());
      }
      prevConnection = curConnection;
@@ -617,14 +617,14 @@
       if (bs->getBean() != NULL)
           p->addSetting(bs);
       else {
-          static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+          static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
           log->error("BadBeanError: " + lsz->getName() + " " + lsz->getLayoutBlock()->getDisplayName());
       }
       bs = new BeanSetting(lsz->getTurnoutB(), lsz->getTurnoutBName(), lsz->getTurnoutBState(LayoutSlip::STATE_AC));
       if (bs->getBean() != NULL)
           p->addSetting(bs);
       else {
-          static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+          static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
           log->error("BadBeanError: " + lsz->getName() + " " + lsz->getLayoutBlock()->getDisplayName());
       }
      }
@@ -638,7 +638,7 @@
           p->addSetting(bs);
       else
       {
-       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
        log->error("BadBeanError: " + lsz->getName() + " " + lsz->getLayoutBlock()->getDisplayName());
       }
 
@@ -647,7 +647,7 @@
           p->addSetting(bs);
       else
       {
-       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
        log->error("BadBeanError: " + lsz->getName() + " " + lsz->getLayoutBlock()->getDisplayName());
       }
      }
@@ -697,7 +697,7 @@
         p->addSetting(bs);
     else
     {
-     static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+     static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
      log->error("BadBeanError: " + lt->getName() + " " + lt->getLayoutBlock()->getDisplayName());
        }
    }
@@ -792,7 +792,7 @@
           p->addSetting(bs);
       else
       {
-       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
        log->error("BadBeanError: " + lt->getName() + " " + lt->getLayoutBlock()->getDisplayName());
       }
       if (lt->getLayoutBlock()!=layoutBlock)
@@ -817,7 +817,7 @@
           p->addSetting(bs);
       else
       {
-       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+       static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
        log->error("BadBeanError: " + lt->getName() + " " + lt->getLayoutBlock()->getDisplayName());
       }
       if (lt->getLayoutBlock()!=layoutBlock)
@@ -855,7 +855,7 @@
       p->addSetting(bs);
      else
      {
-      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
       log->error("BadBeanError: " + lt->getName() + " " + lt->getLayoutBlock()->getDisplayName());
      }
      if (lt->getLayoutBlock()!=layoutBlock)
@@ -1024,7 +1024,7 @@
       p->addSetting(bs);
      else
      {
-      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
       log->error("BadBeanError: " + ls->getName() + " " + ls->getLayoutBlock()->getDisplayName());
      }
      bs = new BeanSetting(ls->getTurnoutB(), ls->getTurnoutBName(), ls->getTurnoutBState(LayoutSlip::STATE_AC));
@@ -1032,7 +1032,7 @@
       p->addSetting(bs);
      else
      {
-      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
       log->error("BadBeanError: " + ls->getName() + " " + ls->getLayoutBlock()->getDisplayName());
      }
      prevConnection = curConnection;
@@ -1046,7 +1046,7 @@
       p->addSetting(bs);
      else
      {
-      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
       log->error("BadBeanError: " + ls->getName() + " " + ls->getLayoutBlock()->getDisplayName());
      }
 
@@ -1055,7 +1055,7 @@
       p->addSetting(bs);
      else
      {
-      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->addBadBeanError();
+      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->addBadBeanError();
       log->error("BadBeanError: " + ls->getName() + " " + ls->getLayoutBlock()->getDisplayName());
      }
      prevConnection = curConnection;

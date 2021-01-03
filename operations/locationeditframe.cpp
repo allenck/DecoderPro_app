@@ -206,7 +206,7 @@ namespace Operations
    {
     // setup the Reader dropdown.
     readerSelector->addItem(""); // add an empty entry.
-    foreach (NamedBean* r, *InstanceManager::reporterManagerInstance()->getNamedBeanList())
+    foreach (NamedBean* r, *((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getNamedBeanList())
     {
      readerSelector->addItem(((Reporter*) r)->getDisplayName());
     }
@@ -530,7 +530,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              ( readerSelector->currentText())!=(""))
      {
       _location->setReporter(
-                 InstanceManager::reporterManagerInstance()
+                 ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))
                          ->getReporter( readerSelector->currentText()));
      } else if (Setup::isRfidEnabled() &&
              readerSelector->currentText() != NULL &&

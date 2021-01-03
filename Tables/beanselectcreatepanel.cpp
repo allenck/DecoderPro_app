@@ -95,7 +95,7 @@
   }
   else if (qobject_cast<ProxyReporterManager*>(_manager)!=NULL)
   {
-   ProxyReporterManager* proxy = (ProxyReporterManager*) InstanceManager::reporterManagerInstance();
+   ProxyReporterManager* proxy = (ProxyReporterManager*) InstanceManager::getDefault("ReporterManager");
    managerList = proxy->getManagerList();
   }
 

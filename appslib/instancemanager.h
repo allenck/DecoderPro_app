@@ -214,32 +214,9 @@ static void setTurnoutManager(TurnoutManager* p);
 //static void setSignalGroupManager(SignalGroupManager* p);
 //Q_DECL_DEPRECATED static ConsistManager* consistManagerInstance();
 Q_DECL_DEPRECATED static void setConsistManager(ConsistManager* p);
-//Q_DECL_DEPRECATED static BlockManager* blockManagerInstance();
-//Q_DECL_DEPRECATED static SectionManager* sectionManagerInstance();
-//static SensorManager* sensorManager;
-//static InstanceManager* instance();
-static SignalMastLogicManager* signalMastLogicManagerInstance();
 static /*public*/  bool containsDefault(/*@Nonnull*/ QString type);
 /*public*/ static /*<T>*/ bool isInitialized(/*@Nonnull*/ QString type);
-
-Q_DECL_DEPRECATED static RouteManager* routeManagerInstance();
-
-//static /*public*/ LayoutBlockManager* layoutBlockManagerInstance();
-//Q_DECL_DEPRECATED static ConditionalManager* conditionalManagerInstance();
-//Q_DECL_DEPRECATED static LogixManager* logixManagerInstance();
-
-//Q_DECL_DEPRECATED static TransitManager* transitManagerInstance();
-//Q_DECL_DEPRECATED static ShutDownManager* shutDownManagerInstance();
-//Q_DECL_DEPRECATED static TabbedPreferences* tabbedPreferencesInstance();
-//Q_DECL_DEPRECATED static ClockControl* clockControlInstance();
-//Q_DECL_DEPRECATED static void addClockControl(ClockControl* cc);
-//Q_DECL_DEPRECATED static CommandStation* commandStationInstance();
-
-Q_DECL_DEPRECATED static ReporterManager* reporterManagerInstance();
 static MemoryManager* memoryManagerInstance();
-//Q_DECL_DEPRECATED static AudioManager* audioManagerInstance();
-//static RosterIconFactory* rosterIconFactoryInstance();
-//Q_DECL_DEPRECATED static CatalogTreeManager* catalogTreeManagerInstance();
 static void setSensorManager(SensorManager* p);
 static void setLightManager(LightManager* p);
 static void setThrottleManager(ThrottleManager* p);

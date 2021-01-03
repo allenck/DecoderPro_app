@@ -241,7 +241,7 @@ return routes;
  if (log->isDebugEnabled()) {
   log->debug("Found " + QString::number(routeList.size()) + " routes");
  }
- RouteManager* tm = InstanceManager::routeManagerInstance();
+ RouteManager* tm = (RouteManager*)InstanceManager::getDefault("RouteManager");
  int namesChanged = 0;
 
  for (int i = 0; i < routeList.size(); i++)
@@ -540,7 +540,7 @@ return routes;
  */
 /*protected*/ void DefaultRouteManagerXml::replaceRouteManager()
 {
- RouteManager* current = InstanceManager::routeManagerInstance();
+ RouteManager* current = (RouteManager*)InstanceManager::getDefault("RouteManager");
  if (current != NULL && current->metaObject()->className()
      ==("DefaultRouteManager")) {
      return;
@@ -561,6 +561,6 @@ return routes;
 }
 
 /*public*/ int DefaultRouteManagerXml::loadOrder() const {
-    return InstanceManager::routeManagerInstance()->getXMLOrder();
+    return ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getXMLOrder();
 }
 

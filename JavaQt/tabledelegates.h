@@ -259,17 +259,17 @@ public:
     }
     void setValues(QStringList values) {this->values = values;}
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-    {
-     //bool state = index.data().toString() == this->on;
-     JComboBox* widget = new JComboBox(values);
-//     widget->setLabels(on, off);
-//     widget->setChecked(state);
-     setEditorData(widget, index);
-     widget->resize(option.rect.size());
-     QPixmap pixmap(option.rect.size());
-     widget->render(&pixmap);
-     painter->drawPixmap(option.rect,pixmap);
-    }
+//    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//    {
+//     //bool state = index.data().toString() == this->on;
+//     JComboBox* widget = new JComboBox(values);
+////     widget->setLabels(on, off);
+////     widget->setChecked(state);
+//     setEditorData(widget, index);
+//     widget->resize(option.rect.size());
+//     QPixmap pixmap(option.rect.size());
+//     widget->render(&pixmap);
+//     painter->drawPixmap(option.rect,pixmap);
+//    }
 };
 #endif // TABLEDELEGATES_H

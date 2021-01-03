@@ -1620,9 +1620,9 @@ void LevelXing::remove() {
         sml->append(sm);
         return;
     }
-    SignalMastLogic* sl = InstanceManager::signalMastLogicManagerInstance()->getSignalMastLogic(sm);
+    SignalMastLogic* sl = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(sm);
     for(int i = 0; i<sml->size(); i++){
-        SignalMastLogic* s = InstanceManager::signalMastLogicManagerInstance()->getSignalMastLogic(sml->at(i));
+        SignalMastLogic* s = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(sml->at(i));
         if (s!=NULL){
             s->setConflictingLogic(sm, this);
         }
@@ -1639,7 +1639,7 @@ void LevelXing::remove() {
         return;
     }
     for(int i = 0; i<sml->size(); i++){
-        SignalMastLogic* s = InstanceManager::signalMastLogicManagerInstance()->getSignalMastLogic(sm);
+        SignalMastLogic* s = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(sm);
         if (s!=NULL)
             s->removeConflictingLogic(sm, this);
     }

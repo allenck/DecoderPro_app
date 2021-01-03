@@ -596,93 +596,45 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 }   // getConnectivityStateForLayoutBlocks
 
 /*public*/ void LayoutSlip::reCheckBlockBoundary(){
-    if(connectA==nullptr && connectB==nullptr && connectC==nullptr && connectD==nullptr){
-        //This is no longer a block boundary, therefore will remove signal masts and sensors if present
-        if(getSignalAMastName()!=(""))
-            removeSML(getSignalAMastName());
-        if(getSignalBMastName()!=(""))
-            removeSML(getSignalBMastName());
-        if(getSignalCMastName()!=(""))
-            removeSML(getSignalCMastName());
-        if(getSignalDMastName()!=(""))
-            removeSML(getSignalDMastName());
-        setSignalAMast("");
+    if(connectA==nullptr && connectB==nullptr && connectC==nullptr ){
+     if (signalAMastNamed != nullptr) {
+         removeSML(getSignalAMast());
+     }
+     if (signalBMastNamed != nullptr) {
+         removeSML(getSignalBMast());
+     }
+     if (signalCMastNamed != nullptr) {
+         removeSML(getSignalCMast());
+     }        setSignalAMast("");
         setSignalBMast("");
         setSignalCMast("");
-        setSignalDMast("");
         setSensorA("");
         setSensorB("");
         setSensorC("");
-        setSensorD("");
         //May want to look at a method to remove the assigned mast from the panel and potentially any logics generated
-    }  else if(connectA==nullptr || connectB==nullptr || connectC==nullptr || connectD==nullptr){
-        //could still be in the process of rebuilding the point details
-        return;
-    }
-
-    TrackSegment* trkA;
-    TrackSegment* trkB;
-    TrackSegment* trkC;
-    TrackSegment* trkD;
-
-    //if(connectA instanceof TrackSegment){
-    if(qobject_cast<TrackSegment*>(connectA)!= nullptr)
-    {
-        trkA = (TrackSegment*)connectA;
-        if(trkA->getLayoutBlock()==block)
-        {
-            if(getSignalAMastName()!=(""))
-                removeSML(getSignalAMastName());
-            setSignalAMast("");
-            setSensorA("");
-        }
-    }
-    //if(connectC instanceof TrackSegment) {
-    if(qobject_cast<TrackSegment*>(connectC)!= nullptr)
-    {
-        trkC = (TrackSegment*)connectC;
-        if(trkC->getLayoutBlock()==block){
-            if(getSignalCMastName()!=(""))
-                removeSML(getSignalCMastName());
-            setSignalCMast("");
-            setSensorC("");
-        }
-    }
-    //if(connectB instanceof TrackSegment){
-    if(qobject_cast<TrackSegment*>(connectB)!= nullptr)
-    {
-        trkB = (TrackSegment*)connectB;
-        if(trkB->getLayoutBlock()==block){
-            if(getSignalBMastName()!=(""))
-                removeSML(getSignalBMastName());
-            setSignalBMast("");
-            setSensorB("");
-        }
-    }
-
-    //if(connectD instanceof TrackSegment) {
-    if(qobject_cast<TrackSegment*>(connectD)!= nullptr)
-    {
-        trkD = (TrackSegment*)connectC;
-        if(trkD->getLayoutBlock()==block){
-            if(getSignalDMastName()!=(""))
-                removeSML(getSignalDMastName());
-            setSignalDMast("");
-            setSensorD("");
-        }
-    }
-}
-
-void LayoutSlip::removeSML(QString signalMast){
-#if 1 // TODO:
-    if(signalMast==nullptr || signalMast == (""))
-        return;
-    SignalMast* mast = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
-    if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && InstanceManager::signalMastLogicManagerInstance()->isSignalMastUsed(mast)){
-        InstanceManager::signalMastLogicManagerInstance()->disableLayoutEditorUse(mast);
-        SignallingGuiTools::removeSignalMastLogic(nullptr, mast);
-    }
-#endif
+    }  else if (isTurnoutTypeXover() && connectD == nullptr) {
+     if (signalAMastNamed != nullptr) {
+         removeSML(getSignalAMast());
+     }
+     if (signalBMastNamed != nullptr) {
+         removeSML(getSignalBMast());
+     }
+     if (signalCMastNamed != nullptr) {
+         removeSML(getSignalCMast());
+     }
+     if (signalDMastNamed != nullptr) {
+         removeSML(getSignalDMast());
+     }
+     signalAMastNamed = nullptr;
+     signalBMastNamed = nullptr;
+     signalCMastNamed = nullptr;
+     signalDMastNamed = nullptr;
+     sensorANamed = nullptr;
+     sensorBNamed = nullptr;
+     sensorCNamed = nullptr;
+     sensorDNamed = nullptr;
+     return;
+ }
 }
 
 /**
@@ -1333,12 +1285,10 @@ void LayoutSlip::remove()
  disableSML(getSignalBMastName());
  disableSML(getSignalCMastName());
  disableSML(getSignalDMastName());
- removeSML(getSignalAMastName());
- removeSML(getSignalBMastName());
- removeSML(getSignalCMastName());
- removeSML(getSignalDMastName());
- // remove from persistance by flagging inactive
- active = false;
+ removeSML(getSignalAMast());
+ removeSML(getSignalBMast());
+ removeSML(getSignalCMast());
+ removeSML(getSignalDMast());
 }
 
 void LayoutSlip::disableSML(QString signalMast)
@@ -1346,7 +1296,7 @@ void LayoutSlip::disableSML(QString signalMast)
  if(signalMast==NULL || signalMast==(""))
   return;
  SignalMast* mast = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(signalMast);
- InstanceManager::signalMastLogicManagerInstance()->disableLayoutEditorUse(mast);
+ ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->disableLayoutEditorUse(mast);
 }
 
 /**

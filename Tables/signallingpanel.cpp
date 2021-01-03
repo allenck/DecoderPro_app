@@ -100,7 +100,7 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*fra
  if (source!=NULL)
  {
   this->sourceMast = source;
-  this->sml = ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->getSignalMastLogic(source);
+  this->sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(source);
   fixedSourceMastLabel = new QLabel(sourceMast->getDisplayName());
  }
  if ((dest!=NULL) && (sml!=NULL))
@@ -1016,7 +1016,7 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
 
  if (sml==NULL)
  {
-  sml = ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->newSignalMastLogic(sourceMast);
+  sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->newSignalMastLogic(sourceMast);
   ((DefaultSignalMastLogic*)sml)->setDestinationMast(destMast);
   fixedSourceMastLabel->setText(sourceMast->getDisplayName());
   fixedDestMastLabel->setText(destMast->getDisplayName());

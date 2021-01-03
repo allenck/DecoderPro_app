@@ -26,7 +26,8 @@
 #include <QApplication>
 #include "inputdialog.h"
 #include <QComboBox>
-#include "pushbuttondelegate.h"
+//#include "pushbuttondelegate.h"
+#include "tabledelegates.h"
 #include "buttoncolumndelegate.h"
 #include "jtablepersistencemanager.h"
 #include <QSignalMapper>
@@ -652,7 +653,7 @@ void BeanTableDataModel::On_itemClicked(QModelIndex index)
 //    table.getColumnModel().getColumn(column)
 //        .setPreferredWidth((sample.getPreferredSize().width)+4);
  this->_table = table;
- table->setItemDelegateForColumn(column, new PushButtonDelegate());
+ table->setItemDelegateForColumn(column, new ButtonEditor());
  //buttonMap.append(column);
  //setPersistentButtons();
 }

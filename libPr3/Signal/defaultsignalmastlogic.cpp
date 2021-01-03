@@ -20,6 +20,7 @@
 #include "block.h"
 #include "entrypoint.h"
 #include "layouttrackexpectedstate.h"
+#include "defaultsignalmastlogicmanager.h"
 
 class RunnableThis : public Runnable
 {
@@ -32,7 +33,7 @@ class RunnableThis : public Runnable
     {
      try
      {
-        QThread::wait((InstanceManager::signalMastLogicManagerInstance()->getSignalLogicDelay()/2));
+        QThread::wait(((DefaultSignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalLogicDelay()/2);
         dsml->inWait=false;
         dsml->setMastAppearance();
      }
@@ -2425,7 +2426,7 @@ QMap<Block*, int> DestinationMast::setupLayoutEditorTurnoutDetails(QList<LayoutB
 void DestinationMast::setupAutoSignalMast(SignalMastLogic* sml, bool overright){
     if(!allowAutoSignalMastGeneration)
         return;
-    QList<SignalMastLogic*> smlList = InstanceManager::signalMastLogicManagerInstance()->getLogicsByDestination(destination);
+    QList<SignalMastLogic*> smlList = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getLogicsByDestination(destination);
     QList<Block*> allBlock =  QList<Block*>();
 
     foreach(NamedBeanSetting* nbh, userSetBlocks){

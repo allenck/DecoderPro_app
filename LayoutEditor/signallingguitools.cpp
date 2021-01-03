@@ -49,11 +49,11 @@
 //            options,
 //            options[0]);
 //         if(n==0)
-//           InstanceManager::signalMastLogicManagerInstance().replaceSignalMast(oldMast, newMast);
+//           InstanceManager::getDefault("SignalMastLogicManager").replaceSignalMast(oldMast, newMast);
     switch(QMessageBox::question((QWidget*)frame, tr("Update Logic"), tr("SignalMast %1 has been replaced with %2\ndo you want to update all the logics to reflect this?").arg(oldMast->getDisplayName()).arg(newMast->getDisplayName()), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
      {
      case QMessageBox::Yes:
-             ((SignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->replaceSignalMast(oldMast, newMast);
+             ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->replaceSignalMast(oldMast, newMast);
          return;
      default:
       break;
@@ -81,7 +81,7 @@
     switch(QMessageBox::question((QWidget*)frame, tr("Remove Logic"), tr("SignalMast %1 and %2\n                                                                                have been swapped\ndo you want to update all the logics to reflect this?").arg(oldMast->getDisplayName()).arg(newMast->getDisplayName()), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
      {
      case QMessageBox::Yes:
-             ((SignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->swapSignalMasts(oldMast, newMast);
+             ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->swapSignalMasts(oldMast, newMast);
          return;
      default:
       break;
@@ -111,7 +111,7 @@
     switch(QMessageBox::question((QWidget*)frame, tr("Remove Logic"), tr("SignalMast %1 has been removed,\ndo you want to remove the logic associated with it?").arg(mast->getDisplayName()), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
      {
      case QMessageBox::Yes:
-             ((SignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->removeSignalMast(mast);
+             ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->removeSignalMast(mast);
          return true;
      default:
       break;
@@ -140,7 +140,7 @@
     switch(QMessageBox::question((QWidget*)frame, tr("Remove Already Logic"), tr("SignalMast %1 is already assigned within logics,\ndo you want to remove the logic associated with it?").arg(mast->getDisplayName()), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
      {
      case QMessageBox::Yes:
-             ((SignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->removeSignalMast(mast);
+             ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->removeSignalMast(mast);
          return ;
      default:
       break;

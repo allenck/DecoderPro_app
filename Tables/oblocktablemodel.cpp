@@ -17,6 +17,7 @@
 #include "signalspeedmap.h"
 #include "portaltablemodel.h"
 #include "joptionpane.h"
+#include "warrantmanager.h"
 
 //OBlockTableModel::OBlockTableModel(QObject *parent) :
 //  BeanTableDataModel(parent)
@@ -469,7 +470,7 @@ void OBlockTableModel::initTempRow()
     {
      Reporter* rep = NULL;
      try {
-         rep = InstanceManager::reporterManagerInstance()->getReporter(tempRow[REPORTERCOL]);
+         rep = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter(tempRow[REPORTERCOL]);
          if (rep != NULL) {
              block->setReporter(rep);
              block->setReportingCurrent(tempRow[REPORT_CURRENTCOL]==(tr("Current")));
@@ -653,7 +654,7 @@ void OBlockTableModel::initTempRow()
  {
    Reporter* rep = NULL;
    try {
-       rep = ((ProxyReporterManager*)InstanceManager::reporterManagerInstance())->getReporter( value.toString());
+       rep = ((ProxyReporterManager*)((ReporterManager*)InstanceManager::getDefault("ReporterManager")))->getReporter( value.toString());
        if (rep != NULL) {
            block->setReporter(rep);
            fireTableRowsUpdated(row, row);
@@ -684,7 +685,26 @@ void OBlockTableModel::initTempRow()
    fireTableRowsUpdated(row, row);
    return true;
   }
-   case SPEEDCOL:
+  case WARRANTCOL:
+  {
+    Warrant* warrant = block ->getWarrant();
+    WarrantManager* mgr = (WarrantManager*)InstanceManager
+                ::getDefault("WarrantManager");
+    Warrant* newWarrant = mgr->getWarrant(value.toString());
+    if (warrant != nullptr && !warrant->equals(newWarrant)) {
+        block->deAllocate(warrant);
+        if (newWarrant != nullptr) {
+            QString msg = block->allocate(newWarrant);
+            if (msg != nullptr) {
+                JOptionPane::showMessageDialog(nullptr, msg,
+                       tr("Error"), JOptionPane::WARNING_MESSAGE);
+            }
+        }
+    }
+    fireTableRowsUpdated(row, row);
+    return true;
+  }
+  case SPEEDCOL:
    {
      block->setBlockSpeedName( value.toString());
      fireTableRowsUpdated(row, row);
@@ -945,7 +965,7 @@ QWidget* OBSComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionVi
 void OBSComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
-  QString value = index.model()->data(index, Qt::EditRole).toString();
+  QString value = index.model()->data(index, Qt::DisplayRole).toString();
   comboBox->setCurrentText(value);
 }
 
@@ -967,7 +987,9 @@ void OBSComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOpti
 // widget->resize(option.rect.size());
 // QPixmap pixmap(option.rect.size());
 // widget->render(&pixmap);
+// painter->save();
 // painter->drawPixmap(option.rect,pixmap);
+// painter->restore();
 //}
 
 /**

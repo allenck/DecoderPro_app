@@ -224,11 +224,11 @@ public:
 
     /*public*/ int getLinkType();
     /*public*/ void setLinkType(int type);
-    /*public*/ TurnoutType getTurnoutType();
-    /*public*/ static bool isTurnoutTypeTurnout(TurnoutType type);
-    /*public*/ bool isTurnoutTypeTurnout();
+    /*public*/ TurnoutType getTurnoutType() const;
+    /*public*/ static bool isTurnoutTypeTurnout(TurnoutType type) ;
+    /*public*/ bool isTurnoutTypeTurnout() const;
     /*public*/ static bool isTurnoutTypeXover(TurnoutType type);
-    /*public*/ bool isTurnoutTypeXover();
+    /*public*/ bool isTurnoutTypeXover() const;
     /*public*/ static bool isTurnoutTypeSlip(TurnoutType type);
     /*public*/ bool isTurnoutTypeSlip();
     /*public*/ static bool hasEnteringSingleTrack(TurnoutType type);
@@ -256,9 +256,9 @@ public:
     /*public*/ void setConnectC(LayoutTrack *o, int type);
     /*public*/ void setConnectD(LayoutTrack* o,int type);
     /*public*/ LayoutBlock* getLayoutBlock() const;
-    /*public*/ LayoutBlock* getLayoutBlockB();
-    /*public*/ LayoutBlock* getLayoutBlockC() ;
-    /*public*/ LayoutBlock* getLayoutBlockD();
+    /*public*/ LayoutBlock* getLayoutBlockB() const;
+    /*public*/ LayoutBlock* getLayoutBlockC() const ;
+    /*public*/ LayoutBlock* getLayoutBlockD() const;
 //    /*public*/ QPointF getCoordsCenter();
     /*public*/ QPointF getCoordsA();
     /*public*/ QPointF getCoordsB();

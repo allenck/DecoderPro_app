@@ -135,7 +135,6 @@ public:
     /*public*/ QPointF getCoordsC();
     /*public*/ QPointF getCoordsD();
     /*public*/ void reCheckBlockBoundary();
-    void removeSML(QString signalMast);
     /**
      * Methods to test if mainline track or not
      *  Returns true if either connecting track segment is mainline

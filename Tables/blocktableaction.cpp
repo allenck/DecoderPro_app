@@ -444,7 +444,7 @@ void BlockTableAction::common()
    Reporter* r = NULL;
    if ( value != QVariant())
    {
-    r = InstanceManager::reporterManagerInstance()->provideReporter(value.toString());
+    r = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter(value.toString());
    }
    b->setReporter(r);
    fireTableRowsUpdated(row, row);

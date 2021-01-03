@@ -33,7 +33,6 @@ private:
 
 private slots:
     void autoCreatePairs(/*jmri.util.JmriJFrame f*/);
-    void On_autoGenSections();
 
    protected:
     /*protected*/ QString getClassName();

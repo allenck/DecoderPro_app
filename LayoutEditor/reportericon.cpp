@@ -45,9 +45,9 @@
  */
 /*public*/ void ReporterIcon::setReporter(QString pName)
 {
- if (InstanceManager::reporterManagerInstance()!=NULL)
+ if (((ReporterManager*)InstanceManager::getDefault("ReporterManager"))!=NULL)
  {
-  reporter = ((ProxyReporterManager*)InstanceManager::reporterManagerInstance())->provideReporter(pName);
+  reporter = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter(pName);
   if (reporter != NULL)
   {
    setReporter(reporter);

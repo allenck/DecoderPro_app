@@ -36,7 +36,7 @@ SensorGroup::SensorGroup(QString name,QObject *parent) :
  log = new Logger("SensorGroup");
  this->name = name;
  // find suitable
- RouteManager* rm = InstanceManager::routeManagerInstance();
+ RouteManager* rm = (RouteManager*)InstanceManager::getDefault("RouteManager");
  QString group = name.toUpper();
  QStringList l = rm->getSystemNameList();
  QString prefix = (namePrefix + group + nameDivider).toUpper();
@@ -54,7 +54,7 @@ SensorGroup::SensorGroup(QString name,QObject *parent) :
 
 void SensorGroup::addPressed() {
     log->debug("start with " + QString::number(sensorList.size()) + " lines");
-    RouteManager* rm = InstanceManager::routeManagerInstance();
+    RouteManager* rm = (RouteManager*)InstanceManager::getDefault("RouteManager");
     QString group = name.toUpper();
 
     // remove the old routes

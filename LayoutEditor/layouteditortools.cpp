@@ -9156,7 +9156,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
 
  if(block1BoundSignalMast==nullptr)
  {
-  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->isSignalMastUsed(oldBlock1SignalMast))
+  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled() && ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->isSignalMastUsed(oldBlock1SignalMast))
   {
    SignallingGuiTools::removeSignalMastLogic(setSignalMastsAtBoundaryFrame, oldBlock1SignalMast);
   }
@@ -9167,7 +9167,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
  }
  if(block2BoundSignalMast==nullptr)
  {
-  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->isSignalMastUsed(oldBlock2SignalMast))
+  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled() && ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->isSignalMastUsed(oldBlock2SignalMast))
   {
    SignallingGuiTools::removeSignalMastLogic(setSignalMastsAtBoundaryFrame, oldBlock2SignalMast);
   }
@@ -9211,7 +9211,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
    boundary->setEastBoundSignalMast(eastSignalMast->getText());
    boundary->setWestBoundSignalMast(westSignalMast->getText());
    //Then sort out the logic
-   if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled())
+   if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
    {
     SignallingGuiTools::swapSignalMastLogic(setSignalMastsAtBoundaryFrame, block1BoundSignalMast, block2BoundSignalMast);
    }
@@ -9312,7 +9312,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
   }
 
     //If advanced routing is enabled and then this indicates that we are using this for discovering the signalmast logic paths.
-  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayutBlockManager"))->isAdvancedRoutingEnabled() && (block1BoundSignalMast!=NULL || block2BoundSignalMast!=nullptr))
+  if(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled() && (block1BoundSignalMast!=NULL || block2BoundSignalMast!=nullptr))
   {
    updateBoundaryBasedSignalMastLogic(oldBlock1SignalMast, oldBlock2SignalMast,
                                                         block1BoundSignalMast,block2BoundSignalMast);
@@ -9331,7 +9331,7 @@ void LayoutEditorTools::refreshSignalMastAtBoundaryComboBox(){
 
 /*public*/ void LayoutEditorTools::updateBoundaryBasedSignalMastLogic(SignalMast* oldBlock1SignalMast, SignalMast* oldBlock2SignalMast,
                                                     SignalMast* block1BoundSignalMast,SignalMast* block2BoundSignalMast){
-    SignalMastLogicManager* smlm = InstanceManager::signalMastLogicManagerInstance();
+    SignalMastLogicManager* smlm = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"));
     bool old1Used = ((DefaultSignalMastLogicManager*)smlm)->isSignalMastUsed(oldBlock1SignalMast);
     bool old2Used = ((DefaultSignalMastLogicManager*)smlm)->isSignalMastUsed(oldBlock2SignalMast);
     //Just check that the old ones are used in logics somewhere.
