@@ -45,9 +45,9 @@ protected:
     /*protected*/ QString getClassName();
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* /*e*/);
-    void cancelPressed(ActionEvent* e = 0);
-    void okPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(JActionEvent* /*e*/);
+    void cancelPressed(JActionEvent* e = 0);
+    void okPressed(JActionEvent* e = 0);
 
 
     friend class MtBeanTableDataModel;

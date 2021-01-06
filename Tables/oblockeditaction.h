@@ -140,7 +140,7 @@ class OBTResetItemAction2 : public AbstractAction {
  public:
   OBTResetItemAction2(OBlockEditAction* act) {this->act = act;}
   //@Override
-  /*public*/ void actionPerformed(ActionEvent e) {
+  /*public*/ void actionPerformed(JActionEvent e) {
       ((Block*)act->bean)->setReporter((Reporter*)act->reporterComboBox->getSelectedItem());
       ((Block*)act->bean)->setReportingCurrent(act->useCurrent->isChecked());
   }
@@ -192,7 +192,7 @@ class OBTResetItemAction3 : public AbstractAction {
  public:
   OBTResetItemAction3(OBlockEditAction* act) {this->act = act;}
   //@Override
-  /*public*/ void actionPerformed(ActionEvent e) {
+  /*public*/ void actionPerformed(JActionEvent e) {
       act->lengthSpinner->setValue(((Block*)act->bean)->getLengthMm());
 
       if (((Block*)act->bean)->getCurvature() == Block::NONE) {

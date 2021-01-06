@@ -1095,7 +1095,7 @@ void SignalHeadTableAction::addTurnoutMessage(QString s1, QString s2) {
 }
 
 //@TODO We could do with checking the to make sure that the user has entered a turnout into a turnout field if it has been presented. Otherwise an error is recorded in the console window
-void SignalHeadTableAction::okPressed(ActionEvent* /*e*/)
+void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
 {
  if (!checkUserName(userNameTextField->text()))
   return;
@@ -1971,14 +1971,14 @@ void SignalHeadTableAction::makeEditSignalWindow()
     editFrame->setVisible(true);
 }
 
-void SignalHeadTableAction::cancelPressed(ActionEvent* /*e*/) {
+void SignalHeadTableAction::cancelPressed(JActionEvent * /*e*/) {
     editFrame->setVisible(false);
     editingHead = false;
 }
 
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
-void SignalHeadTableAction::updatePressed(ActionEvent* /*e*/) {
+void SignalHeadTableAction::updatePressed(JActionEvent* /*e*/) {
     QString nam = eUserName->text();
     // check if user name changed
     if (!((curS->getUserName()!="") && (curS->getUserName() ==(nam)))) {

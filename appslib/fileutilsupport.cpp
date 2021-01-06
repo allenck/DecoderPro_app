@@ -849,6 +849,7 @@ public URL getURL(URI uri) {
   if(items.count()>0)
   {
    setProgramPath(items.at(0)->text());
+   qputenv("JMRIPROJECT", items.at(0)->text().toLocal8Bit());
    return items.at(0)->text();
   }
  }

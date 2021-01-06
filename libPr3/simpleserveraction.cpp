@@ -21,7 +21,7 @@ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 
 //@Override
-/*public*/ void SimpleServerAction::actionPerformed(ActionEvent* e) {
+/*public*/ void SimpleServerAction::actionPerformed(JActionEvent *e) {
 
     // SimpleServerFrame f = new SimpleServerFrame();
     // f.setVisible(true);

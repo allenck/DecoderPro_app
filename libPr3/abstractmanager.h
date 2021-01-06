@@ -124,7 +124,7 @@ public:
     /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale()) const override;
     /*public*/ virtual SystemConnectionMemo* getMemo()const;
     /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
-    /*public*/ void updateAutoNumber(QString systemName);
+    /*public*/ void updateAutoNumber(QString systemName) const;
     /*public*/ QString getAutoSystemName()const;
 
 

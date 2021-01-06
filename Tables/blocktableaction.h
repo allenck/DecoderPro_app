@@ -8,6 +8,8 @@
 #include "jcheckbox.h"
 #include "spinnernumbermodel.h"
 #include "jspinner.h"
+#include "jtextfield.h"
+#include "windowadapter.h"
 
 class BufferedImage;
 class Block;
@@ -25,11 +27,11 @@ public:
  ~BlockTableAction() {}
  BlockTableAction(const BlockTableAction& other) : AbstractTableAction(other.text(), other.parent()) {}
  Q_INVOKABLE/*public*/ BlockTableAction(QString actionName, QObject *parent);
- /*public*/ void addToFrame(BeanTableFrame* f);
-/*public*/ void setMenuBar(BeanTableFrame* f);
+ /*public*/ void addToFrame(BeanTableFrame* f) override;
+/*public*/ void setMenuBar(BeanTableFrame* f) override;
  /*public*/ void dispose();
- Q_INVOKABLE /*public*/ QString getClassDescription();
- Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+ Q_INVOKABLE /*public*/ QString getClassDescription() override;
+ Q_INVOKABLE /*public*/ void setMessagePreferencesDetails() override;
 signals:
 
 public slots:
@@ -37,8 +39,8 @@ public slots:
  void inchBoxChanged();
  void centimeterBoxChanged();
  void on_defaultSpeeds();
- void okPressed(ActionEvent* e = 0);
- void cancelPressed(ActionEvent* e = 0);
+ void okPressed(JActionEvent* e = 0);
+ void cancelPressed(JActionEvent *e = 0);
 
 
 private:
@@ -56,17 +58,17 @@ private:
  QCheckBox* centimeterBox;// = new JCheckBox(tr("LengthCentimeters"));
  /*private*/ void updateSensorList();
  /*private*/ void updateSpeedList();
- JmriJFrame* addFrame;// = NULL;
- JTextField* sysName;// = new JTextField(5);
- JTextField* userName;// = new JTextField(5);
- QLabel* sysNameLabel;// = new JLabel(tr("LabelSystemName"));
- QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
+ JmriJFrame* addFrame = NULL;
+ JTextField* sysName = new JTextField(20);
+ JTextField* userName = new JTextField(20);
+ JLabel* sysNameLabel = new JLabel(tr("SystemName"));
+ JLabel* userNameLabel = new JLabel(tr("UserName"));
 
 
  QComboBox* cur;// = new QComboBox*(curveOptions);
- JTextField* lengthField;// = new JTextField(7);
- JTextField* blockSpeed;// = new JTextField(7);
- QCheckBox* checkPerm;// = new QCheckBox(tr("BlockPermColName"));
+ JTextField* lengthField = new JTextField(7);
+ JTextField* blockSpeed = new JTextField(7);
+ QCheckBox* checkPerm = new QCheckBox(tr("Permissive"));
 
  SpinnerNumberModel* numberToAddSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
  JSpinner* numberToAddSpinner = new JSpinner(numberToAddSpinnerNumberModel);
@@ -75,8 +77,8 @@ private:
  JLabel* statusBar = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
  UserPreferencesManager* pref;
 
- QComboBox* speeds;// = new QComboBox*();
- QWidget* additionalAddOption();
+ QComboBox* speeds = new QComboBox();
+ //QWidget* additionalAddOption();
  QString systemNameAuto;// = this.getClass().getName() + ".AutoSystemName";
  bool validateNumericalInput(QString text);
  Logger* log;
@@ -92,8 +94,9 @@ protected:
  /*protected*/ void setTitle();
  /*protected*/ void setDefaultSpeeds(JFrame* _who);
  /*protected*/ QString helpTarget();
+
 protected slots:
- /*protected*/ void addPressed(ActionEvent* /*e*/);
+ /*protected*/ void addPressed(JActionEvent * /*e*/);
  /*protected*/ QString getClassName();
 
 friend class BlockTableDataModel;
@@ -124,24 +127,27 @@ public:
   SPEEDCOL = PERMISCOL + 1\
  };
 
- /*public*/ QString getValue(QString name) const;
- /*public*/ Manager* getManager();
- /*public*/ NamedBean* getBySystemName(QString name) const;
- /*public*/ NamedBean* getByUserName(QString name);
- /*public*/ void clickOn(NamedBean* t);
+ /*public*/ QString getValue(QString name) const override;
+ /*public*/ Manager* getManager() override;
+ /*public*/ NamedBean* getBySystemName(QString name) const override;
+ /*public*/ NamedBean* getByUserName(QString name)  override;
+ /*public*/ void clickOn(NamedBean* t) override;
  //Permissive and speed columns are temp disabled
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ int getPreferredWidth(int col);
- /*public*/ void configValueColumn(JTable* table);
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
- /*public*/ void configureTable(JTable* table);
- /*public*/ QPushButton* configureButton();
+ /*public*/ int columnCount(const QModelIndex &parent) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ int getPreferredWidth(int col) override;
+ /*public*/ void configValueColumn(JTable* table) override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const  override;
+ /*public*/ void configureTable(JTable* table) override;
+ /*public*/ QPushButton* configureButton() override;
  /*synchronized*/ /*public*/ void dispose();
+ /*public*/ QString getColumnClass(int col);
+
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+
 private:
  Logger* log;
  void editButton(Block* b);
@@ -164,10 +170,13 @@ private:
  /*protected*/ int iconHeight = -1;
  /*protected*/ void loadIcons();
 
- /*protected*/ QString getBeanType();
+ /*protected*/ QString getBeanType() override;
+ /*protected*/ void configStateColumn(JTable* table);
+
   protected slots:
- /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
+ /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
 };
+
 class BTActionListener : public ActionListener
 {
  Q_OBJECT
@@ -175,7 +184,7 @@ class BTActionListener : public ActionListener
 public:
  BTActionListener(BlockTableAction* blockTableAction);
 public slots:
- void actionPerformed(JActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0) override;
 };
 class BTCancelListener : public ActionListener
 {
@@ -184,7 +193,19 @@ class BTCancelListener : public ActionListener
 public:
  BTCancelListener(BlockTableAction* blockTableAction);
 public slots:
- void actionPerformed(JActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0) override;
 };
 
+class ABWindowListener : public WindowAdapter
+{
+  Q_OBJECT
+  BlockTableAction* blockTableAction;
+ public:
+  ABWindowListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
+  void windowClosed(QCloseEvent *e)
+  {
+   blockTableAction->cancelPressed();
+  }
+  void windowClosing(QCloseEvent*){}
+};
 #endif // BLOCKTABLEACTION_H

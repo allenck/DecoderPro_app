@@ -66,7 +66,7 @@
 void PowerManagerMenu::setDefault()
 {
  // name of default
- PowerManager* manager = InstanceManager::powerManagerInstance();
+ PowerManager* manager = (PowerManager*)InstanceManager::getDefault("PowerManager");
  if (manager == NULL) return;
  QString defaultMgr = manager->getUserName();
  if (defaultMgr == NULL) return;
@@ -83,7 +83,7 @@ void PowerManagerMenu::setDefault()
 /*public*/ PowerManager* PowerManagerMenu::getManager()
 {
  // start with default
- PowerManager* manager = InstanceManager::powerManagerInstance();
+ PowerManager* manager = (PowerManager*)InstanceManager::getDefault("PowerManager");
  if (manager == NULL) return NULL;
  QString name = manager->getUserName();
 

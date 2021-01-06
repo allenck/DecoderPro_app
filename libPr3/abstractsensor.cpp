@@ -333,6 +333,7 @@ Reporter* AbstractSensor::getReporter() const{
 /*public*/ Sensor::PullResistance::PULLRESISTANCE AbstractSensor::getPullResistance(){
    return Sensor::PullResistance::PULL_OFF;
 }
+
 ASRunnable::ASRunnable(QObject *as) : Runnable(as)
 {
  this->as = as;

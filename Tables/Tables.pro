@@ -95,7 +95,8 @@ SOURCES +=  slotmonitor.cpp \
     portaleditframe.cpp \
     signaleditframe.cpp \
     oblockeditaction.cpp \
-    blockpatheditframe.cpp
+    blockpatheditframe.cpp \
+    sensoreditaction.cpp
 
 HEADERS += libtables_global.h \
     slotmonitor.h \
@@ -179,7 +180,8 @@ HEADERS += libtables_global.h \
     portaleditframe.h \
     signaleditframe.h \
     oblockeditaction.h \
-    blockpatheditframe.h
+    blockpatheditframe.h \
+    sensoreditaction.h
 
 unix:!symbian {
     maemo5 {

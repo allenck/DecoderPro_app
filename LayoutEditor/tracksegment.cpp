@@ -1410,7 +1410,7 @@ TrackSegment::getLayoutBlock()
     });
 #endif
 }
-
+#if 0
 /**
  * Display popup menu for information and editing
  */
@@ -2427,7 +2427,7 @@ TrackSegment::getLayoutBlock()
  popupMenu->exec(QCursor::pos());
  return popupMenu;
 }   // showPopup
-
+#endif
 void TrackSegment::onBridgeSideLeft()
 {
  setBridgeSideLeft(true);

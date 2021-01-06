@@ -784,7 +784,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  */
 /*public*/ void JTable::setRowHeight(int row, int rowHeight) {
     if (rowHeight <= 0) {
-        throw new IllegalArgumentException("New row height less than 1");
+        throw IllegalArgumentException("New row height less than 1");
     }
     getRowModel()->setSize(row, rowHeight);
     if (sortManager != NULL) {

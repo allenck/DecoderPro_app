@@ -53,13 +53,10 @@
 /*public*/ BeanTableDataModel::BeanTableDataModel(QObject *parent) :   AbstractTableModel(parent)
 {
  //super();
- log = new Logger("BeanTableDataModel");
  setObjectName("BeanTableDataModel");
  sysNameList = QStringList();
  noWarnDelete = false;
- //buttonMap = QList<int>();
  nbMan = (NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager");
- _table = NULL;
  // propertyColumns = new ArrayList<>(getManager().getKnownBeanProperties());
  propertyColumns = new QList<NamedBeanPropertyDescriptor*>();
   // init() can ony be run after sub-classes' constructors are complete!
@@ -72,13 +69,12 @@ void /*public*/ BeanTableDataModel::init() // SLOT
  {
   manager->addPropertyChangeListener((PropertyChangeListener*)this);
   updateNameList();
-  //connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 BeanTableDataModel::~BeanTableDataModel()
 {
- delete log;
 }
 
 /*protected*/ int BeanTableDataModel::getPropertyColumnCount() const{
@@ -1210,10 +1206,12 @@ void BeanTableDataModel::On_moveBean_triggered()
     QMenu* popupMenu = new QMenu();
     QSignalMapper* mapper = new QSignalMapper(this);
     XTableColumnModel* tcm = (XTableColumnModel*)_table->getColumnModel();
-    for (int i = 0; i < tcm->getColumnCount(false); i++) {
+    for (int i = 0; i < tcm->getColumnCount(false); i++)
+    {
         TableColumn* tc = tcm->getColumnByModelIndex(i);
         QString columnName = _table->getModel()->headerData(i, Qt::Horizontal).toString();
-        if(!columnName.isEmpty()){
+        if(!columnName.isEmpty())
+        {
             QAction* menuItem = new QAction(_table->getModel()->headerData(i, Qt::Horizontal).toString(), this);
             menuItem->setCheckable(true);
             menuItem->setChecked(/*tcm->isColumnVisible(tc)*/!_table->isColumnHidden(i));
@@ -1235,6 +1233,11 @@ void BeanTableDataModel::onColumnSelected(QObject* obj)
  int column = tc->getModelIndex();
   //tcm->setColumnVisible(tc, !tcm->isColumnVisible(tc));
  _table->setColumnHidden(column, !_table->isColumnHidden(column));
+ if(!_table->isColumnHidden(column))
+ {
+  if(_table->columnWidth(column)< 1)
+   _table->setColumnWidth(column, 22);
+ }
 }
 #if 0
 static class headerActionListener implements ActionListener {
@@ -1359,108 +1362,5 @@ class TableHeaderListener extends MouseAdapter {
         manager->stopPersisting(table); // throws NPE if table name is null
     }
 }
-#if 0
-/**
- * Load table column settings from persistent storage.
- *
- * @param table the table
- * @deprecated since 4.5.4; use {@link #persistTable(javax.swing.JTable)}
- * instead.
- */
-//@Deprecated
-/*public*/ void BeanTableDataModel::loadTableColumnDetails(JTable* table)
-{
- loadTableColumnDetails(table, getMasterClassName());
-}
 
-/**
- * Load table column settings from persistent storage.
- *
- * @param table        the table
- * @param beantableref name of the table
- * @deprecated since 4.5.4; use {@link #persistTable(javax.swing.JTable)}
- * instead.
- */
-//@Deprecated
-/*public*/ void BeanTableDataModel::loadTableColumnDetails(JTable* table, QString beantableref)
-{
-// UserPreferencesManager* p = (UserPreferencesManager*)  InstanceManager::getDefault("UserPreferencesManager");
- //Set all the sort and width details of the table first.
-
-#if 0
-    //Reorder the columns first
-    for (int i = 0; i < table.columnCount(QModelIndex()); i++) {
-        String columnName = p.getTableColumnAtNum(beantableref, i);
-        if (columnName != NULL) {
-            int originalLocation = -1;
-            for (int j = 0; j < table.columnCount(QModelIndex()); j++) {
-                if (table.getColumnName(j)==(columnName)) {
-                    originalLocation = j;
-                    break;
-                }
-            }
-            if (originalLocation != -1 && (originalLocation != i)) {
-                table.moveColumn(originalLocation, i);
-            }
-        }
-    }
-#endif
-#if 0
- //Set column widths, sort order and hidden status
-    table->createDefaultColumnsFromModel();
- XTableColumnModel* tcm = (XTableColumnModel*)table->getColumnModel();
- QListIterator<TableColumn*> en = tcm->getColumns(false);
-    //jtable.setDefaultEditor(Object.class, new RosterCellEditor());
- QSortFilterProxyModel* tmodel = ((QSortFilterProxyModel*)table->getModel());
- while(en.hasNext())
- {
-  TableColumn* tc = en.next();
-  QString columnName = tc->getHeaderValue().toString();
-  if (p->getTableColumnWidth(beantableref, columnName) != -1)
-  {
-   int width = p->getTableColumnWidth(beantableref, columnName);
-   tc->setPreferredWidth(width);
-
-   int sort = p->getTableColumnSort(beantableref, columnName);
-//   tmodel->setSortingStatus(tc->getModelIndex(), sort);
-
-   if(p->getTableColumnHidden(beantableref, columnName))
-   {
-    tcm->setColumnVisible(tc, false);
-   }
-   else
-   {
-    tcm->setColumnVisible(tc, true);
-   }
-  }
- }
-#else
-    if (table->getName() == "") {
-        table->setName(beantableref);
-    }
-    this->persistTable(table);
-#endif
-}
-#endif
-//void BeanTableDataModel::fireTableDataChanged()
-//{
-// beginResetModel();
-// endResetModel();
-// setPersistentButtons();
-//}
-
-//void BeanTableDataModel::fireTableRowsUpdated(int, int)
-//{
-// beginResetModel();
-// endResetModel();
-// setPersistentButtons();
-//}
-
-//void BeanTableDataModel::setPersistentButtons()
-//{
-// for(int row = 0; row < rowCount(QModelIndex()); row ++)
-// {
-//  foreach(int col, buttonMap)
-//   table->openPersistentEditor(index(row, col));
-// }
-//}
+/*private*/ /*final*/ /*static*/ Logger* BeanTableDataModel::log = LoggerFactory::getLogger("BeanTableDataModel");

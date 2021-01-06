@@ -538,7 +538,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
         //openBlock.addActionListener(event -> showHideFrame(_blockTableFrame, openBlock, "%1 Occupancy Block Table"));
         connect(openBlock, &QAction::triggered, [=]{showHideFrame(_blockTableFrame, openBlock, "%1 Occupancy Block Table");});
 
-        openPortal = new QAction(tr("%1 Portal Table").arg(tr("Hide")),this);
+        openPortal = new QAction(tr("%1 Portal Table").arg(tr("Show")),this);
         tablesMenu->addAction(openPortal);
         //openPortal.addActionListener(event -> showHideFrame(_portalTableFrame, openPortal, "%1 Portal Table"));
         connect(openPortal, &QAction::triggered, [=]{showHideFrame(_portalTableFrame, openPortal, "%1 Portal Table");});
@@ -1026,8 +1026,8 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
         // store frame in Map
         _blockPathMap.insert(blockSystemName, frame);
         frame->setVisible(true);
-        if(desktopframe)
-        desktopframe->getContentPane()->layout()->addWidget(frame);
+        //desktopframe->getContentPane()->layout()->addWidget(frame);
+        _desktop->addWidget(frame);
     } else {
         frame->setVisible(true);
         try {
@@ -1138,15 +1138,15 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
     // get table
     //JScrollPane tablePane = new JScrollPane(blockPathTable);
     JPanel* contentPane = new JPanel();
-    contentPane->setLayout(new BorderLayout(/*5, 5*/));
+    contentPane->setLayout(new QVBoxLayout());//BorderLayout(/*5, 5*/));
     if (_tabbed) {
         // a bit more styling
         blockPathTable->resize(QSize(600, 100));
     } else {
-        JLabel* prompt = new JLabel(tr("AddPathPrompt"));
-        ((BorderLayout*)contentPane->layout())->addWidget(prompt, BorderLayout::North);
+        JLabel* prompt = new JLabel(tr("Enter a Path Name into the blank (last) row of the table to add a Path"));
+        ((QVBoxLayout*)contentPane->layout())->addWidget(prompt, 0, Qt::AlignTop);//BorderLayout::North);
     }
-    ((BorderLayout*)contentPane->layout())->addWidget(/*tablePane*/blockPathTable, BorderLayout::Center);
+    ((QVBoxLayout*)contentPane->layout())->addWidget(/*tablePane*/blockPathTable, 1);//BorderLayout::Center);
 
     return contentPane;
 }

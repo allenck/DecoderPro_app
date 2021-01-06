@@ -9,6 +9,7 @@
 #include "libPr3_global.h"
 #include <QStringList>
 
+class PullResistance;
 class LIBPR3SHARED_EXPORT Sensor : public AbstractNamedBean
 {
  Q_OBJECT
@@ -179,6 +180,7 @@ public:
     virtual /*default*/ /*public*/ int getCommandedState();
     virtual void setCommandedState(int s);
 
+
     class PullResistance
     {
     public:
@@ -224,7 +226,22 @@ public:
       QString shortName;
       QString peopleName;
     };
-signals:
+    /**
+     * Set the pull resistance
+     *
+     * @param r PullResistance value to use.
+     */
+    //@InvokeOnLayoutThread
+    /*public*/ virtual void setPullResistance(PullResistance::PULLRESISTANCE r) {}
+
+    /**
+     * Get the pull resistance
+     *
+     * @return the currently set PullResistance value.
+     */
+    /*public*/ virtual PullResistance::PULLRESISTANCE getPullResistance() {return PullResistance::PULL_OFF;}
+
+ signals:
     
 public slots:
 private:

@@ -3,11 +3,11 @@
 #include <QVBoxLayout>
 #include <QMenuBar>
 #include <QMenu>
-#include "savemenu.h"
 #include "jtable.h"
 #include "box.h"
 #include "mysortfilterproxymodel.h"
 #include <QPushButton>
+#include "storemenu.h"
 
 BeanTableFrame::BeanTableFrame(QWidget *parent) :
     JmriJFrame(parent)
@@ -94,7 +94,7 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  QMenuBar* menuBar = new QMenuBar();
  QMenu* fileMenu = new QMenu(tr("File"));
  menuBar->addMenu(fileMenu);
- fileMenu->addMenu(new SaveMenu());
+ fileMenu->addMenu(new StoreMenu());
 
  QAction* printItem = new QAction(tr("Print Table"),this);
  fileMenu->addAction(printItem);

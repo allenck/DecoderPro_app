@@ -131,7 +131,6 @@ public:
  */
  //template<class T>
  static /*public*/  void store(/*@Nonnull*/ QObject* item, /*@Nonnull Class<T> */ QString type);
-//static void storeBefore( int index, QObject* item, QString type);
 
 /**
  * Retrieve a list of all objects of type T that were
@@ -194,40 +193,15 @@ static QString contentsToString();
 /*public*/ static /*synchronized*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* l) ;
 /*public*/ static /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
 /*public*/ static /*synchronized*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* l);
-Q_DECL_DEPRECATED static PowerManager* powerManagerInstance();
-//Q_DECL_DEPRECATED static void setPowerManager(PowerManager* p);
-//Q_DECL_DEPRECATED static Timebase* timebaseInstance();
-//Q_DECL_DEPRECATED static ConfigureManager* configureManagerInstance();
-//Q_DECL_DEPRECATED static void setConfigureManager(ConfigureManager* p);
-
-//Q_DECL_DEPRECATED static ProgrammerManager* programmerManagerInstance();
-//static void setProgrammerManager(ProgrammerManager* p);
 static ThrottleManager* throttleManagerInstance();
 static void setTurnoutManager(TurnoutManager* p);
 
-//Q_DECL_DEPRECATED static SignalHeadManager* signalHeadManagerInstance();
-//Q_DECL_DEPRECATED static SignalMastManager* signalMastManagerInstance();
-//static void setSignalMastManager(SignalMastManager* p);
-//Q_DECL_DEPRECATED static SignalSystemManager* signalSystemManagerInstance();
-//static void setSignalSystemManager(SignalSystemManager* p);
-//Q_DECL_DEPRECATED static SignalGroupManager* signalGroupManagerInstance() ;
-//static void setSignalGroupManager(SignalGroupManager* p);
-//Q_DECL_DEPRECATED static ConsistManager* consistManagerInstance();
-Q_DECL_DEPRECATED static void setConsistManager(ConsistManager* p);
 static /*public*/  bool containsDefault(/*@Nonnull*/ QString type);
 /*public*/ static /*<T>*/ bool isInitialized(/*@Nonnull*/ QString type);
 static MemoryManager* memoryManagerInstance();
 static void setSensorManager(SensorManager* p);
 static void setLightManager(LightManager* p);
 static void setThrottleManager(ThrottleManager* p);
-Q_DECL_DEPRECATED static void setSignalHeadManager(SignalHeadManager* p);
-//static /*public*/ void setLayoutBlockManager(LayoutBlockManager* p);
-//static void setConditionalManager(ConditionalManager* p);
-//static void setLogixManager(LogixManager* p);
-//Q_DECL_DEPRECATED static void setShutDownManager(ShutDownManager* p);
-//static void setTabbedPreferences(TabbedPreferences* p);
-//QT_DEPRECATED static void setCommandStation(CommandStation* p);
-//QT_DEPRECATED static /*public*/ void setAddressedProgrammerManager(AddressedProgrammerManager* p);
 static void setReporterManager(ReporterManager* p);
 //template<class T>
 /*public*/ /*<T>*/ QObjectList* getInstances(/*@Nonnull Class<T>*/ QString type);
@@ -266,29 +240,8 @@ private:
  /*private*/ /*final*/ QMap</*Class<?>*/QString, StateHolder*> initState;// = new HashMap<>();
  //Logger* log;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("InstanceManager");
- //static void setRootInstance();
- //static ConfigureManager* configureManager;
- ///*private*/ ClockControl* clockControl;// = NULL;
- //SectionManager* sectionManager;
- //TransitManager* transitManager;
- //TurnoutManager* turnoutManager;
- //LightManager* lightManager;
  // data members to hold contact with the property listeners
  static QVector<PropertyChangeListener*> listeners;
- //CatalogTreeManager* catalogTreeManager;
- //AudioManager* audioManager;
- //MemoryManager* memoryManager;
- //RosterIconFactory* rosterIconFactory;
- //Timebase* timebase;
- //SignalHeadManager* signalHeadManager;
- //ConditionalManager* conditionalManager;
- //ReporterManager* reporterManager;
- //ShutDownManager* shutdownManager;
- //LogixManager* logixManager;
-
- //TabbedPreferences* tabbedPreferencesManager;
- //VSDecoderManager vsdecoderManager;
- //static InstanceInitializer* initializer;// = new jmri.managers.DefaultInstanceInitializer();
  static QMutex mutex;
  // support checking for overlapping intialization
  /*private*/ void setInitializationState(QString type, InitializationState state);
@@ -314,19 +267,7 @@ protected:
 //     justification="Protected access to allow changes during JUnit testing.")
  static InstanceManager* root;
 
- //void addConfigureManager(ConfigureManager* p);
- //void addTurnoutManager(TurnoutManager* p);
  void notifyPropertyChangeListener(QString property, QVariant oldValue, QVariant newValue);
- //void init();
- //void addSensorManager(SensorManager* p);
- //void addLightManager(LightManager* p);
-// void addSignalHeadManager(SignalHeadManager* p);
-// void addConditionalManager(ConditionalManager* p);
-// void addLogixManager(LogixManager* p);
-// void addShutdownManager(ShutDownManager* p);
-// void addTabbedPreferences(TabbedPreferences* p);
- //void addReporterManager(ReporterManager* p);
- // /*public*/ static /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
  friend class RosterFrame;
  friend class SignalSpeedMap;
  friend class LazyInstanceManager;

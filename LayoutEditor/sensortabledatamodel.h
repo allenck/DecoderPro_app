@@ -6,7 +6,7 @@
 #include "tablecelleditor.h"
 #include "tablecellrenderer.h"
 
-class ImageIconRenderer;
+class Sensor;
 class Component;
 class QLabel;
 class BufferedImage;
@@ -26,9 +26,13 @@ public:
 enum COLUMNS
 {
   INVERTCOL = NUMCOLUMN,            // 5
-  USEGLOBALDELAY = INVERTCOL+1,     // 6
+  EDITCOL = INVERTCOL + 1,
+  USEGLOBALDELAY = EDITCOL+1,     // 6
   ACTIVEDELAY = USEGLOBALDELAY+1,
-  INACTIVEDELAY = ACTIVEDELAY+1
+  INACTIVEDELAY = ACTIVEDELAY+1,
+  PULLUPCOL = INACTIVEDELAY + 1,
+  FORGETCOL = PULLUPCOL + 1,
+  QUERYCOL = FORGETCOL + 1
 };
 /*public*/ SensorTableDataModel(SensorManager* manager, QObject *parent);
 /*public*/ QString getValue(QString name) const override;
@@ -41,6 +45,7 @@ enum COLUMNS
 /*public*/ void configureTable(JTable* table) override;
 /*public*/ void showDebounce(bool show);
 Q_INVOKABLE /*public*/ QString getClassDescription() ;
+/*public*/ QString getColumnClass(int col) override;
 
 signals:
 
@@ -51,6 +56,7 @@ private:
  void common();
  Logger * log;
  QSignalMapper* deleteMapper;
+ void editButton(Sensor* s);
 
 protected:
  /*protected*/ JTable* table;
@@ -66,7 +72,18 @@ protected:
 // /*protected*/ /*synchronized*/ void updateNameList();
  // for icon state col
  /*protected*/ bool _graphicState = false; // updated from prefs
- ImageIconRenderer* renderer = nullptr;
+ /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
+ /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";
+ /*protected*/ QString offIconPath;// = rootPath + beanTypeChar + "-off-s.png";
+ /*protected*/ BufferedImage* onImage = nullptr;
+ /*protected*/ BufferedImage* offImage = nullptr;
+ /*protected*/ QPixmap onIcon;
+ /*protected*/ QPixmap offIcon;
+ /*protected*/ int iconHeight = -1;
+ /*protected*/ void loadIcons();
+ /*protected*/ void configValueColumn(JTable* table);
+
 
 protected slots:
  /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
@@ -75,6 +92,7 @@ friend class SensorTableWidget;
 };
 Q_DECLARE_METATYPE(SensorTableDataModel)
 
+#if 0
 class ImageIconRenderer : public QItemDelegate , public TableCellEditor, public TableCellRenderer
 {
  Q_OBJECT
@@ -112,5 +130,5 @@ protected:
     /*protected*/ void loadIcons();
  friend class SensorTableDataModel;
 }; // end of ImageIconRenderer class
-
+#endif
 #endif // SENSORTABLEDATAMODEL_H

@@ -42,7 +42,6 @@
 #include <namedbean.h>
 #include <positionable.h>
 #include <positionablelabel.h>
-#include <powermanager.h>
 #include <programmingmode.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
@@ -831,7 +830,6 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    bool  static_InstanceManager_isInitialized(QString  type);
    MemoryManager*  static_InstanceManager_memoryManagerInstance();
    void notifyPropertyChangeListener(InstanceManager* theWrappedObject, QString  property, QVariant  oldValue, QVariant  newValue);
-   PowerManager*  static_InstanceManager_powerManagerInstance();
    void remove(InstanceManager* theWrappedObject, QObject*  item, QString  type);
    void static_InstanceManager_removePropertyChangeListener(PropertyChangeListener*  l);
    void static_InstanceManager_removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  l);
@@ -840,7 +838,6 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    void static_InstanceManager_setLightManager(LightManager*  p);
    void static_InstanceManager_setReporterManager(ReporterManager*  p);
    void static_InstanceManager_setSensorManager(SensorManager*  p);
-   void static_InstanceManager_setSignalHeadManager(SignalHeadManager*  p);
    void static_InstanceManager_setThrottleManager(ThrottleManager*  p);
    void static_InstanceManager_setTurnoutManager(TurnoutManager*  p);
    void static_InstanceManager_store(QObject*  item, QString  type);
@@ -2330,8 +2327,8 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    bool  isMainlineD(LayoutTurnout* theWrappedObject);
    bool  isSecondTurnoutInverted(LayoutTurnout* theWrappedObject);
    bool  isTurnoutTypeSlip(LayoutTurnout* theWrappedObject);
-   bool  isTurnoutTypeTurnout(LayoutTurnout* theWrappedObject);
-   bool  isTurnoutTypeXover(LayoutTurnout* theWrappedObject);
+   bool  isTurnoutTypeTurnout(LayoutTurnout* theWrappedObject) const;
+   bool  isTurnoutTypeXover(LayoutTurnout* theWrappedObject) const;
    void reCheckBlockBoundary(LayoutTurnout* theWrappedObject) const;
    void py_q_reCheckBlockBoundary(LayoutTurnout* theWrappedObject) const{  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_reCheckBlockBoundary());}
    void remove(LayoutTurnout* theWrappedObject);

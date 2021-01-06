@@ -333,6 +333,7 @@
 #include "ctc/ctcmanagerxml.h"
 #include "ctc/ctcexceptionbuffer.h"
 #include "ctc/otherdata.h"
+#include "se8csignalheadxml.h"
 
 bool Metatypes::done = false;
 
@@ -683,6 +684,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<CtcManagerXml>("CtcManagerXml");
  qRegisterMetaType<CTCExceptionBuffer>("CTCExceptionBuffer");
  qRegisterMetaType<OtherData>("OtherData");
+ qRegisterMetaType<SE8cSignalHeadXml>("SE8cSignalHeadXml");
 
  Metatypes::done = true;
 }

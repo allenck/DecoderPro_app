@@ -159,6 +159,7 @@ void TurnoutTableAction::common()
    speedListThrown.append(_speedMap.at(i));
   }
  }
+
 }
 
 //@Override
@@ -206,7 +207,6 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  beanTypeChar = 'T'; // for Turnout
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";
- loadIcons();
  init();
 }
 
@@ -228,8 +228,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     case LOCKCOL: return "Locked";
     case KNOWNCOL: return "Feedback";
     case MODECOL: return "Mode";
-    case SENSOR1COL: return "Sensor 1(T)";
-    case SENSOR2COL: return "Sensor 2(C)";
+    case SENSOR1COL: return "Sensor1";
+    case SENSOR2COL: return "Sensor2";
     case OPSONOFFCOL: return "Automate";
     case OPSEDITCOL: return "";
     case LOCKOPRCOL: return "Lock Mode";
@@ -263,7 +263,10 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     if (col==TurnoutTableDataModel::LOCKDECCOL) return "JComboBox";
     if (col==TurnoutTableDataModel::DIVERGCOL) return "JComboBox";
     if (col==TurnoutTableDataModel::STRAIGHTCOL) return "JComboBox";
-    else return BeanTableDataModel::getColumnClass(col);
+    if (col == FORGETCOL) return "JButton";
+    if (col == QUERYCOL) return "JButton";
+    if (col == VALUECOL && turnoutTableAction->_graphicState) return "JLabel"; // use an image to show turnout state
+    return BeanTableDataModel::getColumnClass(col);
 }
 
 //@Override
@@ -284,9 +287,16 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   case EDITCOL : return  JTextField(7).getPreferredSize().width();
   case DIVERGCOL : return  JTextField(14).getPreferredSize().width();
   case STRAIGHTCOL : return  JTextField(14).getPreferredSize().width();
-  case FORGETCOL: return  QPushButton(tr("Forget")).sizeHint().width();
-  case QUERYCOL: return  QPushButton(tr("Query")).sizeHint().width();
- default:
+  case FORGETCOL: return  JButton(tr("Forget")).sizeHint().width();
+  case QUERYCOL: return JButton(tr("Query")).sizeHint().width();
+  case VALUECOL:
+  {
+   if(turnoutTableAction->_graphicState)
+   {
+    return JTextField(22).getPreferredSize().width() + offIcon.width();
+   }
+  }
+  default:
    break;
  }
  return BeanTableDataModel::getPreferredWidth(col);
@@ -381,6 +391,21 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //    bool val = t->getLocked(Turnout::CABLOCKOUT + Turnout::PUSHBUTTONLOCKOUT);
 //    return (val);
 //   }
+   case VALUECOL:
+   {
+    switch(t->getKnownState())
+    {
+     case Turnout::CLOSED:
+     return tr("Closed");
+    case Turnout::THROWN:
+     return tr("Thrown");
+    case Turnout::UNKNOWN:
+     return tr("Unknown");
+    case Turnout::INCONSISTENT:
+    default:
+     return tr("Inconsistent");
+    }
+   }
    case KNOWNCOL:
    {
     if (t->getKnownState()==Turnout::CLOSED) return turnoutTableAction->closedText;
@@ -814,9 +839,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 }
 
 //@Override
-/*public*/ void TurnoutTableDataModel::configureTable(JTable* tbl) {
-    _table = tbl; //??
-    turnoutTableAction->table = tbl;
+/*public*/ void TurnoutTableDataModel::configureTable(JTable* table) {
 
 //    table.setDefaultRenderer(bool.class, new EnablingCheckboxRenderer());
 //    table.setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
@@ -824,8 +847,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //    setColumnToHoldButton(table,TurnoutTableAction::OPSEDITCOL,editButton());
 //    setColumnToHoldButton(table,TurnoutTableAction::EDITCOL,editButton());
     //Hide the following columns by default
-    XTableColumnModel* columnModel = (XTableColumnModel*)_table->getColumnModel();
-    _table->createDefaultColumnsFromModel();
+    XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
+    table->createDefaultColumnsFromModel();
     TableColumn* column  = columnModel->getColumnByModelIndex(STRAIGHTCOL);
     columnModel->setColumnVisible(column, false);
     column  = columnModel->getColumnByModelIndex(DIVERGCOL);
@@ -846,25 +869,27 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     columnModel->setColumnVisible(column, false);
     column  = columnModel->getColumnByModelIndex(LOCKDECCOL);
     columnModel->setColumnVisible(column, false);
-    setColumnToHoldButton(_table, EDITCOL);
-    setColumnToHoldDelegate(_table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
+    setColumnToHoldButton(table, EDITCOL);
+    setColumnToHoldDelegate(table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
     sensorsColDelegate = new TTEditDelegate(turnoutTableAction);
-    setColumnToHoldDelegate(_table, SENSOR1COL, sensorsColDelegate);
-    setColumnToHoldDelegate(_table, SENSOR2COL, sensorsColDelegate);
-    setColumnToHoldDelegate(_table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), turnoutTableAction)); //Each row needs it's own instance
-    setColumnToHoldDelegate(_table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
-    setColumnToHoldDelegate(_table, LOCKOPRCOL, new TTComboBoxDelegate(turnoutTableAction->lockOperations, turnoutTableAction));
-    setColumnToHoldDelegate(_table, STRAIGHTCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction,true));
-    setColumnToHoldDelegate(_table, DIVERGCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction, true));
-    setColumnToHoldDelegate(_table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),turnoutTableAction)); // ?? shuld be button?
-    setColumnToHoldButton(_table, FORGETCOL);
-    setColumnToHoldButton(_table, QUERYCOL);
+    setColumnToHoldDelegate(table, SENSOR1COL, sensorsColDelegate);
+    setColumnToHoldDelegate(table, SENSOR2COL, sensorsColDelegate);
+    setColumnToHoldDelegate(table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), turnoutTableAction)); //Each row needs it's own instance
+    setColumnToHoldDelegate(table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
+    setColumnToHoldDelegate(table, LOCKOPRCOL, new TTComboBoxDelegate(turnoutTableAction->lockOperations, turnoutTableAction));
+    setColumnToHoldDelegate(table, STRAIGHTCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction,true));
+    setColumnToHoldDelegate(table, DIVERGCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction, true));
+    setColumnToHoldDelegate(table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),turnoutTableAction)); // ?? shuld be button?
+    setColumnToHoldButton(table, FORGETCOL);
+    setColumnToHoldButton(table, QUERYCOL);
   //self->showFeedbackChanged();
   //self->showLockChanged();
   //self->showTurnoutSpeedChanged();
   //self->On_doAutomationBox_toggled(false);
 
-  BeanTableDataModel::configureTable(_table);
+  BeanTableDataModel::configureTable(table);
+  table->resizeRowsToContents();
+  table->resizeColumnsToContents();
 }
 
 // update table if turnout lock or feedback changes
@@ -908,7 +933,6 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 /*protected*/ QString TurnoutTableDataModel::getBeanType(){
     return tr("Turnout");
 }
-
 /**
  * Customize the turnout table Value (State) column to show an
  * appropriate graphic for the turnout state if _graphicState =
@@ -924,9 +948,11 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     // add extras, override BeanTableDataModel
     log->debug(tr("Turnout configValueColumn (I am %1)").arg(BeanTableDataModel::toString()));
     if (turnoutTableAction->_graphicState) { // load icons, only once
-        table->setDefaultEditor("JLabel", new ImageIconRenderer()); // editor
-        table->setDefaultRenderer("JLabel", new ImageIconRenderer()); // item class copied from SwitchboardEditor panel
-    } else {
+     loadIcons();
+//        table->setDefaultEditor("JLabel", new ImageIconRenderer()); // editor
+//        table->setDefaultRenderer("JLabel", new ImageIconRenderer()); // item class copied from SwitchboardEditor panel
+    } else
+    {
         BeanTableDataModel::configValueColumn(table); // classic text style state indication
     }
 }
@@ -935,7 +961,6 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 /*public*/ JTable* TurnoutTableDataModel::makeJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ TableModel* model, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter) {
     return this->configureJTable(name, this->makeJTable(model), sorter);
 }
-
 /*private*/ JTable* TurnoutTableDataModel::makeJTable(TableModel* model) {
     return new TTJTable(model);
 }

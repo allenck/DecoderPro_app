@@ -18,6 +18,7 @@
 #include "portaltablemodel.h"
 #include "joptionpane.h"
 #include "warrantmanager.h"
+#include "guilafpreferencesmanager.h"
 
 //OBlockTableModel::OBlockTableModel(QObject *parent) :
 //  BeanTableDataModel(parent)
@@ -56,6 +57,11 @@
  noWarnDelete = false;
 
  _parent = parent;
+ _tabbed = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed();
+ if (_tabbed) {
+     _manager = ((OBlockManager*)InstanceManager::getDefault("OBlockManager")); // TODO also for _desktop?
+     _manager->addPropertyChangeListener((PropertyChangeListener*)this);
+ }
  updateNameList();
  initTempRow();
  AbstractManager* mgr = (AbstractManager*)getManager();
@@ -133,7 +139,7 @@ void OBlockTableModel::initTempRow()
 }
 
 //@Override
-/*public*/ QString OBlockTableModel::getValue(QString name) {
+/*public*/ QString OBlockTableModel::getValue(QString name) const{
     int state = _manager->getBySystemName(name)->getState();
     return getValue(state);
 }
@@ -194,7 +200,8 @@ void OBlockTableModel::initTempRow()
 //@Override
 /*public*/ int OBlockTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
-    return NUMCOLS;
+ return BeanTableDataModel::getRowCount() + (_tabbed ? 0 : 1); // + 1 row in _desktop to create entry row
+
 }
 
 //@Override
@@ -213,10 +220,9 @@ void OBlockTableModel::initTempRow()
     return "";
  }
  OBlock* b = NULL;
- if (row < sysNameList.size())
- {
-  QString name = sysNameList.at(row);
-  b = (OBlock*)_manager->getBySystemName(name);
+ if ((_tabbed && row <= sysNameList.size()) || (!_tabbed && row < sysNameList.size())) {
+     QString name = sysNameList.at(row);
+     b = (OBlock*)_manager->getBySystemName(name);
  }
  if(role == Qt::DisplayRole)
  {
@@ -351,9 +357,17 @@ void OBlockTableModel::initTempRow()
             return w->getDisplayName();
         }
     }
-    return tempRow[col];case EDIT_COL:
+    return tempRow[col];
+   case EDIT_COL:
    if (b != NULL) {
-       return tr("Edit Paths");
+    if (_tabbed)
+    {
+        return tr("Edit");
+    }
+    else
+    {
+     return tr("Edit Paths");
+    }
    }
    return "";
   case DELETE_COL:
@@ -386,345 +400,505 @@ void OBlockTableModel::initTempRow()
 {
  int col = index.column();
  int row = index.row();
+ if (!_tabbed && (BeanTableDataModel::getRowCount() == row))
+ { // editing tempRow
 
- if(role == Qt::EditRole)
- {
-  if (log->isDebugEnabled())
+  if(role == Qt::EditRole)
   {
-   log-> debug(tr("setValueAt: row= ") + QString::number(row) + ", col= " + QString::number(col) + ", value= " + value.toString());
-  }
-  if (BeanTableDataModel::rowCount(index) == row)
-  {
-   switch (col)
+   if (log->isDebugEnabled())
    {
-    case SYSNAMECOL:
+    log-> debug(tr("setValueAt: row= ") + QString::number(row) + ", col= " + QString::number(col) + ", value= " + value.toString());
+   }
+   if (BeanTableDataModel::rowCount(index) == row)
+   {
+    switch (col)
     {
-    OBlock* block = _manager->createNewOBlock( value.toString(), tempRow[USERNAMECOL]);
-    if (block == NULL)
-    {
-     block = _manager->getOBlock(tempRow[USERNAMECOL]);
-     QString name = value.toString() + " / " + tempRow[USERNAMECOL];
-     if (block != NULL)
+     case SYSNAMECOL:
      {
-      name = block->getDisplayName();
-     }
-     else
+     OBlock* block = _manager->createNewOBlock( value.toString(), tempRow[USERNAMECOL]);
+     if (block == NULL)
      {
-      block = _manager->getOBlock(value.toString());
+      block = _manager->getOBlock(tempRow[USERNAMECOL]);
+      QString name = value.toString() + " / " + tempRow[USERNAMECOL];
       if (block != NULL)
       {
        name = block->getDisplayName();
       }
-     }
-     JOptionPane::showMessageDialog(NULL, tr("Duplicate name, Block \"%1\" has been defined. ").arg(name),
-             tr("Error"), JOptionPane::WARNING_MESSAGE);
-     return true;
-    }
-    if (tempRow[SENSORCOL] != NULL)
-    {
-     if (!sensorExists(tempRow[SENSORCOL]))
-     {
-      JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(tempRow[SENSORCOL]),
-              tr("Error"), JOptionPane::WARNING_MESSAGE);
-     }
-    }
-    block->setComment(tempRow[COMMENTCOL]);
-    float len = 0.0f;
-    bool bok;
-    len = tempRow[LENGTHCOL].toFloat(&bok);
-    if(!bok)
-    {
-     JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(tempRow[LENGTHCOL]),
-             tr("ErrorT"), JOptionPane::WARNING_MESSAGE);
-    }
-    if (tempRow[UNITSCOL]==(tr("cm"))) {
-        block->setLength(len * 10.0f);
-        block->setMetricUnits(true);
-    } else {
-        block->setLength(len * 25.4f);
-        block->setMetricUnits(false);
-    }
-    if (tempRow[CURVECOL]==(noneText)) {
-        block->setCurvature(Block::NONE);
-    } else if (tempRow[CURVECOL]==(gradualText)) {
-        block->setCurvature(Block::GRADUAL);
-    } else if (tempRow[CURVECOL]==(tightText)) {
-        block->setCurvature(Block::TIGHT);
-    } else if (tempRow[CURVECOL]==(severeText)) {
-        block->setCurvature(Block::SEVERE);
-    }
-    block->setPermissiveWorking(tempRow[PERMISSIONCOL]==(tr("Permissive")));
-    block->setBlockSpeedName(tempRow[SPEEDCOL]);
-
-    if (tempRow[ERR_SENSORCOL] != NULL) {
-     if (tempRow[ERR_SENSORCOL].trimmed().length() > 0)
-     {
-      if (!sensorExists(tempRow[ERR_SENSORCOL]))
+      else
       {
-       JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(tempRow[ERR_SENSORCOL]),
+       block = _manager->getOBlock(value.toString());
+       if (block != NULL)
+       {
+        name = block->getDisplayName();
+       }
+      }
+      JOptionPane::showMessageDialog(NULL, tr("Duplicate name, Block \"%1\" has been defined. ").arg(name),
+              tr("Error"), JOptionPane::WARNING_MESSAGE);
+      return true;
+     }
+     if (tempRow[SENSORCOL] != NULL)
+     {
+      if (!sensorExists(tempRow[SENSORCOL]))
+      {
+       JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(tempRow[SENSORCOL]),
                tr("Error"), JOptionPane::WARNING_MESSAGE);
       }
      }
-    }
-    if (tempRow[REPORTERCOL] != NULL)
-    {
-     Reporter* rep = NULL;
-     try {
-         rep = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter(tempRow[REPORTERCOL]);
-         if (rep != NULL) {
-             block->setReporter(rep);
-             block->setReportingCurrent(tempRow[REPORT_CURRENTCOL]==(tr("Current")));
-         }
-     } catch (Exception ex) {
-         log->error("No Reporter named \"" + tempRow[REPORTERCOL] + "\" found. threw exception: " /*+ ex*/);
+     block->setComment(tempRow[COMMENTCOL]);
+     float len = 0.0f;
+     bool bok;
+     len = tempRow[LENGTHCOL].toFloat(&bok);
+     if(!bok)
+     {
+      JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(tempRow[LENGTHCOL]),
+              tr("ErrorT"), JOptionPane::WARNING_MESSAGE);
      }
-     if (rep == NULL) {
-      JOptionPane::showMessageDialog(NULL, tr("There is no Reporter named \"%1\".").arg(tempRow[REPORTERCOL]),
-              tr("ErrorTitle"), JOptionPane::WARNING_MESSAGE);
+     if (tempRow[UNITSCOL]==(tr("cm"))) {
+         block->setLength(len * 10.0f);
+         block->setMetricUnits(true);
+     } else {
+         block->setLength(len * 25.4f);
+         block->setMetricUnits(false);
+     }
+     if (tempRow[CURVECOL]==(noneText)) {
+         block->setCurvature(Block::NONE);
+     } else if (tempRow[CURVECOL]==(gradualText)) {
+         block->setCurvature(Block::GRADUAL);
+     } else if (tempRow[CURVECOL]==(tightText)) {
+         block->setCurvature(Block::TIGHT);
+     } else if (tempRow[CURVECOL]==(severeText)) {
+         block->setCurvature(Block::SEVERE);
+     }
+     block->setPermissiveWorking(tempRow[PERMISSIONCOL]==(tr("Permissive")));
+     block->setBlockSpeedName(tempRow[SPEEDCOL]);
 
+     if (tempRow[ERR_SENSORCOL] != NULL) {
+      if (tempRow[ERR_SENSORCOL].trimmed().length() > 0)
+      {
+       if (!sensorExists(tempRow[ERR_SENSORCOL]))
+       {
+        JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(tempRow[ERR_SENSORCOL]),
+                tr("Error"), JOptionPane::WARNING_MESSAGE);
+       }
+      }
      }
-     block->setReporter(rep);
+     if (tempRow[REPORTERCOL] != NULL)
+     {
+      Reporter* rep = NULL;
+      try {
+          rep = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter(tempRow[REPORTERCOL]);
+          if (rep != NULL) {
+              block->setReporter(rep);
+              block->setReportingCurrent(tempRow[REPORT_CURRENTCOL]==(tr("Current")));
+          }
+      } catch (Exception ex) {
+          log->error("No Reporter named \"" + tempRow[REPORTERCOL] + "\" found. threw exception: " /*+ ex*/);
+      }
+      if (rep == NULL) {
+       JOptionPane::showMessageDialog(NULL, tr("There is no Reporter named \"%1\".").arg(tempRow[REPORTERCOL]),
+               tr("ErrorTitle"), JOptionPane::WARNING_MESSAGE);
+
+      }
+      block->setReporter(rep);
+     }
+     initTempRow();
+     fireTableDataChanged();
+     return true;
     }
-    initTempRow();
-    fireTableDataChanged();
+    case DELETE_COL:            // clear
+    {
+     initTempRow();
+     fireTableRowsUpdated(row, row);
+     return true;
+    }
+    case LENGTHCOL:
+    {
+     bool bok;
+     _tempLen = value.toFloat(&bok);
+     if (tempRow[UNITSCOL]==(tr("cm"))) {
+         _tempLen *= 10.0;
+     } else {
+         _tempLen *= 25.4;
+     }
+     if(!bok)
+     {
+      JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(tempRow[LENGTHCOL]),
+              tr("Error"), JOptionPane::WARNING_MESSAGE);
+     }
+     return true;
+    }
+    case UNITSCOL:
+    {
+     if ( value.toBool())
+     {
+      tempRow[UNITSCOL] = tr("cm");
+     }
+     else
+     {
+      tempRow[UNITSCOL] = tr("in");
+     }
+     fireTableRowsUpdated(row, row);
+     return true;
+    }
+    case REPORT_CURRENTCOL:
+    {
+     if(value.toBool())
+     {//toggle
+            tempRow[REPORT_CURRENTCOL] = tr("Current");
+        } else {
+            tempRow[REPORT_CURRENTCOL] = tr("Last");
+        }
+        return true;
+    }
+    case PERMISSIONCOL:
+    {
+     if ( value.toBool())
+     {//toggle
+         tempRow[PERMISSIONCOL] = tr("Permissive");
+     }
+     else
+     {
+         tempRow[PERMISSIONCOL] = tr("Absolute");
+     }
+     return true;
+    }
+    }
+    tempRow.replace(col, value.toString());
     return true;
    }
-   case DELETE_COL:            // clear
+   QString name = sysNameList.at(row);
+   OBlock* block = (OBlock*)_manager->getBySystemName(name);
+   switch (col)
    {
-    initTempRow();
+    case USERNAMECOL:
+    {
+     OBlock* b = _manager->getOBlock( value.toString());
+     if (b != NULL) {
+                 JOptionPane::showMessageDialog(NULL, tr("Duplicate name, Block \"%1\" has been defined. ").arg( block->getDisplayName()),
+                         tr("Error"), JOptionPane::WARNING_MESSAGE);
+        return true;
+    }
+    block->setUserName( value.toString());
     fireTableRowsUpdated(row, row);
     return true;
    }
+   case COMMENTCOL:
+    block->setComment( value.toString());
+    fireTableRowsUpdated(row, row);
+    return true;
+   case STATECOL:
+    /* currently STATECOL is not editable.  Maybe allow it and (or not) set the sensor?  Why?
+    int state = 0;
+    try {
+        state = Integer.valueOf( value);
+    } catch (NumberFormatException nfe) {
+    }
+    if (state < 0) {
+        state = -state;
+    }
+    block->setState(state % 255);
+    fireTableRowsUpdated(row, row); */
+    return true;
+   case SENSORCOL:
+    if (!block->setSensor( value.toString()))
+    {
+        JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(value.toString()),
+                tr("ErrorTitle"), JOptionPane::WARNING_MESSAGE);
+    }
+    fireTableRowsUpdated(row, row);
+    return true;
    case LENGTHCOL:
    {
     bool bok;
-    _tempLen = value.toFloat(&bok);
-    if (tempRow[UNITSCOL]==(tr("cm"))) {
-        _tempLen *= 10.0;
+    float len = value.toFloat(&bok);
+    if (block->isMetric()) {
+        block->setLength(len * 10.0f);
     } else {
-        _tempLen *= 25.4;
+        block->setLength(len * 25.4f);
     }
+    fireTableRowsUpdated(row, row);
     if(!bok)
     {
-     JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(tempRow[LENGTHCOL]),
+     JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(value.toString()),
              tr("Error"), JOptionPane::WARNING_MESSAGE);
     }
     return true;
    }
    case UNITSCOL:
    {
-    if ( value.toBool())
-    {
-     tempRow[UNITSCOL] = tr("cm");
-    }
-    else
-    {
-     tempRow[UNITSCOL] = tr("in");
+    block->setMetricUnits( value.toBool());
+    fireTableRowsUpdated(row, row);
+    return true;
+   }
+   case CURVECOL:
+   {
+    QString cName =  value.toString();
+    if (cName==(noneText)) {
+        block->setCurvature(Block::NONE);
+    } else if (cName==(gradualText)) {
+        block->setCurvature(Block::GRADUAL);
+    } else if (cName==(tightText)) {
+        block->setCurvature(Block::TIGHT);
+    } else if (cName==(severeText)) {
+        block->setCurvature(Block::SEVERE);
     }
     fireTableRowsUpdated(row, row);
     return true;
    }
-   case REPORT_CURRENTCOL:
+   case ERR_SENSORCOL:
    {
-    if(value.toBool())
-    {//toggle
-           tempRow[REPORT_CURRENTCOL] = tr("Current");
-       } else {
-           tempRow[REPORT_CURRENTCOL] = tr("Last");
-       }
-       return true;
-   }
-   case PERMISSIONCOL:
-   {
-    if ( value.toBool())
-    {//toggle
-        tempRow[PERMISSIONCOL] = tr("Permissive");
-    }
-    else
-    {
-        tempRow[PERMISSIONCOL] = tr("Absolute");
-    }
-    return true;
-   }
-   }
-   tempRow.replace(col, value.toString());
-   return true;
-  }
-  QString name = sysNameList.at(row);
-  OBlock* block = (OBlock*)_manager->getBySystemName(name);
-  switch (col)
-  {
-   case USERNAMECOL:
-   {
-    OBlock* b = _manager->getOBlock( value.toString());
-    if (b != NULL) {
-                JOptionPane::showMessageDialog(NULL, tr("Duplicate name, Block \"%1\" has been defined. ").arg( block->getDisplayName()),
-                        tr("Error"), JOptionPane::WARNING_MESSAGE);
-       return true;
-   }
-   block->setUserName( value.toString());
-   fireTableRowsUpdated(row, row);
-   return true;
-  }
-  case COMMENTCOL:
-   block->setComment( value.toString());
-   fireTableRowsUpdated(row, row);
-   return true;
-  case STATECOL:
-   /* currently STATECOL is not editable.  Maybe allow it and (or not) set the sensor?  Why?
-   int state = 0;
+   bool err = false;
    try {
-       state = Integer.valueOf( value);
-   } catch (NumberFormatException nfe) {
-   }
-   if (state < 0) {
-       state = -state;
-   }
-   block->setState(state % 255);
-   fireTableRowsUpdated(row, row); */
-   return true;
-  case SENSORCOL:
-   if (!block->setSensor( value.toString()))
-   {
-       JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(value.toString()),
-               tr("ErrorTitle"), JOptionPane::WARNING_MESSAGE);
-   }
-   fireTableRowsUpdated(row, row);
-   return true;
-  case LENGTHCOL:
-  {
-   bool bok;
-   float len = value.toFloat(&bok);
-   if (block->isMetric()) {
-       block->setLength(len * 10.0f);
-   } else {
-       block->setLength(len * 25.4f);
-   }
-   fireTableRowsUpdated(row, row);
-   if(!bok)
-   {
-    JOptionPane::showMessageDialog(NULL, tr("%1 is not a number.").arg(value.toString()),
-            tr("Error"), JOptionPane::WARNING_MESSAGE);
-   }
-   return true;
-  }
-  case UNITSCOL:
-  {
-   block->setMetricUnits( value.toBool());
-   fireTableRowsUpdated(row, row);
-   return true;
-  }
-  case CURVECOL:
-  {
-   QString cName =  value.toString();
-   if (cName==(noneText)) {
-       block->setCurvature(Block::NONE);
-   } else if (cName==(gradualText)) {
-       block->setCurvature(Block::GRADUAL);
-   } else if (cName==(tightText)) {
-       block->setCurvature(Block::TIGHT);
-   } else if (cName==(severeText)) {
-       block->setCurvature(Block::SEVERE);
-   }
-   fireTableRowsUpdated(row, row);
-   return true;
-  }
-  case ERR_SENSORCOL:
-  {
-  bool err = false;
-  try {
-   if (( value.toString()).trimmed().length() == 0) {
-       block->setErrorSensor(NULL);
-       err = true;
-   } else {
-       err = block->setErrorSensor( value.toString());
-       fireTableRowsUpdated(row, row);
-   }
-   } catch (Exception ex) {
-       log->error("getSensor(" +  value.toString() + ") threw exception: " /*+ ex*/);
-   }
-   if (err) {
-             JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(value.toString()),
-                     tr("Error"), JOptionPane::WARNING_MESSAGE);
-   }
-   fireTableRowsUpdated(row, row);
-   return true;
-  }
- case REPORTERCOL:
- {
-   Reporter* rep = NULL;
-   try {
-       rep = ((ProxyReporterManager*)((ReporterManager*)InstanceManager::getDefault("ReporterManager")))->getReporter( value.toString());
-       if (rep != NULL) {
-           block->setReporter(rep);
-           fireTableRowsUpdated(row, row);
-       }
-   } catch (Exception ex) {
-       log->error("No Reporter named \"" +  value.toString() + "\" found. threw exception: " /*+ ex*/);
-   }
-   if (rep == NULL) {
-       JOptionPane::showMessageDialog(NULL, tr("There is no Reporter named \"%1\".").arg(tempRow[REPORTERCOL]),
-               tr("Error"), JOptionPane::WARNING_MESSAGE);
-   }
-   block->setReporter(rep);
-   fireTableRowsUpdated(row, row);
-   return true;
-  }
- case REPORT_CURRENTCOL:
-  {
-   if (block->getReporter() != NULL)
-   {
-    block->setReportingCurrent(value.toBool());
+    if (( value.toString()).trimmed().length() == 0) {
+        block->setErrorSensor(NULL);
+        err = true;
+    } else {
+        err = block->setErrorSensor( value.toString());
+        fireTableRowsUpdated(row, row);
+    }
+    } catch (Exception ex) {
+        log->error("getSensor(" +  value.toString() + ") threw exception: " /*+ ex*/);
+    }
+    if (err) {
+              JOptionPane::showMessageDialog(NULL, tr("There is no Sensor named \"%1\".").arg(value.toString()),
+                      tr("Error"), JOptionPane::WARNING_MESSAGE);
+    }
     fireTableRowsUpdated(row, row);
+    return true;
+
    }
-   return true;
-  }
- case PERMISSIONCOL:
+  case REPORTERCOL:
   {
-   block->setPermissiveWorking(value.toBool());
-   fireTableRowsUpdated(row, row);
-   return true;
-  }
-  case WARRANTCOL:
-  {
-    Warrant* warrant = block ->getWarrant();
-    WarrantManager* mgr = (WarrantManager*)InstanceManager
-                ::getDefault("WarrantManager");
-    Warrant* newWarrant = mgr->getWarrant(value.toString());
-    if (warrant != nullptr && !warrant->equals(newWarrant)) {
-        block->deAllocate(warrant);
-        if (newWarrant != nullptr) {
-            QString msg = block->allocate(newWarrant);
-            if (msg != nullptr) {
-                JOptionPane::showMessageDialog(nullptr, msg,
-                       tr("Error"), JOptionPane::WARNING_MESSAGE);
-            }
+    Reporter* rep = NULL;
+    try {
+        rep = ((ProxyReporterManager*)((ReporterManager*)InstanceManager::getDefault("ReporterManager")))->getReporter( value.toString());
+        if (rep != NULL) {
+            block->setReporter(rep);
+            fireTableRowsUpdated(row, row);
         }
+    } catch (Exception ex) {
+        log->error("No Reporter named \"" +  value.toString() + "\" found. threw exception: " /*+ ex*/);
     }
+    if (rep == NULL) {
+        JOptionPane::showMessageDialog(NULL, tr("There is no Reporter named \"%1\".").arg(tempRow[REPORTERCOL]),
+                tr("Error"), JOptionPane::WARNING_MESSAGE);
+    }
+    block->setReporter(rep);
     fireTableRowsUpdated(row, row);
     return true;
-  }
-  case SPEEDCOL:
+   }
+  case REPORT_CURRENTCOL:
    {
-     block->setBlockSpeedName( value.toString());
+    if (block->getReporter() != NULL)
+    {
+     block->setReportingCurrent(value.toBool());
+     fireTableRowsUpdated(row, row);
+    }
+    return true;
+   }
+  case PERMISSIONCOL:
+   {
+    block->setPermissiveWorking(value.toBool());
+    fireTableRowsUpdated(row, row);
+    return true;
+   }
+   case WARRANTCOL:
+   {
+     Warrant* warrant = block ->getWarrant();
+     WarrantManager* mgr = (WarrantManager*)InstanceManager
+                 ::getDefault("WarrantManager");
+     Warrant* newWarrant = mgr->getWarrant(value.toString());
+     if (warrant != nullptr && !warrant->equals(newWarrant)) {
+         block->deAllocate(warrant);
+         if (newWarrant != nullptr) {
+             QString msg = block->allocate(newWarrant);
+             if (msg != nullptr) {
+                 JOptionPane::showMessageDialog(nullptr, msg,
+                        tr("Error"), JOptionPane::WARNING_MESSAGE);
+             }
+         }
+     }
      fireTableRowsUpdated(row, row);
      return true;
    }
-   case EDIT_COL:
-   {
-    _parent->openBlockPathFrame(block->getSystemName());
-    return true;
-   }
-   case DELETE_COL:
-   {
-     deleteBean(block);
-     block = NULL;
+   case SPEEDCOL:
+    {
+      block->setBlockSpeedName( value.toString());
+      fireTableRowsUpdated(row, row);
+      return true;
+    }
+    case EDIT_COL:
+    {
+     _parent->openBlockPathFrame(block->getSystemName());
      return true;
+    }
+    case DELETE_COL:
+    {
+      deleteBean(block);
+      block = NULL;
+      return true;
+    }
    }
+   BeanTableDataModel::setData(index, value, role);
   }
-  BeanTableDataModel::setData(index, value, role);
  }
- return false;
+ // Edit an existing row
+ QString name = sysNameList.at(row);
+ OBlock* block = (OBlock*)_manager->getBySystemName(name);
+ if (block == nullptr) {
+     log->error(tr("OBlock named %1 not found for OBlockTableModel").arg(name));
+     return false;
+ }
+ switch (col) {
+     case USERNAMECOL:
+     {
+         OBlock* b = _manager->getOBlock( value.toString());
+         if (b != nullptr) {
+             JOptionPane::showMessageDialog(nullptr, tr("Duplicate name. Block \"%1\" has already been defined.").arg(block->getDisplayName()),
+                     tr("Error"), JOptionPane::WARNING_MESSAGE);
+             return false;
+         }
+         block->setUserName(value.toString());
+         fireTableRowsUpdated(row, row);
+         return true;
+     }
+     case COMMENTCOL:
+         block->setComment(value.toString());
+         fireTableRowsUpdated(row, row);
+         return true;
+     case STATECOL:
+         return true;     //  STATECOL is not editable
+     case SENSORCOL:
+         if (!block->setSensor(value.toString())) {
+             JOptionPane::showMessageDialog(nullptr, tr("There is no Sensor named \"%1\".").arg(value.toString()),
+                     tr("Error"), JOptionPane::WARNING_MESSAGE);
+         }
+         fireTableRowsUpdated(row, row);
+         return true;
+     case LENGTHCOL:
+     {
+         bool ok;
+             float len = /*IntlUtilities.floatValue*/(value.toFloat(&ok));
+             if (block->isMetric()) {
+                 block->setLength(len * 10.0f);
+             } else {
+                 block->setLength(len * 25.4f);
+             }
+             fireTableRowsUpdated(row, row);
+         if(!ok) {
+             JOptionPane::showMessageDialog(nullptr, tr("%1 is not a number.").arg(value.toString()),
+                     tr("Error"), JOptionPane::WARNING_MESSAGE);
+         }
+         return true;
+     }
+     case UNITSCOL:
+         block->setMetricUnits( value.toBool());
+         fireTableRowsUpdated(row, row);
+         return true;
+     case CURVECOL:
+     {
+         QString cName = value.toString();
+         if (cName == "") {
+             return true;
+         }
+         if (cName == (noneText)) {
+             block->setCurvature(Block::NONE);
+         } else if (cName == (gradualText)) {
+             block->setCurvature(Block::GRADUAL);
+         } else if (cName == (tightText)) {
+             block->setCurvature(Block::TIGHT);
+         } else if (cName == (severeText)) {
+             block->setCurvature(Block::SEVERE);
+         }
+         fireTableRowsUpdated(row, row);
+         return true;
+     }
+     case ERR_SENSORCOL:
+     {
+         bool ok = false;
+         try {
+             if ((value.toString()).trimmed().length() == 0) {
+                 block->setErrorSensor("");
+                 ok = true;
+             } else {
+                 ok = block->setErrorSensor(value.toString());
+                 fireTableRowsUpdated(row, row);
+             }
+         } catch (Exception ex) {
+             log->error(tr("getSensor(%1) threw exception: %2").arg(value.toString()).arg(ex.getMessage()));
+         }
+         if (!ok) {
+             JOptionPane::showMessageDialog(nullptr, tr("There is no Sensor named \"%1\".").arg(value.toString()),
+                     tr("Error"), JOptionPane::WARNING_MESSAGE);
+         }
+         fireTableRowsUpdated(row, row);
+         return true;
+     }
+     case REPORTERCOL:
+     {
+         Reporter* rep = nullptr;
+         try {
+             rep = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter(value.toString());
+             if (rep != nullptr) {
+                 block->setReporter(rep);
+                 fireTableRowsUpdated(row, row);
+             }
+         } catch (Exception ex) {
+             log->error(tr("No Reporter named \"%1\" found. threw exception: %2").arg(value.toString()).arg(ex.getMessage()));
+         }
+         if (rep == nullptr) {
+             JOptionPane::showMessageDialog(nullptr, tr("There is no Reporter named \"%1\.").arg(tempRow[REPORTERCOL]),
+                     tr("Error"), JOptionPane::WARNING_MESSAGE);
+         }
+         block->setReporter(rep);
+         fireTableRowsUpdated(row, row);
+         return true;
+     }
+     case REPORT_CURRENTCOL:
+         if (block->getReporter() != nullptr) {
+             block->setReportingCurrent( value.toBool());
+             fireTableRowsUpdated(row, row);
+         }
+         return true;
+     case PERMISSIONCOL:
+         block->setPermissiveWorking( value.toBool()); // compare to REPORT_CURRENTCOL
+         fireTableRowsUpdated(row, row);
+         return true;
+     case WARRANTCOL:
+     {
+         Warrant* warrant = block ->getWarrant();
+         WarrantManager* mgr = (WarrantManager*)InstanceManager
+                     ::getDefault("WarrantManager");
+         Warrant* newWarrant = mgr->getWarrant(value.toString());
+         if (warrant != nullptr && !warrant->equals(newWarrant)) {
+             block->deAllocate(warrant);
+             if (newWarrant != nullptr) {
+                 QString msg = block->allocate(newWarrant);
+                 if (msg != "") {
+                     JOptionPane::showMessageDialog(nullptr, msg,
+                             tr("Error"), JOptionPane::WARNING_MESSAGE);
+                 }
+             }
+         }
+         fireTableRowsUpdated(row, row);
+         return true;
+     }
+     case SPEEDCOL:
+         block->setBlockSpeedName(value.toString());
+         fireTableRowsUpdated(row, row);
+         return true;
+     case EDIT_COL:
+         _parent->openBlockPathPane(block->getSystemName(), nullptr); // interface is checked in TableFrames
+         return true;
+     case DELETE_COL:
+         deleteBean(block);
+         return true;
+     default:
+         // fall through
+         break;
+ }
+ BeanTableDataModel::setValueAt(value, row, col);
+ return true;
 }
 
 /*private*/ /*static*/ bool OBlockTableModel::sensorExists(QString name)

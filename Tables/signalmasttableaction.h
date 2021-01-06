@@ -35,7 +35,7 @@ private:
     /*protected*/ QString getClassName();
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(JActionEvent* e = 0);
     void On_repeatersTriggered();
 
 };

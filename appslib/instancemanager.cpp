@@ -663,21 +663,6 @@ void InstanceManager::deregister(QObject* item, QString type)
     getDefault()->pcs->addPropertyChangeListener(propertyName, l);
 }
 
-PowerManager* InstanceManager::powerManagerInstance()
-{
- return (PowerManager*)getDefault("PowerManager");
-}
-
-//void InstanceManager::setPowerManager(PowerManager* p)
-//{
-//    //store(p, p->metaObject()->className());
-//    store(p,"PowerManager");
-//}
-
-//ProgrammerManager* InstanceManager::programmerManagerInstance()
-//{
-// return (ProgrammerManager*)getDefault("ProgrammerManager");
-//}
 
 SensorManager* InstanceManager::sensorManagerInstance()
 {
@@ -739,30 +724,6 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 {
  return static_cast<MemoryManager*>(getDefault("MemoryManager"));
 }
-//VSDecoderManager InstanceManager::vsdecoderManagerInstance() {
-//if (instance()->vsdecoderManager == NULL) instance()->vsdecoderManager = VSDecoderManager.instance();
-//return instance()->vsdecoderManager;
-//}
-
-//InstanceManager* InstanceManager::instance()
-//{
-// if (root==nullptr)
-// {
-//  setRootInstance();
-// }
-// return root;
-//}
-
-//void InstanceManager::setRootInstance()
-//{
-// if(root!=nullptr)
-//  return;
-// root = new InstanceManager();
-//}
-
-//    public InstanceManager() {
-//        init();
-//    }
 void InstanceManager::setSensorManager(SensorManager* p)
 {
  log->debug(" setSensorManager");
@@ -840,54 +801,13 @@ void InstanceManager::setThrottleManager(ThrottleManager* p)
     //instance()->notifyPropertyChangeListener("throttlemanager", QVariant(), QVariant());
 }
 
-void InstanceManager::setSignalHeadManager(SignalHeadManager* p) {
-    setDefault("SignalHeadManager", p);
-}
-
-void InstanceManager::setConsistManager(ConsistManager* p) {
-    store(p->self(), "ConsistManager");
-    //instance()->notifyPropertyChangeListener("consistmanager", QVariant(), QVariant());
-}
-
-//
-// This updates the consist manager, which must be
-// either built into instances of calling code or a
-// new service, before this can be deprecated.
-//
-//@Deprecated
-///*static*/ /*public*/ void InstanceManager::setCommandStation(CommandStation* p)
-//{
-// store(p, "CommandStation");
-//}
-
-/**
- * @param p CommandStation to make default
- * @deprecated Since 4.9.5, use
- * {@link #store(java.lang.Object,java.lang.Class)} directly.
- */
-//@Deprecated
-///*static*/ /*public*/ void InstanceManager::setAddressedProgrammerManager(AddressedProgrammerManager* p) {
-//    store(p, "AddressedProgrammerManager");
-//}
-
 void InstanceManager::setReporterManager(ReporterManager* p) {
  log->debug(" setReporterManager");
    ((AbstractProxyReporterManager*) getDefault("ReporterManager"))->addManager(p);
    //store(p, ReporterManager.class);
 }
 
-//void InstanceManager::addReporterManager(ReporterManager* p) {
-//    ((AbstractProxyManager*)instance()->reporterManager)->addManager(p);
-//}
 
-///*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(PropertyChangeListener* l) {
-// //QMutex mutex;
-//    QMutexLocker locker(&mutex);
-//    // add only if not already registered
-//    if (!listeners.contains(l)) {
-//        listeners.append(l);
-//    }
-//}
 
 /**
  * Trigger the notification of all PropertyChangeListeners
@@ -933,42 +853,6 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
 /*public*/ /*static*/ QString InstanceManager::getListPropertyName(/*Class<?>*/QString clazz) {
     return "list-" + clazz/*.getName()*/;
 }
-/* ****************************************************************************
- *                   Old Style Setters - Deprecated and migrated,
- *                                       just here for other users
- *
- *                     Check Jython scripts before removing
- * ****************************************************************************/
-///**
-// * @deprecated Since 3.7.1, use @{link #store} and @{link #setDefault} directly.
-// */
-//@Deprecated
-//static public void setConditionalManager(ConditionalManager p) {
-//    store(p, ConditionalManager.class);
-//    setDefault(ConditionalManager.class, p);
-//}
-///**
-// * @deprecated Since 3.7.4, use @{link #store} directly.
-// */
-//@Deprecated
-//static public void setLogixManager(LogixManager p) {
-//    store(p, LogixManager.class);
-//}
-///**
-// * @deprecated Since 3.7.4, use @{link #store} directly.
-// */
-//@Deprecated
-//static public void setTabbedPreferences(TabbedPreferences p) {
-//    store(p, TabbedPreferences.class);
-//}
-///**
-// * @deprecated Since 3.7.1, use @{link #store} and @{link #setDefault}
-// * directly.
-// */
-// @Deprecated
-// static public void setPowerManager(PowerManager p) {
-//     store(p, PowerManager.class);
-// }
 /**
  * Clear all managed instances from the common instance manager, effectively
  * installing a new one.

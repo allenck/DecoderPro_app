@@ -87,7 +87,7 @@ public slots:
  virtual void /*public*/ init();
 
 private:
- Logger* log;
+ static Logger* log;
  bool noWarnDelete;// = false;
  virtual void doDelete(NamedBean* bean);
  QDialog* dialog;
@@ -95,7 +95,7 @@ private:
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault("NamedBeanHandleManager");
  NamedBean* t;
  //QList<int> buttonMap;
- JTable* _table;
+ JTable* _table = nullptr;
  int row;
  //void setPersistentButtons();
 
@@ -152,6 +152,7 @@ friend class TurnoutTableDataModel;
 friend class SignalMastTableAction;
 friend class OBlockTableAction;
 friend class TTComboBoxDelegate;
+friend class SensorTableDataModel;
 };
 
 

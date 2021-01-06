@@ -8,7 +8,9 @@ class SE8cSignalHeadXml : public AbstractNamedBeanManagerConfigXML
 {
     Q_OBJECT
 public:
-    explicit SE8cSignalHeadXml(QObject *parent = 0);
+    Q_INVOKABLE explicit SE8cSignalHeadXml(QObject *parent = 0);
+  ~SE8cSignalHeadXml() {}
+  SE8cSignalHeadXml(const SE8cSignalHeadXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ bool load(QDomElement element) throw (Exception);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);

@@ -36,7 +36,9 @@ LocoIconXml::LocoIconXml(QObject* parent) :
   storeCommonAttributes((Positionable*)p, element);
 
   // include contents
-  if (p->getUnRotatedText()!=NULL) element.setAttribute("text", p->getUnRotatedText());
+  if (p->getUnRotatedText()!=NULL) {
+   element.setAttribute("text", p->getUnRotatedText());
+  }
   storeTextInfo((Positionable*)p, element);
   element.setAttribute("icon", "yes");
   element.setAttribute("dockX", p->getDockX());

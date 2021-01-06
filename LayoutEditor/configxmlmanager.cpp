@@ -31,7 +31,7 @@
  * See the <A HREF="package-summary.html#schema">Schema versioning
  * discussion</a>. Also controls the stylesheet file version.
  */
-/*static*/ /*final*/const  /*public*/ QString ConfigXmlManager::schemaVersion = "-2-9-6";
+/*static*/ /*final*/const  /*public*/ QString ConfigXmlManager::schemaVersion = "-4-19-2";
 /*static*/ ErrorHandler* ConfigXmlManager::handler = new ErrorHandler();
 QString ConfigXmlManager::fileLocation = QString("layout")+QDir::separator();
 

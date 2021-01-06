@@ -75,7 +75,6 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   QString inverted = ((AbstractSensor*)s)->getInverted() ? "true" : "false";
 
   QDomElement elem = doc.createElement("sensor");
-  //elem.setAttribute("systemName", sname); // deprecated for 2.9.* series
   elem.setAttribute("inverted", inverted);
   QDomElement e1;
   elem.appendChild(e1 = doc.createElement("systemName"));

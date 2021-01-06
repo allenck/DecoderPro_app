@@ -400,7 +400,7 @@ protected:
  /**
   * Display popup menu for information and editing
   */
- /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e) override;
+ // /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e) override;
 
  friend class LayoutEditor;
  //friend class EditTrackSegmentDlg;

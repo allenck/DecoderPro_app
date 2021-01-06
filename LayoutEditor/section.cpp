@@ -692,20 +692,23 @@ void Section::propertyChange(PropertyChangeEvent* e)
  * Access methods for beginning and ending block names
  */
 /*public*/ QString Section::getBeginBlockName() {
-    if (initializationNeeded) initializeBlocks();
-    QString s = mFirstBlock->getSystemName();
-    QString uName = mFirstBlock->getUserName();
-    if ( (uName!=nullptr) && (uName!=("")) )
-        return (s+"( "+uName+" )");
-    return s;
+ if (initializationNeeded) {
+     initializeBlocks();
+ }
+ if (mFirstBlock == nullptr) {
+     return "unknown";
+ }
+ return mFirstBlock->getDisplayName();
 }
+
 /*public*/ QString Section::getEndBlockName() {
-    if (initializationNeeded) initializeBlocks();
-    QString s = mLastBlock->getSystemName();
-    QString uName = mLastBlock->getUserName();
-    if ( (uName!=nullptr) && (uName!=("")) )
-        return (s+"( "+uName+" )");
-    return s;
+ if (initializationNeeded) {
+     initializeBlocks();
+ }
+ if (mLastBlock == nullptr) {
+     return "unknown";
+ }
+ return mLastBlock->getDisplayName();
 }
 
 /**

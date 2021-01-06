@@ -791,7 +791,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     emit notifyIntervalRemoved(e);
 }
 
-/*public*/ void AbstractManager::updateAutoNumber(QString systemName) {
+/*public*/ void AbstractManager::updateAutoNumber(QString systemName) const{
     /* The following keeps track of the last created auto system name.
      currently we do not reuse numbers, although there is nothing to stop the
      user from manually recreating them */

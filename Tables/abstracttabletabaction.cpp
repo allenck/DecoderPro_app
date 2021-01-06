@@ -133,7 +133,7 @@ void AbstractTableTabAction::On_dataTabs_currentChanged(int iTab)
     log->warn("This should not have happened");
 }
 
-void AbstractTableTabAction::actionPerformed(ActionEvent */*e*/)
+void AbstractTableTabAction::actionPerformed(JActionEvent */*e*/)
 {
  if(currFrame() != nullptr)
  {

@@ -312,10 +312,10 @@ void LocoNetSystemConnectionMemo::configureManagers()
  }
 
  InstanceManager::setReporterManager((ReporterManager*)getReporterManager());
-#if 1 // TOO
+
  InstanceManager::setDefault("CabSignalManager",getCabSignalManager());
-#endif
- InstanceManager::setConsistManager(new LocoNetConsistManager(this));
+
+ InstanceManager::setDefault("ConsistManager", new LocoNetConsistManager(this));
 
  ClockControl* cc = getClockControl();
  // make sure InstanceManager knows about that

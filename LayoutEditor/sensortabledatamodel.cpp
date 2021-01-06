@@ -13,6 +13,9 @@
 #include "bufferedimage.h"
 #include <QIcon>
 #include "file.h"
+#include "fileutil.h"
+#include "jbutton.h"
+#include "sensoreditaction.h"
 
 SensorTableDataModel::SensorTableDataModel(QObject *parent) :
     BeanTableDataModel(parent)
@@ -41,8 +44,11 @@ void SensorTableDataModel::common()
  table = nullptr;
  // load graphic state column display preference
  _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
- if(_graphicState)
-  renderer = new ImageIconRenderer();
+ rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+ beanTypeChar = 'S'; // for Sensor
+ onIconPath = rootPath + beanTypeChar + "-on-s.png";
+ offIconPath = rootPath + beanTypeChar + "-off-s.png";
+
  init();
 }
 
@@ -100,6 +106,9 @@ void SensorTableDataModel::common()
  }
 
  updateNameList();
+ // load graphic state column display preference
+ _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+
 }
 
 /*public*/ QString SensorTableDataModel::getValue(QString name) const
@@ -170,7 +179,7 @@ void SensorTableDataModel::common()
 
 /*public*/ int SensorTableDataModel::columnCount(const QModelIndex &/*parent*/) const
 {
-    return INACTIVEDELAY+1;
+    return QUERYCOL + getPropertyColumnCount() + 1;
 }
 
 /*public*/ QVariant SensorTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -178,48 +187,117 @@ void SensorTableDataModel::common()
  if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
  {
   int col = section;
-    if(col==INVERTCOL) return tr("Inverted");
-    if(col==USEGLOBALDELAY) return tr("Use Global Delay");
-    if(col==ACTIVEDELAY) return tr("Active Delay");
-    if(col==INACTIVEDELAY) return tr("InActive Delay");
+  switch (col) {
+      case INVERTCOL:
+          return tr("Inverted");
+      case EDITCOL:
+          return "";
+      case USEGLOBALDELAY:
+          return tr("Use Global Delays");
+      case ACTIVEDELAY:
+          return tr("Delay to Active");
+      case INACTIVEDELAY:
+          return tr("Delay to Inactive");
+      case PULLUPCOL:
+          return tr("Pull-Up/Down");
+      case FORGETCOL:
+          return tr("State");
+      case QUERYCOL:
+          return tr("State");
+      default:
+          //return BeanTableDataModel::getColumnName(col);
+          break;
+  }
  }
  return BeanTableDataModel::headerData(section, orientation, role);
 }
-///*public*/ Class<?> getColumnClass(int col) {
-//    if (col==INVERTCOL) return Boolean.class;
-//    if(col==USEGLOBALDELAY) return Boolean.class;
-//    if(col==ACTIVEDELAY) return String.class;
-//    if(col==INACTIVEDELAY) return String.class;
-//    else return super.getColumnClass(col);
-//}
-/*public*/ int SensorTableDataModel::getPreferredWidth(int col) {
-    if (col==INVERTCOL) return  JTextField(4).getPreferredSize().width();
-    if(col==USEGLOBALDELAY || col==ACTIVEDELAY || col==INACTIVEDELAY){
-        return  JTextField(8).getPreferredSize().width();
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString SensorTableDataModel::getColumnClass(int col) {
+    switch (col) {
+        case INVERTCOL:
+            return "Boolean";
+        case EDITCOL:
+            return "JButton";
+        case USEGLOBALDELAY:
+            return "Boolean";
+        case ACTIVEDELAY:
+            return "String";
+        case INACTIVEDELAY:
+            return "String";
+        case PULLUPCOL:
+            return "JComboBox";
+        case FORGETCOL:
+            return "JButton";
+        case QUERYCOL:
+            return "JButton";
+        case VALUECOL:
+            if (_graphicState) {
+                return "JLabel"; // use an image to show sensor state
+            } else {
+                return BeanTableDataModel::getColumnClass(col);
+            }
+        default:
+            return BeanTableDataModel::getColumnClass(col);
     }
-    else return BeanTableDataModel::getPreferredWidth(col);
+}
+/*public*/ int SensorTableDataModel::getPreferredWidth(int col) {
+ switch (col) {
+     case INVERTCOL:
+         return  JTextField(4).getPreferredSize().width();
+     case USEGLOBALDELAY:
+     case ACTIVEDELAY:
+     case INACTIVEDELAY:
+         return  JTextField(8).getPreferredSize().width();
+     case EDITCOL:
+         return  JTextField(7).getPreferredSize().width();
+     case FORGETCOL:
+         return  JButton(tr("State"))
+                 .sizeHint().width();
+     case QUERYCOL:
+         return  JButton(tr("State"))
+                 .sizeHint().width();
+     default:
+         return BeanTableDataModel::getPreferredWidth(col);
+ }
 }
 /*public*/ Qt::ItemFlags SensorTableDataModel::flags(const QModelIndex &index) const
 {
  int col = index.column();
  int row = index.row();
- if (col==INVERTCOL) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
- if(col==USEGLOBALDELAY) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
- //Need to do something here to make it disable
- if(col==ACTIVEDELAY||col==INACTIVEDELAY)
- {
-  QString name = sysNameList.at(row);
-  Sensor* s;
-  if(qobject_cast<ProxySensorManager*>(senManager)!= nullptr)
-   s= ((ProxySensorManager*)senManager)->getBySystemName(name);
-  else
-   s = ((ProxySensorManager*)senManager)->getBySystemName(name);
-  if(s->useDefaultTimerSettings())
-   return Qt::ItemIsEnabled | Qt::ItemIsSelectable ;
-  else
-   return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
- }
- else return BeanTableDataModel::flags(index);
+ //if (col==INVERTCOL) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+ QString name = sysNameList.at(row);
+  Sensor* sen = (Sensor*)senManager->getBySystemName(name);
+  if (sen == nullptr) {
+      return Qt::ItemIsEnabled;
+  }
+  if (col == INVERTCOL) {
+      return sen->canInvert()? Qt::ItemIsEnabled |Qt::ItemIsUserCheckable: Qt::ItemIsEnabled;
+  }
+  if (col == EDITCOL) {
+      return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  }
+  if (col == USEGLOBALDELAY) {
+      return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  }
+  //Need to do something here to make it disable
+  if (col == ACTIVEDELAY || col == INACTIVEDELAY) {
+      //return !sen.getUseDefaultTimerSettings();
+     return sen->getUseDefaultTimerSettings() ? Qt::ItemIsEnabled : Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  }
+  if (col == PULLUPCOL) {
+      return senManager->isPullResistanceConfigurable()? Qt::ItemIsEnabled : Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  }
+  if (col == FORGETCOL) {
+      return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  }
+  if (col == QUERYCOL) {
+      return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+  }
+  return BeanTableDataModel::isCellEditable(row, col)? Qt::ItemIsEnabled : Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
 /*public*/ QVariant SensorTableDataModel::data(const QModelIndex &index, int role) const
@@ -275,13 +353,29 @@ void SensorTableDataModel::common()
   }
   else if(col == VALUECOL)
   {
-   if(_graphicState)
-    return QVariant();
-   else
-    return BeanTableDataModel::data(index, role);
+   switch (s->getState())
+   {
+       case (Sensor::ACTIVE):
+           return tr("Active");
+       case (Sensor::INACTIVE):
+           return tr("Inactive");
+       case (Sensor::UNKNOWN):
+           return tr("Unknown");
+       default:
+           return tr("Inconsistent");
+   }
   }
   else if (col == INVERTCOL || col == USEGLOBALDELAY)
    return "";
+  else if(col == EDITCOL) return tr("Edit");
+  else if(col == PULLUPCOL)
+  {
+//   PullResistanceComboBox c = new PullResistanceComboBox(Sensor.PullResistance.values());
+//                   c.setSelectedItem(s.getPullResistance());
+//                   c.addActionListener(super::comboBoxAction);
+  }
+  else if(col == FORGETCOL) return tr("Forget");
+  else if(col == QUERYCOL) return tr("Query");
  }
  if(_graphicState && role == Qt::DecorationRole)
  {
@@ -291,13 +385,18 @@ void SensorTableDataModel::common()
   {
    switch (s->getState()) {
    case Sensor::ACTIVE:
-    return renderer->onIcon;
+    return onIcon;
    case Sensor::INACTIVE:
-    return renderer->offIcon;
+    return offIcon;
+   case Sensor::INCONSISTENT:
+   return QColor(Qt::red);
+   case Sensor::UNKNOWN:
    default:
     break;
    }
   }
+  if(iconHeight > 0)
+   _table->setRowHeight(row, offIcon.height());
  }
  return BeanTableDataModel::data(index, role);
 }
@@ -364,6 +463,41 @@ void SensorTableDataModel::common()
        BeanTableDataModel::setData(index, value, role);
    }
   }
+  else if(EDITCOL)
+  {
+   editButton(s);
+  }
+  else if(col == PULLUPCOL)
+  {
+//   s->setPullResistance(value.toString());
+  }
+  else if(col == FORGETCOL)
+  {
+   try {
+       s->setKnownState(Sensor::UNKNOWN);
+   } catch (JmriException e) {
+       log->warn("Failed to set state to UNKNOWN: ", e);
+   }
+  }
+  else if(col == QUERYCOL)
+  {
+   try {
+        s->setKnownState(Sensor::UNKNOWN);
+    } catch (JmriException e) {
+        log->warn("Failed to set state to UNKNOWN: ", e);
+    }
+    s->requestUpdateFromLayout();
+    //break;
+  }
+  else if(col == VALUECOL)
+  {
+   if (_graphicState) { // respond to clicking on ImageIconRenderer CellEditor
+       clickOn(s);
+       fireTableRowsUpdated(row, row);
+   } else {
+       BeanTableDataModel::setValueAt(value, row, col);
+   }
+  }
  }
  return BeanTableDataModel::setData(index, value, role);
 }
@@ -382,7 +516,7 @@ void SensorTableDataModel::common()
  }
  else return BeanTableDataModel::matchPropertyName(e);
 }
-#if 0
+
 /**
  * Customize the sensor table Value (State) column to show an appropriate
  * graphic for the sensor state if _graphicState = true, or (default) just
@@ -392,19 +526,20 @@ void SensorTableDataModel::common()
  * @param table a JTable of Sensors
  */
 //@Override
-/*protected*/ void configValueColumn(JTable* table) {
+/*protected*/ void SensorTableDataModel::configValueColumn(JTable* table) {
     // have the value column hold a JPanel (icon)
     //setColumnToHoldButton(table, VALUECOL, new JLabel("1234")); // for small round icon, but cannot be converted to JButton
     // add extras, override BeanTableDataModel
-    log.debug("Sensor configValueColumn (I am {})", this);
+    log->debug(tr("Sensor configValueColumn (I am %1)").arg(this->metaObject()->className()));
     if (_graphicState) { // load icons, only once
-        table.setDefaultEditor(JLabel.class, new ImageIconRenderer()); // editor
-        table.setDefaultRenderer(JLabel.class, new ImageIconRenderer()); // item class copied from SwitchboardEditor panel
+     loadIcons();
+//        table.setDefaultEditor(JLabel.class, new ImageIconRenderer()); // editor
+//        table.setDefaultRenderer(JLabel.class, new ImageIconRenderer()); // item class copied from SwitchboardEditor panel
     } else {
-        super.configValueColumn(table); // classic text style state indication
+        BeanTableDataModel::configValueColumn(table); // classic text style state indication
     }
 }
-#endif
+
 /**
  * Visualize state in table as a graphic, customized for Sensors (2 states).
  * Renderer and Editor are identical, as the cell contents are not actually
@@ -499,20 +634,20 @@ void SensorTableDataModel::common()
         return this.toString();
     }
 #endif
-    /*public*/ ImageIconRenderer::ImageIconRenderer()
-    {
-      rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
-      beanTypeChar = 'S'; // for Sensor
-      onIconPath = rootPath + beanTypeChar + "-on-s.png";
-      offIconPath = rootPath + beanTypeChar + "-off-s.png";
-      loadIcons();
-    }
+//    /*public*/ ImageIconRenderer::ImageIconRenderer()
+//    {
+//      rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+//      beanTypeChar = 'S'; // for Sensor
+//      onIconPath = rootPath + beanTypeChar + "-on-s.png";
+//      offIconPath = rootPath + beanTypeChar + "-off-s.png";
+//      loadIcons();
+//    }
     /**
      * Read and buffer graphics. Only called once for this table.
      *
      * @see #getTableCellEditorComponent(JTable, Object, boolean, int, int)
      */
-    /*protected*/ void ImageIconRenderer::loadIcons() {
+    /*protected*/ void SensorTableDataModel::loadIcons() {
         try {
             onImage = ImageIO::read(new File(onIconPath));
             offImage = ImageIO::read(new File(offIconPath));
@@ -534,16 +669,24 @@ void SensorTableDataModel::common()
 
 //} // end of ImageIconRenderer class
 
-/*private*/ /*static*/ Logger* ImageIconRenderer::log = LoggerFactory::getLogger("ImageIconRenderer");
+///*private*/ /*static*/ Logger* ImageIconRenderer::log = LoggerFactory::getLogger("ImageIconRenderer");
 
 //@Override
 /*public*/ void SensorTableDataModel::configureTable(JTable* table)
 {
  this->table = table;
  showDebounce(false);
+ //setColumnToHoldButton(table, PULLUPCOL, new JComboBoxEditor(QStringList({tr("Pull-up Resistor Enabled"), tr("Pull-down Resistor Enabled"), tr("No Pull-up/Pull-down")})));
+ table->setItemDelegateForColumn(PULLUPCOL, new JComboBoxEditor(QStringList({tr("Pull-up Resistor Enabled"), tr("Pull-down Resistor Enabled"), tr("No Pull-up/Pull-down")})));
  BeanTableDataModel::configureTable(table);
-}
+ table->resizeRowsToContents();
 
+}
+void SensorTableDataModel::editButton(Sensor* s) {
+    SensorEditAction* beanEdit = new SensorEditAction();
+    beanEdit->setBean(s);
+    beanEdit->actionPerformed(/*null*/);
+}
 
 /*public*/ void SensorTableDataModel::showDebounce(bool show)
 {

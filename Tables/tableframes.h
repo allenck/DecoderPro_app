@@ -202,7 +202,7 @@ protected:
  /*protected*/ /*static*/ class BlockPathFrame : public JInternalFrame {
 
      BlockPathTableModel* blockPathModel;
-
+public:
      BlockPathFrame(QString title, bool resizable, bool closable,
                     bool maximizable, bool iconifiable): JInternalFrame(title, resizable, closable, maximizable, iconifiable){
          //super(title, resizable, closable, maximizable, iconifiable);

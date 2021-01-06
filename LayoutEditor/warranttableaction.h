@@ -64,7 +64,7 @@ private:
     /*private*/ static QHash <QString, WarrantFrame*>* _frameMap;// = new HashMap <String, WarrantFrame> ();
     /*private*/ static WarrantTableAction* _instance;
     /*private*/ static QMap <QString, Warrant*> _warrantMap;// = new HashMap <String, Warrant> ();
-    /*private*/ static JTextArea* _textArea;
+    ///*private*/ static JTextArea* _textArea;
     /*private*/ static bool _hasErrors;// = false;
     /*private*/ static JDialog* _errorDialog;
     static JTextField*  _startWarrant;// = new JTextField(30);
@@ -132,7 +132,7 @@ public:
 //         }  */
  /*public*/ void actionPerformed(JActionEvent* /*e*/)
  {
-     WarrantTableFrame::getDefault();
+     _errorDialog->dispose();
  }
 };
 /*static*/ class CreateWarrantFrame : public JFrame

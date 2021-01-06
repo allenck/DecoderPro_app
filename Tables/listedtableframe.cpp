@@ -13,7 +13,7 @@
 #include "jlist.h"
 #include <QMenu>
 #include <QMenuBar>
-#include "savemenu.h"
+#include "storemenu.h"
 #include <QPushButton>
 #include <QStatusBar>
 #include <QGridLayout>
@@ -21,6 +21,7 @@
 #include "namedbeanpropertydescriptor.h"
 #include <QCheckBox>
 #include "flowlayout.h"
+#include "guilafpreferencesmanager.h"
 
 //ListedTableFrame::ListedTableFrame()
 //{
@@ -91,6 +92,9 @@ void ListedTableFrame::common()
   addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
   addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
   addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
+  if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed()) { // select _tabbed in prefs
+      addTable("jmri.jmrit.beantable.OBlockTableAction", tr("MenuItemOBlockTable"), false);
+  } // requires restart after changing the interface setting (on Display tab)
   addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
   addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
   addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
@@ -276,7 +280,7 @@ void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
 //    });
     connect(newItem, SIGNAL(triggered(bool)), this, SLOT(On_newItem_triggered()));
 
-    fileMenu->addMenu(new SaveMenu());
+    fileMenu->addMenu(new StoreMenu());
 
     QAction* printItem = new QAction(tr("Print Table"),this);
     fileMenu->addAction(printItem);

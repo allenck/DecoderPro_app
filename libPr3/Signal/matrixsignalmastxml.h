@@ -6,7 +6,7 @@ class MatrixSignalMastXml : public AbstractNamedBeanManagerConfigXML
 {
  Q_OBJECT
 public:
- MatrixSignalMastXml(QObject* parent = nullptr);
+ Q_INVOKABLE MatrixSignalMastXml(QObject* parent = nullptr);
  ~MatrixSignalMastXml() {}
  MatrixSignalMastXml(const MatrixSignalMastXml&) : AbstractNamedBeanManagerConfigXML() {}
  /*public*/ QDomElement store(QObject* o); // from mast p to XML

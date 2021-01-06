@@ -40,7 +40,7 @@
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void LnTcpServerAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LnTcpServerAction::actionPerformed(JActionEvent * /*e*/)
 {
  LnTcpServer::getDefault()->enable();
  LnTcpServerFrame::getDefault()->setVisible(true);

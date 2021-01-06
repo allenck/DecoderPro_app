@@ -28,7 +28,6 @@
 #include <namedbean.h>
 #include <positionable.h>
 #include <positionablelabel.h>
-#include <powermanager.h>
 #include <programmingmode.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
@@ -4969,11 +4968,6 @@ void PythonQtWrapper_InstanceManager::notifyPropertyChangeListener(InstanceManag
   ( ((PythonQtPublicPromoter_InstanceManager*)theWrappedObject)->promoted_notifyPropertyChangeListener(property, oldValue, newValue));
 }
 
-PowerManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_powerManagerInstance()
-{
-  return (InstanceManager::powerManagerInstance());
-}
-
 void PythonQtWrapper_InstanceManager::remove(InstanceManager* theWrappedObject, QObject*  item, QString  type)
 {
   ( theWrappedObject->remove(item, type));
@@ -5012,11 +5006,6 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setReporterManager(
 void PythonQtWrapper_InstanceManager::static_InstanceManager_setSensorManager(SensorManager*  p)
 {
   (InstanceManager::setSensorManager(p));
-}
-
-void PythonQtWrapper_InstanceManager::static_InstanceManager_setSignalHeadManager(SignalHeadManager*  p)
-{
-  (InstanceManager::setSignalHeadManager(p));
 }
 
 void PythonQtWrapper_InstanceManager::static_InstanceManager_setThrottleManager(ThrottleManager*  p)
@@ -21222,12 +21211,12 @@ bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeSlip(LayoutTurnout* theWrapped
   return ( theWrappedObject->isTurnoutTypeSlip());
 }
 
-bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeTurnout(LayoutTurnout* theWrappedObject)
+bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeTurnout(LayoutTurnout* theWrappedObject) const
 {
   return ( theWrappedObject->isTurnoutTypeTurnout());
 }
 
-bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeXover(LayoutTurnout* theWrappedObject)
+bool  PythonQtWrapper_LayoutTurnout::isTurnoutTypeXover(LayoutTurnout* theWrappedObject) const
 {
   return ( theWrappedObject->isTurnoutTypeXover());
 }

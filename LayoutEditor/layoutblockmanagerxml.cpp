@@ -93,7 +93,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
  */
 /*public*/ void LayoutBlockManagerXml::setStoreElementClass(QDomElement layoutblocks)
 {
- layoutblocks.setAttribute("class",                        "jmri.jmrit.display.configurexml.LayoutBlockManagerXml");
+ layoutblocks.setAttribute("class", "jmri.jmrit.display.layoutEditor.configurexml.LayoutBlockManagerXml");
 }
 
 /*public*/ void LayoutBlockManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception) {

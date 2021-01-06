@@ -12,9 +12,9 @@ class LIBPR3SHARED_EXPORT BlockManager : public AbstractManager
 {
     Q_OBJECT
 public:
-    explicit BlockManager(QObject *parent = 0);
- ~BlockManager() {}
- BlockManager(const BlockManager&) : AbstractManager() {}
+    Q_INVOKABLE explicit BlockManager(QObject *parent = 0);
+    ~BlockManager() {}
+    BlockManager(const BlockManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder() const override;
     /*public*/ QString getSystemPrefix() const override;
     /*public*/ char typeLetter() const override;
@@ -52,7 +52,6 @@ public:
     /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
 
 signals:
-    void newBlockCreated(Block*) const;
     //void propertyChange(PropertyChangeEvent *e);
 
 public slots:

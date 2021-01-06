@@ -178,7 +178,7 @@ return "package.jmri.jmrit.beantable.MemoryTable";
 #if 1
 
 
-/*protected*/ void MemoryTableAction::addPressed(ActionEvent* /*e*/) {
+/*protected*/ void MemoryTableAction::addPressed(JActionEvent * /*e*/) {
     p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if (addFrame == NULL) {
         addFrame = new JmriJFrameX(tr("Add Memory"), false, true);
@@ -225,13 +225,13 @@ void MtCancelListener::actionPerformed()
 }
 
 
-void MemoryTableAction::cancelPressed(ActionEvent* /*e*/) {
+void MemoryTableAction::cancelPressed(JActionEvent * /*e*/) {
     addFrame->setVisible(false);
     addFrame->dispose();
     addFrame = NULL;
 }
 
-void MemoryTableAction::okPressed(ActionEvent* /*e*/) {
+void MemoryTableAction::okPressed(JActionEvent* /*e*/) {
 
     int numberOfMemory = 1;
 

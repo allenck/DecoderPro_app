@@ -73,7 +73,7 @@ WarrantTableAction::WarrantTableAction(QObject *parent) :
     /*private*/ /*static*/ WarrantTableAction* WarrantTableAction::_instance = NULL;
     /*private*/ /*static*/ QMap <QString, Warrant*> WarrantTableAction::_warrantMap =  QMap <QString, Warrant*> ();
     /*protected*/ /*static*/ TrackerTableAction* WarrantTableAction::_trackerTable = NULL;
-    /*private*/ /*static*/ JTextArea* WarrantTableAction::_textArea = NULL;
+    ///*private*/ /*static*/ JTextArea* WarrantTableAction::_textArea = NULL;
     /*private*/ /*static*/ bool WarrantTableAction::_hasErrors = false;
     /*private*/ /*static*/ JDialog*  WarrantTableAction::_errorDialog = NULL;
     ///*static*/ WarrantTableAction* WarrantTableAction::editWarrantAction = NULL;
@@ -441,7 +441,7 @@ InstanceManager::getDefault("WarrantManager");
     JTextArea* textArea = new JTextArea(10, 50);
     textArea->setEditable(false);
     textArea->setTabSize(4);
-    textArea->append(tr("ErrWarnAreaMsg"));
+    textArea->append(tr("The following are possible sources for errors:"));
     textArea->append("\n\n");
     OBlockManager* manager = (OBlockManager*) InstanceManager::getDefault("OBlockManager");
     for (NamedBean* nb : manager->getNamedBeanSet()) {
@@ -631,14 +631,13 @@ QListIterator <BeanSetting*> iter(myTOs);
  }
  return ret;
 }
-/*public*/ /*static*/ bool WarrantTableAction::showPathPortalErrors(JTextArea* ta)
+/*public*/ /*static*/ bool WarrantTableAction::showPathPortalErrors(JTextArea* textArea)
 {
- Logger* log = new Logger("WarrantTableAction");
- if (!_hasErrors) { return false; }
- if (_textArea==NULL)
- {
-  log->error("_textArea is NULL!.");
-  return true;
+ if (_errorDialog != nullptr) {
+     _errorDialog->dispose();
+ }
+ if (!_hasErrors) {
+     return false;
  }
 
  //JScrollPane scrollPane = new JScrollPane(_textArea);
@@ -674,7 +673,7 @@ QListIterator <BeanSetting*> iter(myTOs);
 //    QWidget* contentPane = _errorDialog->getContentPane();
  QVBoxLayout* contentPaneLayout;
  _errorDialog->setLayout(contentPaneLayout = new QVBoxLayout(_errorDialog/*, BoxLayout.Y_AXIS*/));
- contentPaneLayout->addWidget(/*scrollPane*/_textArea, /*BorderLayout::Center*/0, Qt::AlignCenter);
+ contentPaneLayout->addWidget(/*scrollPane*/textArea, /*BorderLayout::Center*/0, Qt::AlignCenter);
 //    contentPane.add(Box.createVerticalStrut(5));
 //    contentPane.add(Box.createVerticalGlue());
  QWidget* panel = new QWidget();
@@ -684,6 +683,7 @@ QListIterator <BeanSetting*> iter(myTOs);
 //    _errorDialog->addWindowListener( new myListener());
  _errorDialog->adjustSize();
  _errorDialog->setVisible(true);
+ _errorDialog->show();
 
  return true;
 }

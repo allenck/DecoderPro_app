@@ -28,7 +28,7 @@ signals:
 
 public slots:
     void On_dataTabs_currentChanged(int);
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0);
 private:
     Logger* log;
     QVBoxLayout* centralWidgetLayout;

@@ -541,7 +541,8 @@ SOURCES += \
     moveselectiondialog.cpp \
     ../JavaQt/jradiobuttonmenuitem.cpp \
     blockbosslogicprovider.cpp \
-    createxmlfiles.cpp
+    createxmlfiles.cpp \
+    hitpointtype.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -1001,7 +1002,8 @@ HEADERS += liblayouteditor_global.h \
     moveselectiondialog.h \
     ../JavaQt/jradiobuttonmenuitem.h \
     blockbosslogicprovider.h \
-    createxmlfiles.h
+    createxmlfiles.h \
+    hitpointtype.h
 
 FORMS    += \
     createeditblock.ui \

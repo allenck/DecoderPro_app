@@ -168,7 +168,6 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
     TurnoutTableAction* turnoutTableAction;
-    //JTable* table;
 
  public:
     enum COLUMNS

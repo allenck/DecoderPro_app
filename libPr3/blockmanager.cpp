@@ -36,8 +36,8 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
   //connect(static_cast<PowerManager*>(pm)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }//);
  powerManagerChangeName = InstanceManager::getListPropertyName("PowerManager");
- //InstanceManager.addPropertyChangeListener(this);
- connect(InstanceManager::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ InstanceManager::addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect(InstanceManager::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 /**
  * Basic Implementation of a BlockManager.
@@ -113,29 +113,10 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
  // Block does not exist, create a new Block
  QString sName = systemName.toUpper();
  r = new Block(sName,userName);
+
+ updateAutoNumber(systemName);
  // save in the maps
  Register(r);
-
- emit newBlockCreated(r);
-
- /*The following keeps trace of the last created auto system name. currently we do not reuse numbers, although there is nothing to stop the user from manually recreating them*/
- if (systemName.startsWith("IB:AUTO:"))
- {
-  try
-  {
-   bool bOk=false;
-   int autoNumber = /*Integer.parseInt(*/systemName.mid(8).toInt(&bOk);
-   if(!bOk) throw  NumberFormatException();
-   if (autoNumber > lastAutoBlockRef)
-   {
-    lastAutoBlockRef = autoNumber;
-   }
-  }
-  catch (NumberFormatException* e)
-  {
-   log->warn("Auto generated SystemName "+ systemName + " is not in the correct format");
-  }
- }
  try
  {
   r->setBlockSpeed("Global");
@@ -336,13 +317,14 @@ QCompleter* BlockManager::getCompleter(QString text)
         if (e->getNewValue() == QVariant()) {
             // powermanager has been removed
             PowerManager* pm = VPtr<PowerManager>::asPtr( e->getOldValue());
-            //pm.removePropertyChangeListener(this);
-            disconnect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            pm->removePropertyChangeListener((PropertyChangeListener*)this);
+            //disconnect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         } else {
             // a powermanager has been added
          PowerManager* pm = VPtr<PowerManager>::asPtr( e->getOldValue());
-            //pm.addPropertyChangeListener(this);
-         connect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         if(pm)
+            pm->addPropertyChangeListener((PropertyChangeListener*)this);
+         //connect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         }
     }

@@ -14,20 +14,20 @@ class OBlockTableModel : public BeanTableDataModel
 public:
 // explicit OBlockTableModel(QObject *parent = 0);
  /*public*/ OBlockTableModel(TableFrames* parent);
- /*public*/ Manager* getManager();
- /*public*/ NamedBean* getBySystemName(QString name) const;
- /*public*/ NamedBean* getByUserName(QString name);
- /*public*/ void clickOn(NamedBean* t);
- /*public*/ QString getValue(QString name);
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ int rowCount(const QModelIndex &parent) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
+ /*public*/ Manager* getManager() override;
+ /*public*/ NamedBean* getBySystemName(QString name) const override;
+ /*public*/ NamedBean* getByUserName(QString name) override;
+ /*public*/ void clickOn(NamedBean* t) override;
+ /*public*/ QString getValue(QString name) const override;
+ /*public*/ int columnCount(const QModelIndex &parent) const override;
+ /*public*/ int rowCount(const QModelIndex &parent) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  /*public*/ static int numberOfLeadingZeros(int i);
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ QString getColumnClass(int col);
- /*public*/ int getPreferredWidth(int col);
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ QString getColumnClass(int col) override;
+ /*public*/ int getPreferredWidth(int col) override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
  enum COLOUMNS
  {
   SYSNAMECOL = 0,
@@ -62,7 +62,7 @@ public:
  signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  Logger* log;
@@ -76,6 +76,7 @@ private:
  /*private*/ /*final*/ QStringList tempRow;// = new String[NUMCOLS];
  /*private*/ float _tempLen;// = 0.0f;      // mm for length col of tempRow
  TableFrames* _parent;
+ bool _tabbed = false;
  void addHeaderListener(JTable* table);
  void initTempRow();
  /*private*/ static bool sensorExists(QString name);
@@ -83,8 +84,8 @@ private:
  void deleteBean(OBlock* bean);
 
 protected:
- /*protected*/ QString getBeanType();
- /*protected*/ QString getMasterClassName();
+ /*protected*/ QString getBeanType() override;
+ /*protected*/ QString getMasterClassName() override;
  /*protected*/ QList<NamedBean*> getBeanList();
  static /*protected*/ QString getValue(int state);
 
@@ -93,6 +94,7 @@ protected:
  friend class BlockPortalTableModel;
  friend class OBlockTablePanel;
 };
+
 class OBSComboBoxDelegate : public QItemDelegate
 {
 Q_OBJECT

@@ -210,7 +210,7 @@ BlockBossLogic::~BlockBossLogic()
  SignalHead* driveHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
  if (driveHead == nullptr) {
      log->warn(tr("%1 \"%2\" was not found").arg(tr("SignalHead")).arg(name));
-     throw new IllegalArgumentException("SignalHead \"" + name + "\" does not exist");
+     throw IllegalArgumentException("SignalHead \"" + name + "\" does not exist");
  }
  driveSignal = new NamedBeanHandle<SignalHead*> (name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (driveSignal->getBean() == nullptr) log->warn(tr("Signal_")+name+tr(" was not found!"));
