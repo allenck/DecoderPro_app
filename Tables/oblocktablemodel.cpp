@@ -996,7 +996,7 @@ void OBlockTableModel::deleteBean(OBlock* bean)
 }
 
 //@Override
-/*public*/ QString OBlockTableModel::getColumnClass(int col) {
+/*public*/ QString OBlockTableModel::getColumnClass(int col) const {
     switch (col) {
         case CURVECOL:
             return "OBlockTableModel::CurveComboBoxPanel";

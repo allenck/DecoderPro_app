@@ -24,7 +24,7 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  /*public*/ static int numberOfLeadingZeros(int i);
  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
- /*public*/ QString getColumnClass(int col) override;
+ /*public*/ QString getColumnClass(int col) const override;
  /*public*/ int getPreferredWidth(int col) override;
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;

@@ -578,7 +578,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
  //table.sizeColumnsToFit(-1);
  table->resizeColumnsToContents();
  table->resizeRowsToContents();
- table->setRowHeight(0, QPushButton().sizeHint().height());
+ //table->setRowHeight(0, QPushButton().sizeHint().height());
 
  configValueColumn(table);
  configDeleteColumn(table);
@@ -595,7 +595,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
  table->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
  connect(table->horizontalHeader(), SIGNAL(customContextMenuRequested(QPoint)), this,SLOT(showTableHeaderPopup(const QPoint &)));
  //setPersistentButtons();
- table->resizeColumnsToContents();
+ //table->resizeColumnsToContents();
 
 }
 
@@ -824,7 +824,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 /*public*/ JTable* BeanTableDataModel::makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* /*model*/, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter) {
 //    Objects.requireNonNull(name, "the table name must be nonnull");
 //    Objects.requireNonNull(model, "the table model must be nonnull");
-    JTable* table = new JTable((QAbstractItemModel*)sorter);
+    JTable* table = _table = new JTable((QAbstractItemModel*)sorter);
     table->setName(name);
     table->setSortingEnabled(true);
 //    table->setRowSorter(sorter);
@@ -917,7 +917,10 @@ class PopupListener extends MouseAdapter {
 /*protected*/ void BeanTableDataModel::showPopup(QPoint p)
 {
  QModelIndex index= _table->indexAt(p);
- row = ((QSortFilterProxyModel*)_table->getModel())->mapToSource(index).row();
+// if(static_cast<QSortFilterProxyModel*>(index.model()))
+//  row = static_cast<QSortFilterProxyModel*>(_table->getModel())->mapToSource(index).row();
+// else
+  row = index.row();
 // JTable* source = (JTable)e.getSource();
 //    TableSorter tmodel = ((TableSorter)source.getModel());
 //    int row = source.rowAtPoint( e.getPoint() );
@@ -972,6 +975,7 @@ class PopupListener extends MouseAdapter {
  popupMenu->addAction(menuItem);
  addToPopUp(popupMenu);
  popupMenu->popup(_table->viewport()->mapToGlobal(p));
+
 }
 
 void BeanTableDataModel::addToPopUp(QMenu */*popup*/) {}
@@ -1208,20 +1212,20 @@ void BeanTableDataModel::On_moveBean_triggered()
     XTableColumnModel* tcm = (XTableColumnModel*)_table->getColumnModel();
     for (int i = 0; i < tcm->getColumnCount(false); i++)
     {
-        TableColumn* tc = tcm->getColumnByModelIndex(i);
-        QString columnName = _table->getModel()->headerData(i, Qt::Horizontal).toString();
-        if(!columnName.isEmpty())
-        {
-            QAction* menuItem = new QAction(_table->getModel()->headerData(i, Qt::Horizontal).toString(), this);
-            menuItem->setCheckable(true);
-            menuItem->setChecked(/*tcm->isColumnVisible(tc)*/!_table->isColumnHidden(i));
+     TableColumn* tc = tcm->getColumnByModelIndex(i);
+     QString columnName = _table->getModel()->headerData(i, Qt::Horizontal).toString();
+     if(!columnName.isEmpty())
+     {
+      QAction* menuItem = new QAction(_table->getModel()->headerData(i, Qt::Horizontal).toString(), this);
+      menuItem->setCheckable(true);
+      menuItem->setChecked(/*tcm->isColumnVisible(tc)*/!_table->isColumnHidden(i));
 //            menuItem.addActionListener(new headerActionListener(tc, tcm));
-            popupMenu->addAction(menuItem);
-            mapper->setMapping(menuItem, tc);
-            connect(menuItem, SIGNAL(toggled(bool)), mapper, SLOT(map()));
-        }
-      connect(mapper, SIGNAL(mapped(QObject*)), this, SLOT(onColumnSelected(QObject*)));
+      popupMenu->addAction(menuItem);
+      mapper->setMapping(menuItem, tc);
+      connect(menuItem, SIGNAL(toggled(bool)), mapper, SLOT(map()));
+     }
     }
+    connect(mapper, SIGNAL(mapped(QObject*)), this, SLOT(onColumnSelected(QObject*)));
     //popupMenu.show(e.getComponent(), e.getX(), e.getY());
     popupMenu->exec(QCursor::pos());
 }

@@ -172,27 +172,27 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
  public:
     enum COLUMNS
     {
-     INVERTCOL = BeanTableDataModel::NUMCOLUMN,
-     LOCKCOL = INVERTCOL+1,
-     EDITCOL = LOCKCOL+1,
-     KNOWNCOL = EDITCOL+1,
-     MODECOL = KNOWNCOL+1,
-     SENSOR1COL = MODECOL+1,
-     SENSOR2COL = SENSOR1COL+1,
-     OPSONOFFCOL = SENSOR2COL+1,
-     OPSEDITCOL = OPSONOFFCOL+1,
-     LOCKOPRCOL = OPSEDITCOL+1,
-     LOCKDECCOL = LOCKOPRCOL+1,
-     STRAIGHTCOL = LOCKDECCOL+1,
-     DIVERGCOL = STRAIGHTCOL+1,
-     FORGETCOL = DIVERGCOL+1,
-     QUERYCOL = FORGETCOL+1
+     INVERTCOL = BeanTableDataModel::NUMCOLUMN, // 5
+     LOCKCOL = INVERTCOL+1,                     // 6
+     EDITCOL = LOCKCOL+1,                       // 7
+     KNOWNCOL = EDITCOL+1,                      // 8
+     MODECOL = KNOWNCOL+1,                      // 9
+     SENSOR1COL = MODECOL+1,                    // 10
+     SENSOR2COL = SENSOR1COL+1,                 // 11
+     OPSONOFFCOL = SENSOR2COL+1,                // 12
+     OPSEDITCOL = OPSONOFFCOL+1,                // 13
+     LOCKOPRCOL = OPSEDITCOL+1,                 // 14
+     LOCKDECCOL = LOCKOPRCOL+1,                 // 15
+     STRAIGHTCOL = LOCKDECCOL+1,                // 16
+     DIVERGCOL = STRAIGHTCOL+1,                 // 17
+     FORGETCOL = DIVERGCOL+1,                   // 18
+     QUERYCOL = FORGETCOL+1                     // 19
     };
 
     TurnoutTableDataModel(TurnoutTableAction* turnoutTableAction);
     /*public*/ int columnCount(const QModelIndex &parent) const override;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
-    /*public*/ QString getColumnClass(int col) override;
+    /*public*/ QString getColumnClass(int col) const override;
     /*public*/ int getPreferredWidth(int col) override;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
@@ -336,7 +336,7 @@ class TTJTable : public JTable{
   Q_OBJECT
   //TableModel* model;
  public:
-  TTJTable(TableModel* model) : JTable(model){}
+  TTJTable(TableModel* model) : JTable(model){ }
   //@Override
   /*public*/ QAbstractItemDelegate *getCellRenderer(int row, int column);
   //@Override

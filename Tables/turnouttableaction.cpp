@@ -46,6 +46,7 @@
 #include "namedbeancombobox.h"
 #include "sensortabledatamodel.h"
 #include "loggerfactory.h"
+#include <QHeaderView>
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -249,7 +250,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 }
 
 //@Override
-/*public*/ QString TurnoutTableDataModel::getColumnClass(int col) {
+/*public*/ QString TurnoutTableDataModel::getColumnClass(int col) const {
     if (col==TurnoutTableDataModel::INVERTCOL) return "Boolean";
     if (col==TurnoutTableDataModel::LOCKCOL) return "Boolean";
     if (col==TurnoutTableDataModel::KNOWNCOL) return "String";
@@ -447,7 +448,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     case OPSONOFFCOL:
     {
      //return self->makeAutomationBox(t);
-     if(_table->itemDelegate(index) == nullptr || qobject_cast<TTComboBoxDelegate*>(_table->itemDelegate(index))== nullptr)
+     if(_table && (_table->itemDelegate(index) == nullptr || qobject_cast<TTComboBoxDelegate*>(_table->itemDelegate(index))== nullptr))
 //          _table->setItemDelegate(new TTComboBoxDelegate(QStringList(), turnoutTableAction));
       _table->setItemDelegateForColumn(index.column(), new TTComboBoxDelegate(QStringList(), turnoutTableAction));
      QVector<QString> automationList = turnoutTableAction->makeAutomationBox(t, index);
@@ -469,7 +470,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
       currValue = t->getTurnoutOperation()->getName();
      }
 
-     ((TTComboBoxDelegate*)_table->itemDelegate(index))-> setItems(automationList.toList(), currValue);
+     if(_table)
+      ((TTComboBoxDelegate*)_table->itemDelegate(index))-> setItems(automationList.toList(), currValue);
      return currValue;
     }
     case OPSEDITCOL:
@@ -572,12 +574,14 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   {
    switch (t->getState()) {
    case Turnout::THROWN:
-    return onIcon;
-    break;
-   case Turnout::CLOSED:
     return offIcon;
+   case Turnout::CLOSED:
+    return onIcon;
+   case Turnout::INCONSISTENT:
+   break;
    default:
-    break;
+    return QColor(Qt::red);
+    //break;
    }
   }
  }
@@ -781,14 +785,16 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
    t->requestUpdateFromLayout();
    break;
   case VALUECOL:
-   clickOn(t);
+   if (turnoutTableAction->_graphicState) { // respond to clicking on ImageIconRenderer CellEditor
+    clickOn(t);
    fireTableRowsUpdated(row,row);
    break;
+   }
    default:
-    break;
+   return BeanTableDataModel::setData(index, value, role);
   }
  }
- return BeanTableDataModel::setData(index, value, role);
+ return true;
 }
 
 /*public*/ QString TurnoutTableDataModel::getValue(QString name) const
@@ -846,42 +852,43 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //    table.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
 //    setColumnToHoldButton(table,TurnoutTableAction::OPSEDITCOL,editButton());
 //    setColumnToHoldButton(table,TurnoutTableAction::EDITCOL,editButton());
-    //Hide the following columns by default
+ setColumnToHoldButton(table, EDITCOL);
+ setColumnToHoldDelegate(table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
+ sensorsColDelegate = new TTEditDelegate(turnoutTableAction);
+ setColumnToHoldDelegate(table, SENSOR1COL, sensorsColDelegate);
+ setColumnToHoldDelegate(table, SENSOR2COL, sensorsColDelegate);
+ setColumnToHoldDelegate(table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), turnoutTableAction)); //Each row needs it's own instance
+ setColumnToHoldDelegate(table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
+ setColumnToHoldDelegate(table, LOCKOPRCOL, new TTComboBoxDelegate(turnoutTableAction->lockOperations, turnoutTableAction));
+ setColumnToHoldDelegate(table, STRAIGHTCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction,true));
+ setColumnToHoldDelegate(table, DIVERGCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction, true));
+ setColumnToHoldDelegate(table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),turnoutTableAction)); // ?? shuld be button?
+ setColumnToHoldButton(table, FORGETCOL);
+ setColumnToHoldButton(table, QUERYCOL);  //Hide the following columns by default
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
     table->createDefaultColumnsFromModel();
-    TableColumn* column  = columnModel->getColumnByModelIndex(STRAIGHTCOL);
+    TableColumn* column;
+    column  = columnModel->getColumnByModelIndex(DIVERGCOL);   // 18
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(DIVERGCOL);
+    column  = columnModel->getColumnByModelIndex(STRAIGHTCOL); // 16
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(KNOWNCOL);
+    column  = columnModel->getColumnByModelIndex(LOCKDECCOL);  // 15
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(MODECOL);
+    column  = columnModel->getColumnByModelIndex(LOCKOPRCOL);  // 14
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(SENSOR1COL);
+    column  = columnModel->getColumnByModelIndex(OPSEDITCOL);  // 13
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(SENSOR2COL);
+    column  = columnModel->getColumnByModelIndex(OPSONOFFCOL); // 12
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(OPSONOFFCOL);
+    column  = columnModel->getColumnByModelIndex(SENSOR2COL);  // 11
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(OPSEDITCOL);
+    column  = columnModel->getColumnByModelIndex(SENSOR1COL);  // 10
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(LOCKOPRCOL);
+    column  = columnModel->getColumnByModelIndex(MODECOL);     // 9
     columnModel->setColumnVisible(column, false);
-    column  = columnModel->getColumnByModelIndex(LOCKDECCOL);
+    column  = columnModel->getColumnByModelIndex(KNOWNCOL);    // 8
     columnModel->setColumnVisible(column, false);
-    setColumnToHoldButton(table, EDITCOL);
-    setColumnToHoldDelegate(table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
-    sensorsColDelegate = new TTEditDelegate(turnoutTableAction);
-    setColumnToHoldDelegate(table, SENSOR1COL, sensorsColDelegate);
-    setColumnToHoldDelegate(table, SENSOR2COL, sensorsColDelegate);
-    setColumnToHoldDelegate(table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), turnoutTableAction)); //Each row needs it's own instance
-    setColumnToHoldDelegate(table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
-    setColumnToHoldDelegate(table, LOCKOPRCOL, new TTComboBoxDelegate(turnoutTableAction->lockOperations, turnoutTableAction));
-    setColumnToHoldDelegate(table, STRAIGHTCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction,true));
-    setColumnToHoldDelegate(table, DIVERGCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction, true));
-    setColumnToHoldDelegate(table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),turnoutTableAction)); // ?? shuld be button?
-    setColumnToHoldButton(table, FORGETCOL);
-    setColumnToHoldButton(table, QUERYCOL);
+
   //self->showFeedbackChanged();
   //self->showLockChanged();
   //self->showTurnoutSpeedChanged();
@@ -890,20 +897,21 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   BeanTableDataModel::configureTable(table);
   table->resizeRowsToContents();
   table->resizeColumnsToContents();
+  table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 // update table if turnout lock or feedback changes
 //@Override
 /*protected*/ bool TurnoutTableDataModel::matchPropertyName(PropertyChangeEvent* e)
  {
-  if(e->getPropertyName() == "inverted") return true;
-    if (e->getPropertyName()==("locked")) return true;
-    if (e->getPropertyName()==("feedbackchange")) return true;
-    if (e->getPropertyName()==("TurnoutDivergingSpeedChange")) return true;
-    if (e->getPropertyName()==("TurnoutStraightSpeedChange")) return true;
-    if (e->getPropertyName()==("KnownState")) return true;
-    if (e->getPropertyName()==("CommandedState")) return true;
-    else return BeanTableDataModel::matchPropertyName(e);
+  //if(e->getPropertyName() == "inverted") return true;
+  if (e->getPropertyName()==("locked")) return true;
+  if (e->getPropertyName()==("feedbackchange")) return true;
+  if (e->getPropertyName()==("TurnoutDivergingSpeedChange")) return true;
+  if (e->getPropertyName()==("TurnoutStraightSpeedChange")) return true;
+  //if (e->getPropertyName()==("KnownState")) return true;
+  //if (e->getPropertyName()==("CommandedState")) return true;
+  else return BeanTableDataModel::matchPropertyName(e);
 }
 
 /*public*/ void TurnoutTableDataModel::comboBoxAction(JActionEvent* /*e*/){
@@ -1431,6 +1439,7 @@ void RangeListener::actionPerformed(JActionEvent */*e*/)
     }
     int row;
 
+    if(!((TurnoutTableDataModel*)index.model())->_table) return;
     TTComboBoxDelegate* delegate = (TTComboBoxDelegate*)((TurnoutTableDataModel*)index.model())->table()->itemDelegate(index);
     QString currTxt;
 //    if (t->getInhibitOperation()) {
@@ -1840,24 +1849,19 @@ void TurnoutTableAction::On_doAutomationBox_toggled(bool b)
 void TurnoutTableAction::showFeedbackChanged()
 {
  bool showFeedback = showFeedbackBox->isChecked();
-    XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
-//    TableColumn* column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::KNOWNCOL);
-//    columnModel->setColumnVisible(column, showFeedback);
-//    column  = columnModel->getColumnByModelIndex(MODECOL);
- table->setColumnHidden(TurnoutTableDataModel::MODECOL, !showFeedback);
-//    columnModel->setColumnVisible(column, showFeedback);
-//    column  = columnModel->getColumnByModelIndex(SENSOR1COL);
- table->setColumnHidden(TurnoutTableDataModel::SENSOR1COL, !showFeedback);
-//    columnModel->setColumnVisible(column, showFeedback);
-//    column  = columnModel->getColumnByModelIndex(SENSOR2COL);
- table->setColumnHidden(TurnoutTableDataModel::SENSOR2COL, !showFeedback);
-//    columnModel->setColumnVisible(column, showFeedback);
-//    column  = columnModel->getColumnByModelIndex(OPSONOFFCOL);
- table->setColumnHidden(TurnoutTableDataModel::OPSONOFFCOL, !showFeedback);
-//    columnModel->setColumnVisible(column, showFeedback);
-//    column  = columnModel->getColumnByModelIndex(OPSEDITCOL);
- table->setColumnHidden(TurnoutTableDataModel::OPSEDITCOL, !showFeedback);
-//    columnModel->setColumnVisible(column, showFeedback);
+ XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
+ TableColumn* column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::KNOWNCOL);
+ columnModel->setColumnVisible(column, showFeedback);
+ column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::MODECOL);
+ columnModel->setColumnVisible(column, showFeedback);
+ column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::SENSOR1COL);
+ columnModel->setColumnVisible(column, showFeedback);
+ column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::SENSOR2COL);
+ columnModel->setColumnVisible(column, showFeedback);
+ column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::OPSONOFFCOL);
+ columnModel->setColumnVisible(column, showFeedback);
+ column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::OPSEDITCOL);
+ columnModel->setColumnVisible(column, showFeedback);
  pref->setSimplePreferenceState(this->getClassName()+".showFeedback", showFeedback);
 
 }
@@ -1867,11 +1871,9 @@ void TurnoutTableAction::showLockChanged()
  bool showLock = showLockBox->isChecked();
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
     TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(TurnoutTableDataModel::LOCKDECCOL);
-    table->setColumnHidden(TurnoutTableDataModel::LOCKDECCOL, !showLock);
-//    columnModel->setColumnVisible(column, showLock);
-//    column  = columnModel->getColumnByModelIndex(LOCKOPRCOL);
-    table->setColumnHidden(TurnoutTableDataModel::LOCKOPRCOL, !showLock);
-//    columnModel->setColumnVisible(column, showLock);
+    columnModel->setColumnVisible(column, showLock);
+    column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::LOCKOPRCOL);
+    columnModel->setColumnVisible(column, showLock);
     pref->setSimplePreferenceState(this->getClassName()+".showLockBox", showLock);
 }
 
@@ -1881,11 +1883,9 @@ void TurnoutTableAction::showLockChanged()
     bool showTurnoutSpeed = showTurnoutSpeedBox->isChecked();
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
     TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(TurnoutTableDataModel::STRAIGHTCOL);
-    table->setColumnHidden(TurnoutTableDataModel::STRAIGHTCOL, !showTurnoutSpeed);
-//    columnModel->setColumnVisible(column, showTurnoutSpeed);
-//    column  = columnModel->getColumnByModelIndex(DIVERGCOL);
-    table->setColumnHidden(TurnoutTableDataModel::DIVERGCOL, !showTurnoutSpeed);
-//    columnModel->setColumnVisible(column, showTurnoutSpeed);
+    columnModel->setColumnVisible(column, showTurnoutSpeed);
+    column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::DIVERGCOL);
+    columnModel->setColumnVisible(column, showTurnoutSpeed);
     pref->setSimplePreferenceState(this->getClassName()+".showTurnoutSpeed", showTurnoutSpeed);
 }
 

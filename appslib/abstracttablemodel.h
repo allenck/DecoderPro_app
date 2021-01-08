@@ -15,13 +15,13 @@ class JAVAQTSHARED_EXPORT AbstractTableModel : public TableModel
     Q_OBJECT
 public:
     explicit AbstractTableModel(QObject *parent = 0);
-    virtual /*public*/ QString getColumnName(int column) const;
+    /*public*/ QString getColumnName(int column) const;
     virtual /*public*/ int findColumn(QString columnName);
-    virtual /*public*/ QString getColumnClass(int columnIndex){return QString();}
-    virtual /*public*/ bool isCellEditable(int rowIndex, int columnIndex) const;
-    virtual /*public*/ void setValueAt(QVariant aValue, int rowIndex, int columnIndex);
-    /*public*/ virtual void addTableModelListener(TableModelListener* l);
-    /*public*/ virtual void removeTableModelListener(TableModelListener* l);
+    /*public*/ QString getColumnClass(int columnIndex) {return QString();}
+    /*public*/ bool isCellEditable(int rowIndex, int columnIndex) const override;
+    /*public*/ void setValueAt(QVariant aValue, int rowIndex, int columnIndex) override;
+    /*public*/ virtual void addTableModelListener(TableModelListener* l) override;
+    /*public*/ virtual void removeTableModelListener(TableModelListener* l) override;
     /*public*/ virtual QList<TableModelListener*>* getTableModelListeners();
     /*public*/ virtual void fireTableStructureChanged();
     /*public*/ virtual void fireTableRowsInserted(int firstRow, int lastRow);
@@ -29,10 +29,10 @@ public:
     /*public*/ virtual void fireTableRowsDeleted(int firstRow, int lastRow);
     /*public*/ virtual void fireTableCellUpdated(int row, int column);
     /*public*/ virtual void fireTableChanged(TableModelEvent* e = 0);
-    virtual /*public*/ int getRowCount() const {return rowCount(QModelIndex());}
-    virtual /*public*/ int getColumnCount() const {return columnCount(QModelIndex());}
-    virtual /*public*/ QVariant getValueAt(int row, int col) const;
-    virtual /*public*/ QString getColumnClass(int col) const;
+    /*public*/ int getRowCount() const {return rowCount(QModelIndex());}
+    /*public*/ int getColumnCount() const {return columnCount(QModelIndex());}
+    /*public*/ QVariant getValueAt(int row, int col) const;
+    /*public*/ QString getColumnClass(int col) const;
     virtual /*public*/ QVariant getToolTip(int /*col*/)const { return QString();}
     void setTable(JTable*);
 //    void setPersistentButtons();
@@ -45,12 +45,12 @@ public slots:
  /*public*/ virtual void fireTableDataChanged();
 
 private:
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    int rowCount(const QModelIndex &parent) const override;
+    int columnCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
     JTable* _table = nullptr;
 //    QList<int> buttonMap;
 
@@ -73,6 +73,8 @@ protected:
     friend class RouteFilterModel;
     friend class JTable;
     friend class CabSignalTableModel;
+    friend class SensorTableDataModel;
+    friend class TurnoutTableAction;
 };
 
 #endif // ABSTRACTTABLEMODEL_H

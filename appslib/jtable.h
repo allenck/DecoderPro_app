@@ -271,7 +271,7 @@ protected:
  /*protected*/ QAbstractItemModel*        dataModel;
 
  /** The <code>TableColumnModel</code> of the table. */
- /*protected*/ TableColumnModel*  columnModel;
+ /*protected*/ TableColumnModel*  columnModel = nullptr;
 
  /** The <code>ListSelectionModel</code> of the table, used to keep track of row selections. */
  /*protected*/ DefaultListSelectionModel* _selectionModel;

@@ -95,7 +95,7 @@ private:
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault("NamedBeanHandleManager");
  NamedBean* t;
  //QList<int> buttonMap;
- JTable* _table = nullptr;
+ //JTable* _table = nullptr;
  int row;
  //void setPersistentButtons();
 

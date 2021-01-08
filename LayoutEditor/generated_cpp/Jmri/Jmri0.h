@@ -415,7 +415,7 @@ void delete_AbstractManager(AbstractManager* obj) { delete obj; }
    void py_q_removePropertyChangeListener(AbstractManager* theWrappedObject, PropertyChangeListener*  l){  (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_removePropertyChangeListener(l));}
    void py_q_removePropertyChangeListener(AbstractManager* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_removePropertyChangeListener(propertyName, listener));}
    void setDataListenerMute(AbstractManager* theWrappedObject, bool  m);
-   void updateAutoNumber(AbstractManager* theWrappedObject, QString  systemName);
+   void updateAutoNumber(AbstractManager* theWrappedObject, QString  systemName) const;
    Manager::NameValidity  py_q_validSystemNameFormat(AbstractManager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_validSystemNameFormat(systemName));}
    void py_q_vetoableChange(AbstractManager* theWrappedObject, PropertyChangeEvent*  evt){  (((PythonQtPublicPromoter_AbstractManager*)theWrappedObject)->py_q_vetoableChange(evt));}
 void py_set_pcs(AbstractManager* theWrappedObject, PropertyChangeSupport*  pcs){ theWrappedObject->pcs = pcs; }

@@ -444,7 +444,7 @@ JTable* AbstractTableModel::table() { return _table;}
 
 /*public*/ QVariant AbstractTableModel::getValueAt(int row, int col) const
 {
- //return data(index(row, col), Qt::DisplayRole);
+ return data(index(row, col), Qt::DisplayRole);
 }
 
 QVariant AbstractTableModel::data(const QModelIndex &index, int role) const

@@ -216,7 +216,7 @@ void SensorTableDataModel::common()
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QString SensorTableDataModel::getColumnClass(int col) {
+/*public*/ QString SensorTableDataModel::getColumnClass(int col) const {
     switch (col) {
         case INVERTCOL:
             return "Boolean";

@@ -268,6 +268,7 @@ void TabbedTableItem::createDataModel()
  dataTable->setSortingEnabled(true);
  //sorter.setTableHeader(dataTable.getTableHeader());
  //dataScroll	= new JScrollPane(dataTable);
+ dataTable->resizeRowsToContents();
 
 //        try {
 //            TableSorter tmodel = ((TableSorter)dataTable.getModel());

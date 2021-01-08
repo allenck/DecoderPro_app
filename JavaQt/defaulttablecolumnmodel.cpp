@@ -71,8 +71,8 @@ TableColumnModel(parent)
  }
 
  tableColumns.append(aColumn);
- //aColumn->addPropertyChangeListener((PropertyChangeListener*)this);
- connect(aColumn, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+ aColumn->addPropertyChangeListener((PropertyChangeListener*)this);
+ connect(aColumn, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  invalidateWidthCache();
 
 // // Post columnAdded event notification
@@ -102,13 +102,13 @@ TableColumnModel(parent)
    selectionModel->removeIndexInterval(columnIndex,columnIndex);
   }
 
-//  column->removePropertyChangeListener(this);
+  column->removePropertyChangeListener((PropertyChangeListener*)this);
   tableColumns.remove(columnIndex);
   invalidateWidthCache();
 
   // Post columnAdded event notification.  (JTable and JTableHeader
   // listens so they can adjust size and redraw)
-//  fireColumnRemoved(new TableColumnModelEvent(this, columnIndex, 0));
+  fireColumnRemoved(new TableColumnModelEvent(this, columnIndex, 0));
  }
 }
 #if 0
@@ -597,7 +597,7 @@ TableColumnModel(parent)
 //                columnMarginChanged(changeEvent);
 //        }
 //    }
- emit propertyChange(new PropertyChangeEvent(this, "ColumMarginChanged", QVariant(), QVariant()));
+ emit firePropertyChange(new PropertyChangeEvent(this, "ColumMarginChanged", QVariant(), QVariant()));
 }
 #if 0
 /**
@@ -651,7 +651,7 @@ TableColumnModel(parent)
  *
  * @param  evt  <code>PropertyChangeEvent</code>
  */
-/*public*/ void DefaultTableColumnModel::onPropertyChange(PropertyChangeEvent* evt)
+/*public*/ void DefaultTableColumnModel::propertyChange(PropertyChangeEvent* evt)
 {
  QString name = evt->getPropertyName();
 
@@ -661,7 +661,7 @@ TableColumnModel(parent)
   // This is a misnomer, we're using this method
   // simply to cause a relayout.
   fireColumnMarginChanged();
-  emit propertyChange(evt);
+  emit firePropertyChange(evt);
  }
 }
 #if 0

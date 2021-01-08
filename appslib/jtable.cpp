@@ -3576,10 +3576,11 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
   connect((DefaultTableColumnModel*)columnModel, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
  }
 }
- void JTable::On_columnsAboutToBeInserted(QModelIndex, int from, int to)
- {
-  log->debug(QString("Columns about to be inserted %1 %2 ").arg(from).arg(to));
- }
+
+void JTable::On_columnsAboutToBeInserted(QModelIndex, int from, int to)
+{
+log->debug(QString("Columns about to be inserted %1 %2 ").arg(from).arg(to));
+}
 
 /**
  * Returns the <code>TableModel</code> that provides the data displayed by this

@@ -3,11 +3,6 @@
 #include "tablecolumn.h"
 #include "jtable.h"
 
-XTableColumnModel::XTableColumnModel(JTable *parent) :
-  DefaultTableColumnModel(parent)
-{
- allTableColumns =  QVector<TableColumn*>();
-}
 /**
  * Taken from http://www.stephenkelvin.de/XTableColumnModel/
  * <code>XTableColumnModel</code> extends the DefaultTableColumnModel . It
@@ -39,8 +34,11 @@ XTableColumnModel::XTableColumnModel(JTable *parent) :
 /**
  * Creates an extended table column model.
  */
-//    /*public*/ XTableColumnModel() {
-//    }
+XTableColumnModel::XTableColumnModel(JTable *parent) :
+  DefaultTableColumnModel(parent)
+{
+ allTableColumns =  QVector<TableColumn*>();
+}
 
 /**
  * Sets the visibility of the specified TableColumn. The call is ignored if
@@ -55,6 +53,9 @@ XTableColumnModel::XTableColumnModel(JTable *parent) :
 /*public*/ void XTableColumnModel::setColumnVisible(TableColumn* column, bool visible)
 {
  JTable* table = (JTable*)parent();
+ bool visibility = !table->isColumnHidden(column->getModelIndex());
+ if(visibility == visible)
+  return;
  if(visible)
   table->showColumn(column->getModelIndex());
  else

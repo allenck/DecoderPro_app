@@ -45,7 +45,7 @@ enum COLUMNS
 /*public*/ void configureTable(JTable* table) override;
 /*public*/ void showDebounce(bool show);
 Q_INVOKABLE /*public*/ QString getClassDescription() ;
-/*public*/ QString getColumnClass(int col) override;
+/*public*/ QString getColumnClass(int col) const override;
 
 signals:
 

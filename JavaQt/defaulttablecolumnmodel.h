@@ -25,10 +25,10 @@ public:
  /*public*/ int getColumnMargin();
 
 signals:
- void propertyChange(PropertyChangeEvent*);
+ void firePropertyChange(PropertyChangeEvent*);
 
 public slots:
- /*public*/ void onPropertyChange(PropertyChangeEvent* evt);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt);
 
 private:
  /*private*/ void invalidateWidthCache();

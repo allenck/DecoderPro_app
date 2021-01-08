@@ -3064,7 +3064,7 @@ void PythonQtWrapper_AbstractManager::setDataListenerMute(AbstractManager* theWr
   ( theWrappedObject->setDataListenerMute(m));
 }
 
-void PythonQtWrapper_AbstractManager::updateAutoNumber(AbstractManager* theWrappedObject, QString  systemName)
+void PythonQtWrapper_AbstractManager::updateAutoNumber(AbstractManager* theWrappedObject, QString  systemName) const
 {
   ( theWrappedObject->updateAutoNumber(systemName));
 }
