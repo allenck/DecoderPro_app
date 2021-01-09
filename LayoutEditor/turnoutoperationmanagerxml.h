@@ -5,15 +5,18 @@
 #include <QObject>
 #include "turnoutoperationmanager.h"
 #include "liblayouteditor_global.h"
+#include "abstractxmladapter.h"
 
-class LIBLAYOUTEDITORSHARED_EXPORT TurnoutOperationManagerXml : public QObject
+class LIBLAYOUTEDITORSHARED_EXPORT TurnoutOperationManagerXml : public AbstractXmlAdapter
 {
     Q_OBJECT
 public:
-    explicit TurnoutOperationManagerXml(QObject *parent = 0);
+    Q_INVOKABLE explicit TurnoutOperationManagerXml(QObject *parent = 0);
+    ~TurnoutOperationManagerXml() {}
+    TurnoutOperationManagerXml(const TurnoutOperationManagerXml&) : AbstractXmlAdapter() {}
     /*public*/ void setStoreElementClass(QDomElement elem);
     /*public*/ void load(QDomElement element, QObject o);
-    /*public*/ bool load(QDomElement operationsElement);
+    /*public*/ bool load(QDomElement operationsElement) throw (Exception);
     /*public*/ QDomElement store(QDomDocument doc, QObject* o);
 
 signals:
@@ -21,7 +24,7 @@ signals:
 public slots:
     
 private:
- Logger log;
+ static Logger* log;
 };
-
+Q_DECLARE_METATYPE(TurnoutOperationManagerXml)
 #endif // TURNOUTOPERATIONMANAGERXML_H

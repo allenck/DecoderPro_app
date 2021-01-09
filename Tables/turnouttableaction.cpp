@@ -11,7 +11,7 @@
 #include "jmrijframe.h"
 #include <QBoxLayout>
 #include "connectionnamefromsystemname.h"
-#include "QMessageBox"
+#include "joptionpane.h"
 #include <QCheckBox>
 #include "addnewhardwaredevicepanel.h"
 #include <QPushButton>
@@ -344,6 +344,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  }
 }
 
+
 //@Override
 /*public*/ QVariant TurnoutTableDataModel::data(const QModelIndex &index, int role) const
 {
@@ -417,7 +418,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
    case MODECOL:
    {
 
-//    QComboBox* c = new QComboBox();
+//    JComboBox* c = new JComboBox();
 //    c->addItems(t->getValidFeedbackNames());
 //    c->setCurrentIndex(c->findText(t->getFeedbackModeName()));
 //        c.addActionListener(new ActionListener(){
@@ -447,31 +448,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     }
     case OPSONOFFCOL:
     {
-     //return self->makeAutomationBox(t);
-     if(_table && (_table->itemDelegate(index) == nullptr || qobject_cast<TTComboBoxDelegate*>(_table->itemDelegate(index))== nullptr))
-//          _table->setItemDelegate(new TTComboBoxDelegate(QStringList(), turnoutTableAction));
-      _table->setItemDelegateForColumn(index.column(), new TTComboBoxDelegate(QStringList(), turnoutTableAction));
-     QVector<QString> automationList = turnoutTableAction->makeAutomationBox(t, index);
-     QString currValue;
-     if (t->getInhibitOperation() || t->getTurnoutOperation() == nullptr)
-     {
-      currValue = automationList.at(0);
-     }
-     else if (t->getTurnoutOperation() == NULL)
-     {
-      currValue = automationList.at(1);
-     }
-     else if (t->getTurnoutOperation()->isNonce())
-     {
-      currValue = automationList.at(2);
-     }
-     else
-     {
-      currValue = t->getTurnoutOperation()->getName();
-     }
-
-     if(_table)
-      ((TTComboBoxDelegate*)_table->itemDelegate(index))-> setItems(automationList.toList(), currValue);
+      if(t->getTurnoutOperation() == nullptr)
+       return QString();
+      QString currValue = t->getTurnoutOperation()->getName();
      return currValue;
     }
     case OPSEDITCOL:
@@ -484,7 +463,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     }
     case  LOCKDECCOL:
     {
-//        QComboBox* c = new QComboBox();
+//        JComboBox* c = new JComboBox();
 //        c->addItems(t->getValidDecoderNames());
 //        c->setCurrentIndex(c->findText( t->getDecoderName()));
 //        c.addActionListener(new ActionListener(){
@@ -498,7 +477,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     }
     case   LOCKOPRCOL:
     {
-//        QComboBox* c = new QComboBox();
+//        JComboBox* c = new JComboBox();
 //        c->addItems(self->lockOperations);
      if (t->canLock(Turnout::CABLOCKOUT) && t->canLock(Turnout::PUSHBUTTONLOCKOUT))
      {
@@ -534,7 +513,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //        if(!self->speedListClosed.contains(speed)){
 //            self->speedListClosed.append(speed);
 //        }
-//        QComboBox* c = new QComboBox();
+//        JComboBox* c = new JComboBox();
 //        c->addItems(self->speedListClosed.toList());
 //        c->setEditable(true);
 //        c->setCurrentIndex(c->findText(speed));
@@ -549,7 +528,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //        if(!self->speedListThrown.contains(speed)){
 //            self->speedListThrown.append(speed);
 //        }
-//        QComboBox* c = new QComboBox();
+//        JComboBox* c = new JComboBox();
 //        c->addItems(self->speedListThrown.toList());
 //        c->setEditable(true);
 //     c->setCurrentIndex(c->findText(speed));
@@ -637,7 +616,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
    }
    case MODECOL:
    {
-//    QString modeName = ((QComboBox*)value)->currentText();
+//    QString modeName = ((JComboBox*)value)->currentText();
     t->setFeedbackMode(value.toString());
     fireTableRowsUpdated(row,row);
     return true;
@@ -650,8 +629,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     }
     catch (JmriException e)
     {
-     //JOptionPane.showMessageDialog(NULL, e.toString());
-     QMessageBox::warning(NULL, tr("Warning"), e.getMessage());
+     JOptionPane::showMessageDialog(NULL, e.toString());
     }
     fireTableRowsUpdated(row, row);
     return true;
@@ -664,8 +642,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     }
     catch (JmriException e)
     {
-     //JOptionPane.showMessageDialog(NULL, e.toString());
-     QMessageBox::warning(NULL, tr("Warning"), e.getMessage());
+     JOptionPane::showMessageDialog(NULL, e.toString());
     }
    fireTableRowsUpdated(row,row);
    return true;
@@ -678,9 +655,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
    case OPSEDITCOL :
    {
     t->setInhibitOperation(false);
-//    //@SuppressWarnings("unchecked") // cast to QComboBox* required in OPSEDITCOL
-//    QComboBox* cb = (QComboBox*)getValueAt(row,TurnoutTableAction::OPSONOFFCOL);
-   //QComboBox* cb = self->makeAutomationBox(t);
+//    //@SuppressWarnings("unchecked") // cast to JComboBox* required in OPSEDITCOL
+//    JComboBox* cb = (JComboBox*)getValueAt(row,TurnoutTableAction::OPSONOFFCOL);
+   //JComboBox* cb = self->makeAutomationBox(t);
    turnoutTableAction->editTurnoutOperation(t, value.toString());
    fireTableRowsUpdated(row,row);
    return true;
@@ -708,7 +685,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     }
     case LOCKOPRCOL:
     {
-//     QString lockOpName =  ((QComboBox*) value)
+//     QString lockOpName =  ((JComboBox*) value)
 //            ->getSelectedItem();
      QString lockOpName = value.toString();
      if (lockOpName==(turnoutTableAction->bothText))
@@ -730,7 +707,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     }
     case LOCKDECCOL:
     {
-//        QString decoderName = ((QComboBox*)value)->currentText();
+//        QString decoderName = ((JComboBox*)value)->currentText();
 //        t->setDecoderName(decoderName);
      t->setDecoderName(value.toString());
      fireTableRowsUpdated(row,row);
@@ -738,7 +715,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     }
     case STRAIGHTCOL:
     {
-//        QString speed = ((QComboBox*)value)->currentText();
+//        QString speed = ((JComboBox*)value)->currentText();
 //        try {
      t->setStraightSpeed(value.toString());
 //        } catch (JmriException ex) {
@@ -758,7 +735,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
     case DIVERGCOL:
     {
 
-//    QString speed = ((QComboBox*)value)->currentText();
+//    QString speed = ((JComboBox*)value)->currentText();
 //    try
 //    {
      t->setDivergingSpeed(value.toString());
@@ -852,17 +829,17 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 //    table.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
 //    setColumnToHoldButton(table,TurnoutTableAction::OPSEDITCOL,editButton());
 //    setColumnToHoldButton(table,TurnoutTableAction::EDITCOL,editButton());
+ setColumnToHoldButton(table,OPSEDITCOL);
  setColumnToHoldButton(table, EDITCOL);
- setColumnToHoldDelegate(table, MODECOL, modeColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
+ setColumnToHoldDelegate(table, MODECOL, modeColDelegate = new TTComboBoxDelegate(turnoutTableAction));
  sensorsColDelegate = new TTEditDelegate(turnoutTableAction);
  setColumnToHoldDelegate(table, SENSOR1COL, sensorsColDelegate);
  setColumnToHoldDelegate(table, SENSOR2COL, sensorsColDelegate);
- setColumnToHoldDelegate(table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(QStringList(), turnoutTableAction)); //Each row needs it's own instance
- setColumnToHoldDelegate(table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(QStringList(), turnoutTableAction));
- setColumnToHoldDelegate(table, LOCKOPRCOL, new TTComboBoxDelegate(turnoutTableAction->lockOperations, turnoutTableAction));
- setColumnToHoldDelegate(table, STRAIGHTCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction,true));
- setColumnToHoldDelegate(table, DIVERGCOL, new TTComboBoxDelegate(turnoutTableAction->speedListClosed.toList(), turnoutTableAction, true));
- setColumnToHoldDelegate(table, OPSEDITCOL, opsEditColDelegate = new TTComboBoxDelegate(QStringList(),turnoutTableAction)); // ?? shuld be button?
+ setColumnToHoldDelegate(table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(turnoutTableAction)); //Each row needs it's own instance
+ setColumnToHoldDelegate(table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(turnoutTableAction));
+ setColumnToHoldDelegate(table, LOCKOPRCOL, new JComboBoxEditor(turnoutTableAction->lockOperations, turnoutTableAction));
+ setColumnToHoldDelegate(table, STRAIGHTCOL, new JComboBoxEditor(turnoutTableAction->speedListClosed.toList()));
+ setColumnToHoldDelegate(table, DIVERGCOL, new JComboBoxEditor(turnoutTableAction->speedListClosed.toList()));
  setColumnToHoldButton(table, FORGETCOL);
  setColumnToHoldButton(table, QUERYCOL);  //Hide the following columns by default
     XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
@@ -1334,35 +1311,35 @@ void RangeListener::actionPerformed(JActionEvent */*e*/)
  self->canAddRange();
 }
 
-/**
- * Create a QComboBox* containing all the options for turnout automation parameters for
- * this turnout
- * @param t	the turnout
- * @return	the JComboBox
- */
-/*protected*/ /*QComboBox**/QVector<QString>TurnoutTableAction::makeAutomationBox(Turnout* t, QModelIndex index) {
-    QVector<QString> str = QVector<QString>();
-    str << "empty";
+///**
+// * Create a JComboBox* containing all the options for turnout automation parameters for
+// * this turnout
+// * @param t	the turnout
+// * @return	the JComboBox
+// */
+///*protected*/ /*JComboBox**/QVector<QString>TurnoutTableAction::makeAutomationBox(Turnout* t, QModelIndex index) {
+//    QVector<QString> str = QVector<QString>();
+//    str << "empty";
 
-//    /*final*/ QComboBox* cb = new QComboBox();
-//    cb->addItems(str);
-    /*final*/ Turnout* myTurnout = t;
-    TurnoutTableAction::updateAutomationBox(t, str, index);
-//TODO:
-//    cb.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//                setTurnoutOperation(myTurnout, cb);
-//                cb.removeActionListener(this);		// avoid recursion
-//                updateAutomationBox(myTurnout, cb);
-//                cb.addActionListener(this);
-//        }
-//        });
-//    CBActionListener* cbActionListener = new CBActionListener(cb,t, this);
-//    connect(cb, SIGNAL(currentIndexChanged(int)), cbActionListener, SLOT(actionPerformed()));
-//    return cb;
-    return str;
-}
-//CBActionListener::CBActionListener(QComboBox *cb, Turnout* myTurnout, TurnoutTableAction *self)
+////    /*final*/ JComboBox* cb = new JComboBox();
+////    cb->addItems(str);
+//    /*final*/ Turnout* myTurnout = t;
+//    TurnoutTableAction::updateAutomationBox(t, str, index);
+////TODO:
+////    cb.addActionListener(new ActionListener() {
+////        /*public*/ void actionPerformed(ActionEvent e) {
+////                setTurnoutOperation(myTurnout, cb);
+////                cb.removeActionListener(this);		// avoid recursion
+////                updateAutomationBox(myTurnout, cb);
+////                cb.addActionListener(this);
+////        }
+////        });
+////    CBActionListener* cbActionListener = new CBActionListener(cb,t, this);
+////    connect(cb, SIGNAL(currentIndexChanged(int)), cbActionListener, SLOT(actionPerformed()));
+////    return cb;
+//    return str;
+//}
+//CBActionListener::CBActionListener(JComboBox *cb, Turnout* myTurnout, TurnoutTableAction *self)
 //{
 // this->cb = cb;
 // this->self = self;
@@ -1394,11 +1371,11 @@ void RangeListener::actionPerformed(JActionEvent */*e*/)
  * @param t	turnout
  * @param cb	the JComboBox
  */
-/*public*/ /*static*/ void TurnoutTableAction::updateAutomationBox(Turnout* t, /*QComboBox* cb*/ QVector<QString> str, QModelIndex index)
+/*public*/ /*static*/ void TurnoutTableAction::updateAutomationBox(Turnout* t, JComboBox* cb)
 {
- Logger* log = new Logger("TurnoutTableAction");
+ //log->setDebugEnabled(true);
  QList<TurnoutOperation*> ops = TurnoutOperationManager::getInstance()->getTurnoutOperations();
- str.clear();
+ cb->clear();
  QVector<QString> strings =  QVector<QString>(/*20*/);
  QVector<QString> defStrings =  QVector<QString>(/*20*/);
 
@@ -1434,36 +1411,24 @@ void RangeListener::actionPerformed(JActionEvent */*e*/)
     }
     for (int i=0; i<strings.size(); ++i)
     {
-//        cb->addItem(strings.at(i));
-     str.append(strings.at(i));
+     cb->addItem(strings.at(i));
     }
-    int row;
 
-    if(!((TurnoutTableDataModel*)index.model())->_table) return;
-    TTComboBoxDelegate* delegate = (TTComboBoxDelegate*)((TurnoutTableDataModel*)index.model())->table()->itemDelegate(index);
     QString currTxt;
-//    if (t->getInhibitOperation()) {
-//        cb->setCurrentIndex(0);
-    if(t->getInhibitOperation())
-        currTxt = strings.at(0);
-//    } else if (t->getTurnoutOperation() == NULL) {
-//        cb->setCurrentIndex(1);
-    else if(t->getTurnoutOperation() == nullptr)
-        currTxt = strings.at(1);
-//    } else if (t->getTurnoutOperation()->isNonce()) {
-//        cb->setCurrentIndex(2);
-    else if (t->getTurnoutOperation()->isNonce()) {
-        currTxt= strings.at(2);
+    if (t->getInhibitOperation()) {
+        cb->setSelectedIndex(0);
+    } else {
+        TurnoutOperation* turnOp = t->getTurnoutOperation();
+        if (turnOp == nullptr) {
+            cb->setSelectedIndex(1);
+        } else {
+            if (turnOp->isNonce()) {
+                cb->setSelectedIndex(2);
+            } else {
+                cb->setSelectedItem(turnOp->getName());
+            }
+        }
     }
-//    } else {
-//        cb->setCurrentIndex(cb->findText(t->getTurnoutOperation()->getName()));
-//    }
-    else
-    {
-        currTxt = t->getTurnoutOperation()->getName();
-    }
-    ((TTComboBoxDelegate*)delegate)->setItems(strings.toList(), currTxt);
-
 }
 
 /**
@@ -1471,32 +1436,23 @@ void RangeListener::actionPerformed(JActionEvent */*e*/)
  * @param t	turnout
  * @param cb JComboBox
  */
-/*protected*/ void TurnoutTableAction::setTurnoutOperation(Turnout* t,/* QComboBox* cb*/QString val)
+/*protected*/ void TurnoutTableAction::setTurnoutOperation(Turnout* t, JComboBox* cb)
 {
-// switch (cb->currentIndex())
-// {
-//  case 0:			// Off
- if(val == tr("Off"))
+ switch (cb->currentIndex())
  {
+  case 0:			// Off
    t->setInhibitOperation(true);
    t->setTurnoutOperation(NULL);
- }
-//   break;
-//  case 1:			// Default
- else
- if(val == tr("Use GlobalDefault"))
- {
+   break;
+  case 1:			// Default
    t->setInhibitOperation(false);
    t->setTurnoutOperation(NULL);
- }
-//   break;
-//  default:		// named operation
- else
- {
+   break;
+  default:		// named operation
    t->setInhibitOperation(false);
    t->setTurnoutOperation(TurnoutOperationManager::getInstance()->
-                         getOperation((/*cb->currentText()*/val )));
-//   break;
+                         getOperation((cb->currentText() )));
+   break;
  }
 }
 
@@ -1511,7 +1467,7 @@ void TurnoutTableAction::editButton(Turnout* t, QModelIndex index){
  * @param t turnout
  * @param box JComboBox that triggered the edit
  */
-/*protected*/ void TurnoutTableAction::editTurnoutOperation(Turnout* t, /*QComboBox* box*/QString val)
+/*protected*/ void TurnoutTableAction::editTurnoutOperation(Turnout* t, /*JComboBox* box*/QString val)
 {
  TurnoutOperation* op = t->getTurnoutOperation();
  if (op==NULL)
@@ -1533,8 +1489,7 @@ void TurnoutTableAction::editButton(Turnout* t, QModelIndex index){
  }
  else
  {
-  //JOptionPane.showMessageDialog(f, "There is no operation type suitable for this turnout","No operation type", JOptionPane.ERROR_MESSAGE);
-  QMessageBox::critical(f, tr("No operation type"), tr( "There is no operation type suitable for this turnout"));
+  JOptionPane::showMessageDialog(f, "There is no operation type suitable for this turnout","No operation type", JOptionPane::ERROR_MESSAGE);
  }
 }
 ///*protected*/ static class TurnoutOperationEditor extends JDialog {
@@ -1546,7 +1501,7 @@ void TurnoutTableAction::editButton(Turnout* t, QModelIndex index){
 //    TurnoutOperation myOp;
 //    Turnout* myTurnout;
 
-TurnoutOperationEditor::TurnoutOperationEditor(TurnoutTableAction* /*tta*/, JFrame* parent, TurnoutOperation* op, Turnout* t, /*QComboBox* box*/QString /*val*/ ) : JDialog(parent)
+TurnoutOperationEditor::TurnoutOperationEditor(TurnoutTableAction* /*tta*/, JFrame* parent, TurnoutOperation* op, Turnout* t, /*JComboBox* box*/QString /*val*/ ) : JDialog(parent)
 {
  //super(parent);
  ///*final*/ TurnoutOperationEditor* self = this;
@@ -1636,27 +1591,20 @@ TurnoutOperationEditor::TurnoutOperationEditor(TurnoutTableAction* /*tta*/, JFra
 
 void TurnoutOperationEditor::On_nameButton_clicked()
 {
- //QString newName = JOptionPane.showInputDialog("New name for this parameter setting:");
- QString newName;
- InputDialog* dlg = new InputDialog("New name for this parameter setting:", " ");
- if(dlg->exec() == QDialog::Accepted)
- {
-  newName = dlg->value();
-
+ QString newName = JOptionPane::showInputDialog("New name for this parameter setting:");
   if (newName != "" )
   {
    if (!myOp->rename(newName))
    {
-//    JOptionPane.showMessageDialog(self, "This name is already in use",
-//                                                          "Name already in use", JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(this, tr("Name already in use"), tr("This name is already in use"));
+    JOptionPane::showMessageDialog(this, "This name is already in use",
+                                                          "Name already in use", JOptionPane::ERROR_MESSAGE);
    }
    setTitle();
    myTurnout->setTurnoutOperation(NULL);
    myTurnout->setTurnoutOperation(myOp);	// no-op but updates display - have to <i>change</i> value
   }
- }
 }
+
 void TurnoutOperationEditor::On_okButton_clicked()
 {
  config->endConfigure();
@@ -1685,9 +1633,9 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 
 /*protected*/ void TurnoutTableAction::setDefaultSpeeds(JFrame* _who)
 {
-    QComboBox* thrownCombo = new QComboBox();
+    JComboBox* thrownCombo = new JComboBox();
     thrownCombo->addItems(speedListThrown.toList());
-    QComboBox* closedCombo = new QComboBox();
+    JComboBox* closedCombo = new JComboBox();
     closedCombo->addItems(speedListClosed.toList());
     thrownCombo->setEditable(true);
     closedCombo->setEditable(true);
@@ -1710,20 +1658,13 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
     thrownCombo->setCurrentIndex(thrownCombo->findText(turnManager->getDefaultThrownSpeed()));
     closedCombo->setCurrentIndex(closedCombo->findText(turnManager->getDefaultClosedSpeed()));
 
-//    int retval = JOptionPane.showOptionDialog(_who,
-//                                      tr("TurnoutGlobalSpeedMessage") , tr("TurnoutGlobalSpeedMessageTitle"),
-//                                      0, JOptionPane.INFORMATION_MESSAGE, NULL,
-//                                      new Object[]{"Cancel", "OK", thrown, closed}, NULL );
-//    if (retval != 1) {
-//        return;
-//    }
-    QMessageBox* box = new QMessageBox(QMessageBox::Information, tr("Turnout Speeds"),tr("Select the default values for the speed through the turnout"),QMessageBox::Cancel | QMessageBox::Ok,_who);
-    box->layout()->addWidget(thrown);
-    box->layout()->addWidget(closed);
-    int retval = box->exec();
-    if(retval != QMessageBox::Ok)
-     return;
-
+    int retval = JOptionPane::showOptionDialog(_who,
+                                      tr("Select the default values for the speed through the turnout") , tr("Turnout Speeds"),
+                                      0, JOptionPane::INFORMATION_MESSAGE, QIcon(),
+                                      QVariantList({"Cancel", "OK", "Thrown Speed", "Closed Speed"}), QVariant() );
+    if (retval != 1) {
+        return;
+    }
     QString closedValue =  closedCombo->currentText();
     QString thrownValue =  thrownCombo->currentText();
     //We will allow the turnout manager to handle checking if the values have changed
@@ -1992,8 +1933,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  }
  if (numberOfTurnouts>=65)
  {
-//        if(JOptionPane.showConfirmDialog(addFrame, "You are about to add " + numberOfTurnouts + " Turnouts into the configuration\nAre you sure?","Warning", JOptionPane.YES_NO_OPTION)==1)
-  if(QMessageBox::warning(addFrame, tr("Warning"), "You are about to add " + QString::number(numberOfTurnouts) + " Turnouts into the configuration\nAre you sure?",QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+  if(JOptionPane::showConfirmDialog(addFrame, "You are about to add " + QString::number(numberOfTurnouts) + " Turnouts into the configuration\nAre you sure?","Warning", JOptionPane::YES_NO_OPTION)==1)
    return;
  }
 
@@ -2063,17 +2003,12 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
    log->warn("Requested Turnout "+sName+" uses same address as Light "+testSN);
    if (!noWarn)
    {
-//                int selectedValue = JOptionPane.showOptionDialog(addFrame,
-//                                                tr("TurnoutWarn1")+" "+sName+" "+tr("TurnoutWarn2")+" "+
-//                                                testSN+".\n   "+tr("TurnoutWarn3"),tr("WarningTitle"),
-//                                                JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,NULL,
-//                                                new Object[]{tr("ButtonYes"),tr("ButtonNo"),
-//                                                            tr("ButtonYesPlus")},tr("ButtonNo"));
-    QMessageBox* msgBox = new QMessageBox(tr("Warning"), tr("Warning - Requested Turnout")+" "+sName+" "+tr("uses same address as Light")+" "+ testSN+".\n   " +tr("Do you still want to add this Turnout?"),QMessageBox::Warning,QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
-    QPushButton* buttonYesPlus = new QPushButton(tr("Yes - Stop Warnings"));
-    msgBox->addButton(buttonYesPlus, QMessageBox::ActionRole);
-    int selectedValue= msgBox->exec();
-    if (selectedValue == QMessageBox::No)
+    int selectedValue = JOptionPane::showOptionDialog(addFrame,
+                                    tr("Warning - Requested Turnout")+" "+sName+" "+tr("uses same address as Light")+" "+ testSN+".\n   " +tr("Do you still want to add this Turnout?"),tr("Warning"),
+                                    JOptionPane::YES_NO_CANCEL_OPTION,JOptionPane::QUESTION_MESSAGE,QIcon(),
+                                    QVariantList({tr("Yes"),tr("No"),
+                                                tr("Yes - Stop Warnings")}),tr("No"));
+    if (selectedValue == 1)
     {
      // Show error message in statusBar
      errorMessage = tr("Turnout \"%1\" not created as name matched a Light").arg(sName);
@@ -2081,7 +2016,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
      statusBar->setStyleSheet("QLabel { color: gray}");
      return;   // return without creating if "No" response
     }
-    if (msgBox->clickedButton() == buttonYesPlus)
+    if (selectedValue == 2)
     {
      // Suppress future warnings, and continue
      noWarn = true;
@@ -2095,10 +2030,9 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
    iNum = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->askNumControlBits(sName);
    if((((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->isNumControlBitsSupported(sName)) && (rangeBox->isChecked()))
    {
-//                if(JOptionPane.showConfirmDialog(addFrame,
-//                                             "Do you want to use the last setting for all turnouts in this range? ","Use Setting",
-//                                             JOptionPane.YES_NO_OPTION)==0)
-       if(QMessageBox::question(addFrame, tr("Use Setting"), tr("Do you want to use the last setting for all turnouts in this range?"),QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    if(JOptionPane::showConfirmDialog(addFrame,
+                                 "Do you want to use the last setting for all turnouts in this range? ","Use Setting",
+                                 JOptionPane::YES_NO_OPTION)==0)
            useLastBit=true;
        // Add a pop up here asking if the user wishes to use the same value for all
    }
@@ -2160,10 +2094,9 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
      iType = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->askControlType(sName);
      if((((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->isControlTypeSupported(sName)) && (rangeBox->isChecked()))
      {
-//                        if (JOptionPane.showConfirmDialog(addFrame,
-//                                             "Do you want to use the last setting for all turnouts in this range? ","Use Setting",
-//                                             JOptionPane.YES_NO_OPTION)==0)// Add a pop up here asking if the user wishes to use the same value for all
-      if(QMessageBox::question(addFrame, tr("Use Setting"), tr("Do you want to use the last setting for all turnouts in this range?"),QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+      if (JOptionPane::showConfirmDialog(addFrame,
+                           "Do you want to use the last setting for all turnouts in this range? ","Use Setting",
+                           JOptionPane::YES_NO_OPTION)==0)// Add a pop up here asking if the user wishes to use the same value for all
        useLastType=true;
      }
      else
@@ -2233,13 +2166,10 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
 
 void TurnoutTableAction::handleCreateException(QString sysName)
 {
-//    JOptionPane.showMessageDialog(addFrame,
-//            java.text.MessageFormat.format(
-//                tr("ErrorTurnoutAddFailed"),
-//                new Object[] {sysName}),
-//            tr("ErrorTitle"),
-//            javax.swing.JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(addFrame, tr("Error"), tr("Could not create turnout \"%1\" to add it. Check that number/name is OK.").arg(sysName));
+    JOptionPane::showMessageDialog(addFrame,
+            tr("Could not create turnout \"%1\" to add it. Check that number/name is OK.").arg(sysName),
+            tr("Error"),
+            JOptionPane::ERROR_MESSAGE);
 }
 
 
@@ -2296,15 +2226,17 @@ static class BeanComboBoxEditor extends DefaultCellEditor {
 #endif
 QString TurnoutTableAction::getName() { return "jmri.jmrit.beantable.TurnoutTableAction";}
 
-TTComboBoxDelegate::TTComboBoxDelegate(QStringList items, TurnoutTableAction *turnoutTableAction, bool editable, QObject */*parent*/)
+TTComboBoxDelegate::TTComboBoxDelegate(TurnoutTableAction *turnoutTableAction, bool editable, QObject */*parent*/)
 {
- this->items  = items;
  this->turnoutTableAction = turnoutTableAction;
  this->editable = editable;
 
 }
 QWidget* TTComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
 {
+ JComboBox* editor = new JComboBox(parent);
+ editor->setEditable(editable);
+
  AbstractTurnout* t;
  int row = index.row();
  TurnoutManager* manager = turnoutTableAction->turnManager;
@@ -2320,34 +2252,30 @@ QWidget* TTComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionVie
  switch(index.column())
  {
  case TurnoutTableDataModel::MODECOL:
-   //items = t->getValidFeedbackNames().toList();
-  items.clear();
-  foreach(QString s, t->getValidFeedbackNames())
-   items.append(s);
+   editor->addItems( t->getValidFeedbackNames().toList());
    break;
  case TurnoutTableDataModel::OPSONOFFCOL:
  {
-  items.clear();
-  QVector<QString> str = QVector<QString>();
-  str << "empty";
-   TurnoutTableAction::updateAutomationBox(t, str, index);
-   items = str.toList();
-   break;
+//  connect(editor, &JComboBox::currentTextChanged, [=]{
+//   turnoutTableAction->setTurnoutOperation(t, editor);
+//   //cb.removeActionListener(this);  // avoid recursion
+//   turnoutTableAction->updateAutomationBox(t, editor);
+//   //cb.addActionListener(this);
+//  });
+   turnoutTableAction->updateAutomationBox(t, editor);
+       break;
  }
  case TurnoutTableDataModel::LOCKDECCOL:
-   items = t->getValidDecoderNames();
+   editor->addItems( t->getValidDecoderNames());
    break;
  }
- JComboBox* editor = new JComboBox(parent);
- editor->setEditable(editable);
- editor->addItems(items);
  return editor;
 }
 
 void TTComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
  JComboBox *comboBox = static_cast<JComboBox*>(editor);
- QString value = index.model()->data(index, Qt::EditRole).toString();
+ QString value = index.model()->data(index, Qt::DisplayRole).toString();
  comboBox->setCurrentText(value);
 }
 
@@ -2355,6 +2283,23 @@ void TTComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 {
   JComboBox *comboBox = static_cast<JComboBox*>(editor);
   model->setData(index, comboBox->currentText(), Qt::EditRole);
+  if(index.column() == TurnoutTableDataModel::OPSONOFFCOL)
+  {
+   AbstractTurnout* t;
+   int row = index.row();
+   TurnoutManager* manager = turnoutTableAction->turnManager;
+   QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
+    t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
+   else
+    t = (AbstractTurnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
+   if (t == NULL)
+   {
+    TurnoutTableAction::log->debug("error NULL turnout!");
+    throw NullPointerException();
+   }
+   turnoutTableAction->setTurnoutOperation(t, comboBox);
+   turnoutTableAction->updateAutomationBox(t, comboBox);
+  }
 }
 
 void TTComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
@@ -2362,20 +2307,35 @@ void TTComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptio
   editor->setGeometry(option.rect);
 }
 
-//void TTComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-//{
-// JComboBox* widget = new JComboBox(items);
-// setEditorData(widget, index);
-// widget->resize(option.rect.size());
-// QPixmap pixmap(option.rect.size());
-// widget->render(&pixmap);
-// painter->drawPixmap(option.rect,pixmap);
-
-//}
-
-void TTComboBoxDelegate::setItems(QStringList items, QString /*current*/)
+void TTComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
- this->items = items;
+ JComboBox* widget = new JComboBox();
+ widget->setEditable(true);
+ if(index.column() == TurnoutTableDataModel::OPSONOFFCOL)
+ {
+  AbstractTurnout* t;
+  int row = index.row();
+  TurnoutManager* manager = turnoutTableAction->turnManager;
+  QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
+   t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
+  else
+   t = (AbstractTurnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
+  if (t == NULL)
+  {
+   TurnoutTableAction::log->debug("error NULL turnout!");
+   throw NullPointerException();
+  }
+  turnoutTableAction->updateAutomationBox(t, widget);
+ }
+ else
+ {
+  QString value = index.model()->data(index, Qt::DisplayRole).toString();
+  widget->setCurrentText(value);
+ }
+ widget->resize(option.rect.size());
+ QPixmap pixmap(option.rect.size());
+ widget->render(&pixmap);
+ painter->drawPixmap(option.rect,pixmap);
 }
 
 TTEditDelegate::TTEditDelegate(TurnoutTableAction *self)
@@ -2396,7 +2356,7 @@ QWidget* TTEditDelegate::createEditor(QWidget *parent, const QStyleOptionViewIte
 void TTEditDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
  QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
- QString value = index.model()->data(index, Qt::EditRole).toString();
+ QString value = index.model()->data(index, Qt::DisplayRole).toString();
  //comboBox->setCurrentIndex(value);
  lineEdit->setText(value);
 }
@@ -2410,6 +2370,24 @@ void TTEditDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionVie
 {
   editor->setGeometry(option.rect);
 }
+
+void TTEditDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+ QLineEdit* widget = new QLineEdit();
+ QString value = index.model()->data(index, Qt::DisplayRole).toString();
+// QStringList sensors = InstanceManager::sensorManagerInstance()->getSystemNameList();
+// qSort(sensors.begin(), sensors.end(), SystemNameComparator::compare);
+// QCompleter* completer = new QCompleter(sensors);
+// completer->setCaseSensitivity(Qt::CaseInsensitive);
+// widget->setCompleter(completer);
+ widget->setText(value);
+ widget->resize(option.rect.size());
+ QPixmap pixmap(option.rect.size());
+ widget->render(&pixmap);
+ painter->drawPixmap(option.rect,pixmap);
+
+}
+
 TTAValidator::TTAValidator(JTextField *fld, TurnoutTableAction *act)
 {
  this->fld = fld;

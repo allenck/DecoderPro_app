@@ -8,6 +8,7 @@
 #include "jcombobox.h"
 #include <QPainter>
 #include "togglebutton.h"
+#include <QApplication>
 
 class ButtonRenderer : public QItemDelegate, public TableCellEditor, public TableCellRenderer
 {
@@ -41,7 +42,7 @@ public:
     {
         JButton *button = static_cast<JButton*>(editor);
         model->setData(index, QVariant(), Qt::EditRole);
-
+        QApplication::beep();
     }
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
@@ -131,6 +132,7 @@ public:
     {
         QPushButton *button = static_cast<QPushButton*>(editor);
         model->setData(index, QVariant(), Qt::EditRole);
+        QApplication::beep();
     }
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
@@ -246,8 +248,8 @@ public:
     }
     void setEditorData(QWidget *editor, const QModelIndex &index) const{
         JComboBox *comboBox = static_cast<JComboBox*>(editor);
-        int value = index.model()->data(index, Qt::EditRole).toUInt();
-        comboBox->setCurrentIndex(value);
+        QString value = index.model()->data(index, Qt::DisplayRole).toString();
+        comboBox->setCurrentText(value);
     }
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
     {
@@ -259,17 +261,15 @@ public:
     }
     void setValues(QStringList values) {this->values = values;}
 
-//    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-//    {
-//     //bool state = index.data().toString() == this->on;
-//     JComboBox* widget = new JComboBox(values);
-////     widget->setLabels(on, off);
-////     widget->setChecked(state);
-//     setEditorData(widget, index);
-//     widget->resize(option.rect.size());
-//     QPixmap pixmap(option.rect.size());
-//     widget->render(&pixmap);
-//     painter->drawPixmap(option.rect,pixmap);
-//    }
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+     //bool state = index.data().toString() == this->on;
+     JComboBox* widget = new JComboBox(values);
+     widget->setCurrentText(index.model()->data(index, Qt::DisplayRole).toString());
+     widget->resize(option.rect.size());
+     QPixmap pixmap(option.rect.size());
+     widget->render(&pixmap);
+     painter->drawPixmap(option.rect,pixmap);
+    }
 };
 #endif // TABLEDELEGATES_H

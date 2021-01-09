@@ -7,6 +7,7 @@
 #include "libtables_global.h"
 #include <QHash>
 #include "namedbeancombobox.h"
+#include <functional>
 
 class Sensor;
 class BufferedImage;
@@ -38,7 +39,7 @@ public:
     /*public*/ void setManager(Manager* man);
     Q_INVOKABLE /*public*/ QString getClassDescription();
     static QString getName();
-    /*public*/ static void updateAutomationBox(Turnout* t, /*QComboBox* cb*/QVector<QString> sl, QModelIndex index);
+    /*public*/ static void updateAutomationBox(Turnout* t, JComboBox *cb);
     /*public*/ void addToFrame(BeanTableFrame* f);
     /*public*/ void setMenuBar(BeanTableFrame* f);
     /*public*/ void addToPanel(AbstractTableTabAction* f);
@@ -77,7 +78,7 @@ private:
     JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
     QLabel* statusBar;
 
-    JComboBox* prefixBox;// = new QComboBox();
+    JComboBox* prefixBox;// = new JComboBox();
     JTextField* numberToAdd;// = new JTextField(5);
     QCheckBox* rangeBox;// = new QCheckBox("Add a range");
     QLabel* sysNameLabel;// = new JLabel("Hardware Address");
@@ -105,14 +106,14 @@ protected:
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();
 //    /*protected*/ QPushButton* editButton();
-    /*protected*/ void setTurnoutOperation(Turnout* t, /*QComboBox* cb*/QString val);
+    /*protected*/ void setTurnoutOperation(Turnout* t, JComboBox *cb);
     /*protected*/ void editTurnoutOperation(Turnout* t, QString val);
     /*protected*/ void setDefaultSpeeds(JFrame* _who);
     // for icon state col
     /*protected*/ bool _graphicState = false; // updated from prefs
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
-    /*protected*/ /*QComboBox**/QVector<QString> makeAutomationBox(Turnout* t, QModelIndex index);
+//    /*protected*/ /*JComboBox**/QVector<QString> makeAutomationBox(Turnout* t, QModelIndex index);
     /*private*/ void canAddRange(ActionEvent* e = 0);
  friend class CBActionListener;
  friend class RangeListener;
@@ -127,10 +128,10 @@ Q_DECLARE_METATYPE(TurnoutTableAction)
 //{
 // Q_OBJECT
 // TurnoutTableAction* self;
-// QComboBox* cb;
+// JComboBox* cb;
 // Turnout* myTurnout ;
 //public:
-// CBActionListener(QComboBox* cb, Turnout* myTurnout, TurnoutTableAction* self);
+// CBActionListener(JComboBox* cb, Turnout* myTurnout, TurnoutTableAction* self);
 //public slots:
 // void actionPerformed(ActionEvent *e = 0);
 //};
@@ -232,6 +233,8 @@ public slots:
     /*protected*/ int iconHeight = -1;
     /*protected*/ void loadIcons();
     /*protected*/ void configValueColumn(JTable* table);
+    QStringList getAutomationList(Turnout* t, QModelIndex &index);
+    QStringList getDecoderList(Turnout* t, QModelIndex &);
 
  protected slots:
 
@@ -240,20 +243,18 @@ public slots:
 class TTComboBoxDelegate : public QItemDelegate
 {
 Q_OBJECT
-
 public:
-  TTComboBoxDelegate(QStringList items,  TurnoutTableAction* turnoutTableAction, bool editable = false, QObject *parent = 0);
+  TTComboBoxDelegate(TurnoutTableAction* turnoutTableAction, bool editable = false, QObject *parent = 0);
 
   QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
   void setEditorData(QWidget *editor, const QModelIndex &index) const;
   void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
   void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-  //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-  void setItems(QStringList, QString);
+  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:
   TurnoutTableAction* turnoutTableAction;
-  mutable QStringList items;
+  //mutable QStringList items;
   bool editable;
 };
 
@@ -267,7 +268,7 @@ public:
   void setEditorData(QWidget *editor, const QModelIndex &index) const;
   void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
   void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-  //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:
   TurnoutTableAction* self;
@@ -304,7 +305,7 @@ public slots:
     TurnoutOperation* myOp;
     Turnout* myTurnout;
  public:
-    TurnoutOperationEditor(TurnoutTableAction* tta, JFrame* parent, TurnoutOperation* op, Turnout* t, /*QComboBox* box*/ QString val);
+    TurnoutOperationEditor(TurnoutTableAction* tta, JFrame* parent, TurnoutOperation* op, Turnout* t, /*JComboBox* box*/ QString val);
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
     void On_nameButton_clicked();

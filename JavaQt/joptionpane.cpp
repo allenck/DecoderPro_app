@@ -774,7 +774,17 @@
 
  int style = styleFromMessageType(messageType);
  JDialog* dialog = pane->createDialog(parentComponent, title, style, optionType);
-
+ QWidget* w = VPtr<QListWidget>::asPtr(message);
+ if(w)
+ {
+  QListWidget* list = w->findChild<QListWidget*>();
+  if(list)
+  {
+   connect(list, &QListWidget::doubleClicked, [=]{
+    dialog->accept();
+   });
+  }
+ }
  pane->selectInitialValue();
 #if 1
  //dialog->show();

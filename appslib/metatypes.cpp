@@ -334,6 +334,7 @@
 #include "ctc/ctcexceptionbuffer.h"
 #include "ctc/otherdata.h"
 #include "se8csignalheadxml.h"
+#include "turnoutoperationmanagerxml.h"
 
 bool Metatypes::done = false;
 
@@ -685,6 +686,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<CTCExceptionBuffer>("CTCExceptionBuffer");
  qRegisterMetaType<OtherData>("OtherData");
  qRegisterMetaType<SE8cSignalHeadXml>("SE8cSignalHeadXml");
+ qRegisterMetaType<TurnoutOperationManagerXml>("TurnoutOperationManagerXml");
 
  Metatypes::done = true;
 }

@@ -1,9 +1,10 @@
 ﻿#include "turnoutoperationmanagerxml.h"
 #include "turnoutoperationxml.h"
 #include "turnoutoperationmanager.h"
+#include "loggerfactory.h"
 
 TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
-    QObject(parent)
+    AbstractXmlAdapter(parent)
 {
 }
 
@@ -24,11 +25,11 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
 
 /*public*/ void TurnoutOperationManagerXml::load(QDomElement /*element*/, QObject /*o*/)
 {
- log.error("Invalid method called");
+ log->error("Invalid method called");
 }
 
 //@SuppressWarnings("unchecked")
-/*public*/ bool TurnoutOperationManagerXml::load(QDomElement operationsElement)
+/*public*/ bool TurnoutOperationManagerXml::load(QDomElement operationsElement) throw (Exception)
 {
  bool result = true;
  TurnoutOperationManager* manager = TurnoutOperationManager::getInstance();
@@ -44,7 +45,7 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
 //  }
  }
  QDomNodeList operationsList = operationsElement.elementsByTagName("operation");
- if (log.isDebugEnabled()) log.debug("Found "+QString("%1").arg(operationsList.size())+" operations");
+ if (log->isDebugEnabled()) log->debug("Found "+QString("%1").arg(operationsList.size())+" operations");
  for (int i=0; i<operationsList.size(); i++)
  {
   TurnoutOperationXml::loadOperation(operationsList.at(i).toElement());
@@ -83,5 +84,5 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
  return elem;
 }
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TurnoutOperationManagerXml.class.getName());
+/*static*/ Logger* TurnoutOperationManagerXml::log = LoggerFactory::getLogger("TurnoutOperationManagerXml");
 //}

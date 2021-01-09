@@ -833,7 +833,6 @@ public URL getURL(URI uri) {
  foreach (QString str, *stringList) {
   list->addItem(new QListWidgetItem(str));
  }
-
  widget->layout()->addWidget(list);
  QCheckBox* cb = new QCheckBox(tr("Don't show this again"));
  widget->layout()->addWidget(cb);

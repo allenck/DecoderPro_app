@@ -116,7 +116,7 @@ BeanItemPanel* TurnoutEditAction::feedback() {
     _feedback = new BeanItemPanel();
     _feedback->setName(tr("Feedback"));
 
-    modeBox = new QComboBox();
+    modeBox = new JComboBox();
     modeBox->addItems(((Turnout*) bean)->getValidFeedbackNames().toList());
     oldModeSelection = ((Turnout*) bean)->getFeedbackModeName();
     modeBox->setCurrentIndex(modeBox->findText(oldModeSelection));
@@ -140,7 +140,7 @@ BeanItemPanel* TurnoutEditAction::feedback() {
 
     QStringList str = QStringList();
     str << "empty";
-    automationBox = new QComboBox();
+    automationBox = new JComboBox();
     automationBox->addItems(str);
 
     _feedback->addItem(new BeanEditItem(automationBox, tr("Turnout Automation"), tr("Method used to retry the setting of the turnout")));
@@ -327,7 +327,7 @@ FeedbackResetItemListener::FeedbackResetItemListener(TurnoutEditAction *act)
  QStringList* automationList = new QStringList;
  for(int i = 0; i < act->automationBox->count(); i++)
   automationList->append(act->automationBox->itemText(i));
- TurnoutTableAction::updateAutomationBox(t, automationList->toVector(), act->index);
+ TurnoutTableAction::updateAutomationBox(t, act->automationBox);
  //automationBox.addActionListener(automationSelectionListener);
  connect(act->automationBox, SIGNAL(currentIndexChanged(int)), this, SLOT(actionPerformed()));
 
@@ -372,7 +372,7 @@ void TurnoutEditAction::updateFeedbackOptions()
  QStringList* automationList = new QStringList;
  for(int i = 0; i < automationBox->count(); i++)
   automationList->append(automationBox->itemText(i));
- TurnoutTableAction::updateAutomationBox(t, automationList->toVector(),index);
+ TurnoutTableAction::updateAutomationBox(t, automationBox);
 }
 
 void TurnoutEditAction::updateAutomationOptions() {
@@ -432,7 +432,7 @@ BeanItemPanel* TurnoutEditAction::lock() {
     QStringList lockOperations = QStringList()
      << bothText << cabOnlyText << pushbutText << noneText;
 
-    lockOperationBox = new QComboBox;
+    lockOperationBox = new JComboBox;
     lockOperationBox->addItems(lockOperations);
     lock->addItem(new BeanEditItem(lockOperationBox, tr("LockMode"), tr("LockModeToolTip")));
 //    lockOperationBox.addActionListener(new ActionListener() {
@@ -445,7 +445,7 @@ BeanItemPanel* TurnoutEditAction::lock() {
 //        }
 //    });
     connect(lockOperationBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(On_lockBox_currentIndex_changed(QString)));
-    lockBox = new QComboBox;
+    lockBox = new JComboBox;
     lockBox->addItems(((Turnout*) bean)->getValidDecoderNames());
     lock->addItem(new BeanEditItem(lockBox, tr("Accessory Decoder"), tr("JMRI needs to know what type of DCC decoder is in use so it can handle the lock properly.")));
 
@@ -599,13 +599,13 @@ BeanItemPanel* TurnoutEditAction::speed()
   }
  }
 
- closedSpeedBox = new QComboBox;
+ closedSpeedBox = new JComboBox;
  closedSpeedBox->addItems(speedListClosed.toList());
  closedSpeedBox->setEditable(true);
 
  speed->addItem(new BeanEditItem(closedSpeedBox, tr("Closed Speed"), tr("ClosedSpeedToolTip")));
 
- thrownSpeedBox = new QComboBox;
+ thrownSpeedBox = new JComboBox;
  thrownSpeedBox->addItems(speedListThrown.toList());
  thrownSpeedBox->setEditable(true);
  speed->addItem(new BeanEditItem(thrownSpeedBox, tr("Thrown Speed"), tr("The maximum Speed that a train is permited to run when the turnout is set thrown")));

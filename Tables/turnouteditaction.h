@@ -7,7 +7,7 @@ class FlowLayout;
 class TurnoutOperation;
 class JTextField;
 class TurnoutOperationConfig;
-class QComboBox;
+class JComboBox;
 class JmriBeanComboBox;
 class QCheckBox;
 class TurnoutEditAction : public BeanEditAction
@@ -31,8 +31,8 @@ public:
  BeanItemPanel* basicDetails();
  JmriBeanComboBox* sensorFeedBack1Field;
  JmriBeanComboBox* sensorFeedBack2Field;
- QComboBox* modeBox;
- QComboBox* automationBox;
+ JComboBox* modeBox;
+ JComboBox* automationBox;
  QString useBlockSpeed;// = "Use Block Speed";//IN18N
  TurnoutOperationConfig* config;
  BeanItemPanel* _feedback;
@@ -51,14 +51,14 @@ public:
  QString pushbutText;// = "Pushbutton only";
  QString noneText;// = "None";
 
- QComboBox* lockBox;
- QComboBox* lockOperationBox;
+ JComboBox* lockBox;
+ JComboBox* lockOperationBox;
  BeanItemPanel* lock();
  /*private*/ QVector<QString> speedListClosed;// = new QVector<QString>();
  /*private*/ QVector<QString> speedListThrown;// = new QVector<QString>();
 
- QComboBox* closedSpeedBox;
- QComboBox* thrownSpeedBox;
+ JComboBox* closedSpeedBox;
+ JComboBox* thrownSpeedBox;
  QString defaultThrownSpeedText;
  QString defaultClosedSpeedText;
  BeanItemPanel* speed();
