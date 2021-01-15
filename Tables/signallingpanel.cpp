@@ -423,7 +423,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
  QStringList blockStates;
  blockStates << SET_TO_UNOCCUPIED << SET_TO_OCCUPIED << SET_TO_ANY;
  //manualBlockTable->setItemDelegateForColumn(BlockModel::STATE_COLUMN, new SPComboBoxDelegate(blockStates));
- _blockModel->setColumnToHoldDelegate(manualBlockTable, BlockModel::STATE_COLUMN, new SPComboBoxDelegate(blockStates));
+ _blockModel->setColumnToHoldDelegate(manualBlockTable, BlockModel::STATE_COLUMN, new JComboBoxEditor(blockStates));
 
 // TableColumnModel _manualBlockColumnModel = manualBlockTable.getColumnModel();
 // TableColumn includeColumnC = _manualBlockColumnModel.
@@ -683,7 +683,7 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     QStringList statesList;
     statesList << SET_TO_THROWN <<SET_TO_CLOSED << SET_TO_ANY;
     //manualTurnoutTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate(statesList));
-    _turnoutModel->setColumnToHoldDelegate(manualTurnoutTable, SPTableModel::STATE_COLUMN, new SPComboBoxDelegate(statesList));
+    _turnoutModel->setColumnToHoldDelegate(manualTurnoutTable, SPTableModel::STATE_COLUMN, new JComboBoxEditor(statesList));
 
 //    TableColumnModel _manualTurnoutColumnModel = manualTurnoutTable.getColumnModel();
 //    TableColumn includeColumnC = _manualTurnoutColumnModel.
@@ -827,7 +827,7 @@ QWidget* SignallingPanel::buildSensorPanel(){
     QStringList statesList;
     statesList << SET_TO_INACTIVE << SET_TO_ACTIVE;
     //manualSensorTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate( statesList));
-    _sensorModel->setColumnToHoldDelegate(manualSensorTable, SPTableModel::STATE_COLUMN, new SPComboBoxDelegate( statesList) );
+    _sensorModel->setColumnToHoldDelegate(manualSensorTable, SPTableModel::STATE_COLUMN, new JComboBoxEditor( statesList) );
 
 //    TableColumnModel _manualSensorColumnModel = manualSensorTable.getColumnModel();
 //    TableColumn includeColumnC = _manualSensorColumnModel.
@@ -2361,6 +2361,7 @@ void SignallingPanel::editDetails(){
     }
 }
 #endif
+#if 0
     SPComboBoxDelegate::SPComboBoxDelegate(QStringList items, QObject *parent)
     :QItemDelegate(parent)
     {
@@ -2392,9 +2393,9 @@ void SignallingPanel::editDetails(){
     {
       editor->setGeometry(option.rect);
     }
-
+#endif
     SignalMastComboBoxDelegate::SignalMastComboBoxDelegate(SignallingPanel* panel, QObject *parent)
-    :QItemDelegate(parent)
+    : JComboBoxEditor(parent)
     {
      this->panel = panel;
     }
@@ -2410,7 +2411,7 @@ void SignallingPanel::editDetails(){
       editor->addItems(((AbstractSignalMast*)signalMastList.at(index.row())->getMast())->getValidAspects().toList());
       return editor;
     }
-
+#if 0
     void SignalMastComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
     {
       QComboBox *comboBox = static_cast<QComboBox*>(editor);
@@ -2428,7 +2429,7 @@ void SignallingPanel::editDetails(){
     {
       editor->setGeometry(option.rect);
     }
-
+#endif
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SignallingPanel.class.getName());
 //}
 

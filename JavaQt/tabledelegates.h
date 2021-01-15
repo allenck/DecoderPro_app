@@ -2,7 +2,7 @@
 #define TABLEDELEGATES_H
 #include "tablecelleditor.h"
 #include "tablecellrenderer.h"
-#include <QItemDelegate>
+#include <QStyledItemDelegate>
 #include "jtogglebutton.h"
 #include "jbutton.h"
 #include "jcombobox.h"
@@ -10,12 +10,12 @@
 #include "togglebutton.h"
 #include <QApplication>
 
-class ButtonRenderer : public QItemDelegate, public TableCellEditor, public TableCellRenderer
+class ButtonRenderer : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
     Q_OBJECT
     Q_INTERFACES(TableCellEditor TableCellRenderer )
 public:
-    ButtonRenderer(QObject* parent = nullptr) : QItemDelegate(parent) {}
+    ButtonRenderer(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const{
         JButton* editor;
@@ -50,12 +50,12 @@ public:
    }
 };
 
-class ToggleButtonRenderer : public QItemDelegate, public TableCellEditor, public TableCellRenderer
+class ToggleButtonRenderer : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
     Q_OBJECT
     Q_INTERFACES(TableCellEditor TableCellRenderer )
 public:
-    ToggleButtonRenderer(QString sq, QString s2, QObject* parent = nullptr) : QItemDelegate(parent) {}
+    ToggleButtonRenderer(QString sq, QString s2, QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
@@ -89,21 +89,21 @@ public:
     }
 };
 
-class ValueRenderer : public QItemDelegate, public TableCellEditor, public TableCellRenderer
+class ValueRenderer : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
     Q_OBJECT
     Q_INTERFACES(TableCellEditor TableCellRenderer )
 public:
-    ValueRenderer(QObject* parent = nullptr) : QItemDelegate(parent) {}
+    ValueRenderer(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
 };
 
-class ButtonEditor : public QItemDelegate, public TableCellEditor, public TableCellRenderer
+class ButtonEditor : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
     Q_OBJECT
   Q_INTERFACES(TableCellEditor TableCellRenderer )
 public:
-    ButtonEditor(QObject* parent = nullptr) : QItemDelegate(parent) {}
+    ButtonEditor(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
@@ -149,7 +149,7 @@ public:
     }
 };
 
-class ToggleButtonEditor : public QItemDelegate, public TableCellEditor, public TableCellRenderer
+class ToggleButtonEditor : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
     Q_OBJECT
     Q_INTERFACES(TableCellEditor TableCellRenderer )
@@ -157,9 +157,9 @@ class ToggleButtonEditor : public QItemDelegate, public TableCellEditor, public 
     QString off;
 
 public:
-    ToggleButtonEditor(QObject* parent = nullptr) : QItemDelegate(parent) {}
+    ToggleButtonEditor(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
-    ToggleButtonEditor(QString on, QString off, QObject* parent = nullptr) : QItemDelegate(parent)
+    ToggleButtonEditor(QString on, QString off, QObject* parent = nullptr) : QStyledItemDelegate(parent)
     {
         this->on = on;
         this->off = off;
@@ -228,15 +228,15 @@ public:
     }
 };
 
-class JComboBoxEditor : public QItemDelegate, public TableCellEditor, public TableCellRenderer
+class JComboBoxEditor : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
     Q_OBJECT
     Q_INTERFACES(TableCellEditor TableCellRenderer )
     QStringList values = QStringList();
 public:
-    JComboBoxEditor(QObject* parent = nullptr) : QItemDelegate(parent) {}
+    JComboBoxEditor(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
-    JComboBoxEditor(QStringList values, QObject* parent = nullptr) : QItemDelegate(parent)
+    JComboBoxEditor(QStringList values, QObject* parent = nullptr) : QStyledItemDelegate(parent)
     {
         this->values = values;
     }

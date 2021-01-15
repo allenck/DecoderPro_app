@@ -28,6 +28,7 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Light";
  }
+  /*public*/ QString toString() {return "ProxyLightManager";}
 
 signals:
 

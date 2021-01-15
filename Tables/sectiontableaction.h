@@ -224,6 +224,7 @@ public:
     /*public*/ EntryPointTableModel(SectionTableAction* act);
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ int rowCount(const QModelIndex &parent) const;
+    /*public*/ QString getColumnClass(int c);
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     /*public*/ int getPreferredWidth(int col);

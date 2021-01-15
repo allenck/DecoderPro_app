@@ -16,6 +16,7 @@ public:
  };
  Q_ENUM(COLUMNS)
  explicit BeanTableModel(QObject *parent = 0);
+ /*public*/ QString getColumnClass(int c);
  /*public*/ virtual /*abstract*/ Manager* getManager() const;
 
  /*public*/ int columnCount(const QModelIndex &parent) const;

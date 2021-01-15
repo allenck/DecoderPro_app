@@ -64,7 +64,7 @@
  {
   SystemConnectionMemo*memo = (SystemConnectionMemo*)obj;
   //memo.addPropertyChangeListener(this.memoListener);
-  connect(memo, SIGNAL(propertyChange(PropertyChangeEvent*)), memoListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(memo->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), memoListener, SLOT(propertyChange(PropertyChangeEvent*)));
  }//);
 
 }
@@ -74,22 +74,22 @@
 {
  if (e->getPropertyName()== "ConnectionRemoved")
  {
-  if(qobject_cast<SystemConnectionMemo*>(VPtr<SystemConnectionMemo>::asPtr(e->getOldValue())))
+  if(qobject_cast<SystemConnectionMemo*>(VPtr<QObject>::asPtr(e->getOldValue())))
   {
-   SystemConnectionMemo* memo = qobject_cast<SystemConnectionMemo*>(VPtr<SystemConnectionMemo>::asPtr(e->getOldValue()));
+   SystemConnectionMemo* memo = qobject_cast<SystemConnectionMemo*>(VPtr<QObject>::asPtr(e->getOldValue()));
    QString removedName =  memo->getUserName();
    log->debug(tr("ConnectionRemoved for \"%1\"").arg(removedName));
    removeConnectionAsDefault(removedName);
-   disconnect(memo, SIGNAL(propertyChange(PropertyChangeEvent*)), memoListener, SLOT(propertyChange(PropertyChangeEvent*)) );
+   disconnect(memo->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), memoListener, SLOT(propertyChange(PropertyChangeEvent*)) );
   }
  }
  if (e->getPropertyName()=="ConnectionAdded")
  {
-  if(qobject_cast<SystemConnectionMemo*>(VPtr<SystemConnectionMemo>::asPtr(e->getNewValue())))
+  if(qobject_cast<SystemConnectionMemo*>(VPtr<QObject>::asPtr(e->getNewValue())))
   {
    SystemConnectionMemo* memo = VPtr<SystemConnectionMemo>::asPtr( e->getNewValue());
    //memo->addPropertyChangeListener(this->memoListener);
-   connect(memo, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(memo->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    // check for special case of anything else then Internal
    QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
    if((list->size() == 1 && !(qobject_cast<InternalSystemConnectionMemo*>(list->at(0))) ||
@@ -189,7 +189,7 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
   bool found = false;
   for (int x = 0; x < connList->size(); x++)
   {
-   SystemConnectionMemo* memo = static_cast<SystemConnectionMemo*>(connList->at(x));
+   DefaultSystemConnectionMemo* memo = static_cast<DefaultSystemConnectionMemo*>(connList->at(x));
    QString testName = ((SystemConnectionMemo*)memo)->getUserName();
    if (testName == memo->getUserName())
    {

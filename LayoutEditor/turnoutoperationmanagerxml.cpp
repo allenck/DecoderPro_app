@@ -23,28 +23,28 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
     elem.setAttribute("class", "jmri.configurexml.turnoutoperations.NoFeedbackTurnoutOperationXml");
 }
 
-/*public*/ void TurnoutOperationManagerXml::load(QDomElement /*element*/, QObject /*o*/)
-{
- log->error("Invalid method called");
-}
+///*public*/ void TurnoutOperationManagerXml::load(QDomElement /*element*/, QObject /*o*/)
+//{
+// log->error("Invalid method called");
+//}
 
 //@SuppressWarnings("unchecked")
-/*public*/ bool TurnoutOperationManagerXml::load(QDomElement operationsElement) throw (Exception)
+/*public*/ bool TurnoutOperationManagerXml::load(QDomElement sharedOperations, QDomElement perNodeOperations) throw (JmriConfigureXmlException)
 {
  bool result = true;
  TurnoutOperationManager* manager = TurnoutOperationManager::getInstance();
- if (!operationsElement.attribute("automate").isNull())
+ if (!sharedOperations.attribute("automate").isNull())
  {
 //  try
 //  {
-   manager->setDoOperations(operationsElement.attribute("automate")==("true"));
+   manager->setDoOperations(sharedOperations.attribute("automate")==("true"));
 //  }
 //  catch(NumberFormatException ex)
 //  {
 //   result = false;
 //  }
  }
- QDomNodeList operationsList = operationsElement.elementsByTagName("operation");
+ QDomNodeList operationsList = sharedOperations.elementsByTagName("operation");
  if (log->isDebugEnabled()) log->debug("Found "+QString("%1").arg(operationsList.size())+" operations");
  for (int i=0; i<operationsList.size(); i++)
  {

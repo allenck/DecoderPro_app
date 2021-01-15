@@ -559,24 +559,24 @@ QString AEPTableModel::isPairActive(int row) const
  return QVariant();
 }
 
-///*public*/ Class<?> getColumnClass(int col) {
-//    switch (col) {
-//        case FROMPOINTCOL:
-//        case TOPOINTCOL:
-//        case ACTIVECOL:
-//            return String.class;
-//        case DELETECOL:
-//        case CLEARCOL:
-//            return JButton.class;
-//        case BOTHWAYCOL:
-//        case ENABLEDCOL:
-//            return Boolean.class;
-//        case TYPECOL:
-//            return String.class;
-//        default:
-//            return NULL;
-//    }
-//}
+/*public*/ QString AEPTableModel::getColumnClass(int col) {
+    switch (col) {
+        case FROMPOINTCOL:
+        case TOPOINTCOL:
+        case ACTIVECOL:
+            return "String";
+        case DELETECOL:
+        case CLEARCOL:
+            return "JButton";
+        case BOTHWAYCOL:
+        case ENABLEDCOL:
+            return "Boolean";
+        case TYPECOL:
+            return "String";
+        default:
+            return "";
+    }
+}
 
 /*public*/ Qt::ItemFlags AEPTableModel::flags(const QModelIndex &index) const
 {

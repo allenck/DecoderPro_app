@@ -8,7 +8,7 @@ class InternalMeterManager : public AbstractMeterManager
   Q_OBJECT
  public:
   InternalMeterManager(InternalSystemConnectionMemo* memo, QObject* parent = nullptr);
-  /*public*/ SystemConnectionMemo* getMemo() override;
+  /*public*/ SystemConnectionMemo* getMemo() const override;
   /*public*/ QString getNamedBeanClass() const override {return "jmri.jmrix.internal.InternalMeterManager";}
   //QObject* self() {return (QObject*)this;}
 };

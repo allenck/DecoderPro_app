@@ -257,7 +257,8 @@ SOURCES += javaqt.cpp \
     jformattedtextfield.cpp \
     threadingutil.cpp \
     transferactionlistener.cpp \
-    togglebutton.cpp
+    togglebutton.cpp \
+    defaultcomboboxmodel.cpp
 
 HEADERS += javaqt.h\
         javaqt_global.h \
@@ -572,7 +573,8 @@ HEADERS += javaqt.h\
     tablecellrenderer.h \
     tablecelleditor.h \
     tabledelegates.h \
-    togglebutton.h
+    togglebutton.h \
+    defaultcomboboxmodel.h
 
 unix {
     target.path = /usr/lib

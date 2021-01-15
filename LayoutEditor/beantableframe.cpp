@@ -8,6 +8,7 @@
 #include "mysortfilterproxymodel.h"
 #include <QPushButton>
 #include "storemenu.h"
+#include "loggerfactory.h"
 
 BeanTableFrame::BeanTableFrame(QWidget *parent) :
     JmriJFrame(parent)
@@ -100,15 +101,19 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  fileMenu->addAction(printItem);
 //    printItem.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                try {
+ connect(printItem, &QAction::triggered, [=]{
+
+  try
+  {
 //                    // MessageFormat headerFormat = new MessageFormat(getTitle());  // not used below
 //                    MessageFormat footerFormat = new MessageFormat(getTitle()+" page {0,number}");
-//                    dataTable.print(JTable.PrintMode.FIT_WIDTH , null, footerFormat);
-//                } catch (java.awt.print.PrinterException e1) {
-//                    log.warn("error printing: "+e1,e1);
-//                }
+   QString footerFormat = getTitle() + " page {0,number}";
+   dataTable->print(JTable::PrintMode::FIT_WIDTH , QString(), footerFormat);
+  } catch (PrinterException e1) {
+      log->warn("error printing: ",e1);
+  }
 //            }
-//    });
+ });
 
  setMenuBar(menuBar);
 
@@ -187,3 +192,4 @@ void BeanTableFrame::extras() {}
 {
  return "jmri.jmrit.beantable.BeanTableFrame";
 }
+/*private*/ /*final*/ /*static*/ Logger* BeanTableFrame::log = LoggerFactory::getLogger("BeanTableFrame");

@@ -200,19 +200,20 @@ void BeanTableDataModel::setManager(Manager *) {}
  return QVariant();
 }
 
-// /*public*/ Class<?> getColumnClass(int col) {
-//    switch (col) {
-//    case SYSNAMECOL:
-//    case USERNAMECOL:
-//    case COMMENTCOL:
-//        return String.class;
-//    case VALUECOL:
-//    case DELETECOL:
-//        return JButton.class;
-//    default:
-//        return NULL;
-//    }
-//}
+ /*public*/ QString BeanTableDataModel::getColumnClass(int col) const {
+    switch (col) {
+    case SYSNAMECOL:
+    case USERNAMECOL:
+    case COMMENTCOL:
+        return "String";
+    case VALUECOL:
+    case DELETECOL:
+        return "JButton";
+    default:
+        return QString();
+    }
+}
+
 /*public*/ Qt::ItemFlags BeanTableDataModel::flags(const QModelIndex &index) const
 {
  switch (index.column())
@@ -576,7 +577,7 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
   table->setColumnWidth(i,width);
  }
  //table.sizeColumnsToFit(-1);
- table->resizeColumnsToContents();
+ //table->resizeColumnsToContents();
  table->resizeRowsToContents();
  //table->setRowHeight(0, QPushButton().sizeHint().height());
 

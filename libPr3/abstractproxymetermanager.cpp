@@ -5,12 +5,13 @@
 #include "connectionconfigmanager.h"
 #include "instancemanager.h"
 #include "connectionconfig.h"
+#include "defaultsystemconnectionmemo.h"
 
 // NOTE: This class is a replacement for AbstractProxyManager that
 // implements MeterManager instead of AbstractManager
 
 AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
-    : AbstractMeterManager(new SystemConnectionMemo(), parent)
+    : AbstractMeterManager(new DefaultSystemConnectionMemo(), parent)
 {
  mgrs = QList<Manager*>();
  internalManager = nullptr;

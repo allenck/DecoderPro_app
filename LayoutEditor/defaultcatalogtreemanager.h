@@ -31,7 +31,7 @@ public:
     /*public*/ QString getNamedBeanClass()const override {
         return "CatalogTree";
     }
-
+    SystemConnectionMemo* getMemo() const {return nullptr;}
 signals:
 
 public slots:

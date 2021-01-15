@@ -12,12 +12,13 @@
 #include "lnturnoutmanager.h"
 #include "loggerfactory.h"
 #include "namedbeancomparator.h"
+#include "defaultsystemconnectionmemo.h"
 
 // NOTE: This class is a repklacement for AbstractProxyManager that
 // implements TurnoutManager instead of AbstractManager
 
 AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
-    : TurnoutManager(new SystemConnectionMemo(), parent)
+    : TurnoutManager(new DefaultSystemConnectionMemo(), parent)
 {
  mgrs = QList<Manager*>();
  internalManager = nullptr;

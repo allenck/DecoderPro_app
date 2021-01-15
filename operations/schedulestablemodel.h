@@ -2,7 +2,7 @@
 #define SCHEDULESTABLEMODEL_H
 
 #include "abstracttablemodel.h"
-#include <QStyledItemDelegate>
+#include "tabledelegates.h"
 
 class Logger;
 class JComboBox;
@@ -25,6 +25,7 @@ namespace Operations
   /*public*/ int rowCount(const QModelIndex &parent) const;
   /*public*/ int columnCount(const QModelIndex &parent) const;
   /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+  /*public*/ QString getColumnClass(int col);
   /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
   /*public*/ QVariant data(const QModelIndex &index, int role) const;
   /*public*/ void dispose();
@@ -79,15 +80,15 @@ namespace Operations
 
  typedef JComboBox* (*GETCOMBO1)(Schedule*, SchedulesTableModel* );
 
- class STMSComboBoxDelegate : public QStyledItemDelegate
+ class STMSComboBoxDelegate : public JComboBoxEditor
  {
  Q_OBJECT
  public:
    STMSComboBoxDelegate(SchedulesTableModel* model,  GETCOMBO1, QObject *parent = 0);
    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-   void setEditorData(QWidget *editor, const QModelIndex &index) const;
-   void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-   void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+//   void setEditorData(QWidget *editor, const QModelIndex &index) const;
+//   void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+//   void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
    //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
  private:

@@ -1735,6 +1735,39 @@ if (_wrapper) {
 }
   AbstractLightManager::timerEvent(event0);
 }
+QString  PythonQtShell_AbstractLightManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractLightManager::toString();
+}
 char  PythonQtShell_AbstractLightManager::typeLetter() const
 {
 if (_wrapper) {
@@ -1878,6 +1911,7 @@ Light*  PythonQtWrapper_AbstractLightManager::createNewLight(AbstractLightManage
   return ( ((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->promoted_createNewLight(arg__1, arg__2));
 }
 
+QString PythonQtWrapper_AbstractLightManager::py_toString(AbstractLightManager* obj) { return obj->toString(); }
 
 
 PythonQtShell_AbstractManager::~PythonQtShell_AbstractManager() {
@@ -2885,6 +2919,39 @@ if (_wrapper) {
 }
   AbstractManager::timerEvent(event0);
 }
+QString  PythonQtShell_AbstractManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractManager::toString();
+}
 char  PythonQtShell_AbstractManager::typeLetter() const
 {
 if (_wrapper) {
@@ -3069,6 +3136,7 @@ void PythonQtWrapper_AbstractManager::updateAutoNumber(AbstractManager* theWrapp
   ( theWrappedObject->updateAutoNumber(systemName));
 }
 
+QString PythonQtWrapper_AbstractManager::py_toString(AbstractManager* obj) { return obj->toString(); }
 
 
 PythonQtShell_AbstractNamedBean::~PythonQtShell_AbstractNamedBean() {
@@ -7145,6 +7213,39 @@ if (_wrapper) {
 }
   AbstractReporterManager::timerEvent(event0);
 }
+QString  PythonQtShell_AbstractReporterManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractReporterManager::toString();
+}
 char  PythonQtShell_AbstractReporterManager::typeLetter() const
 {
 if (_wrapper) {
@@ -7250,6 +7351,7 @@ int PythonQtShell_AbstractReporterManager::qt_metacall(QMetaObject::Call call, i
   int result = AbstractReporterManager::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
+QString PythonQtWrapper_AbstractReporterManager::py_toString(AbstractReporterManager* obj) { return obj->toString(); }
 
 
 PythonQtShell_AbstractSensor::~PythonQtShell_AbstractSensor() {
@@ -10262,6 +10364,39 @@ if (_wrapper) {
 }
   AbstractSensorManager::timerEvent(event0);
 }
+QString  PythonQtShell_AbstractSensorManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractSensorManager::toString();
+}
 char  PythonQtShell_AbstractSensorManager::typeLetter() const
 {
 if (_wrapper) {
@@ -10403,6 +10538,7 @@ QObject*  PythonQtWrapper_AbstractSensorManager::getInstanceBySystemName(Abstrac
   return ( ((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->promoted_getInstanceBySystemName(systemName));
 }
 
+QString PythonQtWrapper_AbstractSensorManager::py_toString(AbstractSensorManager* obj) { return obj->toString(); }
 
 
 PythonQtShell_AbstractSerialPortController::~PythonQtShell_AbstractSerialPortController() {
@@ -15742,7 +15878,7 @@ if (_wrapper) {
 }
   return AbstractTurnoutManager::getEntryToolTip();
 }
-SystemConnectionMemo*  PythonQtShell_AbstractTurnoutManager::getMemo()
+SystemConnectionMemo*  PythonQtShell_AbstractTurnoutManager::getMemo() const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16677,6 +16813,39 @@ if (_wrapper) {
 }
   AbstractTurnoutManager::timerEvent(event0);
 }
+QString  PythonQtShell_AbstractTurnoutManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractTurnoutManager::toString();
+}
 char  PythonQtShell_AbstractTurnoutManager::typeLetter() const
 {
 if (_wrapper) {
@@ -16787,6 +16956,7 @@ Turnout*  PythonQtWrapper_AbstractTurnoutManager::createNewTurnout(AbstractTurno
   return ( ((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->promoted_createNewTurnout(systemName, userName));
 }
 
+QString PythonQtWrapper_AbstractTurnoutManager::py_toString(AbstractTurnoutManager* obj) { return obj->toString(); }
 
 
 PythonQtShell_Audio::~PythonQtShell_Audio() {
@@ -22629,6 +22799,39 @@ if (_wrapper) {
 }
   AudioManager::timerEvent(event0);
 }
+QString  PythonQtShell_AudioManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AudioManager::toString();
+}
 char  PythonQtShell_AudioManager::typeLetter() const
 {
 if (_wrapper) {
@@ -22769,6 +22972,7 @@ Audio*  PythonQtWrapper_AudioManager::provideAudio(AudioManager* theWrappedObjec
   return ( theWrappedObject->provideAudio(arg__1));
 }
 
+QString PythonQtWrapper_AudioManager::py_toString(AudioManager* obj) { return obj->toString(); }
 
 
 PythonQtShell_AudioSource::~PythonQtShell_AudioSource() {
@@ -26844,6 +27048,39 @@ if (_wrapper) {
 }
   return BeanTableDataModel::getByUserName(name0);
 }
+QString  PythonQtShell_BeanTableDataModel::getColumnClass(int  col0) const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getColumnClass");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&col0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getColumnClass", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::getColumnClass(col0);
+}
 Manager*  PythonQtShell_BeanTableDataModel::getManager()
 {
 if (_wrapper) {
@@ -27291,6 +27528,11 @@ NamedBean*  PythonQtWrapper_BeanTableDataModel::getBySystemName(BeanTableDataMod
 NamedBean*  PythonQtWrapper_BeanTableDataModel::getByUserName(BeanTableDataModel* theWrappedObject, QString  name)
 {
   return ( ((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->promoted_getByUserName(name));
+}
+
+QString  PythonQtWrapper_BeanTableDataModel::getColumnClass(BeanTableDataModel* theWrappedObject, int  col) const
+{
+  return ( theWrappedObject->getColumnClass(col));
 }
 
 int  PythonQtWrapper_BeanTableDataModel::getDisplayDeleteMsg(BeanTableDataModel* theWrappedObject)
@@ -29059,6 +29301,11 @@ QVariant  PythonQtWrapper_BeanTableModel::data(BeanTableModel* theWrappedObject,
 Qt::ItemFlags  PythonQtWrapper_BeanTableModel::flags(BeanTableModel* theWrappedObject, const QModelIndex&  index) const
 {
   return ( theWrappedObject->flags(index));
+}
+
+QString  PythonQtWrapper_BeanTableModel::getColumnClass(BeanTableModel* theWrappedObject, int  c)
+{
+  return ( theWrappedObject->getColumnClass(c));
 }
 
 Manager*  PythonQtWrapper_BeanTableModel::getManager(BeanTableModel* theWrappedObject) const
@@ -31557,6 +31804,39 @@ if (_wrapper) {
 }
   BlockManager::timerEvent(event0);
 }
+QString  PythonQtShell_BlockManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BlockManager::toString();
+}
 char  PythonQtShell_BlockManager::typeLetter() const
 {
 if (_wrapper) {
@@ -31731,6 +32011,7 @@ qint64  PythonQtWrapper_BlockManager::timeSinceLastLayoutPowerOn(BlockManager* t
   return ( theWrappedObject->timeSinceLastLayoutPowerOn());
 }
 
+QString PythonQtWrapper_BlockManager::py_toString(BlockManager* obj) { return obj->toString(); }
 
 
 PythonQtShell_CommandStation::~PythonQtShell_CommandStation() {
@@ -39415,6 +39696,39 @@ if (_wrapper) {
 }
   DefaultLogixManager::timerEvent(event0);
 }
+QString  PythonQtShell_DefaultLogixManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultLogixManager::toString();
+}
 char  PythonQtShell_DefaultLogixManager::typeLetter() const
 {
 if (_wrapper) {
@@ -39525,4 +39839,5 @@ DefaultLogixManager*  PythonQtWrapper_DefaultLogixManager::static_DefaultLogixMa
   return (DefaultLogixManager::instance());
 }
 
+QString PythonQtWrapper_DefaultLogixManager::py_toString(DefaultLogixManager* obj) { return obj->toString(); }
 

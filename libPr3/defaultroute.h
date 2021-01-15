@@ -11,15 +11,15 @@ class ControlSensor;
 class OutputSensor;
 class OutputTurnout;
 class InstanceManager;
-class LIBPR3SHARED_EXPORT DefaultRoute : public AbstractNamedBean, public Route
+class LIBPR3SHARED_EXPORT DefaultRoute : /*public AbstractNamedBean,*/ public Route
 {
     Q_OBJECT
-  Q_INTERFACES(Route)
+  //Q_INTERFACES(Route)
 public:
     //explicit DefaultRoute(QObject *parent = 0);
     /*public*/ DefaultRoute(QString systemName, QString userName,QObject *parent = 0) ;
     /*public*/ DefaultRoute(QString systemName, QObject *parent = 0);
-    /*public*/ bool getEnabled() override ;
+    /*public*/ bool getEnabled() const override ;
     /*public*/ void setEnabled(bool v) override ;
     /*public*/ bool getLocked() override ;
     /*public*/ void setLocked(bool v) override ;
@@ -76,7 +76,7 @@ public:
     /*public*/ bool isRouteBusy();
     /*public*/ int getState() override ;
     /*public*/ void setState(int state) override ;
-    /*public*/ QObject* self() override {(QObject*)this;}
+    /*public*/ QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:

@@ -1,10 +1,10 @@
 #ifndef SYSTEMNAMEVALIDATOR_H
 #define SYSTEMNAMEVALIDATOR_H
 
-#include <QObject>
+#include "inputverifier.h"
 
 class Manager;
-class SystemNameValidator : public QObject
+class SystemNameValidator : public InputVerifier
 {
  Q_OBJECT
 public:

@@ -100,8 +100,8 @@ namespace Operations
      tcm->getColumn(DOWN_COLUMN)->setCellEditor(buttonEditor);
      tcm->getColumn(DELETE_COLUMN)->setCellRenderer(buttonRenderer);
      tcm->getColumn(DELETE_COLUMN)->setCellEditor(buttonEditor);
-     table->setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
-     table->setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
+     table->setDefaultRenderer("JComboBox", new jmri.jmrit.symbolicprog.ValueRenderer());
+     table->setDefaultEditor("JComboBox", new jmri.jmrit.symbolicprog.ValueEditor());
 #endif
      table->setItemDelegateForColumn(COMMENT_COLUMN, new MyDelegate());
      table->setItemDelegateForColumn(UP_COLUMN, new MyDelegate());
@@ -109,8 +109,8 @@ namespace Operations
      table->setItemDelegateForColumn(DELETE_COLUMN, new MyDelegate());
 
      QStringList yesNo = QStringList() << "yes" << "no";
-     table->setItemDelegateForColumn(PICKUP_COLUMN, new RETComboBoxDelegate(this, yesNo));
-     table->setItemDelegateForColumn(DROP_COLUMN, new RETComboBoxDelegate(this, yesNo));
+     table->setItemDelegateForColumn(PICKUP_COLUMN, new JComboBoxEditor(yesNo, this));
+     table->setItemDelegateForColumn(DROP_COLUMN, new JComboBoxEditor(yesNo, this));
      if(!_showWait)
      {
       QStringList times;
@@ -134,7 +134,7 @@ namespace Operations
            times.append(hour + ":" + minute);
        }
       }
-      table->setItemDelegateForColumn(WAIT_COLUMN, new RETComboBoxDelegate(this, times));
+      table->setItemDelegateForColumn(WAIT_COLUMN, new JComboBoxEditor(times, this));
      }
      QStringList randomControlList = QStringList();
      randomControlList.append(RouteLocation::DISABLED);
@@ -142,7 +142,7 @@ namespace Operations
      for (int i = 10; i < 101; i = i + 10) {
          randomControlList.append(QString::number(i));
      }
-     table->setItemDelegateForColumn(RANDOM_CONTROL_COLUMN, new RETComboBoxDelegate(this, randomControlList));
+     table->setItemDelegateForColumn(RANDOM_CONTROL_COLUMN, new JComboBoxEditor(randomControlList, this));
 
 
      setPreferredWidths(table);
@@ -233,49 +233,49 @@ namespace Operations
   return QVariant();
  }
 
-// /*public*/ Class<?> getColumnClass(int col) {
-//     switch (col) {
-//         case ID_COLUMN:
-//             return String.class;
-//         case NAME_COLUMN:
-//             return String.class;
-//         case TRAIN_DIRECTION_COLUMN:
-//             return JComboBox.class;
-//         case MAXMOVES_COLUMN:
-//             return String.class;
-//         case RANDOM_CONTROL_COLUMN:
-//             return JComboBox.class;
-//         case PICKUP_COLUMN:
-//             return JComboBox.class;
-//         case DROP_COLUMN:
-//             return JComboBox.class;
-//         case WAIT_COLUMN: {
-//             if (_showWait) {
-//                 return String.class;
-//             } else {
-//                 return JComboBox.class;
-//             }
-//         }
-//         case MAXLENGTH_COLUMN:
-//             return String.class;
-//         case GRADE:
-//             return String.class;
-//         case TRAINICONX:
-//             return String.class;
-//         case TRAINICONY:
-//             return String.class;
-//         case COMMENT_COLUMN:
-//             return JButton.class;
-//         case UP_COLUMN:
-//             return JButton.class;
-//         case DOWN_COLUMN:
-//             return JButton.class;
-//         case DELETE_COLUMN:
-//             return JButton.class;
-//         default:
-//             return NULL;
-//     }
-// }
+ /*public*/ QString RouteEditTableModel::getColumnClass(int col) {
+     switch (col) {
+         case ID_COLUMN:
+             return "String";
+         case NAME_COLUMN:
+             return "String";
+         case TRAIN_DIRECTION_COLUMN:
+             return "JComboBox";
+         case MAXMOVES_COLUMN:
+             return "String";
+         case RANDOM_CONTROL_COLUMN:
+             return "JComboBox";
+         case PICKUP_COLUMN:
+             return "JComboBox";
+         case DROP_COLUMN:
+             return "JComboBox";
+         case WAIT_COLUMN: {
+             if (_showWait) {
+                 return "String";
+             } else {
+                 return "JComboBox";
+             }
+         }
+         case MAXLENGTH_COLUMN:
+             return "String";
+         case GRADE:
+             return "String";
+         case TRAINICONX:
+             return "String";
+         case TRAINICONY:
+             return "String";
+         case COMMENT_COLUMN:
+             return "JButton";
+         case UP_COLUMN:
+             return "JButton";
+         case DOWN_COLUMN:
+             return "JButton";
+         case DELETE_COLUMN:
+             return "JButton";
+         default:
+             return QString();
+     }
+ }
 
  /*public*/ Qt::ItemFlags RouteEditTableModel::flags(const QModelIndex &index) const{
      switch (index.column()) {
@@ -792,14 +792,13 @@ namespace Operations
      routeList->clear();
      fireTableDataChanged();
  }
-
+#if 0
  RETComboBoxDelegate::RETComboBoxDelegate(RouteEditTableModel* model, QStringList items, QObject *parent)
   : QStyledItemDelegate(parent)
  {
   this->model  = model;
   this->items = items;
  }
-
 
  QWidget *RETComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex &index ) const
  {
@@ -845,4 +844,5 @@ namespace Operations
  {
    editor->setGeometry(option.rect);
  }
+#endif
 }

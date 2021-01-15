@@ -16,7 +16,7 @@ public:
  /*public*/ JButton(Action* a, QWidget *parent = 0) ;
  /*public*/ JButton(QString text, QIcon icon, QWidget *parent = 0);
 // /*public*/ void setIcon(const QIcon &icon);
-
+ /*public*/ void setName(QString s) {setObjectName(s);}
 signals:
  void actionPerformed(JActionEvent*);
 

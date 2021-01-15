@@ -13,13 +13,24 @@
  */
 ///*public*/ abstract class Bean extends UnboundBean implements PropertyChangeProvider {
 
-/*public*/ Bean::Bean(QObject *parent) : UnboundBean(parent)
+/*protected*/ Bean::Bean(QObject *parent) : UnboundBean(parent)
 {
  /**
   * Provide a {@link java.beans.PropertyChangeSupport} helper.
   */
   propertyChangeSupport = new PropertyChangeSupport(this);
- }
+}
+
+/**
+ * Create a bean.
+ *
+ * @param notifyOnEDT true to notify property change listeners on the EDT;
+ *                    false to notify listeners on the thread the event was
+ *                    generated on (which may or may not be the EDT)
+ */
+/*protected*/ Bean::Bean(bool notifyOnEDT, QObject *parent) : UnboundBean(parent) {
+    propertyChangeSupport = new PropertyChangeSupport(this/*, notifyOnEDT*/);
+}
 
 /**
  * Add a PropertyChangeListener to the listener list.

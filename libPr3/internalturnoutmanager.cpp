@@ -34,7 +34,7 @@ InternalTurnoutManager::InternalTurnoutManager(QObject *parent) : AbstractTurnou
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo *InternalTurnoutManager::getMemo() {
+/*public*/ SystemConnectionMemo *InternalTurnoutManager::getMemo() const {
     return  memo;
 }
 /**

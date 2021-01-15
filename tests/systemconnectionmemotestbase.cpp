@@ -56,7 +56,7 @@ SystemConnectionMemoTestBase::SystemConnectionMemoTestBase(QObject *parent) : QO
 
     //@Test
     /*public*/ void SystemConnectionMemoTestBase::testCtor() {
-        Assert::assertNotNull("exists", scm, __FILE__, __LINE__);
+        Assert::assertNotNull("exists", scm->self(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -81,7 +81,7 @@ SystemConnectionMemoTestBase::SystemConnectionMemoTestBase(QObject *parent) : QO
 //        };
         Assert::assertEquals("t", t->getSystemPrefix(), __FILE__, __LINE__);
         t->_register();
-        Assert::assertTrue(InstanceManager::getList("SystemConnectionMemo")->contains(t), __FILE__, __LINE__);
+        Assert::assertTrue(InstanceManager::getList("SystemConnectionMemo")->contains(t->self()), __FILE__, __LINE__);
         Assert::assertFalse(scm->setSystemPrefix("t"), __FILE__, __LINE__);
         Assert::assertTrue(scm->setSystemPrefix("t2"), __FILE__, __LINE__);
         Assert::assertEquals("t2", scm->getSystemPrefix(), __FILE__, __LINE__);

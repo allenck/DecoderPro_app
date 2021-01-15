@@ -91,20 +91,20 @@
  return QVariant();
 }
 
-///**
-// * Note that this returns String even for columns that contain buttons
-// */
-///*public*/ Class<?> getColumnClass(int col) {
-//    switch (col) {
-//        case NAMECOL:
-//        case KILLCOL:
-//            return String.class;
-//        case TURNSCOL:
-//            return Integer.class;
-//        default:
-//            return null;
-//    }
-//}
+/**
+ * Note that this returns String even for columns that contain buttons
+ */
+/*public*/ QString AutomatTableDataModel::getColumnClass(int col) {
+    switch (col) {
+        case NAMECOL:
+        case KILLCOL:
+            return "String";
+        case TURNSCOL:
+            return "Integer";
+        default:
+            return QString();
+    }
+}
 
 /*public*/ Qt::ItemFlags AutomatTableDataModel::flags(const QModelIndex &index) const
 {

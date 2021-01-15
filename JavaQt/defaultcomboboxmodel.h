@@ -4,10 +4,10 @@
 #include <QObject>
 #include <QVector>
 #include "abstractlistmodel.h"
-#include "libPr3_global.h"
+#include "javaqt_global.h"
 
 template <class E>
-class LIBPR3SHARED_EXPORT DefaultComboBoxModel : public AbstractListModel
+class JAVAQTSHARED_EXPORT DefaultComboBoxModel : public AbstractListModel
 {
     //Q_OBJECT
 public:

@@ -21,6 +21,7 @@
 #include "simpletimebasexml.h"
 #include "layouteditorxml.h"
 #include "defaultroutemanagerxml.h"
+#include "defaultroutemanager.h"
 #include "simpletimebasexml.h"
 #include "sensoriconxml.h"
 #include "turnouticonxml.h"
@@ -181,7 +182,6 @@
 #include "../libPr3/Signal/defaultsignalgroupmanager.h"
 #include "../libPr3/Signal/defaultsignalsystemmanager.h"
 #include "../libPr3/Signal/defaultsignalmastlogicmanager.h"
-#include "defaultroutemanager.h"
 #include "../libPr3/Signal/defaultsignalmastmanager.h"
 #include "signalmastlogictableaction.h"
 #include "transittableaction.h"
@@ -517,7 +517,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<TransitManager>("TransitManager");
  qRegisterMetaType<SectionManager>("SectionManager");
  //qRegisterMetaType<CatalogTreeManager>("CatalogTreeManager");
- qRegisterMetaType<SystemConnectionMemo>("SystemConnectionMemo");
+ //qRegisterMetaType<SystemConnectionMemo>("SystemConnectionMemo");
  //qRegisterMetaType<ConfigureManager>("ConfigureManager");
  qRegisterMetaType<Operations::TrainManifestText>("TrainManifestText");
  qRegisterMetaType<LayoutTurntableXml>("LayoutTurntableXml");
@@ -533,7 +533,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<DefaultSignalGroupManager>("DefaultSignalGroupManager");
  qRegisterMetaType<DefaultSignalSystemManager>("DefaultSignalSystemManager");
  qRegisterMetaType<DefaultSignalMastLogicManager>("DefaultSignalMastLogicManager");
- qRegisterMetaType<DefaultRouteManager>("DefaultRouteManager");
+ //qRegisterMetaType<DefaultRouteManager>("DefaultRouteManager");
  qRegisterMetaType<DefaultSignalMastManager>("DefaultSignalMastManager");
  qRegisterMetaType<SignalMastLogicTableAction>("SignalMastLogicTableAction");
  qRegisterMetaType<TransitTableAction>("TransitTableAction");

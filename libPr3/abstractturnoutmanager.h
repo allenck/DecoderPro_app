@@ -74,7 +74,7 @@ public:
       void setDefaultThrownSpeed(QString speed)const override;// throws JmriException{
       QString getDefaultThrownSpeed()const override;
       QString getDefaultClosedSpeed()const override;
-      /*public*/ SystemConnectionMemo* getMemo() override;
+//      /*public*/ SystemConnectionMemo* getMemo() override;
       /*public*/ QString getEntryToolTip();
       /*public*/ int getOutputInterval();
       /*public*/ void setOutputInterval(int newInterval);

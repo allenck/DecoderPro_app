@@ -45,6 +45,7 @@ namespace Operations
   /*public*/ int rowCount(const QModelIndex &parent) const;
   /*public*/ int columnCount(const QModelIndex &parent) const;
   /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+  /*public*/ QString getColumnClass(int col);
   /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
   /*public*/ QVariant data(const QModelIndex &index, int role) const;
   /*public*/ int getLastTrainDirection();
@@ -96,6 +97,7 @@ namespace Operations
  friend class RouteEditFrame;
  };
 
+#if 0
  class RETComboBoxDelegate : public QStyledItemDelegate
  {
  Q_OBJECT
@@ -113,6 +115,6 @@ namespace Operations
    QStringList items;
 
  };
-
+#endif
 }
 #endif // ROUTEEDITTABLEMODEL_H

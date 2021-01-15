@@ -119,7 +119,6 @@ SOURCES += \
     abstractprogrammer.cpp \
     loconetslot.cpp \
     systemconnectionmemomanager.cpp \
-    systemconnectionmemo.cpp \
     loconetsystemconnectionmemo.cpp \
     abstractpowermanager.cpp \
     lnpowermanager.cpp \
@@ -241,7 +240,6 @@ SOURCES += \
     Roster/indexedvarslider.cpp \
     Roster/rosterentrypane.cpp \
     Roster/decoderindexfile.cpp \
-    Roster/defaultcomboboxmodel.cpp \
     Roster/busyglasspane.cpp \
     Roster/dccaddresspanel.cpp \
     Roster/paneprogpane.cpp \
@@ -1067,7 +1065,9 @@ SOURCES += \
     ctc/switchindicatorsroute.cpp \
     ctc/indicationlockingsignals.cpp \
     ctc/trafficlocking.cpp \
-    storemenu.cpp
+    storemenu.cpp \
+    systemconnectionmemo.cpp \
+    managercombobox.cpp
 
 
  !contains(FTDI, 1) {
@@ -1252,7 +1252,6 @@ HEADERS += \
     Roster/indexedvarslider.h \
     Roster/rosterentrypane.h \
     Roster/decoderindexfile.h \
-    Roster/defaultcomboboxmodel.h \
     Roster/paneprogpane.h \
     Roster/panecontainer.h \
     Roster/busyglasspane.h \
@@ -2151,7 +2150,8 @@ HEADERS += \
     ctc/switchindicatorsroute.h \
     ctc/indicationlockingsignals.h \
     ctc/trafficlocking.h \
-    storemenu.h
+    storemenu.h \
+    managercombobox.h
 
 
  !contains(FTDI, 1) {

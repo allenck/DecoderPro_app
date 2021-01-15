@@ -1187,7 +1187,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  * @see     #getDefaultEditor
  * @see     #setDefaultRenderer
  */
-/*public*/ void JTable::setDefaultEditor(QString columnClass, QItemDelegate* editor) {
+/*public*/ void JTable::setDefaultEditor(QString columnClass, QStyledItemDelegate* editor) {
 //    if (editor != NULL) {
 //        defaultEditorsByColumnClass.put(columnClass, editor);
 //    }
@@ -3573,7 +3573,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
    for(int i = columnModel->getColumnCount(); i < dataModel->columnCount(QModelIndex()); i++)
     columnModel->addColumn(new TableColumn(i));
   }
-  connect((DefaultTableColumnModel*)columnModel, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+  connect((DefaultTableColumnModel*)columnModel, SIGNAL(firePropertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -3620,7 +3620,7 @@ log->debug(QString("Columns about to be inserted %1 %2 ").arg(from).arg(to));
 //   old.removeColumnModelListener(this);
   }
   this->columnModel = columnModel;
-  connect((DefaultTableColumnModel*)columnModel, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+  connect((DefaultTableColumnModel*)columnModel, SIGNAL(firePropertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
 //  columnModel.addColumnModelListener(this);
 
 //  // Set the column model of the header as well.

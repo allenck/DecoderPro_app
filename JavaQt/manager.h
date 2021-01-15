@@ -102,7 +102,7 @@ public:
   */
  //@CheckReturnValue
  //@Nonnull
- /*public*/ virtual SystemConnectionMemo* getMemo() {return nullptr;}
+ /*public*/ virtual SystemConnectionMemo* getMemo() const =0;
 
 /**
  * Provides access to the system prefix string.
@@ -643,6 +643,7 @@ public:
       * @param muted true if notifications should be suppressed; false otherwise
       */
      /*public*/ /*default*/ void setDataListenerMute(bool muted);
+     virtual /*public*/QString toString() {return "Manager";}
 
 signals:
     void vetoablePropertyChange(PropertyChangeEvent*);

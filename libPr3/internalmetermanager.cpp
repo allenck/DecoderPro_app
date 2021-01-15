@@ -20,6 +20,6 @@
      */
     //@Override
     //@Nonnull
-    /*public*/ SystemConnectionMemo *InternalMeterManager::getMemo() {
+    /*public*/ SystemConnectionMemo *InternalMeterManager::getMemo() const {
         return (SystemConnectionMemo*) memo;
     }

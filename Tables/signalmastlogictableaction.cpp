@@ -349,7 +349,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
 
  void SmlBeanTableDataModel::editLogic(int row, int /*col*/) {
      act->sigLog->setMast(getLogicFromRow(row)->getSourceMast(), getDestMastFromRow(row));
-     act->sigLog->actionPerformed(NULL);
+     act->sigLog->actionPerformed();
  }
 
  void SmlBeanTableDataModel::deleteLogic(int row, int /*col*/) {
@@ -521,9 +521,9 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      return "package.jmri.jmrit.beantable.SignalMastLogicTable";// NOI18N
  }
 
- /*protected*/ void SignalMastLogicTableAction::addPressed(JActionEvent* e) {
+ /*protected*/ void SignalMastLogicTableAction::addPressed() {
      sigLog->setMast(NULL, NULL);
-     sigLog->actionPerformed(e);
+     sigLog->actionPerformed(/*e*/);
  }
 
 

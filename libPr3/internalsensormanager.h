@@ -19,11 +19,12 @@ public:
     /*public*/ bool allowMultipleAdditions(QString systemName) override;
     /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) override;
     // /*public*/ QString getSystemPrefix();
-     /*public*/ SystemConnectionMemo* getMemo() override;
+     /*public*/ SystemConnectionMemo* getMemo() const override;
     /*public*/ QString getEntryToolTip() override;
     /*public*/ QString getNamedBeanClass()const override {
         return "Sensor";
     }
+    /*public*/ QString toString() {return "InternalSensorManager";}
 
 private:
  static Logger* log;

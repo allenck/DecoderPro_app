@@ -70,22 +70,22 @@ QDomElement DoubleTurnoutSignalHeadXml::addTurnoutElement(Turnout* to) {
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool DoubleTurnoutSignalHeadXml::load(QDomElement element) throw (Exception)
+/*public*/ bool DoubleTurnoutSignalHeadXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException)
 {
- QDomNodeList l = element.elementsByTagName("turnoutname");
- if (l.size() == 0) l = element.elementsByTagName("turnout");
+ QDomNodeList l = shared.elementsByTagName("turnoutname");
+ if (l.size() == 0) l = shared.elementsByTagName("turnout");
  NamedBeanHandle<Turnout*>* green = loadTurnout(l.at(0).toElement());
  NamedBeanHandle<Turnout*>* red = loadTurnout(l.at(1).toElement());
  // put it together
- QString sys = getSystemName(element);
- QString uname = getUserName(element);
+ QString sys = getSystemName(shared);
+ QString uname = getUserName(shared);
  SignalHead* h;
  if (uname == "")
      h = (SignalHead*)new DoubleTurnoutSignalHead(sys, green, red);
  else
      h = (SignalHead*)new DoubleTurnoutSignalHead(sys, uname, green, red);
 
- loadCommon(h, element);
+ loadCommon(h, shared);
 
  static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
  return true;

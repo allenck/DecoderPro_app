@@ -1241,12 +1241,12 @@ QString ConditionalEditBase::validateRouteReference(QString name) {
     Route* r = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            r = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(name);
+            r = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(name);
             if (r != NULL) {
                 return name;
             }
         }
-        r = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(name);
+        r = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(name);
     }
     if (r == NULL) {
         messageInvalidActionItemName(name, "Route"); // NOI18N

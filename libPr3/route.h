@@ -44,11 +44,11 @@
  *
  * @version			$Revision: 19003 $
  */
-/*public*/ /*interface*/class LIBPR3SHARED_EXPORT Route //: public  AbstractNamedBean
+/*public*/ /*interface*/class LIBPR3SHARED_EXPORT Route : public  AbstractNamedBean
 {
  //Q_OBJECT
 public:
- //Route(QString systemName, QString userName = "", QObject* parent = 0) : AbstractNamedBean(systemName, userName, parent) {}
+ Route(QString systemName, QString userName = "", QObject* parent = 0) : AbstractNamedBean(systemName, userName, parent) {}
     /*public*/ static /*final*/ const int TOGGLE = 0x08;
     static /*final*/ const int MAX_CONTROL_SENSORS = 3;
 
@@ -59,7 +59,7 @@ public:
     /**
      * Get enabled status
     */
-    /*public*/ virtual bool getEnabled() =0;
+    /*public*/ virtual bool getEnabled() const =0;
 
     /**
      * Set locked status.

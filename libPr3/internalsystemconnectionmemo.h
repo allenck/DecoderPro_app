@@ -33,9 +33,9 @@ public:
  /*public*/ DebugThrottleManager* getThrottleManager();
  /*public*/ DefaultPowerManager* getPowerManager();
  /*public*/ DebugProgrammerManager* getProgrammerManager();
- /*public*/ bool provides(/*Class<?>*/QString type);
- /*public*/ Manager* get(/*Class<?>*/ QString className);
- /*public*/ void dispose();
+ /*public*/ bool provides(/*Class<?>*/QString type) override;
+ /*public*/ Manager* get(/*Class<?>*/ QString className) override;
+ /*public*/ void dispose() override;
 
 private:
  void common(QString prefix, QString name, bool defaultInstanceType);

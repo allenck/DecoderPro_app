@@ -84,12 +84,6 @@ void LightTableAction::common()
 
 
  // items of add frame
- systemLabel = new QLabel(tr("System connection:"));
- prefixBox = new QComboBox();
- addRangeBox = new QCheckBox(tr("Add a sequential range"));
- hardwareAddressTextField = new JTextField(10);
-  fieldNumToAdd = new JTextField(5);
- labelNumToAdd = new QLabel("   " + tr("Number to Add:"));
  systemSelectionCombo = QString(this->metaObject()->className()) + ".SystemSelected";
  panel1a = nullptr;
  varPanel = nullptr;
@@ -140,7 +134,6 @@ void LightTableAction::common()
  field2a = new JTextField(8);  // Fast Clock
  field2b = new JTextField(8); // Timed ON
  f2Label = new QLabel(tr("Sense for ON"));
- connectionChoice = "";
 }
 
 /*public*/ void LightTableAction::setManager(Manager* man) {
@@ -472,7 +465,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         QWidget* panel1 = new QWidget();
         FlowLayout* panel1Layout;
         panel1->setLayout(panel1Layout = new FlowLayout());
-        initializePrefixCombo();
+        configureManagerComboBox(prefixBox, lightManager, "LightManager");
         hardwareAddressTextField->setValidator(validator = new LTAValidator(hardwareAddressTextField, this));
         panel1Layout->addWidget(systemLabel);
         panel1Layout->addWidget(prefixBox);
@@ -533,8 +526,8 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
                         }
                     });
 #endif
-        panel1aLayout->addWidget(fieldNumToAdd);
-        fieldNumToAdd->setToolTip(tr("Set the number of sequential address Lights to add (Max. 50)"));
+        panel1aLayout->addWidget(numberToAdd);
+        numberToAdd->setToolTip(tr("Set the number of sequential address Lights to add (Max. 50)"));
         contentPane->layout()->addWidget(panel1a);
         QWidget* panel2 = new QWidget();
         FlowLayout* panel2Layout;
@@ -715,25 +708,6 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
  lta->cancelPressed();
 }
 
-/*private*/ void LightTableAction::initializePrefixCombo() {
-    prefixBox->clear();
-    UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-    //if (InstanceManager::lightManagerInstance() instanceof AbstractProxyManager)
-    if(qobject_cast<AbstractProxyLightManager*>(InstanceManager::lightManagerInstance()) != NULL)
-    {
-        ProxyLightManager* proxy = (ProxyLightManager*) InstanceManager::lightManagerInstance();
-        QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
-        for (int i = 0; i < managerList.size(); i++) {
-            QString manuName = ConnectionNameFromSystemName::getConnectionName(managerList.at(i)->getSystemPrefix());
-            prefixBox->addItem(manuName);
-        }
-        if (p->getComboBoxLastSelection(systemSelectionCombo) != NULL) {
-            prefixBox->setCurrentIndex(prefixBox->findText(p->getComboBoxLastSelection(systemSelectionCombo)));
-        }
-    } else {
-        prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(InstanceManager::lightManagerInstance()->getSystemPrefix()));
-    }
-}
 
 /*protected*/ void LightTableAction::prefixChanged() {
     if (supportsVariableLights()) {
@@ -741,69 +715,45 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
     } else {
         varPanel->setVisible(false);
     }
-    if (canAddRange()) {
-        addRangeBox->setVisible(true);
-        labelNumToAdd->setVisible(true);
-        fieldNumToAdd->setVisible(true);
-    } else {
-        addRangeBox->setVisible(false);
-        labelNumToAdd->setVisible(false);
-        fieldNumToAdd->setVisible(false);
-    }
-    addRangeBox->setChecked(false);
-    fieldNumToAdd->setText("");
-    fieldNumToAdd->setEnabled(false);
-    labelNumToAdd->setEnabled(false);
-
-    connectionChoice= prefixBox->currentText();
-    if (connectionChoice == "")
-    {
-           // Tab All or first time opening, keep default tooltip
-           connectionChoice = "TBD";
-    }
-    // Update tooltip in the Add Light pane to match system connection selected from combobox.
-    log->debug(tr("Connection choice = [%1]").arg(connectionChoice));
-    // get tooltip from ProxyLightManager
-    if (QString(lightManager->metaObject()->className()).contains("ProxyLightManager")) {
-        ProxyLightManager* proxy = (ProxyLightManager*)lightManager;
-        QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
-        QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName(connectionChoice);
-        for (Manager* mgr : managerList) {
-            if (mgr->getSystemPrefix()==(systemPrefix)) {
-                // get tooltip from ProxyLightManager
-                addEntryToolTip = mgr->getEntryToolTip();
-                log->debug("L Add box set");
-                break;
-            }
-        }
-    } else if (lightManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName(connectionChoice))) {
-        addRangeBox->setEnabled(true);
-        log->debug("L add box enabled2");
-        // get tooltip from light manager
-        addEntryToolTip = lightManager->getEntryToolTip();
-        log->debug("LightManager tip");
-    }
-    log->debug(tr("DefaultLightManager tip: %1").arg(addEntryToolTip));
-    // show Hardware address field tooltip in the Add Light pane to match system connection selected from combobox
-#if 0
-    if (addEntryToolTip != null) {
-        hardwareAddressTextField.setToolTipText("<html>"
-                + Bundle.getMessage("AddEntryToolTipLine1", connectionChoice, Bundle.getMessage("Lights"))
-                + "<br>" + addEntryToolTip + "</html>");
-    }
-    hardwareAddressTextField.setBackground(Color.yellow); // reset
-    create.setEnabled(true); // too severe to start as disabled (false) until we fully support validation
-#endif
-    addFrame->adjustSize();
-    addFrame->setVisible(true);
+    if (canAddRange()) { // behaves like the AddNewHardwareDevice pane (dim if not available, do not hide)
+     addRangeBox->setEnabled(true);
+ } else {
+     addRangeBox->setEnabled(false);
+ }
+ addRangeBox->setChecked(false);
+ numberToAdd->setValue(1);
+ numberToAdd->setEnabled(false);
+ labelNumToAdd->setEnabled(false);
+ // show tooltip for selected system connection
+ connectionChoice= prefixBox->getSelectedItem(); // store in Field for CheckedTextField
+ // Update tooltip in the Add Light pane to match system connection selected from combobox.
+ log->debug(tr("Connection choice = [%1]").arg(connectionChoice->toString()));
+ // get tooltip from ProxyLightManager
+ QString systemPrefix = connectionChoice->getSystemPrefix();
+ addEntryToolTip = connectionChoice->getEntryToolTip();
+  addRangeBox->setEnabled(((LightManager*) connectionChoice)->allowMultipleAdditions(systemPrefix));
+  log->debug(tr("DefaultLightManager tip: %1").arg(addEntryToolTip));
+  // show Hardware address field tooltip in the Add Light pane to match system connection selected from combobox
+  if (addEntryToolTip != nullptr) {
+      hardwareAddressTextField->setToolTip(
+              tr("<html>%1 %2 use one of these patterns:<br>%3</html>").arg(
+                      connectionChoice->getMemo()->getUserName()).arg(
+                      tr("Lights")).arg(
+                      addEntryToolTip));
+      //hardwareAddressValidator.setToolTipText(hardwareAddressTextField.getToolTipText());
+      hardwareAddressValidator->verify(hardwareAddressTextField);
+  }
+  create->setEnabled(true); // too severe to start as disabled (false) until we fully support validation
+  addFrame->pack();
+  addFrame->setVisible(true);
 }
 
 /*protected*/ void LightTableAction::addRangeChanged() {
     if (addRangeBox->isChecked()) {
-        fieldNumToAdd->setEnabled(true);
+        numberToAdd->setEnabled(true);
         labelNumToAdd->setEnabled(true);
     } else {
-        fieldNumToAdd->setEnabled(false);
+        numberToAdd->setEnabled(false);
         labelNumToAdd->setEnabled(false);
     }
 }
@@ -957,17 +907,17 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     int numberOfLights = 1;
     int startingAddress = 0;
     if (mgr->allowMultipleAdditions(sName)
-            && addRangeBox->isChecked() && (fieldNumToAdd->text().length() > 0)) {
+            && addRangeBox->isChecked() && (numberToAdd->text().length() > 0)) {
         // get number requested
         bool bok;
-            numberOfLights = (fieldNumToAdd->text().toInt(&bok));
+            numberOfLights = (numberToAdd->text().toInt(&bok));
         if(!bok)
         {
             status1->setText(tr("Error: Bad 'Number to Add' entry."));
             status2->setVisible(false);
             addFrame->adjustSize();
             addFrame->setVisible(true);
-             log->error("Unable to convert " + fieldNumToAdd->text() + " to a number - Number to add");
+             log->error("Unable to convert " + numberToAdd->text() + " to a number - Number to add");
             return;
         }
         // convert numerical hardware address
@@ -2210,7 +2160,7 @@ LTAValidator::LTAValidator(JTextField *fld, LightTableAction *act)
  this->fld = fld;
  this->act = act;
  connect(act->prefixBox, SIGNAL(currentTextChanged(QString)), this, SLOT(prefixBoxChanged(QString)));
- prefix = ConnectionNameFromSystemName::getPrefixFromName(act->connectionChoice);
+ prefix = act->connectionChoice->getMemo()->getSystemPrefix();
  mark = ColorUtil::stringToColor("orange");
 }
 

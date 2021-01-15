@@ -71,7 +71,7 @@ public:
  }
  /*public*/ QString getEntryToolTip() override;
  /*public*/ bool isPullResistanceConfigurable() override;
-
+/*public*/ QString toString() {return "ProxySensorManager";}
 signals:
  void propertyChange(PropertyChangeEvent *e);
  //void newSensorCreated(AbstractSensorManager*,Sensor*);

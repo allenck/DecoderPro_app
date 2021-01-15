@@ -9,6 +9,7 @@
 #include "lineborder.h"
 #include "titledborder.h"
 #include "etchedborder.h"
+#include "compoundborder.h"
 
 class BorderFactory : QObject
 {
@@ -41,7 +42,11 @@ public:
                      QColor titleColor);
  /*public*/ static Border* createEmptyBorder();
  /*public*/ static Border* createEmptyBorder(int top, int left, int bottom, int right);
-#if 0
+ /*public*/ static CompoundBorder* createCompoundBorder();
+ /*public*/ static CompoundBorder* createCompoundBorder(Border* outsideBorder,
+                                              Border* insideBorder);
+
+#if 1
  static /*final*/ Border* sharedEtchedBorder;// = new EtchedBorder();
  /*private*/ static Border* sharedRaisedEtchedBorder;
 

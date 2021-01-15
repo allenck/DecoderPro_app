@@ -24,6 +24,9 @@
 #include "pushbuttondelegate.h"
 #include <QSignalMapper>
 #include "loggerfactory.h"
+#include "opath.h"
+#include "oblock.h"
+#include "blockorder.h"
 
 //WarrantTableFrame::WarrantTableFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -136,7 +139,9 @@
 // JComboBox <String> box = new QComboBox*(controls);
 // box.setFont(new Font(NULL, Font.PLAIN, 12));
 // table.getColumnModel().getColumn(WarrantTableModel.CONTROL_COLUMN).setCellEditor(new DefaultCellEditor(box));
-// table.getColumnModel().getColumn(WarrantTableModel.ROUTE_COLUMN).setCellEditor(comboEd);
+ _model->setColumnToHoldDelegate(table, WarrantTableModel::CONTROL_COLUMN, new ControlBoxCellEditor(controls, this));
+// table.getColumnModel().getColumn(WarrantTableModel::WarrantTableModel.ROUTE_COLUMN).setCellEditor(comboEd);
+ _model->setColumnToHoldDelegate(table, WarrantTableModel::ROUTE_COLUMN, new RouteBoxCellEditor(this));
 // table.getColumnModel().getColumn(WarrantTableModel.ALLOCATE_COLUMN).setCellEditor(new ButtonEditor(new QPushButton()));
 // table.getColumnModel().getColumn(WarrantTableModel.ALLOCATE_COLUMN).setCellRenderer(new ButtonRenderer());
  _model->setColumnToHoldButton(table, WarrantTableModel::ALLOCATE_COLUMN);
@@ -497,6 +502,28 @@ void WarrantTableFrame::setStatusText(QString msg, QColor c, bool save)
 /*public*/ QString WarrantTableFrame::getClassName()
 {
  return "jmri.jmrit.logix.WarrantTableFrame";
+}
+
+
+QWidget* RouteBoxCellEditor::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+ WarrantTableModel* model = frame->getModel();
+ JComboBox* comboBox = new JComboBox();
+ Warrant* warrant = nullptr;
+ if (model != nullptr) {
+     warrant = model->getWarrantAt(index.row());
+ }
+ if (warrant == nullptr) {
+     frame->log->warn(tr("getWarrantAt row= %1, Warrant is null!").arg(index.row()));
+     //return getComponent();
+     return comboBox;
+ }
+ QList<BlockOrder*>* orders = warrant->getBlockOrders();
+ for (int i = 0; i < orders->size(); i++) {
+     BlockOrder* order = orders->at(i);
+     comboBox->addItem(order->getBlock()->getDisplayName() + ": - " + order->getPath()->getName());
+ }
+ return comboBox;
 }
 
 /*private*/ /*final*/ /*static*/ Logger* WarrantTableFrame::log = LoggerFactory::getLogger("WarrantTableFrame");

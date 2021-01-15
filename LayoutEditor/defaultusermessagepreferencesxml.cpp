@@ -42,7 +42,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool DefaultUserMessagePreferencesXml::load(QDomElement messages) throw (Exception)
+/*public*/ bool DefaultUserMessagePreferencesXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException)
 {
  // ensure the master object exists
  UserPreferencesManager* p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
@@ -52,7 +52,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
 
  p->setLoading();
 
- QDomNodeList settingList = messages.elementsByTagName("setting");
+ QDomNodeList settingList = shared.elementsByTagName("setting");
 
  for (int i = 0; i < settingList.size(); i++)
  {
@@ -60,7 +60,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
   p->setSimplePreferenceState(name, true);
  }
 
- QDomNodeList comboList = messages.elementsByTagName("comboBoxLastValue");
+ QDomNodeList comboList = shared.elementsByTagName("comboBoxLastValue");
 
  for (int i = 0; i < comboList.size(); i++)
  {
@@ -73,7 +73,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
   }
  }
 
- QDomNodeList classList = messages.elementsByTagName("classPreferences");
+ QDomNodeList classList = shared.elementsByTagName("classPreferences");
  for (int k = 0; k < classList.size(); k++)
  {
   QDomNodeList multipleList = classList.at(k).toElement().elementsByTagName("multipleChoice");
@@ -107,7 +107,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
   }
  }
 
- QDomNodeList windowList = messages.elementsByTagName("windowDetails");
+ QDomNodeList windowList = shared.elementsByTagName("windowDetails");
  for (int k = 0; k < windowList.size(); k++)
  {
   QString strClass = windowList.at(k).toElement().attribute("class");
@@ -243,7 +243,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
  }
 }
 
- QDomNodeList tablesList = messages.elementsByTagName("tableDetails");
+ QDomNodeList tablesList = shared.elementsByTagName("tableDetails");
  //foreach(QDomNode tables, tablesList)
  for(int i = 0; i < tablesList.count(); i++)
  {

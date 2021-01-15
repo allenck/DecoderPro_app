@@ -2,7 +2,7 @@
 #define SYSTEMCONNECTIONMEMOTESTBASE_H
 
 #include <QObject>
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include "resourcebundle.h"
 
 class SystemConnectionMemoTestBase : public QObject
@@ -33,13 +33,13 @@ protected:
 
 };
 
-class SystemConnectionMemoO1 : public SystemConnectionMemo
+class SystemConnectionMemoO1 : public DefaultSystemConnectionMemo
 {
  Q_OBJECT
  SystemConnectionMemoTestBase* base;
 public:
  SystemConnectionMemoO1(QString prefix, QString userName, SystemConnectionMemoTestBase* base)
-  : SystemConnectionMemo(prefix, userName)
+  : DefaultSystemConnectionMemo(prefix, userName)
  {this->base = base;}
 protected:
 

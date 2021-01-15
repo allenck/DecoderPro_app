@@ -47,6 +47,7 @@
 #include "sensortabledatamodel.h"
 #include "loggerfactory.h"
 #include <QHeaderView>
+#include "systemnamevalidator.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -105,17 +106,11 @@ void TurnoutTableAction::common()
  addFrame = NULL;
  userNameTextField = new JTextField(40);
  hardwareAddressTextField = new JTextField(20);
- statusBar = new QLabel(tr("Enter a Hardware Address and (optional) User Name."));
-
-
- prefixBox = new JComboBox();
- numberToAdd = new JTextField(5);
- rangeBox = new QCheckBox("Add a range");
+ statusBarLabel = new JLabel(tr("Enter a Hardware Address and (optional) User Name."));
  sysNameLabel = new QLabel("Hardware Address");
  userNameLabel = new QLabel(tr("User Name"));
  systemSelectionCombo = this->getName()+".SystemSelected";
  userNameError = this->getName()+".DuplicateUserName";
- log = new Logger("TurnoutTableAction");
 
  showFeedbackBox = new QCheckBox("Show feedback information");
  showFeedbackBox->setObjectName("showFeedbackBox");
@@ -1192,7 +1187,7 @@ TableSorter sorter;
     return "package.jmri.jmrit.beantable.TurnoutTable";
 }
 
-/*protected*/ void TurnoutTableAction::addPressed(ActionEvent* /*e*/)
+/*protected*/ void TurnoutTableAction::addPressed()
 {
  //p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 
@@ -1224,54 +1219,27 @@ TableSorter sorter;
 
   /* We use the proxy manager in this instance so that we can deal with
   duplicate usernames in multiple classes */
-  //if (InstanceManager::turnoutManagerInstance() instanceof jmri.managers.AbstractProxyManager)
-  if(qobject_cast<AbstractProxyTurnoutManager*>(InstanceManager::turnoutManagerInstance()) != NULL)
-  {
-   ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance();
-   QList<Manager*> managerList = proxy->getManagerList();
-   for(int x = 0; x<managerList.size(); x++)
-   {
-//    QString manuName = ConnectionNameFromSystemName::getConnectionName(managerList.at(x)->getSystemPrefix());
-//    bool addToPrefix = true;
-//    //Simple test not to add a system with a duplicate System prefix
-//    for (int i = 0; i<prefixBox->count(); i++)
-//    {
-//     if(prefixBox->itemText(i)==(manuName))
-//      addToPrefix=false;
-//    }
-//    if (addToPrefix)
-//     prefixBox->addItem(manuName);
-    TurnoutManager* turnManager = (TurnoutManager*)managerList.at(x);
-    prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(turnManager->getSystemPrefix()),
-                       VPtr<TurnoutManager>::asQVariant(turnManager));
-   }
-   if (!pref->getComboBoxLastSelection(systemSelectionCombo).isNull())
-   { // pick up user pref
-       SystemConnectionMemo* memo = ((SystemConnectionMemoManager*)InstanceManager
-               ::getDefault("SystemConnectionMemoManager"))
-               ->getSystemConnectionMemoForUserName(pref->getComboBoxLastSelection(systemSelectionCombo));
-       prefixBox->setCurrentIndex(prefixBox->findData(VPtr<TurnoutManager>::asQVariant( (TurnoutManager*)memo->get("TurnoutManager"))));
-   }
-  }
-  else
-  {
-   prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(turnManager->getSystemPrefix()),
-                      VPtr<TurnoutManager>::asQVariant(turnManager));
-  }
-  hardwareAddressTextField->setName("sysName");
-  userNameTextField->setName("userName");
-  prefixBox->setObjectName("prefixBox");
-//  addButton = new QPushButton(tr("Create"));
-//  connect(addButton, SIGNAL(clicked(bool)), this, SLOT(createPressed()));
-  connect(hardwareAddressTextField, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
-  centralWidgetLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAdd, rangeBox, tr("Create"), cancelListener, rangeListener));
-
-  canAddRange(NULL);
+  configureManagerComboBox(prefixBox, turnoutManager, "TurnoutManager");
+  userNameTextField->setName("userNameTextField"); // NOI18N
+  prefixBox->setObjectName("prefixBox"); // NOI18N
+  // set up validation, zero text = false
+  addButton = new JButton(tr("Create"));
+  //addButton->addActionListener(createListener);
+  connect(addButton, &QPushButton::clicked, [=]{createPressed();});
+  // create panel
+  hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox->getSelectedItem(), true);
+  centralWidget->layout()->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, hardwareAddressValidator, userNameTextField, prefixBox,
+          numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBarLabel));
+  // tooltip for hardwareAddressTextField will be assigned next by canAddRange()
+  canAddRange(nullptr);
  }
- hardwareAddressTextField->setValidator(validator=new TTAValidator(hardwareAddressTextField, this));
+ hardwareAddressTextField->setName("hwAddressTextField"); // for GUI test NOI18N
+ addButton->setName("createButton"); // for GUI test NOI18N
+ // reset statusBarLabel text
+ statusBarLabel->setText(tr("Enter a Hardware Address and (optional) User Name."));
+ statusBarLabel->setForeground(Qt::gray);
 
- addFrame->adjustSize();
+ addFrame->pack();
  addFrame->setVisible(true);
 }
 
@@ -1919,31 +1887,28 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  //int iName=0;
  int numberOfTurnouts = 1;
 
- if(rangeBox->isChecked())
- {
-  bool ok;
-
-  numberOfTurnouts = numberToAdd->text().toInt(&ok);
-  if(!ok)
-  {
-   log->error(QString("Unable to convert ") + numberToAdd->text() + " to a number");
-   ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage("Error","Number to turnouts to Add must be a number!","", "",true, false);
-   return;
-  }
+ if (rangeBox->isChecked()) {
+     numberOfTurnouts =  numberToAddSpinner->getValue();
  }
- if (numberOfTurnouts>=65)
- {
+ if (numberOfTurnouts >= 65)
+ {// limited by JSpinnerModel to 100
   if(JOptionPane::showConfirmDialog(addFrame, "You are about to add " + QString::number(numberOfTurnouts) + " Turnouts into the configuration\nAre you sure?","Warning", JOptionPane::YES_NO_OPTION)==1)
    return;
  }
 
- QString sName = NULL;
- QString curAddress = hardwareAddressTextField->text().trimmed();
+ QString sName = "";
+ //QString prefix = prefixBox.getSelectedItem().getSystemPrefix();
+ QString prefix;
+ QVariant currData = prefixBox->getItemAt(prefixBox->currentIndex());//prefixBox->currentData(Qt::UserRole);
+ QString currText = prefixBox->currentText();
+ Manager* mgr = VPtr<Manager>::asPtr(currData);
+ prefix = ((TurnoutManager*)mgr)->getSystemPrefix();
+ QString curAddress = hardwareAddressTextField->text();
  // initial check for empty entry
  if (curAddress.length() < 1)
  {
-   statusBar->setText(tr("You must provide a Hardware Address to start."));
-   statusBar->setStyleSheet("QLabel { color: red}");
+   statusBarLabel->setText(tr("You must provide a Hardware Address to start."));
+   statusBarLabel->setStyleSheet("QLabel { color: red}");
    hardwareAddressTextField->setStyleSheet("QLabel { background-color: red}");
    addButton->setEnabled(false);
    return;
@@ -1962,12 +1927,14 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  // Add some entry pattern checking, before assembling sName and handing it to the turnoutManager
  QString statusMessage = tr("New %1(s) added:").arg(tr("Turnout"));
  QString errorMessage = "";
+
  QString lastSuccessfulAddress = tr("NONE");
+
  int iType = 0;
  int iNum=1;
  bool useLastBit = false;
  bool useLastType = false;
- QString prefix = ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText());
+
  for (int x = 0; x < numberOfTurnouts; x++)
  {
   try
@@ -1979,8 +1946,8 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
                    showErrorMessage("Error","Unable to convert '" + curAddress + "' to a valid Hardware Address",""+ex.getMessage(), "",true, false);
    // directly add to statusBar (but never called?)
-   statusBar->setText(tr("Error Converting HW address %1").arg(curAddress));
-   statusBar->setStyleSheet("QLabel { color: red}");
+   statusBarLabel->setText(tr("Error Converting HW address %1").arg(curAddress));
+   statusBarLabel->setStyleSheet("QLabel { color: red}");
    return;
   }
   if (curAddress=="")
@@ -1988,7 +1955,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
    //The next address is already in use, therefore we stop.
    log->debug(tr("Error converting HW or getNextValidAddress"));
    errorMessage = (tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip)."));
-   statusBar->setStyleSheet("QLabel { color: red}");
+   statusBarLabel->setStyleSheet("QLabel { color: red}");
    // The next address returned an error, therefore we stop this attempt and go to the next address.
    break;
   }
@@ -2012,8 +1979,8 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
     {
      // Show error message in statusBar
      errorMessage = tr("Turnout \"%1\" not created as name matched a Light").arg(sName);
-     statusBar->setText(errorMessage);
-     statusBar->setStyleSheet("QLabel { color: gray}");
+     statusBarLabel->setText(errorMessage);
+     statusBarLabel->setStyleSheet("QLabel { color: gray}");
      return;   // return without creating if "No" response
     }
     if (selectedValue == 2)
@@ -2047,8 +2014,8 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
    // User specified more bits, but bits are not available - return without creating
    // Display message in statusBar
    errorMessage = tr("2 Bits requested but not supported. Stopped after \"%1\".").arg( lastSuccessfulAddress);
-   statusBar->setText(errorMessage);
-   statusBar->setStyleSheet("QLabel { color: red}");
+   statusBarLabel->setText(errorMessage);
+   statusBarLabel->setStyleSheet("QLabel { color: red}");
    return;
   }
   else
@@ -2065,8 +2032,8 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
     handleCreateException(sName);
     // add to statusBar as well
     errorMessage = tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip).");
-    statusBar->setText(errorMessage);
-    statusBar->setStyleSheet("QLabel { color: red}");
+    statusBarLabel->setText(errorMessage);
+    statusBarLabel->setStyleSheet("QLabel { color: red}");
     return; // without creating
    }
 
@@ -2110,21 +2077,20 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  }
  // provide feedback to user
  if (errorMessage == "") {
-     statusBar->setText(statusMessage);
-     statusBar->setStyleSheet("QLabel { color: gray}");
+     statusBarLabel->setText(statusMessage);
+     statusBarLabel->setStyleSheet("QLabel { color: gray}");
  }
  else
  {
-  statusBar->setText(errorMessage);
+  statusBarLabel->setText(errorMessage);
      // statusBar.setForeground(Color.red); // handled when errorMassage is set, to differentiate in urgency
  }
- //p->addComboBoxLastSelection(systemSelectionCombo,  prefixBox->currentText());
- pref->setComboBoxLastSelection(systemSelectionCombo, VPtr<TurnoutManager>::asPtr(
-                                prefixBox->currentData())->getMemo()->getUserName()); // store user pref
+
+ pref->setComboBoxLastSelection(systemSelectionCombo,
+                                prefixBox->getSelectedItem()->getMemo()->getUserName()); // store user pref
  addFrame->setVisible(false);
  addFrame->dispose();
  addFrame = nullptr;
- //addButton.removePropertyChangeListener(colorChangeListener);
 }
 
 /*private*/ void TurnoutTableAction::canAddRange(ActionEvent* /*e*/){
@@ -2226,7 +2192,7 @@ static class BeanComboBoxEditor extends DefaultCellEditor {
 #endif
 QString TurnoutTableAction::getName() { return "jmri.jmrit.beantable.TurnoutTableAction";}
 
-TTComboBoxDelegate::TTComboBoxDelegate(TurnoutTableAction *turnoutTableAction, bool editable, QObject */*parent*/)
+TTComboBoxDelegate::TTComboBoxDelegate(TurnoutTableAction *turnoutTableAction, bool editable, QObject * parent) : QStyledItemDelegate(parent)
 {
  this->turnoutTableAction = turnoutTableAction;
  this->editable = editable;

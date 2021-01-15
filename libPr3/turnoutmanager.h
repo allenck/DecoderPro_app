@@ -198,7 +198,7 @@ public:
         //@Nonnull
         virtual /*public*/ LocalDateTime outputIntervalEnds() {}
 
-signals:
+        /*public*/ QString toString() {return "TurnoutManager";}
     
 public slots:
     

@@ -262,7 +262,7 @@ void OBlockTableAction::common()
 // Three [Addx...] buttons on tabbed bottom box handlers
 
 //@Override
-/*protected*/ void OBlockTableAction::addPressed(JActionEvent *e) {
+/*protected*/ void OBlockTableAction::addPressed(/*JActionEvent *e*/) {
     log->warn("This should not have happened");
 }
 

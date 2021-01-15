@@ -17,7 +17,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void actionPerformed(JActionEvent* e = 0);
+    /*public*/ void actionPerformed(/*JActionEvent* e = 0*/);
 
 private:
  Logger* log;

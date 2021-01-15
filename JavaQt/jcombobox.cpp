@@ -98,3 +98,8 @@ void JComboBox::currentIndexChanged(int)
 /*public*/ QStringList JComboBox::itemList(){
  return cbModel->stringList();
 }
+
+/*public*/ QVariant JComboBox::getItemAt(int i)
+{
+ return itemData(i);
+}

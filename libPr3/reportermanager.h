@@ -150,7 +150,7 @@ public:
         */
 
  virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) const {return "";}
-
+/*public*/ QString toString() {return "ReporterManager";}
 signals:
     
 public slots:

@@ -411,7 +411,7 @@ int AbstractTableModel::columnCount(const QModelIndex &parent) const
  //setPersistentButtons();
 }
 
-void AbstractTableModel::setColumnToHoldDelegate(JTable *table, int column, QItemDelegate *delegate)
+void AbstractTableModel::setColumnToHoldDelegate(JTable *table, int column, QStyledItemDelegate *delegate)
 {
  this->_table = table;
  table->setItemDelegateForColumn(column, delegate);

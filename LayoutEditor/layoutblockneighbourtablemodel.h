@@ -31,6 +31,7 @@ private:
  /*private*/ int rowCount(const QModelIndex &parent) const;
  /*private*/ int columnCount(const QModelIndex &parent) const;
  /*private*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+ /*private*/ QString getColumnClass(int col);
  /*private*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  /*private*/ QVariant data(const QModelIndex &index, int role) const;
  /*private*/ bool setData(const QModelIndex &index, const QVariant &value, int role);

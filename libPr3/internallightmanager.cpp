@@ -45,7 +45,7 @@ InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, Q
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo* InternalLightManager::getMemo() {
+/*public*/ SystemConnectionMemo* InternalLightManager::getMemo() const {
     return  memo;
 }
 

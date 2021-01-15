@@ -10,18 +10,18 @@ class LIBPR3SHARED_EXPORT DefaultRouteManager : public RouteManager //, public R
 {
     Q_OBJECT
 public:
-    explicit DefaultRouteManager(QObject *parent = 0);
+    /*Q_INVOKABLE*/ explicit DefaultRouteManager(InternalSystemConnectionMemo* memo, QObject *parent = 0);
     ~DefaultRouteManager() {}
-    DefaultRouteManager(const DefaultRouteManager&) : RouteManager() {}
+    DefaultRouteManager(const DefaultRouteManager& other) : RouteManager(other.memo) {}
     /*public*/ int getXMLOrder() const override;
-    /*public*/ QString getSystemPrefix() const override;
+//    /*public*/ QString getSystemPrefix() const override;
     /*public*/ char typeLetter() const override;
 
     /**
      * Method to provide a  Route
      * whether or not is already exists.
      */
-    /*public*/ Route* provideRoute(QString systemName, QString userName) override;
+    /*public*/ Route* provideRoute(QString systemName, QString userName)const override;
     /*public*/ Route* newRoute(QString userName) override;
 
     /**
@@ -35,24 +35,24 @@ public:
      *      that name is a System Name.  If both fail, returns NULL.
      */
     /*public*/ Route* getRoute(QString name) override;
-    /*public*/ Route* getBySystemName(QString name)  override;
-    /*public*/ Route* getByUserName(QString key) override;
+//    /*public*/ Route* getBySystemName(QString name)  override;
+//    /*public*/ Route* getByUserName(QString key) override;
     QT_DEPRECATED static /*public*/ DefaultRouteManager* instance();
-    int getLastAutoRouteRef();
+//    int getLastAutoRouteRef();
     /*public*/ Route* provide(QString name) throw (IllegalArgumentException) override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QString getNamedBeanClass()const override;
 
 
 signals:
- void newRouteCreated(Route*);
+ //void newRouteCreated(Route*);
 public slots:
 private:
  DecimalFormat* paddedNumber;
 
- int lastAutoRouteRef;// = 0;
+ //int lastAutoRouteRef;// = 0;
  QObject *parent;
  Logger* log;
 };
-Q_DECLARE_METATYPE(DefaultRouteManager)
+//Q_DECLARE_METATYPE(DefaultRouteManager)
 #endif // DEFAULTROUTEMANAGER_H

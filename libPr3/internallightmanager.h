@@ -12,11 +12,12 @@ public:
     /*public*/ bool validSystemNameConfig(QString systemName)const override;
     /*public*/ bool supportsVariableLights(QString systemName) override;
     /*public*/ bool allowMultipleAdditions(QString systemName) override;
-    /*public*/ SystemConnectionMemo* getMemo() override;
+    /*public*/ SystemConnectionMemo* getMemo() const override;
     /*public*/ QString getEntryToolTip() override;
     /*public*/ QString getNamedBeanClass()const override {
      return "Light";
  }
+  /*public*/ QString toString() {return "InternalLightManager";}
 
 
 signals:

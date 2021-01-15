@@ -9,7 +9,7 @@ public:
  ~TripleOutputSignalHeadXml() {}
  TripleOutputSignalHeadXml(const TripleOutputSignalHeadXml&) : DoubleTurnoutSignalHeadXml() {}
  /*public*/ QDomElement store(QObject* o);
- /*public*/ bool load(QDomElement shared, QDomElement /*perNode*/);
+ /*public*/ bool load(QDomElement shared, QDomElement /*perNode*/) throw (JmriConfigureXmlException);
  /*public*/ void load(QDomElement /*element*/, QObject* /*o*/) throw (Exception);
 
 private:

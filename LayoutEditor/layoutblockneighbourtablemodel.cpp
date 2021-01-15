@@ -75,13 +75,13 @@ return lBlock->getNumberOfNeighbours();
 }
 
 //@Override
-///*private*/ Class<?> getColumnClass(int col) {
-//    if (col == METRICCOL) {
-//        return Integer.class;
-//    } else {
-//        return String.class;
-//    }
-//}
+/*private*/ QString LayoutBlockNeighbourTableModel::getColumnClass(int col) {
+    if (col == METRICCOL) {
+        return "Integer";
+    } else {
+        return "String";
+    }
+}
 
 /**
  * Editable state must be set in ctor.

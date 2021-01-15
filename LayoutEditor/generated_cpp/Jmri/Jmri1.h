@@ -72,7 +72,6 @@
 #include <qgraphicsview.h>
 #include <qgraphicswidget.h>
 #include <qicon.h>
-#include <qitemdelegate.h>
 #include <qitemselectionmodel.h>
 #include <qkeysequence.h>
 #include <qlabel.h>
@@ -104,6 +103,7 @@
 #include <qstatusbar.h>
 #include <qstringlist.h>
 #include <qstyle.h>
+#include <qstyleditemdelegate.h>
 #include <qstyleoption.h>
 #include <qtableview.h>
 #include <qtextcursor.h>
@@ -1419,7 +1419,7 @@ void delete_JTable(JTable* obj) { delete obj; }
    void setAutoCreateColumnsFromModel(JTable* theWrappedObject, bool  autoCreateColumnsFromModel);
    void setAutoResizeMode(JTable* theWrappedObject, int  mode);
    void setColumnModel(JTable* theWrappedObject, TableColumnModel*  columnModel);
-   void setDefaultEditor(JTable* theWrappedObject, QString  arg__1, QItemDelegate*  arg__2);
+   void setDefaultEditor(JTable* theWrappedObject, QString  arg__1, QStyledItemDelegate*  arg__2);
    void setDefaultRenderer(JTable* theWrappedObject, QString  arg__1, QObject*  arg__2);
    void setGridColor(JTable* theWrappedObject, QColor  gridColor);
    void setIntercellSpacing(JTable* theWrappedObject, QSize  intercellSpacing);
@@ -1765,6 +1765,7 @@ virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
+virtual QString  toString();
 virtual char  typeLetter() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
 virtual void vetoableChange(PropertyChangeEvent*  evt);
@@ -1815,6 +1816,7 @@ void delete_LayoutBlockManager(LayoutBlockManager* obj) { delete obj; }
    void turnOffWarning(LayoutBlockManager* theWrappedObject);
    char  py_q_typeLetter(LayoutBlockManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LayoutBlockManager*)theWrappedObject)->py_q_typeLetter());}
    bool  warn(LayoutBlockManager* theWrappedObject);
+    QString py_toString(LayoutBlockManager*);
 };
 
 
@@ -2679,6 +2681,7 @@ virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  supportsVariableLights(QString  arg__1);
 virtual void timerEvent(QTimerEvent*  event);
+virtual QString  toString();
 virtual char  typeLetter() const;
 virtual bool  validSystemNameConfig(QString  arg__1) const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
@@ -2704,6 +2707,7 @@ inline Light*  py_q_provide(QString  name) throw (IllegalArgumentException)
  { return LightManager::provide(name); }
 inline Light*  py_q_provideLight(QString  arg__1) { return LightManager::provideLight(arg__1); }
 inline bool  py_q_supportsVariableLights(QString  arg__1) { return LightManager::supportsVariableLights(arg__1); }
+inline QString  py_q_toString() { return LightManager::toString(); }
 inline bool  py_q_validSystemNameConfig(QString  arg__1) const { return LightManager::validSystemNameConfig(arg__1); }
 };
 
@@ -2735,8 +2739,10 @@ void delete_LightManager(LightManager* obj) { delete obj; }
    Light*  py_q_provideLight(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_provideLight(arg__1));}
    bool  supportsVariableLights(LightManager* theWrappedObject, QString  arg__1);
    bool  py_q_supportsVariableLights(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_supportsVariableLights(arg__1));}
+   QString  py_q_toString(LightManager* theWrappedObject){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_toString());}
    bool  validSystemNameConfig(LightManager* theWrappedObject, QString  arg__1) const;
    bool  py_q_validSystemNameConfig(LightManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_validSystemNameConfig(arg__1));}
+    QString py_toString(LightManager*);
 };
 
 
@@ -3136,6 +3142,7 @@ virtual void removeDataListener(QObject*  e);
 virtual void removePropertyChangeListener(PropertyChangeListener*  l);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
+virtual QString  toString();
 virtual char  typeLetter() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
 virtual void vetoableChange(PropertyChangeEvent*  evt);
@@ -3165,6 +3172,7 @@ void delete_LnReporterManager(LnReporterManager* obj) { delete obj; }
    QString  py_q_getNamedBeanClass(LnReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    Manager::NameValidity  py_q_validSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_LnReporterManager*)theWrappedObject)->py_q_validSystemNameFormat(systemName));}
    QString  validateSystemNameFormat(LnReporterManager* theWrappedObject, QString  systemName, QLocale  locale);
+    QString py_toString(LnReporterManager*);
 };
 
 
@@ -3320,6 +3328,7 @@ virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeL
 virtual void setDefaultSensorDebounceGoingActive(long  timer);
 virtual void setDefaultSensorDebounceGoingInActive(long  timer);
 virtual void timerEvent(QTimerEvent*  event);
+virtual QString  toString();
 virtual char  typeLetter() const;
 virtual void updateAll();
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
@@ -3359,6 +3368,7 @@ void delete_LnSensorManager(LnSensorManager* obj) { delete obj; }
    void setUpdateBusy(LnSensorManager* theWrappedObject);
    void setUpdateNotBusy(LnSensorManager* theWrappedObject);
    void py_q_updateAll(LnSensorManager* theWrappedObject){  (((PythonQtPublicPromoter_LnSensorManager*)theWrappedObject)->py_q_updateAll());}
+    QString py_toString(LnSensorManager*);
 };
 
 

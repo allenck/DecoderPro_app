@@ -32,10 +32,10 @@ AbstractTurnoutManager::AbstractTurnoutManager(SystemConnectionMemo* memo, QObje
 //		TurnoutOperationManager.getInstance();		// force creation of an instance
 //	}
 
-// @Override
-/*public*/ SystemConnectionMemo* AbstractTurnoutManager::getMemo() {
-    return memo;
-}
+//// @Override
+///*public*/ SystemConnectionMemo* AbstractTurnoutManager::getMemo() {
+//    return memo;
+//}
 
 int AbstractTurnoutManager::getXMLOrder()const{
     return Manager::TURNOUTS;

@@ -37,9 +37,10 @@ public:
  /*public*/ QString getSelectedItem() {return currentText();}
  /*public*/ int getSelectedIndex() {return currentIndex();}
  /*public*/ void setSelectedIndex(int i){setCurrentIndex(i);}
- /*public*/ void setSelectedItem(QString t) {setCurrentText(t);}
+ /*public*/ virtual void setSelectedItem(QString t) {setCurrentText(t);}
  /*public*/ int getItemCount() {return count();}
  /*public*/ QStringList itemList();
+ /*public*/ QVariant getItemAt(int i);
 
 signals:
  void itemStateChanged(ItemEvent* e);

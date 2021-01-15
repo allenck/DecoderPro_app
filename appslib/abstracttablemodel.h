@@ -5,7 +5,7 @@
 #include <QVariant>
 #include "javaqt_global.h"
 
-class QItemDelegate;
+class QStyledItemDelegate;
 class QPushButton;
 class JTable;
 class TableModelListener;
@@ -17,7 +17,7 @@ public:
     explicit AbstractTableModel(QObject *parent = 0);
     /*public*/ QString getColumnName(int column) const;
     virtual /*public*/ int findColumn(QString columnName);
-    /*public*/ QString getColumnClass(int columnIndex) {return QString();}
+    /*public*/ QString getColumnClass(int columnIndex) const;
     /*public*/ bool isCellEditable(int rowIndex, int columnIndex) const override;
     /*public*/ void setValueAt(QVariant aValue, int rowIndex, int columnIndex) override;
     /*public*/ virtual void addTableModelListener(TableModelListener* l) override;
@@ -32,7 +32,6 @@ public:
     /*public*/ int getRowCount() const {return rowCount(QModelIndex());}
     /*public*/ int getColumnCount() const {return columnCount(QModelIndex());}
     /*public*/ QVariant getValueAt(int row, int col) const;
-    /*public*/ QString getColumnClass(int col) const;
     virtual /*public*/ QVariant getToolTip(int /*col*/)const { return QString();}
     void setTable(JTable*);
 //    void setPersistentButtons();
@@ -59,7 +58,7 @@ protected:
     //protected EventListenerList* listenerList = new EventListenerList();
     QList<EventListener*>* listenerList;
     /*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/= 0);
-    void setColumnToHoldDelegate(JTable *table, int column, QItemDelegate *delegate);
+    void setColumnToHoldDelegate(JTable *table, int column, QStyledItemDelegate *delegate);
 
     friend class CvTableModel;
     friend class BeanTableDataModel;

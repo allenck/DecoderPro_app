@@ -140,7 +140,7 @@ void SignallingSourcePanel::on_addLogic_pressed()
 {
  SignallingAction* sigLog = new SignallingAction();
  sigLog->setMast(sourceMast, NULL);
- sigLog->actionPerformed(NULL);
+ sigLog->actionPerformed();
 }
 
 void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)

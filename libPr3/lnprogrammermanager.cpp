@@ -4,7 +4,7 @@
 #include "lndeferprogrammer.h"
 
 LnProgrammerManager::LnProgrammerManager(LocoNetSystemConnectionMemo* memo)
- : DefaultProgrammerManager(new LnDeferProgrammer(memo), memo)
+ : DefaultProgrammerManager(new LnDeferProgrammer(memo), (SystemConnectionMemo*)memo)
 {
  setObjectName("LnProgrammerManager");
  //super(new LnDeferProgrammer(memo), memo)

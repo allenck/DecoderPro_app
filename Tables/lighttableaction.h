@@ -4,6 +4,13 @@
 #include "abstracttableaction.h"
 #include "beantabledatamodel.h"
 #include "windowlistener.h"
+#include "managercombobox.h"
+#include "jtextfield.h"
+#include "jlabel.h"
+#include "jcheckbox.h"
+#include "jspinner.h"
+#include "spinnernumbermodel.h"
+#include "systemnamevalidator.h"
 
 class BufferedImage;
 class LTAValidator;
@@ -11,9 +18,6 @@ class QGroupBox;
 class LightControlTableModel;
 class LightControl;
 class QLabel;
-class QComboBox;
-class QCheckBox;
-class JTextField;
 class Light;
 class DecimalFormat;
 class LightManager;
@@ -49,12 +53,14 @@ private:
     /*private*/ bool lightControlChanged;// = false;
 
     // items of add frame
-    QLabel* systemLabel;// = new JLabel(tr("LightSystem"));
-    QComboBox* prefixBox;// = new JComboBox<String>();
-    QCheckBox* addRangeBox;// = new JCheckBox(tr("AddRangeBox"));
-    JTextField* hardwareAddressTextField;// = new JTextField(10);
-    JTextField* fieldNumToAdd;// = new JTextField(5);
-    QLabel* labelNumToAdd;// = new JLabel("   " + tr("LabelNumberToAdd"));
+    JLabel* systemLabel = new JLabel(tr("System connection:"));
+    ManagerComboBox* prefixBox = new ManagerComboBox/*<Light>*/();
+    JCheckBox* addRangeBox = new JCheckBox(tr("Add a sequential range"));
+    JTextField* hardwareAddressTextField = new JTextField(10);
+    SystemNameValidator* hardwareAddressValidator;
+    SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 50, 1); // maximum 50 items
+    JSpinner* numberToAdd = new JSpinner(rangeSpinner);
+    JLabel* labelNumToAdd = new JLabel("   " + tr("Number to Add:"));
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
     QWidget* panel1a;// = NULL;
     QGroupBox* varPanel;// = NULL;
@@ -78,7 +84,7 @@ private:
 
     QLabel* status1;// = new JLabel(tr("LightCreateInst"));
     QLabel* status2;// = new JLabel("");
-    QString connectionChoice = "";
+    Manager* connectionChoice = nullptr;
 
     // parts for supporting variable intensity, transition
     QLabel* labelMinIntensity;// = new JLabel(tr("LightMinIntensity") + "  ");
@@ -89,7 +95,6 @@ private:
     QLabel* labelMaxIntensityTail;// = new JLabel(" %   ");
     QLabel* labelTransitionTime;// = new JLabel(tr("LightTransitionTime") + "  ");
     JTextField* fieldTransitionTime;// = new JTextField(5);
-    /*private*/ void initializePrefixCombo();
     /*private*/ bool canAddRange();
     void setupVariableDisplay(bool showIntensity, bool showTransition);
     bool supportsVariableLights();

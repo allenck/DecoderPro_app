@@ -307,35 +307,35 @@ BeanTableDataModel(parent)
 }
 
 //@Override
-///*public*/ Class<?> getColumnClass(int col) {
-//    switch (col) {
-//    case WARRANT_COLUMN:
-//        return String.class;
-//    case ROUTE_COLUMN:
-//        return String.class; // JComboBox.class;
-//    case TRAIN_NAME_COLUMN:
-//        return String.class;
-//    case ADDRESS_COLUMN:
-//        return String.class;
-//    case ALLOCATE_COLUMN:
-//        return JButton.class;
-//    case DEALLOC_COLUMN:
-//        return JButton.class;
-//    case SET_COLUMN:
-//        return JButton.class;
-//    case AUTO_RUN_COLUMN:
-//        return JButton.class;
-//    case MANUAL_RUN_COLUMN:
-//        return JButton.class;
-//    case CONTROL_COLUMN:
-//        return String.class; // JComboBox.class;
-//    case EDIT_COLUMN:
-//        return JButton.class;
-//    case DELETE_COLUMN:
-//        return JButton.class;
-//    }
-//    return String.class;
-//}
+/*public*/ QString WarrantTableModel::getColumnClass(int col) {
+    switch (col) {
+    case WARRANT_COLUMN:
+        return "String";
+    case ROUTE_COLUMN:
+        return "String"; // JComboBox.class;
+    case TRAIN_NAME_COLUMN:
+        return "String";
+    case ADDRESS_COLUMN:
+        return "String";
+    case ALLOCATE_COLUMN:
+        return "JButton";
+    case DEALLOC_COLUMN:
+        return "JButton";
+    case SET_COLUMN:
+        return "JButton";
+    case AUTO_RUN_COLUMN:
+        return "JButton";
+    case MANUAL_RUN_COLUMN:
+        return "JButton";
+    case CONTROL_COLUMN:
+        return "String"; // JComboBox.class;
+    case EDIT_COLUMN:
+        return "JButton";
+    case DELETE_COLUMN:
+        return "JButton";
+    }
+    return "String";
+}
 
 //@Override
 /*public*/ int WarrantTableModel::getPreferredWidth(int col) {

@@ -2,18 +2,17 @@
 #include "actionlistener.h"
 #include "gridbaglayout.h"
 #include "gridbagconstraints.h"
-#include <QPushButton>
 #include <QVBoxLayout>
-#include <QCheckBox>
+#include "jcheckbox.h"
 #include "jcombobox.h"
-#include <QLabel>
-#include <QSpinBox>
+#include "jspinner.h"
 #include "flowlayout.h"
 #include "jtextfield.h"
 #include <QFont>
 #include "loggerfactory.h"
 #include "jpanel.h"
-
+#include "managercombobox.h"
+#include "systemnamevalidator.h"
 
 //AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(QWidget *parent) :
 //    QWidget(parent)
@@ -21,13 +20,18 @@
 //}
 ///*public*/ class AddNewHardwareDevicePanel extends jmri.util.swing.JmriPanel {
 
-/*public*/ AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(JTextField* sysAddress, JTextField* userName, JComboBox/*<String>*/* prefixBox, JTextField* endRange, QCheckBox* addRange,
-            QString addButtonLabel, ActionListener* listener, ActionListener* rangeListener)
+/*public*/ AddNewHardwareDevicePanel::AddNewHardwareDevicePanel(JTextField* sysAddress, SystemNameValidator* sysAddressValidator, JTextField* userName,
+                                     ManagerComboBox/*<String>*/* prefixBox,
+                                     JSpinner* endRange, JCheckBox* addRange,
+                                     JButton* addButton, ActionListener* cancelListener, ActionListener* rangeListener,
+                                     JLabel* statusBar, QWidget* parent) : JmriPanel(parent)
 {
  setObjectName("AddNewHardwareDevicePanel");
  setLayout(new QVBoxLayout());//this, BoxLayout.Y_AXIS));
  _endRange = endRange;
  _range = addRange;
+ // directly using the addButton from the table action allows to disable it from there
+ // as long until a valid address is entered
  JPanel* p;
  p = new JPanel();
  //p.setLayout(new FlowLayout());
@@ -64,32 +68,62 @@
  c.gridx = 2;
  c.gridy = 2;
  pLayout->addWidget(userName, c);
+ userName->setToolTip(tr("Use any characters. Double or padding spaces will be trimmed.")); // fixed general instructio
  layout()->addWidget(p);
- QPushButton* ok;
- layout()->addWidget(ok = new QPushButton((addButtonLabel)));
- //ok.addActionListener(listener);
- connect(ok, SIGNAL(clicked(bool)), listener, SLOT(actionPerformed(/*ActionEvent**/)));
-// addRange.addItemListener(
-//         new ItemListener() {
-//             public void itemStateChanged(ItemEvent e) {
- connect(addRange, &QCheckBox::clicked, [=]{
-                 rangeState();
-//             }
-         });
- //prefixBox.addActionListener(rangeListener);
- connect(prefixBox, SIGNAL(currentIndexChanged(int)), rangeListener, SLOT(actionPerformed()));
-
  finishLabel->setEnabled(false);
  _endRange->setEnabled(false);
- /* System.out.println(jmri.InstanceManager.getList(jmri.jmrix.SystemConnectionMemo.class));
-  java.util.List<jmri.jmrix.SystemConnectionMemo> list
-  = jmri.InstanceManager.getList(jmri.jmrix.SystemConnectionMemo.class);
-  if (list != null) {
-  for (jmri.jmrix.SystemConnectionMemo memo : list) {
-  System.out.println(memo.getUserName());
-  //if (menu != null) m.add(menu);
-  }
-  }*/
+
+ // add status bar above buttons
+ JPanel* panelStatus = new JPanel();
+ panelStatus->setLayout(new FlowLayout());
+ QFont f = statusBar->font();
+ f.setPointSizeF(0.9f * sysAddressLabel->font().pointSizeF());
+ statusBar->setFont(f); // a bit smaller
+ statusBar->setForeground(Qt::gray);
+ panelStatus->layout()->addWidget(statusBar);
+ layout()->addWidget(panelStatus);
+
+ // cancel + add buttons at bottom of window
+ JPanel* panelBottom = new JPanel();
+ panelBottom->setLayout(new FlowLayout());//FlowLayout.TRAILING));
+
+ panelBottom->layout()->addWidget(cancel);
+ //cancel.addActionListener(cancelListener);
+ connect(cancel, &JButton::clicked, [=]{cancelListener->actionPerformed();});
+
+ panelBottom->layout()->addWidget(addButton);
+
+ layout()->addWidget(panelBottom);
+
+// addRange.addItemListener((ItemEvent e) -> {
+//     rangeState();
+// });
+ connect(addRange, &JCheckBox::clicked, [=]{rangeState();});
+ //prefixBox.addActionListener(rangeListener);
+ connect(prefixBox, &ManagerComboBox::currentIndexChanged, [=]{rangeListener->actionPerformed();});
+ sysAddress->setInputVerifier(sysAddressValidator);
+ if (prefixBox->getSelectedItem() == nullptr) {
+     prefixBox->setSelectedIndex(0);
+ }
+ //prefixBox.addActionListener((evt) -> {
+ connect(prefixBox, &ManagerComboBox::currentIndexChanged, [=]{
+     Manager/*<?>*/* manager = prefixBox->getSelectedItem();
+     if (manager != nullptr) {
+         sysAddress->setText("");     // Reset saved text before switching managers
+         sysAddressValidator->setManager(manager);
+     }
+ });
+ //sysAddressValidator->addPropertyChangeListener("validation", (evt) -> { // NOI18N
+#if 0
+ connect(sysAddressValidator, &SystemNameValidator::propertyChange(PropertyChangeEvent*), [=] {
+     Validation validation = sysAddressValidator.getValidation();
+     Validation.Type type = validation.getType();
+     addButton.setEnabled(type != Validation.Type.WARNING && type != Validation.Type.DANGER);
+     setStatusBarText(validation.getMessage());
+ });
+#endif
+ sysAddressValidator->setManager(prefixBox->getSelectedItem());
+ sysAddressValidator->verify(sysAddress);
 }
 /*public*/ void AddNewHardwareDevicePanel::addLabels(QString labelSystemName, QString labelUserName) {
     sysAddressLabel->setText(labelSystemName);

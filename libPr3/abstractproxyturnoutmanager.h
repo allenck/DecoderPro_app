@@ -9,7 +9,7 @@
 #include "turnoutmanager.h"
 #include "proxymanager.h"
 
-// NOTE: This class is a replacement for AbstractProxyManager that
+// NOTE: This class is a replacement for AbstractProxyManager<E> that
 // implements TurnoutManager instead of AbstractManager
 
 class LIBPR3SHARED_EXPORT AbstractProxyTurnoutManager :  public TurnoutManager, public ProxyManager

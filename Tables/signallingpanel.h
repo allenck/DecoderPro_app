@@ -12,6 +12,7 @@
 #include "abstracttablemodel.h"
 #include <QItemDelegate>
 #include "libtables_global.h"
+#include "tabledelegates.h"
 
 class SignalMast;
 class NamedBeanHandleManager;
@@ -430,7 +431,7 @@ public slots:
      void propertyChange(PropertyChangeEvent *e);
 
 };
-
+#if 0
 class SPComboBoxDelegate : public QItemDelegate
 {
 Q_OBJECT
@@ -447,17 +448,17 @@ private:
   QStringList items;
 
 };
-
-class SignalMastComboBoxDelegate : public QItemDelegate
+#endif
+class SignalMastComboBoxDelegate : public JComboBoxEditor
 {
 Q_OBJECT
 public:
   SignalMastComboBoxDelegate(SignallingPanel* panel, QObject *parent = 0);
 
   QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-  void setEditorData(QWidget *editor, const QModelIndex &index) const;
-  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+//  void setEditorData(QWidget *editor, const QModelIndex &index) const;
+//  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+//  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
   //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:

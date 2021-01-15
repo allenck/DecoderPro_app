@@ -70,6 +70,7 @@ public:
     /*public*/ QString getNamedBeanClass()const override {
         return "Reporter";
     }
+    /*public*/ QString toString() {return "ProxyReporterManager";}
 
 signals:
     

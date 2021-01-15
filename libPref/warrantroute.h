@@ -210,6 +210,7 @@ public:
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ QString getColumnClass(int col);
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);

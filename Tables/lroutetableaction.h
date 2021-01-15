@@ -13,7 +13,7 @@ class AddFrameWindowListener;
 class ConditionalVariable;
 class ConditionalAction;
 class RouteInputModel;
-class RouteOutputModel;
+class RouteOutputModelX;
 class LAlignElement;
 class AlignmentModel;
 class QComboBox;
@@ -209,7 +209,7 @@ private:
     QRadioButton* _inputAllButton;
     bool _showAllInput;
 
-    RouteOutputModel* _outputModel;
+    RouteOutputModelX* _outputModel;
     //JScrollPane _outputScrollPane;
     QComboBox* _setStateCombo;
     QRadioButton* _outputAllButton;
@@ -271,7 +271,7 @@ protected slots:
 
     friend class LBeanTableDataModel;
     friend class RouteInputModel;
-    friend class RouteOutputModel;
+    friend class RouteOutputModelX;
     friend class AlignmentModel;
     friend class LRouteInputSensor;
     friend class LRouteInputTurnout;
@@ -360,7 +360,7 @@ public slots:
 private:
   LRouteTableAction* self;
   friend class RouteInputModel;
-  friend class RouteOutputModel;
+  friend class RouteOutputModelX;
   friend class AlignmentModel;
 };
 class RouteInputModel : public RouteElementModel
@@ -375,11 +375,11 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
-class RouteOutputModel : public RouteElementModel
+class RouteOutputModelX : public RouteElementModel
 {
     Q_OBJECT
 public:
- RouteOutputModel(LRouteTableAction* self);
+ RouteOutputModelX(LRouteTableAction* self);
  /*public*/ bool isInput();
  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
  /*public*/ int rowCount(const QModelIndex &parent) const;
@@ -523,17 +523,17 @@ QString getAlignType();
 void setAlignType(QString state);
 };
 
-class LComboBoxDelegate : public QItemDelegate
+class LComboBoxDelegate : public JComboBoxEditor
 {
 Q_OBJECT
 public:
   LComboBoxDelegate(RouteElementModel* model, LRouteTableAction* self, QObject *parent = 0);
 
   QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-  void setEditorData(QWidget *editor, const QModelIndex &index) const;
-  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-  //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+//  void setEditorData(QWidget *editor, const QModelIndex &index) const;
+//  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+//  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+//  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:
   RouteElementModel* model;

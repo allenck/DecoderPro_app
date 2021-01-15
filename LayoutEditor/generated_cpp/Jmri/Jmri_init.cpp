@@ -100,7 +100,7 @@ PythonQt::priv()->registerClass(&RfidSensorManager::staticMetaObject, "Jmri", Py
 PythonQt::priv()->registerClass(&Roster::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Roster>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Roster>, module, 0);
 PythonQt::priv()->registerClass(&RosterEntry::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_RosterEntry>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_RosterEntry>, module, 0);
 PythonQt::priv()->registerCPPClass("RosterObject", "BeanInterface", "Jmri", PythonQtCreateObject<PythonQtWrapper_RosterObject>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_RosterObject>, module, 0);
-PythonQt::priv()->registerCPPClass("Route", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_Route>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Route>, module, 0);
+PythonQt::priv()->registerClass(&Route::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Route>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Route>, module, PythonQt::Type_RichCompare);
 PythonQt::priv()->registerClass(&RouteManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_RouteManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_RouteManager>, module, 0);
 PythonQt::priv()->registerClass(&Sensor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Sensor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Sensor>, module, PythonQt::Type_RichCompare);
 PythonQt::priv()->registerClass(&SensorManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_SensorManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_SensorManager>, module, 0);

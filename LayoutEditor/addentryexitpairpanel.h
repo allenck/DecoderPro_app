@@ -145,6 +145,7 @@ public:
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ QString getColumnClass(int col);
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ int columnCount(const QModelIndex &parent) const;
 

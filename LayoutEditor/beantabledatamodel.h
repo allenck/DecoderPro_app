@@ -42,6 +42,7 @@ public:
  /*public*/ int rowCount(const QModelIndex &parent) const override;
  /*public*/ int columnCount(const QModelIndex &parent) const override;
  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ QString getColumnClass(int col) const override;
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  virtual /*public*/ int getPreferredWidth(int col) ;
@@ -90,10 +91,10 @@ private:
  static Logger* log;
  bool noWarnDelete;// = false;
  virtual void doDelete(NamedBean* bean);
- QDialog* dialog;
- QCheckBox* remember;
+ QDialog* dialog = nullptr;
+ QCheckBox* remember = nullptr;
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault("NamedBeanHandleManager");
- NamedBean* t;
+ NamedBean* t = nullptr;
  //QList<int> buttonMap;
  //JTable* _table = nullptr;
  int row;

@@ -2,7 +2,8 @@
 #include <QLabel>
 #include <QBoxLayout>
 #include "flowlayout.h"
-#include <QSpinBox>
+#include "jspinner.h"
+#include "spinnernumbermodel.h"
 #include <QPushButton>
 #include "audiolistener.h"
 #include "audiotableaction.h"
@@ -10,6 +11,8 @@
 #include "instancemanager.h"
 #include "abstractaudio.h"
 #include <QScrollArea>
+#include "joptionpane.h"
+#include "borderfactory.h"
 
 //AudioListenerFrame::AudioListenerFrame(QWidget *parent) :
 //  AbstractAudioFrame(parent)
@@ -35,9 +38,7 @@
  */
 // /*public*/ class AudioListenerFrame extends AbstractAudioFrame {
 
-   /**
-    *
-    */
+  /*private*/ /*final*/ /*static*/ QString AudioListenerFrame::PREFIX = "IAL";
 
 //@SuppressWarnings("OverridableMethodCallInConstructor")
 /*public*/ AudioListenerFrame::AudioListenerFrame(QString title, AudioTableDataModel* model, QWidget *parent) :
@@ -53,7 +54,7 @@ AbstractAudioFrame(title, model, parent)
  oriUpLabel = new QLabel(tr("look Up"));
  oriUp = new JPanelVector3f("", tr("units"));
  gain = new JPanelSliderf(tr("Gain"), 0.0f, 1.0f, 5, 4);
- metersPerUnit = new QSpinBox();
+ metersPerUnit = new JSpinner();
  metersPerUnitLabel = new QLabel(tr("meters/unit"));
 
  layoutFrame();
@@ -63,18 +64,16 @@ AbstractAudioFrame(title, model, parent)
 /*public*/ void AudioListenerFrame::layoutFrame()
 {
  AbstractAudioFrame::layoutFrame();
- QWidget* p;
+ JPanel* p;
  scrollLayout->addWidget(position);
  scrollLayout->addWidget(velocity);
 
- p = new QGroupBox(tr("Orientation"));
- QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
- p->setStyleSheet(gbStyleSheet);
+ p = new JPanel();
  QVBoxLayout* pLayout;
  p->setLayout(pLayout = new QVBoxLayout); //(p, BoxLayout.Y_AXIS));
-//   p.setBorder(BorderFactory.createCompoundBorder(
-//           BorderFactory.createTitledBorder(tr("LabelOrientation")),
-//           BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+   p->setBorder(BorderFactory::createCompoundBorder(
+           BorderFactory::createTitledBorder(tr("Orientation")),
+           BorderFactory::createEmptyBorder(5, 5, 5, 5)));
  pLayout->addWidget(oriAtLabel);
  pLayout->addWidget(oriAt);
  pLayout->addWidget(oriUpLabel);
@@ -83,30 +82,36 @@ AbstractAudioFrame(title, model, parent)
 
  scrollLayout->addWidget(gain);
 
- p = new QGroupBox(tr("Meters Per Unit"));
+ p = new JPanel();
  FlowLayout* pFlowLayout;
  p->setLayout(pFlowLayout = new FlowLayout());
-//   p.setBorder(BorderFactory.createCompoundBorder(
-//           BorderFactory.createTitledBorder(tr("LabelMetersPerUnit")),
-//           BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+ p->setBorder(BorderFactory::createCompoundBorder(
+           BorderFactory::createTitledBorder(tr("Meters Per Unit")),
+           BorderFactory::createEmptyBorder(5, 5, 5, 5)));
  metersPerUnit->setMinimumSize(JTextField(8).getPreferredSize());
- //metersPerUnit.setModel(
-//           new SpinnerNumberModel(new Float(0f), new Float(0f), new Float(65536f), new Float(0.0001f)));
- metersPerUnit->setRange(0, 65535);
- metersPerUnit->setValue(0);
-//   metersPerUnit.setEditor(new JSpinner.NumberEditor(metersPerUnit, "0.0000"));
+ metersPerUnit->setModel(
+           new SpinnerNumberModel(0., 0., 65536., 0.0001f));
+ //metersPerUnit->setEditor(new JSpinner.NumberEditor(metersPerUnit, "0.0000"));
  pFlowLayout->addWidget(metersPerUnit);
  pFlowLayout->addWidget(metersPerUnitLabel);
  scrollLayout->addWidget(p);
 
- QPushButton* ok = new QPushButton(tr("OK"));
+ JButton* apply;
+ p->layout()->addWidget(apply = new JButton(tr("Apply")));
+// apply.addActionListener((ActionEvent e) -> {
+ connect(apply, &JButton::clicked, [=]{
+     applyPressed(/*e*/);
+ });
+ JButton* ok = new JButton(tr("OK"));
 // frame.getContentPane().add(ok = new JButton(rb.getString("ButtonOK")));
 //   ok.addActionListener(new ActionListener() {
 //       //@Override
 //       /*public*/ void actionPerformed(ActionEvent e) {
-//           okPressed(e);
+ connect(ok, &JButton::clicked, [=]{
+           applyPressed(/*e*/);
+           frame->dispose();
 //       }
-//   });
+ });
  QVBoxLayout* centralWidgetLayout;
  if(frame->centralWidget() == NULL)
  {
@@ -141,13 +146,16 @@ AbstractAudioFrame(title, model, parent)
  metersPerUnit->setValue(l->getMetersPerUnit());
 }
 
-void  AudioListenerFrame::okPressed(JActionEvent* /*e*/)
+void  AudioListenerFrame::applyPressed(JActionEvent* /*e*/)
 {
- QString user = userName->text();
- if (user==("")) {
-  user = "";
+ QString sName = sysName->text();
+ if (entryError(sName, PREFIX, "$")) { // no index for AudioListener
+     return;
  }
- QString sName = sysName->text().toUpper();
+ QString user = userName->text();
+ if (user == ("")) {
+     user = QString();
+ }
  AudioListener* l;
  try
  {
@@ -166,9 +174,10 @@ void  AudioListenerFrame::okPressed(JActionEvent* /*e*/)
  }
  catch (AudioException ex)
  {
-//       JOptionPane.showMessageDialog(null, ex.getMessage(), rb.getString("AudioCreateErrorTitle"), JOptionPane.ERROR_MESSAGE);
+  JOptionPane::showMessageDialog(nullptr, ex.getMessage(), tr("Error creating Audio object"), JOptionPane::ERROR_MESSAGE);
  }
 }
+
 /*public*/ QString AudioListenerFrame::getClassName()
 {
  return "jmri.jmrit.audio.swing.AudioListenerFrame";

@@ -126,7 +126,7 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Turnout";
  }
-
+ /*public*/ QString toString() {return "ProxyTurnoutManager";}
 public slots:
 
 

@@ -96,7 +96,18 @@ SOURCES +=  slotmonitor.cpp \
     signaleditframe.cpp \
     oblockeditaction.cpp \
     blockpatheditframe.cpp \
-    sensoreditaction.cpp
+    sensoreditaction.cpp \
+    routetabledatamodel.cpp \
+    routeeditframe.cpp \
+    abstractrouteaddeditframe.cpp \
+    routeturnout.cpp \
+    routesensor.cpp \
+    routeelement.cpp \
+    routesensormodel.cpp \
+    routeturnoutmodel.cpp \
+    routeaddframe.cpp \
+    routeoutputmodel.cpp \
+    routeexporttologix.cpp
 
 HEADERS += libtables_global.h \
     slotmonitor.h \
@@ -181,7 +192,18 @@ HEADERS += libtables_global.h \
     signaleditframe.h \
     oblockeditaction.h \
     blockpatheditframe.h \
-    sensoreditaction.h
+    sensoreditaction.h \
+    routetabledatamodel.h \
+    routeeditframe.h \
+    abstractrouteaddeditframe.h \
+    routeturnout.h \
+    routesensor.h \
+    routeelement.h \
+    routesensormodel.h \
+    routeturnoutmodel.h \
+    routeaddframe.h \
+    routeoutputmodel.h \
+    routeexporttologix.h
 
 unix:!symbian {
     maemo5 {

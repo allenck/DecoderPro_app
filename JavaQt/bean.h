@@ -13,7 +13,12 @@ class Bean : public UnboundBean, public PropertyChangeProvider
  Q_OBJECT
  Q_INTERFACES(PropertyChangeProvider)
 public:
- explicit Bean(QObject *parent = 0);
+  Bean(QObject *parent = 0);
+  /*protected*/
+  Bean(bool notifyOnEDT, QObject *parent = 0);
+  ~Bean() {}
+  Bean(const Bean&) : UnboundBean() {}
+
  virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
  virtual /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
  virtual /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
@@ -45,5 +50,5 @@ friend class ManagerDefaultSelector;
 friend class UserMessagePreferencesPane;
 friend class AmpMeterFrame;
 };
-
+Q_DECLARE_METATYPE(Bean)
 #endif // BEAN_H

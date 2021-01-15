@@ -104,8 +104,8 @@ namespace Operations
      tcm.getColumn(EDIT_COLUMN)->setCellEditor(buttonEditor);
      tcm.getColumn(DELETE_COLUMN)->setCellRenderer(buttonRenderer);
      tcm.getColumn(DELETE_COLUMN)->setCellEditor(buttonEditor);
-     table->setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
-     table->setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
+     table->setDefaultRenderer("JComboBox", new jmri.jmrit.symbolicprog.ValueRenderer());
+     table->setDefaultEditor("JComboBox", new jmri.jmrit.symbolicprog.ValueEditor());
 #endif
      table->setItemDelegateForColumn(EDIT_COLUMN, new MyDelegate());
      table->setItemDelegateForColumn(DELETE_COLUMN, new MyDelegate());
@@ -178,30 +178,30 @@ namespace Operations
   return QVariant();
  }
 
-// /*public*/ Class<?> getColumnClass(int col) {
-//     switch (col) {
-//         case ID_COLUMN:
-//             return String.class;
-//         case NAME_COLUMN:
-//             return String.class;
-//         case SCHEDULE_STATUS_COLUMN:
-//             return String.class;
-//         case SPUR_NUMBER_COLUMN:
-//             return String.class;
-//         case SPUR_COLUMN:
-//             return JComboBox.class;
-//         case STATUS_COLUMN:
-//             return String.class;
-//         case MODE_COLUMN:
-//             return String.class;
-//         case EDIT_COLUMN:
-//             return JButton.class;
-//         case DELETE_COLUMN:
-//             return JButton.class;
-//         default:
-//             return NULL ;
-//     }
-// }
+ /*public*/ QString SchedulesTableModel::getColumnClass(int col) {
+     switch (col) {
+         case ID_COLUMN:
+             return "String";
+         case NAME_COLUMN:
+             return "String";
+         case SCHEDULE_STATUS_COLUMN:
+             return "String";
+         case SPUR_NUMBER_COLUMN:
+             return "String";
+         case SPUR_COLUMN:
+             return "JComboBox";
+         case STATUS_COLUMN:
+             return "String";
+         case MODE_COLUMN:
+             return "String";
+         case EDIT_COLUMN:
+             return "JButton";
+         case DELETE_COLUMN:
+             return "JButton";
+         default:
+             return QString() ;
+     }
+ }
 
  /*public*/ Qt::ItemFlags SchedulesTableModel::flags(const QModelIndex &index) const
  {
@@ -473,7 +473,7 @@ namespace Operations
 
 
  STMSComboBoxDelegate::STMSComboBoxDelegate(SchedulesTableModel* model,  GETCOMBO1, QObject *parent)
-  : QStyledItemDelegate(parent)
+  : JComboBoxEditor(parent)
  {
   this->model  = model;
   this->items = QStringList();
@@ -503,21 +503,21 @@ namespace Operations
   return editor;
  }
 
- void STMSComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
- {
-   JComboBox *comboBox = static_cast<JComboBox*>(editor);
-   int value = index.model()->data(index, Qt::EditRole).toUInt();
-   comboBox->setCurrentIndex(value);
- }
+// void STMSComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+// {
+//   JComboBox *comboBox = static_cast<JComboBox*>(editor);
+//   int value = index.model()->data(index, Qt::EditRole).toUInt();
+//   comboBox->setCurrentIndex(value);
+// }
 
- void STMSComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
- {
-   JComboBox *comboBox = static_cast<JComboBox*>(editor);
-   model->setData(index, comboBox->currentText(), Qt::EditRole);
- }
+// void STMSComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+// {
+//   JComboBox *comboBox = static_cast<JComboBox*>(editor);
+//   model->setData(index, comboBox->currentText(), Qt::EditRole);
+// }
 
- void STMSComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
- {
-   editor->setGeometry(option.rect);
- }
+// void STMSComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+// {
+//   editor->setGeometry(option.rect);
+// }
 }

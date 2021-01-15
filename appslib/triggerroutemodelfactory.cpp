@@ -53,7 +53,7 @@ TriggerRouteModelFactory::TriggerRouteModelFactory()
   //((RouteManager*)InstanceManager::getDefault("RouteManager")).getSystemNameList().stream().forEach((systemName) ->
   foreach(QString systemName, ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getSystemNameList())
   {
-      Route* r = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(systemName);
+      Route* r = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(systemName);
       if (r != NULL) {
           QString userName = ((DefaultRoute*)r)->getUserName();
           if (userName != NULL && !userName.isEmpty()) {

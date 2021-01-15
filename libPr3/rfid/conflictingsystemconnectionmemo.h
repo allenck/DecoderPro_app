@@ -1,8 +1,8 @@
 #ifndef CONFLICTINGSYSTEMCONNECTIONMEMO_H
 #define CONFLICTINGSYSTEMCONNECTIONMEMO_H
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 
-class ConflictingSystemConnectionMemo : public SystemConnectionMemo
+class ConflictingSystemConnectionMemo : public DefaultSystemConnectionMemo
 {
  Q_OBJECT
 public:

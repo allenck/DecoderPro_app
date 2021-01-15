@@ -15,8 +15,8 @@ public:
     ~TurnoutOperationManagerXml() {}
     TurnoutOperationManagerXml(const TurnoutOperationManagerXml&) : AbstractXmlAdapter() {}
     /*public*/ void setStoreElementClass(QDomElement elem);
-    /*public*/ void load(QDomElement element, QObject o);
-    /*public*/ bool load(QDomElement operationsElement) throw (Exception);
+//    /*public*/ void load(QDomElement element, QObject o);
+    /*public*/ bool load(QDomElement sharedOperations, QDomElement perNodeOperations) throw (JmriConfigureXmlException);
     /*public*/ QDomElement store(QDomDocument doc, QObject* o);
 
 signals:

@@ -130,7 +130,7 @@ public:
 //    /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
     /*public*/ NamedBean* getNamedBean(QString name) const override;
 //    /*public*/ char systemLetter() const;
-    /*public*/ SystemConnectionMemo* getMemo();
+    /*public*/ SystemConnectionMemo* getMemo() const override;
     /*public*/ QString getSystemPrefix()const override;
     /*public*/ char typeLetter() const override;
     /*public*/ QString makeSystemName(QString s)const override;

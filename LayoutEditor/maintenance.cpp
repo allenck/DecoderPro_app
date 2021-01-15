@@ -843,7 +843,7 @@ Maintenance::Maintenance(QObject *parent) :
     while (iter1.hasNext()) {
         // get the next Logix
         QString sName = iter1.next();
-        Route* r = ((DefaultRouteManager*)routeManager)->getBySystemName(sName);
+        Route* r = (Route*)((DefaultRouteManager*)routeManager)->getBySystemName(sName);
         if (r==NULL) {
             log->error("Error getting Route  - "+sName);
             break;

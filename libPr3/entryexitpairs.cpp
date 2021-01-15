@@ -262,7 +262,7 @@ return (settingRouteColor == QColor() ? false : true);
 /** {@inheritDoc} */
 //@Nonnull
 //@Override
-/*public*/ SystemConnectionMemo* EntryExitPairs::getMemo() {
+/*public*/ SystemConnectionMemo* EntryExitPairs::getMemo() const {
     return memo;
 }
 /*public*/ QString EntryExitPairs::getSystemPrefix() const{

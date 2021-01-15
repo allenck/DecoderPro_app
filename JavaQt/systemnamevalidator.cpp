@@ -1,7 +1,7 @@
 #include "systemnamevalidator.h"
 #include "manager.h"
 
-SystemNameValidator::SystemNameValidator(QObject *parent) : QObject(parent)
+SystemNameValidator::SystemNameValidator(QObject *parent) : InputVerifier()
 {
 
 }

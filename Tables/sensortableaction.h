@@ -7,9 +7,16 @@
 #include "libtables_global.h"
 #include "propertychangeevent.h"
 #include <QVariant>
-#include<QPushButton>
+#include "jbutton.h"
 #include "propertychangelistener.h"
-#include <QSpinBox>
+#include "spinnernumbermodel.h"
+#include "instancemanager.h"
+#include "jspinner.h"
+#include "jcheckbox.h"
+#include "jlabel.h"
+#include "managercombobox.h"
+#include "systemnamevalidator.h"
+#include "jtextfield.h"
 
 class STAValidator;
 class QPushButton;
@@ -25,7 +32,6 @@ class SensorManager;
 class QLabel;
 class QCheckBox;
 class UserPreferencesManager;
-class JComboBox;
 class JmriJFrame;
 class JTextField;
 class LIBTABLESSHARED_EXPORT SensorTableAction : public AbstractTableAction
@@ -54,27 +60,31 @@ public slots:
 private:
     JmriJFrame* addFrame;// = NULL;
 
-    JTextField* hardwareAddressTextField;// = new JTextField(40);
-    JTextField* userNameField;// = new JTextField(40);
-    JComboBox* prefixBox;// = new JComboBox();
-    JTextField* numberToAdd;// = new JTextField(5);
-    QCheckBox* rangeBox;// = new JCheckBox("Add a range");
-    QLabel* sysNameLabel;// = new JLabel("Hardware Address");
-    QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
+    JTextField* hardwareAddressTextField = new JTextField(40);
+    // initially allow any 20 char string, updated by prefixBox selection
+    JTextField* userNameField = new JTextField(40);
+    ManagerComboBox/*<Sensor*>*/* prefixBox = new ManagerComboBox();
+    SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+    JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
+    JCheckBox* rangeBox = new JCheckBox("Add a range");
+    JLabel* hwAddressLabel = new JLabel("Hardware Address:");
+    JLabel* userNameLabel = new JLabel(tr("User Name:"));
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
     QString userNameError;// = this.getClass().getName()+".DuplicateUserName";
-    QLabel* statusBarLabel;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
+    JButton* addButton;
+    JLabel* statusBarLabel = new JLabel(tr("Enter a Hardware Address and (optional) User Name.")/*, JLabel.LEADING*/);
 
     UserPreferencesManager* p;
-    void handleCreateException(QString hardwareAddressTextField);
+    Manager/*<Sensor>*/* connectionChoice = nullptr;
+    SystemNameValidator* hardwareAddressValidator;
+
     BeanTableFrame* f;
     //BeanTableDataModel* m;
     QCheckBox* showDebounceBox;// = new JCheckBox(tr("SensorDebounceCheckBox"));
-    bool enabled;
-    QString connectionChoice;// = "";
+    bool enabled = true;
     QString  addEntryToolTip;
-    QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
     STAValidator* validator;
+    void handleCreateException(QString sysName);
 
 private slots:
     /*private*/ void canAddRange();
@@ -82,13 +92,13 @@ private slots:
     void createPressed();
 
 protected:
-    /*protected*/ SensorManager* senManager;// = jmri.InstanceManager.sensorManagerInstance();
     /*protected*/ void createModel();
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();
     /*protected*/ void setDefaultDebounce(JFrame* _who);
     /*protected*/ QString getClassName();
     /*protected*/ void setDefaultState(JFrame* _who);
+    /*protected*/ SensorManager* sensorManager = (SensorManager*)InstanceManager::getDefault("SensorManager");
 
 protected slots:
     /*protected*/ void addPressed();
@@ -117,15 +127,15 @@ public slots:
 
 };
 
-//class STCancelActionListener : public ActionListener
-//{
-// Q_OBJECT
-// SensorTableAction* act;
-//public:
-// STCancelActionListener(SensorTableAction* act);
-//public slots:
-// void actionPerformed();
-//};
+class STCancelActionListener : public ActionListener
+{
+ Q_OBJECT
+ SensorTableAction* act;
+public:
+ STCancelActionListener(SensorTableAction* act);
+public slots:
+ void actionPerformed();
+};
 
 class STRangeActionListener : public ActionListener
 {

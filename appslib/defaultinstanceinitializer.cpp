@@ -106,7 +106,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
          type == "ConditionalManager" ||
          type ==  "LogixManager" ||
          type == "MemoryManager" ||
-         type == "RouteManager" ||
+         type == "RouteManager" || type == "DefaultRouteManager" ||
          type == "SignalGroupManager" ||
          type == "SignalHeadManager" ||
          type == "SignalHeadManager" ||
@@ -593,6 +593,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  {
   CTCExceptionBuffer* m = new CTCExceptionBuffer();
   InstanceManager::store(m, type);
+  return m;
+ }
+
+ if (type == "DefaultRouteManager")
+ {
+  DefaultRouteManager* m = new DefaultRouteManager(memo);
   return m;
  }
 

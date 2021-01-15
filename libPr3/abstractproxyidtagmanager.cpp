@@ -13,12 +13,13 @@
 #include "loggerfactory.h"
 #include "namedbeancomparator.h"
 #include "vetoablechangesupport.h"
+#include "defaultsystemconnectionmemo.h"
 
 // NOTE: This class is a replacement for AbstractProxyManager that
 // implements SensorManager instead of AbstractManager
 
 AbstractProxyIdTagManager::AbstractProxyIdTagManager(QObject *parent)
-    : IdTagManager(new SystemConnectionMemo(), parent)
+    : IdTagManager(new DefaultSystemConnectionMemo(), parent)
 {
  mgrs = QList<Manager*>();
  internalManager = nullptr;

@@ -2,14 +2,11 @@
 #include "jmrijframe.h"
 #include <QCheckBox>
 #include <QBoxLayout>
-#include "jcombobox.h"
-#include <QLabel>
 #include "connectionnamefromsystemname.h"
 #include "userpreferencesmanager.h"
 #include "addnewhardwaredevicepanel.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "proxyreportermanager.h"
-#include <QSpinBox>
 #include <reportable.h>
 #include "vptr.h"
 #include "rfid/reportervariant.h"
@@ -40,14 +37,14 @@
     common();
 
     // disable ourself if there is no primary Reporter manager available
-    if (reportManager == nullptr) {
+    if (reporterManager == nullptr) {
         setEnabled(false);
     }
 }
 
 
 /*public*/ void ReporterTableAction::setManager(ReporterManager* man) {
-    reportManager = man;
+    reporterManager = man;
 }
 
 /*public*/ ReporterTableAction::ReporterTableAction(QObject* parent) : AbstractTableAction(tr("TitleReporterTable"), parent)
@@ -57,23 +54,16 @@
 }
 void ReporterTableAction::common()
 {
- reportManager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
+ reporterManager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
  log = new Logger("ReporterTableAction");
 
  addFrame = NULL;
- //sysName = new JTextField(10);
- hardwareAddressTextField = new JTextField(20);
- //hardwareAddressTextField->setValidator(new RTAValidator(hardwareAddressTextField, this));
- userNameTextField = new JTextField(20);
- prefixBox = new JComboBox();
- numberToAdd = new JTextField(10);
- range = new QCheckBox(tr("Add a range"));
- sysNameLabel = new QLabel("Hardware Address");
- userNameLabel = new QLabel(tr("User Name"));
+ sysNameLabel = new JLabel("Hardware Address");
+ userNameLabel = new JLabel(tr("User Name"));
  systemSelectionCombo = QString(metaObject()->className()) + ".SystemSelected";
  userNameError = QString(this->metaObject()->className()) + ".DuplicateUserName";
  connectionChoice = "";
- statusBar = new QLabel(tr("Enter a Hardware Address and (optional) User Name.")/*, JLabel.LEADING*/);
+ statusBarLabel = new JLabel(tr("Enter a Hardware Address and (optional) User Name.")/*, JLabel.LEADING*/);
 }
 
 /**
@@ -96,7 +86,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 /*public*/ QString RtBeanTableDataModel::getValue(QString name) const
 {
    QVariant value;
-   Reporter* r = (Reporter*)act->reportManager->getBySystemName(name);
+   Reporter* r = (Reporter*)act->reporterManager->getBySystemName(name);
    if (r == nullptr) {
        return "";
    }
@@ -118,16 +108,16 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 }
 
 /*public*/ Manager* RtBeanTableDataModel::getManager() {
-    return act->reportManager;
+    return act->reporterManager;
 }
 
 /*public*/ NamedBean* RtBeanTableDataModel::getBySystemName(QString name)  const
 {
-    return ((ProxyReporterManager*)act->reportManager)->getBySystemName(name);
+    return ((ProxyReporterManager*)act->reporterManager)->getBySystemName(name);
 }
 
 /*public*/ NamedBean* RtBeanTableDataModel::getByUserName(QString name) {
-    return act->reportManager->getByUserName(name);
+    return act->reporterManager->getByUserName(name);
 }
 /*public int getDisplayDeleteMsg() { return InstanceManager.getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
  public void setDisplayDeleteMsg(int boo) { InstanceManager.getDefault(jmri.UserPreferencesManager.class).setMultipleChoiceOption(getClassName(), "delete", boo); }*/
@@ -248,6 +238,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 }
 
 /*protected*/ void ReporterTableAction::addPressed(ActionEvent* /*e*/) {
+#if 1
     pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if (addFrame == NULL) {
         addFrame = new JmriJFrameX(tr("Add Reporter"), false, true);
@@ -272,32 +263,17 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 //                canAddRange(e);
 //            }
 //        };
-        if (QString(reportManager->metaObject()->className()).contains("ProxyReporterManager"))
-        {
-            ProxyReporterManager* proxy = (ProxyReporterManager*) reportManager;
-            QList<Manager*> managerList = proxy->getManagerList();
-            for (int x = 0; x < managerList.size(); x++) {
-                QString manuName = ConnectionNameFromSystemName::getConnectionName(managerList.at(x)->getSystemPrefix());
-                bool addToPrefix = true;
-                //Simple test not to add a system with a duplicate System prefix
-                for (int i = 0; i < prefixBox->count(); i++) {
-                    if ((prefixBox->itemText(i)) == (manuName)) {
-                        addToPrefix = false;
-                    }
-                }
-                if (addToPrefix) {
-                    prefixBox->addItem(manuName);
-                }
-            }
-            if (pref->getComboBoxLastSelection(systemSelectionCombo) != NULL) {
-                prefixBox->setCurrentIndex(prefixBox->findText(pref->getComboBoxLastSelection(systemSelectionCombo)));
-            }
-        } else {
-            prefixBox->addItem(ConnectionNameFromSystemName::getConnectionName(reportManager->getSystemPrefix()));
-        }
+        configureManagerComboBox(prefixBox, reporterManager, "ReporterManager");
         userNameTextField->setObjectName("userName");
-        prefixBox->setObjectName("prefixBox");
-        addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, userNameTextField, prefixBox, numberToAdd, range, "Create", createListener, rangeListener));
+        prefixBox->setName("prefixBox");
+        addButton = new JButton(tr("Create"));
+        //addButton.addActionListener(createListener);
+        connect(addButton, &JButton::clicked, [=]{createListener->actionPerformed();});
+        hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox->getSelectedItem(), true);
+        // create panel
+        addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, hardwareAddressValidator, userNameTextField, prefixBox,
+                                                                numberToAddSpinner, rangeCheckBox, addButton, cancelListener, rangeListener, statusBarLabel));
+
         canAddRange(NULL);
     }
     hardwareAddressTextField->setObjectName("hwAddressTextField"); // for GUI test NOI18N
@@ -305,11 +281,12 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
     hardwareAddressTextField->setBackground(QColor(Qt::yellow));
     //addButton.addActionListener(createListener);
     // reset statusBar text
-    statusBar->setText(tr("Enter a Hardware Address and (optional) User Name."));
-    statusBar->setStyleSheet("QEditLine {color: gray}");
+    statusBarLabel->setText(tr("Enter a Hardware Address and (optional) User Name."));
+    statusBarLabel->setStyleSheet("QEditLine {color: gray}");
 
     addFrame->pack();
     addFrame->setVisible(true);
+#endif
 }
 RTACreateListener::RTACreateListener(ReporterTableAction* act) { this->act = act;}
 /*public*/ void RTACreateListener::actionPerformed(JActionEvent* /*e*/) {
@@ -334,23 +311,15 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
 {
  int numberOfReporters = 1;
 
- if (range->isChecked()) {
-     bool bOk;
-         numberOfReporters = numberToAdd->text().toInt(&bOk);
-     if(!bOk)
-     {
-          log->error("Unable to convert " + numberToAdd->text() + " to a number");
-         ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-                 showErrorMessage("Error", "Number to Reporters to Add must be a number!", "" , "", true, false);
-         return;
-     }
+ if (rangeCheckBox->isChecked()) {
+  numberOfReporters = numberToAddSpinner->value();
+
  }
  if (numberOfReporters >= 65) {
-//        if (JOptionPane.showConfirmDialog(addFrame,
-//                "You are about to add " + numberOfReporters + " Reporters into the configuration\nAre you sure?", "Warning",
-//                JOptionPane.YES_NO_OPTION) == 1) {
-  if(QMessageBox::question(addFrame, tr("Warning"), tr("You are about to add %1 Reporters into the configuration\nAre you sure?").arg(numberOfReporters), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-  {
+        if (JOptionPane::showConfirmDialog(addFrame,
+                tr("You are about to add %1 Reporters into the configuration\nAre you sure?").arg(numberOfReporters),
+                tr("Warning"),
+                JOptionPane::YES_NO_OPTION) == 1) {
       return;
   }
  }
@@ -361,8 +330,8 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
 // initial check for empty entry
  if (curAddress.length() < 1)
  {
-   statusBar->setText(tr("You must provide a Hardware Address to start."));
-   statusBar->setStyleSheet("QLabel {color: red}");
+   statusBarLabel->setText(tr("You must provide a Hardware Address to start."));
+   statusBarLabel->setStyleSheet("QLabel {color: red}");
    hardwareAddressTextField->setBackground(QColor(Qt::red));
    return;
   }
@@ -374,27 +343,27 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
  QString errorMessage = "";
  for (int x = 0; x < numberOfReporters; x++)
  {
-  curAddress = ((ProxyReporterManager*)reportManager)->getNextValidAddress(curAddress, reporterPrefix);
+  curAddress = ((ProxyReporterManager*)reporterManager)->getNextValidAddress(curAddress, reporterPrefix);
   if (curAddress == "") {
    log->debug("Error converting HW or getNextValidAddress");
    errorMessage = (tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip)."));
-   statusBar->setStyleSheet("QEditLine {color: red}");
+   statusBarLabel->setStyleSheet("QEditLine {color: red}");
    // The next address returned an error, therefore we stop this attempt and go to the next address.
   }
 
   // Compose the proposed system name from parts:
-  rName = reporterPrefix + reportManager->typeLetter() + curAddress;
+  rName = reporterPrefix + reporterManager->typeLetter() + curAddress;
   Reporter* r = nullptr;
   //try {
-      r = ((ProxyReporterManager*)reportManager)->provideReporter(rName);
+      r = ((ProxyReporterManager*)reporterManager)->provideReporter(rName);
   if(r == nullptr)
   {
       // user input no good
    handleCreateException(rName); // displays message dialog to the user
    // add to statusBar as well
    errorMessage = tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip).");
-   statusBar->setText(errorMessage);
-   statusBar->setStyleSheet("QLabel {color: red}");
+   statusBarLabel->setText(errorMessage);
+   statusBarLabel->setStyleSheet("QLabel {color: red}");
       return; // without creating
   }
   if (r != nullptr)
@@ -403,9 +372,9 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
       if ((x != 0) && user != "" && user != ("")) {
           user = userNameTextField->text() + ":" + x;
       }
-      if (user != "" && user != ("") && (reportManager->getByUserName(user) == nullptr)) {
+      if (user != "" && user != ("") && (reporterManager->getByUserName(user) == nullptr)) {
           r->setUserName(user);
-      } else if (((ProxyReporterManager*)reportManager)->getByUserName(user) != nullptr && !pref->getPreferenceState(getClassName(), userNameError))
+      } else if (((ProxyReporterManager*)reporterManager)->getByUserName(user) != nullptr && !pref->getPreferenceState(getClassName(), userNameError))
       {
           pref->showErrorMessage("Duplicate UserName", "The username " + user + " specified is already in use and therefore will not be set", userNameError, "", false, true);
       }
@@ -423,10 +392,10 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
  }
  // provide feedback to user
  if (errorMessage == "") {
-     statusBar->setText(statusMessage);
-     statusBar->setStyleSheet("QLabel {color: gray}");
+     statusBarLabel->setText(statusMessage);
+     statusBarLabel->setStyleSheet("QLabel {color: gray}");
  } else {
-     statusBar->setText(errorMessage);
+     statusBarLabel->setText(errorMessage);
      // statusBar.setForeground(Color.red); // handled when errorMassage is set to differentiate urgency
  }
 
@@ -438,16 +407,16 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
 
 /*private*/ void ReporterTableAction::canAddRange(ActionEvent* /*e*/)
 {
- range->setEnabled(false);
- range->setChecked(false);
+ rangeCheckBox->setEnabled(false);
+ rangeCheckBox->setChecked(false);
  connectionChoice =  prefixBox->currentText(); // store in Field for CheckedTextField
  if (connectionChoice == "") {
      // Tab All or first time opening, default tooltip
      connectionChoice = "TBD";
  }
- if (QString(reportManager->metaObject()->className()).contains("ProxyReporterManager"))
+ if (QString(reporterManager->metaObject()->className()).contains("ProxyReporterManager"))
  {
-  ProxyReporterManager* proxy = (ProxyReporterManager*) reportManager;
+  ProxyReporterManager* proxy = (ProxyReporterManager*) reporterManager;
   QList<Manager*> managerList = proxy->getManagerList();
   QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName(connectionChoice);
   for (int x = 0; x < managerList.size(); x++) {
@@ -455,17 +424,17 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
       QString sp = mgr->getSystemPrefix();
       bool bam = mgr->allowMultipleAdditions(systemPrefix);
       if (mgr->getSystemPrefix() == (systemPrefix) && mgr->allowMultipleAdditions(systemPrefix)) {
-          range->setEnabled(true);
+          rangeCheckBox->setEnabled(true);
           addEntryToolTip = mgr->getEntryToolTip();
           log->debug("R add box set");
           break;
       }
   }
- } else if (reportManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()))) {
-     range->setEnabled(true);
+ } else if (reporterManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()))) {
+     rangeCheckBox->setEnabled(true);
      log->debug("R add box enabled2");
      // get tooltip from sensor manager
-     addEntryToolTip = reportManager->getEntryToolTip();
+     addEntryToolTip = reporterManager->getEntryToolTip();
      log->debug("ReporterManager tip");
  }
  // show hwAddressTextField field tooltip in the Add Reporter pane that matches system connection selected from combobox
@@ -476,13 +445,10 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
 }
 
 void ReporterTableAction::handleCreateException(QString sysName) {
-//    javax.swing.JOptionPane.showMessageDialog(addFrame,
-//            java.text.MessageFormat.format(
-//                    tr("ErrorReporterAddFailed"),
-//                    new Object[]{sysName}),
-//            tr("ErrorTitle"),
-//            javax.swing.JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(addFrame, tr("Error"),tr("Could not create Reporter %1 to add it. Check that number/name is OK.").arg(sysName));
+    JOptionPane::showMessageDialog(addFrame,
+                    tr("Could not create Reporter %1 to add it. Check that number/name is OK.").arg(sysName),
+            tr("Error"),
+            JOptionPane::ERROR_MESSAGE);
 }
 
 /*protected*/ QString ReporterTableAction::getClassName() {

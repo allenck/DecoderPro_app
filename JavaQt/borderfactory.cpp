@@ -270,10 +270,10 @@
         return new SoftBevelBorder(type, highlightOuter, highlightInner, shadowOuter, shadowInner);
     }
 #endif
-#if 0
+#if 1
 //// EtchedBorder ///////////////////////////////////////////////////////////
 
-    /*static*/ /*final*/ Border* BorderFactory::sharedEtchedBorder = new EtchedBorder();
+    /*static*/ /*final*/ Border* BorderFactory::sharedEtchedBorder = nullptr;//new EtchedBorder();
     /*private*/ /*static*/ Border* BorderFactory::sharedRaisedEtchedBorder;
 
     /**
@@ -284,6 +284,8 @@
      * @return the <code>Border</code> object
      */
     /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder()    {
+     if(sharedEtchedBorder == nullptr)
+      sharedEtchedBorder = new EtchedBorder();
         return sharedEtchedBorder;
     }
 
@@ -321,6 +323,8 @@
             }
             return sharedRaisedEtchedBorder;
         case EtchedBorder::LOWERED:
+         if(sharedEtchedBorder == nullptr)
+          sharedEtchedBorder = new EtchedBorder();
             return sharedEtchedBorder;
         default:
             throw  IllegalArgumentException("type must be one of EtchedBorder.RAISED or EtchedBorder.LOWERED");
@@ -547,7 +551,7 @@
                                                 int bottom, int right) {
         return new EmptyBorder(top, left, bottom, right);
     }
-#if 0
+#if 1
 //// CompoundBorder ////////////////////////////////////////////////////////
     /**
      * Creates a compound border with a <code>null</code> inside edge and a
@@ -555,7 +559,7 @@
      *
      * @return the <code>CompoundBorder</code> object
      */
-    /*public*/ static CompoundBorder createCompoundBorder() {
+    /*public*/ /*static*/ CompoundBorder* BorderFactory::createCompoundBorder() {
         return new CompoundBorder();
     }
 
@@ -569,8 +573,8 @@
      *                          edge of the compound border
      * @return the <code>CompoundBorder</code> object
      */
-    /*public*/ static CompoundBorder createCompoundBorder(Border outsideBorder,
-                                                Border insideBorder) {
+    /*public*/ /*static*/ CompoundBorder* BorderFactory::createCompoundBorder(Border* outsideBorder,
+                                                Border* insideBorder) {
         return new CompoundBorder(outsideBorder, insideBorder);
     }
 #endif

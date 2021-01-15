@@ -50,20 +50,20 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
     // last is internal, so insert before that one
     log->debug("   putting one before end");
     SystemConnectionMemo* internal = (SystemConnectionMemo*)list->at(size - 1);
-    InstanceManager::deregister(internal, "SystemConnectionMemo");
-    InstanceManager::store(memo, "SystemConnectionMemo");
-    InstanceManager::store(internal, "SystemConnectionMemo");
+    InstanceManager::deregister(internal->self(), "SystemConnectionMemo");
+    InstanceManager::store(memo->self(), "SystemConnectionMemo");
+    InstanceManager::store(internal->self(), "SystemConnectionMemo");
   }
   else {
     // just add on end
-    InstanceManager::store(memo, "SystemConnectionMemo");
+    InstanceManager::store(memo->self(), "SystemConnectionMemo");
   }
   this->firePropertyChange("ConnectionAdded", QVariant(), VPtr<SystemConnectionMemo>::asQVariant(memo));
 }
 
 /*public*/ void SystemConnectionMemoManager::deregister(SystemConnectionMemo* memo) {
  // removeFromActionList();
- InstanceManager::deregister(memo, "SystemConnectionMemo");
+ InstanceManager::deregister(memo->self(), "SystemConnectionMemo");
  firePropertyChange("ConnectionRemoved", VPtr<SystemConnectionMemo>::asQVariant(memo), QVariant());
 }
 

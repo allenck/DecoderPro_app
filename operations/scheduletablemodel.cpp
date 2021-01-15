@@ -108,8 +108,8 @@ namespace Operations
      tcm.getColumn(DOWN_COLUMN)->setCellEditor(buttonEditor);
      tcm.getColumn(DELETE_COLUMN)->setCellRenderer(buttonRenderer);
      tcm.getColumn(DELETE_COLUMN)->setCellEditor(buttonEditor);
-     table->setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
-     table->setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
+     table->setDefaultRenderer("JComboBox", new jmri.jmrit.symbolicprog.ValueRenderer());
+     table->setDefaultEditor("JComboBox", new jmri.jmrit.symbolicprog.ValueEditor());
 #endif
      table->setItemDelegateForColumn(UP_COLUMN, new MyDelegate());
      table->setItemDelegateForColumn(DOWN_COLUMN, new MyDelegate());
@@ -220,44 +220,44 @@ namespace Operations
   return QVariant();
  }
 
-// /*public*/ Class<?> getColumnClass(int col) {
-//     switch (col) {
-//         case ID_COLUMN:
-//             return String.class;
-//         case CURRENT_COLUMN:
-//             return String.class;
-//         case TYPE_COLUMN:
-//             return String.class;
-//         case RANDOM_COLUMN:
-//             return JComboBox.class;
-//         case SETOUT_DAY_COLUMN:
-//             return JComboBox.class;
-//         case ROAD_COLUMN:
-//             return JComboBox.class;
-//         case LOAD_COLUMN:
-//             return JComboBox.class;
-//         case SHIP_COLUMN:
-//             return JComboBox.class;
-//         case DEST_COLUMN:
-//             return JComboBox.class;
-//         case TRACK_COLUMN:
-//             return JComboBox.class;
-//         case PICKUP_DAY_COLUMN:
-//             return JComboBox.class;
-//         case COUNT_COLUMN:
-//             return String.class;
-//         case WAIT_COLUMN:
-//             return String.class;
-//         case UP_COLUMN:
-//             return JButton.class;
-//         case DOWN_COLUMN:
-//             return JButton.class;
-//         case DELETE_COLUMN:
-//             return JButton.class;
-//         default:
-//             return NULL ;
-//     }
-// }
+ /*public*/ QString ScheduleTableModel::getColumnClass(int col) {
+     switch (col) {
+         case ID_COLUMN:
+             return "String";
+         case CURRENT_COLUMN:
+             return "String";
+         case TYPE_COLUMN:
+             return "String";
+         case RANDOM_COLUMN:
+             return "JComboBox";
+         case SETOUT_DAY_COLUMN:
+             return "JComboBox";
+         case ROAD_COLUMN:
+             return "JComboBox";
+         case LOAD_COLUMN:
+             return "JComboBox";
+         case SHIP_COLUMN:
+             return "JComboBox";
+         case DEST_COLUMN:
+             return "JComboBox";
+         case TRACK_COLUMN:
+             return "JComboBox";
+         case PICKUP_DAY_COLUMN:
+             return "JComboBox";
+         case COUNT_COLUMN:
+             return "String";
+         case WAIT_COLUMN:
+             return "String";
+         case UP_COLUMN:
+             return "JButton";
+         case DOWN_COLUMN:
+             return "JButton";
+         case DELETE_COLUMN:
+             return "JButton";
+         default:
+             return "" ;
+     }
+ }
 
  /*public*/ Qt::ItemFlags ScheduleTableModel::flags(const QModelIndex &index) const
  {
@@ -826,7 +826,7 @@ namespace Operations
 
 
  STMComboBoxDelegate::STMComboBoxDelegate(ScheduleTableModel* model,  QObject *parent)
-  : QStyledItemDelegate(parent)
+  : JComboBoxEditor(parent)
  {
   this->model  = model;
   this->items = QStringList();
@@ -870,22 +870,22 @@ namespace Operations
   return editor;
  }
 
- void STMComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
- {
-   QComboBox *comboBox = static_cast<QComboBox*>(editor);
-   int value = index.model()->data(index, Qt::EditRole).toUInt();
-   comboBox->setCurrentIndex(value);
- }
+// void STMComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+// {
+//   QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//   int value = index.model()->data(index, Qt::EditRole).toUInt();
+//   comboBox->setCurrentIndex(value);
+// }
 
- void STMComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
- {
-   QComboBox *comboBox = static_cast<QComboBox*>(editor);
-   model->setData(index, comboBox->currentText(), Qt::EditRole);
- }
+// void STMComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+// {
+//   QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//   model->setData(index, comboBox->currentText(), Qt::EditRole);
+// }
 
- void STMComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
- {
-   editor->setGeometry(option.rect);
- }
+// void STMComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+// {
+//   editor->setGeometry(option.rect);
+// }
 
 }

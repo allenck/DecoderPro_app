@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include "conditionalvariable.h"
 #include "actionevent.h"
+#include "abstracttablemodel.h"
 
 class CLESelectLogixBoxListener;
 class CLESelectConditionalBoxListener;
@@ -232,7 +233,7 @@ protected:
  friend class CLESelectLogixBoxListener;
 };
 
-/*public*/ class LIBTABLESSHARED_EXPORT ConditionalTableModel : public  QAbstractTableModel //implements PropertyChangeListener
+/*public*/ class LIBTABLESSHARED_EXPORT ConditionalTableModel : public  AbstractTableModel //implements PropertyChangeListener
 {
  Q_OBJECT
     QMutex mutex;
@@ -248,7 +249,7 @@ public:
   /*public*/ ConditionalTableModel(QObject* parent) ;
   /*synchronized*/ void updateConditionalListeners();
   bool matchPropertyName(PropertyChangeEvent* e);
-  ///*public*/ Class<?> getColumnClass(int c);
+  /*public*/ QString getColumnClass(int c);
   /*public*/ int columnCount(const QModelIndex &parent) const;
   /*public*/ int rowCount(const QModelIndex &parent) const;
   /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -266,7 +267,7 @@ public slots:
   friend class WindowMaker;
 };
 
-/*public*/ class LIBTABLESSHARED_EXPORT LVariableTableModel : public QAbstractTableModel
+/*public*/ class LIBTABLESSHARED_EXPORT LVariableTableModel : public AbstractTableModel
 {
  Q_OBJECT
 public:
@@ -282,6 +283,7 @@ public:
      DELETE_COLUMN = 7
     };
     LVariableTableModel(QObject* parent);
+    /*public*/ QString getColumnClass(int c);
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -298,7 +300,7 @@ private:
     ConditionalListEdit* self;
 };
 
-/*public*/ class ActionTableModel : public QAbstractTableModel
+/*public*/ class ActionTableModel : public AbstractTableModel
 {
     Q_OBJECT
     ConditionalListEdit* self;
@@ -310,6 +312,7 @@ public:
      DELETE_COLUMN = 2
     };
     ActionTableModel(QObject* parent);
+    /*public*/ QString getColumnClass(int c);
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;

@@ -11,7 +11,7 @@ public:
  QT_DEPRECATED InternalTurnoutManager(QObject* parent = nullptr);
  QT_DEPRECATED /*public*/ InternalTurnoutManager(QString prefix, QObject* parent = nullptr);
  /*public*/ InternalTurnoutManager(InternalSystemConnectionMemo* memo, QObject* parent = nullptr);
- /*public*/ SystemConnectionMemo* getMemo() override;
+ /*public*/ SystemConnectionMemo* getMemo() const override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
  /*public*/ QString createSystemName(QString curAddress, QString prefix) const throw (JmriException) override;
  /*public*/ QStringList getValidOperationTypes() override;
@@ -19,6 +19,7 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Turnout";
  }
+ /*public*/ QString toString() {return "InternalTurnoutManager";}
 
 protected:
 /*protected*/ Turnout* createNewTurnout(QString systemName, QString userName) const;

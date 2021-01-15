@@ -29,6 +29,7 @@
 #include "tablecolumn.h"
 #include "variabletablemodel.h"
 #include "light.h"
+#include "tabledelegates.h"
 
 /**
  * The traditional list based conditional editor based on the original editor
@@ -209,6 +210,7 @@ void ConditionalListEdit::makeEditLogixWindow()
  //     stateColumn->setMaxWidth(100);
  //     TableColumn buttonColumn = conditionalColumnModel
  //             .getColumn(ConditionalTableModel.BUTTON_COLUMN);
+      conditionalTable->setItemDelegateForColumn(ConditionalTableModel::BUTTON_COLUMN, new ButtonEditor());
   #if 0
       // install button renderer and editor
       ButtonRenderer buttonRenderer = new ButtonRenderer();
@@ -4404,7 +4406,7 @@ void ConditionalListEdit::actionSignalMastNameListener() // SLOT[]
 //        PropertyChangeListener {
 
 
-/*public*/ ConditionalTableModel::ConditionalTableModel(QObject* parent) : QAbstractTableModel(parent)
+/*public*/ ConditionalTableModel::ConditionalTableModel(QObject* parent) : AbstractTableModel(parent)
 {
  //super();
  self = (ConditionalListEdit*)parent;
@@ -4459,13 +4461,13 @@ bool ConditionalTableModel::matchPropertyName(PropertyChangeEvent* e) {
             ->getPropertyName().indexOf("Appearance") >= 0);
 }
 
-//    /*public*/ Class<?> getColumnClass(int c) {
-//        if (c == BUTTON_COLUMN) {
-//            return QPushButton.class;
-//        } else {
-//            return String.class;
-//        }
-//    }
+/*public*/ QString ConditionalTableModel::getColumnClass(int c) {
+    if (c == BUTTON_COLUMN) {
+        return "JButton";
+    } else {
+        return "String";
+    }
+}
 
 /*public*/ int ConditionalTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
@@ -4696,34 +4698,34 @@ void ConditionalTableModel::fireTableRowsDeleted(int /*r1*/, int /*r2*/)
  */
 ///*public*/ class VariableTableModel extends AbstractTableModel {
 
-LVariableTableModel::LVariableTableModel(QObject* parent) : QAbstractTableModel(parent)
+LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(parent)
 {
   self = (ConditionalListEdit*) parent;
 
 }
 
-//    /*public*/ Class<?> getColumnClass(int c) {
-//        switch (c)
-//        {
-//            case ROWNUM_COLUMN:
-//                return String.class;
-//            case AND_COLUMN:
-//                return JComboBox.class;
-//            case NOT_COLUMN:
-//                return JComboBox.class;
-//            case DESCRIPTION_COLUMN:
-//                return String.class;
-//            case STATE_COLUMN:
-//                return String.class;
-//            case TRIGGERS_COLUMN:
-//                return Boolean.class;
-//            case EDIT_COLUMN:
-//                return QPushButton.class;
-//            case DELETE_COLUMN:
-//                return QPushButton.class;
-//        }
-//        return String.class;
-//    }
+/*public*/ QString LVariableTableModel::getColumnClass(int c) {
+    switch (c)
+    {
+        case ROWNUM_COLUMN:
+            return "String";
+        case AND_COLUMN:
+            return "JComboBox";
+        case NOT_COLUMN:
+            return "JComboBox";
+        case DESCRIPTION_COLUMN:
+            return "String";
+        case STATE_COLUMN:
+            return "String";
+        case TRIGGERS_COLUMN:
+            return "Boolean";
+        case EDIT_COLUMN:
+            return "JButton";
+        case DELETE_COLUMN:
+            return "JButton";
+    }
+    return "String";
+}
 
 /*public*/ int LVariableTableModel::columnCount(const QModelIndex &/*parent*/) const
 {
@@ -4954,18 +4956,18 @@ void LVariableTableModel::fireTableRowsUpdated(int /*row1*/, int /*row2*/)
  */
 // /*public*/ class ActionTableModel extends AbstractTableModel {
 
-ActionTableModel::ActionTableModel(QObject *parent) : QAbstractTableModel(parent)
+ActionTableModel::ActionTableModel(QObject *parent) : AbstractTableModel(parent)
 {
     this->self = (ConditionalListEdit*)parent;
 }
 
-//    /*public*/ Class<?> getColumnClass(int c) {
-//        if (c == EDIT_COLUMN || c ==DELETE_COLUMN )
-//        {
-//            return QPushButton.class;
-//        }
-//        return super.getColumnClass(c);
-//    }
+/*public*/ QString ActionTableModel::getColumnClass(int c) {
+ if (c == EDIT_COLUMN || c ==DELETE_COLUMN )
+ {
+     return "JButton";
+ }
+ return AbstractTableModel::getColumnClass(c);
+}
 
 /*public*/ int ActionTableModel::columnCount(const QModelIndex &/*parent*/) const
 {

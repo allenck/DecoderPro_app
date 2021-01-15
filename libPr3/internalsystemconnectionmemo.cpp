@@ -156,7 +156,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
     if (throttleManager == nullptr) {
         log->debug("Create DebugThrottleManager by request");
         // Install a debug throttle manager
-        throttleManager = new DebugThrottleManager(this);
+        throttleManager = new DebugThrottleManager(this->self());
         InstanceManager::setThrottleManager(throttleManager);
     }
     return throttleManager;
@@ -175,7 +175,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
     if (programManager == nullptr) {
         log->debug("Create DebugProgrammerManager by request");
         // Install a debug programmer
-        programManager = new DebugProgrammerManager(this);
+        programManager = new DebugProgrammerManager(this->self());
         // Don't auto-enter, as that messes up selection in Single CV programmer
         //InstanceManager.setProgrammerManager(programManager);
     }

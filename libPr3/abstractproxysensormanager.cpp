@@ -19,7 +19,7 @@
 // implements SensorManager instead of AbstractManager
 
 AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
-    : SensorManager(new SystemConnectionMemo(), parent)
+    : SensorManager(new DefaultSystemConnectionMemo(), parent)
 {
  mgrs = QList<Manager*>();
  internalManager = nullptr;

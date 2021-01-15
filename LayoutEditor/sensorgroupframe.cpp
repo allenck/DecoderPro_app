@@ -363,7 +363,7 @@ void SensorGroupFrame::deleteGroup(bool showMsg) {
         QString name = l.at(i);
         if (name.startsWith(prefix)) {
             // OK, kill this one
-            Route* r = rm->getBySystemName(l.at(i));
+            Route* r = (Route*)rm->getBySystemName(l.at(i));
             r->deActivateRoute();
             rm->deleteRoute(r);
         }

@@ -27,13 +27,13 @@
 ///*public*/ class DefaultRoute extends AbstractNamedBean
 //    implements Route, java.io.Serializable {
 
-/*public*/ DefaultRoute::DefaultRoute(QString systemName, QString userName,QObject *parent) : AbstractNamedBean(systemName.toUpper(), userName, parent)
+/*public*/ DefaultRoute::DefaultRoute(QString systemName, QString userName,QObject *parent) : Route(systemName.toUpper(), userName, parent)
 {
  //super(systemName.toUpperCase(), userName);
  init();
 }
 
-/*public*/ DefaultRoute::DefaultRoute(QString systemName,QObject *parent) : AbstractNamedBean(systemName.toUpper(), "", parent)
+/*public*/ DefaultRoute::DefaultRoute(QString systemName,QObject *parent) : Route(systemName.toUpper(), "", parent)
 {
  //super(systemName.toUpperCase());
  init();
@@ -74,7 +74,7 @@ void DefaultRoute::init()
  _locked = false;
 }
 
-/*public*/ bool DefaultRoute::getEnabled() {
+/*public*/ bool DefaultRoute::getEnabled() const{
     return _enabled;
 }
 /*public*/ void DefaultRoute::setEnabled(bool v) {

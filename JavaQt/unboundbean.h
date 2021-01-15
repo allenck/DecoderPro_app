@@ -10,6 +10,8 @@ class UnboundBean : public QObject, public BeanInterface
  Q_INTERFACES(BeanInterface)
 public:
  explicit UnboundBean(QObject *parent = nullptr);
+  ~UnboundBean() {}
+  UnboundBean(const UnboundBean&) : QObject() {}
  /*public*/ QVariant getIndexedProperty(QString key, int index) override;
  /*public*/ QVariant getProperty(QString key) override;
  /*public*/ QSet<QString> getPropertyNames();
@@ -22,5 +24,5 @@ signals:
 
 public slots:
 };
-
+Q_DECLARE_METATYPE(UnboundBean)
 #endif // UNBOUNDBEAN_H

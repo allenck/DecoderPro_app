@@ -3,6 +3,7 @@
 #include "jmrijframe.h"
 #include "windowlistener.h"
 #include "liblayouteditor_global.h"
+#include "tabledelegates.h"
 
 class QSignalMapper;
 class Warrant;
@@ -73,6 +74,7 @@ friend class WarrantTableModel;
 friend class WarrantFrame;
 friend class NXFrame;
 friend class Engineer;
+friend class RouteBoxCellEditor;
 };
 
 class WTWindowListener : public WindowListener
@@ -84,4 +86,22 @@ class WTWindowListener : public WindowListener
  friend class WarrantTableFrame;
 };
 
+class ControlBoxCellEditor : public JComboBoxEditor
+{
+  Q_OBJECT
+  WarrantTableFrame* frame;
+ public:
+  ControlBoxCellEditor(QStringList controls, WarrantTableFrame* frame) : JComboBoxEditor(controls, (QObject*)frame) {this->frame = frame;}
+  //QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+};
+
+class RouteBoxCellEditor : public JComboBoxEditor
+{
+  Q_OBJECT
+  WarrantTableFrame* frame;
+ public:
+  RouteBoxCellEditor(WarrantTableFrame* frame) : JComboBoxEditor((QObject*)frame) {this->frame = frame;}
+  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
 #endif // WARRANTTABLEFRAME_H

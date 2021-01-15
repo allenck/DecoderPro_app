@@ -9,18 +9,21 @@
 #include "jtextfield.h"
 #include "instancemanager.h"
 #include "reportermanager.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QLineEdit>
 #include <QValidator>
+#include "managercombobox.h"
+#include "jcheckbox.h"
+#include "spinnernumbermodel.h"
+#include "jspinner.h"
+#include "jlabel.h"
+#include "systemnamevalidator.h"
 
-class QSpinBox;
 class QVBoxLayout;
 class ReporterManager;
-class JTextField;
 class JComboBox;
 class QCheckBox;
 class UserPreferencesManager;
-class QLabel;
 class ReporterTableAction : public AbstractTableAction
 {
     Q_OBJECT
@@ -36,20 +39,22 @@ private:
     void common();
     JmriJFrame* addFrame = NULL;
     QVBoxLayout* addFrameLayout;
-    JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
-    //JTextField* sysName;// = new JTextField(10);
-    JTextField* userNameTextField;// = new JTextField(20);
-    JComboBox* prefixBox = nullptr;// = new JComboBox<String>();
-    JTextField* numberToAdd;// = new JTextField(10);
-    QCheckBox* range;// = new JCheckBox(tr("AddRangeBox"));
-    QLabel* sysNameLabel;// = new JLabel("Hardware Address");
-    QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
+    JTextField* hardwareAddressTextField = new JTextField(20);
+    JTextField* userNameTextField = new JTextField(20);
+    ManagerComboBox* prefixBox = new ManagerComboBox/*<Manager*>*/();
+    /*private*/ /*final*/ SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+    /*private*/ /*final*/ JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
+    JCheckBox* rangeCheckBox = new JCheckBox(tr("Add a range"));
+    JLabel* sysNameLabel;// = new JLabel("Hardware Address");
+    JLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
+    /*private*/ JButton* addButton;
     QString userNameError;// = this.getClass().getName() + ".DuplicateUserName";
     QString connectionChoice;// = "";
-    QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
+    JLabel* statusBarLabel;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
     /*private*/ QString addEntryToolTip;
     UserPreferencesManager* pref;
+    /*private*/ SystemNameValidator* hardwareAddressValidator;
     Logger* log;
 
 private slots:
@@ -59,7 +64,7 @@ private slots:
 
 
 protected:
-    /*protected*/ ReporterManager* reportManager;// = InstanceManager::reporterManagerInstance();
+    /*protected*/ ReporterManager* reporterManager;// = InstanceManager::reporterManagerInstance();
     /*protected*/ void createModel();
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();

@@ -44,7 +44,7 @@
 //    disabledAsLoaded = /*null*/ false; // Boolean can be true, false, or null
 // initialise();
 //}
-
+#if 0
 SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QObject *parent) :
     QObject(parent)
 {
@@ -63,6 +63,7 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
 
  log->debug(tr("SystemConnectionMemo created for prefix \"%1\" user name \"%2\"").arg(prefix).arg(userName));
  //initialise();
+#if 0
  if (!setSystemPrefix(prefix))
  {
   int x = 2;
@@ -85,6 +86,7 @@ SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QOb
  // call after construction
  this->prefixAsLoaded = "";
  this->userNameAsLoaded = "";
+#endif
 }
 
 
@@ -102,7 +104,7 @@ void SystemConnectionMemo::_register()
  * Provides access to the system prefix string.
  * This was previously called the "System letter"
  */
-QString SystemConnectionMemo::getSystemPrefix() const { return prefix; }
+//QString SystemConnectionMemo::getSystemPrefix(); const
 
 /**
  * Set the system prefix.
@@ -111,27 +113,27 @@ QString SystemConnectionMemo::getSystemPrefix() const { return prefix; }
  * @throws java.lang.NullPointerException if systemPrefix is null
  * @return true if the system prefix could be set
  */
-bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
-{
- // return true if systemPrefix is not being changed
- if (systemPrefix == (prefix)) {
-     if (this->prefixAsLoaded.isNull()) {
-         this->prefixAsLoaded = systemPrefix;
-     }
-     return true;
- }
- QString oldPrefix = prefix;
- if (SystemConnectionMemoManager::getDefault()->isSystemPrefixAvailable(systemPrefix)) {
-     prefix = systemPrefix;
-     if (this->prefixAsLoaded.isNull()) {
-         this->prefixAsLoaded = systemPrefix;
-     }
-     notifyPropertyChangeListener(/*SYSTEM_PREFIX*/"ConnectionPrefixChanged", oldPrefix, systemPrefix);
-     return true;
- }
- log->debug(tr("setSystemPrefix false for \"%1\"").arg(systemPrefix));
- return false;
-}
+//bool SystemConnectionMemo::setSystemPrefix(QString systemPrefix)
+//{
+// // return true if systemPrefix is not being changed
+// if (systemPrefix == (prefix)) {
+//     if (this->prefixAsLoaded.isNull()) {
+//         this->prefixAsLoaded = systemPrefix;
+//     }
+//     return true;
+// }
+// QString oldPrefix = prefix;
+// if (SystemConnectionMemoManager::getDefault()->isSystemPrefixAvailable(systemPrefix)) {
+//     prefix = systemPrefix;
+//     if (this->prefixAsLoaded.isNull()) {
+//         this->prefixAsLoaded = systemPrefix;
+//     }
+//     notifyPropertyChangeListener(/*SYSTEM_PREFIX*/"ConnectionPrefixChanged", oldPrefix, systemPrefix);
+//     return true;
+// }
+// log->debug(tr("setSystemPrefix false for \"%1\"").arg(systemPrefix));
+// return false;
+//}
 
 
 
@@ -352,3 +354,4 @@ void SystemConnectionMemo::removeFromActionList()
 
 
 /*private*/ /*final*/ /*static*/ Logger* SystemConnectionMemo::log = LoggerFactory::getLogger("SystemConnectionMemo");
+#endif

@@ -8,6 +8,7 @@
 #include "libtables_global.h"
 #include <QSortFilterProxyModel>
 
+class ManagerComboBox;
 class AbstractTableTabAction;
 class JActionEvent;
 class MessageFormat;
@@ -35,13 +36,13 @@ public:
     virtual /*public*/ bool includeAddButton();
     virtual /*public*/ void print(JTable::PrintMode mode, QString headerFormat, QString footerFormat);
     virtual /*public*/ void addToPanel(AbstractTableTabAction* f);
-    virtual void buildMenus(BeanTableFrame*) {}
+    //virtual void buildMenus(BeanTableFrame*) {}
 signals:
 
 public slots:
     virtual /*public*/ void actionPerformed(JActionEvent* e = 0);
 private:
-    Logger* log;
+    static Logger* log;
     JTable* dataTable;
 protected:
     /*protected*/ BeanTableDataModel* m;
@@ -54,9 +55,13 @@ protected:
     /*protected*/ bool _includeAddButton = true;
     /*protected*/ JTable* table;
     /*protected*/ /*@Nonnull*/ QString nextName(/*@Nonnull*/ QString name);
+    /*protected*/ void configureManagerComboBox(ManagerComboBox/*<E>*/* comboBox, Manager/*<E>*/* manager,
+                                                /*Class<? extends Manager<E>>*/QString managerClass);
+    /*protected*/ void removePrefixBoxListener(ManagerComboBox/*<E>*/* prefixBox);
+    /*protected*/ void displayHwError(QString curAddress, Exception ex);
 
   protected slots:
-    virtual /*protected*/ /*abstract*/ void addPressed(JActionEvent* e = 0);
+    virtual /*protected*/ /*abstract*/ void addPressed(/*JActionEvent* e = 0*/);
 friend class TabbedTableItem;
 friend class ATABeanTableFrame;
 friend class AbstractTableTabAction;

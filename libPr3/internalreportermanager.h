@@ -16,6 +16,8 @@ public:
     {
      return "Reporter";
     }
+    /*public*/ QString toString() {return "InternalReporterManager";}
+
 signals:
     
 public slots:

@@ -1474,9 +1474,9 @@ return QVariant();
 }
 
 //@Override
-//     /*public*/ Class<?> getColumnClass(int col) {
-//         return String.class;
-//     }
+/*public*/ QString RouteTableModel::getColumnClass(int col) {
+ return "String";
+}
 
 /*public*/ int RouteTableModel::getPreferredWidth(int /*col*/) {
  return  JTextField(15).getPreferredSize().width();

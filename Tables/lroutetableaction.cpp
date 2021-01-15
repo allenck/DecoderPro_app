@@ -1238,7 +1238,7 @@ void LRouteTableAction::makeEditWindow()
     connect(includedOutputButton, SIGNAL(clicked()), this, SLOT(includedOutputButtonPressed()));
     tab2->layout()->addWidget(new QLabel(tr("Choose Sensors, Turnouts, Lights and/or Signals for actions to set")));
 
-    _outputModel = new RouteOutputModel(this);
+    _outputModel = new RouteOutputModelX(this);
     JTable* routeOutputTable = new JTable();
     routeOutputTable->setModel(_outputModel);
     routeOutputTable->resizeColumnsToContents();
@@ -2626,13 +2626,13 @@ RouteInputModel::RouteInputModel(LRouteTableAction* self) : RouteElementModel(se
 */
 //class RouteOutputModel extends RouteElementModel
 //{
-RouteOutputModel::RouteOutputModel(LRouteTableAction *self) : RouteElementModel(self)
+RouteOutputModelX::RouteOutputModelX(LRouteTableAction *self) : RouteElementModel(self)
 {
 }
-/*public*/ bool RouteOutputModel::isInput() {
+/*public*/ bool RouteOutputModelX::isInput() {
     return false;
 }
-/*public*/ QVariant RouteOutputModel::headerData(int section, Qt::Orientation orientation, int role) const
+/*public*/ QVariant RouteOutputModelX::headerData(int section, Qt::Orientation orientation, int role) const
 {
  if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
  {
@@ -2643,14 +2643,14 @@ RouteOutputModel::RouteOutputModel(LRouteTableAction *self) : RouteElementModel(
  }
  return QVariant();
 }
- /*public*/ int RouteOutputModel::rowCount(const QModelIndex &/*parent*/) const
+ /*public*/ int RouteOutputModelX::rowCount(const QModelIndex &/*parent*/) const
 {
  if (self->_showAllOutput)
         return self->_outputList->size();
     else
         return self->_includedOutputList->size();
 }
-/*public*/ QVariant RouteOutputModel::data(const QModelIndex &index, int role) const
+/*public*/ QVariant RouteOutputModelX::data(const QModelIndex &index, int role) const
 {
  if(role == Qt::DisplayRole)
  {
@@ -2688,7 +2688,7 @@ RouteOutputModel::RouteOutputModel(LRouteTableAction *self) : RouteElementModel(
  }
  return QVariant();
 }
-/*public*/ bool  RouteOutputModel::setData(const QModelIndex &index, const QVariant &value, int role)
+/*public*/ bool  RouteOutputModelX::setData(const QModelIndex &index, const QVariant &value, int role)
 {
  if(role == Qt::EditRole)
  {
@@ -3375,7 +3375,7 @@ AbstractTableAction::setMessagePreferencesDetails();
  }
 }
 LComboBoxDelegate::LComboBoxDelegate(RouteElementModel* model, LRouteTableAction* self, QObject *parent)
-:QItemDelegate(parent)
+: JComboBoxEditor(parent)
 {
  this->model  = model;
  this->self = self;
@@ -3409,33 +3409,36 @@ QWidget *LComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionView
   return editor;
 }
 
-void LComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
-{
-  QComboBox *comboBox = static_cast<QComboBox*>(editor);
-  int value = index.model()->data(index, Qt::EditRole).toUInt();
-  comboBox->setCurrentIndex(value);
-}
-
-void LComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
-{
-  QComboBox *comboBox = static_cast<QComboBox*>(editor);
-  model->setData(index, comboBox->currentText(), Qt::EditRole);
-}
-
-void LComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
-{
-  editor->setGeometry(option.rect);
-}
-
-//void ComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//void LComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 //{
-//  QStyleOptionViewItemV4 myOption = option;
-//  QString text = Items.at(index.row());
-
-//  myOption.text = text;
-
-//  QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &myOption, painter);
+//  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//  int value = index.model()->data(index, Qt::EditRole).toUInt();
+//  comboBox->setCurrentIndex(value);
 //}
+
+//void LComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+//{
+//  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//  model->setData(index, comboBox->currentText(), Qt::EditRole);
+//}
+
+//void LComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+//{
+//  editor->setGeometry(option.rect);
+//}
+
+//void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//{
+// //bool state = index.data().toString() == this->on;
+// JComboBox* widget = new JComboBox(values);
+// widget->setEditable(true);
+// widget->setCurrentText(index.model()->data(index, Qt::DisplayRole).toString());
+// widget->resize(option.rect.size());
+// QPixmap pixmap(option.rect.size());
+// widget->render(&pixmap);
+// painter->drawPixmap(option.rect,pixmap);
+//}
+
 QString LRouteTableAction::getName()
 {
  return "jmri.jmrit.beantable.LRouteTableAction";

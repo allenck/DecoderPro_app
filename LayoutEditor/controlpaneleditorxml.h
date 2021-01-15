@@ -14,7 +14,7 @@ public:
  ControlPanelEditorXml(const ControlPanelEditorXml&) :AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o) ;
     /*public*/ void load(QDomElement element, QObject* o)throw (Exception)  override;
-    /*public*/ bool load(QDomElement element)throw (Exception) override ;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode)throw (JmriConfigureXmlException) override ;
     /*public*/ int loadOrder() const override;
  /*public*/ QDomElement storeIcon(QString elemName, NamedIcon* icon);
  /*public*/ NamedIcon* loadIcon(QString key, QDomElement element, Editor* ed);

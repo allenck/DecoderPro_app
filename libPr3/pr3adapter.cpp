@@ -168,7 +168,7 @@ void PR3Adapter::configure()
 /*public*/ SystemConnectionMemo *PR3Adapter::getSystemConnectionMemo()
 {
     SystemConnectionMemo* m = LocoBufferAdapter::getSystemConnectionMemo();
-    if (qobject_cast<PR3SystemConnectionMemo*>(m)) {
+    if (qobject_cast<PR3SystemConnectionMemo*>(m->self())) {
         return (PR3SystemConnectionMemo*) m;
     }
     log->error("Cannot cast the system connection memo to a PR3SystemConnection Memo.");

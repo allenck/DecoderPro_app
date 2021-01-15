@@ -53,21 +53,21 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
  return BeanTableDataModel::headerData(section, orientation, role);
 }
 
-///*public*/ Class<?> getColumnClass(int col) {
-//    if (col == VALUECOL) {
-//        return JComboBox.class;
-//    } else if (col == EDITMASTCOL) {
-//        return JButton.class;
-//    } else if (col == EDITLOGICCOL) {
-//        return JButton.class;
-//    } else if (col == LITCOL) {
-//        return Boolean.class;
-//    } else if (col == HELDCOL) {
-//        return Boolean.class;
-//    } else {
-//        return super.getColumnClass(col);
-//    }
-//}
+/*public*/ QString SignalMastTableDataModel::getColumnClass(int col) {
+    if (col == VALUECOL) {
+        return "JComboBox";
+    } else if (col == EDITMASTCOL) {
+        return "JButton";
+    } else if (col == EDITLOGICCOL) {
+        return "JButton";
+    } else if (col == LITCOL) {
+        return "Boolean";
+    } else if (col == HELDCOL) {
+        return "Boolean";
+    } else {
+        return BeanTableDataModel::getColumnClass(col);
+    }
+}
 
 /*public*/ int SignalMastTableDataModel::getPreferredWidth(int col) {
     if (col == LITCOL) {

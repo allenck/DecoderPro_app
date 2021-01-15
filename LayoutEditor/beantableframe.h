@@ -28,6 +28,7 @@ private:
     int bottomBoxIndex;	// index to insert extra stuff
     static /*final*/ int bottomStrutWidth;// = 20;
     virtual void extras();
+    static Logger* log;
 
 protected:
     virtual /*protected*/ void addToBottomBox(QWidget* comp, QString c);

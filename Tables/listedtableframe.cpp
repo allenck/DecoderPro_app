@@ -105,7 +105,7 @@ void ListedTableFrame::common()
 
 /*public*/ void ListedTableFrame::initComponents()
 {
- JmriJFrame::initComponents();
+ //JmriJFrame::initComponents();
 
 
  actionList = new ActionJList(currTableIndex, this);

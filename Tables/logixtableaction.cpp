@@ -407,7 +407,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
 //    TableColumn col = table.getColumnModel().getColumn(BeanTableDataModel.DELETECOL);
 //    col.setCellEditor(new DefaultCellEditor(editCombo));
  QStringList items = QStringList() << tr("Select") << tr("Edit") << tr("Browser") << tr("Copy") << tr("Delete");
- table->setItemDelegateForColumn(BeanTableDataModel::DELETECOL, new ItemDelegate(items, this));
+ table->setItemDelegateForColumn(BeanTableDataModel::DELETECOL, new JComboBoxEditor(items, this));
 }
 
 /*protected*/ void LogixTableModel::configValueColumn(JTable */*table*/)
@@ -1901,51 +1901,51 @@ QString LogixTableAction::getName()
  return "jmri.jmrit.beantable.LogixTableAction";
 }
 #endif
-ItemDelegate::ItemDelegate(QStringList items, QObject *parent)
-: QAbstractItemDelegate(parent)
-{
- Items = items;
-}
+//ItemDelegate::ItemDelegate(QStringList items, QObject *parent)
+//: QAbstractItemDelegate(parent)
+//{
+// Items = items;
+//}
 
 
-QWidget* ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & /*index*/ ) const
-{
-  QComboBox* editor = new QComboBox(parent);
-  editor->addItems(Items);
-  return editor;
-}
+//QWidget* ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & /*index*/ ) const
+//{
+//  QComboBox* editor = new QComboBox(parent);
+//  editor->addItems(Items);
+//  return editor;
+//}
 
-void ItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
-{
-  QComboBox *comboBox = static_cast<QComboBox*>(editor);
-  int value = index.model()->data(index, Qt::EditRole).toUInt();
-  comboBox->setCurrentIndex(value);
-}
+//void ItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+//{
+//  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//  int value = index.model()->data(index, Qt::EditRole).toUInt();
+//  comboBox->setCurrentIndex(value);
+//}
 
-void ItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
-{
-  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//void ItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+//{
+//  QComboBox *comboBox = static_cast<QComboBox*>(editor);
 
-  model->setData(index, comboBox->currentText(), Qt::EditRole);
-}
+//  model->setData(index, comboBox->currentText(), Qt::EditRole);
+//}
 
-void ItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
-{
-  editor->setGeometry(option.rect);
-}
-void ItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-  QStyleOptionViewItemV4 myOption = option;
-  QString text = Items.at(index.row());
+//void ItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+//{
+//  editor->setGeometry(option.rect);
+//}
+//void ItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//{
+//  QStyleOptionViewItemV4 myOption = option;
+//  QString text = Items.at(index.row());
 
-  myOption.text = text;
+//  myOption.text = text;
 
-  QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &myOption, painter);
-}
-QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
-{
- return QSize (80, 100);
-}
+//  QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &myOption, painter);
+//}
+//QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
+//{
+// return QSize (80, 100);
+//}
 
 // ------------ Methods for Conditional References Window ------------
 /**

@@ -12,12 +12,13 @@
 #include "lnturnoutmanager.h"
 #include "loggerfactory.h"
 #include "namedbeancomparator.h"
+#include "defaultsystemconnectionmemo.h"
 
 // NOTE: This class is a replacement for AbstractProxyManager that
 // implements LightManager instead of AbstractManager
 
 AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
-    : LightManager(new SystemConnectionMemo(), parent)
+    : LightManager(new DefaultSystemConnectionMemo(), parent)
 {
  mgrs = QList<Manager*>();
  internalManager = nullptr;

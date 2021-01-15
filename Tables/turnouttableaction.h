@@ -8,7 +8,15 @@
 #include <QHash>
 #include "namedbeancombobox.h"
 #include <functional>
+#include "managercombobox.h"
+#include "spinnernumbermodel.h"
+#include "jspinner.h"
+#include "jlabel.h"
+#include "jcheckbox.h"
+#include "instancemanager.h"
+#include "turnoutmanager.h"
 
+class SystemNameValidator;
 class Sensor;
 class BufferedImage;
 class TTAValidator;
@@ -26,7 +34,7 @@ class QLabel;
 class JTextField;
 class JComboBox;
 class UserPreferencesManager;
-class TurnoutManager;
+//class TurnoutManager;
 //class QTableView;
 class LIBTABLESSHARED_EXPORT TurnoutTableAction : public AbstractTableAction
 {
@@ -76,17 +84,19 @@ private:
     JmriJFrame* addFrame;// = NULL;
     JTextField* userNameTextField;// = new JTextField(40);
     JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
-    QLabel* statusBar;
+    JLabel* statusBarLabel;
 
-    JComboBox* prefixBox;// = new JComboBox();
-    JTextField* numberToAdd;// = new JTextField(5);
-    QCheckBox* rangeBox;// = new QCheckBox("Add a range");
+    ManagerComboBox/*<Turnout>*/* prefixBox = new ManagerComboBox();
+    SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+    JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
+    JCheckBox* rangeBox = new JCheckBox("Add a range");
     QLabel* sysNameLabel;// = new JLabel("Hardware Address");
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
-    QPushButton* addButton;
+    JButton* addButton;
     QString userNameError;// = this.getName()+".DuplicateUserName";
     UserPreferencesManager* pref;
+    SystemNameValidator* hardwareAddressValidator;
     static Logger* log;
     void editButton(Turnout* t, QModelIndex index);
     QCheckBox* showFeedbackBox;// = new JCheckBox("Show feedback information");
@@ -111,8 +121,9 @@ protected:
     /*protected*/ void setDefaultSpeeds(JFrame* _who);
     // for icon state col
     /*protected*/ bool _graphicState = false; // updated from prefs
+    /*protected*/ TurnoutManager* turnoutManager = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(/*ActionEvent* e = 0*/);
 //    /*protected*/ /*JComboBox**/QVector<QString> makeAutomationBox(Turnout* t, QModelIndex index);
     /*private*/ void canAddRange(ActionEvent* e = 0);
  friend class CBActionListener;
@@ -240,7 +251,7 @@ public slots:
 
 };  // end of custom data model
 
-class TTComboBoxDelegate : public QItemDelegate
+class TTComboBoxDelegate : public QStyledItemDelegate
 {
 Q_OBJECT
 public:
@@ -258,7 +269,7 @@ private:
   bool editable;
 };
 
-class TTEditDelegate : public QItemDelegate
+class TTEditDelegate : public QStyledItemDelegate
 {
 Q_OBJECT
 public:

@@ -154,7 +154,7 @@ public:
  /*public*/ bool getShowHorizontalLines();
  /*public*/ bool getShowVerticalLines();
  /*public*/ void setDefaultRenderer(QString, QObject*);
- /*public*/ void setDefaultEditor(QString, QItemDelegate *);
+ /*public*/ void setDefaultEditor(QString, QStyledItemDelegate *);
  /*public*/ void doLayout();
  /*public*/ int columnAtPoint(QPoint);
  /*public*/ QAbstractItemDelegate *getCellRenderer(int row, int column);
