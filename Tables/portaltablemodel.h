@@ -13,7 +13,7 @@ public:
  /*public*/ void init();
  /*public*/ Manager* getManager() ;
  /*public*/ NamedBean* getBySystemName(QString name) const ;
- /*public*/ NamedBean* getByUserName(QString name);
+ /*public*/ NamedBean* getByUserName(QString name) const;
  /*protected*/ QString getBeanType();
  /*public*/ QString getValue(QString name);
  /*public*/ void clickOn(NamedBean* t) ;

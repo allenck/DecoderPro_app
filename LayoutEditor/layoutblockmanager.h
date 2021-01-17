@@ -101,6 +101,9 @@ public:
      return "LayoutBlock";
  }
  /*public*/ QString getBeanTypeHandled(bool plural)const override;
+ /*public*/ LayoutBlock *getBySystemName(QString name) const;
+ /*public*/ LayoutBlock *getByUserName(QString key)const ;
+
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

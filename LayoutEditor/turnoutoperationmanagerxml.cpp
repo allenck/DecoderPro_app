@@ -53,7 +53,7 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
  return result;
 }
 
-/*public*/ QDomElement TurnoutOperationManagerXml::store(QDomDocument doc, QObject* o)
+/*public*/ QDomElement TurnoutOperationManagerXml::store(QObject* o)
 {
  QDomElement elem = doc.createElement("operations");
  //if (o instanceof TurnoutOperationManager)

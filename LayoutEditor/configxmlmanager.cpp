@@ -1090,7 +1090,7 @@ File userPrefsFile;*/
     bool loadStatus;
     if(adapter != nullptr)
     {
-     loadStatus = adapter->load(item);
+     loadStatus = adapter->load(item, item);
      log->debug("deferred load status for "+adapterName+" is "+(loadStatus?"true":"false"));
     }
     else

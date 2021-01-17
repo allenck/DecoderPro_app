@@ -92,17 +92,17 @@ SingleTurnoutSignalHeadXml::SingleTurnoutSignalHeadXml(QObject *parent) :
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool SingleTurnoutSignalHeadXml::load(QDomElement element) throw (Exception){
-    QDomNodeList l = element.elementsByTagName("turnoutname");
-    if (l.size() == 0) l = element.elementsByTagName("turnout");
+/*public*/ bool SingleTurnoutSignalHeadXml::load(QDomElement shared, QDomElement perNode) throw (Exception){
+    QDomNodeList l = shared.elementsByTagName("turnoutname");
+    if (l.size() == 0) l = shared.elementsByTagName("turnout");
     NamedBeanHandle<Turnout*>* lit = loadTurnout(l.at(0).toElement());
 
-    int off = loadAppearance(element.elementsByTagName("appearance"), "closed");
-    int on = loadAppearance(element.elementsByTagName("appearance"), "thrown");
+    int off = loadAppearance(shared.elementsByTagName("appearance"), "closed");
+    int on = loadAppearance(shared.elementsByTagName("appearance"), "thrown");
 
     // put it together
-    QString sys = getSystemName(element);
-    QString uname = getUserName(element);
+    QString sys = getSystemName(shared);
+    QString uname = getUserName(shared);
 
     SignalHead* h;
     if (uname == NULL)
@@ -110,7 +110,7 @@ SingleTurnoutSignalHeadXml::SingleTurnoutSignalHeadXml(QObject *parent) :
     else
         h =(SignalHead*) new SingleTurnoutSignalHead(sys, uname, lit, on, off);
 
-    loadCommon(h, element);
+    loadCommon(h, shared);
 
     static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
     return true;

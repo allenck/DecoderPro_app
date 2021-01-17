@@ -25,8 +25,8 @@ public:
     Transit* createNewTransit(QString systemName, QString userName);
     /*public*/ Transit* createNewTransit(QString userName);
     /*public*/ Transit* getTransit(QString name) ;
-    /*public*/ Transit* getBySystemName(QString name)const override;
-    /*public*/ Transit* getByUserName(QString key)const override;
+    /*public*/ Transit* getBySystemName(QString name)const ;
+    /*public*/ Transit* getByUserName(QString key)const ;
     /*public*/ void deleteTransit(Transit* z) ;
     /*public*/ QList<Transit*>* getListUsingSection(Section* s);
     /*static*/ /*public*/ TransitManager* instance();

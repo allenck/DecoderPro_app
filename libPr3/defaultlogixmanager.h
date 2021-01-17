@@ -19,8 +19,8 @@ public:
     /*public*/ void deleteLogix(Logix* x) override;
     /*public*/ void activateAllLogixs() override;
     /*public*/ Logix* getLogix(QString name) override;
-    /*public*/ NamedBean* getBySystemName(QString name)const override;
-    /*public*/ NamedBean* getByUserName(QString key)const override;
+    /*public*/ Logix* getBySystemName(QString name)const override;
+    /*public*/ Logix* getByUserName(QString key)const override;
     /*public*/ void setLoadDisabled(bool s) override;
     /*public*/ bool getLoadDisabled()const override;
     static DefaultLogixManager* _instance;// = NULL;

@@ -15,19 +15,16 @@
 #include <qbytearray.h>
 #include <qcoreevent.h>
 #include <qdatastream.h>
-#include <qdatetime.h>
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
 #include <qstringlist.h>
 #include <qurl.h>
 #include <qvector.h>
-#include <roster.h>
-#include <rosterentry.h>
-#include <rosterobject.h>
 #include <route.h>
 #include <routemanager.h>
 #include <sensor.h>
@@ -50,172 +47,6 @@
 #include <vetoablechangesupport.h>
 #include <windowlistener.h>
 #include <xmlfile.h>
-
-
-
-class PythonQtShell_RosterEntry : public RosterEntry
-{
-public:
-    PythonQtShell_RosterEntry(QDomElement  e, QObject*  parent = 0):RosterEntry(e, parent),_wrapper(NULL) {}
-    PythonQtShell_RosterEntry(QObject*  parent = 0):RosterEntry(parent),_wrapper(NULL) {}
-    PythonQtShell_RosterEntry(QString  fileName, QObject*  parent = 0):RosterEntry(fileName, parent),_wrapper(NULL) {}
-    PythonQtShell_RosterEntry(RosterEntry*  pEntry, QString  pID, QObject*  parent = 0):RosterEntry(pEntry, pID, parent),_wrapper(NULL) {}
-    PythonQtShell_RosterEntry(const RosterEntry&  arg__1, QObject*  parent = 0):RosterEntry(arg__1, parent),_wrapper(NULL) {}
-
-   ~PythonQtShell_RosterEntry();
-
-virtual void warnShortLong(QString  id);
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_RosterEntry : public RosterEntry
-{ public:
-inline QDomElement  promoted_createTextElement(QDomDocument  doc, QString  tagName, QString  text) { return this->createTextElement(doc, tagName, text); }
-inline void py_q_warnShortLong(QString  id) { RosterEntry::warnShortLong(id); }
-};
-
-class PythonQtWrapper_RosterEntry : public QObject
-{ Q_OBJECT
-public:
-public slots:
-RosterEntry* new_RosterEntry(QDomElement  e, QObject*  parent = 0);
-RosterEntry* new_RosterEntry(QObject*  parent = 0);
-RosterEntry* new_RosterEntry(QString  fileName, QObject*  parent = 0);
-RosterEntry* new_RosterEntry(RosterEntry*  pEntry, QString  pID, QObject*  parent = 0);
-RosterEntry* new_RosterEntry(const RosterEntry&  arg__1, QObject*  parent = 0);
-void delete_RosterEntry(RosterEntry* obj) { delete obj; } 
-   void addPropertyChangeListener(RosterEntry* theWrappedObject, PropertyChangeListener*  l);
-   void changeDateUpdated(RosterEntry* theWrappedObject);
-   QDomElement  createTextElement(RosterEntry* theWrappedObject, QDomDocument  doc, QString  tagName, QString  text);
-   void deleteAttribute(RosterEntry* theWrappedObject, QString  key);
-   void ensureFilenameExists(RosterEntry* theWrappedObject);
-   void firePropertyChange(RosterEntry* theWrappedObject, QString  p, QVariant  old, QVariant  n);
-   QString  getAttribute(RosterEntry* theWrappedObject, QString  key);
-   QStringList  getAttributeList(RosterEntry* theWrappedObject);
-   QList<QString >  getAttributes(RosterEntry* theWrappedObject);
-   QString  getComment(RosterEntry* theWrappedObject);
-   QDateTime  getDateModified(RosterEntry* theWrappedObject);
-   QString  getDateUpdated(RosterEntry* theWrappedObject);
-   QString  getDccAddress(RosterEntry* theWrappedObject);
-   DccLocoAddress*  getDccLocoAddress(RosterEntry* theWrappedObject);
-   QString  getDecoderComment(RosterEntry* theWrappedObject);
-   QString  getDecoderFamily(RosterEntry* theWrappedObject);
-   QString  getDecoderModel(RosterEntry* theWrappedObject);
-   QString  static_RosterEntry_getDefaultOwner();
-   QString  getDisplayName(RosterEntry* theWrappedObject);
-   QString  getFileName(RosterEntry* theWrappedObject);
-   QString  getFunctionImage(RosterEntry* theWrappedObject, int  fn);
-   QString  getFunctionLabel(RosterEntry* theWrappedObject, int  fn);
-   bool  getFunctionLockable(RosterEntry* theWrappedObject, int  fn);
-   QString  getFunctionSelectedImage(RosterEntry* theWrappedObject, int  fn);
-   QList<RosterGroup* >  getGroups(RosterEntry* theWrappedObject);
-   QList<RosterGroup* >  getGroups(RosterEntry* theWrappedObject, Roster*  roster);
-   QString  getIconPath(RosterEntry* theWrappedObject);
-   QString  getId(RosterEntry* theWrappedObject);
-   QString  getImagePath(RosterEntry* theWrappedObject);
-   int  getMAXFNNUM(RosterEntry* theWrappedObject);
-   int  getMaxSpeedPCT(RosterEntry* theWrappedObject);
-   QString  getMfg(RosterEntry* theWrappedObject);
-   QString  getModel(RosterEntry* theWrappedObject);
-   QString  getOwner(RosterEntry* theWrappedObject);
-   QString  getPathName(RosterEntry* theWrappedObject);
-   LocoAddress::Protocol  getProtocol(RosterEntry* theWrappedObject);
-   QString  getProtocolAsString(RosterEntry* theWrappedObject);
-   int  getRfidTag(RosterEntry* theWrappedObject);
-   QString  getRoadName(RosterEntry* theWrappedObject);
-   QString  getRoadNumber(RosterEntry* theWrappedObject);
-   QString  getShuntingFunction(RosterEntry* theWrappedObject);
-   QString  getSoundLabel(RosterEntry* theWrappedObject, int  fn);
-   QString  getURL(RosterEntry* theWrappedObject);
-   bool  isLongAddress(RosterEntry* theWrappedObject);
-   bool  isOpen(RosterEntry* theWrappedObject);
-   void loadAttributes(RosterEntry* theWrappedObject, QDomElement  e3);
-   void loadFunctions(RosterEntry* theWrappedObject, QDomElement  e3);
-   void putAttribute(RosterEntry* theWrappedObject, QString  key, QString  value);
-   void readFile(RosterEntry* theWrappedObject);
-   void removePropertyChangeListener(RosterEntry* theWrappedObject, PropertyChangeListener*  l);
-   void setComment(RosterEntry* theWrappedObject, QString  s);
-   void setDateModified(RosterEntry* theWrappedObject, QDateTime  date);
-   void setDateModified(RosterEntry* theWrappedObject, QString  date) throw (ParseException) ;
-   void setDateUpdated(RosterEntry* theWrappedObject, QString  s);
-   void setDccAddress(RosterEntry* theWrappedObject, QString  s);
-   void setDecoderComment(RosterEntry* theWrappedObject, QString  s);
-   void setDecoderFamily(RosterEntry* theWrappedObject, QString  s);
-   void setDecoderModel(RosterEntry* theWrappedObject, QString  s);
-   void static_RosterEntry_setDefaultOwner(QString  n);
-   void setFileName(RosterEntry* theWrappedObject, QString  s);
-   void setFunctionImage(RosterEntry* theWrappedObject, int  fn, QString  s);
-   void setFunctionLabel(RosterEntry* theWrappedObject, int  fn, QString  label);
-   void setFunctionLockable(RosterEntry* theWrappedObject, int  fn, bool  lockable);
-   void setFunctionSelectedImage(RosterEntry* theWrappedObject, int  fn, QString  s);
-   void setIconPath(RosterEntry* theWrappedObject, QString  s);
-   void setId(RosterEntry* theWrappedObject, QString  s);
-   void setImagePath(RosterEntry* theWrappedObject, QString  s);
-   void setLongAddress(RosterEntry* theWrappedObject, bool  b);
-   void setMaxSpeedPCT(RosterEntry* theWrappedObject, int  maxSpeedPCT);
-   void setMfg(RosterEntry* theWrappedObject, QString  s);
-   void setModel(RosterEntry* theWrappedObject, QString  s);
-   void setOpen(RosterEntry* theWrappedObject, bool  boo);
-   void setOwner(RosterEntry* theWrappedObject, QString  s);
-   void setProtocol(RosterEntry* theWrappedObject, LocoAddress::Protocol  protocol);
-   void setRfidTag(RosterEntry* theWrappedObject, QString  tag);
-   void setRoadName(RosterEntry* theWrappedObject, QString  s);
-   void setRoadNumber(RosterEntry* theWrappedObject, QString  s);
-   void setShuntingFunction(RosterEntry* theWrappedObject, QString  fn);
-   void setSoundLabel(RosterEntry* theWrappedObject, int  fn, QString  label);
-   void setURL(RosterEntry* theWrappedObject, QString  s);
-   QDomElement  store(RosterEntry* theWrappedObject, QDomDocument  doc);
-   QString  titleString(RosterEntry* theWrappedObject);
-   QString  toString(RosterEntry* theWrappedObject);
-   void updateFile(RosterEntry* theWrappedObject);
-   void warnShortLong(RosterEntry* theWrappedObject, QString  id);
-   void py_q_warnShortLong(RosterEntry* theWrappedObject, QString  id){  (((PythonQtPublicPromoter_RosterEntry*)theWrappedObject)->py_q_warnShortLong(id));}
-   QVector<QString >  wrapComment(RosterEntry* theWrappedObject, QString  comment, int  textSpace);
-    QString py_toString(RosterEntry*);
-};
-
-
-
-
-
-class PythonQtShell_RosterObject : public RosterObject
-{
-public:
-    PythonQtShell_RosterObject():RosterObject(),_wrapper(NULL) {}
-
-   ~PythonQtShell_RosterObject();
-
-virtual QString  getDisplayName();
-virtual QVariant  getIndexedProperty(QString  arg__1, int  arg__2);
-virtual QVariant  getProperty(QString  arg__1);
-virtual QSet<QString >  getPropertyNames();
-virtual bool  hasIndexedProperty(QString  arg__1);
-virtual bool  hasProperty(QString  arg__1);
-virtual void setIndexedProperty(QString  arg__1, int  arg__2, QVariant  arg__3);
-virtual void setProperty(QString  arg__1, QVariant  arg__2);
-
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_RosterObject : public RosterObject
-{ public:
-inline QString  py_q_getDisplayName() { return RosterObject::getDisplayName(); }
-};
-
-class PythonQtWrapper_RosterObject : public QObject
-{ Q_OBJECT
-public:
-public slots:
-RosterObject* new_RosterObject();
-void delete_RosterObject(RosterObject* obj) { delete obj; } 
-   QString  getDisplayName(RosterObject* theWrappedObject);
-   QString  py_q_getDisplayName(RosterObject* theWrappedObject){  return (((PythonQtPublicPromoter_RosterObject*)theWrappedObject)->py_q_getDisplayName());}
-};
-
-
 
 
 
@@ -507,10 +338,10 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  systemName) const;
-virtual NamedBean*  getByUserName(QString  userName) const;
+virtual Route*  getBySystemName(QString  arg__1) const;
+virtual Route*  getByUserName(QString  arg__1) const;
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
@@ -548,6 +379,8 @@ class PythonQtPublicPromoter_RouteManager : public RouteManager
 { public:
 inline void py_q_deleteRoute(Route*  arg__1) { RouteManager::deleteRoute(arg__1); }
 inline void py_q_dispose() { RouteManager::dispose(); }
+inline Route*  py_q_getBySystemName(QString  arg__1) const { return this->getBySystemName(arg__1); }
+inline Route*  py_q_getByUserName(QString  arg__1) const { return this->getByUserName(arg__1); }
 inline Route*  py_q_getRoute(QString  arg__1) { return RouteManager::getRoute(arg__1); }
 inline Route*  py_q_newRoute(QString  arg__1) { return RouteManager::newRoute(arg__1); }
 inline Route*  py_q_provide(QString  name) throw (IllegalArgumentException) { return this->provide(name); }
@@ -564,6 +397,10 @@ void delete_RouteManager(RouteManager* obj) { delete obj; }
    void deleteRoute(RouteManager* theWrappedObject, Route*  arg__1);
    void py_q_deleteRoute(RouteManager* theWrappedObject, Route*  arg__1){  (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_deleteRoute(arg__1));}
    void py_q_dispose(RouteManager* theWrappedObject){  (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_dispose());}
+   Route*  getBySystemName(RouteManager* theWrappedObject, QString  arg__1) const;
+   Route*  py_q_getBySystemName(RouteManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
+   Route*  getByUserName(RouteManager* theWrappedObject, QString  arg__1) const;
+   Route*  py_q_getByUserName(RouteManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    Route*  getRoute(RouteManager* theWrappedObject, QString  arg__1);
    Route*  py_q_getRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getRoute(arg__1));}
    Route*  newRoute(RouteManager* theWrappedObject, QString  arg__1);
@@ -743,7 +580,7 @@ virtual void dispose() const;
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  arg__1) const;
 virtual NamedBean*  getByUserName(QString  arg__1) const;
@@ -822,7 +659,9 @@ void delete_SensorManager(SensorManager* obj) { delete obj; }
    QString  createSystemName(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    QString  py_q_createSystemName(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_createSystemName(arg__1, arg__2));}
    void py_q_dispose(SensorManager* theWrappedObject) const{  (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_dispose());}
+   NamedBean*  getBySystemName(SensorManager* theWrappedObject, QString  arg__1) const;
    NamedBean*  py_q_getBySystemName(SensorManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
+   NamedBean*  getByUserName(SensorManager* theWrappedObject, QString  arg__1) const;
    NamedBean*  py_q_getByUserName(SensorManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    long  getDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject);
    long  py_q_getDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingActive());}
@@ -2465,10 +2304,10 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  systemName) const;
-virtual NamedBean*  getByUserName(QString  userName) const;
+virtual Turnout*  getBySystemName(QString  arg__1) const;
+virtual Turnout*  getByUserName(QString  arg__1) const;
 virtual QString  getClosedText();
 virtual QString  getDefaultClosedSpeed() const;
 virtual QString  getDefaultThrownSpeed() const;
@@ -2520,6 +2359,8 @@ inline bool  py_q_allowMultipleAdditions(QString  arg__1) { return TurnoutManage
 inline int  py_q_askControlType(QString  arg__1) { return TurnoutManager::askControlType(arg__1); }
 inline int  py_q_askNumControlBits(QString  arg__1) { return TurnoutManager::askNumControlBits(arg__1); }
 inline QString  py_q_createSystemName(QString  arg__1, QString  arg__2) const { return this->createSystemName(arg__1, arg__2); }
+inline Turnout*  py_q_getBySystemName(QString  arg__1) const { return this->getBySystemName(arg__1); }
+inline Turnout*  py_q_getByUserName(QString  arg__1) const { return this->getByUserName(arg__1); }
 inline QString  py_q_getClosedText() { return TurnoutManager::getClosedText(); }
 inline QString  py_q_getDefaultClosedSpeed() const { return TurnoutManager::getDefaultClosedSpeed(); }
 inline QString  py_q_getDefaultThrownSpeed() const { return TurnoutManager::getDefaultThrownSpeed(); }
@@ -2553,6 +2394,10 @@ void delete_TurnoutManager(TurnoutManager* obj) { delete obj; }
    int  py_q_askNumControlBits(TurnoutManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_askNumControlBits(arg__1));}
    QString  createSystemName(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    QString  py_q_createSystemName(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_createSystemName(arg__1, arg__2));}
+   Turnout*  getBySystemName(TurnoutManager* theWrappedObject, QString  arg__1) const;
+   Turnout*  py_q_getBySystemName(TurnoutManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
+   Turnout*  getByUserName(TurnoutManager* theWrappedObject, QString  arg__1) const;
+   Turnout*  py_q_getByUserName(TurnoutManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    QString  getClosedText(TurnoutManager* theWrappedObject);
    QString  py_q_getClosedText(TurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_getClosedText());}
    QString  getDefaultClosedSpeed(TurnoutManager* theWrappedObject) const;

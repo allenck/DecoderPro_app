@@ -96,6 +96,7 @@
 #include "application.h"
 #include "fileutilsupport.h"
 #include "testsmenu.h"
+#include "appsconfigurationmanager.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -278,7 +279,9 @@ bool Apps::configDeferredLoadOK = false;
 //         });
 
  // Install configuration manager and Swing error handler
-  ConfigureManager* cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
+ ConfigureManager* cm = nullptr;
+ if((cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager")) == nullptr)
+   cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new AppsConfigurationManager());
 
   ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
   //InstanceManager::setConfigureManager(cm);

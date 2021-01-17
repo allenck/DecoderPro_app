@@ -111,8 +111,8 @@ public:
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
     /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
-    /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
-    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
+    /*public*/ Turnout* getBySystemName(/*@Nonnull*/ QString systemName) const ;
+    /*public*/ Turnout* getByUserName(/*@Nonnull*/ QString userName) const ;
     /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException);
     /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) override;
 

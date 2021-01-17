@@ -12,7 +12,7 @@ public:
     ~SingleTurnoutSignalHeadXml() {}
     SingleTurnoutSignalHeadXml(const SingleTurnoutSignalHeadXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);
-    /*public*/ bool load(QDomElement element) throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception);
     /*private*/ int loadAppearance(QDomNodeList l, QString state);
     NamedBeanHandle<Turnout*>* loadTurnout(/*QObject o*/QDomElement e);
     /*public*/ void load(QDomElement element, QObject* o)throw (Exception);

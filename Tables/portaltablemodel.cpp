@@ -77,12 +77,12 @@ void PortalTableModel::initTempRow()
 
 //@Override
 /*public*/ NamedBean* PortalTableModel::getBySystemName(QString name) const {
-    return _manager->getBySystemName(name);
+    return (NamedBean*)_manager->getBySystemName(name);
 }
 
 //@Override
-/*public*/ NamedBean* PortalTableModel::getByUserName(QString name) {
-    return _manager->getByUserName(name);
+/*public*/ NamedBean *PortalTableModel::getByUserName(QString name) const {
+    return (NamedBean*)_manager->getByUserName(name);
 }
 
 //@Override

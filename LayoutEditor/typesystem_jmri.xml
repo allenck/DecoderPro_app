@@ -42,6 +42,9 @@
  <rejection class="JLabel" function-name="deepClone" />
  <rejection class="JLabel" function-name="doMouseClicked" />
  <rejection class="LayoutTrack" />
+ <rejection class="LogixManager" />
+ <rejection class="MemoryManager" />
+
  <object-type name="NamedBean" />
  <object-type name="AbstractNamedBean" />
  <object-type name="Turnout" />

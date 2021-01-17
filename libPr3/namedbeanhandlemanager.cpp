@@ -4,7 +4,7 @@
 
 //template<class T>
 NamedBeanHandleManager::NamedBeanHandleManager(QObject *parent) :
-    AbstractManager(parent)
+    AbstractNamedBeanHandleManager(parent)
 {
     namedBeanHandles = new QList<QObject*>();
     pcs = new PropertyChangeSupport(this);

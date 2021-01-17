@@ -403,7 +403,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
  QStringList systemNameList = ((ProxyTurnoutManager*)tm)->getSystemNameList();
  _mastAppearancesList = QList <SignalMastAspect*>();
 
- SignalHeadManager* shm = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+ SignalHeadManager* shm = static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  systemNameList = ((AbstractSignalHeadManager*)shm)->getSystemNameList();
  _signalList = QList <SignalGroupSignal*> (/*systemNameList.size()*/);
 
@@ -1230,8 +1230,8 @@ this->act = act;
 //{
 SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *act) : SignalGroupOutputModel(act)
 {
- static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
- AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+ static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
+ AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  editMapper = new QSignalMapper;
 }
@@ -1350,7 +1350,7 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
 
 /*public*/ SignalHead* SignalGroupSignalHeadModel::getBean(int r)
 {
-        return static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(data(index(r, SNAME_COLUMN),Qt::DisplayRole).toString());
+        return static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(data(index(r, SNAME_COLUMN),Qt::DisplayRole).toString());
     }
 
 /*public*/ bool  SignalGroupSignalHeadModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -1410,7 +1410,7 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
  return false;
 }
     /*public*/ void SignalGroupSignalHeadModel::dispose() {
-        static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->removePropertyChangeListener((PropertyChangeListener*)this);
+        static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->removePropertyChangeListener((PropertyChangeListener*)this);
     }
 //};
 
@@ -1454,10 +1454,10 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
  _onState = 0x00;
  _offState = 0x00;
 
- SignalHead* head = (SignalHead*)((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName);
+ SignalHead* head = (SignalHead*)((AbstractSignalHeadManager*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName);
  if (QString(head->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
-  SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sysName);
+  SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sysName);
   _onState = signal->getOnAppearance();
   _offState = signal->getOffAppearance();
   _signal = (SignalHead*)signal;

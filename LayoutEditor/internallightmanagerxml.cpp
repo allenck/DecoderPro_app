@@ -24,12 +24,8 @@ InternalLightManagerXml::InternalLightManagerXml(QObject *parent) :
  lights.setAttribute("class", "jmri.managers.configurexml.InternalLightManagerXml");
 }
 
-/*public*/ void InternalLightManagerXml::load(QDomElement element, QObject* o)  throw (Exception){
-    Logger::error("Invalid method called");
-}
-
-/*public*/ bool InternalLightManagerXml::load(QDomElement lights)throw (Exception) {
+/*public*/ bool InternalLightManagerXml::load(QDomElement shared, QDomElement perNode)throw (Exception) {
     // load individual lights
-    loadLights(lights);
+    loadLights(shared);
     return true;
 }

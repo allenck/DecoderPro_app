@@ -1,18 +1,18 @@
 #ifndef DEFAULTROUTEMANAGER_H
 #define DEFAULTROUTEMANAGER_H
 
-#include "../libPr3/routemanager.h"
+#include "abstractroutemanager.h"
 #include "route.h"
 #include "defaultroute.h"
 #include "decimalformat.h"
 
-class LIBPR3SHARED_EXPORT DefaultRouteManager : public RouteManager //, public RouteManager, public Route
+class LIBPR3SHARED_EXPORT DefaultRouteManager : public AbstractRouteManager //, public RouteManager, public Route
 {
     Q_OBJECT
 public:
     /*Q_INVOKABLE*/ explicit DefaultRouteManager(InternalSystemConnectionMemo* memo, QObject *parent = 0);
     ~DefaultRouteManager() {}
-    DefaultRouteManager(const DefaultRouteManager& other) : RouteManager(other.memo) {}
+    DefaultRouteManager(const DefaultRouteManager& other) : AbstractRouteManager(other.memo) {}
     /*public*/ int getXMLOrder() const override;
 //    /*public*/ QString getSystemPrefix() const override;
     /*public*/ char typeLetter() const override;

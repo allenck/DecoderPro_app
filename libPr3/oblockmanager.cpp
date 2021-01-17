@@ -104,15 +104,15 @@ OBlockManager::OBlockManager(QObject *parent) :
     return (OBlock*)getBySystemName(name);
 }
 
-/*public*/ NamedBean *OBlockManager::getBySystemName(QString name) const {
+/*public*/ OBlock *OBlockManager::getBySystemName(QString name) const {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
     return (OBlock*)_tsys->value(key);
 }
 
-/*public*/ NamedBean *OBlockManager::getByUserName(QString key)const  {
+/*public*/ OBlock *OBlockManager::getByUserName(QString key)const  {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
-    return _tuser->value(key);
+    return (OBlock*)_tuser->value(key);
 }
 //@Override
 /*public*/ OBlock* OBlockManager::provide(QString name) const throw (IllegalArgumentException) {

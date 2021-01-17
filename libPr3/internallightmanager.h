@@ -17,14 +17,14 @@ public:
     /*public*/ QString getNamedBeanClass()const override {
      return "Light";
  }
-  /*public*/ QString toString() {return "InternalLightManager";}
+  /*public*/ QString toString() override {return "InternalLightManager";}
 
 
 signals:
 
 public slots:
 protected:
- /*protected*/ Light* createNewLight(QString systemName, QString userName);
+ /*protected*/ Light* createNewLight(QString systemName, QString userName) override;
 
 };
 

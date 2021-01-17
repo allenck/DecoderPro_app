@@ -12,7 +12,7 @@
 ///*static*/ BlockManager* BlockManager::_instance = NULL;
 
 BlockManager::BlockManager(QObject *parent) :
-    AbstractManager(parent)
+    AbstractBlockManager(parent)
 {
  setObjectName("BlockManager");
  setProperty("JavaClassName", "jmri.BlockManager");
@@ -163,8 +163,8 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
     if (r!=NULL) return r;
     return (Block*)getBySystemName(name);
 }
-#if 0
-/*public*/ Block* BlockManager::getBySystemName(QString name) const {
+#if 1
+/*public*/ Block *BlockManager::getBySystemName(QString name) const {
     QString key = name.toUpper();
     return (Block*)_tsys->value(key);
 }

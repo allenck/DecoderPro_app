@@ -86,11 +86,11 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  return m;
 }
 
-/*public*/ SignalMast* DefaultSignalMastManager::getBySystemName(QString key) {
+/*public*/ SignalMast* DefaultSignalMastManager::getBySystemName(QString key) const {
     return (SignalMast*)_tsys->value(key);
 }
 
-/*public*/ SignalMast* DefaultSignalMastManager::getByUserName(QString key) {
+/*public*/ SignalMast* DefaultSignalMastManager::getByUserName(QString key) const {
     return (SignalMast*)_tuser->value(key);
 }
 

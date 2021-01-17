@@ -34,15 +34,15 @@ public:
      * @return null if no match found
      */
     /*public*/ Light* getLight(QString name) override;
-#if 0
+#if 1
     /**
      * Locate a Light by its system name
      */
-    /*public*/ Light* getBySystemName(QString name);
+    /*public*/ Light* getBySystemName(QString name)const;
     /**
      * Locate a Light by its user name
      */
-    /*public*/ Light* getByUserName(QString key);
+    /*public*/ Light* getByUserName(QString key) const;
 #endif
     /**
      * Return an instance with the specified system and user names.

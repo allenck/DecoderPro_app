@@ -1,7 +1,7 @@
 #include "defaultroutemanager.h"
 #include "decimalformat.h"
 
-DefaultRouteManager::DefaultRouteManager(InternalSystemConnectionMemo* memo, QObject *parent) : RouteManager((SystemConnectionMemo*)memo, parent)
+DefaultRouteManager::DefaultRouteManager(InternalSystemConnectionMemo* memo, QObject *parent) : AbstractRouteManager((SystemConnectionMemo*)memo, parent)
 {
  setObjectName("DefaultRouteManager");
  setProperty("JavaClassName", "jmri.managers.DefaultRouteManager");

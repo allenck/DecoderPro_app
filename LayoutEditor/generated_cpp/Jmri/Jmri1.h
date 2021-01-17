@@ -38,7 +38,6 @@
 #include <loconetinterface.h>
 #include <loconetmessage.h>
 #include <loconetsystemconnectionmemo.h>
-#include <memorymanager.h>
 #include <namedbean.h>
 #include <positionable.h>
 #include <positionablelabel.h>
@@ -78,6 +77,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1743,10 +1743,8 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  systemName) const;
-virtual NamedBean*  getByUserName(QString  userName) const;
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
@@ -2652,10 +2650,10 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  arg__1) const;
-virtual NamedBean*  getByUserName(QString  arg__1) const;
+virtual Light*  getBySystemName(QString  arg__1) const;
+virtual Light*  getByUserName(QString  arg__1) const;
 virtual QString  getEntryToolTip();
 virtual Light*  getLight(QString  arg__1);
 virtual SystemConnectionMemo*  getMemo() const;
@@ -2698,10 +2696,10 @@ inline void py_q_activateAllLights() { LightManager::activateAllLights(); }
 inline bool  py_q_allowMultipleAdditions(QString  arg__1) { return LightManager::allowMultipleAdditions(arg__1); }
 inline QString  py_q_convertSystemNameToAlternate(QString  arg__1) { return LightManager::convertSystemNameToAlternate(arg__1); }
 inline void py_q_dispose() { LightManager::dispose(); }
-inline NamedBean*  py_q_getBySystemName(QString  arg__1) const { return LightManager::getBySystemName(arg__1); }
-inline NamedBean*  py_q_getByUserName(QString  arg__1) const { return LightManager::getByUserName(arg__1); }
+inline Light*  py_q_getBySystemName(QString  arg__1) const { return this->getBySystemName(arg__1); }
+inline Light*  py_q_getByUserName(QString  arg__1) const { return this->getByUserName(arg__1); }
 inline Light*  py_q_getLight(QString  arg__1) { return LightManager::getLight(arg__1); }
-inline Light*  py_q_newLight(QString  arg__1, QString  arg__2) { return LightManager::newLight(arg__1, arg__2); }
+inline Light*  py_q_newLight(QString  arg__1, QString  arg__2) { return this->newLight(arg__1, arg__2); }
 inline QString  py_q_normalizeSystemName(QString  arg__1) { return LightManager::normalizeSystemName(arg__1); }
 inline Light*  py_q_provide(QString  name) throw (IllegalArgumentException)
  { return LightManager::provide(name); }
@@ -2724,8 +2722,10 @@ void delete_LightManager(LightManager* obj) { delete obj; }
    QString  convertSystemNameToAlternate(LightManager* theWrappedObject, QString  arg__1);
    QString  py_q_convertSystemNameToAlternate(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_convertSystemNameToAlternate(arg__1));}
    void py_q_dispose(LightManager* theWrappedObject){  (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_dispose());}
-   NamedBean*  py_q_getBySystemName(LightManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   NamedBean*  py_q_getByUserName(LightManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
+   Light*  getBySystemName(LightManager* theWrappedObject, QString  arg__1) const;
+   Light*  py_q_getBySystemName(LightManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
+   Light*  getByUserName(LightManager* theWrappedObject, QString  arg__1) const;
+   Light*  py_q_getByUserName(LightManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    Light*  getLight(LightManager* theWrappedObject, QString  arg__1);
    Light*  py_q_getLight(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getLight(arg__1));}
    Light*  newLight(LightManager* theWrappedObject, QString  arg__1, QString  arg__2);
@@ -3118,10 +3118,10 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  arg__1) const;
-virtual NamedBean*  getByUserName(QString  arg__1) const;
+virtual NamedBean*  getBySystemName(QString  name) const;
+virtual NamedBean*  getByUserName(QString  key) const;
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
@@ -3295,7 +3295,7 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  key) const;
 virtual NamedBean*  getByUserName(QString  key) const;

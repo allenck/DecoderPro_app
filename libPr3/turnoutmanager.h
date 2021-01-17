@@ -46,14 +46,14 @@ public:
          * instance already exists.
          * @return requested Turnout object or null if none exists
          */
-         //NamedBean* getBySystemName(QString /*systemName*/) const =0;
+         virtual Turnout* getBySystemName(QString /*systemName*/) const =0;
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Turnout object or null if none exists
          */
-         //NamedBean* getByUserName(QString /*userName*/) const =0;
+         virtual Turnout* getByUserName(QString /*userName*/) const =0;
 
         /**
          * Return an instance with the specified system and user names.

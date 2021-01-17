@@ -49,7 +49,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
  if (tm!=nullptr)
  {
   TurnoutOperationManagerXml* tomx = new TurnoutOperationManagerXml();
-  QDomElement opElem = tomx->store(doc, TurnoutOperationManager::getInstance());
+  QDomElement opElem = tomx->store((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"));
   turnouts.appendChild(opElem);
   QStringListIterator iter(((AbstractTurnoutManager*)tm)->getSystemNameList());
 

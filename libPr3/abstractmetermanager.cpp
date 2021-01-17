@@ -50,3 +50,13 @@
     /*public*/ QString getNamedBeanClass() {
         return "Meter";
     }
+
+    /*public*/ NamedBean *AbstractMeterManager::getBySystemName(QString name) const
+    {
+     return _tsys->value(name);
+    }
+
+    /*public*/ NamedBean* AbstractMeterManager::getByUserName(QString key) const
+    {
+     return _tuser->value(key);
+    }

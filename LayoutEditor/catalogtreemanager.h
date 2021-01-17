@@ -21,13 +21,13 @@ public:
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return NULL;}
+    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
     /**
      * Locate an instance based on a user name.  Returns null if no
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return NULL;}
+    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) const {return NULL;}
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;

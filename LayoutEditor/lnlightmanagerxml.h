@@ -12,9 +12,9 @@ public:
     Q_INVOKABLE LnLightManagerXml(QObject *parent = 0);
     ~LnLightManagerXml();
     LnLightManagerXml(const LnLightManagerXml&) : AbstractLightManagerConfigXML() {}
-    /*public*/ void setStoreElementClass(QDomElement lights);
+    /*public*/ void setStoreElementClass(QDomElement lights) override;
     /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);
-    /*public*/ bool load(QDomElement lights) throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception) override;
 
 };
 Q_DECLARE_METATYPE(LnLightManagerXml)

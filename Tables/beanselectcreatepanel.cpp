@@ -7,7 +7,7 @@
 #include "jtextfield.h"
 #include "defaultmemorymanager.h"
 #include "blockmanager.h"
-#include "jmribeancombobox.h"
+#include "namedbeancombobox.h"
 #include "flowlayout.h"
 #include "jmriuserpreferencesmanager.h"
 #include "connectionnamefromsystemname.h"
@@ -32,8 +32,6 @@
  systemSelectionCombo = "jmri.util.swing.BeanSelectCreatePanel.SystemSelected";
 
  _manager = manager;
- prefixBox = new QComboBox();
- hardwareAddress = new JTextField();
  QValidator* v = new QIntValidator(0,1027);
  hardwareAddress->setValidator(v);
 
@@ -57,13 +55,13 @@
  selectcreate = new QButtonGroup();
  selectcreate->addButton(existingItem);
  selectcreate->addButton(newItem);
- existingCombo = new JmriBeanComboBox(_manager, defaultSelect, JmriBeanComboBox::USERNAMESYSTEMNAME);
+ existingCombo = new NamedBeanComboBox(_manager, defaultSelect, NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
  //If the combo list is empty we go straight to creation.
  if (existingCombo->count()==0)
  {
   newItem->setChecked(true);
  }
- existingCombo->setFirstItemBlank(true);
+ existingCombo->setAllowNull(true);
  QWidget* radio = new QWidget();
  //radio->setLayout(new FlowLayout(/*FlowLayout::Center, 5, 0*/));
  QHBoxLayout* radioHLayout;
@@ -81,22 +79,37 @@
   if(qobject_cast<ProxyTurnoutManager*>(_manager)!=NULL)
   {
    ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance();
-   managerList = proxy->getManagerList();
+   prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
+   if (p->getComboBoxLastSelection(systemSelectionCombo) != "") {
+       prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
+   }
   }
   else if (qobject_cast<ProxySensorManager*>(_manager)!=NULL)
   {
    ProxySensorManager* proxy = (ProxySensorManager*) InstanceManager::sensorManagerInstance();
-   managerList = proxy->getManagerList();
+   prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
+   if (p->getComboBoxLastSelection(systemSelectionCombo) != "") {
+       prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
+   }
+
   }
   else if (qobject_cast<ProxyLightManager*>(_manager)!=NULL)
   {
    ProxyLightManager* proxy = (ProxyLightManager*) InstanceManager::lightManagerInstance();
-   managerList = proxy->getManagerList();
+   prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
+   if (p->getComboBoxLastSelection(systemSelectionCombo) != "") {
+       prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
+   }
+
   }
   else if (qobject_cast<ProxyReporterManager*>(_manager)!=NULL)
   {
    ProxyReporterManager* proxy = (ProxyReporterManager*) InstanceManager::getDefault("ReporterManager");
-   managerList = proxy->getManagerList();
+   prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
+   if (p->getComboBoxLastSelection(systemSelectionCombo) != "") {
+       prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
+   }
+
   }
 
   for(int x = 0; x < managerList.size(); x++)
@@ -162,7 +175,7 @@ void BeanSelectCreatePanel::update(){
 }
 
 /*public*/ void BeanSelectCreatePanel::refresh(){
-    existingCombo->refreshCombo();
+    // do nothing
 }
 
 /**
@@ -172,7 +185,7 @@ void BeanSelectCreatePanel::update(){
 /*public*/ QString BeanSelectCreatePanel::getDisplayName()
 {
  if(existingItem->isChecked()){
-     return existingCombo->getSelectedDisplayName();
+     return existingCombo->getSelectedItemDisplayName();
  }
  else
  {
@@ -196,7 +209,7 @@ void BeanSelectCreatePanel::update(){
 {
  if(existingItem->isChecked())
  {
-  return existingCombo->getSelectedBean();
+  return existingCombo->getSelectedItem();
  }
  //try {
  return createBean();
@@ -292,7 +305,7 @@ void BeanSelectCreatePanel::update(){
 */
 /*public*/ void BeanSelectCreatePanel::setDefaultNamedBean(NamedBean* nBean){
     _defaultSelect = nBean;
-    existingCombo->setSelectedBean(_defaultSelect);
+    existingCombo->setSelectedItem(_defaultSelect);
     existingItem->setChecked(true);
     update();
 }

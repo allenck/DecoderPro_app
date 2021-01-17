@@ -1,6 +1,6 @@
 ﻿#ifndef BLOCKMANAGER_H
 #define BLOCKMANAGER_H
-#include "abstractmanager.h"
+#include "abstractblockmanager.h"
 #include "block.h"
 #include "exceptions.h"
 #include <QCompleter>
@@ -8,13 +8,13 @@
 #include "abstractshutdowntask.h"
 
 class RosterEntry;
-class LIBPR3SHARED_EXPORT BlockManager : public AbstractManager
+class LIBPR3SHARED_EXPORT BlockManager : public AbstractBlockManager
 {
     Q_OBJECT
 public:
     Q_INVOKABLE explicit BlockManager(QObject *parent = 0);
     ~BlockManager() {}
-    BlockManager(const BlockManager&) : AbstractManager() {}
+    BlockManager(const BlockManager&) : AbstractBlockManager() {}
     /*public*/ int getXMLOrder() const override;
     /*public*/ QString getSystemPrefix() const override;
     /*public*/ char typeLetter() const override;
@@ -35,10 +35,8 @@ public:
      *      that name is a System Name.  If both fail, returns NULL.
      */
     /*public*/ Block* getBlock(QString name)const;
-#if 0
-    /*public*/ Block* getBySystemName(QString name) const override;
-    /*public*/ Block* getByUserName(QString key)const override;
-#endif
+    /*public*/ Block *getBySystemName(QString name) const;
+    /*public*/ Block* getByUserName(QString key) const;
     /*public*/ Block* getByDisplayName(QString key);
 //    static BlockManager* _instance;// = NULL;
 //    static /*public*/ BlockManager* instance();

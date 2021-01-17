@@ -29,7 +29,7 @@
 /*public*/ CtcManager::CtcManager(QObject *parent) : QObject(parent){
     InstanceManager::setDefault("CtcManager", this);
     //InstanceManager.getOptionalDefault(ConfigureManager.class).ifPresent(cm -> {
-    ConfigureManager* cm = (ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager");
+    ConfigureManager* cm = (ConfigureManager*)InstanceManager::getDefault("ConfigureManager");
     if(cm)
         cm->registerConfig(this, getXMLOrder());
 //        });

@@ -1,6 +1,7 @@
 #include "abstractnamedbeanmanagerconfigxml.h"
 #include "manager.h"
 #include "class.h"
+#include "abstractmanager.h"
 
 AbstractNamedBeanManagerConfigXML::AbstractNamedBeanManagerConfigXML(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -175,7 +176,7 @@ void AbstractNamedBeanManagerConfigXML::checkNameNormalization(/*@Nonnull*/ QStr
                     rawUserName).arg(rawSystemName).arg(normalizedUserName));
         }
         if (!normalizedUserName.isNull()) {
-            NamedBean* bean = manager->getByUserName(normalizedUserName);
+            NamedBean* bean = ((AbstractManager*)manager)->getBeanByUserName(normalizedUserName);
             if (bean != nullptr && bean->getSystemName() != (rawSystemName)) {
                 log->warn(tr("User name \"%1\" already exists as system name \"%2\"").arg(normalizedUserName).arg(bean->getSystemName()));
             }

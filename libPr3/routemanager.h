@@ -63,8 +63,8 @@ public:
      */
     /*public*/ virtual Route* getRoute(QString /*name*/) {return nullptr;}
 
-//    /*public*/ NamedBean* getByUserName(QString /*s*/) const override{return nullptr;}
-//    /*public*/ NamedBean* getBySystemName(QString /*s*/) const  override{return nullptr;}
+    virtual /*public*/ Route* getByUserName(QString /*s*/) const =0;
+    virtual /*public*/ Route* getBySystemName(QString /*s*/) const =0;
 
     /**
      * Get a list of all Route system names.

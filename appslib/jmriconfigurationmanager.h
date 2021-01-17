@@ -12,13 +12,13 @@ class Profile;
 class InitializationException;
 //class ConfigXmlManager;
 class PreferencesManager;
-class JmriConfigurationManager : public ConfigXmlManager
+class JmriConfigurationManager : public ConfigureManager
 {
  Q_OBJECT
 public:
  QT_DEPRECATED JmriConfigurationManager(QObject* parent = 0);
  ~JmriConfigurationManager() {}
- JmriConfigurationManager(const JmriConfigurationManager&) : ConfigXmlManager(){}
+ JmriConfigurationManager(const JmriConfigurationManager&) : ConfigureManager(){}
  /*public*/ void registerPref(QObject* o) override;
  /*public*/ void removePrefItems()  override;
  /*public*/ void registerConfig(QObject* o) override;

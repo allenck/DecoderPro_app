@@ -2,6 +2,7 @@
 #include <QObject>
 #include <QVariant>
 #include <abstractturnoutmanager.h>
+#include <dcclocoaddress.h>
 #include <defaultprogrammermanager.h>
 #include <editor.h>
 #include <editscene.h>
@@ -20,9 +21,7 @@
 #include <loconetmessage.h>
 #include <loconetsystemconnectionmemo.h>
 #include <logger.h>
-#include <logixmanager.h>
 #include <manager.h>
-#include <memorymanager.h>
 #include <multiiconeditor.h>
 #include <namedbean.h>
 #include <networkportadapter.h>
@@ -48,6 +47,7 @@
 #include <qcoreevent.h>
 #include <qcursor.h>
 #include <qdatastream.h>
+#include <qdatetime.h>
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
@@ -61,6 +61,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -89,6 +90,7 @@
 #include <rfidsensormanager.h>
 #include <roster.h>
 #include <rosterentry.h>
+#include <rosterobject.h>
 #include <sensor.h>
 #include <systemconnectionmemo.h>
 #include <throttlemanager.h>
@@ -122,10 +124,10 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  systemName) const;
-virtual NamedBean*  getByUserName(QString  userName) const;
+virtual Turnout*  getBySystemName(QString  name) const;
+virtual Turnout*  getByUserName(QString  key) const;
 virtual QString  getClosedText();
 virtual QString  getDefaultClosedSpeed() const;
 virtual QString  getDefaultThrownSpeed() const;
@@ -471,87 +473,6 @@ void delete_Logger(Logger* obj) { delete obj; }
 
 
 
-class PythonQtShell_LogixManager : public LogixManager
-{
-public:
-    PythonQtShell_LogixManager(QObject*  parent = 0):LogixManager(parent),_wrapper(NULL) {}
-
-   ~PythonQtShell_LogixManager();
-
-virtual void Register(NamedBean*  s) const;
-virtual void activateAllLogixs();
-virtual void addDataListener(QObject*  e);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
-virtual void deregister(NamedBean*  s) const;
-virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
-virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  systemName) const;
-virtual NamedBean*  getByUserName(QString  userName) const;
-virtual QString  getEntryToolTip();
-virtual bool  getLoadDisabled() const;
-virtual SystemConnectionMemo*  getMemo() const;
-virtual NamedBean*  getNamedBean(QString  name) const;
-virtual QString  getNamedBeanClass() const;
-virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual int  getObjectCount();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
-virtual QStringList  getSystemNameArray();
-virtual QStringList  getSystemNameList();
-virtual QString  getSystemPrefix() const;
-virtual int  getXMLOrder() const;
-virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
-virtual QString  normalizeSystemName(QString  inputName) const;
-virtual void propertyChange(PropertyChangeEvent*  e);
-virtual void removeDataListener(QObject*  e);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void setLoadDisabled(bool  arg__1);
-virtual void timerEvent(QTimerEvent*  event);
-virtual QString  toString();
-virtual char  typeLetter() const;
-virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
-virtual void vetoableChange(PropertyChangeEvent*  evt);
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_LogixManager : public LogixManager
-{ public:
-inline void py_q_activateAllLogixs() { LogixManager::activateAllLogixs(); }
-inline bool  py_q_getLoadDisabled() const { return LogixManager::getLoadDisabled(); }
-inline void py_q_setLoadDisabled(bool  arg__1) { LogixManager::setLoadDisabled(arg__1); }
-};
-
-class PythonQtWrapper_LogixManager : public QObject
-{ Q_OBJECT
-public:
-public slots:
-LogixManager* new_LogixManager(QObject*  parent = 0);
-void delete_LogixManager(LogixManager* obj) { delete obj; } 
-   void activateAllLogixs(LogixManager* theWrappedObject);
-   void py_q_activateAllLogixs(LogixManager* theWrappedObject){  (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_activateAllLogixs());}
-   bool  getLoadDisabled(LogixManager* theWrappedObject) const;
-   bool  py_q_getLoadDisabled(LogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_getLoadDisabled());}
-   void setLoadDisabled(LogixManager* theWrappedObject, bool  arg__1);
-   void py_q_setLoadDisabled(LogixManager* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_LogixManager*)theWrappedObject)->py_q_setLoadDisabled(arg__1));}
-    QString py_toString(LogixManager*);
-};
-
-
-
-
-
 class PythonQtShell_Manager : public Manager
 {
 public:
@@ -574,8 +495,6 @@ virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  arg__1) const;
 virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  systemName) const;
-virtual NamedBean*  getByUserName(QString  userName) const;
 virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  arg__1) const;
@@ -617,8 +536,6 @@ inline void py_q_dispose() { Manager::dispose(); }
 inline NamedBean*  py_q_getBeanBySystemName(QString  arg__1) const { return Manager::getBeanBySystemName(arg__1); }
 inline NamedBean*  py_q_getBeanByUserName(QString  arg__1) const { return Manager::getBeanByUserName(arg__1); }
 inline QString  py_q_getBeanTypeHandled(bool  plural) const { return Manager::getBeanTypeHandled(plural); }
-inline NamedBean*  py_q_getBySystemName(QString  systemName) const { return this->getBySystemName(systemName); }
-inline NamedBean*  py_q_getByUserName(QString  userName) const { return this->getByUserName(userName); }
 inline QString  py_q_getEntryToolTip() { return Manager::getEntryToolTip(); }
 inline SystemConnectionMemo*  py_q_getMemo() const { return this->getMemo(); }
 inline NamedBean*  py_q_getNamedBean(QString  arg__1) const { return Manager::getNamedBean(arg__1); }
@@ -671,10 +588,6 @@ void delete_Manager(Manager* obj) { delete obj; }
    QString  getBeanTypeHandled(Manager* theWrappedObject) const;
    QString  getBeanTypeHandled(Manager* theWrappedObject, bool  plural) const;
    QString  py_q_getBeanTypeHandled(Manager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
-   NamedBean*  getBySystemName(Manager* theWrappedObject, QString  systemName) const;
-   NamedBean*  py_q_getBySystemName(Manager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBySystemName(systemName));}
-   NamedBean*  getByUserName(Manager* theWrappedObject, QString  userName) const;
-   NamedBean*  py_q_getByUserName(Manager* theWrappedObject, QString  userName) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getByUserName(userName));}
    QString  getEntryToolTip(Manager* theWrappedObject);
    QString  py_q_getEntryToolTip(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getEntryToolTip());}
    SystemConnectionMemo*  getMemo(Manager* theWrappedObject) const;
@@ -734,79 +647,6 @@ void delete_Manager(Manager* obj) { delete obj; }
    QString  validateTrimmedSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale);
    QString  validateUppercaseTrimmedSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale);
     QString py_toString(Manager*);
-};
-
-
-
-
-
-class PythonQtShell_MemoryManager : public MemoryManager
-{
-public:
-    PythonQtShell_MemoryManager(QObject*  parent = 0):MemoryManager(parent),_wrapper(NULL) {}
-
-   ~PythonQtShell_MemoryManager();
-
-virtual void Register(NamedBean*  s) const;
-virtual void addDataListener(QObject*  e);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
-virtual void deregister(NamedBean*  s) const;
-virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
-virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  arg__1) const;
-virtual NamedBean*  getByUserName(QString  arg__1) const;
-virtual QString  getEntryToolTip();
-virtual SystemConnectionMemo*  getMemo() const;
-virtual NamedBean*  getNamedBean(QString  name) const;
-virtual QString  getNamedBeanClass() const;
-virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual int  getObjectCount();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
-virtual QStringList  getSystemNameArray();
-virtual QStringList  getSystemNameList();
-virtual QString  getSystemPrefix() const;
-virtual int  getXMLOrder() const;
-virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
-virtual QString  normalizeSystemName(QString  inputName) const;
-virtual void propertyChange(PropertyChangeEvent*  e);
-virtual void removeDataListener(QObject*  e);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void timerEvent(QTimerEvent*  event);
-virtual QString  toString();
-virtual char  typeLetter() const;
-virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
-virtual void vetoableChange(PropertyChangeEvent*  evt);
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_MemoryManager : public MemoryManager
-{ public:
-inline NamedBean*  py_q_getBySystemName(QString  arg__1) const { return MemoryManager::getBySystemName(arg__1); }
-inline NamedBean*  py_q_getByUserName(QString  arg__1) const { return MemoryManager::getByUserName(arg__1); }
-};
-
-class PythonQtWrapper_MemoryManager : public QObject
-{ Q_OBJECT
-public:
-public slots:
-MemoryManager* new_MemoryManager(QObject*  parent = 0);
-void delete_MemoryManager(MemoryManager* obj) { delete obj; } 
-   NamedBean*  py_q_getBySystemName(MemoryManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_MemoryManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   NamedBean*  py_q_getByUserName(MemoryManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_MemoryManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
-    QString py_toString(MemoryManager*);
 };
 
 
@@ -2574,8 +2414,8 @@ virtual void activateAllLights();
 virtual bool  allowMultipleAdditions(QString  systemName);
 virtual QString  convertSystemNameToAlternate(QString  systemName);
 virtual QString  getBeanTypeHandled(bool  plural) const;
-virtual NamedBean*  getBySystemName(QString  systemName) const;
-virtual NamedBean*  getByUserName(QString  userName) const;
+virtual Light*  getBySystemName(QString  systemName) const;
+virtual Light*  getByUserName(QString  userName) const;
 virtual QString  getEntryToolTip();
 virtual Light*  getLight(QString  name);
 virtual QString  getNamedBeanClass() const;
@@ -2601,8 +2441,8 @@ inline void py_q_activateAllLights() { ProxyLightManager::activateAllLights(); }
 inline bool  py_q_allowMultipleAdditions(QString  systemName) { return ProxyLightManager::allowMultipleAdditions(systemName); }
 inline QString  py_q_convertSystemNameToAlternate(QString  systemName) { return ProxyLightManager::convertSystemNameToAlternate(systemName); }
 inline QString  py_q_getBeanTypeHandled(bool  plural) const { return ProxyLightManager::getBeanTypeHandled(plural); }
-inline NamedBean*  py_q_getBySystemName(QString  systemName) const { return ProxyLightManager::getBySystemName(systemName); }
-inline NamedBean*  py_q_getByUserName(QString  userName) const { return ProxyLightManager::getByUserName(userName); }
+inline Light*  py_q_getBySystemName(QString  systemName) const { return ProxyLightManager::getBySystemName(systemName); }
+inline Light*  py_q_getByUserName(QString  userName) const { return ProxyLightManager::getByUserName(userName); }
 inline QString  py_q_getEntryToolTip() { return ProxyLightManager::getEntryToolTip(); }
 inline Light*  py_q_getLight(QString  name) { return ProxyLightManager::getLight(name); }
 inline QString  py_q_getNamedBeanClass() const { return ProxyLightManager::getNamedBeanClass(); }
@@ -2630,10 +2470,10 @@ void delete_ProxyLightManager(ProxyLightManager* obj) { delete obj; }
    QString  py_q_convertSystemNameToAlternate(ProxyLightManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_convertSystemNameToAlternate(systemName));}
    QString  getBeanTypeHandled(ProxyLightManager* theWrappedObject, bool  plural) const;
    QString  py_q_getBeanTypeHandled(ProxyLightManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
-   NamedBean*  getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName) const;
-   NamedBean*  py_q_getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getBySystemName(systemName));}
-   NamedBean*  getByUserName(ProxyLightManager* theWrappedObject, QString  userName) const;
-   NamedBean*  py_q_getByUserName(ProxyLightManager* theWrappedObject, QString  userName) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getByUserName(userName));}
+   Light*  getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName) const;
+   Light*  py_q_getBySystemName(ProxyLightManager* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getBySystemName(systemName));}
+   Light*  getByUserName(ProxyLightManager* theWrappedObject, QString  userName) const;
+   Light*  py_q_getByUserName(ProxyLightManager* theWrappedObject, QString  userName) const{  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getByUserName(userName));}
    QString  getEntryToolTip(ProxyLightManager* theWrappedObject);
    QString  py_q_getEntryToolTip(ProxyLightManager* theWrappedObject){  return (((PythonQtPublicPromoter_ProxyLightManager*)theWrappedObject)->py_q_getEntryToolTip());}
    Light*  getLight(ProxyLightManager* theWrappedObject, QString  name);
@@ -2909,7 +2749,7 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  arg__1) const;
 virtual NamedBean*  getByUserName(QString  arg__1) const;
@@ -2961,7 +2801,9 @@ ReporterManager* new_ReporterManager(SystemConnectionMemo*  memo, QObject*  pare
 void delete_ReporterManager(ReporterManager* obj) { delete obj; } 
    bool  allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const;
    bool  py_q_allowMultipleAdditions(ReporterManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_allowMultipleAdditions(arg__1));}
+   NamedBean*  getBySystemName(ReporterManager* theWrappedObject, QString  arg__1) const;
    NamedBean*  py_q_getBySystemName(ReporterManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
+   NamedBean*  getByUserName(ReporterManager* theWrappedObject, QString  arg__1) const;
    NamedBean*  py_q_getByUserName(ReporterManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    QString  getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    QString  py_q_getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getNextValidAddress(arg__1, arg__2));}
@@ -2996,7 +2838,7 @@ virtual void dispose();
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  userName) const;
+virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  key) const;
 virtual NamedBean*  getByUserName(QString  key) const;
@@ -3153,6 +2995,172 @@ void delete_Roster(Roster* obj) { delete obj; }
    void writeRoster(Roster* theWrappedObject);
 void py_set_pcs(Roster* theWrappedObject, PropertyChangeSupport*  pcs){ theWrappedObject->pcs = pcs; }
 PropertyChangeSupport*  py_get_pcs(Roster* theWrappedObject){ return theWrappedObject->pcs; }
+};
+
+
+
+
+
+class PythonQtShell_RosterEntry : public RosterEntry
+{
+public:
+    PythonQtShell_RosterEntry(QDomElement  e, QObject*  parent = 0):RosterEntry(e, parent),_wrapper(NULL) {}
+    PythonQtShell_RosterEntry(QObject*  parent = 0):RosterEntry(parent),_wrapper(NULL) {}
+    PythonQtShell_RosterEntry(QString  fileName, QObject*  parent = 0):RosterEntry(fileName, parent),_wrapper(NULL) {}
+    PythonQtShell_RosterEntry(RosterEntry*  pEntry, QString  pID, QObject*  parent = 0):RosterEntry(pEntry, pID, parent),_wrapper(NULL) {}
+    PythonQtShell_RosterEntry(const RosterEntry&  arg__1, QObject*  parent = 0):RosterEntry(arg__1, parent),_wrapper(NULL) {}
+
+   ~PythonQtShell_RosterEntry();
+
+virtual void warnShortLong(QString  id);
+
+  const QMetaObject* metaObject() const;
+  int qt_metacall(QMetaObject::Call call, int id, void** args);
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_RosterEntry : public RosterEntry
+{ public:
+inline QDomElement  promoted_createTextElement(QDomDocument  doc, QString  tagName, QString  text) { return this->createTextElement(doc, tagName, text); }
+inline void py_q_warnShortLong(QString  id) { RosterEntry::warnShortLong(id); }
+};
+
+class PythonQtWrapper_RosterEntry : public QObject
+{ Q_OBJECT
+public:
+public slots:
+RosterEntry* new_RosterEntry(QDomElement  e, QObject*  parent = 0);
+RosterEntry* new_RosterEntry(QObject*  parent = 0);
+RosterEntry* new_RosterEntry(QString  fileName, QObject*  parent = 0);
+RosterEntry* new_RosterEntry(RosterEntry*  pEntry, QString  pID, QObject*  parent = 0);
+RosterEntry* new_RosterEntry(const RosterEntry&  arg__1, QObject*  parent = 0);
+void delete_RosterEntry(RosterEntry* obj) { delete obj; } 
+   void addPropertyChangeListener(RosterEntry* theWrappedObject, PropertyChangeListener*  l);
+   void changeDateUpdated(RosterEntry* theWrappedObject);
+   QDomElement  createTextElement(RosterEntry* theWrappedObject, QDomDocument  doc, QString  tagName, QString  text);
+   void deleteAttribute(RosterEntry* theWrappedObject, QString  key);
+   void ensureFilenameExists(RosterEntry* theWrappedObject);
+   void firePropertyChange(RosterEntry* theWrappedObject, QString  p, QVariant  old, QVariant  n);
+   QString  getAttribute(RosterEntry* theWrappedObject, QString  key);
+   QStringList  getAttributeList(RosterEntry* theWrappedObject);
+   QList<QString >  getAttributes(RosterEntry* theWrappedObject);
+   QString  getComment(RosterEntry* theWrappedObject);
+   QDateTime  getDateModified(RosterEntry* theWrappedObject);
+   QString  getDateUpdated(RosterEntry* theWrappedObject);
+   QString  getDccAddress(RosterEntry* theWrappedObject);
+   DccLocoAddress*  getDccLocoAddress(RosterEntry* theWrappedObject);
+   QString  getDecoderComment(RosterEntry* theWrappedObject);
+   QString  getDecoderFamily(RosterEntry* theWrappedObject);
+   QString  getDecoderModel(RosterEntry* theWrappedObject);
+   QString  static_RosterEntry_getDefaultOwner();
+   QString  getDisplayName(RosterEntry* theWrappedObject);
+   QString  getFileName(RosterEntry* theWrappedObject);
+   QString  getFunctionImage(RosterEntry* theWrappedObject, int  fn);
+   QString  getFunctionLabel(RosterEntry* theWrappedObject, int  fn);
+   bool  getFunctionLockable(RosterEntry* theWrappedObject, int  fn);
+   QString  getFunctionSelectedImage(RosterEntry* theWrappedObject, int  fn);
+   QList<RosterGroup* >  getGroups(RosterEntry* theWrappedObject);
+   QList<RosterGroup* >  getGroups(RosterEntry* theWrappedObject, Roster*  roster);
+   QString  getIconPath(RosterEntry* theWrappedObject);
+   QString  getId(RosterEntry* theWrappedObject);
+   QString  getImagePath(RosterEntry* theWrappedObject);
+   int  getMAXFNNUM(RosterEntry* theWrappedObject);
+   int  getMaxSpeedPCT(RosterEntry* theWrappedObject);
+   QString  getMfg(RosterEntry* theWrappedObject);
+   QString  getModel(RosterEntry* theWrappedObject);
+   QString  getOwner(RosterEntry* theWrappedObject);
+   QString  getPathName(RosterEntry* theWrappedObject);
+   LocoAddress::Protocol  getProtocol(RosterEntry* theWrappedObject);
+   QString  getProtocolAsString(RosterEntry* theWrappedObject);
+   int  getRfidTag(RosterEntry* theWrappedObject);
+   QString  getRoadName(RosterEntry* theWrappedObject);
+   QString  getRoadNumber(RosterEntry* theWrappedObject);
+   QString  getShuntingFunction(RosterEntry* theWrappedObject);
+   QString  getSoundLabel(RosterEntry* theWrappedObject, int  fn);
+   QString  getURL(RosterEntry* theWrappedObject);
+   bool  isLongAddress(RosterEntry* theWrappedObject);
+   bool  isOpen(RosterEntry* theWrappedObject);
+   void loadAttributes(RosterEntry* theWrappedObject, QDomElement  e3);
+   void loadFunctions(RosterEntry* theWrappedObject, QDomElement  e3);
+   void putAttribute(RosterEntry* theWrappedObject, QString  key, QString  value);
+   void readFile(RosterEntry* theWrappedObject);
+   void removePropertyChangeListener(RosterEntry* theWrappedObject, PropertyChangeListener*  l);
+   void setComment(RosterEntry* theWrappedObject, QString  s);
+   void setDateModified(RosterEntry* theWrappedObject, QDateTime  date);
+   void setDateModified(RosterEntry* theWrappedObject, QString  date) throw (ParseException) ;
+   void setDateUpdated(RosterEntry* theWrappedObject, QString  s);
+   void setDccAddress(RosterEntry* theWrappedObject, QString  s);
+   void setDecoderComment(RosterEntry* theWrappedObject, QString  s);
+   void setDecoderFamily(RosterEntry* theWrappedObject, QString  s);
+   void setDecoderModel(RosterEntry* theWrappedObject, QString  s);
+   void static_RosterEntry_setDefaultOwner(QString  n);
+   void setFileName(RosterEntry* theWrappedObject, QString  s);
+   void setFunctionImage(RosterEntry* theWrappedObject, int  fn, QString  s);
+   void setFunctionLabel(RosterEntry* theWrappedObject, int  fn, QString  label);
+   void setFunctionLockable(RosterEntry* theWrappedObject, int  fn, bool  lockable);
+   void setFunctionSelectedImage(RosterEntry* theWrappedObject, int  fn, QString  s);
+   void setIconPath(RosterEntry* theWrappedObject, QString  s);
+   void setId(RosterEntry* theWrappedObject, QString  s);
+   void setImagePath(RosterEntry* theWrappedObject, QString  s);
+   void setLongAddress(RosterEntry* theWrappedObject, bool  b);
+   void setMaxSpeedPCT(RosterEntry* theWrappedObject, int  maxSpeedPCT);
+   void setMfg(RosterEntry* theWrappedObject, QString  s);
+   void setModel(RosterEntry* theWrappedObject, QString  s);
+   void setOpen(RosterEntry* theWrappedObject, bool  boo);
+   void setOwner(RosterEntry* theWrappedObject, QString  s);
+   void setProtocol(RosterEntry* theWrappedObject, LocoAddress::Protocol  protocol);
+   void setRfidTag(RosterEntry* theWrappedObject, QString  tag);
+   void setRoadName(RosterEntry* theWrappedObject, QString  s);
+   void setRoadNumber(RosterEntry* theWrappedObject, QString  s);
+   void setShuntingFunction(RosterEntry* theWrappedObject, QString  fn);
+   void setSoundLabel(RosterEntry* theWrappedObject, int  fn, QString  label);
+   void setURL(RosterEntry* theWrappedObject, QString  s);
+   QDomElement  store(RosterEntry* theWrappedObject, QDomDocument  doc);
+   QString  titleString(RosterEntry* theWrappedObject);
+   QString  toString(RosterEntry* theWrappedObject);
+   void updateFile(RosterEntry* theWrappedObject);
+   void warnShortLong(RosterEntry* theWrappedObject, QString  id);
+   void py_q_warnShortLong(RosterEntry* theWrappedObject, QString  id){  (((PythonQtPublicPromoter_RosterEntry*)theWrappedObject)->py_q_warnShortLong(id));}
+   QVector<QString >  wrapComment(RosterEntry* theWrappedObject, QString  comment, int  textSpace);
+    QString py_toString(RosterEntry*);
+};
+
+
+
+
+
+class PythonQtShell_RosterObject : public RosterObject
+{
+public:
+    PythonQtShell_RosterObject():RosterObject(),_wrapper(NULL) {}
+
+   ~PythonQtShell_RosterObject();
+
+virtual QString  getDisplayName();
+virtual QVariant  getIndexedProperty(QString  arg__1, int  arg__2);
+virtual QVariant  getProperty(QString  arg__1);
+virtual QSet<QString >  getPropertyNames();
+virtual bool  hasIndexedProperty(QString  arg__1);
+virtual bool  hasProperty(QString  arg__1);
+virtual void setIndexedProperty(QString  arg__1, int  arg__2, QVariant  arg__3);
+virtual void setProperty(QString  arg__1, QVariant  arg__2);
+
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_RosterObject : public RosterObject
+{ public:
+inline QString  py_q_getDisplayName() { return RosterObject::getDisplayName(); }
+};
+
+class PythonQtWrapper_RosterObject : public QObject
+{ Q_OBJECT
+public:
+public slots:
+RosterObject* new_RosterObject();
+void delete_RosterObject(RosterObject* obj) { delete obj; } 
+   QString  getDisplayName(RosterObject* theWrappedObject);
+   QString  py_q_getDisplayName(RosterObject* theWrappedObject){  return (((PythonQtPublicPromoter_RosterObject*)theWrappedObject)->py_q_getDisplayName());}
 };
 
 

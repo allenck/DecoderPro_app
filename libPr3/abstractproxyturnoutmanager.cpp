@@ -307,24 +307,24 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 //@Override
 //@CheckReturnValue
 //@CheckForNull
-/*public*/ NamedBean* AbstractProxyTurnoutManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
+/*public*/ Turnout* AbstractProxyTurnoutManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
     // System names can be matched to managers by system and type at front of name
     int index = matchTentative(systemName);
     if (index >= 0) {
         Manager* m = getMgr(index);
-        return (NamedBean*)m->getBySystemName(systemName);
+        return (Turnout*)((AbstractTurnoutManager*)m)->getBySystemName(systemName);
     }
     log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName.isEmpty()?"(NULL)":systemName)); // NOI18N
-    return (NamedBean*)getDefaultManager()->getBySystemName(systemName);
+    return (Turnout*)((AbstractTurnoutManager*)getDefaultManager())->getBySystemName(systemName);
 }
 
 /** {@inheritDoc} */
 //@Override
 //@CheckReturnValue
 //@CheckForNull
-/*public*/ NamedBean *AbstractProxyTurnoutManager::getByUserName(/*@Nonnull*/ QString userName) const{
+/*public*/ Turnout *AbstractProxyTurnoutManager::getByUserName(/*@Nonnull*/ QString userName) const{
     for (Manager* m : this->mgrs) {
-        NamedBean* b = m->getByUserName(userName);
+        Turnout* b = ((AbstractTurnoutManager*)m)->getByUserName(userName);
         if (b != nullptr) {
             return b;
         }

@@ -15,8 +15,8 @@ public:
 //    /*public*/ QString getSystemPrefix()const override;
     /*public*/ char typeLetter()const override ;
     /*public*/ SignalHead* getSignalHead(QString name) override;
-//    /*public*/ SignalHead* getBySystemName(QString name) override;
-//    /*public*/ SignalHead* getByUserName(QString key) override;
+    /*public*/ SignalHead* getBySystemName(QString name) const override;
+    /*public*/ SignalHead* getByUserName(QString key) const override;
     void Register(NamedBean *s)const override;
     QCompleter* getCompleter(QString text, bool bIncludeUserNames = false) override;
     /*public*/ QString getBeanTypeHandled(bool plural);

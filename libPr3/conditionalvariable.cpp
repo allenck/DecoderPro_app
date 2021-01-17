@@ -295,7 +295,7 @@ void ConditionalVariable::common()
   bean =(NamedBean*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock(_name);
   break;
  case Conditional::ITEM_TYPE_ENTRYEXIT:
-  bean = ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getBySystemName(_name);
+  bean = (NamedBean*)((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getBySystemName(_name);
   break;
  default : log->error("Type "+QString::number(itemType)+" not set for " + _name);
  }

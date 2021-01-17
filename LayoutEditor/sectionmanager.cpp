@@ -6,7 +6,7 @@
 
 
 SectionManager::SectionManager(QObject *parent) :
-    AbstractManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"), parent)
+    AbstractSectionManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"), parent)
 {
  setObjectName("SectionManager");
  setProperty("JavaClassName", "jmri.managers.SectionManager");
@@ -153,14 +153,6 @@ Section* SectionManager::createNewSection(QString userName) {
     return (Section*)getBySystemName(name);
 }
 
-///*public*/ Section* SectionManager::getBySystemName(QString name) {
-//    QString key = name.toUpper();
-//    return (Section*)_tsys->value(key);
-//}
-
-///*public*/ Section* SectionManager::getByUserName(QString key) {
-//    return (Section*)_tuser->value(key);
-//}
 
 /**
  * Validates all Sections
@@ -239,7 +231,7 @@ Section* SectionManager::createNewSection(QString userName) {
     QStringList signalList = shManager->getSystemNameList();
     for (int j=0; j<signalList.size(); j++)
     {
-     SignalHead* sh =(SignalHead*) shManager->getBySystemName(signalList.at(j));
+     SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)shManager)->getBySystemName(signalList.at(j));
      if (!cUtil->removeSensorsFromSignalHeadLogic(&sensorList,	sh)) numErrors ++;
  }
  return numErrors;

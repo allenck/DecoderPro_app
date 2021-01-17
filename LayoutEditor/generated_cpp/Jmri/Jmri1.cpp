@@ -24,7 +24,6 @@
 #include <loconetinterface.h>
 #include <loconetmessage.h>
 #include <loconetsystemconnectionmemo.h>
-#include <memorymanager.h>
 #include <namedbean.h>
 #include <positionable.h>
 #include <positionablelabel.h>
@@ -64,6 +63,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -16408,7 +16408,7 @@ if (_wrapper) {
 }
   return LayoutBlockManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_LayoutBlockManager::getBeanByUserName(QString  userName0) const
+NamedBean*  PythonQtShell_LayoutBlockManager::getBeanByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16419,7 +16419,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -16439,7 +16439,7 @@ if (_wrapper) {
     }
   }
 }
-  return LayoutBlockManager::getBeanByUserName(userName0);
+  return LayoutBlockManager::getBeanByUserName(arg__1);
 }
 QString  PythonQtShell_LayoutBlockManager::getBeanTypeHandled(bool  plural0) const
 {
@@ -16473,72 +16473,6 @@ if (_wrapper) {
   }
 }
   return LayoutBlockManager::getBeanTypeHandled(plural0);
-}
-NamedBean*  PythonQtShell_LayoutBlockManager::getBySystemName(QString  systemName0) const
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getBySystemName");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"NamedBean*" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&systemName0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
-          } else {
-            returnValue = *((NamedBean**)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return LayoutBlockManager::getBySystemName(systemName0);
-}
-NamedBean*  PythonQtShell_LayoutBlockManager::getByUserName(QString  userName0) const
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getByUserName");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"NamedBean*" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
-          } else {
-            returnValue = *((NamedBean**)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return LayoutBlockManager::getByUserName(userName0);
 }
 QString  PythonQtShell_LayoutBlockManager::getEntryToolTip()
 {
@@ -23606,7 +23540,7 @@ if (_wrapper) {
 }
   return LightManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_LightManager::getBeanByUserName(QString  userName0) const
+NamedBean*  PythonQtShell_LightManager::getBeanByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23617,7 +23551,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -23637,7 +23571,7 @@ if (_wrapper) {
     }
   }
 }
-  return LightManager::getBeanByUserName(userName0);
+  return LightManager::getBeanByUserName(arg__1);
 }
 QString  PythonQtShell_LightManager::getBeanTypeHandled(bool  plural0) const
 {
@@ -23672,7 +23606,7 @@ if (_wrapper) {
 }
   return LightManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_LightManager::getBySystemName(QString  arg__1) const
+Light*  PythonQtShell_LightManager::getBySystemName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23680,9 +23614,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getBySystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const char* argumentList[] ={"Light*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      NamedBean* returnValue{};
+      Light* returnValue{};
       void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -23691,7 +23625,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
           } else {
-            returnValue = *((NamedBean**)args[0]);
+            returnValue = *((Light**)args[0]);
           }
         }
       }
@@ -23703,9 +23637,9 @@ if (_wrapper) {
     }
   }
 }
-  return LightManager::getBySystemName(arg__1);
+  return 0;
 }
-NamedBean*  PythonQtShell_LightManager::getByUserName(QString  arg__1) const
+Light*  PythonQtShell_LightManager::getByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23713,9 +23647,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getByUserName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const char* argumentList[] ={"Light*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      NamedBean* returnValue{};
+      Light* returnValue{};
       void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -23724,7 +23658,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
           } else {
-            returnValue = *((NamedBean**)args[0]);
+            returnValue = *((Light**)args[0]);
           }
         }
       }
@@ -23736,7 +23670,7 @@ if (_wrapper) {
     }
   }
 }
-  return LightManager::getByUserName(arg__1);
+  return 0;
 }
 QString  PythonQtShell_LightManager::getEntryToolTip()
 {
@@ -24231,7 +24165,7 @@ if (_wrapper) {
     }
   }
 }
-  return LightManager::newLight(arg__1, arg__2);
+  return 0;
 }
 QString  PythonQtShell_LightManager::normalizeSystemName(QString  arg__1)
 {
@@ -24660,6 +24594,16 @@ bool  PythonQtWrapper_LightManager::allowMultipleAdditions(LightManager* theWrap
 QString  PythonQtWrapper_LightManager::convertSystemNameToAlternate(LightManager* theWrappedObject, QString  arg__1)
 {
   return ( theWrappedObject->convertSystemNameToAlternate(arg__1));
+}
+
+Light*  PythonQtWrapper_LightManager::getBySystemName(LightManager* theWrappedObject, QString  arg__1) const
+{
+  return ( theWrappedObject->getBySystemName(arg__1));
+}
+
+Light*  PythonQtWrapper_LightManager::getByUserName(LightManager* theWrappedObject, QString  arg__1) const
+{
+  return ( theWrappedObject->getByUserName(arg__1));
 }
 
 Light*  PythonQtWrapper_LightManager::getLight(LightManager* theWrappedObject, QString  arg__1)
@@ -28099,7 +28043,7 @@ if (_wrapper) {
 }
   return LnReporterManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_LnReporterManager::getBeanByUserName(QString  userName0) const
+NamedBean*  PythonQtShell_LnReporterManager::getBeanByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -28110,7 +28054,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -28130,7 +28074,7 @@ if (_wrapper) {
     }
   }
 }
-  return LnReporterManager::getBeanByUserName(userName0);
+  return LnReporterManager::getBeanByUserName(arg__1);
 }
 QString  PythonQtShell_LnReporterManager::getBeanTypeHandled(bool  plural0) const
 {
@@ -28165,7 +28109,7 @@ if (_wrapper) {
 }
   return LnReporterManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_LnReporterManager::getBySystemName(QString  arg__1) const
+NamedBean*  PythonQtShell_LnReporterManager::getBySystemName(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -28176,7 +28120,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&name0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -28196,9 +28140,9 @@ if (_wrapper) {
     }
   }
 }
-  return LnReporterManager::getBySystemName(arg__1);
+  return LnReporterManager::getBySystemName(name0);
 }
-NamedBean*  PythonQtShell_LnReporterManager::getByUserName(QString  arg__1) const
+NamedBean*  PythonQtShell_LnReporterManager::getByUserName(QString  key0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -28209,7 +28153,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
+      void* args[2] = {NULL, (void*)&key0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -28229,7 +28173,7 @@ if (_wrapper) {
     }
   }
 }
-  return LnReporterManager::getByUserName(arg__1);
+  return LnReporterManager::getByUserName(key0);
 }
 QString  PythonQtShell_LnReporterManager::getEntryToolTip()
 {
@@ -30992,7 +30936,7 @@ if (_wrapper) {
 }
   return LnSensorManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_LnSensorManager::getBeanByUserName(QString  userName0) const
+NamedBean*  PythonQtShell_LnSensorManager::getBeanByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -31003,7 +30947,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -31023,7 +30967,7 @@ if (_wrapper) {
     }
   }
 }
-  return LnSensorManager::getBeanByUserName(userName0);
+  return LnSensorManager::getBeanByUserName(arg__1);
 }
 QString  PythonQtShell_LnSensorManager::getBeanTypeHandled(bool  plural0) const
 {

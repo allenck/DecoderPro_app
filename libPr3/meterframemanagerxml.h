@@ -13,6 +13,7 @@ class MeterFrameManagerXml : public AbstractXmlAdapter
   /*public*/ QDomElement store(QObject* o);
   /*public*/ QDomElement storeMeterFrame(MeterFrame* frame);
   /*public*/ void setStoreElementClass(QDomElement meterFrames);
+  /*public*/ void load(QDomElement element, QObject* o) throw (Exception)  override {}
   /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException);
 
  private:

@@ -63,11 +63,11 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 
     return (Light*)getBySystemName(name);
 }
-#if 0
+#if 1
 /**
  * Locate a Light by its system name
  */
-/*public*/ Light* AbstractLightManager::getBySystemName(QString name)
+/*public*/ Light* AbstractLightManager::getBySystemName(QString name) const
 {
  return (Light*)(_tsys->value(name));
 }
@@ -75,7 +75,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /**
  * Locate a Light by its user name
  */
-/*public*/ Light* AbstractLightManager::getByUserName(QString key) {
+/*public*/ Light* AbstractLightManager::getByUserName(QString key) const {
     return dynamic_cast<Light*>(_tuser->value(key));
 }
 #endif

@@ -119,8 +119,8 @@
  */
 /*public*/ void SignalHeadIcon::setSignalHead(QString pName)
 {
- SignalHead* mHead = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName);
- if (mHead == NULL) mHead = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName);
+ SignalHead* mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName);
+ if (mHead == NULL) mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName);
  if (mHead == NULL) log->warn("did not find a SignalHead named "+pName);
  else
  {

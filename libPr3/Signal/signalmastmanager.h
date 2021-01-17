@@ -61,8 +61,8 @@ public:
                                         QString /*mastName*/,
                                         QStringList /*heads*/)  {return NULL;}
 
-    /*public*/ virtual SignalMast* getBySystemName(QString /*s*/)  {return NULL;}
-    /*public*/ virtual SignalMast* getByUserName(QString /*s*/)  {return NULL;}
+    /*public*/ virtual SignalMast* getBySystemName(QString /*s*/)  const =0;
+    /*public*/ virtual SignalMast* getByUserName(QString /*s*/)  const = 0;
     virtual /*public*/ SignalMast* provide(QString name) throw (IllegalArgumentException)=0;
 
 friend class SignalMastIcon;

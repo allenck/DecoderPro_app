@@ -60,8 +60,8 @@ Turnout* AbstractTurnoutManager::getTurnout(QString name) const {
 
     return (Turnout*)getBySystemName(name);
 }
-#if 0
-Turnout* AbstractTurnoutManager::getBySystemName(QString name)
+#if 1
+Turnout* AbstractTurnoutManager::getBySystemName(QString name) const
 {
  NamedBean* bean = _tsys->value(name);
  //return nullptr;
@@ -71,7 +71,7 @@ Turnout* AbstractTurnoutManager::getBySystemName(QString name)
 // return (Turnout*)nullptr;
 }
 
-Turnout* AbstractTurnoutManager::getByUserName(QString key)
+Turnout* AbstractTurnoutManager::getByUserName(QString key) const
 {
  NamedBean* bean = _tuser->value(key);
  //return nullptr;

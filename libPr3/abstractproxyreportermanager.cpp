@@ -287,10 +287,10 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
     int index = matchTentative(systemName);
     if (index >= 0) {
         Manager* m = getMgr(index);
-        return (Reporter*)m->getBySystemName(systemName);
+        return (Reporter*)((AbstractReporterManager*)m)->getBySystemName(systemName);
     }
     log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
-    return (Reporter*)getDefaultManager()->getBySystemName(systemName);
+    return (Reporter*)((AbstractReporterManager*)getDefaultManager())->getBySystemName(systemName);
 }
 
 /** {@inheritDoc} */
@@ -299,7 +299,7 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
 //@CheckForNull
 /*public*/ Reporter *AbstractProxyReporterManager::getByUserName(/*@Nonnull*/ QString userName) const{
     for (Manager* m : this->mgrs) {
-        NamedBean* b = m->getByUserName(userName);
+        NamedBean* b = ((AbstractReporterManager*)m)->getByUserName(userName);
         if (b != nullptr) {
             return (Reporter*)b;
         }

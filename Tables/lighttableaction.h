@@ -30,12 +30,12 @@ public:
     /*public*/ LightTableAction(QString s, QObject* parent);
     ~LightTableAction() {}
     LightTableAction(const LightTableAction&) : AbstractTableAction() {}
-    /*public*/ void setManager(Manager* man);
-    Q_INVOKABLE /*public*/ QString getClassDescription();
+    /*public*/ void setManager(Manager* man) override;
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
     /*public*/ QString getControlTypeText(int type);
     /*public*/ static QString getDescriptionText(LightControl* lc, int type);
     /*public*/ static QString lightControlTitle;// = Bundle.getMessage("LightControlBorder");
-    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails() override;
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);

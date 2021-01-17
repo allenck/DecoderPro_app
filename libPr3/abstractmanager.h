@@ -52,8 +52,8 @@ public:
      * @param userName System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/  NamedBean* getBeanByUserName(QString userName)const override;
-    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
+//    /*public*/  NamedBean* getBeanByUserName(QString userName)const override;
+//    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
 
     /**
      * Locate an instance based on a name.  Returns NULL if no
@@ -123,7 +123,7 @@ public:
 //    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors);
     /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale()) const override;
     /*public*/ virtual SystemConnectionMemo* getMemo() const;
-    /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
+//    /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
     /*public*/ void updateAutoNumber(QString systemName) const;
     /*public*/ QString getAutoSystemName()const;
 

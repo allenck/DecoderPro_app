@@ -1,6 +1,6 @@
 #ifndef NAMEDBEANHANDLEMANAGER_H
 #define NAMEDBEANHANDLEMANAGER_H
-#include "abstractmanager.h"
+#include "abstractnamedbeanhandlemanager.h"
 #include "logger.h"
 #include "exceptions.h"
 #include "namedbeanhandle.h"
@@ -9,13 +9,13 @@
 //template <typename T> class NamedBeanhandle;
 //template <class T>
 
-class JAVAQTSHARED_EXPORT NamedBeanHandleManager:  public AbstractManager
+class JAVAQTSHARED_EXPORT NamedBeanHandleManager:  public AbstractNamedBeanHandleManager
 {
 //Q_OBJECT
 public:
 explicit NamedBeanHandleManager(QObject *parent = 0);
  ~NamedBeanHandleManager() {}
- NamedBeanHandleManager(const NamedBeanHandleManager&) : AbstractManager() {}
+ NamedBeanHandleManager(const NamedBeanHandleManager&) : AbstractNamedBeanHandleManager() {}
 //template <typename T>
 template<class T>
 NamedBeanHandle<T>* getNamedBeanHandle(QString name, T bean)
@@ -77,8 +77,8 @@ PropertyChangeSupport* pcs; // = new PropertyChangeSupport(this);
  /*public*/ void Register(NamedBean* n)const override;
 /*public*/ void deregister(NamedBean* n)const override;
 /*public*/ int getXMLOrder()const override;
-/*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return nullptr;}
-/*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return nullptr;}
+///*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return nullptr;}
+///*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return nullptr;}
 /*public*/ QString getNamedBeanClass()const override {
     return "NamedBean";
 }

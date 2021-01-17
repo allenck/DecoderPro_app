@@ -107,8 +107,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public AbstractMeterManag
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() override;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
     /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
-    /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const override;
-    /*public*/ NamedBean *getByUserName(/*@Nonnull*/ QString userName) const override;
+    /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const ;
+    /*public*/ NamedBean *getByUserName(/*@Nonnull*/ QString userName) const ;
 
  signals:
     //virtual void propertyChange(PropertyChangeEvent *e);

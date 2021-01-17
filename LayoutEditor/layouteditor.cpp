@@ -5121,8 +5121,8 @@ LEMemoryIcon *LayoutEditor::checkMemoryMarkerIcons(QPointF loc)
  }
 
  SignalHead* LayoutEditor::getSignalHead(QString name) {
-     SignalHead* sh = (SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
-     if (sh == nullptr) sh = (SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);
+     SignalHead* sh = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+     if (sh == nullptr) sh = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);
      if (sh == nullptr) log->warn("did not find a SignalHead named "+name);
      return sh;
  }

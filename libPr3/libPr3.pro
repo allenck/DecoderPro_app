@@ -1067,7 +1067,11 @@ SOURCES += \
     ctc/trafficlocking.cpp \
     storemenu.cpp \
     systemconnectionmemo.cpp \
-    managercombobox.cpp
+    managercombobox.cpp \
+    abstractblockmanager.cpp \
+    abstractsectionmanager.cpp \
+    abstractnamedbeanhandlemanager.cpp \
+    abstractroutemanager.cpp
 
 
  !contains(FTDI, 1) {
@@ -2151,7 +2155,11 @@ HEADERS += \
     ctc/indicationlockingsignals.h \
     ctc/trafficlocking.h \
     storemenu.h \
-    managercombobox.h
+    managercombobox.h \
+    abstractblockmanager.h \
+    abstractsectionmanager.h \
+    abstractnamedbeanhandlemanager.h \
+    abstractroutemanager.h
 
 
  !contains(FTDI, 1) {

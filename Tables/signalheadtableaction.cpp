@@ -276,7 +276,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
  int col = index.column();
  int row = index.row();
  QString name = sysNameList.at(row);
- SignalHead* s = (SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+ SignalHead* s = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
 
  if(role == Qt::DisplayRole)
  {
@@ -310,7 +310,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
  int col = index.column();
  int row = index.row();
  QString name = sysNameList.at(row);
- SignalHead* s = (SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+ SignalHead* s = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
  if (s==nullptr) return false;  // device is going away anyway
  if(role == Qt::CheckStateRole)
  {
@@ -341,7 +341,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
 
 /*public*/ QString SHBeanTableDataModel::getValue(QString name) const
 {
-    SignalHead* s =(SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
+    SignalHead* s =(SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
     if (s==nullptr) return "<lost>"; // if due to race condition, the device is going away
     QString val = "";
     //try {
@@ -357,9 +357,9 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
 /*public*/ Manager* SHBeanTableDataModel::getManager() { return static_cast<Manager*>(InstanceManager::getDefault("SignalHeadManager")); }
 
 /*public*/ NamedBean* SHBeanTableDataModel::getBySystemName(QString name) const
-{ return static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);}
+{ return static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);}
 
-/*public*/ NamedBean* SHBeanTableDataModel::getByUserName(QString name) { return static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);}
+/*public*/ NamedBean* SHBeanTableDataModel::getByUserName(QString name) { return static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(name);}
 
 /*public int SHBeanTableDataModel::getDisplayDeleteMsg() { return InstanceManager::getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
 public void SHBeanTableDataModel::setDisplayDeleteMsg(int boo) { InstanceManager::getDefault(jmri.UserPreferencesManager.class).setMultipleChoiceOption(getClassName(), "delete", boo); }*/
@@ -1049,11 +1049,11 @@ bool SignalHeadTableAction::checkBeforeCreating(QString sysName)
         }
     }
     // check for pre-existing signal head with same system name
-    SignalHead* s = (SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sName);
+    SignalHead* s = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sName);
     // return true if signal head does not exist
     if (s==nullptr){
         //Need to check that the Systemname doesn't already exists as a UserName
-        NamedBean* nB = static_cast<SignalHeadManager*>( InstanceManager::getDefault("SignalHeadManager"))->getByUserName(sName);
+        NamedBean* nB = static_cast<AbstractSignalHeadManager*>( InstanceManager::getDefault("SignalHeadManager"))->getByUserName(sName);
         if (nB!=nullptr){
 //            log->error("System name is not unique " + sName + " It already exists as a User name");
 //            String msg = java.text.MessageFormat.format(AbstractTableAction.rb
@@ -1144,7 +1144,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    {
     s = new AcelaSignalHead("AH"+QString::number(headnumber), inputusername);
    }
-   static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
 
   int st = signalheadTypeFromBox(stBox);
@@ -1184,7 +1184,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
   if (checkBeforeCreating(inputsysname))
   {
    s = new SerialSignalHead(inputsysname,userName->text());
-   static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
 #endif
@@ -1212,7 +1212,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    nbhm->getNamedBeanHandle(to2->getDisplayName(),t2),
    nbhm->getNamedBeanHandle(to3->getDisplayName(),t3),
    nbhm->getNamedBeanHandle(to4->getDisplayName(),t4));
-   static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
  else if (tripleTurnout ==(typeBox->currentText()))
@@ -1236,7 +1236,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
                 nbhm->getNamedBeanHandle(to2->getDisplayName(),t2),
                 nbhm->getNamedBeanHandle(to3->getDisplayName(),t3));
 
-   static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
  else if (tripleOutput == (typeBox->currentText()))
@@ -1265,7 +1265,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
                   nbhm->getNamedBeanHandle(to2->getDisplayName(), t2),
                   nbhm->getNamedBeanHandle(to3->getDisplayName(), t3));
 
-          static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+          static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
       }
   }
  else if (doubleTurnout ==(typeBox->currentText()))
@@ -1287,7 +1287,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    nbhm->getNamedBeanHandle(to1->getDisplayName(),t1),
    nbhm->getNamedBeanHandle(to2->getDisplayName(),t2));
    s->setUserName(userNameTextField->text());
-   static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
 
@@ -1307,7 +1307,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    }
 
    s = (SignalHead*)new SingleTurnoutSignalHead( systemNameTextField->text(), userNameTextField->text(), nbhm->getNamedBeanHandle(t1->getDisplayName(),t1), on, off);
-   static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
  else if (virtualHead ==(typeBox->currentText()))
@@ -1315,7 +1315,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
   if (checkBeforeCreating( systemNameTextField->text()))
   {
    s = (SignalHead*)new VirtualSignalHead( systemNameTextField->text(),userNameTextField->text());
-   static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
 #if 0 // LsDec, merg not implemented.
@@ -1354,7 +1354,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
 
    s = (SignalHead*)new LsDecSignalHead( systemName->text(), nbhm->getNamedBeanHandle(t1->getDisplayName(),t1), s1, nbhm->getNamedBeanHandle(t2->getDisplayName(),t2), s2, nbhm->getNamedBeanHandle(t3->getDisplayName(),t3), s3, nbhm->getNamedBeanHandle(t4->getDisplayName(),t4), s4, nbhm->getNamedBeanHandle(t5->getDisplayName(),t5), s5, nbhm->getNamedBeanHandle(t6->getDisplayName(),t6), s6, nbhm->getNamedBeanHandle(t7->getDisplayName(),t7), s7);
    s.setUserName(userName.->text()());
-   static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
 #endif
@@ -1370,7 +1370,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    {
     s = new DccSignalHead(systemNameText);
     s->setUserName(userNameTextField->text());
-    static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+    static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
    }
   }
 #if 0
@@ -1395,7 +1395,7 @@ void SignalHeadTableAction::handleSE8cOkPressed() {
             nbhm->getNamedBeanHandle(t1->getSystemName(), t1),
             nbhm->getNamedBeanHandle(t2->getSystemName(), t2),
             userNameTextField->text());
-        static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+        static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
     } else {
         // couldn't create turnouts, error
 //        QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
@@ -1481,7 +1481,7 @@ void handleMergSignalDriverOkPressed() {
 
         s = new jmri.implementation.MergSD2SignalHead( systemName->text(), ukSignalAspectsFromBox(msaBox), nbt1, nbt2, nbt3, false, home);
         s.setUserName(userName.->text()());
-        static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+        static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
 
     }
 }
@@ -1491,7 +1491,7 @@ void handleMergSignalDriverOkPressed() {
 void SignalHeadTableAction::editSignal(/*int row*/ SignalHead* head) {
 //    // Logix was found, initialize for edit
 //    QString eSName = (String)m.getValueAt(row,BeanTableDataModel.SYSNAMECOL);
-//    _curSignal = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")).getBySystemName(eSName);
+//    _curSignal = static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")).getBySystemName(eSName);
     _curSignal = head;
     //numConditionals = _curLogix.getNumConditionals();
     // create the Edit Logix Window
@@ -1531,7 +1531,7 @@ void SignalHeadTableAction::makeEditSignalWindow()
 
  editSysName = eSName;
  editingHead = true;
- curS = (SignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(editSysName);
+ curS = (SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(editSysName);
  if (editFrame == nullptr)
  {
   eto1 = new BeanSelectCreatePanel(InstanceManager::turnoutManagerInstance(), nullptr);
@@ -2200,7 +2200,7 @@ bool SignalHeadTableAction::checkUserName(QString nam)
     if (!((nam==NULL) || (nam ==(""))))
     {
         // user name changed, check if new name already exists
-        NamedBean* nB = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(nam);
+        NamedBean* nB = static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(nam);
         if (nB != nullptr) {
             log->error("User name is not unique " + nam);
 //            QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
@@ -2212,7 +2212,7 @@ bool SignalHeadTableAction::checkUserName(QString nam)
             return false;
         }
         //Check to ensure that the username doesn't exist as a systemname.
-        nB = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(nam);
+        nB = static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(nam);
         if (nB!=nullptr){
             log->error("User name is not unique " + nam + " It already exists as a System name");
 //            String msg = java.text.MessageFormat.format(AbstractTableAction.rb

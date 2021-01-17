@@ -542,7 +542,8 @@ SOURCES += \
     ../JavaQt/jradiobuttonmenuitem.cpp \
     blockbosslogicprovider.cpp \
     createxmlfiles.cpp \
-    hitpointtype.cpp
+    hitpointtype.cpp \
+    abstractnamedbeanmanager.cpp
 
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
@@ -1003,7 +1004,8 @@ HEADERS += liblayouteditor_global.h \
     ../JavaQt/jradiobuttonmenuitem.h \
     blockbosslogicprovider.h \
     createxmlfiles.h \
-    hitpointtype.h
+    hitpointtype.h \
+    abstractnamedbeanmanager.h
 
 FORMS    += \
     createeditblock.ui \

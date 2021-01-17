@@ -1,18 +1,18 @@
 #ifndef SECTIONMANAGER_H
 #define SECTIONMANAGER_H
-#include "abstractmanager.h"
+#include "abstractsectionmanager.h"
 #include "section.h"
 #include <QString>
 #include "decimalformat.h"
 #include "liblayouteditor_global.h"
 
-class LIBLAYOUTEDITORSHARED_EXPORT SectionManager : public AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT SectionManager : public AbstractSectionManager
 {
     Q_OBJECT
 public:
     explicit SectionManager(QObject *parent = 0);
     ~SectionManager() {}
-    SectionManager(const SectionManager&) : AbstractManager() {}
+    SectionManager(const SectionManager&) : AbstractSectionManager() {}
     int getXMLOrder() const override;
     //QString getSystemPrefix();
     char typeLetter() const override;
@@ -35,8 +35,8 @@ public:
      *      that name is a System Name.  If both fail, returns NULL.
      */
     /*public*/ Section* getSection(QString name);
-//    /*public*/ Section* getBySystemName(QString name);
-//    /*public*/ Section* getByUserName(QString key);
+//    /*public*/ Section* getBySystemName(QString name) const override;
+//    /*public*/ Section* getByUserName(QString key)const override;
 
     /**
      * Validates all Sections

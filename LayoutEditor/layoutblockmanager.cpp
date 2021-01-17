@@ -2474,3 +2474,13 @@ QCompleter* LayoutBlockManager::getCompleter(QString text, bool bIncludeUserName
  }
  return NULL;
 }
+/*public*/ LayoutBlock *LayoutBlockManager::getBySystemName(QString name) const {
+    if (name==NULL || name.trimmed().length()==0) { return NULL; }
+    QString key = name.toUpper();
+    return (LayoutBlock*)_tsys->value(key);
+}
+
+/*public*/ LayoutBlock *LayoutBlockManager::getByUserName(QString key)const  {
+    if (key==NULL || key.trimmed().length()==0) { return NULL; }
+    return (LayoutBlock*)_tuser->value(key);
+}

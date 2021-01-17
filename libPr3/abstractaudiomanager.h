@@ -12,8 +12,8 @@ public:
  /*public*/ char typeLetter() const ;
  /*public*/ Audio* provideAudio(QString name); //throws AudioException {
  /*public*/ Audio* getAudio(QString name);
- /*public*/ Audio* getBySystemName(QString key);
- /*public*/ Audio* getByUserName(QString key);
+ /*public*/ Audio* getBySystemName(QString key) const;
+ /*public*/ Audio* getByUserName(QString key)const;
  /*public*/ Audio* newAudio(QString systemName, QString userName) /*throws AudioException */;
  /*public*/ QString getBeanTypeHandled(bool plural);
 

@@ -15,8 +15,8 @@ public:
     char typeLetter()const override;
     Reporter* provideReporter(QString sName)override;
     Reporter* getReporter(QString name)const override;
-//    NamedBean* getBySystemName(QString name);
-//    NamedBean* getByUserName(QString key);
+    NamedBean *getBySystemName(QString name) const override;
+    NamedBean* getByUserName(QString key) const override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     Reporter* getByDisplayName(QString key)const override;
     Reporter* newReporter(QString systemName, QString userName)const throw(IllegalArgumentException)override;

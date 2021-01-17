@@ -81,14 +81,14 @@ public:
          * instance already exists.
          * @return requested Memory object or null if none exists
          */
-         NamedBean* getBySystemName(QString /*systemName*/) const override {return NULL;}
+         virtual Memory* getBySystemName(QString /*systemName*/) const =0;
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Memory object or null if none exists
          */
-         NamedBean* getByUserName(QString /*userName*/) const override {return NULL;}
+         virtual Memory* getByUserName(QString /*userName*/) const =0;
 
         /**
          * Return an instance with the specified system and user names.

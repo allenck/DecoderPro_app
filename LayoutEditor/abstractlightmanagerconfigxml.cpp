@@ -45,23 +45,20 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
 {
  QDomElement lights = doc.createElement("lights");
  setStoreElementClass(lights);
- AbstractLightManager* tm = (AbstractLightManager*) o;
- if (tm!=NULL)
+ LightManager* lm = (LightManager*) o;
+ if (lm!=NULL)
  {
-  //java.util.Iterator<String> iter =
-  //                                tm.getSystemNameList().iterator();
-  QStringListIterator iter(tm->getSystemNameList());
+  QSet<NamedBean*> lightList = lm->getNamedBeanSet();
 
   // don't return an element if there are not lights to include
-  if (!iter.hasNext()) return QDomElement();
+  if (lightList.isEmpty()) return QDomElement();
 
   // store the lights
-  while (iter.hasNext())
+  for (NamedBean* nb : lightList)
   {
-   QString sname = iter.next();
-   if (sname==NULL) log->error("System name NULL during store");
+   Light* lgt = (Light*)nb;
+   QString sname = lgt->getSystemName();
    log->debug("system name is "+sname);
-   AbstractLight* lgt = (AbstractLight*)tm->getBySystemName(sname);
    QDomElement elem = doc.createElement("light");
    //elem.setAttribute("systemName", sname);
    QDomElement e1;

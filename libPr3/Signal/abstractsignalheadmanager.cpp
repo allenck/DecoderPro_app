@@ -54,13 +54,13 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
 /*public*/ QString AbstractSignalHeadManager::getBeanTypeHandled(bool plural) {
     return tr(plural ? "SignalHeads" : "SignalHead");
 }
-#if 0
-/*public*/ SignalHead* AbstractSignalHeadManager::getBySystemName(QString name)
+#if 1
+/*public*/ SignalHead* AbstractSignalHeadManager::getBySystemName(QString name) const
 {
  return (SignalHead*)_tsys->value(name);
 }
 
-/*public*/ SignalHead* AbstractSignalHeadManager::getByUserName(QString key)
+/*public*/ SignalHead* AbstractSignalHeadManager::getByUserName(QString key) const
 {
  return (SignalHead*)_tuser->value(key);
 }

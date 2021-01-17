@@ -61,7 +61,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ Audio* AbstractAudioManager::getBySystemName(QString key)
+/*public*/ Audio* AbstractAudioManager::getBySystemName(QString key) const
 {
  //return (Audio)_tsys.get(key);
  NamedBean* bean = _tsys->value(key);
@@ -73,7 +73,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ Audio* AbstractAudioManager::getByUserName(QString key) {
+/*public*/ Audio* AbstractAudioManager::getByUserName(QString key) const {
     //return key==NULL?NULL:(Audio)_tuser.get(key);
     if (key == NULL) {
         return (NULL);

@@ -62,7 +62,7 @@ public:
      * @throws Exception when a error prevents creating the objects as
      *          as required by the input XML.
      */
-    /*public*/ virtual void load(QDomElement /*e*/, QObject* /*o*/) throw (Exception) {}
+    /*public*/ virtual void load(QDomElement /*e*/, QObject* /*o*/) throw (Exception) =0;
 
  /**
       * Create a set of configured objects from their XML description, using an

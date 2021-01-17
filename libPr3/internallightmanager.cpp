@@ -7,7 +7,7 @@ InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, Q
  setObjectName("InternalLightManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalLightManager");
 
- //registerSelf();
+ registerSelf();
 }
 /**
  * Implement a light manager for "Internal" (virtual) lights.

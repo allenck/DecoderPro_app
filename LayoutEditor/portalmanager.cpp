@@ -126,11 +126,11 @@ PortalManager::PortalManager(QObject *parent) :
     return (Portal*)getBySystemName(name);
 }
 
-/*public*/ NamedBean *PortalManager::getBySystemName(QString name)const {
+/*public*/ Portal *PortalManager::getBySystemName(QString name)const {
     if (name == NULL || name.trimmed().length() == 0) {
         return NULL;
     }
-    return (NamedBean*) _tsys->value(name);
+    return (Portal*) _tsys->value(name);
 }
 
 /*public*/ QSet<Portal*> PortalManager::getPortalSet() {
@@ -138,11 +138,11 @@ PortalManager::PortalManager(QObject *parent) :
  return _nameList.toSet();
     }
 
-/*public*/ NamedBean *PortalManager::getByUserName(QString key) const{
+/*public*/ Portal *PortalManager::getByUserName(QString key) const{
     if (key == NULL || key.trimmed().length() == 0) {
         return NULL;
     }
-    return (NamedBean*) _tuser->value(key);
+    return (Portal*) _tuser->value(key);
 }
 
 /*public*/ Portal* PortalManager::providePortal(QString name) {

@@ -92,7 +92,7 @@ public:
          * @param systemName Audio object system name (e.g. IAS1, IAB4)
          * @return requested Audio object or null if none exists
          */
-        virtual Audio* getBySystemName(QString /*systemName*/) {return NULL;}
+        virtual Audio* getBySystemName(QString /*systemName*/) const = 0;
 
         /**
          * Locate an instance based on a user name.  Returns null if no
@@ -100,7 +100,7 @@ public:
          * @param userName Audio object user name
          * @return requested Audio object or null if none exists
          */
-        virtual Audio* getByUserName(QString /*userName*/) {return NULL;}
+        virtual Audio* getByUserName(QString /*userName*/) const = 0;
 
         /**
          * Return an instance with the specified system and user names.

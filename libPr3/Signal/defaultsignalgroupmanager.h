@@ -14,8 +14,8 @@ public:
     /*public*/ QString getSystemPrefix()const override;
     /*public*/ char typeLetter()const override;
     /*public*/ SignalGroup* getSignalGroup(QString name)override;
-    /*public*/ SignalGroup* getBySystemName(QString key)const override;
-    /*public*/ SignalGroup* getByUserName(QString key)const override;
+    /*public*/ SignalGroup* getBySystemName(QString key)const ;
+    /*public*/ SignalGroup* getByUserName(QString key)const ;
     /*public*/ SignalGroup* newSignalGroup(QString sys)override;
     /*public*/ SignalGroup* provideSignalGroup(QString systemName, QString userName)override;
     QStringList getListOfNames();

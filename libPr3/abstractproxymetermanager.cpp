@@ -299,7 +299,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
 //@CheckForNull
 /*public*/ NamedBean* AbstractProxyMeterManager::getByUserName(/*@Nonnull*/ QString userName) const{
     for (Manager* m : this->mgrs) {
-        NamedBean* b = m->getByUserName(userName);
+        NamedBean* b = ((AbstractMeterManager*)m)->getByUserName(userName);
         if (b != nullptr) {
             return (NamedBean*)b;
         }

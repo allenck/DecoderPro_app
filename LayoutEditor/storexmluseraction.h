@@ -8,7 +8,6 @@ class StoreXmlUserAction : public StoreXmlConfigAction
 public:
     explicit StoreXmlUserAction(QObject *parent = 0);
     /*public*/ StoreXmlUserAction(QString s, QObject *parent = 0);
- /*public*/ void saveFile(QString selectedFile);
 
 signals:
 

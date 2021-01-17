@@ -5,14 +5,14 @@
 #include <QRadioButton>
 #include <QButtonGroup>
 #include "jtextfield.h"
-#include <QComboBox>
+#include "managercombobox.h"
 #include "exceptions.h"
 #include "libtables_global.h"
 
 class UserPreferencesManager;
 class Manager;
 class NamedBean;
-class JmriBeanComboBox;
+class NamedBeanComboBox;
 class LIBTABLESSHARED_EXPORT BeanSelectCreatePanel : public QWidget
 {
     Q_OBJECT
@@ -40,9 +40,9 @@ private:
     QRadioButton* newItem;
     QButtonGroup* selectcreate;// = new QButtonGroup();
 
-    JmriBeanComboBox* existingCombo;
-    JTextField* hardwareAddress;//= new JTextField(8);
-    QComboBox* prefixBox;// = new QComboBox();
+    NamedBeanComboBox* existingCombo;
+    JTextField* hardwareAddress =  new JTextField(8);
+    ManagerComboBox* prefixBox = new ManagerComboBox();
     UserPreferencesManager* p;
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
     /*private*/ NamedBean* createBean() throw (JmriException);

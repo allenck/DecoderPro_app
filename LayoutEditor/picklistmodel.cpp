@@ -1243,7 +1243,7 @@ EntryExitPickModel::EntryExitPickModel (QObject* parent): PickListModel(parent) 
     return manager;
 }
 /*public*/ NamedBean* EntryExitPickModel::getBySystemName(QString name) {
-    return manager->getBySystemName(name);
+    return (NamedBean*)manager->getBySystemName(name);
 }
 
 /*public*/ NamedBean* EntryExitPickModel::addBean(QString /*name*/) {

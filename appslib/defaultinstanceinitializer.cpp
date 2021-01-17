@@ -72,6 +72,7 @@
 #include "proxymetermanager.h"
 #include "ctc/ctcmanager.h"
 #include "ctc/ctcexceptionbuffer.h"
+#include "appsconfigurationmanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -108,7 +109,6 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
          type == "MemoryManager" ||
          type == "RouteManager" || type == "DefaultRouteManager" ||
          type == "SignalGroupManager" ||
-         type == "SignalHeadManager" ||
          type == "SignalHeadManager" ||
          type == "SignalMastLogicManager" ||
          type == "SignalMastManager" ||
@@ -201,7 +201,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "SignalHeadManager")
  {
    AbstractSignalHeadManager* o =  new AbstractSignalHeadManager(memo);
-   InstanceManager::store(o, type);
+//   InstanceManager::store(o, type);
    return o;
  }
 
@@ -372,16 +372,16 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  }
 
+// if(type == "ConfigureManager")
+// {
+//  ConfigXmlManager* cm = new ConfigXmlManager();
+//  InstanceManager::store(cm,type);
+//  return cm;
+// }
+
  if(type == "ConfigureManager")
  {
-  ConfigXmlManager* cm = new ConfigXmlManager();
-  InstanceManager::store(cm,type);
-  return cm;
- }
-
- if(type == "JmriConfigurationManager")
- {
-  ConfigXmlManager* cm = new ConfigXmlManager();
+  ConfigureManager* cm = new AppsConfigurationManager();
   InstanceManager::store(cm,type);
   return cm;
  }

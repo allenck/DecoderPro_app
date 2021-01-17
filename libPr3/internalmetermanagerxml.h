@@ -9,6 +9,7 @@ class InternalMeterManagerXml : public AbstractMeterManagerXml
   ~InternalMeterManagerXml() {}
   InternalMeterManagerXml(const InternalMeterManagerXml&) : AbstractMeterManagerXml() {}
   /*public*/ void setStoreElementClass(QDomElement meters);
+  /*public*/ void load(QDomElement element, QObject* o) throw (Exception)  override {}
 };
 Q_DECLARE_METATYPE(InternalMeterManagerXml)
 #endif // INTERNALMETERMANAGERXML_H

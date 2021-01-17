@@ -37,40 +37,33 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
  */
 /*public*/ QDomElement DefaultSignalMastManagerXml::store(QObject* o)
 {
-    DefaultSignalMastManager* m = (DefaultSignalMastManager*)o;
+    DefaultSignalMastManager* smm = (DefaultSignalMastManager*)o;
 
-    QDomElement element = doc.createElement("signalmasts");
-    element.setAttribute("class", "jmri.managers.configurexml.DefaultSignalMastManagerXml");
-    if(m!=nullptr)
+    QDomElement signalmasts = doc.createElement("signalmasts");
+    signalmasts.setAttribute("class", "jmri.managers.configurexml.DefaultSignalMastManagerXml");
+    if(smm!=nullptr)
     {
-     // include contents
-     QStringList names = m->getSystemNameList();
-     for (int i = 0; i < names.size(); i++)
-     {
-      //QDomQDomElement e = doc.createElement("signalmast");
-      SignalMast* p = m->getSignalMast(names.at(i));
-      try {
-          QDomElement e = ConfigXmlManager::elementFromObject(p);
-          if (!e.isNull()) element.appendChild(e);
-      } catch (Exception e) {
-          log->error("Error storing signalmast: "+e.getMessage());
-          //e.printStackTrace();
-      }
-
-
-      /*e.setAttribute("systemName", p.getSystemName()); // deprecated for 2.9.* series
-      e.appendChild(doc.createElement("systemName").appendChild(p.getSystemName()));
-      storeCommon(p, e);
-      element.appendChild(e);*/
+     QSet<NamedBean*> smList = smm->getNamedBeanSet();
+     // don't return an element if there are no SignalMasts to include
+     if (smList.isEmpty()) {
+         return QDomElement();
      }
-     QList<SignalMastRepeater*>* repeaterList = m->getRepeaterList();
+     // include contents
+     for (NamedBean* nb : smList)
+     {
+       SignalMast* sm = (SignalMast*)nb;
+       QDomElement e = ConfigXmlManager::elementFromObject(sm);
+       if (!e.isNull()) {
+           signalmasts.appendChild(e);
+       }
+     }
+
+     QList<SignalMastRepeater*>* repeaterList = smm->getRepeaterList();
      if(repeaterList->size()>0)
      {
       //QDomElement repeatElem= doc.createElement("signalmastrepeaters");
       foreach(SignalMastRepeater* smr, *repeaterList)
       {
-       if(smr->getMasterMast()!=nullptr && smr->getSlaveMast()!=nullptr)
-       {
         QDomElement e = doc.createElement("signalmastrepeater");
         QDomElement e1;
         e.appendChild(e1=doc.createElement("masterMast"));
@@ -90,17 +83,15 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
          case 2 : e.appendChild(e4=doc.createElement("update"));
             e4.appendChild(doc.createTextNode("SlaveToMaster"));
             break;
-            default : e.appendChild(e4=doc.createElement("update"));
+         default : e.appendChild(e4=doc.createElement("update"));
             e4.appendChild(doc.createTextNode("BothWay"));
             break;
         }
-        element.appendChild(e);
+        signalmasts.appendChild(e);
        }
       }
-      //element.add(repeatElem);
      }
-    }
-    return element;
+    return signalmasts;
 }
 
 /**

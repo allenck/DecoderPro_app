@@ -46,7 +46,7 @@
 /*private*/ /*final*/ /*static*/ Logger* JmriConfigurationManager::log = LoggerFactory::getLogger("JmriConfigurationManager");
 
 //@SuppressWarnings("unchecked") // For types in InstanceManager.store()
-/*public*/ JmriConfigurationManager::JmriConfigurationManager(QObject* parent) : ConfigXmlManager(parent)
+/*public*/ JmriConfigurationManager::JmriConfigurationManager(QObject* parent) : ConfigureManager(parent)
 {
  setObjectName("JmriConfigurationManager");
  legacy = new ConfigXmlManager();

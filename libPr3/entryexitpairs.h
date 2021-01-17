@@ -124,8 +124,8 @@ public:
     /*public*/ void addNXSourcePoint(NamedBean* source, LayoutEditor* panel);
     /*public*/ QObject* getEndPointLocation(NamedBean* source, LayoutEditor* panel);
     /*public*/ int getXMLOrder() const;
-    /*public*/ NamedBean* getBySystemName(QString systemName) const override;
-    /*public*/ NamedBean* getByUserName(QString systemName) const override;
+    /*public*/ DestinationPoints *getBySystemName(QString systemName) const;
+    /*public*/ DestinationPoints* getByUserName(QString systemName) const ;
 //    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
 //    /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
     /*public*/ NamedBean* getNamedBean(QString name) const override;

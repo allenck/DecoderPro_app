@@ -52,7 +52,7 @@
     /*public*/ NamedBean* ProxyMeterManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
         NamedBean* meter = AbstractProxyMeterManager::getBySystemName(systemName);
         if (meter == nullptr) {
-            meter = initInternal()->getBySystemName(systemName);
+            meter = ((AbstractMeterManager*) initInternal())->getBySystemName(systemName);
         }
         return meter;
     }
@@ -63,7 +63,7 @@
     /*public*/ NamedBean* ProxyMeterManager::getByUserName(/*@Nonnull*/ QString userName) const {
         NamedBean* meter = AbstractProxyMeterManager::getByUserName(userName);
         if (meter == nullptr) {
-            meter = initInternal()->getByUserName(userName);
+            meter = ((AbstractMeterManager*)initInternal())->getByUserName(userName);
         }
         return meter;
     }

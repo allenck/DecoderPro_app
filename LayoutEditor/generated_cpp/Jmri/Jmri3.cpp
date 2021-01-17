@@ -17,18 +17,16 @@
 #include <qbytearray.h>
 #include <qcoreevent.h>
 #include <qdatastream.h>
-#include <qdatetime.h>
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
 #include <qstringlist.h>
 #include <qurl.h>
 #include <qvector.h>
-#include <roster.h>
-#include <rosterentry.h>
 #include <route.h>
 #include <sensor.h>
 #include <shutdowntask.h>
@@ -38,755 +36,6 @@
 #include <throttlemanager.h>
 #include <turnout.h>
 #include <turnoutoperation.h>
-
-PythonQtShell_RosterEntry::~PythonQtShell_RosterEntry() {
-  PythonQtPrivate* priv = PythonQt::priv();
-  if (priv) { priv->shellClassDeleted(this); }
-}
-void PythonQtShell_RosterEntry::warnShortLong(QString  id0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("warnShortLong");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&id0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  RosterEntry::warnShortLong(id0);
-}
-RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(QDomElement  e, QObject*  parent)
-{ 
-return new PythonQtShell_RosterEntry(e, parent); }
-
-RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(QObject*  parent)
-{ 
-return new PythonQtShell_RosterEntry(parent); }
-
-RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(QString  fileName, QObject*  parent)
-{ 
-return new PythonQtShell_RosterEntry(fileName, parent); }
-
-RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(RosterEntry*  pEntry, QString  pID, QObject*  parent)
-{ 
-return new PythonQtShell_RosterEntry(pEntry, pID, parent); }
-
-RosterEntry* PythonQtWrapper_RosterEntry::new_RosterEntry(const RosterEntry&  arg__1, QObject*  parent)
-{ 
-return new PythonQtShell_RosterEntry(arg__1, parent); }
-
-const QMetaObject* PythonQtShell_RosterEntry::metaObject() const {
-  if (QObject::d_ptr->metaObject) {
-    return QObject::d_ptr->dynamicMetaObject();
-  } else if (_wrapper) {
-    return PythonQt::priv()->getDynamicMetaObject(_wrapper, &RosterEntry::staticMetaObject);
-  } else {
-    return &RosterEntry::staticMetaObject;
-  }
-}
-int PythonQtShell_RosterEntry::qt_metacall(QMetaObject::Call call, int id, void** args) {
-  int result = RosterEntry::qt_metacall(call, id, args);
-  return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
-}
-void PythonQtWrapper_RosterEntry::addPropertyChangeListener(RosterEntry* theWrappedObject, PropertyChangeListener*  l)
-{
-  ( theWrappedObject->addPropertyChangeListener(l));
-}
-
-void PythonQtWrapper_RosterEntry::changeDateUpdated(RosterEntry* theWrappedObject)
-{
-  ( theWrappedObject->changeDateUpdated());
-}
-
-QDomElement  PythonQtWrapper_RosterEntry::createTextElement(RosterEntry* theWrappedObject, QDomDocument  doc, QString  tagName, QString  text)
-{
-  return ( ((PythonQtPublicPromoter_RosterEntry*)theWrappedObject)->promoted_createTextElement(doc, tagName, text));
-}
-
-void PythonQtWrapper_RosterEntry::deleteAttribute(RosterEntry* theWrappedObject, QString  key)
-{
-  ( theWrappedObject->deleteAttribute(key));
-}
-
-void PythonQtWrapper_RosterEntry::ensureFilenameExists(RosterEntry* theWrappedObject)
-{
-  ( theWrappedObject->ensureFilenameExists());
-}
-
-void PythonQtWrapper_RosterEntry::firePropertyChange(RosterEntry* theWrappedObject, QString  p, QVariant  old, QVariant  n)
-{
-  ( theWrappedObject->firePropertyChange(p, old, n));
-}
-
-QString  PythonQtWrapper_RosterEntry::getAttribute(RosterEntry* theWrappedObject, QString  key)
-{
-  return ( theWrappedObject->getAttribute(key));
-}
-
-QStringList  PythonQtWrapper_RosterEntry::getAttributeList(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getAttributeList());
-}
-
-QList<QString >  PythonQtWrapper_RosterEntry::getAttributes(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getAttributes());
-}
-
-QString  PythonQtWrapper_RosterEntry::getComment(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getComment());
-}
-
-QDateTime  PythonQtWrapper_RosterEntry::getDateModified(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getDateModified());
-}
-
-QString  PythonQtWrapper_RosterEntry::getDateUpdated(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getDateUpdated());
-}
-
-QString  PythonQtWrapper_RosterEntry::getDccAddress(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getDccAddress());
-}
-
-DccLocoAddress*  PythonQtWrapper_RosterEntry::getDccLocoAddress(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getDccLocoAddress());
-}
-
-QString  PythonQtWrapper_RosterEntry::getDecoderComment(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getDecoderComment());
-}
-
-QString  PythonQtWrapper_RosterEntry::getDecoderFamily(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getDecoderFamily());
-}
-
-QString  PythonQtWrapper_RosterEntry::getDecoderModel(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getDecoderModel());
-}
-
-QString  PythonQtWrapper_RosterEntry::static_RosterEntry_getDefaultOwner()
-{
-  return (RosterEntry::getDefaultOwner());
-}
-
-QString  PythonQtWrapper_RosterEntry::getDisplayName(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getDisplayName());
-}
-
-QString  PythonQtWrapper_RosterEntry::getFileName(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getFileName());
-}
-
-QString  PythonQtWrapper_RosterEntry::getFunctionImage(RosterEntry* theWrappedObject, int  fn)
-{
-  return ( theWrappedObject->getFunctionImage(fn));
-}
-
-QString  PythonQtWrapper_RosterEntry::getFunctionLabel(RosterEntry* theWrappedObject, int  fn)
-{
-  return ( theWrappedObject->getFunctionLabel(fn));
-}
-
-bool  PythonQtWrapper_RosterEntry::getFunctionLockable(RosterEntry* theWrappedObject, int  fn)
-{
-  return ( theWrappedObject->getFunctionLockable(fn));
-}
-
-QString  PythonQtWrapper_RosterEntry::getFunctionSelectedImage(RosterEntry* theWrappedObject, int  fn)
-{
-  return ( theWrappedObject->getFunctionSelectedImage(fn));
-}
-
-QList<RosterGroup* >  PythonQtWrapper_RosterEntry::getGroups(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getGroups());
-}
-
-QList<RosterGroup* >  PythonQtWrapper_RosterEntry::getGroups(RosterEntry* theWrappedObject, Roster*  roster)
-{
-  return ( theWrappedObject->getGroups(roster));
-}
-
-QString  PythonQtWrapper_RosterEntry::getIconPath(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getIconPath());
-}
-
-QString  PythonQtWrapper_RosterEntry::getId(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getId());
-}
-
-QString  PythonQtWrapper_RosterEntry::getImagePath(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getImagePath());
-}
-
-int  PythonQtWrapper_RosterEntry::getMAXFNNUM(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getMAXFNNUM());
-}
-
-int  PythonQtWrapper_RosterEntry::getMaxSpeedPCT(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getMaxSpeedPCT());
-}
-
-QString  PythonQtWrapper_RosterEntry::getMfg(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getMfg());
-}
-
-QString  PythonQtWrapper_RosterEntry::getModel(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getModel());
-}
-
-QString  PythonQtWrapper_RosterEntry::getOwner(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getOwner());
-}
-
-QString  PythonQtWrapper_RosterEntry::getPathName(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getPathName());
-}
-
-LocoAddress::Protocol  PythonQtWrapper_RosterEntry::getProtocol(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getProtocol());
-}
-
-QString  PythonQtWrapper_RosterEntry::getProtocolAsString(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getProtocolAsString());
-}
-
-int  PythonQtWrapper_RosterEntry::getRfidTag(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getRfidTag());
-}
-
-QString  PythonQtWrapper_RosterEntry::getRoadName(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getRoadName());
-}
-
-QString  PythonQtWrapper_RosterEntry::getRoadNumber(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getRoadNumber());
-}
-
-QString  PythonQtWrapper_RosterEntry::getShuntingFunction(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getShuntingFunction());
-}
-
-QString  PythonQtWrapper_RosterEntry::getSoundLabel(RosterEntry* theWrappedObject, int  fn)
-{
-  return ( theWrappedObject->getSoundLabel(fn));
-}
-
-QString  PythonQtWrapper_RosterEntry::getURL(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->getURL());
-}
-
-bool  PythonQtWrapper_RosterEntry::isLongAddress(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->isLongAddress());
-}
-
-bool  PythonQtWrapper_RosterEntry::isOpen(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->isOpen());
-}
-
-void PythonQtWrapper_RosterEntry::loadAttributes(RosterEntry* theWrappedObject, QDomElement  e3)
-{
-  ( theWrappedObject->loadAttributes(e3));
-}
-
-void PythonQtWrapper_RosterEntry::loadFunctions(RosterEntry* theWrappedObject, QDomElement  e3)
-{
-  ( theWrappedObject->loadFunctions(e3));
-}
-
-void PythonQtWrapper_RosterEntry::putAttribute(RosterEntry* theWrappedObject, QString  key, QString  value)
-{
-  ( theWrappedObject->putAttribute(key, value));
-}
-
-void PythonQtWrapper_RosterEntry::readFile(RosterEntry* theWrappedObject)
-{
-  ( theWrappedObject->readFile());
-}
-
-void PythonQtWrapper_RosterEntry::removePropertyChangeListener(RosterEntry* theWrappedObject, PropertyChangeListener*  l)
-{
-  ( theWrappedObject->removePropertyChangeListener(l));
-}
-
-void PythonQtWrapper_RosterEntry::setComment(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setComment(s));
-}
-
-void PythonQtWrapper_RosterEntry::setDateModified(RosterEntry* theWrappedObject, QDateTime  date)
-{
-  ( theWrappedObject->setDateModified(date));
-}
-
-void PythonQtWrapper_RosterEntry::setDateModified(RosterEntry* theWrappedObject, QString  date) throw (ParseException) 
-{
-  ( theWrappedObject->setDateModified(date));
-}
-
-void PythonQtWrapper_RosterEntry::setDateUpdated(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setDateUpdated(s));
-}
-
-void PythonQtWrapper_RosterEntry::setDccAddress(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setDccAddress(s));
-}
-
-void PythonQtWrapper_RosterEntry::setDecoderComment(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setDecoderComment(s));
-}
-
-void PythonQtWrapper_RosterEntry::setDecoderFamily(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setDecoderFamily(s));
-}
-
-void PythonQtWrapper_RosterEntry::setDecoderModel(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setDecoderModel(s));
-}
-
-void PythonQtWrapper_RosterEntry::static_RosterEntry_setDefaultOwner(QString  n)
-{
-  (RosterEntry::setDefaultOwner(n));
-}
-
-void PythonQtWrapper_RosterEntry::setFileName(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setFileName(s));
-}
-
-void PythonQtWrapper_RosterEntry::setFunctionImage(RosterEntry* theWrappedObject, int  fn, QString  s)
-{
-  ( theWrappedObject->setFunctionImage(fn, s));
-}
-
-void PythonQtWrapper_RosterEntry::setFunctionLabel(RosterEntry* theWrappedObject, int  fn, QString  label)
-{
-  ( theWrappedObject->setFunctionLabel(fn, label));
-}
-
-void PythonQtWrapper_RosterEntry::setFunctionLockable(RosterEntry* theWrappedObject, int  fn, bool  lockable)
-{
-  ( theWrappedObject->setFunctionLockable(fn, lockable));
-}
-
-void PythonQtWrapper_RosterEntry::setFunctionSelectedImage(RosterEntry* theWrappedObject, int  fn, QString  s)
-{
-  ( theWrappedObject->setFunctionSelectedImage(fn, s));
-}
-
-void PythonQtWrapper_RosterEntry::setIconPath(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setIconPath(s));
-}
-
-void PythonQtWrapper_RosterEntry::setId(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setId(s));
-}
-
-void PythonQtWrapper_RosterEntry::setImagePath(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setImagePath(s));
-}
-
-void PythonQtWrapper_RosterEntry::setLongAddress(RosterEntry* theWrappedObject, bool  b)
-{
-  ( theWrappedObject->setLongAddress(b));
-}
-
-void PythonQtWrapper_RosterEntry::setMaxSpeedPCT(RosterEntry* theWrappedObject, int  maxSpeedPCT)
-{
-  ( theWrappedObject->setMaxSpeedPCT(maxSpeedPCT));
-}
-
-void PythonQtWrapper_RosterEntry::setMfg(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setMfg(s));
-}
-
-void PythonQtWrapper_RosterEntry::setModel(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setModel(s));
-}
-
-void PythonQtWrapper_RosterEntry::setOpen(RosterEntry* theWrappedObject, bool  boo)
-{
-  ( theWrappedObject->setOpen(boo));
-}
-
-void PythonQtWrapper_RosterEntry::setOwner(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setOwner(s));
-}
-
-void PythonQtWrapper_RosterEntry::setProtocol(RosterEntry* theWrappedObject, LocoAddress::Protocol  protocol)
-{
-  ( theWrappedObject->setProtocol(protocol));
-}
-
-void PythonQtWrapper_RosterEntry::setRfidTag(RosterEntry* theWrappedObject, QString  tag)
-{
-  ( theWrappedObject->setRfidTag(tag));
-}
-
-void PythonQtWrapper_RosterEntry::setRoadName(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setRoadName(s));
-}
-
-void PythonQtWrapper_RosterEntry::setRoadNumber(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setRoadNumber(s));
-}
-
-void PythonQtWrapper_RosterEntry::setShuntingFunction(RosterEntry* theWrappedObject, QString  fn)
-{
-  ( theWrappedObject->setShuntingFunction(fn));
-}
-
-void PythonQtWrapper_RosterEntry::setSoundLabel(RosterEntry* theWrappedObject, int  fn, QString  label)
-{
-  ( theWrappedObject->setSoundLabel(fn, label));
-}
-
-void PythonQtWrapper_RosterEntry::setURL(RosterEntry* theWrappedObject, QString  s)
-{
-  ( theWrappedObject->setURL(s));
-}
-
-QDomElement  PythonQtWrapper_RosterEntry::store(RosterEntry* theWrappedObject, QDomDocument  doc)
-{
-  return ( theWrappedObject->store(doc));
-}
-
-QString  PythonQtWrapper_RosterEntry::titleString(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->titleString());
-}
-
-QString  PythonQtWrapper_RosterEntry::toString(RosterEntry* theWrappedObject)
-{
-  return ( theWrappedObject->toString());
-}
-
-void PythonQtWrapper_RosterEntry::updateFile(RosterEntry* theWrappedObject)
-{
-  ( theWrappedObject->updateFile());
-}
-
-void PythonQtWrapper_RosterEntry::warnShortLong(RosterEntry* theWrappedObject, QString  id)
-{
-  ( theWrappedObject->warnShortLong(id));
-}
-
-QVector<QString >  PythonQtWrapper_RosterEntry::wrapComment(RosterEntry* theWrappedObject, QString  comment, int  textSpace)
-{
-  return ( theWrappedObject->wrapComment(comment, textSpace));
-}
-
-QString PythonQtWrapper_RosterEntry::py_toString(RosterEntry* obj) { return obj->toString(); }
-
-
-PythonQtShell_RosterObject::~PythonQtShell_RosterObject() {
-  PythonQtPrivate* priv = PythonQt::priv();
-  if (priv) { priv->shellClassDeleted(this); }
-}
-QString  PythonQtShell_RosterObject::getDisplayName()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getDisplayName");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QString returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getDisplayName", methodInfo, result);
-          } else {
-            returnValue = *((QString*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return RosterObject::getDisplayName();
-}
-QVariant  PythonQtShell_RosterObject::getIndexedProperty(QString  arg__1, int  arg__2)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getIndexedProperty");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"QVariant" , "QString" , "int"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      QVariant returnValue{};
-      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getIndexedProperty", methodInfo, result);
-          } else {
-            returnValue = *((QVariant*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return RosterObject::getIndexedProperty(arg__1, arg__2);
-}
-QVariant  PythonQtShell_RosterObject::getProperty(QString  arg__1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getProperty");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"QVariant" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      QVariant returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getProperty", methodInfo, result);
-          } else {
-            returnValue = *((QVariant*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return RosterObject::getProperty(arg__1);
-}
-QSet<QString >  PythonQtShell_RosterObject::getPropertyNames()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getPropertyNames");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"QSet<QString >"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QSet<QString > returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getPropertyNames", methodInfo, result);
-          } else {
-            returnValue = *((QSet<QString >*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return RosterObject::getPropertyNames();
-}
-bool  PythonQtShell_RosterObject::hasIndexedProperty(QString  arg__1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("hasIndexedProperty");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      bool returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("hasIndexedProperty", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return RosterObject::hasIndexedProperty(arg__1);
-}
-bool  PythonQtShell_RosterObject::hasProperty(QString  arg__1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("hasProperty");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool" , "QString"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      bool returnValue{};
-      void* args[2] = {NULL, (void*)&arg__1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("hasProperty", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return RosterObject::hasProperty(arg__1);
-}
-void PythonQtShell_RosterObject::setIndexedProperty(QString  arg__1, int  arg__2, QVariant  arg__3)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("setIndexedProperty");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QString" , "int" , "QVariant"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&arg__1, (void*)&arg__2, (void*)&arg__3};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  RosterObject::setIndexedProperty(arg__1, arg__2, arg__3);
-}
-void PythonQtShell_RosterObject::setProperty(QString  arg__1, QVariant  arg__2)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("setProperty");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QString" , "QVariant"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  RosterObject::setProperty(arg__1, arg__2);
-}
-RosterObject* PythonQtWrapper_RosterObject::new_RosterObject()
-{ 
-return new PythonQtShell_RosterObject(); }
-
-QString  PythonQtWrapper_RosterObject::getDisplayName(RosterObject* theWrappedObject)
-{
-  return ( theWrappedObject->getDisplayName());
-}
-
-
 
 PythonQtShell_Route::~PythonQtShell_Route() {
   PythonQtPrivate* priv = PythonQt::priv();
@@ -3920,7 +3169,7 @@ if (_wrapper) {
 }
   return RouteManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_RouteManager::getBeanByUserName(QString  userName0) const
+NamedBean*  PythonQtShell_RouteManager::getBeanByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3931,7 +3180,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -3951,7 +3200,7 @@ if (_wrapper) {
     }
   }
 }
-  return RouteManager::getBeanByUserName(userName0);
+  return RouteManager::getBeanByUserName(arg__1);
 }
 QString  PythonQtShell_RouteManager::getBeanTypeHandled(bool  plural0) const
 {
@@ -3986,7 +3235,7 @@ if (_wrapper) {
 }
   return RouteManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_RouteManager::getBySystemName(QString  systemName0) const
+Route*  PythonQtShell_RouteManager::getBySystemName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3994,10 +3243,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getBySystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const char* argumentList[] ={"Route*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&systemName0};
+      Route* returnValue{};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -4005,7 +3254,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
           } else {
-            returnValue = *((NamedBean**)args[0]);
+            returnValue = *((Route**)args[0]);
           }
         }
       }
@@ -4017,9 +3266,9 @@ if (_wrapper) {
     }
   }
 }
-  return RouteManager::getBySystemName(systemName0);
+  return 0;
 }
-NamedBean*  PythonQtShell_RouteManager::getByUserName(QString  userName0) const
+Route*  PythonQtShell_RouteManager::getByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4027,10 +3276,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getByUserName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const char* argumentList[] ={"Route*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      Route* returnValue{};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -4038,7 +3287,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
           } else {
-            returnValue = *((NamedBean**)args[0]);
+            returnValue = *((Route**)args[0]);
           }
         }
       }
@@ -4050,7 +3299,7 @@ if (_wrapper) {
     }
   }
 }
-  return RouteManager::getByUserName(userName0);
+  return 0;
 }
 QString  PythonQtShell_RouteManager::getEntryToolTip()
 {
@@ -4901,6 +4150,16 @@ int PythonQtShell_RouteManager::qt_metacall(QMetaObject::Call call, int id, void
 void PythonQtWrapper_RouteManager::deleteRoute(RouteManager* theWrappedObject, Route*  arg__1)
 {
   ( theWrappedObject->deleteRoute(arg__1));
+}
+
+Route*  PythonQtWrapper_RouteManager::getBySystemName(RouteManager* theWrappedObject, QString  arg__1) const
+{
+  return ( theWrappedObject->getBySystemName(arg__1));
+}
+
+Route*  PythonQtWrapper_RouteManager::getByUserName(RouteManager* theWrappedObject, QString  arg__1) const
+{
+  return ( theWrappedObject->getByUserName(arg__1));
 }
 
 Route*  PythonQtWrapper_RouteManager::getRoute(RouteManager* theWrappedObject, QString  arg__1)
@@ -6982,7 +6241,7 @@ if (_wrapper) {
 }
   return SensorManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_SensorManager::getBeanByUserName(QString  userName0) const
+NamedBean*  PythonQtShell_SensorManager::getBeanByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -6993,7 +6252,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -7013,7 +6272,7 @@ if (_wrapper) {
     }
   }
 }
-  return SensorManager::getBeanByUserName(userName0);
+  return SensorManager::getBeanByUserName(arg__1);
 }
 QString  PythonQtShell_SensorManager::getBeanTypeHandled(bool  plural0) const
 {
@@ -8167,6 +7426,16 @@ bool  PythonQtWrapper_SensorManager::allowMultipleAdditions(SensorManager* theWr
 QString  PythonQtWrapper_SensorManager::createSystemName(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2) const
 {
   return ( theWrappedObject->createSystemName(arg__1, arg__2));
+}
+
+NamedBean*  PythonQtWrapper_SensorManager::getBySystemName(SensorManager* theWrappedObject, QString  arg__1) const
+{
+  return ( theWrappedObject->getBySystemName(arg__1));
+}
+
+NamedBean*  PythonQtWrapper_SensorManager::getByUserName(SensorManager* theWrappedObject, QString  arg__1) const
+{
+  return ( theWrappedObject->getByUserName(arg__1));
 }
 
 long  PythonQtWrapper_SensorManager::getDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject)
@@ -21246,7 +20515,7 @@ if (_wrapper) {
 }
   return TurnoutManager::getBeanBySystemName(systemName0);
 }
-NamedBean*  PythonQtShell_TurnoutManager::getBeanByUserName(QString  userName0) const
+NamedBean*  PythonQtShell_TurnoutManager::getBeanByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21257,7 +20526,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"NamedBean*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -21277,7 +20546,7 @@ if (_wrapper) {
     }
   }
 }
-  return TurnoutManager::getBeanByUserName(userName0);
+  return TurnoutManager::getBeanByUserName(arg__1);
 }
 QString  PythonQtShell_TurnoutManager::getBeanTypeHandled(bool  plural0) const
 {
@@ -21312,7 +20581,7 @@ if (_wrapper) {
 }
   return TurnoutManager::getBeanTypeHandled(plural0);
 }
-NamedBean*  PythonQtShell_TurnoutManager::getBySystemName(QString  systemName0) const
+Turnout*  PythonQtShell_TurnoutManager::getBySystemName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21320,10 +20589,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getBySystemName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const char* argumentList[] ={"Turnout*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&systemName0};
+      Turnout* returnValue{};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -21331,7 +20600,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getBySystemName", methodInfo, result);
           } else {
-            returnValue = *((NamedBean**)args[0]);
+            returnValue = *((Turnout**)args[0]);
           }
         }
       }
@@ -21343,9 +20612,9 @@ if (_wrapper) {
     }
   }
 }
-  return TurnoutManager::getBySystemName(systemName0);
+  return 0;
 }
-NamedBean*  PythonQtShell_TurnoutManager::getByUserName(QString  userName0) const
+Turnout*  PythonQtShell_TurnoutManager::getByUserName(QString  arg__1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21353,10 +20622,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getByUserName");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const char* argumentList[] ={"Turnout*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      NamedBean* returnValue{};
-      void* args[2] = {NULL, (void*)&userName0};
+      Turnout* returnValue{};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -21364,7 +20633,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
           } else {
-            returnValue = *((NamedBean**)args[0]);
+            returnValue = *((Turnout**)args[0]);
           }
         }
       }
@@ -21376,7 +20645,7 @@ if (_wrapper) {
     }
   }
 }
-  return TurnoutManager::getByUserName(userName0);
+  return 0;
 }
 QString  PythonQtShell_TurnoutManager::getClosedText()
 {
@@ -22601,6 +21870,16 @@ int  PythonQtWrapper_TurnoutManager::askNumControlBits(TurnoutManager* theWrappe
 QString  PythonQtWrapper_TurnoutManager::createSystemName(TurnoutManager* theWrappedObject, QString  arg__1, QString  arg__2) const
 {
   return ( theWrappedObject->createSystemName(arg__1, arg__2));
+}
+
+Turnout*  PythonQtWrapper_TurnoutManager::getBySystemName(TurnoutManager* theWrappedObject, QString  arg__1) const
+{
+  return ( theWrappedObject->getBySystemName(arg__1));
+}
+
+Turnout*  PythonQtWrapper_TurnoutManager::getByUserName(TurnoutManager* theWrappedObject, QString  arg__1) const
+{
+  return ( theWrappedObject->getByUserName(arg__1));
 }
 
 QString  PythonQtWrapper_TurnoutManager::getClosedText(TurnoutManager* theWrappedObject)

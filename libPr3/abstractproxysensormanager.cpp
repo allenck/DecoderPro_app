@@ -284,10 +284,10 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
     int index = matchTentative(systemName);
     if (index >= 0) {
         Manager* m = getMgr(index);
-        return (Sensor*)m->getBySystemName(systemName);
+        return (Sensor*)((AbstractSensorManager*)m)->getBySystemName(systemName);
     }
     log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
-    return (Sensor*)getDefaultManager()->getBySystemName(systemName);
+    return (Sensor*)((AbstractSensorManager*)getDefaultManager())->getBySystemName(systemName);
 }
 
 /** {@inheritDoc} */
@@ -296,7 +296,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
 //@CheckForNull
 /*public*/ Sensor* AbstractProxySensorManager::getByUserName(/*@Nonnull*/ QString userName) const{
     for (Manager* m : this->mgrs) {
-        NamedBean* b = m->getByUserName(userName);
+        NamedBean* b = ((AbstractSensorManager*)m)->getByUserName(userName);
         if (b != nullptr) {
             return (Sensor*)b;
         }
