@@ -35,36 +35,46 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
  */
 /*public*/ QDomElement DefaultSignalGroupManagerXml::store(QObject* o)
 {
+ QDomElement groups = doc.createElement("signalgroups");
+ groups.setAttribute("class", "jmri.managers.configurexml.DefaultSignalGroupManagerXml"); //this.getClass().getName());
  SignalGroupManager* sgm = (SignalGroupManager*)o;
-
- QDomElement element = doc.createElement("signalgroups");
- element.setAttribute("class", "jmri.managers.configurexml.DefaultSignalGroupManagerXml");
-
- // include contents
- QStringList names = sgm->getSystemNameList();
- for (int i = 0; i < names.size(); i++)
+ if(sgm != nullptr)
  {
-  QDomElement e = doc.createElement("signalgroup");
-  SignalGroup* sg = sgm->getSignalGroup(names.at(i));
-  //e.setAttribute("systemName", p->getSystemName()); // deprecated for 2.9.* series
-  e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sg->getSystemName())));
-  //e.setAttribute("userName", p->getUserName());
-  //storeCommon(p, e);
-  element.appendChild(e);
-  for (int x=0; x < sg->getNumSignalMastAspects(); x++)
-  {
-   QDomElement app = doc.createElement("aspect");
-   app.setAttribute("valid", sg->getSignalMastAspectByIndex(x));
-   e.appendChild(app);
+  QSet<NamedBean*> sgList = sgm->getNamedBeanSet();
+  // don't return an element if there are no SignalGroups to include
+  if (sgList.isEmpty()) {
+      return QDomElement();
   }
-  e.setAttribute("signalMast", sg->getSignalMastName());
-
-  for (int x=0; x<sg->getNumSignalHeadItems(); x++)
+  for (NamedBean* nb : sgList)
   {
-    storeSignalHead(e, sg, x);
+    SignalGroup* sg = (SignalGroup*)nb;
+    // store the signalgroups
+    QString sgName = sg->getSystemName();
+    log->debug(tr("SignalGroup system name is %1").arg(sgName));  // NOI18N
+   QDomElement e = doc.createElement("signalgroup");
+   QDomElement e1;
+   e.appendChild(e1= doc.createElement("systemName"));
+    e1.appendChild(doc.createTextNode(sgName));
+   e.appendChild(e1 = doc.createElement("userName"));
+    e1.appendChild(doc.createTextNode(sg->getUserName()));
+// storeCommon(sg, e); previously would store comment, now a separate element
+    storeComment(sg, e);
+    groups.appendChild(e);
+    for (int x=0; x < sg->getNumSignalMastAspects(); x++)
+   {
+    QDomElement app = doc.createElement("aspect");
+    app.setAttribute("valid", sg->getSignalMastAspectByIndex(x));
+    e.appendChild(app);
+   }
+   e.setAttribute("signalMast", sg->getSignalMastName());
+
+   for (int x=0; x<sg->getNumSignalHeadItems(); x++)
+   {
+     storeSignalHead(e, sg, x);
+   }
   }
  }
- return element;
+ return groups;
 }
 
 /*private*/ void DefaultSignalGroupManagerXml::storeSignalHead(QDomElement element, SignalGroup* _group, int x){
