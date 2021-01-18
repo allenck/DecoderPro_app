@@ -63,7 +63,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -2043,7 +2042,7 @@ virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;
-virtual QSet<NamedBean* >  getNamedBeanSet();
+virtual QSet<NamedBean* >  getNamedBeanSet(QChar  subType);
 virtual int  getObjectCount();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
@@ -2080,6 +2079,7 @@ inline Audio*  py_q_getAudio(QString  arg__1) { return AudioManager::getAudio(ar
 inline Audio*  py_q_getBySystemName(QString  arg__1) const { return this->getBySystemName(arg__1); }
 inline Audio*  py_q_getByUserName(QString  arg__1) const { return this->getByUserName(arg__1); }
 inline QString  py_q_getNamedBeanClass() const { return AudioManager::getNamedBeanClass(); }
+inline QSet<NamedBean* >  py_q_getNamedBeanSet(QChar  subType) { return this->getNamedBeanSet(subType); }
 inline QStringList  py_q_getSystemNameList() { return AudioManager::getSystemNameList(); }
 inline QStringList  py_q_getSystemNameList(QChar  arg__1) { return AudioManager::getSystemNameList(arg__1); }
 inline QStringList  py_q_getSystemNameList(char  arg__1) { return AudioManager::getSystemNameList(arg__1); }
@@ -2104,6 +2104,8 @@ void delete_AudioManager(AudioManager* obj) { delete obj; }
    Audio*  getByUserName(AudioManager* theWrappedObject, QString  arg__1) const;
    Audio*  py_q_getByUserName(AudioManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    QString  py_q_getNamedBeanClass(AudioManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getNamedBeanClass());}
+   QSet<NamedBean* >  getNamedBeanSet(AudioManager* theWrappedObject, QChar  subType);
+   QSet<NamedBean* >  py_q_getNamedBeanSet(AudioManager* theWrappedObject, QChar  subType){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getNamedBeanSet(subType));}
    QStringList  py_q_getSystemNameList(AudioManager* theWrappedObject){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getSystemNameList());}
    QStringList  getSystemNameList(AudioManager* theWrappedObject, QChar  arg__1);
    QStringList  py_q_getSystemNameList(AudioManager* theWrappedObject, QChar  arg__1){  return (((PythonQtPublicPromoter_AudioManager*)theWrappedObject)->py_q_getSystemNameList(arg__1));}

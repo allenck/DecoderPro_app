@@ -14,7 +14,7 @@ class LOCOIOSHARED_EXPORT LocoIOPanel : public LnPanel
 {
  Q_OBJECT
 public:
- explicit LocoIOPanel(QWidget *parent = 0);
+ Q_INVOKABLE explicit LocoIOPanel(QWidget *parent = 0);
  ~LocoIOPanel() {}
  LocoIOPanel(const LocoIOPanel&) : LnPanel() {}
  /*public*/ void initComponents(LocoNetSystemConnectionMemo* memo);

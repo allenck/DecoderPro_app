@@ -28,7 +28,7 @@
 ///*public*/ final class ClientRxHandler extends Thread implements LocoNetListener {
 
 
-/*public*/ ClientRxHandler::ClientRxHandler(QString newRemoteAddress, QTcpSocket* newSocket, int connectionNbr, QObject *parent) :
+/*public*/ ClientRxHandler::ClientRxHandler(QString newRemoteAddress, QTcpSocket* newSocket, LnTrafficController *tc, int connectionNbr, QObject *parent) :
   QThread(parent)
 {
  clientSocket = newSocket;
@@ -40,16 +40,17 @@
  //connect(clientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 
  //tc = ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo"))->getLnTrafficController();
- QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
- foreach (QObject* memo, *list)
- {
-  if(qobject_cast<LocoNetSystemConnectionMemo*>(memo) != NULL)
-  {
-   LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)memo;
-   tc = connectionMemo->getLnTrafficController();
-   break;
-  }
- }
+// QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
+// foreach (QObject* memo, *list)
+// {
+//  if(qobject_cast<LocoNetSystemConnectionMemo*>(memo) != NULL)
+//  {
+//   LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)memo;
+//   tc = connectionMemo->getLnTrafficController();
+//   break;
+//  }
+// }
+ this->tc = tc;
  bIsInterrupted = false;
  log = new Logger(objectName());
  log->setDebugEnabled(false);
@@ -100,7 +101,7 @@
   //} catch (IOException ex1) {
   //}
 
- LnTcpServer::getInstance()->removeClient(this);
+ LnTcpServer::getDefault()->removeClient(this);
  log->info("ClientRxHandler: Exiting");
 }
 

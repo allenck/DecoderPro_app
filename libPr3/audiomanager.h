@@ -154,14 +154,25 @@ public:
          * @return List of specified Audio sub-type objects' system names.
          */
 //        @Deprecated
-        virtual QStringList getSystemNameList(QChar /*subType*/) {return QStringList();}
+        QT_DEPRECATED virtual QStringList getSystemNameList(QChar /*subType*/) {return QStringList();}
 
         /**
          * Get a list of specified Audio sub-type objects' system names.
          * @param subType sub-type to retrieve
          * @return List of specified Audio sub-type objects' system names.
          */
-        virtual QStringList getSystemNameList(char /*subType*/) {return QStringList();}
+       QT_DEPRECATED  virtual QStringList getSystemNameList(char /*subType*/) {return QStringList();}
+
+        /**
+         * Get the specified Audio sub-type NamedBeans.
+         *
+         * @param subType sub-type to retrieve
+         * @return Unmodifiable access to a SortedSet of NamedBeans for the specified Audio sub-type .
+         *
+         * @since 4.17.6
+         */
+        //@Nonnull
+        /*public*/ virtual QSet<NamedBean*> getNamedBeanSet(QChar subType)= 0;
 
         /**
          * Perform any initialisation operations

@@ -55,8 +55,11 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
    QDomElement e1;
    e.appendChild(e1= doc.createElement("systemName"));
     e1.appendChild(doc.createTextNode(sgName));
-   e.appendChild(e1 = doc.createElement("userName"));
-    e1.appendChild(doc.createTextNode(sg->getUserName()));
+   if(!sg->getUserName().isNull())
+   {
+    e.appendChild(e1 = doc.createElement("userName"));
+     e1.appendChild(doc.createTextNode(sg->getUserName()));
+   }
 // storeCommon(sg, e); previously would store comment, now a separate element
     storeComment(sg, e);
     groups.appendChild(e);

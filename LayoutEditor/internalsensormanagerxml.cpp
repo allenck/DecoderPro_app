@@ -50,7 +50,9 @@ InternalSensorManagerXml::InternalSensorManagerXml(QObject *parent) :
          defaultState = "unknown";
  }
 
- sensors.appendChild(doc.createElement("defaultInitialState").appendChild(doc.createTextNode(defaultState)));
+ QDomElement s1;
+ sensors.appendChild(s1 = doc.createElement("defaultInitialState"));
+ s1.appendChild(doc.createTextNode(defaultState));
 
  return AbstractSensorManagerConfigXML::store(o, sensors);
 }

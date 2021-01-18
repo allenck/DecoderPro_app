@@ -19,7 +19,7 @@ class ClientRxHandler : public QThread
  Q_OBJECT
 public:
  //explicit ClientRxHandler(QObject *parent = 0);
- /*public*/ ClientRxHandler(QString newRemoteAddress, QTcpSocket* newSocket, int connectionNbr, QObject *parent = 0);
+ /*public*/ ClientRxHandler(QString newRemoteAddress, QTcpSocket* newSocket, LnTrafficController* tc, int connectionNbr, QObject *parent = 0);
  /*public*/ void run();
 
 signals:

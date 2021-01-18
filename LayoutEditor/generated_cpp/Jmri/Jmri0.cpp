@@ -48,7 +48,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -22140,7 +22139,7 @@ if (_wrapper) {
 }
   return AudioManager::getNamedBeanClass();
 }
-QSet<NamedBean* >  PythonQtShell_AudioManager::getNamedBeanSet()
+QSet<NamedBean* >  PythonQtShell_AudioManager::getNamedBeanSet(QChar  subType0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22148,10 +22147,10 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getNamedBeanSet");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QSet<NamedBean* >"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      static const char* argumentList[] ={"QSet<NamedBean* >" , "QChar"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       QSet<NamedBean* > returnValue{};
-      void* args[1] = {NULL};
+      void* args[2] = {NULL, (void*)&subType0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -22171,7 +22170,7 @@ if (_wrapper) {
     }
   }
 }
-  return AudioManager::getNamedBeanSet();
+  return QSet<NamedBean* >();
 }
 int  PythonQtShell_AudioManager::getObjectCount()
 {
@@ -22890,6 +22889,11 @@ Audio*  PythonQtWrapper_AudioManager::getBySystemName(AudioManager* theWrappedOb
 Audio*  PythonQtWrapper_AudioManager::getByUserName(AudioManager* theWrappedObject, QString  arg__1) const
 {
   return ( theWrappedObject->getByUserName(arg__1));
+}
+
+QSet<NamedBean* >  PythonQtWrapper_AudioManager::getNamedBeanSet(AudioManager* theWrappedObject, QChar  subType)
+{
+  return ( theWrappedObject->getNamedBeanSet(subType));
 }
 
 QStringList  PythonQtWrapper_AudioManager::getSystemNameList(AudioManager* theWrappedObject, QChar  arg__1)

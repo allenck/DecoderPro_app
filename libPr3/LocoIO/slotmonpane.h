@@ -12,7 +12,7 @@ class LIBPR3SHARED_EXPORT SlotMonPane : public LnPanel
 {
  Q_OBJECT
 public:
- explicit SlotMonPane(QWidget *parent = 0);
+ Q_INVOKABLE explicit SlotMonPane(QWidget *parent = 0);
  ~SlotMonPane() {}
  SlotMonPane(const SlotMonPane&) : LnPanel() {}
  /*public*/ void initComponents(LocoNetSystemConnectionMemo* memo);

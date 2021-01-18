@@ -141,7 +141,6 @@ protected:
 /*protected*/ Positionable* getCurrentSelection(QGraphicsSceneMouseEvent* event);
 /*protected*/ Positionable* getCopySelection(QGraphicsSceneMouseEvent* event);
 /*protected*/ void makeCircuitMenu();
-/*protected*/ void makeCircuitMenu(bool edit);
 /*protected*/ void disableMenus();
 /*protected*/ QList<Positionable*>* getSelectionGroup();
 /*protected*/ void highlight(Positionable* pos);
@@ -155,6 +154,8 @@ protected:
 /*protected*/ void setSelectionsRotation(int k, Positionable* p);
 /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
 
+protected slots:
+ /*protected*/ void makeCircuitMenu(bool edit);
 
 friend class CircuitBuilder;
 friend class EditCircuitFrame;

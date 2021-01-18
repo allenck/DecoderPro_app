@@ -378,16 +378,15 @@ ControlPanelEditor::~ControlPanelEditor()
      sm->setMapping(aboutItem,aboutItem);
      HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", nullptr);
      _warrantMenu->addAction(aboutItem);
-     aboutItem = new QAction(tr("AboutCircuitMenu"),this);
+     aboutItem = new QAction(tr("About Circuit Builder"),this);
      sm->setMapping(aboutItem,aboutItem);
      HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
      _warrantMenu->addAction(aboutItem);
      //aboutItem.addActionListener((ActionEvent event) -> {
-//     connect(sm, &QSignalMapper::mapped, [=]{
-//         makeCircuitMenu(true);
-////                openCircuitWindow();
-//     });
-     connect(sm, SIGNAL(mapped(QObject*)), this, SLOT(on_makeCircuitMenu()));
+     connect(aboutItem, &QAction::triggered, [=]{
+         makeCircuitMenu(true);
+//                openCircuitWindow();
+     });
 #endif
  } else {
      makeCircuitMenu(edit);
@@ -505,7 +504,6 @@ ControlPanelEditor::~ControlPanelEditor()
   editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
   editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
  });
- connect(scrollBoth, SIGNAL(triggered()), this, SLOT(on_scrollBoth_triggered()));
  scrollGroup->addAction(scrollNone);
  scrollMenu->addAction(scrollNone);
 // scrollNone.addActionListener(new ActionListener() {
@@ -580,11 +578,10 @@ ControlPanelEditor::~ControlPanelEditor()
 //    editItem.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent event) {
     connect(editItem, &QAction::triggered, [=]{
-                changeView("jmri.jmrit.display.panelEditor.PanelEditor");
-                _itemPalette->dispose();
+            changeView("jmri.jmrit.display.panelEditor.PanelEditor");
+            _itemPalette->dispose();
 //            }
-        });
-    connect(editItem, SIGNAL(triggered()), this, SLOT(changePEViewAction()));
+    });
     _fileMenu->addSeparator();
     QAction* deleteItem = new QAction(tr("Delete This Panel..."),this);
     _fileMenu->addAction(deleteItem);

@@ -354,7 +354,7 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
 
  QDomProcessingInstruction xmlProcessingInstruction = doc.createProcessingInstruction("xml", "version=\"1.0\"  encoding=\"UTF-8\"");
  doc.appendChild(xmlProcessingInstruction);
- xmlProcessingInstruction =  doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"/xml/XSLT/panelfile-" + schemaVersion + ".xsl\"");
+ xmlProcessingInstruction =  doc.createProcessingInstruction("xml-stylesheet","type=\"text/xsl\" href=\"/xml/XSLT/panelfile" + schemaVersion + ".xsl\"");
  doc.appendChild(xmlProcessingInstruction);
  QDomElement root = doc.createElement("layout-config");
  root.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
