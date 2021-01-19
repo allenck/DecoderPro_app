@@ -169,7 +169,8 @@ void LnTcpServerFrame::on_stopButton_clicked()
 //        justification = "Only used during system initialization")
 /*public*/ void LnTcpServerFrame::windowClosing(QCloseEvent* e) {
     setVisible(false);
-    this->server->setStateListner(NULL);
+    //this->server->removeStateListener(this->listener);
+    disconnect(this->server, SIGNAL(serverStateChanged(LnTcpServer*)), this, SLOT(notifyServerStateChanged(LnTcpServer*)));
     dispose();
     JmriJFrame::windowClosing(e);
 }

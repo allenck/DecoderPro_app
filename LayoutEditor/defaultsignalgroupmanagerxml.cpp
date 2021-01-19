@@ -55,7 +55,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
    QDomElement e1;
    e.appendChild(e1= doc.createElement("systemName"));
     e1.appendChild(doc.createTextNode(sgName));
-   if(!sg->getUserName().isNull())
+   if(sg->getUserName()!= "")
    {
     e.appendChild(e1 = doc.createElement("userName"));
      e1.appendChild(doc.createTextNode(sg->getUserName()));

@@ -25,12 +25,6 @@ class LnTcpServer : public QTcpServer
  Q_OBJECT
 public:
  explicit LnTcpServer(LocoNetSystemConnectionMemo *memo, QObject *parent = 0);
- QT_DEPRECATED /*public*/ void setStateListner(ServerListner* l);
- //QT_DEPRECATED /*public*/ static /*synchronized*/ LnTcpServer* getInstance();
- QT_DEPRECATED /*public*/ bool getAutoStart() ;
- QT_DEPRECATED /*public*/ void setAutoStart(bool start);
- QT_DEPRECATED /*public*/ int getPortNumber() ;
- QT_DEPRECATED /*public*/ void setPortNumber(int port);
  /*public*/ bool isEnabled();
  /*public*/ bool isSettingChanged();
  /*public*/ void enable();

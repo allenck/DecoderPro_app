@@ -65,11 +65,6 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
  }
 }
 
-//@Deprecated
-/*public*/ void LnTcpServer::setStateListner(ServerListner* l) {
- stateListner = l;
-}
-
 /**
  * Get the default server instance, creating it if necessary.
  *
@@ -82,41 +77,7 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
  return server;
 }
 
-//@Deprecated
-///*public*/ /*static synchronized*/ LnTcpServer* LnTcpServer::getInstance()
-//{
-// LnTcpServer* server = (LnTcpServer*)InstanceManager::getOptionalDefault("LnTcpServer");
-// if(server == nullptr)
-// {
-//  server = new LnTcpServer();
-//  (LnTcpServer*)InstanceManager::setDefault("LnTcpServer", server);
-// }
-// return server;
-//}
-/*public*/ bool LnTcpServer::getAutoStart()
-{
- return true;
-}
 
-/*public*/ void LnTcpServer::setAutoStart(bool start)
-{
- // do nothing
-}
-
-/*public*/ int LnTcpServer::getPortNumber()
-{
- return portNumber;
-}
-
-/*public*/ void LnTcpServer::setPortNumber(int port)
-{
- if ((port >= 1024) && (port <= 65535))
- {
-  portNumber = port;
-  settingsChanged = true;
-  updateServerStateListener();
- }
-}
 
 /*public*/ bool LnTcpServer::isEnabled()
 {

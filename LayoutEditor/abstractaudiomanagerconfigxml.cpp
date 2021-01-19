@@ -138,8 +138,10 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
    {
     AudioBuffer* ab = (AudioBuffer*) a;
     e = doc.createElement("audiobuffer");
-    e.setAttribute("systemName", sname);
-    e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
+    //e.setAttribute("systemName", sname);
+    QDomElement e1;
+    e.appendChild(e1=doc.createElement("systemName"));
+     e1.appendChild(doc.createTextNode(sname));
 
     // store common part
     storeCommon(ab, e);
@@ -162,8 +164,10 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
    {
     AudioListener* al = (AudioListener*) a;
     e = doc.createElement("audiolistener");
-    e.setAttribute("systemName", sname);
-    e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
+    //e.setAttribute("systemName", sname);
+    QDomElement e1;
+    e.appendChild(e1=doc.createElement("systemName"));
+     e1.appendChild(doc.createTextNode(sname));
 
     // store common part
     storeCommon(al, e);
@@ -202,8 +206,10 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
    {
     AudioSource* as = (AudioSource*) a;
     e = doc.createElement("audiosource");
-    e.setAttribute("systemName", sname);
-    e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
+    //e.setAttribute("systemName", sname);
+    QDomElement e1;
+    e.appendChild(e1=doc.createElement("systemName"));
+     e1.appendChild(doc.createTextNode(sname));
 
     // store common part
     storeCommon((NamedBean*)as, e);
