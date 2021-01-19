@@ -72,7 +72,7 @@
          QDomElement elem = frames.at(i).toElement();
             QString uuidStr = elem.firstChildElement("uuid").text();
             QString meterSystemName = elem.firstChildElement("meter").text();      // This should be a NamedBeanHandle
-            Meter* meter = (Meter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(meterSystemName);
+            DefaultMeter* meter = (DefaultMeter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(meterSystemName);
             QUuid uuid = QUuid::fromString(uuidStr);
             MeterFrame* frame = MeterFrameManager::getInstance()->getByUUID(uuid);
             if (frame == nullptr) {

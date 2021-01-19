@@ -338,13 +338,10 @@ void SensorTableAction::createPressed()
 }
 
 void SensorTableAction::handleCreateException(QString sysName) {
-//    javax.swing.JOptionPane.showMessageDialog(addFrame,
-//            java.text.MessageFormat.format(
-//                tr("ErrorSensorAddFailed"),
-//                new Object[] {sysName}),
-//            tr("ErrorTitle"),
-//            javax.swing.JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(addFrame, tr("Error"), tr("Could not create sensor \"%1\" to add it. Check that number/name is OK.").arg(sysName));
+    JOptionPane::showMessageDialog(addFrame,
+            tr("Could not create sensor \"%1\" to add it. Check that number/name is OK.").arg(sysName),
+            tr("Error"),
+            JOptionPane::ERROR_MESSAGE);
 }
 
 /*protected*/ void SensorTableAction::setDefaultDebounce(JFrame* _who){

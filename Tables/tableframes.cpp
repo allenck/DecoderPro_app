@@ -227,9 +227,9 @@
 //    printItem.addActionListener(e -> {
     connect(printItem, &QAction::triggered, [=]{
         try {
-#if 0
-            MessageFormat headerFormat = new MessageFormat(tr("TitleOBlockTable"));
-            MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
+#if 1
+            QString headerFormat = tr("OBlock Table");
+            QString footerFormat = QString(getTitle() + " page {0,number}");
             oBlockTable->print(JTable::PrintMode::FIT_WIDTH, headerFormat, footerFormat);
 #endif
         } catch (PrinterException e1) {
@@ -241,10 +241,10 @@
 //    printItem.addActionListener(e -> {
     connect(printItem, &QAction::triggered, [=]{
         try {
-#if 0
-            MessageFormat headerFormat = new MessageFormat(tr("TitlePortalTable"));
-            MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
-            portalTable.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+#if 1
+            QString headerFormat = tr("Portal Table");
+            QString footerFormat = QString(getTitle() + " page {0,number}");
+            portalTable->print(JTable::PrintMode::FIT_WIDTH, headerFormat, footerFormat);
 #endif
         } catch (PrinterException e1) {
             log->warn(tr("error printing: %1").arg(e1.getMessage()), e1);
@@ -255,10 +255,10 @@
 //    printItem.addActionListener(e -> {
     connect(printItem, &QAction::triggered, [=]{
         try {
-#if 0
-            MessageFormat headerFormat = new MessageFormat(tr("TitleSignalTable"));
-            MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
-            signalTable.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+#if 1
+            QString headerFormat = tr("Signal Table");
+            QString footerFormat = QString(getTitle() + " page {0,number}");
+            signalTable->print(JTable::PrintMode::FIT_WIDTH, headerFormat, footerFormat);
 #endif
         } catch (PrinterException e1) {
       log->warn(tr("error printing: %1").arg(e1.getMessage()), e1);
@@ -269,10 +269,10 @@
 //    printItem.addActionListener(e -> {
     connect(printItem, &QAction::triggered, [=]{
         try {
-#if 0
-            MessageFormat headerFormat = new MessageFormat(tr("%1 Block-Portal Cross Reference", ""));
-            MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
-            blockPortalTable.print(JTable.PrintMode.FIT_WIDTH, headerFormat, footerFormat);
+#if 1
+            QString headerFormat = tr("%1 Block-Portal Cross Reference").arg("");
+            QString footerFormat = QString(getTitle() + " page {0,number}");
+            blockPortalTable->print(JTable::PrintMode::FIT_WIDTH, headerFormat, footerFormat);
 #endif
         } catch (PrinterException e1) {
       log->warn(tr("error printing: %1").arg(e1.getMessage()), e1);

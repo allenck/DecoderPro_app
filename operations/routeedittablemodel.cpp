@@ -8,7 +8,7 @@
 #include "routeeditframe.h"
 #include "setup.h"
 #include "jtable.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "jdialog.h"
 #include <QBoxLayout>
 #include "flowlayout.h"
@@ -504,9 +504,7 @@ namespace Operations
          rl->setMaxCarMoves(moves);
          _maxTrainMoves = moves;
      } else {
-//         JOptionPane.showMessageDialog(NULL, tr("MaximumLocationMoves"), Bundle
-//                 .getMessage("CanNotChangeMoves"), JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(NULL, tr("CanNotChangeMoves"), tr("MaximumLocationMoves"));
+         JOptionPane::showMessageDialog(NULL, tr("Location moves can not exceed 500"), tr("Can not change number of moves!"), JOptionPane::ERROR_MESSAGE);
      }
  }
 
@@ -538,9 +536,7 @@ namespace Operations
      if(!ok)
      {
          log->error("Location wait must be a number");
-//         JOptionPane.showMessageDialog(NULL, tr("EnterWaitTimeMinutes"), Bundle
-//                 .getMessage("WaitTimeNotValid"), JOptionPane.ERROR_MESSAGE);
-         QMessageBox::critical(NULL, tr("WaitTimeNotValid"), tr("EnterWaitTimeMinutes"));
+         JOptionPane::showMessageDialog(NULL, tr("Enter wait time in minutes"), tr("Wait time isn't valid"), JOptionPane::ERROR_MESSAGE);
          return;
      }
      routeList->at(row)->setWait(wait);
@@ -569,20 +565,17 @@ namespace Operations
      if (length < 500 && Setup::getLengthUnit()==(Setup::FEET) || length < 160
              && Setup::getLengthUnit()==(Setup::METER)) {
          // warn that train length might be too short
-//         if (JOptionPane.showConfirmDialog(NULL, MessageFormat.format(tr("LimitTrainLength"),
-//                 new Object[]{length, Setup.getLengthUnit().toLowerCase(), rl->getName()}), Bundle
-//                 .getMessage("WarningTooShort"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
-         if(QMessageBox::warning(NULL, tr("WarningTooShort"), tr("LimitTrainLength"),QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+         if (JOptionPane::showConfirmDialog(nullptr, tr("Are you sure that you want to limit your trains to %1 scale %2 when departing %3?").arg(
+                 length).arg(Setup::getLengthUnit().toLower()).arg(rl->getName()), tr("Warning: train length might be too short!"), JOptionPane::OK_CANCEL_OPTION) == JOptionPane::CANCEL_OPTION)
          {
              return;
          }
      }
      if (length > Setup::getMaxTrainLength()) {
          log->error("Maximum departure length can not exceed maximum train length");
-//         JOptionPane.showMessageDialog(NULL, MessageFormat.format(tr("DepartureLengthNotExceed"),
-//                 new Object[]{length, Setup.getMaxTrainLength()}), tr("CanNotChangeMaxLength"),
-//                 JOptionPane.ERROR_MESSAGE);
-         QMessageBox::critical(NULL,tr("CanNotChangeMaxLength"), tr("DepartureLengthNotExceed"));
+         JOptionPane::showMessageDialog(nullptr, tr("Maximum departure train length (%1) can not exceed maximum train length (%2)").arg(
+                 length).arg(Setup::getMaxTrainLength()), tr("Can not change maximum train length!"),
+                 JOptionPane::ERROR_MESSAGE);
          return;
      } else {
          rl->setMaxTrainLength(length);
@@ -604,9 +597,8 @@ namespace Operations
          routeList->at(row)->setGrade(grade);
      } else {
          log->error("Maximum grade is 6 percent");
-//         JOptionPane.showMessageDialog(NULL, tr("MaxGrade"), tr("CanNotChangeGrade"),
-//                 JOptionPane.ERROR_MESSAGE);
-         QMessageBox::critical(NULL,tr("CanNotChangeGrade"), tr("MaxGrade") );
+         JOptionPane::showMessageDialog(NULL, tr("Maximum grade is 6 percent"), tr("Can not change grade!"),
+                 JOptionPane::ERROR_MESSAGE);
      }
  }
 

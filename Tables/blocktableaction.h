@@ -78,7 +78,6 @@ private:
  UserPreferencesManager* pref;
 
  QComboBox* speeds = new QComboBox();
- //QWidget* additionalAddOption();
  QString systemNameAuto;// = this.getClass().getName() + ".AutoSystemName";
  bool validateNumericalInput(QString text);
  Logger* log;
