@@ -366,6 +366,17 @@ public:
      */
     /*public*/ virtual bool useLayoutEditorTurnouts(SignalMast* destination) = 0;
     
+    /**
+     * Set direction sensors in SML need to autoActiveTrains.
+     * @return number of errors
+     */
+    /*public*/ virtual int setupDirectionSensors() =0;
+
+    /**
+     * remove direction sensors from SML need to autoActiveTrains.
+     */
+    /*public*/ virtual void removeDirectionSensors() = 0;
+
     /*public*/ virtual void disableLayoutEditorUse() = 0;
 
     /*public*/ virtual void removePropertyChangeListener(PropertyChangeListener* l) = 0;

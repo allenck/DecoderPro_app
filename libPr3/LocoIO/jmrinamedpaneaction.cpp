@@ -60,8 +60,6 @@ JmriNamedPaneAction::JmriNamedPaneAction(QObject *parent) :
 void JmriNamedPaneAction::common()
 {
  log = new Logger("JmriNamedPaneAction");
- context = nullptr;
- cache = nullptr;
  hint = WindowInterface::DEFAULT;
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
@@ -82,17 +80,6 @@ void JmriNamedPaneAction::common()
  try
  {
   JmriPanel* p = (JmriPanel*) Class::forName(paneClass)->newInstance();
-// QString className = paneClass;
-// if(className.contains("."))
-//  className = paneClass.mid(paneClass.lastIndexOf(".")+1);
-// int typeId = QMetaType::type(className.toLocal8Bit());
-// if(typeId != 0)
-// {
-//#if QT_VERSION < 0x050000
-//  JmriPanel* p = (JmriPanel*) QMetaType::construct(typeId);
-//#else
-//  JmriPanel* p = (JmriPanel*) QMetaType::create(typeId);
-//#endif
   p->setWindowInterface(wi);
   p->resize(100,80);
   p->initComponents();
@@ -123,33 +110,3 @@ void JmriNamedPaneAction::common()
   return nullptr;
  }
 }
-#if 0
-//@Override
-/*public*/ void JmriNamedPaneAction::actionPerformed(ActionEvent* /*e*/)
-{
- // we have to make a new panel if we don't have one yet
- // we don't make a new panel if the window interface is
- //      single instance (not multiple instance),
- // of if the existing panel is single instance (not multiple instance)
- if (cache == NULL
-         || (wi->multipleInstances() && cache->isMultipleInstances()))
- {
-  //try {
-  cache = makePanel();
-  //} catch (Exception ex) {
-//  if(cache == NULL)
-//      log->error("Exception creating panel: " + ex);
-//      return;
-//  }
-  if (cache == NULL)
-  {
-   log->error("Unable to make panel " + paneClass);
-   return;
-  }
- }
- QSize sz = cache->size();
- wi->setMinimumSize(sz);
- wi->show(cache, this, hint);  // no real context, this is new content
- wi->resize(sz);
-}
-#endif

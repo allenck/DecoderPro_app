@@ -66,12 +66,38 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  QList<DecoderFile*>* l = new QList<DecoderFile*>();
  for (int i = 0; i < numDecoders(); i++)
  {
-  if ( checkEntry(i, mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model ))
+  if ( checkEntry(i, mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model, "", "", "" ))
   {
    l->append(decoderList->at(i));
   }
  }
  return l;
+}
+/**
+ * Get a List of decoders matching some information.
+ *
+ * @param mfg              decoder manufacturer
+ * @param family           decoder family
+ * @param decoderMfgID     NMRA decoder manufacturer ID
+ * @param decoderVersionID decoder version ID
+ * @param decoderProductID decoder product ID
+ * @param model            decoder model
+ * @param developerID      developer ID number
+ * @param manufacturerID   manufacturerID number
+ * @param productID        productID number
+ * @return a list, possibly empty, of matching decoders
+ */
+//@Nonnull
+/*public*/ QList<DecoderFile*>DecoderIndexFile:: matchingDecoderList(QString mfg, QString family,
+        QString decoderMfgID, QString decoderVersionID,
+        QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID) {
+    QList<DecoderFile*> l = QList<DecoderFile*>();
+    for (int i = 0; i < numDecoders(); i++) {
+        if (checkEntry(i, mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model, developerID, manufacturerID, productID)) {
+            l.append(decoderList->at(i));
+        }
+    }
+    return l;
 }
 
 /**
@@ -135,7 +161,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * Don't bother asking about the model number...
  *
  */
-/*public*/ bool DecoderIndexFile::checkEntry(int i, QString mfgName, QString family, QString mfgID, QString decoderVersionID, QString decoderProductID, QString model)
+/*public*/ bool DecoderIndexFile::checkEntry(int i, QString mfgName, QString family, QString mfgID, QString decoderVersionID, QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID)
 {
  DecoderFile* r = decoderList->at(i);
  if (mfgName != "" && mfgName!=(r->getMfg())) return false;
@@ -149,6 +175,57 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
   if (!r->isVersion(versionID)) return false;
  }
  if (decoderProductID != "" && decoderProductID!=(r->getProductID())) return false;
+ if (developerID != "") {
+     // must have a developerID value that matches to consider this entry a match
+     if (developerID != (r->getDeveloperID())) {
+         // didn't match the getDeveloperID() value, so check the model developerID value
+         if (r->getModelElement().attribute("developerID") == "") {
+             // no model developerID value, so not a match!
+             return false;
+         }
+         if (!QString("," + r->getModelElement().attribute("developerID") + ",").contains("," + developerID + ",")) {
+                 return false;
+         }
+     }
+     log->debug("developerID match");
+ }
+
+
+ if (manufacturerID != "") {
+     log->debug(tr("checking manufactureriD %1, mfgID %2, modelElement[manufacturerID] #3").arg(
+             manufacturerID).arg(r->_mfgID).arg(r->getModelElement().attribute("manufacturerID")));
+     // must have a manufacturerID value that matches to consider this entry a match
+
+     if ((r->_mfgID == "") || (manufacturerID.compare(r->_mfgID) != 0)) {
+         // ID number from manufacturer name isn't identical; try another way
+         if (manufacturerID != (r->getManufacturerID())) {
+             // no match to the manufacturerID attribute at the (family?) level, so try model level
+             QString a = r->getModelElement().attribute("manufacturerID");
+             if ((a == "") || (a.isNull()) ||
+                     (manufacturerID.compare(a)!=0)) {
+                     // no model manufacturerID value, or model manufacturerID
+                     // value does not match so this decoder is not a match!
+                     return false;
+             }
+         }
+     }
+     log->debug("manufacturerID match");
+ }
+
+ if (productID != "") {
+     // must have a productID value that matches to consider this entry a match
+     if (productID !=(r->getProductID())) {
+         // didn't match the getProductID() value, so check the model productID value
+         if (r->getModelElement().attribute("productID") == "") {
+             // no model productID value, so not a match!
+             return false;
+         }
+         if (!QString("," + r->getModelElement().attribute("productID") + ",").contains("," + productID + ",")) {
+                 return false;
+         }
+     }
+     log->debug("productID match");
+ }
  return true;
 }
 

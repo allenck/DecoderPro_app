@@ -224,7 +224,7 @@ void propertyChange(PropertyChangeEvent*);
 
 public slots:
 private:
- PropertyChangeListenerMap* map;
+ PropertyChangeListenerMap* map = nullptr;
  /*private*/ static void fire(QVector<PropertyChangeListener*> listeners, PropertyChangeEvent* event);
  /**
   * The object to be provided as the "source" for any generated events.

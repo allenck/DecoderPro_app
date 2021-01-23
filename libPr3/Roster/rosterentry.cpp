@@ -31,8 +31,13 @@ QString RosterEntry::_defaultOwner = "";
     /*public*/ /*static*/ /*final*/ QString RosterEntry::PROTOCOL = "protocol"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString RosterEntry::COMMENT = "comment"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_MODEL = "decodermodel"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_DEVELOPERID = "developerID"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_MANUFACTURERID = "manufacturerID"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_PRODUCTID = "productID"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_FAMILY = "decoderfamily"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_COMMENT = "decodercomment"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DECODER_MAXFNNUM = "decodermaxFnNum"; // NOI18N
+    /*public*/ /*static*/ /*final*/ QString RosterEntry::DEFAULT_MAXFNNUM = "28"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString RosterEntry::IMAGE_FILE_PATH = "imagefilepath"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString RosterEntry::ICON_FILE_PATH = "iconfilepath"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString RosterEntry::URL = "url"; // NOI18N
@@ -104,6 +109,9 @@ void RosterEntry::init()
   _comment = "";
   _decoderModel = "";
   _decoderFamily = "";
+  _developerID = "";//pEntry._developerID;
+  _manufacturerID = "";//pEntry._manufacturerID;
+  _productID = "";//pEntry._productID;
   _decoderComment = "";
   _dateUpdated = "";
   _maxSpeedPCT = 100;
@@ -358,6 +366,37 @@ void RosterEntry::init()
 }
 /*public*/ QString RosterEntry::getDecoderModel() { return _decoderModel; }
 
+/*public*/ void RosterEntry::setDeveloperID(QString s) {
+    QString old = _developerID;
+    _developerID = s;
+    firePropertyChange(DECODER_DEVELOPERID, old, s);
+}
+
+/*public*/ QString RosterEntry::getDeveloperID() {
+    return _developerID;
+}
+
+/*public*/ void RosterEntry::setManufacturerID(QString s) {
+    QString old = _manufacturerID;
+    _manufacturerID = s;
+    firePropertyChange(DECODER_MANUFACTURERID, old, s);
+}
+
+/*public*/ QString RosterEntry::getManufacturerID() {
+    return _manufacturerID;
+}
+
+/*public*/ void RosterEntry::setProductID(QString s) {
+    QString old = _productID;
+    if (s.isNull()) {s="";}
+    _productID = s;
+    firePropertyChange(DECODER_PRODUCTID, old, s);
+}
+
+/*public*/ QString RosterEntry::getProductID() {
+    return _productID;
+}
+
 /*public*/ void   RosterEntry::setDecoderFamily(QString s) {
     QString old = _decoderFamily;
     _decoderFamily = s;
@@ -371,6 +410,16 @@ void RosterEntry::init()
     firePropertyChange("decodercomment", old, s);
 }
 /*public*/ QString RosterEntry::getDecoderComment() { return _decoderComment; }
+
+/*public*/ void RosterEntry::setMaxFnNum(QString s) {
+    QString old = _maxFnNum;
+    _maxFnNum = s;
+    firePropertyChange(RosterEntry::DECODER_MAXFNNUM, old, s);
+}
+
+/*public*/ QString RosterEntry::getMaxFnNum() {
+    return _maxFnNum;
+}
 
 /*public*/ DccLocoAddress* RosterEntry::getDccLocoAddress() {
     int n = 0;
@@ -798,6 +847,9 @@ void RosterEntry::init()
  e.setAttribute("dccAddress",getDccAddress());
  e.setAttribute("protocol",getProtocolAsString());
  e.setAttribute("comment",getComment());
+ e.setAttribute(DECODER_DEVELOPERID, getDeveloperID());
+ e.setAttribute(DECODER_MANUFACTURERID, getManufacturerID());
+ e.setAttribute(DECODER_PRODUCTID, getProductID());
  e.setAttribute("maxSpeed", getMaxSpeedPCT());
  // file path are saved without default xml config path
  //e.setAttribute("imageFilePath", getImagePath().mid( FileUtil::getUserResourcePath().length() ));
@@ -812,6 +864,7 @@ void RosterEntry::init()
  d.setAttribute("model",getDecoderModel());
  d.setAttribute("family",getDecoderFamily());
  d.setAttribute("comment",getDecoderComment());
+ d.setAttribute("maxFnNum", getMaxFnNum());
  d.setAttribute("rfidtag", getRfidTag());
 
  e.appendChild(d);
@@ -1508,7 +1561,18 @@ if (!(_decoderFamily==("")))
    _isShuntingOn = a;
   if ((a = e.attribute("maxSpeed")) != "" )
        _maxSpeedPCT = a.toInt();
-  QDomElement e3;
+  if ((a = e.attribute(DECODER_DEVELOPERID)) != "") {
+       _developerID = a;
+   }
+
+   if ((a = e.attribute(DECODER_MANUFACTURERID)) != "") {
+       _manufacturerID = a;
+   }
+
+   if ((a = e.attribute(DECODER_PRODUCTID)) != "null") {
+       _productID = a;
+   }
+   QDomElement e3;
    if (!(e3 = e.firstChildElement("dateUpdated")).isNull())
    {
     this->setDateUpdated(e3.text());
@@ -1559,13 +1623,28 @@ if (!(_decoderFamily==("")))
     }
 
    }
-   if ((a = e.attribute("comment")) != "" )  _comment = a;
+   if ((a = e.attribute("comment")) != "" )
+    _comment = a;
    QDomElement d = e.firstChildElement("decoder");
    if (!d.isNull())
    {
-    if ((a = d.attribute("model")) != "" )  _decoderModel = a;
-    if ((a = d.attribute("family")) != "" )  _decoderFamily = a;
-    if ((a = d.attribute("comment")) != "" )  _decoderComment = a;
+    if ((a = d.attribute("model")) != "" )
+     _decoderModel = a;
+    if ((a = d.attribute("family")) != "" )
+     _decoderFamily = a;
+    if ((a = d.attribute(DECODER_DEVELOPERID)) != "") {
+        _developerID = a;
+    }
+    if ((a = d.attribute(DECODER_MANUFACTURERID)) != "") {
+        _manufacturerID = a;
+    }
+    if ((a = d.attribute(DECODER_PRODUCTID)) != "") {
+        _productID = a;
+    }if ((a = d.attribute("comment")) != "" )
+     _decoderComment = a;
+   }
+   if ((a = d.attribute("maxFnNum")) != "") {
+       _maxFnNum = a;
    }
    if((a = e.attribute("rfidtag")) != "" )_rfidTag = a.toInt();
 

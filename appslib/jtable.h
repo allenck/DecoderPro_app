@@ -124,6 +124,7 @@ public:
  void setName(QString name);
  QString getName();
  /*public*/ QString getColumnName(int column);
+ /*public*/ TableColumn* getColumn(QString name);
  /*public*/ void setRowSorter(RowSorter/*<? extends TableModel>*/* sorter);
  RowSorter* getRowSorter();
  /*public*/ void setUpdateSelectionOnSort(bool update);

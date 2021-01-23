@@ -320,4 +320,10 @@ void JButton::setAction(Action*)
 ///*public*/ void JButton::setIcon(const QIcon &icon)
 //{
 // QPushButton::setIcon(icon);
+// this->icon = icon;
 //}
+///*public*/ void JButton::setRolloverIcon(QIcon icon)
+//{
+// this->rolloverIcon = icon;
+//}
+

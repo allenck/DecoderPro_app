@@ -547,12 +547,12 @@
     /*public*/ bool LnSv2MessageContents::isSupportedSv2Command() {
         return isSupportedSv2Command(sv_cmd);
     }
-#if 0
+
     /**
      *
      * @return true if the SV2 message is a SV2 Read One Reply message
      */
-    /*public*/ bool isSupportedSv2ReadOneReply() {
+    /*public*/ bool LnSv2MessageContents::isSupportedSv2ReadOneReply() {
         return (sv_cmd == SV_CMD_REPORT_ONE);
     }
 
@@ -560,7 +560,7 @@
      *
      * @return true of the SV2 message is a SV2 Read Four Reply message
      */
-    /*public*/ bool isSupportedSv2ReadFourReply() {
+    /*public*/ bool LnSv2MessageContents::isSupportedSv2ReadFourReply() {
         return (sv_cmd == SV_CMD_REPORT_FOUR);
     }
 
@@ -569,21 +569,19 @@
      * @return true if the SV2 message is a SV2 Read One Reply message or a SV2
      * Read Four Reply message
      */
-    /*public*/ bool isSupportedSv2ReadOneReplyOrSv2ReadFourReply() {
+    /*public*/ bool LnSv2MessageContents::isSupportedSv2ReadOneReplyOrSv2ReadFourReply() {
         return ((sv_cmd == SV_CMD_REPORT_ONE)
                 ||
                 (sv_cmd == SV_CMD_REPORT_FOUR));
     }
-#endif
-    // initialize logging
-    /*private*/ /*final*/ /*static*/ Logger* LnSv2MessageContents::log = LoggerFactory::getLogger("LnSv2MessageContents");
-#if 0
+
+
     /**
      * Get the data from a SVs Single Read Reply message.  May also be used to
      * return the effective SV value reported in a SV2 Single Write Reply message.
      * @return the {@code <D1>} value from the SV2 message
      */
-    /*public*/ int getSingleReadReportData() {
+    /*public*/ int LnSv2MessageContents::getSingleReadReportData() {
         return d1;
     }
     /**
@@ -599,14 +597,14 @@
      * @return - LocoNet message for the requested message
      * @throws IllegalArgumentException of command is not a valid SV Programming Format 2 &lt;SV_CMD&gt; value
      */
-    /*public*/ static LocoNetMessage createSv2Message (int source, int command,
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSv2Message (int source, int command,
             int destination, int svNum, int d1, int d2, int d3, int d4)
-        throws java.lang.IllegalArgumentException {
+        throw (IllegalArgumentException) {
             if ( ! isSupportedSv2Command(command)) {
-                throw new java.lang.IllegalArgumentException("Command is not a supported SV2 command"); // NOI18N
+                throw  IllegalArgumentException("Command is not a supported SV2 command"); // NOI18N
             }
-        LocoNetMessage m = new LocoNetMessage(SV2_LENGTH_ELEMENT_VALUE);
-        m->setOpCode(LnConstants.OPC_PEER_XFER);
+        LocoNetMessage* m = new LocoNetMessage(SV2_LENGTH_ELEMENT_VALUE);
+        m->setOpCode(LnConstants::OPC_PEER_XFER);
         m->setElement(SV2_LENGTH_ELEMENT_INDEX, SV2_LENGTH_ELEMENT_VALUE);
         m->setElement(SV2_SRC_ELEMENT_INDEX, (source & SV2_SRC_ELEMENT_MASK));
         m->setElement(SV2_SV_CMD_ELEMENT_INDEX, command);
@@ -639,66 +637,66 @@
         return m;
     }
 
-    /*public*/ int getDestAddr() {
-        if (sv_cmd != Sv2Command.SV2_DISCOVER_ALL.cmd) {
+    /*public*/ int LnSv2MessageContents::getDestAddr() {
+        if (sv_cmd != Sv2Command::SV2_DISCOVER_ALL/*.cmd*/) {
             return dst_l + 246*dst_h;
         }
         return -1;
     }
 
-    /*public*/ int getSVNum() {
-        if ((sv_cmd != Sv2Command.SV2_DISCOVER_ALL.cmd) &&
-                (sv_cmd != Sv2Command.SV2_IDENTIFY_DEVICES_BY_TYPE.cmd) &&
-                (sv_cmd != Sv2Command.SV2_CHANGE_DEVICE_ADDRESS.cmd) &&
-                (sv_cmd != Sv2Command.SV2_DISCOVER_DEVICE_REPORT.cmd) &&
-                (sv_cmd != Sv2Command.SV2_DEVICE_TYPE_REPORT.cmd) &&
-                (sv_cmd != Sv2Command.SV2_CHANGE_DEVICE_ADDRESS_REPLY.cmd) &&
-                (sv_cmd != Sv2Command.SV2_RECONFIGURE_DEVICE_REPLY.cmd) &&
-                (sv_cmd != Sv2Command.SV2_RECONFIGURE_DEVICE.cmd)) {
+    /*public*/ int LnSv2MessageContents::getSVNum() {
+        if ((sv_cmd != Sv2Command::SV2_DISCOVER_ALL/*.cmd*/) &&
+                (sv_cmd != Sv2Command::SV2_IDENTIFY_DEVICES_BY_TYPE/*.cmd*/) &&
+                (sv_cmd != Sv2Command::SV2_CHANGE_DEVICE_ADDRESS/*.cmd*/) &&
+                (sv_cmd != Sv2Command::SV2_DISCOVER_DEVICE_REPORT/*.cmd*/) &&
+                (sv_cmd != Sv2Command::SV2_DEVICE_TYPE_REPORT/*.cmd*/) &&
+                (sv_cmd != Sv2Command::SV2_CHANGE_DEVICE_ADDRESS_REPLY/*.cmd*/) &&
+                (sv_cmd != Sv2Command::SV2_RECONFIGURE_DEVICE_REPLY/*.cmd*/) &&
+                (sv_cmd != Sv2Command::SV2_RECONFIGURE_DEVICE/*.cmd*/)) {
             return sv_adrl + 256*sv_adrh;
         }
         return -1;
     }
 
-    /*public*/ int getSv2ManufacturerID() {
-        if ((sv_cmd == Sv2Command.SV2_DISCOVER_DEVICE_REPORT.cmd) ||
-                (sv_cmd == Sv2Command.SV2_DEVICE_TYPE_REPORT.cmd)) {
+    /*public*/ int LnSv2MessageContents::getSv2ManufacturerID() {
+        if ((sv_cmd == Sv2Command::SV2_DISCOVER_DEVICE_REPORT/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_DEVICE_TYPE_REPORT/*.cmd*/)) {
             return sv_adrl;
         }
         return -1;
     }
 
-    /*public*/ bool isSvReconfigureReply() {
-        if (sv_cmd == Sv2Command.SV2_RECONFIGURE_DEVICE_REPLY.cmd) {
+    /*public*/ bool LnSv2MessageContents::isSvReconfigureReply() {
+        if (sv_cmd == Sv2Command::SV2_RECONFIGURE_DEVICE_REPLY/*.cmd*/) {
             return true;
         }
         return false;
     }
 
-    /*public*/ int getSv2DeveloperID() {
-        if ((sv_cmd == Sv2Command.SV2_CHANGE_DEVICE_ADDRESS.cmd) ||
-                (sv_cmd == Sv2Command.SV2_DISCOVER_DEVICE_REPORT.cmd) ||
-                (sv_cmd == Sv2Command.SV2_DEVICE_TYPE_REPORT.cmd)){
+    /*public*/ int LnSv2MessageContents::getSv2DeveloperID() {
+        if ((sv_cmd == Sv2Command::SV2_CHANGE_DEVICE_ADDRESS/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_DISCOVER_DEVICE_REPORT/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_DEVICE_TYPE_REPORT/*.cmd*/)){
             return sv_adrh;
         }
         return -1;
     }
 
-    /*public*/ int getSv2ProductID() {
-        if ((sv_cmd == Sv2Command.SV2_CHANGE_DEVICE_ADDRESS.cmd) ||
-                (sv_cmd == Sv2Command.SV2_DISCOVER_DEVICE_REPORT.cmd) ||
-                (sv_cmd == Sv2Command.SV2_DEVICE_TYPE_REPORT.cmd) ||
-                (sv_cmd == Sv2Command.SV2_RECONFIGURE_DEVICE_REPLY.cmd)){
+    /*public*/ int LnSv2MessageContents::getSv2ProductID() {
+        if ((sv_cmd == Sv2Command::SV2_CHANGE_DEVICE_ADDRESS/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_DISCOVER_DEVICE_REPORT/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_DEVICE_TYPE_REPORT/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_RECONFIGURE_DEVICE_REPLY/*.cmd*/)){
             return d1 + d2 * 256;
         }
         return -1;
     }
 
-    /*public*/ int getSv2SerialNum() {
-        if ((sv_cmd == Sv2Command.SV2_CHANGE_DEVICE_ADDRESS.cmd) ||
-                (sv_cmd == Sv2Command.SV2_DISCOVER_DEVICE_REPORT.cmd) ||
-                (sv_cmd == Sv2Command.SV2_DEVICE_TYPE_REPORT.cmd) ||
-                (sv_cmd == Sv2Command.SV2_RECONFIGURE_DEVICE_REPLY.cmd)){
+    /*public*/ int LnSv2MessageContents::getSv2SerialNum() {
+        if ((sv_cmd == Sv2Command::SV2_CHANGE_DEVICE_ADDRESS/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_DISCOVER_DEVICE_REPORT/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_DEVICE_TYPE_REPORT/*.cmd*/) ||
+                (sv_cmd == Sv2Command::SV2_RECONFIGURE_DEVICE_REPLY/*.cmd*/)){
             return d3 + d4 * 256;
         }
         return -1;
@@ -714,11 +712,11 @@
      * @param serial - the serial number
      * @return a LocoNet message containing the formatted reply
      */
-    /*public*/ static LocoNetMessage createSv2DeviceDiscoveryReply(int ida, int currentDest,
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSv2DeviceDiscoveryReply(int ida, int currentDest,
             int mfg, int devel, int prodID, int serial) {
 
         return createSv2Message(ida,
-                Sv2Command.SV2_DISCOVER_DEVICE_REPORT.cmd,
+                Sv2Command::SV2_DISCOVER_DEVICE_REPORT/*.cmd*/,
                 currentDest,
                 mfg + (256*devel),
                 prodID % 256,
@@ -735,9 +733,9 @@
      * @param destAddr - the "old" SV2 destination address
      * @return a LocoNet message
      */
-    /*public*/ static LocoNetMessage createSv2ChangeAddressReply(int ida, int destAddr) {
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSv2ChangeAddressReply(int ida, int destAddr) {
         return createSv2Message(ida,
-                Sv2Command.SV2_CHANGE_DEVICE_ADDRESS_REPLY.cmd,
+                Sv2Command::SV2_CHANGE_DEVICE_ADDRESS_REPLY/*.cmd*/,
                 destAddr,
                 0, 0, 0, 0, 0) ;
     }
@@ -754,10 +752,10 @@
      * @param serialNum - serial Number
      * @return a LocoNet message
      */
-    /*public*/ static LocoNetMessage createSv2ChangeAddressReply(int ida, int newDestAddr,
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSv2ChangeAddressReply(int ida, int newDestAddr,
             int mfg, int developer, int productId, int serialNum) {
         return createSv2Message(ida,
-                Sv2Command.SV2_CHANGE_DEVICE_ADDRESS_REPLY.cmd,
+                Sv2Command::SV2_CHANGE_DEVICE_ADDRESS_REPLY/*.cmd*/,
                 newDestAddr,
                 mfg + (256 * developer), productId % 256, productId / 256,
                 serialNum % 256, serialNum / 256);
@@ -774,10 +772,10 @@
      * @param serialNum - serial Number
      * @return a LocoNet message
      */
-    /*public*/ static LocoNetMessage createSv2ReconfigureReply(int ida, int newDestAddr,
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSv2ReconfigureReply(int ida, int newDestAddr,
             int mfg, int developer, int productId, int serialNum) {
         return createSv2Message(ida,
-                Sv2Command.SV2_RECONFIGURE_DEVICE_REPLY.cmd,
+                Sv2Command::SV2_RECONFIGURE_DEVICE_REPLY/*.cmd*/,
                 newDestAddr,
                 mfg + (256 * developer), productId % 256, productId / 256,
                 serialNum % 256, serialNum / 256);
@@ -790,42 +788,42 @@
      * @return  LocoNet message containing the reply, or NULL if preceeding
      *          message isn't a query.
      */
-    /*public*/ static LocoNetMessage createSvReadReply(LocoNetMessage m, int svValues[]) {
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSvReadReply(LocoNetMessage* m, QVector<int> svValues) {
         if (!isSupportedSv2Message(m)) {
             return NULL;
         }
-        if ((m->getElement(3) != Sv2Command.SV2_QUERY_ONE.cmd) &&
-                (m->getElement(3) != Sv2Command.SV2_QUERY_FOUR.cmd)) {
+        if ((m->getElement(3) != Sv2Command::SV2_QUERY_ONE/*.cmd*/) &&
+                (m->getElement(3) != Sv2Command::SV2_QUERY_FOUR/*.cmd*/)) {
             return NULL;
 
         }
-        LocoNetMessage n = m;
-        n.setElement(3, n.getElement(3) + 0x40);
-        n.setElement(11, svValues[0] & 0x7F);
-        if (n.getElement(3) == Sv2Command.SV2_QUERY_ONE.cmd) {
-            n.setElement(12, 0);
-            n.setElement(13, 0);
-            n.setElement(14, 0);
-            int a = n.getElement(10);
+        LocoNetMessage* n = m;
+        n->setElement(3, n->getElement(3) + 0x40);
+        n->setElement(11, svValues[0] & 0x7F);
+        if (n->getElement(3) == Sv2Command::SV2_QUERY_ONE/*.cmd*/) {
+            n->setElement(12, 0);
+            n->setElement(13, 0);
+            n->setElement(14, 0);
+            int a = n->getElement(10);
             a &= 0x70;
             if ((svValues[0] & 0xFF) > 0x7f) {
                 a |= 1;
             }
-            n.setElement(10, a);
+            n->setElement(10, a);
             return n;
         }
-        n.setElement(12, svValues[1] & 0x7F);
-        n.setElement(13, svValues[2] & 0x7F);
-        n.setElement(14, svValues[3] & 0x7F);
-        int a = n.getElement(10);
+        n->setElement(12, svValues[1] & 0x7F);
+        n->setElement(13, svValues[2] & 0x7F);
+        n->setElement(14, svValues[3] & 0x7F);
+        int a = n->getElement(10);
         a &= 0x70;
         a |= ((svValues[1] & 0x80) >> 6);
         a |= ((svValues[2] & 0x80) >> 5);
         a |= ((svValues[3] & 0x80) >> 5);
-        n.setElement(10, a);
+        n->setElement(10, a);
         return n;
     }
-
+#if 1
     /**
      *
      * @param m - the preceeding LocoNet message
@@ -833,15 +831,15 @@
      * @return  LocoNet message containing the reply, or NULL if preceeding
      *          message isn't a query.
      */
-    /*public*/ static LocoNetMessage createSvReadReply(LocoNetMessage m, int svValue) {
-        return createSvReadReply(m, new int[] {svValue});
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSvReadReply(LocoNetMessage* m, int svValue) {
+        return createSvReadReply(m, QVector<int> {svValue});
     }
 
     /**
      * Get the d1 value
      * @return d1
      */
-    /*public*/ int getSv2D1() {
+    /*public*/ int LnSv2MessageContents::getSv2D1() {
         return d1;
     }
 
@@ -849,7 +847,7 @@
      * Get the d2 value
      * @return d2
      */
-    /*public*/ int getSv2D2() {
+    /*public*/ int LnSv2MessageContents::getSv2D2() {
         return d2;
     }
 
@@ -857,7 +855,7 @@
      * Get the d3 value
      * @return d3
      */
-    /*public*/ int getSv2D3() {
+    /*public*/ int LnSv2MessageContents::getSv2D3() {
         return d3;
     }
 
@@ -865,26 +863,26 @@
      * Get the d4 value
      * @return d4
      */
-    /*public*/ int getSv2D4() {
+    /*public*/ int LnSv2MessageContents::getSv2D4() {
         return d4;
     }
 
-    /*public*/ bool isSvChangeAddressReply() {
-        if (sv_cmd == Sv2Command.SV2_CHANGE_DEVICE_ADDRESS_REPLY.cmd) {
+    /*public*/ bool LnSv2MessageContents::isSvChangeAddressReply() {
+        if (sv_cmd == Sv2Command::SV2_CHANGE_DEVICE_ADDRESS_REPLY/*.cmd*/) {
             return true;
         }
         return false;
     }
 
-    /*public*/ static LocoNetMessage createSvDiscoverQueryMessage() {
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSvDiscoverQueryMessage() {
      return createSv2Message(1,
-                Sv2Command.SV2_DISCOVER_ALL.cmd,
+                Sv2Command::SV2_DISCOVER_ALL/*.cmd*/,
                 0, 0, 0, 0, 0, 0);
      }
 
-    /*public*/ static LocoNetMessage createSvReadRequest() {
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSvReadRequest() {
      return createSv2Message(1,
-                Sv2Command.SV2_DISCOVER_ALL.cmd,
+                Sv2Command::SV2_DISCOVER_ALL/*.cmd*/,
                 0, 0, 0, 0, 0, 0);
      }
 
@@ -895,9 +893,11 @@
      * @param svNum - SV number
      * @return LocoNet message
      */
-    /*public*/ static LocoNetMessage createSvReadRequest(int deviceAddress, int svNum) {
-        return createSv2Message(1, Sv2Command.SV2_QUERY_ONE.cmd,
+    /*public*/ /*static*/ LocoNetMessage* LnSv2MessageContents::createSvReadRequest(int deviceAddress, int svNum) {
+        return createSv2Message(1, Sv2Command::SV2_QUERY_ONE/*.cmd*/,
                 deviceAddress, svNum, 0, 0, 0, 0);
     }
 #endif
 
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* LnSv2MessageContents::log = LoggerFactory::getLogger("LnSv2MessageContents");

@@ -408,6 +408,32 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
  }
 }
 
+/*static*/ /*public*/ void JUnitUtil::waitFor(bool (*condition)(), QString name,
+                                              QString file, int line)
+{
+
+ int delay = 0;
+ try
+ {
+  while (delay < WAITFOR_MAX_DELAY)
+  {
+   if ((*condition)())
+   {
+    log->debug(tr("return delay = %1").arg(delay));
+    return;
+   }
+   SleeperThread::msleep(WAITFOR_DELAY_STEP);
+   delay += WAITFOR_DELAY_STEP;
+   qApp->processEvents();
+  }
+
+  Assert::fail("\"" + name + "\" did not occur in time", file, line);
+ }
+ catch (Exception ex)
+ {
+  Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), file, line);
+ }
+}
 /**
  * Wait for a specific condition to be true, without having to wait longer
  * <p>

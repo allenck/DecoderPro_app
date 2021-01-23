@@ -3,9 +3,10 @@
 #include "signalgroup.h"
 #include <QFileInfo>
 #include <QDir>
+#include "instancemanager.h"
 
-DefaultSignalGroupManager::DefaultSignalGroupManager(QObject *parent) :
-    SignalGroupManager()
+DefaultSignalGroupManager::DefaultSignalGroupManager(InternalSystemConnectionMemo* memo, QObject *parent) :
+    SignalGroupManager(memo, parent)
 {
  setObjectName("DefaultSignalGroupManager");
  setProperty("JavaClassName", "jmri.managers.DefaultSignalGroupManager");
@@ -56,14 +57,6 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(QObject *parent) :
     return (SignalGroup*)_tuser->value(key);
 }
 
-/*public*/ SignalGroup* DefaultSignalGroupManager::newSignalGroup(QString sys){
-    SignalGroup* g;
-    g = (SignalGroup*)new DefaultSignalGroup(sys);
-    Register(g);
-    return g;
-
-}
-
 /*public*/ SignalGroup* DefaultSignalGroupManager::provideSignalGroup(QString systemName, QString userName) {
     SignalGroup* r;
     r = getByUserName(systemName);
@@ -75,6 +68,29 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(QObject *parent) :
     // save in the maps
     Register(r);
     return r;
+}
+
+/**
+ * {@inheritDoc}
+ * @deprecated 4.15.2 use newSignaGroupWithUserName
+ */
+//@Nonnull
+//@Override
+//@Deprecated //  4.15.2 use newSignaGroupWithUserName
+/*public*/ SignalGroup* DefaultSignalGroupManager::newSignalGroup(QString userName){
+ //jmri.util.LoggingUtil.deprecationWarning(log, "newSignalGroup");
+ return newSignaGroupWithUserName(userName);
+}
+/**
+ * {@inheritDoc}
+ *
+ * Keep autostring in line with {@link #provideSignalGroup(String, String)},
+ * {@link #getSystemPrefix()} and {@link #typeLetter()}
+ */
+//@Nonnull
+//@Override
+/*public*/ SignalGroup* DefaultSignalGroupManager::newSignaGroupWithUserName(/*@Nonnull*/ QString userName) {
+    return provideSignalGroup(getAutoSystemName(), userName);
 }
 
 QStringList DefaultSignalGroupManager::getListOfNames()
@@ -100,16 +116,9 @@ QStringList DefaultSignalGroupManager::getListOfNames()
  return retval;
 }
 
-
-/*static*/ DefaultSignalGroupManager* DefaultSignalGroupManager::_instance = NULL;
-
 /*static*/ /*public*/ DefaultSignalGroupManager* DefaultSignalGroupManager::instance()
 {
- if (_instance == NULL)
- {
-  _instance = new DefaultSignalGroupManager();
- }
- return (_instance);
+ return (DefaultSignalGroupManager*)InstanceManager::getDefault("DefaultSignalGroupManager");
 }
 
 /*public*/ void DefaultSignalGroupManager::deleteSignalGroup(SignalGroup* s) {

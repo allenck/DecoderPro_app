@@ -491,4 +491,40 @@
         }
     }
 }
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString DefaultSignalMastLogicManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "SignalMastLogics" : "SignalMastLogic");
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ /*Class<SignalMastLogic>*/QString DefaultSignalMastLogicManager::getNamedBeanClass() const {
+    return "SignalMastLogic";
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ int DefaultSignalMastLogicManager::setupSignalMastsDirectionSensors() {
+    int errorCount = 0;
+    for (SignalMastLogic* sml : getSignalMastLogicList()) {
+        errorCount += sml->setupDirectionSensors();
+    }
+    return errorCount;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void DefaultSignalMastLogicManager::removeSignalMastsDirectionSensors() {
+    for (SignalMastLogic* sml : getSignalMastLogicList()) {
+        sml->removeDirectionSensors();
+    }
+    return;
+}
 /*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));

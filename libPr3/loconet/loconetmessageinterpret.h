@@ -40,6 +40,7 @@ private:
  /*private*/ static QString interpretSV1Message(LocoNetMessage* l);
  /*private*/ static QString interpretSV0Message(LocoNetMessage* l);
  /*private*/ static QString interpretSV2Message(LocoNetMessage* l);
+ /*private*/ static QString interpretLncvMessage(LocoNetMessage* l);
  /*private*/ static QString interpretOpcPeerXfer10(LocoNetMessage* l);
  /*private*/ static QString interpretOpcPeerXfer9(LocoNetMessage* l, QString reporterPrefix);
  /*private*/ static QString interpretOpcPeerXfer7(LocoNetMessage* l);

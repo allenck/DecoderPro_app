@@ -61,26 +61,29 @@ public:
      COMCOL = 4,
      DELCOL = 5,
      ENABLECOL = 6,
-     EDITLOGICCOL = 7
+     EDITLOGICCOL = 7,
+     MAXSPEEDCOL = 8,
+     COLUMNCOUNT = 9
     };
     SmlBeanTableDataModel(SignalMastLogicTableAction* act);
     //We have to set a manager first off, but this gets replaced.
-    /*public*/ QString getValue(QString s);
+    /*public*/ QString getValue(QString s) const override;
 
-    /*public*/ void clickOn(NamedBean* t);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ void clickOn(NamedBean* t) override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ QString getColumnClass(int col) const override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ SignalMast* getDestMastFromRow(int row) const;
     /*public*/ SignalMastLogic* getLogicFromRow(int row) const;
-    /*public*/ int getPreferredWidth(int col);
-    /*public*/ void configureTable(JTable* table);
-    /*public*/ NamedBean* getBySystemName(QString name) const;
-    /*public*/ NamedBean* getByUserName(QString name);
+    /*public*/ int getPreferredWidth(int col) override;
+    /*public*/ void configureTable(JTable* table) override;
+//    /*public*/ NamedBean* getBySystemName(QString name) const;
+//    /*public*/ NamedBean* getByUserName(QString name);
     /*synchronized*/ /*public*/ void dispose() ;
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);

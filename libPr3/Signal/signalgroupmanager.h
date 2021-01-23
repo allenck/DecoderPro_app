@@ -35,6 +35,7 @@
  Q_OBJECT
 public:
     SignalGroupManager(QObject* parent = 0) : AbstractManager(parent) {}
+    SignalGroupManager(SystemConnectionMemo*, QObject* parent = 0) : AbstractManager(memo, parent) {}
     ~SignalGroupManager() {}
     SignalGroupManager(const SignalGroupManager&) : AbstractManager() {}
     /*public*/ virtual SignalGroup* getSignalGroup(QString /*name*/) {return nullptr;}

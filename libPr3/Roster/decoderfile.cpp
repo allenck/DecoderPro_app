@@ -190,6 +190,29 @@ DecoderFile::DecoderFile(QObject *parent) :
 
 /*public*/ QString DecoderFile::getMfg()       { return _mfg; }
 /*public*/ QString DecoderFile::getMfgID()     { return _mfgID; }
+/**
+ * Get the SV2 "Developer ID" number.
+ *
+ * This value is assigned by the device
+ * manufacturer and is an 8-bit number.
+ * @return the developerID number
+ */
+/*public*/ QString DecoderFile::getDeveloperID() {
+    return _developerID;
+}
+
+/**
+ * Get the SV2 "Manufacturer ID" number.
+ *
+ * This value typically matches the NMRA
+ * manufacturer ID number and is an 8-bit number.
+ *
+ * @return the manufacturer number
+ */
+/*public*/ QString DecoderFile::getManufacturerID() {
+    return _manufacturerID;
+}
+
 /*public*/ QString DecoderFile::getModel()     { return _model; }
 /*public*/ QString DecoderFile::getFamily()    { return _family; }
 /*public*/ QString DecoderFile::getReplacementModel() {

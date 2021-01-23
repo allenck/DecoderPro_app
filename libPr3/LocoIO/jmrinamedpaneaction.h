@@ -16,22 +16,18 @@ public:
  /*public*/ JmriNamedPaneAction(QString s, WindowInterface* wi, QString paneClass);
  /*public*/ JmriNamedPaneAction(QString s, QIcon i, WindowInterface* wi, QString paneClass);
  /*public*/ JmriNamedPaneAction(QString s, QString p,QObject *parent = nullptr);
- /*public*/ JmriPanel* makePanel();
+ /*public*/ JmriPanel* makePanel() override;
 
 signals:
 
 public slots:
- // /*public*/ void actionPerformed(ActionEvent* e = 0);
 
 private:
  Logger* log;
- //WindowInterface* wi;
  void common();
- JmriPanel* cache;
 
 protected:
  /*protected*/ QString paneClass;
-// /*protected*/ QObject* context;// = NULL;
  /*protected*/ WindowInterface::Hint hint;// = WindowInterface.Hint.DEFAULT;
 };
 

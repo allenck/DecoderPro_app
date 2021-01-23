@@ -75,7 +75,7 @@
         //throw AssertionError("unknown error");
     qDebug() << info;
     //JOptionPane::showMessageDialog(nullptr, info + message, "Assert error",  JOptionPane::WARNING_MESSAGE);
-    int retval = JOptionPane::showOptionDialog(NULL, info + message + "Continue testing?", tr("Assert error"),
+    int retval = JOptionPane::showOptionDialog(NULL, info + message + "\nContinue testing?", tr("Assert error"),
             JOptionPane::YES_NO_OPTION,
             JOptionPane::QUESTION_MESSAGE/*, QIcon(), NULL, NULL*/);
     if(retval != 0)
@@ -1387,3 +1387,30 @@ AssertionError::AssertionError(QString s)
  msg = s;
 }
 
+/*public*/ /*static*/ void Assertions::assertNotNull(QObject* obj, QString msg, QString file,int line)
+{
+ Assert::assertNotNull(msg, obj, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertEquals(QString s1, QString s2, QString msg, QString file,int line)
+{
+ Assert::assertEquals(msg, s1, s2, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertTrue(bool condition, QString msg, QString file,int line){
+ Assert::assertTrue(msg, condition, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertFalse(bool condition, QString msg, QString file,int line){
+ Assert::assertFalse(msg, condition, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertNull(QObject* obj, QString msg, QString file,int line)
+{
+ Assert::assertNull(msg, obj, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertEquals(int i1, int i2, QString msg, QString file,int line)
+{
+ Assert::assertEquals(msg, i1, i2, file, line);
+}

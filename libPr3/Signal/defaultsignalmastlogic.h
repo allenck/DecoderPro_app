@@ -56,6 +56,8 @@ public:
     /*public*/ bool removeDestination(SignalMast* dest) override;
     /*public*/ void disableLayoutEditorUse() override;
     /*public*/ void useLayoutEditor(bool boo, SignalMast* destination) throw (JmriException) override;
+    /*public*/ int setupDirectionSensors() override;
+    /*public*/ void removeDirectionSensors() override;
     /*public*/ bool useLayoutEditor(SignalMast* destination) override;
     /*public*/ void useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) throw (JmriException) override;
     /*public*/ bool useLayoutEditorTurnouts(SignalMast* destination);

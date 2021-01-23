@@ -335,6 +335,7 @@
 #include "ctc/otherdata.h"
 #include "se8csignalheadxml.h"
 #include "turnoutoperationmanagerxml.h"
+#include "lncvprogpane.h"
 
 bool Metatypes::done = false;
 
@@ -687,6 +688,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<OtherData>("OtherData");
  qRegisterMetaType<SE8cSignalHeadXml>("SE8cSignalHeadXml");
  qRegisterMetaType<TurnoutOperationManagerXml>("TurnoutOperationManagerXml");
+ qRegisterMetaType<LncvProgPane>("LncvProgPane");
 
  Metatypes::done = true;
 }

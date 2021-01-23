@@ -22,6 +22,8 @@
  * @author		Bob Jacobsen  Copyright (C) 2010
  * @version             $Revision: 20788 $
  */
+
+class LncvDevicesManager;
 class LnPredefinedMeters;
 class LnCabSignalManager;
 class LnMultiMeter;
@@ -70,6 +72,7 @@ public:
  LnMessageManager* getLnMessageManager();
  DefaultProgrammerManager *getProgrammerManager();
  void setProgrammerManager(DefaultProgrammerManager* p);
+ /*public*/ void setLncvDevicesManager(LncvDevicesManager* lncvdm);
  /*public*/ bool provides(QString type)override;
 // /*public*/ Manager*  get(QString T) override;
  void configureManagers();
@@ -83,6 +86,7 @@ public:
  LnReporterManager* getReporterManager();
  virtual LnSensorManager* getSensorManager();
  LnLightManager* getLightManager();
+ /*public*/ LncvDevicesManager* getLncvDevicesManager();
  /*public*/ LnPredefinedMeters* getPredefinedMeters();
 
 // LocoNetConsistManager* getConsistManager();
@@ -97,6 +101,7 @@ private:
  LnTrafficController* lt = nullptr;
  LnMessageManager* lnm = nullptr;
  SlotManager* sm = nullptr;
+ /*private*/ LncvDevicesManager* lncvdm = nullptr;
  static Logger* log;
  LocoNetConsistManager* consistManager = nullptr;
  void common();

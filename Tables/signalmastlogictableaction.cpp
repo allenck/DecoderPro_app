@@ -95,7 +95,20 @@ void SignalMastLogicTableAction::common()
              JOptionPane::showMessageDialog(NULL,tr("Generation of Sections Complete"));
 //         }
      });
- }
+     QAction* setSMLDirSensors = new QAction(tr("Add Direction Sensors to SML"));
+     pathMenu->addAction(setSMLDirSensors);
+//     setSMLDirSensors.addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+     connect(setSMLDirSensors, &QAction::triggered, [=]{
+             int n = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->setupSignalMastsDirectionSensors();
+             if (n > 0) {
+                 JOptionPane::showMessageDialog(finalF, tr("There were %1 errors, see console log.").arg(n),
+                         tr("Error"), JOptionPane::ERROR_MESSAGE);
+             }
+//         }
+     });
+}
 
 
  /*protected*/ void SignalMastLogicTableAction::createModel()
@@ -117,7 +130,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  }
 
  /*public EcosLocoAddress getByDccAddress(int address) {return getManager().getByDccAddress(address);}*/
- /*public*/ QString SmlBeanTableDataModel::getValue(QString /*s*/) {
+ /*public*/ QString SmlBeanTableDataModel::getValue(QString /*s*/) const{
      return "Set";
  }
 
@@ -305,6 +318,8 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
              return ""; // override default, no title for Edit column
          case ENABLECOL:
              return tr("Head Enabled");
+         case MAXSPEEDCOL:
+             return tr("Max speed");
          default:
              break;
      }
@@ -313,23 +328,23 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  }
 
 // @Override
-// /*public*/ Class<?> getColumnClass(int col) {
-//     switch (col) {
-//         case SOURCECOL:
-//         case DESTCOL:
-//         case SOURCEAPPCOL:
-//         case COMCOL:
-//         case DESTAPPCOL:
-//             return String.class;
-//         case ENABLECOL:
-//             return Boolean.class;
-//         case EDITLOGICCOL:
-//         case DELCOL:
-//             return JButton.class;
-//         default:
-//             return NULL;
-//     }
-// }
+ /*public*/ QString SmlBeanTableDataModel::getColumnClass(int col) const {
+     switch (col) {
+         case SOURCECOL:
+         case DESTCOL:
+         case SOURCEAPPCOL:
+         case COMCOL:
+         case DESTAPPCOL:
+             return "String";
+         case ENABLECOL:
+             return "Boolean";
+         case EDITLOGICCOL:
+         case DELCOL:
+             return "JButton";
+         default:
+             return QString();
+     }
+ }
 
  //@Override
  /*public*/ Qt::ItemFlags SmlBeanTableDataModel::flags(const QModelIndex &index) const
@@ -382,6 +397,8 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      switch (col) {
          case SOURCECOL:
              return  JTextField(10).sizeHint().width();
+         case MAXSPEEDCOL:
+             return  JTextField(10).sizeHint().width();
          case COMCOL:
              return 75;
          case DESTCOL:
@@ -423,13 +440,13 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      configDeleteColumn(table);
  }
 
- /*public*/ NamedBean* SmlBeanTableDataModel::getBySystemName(QString /*name*/) const {
-     return NULL;
- }
+// /*public*/ NamedBean* SmlBeanTableDataModel::getBySystemName(QString /*name*/) const {
+//     return NULL;
+// }
 
- /*public*/ NamedBean* SmlBeanTableDataModel::getByUserName(QString /*name*/) {
-     return NULL;
- }
+// /*public*/ NamedBean* SmlBeanTableDataModel::getByUserName(QString /*name*/) {
+//     return NULL;
+// }
 
  /*synchronized*/ /*public*/ void SmlBeanTableDataModel::dispose() {
 
@@ -488,6 +505,8 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
              return tr("Delete");
          case EDITLOGICCOL:
              return tr("Edit");
+         case MAXSPEEDCOL:
+             return  (b != nullptr) ? b->getMaximumSpeed(getDestMastFromRow(row)) : 0.0;
          default:
              //log.error("internal state inconsistent with table requst for "+row+" "+col);
              break;;

@@ -20,11 +20,14 @@ public:
     /*public*/ QString mfgIdFromName(QString name);
     /*public*/ QString mfgNameFromId(QString name);
     /*public*/ QList<DecoderFile*>* matchingDecoderList(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model );
-    /*public*/ QComboBox* matchingComboBox(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model );
+    /*public*/ QList<DecoderFile*> matchingDecoderList(QString mfg, QString family,
+          QString decoderMfgID, QString decoderVersionID,
+          QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID);
+  /*public*/ QComboBox* matchingComboBox(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model );
     static /*public*/ QComboBox* jComboBoxFromList(QList<DecoderFile*>* l);
     static /*public*/ ComboBoxModel* jComboBoxModelFromList(QList<DecoderFile*>* l);
     /*public*/ DecoderFile* fileFromTitle(QString title );
-    /*public*/ bool checkEntry(int i, QString mfgName, QString family, QString mfgID, QString decoderVersionID, QString decoderProductID, QString model);
+    /*public*/ bool checkEntry(int i, QString mfgName, QString family, QString mfgID, QString decoderVersionID, QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID);
     static DecoderIndexFile* _instance;// = NULL;
     /*public*/ /*synchronized*/ static void resetInstance();
     /*public*/ /*synchronized*/ static DecoderIndexFile* instance();

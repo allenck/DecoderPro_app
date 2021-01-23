@@ -41,8 +41,13 @@ public:
      /*public*/ static /*final*/ QString PROTOCOL;// = "protocol"; // NOI18N
      /*public*/ static /*final*/ QString COMMENT;// = "comment"; // NOI18N
      /*public*/ static /*final*/ QString DECODER_MODEL;// = "decodermodel"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_DEVELOPERID;// = "developerID"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_MANUFACTURERID;// = "manufacturerID"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_PRODUCTID;// = "productID"; // NOI18N
      /*public*/ static /*final*/ QString DECODER_FAMILY;// = "decoderfamily"; // NOI18N
      /*public*/ static /*final*/ QString DECODER_COMMENT;// = "decodercomment"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_MAXFNNUM;// = "decodermaxFnNum"; // NOI18N
+     /*public*/ static /*final*/ QString DEFAULT_MAXFNNUM;// = "28"; // NOI18N
      /*public*/ static /*final*/ QString IMAGE_FILE_PATH;// = "imagefilepath"; // NOI18N
      /*public*/ static /*final*/ QString ICON_FILE_PATH;// = "iconfilepath"; // NOI18N
      /*public*/ static /*final*/ QString URL;// = "url"; // NOI18N
@@ -125,9 +130,17 @@ public:
     /*public*/ void   setDecoderModel(QString s);
     /*public*/ QString getDecoderModel();
     /*public*/ void   setDecoderFamily(QString s);
+    /*public*/ void setDeveloperID(QString s);
+    /*public*/ QString getDeveloperID();
+    /*public*/ void setManufacturerID(QString s);
+    /*public*/ QString getManufacturerID();
+    /*public*/ void setProductID(QString s);
+    /*public*/ QString getProductID();
     /*public*/ QString getDecoderFamily();
     /*public*/ void   setDecoderComment(QString s);
     /*public*/ QString getDecoderComment();
+    /*public*/ void setMaxFnNum(QString s);
+    /*public*/ QString getMaxFnNum();
     /*public*/ DccLocoAddress* getDccLocoAddress();
     /*public*/ void setImagePath(QString s) ;
     /*public*/ QString getImagePath();
@@ -216,8 +229,12 @@ protected:
     /*protected*/ QString _decoderModel;// = "";
     /*protected*/ QString _decoderFamily;// = "";
     /*protected*/ QString _decoderComment;// = "";
+    /*protected*/ QString _maxFnNum = DEFAULT_MAXFNNUM;
     /*protected*/ QString _dateUpdated;// = "";
-    /*protected*/ int _maxSpeedPCT;// = 100;
+    /*protected*/ int _maxSpeedPCT = 100;
+    /*protected*/ QString _developerID = "";
+    /*protected*/ QString _manufacturerID = "";
+    /*protected*/ QString _productID = "";
     /*protected*/ QVector<QString> functionLabels;
     /*protected*/ QVector<QString> soundLabels;
     /*protected*/ QVector<QString> functionSelectedImages;

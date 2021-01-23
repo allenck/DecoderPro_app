@@ -76,6 +76,10 @@ Version::Version()
  QString releaseName;
  if (branched)
  {
+  QString version = QString::number(major) + "." + QString::number(minor);
+  if (test != 0) {
+      version = version + "." + QString::number(test);
+  }
   QString addOn;
   if ("unknown"==(revisionId))
   {

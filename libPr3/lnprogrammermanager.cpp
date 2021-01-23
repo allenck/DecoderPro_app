@@ -37,6 +37,10 @@ LnProgrammerManager::LnProgrammerManager(LocoNetSystemConnectionMemo* memo)
 
 /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETSV1MODE    = new ProgrammingMode("LOCONETSV1MODE", tr("System Variable Type 1"));
 /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETSV2MODE    = new ProgrammingMode("LOCONETSV2MODE", tr("System Variable Type 2"));
+/**
+ * Programming for Uhlenbrock (LocoNet) LNCV protocol.
+ */
+/*public*/ /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETLNCVMODE    = new ProgrammingMode("LOCONETLNCVMODE", tr("LNCV (Uhlenbrock)"));
 /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETBDOPSWMODE = new ProgrammingMode("LOCONETBDOPSWMODE", tr("Board Op Switches"));
 /*static*/ /*final*/ ProgrammingMode* LnProgrammerManager::LOCONETCSOPSWMODE = new ProgrammingMode("LOCONETCSOPSWMODE", tr("Cmd Station Op Switches"));
 /**

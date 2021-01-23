@@ -84,6 +84,10 @@
 #include "loconet/lnpredefinedmeterstestaction.h"
 #include "loconet/lniplimplementationtestaction.h"
 #include "tables/oblocktableactiontestaction.h"
+#include "loconet/lncvdevicetestaction.h"
+#include "loconet/lncvmessagecontentsclasstestaction.h"
+#include "loconet/lncvprogpanetestaction.h"
+#include "loconet/lncvprogtablemodeltestaction.h".h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -156,6 +160,13 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTurnoutsMenu->addAction(new LnTurnoutManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetMessageInterpretTestAction(this));
     loconetTestMenu->addAction(new LocoNetConsistTestAction(this));
+
+    QMenu* lncvMenu = new QMenu("Lncv");
+    loconetTestMenu->addMenu(lncvMenu);
+    lncvMenu->addAction(new LncvDeviceTestAction(this));
+    lncvMenu->addAction(new LncvMessageContentsClassTestAction(this));
+    lncvMenu->addAction(new LncvProgPaneTestAction(this));
+    lncvMenu->addAction(new LncvProgTableModelTestAction(this));
 
     QMenu* sprogTestMenu = new QMenu(tr("Sprog"));
     addMenu(sprogTestMenu);

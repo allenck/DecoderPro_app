@@ -2,6 +2,8 @@
 #define JBUTTON_H
 
 #include <QPushButton>
+#include <QIcon>
+#include <QEvent>
 
 class Action;
 class JActionEvent;
@@ -17,6 +19,7 @@ public:
  /*public*/ JButton(QString text, QIcon icon, QWidget *parent = 0);
 // /*public*/ void setIcon(const QIcon &icon);
  /*public*/ void setName(QString s) {setObjectName(s);}
+// /*public*/ void setRolloverIcon(QIcon icon);
 signals:
  void actionPerformed(JActionEvent*);
 
@@ -26,7 +29,25 @@ public slots:
 private:
  void common(QString, QIcon);
  void setAction(Action*);
+ QIcon rolloverIcon;
+ QIcon icon;
+// bool eventFilter(QObject *watched, QEvent *event)
+// {
+//  if(!rolloverIcon.isNull())
+//  {
+//   if (event->type() == QEvent::Enter) {
+//       // The push button is hovered by mouse
+//       setIcon(rolloverIcon);
+//       return true;
+//   }
 
+//   if (event->type() == QEvent::Leave){
+//       // The push button is not hovered by mouse
+//       setIcon(icon);
+//       return true;
+//   }
+//  }
+// }
 };
 
 #endif // JBUTTON_H

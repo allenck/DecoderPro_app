@@ -1071,7 +1071,14 @@ SOURCES += \
     abstractblockmanager.cpp \
     abstractsectionmanager.cpp \
     abstractnamedbeanhandlemanager.cpp \
-    abstractroutemanager.cpp
+    abstractroutemanager.cpp \
+    loconet/lncvdevicesmanager.cpp \
+    loconet/lncvdevices.cpp \
+    loconet/lncvdevice.cpp \
+    loconet/lncvmessagecontents.cpp \
+    loconet/lncvprogtablemodel.cpp \
+    loconet/lncvprogpane.cpp \
+    loconet/lncvprogaction.cpp
 
 
  !contains(FTDI, 1) {
@@ -2159,7 +2166,15 @@ HEADERS += \
     abstractblockmanager.h \
     abstractsectionmanager.h \
     abstractnamedbeanhandlemanager.h \
-    abstractroutemanager.h
+    abstractroutemanager.h \
+    loconet/lncvdevicesmanager.h \
+    loconet/lncvdevices.h \
+    loconet/lncvdevice.h \
+    loconet/lncvmessagecontents.h \
+    loconet/programmingtool.h \
+    loconet/lncvprogtablemodel.h \
+    loconet/lncvprogpane.h \
+    loconet/lncvprogaction.h
 
 
  !contains(FTDI, 1) {

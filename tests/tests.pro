@@ -246,7 +246,16 @@ SOURCES += \
     loconet/lniplimplementationtest.cpp \
     loconet/lniplimplementationtestaction.cpp \
     tables/oblocktableactiontest.cpp \
-    tables/oblocktableactiontestaction.cpp
+    tables/oblocktableactiontestaction.cpp \
+    loconet/lncvdevicetest.cpp \
+    loconet/lncvdevicetestaction.cpp \
+    loconet/lncvmessagecontentsclasstest.cpp \
+    loconet/lncvmessagecontentsclasstestaction.cpp \
+    lncvprogpanetest.cpp \
+    jmripaneltest.cpp \
+    loconet/lncvprogpanetestaction.cpp \
+    loconet/lncvprogtablemodeltest.cpp \
+    loconet/lncvprogtablemodeltestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -470,7 +479,16 @@ HEADERS += \
     loconet/lniplimplementationtest.h \
     loconet/lniplimplementationtestaction.h \
     tables/oblocktableactiontest.h \
-    tables/oblocktableactiontestaction.h
+    tables/oblocktableactiontestaction.h \
+    loconet/lncvdevicetest.h \
+    loconet/lncvdevicetestaction.h \
+    loconet/lncvmessagecontentsclasstest.h \
+    loconet/lncvmessagecontentsclasstestaction.h \
+    lncvprogpanetest.h \
+    jmripaneltest.h \
+    loconet/lncvprogpanetestaction.h \
+    loconet/lncvprogtablemodeltest.h \
+    loconet/lncvprogtablemodeltestaction.h
 
 unix {
     target.path = /usr/lib

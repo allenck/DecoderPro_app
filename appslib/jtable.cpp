@@ -9769,6 +9769,18 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
  }
 }
 
+/*public*/ TableColumn* JTable::getColumn(QString name)
+{
+ for(int i =0; i < getColumnCount(); i++)
+ {
+  if(getColumnName(i) == name)
+  {
+   return getColumnModel()->getColumn(i);
+  }
+ }
+ return nullptr;
+}
+
 /*public*/ QAbstractItemDelegate* JTable::getCellRenderer(int row, int column){
     return itemDelegate(model()->index(row, column));
 }
@@ -9776,3 +9788,4 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
 /*public*/ QAbstractItemDelegate *JTable::getCellEditor(int row, int column){
     return itemDelegate(model()->index(row, column));
 }
+

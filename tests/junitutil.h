@@ -22,6 +22,7 @@ public:
     /*public*/ static void initRosterConfigManager();
     /*public*/ static void resetProfileManager(Profile* profile);
     static /*public*/ void waitFor(ReleaseUntil *condition, QString name, QString file = __FILE__, int line = __LINE__);
+    static /*public*/ void waitFor(bool (*condition)(), QString name, QString file, int line);
     static /*public*/ bool waitFor(ReleaseUntil* condition, QString file = __FILE__, int line = __LINE__);
     static /*public*/ void waitFor(int time);
     static /*public*/ bool fasterWaitFor(ReleaseUntil* condition, QString name, QString file, int line);

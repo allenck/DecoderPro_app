@@ -27,6 +27,8 @@
 #include <QDebug>
 #include "lncabsignalmanager.h"
 #include "lnpredefinedmeters.h"
+#include "lncvdevicesmanager.h"
+
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
  : DefaultSystemConnectionMemo("L","LocoNet", parent)
@@ -184,6 +186,9 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
     programmerManager = p;
 }
 
+/*public*/ void LocoNetSystemConnectionMemo::setLncvDevicesManager(LncvDevicesManager* lncvdm) {
+    this->lncvdm = lncvdm;
+}
 
 /**
  * Tells which managers this provides by class
@@ -403,6 +408,17 @@ LnLightManager* LocoNetSystemConnectionMemo::getLightManager()
  if (lightManager == NULL)
   lightManager = new LnLightManager(this);
  return lightManager;
+}
+
+/*public*/ LncvDevicesManager* LocoNetSystemConnectionMemo::getLncvDevicesManager() {
+    if (getDisabled()) {
+        return nullptr;
+    }
+    if (lncvdm == nullptr) {
+        setLncvDevicesManager(new LncvDevicesManager(this));
+        log->debug("Auto create of LncvDevicesManager for initial configuration");
+    }
+    return lncvdm;
 }
 
 /*public*/ LnPredefinedMeters* LocoNetSystemConnectionMemo::getPredefinedMeters() {

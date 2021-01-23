@@ -404,6 +404,70 @@ class RunnableThis : public Runnable
 }
 
 /**
+ * Add direction sensors to SML
+ *
+ * @return number of errors
+ */
+//@Override
+/*public*/ int DefaultSignalMastLogic::setupDirectionSensors() {
+    // iterrate over the signal masts
+    int errorCount = 0;
+    for (SignalMast* sm : getDestinationList()) {
+        QString displayName = sm->getDisplayName();
+        Section* sec = getAssociatedSection(sm);
+        Block* facingBlock = nullptr;
+        if (sec != nullptr) {
+            Sensor* fwd = sec->getForwardBlockingSensor();
+            Sensor* rev = sec->getReverseBlockingSensor();
+            LayoutBlock* lBlock = getFacingBlock();
+            if (lBlock == nullptr) {
+                try {
+                    useLayoutEditor(true, sm); // force a refind
+                } catch (JmriException ex) {
+                    continue;
+                }
+            }
+            if (lBlock != nullptr) {
+                facingBlock = lBlock->getBlock();
+                EntryPoint* fwdEntryPoint = sec->getEntryPointFromBlock(facingBlock, Section::FORWARD);
+                EntryPoint* revEntryPoint = sec->getEntryPointFromBlock(facingBlock, Section::REVERSE);
+                log->debug(tr("Mast[%1] Sec[%2] Fwd[%3] Rev [%4]").arg(
+                        displayName).arg(sec->getDisplayName()).arg(fwd?fwd->getDisplayName():"null").arg(rev?rev->getDisplayName():"null"));
+                if (fwd != nullptr && fwdEntryPoint != nullptr) {
+                    addSensor(fwd->getUserName(), Sensor::INACTIVE, sm);
+                    log->debug(tr("Mast[%1] Sec[%2] Fwd[%3] fwdEP[%4] revEP[%5]").arg(
+                            displayName).arg(sec->getDisplayName()).arg(fwd->getDisplayName()).arg(
+                            fwdEntryPoint->getBlock()->getUserName()));
+
+                } else if (rev != nullptr && revEntryPoint != nullptr) {
+                    addSensor(rev->getUserName(), Sensor::INACTIVE, sm);
+                    log->debug(tr("Mast[%1] Sec[%2] Rev [%3] fwdEP[%4] revEP[%5]").arg(
+                            displayName).arg(sec->getDisplayName()).arg(fwd->getDisplayName()).arg(rev->getDisplayName()).arg(
+                            revEntryPoint->getBlock()->getUserName()));
+
+                } else {
+                    log->error(tr("Mast[%1] Cannot Establish entry point to protected section").arg(displayName));
+                    errorCount += 1;
+                }
+            } else {
+                log->error(tr("Mast[%1] No Facing Block").arg(displayName));
+                errorCount += 1;
+            }
+        } else {
+            log->error(tr("Mast[%1] No Associated Section").arg(displayName));
+            errorCount += 1;
+        }
+    }
+    return errorCount;
+}
+
+//@Override
+/*public*/ void DefaultSignalMastLogic::removeDirectionSensors() {
+    //TODO find aaway of easilty identifying the ones we added.
+    return ;
+}
+
+/**
 * Sets whether we should use the information from the layout editor for either
 * blocks or turnouts.
 *

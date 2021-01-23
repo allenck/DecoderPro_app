@@ -117,6 +117,17 @@ public:
 
     /*public*/ virtual void setSignalLogicDelay(long l) = 0;
     //PropertyChangeSupport* pcs;
+    /**
+     * Iterate over the signal masts setting up direction Section sensors.
+     * @return error count
+     */
+    /*public*/ virtual int setupSignalMastsDirectionSensors() = 0;
+
+    /**
+     * Iterate over the signal masts setting up direction Section sensors.
+     */
+    /*public*/ virtual void removeSignalMastsDirectionSensors() = 0;
+
  friend class RunnableThis;
  friend class DestinationMast;
  friend class LevelXing;

@@ -77,11 +77,19 @@ public:
     /*public*/ QSet<QString> getAllAttributeKeys();
     /*public*/ QList<RosterEntry*> getEntriesInGroup(QString group);
     /*public*/ QList<RosterEntry*> getEntriesMatchingCriteria(QString roadName, QString roadNumber, QString dccAddress,
+            QString mfg, QString decoderModel, QString decoderFamily, QString id, QString group,
+            QString developerID, QString manufacturerID, QString productID);
+    /*public*/ QList<RosterEntry*> getEntriesMatchingCriteria(QString roadName, QString roadNumber, QString dccAddress,
             QString mfg, QString decoderMfgID, QString decoderVersionID, QString id, QString group);
     /*public*/ QList<RosterEntry*> matchingList(QString roadName, QString roadNumber, QString dccAddress,
             QString mfg, QString decoderMfgID, QString decoderVersionID, QString id);
+    /*public*/ QList<RosterEntry*> matchingList(QString dccAddress, QString productID);
     /*public*/ bool checkEntry(int i, QString roadName, QString roadNumber, QString dccAddress, QString mfg, QString decoderModel, QString decoderFamily, QString id, QString group);
     /*public*/ bool checkEntry(QList<RosterEntry*> list, int i, QString roadName, QString roadNumber, QString dccAddress, QString mfg, QString decoderModel, QString decoderFamily, QString id, QString group);
+    /*public*/ bool checkEntry(RosterEntry* r, QString roadName, QString roadNumber, QString dccAddress,
+            QString mfg, QString decoderModel, QString decoderFamily,
+            QString id, QString group, QString developerID,
+                QString manufacturerID, QString productID);
     void writeFile(QString name); // throw (FileNotFoundException, IOException);
     void writeFile (QFile* file); //throw (IOException);
     static QString _rosterGroupPrefix;// = "RosterGroup:";
@@ -166,6 +174,22 @@ private:
  /*private*/ QString defaultRosterGroup;// = NULL;
  bool readFile(QString name);
  /*private*/ bool dirty;// = false;
+ /**
+  * Internal interface works with #findMatchingEntries to provide a common
+  * search-match-return capability.
+  */
+ /*private*/ /*interface*/class  RosterComparator {
+   Roster* r;
+  public:
+   RosterComparator(Roster* r) {this->r = r;}
+     ///*public*/ bool check(RosterEntry* r);
+     #if 0
+     return r->checkEntry(r, roadName, roadNumber, dccAddress,
+                           mfg, decoderModel, decoderFamily,
+                           id, group, developerID, manufacturerID, productID);
+#endif
+ };
+ /*private*/ QList<RosterEntry*> findMatchingEntries(RosterComparator c);
  /*
   * This should only be non-null if explictly set to a non-default location.
   */
@@ -190,6 +214,7 @@ protected:
 
   friend class RosterTest;
 };
+
 class RosterPropertyChangeListener : public PropertyChangeListener
 {
  Q_OBJECT

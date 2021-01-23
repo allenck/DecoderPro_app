@@ -80,6 +80,7 @@ LocoNetMenu* LocoNetMenu::_instance = nullptr;
    << new LocoNetMenuItem(tr("Send Throttle Messages"), "jmri.jmrix.loconet.swing.throttlemsg.MessagePanel")
    //<< new LocoNetMenuItem(tr("Send LocoNet Packet"), "jmri.jmrix.loconet.locogen.LocoGenPanel")
    << new LocoNetMenuItem(tr("Send LocoNet Packet"), "LocoNetMsgDialog")
+   << new LocoNetMenuItem("Configure LNCV Modules", "jmri.jmrix.loconet.swing.lncvprog.LncvProgPane") // NOI18N
    << new LocoNetMenuItem(tr("Select PR3 Mode"), "jmri.jmrix.loconet.pr3.swing.Pr3SelectPane")
    << nullptr
    << new LocoNetMenuItem(tr("Download Firmware"), "jmri.jmrix.loconet.downloader.LoaderPane")

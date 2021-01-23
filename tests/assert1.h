@@ -94,4 +94,17 @@ public slots:
 private:
 };
 
+class Assertions : public QObject
+{
+ public:
+  /*public*/ static void assertNotNull(QObject* obj, QString msg, QString file,int line);
+  /*public*/ static void assertEquals(QString s1, QString s2, QString msg, QString file,int line);
+  /*public*/ static void assertTrue(bool cond, QString msg, QString file,int line);
+  /*public*/ static void assertFalse(bool condition, QString msg, QString file,int line);
+  /*public*/ static void assertNull(QObject* obj, QString msg, QString file,int line);
+
+  /*public*/ static void assertEquals(int i1, int i2, QString msg, QString file,int line);
+
+};
+
 #endif // ASSERT1_H

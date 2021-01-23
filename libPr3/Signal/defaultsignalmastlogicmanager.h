@@ -55,9 +55,11 @@ public:
     /*public*/ void automaticallyDiscoverSignallingPairs() throw (JmriException) override;
     /*public*/ void generateSection();
     QObject* self() {return (QObject*)this;}
-    /*public*/ QString getNamedBeanClass()const override {
-        return "SignalMastLogic";
-    }
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+    /*public*/ /*Class<SignalMastLogic>*/QString getNamedBeanClass() const override;
+    /*public*/ int setupSignalMastsDirectionSensors() override;
+    /*public*/ void removeSignalMastsDirectionSensors() override;
+
 signals:
     void on_newSignalMastLogicCreated(SignalMastLogic*);
     void propertyChange(PropertyChangeEvent*);

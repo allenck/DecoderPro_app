@@ -105,12 +105,8 @@ void ProgDebugger::common()
     return "error "+i;
 }
 
-/*public*/ void ProgDebugger::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException) {
-    writeCV(CV.toInt(), val, p);
-}
-
-/*public*/ void ProgDebugger::writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
-{
+/*public*/ void ProgDebugger::writeCV(QString CVName, int val, ProgListener* p) throw (ProgrammerException) {
+    int CV = CVName.toInt();
     nOperations++;
     /*final*/ ProgListener* m = p;
     // log out the request
@@ -156,14 +152,10 @@ void ProgDebugger::PDRunnable1::run()
 
 /*public*/ int ProgDebugger::lastReadCv() { return _lastReadCv; }
 
-/*public*/ void ProgDebugger::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
+/*public*/ void ProgDebugger::confirmCV(QString CVName, int val, ProgListener* p) throw (ProgrammerException)
 {
-    confirmCV(CV.toInt(), val, p);
-}
-
-/*public*/ void ProgDebugger::confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException)
-{
-    /*final*/ ProgListener* m = p;
+ int  CV = CVName.toInt();
+ /*final*/ ProgListener* m = p;
 
     nOperations++;
     // guess by comparing current value in val to has table
@@ -222,11 +214,8 @@ Logger* log = new Logger("PDRunnable2");
  }
 }
 
-/*public*/ void ProgDebugger::readCV(QString CV, ProgListener* p) throw (ProgrammerException) {
-    readCV(CV.toInt(), p);
-}
-
-/*public*/ void ProgDebugger::readCV(int CV, ProgListener* p) throw (ProgrammerException) {
+/*public*/ void ProgDebugger::readCV(QString CVName, ProgListener* p) throw (ProgrammerException) {
+    int CV = CVName.toInt();
     /*final*/ ProgListener* m = p;
     _lastReadCv = CV;
     nOperations++;
