@@ -131,16 +131,16 @@ private:
     QHash<SignalMast*, DestinationMast*> destList;// =  QHash<SignalMast*, DestinationMast*>();
     LayoutEditor* editor;
 
-    bool useAutoGenBlock;// = true;
-    bool useAutoGenTurnouts;// = true;
+    bool useAutoGenBlock = true;
+    bool useAutoGenTurnouts = true;
 
-    LayoutBlock* facingBlock;// = NULL;
-    LayoutBlock* protectingBlock;// = NULL;
+    LayoutBlock* facingBlock = NULL;
+    LayoutBlock* protectingBlock = NULL;
 
-    bool disposing;// = false;
-    Logger*log;
+    bool disposing = false;
+    static Logger* log;
     //PropertyChangeSupport* pcs;// = new jPropertyChangeSupport(this);
-    /*volatile*/ bool inWait;// = false;
+    /*volatile*/ bool inWait = false;
     QThread* thr;// = NULL;
     /*synchronized*/ void setSignalAppearance();
     QMutex mutex;

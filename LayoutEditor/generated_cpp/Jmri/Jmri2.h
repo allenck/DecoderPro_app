@@ -2942,6 +2942,7 @@ void delete_Roster(Roster* obj) { delete obj; }
    void addRosterGroup(Roster* theWrappedObject, RosterGroup*  rg);
    void addRosterGroups(Roster* theWrappedObject, QList<RosterGroup* >  groups);
    bool  checkEntry(Roster* theWrappedObject, QList<RosterEntry* >  list, int  i, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group);
+   bool  checkEntry(Roster* theWrappedObject, RosterEntry*  r, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group, QString  developerID, QString  manufacturerID, QString  productID);
    bool  checkEntry(Roster* theWrappedObject, int  i, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group);
    void copyRosterGroupList(Roster* theWrappedObject, QString  oldName, QString  newName);
    void delRosterGroupList(Roster* theWrappedObject, QString  str);
@@ -2957,6 +2958,7 @@ void delete_Roster(Roster* obj) { delete obj; }
    QList<RosterEntry* >  getEntriesByDccAddress(Roster* theWrappedObject, QString  a);
    QList<RosterEntry* >  getEntriesInGroup(Roster* theWrappedObject, QString  group);
    QList<RosterEntry* >  getEntriesMatchingCriteria(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderMfgID, QString  decoderVersionID, QString  id, QString  group);
+   QList<RosterEntry* >  getEntriesMatchingCriteria(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group, QString  developerID, QString  manufacturerID, QString  productID);
    QList<RosterEntry* >  getEntriesWithAttributeKey(Roster* theWrappedObject, QString  key);
    QList<RosterEntry* >  getEntriesWithAttributeKeyValue(Roster* theWrappedObject, QString  key, QString  value);
    RosterEntry*  getEntry(Roster* theWrappedObject, int  i);
@@ -2976,6 +2978,7 @@ void delete_Roster(Roster* obj) { delete obj; }
    QString  getSelectedRosterGroup(Roster* theWrappedObject);
    Roster*  static_Roster_instance();
    QString  static_Roster_makeValidFilename(QString  entry);
+   QList<RosterEntry* >  matchingList(Roster* theWrappedObject, QString  dccAddress, QString  productID);
    QList<RosterEntry* >  matchingList(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderMfgID, QString  decoderVersionID, QString  id);
    int  numEntries(Roster* theWrappedObject);
    int  numGroupEntries(Roster* theWrappedObject, QString  group);
@@ -3052,6 +3055,7 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    QString  getDecoderFamily(RosterEntry* theWrappedObject);
    QString  getDecoderModel(RosterEntry* theWrappedObject);
    QString  static_RosterEntry_getDefaultOwner();
+   QString  getDeveloperID(RosterEntry* theWrappedObject);
    QString  getDisplayName(RosterEntry* theWrappedObject);
    QString  getFileName(RosterEntry* theWrappedObject);
    QString  getFunctionImage(RosterEntry* theWrappedObject, int  fn);
@@ -3064,11 +3068,14 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    QString  getId(RosterEntry* theWrappedObject);
    QString  getImagePath(RosterEntry* theWrappedObject);
    int  getMAXFNNUM(RosterEntry* theWrappedObject);
+   QString  getManufacturerID(RosterEntry* theWrappedObject);
+   QString  getMaxFnNum(RosterEntry* theWrappedObject);
    int  getMaxSpeedPCT(RosterEntry* theWrappedObject);
    QString  getMfg(RosterEntry* theWrappedObject);
    QString  getModel(RosterEntry* theWrappedObject);
    QString  getOwner(RosterEntry* theWrappedObject);
    QString  getPathName(RosterEntry* theWrappedObject);
+   QString  getProductID(RosterEntry* theWrappedObject);
    LocoAddress::Protocol  getProtocol(RosterEntry* theWrappedObject);
    QString  getProtocolAsString(RosterEntry* theWrappedObject);
    int  getRfidTag(RosterEntry* theWrappedObject);
@@ -3093,6 +3100,7 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    void setDecoderFamily(RosterEntry* theWrappedObject, QString  s);
    void setDecoderModel(RosterEntry* theWrappedObject, QString  s);
    void static_RosterEntry_setDefaultOwner(QString  n);
+   void setDeveloperID(RosterEntry* theWrappedObject, QString  s);
    void setFileName(RosterEntry* theWrappedObject, QString  s);
    void setFunctionImage(RosterEntry* theWrappedObject, int  fn, QString  s);
    void setFunctionLabel(RosterEntry* theWrappedObject, int  fn, QString  label);
@@ -3102,11 +3110,14 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    void setId(RosterEntry* theWrappedObject, QString  s);
    void setImagePath(RosterEntry* theWrappedObject, QString  s);
    void setLongAddress(RosterEntry* theWrappedObject, bool  b);
+   void setManufacturerID(RosterEntry* theWrappedObject, QString  s);
+   void setMaxFnNum(RosterEntry* theWrappedObject, QString  s);
    void setMaxSpeedPCT(RosterEntry* theWrappedObject, int  maxSpeedPCT);
    void setMfg(RosterEntry* theWrappedObject, QString  s);
    void setModel(RosterEntry* theWrappedObject, QString  s);
    void setOpen(RosterEntry* theWrappedObject, bool  boo);
    void setOwner(RosterEntry* theWrappedObject, QString  s);
+   void setProductID(RosterEntry* theWrappedObject, QString  s);
    void setProtocol(RosterEntry* theWrappedObject, LocoAddress::Protocol  protocol);
    void setRfidTag(RosterEntry* theWrappedObject, QString  tag);
    void setRoadName(RosterEntry* theWrappedObject, QString  s);

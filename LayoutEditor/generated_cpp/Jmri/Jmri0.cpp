@@ -33410,11 +33410,6 @@ void PythonQtWrapper_ControlPanelEditor::makeCircuitMenu(ControlPanelEditor* the
   ( ((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->promoted_makeCircuitMenu());
 }
 
-void PythonQtWrapper_ControlPanelEditor::makeCircuitMenu(ControlPanelEditor* theWrappedObject, bool  edit)
-{
-  ( ((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->promoted_makeCircuitMenu(edit));
-}
-
 void PythonQtWrapper_ControlPanelEditor::makeDataFlavors(ControlPanelEditor* theWrappedObject)
 {
   ( ((PythonQtPublicPromoter_ControlPanelEditor*)theWrappedObject)->promoted_makeDataFlavors());
@@ -37710,26 +37705,26 @@ if (_wrapper) {
 }
   DefaultLogixManager::activateAllLogixs();
 }
-bool  PythonQtShell_DefaultLogixManager::getLoadDisabled() const
+QString  PythonQtShell_DefaultLogixManager::getBeanTypeHandled(bool  plural0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getLoadDisabled");
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      bool returnValue{};
-      void* args[1] = {NULL};
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
         if (args[0]!=&returnValue) {
           if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getLoadDisabled", methodInfo, result);
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
           } else {
-            returnValue = *((bool*)args[0]);
+            returnValue = *((QString*)args[0]);
           }
         }
       }
@@ -37741,7 +37736,7 @@ if (_wrapper) {
     }
   }
 }
-  return DefaultLogixManager::getLoadDisabled();
+  return DefaultLogixManager::getBeanTypeHandled(plural0);
 }
 QString  PythonQtShell_DefaultLogixManager::getNamedBeanClass() const
 {
@@ -37919,9 +37914,9 @@ void PythonQtWrapper_DefaultLogixManager::activateAllLogixs(DefaultLogixManager*
   ( theWrappedObject->activateAllLogixs());
 }
 
-bool  PythonQtWrapper_DefaultLogixManager::getLoadDisabled(DefaultLogixManager* theWrappedObject) const
+QString  PythonQtWrapper_DefaultLogixManager::getBeanTypeHandled(DefaultLogixManager* theWrappedObject, bool  plural)
 {
-  return ( theWrappedObject->getLoadDisabled());
+  return ( theWrappedObject->getBeanTypeHandled(plural));
 }
 
 QString  PythonQtWrapper_DefaultLogixManager::getNamedBeanClass(DefaultLogixManager* theWrappedObject) const

@@ -978,8 +978,6 @@ SOURCES += \
     zeroconfservicemanager.cpp \
     zeroconfpreferences.cpp \
     logix/learnthrottleframe.cpp \
-    logix/ltfcontrolpanel.cpp \
-    logix/ltffunctionpanel.cpp \
     defaultsystemconnectionmemo.cpp \
     lnpredefinedmeters.cpp \
     meterupdatetask.cpp \
@@ -1078,7 +1076,10 @@ SOURCES += \
     loconet/lncvmessagecontents.cpp \
     loconet/lncvprogtablemodel.cpp \
     loconet/lncvprogpane.cpp \
-    loconet/lncvprogaction.cpp
+    loconet/lncvprogaction.cpp \
+    logix/learnfunctionpanel.cpp \
+    logix/learncontrolpanel.cpp \
+    logix/learnspeedpanel.cpp
 
 
  !contains(FTDI, 1) {
@@ -2063,8 +2064,6 @@ HEADERS += \
     networktopologyevent.h \
     zeroconfpreferences.h \
     logix/learnthrottleframe.h \
-    logix/ltfcontrolpanel.h \
-    logix/ltffunctionpanel.h \
     defaultsystemconnectionmemo.h \
     lnpredefinedmeters.h \
     meterupdatetask.h \
@@ -2174,7 +2173,10 @@ HEADERS += \
     loconet/programmingtool.h \
     loconet/lncvprogtablemodel.h \
     loconet/lncvprogpane.h \
-    loconet/lncvprogaction.h
+    loconet/lncvprogaction.h \
+    logix/learncontrolpanel.h \
+    logix/learnfunctionpanel.h \
+    logix/learnspeedpanel.h
 
 
  !contains(FTDI, 1) {

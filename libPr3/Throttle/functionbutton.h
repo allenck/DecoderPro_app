@@ -61,16 +61,16 @@ public:
     static int BUT_WDTH;// = 56;
     /*final*/ static int BUT_IMG_SIZE;// = 45;
     QObject* jself() {return (QObject*)this;}
-    /*public*/ void setEnabled(bool b) {QWidget::setEnabled(b);}
-    /*public*/ bool isOpaque() {return true;}
-    /*public*/ QColor getForeground() {return Qt::black;}
-    /*public*/ QColor getBackground() {return Qt::lightGray;}
-    /*public*/ void setBackground(QColor) {}
-    /*public*/ void setOpaque(bool) {}
-    /*public*/ QFont getFont() {return QWidget::font();}
-    /*public*/ void setFont(QFont) {}
-    /*public*/ Border* getBorder() {return nullptr;}
-    /*public*/ void setBorder(Border*) {}
+    /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
+    /*public*/ bool isOpaque() override {return true;}
+    /*public*/ QColor getForeground() override {return Qt::black;}
+    /*public*/ QColor getBackground() override {return Qt::lightGray;}
+    /*public*/ void setBackground(QColor) override {}
+    /*public*/ void setOpaque(bool) override {}
+    /*public*/ QFont getFont() override {return QWidget::font();}
+    /*public*/ void setFont(QFont) override {}
+    /*public*/ Border* getBorder() override {return nullptr;}
+    /*public*/ void setBorder(Border*) override {}
 
 signals:
     void notifyFunctionStateChanged(int identity, bool isOn);
@@ -83,11 +83,11 @@ private:
     /*private*/ QList<FunctionListener*> listeners;// = new QList<FunctionListener>();
     /*private*/ int identity; // F0, F1, etc?
     /*private*/ bool isOn;
-    /*private*/ bool isLockable;// = true;
-    /*private*/ bool isDisplayed;// = true;
-    /*private*/ bool dirty;// = false;
-    /*private*/ bool _isImageOK;// = false;
-    /*private*/ bool _isSelectedImageOK;// = false;
+    /*private*/ bool isLockable = true;
+    /*private*/ bool isDisplayed = true;
+    /*private*/ bool dirty = false;
+    /*private*/ bool _isImageOK = false;
+    /*private*/ bool _isSelectedImageOK = false;
     /*private*/ int actionKey;
     /*private*/ QString buttonLabel;
     /*private*/ QMenu* popup;

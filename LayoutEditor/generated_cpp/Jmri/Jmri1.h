@@ -1390,6 +1390,7 @@ void delete_JTable(JTable* obj) { delete obj; }
    bool  getAutoCreateColumnsFromModel(JTable* theWrappedObject);
    QAbstractItemDelegate*  getCellEditor(JTable* theWrappedObject, int  row, int  column);
    QAbstractItemDelegate*  getCellRenderer(JTable* theWrappedObject, int  row, int  column);
+   TableColumn*  getColumn(JTable* theWrappedObject, QString  name);
    int  getColumnCount(JTable* theWrappedObject);
    TableColumnModel*  getColumnModel(JTable* theWrappedObject);
    QString  getColumnName(JTable* theWrappedObject, int  column);

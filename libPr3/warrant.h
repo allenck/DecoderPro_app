@@ -279,6 +279,7 @@ friend class ReleaseUntilWT2;
 friend class WarrantTest;
 friend class ThrottleRamp;
 friend class AllocateBlocks;
+friend class LearnSpeedPanel;
 };
 
 class BlockSpeedInfo

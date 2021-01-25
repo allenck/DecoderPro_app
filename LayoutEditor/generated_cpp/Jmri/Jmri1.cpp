@@ -12638,6 +12638,11 @@ QAbstractItemDelegate*  PythonQtWrapper_JTable::getCellRenderer(JTable* theWrapp
   return ( theWrappedObject->getCellRenderer(row, column));
 }
 
+TableColumn*  PythonQtWrapper_JTable::getColumn(JTable* theWrappedObject, QString  name)
+{
+  return ( theWrappedObject->getColumn(name));
+}
+
 int  PythonQtWrapper_JTable::getColumnCount(JTable* theWrappedObject)
 {
   return ( theWrappedObject->getColumnCount());

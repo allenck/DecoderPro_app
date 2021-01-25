@@ -9,6 +9,7 @@
 #include "warrantmanager.h"
 #include "signalheadmanager.h"
 #include "signalmastmanager.h"
+#include "loggerfactory.h"
 
 /*static*/ DefaultLogixManager* DefaultLogixManager::_instance = nullptr;
 
@@ -18,7 +19,6 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  setObjectName("DefaultLogixManager");
  setProperty("JavaClassName", "jmri.managers.DefaultLogixManager");
 
- log = new Logger("DefaultLogixManager");
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
 
@@ -92,33 +92,15 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     x = (Logix*)new DefaultLogix(systemName,userName);
     // save in the maps
     Register(x);
-    //emit newLogixCreated(x);
-    emit propertyChange(new PropertyChangeEvent(this, "length", QVariant(), QVariant(_tsys->count())));
 
-    /*The following keeps trace of the last created auto system name.
-    currently we do not reuse numbers, although there is nothing to stop the
-    user from manually recreating them*/
-    if (systemName.startsWith("IX:AUTO:"))
-    {
-     bool bOk;
-     int autoNumber = systemName.mid(8).toInt(&bOk);
-     if (autoNumber > lastAutoLogixRef)
-     {
-      lastAutoLogixRef = autoNumber;
-     }
-     if(!bOk)
-       log->warn("Auto generated SystemName "+ systemName + " is not in the correct format");
+    // Keep track of the last created auto system name
+    updateAutoNumber(systemName);
 
- }
  return x;
 }
 
 /*public*/ Logix* DefaultLogixManager::createNewLogix(QString userName) {
-    int nextAutoLogixRef = lastAutoLogixRef+1;
-    QString b = QString("IX:AUTO:");
-    QString nextNumber = paddedNumber->format(nextAutoLogixRef);
-    b.append(nextNumber);
-    return createNewLogix(b, userName);
+ return createNewLogix(getAutoSystemName(), userName);
 }
 
 /**
@@ -209,8 +191,6 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  */
 /*public*/ void DefaultLogixManager::setLoadDisabled(bool s) {loadDisabled = s;}
 
-/*public*/ bool DefaultLogixManager::getLoadDisabled() const {return loadDisabled;}
-
 /*static*/ /*public*/ DefaultLogixManager* DefaultLogixManager::instance() {
     if (_instance == nullptr) {
         _instance = new DefaultLogixManager();
@@ -218,5 +198,15 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return (_instance);
 }
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultLogixManager.class.getName());
+//@Override
+//@Nonnull
+/*public*/ QString DefaultLogixManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "Logixes" : "Logix");
+}
+
+/*public*/ QString DefaultLogixManager::getNamedBeanClass()const {
+    return "Logix";
+}
+
+/*static*/ Logger* DefaultLogixManager::log = LoggerFactory::getLogger("DefaultLogixManager");
 //}

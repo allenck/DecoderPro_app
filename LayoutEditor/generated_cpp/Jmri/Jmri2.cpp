@@ -24790,6 +24790,11 @@ bool  PythonQtWrapper_Roster::checkEntry(Roster* theWrappedObject, QList<RosterE
   return ( theWrappedObject->checkEntry(list, i, roadName, roadNumber, dccAddress, mfg, decoderModel, decoderFamily, id, group));
 }
 
+bool  PythonQtWrapper_Roster::checkEntry(Roster* theWrappedObject, RosterEntry*  r, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group, QString  developerID, QString  manufacturerID, QString  productID)
+{
+  return ( theWrappedObject->checkEntry(r, roadName, roadNumber, dccAddress, mfg, decoderModel, decoderFamily, id, group, developerID, manufacturerID, productID));
+}
+
 bool  PythonQtWrapper_Roster::checkEntry(Roster* theWrappedObject, int  i, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group)
 {
   return ( theWrappedObject->checkEntry(i, roadName, roadNumber, dccAddress, mfg, decoderModel, decoderFamily, id, group));
@@ -24863,6 +24868,11 @@ QList<RosterEntry* >  PythonQtWrapper_Roster::getEntriesInGroup(Roster* theWrapp
 QList<RosterEntry* >  PythonQtWrapper_Roster::getEntriesMatchingCriteria(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderMfgID, QString  decoderVersionID, QString  id, QString  group)
 {
   return ( theWrappedObject->getEntriesMatchingCriteria(roadName, roadNumber, dccAddress, mfg, decoderMfgID, decoderVersionID, id, group));
+}
+
+QList<RosterEntry* >  PythonQtWrapper_Roster::getEntriesMatchingCriteria(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderModel, QString  decoderFamily, QString  id, QString  group, QString  developerID, QString  manufacturerID, QString  productID)
+{
+  return ( theWrappedObject->getEntriesMatchingCriteria(roadName, roadNumber, dccAddress, mfg, decoderModel, decoderFamily, id, group, developerID, manufacturerID, productID));
 }
 
 QList<RosterEntry* >  PythonQtWrapper_Roster::getEntriesWithAttributeKey(Roster* theWrappedObject, QString  key)
@@ -24958,6 +24968,11 @@ Roster*  PythonQtWrapper_Roster::static_Roster_instance()
 QString  PythonQtWrapper_Roster::static_Roster_makeValidFilename(QString  entry)
 {
   return (Roster::makeValidFilename(entry));
+}
+
+QList<RosterEntry* >  PythonQtWrapper_Roster::matchingList(Roster* theWrappedObject, QString  dccAddress, QString  productID)
+{
+  return ( theWrappedObject->matchingList(dccAddress, productID));
 }
 
 QList<RosterEntry* >  PythonQtWrapper_Roster::matchingList(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderMfgID, QString  decoderVersionID, QString  id)
@@ -25191,6 +25206,11 @@ QString  PythonQtWrapper_RosterEntry::static_RosterEntry_getDefaultOwner()
   return (RosterEntry::getDefaultOwner());
 }
 
+QString  PythonQtWrapper_RosterEntry::getDeveloperID(RosterEntry* theWrappedObject)
+{
+  return ( theWrappedObject->getDeveloperID());
+}
+
 QString  PythonQtWrapper_RosterEntry::getDisplayName(RosterEntry* theWrappedObject)
 {
   return ( theWrappedObject->getDisplayName());
@@ -25251,6 +25271,16 @@ int  PythonQtWrapper_RosterEntry::getMAXFNNUM(RosterEntry* theWrappedObject)
   return ( theWrappedObject->getMAXFNNUM());
 }
 
+QString  PythonQtWrapper_RosterEntry::getManufacturerID(RosterEntry* theWrappedObject)
+{
+  return ( theWrappedObject->getManufacturerID());
+}
+
+QString  PythonQtWrapper_RosterEntry::getMaxFnNum(RosterEntry* theWrappedObject)
+{
+  return ( theWrappedObject->getMaxFnNum());
+}
+
 int  PythonQtWrapper_RosterEntry::getMaxSpeedPCT(RosterEntry* theWrappedObject)
 {
   return ( theWrappedObject->getMaxSpeedPCT());
@@ -25274,6 +25304,11 @@ QString  PythonQtWrapper_RosterEntry::getOwner(RosterEntry* theWrappedObject)
 QString  PythonQtWrapper_RosterEntry::getPathName(RosterEntry* theWrappedObject)
 {
   return ( theWrappedObject->getPathName());
+}
+
+QString  PythonQtWrapper_RosterEntry::getProductID(RosterEntry* theWrappedObject)
+{
+  return ( theWrappedObject->getProductID());
 }
 
 LocoAddress::Protocol  PythonQtWrapper_RosterEntry::getProtocol(RosterEntry* theWrappedObject)
@@ -25396,6 +25431,11 @@ void PythonQtWrapper_RosterEntry::static_RosterEntry_setDefaultOwner(QString  n)
   (RosterEntry::setDefaultOwner(n));
 }
 
+void PythonQtWrapper_RosterEntry::setDeveloperID(RosterEntry* theWrappedObject, QString  s)
+{
+  ( theWrappedObject->setDeveloperID(s));
+}
+
 void PythonQtWrapper_RosterEntry::setFileName(RosterEntry* theWrappedObject, QString  s)
 {
   ( theWrappedObject->setFileName(s));
@@ -25441,6 +25481,16 @@ void PythonQtWrapper_RosterEntry::setLongAddress(RosterEntry* theWrappedObject, 
   ( theWrappedObject->setLongAddress(b));
 }
 
+void PythonQtWrapper_RosterEntry::setManufacturerID(RosterEntry* theWrappedObject, QString  s)
+{
+  ( theWrappedObject->setManufacturerID(s));
+}
+
+void PythonQtWrapper_RosterEntry::setMaxFnNum(RosterEntry* theWrappedObject, QString  s)
+{
+  ( theWrappedObject->setMaxFnNum(s));
+}
+
 void PythonQtWrapper_RosterEntry::setMaxSpeedPCT(RosterEntry* theWrappedObject, int  maxSpeedPCT)
 {
   ( theWrappedObject->setMaxSpeedPCT(maxSpeedPCT));
@@ -25464,6 +25514,11 @@ void PythonQtWrapper_RosterEntry::setOpen(RosterEntry* theWrappedObject, bool  b
 void PythonQtWrapper_RosterEntry::setOwner(RosterEntry* theWrappedObject, QString  s)
 {
   ( theWrappedObject->setOwner(s));
+}
+
+void PythonQtWrapper_RosterEntry::setProductID(RosterEntry* theWrappedObject, QString  s)
+{
+  ( theWrappedObject->setProductID(s));
 }
 
 void PythonQtWrapper_RosterEntry::setProtocol(RosterEntry* theWrappedObject, LocoAddress::Protocol  protocol)

@@ -78,7 +78,8 @@
             if (frame == nullptr) {
                 frame = new MeterFrame(uuid);
                 frame->initComponents();
-                log->error(tr("uuid: %1, meter: %2, meter: %3, systemName: %4")
+                if(meter)
+                 log->error(tr("uuid: %1, meter: %2, meter: %3, systemName: %4")
                            .arg(frame->getUUID().toString())
                            .arg(((DefaultMeter*)meter)->getDisplayName())
                            .arg(((DefaultMeter*)frame->getMeter())->getSystemName())

@@ -65,6 +65,7 @@ private:
     /*private*/ bool keyReleased;// = true;
     /*private*/ void initGUI();
 
+    friend class LearnFunctionPanel;
 };
 
 #endif // FUNCTIONPANEL_H

@@ -21,6 +21,7 @@
 #include "entrypoint.h"
 #include "layouttrackexpectedstate.h"
 #include "defaultsignalmastlogicmanager.h"
+#include "loggerfactory.h"
 
 class RunnableThis : public Runnable
 {
@@ -82,18 +83,9 @@ class RunnableThis : public Runnable
   throw NullPointerException(tr("source is marked @NonNull but is null."));
  this->source = source;
  destList =  QHash<SignalMast*, DestinationMast*>();
- useAutoGenBlock = true;
- useAutoGenTurnouts = true;
- log = new Logger("DefaultSignalMastLogic");
-
- facingBlock = nullptr;
- protectingBlock = nullptr;
- destList = QHash<SignalMast*, DestinationMast*>();
- disposing = false;
  pcs = new PropertyChangeSupport(this);
  propertyDestinationMastListener = new PropertyDestinationMastListener(this);
  propertySourceMastListener = new PropertySourceMastListener(this);
- inWait = false;
  thr = nullptr;
  try
  {
@@ -113,10 +105,6 @@ class RunnableThis : public Runnable
 /*public*/ void DefaultSignalMastLogic::setFacingBlock(LayoutBlock* facing){
     facingBlock = facing;
 }
-
-///*public*/ void DefaultSignalMastLogic::setProtectingBlock(LayoutBlock* protecting){
-//    protectingBlock = protecting;
-//}
 
 /*public*/ LayoutBlock* DefaultSignalMastLogic::getFacingBlock(){
     return facingBlock;
@@ -3037,5 +3025,5 @@ protected PropertyChangeListener propertySignalMastLogicManagerListener = new Pr
     return report;
 }
 
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultSignalMastLogic.class.getName());
+/*static*/ Logger*  DefaultSignalMastLogic::log = LoggerFactory::getLogger("DefaultSignalMastLogic");
 //}

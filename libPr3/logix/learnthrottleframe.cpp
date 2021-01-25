@@ -6,12 +6,15 @@
 #include "powermanager.h"
 #include "rosterentry.h"
 #include "powerpane.h"
-#include "logix/ltfcontrolpanel.h"
-#include "logix/ltffunctionpanel.h"
+#include "logix/learncontrolpanel.h"
+#include "logix/learnfunctionpanel.h"
 #include "jdesktoppane.h"
 #include <QActionGroup>
 #include <QMenuBar>
 #include <QMenu>
+#include "speedutil.h"
+#include "learnspeedpanel.h"
+#include "loggerfactory.h"
 
 //LearnThrottleFrame::LearnThrottleFrame(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -43,7 +46,6 @@
     {
         //super(false, false);
         _warrantFrame = warrantFrame;
-        powerControl  = new PowerPane();
 
         powerMgr = (PowerManager*)InstanceManager::getDefault("PowerManager");
         if (powerMgr == NULL) {
@@ -66,20 +68,22 @@
            log->debug("notifyThrottleFound address= " +((DccLocoAddress*)((LocoNetThrottle*)t)->getLocoAddress())->toString());
         }
         _throttle = t;
-#if 1
-        _controlPanel->notifyThrottleFound(t);
-        _functionPanel->notifyThrottleFound(t);
-        _buttonPanel->notifyThrottleFound(t);
+
+        _controlPanel->notifyAddressThrottleFound(t);
+        _functionPanel->notifyAddressThrottleFound(t);
+        _speedPanel->notifyAddressThrottleFound(t);
         setSpeedSetting(0.0f);      // be sure loco is stopped.
-#endif
-        RosterEntry* train = _warrantFrame->getTrain();
-        QString name = "";
-        if (train != nullptr) {
-            name = train->getId();
+
+        setButtonForward(t->getIsForward());
+        RosterEntry* re = _warrantFrame->_speedUtil->getRosterEntry();
+        QString name;
+        if (re != nullptr) {
+            name = re->getId();
+        } else {
+            name = _warrantFrame->getTrainName();
         }
-        setWindowTitle(name+" ("+((DccLocoAddress*)((LocoNetThrottle*)t)->getLocoAddress())->toString()+")");
-    }
-#if 1
+        setTitle(name + " (" + t->getLocoAddress()->toString() + ")");}
+
     /*private*/ void LearnThrottleFrame::initGUI()
     {
         setTitle("Throttle");
@@ -91,45 +95,43 @@
 //                               });
         this->addWindowListener(new LTFWindowListener(this));
         initializeMenu();
-        _functionPanel = new LTFFunctionPanel(_warrantFrame->getTrain(), this);
-        // assumes button width of 54, height of 30 (set in class FunctionButton) with
-        // horiz and vert gaps of 5 each (set in FunctionPanel class)
-        // with 3 buttons across and 6 rows high
-        int width = 3*(FunctionButton::getButtonWidth()) + 2*3*5; 		// = 192
-        int height = 6*(FunctionButton::getButtonHeight()) + 2*6*5 +10;	// = 240 (another 10 needed?)
-        _functionPanel->resize(width, height);
-        _functionPanel->setVisible(true);
-        _functionPanel->setEnabled(false);
-        //functionPanel.addInternalFrameListener(InternalFrameAdapter);
 
-        _controlPanel = new LTFControlPanel(this);
-        _controlPanel->setVisible(true);
-        _controlPanel->setEnabled(false);
-        _controlPanel->resize(_controlPanel->sizeHint().width(), height);
+        _controlPanel = new LearnControlPanel(this);
+     _controlPanel->setVisible(true);
+     _controlPanel->setEnabled(false);
+     _controlPanel->setWindowTitle(tr("Speed"));
+     _controlPanel->resize(_controlPanel->sizeHint());
 
-        _buttonPanel = new ButtonFrame(this);
-        _buttonPanel->setVisible(true);
-        _buttonPanel->setEnabled(false);
-        _buttonPanel->resize(_controlPanel->getWidth()+_functionPanel->getWidth(), _buttonPanel->sizeHint().height());
+     int width = 3 * (FunctionButton::getButtonWidth()) + 2 * 3 * 5 + 11;   // = 192
+     int height = 6 * (FunctionButton::getButtonHeight()) + 2 * 6 * 5 + 20; // FunctionButton.BUT_IMG_SIZE = 45
+     _functionPanel = new LearnFunctionPanel(this);
+     _functionPanel->resize(width, height);
+     _functionPanel->setVisible(true);
+     _functionPanel->setEnabled(false);
+     _functionPanel->setWindowTitle(tr("Function Key"));
 
-//        _buttonPanel->setLocation(0, 0);
-        _controlPanel->setLocation(0, _buttonPanel->getHeight());
-        _functionPanel->setLocation(_controlPanel->getWidth(), _buttonPanel->getHeight());
+     _speedPanel = new LearnSpeedPanel(_warrantFrame->getWarrant());
+     _speedPanel->resize(_functionPanel->width(), _controlPanel->height() - _functionPanel->height());
+     _speedPanel->setVisible(true);
+//     _speedPanel->setClosable(true);
+     _speedPanel->setTitle(tr("Speed Panel"));
 
-        getContentPane()->layout()->addWidget(_buttonPanel);
-        JDesktopPane* desktop = new JDesktopPane();
-        getContentPane()->layout()->addWidget(desktop);
-        desktop->layout()->addWidget(_controlPanel);
-        desktop->layout()->addWidget(_functionPanel);
+     _controlPanel->move(0, 0);
+     _functionPanel->move(_controlPanel->width(), 0);
+     _speedPanel->move(_controlPanel->width(), _functionPanel->height());
 
-        desktop->resize(QSize(
-                    qMax(_controlPanel->getWidth()+_functionPanel->getWidth(),_buttonPanel->getWidth()),
-                    qMax(_functionPanel->getHeight(),_controlPanel->getHeight())+_buttonPanel->getHeight()));
+     JDesktopPane* desktop = new JDesktopPane();
+     getContentPane()->layout()->addWidget(desktop);
+     desktop->layout()->addWidget(_controlPanel);
+     desktop->layout()->addWidget(_functionPanel);
+     desktop->layout()->addWidget(_speedPanel);
 
-        // Install the Key bindings on all Components
-//        KeyListenerInstaller.installKeyListenerOnAllComponents(new ControlPadKeyListener(), this);
-//        setResizable(false);
-        pack();
+     desktop->resize(QSize(
+             _controlPanel->width() + _functionPanel->width(), _controlPanel->height()));
+
+//     setResizable(false);
+//     jmri.util.PlaceWindow.getDefault().nextTo(_warrantFrame, null, this);
+     pack();
     }
 
 
@@ -163,22 +165,34 @@
          QMenu* powerMenu = new QMenu(tr("Power"));
          QAction* powerOn = new QAction(tr("Power On"), this);
          powerMenu->addAction(powerOn);
-         //powerOn.addActionListener((ActionEvent e)-> powerControl.onButtonPushed());
+//         powerOn.addActionListener(new ActionListener() {
+
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
          connect(powerOn, &QAction::triggered, [=]{
-          powerControl->onButtonPushed();
+                 try {
+                     powerMgr->setPower(PowerManager::ON);
+                 } catch (JmriException e1) {
+                     log->error(tr("Error when setting power %1").arg(e1.getMessage()));
+                 }
          });
 
-         QAction* powerOff = new QAction(tr("Power Off"));
+         QAction* powerOff = new QAction(tr("Power Off"),this);
          powerMenu->addAction(powerOff);
-         //powerOff.addActionListener((ActionEvent e) -> powerControl.offButtonPushed());
+//         powerOff.addActionListener(new ActionListener() {
+
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
          connect(powerOff, &QAction::triggered, [=]{
-          powerControl->offButtonPushed();
+                 try {
+                     powerMgr->setPower(PowerManager::OFF);
+                 } catch (JmriException e1) {
+                     log->error(tr("Error when setting power %1").arg(e1.getMessage()));
+                 }
+//             }
          });
 
          this->menuBar()->addMenu(powerMenu);
-         powerLight = new QAction(this);//new JButton();
-         setPowerIcons();
-         this->menuBar()->addAction(powerLight);
      }
      // add help selection
      addHelpMenu("package.jmri.jmrit.throttle.ThrottleFrame", true);
@@ -187,22 +201,9 @@
     /*public*/ void LearnThrottleFrame::dispose() {
         if (powerMgr!=NULL) powerMgr->removePropertyChangeListener((PropertyChangeListener*)this);
         _controlPanel->dispose();
-        _functionPanel->dispose();
         JmriJFrame::dispose();
     }
 
-    /**
-     *  implement a property change listener for power and throttle
-     *  Set the GUI's to correspond to the throttle settings
-     */
-    /*public*/ void LearnThrottleFrame::propertyChange(PropertyChangeEvent* evt) {
-        if (log->isDebugEnabled()) log->debug("propertyChange "+evt->getPropertyName()+"= "+evt->getNewValue().toString());
-        if (evt->getPropertyName() == "Power") {
-            setPowerIcons();
-        }
-    }
-
-#endif
     /**
     *  Record throttle commands that have been sent to the throttle.
     */
@@ -233,7 +234,6 @@
     }
     /* from ControlPanel */
     /*protected*/ void LearnThrottleFrame::setButtonForward(bool isForward) {
-        _buttonPanel->setForwardDirection(isForward);
         _warrantFrame->setThrottleCommand("Forward", /*Boolean.toString(isForward)*/ isForward?"true":"false");
     }
     /* from ButtonPanel */
@@ -246,190 +246,4 @@
         _warrantFrame->stopRunTrain();
     }
 
-    /**
-     *  change the power LED displayed as appropriate and set corresponding tooltip
-     *
-     */
-    /*public*/ void LearnThrottleFrame::setPowerIcons() {
-        if (powerMgr==NULL) return;
-        try {
-            if (powerMgr->getPower()==PowerManager::ON) {
-                powerLight->setIcon(/*powerOnIcon*/QIcon(QPixmap::fromImage(powerOnIcon->getImage())));
-                powerLight->setToolTip(tr("Layout Power On.  Click light to turn off, or use Power menu"));
-            }
-            else if (powerMgr->getPower()==PowerManager::OFF) {
-                powerLight->setIcon(QIcon(QPixmap::fromImage(powerOffIcon->getImage())));
-                powerLight->setToolTip(tr("Layout Power Off.  Click light to turn on, or use Power menu"));
-            }
-            else if (powerMgr->getPower()==PowerManager::UNKNOWN) {
-                powerLight->setIcon(QIcon(QPixmap::fromImage(powerXIcon->getImage())));
-                powerLight->setToolTip(tr("Layout Power state unknown.  Click light to turn off, or use Power menu"));
-            }
-            else {
-                powerLight->setIcon(QIcon(QPixmap::fromImage(powerXIcon->getImage())));
-                powerLight->setToolTip(tr("Layout Power state unknown.  Click light to turn off, or use Power menu"));
-                log->error("Unexpected state value: +"+powerMgr->getPower());
-            }
-        } catch (JmriException ex) {
-            powerLight->setIcon(QIcon(QPixmap::fromImage(powerXIcon->getImage())));
-            powerLight->setToolTip(tr("Layout Power state unknown.  Click light to turn off, or use Power menu"));
-        }
-    }
-#if 0
-
-    /**
-     *  A KeyAdapter that listens for the keys that work the control pad buttons
-     *
-     * @author     glen
-     * @version    $Revision: 22216 $
-     */
-    class ControlPadKeyListener extends KeyAdapter
-    {
-        /**
-         *  Description of the Method
-         *
-         * @param  e  Description of the Parameter
-         */
-        /*public*/ void keyPressed(KeyEvent e)
-        {
-            if ( (e.getKeyCode() == accelerateKey) || (e.getKeyCode() == accelerateKey1) ) {
-                _controlPanel.accelerate1();
-            } else if ( e.getKeyCode() == accelerateKey2 ) {
-                _controlPanel.accelerate10();
-            } else if ( (e.getKeyCode() == decelerateKey) || (e.getKeyCode() == decelerateKey1) ) {
-                _controlPanel.decelerate1();
-            } else if ( e.getKeyCode() == decelerateKey2 ) {
-                _controlPanel.decelerate10();
-            } else if (e.getKeyCode() == forwardKey) {
-                _buttonPanel.forwardButton.doClick();
-            } else if (e.getKeyCode() == reverseKey) {
-                _buttonPanel.reverseButton.doClick();
-            } else if (e.getKeyCode() == stopKey) {
-                _buttonPanel.stop();
-            }
-        }
-    }
-
-    class ButtonFrame extends JPanel {
-        //private GridBagConstraints sliderConstraints;
-        private JButton forwardButton, reverseButton;
-        private JLabel forwardLight, reverseLight, stopLabel;
-        private JButton stopButton;
-        private int _gap;
-
-        ButtonFrame() {
-            super();
-            forwardButton = new JButton(Bundle.getMessage("ButtonForward"));
-            reverseButton = new JButton(Bundle.getMessage("ButtonReverse"));
-            initGUI();
-        }
-
-        private void initGUI() {
-            JPanel _buttonPanel = new JPanel();
-            _buttonPanel.setLayout(new BoxLayout(_buttonPanel, BoxLayout.X_AXIS));
-            add(_buttonPanel);
-
-            GridBagConstraints constraints = new GridBagConstraints();
-            constraints.anchor = GridBagConstraints.CENTER;
-            //constraints.fill = GridBagConstraints.BOTH;
-            constraints.gridheight = 1;
-            constraints.gridwidth = 1;
-            constraints.ipadx = 0;
-            constraints.ipady = 0;
-            Insets insets = new Insets(2, 2, 2, 2);
-            constraints.insets = insets;
-            constraints.weightx = 1;
-            constraints.weighty = 1;
-            constraints.gridx = 0;
-            constraints.gridy = 0;
-
-            forwardLight = new JLabel();
-            forwardLight.setIcon(directionOffIcon);
-            forwardButton.addActionListener(new ActionListener()  {
-                                                /*public*/ void actionPerformed(ActionEvent e) {
-                                                    setIsForward(true);
-                                                }
-                                            });
-            JPanel forwardPanel = new JPanel();
-            forwardPanel.setLayout(new GridBagLayout());
-            forwardPanel.add(forwardLight, constraints);
-            constraints.gridy = 1;
-            forwardPanel.add(forwardButton, constraints);
-
-            reverseLight = new JLabel();
-            reverseLight.setIcon(directionOffIcon);
-            reverseButton.addActionListener(new ActionListener() {
-                                                /*public*/ void actionPerformed(ActionEvent e) {
-                                                    setIsForward(false);
-                                                }
-                                            });
-            JPanel reversePanel = new JPanel();
-            reversePanel.setLayout(new GridBagLayout());
-            constraints.gridy = 0;
-            reversePanel.add(reverseLight, constraints);
-            constraints.gridy = 1;
-            reversePanel.add(reverseButton, constraints);
-
-            stopLabel = new JLabel("Emergency");
-            _gap = -(stopIcon.getIconWidth()+stopLabel.getPreferredSize().width)/2;
-            stopButton = new JButton("Stop");
-            stopButton.addActionListener(new ActionListener() {
-                                             /*public*/ void actionPerformed(ActionEvent e)  {
-                                                 stop();
-                                             }
-                                         });
-            JPanel stopPanel = new JPanel();
-            stopPanel.setLayout(new GridBagLayout());
-            constraints.gridy = 0;
-            stopPanel.add(stopLabel, constraints);
-            constraints.gridy = 1;
-            stopPanel.add(stopButton, constraints);
-
-            _buttonPanel.add(Box.createHorizontalStrut(STRUT_SIZE));
-            _buttonPanel.add(forwardPanel);
-            _buttonPanel.add(Box.createHorizontalStrut(STRUT_SIZE));
-            _buttonPanel.add(stopPanel);
-            _buttonPanel.add(Box.createHorizontalStrut(STRUT_SIZE));
-            _buttonPanel.add(reversePanel);
-            _buttonPanel.add(Box.createHorizontalStrut(STRUT_SIZE));
-            pack();
-        }
-
-        /**
-         *  Perform an emergency stop
-         */
-        /*public*/ void stop()
-        {
-            _throttle.setSpeedSetting(-0.5F);
-            //setSpeedSetting(-1);
-            //setSpeedSetting(0);
-            _throttle.setSpeedSetting(0.0F);
-            stopLabel.setIcon(stopIcon);
-            stopLabel.setIconTextGap(_gap);
-            pack();
-        }
-
-        /*public*/ void notifyThrottleFound(DccThrottle t) {
-            boolean isForward = t.getIsForward();
-            this.setForwardDirection(isForward);
-            setIsForward(isForward);
-        }
-
-        /**
-         *  Set the GUI to match that the loco is set to forward.
-         * @param  isForward  True if the loco is set to forward, false otherwise.
-         */
-        /*public*/ void setForwardDirection(boolean isForward) {
-            if (isForward) {
-                forwardLight.setIcon(directionOnIcon);
-                reverseLight.setIcon(directionOffIcon);
-            } else {
-                forwardLight.setIcon(directionOffIcon);
-                reverseLight.setIcon(directionOnIcon);
-            }
-            pack();
-        }
-
-
-    }
-    #endif
+      /*private*/ /*static*/ /*final*/ Logger* LearnThrottleFrame::log = LoggerFactory::getLogger("LearnThrottleFrame");

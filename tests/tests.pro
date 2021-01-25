@@ -251,11 +251,11 @@ SOURCES += \
     loconet/lncvdevicetestaction.cpp \
     loconet/lncvmessagecontentsclasstest.cpp \
     loconet/lncvmessagecontentsclasstestaction.cpp \
-    lncvprogpanetest.cpp \
     jmripaneltest.cpp \
     loconet/lncvprogpanetestaction.cpp \
     loconet/lncvprogtablemodeltest.cpp \
-    loconet/lncvprogtablemodeltestaction.cpp
+    loconet/lncvprogtablemodeltestaction.cpp \
+    loconet/lncvprogpanetest.cpp
 
 HEADERS += \
         tests.h \
@@ -488,7 +488,8 @@ HEADERS += \
     jmripaneltest.h \
     loconet/lncvprogpanetestaction.h \
     loconet/lncvprogtablemodeltest.h \
-    loconet/lncvprogtablemodeltestaction.h
+    loconet/lncvprogtablemodeltestaction.h \
+    loconet/lncvprogpanetest.h
 
 unix {
     target.path = /usr/lib
