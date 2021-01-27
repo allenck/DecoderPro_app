@@ -254,22 +254,23 @@ class MyIdentifyLoco : public IdentifyLoco
      who = me;
      this->programmer = programmer;
     }
+ signals:
+  void doneSignal(int dccAddress, bool bLongAddr, int cv8Val, int cv7Val);
 
 private:
  RosterFrame* who;// = me;
 
     //@Override
 protected:
- void done(int dccAddress)
+ void done(int dccAddress) override
  {
   // if Done, updated the selected decoder
    //who->selectLoco(dccAddress, !shortAddr, cv8val, cv7val);
   emit doneSignal(dccAddress, !shortAddr, cv8val, cv7val);
  }
-signals:
- void doneSignal(int dccAddress, bool bLongAddr, int cv8Val, int cv7Val);
+
  //@Override
- protected: void message(QString m)
+ protected: void message(QString m) override
  {
   who->statusField->setText(m);
  }

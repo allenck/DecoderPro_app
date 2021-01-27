@@ -5,6 +5,7 @@
 class DispatcherFrame;
 class DispatcherAction : public AbstractAction
 {
+  Q_OBJECT
 public:
  DispatcherAction(QObject* parent);
  DispatcherAction(QString s, QObject* parent);

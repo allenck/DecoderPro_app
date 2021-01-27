@@ -30,6 +30,8 @@ public:
     /*abstract*/ /*public*/ virtual bool test8(int value) = 0;
 
     /*abstract*/ /*public*/ virtual bool test9(int value) = 0;
+    /*public*/ bool isOptionalCv();
+    /*public*/ void setOptionalCv(bool flag);
 
 signals:
 
@@ -39,15 +41,18 @@ public slots:
 private:
     static Logger* log;
     /** State of the internal sequence */
-    int state;// = 0;
-    int retry;
-    Programmer* programmer;
+    int state = 0;
+    int retry = 0;
+    int lastValue = 0;
+    bool optionalCv = false;
+    QString cvToRead;
+    QString cvToWrite;Programmer* programmer;
     ProgrammingMode* savedMode;
     static /*final*/ int RETRY_COUNT;// = 2;
 
 protected:
     /*protected*/ void identifyDone();
-    /*protected*/ void readCV(int cv);
+    /*protected*/ void readCV(QString cv);
     /*protected*/ void writeCV(QString cv, int value);
 /*abstract*/ /*protected*/ virtual void statusUpdate(QString status) = 0;
     /*abstract*/ /*protected*/ virtual void error() = 0;

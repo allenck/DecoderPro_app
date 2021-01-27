@@ -574,7 +574,8 @@ HEADERS += javaqt.h\
     tablecelleditor.h \
     tabledelegates.h \
     togglebutton.h \
-    defaultcomboboxmodel.h
+    defaultcomboboxmodel.h \
+    runnable.h
 
 unix {
     target.path = /usr/lib

@@ -1153,7 +1153,6 @@ HEADERS += \
     proxyturnoutmanager.h \
     internalsensormanager.h \
     internalturnoutmanager.h \
-    runnable.h \
     sensor.h \
     abstractmemory.h \
     physicallocationreporter.h \

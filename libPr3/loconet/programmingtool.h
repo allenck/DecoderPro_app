@@ -17,8 +17,8 @@
      * @param programmerFile the programmer file
      * @param p the programmer
      */
-    /*public*/ void openPaneOpsProgFrame(RosterEntry* re, QString name,
-                                     QString programmerFile, Programmer* p);
+    /*public*/ virtual void openPaneOpsProgFrame(RosterEntry* re, QString name,
+                                     QString programmerFile, Programmer* p) = 0;
 };
 Q_DECLARE_INTERFACE(ProgrammingTool, "ProgrammingTool")
 #endif // PROGRAMMINGTOOL_H

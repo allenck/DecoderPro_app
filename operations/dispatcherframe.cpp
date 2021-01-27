@@ -35,11 +35,13 @@
 #include "scale.h"
 #include "scalemanager.h"
 #include "optionsfile.h"
+#include "taskallocaterelease.h"
+#include "threadingutil.h"
+#include "tablecolumn.h"
+#include "tablecolumnmodel.h"
+#include "sleeperthread.h"
+#include "autoallocate.h"
 
-//DispatcherFrame::DispatcherFrame()
-//{
-
-//}
 /**
  * Dispatcher functionality, working with Sections, Transits and ActiveTrain::
  *
@@ -149,9 +151,6 @@
     openDispatcherWindow();
 
     autoTurnouts = new AutoTurnouts(this);
-    if (_LE != NULL) {
-        autoAllocate = new AutoAllocate(this);
-    }
     ((SectionManager*)InstanceManager::getDefault("SectionManager"))->initializeBlockingSensors();
     getActiveTrainFrame();
 
@@ -308,10 +307,8 @@ void DispatcherFrame::openDispatcherWindow() {
         dispatcherFrame = this;
         dispatcherFrame->setTitle(tr("Dispatcher"));
         QMenuBar* menuBar = new QMenuBar();
-#if 0
         optionsMenu = new OptionsMenu(this);
         menuBar->addMenu(optionsMenu);
-#endif
         setMenuBar(menuBar);
         dispatcherFrame->addHelpMenu("package.jmri.jmrit.dispatcher.Dispatcher", true);
         contentPane = dispatcherFrame->getContentPane();
@@ -329,45 +326,46 @@ void DispatcherFrame::openDispatcherWindow() {
         p12->setLayout(p12Layout = new QVBoxLayout());
         activeTrainsTableModel = new ActiveTrainsTableModel(this);
         JTable* activeTrainsTable = new JTable(activeTrainsTableModel);
-#if 0
-        activeTrainsTable.setRowSelectionAllowed(false);
-        activeTrainsTable.setPreferredScrollableViewportSize(QSize(950, 160));
-        TableColumnModel activeTrainsColumnModel = activeTrainsTable.getColumnModel();
-        TableColumn transitColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.TRANSIT_COLUMN);
-        transitColumn.setResizable(true);
-        transitColumn.setMinWidth(140);
-        transitColumn.setMaxWidth(220);
-        TableColumn trainColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.TRAIN_COLUMN);
-        trainColumn.setResizable(true);
-        trainColumn.setMinWidth(90);
-        trainColumn.setMaxWidth(160);
-        TableColumn typeColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.TYPE_COLUMN);
-        typeColumn.setResizable(true);
-        typeColumn.setMinWidth(130);
-        typeColumn.setMaxWidth(190);
-        TableColumn statusColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.STATUS_COLUMN);
-        statusColumn.setResizable(true);
-        statusColumn.setMinWidth(90);
-        statusColumn.setMaxWidth(140);
-        TableColumn modeColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.MODE_COLUMN);
-        modeColumn.setResizable(true);
-        modeColumn.setMinWidth(90);
-        modeColumn.setMaxWidth(140);
-        TableColumn allocatedColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.ALLOCATED_COLUMN);
-        allocatedColumn.setResizable(true);
-        allocatedColumn.setMinWidth(120);
-        allocatedColumn.setMaxWidth(200);
-        TableColumn nextSectionColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.NEXTSECTION_COLUMN);
-        nextSectionColumn.setResizable(true);
-        nextSectionColumn.setMinWidth(120);
-        nextSectionColumn.setMaxWidth(200);
-        TableColumn allocateButtonColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.ALLOCATEBUTTON_COLUMN);
-        allocateButtonColumn.setCellEditor(new ButtonEditor(new JButton()));
-        allocateButtonColumn.setMinWidth(110);
-        allocateButtonColumn.setMaxWidth(190);
-        allocateButtonColumn.setResizable(false);
-        ButtonRenderer buttonRenderer = new ButtonRenderer();
-        activeTrainsTable.setDefaultRenderer(JButton.class, buttonRenderer);
+#if 1
+        activeTrainsTable->setRowSelectionAllowed(false);
+        //activeTrainsTable->setPreferredScrollableViewportSize(QSize(950, 160));
+        activeTrainsTable->resize(QSize(950, 160));
+        TableColumnModel* activeTrainsColumnModel = activeTrainsTable->getColumnModel();
+        TableColumn* transitColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::TRANSIT_COLUMN);
+        transitColumn->setResizable(true);
+        transitColumn->setMinWidth(140);
+        transitColumn->setMaxWidth(220);
+        TableColumn* trainColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::TRAIN_COLUMN);
+        trainColumn->setResizable(true);
+        trainColumn->setMinWidth(90);
+        trainColumn->setMaxWidth(160);
+        TableColumn* typeColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::TYPE_COLUMN);
+        typeColumn->setResizable(true);
+        typeColumn->setMinWidth(130);
+        typeColumn->setMaxWidth(190);
+        TableColumn* statusColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::STATUS_COLUMN);
+        statusColumn->setResizable(true);
+        statusColumn->setMinWidth(90);
+        statusColumn->setMaxWidth(140);
+        TableColumn* modeColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::MODE_COLUMN);
+        modeColumn->setResizable(true);
+        modeColumn->setMinWidth(90);
+        modeColumn->setMaxWidth(140);
+        TableColumn* allocatedColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::ALLOCATED_COLUMN);
+        allocatedColumn->setResizable(true);
+        allocatedColumn->setMinWidth(120);
+        allocatedColumn->setMaxWidth(200);
+        TableColumn* nextSectionColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::NEXTSECTION_COLUMN);
+        nextSectionColumn->setResizable(true);
+        nextSectionColumn->setMinWidth(120);
+        nextSectionColumn->setMaxWidth(200);
+        TableColumn* allocateButtonColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::ALLOCATEBUTTON_COLUMN);
+        allocateButtonColumn->setCellEditor(new ButtonEditor(new JButton()));
+        allocateButtonColumn->setMinWidth(110);
+        allocateButtonColumn->setMaxWidth(190);
+        allocateButtonColumn->setResizable(false);
+        ButtonRenderer* buttonRenderer = new ButtonRenderer();
+        activeTrainsTable->setDefaultRenderer("JButton", buttonRenderer);
 #endif
 //        QPushButton* sampleButton = new QPushButton(tr("Allocate Next"));
 //        activeTrainsTable.setRowHeight(sampleButton.getPreferredSize().height);
@@ -701,20 +699,61 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
 
 /*private*/ void DispatcherFrame::handleAutoAllocateChanged(JActionEvent* /*e*/) {
     setAutoAllocate(autoAllocateBox->isChecked());
+    stopStartAutoAllocateRelease();
+    if (autoAllocateBox != nullptr) {
+        autoAllocateBox->setChecked(_AutoAllocate);
+    }
+
     if (optionsMenu != NULL) {
         optionsMenu->initializeMenu();
     }
     if (_AutoAllocate) {
-        autoAllocate->scanAllocationRequestList(allocationRequests);
+     queueScanOfAllocationRequests();
     }
 }
 
-/*protected*/ void DispatcherFrame::forceScanOfAllocation() {
-
+/*
+ * Queue a scan
+ */
+/*protected*/ void DispatcherFrame::queueScanOfAllocationRequests() {
     if (_AutoAllocate) {
-        autoAllocate->scanAllocationRequestList(allocationRequests);
+        autoAllocate->scanAllocationRequests(new TaskAllocateRelease(TaskAllocateRelease::TaskAction::SCAN_REQUESTS));
     }
+}
 
+/*
+ * Queue a release all reserved sections for a train.
+ */
+/*protected*/ void DispatcherFrame::queueReleaseOfReservedSections(QString trainName) {
+    if (_AutoRelease || _AutoAllocate) {
+        autoAllocate->scanAllocationRequests(new TaskAllocateRelease(TaskAllocateRelease::TaskAction::RELEASE_RESERVED, trainName));
+    }
+}
+
+/*
+ * Wait for the queue to empty
+ */
+/*protected*/ void DispatcherFrame::queueWaitForEmpty() {
+    if (_AutoAllocate) {
+        while (!autoAllocate->allRequestsDone()) {
+            try {
+                SleeperThread::msleep(10);
+            } catch (InterruptedException iex) {
+                // we closing do done
+                return;
+            }
+        }
+    }
+    return;
+}
+
+/*
+ * Queue a general release of completed sections
+ */
+/*protected*/ void DispatcherFrame::queueReleaseOfCompletedAllocations() {
+    if (_AutoRelease) {
+        autoAllocate->scanAllocationRequests(new TaskAllocateRelease(TaskAllocateRelease::TaskAction::AUTO_RELEASE));
+    }
 }
 
 /*private*/ void DispatcherFrame::handleAutoReleaseChanged(JActionEvent* /*e*/) {
@@ -2254,28 +2293,39 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     return _AutoAllocate;
 }
 
-/*protected*/ void DispatcherFrame::setAutoAllocate( bool set) {
-    if (set && (autoAllocate == NULL)) {
-        if (_LE != NULL) {
-            autoAllocate = new AutoAllocate(this);
+/*protected*/ void DispatcherFrame::stopStartAutoAllocateRelease() {
+    if (_AutoAllocate || _AutoRelease) {
+        if (_LE != nullptr) {
+            if (autoAllocate == nullptr) {
+                autoAllocate = new AutoAllocate(this, allocationRequests);
+                autoAllocateThread = ThreadingUtil::newThread(autoAllocate, "Auto Allocator ");
+                autoAllocateThread->start();
+            }
         } else {
-//            JOptionPane.showMessageDialog(dispatcherFrame, tr("Error39"),
-//                    tr("MessageTitle"), JOptionPane.INFORMATION_MESSAGE);
-         QMessageBox::information(dispatcherFrame, tr("Information"), tr("AutoAllocate requires a Layout Editor panel. Please select\na Layout Editor panel in Options window and try again."));
+            JOptionPane::showMessageDialog(dispatcherFrame, tr("was specified in the Dispatcher Options."),
+                    tr("Message"), JOptionPane::INFORMATION_MESSAGE);
             _AutoAllocate = false;
-            if (autoAllocateBox != NULL) {
+            if (autoAllocateBox != nullptr) {
                 autoAllocateBox->setChecked(_AutoAllocate);
             }
             return;
         }
+    } else {
+        //no need for autoallocateRelease
+        if (autoAllocate != nullptr) {
+            autoAllocate->setAbort();
+            autoAllocate = nullptr;
+        }
     }
-    _AutoAllocate = set;
-    if ((!_AutoAllocate) && (autoAllocate != NULL)) {
-        autoAllocate->clearAllocationPlans();
-    }
-    if (autoAllocateBox != NULL) {
-        autoAllocateBox->setChecked(_AutoAllocate);
-    }
+
+}
+
+/*protected*/ void DispatcherFrame::setAutoAllocate( bool set) {
+     _AutoAllocate = set;
+     stopStartAutoAllocateRelease();
+     if (autoAllocateBox != nullptr) {
+         autoAllocateBox->setChecked(_AutoAllocate);
+     }
 }
 
 /*protected*/  bool DispatcherFrame::getAutoTurnouts() {

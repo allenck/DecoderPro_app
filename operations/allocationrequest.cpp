@@ -4,6 +4,7 @@
 #include "activetrain.h"
 #include "dispatcherframe.h"
 #include "signalmast.h"
+#include "instancemanager.h"
 
 //AllocationRequest::AllocationRequest(QObject *parent) : QObject(parent)
 //{
@@ -155,7 +156,7 @@
     //This forces us to rescan the allocation list if the section has gone unoccupied, thus this might get re-allocated
     if (e->getPropertyName() == ("occupancy")) {
         if (( e->getNewValue()).toInt() == Section::UNOCCUPIED) {
-            DispatcherFrame::instance()->forceScanOfAllocation();
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
         }
     }
 }

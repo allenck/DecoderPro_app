@@ -21,11 +21,13 @@ signals:
 
 public slots:
 private:
-    int mfgID;// = -1; 	// cv8
-    int modelID;// = -1;	// cv7
-    int productIDhigh;// = -1;
-    int productIDlow;//  = -1;
-    int productID;//  = -1;
+    int mfgID = -1; 	// cv8
+    int modelID = -1;	// cv7
+    int productIDhigh = -1;
+    int productIDlow  = -1;
+    int productIDhighest = -1;
+    int productIDlowest = -1;
+    int productID  = -1;
     Logger* log;
 protected:
     /*protected*/ void statusUpdate(QString s) ;

@@ -8,8 +8,11 @@ class HexFileSystemConnectionMemo : public LocoNetSystemConnectionMemo
 
 public:
  HexFileSystemConnectionMemo(QObject* parent = nullptr);
- /*public*/ LnSensorManager* getSensorManager();
+ ///*public*/ LnSensorManager* getSensorManager();
+ /*public*/ /*<T>*/ Manager* get(QString type) override;
 
+ private:
+ static Logger* log;
 };
 
 #endif // HEXFILESYSTEMCONNECTIONMEMO_H

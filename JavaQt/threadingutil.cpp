@@ -220,14 +220,15 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
     static /*public*/ bool isGUIThread() {
         return SwingUtilities.isEventDispatchThread();
     }
-
+#endif
     /**
      * Create a new thread in the JMRI group
      * @param runner Runnable.
      * @return new Thread.
      */
-    static /*public*/ Thread newThread(Runnable runner) {
-        return new Thread(getJmriThreadGroup(), runner);
+    /*static*/ /*public*/ QThread* ThreadingUtil::newThread(Runnable* runner) {
+        //return new Thread(getJmriThreadGroup(), runner);
+     return runner;
     }
 
     /**
@@ -236,10 +237,12 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      * @param name Thread name.
      * @return New Thread.
      */
-    static /*public*/ Thread newThread(Runnable runner, String name) {
-        return new Thread(getJmriThreadGroup(), runner, name);
+    /*static*/ /*public*/ QThread* ThreadingUtil::newThread(Runnable* runner, QString name) {
+        //return new Thread(getJmriThreadGroup(), runner, name);
+     runner->setObjectName(name);
+     return runner;
     }
-
+#if 0
     /**
      * Get the JMRI default thread group.
      * This should be passed to as the first argument to the {@link Thread}

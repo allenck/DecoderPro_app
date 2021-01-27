@@ -962,6 +962,7 @@ void RosterFrame::updateProgMode() // SLOT
 //taken out of CombinedLocoSelPane
 /*protected*/ void RosterFrame::startIdentifyLoco()
 {
+ /*final*/ RosterFrame* me = this;
  Programmer* programmer = NULL;
  if (modePanel->isSelected())
  {
@@ -1011,7 +1012,7 @@ void RosterFrame::updateProgMode() // SLOT
         }
     };
 #endif
-    MyIdentifyLoco* ident = new MyIdentifyLoco(programmer, this);
+    MyIdentifyLoco* ident = new MyIdentifyLoco(programmer, me);
     connect(ident, SIGNAL(doneSignal(int,bool,int,int)), this, SLOT(selectLoco(int,bool,int,int)));
     ident->start();
 }

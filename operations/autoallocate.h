@@ -1,21 +1,22 @@
 #ifndef AUTOALLOCATE_H
 #define AUTOALLOCATE_H
 
-#include <QObject>
 #include "section.h"
+#include "runnable.h"
 
+class TaskAllocateRelease;
 class ActiveTrain;
 class ConnectivityUtil;
 class Logger;
 class DispatcherFrame;
 class AllocationPlan;
 class AllocationRequest;
-class AutoAllocate : public QObject
+class AutoAllocate : public Runnable
 {
  Q_OBJECT
 public:
  //explicit AutoAllocate(QObject *parent = 0);
- /*public*/ AutoAllocate(DispatcherFrame* d);
+ /*public*/ AutoAllocate(DispatcherFrame* d, QList<AllocationRequest *>* inAllocationRequests, QObject *parent = 0);
 
 signals:
 
@@ -34,10 +35,16 @@ private:
  /*private*/ bool isSignalHeldAtStartOfSection(AllocationRequest* ar);
  /*private*/ AllocationPlan* getPlanThisTrain(ActiveTrain* at);
  /*private*/ int willTraverse(Section* s, ActiveTrain* at, int seq);
+ /*private*/ bool abort = false;
+ /*private*/ QList<AllocationRequest*>* allocationRequests = nullptr;
+ QLinkedList<TaskAllocateRelease*>* taskList =nullptr;
 
 protected:
  /*protected*/ void scanAllocationRequestList(QList<AllocationRequest*>* list);
  /*protected*/ void clearAllocationPlans();
+ /*protected*/ void setAbort();
+ /*protected*/ bool allRequestsDone();
+ /*protected*/ void scanAllocationRequests(TaskAllocateRelease* task);
 
  friend class DispatcherFrame;
 };

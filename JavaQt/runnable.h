@@ -2,7 +2,7 @@
 #define RUNNABLE_H
 
 #include <QObject>
-#include "libPr3_global.h"
+#include "javaqt_global.h"
 #include <QThread>
 #include <QMutex>
 
@@ -33,7 +33,7 @@
  * @see     java.util.concurrent.Callable
  * @since   JDK1.0
  */
-class LIBPR3SHARED_EXPORT Runnable : public QThread
+class JAVAQTSHARED_EXPORT Runnable : public QThread
 {
  Q_OBJECT
 public:

@@ -7,6 +7,7 @@
 #include "allocationplan.h"
 #include "signalmast.h"
 #include "transit.h"
+#include "taskallocaterelease.h"
 
 //AutoAllocate::AutoAllocate(QObject *parent) : QObject(parent)
 //{
@@ -71,7 +72,9 @@
 //    static final ResourceBundle rb = ResourceBundle
 //            .getBundle("jmri.jmrit.dispatcher.DispatcherBundle");
 
-/*public*/ AutoAllocate::AutoAllocate(DispatcherFrame* d) {
+/*public*/ AutoAllocate::AutoAllocate(DispatcherFrame* d, QList<AllocationRequest*>* inAllocationRequests, QObject* parent)
+ : Runnable(parent)
+{
  log = new Logger("AutoAllocate");
  // operational variables
  _dispatcher = NULL;
@@ -81,6 +84,7 @@
  orderedRequests = new QList<AllocationRequest*>();
 
     _dispatcher = d;
+     allocationRequests = inAllocationRequests;
     if (_dispatcher == NULL) {
         log->error("NULL DispatcherFrame when constructing AutoAllocate");
         return;
@@ -91,7 +95,24 @@
     }
     _conUtil = _dispatcher->getLayoutEditor()->getConnectivityUtil();
 }
+/**
+ * Stops the autoAllocate nicely
+ */
+/*protected*/ void AutoAllocate::setAbort() {
+    abort = true;
+    scanAllocationRequests(new TaskAllocateRelease(TaskAllocateRelease::TaskAction::ABORT)); //force queue flush
+}
 
+/*
+ * return true when the taskList queue is Empty
+ */
+/*protected*/ bool AutoAllocate::allRequestsDone() {
+    return taskList->isEmpty();
+}
+
+/*protected*/ void AutoAllocate::scanAllocationRequests(TaskAllocateRelease* task) {
+        taskList->append(task);
+}
 /**
  * This is the entry point to AutoAllocate when it is triggered.
  *

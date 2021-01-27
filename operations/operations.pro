@@ -360,7 +360,8 @@ SOURCES += \
     timetable/timetabledisplaygraph.cpp \
     timetable/timetablegraphcommon.cpp \
     timetable/exporttimetable.cpp \
-    rollingstockattributeeditframe.cpp
+    rollingstockattributeeditframe.cpp \
+    taskallocaterelease.cpp
 
 HEADERS += \
         operations.h \
@@ -656,7 +657,8 @@ HEADERS += \
     timetable/timetabledisplaygraph.h \
     timetable/timetablegraphcommon.h \
     timetable/exporttimetable.h \
-    rollingstockattributeeditframe.h
+    rollingstockattributeeditframe.h \
+    taskallocaterelease.h
 
 unix {
     target.path = /usr/lib
