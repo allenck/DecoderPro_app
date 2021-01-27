@@ -37,4 +37,4 @@ HexFileSystemConnectionMemo::HexFileSystemConnectionMemo(QObject *parent)
         return LocoNetSystemConnectionMemo::get(type);
     }
 }
-/*private*/ /*final*/ /*static*/ Logger* log = LoggerFactory::getLogger("HexFileSystemConnectionMemo");
+/*private*/ /*final*/ /*static*/ Logger* HexFileSystemConnectionMemo::log = LoggerFactory::getLogger("HexFileSystemConnectionMemo");

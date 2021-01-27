@@ -232,7 +232,7 @@ IdentifyDecoder::IdentifyDecoder(Programmer* programmer, QObject *parent) :
  message(s);
  if (s == ("Done")) {
      done(mfgID, modelID, productID);
-     log->info(tr("Decoder returns mfgID:%1;modelID:%2;productID:%3",).arg(mfgID).arg(modelID).arg(productID));
+     log->info(tr("Decoder returns mfgID:%1;modelID:%2;productID:%3").arg(mfgID).arg(modelID).arg(productID));
  } else if (log->isDebugEnabled()) {
      log->debug(tr("received status: %1").arg(s));
  }
