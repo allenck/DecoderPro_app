@@ -40,6 +40,6 @@ public:
     PNPPaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntry, QString frameTitle, QString programmerFile, Programmer* pProg, bool opsMode, QWidget* parent = 00);
 
 protected:
- QWidget* getModePane();
+ JPanel* getModePane() override;
 };
 #endif // PANENEWPROGACTION_H

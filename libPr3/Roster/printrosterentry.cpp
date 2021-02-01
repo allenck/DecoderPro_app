@@ -22,6 +22,7 @@
 #include "imageicon.h"
 #include <QImage>
 #include "jlabel.h"
+#include "instancemanager.h"
 
 //PrintRosterEntry::PrintRosterEntry(QObject *parent) :
 //    PaneContainer(parent)
@@ -33,7 +34,7 @@
 
 /*public*/ PrintRosterEntry::PrintRosterEntry(RosterEntry* rosterEntry, JmriJFrame* parent, QString filename)
 {
- _paneList        = QList<QWidget*>();
+ _paneList        = QList<JPanel*>();
  _flPane         = NULL;
  _rMPane         = NULL;
  _parent         = NULL;
@@ -81,13 +82,13 @@
 
  if (log->isDebugEnabled()) log->debug("selected loco uses decoder "+decoderFamily+" "+decoderModel);
  // locate a decoder like that.
- QList<DecoderFile*>* l = DecoderIndexFile::instance()->matchingDecoderList(NULL, decoderFamily, NULL, NULL, NULL, decoderModel);
+ QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList(NULL, decoderFamily, NULL, NULL, NULL, decoderModel);
  if (log->isDebugEnabled()) log->debug("found "+QString(l->size())+" matches");
  if (l->size() == 0)
  {
   log->debug("Loco uses "+decoderFamily+" "+decoderModel+" decoder, but no such decoder defined");
   // fall back to use just the decoder name, not family
-  l = DecoderIndexFile::instance()->matchingDecoderList(NULL, NULL, NULL, NULL, NULL, decoderModel);
+  l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList(NULL, NULL, NULL, NULL, NULL, decoderModel);
   if (log->isDebugEnabled()) log->debug("found "+QString::number(l->size())+" matches without family key");
  }
  DecoderFile* d=NULL;
@@ -154,7 +155,7 @@
 
 /*public*/ bool  PrintRosterEntry::isBusy() { return false; }
 
-/*public*/  PrintRosterEntry::PrintRosterEntry(RosterEntry* rosterEntry, QList<QWidget*> paneList, FunctionLabelPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent)
+/*public*/  PrintRosterEntry::PrintRosterEntry(RosterEntry* rosterEntry, QList<JPanel*> paneList, FunctionLabelPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent)
 {
  _rosterEntry = rosterEntry;
  _paneList = paneList;

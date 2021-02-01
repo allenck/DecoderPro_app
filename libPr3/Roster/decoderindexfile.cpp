@@ -6,8 +6,8 @@
 #include "fileutil.h"
 #include "file.h"
 #include "fileutil.h"
+#include <QStringList>
 
-DecoderIndexFile* DecoderIndexFile::_instance = NULL;
 //QString DecoderIndexFile::decoderIndexFileName = "decoderIndex.xml";
 /*static*/ /*final*/ /*protected*/ QString DecoderIndexFile::DECODER_INDEX_FILE_NAME = "decoderIndex.xml";
 QString DecoderIndexFile::decoderIndexFileName = "/home/allen/NetBeansProjects/JMRI/xml/decoderIndex.xml";
@@ -15,14 +15,17 @@ QString DecoderIndexFile::decoderIndexFileName = "/home/allen/NetBeansProjects/J
 DecoderIndexFile::DecoderIndexFile(QObject *parent) :
     XmlFile(parent)
 {
- log = new Logger("DecoderIndexFile");
+ log->setDebugEnabled(true);
  fileVersion = -1;
  decoderList = new QList<DecoderFile*>();
  _mfgIdFromNameHash = new QHash<QString,QString>();
  _mfgNameFromIdHash = new QHash<QString,QString>();
 
   mMfgNameList = new QStringList();
+
+  readFile(defaultDecoderIndexFilename());
 }
+
 /**
  * DecoderIndex represents a decoderIndex.xml file in memory.
  * <P>
@@ -231,52 +234,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
 
 /*public*/ /*synchronized*/ /*static*/ void DecoderIndexFile::resetInstance()
 {
- //QMutexLocker locker(*mutex);
- _instance = NULL;
-}
-/*public*/ /*synchronized*/ /*static*/ DecoderIndexFile* DecoderIndexFile::instance()
-{
- //QMutexLocker locker(*mutex);
- Logger log = Logger("DecoderIndexFile");
- if (_instance == NULL)
- {
-  if (log.isDebugEnabled()) log.debug("DecoderIndexFile creating instance");
-  // create and load
-  try
-  {
-   _instance = new DecoderIndexFile();
-   _instance->readFile(FileUtil::getProgramPath() + "xml" + File::separator + defaultDecoderIndexFilename());
-  }
-  catch (Exception e)
-  {
-   log.error("Exception during decoder index reading: "+e.getMessage());
-//            e.printStackTrace();
-  }
-  // see if needs to be updated
-  try
-  {
-   if (updateIndexIfNeeded(defaultDecoderIndexFilename()))
-   {
-    try
-    {
-     _instance = new DecoderIndexFile();
-     _instance->readFile(defaultDecoderIndexFilename());
-    }
-    catch (Exception e)
-    {
-     log.error("Exception during decoder index reload: "+e.getMessage());
-//                    e.printStackTrace();
-    }
-   }
-  }
-  catch (Exception e)
-  {
-   log.error("Exception during decoder index update: "+e.getMessage());
-//            e.printStackTrace();
-  }
- }
- if (log.isDebugEnabled()) log.debug(tr("DecoderIndexFile returns instance ")+_instance->metaObject()->className());
-  return _instance;
+ InstanceManager::getDefault()->clear("DecoderIndexFile");;
 }
 
 /**
@@ -287,7 +245,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * @throws JDOMException
  * @throws FileNotFoundException
  */
-/*static*/ bool DecoderIndexFile::updateIndexIfNeeded(QString name) throw (JDOMException, IOException)
+/*static*/ bool DecoderIndexFile::updateIndexIfNeeded(QString name) /*throw (JDOMException, IOException)*/
 {
  Logger log = Logger("DecoderIndexFile");
  // get version from master index; if not found, give up
@@ -322,9 +280,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  if (masterVersion!=NULL && masterVersion==(userVersion)) return false;
 
  // force the update, with the version number located earlier is available
- if (masterVersion != NULL)
-  instance()->fileVersion = (masterVersion.toInt());
-
+ log.debug(tr("forcing update of decoder index due to %1 and %2").arg(masterVersion).arg(userVersion));
  forceCreationOfNewIndex();
  // and force it to be used
  return true;
@@ -342,92 +298,76 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * Force creation of a new user index
  */
 /*static*/ /*public*/ void DecoderIndexFile::forceCreationOfNewIndex(bool increment) {
- Logger* log = new Logger("DecoderIndexFile");
  log->info("update decoder index");
  // make sure we're using only the default manufacturer info
  // to keep from propagating wrong, old stuff
- File* oldfile = new File(FileUtil::getUserFilesPath() + "decoderIndex.xml");
- if (oldfile->exists())
- {
-  log->debug("remove existing user decoderIndex.xml file");
-  if (!oldfile->_delete()) // delete file, check for success
-  {
-   Logger::error("Failed to delete old index file");
-  }
-  // force read from distributed file
-  resetInstance();
-  instance();
+ File* oldfile = new File(FileUtil::getUserFilesPath() + DECODER_INDEX_FILE_NAME);
+ if (oldfile->exists()) {
+     log->debug("remove existing user decoderIndex.xml file");
+     if (!oldfile->_delete()) // delete file, check for success
+     {
+         log->error("Failed to delete old index file");
+     }
+     // force read from distributed file on next access
+     resetInstance();
  }
 
  // create an array of file names from decoders dir in preferences, count entries
- QStringList al;
- QStringList sp = QStringList();
- int i=0;
+ QList<QString> al = QList<QString>();
  FileUtil::createDirectory(FileUtil::getUserFilesPath() + DecoderFile::fileLocation);
- QDir* fp = new QDir(FileUtil::getUserFilesPath() + DecoderFile::fileLocation);
- if (fp->exists())
- {
-  sp = fp->entryList();
-  for (i=0; i<sp.length(); i++)
-  {
-   if (sp.at(i).endsWith(".xml") || sp.at(i).endsWith(".XML"))
-    al.append(sp.at(i));
-  }
- }
- else
- {
-  log->warn(FileUtil::getUserFilesPath()+"decoders was missing, though tried to create it");
+ File* fp = new File(FileUtil::getUserFilesPath() + DecoderFile::fileLocation);
+
+ if (fp->exists()) {
+     QStringList list = fp->list();
+     if (!list.isEmpty()) {
+         for (QString sp : list) {
+             if (sp.endsWith(".xml") || sp.endsWith(".XML")) {
+                 al.append(sp);
+             }
+         }
+     }
+ } else {
+     log->debug(tr("%1 decoders was missing, though tried to create it").arg(FileUtil::getUserFilesPath()));
  }
  // create an array of file names from xml/decoders, count entries
- QStringList sx = ( new QDir(XmlFile::xmlDir()+DecoderFile::fileLocation))->entryList();
- for (i=0; i<sx.length(); i++)
- {
-  if (sx[i].endsWith(".xml") || sx[i].endsWith(".XML"))
-  {
-   // Valid name.  Does it exist in preferences xml/decoders?
-   if (!al.contains(sx[i]))
-   {
-    // no, include it!
-    al.append(sx.at(i));
-   }
-  }
+ QStringList fileList = (new File(XmlFile::xmlDir() + DecoderFile::fileLocation))->list();
+ if (!fileList.isEmpty()) {
+     for (QString sx : fileList ) {
+         if (sx.endsWith(".xml") || sx.endsWith(".XML")) {
+             // Valid name.  Does it exist in preferences xml/decoders?
+             if (!al.contains(sx)) {
+                 // no, include it!
+                 al.append(sx);
+             }
+         }
+     }
+ } else {
+     log->error(tr("Could not access decoder definition directory %1%2").arg(XmlFile::xmlDir()).arg(DecoderFile::fileLocation));
  }
- // copy the decoder entries to the final array (toArray needs cast of +elements+)
- //QList<QObject*> aa = al.toArray();
- QList<QObject*> aa;
- foreach (QString s, al)
- {
-  aa.append((QObject*)&s);
- }
- QStringList* sbox =  new QStringList();
- for (i =0; i<sbox->length(); i++)
-  sbox->append(*(QString*) aa.at(i));
+ // copy the decoder entries to the final array
+ QStringList sbox = QStringList(al);//al.toArray(new String[al.size()]);
 
  //the resulting array is now sorted on file-name to make it easier
  // for humans to read
-// TODO:    jmri.util.QStringUtil.sort(sbox);
+ //Arrays.sort(sbox);
+ sbox.sort();
 
  // create a new decoderIndex
- // the existing version is used, so that a new master file
- // with a larger one will force an update
  DecoderIndexFile* index = new DecoderIndexFile();
 
  // For user operations the existing version is used, so that a new master file
  // with a larger one will force an update
  if (increment) {
-     index->fileVersion = instance()->fileVersion + 2;
+     index->fileVersion = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->fileVersion + 2;
  } else {
-     index->fileVersion = instance()->fileVersion;
+     index->fileVersion = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->fileVersion;
  }
 
  // write it out
- try
- {
-  index->writeFile("decoderIndex.xml", _instance, sbox);
- }
- catch (IOException ex)
- {
-  log->error("Error writing new decoder index file: "+ex.getMessage());
+ try {
+     index->writeFile(DECODER_INDEX_FILE_NAME, ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile")), &sbox);
+ } catch (IOException ex) {
+     log->error(tr("Error writing new decoder index file: %1").arg(ex.getMessage()));
  }
 }
 
@@ -435,7 +375,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * Read the contents of a decoderIndex XML file into this object. Note that this does not
  * clear any existing entries; reset the instance to do that.
  */
-void DecoderIndexFile::readFile(QString name) throw (JDOMException, IOException)
+void DecoderIndexFile::readFile(QString name) /*throw (JDOMException, IOException)*/
 {
  if (log->isDebugEnabled()) log->debug("readFile "+name);
 
@@ -580,7 +520,7 @@ void DecoderIndexFile::readFamily(QDomElement family)
  }
 }
 
-/*public*/ void DecoderIndexFile::writeFile(QString name, DecoderIndexFile* oldIndex, QStringList* files) throw (IOException)
+/*public*/ void DecoderIndexFile::writeFile(QString name, DecoderIndexFile* oldIndex, QStringList* files) /*throw (IOException)*/
 {
 #if 1 //TODO:
  //QDomDocument doc(/*QString("../xml/)"+"decoderIndex-config.dtd")*/);
@@ -682,3 +622,4 @@ void DecoderIndexFile::readFamily(QDomElement family)
 /*protected*/ /*static*/ QString DecoderIndexFile::defaultDecoderIndexFilename()
 { return DECODER_INDEX_FILE_NAME;}
 
+/*private*/ /*static*/ /*final*/ Logger* DecoderIndexFile::log = LoggerFactory::getLogger("DecoderIndexFile");

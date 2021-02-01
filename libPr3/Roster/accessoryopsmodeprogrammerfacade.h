@@ -4,13 +4,14 @@
 #include "logger.h"
 
 class AddressedProgrammer;
-class AccessoryOpsModeProgrammerFacade : public AbstractProgrammerFacade
+class AccessoryOpsModeProgrammerFacade : public AbstractProgrammerFacade, public ProgListener
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
     //explicit AccessoryOpsModeProgrammerFacade(QObject *parent = 0);
  /*public*/ AccessoryOpsModeProgrammerFacade(Programmer* prog, /*@Nonnull */QString addrType, int delay, AddressedProgrammer* baseProg, QObject *parent= 0);
-    /*public*/ QList<ProgrammingMode*> getSupportedModes();
+    /*public*/ QList<QString> getSupportedModes();
     /*public*/ void setMode(ProgrammingMode* p);
     /*public*/ bool getCanRead();
     /*public*/ bool getCanRead(QString addr);

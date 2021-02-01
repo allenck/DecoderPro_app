@@ -247,7 +247,7 @@ bool MultiIndexProgrammerFacade::useCachePiSi() {
 /*protected*/ void MultiIndexProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
-        if (log->isInfoEnabled()) log->info(QString("programmer already in use by ") +QString(_usingProgrammer->metaObject()->className()));
+        if (log->isInfoEnabled()) log->info(QString("programmer already in use by ") +QString(_usingProgrammer->self()->metaObject()->className()));
         throw ProgrammerException("programmer in use");
     }
     else {

@@ -31,6 +31,7 @@
 #include <QTreeView>
 #include "globalprogrammermanager.h"
 #include "defaultprogrammermanager.h"
+#include "printdecoderlistaction.h"
 
 PaneProgDp3Action::PaneProgDp3Action()
  : JmriAbstractAction("New Loco", (WindowInterface*)NULL)
@@ -92,7 +93,7 @@ PaneProgDp3Action::~PaneProgDp3Action(){}
 void PaneProgDp3Action::init()
 {
  log = new Logger("PaneProgDp3Action");
- modePane = new ProgServiceModeComboBox();
+
  statusLabel = new QLabel(tr("Idle")); // NOI18N
  log = new Logger("PaneProgDp3Action");
  lastSelectedProgrammer = QString(this->metaObject()->className())+".SelectedProgrammer"; // NOI18N
@@ -148,15 +149,15 @@ void PaneProgDp3Action::init()
   // add the Roster menu
   QMenuBar* menuBar = new QMenuBar();
   QMenu* j = new QMenu(tr("File")); // NOI18N
-//        j.add(new PrintDecoderListAction(tr("MenuPrintDecoderDefinitions"), f, false)); // NOI18N
-//        j.add(new PrintDecoderListAction(tr("MenuPrintPreviewDecoderDefinitions"), f, true)); // NOI18N
+  j->addAction(new PrintDecoderListAction(tr("Print Decoder Definitions"), f, false, this)); // NOI18N
+  j->addAction(new PrintDecoderListAction(tr("Print Preview Decoder Definitions"), f, true, this)); // NOI18N
   menuBar->addMenu(j);
   menuBar->addMenu(new RosterMenu(tr("Roster"), RosterMenu::MAINMENU, f)); // NOI18N
   f->setMenuBar(menuBar);
   bottomPanel = new QWidget();
   BorderLayout* bottomPanelLayout = new BorderLayout();
   // new Loco on programming track
-  combinedLocoSelTree = new PPD3CombinedLocoSelTreePane(statusLabel,this);
+  combinedLocoSelTree = new PPD3CombinedLocoSelTreePane(statusLabel, modePane, this);
 //        {
 //         /**
 //           *
@@ -205,7 +206,7 @@ void PaneProgDp3Action::init()
 
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* PaneProgDp3Action::makePanel() {
-throw new IllegalArgumentException("Should not be invoked"); // NOI18N
+throw  IllegalArgumentException("Should not be invoked"); // NOI18N
 }
 
 /*synchronized*/ void PaneProgDp3Action::findDecoderAddress()
@@ -547,7 +548,7 @@ void PaneProgDp3Action::saveRosterEntry() /*throws jmri.JmriException*/
  Roster::getDefault()->writeRoster();
 
  // show OK status
- statusLabel->setText(tr("StateSaveOK").arg(filename));
+ statusLabel->setText(tr("Roster file %1 saved OK").arg(filename));
 }
 
 
@@ -704,14 +705,15 @@ void ThisProgPane::On_readAllButton_clicked(bool bSelected)
 }
 
 //};
-/*public*/ PPD3CombinedLocoSelTreePane::PPD3CombinedLocoSelTreePane(QLabel *s, PaneProgDp3Action* pane)
+/*public*/ PPD3CombinedLocoSelTreePane::PPD3CombinedLocoSelTreePane(QLabel *s, ProgModeSelector* selector, PaneProgDp3Action* pane)
+ : CombinedLocoSelTreePane(s, selector)
 {
  this->pane = pane;
  log = new Logger("PPD3CombinedLocoSelTreePane");
 }
 
 /*protected*/ void PPD3CombinedLocoSelTreePane::startProgrammer(DecoderFile* decoderFile, RosterEntry* re,
-                                        QString filename)
+                                        QString progName) // progName is ignored here
  {
   log->debug("startProgrammer");
   QString title =(tr("FrameServiceProgrammerTitle").arg("NewDecoder")); // NOI18N
@@ -719,28 +721,31 @@ void ThisProgPane::On_readAllButton_clicked(bool bSelected)
   JFrame* p = new PaneServiceProgFrame(decoderFile, re,
                                title, "programmers"+File::separator+"Comprehensive.xml", // NOI18N
                                pane->modePane->getProgrammer());
-  if(pane->editModeProg->isChecked())
+  if(pane->modePane->isSelected() || (pane->modePane->getProgrammer() == nullptr) )
   {
    p = new PPD3PaneProgFrame(decoderFile, re,
-                       title, "programmers"+File::separator+"Comprehensive.xml", // NOI18N
-                       NULL, false,this);
-   //{
-
-    /**
-    *
-    */
-   //private static final long serialVersionUID = -4335497929570046467L;
-//   /*protected*/ QWidget* getModePane() { return NULL; }
-//                };
+                               title, "programmers" + File::separator + "Comprehensive.xml", // NOI18N
+                               nullptr, false);
+//   {
+//            @Override
+//            protected JPanel getModePane() {
+//                return null;
+//            }
+//        };
+    } else {
+        p = new PaneServiceProgFrame(decoderFile, re,
+                title, "programmers" + File::separator + "Comprehensive.xml", // NOI18N
+                pane->modePane->getProgrammer());
     }
     p->pack();
     p->setVisible(true);
 }
+
 /*protected*/ void PPD3CombinedLocoSelTreePane::openNewLoco()
 {
    log->debug("openNewLoco");
    // find the decoderFile object
-   DecoderFile* decoderFile = DecoderIndexFile::instance()->fileFromTitle(selectedDecoderType());
+   DecoderFile* decoderFile = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->fileFromTitle(selectedDecoderType());
    if (log->isDebugEnabled()) log->debug("decoder file: "+decoderFile->getFileName()); // NOI18N
    if(pane->rosterIdField->text()==(tr("LabelNewDecoder"))){ // NOI18N
        pane->re = new RosterEntry();
@@ -913,7 +918,7 @@ PPD3PaneProgFrame::PPD3PaneProgFrame(DecoderFile *pDecoderFile, RosterEntry *pRo
  : PaneProgFrame(pDecoderFile, pRosterEntry, frameTitle, programmerFile, pProg, opsMode, parent)
 {
 }
-/*protected*/ QWidget* PPD3PaneProgFrame::getModePane() { return NULL; }
+/*protected*/ JPanel *PPD3PaneProgFrame::getModePane() { return NULL; }
 
 /*public*/ PPD3DccAddressVarHandler::PPD3DccAddressVarHandler(VariableValue *primaryAddr, VariableValue *extendAddr, EnumVariableValue *addMode, PaneProgDp3Action* pane) : DccAddressVarHandler(primaryAddr, extendAddr, addMode, new JTextField, pane )
 {

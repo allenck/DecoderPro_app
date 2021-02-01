@@ -3,9 +3,10 @@
 #include "abstractprogrammerfacade.h"
 
 class Logger;
-class ResettingOffsetHighCvProgrammerFacade : public AbstractProgrammerFacade
+class ResettingOffsetHighCvProgrammerFacade : public AbstractProgrammerFacade, public ProgListener
 {
  Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
  /*public*/ ResettingOffsetHighCvProgrammerFacade(Programmer* prog, QString top, QString addrCV, QString cvFactor, QString modulo, QString indicator, QObject* parent = nullptr);
  /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);

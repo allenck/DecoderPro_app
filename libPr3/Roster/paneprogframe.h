@@ -10,11 +10,19 @@
 //#include "panecontainer.h"
 #include "swingshutdowntask.h"
 #include "jpanel.h"
+#include "jtogglebutton.h"
+#include "watchinglabel.h"
+#include "runnable.h"
 
 namespace Ui {
 class PaneProgFrame;
 }
 
+class SearchDoneTask;
+class SearchBackwardTask;
+class SearchForwardTask;
+class SearchPair;
+class SearchBar;
 class RosterMediaPane;
 class FunctionLabelPane;
 class DecoderFile;
@@ -47,7 +55,7 @@ public:
     /*public*/ void windowClosing(QCloseEvent* e = 0);
     void readConfig(QDomElement root, RosterEntry* r);
     void updateDccAddress();
-    /*public*/ void newPane(QString name, QDomElement pane, QDomElement modelElem, bool enableEmpty);
+    /*public*/ void newPane(QString name, QDomElement pane, QDomElement modelElem, bool enableEmpty, bool programmerPane);
     /*public*/ BusyGlassPane* getBusyGlassPane();
     /*public*/ void prepGlassPane(JToggleButton* activeButton) ;
     /*public*/ void paneFinished();
@@ -75,7 +83,7 @@ public:
     /*public*/ static bool getShowEmptyPanes();
     static bool showEmptyPanes;// = true;
     /*public*/ RosterEntry* getRosterEntry();
-    /*public*/ QList<QWidget*> getPaneList();
+    /*public*/ QList<JPanel *> getPaneList();
     void virtual addHelp();
     /*public*/ QSize getPreferredSize();
     /*public*/ QSize getMaximumSize();
@@ -109,14 +117,19 @@ public slots:
 private:
     Ui::PaneProgFrame *ui;
     bool _opsMode;
-    QLabel* progStatus;
-    CvTableModel* cvModel;
-    IndexedCvTableModel* iCvModel;
-    VariableTableModel* variableModel;
-    ResetTableModel* resetModel;
-    Programmer* mProgrammer;
-    RosterEntry* _rosterEntry;
+    bool maxFnNumDirty = false;
+    QString maxFnNumOld = "";
+    QString maxFnNumNew = "";
+    QLabel* progStatus = nullptr;
+    CvTableModel* cvModel  = nullptr;
+    VariableTableModel* variableModel = nullptr;
+    ResetTableModel* resetModel = nullptr;
+    Programmer* mProgrammer = nullptr;
+    RosterEntry* _rosterEntry = nullptr;
     QString filename;
+    QString programmerShowEmptyPanes = "";
+    QString decoderShowEmptyPanes = "";
+    QString decoderAllowResetDefaults = "";
     QString pProgrammerFile;
     /**
      * Data element holding the 'model' element representing the decoder type
@@ -125,41 +138,49 @@ private:
 
     QDomElement decoderRoot;// = null;
     QDomElement programmerRoot;// = null;
-    Logger* log;
+    static Logger* log;
     QVector<int> defaultCvValues;
     QVector<QString> defaultCvNumbers;
     QVector<int> defaultIndexedCvValues;
-    RosterEntryPane* _rPane;
+    RosterEntryPane* _rPane = nullptr;
     QMenu* resetMenu;
     bool justChanges;
-    /*private*/ bool _busy;// = false;
+    /*private*/ bool _busy = false;
     /*private*/ void setBusy(bool stat);
-    bool _read;// = true;
-    PaneProgPane* _programmingPane;// = null;
-    JToggleButton* readChangesButton;// = new JToggleButton(rbt.getString("ButtonReadChangesAllSheets"));
-    JToggleButton* writeChangesButton;// = new JToggleButton(rbt.getString("ButtonWriteChangesAllSheets"));
-    JToggleButton* readAllButton;// = new JToggleButton(rbt.getString("ButtonReadAllSheets"));
-    JToggleButton* writeAllButton;// = new JToggleButton(rbt.getString("ButtonWriteAllSheets"));
-    ShutDownTask* decoderDirtyTask;
-    ShutDownTask* fileDirtyTask;
-    QList<QWidget*> paneList;
+    bool _read = true;
+    PaneProgPane* _programmingPane = nullptr;
+    JToggleButton*  readChangesButton = new JToggleButton(tr("Read changes on all sheets"));
+    JToggleButton*  writeChangesButton = new JToggleButton(tr("Write changes on all sheets"));
+    JToggleButton*  readAllButton = new JToggleButton(tr("Read all sheets"));
+    JToggleButton*  writeAllButton = new JToggleButton(tr("Write all sheets"));
+
+    ShutDownTask* decoderDirtyTask = nullptr;
+    ShutDownTask* fileDirtyTask = nullptr;
+    QList<JPanel*> paneList;
     // hold refs to variables to check dccAddress
-    VariableValue* primaryAddr;// = NULL;
-    VariableValue* extendAddr;// = NULL;
-    VariableValue* addMode;// = NULL;
-    BusyGlassPane*       glassPane;
-    QWidget* modePane;
-    QWidget* tempPane; // passed around during construction
+    VariableValue* primaryAddr = nullptr;
+    VariableValue* extendAddr = nullptr;
+    VariableValue* addMode = nullptr;
+    BusyGlassPane* glassPane = nullptr;
+    JPanel* modePane = nullptr;
+    JPanel* tempPane; // passed around during construction
     FunctionLabelPane* _flPane;
     RosterMediaPane* _rMPane;
 
     QList<QWidget*>    activeComponents;// = new ArrayList<JComponent>();
     int paneListIndex;
-    QFrame* bottom;
+    QFrame* bottom = nullptr;
     QDomNodeList decoderPaneList;
     void closeEvent(QCloseEvent *);
     void setProgrammingGui(QWidget* pane);
     static bool showCvNumbers;// = false;
+    void setSearchGui(JPanel* bottom);
+    SearchBar* searchBar;
+    QList<SearchPair*>* searchTargetList = nullptr;
+    int nextSearchTarget = 0;
+    SearchDoneTask* searchDoneTask = nullptr;
+    SearchForwardTask* searchForwardTask = nullptr;
+    SearchBackwardTask* searchBackwardTask = nullptr;
 
 protected:
     /*protected*/ void loadDecoderFromLoco(RosterEntry* r);
@@ -170,11 +191,13 @@ protected:
     /*protected*/ void handleDirtyFile();
     /*protected*/ void saveDefaults();
     /*protected*/ QWidget* makeInfoPane(RosterEntry* r);
-    /*abstract*/ /*protected*/ virtual QWidget* getModePane() {return NULL;}
+    /*abstract*/ /*protected*/ virtual JPanel* getModePane() {return NULL;}
     /*protected*/ QWidget* makeFunctionLabelPane(RosterEntry* r);
     /*protected*/ QWidget* makeMediaPane(RosterEntry* r);
     /*protected*/ virtual void pickProgrammerMode(/*@NonNull*/ QDomElement programming);
     /*protected*/ void resetStatus(int newStatus);
+    /*protected*/ void loadSearchTargets();
+
 
 protected slots:
     /*protected*/ void installComponents();
@@ -185,6 +208,7 @@ protected slots:
  friend class PaneServiceProgFrame;
  friend class PaneProgFrameTest;
 };
+
 class DecoderDirtyTask : public SwingShutDownTask
 {
  Q_OBJECT
@@ -213,4 +237,28 @@ public:
         return result;
     }
 };
+
+/*static*/ class SearchPair {
+    WatchingLabel* label;
+    JPanel* tab;
+ public:
+    SearchPair(WatchingLabel* label, /*@Nonnull*/ JPanel* tab) {
+        this->label = label;
+        this->tab = tab;
+    }
+};
+
+class SearchDoneTask : public Runnable
+{
+  Q_OBJECT
+};
+class SearchForwardTask : public Runnable
+{
+  Q_OBJECT
+};
+class SearchBackwardTask : public Runnable
+{
+
+};
+
 #endif // PANEPROGFRAME_H

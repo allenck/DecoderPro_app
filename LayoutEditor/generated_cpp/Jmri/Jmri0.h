@@ -3550,7 +3550,7 @@ public:
    ~PythonQtShell_DefaultLogixManager();
 
 virtual void activateAllLogixs();
-virtual QString  getBeanTypeHandled(bool  plural);
+virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual QString  getNamedBeanClass() const;
 virtual QString  getSystemPrefix() const;
 virtual int  getXMLOrder() const;
@@ -3565,7 +3565,7 @@ virtual char  typeLetter() const;
 class PythonQtPublicPromoter_DefaultLogixManager : public DefaultLogixManager
 { public:
 inline void py_q_activateAllLogixs() { DefaultLogixManager::activateAllLogixs(); }
-inline QString  py_q_getBeanTypeHandled(bool  plural) { return DefaultLogixManager::getBeanTypeHandled(plural); }
+inline QString  py_q_getBeanTypeHandled(bool  plural) const { return DefaultLogixManager::getBeanTypeHandled(plural); }
 inline QString  py_q_getNamedBeanClass() const { return DefaultLogixManager::getNamedBeanClass(); }
 inline QString  py_q_getSystemPrefix() const { return DefaultLogixManager::getSystemPrefix(); }
 inline int  py_q_getXMLOrder() const { return DefaultLogixManager::getXMLOrder(); }
@@ -3581,8 +3581,8 @@ DefaultLogixManager* new_DefaultLogixManager(QObject*  parent = 0);
 void delete_DefaultLogixManager(DefaultLogixManager* obj) { delete obj; } 
    void activateAllLogixs(DefaultLogixManager* theWrappedObject);
    void py_q_activateAllLogixs(DefaultLogixManager* theWrappedObject){  (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_activateAllLogixs());}
-   QString  getBeanTypeHandled(DefaultLogixManager* theWrappedObject, bool  plural);
-   QString  py_q_getBeanTypeHandled(DefaultLogixManager* theWrappedObject, bool  plural){  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
+   QString  getBeanTypeHandled(DefaultLogixManager* theWrappedObject, bool  plural) const;
+   QString  py_q_getBeanTypeHandled(DefaultLogixManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    QString  getNamedBeanClass(DefaultLogixManager* theWrappedObject) const;
    QString  py_q_getNamedBeanClass(DefaultLogixManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_DefaultLogixManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    QString  getSystemPrefix(DefaultLogixManager* theWrappedObject) const;

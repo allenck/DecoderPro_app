@@ -41,7 +41,7 @@ class PEPaneProgFrame : public PaneProgFrame
 public:
     PEPaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntry, QString frameTitle, QString programmerFile, Programmer* pProg, bool opsMode, QWidget* parent = 0);
 protected:
-    /*protected*/ QWidget* getModePane() { return NULL; }
+    /*protected*/ JPanel* getModePane() override { return NULL; }
 };
 
 #endif // PANEEDITACTION_H

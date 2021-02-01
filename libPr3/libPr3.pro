@@ -1079,7 +1079,10 @@ SOURCES += \
     loconet/lncvprogaction.cpp \
     logix/learnfunctionpanel.cpp \
     logix/learncontrolpanel.cpp \
-    logix/learnspeedpanel.cpp
+    logix/learnspeedpanel.cpp \
+    abstractprogrammerserver.cpp \
+    searchbar.cpp \
+    cvutil.cpp
 
 
  !contains(FTDI, 1) {
@@ -2175,7 +2178,10 @@ HEADERS += \
     loconet/lncvprogaction.h \
     logix/learncontrolpanel.h \
     logix/learnfunctionpanel.h \
-    logix/learnspeedpanel.h
+    logix/learnspeedpanel.h \
+    abstractprogrammerserver.h \
+    searchbar.h \
+    cvutil.h
 
 
  !contains(FTDI, 1) {

@@ -81,8 +81,9 @@ protected:
     }
 };
 
-class ProgListenerO4 : public ProgListener{
+class ProgListenerO4 : public QObject, public ProgListener{
  Q_OBJECT
+  Q_INTERFACES(ProgListener)
  LnDeferProgrammerTest* test;
 public:
  ProgListenerO4(LnDeferProgrammerTest* test) { this->test = test;}
@@ -92,6 +93,7 @@ public:
         test->status = stat;
         test->value = val;
     }
+ QObject* self() {return (QObject*)this;}
 };
 
 class ReleaseUntilO10 : public ReleaseUntil

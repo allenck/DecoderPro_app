@@ -80,6 +80,7 @@ class CLSIdentifyLoco : public IdentifyLoco
  /*private*/ CombinedLocoSelPane* who;
 public:
  CLSIdentifyLoco(Programmer* programmer, CombinedLocoSelPane* who);
+ QObject* self() {return (QObject*)this;}
  protected:
  /*protected*/ void done(int dccAddress);
  /*protected*/ void message(QString m);
@@ -93,6 +94,7 @@ class CLSIdentifyDecoder : public IdentifyDecoder
     /*private*/ CombinedLocoSelPane* who;
 public:
     CLSIdentifyDecoder(Programmer* p, CombinedLocoSelPane* who);
+    QObject* self() {return (QObject*)this;}
 protected:
     /*protected*/ void done(int mfg, int model, int productID);
     /*protected*/ void message(QString m) ;

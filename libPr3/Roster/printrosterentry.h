@@ -3,6 +3,7 @@
 #include "panecontainer.h"
 #include "logger.h"
 
+class JPanel;
 class HardcopyWriter;
 class JFrame;
 class PaneProgPane;
@@ -23,7 +24,7 @@ public:
     /*public*/ void enableButtons(bool enable);
     /*public*/ void paneFinished();
     /*public*/ bool isBusy();
-    /*public*/ PrintRosterEntry(RosterEntry* rosterEntry, QList<QWidget*> paneList, FunctionLabelPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent);
+    /*public*/ PrintRosterEntry(RosterEntry* rosterEntry, QList<JPanel *> paneList, FunctionLabelPane* flPane, RosterMediaPane* rMPane, JmriJFrame* parent);
     /*public*/ void doPrintPanes(bool preview);
     /*public*/ void printPanes(/*final*/ bool preview);
     /*public*/ void printInfoSection(HardcopyWriter* w);
@@ -36,7 +37,7 @@ public slots:
 private:
     RosterEntry* _rosterEntry;
 
-    QList<QWidget*>        _paneList;//        = new ArrayList<JPanel>();
+    QList<JPanel*>        _paneList;//        = new ArrayList<JPanel>();
     FunctionLabelPane*   _flPane;//         = null;
     RosterMediaPane*     _rMPane;//        = null;
     JmriJFrame*          _parent;//         = null;

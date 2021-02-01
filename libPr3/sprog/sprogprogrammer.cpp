@@ -28,10 +28,10 @@ using namespace Sprog;
  * Implemented Types.
  */
 //@Override
-/*public*/ QList<ProgrammingMode*> SprogProgrammer::getSupportedModes() {
-    QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
-    ret.append(ProgrammingMode::DIRECTBITMODE);
-    ret.append(ProgrammingMode::PAGEMODE);
+/*public*/ QList<QString> SprogProgrammer::getSupportedModes() {
+    QList<QString> ret =  QList<QString>();
+    ret.append("DIRECTBITMODE");
+    ret.append("PAGEMODE");
     return ret;
 }
 
@@ -56,7 +56,7 @@ using namespace Sprog;
 //@Override
 /*synchronized*/ /*public*/ void SprogProgrammer::writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException) {
     if (log->isDebugEnabled()) {
-        log->debug("writeCV " + QString::number(CV) + " mode " + getMode()->toString() + " listens " + (QString(p->metaObject()->className())));
+        log->debug("writeCV " + QString::number(CV) + " mode " + getMode()->toString() + " listens " + (QString(p->self()->metaObject()->className())));
     }
     useProgrammer(p);
     _val = val;
@@ -78,7 +78,7 @@ using namespace Sprog;
 {
  if (log->isDebugEnabled())
  {
-  log->debug("readCV " +QString::number(CV) + " mode " + getMode()->toString() + " listens " + (QString(p->metaObject()->className())));
+  log->debug("readCV " +QString::number(CV) + " mode " + getMode()->toString() + " listens " + (QString(p->self()->metaObject()->className())));
  }
  useProgrammer(p);
  _val = -1;
@@ -120,7 +120,7 @@ using namespace Sprog;
  {
   if (log->isInfoEnabled())
   {
-   log->info("programmer already in use by " + QString(_usingProgrammer->metaObject()->className()));
+   log->info("programmer already in use by " + QString(_usingProgrammer->self()->metaObject()->className()));
   }
   throw  ProgrammerException("programmer in use");
  }
@@ -237,9 +237,9 @@ using namespace Sprog;
 //       ((AbstractIdentify*)temp)->programmingOpReply(value, status);
 //     else
 //      temp->programmingOpReply(value, status);
-  connect(this, SIGNAL(notify_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+  connect(this, SIGNAL(notify_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
   emit notify_programmingOpReply(value, status);
-  disconnect(this, SIGNAL(notify_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+  disconnect(this, SIGNAL(notify_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
 
  }
 }

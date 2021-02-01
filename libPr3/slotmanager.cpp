@@ -6,8 +6,10 @@
 #include "defaultprogrammermanager.h"
 #include "programmingmode.h"
 #include "csopswaccess.h"
+#include "timer.h"
 
 /*final static protected*/ int SlotManager::NUM_SLOTS = 128;
+/*static*/ /*public*/ int SlotManager::postProgDelay = 100; // this is public to allow changes via script
 
 SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractProgrammer(parent)
 {
@@ -19,30 +21,11 @@ SlotManager::SlotManager(LnTrafficController* tc, QObject *parent) : AbstractPro
  // change timeout values from AbstractProgrammer superclass
  LONG_TIMEOUT = 180000;  // Fleischman command stations take forever
  SHORT_TIMEOUT = 8000;   // DCS240 reads
- lastMessage = -1;
- mCanRead = true;
- throttledTransmitter = nullptr;
- mTurnoutNoRetry = false;
- mProgPowersOff = false;
- mProgEndSequence = false;
- progState = 0;
- // 1 is commandPending
- // 2 is commandExecuting
- // 0 is notProgramming
- _progRead = false;
- _progConfirm = false;
- _confirmVal =0;
- mServiceMode = true;
- _usingProgrammer = nullptr;
- //_mode = Programmer::PAGEMODE;
- mPowerTimer = nullptr;
- nextReadSlot = 0;
- _slots.reserve(128);
+
+
  csOpSwProgrammingMode = new ProgrammingMode(
              "LOCONETCSOPSWMODE",
              tr("Command Station Op Switches"));
- postProgDelay = 100;
-
 
  loadSlots();
 
@@ -585,8 +568,7 @@ void SlotManager::programmerOpMessage(LocoNetMessage* m, int i)
  if (i == 124)
  {
   // here its an operation on the programmer slot
-  if (log->isDebugEnabled())
-   log->debug(QString("Message %1 for slot 124 in state %2").arg(m->getOpCodeHex()).arg(progState));
+  log->debug(QString("Prog Message %1 for slot 124 in state %2").arg(m->getOpCodeHex()).arg(progState));
   switch (progState)
   {
    case 0:   // notProgramming
@@ -598,6 +580,7 @@ void SlotManager::programmerOpMessage(LocoNetMessage* m, int i)
     // waiting for slot read, is it present?
     if (m->getOpCode() == LnConstants::OPC_SL_RD_DATA) // 0xe7 231
     {
+     log->debug("  was OPC_SL_RD_DATA"); // NOI18N
      // yes, this is the end
      // move to not programming state
      stopTimer();
@@ -610,7 +593,8 @@ void SlotManager::programmerOpMessage(LocoNetMessage* m, int i)
      {
       // read command, get value; check if OK
       value = _slots[i]->cvval();
-      if (value != _confirmVal) status = status | ProgListener::ConfirmFailed;
+      if (value != _confirmVal)
+       status = status | ProgListener::ConfirmFailed;
      }
      if (_progRead )
      {
@@ -645,14 +629,14 @@ void SlotManager::programmerOpMessage(LocoNetMessage* m, int i)
  * Types implemented here.
  */
 //@Override
-/*public*/ QList<ProgrammingMode*> SlotManager::getSupportedModes()
+/*public*/ QList<QString> SlotManager::getSupportedModes()
 {
- QList<ProgrammingMode*> ret = QList<ProgrammingMode*>();
- ret.append(ProgrammingMode::DIRECTBYTEMODE);
- ret.append(ProgrammingMode::PAGEMODE);
- ret.append(ProgrammingMode::REGISTERMODE);
- ret.append(ProgrammingMode::ADDRESSMODE);
- ret.append(csOpSwProgrammingMode);
+ QList<QString> ret = QList<QString>();
+ ret.append("DIRECTBYTEMODE");
+ ret.append("PAGEMODE");
+ ret.append("REGISTERMODE");
+ ret.append("ADDRESSMODE");
+ ret.append(csOpSwProgrammingMode->getStandardName());
  return ret;
 }
 
@@ -785,31 +769,72 @@ LnCommandStationType* SlotManager::getCommandStationType(){
 
 void SlotManager::writeCVOpsMode(QString CVname, int val, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException)
 {
-     Q_UNUSED(longAddr)
+  Q_UNUSED(longAddr)
   int CV = CVname.toInt();
-    lopsa = addr&0x7f;
-    hopsa = (addr/128)&0x7f;
+    lopsa = addr & 0x7f;
+    hopsa = (addr / 128)&0x7f;
     mServiceMode = false;
     doWrite(CV, val, p, 0x67);  // ops mode byte write, with feedback
 }
 
-void SlotManager::writeCV(int CV, int val, ProgListener* p) throw(ProgrammerException)
+/**
+ * Write a CV via the Service Mode programmer.
+ *
+ * @param cvNum CV id as String
+ * @param val value to write to the CV
+ * @param p programmer
+ * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
+ */
+//@Overridevoid
+void SlotManager::writeCV(QString cvNum, int val, ProgListener* p) throw(ProgrammerException)
 {
- lopsa = 0;
- hopsa = 0;
- mServiceMode = true;
-    // parse the programming command
- int pcmd = 0x43;       // LPE implies 0x40, but 0x43 is observed
- if (getMode()->equals(ProgrammingMode::PAGEMODE)) pcmd = pcmd | 0x20;
- else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) pcmd = pcmd | 0x28;
- else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
-             || getMode()->equals(ProgrammingMode::ADDRESSMODE)) pcmd = pcmd | 0x10;
- else
- //throw (new ProgrammerException("mode not supported"));
-  emit programmerException("mode not supported");
+ log->debug(tr("writeCV(string): cvNum=%1, value=%2").arg(cvNum).arg(val));
+ if (getMode()->equals(csOpSwProgrammingMode)) {
+     log->debug("cvOpSw mode write!");
+     // handle Command Station OpSw programming here
+     QStringList parts = cvNum.split("\\.");
+     if ((parts[0] ==("csOpSw")) && (parts.length()==2)) {
+         if (csOpSwAccessor == nullptr) {
+             csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
+         } else {
+             csOpSwAccessor->setProgrammerListener(p);
+         }
+         // perform the CsOpSwMode read access
+         log->debug("going to try the opsw access");
+         csOpSwAccessor->writeCsOpSw(cvNum, val, p);
+         return;
 
- doWrite(CV, val, p, pcmd);
+     } else {
+         log->warn("rejecting the cs opsw access account unsupported CV name format");
+         // unsupported format in "cv" name. Signal an error
+         Programmer::notifyProgListenerEnd(p, 1, (int)ProgListener::SequenceError);
+         return;
+
+     }
+ } else {
+     // regular CV case
+     int CV = cvNum.toInt();
+
+     lopsa = 0;
+     hopsa = 0;
+     mServiceMode = true;
+     // parse the programming command
+     int pcmd = 0x43;       // LPE imples 0x40, but 0x43 is observed
+     if (getMode()->equals(ProgrammingMode::PAGEMODE)) {
+         pcmd = pcmd | 0x20;
+     } else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) {
+         pcmd = pcmd | 0x28;
+     } else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
+             || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
+         pcmd = pcmd | 0x10;
+     } else {
+         throw ProgrammerException("mode not supported"); // NOI18N
+     }
+
+     doWrite(CV, val, p, pcmd);
+ }
 }
+
 void SlotManager::doWrite(int CV, int val, ProgListener* p, int pcmd) throw(ProgrammerException)
 {
  if (log->isDebugEnabled()) log->debug("writeCV: "+QString::number(CV));
@@ -951,7 +976,7 @@ void SlotManager::useProgrammer(ProgListener* p) // throws jmri.ProgrammerExcept
  if (_usingProgrammer != nullptr && _usingProgrammer != p)
  {
   if (log->isInfoEnabled())
-   log->info(QString("programmer already in use by %1").arg(_usingProgrammer->objectName()));
+   log->info(QString("programmer already in use by %1").arg(_usingProgrammer->self()->objectName()));
   throw ProgrammerException("programmer in use");
  }
  else
@@ -1021,11 +1046,11 @@ void SlotManager::notifyProgListenerEnd(int value, int status)
  * @param value result value
  * @param status code from jmri.ProgListener
  */
-/*default*/ /*public*/ void SlotManager::notifyProgListenerEnd(ProgListener* p, int value, int status) {
-    if ( p != nullptr ) {
-       p->programmingOpReply(value, status);
-    }
-}
+///*default*/ /*public*/ void SlotManager::(ProgListener* p, int value, int status) {
+//    if ( p != nullptr ) {
+//       p->programmingOpReply(value, status);
+//    }
+//}
 
 /**
  * Internal method to notify of the LACK result.
@@ -1054,8 +1079,8 @@ void SlotManager::sendProgrammingReply(ProgListener* p, int value, int status)
  if (!mServiceMode) {
      delay = 100;  // value in ops mode
  }
- new SendProgrammingReplyDelay(p, value, status,  delay, this);
-}
+ //new SendProgrammingReplyDelay(p, value, status,  delay, this);
+QTimer::singleShot(delay, [=]() { Programmer::notifyProgListenerEnd(p, value, status);; } );}
 
 SendProgrammingReplyDelay::SendProgrammingReplyDelay(ProgListener *p, int value, int status, int delay, SlotManager* slotManager)
 {
@@ -1135,7 +1160,21 @@ void SlotManager::doEndOfProgramming()
  }
 }
 
-
+/**
+ * Start the process of checking each slot for contents.
+ * <p>
+ * This is not invoked by this class, but can be invoked from elsewhere to
+ * start the process of scanning all slots to update their contents.
+ *
+ * @param inputSlotMap array of from to pairs
+ * @param interval ms between slt rds
+ */
+/*synchronized*/ /*public*/ void SlotManager::update(QList<SlotMapEntry*> inputSlotMap, int interval) {
+    for ( SlotMapEntry* item: inputSlotMap) {
+        nextReadSlot = item->getFrom();
+        readNextSlot(item->getTo(),interval);
+    }
+}
 
 /**
  * Start the process of checking each slot for contents.
@@ -1146,8 +1185,7 @@ void SlotManager::doEndOfProgramming()
  */
 void SlotManager::update()
 {
- nextReadSlot = 0;
- readNextSlot();
+ update(slotMap, slotScanInterval);
 }
 
 /**
@@ -1170,25 +1208,27 @@ void SlotManager::sendReadSlot(int slot)
  tc->sendLocoNetMessage(m);
 }
 
-void SlotManager::readNextSlot()
-{
- // send info request
- sendReadSlot(nextReadSlot++);
+/**
+ * Continue the sequence of reading all slots.
+ * @param toSlot index of the next slot to read
+ * @param interval wait time before operation, milliseconds
+ */
+/*synchronized*/ /*protected*/ void SlotManager::readNextSlot(int toSlot, int interval) {
+    // send info request
+    sendReadSlot(nextReadSlot++);
 
- // schedule next read if needed
- if (nextReadSlot < 127)
- {
-//        javax.swing.Timer t = new javax.swing.Timer(500, new java.awt.event.ActionListener() {
+    // schedule next read if needed
+    if (nextReadSlot < toSlot) {
+//        Timer* t = new Timer(interval, new ActionListener() {
+//            @Override
 //            public void actionPerformed(java.awt.event.ActionEvent e) {
-//                readNextSlot();
+//                readNextSlot(toSlot,interval);
 //            }
 //        });
-//        QTimer t;
-
-//        t.setSingleShot(true);
-//        t.start(500);
-  QTimer::singleShot(500, this, SLOT(readNextSlot()));
- }
+//        t.setRepeats(false);
+//        t.start();
+     QTimer::singleShot(interval, [=]() { readNextSlot(toSlot,interval); } );
+    }
 }
 
 /**
@@ -1232,62 +1272,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
 // initialize logging
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SlotManager.class.getName());
 
-/**
- * Write a CV via the Service Mode programmer.
- *
- * @param cvNum CV id as String
- * @param val value to write to the CV
- * @param p programmer
- * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
- */
-//@Override
-/*public*/ void SlotManager::writeCV(QString cvNum, int val, ProgListener* p) throw (ProgrammerException) {
-    log->debug(tr("writeCV(string): cvNum=%1, value=%2").arg(cvNum).arg(val));
-    if (getMode()->equals(csOpSwProgrammingMode)) {
-        log->debug("cvOpSw mode write!");
-        // handle Command Station OpSw programming here
-        QStringList parts = cvNum.split(QRegExp("\\."));
-        if ((parts.at(0) == ("csOpSw")) && (parts.length()==2)) {
-            if (csOpSwAccessor == nullptr) {
-                csOpSwAccessor = new CsOpSwAccess(adaptermemo, p);
-            } else {
-                csOpSwAccessor->setProgrammerListener(p);
-            }
-            // perform the CsOpSwMode read access
-            log->debug("going to try the opsw access");
-            csOpSwAccessor->writeCsOpSw(cvNum, val, p);
-            return;
 
-        } else {
-            log->warn("rejecting the cs opsw access account unsupported CV name format");
-            // unsupported format in "cv" name. Signal an error
-            Programmer::notifyProgListenerEnd(p, 1, ProgListener::SequenceError);
-            return;
-
-        }
-    } else {
-        // regular CV case
-        int CV = cvNum.toInt();
-
-        lopsa = 0;
-        hopsa = 0;
-        mServiceMode = true;
-        // parse the programming command
-        int pcmd = 0x43;       // LPE imples 0x40, but 0x43 is observed
-        if (getMode()->equals(ProgrammingMode::PAGEMODE)) {
-            pcmd = pcmd | 0x20;
-        } else if (getMode()->equals(ProgrammingMode::DIRECTBYTEMODE)) {
-            pcmd = pcmd | 0x28;
-        } else if (getMode()->equals(ProgrammingMode::REGISTERMODE)
-                || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
-            pcmd = pcmd | 0x10;
-        } else {
-            throw ProgrammerException("mode not supported"); // NOI18N
-        }
-
-        doWrite(CV, val, p, pcmd);
-    }
-}
 
 /**
  * Read a CV via the OpsMode programmer

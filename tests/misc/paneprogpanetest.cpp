@@ -49,7 +49,7 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
 
     // create test object with special implementation of the newColumn(String) operation
     colCount = 0;
-    PaneProgPaneO1* pane = new PaneProgPaneO1(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr, this);
+    PaneProgPaneO1* pane = new PaneProgPaneO1(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr, false, this);
 //    {
 //        @Override
 //        /*public*/ JPanel newColumn(QDomElement e, boolean a, QDomElement el) {
@@ -62,7 +62,7 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
     JUnitUtil::dispose(pFrame);
 }
 //@Override
-/*protected*/ QWidget* PaneProgFrameO1::getModePane()
+/*protected*/ JPanel *PaneProgFrameO1::getModePane()
 {
     return nullptr;
 }

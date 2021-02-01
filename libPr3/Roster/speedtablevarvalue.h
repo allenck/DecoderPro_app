@@ -19,8 +19,8 @@ public:
                               QString cvNum, QString mask, int minVal, int maxVal,
                               QMap<QString,CvValue*>* v, QLabel* status, QString stdname, int entries, bool mfxFlag, QObject *parent = 0);
     /*public*/ SpeedTableVarValue(QObject *parent = 0);
-    /*public*/ QVariant rangeVal() ;
-    /*public*/ QVector<CvValue*>* usesCVs() ;
+    /*public*/ QVariant rangeVal() override;
+    /*public*/ QVector<CvValue*>* usesCVs() override;
     // /*public*/ void stateChanged(ChangeEvent* e);
     void setModel(int i, int value) ;
     void forceMonotonic(int modifiedStepIndex, int value);
@@ -29,24 +29,24 @@ public:
     void matchPointsRight(int modifiedStepIndex);
     void enforceEndPointsMfx();
     /*public*/ int getState() ;
-    /*public*/ QString getValueString();
-    /*public*/ void setIntValue(int i);
-    /*public*/ int getIntValue() ;
-    /*public*/ QVariant getValueObject();
-    /*public*/ QWidget* getCommonRep();
+    /*public*/ QString getValueString() override;
+    /*public*/ void setIntValue(int i) override;
+    /*public*/ int getIntValue()  override;
+    /*public*/ QVariant getValueObject() override;
+    /*public*/ QWidget* getCommonRep() override;
     /*public*/ void setValue(int value);
     void setColor(QColor c);
-    /*public*/ QWidget* getNewRep(QString format);
+    /*public*/ QWidget* getNewRep(QString format) override;
     void initStepCheckBoxes() ;
-    /*public*/ void setCvState(int state);
-    /*public*/ bool isChanged();
-    /*public*/ void readChanges() ;
-    /*public*/ void writeChanges();
-    /*public*/ void readAll();
-    /*public*/ void writeAll() ;
+    /*public*/ void setCvState(int state) override;
+    /*public*/ bool isChanged() override;
+    /*public*/ void readChanges()  override;
+    /*public*/ void writeChanges() override;
+    /*public*/ void readAll() override;
+    /*public*/ void writeAll()  override;
     void readNext();
     void writeNext() ;
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
 signals:
 
 public slots:
@@ -74,7 +74,7 @@ private:
     bool mfx;
 
     QList<QCheckBox*> stepCheckBoxes;
-    QList<JSlider*> stepSliders;
+    //QList<JSlider*> stepSliders;
     QColor _defaultColor;
 
     /**

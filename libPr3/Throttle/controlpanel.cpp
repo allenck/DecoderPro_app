@@ -457,10 +457,10 @@
 //    labelTable->insert((maxSpeed / 2), new QLabel("50%"));
 //    labelTable->insert((maxSpeed), new QLabel("100%"));
 //    labelTable->insert((0), new QLabel(tr("Stop")));
- QHash<int,QLabel*> labelTable = QHash<int,QLabel*>();
- labelTable.insert((maxSpeed / 2),new QLabel("100%"));
- labelTable.insert((maxSpeed),new QLabel("50%"));
- labelTable.insert((0), new QLabel(tr("Stop")));
+ QHash<int,JLabel*> labelTable = QHash<int,JLabel*>();
+ labelTable.insert((maxSpeed / 2),new JLabel("100%"));
+ labelTable.insert((maxSpeed),new JLabel("50%"));
+ labelTable.insert((0), new JLabel(tr("Stop")));
  speedSlider->setLabelTable(labelTable);
 //    speedSlider.setPaintTicks(true);
 //    speedSlider.setPaintLabels(true);
@@ -484,12 +484,12 @@
   }
   speedSliderContinuous->setValue((int) (oldSpeed * maxSpeed));
   speedSliderContinuous->setMajorTickSpacing(maxSpeed / 2);
-  QHash<int, QLabel*> labelTable =  QHash<int, QLabel*>();
-  labelTable.insert((maxSpeed / 2), new QLabel("50%"));
-  labelTable.insert((maxSpeed), new QLabel("100%"));
-  labelTable.insert((0), new QLabel(tr("Stop")));
-  labelTable.insert((-maxSpeed / 2), new QLabel("-50%"));
-  labelTable.insert((-maxSpeed), new QLabel("-100%"));
+  QHash<int, JLabel*> labelTable =  QHash<int, JLabel*>();
+  labelTable.insert((maxSpeed / 2), new JLabel("50%"));
+  labelTable.insert((maxSpeed), new JLabel("100%"));
+  labelTable.insert((0), new JLabel(tr("Stop")));
+  labelTable.insert((-maxSpeed / 2), new JLabel("-50%"));
+  labelTable.insert((-maxSpeed), new JLabel("-100%"));
   speedSliderContinuous->setLabelTable(labelTable);
 //        speedSliderContinuous.setPaintTicks(true);
 //        speedSliderContinuous.setPaintLabels(true);
@@ -877,7 +877,7 @@
  speedControlPanelLayout->addWidget(sliderPanel);
  speedSlider->setOrientation(Qt::Vertical);
  speedSlider->setMajorTickSpacing(maxSpeed / 2);
- QHash<int, QLabel*>  labelTable = QHash<int, QLabel*>();
+ QHash<int, JLabel*>  labelTable = QHash<int, JLabel*>();
  labelTable.insert(maxSpeed / 2, new JLabel("50%"));
  labelTable.insert(maxSpeed, new JLabel("100%"));
  labelTable.insert(0, new JLabel(tr("Stop")));
@@ -930,7 +930,7 @@
  speedControlPanelLayout->addWidget(speedSliderContinuousPanel);
  speedSliderContinuous->setOrientation(Qt::Vertical);
  speedSliderContinuous->setMajorTickSpacing(maxSpeed / 2);
- labelTable = QHash<int,QLabel*> ();
+ labelTable = QHash<int,JLabel*> ();
  labelTable.insert(maxSpeed / 2, new JLabel("50%"));
  labelTable.insert(maxSpeed, new JLabel("100%"));
  labelTable.insert(0, new JLabel(tr("Stop")));

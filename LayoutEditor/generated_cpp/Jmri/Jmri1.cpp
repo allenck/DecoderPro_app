@@ -27,7 +27,6 @@
 #include <namedbean.h>
 #include <positionable.h>
 #include <positionablelabel.h>
-#include <programmingmode.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
 #include <proxylightmanager.h>
@@ -326,7 +325,7 @@ if (_wrapper) {
 }
   return DefaultProgrammerManager::eventFilter(watched0, event1);
 }
-QList<ProgrammingMode* >  PythonQtShell_DefaultProgrammerManager::getDefaultModes()
+QList<QString >  PythonQtShell_DefaultProgrammerManager::getDefaultModes()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -334,9 +333,9 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("getDefaultModes");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QList<ProgrammingMode* >"};
+      static const char* argumentList[] ={"QList<QString >"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QList<ProgrammingMode* > returnValue{};
+      QList<QString > returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
@@ -345,7 +344,7 @@ if (_wrapper) {
           if (args[0]==NULL) {
             PythonQt::priv()->handleVirtualOverloadReturnError("getDefaultModes", methodInfo, result);
           } else {
-            returnValue = *((QList<ProgrammingMode* >*)args[0]);
+            returnValue = *((QList<QString >*)args[0]);
           }
         }
       }
@@ -464,7 +463,7 @@ int PythonQtShell_DefaultProgrammerManager::qt_metacall(QMetaObject::Call call, 
   int result = DefaultProgrammerManager::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-QList<ProgrammingMode* >  PythonQtWrapper_DefaultProgrammerManager::getDefaultModes(DefaultProgrammerManager* theWrappedObject)
+QList<QString >  PythonQtWrapper_DefaultProgrammerManager::getDefaultModes(DefaultProgrammerManager* theWrappedObject)
 {
   return ( theWrappedObject->getDefaultModes());
 }

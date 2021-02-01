@@ -56,7 +56,7 @@
 /*protected*/ void VerifyWriteProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
-        log->info(tr("programmer already in use by %1").arg(_usingProgrammer->metaObject()->className()));
+        log->info(tr("programmer already in use by %1").arg(_usingProgrammer->self()->metaObject()->className()));
         throw ProgrammerException("programmer in use");
     } else {
         _usingProgrammer = p;
@@ -80,9 +80,9 @@
 //        //temp->programmingOpReply(value, status);
 //        emit do_programmingOpReply(value, status);
 //        disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-        if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+        if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
         {
-            log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+            log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
             return;
         }
 
@@ -113,9 +113,9 @@
 //                //temp->programmingOpReply(value, status);
 //                emit do_programmingOpReply(value, status);
 //                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-                    if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+                    if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
                     {
-                        log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                        log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
                         return;
                     }
                     return;
@@ -134,9 +134,9 @@
 //            //temp->programmingOpReply(value, status);
 //            emit do_programmingOpReply(value, status);
 //            disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-            if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+            if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
             {
-                log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
                 return;
             }
             break;
@@ -152,9 +152,9 @@
 //                //temp->programmingOpReply(value, status);
 //                emit do_programmingOpReply(value, status);
 //                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-             if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+             if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
              {
-                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
                  return;
              }
             } else {
@@ -164,9 +164,9 @@
 //                //temp->programmingOpReply(value, status);
 //                emit do_programmingOpReply(value, status);
 //                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-             if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+             if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
              {
-                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
                  return;
              }
             }

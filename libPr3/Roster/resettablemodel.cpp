@@ -2,6 +2,9 @@
 #include "variablevalue.h"
 #include "actionlistener.h"
 #include "rosterentry.h"
+#include "programmingmode.h"
+#include "joptionpane.h"
+
 
 //ResetTableModel::ResetTableModel(QObject *parent) :
 //    AbstractTableModel(parent)
@@ -131,8 +134,9 @@
  _siCv = siCv;
 }
 
-/*public*/ void ResetTableModel::setRow(int row, QDomElement e)
+/*public*/ void ResetTableModel::setRow(int row, QDomElement e, QDomElement p, QString model)
 {
+ decoderModel = model; // Save for use elsewhere
  //QString label = LocaleSelector.attribute(e, "label"); // Note the name variable is actually the label attribute
  QString label = e.attribute("label");
  if (log->isDebugEnabled()) log->debug("Starting to setRow \"" +
@@ -180,16 +184,71 @@
 
 /*protected*/ void ResetTableModel::performReset(int row)
 {
+ savedMode = mProgrammer->getMode(); // In case we need to change modes
+ if (modeVector.at(row) != nullptr) {
+     QList<QString> modes = mProgrammer->getSupportedModes();
+     QList<QString>* validModes = modeVector.at(row);
+
+     QString programmerModeListBuffer;// = new StringBuilder("");
+     //modes.forEach((m) ->
+     for(QString m : modes)
+     {
+         programmerModeListBuffer.append(",").append(m);
+     }//);
+     QString programmerModeList = programmerModeListBuffer/*.toString()*/;
+     if (programmerModeList.length() <= 1) {
+         programmerModeList = ""; // NOI18N
+     } else if (programmerModeList.startsWith(",")) {
+         programmerModeList = programmerModeList.mid(1);
+     }
+
+     QString resetModeBuilder;// = new StringBuilder("");
+     //validModes.forEach((mode) ->
+     for(QString mode : *validModes)
+     {
+         resetModeBuilder.append(",").append((new ProgrammingMode(mode))->toString());
+     }//);
+     QString resetModeList = resetModeBuilder/*.toString()*/;
+     if (resetModeList.length() <= 1) {
+         resetModeList = ""; // NOI18N
+     } else if (resetModeList.startsWith(",")) {
+         resetModeList = resetModeList.mid(1);
+     }
+
+     if (resetModeList.length() > 0) {
+         bool modeFound = false;
+         search:
+         for (QString m : modes) {
+          if(modeFound)
+           break;
+          for (QString mode : *validModes) {
+                 if (mode == m/*(m->getStandardName())*/) {
+                     mProgrammer->setMode(new ProgrammingMode(m));
+                     modeFound = true;
+                     break/* search*/;
+                 }
+             }
+         }
+
+         if (mProgrammer->getMode()->getStandardName().startsWith("OPS")) {
+             if (!opsResetOk()) {
+                 return;
+             }
+         }
+
+         if (!modeFound) {
+             if (!badModeOk((savedMode->toString()), resetModeList, programmerModeList)) {
+                 return;
+             }
+             log->warn(tr("%1 for %2 was attempted in %3 mode.").arg(labelVector->at(row)).arg(decoderModel).arg(savedMode->getStandardName()));
+             log->warn(tr("Recommended mode(s) were \"%1\" but available modes were \"%2\"").arg(resetModeList).arg(programmerModeList));
+         }
+     }
+ }
  CvValue* cv = rowVector->at(row);
- if (cv->piCv() > 0 && cv->iCv() > 0)
- {
-  _iCv = cv;
-  indexedWrite();
- }
- else
- {
-  cv->write(_status);
- }
+ log->debug(tr("performReset: %1").arg(cv->toString()));
+ _progState = WRITING_CV;
+ cv->write(_status);
 }
 
 /*public*/ void ResetTableModel::actionPerformed(JActionEvent* e)
@@ -251,8 +310,61 @@
   }
  }
 }
+/**
+ * Can provide some mechanism to prompt for user for one last chance to
+ * change his/her mind
+ * @param currentMode current programming mode
+ * @param resetModes representation of reset modes available
+ * @param availableModes representation of available modes
+ * @return true if user says to continue
+ */
+bool ResetTableModel::badModeOk(QString currentMode, QString resetModes, QString availableModes) {
+    QString resetWarning
+            = tr("Warning: Recommended Reset Mode not available")
+            + "\n\n"
+            + tr("The recommended programming mode(s) for this reset are \"%1\".").arg(resetModes)
+            + "\n"
+            + tr("The available programming mode(s) are \%1\".").arg(availableModes)
+            + "\n"
+            + tr("Use of a non-recommended mode may cause an improper reset.")
+            + "\n\n"
+            + tr("Do you wish to try anyway using the current programming mode ({0})?").arg(currentMode);
+    return (JOptionPane::YES_OPTION
+            == JOptionPane::showConfirmDialog(nullptr,
+                    resetWarning,
+                    tr("Caution: Factory Reset"),
+                    JOptionPane::YES_NO_OPTION, JOptionPane::WARNING_MESSAGE));
+}
 
-/*public*/ void ResetTableModel::dispose()
+ /**
+  * Can provide some mechanism to prompt for user for one last chance to
+  * change his/her mind
+  *
+  * @return true if user says to continue
+  */
+ bool ResetTableModel::opsResetOk() {
+     QString resetWarning
+             = tr("Warning: For satisfactory Factory Reset on Main of this decoder: ")
+             + "\n\n"
+             + tr("The Roster Entry must have been set to the current loco address when opened.")
+             + "\n"
+             + tr("If not, change to current address on the Basic sheet, save the Roster Entry, close and reopen.")
+             + "\n"
+             + tr("(The manufacturer may specify an alternate address to use.)")
+             + "\n\n"
+             + tr("The reset will most likely change the loco address, usually (but not always) to short address 3.")
+             + "\n"
+             + tr("Before doing further Programming On Main, change the Roster Entry to the after-reset address on the Basic sheet, save, close and reopen.")
+             + "\n\n"
+             + tr("Was the Roster Entry set to the current loco address when opened? Do you wish to continue with Reset on Main?");
+     return (JOptionPane::YES_OPTION
+             == JOptionPane::showConfirmDialog(nullptr,
+                     resetWarning,
+                     tr("Caution: Factory Reset"),
+                     JOptionPane::YES_NO_OPTION, JOptionPane::WARNING_MESSAGE));
+ }
+
+ /*public*/ void ResetTableModel::dispose()
  {
  if (log->isDebugEnabled()) log->debug("dispose");
 

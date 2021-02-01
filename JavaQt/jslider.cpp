@@ -22,7 +22,7 @@ void JSlider::common()
  max = 1;
  min = 0;
  isAdjusting = false;
- labelTable = QHash<int,QLabel*>();
+ labelTable = QHash<int,JLabel*>();
  slider = new QSlider();
  //slider->setMinimumHeight(200);
  verticalLayout_2 = NULL;
@@ -34,6 +34,9 @@ void JSlider::common()
  //connect(slider, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
  setValue(0);
  listeners = QVector<ChangeListener*>();
+
+ setLayout(verticalLayout_2 = new QVBoxLayout());
+ verticalLayout_2->addWidget(slider);
 }
 
 /**
@@ -233,10 +236,10 @@ void JSlider::onValueChanged(int v)
  QWidget::setVisible(b);
 }
 
-void JSlider::setLabelTable(QHash<int,QLabel*> labelTable)
+void JSlider::setLabelTable(QHash<int,JLabel*> labelTable)
 {
  if(this->labelTable.isEmpty())
-  this->labelTable = QHash<int,QLabel*>(labelTable);
+  this->labelTable = QHash<int,JLabel*>(labelTable);
  else
  {
   if(this->labelTable.count()== labelTable.count())
@@ -319,11 +322,11 @@ void JSlider::layoutWidget()
  verticalLayout_2->setObjectName("verticalLayout_2");
  verticalLayout_2->setContentsMargins(0, -1, -1, -1);
 
- QHashIterator<int, QLabel*> iter(labelTable);
+ QHashIterator<int, JLabel*> iter(labelTable);
  while(iter.hasNext())
  {
   iter.next();
-  QLabel* label = iter.value();
+  JLabel* label = iter.value();
   label->setObjectName(tr("label_%1").arg(iter.key()));
   label->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
   verticalLayout_2->addWidget(label);

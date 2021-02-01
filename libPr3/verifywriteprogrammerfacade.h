@@ -3,9 +3,10 @@
 #include "abstractprogrammerfacade.h"
 
 class Logger;
-class VerifyWriteProgrammerFacade : public AbstractProgrammerFacade
+class VerifyWriteProgrammerFacade : public AbstractProgrammerFacade, public ProgListener
 {
  Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
  /*public*/ VerifyWriteProgrammerFacade(Programmer* prog, QObject* parent = 0);
  /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);

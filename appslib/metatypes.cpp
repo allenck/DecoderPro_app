@@ -336,6 +336,7 @@
 #include "se8csignalheadxml.h"
 #include "turnoutoperationmanagerxml.h"
 #include "lncvprogpane.h"
+#include "decoderindexfile.h"
 
 bool Metatypes::done = false;
 
@@ -689,6 +690,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SE8cSignalHeadXml>("SE8cSignalHeadXml");
  qRegisterMetaType<TurnoutOperationManagerXml>("TurnoutOperationManagerXml");
  qRegisterMetaType<LncvProgPane>("LncvProgPane");
+ qRegisterMetaType<DecoderIndexFile>("DecoderIndexFile");
 
  Metatypes::done = true;
 }

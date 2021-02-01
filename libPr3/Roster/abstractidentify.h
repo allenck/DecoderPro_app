@@ -6,9 +6,10 @@
 #include "libPr3_global.h"
 #include "programmer.h"
 
-class LIBPR3SHARED_EXPORT AbstractIdentify : public QObject
+class LIBPR3SHARED_EXPORT AbstractIdentify : public QObject, public ProgListener
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
     AbstractIdentify(Programmer* programmer, QObject *parent = 0);
     /*public*/ void start();

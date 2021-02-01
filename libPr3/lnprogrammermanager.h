@@ -8,11 +8,9 @@ class LnProgrammerManager : public  DefaultProgrammerManager
 {
  Q_OBJECT
 public:
+    LnProgrammerManager() {}
     LnProgrammerManager( LocoNetSystemConnectionMemo* memo);
-    ~LnProgrammerManager()
-    {
-
-    }
+    ~LnProgrammerManager() {}
     LnProgrammerManager(const LnProgrammerManager&) : DefaultProgrammerManager() {}
     /**
      * LocoNet command station does provide Ops Mode
@@ -21,7 +19,7 @@ public:
     /*public*/ bool isAddressedModePossible() override;
     /*public*/ AddressedProgrammer* getAddressedProgrammer(bool pLongAddress, int pAddress) override;
     /*public*/ AddressedProgrammer* reserveAddressedProgrammer(bool pLongAddress, int pAddress) override;
-    /*public*/ QList<ProgrammingMode*> getDefaultModes() override;
+    /*public*/ QList<QString> getDefaultModes() override;
     /*public*/ QString toString() override;
     /*public*/ QObject* self() override {return (QObject*)this;}
 
@@ -42,5 +40,5 @@ private:
  friend class LnOpsModeProgrammerTest;
  friend class LncvDevicesManager;
 };
-
+Q_DECLARE_METATYPE(LnProgrammerManager)
 #endif // LNPROGRAMMERMANAGER_H

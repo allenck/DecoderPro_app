@@ -18,7 +18,7 @@ class LIBPR3SHARED_EXPORT CombinedLocoSelTreePane : public CombinedLocoSelPane
     Q_OBJECT
 public:
     explicit CombinedLocoSelTreePane(QWidget *parent = 0);
-    /*public*/ CombinedLocoSelTreePane(QLabel* s, ProgModeSelector* selector, QWidget *parent);
+    /*public*/ CombinedLocoSelTreePane(QLabel* s, ProgModeSelector* selector, QWidget *parent = nullptr);
     /*public*/ void resetSelections();
 
 signals:

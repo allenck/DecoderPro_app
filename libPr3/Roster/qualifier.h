@@ -1,6 +1,7 @@
 #ifndef QUALIFIER_H
 #define QUALIFIER_H
 #include <QObject>
+#include "propertychangeevent.h"
 
 class Qualifier : public QObject
 {
@@ -26,6 +27,10 @@ public:
      * of qualified object, like a Variable or Pane.
      */
     /*public*/ virtual void setWatchedAvailable(bool /*enable*/) {}
+
+ public slots:
+     virtual /*public*/ void propertyChange(PropertyChangeEvent* e) = 0;
+
 };
 
 #endif // QUALIFIER_H

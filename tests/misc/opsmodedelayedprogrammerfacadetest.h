@@ -37,13 +37,15 @@ private:
   friend class ProgListenerO7;
 };
 
-class ProgListenerO7 : public ProgListener {
+class ProgListenerO7 : public OpsModeDelayedProgrammerFacadeTest, public ProgListener {
  Q_OBJECT
- OpsModeDelayedProgrammerFacadeTest* test;
+ Q_INTERFACES(ProgListener)
+  OpsModeDelayedProgrammerFacadeTest* test;
 public:
- ProgListenerO7(OpsModeDelayedProgrammerFacadeTest* test) { this->test = test;}
+ ProgListenerO7(OpsModeDelayedProgrammerFacadeTest* test) : OpsModeDelayedProgrammerFacadeTest() { this->test = test;}
     //@Override
     /*public*/ void programmingOpReply(int value, int status);
+ QObject* self() {return (QObject*)this;}
 };
 
 

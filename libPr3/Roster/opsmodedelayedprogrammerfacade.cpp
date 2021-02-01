@@ -50,7 +50,7 @@
 // programming interface
 //@Override
 /*public*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException) {
-    log->debug(tr("writeCV entry: ProgListener p is %1").arg(p->metaObject()->className()));
+    log->debug(tr("writeCV entry: ProgListener p is %1").arg(p->self()->metaObject()->className()));
     useProgrammer(p);
     state = ProgState::WRITECOMMANDSENT;
     prog->writeCV(cv, val, (ProgListener*)this);
@@ -80,18 +80,19 @@
  */
 /*protected*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
     // test for only one!
-    log->debug(tr("useProgrammer entry: _usingProgrammer is %1").arg(_usingProgrammer->metaObject()->className()));
+    if(_usingProgrammer)
+     log->debug(tr("useProgrammer entry: _usingProgrammer is %1").arg(_usingProgrammer->self()->metaObject()->className()));
     if (_usingProgrammer != NULL && _usingProgrammer != p)
     {
         if (log->isInfoEnabled()) {
-            log->info(tr("programmer already in use by ") + _usingProgrammer->metaObject()->className());
+            log->info(tr("programmer already in use by ") + _usingProgrammer->self()->metaObject()->className());
         }
         throw ProgrammerException("programmer in use");
     } else
     {
         _usingProgrammer = p;
     }
-    log->debug(tr("useProgrammer exit: _usingProgrammer is %1").arg(_usingProgrammer->metaObject()->className()));
+    log->debug(tr("useProgrammer exit: _usingProgrammer is %1").arg(_usingProgrammer->self()->metaObject()->className()));
 }
 
 

@@ -6,10 +6,13 @@
 #include "javaqt_global.h"
 #include <QTranslator>
 
-
+class Logger;
 class JAVAQTSHARED_EXPORT StringUtil
 {
 public:
+  /*public*/ static /*final*/ QString HTML_CLOSE_TAG;// = "</html>";
+  /*public*/ static /*final*/ QString HTML_OPEN_TAG;// = "<html>";
+  /*public*/ static /*final*/ QString LINEBREAK;// = "\n";
     StringUtil();
     static /*public*/ int getStateFromName(QString name, QVector<int> states, QVector<QString> names);
     static /*public*/ QStringList getNamesFromStateMasked(int state, QVector<int> states, QVector<int> masks, QStringList names) ;
@@ -28,10 +31,11 @@ public:
     /*public*/ static QString stringFormat(QLocale locale, QString in );
     static /*public*/ QString escapeString(QString s);
     static /*public*/ QString unescapeString(QString s);
+    /*public*/ static QString concatTextHtmlAware(QString baseText, QString extraText);
 
 private:
     /*private*/ static QTranslator* translator;// = QTranslator();
-
+ static Logger* log;
 };
 
 #endif // STRINGUTIL_H

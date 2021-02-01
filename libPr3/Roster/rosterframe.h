@@ -75,7 +75,7 @@ private:
     Ui::RosterFrame *ui;
     void common();
     Roster* roster;
-    RosterEntry* rosterEntry;
+    RosterEntry* re;
     QToolButton* newLoco;
     QToolButton* identifyLoco;
     QToolButton* togglePower;
@@ -83,7 +83,7 @@ private:
     JFrame* progFrame;
     QComboBox* cbProgrammers;
     ProgModeSelector* modePanel;
-    QComboBox* cbProgMode;
+    //QComboBox* cbProgMode;
     UserPreferencesManager* prefsMgr;
 //    ConnectionConfig* serModeProCon;// = NULL;
 //    ConnectionConfig* opsModeProCon;// = NULL;
@@ -91,8 +91,8 @@ private:
     QLabel* statusField;
     QLabel* serviceModeProgrammerLabel;
     QLabel* operationsModeProgrammerLabel;
-    QString programmer1; // "Comprehensive
-    QString programmer2; // "Basic"
+    QString programmer1 =  "Comprehensive";
+    QString programmer2 = "Basic";
     QVector<RosterEntry*> rows;
     QPushButton* prog2Button;
 
@@ -147,7 +147,7 @@ private slots:
     void on_actionDelete_Loco_triggered();
 //    void on_tableWidget_cellChanged(int, int);
     void propertyChange(PropertyChangeEvent* e);
-    void On_cbProgrammers_currentIndexChanged(QString);
+//    void On_cbProgrammers_currentIndexChanged(QString);
     void updateProgMode();
     void On_splitterMoved(int, int);
     void On_splitter2Moved(int, int);
@@ -254,6 +254,7 @@ class MyIdentifyLoco : public IdentifyLoco
      who = me;
      this->programmer = programmer;
     }
+    QObject* self() {return (QObject*)this;}
  signals:
   void doneSignal(int dccAddress, bool bLongAddr, int cv8Val, int cv7Val);
 
@@ -281,7 +282,7 @@ protected:
         //idloco.setSelected(false);
     }
 };
-#if 0
+#if 1
 class RosterEntryUpdateListener : public PropertyChangeListener
 {
  Q_OBJECT
@@ -297,7 +298,6 @@ protected:
 #endif
 /*static*/ class ExportRosterItem : public ExportRosterItemAction
 {
-
     /**
      *
      */
@@ -355,7 +355,7 @@ public:
  /*public*/ QString getClassName() {return "PaneProgFrameO1";}
 
 protected:
- QWidget* getModePane()
+ JPanel* getModePane()
  {
   return nullptr;
  }

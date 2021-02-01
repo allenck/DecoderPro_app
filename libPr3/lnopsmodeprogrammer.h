@@ -36,7 +36,7 @@ public:
     /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ /*final*/ void setMode(ProgrammingMode* m);
     /*public*/ /*final*/ ProgrammingMode* getMode();
-    /*public*/ QList<ProgrammingMode*> getSupportedModes();
+    /*public*/ QList<QString> getSupportedModes();
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ bool getCanRead();

@@ -57,7 +57,7 @@
 //@Override
 /*public*/ ProgrammingMode* AbstractProgrammerFacade::getMode() { return prog->getMode(); }
 //@Override
-/*public*/ QList<ProgrammingMode*> AbstractProgrammerFacade::getSupportedModes()
+/*public*/ QList<QString> AbstractProgrammerFacade::getSupportedModes()
 { return prog->getSupportedModes(); }
 //@Override
 /*public*/ void AbstractProgrammerFacade::setMode(ProgrammingMode* p)

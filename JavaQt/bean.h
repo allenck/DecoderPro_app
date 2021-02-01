@@ -49,6 +49,7 @@ friend class SATableModel;
 friend class ManagerDefaultSelector;
 friend class UserMessagePreferencesPane;
 friend class AmpMeterFrame;
+friend class RosterFrame;
 };
 Q_DECLARE_METATYPE(Bean)
 #endif // BEAN_H

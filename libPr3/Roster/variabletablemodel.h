@@ -9,7 +9,15 @@
 #include <QtXml>
 #include "exceptions.h"
 #include "qualifieradder.h"
+#include "tablecelleditor.h"
+#include "tablecellrenderer.h"
+#include <QPixmap>
+#include "vptr.h"
+#include <qstyleditemdelegate.h>
+#include <QPainter>
 
+class CompositeVariableValue;
+class DecoderFile;
 class EnumVariableValue;
 class JActionEvent;
 class LIBPR3SHARED_EXPORT VariableTableModel : public AbstractTableModel
@@ -28,7 +36,7 @@ public:
   DELETE_COLUMN = 7
  };
     explicit VariableTableModel(QObject *parent = 0);
-/*public*/ VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel,*/ QObject *parent = 0);
+    /*public*/ VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel,*/ QObject *parent = 0);
     /*public*/ int rowCount(const QModelIndex &parent) const override;
     /*public*/ int columnCount(const QModelIndex &parent) const override;
     /*public*/ QString getColumnName(int col) const  override;
@@ -45,7 +53,7 @@ public:
     /*public*/ QWidget* getRep(int row, QString format);
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ void setRow(int row, QDomElement e);
+    /*public*/ void setRow(int row, QDomElement e, DecoderFile *df = nullptr);
     /*public*/ QString piCv();
     /*public*/ QString siCv();
     /*public*/ int setIndxRow(int row, QDomElement e, QString productID);
@@ -80,6 +88,7 @@ signals:
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 private:
+    Logger* log;
     /*private*/ QStringList headers;// = NULL;
 
     /*private*/ QVector<VariableValue*>* rowVector;// = new Vector<VariableValue>();  // vector of Variable items
@@ -109,8 +118,10 @@ private:
     /*protected*/ void setButtonsReadWrite(bool readOnly, bool infoOnly, bool writeOnly, QPushButton* bw, QPushButton* br, int row);
     /*protected*/ void setToolTip(QDomElement e, VariableValue* v);
     /*protected*/ void handleENumValChildren(QDomElement e, EnumVariableValue* var);
- Logger* log;
+    /*protected*/ /*transient*/ /*volatile*/ DecoderFile* _df = nullptr;
+    /*protected*/ void handleCompositeValChildren(QDomElement e, CompositeVariableValue* var);
 };
+
 class VTQualifierAdder : public QualifierAdder
 {
     Q_OBJECT
@@ -122,5 +133,7 @@ protected:
    /*protected*/ void addListener(PropertyChangeListener* qc) ;
 
 };
+
+
 
 #endif // VARIABLETABLEMODEL_H

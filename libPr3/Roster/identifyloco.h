@@ -30,7 +30,7 @@ private:
     /*private*/ int cv18val;
     int address = -1;
 
-    Logger* log;
+    static Logger* log;
 protected:
     /*protected*/ bool shortAddr = false;
     /*protected*/ int cv7val;

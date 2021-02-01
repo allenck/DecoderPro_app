@@ -111,7 +111,7 @@ AbstractIdentify::AbstractIdentify(Programmer* programmer, QObject *parent) :
       retry++;
       value = lastValue;  // Restore the last good value. Needed for retries.
   } else if (state ==1 && !programmer->getMode()->equals(ProgrammingMode::PAGEMODE)
-          && programmer->getSupportedModes().contains(ProgrammingMode::PAGEMODE)) {
+          && programmer->getSupportedModes().contains("PAGEMODE")) {
       programmer->setMode(ProgrammingMode::PAGEMODE);
       retry = 0;
       state--;
@@ -119,18 +119,22 @@ AbstractIdentify::AbstractIdentify(Programmer* programmer, QObject *parent) :
       log->warn(programmer->decodeErrorCode(status)
               + ", trying " + programmer->getMode()->toString() + " mode");
   } else {
-      log->warn("Stopping due to error: "
-              + programmer->decodeErrorCode(status));
-      statusUpdate("Stopping due to error: "
-              + programmer->decodeErrorCode(status));
-      if (!programmer->getMode()->equals(savedMode)) {  // restore original mode
-          log->warn("Restoring " + savedMode->toString() + " mode");
-          programmer->setMode(savedMode);
-      }
-      state = 0;
-      retry = 0;
-      error();
-      return;
+   retry = 0;
+   if (programmer->getMode() != savedMode) {  // restore original mode
+       log->warn(tr("Restoring %1 mode").arg(savedMode->toString()));
+       programmer->setMode(savedMode);
+   }
+   if (isOptionalCv()) {
+       log->warn(tr("CV %1 is optional. Will assume not present...").arg(cvToRead));
+       statusUpdate("CV " + cvToRead + " is optional. Will assume not present...");
+   } else {
+       log->warn(tr("Stopping due to error: %1").arg(programmer->decodeErrorCode(status)));
+       statusUpdate("Stopping due to error: "
+               + programmer->decodeErrorCode(status));
+       state = 0;
+       error();
+       return;
+   }
   }
  } else {
      retry = 0;

@@ -2209,34 +2209,30 @@ PropertyChangeSupport*  py_get_pcs(PowerManager* theWrappedObject){ return theWr
 class PythonQtShell_ProgListener : public ProgListener
 {
 public:
-    PythonQtShell_ProgListener(QObject*  parent = 0):ProgListener(parent),_wrapper(NULL) {}
+    PythonQtShell_ProgListener():ProgListener(),_wrapper(NULL) {}
 
    ~PythonQtShell_ProgListener();
 
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual void programmingOpReply(int  value, int  status);
-virtual void timerEvent(QTimerEvent*  event);
+virtual QObject*  self();
 
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
 class PythonQtPublicPromoter_ProgListener : public ProgListener
 { public:
-inline void py_q_programmingOpReply(int  value, int  status) { ProgListener::programmingOpReply(value, status); }
+inline void py_q_programmingOpReply(int  value, int  status) { this->programmingOpReply(value, status); }
+inline QObject*  py_q_self() { return this->self(); }
 };
 
 class PythonQtWrapper_ProgListener : public QObject
 { Q_OBJECT
 public:
 public slots:
-ProgListener* new_ProgListener(QObject*  parent = 0);
+ProgListener* new_ProgListener();
 void delete_ProgListener(ProgListener* obj) { delete obj; } 
    void py_q_programmingOpReply(ProgListener* theWrappedObject, int  value, int  status){  (((PythonQtPublicPromoter_ProgListener*)theWrappedObject)->py_q_programmingOpReply(value, status));}
+   QObject*  py_q_self(ProgListener* theWrappedObject){  return (((PythonQtPublicPromoter_ProgListener*)theWrappedObject)->py_q_self());}
 };
 
 
@@ -2272,6 +2268,7 @@ void delete_ProgrammingMode(ProgrammingMode* obj) { delete obj; }
    bool  equals(ProgrammingMode* theWrappedObject, QObject*  o);
    QString  getStandardName(ProgrammingMode* theWrappedObject);
    int  hashCode(ProgrammingMode* theWrappedObject);
+   bool  __eq__(ProgrammingMode* theWrappedObject, QObject*  o);
    QString  toString(ProgrammingMode* theWrappedObject);
     QString py_toString(ProgrammingMode*);
 };

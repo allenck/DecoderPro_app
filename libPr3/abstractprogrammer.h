@@ -33,7 +33,7 @@ public:
     /*public*/ bool getCanRead(QString addr);
     /*public*/ /*final*/ void setMode(ProgrammingMode* m);
     /*public*/ /*final*/ ProgrammingMode* getMode();
-    /*abstract*/ /*public*/ virtual QList<ProgrammingMode*> getSupportedModes();
+    /*abstract*/ /*public*/ virtual QList<QString> getSupportedModes();
     /*public*/ bool getCanWrite();
     /*public*/ bool getCanWrite(QString addr);
 

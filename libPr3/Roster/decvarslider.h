@@ -8,7 +8,7 @@
 
 class LIBPR3SHARED_EXPORT DecVarSlider : public JSlider
 {
-    Q_OBJECT
+ Q_OBJECT
 public:
  //explicit DecVarSlider(QWidget *parent = 0);
  DecVarSlider(DecVariableValue* var, int min, int max, QWidget *parent = 0);

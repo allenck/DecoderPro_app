@@ -3,9 +3,10 @@
 #include "abstractprogrammerfacade.h"
 
 class Logger;
-class OpsModeDelayedProgrammerFacade : public AbstractProgrammerFacade
+class OpsModeDelayedProgrammerFacade : public AbstractProgrammerFacade, public ProgListener
 {
  Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
  /*public*/ OpsModeDelayedProgrammerFacade(Programmer* prog, int writeDelay, QObject* parent = 0);
  /*public*/ /*synchronized*/ void writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException);

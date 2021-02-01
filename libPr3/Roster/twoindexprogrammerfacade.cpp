@@ -122,7 +122,7 @@ void TwoIndexTcsProgrammerFacade::parseCV(QString cv) throw (IllegalArgumentExce
 {
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
-        if (log->isInfoEnabled()) log->info("programmer already in use by "+QString(_usingProgrammer->metaObject()->className()));
+        if (log->isInfoEnabled()) log->info("programmer already in use by "+QString(_usingProgrammer->self()->metaObject()->className()));
         //throw new jmri.ProgrammerException("programmer in use");
         emit ProgrammerException("programmer in use");
     }

@@ -137,9 +137,9 @@ void ProgDebugger::PDRunnable1::run()
  log->debug("write CV reply");
  if(l != nullptr)
  {
-   if(qobject_cast<AbstractProgrammerFacade*>(l))
+   if(qobject_cast<AbstractProgrammerFacade*>(l->self()))
     ((AbstractProgrammerFacade*)l)->programmingOpReply(-1, 0);
-   else    if(qobject_cast<CvValue*>(l))
+   else    if(qobject_cast<CvValue*>(l->self()))
     ((CvValue*)l)->programmingOpReply(-1, 0);
    else
      l->programmingOpReply(-1, 0);   // 0 is OK status
@@ -198,7 +198,7 @@ Logger* log = new Logger("PDRunnable2");
  log->debug("read CV reply");
  if(l != nullptr)
  {
-  if(qobject_cast<AbstractProgrammerFacade*>(l))
+  if(qobject_cast<AbstractProgrammerFacade*>(l->self()))
   {
    if (parent->confirmOK)
     ((AbstractProgrammerFacade*)l)->programmingOpReply(result, ProgListener::OK);
@@ -254,12 +254,12 @@ void ProgDebugger::PDRunnable3::run()
     // log->debug("read CV reply - start sleep");
     // try { Thread.sleep(100); } catch (Exception e) {}
     log->debug("read CV reply");
-    if(qobject_cast<AbstractProgrammerFacade*>(l))
+    if(qobject_cast<AbstractProgrammerFacade*>(l->self()))
     {
      ((AbstractProgrammerFacade*)l)->programmingOpReply(retval, 0);
     }
     else
-     if(qobject_cast<CvValue*>(l))
+     if(qobject_cast<CvValue*>(l->self()))
      {
       ((CvValue*)l)->programmingOpReply(retval, 0);
      }
@@ -270,16 +270,16 @@ void ProgDebugger::PDRunnable3::run()
 //@Override
 /*public*/ /*final*/ void ProgDebugger::setMode(ProgrammingMode* m) {
     log->debug(QString("Setting mode from %1 to %2").arg(mode->getStandardName()).arg( m->getStandardName()));
-    if (getSupportedModes().contains(m)) {
+    if (getSupportedModes().contains(m->getStandardName())) {
         ProgrammingMode* oldMode = mode;
         mode = m;
         notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(oldMode), VPtr<ProgrammingMode>::asQVariant(m));
     } else {
-        throw new IllegalArgumentException("Invalid requested mode: "+m->getStandardName());
+        throw IllegalArgumentException("Invalid requested mode: "+m->getStandardName());
     }
 }
 /*public*/ /*final*/ ProgrammingMode* ProgDebugger::getMode() { return mode; }
-/*public*/ QList<ProgrammingMode*> ProgDebugger::getSupportedModes() {
+/*public*/ QList<QString> ProgDebugger::getSupportedModes() {
     if (address >= 0 ) {
 //        // addressed programmer
 //        return Arrays.asList(
@@ -289,8 +289,8 @@ void ProgDebugger::PDRunnable3::run()
 //                DefaultProgrammerManager::OPSBYTEMODE
 //            }
 //        );
-        QList<ProgrammingMode*> l = QList<ProgrammingMode*>() <<ProgrammingMode::OPSBITMODE <<
-                ProgrammingMode::OPSBYTEMODE;
+        QList<QString> l = QList<QString>() <<"OPSBITMODE" <<
+                "OPSBYTEMODE";
         return l;
     } else {
         // global programmer
@@ -302,8 +302,8 @@ void ProgDebugger::PDRunnable3::run()
 //                DefaultProgrammerManager::DIRECTBYTEMODE
 //            }
 //        );
-        QList<ProgrammingMode*> l = QList<ProgrammingMode*>() <<ProgrammingMode::PAGEMODE <<
-                ProgrammingMode::DIRECTBITMODE << ProgrammingMode::DIRECTBYTEMODE;
+        QList<QString> l = QList<QString>() <<"PAGEMODE" <<
+                "DIRECTBITMODE" << "DIRECTBYTEMODE" << "DIRECTMODE";
         return l;
     }
 }

@@ -358,7 +358,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 {
  const int GRID_Y_BUTTONS = 3;
  QSignalMapper* mapper = new QSignalMapper;
- stepSliders = QList<JSlider*>();
+ //stepSliders = QList<JSlider*>();
  // put together a new panel in scroll pane
  QWidget* j = new QScrollArea();
 #if 1
@@ -375,11 +375,11 @@ void SpeedTableVarValue::setColor(QColor c) {
 
   CvValue* cv = _cvMap->value(cvList->at(i));
   JSlider* s = new VarSlider(models->at(i), cv, i+1);
-  stepSliders.append(s);
+  //stepSliders.append(s);
   s->setOrientation(/*JSlider.VERTICAL*/Qt::Vertical);
   //s.addChangeListener(this);
   mapper->setMapping(s, s);
-  connect(s, SIGNAL(sliderMoved(int)), mapper, SLOT(map()));
+  connect(s, SIGNAL(valueChanged(int)), mapper, SLOT(map()));
 
   int currentState = cv->getState();
   int currentValue = cv->getValue();
@@ -847,8 +847,8 @@ void SpeedTableVarValue::writeNext() {
    {
     // this is the one, so use this i
     setModel(i, value);
-    if(i < stepSliders.count())
-     stepSliders.at(i)->setValue(value);
+//    if(i < stepSliders.count())
+//     stepSliders.at(i)->setValue(value);
     break;
    }
   }

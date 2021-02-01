@@ -6,7 +6,7 @@ class AbstractInstanceInitializer : public InstanceInitializer
 {
 public:
  AbstractInstanceInitializer();
- /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) throw (IllegalArgumentException);
+ /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) const throw (IllegalArgumentException);
  /*public*/ QSet</*Class<?>*/QString> getInitalizes();
 
 };

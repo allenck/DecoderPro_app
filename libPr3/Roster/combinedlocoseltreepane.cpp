@@ -111,7 +111,7 @@ void CombinedLocoSelTreePane::common()
 //    };
  dTree->setToolTip("Select decoder");
 
- QList<DecoderFile*>* decoders = DecoderIndexFile::instance()->matchingDecoderList("", "", "", "", "", "");
+ QList<DecoderFile*>* decoders = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", "", "", "", "");
  int len = decoders->size();
  DecoderTreeNode* mfgElement = NULL;
  DecoderTreeNode* familyElement = NULL;
@@ -134,7 +134,7 @@ void CombinedLocoSelTreePane::common()
    QList<QVariant> data;
    data << mfg;
    mfgElement = new DecoderTreeNode(data, mfg,
-                "CV8 = "+DecoderIndexFile::instance()->mfgIdFromName(mfg), "", dRoot);
+                "CV8 = "+((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->mfgIdFromName(mfg), "", dRoot);
    //dModel.insertNodeInto(mfgElement, dRoot, dRoot->childCount());
    dRoot->appendChild(mfgElement);
    familyNameNode =  QMap<QString, DecoderTreeNode*>();
@@ -655,7 +655,7 @@ void CombinedLocoSelTreePane::setDecoderSelectionFromLoco(QString loco)
     QString titleString = DecoderFile::titleString(modelString, familyString);
 
     // find the decoder mfg
-    DecoderIndexFile::instance()->fileFromTitle(titleString)->getMfg();
+    ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->fileFromTitle(titleString)->getMfg();
 
     // close the entire GUI (not currently done, users want left open)
     //collapseAll();

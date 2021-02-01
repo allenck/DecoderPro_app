@@ -65,7 +65,7 @@ void ProgOpsModePane::init()
  oldAddrText             = "";
  oldLongAddr             = false;
  buttonPool =  QList<QRadioButton*>();
- buttonMap =  QMap<ProgrammingMode*, QRadioButton*>();
+ buttonMap =  QMap<QString, QRadioButton*>();
  modeGroup 		    = new QButtonGroup();
 }
 /**
@@ -259,32 +259,32 @@ void ProgOpsModePane::programmerSelected()
 
  // configure buttons
  int index = 0;
- QList<ProgrammingMode*> modes = QList<ProgrammingMode*>();
+ QList<QString> modes = QList<QString>();
  if (getProgrammer() != NULL) {
      //modes.addAll(programmer->getSupportedModes());
-  foreach(ProgrammingMode* mode, programmer->getSupportedModes())
+  foreach(QString mode, programmer->getSupportedModes())
    modes.append(mode);
  } else {
      //modes.addAll(((AddressedProgrammerManager) progBox.getSelectedItem()).getDefaultModes());
-  foreach(ProgrammingMode* mode, (VPtr<AddressedProgrammerManager>::asPtr( progBox->currentData())->getDefaultModes()))
+  foreach(QString mode, (VPtr<AddressedProgrammerManager>::asPtr( progBox->currentData())->getDefaultModes()))
    modes.append(mode);
  }
  // add OPSACCBYTEMODE & OPSACCEXTBYTEMODE if possible
- if (modes.contains(ProgrammingMode::OPSBYTEMODE))
+ if (modes.contains("OPSBYTEMODE"))
  {
-     if (!modes.contains(ProgrammingMode::OPSACCBYTEMODE))
+     if (!modes.contains("OPSACCBYTEMODE"))
      {
          log->debug(tr("   adding button for %1 via AccessoryOpsModeProgrammerFacade").arg( ProgrammingMode::OPSACCBYTEMODE->toString()));
-         modes.append(ProgrammingMode::OPSACCBYTEMODE);
+         modes.append("OPSACCBYTEMODE");
      }
-     if (!modes.contains(ProgrammingMode::OPSACCEXTBYTEMODE))
+     if (!modes.contains("OPSACCEXTBYTEMODE"))
      {
          log->debug(tr("   adding button for %1 via AccessoryOpsModeProgrammerFacade").arg( ProgrammingMode::OPSACCEXTBYTEMODE->toString()));
-         modes.append(ProgrammingMode::OPSACCEXTBYTEMODE);
+         modes.append("OPSACCEXTBYTEMODE");
      }
  }
  log->debug(tr("   has %1 modes").arg(modes.size()));
- for (ProgrammingMode* mode : modes) {
+ for (QString mode : modes) {
      QRadioButton* button;
      // need a new button?
      if (index >= buttonPool.size()) {
@@ -297,11 +297,11 @@ void ProgOpsModePane::programmerSelected()
          thisLayout->addWidget(button); // add to GUI
      }
      // configure next button in pool
-     log->debug(tr("   set for %1").arg(mode->toString()));
+     log->debug(tr("   set for %1").arg(mode));
      button = buttonPool.value(index++);
      button->setVisible(true);
      modeGroup->addButton(button);
-     button->setText(mode->toString());
+     button->setText(mode);
      buttonMap.insert(mode, button);
  }
 
@@ -323,14 +323,14 @@ void ProgOpsModePane::programmerSelected()
 //           return; // 1st match
 //       }
 //   }
- QMapIterator<ProgrammingMode*, QRadioButton*> iter(buttonMap);
+ QMapIterator<QString, QRadioButton*> iter(buttonMap);
  while(iter.hasNext())
  {
   iter.next();
   if(iter.value()->isChecked())
   {
       if(getProgrammer() != NULL)
-          getProgrammer()->setMode(iter.key());
+          getProgrammer()->setMode(new ProgrammingMode(iter.key()));
       return; // 1st match
   }
  }
@@ -341,12 +341,12 @@ void ProgOpsModePane::setProgrammerFromGui(Programmer* programmer) {
 //       if (buttonMap.get(mode).isSelected())
 //           programmer.setMode(mode);
 //   }
-    QMapIterator<ProgrammingMode*, QRadioButton*> iter(buttonMap);
+    QMapIterator<QString, QRadioButton*> iter(buttonMap);
     while(iter.hasNext())
     {
      iter.next();
      if(iter.value()->isChecked())
-         programmer->setMode(iter.key());
+         programmer->setMode(new ProgrammingMode(iter.key()));
     }
 }
 
@@ -372,7 +372,7 @@ void ProgOpsModePane::setGuiFromProgrammer()
  }
 
  ProgrammingMode* mode = getProgrammer()->getMode();
- QRadioButton* button = buttonMap.value(mode);
+ QRadioButton* button = buttonMap.value(mode->getStandardName());
  if (button == NULL)
  {
   log->error("setGuiFromProgrammer found mode \"{}\" that's not supported by the programmer" + mode->toString());

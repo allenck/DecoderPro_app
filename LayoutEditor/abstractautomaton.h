@@ -129,7 +129,7 @@ private:
  public:
      ProgListener1(AbstractAutomaton* self)
      {
-      this->self = self;
+      this->_self = self;
      }
 
      /*public*/ void programmingOpReply(int /*value*/, int /*status*/)
@@ -137,49 +137,52 @@ private:
       /*synchronized (self)*/
       {
        QMutexLocker locker(&mutex2);
-       self->notifyAll(); // should be only one thread waiting, but just in case
+       _self->notifyAll(); // should be only one thread waiting, but just in case
       }
      }
+     QObject* self() {return (QObject*)this;}
  private:
      QMutex mutex2;
-     AbstractAutomaton* self;
+     AbstractAutomaton* _self;
  };
  class ProgListener2 : public ProgListener
  {
    public:
      ProgListener2(AbstractAutomaton* self)
      {
-      this->self = self;
+      this->_self = self;
      }
+     QObject* self() {return (QObject*)this;}
 
      /*public*/ void programmingOpReply(int value, int /*status*/) {
-         self->cvReturnValue = value;
+         _self->cvReturnValue = value;
          /*synchronized (self) */{
              QMutexLocker locker(&mutex);
-             self->notifyAll(); // should be only one thread waiting, but just in case
+             _self->notifyAll(); // should be only one thread waiting, but just in case
          }
      }
  private:
      QMutex mutex;
-     AbstractAutomaton* self;
+     AbstractAutomaton* _self;
  };
  class ProgListener3 : public ProgListener
  {
    public:
      ProgListener3(AbstractAutomaton* self)
      {
-      this->self = self;
+      this->_self = self;
      }
+     QObject* self() {return (QObject*)this;}
 
      /*public*/ void programmingOpReply(int /*value*/, int /*status*/)
      {
          /*synchronized (self)*/ {
              QMutexLocker locker(&mutex);
-             self->notifyAll(); // should be only one thread waiting, but just in case
+             _self->notifyAll(); // should be only one thread waiting, but just in case
          }
      }
  private:
-     AbstractAutomaton* self;
+     AbstractAutomaton* _self;
      QMutex mutex;
  };
 private slots:

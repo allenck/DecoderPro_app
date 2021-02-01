@@ -143,10 +143,10 @@ Q_UNUSED(p)
  *         {@link jmri.AddressedProgrammer}s make available
  */
 //@Override
-/*public*/ QList<ProgrammingMode*> DefaultProgrammerManager::getDefaultModes()
+/*public*/ QList<QString> DefaultProgrammerManager::getDefaultModes()
 {
-    QList<ProgrammingMode*> retval = QList<ProgrammingMode*>();
-    retval.append(ProgrammingMode::OPSBYTEMODE);
+    QList<QString> retval = QList<QString>();
+    retval.append("OPSBYTEMODE");
     return retval;
 }
 

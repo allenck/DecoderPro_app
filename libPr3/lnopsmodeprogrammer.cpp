@@ -323,7 +323,7 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 //@Override
 /*public*/ /*final*/ void LnOpsModeProgrammer::setMode(ProgrammingMode* m)
 {
-    if (getSupportedModes().contains(m)) {
+    if (getSupportedModes().contains(m->getStandardName())) {
         mode = m;
         notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(mode), VPtr<ProgrammingMode>::asQVariant(m));
     } else {
@@ -336,16 +336,16 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
  * Types implemented here.
  */
 //@Override
-/*public*/ QList<ProgrammingMode*> LnOpsModeProgrammer::getSupportedModes()
+/*public*/ QList<QString> LnOpsModeProgrammer::getSupportedModes()
 {
- QVector<ProgrammingMode*> ret =  QVector<ProgrammingMode*>();//  (4,nullptr);
- ret.append(ProgrammingMode::OPSBYTEMODE);
- ret.append(LnProgrammerManager::LOCONETOPSBOARD);
- ret.append(LnProgrammerManager::LOCONETSV1MODE);
- ret.append(LnProgrammerManager::LOCONETSV2MODE);
- ret.append(LnProgrammerManager::LOCONETBDOPSWMODE);
- ret.append(LnProgrammerManager::LOCONETCSOPSWMODE);
- return ret.toList();
+ QStringList ret =  QStringList();//  (4,nullptr);
+ ret.append("OPSBYTEMODE");
+ ret.append("LOCONETOPSBOARD");
+ ret.append("LOCONETSV1MODE");
+ ret.append("LOCONETSV2MODE");
+ ret.append("LOCONETBDOPSWMODE");
+ ret.append("LOCONETCSOPSWMODE");
+ return ret;
 }
 
 ///**

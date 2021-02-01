@@ -32,12 +32,14 @@ private:
  friend class ProgListenerO6;
 };
 
-class ProgListenerO6 : public ProgListener {
+class ProgListenerO6 : public QObject, public ProgListener {
  Q_OBJECT
-    //@Override
+ Q_INTERFACES(ProgListener)
+ //@Override
  AddressedHighCvProgranmmerFacadeTest* test;
 public:
  ProgListenerO6(AddressedHighCvProgranmmerFacadeTest* test) {this->test = test;}
+ QObject* self() {return (QObject*)this;}
 public slots:
  /*public*/ void programmingOpReply(int value, int status);
 };

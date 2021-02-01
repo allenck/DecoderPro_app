@@ -88,7 +88,7 @@
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
         if (log->isInfoEnabled()) {
-            log->info(tr("programmer already in use by ") + _usingProgrammer->metaObject()->className());
+            log->info(tr("programmer already in use by ") + _usingProgrammer->self()->metaObject()->className());
         }
         throw new ProgrammerException("programmer in use");
     } else {
@@ -112,9 +112,9 @@
         _usingProgrammer = NULL; // done
         state = ProgState::NOTPROGRAMMING;
         //temp.programmingOpReply(value, status);
-        connect(this, SIGNAL(on_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+        connect(this, SIGNAL(on_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
         emit on_programmingOpReply(value, status);
-        disconnect(this, SIGNAL(on_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+        disconnect(this, SIGNAL(on_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
         return;
     }
 
@@ -157,9 +157,9 @@
             _usingProgrammer = NULL; // done
             state = ProgState::NOTPROGRAMMING;
             //temp.programmingOpReply(value, status);
-            connect(this, SIGNAL(on_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+            connect(this, SIGNAL(on_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
             emit on_programmingOpReply(value, status);
-            disconnect(this, SIGNAL(on_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+            disconnect(this, SIGNAL(on_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
             break;
     }
         default:

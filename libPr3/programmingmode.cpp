@@ -175,7 +175,10 @@
 
 //@Override
 /*public*/ int ProgrammingMode::hashCode() {
-    //return standardName.hashCode();
-    return 0;
+    return qHash(this->standardName);
 }
 
+/*public*/ bool ProgrammingMode::operator==(QObject* o)
+{
+ return this->equals(o);
+}

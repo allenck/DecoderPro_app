@@ -87,7 +87,8 @@
 #include "loconet/lncvdevicetestaction.h"
 #include "loconet/lncvmessagecontentsclasstestaction.h"
 #include "loconet/lncvprogpanetestaction.h"
-#include "loconet/lncvprogtablemodeltestaction.h".h"
+#include "loconet/lncvprogtablemodeltestaction.h"
+#include "misc/identifydecodertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -117,6 +118,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     profileTestMenu->addAction(new ProfileTestAction(this));
     profileTestMenu->addAction(new ProfileManagerTestAction(this));
     profileTestMenu->addAction(new ProfileUtilsTestAction(this));
+    profileTestMenu->addAction(new IdentifyDecoderTestAction(this));
 
     QMenu* loconetTestMenu = new QMenu(tr("LocoNet Tests ..."));
     addMenu(loconetTestMenu);

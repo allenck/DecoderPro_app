@@ -3,6 +3,8 @@
 #include "actionlistener.h"
 #include "vartextfield.h"
 #include <QIntValidator>
+#include "jslider.h"
+#include "jlabel.h"
 
 //DecVariableValue::DecVariableValue(QObject *parent) :
 //    VariableValue(parent)
@@ -207,6 +209,37 @@ else if (format==("hslider"))
   reps->append(b);
   updateRepresentation(b);
   return b;
+ }
+ else if (format == ("hslider-percent")) {
+     DecVarSlider* b = new DecVarSlider(this, _minVal, _maxVal);
+     b->setOrientation(/*JSlider::HORIZONTAL*/Qt::Horizontal);
+     if (_maxVal > 20) {
+         b->setMajorTickSpacing(_maxVal / 2);
+//         b->setMinorTickSpacing((_maxVal + 1) / 8);
+     } else {
+         b->setMajorTickSpacing(5);
+//         b->setMinorTickSpacing(1); // because JSlider does not SnapToValue
+//         b->setSnapToTicks(true);   // like it should, we fake it here
+     }
+     b->resize(b->width(), 28);
+     QHash<int, JLabel*> labelTable = QHash<int, JLabel*>();
+     labelTable.insert((0), new JLabel("0%"));
+     if (_maxVal == 63) {   // this if for the QSI mute level, not very universal, needs work
+         labelTable.insert((_maxVal / 2), new JLabel("25%"));
+         labelTable.insert((_maxVal), new JLabel("50%"));
+     } else {
+         labelTable.insert((_maxVal / 2), new JLabel("50%"));
+         labelTable.insert((_maxVal), new JLabel("100%"));
+     }
+     b->setLabelTable(labelTable);
+     b->setPaintTicks(true);
+     b->setPaintLabels(true);
+     sliders->append(b);
+     updateRepresentation(b);
+     if (!getAvailable()) {
+         b->setVisible(false);
+     }
+     return b;
  }
  else
  {

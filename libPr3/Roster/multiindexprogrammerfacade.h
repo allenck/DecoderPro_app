@@ -3,9 +3,10 @@
 #include "abstractprogrammerfacade.h"
 #include "logger.h"
 
-class MultiIndexProgrammerFacade : public AbstractProgrammerFacade
+class MultiIndexProgrammerFacade : public AbstractProgrammerFacade, public ProgListener
 {
     Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
     //explicit MultiIndexProgrammerFacade(QObject *parent = 0);
     /*public*/ MultiIndexProgrammerFacade(Programmer* prog, QString indexPI, QString indexSI, bool cvFirst, bool skipDupIndexWrite, QObject* parent = 0);

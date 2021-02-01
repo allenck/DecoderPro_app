@@ -35,7 +35,7 @@ public:
     /*public*/ void readCV(QString CVName, ProgListener* p) throw (ProgrammerException) ;
     /*public*/ /*final*/ void setMode(ProgrammingMode* m) ;
     /*public*/ /*final*/ ProgrammingMode* getMode();
-    /*public*/ QList<ProgrammingMode*> getSupportedModes();
+    /*public*/ QList<QString> getSupportedModes();
     /*public*/ void setTestReadLimit(int lim);
     /*public*/ void setTestWriteLimit(int lim);
     /*public*/ bool getCanRead();

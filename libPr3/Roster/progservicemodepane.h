@@ -36,7 +36,7 @@ private:
     // GUI member declarations
     QComboBox* progBox;
     QButtonGroup* modeGroup;// 		= new QButtonGroup();
-    QMap<ProgrammingMode*, QRadioButton*>* buttonMap;// = new QMap<ProgrammingMode*, QRadioButton*>();
+    QMap<QString, QRadioButton*>* buttonMap;// = new QMap<ProgrammingMode*, QRadioButton*>();
     QList<QRadioButton*>* buttonPool;// = new ArrayList<JRadioButton>();
     Logger* log;
     QBoxLayout* layout;

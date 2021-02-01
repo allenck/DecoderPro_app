@@ -69,12 +69,12 @@
     this->_baseProg = baseProg;
 }
 //@Override
-/*public*/ QList<ProgrammingMode*> AccessoryOpsModeProgrammerFacade::getSupportedModes() {
-    QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
-    ret.append(ProgrammingMode::OPSACCBYTEMODE);
-    ret.append(ProgrammingMode::OPSACCBITMODE);
-    ret.append(ProgrammingMode::OPSACCEXTBYTEMODE);
-    ret.append(ProgrammingMode::OPSACCEXTBITMODE);
+/*public*/ QList<QString> AccessoryOpsModeProgrammerFacade::getSupportedModes() {
+    QList<QString> ret =  QList<QString>();
+    ret.append("OPSACCBYTEMODE");
+    ret.append("OPSACCBITMODE");
+    ret.append("OPSACCEXTBYTEMODE");
+    ret.append("OPSACCEXTBITMODE");
     return ret;
 }
 
@@ -209,7 +209,7 @@ void DelayWorker::process()
 /*protected*/ void AccessoryOpsModeProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
-        if (log->isInfoEnabled()) log->info("programmer already in use by "+QString(_usingProgrammer->metaObject()->className()));
+        if (log->isInfoEnabled()) log->info("programmer already in use by "+QString(_usingProgrammer->self()->metaObject()->className()));
         throw ProgrammerException("programmer in use");
     }
     else {

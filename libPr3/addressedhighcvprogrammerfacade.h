@@ -9,9 +9,10 @@ enum ProgState {
 };
 
 class Logger;
-class LIBPR3_GLOBAL_H AddressedHighCvProgrammerFacade : public AbstractProgrammerFacade
+class LIBPR3_GLOBAL_H AddressedHighCvProgrammerFacade : public AbstractProgrammerFacade, public ProgListener
 {
- Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
  //explicit AddressedHighCvProgrammerFacade(QObject *parent = 0);
  /*public*/ AddressedHighCvProgrammerFacade(Programmer* prog, QString top, QString addrCVhigh, QString addrCVlow, QString valueCV, QString modulo, QObject *parent = 0);

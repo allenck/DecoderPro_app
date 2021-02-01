@@ -51,7 +51,9 @@ class KLSPIdentifyLoco : public IdentifyLoco
 public:
     KLSPIdentifyLoco(Programmer* programmer, KnownLocoSelPane* who);
     /*public*/ void error();
-protected:
+    QObject* self() {return (QObject*)this;}
+
+ protected:
     /*protected*/ void done(int dccAddress);
     /*protected*/ void message(QString m) ;
 

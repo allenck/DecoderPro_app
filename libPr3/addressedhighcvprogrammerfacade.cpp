@@ -89,7 +89,7 @@ AbstractProgrammerFacade(prog, parent) {
  // test for only one!
  if (_usingProgrammer != NULL && _usingProgrammer != p) {
      if (log->isInfoEnabled()) {
-         log->info(tr("programmer already in use by ") + _usingProgrammer->metaObject()->className());
+         log->info(tr("programmer already in use by ") + _usingProgrammer->self()->metaObject()->className());
      }
      throw ProgrammerException("programmer in use");
  } else {

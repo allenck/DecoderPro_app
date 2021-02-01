@@ -13,6 +13,7 @@ public:
     Q_INVOKABLE/*public*/ QString toString();
     /*public*/ QString getStandardName();
     /*public*/ int hashCode();
+    /*public*/ bool operator==(QObject* o);
  /**
   * NMRA "Paged" mode
   */

@@ -4,12 +4,12 @@
 #include <QObject>
 #include "libPr3_global.h"
 
-class LIBPR3SHARED_EXPORT ProgListener : public QObject
+class LIBPR3SHARED_EXPORT ProgListener //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
     Q_ENUMS(status)
 public:
-    explicit ProgListener(QObject *parent = 0);
+    //explicit ProgListener(QObject *parent = 0);
 
     /** Constant denoting that the request completed correctly. Note this
      *  is a specific value; all others are bitwise combinations
@@ -59,7 +59,7 @@ public:
          * the command station and the PC durring programming */
     CommError  = 0x400
     };
-    Q_ENUM(status)
+    //Q_ENUM(status)
 
     static QString statusString(ProgListener::status type);
 
@@ -73,8 +73,10 @@ public slots:
      *                    bitwise combination of the various status coded defined
      *                    in this interface.
      */
-    virtual void programmingOpReply(int value, int status);
+    virtual void programmingOpReply(int value, int status) = 0;
+
+    virtual QObject* self() =0;
 
 };
-
+Q_DECLARE_INTERFACE(ProgListener, "ProgListener")
 #endif // PROGLISTENER_H

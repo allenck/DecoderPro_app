@@ -63,7 +63,7 @@ public:
 protected:
  // dummy implementations
  //@Override
- /*protected*/ QWidget* getModePane() override;
+ /*protected*/ JPanel* getModePane() override;
 };
 
 
@@ -75,8 +75,8 @@ class PaneProgPaneO1 : public PaneProgPane
   /*public*/ PaneProgPaneO1(PaneContainer* container, QString name,
                           QDomElement pane, CvTableModel* cvModel,
                           VariableTableModel* varModel, QDomElement modelElem,
-                          RosterEntry* rosterEntry, PaneProgPaneTest* test)
-   : PaneProgPane(container, name, pane,cvModel, varModel, modelElem, rosterEntry, nullptr)
+                          RosterEntry* rosterEntry, bool isProgPane, PaneProgPaneTest* test)
+   : PaneProgPane(container, name, pane,cvModel, varModel, modelElem, rosterEntry, isProgPane, nullptr)
   {
    this->test = test;
    qApp->processEvents();

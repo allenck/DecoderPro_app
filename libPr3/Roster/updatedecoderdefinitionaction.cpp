@@ -3,6 +3,7 @@
 #include "rosterentry.h"
 #include "decoderfile.h"
 #include "decoderindexfile.h"
+#include "instancemanager.h"
 
 UpdateDecoderDefinitionAction::UpdateDecoderDefinitionAction(QObject *parent) :
   JmriAbstractAction(tr("Update Decoder Definition"), parent)
@@ -61,7 +62,7 @@ foreach (RosterEntry* entry, list)
   QString model = entry->getDecoderModel();
 
   // check if replaced
-  QList<DecoderFile*>* decoders = DecoderIndexFile::instance()->matchingDecoderList(NULL, family, NULL, NULL, NULL, model);
+  QList<DecoderFile*>* decoders = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList(NULL, family, NULL, NULL, NULL, model);
   log->info("Found " + QString::number(decoders->size()) + " decoders matching family \"" + family + "\" model \"" + model + "\" from roster entry \"" + entry->getId() + "\"");
 
   QString replacementFamily = NULL;

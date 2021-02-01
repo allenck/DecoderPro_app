@@ -291,6 +291,7 @@ void CvTableModel::configureTable(JTable *cvTable)
 {
  if(_table == NULL)
   _table = cvTable;
+ cvTable->setItemDelegateForColumn(VALCOLUMN, new ValueRenderer());
  setColumnToHoldButton(cvTable,READCOLUMN);
  setColumnToHoldButton(cvTable, WRITECOLUMN);
  setColumnToHoldButton(cvTable, COMPARECOLUMN);

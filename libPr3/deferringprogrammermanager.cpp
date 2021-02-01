@@ -140,6 +140,6 @@ DefaultProgrammerManager(parent) // see note in .h
     return isAddressedModePossible();
 }
 
-/*public*/ QList<ProgrammingMode*> DeferringProgrammerManager::getDefaultModes() {
+/*public*/ QList<QString> DeferringProgrammerManager::getDefaultModes() {
  return ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->getDefaultModes();
 }

@@ -191,7 +191,7 @@
 
     if (p->self()->/*getClass()*/metaObject()->className() != "ProgDebugger") {
         // ProgDebugger used for LocoNet HexFile Sim, setting progMode not required so skip allows testing of LNCV Tool
-        if (!p->getSupportedModes().contains(LnProgrammerManager::LOCONETLNCVMODE)) {
+        if (!p->getSupportedModes().contains("LOCONETLNCVMODE")) {
             return ProgrammingResult::FAIL_NO_LNCV_PROGRAMMER;
         }
         p->setMode(LnProgrammerManager::LOCONETLNCVMODE);

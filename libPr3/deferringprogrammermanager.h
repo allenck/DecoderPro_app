@@ -28,7 +28,7 @@ public:
  /*public*/ void releaseAddressedProgrammer(AddressedProgrammer* p) ;
  /*public*/ bool isAddressedModePossible();
  /*public*/ bool isAddressedModePossible(LocoAddress* l);
- /*public*/ QList<ProgrammingMode*> getDefaultModes();
+ /*public*/ QList<QString> getDefaultModes();
 
 signals:
 

@@ -93,7 +93,9 @@ public:
     /*public*/ RosterEntry(QDomElement e, QObject *parent = 0);
 //    /*public*/ LocoAddress* getAddress(QDomElement element);
     /*public*/ void loadFunctions(QDomElement e3);
+    /*public*/ void loadFunctions(QDomElement e3, QString source);
     /*public*/ void loadAttributes(QDomElement e3);
+    /*public*/ void loadSounds(QDomElement e3, QString source);
     /*public*/ void putAttribute(QString key, QString value);
     /*public*/ QString getAttribute(QString key) ;
     /*public*/ QString titleString();
@@ -211,6 +213,7 @@ private:
     QString newLine;// = "\n";
     /*private*/ int writeWrappedComment(HardcopyWriter* w, QString text, QString title, int textSpace);
     QDateTime dateModified;
+    bool soundLoadedOnce = false;
 
 protected:
     // members to remember all the info
@@ -235,11 +238,11 @@ protected:
     /*protected*/ QString _developerID = "";
     /*protected*/ QString _manufacturerID = "";
     /*protected*/ QString _productID = "";
-    /*protected*/ QVector<QString> functionLabels;
-    /*protected*/ QVector<QString> soundLabels;
-    /*protected*/ QVector<QString> functionSelectedImages;
-    /*protected*/ QVector<QString> functionImages;
-    /*protected*/ QVector<bool> functionLockables;
+    /*protected*/ QMap<int, QString> functionLabels;
+    /*protected*/ QMap<int, QString> soundLabels;
+    /*protected*/ QMap<int, QString> functionSelectedImages;
+    /*protected*/ QMap<int, QString> functionImages;
+    /*protected*/ QMap<int, bool> functionLockables;
     /*protected*/ QString _isShuntingOn;//="";
     qint32 _rfidTag;
 

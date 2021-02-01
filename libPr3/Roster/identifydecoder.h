@@ -34,7 +34,7 @@ protected:
     /*abstract*/ /*protected*/ virtual void done(int /*mfgID*/, int /*modelID*/, int /*productID*/){}
 
     /*abstract*/ /*protected*/ virtual void message(QString /*m*/) {}
-
+friend class IdentifyDecoderTest;
 };
 
 #endif // IDENTIFYDECODER_H

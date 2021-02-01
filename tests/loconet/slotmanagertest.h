@@ -86,12 +86,14 @@ protected:
     /*protected*/ void stopTimer();
 };
 
-class ProgListenerO1 : public ProgListener
+class ProgListenerO1 : public QObject, public ProgListener
 {
     Q_OBJECT
+  Q_INTERFACES(ProgListener)
     SlotManagerTest* smt;
 public:
     ProgListenerO1(SlotManagerTest* smt) {this->smt = smt;}
+    QObject* self() {return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void programmingOpReply(int val, int stat);

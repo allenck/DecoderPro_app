@@ -18,7 +18,7 @@ public:
     /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
     /*public*/ void confirmCV(QString CV, int val, ProgListener* p)throw (ProgrammerException);
     /*public*/ ProgrammingMode* getMode();
-    /*public*/ QList<ProgrammingMode*> getSupportedModes();
+    /*public*/ QList<QString> getSupportedModes();
     /*public*/ void setMode(ProgrammingMode* p);
     /*public*/ bool getCanRead();
     /*public*/ bool getCanRead(QString addr);

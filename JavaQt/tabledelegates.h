@@ -9,6 +9,7 @@
 #include <QPainter>
 #include "togglebutton.h"
 #include <QApplication>
+#include "vptr.h"
 
 class ButtonRenderer : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
@@ -91,11 +92,41 @@ public:
 
 class ValueRenderer : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
-    Q_OBJECT
-    Q_INTERFACES(TableCellEditor TableCellRenderer )
-public:
-    ValueRenderer(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
-    QObject* self() {return (QObject*)this;}
+  Q_OBJECT
+  Q_INTERFACES(TableCellEditor TableCellRenderer )
+ public:
+     ValueRenderer(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
+     QObject* self() {return (QObject*)this;}
+     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+     {
+         QWidget* editor = VPtr<QWidget>::asPtr(index.model()->data(index, Qt::DisplayRole));
+         return editor;
+     }
+     void setEditorData(QWidget *editor, const QModelIndex &index) const{
+//         JComboBox *comboBox = static_cast<JComboBox*>(editor);
+//         QString value = index.model()->data(index, Qt::DisplayRole).toString();
+//         comboBox->setCurrentText(value);
+     }
+     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+     {
+//         JComboBox *comboBox = static_cast<JComboBox*>(editor);
+//         model->setData(index, comboBox->currentText(), Qt::EditRole);
+     }
+
+     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const{
+         editor->setGeometry(option.rect);
+     }
+
+     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+     {
+      //bool state = index.data().toString() == this->on;
+      QWidget* widget = new QWidget();
+//      widget->setCurrentText(index.model()->data(index, Qt::DisplayRole).toString());
+      widget->resize(option.rect.size());
+      QPixmap pixmap(option.rect.size());
+      widget->render(&pixmap);
+      painter->drawPixmap(option.rect,pixmap);
+     }
 };
 
 class ButtonEditor : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer

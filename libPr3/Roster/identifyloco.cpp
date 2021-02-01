@@ -1,6 +1,7 @@
 #include "identifyloco.h"
 #include "instancemanager.h"
 #include "lnprogrammermanager.h"
+#include "loggerfactory.h"
 
 IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
     AbstractIdentify(programmer, parent)
@@ -137,7 +138,7 @@ IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
 
 //abstract /*protected*/ void message(String m);
 
-//    // initialize logging
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(IdentifyLoco.class.getName());
+// initialize logging
+/*static*/ Logger* IdentifyLoco::log = LoggerFactory::getLogger("IdentifyLoco");
 
 //}

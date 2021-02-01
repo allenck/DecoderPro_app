@@ -3,11 +3,12 @@
 #include "progmodeselector.h"
 #include "logger.h"
 #include <QBoxLayout>
+#include "jlabel.h"
+#include "jcombobox.h"
 
 class JActionEvent;
 class GlobalProgrammerManager;
 class PropertyChangeEvent;
-class QComboBox;
 class ProgServiceModeComboBox : public ProgModeSelector
 {
     Q_OBJECT
@@ -25,6 +26,7 @@ public slots:
 
 private:
     // GUI member declarations
+    JLabel* progLabel = new JLabel(tr("Program on:"));
     QComboBox/*<GlobalProgrammerManager> */* progBox;
     QComboBox/*<ProgrammingMode>*/*          modeBox;
     QList<int> modes;// = new qList<int>();

@@ -11,8 +11,6 @@ QString DecoderFile::fileLocation = tr("decoders")+QDir::separator();
 DecoderFile::DecoderFile(QObject *parent) :
     XmlFile(parent)
 {
- _numFns  = -1;
- _numOuts  = -1;
 
 }
 /**
@@ -34,10 +32,6 @@ DecoderFile::DecoderFile(QObject *parent) :
 /*public*/ DecoderFile::DecoderFile(QString mfg, QString mfgID, QString model, QString lowVersionID, QString highVersionID, QString family, QString filename, int numFns, int numOuts, QDomElement decoder, QObject *parent) : XmlFile(parent)
 {
  log->setDebugEnabled(true);
- _numFns  = -1;
- _numOuts  = -1;
- _replacementFamily = "";
- _replacementModel = "";
 
  _mfg = mfg;
  _mfgID = mfgID;
@@ -52,9 +46,6 @@ DecoderFile::DecoderFile(QObject *parent) :
  versions = new QVector<bool>(256,false);
  // store the default range of version id's
  setVersionRange(lowVersionID, highVersionID);
- protocols = NULL;
- nextCvStoreIndex = 0;
- nextICvStoreIndex = 0;
 }
 /*public*/ DecoderFile::DecoderFile(QString mfg, QString mfgID, QString model, QString lowVersionID,
         QString highVersionID, QString family, QString filename,
@@ -70,8 +61,8 @@ DecoderFile::DecoderFile(QObject *parent) :
  _numFns = numFns;
  _numOuts = numOuts;
  _element = decoder;
-    _replacementModel = replacementModel;
-    _replacementFamily = replacementFamily;
+ _replacementModel = replacementModel;
+ _replacementFamily = replacementFamily;
 }
 
 /*public*/ void DecoderFile::setOneVersion(int i) { versions->replace(i, true); }
@@ -312,7 +303,6 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
                               VariableTableModel* variableModel)
 {
   nextCvStoreIndex = 0;
-  nextICvStoreIndex = 0;
 
   processVariablesElement(decoderElement.firstChildElement("variables"), variableModel, "", "");
 
@@ -322,46 +312,6 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
 /*public*/ void DecoderFile::processVariablesElement(QDomElement variablesElement,
                               VariableTableModel* variableModel, QString extraInclude, QString extraExclude)
 {
-// QDomNodeList nl = variablesElement.childNodes();
-// qDebug() << "root contains " << QString::number(nl.count()) << " nodes ";
-// for(int i=0; i < nl.count(); i++)
-// {
-//  QDomElement e = nl.at(i).toElement();
-
-//  if(e.tagName() == "xi:include")
-//  {
-//   QString href= e.attribute("href");
-//   qDebug() << e.tagName() << " href= " << href;
-//   QDomDocumentFragment frag = XmlInclude::processInclude(e);
-//   QDomNodeList nl1 = frag.childNodes();
-//   if(nl1.count() > 0)
-//   {
-//    qDebug() << "first node to be inserted " << nl1.at(0).toElement().tagName() << " of " << QString::number(nl1.count()) << " nodes.";
-//    QDomElement var = frag.firstChildElement("variable");
-//    if(!var.isNull())
-//     qDebug() << " variable tag CV = " << var.attribute("CV") << " item= " << var.attribute("item");
-//   }
-//   variablesElement.replaceChild(frag, e);
-//  }
-//  else
-//  {
-//   qDebug() << e.tagName() << " CV=" << e.attribute("CV");
-//   if(e.tagName() == "variable")
-//   {
-//    if(e.firstChild().toElement().tagName() == "xi:include")
-//    {
-//     QDomElement e2 = e.firstChild().toElement();
-//     QString href= e2.attribute("href");
-//     qDebug() << e2.tagName() << " href= " << href;
-//     QDomDocumentFragment frag = XmlInclude::processInclude(e);
-
-//     e.replaceChild(frag, e2);
-//    }
-//   }
-//  }
-// }
-// nl = variablesElement.childNodes();
-// qDebug() << "root now contains " << QString::number(nl.count()) << " nodes ";
 
  // handle include, exclude on this element
  extraInclude = extraInclude +(variablesElement.attribute("include")!="" ? ","+variablesElement.attribute("include") : "");
@@ -384,12 +334,12 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
   {
    // if its associated with an inconsistent number of functions,
    // skip creating it
-   if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
+   if (getNumFunctions() >= 0 && e.attribute("minFn") != ""
        && getNumFunctions() < (e.attribute("minFn")).toInt() )
        continue;
    // if its associated with an inconsistent number of outputs,
    // skip creating it
-   if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
+   if (getNumOutputs() >= 0 && e.attribute("minOut") != ""
        && getNumOutputs() < (e.attribute("minOut")).toInt() )
        continue;
    // if not correct productID, skip
@@ -399,7 +349,7 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
                +e.attribute("item")+" exception: "/*+ex*/);
   }
   // load each row
-  variableModel->setRow(index++, e);
+  variableModel->setRow(nextCvStoreIndex++, e, _element.isNull() ? nullptr : this);
  }
  // load constants to table
 //    iter = decoderElement.getChild("variables")
@@ -503,17 +453,12 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
 {
 
     if (!decoderElement.firstChildElement("resets").isNull()) {
-        QDomNodeList resetList = decoderElement.firstChildElement("resets").elementsByTagName("factReset");
-        for (int i=0; i<resetList.size(); i++) {
-            QDomElement e = resetList.at(i).toElement();
-            resetModel->setRow(i,e);
-        }
-        QDomNodeList iresetList = decoderElement.firstChildElement("resets").elementsByTagName("ifactReset");
-        for (int i=0; i<iresetList.size(); i++) {
-            QDomElement e = iresetList.at(i).toElement();
-            resetModel->setIndxRow(i,e);
-        }
-    }
+     QDomNodeList resetList = decoderElement.firstChildElement("resets").elementsByTagName("factReset");
+     for (int i = 0; i < resetList.size(); i++) {
+         QDomElement e = resetList.at(i).toElement();
+         resetModel->setRow(i, e, decoderElement.firstChildElement("resets"), _model);
+     }
+ }
 }
 
 /**

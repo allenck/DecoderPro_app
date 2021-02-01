@@ -74,13 +74,13 @@ _readButtons = new QVector<QPushButton*>();
 /*public*/ QString VariableTableModel::getColumnClass(int col) const {
     // if (log->isDebugEnabled()) log->debug("getColumnClass "+QString::number(col));
     if (headers[col]==("Value"))
-        return "QLineEdit";
+        return "JTextField";
     else if (headers[col]==("Read"))
-        return "QPushButton";
+        return "JButton";
     else if (headers[col]==("Write"))
-        return "QPushButton";
+        return "JButton";
     else
-        return "QString";
+        return "String";
 }
 
 /*public*/ bool VariableTableModel::isCellEditable(int row, int col) const {
@@ -135,21 +135,6 @@ _readButtons = new QVector<QPushButton*>();
  */
 /*public*/ QWidget* VariableTableModel::getRep(int row, QString format) {
     VariableValue* v = rowVector->at(row);
-//    if(qobject_cast<DecVariableValue*>(v) != NULL)
-//        return ((DecVariableValue*)v)->getNewRep(format);
-//    else
-//    if(qobject_cast<EnumVariableValue*>(v) != NULL)
-//        return ((EnumVariableValue*)v)->getNewRep(format);
-//    else
-//    if(qobject_cast<ShortAddrVariableValue*>(v) != NULL)
-//        return ((ShortAddrVariableValue*)v)->getNewRep(format);
-//    else
-//    if(qobject_cast<LongAddrVariableValue*>(v) != NULL)
-//        return ((LongAddrVariableValue*)v)->getNewRep(format);
-//    else
-//    if(qobject_cast<SpeedTableVarValue*>(v) != NULL)
-//     return ((SpeedTableVarValue*)v)->getNewRep(format);
-//    else
     return v->getNewRep(format);
 }
 
@@ -218,9 +203,10 @@ _readButtons = new QVector<QPushButton*>();
  * @param row number of row to fill
  * @param e Element of type "variable"
  */
-/*public*/ void VariableTableModel::setRow(int row, QDomElement e)
+/*public*/ void VariableTableModel::setRow(int row, QDomElement e, DecoderFile* df)
 {
  // get the values for the VariableValue ctor
+ _df = df;
  //QString name = LocaleSelector.attribute(e, "label"); 	// Note the name variable is actually the label attribute
  QString name = e.attribute("label");
  if (log->isDebugEnabled()) log->debug("Starting to setRow \""+name+"\"");
@@ -418,14 +404,27 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
  * If there's a "default" attribute, set that value to start
  * @return true if the value was set
  */
-/*protected*/ bool VariableTableModel::setDefaultValue(QDomElement e, VariableValue* v) {
+/*protected*/ bool VariableTableModel::setDefaultValue(QDomElement e, VariableValue* variable) {
     QString a;
+    bool set = false;
     if ( (a = e.attribute("default")) != "") {
         QString val = a;
-        v->setIntValue(val.toInt());
-        return true;
+        variable->setIntValue(val.toInt());
+        set = true;
     }
-    return false;
+    // check for matching child
+    QDomNodeList elements = e.elementsByTagName("defaultItem");
+    //for (Element defaultItem : elements)
+    for(int i=0; i < elements.size(); i++)
+    {
+     QDomElement defaultItem = elements.at(i).toElement();
+        if (_df != nullptr && DecoderFile::isIncluded(defaultItem, _df->getProductID(), _df->getModel(), _df->getFamily(), "", "")) {
+            log->debug(tr("element included by productID=%1 model=%2 family=%3").arg(_df->getProductID()).arg(_df->getModel()).arg(_df->getFamily()));
+            variable->setValue(defaultItem.attribute("default"));
+            return true;
+        }
+    }
+    return set;
 }
 /*public*/ QString VariableTableModel::piCv() {return _piCv;}
 /*public*/ QString VariableTableModel::siCv() {return _siCv;}
@@ -538,31 +537,68 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
 }
 
 /*protected*/ VariableValue* VariableTableModel::processCompositeVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) {
-    VariableValue* v;
-    //@SuppressWarnings("unchecked")
-    QDomNodeList lChoice = child.elementsByTagName("compositeChoice");
-    CompositeVariableValue* v1 = new CompositeVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, 0, lChoice.size() - 1, _indxCvModel->allIndxCvMap(), _status, item);
-    v = v1; // v1 is of CompositeVariableType, so doesn't need casts
-    // loop over the choices
-    for (int k = 0; k < lChoice.size(); k++) {
-        // Create the choice
-        QDomElement choiceElement = lChoice.at(k).toElement();
-        //QString choice = LocaleSelector.attribute(choiceElement, "choice");
-        QString choice = choiceElement.attribute("choice");
-        v1->addChoice(choice);
-        // for each choice, capture the settings
-        //@SuppressWarnings("unchecked")
-        QDomNodeList lSetting = choiceElement.elementsByTagName("compositeSetting");
-        for (int n = 0; n < lSetting.size(); n++) {
-            QDomElement settingElement = lSetting.at(n).toElement();
-            //QString varName = LocaleSelector.attribute(settingElement, "label");
-            QString varName = settingElement.attribute("label");
-            QString value = settingElement.attribute("value");
-            v1->addSetting(choice, varName, findVar(varName), value);
+ int count = 0;
+ //IteratorIterable<Content> iterator = child.getDescendants();
+ QDomNodeList content = child.childNodes();
+ //while (iterator.hasNext()) {
+ for(int i = 0; i<content.size(); i++)
+ {
+//     Object ex = iterator.next();
+//     if (ex instanceof Element) {
+  QDomElement ex = content.at(i).toElement();
+  //       if (((Element) ex).getName().equals("compositeChoice")) {
+  if(ex.tagName() == "compositChoice"){
+             count++;
+         }
+     }
+// }
+
+ VariableValue* v;
+ CompositeVariableValue* v1 = new CompositeVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, 0, count, _cvModel->allCvMap(), _status, item);
+ v = v1; // v1 is of CompositeVariableType, so doesn't need casts
+
+ v1->nItems(count);
+ handleCompositeValChildren(child, v1);
+ v1->lastItem();
+ return v;
+}
+
+/**
+ * Recursively walk the child compositeChoice elements, working through the
+ * compositeChoiceGroup elements as needed.
+ * <p>
+ * Adapted from handleEnumValChildren for use in LocoIO Legacy tool.
+ *
+ * @param e Element that's source of info
+ * @param var Variable to load
+ */
+/*protected*/ void VariableTableModel::handleCompositeValChildren(QDomElement e, CompositeVariableValue* var) {
+    QDomNodeList local = e.childNodes();
+    for (int k = 0; k < local.size(); k++) {
+        QDomElement el = local.at(k).toElement();
+        log->debug(tr("processing element='%1' name='%2' choice='%3' value='%4'").arg(el.tagName()).arg(/*LocaleSelector.*/el.attribute("name")).arg(el.attribute("choice")).arg(el.attribute("value")));
+        if (_df != nullptr && !DecoderFile::isIncluded(el, _df->getProductID(), _df->getModel(), _df->getFamily(), "", "")) {
+            log->debug(tr("element excluded by productID=%1 model=%2 family=%3").arg(_df->getProductID()).arg(_df->getModel()).arg(_df->getFamily()));
+            continue;
         }
+        if (el.tagName() == ("compositeChoice")) {
+            // Create the choice
+            QString choice = el.attribute("choice"); //el.attribute("choice");
+            var->addChoice(choice);
+            // for each choice, capture the settings
+            QDomNodeList lSetting = el.elementsByTagName("compositeSetting");
+            for (int n = 0; n < lSetting.size(); n++) {
+                QDomElement settingElement = lSetting.at(n).toElement();
+                QString varName = settingElement.attribute("label");//LocaleSelector.getAttribute(settingElement, "label");
+                QString value = settingElement.attribute("value");
+                var->addSetting(choice, varName, findVar(varName), value);
+            }
+        } else if (el.tagName() == ("compositeChoiceGroup")) {
+            // no tree to manage as in enumGroup
+            handleCompositeValChildren(el, var);
+        }
+        log->debug("element processed");
     }
-    v1->lastItem();
-    return v;
 }
 
 /*protected*/ VariableValue* VariableTableModel::processDecVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) {
@@ -618,37 +654,30 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
  */
 /*protected*/ void VariableTableModel::handleENumValChildren(QDomElement e, EnumVariableValue* var)
 {
-    //List<Element> local = e.getChildren();
  QDomNodeList local = e.childNodes();
- for (int k = 0; k < local.size(); k++)
- {
-     //Element el = local.get(k);
-  QDomElement el = local.at(k).toElement();
-  if (el.tagName()==("enumChoice"))
-  {
-   QString valAttr = el.attribute("value");
-   if (valAttr == "")
-   {
-       //var->addItem(LocaleSelector.getAttribute(el, "choice"));
-    var->addItem(el.attribute("choice"));
-   }
-   else
-   {
-//                var->addItem(LocaleSelector.getAttribute(el, "choice"),
-//                        Integer.parseInt(valAttr.getValue()));
-    var->addItem(el.attribute("choice"),el.text().toInt());
-   }
-  }
-  else if (el.tagName()==("enumChoiceGroup"))
-  {
-      //var->startGroup(LocaleSelector.getAttribute(el, "name"));
-   var->startGroup(el.attribute("name"));
-   handleENumValChildren(el, var);
-   var->endGroup();
-  }
+ for (int k = 0; k < local.size(); k++) {
+     QDomElement el = local.at(k).toElement();
+     log->debug(tr("processing element='%1' name='%2' choice='%3' value='%4'").arg(el.tagName()).arg(el.attribute( "name")).arg(el.attribute( "choice")).arg(el.attribute("value")));
+     if (_df != nullptr && !DecoderFile::isIncluded(el, _df->getProductID(), _df->getModel(), _df->getFamily(), "", "")) {
+         log->debug(tr("element excluded by productID=%1 model=%2 family=%3").arg(_df->getProductID()).arg(_df->getModel()).arg(_df->getFamily()));
+         continue;
+     }
+     if (el.tagName() == ("enumChoice")) {
+         QString valAttr = el.attribute("value");
+         if (valAttr == "") {
+             var->addItem(el.attribute( "choice"));
+         } else {
+             var->addItem(el.attribute("choice"),
+                     valAttr.toInt());
+         }
+     } else if (el.tagName() == ("enumChoiceGroup")) {
+         var->startGroup(el.attribute("name"));
+         handleENumValChildren(el, var);
+         var->endGroup();
+     }
+     log->debug("element processed");
  }
 }
-
 /*protected*/ VariableValue* VariableTableModel::processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) {
     VariableValue* v;
     QString a;

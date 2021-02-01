@@ -22,7 +22,7 @@ private:
     //ProgModeSelector*  modePane;
     Logger* log;
 protected:
-    /*protected*/ QWidget *getModePane() override;
+    /*protected*/ JPanel *getModePane() override;
  class MyProgServiceModeComboBox : public ProgServiceModeComboBox
  {
    PaneServiceProgFrame* frame;

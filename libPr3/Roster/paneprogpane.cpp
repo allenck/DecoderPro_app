@@ -19,7 +19,6 @@
 #include "../../LayoutEditor/jseparator.h"
 #include "field.h"
 #include "rosterentry.h"
-#include "fnmappanelesu.h"
 #include "qualifier.h"
 #include "jcomponentqualifier.h"
 #include "hardcopywriter.h"
@@ -30,6 +29,10 @@
 #include "slotmanager.h"
 #include "jpanel.h"
 #include <QTimer>
+#include "box.h"
+#include "loggerfactory.h"
+#include "cvutil.h"
+#include "stringutil.h"
 
 class Attribute
 {
@@ -59,46 +62,15 @@ public:
  /*public*/ GridBagConstraints* gridConstraints;
 };
 
+/*static*/ /*final*/ QString PaneProgPane::LAST_GRIDX = "last_gridx";
+/*static*/ /*final*/ QString PaneProgPane::LAST_GRIDY = "last_gridy";
+
 class PaneProgFrame;
 
 PaneProgPane::PaneProgPane(QWidget *parent) :
-    QWidget(parent)
+    JPanel(parent)
 {
- log = new Logger("PaneProgPane");
- log->setDebugEnabled(false);
- QFont f = font();
- QFont newF = QFont("Ubuntu");
- newF.setPointSize(f.pointSize());
- setFont(newF);
- varList = new QList<int>();
- cvList = new QList<int>();
- indexedCvList = new QList<int>();
- panelList = new QList<QWidget*>();
- readChangesButton  = new JToggleButton(tr("Read Changes on Sheet"));
- readChangesButton->setCheckable(true);
- readAllButton      = new JToggleButton(tr("Read full Sheet"));
- readAllButton->setCheckable(true);
- writeChangesButton = new JToggleButton(tr("Write Changes on Sheet"));
- writeChangesButton->setCheckable(true);
- writeAllButton     = new JToggleButton(tr("Write full sheet"));
- writeAllButton->setCheckable(true);
- confirmChangesButton = new JToggleButton(tr("Compare Changes on Sheet"));
- confirmChangesButton->setCheckable(true);
- confirmAllButton     = new JToggleButton(tr("Compare full Sheet"));
- confirmAllButton->setCheckable(true);
- // reference to variable being programmed (or NULL if none)
- _programmingVar = NULL;
- _programmingCV  = NULL;
- _programmingIndexedCV = NULL;
- _read = true;
- changeSupport = new PropertyChangeSupport(this);
-
- // busy during read, write operations
- _busy = false;
- retry = 0;
- print = false;
- container = NULL;
- log->setDebugEnabled(true);
+ common();
 }
 /**
  * Provides the individual panes for the TabbedPaneProgrammer.
@@ -154,16 +126,27 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  * @param modelElem "model" element from the Decoder Index, used to check what decoder options are present.
  */
 //@SuppressWarnings("unchecked")
-/*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane, CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/ VariableTableModel* varModel, QDomElement  modelElem, RosterEntry* rosterEntry, QWidget *parent) : QWidget(parent)
+/*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane, CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/ VariableTableModel* varModel, QDomElement  modelElem, RosterEntry* rosterEntry, bool isProgPane, QWidget *parent) : JPanel(parent)
 {
- log = new Logger("PaneProgPane");
- log->setDebugEnabled(false);
- varList = new QList<int>();
- cvList = new QList<int>();
- indexedCvList = new QList<int>();
- fnMapList = new QList<FnMapPanel*>();
- fnMapListESU = new QList<FnMapPanelESU*>();
- panelList = new QList<QWidget*>();
+ common();
+ this->container = container;
+ mName = name;
+ this->setObjectName(name);
+ _cvModel = cvModel;
+ //_indexedCvModel = icvModel;
+ _varModel = varModel;
+ this->rosterEntry = rosterEntry;
+ this->isProgPane = isProgPane;
+ this->pane = pane;
+ this->modelElem = modelElem;
+ //QTimer::singleShot(1,this,SLOT(ctorContinue()));
+ ctorContinue();
+}
+
+void PaneProgPane::common()
+{
+ log->setDebugEnabled(true);
+
  readChangesButton  = new JToggleButton(tr("Read changes on sheet"));
  readChangesButton->setCheckable(true);
  readAllButton      = new JToggleButton(tr("Read full sheet"));
@@ -176,32 +159,8 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  confirmChangesButton->setCheckable(true);
  confirmAllButton     = new JToggleButton(tr("Compare full sheet"));
  confirmAllButton->setCheckable(true);
- // reference to variable being programmed (or NULL if none)
- _programmingVar = NULL;
- _programmingCV  = NULL;
- _programmingIndexedCV = NULL;
- _read = true;
- isCvTablePane = false;
 
- // busy during read, write operations
- _busy = false;
- retry = 0;
- print = false;
- changeSupport = new PropertyChangeSupport(this);
-
- this->container = container;
- mName = name;
- this->setObjectName(name);
- _cvModel = cvModel;
- //_indexedCvModel = icvModel;
- _varModel = varModel;
- this->rosterEntry = rosterEntry;
-
- this->pane = pane;
- this->modelElem = modelElem;
- QTimer::singleShot(1,this,SLOT(ctorContinue()));
 }
-
 void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
 {
 
@@ -241,6 +200,7 @@ void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
 
  // handle the xml definition
  // for all "column" elements ...
+ QDomElement rowElem = QDomElement();
  QDomNodeList nodeList= pane.childNodes();
  for(int i=0; i<nodeList.size();i++)
  {
@@ -251,16 +211,42 @@ void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
  for(int i=0; i<nodeList.size();i++)
  {
   QDomElement  elem = nodeList.at(i).toElement ();
-  if(elem.tagName() == "row")
+  if(elem.tagName() == "row"){
       hLayout1->addWidget(newRow( elem, showItem, modelElem));
+      rowElem = elem;
+  }
  }
  // for all "grid" elements ...
- QDomNodeList gridList = pane.elementsByTagName("grid");
+ QDomNodeList gridList = pane.firstChildElement("row").elementsByTagName("grid");
  for (int i=0; i<gridList.size(); i++)
  {
   // load each grid
   hLayout1->addWidget(newGrid( ((gridList.at(i).toElement ())), showItem, modelElem));
  }
+
+ for(int i=0; i<nodeList.size();i++)
+ {
+  QDomElement  elem = nodeList.at(i).toElement ();
+  if(elem.tagName() == "column")
+  {
+   QDomNodeList rows = elem.elementsByTagName("row");
+   for(int i=0; i< rows.size();i++)
+   {
+    QDomElement e2 = rows.at(i).toElement();
+    QDomNodeList col2 = e2.elementsByTagName("column");
+    for(int i=0; i< col2.size();i++)
+    {
+     QDomElement e3 = col2.at(i).toElement();
+      QDomNodeList gridList = e3.elementsByTagName("grid");
+      for (int i=0; i<gridList.size(); i++)
+      {
+       // load each grid
+       hLayout1->addWidget(newGrid( ((gridList.at(i).toElement ())), showItem, modelElem));
+      }
+     }
+    }
+   }
+  }
  // for all "group" elements ...
  QDomNodeList groupList = pane.elementsByTagName("group");
  for (int i=0; i<groupList.size(); i++)
@@ -268,8 +254,51 @@ void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
   // load each group
   hLayout1->addWidget(newGroup( ((groupList.at(i).toElement ())), showItem, modelElem));
  }
+
+ // explain why pane is empty
+ if (cvList->isEmpty() && varList->isEmpty() && isProgPane)
+ {
+     JPanel* pe = new JPanel();
+     pe->setLayout(new QVBoxLayout());//pe, BoxLayout.Y_AXIS));
+     int line = 1;
+     while (line >= 0) {
+      try {
+       QString msg;// = SymbolicProgBundle.getMessage("TextTabEmptyExplain" + line);
+       switch (line) {
+       case 1:
+        msg = tr("This tab is empty because there are no options in this category");
+        break;
+       case 2:
+        msg = tr("or they are to be found on another tab.");
+        break;
+       case 3:
+        msg = "";
+        break;
+       case 4:
+        msg = tr("to hide empty tabs, uncheck Preferences -> Roster -> Programmer -> Show empty tabs.");
+       default:
+        line = -1;
+        break;
+       }
+       if (msg.isEmpty()) {
+           msg = " ";
+       }
+       JLabel* l = new JLabel(msg);
+       l->setAlignmentX(Qt::AlignHCenter);
+       pe->layout()->addWidget(l);
+       line++;
+      }
+      catch (MissingResourceException e) {  // deliberately runs until exception
+          line = -1;
+      }
+  }
+  layout()->addWidget(pe);
+  panelList->append(pe);
+  return;
+ }
+
  // add glue to the right to allow resize - but this isn't working as expected? Alignment?
-//    add(Box.createHorizontalGlue());
+ layout()->addWidget(Box::createHorizontalGlue());
 
  vLayout2->addLayout(hLayout1);
  scrollArea->setWidget(scrollAreaWidgetContents);
@@ -593,7 +622,7 @@ void PaneProgPane::enableButtons(bool stat)
     if (log->isDebugEnabled()) log->debug("readPane starts with "
                                         +QString::number(varList->size())+" vars, "
                                         +QString::number(cvList->size())+" cvs "
-                                        +QString::number(indexedCvList->size())+" indexed cvs" );
+                                        );
     prepReadPane(true);
     return nextRead();
 }
@@ -610,6 +639,10 @@ void PaneProgPane::enableButtons(bool stat)
 {
  if (log->isDebugEnabled()) log->debug("start prepReadPane with onlyChanges="+QString(onlyChanges?"true":"false"));
  justChanges = onlyChanges;
+
+ if (isCvTablePane) {
+     setCvListFromTable();  // make sure list of CVs up to date if table
+ }
  enableButtons(false);
  if (justChanges == true)
  {
@@ -646,8 +679,7 @@ void PaneProgPane::enableButtons(bool stat)
 {
  if (log->isDebugEnabled()) log->debug("readAllPane starts with "
                                      +QString::number(varList->size())+" vars, "
-                                     +QString::number(cvList->size())+" cvs "
-                                     +QString::number(indexedCvList->size())+" indexed cvs" );
+                                     +QString::number(cvList->size())+" cvs ");
  prepReadPane(false);
  // start operation
  return nextRead();
@@ -700,26 +732,6 @@ void PaneProgPane::setToRead(bool justChanges, bool startProcess)
    else
    {
     cv->setToRead(startProcess);
-   }
-  }
-
-  for (int i = 0; i < indexedCvList->size(); i++)
-  {
-   CvValue* icv = _indexedCvModel->getCvByRow(i);
-   if (justChanges)
-   {
-    if (VariableValue::considerChanged(icv))
-    {
-     icv->setToRead(startProcess);
-    }
-    else
-    {
-     icv->setToRead(false);
-    }
-   }
-   else
-   {
-    icv->setToRead(startProcess);
    }
   }
  }
@@ -775,26 +787,6 @@ void PaneProgPane::setToWrite(bool justChanges, bool startProcess)
    else
    {
     cv->setToWrite(startProcess);
-   }
-  }
-  log->debug("about to start setToWrite of indexedCvList");
-  for (int i = 0; i < indexedCvList->size(); i++)
-  {
-   CvValue* icv = _indexedCvModel->getCvByRow(i);
-   if (justChanges)
-   {
-    if (VariableValue::considerChanged(icv))
-    {
-     icv->setToWrite(startProcess);
-    }
-    else
-    {
-     icv->setToWrite(false);
-    }
-   }
-   else
-   {
-    icv->setToWrite(startProcess);
    }
   }
  }
@@ -902,36 +894,6 @@ bool PaneProgPane::nextRead()
   }
  }
 
- // found no CVs needing read, try indexed CVs
- while ((indexedCvList->size() >= 0) && (indexedCvListIndex < indexedCvList->size()))
- {
-  int indxVarNum = indexedCvList->at(indexedCvListIndex);
-  int indxState = _varModel->getState(indxVarNum);
-  if (log->isDebugEnabled()) log->debug(
-            "nextRead indexed cv @ row index " + QString::number(indexedCvListIndex) + " state " + QString::number(indxState));
-  VariableValue* iCv = _varModel->getVariable(indxVarNum);
-  indexedCvListIndex++;
-  if (iCv->isToRead() || indxState == VariableValue::UNKNOWN)
-  {
-   QString sz = "start read of indexed cv " +
-        (_indexedCvModel->getCvByRow(indexedCvListIndex-1))->cvName();
-   if (log->isDebugEnabled()) log->debug(sz);
-   setBusy(true);
-   if (_programmingIndexedCV != NULL)
-    log->error("listener already set at read start");
-   _programmingIndexedCV = _varModel->getVariable(indxVarNum);
-   _read = true;
-   // get notified when that state changes so can repeat
-   _programmingIndexedCV->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(_programmingIndexedCV, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   // and make the read request
-   // _programmingIndexedCV.setToRead(false);  // CVs set this themselves
-   _programmingIndexedCV->readAll();
-   if (log->isDebugEnabled()) log->debug("return from starting indexed CV read");
-   // the request may have instantateously been satisfied...
-   return true; // only make one request at a time!
-  }
- }
  // nothing to program, end politely
  if (log->isDebugEnabled()) log->debug("nextRead found nothing to do");
  readChangesButton->setSelected(false);
@@ -977,36 +939,7 @@ bool PaneProgPane::nextConfirm()
    return true;  // only make one request at a time!
   }
  }
- // found no CVs needing read, try indexed CVs
- while ((indexedCvList->size() >= 0) && (indexedCvListIndex < indexedCvList->size()))
- {
-  int indxVarNum = indexedCvList->at(indexedCvListIndex);
-  int indxState = _varModel->getState(indxVarNum);
-  if (log->isDebugEnabled()) log->debug(
-    "nextRead indexed cv @ row index " + QString::number(indexedCvListIndex) + " state " + QString::number(indxState));
-  VariableValue* iCv = _varModel->getVariable(indxVarNum);
-  indexedCvListIndex++;
-  if (iCv->isToRead())
-  {
-   QString sz = "start confirm of indexed cv " +
-        (_indexedCvModel->getCvByRow(indexedCvListIndex-1))->cvName();
-   if (log->isDebugEnabled()) log->debug(sz);
-   setBusy(true);
-   if (_programmingIndexedCV != NULL) log->error(
-        "listener already set at confirm start");
-   _programmingIndexedCV = _varModel->getVariable(indxVarNum);
-   _read = true;
-   // get notified when that state changes so can repeat
-   _programmingIndexedCV->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(_programmingIndexedCV, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   // and make the compare request
-   _programmingIndexedCV->confirmAll();
-   if (log->isDebugEnabled()) log->debug(
-        "return from starting indexed CV confirm");
-   // the request may have instantateously been satisfied...
-   return true; // only make one request at a time!
-  }
- }
+
  // nothing to program, end politely
  if (log->isDebugEnabled()) log->debug("nextConfirm found nothing to do");
  confirmChangesButton->setSelected(false);
@@ -1120,37 +1053,7 @@ bool PaneProgPane::nextWrite()
     return true;  // only make one request at a time!
   }
  }
- // check for Indexed CVs to handle (e.g. for Indexed CV table)
- while ((indexedCvList->size() >= 0) && (indexedCvListIndex < indexedCvList->size()))
- {
-  int indxVarNum = indexedCvList->at(indexedCvListIndex);
-  int indxState = _varModel->getState(indxVarNum);
-  if (log->isDebugEnabled()) log->debug(
-    "nextWrite indexed cv @ row index " + QString::number(indexedCvListIndex) + " state " + QString::number(indxState));
-  VariableValue* iCv = _varModel->getVariable(indxVarNum);
-  indexedCvListIndex++;
-  if (iCv->isToWrite() || indxState == VariableValue::UNKNOWN)
-  {
-   QString sz = "start write of indexed cv " +
-        (  _indexedCvModel->getCvByRow(indexedCvListIndex-1))->cvName();
-   if (log->isDebugEnabled()) log->debug(sz);
 
-   setBusy(true);
-   if (_programmingIndexedCV != NULL)
-    log->error("listener already set at read start");
-   _programmingIndexedCV = _varModel->getVariable(indxVarNum);
-   _read = true;
-   // get notified when that state changes so can repeat
-   _programmingIndexedCV->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(_programmingIndexedCV, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   // _programmingIndexedCV.setToWrite(false);  // CVs set this themselves
-   // and make the write request
-   _programmingIndexedCV->writeAll();
-   if (log->isDebugEnabled()) log->debug("return from starting indexed CV read");
-    // the request may have instantateously been satisfied...
-    return true; // only make one request at a time!
-  }
- }
  // nothing to program, end politely
  if (log->isDebugEnabled()) log->debug("nextWrite found nothing to do");
  writeChangesButton->setSelected(false);
@@ -1208,8 +1111,7 @@ bool PaneProgPane::nextWrite()
 {
  if (log->isDebugEnabled()) log->debug("confirmPane starts with "
                                         +QString::number(varList->size())+" vars, "
-                                        +QString::number(cvList->size())+" cvs "
-                                        +QString::number(indexedCvList->size())+" indexed cvs" );
+                                        +QString::number(cvList->size())+" cvs ");
   prepConfirmPane(true);
  return nextConfirm();
 }
@@ -1229,8 +1131,7 @@ bool PaneProgPane::nextWrite()
 {
  if (log->isDebugEnabled()) log->debug("confirmAllPane starts with "
                                         +QString::number(varList->size())+" vars, "
-                                        +QString::number(cvList->size())+" cvs "
-                                        +QString::number(indexedCvList->size())+" indexed cvs" );
+                                        +QString::number(cvList->size())+" cvs " );
   prepConfirmPane(false);
  // start operation
  return nextConfirm();
@@ -1261,7 +1162,7 @@ bool PaneProgPane::nextWrite()
 {
  emit notifyPropertyChange(e);
  // check for the right event & condition
- if (_programmingVar == NULL && _programmingCV == NULL && _programmingIndexedCV == NULL)
+ if (_programmingVar == NULL && _programmingCV == NULL)
  {
   log->warn("unexpected propertyChange: "+e->getPropertyName());
   return;
@@ -1309,25 +1210,6 @@ bool PaneProgPane::nextWrite()
   replyWhileProgrammingCV();
   return;
  }
- else if (e->getSource() == _programmingIndexedCV &&
-               e->getPropertyName()==("Busy") &&
-               (e->getNewValue())==false )
- {
-  if (_programmingIndexedCV->getState() == VariableValue::UNKNOWN)
-  {
-   if (retry == 0)
-   {
-    indexedCvListIndex--;
-    retry++;
-   }
-   else
-   {
-    retry = 0;
-   }
-  }
-  replyWhileProgrammingIndxCV();
-  return;
- }
  else
  {
   if (log->isDebugEnabled() && e->getPropertyName()==("Busy"))
@@ -1355,17 +1237,6 @@ bool PaneProgPane::nextWrite()
  _programmingCV->removePropertyChangeListener((PropertyChangeListener*)this);
  disconnect(_programmingCV, SIGNAL(propertyChange(PropertyChangeEvent*)));
  _programmingCV = NULL;
- // restart the operation
- restartProgramming();
-}
-
-/*public*/ void PaneProgPane::replyWhileProgrammingIndxCV()
-{
- if (log->isDebugEnabled()) log->debug("correct event for programming Indexed CV, restart operation");
- // remove existing listener
- _programmingIndexedCV->removePropertyChangeListener((PropertyChangeListener*)this);
- disconnect(_programmingIndexedCV->prop, SIGNAL(propertyChange(PropertyChangeEvent*)));
- _programmingIndexedCV = NULL;
  // restart the operation
  restartProgramming();
 }
@@ -1398,7 +1269,6 @@ void PaneProgPane::restartProgramming()
  setToWrite(false, false);
  varListIndex = varList->size();
  cvListIndex = cvList->size();
- indexedCvListIndex = indexedCvList->size();
  if (isBusy())
  {
   container->paneFinished();
@@ -1468,9 +1338,9 @@ void PaneProgPane::restartProgramming()
   {
    log->debug("starting to build IndexedCvTable pane");
    JTable* indxcvTable = new JTable();
-   indxcvTable->setModel(_indexedCvModel);
 //           JScrollPane cvScroll = new JScrollPane(indxcvTable);
 //           indxcvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
+   indxcvTable->setItemDelegateForColumn(1, new ValueRenderer());
 //           indxcvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
 //           indxcvTable.setDefaultEditor(JTextField.class, new ValueEditor());
 //           indxcvTable.setDefaultEditor(JButton.class, new ValueEditor());
@@ -1485,14 +1355,6 @@ void PaneProgPane::restartProgramming()
    //c.add(cvScroll);
    g->addWidget(indxcvTable,cs->gridy, cs->gridx);
    cs->gridwidth = 1;
-
-   // remember which indexed CVs to read/write
-   for (int j=0; j<_indexedCvModel->rowCount(QModelIndex()); j++)
-   {
-    QString sz = "CV" +_indexedCvModel->getName(j);
-    int in = _varModel->findVarIndex(sz);
-    indexedCvList->append((in));
-   }
 
    _cvTable = true;
    log->debug("end of building IndexedCvTable pane");
@@ -1778,63 +1640,6 @@ void PaneProgPane::restartProgramming()
 
    log->debug("end of building CvTable pane");
   }
-#if 0 // Done, see below->
-        else if (name==("indxcvtable")) {
-            log->debug("starting to build IndexedCvTable pane");
-            JTable indxcvTable   = new JTable(_indexedCvModel);
-            JScrollPane cvScroll = new JScrollPane(indxcvTable);
-            indxcvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-            indxcvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-            indxcvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-            indxcvTable.setDefaultEditor(JButton.class, new ValueEditor());
-            indxcvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-            indxcvTable.setPreferredScrollableViewportSize(new Dimension(700, indxcvTable.getRowHeight()*14));
-            cvScroll.setColumnHeaderView(indxcvTable.getTableHeader());
-            // don't want a horizontal scroll bar
-            // Need to see the whole row at one time
-//                indxcvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            cs->gridwidth = GridBagConstraints::REMAINDER;
-            g.setConstraints(cvScroll, cs);
-            c.add(cvScroll);
-            cs->gridwidth = 1;
-
-            // remember which indexed CVs to read/write
-            for (int j=0; j<_indexedCvModel.getRowCount(); j++) {
-                String sz = "CV" +_indexedCvModel.getName(j);
-                int in = _varModel.findVarIndex(sz);
-                indexedCvList.add(Integer.valueOf(in));
-            }
-
-            _cvTable = true;
-            log->debug("end of building IndexedCvTable pane");
-
-        }
-#endif
-  else if (name==("indxcvtable"))
-  {
-   log->debug("starting to build IndexedCvTable pane");
-
-   JTable* indxcvtable = new JTable();
-   Q_ASSERT(cs->gridx >=0);
-   g->addWidget(indxcvtable, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
-   indxcvtable->setModel(_indexedCvModel);
-   _indexedCvModel->setTable(indxcvtable);
-
-   cs->gridheight = GridBagConstraints::REMAINDER;
-   // remember which CVs to read/write
-   // remember which indexed CVs to read/write
-   for (int j=0; j<_indexedCvModel->rowCount(QModelIndex()); j++)
-   {
-    QString sz = "CV" +_indexedCvModel->getName(j);
-    int in = _varModel->findVarIndex(sz);
-    indexedCvList->append((in));
-   }
-
-   _cvTable = true;
-   connect(_indexedCvModel, SIGNAL(modelChange(CvValue*,int)), this, SLOT(onIvModelChange(CvValue*,int)));
-   _cvModel->configureTable(indxcvtable);
-   log->debug("end of building IndexedCvTable pane");
-  }
   else if (name==("fnmapping"))
   {
     pickFnMapPanel(c, g, cs, modelElem);
@@ -2037,58 +1842,7 @@ void PaneProgPane::restartProgramming()
    _cvTable = true;
    log->debug("end of building CvTable pane");
   }
-#if 0 // Done:
-   else if (name==("indxcvtable")) {
-        log->debug("starting to build IndexedCvTable pane");
-        JTable	indxcvTable	= new JTable(_indexedCvModel);
-        JScrollPane cvScroll = new JScrollPane(indxcvTable);
-        indxcvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-        indxcvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-        indxcvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-        indxcvTable.setDefaultEditor(JButton.class, new ValueEditor());
-        indxcvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-        indxcvTable.setPreferredScrollableViewportSize(new Dimension(700, indxcvTable.getRowHeight()*14));
-        cvScroll.setColumnHeaderView(indxcvTable.getTableHeader());
-        // don't want a horizontal scroll bar
-        // Need to see the whole row at one time
-//                indxcvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        cs->gridwidth = GridBagConstraints::REMAINDER;
-        g.setConstraints(cvScroll, cs);
-        c.add(cvScroll);
-        cs->gridwidth = 1;
 
-        // remember which indexed CVs to read/write
-        for (int j=0; j<_indexedCvModel.getRowCount(); j++) {
-            String sz = "CV" +_indexedCvModel.getName(j);
-            int in = _varModel.findVarIndex(sz);
-            indexedCvList.add(Integer.valueOf(in));
-        }
-
-        _cvTable = true;
-        log->debug("end of building IndexedCvTable pane");
-    }
-#endif
-  else if (name==("indxcvtable"))
-  {
-   log->debug("starting to build IndexedCvTable pane");
-
-   QTableView* cvTable = new QTableView();
-   Q_ASSERT(cs->gridx >=0);
-   g->addWidget(cvTable, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
-   cvTable->setModel(_indexedCvModel);
-   cs->gridheight = GridBagConstraints::REMAINDER;
-   // remember which CVs to read/write
-   // remember which indexed CVs to read/write
-   for (int j=0; j<_indexedCvModel->rowCount(QModelIndex()); j++)
-   {
-    QString sz = "CV" +_indexedCvModel->getName(j);
-    int in = _varModel->findVarIndex(sz);
-    indexedCvList->append((in));
-   }
-
-   _cvTable = true;
-   log->debug("end of building IndexedCvTable pane");
-  }
   else if (name==("fnmapping"))
   {
    pickFnMapPanel(c, g, cs, modelElem);
@@ -2186,9 +1940,9 @@ void PaneProgPane::restartProgramming()
  for (int i=0; i<elemList.size(); i++)
  {
   globs->gridConstraints = new GridBagConstraints();
-  QDomElement  e = elemList.at(i).toElement();
+  QDomElement e = elemList.at(i).toElement();
   QString name = e.tagName();
-  //log->trace("newGrid processing {} element", name);
+  log->trace(tr("newGrid processing %1 element").arg(name));
   // decode the type
   if (name== ("griditem"))
   {
@@ -2254,12 +2008,13 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
  */
 /*public*/ QWidget* PaneProgPane::newGridItem(QDomElement  element, bool showStdName, QDomElement  modelElem, GridGlobals* globs)
 {
+ QString tagName = element.tagName();
  //QDomNamedNodeMap itemAttList = element.attributes(); // get item-level attributes
  QVector<Attribute*> itemAttList = getAttributeList(element);
  QVector<Attribute*> attList =  QVector<Attribute*>(globs->gridAttList);
  //attList.addAll(itemAttList); // merge grid and item-level attributes
- for(int i = 0; i < attList.size(); i++)
-  itemAttList.append(attList.at(i));
+ for(int i = 0; i < itemAttList.size(); i++)
+  attList.append(itemAttList.at(i));
 //                log->info("New gridtiem -----------------------------------------------");
 //                log->info("Attribute list:"+attList);
  attList.append(new Attribute(LAST_GRIDX,""));
@@ -2283,11 +2038,12 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
   {
    Attribute* a = new Attribute(LAST_GRIDX,attribRawValue);
    //attList.set(attList.size()-2,a);
-   attList.append(a);
+   attList.replace(attList.size()-2,a);
+   //attList.append(a);
 //                        log->info("Moved & Updated Attribute list:"+attList);
    continue; //. don't process now
   }
-  if ( attribName== ("gridy") )
+  if ( attribName == ("gridy") )
   {
    Attribute* a = new Attribute(LAST_GRIDY,attribRawValue);
    //attList.set(attList.size()-1,a);
@@ -2439,7 +2195,8 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
   // handle the xml definition
   // for all elements in the grid item
   QDomNodeList elemList = element.childNodes();
-  if (log->isDebugEnabled()) log->debug("newGridItem starting with "+QString::number(elemList.size())+" elements");
+  if (log->isDebugEnabled())
+   log->debug("newGridItem starting with "+QString::number(elemList.size())+" elements");
   for (int i=0; i<elemList.size(); i++)
   {
    // update the grid position
@@ -2478,55 +2235,6 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
    else if (name== ("cvtable"))
    {
     makeCvTable(cs, g, c);
-   }
-   else if (name== ("indxcvtable"))
-   {
-    log->debug("starting to build IndexedCvTable pane");
-    QTableView* indxcvTable = new QTableView(/*_indexedCvModel*/);
-    indxcvTable->setModel(_indexedCvModel);
-//    JScrollPane cvScroll = new JScrollPane(indxcvTable);
-//    indxcvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-//    indxcvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-//    indxcvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-//    indxcvTable.setDefaultEditor(JButton.class, new ValueEditor());
-//    indxcvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-//    indxcvTable.setPreferredScrollableViewportSize(new Dimension(700, indxcvTable.getRowHeight()*14));
-//    cvScroll.setColumnHeaderView(indxcvTable.getTableHeader());
-    // don't want a horizontal scroll bar
-    // Need to see the whole row at one time
-//                indxcvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    cs->gridwidth = GridBagConstraints::REMAINDER;
-    //g.setConstraints(cvScroll, cs);
-    //c.add(cvScroll);
-    g->addWidget(indxcvTable, cs->gridy,cs->gridx);
-
-    cs->gridwidth = 1;
-
-    // remember which indexed CVs to read/write
-    for (int j=0; j<_indexedCvModel->rowCount(QModelIndex()); j++)
-    {
-     QString sz = "CV" +_indexedCvModel->getName(j);
-     int in = _varModel->findVarIndex(sz);
-     indexedCvList->append((in));
-    }
-
-    _cvTable = true;
-    log->debug("end of building IndexedCvTable pane");
-    }
-   else if (name== ("fnmapping"))
-   {
-    pickFnMapPanel(c, g, cs, modelElem);
-   }
-   else if (name== ("dccaddress"))
-   {
-    QWidget* l = addDccAddressPanel(e);
-    if (l->children().count() > 1)
-    {
-     cs->gridheight = GridBagConstraints::REMAINDER;
-     //g.setConstraints(l, cs);
-     g->addWidget(l, cs->gridy,cs->gridx);
-     cs->gridheight = 1;
-    }
    }
    else if (name== ("column"))
    {
@@ -2682,6 +2390,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
  qa->processModifierElements(e, _varModel);
 #endif
 }
+
 void PaneProgPane::makeCvTable(GridBagConstraints* cs, QGridLayout* g, QWidget* c)
 {
  log->debug("starting to build CvTable pane");
@@ -2910,7 +2619,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
 /*public*/ QWidget* PaneProgPane::getRepresentation(QString name, QDomElement  var)
 {
  int i = _varModel->findVarIndex(name);
- //QWidget* rep =/* NULL*/ new QLabel("???", this);
+ VariableValue* variable = _varModel->getVariable(i);
  QWidget* rep = NULL;
  QString format = "default";
  QString attr;
@@ -2928,7 +2637,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
   QString tip = "";
   if ( (tip = /*LocaleSelector.attribute(var, "tooltip")*/var.attribute("tooltip"))!=NULL
               && rep->toolTip()==NULL)
-   rep->setToolTip(tip);
+   rep->setToolTip(modifyToolTipText(tip, variable));
   rep->setParent(this);
 
  }
@@ -2936,6 +2645,46 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
   log->warn(QString("var index not found for var %1").arg(name));
 
  return rep;
+}
+
+/**
+ * Takes default tool tip text, e.g. from the decoder element, and modifies
+ * it as needed.
+ * <p>
+ * Intended to handle e.g. adding CV numbers to variables.
+ *
+ * @param start    existing tool tip text
+ * @param variable the CV
+ * @return new tool tip text
+ */
+QString PaneProgPane::modifyToolTipText(QString start, VariableValue* variable) {
+    log->trace(tr("modifyToolTipText: %1").arg(variable->label()));
+    // this is the place to invoke VariableValue methods to (conditionally)
+    // add information about CVs, etc in the ToolTip text
+
+    // Optionally add CV numbers based on Roster Preferences setting
+    start = CvUtil::addCvDescription(start, variable->getCvDescription(), variable->getMask());
+
+    // Indicate what the command station can do
+    // need to update this with e.g. the specific CV numbers
+    if (_cvModel->getProgrammer() != nullptr
+            && !_cvModel->getProgrammer()->getCanRead()) {
+        start = StringUtil::concatTextHtmlAware(start, " (Hardware cannot read)");
+    }
+    if (_cvModel->getProgrammer() != nullptr
+            && !_cvModel->getProgrammer()->getCanWrite()) {
+        start = StringUtil::concatTextHtmlAware(start, " (Hardware cannot write)");
+    }
+
+    // indicate other reasons for read/write constraints
+    if (variable->getReadOnly()) {
+        start = StringUtil::concatTextHtmlAware(start, " (Defined to be read only)");
+    }
+    if (variable->getWriteOnly()) {
+        start = StringUtil::concatTextHtmlAware(start, " (Defined to be write only)");
+    }
+
+    return start;
 }
 
 QWidget* PaneProgPane::getRep(int i, QString format) {
@@ -2960,18 +2709,14 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
 
     if (_programmingVar != NULL) _programmingVar->removePropertyChangeListener((PropertyChangeListener*)this);
     if (_programmingCV != NULL) _programmingCV->removePropertyChangeListener((PropertyChangeListener*)this);
-    if (_programmingIndexedCV != NULL) _programmingIndexedCV->removePropertyChangeListener((PropertyChangeListener*)this);
 
     _programmingVar = NULL;
     _programmingCV  = NULL;
-    _programmingIndexedCV = NULL;
 
     varList->clear();
     varList = NULL;
     cvList->clear();
     cvList = NULL;
-    indexedCvList->clear();
-    indexedCvList = NULL;
 
 //    // dispose of any panels
 //    for (int i=0; i<panelList.size(); i++) {
@@ -2992,7 +2737,6 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
 #endif
     // these are disposed elsewhere
     _cvModel = NULL;
-    _indexedCvModel = NULL;
     _varModel = NULL;
 }
 
@@ -3586,3 +3330,5 @@ QVector<Attribute*> PaneProgPane::getAttributeList(QDomElement e)
     }
     changeSupport->firePropertyChange(propertyName, oldValue, newValue);
 }
+
+/*private*/ /*final*/ /*static*/ Logger* PaneProgPane::log = LoggerFactory::getLogger("PaneProgPane");

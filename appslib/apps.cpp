@@ -614,7 +614,7 @@ void Apps::initGui() // must be called after Constructor is complete!
 {
  try
  {
-  DecoderIndexFile::instance();
+  (DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile");
  }
  catch (Exception ex)
  {

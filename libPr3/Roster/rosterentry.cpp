@@ -125,10 +125,10 @@ void RosterEntry::init()
  loadedOnce = false;
  attributePairs = new QMap<QString,QString>();
  openCounter =0;
- functionLabels =  QVector<QString>(MAXFNNUM+1, "");
- functionSelectedImages = QVector<QString>(MAXFNNUM+1, "");
- functionImages = QVector<QString>(MAXFNNUM+1, "");
- functionLockables =  QVector<bool>(MAXFNNUM+1, true);
+ functionLabels =  QMap<int, QString>();
+ functionSelectedImages = QMap<int, QString>();
+ functionImages = QMap<int, QString>();
+ functionLockables =  QMap<int, bool>();
  blanks=0;
  textSpaceWithIcon=0;
  indent = "                      ";
@@ -180,25 +180,56 @@ void RosterEntry::init()
     _maxSpeedPCT =  pEntry->_maxSpeedPCT;
     _isShuntingOn = pEntry->_isShuntingOn;
 
-    for (int i=0; i<MAXFNNUM+1; i++)
-    {
-     if ((!pEntry->functionLabels.isEmpty()) && (!pEntry->functionLabels.at(i).isEmpty()))
+    if (!pEntry->functionLabels.isEmpty()) {
+         //pEntry.functionLabels.forEach((key, value) -> {
+     for(int key : pEntry->functionLabels.keys())
      {
-      functionLabels.replace(i, pEntry->functionLabels.at(i));
+      QString value = pEntry->functionLabels.value(key);
+             if (value != "") {
+                 functionLabels.insert(key, value);
+             }
+         }//);
      }
-     if ((!pEntry->functionSelectedImages.isEmpty()) && (pEntry->functionSelectedImages.at(i).isNull()))
-     {
-      functionSelectedImages.replace(i, pEntry->functionSelectedImages.at(i));
+     if (!pEntry->soundLabels.isEmpty()) {
+         //pEntry.soundLabels.forEach((key, value) -> {
+         for(int key : pEntry->soundLabels.keys())
+         {
+         QString value = pEntry->soundLabels.value(key);
+         if (value != "") {
+                 soundLabels.insert(key, value);
+             }
+         }//);
      }
-     if ((!pEntry->functionImages.isEmpty()) && (!pEntry->functionImages.at(i).isEmpty()))
-     {
-      functionImages.replace(i,pEntry->functionImages.at(i));
+     if (!pEntry->functionSelectedImages.isEmpty()) {
+         //pEntry.functionSelectedImages.forEach((key, value) -> {
+         for(int key : pEntry->functionSelectedImages.keys())
+         {
+         QString value = pEntry->functionSelectedImages.value(key);
+         if (value != "") {
+                 functionSelectedImages.insert(key, value);
+             }
+         }//);
      }
-     if (!pEntry->functionLockables.isEmpty())
-     {
-      functionLockables.replace(i, pEntry->functionLockables.at(i));
+     if (!pEntry->functionImages.isEmpty()) {
+         //pEntry.functionImages.forEach((key, value) -> {
+         for(int key : pEntry->functionImages.keys())
+         {
+          QString value = pEntry->functionImages.value(key);
+          if (value != "") {
+                 functionImages.insert(key, value);
+             }
+         }//);
      }
-    }
+     if (!pEntry->functionLockables.isEmpty()) {
+        //pEntry.functionLockables.forEach((key, value) -> {
+        for(int key : pEntry->functionLockables.keys())
+        {
+             bool value = pEntry->functionLockables.value(key);
+//             if (value != "") {
+                 functionLockables.insert(key, value);
+//             }
+         }//);
+     }
 }
 
 /*public*/ void RosterEntry::setId(QString s) {
@@ -207,7 +238,7 @@ void RosterEntry::init()
     if (!oldID.isEmpty() || oldID!=(s))
     {
         Roster::getDefault()->entryIdChanged(this);
-//TODO:        firePropertyChange("id", oldID, s);
+        firePropertyChange("id", oldID, s);
     }
 }
 /*public*/ QString RosterEntry::getId() { return _id; }
@@ -215,7 +246,7 @@ void RosterEntry::init()
 /*public*/ void   RosterEntry::setFileName(QString s) {
     QString oldName = _fileName;
     _fileName = s;
-// TODO:    firePropertyChange("filename", oldName, s);
+    firePropertyChange("filename", oldName, s);
 }
 /*public*/ QString RosterEntry::getFileName() { return _fileName; }
 
@@ -593,12 +624,13 @@ void RosterEntry::init()
 /*public*/ void RosterEntry::setFunctionLabel(int fn, QString label) {
 //    if (functionLabels == NULL) functionLabels = new QString[MAXFNNUM+1]; // counts zero
 //    functionLabels[fn] = label;
- if(functionLabels.isEmpty())
- {
-  for(int i=0; i < MAXFNNUM+1; i ++)
-   functionLabels.append("");
- }
- functionLabels.replace(fn,label);
+  if(functionLabels.isEmpty())
+  {
+      functionLabels =  QMap<int, QString>();//Collections.synchronizedMap(new HashMap<>());
+  }
+  QString old = functionLabels.value(fn);
+  functionLabels.insert(fn, label);
+  this->firePropertyChange(RosterEntry::FUNCTION_LABEL + QString::number(fn), old, label);
 }
 
 /**
@@ -611,11 +643,10 @@ void RosterEntry::init()
 //    if (fn <0 || fn >MAXFNNUM)
 //        throw new IllegalArgumentException("number out of range: "+fn);
 //    return functionLabels[fn];
-  if(functionLabels.isEmpty()) return "";
-  if (fn < 0 || fn > MAXFNNUM) {
-   throw IllegalArgumentException("number out of range: " + QString::number(fn));
-  }
-  return functionLabels.at(fn);
+ if (functionLabels.isEmpty()) {
+     return "";
+ }
+ return functionLabels.value(fn);
 }
 
 /**
@@ -626,11 +657,11 @@ void RosterEntry::init()
  */
 /*public*/ void RosterEntry::setSoundLabel(int fn, QString label) {
     if (soundLabels.isEmpty()) {
-        soundLabels = QVector<QString>(MAXSOUNDNUM + 1); // counts zero
+        soundLabels = QMap<int, QString>(); // counts zero
     }
     QString old = this->soundLabels[fn];
-    soundLabels.replace(fn, label);
-    this->firePropertyChange(RosterEntry::SOUND_LABEL + fn, old, this->soundLabels[fn]);
+    soundLabels.insert(fn, label);
+    this->firePropertyChange(RosterEntry::SOUND_LABEL +  QString::number(fn), old, this->soundLabels[fn]);
 }
 
 /**
@@ -651,86 +682,33 @@ void RosterEntry::init()
 }
 /*public*/ void RosterEntry::setFunctionImage(int fn, QString s)
 {
- //if (functionImages == NULL) functionImages = new QString[MAXFNNUM+1]; // counts zero
- if(functionImages.isEmpty())
- {
-  for(int i=0; i < MAXFNNUM+1; i ++)
-   functionImages.append("");
+ if (functionImages.isEmpty()) {
+     functionImages = QMap<int, QString>();//Collections.synchronizedMap(new HashMap<>());
  }
-
- QString old = functionImages.at(fn);
- functionImages.replace(fn, s);
- firePropertyChange("functionImage"+QString::number(fn), old, s);
-#if 0
- QString dropFolder = FileUtil::getUserFilesPath();
- //QString dropFolder = LocoFile::getFileLocation();
- File* source = new File(s);
- if(!source->exists())
- {
-  log->error(tr("file %s does not exist").arg(source->getPath()));
- }
- File* dest = new File(s);
- if (dropFolder != NULL) {
-     dest = new File(dropFolder + /*File::separatorChar +*/ source->getName());
-     if (source->getParent().compare(dest->getParent()) != 0) {
-         try {
-             FileUtil::createDirectory(dest->getParentFile()->getPath());
-             FileUtil::copy(source, dest);
-         } catch (IOException ex) {
-             log->error("filesDropped: error while copying new file, using original file");
-             dest = source;
-         }
-     }
- }
- functionImages.replace(fn, dest->getPath());
-#endif
+ QString old = functionImages.value(fn);
+ functionImages.insert(fn, s);
+ firePropertyChange(RosterEntry::FUNCTION_IMAGE +  QString::number(fn), old, s);
 }
+
 /*public*/ QString RosterEntry::getFunctionImage(int fn)
 {
- if ((!functionImages.isEmpty()) && (functionImages.at(fn) != ""))
-  return functionImages.at(fn);
+ if ((!functionImages.isEmpty()) && (functionImages.value(fn) != ""))
+  return functionImages.value(fn);
  return "";
 }
 
 /*public*/ void RosterEntry::setFunctionSelectedImage(int fn, QString s)
 {
  //if (functionSelectedImages == NULL) functionSelectedImages = new QString[MAXFNNUM+1]; // counts zero
- if(functionSelectedImages.isEmpty())
- {
-  for(int i=0; i < MAXFNNUM+1; i ++)
-   functionSelectedImages.append("");
- }
-
- QString old = functionSelectedImages.at(fn);
- functionSelectedImages.replace(fn,s);
- firePropertyChange("functionSelectedImage"+QString::number(fn), old, s);
-#if 0
- //QString dropFolder = FileUtil::getUserFilesPath();
- QString dropFolder = LocoFile::getFileLocation();
- File* source = new File(s);
- File* dest = new File(s);
- if (dropFolder != NULL && source->getPath() != "")
- {
-  dest = new File(dropFolder + /*File::separatorChar +*/ source->getName());
-  if (source->getParent().compare(dest->getParent()) != 0)
-  {
-   try {
-       FileUtil::createDirectory(dest->getParentFile()->getPath());
-       FileUtil::copy(source, dest);
-   } catch (IOException ex) {
-       log->error("filesDropped: error while copying new file, using original file");
-       dest = source;
-   }
-  }
- }
- functionSelectedImages.replace(fn, dest->getPath());
-#endif
+ QString old = functionSelectedImages.value(fn);
+         functionSelectedImages.insert(fn, s);
+         firePropertyChange(RosterEntry::FUNCTION_SELECTED_IMAGE +  QString::number(fn), old, s);
 }
 
 /*public*/ QString RosterEntry::getFunctionSelectedImage(int fn)
 {
- if ((!functionSelectedImages.isEmpty()) && (functionSelectedImages.at(fn) != ""))
-  return functionSelectedImages.at(fn);
+ if ((!functionSelectedImages.isEmpty()) && (functionSelectedImages.value(fn) != ""))
+  return functionSelectedImages.value(fn);
  return "";
 }
 
@@ -740,14 +718,13 @@ void RosterEntry::init()
  */
 /*public*/ void RosterEntry::setFunctionLockable(int fn, bool lockable)
 {
- if (functionLockables.isEmpty())
- {
-  //functionLockables = new bool[MAXFNNUM+1]; // counts zero
-  //for (int i = 0; i < functionLockables.length; i++) functionLockables[i] = true;
-  for(int i=0; i < MAXFNNUM+1; i++)
-   functionLockables.append(true);
- }
- functionLockables.replace(fn,lockable);
+ if (functionLockables.isEmpty()) {
+       functionLockables = QMap<int, bool>();//Collections.synchronizedMap(new HashMap<>());
+       functionLockables.insert(fn, true);
+   }
+   bool old = ((functionLockables.value(fn) != true) ? functionLockables.value(fn) : true);
+   functionLockables.insert(fn, lockable);
+   this->firePropertyChange(RosterEntry::FUNCTION_LOCKABLE +  QString::number(fn), old, lockable);
 }
 
 
@@ -759,7 +736,7 @@ void RosterEntry::init()
     if (functionLockables.isEmpty()) return true;
     if (fn <0 || fn >MAXFNNUM)
         throw IllegalArgumentException("number out of range: "+QString::number(fn));
- return functionLockables.at(fn);
+ return functionLockables.value(fn);
 }
 
 /**
@@ -883,15 +860,15 @@ void RosterEntry::init()
   // loop to copy non-NULL elements
   for (int i = 0; i<MAXFNNUM+1; i++)
   {
-   if (!functionLabels.at(i).isNull() && functionLabels.at(i)!=(""))
+   if (!functionLabels.value(i).isNull() && functionLabels.value(i)!=(""))
    {
     QDomElement fne = doc.createElement("functionlabel");
     fne.setAttribute("num", QString::number(i));
     bool lockable = false;
-    if (!functionLockables.isEmpty()) lockable = functionLockables.at(i);
+    if (!functionLockables.isEmpty()) lockable = functionLockables.value(i);
     fne.setAttribute("lockable", lockable ? QString("true"):QString("false"));
 
-    if ((!functionImages.isEmpty()) && (functionImages.at(i)!=""))
+    if ((!functionImages.isEmpty()) && (functionImages.value(i)!=""))
     {
 //     try
 //     {
@@ -902,7 +879,7 @@ void RosterEntry::init()
 //      fne.setAttribute("functionImage", "");
 //     }
     }
-    if ((!functionSelectedImages.isEmpty()) && (functionSelectedImages.at(i)!=""))
+    if ((!functionSelectedImages.isEmpty()) && (functionSelectedImages.value(i)!=""))
     {
 //     try
 //     {
@@ -913,11 +890,30 @@ void RosterEntry::init()
 //      fne.setAttribute("functionImageSelected", "");
 //     }
     }
-    fne.appendChild(doc.createTextNode(functionLabels.at(i)));
+    fne.appendChild(doc.createTextNode(functionLabels.value(i)));
     d.appendChild(fne);
    }
   }
   e.appendChild(d);
+ }
+
+ if (!soundLabels.isEmpty())
+ {
+     QDomElement s = doc.createElement("soundlabels");
+
+     // loop to copy non-null elements
+     //soundLabels.forEach((key, value) ->
+     for(int key : soundLabels.keys())
+     {
+      QString value = soundLabels.value(key);
+         if (value != "" && !value.isEmpty()) {
+             QDomElement fne = doc.createElement(RosterEntry::SOUND_LABEL);
+             fne.setAttribute("num", key);
+             fne.appendChild(doc.createTextNode(value));
+             s.appendChild(fne);
+         }
+     }//);
+     e.appendChild(s);
  }
 #endif
  QList<QString> keyset = getAttributes();
@@ -1662,11 +1658,22 @@ if (!(_decoderFamily==("")))
 }
 
 /**
+ * Load function names from a JDOM element.
+ * <p>
+ * Does not change values that are already present!
+ *
+ * @param e3 the XML element containing functions
+ */
+/*public*/ void RosterEntry::loadFunctions(QDomElement e3) {
+    this->loadFunctions(e3, "family");
+}
+
+/**
 * Loads function names from a
 * JDOM element.  Does not change values that are already present!
 */
 //@SuppressWarnings("unchecked")
-/*public*/ void RosterEntry::loadFunctions(QDomElement e3)
+/*public*/ void RosterEntry::loadFunctions(QDomElement e3, QString source)
 {
  /*Load flag once, means that when the roster entry is edited only the first set of function labels are displayed
    ie those saved in the roster file, rather than those being left blank
@@ -1699,6 +1706,45 @@ if (!(_decoderFamily==("")))
   }
  }
  loadedOnce = true;
+}
+
+/**
+ * Loads sound names from a JDOM element. Does not change values that are
+ * already present!
+ *
+ * @param e3     the XML element containing sound names
+ * @param source "family" if source is the decoder definition, or "model" if
+ *               source is the roster entry itself
+ */
+/*public*/ void RosterEntry::loadSounds(QDomElement e3, QString source) {
+    /*
+     * Load flag once, means that when the roster entry is edited only the
+     * first set of sound labels are displayed ie those saved in the roster
+     * file, rather than those being left blank rather than being
+     * over-written by the defaults linked to the decoder def
+     */
+    if (soundLoadedOnce) {
+        return;
+    }
+    if (!e3.isNull()) {
+        // load sound names
+        QDomNodeList l = e3.elementsByTagName(RosterEntry::SOUND_LABEL);
+        for (int i = 0; i < l.size(); i++) {
+         QDomElement fn = l.at(i).toElement();
+            int num = fn.attribute("num").toInt();
+            //QString val = LocaleSelector.attribute(fn, "text");
+            QString val = fn.text();
+            if (val == "") {
+                val = fn.text();
+            }
+            if ((this->getSoundLabel(num) == "") || (source.toLower() == "model")) {
+                this->setSoundLabel(num, val);
+            }
+        }
+    }
+    if (source.toLower() == ("RosterEntry")) {
+        soundLoadedOnce = true;
+    }
 }
 
 /**

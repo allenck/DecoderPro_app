@@ -37705,7 +37705,7 @@ if (_wrapper) {
 }
   DefaultLogixManager::activateAllLogixs();
 }
-QString  PythonQtShell_DefaultLogixManager::getBeanTypeHandled(bool  plural0)
+QString  PythonQtShell_DefaultLogixManager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -37914,7 +37914,7 @@ void PythonQtWrapper_DefaultLogixManager::activateAllLogixs(DefaultLogixManager*
   ( theWrappedObject->activateAllLogixs());
 }
 
-QString  PythonQtWrapper_DefaultLogixManager::getBeanTypeHandled(DefaultLogixManager* theWrappedObject, bool  plural)
+QString  PythonQtWrapper_DefaultLogixManager::getBeanTypeHandled(DefaultLogixManager* theWrappedObject, bool  plural) const
 {
   return ( theWrappedObject->getBeanTypeHandled(plural));
 }

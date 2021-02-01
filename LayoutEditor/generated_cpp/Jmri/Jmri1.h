@@ -41,7 +41,6 @@
 #include <namedbean.h>
 #include <positionable.h>
 #include <positionablelabel.h>
-#include <programmingmode.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
 #include <proxylightmanager.h>
@@ -177,7 +176,7 @@ virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual QList<ProgrammingMode* >  getDefaultModes();
+virtual QList<QString >  getDefaultModes();
 virtual bool  isGlobalProgrammerAvailable();
 virtual QObject*  self();
 virtual void timerEvent(QTimerEvent*  event);
@@ -189,7 +188,7 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_DefaultProgrammerManager : public DefaultProgrammerManager
 { public:
-inline QList<ProgrammingMode* >  py_q_getDefaultModes() { return DefaultProgrammerManager::getDefaultModes(); }
+inline QList<QString >  py_q_getDefaultModes() { return DefaultProgrammerManager::getDefaultModes(); }
 inline bool  py_q_isGlobalProgrammerAvailable() { return DefaultProgrammerManager::isGlobalProgrammerAvailable(); }
 inline QObject*  py_q_self() { return DefaultProgrammerManager::self(); }
 };
@@ -200,8 +199,8 @@ public:
 public slots:
 DefaultProgrammerManager* new_DefaultProgrammerManager(QObject*  parent = 0);
 void delete_DefaultProgrammerManager(DefaultProgrammerManager* obj) { delete obj; } 
-   QList<ProgrammingMode* >  getDefaultModes(DefaultProgrammerManager* theWrappedObject);
-   QList<ProgrammingMode* >  py_q_getDefaultModes(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_getDefaultModes());}
+   QList<QString >  getDefaultModes(DefaultProgrammerManager* theWrappedObject);
+   QList<QString >  py_q_getDefaultModes(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_getDefaultModes());}
    QString  getUserName(DefaultProgrammerManager* theWrappedObject);
    bool  isAddressedModePossible(DefaultProgrammerManager* theWrappedObject);
    bool  isAddressedModePossible(DefaultProgrammerManager* theWrappedObject, DccLocoAddress*  l);

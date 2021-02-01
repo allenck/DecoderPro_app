@@ -18,28 +18,28 @@ public:
                             QString cvNum, QString mask, int minVal, int maxVal,
                             QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
     /*public*/ void setToolTipText(QString t);
-    /*public*/ QVector<CvValue*>* usesCVs();
-    /*public*/ QVariant rangeVal();
+    /*public*/ QVector<CvValue*>* usesCVs() override;
+    /*public*/ QVariant rangeVal()override;
     void updatedTextField();
-    /*public*/ QString getValueString();
+    /*public*/ QString getValueString() override;
     // to complete this class, fill in the routines to handle "Value" parameter
     // and to read/write/hear parameter changes.
-    /*public*/ void setIntValue(int i);
-    /*public*/ int getIntValue();
-    /*public*/ QVariant getValueObject();
-    /*public*/ QWidget* getCommonRep();
+    /*public*/ void setIntValue(int i) override;
+    /*public*/ int getIntValue() override;
+    /*public*/ QVariant getValueObject() override;
+    /*public*/ QWidget* getCommonRep() override;
     /*public*/ void setAvailable(bool a);
-    /*public*/ QWidget* getNewRep(QString format);
+    /*public*/ QWidget* getNewRep(QString format) override;
     /*public*/ void setValue(int value);
     QColor getColor();
     void setColor(QColor c);
-    /*public*/ void setCvState(int state);
-    /*public*/ bool isChanged() ;
-    /*public*/ void readChanges();
-    /*public*/ void writeChanges();
-    /*public*/ void readAll();
-    /*public*/ void writeAll();
-    /*public*/ void dispose();
+    /*public*/ void setCvState(int state) override;
+    /*public*/ bool isChanged() override;
+    /*public*/ void readChanges() override;
+    /*public*/ void writeChanges() override;
+    /*public*/ void readAll() override;
+    /*public*/ void writeAll() override;
+    /*public*/ void dispose() override;
 
 signals:
 

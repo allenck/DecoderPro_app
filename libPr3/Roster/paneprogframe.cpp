@@ -45,60 +45,49 @@
 #include "joptionpane.h"
 #include "xinclude/xinclude.h"
 #include <QTemporaryDir>
+#include <QFileInfo>
+#include "searchbar.h"
 
 int PaneProgFrame::iLabel=0;
 
 // derived from java PaneProgFrame class.
 bool PaneProgFrame::showEmptyPanes = true;
 
-PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntry, QString frameTitle, QString pProgrammerFile, Programmer* pProg, bool opsMode, QWidget *parent) :
+PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntry,
+                             QString pFrameTitle, QString pProgrammerFile, Programmer* pProg, bool opsMode, QWidget *parent) :
     JmriJFrame(parent),
     ui(new Ui::PaneProgFrame)
 {
  ui->setupUi(this);
  setObjectName("PaneProgFrame");
- this->pProgrammerFile = pProgrammerFile;
+ _rosterEntry = pRosterEntry;
  _opsMode = opsMode;
+ filename = pProgrammerFile;
+ mProgrammer = pProg;
 
- log = new Logger("PaneProgFrame");
  log->setDebugEnabled(true);
  progStatus = new QLabel(tr("Programmer Status: Idle"));
  ui->statusbar->addPermanentWidget(progStatus);
  //ui->statusbar->addPermanentWidget(progStatus);
- // create the tables
- mProgrammer   = pProg;
- setWindowTitle(frameTitle);
- cvModel       = new CvTableModel(progStatus, mProgrammer);
- iCvModel      = new IndexedCvTableModel(progStatus, mProgrammer);
- QStringList list = QStringList();
- list << tr("Name") << tr("Value");
- variableModel = new VariableTableModel(progStatus, list, cvModel, iCvModel);
 
- resetModel    = new ResetTableModel(progStatus, mProgrammer);
- _busy = false;
- _read = true;
- _programmingPane = NULL;
- primaryAddr = NULL;
- extendAddr = NULL;
- addMode = NULL;
- decoderDirtyTask = NULL;
- fileDirtyTask = NULL;
- glassPane = NULL;
- bottom = NULL;
- modePane = NULL;
+ // create the tables
+ setWindowTitle(pFrameTitle);
+
+ // create the tables
+ cvModel       = new CvTableModel(progStatus, mProgrammer);
+
+ variableModel = new VariableTableModel(progStatus, QStringList{"Name", "Value"},
+                 cvModel);
+
+ resetModel = new ResetTableModel(progStatus, mProgrammer);
 
  // handle the roster entry
- _rosterEntry =  pRosterEntry;
- if (_rosterEntry == NULL) log->error("NULL RosterEntry pointer");
- else _rosterEntry->setOpen(true);
- filename = pProgrammerFile;
- readChangesButton = new JToggleButton(tr("Read changes on all sheets"));
- writeChangesButton = new JToggleButton(tr("Write changes on all sheets"));
- readAllButton = new JToggleButton(tr("Read all sheets"));
- writeAllButton = new JToggleButton(tr("Write all sheets"));
+ _rosterEntry->setOpen(true);
 
 
- QTimer::singleShot(1,this, SLOT(installComponents()));
+
+ //QTimer::singleShot(1,this, SLOT(installComponents()));
+ installComponents();
 
  if (_rosterEntry->getFileName() != NULL)
  {
@@ -123,13 +112,57 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
  // mark file state as consistent
  variableModel->setFileDirty(false);
 
-// // if the Reset Table was used lets enable the menu item
-// if (!_opsMode) {
-//     if (resetModel->rowCount(QModelIndex()) > 0) {
-//         resetMenu->setEnabled(true);
-//     }
-// }
+ // if the Reset Table was used lets enable the menu item
+ if (!_opsMode) {
+     if (resetModel->rowCount(QModelIndex()) > 0) {
+         resetMenu->setEnabled(true);
+     }
+ }
  connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tabWidget_currentChanged(int)));
+
+ // set the programming mode
+ if (pProg != nullptr) {
+     if (InstanceManager::getOptionalDefault("AddressedProgrammerManager")/*.isPresent()*/
+             || InstanceManager::getOptionalDefault("GlobalProgrammerManager")/*.isPresent()*/) {
+         // go through in preference order, trying to find a mode
+         // that exists in both the programmer and decoder.
+         // First, get attributes. If not present, assume that
+         // all modes are usable
+         QDomElement programming = QDomElement();
+         if (!decoderRoot.isNull()
+                 && (programming = decoderRoot.firstChildElement("decoder").firstChildElement("programming")) != QDomElement()) {
+
+             // add a verify-write facade if configured
+             Programmer* pf = mProgrammer;
+             if (getDoConfirmRead()) {
+                 pf = new VerifyWriteProgrammerFacade(pf);
+                 log->debug(tr("adding VerifyWriteProgrammerFacade, new programmer is %1").arg(pf->self()->metaObject()->className()));
+             }
+             // add any facades defined in the decoder file
+             pf = ProgrammerFacadeSelector
+                     ::loadFacadeElements(programming, pf, getCanCacheDefault(), pProg);
+             log->debug(tr("added any other FacadeElements, new programmer is %1").arg(pf->self()->metaObject()->className()));
+             mProgrammer = pf;
+             cvModel->setProgrammer(pf);
+             resetModel->setProgrammer(pf);
+             log->debug(tr("Found programmer: %1").arg(cvModel->getProgrammer()->self()->metaObject()->className()));
+
+         }
+
+         // done after setting facades in case new possibilities appear
+         if (!programming.isNull()) {
+             pickProgrammerMode(programming);
+             // reset the read buttons if the mode changes
+             enableReadButtons();
+         } else {
+             log->debug("Skipping programmer setup because found no programmer element");
+         }
+
+     } else {
+         log->error("Can't set programming mode, no programmer instance");
+     }
+ }
+
  // and build the GUI
  loadProgrammerFile(pRosterEntry);
 
@@ -155,69 +188,35 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
     // handle include/exclude
     if ( isIncludedFE(decoderPaneList.at(i).toElement(), modelElem, _rosterEntry, "", "") )
     {
-     newPane( pname, decoderPaneList.at(i).toElement(), modelElem, true);  // show even if empty??
+     newPane( pname, decoderPaneList.at(i).toElement(), modelElem, true, false);  // show even if empty??
     }
    }
   }
  }
- // set the programming mode
- if (pProg != NULL)
- {
-  if (((DefaultProgrammerManager*)InstanceManager::getOptionalDefault("AddressedProgrammerManager"))!= NULL
-                      || ((DefaultProgrammerManager*)InstanceManager::getOptionalDefault("GlobalProgrammerManager"))!= NULL)
-  {
-   // go through in preference order, trying to find a mode
-   // that exists in both the programmer and decoder.
-   // First, get attributes. If not present, assume that
-   // all modes are usable
-   QDomElement programming = QDomElement();
-   if (!decoderRoot.isNull()
-     && (programming = decoderRoot.firstChildElement("decoder").firstChildElement("programming"))!= QDomElement())
-   {
-    // add a verify-write facade if configured
-    Programmer* pf = mProgrammer;
-    if (getDoConfirmRead())
-    {
-     pf = new VerifyWriteProgrammerFacade(pf);
-     log->debug(tr("adding VerifyWriteProgrammerFacade, new programmer is %1").arg(pf->self()->metaObject()->className()));
-    }
-    // add any facades defined in the decoder file
-    pf = ProgrammerFacadeSelector::loadFacadeElements(programming, pf, getCanCacheDefault(), pProg);
-    log->debug("new programmer "+QString(pf->self()->metaObject()->className()));
-    mProgrammer = pf;
-    cvModel->setProgrammer(pf);
-    iCvModel->setProgrammer(pf);
-    resetModel->setProgrammer(pf);
-    log->debug("Found programmers: "+QString(cvModel->getProgrammer()->self()->metaObject()->className())+" "+QString(iCvModel->getProgrammer()->self()->metaObject()->className()));
-   }
 
-   if (!programming.isNull()) pickProgrammerMode(programming);
-
-  }
-  else
-  {
-   log->error("Can't set programming mode, no programmer instance");
-  }
- }
+ JPanel* bottom = new JPanel();
+ bottom->setLayout(new QVBoxLayout());//bottom, BoxLayout.Y_AXIS));
+ ((QVBoxLayout*)tempPane->layout())->addWidget(bottom, 0, Qt::AlignBottom);//BorderLayout.SOUTH);
 
  // now that programmer is configured, set the programming GUI
- setProgrammingGui(tempPane);
+ setProgrammingGui(bottom);
 
-// pack();
+ // add the search GUI
+ setSearchGui(bottom);
 
- if (log->isDebugEnabled()) log->debug("PaneProgFrame \""+frameTitle
-                                     +"\" constructed for file "+_rosterEntry->getFileName()
-                                       +", unconstrained size is "+/*super.getPreferredSize()*/QString::number(QMainWindow::size().height())+","+QString::number(QMainWindow::size().width())
-                                     +", constrained to "+/*getPreferredSize());*/QString::number(getPreferredSize().height())+","+QString::number(getPreferredSize().width()));
+ pack();
 
- resetStatus(CvValue::FROMFILE); // ACK reset any CvValues marked as EDITED to FROMFILE.
-
+ if (log->isDebugEnabled()) {  // because size elements take time
+     log->debug(tr("PaneProgFrame \"%1\" constructed for file %2, unconstrained size is %3, constrained to %4").arg(
+             pFrameTitle).arg(_rosterEntry->getFileName()).arg(JmriJFrame::getPreferredSize().height()).arg(getPreferredSize().height()));
+ }
 }
 
 PaneProgFrame::~PaneProgFrame()
 {
  delete ui;
 }
+
 /**
  * Front end to DecoderFile.isIncluded()
  * <ul>
@@ -267,13 +266,13 @@ PaneProgFrame::~PaneProgFrame()
  QString decoderFamily = r->getDecoderFamily();
  if (log->isDebugEnabled()) log->debug("selected loco uses decoder "+decoderFamily+" "+decoderModel);
  // locate a decoder like that.
- QList<DecoderFile*>* l = DecoderIndexFile::instance()->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
+ QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
  if (log->isDebugEnabled()) log->debug("found "+QString::number(l->size())+" matches");
  if (l->size() == 0)
  {
   log->debug("Loco uses "+decoderFamily+" "+decoderModel+" decoder, but no such decoder defined");
   // fall back to use just the decoder name, not family
-  l = DecoderIndexFile::instance()->matchingDecoderList("", "", "", "", "", decoderModel);
+  l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", "", "", "", decoderModel);
   if (log->isDebugEnabled()) log->debug("found "+QString::number(l->size())+" matches without family key");
  }
  if (l->size() > 0)
@@ -315,23 +314,23 @@ PaneProgFrame::~PaneProgFrame()
 
  // find a mode to set it to
 
- QList<ProgrammingMode*> modes = mProgrammer->getSupportedModes();
- if (modes.contains(ProgrammingMode::DIRECTBITMODE)&&directbit)
+ QList<QString> modes = mProgrammer->getSupportedModes();
+ if (modes.contains("DIRECTBITMODE")&&directbit)
  {
   mProgrammer->setMode(ProgrammingMode::DIRECTBITMODE);
   log->debug("Set to DIRECTBITMODE");
  }
- else if (modes.contains(ProgrammingMode::DIRECTBYTEMODE)&&directbyte)
+ else if (modes.contains("DIRECTBYTEMODE")&&directbyte)
  {
   mProgrammer->setMode(ProgrammingMode::DIRECTBYTEMODE);
   log->debug("Set to DIRECTBYTEMODE");
  }
- else if (modes.contains(ProgrammingMode::PAGEMODE)&&paged)
+ else if (modes.contains("PAGEMODE")&&paged)
  {
   mProgrammer->setMode(ProgrammingMode::PAGEMODE);
   log->debug("Set to PAGEMODE");
  }
- else if (modes.contains(ProgrammingMode::REGISTERMODE)&&_register)
+ else if (modes.contains("REGISTERMODE")&&_register)
  {
   mProgrammer->setMode(ProgrammingMode::REGISTERMODE);
   log->debug("Set to REGISTERMODE");
@@ -364,7 +363,7 @@ PaneProgFrame::~PaneProgFrame()
  {
   log->error("Exception while loading decoder XML file: "+df->getFileName(), e);
  }
-
+#if 0
  if(XmlInclude::scanForInclude(decoderRoot))
  {
   int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load decoder file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
@@ -432,6 +431,85 @@ PaneProgFrame::~PaneProgFrame()
  // save the pointer to the model element
  modelElem = df->getModelElement();
  setCursor(Qt::ArrowCursor);
+#else
+ if(XmlInclude::scanForInclude(decoderRoot))
+ {
+  int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load decoder file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
+  if(ret == JOptionPane::CANCEL_OPTION)
+   return;
+  XInclude* xinclude = new XInclude();
+  File* f;
+  QStringList slist = QStringList() << FileUtil::getUserFilesPath() << FileUtil::getProgramPath()+ "xml";
+  QUrl url = QUrl(FileUtil::findURL(DecoderFile::fileLocation+df->getFileName(),slist));
+  if(ret == JOptionPane::YES_OPTION)
+  {
+   xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), this);
+  }
+   else
+  {
+   QTemporaryDir dir;
+   xinclude->copyXml(&url, f = new File(dir.path()+df->getFileName()),this);
+  }
+  decoderRoot = df->rootFromFile(f);
+ }
+
+ // load variables from decoder tree
+ df->getProductID();
+ df->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel);
+
+ // load reset from decoder tree
+ df->loadResetModel(decoderRoot.firstChildElement("decoder"), resetModel);
+
+ // load function names from family
+ re->loadFunctions(decoderRoot.firstChildElement("decoder").firstChildElement("family").firstChildElement("functionlabels"), "family");
+
+ // load sound names from family
+ re->loadSounds(decoderRoot.firstChildElement("decoder").firstChildElement("family").firstChildElement("soundlabels"), "family");
+
+ // get the showEmptyPanes attribute, if yes/no update our state
+ if (!decoderRoot.attribute("showEmptyPanes").isNull()) {
+     log->debug(tr("Found in decoder showEmptyPanes=%1").arg(decoderRoot.attribute("showEmptyPanes")));
+     decoderShowEmptyPanes = decoderRoot.attribute("showEmptyPanes");
+ } else {
+     decoderShowEmptyPanes = "";
+ }
+ log->debug(tr("decoderShowEmptyPanes=%1").arg(decoderShowEmptyPanes));
+
+ // get the allowResetDefaults attribute, if yes/no update our state
+ if (!decoderRoot.attribute("allowResetDefaults").isNull()) {
+     log->debug(tr("Found in decoder allowResetDefaults=%1").arg(decoderRoot.attribute("allowResetDefaults")));
+     decoderAllowResetDefaults = decoderRoot.attribute("allowResetDefaults");
+ } else {
+     decoderAllowResetDefaults = "yes";
+ }
+ log->debug(tr("decoderAllowResetDefaults=%1").arg(decoderAllowResetDefaults));
+
+ // save the pointer to the model element
+ modelElem = df->getModelElement();
+
+ // load function names from model
+ re->loadFunctions(modelElem.firstChildElement("functionlabels"), "model");
+
+ // load sound names from model
+ re->loadSounds(modelElem.firstChildElement("soundlabels"), "model");
+
+ // load maxFnNum from model
+ QString a;
+ if ((a = modelElem.attribute("maxFnNum")) != "") {
+     maxFnNumOld = re->getMaxFnNum();
+     maxFnNumNew = a;
+     if (maxFnNumOld != (maxFnNumNew)) {
+         if (re->getId()!=(tr("<new loco>"))) {
+             maxFnNumDirty = true;
+             log->info(tr("maxFnNum for \"%1\" changed from %2 to %3").arg(re->getId()).arg(maxFnNumOld).arg(maxFnNumNew));
+             QString message = tr("Family \"%1\" Model \"%2\" now supports up to F%3. Please Save to update this Roster Entry .").arg(
+                     re->getDecoderFamily()).arg(re->getDecoderModel()).arg(maxFnNumNew);
+             progStatus->setText(message);
+         }
+         re->setMaxFnNum(maxFnNumNew);
+     }
+ }
+#endif
 }
 
 /*protected*/ void PaneProgFrame::loadProgrammerFile(RosterEntry* r)
@@ -451,7 +529,8 @@ PaneProgFrame::~PaneProgFrame()
    programmerRoot = pf->rootFromName(FileUtil::findURL(filename, slist).path());
   }
   statusBar()->showMessage(tr("reading programmer %1").arg(pf->getPathname()));
-  // get the showEmptyPanes attribute, if yes/no update our state
+
+//__________________________________________________________
   if(XmlInclude::scanForInclude(programmerRoot))
   {
    int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load programmer file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
@@ -460,9 +539,11 @@ PaneProgFrame::~PaneProgFrame()
    XInclude* xinclude = new XInclude();
    QUrl url = FileUtil::findURL(filename);
    File* f;
+   QFileInfo info(filename);
    if(ret == JOptionPane::YES_OPTION)
    {
-    xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ filename), this);
+    xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ File::separator + "programmers" + File::separator +
+                                        info.fileName()), this);
    }
     else
    {
@@ -472,7 +553,9 @@ PaneProgFrame::~PaneProgFrame()
    programmerRoot = pf->rootFromFile(f);
 
   }
+// _____________________________________________________________
 
+  // get the showEmptyPanes attribute, if yes/no update our state
   if (programmerRoot.firstChildElement("programmer").attribute("showEmptyPanes") != "")
   {
    if (log->isDebugEnabled()) log->debug("Found in programmer "+programmerRoot.firstChildElement("programmer").attribute("showEmptyPanes"));
@@ -690,22 +773,72 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
 //   base.replaceChild(frag, e2);
 //  }
 // }
-
- QDomNodeList paneList = base.elementsByTagName("pane");
- if (log->isDebugEnabled()) log->debug("will process "+QString::number(paneList.size())+" pane definitions");
- for (int i=0; i<paneList.size(); i++)
+#if 0
+ QDomNodeList progPaneList = base.elementsByTagName("pane");
+ if (log->isDebugEnabled()) log->debug("will process "+QString::number(progPaneList.size())+" pane definitions");
+ for (int i=0; i<progPaneList.size(); i++)
  {
   // load each pane
   //QString name = LocaleSelector.attribute(paneList.get(i), "name");
-  QString name = paneList.at(i).toElement().attribute("name");
+  bool isProgPane = true;
+  QString name = progPaneList.at(i).toElement().attribute("name");
   if(name == "")
   {
-   QDomElement nameElement = paneList.at(i).toElement().firstChildElement("name");
+   QDomElement nameElement = progPaneList.at(i).toElement().firstChildElement("name");
    if(!nameElement.isNull())
     name = nameElement.text();
   }
-  newPane( name, paneList.at(i).toElement(), modelElem, false);  // dont force showing if empty
+  newPane( name, progPaneList.at(i).toElement(), modelElem, false, isProgPane);  // dont force showing if empty
  }
+#else // TODO:
+ // for all "pane" elements in the programmer
+ QDomNodeList progPaneList = base.elementsByTagName("pane");
+ if (log->isDebugEnabled()) {
+     log->debug(tr("will process %1 pane definitions").arg(progPaneList.size()));
+ }
+ for (int i = 0; i < progPaneList.size(); i++) {
+     // load each programmer pane
+     QDomElement temp = progPaneList.at(i).toElement();
+     QDomNodeList pnames = temp.elementsByTagName("name");
+     bool isProgPane = true;
+     if ((pnames.size() > 0) && (!decoderPaneList.isEmpty()) && (decoderPaneList.size() > 0)) {
+         QString namePrimary = (pnames.at(0).toElement()).text(); // get non-localised name
+
+         // check if there is a same-name pane in decoder file
+         for (int j = 0; j < decoderPaneList.size(); j++) {
+             QDomNodeList dnames = decoderPaneList.at(j).toElement().elementsByTagName("name");
+             if (dnames.size() > 0) {
+                 QString namePrimaryDecoder = (dnames.at(0).toElement()).text(); // get non-localised name
+                 if (namePrimary == (namePrimaryDecoder)) {
+                     // replace programmer pane with same-name decoder pane
+                     temp = decoderPaneList.at(j).toElement();
+//                     decoderPaneList.remove(j);
+                     QDomNode node = decoderPaneList.at(j);
+                     node.parentNode().removeChild(node);
+                     isProgPane = false;
+                 }
+             }
+         }
+     }
+     //QString name = LocaleSelector.attribute(temp, "name");
+     //QString name = progPaneList.at(i).toElement().attribute("name");
+     QString name = pnames.at(0).toElement().text();
+
+//     if(name == "Basic Speed Control")
+//      continue;
+//     if(name == "Speed Table")
+//      continue;
+     if(name == "Sound")
+      continue;
+     if(name == "Sound Levels")
+      continue;
+
+     // handle include/exclude
+     if (isIncludedFE(temp, modelElem, _rosterEntry, "", "")) {
+         newPane(name, temp, modelElem, false, isProgPane);  // don't force showing if empty
+     }
+ }
+#endif
 }
 
 /**
@@ -722,15 +855,8 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
                                  +" but didn't find the CV object");
   else cv->setValue(defaultCvValues.at(i));
  }
- n = defaultIndexedCvValues.count();
- for (int i=0; i<n; i++)
- {
-  CvValue* cv = iCvModel->getCvByRow(i);
-  if (cv == NULL) log->warn("Trying to set default in indexed CV from row "+QString::number(i)
-                                 +" but didn't find the CV object");
-  else cv->setValue(defaultIndexedCvValues.at(i));
- }
 }
+
 /**
  * Save all CV values.  These stored values are used by
  * resetToDefaults
@@ -747,16 +873,8 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
   defaultCvValues.replace(i, cv->getValue());
   defaultCvNumbers.replace(i, cv->number());
  }
-
- n = iCvModel->rowCount(QModelIndex());
- defaultIndexedCvValues = QVector<int>(n);
-
- for (int i=0; i<n; i++)
- {
-  CvValue* cv = iCvModel->getCvByRow(i);
-  defaultIndexedCvValues[i] = cv->getValue();
- }
 }
+
 /*protected*/ QWidget* PaneProgFrame::makeInfoPane(RosterEntry* r)
 {
  // create the identification pane (not configured by programmer file now; maybe later?
@@ -839,8 +957,8 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
 
     // add the store button
     JButton store = new JButton(rbt.getString("ButtonSave"));
-    store.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-    store.addActionListener( new ActionListener() {
+    store->setAlignmentX(JLabel.CENTER_ALIGNMENT);
+    store->addActionListener( new ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 storeFile();
             }
@@ -864,7 +982,7 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
     QPushButton* store = new QPushButton(tr("Save to Roster"));
     frameLayout->addWidget(store);
     frameLayout->setAlignment(store, Qt::AlignHCenter);
-//    store.addActionListener( new ActionListener() {
+//    store->addActionListener( new ActionListener() {
 //            public void actionPerformed(java.awt.event.ActionEvent e) {
 //                storeFile();
 //            }
@@ -896,8 +1014,8 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
 
     // add the store button
     JButton store = new JButton(rbt.getString("ButtonSave"));
-    store.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-    store.addActionListener(new ActionListener() {
+    store->setAlignmentX(JLabel.CENTER_ALIGNMENT);
+    store->addActionListener(new ActionListener() {
 
         public void actionPerformed(java.awt.event.ActionEvent e) {
             storeFile();
@@ -924,7 +1042,7 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
     QPushButton* store = new QPushButton(tr("Save to Roster"));
     frameLayout->addWidget(store);
     frameLayout->setAlignment(store, Qt::AlignHCenter);
-//    store..addActionListener(new ActionListener() {
+//    store->.addActionListener(new ActionListener() {
 
 //        public void actionPerformed(java.awt.event.ActionEvent e) {
 //            storeFile();
@@ -940,7 +1058,6 @@ void PaneProgFrame::on_btnStore_clicked()
 
 /*protected*/ void PaneProgFrame::installComponents()
 {
-
  // create ShutDownTasks
  if (InstanceManager::getNullableDefault("ShutDownManager") != NULL)
  {
@@ -1026,10 +1143,11 @@ void PaneProgFrame::on_btnStore_clicked()
 
     // to control size, we need to insert a single
     // JPanel, then have it laid out with BoxLayout
-//    JPanel pane = new JPanel();
+    JPanel* pane = new JPanel();
+    tempPane = pane;
 
     // general GUI config
-//    pane.setLayout(new BorderLayout());
+    pane->setLayout(new QVBoxLayout());
 
     // configure GUI elements
 #endif
@@ -1151,7 +1269,7 @@ void PaneProgFrame::on_btnStore_clicked()
  addHelp();
  //setCursor(Qt::ArrowCursor);
 }
-/*public*/ QList<QWidget*> PaneProgFrame::getPaneList(){
+/*public*/ QList<JPanel*> PaneProgFrame::getPaneList(){
     return paneList;
 }
 
@@ -1233,16 +1351,17 @@ void PaneProgFrame::updateDccAddress()
   _rPane->setDccAddressLong(longMode);
  }
 }
-/*public*/ void PaneProgFrame::newPane(QString name, QDomElement pane, QDomElement modelElem, bool enableEmpty)
+/*public*/ void PaneProgFrame::newPane(QString name, QDomElement pane, QDomElement modelElem, bool enableEmpty, bool programmerPane)
 {
  if (log->isDebugEnabled()) log->debug(tr("newPane '")+name+tr("' with enableEmpty ")+(enableEmpty?"true":"false")+" getShowEmptyPanes() "+(getShowEmptyPanes()?"true":"false"));
  // create a panel to hold columns
- PaneProgPane* p = new PaneProgPane((PaneContainer*)this, name, pane, cvModel, /*iCvModel,*/ variableModel, modelElem, _rosterEntry);
-//    p->setOpaque(true);
+ PaneProgPane* p = new PaneProgPane((PaneContainer*)this, name, pane, cvModel, /*iCvModel,*/ variableModel, modelElem, _rosterEntry, programmerPane);
+ //    p->setOpaque(true);
  // how to handle the tab depends on whether it has contents and option setting
- if ( enableEmpty || (p->cvList->size()!=0) || (p->varList->size()!=0) || (p->indexedCvList->size()!=0))
+ if ( enableEmpty || !p->cvList->isEmpty() || !p->varList->isEmpty())
  {
-  ui->tabWidget->addTab(p, name);  // always add if not empty
+  int index = ui->tabWidget->addTab(p, name);  // always add if not empty
+  ui->tabWidget->setTabToolTip(index, p->toolTip());
  }
  else if (getShowEmptyPanes())
  {
@@ -1707,7 +1826,6 @@ bool PaneProgFrame::doWrite()
 //    _rMPane.dispose();
  variableModel->dispose();
  cvModel->dispose();
- iCvModel->dispose();
  if(_rosterEntry!=NULL)
  {
   _rosterEntry->setOpen(false);
@@ -1716,7 +1834,6 @@ bool PaneProgFrame::doWrite()
  // remove references to everything we remember
  progStatus = NULL;
  cvModel = NULL;
- iCvModel = NULL;
  variableModel = NULL;
  _rosterEntry = NULL;
  _rPane = NULL;
@@ -1921,6 +2038,39 @@ void PaneProgFrame::setProgrammingGui(QWidget* pane)
   ((QVBoxLayout*)pane->layout())->addWidget(bottom,0, Qt::AlignBottom);
  }
 }
+
+// ================== Search section ==================
+
+// create and add the Search GUI
+void PaneProgFrame::setSearchGui(JPanel* bottom) {
+    // search field
+    searchBar = new SearchBar(searchForwardTask, searchBackwardTask, searchDoneTask);
+    searchBar->setVisible(false); // start not visible
+    searchBar->configureKeyModifiers(this);
+    bottom->layout()->addWidget(searchBar);
+}
+
+
+
+// Load the array of search targets
+/*protected*/ void PaneProgFrame::loadSearchTargets() {
+    if (searchTargetList != nullptr) return;
+
+    searchTargetList = new QList<SearchPair*>();
+#if 0
+    for (JPanel* p : getPaneList()) {
+        for (Component* c : p->getComponents()) {
+            loadJPanel(c, p);
+        }
+    }
+
+    // add the panes themselves
+    for (JPanel* tab : getPaneList()) {
+        searchTargetList->append( new SearchPair( nullptr, tab ));
+    }
+#endif
+}
+
 /**
  * Option to control appearance of CV numbers in tool tips
  */
@@ -1960,3 +2110,5 @@ void PaneProgFrame::setProgrammingGui(QWidget* pane)
 {
  return "jmri.jmrit.symbolicprog.tabbedframe.PaneProgFrame";
 }
+
+/*private*/ /*final*/ /*static*/ Logger* PaneProgFrame::log = LoggerFactory::getLogger("PaneProgFrame");

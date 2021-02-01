@@ -52,13 +52,13 @@ LnProgrammerManager::LnProgrammerManager(LocoNetSystemConnectionMemo* memo)
  * Types implemented here.
  */
 // @Override
-/*public*/ QList<ProgrammingMode*> LnProgrammerManager::getDefaultModes()
+/*public*/ QList<QString> LnProgrammerManager::getDefaultModes()
 {
- QList<ProgrammingMode*> ret =  QList<ProgrammingMode*>();
- ret.append(ProgrammingMode::OPSBYTEMODE);
- ret.append(LOCONETOPSBOARD);
- ret.append(LOCONETSV2MODE);
- ret.append(LOCONETSV1MODE); // the show in interface in order listed here
+ QList<QString> ret =  QList<QString>();
+ ret.append("OPSBYTEMODE");
+ ret.append("LOCONETOPSBOARD");
+ ret.append("LOCONETSV2MODE");
+ ret.append("LOCONETSV1MODE"); // the show in interface in order listed here
  return ret;
 }
 

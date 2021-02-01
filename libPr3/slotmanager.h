@@ -62,6 +62,37 @@ class LIBPR3SHARED_EXPORT SlotManager : public  AbstractProgrammer, public LocoN
  Q_OBJECT
  Q_INTERFACES(LocoNetListener CommandStation)
 public:
+    /**
+     * Time to wait after programming operation complete on LocoNet
+     * before reporting completion and hence starting next operation
+     */
+    static /*public*/ int postProgDelay;// = 100; // this is public to allow changes via script
+
+    /*public*/ int slotScanInterval = 50; // this is public to allow changes via script and tests
+     /**
+     * slotMapEntry - a from to pair of slot numbers defining a valid range of loco/system slots
+     * TODO add slottype, eg systemslot, std slot, expanded slot etc
+     * @author sg
+     *
+     */
+    /*static*/ /*public*/ class SlotMapEntry {
+     public:
+        /*public*/ SlotMapEntry(int from, int to) {
+            fromSlot = from;
+            toSlot = to;
+        }
+        int fromSlot;
+        int toSlot;
+        /*public*/ int getFrom() {
+            return fromSlot;
+        }
+        /*public*/ int getTo() {
+            return toSlot;
+        }
+    };
+    /*public*/ QList<SlotMapEntry*> slotMap = QList<SlotMapEntry*>();
+
+
     SlotManager(LnTrafficController* tc, QObject *parent = nullptr);
     /**
      * Send a DCC packet to the rails. This implements the CommandStation interface.
@@ -183,16 +214,12 @@ public:
      */
     int findSlotFromMessage(LocoNetMessage* m);
     void forwardMessageToSlot(LocoNetMessage* m, int i); // protected??
+
     /**
-     * Set the mode of the Programmer implementation.
-     * @param mode A mode constant from the Programmer interface
+     * a Map of the CS slots.
      */
-//    void setMode(ProgrammerMode* mode);
-    /**
-     * Get the current mode of the Programmer implementation.
-     * @return A mode constant from the Programmer interface
-     */
-//    virtual ProgrammerMode* getMode();
+    /*synchronized*/ /*public*/ void update(QList<SlotMapEntry*> inputSlotMap, int interval);
+
     /**
      * Start the process of checking each slot for contents.
      * <P>
@@ -211,7 +238,7 @@ public:
      */
     int getInUseCount();
     void writeCVOpsMode(QString CVname, int val, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException);
-    void writeCV(int CV, int val, ProgListener* p) throw(ProgrammerException);
+    void writeCV(QString cvNum, int val, ProgListener* p) throw(ProgrammerException);
     void doWrite(int CV, int val, ProgListener* p, int pcmd) throw(ProgrammerException);
     void confirmCVOpsMode(int CV, int val, ProgListener* p,
                           int addr, bool longAddr) throw(ProgrammerException);
@@ -231,15 +258,14 @@ public:
     QString getUserName();
     QString getSystemPrefix();
     LocoNetSystemConnectionMemo* getSystemConnectionMemo();
-    /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
     /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
-    /*public*/ QList<ProgrammingMode*> getSupportedModes();
+    /*public*/ QList<QString> getSupportedModes();
     /*public*/ Programmer::WriteConfirmMode getWriteConfirmMode(QString addr);
     /*public*/ void setTranspondingAvailable(bool val);
     /*public*/ bool getTranspondingAvailable();
 
-    /*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status);
+    ///*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status);
     /*public*/ QObject* self() {return (QObject*)this;}
     /*public*/ void dispose();
 
@@ -254,8 +280,8 @@ public slots:
 
 private:
  int LONG_TIMEOUT;
- QTimer* staleSlotCheckTimer;
- LnTrafficController* tc;
+ QTimer* staleSlotCheckTimer = nullptr;
+ LnTrafficController* tc = nullptr;
  Logger* log;
  QVector<LocoNetSlot*> _slots;
  QMutex mutex;
@@ -271,50 +297,45 @@ private:
   * This is needed to know whether a SLOT DATA READ is a response to
   * a REQ LOCO ADDR, for example.
   */
- int lastMessage;
+ int lastMessage =-1;
 /**
  * Remember whether the attached command station
  * needs a sequence sent after programming.
  * The default operation is implemented in doEndOfProgramming
  * and turns power back on by sending a GPON message.
  */
-/*private*/ bool mProgEndSequence;// = false;
+/*private*/ bool mProgEndSequence = false;
  /**
   * Remember whether the attached command station can read from
   * Decoders.
   */
- bool mCanRead;
+ bool mCanRead = true;
 
- LocoNetMessage* immedPacket;
- LocoNetThrottledTransmitter* throttledTransmitter;
- bool mTurnoutNoRetry;
+ LocoNetMessage* immedPacket = nullptr;
+ LocoNetThrottledTransmitter* throttledTransmitter = nullptr;
+ bool mTurnoutNoRetry = false;
  /**
   * Remember whether the attached command station has powered
   * off the main track after programming
   */
- bool mProgPowersOff;
- int progState;
+ bool mProgPowersOff = false;
+ int progState = 0;
  // 1 is commandPending
  // 2 is commandExecuting
  // 0 is notProgramming
- bool _progRead;
- bool _progConfirm;
+ bool _progRead = false;
+ bool _progConfirm = false;
  int _confirmVal;
- bool mServiceMode;
+ bool mServiceMode = true;
  int hopsa; // high address for CV read/write
  int lopsa; // low address for CV read/write
- ProgListener* _usingProgrammer;
- QTimer* mPowerTimer;
+ ProgListener* _usingProgrammer = nullptr;
+ QTimer* mPowerTimer= nullptr;
  LocoNetSystemConnectionMemo* adaptermemo = nullptr;
  ProgrammingMode* csOpSwProgrammingMode;// = new ProgrammingMode(
 //             "LOCONETCSOPSWMODE",
 //             Bundle.getMessage("LOCONETCSOPSWMODE"));
- CsOpSwAccess* csOpSwAccessor;
- /**
-  * Time to wait after programming operation complete on LocoNet
-  * before reporting completion and hence starting next operation
-  */
- int postProgDelay;// = 100;
+ CsOpSwAccess* csOpSwAccessor = nullptr;
  bool transpondingAvailable = false;
 
 
@@ -392,7 +413,7 @@ protected:
   * power.  This is only needed in service mode.
   */
  /*protected*/ void restartEndOfProgrammingTimer();
- int nextReadSlot;
+ int nextReadSlot = 0;
  // internal method to remember who's using the programmer
  void useProgrammer(ProgListener* p); // throws jmri.ProgrammerException {
 
@@ -409,7 +430,7 @@ protected:
  /*final*/ static /*protected*/ int NUM_SLOTS;// = 128;
 
 protected slots:
- void readNextSlot();
+ void readNextSlot(int toSlot, int interval);
  void On_notifyProgListenerEnd();
  /*synchronized*/ /*protected*/ void timeout();
 
@@ -417,6 +438,8 @@ protected slots:
  friend class LnDeferProgrammer;
  friend class LnPredefinedMeters;
 };
+
+
 
 class SendProgrammingReplyDelay : public QObject
 {

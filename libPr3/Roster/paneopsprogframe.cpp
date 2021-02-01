@@ -21,10 +21,10 @@
  * presently don't want a selection GUI to be
  * present when in ops mode.
  */
-/*protected*/ QWidget* PaneOpsProgFrame::getModePane()
+/*protected*/ JPanel* PaneOpsProgFrame::getModePane()
 {
  if (modePane == NULL)
-  modePane = new QWidget();
+  modePane = new JPanel();
  return modePane;
 }
 

@@ -106,7 +106,7 @@ QString AbstractProgrammer::decodeErrorCode(int code)
 
 //@Override
 /*public*/ /*final*/ void AbstractProgrammer::setMode(ProgrammingMode* m) {
- QList<ProgrammingMode*> validModes = getSupportedModes();
+ QList<QString> validModes = getSupportedModes();
 
  if (m == nullptr) {
      if (validModes.size()>0) {
@@ -118,7 +118,7 @@ QString AbstractProgrammer::decodeErrorCode(int code)
      }
  }
 
- if (validModes.contains(m)) {
+ if (validModes.contains(m->getStandardName())) {
      ProgrammingMode* oldMode = mode;
      mode = m;
      notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(oldMode), VPtr<ProgrammingMode>::asQVariant(m));
@@ -127,11 +127,12 @@ QString AbstractProgrammer::decodeErrorCode(int code)
      throw  IllegalArgumentException("Invalid requested mode: " + m->getStandardName());
  }
 }
+
 /*public*/ /*final*/ ProgrammingMode* AbstractProgrammer::getMode() { return mode; }
 
 //@Override
-/*abstract*/ /*public*/ QList<ProgrammingMode*> AbstractProgrammer::getSupportedModes()
-{ return QList<ProgrammingMode*>();}
+/*abstract*/ /*public*/ QList<QString> AbstractProgrammer::getSupportedModes()
+{ return QList<QString>();}
 
 /**
  * Basic implementation.
