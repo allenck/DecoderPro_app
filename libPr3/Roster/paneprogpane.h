@@ -7,7 +7,7 @@
 #include <QHBoxLayout>
 #include "logger.h"
 #include "jtogglebutton.h"
-#include <QGridLayout>
+#include "gridbaglayout.h"
 #include <QScrollArea>
 //#include "panecontainer.h"
 #include "propertychangesupport.h"
@@ -69,10 +69,10 @@ public:
     /*public*/ void replyWhileProgrammingCV() ;
     void restartProgramming();
     //@SuppressWarnings("unchecked")
-    /*public*/ virtual QWidget *newColumn(QDomElement element, bool showStdName, QDomElement modelElem);
-    /*public*/ QWidget* newRow(QDomElement element, bool showStdName, QDomElement modelElem);
-    /*public*/ virtual void newVariable( QDomElement var, QWidget* col,
-                             QGridLayout* g, GridBagConstraints* cs, bool showStdName);
+    /*public*/ virtual JPanel *newColumn(QDomElement element, bool showStdName, QDomElement modelElem);
+    /*public*/ JPanel* newRow(QDomElement element, bool showStdName, QDomElement modelElem);
+    /*public*/ virtual void newVariable( QDomElement var, JPanel* col,
+                             GridBagLayout* g, GridBagConstraints* cs, bool showStdName);
     /*public*/ QWidget* getRepresentation(QString name, QDomElement var);
     QString modifyToolTipText(QString start, VariableValue* variable);
     QWidget* getRep(int i, QString format) ;
@@ -81,8 +81,8 @@ public:
 //    /*public*/ void printPane(HardcopyWriter w);
     void addPropertyChangeListener(PropertyChangeListener* l);
     void removePropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ QWidget* newGrid(QDomElement  element, bool showStdName, QDomElement  modelElem);
-    /*public*/ QWidget* newGridItem(QDomElement  element, bool showStdName, QDomElement  modelElem, GridGlobals* globs);
+    /*public*/ JPanel *newGrid(QDomElement  element, bool showStdName, QDomElement  modelElem);
+    /*public*/ JPanel *newGridItem(QDomElement  element, bool showStdName, QDomElement  modelElem, GridGlobals* globs);
     /*public*/ void printPane(HardcopyWriter* w);
 
 
@@ -179,13 +179,13 @@ protected:
     int indexedCvListIndex;
     /*protected*/ void setBusy(bool busy);
     /*protected*/ void stopProgramming();
-    /*protected*/ QWidget* newGroup(QDomElement  element, bool showStdName, QDomElement  modelElem);
-    /*protected*/ void newGridGroup(QDomElement  element, /*final*/ QWidget* c, QGridLayout* g, GridGlobals* globs, bool showStdName, QDomElement  modelElem);
+    /*protected*/ JPanel *newGroup(QDomElement  element, bool showStdName, QDomElement  modelElem);
+    /*protected*/ void newGridGroup(QDomElement  element, /*final*/ JPanel* c, GridBagLayout* g, GridGlobals* globs, bool showStdName, QDomElement  modelElem);
     /*protected*/ RosterEntry* rosterEntry;
-    /*protected*/ void makeLabel(QDomElement e, QWidget* c, QGridLayout* g, GridBagConstraints* cs);
-    /*protected*/ void makeSoundLabel(QDomElement e, QWidget* c, QGridLayout* g, GridBagConstraints* cs);
-    void makeCvTable(GridBagConstraints* cs, QGridLayout* g, QWidget* c);
-    void pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints* cs, QDomElement modelElem);
+    /*protected*/ void makeLabel(QDomElement e, QWidget* c, GridBagLayout *g, GridBagConstraints* cs);
+    /*protected*/ void makeSoundLabel(QDomElement e, QWidget* c, GridBagLayout* g, GridBagConstraints* cs);
+    void makeCvTable(GridBagConstraints* cs, GridBagLayout* g, JPanel *c);
+    void pickFnMapPanel(QWidget* c, GridBagLayout *g, GridBagConstraints* cs, QDomElement modelElem);
     /*protected*/ void firePropertyChange(QString propertyName,
                                           QVariant oldValue, QVariant newValue);
 

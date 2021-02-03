@@ -31,12 +31,13 @@
 
     weightx = 0;
     weighty = 0;
-    anchor = CENTER;
+    anchor = 0;
     fill = NONE;
 
     insets = new Insets(0, 0, 0, 0);
     ipadx = 0;
     ipady = 0;
+    gridx = gridy =0;
 }
 
 /**
@@ -115,14 +116,14 @@ bool GridBagConstraints::isVerticallyResizable() {
 int GridBagConstraints::rowSpan()
 {
     if((fill == BOTH || fill == VERTICAL) && gridheight == REMAINDER)
-     return 0;//-1;
+     return -1;
     if(gridheight <=0) return 1;
     return gridheight;
 }
 int GridBagConstraints::colSpan()
 {
     if((fill == BOTH || fill == HORIZONTAL) && gridwidth == REMAINDER)
-     return 0;//-1;
+     return -1;
     if(gridwidth <=0) return 1;
     return gridwidth;
 }
@@ -148,7 +149,8 @@ Qt::Alignment GridBagConstraints::align()
  case SOUTHEAST:
   return Qt::AlignRight | Qt::AlignBottom;
  case CENTER:
- default:
   return Qt::AlignCenter;
+ default:
+  return Qt::Alignment();
  }
 }

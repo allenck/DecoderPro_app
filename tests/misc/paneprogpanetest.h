@@ -83,7 +83,7 @@ class PaneProgPaneO1 : public PaneProgPane
 
   }
   //@Override
-  /*public*/ QWidget* newColumn(QDomElement e, bool a, QDomElement el) override;
+  /*public*/ JPanel* newColumn(QDomElement e, bool a, QDomElement el) override;
 };
 
 class PaneProgPaneO2 : public PaneProgPane
@@ -102,7 +102,7 @@ class PaneProgPaneO2 : public PaneProgPane
 
   }
   //@Override
-  /*public*/ void newVariable(QDomElement /*e*/, QWidget* /*p*/, QGridLayout* /*g*/,
+  /*public*/ void newVariable(QDomElement /*e*/, JPanel * /*p*/, GridBagLayout* /*g*/,
                               GridBagConstraints* /*c*/, bool /*a*/) override;
 };
 

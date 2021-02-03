@@ -68,9 +68,9 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
 }
 
 
-/*public*/ QWidget *PaneProgPaneO1::newColumn(QDomElement e, bool a, QDomElement el) {
+/*public*/ JPanel *PaneProgPaneO1::newColumn(QDomElement e, bool a, QDomElement el) {
     test->colCount++;
-    return new QWidget();
+    return new JPanel();
 }
 
 // test specifying variables in columns
@@ -108,8 +108,8 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
 }
 
 //@Override
-/*public*/ void PaneProgPaneO2::newVariable(QDomElement /*e*/, QWidget* /*p*/,
-        QGridLayout* /*g*/, GridBagConstraints* /*c*/, bool /*a*/)
+/*public*/ void PaneProgPaneO2::newVariable(QDomElement /*e*/, JPanel* /*p*/,
+        GridBagLayout * /*g*/, GridBagConstraints* /*c*/, bool /*a*/)
 {
     test->varCount++;
 }

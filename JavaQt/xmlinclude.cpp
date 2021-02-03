@@ -62,7 +62,7 @@ QDomDocumentFragment XmlInclude::processInclude(QDomElement e, int level)
   QDomElement e = childNodes.at(i).toElement();
   if(e.tagName() == "xi:include")
    return true;
-  if(scanForInclude(e) == true)
+  if(scanForInclude(e))
    return true;
  }
  return false;

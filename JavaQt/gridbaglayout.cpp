@@ -21,7 +21,7 @@ void GridBagLayout::addWidget(QWidget *widget, GridBagConstraints gb)
   x = ++lastX;
  else
   x = gb.gridx;
- QGridLayout::addWidget(widget, y, x, gb.rowSpan(), gb.colSpan(), gb.align());
+ QGridLayout::addWidget(widget, y, x, gb.rowSpan(), gb.colSpan()/*, gb.align()*/);
 }
 
 void GridBagLayout::columnWidths(QList<int> columns)

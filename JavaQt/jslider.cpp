@@ -9,21 +9,22 @@
 JSlider::JSlider(QWidget *parent) :
     QWidget(parent)
 {
- common();
+ common(Qt::Vertical);
 }
 
-void JSlider::common()
+void JSlider::common(Qt::Orientation orientation)
 {
  if(objectName().isEmpty())
   setObjectName("MySlider");
  resize(55, 600);
+ checkOrientation(orientation);
  tickSpacing = 0;
- orientation = Qt::Vertical;
+ this->orientation = orientation;
  max = 1;
  min = 0;
  isAdjusting = false;
  labelTable = QHash<int,JLabel*>();
- slider = new QSlider();
+ slider = new QSlider(orientation);
  //slider->setMinimumHeight(200);
  verticalLayout_2 = NULL;
  horizontalLayout = NULL;
@@ -66,9 +67,7 @@ void JSlider::common()
  */
 /*public*/ JSlider::JSlider(Qt::Orientation orientation, int min, int max, int value, QWidget* parent) : QWidget(parent)
 {
- common();
-    checkOrientation(orientation);
-    this->orientation = orientation;
+ common(orientation);
     slider->setOrientation((Qt::Orientation)orientation);
     setModel(new DefaultBoundedRangeModel(value, 0, min, max));
     //updateUI();
@@ -110,8 +109,9 @@ void JSlider::common()
  */
 /*public*/ JSlider::JSlider(int min, int max, QWidget* parent) : QWidget(parent)
 {
- common();
+ common(Qt::Horizontal);
  //this(HORIZONTAL, min, max, (min + max) / 2);
+ setOrientation(Qt::Horizontal);
  setMinimum(min);
  sliderModel->setMinimum(min);
  setMaximum(max);
@@ -125,9 +125,8 @@ void JSlider::common()
  */
 /*public*/ JSlider::JSlider(BoundedRangeModel* brm, QWidget* parent) : QWidget(parent)
 {
- common();
-    this->orientation = Qt::Horizontal;
-    setOrientation(Qt::Horizontal);
+ common(Qt::Horizontal);
+    //this->orientation = Qt::Horizontal;
     setModel(brm);
     setMaximum(brm->getMaximum());
     setMinimum(brm->getMinimum());
@@ -303,7 +302,7 @@ void JSlider::layoutWidget()
  //slider = new QSlider(Qt::Vertical, widget);
  slider->setParent(widget);
  slider->setObjectName("slider");
- slider->setOrientation(Qt::Vertical);
+ //slider->setOrientation(Qt::Vertical);
  slider->setTickPosition(QSlider::TicksBothSides);
  //slider-> resize(55, 350);
 // slider->setMaximumHeight(450);

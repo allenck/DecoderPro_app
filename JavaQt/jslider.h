@@ -71,7 +71,7 @@ private:
     int val;
     bool bPaintLabels;
     bool bPaintTicks;
-    void common();
+    void common(Qt::Orientation orientation);
 
  protected:
     /**

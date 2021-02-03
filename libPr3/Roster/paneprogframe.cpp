@@ -358,80 +358,11 @@ PaneProgFrame::~PaneProgFrame()
    //decoderRoot = df->rootFromName(XmlFile::xmlDir()+DecoderFile::fileLocation+df->getFilename());
    decoderRoot = df->rootFromName(FileUtil::findURL(DecoderFile::fileLocation+ df->getFileName(),slist).path());
    }
-  }
+ }
  catch (Exception e)
  {
   log->error("Exception while loading decoder XML file: "+df->getFileName(), e);
  }
-#if 0
- if(XmlInclude::scanForInclude(decoderRoot))
- {
-  int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load decoder file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
-  if(ret == JOptionPane::CANCEL_OPTION)
-   return;
-  XInclude* xinclude = new XInclude();
-  File* f;
-  QStringList slist = QStringList() << FileUtil::getUserFilesPath() << FileUtil::getProgramPath()+ "xml";
-  QUrl url = QUrl(FileUtil::findURL(DecoderFile::fileLocation+df->getFileName(),slist));
-  if(ret == JOptionPane::YES_OPTION)
-  {
-   xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ DecoderFile::fileLocation+ df->getFileName()), this);
-  }
-   else
-  {
-   QTemporaryDir dir;
-   xinclude->copyXml(&url, f = new File(dir.path()+df->getFileName()),this);
-  }
-  decoderRoot = df->rootFromFile(f);
- }
-
- statusBar()->showMessage(tr("reading decoder file %1").arg(df->getFileName()));
- // load variables from decoder tree
- df->getProductID();
- setCursor(Qt::WaitCursor);
-// QDomNodeList nl = decoderRoot.childNodes();
-// for(int i = 0; i < nl.count(); i++)
-// {
-//  QDomElement e2 = nl.at(i).toElement();
-//  if(e2.tagName() == "xi:include")
-//  {
-//   QString href= e2.attribute("href");
-//   qDebug() << e2.tagName() << " href= " << href;
-//   QDomDocumentFragment frag = XmlInclude::processInclude(e2);
-
-//   decoderRoot.replaceChild(frag, e2);
-//  }
-// }
- df->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel);
-
- // load reset from decoder tree
- if (variableModel->piCv() >= 0) {
-     resetModel->setPiCv(variableModel->piCv());
- }
- if (variableModel->siCv() >= 0) {
-     resetModel->setSiCv(variableModel->siCv());
- }
- df->loadResetModel(decoderRoot.firstChildElement("decoder"), resetModel);
-
- // load function names
- re->loadFunctions(decoderRoot.firstChildElement("decoder").firstChildElement("family").firstChildElement("functionlabels"));
-
- // get the showEmptyPanes attribute, if yes/no update our state
- if (decoderRoot.attribute("showEmptyPanes") != "")
- {
-     if (log->isDebugEnabled()) log->debug("Found in decoder "+decoderRoot.attribute("showEmptyPanes"));
-     if (decoderRoot.attribute("showEmptyPanes")==("yes"))
-         setShowEmptyPanes(true);
-     else if (decoderRoot.attribute("showEmptyPanes")==("no"))
-         setShowEmptyPanes(false);
-     // leave alone for "default" value
-     if (log->isDebugEnabled()) log->debug(tr("result ")+(getShowEmptyPanes()?"true":"false"));
- }
-
- // save the pointer to the model element
- modelElem = df->getModelElement();
- setCursor(Qt::ArrowCursor);
-#else
  if(XmlInclude::scanForInclude(decoderRoot))
  {
   int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load decoder file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
@@ -509,7 +440,6 @@ PaneProgFrame::~PaneProgFrame()
          re->setMaxFnNum(maxFnNumNew);
      }
  }
-#endif
 }
 
 /*protected*/ void PaneProgFrame::loadProgrammerFile(RosterEntry* r)
@@ -520,8 +450,13 @@ PaneProgFrame::~PaneProgFrame()
  XmlFile* pf = new XmlFile();  // XmlFile is abstract
  try
  {
-  if(filename.startsWith(FileUtil::SEPARATOR))
-   programmerRoot = pf->rootFromName(filename);
+  QFileInfo info(filename);
+  if(!info.exists())
+   throw FileNotFoundException(tr("Programming file %1 not found").arg(filename));
+  QFileInfo local(FileUtil::getUserFilesPath()+ File::separator + "programmers" + File::separator +
+                                          info.fileName());
+  if(local.exists() && (local.fileTime(QFileDevice::FileModificationTime) > info.fileTime(QFileDevice::FileModificationTime))) // see if a local, expanded copy esists.
+   programmerRoot = pf->rootFromName(local.absoluteFilePath());
   else
   {
 //   programmerRoot = pf->rootFromName(FileUtil::getUserFilesPath()+filename);
@@ -529,6 +464,7 @@ PaneProgFrame::~PaneProgFrame()
    programmerRoot = pf->rootFromName(FileUtil::findURL(filename, slist).path());
   }
   statusBar()->showMessage(tr("reading programmer %1").arg(pf->getPathname()));
+  log->info(tr("reading programmer %1").arg(pf->getPathname()));
 
 //__________________________________________________________
   if(XmlInclude::scanForInclude(programmerRoot))
@@ -828,10 +764,10 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
 //      continue;
 //     if(name == "Speed Table")
 //      continue;
-     if(name == "Sound")
-      continue;
-     if(name == "Sound Levels")
-      continue;
+//     if(name == "Sound")
+//      continue;
+//     if(name == "Sound Levels")
+//      continue;
 
      // handle include/exclude
      if (isIncludedFE(temp, modelElem, _rosterEntry, "", "")) {
