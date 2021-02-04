@@ -126,6 +126,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
  else
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
+
 /**
  *  This empty implementation is provided so users don't have to implement
  *  this method if their data model is not editable.

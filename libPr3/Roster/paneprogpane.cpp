@@ -9,9 +9,7 @@
 #include "gridbaglayout.h"
 #include "watchinglabel.h"
 #include "jtable.h"
-//#include "qtcvtablemodel.h"
 #include "fnmappanel.h"
-//#include "qtindxcvtablemodel.h"
 #include "paneprogframe.h"
 #include "panecontainer.h"
 #include "variablevalue.h"
@@ -127,7 +125,10 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  * @param modelElem "model" element from the Decoder Index, used to check what decoder options are present.
  */
 //@SuppressWarnings("unchecked")
-/*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane, CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/ VariableTableModel* varModel, QDomElement  modelElem, RosterEntry* rosterEntry, bool isProgPane, QWidget *parent) : JPanel(parent)
+/*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane,
+                                      CvTableModel* cvModel, VariableTableModel* varModel,
+                                      QDomElement  modelElem, RosterEntry* rosterEntry,
+                                      bool isProgPane, QWidget *parent) : JPanel(parent)
 {
  common();
  this->container = container;
@@ -856,7 +857,7 @@ bool PaneProgPane::nextRead()
   CvValue* cv = _cvModel->getCvByRow(cvNum);
   if (log->isDebugEnabled())
    log->debug(tr("nextRead cv index %1 state %2").arg(cvNum).arg(cv->getState()));
-  //cvListIndex++;
+  cvListIndex++;
   if (cv->isToRead() || cv->getState() == CvValue::UNKNOWN)
   {  // always read UNKNOWN state
    if (log->isDebugEnabled())

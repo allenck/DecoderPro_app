@@ -51,12 +51,14 @@ public:
     void resetStatus(int newState);
 
     QObject* self() {return (QObject*)this;}
+
 signals:
     void propertyChange(PropertyChangeEvent*);
 
 public slots:
-    /*public*/ void programmingOpReply(int value, int retval);
+    /*public*/ void programmingOpReply(int value, int retval) override;
     void errorTimeout() ;
+
 private:
     /*private*/ QString _num;
     /*private*/ QString _cvName = "";
@@ -82,6 +84,7 @@ private:
 
 protected:
     /*protected*/ void notifyValueChange(int value);
+
 friend class PaneProgPane;
 };
 

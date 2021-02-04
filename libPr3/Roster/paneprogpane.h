@@ -26,7 +26,6 @@ class Qualifier;
 class CvTableModel;
 class IndexedCvTableModel;
 class VariableTableModel;
-//class PaneContainer;
 class VariableValue;
 class CvValue;
 class PropertyChangeEvent;
@@ -38,8 +37,9 @@ class LIBPR3SHARED_EXPORT PaneProgPane : public JPanel //implements java.beans.P
 public:
     explicit PaneProgPane(QWidget *parent = 0);
     /*public*/ PaneProgPane(PaneContainer* container, QString name, QDomElement pane,
-                            CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/
-                            VariableTableModel* varModel, QDomElement modelElem, RosterEntry* rosterEntry, bool isProgPane = false, QWidget *parent = 0);
+                            CvTableModel* cvModel, VariableTableModel* varModel,
+                            QDomElement modelElem, RosterEntry* rosterEntry,
+                            bool isProgPane = false, QWidget *parent = 0);
     /*virtual*/ ~PaneProgPane() {}
     /*public*/ QString getName();
     /*public*/ QString toString() ;

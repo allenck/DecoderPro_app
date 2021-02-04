@@ -232,7 +232,6 @@ SOURCES += \
     Roster/decvarslider.cpp \
     Roster/comboonradiobutton.cpp \
     Roster/combooffradiobutton.cpp \
-    Roster/indexedvarslider.cpp \
     Roster/rosterentrypane.cpp \
     Roster/decoderindexfile.cpp \
     Roster/busyglasspane.cpp \
@@ -1253,7 +1252,6 @@ HEADERS += \
     Roster/decvarslider.h \
     Roster/comboonradiobutton.h \
     Roster/combooffradiobutton.h \
-    Roster/indexedvarslider.h \
     Roster/rosterentrypane.h \
     Roster/decoderindexfile.h \
     Roster/paneprogpane.h \

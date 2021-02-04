@@ -368,6 +368,7 @@ protected:
  /*protected*/ DefaultListSelectionModel* createDefaultSelectionModel();
  /*protected*/ TableModel* createDefaultDataModel();
  /*protected*/ void resizeAndRepaint();
+ /*protected*/ void columnResized(int column, int oldWidth, int newWidth);
 
 friend class TableFrames;
 friend class WarrantPreferencesPanel;

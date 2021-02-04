@@ -11,7 +11,6 @@
 #include "constantvalue.h"
 #include "qualifiercombiner.h"
 #include "decoderfile.h"
-#include "speedtablevarvalue.h"
 #include "qualifieradder.h"
 #include "xmlinclude.h"
 

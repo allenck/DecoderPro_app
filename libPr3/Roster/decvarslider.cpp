@@ -28,7 +28,7 @@ DecVarSlider::DecVarSlider(DecVariableValue* var, int min, int max, QWidget *par
  setValue(val.toInt());
  // listen for changes here
  connect(this, SIGNAL(valueChanged(int)), this, SLOT(on_value_Changed(int)));
-//    addChangeListener(this);
+ addChangeListener((ChangeListener*)this);
  // listen for changes to associated variable
  // _var->addPropertyChangeListener(new PropertyChangeListener();
  DVSPropertyChangeListener* l = new DVSPropertyChangeListener(this);
@@ -45,16 +45,16 @@ void DVSPropertyChangeListener::propertyChange(PropertyChangeEvent* e) {self->or
 
 void DecVarSlider::propertyChange(PropertyChangeEvent* e)
 {
- if(qobject_cast<ShortAddrVariableValue*>(_var)!= NULL)
-  ((ShortAddrVariableValue*)_var)->setValue(/*value()*/e->getNewValue().toInt());
- else
- if(qobject_cast<DecVariableValue*>(_var)!= NULL)
-  ((DecVariableValue*)_var)->setValue(/*value()*/e->getNewValue().toInt());
-     else
- {
-  logit->debug(tr("missing cast ")+ _var->metaObject()->className());
-  Q_ASSERT(false);
- }
+// if(qobject_cast<ShortAddrVariableValue*>(_var)!= NULL)
+//  ((ShortAddrVariableValue*)_var)->setValue(/*value()*/e->getNewValue().toInt());
+// else
+// if(qobject_cast<DecVariableValue*>(_var)!= NULL)
+//  ((DecVariableValue*)_var)->setValue(/*value()*/e->getNewValue().toInt());
+//     else
+// {
+//  logit->debug(tr("missing cast ")+ _var->metaObject()->className());
+//  Q_ASSERT(false);
+// }
  originalPropertyChanged(e);
 }
 
@@ -92,6 +92,7 @@ void DecVarSlider::on_value_Changed(int v)
  ChangeEvent* event = new ChangeEvent(this);
  stateChanged(event);
 }
+
 QColor DecVarSlider::getBackground()
 {
  QColor c;

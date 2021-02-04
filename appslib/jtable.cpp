@@ -3647,6 +3647,15 @@ log->debug(QString("Columns about to be inserted %1 %2 ").arg(from).arg(to));
  return columnModel;
 }
 
+/*protected*/ void JTable::columnResized(int column, int oldWidth, int newWidth)
+{
+ if(columnModel)
+ {
+  TableColumn* tc = columnModel->getColumn(column);
+  tc->setWidth(newWidth);
+ }
+}
+
 /**
  * Sets the row selection model for this table to <code>newModel</code>
  * and registers for listener notifications from the new selection model.

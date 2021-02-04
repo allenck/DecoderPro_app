@@ -103,11 +103,11 @@
                        QObject(parent)
 {
  //   this(0);
+ common();
  this->modelIndex = 0;
  preferredWidth = this->width = qMax(width, 0);
  this->cellEditor = NULL;
  this->cellRenderer = NULL;
- common();
 }
 
 /**
@@ -118,12 +118,12 @@
 /*public*/ TableColumn::TableColumn(int modelIndex, QObject *parent) :
   QObject(parent)
 {
+ common();
  //this(modelIndex, 75, NULL, NULL);
  this->modelIndex = modelIndex;
  preferredWidth = this->width = qMax(width, 0);
  this->cellRenderer = NULL;
  this->cellEditor = NULL;
- common();
 }
 
 /**
@@ -134,12 +134,12 @@
 /*public*/ TableColumn::TableColumn(int modelIndex, int width, QObject *parent) :
   QObject(parent)
 {
+ common();
  //this(modelIndex, width, NULL, NULL);
  this->modelIndex = modelIndex;
  preferredWidth = this->width = qMax(width, 0);
  this->cellRenderer = NULL;
  this->cellEditor = NULL;
- common();
 }
 
 /**
@@ -184,12 +184,12 @@
                              TableCellEditor* cellEditor, QObject *parent) :
                        QObject(parent){
     //super();
+ common();
     this->modelIndex = modelIndex;
     preferredWidth = this->width = qMax(width, 0);
 
     this->cellRenderer = cellRenderer;
     this->cellEditor = cellEditor;
-    common();
 }
 void TableColumn::common()
 {
@@ -197,7 +197,6 @@ void TableColumn::common()
     minWidth = qMin(15, this->width);
     maxWidth = /*Integer.MAX_VALUE*/65535;
     isResizable = true;
-    resizedPostingDisableCount = 0;
     headerValue = QVariant();
     changeSupport = NULL;
 }
