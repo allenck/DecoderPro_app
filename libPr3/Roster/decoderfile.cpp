@@ -421,18 +421,7 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
    log->warn("Problem parsing minFn or minOut in decoder file, variable "
             +e.attribute("item")+" exception: "+ex.getMessage());
   }
-  // load each row
-  if (variableModel->setIndxRow(row, e, _productID) == row) {
-   // if this one existed, we will not update the row count.
-   row++;
-  }
-  else
-  {
-   if (log->isDebugEnabled())
-   {
-    log->debug("skipping entry for "+e.attribute("CVname"));
-   }
-  }
+
  }
  //for (Element e : variablesElement.getChildren("variables")) {
  QDomNodeList nl1 = variablesElement.elementsByTagName("variables");

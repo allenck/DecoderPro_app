@@ -17,11 +17,8 @@
 #include <QUrl>
 #include "rosterentry.h"
 
-//VSDecoderPreferencesPane::VSDecoderPreferencesPane(QWidget *parent) :
-//  QWidget(parent)
-//{
-//}
-/*
+/**
+ * Pane to show VSDecoder Preferences.
  * <hr>
  * This file is part of JMRI.
  * <P>
@@ -39,24 +36,6 @@
  * @author			Mark Underwood Copyright (C) 2011
  * @version			$Revision: 28746 $
  */
-//import java.awt.GridBagConstraints;
-//import java.awt.GridBagLayout;
-//import java.awt.Insets;
-//import java.beans.PropertyChangeEvent;
-//import java.beans.PropertyChangeListener;
-//import java.net.URI;
-//import javax.swing.BorderFactory;
-//import javax.swing.BoxLayout;
-//import javax.swing.ButtonGroup;
-//import QPushButton;
-//import javax.swing.JFileChooser;
-//import javax.swing.JFrame;
-//import QLabel;
-//import javax.swing.QWidget;
-//import javax.swing.JRadioButton;
-//import jmri.jmrit.vsdecoder.VSDecoderManager;
-//import jmri.jmrit.vsdecoder.VSDecoderPreferences;
-
 //class VSDecoderPreferencesPane extends javax.swing.QWidget*implements PropertyChangeListener {
 
     ///*private*/ static final long serialVersionUID = -5473594799045080011L;

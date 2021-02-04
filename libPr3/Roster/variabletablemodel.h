@@ -4,7 +4,6 @@
 #include <QStringList>
 #include <QLabel>
 #include "cvtablemodel.h"
-#include "indexedcvtablemodel.h"
 #include "variablevalue.h"
 #include <QtXml>
 #include "exceptions.h"
@@ -54,9 +53,6 @@ public:
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
     /*public*/ void setRow(int row, QDomElement e, DecoderFile *df = nullptr);
-    /*public*/ QString piCv();
-    /*public*/ QString siCv();
-    /*public*/ int setIndxRow(int row, QDomElement e, QString productID);
     void reportBogus() ;
     /*public*/ void setConstant(QDomElement e) ;
     /*public*/ void newDecVariableValue(QString name, QString CV, QString mask,
@@ -71,8 +67,8 @@ public:
     /*public*/ VariableValue* findVar(QString name);
     /*public*/ int findVarIndex(QString name);
     /*public*/ void dispose();
-    /*public*/  QVector<CvValue*> allIndxCvVector();
-    /*public*/  QMap<QString, CvValue*>* allIndxCvMap();
+//    /*public*/  QVector<CvValue*> allIndxCvVector();
+//    /*public*/  QMap<QString, CvValue*>* allIndxCvMap();
     /**
      * Gives access to the programmer used to reach these Indexed CVs,
      * so you can check on mode, capabilities, etc.
@@ -93,24 +89,17 @@ private:
 
     /*private*/ QVector<VariableValue*>* rowVector;// = new Vector<VariableValue>();  // vector of Variable items
     /*private*/ CvTableModel* _cvModel;// = null;          // reference to external table model
-    /*private*/ IndexedCvTableModel* _indxCvModel;// = NULL;
     /*private*/ QVector<QPushButton*>* _writeButtons;// = new QVector<QPushButton*>();
     /*private*/ QVector<QPushButton*>* _readButtons;// = new QVector<QPushButton*>();
-    /*private*/ QLabel* _status;// = NULL;
-    /*private*/ QString _piCv;// = -1;
-    /*private*/ QString _siCv;// = -1;
+    /*private*/ QLabel* _status = NULL;
     /*private*/ bool _fileDirty;
  protected:
     /*protected*/ void processModifierElements(QDomElement e, VariableValue* v);
-    /*protected*/ VariableValue* createIndexedVariableFromElement(QDomElement e, int row, QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cv, QString mask, QString item, QString productID) throw (NumberFormatException) ;
     /*protected*/ bool setDefaultValue(QDomElement e, VariableValue* v);
     /*protected*/ VariableValue* processCompositeVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item);
     /*protected*/ VariableValue* processDecVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException);
     /*protected*/ VariableValue* processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException);
     /*protected*/ VariableValue* processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) ;
-    /*protected*/ VariableValue* processIEnumVal(QDomElement child, int row, QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cv, QString mask, QString item, QString productID) throw (NumberFormatException);
-    /*protected*/ VariableValue* processIndexedPairVal(QDomElement child, int row, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, QString cvName, bool opsOnly, QString cv, QString mask, QString item) throw (NumberFormatException) ;
-    /*protected*/ VariableValue* processIndexedVal(QDomElement child, int row, QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cv, QString mask, QString item) throw (NumberFormatException) ;
     /*protected*/ VariableValue* processLongAddressVal(QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) ;
     /*protected*/ VariableValue* processShortAddressVal(QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item, QDomElement child) ;
     /*protected*/ VariableValue* processSpeedTableVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) throw (NumberFormatException) ;

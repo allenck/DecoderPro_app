@@ -19,9 +19,6 @@ AbstractValue::AbstractValue(QObject *parent) :
 // COLOR_FROMFILE = QColor(Qt::yellow);
 // COLOR_SAME     = QColor();
 // COLOR_DIFF = QColor(Qt::magenta);
- _toWrite = false;
- available = true;
- _toRead = false;
 
 }
 /**

@@ -33,6 +33,7 @@
 #include "loggerfactory.h"
 #include "cvutil.h"
 #include "stringutil.h"
+#include <QHeaderView>
 
 class Attribute
 {
@@ -826,12 +827,16 @@ void PaneProgPane::executeWrite(VariableValue* var)
 bool PaneProgPane::nextRead()
 {
  // look for possible variables
+ if (log->isDebugEnabled()) {
+     log->debug(tr("nextRead scans %1 variables").arg(varList->size()));
+ }
  while ((varList->size() >= 0) && (varListIndex < varList->size()))
  {
   int varNum = varList->at(varListIndex);
   int vState = _varModel->getState( varNum );
   VariableValue* var = _varModel->getVariable(varNum);
-  if (log->isDebugEnabled()) log->debug("nextRead var index "+QString::number(varNum)+" state "+QString::number(vState)+"  label: "+var->label());
+  if (log->isDebugEnabled())
+   log->debug("nextRead var index "+QString::number(varNum)+" state "+QString::number(vState)+"  label: "+var->label());
   varListIndex++;
   if (var->isToRead() || vState == VariableValue::UNKNOWN)
   {        // always read UNKNOWN state
@@ -849,11 +854,13 @@ bool PaneProgPane::nextRead()
  {
   int cvNum = cvList->at(cvListIndex);
   CvValue* cv = _cvModel->getCvByRow(cvNum);
-  if (log->isDebugEnabled()) log->debug("nextRead cv index "+QString::number(cvNum)+" state "+QString::number(cv->getState()));
-  cvListIndex++;
+  if (log->isDebugEnabled())
+   log->debug(tr("nextRead cv index %1 state %2").arg(cvNum).arg(cv->getState()));
+  //cvListIndex++;
   if (cv->isToRead() || cv->getState() == CvValue::UNKNOWN)
   {  // always read UNKNOWN state
-   if (log->isDebugEnabled()) log->debug("start read of cv "+cvNum);
+   if (log->isDebugEnabled())
+    log->debug("start read of cv "+cvNum);
    setBusy(true);
    if (_programmingCV != NULL)
     log->error("listener already set at read start");
@@ -861,11 +868,12 @@ bool PaneProgPane::nextRead()
    _read = true;
    // get notified when that state changes so can repeat
    _programmingCV->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(_programmingCV, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(_programmingCV->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    // and make the read request
    // _programmingCV.setToRead(false);  // CVs set this themselves
    _programmingCV->read(_cvModel->getStatusLabel());
-   if (log->isDebugEnabled()) log->debug("return from starting CV read");
+   if (log->isDebugEnabled())
+    log->debug("return from starting CV read");
    // the request may have instantateously been satisfied...
    return true;  // only make one request at a time!
   }
@@ -2280,7 +2288,8 @@ void PaneProgPane::makeCvTable(GridBagConstraints* cs, GridBagLayout* g, JPanel*
  _cvModel->configureTable(cvTable);
  _cvModel->setTable(cvTable);
  //sorter.setComparator(CvTableModel.NUMCOLUMN, new jmri.util.PreferNumericComparator());
-
+ cvTable->getTableHeader()->setSectionsMovable(false);
+ cvTable->getTableHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 //    List <RowSorter.SortKey> sortKeys
 //        = new ArrayList<RowSorter.SortKey>();
 //    sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
@@ -2295,7 +2304,7 @@ void PaneProgPane::makeCvTable(GridBagConstraints* cs, GridBagLayout* g, JPanel*
 //    cvTable.setRowHeight(new JButton("X").getPreferredSize().height);
 //    // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
 //    // instead of forcing the columns to fill the frame (and only fill)
-//    cvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    cvTable->setAutoResizeMode(JTable::AUTO_RESIZE_OFF);
 
 //    JScrollPane  cvScroll = new JScrollPane(cvTable);
 //    cvScroll.setColumnHeaderView(cvTable.getTableHeader());

@@ -5,11 +5,8 @@
 #include <QPalette>
 #include "jtextfield.h"
 #include "slotmanager.h"
+#include "loggerfactory.h"
 
-//CvValue::CvValue(QObject *parent) :
-//    AbstractValue(parent)
-//{
-//}
 /**
  * Encapsulate a single CV value and provide programming access to the decoder.
  *<P>Since this is a single CV in a single decoder, the Programmer used to get
@@ -29,80 +26,44 @@
 
 //    static final java.util.ResourceBundle rbt = jmri.jmrit.symbolicprog.SymbolicProgBundle.bundle();
 
-/*public*/ CvValue::CvValue(QString num, Programmer* pProgrammer, QObject *parent) : AbstractValue(parent)
+/*public*/ CvValue::CvValue(QString num, Programmer* pProgrammer, QObject *parent)
+ : AbstractValue(parent)
 {
     _num = num;
     mProgrammer = pProgrammer;
     _tableEntry = new JTextField("0", 3);
     _defaultColor = _tableEntry->getBackground();
     _tableEntry->setBackground(COLOR_UNKNOWN);
-    _status = NULL;
-    log = new Logger("CvValue");
+
     log->setDebugEnabled(false);
-    _value = 0;
-    _decoderValue = 0;
-    _state = 0;
-    _busy = false;
-    _readOnly = false;
-    _infoOnly = false;
-    _writeOnly = false;
-    _toRead = false;
-    _toWrite = false;
-    _reading = false;
-    _confirm = false;
     setObjectName("CvValue");
 }
 
-/*public*/ CvValue::CvValue(QString num, QString cvName, QString piCv, int piVal, QString siCv, int siVal, QString iCv, Programmer* pProgrammer, QObject *parent) : AbstractValue(parent)
+/*public*/ CvValue::CvValue(QString num, QString cvName,  Programmer* pProgrammer, QObject *parent)
+ : AbstractValue(parent)
 {
     _num   = num;
     _cvName  = cvName;
-    if (cvName == NULL) log->error("cvName == NULL in ctor num: "+(num));
-    _piCv  = piCv;
-    _piVal = piVal;
-    _siCv  = siCv;
-    _siVal = siVal;
-    _iCv    = iCv;
+    if (cvName == "")
+     log->error("cvName == NULL in ctor num: "+(num));
     mProgrammer = pProgrammer;
     _tableEntry = new JTextField("0", 3);
     _defaultColor = _tableEntry->getBackground();
     _tableEntry->setBackground(COLOR_UNKNOWN);
-    _status = NULL;
-    log = new Logger("CvValue");
-//    log->setDebugEnabled(true);
-    _value = 0;
-    _decoderValue = 0;
-    _state = 0;
-    _busy = false;
-    _readOnly = false;
-    _infoOnly = false;
-    _writeOnly = false;
-    _toRead = false;
-    _toWrite = false;
-    _reading = false;
-    _confirm = false;
+
+     log->setDebugEnabled(true);
     setObjectName("CvValue");
 }
 
 /*public*/ QString CvValue::toString()
 {
- return "CvValue _num="+(_num)+" _cvName="+_cvName+" _piCv="+(_piCv)+" _siCv="+(_siCv)
-            +" _iCv="+(_iCv);
+ return "CvValue _num="+(_num)+" _cvName="+_cvName;
 }
+
 void CvValue::setProgrammer(Programmer* p) { mProgrammer = p; }
 /*public*/ QString CvValue::number() { return _num; }
 
 /*public*/ QString CvValue::cvName() { return _cvName; }
-
-/*public*/ QString CvValue::piCv() { return _piCv; }
-
-/*public*/ int CvValue::piVal() { return _piVal; }
-
-/*public*/ QString CvValue::siCv() { return _siCv; }
-
-/*public*/ int CvValue::siVal() { return _siVal; }
-
-/*public*/ QString CvValue::iCv() { return _iCv; }
 
 /*public*/ int CvValue::getValue()  { return _value; }
 
@@ -318,7 +279,8 @@ JTextField* CvValue::getTableEntry() {
 
 /*public*/ void CvValue::read(QLabel* status)
 {
- if (log->isDebugEnabled()) log->debug("read call with Cv number "+(_num));
+ if (log->isDebugEnabled())
+  log->debug("read call with Cv number "+(_num));
  setToRead(false);
  // get a programmer reference and write
  _status = status;
@@ -345,72 +307,6 @@ JTextField* CvValue::getTableEntry() {
  else
  {
   if (status != NULL) status->setText(tr("No programmer available!"));
-  log->error("No programmer available!");
- }
-}
-
-/*public*/ void CvValue::readIcV(QLabel* status)
-{
- setToRead(false);
- // get a programmer reference and write an indexed CV
- _status = status;
-
- if (status != NULL) status->setText(tr("Reading Indexed CV%1.%2...").arg(
-                             (_iCv)).arg(QString::number( _piVal)+(_siVal>=0?"."+_siVal:"")));
-
- if (mProgrammer != NULL)
- {
-  setBusy(true);
-  _reading = true;
-  _confirm = false;
-  try {
-      setState(UNKNOWN);
-      ((SlotManager*)mProgrammer)->readCV(_iCv, (ProgListener*)this);
-  }
-  catch (Exception e) {
-      setState(UNKNOWN);
-      if (status != NULL) status->setText(tr("Exception during IndexedCV read: %1").arg(e.getMessage()));
-      log->warn("Exception during IndexedCV read: " + e.getMessage());
-      setBusy(false);
-  }
- }
- else
- {
-  if (status != NULL) status->setText(tr("No programmer available!"));
-  log->error("No programmer available!");
- }
-}
-
-/*public*/ void CvValue::confirmIcV(QLabel* status)
-{
- setToRead(false);
- // get a programmer reference and write an indexed CV
- _status = status;
-
-//    ""+_iCv,
-//    ""+_piVal+(_siVal>=0?"."+_siVal:"")
- QString s = QString::number(_piVal)+(_siVal>=0?"."+QString::number(_siVal):"");
- if (status != NULL) status->setText(tr("Confirming Indexed CV%1.%2...").arg(_iCv).arg(s));
-
- if (mProgrammer != NULL)
- {
-  setBusy(true);
-  _reading = false;
-  _confirm = true;
-  try {
-      setState(UNKNOWN);
-      ((SlotManager*)mProgrammer)->readCV(_iCv, (ProgListener*)this);
-  }
-  catch (Exception e) {
-      setState(UNKNOWN);
-      if (status != NULL) status->setText(tr("Exception during IndexedCV read: %1").arg(e.getMessage()));
-      log->warn("Exception during IndexedCV read: " + e.getMessage());
-      setBusy(false);
-  }
- }
- else
- {
-  if (status != NULL) status->setText(tr("StateNoProgrammer"));
   log->error("No programmer available!");
  }
 }
@@ -472,101 +368,6 @@ JTextField* CvValue::getTableEntry() {
  }
 }
 
-/*public*/ void CvValue::writePI(QLabel* status)
-{
- if (log->isDebugEnabled()) log->debug("write call with PI number "+QString::number(_piVal));
- // get a programmer reference and write to the primary index
- _status = status;
- if (status != NULL) status->setText(tr("Writing PI CV%1...").arg((_num)));
- if (mProgrammer != NULL)
- {
-  setBusy(true);
-  _reading = false;
-  _confirm = false;
-  try
-  {
-   setState(UNKNOWN);
-   ((SlotManager*)mProgrammer)->writeCV(_piCv, _piVal, (ProgListener*)this);
-  }
-  catch (Exception e)
-  {
-   setState(UNKNOWN);
-   if (status != NULL) status->setText(tr("Exception during CV write: %1").arg(e.getMessage()));
-   log->warn("Exception during CV write: "+e.getMessage());
-   setBusy(false);
-  }
- }
- else
- {
-  if (status != NULL) status->setText(tr("No Programmer"));
-  log->error("No programmer available!");
- }
-}
-
-/*public*/ void CvValue::writeSI(QLabel* status)
-{
- if (log->isDebugEnabled()) log->debug("write call with SI number " +QString::number(_siVal));
- // get a programmer reference and write to the secondary index
- _status = status;
- if (mProgrammer != NULL)
- {
-  setBusy(true);
-  if (status != NULL) status->setText(tr("Writing SI CV%1...").arg((_num)));
-
-  _reading = false;
-  _confirm = false;
-  try
-  {
-   setState(UNKNOWN);
-   if ( _siVal >= 0 )
-   {
-    ((SlotManager*)mProgrammer)->writeCV(_siCv, _siVal, (ProgListener*)this);
-   }
-   else
-   { // just in case we get called without a real SI value
-    ((SlotManager*)mProgrammer)->writeCV(_siCv, 0, (ProgListener*)this);
-   }
-  }
-  catch (Exception e)
-  {
-   setState(UNKNOWN);
-   log->warn("Exception during CV write: " + e.getMessage());
-   setBusy(false);
-  }
- }
- else
- {
-  if (status != NULL) status->setText(tr("StateNoProgrammer"));
-   log->error("No programmer available!");
- }
-}
-
-/*public*/ void CvValue::writeIcV(QLabel* status) {
-    if (log->isDebugEnabled()) log->debug("write call with IndexedCv number "+(_iCv));
-    setToWrite(false);
-    // get a programmer reference and write the indexed CV
-    _status = status;
-
-    if (status != NULL) status->setText(tr("Writing Indexed CV%1.%2...").arg( QString::number(_piVal)).arg(_siVal>=0?"."+QString::number(_siVal):""));
-
-    if (mProgrammer != NULL) {
-        setBusy(true);
-        _reading = false;
-        _confirm = false;
-        try {
-            setState(UNKNOWN);
-            ((SlotManager*)mProgrammer)->writeCV(_iCv, _value, (ProgListener*)this);
-        } catch (Exception e) {
-            setState(UNKNOWN);
-            if (status != NULL) status->setText(tr("Exception during IndexedCV write: %1").arg(e.getMessage()));
-            log->warn("Exception during CV write: "+e.getMessage());
-            setBusy(false);
-        }
-    } else {
-        if (status != NULL) status->setText(tr("StateNoProgrammer"));
-        log->error("No programmer available!");
-    }
-}
 
 /*public*/ void CvValue::programmingOpReply(int value, int retval)
 {
@@ -639,3 +440,6 @@ void CvValue::errorTimeout() {
 /*public*/ void CvValue::dispose() {
     if (log->isDebugEnabled()) log->debug("dispose");
 }
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* CvValue::log = LoggerFactory::getLogger("CvValue");

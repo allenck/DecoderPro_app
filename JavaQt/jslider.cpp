@@ -37,7 +37,7 @@ void JSlider::common(Qt::Orientation orientation)
  listeners = QVector<ChangeListener*>();
 
  setLayout(verticalLayout_2 = new QVBoxLayout());
- verticalLayout_2->addWidget(slider);
+ verticalLayout_2->addWidget(slider, 1);
 }
 
 /**
@@ -348,6 +348,7 @@ int JSlider::value() { return slider->value();}
 void JSlider::setOrientation(Qt::Orientation orientation)
 {
  this->orientation = orientation;
+ slider->setOrientation(orientation);
 }
 int JSlider::maximum() { return slider->maximum();}
 int JSlider::minimum() { return slider->minimum();}

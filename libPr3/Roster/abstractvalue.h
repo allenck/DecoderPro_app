@@ -77,22 +77,19 @@ signals:
 public slots:
 private:
     PropertyChangeSupport* prop;// = new PropertyChangeSupport(this);
-    /*private*/ bool _toWrite;// = false;
-    /*private*/ bool available;// = true;
-    /*private*/ bool _toRead;// = false;
+    /*private*/ bool _toWrite = false;
+    /*private*/ bool available = true;
+    /*private*/ bool _toRead = false;
  friend class CvValue;
  friend class VariableValue;
  friend class EnumVariableValue;
  friend class CompositeVariableValue;
  friend class DecVariableValue;
  friend class HexVariableValue;
- friend class IndexedEnumVariableValue;
- friend class IndexedVariableValue;
  friend class LongAddrVariableValue;
  friend class SpeedTableVarValue;
  friend class SplitVariableValue;
  friend class ConstantValue;
- friend class IndexedPairVariableValue;
  friend class PaneProgPane;
  friend class ResetTableModel;
  friend class DccAddressPanel;

@@ -59,8 +59,8 @@ public:
     /*public*/ void hideGroupsPane(bool hide);
     /*public*/ QString getSelectedRosterGroup();
     /*public*/ QList<RosterEntry*>* getSelectedRosterEntries();
-    /*public*/ void setTitle(QString title) ;
-    /*public*/ QVariant getProperty(QString key);
+    /*public*/ void setTitle(QString title)  override;
+    /*public*/ QVariant getProperty(QString key) override;
     /*public*/ void setProgrammerLaunch(int buttonId, QString programmer, QString buttonText);
     /*public*/ void setSelectedRosterGroup(QString rosterGroup);
 
@@ -98,7 +98,7 @@ private:
 
  Logger* log;
  bool inStartProgrammer;// = false;
- RosterEntryUpdateListener* rosterEntryUpdateListener;
+ RosterEntryUpdateListener* rosterEntryUpdateListener = nullptr;
 // void updateRow(int row, RosterEntry* re);
 // void updateDetails();
  bool bUpdating;
@@ -127,7 +127,7 @@ private:
  QAction* contextEdit;
  QList<RosterEntry*>* selectedRosterEntries;
  void editMediaButton();
- QString getClassName();
+ QString getClassName() override;
 
 private slots:
 //    void on_tableWidget_cellClicked(int row, int col);

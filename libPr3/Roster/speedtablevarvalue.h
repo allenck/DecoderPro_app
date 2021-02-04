@@ -101,7 +101,7 @@ private:
     bool onlyChanges;// = false;
     Logger* logit;
 };
-#if 1
+
 /* Internal class extends a JSlider so that its color is consistent with
  * an underlying CV; we return one of these in getNewRep.
  *<P>
@@ -188,6 +188,5 @@ private:
   }
   Logger* log;
 };  // end class definition
-#endif
 
 #endif // SPEEDTABLEVARVALUE_H

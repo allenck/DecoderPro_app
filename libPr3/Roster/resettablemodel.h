@@ -18,12 +18,8 @@ public:
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     QVariant dataAt(int row, int col) const;
     /*public*/ void setProgrammer(Programmer* p);
-    /*public*/ void setPiCv(QString piCv) ;
-    /*public*/ void setSiCv(QString siCv);
     /*public*/ void setRow(int row, QDomElement e, QDomElement p, QString model);
-    /*public*/ void setIndxRow(int row, QDomElement e);
     /*public*/ void actionPerformed(JActionEvent* /*e*/);
-    /*public*/ void indexedWrite() ;
     /*public*/ void dispose();
     /*public*/ int getRowCount() const override {return rowCount(QModelIndex());}
     /*public*/ int getColumnCount() const override{return columnCount(QModelIndex());}

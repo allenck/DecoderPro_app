@@ -31,10 +31,10 @@ public:
     /*public*/ QString getMask();
     /*public*/ int getState();
     /*public*/ void setState(int state);
-    /*public*/ void setToRead(bool state);
-    /*public*/ bool isToRead();
-    /*public*/ void setToWrite(bool state);
-    /*public*/ bool isToWrite();
+    /*public*/ void setToRead(bool state) override;
+    /*public*/ bool isToRead() override;
+    /*public*/ void setToWrite(bool state) override;
+    /*public*/ bool isToWrite() override;
     /*public*/ bool isBusy();
 
     /*abstract*/ /*public*/ virtual QWidget* getCommonRep() {return NULL;}	// and thus should be called a limited number of times

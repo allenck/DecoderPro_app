@@ -160,6 +160,7 @@ public:
  /*public*/ int columnAtPoint(QPoint);
  /*public*/ QAbstractItemDelegate *getCellRenderer(int row, int column);
  /*public*/ QAbstractItemDelegate* getCellEditor(int row, int column);
+ /*public*/ void clearSelection();
 
 signals:
  void propertyChange(PropertyChangeEvent*);

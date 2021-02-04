@@ -25264,6 +25264,16 @@ void PythonQtWrapper_RosterEntry::loadFunctions(RosterEntry* theWrappedObject, Q
   ( theWrappedObject->loadFunctions(e3));
 }
 
+void PythonQtWrapper_RosterEntry::loadFunctions(RosterEntry* theWrappedObject, QDomElement  e3, QString  source)
+{
+  ( theWrappedObject->loadFunctions(e3, source));
+}
+
+void PythonQtWrapper_RosterEntry::loadSounds(RosterEntry* theWrappedObject, QDomElement  e3, QString  source)
+{
+  ( theWrappedObject->loadSounds(e3, source));
+}
+
 void PythonQtWrapper_RosterEntry::putAttribute(RosterEntry* theWrappedObject, QString  key, QString  value)
 {
   ( theWrappedObject->putAttribute(key, value));

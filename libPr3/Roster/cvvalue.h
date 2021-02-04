@@ -4,24 +4,21 @@
 #include <QLabel>
 #include "logger.h"
 #include <QLineEdit>
+#include "proglistener.h"
 
 class Programmer;
 class JTextField;
-class LIBPR3SHARED_EXPORT CvValue : public AbstractValue
+class LIBPR3SHARED_EXPORT CvValue : public AbstractValue, ProgListener
 {
     Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
     //explicit CvValue(QObject *parent = 0);
     /*public*/ CvValue(QString num, Programmer* pProgrammer, QObject *parent = 0);
-    /*public*/ CvValue(QString num, QString cvName, QString piCv, int piVal, QString siCv, int siVal, QString iCv, Programmer* pProgrammer, QObject *parent = 0);
+    /*public*/ CvValue(QString num, QString cvName, Programmer* pProgrammer, QObject *parent = 0);
     /*public*/ QString toString();
     /*public*/ QString number();
     /*public*/ QString cvName();
-    /*public*/ Q_DECL_DEPRECATED QString piCv();
-    /*public*/ Q_DECL_DEPRECATED int piVal();
-    /*public*/ Q_DECL_DEPRECATED QString siCv();
-    /*public*/ Q_DECL_DEPRECATED int siVal();
-    /*public*/ Q_DECL_DEPRECATED QString iCv();
     /*public*/ int getValue();
     QColor getColor();
     /*public*/ void setValue(int value);
@@ -38,27 +35,22 @@ public:
     /*public*/ bool getInfoOnly();
     /*public*/ void setWriteOnly(bool is);
     /*public*/ bool getWriteOnly();
-    /*public*/ void setToRead(bool state);
-    /*public*/ bool isToRead();
-    /*public*/ void setToWrite(bool state) ;
-    /*public*/ bool isToWrite();
+    /*public*/ void setToRead(bool state) override;
+    /*public*/ bool isToRead() override;
+    /*public*/ void setToWrite(bool state) override;
+    /*public*/ bool isToWrite() override;
     // read, write support
 
     /*public*/ void read(QLabel* status);
-    /*public*/ Q_DECL_DEPRECATED void readIcV(QLabel* status);
-    /*public*/ Q_DECL_DEPRECATED void confirmIcV(QLabel* status);
     /*public*/ void confirm(QLabel* status);
     /*public*/ void write(QLabel* status);
-    /*public*/ Q_DECL_DEPRECATED void writePI(QLabel* status);
-    /*public*/ Q_DECL_DEPRECATED void writeSI(QLabel* status);
-    /*public*/ Q_DECL_DEPRECATED void writeIcV(QLabel* status);
     // clean up connections when done
     /*public*/ void dispose();
     QString getStateColor();
     void setProgrammer(Programmer* p);
     void resetStatus(int newState);
 
-
+    QObject* self() {return (QObject*)this;}
 signals:
     void propertyChange(PropertyChangeEvent*);
 
@@ -67,31 +59,26 @@ public slots:
     void errorTimeout() ;
 private:
     /*private*/ QString _num;
-    /*private*/ QString _cvName;// = "";
-    /*private*/ Q_DECL_DEPRECATED QString _piCv;
-    /*private*/ Q_DECL_DEPRECATED int _piVal;
-    /*private*/ Q_DECL_DEPRECATED QString _siCv;
-    /*private*/ Q_DECL_DEPRECATED int _siVal;
-    /*private*/ Q_DECL_DEPRECATED QString _iCv;
-    /*private*/ QLabel* _status;// = NULL;
+    /*private*/ QString _cvName = "";
+    /*private*/ QLabel* _status = nullptr;
 
     /*private*/ Programmer* mProgrammer;
-    Logger* log;
-    /*private*/ int _value;// = 0;
-    /*private*/ int _decoderValue;// = 0;
-    /*private*/ int _state;// = 0;
+    static Logger* log;
+    /*private*/ int _value = 0;
+    /*private*/ int _decoderValue = 0;
+    /*private*/ int _state = 0;
     /*private*/ void setBusy(bool busy);
     /*private*/ void notifyBusyChange(bool oldBusy, bool newBusy);
-    /*private*/ bool _busy;// = false;
+    /*private*/ bool _busy = false;
     QColor _defaultColor;
-    JTextField* _tableEntry;// = NULL;
-    /*private*/ bool _readOnly;// = false;
-    /*private*/ bool _infoOnly;// = false;
-    /*private*/ bool _writeOnly;// = false;
-    /*private*/ bool _toRead;// = false;
-    /*private*/ bool _toWrite;// = false;
-    /*private*/ bool _reading;// = false;
-    /*private*/ bool _confirm;// = false;
+    JTextField* _tableEntry = NULL;
+    /*private*/ bool _readOnly = false;
+    /*private*/ bool _infoOnly = false;
+    /*private*/ bool _writeOnly = false;
+    /*private*/ bool _toRead = false;
+    /*private*/ bool _toWrite = false;
+    /*private*/ bool _reading = false;
+    /*private*/ bool _confirm = false;
 
 protected:
     /*protected*/ void notifyValueChange(int value);

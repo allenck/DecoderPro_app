@@ -194,6 +194,7 @@ protected:
  friend class ThisProgPane;
  friend class PaneProgPaneTest;
 };
+
 class MyQualifierAdder : public QualifierAdder
 {
     Q_OBJECT

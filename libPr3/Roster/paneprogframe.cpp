@@ -4,7 +4,6 @@
 #include "rosterentry.h"
 #include "programmer.h"
 #include "cvtablemodel.h"
-#include "indexedcvtablemodel.h"
 #include "variabletablemodel.h"
 #include "rosterentrypane.h"
 #include "resettablemodel.h"

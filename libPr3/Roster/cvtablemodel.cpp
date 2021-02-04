@@ -168,7 +168,7 @@
     return val->number().toInt();
    case VALCOLUMN:
     return val->getValue();
-   case STATECOLUMN:
+  case STATECOLUMN:
    {
     int state = val->getState();
     switch (state)

@@ -39,15 +39,6 @@ ComboRadioButtons::ComboRadioButtons(QComboBox* box, EnumVariableValue* var, QWi
  init();
 }
 
-ComboRadioButtons::ComboRadioButtons(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent) : QWidget(parent)
-{
- //super();
-
- _var = var;
- _value = var->_value;
- _box = box;
- init();
-}
 
 void ComboRadioButtons::init()
 {
@@ -127,12 +118,6 @@ void ComboRadioButtons::thisActionPerformed(JActionEvent* e)
   qDebug() << e->getActionCommand();
   if(qobject_cast<EnumVariableValue*>(_var) != NULL)
    ((EnumVariableValue*)_var)->setIntValue(e->getModifiers());
-  else
-   ((IndexedEnumVariableValue*)_var)->setIntValue(e->getModifiers());
- }
- else
- {
-
  }
 }
 
@@ -223,11 +208,6 @@ void ComboRadioButtons::propertyChange(PropertyChangeEvent* e)
  thisActionPerformed(NULL);
 }
 void ComboRadioButtons::on_valueChanged(EnumVariableValue * v)
-{
- emit valueChanged(v);
- b1->at(v->_value->currentIndex())->setChecked(true);
-}
-void ComboRadioButtons::on_valueChanged(IndexedEnumVariableValue * v)
 {
  emit valueChanged(v);
  b1->at(v->_value->currentIndex())->setChecked(true);

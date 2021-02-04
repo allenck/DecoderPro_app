@@ -40,15 +40,15 @@ TimerUtil::TimerUtil(QObject *parent) : QObject(parent)
     static public void schedule(@Nonnull TimerTask task, @Nonnull Date firstTime, long period) {
         commonTimer.schedule(task, firstTime, period);
     }
-
-    static public void schedule(@Nonnull TimerTask task, long delay) {
-        commonTimer.schedule(task, delay);
+#endif
+    /*static*/ /*public*/ void TimerUtil::schedule(/*@Nonnull*/ TimerTask* task, long delay) {
+        commonTimer->schedule(task, delay);
     }
 
-    static public void schedule(@Nonnull TimerTask task, long delay, long period) {
-        commonTimer.schedule(task, delay, period);
+    /*static*/ /*public*/ void TimerUtil::schedule(/*@Nonnull*/ TimerTask* task, long delay, long period) {
+        commonTimer->schedule(task, delay, period);
     }
-
+#if 0
     static public void scheduleAtFixedRate(@Nonnull TimerTask task, @Nonnull Date firstTime, long period) {
         commonTimer.schedule(task, firstTime, period);
     }
@@ -130,4 +130,4 @@ TimerUtil::TimerUtil(QObject *parent) : QObject(parent)
     }
 
    #endif
-    /*final*/ /*static*/ Timer* TimerUtil::commonTimer = new Timer("JMRI Common Timer", true);
+    /*final*/ /*static*/ TUTimer* TimerUtil::commonTimer = new TUTimer("JMRI Common Timer", true);

@@ -8,6 +8,7 @@
 #include <audiomanager.h>
 #include <block.h>
 #include <dcclocoaddress.h>
+#include <defaultprogrammermanager.h>
 #include <editor.h>
 #include <editscene.h>
 #include <instancemanager.h>
@@ -358,6 +359,105 @@ if (_wrapper) {
 }
   return DefaultProgrammerManager::getDefaultModes();
 }
+QString  PythonQtShell_DefaultProgrammerManager::getUserName()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getUserName", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultProgrammerManager::getUserName();
+}
+bool  PythonQtShell_DefaultProgrammerManager::isAddressedModePossible()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isAddressedModePossible");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isAddressedModePossible", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultProgrammerManager::isAddressedModePossible();
+}
+bool  PythonQtShell_DefaultProgrammerManager::isAddressedModePossible(DccLocoAddress*  l0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isAddressedModePossible");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool" , "DccLocoAddress*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      bool returnValue{};
+      void* args[2] = {NULL, (void*)&l0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isAddressedModePossible", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultProgrammerManager::isAddressedModePossible(l0);
+}
 bool  PythonQtShell_DefaultProgrammerManager::isGlobalProgrammerAvailable()
 {
 if (_wrapper) {
@@ -446,9 +546,46 @@ if (_wrapper) {
 }
   DefaultProgrammerManager::timerEvent(event0);
 }
+QString  PythonQtShell_DefaultProgrammerManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return DefaultProgrammerManager::toString();
+}
 DefaultProgrammerManager* PythonQtWrapper_DefaultProgrammerManager::new_DefaultProgrammerManager(QObject*  parent)
 { 
 return new PythonQtShell_DefaultProgrammerManager(parent); }
+
+DefaultProgrammerManager* PythonQtWrapper_DefaultProgrammerManager::new_DefaultProgrammerManager(const DefaultProgrammerManager&  arg__1)
+{ 
+return new PythonQtShell_DefaultProgrammerManager(arg__1); }
 
 const QMetaObject* PythonQtShell_DefaultProgrammerManager::metaObject() const {
   if (QObject::d_ptr->metaObject) {
@@ -12580,6 +12717,11 @@ int PythonQtShell_JTable::qt_metacall(QMetaObject::Call call, int id, void** arg
 void PythonQtWrapper_JTable::addColumn(JTable* theWrappedObject, TableColumn*  aColumn)
 {
   ( theWrappedObject->addColumn(aColumn));
+}
+
+void PythonQtWrapper_JTable::clearSelection(JTable* theWrappedObject)
+{
+  ( theWrappedObject->clearSelection());
 }
 
 int  PythonQtWrapper_JTable::columnAtPoint(JTable* theWrappedObject, QPoint  arg__1)

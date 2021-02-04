@@ -12,7 +12,6 @@
 #include "propertychangesupport.h"
 #include "Roster/cvtablemodel.h"
 #include "Roster/locofile.h"
-#include "Roster/indexedcvtablemodel.h"
 #include "basicrosterentry.h"
 #include "arbitrarybean.h"
 #include "rosterobject.h"

@@ -19,7 +19,7 @@ public:
                             QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
     /*public*/ void setToolTipText(QString t);
     /*public*/ QVector<CvValue*>* usesCVs() override;
-    /*public*/ QVariant rangeVal()override;
+    /*public*/ QVariant rangeVal() override;
     void updatedTextField();
     /*public*/ QString getValueString() override;
     // to complete this class, fill in the routines to handle "Value" parameter
@@ -45,7 +45,7 @@ signals:
 
 public slots:
     void value_changed();
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
     /*public*/ void actionPerformed(JActionEvent* e = 0);
     /*public*/ void focusGained(/*FocusEvent*/QEvent* e = 0);
     /*public*/ void focusLost(/*FocusEvent*/QEvent* e = 0);

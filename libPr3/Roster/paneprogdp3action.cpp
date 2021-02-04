@@ -324,11 +324,8 @@ if (p == NULL) {
  }
 
  cvModel       = new CvTableModel(statusLabel, mProgrammer);
-// iCvModel      = new IndexedCvTableModel(statusLabel, mProgrammer);
 
- QStringList labels = QStringList() << "Name" << "Value";
- variableModel = new VariableTableModel(statusLabel, labels,
-                                         cvModel, iCvModel);
+ variableModel = new VariableTableModel(statusLabel, QStringList{"Name", "Value"}, cvModel);
  if(decoderFile!=NULL)
  {
   QDomElement decoderRoot = QDomElement();

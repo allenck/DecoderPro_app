@@ -5,7 +5,6 @@
 #include "resettablemodel.h"
 #include "xmlfile.h"
 #include "cvtablemodel.h"
-#include "indexedcvtablemodel.h"
 #include "variabletablemodel.h"
 #include "rosterentry.h"
 #include "decoderindexfile.h"
@@ -124,14 +123,7 @@
  }
 
  d->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel);
- if (variableModel->piCv() != "")
- {
-  resetModel->setPiCv(variableModel->piCv());
- }
- if (variableModel->siCv() != "")
- {
-  resetModel->setSiCv(variableModel->siCv());
- }
+
  d->loadResetModel(decoderRoot.firstChildElement("decoder"), resetModel);
 
  //@SuppressWarnings("unchecked")

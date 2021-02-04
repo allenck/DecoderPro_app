@@ -8,6 +8,7 @@ MyApplication::MyApplication(int &argc, char *argv[]):
 {
 
 }
+
 bool MyApplication::notify(QObject *receiver_, QEvent *event_)
 {
  bool done = true;

@@ -169,6 +169,7 @@ class PythonQtShell_DefaultProgrammerManager : public DefaultProgrammerManager
 {
 public:
     PythonQtShell_DefaultProgrammerManager(QObject*  parent = 0):DefaultProgrammerManager(parent),_wrapper(NULL) {}
+    PythonQtShell_DefaultProgrammerManager(const DefaultProgrammerManager&  arg__1):DefaultProgrammerManager(arg__1),_wrapper(NULL) {}
 
    ~PythonQtShell_DefaultProgrammerManager();
 
@@ -177,9 +178,13 @@ virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QList<QString >  getDefaultModes();
+virtual QString  getUserName();
+virtual bool  isAddressedModePossible();
+virtual bool  isAddressedModePossible(DccLocoAddress*  l);
 virtual bool  isGlobalProgrammerAvailable();
 virtual QObject*  self();
 virtual void timerEvent(QTimerEvent*  event);
+virtual QString  toString();
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -189,8 +194,12 @@ virtual void timerEvent(QTimerEvent*  event);
 class PythonQtPublicPromoter_DefaultProgrammerManager : public DefaultProgrammerManager
 { public:
 inline QList<QString >  py_q_getDefaultModes() { return DefaultProgrammerManager::getDefaultModes(); }
+inline QString  py_q_getUserName() { return DefaultProgrammerManager::getUserName(); }
+inline bool  py_q_isAddressedModePossible() { return DefaultProgrammerManager::isAddressedModePossible(); }
+inline bool  py_q_isAddressedModePossible(DccLocoAddress*  l) { return DefaultProgrammerManager::isAddressedModePossible(l); }
 inline bool  py_q_isGlobalProgrammerAvailable() { return DefaultProgrammerManager::isGlobalProgrammerAvailable(); }
 inline QObject*  py_q_self() { return DefaultProgrammerManager::self(); }
+inline QString  py_q_toString() { return DefaultProgrammerManager::toString(); }
 };
 
 class PythonQtWrapper_DefaultProgrammerManager : public QObject
@@ -198,17 +207,22 @@ class PythonQtWrapper_DefaultProgrammerManager : public QObject
 public:
 public slots:
 DefaultProgrammerManager* new_DefaultProgrammerManager(QObject*  parent = 0);
+DefaultProgrammerManager* new_DefaultProgrammerManager(const DefaultProgrammerManager&  arg__1);
 void delete_DefaultProgrammerManager(DefaultProgrammerManager* obj) { delete obj; } 
    QList<QString >  getDefaultModes(DefaultProgrammerManager* theWrappedObject);
    QList<QString >  py_q_getDefaultModes(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_getDefaultModes());}
    QString  getUserName(DefaultProgrammerManager* theWrappedObject);
+   QString  py_q_getUserName(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_getUserName());}
    bool  isAddressedModePossible(DefaultProgrammerManager* theWrappedObject);
+   bool  py_q_isAddressedModePossible(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_isAddressedModePossible());}
    bool  isAddressedModePossible(DefaultProgrammerManager* theWrappedObject, DccLocoAddress*  l);
+   bool  py_q_isAddressedModePossible(DefaultProgrammerManager* theWrappedObject, DccLocoAddress*  l){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_isAddressedModePossible(l));}
    bool  isGlobalProgrammerAvailable(DefaultProgrammerManager* theWrappedObject);
    bool  py_q_isGlobalProgrammerAvailable(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_isGlobalProgrammerAvailable());}
    QObject*  self(DefaultProgrammerManager* theWrappedObject);
    QObject*  py_q_self(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_self());}
    QString  toString(DefaultProgrammerManager* theWrappedObject);
+   QString  py_q_toString(DefaultProgrammerManager* theWrappedObject){  return (((PythonQtPublicPromoter_DefaultProgrammerManager*)theWrappedObject)->py_q_toString());}
     QString py_toString(DefaultProgrammerManager*);
 };
 
@@ -1378,6 +1392,7 @@ JTable* new_JTable(QAbstractItemModel*  dm, QWidget*  parent = 0);
 JTable* new_JTable(QWidget*  parent = 0);
 void delete_JTable(JTable* obj) { delete obj; } 
    void addColumn(JTable* theWrappedObject, TableColumn*  aColumn);
+   void clearSelection(JTable* theWrappedObject);
    int  columnAtPoint(JTable* theWrappedObject, QPoint  arg__1);
    int  convertColumnIndexToModel(JTable* theWrappedObject, int  viewColumnIndex);
    int  convertColumnIndexToView(JTable* theWrappedObject, int  modelColumnIndex);

@@ -3085,6 +3085,8 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    bool  isOpen(RosterEntry* theWrappedObject);
    void loadAttributes(RosterEntry* theWrappedObject, QDomElement  e3);
    void loadFunctions(RosterEntry* theWrappedObject, QDomElement  e3);
+   void loadFunctions(RosterEntry* theWrappedObject, QDomElement  e3, QString  source);
+   void loadSounds(RosterEntry* theWrappedObject, QDomElement  e3, QString  source);
    void putAttribute(RosterEntry* theWrappedObject, QString  key, QString  value);
    void readFile(RosterEntry* theWrappedObject);
    void removePropertyChangeListener(RosterEntry* theWrappedObject, PropertyChangeListener*  l);

@@ -434,7 +434,7 @@ void SpeedTableVarValue::setColor(QColor c) {
  QPushButton* b;
  QHBoxLayout* layout = new QHBoxLayout(j);
  k->setLayout(layout);
- layout->addWidget(b = new  QPushButton(tr("ButtonForceStraight"),k));
+ layout->addWidget(b = new  QPushButton(tr("Force Straight"),k));
  b->setToolTip(tr("TooltipForceStraight"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
@@ -442,7 +442,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //            }
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doForceStraight()));
- layout->addWidget(b = new QPushButton(tr("ButtonMatchEnds"),k));
+ layout->addWidget(b = new QPushButton(tr("Match Ends"),k));
  b->setToolTip(tr("TooltipMatchEnds"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
@@ -450,7 +450,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //            }
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doMatchEnds()));
- layout->addWidget(b = new QPushButton(tr("ButtonConstantRatio"),k));
+ layout->addWidget(b = new QPushButton(tr("Constan Ratio"),k));
  b->setToolTip(tr("TooltipConstantRatio"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
@@ -458,7 +458,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //            }
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doRatioCurve()));
- layout->addWidget(b = new QPushButton(tr("ButtonLogCurve"),k));
+ layout->addWidget(b = new QPushButton(tr("Log Curve"),k));
  b->setToolTip(tr("TooltipLogCurve"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
@@ -466,7 +466,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //            }
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doLogCurve()));
- layout->addWidget(b = new QPushButton(tr("ButtonShiftLeft"),k));
+ layout->addWidget(b = new QPushButton(tr("Shift Left"),k));
  b->setToolTip(tr("TooltipShiftLeft"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
@@ -474,7 +474,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //            }
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doShiftLeft()));
- layout->addWidget(b = new QPushButton(tr("ButtonShiftRight"),k));
+ layout->addWidget(b = new QPushButton(tr("Shift Right"),k));
  b->setToolTip(tr("TooltipShiftRight"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {

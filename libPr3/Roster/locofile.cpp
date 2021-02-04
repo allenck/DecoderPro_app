@@ -1,6 +1,5 @@
 #include "locofile.h"
 #include "cvtablemodel.h"
-#include "indexedcvtablemodel.h"
 #include "fileutil.h"
 #include "roster.h"
 #include "file.h"

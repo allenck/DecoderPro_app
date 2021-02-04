@@ -342,6 +342,7 @@ enum PCMD
    OPC_GPOFF         = 0x82,
    OPC_GPON          = 0x83,
    OPC_IDLE          = 0x85,
+   OPC_RE_LOCORESET_BUTTON = 0x8A, // Undocumented name
    OPC_LOCO_SPD      = 0xa0,
    OPC_LOCO_DIRF     = 0xa1,
    OPC_LOCO_SND      = 0xa2,

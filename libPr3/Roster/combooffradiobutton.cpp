@@ -18,13 +18,6 @@ ComboOffRadioButton::ComboOffRadioButton(QComboBox* box, EnumVariableValue* var,
         addToPanel(v->at(i), i);
 }
 
-ComboOffRadioButton::ComboOffRadioButton(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent) : ComboRadioButtons(box, var, parent)
-{
-    //super(box, var);
-    for(int i =0; i < v->count(); i++)
-        addToPanel(v->at(i), i);
-}
-
 /**
  * Make only the "on" button visible
  */

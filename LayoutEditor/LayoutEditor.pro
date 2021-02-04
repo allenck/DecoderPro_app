@@ -380,7 +380,6 @@ SOURCES += \
     speedometeraction.cpp \
     sendpacketaction.cpp \
     sendpacketframe.cpp \
-    vsdconfigpanel.cpp \
     vsdconfigdialog.cpp \
     vsdcontrol.cpp \
     busydialog.cpp \
@@ -836,7 +835,6 @@ HEADERS += liblayouteditor_global.h \
     speedometeraction.h \
     sendpacketaction.h \
     sendpacketframe.h \
-    vsdconfigpanel.h \
     vsdconfigdialog.h \
     vsdcontrol.h \
     busydialog.h \

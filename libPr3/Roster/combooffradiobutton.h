@@ -8,7 +8,6 @@ class LIBPR3SHARED_EXPORT ComboOffRadioButton : public ComboRadioButtons
 public:
     //explicit ComboOffRadioButton(QWidget *parent = 0);
     ComboOffRadioButton(QComboBox* box, EnumVariableValue* var, QWidget *parent = 0);
-    ComboOffRadioButton(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent = 0);
     void addToPanel(QRadioButton* b, int i);
 
 signals:

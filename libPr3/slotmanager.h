@@ -18,6 +18,7 @@
 #include "runnable.h"
 #include "programmingmode.h"
 #include "sleeperthread.h"
+#include "timertask.h"
 
 /**
  * Controls a collection of slots, acting as the
@@ -428,6 +429,8 @@ protected:
  /*protected*/ void handleLongAck (LocoNetMessage* m);
  /*protected*/ void loadSlots();
  /*final*/ static /*protected*/ int NUM_SLOTS;// = 128;
+ /*protected*/ void getMoreDetailsForSlot(LocoNetMessage* m, int i);
+ /*protected*/ void sendReadSlotDelayed(int slotNo, long delay);
 
 protected slots:
  void readNextSlot(int toSlot, int interval);
@@ -437,6 +440,7 @@ protected slots:
  friend class SlotManagerTest;
  friend class LnDeferProgrammer;
  friend class LnPredefinedMeters;
+ friend class SMTimerTask;
 };
 
 
@@ -456,6 +460,26 @@ public slots:
  void timeout();
 signals:
  void on_programmingOpReply(int value, int status);
+};
+
+class SMTimerTask : public TimerTask
+{
+  Q_OBJECT
+  int slotNumber;// = slotNo;
+  SlotManager* sm;
+public:
+  SMTimerTask (int slotNumber, SlotManager* sm) {
+   this->slotNumber = slotNumber;
+   this->sm = sm;
+  }
+  //@Override
+  /*public*/ void run() {
+      try {
+          sm->sendReadSlot(slotNumber);
+      } catch (Exception e) {
+          sm->log->error("Exception occurred sendReadSlotDelayed:", e);
+      }
+  }
 };
 
 #endif // SLOTMANAGER_H

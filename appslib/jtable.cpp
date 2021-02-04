@@ -728,7 +728,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  */
 /*public*/ void JTable::setRowHeight(int rowHeight) {
     if (rowHeight <= 0) {
-        throw new IllegalArgumentException("New row height less than 1");
+        throw IllegalArgumentException("New row height less than 1");
     }
     int old = this->_rowHeight;
     this->_rowHeight = rowHeight;
@@ -1956,15 +1956,16 @@ Object setDropLocation(TransferHandler.DropLocation location,
         selModel.setValueIsAdjusting(false);
     }
 }
-
+#endif
 /**
  * Deselects all selected columns and rows.
  */
-/*public*/ void clearSelection() {
-    selectionModel.clearSelection();
-    columnModel.getSelectionModel().clearSelection();
+/*public*/ void JTable::clearSelection() {
+    _selectionModel->clearSelection();
+    columnModel->getSelectionModel()->clearSelection();
+    QAbstractItemView::clearSelection();
 }
-#endif
+
 /*private*/ void JTable::clearSelectionAndLeadAnchor() {
     _selectionModel->setValueIsAdjusting(true);
     columnModel->getSelectionModel()->setValueIsAdjusting(true);
@@ -3610,7 +3611,7 @@ log->debug(QString("Columns about to be inserted %1 %2 ").arg(from).arg(to));
 {
  if (columnModel == NULL)
  {
-  throw new IllegalArgumentException("Cannot set a NULL ColumnModel");
+  throw IllegalArgumentException("Cannot set a NULL ColumnModel");
  }
  TableColumnModel* old = this->columnModel;
  if (columnModel != old)
@@ -6150,12 +6151,12 @@ class CellEditorRemover implements PropertyChangeListener {
  {
   if (showPrintDialog)
   {
-   throw new HeadlessException("Can't show print dialog.");
+   throw HeadlessException("Can't show print dialog.");
   }
 
   if (interactive)
   {
-   throw new HeadlessException("Can't run interactively.");
+   throw HeadlessException("Can't run interactively.");
   }
  }
 #if 0

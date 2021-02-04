@@ -3,7 +3,6 @@
 #include "actionevent.h"
 #include "propertychangeevent.h"
 #include <QtXml>
-#include "indexedpairvariablevalue.h"
 #include "longaddrvariablevalue.h"
 #include "splitvariablevalue.h"
 #include "shortaddrvariablevalue.h"
@@ -75,12 +74,6 @@ void VarTextField::thisActionPerformed(JActionEvent* e) {
     {
      ((DecVariableValue*)_var)->_value->setText(this->text());
      ((DecVariableValue*)_var)->actionPerformed(e);
-    }
-    else
-    if(qobject_cast<IndexedPairVariableValue*>(_var)!=NULL)
-    {
-      ((IndexedPairVariableValue*)_var)->_value->setText(text());
-      ((IndexedPairVariableValue*)_var)->actionPerformed(e);
     }
     else
     if(qobject_cast<LongAddrVariableValue*>(_var)!=NULL)

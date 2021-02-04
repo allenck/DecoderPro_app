@@ -209,7 +209,6 @@ SOURCES += \
     Throttle/throttlewindow.cpp \
     Roster/locofile.cpp \
     Roster/cvtablemodel.cpp \
-    Roster/indexedcvtablemodel.cpp \
     Roster/abstractvalue.cpp \
     Roster/cvvalue.cpp \
     Roster/variabletablemodel.cpp \
@@ -220,8 +219,6 @@ SOURCES += \
     Roster/compositevariablevalue.cpp \
     Roster/decvariablevalue.cpp \
     Roster/hexvariablevalue.cpp \
-    Roster/indexedenumvariablevalue.cpp \
-    Roster/indexedvariablevalue.cpp \
     Roster/longaddrvariablevalue.cpp \
     Roster/shortaddrvariablevalue.cpp \
     Roster/speedtablevarvalue.cpp \
@@ -232,8 +229,6 @@ SOURCES += \
     Roster/resettablemodel.cpp \
     Roster/combocheckbox.cpp \
     Roster/comboradiobuttons.cpp \
-    Roster/indexedcombocheckbox.cpp \
-    Roster/indexedpairvariablevalue.cpp \
     Roster/decvarslider.cpp \
     Roster/comboonradiobutton.cpp \
     Roster/combooffradiobutton.cpp \
@@ -1233,7 +1228,6 @@ HEADERS += \
     Throttle/throttlewindow.h \
     Roster/locofile.h \
     Roster/cvtablemodel.h \
-    Roster/indexedcvtablemodel.h \
     Roster/abstractvalue.h \
     Roster/cvvalue.h \
     Roster/variabletablemodel.h \
@@ -1245,8 +1239,6 @@ HEADERS += \
     Roster/compositevariablevalue.h \
     Roster/decvariablevalue.h \
     Roster/hexvariablevalue.h \
-    Roster/indexedenumvariablevalue.h \
-    Roster/indexedvariablevalue.h \
     Roster/longaddrvariablevalue.h \
     Roster/shortaddrvariablevalue.h \
     Roster/speedtablevarvalue.h \
@@ -1258,8 +1250,6 @@ HEADERS += \
     Roster/combocheckbox.h \
     Roster/comboradiobuttons.h \
     Roster/listdatalistener.h \
-    Roster/indexedcombocheckbox.h \
-    Roster/indexedpairvariablevalue.h \
     Roster/decvarslider.h \
     Roster/comboonradiobutton.h \
     Roster/combooffradiobutton.h \

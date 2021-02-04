@@ -103,8 +103,6 @@ SOURCES += appslib.cpp \
     xml.cpp \
     printdecoderlistaction.cpp \
     debugmenu.cpp \
-    vsdecoderframe.cpp \
-    vsdecoderpane.cpp \
     vsdecodercreationaction.cpp \
     loadvsdfileaction.cpp \
     vsdmanagerevent.cpp \
@@ -244,8 +242,6 @@ HEADERS += appslib.h\
     xml.h \
     printdecoderlistaction.h \
     debugmenu.h \
-    vsdecoderframe.h \
-    vsdecoderpane.h \
     vsdecodercreationaction.h \
     loadvsdfileaction.h \
     vsdmanagerevent.h \

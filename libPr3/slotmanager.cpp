@@ -7,6 +7,7 @@
 #include "programmingmode.h"
 #include "csopswaccess.h"
 #include "timer.h"
+#include "timerutil.h"
 
 /*final static protected*/ int SlotManager::NUM_SLOTS = 128;
 /*static*/ /*public*/ int SlotManager::postProgDelay = 100; // this is public to allow changes via script
@@ -247,8 +248,42 @@ void SlotManager::notify(LocoNetSlot* s)
  */
 void SlotManager::message(LocoNetMessage* m)
 {
+ if (m->getOpCode() == LnConstants::OPC_RE_LOCORESET_BUTTON) {
+  if (commandStationType->getSupportsLocoReset()) {
+      // Command station LocoReset button was triggered.
+      //
+      // Note that sending a LocoNet message using this OpCode to the command
+      // station does _not_ seem to trigger the equivalent effect; only
+      // pressing the button seems to do so.
+      // If the OpCode is received by JMRI, regardless of its source,
+      // JMRI will simply trigger a re-read of all slots.  This will
+      // allow the JMRI slots to stay consistent with command station
+      // slot information, regardless of whether the command station
+      // just modified the slot information.
+//      Timer* t = new Timer(500, (ActionEvent* e)); // ->
+//      {
+//          log.debug("Updating slots account received opcode 0x8a message");   // NOI18N
+//          update(slotMap,slotScanInterval);
+//      });
+      QTimer* t = new QTimer();
+//      t.stop();
+//      t.setInitialDelay(500);
+      t->setSingleShot(true);
+//      t.setRepeats(false);
+      connect(t, &QTimer::timeout, [=]{
+       log->debug("Updating slots account received opcode 0x8a message");   // NOI18N
+       update(slotMap,slotScanInterval);
+
+      });
+      t->start(500);
+  }
+  return;
+ }
+
  // LACK processing for resend of immediate command
- if (!mTurnoutNoRetry && immedPacket != nullptr && m->getOpCode() == LnConstants::OPC_LONG_ACK && m->getElement(1) == 0x6D && m->getElement(2) == 0x00)
+ if (!mTurnoutNoRetry && immedPacket != nullptr &&
+     m->getOpCode() == LnConstants::OPC_LONG_ACK &&
+     m->getElement(1) == 0x6D && m->getElement(2) == 0x00)
  {
   // LACK reject, resend immediately
   tc->sendLocoNetMessage(immedPacket);
@@ -264,11 +299,13 @@ void SlotManager::message(LocoNetMessage* m)
  int i = findSlotFromMessage(m);
  if (i != -1)
  {
+  getMoreDetailsForSlot(m, i);
   forwardMessageToSlot(m,i);
   respondToAddrRequest(m,i);
   programmerOpMessage(m,i);
  }
 
+ // LONG_ACK response?
  if (m->getOpCode()==LnConstants::OPC_LONG_ACK)
  {
   handleLongAck(m);
@@ -299,8 +336,8 @@ void SlotManager::message(LocoNetMessage* m)
    // for this one.
    LocoNetMessage* mo = new LocoNetMessage(4);
    mo->setOpCode(LnConstants::OPC_LOCO_ADR);  // OPC_LOCO_ADR
-   mo->setElement(1, (addr/128)&0x7F);
-   mo->setElement(2, addr&0x7F);
+   mo->setElement(1, (addr / 128) & 0x7F);
+   mo->setElement(2, addr & 0x7F);
    tc->sendLocoNetMessage(mo);
   }
  }
@@ -560,6 +597,56 @@ void SlotManager::respondToAddrRequest(LocoNetMessage* m, int i)
       log->debug(tr("no request for addr %1").arg(addr)); // NOI18N
   }
  }
+}
+
+/**
+ * If it is a slot being sent COMMON,
+ *  after a delay, get the new status of the slot
+ * If it is a true slot move, not dispatch or null
+ *  after a delay, get the new status of the from slot, which varies by CS.
+ *  the to slot should come in the reply.
+ * @param m a LocoNet message
+ * @param i the slot to which it is directed
+ */
+/*protected*/ void SlotManager::getMoreDetailsForSlot(LocoNetMessage* m, int i) {
+    // is called any time a LocoNet message is received.
+    // sets up delayed slot read to update our effected slots to match the CS
+    if (m->getOpCode() == LnConstants::OPC_SLOT_STAT1 &&
+            ((m->getElement(2) & LnConstants::LOCOSTAT_MASK) == LnConstants::LOCO_COMMON ) ) {
+        // Changing a slot to common. Depending on a CS and its OpSw, and throttle speed
+        // it could have its status changed a number of ways.
+        sendReadSlotDelayed(i,100);
+    } else if (m->getOpCode() == LnConstants::OPC_MOVE_SLOTS) {
+        // if a true move get the new from slot status
+        // the to slot status is sent in the reply
+        int slotTwo;
+        slotTwo = m->getElement(2);
+        if (i != 0 && slotTwo != 0) {
+            sendReadSlotDelayed(i,100);
+        }
+   }
+}
+
+/**
+ * Scedule a delayed slot read.
+ * @param slotNo - the slot.
+ * @param delay - delay in msecs.
+ */
+/*protected*/ void SlotManager::sendReadSlotDelayed(int slotNo, long delay) {
+    TimerTask* meterTask = new SMTimerTask(slotNo, this);
+//    {
+//        int slotNumber = slotNo;
+
+//        @Override
+//        public void run() {
+//            try {
+//                sendReadSlot(slotNumber);
+//            } catch (Exception e) {
+//                log.error("Exception occurred sendReadSlotDelayed:", e);
+//            }
+//        }
+//    };
+    TimerUtil::schedule(meterTask, delay);
 }
 
 void SlotManager::programmerOpMessage(LocoNetMessage* m, int i)

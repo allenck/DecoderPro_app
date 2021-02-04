@@ -88,19 +88,9 @@
  }
  if (headers->at(col)==("Label"))
      return labelVector->at(row);
- else if (headers->at(col)==("Name"))
+  else if (headers->at(col)==("Name"))
      return cv->cvName();
- else if (headers->at(col)==("PI"))
-     return cv->piCv();
- else if (headers->at(col)==("PIvalue"))
-     return cv->piVal();
- else if (headers->at(col)==("SI"))
-     return cv->siCv();
- else if (headers->at(col)==("SIvalue"))
-     return cv->siVal();
- else if (headers->at(col)==("CV"))
-     return cv->iCv();
- else if (headers->at(col)==("Value"))
+  else if (headers->at(col)==("Value"))
      return cv->getValue();
  else if (headers->at(col)==("Write"))
      return VPtr<QPushButton>::asQVariant(_writeButtons->at(row));
@@ -124,16 +114,6 @@
  }
 }
 
-/*public*/ void ResetTableModel::setPiCv(QString piCv)
-{
- _piCv = piCv;
-}
-
-/*public*/ void ResetTableModel::setSiCv(QString siCv)
-{
- _siCv = siCv;
-}
-
 /*public*/ void ResetTableModel::setRow(int row, QDomElement e, QDomElement p, QString model)
 {
  decoderModel = model; // Save for use elsewhere
@@ -152,35 +132,6 @@
  return;
 }
 
-/*public*/ void ResetTableModel::setIndxRow(int row, QDomElement e)
-{
- if (_piCv >=0 && _siCv >= 0)
- {
-  // get the values for the VariableValue ctor
-  //QString label = LocaleSelector.attribute(e, "label"); // Note the name variable is actually the label attribute
-  QString label = e.attribute("label");
-  if (log->isDebugEnabled()) log->debug("Starting to setIndxRow \"" +
-                                      label + "\"");
-  QString cvName = e.attribute("CVname");
-  int piVal = e.attribute("PI").toInt();
-  int siVal = e.attribute("SI") != "" ? e.attribute("SI").toInt() : -1;
-  QString iCv   = e.attribute("CV");
-  int icvVal = e.attribute("default").toInt();
-
-  CvValue* resetCV = new CvValue(cvName, cvName, _piCv, piVal, _siCv, siVal, iCv, mProgrammer);
-  resetCV->addPropertyChangeListener((PropertyChangeListener*)this);
-  connect(resetCV->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
-  QPushButton* bw = new QPushButton("Write");
-  _writeButtons->append(bw);
-  resetCV->setValue(icvVal);
-  resetCV->setWriteOnly(true);
-  resetCV->setState(VariableValue::STORED);
-  rowVector->append(resetCV);
-  labelVector->append(label);
- }
- return;
-}
 
 /*protected*/ void ResetTableModel::performReset(int row)
 {
@@ -264,19 +215,6 @@
   }
  }
 
-/*public*/ void ResetTableModel::indexedWrite()
- {
- if (_progState != IDLE) log->warn("Programming state "+QString::number(_progState)+", not IDLE, in write()");
-  // lets skip the SI step if SI is not used
- if (_iCv->siVal() >= 0) {
-     _progState = WRITING_PI;
- } else {
-     _progState = WRITING_SI;
- }
- if (log->isDebugEnabled()) log->debug("invoke PI write for CV write");
- // to write any indexed CV we must write the PI
- _iCv->writePI(_status);
-}
 
 /*public*/ void ResetTableModel::propertyChange(PropertyChangeEvent* e)
  {
@@ -288,16 +226,6 @@
   switch (_progState) {
   case IDLE:  // no, just an Indexed CV update
       if (log->isDebugEnabled()) log->error("Busy goes false with state IDLE");
-      return;
-  case WRITING_PI:   // have written the PI, now write SI if needed
-      if (log->isDebugEnabled()) log->debug("Busy goes false with state WRITING_PI");
-      _progState = WRITING_SI;
-      _iCv->writeSI(_status);
-      return;
-  case WRITING_SI:  // have written the SI if needed, now write CV
-      if (log->isDebugEnabled()) log->debug("Busy goes false with state WRITING_SI");
-      _progState = WRITING_CV;
-      _iCv->writeIcV(_status);
       return;
   case WRITING_CV:  // now done with the write request
       if (log->isDebugEnabled()) log->debug("Finished writing the Indexed CV");

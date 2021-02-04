@@ -10,7 +10,6 @@
 #include "vsdecoderevent.h"
 #include "rosterentry.h"
 #include "vsdmanagerframe.h"
-#include "vsdecoderpane.h"
 #include "trigger.h"
 #include "soundevent.h"
 #include "momentarysoundevent.h"
@@ -560,28 +559,7 @@ void VSDecoder::common()
             return;
         }
 
-        // Respond to events from the old GUI.
-        if ((property==(VSDManagerFrame::PCIDMap.value(VSDManagerFrame::MUTE)))
-                || (property==(VSDecoderPane::PCIDMap.value(VSDecoderPane::MUTE)))) {
-            // Either GUI Mute button
-         log->debug("VSD: Mute change. value = " + evt->getNewValue().toString());
-            bool b =  evt->getNewValue().toBool();
-            this->mute(b/*.boolValue()*/);
 
-        } else if ((property==(VSDManagerFrame::PCIDMap.value(VSDManagerFrame::VOLUME_CHANGE)))
-                || (property==(VSDecoderPane::PCIDMap.value(VSDecoderPane::VOLUME_CHANGE)))) {
-            // Either GUI Volume slider
-            log->debug("VSD: Volume change. value = " + evt->getNewValue().toString());
-            // Slider gives integer 0-100. Need to change that to a float 0.0-1.0
-            this->setMasterVolume((1.0f * evt->getNewValue().toInt()) / 100.0f);
-
-        } else if (property==(VSDecoderPane::PCIDMap.value(VSDecoderPane::ADDRESS_CHANGE))) {
-            // OLD GUI Address Change
-            log->debug("Decoder set address = " +  (evt->getNewValue().toString()));
-            this->setAddress(VPtr<LocoAddress>::asPtr(evt->getNewValue().toString()));
-            this->enable();
-
-        }
 #if 0
         else if (property==(Train.TRAIN_LOCATION_CHANGED_PROPERTY)) {
             // Train Location Move (either GUI)
