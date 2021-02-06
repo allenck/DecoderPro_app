@@ -257,7 +257,9 @@ SOURCES += \
     loconet/lncvprogtablemodeltestaction.cpp \
     loconet/lncvprogpanetest.cpp \
     misc/identifydecodertest.cpp \
-    misc/identifydecodertestaction.cpp
+    misc/identifydecodertestaction.cpp \
+    misc/cvutiltest.cpp \
+    misc/cvutiltestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -493,7 +495,9 @@ HEADERS += \
     loconet/lncvprogtablemodeltestaction.h \
     loconet/lncvprogpanetest.h \
     misc/identifydecodertest.h \
-    misc/identifydecodertestaction.h
+    misc/identifydecodertestaction.h \
+    misc/cvutiltest.h \
+    misc/cvutiltestaction.h
 
 unix {
     target.path = /usr/lib

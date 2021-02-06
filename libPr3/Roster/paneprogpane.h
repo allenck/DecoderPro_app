@@ -15,6 +15,7 @@
 #include "libPr3_global.h"
 #include "fnmappanel.h"
 #include "fnmappanelesu.h"
+#include "jlabel.h"
 
 class JPanel;
 class HardcopyWriter;
@@ -199,9 +200,9 @@ class MyQualifierAdder : public QualifierAdder
 {
     Q_OBJECT
     PaneProgPane* self;
-    QWidget* c;
+    JLabel* l;
 public:
-    MyQualifierAdder(QWidget* c, PaneProgPane* self);
+    MyQualifierAdder(JLabel* l, PaneProgPane* self);
     protected:
       /*protected*/ Qualifier* createQualifier(VariableValue* var, QString relation, QString value) override;
       /*protected*/ void addListener(PropertyChangeListener* qc) override;

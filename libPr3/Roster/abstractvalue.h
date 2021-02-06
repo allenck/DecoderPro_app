@@ -102,6 +102,9 @@ private:
  friend class DecVarSlider;
  friend class PaneProgFrame;
  friend class PaneProgDp3Action;
+ friend class DecVarTextField;
+ friend class LAVarTextField;
+ friend class SPVarTextField;
 };
 
 #endif // ABSTRACTVALUE_H

@@ -32,7 +32,7 @@ void JSlider::common(Qt::Orientation orientation)
  sliderModel = new DefaultBoundedRangeModel(0,0,0,100);
  setMinimum(0);
  setMaximum(100);
- //connect(slider, SIGNAL(valueChanged(int)), this, SLOT(On_valueChanged(int)));
+ connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)));
  setValue(0);
  listeners = QVector<ChangeListener*>();
 
@@ -154,15 +154,19 @@ void JSlider::common(Qt::Orientation orientation)
 {
     BoundedRangeModel* oldModel = getModel();
 
-//    if (oldModel != null) {
+    if (oldModel != nullptr) {
 //        oldModel->removeChangeListener(changeListener);
-//    }
+    }
 
     sliderModel = newModel;
 
-//    if (newModel != null) {
+    if (newModel != nullptr) {
 //        newModel->addChangeListener(changeListener);
-//    }
+        setMaximum(newModel->getMaximum());
+        setMinimum(newModel->getMinimum());
+        setValue(newModel->getValue());
+
+    }
 
 //    if (accessibleContext != NULL) {
 //        accessibleContext.firePropertyChange(

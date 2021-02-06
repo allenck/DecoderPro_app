@@ -35,7 +35,7 @@ VariableTableModel::VariableTableModel(QObject *parent) :
  *  "Name", "Value", "Range", "Read", "Write", "Comment", "CV", "Mask", "State"
  */
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // OK until Java 1.6 allows cheap array copy
-/*public*/ VariableTableModel::VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, QObject *parent) :
+/*public*/ VariableTableModel::VariableTableModel(JLabel* status, QStringList h, CvTableModel* cvModel, QObject *parent) :
 AbstractTableModel(parent)
 {
 //super();
@@ -646,15 +646,13 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
     QString a;
     int minVal = 0;
     int maxVal = 255;
+    QString highCV = "";
+
     if ((a = child.attribute("min")) != "") {
         minVal = a.toInt();
     }
     if ((a = child.attribute("max")) != "") {
         maxVal = a.toInt();
-    }
-    int highCV = CV.toInt() + 1;
-    if ((a = child.attribute("highCV")) != "") {
-        highCV = a.toInt();
     }
     int factor = 1;
     if ((a = child.attribute("factor")) != "") {
@@ -668,8 +666,15 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
     if ((a = child.attribute("upperMask")) != "") {
         uppermask = a;
     }
-    _cvModel->addCV(QString::number(highCV), readOnly, infoOnly, writeOnly); // ensure 2nd CV exists
-    v = new SplitVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, minVal, maxVal, _cvModel->allCvMap(), _status, item, highCV, factor, offset, uppermask);
+    QString extra3 = "0";
+    if ((a = child.attribute("min")) != "") {
+        extra3 = a;
+    }
+    QString extra4 = /*Long.toUnsignedString*/QString::number(~0);
+    if ((a = child.attribute("max")) != "") {
+        extra4 = a;
+    }
+    v = new SplitVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, minVal, maxVal, _cvModel->allCvMap(), _status, item, highCV, factor, offset, uppermask, "", "", extra3, extra4);
     return v;
 }
 

@@ -57,6 +57,7 @@ public:
     /*public*/ void removeKeyListener(KeyAdapter*);
     QObject* self() {return (QObject*)this;}
     /*public*/ void setEnabled(bool b) override {QLineEdit::setEnabled(b);}
+    /*public*/ void setEditable(bool b) {setEnabled(b);}
 
 signals:
  void enterField();

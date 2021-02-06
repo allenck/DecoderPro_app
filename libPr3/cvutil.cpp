@@ -18,7 +18,7 @@ CvUtil::CvUtil(QObject *parent) : QObject(parent)
  * @author Dave Heap Copyright (C) 2016
  */
 // /*public*/ class CvUtil {
-#if 0
+
     /**
      *
      *
@@ -52,40 +52,40 @@ CvUtil::CvUtil(QObject *parent) : QObject(parent)
      * <br><strong>or</strong><br>
      * an empty list if nothing to expand.
      */
-    /*public*/ static List<String> expandCvList(String cvString) {
-        List<String> ret = new ArrayList<>();
-        Pattern pattern;
-        Matcher matcher;
-        String prefix = "";
-        String theString = cvString;
-        String suffix = "";
-        pattern = Pattern.compile("[(),\\-:]");
-        matcher = pattern.matcher(theString);
-        if (matcher.find()) {
-            pattern = Pattern.compile("^([^(),\\-:]*?)\\(??([^()]*)\\)??([^(),\\-:]*?)$");
-            matcher = pattern.matcher(theString);
-            if (matcher.find()) {
-                prefix = matcher.group(1);
-                theString = matcher.group(2);
-                suffix = matcher.group(3);
+    /*public*/ /*static*/ QList<QString> CvUtil::expandCvList(QString cvString) {
+        QList<QString> ret = QList<QString>();
+        QRegularExpression pattern;
+        QRegularExpressionMatch matcher;
+        QString prefix = "";
+        QString theString = cvString;
+        QString suffix = "";
+        pattern = QRegularExpression("[(),\\-:]");
+        matcher = pattern.match(theString);
+        if (matcher.hasMatch()) {
+            pattern = QRegularExpression("^([^(),\\-:]*?)\\(??([^()]*)\\)??([^(),\\-:]*?)$");
+            matcher = pattern.match(theString);
+            if (matcher.hasMatch()) {
+                prefix = matcher.captured(1);
+                theString = matcher.captured(2);
+                suffix = matcher.captured(3);
             }
-            pattern = Pattern.compile("^([^(),\\-:]+?)(,[^(),\\-:]+?)+?$");
-            matcher = pattern.matcher(theString);
-            if (matcher.find()) {
-                String[] theArray = theString.split(",");
-                for (int i = 0; i < theArray.length; i++) {
-                    ret.add(prefix + theArray[i] + suffix);
+            pattern = QRegularExpression("^([^(),\\-:]+?)(,[^(),\\-:]+?)+?$");
+            matcher = pattern.match(theString);
+            if (matcher.hasMatch()) {
+                QStringList theArray = theString.split(",");
+                for (int i = 0; i < theArray.length(); i++) {
+                    ret.append(prefix + theArray[i] + suffix);
                 }
                 return ret;
             }
-            pattern = Pattern.compile("^([^(),\\-:]*?)(\\d+)-(\\d+)([^(),\\-:]*?)$");
-            matcher = pattern.matcher(theString);
-            if (matcher.find()) {
-                String subPrefix = matcher.group(1);
-                int start = Integer.parseInt(matcher.group(2));
-                int end = Integer.parseInt(matcher.group(3));
+            pattern = QRegularExpression("^([^(),\\-:]*?)(\\d+)-(\\d+)([^(),\\-:]*?)$");
+            matcher = pattern.match(theString);
+            if (matcher.hasMatch()) {
+                QString subPrefix = matcher.captured(1);
+                int start = matcher.captured(2).toInt();
+                int end = matcher.captured(3).toInt();
                 int inc = 0;
-                String subSuffix = matcher.group(4);
+                QString subSuffix = matcher.captured(4);
                 if (start < end) {
                     inc = 1;
                 } else if (start > end) {
@@ -93,19 +93,19 @@ CvUtil::CvUtil(QObject *parent) : QObject(parent)
                 }
                 int j = start;
                 do {
-                    ret.add(prefix + subPrefix + j + subSuffix + suffix);
+                    ret.append(prefix + subPrefix + QString::number(j) + subSuffix + suffix);
                     j = j + inc;
                 } while (j != (end + inc));
                 return ret;
             }
-            pattern = Pattern.compile("^([^(),\\-:]*?)(\\d+):(-?\\d+)([^(),\\-:]*?)$");
-            matcher = pattern.matcher(theString);
-            if (matcher.find()) {
-                String subPrefix = matcher.group(1);
-                int start = Integer.parseInt(matcher.group(2));
-                int count = Integer.parseInt(matcher.group(3));
+            pattern = QRegularExpression("^([^(),\\-:]*?)(\\d+):(-?\\d+)([^(),\\-:]*?)$");
+            matcher = pattern.match(theString);
+            if (matcher.hasMatch()) {
+                QString subPrefix = matcher.captured(1);
+                int start = matcher.captured(2).toInt();
+                int count = matcher.captured(3).toInt();
                 int inc = 0;
-                String subSuffix = matcher.group(4);
+                QString subSuffix = matcher.captured(4);
                 if (count > 0) {
                     inc = 1;
                 } else if (count < 0) {
@@ -113,22 +113,22 @@ CvUtil::CvUtil(QObject *parent) : QObject(parent)
                 }
                 int j = start;
                 do {
-                    ret.add(prefix + subPrefix + j + subSuffix + suffix);
+                    ret.append(prefix + subPrefix + QString::number(j) + subSuffix + suffix);
                     j = j + inc;
                 } while (j != (start + count));
                 return ret;
             }
-            pattern = Pattern.compile("[(),\\-:]");
-            matcher = pattern.matcher(theString);
-            if (!matcher.find()) {
-                ret.add(prefix + theString + suffix);
+            pattern = QRegularExpression("[(),\\-:]");
+            matcher = pattern.match(theString);
+            if (!matcher.hasMatch()) {
+                ret.append(prefix + theString + suffix);
             } else {
-                log.error("Invalid string '{}'", cvString);
+                log->error(tr("Invalid string '%1'").arg(cvString));
             }
         }
         return ret;
     }
-#endif
+
     /**
      * Optionally add CV numbers and bit numbers to tool tip text based on
      * Roster Preferences setting.
@@ -178,26 +178,26 @@ CvUtil::CvUtil(QObject *parent) : QObject(parent)
             int lastV = -2;
             if (mask.contains("V")) {
                 if (mask.indexOf('V') == mask.lastIndexOf('V')) {
-                    maskDescString.append("bit ").append(lastBit - mask.indexOf('V'));
+                    maskDescString.append("bit ").append(QString::number(lastBit - mask.indexOf('V')));
                 } else {
                     maskDescString.append("bits ");
                     for (int i = 0; i <= lastBit; i++) {
                         QChar descStringLastChar = maskDescString.at(maskDescString.length() - 1);
                         if (mask.at(lastBit - i) == 'V') {
                             if (descStringLastChar == ' ') {
-                                maskDescString.append(i);
+                                maskDescString.append(QString::number(i));
                             } else if (lastV == (i - 1)) {
                                 if (descStringLastChar != '-') {
                                     maskDescString.append("-");
                                 }
                             } else {
-                                maskDescString.append(",").append(i);
+                                maskDescString.append(",").append(QString::number(i));
                             }
                             lastV = i;
                         }
                         descStringLastChar = maskDescString.at(maskDescString.length() - 1);
                         if ((descStringLastChar == '-') && ((mask.at(lastBit - i) != 'V') || (i == lastBit))) {
-                            maskDescString.append(lastV);
+                            maskDescString.append(QString::number(lastV));
                         }
                     }
                 }

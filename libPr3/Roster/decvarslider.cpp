@@ -82,8 +82,8 @@ void DecVarSlider::originalPropertyChanged(PropertyChangeEvent* e)
  }
  if (e->getPropertyName()==("Value"))
  {
-  //int newValue = (((QLineEdit*)_var->getCommonRep())->text()).toInt();
-  int newValue = e->getNewValue().toInt();
+  int newValue = (((QLineEdit*)_var->getCommonRep())->text()).toInt();
+  //int newValue = e->getNewValue().toInt();
   setValue(newValue);
  }
 }

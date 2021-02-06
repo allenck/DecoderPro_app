@@ -120,7 +120,7 @@ private:
     bool maxFnNumDirty = false;
     QString maxFnNumOld = "";
     QString maxFnNumNew = "";
-    QLabel* progStatus = nullptr;
+    JLabel* progStatus = nullptr;
     CvTableModel* cvModel  = nullptr;
     VariableTableModel* variableModel = nullptr;
     ResetTableModel* resetModel = nullptr;
@@ -173,7 +173,6 @@ private:
     QDomNodeList decoderPaneList;
     void closeEvent(QCloseEvent *);
     void setProgrammingGui(QWidget* pane);
-    static bool showCvNumbers;// = false;
     void setSearchGui(JPanel* bottom);
     SearchBar* searchBar;
     QList<SearchPair*>* searchTargetList = nullptr;

@@ -63,6 +63,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -12727,6 +12728,11 @@ void PythonQtWrapper_JTable::clearSelection(JTable* theWrappedObject)
 int  PythonQtWrapper_JTable::columnAtPoint(JTable* theWrappedObject, QPoint  arg__1)
 {
   return ( theWrappedObject->columnAtPoint(arg__1));
+}
+
+void PythonQtWrapper_JTable::columnResized(JTable* theWrappedObject, int  column, int  oldWidth, int  newWidth)
+{
+  ( ((PythonQtPublicPromoter_JTable*)theWrappedObject)->promoted_columnResized(column, oldWidth, newWidth));
 }
 
 int  PythonQtWrapper_JTable::convertColumnIndexToModel(JTable* theWrappedObject, int  viewColumnIndex)

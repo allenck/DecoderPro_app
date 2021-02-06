@@ -2,7 +2,7 @@
 #define VARIABLETABLEMODEL_H
 #include <QVector>
 #include <QStringList>
-#include <QLabel>
+#include "jlabel.h"
 #include "cvtablemodel.h"
 #include "variablevalue.h"
 #include <QtXml>
@@ -35,7 +35,7 @@ public:
   DELETE_COLUMN = 7
  };
     explicit VariableTableModel(QObject *parent = 0);
-    /*public*/ VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel,*/ QObject *parent = 0);
+    /*public*/ VariableTableModel(JLabel *status, QStringList h, CvTableModel* cvModel, /*IndexedCvTableModel* iCvModel,*/ QObject *parent = 0);
     /*public*/ int rowCount(const QModelIndex &parent) const override;
     /*public*/ int columnCount(const QModelIndex &parent) const override;
     /*public*/ QString getColumnName(int col) const  override;
@@ -88,10 +88,10 @@ private:
     /*private*/ QStringList headers;// = NULL;
 
     /*private*/ QVector<VariableValue*>* rowVector;// = new Vector<VariableValue>();  // vector of Variable items
-    /*private*/ CvTableModel* _cvModel;// = null;          // reference to external table model
+    /*private*/ CvTableModel* _cvModel = nullptr;          // reference to external table model
     /*private*/ QVector<QPushButton*>* _writeButtons;// = new QVector<QPushButton*>();
     /*private*/ QVector<QPushButton*>* _readButtons;// = new QVector<QPushButton*>();
-    /*private*/ QLabel* _status = NULL;
+    /*private*/ JLabel* _status = nullptr;
     /*private*/ bool _fileDirty;
  protected:
     /*protected*/ void processModifierElements(QDomElement e, VariableValue* v);

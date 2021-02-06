@@ -14,7 +14,7 @@
  *
  */
 // /*public*/ class WatchingLabel extends javax.swing.JLabel  {
-/*public*/ WatchingLabel::WatchingLabel(QString name, QWidget* c, QWidget *parent) : QLabel(name, parent)
+/*public*/ WatchingLabel::WatchingLabel(QString name, QWidget *c, QWidget *parent) : JLabel(name, parent)
 {
     //super(name);
     setText(name);
@@ -39,4 +39,5 @@
     // set initial status
     //self->setVisible(c->isVisible());
 }
+
 

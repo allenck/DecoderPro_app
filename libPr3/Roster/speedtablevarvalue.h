@@ -17,11 +17,10 @@ public:
     /*public*/ SpeedTableVarValue(QString name, QString comment, QString cvName,
                               bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                               QString cvNum, QString mask, int minVal, int maxVal,
-                              QMap<QString,CvValue*>* v, QLabel* status, QString stdname, int entries, bool mfxFlag, QObject *parent = 0);
+                              QMap<QString,CvValue*>* v, JLabel *status, QString stdname, int entries, bool mfxFlag, QObject *parent = 0);
     /*public*/ SpeedTableVarValue(QObject *parent = 0);
     /*public*/ QVariant rangeVal() override;
-    /*public*/ QVector<CvValue*>* usesCVs() override;
-    // /*public*/ void stateChanged(ChangeEvent* e);
+    /*public*/ QVector<CvValue*> usesCVs() override;
     void setModel(int i, int value) ;
     void forceMonotonic(int modifiedStepIndex, int value);
     void matchPoints(int modifiedStepIndex);
@@ -58,7 +57,7 @@ public slots:
     void doShiftRight(JActionEvent* e = 0);
     /*public*/ void stateChanged(QWidget*);
     // handle incoming parameter notification
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     static /*final*/ const QString VSTART_CV;// = 2;
@@ -74,7 +73,6 @@ private:
     bool mfx;
 
     QList<QCheckBox*> stepCheckBoxes;
-    //QList<JSlider*> stepSliders;
     QColor _defaultColor;
 
     /**
@@ -82,7 +80,7 @@ private:
      * indicates the index of the CV to handle when the current programming operation
      * finishes.
      */
-    /*private*/ int _progState;// = IDLE;
+    /*private*/ int _progState = IDLE;
 
     /*private*/ static /*final*/ const int IDLE = -1;
     bool isReading;
@@ -91,7 +89,7 @@ private:
     /**
      * Count number of retries done
      */
-    /*private*/ int retries;// = 0;
+    /*private*/ int retries = 0;
 
     /**
      * Define maximum number of retries of read/write operations before moving on
@@ -148,6 +146,10 @@ public slots:
    if (e->getPropertyName()==("State"))
    {
     setBackground(_var->getColor());
+   }
+   if (e->getPropertyName()==("Value"))
+   {
+    setValue(e->getNewValue().toInt());
    }
   }
 private:

@@ -94,7 +94,7 @@ void PaneProgDp3Action::init()
 {
  log = new Logger("PaneProgDp3Action");
 
- statusLabel = new QLabel(tr("Idle")); // NOI18N
+ statusLabel = new JLabel(tr("Idle")); // NOI18N
  log = new Logger("PaneProgDp3Action");
  lastSelectedProgrammer = QString(this->metaObject()->className())+".SelectedProgrammer"; // NOI18N
  rosterIdField = new JTextField(20);

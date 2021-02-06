@@ -65,7 +65,7 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
  mProgrammer = pProg;
 
  log->setDebugEnabled(true);
- progStatus = new QLabel(tr("Programmer Status: Idle"));
+ progStatus = new JLabel(tr("Programmer Status: Idle"));
  ui->statusbar->addPermanentWidget(progStatus);
  //ui->statusbar->addPermanentWidget(progStatus);
 
@@ -759,7 +759,7 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
      //QString name = progPaneList.at(i).toElement().attribute("name");
      QString name = pnames.at(0).toElement().text();
 
-//     if(name == "Basic Speed Control")
+//     if(name != "Basic Speed Control")
 //      continue;
 //     if(name == "Speed Table")
 //      continue;
@@ -2010,11 +2010,15 @@ void PaneProgFrame::setSearchGui(JPanel* bottom) {
  * Option to control appearance of CV numbers in tool tips
  */
 /*public*/ /*static*/ void PaneProgFrame::setShowCvNumbers(bool yes) {
-    showCvNumbers = yes;
+ if (InstanceManager::getNullableDefault("ProgrammerConfigManager") != nullptr) {
+     ((ProgrammerConfigManager*)InstanceManager::getDefault("ProgrammerConfigManager"))->setShowCvNumbers(yes);
+ }
 }
-/*static*/ bool PaneProgFrame::showCvNumbers = false;
+
 /*public*/ /*static*/ bool PaneProgFrame::getShowCvNumbers() {
-    return showCvNumbers;
+ return (InstanceManager::getNullableDefault("ProgrammerConfigManager") == nullptr)
+         ? true
+         : ((ProgrammerConfigManager*)InstanceManager::getDefault("ProgrammerConfigManager"))->isShowCvNumbers();
 }
 
 /*public*/ /*static*/ void PaneProgFrame::setCanCacheDefault(bool yes) {

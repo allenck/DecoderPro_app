@@ -42,7 +42,7 @@
  _rMPane = new RosterMediaPane(rosterEntry);
  _parent = parent;
  log = new Logger("PrintRosterEntry");
- QLabel* progStatus   = new QLabel(tr("Idle"));
+ JLabel* progStatus   = new JLabel(tr("Idle"));
  Programmer* mProgrammer   = NULL;
  ResetTableModel* resetModel    = new ResetTableModel(progStatus, mProgrammer);
 

@@ -238,7 +238,6 @@ SOURCES += \
     Roster/dccaddresspanel.cpp \
     Roster/paneprogpane.cpp \
     Roster/watchinglabel.cpp \
-    Roster/vartextfield.cpp \
     Roster/fnmappanel.cpp \
     Roster/paneprogframe.cpp \
     Roster/paneopsprogframe.cpp \
@@ -1259,7 +1258,6 @@ HEADERS += \
     Roster/busyglasspane.h \
     Roster/dccaddresspanel.h \
     Roster/watchinglabel.h \
-    Roster/vartextfield.h \
     Roster/fnmappanel.h \
     #Roster/functionlabelspane.h \
     Roster/paneprogframe.h \

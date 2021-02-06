@@ -84,9 +84,9 @@ public:
     /*public*/ CompositeVariableValue(QString name, QString comment, QString cvName,
                              bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                              QString cvNum, QString mask, int minVal, int maxVal,
-                             QMap<QString,CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
+                             QMap<QString,CvValue*>* v, JLabel *status, QString stdname, QObject *parent = 0);
     /*public*/ CompositeVariableValue(QObject *parent = 0);
-    /*public*/ QVector<CvValue*>* usesCVs();
+    /*public*/ QVector<CvValue*> usesCVs();
     /*public*/ void addChoice(QString name) ;
     /*public*/ void addSetting(QString choice, QString varName, VariableValue* variable, QString value);
     /*public*/ void lastItem();

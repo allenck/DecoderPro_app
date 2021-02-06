@@ -62,7 +62,7 @@ public slots:
 private:
     Logger* log;
     QObject *o1, *o2, *o3, *o4;
-    QLabel* statusLabel;
+    JLabel* statusLabel;
     /*final*/ ProgModeSelector* modePane = new ProgServiceModeComboBox();
 
     void init();

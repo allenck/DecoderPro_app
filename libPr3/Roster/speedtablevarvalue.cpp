@@ -69,7 +69,9 @@ const QString SpeedTableVarValue::VHIGH_CV = "5";
 /*public*/ SpeedTableVarValue::SpeedTableVarValue(QString name, QString comment, QString cvName,
                           bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                           QString cvNum, QString mask, int minVal, int maxVal,
-                          QMap<QString,CvValue*>* v, QLabel* status, QString stdname, int entries, bool mfxFlag, QObject *parent) : VariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname, parent)
+                          QMap<QString,CvValue*>* v, JLabel* status, QString stdname, int entries,
+                                                  bool mfxFlag, QObject *parent)
+ : VariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname, parent)
 
 {
  //super(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname, parent);
@@ -134,11 +136,11 @@ const QString SpeedTableVarValue::VHIGH_CV = "5";
     return "Speed table";
 }
 
-/*public*/ QVector<CvValue*>* SpeedTableVarValue::usesCVs() {
-    QVector<CvValue*>* retval = new QVector<CvValue*>(numCvs);
+/*public*/ QVector<CvValue *> SpeedTableVarValue::usesCVs() {
+    QVector<CvValue*> retval = QVector<CvValue*>(numCvs);
     int i;
     for (i=0; i<numCvs; i++)
-        retval->replace(i, _cvMap->value(cvList->at(i)));
+        retval.replace(i, _cvMap->value(cvList->at(i)));
     return retval;
 }
 

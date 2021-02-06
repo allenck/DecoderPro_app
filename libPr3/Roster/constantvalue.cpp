@@ -17,7 +17,7 @@
 /*public*/ ConstantValue::ConstantValue(QString name, QString comment, QString cvName,
                      bool readOnly, bool infoOnly, bool writeOnly,  bool opsOnly,
                      QString cvNum, QString mask, int minVal, int maxVal,
-                     QMap<QString,CvValue*>* v, QLabel* status, QString stdname, QObject *parent) :
+                     QMap<QString,CvValue*>* v, JLabel* status, QString stdname, QObject *parent) :
     VariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname, parent)
 
 {
@@ -45,8 +45,8 @@
 
 }
 
-/*public*/ QVector<CvValue*>* ConstantValue::usesCVs() {
-    return new QVector<CvValue*>;
+/*public*/ QVector<CvValue *> ConstantValue::usesCVs() {
+    return  QVector<CvValue*>();
 }
 
 

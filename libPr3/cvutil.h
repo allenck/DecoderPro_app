@@ -9,6 +9,7 @@ class CvUtil : public QObject
   Q_OBJECT
  public:
   explicit CvUtil(QObject *parent = nullptr);
+  /*public*/ static QList<QString> expandCvList(QString cvString);
   /*public*/ static QString addCvDescription(QString toolTip, QString cvDescription, QString mask);
   /*public*/ static QString getMaskDescription(QString mask);
 

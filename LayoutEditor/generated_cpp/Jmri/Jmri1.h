@@ -76,6 +76,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1378,6 +1379,7 @@ virtual void wheelEvent(QWheelEvent*  arg__1);
 
 class PythonQtPublicPromoter_JTable : public JTable
 { public:
+inline void promoted_columnResized(int  column, int  oldWidth, int  newWidth) { this->columnResized(column, oldWidth, newWidth); }
 inline TableColumnModel*  promoted_createDefaultColumnModel() { return this->createDefaultColumnModel(); }
 inline void promoted_resizeAndRepaint() { this->resizeAndRepaint(); }
 inline void py_q_setModel(QAbstractItemModel*  dataModel) { JTable::setModel(dataModel); }
@@ -1394,6 +1396,7 @@ void delete_JTable(JTable* obj) { delete obj; }
    void addColumn(JTable* theWrappedObject, TableColumn*  aColumn);
    void clearSelection(JTable* theWrappedObject);
    int  columnAtPoint(JTable* theWrappedObject, QPoint  arg__1);
+   void columnResized(JTable* theWrappedObject, int  column, int  oldWidth, int  newWidth);
    int  convertColumnIndexToModel(JTable* theWrappedObject, int  viewColumnIndex);
    int  convertColumnIndexToView(JTable* theWrappedObject, int  modelColumnIndex);
    int  convertRowIndexToModel(JTable* theWrappedObject, int  viewRowIndex);

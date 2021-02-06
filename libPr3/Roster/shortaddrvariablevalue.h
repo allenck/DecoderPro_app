@@ -11,7 +11,7 @@ public:
     /*public*/ ShortAddrVariableValue(QString name, QString comment, QString cvName,
                                   bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                                   QString cvNum, QString mask,
-                                  QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
+                                  QMap<QString, CvValue*>* v, JLabel *status, QString stdname, QObject *parent = 0);
     /*public*/ void setModifiedCV(QString cvNum);
     /*public*/ void writeChanges();
     /*public*/ void writeAll();

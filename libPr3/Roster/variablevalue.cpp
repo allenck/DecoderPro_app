@@ -1,5 +1,6 @@
 #include "variablevalue.h"
 #include "loggerfactory.h"
+#include "exceptions.h"
 
 //VariableValue::VariableValue(QObject *parent) :
 //    AbstractValue(parent)
@@ -169,7 +170,9 @@ void VariableValue::updatedTextField() {
 //    abstract /*public*/ Object rangeVal();
 
 // methods implemented here:
-/*public*/ VariableValue::VariableValue(QString label, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum, QString mask, QMap<QString, CvValue*>* v, QLabel* status, QString item, QObject *parent)
+/*public*/ VariableValue::VariableValue(QString label, QString comment, QString cvName, bool readOnly,
+                                        bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum,
+                                        QString mask, QMap<QString, CvValue*>* v, JLabel* status, QString item, QObject *parent)
  : AbstractValue(parent)
 {
  logit->setDebugEnabled(true);
@@ -316,20 +319,52 @@ void VariableValue::updatedTextField() {
 }
 
 // tool to handle masking, updating
-/*protected*/ int VariableValue::maskVal(QString maskString) {
+
+/**
+ * In case a set of masks was provided, at end of Ctor pick the first mask
+ * for implementing classes that use just one. Call not required if mask is
+ * ignored.
+ */
+/*protected*/ void VariableValue::simplifyMask() {
+    if (_mask != "" && _mask.contains(" ")) {
+        logit->debug(tr("Mask for var %1 was:%2").arg(getCvName()).arg(_mask));
+        _mask = _mask.split(" ")[0];
+        logit->debug(tr("Mask1 for var %1 is:%2").arg(getCvName()).arg(_mask));
+    }
+}
+
+/**
+ * Convert a String bit mask like XXXVVVXX to an int like 0b00011100.
+ *
+ * @param maskString the textual (XXXVVVXX style) mask
+ * @return the binary integer (0b00011100 style) mask
+ */
+/*protected*/ int VariableValue::maskValAsInt(QString maskString) {
     // convert String mask to int
     int mask = 0;
-    for (int i=0; i<8; i++) {
+    for (int i = 0; i < maskString.length(); i++) {
         mask = mask << 1;
-//            try {
+        if(i < maskString.length())
+        {
             if (maskString.at(i) == 'V') {
-                mask = mask+1;
+                mask = mask | 1;
             }
-//            } catch (StringIndexOutOfBoundsException e) {
-//                log->error("mask /"+maskString+"/ could not be handled for variable "+label());
-//            }
+        } else{
+            logit->error(tr("mask \"%1\" could not be handled for variable %2").arg(maskString).arg(label()));
+        }
     }
     return mask;
+}
+
+/**
+ * Is this a bit mask (such as XVVVXXXX form) vice radix mask (small
+ * integer)?
+ *
+ * @param mask the bit mask to check
+ * @return {@code true} if XVVVXXXX form
+ */
+/*protected*/ bool VariableValue::isBitMask(QString mask) {
+    return mask.isEmpty() || mask.startsWith("X") || mask.startsWith("V");
 }
 
 /**
@@ -350,16 +385,48 @@ void VariableValue::updatedTextField() {
 }
 
 /**
+ * Get the current value from the CV, using the mask as needed.
  *
- * @param oldCv Value of the CV before this update is applied
- * @param newVal Value for this variable (e.g. not the CV value)
+ * @param Cv         the CV of interest
+ * @param maskString the (XXXVVVXX style) mask for extracting the Variable
+ *                   value from this CV
+ * @param maxVal     the maximum possible value for this Variable
+ * @return the current value of the Variable
+ */
+/*protected*/ int VariableValue::getValueInCV(int Cv, QString maskString, int maxVal) {
+    if (isBitMask(maskString)) {
+        return (Cv & maskValAsInt(maskString)) >> offsetVal(maskString);
+    } else {
+        int radix = (maskString).toInt();
+        logit->trace(tr("get value %1 radix %2 returns %3").arg(Cv).arg(radix).arg(Cv / radix));
+        return (Cv / radix) % (maxVal + 1);
+    }
+}
+
+
+/**
+ * Set a value into a CV, using the mask as needed.
+ *
+ * @param oldCv      Value of the CV before this update is applied
+ * @param newVal     Value for this variable (e.g. not the CV value)
  * @param maskString The bit mask for this variable in character form
+ * @param maxVal     the maximum possible value for this Variable
  * @return int new value for the CV
  */
-/*protected*/ int VariableValue::newValue(int oldCv, int newVal, QString maskString) {
-    int mask = maskVal(maskString);
-    int offset = offsetVal(maskString);
-    return (oldCv & ~mask) + ((newVal << offset) & mask);
+/*protected*/ int VariableValue::setValueInCV(int oldCv, int newVal, QString maskString, int maxVal) {
+    if (isBitMask(maskString)) {
+        int mask = maskValAsInt(maskString);
+        int offset = offsetVal(maskString);
+        return (oldCv & ~mask) + ((newVal << offset) & mask);
+    } else {
+        int radix = maskString.toInt();
+        int lowPart = oldCv % radix;
+        int newPart = newVal % (maxVal + 1) * radix;
+        int highPart = (oldCv / (radix * (maxVal + 1))) * (radix * (maxVal + 1));
+        int retval = highPart + newPart + lowPart;
+        logit->trace(tr("Set sees oldCv %1 radix %2, lowPart %3, newVal %4, highPart %5, does %6").arg(oldCv).arg(radix).arg(lowPart).arg(newVal).arg(highPart).arg(retval));
+        return retval;
+    }
 }
 
 /**
@@ -375,5 +442,5 @@ void VariableValue::setSV(int cv)
 }
 
 // initialize logging
-    /*private*/ /*final*/ /*static*/ Logger* VariableValue::logit = LoggerFactory::getLogger("VariableValue");
+/*private*/ /*final*/ /*static*/ Logger* VariableValue::logit = LoggerFactory::getLogger("VariableValue");
 

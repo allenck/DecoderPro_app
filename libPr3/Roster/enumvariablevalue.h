@@ -37,9 +37,9 @@ public:
     /*public*/ EnumVariableValue(QString name, QString comment, QString cvName,
                                  bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                                  QString cvNum, QString mask, int minVal, int maxVal,
-                                 QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
+                                 QMap<QString, CvValue*>* v, JLabel *status, QString stdname, QObject *parent = 0);
     /*public*/ EnumVariableValue(QObject *parent = 0);
-    /*public*/ QVector<CvValue*>* usesCVs();
+    /*public*/ QVector<CvValue*> usesCVs();
     /*public*/ void nItems(int n);
     /*public*/ void addItem(QString s);
     /*public*/ void addItem(QString s, int value);

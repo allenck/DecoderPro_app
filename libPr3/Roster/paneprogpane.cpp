@@ -32,7 +32,8 @@
 #include "cvutil.h"
 #include "stringutil.h"
 #include <QHeaderView>
-
+#include "jslider.h"
+#include "jtextfield.h"
 class Attribute
 {
  public:
@@ -552,11 +553,11 @@ void PaneProgPane::enableConfirmButtons()
   if ( !changes ||
                 ( changes && var->isChanged()) )
   {
-   QVector<CvValue*>* cvs = var->usesCVs();
-   for (int j = 0; j<cvs->count(); j++)
+   QVector<CvValue*> cvs = var->usesCVs();
+   for (int j = 0; j<cvs.count(); j++)
    {
     // always of interest
-    CvValue* cv = cvs->at(j);
+    CvValue* cv = cvs.at(j);
     if (!changes || VariableValue::considerChanged(cv))
     set->insert(cv->number().toInt());
    }
@@ -1395,9 +1396,9 @@ void PaneProgPane::restartProgramming()
  {
   g->addWidget(Box::createVerticalGlue(), *cs);
  }
-
+#if 0
  // handle qualification if any
- MyQualifierAdder* qa = new MyQualifierAdder(c, this);
+ MyQualifierAdder* qa = new MyQualifierAdder(1, this);
 // {
 //       protected Qualifier createQualifier(VariableValue var, String relation, String value) {
 //           return new JComponentQualifier(c, var, Integer.parseInt(value), relation);
@@ -1408,6 +1409,7 @@ void PaneProgPane::restartProgramming()
 // };
 
  qa->processModifierElements(element, _varModel);
+#endif
  return c;
 }
 
@@ -1444,6 +1446,7 @@ void PaneProgPane::restartProgramming()
     g->addWidget(l, *globs->gridConstraints);
 //                     globs.gridConstraints.gridwidth = 1;
     // handle qualification if any
+#if 0
     MyQualifierAdder* qa = new MyQualifierAdder(c, this);
 //    {
 //               protected Qualifier createQualifier(VariableValue var, String relation, String value) {
@@ -1455,6 +1458,7 @@ void PaneProgPane::restartProgramming()
 //    };
 
     qa->processModifierElements(e, _varModel);
+#endif
    }
   }
   else if (name== ("group"))
@@ -1856,6 +1860,7 @@ void PaneProgPane::restartProgramming()
   //g->addWidget(Box.createVerticalGlue());
  }
 
+#if 0
  // handle qualification if any
  MyQualifierAdder* qa = new MyQualifierAdder(c, this);
 //    {
@@ -1868,22 +1873,23 @@ void PaneProgPane::restartProgramming()
 //    };
 
  qa->processModifierElements(element, _varModel);
+#endif
  return c;
 }
 
-MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAdder(self)
+MyQualifierAdder::MyQualifierAdder(JLabel *l, PaneProgPane *self) : QualifierAdder(self)
 {
  this->self = self;
- this->c = c;
+ this->l = l;
 }
 
-/*protected*/ Qualifier* MyQualifierAdder::createQualifier(VariableValue* var, QString relation, QString value) {
-
- return new JComponentQualifier(c, var, value.toInt(), relation);
-}
-/*protected*/ void MyQualifierAdder::addListener(PropertyChangeListener* /*qc*/)
+/*protected*/ Qualifier* MyQualifierAdder::createQualifier(VariableValue* var, QString relation, QString value)
 {
- //c->addPropertyChangeListener(qc);
+ return new JComponentQualifier(l, var, value.toInt(), relation);
+}
+/*protected*/ void MyQualifierAdder::addListener(PropertyChangeListener* qc)
+{
+ //l->addPropertyChangeListener(qc);
     // TODO:
 }
 
@@ -2186,9 +2192,9 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
   if (c->children().count() > 1) {
 //   g->addWidget(Box.createVerticalGlue());
   }
-
+#if 0
   // handle qualification if any
-  MyQualifierAdder* qa = new MyQualifierAdder( c, this);
+  MyQualifierAdder* qa = new MyQualifierAdder( l, this);
 //  {
 //        /*protected*/ Qualifier createQualifier(VariableValue var, String relation, QString value) {
 //            return new JComponentQualifier(c, var, Integer.parseInt(value), relation);
@@ -2199,6 +2205,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
 //    };
 
  qa->processModifierElements(element, _varModel);
+#endif
  return c;
 }
 /**
@@ -2208,10 +2215,13 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
 {
  //QString text = LocaleSelector.getAttribute(e,"text");
  QString text = e.attribute("text");
- if (text=="" || text== (""))
+ if (text.isNull() || text== (""))
   //text = LocaleSelector.getAttribute(e,"label"); // label subelement deprecated 3.7.5
   text = e.attribute("label");
- /*final*/ QLabel* l = new QLabel(text);
+ QDomElement eText= e.firstChildElement("text");
+ if(!eText.isNull())
+  text= eText.text();
+ /*final*/ JLabel* l = new JLabel(text);
  //l.setAlignmentX(1.0f);
  cs->fill = GridBagConstraints::BOTH;
  log->trace(tr("Add label: %1 cs: %2 fill: %3 x: %4 y: %5").arg(
@@ -2223,7 +2233,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
  cs->gridheight = 1;
 
  // handle qualification if any
- MyQualifierAdder* qa = new MyQualifierAdder(c, this);
+ MyQualifierAdder* qa = new MyQualifierAdder(l, this);
 // {
 //        protected Qualifier createQualifier(VariableValue var, String relation, String value) {
 //            return new JComponentQualifier(l, var, Integer.parseInt(value), relation);
@@ -2240,7 +2250,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
   */
 /*protected*/ void PaneProgPane::makeSoundLabel(QDomElement e, QWidget* c, GridBagLayout *g, GridBagConstraints* cs)
 {
-#if 1
+
  QString labelText = rosterEntry->getSoundLabel(e.attribute("num").toInt());
  /*final*/ QLabel* l = new QLabel(labelText);
  //l.setAlignmentX(1.0f);
@@ -2256,7 +2266,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
  cs->fill = GridBagConstraints::NONE;
  cs->gridwidth = 1;
  cs->gridheight = 1;
-
+#if 0
  // handle qualification if any
  MyQualifierAdder* qa = new MyQualifierAdder(c, this);
 //  {
@@ -2413,7 +2423,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
   varList->append(i);
 
  // create the paired label
- QLabel* l = new WatchingLabel(" "+label+" ", rep);
+ JLabel* l = new WatchingLabel(" "+label+" ", rep);
 
  // now handle the four orientations
  // assemble v from label, rep
@@ -2522,6 +2532,29 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
               && rep->toolTip()==NULL)
    rep->setToolTip(modifyToolTipText(tip, variable));
   rep->setParent(this);
+  //---------------------
+//  if(qobject_cast<JSlider*>(rep))
+//  {
+//   JSlider* slider = (JSlider*)rep;
+//   connect(slider, &JSlider::valueChanged, [=]{
+//    variable->setIntValue(((JSlider*)rep)->value());
+//   });
+//   connect(variable->prop, &PropertyChangeSupport::propertyChange, [=](PropertyChangeEvent* e){
+//    if(e->getPropertyName() == "Value")
+//    {
+//     slider->setValue(e->getNewValue().toInt());
+//    }
+//   });
+//  }
+//  else if(qobject_cast<JTextField*>(rep))
+//  {
+//   JTextField* tf = (JTextField*)rep;
+//   connect(tf, &JTextField::editingFinished, [=]{
+//    variable->setIntValue(((JTextField*)rep)->text().toInt());
+//   });
+//  }
+//   else log->error(tr("unable to determine format type %1").arg(format));
+  //---------------------
 
  }
  else

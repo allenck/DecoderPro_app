@@ -5,7 +5,6 @@
 #include <QList>
 #include "actionevent.h"
 #include "jtextfield.h"
-#include "vartextfield.h"
 
 class DecVarSlider;
 class LIBPR3SHARED_EXPORT DecVariableValue : public VariableValue
@@ -16,9 +15,9 @@ public:
     /*public*/ DecVariableValue(QString name, QString comment, QString cvName,
                             bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                             QString cvNum, QString mask, int minVal, int maxVal,
-                            QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
+                            QMap<QString, CvValue*>* v, JLabel *status, QString stdname, QObject *parent = 0);
     /*public*/ void setToolTipText(QString t);
-    /*public*/ QVector<CvValue*>* usesCVs() override;
+    /*public*/ QVector<CvValue*> usesCVs() override;
     /*public*/ QVariant rangeVal() override;
     void updatedTextField();
     /*public*/ QString getValueString() override;
@@ -31,8 +30,6 @@ public:
     /*public*/ void setAvailable(bool a);
     /*public*/ QWidget* getNewRep(QString format) override;
     /*public*/ void setValue(int value);
-    QColor getColor();
-    void setColor(QColor c);
     /*public*/ void setCvState(int state) override;
     /*public*/ bool isChanged() override;
     /*public*/ void readChanges() override;
@@ -46,7 +43,7 @@ signals:
 public slots:
     void value_changed();
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
-    /*public*/ void actionPerformed(JActionEvent* e = 0);
+    /*public*/ void actionPerformed();
     /*public*/ void focusGained(/*FocusEvent*/QEvent* e = 0);
     /*public*/ void focusLost(/*FocusEvent*/QEvent* e = 0);
 
@@ -58,80 +55,29 @@ private:
     QList<DecVarSlider*>* sliders;// = new QList<DecVarSlider>();
     QColor _defaultColor;
     QColor currColor;
+    QColor getDefaultColor();
+    QColor getColor();
+    void setColor(QColor c);
     // stored value, read-only Value
     JTextField* _value;// = NULL;
- Logger* log;
- void enterField();
- void exitField();
+    Logger* log;
+    void enterField();
+    void exitField();
+    int fieldLength();
 
  friend class HexVariableValue;
- friend class VarTextField;
+ friend class DecVarSlider;
+ friend class DecVarTextField;
 };
-#if 0
-/* Internal class extends a JTextField so that its color is consistent with
- * an underlying variable
- *
- * @author			Bob Jacobsen   Copyright (C) 2001
- * @version
- */
-/*public*/ class VarTextField : public JTextField
-{
+
+/*public*/ class DecVarTextField : public JTextField {
+Q_OBJECT
+  DecVariableValue* _var;
  public:
-    VarTextField(QDomDocument doc, QString text, int col, VariableValue* var, QWidget* parent = 0) : JTextField(doc, text, col,parent)
-    {
-     //super(doc, text, col);
-     this->doc = doc;
-     this->col = col;
-        _var = var;
-        // get the original color right
-     setBackground(_var->_value->getBackground());
-        // listen for changes to ourself
-//        addActionListener(new ActionListener());
-//        {
-//                /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//                    thisActionPerformed(e);
-//                }
-//            });
-//        addFocusListener(new FocusListener() {
-//                /*public*/ void focusGained(FocusEvent e) {
-//                    if (log->isDebugEnabled()) log->debug("focusGained");
-//                    enterField();
-//                }
+    DecVarTextField(Document* doc, QString text, int col, DecVariableValue* var);
 
-//                /*public*/ void focusLost(FocusEvent e) {
-//                    if (log->isDebugEnabled()) log->debug("focusLost");
-//                    exitField();
-//                }
-//            });
-        // listen for changes to original state
-        _var->addPropertyChangeListener(new PropertyChangeListener());
-//        {
-//                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                    originalPropertyChanged(e);
-//                }
-//            });
-    }
-
-    //DecVariableValue* _var;
-    VariableValue* _var;
-    QDomDocument doc;
-    int col;
-
-    void thisActionPerformed(ActionEvent* /*e*/) {
-        // tell original
-        if(qobject_cast<DecVariableValue*>(_var)!=NULL)
-            ((DecVariableValue*)_var)->actionPerformed(e);
-//        else
-//        _var->actionPerformed(e);
-    }
-
-    void originalPropertyChanged(PropertyChangeEvent* e) {
-        // update this color from original state
-        if (e->getPropertyName()==("State")) {
-         setBackground(_var->_value->getBackground());
-        }
-    }
-    QDomDocument getDocument() {return doc;}
+ public slots:
+    void thisActionPerformed(/*java.awt.event.ActionEvent e*/);
+    void originalPropertyChanged(PropertyChangeEvent* e);
 };
-#endif
 #endif // DECVARIABLEVALUE_H
