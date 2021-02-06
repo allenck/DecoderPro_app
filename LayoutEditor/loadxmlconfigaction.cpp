@@ -65,6 +65,7 @@ void LoadXmlConfigAction::common()
 /*protected*/ bool LoadXmlConfigAction::loadFile(JFileChooser* fileChooser)
 {
  bool results = false;
+ fileChooser->settimeout(15); // 15 sec timeout
  File* file = getFile(fileChooser);
  if (file != nullptr)
  {

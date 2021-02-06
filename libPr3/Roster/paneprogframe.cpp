@@ -265,18 +265,18 @@ PaneProgFrame::~PaneProgFrame()
  QString decoderFamily = r->getDecoderFamily();
  if (log->isDebugEnabled()) log->debug("selected loco uses decoder "+decoderFamily+" "+decoderModel);
  // locate a decoder like that.
- QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
- if (log->isDebugEnabled()) log->debug("found "+QString::number(l->size())+" matches");
- if (l->size() == 0)
+ QList<DecoderFile*> l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
+ if (log->isDebugEnabled()) log->debug("found "+QString::number(l.size())+" matches");
+ if (l.size() == 0)
  {
   log->debug("Loco uses "+decoderFamily+" "+decoderModel+" decoder, but no such decoder defined");
   // fall back to use just the decoder name, not family
   l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", "", "", "", decoderModel);
-  if (log->isDebugEnabled()) log->debug("found "+QString::number(l->size())+" matches without family key");
+  if (log->isDebugEnabled()) log->debug("found "+QString::number(l.size())+" matches without family key");
  }
- if (l->size() > 0)
+ if (l.size() > 0)
  {
-  DecoderFile* d = l->at(0);
+  DecoderFile* d = l.at(0);
   loadDecoderFile(d, r);
  }
  else

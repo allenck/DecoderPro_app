@@ -64,11 +64,11 @@
     QString lastFamily = "";
 
     DecoderIndexFile* f = (DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile");
-    QList<DecoderFile*>* l = f->matchingDecoderList(NULL, NULL, NULL, NULL, NULL, NULL); // take all
+    QList<DecoderFile*> l = f->matchingDecoderList(NULL, NULL, NULL, NULL, NULL, NULL); // take all
     int i = -1;
-    log->debug("Roster list size: " + l->size());
-    for (i = 0; i < l->size(); i++) {
-        DecoderFile* d = l->at(i);
+    log->debug("Roster list size: " + l.size());
+    for (i = 0; i < l.size(); i++) {
+        DecoderFile* d = l.at(i);
         if (d->getMfg()!=(lastMfg)) {
             printMfg(d, writer);
             lastMfg = d->getMfg();

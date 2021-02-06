@@ -81,7 +81,7 @@ private:
 
     QString oldContents;// = "";
     QColor _defaultColor;
-    QList<QWidget*>* reps;// = new QList<QWidget*>();
+    QList<QWidget*> reps = QList<QWidget*>();
 
     // the connection is to cvNum and cvNum+1
     long _minVal;

@@ -1035,9 +1035,9 @@ void RosterFrame::updateProgMode() // SLOT
     }
     //Still more than one possible loco, so check against the decoder family
     QList<RosterEntry*> l3 =  QList<RosterEntry*>();
-    QList<DecoderFile*>* temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", QString::number(mfgId), QString::number( modelId), "", "");
+    QList<DecoderFile*> temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", QString::number(mfgId), QString::number( modelId), "", "");
     QStringList* decoderFam = new QStringList();
-    foreach (DecoderFile* f, *temp)
+    foreach (DecoderFile* f, temp)
     {
      if (!decoderFam->contains(f->getModel()))
      {

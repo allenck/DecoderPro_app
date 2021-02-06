@@ -6,6 +6,7 @@
 #include "focuslistener.h"
 #include "itemlistener.h"
 #include <QStringListModel>
+#include "comboboxmodel.h"
 
 class EventObject;
 class JComboBox : public QComboBox, public JComponent
@@ -15,6 +16,7 @@ class JComboBox : public QComboBox, public JComponent
 public:
  JComboBox(QWidget* parent = nullptr);
  JComboBox(QStringList list, QWidget* parent = nullptr);
+ JComboBox(ComboBoxModel* model, QWidget* parent = nullptr);
  ~JComboBox() {}
  JComboBox(const JComboBox&) : QComboBox() {}
 

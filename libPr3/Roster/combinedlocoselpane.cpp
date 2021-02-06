@@ -477,33 +477,33 @@ CLSIdentifyDecoder::CLSIdentifyDecoder(Programmer* programmer, CombinedLocoSelPa
  // raise the button again
  iddecoder->setChecked(false);
  //QList<DecoderFile*>* temp = new QList<DecoderFile*>();
- QList<DecoderFile*>* temp = NULL;
+ QList<DecoderFile*> temp;
 
  // if productID present, try with that
  if (productID != -1)
  {
   QString sz_productID = QString::number(productID);
   temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", QString::number(mfgID), QString::number(modelID), sz_productID, "");
-  if (temp->size() == 0)
+  if (temp.size() == 0)
   {
    log->debug("selectDecoder found no items with product ID "+productID);
-   temp = NULL;
+   temp = QList<DecoderFile*>();
   }
   else
   {
-   log->debug("selectDecoder found "+QString::number(temp->size())+" matches with productID "+QString::number(productID));
+   log->debug("selectDecoder found "+QString::number(temp.size())+" matches with productID "+QString::number(productID));
   }
  }
 
  // try without product ID if needed
- if (temp == NULL)
+ if (temp == QList<DecoderFile*>())
  {  // i.e. if no match previously
   temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", QString::number(mfgID), QString::number(modelID), "", "");
-  if (log->isDebugEnabled()) log->debug("selectDecoder without productID found "+QString::number(temp->size())+" matches");
+  if (log->isDebugEnabled()) log->debug("selectDecoder without productID found "+QString::number(temp.size())+" matches");
  }
 
  // install all those in the JComboBox in place of the longer, original list
- if (temp->size() > 0)
+ if (temp.size() > 0)
  {
   updateForDecoderTypeID(temp);
  }
@@ -524,11 +524,11 @@ CLSIdentifyDecoder::CLSIdentifyDecoder(Programmer* programmer, CombinedLocoSelPa
 /**
  * Decoder identify has matched one or more specific types
  */
-void CombinedLocoSelPane::updateForDecoderTypeID(QList<DecoderFile*>* pList)
+void CombinedLocoSelPane::updateForDecoderTypeID(QList<DecoderFile*> pList)
 {
  //decoderBox->setModel(DecoderIndexFile::jComboBoxModelFromList(pList));
  decoderBox->clear();
- foreach(DecoderFile* r, *pList)
+ foreach(DecoderFile* r, pList)
   decoderBox->addItem(r->titleString());
  decoderBox->insertItem(0, "<from locomotive settings>");
  decoderBox->setCurrentIndex(1);

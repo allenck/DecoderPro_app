@@ -438,20 +438,20 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
          log->debug(tr("selected loco uses decoder %1 %2").arg(decoderFamily).arg(decoderModel));
      }
      // locate a decoder like that.
-     QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
+     QList<DecoderFile*> l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
      if (log->isDebugEnabled()) {
-         log->debug(tr("found %1 matches").arg(l->size()));
+         log->debug(tr("found %1 matches").arg(l.size()));
      }
-     if (l->isEmpty()) {
+     if (l.isEmpty()) {
          log->debug(tr("Loco uses %1 %2 decoder, but no such decoder defined").arg(decoderFamily).arg(decoderModel ));
          // fall back to use just the decoder name, not family
          l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", "", "", "", decoderModel);
          if (log->isDebugEnabled()) {
-             log->debug(tr("found %1 matches without family key").arg(l->size()));
+             log->debug(tr("found %1 matches without family key").arg(l.size()));
          }
      }
-     if (!l->isEmpty()) {
-         DecoderFile* d = l->at(0);
+     if (!l.isEmpty()) {
+         DecoderFile* d = l.at(0);
          loadDecoderFile(d, r, varTable);
      } else {
          if (decoderModel ==("")) {

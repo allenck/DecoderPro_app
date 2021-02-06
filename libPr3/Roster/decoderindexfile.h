@@ -2,7 +2,7 @@
 #define DECODERINDEXFILE_H
 #include "xmlfile.h"
 #include <QStringList>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QMutex>
 #include <QHash>
 #include "libPr3_global.h"
@@ -24,13 +24,13 @@ public:
     /*public*/ QStringList* getMfgNameList();
     /*public*/ QString mfgIdFromName(QString name);
     /*public*/ QString mfgNameFromId(QString name);
-    /*public*/ QList<DecoderFile*>* matchingDecoderList(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model );
+    /*public*/ QList<DecoderFile *> matchingDecoderList(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model );
     /*public*/ QList<DecoderFile*> matchingDecoderList(QString mfg, QString family,
           QString decoderMfgID, QString decoderVersionID,
           QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID);
     /*public*/ QComboBox* matchingComboBox(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model );
-    static /*public*/ QComboBox* jComboBoxFromList(QList<DecoderFile*>* l);
-    static /*public*/ ComboBoxModel* jComboBoxModelFromList(QList<DecoderFile*>* l);
+    static /*public*/ JComboBox* jComboBoxFromList(QList<DecoderFile*> l);
+    static /*public*/ ComboBoxModel* jComboBoxModelFromList(QList<DecoderFile *> l);
     /*public*/ DecoderFile* fileFromTitle(QString title );
     /*public*/ bool checkEntry(int i, QString mfgName, QString family, QString mfgID, QString decoderVersionID, QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID);
     /*public*/ /*synchronized*/ static void resetInstance();
@@ -42,7 +42,8 @@ public:
     void readFamilySection(QDomElement decoderIndex);
     void readFamily(QDomElement family);
     /*public*/ void writeFile(QString name, DecoderIndexFile* oldIndex, QStringList* files) /*throw (IOException)*/;
-signals:
+
+ signals:
 
 public slots:
 

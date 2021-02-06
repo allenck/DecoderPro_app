@@ -705,7 +705,6 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 
 /*public*/ bool AbstractThrottleManager::addressStillRequired(DccLocoAddress* la)
 {
-#if 1 // TODO:
  //if (addressThrottles->contains(la))
  bool f = false;
  foreach (LocoAddress* a, addressThrottles->keys()) {
@@ -723,8 +722,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    return true;
   }
  }
-#endif
-    return false;
+ return false;
 }
 
 /*public*/ void AbstractThrottleManager::releaseThrottle(DccThrottle* t, ThrottleListener* l)
@@ -735,8 +733,9 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 /*public*/ bool AbstractThrottleManager::disposeThrottle(DccThrottle* t, ThrottleListener* l)
 {
 //        if (!active) log->error("Dispose called when not active");  <-- might need to control this in the sub class
- if(t == NULL) return false;
-#if 1 // TODO:
+ if(t == NULL) 
+  return false;
+
  DccLocoAddress* la = (DccLocoAddress*) t->getLocoAddress();
  if (addressReleased(la, l))
  {
@@ -772,7 +771,6 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  {
   log->debug("Loco Address not found in the stack " + QString::number(la->getNumber()));
  }
-#endif
  return true;
 }
 

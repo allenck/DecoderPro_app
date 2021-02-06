@@ -130,6 +130,18 @@ void JFileChooser::common()
 // });
  returnValue = ERROR_OPTION;
  //rescanCurrentDirectory();
+  if(_timeout > 0)
+  {
+   // One shot timer to close the dialog programmatically
+   timer = new QTimer(this);
+   timer->setSingleShot(true);
+   connect(timer, &QTimer::timeout, [=]()
+   {
+       dialog->close();
+       timer->deleteLater();
+   } );
+   timer->start(_timeout);
+  }
 
  int rslt = dialog->exec();
  switch (rslt)
@@ -162,6 +174,11 @@ void JFileChooser::common()
 // dialog.getContentPane().removeAll();
  delete dialog;
  dialog = nullptr;
+ if(timer)
+ {
+  timer->stop();
+  timer = nullptr;
+ }
  return returnValue;
 }
 
@@ -406,4 +423,25 @@ QString JFileChooser::getFileFilter() { return selectedFilter;}
 //    currentDirectory = dir;
 
 //    firePropertyChange(DIRECTORY_CHANGED_PROPERTY, oldValue, currentDirectory);
+}
+
+/*public*/ void JFileChooser::settimeout(int i)
+{
+ _timeout = i * 1000;
+ if(_timeout)
+ {
+  if(timer)
+  {
+   timer->stop();
+   timer = nullptr;
+  }
+ }
+ else
+ {
+  if(timer)
+   timer->stop();
+ }
+}
+/*public*/ int JFileChooser::getTimeout(){
+ return _timeout / 1000;
 }

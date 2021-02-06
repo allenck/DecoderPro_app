@@ -18,6 +18,11 @@ JComboBox::JComboBox(QStringList list, QWidget* parent) : QComboBox(parent)
  setModel(cbModel);
 }
 
+JComboBox::JComboBox(ComboBoxModel* model, QWidget* parent)
+{
+
+}
+
 /*public*/ bool JComboBox::isOpaque()
 {
  return _opaque;

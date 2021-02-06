@@ -417,13 +417,13 @@ void SplitVariableValue::setColor(QColor c) {
  if (getReadOnly() || getInfoOnly()) {
      value->setEditable(false);
  }
- reps->append(value);
+ reps.append(value);
  return updateRepresentation(value);
 }
 
 /*public*/ void SplitVariableValue::setAvailable(bool a) {
     _textField->setVisible(a);
-    foreach (QWidget* c, *reps) c->setVisible(a);
+    foreach (QWidget* c, reps) c->setVisible(a);
     VariableValue::setAvailable(a);
 }
 

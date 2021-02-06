@@ -108,7 +108,6 @@ SOURCES += appslib.cpp \
     vsdmanagerevent.cpp \
     vsdpreferencesaction.cpp \
     vsdecoderpreferencespane.cpp \
-    loadxmlvsdecoderaction.cpp \
     installdecoderurlaction.cpp \
     installdecoderfileaction.cpp \
     vsdsoundspanel.cpp \
@@ -247,7 +246,6 @@ HEADERS += appslib.h\
     vsdmanagerevent.h \
     vsdpreferencesaction.h \
     vsdecoderpreferencespane.h \
-    loadxmlvsdecoderaction.h \
     installdecoderurlaction.h \
     installdecoderfileaction.h \
     vsdsoundspanel.h \

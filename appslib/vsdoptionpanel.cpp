@@ -1,5 +1,4 @@
 #include "vsdoptionpanel.h"
-#include "vsdecoderpane.h"
 #include <QGridLayout>
 #include <QBoxLayout>
 #include <QLabel>

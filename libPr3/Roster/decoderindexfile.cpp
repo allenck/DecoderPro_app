@@ -7,6 +7,7 @@
 #include "file.h"
 #include "fileutil.h"
 #include <QStringList>
+#include "jcombobox.h"
 
 //QString DecoderIndexFile::decoderIndexFileName = "decoderIndex.xml";
 /*static*/ /*final*/ /*protected*/ QString DecoderIndexFile::DECODER_INDEX_FILE_NAME = "decoderIndex.xml";
@@ -64,18 +65,11 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
 /**
  *	Get a List of decoders matching some information
  */
-/*public*/ QList<DecoderFile*>* DecoderIndexFile::matchingDecoderList(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model )
+/*public*/ QList<DecoderFile*> DecoderIndexFile::matchingDecoderList(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model )
 {
- QList<DecoderFile*>* l = new QList<DecoderFile*>();
- for (int i = 0; i < numDecoders(); i++)
- {
-  if ( checkEntry(i, mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model, "", "", "" ))
-  {
-   l->append(decoderList->at(i));
-  }
- }
- return l;
+ return (matchingDecoderList(mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model, "", "", ""));
 }
+
 /**
  * Get a List of decoders matching some information.
  *
@@ -94,13 +88,13 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
 /*public*/ QList<DecoderFile*>DecoderIndexFile:: matchingDecoderList(QString mfg, QString family,
         QString decoderMfgID, QString decoderVersionID,
         QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID) {
-    QList<DecoderFile*> l = QList<DecoderFile*>();
-    for (int i = 0; i < numDecoders(); i++) {
-        if (checkEntry(i, mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model, developerID, manufacturerID, productID)) {
-            l.append(decoderList->at(i));
-        }
-    }
-    return l;
+ QList<DecoderFile*> l = QList<DecoderFile*>();
+ for (int i = 0; i < numDecoders(); i++) {
+     if (checkEntry(i, mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model, developerID, manufacturerID, productID)) {
+         l.append(decoderList->at(i));
+     }
+ }
+ return l;
 }
 
 /**
@@ -109,40 +103,38 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  */
 /*public*/ QComboBox* DecoderIndexFile::matchingComboBox(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model )
 {
- QList<DecoderFile*>* l = matchingDecoderList(mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model );
+ QList<DecoderFile*> l = matchingDecoderList(mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model );
  return jComboBoxFromList(l);
 }
 
 /**
- * Return a JComboBox made with the titles from a list of
- * DecoderFile entries
+ * Get a JComboBox made with the titles from a list of DecoderFile entries.
+ *
+ * @param l list of decoders
+ * @return a combo box populated with the list
  */
-/*static*/ /*public*/ QComboBox* DecoderIndexFile::jComboBoxFromList(QList<DecoderFile*>* l)
-{
- QComboBox* comboBox = new QComboBox();
-// for(int i=0; i < l->size(); l++)
-//  comboBox->addItem(l->at(i)->titleString());
- foreach (DecoderFile* f, *l)
- {
-  comboBox->addItem(f->titleString());
+/*public*/ /*static*/ JComboBox/*<String>*/* DecoderIndexFile::jComboBoxFromList(QList<DecoderFile*> l) {
+    //return new JComboBox(jComboBoxModelFromList(l));
+ JComboBox* box = new JComboBox();
+ for (int i = 0; i < l.size(); i++) {
+     DecoderFile* r = l.at(i);
+     box->addItem(r->titleString());
  }
- //return new QComboBox(jComboBoxModelFromList(l));
- return comboBox;
+ return box;
 }
 
 /**
  * Return a new ComboBoxModel made with the titles from a list of
  * DecoderFile entries
  */
-/*static*/ /*public*/ ComboBoxModel* DecoderIndexFile::jComboBoxModelFromList(QList<DecoderFile*>* l)
+/*static*/ /*public*/ ComboBoxModel* DecoderIndexFile::jComboBoxModelFromList(QList<DecoderFile*> l)
 {
-//    DefaultComboBoxModel<QString>* b = new DefaultComboBoxModel<QString>();
-//    for (int i = 0; i < l->size(); i++) {
-//        DecoderFile* r = l->at(i);
-////        b->addElement(r->titleString());
-//    }
-//    return (ComboBoxModel*)b;
-    return NULL;
+ DefaultComboBoxModel<QString>* b = new DefaultComboBoxModel<QString>(QList<QString>());
+ for (int i = 0; i < l.size(); i++) {
+     DecoderFile* r = l.at(i);
+     b->addElement(r->titleString());
+ }
+ return b;
 }
 
 /**

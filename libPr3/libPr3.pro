@@ -534,7 +534,6 @@ SOURCES += \
     zipfile.cpp \
     vsdsound.cpp \
     vsdecoderevent.cpp \
-    storexmlvsdecoderaction.cpp \
     trigger.cpp \
     soundevent.cpp \
     momentarysoundevent.cpp \
@@ -1579,7 +1578,6 @@ HEADERS += \
     zipfile.h \
     vsdsound.h \
     vsdecoderevent.h \
-    storexmlvsdecoderaction.h \
     trigger.h \
     soundevent.h \
     momentarysoundevent.h \

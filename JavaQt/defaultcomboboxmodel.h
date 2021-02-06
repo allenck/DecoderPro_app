@@ -5,11 +5,13 @@
 #include <QVector>
 #include "abstractlistmodel.h"
 #include "javaqt_global.h"
+#include "comboboxmodel.h"
 
 template <class E>
-class JAVAQTSHARED_EXPORT DefaultComboBoxModel : public AbstractListModel
+class JAVAQTSHARED_EXPORT DefaultComboBoxModel : public AbstractListModel, public ComboBoxModel
 {
     //Q_OBJECT
+  Q_INTERFACES(ComboBoxModel)
 public:
     //explicit DefaultComboBoxModel(QObject *parent = 0);
     /**
@@ -27,7 +29,7 @@ public:
     /*public*/ void setSelectedItem(QObject* anObject);
     /*public*/ QObject* getSelectedItem();
     /*public*/ int getSize();
-    /*public*/ E getElementAt(int index);
+//    /*public*/ QObject* getElementAt(int index);
     /*public*/ int getIndexOf(QObject* anObject) ;
     /*public*/ void addElement(E anObject);
     /*public*/ void insertElementAt(E anObject,int index);
@@ -37,6 +39,9 @@ public:
      * Empties the list.
      */
     /*public*/ void removeAllElements();
+  /*public*/ int rowCount(const QModelIndex &parent) const {return 0;}
+  /*public*/ QVariant data(const QModelIndex &index, int role) const {return QVariant();}
+  QObject* self() {return (QObject*)this;}
 
 signals:
 

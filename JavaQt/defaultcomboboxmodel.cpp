@@ -91,13 +91,13 @@ template <class E>
 }
 
 // implements javax.swing.ListModel
-template <class E>
-/*public*/ E DefaultComboBoxModel<E>::getElementAt(int index) {
-    if ( index >= 0 && index < objects.size() )
-        return objects.at(index);
-    else
-        return NULL;
-}
+//template <class E>
+///*public*/ QObject* DefaultComboBoxModel<E>::getElementAt(int index) {
+//    if ( index >= 0 && index < objects.size() )
+//        return objects.at(index);
+//    else
+//        return NULL;
+//}
 
 /**
  * Returns the index-position of the specified object in the list.

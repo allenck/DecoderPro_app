@@ -42,7 +42,7 @@ private:
     virtual void setDecoderSelectionFromLoco(QString loco);
     virtual bool isDecoderSelected();
    Logger* log;
-   virtual void updateForDecoderTypeID(QList<DecoderFile*>* pList);
+   virtual void updateForDecoderTypeID(QList<DecoderFile *> pList);
    virtual void updateForDecoderMfgID(QString pMfg, int pMfgID, int pModelID);
    virtual void updateForDecoderNotID(int pMfgID, int pModelID);
    ProgModeSelector* selector;

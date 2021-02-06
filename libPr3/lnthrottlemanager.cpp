@@ -353,13 +353,13 @@ DccThrottle* LnThrottleManager::createThrottle(LocoNetSystemConnectionMemo* memo
 
 /*public*/ void LnThrottleManager::releaseThrottle(DccThrottle* t, ThrottleListener* l)
 {
- if(t == NULL) return;
-    LocoNetThrottle* lnt = (LocoNetThrottle*) t;
-    LocoNetSlot* tSlot = lnt->getLocoNetSlot();
-    if (tSlot != NULL)
-        tc->sendLocoNetMessage(
-                tSlot->writeStatus(LnConstants::LOCO_COMMON));
-    AbstractThrottleManager::releaseThrottle(t, l);
+ if(t == NULL) 
+  return;
+ LocoNetThrottle* lnt = (LocoNetThrottle*) t;
+ LocoNetSlot* tSlot = lnt->getLocoNetSlot();
+ if (tSlot != NULL)
+     tc->sendLocoNetMessage(tSlot->writeStatus(LnConstants::LOCO_COMMON));
+ AbstractThrottleManager::releaseThrottle(t, l);
 }
 /**
  * Cancels the loco acquisition process when throttle acquisition of a loco

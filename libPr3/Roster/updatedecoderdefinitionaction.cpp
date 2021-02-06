@@ -62,13 +62,13 @@ foreach (RosterEntry* entry, list)
   QString model = entry->getDecoderModel();
 
   // check if replaced
-  QList<DecoderFile*>* decoders = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList(NULL, family, NULL, NULL, NULL, model);
-  log->info("Found " + QString::number(decoders->size()) + " decoders matching family \"" + family + "\" model \"" + model + "\" from roster entry \"" + entry->getId() + "\"");
+  QList<DecoderFile*> decoders = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList(NULL, family, NULL, NULL, NULL, model);
+  log->info("Found " + QString::number(decoders.size()) + " decoders matching family \"" + family + "\" model \"" + model + "\" from roster entry \"" + entry->getId() + "\"");
 
   QString replacementFamily = NULL;
   QString replacementModel = NULL;
 
-  foreach (DecoderFile* decoder, *decoders)
+  foreach (DecoderFile* decoder, decoders)
   {
    if (decoder->getReplacementFamily() != NULL || decoder->getReplacementModel() != NULL)
    {

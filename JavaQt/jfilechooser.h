@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QStringList>
 #include "javaqt_global.h"
+#include <QTimer>
 
 class File;
 class PropertyChangeSupport;
@@ -45,6 +46,8 @@ public:
  /*public*/ QString getFileFilter();
  /*public*/ void setCurrentDirectory(File* dir);
  /*public*/ File* getCurrentDirectory();
+ /*public*/ void settimeout(int i);
+ /*public*/ int getTimeout();
 
 signals:
 
@@ -65,6 +68,8 @@ private:
  QString selectedFilter;
  File* currentDirectory;
  QString title;
+ int _timeout = -1;
+ QTimer* timer = nullptr;
 
  void common();
 
