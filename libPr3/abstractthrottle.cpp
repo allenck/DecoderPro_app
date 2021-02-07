@@ -19,7 +19,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  re = nullptr;
  this->parent = parent;
  setObjectName("AbstractThrottle");
- speedStepMode = new SpeedStepMode(SpeedStepMode::UNKNOWN);
+ speedStepMode = SpeedStepMode::UNKNOWN;
 
  log = new Logger("AbstractThrottle");
  durationRunning = 0;
@@ -511,7 +511,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  * always positive.
  */
 /*public*/ float AbstractThrottle::getSpeedIncrement() {
-    return speedStepMode->increment;
+    return SpeedStepMode(speedStepMode).increment;
 }
 
 // functions - note that we use the naming for DCC, though that's not the implication;
@@ -747,7 +747,82 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
     if (old != this->f28)
         notifyPropertyChangeListener(Throttle::F28, old, this->f28 );
 }
+/**
+  * Send whole (DCC) Function Group for a particular function number.
+  * @param functionNum Function Number
+  * @param momentary False to send normal function status, true to send momentary.
+  */
+ /*protected*/ void AbstractThrottle::sendFunctionGroup(int functionNum, bool momentary){
+     switch (FUNCTION_GROUPS[functionNum]) {
+         case 1:
+             if (momentary) sendMomentaryFunctionGroup1(); else sendFunctionGroup1();
+             break;
+         case 2:
+             if (momentary) sendMomentaryFunctionGroup2(); else sendFunctionGroup2();
+             break;
+         case 3:
+             if (momentary) sendMomentaryFunctionGroup3(); else sendFunctionGroup3();
+             break;
+         case 4:
+             if (momentary) sendMomentaryFunctionGroup4(); else sendFunctionGroup4();
+             break;
+         case 5:
+             if (momentary) sendMomentaryFunctionGroup5(); else sendFunctionGroup5();
+             break;
+         default:
+             break;
+     }
+ }
 
+ /**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractThrottle::setFunction(int functionNum, bool newState) {
+    if (functionNum < 0 || functionNum > FUNCTION_BOOLEAN_ARRAY.length()-1) {
+        log->warn(tr("Unhandled set function number: %1 %2").arg(functionNum).arg(this->metaObject()->className()));
+        return;
+    }
+    bool old = FUNCTION_BOOLEAN_ARRAY[functionNum];
+    FUNCTION_BOOLEAN_ARRAY[functionNum] = newState;
+    sendFunctionGroup(functionNum,false);
+//    firePropertyChange(Throttle::getFunctionString(functionNum), old, newState);
+}
+
+/**
+ * Update the state of a single function. Updates function value and
+ * ChangeListener. Does not send outward message TO hardware.
+ *
+ * @param fn    Function Number 0-28
+ * @param state On - True, Off - False
+ */
+/*public*/ void AbstractThrottle::updateFunction(int fn, bool state) {
+    if (fn < 0 || fn > FUNCTION_BOOLEAN_ARRAY.length()-1) {
+        log->warn(tr("Unhandled update function number: %1 %2").arg(fn).arg(this->metaObject()->className()));
+        return;
+    }
+    bool old = FUNCTION_BOOLEAN_ARRAY[fn];
+    FUNCTION_BOOLEAN_ARRAY[fn] = state;
+//    firePropertyChange(Throttle::getFunctionString(fn), old, state);
+}
+
+/**
+ * Update the Momentary state of a single function.
+ * Updates function value and ChangeListener.
+ * Does not send outward message TO hardware.
+ *
+ * @param fn    Momentary Function Number 0-28
+ * @param state On - True, Off - False
+ */
+/*public*/ void AbstractThrottle::updateFunctionMomentary(int fn, bool state) {
+    if (fn < 0 || fn > FUNCTION_MOMENTARY_BOOLEAN_ARRAY.length()-1) {
+        log->warn(tr("Unhandled update momentary function number: $1").arg(fn));
+        return;
+    }
+    bool old = FUNCTION_MOMENTARY_BOOLEAN_ARRAY[fn];
+    FUNCTION_MOMENTARY_BOOLEAN_ARRAY[fn] = state;
+//    firePropertyChange(Throttle::getFunctionMomentaryString(fn), old, state);
+}
 
 /**
  * Send the message to set the state of
@@ -1147,10 +1222,10 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  * @param Mode - the current speed step mode - default should be 128
  *              speed step mode in most cases
  */
-/*public*/ void AbstractThrottle::setSpeedStepMode(SpeedStepMode* newMode) {
- log->debug(tr("Speed Step Mode Change from:%1 to Mode:%2").arg(this->speedStepMode->name).arg(newMode->name));
+/*public*/ void AbstractThrottle::setSpeedStepMode(SpeedStepMode::SSMODES newMode) {
+ log->debug(tr("Speed Step Mode Change from:%1 to Mode:%2").arg(this->speedStepMode).arg(newMode));
  if (speedStepMode != newMode) {
-     notifyPropertyChangeListener("SpeedSteps", this->speedStepMode->mode, newMode->mode);
+     notifyPropertyChangeListener("SpeedSteps", this->speedStepMode, newMode);
      this->speedStepMode = newMode;
  }
 }
@@ -1159,7 +1234,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  * getSpeedStepMode - get the current speed step value.
  * <P>
  */
- /*public*/ SpeedStepMode* AbstractThrottle::getSpeedStepMode() {
+ /*public*/ SpeedStepMode::SSMODES AbstractThrottle::getSpeedStepMode() {
     return speedStepMode;
  }
 

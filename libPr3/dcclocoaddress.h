@@ -12,7 +12,7 @@ public:
     explicit DccLocoAddress(int number, bool isLong, QObject *parent = 0);
     DccLocoAddress(int number, Protocol protocol, QObject *parent = 0);
     DccLocoAddress(const DccLocoAddress& l , QObject* parent = 0);
-    //bool operator ==(const LocoAddress &a) override;
+    //bool operator ==(const LocoAddress &a);
     Q_INVOKABLE /*public*/ bool equals(QObject* a);
     int hashCode();
     QString toString();

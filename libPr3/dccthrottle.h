@@ -59,7 +59,7 @@ void virtual setSpeedStepMode(SpeedStepMode::SSMODES /*Mode*/) {}
  * getSpeedStepMode - get the current speed step value.
  * <P>
  */
-virtual SpeedStepMode* getSpeedStepMode() {return   new SpeedStepMode(SpeedStepMode::UNKNOWN);}
+virtual SpeedStepMode::SSMODES getSpeedStepMode() {return   SpeedStepMode::UNKNOWN;}
 
 // information on consisting  (how do we set consisting?)
 

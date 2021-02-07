@@ -107,7 +107,7 @@ using namespace Sprog;
  */
 //@Override
 /*public*/ void SprogCSThrottle::setSpeedSetting(float speed) {
-    int mode = getSpeedStepMode()->mode;
+    int mode = getSpeedStepMode();
     if ((mode & DccThrottle::SpeedStepMode28) != 0) {
         // 28 step mode speed commands are
         // stop, estop, stop, estop, 4, 5, ..., 31

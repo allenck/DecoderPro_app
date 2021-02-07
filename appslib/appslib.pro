@@ -110,7 +110,6 @@ SOURCES += appslib.cpp \
     vsdecoderpreferencespane.cpp \
     installdecoderurlaction.cpp \
     installdecoderfileaction.cpp \
-    vsdsoundspanel.cpp \
     vsdoptionpanel.cpp \
     profileutils.cpp \
     jmriconfigurationprovider.cpp \
@@ -248,7 +247,6 @@ HEADERS += appslib.h\
     vsdecoderpreferencespane.h \
     installdecoderurlaction.h \
     installdecoderfileaction.h \
-    vsdsoundspanel.h \
     vsdoptionpanel.h \
     profileutils.h \
     auxiliaryconfiguration.h \

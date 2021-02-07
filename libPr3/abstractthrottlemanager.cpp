@@ -699,7 +699,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   p->propertyChange(new PropertyChangeEvent(this, "throttleRemoved", la, NULL));
   return;
  }
- //p->propertyChange(new PropertyChangeEvent(this, "throttleNotFoundInRemoval", la, NULL));
+ p->propertyChange(new PropertyChangeEvent(this, "throttleNotFoundInRemoval", la, NULL));
 #endif
 }
 
@@ -879,7 +879,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    }
    else if (item==("SpeedStepMode"))
    {
-    int i =  ln->getSpeedStepMode()->mode;
+    int i =  ln->getSpeedStepMode();
     return i;
    }
   }

@@ -14,13 +14,13 @@ class ComboBoxModel //: public ListModel
        * @param anItem the list object to select or <code>null</code>
        *        to clear the selection
        */
-  virtual void setSelectedItem(QObject* anItem) {}
+  virtual void setSelectedItem(QString anItem) {}
 
       /**
        * Returns the selected item
        * @return The selected item or <code>null</code> if there is no selection
        */
-  virtual QObject* getSelectedItem() = 0;
+  virtual QString getSelectedItem() = 0;
   virtual QObject* self() = 0;
 };
 Q_DECLARE_INTERFACE(ComboBoxModel, "ComboBoxModel")

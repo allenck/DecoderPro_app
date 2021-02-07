@@ -21,7 +21,7 @@
     //super(memo);
     this->address = address;
     addr = address->getNumber();
-    setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_28));
+    setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
     //this->speedIncrement = 1;  // 128 step mode only
 }
 
@@ -37,13 +37,13 @@
     } else if (lSpeed == 1) {
         return -1.f;   // estop
     }
-    if (getSpeedStepMode()->mode == DccThrottle::SpeedStepMode28) {
+    if (getSpeedStepMode() == DccThrottle::SpeedStepMode28) {
         if (lSpeed <= 15) //Value less than 15 is in the stop/estop range bracket
         {
             return 0.f;
         }
         return (((lSpeed - 12) / 4.f) / 28.f);
-    } else if (getSpeedStepMode()->mode == DccThrottle::SpeedStepMode14) {
+    } else if (getSpeedStepMode() == DccThrottle::SpeedStepMode14) {
         if (lSpeed <= 15) //Value less than 15 is in the stop/estop range bracket
         {
             return 0.f;
@@ -63,14 +63,14 @@
     if (speed <= 0) {
         return speed; // return idle and emergency stop
     }
-    switch (this->getSpeedStepMode()->mode) {
+    switch (this->getSpeedStepMode()) {
         case DccThrottle::SpeedStepMode28:
         case DccThrottle::SpeedStepMode28Mot:
             return (int) ((fSpeed * 28) * 4) + 12;
         case DccThrottle::SpeedStepMode14:
             return (int) ((fSpeed * 14) * 8) + 8;
         default:
-            log->warn(tr("Unhandled speed step mode: %1").arg(this->getSpeedStepMode()->name));
+            log->warn(tr("Unhandled speed step mode: %1").arg(SpeedStepMode(this->getSpeedStepMode()).name));
             break;
     }
     return speed;

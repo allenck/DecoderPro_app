@@ -1,9 +1,5 @@
 #include "defaultcomboboxmodel.h"
 
-//DefaultComboBoxModel::DefaultComboBoxModel(QObject *parent) :
-//    QObject(parent)
-//{
-//}
 /**
  * The default model for combo boxes.
  *
@@ -30,15 +26,15 @@
  *
  * @param items  an array of Object objects
  */
-template <class E>
-/*public*/ DefaultComboBoxModel<E>::DefaultComboBoxModel(/*final*/ QList<E> items, QObject *parent)
+//template <class E>
+/*public*/ DefaultComboBoxModel::DefaultComboBoxModel(/*final*/ QList<QString> items, QObject *parent)
     : AbstractListModel(parent)
 {
-    objects = new QVector<E>();
+    objects = QVector<QString>();
     objects.reserve(items.size());
 
     int i,c;
-    for ( i=0,c=items.length;i<c;i++ )
+    for ( i=0,c=items.length();i<c;i++ )
         objects.append(items.at(i));
 
     if ( getSize() > 0 ) {
@@ -52,8 +48,8 @@ template <class E>
  *
  * @param v  a Vector object ...
  */
-template <class E>
-/*public*/ DefaultComboBoxModel<E>::DefaultComboBoxModel(QVector<E> v, QObject *parent)
+//template <class E>
+/*public*/ DefaultComboBoxModel::DefaultComboBoxModel(QVector<QString> v, QObject *parent)
     : AbstractListModel(parent)
 {
  objects = v;
@@ -69,8 +65,8 @@ template <class E>
  * <p>
  * @param anObject The combo box value or NULL for no selection.
  */
-template <class E>
-/*public*/ void DefaultComboBoxModel<E>::setSelectedItem(QObject* anObject) {
+//template <class E>
+/*public*/ void DefaultComboBoxModel::setSelectedItem(QString anObject) {
     if ((selectedObject != NULL && selectedObject!=( anObject )) ||
         selectedObject == NULL && anObject != NULL) {
         selectedObject = anObject;
@@ -79,14 +75,14 @@ template <class E>
 }
 
 // implements javax.swing.ComboBoxModel
-template <class E>
-/*public*/ QObject* DefaultComboBoxModel<E>::getSelectedItem() {
+//template <class E>
+/*public*/ QString DefaultComboBoxModel::getSelectedItem() {
     return selectedObject;
 }
 
 // implements javax.swing.ListModel
-template <class E>
-/*public*/ int DefaultComboBoxModel<E>::getSize() {
+//template <class E>
+/*public*/ int DefaultComboBoxModel::getSize() {
     return objects.size();
 }
 
@@ -106,48 +102,48 @@ template <class E>
  * @return an int representing the index position, where 0 is
  *         the first position
  */
-template <class E>
-/*public*/ int DefaultComboBoxModel<E>::getIndexOf(QObject* anObject) {
+//template <class E>
+/*public*/ int DefaultComboBoxModel::getIndexOf(QString anObject) {
     return objects.indexOf(anObject);
 }
 
 // implements javax.swing.MutableComboBoxModel
-template <class E>
-/*public*/ void DefaultComboBoxModel<E>::addElement(E anObject) {
-    objects.addElement(anObject);
-    fireIntervalAdded(this,objects.size()-1, objects.size()-1);
-    if ( objects.size() == 1 && selectedObject == NULL && anObject != NULL ) {
-        setSelectedItem( anObject );
-    }
-}
+//template <class E>
+///*public*/ void DefaultComboBoxModel<E>::addElement(E anObject) {
+//    objects.append(anObject);
+//    fireIntervalAdded(this,objects.size()-1, objects.size()-1);
+//    if ( objects.size() == 1 && selectedObject == NULL && anObject != NULL ) {
+//        setSelectedItem( anObject );
+//    }
+//}
 
 // implements javax.swing.MutableComboBoxModel
-template <class E>
-/*public*/ void DefaultComboBoxModel<E>::insertElementAt(E anObject,int index) {
-    objects.insertElementAt(anObject,index);
+//template <class E>
+/*public*/ void DefaultComboBoxModel::insertElementAt(QString anObject, int index) {
+    objects.insert(index, anObject);
     fireIntervalAdded(this, index, index);
 }
 
 // implements javax.swing.MutableComboBoxModel
-template <class E>
-/*public*/ void DefaultComboBoxModel<E>::removeElementAt(int index) {
+//template <class E>
+/*public*/ void DefaultComboBoxModel::removeElementAt(int index) {
     if ( getElementAt( index ) == selectedObject ) {
         if ( index == 0 ) {
-            setSelectedItem( getSize() == 1 ? NULL : getElementAt( index + 1 ) );
+            setSelectedItem( getSize() == 1 ? NULL : getElementAt( index + 1 ).toString() );
         }
         else {
-            setSelectedItem( getElementAt( index - 1 ) );
+            setSelectedItem( getElementAt( index - 1 ).toString() );
         }
     }
 
-    objects.removeElementAt(index);
+    objects.removeAt(index);
 
     fireIntervalRemoved(this, index, index);
 }
 
 // implements javax.swing.MutableComboBoxModel
-template <class E>
-/*public*/ void DefaultComboBoxModel<E>::removeElement(QObject* anObject) {
+//template <class E>
+/*public*/ void DefaultComboBoxModel::removeElement(QString anObject) {
     int index = objects.indexOf(anObject);
     if ( index != -1 ) {
         removeElementAt(index);
@@ -157,15 +153,15 @@ template <class E>
 /**
  * Empties the list.
  */
-template <class E>
-/*public*/ void DefaultComboBoxModel<E>::removeAllElements() {
+//template <class E>
+/*public*/ void DefaultComboBoxModel::removeAllElements() {
     if ( objects.size() > 0 ) {
         int firstIndex = 0;
         int lastIndex = objects.size() - 1;
-        objects.removeAllElements();
-        selectedObject = NULL;
+        objects.clear();
+        selectedObject = QString();
         fireIntervalRemoved(this, firstIndex, lastIndex);
     } else {
-        selectedObject = NULL;
+        selectedObject = QString();
     }
 }

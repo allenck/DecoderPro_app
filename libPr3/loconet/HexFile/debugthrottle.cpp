@@ -40,7 +40,7 @@
     this->isForward    = true;
 
     this->address      = address;
-    setSpeedStepMode( new SpeedStepMode(SpeedStepMode::NMRA_DCC_128) );
+    setSpeedStepMode( SpeedStepMode::NMRA_DCC_128);
 }
 
 

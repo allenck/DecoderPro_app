@@ -106,7 +106,7 @@
 //@Override
 /*protected*/ void DecoderPro3::displayMainFrame(QSize d) {
  UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-    if (!p->isWindowPositionSaved(mainFrame->getWindowFrameRef())) {
+ if (!p->hasProperties(mainFrame->getWindowFrameRef())) {
         mainFrame->resize(QSize(1024, 600));
         mainFrame->setMaximumSize(QSize(1024, 600));
     }
@@ -164,7 +164,7 @@
 //    };
 //    Thread thr = new Thread(r, "initialize decoder index");
 //    thr.start();
- LoadDecoders* worker = new LoadDecoders();
+ LoadDecoders* worker = new LoadDecoders(this);
  QThread* thread = new QThread;
  worker->moveToThread(thread);
  //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
@@ -178,5 +178,10 @@
 LoadDecoders::LoadDecoders(QObject *parent) : QObject(parent) {}
 void LoadDecoders::process()
 {
- DecoderIndexFile::instance();
+    try {
+        InstanceManager::getDefault("DecoderIndexFile");
+    } catch (Exception ex) {
+        ((DecoderPro3*)parent())->log->error(tr("Error in trying to initialize decoder index file %1").arg(ex.toString()));
+    }
+
 }

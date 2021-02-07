@@ -82,6 +82,15 @@
      QString Throttle::F27Momentary = "F27Momentary"; // NOI18N
      QString Throttle::F28Momentary = "F28Momentary"; // NOI18N
 
+     /**
+      * Constants to represent Function Groups.
+      * <p>
+      * The are the same groupings for both normal Functions and Momentary.
+      */
+     /*public*/ /*static*/ /*final*/ const QVector<int>Throttle::FUNCTION_GROUPS = QVector<int>{ 1, 1, 1, 1, 1, /** 0-4 */
+         2, 2, 2, 2, /** 5-8 */   3, 3, 3, 3, /** 9-12 */
+         4, 4, 4, 4, 4, 4, 4, 4, /** 13-20 */ 5, 5, 5, 5, 5, 5, 5, 5 /** 21-28 */
+     };
 
      /**
       * Get the Function String for a particular Function number.

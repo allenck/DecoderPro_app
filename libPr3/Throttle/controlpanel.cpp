@@ -185,7 +185,7 @@
  this->setSpeedValues(_throttle->getSpeedIncrement(), _throttle->getSpeedSetting());
 
  // Set speed steps
- this->setSpeedStepsMode(_throttle->getSpeedStepMode()->mode);
+ this->setSpeedStepsMode(_throttle->getSpeedStepMode());
 
  //this->throttle.addPropertyChangeListener(this);
  connect(this->_throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

@@ -13,8 +13,8 @@ PropertyChangeEvent::PropertyChangeEvent(QObject* source, QString propertyName,
 PropertyChangeEvent::PropertyChangeEvent(QObject *source, QString propertyName, QObject* oldValue, QObject* newValue, QObject *parent)
 : EventObject(source, parent)
 {
-// this->parent = parent;
-// this->source = source;
+ this->parent = parent;
+ this->source = source;
  this->propertyName = propertyName;
 }
 

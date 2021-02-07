@@ -92,15 +92,15 @@
   {
    case LnConstants::DEC_MODE_128:
    case LnConstants::DEC_MODE_128A:
-       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_128));
+       setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
        break;
    case LnConstants::DEC_MODE_28:
    case LnConstants::DEC_MODE_28A:
    case LnConstants::DEC_MODE_28TRI:
-       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_28));
+       setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
        break;
    case LnConstants::DEC_MODE_14:
-       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_14));
+       setSpeedStepMode(SpeedStepMode::NMRA_DCC_14);
        break;
    default:
        log->warn(tr("Unhandled decoder type: %1").arg(slot->decoderType()));
@@ -136,13 +136,13 @@
  } else if (lSpeed == 1) {
      return -1.f;   // estop
  }
- if (getSpeedStepMode()->mode == SpeedStepMode::NMRA_DCC_28) {
+ if (getSpeedStepMode() == SpeedStepMode::NMRA_DCC_28) {
      if (lSpeed <= 15) //Value less than 15 is in the stop/estop range bracket
      {
          return 0.f;
      }
      return (((lSpeed - 12) / 4.f) / 28.f);
- } else if (getSpeedStepMode()->mode == SpeedStepMode::NMRA_DCC_14) {
+ } else if (getSpeedStepMode() == SpeedStepMode::NMRA_DCC_14) {
      if (lSpeed <= 15) //Value less than 15 is in the stop/estop range bracket
      {
          return 0.f;
@@ -162,7 +162,7 @@
  if (speed <= 1) {
      return speed; // return idle and emergency stop
  }
- switch (this->getSpeedStepMode()->mode) {
+ switch (this->getSpeedStepMode()) {
      case SpeedStepMode::NMRA_DCC_28:
      case SpeedStepMode::MOTOROLA_28:
          return (int) ((fSpeed * 28) * 4) + 12;
@@ -171,7 +171,7 @@
      case SpeedStepMode::NMRA_DCC_128:
          return speed;
      default:
-         log->warn(tr("Unhandled speed step: %1").arg(this->getSpeedStepMode()->mode));
+         log->warn(tr("Unhandled speed step: %1").arg(this->getSpeedStepMode()));
          break;
  }
  return speed;
@@ -651,20 +651,20 @@
  {
      case LnConstants::DEC_MODE_128:
      case LnConstants::DEC_MODE_128A:
-         if(SpeedStepMode::NMRA_DCC_128 != getSpeedStepMode()->mode) {
-            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_128));
+         if(SpeedStepMode::NMRA_DCC_128 != getSpeedStepMode()) {
+            setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
          }
          break;
      case LnConstants::DEC_MODE_28:
      case LnConstants::DEC_MODE_28A:
      case LnConstants::DEC_MODE_28TRI:
-         if(SpeedStepMode::NMRA_DCC_28 != getSpeedStepMode()->mode) {
-            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_28));
+         if(SpeedStepMode::NMRA_DCC_28 != getSpeedStepMode()) {
+            setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
          }
          break;
      case LnConstants::DEC_MODE_14:
-         if(SpeedStepMode::NMRA_DCC_14 != getSpeedStepMode()->mode) {
-            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_14));
+         if(SpeedStepMode::NMRA_DCC_14 != getSpeedStepMode()) {
+            setSpeedStepMode(SpeedStepMode::NMRA_DCC_14);
          }
          break;
      default:
@@ -832,31 +832,31 @@
  *              speed step mode in most cases
  */
 //@Override
-/*public*/ void LocoNetThrottle::setSpeedStepMode(SpeedStepMode* Mode)
+/*public*/ void LocoNetThrottle::setSpeedStepMode(SpeedStepMode::SSMODES Mode)
 {
  int status=slot->slotStatus();
  if(log->isDebugEnabled())
  {
-  log->debug("Speed Step Mode Change to Mode: " + Mode->name +
-            " Current mode is: " + this->speedStepMode->name);
+  log->debug("Speed Step Mode Change to Mode: " + SpeedStepMode(Mode).name +
+            " Current mode is: " + SpeedStepMode(this->speedStepMode).name);
   log->debug("Current Slot Mode: " +LnConstants::DEC_MODE(status));
  }
  if(speedStepMode!=Mode)
-   notifyPropertyChangeListener("SpeedSteps", this->speedStepMode->mode,
-                                          this->speedStepMode->mode );
+   notifyPropertyChangeListener("SpeedSteps", this->speedStepMode,
+                                          this->speedStepMode );
  speedStepMode=Mode;
- if (Mode->mode == SpeedStepMode::NMRA_DCC_14)
+ if (Mode == SpeedStepMode::NMRA_DCC_14)
  {
      log->debug("14 speed step change"); // NOI18N
      status = status & ((~LnConstants::DEC_MODE_MASK)
              | LnConstants::STAT1_SL_SPDEX)
              | LnConstants::DEC_MODE_14;
- } else if (Mode->mode == SpeedStepMode::MOTOROLA_28) {
+ } else if (Mode == SpeedStepMode::MOTOROLA_28) {
      log->debug("28-Tristate speed step change");
      status = status & ((~LnConstants::DEC_MODE_MASK)
              | LnConstants::STAT1_SL_SPDEX)
              | LnConstants::DEC_MODE_28TRI;
- } else if (Mode->mode == SpeedStepMode::NMRA_DCC_28) {
+ } else if (Mode == SpeedStepMode::NMRA_DCC_28) {
      log->debug("28 speed step change");
      status = status & ((~LnConstants::DEC_MODE_MASK)
              | LnConstants::STAT1_SL_SPDEX);

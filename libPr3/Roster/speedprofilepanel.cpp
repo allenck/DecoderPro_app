@@ -375,7 +375,7 @@ void SpeedProfilePanel::setupProfile()
  AbstractThrottle* at = (AbstractThrottle*)t;
  connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
- int speedStepMode = t->getSpeedStepMode()->mode;
+ int speedStepMode = t->getSpeedStepMode();
  profileIncrement = t->getSpeedIncrement();
  if (speedStepMode == DccThrottle::SpeedStepMode14)
  {

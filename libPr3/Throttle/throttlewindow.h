@@ -41,7 +41,7 @@ public:
     /*public*/ void nextThrottleFrame();
     /*public*/ void previousRunningThrottleFrame();
     /*public*/ void previousThrottleFrame();
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     /*public*/ void removeThrottleFrame(ThrottleWindow* tf);
     /*public*/ void addThrottleFrame(ThrottleWindow* tp);
     /*public*/ ThrottleWindow* addThrottleFrame();
@@ -65,16 +65,18 @@ public:
     /*public*/ static void setTransparent(QWidget* jcomp);
     /*public*/ static void setTransparent(QObject* jcomp, bool transparency);
     QObject* self() {return (QObject*)this;}
-    QString getClassName();
+    QString getClassName() override;
     /*public*/ void saveRosterChanges();
+    /*public*/ void setEditMode(bool mode);
+    /*public*/ bool getEditMode();
 
 public slots:
     /*public*/ void saveThrottle();
     /*public*/ void saveThrottleAs();
-    void notifyAddressThrottleFound(DccThrottle*t);
-    /*public*/ virtual void notifyAddressReleased(LocoAddress* la);
+    void notifyAddressThrottleFound(DccThrottle*t) override;
+    /*public*/ virtual void notifyAddressReleased(LocoAddress* la) override;
     void notifyThrottleFound(DccThrottle* t);
-    /*public*/ virtual void notifyAddressChosen(LocoAddress* l);
+    /*public*/ virtual void notifyAddressChosen(LocoAddress* l) override;
 
 
 signals:
@@ -172,7 +174,7 @@ private slots:
 private slots:
     void propertyChange(PropertyChangeEvent* e);
     /*private*/ void editPreferences();
-    /*private*/ void switchMode();
+    QT_DEPRECATED/*private*/ void switchMode();
 
 friend class PropertyChangeSupport;
 friend class LocoNetSlot;

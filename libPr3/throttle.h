@@ -288,6 +288,8 @@ public:
         Q_INVOKABLE virtual bool getF28() {return false;}
         virtual void setF28(bool  /*f28*/) {}
 
+        /*public*/ static /*final*/ const QVector<int> FUNCTION_GROUPS;// = QVector<int>{ 1, 1, 1, 1, 1, /** 0-4 */
+
         // functions momentary status - note that we use the naming for DCC,
         // though that's not the implication;
         // see also DccThrottle interface

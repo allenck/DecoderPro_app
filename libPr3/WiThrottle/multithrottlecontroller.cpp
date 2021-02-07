@@ -164,7 +164,7 @@
 /*protected*/ void MultiThrottleController::sendSpeedStepMode(DccThrottle* t) {
     QString message =  QString(buildPacketWithChar('A'));
     message.append("s");
-    message.append(throttle->getSpeedStepMode()->mode);
+    message.append(throttle->getSpeedStepMode());
     foreach (ControllerInterface* listener, *controllerListeners) {
         listener->sendPacketToDevice(message);
     }

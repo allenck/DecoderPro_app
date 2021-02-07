@@ -1408,7 +1408,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
  */
 //@Test
 /*public*/ void AbstractThrottleTest::testSetSpeedStepMode() {
-    instance->setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_128));
+    instance->setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
 }
 
 /**
@@ -1417,7 +1417,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 //@Test
 /*public*/ void AbstractThrottleTest::testGetSpeedStepMode() {
     SpeedStepMode::SSMODES expResult = SpeedStepMode::UNKNOWN;
-    SpeedStepMode::SSMODES result = instance->getSpeedStepMode()->mode;
+    SpeedStepMode::SSMODES result = instance->getSpeedStepMode();
     Assert::assertEquals(expResult, result, __FILE__, __LINE__);
 }
 

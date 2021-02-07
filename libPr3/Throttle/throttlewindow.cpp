@@ -132,6 +132,7 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  addressPanel->addAddressListener((AddressListener*)this);
  //addressPanel->addAddressListener((AddressListener*)((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->getTableModel());
  functionPanel->setAddressPanel(addressPanel);
+ functionPanel->setEnabled(false);
  controlPanel->setAddressPanel(addressPanel);
  speedPanel->setAddressPanel(addressPanel);
 
@@ -846,23 +847,27 @@ void ThrottleWindow::OnFileMenuLoad()
 /*public*/ void ThrottleWindow::previousThrottleFrame() {
 //		throttlesLayout.previous(throttlesPanel);
 //		updateGUI();
+}
+
+/*public*/ void ThrottleWindow::setEditMode(bool mode) {
+    if (mode == isEditMode)
+        return;
+    isEditMode = mode;
+    if (!throttleFrames->isEmpty()) {
+        for (QListIterator<ThrottleWindow*> tfi(throttleFrames->values()); tfi.hasNext();) {
+            tfi.next()->setEditMode(isEditMode);
+        }
     }
+    updateGUI();
+}
+
+/*public*/ bool ThrottleWindow::getEditMode() {
+    return isEditMode;
+}
+
 /*private*/ void ThrottleWindow::switchMode()
 {
- if (isVisible()) {
-#if 0
-     if (isEditMode) {
-         playRendering();
-     } else {
-         editRendering();
-     }
-#endif
-     isEditMode = !isEditMode;
-     willSwitch = false;
- } else {
-     willSwitch = !willSwitch;
- }
- updateGUI();
+ setEditMode(!isEditMode);
 }
 
 

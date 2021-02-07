@@ -142,7 +142,7 @@ LocoNetThrottleTest::LocoNetThrottleTest()
 //@Override
 /*public*/ void LocoNetThrottleTest::testGetSpeed_float() {
     // set speed step mode to 128.
-    instance->setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_128));
+    instance->setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
     Assert::assertEquals("Full Speed", 127, ((LocoNetThrottle*)instance)->intSpeed(1.0F), __FILE__, __LINE__);
     float incre = 0.007874016f;
     float speed = incre;

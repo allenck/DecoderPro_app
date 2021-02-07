@@ -124,7 +124,7 @@ using namespace Sprog;
      *             step mode in most cases
      */
     //@Override
-    /*public*/ void SprogThrottle::setSpeedStepMode(SpeedStepMode* Mode) {
+    /*public*/ void SprogThrottle::setSpeedStepMode(SpeedStepMode::SSMODES Mode) {
         SprogMessage* m;
         int mode = address->isLongAddress()
                 ? SprogConstants::LONG_ADD : 0;
@@ -135,25 +135,25 @@ using namespace Sprog;
             log->error("Exception from InstanceManager.getDefault(jmri.PowerManager.class): " + e.getMessage());
         }
         if (log->isDebugEnabled()) {
-            log->debug("Speed Step Mode Change to Mode: " +Mode->name
-                    + " Current mode is: " + this->speedStepMode->name);
+            log->debug("Speed Step Mode Change to Mode: " +SpeedStepMode(Mode).name
+                    + " Current mode is: " + SpeedStepMode(this->speedStepMode).name);
         }
-        if (Mode->mode == DccThrottle::SpeedStepMode14) {
+        if (Mode == DccThrottle::SpeedStepMode14) {
             mode += 0x200;
-        } else if (Mode->mode == DccThrottle::SpeedStepMode27) {
+        } else if (Mode == DccThrottle::SpeedStepMode27) {
             log->error("Requested Speed Step Mode 27 not supported Current mode is: "
-                    + this->speedStepMode->name);
+                    + SpeedStepMode(this->speedStepMode).name);
             return;
-        } else if (Mode->mode == DccThrottle::SpeedStepMode28) {
+        } else if (Mode == DccThrottle::SpeedStepMode28) {
             mode += 0x400;
         } else { // default to 128 speed step mode
             mode += 0x800;
        }
         m = new SprogMessage("M h" + QString::number(mode,0,16));
         ((SprogSystemConnectionMemo*)adapterMemo)->getSprogTrafficController()->sendSprogMessage(m, NULL);
-        if ((speedStepMode != Mode) && (Mode->mode != DccThrottle::SpeedStepMode27)) {
-            notifyPropertyChangeListener("SpeedSteps", this->speedStepMode->mode,
-                    this->speedStepMode->mode);
+        if ((speedStepMode != Mode) && (Mode != DccThrottle::SpeedStepMode27)) {
+            notifyPropertyChangeListener("SpeedSteps", this->speedStepMode,
+                    this->speedStepMode);
             this->speedStepMode = Mode;
         }
     }
@@ -168,7 +168,7 @@ using namespace Sprog;
      */
     //@Override
     /*public*/ void SprogThrottle::setSpeedSetting(float speed) {
-        int mode = getSpeedStepMode()->mode;
+        int mode = getSpeedStepMode();
         if ((mode & DccThrottle::SpeedStepMode28) != 0) {
             // 28 step mode speed commands are
             // stop, estop, stop, estop, 4, 5, ..., 31

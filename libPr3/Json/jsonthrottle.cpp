@@ -364,7 +364,7 @@
         this->throttle = throttle;
 //        throttle->addPropertyChangeListener(this);
      connect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        switch (throttle->getSpeedStepMode()->mode) {
+        switch (throttle->getSpeedStepMode()) {
             case DccThrottle::SpeedStepMode14:
                 this->speedSteps = 14;
                 break;

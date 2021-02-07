@@ -129,7 +129,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  */
 /*static*/ /*public*/ ComboBoxModel* DecoderIndexFile::jComboBoxModelFromList(QList<DecoderFile*> l)
 {
- DefaultComboBoxModel<QString>* b = new DefaultComboBoxModel<QString>(QList<QString>());
+ DefaultComboBoxModel/*<QString>*/* b = new DefaultComboBoxModel/*<QString>*/(QList<QString>());
  for (int i = 0; i < l.size(); i++) {
      DecoderFile* r = l.at(i);
      b->addElement(r->titleString());
