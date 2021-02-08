@@ -61,7 +61,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -211,6 +210,7 @@ virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual int  getNumber() const;
 virtual LocoAddress::Protocol  getProtocol() const;
+virtual int  hashCode() const;
 virtual void timerEvent(QTimerEvent*  event);
 virtual QString  toString();
 
@@ -224,6 +224,7 @@ class PythonQtPublicPromoter_LocoAddress : public LocoAddress
 inline bool  py_q_equals(QObject*  a) { return LocoAddress::equals(a); }
 inline int  py_q_getNumber() const { return LocoAddress::getNumber(); }
 inline LocoAddress::Protocol  py_q_getProtocol() const { return LocoAddress::getProtocol(); }
+inline int  py_q_hashCode() const { return LocoAddress::hashCode(); }
 inline QString  py_q_toString() { return LocoAddress::toString(); }
 };
 
@@ -243,6 +244,8 @@ void delete_LocoAddress(LocoAddress* obj) { delete obj; }
    LocoAddress::Protocol  getProtocol(LocoAddress* theWrappedObject) const;
    LocoAddress::Protocol  py_q_getProtocol(LocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_getProtocol());}
    QString  static_LocoAddress_getShortName(LocoAddress::Protocol  p);
+   int  hashCode(LocoAddress* theWrappedObject) const;
+   int  py_q_hashCode(LocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_hashCode());}
    QString  toString(LocoAddress* theWrappedObject);
    QString  py_q_toString(LocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_toString());}
     QString py_toString(LocoAddress*);

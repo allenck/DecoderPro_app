@@ -18,7 +18,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
@@ -1364,7 +1363,7 @@ void delete_TableColumnModel(TableColumnModel* obj) { delete obj; }
 class PythonQtShell_Throttle : public Throttle
 {
 public:
-    PythonQtShell_Throttle(QObject*  parent = 0):Throttle(parent),_wrapper(NULL) {}
+    PythonQtShell_Throttle():Throttle(),_wrapper(NULL) {}
 
    ~PythonQtShell_Throttle();
 
@@ -1655,7 +1654,7 @@ class PythonQtWrapper_Throttle : public QObject
 { Q_OBJECT
 public:
 public slots:
-Throttle* new_Throttle(QObject*  parent = 0);
+Throttle* new_Throttle();
 void delete_Throttle(Throttle* obj) { delete obj; } 
    void addPropertyChangeListener(Throttle* theWrappedObject, PropertyChangeListener*  arg__1);
    void py_q_addPropertyChangeListener(Throttle* theWrappedObject, PropertyChangeListener*  arg__1){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1));}
@@ -1940,9 +1939,9 @@ public:
 
    ~PythonQtShell_ThrottleManager();
 
-virtual bool  addressStillRequired(DccLocoAddress*  arg__1);
+virtual bool  addressStillRequired(LocoAddress*  arg__1);
 virtual bool  addressTypeUnique();
-virtual void attachListener(LocoAddress*  arg__1, PropertyChangeListener*  arg__2);
+virtual void attachListener(LocoAddress*  la, PropertyChangeListener*  p);
 virtual bool  canBeLongAddress(int  arg__1);
 virtual bool  canBeShortAddress(int  arg__1);
 virtual void childEvent(QChildEvent*  event);
@@ -1956,10 +1955,10 @@ virtual QString  getAddressTypeString(LocoAddress::Protocol  arg__1);
 virtual QStringList  getAddressTypes();
 virtual int  getMode(int  arg__1);
 virtual LocoAddress::Protocol  getProtocolFromString(QString  arg__1);
-virtual QVariant  getThrottleInfo(DccLocoAddress*  arg__1, QString  arg__2);
+virtual QVariant  getThrottleInfo(LocoAddress*  arg__1, QString  arg__2);
 virtual QString  getUserName();
 virtual bool  hasDispatchFunction();
-virtual void removeListener(DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2);
+virtual void removeListener(LocoAddress*  arg__1, PropertyChangeListener*  arg__2);
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -1969,9 +1968,9 @@ virtual void timerEvent(QTimerEvent*  event);
 
 class PythonQtPublicPromoter_ThrottleManager : public ThrottleManager
 { public:
-inline bool  py_q_addressStillRequired(DccLocoAddress*  arg__1) { return ThrottleManager::addressStillRequired(arg__1); }
+inline bool  py_q_addressStillRequired(LocoAddress*  arg__1) { return ThrottleManager::addressStillRequired(arg__1); }
 inline bool  py_q_addressTypeUnique() { return ThrottleManager::addressTypeUnique(); }
-inline void py_q_attachListener(LocoAddress*  arg__1, PropertyChangeListener*  arg__2) { ThrottleManager::attachListener(arg__1, arg__2); }
+inline void py_q_attachListener(LocoAddress*  la, PropertyChangeListener*  p) { this->attachListener(la, p); }
 inline bool  py_q_canBeLongAddress(int  arg__1) { return ThrottleManager::canBeLongAddress(arg__1); }
 inline bool  py_q_canBeShortAddress(int  arg__1) { return ThrottleManager::canBeShortAddress(arg__1); }
 inline LocoAddress*  py_q_getAddress(QString  arg__1, LocoAddress::Protocol  arg__2) { return ThrottleManager::getAddress(arg__1, arg__2); }
@@ -1981,10 +1980,10 @@ inline QString  py_q_getAddressTypeString(LocoAddress::Protocol  arg__1) { retur
 inline QStringList  py_q_getAddressTypes() { return ThrottleManager::getAddressTypes(); }
 inline int  py_q_getMode(int  arg__1) { return ThrottleManager::getMode(arg__1); }
 inline LocoAddress::Protocol  py_q_getProtocolFromString(QString  arg__1) { return ThrottleManager::getProtocolFromString(arg__1); }
-inline QVariant  py_q_getThrottleInfo(DccLocoAddress*  arg__1, QString  arg__2) { return ThrottleManager::getThrottleInfo(arg__1, arg__2); }
+inline QVariant  py_q_getThrottleInfo(LocoAddress*  arg__1, QString  arg__2) { return ThrottleManager::getThrottleInfo(arg__1, arg__2); }
 inline QString  py_q_getUserName() { return ThrottleManager::getUserName(); }
 inline bool  py_q_hasDispatchFunction() { return ThrottleManager::hasDispatchFunction(); }
-inline void py_q_removeListener(DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2) { ThrottleManager::removeListener(arg__1, arg__2); }
+inline void py_q_removeListener(LocoAddress*  arg__1, PropertyChangeListener*  arg__2) { ThrottleManager::removeListener(arg__1, arg__2); }
 };
 
 class PythonQtWrapper_ThrottleManager : public QObject
@@ -1993,12 +1992,12 @@ public:
 public slots:
 ThrottleManager* new_ThrottleManager(QObject*  parent = 0);
 void delete_ThrottleManager(ThrottleManager* obj) { delete obj; } 
-   bool  addressStillRequired(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1);
-   bool  py_q_addressStillRequired(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_addressStillRequired(arg__1));}
+   bool  addressStillRequired(ThrottleManager* theWrappedObject, LocoAddress*  arg__1);
+   bool  py_q_addressStillRequired(ThrottleManager* theWrappedObject, LocoAddress*  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_addressStillRequired(arg__1));}
    bool  addressTypeUnique(ThrottleManager* theWrappedObject);
    bool  py_q_addressTypeUnique(ThrottleManager* theWrappedObject){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_addressTypeUnique());}
-   void attachListener(ThrottleManager* theWrappedObject, LocoAddress*  arg__1, PropertyChangeListener*  arg__2);
-   void py_q_attachListener(ThrottleManager* theWrappedObject, LocoAddress*  arg__1, PropertyChangeListener*  arg__2){  (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_attachListener(arg__1, arg__2));}
+   void attachListener(ThrottleManager* theWrappedObject, LocoAddress*  la, PropertyChangeListener*  p);
+   void py_q_attachListener(ThrottleManager* theWrappedObject, LocoAddress*  la, PropertyChangeListener*  p){  (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_attachListener(la, p));}
    bool  canBeLongAddress(ThrottleManager* theWrappedObject, int  arg__1);
    bool  py_q_canBeLongAddress(ThrottleManager* theWrappedObject, int  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_canBeLongAddress(arg__1));}
    bool  canBeShortAddress(ThrottleManager* theWrappedObject, int  arg__1);
@@ -2017,15 +2016,15 @@ void delete_ThrottleManager(ThrottleManager* obj) { delete obj; }
    int  py_q_getMode(ThrottleManager* theWrappedObject, int  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getMode(arg__1));}
    LocoAddress::Protocol  getProtocolFromString(ThrottleManager* theWrappedObject, QString  arg__1);
    LocoAddress::Protocol  py_q_getProtocolFromString(ThrottleManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getProtocolFromString(arg__1));}
-   QVariant  getThrottleInfo(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, QString  arg__2);
-   QVariant  py_q_getThrottleInfo(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getThrottleInfo(arg__1, arg__2));}
+   QVariant  getThrottleInfo(ThrottleManager* theWrappedObject, LocoAddress*  arg__1, QString  arg__2);
+   QVariant  py_q_getThrottleInfo(ThrottleManager* theWrappedObject, LocoAddress*  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getThrottleInfo(arg__1, arg__2));}
    QString  getUserName(ThrottleManager* theWrappedObject);
    QString  py_q_getUserName(ThrottleManager* theWrappedObject){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_getUserName());}
    bool  hasDispatchFunction(ThrottleManager* theWrappedObject);
    bool  py_q_hasDispatchFunction(ThrottleManager* theWrappedObject){  return (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_hasDispatchFunction());}
    ThrottleManager*  static_ThrottleManager_instance();
-   void removeListener(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2);
-   void py_q_removeListener(ThrottleManager* theWrappedObject, DccLocoAddress*  arg__1, PropertyChangeListener*  arg__2){  (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_removeListener(arg__1, arg__2));}
+   void removeListener(ThrottleManager* theWrappedObject, LocoAddress*  arg__1, PropertyChangeListener*  arg__2);
+   void py_q_removeListener(ThrottleManager* theWrappedObject, LocoAddress*  arg__1, PropertyChangeListener*  arg__2){  (((PythonQtPublicPromoter_ThrottleManager*)theWrappedObject)->py_q_removeListener(arg__1, arg__2));}
 };
 
 

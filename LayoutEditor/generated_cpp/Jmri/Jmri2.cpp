@@ -53,7 +53,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -2109,6 +2108,39 @@ if (_wrapper) {
 }
   return LocoAddress::getProtocol();
 }
+int  PythonQtShell_LocoAddress::hashCode() const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("hashCode");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      int returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("hashCode", methodInfo, result);
+          } else {
+            returnValue = *((int*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LocoAddress::hashCode();
+}
 void PythonQtShell_LocoAddress::timerEvent(QTimerEvent*  event0)
 {
 if (_wrapper) {
@@ -2214,6 +2246,11 @@ LocoAddress::Protocol  PythonQtWrapper_LocoAddress::getProtocol(LocoAddress* the
 QString  PythonQtWrapper_LocoAddress::static_LocoAddress_getShortName(LocoAddress::Protocol  p)
 {
   return (LocoAddress::getShortName(p));
+}
+
+int  PythonQtWrapper_LocoAddress::hashCode(LocoAddress* theWrappedObject) const
+{
+  return ( theWrappedObject->hashCode());
 }
 
 QString  PythonQtWrapper_LocoAddress::toString(LocoAddress* theWrappedObject)

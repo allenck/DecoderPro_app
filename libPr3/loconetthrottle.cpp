@@ -176,6 +176,7 @@
  }
  return speed;
 }
+#if 0
 /*public*/ void LocoNetThrottle::setF0(bool f0) {
     bool old = this->f0;
     this->f0 = f0;
@@ -317,7 +318,7 @@
     if (old != this->f17)
         notifyPropertyChangeListener(Throttle::F17, old, this->f17 );
 }
-
+#endif
 /**
  * Send the LocoNet message to set the state of locomotive
  * direction and functions F0, F1, F2, F3, F4
@@ -880,7 +881,12 @@
 }
 
 
-
+/**
+ * Get the address controlled by this throttle. If the throttle is controlling.
+ *
+ * @return a LocoAddress for the address controlled by this throttle
+ */
+//@Override
 /*public*/ LocoAddress* LocoNetThrottle::getLocoAddress()
 {
  if (slot != nullptr)

@@ -21,8 +21,9 @@ public:
     /*public*/ LocoNetSlot* getLocoNetSlot();
     /*public*/ QString toString();
     /*public*/ void notifyChangedSlot(LocoNetSlot* pSlot) override;
-    /*public*/ void setSpeedStepMode(SpeedStepMode::SSMODES Mode);
-    /*public*/ LocoAddress* getLocoAddress();
+    /*public*/ void setSpeedStepMode(SpeedStepMode::SSMODES Mode) override;
+    /*public*/ LocoAddress* getLocoAddress() override;
+#if 0
     /*public*/ void setF0(bool f0) override;
     /*public*/ void setF1(bool f1) override;
     /*public*/ void setF2(bool f2) override;
@@ -41,6 +42,7 @@ public:
     /*public*/ void setF15(bool f15) override;
     /*public*/ void setF16(bool f16) override;
     /*public*/ void setF17(bool f17) override;
+#endif
     /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l);
     QObject* self() {return (QObject*)this;}
 

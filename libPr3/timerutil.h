@@ -44,13 +44,14 @@ class TUTimer : public QTimer
   start(delay);
   qDebug() << tr("timer %1 started").arg(objectName());
  }
+
  /*public*/ void schedule(TimerTask* task, long delay)
  {
   this->task = task;
   this->delay = delay;
-  this->period = delay;
-  setSingleShot(false);
-  setInterval(period);
+  this->period = 0;
+  setSingleShot(true);
+  //setInterval(period);
   connect(this, SIGNAL(timeout()), task, SLOT(run()));
   start(delay);
   qDebug() << tr("timer %1 started").arg(objectName());

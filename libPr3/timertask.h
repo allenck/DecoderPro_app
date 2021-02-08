@@ -50,7 +50,7 @@ private:
     /**
      * The state of this task, chosen from the constants below.
      */
-    int state;// = VIRGIN;
+    int state = VIRGIN;
 
 
 

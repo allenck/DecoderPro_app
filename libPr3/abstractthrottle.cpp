@@ -480,24 +480,10 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
     InstanceManager::throttleManagerInstance()->disposeThrottle((DccThrottle*)this, l);
 }
 
-//    @Deprecated
-//    /*public*/ void dispatch() {
-//        if (!active) log.warn("dispatch called when not active");
-//        log.warn("dispatch called without knowing the original throttle listener");
-//        InstanceManager.throttleManagerInstance().dispatchThrottle(this, nullptr);
-//    }
-
 /*public*/ void AbstractThrottle::dispatch(ThrottleListener* l) {
     if (!active) log->warn("dispatch called when not active");
     InstanceManager::throttleManagerInstance()->dispatchThrottle((DccThrottle*)this, l);
 }
-
-//    @Deprecated
-//    /*public*/ void release() {
-//        if (!active) log.warn("release called when not active");
-//        log.warn("Release called without knowing the original throttle listener");
-//        InstanceManager.throttleManagerInstance().releaseThrottle(this, nullptr);
-//    }
 
 /*public*/ void AbstractThrottle::release(ThrottleListener* l) {
     if (!active) log->warn("release called when not active");
