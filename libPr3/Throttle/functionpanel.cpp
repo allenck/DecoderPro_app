@@ -96,8 +96,7 @@ FunctionPanel::~FunctionPanel()
  if (mThrottle != NULL)
  {
   //mThrottle->removePropertyChangeListener((PropertyChangeListener*)this);
-  AbstractThrottle* at = (AbstractThrottle*)at;
-  disconnect(at, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(mThrottle, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
   mThrottle=NULL;
  }
 }

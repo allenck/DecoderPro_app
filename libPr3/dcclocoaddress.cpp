@@ -67,7 +67,7 @@ DccLocoAddress::DccLocoAddress(const DccLocoAddress& l , QObject* parent)
     return false;
 }
 
-int DccLocoAddress::hashCode() {
+int DccLocoAddress::hashCode() const {
     switch(protocol){
         case DCC_SHORT :    return (int)(number&0xFFFFFFFF);
         case DCC_LONG :     return (int)(20000+(number&0xFFFFFFFF));

@@ -5,6 +5,11 @@
 //{
 //}
     /**
+     * Constant used in getThrottleInfo.
+     */
+    /*public*/ /*static*/ /*final*/ QString Throttle::SPEEDSTEPMODE = "SpeedStepsMode"; // speed steps NOI18N
+
+    /**
      * Properties strings sent to property change listeners
      */
 

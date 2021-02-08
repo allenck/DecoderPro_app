@@ -146,15 +146,13 @@ public:
      * DccThrottle interface
      */
     /*public*/ QSet<SpeedStepMode::SSMODES> supportedSpeedModes() override;
-    /*public*/ void attachListener(BasicRosterEntry* re, PropertyChangeListener* p);
     /*public*/ void attachListener(LocoAddress* la, PropertyChangeListener* p) override;
-    /*public*/ void attachListener(LocoAddress *la, BasicRosterEntry* re, PropertyChangeListener* p);
-    /*public*/ void removeListener(DccLocoAddress* la, PropertyChangeListener* p) override;
-    /*public*/ bool addressStillRequired(DccLocoAddress* la) override;
+    /*public*/ void removeListener(LocoAddress* la, PropertyChangeListener* p) override;
+    /*public*/ bool addressStillRequired(LocoAddress* la) override;
     /*public*/ void releaseThrottle(DccThrottle* t, ThrottleListener* l) override;
     /*public*/ bool disposeThrottle(DccThrottle* t, ThrottleListener* l) override;
     /*public*/ void dispatchThrottle(DccThrottle* t, ThrottleListener* l) override;
-    /*public*/ QVariant getThrottleInfo(DccLocoAddress* la, QString item) override;
+    /*public*/ QVariant getThrottleInfo(LocoAddress* la, QString item) override;
     /*public*/ QString getAddressTypeString(LocoAddress::Protocol prot) override;
     /*public*/ void responseThrottleDecision(int address, bool isLong, ThrottleListener* l, ThrottleListener::DecisionType decision) override;
     /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision) override;
@@ -172,8 +170,7 @@ private:
      * at a time, the entries in this Hashmap are only valid during the
      * throttle setup process.
      */
-    /*private*/ QHash<LocoAddress*,QList<WaitingThrottle*>* >* throttleListeners;// = new QHash<DccLocoAddress,QList<WaitingThrottle>>(5);
-    /*private*/ QList<WaitingThrottle*>* getWaiting(LocoAddress* addr);
+    /*private*/ QMap</*LocoAddress**/uint,QList<WaitingThrottle*>* >* throttleListeners;// = new QHash<DccLocoAddress,QList<WaitingThrottle>>(5);
 
     /**
      * listenerOnly is indexed by the address, and
@@ -182,14 +179,14 @@ private:
      * hasn't yet been created/
      * The entries in this Hashmap are only valid during the throttle setup process.
      */
-    /*private*/ QHash<LocoAddress*,QList<WaitingThrottle*>* >* listenerOnly;// = new HashMap<DccLocoAddress,ArrayList<WaitingThrottle>>(5);
+    /*private*/ QMap<uint,QList<WaitingThrottle*>* >* listenerOnly;// = new HashMap<DccLocoAddress,ArrayList<WaitingThrottle>>(5);
     //This keeps a map of all the current active DCC loco Addresses that are in use.
     /**
      * addressThrottles is indexed by the address, and
      * contains as elements a subclass of the throttle assigned to an address and
      * the number of requests and active users for this address.
      */
-    /*private*/ QHash<LocoAddress*,Addresses*>* addressThrottles;// = new QHash<DccLocoAddress*,Addresses>();
+    /*private*/ QMap</*LocoAddress**/uint,Addresses*>* addressThrottles;// = new QHash<DccLocoAddress*,Addresses>();
     /*private*/ void cancelThrottleRequest(LocoAddress *la, ThrottleListener* l);
 
 protected:
@@ -201,7 +198,7 @@ protected:
      * by only one user at a time?
      */
     /*protected*/ bool singleUse();
-    /*protected*/ bool addressReleased(DccLocoAddress* la, ThrottleListener* l);
+    /*protected*/ bool addressReleased(LocoAddress* la, ThrottleListener* l);
     /*protected*/ void makeHardwareDecision(LocoAddress* address, ThrottleListener::DecisionType question);
     /*protected*/ void notifyDecisionRequest(LocoAddress* address, ThrottleListener::DecisionType question);
     /*protected*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions);

@@ -538,7 +538,8 @@
    if (mRefreshTimer != nullptr) {
        mRefreshTimer->stop();
        log->debug(tr("Stopped refresh timer for slot %1 address %2 as part of throttleDispose").arg(slot->getSlot()).arg(slot->locoAddr()));
-   mRefreshTimer = nullptr;
+       qApp->processEvents();
+       mRefreshTimer = nullptr;
    }
 
    slot = nullptr;
@@ -558,10 +559,10 @@
 //        }
 //    });
     mRefreshTimer = new QTimer(this);
-    mRefreshTimer->setInterval(50000);
+    //mRefreshTimer->setInterval(50000);
     connect(mRefreshTimer, SIGNAL(timeout()), this, SLOT(timeout()));
     mRefreshTimer->setSingleShot(false);     // refresh until stopped by dispose
-    mRefreshTimer->start();
+    mRefreshTimer->start(50000);
 }
 
 /**

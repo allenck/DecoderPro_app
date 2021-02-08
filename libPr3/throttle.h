@@ -44,6 +44,7 @@ public:
      * @version			$Revision: 22484 $
      */
 //    public interface Throttle {
+  /*public*/ static /*final*/ QString SPEEDSTEPMODE;// = "SpeedStepsMode"; // speed steps NOI18N
   /*public*/ static /*final*/ QString SPEEDSTEPS;// = "SpeedSteps"; // speed steps NOI18N
 
   /*public*/ static /*final*/ QString SPEEDSETTING;// = "SpeedSetting"; // speed setting NOI18N

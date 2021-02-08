@@ -354,9 +354,9 @@ virtual int getMode(int /*address*/) {return 0;}
  * @return the value as an objet, if the loco address has not been assigned
  * to a throttle or the item value is not valid, null is returned.
  */
-    virtual QVariant getThrottleInfo(DccLocoAddress* /*la*/, QString /*item*/) {return QVariant();}
+    virtual QVariant getThrottleInfo(LocoAddress* /*la*/, QString /*item*/) {return QVariant();}
 
-    virtual bool addressStillRequired(DccLocoAddress* /*la*/) {return false;}
+    virtual bool addressStillRequired(LocoAddress* /*la*/) {return false;}
 
 /**
  * The specified Throttle Listener has finished using a given throttle and
@@ -405,17 +405,17 @@ virtual void dispatchThrottle(DccThrottle* /*t*/, ThrottleListener* /*l*/) {}
 
 /**
  * Attach a PropertyChangeListener to a specific loco address, where the
- * requesting code does not need or require control over the loco.
- * If the loco address is not in the active in the list, then a new throttle
- * will be created by the manager and the listener attached.
- * <P>
- * The propertyChangeListener will be notified if it has been attached to a
- * loco address or not, via a propertyChange notification.
+ * requesting code does not need or require control over the loco. If the
+ * loco address is not in the active in the list, then a new throttle will
+ * be created by the manager and the listener attached.
  * <p>
- * @param la - DccLocoAddress of the loco we wish to monitor
- * @param p - PropertyChangeListener to attach to the throttle
+ * The PropertyChangeListener will be notified if it has been attached to a
+ * loco address or not, via a PropertyChange notification.
+ * <p>
+ * @param la LocoAddress of the loco we wish to monitor
+ * @param p  PropertyChangeListener to attach to the throttle
  */
-virtual void attachListener(LocoAddress* /*la*/, PropertyChangeListener* /*p*/) {}
+/*public*/ virtual void attachListener(LocoAddress* la, PropertyChangeListener* p) = 0;
 
 /**
  * Remove a PropertyChangeListener to a specific loco address, where the
@@ -428,8 +428,8 @@ virtual void attachListener(LocoAddress* /*la*/, PropertyChangeListener* /*p*/) 
  * @param la - DccLocoAddress of the loco we wish to monitor
  * @param p - PropertyChangeListener to attachremove from the throttle
 */
-virtual void removeListener(DccLocoAddress* /*la*/, PropertyChangeListener* /*p*/) {}
-//public void addressNoLongerRequired(DccLocoAddress la) const = 0;
+virtual void removeListener(LocoAddress* /*la*/, PropertyChangeListener* /*p*/) {}
+
 /**
  * A method to get the Name of the system that the programmer is associated with.
  */
