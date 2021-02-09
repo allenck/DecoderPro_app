@@ -76,16 +76,16 @@ public:
      */
     /*public*/ QStringList getAddressTypes() override;
     /*public*/ QList<LocoAddress::Protocol> getAddressProtocolTypes() override;
-    /*public*/ LocoAddress* getAddress(QString value,LocoAddress::Protocol protocol);
-    /*public*/ LocoAddress* getAddress(QString value, QString protocol);
+    /*public*/ LocoAddress* getAddress(QString value,LocoAddress::Protocol protocol) override;
+    /*public*/ LocoAddress* getAddress(QString value, QString protocol) override;
     /*public*/ LocoAddress::Protocol getProtocolFromString(QString selection) override;
-    QT_DEPRECATED /*public*/ bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l);
-    QT_DEPRECATED /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l);
-    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress *la, ThrottleListener* l);
-    /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l, bool canHandleDecisions);
+    QT_DEPRECATED /*public*/ bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l) override;
+    QT_DEPRECATED /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l) override;
+    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress *la, ThrottleListener* l) override;
+    /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l, bool canHandleDecisions) override;
     /*public*/ bool requestThrottle(/*@Nonnull*/ BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions) override;
     /*public*/ bool requestThrottle(LocoAddress* la, ThrottleListener* l, bool canHandleDecisions) override;
-    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l);
+    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l) override;
     /*public*/ bool requestThrottle(int address, ThrottleListener* l) override;
     /*public*/ bool requestThrottle(int address, ThrottleListener* l, bool canHandleDecisions) override;
 

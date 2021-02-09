@@ -1143,6 +1143,22 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 }
 
 /**
+ * Sets Momentary Function and sends to layout.
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractThrottle::setFunctionMomentary(int momFuncNum, bool state){
+    if (momFuncNum < 0 || momFuncNum > FUNCTION_MOMENTARY_BOOLEAN_ARRAY.length()-1) {
+        log->warn(tr("Unhandled set momentary function number: %1").arg(momFuncNum));
+        return;
+    }
+    bool old = FUNCTION_MOMENTARY_BOOLEAN_ARRAY[momFuncNum];
+    FUNCTION_MOMENTARY_BOOLEAN_ARRAY[momFuncNum] = state;
+    sendFunctionGroup(momFuncNum,true);
+//    firePropertyChange(Throttle::getFunctionMomentaryString(momFuncNum), old, state);
+}
+
+/**
  * Send the message to set the momentary state of
  * functions F0, F1, F2, F3, F4.
  * <P>

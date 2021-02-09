@@ -108,7 +108,24 @@ virtual bool requestThrottle(int /*address*/, ThrottleListener* /*l*/) {return f
  * @return True if the request will continue, false if the request will not
  * be made. False may be returned if a the throttle is already in use.
  */
-virtual bool  requestThrottle(int /*address*/, bool  /*isLong*/, ThrottleListener* /*l*/) {return false;}
+QT_DEPRECATED virtual bool  requestThrottle(int /*address*/, bool  /*isLong*/, ThrottleListener* /*l*/) {return false;}
+
+/**
+ * Request a throttle, given a decoder address and whether it is a long or
+ * short DCC address. When the decoder address is located, the
+ * ThrottleListener gets a callback via the
+ * ThrottleListener.notifyThrottleFound method.
+ *
+ * @param address desired decoder address
+ * @param isLong  true if requesting a DCC long (extended) address
+ * @param l       ThrottleListener awaiting notification of a found throttle
+ * @param canHandleDecisions true if the ThrottleListener has a mechanism for dealing with
+ *                Share / Steal decisions, else false
+ * @return true if the request will continue, false if the request will not
+ *         be made; false may be returned if a the throttle is already in
+ *         use
+ */
+/*public*/ virtual bool requestThrottle(int address, bool isLong, ThrottleListener* l, bool canHandleDecisions) {return false;}
 
 /**
  * Request a throttle, given a decoder address. When the decoder address
@@ -122,7 +139,7 @@ virtual bool  requestThrottle(int /*address*/, bool  /*isLong*/, ThrottleListene
  * @return True if the request will continue, false if the request will not
  * be made. False may be returned if a the throttle is already in use.
  */
-QT_DEPRECATED virtual bool  requestThrottle(DccLocoAddress* /*address*/, ThrottleListener* /*l*/) {return false;}
+QT_DEPRECATED virtual bool  requestThrottle(LocoAddress* /*address*/, ThrottleListener* /*l*/) {return false;}
 
 /**
  * Request a throttle, given a LocoAddress. When the address is
@@ -151,7 +168,7 @@ virtual /*public*/ bool requestThrottle(LocoAddress* /*address*/, ThrottleListen
  * @return True if the request will continue, false if the request will not
  * be made. False may be returned if a the throttle is already in use.
  */
-QT_DEPRECATED virtual bool  requestThrottle(DccLocoAddress* /*address*/, BasicRosterEntry* /*re*/, ThrottleListener* /*l*/) {return false;}
+QT_DEPRECATED virtual bool  requestThrottle(LocoAddress* /*address*/, BasicRosterEntry* /*re*/, ThrottleListener* /*l*/) {return false;}
 /**
  * Request a throttle from a given RosterEntry. When the decoder address is
  * located, the ThrottleListener gets a callback via the

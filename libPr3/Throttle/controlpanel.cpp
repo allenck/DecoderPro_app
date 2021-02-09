@@ -62,6 +62,7 @@
 /*public*/ ControlPanel::ControlPanel(QWidget *parent) : QDockWidget(tr("Speed"),parent)
 {
  //super("Speed");
+ setObjectName("ControlPanel");
  _displaySlider = SLIDERDISPLAY;
  speedControllerEnable = false;
  _emergencyStop = false;

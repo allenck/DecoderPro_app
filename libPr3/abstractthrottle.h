@@ -163,6 +163,7 @@ public:
      /*public*/ SpeedStepMode::SSMODES getSpeedStepMode() override;
      /*public*/ void setRosterEntry(BasicRosterEntry* re) override;
      /*public*/ BasicRosterEntry* getRosterEntry() override;
+     /*public*/ void setFunctionMomentary(int momFuncNum, bool state);
 
  signals:
     void propertyChange(PropertyChangeEvent*);

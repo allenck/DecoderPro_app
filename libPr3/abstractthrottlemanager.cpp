@@ -180,13 +180,16 @@ list << "dcc" <<"dcc_short" << "dcc_long";
     }
 
     /**
-     * Request a throttle, given a decoder address. When the decoder address is
+     * Request a throttle, given a decoder address.
+     * <p>
+     * When the decoder address is
      * located, the ThrottleListener gets a callback via the
      * ThrottleListener.notifyThrottleFound method.
      *
      * @param la LocoAddress of the decoder desired.
      * @param l  The ThrottleListener awaiting notification of a found throttle.
      * @param re A BasicRosterEntry can be passed, this is attached to a throttle after creation.
+     * @param canHandleDecisions true if theThrottleListener can make a steal or share decision, else false.
      * @return True if the request will continue, false if the request will not
      *         be made. False may be returned if a the throttle is already in
      *         use.

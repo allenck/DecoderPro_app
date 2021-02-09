@@ -135,7 +135,7 @@ public:
          *
          * @param speed the speed as a {@literal 0.0 -> 1.0.} fraction of maximum possible speed or -1 for emergency stop.
          */
-        /*public*/ virtual void setSpeedSetting(float /*speed*/);
+        /*public*/ virtual void setSpeedSetting(float /*speed*/) {}
 
         /**
          * Set the desired speed, expressed as a value {@literal 0.0 -> 1.0.},
@@ -152,7 +152,7 @@ public:
          * @param allowDuplicatesOnStop if true, and the new speed is idle or estop,
          *                              don't suppress messages
          */
-        /*public*/ virtual void setSpeedSetting(float speed, bool allowDuplicates, bool allowDuplicatesOnStop);
+        /*public*/ virtual void setSpeedSetting(float speed, bool allowDuplicates, bool allowDuplicatesOnStop) {}
 
         /**
          * Set the speed, and on systems which normally suppress the sending of a
@@ -160,14 +160,14 @@ public:
          *
          * @param speed the speed as a {@literal 0.0 -> 1.0.} fraction of maximum possible speed or -1 for emergency stop.
          */
-        /*public*/ virtual void setSpeedSettingAgain(float speed);
+        /*public*/ virtual void setSpeedSettingAgain(float speed) {}
 
         /** direction
          * This is an bound property.
          */
-        virtual bool getIsForward();
+        virtual bool getIsForward() {return false;}
 
-        virtual void setIsForward(bool  /*forward*/);
+        virtual void setIsForward(bool  /*forward*/) {}
 
         // functions - note that we use the naming for DCC, though that's not the implication;
         // see also DccThrottle interface
@@ -177,28 +177,28 @@ public:
          * @param functionNum Function Number, 0-28
          * @param newState New Function State. True on, false off.
          */
-        /*public*/ /*abstract*/ virtual void setFunction(int functionNum, bool newState);
+        /*public*/ /*abstract*/ virtual void setFunction(int functionNum, bool newState) {}
 
         /**
          * Get Loco Function status.
          * @param functionNum Function Number, 0-28
          * @return Function State. True on, false off.
          */
-        /*public*/ virtual bool getFunction(int functionNum);
+        /*public*/ virtual bool getFunction(int functionNum) {}
 
         /**
          * Set Momentary Loco Function and send to Layout.
          * @param momFuncNum Momentary Function Number, 0-28
          * @param state New Function State. True on, false off.
          */
-        /*public*/ /*abstract*/ virtual void setFunctionMomentary(int momFuncNum, bool state);
+        /*public*/ /*abstract*/ virtual void setFunctionMomentary(int momFuncNum, bool state) {}
 
         /**
          * Get the Momentary Function Value.
          * @param fN Momentary function number
          * @return true if momentary function is on, else false.
          */
-        /*public*/ /*abstract*/virtual  bool getFunctionMomentary(int fN);
+        /*public*/ /*abstract*/virtual  bool getFunctionMomentary(int fN) {return false;}
 
         // functions - note that we use the naming for DCC, though that's not the implication;
         // see also DccThrottle interface
@@ -391,8 +391,8 @@ public:
         virtual LocoAddress* getLocoAddress()  {return NULL;}
 
         // register for notification if any of the properties change
-        virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) ;
-        virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) ;
+        virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
+        virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
         virtual QVector<PropertyChangeListener*>* getListeners()  {return NULL;}
 
         /**
@@ -436,7 +436,7 @@ public:
          */
         virtual void dispatch(ThrottleListener* /*l*/) {}
 
-        virtual void setRosterEntry(BasicRosterEntry* /*re*/) ;
+        virtual void setRosterEntry(BasicRosterEntry* /*re*/) {}
         virtual BasicRosterEntry* getRosterEntry()  {return NULL;}
 
 signals:
