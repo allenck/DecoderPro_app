@@ -539,7 +539,6 @@
    if (mRefreshTimer != nullptr) {
        mRefreshTimer->stop();
        log->debug(tr("Stopped refresh timer for slot %1 address %2 as part of throttleDispose").arg(slot->getSlot()).arg(slot->locoAddr()));
-       qApp->processEvents();
        mRefreshTimer = nullptr;
    }
 

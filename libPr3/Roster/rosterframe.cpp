@@ -65,6 +65,7 @@
 #include "addressedprogrammermanager.h"
 #include "abstractpowermanager.h"
 #include "programmerconfigmanager.h"
+#include "throttlewindow.h"
 
 QList<RosterFrame*> RosterFrame::frameInstances =  QList<RosterFrame*>();
 
@@ -1933,34 +1934,6 @@ void RosterFrame::On_Quit()
  {
 //     rtable.resetColumnWidths();
  }
-#if 0
- else if(args.at(0) == "labelsandmedia")
- {
-  //editMediaButton();
-  FunctionLabelsMediaDlg* dlg = new FunctionLabelsMediaDlg(rosterEntry);
-  dlg->show();
-
- }
- else if(args.at(0) == "throttle")
- {
-  ThrottleWindow* tf =ThrottleFrameManager::instance()->createThrottleFrame();
-  tf->toFront();
-  tf->getAddressPanel()->getRosterEntrySelector()->setSelectedRosterGroup(getSelectedRosterGroup());
-  tf->getAddressPanel()->setRosterEntry(rosterEntry);
- }
- else if(args.at(0) == "duplicate")
- {
-  copyLoco();
- }
- else if(args.at(0) == "deletefromgroup")
- {
-  deleteLoco();
- }
- else if(args.at(0) == "deletefromroster")
- {
-  deleteLoco();
- }
-#endif
  else
  {
   log->error("remote calls method " + args.at(0) + " not found");
@@ -2242,30 +2215,42 @@ void RosterFrame::on_currentMapped(QAction *act) //SLOT[]
      popupMenu->addSeparator();
      menuItem = new QAction("Labels and Media",this);
 //        menuItem.addActionListener((ActionEvent e1) -> {
-//            editMediaButton();
-//        });
-     menuItem->setProperty("action", "labelsandmedia");
-     mapper->setMapping(menuItem, menuItem);
-     connect(menuItem, SIGNAL(triggered(bool)), mapper, SLOT(map()));
-     if (re == NULL) {
-         menuItem->setEnabled(false);
-     }
+     connect(menuItem, &QAction::triggered, [=]{
+            editMediaButton();
+        });
      popupMenu->addAction(menuItem);
      menuItem = new QAction("Throttle", this);
      menuItem->setProperty("action", "throttle");
-     mapper->setMapping(menuItem, menuItem);
-     connect(menuItem, SIGNAL(triggered(bool)), mapper, SLOT(map()));
 //        menuItem.addActionListener((ActionEvent e1) -> {
-//            ThrottleFrame tf = ThrottleFrameManager.instance().createThrottleFrame();
-//            tf.toFront();
-//            tf.getAddressPanel().getRosterEntrySelector().setSelectedRosterGroup(getSelectedRosterGroup());
-//            tf.getAddressPanel().setRosterEntry(re);
-//        });
+     connect(menuItem, &QAction::triggered, [=] {
+            ThrottleWindow* tf = ThrottleFrameManager::instance()->createThrottleFrame();
+            tf->toFront();
+            tf->getAddressPanel()->getRosterEntrySelector()->setSelectedRosterGroup(getSelectedRosterGroup());
+            tf->getAddressPanel()->setRosterEntry(re);
+        });
      if (re == NULL) {
          menuItem->setEnabled(false);
      }
      popupMenu->addAction(menuItem);
      popupMenu->addSeparator();
+
+
+     menuItem = new QAction(tr("Print Entry..."),this);
+     //menuItem.addActionListener((ActionEvent e1) -> printLoco(false));
+     connect(menuItem, &QAction::triggered, [=] {printLoco(false);});
+     if (re == nullptr) {
+         menuItem->setEnabled(false);
+     }
+     popupMenu->addAction(menuItem);
+     menuItem = new QAction(tr("Preview Entry..."));
+     //menuItem.addActionListener((ActionEvent e1) -> printLoco(true));
+     connect(menuItem, &QAction::triggered, [=]{printLoco(true);});
+     if (re == nullptr) {
+         menuItem->setEnabled(false);
+     }
+     popupMenu->addAction(menuItem);
+     popupMenu->addSeparator();
+
      menuItem = new QAction("Duplicate", this);
 //        menuItem.addActionListener((ActionEvent e1) -> {
 //            copyLoco();

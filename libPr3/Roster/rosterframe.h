@@ -109,6 +109,7 @@ private:
 // JRadioButtonMenuItem contextOps = new JRadioButtonMenuItem(Bundle.getMessage("ProgrammingOnMain"));
 // JRadioButtonMenuItem contextService = new JRadioButtonMenuItem(Bundle.getMessage("ProgrammingTrack"));
  QSignalMapper* signalMapper;
+ int groupSplitPaneLocation = 0;
  RosterGroupsPanel* groups;
  QMenuBar* menuBar;// = new JMenuBar();
  void closeEvent(QCloseEvent *);
