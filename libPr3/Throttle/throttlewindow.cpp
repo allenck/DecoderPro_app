@@ -873,7 +873,18 @@ void ThrottleWindow::OnFileMenuLoad()
 
 void ThrottleWindow::windowClosing(QCloseEvent *)
 {
- dispose();
+ //this->dispose();
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->requestThrottleWindowDestruction(/*me*/this);
+ if (throttleToolBar != nullptr) {
+//     Component[] cmps = throttleToolBar.getComponents();
+//     if (cmps != null) {
+//         for (int i = 0; i < cmps.length; i++) {
+//             if (cmps[i] instanceof Jynstrument) {
+//                 ((Jynstrument) cmps[i]).exit();
+//             }
+//         }
+//     }
+ }
 }
 
 /**

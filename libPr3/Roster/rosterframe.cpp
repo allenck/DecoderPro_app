@@ -927,67 +927,7 @@ void RosterFrame::updateProgMode() // SLOT
  }
  firePropertyChange(progMode, QVariant("setSelected"), QVariant(true));
 }
-/**
- * Identify loco button pressed, start the identify operation This defines
- * what happens when the identify is done.
- */
-//taken out of CombinedLocoSelPane
-/*protected*/ void RosterFrame::startIdentifyLoco()
-{
- /*final*/ RosterFrame* me = this;
- Programmer* programmer = NULL;
- if (modePanel->isSelected())
- {
-     programmer = modePanel->getProgrammer();
- }
- if (programmer == NULL)
- {
-  GlobalProgrammerManager* gpm = (DefaultProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
-  if (gpm != NULL)
-  {
-   programmer = gpm->getGlobalProgrammer();
-   log->warn(tr("Selector did not provide a programmer, attempt to use GlobalProgrammerManager default: %1").arg(programmer->self()->metaObject()->className()));
-} else {
-   log->warn("Selector did not provide a programmer, and no ProgramManager found in InstanceManager");
-  }
- }
 
- // if failed to get programmer, tell user and stop
- if (programmer == NULL) {
-     log->error("Identify loco called when no service mode programmer is available; button should have been disabled");
-     JOptionPane::showMessageDialog(NULL, tr("Identify loco called when no service mode programmer is available"));
-     return;
- }
-
- // and now do the work
-#if 0
-    // start identifying a loco
-    /*final*/ RosterFrame* me = this;
-    IdentifyLoco ident = new IdentifyLoco() {
-        private RosterFrame who = me;
-
-        //@Override
-        protected void done(int dccAddress) {
-            // if Done, updated the selected decoder
-            who.selectLoco(dccAddress, !shortAddr, cv8val, cv7val);
-        }
-
-        //@Override
-        protected void message(String m) {
-            statusField.setText(m);
-        }
-
-        //@Override
-        protected void error() {
-            // raise the button again
-            //idloco.setSelected(false);
-        }
-    };
-#endif
-    MyIdentifyLoco* ident = new MyIdentifyLoco(programmer, me);
-    connect(ident, SIGNAL(doneSignal(int,bool,int,int)), this, SLOT(selectLoco(int,bool,int,int)));
-    ident->start();
-}
 /**
  * Identify locomotive complete, act on it by setting the GUI. This will
  * fire "GUI changed" events which will reset the decoder GUI.
@@ -1946,6 +1886,68 @@ bool RosterFrame::checkIfEntrySelected()
  if(ui->rtable->selectionModel()->selectedRows().isEmpty())
   return false;
  return true;
+}
+
+/**
+ * Identify loco button pressed, start the identify operation This defines
+ * what happens when the identify is done.
+ */
+//taken out of CombinedLocoSelPane
+/*protected*/ void RosterFrame::startIdentifyLoco()
+{
+ /*final*/ RosterFrame* me = this;
+ Programmer* programmer = NULL;
+ if (modePanel->isSelected())
+ {
+     programmer = modePanel->getProgrammer();
+ }
+ if (programmer == NULL)
+ {
+  GlobalProgrammerManager* gpm = (DefaultProgrammerManager*)InstanceManager::getNullableDefault("GlobalProgrammerManager");
+  if (gpm != NULL)
+  {
+   programmer = gpm->getGlobalProgrammer();
+   log->warn(tr("Selector did not provide a programmer, attempt to use GlobalProgrammerManager default: %1").arg(programmer->self()->metaObject()->className()));
+  } else {
+   log->warn("Selector did not provide a programmer, and no ProgramManager found in InstanceManager");
+  }
+ }
+
+ // if failed to get programmer, tell user and stop
+ if (programmer == NULL) {
+     log->error("Identify loco called when no service mode programmer is available; button should have been disabled");
+     JOptionPane::showMessageDialog(NULL, tr("Identify loco called when no service mode programmer is available"));
+     return;
+ }
+
+ // and now do the work
+#if 0
+    // start identifying a loco
+    /*final*/ RosterFrame* me = this;
+    IdentifyLoco ident = new IdentifyLoco() {
+        private RosterFrame who = me;
+
+        //@Override
+        protected void done(int dccAddress) {
+            // if Done, updated the selected decoder
+            who.selectLoco(dccAddress, !shortAddr, cv8val, cv7val);
+        }
+
+        //@Override
+        protected void message(String m) {
+            statusField.setText(m);
+        }
+
+        //@Override
+        protected void error() {
+            // raise the button again
+            //idloco.setSelected(false);
+        }
+    };
+#endif
+    MyIdentifyLoco* ident = new MyIdentifyLoco(programmer, me);
+    connect(ident, SIGNAL(doneSignal(int,bool,int,int)), this, SLOT(selectLoco(int,bool,int,int)));
+    ident->start();
 }
 
 /*protected*/ void RosterFrame::startProgrammer(DecoderFile* decoderFile, RosterEntry* re, QString filename)

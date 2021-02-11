@@ -458,10 +458,11 @@
 //    labelTable->insert((maxSpeed / 2), new QLabel("50%"));
 //    labelTable->insert((maxSpeed), new QLabel("100%"));
 //    labelTable->insert((0), new QLabel(tr("Stop")));
- QHash<int,JLabel*> labelTable = QHash<int,JLabel*>();
- labelTable.insert((maxSpeed / 2),new JLabel("100%"));
- labelTable.insert((maxSpeed),new JLabel("50%"));
+ speedSlider->setTickPosition(QSlider::TicksRight);
+ QMap<int,JLabel*> labelTable = QMap<int,JLabel*>();
  labelTable.insert((0), new JLabel(tr("Stop")));
+ labelTable.insert((maxSpeed/2),new JLabel("50%"));
+ labelTable.insert((maxSpeed),new JLabel("100%"));
  speedSlider->setLabelTable(labelTable);
 //    speedSlider.setPaintTicks(true);
 //    speedSlider.setPaintLabels(true);
@@ -485,7 +486,7 @@
   }
   speedSliderContinuous->setValue((int) (oldSpeed * maxSpeed));
   speedSliderContinuous->setMajorTickSpacing(maxSpeed / 2);
-  QHash<int, JLabel*> labelTable =  QHash<int, JLabel*>();
+  QMap<int, JLabel*> labelTable =  QMap<int, JLabel*>();
   labelTable.insert((maxSpeed / 2), new JLabel("50%"));
   labelTable.insert((maxSpeed), new JLabel("100%"));
   labelTable.insert((0), new JLabel(tr("Stop")));
@@ -679,60 +680,68 @@
     /*final*/ ThrottlesPreferences* preferences = ((ThrottleFrameManager*)
             InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences();
 
-    GridBagConstraints constraints = makeDefaultGridBagConstraints();
-    constraints.fill = GridBagConstraints::NONE;
+//    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+//    constraints.fill = GridBagConstraints::NONE;
 
-    constraints.gridy = 10;
-    if (preferences->isUsingIcons()) {
-        constraints.gridx = 2;
-    }
-    buttonPanelLayout->addWidget(forwardButton, constraints);
+//    constraints.gridy = 10;
+//    if (preferences->isUsingIcons()) {
+//        constraints.gridx = 2;
+//    }
+//    buttonPanelLayout->addWidget(forwardButton, constraints);
+ buttonPanel->layout()->addWidget(forwardButton);
 
-    if (preferences->isUsingIcons()) {
-        constraints.gridx = 0;
-    } else {
-        constraints.gridy = 20;
-    }
-    buttonPanelLayout->addWidget(reverseButton, constraints);
 
-    if (preferences->isUsingIcons()) {
-        constraints.gridx = 1;
-    } else {
-        constraints.gridy = 30;
-    }
-    buttonPanelLayout->addWidget(idleButton, constraints);
-
-    if (preferences->isUsingIcons()) {
-        constraints.gridx = 1;
-    } else {
-        constraints.gridx = 0;
-    }
-    constraints.gridy = 40;
-    buttonPanelLayout->addWidget(stopButton, constraints);
+//    if (preferences->isUsingIcons()) {
+//        constraints.gridx = 0;
+//    } else {
+//        constraints.gridy = 20;
+//    }
+//    buttonPanelLayout->addWidget(reverseButton, constraints);
+ buttonPanel->layout()->addWidget(reverseButton);
+//    if (preferences->isUsingIcons()) {
+//        constraints.gridx = 1;
+//    } else {
+//        constraints.gridy = 30;
+//    }
+//    buttonPanelLayout->addWidget(idleButton, constraints);
+ buttonPanel->layout()->addWidget(idleButton);
+//    if (preferences->isUsingIcons()) {
+//        constraints.gridx = 1;
+//    } else {
+//        constraints.gridx = 0;
+//    }
+//    constraints.gridy = 40;
+//    buttonPanelLayout->addWidget(stopButton, constraints);
+ buttonPanel->layout()->addWidget(stopButton);
 }
 
 /*private*/ void ControlPanel::layoutSliderPanel() {
-    sliderPanel->setLayout(sliderPanelLayout =new GridBagLayout());
+//    sliderPanel->setLayout(sliderPanelLayout = new GridBagLayout());
 
-    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+//    GridBagConstraints constraints = makeDefaultGridBagConstraints();
 
-    sliderPanelLayout->addWidget(speedSlider, constraints);
-
+//    sliderPanelLayout->addWidget(speedSlider, constraints);
+ sliderPanel->setLayout(new QVBoxLayout());
+ sliderPanel->layout()->addWidget(speedSlider);
 }
 
 /*private*/ void ControlPanel::layoutSpeedSliderContinuous() {
-    speedSliderContinuousPanel->setLayout(speedSliderContinuousPanelLayout = new GridBagLayout());
+//    speedSliderContinuousPanel->setLayout(speedSliderContinuousPanelLayout = new GridBagLayout());
 
-    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+//    GridBagConstraints constraints = makeDefaultGridBagConstraints();
 
-    speedSliderContinuousPanelLayout->addWidget(speedSliderContinuous, constraints);
+//    speedSliderContinuousPanelLayout->addWidget(speedSliderContinuous, constraints);
+ speedSliderContinuousPanel->setLayout(new QVBoxLayout());
+ speedSliderContinuousPanel->layout()->addWidget(speedSliderContinuous);
 }
 
 /*private*/ void ControlPanel::layoutSpinnerPanel() {
-    spinnerPanel->setLayout(spinnerPanelLayout = new GridBagLayout());
-    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+//    spinnerPanel->setLayout(spinnerPanelLayout = new GridBagLayout());
+//    GridBagConstraints constraints = makeDefaultGridBagConstraints();
 
-    spinnerPanelLayout->addWidget(speedSpinner, constraints);
+//    spinnerPanelLayout->addWidget(speedSpinner, constraints);
+ spinnerPanel->setLayout(new QVBoxLayout());
+ spinnerPanel->layout()->addWidget(speedSpinner);
 }
 
 /*private*/ void ControlPanel::setupButton(QAbstractButton* button, /*final*/ ThrottlesPreferences* preferences, /*final*/ QString iconPath,
@@ -777,7 +786,7 @@
  QHBoxLayout* speedControlPanelLayout;
  speedControlPanel->setLayout(speedControlPanelLayout = new QHBoxLayout());//speedControlPanel, BoxLayout.X_AXIS));
  //speedControlPanel.setOpaque(false);
- mainPanelLayout->addWidget(speedControlPanel, 0, Qt::AlignCenter); //BorderLayout.CENTER);
+ mainPanelLayout->addWidget(speedControlPanel, 1, Qt::AlignCenter); //BorderLayout.CENTER);
  sliderPanel = new JPanel();
  //sliderPanel.setOpaque(false);
  speedSlider = new JSlider(0, intSpeedSteps);
@@ -878,7 +887,7 @@
  speedControlPanelLayout->addWidget(sliderPanel);
  speedSlider->setOrientation(Qt::Vertical);
  speedSlider->setMajorTickSpacing(maxSpeed / 2);
- QHash<int, JLabel*>  labelTable = QHash<int, JLabel*>();
+ QMap<int, JLabel*>  labelTable = QMap<int, JLabel*>();
  labelTable.insert(maxSpeed / 2, new JLabel("50%"));
  labelTable.insert(maxSpeed, new JLabel("100%"));
  labelTable.insert(0, new JLabel(tr("Stop")));
@@ -931,7 +940,7 @@
  speedControlPanelLayout->addWidget(speedSliderContinuousPanel);
  speedSliderContinuous->setOrientation(Qt::Vertical);
  speedSliderContinuous->setMajorTickSpacing(maxSpeed / 2);
- labelTable = QHash<int,JLabel*> ();
+ labelTable = QMap<int,JLabel*> ();
  labelTable.insert(maxSpeed / 2, new JLabel("50%"));
  labelTable.insert(maxSpeed, new JLabel("100%"));
  labelTable.insert(0, new JLabel(tr("Stop")));
@@ -1022,7 +1031,8 @@
  });
 
  buttonPanel = new JPanel();
- buttonPanel->setLayout(buttonPanelLayout = new GridBagLayout());
+ //buttonPanel->setLayout(buttonPanelLayout = new GridBagLayout());
+ buttonPanel->setLayout(new QVBoxLayout());
 // QSizePolicy bpsp = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 // buttonPanel->setSizePolicy(bpsp);
  mainPanelLayout->addWidget(buttonPanel, 0, Qt::AlignBottom); //BorderLayout.SOUTH);

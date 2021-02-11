@@ -361,6 +361,7 @@ DccThrottle* LnThrottleManager::createThrottle(LocoNetSystemConnectionMemo* memo
      tc->sendLocoNetMessage(tSlot->writeStatus(LnConstants::LOCO_COMMON));
  AbstractThrottleManager::releaseThrottle(t, l);
 }
+
 /**
  * Cancels the loco acquisition process when throttle acquisition of a loco
  * fails.
@@ -460,7 +461,7 @@ void LnThrottleManager::dispose() {
     // send that "throttleListener" a notification that the command station needs
     // permission to "steal" the loco address.
     if (waitingForNotification.contains(locoAddr)) {
-        waitingForNotification.value(locoAddr)->quit();
+        waitingForNotification.value(locoAddr)->requestInterruption();
         waitingForNotification.remove(locoAddr);
 
         notifyDecisionRequest(new DccLocoAddress(locoAddr, isLongAddress(locoAddr)),ThrottleListener::DecisionType::STEAL);

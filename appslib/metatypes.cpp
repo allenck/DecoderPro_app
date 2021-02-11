@@ -337,6 +337,7 @@
 #include "turnoutoperationmanagerxml.h"
 #include "lncvprogpane.h"
 #include "decoderindexfile.h"
+#include "querycvdialog.h"
 
 bool Metatypes::done = false;
 
@@ -691,6 +692,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<TurnoutOperationManagerXml>("TurnoutOperationManagerXml");
  qRegisterMetaType<LncvProgPane>("LncvProgPane");
  qRegisterMetaType<DecoderIndexFile>("DecoderIndexFile");
+ qRegisterMetaType<QueryCvDialog>("QueryCvDialog");
 
  Metatypes::done = true;
 }

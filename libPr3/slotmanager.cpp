@@ -162,8 +162,8 @@ void SlotManager::slotFromLocoAddress(int i, SlotListener* l)
  // send info request
  LocoNetMessage* m = new LocoNetMessage(4);
  m->setOpCode(LnConstants::OPC_LOCO_ADR);  // OPC_LOCO_ADR
- m->setElement(1, (i/128)&0x7F);
- m->setElement(2, i&0x7F);
+ m->setElement(1, (i / 128) & 0x7F);
+ m->setElement(2, i & 0x7F);
  tc->sendLocoNetMessage(m);
 }
 
@@ -184,7 +184,7 @@ void SlotManager::checkStaleSlots() // [slot]
     // We will just check the normal loco slots 1 to 120
   for (int i = 1; i <= 120; i++) {
     slot = _slots[i];
-    if ( (slot->slotStatus() == LnConstants::LOCO_IN_USE) &&
+    if ( (slot->slotStatus() == LnConstants::LOCO_IN_USE || slot->slotStatus() == LnConstants::LOCO_COMMON )&&
         (slot->getLastUpdateTime() <= staleTimeout))
       sendReadSlot(i);
   }
@@ -439,8 +439,12 @@ int SlotManager::findSlotFromMessage(LocoNetMessage* m) {
         i = m->getElement(1);
         break;
 
-    case LnConstants::OPC_MOVE_SLOTS:  // handle the follow-on message when it comes
-        return i; // need to cope with that!!
+    case LnConstants::OPC_MOVE_SLOTS:  // No follow on for some moves
+     if (m->getElement(1) != 0) {
+         i = m->getElement(1);
+         return i;
+     }
+     break;
  default:
   // nothing here for us
   return i;
@@ -555,7 +559,8 @@ void SlotManager::forwardMessageToSlot(LocoNetMessage* m, int i) {
 
     // if here, i holds the slot number, and we expect to be able to parse
     // and have the slot handle the message
-    if (i>=_slots.length() || i<0) log->error(QString("Received slot number %1 is greater than array length %2 Message was %3").arg(i).arg(_slots.size()).arg( m->toString()));
+    if (i>=_slots.length() || i<0)
+     log->error(QString("Received slot number %1 is greater than array length %2 Message was %3").arg(i).arg(_slots.size()).arg( m->toString()));
     try
     {
      _slots[i]->setSlot(m);

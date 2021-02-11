@@ -16,7 +16,10 @@ bool MyApplication::notify(QObject *receiver_, QEvent *event_)
  {
   done = QApplication::notify( receiver_, event_ );
  }
- //catch ( std::exception& e )
+ catch ( std::exception& e )
+ {
+  qDebug() << QString("caught std exception %1").arg(e.what());
+ }
  catch (Exception& e)
  {
   //showAngryDialog( e );

@@ -283,7 +283,7 @@ protected:
         //idloco.setSelected(false);
     }
 };
-#if 1
+
 class RosterEntryUpdateListener : public PropertyChangeListener
 {
  Q_OBJECT
@@ -296,7 +296,7 @@ private:
     RosterFrame* f;
 protected:
 };
-#endif
+
 /*static*/ class ExportRosterItem : public ExportRosterItemAction
 {
     /**

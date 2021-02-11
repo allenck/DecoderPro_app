@@ -24,6 +24,7 @@
  */
 /*public*/ SpeedPanel::SpeedPanel(QWidget* parent) : QDockWidget(parent)
 {
+ setObjectName("SpeedPanel");
  scaleSpeedLabel = new QLabel(""); //, JLabel.CENTER);
  scaleSpeedLabel->setAlignment(Qt::AlignCenter);
  useSpeedProfile = false;

@@ -23,11 +23,10 @@ void JSlider::common(Qt::Orientation orientation)
  max = 1;
  min = 0;
  isAdjusting = false;
- labelTable = QHash<int,JLabel*>();
+ labelTable = QMap<int,JLabel*>();
  slider = new QSlider(orientation);
  //slider->setMinimumHeight(200);
  verticalLayout_2 = NULL;
- horizontalLayout = NULL;
 
  sliderModel = new DefaultBoundedRangeModel(0,0,0,100);
  setMinimum(0);
@@ -36,8 +35,8 @@ void JSlider::common(Qt::Orientation orientation)
  setValue(0);
  listeners = QVector<ChangeListener*>();
 
- setLayout(verticalLayout_2 = new QVBoxLayout());
- verticalLayout_2->addWidget(slider, 1);
+  setLayout(verticalLayout_2 = new QVBoxLayout());
+  verticalLayout_2->addWidget(slider, 1);
 }
 
 /**
@@ -239,10 +238,10 @@ void JSlider::onValueChanged(int v)
  QWidget::setVisible(b);
 }
 
-void JSlider::setLabelTable(QHash<int,JLabel*> labelTable)
+void JSlider::setLabelTable(QMap<int,JLabel*> labelTable)
 {
  if(this->labelTable.isEmpty())
-  this->labelTable = QHash<int,JLabel*>(labelTable);
+  this->labelTable = QMap<int,JLabel*>(labelTable);
  else
  {
   if(this->labelTable.count()== labelTable.count())
@@ -258,90 +257,27 @@ void JSlider::layoutWidget()
   return;
  if(verticalLayout_2 != NULL)
  {
-  QObjectList ol = verticalLayout_2->children();
-  foreach(QObject* o, ol)
-  {
-   if(qobject_cast<QWidget*>(o) != NULL)
-    verticalLayout_2->removeWidget((QWidget*)o);
-  }
-  delete verticalLayout_2;
-  verticalLayout_2 = NULL;
+  verticalLayout_2->removeWidget(slider);
  }
- if(horizontalLayout != NULL)
+ delete verticalLayout_2;
+ verticalLayout_2 = nullptr;
+
+ slider->setTickPosition(QSlider::TicksRight);
+ QGridLayout* gl = new QGridLayout();
+ setLayout(gl);
+
+ gl->addWidget(slider, 0, 0, labelTable.count(), 1);
+ int j;
+ for(int i = labelTable.count()-1; i >=0; i--)
  {
-  QObjectList ol = horizontalLayout->children();
-  foreach(QObject* o, ol)
-  {
-   if(qobject_cast<QWidget*>(o) != NULL)
-    horizontalLayout->removeWidget((QWidget*)o);
-  }
-  delete horizontalLayout;
-  horizontalLayout = NULL;
+  j = labelTable.count()-1 - i;
+  gl->addWidget(labelTable.values().at(i), j, 1, 1, 1);
  }
 
-
-// thisLayout->removeWidget(slider);
-// delete slider;
-
-// slider= new QSlider(orientation);
-// slider->setMinimumHeight(100);
-// QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
-// sizePolicy.setHorizontalStretch(0);
-// sizePolicy.setVerticalStretch(2);
-// sizePolicy.setHeightForWidth(false);
-// slider->setSizePolicy(sizePolicy);
-
-// thisLayout->addWidget(slider, 0, 0, labelTable.count(), 1);
-// slider->setTickPosition(QSlider::TicksBothSides);
-// for(int i = 0; i < labelTable.count(); i++)
-//  thisLayout->addWidget(labelTable.at(i), i, 1, 1,1);
- horizontalLayout = new QHBoxLayout(this);
- horizontalLayout->setContentsMargins(0,0,0,0);
- horizontalLayout->setObjectName("horizontalLayout");
- QWidget* widget = new QWidget(this);
- widget->setObjectName("widget");
- QVBoxLayout* verticalLayout = new QVBoxLayout(widget);
- verticalLayout->setObjectName("verticalLayout");
- verticalLayout->setContentsMargins(-1, -1, 0, -1);
- //slider = new QSlider(Qt::Vertical, widget);
- slider->setParent(widget);
- slider->setObjectName("slider");
- //slider->setOrientation(Qt::Vertical);
- slider->setTickPosition(QSlider::TicksBothSides);
- //slider-> resize(55, 350);
-// slider->setMaximumHeight(450);
-// slider->setMinimumHeight(150);
- connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)));
+ //connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)));
  connect(slider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
  connect(slider, SIGNAL(sliderReleased()), this, SLOT(sliderReleased()));
 
- verticalLayout->addWidget(slider,1,Qt::AlignCenter);
-
- horizontalLayout->addWidget(widget);
-
- QWidget* widget_2 = new QWidget(this);
- widget_2->setObjectName("widget_2");
- verticalLayout_2 = new QVBoxLayout(widget_2);
- verticalLayout_2->setObjectName("verticalLayout_2");
- verticalLayout_2->setContentsMargins(0, -1, -1, -1);
-
- QHashIterator<int, JLabel*> iter(labelTable);
- while(iter.hasNext())
- {
-  iter.next();
-  JLabel* label = iter.value();
-  label->setObjectName(tr("label_%1").arg(iter.key()));
-  label->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-  verticalLayout_2->addWidget(label);
- }
- //for(int i = 0; i < labelTable.count(); i++)
- iter.toFront();
- while(iter.hasNext())
- {
-  iter.next();
-  verticalLayout_2->setStretch(1, iter.key());
- }
- horizontalLayout->addWidget(widget_2);
 }
 
 

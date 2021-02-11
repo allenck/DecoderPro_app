@@ -28,7 +28,7 @@ public:
     /*public*/ void removeChangeListener(ChangeListener*);
     /*public*/ void setVisible(bool b);
     /*public*/ bool getValueIsAdjusting();
-    void setLabelTable(QHash<int,JLabel*> labelTable);
+    void setLabelTable(QMap<int, JLabel *> labelTable);
     void setMajorTickSpacing(int v);
     void setOrientation(Qt::Orientation);
     int value();
@@ -55,13 +55,13 @@ public slots:
 private:
     /*private*/ void checkOrientation(int orientation);
     QVector<ChangeListener*> listeners;
-    QHash<int,JLabel*> labelTable;
+    QMap<int,JLabel*> labelTable;
     bool isAdjusting;
     bool bSetPaintTicks = true;
     bool bSetPaintLabels = true;
     void resizeEvent(QResizeEvent *event);
     QVBoxLayout* verticalLayout_2;
-    QHBoxLayout* horizontalLayout;
+    //QHBoxLayout* horizontalLayout;
     int tickSpacing;
     Qt::Orientation orientation;
     void layoutWidget();

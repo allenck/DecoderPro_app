@@ -222,7 +222,7 @@ else if (format==("hslider"))
 //         b->setSnapToTicks(true);   // like it should, we fake it here
      }
      b->resize(b->width(), 28);
-     QHash<int, JLabel*> labelTable = QHash<int, JLabel*>();
+     QMap<int, JLabel*> labelTable = QMap<int, JLabel*>();
      labelTable.insert((0), new JLabel("0%"));
      if (_maxVal == 63) {   // this if for the QSI mute level, not very universal, needs work
          labelTable.insert((_maxVal / 2), new JLabel("25%"));

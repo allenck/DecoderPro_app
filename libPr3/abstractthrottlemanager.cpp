@@ -449,7 +449,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      for (int i = 0; i < p->size(); i++) {
          PropertyChangeListener* l = p->at(i)->getPropertyChangeListener();
          log->debug("Notify propertyChangeListener");
-         l->propertyChange(new PropertyChangeEvent(this, "throttleAssigned", 0, VPtr<LocoAddress>::asQVariant(addr)));
+         l->propertyChange(new PropertyChangeEvent(this, "throttleAssigned", QVariant(), VPtr<LocoAddress>::asQVariant(addr)));
          if (ads != nullptr && p->value(i)->getRosterEntry() != nullptr && throttle->getRosterEntry() == nullptr) {
              throttle->setRosterEntry(p->at(i)->getRosterEntry());
          }
