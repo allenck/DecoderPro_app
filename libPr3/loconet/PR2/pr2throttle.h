@@ -12,6 +12,7 @@ public:
  /*public*/ void setIsForward(bool forward);
  /*public*/ QString toString();
  /*public*/ LocoAddress* getLocoAddress();
+  QObject* self() {return(QObject*)this;}
 
 
 private:

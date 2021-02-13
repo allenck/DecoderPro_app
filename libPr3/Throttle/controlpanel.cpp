@@ -63,6 +63,7 @@
 {
  //super("Speed");
  setObjectName("ControlPanel");
+ log->setDebugEnabled(true);
  _displaySlider = SLIDERDISPLAY;
  speedControllerEnable = false;
  _emergencyStop = false;
@@ -161,7 +162,7 @@
     this->setEnabled(false);
     if (_throttle != NULL) {
         //throttle.removePropertyChangeListener(this);
-     disconnect(_throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect((AbstractThrottle*)_throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     _throttle = NULL;
     if (prevShuntingFn != NULL) {
@@ -189,7 +190,7 @@
  this->setSpeedStepsMode(_throttle->getSpeedStepMode());
 
  //this->throttle.addPropertyChangeListener(this);
- connect(this->_throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect((AbstractThrottle*)this->_throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  if (log->isDebugEnabled())
  {
      DccLocoAddress* Address = (DccLocoAddress*) _throttle->getLocoAddress();
@@ -1609,12 +1610,12 @@ void ControlPanel::on_menu_requested()
 //            java.lang.reflect.Method getter = throttle.getClass().getMethod("get" + switchSliderFunction, (Class[]) null);
    QByteArray member = QMetaObject::normalizedSignature(QString("get"+switchSliderFunction).toLocal8Bit());
 
-   int methodIndex = _throttle->metaObject()->indexOfMethod(member);
+   int methodIndex = _throttle->self()->metaObject()->indexOfMethod(member);
 //   if(methodIndex < 0) throw Exception("invalid switchslider function "+ switchSliderFunction);
 
 //            bool state = (Boolean) getter.invoke(throttle, (Object[]) null);
    bool state;
-   if(QMetaObject::invokeMethod(_throttle, member, Qt::AutoConnection, Q_RETURN_ARG(bool, state)))
+   if(QMetaObject::invokeMethod(_throttle->self(), member, Qt::AutoConnection, Q_RETURN_ARG(bool, state)))
    {
     if (state) {
         setSpeedController(SLIDERDISPLAYCONTINUOUS);

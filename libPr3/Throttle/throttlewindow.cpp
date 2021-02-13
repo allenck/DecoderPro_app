@@ -9,9 +9,7 @@
 //#include "listthrottles.h"
 #include "panelmenu.h"
 #include "editor.h"
-#include "instancemanager.h"
 #include "lnpowermanager.h"
-#include "throttleframemanager.h"
 #include "addresspanel.h"
 #include "throttleframepropertyeditor.h"
 #include "throttlespreferencesaction.h"
@@ -25,8 +23,6 @@
 #include "warrantframe.h"
 #include "functionpanel.h"
 #include "loconetsystemconnectionmemo.h"
-#include "throttleslistpanel.h"
-#include "throttlestablemodel.h"
 #include "withrottlecreationaction.h"
 #include "xmlfile.h"
 #include "jfilechooser.h"
@@ -52,6 +48,7 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  ui->setupUi(this);
  this->parent = parent;
  log = new Logger("ThrottleWindow");
+ log->setDebugEnabled(true);
  addressPanel = new AddressPanel(this);
  addressPanel->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::RightDockWidgetArea);
  this->addDockWidget(static_cast<Qt::DockWidgetArea>(Qt::RightDockWidgetArea ), addressPanel,Qt::Horizontal);
@@ -174,13 +171,15 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
 #endif
  initializeMenu();
 
+ addWindowListener(new TWWindowListener(this));
+
  ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->addThrottleFrame(this);
 }
 
 ThrottleWindow::~ThrottleWindow()
 {
     delete ui;
-    dispose();
+    //dispose();
 }
 /**
  *  Set up View, Edit and Power Menus
@@ -495,7 +494,7 @@ void ThrottleWindow::notifyThrottleFound(DccThrottle *t)
  controlPanel->notifyAddressThrottleFound(t);
  functionPanel->setAddressPanel(addressPanel);
  functionPanel->notifyAddressThrottleFound(t);
- //throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+ throttle->addPropertyChangeListener((PropertyChangeListener*)this);
  connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  //setWindowTitle(((RosterEntry*)throttle->getRosterEntry())->getId());
  setFrameTitle();
@@ -524,19 +523,12 @@ void ThrottleWindow::getSettings()
  settings.endGroup();
 }
 
-void ThrottleWindow::closeEvent(QCloseEvent *)
-{
- saveSettings();
- dispose();
-}
-//void ThrottleWindow::on_btnDispatch_clicked()
+//void ThrottleWindow::closeEvent(QCloseEvent *)
 //{
-// mgr->dispatchThrottle((DccThrottle*)throttle, (ThrottleListener*)this);
+// saveSettings();
+// dispose();
 //}
-//void ThrottleWindow::on_btnProgram_clicked()
-//{
 
-//}
 
 void ThrottleWindow::notifyChangedSlot(LocoNetSlot * s)
 {
@@ -898,6 +890,8 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
 /*public*/ void ThrottleWindow::dispose()
 {
  log->debug(tr("Disposing %1").arg(getTitle()));
+ if(addressPanel == nullptr)
+  return;
  addressPanel->removeAddressListener(this);
  ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(this, addressPanel->getCurrentAddress());
  // check for any special disposing in InternalFrames
@@ -906,6 +900,7 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  speedPanel->destroy();
  // dispose of this last because it will release and destroy throttle.
  addressPanel->destroy();
+ addressPanel = nullptr;
 
 }
 

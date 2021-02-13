@@ -1368,10 +1368,6 @@ public:
    ~PythonQtShell_Throttle();
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual bool  getF0();
 virtual bool  getF0Momentary();
 virtual bool  getF1();
@@ -1440,6 +1436,7 @@ virtual LocoAddress*  getLocoAddress();
 virtual BasicRosterEntry*  getRosterEntry();
 virtual float  getSpeedSetting();
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
+virtual QObject*  self();
 virtual void setF0(bool  arg__1);
 virtual void setF0Momentary(bool  arg__1);
 virtual void setF1(bool  arg__1);
@@ -1505,10 +1502,7 @@ virtual void setRosterEntry(BasicRosterEntry*  arg__1);
 virtual void setSpeedSetting(float  arg__1);
 virtual void setSpeedSetting(float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop);
 virtual void setSpeedSettingAgain(float  speed);
-virtual void timerEvent(QTimerEvent*  event);
 
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
@@ -1583,6 +1577,7 @@ inline LocoAddress*  py_q_getLocoAddress() { return Throttle::getLocoAddress(); 
 inline BasicRosterEntry*  py_q_getRosterEntry() { return Throttle::getRosterEntry(); }
 inline float  py_q_getSpeedSetting() { return Throttle::getSpeedSetting(); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { Throttle::removePropertyChangeListener(arg__1); }
+inline QObject*  py_q_self() { return this->self(); }
 inline void py_q_setF0(bool  arg__1) { Throttle::setF0(arg__1); }
 inline void py_q_setF0Momentary(bool  arg__1) { Throttle::setF0Momentary(arg__1); }
 inline void py_q_setF1(bool  arg__1) { Throttle::setF1(arg__1); }
@@ -1796,6 +1791,8 @@ void delete_Throttle(Throttle* obj) { delete obj; }
    float  py_q_getSpeedSetting(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_getSpeedSetting());}
    void removePropertyChangeListener(Throttle* theWrappedObject, PropertyChangeListener*  arg__1);
    void py_q_removePropertyChangeListener(Throttle* theWrappedObject, PropertyChangeListener*  arg__1){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1));}
+   QObject*  self(Throttle* theWrappedObject);
+   QObject*  py_q_self(Throttle* theWrappedObject){  return (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_self());}
    void setF0(Throttle* theWrappedObject, bool  arg__1);
    void py_q_setF0(Throttle* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Throttle*)theWrappedObject)->py_q_setF0(arg__1));}
    void setF0Momentary(Throttle* theWrappedObject, bool  arg__1);

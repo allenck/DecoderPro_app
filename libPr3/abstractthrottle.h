@@ -8,9 +8,10 @@
 #include "libPr3_global.h"
 #include "propertychangesupport.h"
 
-class LIBPR3SHARED_EXPORT AbstractThrottle : public DccThrottle
+class LIBPR3SHARED_EXPORT AbstractThrottle : public PropertyChangeSupport, public DccThrottle
 {
     Q_OBJECT
+  Q_INTERFACES(DccThrottle)
 public:
     explicit AbstractThrottle(SystemConnectionMemo* memo, QObject *parent = 0);
     /*public final*/ static float SPEED_STEP_14_INCREMENT;//=1.0f/14.0f;
@@ -27,7 +28,7 @@ public:
     /*public*/ QVector<bool> getFunctionsMomentary() override;
     /*public*/ bool getFunction(int fN) override;
     /*public*/ bool getFunctionMomentary(int fN) override;
-
+#if 0
     Q_INVOKABLE /*public*/ bool getF0() override;
     Q_INVOKABLE /*public*/ bool getF1() override;
     Q_INVOKABLE /*public*/ bool getF2() override;
@@ -86,10 +87,11 @@ public:
     /*public*/ bool getF26Momentary() override;
     /*public*/ bool getF27Momentary() override;
     /*public*/ bool getF28Momentary() override;
+#endif
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*protected*/ void notifyPropertyChangeListener(QString property, QVariant oldValue, QVariant newValue);
-    /*public*/ QVector<PropertyChangeListener*>* getListeners();
+//   QT_DEPRECATED  /*protected*/ void notifyPropertyChangeListener(QString property, QVariant oldValue, QVariant newValue);
+    QT_DEPRECATED /*public*/ QVector<PropertyChangeListener*>* getListeners();
 //    /*public*/ void dispose();
     /*public*/ void dispose(ThrottleListener* l);
 //    /*public*/ void dispatch();
@@ -98,6 +100,7 @@ public:
     /*public*/ void release(ThrottleListener* l);
     /*abstract*/ virtual /*protected*/ void throttleDispose() {}
     /*public*/ float getSpeedIncrement();
+#if 0
     /*public*/ void setF0(bool f0) override;
     /*public*/ void setF1(bool f1) override;
     /*public*/ void setF2(bool f2) override;
@@ -156,6 +159,7 @@ public:
     /*public*/ void setF26Momentary(bool f26Momentary) override;
     /*public*/ void setF27Momentary(bool f27Momentary) override;
     /*public*/ void setF28Momentary(bool f28Momentary) override;
+#endif
     /*public*/ void setFunction(int functionNum, bool newState);
     /*public*/ void updateFunction(int fn, bool state);
     /*public*/ void updateFunctionMomentary(int fn, bool state);
@@ -197,6 +201,7 @@ public slots:
       */
      /*private*/ /*final*/ QVector<bool> FUNCTION_MOMENTARY_BOOLEAN_ARRAY;
 
+
 protected:
     /*protected*/ float speedSetting = 0.0;
     /**
@@ -204,16 +209,16 @@ protected:
      */
     /*protected*/ SpeedStepMode::SSMODES speedStepMode;
     /*protected*/ bool isForward;
-    /*protected*/ bool f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12;
-    /*protected*/ bool f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23,
-            f24, f25, f26, f27, f28;
-    /*protected*/ bool f0Momentary, f1Momentary, f2Momentary, f3Momentary,
-            f4Momentary, f5Momentary, f6Momentary, f7Momentary, f8Momentary,
-            f9Momentary, f10Momentary, f11Momentary, f12Momentary;
-    /*protected*/ bool f13Momentary, f14Momentary, f15Momentary, f16Momentary,
-            f17Momentary, f18Momentary, f19Momentary, f20Momentary,
-            f21Momentary, f22Momentary, f23Momentary, f24Momentary,
-            f25Momentary, f26Momentary, f27Momentary, f28Momentary;
+//    /*protected*/ bool f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12;
+//    /*protected*/ bool f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23,
+//            f24, f25, f26, f27, f28;
+//    /*protected*/ bool f0Momentary, f1Momentary, f2Momentary, f3Momentary,
+//            f4Momentary, f5Momentary, f6Momentary, f7Momentary, f8Momentary,
+//            f9Momentary, f10Momentary, f11Momentary, f12Momentary;
+//    /*protected*/ bool f13Momentary, f14Momentary, f15Momentary, f16Momentary,
+//            f17Momentary, f18Momentary, f19Momentary, f20Momentary,
+//            f21Momentary, f22Momentary, f23Momentary, f24Momentary,
+//            f25Momentary, f26Momentary, f27Momentary, f28Momentary;
 
     /**
      * Is this object still usable?  Set false after dispose, this
@@ -242,4 +247,23 @@ protected:
  friend class AbstractThrottleTest;
 };
 
+class ATThrottleListener : public ThrottleListener
+{
+  //Q_OBJECT
+ public:
+  QObject* self() {return(QObject*)this;}
+
+ //public slots:
+  //@Override
+  /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason) {
+  }
+
+  //@Override
+  /*public*/ void notifyThrottleFound(DccThrottle* t) {
+  }
+
+  //@Override
+  /*public*/ void notifyDecisionRequired(LocoAddress* address, DecisionType* question) {
+  }
+};
 #endif // ABSTRACTTHROTTLE_H

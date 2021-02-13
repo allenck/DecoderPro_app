@@ -708,7 +708,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
     QString property = "";
     QVariant oldValue = QVariant();
     QVariant newValue = QVariant();
-    instance->notifyPropertyChangeListener(property, oldValue, newValue);
+    instance->firePropertyChange(property, oldValue, newValue);
     JUnitAppender::assertErrorMessage("notifyPropertyChangeListener without change",__FILE__, __LINE__);
 }
 

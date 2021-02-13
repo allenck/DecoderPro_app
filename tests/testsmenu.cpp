@@ -90,6 +90,7 @@
 #include "loconet/lncvprogtablemodeltestaction.h"
 #include "misc/identifydecodertestaction.h"
 #include "misc/cvutiltestaction.h"
+#include "misc/fileutilsupporttestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -249,6 +250,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     miscMenu->addAction(new ConsistToolFrameTestAction(this));
     miscMenu->addAction(new OBlockTableActionTestAction(this));
     miscMenu->addAction(new CvUtilTestAction(this));
+    miscMenu->addAction(new FileUtilSupportTestAction(this));
 
     QMenu* layoutEditorMenu = new QMenu("LayoutEditor");
     addMenu(layoutEditorMenu);

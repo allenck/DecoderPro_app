@@ -202,7 +202,7 @@
 
     writeData();
     if (oldSpeed != this->speedSetting) {
-        notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting); // NOI18N
+        firePropertyChange("SpeedSetting", oldSpeed, this->speedSetting); // NOI18N
     }
     record(speed);
 }
@@ -217,7 +217,7 @@
     isForward = forward;
     sendFunctionGroup1();
     if (old != isForward) {
-        notifyPropertyChangeListener("IsForward", old, isForward); // NOI18N
+        firePropertyChange("IsForward", old, isForward); // NOI18N
     }
 }
 

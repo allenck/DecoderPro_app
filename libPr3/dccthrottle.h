@@ -7,11 +7,11 @@
 //class Throttle;
 class LIBPR3SHARED_EXPORT DccThrottle : public Throttle
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
-    explicit DccThrottle(QObject *parent = 0) : Throttle(parent) {}
-    ~DccThrottle() {}
-    DccThrottle(const DccThrottle&) : Throttle() {}
+//    explicit DccThrottle(QObject *parent = 0) : Throttle(parent) {}
+//    ~DccThrottle() {}
+//    DccThrottle(const DccThrottle&) : Throttle() {}
     /**
      * Provide DCC-specific extensions to Throttle interface.
      *
@@ -71,5 +71,5 @@ signals:
 public slots:
     
 };
-Q_DECLARE_METATYPE(DccThrottle)
+Q_DECLARE_INTERFACE(DccThrottle, "DccThrottle")
 #endif // DCCTHROTTLE_H

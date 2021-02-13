@@ -170,6 +170,24 @@ void LocoNetSlot::common(int slotNum)
     return 0 == (_dirf & LnConstants::DIRF_DIR);
 }
 
+/*private*/ QVector<bool> LocoNetSlot::getFuncArray() {
+        return QVector<bool>{isF0(),isF1(),isF2(),isF3(),isF4(),isF5(),isF6(),isF7(),isF8(),
+        isF9(),isF10(),isF11(),isF12(),isF13(),isF14(),isF15(),isF16(),isF17(),isF18(),
+        isF19(),isF20(),isF21(),isF22(),isF23(),isF24(),isF25(),isF26(),isF27(),isF28()};
+}
+
+/**
+ * Return a slot Function state.
+ * <p>
+ * See individual Functions for meanings.
+ *
+ * @param Fn Function number, 0-28
+ * @return true if Function is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isFunction(int Fn){
+    return getFuncArray()[Fn];
+}
+
 /**
  * Returns the slot's F0 state
  * <p>

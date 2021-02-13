@@ -11,7 +11,7 @@
 /*public final*/ /*static*/ float AbstractThrottle::SPEED_STEP_128_INCREMENT=1.0f/126.0f; // remember there are only 126
                                                                 // non-stop values in 128 speed
 
-AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) //:    DccThrottle(parent)
+AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) :    PropertyChangeSupport(this, parent)
 {
  active = true;
  adapterMemo = memo;
@@ -20,10 +20,12 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  this->parent = parent;
  setObjectName("AbstractThrottle");
  speedStepMode = SpeedStepMode::UNKNOWN;
+ FUNCTION_BOOLEAN_ARRAY = QVector<bool>(29);
+ FUNCTION_MOMENTARY_BOOLEAN_ARRAY = QVector<bool>(29);
 
  log = new Logger("AbstractThrottle");
  durationRunning = 0;
- f0=f1=f2=f3=f4=f5=f6=f7=f8=f9=f10=f11=f12=f13=f14=f15=f16=f17=f18=f19=f20=f21=f22=f23=f24=f25=f26=f27=f28=false;
+ //f0=f1=f2=f3=f4=f5=f6=f7=f8=f9=f10=f11=f12=f13=f14=f15=f16=f17=f18=f19=f20=f21=f22=f23=f24=f25=f26=f27=f28=false;
 }
 /**
  * An abstract implementation of DccThrottle.
@@ -76,7 +78,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 //@Override
 /*public*/ void AbstractThrottle::setSpeedSetting(float speed, bool /*allowDuplicates*/, bool /*allowDuplicatesOnStop*/) {
     if (qAbs(this->speedSetting - speed) > 0.0001) {
-        notifyPropertyChangeListener("SpeedSetting", this->speedSetting, this->speedSetting = speed);
+        firePropertyChange("SpeedSetting", this->speedSetting, this->speedSetting = speed);
     }
     record(speed);
 }
@@ -106,7 +108,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 /*public*/ void AbstractThrottle::setIsForward(bool forward)
 {
  if(forward!=this->isForward)
-  notifyPropertyChangeListener("IsForward",
+  firePropertyChange("IsForward",
                              (this->isForward),
                              (this->isForward=forward));
 }
@@ -157,7 +159,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
     return FUNCTION_MOMENTARY_BOOLEAN_ARRAY[fN];
 
 }
-
+#if 0
 /*public*/ bool AbstractThrottle::getF0() {
     return f0;
 }
@@ -392,37 +394,52 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 /*public*/ bool AbstractThrottle::getF28Momentary() {
     return f28Momentary;
 }
-
-
-// register for notification if any of the properties change
-/*public*/ void AbstractThrottle::removePropertyChangeListener(PropertyChangeListener* l) {
-    log->debug("Removing property change " + l->objectName());
-    if (listeners->contains(l)) {
-        listeners->remove(listeners->indexOf(l));
-    }
-    log->debug("remove listeners size is " + QString("%1").arg(listeners->size()));
-    if ((listeners->size()==0))
+#endif
+/**
+ * Temporary behaviour only allowing unique PCLs.
+ * To support Throttle PCL's ( eg. WiThrottle Server ) that rely on the
+ * previous behaviour of only allowing 1 unique PCL instance.
+ * To be removed when WiThrottle Server has been updated.
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractThrottle::addPropertyChangeListener(PropertyChangeListener* l) {
+    if ( getPropertyChangeListeners().contains(l) )
     {
-        log->debug("Listener Size is 0 so will call the dispose in the InstanceManger with an empty throttleListenr nullptr value");
-// TODO:
-//        InstanceManager::throttleManagerInstance().disposeThrottle(this, new ThrottleListener(){
-//            /*public*/ void notifyFailedThrottleRequest(DccLocoAddress address, String reason){ }
-//            /*public*/ void notifyThrottleFound(DccThrottle t) { }
+        log->warn(tr("Preventing %1 adding duplicate PCL").arg(l->objectName()));
+        return;
+    }
+    PropertyChangeSupport::addPropertyChangeListener(l);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractThrottle::removePropertyChangeListener(PropertyChangeListener* l) {
+    log->debug(tr("Removing property change %1").arg(l->objectName()));
+    PropertyChangeSupport::removePropertyChangeListener(l);
+    log->debug(tr("remove listeners size is %1").arg(getPropertyChangeListeners().length()));
+    if (getPropertyChangeListeners().length() == 0) {
+        log->debug("No listeners so calling ThrottleManager.dispose with an empty ThrottleListener");
+        InstanceManager::throttleManagerInstance()->disposeThrottle(this, new ATThrottleListener() );
+//        {
+//            @Override
+//            public void notifyFailedThrottleRequest(LocoAddress address, String reason) {
+//            }
+
+//            @Override
+//            public void notifyThrottleFound(DccThrottle t) {
+//            }
+
+//            @Override
+//            public void notifyDecisionRequired(LocoAddress address, DecisionType question) {
+//            }
 //        });
     }
 }
 
-/*public*/ void AbstractThrottle::addPropertyChangeListener(PropertyChangeListener* l) {
-    log->debug(QString("listeners added ") + QString(l?l->objectName():"null"));
-    // add only if not already registered
-    if (!listeners->contains(l))
-    {
-     listeners->append(l);
-     connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
-    }
-    log->debug("listeners size is " + QString("%1").arg(listeners->size()));
-}
-
+#if 0
 /**
  * Trigger the notification of all PropertyChangeListeners
  */
@@ -458,7 +475,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  }
  emit propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
 }
-
+#endif
 /*public*/ QVector<PropertyChangeListener*>* AbstractThrottle::getListeners(){
     return listeners;
 }
@@ -499,7 +516,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 /*public*/ float AbstractThrottle::getSpeedIncrement() {
     return SpeedStepMode(speedStepMode).increment;
 }
-
+#if 0
 // functions - note that we use the naming for DCC, though that's not the implication;
 // see also DccThrottle interface
 /*public*/ void AbstractThrottle::setF0(bool f0) {
@@ -733,6 +750,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
     if (old != this->f28)
         notifyPropertyChangeListener(Throttle::F28, old, this->f28 );
 }
+#endif
 /**
   * Send whole (DCC) Function Group for a particular function number.
   * @param functionNum Function Number
@@ -906,7 +924,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
     return;
 }
 
-
+#if 0
 // function momentary status  - note that we use the naming for DCC,
 // though that's not the implication;
 // see also DccThrottle interface
@@ -1141,7 +1159,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
     if (old != this->f28Momentary)
         notifyPropertyChangeListener(Throttle::F28Momentary, old, this->f28Momentary );
 }
-
+#endif
 /**
  * Sets Momentary Function and sends to layout.
  * {@inheritDoc}
@@ -1227,7 +1245,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 /*public*/ void AbstractThrottle::setSpeedStepMode(SpeedStepMode::SSMODES newMode) {
  log->debug(tr("Speed Step Mode Change from:%1 to Mode:%2").arg(this->speedStepMode).arg(newMode));
  if (speedStepMode != newMode) {
-     notifyPropertyChangeListener("SpeedSteps", this->speedStepMode, newMode);
+     firePropertyChange("SpeedSteps", this->speedStepMode, newMode);
      this->speedStepMode = newMode;
  }
 }

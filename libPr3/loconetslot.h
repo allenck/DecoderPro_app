@@ -137,6 +137,7 @@ public:
     /*public*/ /*synchronized*/ void removeSlotListener(SlotListener* l);
     /*public*/ int getTrackStatus();
     /*public*/ void setTrackStatus(int status);
+    /*public*/ bool isFunction(int Fn);
 
 signals:
     //void LocoNetException(QString str = "");
@@ -186,6 +187,8 @@ private:
   static Logger* log;
  QMutex mutex;
  // global track status should be reference through SlotManager
+ /*private*/ QVector<bool> getFuncArray();
+
 protected:
  void notifySlotListeners();
 friend class LnClockControl;

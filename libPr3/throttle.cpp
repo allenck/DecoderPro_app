@@ -1040,7 +1040,7 @@
 //         sb.append("F"); // NOI18N
 //         sb.append(functionNum);
 //         return sb.toString();
-      return QString(tr("F%1").arg(functionNum));
+      return QString("F%1").arg(functionNum);
      }
 
      /**
@@ -1055,7 +1055,7 @@
 //         sb.append(momentFunctionNum);
 //         sb.append("Momentary"); // NOI18N
 //         return sb.toString();
-      return QString(tr("F%1Momentary").arg(momentFunctionNum));
+      return QString("F%1Momentary").arg(momentFunctionNum);
      }
 
      /**

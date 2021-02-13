@@ -36,7 +36,7 @@ PythonQt::priv()->registerClass(&BlockManager::staticMetaObject, "Jmri", PythonQ
 PythonQt::priv()->registerCPPClass("CommandStation", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_CommandStation>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_CommandStation>, module, 0);
 PythonQt::priv()->registerClass(&ControlPanelEditor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_ControlPanelEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_ControlPanelEditor>, module, 0);
 PythonQt::priv()->registerClass(&DccLocoAddress::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_DccLocoAddress>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_DccLocoAddress>, module, PythonQt::Type_RichCompare);
-PythonQt::priv()->registerClass(&DccThrottle::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_DccThrottle>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_DccThrottle>, module, 0);
+PythonQt::priv()->registerCPPClass("DccThrottle", "Throttle", "Jmri", PythonQtCreateObject<PythonQtWrapper_DccThrottle>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_DccThrottle>, module, 0);
 PythonQt::priv()->registerClass(&DefaultLogixManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_DefaultLogixManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_DefaultLogixManager>, module, 0);
 PythonQt::priv()->registerClass(&DefaultMemoryManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_DefaultMemoryManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_DefaultMemoryManager>, module, 0);
 PythonQt::priv()->registerClass(&DefaultProgrammerManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_DefaultProgrammerManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_DefaultProgrammerManager>, module, 0);
@@ -112,7 +112,7 @@ PythonQt::priv()->registerClass(&SystemConnectionMemo::staticMetaObject, "Jmri",
 PythonQt::priv()->registerCPPClass("TableCellEditor", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_TableCellEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableCellEditor>, module, 0);
 PythonQt::priv()->registerClass(&TableColumn::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumn>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumn>, module, 0);
 PythonQt::priv()->registerClass(&TableColumnModel::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumnModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumnModel>, module, 0);
-PythonQt::priv()->registerClass(&Throttle::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Throttle>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Throttle>, module, 0);
+PythonQt::priv()->registerCPPClass("Throttle", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_Throttle>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Throttle>, module, 0);
 PythonQt::priv()->registerClass(&ThrottleManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_ThrottleManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_ThrottleManager>, module, 0);
 PythonQt::priv()->registerClass(&Turnout::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Turnout>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Turnout>, module, PythonQt::Type_RichCompare);
 PythonQt::priv()->registerClass(&TurnoutManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TurnoutManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TurnoutManager>, module, 0);

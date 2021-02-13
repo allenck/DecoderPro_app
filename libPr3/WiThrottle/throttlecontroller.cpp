@@ -14,6 +14,7 @@
 #include "withrottlepreferences.h"
 #include "sleeperthread.h"
 #include "consistfunctioncontroller.h"
+#include "abstractthrottle.h"
 
 // /*public*/ class ThrottleController implements ThrottleListener, PropertyChangeListener {
 
@@ -89,7 +90,7 @@ controllerListeners = NULL;
     isAddressSet = false;
     InstanceManager::throttleManagerInstance()->releaseThrottle(throttle, (ThrottleListener*)this);
     //throttle.removePropertyChangeListener(this);
-    disconnect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    disconnect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     throttle = NULL;
     rosterLoco = NULL;
     sendAddress();
@@ -107,7 +108,7 @@ controllerListeners = NULL;
     isAddressSet = false;
     InstanceManager::throttleManagerInstance()->dispatchThrottle(throttle, (ThrottleListener*)this);
     //throttle->removePropertyChangeListener(this);
-    disconnect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
+    disconnect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
     throttle = NULL;
     rosterLoco = NULL;
     sendAddress();
@@ -137,7 +138,7 @@ controllerListeners = NULL;
         throttle = t;
         setFunctionThrottle(throttle);
         //throttle.addPropertyChangeListener(this);
-        connect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
+        connect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)) );
         isAddressSet = true;
         if (log->isDebugEnabled()) {
             log->debug(tr("DccThrottle found for: ") + throttle->getLocoAddress()->toString());
@@ -436,7 +437,7 @@ controllerListeners = NULL;
     if (useLeadLocoF) {
         leadLocoF->dispose();
         //functionThrottle.removePropertyChangeListener(this);
-        disconnect(functionThrottle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        disconnect((AbstractThrottle*)functionThrottle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         if (throttle != NULL) {
             setFunctionThrottle(throttle);
         }
@@ -449,7 +450,7 @@ controllerListeners = NULL;
 /*public*/ void ThrottleController::setFunctionThrottle(DccThrottle* t) {
     functionThrottle = t;
     //functionThrottle.addPropertyChangeListener(this);
-    connect(functionThrottle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect((AbstractThrottle*)functionThrottle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void ThrottleController::setLocoForConsistFunctions(QString inPackage) {
@@ -609,7 +610,7 @@ controllerListeners = NULL;
   {
 //            Method getF = functionThrottle.getClass().getMethod("getF" + receivedFunction, (Class[]) NULL);
    QObject* obj = NULL;
-   const char* className = functionThrottle->metaObject()->className();
+   const char* className = functionThrottle->self()->metaObject()->className();
    int typeId = QMetaType::type(className);
    if(typeId > 0)
    {
@@ -681,7 +682,7 @@ controllerListeners = NULL;
   {
    //Method getFMom = functionThrottle.getClass().getMethod("getF" + receivedFunction + "Momentary", (Class[]) NULL);
    QObject* obj = NULL;
-   const char* className = functionThrottle->metaObject()->className();
+   const char* className = functionThrottle->self()->metaObject()->className();
    int typeId = QMetaType::type(className);
    if(typeId > 0)
    {

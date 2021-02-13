@@ -10,6 +10,7 @@
 #include "propertychangeevent.h"
 #include "dccthrottle.h"
 #include "rosterentry.h"
+#include "abstractthrottle.h"
 
 // /*public*/ class JsonThrottle implements ThrottleListener, PropertyChangeListener {
 
@@ -156,7 +157,7 @@
         if (manager->getServers(this)->size() == 1) {
             this->throttle->release((ThrottleListener*)this);
 //            this->throttle->removePropertyChangeListener(this);
-         disconnect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         disconnect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
             this->throttle = NULL;
         }
         if (notifyClient) {
@@ -363,7 +364,7 @@
     try {
         this->throttle = throttle;
 //        throttle->addPropertyChangeListener(this);
-     connect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         switch (throttle->getSpeedStepMode()) {
             case DccThrottle::SpeedStepMode14:
                 this->speedSteps = 14;

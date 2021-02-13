@@ -571,7 +571,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<ProgrammerConfigManager>("ProgrammerConfigManager");
  qRegisterMetaType<RosterConfigManager>("RosterConfigManager");
  qRegisterMetaType<TreeFrame>("TreeFrame");
- qRegisterMetaType<DccThrottle>("DccThrottle");
+ //qRegisterMetaType<DccThrottle>("DccThrottle");
  qRegisterMetaType<WiThrottlePrefsPanel>("WiThrottlePrefsPanel");
  qRegisterMetaType<WebServerPreferencesPanel>("WebServerPreferencesPanel");
  qRegisterMetaType<JsonServerPreferencesPanel>("JsonServerPreferencesPanel");

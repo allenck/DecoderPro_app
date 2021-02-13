@@ -3373,16 +3373,11 @@ void delete_DccLocoAddress(DccLocoAddress* obj) { delete obj; }
 class PythonQtShell_DccThrottle : public DccThrottle
 {
 public:
-    PythonQtShell_DccThrottle(QObject*  parent = 0):DccThrottle(parent),_wrapper(NULL) {}
-    PythonQtShell_DccThrottle(const DccThrottle&  arg__1):DccThrottle(arg__1),_wrapper(NULL) {}
+    PythonQtShell_DccThrottle():DccThrottle(),_wrapper(NULL) {}
 
    ~PythonQtShell_DccThrottle();
 
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual bool  getF0();
 virtual bool  getF0Momentary();
 virtual bool  getF1();
@@ -3452,6 +3447,7 @@ virtual BasicRosterEntry*  getRosterEntry();
 virtual float  getSpeedIncrement();
 virtual float  getSpeedSetting();
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
+virtual QObject*  self();
 virtual void setF0(bool  arg__1);
 virtual void setF0Momentary(bool  arg__1);
 virtual void setF1(bool  arg__1);
@@ -3517,10 +3513,7 @@ virtual void setRosterEntry(BasicRosterEntry*  arg__1);
 virtual void setSpeedSetting(float  arg__1);
 virtual void setSpeedSetting(float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop);
 virtual void setSpeedSettingAgain(float  speed);
-virtual void timerEvent(QTimerEvent*  event);
 
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
@@ -3533,8 +3526,7 @@ class PythonQtWrapper_DccThrottle : public QObject
 { Q_OBJECT
 public:
 public slots:
-DccThrottle* new_DccThrottle(QObject*  parent = 0);
-DccThrottle* new_DccThrottle(const DccThrottle&  arg__1);
+DccThrottle* new_DccThrottle();
 void delete_DccThrottle(DccThrottle* obj) { delete obj; } 
    float  getSpeedIncrement(DccThrottle* theWrappedObject);
    float  py_q_getSpeedIncrement(DccThrottle* theWrappedObject){  return (((PythonQtPublicPromoter_DccThrottle*)theWrappedObject)->py_q_getSpeedIncrement());}

@@ -8,6 +8,11 @@
 #include "libPr3_global.h"
 #include "speedpanel.h"
 #include "addresslistener.h"
+#include "windowadapter.h"
+#include "throttleframemanager.h"
+#include "instancemanager.h"
+#include "throttlestablemodel.h"
+#include "throttleslistpanel.h"
 
 namespace Ui {
 class ThrottleWindow;
@@ -135,7 +140,7 @@ private slots:
     void fillCbRoster();
     void getSettings();
     void saveSettings();
-    void closeEvent(QCloseEvent *);
+//    void closeEvent(QCloseEvent *);
     Logger* log;
     ListThrottles* listViewDlg;
     bool bAltFunc;
@@ -182,6 +187,30 @@ friend class AbstractThrottle;
 friend class SlotManager;
 friend class ThrottleCreationAction;
 friend class ThrottleOperator;
+friend class TWWindowListener;
 };
 
+class TWWindowListener : public WindowAdapter
+{
+  Q_OBJECT
+  ThrottleWindow* me;
+ public:
+  TWWindowListener(ThrottleWindow* me) {this->me = me;}
+  //@Override
+ /*public*/ void windowClosing(QCloseEvent* e) {
+     //ThrottleWindow me = (ThrottleWindow) e.getSource();
+     //((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->requestThrottleWindowDestruction(me);
+     ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(me, nullptr);
+     if (me->throttleToolBar != nullptr) {
+//         Component[] cmps = throttleToolBar.getComponents();
+//         if (cmps != null) {
+//             for (int i = 0; i < cmps.length; i++) {
+//                 if (cmps[i] instanceof Jynstrument) {
+//                     ((Jynstrument) cmps[i]).exit();
+//                 }
+//             }
+//         }
+     }
+ }
+};
 #endif // THROTTLEWINDOW_H

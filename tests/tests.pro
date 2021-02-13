@@ -259,7 +259,9 @@ SOURCES += \
     misc/identifydecodertest.cpp \
     misc/identifydecodertestaction.cpp \
     misc/cvutiltest.cpp \
-    misc/cvutiltestaction.cpp
+    misc/cvutiltestaction.cpp \
+    misc/fileutilsupporttest.cpp \
+    misc/fileutilsupporttestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -497,7 +499,9 @@ HEADERS += \
     misc/identifydecodertest.h \
     misc/identifydecodertestaction.h \
     misc/cvutiltest.h \
-    misc/cvutiltestaction.h
+    misc/cvutiltestaction.h \
+    misc/fileutilsupporttest.h \
+    misc/fileutilsupporttestaction.h
 
 unix {
     target.path = /usr/lib

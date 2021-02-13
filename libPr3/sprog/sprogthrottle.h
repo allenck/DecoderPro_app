@@ -14,6 +14,7 @@ namespace Sprog
   /*public*/ void setSpeedStepMode(SpeedStepMode::SSMODES Mode);
   /*public*/ void setSpeedSetting(float speed);
   /*public*/ void setIsForward(bool forward);
+   QObject* self() {return(QObject*)this;}
 
  private:
   SprogCommandStation* station;// = null;

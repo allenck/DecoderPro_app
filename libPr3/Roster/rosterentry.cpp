@@ -1534,6 +1534,7 @@ if (!(_decoderFamily==("")))
     }
    } catch (FileNotFoundException ex)
    {
+    log->info(tr("iconFilePath invalid %1").arg(ex.getMessage()));
     if(a.contains(":"))
      a = a.mid(a.indexOf(":")+1);
     try
@@ -1565,7 +1566,7 @@ if (!(_decoderFamily==("")))
        _manufacturerID = a;
    }
 
-   if ((a = e.attribute(DECODER_PRODUCTID)) != "null") {
+   if ((a = e.attribute(DECODER_PRODUCTID)) != "") {
        _productID = a;
    }
    QDomElement e3;

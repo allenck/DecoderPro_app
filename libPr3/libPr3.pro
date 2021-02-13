@@ -1075,6 +1075,7 @@ SOURCES += \
     abstractprogrammerserver.cpp \
     searchbar.cpp \
     cvutil.cpp
+#    Throttle/throttleframe.cpp
 
 
  !contains(FTDI, 1) {
@@ -2166,6 +2167,7 @@ HEADERS += \
     abstractprogrammerserver.h \
     searchbar.h \
     cvutil.h
+#    Throttle/throttleframe.h
 
 
  !contains(FTDI, 1) {

@@ -743,7 +743,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   void Addresses::incrementUse()
   {
    useActiveCount++;
-   if(qobject_cast<LocoNetThrottle*>(throttle)!= NULL)
+   if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
    {
     LocoNetThrottle* lnThrottle = (LocoNetThrottle*)throttle;
     log.debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " increased Use Size to " + QString::number(useActiveCount));
@@ -755,7 +755,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    //Do want to go below 0 on the usage front!
    if (useActiveCount >0)
     useActiveCount--;
-   if(qobject_cast<LocoNetThrottle*>(throttle)!= NULL)
+   if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
    {
     LocoNetThrottle* lnThrottle = (LocoNetThrottle*)throttle;
     log.debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " decreased Use Size to " + QString::number(useActiveCount));
@@ -781,7 +781,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    //As the throttle has changed, we need to inform the listeners
    //However if a throttle hasn't used the new code, it will not have been
    //removed and will get a notification.
-   if(qobject_cast<LocoNetThrottle*>(throttle)!= NULL)
+   if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
    {
     LocoNetThrottle* lnThrottle = (LocoNetThrottle*)throttle;
     log.debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " throttle assigned " +
@@ -797,7 +797,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    QVector<PropertyChangeListener*>* v = old->getListeners();
    foreach (PropertyChangeListener* prop , *v)
    {
-    if(qobject_cast<LocoNetThrottle*>(throttle)!= NULL)
+    if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
      ((LocoNetThrottle*)this->throttle)->addPropertyChangeListener(prop);
 #if 1 //TODO:
      prop->propertyChange(new PropertyChangeEvent((QObject*)this, "throttleAssignmentChanged", QString(""), VPtr<DccLocoAddress>::asQVariant(la)));

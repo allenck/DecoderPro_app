@@ -24,6 +24,7 @@ FunctionPanel::FunctionPanel(QWidget *parent) :
     ui(new Ui::FunctionPanel)
 {
  ui->setupUi(this);
+ log->setDebugEnabled(true);
  functionButton = QList<FunctionButton*>();
  functionButton.append(ui->btnLight);
  functionButton.append(ui->btnF1);
@@ -96,7 +97,7 @@ FunctionPanel::~FunctionPanel()
  if (mThrottle != NULL)
  {
   //mThrottle->removePropertyChangeListener((PropertyChangeListener*)this);
-  disconnect(mThrottle, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect((AbstractThrottle*)mThrottle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
   mThrottle=NULL;
  }
 }
@@ -715,7 +716,8 @@ FunctionPanel::~FunctionPanel()
  */
 /*public*/ void FunctionPanel::notifyAddressThrottleFound(DccThrottle* t)
 {
- if (log->isDebugEnabled()) log->debug("Throttle found");
+ if (log->isDebugEnabled())
+  log->debug("Throttle found");
  mThrottle = t;
  setEnabled(true);
  //mThrottle->addPropertyChangeListener(this);

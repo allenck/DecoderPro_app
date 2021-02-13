@@ -8,11 +8,11 @@
 #include "libPr3_global.h"
 
 class ThrottleListener;
-class LIBPR3SHARED_EXPORT Throttle : public QObject
+class LIBPR3SHARED_EXPORT Throttle //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
-  explicit Throttle(QObject *parent = 0) : QObject(parent) {}
+  //explicit Throttle(QObject *parent = 0) : QObject(parent) {}
     /**
      * A Throttle object can be manipulated to change the speed, direction
      * and functions of a single locomotive.
@@ -439,10 +439,11 @@ public:
         virtual void setRosterEntry(BasicRosterEntry* /*re*/) {}
         virtual BasicRosterEntry* getRosterEntry()  {return NULL;}
 
+        virtual QObject* self() = 0;
 signals:
-    void propertyChange(PropertyChangeEvent*);
+    //void propertyChange(PropertyChangeEvent*);
 public slots:
     friend class FunctionPanel;
 };
-
+Q_DECLARE_INTERFACE(Throttle, "Throttle")
 #endif // THROTTLE_H

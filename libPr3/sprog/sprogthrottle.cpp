@@ -26,19 +26,7 @@ using namespace Sprog;
 
         // cache settings.
         this->speedSetting = 0;
-        this->f0 = false;
-        this->f1 = false;
-        this->f2 = false;
-        this->f3 = false;
-        this->f4 = false;
-        this->f5 = false;
-        this->f6 = false;
-        this->f7 = false;
-        this->f8 = false;
-        this->f9 = false;
-        this->f10 = false;
-        this->f11 = false;
-        this->f12 = false;
+
         this->address = address;
         this->isForward = true;
 
@@ -152,7 +140,7 @@ using namespace Sprog;
         m = new SprogMessage("M h" + QString::number(mode,0,16));
         ((SprogSystemConnectionMemo*)adapterMemo)->getSprogTrafficController()->sendSprogMessage(m, NULL);
         if ((speedStepMode != Mode) && (Mode != DccThrottle::SpeedStepMode27)) {
-            notifyPropertyChangeListener("SpeedSteps", this->speedStepMode,
+            firePropertyChange("SpeedSteps", this->speedStepMode,
                     this->speedStepMode);
             this->speedStepMode = Mode;
         }
@@ -203,7 +191,7 @@ using namespace Sprog;
 
             ((SprogSystemConnectionMemo*)adapterMemo)->getSprogTrafficController()->sendSprogMessage(m, NULL);
             if (qAbs(oldSpeed - this->speedSetting) > 0.0001) {
-                notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting);
+                firePropertyChange("SpeedSetting", oldSpeed, this->speedSetting);
             }
         } else {
             // 128 step mode speed commands are
@@ -236,7 +224,7 @@ using namespace Sprog;
 
             ((SprogSystemConnectionMemo*)adapterMemo)->getSprogTrafficController()->sendSprogMessage(m, NULL);
             if (qAbs(oldSpeed - this->speedSetting) > 0.0001) {
-                notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting);
+                firePropertyChange("SpeedSetting", oldSpeed, this->speedSetting);
             }
         }
         record(speed);
@@ -248,7 +236,7 @@ using namespace Sprog;
         isForward = forward;
         setSpeedSetting(speedSetting);  // send the command
         if (old != isForward) {
-            notifyPropertyChangeListener("IsForward", old, isForward);
+            firePropertyChange("IsForward", old, isForward);
         }
     }
 

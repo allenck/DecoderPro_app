@@ -114,6 +114,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _file, ("file:"))
 //  throw  FileNotFoundException("Cannot find file at " + path);
 // }
 // return file;
+ QFileInfo info(this->pathFromPortablePath(profile, path));
+ if(!info.exists())
+  throw  FileNotFoundException("Cannot find file at " + info.filePath());
  try {
      return new File(this->pathFromPortablePath(profile, path));
  } catch (NullPointerException ex) {
@@ -1190,6 +1193,7 @@ public URL getURL(URI uri) {
       path = path.mid(QString(*_settings).length());
   } else {
       path = path.replace(*_settings, Matcher::quoteReplacement(this->getPreferencesPath()));
+   //path = path.replace(*_settings, Matcher::quoteReplacement(this->getProfilePath()));
   }
  }
  else if (path.startsWith(*_home))

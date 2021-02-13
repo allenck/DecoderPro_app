@@ -133,7 +133,7 @@ int LnConstants::OPC_LOCO_SPD_ESTOP = 0x01; /* emergency stop command           
 //int LnConstants::STAT2_ID_IS_ALIAS = STAT2_SL_NOT_ID;
 
 /* mask and values for consist determination */
-int LnConstants::CONSIST_MASK      = STAT1_SL_CONDN | STAT1_SL_CONUP;
+int LnConstants::CONSIST_MASK      = LnConstants::STAT1_SL_CONDN | LnConstants::STAT1_SL_CONUP;
 //const int LnConstants::CONSIST_MID       = STAT1_SL_CONDN | STAT1_SL_CONUP;
 //const int LnConstants::CONSIST_TOP       = STAT1_SL_CONDN;
 //const int LnConstants::CONSIST_SUB       = STAT1_SL_CONUP;
@@ -146,7 +146,7 @@ QString LnConstants::CONSIST_STAT(int s) {   // encode consisting status as a st
       }
 
 /* mask and values for locomotive use determination */
-int LnConstants::LOCOSTAT_MASK     = STAT1_SL_BUSY  | STAT1_SL_ACTIVE;
+int LnConstants::LOCOSTAT_MASK     = LnConstants::STAT1_SL_BUSY  | LnConstants::STAT1_SL_ACTIVE;
 //const int LnConstants::LOCO_IN_USE       = STAT1_SL_BUSY  | STAT1_SL_ACTIVE;
 //const int LnConstants::LOCO_IDLE         = STAT1_SL_BUSY;
 //const int LnConstants::LOCO_COMMON       = STAT1_SL_ACTIVE;
@@ -159,7 +159,7 @@ QString LnConstants::LOCO_STAT(int s)   { // encode loco status as a string
       }
 
 /* mask and values for decoder type encoding for this slot */
-int LnConstants::DEC_MODE_MASK     = STAT1_SL_SPDEX | STAT1_SL_SPD14 | STAT1_SL_SPD28;
+int LnConstants::DEC_MODE_MASK     = LnConstants::STAT1_SL_SPDEX | LnConstants::STAT1_SL_SPD14 | LnConstants::STAT1_SL_SPD28;
 /* Advanced consisting allowed for the next two */
 //int LnConstants::DEC_MODE_128A     = STAT1_SL_SPDEX | STAT1_SL_SPD14 | STAT1_SL_SPD28;
 //int LnConstants::DEC_MODE_28A      = STAT1_SL_SPDEX ;

@@ -294,7 +294,8 @@ bool LnThrottleManager::singleUse() { return false; }
  */
 DccThrottle* LnThrottleManager::createThrottle(LocoNetSystemConnectionMemo* memo, LocoNetSlot* s) {
     log->debug(tr("createThrottle: slot %1").arg(s->getSlot()));
-    return new LocoNetThrottle(memo, s);
+    LocoNetThrottle* throttle = new LocoNetThrottle(memo, s);
+    return (DccThrottle*)throttle;
 }
 
 /**

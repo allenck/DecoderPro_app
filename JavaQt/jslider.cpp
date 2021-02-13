@@ -240,14 +240,8 @@ void JSlider::onValueChanged(int v)
 
 void JSlider::setLabelTable(QMap<int,JLabel*> labelTable)
 {
- if(this->labelTable.isEmpty())
-  this->labelTable = QMap<int,JLabel*>(labelTable);
- else
- {
-  if(this->labelTable.count()== labelTable.count())
-   return;
-  throw Exception("MySlider layout has changed");
- }
+ this->labelTable.clear();
+ this->labelTable = QMap<int,JLabel*>(labelTable);
  layoutWidget();
 }
 

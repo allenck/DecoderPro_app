@@ -222,6 +222,7 @@ private:
     /*public*/ DccLocoAddress* getLocoAddress() {
         return this->locoAddress;
     }
+  QObject* self() {return(QObject*)this;}
     friend class AbstractThrottleTest;
 };
 class PropertyChangeListenerO1  : public PropertyChangeListener
