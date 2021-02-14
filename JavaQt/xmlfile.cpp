@@ -33,6 +33,8 @@ XmlFile::XmlFile(QObject *parent) :
  //dtdLocation = defaultDtdLocation;
  validate = defaultValidate;
 
+ if(log == nullptr)
+  log = new Logger("XmlFile");
 }
 /**
  * Handle common aspects of XML files. <P> JMRI needs to be able to operate

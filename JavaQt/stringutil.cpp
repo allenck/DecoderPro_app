@@ -86,6 +86,7 @@ QList<char> StringUtil::hexChars = QList<char>() <<  '0'<< '1'<< '2'<< '3'<< '4'
  */
 /*static*/ /*public*/ QString StringUtil::twoHexFromInt(int val) {
     QString sb;// = new StringBuffer() ;
+    QList<char>hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
     sb.append( hexChars[ (val&0xF0) >> 4 ] );
     sb.append( hexChars[ val & 0x0F ] ) ;
     return sb/*.toString() */;

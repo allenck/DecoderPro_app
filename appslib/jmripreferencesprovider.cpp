@@ -66,6 +66,8 @@
  }
  else
  {
+  if(privateProviders == nullptr)
+   privateProviders = new QHash<File*, JmriPreferencesProvider*>();
   if (privateProviders->value(path) == NULL)
   {
    privateProviders->insert(path, new JmriPreferencesProvider(path, shared));
@@ -264,7 +266,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
  }
  else
  {
-  dir = new File(this->path, Profile::PROFILE);
+  dir = new File(this->path, /*Profile::PROFILE*/"profile");
   if (!this->shared)
   {
    if (Profile::isProfile(this->path))

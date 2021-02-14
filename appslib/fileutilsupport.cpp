@@ -641,7 +641,7 @@ public URL getURL(URI uri) {
 /*public*/ QString FileUtilSupport::getHomePath() {
 // homePath = QDir::homePath() + File::separator;
 //    return homePath;
- return QDir::homePath() + File::separator;
+ return QDir::homePath() + /*File::separator*/'/';
 }
 
 /**
@@ -821,7 +821,7 @@ public URL getURL(URI uri) {
 //     if(paths->size() > 1)
 //      return SelectProgramPath(paths);
      if(!paths->isEmpty())
-      this->programPath = (paths->at(0) + File::separator);
+      this->programPath = (paths->at(0) + /*File::separator*/'/');
     }
     return programPath;
 }
@@ -1271,7 +1271,7 @@ public URL getURL(URI uri) {
     if(names.contains("catalog.xml") && names.contains("names.xml") && names.contains("decoderIndex.xml") && !(info.filePath().contains(".jmri")))
     {
      paths->append(info.path());
-     names = QDir(info.absolutePath() + File::separator + "web").entryList(filters,QDir::AllDirs);
+     names = QDir(info.absolutePath() + /*File::separator*/'/' + "web").entryList(filters,QDir::AllDirs);
      if(names.contains("xml") && names.contains("prefs") && names.contains("dist"))
       continue;
      if(!names.contains("xml"))
@@ -1694,10 +1694,10 @@ public URL getURL(URI uri) {
         searchPaths.append(getProgramPath());
     for (QString searchPath : searchPaths)
     {
-        QFileInfo info(/*getProgramPath() +*/ searchPath + File::separator + path);
+        QFileInfo info(/*getProgramPath() +*/ searchPath + /*File::separator*/'/' + path);
         if(info.exists())
         {
-            resource = this->findURI( /*getProgramPath() +*/ searchPath + File::separator + path);
+            resource = this->findURI( /*getProgramPath() +*/ searchPath + QDir::separator() + path);
             if (resource != "") {
                 return resource;
             }

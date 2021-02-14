@@ -94,6 +94,9 @@ DEPENDPATH += $$PWD/LocoIO
 #    tests/RosterTest/rosterentrytest.cpp \
 #    tests/RosterTest/rosterentrytestaction.cpp
 
+DISTFILES += \
+    scripts_config.prf
+
 
 
 

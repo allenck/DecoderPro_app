@@ -2,7 +2,7 @@
 #define JYTHONAUTOMATON_H
 
 #include "abstractautomaton.h"
-//#include "PythonQt_QtAll.h"
+#include "PythonQt_QtAll.h"
 #include "PythonQt.h"
 
 class PythonQtObjectPtr;

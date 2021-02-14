@@ -604,6 +604,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);
+ if(log)
  log->warn("DefaultInstanceInitializer: Cannot create object of type " + type);
  return nullptr;
 }

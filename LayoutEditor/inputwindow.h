@@ -2,7 +2,7 @@
 #define INPUTWIDOW_H
 
 #include <QWidget>
-//#include "PythonQt_QtAll.h"
+#include "PythonQt_QtAll.h"
 #include "PythonQt.h"
 #include <QEventLoop>
 

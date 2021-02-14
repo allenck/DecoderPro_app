@@ -53,7 +53,7 @@ SlipIconAdder::~SlipIconAdder()
 // /*public*/ class SlipIconAdder extends IconAdder {
 
 
-/*public*/ /*static*/ /*final*/ QString SlipIconAdder::NamedBeanFlavorMime = DataFlavor::javaJVMLocalObjectMimeType +
+/*public*/ /*static*/ /*final*/ QString SlipIconAdder::NamedBeanFlavorMime = /*DataFlavor::javaJVMLocalObjectMimeType*/QString("application/x-java-jvm-local-objectref") +
            ";class=jmri.NamedBean";
 
 ///*public*/ SlipIconAdder() {

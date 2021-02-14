@@ -3,8 +3,7 @@
 #include "droptargetlistener.h"
 #include <QBoxLayout>
 
-Component::Component(QWidget *parent) :
-    QWidget(parent)
+Component::Component(QWidget *parent) :  JPanel(parent)
 {
  peer = NULL;
  dropTarget = NULL;

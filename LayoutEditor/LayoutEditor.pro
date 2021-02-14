@@ -21,24 +21,33 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
+include(../scripts_config.prf)
 
-PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-isEmpty( PYTHONQT_PREFIX ) {
-  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
-}
+#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+#isEmpty( PYTHONQT_PREFIX ) {
+#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+#}
 
-include($$PYTHONQT_PREFIX/build/python.prf)
+#include($$PYTHONQT_PREFIX/build/python.prf)
 
-win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
-ENABLE_SCRIPTING = "Y"
-}
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
-ENABLE_SCRIPTING = "Y"
-}
+#win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
+#ENABLE_SCRIPTING = "Y"
+#}
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+#ENABLE_SCRIPTING = "Y"
+#}
+
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so){
+# ENABLE_SCRIPTING = "Y"
+# message($$TARGET: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "found OK")
+#} else:unix: {
+# message($$TARGET: $$PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "not found")
+#}
+
 equals(ENABLE_SCRIPTING, "Y") {
  DEFINES += SCRIPTING_ENABLED
- message("LayoutEditor: Scripting is enabled")
+ message("$$TARGET: Scripting is enabled")
  include($$PWD/generated_cpp/Jmri/Jmri.pri)
  SOURCES +=     jythonsiglet.cpp \
     jythonautomaton.cpp \
@@ -78,18 +87,18 @@ equals(ENABLE_SCRIPTING, "Y") {
 
     #include(../python.prf)
 
-    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib -lPythonQt
-    else:unix: LIBS += -L/$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d
+#    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib -lPythonQt
+#    else:unix: LIBS += -L/$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
 
-    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
-    DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+#    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+#    DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
 
 
 message("Qt path=" + $$(QTDIR))
 
 
 } else {
- message("LayoutEditor: Scripting is disabled")
+ message("$$TARGET: Scripting is disabled")
 }
 
 

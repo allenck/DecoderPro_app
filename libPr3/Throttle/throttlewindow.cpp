@@ -953,6 +953,7 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  addThrottleFrame(getCurrentThrottleFrame());
  return getCurrentThrottleFrame();
 }
+
 /*public*/ void ThrottleWindow::setCurrentThrottleFrame(ThrottleWindow* tf)
 {
  if (getCurrentThrottleFrame() != NULL)
@@ -961,10 +962,12 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  emit propertyChange("ThrottleFrame", getCurrentThrottleFrame(), tf);
  currentThrottleFrame = tf;
 }
+
 /*public*/ ThrottleWindow* ThrottleWindow::getCurrentThrottleFrame()
 {
  return currentThrottleFrame;
 }
+
 /*public*/ void ThrottleWindow::updateGUI()
 {
  // title bar
@@ -1009,9 +1012,9 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
 }
 
 /*public*/ void ThrottleWindow::setLastUsedSaveFile(QString lusf) {
-        lastUsedSaveFile = lusf;
-        /*throttleWindow.*/updateGUI();
-    }
+    lastUsedSaveFile = lusf;
+    /*throttleWindow.*/updateGUI();
+}
 
 /**
  * setFrameTitle - set the frame title based on type, text and address
@@ -1049,7 +1052,6 @@ void ThrottleWindow::on_address_released(LocoAddress *)
 
 /*public*/ QDomElement ThrottleWindow::getXml()
 {
-
  QDomElement me =doc.createElement("ThrottleFrame");
  me.setAttribute("title", titleText);
  me.setAttribute("titleType", titleTextType);
@@ -1166,35 +1168,37 @@ void ThrottleWindow::on_address_released(LocoAddress *)
 
 //    children.add(addressPanel.getXml());
     me.appendChild(tf->addressPanel->getXml());
-#if 0
-    // Save Jynstruments
-    Component[] cmps = getComponents();
-    for (int i = 0; i < cmps.length; i++) {
-        try {
-            if (cmps[i] instanceof JInternalFrame) {
-                Component[] cmps2 = ((JInternalFrame) cmps[i]).getContentPane().getComponents();
-                int j = 0;
-                while ((j < cmps2.length) && (!(cmps2[j] instanceof Jynstrument))) {
-                    j++;
-                }
-                if ((j < cmps2.length) && (cmps2[j] instanceof Jynstrument)) {
-                    Jynstrument jyn = (Jynstrument) cmps2[j];
-                    Element elt = new Element("Jynstrument");
-                    elt.setAttribute("JynstrumentFolder", FileUtil.getPortableFilename(jyn.getFolder()));
-                    java.util.ArrayList<Element> jychildren = new java.util.ArrayList<Element>(1);
-                    jychildren.add(WindowPreferences.getPreferences((JInternalFrame) cmps[i]));
-                    Element je = jyn.getXml();
-                    if (je != null) {
-                        jychildren.add(je);
-                    }
-                    elt.setContent(jychildren);
-                    children.add(elt);
-                }
-            }
-        } catch (Exception ex) {
-            log.debug("Got exception (no panic) " + ex);
-        }
-    }
+
+#ifdef SCRIPTING_ENABLED
+ // Save Jynstruments
+ QDomDocument doc = QDomDocument();
+ if (throttleToolBar != NULL) {
+     QObjectList cmps = throttleToolBar->children();
+     if (!cmps.isEmpty()) {
+         for (int i = 0; i < cmps.length(); i++) {
+             try {
+                 //if (cmps[i] instanceof Jynstrument)
+           if(qobject_cast<Jynstrument*>(cmps.at(i)) != NULL)
+                 {
+                     Jynstrument* jyn = (Jynstrument*) cmps[i];
+                     QDomElement elt = doc.createElement("Jynstrument");
+                     elt.setAttribute("JynstrumentFolder", FileUtil::getPortableFilename(jyn->getFolder()));
+                     QDomElement je = jyn->getXml();
+//                     if (je != NULL) {
+//                         java.util.ArrayList<Element> jychildren = new java.util.ArrayList<Element>(1);
+//                         jychildren.add(je);
+//                         elt.setContent(jychildren);
+//                     }
+//                     children.add(elt);
+                     elt.appendChild(je);
+                 }
+
+             } catch (Exception ex) {
+                 log->debug("Got exception (no panic) " + ex.getMessage());
+             }
+         }
+     }
+ }
 #endif
  if(tf != this)
  {

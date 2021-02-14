@@ -39,6 +39,7 @@
 #include "audiosource.h"
 #include "scriptoutput.h"
 #include "scriptexception.h"
+#include "../JavaQt/bitset.h"
 
 //DefaultConditional::DefaultConditional(QObject *parent) :
 //    AbstractNamedBean(parent)

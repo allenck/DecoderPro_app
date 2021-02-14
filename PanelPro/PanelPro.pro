@@ -14,13 +14,20 @@ TEMPLATE = app
 MOC_DIR = moc_obj
 OBJECTS_DIR += moc_obj
 
-PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-isEmpty( PYTHONQT_PREFIX ) {
-  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code
+PROJ_DIR=$$(PROJ_DIR) # get project directory from env
+isEmpty( PROJ_DIR ) {
+  win32:PROJ_DIR=C:/Projects
+  unix:PROJ_DIR=/home/allen/Projects
 }
+include(../scripts_config.prf)
 
-include($$PYTHONQT_PREFIX/build/python.prf)
+#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+#isEmpty( PYTHONQT_PREFIX ) {
+#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+#}
+
+#include($$PYTHONQT_PREFIX/build/python.prf)
 
 
 SOURCES += \
@@ -86,19 +93,20 @@ else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
 
-win32:exists($$PYTHONQT_PREFIX/lib/PythonQt.dll){
- ENABLE_SCRIPTING = "Y"
- message(PanelPro: $$PYTHONQT_PREFIX/lib/PythonQt.dll + "exists")
-} else:win32: {
- message(PanelPro: $$PYTHONQT_PREFIX/lib/PythonQt.dll + "not found")
-}
+#win32:exists($$PYTHONQT_PREFIX/lib/PythonQt.dll){
+# ENABLE_SCRIPTING = "Y"
+# message(PanelPro: $$PYTHONQT_PREFIX/lib/PythonQt.dll + "exists")
+#} else:win32: {
+# message(PanelPro: $$PYTHONQT_PREFIX/lib/PythonQt.dll + "not found")
+#}
 
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so){
- ENABLE_SCRIPTING = "Y"
- message(PanelPro: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "found OK")
-} else:unix: {
- message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "not found")
-}
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so){
+# ENABLE_SCRIPTING = "Y"
+# message(PanelPro: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "found OK")
+#} else:unix: {
+# message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "not found")
+#}
+
 CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED

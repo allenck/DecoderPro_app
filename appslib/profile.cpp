@@ -392,7 +392,7 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
    return true;
   }
   // Version 1
-  if ((new File(path, *_PROPERTIES))->canRead() && path->getName() != (PROFILE)) // i.e: "profile.properties"
+  if ((new File(path, *_PROPERTIES))->canRead() && path->getName() != (/*PROFILE*/"profile")) // i.e: "profile.properties"
   {
    return true;
   }

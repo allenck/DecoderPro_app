@@ -3,7 +3,7 @@
 #include <QBoxLayout>
 #include "inputwindow.h"
 #include "PythonQt.h"
-//#include "PythonQt_QtAll.h"
+#include "PythonQt_QtAll.h"
 #include "jmrijframe.h"
 #include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"

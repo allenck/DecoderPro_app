@@ -35,7 +35,7 @@
 
 // /*public*/ class MultiSensorIconAdder extends IconAdder {
 
-/*public*/ /*static*/ /*final*/ QString MultiSensorIconAdder::NamedBeanFlavorMime = DataFlavor::javaJVMLocalObjectMimeType +
+/*public*/ /*static*/ /*final*/ QString MultiSensorIconAdder::NamedBeanFlavorMime = /*DataFlavor::javaJVMLocalObjectMimeType*/QString("application/x-java-jvm-local-objectref") +
                ";class=jmri.NamedBean";
 
 //    /*public*/ MultiSensorIconAdder(QWidget *parent) {

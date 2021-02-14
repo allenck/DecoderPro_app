@@ -2,7 +2,7 @@
 #define JYTHONSIGLET_H
 
 #include "siglet.h"
-//#include "PythonQt_QtAll.h"
+#include "PythonQt_QtAll.h"
 #include "PythonQt.h"
 #include "liblayouteditor_global.h"
 

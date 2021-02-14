@@ -242,17 +242,16 @@ FunctionPanel::~FunctionPanel()
     text = "";		// reset button text to default
    rosterEntry->setFunctionLabel(functionNumber, text);
   }
-  if (rosterEntry->getFunctionLabel(functionNumber) != NULL && lockable != rosterEntry->getFunctionLockable(functionNumber))
-  {
-   rosterEntry->setFunctionLockable(functionNumber, lockable);
-  }
-  if (rosterEntry->getFunctionLabel(functionNumber) != NULL && imagePath!=NULL && imagePath.compare(rosterEntry->getFunctionImage(functionNumber))!=0)
-  {
-   rosterEntry->setFunctionImage(functionNumber, imagePath);
-  }
-  if (rosterEntry->getFunctionLabel(functionNumber) != NULL && imageSelectedPath!=NULL && imageSelectedPath.compare(rosterEntry->getFunctionSelectedImage(functionNumber))!=0)
-  {
-   rosterEntry->setFunctionSelectedImage(functionNumber, imageSelectedPath);
+  if (rosterEntry->getFunctionLabel(functionNumber) != "" ) {
+      if( lockable != rosterEntry->getFunctionLockable(functionNumber)) {
+         rosterEntry->setFunctionLockable(functionNumber, lockable);
+      }
+      if ( imagePath.compare(rosterEntry->getFunctionImage(functionNumber)) != 0) {
+         rosterEntry->setFunctionImage(functionNumber, imagePath);
+      }
+      if ( imageSelectedPath.compare(rosterEntry->getFunctionSelectedImage(functionNumber)) != 0) {
+         rosterEntry->setFunctionSelectedImage(functionNumber, imageSelectedPath);
+      }
   }
  }
  Roster::getDefault()->writeRoster();

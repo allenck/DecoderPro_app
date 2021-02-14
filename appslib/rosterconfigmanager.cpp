@@ -46,7 +46,7 @@
 //        }
 //    });
     //connect(FileUtilSupport::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
- FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeListener*)this);
+ FileUtilSupport::getDefault()->addPropertyChangeListener(/*FileUtil::PREFERENCES*/"preference:", (PropertyChangeListener*)this);
 }
 
 void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)

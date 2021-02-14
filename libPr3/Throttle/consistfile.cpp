@@ -302,7 +302,7 @@
  * Defines the preferences subdirectory in which LocoFiles are kept by
  * default.
  */
-/*static*/ /*private*/ QString ConsistFile::fileLocation = FileUtil::getUserFilesPath() + "roster" + File::separator + "consist";
+/*static*/ /*private*/ QString ConsistFile::fileLocation = FileUtil::getUserFilesPath() + "roster" + QDir::separator() + "consist";
 
 /*static*/ /*public*/ QString ConsistFile::getFileLocation() {
     return fileLocation;

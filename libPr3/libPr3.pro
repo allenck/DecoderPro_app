@@ -76,18 +76,31 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
+include(../scripts_config.prf)
 
-PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-isEmpty( PYTHONQT_PREFIX ) {
-  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
-}
-win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
-ENABLE_SCRIPTING = "Y"
-}
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
-ENABLE_SCRIPTING = "Y"
-}
+# NOTE: The PYTHONQT_PREFIX path should be exported in the environment like thi:
+# On Unix, "export PYTHON_VERSION=2.7"
+# and "export PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code"
+#
+#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+#isEmpty( PYTHONQT_PREFIX ) {
+#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+#}
+#include($$PYTHONQT_PREFIX/build/python.prf)
+
+#win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
+#ENABLE_SCRIPTING = "Y"
+#}
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+#ENABLE_SCRIPTING = "Y"
+# message(libPr3: found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+#} else {
+# message(libPr3: not found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+#}
+
+#message(libPr3: PYTHON_VERSION = $$PYTHON_VERSION)
+#message(libPr3: PYTHONQT_PREFIX = $$PYTHONQT_PREFIX)
 
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {

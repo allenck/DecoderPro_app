@@ -27,7 +27,7 @@
  * cause a {@value jmri.server.json.JSON#HELLO} message to be sent to the
  * client.
  */
-/*public*/ /*static*/ /*final*/ QString JsonClientHandler::HELLO_MSG = "{\"" + JSON::TYPE + "\":\"" + JSON::HELLO + "\"}";
+/*public*/ /*static*/ /*final*/ QString JsonClientHandler::HELLO_MSG = QString("{\"") + /*JSON::TYPE*/"type" + "\":\"" + /*JSON::HELLO*/ "hello"+ "\"}";
 /*private*/ /*static*/ /*final*/ Logger* JsonClientHandler::log = LoggerFactory::getLogger("JsonClientHandler");
 
 /*public*/ JsonClientHandler::JsonClientHandler(JsonConnection* connection, QObject* parent) : QObject(parent)

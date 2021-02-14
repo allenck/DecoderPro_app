@@ -4,6 +4,7 @@
 #include "gridbagconstraints.h"
 #include "gridbaglayout.h"
 #include "hardcopywriter.h"
+#include "borderfactory.h"
 
 /**
  * Display and edit the function labels in a RosterEntry.
@@ -105,8 +106,8 @@
         _imageFilePath[i]->setDropFolder(LocoFile::getFileLocation());
         _imageFilePath[i]->setBackground(QColor(0, 0, 0, 0));
         _imageFilePath[i]->setToolTip(tr("Image for function button"));
-//            _imageFilePath[i].setBorder(BorderFactory.createLineBorder(java.awt.Color.blue));
-        _imageFilePath[i]->setStyleSheet("QWidget{border: 1px solid blue;}");
+        _imageFilePath[i]->setBorder(BorderFactory::createLineBorder(Qt::blue));
+        //_imageFilePath[i]->setStyleSheet("QWidget{border: 1px solid blue;}");
         gbLayout->addWidget(_imageFilePath[i], cL);
         cL.gridx++;
 
@@ -114,8 +115,8 @@
         _imagePressedFilePath[i]->setDropFolder(LocoFile::getFileLocation());
         _imagePressedFilePath[i]->setBackground(QColor(0, 0, 0, 0));
         _imagePressedFilePath[i]->setToolTip(tr("Image for activated function button"));
-//            _imagePressedFilePath[i].setBorder(BorderFactory.createLineBorder(java.awt.Color.blue));
-        _imagePressedFilePath[i]->setStyleSheet("QWidget{border: 1px solid blue;}");
+        _imagePressedFilePath[i]->setBorder(BorderFactory::createLineBorder(Qt::blue));
+        //_imagePressedFilePath[i]->setStyleSheet("QWidget{border: 1px solid blue;}");
         gbLayout->addWidget(_imagePressedFilePath[i], cL);
         cL.gridx++;
 
