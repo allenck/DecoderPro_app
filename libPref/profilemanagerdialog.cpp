@@ -99,7 +99,7 @@ void PMDPropertyChangeListener2::propertyChange(PropertyChangeEvent * evt)
 // <editor-fold defaultstate="collapsed" desc="Generated Code">
 /*private*/ void ProfileManagerDialog::initComponents()
 {
- QList<Profile*> list = ProfileManager::defaultManager()->getProfiles();
+ QList<Profile*> list = ProfileManager::getDefault()->getProfiles();
  listLabel = new QLabel();
  //jScrollPane1 = new QScrollArea();
  profiles = new JList();
@@ -130,7 +130,7 @@ void PMDPropertyChangeListener2::propertyChange(PropertyChangeEvent * evt)
  listLabel->setText(tr("Use Configuration Profile:")); // NOI18N
 
  profiles->setModel(new ProfileListModel());
-//    profiles.setSelectedValue(ProfileManager::defaultManager().getActiveProfile(), true);
+//    profiles.setSelectedValue(ProfileManager::getDefault().getActiveProfile(), true);
  profiles->setSelectionMode(QAbstractItemView::SingleSelection);
  profiles->setToolTip(tr("Select the profile to load JMRI with.")); // NOI18N
 //    profiles.setNextFocusableComponent(btnSelect);
@@ -250,7 +250,7 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
   QModelIndex m = profiles->currentIndex();
   QString s = m.data().toString();
   Profile* p = ProfileManager::getDefault()->getProfiles().at(m.row());
-  ProfileManager::defaultManager()->setActiveProfile(p);
+  ProfileManager::getDefault()->setActiveProfile(p);
   //dispose();
   close();
  }
@@ -280,7 +280,7 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
 //        try {
  //QString selectedFile = QFileDialog::getOpenFileName(this,tr("Select profile"),FileUtil::getPreferencesPath());
  Profile* p = new Profile(chooser->getSelectedFile());
- ProfileManager::defaultManager()->addProfile(p);
+ ProfileManager::getDefault()->addProfile(p);
 // profiles->setSelectedValue(p, true);
 //        } catch (IOException ex) {
 //            log->warn("{} is not a profile directory", chooser.getSelectedFile());
@@ -304,8 +304,8 @@ void ProfileManagerDialog::showEvent(QShowEvent *e)
 //                countDownLbl.setText(Integer.toString(countDown));
 //            } else {
 //                setVisible(false);
-//                ProfileManager::defaultManager().setActiveProfile((Profile) profiles.getSelectedValue());
-//                log->info("Automatically starting with profile " + ProfileManager::defaultManager().getActiveProfile().getId() + " after timeout.");
+//                ProfileManager::getDefault().setActiveProfile((Profile) profiles.getSelectedValue());
+//                log->info("Automatically starting with profile " + ProfileManager::getDefault().getActiveProfile().getId() + " after timeout.");
 //                timer.stop();
 //                countDown = -1;
 //                dispose();
@@ -317,9 +317,9 @@ void ProfileManagerDialog::showEvent(QShowEvent *e)
  timer->setSingleShot(false);
  connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
 
- //if (profiles.getModel().getSize() > 0 && NULL != ProfileManager::defaultManager()->getActiveProfile())
+ //if (profiles.getModel().getSize() > 0 && NULL != ProfileManager::getDefault()->getActiveProfile())
  if(profiles->model()->rowCount() > 0
-         && (ProfileManager::defaultManager()->getActiveProfile() != NULL))
+         && (ProfileManager::getDefault()->getActiveProfile() != NULL))
  {
   timer->start();
  }
@@ -340,9 +340,9 @@ void ProfileManagerDialog::timeout()
  {
   setVisible(false);
   QModelIndex m = profiles->currentIndex();
-  ProfileManager::defaultManager()->setActiveProfile(ProfileManager::defaultManager()->getProfiles().at(m.row()));
-  if(ProfileManager::defaultManager()->getActiveProfile() != nullptr)
-   log->info("Automatically starting with profile " + ProfileManager::defaultManager()->getActiveProfile()->getId() + " after timeout.");
+  ProfileManager::getDefault()->setActiveProfile(ProfileManager::getDefault()->getProfiles().at(m.row()));
+  if(ProfileManager::getDefault()->getActiveProfile() != nullptr)
+   log->info("Automatically starting with profile " + ProfileManager::getDefault()->getActiveProfile()->getId() + " after timeout.");
   timer->stop();
   countDown = -1;
   //dispose();
@@ -361,15 +361,15 @@ void ProfileManagerDialog::timeout()
 /*public*/ /*static*/ Profile* ProfileManagerDialog::getStartingProfile(JFrame* f) throw (IOException)
 {
  if (ProfileManager::getStartingProfile() == nullptr
-  || (System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile") == "" && !ProfileManager::defaultManager()->isAutoStartActiveProfile()))
+  || (System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile") == "" && !ProfileManager::getDefault()->isAutoStartActiveProfile()))
  {
   ProfileManagerDialog* pmd = new ProfileManagerDialog(f, true);
   //pmd->setLocationRelativeTo(f);
   //pmd->setVisible(true);
   pmd->exec();
-  ProfileManager::defaultManager()->saveActiveProfile();
+  ProfileManager::getDefault()->saveActiveProfile();
  }
- return ProfileManager::defaultManager()->getActiveProfile();
+ return ProfileManager::getDefault()->getActiveProfile();
 }
 
 /*private*/ void ProfileManagerDialog::profileNameChanged(Profile* p)
@@ -412,7 +412,7 @@ void ProfileManagerDialog::timeout()
  }
 }
 ///*public*/ void ProfileManagerDialog::propertyChange(IndexedPropertyChangeEvent* evt) {
-// // TODO: profiles->setSelectedValue(ProfileManager::defaultManager()->getActiveProfile(), true);
+// // TODO: profiles->setSelectedValue(ProfileManager::getDefault()->getActiveProfile(), true);
 // //profiles.repaint();
 // if (QString(evt->getSource()->metaObject()->className()) ==("Profile") && evt->getPropertyName()==(/*Profile::NAME*/"name"))
 // {

@@ -7,7 +7,7 @@
 #include "blockmanager.h"
 
 
-/*private*/ /*static*/ QString BlockValueFile::defaultFileName = FileUtil::getUserFilesPath()+"blockvalues.xml";
+/*private*/ /*static*/ QString BlockValueFile::defaultFileName = "";//FileUtil::getUserFilesPath()+"blockvalues.xml";
 
 BlockValueFile::BlockValueFile(QObject *parent) :
     XmlFile(parent)
@@ -44,6 +44,9 @@ BlockValueFile::BlockValueFile(QObject *parent) :
  log->debug("entered readBlockValues");
  QStringList blocks = blockManager->getSystemNameList();
  // check if file exists
+ if(defaultFileName == "")
+  defaultFileName = FileUtil::getUserFilesPath()+"blockvalues.xml";
+
  if (checkFile(defaultFileName))
  {
   // file is present,

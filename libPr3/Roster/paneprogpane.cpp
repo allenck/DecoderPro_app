@@ -641,7 +641,6 @@ void PaneProgPane::enableButtons(bool stat)
  setToRead(justChanges, true);
  varListIndex = 0;
  cvListIndex = 0;
- indexedCvListIndex = 0;
 }
 
 /**
@@ -852,6 +851,9 @@ bool PaneProgPane::nextRead()
  }
 
  // found no variables needing read, try CVs
+ if (log->isDebugEnabled()) {
+     log->debug(tr("nextRead scans %1 CVs").arg(cvList->size()));
+ }
  while ((cvList->size() >= 0) && (cvListIndex < cvList->size()))
  {
   int cvNum = cvList->at(cvListIndex);
@@ -988,7 +990,6 @@ bool PaneProgPane::nextConfirm()
  setToWrite(justChanges, true);
  varListIndex = 0;
  cvListIndex = 0;
- indexedCvListIndex = 0;
  log->debug("end prepWritePane");
 }
 
@@ -1082,7 +1083,6 @@ bool PaneProgPane::nextWrite()
  setToRead(justChanges, true);
  varListIndex = 0;
  cvListIndex = 0;
- indexedCvListIndex = 0;
 }
 
 

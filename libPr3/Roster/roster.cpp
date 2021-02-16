@@ -16,6 +16,7 @@
 #include "userpreferencesmanager.h"
 #include "profilemanager.h"
 #include "vptr.h"
+#include "joptionpane.h"
 
 /** record the single instance of Roster **/
 //Roster* Roster::_instance = NULL;
@@ -1059,11 +1060,10 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  catch (Exception e) {
         log->error("Exception while writing the new roster file, may not be complete: "+e.getMessage());
 //        try {
-//            JOptionPane.showMessageDialog(NULL,
-//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorSavingText")+"\n"+e.getMessage(),
-//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorSavingTitle"),
-//                    JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(0,tr("Error saving Roster"), tr("Exception while writing the new roster file, may not be complete"));
+  JOptionPane::showMessageDialog(NULL,
+          tr("Exception while writing the new roster file, may not be complete")+"\n"+e.getMessage(),
+          tr("Error saving Roster"),
+          JOptionPane::ERROR_MESSAGE);
         }
 //        catch (HeadlessException he)
 //        {

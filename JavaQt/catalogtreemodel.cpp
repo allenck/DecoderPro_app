@@ -25,6 +25,8 @@
 
 /*public*/ CatalogTreeModel::CatalogTreeModel(QObject* parent) : DefaultTreeModel(new DefaultMutableTreeNode("Root"))
 {
+ if(fileRoot == nullptr)
+  fileRoot = FileUtil::getUserFilesPath() + "resources";
     //super(new DefaultMutableTreeNode("Root"));
     dRoot = (DefaultMutableTreeNode*) DefaultTreeModel::getRoot();  // this is used because we can't store the DMTN we just made during the super() call
 
@@ -133,6 +135,6 @@ void CatalogTreeModel::insertFileNodes(QString name, QString path, DefaultMutabl
  * Starting point in the .jar file for the "icons" part of the tree
  */
 /*static*/ /*final*/ QString CatalogTreeModel::resourceRoot = "resources";
-/*static*/ /*final*/ QString CatalogTreeModel::fileRoot = FileUtil::getUserFilesPath() + "resources";
+/*static*/ /*final*/ QString CatalogTreeModel::fileRoot = nullptr;//FileUtil::getUserFilesPath() + "resources";
 
 /*private*/ /*final*/ /*static*/ Logger* CatalogTreeModel::log = LoggerFactory::getLogger("CatalogTreeModel");

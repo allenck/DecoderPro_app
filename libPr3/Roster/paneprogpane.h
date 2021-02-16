@@ -177,7 +177,6 @@ protected:
     JToggleButton* confirmChangesButton;// = new JToggleButton(rbt.getString("ButtonConfirmChangesSheet"));
     JToggleButton* confirmAllButton;//     = new JToggleButton(rbt.getString("ButtonConfirmFullSheet"));
 
-    int indexedCvListIndex;
     /*protected*/ void setBusy(bool busy);
     /*protected*/ void stopProgramming();
     /*protected*/ JPanel *newGroup(QDomElement  element, bool showStdName, QDomElement  modelElem);

@@ -47,9 +47,9 @@
 {
  log= new Logger("ProfilePreferencesPanel");
  initComponents();
- this->chkStartWithActiveProfile->setChecked(ProfileManager::defaultManager()->isAutoStartActiveProfile());
+ this->chkStartWithActiveProfile->setChecked(ProfileManager::getDefault()->isAutoStartActiveProfile());
  this->valueChanged(QItemSelection(), QItemSelection());
- int index = ProfileManager::defaultManager()->getAllProfiles().indexOf(ProfileManager::defaultManager()->getActiveProfile());
+ int index = ProfileManager::getDefault()->getAllProfiles().indexOf(ProfileManager::getDefault()->getActiveProfile());
  if (index != -1)
  {
   //this->profilesTbl->setRowSelectionInterval(index, index);
@@ -381,7 +381,7 @@
  if(dir != "")
  {
 //        try {
-  ProfileManager::defaultManager()->addSearchPath(/*chooser.getSelectedFile()*/new File(dir));
+  ProfileManager::getDefault()->addSearchPath(/*chooser.getSelectedFile()*/new File(dir));
 // TODO:  searchPaths->setSelectedValue(chooser.getSelectedFile(), true);
 //        } catch (IOException ex) {
 //            log.warn("Unable to write profiles while adding search path {}", chooser.getSelectedFile().getPath(), ex);
@@ -402,7 +402,7 @@
  { // getSelectedValues is deprecated in Java 1.7
   File* path = new File(value.toString());
 //        try {
-            ProfileManager::defaultManager()->removeSearchPath(path);
+            ProfileManager::getDefault()->removeSearchPath(path);
 //        } catch (IOException ex) {
 //            log.warn("Unable to write profiles while removing search path {}", path.getPath(), ex);
 //            JOptionPane.showMessageDialog(this,
@@ -430,7 +430,7 @@
 
 /*private*/ void ProfilePreferencesPanel::btnExportProfileActionPerformed(JActionEvent* /*evt*/)
 {
- Profile* p = ProfileManager::defaultManager()->getProfiles(profilesTbl->currentIndex().row());
+ Profile* p = ProfileManager::getDefault()->getProfiles(profilesTbl->currentIndex().row());
 #if 1
  JFileChooser* chooser = new JFileChooser();
  chooser->setFileFilter("Zip Archives *.zip" ); //new FileNameExtensionFilter("ZIP Archives", "zip"));
@@ -496,11 +496,11 @@
         exportExternalRoster = true;
        }
       }
-      if (ProfileManager::defaultManager()->getActiveProfile() == p)
+      if (ProfileManager::getDefault()->getActiveProfile() == p)
       {
           // TODO: save roster, panels, operations if needed and safe to do so
       }
-      ProfileManager::defaultManager()->_export(p, chooser->getSelectedFile(), exportExternalUserFiles, exportExternalRoster);
+      ProfileManager::getDefault()->_export(p, chooser->getSelectedFile(), exportExternalUserFiles, exportExternalRoster);
       log->info(tr("Profile \"%1\" exported to \"%2\"").arg(p->getName()).arg(chooser->getSelectedFile()->getName()));
 //            JOptionPane.showMessageDialog(this,
 //                    tr("ProfilePreferencesPanel.btnExportProfile.successMessage",
@@ -527,9 +527,9 @@
 
 /*private*/ void ProfilePreferencesPanel::btnActivateProfileActionPerformed(JActionEvent* /*evt*/) {
 //    try {
-        Profile* p = ProfileManager::defaultManager()->getProfiles(profilesTbl->currentIndex().row());
-        ProfileManager::defaultManager()->setNextActiveProfile(p);
-        ProfileManager::defaultManager()->saveActiveProfile(p, ProfileManager::defaultManager()->isAutoStartActiveProfile());
+        Profile* p = ProfileManager::getDefault()->getProfiles(profilesTbl->currentIndex().row());
+        ProfileManager::getDefault()->setNextActiveProfile(p);
+        ProfileManager::getDefault()->saveActiveProfile(p, ProfileManager::getDefault()->isAutoStartActiveProfile());
 //    } catch (IOException ex) {
 //        log.error("Unable to save profile preferences", ex);
 //        JOptionPane.showMessageDialog(this, "Usable to save profile preferences.\n" + ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -586,7 +586,7 @@
 //                        JOptionPane.ERROR_MESSAGE);
         QMessageBox::critical(this, tr("Error"), tr("Unable to delete profile %1}.").arg(deletedProfile->getPath()->getPath()));
        }
-       ProfileManager::defaultManager()->removeProfile(deletedProfile);
+       ProfileManager::getDefault()->removeProfile(deletedProfile);
        log->info(tr("Removed profile \"%1\" from %2").arg( deletedProfile->getName()).arg(deletedProfile->getPath()->getPath()));
             //profilesTbl.repaint();
       }
@@ -608,8 +608,8 @@
  {
   //try {
   Profile* p = new Profile(/*chooser.getSelectedFile()*/new File(path));
-  ProfileManager::defaultManager()->addProfile(p);
-  int index = ProfileManager::defaultManager()->getAllProfiles().indexOf(p);
+  ProfileManager::getDefault()->addProfile(p);
+  int index = ProfileManager::getDefault()->getAllProfiles().indexOf(p);
 //  profilesTbl->setRowSelectionInterval(index, index);
 //  } catch (IOException ex) {
 //    log.warn("{} is not a profile directory", chooser.getSelectedFile());
@@ -622,9 +622,9 @@
 }
 
 /*private*/ void ProfilePreferencesPanel::chkStartWithActiveProfileActionPerformed(JActionEvent* evt) {
-    ProfileManager::defaultManager()->setAutoStartActiveProfile(this->chkStartWithActiveProfile->isChecked());
+    ProfileManager::getDefault()->setAutoStartActiveProfile(this->chkStartWithActiveProfile->isChecked());
 //    try {
-        ProfileManager::defaultManager()->saveActiveProfile();
+        ProfileManager::getDefault()->saveActiveProfile();
 //    } catch (IOException ex) {
 //        log.error("Unable to save active profile.", ex);
 //    }
@@ -692,7 +692,7 @@
 }
 
 /*public*/ void ProfilePreferencesPanel::dispose() {
-//    ProfileManager::defaultManager()->removePropertyChangeListener((ProfileTableModel*) profilesTbl->model());
+//    ProfileManager::getDefault()->removePropertyChangeListener((ProfileTableModel*) profilesTbl->model());
 }
 
 //@Override
@@ -706,17 +706,17 @@
   this->btnExportProfile->setEnabled(false);
  }
 
- if (mil.count() == 1 && mil.at(0).row() < ProfileManager::defaultManager()->getAllProfiles().size())
+ if (mil.count() == 1 && mil.at(0).row() < ProfileManager::getDefault()->getAllProfiles().size())
  {
-  Profile* p = ProfileManager::defaultManager()->getAllProfiles().at(mil.at(0).row());
-  this->btnDeleteProfile->setEnabled(p!=(ProfileManager::defaultManager()->getActiveProfile()));
-  if (ProfileManager::defaultManager()->getNextActiveProfile() != NULL)
+  Profile* p = ProfileManager::getDefault()->getAllProfiles().at(mil.at(0).row());
+  this->btnDeleteProfile->setEnabled(p!=(ProfileManager::getDefault()->getActiveProfile()));
+  if (ProfileManager::getDefault()->getNextActiveProfile() != NULL)
   {
-   this->btnActivateProfile->setEnabled(p!=(ProfileManager::defaultManager()->getNextActiveProfile()));
+   this->btnActivateProfile->setEnabled(p!=(ProfileManager::getDefault()->getNextActiveProfile()));
   }
   else
   {
-   this->btnActivateProfile->setEnabled(p!=(ProfileManager::defaultManager()->getActiveProfile()));
+   this->btnActivateProfile->setEnabled(p!=(ProfileManager::getDefault()->getActiveProfile()));
   }
   this->btnCopyProfile->setEnabled(true);
   this->btnExportProfile->setEnabled(true);
@@ -728,8 +728,8 @@
    for(int i = 0; i << mil.count(); i++)
    {
    int row = mil.at(i).row();
-   Profile* p = ProfileManager::defaultManager()->getAllProfiles().at(row);
-   if (p==(ProfileManager::defaultManager()->getActiveProfile()))
+   Profile* p = ProfileManager::getDefault()->getAllProfiles().at(row);
+   if (p==(ProfileManager::getDefault()->getActiveProfile()))
    {
     this->btnDeleteProfile->setEnabled(false);
     break;
@@ -759,8 +759,8 @@
     // Since next profile defaults to null when application starts, restart
     // is required only if next profile is not null and is not the same
     // profile as the current profile
-    return ProfileManager::defaultManager()->getNextActiveProfile() != NULL
-            && ProfileManager::defaultManager()->getActiveProfile()!=(ProfileManager::defaultManager()->getNextActiveProfile()
+    return ProfileManager::getDefault()->getNextActiveProfile() != NULL
+            && ProfileManager::getDefault()->getActiveProfile()!=(ProfileManager::getDefault()->getNextActiveProfile()
             );
 }
 /* Comment out until I get around to utilizing this, so Jenkins does not throw warnin

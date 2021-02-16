@@ -83,7 +83,8 @@ namespace Operations
  /*private*/ int showMoveCol;// = SHOWMOVES;
 
  /*private*/ int _sort;// = SORTBYNUMBER;
- static EngineManager* manager;// = EngineManager.instance(); // There is only one manager
+ //static EngineManager* manager;// = EngineManager.instance(); // There is only one manager
+ Operations::EngineManager* engineManager;// = InstanceManager::getDefault("EngineManager"); // There is only one manager
  QString _roadNumber;// = "";
  int _index;// = 0;
  QList<RollingStock*>* sysList;// = null;

@@ -13,9 +13,9 @@
 #include "track.h"
 #include "traincommon.h"
 
-JsonUtil::JsonUtil(QObject *parent) : QObject(parent)
+JsonUtil::JsonUtil(ObjectMapper mapper, QObject *parent) : QObject(parent)
 {
-
+ this->mapper = mapper;
 }
 /**
  * A set of static methods for converting certain objects to/from JSON

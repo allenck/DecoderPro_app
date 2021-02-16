@@ -1079,10 +1079,12 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
      * @return path to location
      */
     /*public*/ /*static*/ QString SpeedometerXml::getFileLocation() {
+ if(fileLocation == nullptr)
+  fileLocation = FileUtil::getUserFilesPath();
         return fileLocation;
     }
 
-    /*public*/ /*static*/ QString SpeedometerXml::fileLocation = FileUtil::getUserFilesPath();
+    /*public*/ /*static*/ QString SpeedometerXml::fileLocation = nullptr;//FileUtil::getUserFilesPath();
 
 //};
 /*public*/ QString SpeedometerFrame::getClassName()

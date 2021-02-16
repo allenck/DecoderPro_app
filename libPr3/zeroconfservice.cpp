@@ -71,9 +71,9 @@
     /*public*/ /*static*/ /*final*/ QString ZeroConfService::IPv4 = "IPv4";
     /*public*/ /*static*/ /*final*/ QString ZeroConfService::IPv6 = "IPv6";
 
-    /*private*/ /*static*/ /*final*/ Preferences* ZeroConfService::zeroConfPrefs = ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(),
-            "ZeroConfService",
-            false);
+    /*private*/ /*static*/ /*final*/ Preferences* ZeroConfService::zeroConfPrefs = nullptr;//ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(),
+//"ZeroConfService",
+//false);
 
 /**
  * Create a ZeroConfService with the minimal required settings. This method

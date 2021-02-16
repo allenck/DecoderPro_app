@@ -67,10 +67,10 @@ SOURCES += appslib.cpp \
     jmripreferencesprovider.cpp \
     nodeidentity.cpp \
     properties.cpp \
-    profilemanager.cpp \
-    profile.cpp \
     fileutil.cpp \
     fileutilsupport.cpp \
+    profilemanager.cpp \
+    profile.cpp \
     myapplication.cpp \
     createbuttonmodel.cpp \
     splashwindow.cpp \

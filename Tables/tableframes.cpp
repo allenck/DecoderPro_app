@@ -79,8 +79,8 @@
 /*public*/ /*static*/ /*final*/ int TableFrames::ROW_HEIGHT = 20;//( JButton("X").sizeHint().height())*9/10;
 
 /*private*/ /*final*/ /*static*/ QString  TableFrames::portalPrefix;// = "IP";
-/*protected*/ /*static*/ /*final*/ QString TableFrames::SET_CLOSED = InstanceManager::turnoutManagerInstance()->getClosedText();
-/*protected*/ /*static*/ /*final*/ QString TableFrames::SET_THROWN = InstanceManager::turnoutManagerInstance()->getThrownText();
+/*protected*/ /*static*/ /*final*/ QString TableFrames::SET_CLOSED = "";//InstanceManager::turnoutManagerInstance()->getClosedText();
+/*protected*/ /*static*/ /*final*/ QString TableFrames::SET_THROWN = "";//InstanceManager::turnoutManagerInstance()->getThrownText();
 
 /*public*/ TableFrames::TableFrames(QWidget* parent) : JmriJFrame(parent){
     common("OBlock Tables");
@@ -92,6 +92,11 @@
 
 /*private*/ void TableFrames::common(QString actionName)
 {
+ if(SET_CLOSED == "")
+  SET_CLOSED = InstanceManager::turnoutManagerInstance()->getClosedText();
+ if(SET_THROWN == nullptr)
+  SET_THROWN = InstanceManager::turnoutManagerInstance()->getThrownText();
+
     _tabbed = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed();
     _title = actionName;
     if (!_tabbed) {

@@ -24,7 +24,6 @@ class APPSLIBSHARED_EXPORT ProfileManager : public Bean
 public:
     explicit ProfileManager(QObject *parent = 0);
     ProfileManager(File * catalog, QObject *parent = 0);
-    QT_DEPRECATED/*public*/  static ProfileManager* defaultManager();
     /*public*/ static ProfileManager* getDefault();
     /*public*/ File* getConfigFile();
     /*public*/ void setConfigFile(File* configFile);
@@ -125,13 +124,14 @@ protected:
     friend class Apps3;
     friend class AddProfileDialog;
 };
-/*private*/ /*static*/ class ProfileManagerHolder
-{
- /**
-  * Default instance of the ProfileManager
-  */
- /*public*/ static ProfileManager* manager;// = new ProfileManager();
- friend class ProfileManager;
-};
+
+///*private*/ /*static*/ class ProfileManagerHolder
+//{
+// /**
+//  * Default instance of the ProfileManager
+//  */
+// /*public*/ static ProfileManager* manager;// = new ProfileManager();
+// friend class ProfileManager;
+//};
 
 #endif // PROFILEMANAGER_H

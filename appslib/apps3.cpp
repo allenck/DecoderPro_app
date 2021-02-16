@@ -332,18 +332,18 @@
         profileFile = new File(profileFilename);
     }
 
-    ProfileManager::defaultManager()->setConfigFile(profileFile);
+    ProfileManager::getDefault()->setConfigFile(profileFile);
     // See if the profile to use has been specified on the command line as
     // a system property jmri.profile as a profile id.
     if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile")) {
-        ProfileManager::defaultManager()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
+        ProfileManager::getDefault()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
     }
     // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
-    if (!ProfileManager::defaultManager()->getConfigFile()->exists()) { // no profile config for this app
+    if (!ProfileManager::getDefault()->getConfigFile()->exists()) { // no profile config for this app
      log->trace(tr("profileFile %1 doesn't exist").arg(profileFile->toString()));
      try
      {
-      if (ProfileManager::defaultManager()->migrateToProfiles(getConfigFileName())) { // migration or first use
+      if (ProfileManager::getDefault()->migrateToProfiles(getConfigFileName())) { // migration or first use
           // notify user of change only if migration occured
           // TODO: a real migration message
           JOptionPane::showMessageDialog(sp,
@@ -371,7 +371,7 @@
         // Manually setting the configFilename property since calling
         // Apps.setConfigFilename() does not reset the system property
         System::setProperty("org.jmri.Apps.configFilename", /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml");
-        log->info(tr("Starting with profile %1").arg( ProfileManager::defaultManager()->getActiveProfile()->getId()));
+        log->info(tr("Starting with profile %1").arg( ProfileManager::getDefault()->getActiveProfile()->getId()));
     } catch (IOException ex) {
         log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg( ex.getMessage()));
     }

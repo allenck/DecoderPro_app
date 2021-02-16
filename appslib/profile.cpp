@@ -200,7 +200,7 @@ void Profile::common(File *path, bool isReadable)
 /*public*/ void Profile::setName(QString name) {
     QString oldName = this->name;
     this->name = name;
-ProfileManager::defaultManager()->profileNameChange(this, oldName);
+ProfileManager::getDefault()->profileNameChange(this, oldName);
 }
 
 /**
@@ -235,12 +235,13 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
 {
  ProfileProperties* p = new ProfileProperties(this->path);
 
- this->id = p->get(*_ID, true);
- this->name = p->get(*_NAME, true);
- if (this->id == NULL)
- {
-  this->readProfileXml();
-  this->save();
+ QString readId = p->get(*_ID, true);
+ if (readId != "") {
+     id = readId;
+ }
+ QString readName = p->get(*_NAME, true);
+ if (readName != "") {
+     name = readName;
  }
 }
 
@@ -255,7 +256,7 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
     //FileInputStream is = null;
     QFile* ff = new QFile(f->getPath());
     if(!ff->open(QIODevice::ReadOnly))
-     throw IOException(tr("File not found: %1").arg(f->getPath()));
+     throw IOException(tr("Error opening: %1 - %2").arg(f->getPath()).arg(ff->errorString()));
     QTextStream* is;
     try {
         is = new QTextStream(ff);

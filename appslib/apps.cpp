@@ -191,7 +191,7 @@ bool Apps::configDeferredLoadOK = false;
  {
   profileFile = new File(profileFilename);
  }
- ProfileManager::defaultManager()->setConfigFile(profileFile);
+ ProfileManager::getDefault()->setConfigFile(profileFile);
  // See if the profile to use has been specified on the command line as
  // a system property jmri.profile as a profile id.
  if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY)*/"org.jmri.profile"))
@@ -205,7 +205,7 @@ bool Apps::configDeferredLoadOK = false;
   log->trace(tr("profileFile %1 doesn't exist").arg(profileFile->toString()));
   try
   {
-   if (ProfileManager::defaultManager()->migrateToProfiles(configFilename))
+   if (ProfileManager::getDefault()->migrateToProfiles(configFilename))
    { // migration or first use
      // notify user of change only if migration occurred
      // TODO: a real migration message
@@ -240,7 +240,7 @@ bool Apps::configDeferredLoadOK = false;
   Profile* profile = ProfileManager::getDefault()->getActiveProfile();
   if(profile != nullptr)
   {
-   log->info(tr("Starting with profile %1").arg(  ProfileManager::defaultManager()->getActiveProfile()->getId()));
+   log->info(tr("Starting with profile %1").arg(  ProfileManager::getDefault()->getActiveProfile()->getId()));
   }
   else {
    log->info("Starting without a profile");

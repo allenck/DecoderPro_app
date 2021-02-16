@@ -15,7 +15,7 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  explicit EngineManager(QObject *parent = 0);
+  Q_INVOKABLE explicit EngineManager(QObject *parent = 0);
   ~EngineManager() {}
   EngineManager(const EngineManager&) : RollingStockManager() {}
   /*public*/ static /*final*/ QString CONSISTLISTLENGTH_CHANGED_PROPERTY;// = "ConsistListLength"; // NOI18N

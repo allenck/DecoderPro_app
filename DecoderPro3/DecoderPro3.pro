@@ -22,14 +22,14 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
+include(../scripts_config.prf)
+#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+#isEmpty( PYTHONQT_PREFIX ) {
+#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+#}
 
-PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-isEmpty( PYTHONQT_PREFIX ) {
-  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
-}
-
-include($$PYTHONQT_PREFIX/build/python.prf)
+#include($$PYTHONQT_PREFIX/build/python.prf)
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -100,12 +100,12 @@ win32:exists($$PREFIX/lib/PythonQt.dll){
  ENABLE_SCRIPTING = "Y"
 }
 
-unix:exists($$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so){
- ENABLE_SCRIPTING = "Y"
- message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so + "found OK")
-} else:unix: {
- message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so + "not found")
-}
+#unix:exists($$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so){
+# ENABLE_SCRIPTING = "Y"
+# message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so + "found OK")
+#} else:unix: {
+# message(PanelPro: $$PREFIX/lib/libPythonQt-Qt5-Python2.7_d.so + "not found")
+#}
 
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {

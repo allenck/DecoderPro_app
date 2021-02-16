@@ -852,45 +852,24 @@ void RosterEntry::init()
      e.appendChild((new LocoAddressXml())
              ->store(new DccLocoAddress(_dccAddress.toInt(), _protocol)));
  }
-#if 1
+
  if (!functionLabels.isEmpty())
  {
   d = doc.createElement("functionlabels");
 
   // loop to copy non-NULL elements
-  for (int i = 0; i<MAXFNNUM+1; i++)
+  for (int key = 0; key<MAXFNNUM+1; key++)
   {
-   if (!functionLabels.value(i).isNull() && functionLabels.value(i)!=(""))
+   if (!functionLabels.value(key).isNull() && functionLabels.value(key)!=(""))
    {
     QDomElement fne = doc.createElement("functionlabel");
-    fne.setAttribute("num", QString::number(i));
-    bool lockable = false;
-    if (!functionLockables.isEmpty()) lockable = functionLockables.value(i);
-    fne.setAttribute("lockable", lockable ? QString("true"):QString("false"));
-
-    if ((!functionImages.isEmpty()) && (functionImages.value(i)!=""))
-    {
-//     try
-//     {
-      fne.setAttribute("functionImage", FileUtil::getPortableFilename(functionImages[i]));
-//     }
-//     catch (StringIndexOutOfBoundsException eob)
-//     {
-//      fne.setAttribute("functionImage", "");
-//     }
-    }
-    if ((!functionSelectedImages.isEmpty()) && (functionSelectedImages.value(i)!=""))
-    {
-//     try
-//     {
-      fne.setAttribute("functionImageSelected", FileUtil::getPortableFilename(functionSelectedImages[i]));
-//     }
-//     catch (QStringIndexOutOfBoundsException eob)
-//     {
-//      fne.setAttribute("functionImageSelected", "");
-//     }
-    }
-    fne.appendChild(doc.createTextNode(functionLabels.value(i)));
+    fne.setAttribute("num", QString::number(key));
+    fne.setAttribute("lockable", getFunctionLockable(key) ? QString("true"):QString("false"));
+    fne.setAttribute("functionImage",
+            (getFunctionImage(key) != "") ? FileUtil::getPortableFilename(getFunctionImage(key)) : "");
+    fne.setAttribute("functionImageSelected", (getFunctionSelectedImage(key) != "")
+            ? FileUtil::getPortableFilename(getFunctionSelectedImage(key)) : "");
+    fne.appendChild(doc.createTextNode(functionLabels.value(key)));
     d.appendChild(fne);
    }
   }
@@ -915,7 +894,7 @@ void RosterEntry::init()
      }//);
      e.appendChild(s);
  }
-#endif
+
  QList<QString> keyset = getAttributes();
  if (!keyset.isEmpty())
  {

@@ -20,16 +20,16 @@
 /*public*/ SearchPathsListModel::SearchPathsListModel(QObject *parent) :
     AbstractListModel(parent)
 {
- ProfileManager::defaultManager()->addPropertyChangeListener(ProfileManager::SEARCH_PATHS, new PropertyChangeListener());
-    //connect(ProfileManager::defaultManager(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)), this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
+ ProfileManager::getDefault()->addPropertyChangeListener(ProfileManager::SEARCH_PATHS, new PropertyChangeListener());
+    //connect(ProfileManager::getDefault(), SIGNAL(indexedPropertyChange(IndexedPropertyChangeEvent*)), this, SLOT(propertyChange(IndexedPropertyChangeEvent*)));
 
 }
 //    @Override
 /*public*/ void SearchPathsListModel::propertyChange(IndexedPropertyChangeEvent* evt)
 {
 //  if (evt instanceof IndexedPropertyChangeEvent
-//                && evt.getSource().equals(ProfileManager.defaultManager()))
- if(qobject_cast<IndexedPropertyChangeEvent*>(evt) != NULL && evt->getSource() == ProfileManager::defaultManager())
+//                && evt.getSource().equals(ProfileManager.getDefault()))
+ if(qobject_cast<IndexedPropertyChangeEvent*>(evt) != NULL && evt->getSource() == ProfileManager::getDefault())
  {
   if (evt->getOldValue() == QVariant())
   {
@@ -46,18 +46,18 @@
 //@Override
 /*public*/ int SearchPathsListModel::getSize()
 {
- return ProfileManager::defaultManager()->getSearchPaths().length();
+ return ProfileManager::getDefault()->getSearchPaths().length();
 }
 int SearchPathsListModel::rowCount(const QModelIndex &/*parent*/) const
 {
- return ProfileManager::defaultManager()->getSearchPaths().length();
+ return ProfileManager::getDefault()->getSearchPaths().length();
 }
 //@Override
 /*public*/ QVariant SearchPathsListModel::data(const QModelIndex &index, int role) const
 {
  if(role == Qt::DisplayRole)
  {
-  return ProfileManager::defaultManager()->getSearchPaths(index.row())->getPath();
+  return ProfileManager::getDefault()->getSearchPaths(index.row())->getPath();
  }
  return QVariant();
 }

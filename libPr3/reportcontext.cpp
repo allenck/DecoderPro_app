@@ -67,7 +67,7 @@
     addString("Available Communication Ports:");
     addCommunicationPortInfo();
 
-    Profile* profile = ProfileManager::defaultManager()->getActiveProfile();
+    Profile* profile = ProfileManager::getDefault()->getActiveProfile();
     addString("Active profile: " + profile-> getName() + "   ");
     addString("Profile location: " + profile-> getPath()->getPath() + "   ");
     addString("Profile ID: " + profile-> getId() + "   ");

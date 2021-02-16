@@ -15,7 +15,7 @@
 
     /*private*/ /*final*/ /*static*/ Logger* MeterFrameManager::log = LoggerFactory::getLogger("MeterFrameManager");
 
-    /*private*/ /*static*/ /*final*/ MeterFrameManager* MeterFrameManager::_instance = new MeterFrameManager();
+    /*private*/ /*static*/ /*final*/ MeterFrameManager* MeterFrameManager::_instance = nullptr;//new MeterFrameManager();
 
 
     /**
@@ -24,6 +24,9 @@
      */
     //@CheckReturnValue
     /*public*/ /*static*/ MeterFrameManager* MeterFrameManager::getInstance() {
+ if(_instance == nullptr)
+  _instance = new MeterFrameManager();
+
         return _instance;
     }
 

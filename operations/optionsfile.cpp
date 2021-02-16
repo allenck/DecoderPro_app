@@ -37,7 +37,7 @@
     }
 
     // operational variables
-    /*private*/ /*static*/ QString OptionsFile::defaultFileName = FileUtil::getUserFilesPath() + "dispatcheroptions.xml";
+    /*private*/ /*static*/ QString OptionsFile::defaultFileName = nullptr; //FileUtil::getUserFilesPath() + "dispatcheroptions.xml";
 
     /*public*/ /*static*/ void OptionsFile::setDefaultFileName(QString testLocation) {
         defaultFileName = testLocation;
@@ -52,6 +52,8 @@
      */
     /*public*/ void OptionsFile::readDispatcherOptions(DispatcherFrame* f) //throw (JDOMException, IOException)
     {
+     if(defaultFileName == "")
+      defaultFileName = FileUtil::getUserFilesPath() + "dispatcheroptions.xml";
         // check if file exists
         if (checkFile(defaultFileName)) {
             // file is present,

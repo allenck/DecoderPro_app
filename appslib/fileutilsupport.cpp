@@ -654,6 +654,7 @@ public URL getURL(URI uri) {
 /*public*/ QString FileUtilSupport::getUserFilesPath() {
  return getUserFilesPath(ProfileManager::getDefault()->getActiveProfile());
 }
+
 /**
  * Get the user's files directory. If not set by the user, this is the same
  * as the profile path. Note that if the profile path has been set to null,
@@ -890,8 +891,8 @@ public URL getURL(URI uri) {
  if ((old != NULL && old != (this->programPath))
          || (this->programPath != NULL && this->programPath !=(old)))
  {
-  FileUtil::Property* oldProperty = new FileUtil::Property(ProfileManager::defaultManager()->getActiveProfile(), old);
-  FileUtil::Property* newProperty = new FileUtil::Property(ProfileManager::defaultManager()->getActiveProfile(), this->programPath);
+  FileUtil::Property* oldProperty = new FileUtil::Property(ProfileManager::getDefault()->getActiveProfile(), old);
+  FileUtil::Property* newProperty = new FileUtil::Property(ProfileManager::getDefault()->getActiveProfile(), this->programPath);
 
      //this->firePropertyChange(*_program, old, this->programPath);
   this->firePropertyChange(*_program, VPtr<FileUtil::Property>::asQVariant(oldProperty), VPtr<FileUtil::Property>::asQVariant(newProperty));
@@ -1191,9 +1192,15 @@ public URL getURL(URI uri) {
  {
   if ((new File(path.mid(QString(*_settings).length())))->isAbsolute()) {
       path = path.mid(QString(*_settings).length());
-  } else {
-      path = path.replace(*_settings, Matcher::quoteReplacement(this->getPreferencesPath()));
-   //path = path.replace(*_settings, Matcher::quoteReplacement(this->getProfilePath()));
+  } else
+  {
+   QString path1;
+//   path1 = QString(path).replace(*_settings, Matcher::quoteReplacement(this->getPreferencesPath()));
+//   if(!QFileInfo(path1).exists())
+//   {
+    path1 = QString(path).replace(*_settings, Matcher::quoteReplacement(this->getProfilePath()));
+//   }
+   path = path1;
   }
  }
  else if (path.startsWith(*_home))

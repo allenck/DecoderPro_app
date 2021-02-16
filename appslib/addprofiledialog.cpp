@@ -113,7 +113,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
 
     lblProfileLocation->setText(tr("Profile Location:")); // NOI18N
 
-    profileLocation->setText(ProfileManager::defaultManager()->getDefaultSearchPath()->getPath());
+    profileLocation->setText(ProfileManager::getDefault()->getDefaultSearchPath()->getPath());
     profileLocation->setMinimumSize( QSize(14, 128));
 //    profileLocation.addFocusListener(new FocusAdapter() {
 //        /*public*/ void focusLost(FocusEvent evt) {
@@ -134,7 +134,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
 //    });
     connect(profileLocation, SIGNAL(textEdited(QString)), this, SLOT(profileNameActionPerformed()));
 
-    profileFolder->setText(ProfileManager::defaultManager()->getDefaultSearchPath()->getPath());
+    profileFolder->setText(ProfileManager::getDefault()->getDefaultSearchPath()->getPath());
 //    profileFolder.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent evt) {
 //            profileFolderActionPerformed(evt);
@@ -303,7 +303,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
  {
   setCursor(Qt::WaitCursor);
   Profile* p = new Profile(this->profileName->text(), this->profileId, new File(this->profileFolder->text()));
-ProfileManager::defaultManager()->addProfile(p);
+ProfileManager::getDefault()->addProfile(p);
   if (this->source != NULL)
   {
    // TODO: if source is active profile, save source first
@@ -312,10 +312,10 @@ ProfileManager::defaultManager()->addProfile(p);
   }
   if (this->setNextProfile)
   {
-   ProfileManager::defaultManager()->setNextActiveProfile(p);
+   ProfileManager::getDefault()->setNextActiveProfile(p);
   }
   else {
-   ProfileManager::defaultManager()->setActiveProfile(p);
+   ProfileManager::getDefault()->setActiveProfile(p);
   }
   ProfileManager::getDefault()->saveActiveProfile(p, ProfileManager::getDefault()->isAutoStartActiveProfile());
   if (this->source != NULL)

@@ -25,7 +25,7 @@
  */
 ///*public*/ class ImportExternalData {
 
-/*static*/ /*final*/ CtcManager* ImportExternalData::cm = (CtcManager*)InstanceManager::getDefault("CtcManager");
+/*static*/ /*final*/ CtcManager* ImportExternalData::cm = nullptr;//(CtcManager*)InstanceManager::getDefault("CtcManager");
 /*static*/ ImportOtherData* ImportExternalData::_mImportOtherData = nullptr;
 /*static*/ QList<ImportCodeButtonHandlerData*> ImportExternalData::_mImportCodeButtonHandlerDataArrayList = QList<ImportCodeButtonHandlerData*>();
 
@@ -51,6 +51,8 @@
             return;
         }
     }
+    if(cm == nullptr)
+     cm = (CtcManager*)InstanceManager::getDefault("CtcManager");
 
     cm->getProgramProperties()->importExternalProgramProperties();    // Load ProgramProperties
     if (loadCTCSystemContent()) {   // Load the CTCSystem.xml file into special classes

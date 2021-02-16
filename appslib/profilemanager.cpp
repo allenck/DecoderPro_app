@@ -53,7 +53,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SEARCH_PATHS, ("searchPaths"))
  Q_GLOBAL_STATIC_WITH_ARGS(const char*, _DEFAULT_SEARCH_PATH, ("defaultSearchPath"))
 /*public*/ /*static*/ /*final*/ QString ProfileManager::DEFAULT_SEARCH_PATH = "defaultSearchPath"; // NOI18N
 /*volatile*/ /*private*/ /*static*/ ProfileManager* ProfileManager::defaultInstance = nullptr;
-//ProfileManager* ProfileManager::instance = NULL;
+
 /**
  * Default instance of the ProfileManager
  */
@@ -97,9 +97,11 @@ void ProfileManager::common(File* catalog)
  configFile = NULL;
  readingProfiles = false;
  autoStartActiveProfile = false;
- defaultSearchPath = new File(FileUtil::getPreferencesPath());
+ defaultSearchPath = nullptr;//new File(FileUtil::getPreferencesPath());
  autoStartActiveProfileTimeout = 10;
  pcs = new PropertyChangeSupport(this);
+ defaultInstance = this;
+
  this->catalog = catalog;
  try
  {
@@ -116,19 +118,6 @@ void ProfileManager::common(File* catalog)
      log->error(ex.getLocalizedMessage() + ex.getMessage());
  }
 
-}
-/**
- * Get the default {@link ProfileManager}.
- *
- * The default ProfileManager needs to be loaded before the InstanceManager
- * since user interaction with the ProfileManager may change how the
- * InstanceManager is configured.
- *
- * @return the default ProfileManager.
- */
-/*public*/ /*static*/ ProfileManager* ProfileManager::defaultManager()
-{
- return ProfileManager::getDefault();
 }
 
 /**
@@ -1071,7 +1060,7 @@ QString ProfileManager::FileFilter1::getDescription()
    return nullptr;
   }
  }
- return ProfileManager::defaultManager()->getActiveProfile();
+ return ProfileManager::getDefault()->getActiveProfile();
 }
 
 /**

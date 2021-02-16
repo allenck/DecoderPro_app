@@ -471,7 +471,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
 
 //    /*public*/ static class TimeTableXmlFile extends XmlFile {
-        /*private*/ /*static*/ QString TimeTableXmlFile::fileLocation = FileUtil::getUserFilesPath() + "timetable/";  // NOI18N
+        /*private*/ /*static*/ QString TimeTableXmlFile::fileLocation = nullptr;//FileUtil::getUserFilesPath() + "timetable/";  // NOI18N
         /*private*/ /*static*/ QString TimeTableXmlFile::demoLocation = FileUtil::getProgramPath() + "xml/demoTimetable/";  // NOI18N
         /*private*/ /*static*/ QString TimeTableXmlFile::baseFileName = "TimeTableData.xml";  // NOI18N
 

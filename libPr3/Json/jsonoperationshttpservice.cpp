@@ -9,7 +9,7 @@
 #include "locationmanager.h"
 #include "engine.h"
 #include "enginemanager.h"
-
+#include "jsonutil.h"
 /**
  *
  * @author Randall Wood (C) 2016
@@ -21,7 +21,7 @@
 
 /*public*/ JsonOperationsHttpService::JsonOperationsHttpService(ObjectMapper mapper, QObject* parent) : JsonHttpService(mapper, parent){
     //super(mapper);
-    //this->utilities = new JsonUtil(mapper);
+    this->utilities = new JsonUtil(mapper);
 }
 
 //@Override

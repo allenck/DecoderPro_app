@@ -70,6 +70,7 @@ protected:
  friend class ProfileUtils;
  friend class NullProfile;
  friend class PMDPropertyChangeListener2;
+ friend class FileUtilSupport;
 };
 
 #endif // PROFILE_H

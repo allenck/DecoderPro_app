@@ -11,7 +11,7 @@
 #include "engineeditframe.h"
 #include "enginesetframe.h"
 #include "pushbuttondelegate.h"
-
+#include "instancemanager.h"
 
 //EnginesTableModel::EnginesTableModel(QObject *parent) :
 //  AbstractTableModel(parent)
@@ -32,7 +32,7 @@ namespace Operations
   *
   */
  //private static final long serialVersionUID = 6804454611283948123L;
- EngineManager* EnginesTableModel::manager = EngineManager::instance(); // There is only one manager
+ //EngineManager* EnginesTableModel::manager = EngineManager::instance(); // There is only one manager
 
  /*public*/ EnginesTableModel::EnginesTableModel(QObject *parent) :
    AbstractTableModel(parent)
@@ -47,10 +47,11 @@ namespace Operations
   log = new Logger("EngineTableModel");
   _enginesTableColumnWidths = QList<int>() << 60 << 60 << 65 << 50 << 65 << 35 << 75 << 190 << 190 << 65 << 50 << 65 << 70;
   showMoveCol = SHOWMOVES;
+  engineManager = (EngineManager*)InstanceManager::getDefault("EngineManager"); // There is only one manager
 
 
   //manager->addPropertyChangeListener(this);
-  connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(engineManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();
  }
 
@@ -152,37 +153,37 @@ namespace Operations
  /*public*/ QList<RollingStock*>* EnginesTableModel::getSelectedEngineList() {
 QList<RollingStock*>* list = new QList<RollingStock*>();
      if (_sort == SORTBYROAD) {
-         list = manager->getByRoadNameList();
+         list = engineManager->getByRoadNameList();
      }
      else if (_sort == SORTBYMODEL) {
-         list = manager->getByModelList();
+         list = engineManager->getByModelList();
      }
 
      else if (_sort == SORTBYLOCATION) {
-         list = manager->getByLocationList();
+         list = engineManager->getByLocationList();
      } else if (_sort == SORTBYDESTINATION) {
-         list = manager->getByDestinationList();
+         list = engineManager->getByDestinationList();
      } else if (_sort == SORTBYTRAIN) {
-         list = manager->getByTrainList();
+         list = engineManager->getByTrainList();
      } else if (_sort == SORTBYMOVES) {
-         list = manager->getByMovesList();
+         list = engineManager->getByMovesList();
      }
      else if (_sort == SORTBYCONSIST) {
-         list = manager->getByConsistList();
+         list = engineManager->getByConsistList();
      }
      else if (_sort == SORTBYOWNER) {
-         list = manager->getByOwnerList();
+         list = engineManager->getByOwnerList();
      } else if (_sort == SORTBYBUILT) {
-         list = manager->getByBuiltList();
+         list = engineManager->getByBuiltList();
      } else if (_sort == SORTBYVALUE) {
-         list = manager->getByValueList();
+         list = engineManager->getByValueList();
      } else if (_sort == SORTBYRFID) {
-         list = manager->getByRfidList();
+         list = engineManager->getByRfidList();
      } else if (_sort == SORTBYLAST) {
-         list = manager->getByLastDateList();
+         list = engineManager->getByLastDateList();
      }
      else {
-         list = manager->getByNumberList();
+         list = engineManager->getByNumberList();
      }
 
      return list;
@@ -478,7 +479,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
          log->debug("dispose EngineTableModel");
      }
      //manager->removePropertyChangeListener(this);
-     disconnect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(engineManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeEngines();
 
      if (esf != NULL) {

@@ -14,7 +14,7 @@
 
 QString IdTagManagerXml::idTagDirectoryName = "idtags";
 /*private*/ QString IdTagManagerXml::idTagBaseFileName = "IdTags.xml"; // NOI18N
-QString IdTagManagerXml::fileLocation = FileUtil::getUserFilesPath();
+QString IdTagManagerXml::fileLocation = nullptr;//FileUtil::getUserFilesPath();
 bool IdTagManagerXml::_loaded = false;
 IdTagManagerXml* IdTagManagerXml::_instance = NULL;
 
@@ -551,7 +551,9 @@ doc.appendChild(root);
  * @return path to location
  */
 /*public*/ /*static*/ QString IdTagManagerXml::getFileLocation() {
-    return fileLocation;
+ if(fileLocation == nullptr)
+  fileLocation = FileUtil::getUserFilesPath();
+ return fileLocation;
 }
 
 

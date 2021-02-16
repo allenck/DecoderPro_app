@@ -53,7 +53,7 @@ CodeButtonHandler::CodeButtonHandler(QObject *parent) : QObject(parent)
         }
         return returnValue;
     }
-    /*private*/ /*static*/ /*final*/ Sensor* CodeButtonHandler::_mPreconditioningEnabledSensor = initializePreconditioningEnabledSensor();
+    /*private*/ /*static*/ /*final*/ Sensor* CodeButtonHandler::_mPreconditioningEnabledSensor = nullptr;//initializePreconditioningEnabledSensor();
 
     /*public*/ CodeButtonHandler::CodeButtonHandler(   bool turnoutLockingOnlyEnabled,                              // If this is NOT an O.S. section, but only a turnout lock, then this is true.
                                 LockedRoutesManager* lockedRoutesManager,
@@ -168,6 +168,8 @@ CodeButtonHandler::CodeButtonHandler(QObject *parent) : QObject(parent)
     }
 #if 1
     /*private*/ void CodeButtonHandler::codeButtonStateChange(PropertyChangeEvent* e) {
+ if(_mPreconditioningEnabledSensor == nullptr)
+  _mPreconditioningEnabledSensor = initializePreconditioningEnabledSensor();
         if (e->getPropertyName() == ("KnownState") && (int)e->getNewValue().toInt() == Sensor::ACTIVE) {
 //  NOTE: If the primary O.S. section is occupied, you CANT DO ANYTHING via a CTC machine, except:
 //  Preconditioning: IF the O.S. section is occupied, then it is a pre-conditioning request:

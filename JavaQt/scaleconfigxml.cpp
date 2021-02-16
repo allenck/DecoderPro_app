@@ -107,8 +107,8 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
     }
 
 //    /*private*/ /*static*/ class ScaleXmlFile : public XmlFile {
-        /*private*/ /*static*/ QString ScaleXmlFile::prodPath = FileUtil::getProgramPath() + "resources/scales/";  // NOI18N
-        /*private*/ /*static*/ QString ScaleXmlFile::userPath = FileUtil::getUserFilesPath() + "resources/scales/";  // NOI18N
+        /*private*/ /*static*/ QString ScaleXmlFile::prodPath = "";//FileUtil::getProgramPath() + "resources/scales/";  // NOI18N
+        /*private*/ /*static*/ QString ScaleXmlFile::userPath = "";//FileUtil::getUserFilesPath() + "resources/scales/";  // NOI18N
         /*private*/ /*static*/ QString ScaleXmlFile::fileName = "ScaleData.xml";  // NOI18N
 
         /*public*/ /*static*/ QString ScaleXmlFile::getStoreFileName() {
