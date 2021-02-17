@@ -1,8 +1,8 @@
 #include "speedtablevarvalue.h"
 #include"rosterentry.h"
 #include "math.h"
-#include <QScrollArea>
-#include <QGridLayout>
+#include "jpanel.h"
+#include "gridbaglayout.h"
 #include "gridbagconstraints.h"
 #include "decvariablevalue.h"
 #include "jslider.h"
@@ -362,9 +362,9 @@ void SpeedTableVarValue::setColor(QColor c) {
  QSignalMapper* mapper = new QSignalMapper;
  //stepSliders = QList<JSlider*>();
  // put together a new panel in scroll pane
- QWidget* j = new QScrollArea();
+ JPanel* j = new JPanel();
 #if 1
- QGridLayout* g = new QGridLayout();
+ GridBagLayout* g = new GridBagLayout();
  GridBagConstraints* cs = new GridBagConstraints();
  j->setLayout(g);
 
@@ -412,13 +412,15 @@ void SpeedTableVarValue::setColor(QColor c) {
   //float newSize = v->getFont().getSize() * 0.8f;
   //v->setFont(jmri.util.FontUtil.deriveFont(v.getFont(),newSize));
   //j.add ( v );
-  g->addWidget(v, cs->gridy, cs->gridx, cs->rowSpan(),cs->colSpan());
+  //g->addWidget(v, cs->gridy, cs->gridx, cs->rowSpan(),cs->colSpan());
+  g->addWidget(v, *cs);
 
   cs->gridy++;
   //g.setConstraints(s, cs);
 
   //j.add(s);
-  g->addWidget(s, cs->gridy, cs->gridx, cs->rowSpan(),cs->colSpan());
+  //((QGridLayout*)g)->addWidget(s, cs->gridy, cs->gridx, cs->rowSpan(),cs->colSpan());
+  g->addWidget(s, *cs);
 
 
   cs->gridy++;
@@ -426,13 +428,14 @@ void SpeedTableVarValue::setColor(QColor c) {
 
   //g.setConstraints(b, cs);
   //j.add(b, cs);
-  g->addWidget(b, cs->gridy, cs->gridx, cs->rowSpan(),cs->colSpan());
+  //g->addWidget(b, cs->gridy, cs->gridx, cs->rowSpan(),cs->colSpan());
+  g->addWidget(b, *cs);
 
   enforceEndPointsMfx();
  }
  connect(mapper, SIGNAL(mapped(QWidget*)), this, SLOT(stateChanged(QWidget*)));
  // add control buttons
- QFrame* k= new QFrame(j);
+ JPanel* k= new JPanel();
  QPushButton* b;
  QHBoxLayout* layout = new QHBoxLayout(j);
  k->setLayout(layout);

@@ -499,7 +499,7 @@ PaneProgFrame::~PaneProgFrame()
    else if (programmerRoot.firstChildElement("programmer").attribute("showEmptyPanes")==("no"))
     setShowEmptyPanes(false);
    // leave alone for "default" value
-   if (log->isDebugEnabled()) log->debug(tr("result ")+(getShowEmptyPanes()?"true":"false"));
+   if (log->isDebugEnabled()) log->debug(tr("result ")+(isShowingEmptyPanes()?"true":"false"));
  }
 
   // get extra any panes from the decoder file
@@ -694,38 +694,7 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
   // make it, just don't make it visible
   makeMediaPane(r);
  }
- // for all "pane" elements in the programmer
-// QDomNodeList children = base.childNodes();
-// for(int i = 0; i < children.count(); i++)
-// {
-//  QDomElement e2 = children.at(i).toElement();
-//  if(e2.tagName() == "xi:include")
-//  {
-//   QString href= e2.attribute("href");
-//   qDebug() << e2.tagName() << " href= " << href;
-//   QDomDocumentFragment frag = XmlInclude::processInclude(e2);
 
-//   base.replaceChild(frag, e2);
-//  }
-// }
-#if 0
- QDomNodeList progPaneList = base.elementsByTagName("pane");
- if (log->isDebugEnabled()) log->debug("will process "+QString::number(progPaneList.size())+" pane definitions");
- for (int i=0; i<progPaneList.size(); i++)
- {
-  // load each pane
-  //QString name = LocaleSelector.attribute(paneList.get(i), "name");
-  bool isProgPane = true;
-  QString name = progPaneList.at(i).toElement().attribute("name");
-  if(name == "")
-  {
-   QDomElement nameElement = progPaneList.at(i).toElement().firstChildElement("name");
-   if(!nameElement.isNull())
-    name = nameElement.text();
-  }
-  newPane( name, progPaneList.at(i).toElement(), modelElem, false, isProgPane);  // dont force showing if empty
- }
-#else // TODO:
  // for all "pane" elements in the programmer
  QDomNodeList progPaneList = base.elementsByTagName("pane");
  if (log->isDebugEnabled()) {
@@ -773,7 +742,6 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
          newPane(name, temp, modelElem, false, isProgPane);  // don't force showing if empty
      }
  }
-#endif
 }
 
 /**
@@ -871,43 +839,6 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
 /*protected*/ QWidget* PaneProgFrame::makeFunctionLabelPane(RosterEntry* r)
 {
     // create the identification pane (not configured by programmer file now; maybe later?
-#if 0 // Using QDesigner page
-
-    JPanel outer = new JPanel();
-    outer.setLayout(new BoxLayout(outer, BoxLayout.Y_AXIS));
-    JPanel body = new JPanel();
-    body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-    JScrollPane scrollPane = new JScrollPane(body);
-
-    // add tab description
-    JLabel title = new JLabel(rbt.getString("UseThisTabCustomize"));
-    title.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-    body.add(title);
-    body.add(new JLabel(" "));	// some padding
-
-    // add roster info
-    _flPane = new FunctionLabelPane(r);
-    //_flPane.setMaximumSize(_flPane.getPreferredSize());
-    body.add(_flPane);
-
-    // add the store button
-    JButton store = new JButton(rbt.getString("ButtonSave"));
-    store->setAlignmentX(JLabel.CENTER_ALIGNMENT);
-    store->addActionListener( new ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                storeFile();
-            }
-        });
-
-    JPanel buttons = new JPanel();
-    buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
-
-    buttons.add(store);
-
-    body.add(buttons);
-    outer.add(scrollPane);
-    return outer;
-#endif
     QFrame* frame = new QFrame();
     QVBoxLayout* frameLayout = new QVBoxLayout();
     frame->setLayout(frameLayout);
@@ -929,43 +860,6 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
 /*protected*/ QWidget* PaneProgFrame::makeMediaPane(RosterEntry* r)
 {
     // create the identification pane (not configured by programmer file now; maybe later?
-#if 0 // see MediaPane
-    JPanel outer = new JPanel();
-    outer.setLayout(new BoxLayout(outer, BoxLayout.Y_AXIS));
-    JPanel body = new JPanel();
-    body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
-    JScrollPane scrollPane = new JScrollPane(body);
-
-    // add tab description
-    JLabel title = new JLabel(rbt.getString("UseThisTabMedia"));
-    title.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-    body.add(title);
-    body.add(new JLabel(" "));	// some padding
-
-    // add roster info
-    _rMPane = new RosterMediaPane(r);
-    _rMPane.setMaximumSize(_rMPane.getPreferredSize());
-    body.add(_rMPane);
-
-    // add the store button
-    JButton store = new JButton(rbt.getString("ButtonSave"));
-    store->setAlignmentX(JLabel.CENTER_ALIGNMENT);
-    store->addActionListener(new ActionListener() {
-
-        public void actionPerformed(java.awt.event.ActionEvent e) {
-            storeFile();
-        }
-    });
-
-    JPanel buttons = new JPanel();
-    buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
-
-    buttons.add(store);
-
-    body.add(buttons);
-    outer.add(scrollPane);
-    return outer;
-#endif
     QFrame* frame = new QFrame();
     QVBoxLayout* frameLayout = new QVBoxLayout();
     frame->setLayout(frameLayout);
@@ -1288,7 +1182,8 @@ void PaneProgFrame::updateDccAddress()
 }
 /*public*/ void PaneProgFrame::newPane(QString name, QDomElement pane, QDomElement modelElem, bool enableEmpty, bool programmerPane)
 {
- if (log->isDebugEnabled()) log->debug(tr("newPane '")+name+tr("' with enableEmpty ")+(enableEmpty?"true":"false")+" getShowEmptyPanes() "+(getShowEmptyPanes()?"true":"false"));
+ if (log->isDebugEnabled())
+  log->debug(tr("newPane '")+name+tr("' with enableEmpty ")+(enableEmpty?"true":"false")+" getShowEmptyPanes() "+(isShowingEmptyPanes()?"true":"false"));
  // create a panel to hold columns
  PaneProgPane* p = new PaneProgPane((PaneContainer*)this, name, pane, cvModel, /*iCvModel,*/ variableModel, modelElem, _rosterEntry, programmerPane);
  //    p->setOpaque(true);
@@ -1298,12 +1193,12 @@ void PaneProgFrame::updateDccAddress()
   int index = ui->tabWidget->addTab(p, name);  // always add if not empty
   ui->tabWidget->setTabToolTip(index, p->toolTip());
  }
- else if (getShowEmptyPanes())
+ else if (isShowingEmptyPanes())
  {
   // here empty, but showing anyway as disabled
   int index = ui->tabWidget->addTab(p, name);
   //int index = tabPane.indexOfTab(name);
-  ui->tabWidget->setTabEnabled(index, false);
+  ui->tabWidget->setTabEnabled(index, true);
   ui->tabWidget->setTabToolTip(index,  tr("Tab disabled because there are no options in this category"));
  }
  else
@@ -1796,7 +1691,7 @@ bool PaneProgFrame::doWrite()
 /*public*/ /*static*/ void PaneProgFrame::setShowEmptyPanes(bool yes) {
     showEmptyPanes = yes;
 }
-/*public*/ /*static*/ bool PaneProgFrame::getShowEmptyPanes() {
+/*public*/ /*static*/ bool PaneProgFrame::isShowingEmptyPanes() {
     return showEmptyPanes;
 }
 

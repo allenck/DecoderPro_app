@@ -80,7 +80,7 @@ public:
 
     /*public*/ void dispose();
     /*public*/ static void setShowEmptyPanes(bool yes);
-    /*public*/ static bool getShowEmptyPanes();
+    /*public*/ static bool isShowingEmptyPanes();
     static bool showEmptyPanes;// = true;
     /*public*/ RosterEntry* getRosterEntry();
     /*public*/ QList<JPanel *> getPaneList();

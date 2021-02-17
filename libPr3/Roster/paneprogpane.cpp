@@ -2385,7 +2385,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
  * Add the representation of a single variable.  The
  * variable is defined by a JDOM variable QDomElement  from the XML file.
  */
-/*public*/ void PaneProgPane::newVariable(QDomElement  var, JPanel * /*col*/, GridBagLayout* gridLayout, GridBagConstraints* cs, bool showStdName)
+/*public*/ void PaneProgPane::newVariable(QDomElement  var, JPanel * /*col*/, GridBagLayout* g, GridBagConstraints* cs, bool showStdName)
 {
  // get the name
  QString name = var.attribute("item");
@@ -2429,35 +2429,40 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
  // assemble v from label, rep
  if (layout==("left"))
  {
-  QHBoxLayout* hLayout = new QHBoxLayout();
-  Q_ASSERT(cs->gridx >=0);
-  gridLayout->addLayout(hLayout, cs->gridy, cs->gridx);
+//  QHBoxLayout* hLayout = new QHBoxLayout();
+//  Q_ASSERT(cs->gridx >=0);
+//  g->addLayout(hLayout, cs->gridy, cs->gridx);
   cs->anchor= GridBagConstraints::EAST;
 //        g.setConstraints(l, *cs);
   //col->layout()->addWidget(l);
-  hLayout->addWidget(l);
+  g->addWidget(l, *cs);
+  cs->gridx = g->getConstraints().gridx;
 
   //cs->gridx = GridBagConstraints::RELATIVE;
   cs->anchor= GridBagConstraints::WEST;
 //        g.setConstraints(rep, *cs);
 //  col->layout()->addWidget(rep);
-  hLayout->addWidget(rep);
+  g->addWidget(rep, *cs);
+  cs->gridx = g->getConstraints().gridx;
  }
  else if (layout==("right"))
  {
-  QHBoxLayout* hLayout = new QHBoxLayout();
-  Q_ASSERT(cs->gridx >=0);
-  gridLayout->addLayout(hLayout, cs->gridy, cs->gridx);
+//  QHBoxLayout* hLayout = new QHBoxLayout();
+//  Q_ASSERT(cs->gridx >=0);
+//  g->addLayout(hLayout, cs->gridy, cs->gridx);
   cs->anchor= GridBagConstraints::EAST;
 //        g.setConstraints(rep, *cs);
 //        col->layout()->addWidget(rep);
-  hLayout->addWidget(rep);
+  g->addWidget(rep, *cs);
+  cs->gridx = g->getConstraints().gridx;
+
 
   //cs->gridx = GridBagConstraints::RELATIVE;
   cs->anchor= GridBagConstraints::WEST;
 //        g.setConstraints(l, *cs);
 //        col->layout()->addWidget(l);
-  hLayout->addWidget(l);
+  g->addWidget(l, *cs);
+  cs->gridx = g->getConstraints().gridx;
  }
  else if (layout==("below"))
  {
@@ -2466,7 +2471,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
 //        g.setConstraints(rep, *cs);
 //        col->layout()->addWidget(rep);
   Q_ASSERT(cs->gridx >=0);
-  gridLayout->addWidget(rep, *cs);
+  g->addWidget(rep, *cs);
 
   // label aligned like others
   cs->gridy++;
@@ -2474,7 +2479,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
 //        g.setConstraints(l, *cs);
 //        col->layout()->addWidget(l);
   Q_ASSERT(cs->gridx >=0);
-  gridLayout->addWidget(l, *cs);
+  g->addWidget(l, *cs);
  }
  else if (layout==("above"))
  {
@@ -2483,7 +2488,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
 //        g.setConstraints(l, *cs);
 //        col->layout()->addWidget(l);
   Q_ASSERT(cs->gridx >=0);
-  gridLayout->addWidget(l, *cs);
+  g->addWidget(l, *cs);
 
   // variable in center of lower line
   cs->gridy++;
@@ -2491,7 +2496,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
 //        g.setConstraints(rep, *cs);
 //        col->layout()->addWidget(rep);
   Q_ASSERT(cs->gridx >=0);
-  gridLayout->addWidget(rep, *cs);
+  g->addWidget(rep, *cs);
  }
  else
  {
@@ -2525,36 +2530,13 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
   if(newRep)
   rep = newRep;
   Q_ASSERT(newRep != NULL);
-//        rep->setMaximumSize(rep->getPreferredSize());
-        // set tooltip if specified here & not overridden by defn in Variable
+  rep->setMaximumSize(rep->sizeHint());
+  // set tooltip if specified here & not overridden by defn in Variable
   QString tip = "";
   if ( (tip = /*LocaleSelector.attribute(var, "tooltip")*/var.attribute("tooltip"))!=NULL
               && rep->toolTip()==NULL)
    rep->setToolTip(modifyToolTipText(tip, variable));
   rep->setParent(this);
-  //---------------------
-//  if(qobject_cast<JSlider*>(rep))
-//  {
-//   JSlider* slider = (JSlider*)rep;
-//   connect(slider, &JSlider::valueChanged, [=]{
-//    variable->setIntValue(((JSlider*)rep)->value());
-//   });
-//   connect(variable->prop, &PropertyChangeSupport::propertyChange, [=](PropertyChangeEvent* e){
-//    if(e->getPropertyName() == "Value")
-//    {
-//     slider->setValue(e->getNewValue().toInt());
-//    }
-//   });
-//  }
-//  else if(qobject_cast<JTextField*>(rep))
-//  {
-//   JTextField* tf = (JTextField*)rep;
-//   connect(tf, &JTextField::editingFinished, [=]{
-//    variable->setIntValue(((JTextField*)rep)->text().toInt());
-//   });
-//  }
-//   else log->error(tr("unable to determine format type %1").arg(format));
-  //---------------------
 
  }
  else
@@ -2610,7 +2592,6 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
 /*public*/ void PaneProgPane::dispose()
 {
  if (log->isDebugEnabled()) log->debug("dispose");
-#if 1 // TODO:
 
     // remove components
     //removeAll();
@@ -2635,22 +2616,16 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
     cvList = NULL;
 
 //    // dispose of any panels
-//    for (int i=0; i<panelList.size(); i++) {
-//        panelList->at(i)->removeAll();
-//    }
     panelList->clear();
     panelList = NULL;
 
 //    // dispose of any fnMaps
-//    for (int i=0; i<fnMapList.size(); i++) {
-//        fnMapList.get(i).dispose();
-//    }
     fnMapList->clear();
     fnMapList = NULL;
 
     readChangesButton = NULL;
     writeChangesButton = NULL;
-#endif
+
     // these are disposed elsewhere
     _cvModel = NULL;
     _varModel = NULL;
