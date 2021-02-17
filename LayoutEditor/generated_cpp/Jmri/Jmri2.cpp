@@ -29,6 +29,7 @@
 #include <positionable.h>
 #include <positionablelabel.h>
 #include <powermanager.h>
+#include <programmingmode.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
 #include <qaction.h>
@@ -18912,7 +18913,7 @@ int  PythonQtWrapper_ProgrammingMode::hashCode(ProgrammingMode* theWrappedObject
   return ( theWrappedObject->hashCode());
 }
 
-bool  PythonQtWrapper_ProgrammingMode::__eq__(ProgrammingMode* theWrappedObject, QObject*  o)
+bool  PythonQtWrapper_ProgrammingMode::__eq__(ProgrammingMode* theWrappedObject, ProgrammingMode&  o)
 {
   return ( (*theWrappedObject)== o);
 }

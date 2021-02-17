@@ -193,7 +193,7 @@ public:
  * Get the list of {@link ProgrammingMode} supported by this
  * Programmer. If the order is significant, earlier modes are better.
  */
-    /*public*/ virtual QList<QString> getSupportedModes() {return QList<QString>();}
+  /*public*/ virtual QList<QString> getSupportedModes() =0;
   virtual void setMode(ProgrammingMode* /*mode*/) =0;
   virtual ProgrammingMode*  getMode() =0;
 //virtual bool hasMode(int mode) {return false;}

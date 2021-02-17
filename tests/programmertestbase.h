@@ -20,7 +20,7 @@ public:
     /*public*/ virtual void testGetWriteConfirmMode();
     /*public*/ virtual void testWriteCVNullListener() throw (ProgrammerException);
     /*abstract*/ virtual /*public*/ void setUp() {}
-    /*abstract*/ /*public*/ void tearDown() {}
+    /*abstract*/ virtual /*public*/ void tearDown() {}
 
 signals:
 

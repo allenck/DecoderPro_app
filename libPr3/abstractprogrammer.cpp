@@ -118,14 +118,36 @@ QString AbstractProgrammer::decodeErrorCode(int code)
      }
  }
 
- if (validModes.contains(m->getStandardName())) {
+ //if (validModes.contains(m->getStandardName()))
+ for(QString vm : validModes)
+ {
+  if(vm == m->getStandardName())
+  {
      ProgrammingMode* oldMode = mode;
      mode = m;
      notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(oldMode), VPtr<ProgrammingMode>::asQVariant(m));
- } else {
+     return;
+  }
+ }
   log->error("Invalid requested mode: " + m->getStandardName());
      throw  IllegalArgumentException("Invalid requested mode: " + m->getStandardName());
- }
+
+}
+
+/**
+ * Define the "best" programming mode, which provides the initial setting.
+ * <p>
+ * The definition of "best" is up to the specific-system developer.
+ * By default, this is the first of the available methods from getSupportedModes;
+ * override this method to change that.
+ *
+ * @return The recommended ProgrammingMode or null if none exists or is defined.
+ */
+/*public*/ ProgrammingMode* AbstractProgrammer::getBestMode() {
+    if (!getSupportedModes().isEmpty()) {
+        return new ProgrammingMode(getSupportedModes().at(0));
+    }
+    return nullptr;
 }
 
 /*public*/ /*final*/ ProgrammingMode* AbstractProgrammer::getMode() { return mode; }

@@ -2273,7 +2273,7 @@ void delete_ProgrammingMode(ProgrammingMode* obj) { delete obj; }
    bool  equals(ProgrammingMode* theWrappedObject, QObject*  o);
    QString  getStandardName(ProgrammingMode* theWrappedObject);
    int  hashCode(ProgrammingMode* theWrappedObject);
-   bool  __eq__(ProgrammingMode* theWrappedObject, QObject*  o);
+   bool  __eq__(ProgrammingMode* theWrappedObject, ProgrammingMode&  o);
    QString  toString(ProgrammingMode* theWrappedObject);
     QString py_toString(ProgrammingMode*);
 };

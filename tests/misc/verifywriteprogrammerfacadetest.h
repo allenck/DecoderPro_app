@@ -44,7 +44,10 @@ public:
     //@Override
     /*public*/ bool getCanRead() { return false; }
     //@Override
-    /*public*/ void readCV(QString cv, ProgListener* p) throw (ProgrammerException) { test->readCount++; ProgDebugger::readCV(cv, p); }
+    /*public*/ void readCV(QString cv, ProgListener* p) throw (ProgrammerException) {
+  test->readCount++;
+  ProgDebugger::readCV(cv, p);
+ }
 };
 
 class ProgListenerO8 : public QObject, public ProgListener {

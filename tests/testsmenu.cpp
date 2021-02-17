@@ -91,6 +91,7 @@
 #include "misc/identifydecodertestaction.h"
 #include "misc/cvutiltestaction.h"
 #include "misc/fileutilsupporttestaction.h"
+#include "programmers/abstractprogrammertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -191,6 +192,10 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     facadeMenu->addAction(new OpsModeDelayedProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new TwoIndexTcsProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new VerifyWriteProgrammerFacadeTestAction(this));
+
+    QMenu* progMenu = new QMenu(tr("Programmer tests ..."));
+    addMenu(progMenu);
+    progMenu->addAction(new AbstractProgrammerTestAction(this));
 
     QMenu* panelsMenu = new QMenu(tr("Panels ..."));
     addMenu(panelsMenu);

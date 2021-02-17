@@ -261,7 +261,9 @@ SOURCES += \
     misc/cvutiltest.cpp \
     misc/cvutiltestaction.cpp \
     misc/fileutilsupporttest.cpp \
-    misc/fileutilsupporttestaction.cpp
+    misc/fileutilsupporttestaction.cpp \
+    programmers/abstractprogrammertest.cpp \
+    programmers/abstractprogrammertestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -501,7 +503,9 @@ HEADERS += \
     misc/cvutiltest.h \
     misc/cvutiltestaction.h \
     misc/fileutilsupporttest.h \
-    misc/fileutilsupporttestaction.h
+    misc/fileutilsupporttestaction.h \
+    programmers/abstractprogrammertest.h \
+    programmers/abstractprogrammertestaction.h
 
 unix {
     target.path = /usr/lib

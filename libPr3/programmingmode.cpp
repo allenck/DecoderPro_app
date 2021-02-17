@@ -178,7 +178,7 @@
     return qHash(this->standardName);
 }
 
-/*public*/ bool ProgrammingMode::operator==(QObject* o)
+/*public*/ bool ProgrammingMode::operator==(ProgrammingMode& o)
 {
- return this->equals(o);
+ return this->standardName==(o.standardName);
 }

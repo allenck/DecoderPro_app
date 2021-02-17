@@ -138,7 +138,7 @@ void ProgDebugger::PDRunnable1::run()
  if(l != nullptr)
  {
    if(qobject_cast<AbstractProgrammerFacade*>(l->self()))
-    ((AbstractProgrammerFacade*)l)->programmingOpReply(-1, 0);
+    ((AbstractProgrammerFacade*)l->self())->programmingOpReply(-1, 0);
    else    if(qobject_cast<CvValue*>(l->self()))
     ((CvValue*)l)->programmingOpReply(-1, 0);
    else
@@ -256,7 +256,7 @@ void ProgDebugger::PDRunnable3::run()
     log->debug("read CV reply");
     if(qobject_cast<AbstractProgrammerFacade*>(l->self()))
     {
-     ((AbstractProgrammerFacade*)l)->programmingOpReply(retval, 0);
+     ((AbstractProgrammerFacade*)l->self())->programmingOpReply(retval, 0);
     }
     else
      if(qobject_cast<CvValue*>(l->self()))

@@ -461,32 +461,32 @@ PaneProgFrame::~PaneProgFrame()
 //   programmerRoot = pf->rootFromName(FileUtil::getUserFilesPath()+filename);
    QStringList slist = QStringList() << FileUtil::getUserFilesPath();
    programmerRoot = pf->rootFromName(FileUtil::findURL(filename, slist).path());
-  }
-  statusBar()->showMessage(tr("reading programmer %1").arg(pf->getPathname()));
-  log->info(tr("reading programmer %1").arg(pf->getPathname()));
 
-//__________________________________________________________
-  if(XmlInclude::scanForInclude(programmerRoot))
-  {
-   int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load programmer file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
-   if(ret == JOptionPane::CANCEL_OPTION)
-    return;
-   XInclude* xinclude = new XInclude();
-   QUrl url = FileUtil::findURL(filename);
-   File* f;
-   QFileInfo info(filename);
-   if(ret == JOptionPane::YES_OPTION)
-   {
-    xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ File::separator + "programmers" + File::separator +
-                                        info.fileName()), this);
-   }
-    else
-   {
-    QTemporaryDir dir;
-    xinclude->copyXml(&url, f = new File(dir.path()+filename),this);
-   }
-   programmerRoot = pf->rootFromFile(f);
+   statusBar()->showMessage(tr("reading programmer %1").arg(pf->getPathname()));
+   log->info(tr("reading programmer %1").arg(pf->getPathname()));
 
+ //__________________________________________________________
+   if(XmlInclude::scanForInclude(programmerRoot))
+   {
+    int ret = JOptionPane::showOptionDialog(this, tr("This may take a while since some include files must be downloaded from the internet.\nDo you wish to save a local copy of the updated file.\nClick on \"Yes\", \"No\" or \"Cancel\" to abort "),tr("Load programmer file"),JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE);
+    if(ret == JOptionPane::CANCEL_OPTION)
+     return;
+    XInclude* xinclude = new XInclude();
+    QUrl url = FileUtil::findURL(filename);
+    File* f;
+    QFileInfo info(filename);
+    if(ret == JOptionPane::YES_OPTION)
+    {
+     xinclude->copyXml(&url, f =new File(FileUtil::getUserFilesPath()+ File::separator + "programmers" + File::separator +
+                                         info.fileName()), this);
+    }
+     else
+    {
+     QTemporaryDir dir;
+     xinclude->copyXml(&url, f = new File(dir.path()+filename),this);
+    }
+    programmerRoot = pf->rootFromFile(f);
+   }
   }
 // _____________________________________________________________
 
@@ -500,7 +500,7 @@ PaneProgFrame::~PaneProgFrame()
     setShowEmptyPanes(false);
    // leave alone for "default" value
    if (log->isDebugEnabled()) log->debug(tr("result ")+(getShowEmptyPanes()?"true":"false"));
-  }
+ }
 
   // get extra any panes from the decoder file
   QString a;
@@ -520,8 +520,8 @@ PaneProgFrame::~PaneProgFrame()
 //        e.printStackTrace();
  }
  setCursor(Qt::ArrowCursor);
-
 }
+
 /**
  * @return true if decoder needs to be written
  */

@@ -173,7 +173,7 @@
           if(modeFound)
            break;
           for (QString mode : *validModes) {
-                 if (mode == m/*(m->getStandardName())*/) {
+                 if (mode == m) {
                      mProgrammer->setMode(new ProgrammingMode(m));
                      modeFound = true;
                      break/* search*/;
