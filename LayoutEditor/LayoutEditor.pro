@@ -13,7 +13,17 @@ TEMPLATE = lib
 
 DEFINES += LIBLAYOUTEDITOR_LIBRARY
 MOC_DIR = moc_obj
-OBJECTS_DIR += moc_obj
+OBJECTS_DIR = moc_obj
+
+# Windows and Unix get the suffix "d" to indicate a debug version of the library.
+# Mac OS gets the suffix "_debug".
+CONFIG(debug, debug|release) {
+    win32:      TARGET = $$join(TARGET,,,d)
+    mac:        TARGET = $$join(TARGET,,,_debug)
+    unix:!mac:  TARGET = $$join(TARGET,,,d)
+    MOC_DIR = moc_objd
+    OBJECTS_DIR = moc_objd
+}
 
 PROJ_DIR=$$(PROJ_DIR) # get project directory from env
 isEmpty( PROJ_DIR ) {
@@ -1047,7 +1057,9 @@ RESOURCES += \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
-else:unix:!macx: LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:!macx:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:!macx:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3d
+
 
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
  $$PWD/../Tables $$PWD/../libPr3/Throttle $$PWD/../libPr3/LocoIO $$PWD/../libPr3/loconet $$PWD/../libPr3/rfid
@@ -1069,7 +1081,9 @@ OTHER_FILES +=
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
-else:unix: LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/ -lPrefd
+
 
 INCLUDEPATH += $$PWD/../libPref
 DEPENDPATH += $$PWD/../libPref
@@ -1077,7 +1091,8 @@ DEPENDPATH += $$PWD/../libPref
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
-else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/ -lappslibd
 
 INCLUDEPATH += $$PWD/../appslib
 DEPENDPATH += $$PWD/../appslib
@@ -1087,7 +1102,8 @@ DISTFILES += \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
-else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
@@ -1100,7 +1116,8 @@ DEPENDPATH += $$PWD/../../../../../Python27/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
-else:unix: LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/ -lTablesd
 
 INCLUDEPATH += $$PWD/../Tables/debug
 DEPENDPATH += $$PWD/../Tables/debug
@@ -1125,7 +1142,8 @@ message(LayoutEditor: $$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 not found)
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/debug/ -loperations
-else:unix: LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/ -loperationsd
 
 INCLUDEPATH += $$PWD/../operations
 DEPENDPATH += $$PWD/../operations

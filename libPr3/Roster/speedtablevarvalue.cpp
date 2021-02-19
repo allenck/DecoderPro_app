@@ -122,7 +122,7 @@ const QString SpeedTableVarValue::VHIGH_CV = "5";
   c->setState(CvValue::FROMFILE);
  }
 
-//    _defaultColor = (new QSlider()).getBackground();
+ //_defaultColor = (new JSlider())->backgroundRole().background().color();//getBackground();
 }
 
 /**
@@ -395,8 +395,10 @@ void SpeedTableVarValue::setColor(QColor c) {
 
   QWidget* v = decVal->getCommonRep();
   QFontMetrics fm(j->fontMetrics());
-  ((JTextField*)v)->setMinimumWidth(fm.width("99999")*2);
-  ((JTextField*)v)->setToolTip(tr("TextStep")
+  //((JTextField*)v)->setMinimumWidth(fm.width("99")*2);
+  ((JTextField*)v)->setMaximumWidth(fm.width("99")*2);
+  //((JTextField*)v)->setColumns(2);
+  ((JTextField*)v)->setToolTip(tr("Step")
                             +" "+QString::number(i+1)+" CV "+(cvList->at(i)));
 //  ((QWidget*)v)->setBorder(NULL);  // pack tighter
 
@@ -440,7 +442,7 @@ void SpeedTableVarValue::setColor(QColor c) {
  QHBoxLayout* layout = new QHBoxLayout(j);
  k->setLayout(layout);
  layout->addWidget(b = new  QPushButton(tr("Force Straight"),k));
- b->setToolTip(tr("TooltipForceStraight"));
+ b->setToolTip(tr("Insert straight line between min and max"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doForceStraight(e);
@@ -448,7 +450,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doForceStraight()));
  layout->addWidget(b = new QPushButton(tr("Match Ends"),k));
- b->setToolTip(tr("TooltipMatchEnds"));
+ b->setToolTip(tr("Insert a straight line between existing endpoints"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doMatchEnds(e);
@@ -456,7 +458,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doMatchEnds()));
  layout->addWidget(b = new QPushButton(tr("Constan Ratio"),k));
- b->setToolTip(tr("TooltipConstantRatio"));
+ b->setToolTip(tr("Insert a constant ratio curve between existing endpoints"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doRatioCurve(e);
@@ -464,7 +466,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doRatioCurve()));
  layout->addWidget(b = new QPushButton(tr("Log Curve"),k));
- b->setToolTip(tr("TooltipLogCurve"));
+ b->setToolTip(tr("Insert a logarithmic curve between existing endpoints"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doLogCurve(e);
@@ -472,7 +474,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doLogCurve()));
  layout->addWidget(b = new QPushButton(tr("Shift Left"),k));
- b->setToolTip(tr("TooltipShiftLeft"));
+ b->setToolTip(tr("Shift the existing curve left one slot"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doShiftLeft(e);
@@ -480,7 +482,7 @@ void SpeedTableVarValue::setColor(QColor c) {
 //        });
  connect(b, SIGNAL(clicked()), this, SLOT(doShiftLeft()));
  layout->addWidget(b = new QPushButton(tr("Shift Right"),k));
- b->setToolTip(tr("TooltipShiftRight"));
+ b->setToolTip(tr("Shift the existing curve right one slot"));
 //    b.addActionListener(new java.awt.event.ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent* /*e*/) {
 //                doShiftRight(e);
@@ -572,7 +574,7 @@ void SpeedTableVarValue::initStepCheckBoxes() {
     stepCheckBoxes =  QList<QCheckBox*>();
     for (int i=0; i<nValues; i++) {
         QCheckBox* b = new QCheckBox();
-        b->setToolTip(tr("TooltipCheckToFix"));
+        b->setToolTip(tr("Check to fix this point when adjusting; uncheck to adjust individually"));
         stepCheckBoxes.append(b);
     }
 }

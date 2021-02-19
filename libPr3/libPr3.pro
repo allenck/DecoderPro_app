@@ -27,13 +27,24 @@ APPVERSION = 0.1
 PREFIX = /home/allen/pythonqt-code
 
 MOC_DIR = moc_obj
-OBJECTS_DIR += moc_obj
+OBJECTS_DIR = moc_obj
 
 #QT       -= gui
 QT       += core xml  gui printsupport   sql network  multimedia #webkitwidgets
 
 TARGET = Pr3
 TEMPLATE = lib
+
+# Windows and Unix get the suffix "d" to indicate a debug version of the library.
+# Mac OS gets the suffix "_debug".
+CONFIG(debug, debug|release) {
+    win32:      TARGET = $$join(TARGET,,,d)
+    mac:        TARGET = $$join(TARGET,,,_debug)
+    unix:!mac:  TARGET = $$join(TARGET,,,d)
+    MOC_DIR = moc_objd
+    OBJECTS_DIR = moc_objd
+}
+
 unix{
  isEmpty(PREFIX): PREFIX_USR = /usr
  isEmpty(PREFIX): PREFIX_LOCAL = $${PREFIX_USR}/local
@@ -2281,17 +2292,17 @@ INCLUDEPATH += "~/Qt/5.7/gcc_64/include/QtMultimedia"
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
-else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/ -lappslibd
 
-INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
-DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
 
 INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
 DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/release/ -lLocoIO
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/debug/ -lLocoIO
-else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/ -lLocoIO
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/ -lLocoIOd
 
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
@@ -2302,7 +2313,9 @@ DEPENDPATH += $$PWD/../LocoIO
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
-else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
+
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
@@ -2310,21 +2323,27 @@ DEPENDPATH += $$PWD/../JavaQt
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug -lLayoutEditor
-else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditord
+
 
 INCLUDEPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
-else:unix: LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/ -lPrefd
+
 
 INCLUDEPATH += $$PWD/../libPref/
 DEPENDPATH += $$PWD/../libPref
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
-else:unix: LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/ -lTablesd
+
 
 INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
@@ -2369,7 +2388,9 @@ message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 not found)
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/debug/ -loperations
-else:unix: LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/ -loperationsd
+
 
 INCLUDEPATH += $$PWD/../operations
 DEPENDPATH += $$PWD/../operations
@@ -2379,3 +2400,5 @@ unix|win32: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
 
 INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
 DEPENDPATH += $$PWD/../../../../QtZeroConf-master
+
+
