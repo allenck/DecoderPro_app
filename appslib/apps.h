@@ -43,6 +43,7 @@ void initGui();
 /*public*/ static void ynstrument(QString path);
 #endif
 
+
 signals:
 
 public slots:

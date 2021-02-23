@@ -1,4 +1,4 @@
-﻿#include "fileutilsupport.h"
+#include "fileutilsupport.h"
 #include <QDir>
 #include "file.h"
 #include "system.h"
@@ -33,9 +33,10 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _program, ("program:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _settings, ("settings:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _home, ("home:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _scripts, ("scripts:"))
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _resource, ("resource:"))
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _file, ("file:"))
+//Q_GLOBAL_STATIC_WITH_ARGS(const char*, _resource, ("resource:"))
+//Q_GLOBAL_STATIC_WITH_ARGS(const char*, _file, ("file:"))
 
+Q_GLOBAL_STATIC_WITH_ARGS(FileUtilSupport*, _instancePtr, (new FileUtilSupport()))
 
 
 
@@ -1084,10 +1085,15 @@ public URL getURL(URI uri) {
 }
 
 /*public*/ /*static*/ FileUtilSupport* FileUtilSupport::getDefault() {
-    if (FileUtilSupport::defaultInstance == nullptr) {
-        FileUtilSupport::defaultInstance = new FileUtilSupport();
-    }
-    return FileUtilSupport::defaultInstance;
+//    if (FileUtilSupport::defaultInstance == nullptr) {
+//        FileUtilSupport::defaultInstance = new FileUtilSupport();
+//    }
+//    return FileUtilSupport::defaultInstance;
+//    if(_instancePtr.exists())
+//        return *_instancePtr;
+//    return nullptr;
+    FileUtilSupport* instance = *_instancePtr;
+    return instance;
 }
 
 /**

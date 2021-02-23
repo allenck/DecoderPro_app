@@ -117,7 +117,19 @@ PaneProgFrame::PaneProgFrame(DecoderFile* pDecoderFile, RosterEntry* pRosterEntr
          resetMenu->setEnabled(true);
      }
  }
- connect(ui->tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tabWidget_currentChanged(int)));
+ connect(ui->tabWidget, &QTabWidget::currentChanged,[=]{
+  int i = ui->tabWidget->currentIndex();
+  if(ui->tabWidget->tabText(i) == tr("Roster Entry") ||
+             ui->tabWidget->tabText(i) == tr("Function Labels") ||
+             ui->tabWidget->tabText(i) == tr("Roster Media") || mProgrammer == NULL)
+  {
+   if(bottom!= NULL) bottom->setHidden(true);
+  }
+  else
+  {
+   if(bottom!= NULL)bottom->setVisible(true);
+  }
+ });
 
  // set the programming mode
  if (pProg != nullptr) {
@@ -793,7 +805,7 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
  QPushButton* btnSave = new QPushButton(tr("Save to Roster"), this);
  bottomLayout->addWidget(btnSave);
  bottomLayout->setAlignment(btnSave,Qt::AlignHCenter);
- connect(btnSave, SIGNAL(clicked()), this, SLOT(on_actionSave_triggered()));
+ connect(btnSave, SIGNAL(clicked()), this, SLOT(storeFile()));
  QPushButton* btnReset = new QPushButton(tr("Reset to defaults"),this);
  bottomLayout->addWidget(btnReset);
  bottomLayout->setAlignment(btnReset,Qt::AlignHCenter);
@@ -850,10 +862,10 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
     frameLayout->setAlignment(store, Qt::AlignHCenter);
 //    store->addActionListener( new ActionListener() {
 //            public void actionPerformed(java.awt.event.ActionEvent e) {
-//                storeFile();
+    connect(store, &QPushButton::clicked, [=]{
+                storeFile();
 //            }
-//        });
-    connect(store, SIGNAL(clicked()), this, SLOT(on_btnStore_clicked()));
+        });
     return frame;
 }
 
@@ -872,17 +884,12 @@ void PaneProgFrame::OnDccNews(PropertyChangeEvent* ) // SLOT
     frameLayout->addWidget(store);
     frameLayout->setAlignment(store, Qt::AlignHCenter);
 //    store->.addActionListener(new ActionListener() {
-
 //        public void actionPerformed(java.awt.event.ActionEvent e) {
-//            storeFile();
+    connect(store, &QPushButton::clicked, [=]{
+            storeFile();
 //        }
-//    });
-    connect(store, SIGNAL(clicked()), this, SLOT(on_btnStore_clicked()));
+    });
     return frame;
-}
-void PaneProgFrame::on_btnStore_clicked()
-{
- storeFile();
 }
 
 /*protected*/ void PaneProgFrame::installComponents()
@@ -983,56 +990,63 @@ void PaneProgFrame::on_btnStore_clicked()
  // set read buttons enabled state, tooltips
  enableReadButtons();
 
-//    readChangesButton.addItemListener(l1 = new ItemListener() {
-//        public void itemStateChanged (ItemEvent e) {
-//            if (e.getStateChange() == ItemEvent.SELECTED) {
-//                prepGlassPane(readChangesButton);
-//                readChangesButton.setText(tr("ButtonStopReadChangesAll"));
-//                readChanges();
-//            } else {
-//                if (_programmingPane != NULL) {
-//                    _programmingPane.stopProgramming();
-//                }
-//                paneListIndex = paneList.size();
-//                readChangesButton.setText(tr("ButtonReadChangesAllSheets"));
-//            }
-//        }
-//    });
- connect(readChangesButton, SIGNAL(toggled(bool)), this, SLOT(on_btnReadChangesAllSheets_clicked()));
-//    readAllButton.addItemListener(l3 = new ItemListener() {
-//        public void itemStateChanged (ItemEvent e) {
-//            if (e.getStateChange() == ItemEvent.SELECTED) {
-//                prepGlassPane(readAllButton);
-//                readAllButton.setText(tr("ButtonStopReadAll"));
-//                readAll();
-//            } else {
-//                if (_programmingPane != NULL) {
-//                    _programmingPane.stopProgramming();
-//                }
-//                paneListIndex = paneList.size();
-//                readAllButton.setText(tr("ButtonReadAllSheets"));
-//            }
-//        }
-//    });
-    connect(readAllButton, SIGNAL(toggled(bool)), this, SLOT(on_btnReadAllSheets()));
-
+  connect(readChangesButton, &JToggleButton::clicked, [=]{
+   //readChanges();
+   //if (e.getStateChange() == ItemEvent.SELECTED)
+   if(readChangesButton->isSelected())
+   {
+    prepGlassPane(readChangesButton);
+    readChangesButton->setText(tr("Stop Read changes, all sheets"));
+    readChanges();
+   }
+   else
+   {
+    if (_programmingPane != NULL)
+    {
+     _programmingPane->stopProgramming();
+    }
+    paneListIndex = paneList.size();
+    readChangesButton->setText(tr("Read changes on all sheets"));
+   }
+  });
+  connect(readAllButton, &JToggleButton::clicked, [=]{
+   //readAll();
+   //if (e.getStateChange() == ItemEvent.SELECTED)
+   if(readAllButton->isSelected())
+   {
+    prepGlassPane(readAllButton);
+    readAllButton->setText(tr("Stop Read all sheets"));
+    readAll();
+   }
+   else
+   {
+    if (_programmingPane != NULL)
+    {
+     _programmingPane->stopProgramming();
+    }
+    paneListIndex = paneList.size();
+    readAllButton->setText(tr("Read all sheets"));
+   }
+});
     writeChangesButton->setToolTip(tr("Write highlighted values on all sheets to decoder"));
-//    writeChangesButton.addItemListener(l2 = new ItemListener() {
-//        public void itemStateChanged (ItemEvent e) {
-//            if (e.getStateChange() == ItemEvent.SELECTED) {
-//                prepGlassPane(writeChangesButton);
-//                writeChangesButton.setText(tr("ButtonStopWriteChangesAll"));
-//                writeChanges();
-//            } else {
-//                if (_programmingPane != NULL) {
-//                    _programmingPane.stopProgramming();
-//                }
-//                paneListIndex = paneList.size();
-//                writeChangesButton.setText(tr("ButtonWriteChangesAllSheets"));
-//            }
-//        }
-//    });
-    connect(writeChangesButton, SIGNAL(toggled(bool)), this, SLOT(on_btnWriteChangesAllSheets_Clicked()));
+
+     connect(writeChangesButton, &JToggleButton::clicked, [=]{
+     //writeChanges();
+     //if (e.getStateChange() == ItemEvent.SELECTED)
+     if(writeChangesButton->isSelected())
+     {
+      prepGlassPane(writeChangesButton);
+      writeChangesButton->setText(tr("Stop Write changes, all sheets"));
+      writeChanges();
+    } else {
+      if (_programmingPane != NULL)
+      {
+       _programmingPane->stopProgramming();
+      }
+      paneListIndex = paneList.size();
+      writeChangesButton->setText(tr("Write changes on all sheets"));
+     }
+    });
     writeAllButton->setToolTip(tr("Write all values on all sheets to decoder"));
 //    writeAllButton.addItemListener(l4 = new ItemListener() {
 //        public void itemStateChanged (ItemEvent e) {
@@ -1049,7 +1063,26 @@ void PaneProgFrame::on_btnStore_clicked()
 //            }
 //        }
 //    });
-    connect(writeAllButton, SIGNAL(toggled(bool)), this, SLOT(on_btnWriteAllSheets()));
+    connect(writeAllButton, &JToggleButton::clicked, [=]{
+     //writeAll();
+     //if (e.getStateChange() == ItemEvent.SELECTED)
+     if(writeAllButton->isSelected())
+     {
+        prepGlassPane(writeAllButton);
+        writeAllButton->setText(tr("Stop Write all sheets"));
+        writeAll();
+     }
+     else
+     {
+      if (_programmingPane != NULL)
+      {
+       _programmingPane->stopProgramming();
+      }
+      paneListIndex = paneList.size();
+      writeAllButton->setText(tr("Write all sheets"));
+     }
+
+    });
     // most of the GUI is done from XML in readConfig() function
     // which configures the tabPane
     //pane.add(tabPane, BorderLayout.CENTER);
@@ -1691,110 +1724,13 @@ bool PaneProgFrame::doWrite()
 /*public*/ /*static*/ void PaneProgFrame::setShowEmptyPanes(bool yes) {
     showEmptyPanes = yes;
 }
+
 /*public*/ /*static*/ bool PaneProgFrame::isShowingEmptyPanes() {
     return showEmptyPanes;
 }
 
 /*public*/ RosterEntry* PaneProgFrame::getRosterEntry() { return _rosterEntry; }
-void PaneProgFrame::on_btnReadChangesAllSheets_clicked()
-{
- //readChanges();
- //if (e.getStateChange() == ItemEvent.SELECTED)
- if(readChangesButton->isSelected())
- {
-  prepGlassPane(readChangesButton);
-  readChangesButton->setText(tr("Stop Read changes, all sheets"));
-  readChanges();
- }
- else
- {
-  if (_programmingPane != NULL)
-  {
-   _programmingPane->stopProgramming();
-  }
-  paneListIndex = paneList.size();
-  readChangesButton->setText(tr("Read changes on all sheets"));
- }
-}
 
-void PaneProgFrame::on_btnWriteChangesAllSheets_Clicked()
-{
- //writeChanges();
- //if (e.getStateChange() == ItemEvent.SELECTED)
- if(writeChangesButton->isSelected())
- {
-  prepGlassPane(writeChangesButton);
-  writeChangesButton->setText(tr("Stop Write changes, all sheets"));
-  writeChanges();
-} else {
-  if (_programmingPane != NULL)
-  {
-   _programmingPane->stopProgramming();
-  }
-  paneListIndex = paneList.size();
-  writeChangesButton->setText(tr("Write changes on all sheets"));
- }
-}
-void PaneProgFrame::on_btnReadAllSheets()
-{
- //readAll();
- //if (e.getStateChange() == ItemEvent.SELECTED)
- if(readAllButton->isSelected())
- {
-  prepGlassPane(readAllButton);
-  readAllButton->setText(tr("Stop Read all sheets"));
-  readAll();
- }
- else
- {
-  if (_programmingPane != NULL)
-  {
-   _programmingPane->stopProgramming();
-  }
-  paneListIndex = paneList.size();
-  readAllButton->setText(tr("Read all sheets"));
- }
-}
-
-void PaneProgFrame::on_btnWriteAllSheets()
-{
- //writeAll();
- //if (e.getStateChange() == ItemEvent.SELECTED)
- if(writeAllButton->isSelected())
- {
-    prepGlassPane(writeAllButton);
-    writeAllButton->setText(tr("Stop Write all sheets"));
-    writeAll();
- }
- else
- {
-  if (_programmingPane != NULL)
-  {
-   _programmingPane->stopProgramming();
-  }
-  paneListIndex = paneList.size();
-  writeAllButton->setText(tr("Write all sheets"));
- }
-}
-
-void PaneProgFrame::on_actionSave_triggered()
-{
- storeFile();
-}
-
-void PaneProgFrame::on_tabWidget_currentChanged(int i)
-{
- if(ui->tabWidget->tabText(i) == tr("Roster Entry") ||
-            ui->tabWidget->tabText(i) == tr("Function Labels") ||
-            ui->tabWidget->tabText(i) == tr("Roster Media") || mProgrammer == NULL)
- {
-  if(bottom!= NULL) bottom->setHidden(true);
- }
- else
- {
-  if(bottom!= NULL)bottom->setVisible(true);
- }
-}
 #if 0
 /**
  * Returns the <code>contentPane</code> object for this frame.

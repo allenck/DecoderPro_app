@@ -84,8 +84,10 @@
      QString attr = ue.attribute(UUID_ELEMENT);
      this->uuid = uuidFromCompactString( attr);
      this->_storageIdentity = this->uuid.toString(QUuid::WithoutBraces); // backwards compatible, see class docs
-     this->_formerIdentities.append(this->_storageIdentity);
-     this->_formerIdentities.append(IDENTITY_PREFIX + attr);
+     if(!this->_formerIdentities.contains(this->_storageIdentity))
+        this->_formerIdentities.append(this->_storageIdentity);
+     if(!this->_formerIdentities.contains(IDENTITY_PREFIX + attr))
+        this->_formerIdentities.append(IDENTITY_PREFIX + attr);
     }
     catch (IllegalArgumentException ex){
      // do nothing
@@ -115,14 +117,12 @@
    try
    {
     id = doc.documentElement().firstChildElement(NODE_IDENTITY).attribute(NODE_IDENTITY);
-  //            doc.getRootElement().getChild(FORMER_IDENTITIES).getChildren().stream().forEach((e) -> {
-  //                this->formerIdentities.add(e.getAttributeValue(NODE_IDENTITY));
-  //            });
     QDomNodeList nl = doc.documentElement().firstChildElement(FORMER_IDENTITIES).childNodes();
     for(int i = 0; i < nl.size(); i++)
     {
     QDomElement e = nl.at(i).toElement();
-    this->_formerIdentities.append(e.attribute(NODE_IDENTITY));
+    if(!this->_formerIdentities.contains(e.attribute(NODE_IDENTITY)))
+        this->_formerIdentities.append(e.attribute(NODE_IDENTITY));
     }
    } catch (NullPointerException ex)
    {
@@ -468,7 +468,8 @@
             this->uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
         }
         this->_storageIdentity = this->uuid.toString(QUuid::WithoutBraces);
-        this->_formerIdentities.append(this->_storageIdentity);
+        if(!this->_formerIdentities.contains(this->_storageIdentity))
+            this->_formerIdentities.append(this->_storageIdentity);
     }
     if (save) {
         this->saveIdentity();

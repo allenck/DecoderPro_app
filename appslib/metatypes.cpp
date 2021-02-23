@@ -338,6 +338,7 @@
 #include "lncvprogpane.h"
 #include "decoderindexfile.h"
 #include "querycvdialog.h"
+#include "namedbeanhandlemanager.h"
 
 bool Metatypes::done = false;
 
@@ -562,7 +563,6 @@ Metatypes::Metatypes(QObject *parent) :
  //qRegisterMetaType<JmriConfigurationManager>("JmriConfigurationManager");
  qRegisterMetaType<WarrantManager>("WarrantManager");
  qRegisterMetaType<OBlockManager>("OBlockManager");
- //qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");
  qRegisterMetaType<JmriJTablePersistenceManager>("JmriJTablePersistenceManager");
  qRegisterMetaType<StartupActionsManager>("StartupActionsManager");
  qRegisterMetaType<ManagerDefaultSelector>("ManagerDefaultSelector");

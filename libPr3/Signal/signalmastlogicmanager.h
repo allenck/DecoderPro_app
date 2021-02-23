@@ -32,6 +32,8 @@ class SignalMastLogic;
  Q_OBJECT
 public:
  SignalMastLogicManager(QObject* parent=0) : AbstractManager(parent) {}
+ ~SignalMastLogicManager() {}
+ SignalMastLogicManager(const SignalMastLogicManager&) : AbstractManager() {}
     /*public void addDestinationMastToLogic(SignalMastLogic src, SignalMast destination) = 0;*/
 
     /**
@@ -138,4 +140,5 @@ public:
  friend class LayoutTurnout;
  friend class LayoutSlip;
 };
+//Q_DECLARE_METATYPE(SignalMastLogicManager);
 #endif // SIGNALMASTLOGICMANAGER_H

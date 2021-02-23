@@ -10,7 +10,6 @@
 #include "propertychangeevent.h"
 #include "instancemanager.h"
 
-/*static*/ /*private*/ SignalSpeedMap* SignalSpeedMap::_map = NULL;
 /*static*/ /*private*/ bool SignalSpeedMap::_percentNormal = false;
 /*static*/ /*private*/ int SignalSpeedMap::_sStepDelay = 0;
 /*static*/ /*private*/ int SignalSpeedMap::_numSteps =4;
@@ -21,13 +20,8 @@
 SignalSpeedMap::SignalSpeedMap(QObject *parent) :
     Bean(parent)
 {
- _stepIncrement = 0.04f;       // ramp step throttle increment
- _throttleFactor = 0.75f;
- _table = new QMap<QString, float>();
- _headTable = new QMap<QString, QString>();
  setProperty("InstanceManagerAutoDefault", "true");
  setProperty("InstanceManagerAutoInitialize", "true");
-
 
  loadMap();
 // this.warrantPreferencesListener = (PropertyChangeEvent evt) -> {
@@ -295,11 +289,8 @@ void SignalSpeedMap::loadMap()
 }
 
 /*public*/ float SignalSpeedMap::getStepIncrement() {
-        return _stepIncrement;
+    return _stepIncrement;
 
-    }
-/*public*/ int SignalSpeedMap::getNumSteps() {
-    return _numSteps;
 }
 
 /*public*/ void SignalSpeedMap::setAspects(/*@Nonnull*/ QMap<QString, float> map, int interpretation) {
@@ -379,8 +370,5 @@ void SignalSpeedMap::loadMap()
     return _scale;
 }
 
-/*public*/ void SignalSpeedMap::setMap(SignalSpeedMap* map) {
-    _map = map;
-}
 
 /*static*/ /*private*/ /*final*/ Logger* SignalSpeedMap::log = LoggerFactory::getLogger("SignalSpeedMap");

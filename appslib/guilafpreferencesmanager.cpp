@@ -7,6 +7,7 @@
 #include "propertychangesupport.h"
 #include "language.h"
 #include "exceptions.h"
+#include "loggerfactory.h"
 
 GuiLafPreferencesManager::GuiLafPreferencesManager()
 {
@@ -61,6 +62,8 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 /*public*/ /*static*/ /*final*/ int GuiLafPreferencesManager::MAX_FONT_SIZE = 36;
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::PROP_DIRTY = "dirty";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::PROP_RESTARTREQUIRED = "restartRequired";
+
+/*private*/ /*static*/ /*final*/ Logger* GuiLafPreferencesManager::log = LoggerFactory::getLogger("GuiLafPreferencesManager");
 
 //@Override
 /*public*/ void GuiLafPreferencesManager::initialize(Profile* profile) throw (InitializationException)
@@ -396,6 +399,23 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
         }
     }
 #endif
+}
+
+/**
+ * Stand-alone service routine to set the default Locale.
+ * <p>
+ * Intended to be invoked early, as soon as a profile is available, to
+ * ensure the correct language is set as startup proceeds. Must be followed
+ * eventually by a complete {@link #setLocale}.
+ *
+ * @param profile The profile to get the locale from
+ */
+/*public*/ /*static*/ void GuiLafPreferencesManager::setLocaleMinimally(Profile* profile) {
+    // en is default if a locale preference has not been set
+//    QString name = ((GuiLafPreferencesManager*)ProfileUtils::getPreferences(profile, "GuiLafPreferencesManager", true))->get("locale", "en");
+//    log->debug("setLocaleMinimally found language {}, setting", name);
+//    Locale.setDefault(new Locale(name));
+//    javax.swing.JComponent.setDefaultLocale(new Locale(name));
 }
 
 /**

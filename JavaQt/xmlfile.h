@@ -21,7 +21,7 @@ public:
     explicit XmlFile(QObject *parent = 0);
     /*public*/ static /*final*/ QString xsltLocation;// = "/xml/XSLT/";
     /*public*/ QDomElement rootFromName(QString name) throw (JDOMException);
- /*public*/ QDomElement rootFromFile(File* file);
+    /*public*/ QDomElement rootFromFile(File* file);
     /*public*/ QDomElement rootFromFile(QFile* file) throw (JDOMException);
     /*public*/ QDomElement rootFromInputStream(QDataStream* stream) /*throw (JDOMException)*/;
     /*public*/ QDomElement rootFromURL(QUrl* url) throw (JDOMException);

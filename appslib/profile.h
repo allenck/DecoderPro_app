@@ -18,10 +18,18 @@ public:
     /*public*/ Profile(QString name, QString id, File* path, QObject *parent = 0) throw (IOException, IllegalArgumentException);
     /*public*/ QString getName();
     /*public*/ void setName(QString name);
-    /*public*/ QString getId();
+    /*public*/ QString getId() const;
     /*public*/ File* getPath();
     /*public*/ virtual QString toString();
 //    /*public*/ virtual int hashCode();
+    inline bool operator==(const Profile &e1)
+    {
+       return this->id == e1.id;
+    }
+//    inline uint qHash(const Profile &key, uint seed)
+//    {
+//        return qHash(key.getId(), seed);
+//    }
     /*public*/ virtual bool equals(QObject* obj);
     /*public*/ virtual bool isComplete();
     /*public*/ virtual QString getUniqueId();
@@ -49,7 +57,6 @@ private:
     /*private*/ QString id;
     /*private*/ File* path;
     /*private*/ void readProfile();
- QT_DEPRECATED /*private*/ void readProfileXml() throw (IOException);
 
 protected:
     /*protected*/ Profile(File* path, bool isReadable, QObject *parent = 0);
@@ -58,7 +65,6 @@ protected:
     /*protected*/ static /*final*/ QString PATH;// = "path"; // NOI18N
     /*protected*/ Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent = 0) throw (IOException);
     /*protected*/ /*final*/ void save() throw (IOException);
-    QT_DEPRECATED /*protected*/ /*final*/ void saveXml() throw (IOException);
     /*protected*/ /*final*/ void setNameInConstructor(QString name);
 
  friend class ProfileManager;

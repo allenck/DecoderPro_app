@@ -21,7 +21,7 @@ win32_msvc: {
  QMAKE_CFLAGS_DEBUG += /wd4290
 }
 
-APPNAME = "LocoNetMonitor"
+APPNAME = "JMRI"
 APPVERSION = 0.1
 
 PREFIX = /home/allen/pythonqt-code

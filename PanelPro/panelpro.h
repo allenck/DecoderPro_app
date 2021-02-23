@@ -19,11 +19,11 @@ private:
     Logger* log;
 
 protected:
-    /*protected*/ QString logo();
+    /*protected*/ QString logo() override;
     /*protected*/ QString mainWindowHelpID();
-    /*protected*/ QString line1() ;
-    /*protected*/ QString line2() ;
-    /*protected*/ QWidget* statusPanel();
+    /*protected*/ QString line1() override;
+    /*protected*/ QString line2() override;
+    /*protected*/ QWidget* statusPanel() override;
 //    /*protected*/ void windowClosing(QCloseEvent *);
 
 };

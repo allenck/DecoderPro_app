@@ -161,34 +161,9 @@ void Profile::common(File *path, bool isReadable)
     ProfileProperties* p = new ProfileProperties(this);
     p->put(*_NAME, this->name, true);
     p->put(*_ID, this->id, true);
-    this->saveXml();
 }
 
-/*
- * Remove when or after support for writing ProfileConfig.xml is removed.
- */
-//@Deprecated
-/*protected*/ /*final*/ void Profile::saveXml() throw (IOException) {
-    Properties* p = new Properties();
-    File* f = new File(this->path, PROPERTIES);
-    FileOutputStream* os = nullptr;
 
-    p->setProperty(NAME, this->name);
-    p->setProperty(ID, this->id);
-    if (!f->exists() && !f->createNewFile()) {
-        throw  IOException("Unable to create file at " + f->getAbsolutePath()); // NOI18N
-    }
-    try {
-        os = new FileOutputStream(f);
-        p->storeToXML(os, "JMRI Profile"); // NOI18N
-        os->close();
-    } catch (IOException ex) {
-        if (os != nullptr) {
-            os->close();
-        }
-        throw ex;
-    }
-}
 
 /**
  * @return the name
@@ -219,7 +194,7 @@ ProfileManager::getDefault()->profileNameChange(this, oldName);
 /**
  * @return the id
  */
-/*public*/ QString Profile::getId()
+/*public*/ QString Profile::getId() const
 {
  return id;
 }
@@ -245,32 +220,6 @@ ProfileManager::getDefault()->profileNameChange(this, oldName);
  }
 }
 
-/**
- * @deprecated since 4.1.1; Remove sometime after the new profiles get
- * entrenched (JMRI 5.0, 6.0?)
- */
-//@Deprecated
-/*private*/ void Profile::readProfileXml() throw (IOException) {
-    Properties* p = new Properties();
-    File* f = new File(this->path, /*PROPERTIES*/"profile.properties");
-    //FileInputStream is = null;
-    QFile* ff = new QFile(f->getPath());
-    if(!ff->open(QIODevice::ReadOnly))
-     throw IOException(tr("Error opening: %1 - %2").arg(f->getPath()).arg(ff->errorString()));
-    QTextStream* is;
-    try {
-        is = new QTextStream(ff);
-        p->loadFromXML(is);
-        ff->close();
-    } catch (IOException ex) {
-        if (is != NULL) {
-            ff->close();
-        }
-        throw ex;
-    }
-    this->id = p->getProperty("id");
-    this->name = p->getProperty("name");
-}
 
 //@Override
 /*public*/ QString Profile::toString() {

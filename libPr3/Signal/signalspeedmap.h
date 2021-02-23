@@ -9,13 +9,16 @@
 #include "libPr3_global.h"
 #include "bean.h"
 #include "propertychangelistener.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 class WarrantPreferencesListener;
 class QDomElement;
 class SignalSystem;
-class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean
+class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
 public:
  Q_INVOKABLE SignalSpeedMap(QObject *parent = nullptr);
  ~SignalSpeedMap() {}
@@ -40,7 +43,6 @@ public:
     /*public*/ bool isRatioOfNormalSpeed();
     /*public*/ int getInterpretation();
     /*public*/ int getStepDelay();
-    /*public*/ Q_DECL_DEPRECATED int getNumSteps();
     /*public*/ void setAspectTable(QMapIterator<QString, float> iter, int interpretation);
     /*public*/ void setAppearanceTable(QMapIterator<QString, QString>  iter);
     /*public*/ void setRampParams(float throttleIncr, int msIncrTime);
@@ -63,16 +65,15 @@ public:
     void propertyChange(PropertyChangeEvent*);
 
     private:
-    static /*private*/ SignalSpeedMap* _map;
     static /*private*/ QMap<QString, float>* _table;// =  QMap<String, float>();
     static /*private*/ QMap<QString, QString>* _headTable;// = new QMap<QString, QString>();
     static /*private*/ int _interpretation;
     static /*private*/ bool _percentNormal;
     static /*private*/ int _sStepDelay;
     static /*private*/ int _numSteps;
-    /*private*/ float _stepIncrement;// = 0.04f;       // ramp step throttle increment
-    /*private*/ float _throttleFactor;// = 0.75f;
-    /*private*/ float _scale;
+    /*private*/ float _stepIncrement = 0.04f;       // ramp step throttle increment
+    /*private*/ float _throttleFactor = 0.75f;
+    /*private*/ float _scale = 87.1f;
     static Logger* log;
     WarrantPreferencesListener* warrantPreferencesListener = nullptr;
  friend class WarrantPreferencesListener;

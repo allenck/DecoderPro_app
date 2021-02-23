@@ -20,6 +20,7 @@
 #include "properties.h"
 #include "jmriconfigurationmanager.h"
 #include "jmriuserpreferencesmanager.h"
+#include "appspreferencesactionfactory.h"
 
 AppsBase::AppsBase(QObject *parent) :
     QObject(parent)
@@ -246,6 +247,7 @@ void AppsBase::init()
 
 /*protected*/ void AppsBase::installConfigurationManager()
 {
+ //InstanceManager::store(new AppsPreferencesActionFactory(), "JmriPreferencesActionFactory");
  ConfigureManager* cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
 // InstanceManager::setConfigureManager(cm);
@@ -260,29 +262,12 @@ void AppsBase::init()
 }
 
 /*protected*/ void AppsBase::installManagers() {
-    // Install a history manager
- InstanceManager::store(new FileHistory(), "FileHistory");
-    // record startup
+ // record startup
  ((FileHistory*)InstanceManager::getDefault("FileHistory"))->addOperation("app", QApplication::applicationName(), NULL);
 
-    // Install a user preferences manager
- InstanceManager::store((QObject*)JmriUserPreferencesManager::getDefault(), "UserPreferencesManager");
-
-    // install the abstract action model that allows items to be added to the, both
-    // CreateButton and Perform Action Model use a common Abstract class
+ // install the abstract action model that allows items to be added to the, both
+ // CreateButton and Perform Action Model use a common Abstract class
  InstanceManager::store(new CreateButtonModel(), "CreateButtonModel");
-
-    // install preference manager
- InstanceManager::store(new TabbedPreferences(), "TabbedPreferences");
-
-    // install the named bean handler
- InstanceManager::store(new NamedBeanHandleManager(), "NamedBeanHandleManager");
-
-    // Install an IdTag manager
- InstanceManager::store(new DefaultIdTagManager(), "IdTagManager");
-
-    //Install Entry Exit Pairs Manager
- InstanceManager::store(new EntryExitPairs(), "EntryExitPairs");
 
 }
 

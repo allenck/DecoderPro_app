@@ -472,7 +472,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
 //    /*public*/ static class TimeTableXmlFile extends XmlFile {
         /*private*/ /*static*/ QString TimeTableXmlFile::fileLocation = nullptr;//FileUtil::getUserFilesPath() + "timetable/";  // NOI18N
-        /*private*/ /*static*/ QString TimeTableXmlFile::demoLocation = FileUtil::getProgramPath() + "xml/demoTimetable/";  // NOI18N
+        /*private*/ /*static*/ QString TimeTableXmlFile::demoLocation = nullptr;// FileUtil::getProgramPath() + "xml/demoTimetable/";  // NOI18N
         /*private*/ /*static*/ QString TimeTableXmlFile::baseFileName = "TimeTableData.xml";  // NOI18N
 
         /*public*/ /*static*/ QString TimeTableXmlFile::getDefaultFileName() {
@@ -493,6 +493,8 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
             File* chkfile = new File(getDefaultFileName());
             if (!chkfile->exists()) {
                 // Copy the demo file
+                if(demoLocation == nullptr)
+                    demoLocation = FileUtil::getProgramPath() + "xml/demoTimetable/";
                 File* demoFile = new File(demoLocation + baseFileName);
 //                Path toPath = chkdir->toPath();
 //                Path fromPath = demoFile->toPath();
@@ -537,7 +539,8 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
         }
 
 
-    /*private*/ /*final*/ /*static*/ Logger* TimeTableXml::log = LoggerFactory::getLogger("TimeTableXml");
-/*private*/ /*final*/ /*static*/ Logger* TimeTableXmlFile::log = LoggerFactory::getLogger("TimeTableXml");
+/*private*/ /*final*/ /*static*/ Logger* TimeTableXml::log = LoggerFactory::getLogger("TimeTableXml");
+/*private*/ /*final*/ /*static*/ Logger* TimeTableXmlFile::log = LoggerFactory::getLogger("TimeTableXmlFile");
 
-}
+
+} // namespace TimeTable

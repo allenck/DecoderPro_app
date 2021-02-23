@@ -56,9 +56,10 @@ public:
  /*public*/ void setEditorUseOldLocSize(bool editorUseOldLocSize);
  /*public*/ bool isOblockEditTabbed();
  /*public*/ void setOblockEditTabbed(bool tabbed);
+ /*public*/ static void setLocaleMinimally(Profile* profile);
 
 private:
- Logger* log;
+ static Logger* log;
  // preferences with default values
  /*private*/ QLocale locale;// = Locale.getDefault();
  /*private*/ int fontSize;// = 0;

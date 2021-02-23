@@ -26,8 +26,8 @@ public:
 signals:
 
 public slots:
- /*public*/ void testGetInstance();
- /*public*/ void testGetDefault();
+// /*public*/ void testGetInstance();
+// /*public*/ void testGetDefault();
  /*public*/ void testAllowSave();
  /*public*/ void testDisallowSave();
  /*public*/ void testSetSaveAllowed();

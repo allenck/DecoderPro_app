@@ -63,7 +63,7 @@ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/ -lappslibd
 
 
 INCLUDEPATH += $$PWD/../appslib/
-DEPENDPATH += $$PWD/../appslib/
+#DEPENDPATH += $$PWD/../appslib/
 
 HEADERS += \
     panelpro.h

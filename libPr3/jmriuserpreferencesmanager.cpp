@@ -23,10 +23,6 @@
 #include "joptionpane.h"
 #include "vptr.h"
 
-//JmriUserPreferencesManager::JmriUserPreferencesManager()
-//{
-
-//}
 /**
  * Implementation of {@link UserPreferencesManager} that saves user interface
  * preferences that should be automatically remembered as they are set.
@@ -53,9 +49,9 @@
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::WINDOWS_ELEMENT = "windowDetails"; // NOI18N
 // /*private*/ /*final*/ static Logger log = LoggerFactory.getLogger(JmriUserPreferencesManager.class);
 
-/*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getInstance() {
-    return JmriUserPreferencesManager::getDefault();
-}
+///*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getInstance() {
+//    return JmriUserPreferencesManager::getDefault();
+//}
 
 /**
  * Get the default UserPreferencesManager or create a new one if none
@@ -63,9 +59,9 @@
  *
  * @return the default UserPreferencesManager
  */
-/*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getDefault() {
-    return (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
- }
+///*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getDefault() {
+//    return (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+// }
 
 
 /*public*/ JmriUserPreferencesManager::JmriUserPreferencesManager(QObject* parent) : UserPreferencesManager(parent)
@@ -83,6 +79,7 @@
  // prevent attempts to write during construction
  //this->allowSave = false;
  QMetaObject::invokeMethod((JmriUserPreferencesManager*)this, "initAfter", Qt::QueuedConnection);
+ QObject::setProperty("InstanceManagerAutoInitialize", "true");
 }
 
 /*private*/ void JmriUserPreferencesManager::initAfter() // finish up after subclassed constructor has run

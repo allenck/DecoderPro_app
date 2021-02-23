@@ -17,8 +17,8 @@ void JmriUserPreferencesManagerTestAction::actionPerformed()
     try
     {
      QStringList testList = QStringList()
-       << "testGetInstance"
-       << "testGetDefault"
+//       << "testGetInstance"
+//       << "testGetDefault"
        << "testAllowSave"
        << "testDisallowSave"
        << "testSetSaveAllowed"

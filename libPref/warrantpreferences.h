@@ -11,7 +11,7 @@ class LIBPREFSHARED_EXPORT WarrantPreferences : public AbstractPreferencesManage
 {
  Q_OBJECT
 public:
- explicit WarrantPreferences(QObject *parent = 0);
+ Q_INVOKABLE explicit WarrantPreferences(QObject *parent = 0);
  /*public*/ enum Shutdown {NO_MERGE, PROMPT, MERGE_ALL};
  /*public*/ static /*final*/ QString LAYOUT_PARAMS;// = "layoutParams";   // NOI18N
  /*public*/ static /*final*/ QString LAYOUT_SCALE;// = "layoutScale";     // NOI18N

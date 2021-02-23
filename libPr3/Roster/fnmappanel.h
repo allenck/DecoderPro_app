@@ -1,52 +1,60 @@
 #ifndef FNMAPPANEL_H
 #define FNMAPPANEL_H
 
-#include <QFrame>
+#include "jpanel.h"
 #include <QtXml>
-#include <QGridLayout>
+#include "gridbaglayout.h"
 #include "gridbagconstraints.h"
 #include "logger.h"
 #include "libPr3_global.h"
 
 class VariableTableModel;
-class LIBPR3SHARED_EXPORT FnMapPanel : public QFrame
+class LIBPR3SHARED_EXPORT FnMapPanel : public JPanel
 {
     Q_OBJECT
 public:
    //explicit FnMapPanel(QWidget *parent = 0);
-    /*public*/ FnMapPanel(VariableTableModel* v, QList<int>* varsUsed, QDomElement model, QFrame* parent = 0);
+    /*public*/ FnMapPanel(VariableTableModel* v, QList<int>* varsUsed, QDomElement model, QWidget* parent = 0);
     void saveAt(int row, int column, QWidget* j);
+    void saveAt(int row, int column, QWidget* j, int anchor);
     void labelAt(int row, int column, QString name);
+    void labelAt(int row, int column, QString name, int anchor);
     /*public*/ void dispose();
 
 signals:
 
 public slots:
 private:
-    // columns
-    int cvNum;// = -1;
-    int fnName;// = 0;
-    int firstOut;// = 1;
+    // GridBayLayout column numbers
+    int fnNameCol = 0;
+    int firstOutCol = 1;
 
-    // rows
-    int outputName;// = 0;
-    int outputNum;// = 1;
-    int outputLabel;// = 2;
-    int firstFn;// = 3;
+    // GridBayLayout row numbers
+    int outputNameRow = 0;
+    int outputNumRow = 1;
+    int outputLabelRow = 2;
+    int firstFnRow = 3;
 
-    // these will eventually be passed in from the ctor
-    int numFn;// = 14;  // include FL(f) and FL(r) in the total
-    int numOut;// = 20;
-    int maxFn;// = 30;  // include FL(f) and FL(r) in the total; update list of names if you update this
-    int maxOut;// = 40; // update list of names if you update this
+    // Some limits and defaults
+    int highestFn = 28;
+    int highestSensor = 28;
+    int numFn = 14;  // include FL(f) and FL(r) in the total
+    int numOut = 20;
+    int maxFn = 30;  // include FL(f) and FL(r) in the total; update list of names if you update this
+    int maxOut = 40; // update list of names if you update this
 
-    QGridLayout* gl;// = NULL;
-    GridBagConstraints* cs;// = NULL;
-    VariableTableModel* _varModel;
-    Logger* log;
-    QStringList fnList;
-    QStringList outLabel;
-    QStringList outName;
+    /*final*/ QVector<QString> outName = QVector<QString>(maxOut);
+    /*final*/ QVector<QString> outLabel = QVector<QString>(maxOut);
+    /*final*/ QVector<bool> outIsUsed = QVector<bool>(maxOut);
+
+    /*final*/ QVector<QString> fnExtraList = {"STOP", "DRIVE", "FWD", "REV", "FL"};
+    /*final*/ QVector<QString> fnVariantList = {"", "(f)", "(r)"};
+
+    QList<QString> fnList;
+    GridBagLayout* gl = NULL;
+    GridBagConstraints* cs = NULL;
+    VariableTableModel* _varModel = nullptr;
+    static Logger* log;
 protected:
     /*protected*/ void configOutputs(QDomElement model);
 

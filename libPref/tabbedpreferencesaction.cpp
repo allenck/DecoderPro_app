@@ -35,7 +35,7 @@
 TabbedPreferencesFrame* TabbedPreferencesAction::f;
 
 /*public*/ TabbedPreferencesAction::TabbedPreferencesAction(QString s, QString category, QString subCategory, QObject* parent)
-    : AbstractAction(s, parent)
+    : JmriAbstractAction(s, parent)
 {
  //super(s);
  common();
@@ -44,7 +44,7 @@ TabbedPreferencesFrame* TabbedPreferencesAction::f;
 }
 
 /*public*/ TabbedPreferencesAction::TabbedPreferencesAction(QString s, QString category, QObject* parent)
-    : AbstractAction(s, parent)
+    : JmriAbstractAction(s, parent)
 {
  //super(s);
  common();
@@ -52,14 +52,14 @@ TabbedPreferencesFrame* TabbedPreferencesAction::f;
 }
 
 /*public*/ TabbedPreferencesAction::TabbedPreferencesAction(QString s, QObject* parent)
-    : AbstractAction(s, parent)
+    : JmriAbstractAction(s, parent)
 {
  //super(s);
  common();
 }
 
 /*public*/ TabbedPreferencesAction::TabbedPreferencesAction(QObject* parent)
-    : AbstractAction(parent)
+    : JmriAbstractAction(parent)
 { //this(Bundle.getMessage("MenuItemPreferences"));
  common();
  setText(tr("Preferences"));
@@ -70,14 +70,14 @@ TabbedPreferencesFrame* TabbedPreferencesAction::f;
 //}
 
 /*public*/TabbedPreferencesAction:: TabbedPreferencesAction(QString s, QIcon i, WindowInterface* wi)
-    : AbstractAction(s, i, wi)
+    : JmriAbstractAction(s, i, wi)
 {
  //super(s, i, wi);
  common();
 }
 
 /*public*/ TabbedPreferencesAction::TabbedPreferencesAction(QString s, WindowInterface* wi, QString category, QString subCategory)
-    : AbstractAction(s,wi)
+    : JmriAbstractAction(s,wi)
 {
  //super(s, wi);
  common();
@@ -86,7 +86,7 @@ TabbedPreferencesFrame* TabbedPreferencesAction::f;
 }
 
 /*public*/ TabbedPreferencesAction::TabbedPreferencesAction(QString s, QIcon i, WindowInterface* wi, QString category)
-    : AbstractAction(s, i, wi)
+    : JmriAbstractAction(s, i, wi)
 {
   //super(s, i, wi);
   common();
@@ -201,7 +201,7 @@ QString TabbedPreferencesAction::helpTarget()
 }
 
 // never invoked, because we overrode actionPerformed above
-/*public*/ JmriPanel* makePanel()
+/*public*/ JmriPanel* TabbedPreferencesAction::makePanel()
 {
  throw  IllegalArgumentException("Should not be invoked");
 }

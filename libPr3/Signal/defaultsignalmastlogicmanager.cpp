@@ -38,7 +38,7 @@
  setObjectName("DefaultSignalMastLogicManager");
  setProperty("JavaClassName", "jmri.managers.DefaultSignalMastLogicManager");
     log = new Logger("DefaultSignalMastLogicManager");
-    _speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
+    //_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
     signalMastLogic =  QList<SignalMastLogic*>();
     pcs = new PropertyChangeSupport(this);
     signalLogicDelay = 500L;
@@ -59,7 +59,9 @@
 
 
 /*public*/ /*final*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::getSpeedMap() {
-    return _speedMap;
+ if(_speedMap == nullptr)
+  _speedMap = (SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap");
+ return _speedMap;
 }
 
 /*public*/ SignalMastLogic* DefaultSignalMastLogicManager::getSignalMastLogic(SignalMast* source)
@@ -260,30 +262,22 @@
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-//@Deprecated
-///*public*/ char systemLetter() {
-//    throw new UnsupportedOperationException("Not supported yet.");
-//}
-
 /*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() const {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 /*public*/ char DefaultSignalMastLogicManager::typeLetter()const  {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ QString DefaultSignalMastLogicManager::makeSystemName(QString /*s*/)const {
-    throw new UnsupportedOperationException("Not supported yet.");
-}
 
 /*public*/ QStringList DefaultSignalMastLogicManager::getSystemNameArray() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 /*public*/ QStringList DefaultSignalMastLogicManager::getSystemNameList()
 {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 /** {@inheritDoc} */
@@ -527,4 +521,4 @@
     }
     return;
 }
-/*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
+/*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = nullptr; //static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));

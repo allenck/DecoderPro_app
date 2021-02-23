@@ -98,13 +98,6 @@ public:
     /*public*/ QString getClassName();
 
 public slots:
-    void on_btnReadChangesAllSheets_clicked();
-    void on_btnWriteChangesAllSheets_Clicked();
-    void on_btnReadAllSheets();
-    void on_btnWriteAllSheets();
-    void on_actionSave_triggered();
-    void on_tabWidget_currentChanged(int);
-    void on_btnStore_clicked();
     /**
      * get notification of a variable property change in the pane, specifically "busy" going to
      * false at the end of a programming operation

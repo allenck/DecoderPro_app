@@ -79,7 +79,7 @@ class ManagerLists : public QHash<QString,QObjectList*>
 
 };
 // /*static*/ InstanceInitializer* InstanceManager::initializer = (InstanceInitializer*)new DefaultInstanceInitializer();
-Q_GLOBAL_STATIC(DefaultInstanceInitializer, initializer)
+Q_GLOBAL_STATIC_WITH_ARGS(DefaultInstanceInitializer*, initializer, (new DefaultInstanceInitializer()))
 //Q_GLOBAL_STATIC(ManagerLists, managerLists)
 //Logger InstanceManager::log;
 //SensorManager* InstanceManager::sensorManager=nullptr;
@@ -347,7 +347,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  {
   QString msg = "Required nonnull default for " + type + " does not exist.";
   log->warn(msg);
-  //throw NullPointerException(msg);
+  throw NullPointerException(msg);
  }
  else
  {
@@ -430,7 +430,7 @@ void InstanceManager::deregister(QObject* item, QString type)
 
   // see if can autocreate
   if(log)
-  log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
+   log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
         //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
   if(Metatypes::done == 0)
    new Metatypes();
@@ -491,11 +491,11 @@ void InstanceManager::deregister(QObject* item, QString type)
 //  if(initializers.contains(type))
 //  {
    //QObject* obj = initializers.value(type);//->getDefault(type);//initializer->getDefault(type);
-   QObject* obj = initializer->getDefault(type);
-   if(type == "InternalSystemConnectionMemo")
+  QObject* obj = ((DefaultInstanceInitializer*)*initializer)->getDefault(type);
+  if(type == "InternalSystemConnectionMemo")
        obj = obj1;
-   if (obj != nullptr)
-   {
+  if (obj != nullptr)
+  {
     log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
     setInitializationState(type, InitializationState::DONE);
     l->append(obj);
@@ -920,13 +920,18 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
   */
  //@Nonnull
  /*public*/ /*static*/ InstanceManager* InstanceManager::getDefault() {
- if(log == nullptr)
-  log = LoggerFactory::getLogger("InstanceManager");
+  if(log == nullptr)
+   log = LoggerFactory::getLogger("InstanceManager");
 
  // if(LazyInstanceManager::instanceManager == nullptr)
  //  LazyInstanceManager::instanceManager = new InstanceManager();
  // return LazyInstanceManager::instanceManager;
-  return *_instancePtr;
+  //return *_instancePtr;
+//  if(_instancePtr.exists())
+//      return *_instancePtr;
+//  return nullptr;
+  InstanceManager* mgr = *_instancePtr;
+  return mgr;
  }
 
 /*public*/ /*static*/ InstanceManager* LazyInstanceManager::instanceManager = new InstanceManager();

@@ -13,7 +13,7 @@ class JMRIClientSystemConnectionMemo : public DefaultSystemConnectionMemo
 {
  Q_OBJECT
 public:
- JMRIClientSystemConnectionMemo();
+ Q_INVOKABLE JMRIClientSystemConnectionMemo();
  /*public*/ JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt);
  /*public*/ JMRIClientTrafficController* getJMRIClientTrafficController();
  ~JMRIClientSystemConnectionMemo() {}

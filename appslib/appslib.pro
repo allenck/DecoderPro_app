@@ -34,6 +34,11 @@ DEFINES += APPSLIB_LIBRARY
 
 include(../scripts_config.prf)
 
+
+#include(../jmri_libs.prf)
+
+message(appslib: PWD = $$PWD)
+
 #PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
 #isEmpty( PYTHONQT_PREFIX ) {
 #  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
@@ -68,6 +73,8 @@ HEADERS += jynstrument.h \
 }
 
 SOURCES += appslib.cpp \
+    appspreferencesactionfactory.cpp \
+    jmripreferencesactionfactory.cpp \
     metatypes.cpp \
     instancemanager.cpp \
     apps.cpp \
@@ -216,6 +223,8 @@ SOURCES += appslib.cpp \
 HEADERS += appslib.h\
     appslib_global.h \
     apps.h \
+    appspreferencesactionfactory.h \
+    jmripreferencesactionfactory.h \
     myapplication.h \
     createbuttonmodel.h \
     splashwindow.h \
@@ -341,7 +350,7 @@ HEADERS += appslib.h\
     firsttimestartupwizardaction.h \
     profileconfiguration.h \
     nullprofile.h \
-   jlist.h \
+    jlist.h \
     jlisttablemodel.h \
     fileutil.h \
     fileutilsupport.h \

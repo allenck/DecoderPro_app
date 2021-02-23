@@ -64,7 +64,6 @@
 #include "systemconnectionmemomanager.h"
 #include "listedtableframe.h"
 #include "lnprogrammermanager.h"
-#include "signalspeedmap.h"
 #include "decoderindexfile.h"
 #include "rfid/proxyidtagmanager.h"
 #include "proxylightmanager.h"
@@ -73,6 +72,7 @@
 #include "ctc/ctcmanager.h"
 #include "ctc/ctcexceptionbuffer.h"
 #include "appsconfigurationmanager.h"
+#include "warrantpreferences.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -205,12 +205,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
    return o;
  }
 
- if (type == "SignalMastLogicManager")
- {
-  DefaultSignalMastLogicManager* smlm = new DefaultSignalMastLogicManager(memo);
-  InstanceManager::store(smlm, type);
-  return smlm;
- }
+// if (type == "SignalMastLogicManager")
+// {
+//  DefaultSignalMastLogicManager* smlm = new DefaultSignalMastLogicManager(memo);
+//  InstanceManager::store(smlm, type);
+//  return smlm;
+// }
 
  if (type == "EditorManager")
  {
@@ -536,6 +536,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return rsaf;
  }
 
+ if(type == "SignalMastLogicManager")
+ {
+  SignalMastLogicManager* slm = new DefaultSignalMastLogicManager();
+  InstanceManager::store(slm,type);
+  return slm;
+ }
+
  if(type == "JsonServerPreferences")
  {
   JsonServerPreferences* jsp = new JsonServerPreferences();
@@ -576,6 +583,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return pitm;
  }
 
+ if(type == "WarrantPreferences")
+ {
+  WarrantPreferences* wp = new WarrantPreferences();
+  InstanceManager::store(wp,type);
+  return wp;
+ }
+
 // if(type == "ConsistManager")
 // {
 //  LocoNetConsistManager* lncm = new LocoNetConsistManager();
@@ -605,7 +619,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);
  if(log)
- log->warn("DefaultInstanceInitializer: Cannot create object of type " + type);
+  log->warn("DefaultInstanceInitializer: Cannot create object of type " + type);
  return nullptr;
 }
 

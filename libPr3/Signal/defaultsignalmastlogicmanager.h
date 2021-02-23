@@ -25,8 +25,8 @@ public:
     /*public*/ /*final*/ static SignalSpeedMap* getSpeedMap();
     /*public*/ SignalMastLogic* getSignalMastLogic(SignalMast* source) override;
     /*public*/ SignalMastLogic* newSignalMastLogic(SignalMast* source) override;
-    /*public*/ void replaceSignalMast(SignalMast* oldMast, SignalMast* newMast);
-    /*public*/ void swapSignalMasts(SignalMast* mastA, SignalMast* mastB);
+    /*public*/ void replaceSignalMast(SignalMast* oldMast, SignalMast* newMast) override;
+    /*public*/ void swapSignalMasts(SignalMast* mastA, SignalMast* mastB) override;
     /*public*/ QList<SignalMastLogic*> getLogicsByDestination(SignalMast* destination) override;
     /*public*/ QList<SignalMastLogic*> getSignalMastLogicList() override;
     /*public*/ bool isSignalMastUsed(SignalMast* mast) override;
@@ -41,7 +41,6 @@ public:
     /*public*/ NamedBean* getNamedBean(QString name)const override;
     /*public*/ QString getSystemPrefix()const override ;
     /*public*/ char typeLetter() const override;
-    /*public*/ QString makeSystemName(QString s)const override ;
     /*public*/ QStringList getSystemNameArray()  override;
     /*public*/ QStringList getSystemNameList() override;
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;
@@ -62,7 +61,7 @@ public:
 
 signals:
     void on_newSignalMastLogicCreated(SignalMastLogic*);
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*) override;
 
 public slots:
 private:

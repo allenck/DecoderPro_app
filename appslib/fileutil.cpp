@@ -575,62 +575,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QUrl FileUtil::findURL(QString path, Location locations, /*@Nonnull*/ QStringList searchPaths)
 {
-#if 1
- Logger log("FileUtil");
-    if (log.isDebugEnabled()) { // avoid the Arrays.toString call unless debugging
-        log.debug(QString("Attempting to find %1 in %2").arg(path).arg(/*Arrays.toString(searchPaths)*/""));
-    }
-    if (FileUtil::isPortableFilename(path)) {
-        return FileUtil::findExternalFilename(path);
-    }
-    QUrl resource = QUrl();
-    foreach (QString searchPath, searchPaths) {
-        resource = FileUtil::findURL(searchPath + QDir::separator() + path);
-        if (resource != QUrl()) {
-            return resource;
-        }
-    }
-    try {
-        QFileInfo file;
-        if (locations == ALL || locations == USER) {
-            // attempt to return path from preferences directory
-            file =  QFile(FileUtil::getUserFilesPath() + path);
-            if (file.exists()) {
-                //return file.toURI().toURL();
-             return QUrl(file.absoluteFilePath());
-            }
-        }
-        if (locations == ALL || locations == INSTALLED) {
-            // attempt to return path from current working directory
-            file =  QFileInfo(path);
-            if (file.exists()) {
-                //return file.toURI().toURL();
-                return QUrl(file.absoluteFilePath());
-
-            }
-            // attempt to return path from JMRI distribution directory
-            file =  QFileInfo(FileUtil::getProgramPath() + path);
-            if (file.exists()) {
-                //return file.toURI().toURL();
-                return QUrl(file.absoluteFilePath());
-
-            }
-        }
-    } catch (MalformedURLException ex) {
-        log.warn(QString("Unable to get URL for %1").arg(path).arg( ex.getMessage()));
-        return QUrl();
-    }
-//    if (locations == Location::ALL || locations == Location::INSTALLED) {
-//        // return path if in jmri.jar or null
-//        resource = FileUtil.class.getClassLoader().getResource(path);
-//        if (resource == null) {
-//            log.debug("Unable to get URL for {}", path);
-//        }
-//    }
-    return resource;
-#else
- return FileUtilSupport::getDefault()->findURL(path, locations, searchPaths);
-#endif
+ return FileUtilSupport::getDefault()->findURL(path, searchPaths);
 }
 
 /**

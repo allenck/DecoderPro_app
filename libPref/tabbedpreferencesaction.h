@@ -1,7 +1,7 @@
 #ifndef TABBEDPREFERENCESACTION_H
 #define TABBEDPREFERENCESACTION_H
 
-#include "abstractaction.h"
+#include "jmriabstractaction.h"
 #include "logger.h"
 #include "tabbedpreferencesframe.h"
 #include "runnable.h"
@@ -9,12 +9,12 @@
 
 class WindowInterface;
 class JmriPanel;
-class LIBPREFSHARED_EXPORT TabbedPreferencesAction : public AbstractAction
+class LIBPREFSHARED_EXPORT TabbedPreferencesAction : public JmriAbstractAction
 {
     Q_OBJECT
 public:
-    explicit TabbedPreferencesAction(QObject *parent = 0);
-    /*public*/ TabbedPreferencesAction(QString s, QString category, QString subCategory, QObject *parent = 0);
+    explicit TabbedPreferencesAction(QObject *parent = 0 );
+    /*public*/ TabbedPreferencesAction(QString s, QString category, QString subCategory, QObject *parent );
     /*public*/ TabbedPreferencesAction(QString s, QString category, QObject *parent );
     /*public*/ TabbedPreferencesAction(QString s, QObject* parent) ;
     /*public*/ TabbedPreferencesAction(QString s, QIcon i, WindowInterface* wi) ;
@@ -22,7 +22,7 @@ public:
     /*public*/ TabbedPreferencesAction(QString s, WindowInterface* wi, QString category, QString subCategory) ;
     /*public*/ TabbedPreferencesAction(QString s, QIcon i, WindowInterface* wi, QString category) ;
  ~TabbedPreferencesAction() {}
- TabbedPreferencesAction(const TabbedPreferencesAction& other) : AbstractAction(other.parent()) {}
+ TabbedPreferencesAction(const TabbedPreferencesAction& other) : JmriAbstractAction(other.parent()) {}
     /*public*/ JmriPanel* makePanel();
 private:
 private slots:

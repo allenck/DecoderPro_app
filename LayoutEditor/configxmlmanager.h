@@ -6,7 +6,7 @@
 #include "xmladapter.h"
 
 #include "level.h"
-#include "configuremanager.h"
+#include "../libPr3/configuremanager.h"
 #include "liblayouteditor_global.h"
 
 class File;

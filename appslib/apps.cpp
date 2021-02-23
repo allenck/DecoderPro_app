@@ -97,6 +97,8 @@
 #include "fileutilsupport.h"
 #include "testsmenu.h"
 #include "appsconfigurationmanager.h"
+#include "appspreferencesactionfactory.h"
+#include "guilafpreferencesmanager.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -124,6 +126,7 @@ bool Apps::configOK = false;
 bool Apps::configDeferredLoadOK = false;
 /*static*/ QString Apps::nameString = "JMRI program";
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "SC_START_IN_CTOR"})//"only one application at a time. The thread is only called to help improve user experiance when opening the preferences, it is not critical for it to be run at this stage"
+
 /*public*/ Apps::Apps(JFrame* frame, QWidget *parent) :
     QWidget(parent)
 {
@@ -159,19 +162,13 @@ bool Apps::configDeferredLoadOK = false;
     setJynstrumentSpace();
 #endif
 
-    log->trace("setLogo");
-    Application::setLogo(logo());
-    log->trace("setURL");
-    Application::setURL(line2());
-#if 0
-    // Enable proper snapping of JSliders
-    SliderSnap.init();
-
-    // Prepare font lists
-    prepareFontLists();
-#endif
+ log->trace("setLogo");
+ Application::setLogo(logo());
+ log->trace("setURL");
+ Application::setURL(line2());
 
  // Get configuration profile
+ log->trace("start to get configuration profile - locate files");
  // Needs to be done before loading a ConfigManager or UserPreferencesManager
  FileUtil::createDirectory(FileUtil::getPreferencesPath());
  // Needs to be declared final as we might need to
@@ -223,13 +220,14 @@ bool Apps::configDeferredLoadOK = false;
            JOptionPane::ERROR_MESSAGE);
    log->error(ex.getMessage());
   } catch (IllegalArgumentException ex) {
-  JOptionPane::showMessageDialog(sp,
+   JOptionPane::showMessageDialog(sp,
           ex.getLocalizedMessage(),
           QApplication::applicationName(),
           JOptionPane::ERROR_MESSAGE);
-  log->error(ex.getMessage());
+   log->error(ex.getMessage());
   }
  }
+ log->trace("about to try getStartingProfile");
  try
  {
   ProfileManagerDialog::getStartingProfile(sp);
@@ -246,71 +244,51 @@ bool Apps::configDeferredLoadOK = false;
    log->info("Starting without a profile");
   }
   // rapid language set; must follow up later with full setting as part of preferences
-  //apps.gui.GuiLafPreferencesManager.setLocaleMinimally(profile);
-
+  GuiLafPreferencesManager::setLocaleMinimally(profile);
  }
  catch (IOException ex)
  {
    log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex.getMessage()*/);
  }
 
- // add the default shutdown task to save blocks
- // as a special case, register a ShutDownTask to write out blocks
- ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->
-         _register(new WriteBlocksShutdownTask("Writing Blocks"));
-
-// _register(new AbstractShutDownTask("Writing Blocks"));
-
-// {
-//             @Override
-//             public boolean execute() {
-//                 // Save block values prior to exit, if necessary
-//                 log.debug("Start writing block info");
-//                 try {
-//                     new BlockValueFile().writeBlockValues();
-//                 } //catch (org.jdom2.JDOMException jde) { log.error("Exception writing blocks: {}", jde); }
-//                 catch (IOException ioe) {
-//                     log.error("Exception writing blocks: {}", ioe.getMessage());
-//                 }
-
-//                 // continue shutdown
-//                 return true;
-//             }
-//         });
+ // install a Preferences Action Factory.
+ InstanceManager::store(new AppsPreferencesActionFactory(), "JmriPreferencesActionFactory");
 
  // Install configuration manager and Swing error handler
+ // Constructing the AppsConfigurationManager also loads various configuration services
  ConfigureManager* cm = nullptr;
  if((cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager")) == nullptr)
    cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new AppsConfigurationManager());
 
-  ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
+  //ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
   //InstanceManager::setConfigureManager(cm);
 
-  // Install a history manager
-  InstanceManager::store(new FileHistory(), "FileHistory");
-     // record startup
+  // record startup
   ((FileHistory*)InstanceManager::getDefault("FileHistory"))->addOperation("app", nameString, NULL);
-
-  // Install a user preferences manager
-  InstanceManager::store(JmriUserPreferencesManager::getDefault(), "UserPreferencesManager");
-  InstanceManager::store(new NamedBeanHandleManager(), "NamedBeanHandleManager");
-  // Install an IdTag manager
-  InstanceManager::store(new DefaultIdTagManager(), "IdTagManager");
-  //Install Entry Exit Pairs Manager
-  InstanceManager::store(new EntryExitPairs(), "EntryExitPairs");
-
-  // install preference manager
-  InstanceManager::store(new TabbedPreferences(), "TabbedPreferences");
 
   // Install abstractActionModel
   InstanceManager::store(new CreateButtonModel(), "CreateButtonModel");
 
+//  // Install a user preferences manager
+//  InstanceManager::store(JmriUserPreferencesManager::getDefault(), "UserPreferencesManager");
+//  InstanceManager::store(new NamedBeanHandleManager(), "NamedBeanHandleManager");
+//  // Install an IdTag manager
+//  InstanceManager::store(new DefaultIdTagManager(), "IdTagManager");
+//  //Install Entry Exit Pairs Manager
+//  InstanceManager::store(new EntryExitPairs(), "EntryExitPairs");
+
+//  // install preference manager
+//  InstanceManager::store(new TabbedPreferences(), "TabbedPreferences");
+
+//  // Install abstractActionModel
+//  InstanceManager::store(new CreateButtonModel(), "CreateButtonModel");
+
   // find preference file and set location in configuration manager
   // Needs to be declared final as we might need to
   // refer to this on the Swing thread
-  File* file;
-  File* singleConfig;
-  File* sharedConfig = NULL;
+  File* file = nullptr;
+  File* singleConfig = nullptr;
+  File* sharedConfig = nullptr;
   // decide whether name is absolute or relative
   if (!(new File(configFilename))->isAbsolute())
   {
@@ -343,7 +321,15 @@ bool Apps::configDeferredLoadOK = false;
   {
    file = singleConfig;
   }
-
+#if 1
+  // ensure the UserPreferencesManager has loaded. Done on GUI
+  // thread as it can modify GUI objects
+  log->debug(tr("*** About to getDefault(jmri.UserPreferencesManager.class) with file %1").arg(file->toString()));
+//  ThreadingUtil.runOnGUI(() -> {
+      InstanceManager::getDefault("UserPreferencesManager");
+//  });
+  log->debug("*** Done");
+#endif
   // now (attempt to) load the config file
   log->debug(tr("Using config file(s) %1").arg(file->getPath()));
   if (file->exists())

@@ -33,8 +33,8 @@ public:
      * Perform any initialization that occurs after this object has been
      * constructed and made available by the InstanceManager.
      */
- /*public*/ virtual void initialize() {}
+ /*public*/ virtual void initialize() =0;
 
 };
-
+Q_DECLARE_INTERFACE(InstanceManagerAutoInitialize, "InstanceManagerAutoInitialize")
 #endif // INSTANCEMANAGERAUTOINITIALIZE_H

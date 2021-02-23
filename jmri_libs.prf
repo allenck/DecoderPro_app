@@ -1,5 +1,9 @@
 #
 # common Jmri library definitions
+#
+# should be included in each module's .pro file
+
+message(jmri_libs.prf: PWD = $$(PWD))
 
 message(python.prf called by $${TARGET} $$(PWD))
 
@@ -9,7 +13,9 @@ equals($${TARGET}, JavaQt) {
  message($${TARGET} links to JavaQt)
  win32:CONFIG(release, debug|release): LIBS += -L$$PWD/JavaQt/release/ -lJavaQt
  else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/JavaQt/debug/ -lJavaQt
- else:unix: LIBS += -L$$PWD/JavaQt/ -lJavaQt
+ else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/JavaQt/ -lJavaQt
+ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/JavaQt/ -lJavaQtd
+
  message($${LIBS})
 }
 INCLUDEPATH += $$PWD/JavaQt
@@ -21,10 +27,12 @@ equals($${TARGET}, appslib) {
  message($${TARGET} links to appslib)
  win32:CONFIG(release, debug|release): LIBS += -L$$PWD/appslib/release/ -lappslib
  else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/appslib/debug/ -lappslib
- else:unix: LIBS += -L$$PWD/appslib/ -lappslib
+ else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/appslib/ -lappslib
+ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/appslib/ -lappslibd
+
 }
-INCLUDEPATH += $$PWD/appslib $$PWD/appslib/operations
-DEPENDPATH += $$PWD/appslib $$PWD/appslib/operations
+INCLUDEPATH += $$PWD/appslib
+DEPENDPATH += $$PWD/appslib
 
 equals($${TARGET}, Pr3) {
  message($${TARGET} ignoring self)
@@ -33,10 +41,18 @@ equals($${TARGET}, Pr3) {
 
  win32:CONFIG(release, debug|release): LIBS += -L$$PWD/libPr3/release/ -lPr3
  else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/libPr3/debug/ -lPr3
- else:unix: LIBS += -L$$PWD/libPr3 -lPr3
+ else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/libPr3 -lPr3
+ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/libPr3 -lPr3d
+
 }
-INCLUDEPATH += $$PWD/libPr3 $$PWD/libPr3/Roster $$PWD/libPr3/Signal $$PWD/Tables $$PWD/libPr3/Throttle
-DEPENDPATH += $$PWD/libPr3 $$PWD/libPr3/Roster $$PWD/libPr3/Signal $$PWD/Tables $$PWD/libPr3/Throttle
+INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
+    $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
+    $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal \
+    $$PWD/../libPr3/sprog $$PWD/../libPr3/loconet/HexFile
+DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
+    $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
+    $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal \
+    $$PWD/../libPr3/sprog $$PWD/../libPr3/loconet/HexFile
 
 equals($${TARGET}, LayoutEditor) {
  message($${TARGET} ignoring self)
@@ -45,7 +61,9 @@ equals($${TARGET}, LayoutEditor) {
 
  win32:CONFIG(release, debug|release): LIBS += -L$$PWD/LayoutEditor/release/ -lLayoutEditor
  else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/LayoutEditor/debug/ -lLayoutEditor
- else:unix: LIBS += -L$$PWD/LayoutEditor/ -lLayoutEditor
+ else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/LayoutEditor/ -lLayoutEditor
+ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/LayoutEditor/ -lLayoutEditord
+
 }
 INCLUDEPATH += $$PWD/LayoutEditor
 DEPENDPATH += $$PWD/LayoutEditor
@@ -57,7 +75,9 @@ equals($${TARGET}, Pref) {
 
  win32:CONFIG(release, debug|release): LIBS += -L$$PWD/libPref/release/ -lPref
  else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/libPref/debug/ -lPref
- else:unix: LIBS += -L$$PWD/libPref/ -lPref
+ else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/libPref/ -lPref
+ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/libPref/ -lPrefd
+
 }
 INCLUDEPATH += $$PWD/libPref
 DEPENDPATH += $$PWD/libPref
@@ -69,7 +89,9 @@ equals($${TARGET}, Tables) {
 
  win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Tables/release/ -lTables
  else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Tables/debug/ -lTables
- else:unix: LIBS += -L$$PWD/Tables/ -lTables
+ else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/Tables/ -lTables
+ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/Tables/ -lTablesd
+
 }
 INCLUDEPATH += $$PWD/Tables
 DEPENDPATH += $$PWD/Tables
@@ -81,18 +103,25 @@ equals($${TARGET}, LocoIO) {
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/LocoIO/release/ -lLocoIO
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/LocoIO/debug/ -lLocoIO
-else:unix: LIBS += -L$$PWD/LocoIO/ -lLocoIO
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/LocoIO/ -lLocoIO
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/LocoIO/ -lLocoIOd
+
 }
 INCLUDEPATH += $$PWD/LocoIO
 DEPENDPATH += $$PWD/LocoIO
 
-#HEADERS += \
-#    tests/RosterTest/rosterentrytest.h \
-#    tests/RosterTest/rosterentrytestaction.h
+equals($${TARGET}, tests) {
+ message($${TARGET} ignoring self)
+} else {
+ message($${TARGET} links to LocoIO)win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../tests/release/ -ltests
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../tests/debug/ -ltests
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../tests/ -ltests
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../tests/ -ltestsd
+}
 
-#SOURCES += \
-#    tests/RosterTest/rosterentrytest.cpp \
-#    tests/RosterTest/rosterentrytestaction.cpp
+INCLUDEPATH += $$PWD/../tests
+DEPENDPATH += $$PWD/../tests
+
 
 DISTFILES += \
     scripts_config.prf

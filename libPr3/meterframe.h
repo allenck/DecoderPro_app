@@ -140,20 +140,21 @@ private:
     friend class MeterFrame;
     friend class MeterFrameManagerXml;
   };
+
   MeterFrame(QUuid uuid = QUuid::createUuid(), QWidget* parent = nullptr);
   /*public*/ QUuid getUUID();
   /*public*/ Meter* getMeter();
   /*public*/ void setMeter(Meter* m);
-  /*public*/ void initComponents();
+  /*public*/ void initComponents() override;
   /*synchronized*/ /*public*/ void scaleImage();
-  /*public*/ void dispose();
+  /*public*/ void dispose() override;
   /*public*/ int getNumIntegerDigits();
   /*public*/ void setNumIntegerDigits(int digits);
   /*public*/ int getNumDecimalDigits();
   /*public*/ void setNumDecimalDigits(int digits);
   /*public*/ Unit getUnit();
   /*public*/ void setUnit(MeterFrame::Unit unit);
-  /*public*/ QString getClassName() {return "jmri.jmrit.swing.meter.MeterFrame";}
+  /*public*/ QString getClassName() override {return "jmri.jmrit.swing.meter.MeterFrame";}
 
  private:
   static Logger* log;

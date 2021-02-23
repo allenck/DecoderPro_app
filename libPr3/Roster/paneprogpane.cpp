@@ -2359,9 +2359,13 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
  QString a = modelElem.attribute("extFnsESU");
  try
  {
-  if (a!="") extFnsESU = a.compare("yes",Qt::CaseInsensitive);
+  if (a != "") {
+      extFnsESU = a.toLower() != ("no");
+  }
  }
- catch (Exception ex) {log->error("error handling decoder's extFnsESU value");}
+ catch (Exception ex) {
+  log->error("error handling decoder's extFnsESU value");
+ }
  if (extFnsESU)
  {
   FnMapPanelESU* l = new FnMapPanelESU(_varModel, varList, modelElem, rosterEntry, _cvModel);

@@ -36,7 +36,7 @@ public:
  /*public*/ bool storeConfig(File* file) override;
  /*public*/ bool storeUser(File* file) override;
  /*public*/ bool load(File* file)  throw (JmriException) override;
- /*public*/ bool load( QUrl file)  throw (JmriConfigureXmlException);
+ /*public*/ bool load( QUrl file)  throw (JmriConfigureXmlException) override;
  /*public*/ bool load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException) override;
  /*public*/ bool load( QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException) override;
  /*public*/ bool loadDeferred(File* file)  throw (JmriException) override;

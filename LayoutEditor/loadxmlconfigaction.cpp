@@ -74,7 +74,7 @@ void LoadXmlConfigAction::common()
    ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
    if (cm == nullptr)
    {
-       log->error("Failed to get default configure manager");
+    log->error("Failed to get default configure manager");
    }
    else
    {
