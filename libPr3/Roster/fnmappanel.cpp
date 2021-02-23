@@ -36,7 +36,31 @@
 
 /*public*/ FnMapPanel::FnMapPanel(VariableTableModel* v, QList<int>* varsUsed, QDomElement model, QWidget* parent)  : JPanel(parent)
 {
- if (log->isDebugEnabled()) {
+ QMap<QString, QString> fnMap = {{"FnMapOutWireOr", tr("Output wire or operation")},
+                                {"FnMapDesc", tr("Description")},
+                                {"FnMapControlsOutput", tr("controls output")},
+                                {"FnMap_FL(f)", tr("Forward Headlight F0(f)")},
+                                {"FnMap_FL(r)", tr("Reverse Headlight F0(r)")},
+                                {"FnMap_HL", tr("Headlight")},
+                                {"FnMap_RL", tr("Rear light")},
+                                {"FnMap_A", tr("Aux")},
+                                {"FnMap_(f)", tr("(f)")},
+                                {"FnMap_(r)", tr("(r)")},
+                                {"FnMap_F", tr("Function")},
+                                {"FnMap_S", tr("Sensor")},
+                                {"FnMap_WS", tr("Wheel Sensor")},
+                                {"FnMap_RS", tr("Reserved")},
+                                {"FnMap_STATE", tr("State")},
+                                {"FnMap_STOP", tr("Stopped")},
+                                {"FnMap_DRIVE", tr("Moving")},
+                                {"FnMap_DIR", tr("Direction")},
+                                {"FnMap_FWD", tr("Forward")},
+                                {"FnMap_REV", tr("Reverse")},
+                                {"FnMapSndSlot", tr("Sound slot")},
+                                {"FnMapOutLabelDefault_1", tr("White")},
+                                {"FnMapOutLabelDefault_2", tr("Yellow")},
+                                {"FnMapOutLabelDefault_3", tr("Green")},
+                                {"FnMapOutLabelDefault_4", tr("Vlt/Brwn")}};if (log->isDebugEnabled()) {
      log->debug("Function map starts");
  }
  _varModel = v;
@@ -56,17 +80,16 @@
  numFn = fnList.size() * fnVariantList.length();
 
  // set up default names and labels
- QStringList labels = {tr("White"), tr("Yellow"), tr("Green"), tr("Vlt/Brwn")};
  for (int iOut = 0; iOut < maxOut; iOut++) {
      outName[iOut] = QString::number(iOut + 1);
      outIsUsed[iOut] = false;
      // get default labels, if any
-     try {
-         //outLabel[iOut] = tr("FnMapOutLabelDefault_" + (iOut + 1));
-      outLabel[iOut] = labels[iOut];
-     } catch (MissingResourceException e) {
-         outLabel[iOut] = "";  // no default label specified
-     }
+//     try {
+         //outLabel[iOut] = tr();
+      outLabel[iOut] = fnMap.value("FnMapOutLabelDefault_" + QString::number(iOut + 1),"");
+//     } catch (MissingResourceException e) {
+//         outLabel[iOut] = "";  // no default label specified
+//     }
  }
 
  // configure number of channels, arrays
@@ -76,129 +99,112 @@
  gl = new GridBagLayout();
  cs = new GridBagConstraints();
  setLayout(gl);
+
  {
-  QLabel* l = new QLabel("Output wire or operation");
+  QLabel* l = new QLabel(fnMap.value("FnMapOutWireOr"));
   cs->gridy = outputNameRow;
-  cs->gridx = 3;
+  cs->gridx = firstOutCol;
   cs->gridwidth = GridBagConstraints::REMAINDER;
   //gl.setConstraints(l, cs);
   gl->addWidget(l, *cs);
   cs->gridwidth = 1;
  }
 
- labelAt(0, fnNameCol, tr("Description"), GridBagConstraints::LINE_START);
+ labelAt(0, fnNameCol, fnMap.value("FnMapDesc"), GridBagConstraints::LINE_START);
 
  // Loop through function names and output names looking for variables
  int row = firstFnRow;
- for (QString fnNameBase : fnList) {
+ foreach (QString fnNameBase, fnList) {
   if ((row - firstFnRow) >= numFn) {
       break; // for compatibility with legacy defintions
   }
-  for (QString fnDirVariant : fnVariantList) {
-      QString fnNameString = fnNameBase + fnDirVariant;
+  foreach (QString fnDirVariant, fnVariantList) {
+   QString fnNameString = fnNameBase + fnDirVariant;
 //                log.info(fnNameString);
-      bool rowIsUsed = false;
-      for (int iOut = 0; iOut < numOut; iOut++) {
-          // if column is not suppressed by blank headers
-          if (outName[iOut] != ("") || outLabel[iOut] !=("")) {
-              // find the variable using the output number or label
-              // include an (alt) variant to enable Tsunami function exchange definitions
-              QString searchNameBase = fnNameString + " controls output ";
-              QList<QString> names = QList<QString>();
-              if (outName[iOut] != (QString::number(iOut + 1))) {
-                  names.append(searchNameBase + (iOut + 1));
-                  names.append(searchNameBase + (iOut + 1) + "(alt)");
-              }
-              names.append(searchNameBase + outName[iOut]);
-              names.append(searchNameBase + outName[iOut] + "(alt)");
-              for (QString name : names) {
+   bool rowIsUsed = false;
+   for (int iOut = 0; iOut < numOut; iOut++) {
+    // if column is not suppressed by blank headers
+    if (outName[iOut] != ("") || outLabel[iOut] !=("")) {
+     // find the variable using the output number or label
+     // include an (alt) variant to enable Tsunami function exchange definitions
+     QString searchNameBase = fnNameString + " controls output ";
+     QList<QString> names = QList<QString>();
+     if (outName[iOut] != (QString::number(iOut + 1))) {
+       names.append(searchNameBase + QString::number(iOut + 1));
+       names.append(searchNameBase + QString::number(iOut + 1) + "(alt)");
+     }
+     names.append(searchNameBase + outName[iOut]);
+     names.append(searchNameBase + outName[iOut] + "(alt)");
+     foreach (QString name, names) {
 //                            log.info("Search name='" + name + "'");
-                  int iVar = _varModel->findVarIndex(name);
-                  if (iVar >= 0) {
-                      if (log->isDebugEnabled()) {
-                          log->debug(tr("Process var: %1 as index %2").arg(name).arg(iVar));
-                      }
-                      varsUsed->append((iVar));
-                      VariableValue* var = _varModel->getVariable(iVar);
-                      // Only single-bit (exactly two options) variables should use checkbox
-                      // this really would be better fixed in EnumVariableValue
-                      // done here to avoid side effects elsewhere
-                      QString displayFormat = "checkbox";
-                      if ((var->getMask() != "") && (((var->getMask().replace("X", "")).length()) != 1)) {
-                          displayFormat = "";
-                      }
-                      QWidget* j = (_varModel->getRep(iVar, displayFormat));
-                      j->setToolTip(CvUtil::addCvDescription((fnNameString + " "
-                              + tr("controls output") + " "
-                              + outName[iOut] + " " + outLabel[iOut]), var->getCvDescription(), var->getMask()));
-                      int column = firstOutCol + iOut;
-                      saveAt(row, column, j);
-                      rowIsUsed = true;
-                      outIsUsed[iOut] = true;
-                  } else {
-                      if (log->isDebugEnabled()) {
-                          log->debug(tr("Did not find var: %1").arg(name));
-                      }
-                  }
-              }
-          }
-      }
-      QMap<QString, QString> fnMap  {
-                                     {"FnMap_FL(f)", tr("Forward Headlight F0(f)")},
-                                     {"FnMap_FL(r)", tr("Reverse Headlight F0(r)")},
-                                     {"FnMap_HL", tr("Headlight")},
-                                     {"FnMap_RL", tr("Rear light")},
-                                     {"FnMap_A", tr("Aux")},
-                                     {"FnMap_(f)", tr("(f)")},
-                                     {"FnMap_(r)", tr("(r)")},
-                                     {"FnMap_F", tr("Function")},
-                                     {"FnMap_S", tr("Sensor")},
-                                     {"FnMap_WS", tr("Wheel Sensor")},
-                                     {"FnMap_RS", tr("Reserved")},
-                                     {"FnMap_STATE", tr("State")},
-                                     {"FnMap_STOP", tr("Stopped")},
-                                     {"FnMap_DRIVE", tr("Moving")},
-                                     {"FnMap_DIR", tr("Direction")},
-                                     {"FnMap_FWD", tr("Forward")},
-                                     {"FnMap_REV", tr("Reverse")}};
-      if (rowIsUsed)
-      {
-       QRegExp rx("F\\d+");
-       QRegExp rx2("S\\d+");
-          //if (fnNameBase.matches("F\\d+"))
-       if(rx.indexIn(fnNameBase)>=0)
-       {
-           fnNameString = tr("Function") + " " + fnNameBase.mid(1);
-           if (fnDirVariant != ("")) {
-               //fnNameString = fnNameString + tr("FnMap_" + fnDirVariant);
-            fnNameString = fnNameString + fnMap.value(tr("FnMap_") + fnDirVariant);
-           }
+      int iVar = _varModel->findVarIndex(name);
+      if (iVar >= 0) {
+       if (log->isDebugEnabled()) {
+           log->debug(tr("Process var: %1 as index %2").arg(name).arg(iVar));
        }
-       //else if (fnNameBase.matches("S\\d+"))
-       else if(rx2.indexIn(fnNameBase)>= 0)
-       {
-              fnNameString = fnMap.value("FnMap_S") + " " + fnNameBase.mid(1);
-              if (fnDirVariant != ("")) {
-                  fnNameString = fnNameString + fnMap.value("FnMap_" + fnDirVariant);
-              }
+       varsUsed->append((iVar));
+       VariableValue* var = _varModel->getVariable(iVar);
+       // Only single-bit (exactly two options) variables should use checkbox
+       // this really would be better fixed in EnumVariableValue
+       // done here to avoid side effects elsewhere
+       QString displayFormat = "checkbox";
+       if ((var->getMask() != "") && (((var->getMask().replace("X", "")).length()) != 1)) {
+           displayFormat = "";
        }
-       else {
-                // See if we have a match for whole fnNameString
-                  //fnNameString = tr("FnMap_" + fnNameString);
-                  fnNameString = fnMap.value("FnMap_" + fnNameString, "");
-           if(fnNameString == "") {
-                   // Else see if we have a match for fnNameBase
-                      fnNameString = fnMap.value("FnMap_" + fnNameBase);
-                      if (fnDirVariant != ("")) { // Add variant
-                          //fnNameString = fnNameString + tr("FnMap_" + fnDirVariant);
-                       fnNameString = fnNameString + fnMap.value("FnMap_" + fnDirVariant);
-                      }
-              }
-          }
-          labelAt(row, fnNameCol, fnNameString, GridBagConstraints::LINE_START);
-          row++;
+       QWidget* j = (_varModel->getRep(iVar, displayFormat));
+       j->setToolTip(CvUtil::addCvDescription((fnNameString + " "
+               + fnMap.value("FnMapControlsOutput") + " "
+               + outName[iOut] + " " + outLabel[iOut]), var->getCvDescription(), var->getMask()));
+       int column = firstOutCol + iOut;
+       saveAt(row, column, j);
+       rowIsUsed = true;
+       outIsUsed[iOut] = true;
+      } else {
+       if (log->isDebugEnabled()) {
+           log->debug(tr("Did not find var: %1").arg(name));
+       }
       }
-
+     }
+    }
+   }
+   if (rowIsUsed)
+   {
+    QRegExp rx("F\\d+");
+    QRegExp rx2("S\\d+");
+       //if (fnNameBase.matches("F\\d+"))
+    if(rx.indexIn(fnNameBase)>=0)
+    {
+     fnNameString = fnMap.value("FnMap_F") + " " + fnNameBase.mid(1);
+     if (fnDirVariant != ("")) {
+         //fnNameString = fnNameString + tr("FnMap_" + fnDirVariant);
+      fnNameString = fnNameString + fnMap.value(tr("FnMap_") + fnDirVariant);
+     }
+    }
+    //else if (fnNameBase.matches("S\\d+"))
+    else if(rx2.indexIn(fnNameBase)>= 0)
+    {
+     fnNameString = fnMap.value("FnMap_S") + " " + fnNameBase.mid(1);
+     if (fnDirVariant != ("")) {
+         fnNameString = fnNameString + fnMap.value("FnMap_" + fnDirVariant);
+     }
+    }
+    else {
+     // See if we have a match for whole fnNameString
+     //fnNameString = tr("FnMap_" + fnNameString);
+     fnNameString = fnMap.value("FnMap_" + fnNameString, "");
+     if(fnNameString == "")
+     {
+       // Else see if we have a match for fnNameBase
+       fnNameString = fnMap.value("FnMap_" + fnNameBase);
+       if (fnDirVariant != ("")) { // Add variant
+           //fnNameString = fnNameString + tr("FnMap_" + fnDirVariant);
+        fnNameString = fnNameString + fnMap.value("FnMap_" + fnDirVariant);
+       }
+      }
+     }
+     labelAt(row, fnNameCol, fnNameString, GridBagConstraints::LINE_START);
+     row++;
+   }
   }
  }
  if (log->isDebugEnabled()) {
@@ -231,7 +237,8 @@ void FnMapPanel::saveAt(int row, int column, QWidget* j, int anchor) {
     cs->gridx = column;
     cs->anchor = anchor;
     gl->setConstraints( *cs);
-    layout()->addWidget(j);
+    //layout()->addWidget(j);
+    gl->addWidget(j, *cs);
 }
 
 

@@ -15,11 +15,11 @@ void GridBagLayout::addWidget(QWidget *widget, GridBagConstraints gb)
   lastY = -1;
  if(gbc.insets->left == 0)
   lastX = -1;
- if(gbc.gridy ==  GridBagConstraints::_RELATIVE /*&& (gb.gridwidth != GridBagConstraints::REMAINDER) */)
+ if(gbc.gridy ==  GridBagConstraints::_RELATIVE && (gbc.gridwidth != GridBagConstraints::REMAINDER) )
   y = ++lastY;
  else
   y = gbc.gridy;
- if(gbc.gridx ==  GridBagConstraints::_RELATIVE /*&& (gb.gridheight != GridBagConstraints::REMAINDER)*/)
+ if(gbc.gridx ==  GridBagConstraints::_RELATIVE && (gbc.gridheight != GridBagConstraints::REMAINDER))
   x = ++lastX;
  else
   x = gbc.gridx;
