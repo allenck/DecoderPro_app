@@ -9,6 +9,7 @@
 #include "configuremanager.h"
 #include "systemconnectionmemomanager.h"
 #include "vptr.h"
+#include "defaultsystemconnectionmemo.h"
 
 /**
  * Records and executes a desired set of defaults for the JMRI InstanceManager
@@ -89,7 +90,7 @@
   {
    SystemConnectionMemo* memo = VPtr<SystemConnectionMemo>::asPtr( e->getNewValue());
    //memo->addPropertyChangeListener(this->memoListener);
-   connect(memo->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect((DefaultSystemConnectionMemo*)memo->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    // check for special case of anything else then Internal
    QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
    if((list->size() == 1 && !(qobject_cast<InternalSystemConnectionMemo*>(list->at(0))) ||

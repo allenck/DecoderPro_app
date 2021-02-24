@@ -13,8 +13,8 @@ class JMRIClientSystemConnectionMemo : public DefaultSystemConnectionMemo
 {
  Q_OBJECT
 public:
- Q_INVOKABLE JMRIClientSystemConnectionMemo();
- /*public*/ JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt);
+ Q_INVOKABLE JMRIClientSystemConnectionMemo(QObject* parent = nullptr);
+ /*public*/ JMRIClientSystemConnectionMemo(JMRIClientTrafficController* jt, QObject* parent = nullptr);
  /*public*/ JMRIClientTrafficController* getJMRIClientTrafficController();
  ~JMRIClientSystemConnectionMemo() {}
  JMRIClientSystemConnectionMemo(const JMRIClientSystemConnectionMemo& other)

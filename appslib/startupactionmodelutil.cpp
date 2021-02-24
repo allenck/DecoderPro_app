@@ -284,7 +284,10 @@ entry.next();
     if(key == "LocoNetMenuStartupAction")
      ((AbstractAction*)clazz)->setText(key);
    } catch (ClassNotFoundException ex) {
-    log->error(tr("Did not find class \"%1\"").arg(key));
+    log->error(tr("Did not find class \"%1\" %2").arg(key).arg(ex.getMessage()));
+   }
+   catch(Exception ex) {
+    log->error(tr("Unable to load class \"%1\" %2").arg(key).arg(ex.getMessage()));
    }
   }
 

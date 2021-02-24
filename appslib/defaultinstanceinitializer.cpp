@@ -73,6 +73,7 @@
 #include "ctc/ctcexceptionbuffer.h"
 #include "appsconfigurationmanager.h"
 #include "warrantpreferences.h"
+#include "jmriclient/jmriclientsystemconnectionmemo.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -484,6 +485,14 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 //  InstanceManager::store(itcm, "SystemConnectionMemo");
 //  return itcm;
 // }
+
+ if(type == "JMRIClientSystemConnectionMemo")
+ {
+  JMRIClientSystemConnectionMemo* memo = new JMRIClientSystemConnectionMemo();
+  InstanceManager::store(memo,type);
+  //InstanceManager::store(itcm, "SystemConnectionMemo");
+  return memo;
+ }
 
  if(type == "ManagerDefaultSelector")
  {
