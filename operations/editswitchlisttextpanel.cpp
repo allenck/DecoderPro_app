@@ -8,6 +8,7 @@
 #include <QScrollArea>
 #include "trainswitchlisttext.h"
 #include "setup.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -327,7 +328,7 @@ namespace Operations
   TrainSwitchListText::setStringSwitchListByTrack(switchListByTrackTextField->text());
   TrainSwitchListText::setStringHoldCar(holdCarTextField->text());
 
-  OperationsSetupXml::instance()->writeOperationsFile();
+  ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
  }
 
  //@Override

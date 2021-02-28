@@ -73,7 +73,7 @@ namespace Operations
  /*public*/ void TrainSwitchListEditFrame::initComponents() {
      // listen for any changes in the number of locations
      //locationManager.addPropertyChangeListener(this);
-connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // the following code sets the frame's initial state
      //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
@@ -546,7 +546,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void TrainSwitchListEditFrame::dispose() {
      //locationManager.removePropertyChangeListener(this);
- disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     Setup::removePropertyChangeListener(this);
      foreach (Location* location, locationManager->getLocationsByNameList()) {
          //location->removePropertyChangeListener(this);

@@ -12,6 +12,8 @@
 #include "trainschedule.h"
 #include "propertychangesupport.h"
 #include "propertychangeevent.h"
+#include "instancemanager.h"
+
 
 namespace Operations
 {
@@ -46,7 +48,7 @@ namespace Operations
 
   restoreButton = new QPushButton(tr("Restore"));
 
-  trainScheduleManager = TrainScheduleManager::instance();     // the following code sets the frame's initial state
+  trainScheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"));     // the following code sets the frame's initial state
 
   //getContentPane().setLayout(new GridBagLayout());
   QBoxLayout* thisLayout = new QVBoxLayout(getContentPane());

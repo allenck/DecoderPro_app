@@ -39,7 +39,7 @@
  setProperty("JavaClassName", "jmri.managers.ManagerDefaultSelector");
 
  memoListener = new MemoListener(this);
- SystemConnectionMemoManager::getDefault()->addPropertyChangeListener((PropertyChangeListener*)this);
+ //SystemConnectionMemoManager::getDefault()->addPropertyChangeListener((PropertyChangeListener*)this);
 
  defaults = QMap<QString, QString>();
  // Define set of items that we remember defaults for, manually maintained because
@@ -196,7 +196,7 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
    {
     found = true;
     // match, store
-    InstanceManager::setDefault(c, memo->get(c));
+    InstanceManager::setDefault(c, memo->get(c)->self());
     break;
    }
    else

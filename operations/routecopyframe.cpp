@@ -14,6 +14,7 @@
 #include "vptr.h"
 #include <QMessageBox>
 #include "routeeditframe.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -35,7 +36,7 @@ namespace Operations
  /*public*/ RouteCopyFrame::RouteCopyFrame(QWidget* parent) : OperationsFrame(tr("Copy Route"),parent) {
      //super(tr("TitleRouteCopy"));
  log = new Logger("RouteCopyFrame");
- routeManager = RouteManager::instance();
+ routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
 
   // labels
   textCopyRoute = new QLabel(tr("Copy Route"));
@@ -51,7 +52,7 @@ namespace Operations
   copyButton = new QPushButton(tr("Copy"));
 
   // combo boxes
-  routeBox = RouteManager::instance()->getComboBox();
+  routeBox = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getComboBox();
   // general GUI config
 
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

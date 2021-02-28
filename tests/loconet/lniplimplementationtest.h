@@ -46,13 +46,13 @@ class LnIplImplementationTest : public QObject
   friend class LNIPLI_ReleaseUntil;
 };
 
-class LNIPLI_PropertyChangeListener : public PropertyChangeListener
+class LNIPLI_PropertyChangeListener : public QObject, public PropertyChangeListener
 {
   Q_OBJECT
-  LnIplImplementationTest* test;
+  Q_INTERFACES(PropertyChangeListener)LnIplImplementationTest* test;
  public:
   LNIPLI_PropertyChangeListener(LnIplImplementationTest* test) { this->test = test;}
- public slots:
+ QObject* self() {return (QObject*)this;}public slots:
   //@Override
   /*public*/ void propertyChange(PropertyChangeEvent* e) override {
       if ((e->getPropertyName() == ("IplDeviceTypeQuery"))) {

@@ -19,6 +19,7 @@ public:
     /*public*/ QString getSelectedRosterGroup();
     /*public*/ bool isAllEntriesEnabled();
     /*public*/ void setAllEntriesEnabled(bool allEntriesEnabled);
+  QObject* self() override{return (QObject*)this;}
 
 signals:
 

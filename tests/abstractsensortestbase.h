@@ -50,12 +50,13 @@ protected:
  friend class ReleaseUntilO9;
 };
 
-/*protected*/ class ListenO2 : public PropertyChangeListener {
+/*protected*/ class ListenO2 : public QObject, public PropertyChangeListener {
 Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
     AbstractSensorTestBase* test;
 public:
     ListenO2(AbstractSensorTestBase* test) {this->test = test;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

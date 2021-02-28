@@ -175,9 +175,9 @@ namespace Operations
 
      // get notified if combo box gets modified
      //CarLoads::instance().addPropertyChangeListener(this);
-     connect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarManager::addPropertyChangeListener(this);
-     connect(carManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      packFrame();
  }
@@ -282,7 +282,7 @@ namespace Operations
    f = new CarAttributeEditFrame();
 //         f->setLocationRelativeTo(this);
    //f.addPropertyChangeListener(this);
-   connect(f->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(f, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    editActive = true;
    f->initComponents(tr("Kernel"),  kernelComboBox->currentText());
   }
@@ -681,9 +681,9 @@ namespace Operations
 
  /*public*/ void CarSetFrame::dispose() {
      //CarLoads::instance().removePropertyChangeListener(this);
-     disconnect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarManager::removePropertyChangeListener(this);
-     connect(carManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      RollingStockSetFrame::dispose();
  }
 

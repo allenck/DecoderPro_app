@@ -3,11 +3,13 @@
 
 #include "bean.h"
 #include "editor.h"
+#include "instancemanagerautodefault.h"
 
 class Editor;
-class EditorManager : public Bean
+class EditorManager : public Bean, public PropertyChangeListener, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener InstanceManagerAutoDefault)
 public:
  /*public*/ static /*final*/ QString EDITORS;// = "editors";
  /*public*/ static /*final*/ QString TITLE;// = "title";
@@ -26,7 +28,7 @@ public:
  /*public*/ bool addEditor(/*@Nonnull*/ Editor* editor);
  QT_DEPRECATED /*public*/ bool removeEditor(/*@Nonnull*/ Editor *editor);
  /*public*/ void remove(/*@Nonnull*/ Editor* editor);
-
+ QObject* self() { return(QObject*)this;}
 signals:
 
 public slots:

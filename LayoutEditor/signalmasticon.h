@@ -12,9 +12,10 @@ class SignalMast;
 //class NamedBeanHandle;
 class NamedBean;
 class PropertyChangeEvent;
-class LIBLAYOUTEDITORSHARED_EXPORT SignalMastIcon : public PositionableIcon
+class LIBLAYOUTEDITORSHARED_EXPORT SignalMastIcon : public PositionableIcon, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit SignalMastIcon(QWidget *parent = 0);
     /*public*/ SignalMastIcon(Editor* editor, Positionable* parent = 0);
@@ -52,6 +53,7 @@ public:
     /*public*/ bool getLitMode();
     /*public*/ void dispose() override;
     /*public*/ bool updateScene() override;
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 

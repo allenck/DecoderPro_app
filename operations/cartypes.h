@@ -2,14 +2,18 @@
 #define CARTYPES_H
 #include "rollingstockattribute.h"
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
 
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT CarTypes : public RollingStockAttribute
+ class APPSLIBSHARED_EXPORT CarTypes : public RollingStockAttribute, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+   Q_INTERFACES(InstanceManagerAutoDefault)
  public:
   explicit CarTypes(QObject *parent = 0);
+   ~CarTypes() {}
+   CarTypes(const CarTypes&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString CARTYPES_CHANGED_PROPERTY;// = "CarTypes Length"; // NOI18N
   /*public*/ static /*final*/ QString CARTYPES_NAME_CHANGED_PROPERTY;// = "CarTypes Name"; // NOI18N
   /*public*/ static /*synchronized*/ CarTypes* instance();
@@ -45,4 +49,5 @@ protected:
 
  };
 }
+Q_DECLARE_METATYPE(Operations::CarTypes)
 #endif // CARTYPES_H

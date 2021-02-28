@@ -10,8 +10,10 @@
 #include <QTimer>
 #include "source.h"
 #include "jpanel.h"
+#include "instancemanagerautodefault.h"
+#include "vetoablechangesupport.h"
+#include "propertychangelistener.h"
 
-class VetoableChangeSupport;
 class DeletePair;
 class JDialog;
 class StackNXPanel;
@@ -65,13 +67,14 @@ public:
     }
 };
 
-class LIBPR3SHARED_EXPORT EntryExitPairs : public Manager
+class /*LIBPR3SHARED_EXPORT*/ EntryExitPairs : public VetoableChangeSupport, public Manager, public InstanceManagerAutoDefault, public PropertyChangeListener
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(Manager InstanceManagerAutoDefault PropertyChangeListener)
 public:
     explicit EntryExitPairs(QObject *parent = 0);
  ~EntryExitPairs() {}
- EntryExitPairs(const EntryExitPairs&) : Manager() {}
+ EntryExitPairs(const EntryExitPairs&) : VetoableChangeSupport(this) {}
     /*public*/ int routingMethod;// = LayoutBlockConnectivityTools.METRIC;
     //Method to get delay between issuing Turnout commands
     /*public*/ int turnoutSetDelay;// = 0;
@@ -123,7 +126,7 @@ public:
     /*public*/ void addNXSourcePoint(NamedBean* source);
     /*public*/ void addNXSourcePoint(NamedBean* source, LayoutEditor* panel);
     /*public*/ QObject* getEndPointLocation(NamedBean* source, LayoutEditor* panel);
-    /*public*/ int getXMLOrder() const;
+    /*public*/ int getXMLOrder() const override;
     /*public*/ DestinationPoints *getBySystemName(QString systemName) const;
     /*public*/ DestinationPoints* getByUserName(QString systemName) const ;
 //    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
@@ -182,8 +185,8 @@ public:
     /*public*/ QString getPointAsString(NamedBean* obj, LayoutEditor* panel);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* list, NamedBean* obj, LayoutEditor* panel);
 //    java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
-    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
+    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
+    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
     /*public*/ void automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) throw (JmriException);
     /*public*/ int getSettingTimer();
     /*public*/ void setSettingTimer(int i);
@@ -198,20 +201,23 @@ public:
     /*synchronized*/ /*public*/ void cancelStackedRoute(DestinationPoints* dp, bool reverse);
     /*public*/ QList<QString> layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock);
     /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
-    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l) override;
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() override;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
     /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
-    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
+    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
     /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
     /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
-    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
+    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
     /*public*/ void deleteBean(DestinationPoints* bean, QString property) throw (PropertyVetoException);
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ void addDataListener(/*ManagerDataListener*/QObject *e) override;
     /*public*/ void removeDataListener(QObject *e) override;
     /*public*/ QString getNamedBeanClass()const override;
+
+    QObject* self() override {return (QObject*)this;}
+
 signals:
     //void propertyChange(PropertyChangeEvent*);
 public slots:
@@ -259,7 +265,7 @@ private:
     VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
     /*final*/ QVector</*ManagerDataListener*/QObject*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
     static QList<PointDetails*>* pointDetails;// = new ArrayList<PointDetails>();
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    //PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     SystemConnectionMemo* memo = nullptr;
 
 private slots:

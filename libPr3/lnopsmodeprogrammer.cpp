@@ -360,12 +360,12 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
  */
 /*public*/ void LnOpsModeProgrammer::addPropertyChangeListener(PropertyChangeListener* listener) {
  //propertyChangeSupport.addPropertyChangeListener(listener);
- connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void LnOpsModeProgrammer::removePropertyChangeListener(PropertyChangeListener* listener) {
 //    propertyChangeSupport.removePropertyChangeListener(listener);
- disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*protected*/ void LnOpsModeProgrammer::notifyPropertyChange(QString key, QVariant oldValue, QVariant value) {

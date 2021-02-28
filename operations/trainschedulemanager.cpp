@@ -27,7 +27,7 @@ namespace Operations
 
  /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::LISTLENGTH_CHANGED_PROPERTY = "trainScheduleListLength"; // NOI18N
 
- /*public*/ TrainScheduleManager::TrainScheduleManager(QObject* parent) : QObject(parent) {
+ /*public*/ TrainScheduleManager::TrainScheduleManager(QObject* parent) : PropertyChangeSupport(this, parent) {
   log = new Logger("TrainScheduleManger");
   setObjectName("TrainScheduleManager");
   _id = 0;
@@ -36,16 +36,6 @@ namespace Operations
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
 
- }
-
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ TrainScheduleManager* TrainScheduleManager::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ TrainScheduleManager* TrainScheduleManager::instance()
- {
-  return static_cast<TrainScheduleManager*>(InstanceManager::getDefault("TrainScheduleManager"));
  }
 
  /*public*/ void TrainScheduleManager::dispose() {

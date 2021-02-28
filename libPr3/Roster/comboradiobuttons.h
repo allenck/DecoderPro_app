@@ -59,4 +59,22 @@ protected:
  friend class ComboOffRadioButton;
 };
 
+class NewListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+
+public:
+    NewListener(ComboRadioButtons* parent)
+    {
+     this->parent = parent;
+    }
+    ComboRadioButtons* parent;
+    QObject* self() override{return (QObject*)this;}
+public slots:
+    void propertyChange(PropertyChangeEvent *e) override
+    {
+     parent->originalPropertyChanged(e);
+    }
+};
 #endif // COMBORADIOBUTTONS_H

@@ -338,7 +338,7 @@ namespace Operations
 /*private*/ void CarLoadEditFrame::loadComboboxes() {
      loadComboBox = carLoads->getComboBox(_type);
      //carLoads.addPropertyChangeListener(this);
-     connect(carLoads->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(carLoads, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      priorityComboBox = carLoads->getPriorityComboBox();
  }
 
@@ -392,7 +392,7 @@ namespace Operations
 
  /*public*/ void CarLoadEditFrame::dispose() {
      //carLoads.removePropertyChangeListener(this);
- disconnect(carLoads->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(carLoads, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
 

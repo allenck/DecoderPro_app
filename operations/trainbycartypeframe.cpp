@@ -118,9 +118,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      addComboBoxAction(carsComboBox);
 
      //locationManager.addPropertyChangeListener(this);
-     connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // listen to all tracks and locations
      addLocationAndTrackPropertyChange();
 
@@ -142,7 +142,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  /*private*/ void TrainByCarTypeFrame::updateRoute() {
      if (_train != NULL) {
         // _train->removePropertyChangeListener(this);
-      disconnect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
 
      //pRoute.removeAll();
@@ -167,7 +167,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      setTitle(tr("Show Car Types") + " " + _train->getName());
      //_train->addPropertyChangeListener(this);
-     connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      setTitle(tr("Show Car Types") + " " + _train->getName());
      log->debug(tr("update locations served by train (%1)").arg(_train->getName()));
 
@@ -175,13 +175,13 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      QString carType =  typeComboBox->currentText();
      if (_car != NULL) {
          //_car->removePropertyChangeListener(this);
-      disconnect(_car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      _car = NULL;
      if (carsComboBox->currentText() != NULL) {
          _car = (Car*) VPtr<Car>::asPtr(carsComboBox->currentData());
          //_car->addPropertyChangeListener(this);
-         connect(_car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         connect(_car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      Route* route = _train->getRoute();
      if (route == NULL) {
@@ -397,14 +397,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  /*private*/ void TrainByCarTypeFrame::addLocationAndTrackPropertyChange() {
      foreach (Location* loc, locationManager->getList()) {
          //loc.addPropertyChangeListener(this);
-      connect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          foreach (Track* track, loc->getTrackList()) {
              //track->addPropertyChangeListener(this);
-          connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              Schedule* schedule = track->getSchedule();
              if (schedule != NULL) {
                  //schedule.addPropertyChangeListener(this);
-              connect(schedule->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+              connect(schedule, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              }
          }
      }
@@ -416,14 +416,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  /*private*/ void TrainByCarTypeFrame::removeLocationAndTrackPropertyChange() {
      foreach (Location* loc, locationManager->getList()) {
          //loc.removePropertyChangeListener(this);
-      disconnect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          foreach (Track* track, loc->getTrackList()) {
              //track->removePropertyChangeListener(this);
-          disconnect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              Schedule* schedule = track->getSchedule();
              if (schedule != NULL) {
                  //schedule.removePropertyChangeListener(this);
-              disconnect(schedule->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+              disconnect(schedule, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              }
          }
      }
@@ -431,17 +431,17 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void TrainByCarTypeFrame::dispose() {
      //locationManager.removePropertyChangeListener(this);
- disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removeLocationAndTrackPropertyChange();
      if (_train != NULL) {
          //_train->removePropertyChangeListener(this);
-      disconnect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      if (_car != NULL) {
          //_car->removePropertyChangeListener(this);
-      disconnect(_car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      OperationsFrame::dispose();
  }

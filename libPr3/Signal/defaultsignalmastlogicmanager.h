@@ -44,8 +44,8 @@ public:
     /*public*/ QStringList getSystemNameArray()  override;
     /*public*/ QStringList getSystemNameList() override;
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;
-    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
+//    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
+//    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
     /*public*/ void Register(NamedBean* n)const override ;
     /*public*/ void deregister(NamedBean* n)const override;
     /*public*/ long getSignalLogicDelay() override;
@@ -81,14 +81,18 @@ protected:
 };
 Q_DECLARE_METATYPE(DefaultSignalMastLogicManager)
 
-class PropertyBlockManagerListener : public PropertyChangeListener
+class PropertyBlockManagerListener : public QObject,public PropertyChangeListener
 {
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+
 public:
  PropertyBlockManagerListener(DefaultSignalMastLogicManager* dsmlm)
  {
   this->dsmlm = dsmlm;
  }
- /*public*/ void propertyChange(PropertyChangeEvent* e)
+public slots:
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override
  {
   if(e->getPropertyName()==("topology"))
   {
@@ -113,6 +117,7 @@ public:
    }
   }
  }
+ QObject* self() override{return (QObject*)this;}
 private:
  DefaultSignalMastLogicManager* dsmlm;
 };

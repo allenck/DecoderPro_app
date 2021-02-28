@@ -3,6 +3,7 @@
 #include "signalgroup.h"
 #include "namedbeanhandle.h"
 #include "libPr3_global.h"
+#include "propertychangelistener.h"
 
 class SignalSensor;
 class Turnout;
@@ -10,9 +11,10 @@ class Sensor;
 class SignalHeadItem;
 class SignalHead;
 class SignalMast;
-class LIBPR3SHARED_EXPORT DefaultSignalGroup : public SignalGroup
+class LIBPR3SHARED_EXPORT DefaultSignalGroup : public SignalGroup, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit DefaultSignalGroup(QObject *parent = 0);
     /*public*/ DefaultSignalGroup(QString systemName, QString userName = "", QObject* parent = 0);
@@ -69,6 +71,7 @@ public:
     /*public*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 

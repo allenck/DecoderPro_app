@@ -12,6 +12,7 @@
 #include "enginelengths.h"
 #include "propertychangesupport.h"
 #include "train.h"
+#include "instancemanager.h"
 
 //Engine::Engine(QObject *parent) :
 //  RollingStock(parent)
@@ -294,9 +295,9 @@ namespace Operations
  /*public*/ void Engine::dispose() {
      setConsist(NULL);
      //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //EngineLengths.instance().removePropertyChangeListener(this);
-     disconnect(EngineLengths::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(EngineLengths::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      RollingStock::dispose();
  }
 
@@ -381,15 +382,15 @@ namespace Operations
 
  /*protected*/ void Engine::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-   EngineManagerXml::instance()->setDirty(true);
+   ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
    RollingStock::setDirtyAndFirePropertyChange(p, old, n);
  }
 
  /*private*/ void Engine::addPropertyChangeListeners() {
 //     EngineTypes.instance().addPropertyChangeListener(this);
- connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineLengths.instance().addPropertyChangeListener(this);
- connect(EngineLengths::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(EngineLengths::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
  /*public*/ void Engine::propertyChange(PropertyChangeEvent* e)

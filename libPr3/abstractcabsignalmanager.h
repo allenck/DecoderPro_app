@@ -32,12 +32,14 @@ protected:
  friend class ACMPropertyChangeListener;
 };
 
-class ACMPropertyChangeListener : public PropertyChangeListener
+class ACMPropertyChangeListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  AbstractCabSignalManager* acm;
 public:
  ACMPropertyChangeListener(AbstractCabSignalManager* acm) {this->acm = acm;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* e) override
  {

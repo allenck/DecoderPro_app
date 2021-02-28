@@ -90,7 +90,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e)override;
     void sensorChange(PropertyChangeEvent*);
     void signalChange(PropertyChangeEvent*);
     void turnoutChange(PropertyChangeEvent*);

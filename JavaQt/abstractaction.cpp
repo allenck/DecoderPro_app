@@ -257,8 +257,8 @@ void AbstractAction::common()
 //        (oldValue != NULL && newValue != NULL && oldValue.equals(newValue))) {
 //        return;
 //    }
-    //changeSupport.firePropertyChange(propertyName, oldValue, newValue);
-    emit propertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
+//    changeSupport.firePropertyChange(propertyName, oldValue, newValue);
+//    emit propertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
 }
 
 
@@ -282,7 +282,7 @@ void AbstractAction::common()
 //        changeSupport = new SwingPropertyChangeSupport(this);
 //    }
 //    changeSupport.addPropertyChangeListener(listener);
- connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+// connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 
@@ -300,7 +300,7 @@ void AbstractAction::common()
 //        return;
 //    }
 //    changeSupport.removePropertyChangeListener(listener);
- disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+// disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 #if 0

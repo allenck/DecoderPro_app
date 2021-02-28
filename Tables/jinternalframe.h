@@ -193,9 +193,10 @@ protected:
 
  friend class FocusPropertyChangeListener;
 };
-/*private*/ /*static*/ class FocusPropertyChangeListener : public PropertyChangeListener
+/*private*/ /*static*/ class FocusPropertyChangeListener :public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
  JInternalFrame* frame;
 public:
  FocusPropertyChangeListener(JInternalFrame* frame) { this->frame = frame;}
@@ -206,6 +207,7 @@ public:
    frame->updateLastFocusOwner(VPtr<QWidget>::asPtr(e->getNewValue()));
   }
  }
+ QObject* self() override{return (QObject*)this;}
 };
 
 #endif // JINTERNALFRAME_H

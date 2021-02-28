@@ -159,7 +159,7 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
 {
  this->act = act;
  DefaultSignalGroupManager* mgr = (DefaultSignalGroupManager*)getManager();
- connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  //updateNameList();
  init();
 }

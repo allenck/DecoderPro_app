@@ -31,23 +31,12 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString RouteManager::LISTLENGTH_CHANGED_PROPERTY = "routesListLengthChanged"; // NOI18N
 
  /*public*/ RouteManager::RouteManager(QObject *parent)
-   : QObject(parent)
+   : PropertyChangeSupport(parent)
  {
-  pcs = new ::PropertyChangeSupport(this);
   log = new ::Logger("RouteManager");
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
 
- }
-
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ RouteManager* RouteManager::_instance = NULL;
-
- /*public*/ /*static synchronized*/ RouteManager* RouteManager::instance()
- {
-  return static_cast<RouteManager*>(InstanceManager::getDefault("RouteManager"));
  }
 
  /*public*/ void RouteManager::dispose() {
@@ -320,8 +309,8 @@ namespace Operations
  }
 #endif
  /*protected*/ void RouteManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     RouteManagerXml::instance()->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+     ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
+     firePropertyChange(p, old, n);
  }
  /**
   * Locate via user name, then system name if needed. Does not create a new

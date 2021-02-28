@@ -3,15 +3,19 @@
 #include "rollingstockattribute.h"
 #include <QtXml>
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
 
 class Logger;
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT CarRoads : public RollingStockAttribute
+ class APPSLIBSHARED_EXPORT CarRoads : public RollingStockAttribute, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  explicit CarRoads(QObject *parent = 0);
+  Q_INVOKABLE explicit CarRoads(QObject *parent = 0);
+  ~CarRoads() {}
+  CarRoads(const CarRoads&) : RollingStockAttribute() {}
   /*public*/ static /*synchronized*/ CarRoads* instance();
   /*public*/ static /*final*/ QString CARROADS_CHANGED_PROPERTY;// = "CarRoads Length"; // NOI18N
   /*public*/ static /*final*/ QString CARROADS_NAME_CHANGED_PROPERTY;// = "CarRoads Name"; // NOI18N
@@ -40,4 +44,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::CarRoads)
 #endif // CARROADS_H

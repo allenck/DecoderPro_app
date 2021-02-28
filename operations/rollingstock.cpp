@@ -461,13 +461,13 @@ return getLength().toInt();
   {
    oldLocation->deleteRS(this);
    //oldLocation::removePropertyChangeListener(this);
-   disconnect(oldLocation->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent())));
+   disconnect(oldLocation, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent())));
    // if track is NULL, then rolling stock is in a train
    if (oldTrack != NULL)
    {
     oldTrack->deleteRS(this);
     //oldTrack::removePropertyChangeListener(this);
-    disconnect(oldTrack->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent())));
+    disconnect(oldTrack, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent())));
     // if there's a destination then pickup complete
     if (_destination != NULL)
     {
@@ -486,14 +486,14 @@ return getLength().toInt();
    _location->addRS(this);
    // Need to know if location name changes so we can forward to listeners
    // _location->addPropertyChangeListener(this);
-   connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   if (_trackLocation != NULL)
   {
    _trackLocation->addRS(this);
    // Need to know if location name changes so we can forward to listeners
    //_trackLocation addPropertyChangeListener(this);
-   connect(_trackLocation->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(_trackLocation, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    // if there's a destination then there's a pick up
    if (_destination != NULL)
    {
@@ -558,7 +558,7 @@ return getLength().toInt();
       {
           oldDestination->deleteDropRS();
           //oldDestination->removePropertyChangeListener(this);
-          disconnect(oldDestination->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(oldDestination, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
           // delete pick up in case destination is NULL
           if (_location != NULL && _trackLocation != NULL) {
                _location->deletePickupRS();
@@ -568,7 +568,7 @@ return getLength().toInt();
       if (oldTrack != NULL) {
           oldTrack->deleteDropRS(this);
           //oldTrack::removePropertyChangeListener(this);
-          disconnect(oldTrack->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(oldTrack, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       }
       if (_destination != NULL) {
           _destination->addDropRS();
@@ -579,13 +579,13 @@ return getLength().toInt();
 
           // Need to know if destination name changes so we can forward to listeners
           //_destination.addPropertyChangeListener(this);
-          connect(_destination->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(_destination, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       }
       if (_trackDestination != NULL) {
           _trackDestination->addDropRS(this);
           // Need to know if destination name changes so we can forward to listeners
           //_trackDestination.addPropertyChangeListener(this);
-          connect(_trackDestination->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(_trackDestination, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       } else {
           // rolling stock has been terminated or reset, bump rolling stock moves
           if (getTrain() != NULL && getTrain()->getRoute() != NULL) {
@@ -728,11 +728,11 @@ return getLength().toInt();
      if ((old != NULL && old!=(train)) || old != train) {
          if (old != NULL) {
              //old.removePropertyChangeListener(this);
-          disconnect(old->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(old, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
          if (train != NULL) {
              //train.addPropertyChangeListener(this);
-          connect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
        }
          setDirtyAndFirePropertyChange(TRAIN_CHANGED_PROPERTY, VPtr<Train>::asQVariant(old), VPtr<Train>::asQVariant(train));
      }
@@ -826,7 +826,7 @@ return getLength().toInt();
      if (_tag != NULL)
      {
          //_tag.removePropertyChangeListener(_tagListener);
-      disconnect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(((AbstractIdTag*)_tag->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      _tag = tag;
      if (_tagListener == NULL) {
@@ -862,7 +862,7 @@ return getLength().toInt();
      }
      if (_tag != NULL)
          //_tag.addPropertyChangeListener(_tagListener);
-      connect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(((AbstractIdTag*)_tag->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  }
 IdTagPropertyChangeListener::IdTagPropertyChangeListener(RollingStock* parent) { this->parent = parent ;}
@@ -1179,14 +1179,14 @@ return "";
      setDestination(NULL, NULL);
      setLocation(NULL, NULL);
      //CarRoads::instance().removePropertyChangeListener(this);
-     disconnect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarOwners.instance().removePropertyChangeListener(this);
-     disconnect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarColors.instance().removePropertyChangeListener(this);
-     disconnect(CarColors::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_tag != NULL) {
          //_tag.removePropertyChangeListener(_tagListener);
-      disconnect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(((AbstractIdTag*)_tag->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
  }
 
@@ -1399,11 +1399,11 @@ return "";
 
  /*private*/ void RollingStock::addPropertyChangeListeners() {
      //CarRoads.instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //        CarOwners.instance().addPropertyChangeListener(this);
-  connect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //        CarColors.instance().addPropertyChangeListener(this);
-  connect(CarColors::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
  // rolling stock listens for changes in a location name or if a location is deleted

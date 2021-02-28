@@ -69,7 +69,7 @@ void /*public*/ BeanTableDataModel::init() // SLOT
  {
   manager->addPropertyChangeListener((PropertyChangeListener*)this);
   updateNameList();
-  connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
@@ -665,7 +665,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 
 /*synchronized*/ /*public*/ void BeanTableDataModel::dispose()
 {
- getManager()->removePropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractManager*)getManager()->self())->removePropertyChangeListener((PropertyChangeListener*)this);
  if (!sysNameList.isEmpty())
  {
   for (int i = 0; i< sysNameList.size(); i++)

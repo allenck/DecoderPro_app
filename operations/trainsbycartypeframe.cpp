@@ -107,9 +107,9 @@ namespace Operations
      addCheckBoxAction(copyCheckBox);
 
      //manager.addPropertyChangeListener(this);
-     connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes::instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
@@ -196,7 +196,7 @@ namespace Operations
      QList<Train*> trains = manager->getTrainsByNameList();
      foreach (Train* train, trains) {
          //train.addPropertyChangeListener(this);
-      connect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          QCheckBox* cb = new QCheckBox(train->getName());
          cb->setObjectName(train->getId());
          cb->setToolTip(tr("Select this train if it services car type %1").arg(carType));
@@ -251,7 +251,7 @@ namespace Operations
              Train* train = manager->getTrainById(trainList.at(i)->objectName());
              if (train != NULL) {
                  //train.removePropertyChangeListener(this);
-              disconnect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+              disconnect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              }
          }
      }
@@ -259,9 +259,9 @@ namespace Operations
 
  /*public*/ void TrainsByCarTypeFrame::dispose() {
      //manager.removePropertyChangeListener(this);
- disconnect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeTrains();
      OperationsFrame::dispose();
  }

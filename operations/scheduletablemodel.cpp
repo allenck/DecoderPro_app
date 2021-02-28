@@ -20,6 +20,7 @@
 #include "locationmanager.h"
 #include "trainschedulemanager.h"
 #include "trainschedule.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -445,8 +446,8 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getSetoutDayComboBox(ScheduleItem* si)
  {
-     QComboBox* cb = TrainScheduleManager::instance()->getSelectComboBox();
-     TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId());
+     QComboBox* cb = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getSelectComboBox();
+     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
      if (sch != NULL )
      {
       cb->setCurrentIndex(cb->findText(sch->toString()));
@@ -503,8 +504,8 @@ namespace Operations
 
 
  /*private*/ QComboBox* ScheduleTableModel::getPickupDayComboBox(ScheduleItem* si) {
-     QComboBox* cb = TrainScheduleManager::instance()->getSelectComboBox();
-     TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(si->getPickupTrainScheduleId());
+     QComboBox* cb = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getSelectComboBox();
+     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId());
      if (sch != NULL ) {
          cb->setCurrentIndex(cb->findText(sch->toString()));
      } else if (si->getPickupTrainScheduleId()!=(ScheduleItem::NONE)) {

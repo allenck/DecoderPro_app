@@ -54,14 +54,14 @@ protected:
  friend class ReleaseUntilWT2;
 };
 
-class WarrantListener : public PropertyChangeListener {
+class WarrantListener : public QObject, public PropertyChangeListener {
 Q_OBJECT
-    Warrant* warrant;
+   Q_INTERFACES(PropertyChangeListener) Warrant* warrant;
 
     WarrantListener(Warrant* w) {
         warrant = w;
     }
-
+QObject* self() {return (QObject*)this;}
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     friend class WarrantTest;

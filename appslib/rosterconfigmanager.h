@@ -6,9 +6,10 @@
 
 class Logger;
 class Roster;
-class RosterConfigManager : public AbstractPreferencesManager
+class RosterConfigManager : public AbstractPreferencesManager, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
  Q_INVOKABLE RosterConfigManager();
  ~RosterConfigManager() {}
@@ -26,6 +27,7 @@ public:
  /*public*/ void setDirectory(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString directory);
  /*public*/ Roster* getRoster(/*@CheckForNull*/ Profile* profile);
  /*public*/ Roster* setRoster(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ Roster* roster);
+ QObject* self() override {return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*);

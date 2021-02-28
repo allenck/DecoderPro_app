@@ -95,7 +95,7 @@
  debugWaitFrame = NULL;
  promptOnWait = false;
  inThread = false;
- self = this;
+ _self = this;
  messageFrame = NULL;
  message = "";
  debugWaitFrame = NULL;
@@ -112,7 +112,7 @@
  debugWaitFrame = NULL;
  promptOnWait = false;
  inThread = false;
- self = this;
+ _self = this;
  messageFrame = NULL;
  message = "";
  debugWaitFrame = NULL;
@@ -354,12 +354,14 @@ void AbstractAutomaton::defaultName() {
  if (promptOnWait) debuggingWait();
 }
 
-class SensorListener : public PropertyChangeListener
+class SensorListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  AbstractAutomaton* aa;
 public:
  SensorListener(AbstractAutomaton* aa) {this->aa = aa;}
+ QObject* self() {return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt)
  {
@@ -414,7 +416,7 @@ public slots:
 }
 void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 {
- self->notifyAll();
+ _self->notifyAll();
 }
 
 /**
@@ -1085,7 +1087,7 @@ void AbstractAutomaton::notifyAll()
  /*synchronized (self)*/
  {
   QMutexLocker locker(&throttleMutex);
-  self->notifyAll(); // should be only one thread waiting, but just in case
+  _self->notifyAll(); // should be only one thread waiting, but just in case
  }
 }
 /*public*/ void AbstractAutomaton::notifyFailedThrottleRequest(DccLocoAddress* /*address*/, QString /*reason*/)

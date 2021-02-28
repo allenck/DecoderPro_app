@@ -37,7 +37,7 @@ namespace Operations
 
   locationManager = LocationManager::instance();
   //locationManager.addPropertyChangeListener(this);
-  connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();
  }
 
@@ -342,7 +342,7 @@ namespace Operations
          lef->dispose();
      }
      //locationManager.removePropertyChangeListener(this);
-     disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeLocations();
  }
 

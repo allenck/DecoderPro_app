@@ -5,44 +5,46 @@
 
 class TableItemPanel;
 class Turnout;
-class LIBLAYOUTEDITORSHARED_EXPORT TurnoutIcon : public PositionableIcon
+class LIBLAYOUTEDITORSHARED_EXPORT TurnoutIcon : public PositionableIcon, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  //explicit TurnoutIcon(QObject *parent = 0);
  /*public*/ TurnoutIcon(Editor* editor, QObject *parent = 0);
- /*public*/ Positionable* deepClone() ;
- /*public*/ Positionable* finishClone(Positionable* p);
+ /*public*/ Positionable* deepClone() override ;
+ /*public*/ Positionable* finishClone(Positionable* p) override;
  /*public*/ void setTurnout(QString pName);
  /*public*/ void setTurnout(NamedBeanHandle<Turnout*>* to);
  /*public*/ Turnout* getTurnout();
  /*public*/ NamedBeanHandle <Turnout*>* getNamedTurnout();
- /*public*/ NamedBean* getNamedBean();
+ /*public*/ NamedBean* getNamedBean() override;
  /*public*/ void setIcon(QString name, NamedIcon* icon);
  /*public*/ NamedIcon* getIcon(QString state);
  /*public*/ NamedIcon* getIcon(int state);
  /*public*/ QString getFamily();
  /*public*/ void setFamily(QString family);
- /*public*/ int maxHeight();
- /*public*/ int maxWidth();
+ /*public*/ int maxHeight() override;
+ /*public*/ int maxWidth() override;
  int turnoutState();
  /*public*/ QString getStateName(int state) ;
- /*public*/ QString getNameString();
+ /*public*/ QString getNameString() override;
  /*public*/ void setTristate(bool set) ;
  /*public*/ bool getTristate();
- /*public*/ bool showPopUp(QMenu* popup);
+ /*public*/ bool showPopUp(QMenu* popup) override;
  void addTristateEntry(QMenu* popup);
- /*public*/ void setScale(double s) ;
- /*public*/ void rotate(int deg);
- /*public*/ void displayState(int state);
+ /*public*/ void setScale(double s)  override;
+ /*public*/ void rotate(int deg) override;
+ /*public*/ void displayState(int state) override;
  int getType();
  void setType(int type);
- /*public*/ void dispose();
- /*public*/ bool setEditItemMenu(QMenu* popup);
- /*public*/ bool setEditIconMenu(QMenu* popup);
+ /*public*/ void dispose() override;
+ /*public*/ bool setEditItemMenu(QMenu* popup) override;
+ /*public*/ bool setEditIconMenu(QMenu* popup) override;
  /*public*/ bool getMomentary();
  /*public*/ bool getDirectControl();
- /*public*/ QString getGroupName();
+ /*public*/ QString getGroupName() override;
+ QObject* self() override {return (QObject*)this;}
 
 signals:
 

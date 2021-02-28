@@ -15,20 +15,7 @@
 // /*public*/ class ComboRadioButtons extends JPanel {
 
 
-class NewListener : public PropertyChangeListener
-{
-public:
-    NewListener(ComboRadioButtons* parent)
-    {
-     this->parent = parent;
-    }
-    ComboRadioButtons* parent;
-public slots:
-    void propertyChange(PropertyChangeEvent *e)
-    {
-     parent->originalPropertyChanged(e);
-    }
-};
+
 
 ComboRadioButtons::ComboRadioButtons(QComboBox* box, EnumVariableValue* var, QWidget *parent) : QWidget(parent)
 {

@@ -2,14 +2,19 @@
 #define TRAINMANAGERXML_H
 #include "operationsxml.h"
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
+
 
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT TrainManagerXml : public OperationsXml
+ class APPSLIBSHARED_EXPORT TrainManagerXml : public OperationsXml, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+   Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  explicit TrainManagerXml(QObject *parent = 0);
+  Q_INVOKABLE explicit TrainManagerXml(QObject *parent = 0);
+   ~TrainManagerXml() {}
+   TrainManagerXml(const TrainManagerXml&) : OperationsXml() {}
   /*public*/ static /*synchronized*/ TrainManagerXml* instance();
   /*public*/ bool isTrainFileLoaded();
   /*public*/ void writeFile(QString name); //throw FileNotFoundException, IOException
@@ -69,4 +74,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::TrainManagerXml)
 #endif // TRAINMANAGERXML_H

@@ -157,9 +157,10 @@ protected:
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };
-/*private*/ class OutputTurnout : public PropertyChangeListener
+/*private*/ class OutputTurnout : public QObject, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     NamedBeanHandle<Turnout*>* _turnout;
     //Turnout _turnout;
@@ -172,6 +173,8 @@ public:
     Turnout* getTurnout();
     void addListener();
     void removeListener() ;
+    QObject* self() {return (QObject*)this;}
+
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) ;
 private:

@@ -327,22 +327,13 @@ public:
 
 virtual void Register(NamedBean*  s) const;
 virtual void addDataListener(QObject*  e);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deleteRoute(Route*  arg__1);
 virtual void deregister(NamedBean*  s) const;
 virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual void fireVetoableChange(QString  p, QVariant  old, QVariant  n) throw (PropertyVetoException);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
-virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual Route*  getBySystemName(QString  arg__1) const;
 virtual Route*  getByUserName(QString  arg__1) const;
-virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;
@@ -362,13 +353,8 @@ virtual void propertyChange(PropertyChangeEvent*  e);
 virtual Route*  provide(QString  name) throw (IllegalArgumentException);
 virtual Route*  provideRoute(QString  arg__1, QString  arg__2) const;
 virtual void removeDataListener(QObject*  e);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void timerEvent(QTimerEvent*  event);
-virtual QString  toString();
-virtual char  typeLetter() const;
+virtual QObject*  self();
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
-virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -381,10 +367,12 @@ inline void py_q_deleteRoute(Route*  arg__1) { RouteManager::deleteRoute(arg__1)
 inline void py_q_dispose() { RouteManager::dispose(); }
 inline Route*  py_q_getBySystemName(QString  arg__1) const { return this->getBySystemName(arg__1); }
 inline Route*  py_q_getByUserName(QString  arg__1) const { return this->getByUserName(arg__1); }
+inline QString  py_q_getNamedBeanClass() const { return RouteManager::getNamedBeanClass(); }
 inline Route*  py_q_getRoute(QString  arg__1) { return RouteManager::getRoute(arg__1); }
 inline Route*  py_q_newRoute(QString  arg__1) { return RouteManager::newRoute(arg__1); }
 inline Route*  py_q_provide(QString  name) throw (IllegalArgumentException) { return this->provide(name); }
 inline Route*  py_q_provideRoute(QString  arg__1, QString  arg__2) const { return RouteManager::provideRoute(arg__1, arg__2); }
+inline QObject*  py_q_self() { return RouteManager::self(); }
 };
 
 class PythonQtWrapper_RouteManager : public QObject
@@ -401,6 +389,7 @@ void delete_RouteManager(RouteManager* obj) { delete obj; }
    Route*  py_q_getBySystemName(RouteManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
    Route*  getByUserName(RouteManager* theWrappedObject, QString  arg__1) const;
    Route*  py_q_getByUserName(RouteManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
+   QString  py_q_getNamedBeanClass(RouteManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    Route*  getRoute(RouteManager* theWrappedObject, QString  arg__1);
    Route*  py_q_getRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getRoute(arg__1));}
    Route*  newRoute(RouteManager* theWrappedObject, QString  arg__1);
@@ -409,7 +398,7 @@ void delete_RouteManager(RouteManager* obj) { delete obj; }
    Route*  py_q_provide(RouteManager* theWrappedObject, QString  name) throw (IllegalArgumentException){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provide(name));}
    Route*  provideRoute(RouteManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    Route*  py_q_provideRoute(RouteManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provideRoute(arg__1, arg__2));}
-    QString py_toString(RouteManager*);
+   QObject*  py_q_self(RouteManager* theWrappedObject){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_self());}
 };
 
 
@@ -568,25 +557,16 @@ public:
 
 virtual void Register(NamedBean*  s) const;
 virtual void addDataListener(QObject*  e);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  allowMultipleAdditions(QString  arg__1);
-virtual void childEvent(QChildEvent*  event);
 virtual QString  createSystemName(QString  arg__1, QString  arg__2) const;
-virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s) const;
 virtual void dispose() const;
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual void fireVetoableChange(QString  p, QVariant  old, QVariant  n) throw (PropertyVetoException);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
-virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  arg__1) const;
 virtual NamedBean*  getByUserName(QString  arg__1) const;
 virtual long  getDefaultSensorDebounceGoingActive();
 virtual long  getDefaultSensorDebounceGoingInActive();
-virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;
@@ -609,16 +589,12 @@ virtual Sensor*  provide(QString  name) throw (IllegalArgumentException)
 ;
 virtual Sensor*  provideSensor(QString  arg__1);
 virtual void removeDataListener(QObject*  e);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
+virtual QObject*  self();
 virtual void setDefaultSensorDebounceGoingActive(long  arg__1);
 virtual void setDefaultSensorDebounceGoingInActive(long  arg__1);
-virtual void timerEvent(QTimerEvent*  event);
 virtual QString  toString();
-virtual char  typeLetter() const;
 virtual void updateAll() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
-virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -634,6 +610,7 @@ inline NamedBean*  py_q_getBySystemName(QString  arg__1) const { return SensorMa
 inline NamedBean*  py_q_getByUserName(QString  arg__1) const { return SensorManager::getByUserName(arg__1); }
 inline long  py_q_getDefaultSensorDebounceGoingActive() { return SensorManager::getDefaultSensorDebounceGoingActive(); }
 inline long  py_q_getDefaultSensorDebounceGoingInActive() { return SensorManager::getDefaultSensorDebounceGoingInActive(); }
+inline QString  py_q_getNamedBeanClass() const { return SensorManager::getNamedBeanClass(); }
 inline QString  py_q_getNextValidAddress(QString  arg__1, QString  arg__2) { return SensorManager::getNextValidAddress(arg__1, arg__2); }
 inline Sensor*  py_q_getSensor(QString  arg__1) const { return SensorManager::getSensor(arg__1); }
 inline bool  py_q_isPullResistanceConfigurable() { return SensorManager::isPullResistanceConfigurable(); }
@@ -641,6 +618,7 @@ inline Sensor*  py_q_newSensor(QString  arg__1, QString  arg__2) { return Sensor
 inline Sensor*  py_q_provide(QString  name) throw (IllegalArgumentException)
  { return SensorManager::provide(name); }
 inline Sensor*  py_q_provideSensor(QString  arg__1) { return SensorManager::provideSensor(arg__1); }
+inline QObject*  py_q_self() { return SensorManager::self(); }
 inline void py_q_setDefaultSensorDebounceGoingActive(long  arg__1) { SensorManager::setDefaultSensorDebounceGoingActive(arg__1); }
 inline void py_q_setDefaultSensorDebounceGoingInActive(long  arg__1) { SensorManager::setDefaultSensorDebounceGoingInActive(arg__1); }
 inline QString  py_q_toString() { return SensorManager::toString(); }
@@ -667,6 +645,7 @@ void delete_SensorManager(SensorManager* obj) { delete obj; }
    long  py_q_getDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingActive());}
    long  getDefaultSensorDebounceGoingInActive(SensorManager* theWrappedObject);
    long  py_q_getDefaultSensorDebounceGoingInActive(SensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingInActive());}
+   QString  py_q_getNamedBeanClass(SensorManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    QString  getNextValidAddress(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2);
    QString  py_q_getNextValidAddress(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getNextValidAddress(arg__1, arg__2));}
    Sensor*  getSensor(SensorManager* theWrappedObject, QString  arg__1) const;
@@ -681,10 +660,12 @@ void delete_SensorManager(SensorManager* obj) { delete obj; }
 {  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_provide(name));}
    Sensor*  provideSensor(SensorManager* theWrappedObject, QString  arg__1);
    Sensor*  py_q_provideSensor(SensorManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_provideSensor(arg__1));}
+   QObject*  py_q_self(SensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_self());}
    void setDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject, long  arg__1);
    void py_q_setDefaultSensorDebounceGoingActive(SensorManager* theWrappedObject, long  arg__1){  (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_setDefaultSensorDebounceGoingActive(arg__1));}
    void setDefaultSensorDebounceGoingInActive(SensorManager* theWrappedObject, long  arg__1);
    void py_q_setDefaultSensorDebounceGoingInActive(SensorManager* theWrappedObject, long  arg__1){  (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_setDefaultSensorDebounceGoingInActive(arg__1));}
+   QString  toString(SensorManager* theWrappedObject);
    QString  py_q_toString(SensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_toString());}
    void updateAll(SensorManager* theWrappedObject) const;
    void py_q_updateAll(SensorManager* theWrappedObject) const{  (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_updateAll());}
@@ -2287,28 +2268,19 @@ public:
 
 virtual void Register(NamedBean*  s) const;
 virtual void addDataListener(QObject*  e);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  allowMultipleAdditions(QString  arg__1);
 virtual int  askControlType(QString  arg__1);
 virtual int  askNumControlBits(QString  arg__1);
-virtual void childEvent(QChildEvent*  event);
 virtual QString  createSystemName(QString  arg__1, QString  arg__2) const;
-virtual void customEvent(QEvent*  event);
-virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
 virtual void deregister(NamedBean*  s) const;
 virtual void dispose();
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual void fireVetoableChange(QString  p, QVariant  old, QVariant  n) throw (PropertyVetoException);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
-virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual Turnout*  getBySystemName(QString  arg__1) const;
 virtual Turnout*  getByUserName(QString  arg__1) const;
 virtual QString  getClosedText();
 virtual QString  getDefaultClosedSpeed() const;
 virtual QString  getDefaultThrownSpeed() const;
-virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;
@@ -2334,16 +2306,12 @@ virtual void propertyChange(PropertyChangeEvent*  e);
 virtual Turnout*  provide(QString  name) const throw (IllegalArgumentException) ;
 virtual Turnout*  provideTurnout(QString  arg__1) const;
 virtual void removeDataListener(QObject*  e);
-virtual void removePropertyChangeListener(PropertyChangeListener*  l);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
+virtual QObject*  self();
 virtual void setDefaultClosedSpeed(QString  arg__1) const;
 virtual void setDefaultThrownSpeed(QString  arg__1) const;
 virtual void setOutputInterval(int  newInterval);
-virtual void timerEvent(QTimerEvent*  event);
 virtual QString  toString();
-virtual char  typeLetter() const;
 virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
-virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -2371,6 +2339,7 @@ inline bool  py_q_isNumControlBitsSupported(QString  arg__1) { return TurnoutMan
 inline Turnout*  py_q_newTurnout(QString  arg__1, QString  arg__2) const { return this->newTurnout(arg__1, arg__2); }
 inline Turnout*  py_q_provide(QString  name) const throw (IllegalArgumentException)  { return TurnoutManager::provide(name); }
 inline Turnout*  py_q_provideTurnout(QString  arg__1) const { return TurnoutManager::provideTurnout(arg__1); }
+inline QObject*  py_q_self() { return TurnoutManager::self(); }
 inline void py_q_setDefaultClosedSpeed(QString  arg__1) const { TurnoutManager::setDefaultClosedSpeed(arg__1); }
 inline void py_q_setDefaultThrownSpeed(QString  arg__1) const { TurnoutManager::setDefaultThrownSpeed(arg__1); }
 inline void py_q_setOutputInterval(int  newInterval) { TurnoutManager::setOutputInterval(newInterval); }
@@ -2421,12 +2390,14 @@ void delete_TurnoutManager(TurnoutManager* obj) { delete obj; }
    Turnout*  py_q_provide(TurnoutManager* theWrappedObject, QString  name) const throw (IllegalArgumentException) {  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_provide(name));}
    Turnout*  provideTurnout(TurnoutManager* theWrappedObject, QString  arg__1) const;
    Turnout*  py_q_provideTurnout(TurnoutManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_provideTurnout(arg__1));}
+   QObject*  py_q_self(TurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_self());}
    void setDefaultClosedSpeed(TurnoutManager* theWrappedObject, QString  arg__1) const;
    void py_q_setDefaultClosedSpeed(TurnoutManager* theWrappedObject, QString  arg__1) const{  (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_setDefaultClosedSpeed(arg__1));}
    void setDefaultThrownSpeed(TurnoutManager* theWrappedObject, QString  arg__1) const;
    void py_q_setDefaultThrownSpeed(TurnoutManager* theWrappedObject, QString  arg__1) const{  (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_setDefaultThrownSpeed(arg__1));}
    void setOutputInterval(TurnoutManager* theWrappedObject, int  newInterval);
    void py_q_setOutputInterval(TurnoutManager* theWrappedObject, int  newInterval){  (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_setOutputInterval(newInterval));}
+   QString  toString(TurnoutManager* theWrappedObject);
    QString  py_q_toString(TurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_TurnoutManager*)theWrappedObject)->py_q_toString());}
     QString py_toString(TurnoutManager*);
 };
@@ -2503,7 +2474,7 @@ PropertyChangeSupport*  py_get_pcs(TurnoutOperation* theWrappedObject){ return t
 class PythonQtShell_VetoableChangeSupport : public VetoableChangeSupport
 {
 public:
-    PythonQtShell_VetoableChangeSupport(QObject*  source):VetoableChangeSupport(source),_wrapper(NULL) {}
+    PythonQtShell_VetoableChangeSupport(QObject*  source, QObject*  parent = nullptr):VetoableChangeSupport(source, parent),_wrapper(NULL) {}
 
    ~PythonQtShell_VetoableChangeSupport();
 
@@ -2511,6 +2482,10 @@ virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual void fireVetoableChange(PropertyChangeEvent*  event) throw (PropertyVetoException) ;
+virtual void fireVetoableChange(QString  propertyName, QVariant  oldValue, QVariant  newValue) throw (PropertyVetoException) ;
+virtual void fireVetoableChange(QString  propertyName, bool  oldValue, bool  newValue) throw (PropertyVetoException) ;
+virtual void fireVetoableChange(QString  propertyName, int  oldValue, int  newValue) throw (PropertyVetoException) ;
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
@@ -2518,17 +2493,29 @@ virtual void timerEvent(QTimerEvent*  event);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
+class PythonQtPublicPromoter_VetoableChangeSupport : public VetoableChangeSupport
+{ public:
+inline void py_q_fireVetoableChange(PropertyChangeEvent*  event) throw (PropertyVetoException)  { VetoableChangeSupport::fireVetoableChange(event); }
+inline void py_q_fireVetoableChange(QString  propertyName, QVariant  oldValue, QVariant  newValue) throw (PropertyVetoException)  { VetoableChangeSupport::fireVetoableChange(propertyName, oldValue, newValue); }
+inline void py_q_fireVetoableChange(QString  propertyName, bool  oldValue, bool  newValue) throw (PropertyVetoException)  { VetoableChangeSupport::fireVetoableChange(propertyName, oldValue, newValue); }
+inline void py_q_fireVetoableChange(QString  propertyName, int  oldValue, int  newValue) throw (PropertyVetoException)  { VetoableChangeSupport::fireVetoableChange(propertyName, oldValue, newValue); }
+};
+
 class PythonQtWrapper_VetoableChangeSupport : public QObject
 { Q_OBJECT
 public:
 public slots:
-VetoableChangeSupport* new_VetoableChangeSupport(QObject*  source);
+VetoableChangeSupport* new_VetoableChangeSupport(QObject*  source, QObject*  parent = nullptr);
 void delete_VetoableChangeSupport(VetoableChangeSupport* obj) { delete obj; } 
-   void fireVetoableChange(VetoableChangeSupport* theWrappedObject, PropertyChangeEvent*  event);
-   void fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue);
-   void fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue);
-   void fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, int  oldValue, int  newValue);
-   bool  hasListeners(VetoableChangeSupport* theWrappedObject, QString  propertyName);
+   void fireVetoableChange(VetoableChangeSupport* theWrappedObject, PropertyChangeEvent*  event) throw (PropertyVetoException) ;
+   void py_q_fireVetoableChange(VetoableChangeSupport* theWrappedObject, PropertyChangeEvent*  event) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_fireVetoableChange(event));}
+   void fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue) throw (PropertyVetoException) ;
+   void py_q_fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_fireVetoableChange(propertyName, oldValue, newValue));}
+   void fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue) throw (PropertyVetoException) ;
+   void py_q_fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_fireVetoableChange(propertyName, oldValue, newValue));}
+   void fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, int  oldValue, int  newValue) throw (PropertyVetoException) ;
+   void py_q_fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, int  oldValue, int  newValue) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_fireVetoableChange(propertyName, oldValue, newValue));}
+   QObject*  self(VetoableChangeSupport* theWrappedObject);
 };
 
 

@@ -2,11 +2,13 @@
 #define OBLOCKMANAGER_H
 #include "abstractmanager.h"
 #include "libPr3_global.h"
+#include "instancemanagerautodefault.h"
 
 class OBlock;
-class LIBPR3SHARED_EXPORT OBlockManager : public AbstractManager
+class LIBPR3SHARED_EXPORT OBlockManager : public AbstractManager, public InstanceManagerAutoDefault
 {
     Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
 public:
     Q_INVOKABLE explicit OBlockManager(QObject *parent = 0);
     ~OBlockManager(){}
@@ -27,6 +29,7 @@ public:
     /*public*/ QString getNamedBeanClass()const override {
         return "QBlock";
     }
+    QObject* self() {return (QObject*)this;}
 
 signals:
 public slots:

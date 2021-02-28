@@ -2,15 +2,17 @@
 #define WARRANTMANAGER_H
 #include "abstractmanager.h"
 #include "libPr3_global.h"
+#include "instancemanagerautodefault.h"
 
 class OBlock;
 class OPath;
 class Portal;
 class RosterSpeedProfile;
 class Warrant;
-class LIBPR3SHARED_EXPORT WarrantManager : public AbstractManager
+class LIBPR3SHARED_EXPORT WarrantManager : public AbstractManager, public InstanceManagerAutoDefault
 {
     Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
 public:
     explicit WarrantManager(QObject *parent = 0);
     ~WarrantManager() {}
@@ -30,6 +32,7 @@ public:
     /*public*/ static WarrantManager* getDefault();
     /*public*/ QString getBeanTypeHandled(bool plural);
     /*public*/ QString getNamedBeanClass();
+    QObject* self() {return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

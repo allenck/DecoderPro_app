@@ -125,12 +125,12 @@ protected:
  friend class JmriUserPreferencesManagerTest;
 };
 
-/*private*/ /*static*/ class JUPMListener : public PropertyChangeListener {
+/*private*/ /*static*/ class JUPMListener : public QObject, public PropertyChangeListener {
  Q_OBJECT
- JmriUserPreferencesManagerTest* test;
+ Q_INTERFACES(PropertyChangeListener)JmriUserPreferencesManagerTest* test;
 public:
  JUPMListener(JmriUserPreferencesManagerTest* test) {this->test = test;}
- /*public*/ PropertyChangeEvent* event = nullptr;
+ QObject* self() {return (QObject*)this;}/*public*/ PropertyChangeEvent* event = nullptr;
 public slots:
  //@Override
  /*public*/ void propertyChange(PropertyChangeEvent* evt);

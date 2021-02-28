@@ -2,6 +2,7 @@
 #define CONSTRAINEDBEAN_H
 #include "bean.h"
 #include "propertyvetoexception.h"
+#include "vetoablechangesupport.h"
 
 class PropertyVetoException;
 class VetoableChangeListener;
@@ -25,7 +26,7 @@ public:
  /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) throw (PropertyVetoException) ;
 
 protected:
- /*protected*/ /*final*/ VetoableChangeSupport* vetoableChangeSupport;// = new VetoableChangeSupport(this);
+ /*protected*/ /*final*/ VetoableChangeSupport* vetoableChangeSupport = new VetoableChangeSupport(this);
 
 };
 

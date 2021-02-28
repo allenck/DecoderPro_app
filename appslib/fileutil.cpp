@@ -798,6 +798,7 @@ FileUtil::FileUtil(QObject *parent) :
     {
     FileUtilSupport::getDefault()->rotate(file, max, extension);
 }
+
 /*public*/ /*static*/ QList<QString>* FileUtil::findProgramPath()
 {
  return FileUtilSupport::getDefault()->findProgramPath();

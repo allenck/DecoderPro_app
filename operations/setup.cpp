@@ -17,22 +17,10 @@
 namespace Operations
 {
  Setup::Setup(QObject *parent) :
-   QObject(parent)
+   PropertyChangeSupport(parent)
  {
-  pcs = new PropertyChangeSupport(this);
   setProperty("InstanceManagerAutoDefault", "yes");
 
- }
-
- /*static*/ Setup* Setup::_instance = NULL;
-
- /*static*/ Setup* Setup::instance()
- {
-  if(_instance == NULL)
-  {
-   _instance = new Setup();
-  }
-  return _instance;
  }
 
  /**
@@ -362,7 +350,7 @@ namespace Operations
 
  /*public*//*static*/bool Setup::isMainMenuEnabled()
  {
-  Operations::OperationsSetupXml::instance(); // load file
+  ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml")); // load file
   return mainMenuEnabled;
  }
 
@@ -3196,7 +3184,7 @@ namespace Operations
  }
  #endif
  /*protected*//*static*/void Setup::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     Operations::OperationsSetupXml::instance()->setDirty(true);
+     ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->setDirty(true);
    //pcs->firePropertyChange(p, old, n);
  }
 

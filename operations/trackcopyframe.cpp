@@ -114,7 +114,7 @@ namespace Operations
 
      // get notified if combo box gets modified
      //LocationManager::instance().addPropertyChangeListener(this);
-     connect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // add help menu to window
      addHelpMenu("package.jmri.jmrit.operations.Operations_Locations", true); // NOI18N
@@ -280,7 +280,7 @@ namespace Operations
 #endif
  /*public*/ void TrackCopyFrame::dispose() {
      //LocationManager::instance().removePropertyChangeListener(this);
- disconnect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_location != NULL) {
          //_location.removePropertyChangeListener(this);
       disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

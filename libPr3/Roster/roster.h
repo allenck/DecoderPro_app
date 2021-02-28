@@ -215,12 +215,14 @@ protected:
   friend class RosterTest;
 };
 
-class RosterPropertyChangeListener : public PropertyChangeListener
+class RosterPropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  Roster* roster;
 public:
  RosterPropertyChangeListener(Roster* roster) { this->roster = roster;}
+ QObject* self() {return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*);

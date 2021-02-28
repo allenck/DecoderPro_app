@@ -2,7 +2,6 @@
 #define ROSTERENTRYSELECTOR_H
 #include "propertychangelistener.h"
 #include "rosterentry.h"
-#include "rosterentryselector.h"
 /**
  * The getter method for a roster entry selection.
  * <p>
@@ -36,6 +35,8 @@ public:
 /*public*/ virtual void removePropertyChangeListener(PropertyChangeListener* /*listener*/) {}
 
 /*public*/ virtual void removePropertyChangeListener(QString /*propertyName*/, PropertyChangeListener* /*listener*/) {}
+
+  virtual QObject* self() =0;
 private:
 
 };

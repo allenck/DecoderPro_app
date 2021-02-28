@@ -37,16 +37,6 @@ namespace Operations
 
  }
 
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ EngineManagerXml*  EngineManagerXml::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ EngineManagerXml* EngineManagerXml::instance()
- {
-  return static_cast<EngineManagerXml*>(InstanceManager::getDefault("EngineManagerXml"));
- }
-
  /*public*/ void EngineManagerXml::writeFile(QString name) //throws java.io.FileNotFoundException, java.io.IOException
  {
      if (log->isDebugEnabled()) {

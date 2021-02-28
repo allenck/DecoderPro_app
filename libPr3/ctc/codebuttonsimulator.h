@@ -43,12 +43,14 @@ class CodeButtonSimulator : public QObject
   friend class AnySensorPropertyChangeListener;
   friend class PauseActionListener;
 };
-class AnySensorPropertyChangeListener : public PropertyChangeListener
+class AnySensorPropertyChangeListener : public QObject,public PropertyChangeListener
 {
   Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
   CodeButtonSimulator* codeButtonSimulator;
  public:
   AnySensorPropertyChangeListener(CodeButtonSimulator* codeButtonSimulator) {this->codeButtonSimulator = codeButtonSimulator;}
+  QObject* self() override{return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent* e)
   {

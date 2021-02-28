@@ -11,6 +11,7 @@
 #include "carlengths.h"
 #include "carowners.h"
 #include "carcolors.h"
+#include "instancemanager.h"
 
 //CarManagerXml::CarManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -92,7 +93,7 @@ Logger* log = new Logger("CarManagerXml");
      // note all comments line feeds have been changed to processor directives
      CarRoads::instance()->store(root,doc);
      CarTypes::instance()->store(root,doc);
-     CarColors::instance()->store(root, doc);
+     ((CarColors*)InstanceManager::getDefault("CarColors"))->store(root, doc);
      CarLengths::instance()->store(root, doc);
      CarOwners::instance()->store(root, doc);
      CarLoads::instance()->store(root, doc);
@@ -125,7 +126,7 @@ Logger* log = new Logger("CarManagerXml");
 
      CarRoads::instance()->load(root);
      CarTypes::instance()->load(root);
-     CarColors::instance()->load(root);
+     ((CarColors*)InstanceManager::getDefault("CarColors"))->load(root);
      CarLengths::instance()->load(root);
      CarOwners::instance()->load(root);
      CarLoads::instance()->load(root);

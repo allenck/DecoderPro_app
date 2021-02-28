@@ -175,6 +175,8 @@ public:
      virtual/*default*/ /*public*/ Light* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
      { return provideLight(name); }
      /*public*/ QString toString() {return "LightManager";}
+  QString getNamedBeanClass() const {return "LightManager";}
+  QObject* self() {return (QObject*)this;}
 
 signals:
     

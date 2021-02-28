@@ -6,12 +6,17 @@
 #include <QDir>
 #include "logger.h"
 #include "defaultmutabletreenode.h"
+#include "instancemanagerautodefault.h"
 
-class CatalogTreeModel : public DefaultTreeModel
+class CatalogTreeModel : public DefaultTreeModel, public InstanceManagerAutoDefault
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
- /*public*/ CatalogTreeModel(QObject* parent = 0);
+ Q_INVOKABLE /*public*/ CatalogTreeModel(QObject* parent = 0);
+  ~CatalogTreeModel() {}
+  CatalogTreeModel(const CatalogTreeModel&) : DefaultTreeModel() {}
  //QT_DEPRECATED static /*public*/ CatalogTreeModel* instance();
  static /*final*/ QString resourceRoot;// = "resources";
  static /*final*/ QString fileRoot;// = FileUtil::getUserFilesPath() + "resources";
@@ -26,5 +31,5 @@ private:
  void insertFileNodes(QString name, QString path, DefaultMutableTreeNode* parent);
 
 };
-
+Q_DECLARE_METATYPE(CatalogTreeModel);
 #endif // CATALOGTREEMODEL_H

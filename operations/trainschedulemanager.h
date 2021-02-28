@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QHash>
+#include "propertychangesupport.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 class PropertyChangeSupport;
 class PropertyChangeEvent;
@@ -13,14 +16,17 @@ class Logger;
 namespace Operations
 {
  class TrainSchedule;
- class TrainScheduleManager : public QObject
+ class TrainScheduleManager : public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
+   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
+
  public:
-  explicit TrainScheduleManager(QObject *parent = 0);
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  Q_INVOKABLE explicit TrainScheduleManager(QObject *parent = 0);
+   ~TrainScheduleManager() {}
+   TrainScheduleManager(const TrainScheduleManager&) : PropertyChangeSupport(this) {}
+   PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "trainScheduleListLength"; // NOI18N
-  /*public*/ static /*synchronized*/ TrainScheduleManager* instance();
   /*public*/ void dispose();
   /*public*/ int numEntries();
   /*public*/ TrainSchedule* getScheduleByName(QString name);
@@ -56,4 +62,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::TrainScheduleManager)
 #endif // TRAINSCHEDULEMANAGER_H

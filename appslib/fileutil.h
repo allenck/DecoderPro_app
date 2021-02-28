@@ -10,6 +10,7 @@
 #include "file.h"
 #include "exceptions.h"
 
+
 class Profile;
 class QTextStream;
 class JAVAQTSHARED_EXPORT FileUtil : public QObject

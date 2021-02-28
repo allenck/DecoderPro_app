@@ -189,12 +189,14 @@ namespace Operations
  friend class RollingStockManager;
  };
 
- class IdTagPropertyChangeListener :  public PropertyChangeListener
+ class IdTagPropertyChangeListener :  public QObject, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
   RollingStock* parent;
  public:
   IdTagPropertyChangeListener(RollingStock* parent);
+  QObject* self() {return (QObject*)this;}
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) ;
  };

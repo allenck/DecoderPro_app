@@ -130,7 +130,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param oldValue      the old value of the property
  * @param newValue      the new value of the property
  */
-/*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
+/*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue) const;
 //void firePropertyChange(QString properyName, QObject* oldValue, QObject* newValue);
 
 /**
@@ -157,7 +157,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  *
  * @param event  the {@code PropertyChangeEvent} to be fired
  */
-/*public*/ void firePropertyChange(PropertyChangeEvent* event);
+/*public*/ void firePropertyChange(PropertyChangeEvent* event) const;
 /**
  * Reports a bound indexed property update to listeners
  * that have been registered to track updates of
@@ -174,7 +174,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param newValue      the new value of the property
  * @since 1.5
  */
-/*public*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue);
+/*public*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue) const;
 /**
  * Reports an integer bound indexed property update to listeners
  * that have been registered to track updates of

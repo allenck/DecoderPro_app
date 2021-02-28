@@ -23,13 +23,16 @@ private:
 friend class LayoutBlockListener;
 };
 
-/*private*/ class LayoutBlockListener : public PropertyChangeListener {
+/*private*/ class LayoutBlockListener : public QObject,public PropertyChangeListener {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 protected:
  /*protected*/ /*final*/ LayoutBlock* layoutBlock;
 private:
  JsonLayoutBlockSocketService* jlbss;
+ public:
  /*public*/ LayoutBlockListener(LayoutBlock* layoutblock, JsonLayoutBlockSocketService* jlbss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
  friend class JsonLayoutBlockSocketService;

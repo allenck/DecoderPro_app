@@ -25,6 +25,7 @@ public:
     /*public*/ bool isEnabled();
     /*public*/ QString getNonSelectedItem();
     /*public*/ void setNonSelectedItem(QString itemText);
+  QObject* self() override{return (QObject*)this;}
 
 signals:
     void propertyChange(PropertyChangeEvent*);

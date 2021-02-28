@@ -15,10 +15,10 @@
 class WarrantPreferencesListener;
 class QDomElement;
 class SignalSystem;
-class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
+class LIBPR3SHARED_EXPORT SignalSpeedMap : public Bean, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize, public PropertyChangeListener
 {
   Q_OBJECT
-  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
+  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize PropertyChangeListener)
 public:
  Q_INVOKABLE SignalSpeedMap(QObject *parent = nullptr);
  ~SignalSpeedMap() {}
@@ -58,7 +58,7 @@ public:
     /*public*/ void loadRoot(/*@Nonnull*/ QDomElement root);
     /*public*/ void setAspects(/*@Nonnull*/ QMap<QString, float> map, int interpretation);
     /*public*/ void setAppearances(/*@Nonnull*/ QMap<QString, QString> map);
-
+    QObject* self() {return (QObject*)this;}
     signals:
 
     public slots:
@@ -80,12 +80,14 @@ public:
 };
 Q_DECLARE_METATYPE(SignalSpeedMap)
 
-class WarrantPreferencesListener : public PropertyChangeListener
+class WarrantPreferencesListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  SignalSpeedMap* ssm;
 public:
  WarrantPreferencesListener(SignalSpeedMap* ssm) {this->ssm = ssm;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt) override;
 };

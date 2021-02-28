@@ -49,6 +49,7 @@
 #endif
 #include "exporttrainrosteraction.h"
 #include "setupexcelprogramframeaction.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -78,7 +79,7 @@ namespace Operations
   setObjectName("TrainsTableFrame");
   log = new Logger("TrainsTableFrame");
   carManagerXml = CarManagerXml::instance(); // load cars
-  engineManagerXml = EngineManagerXml::instance(); // load engines
+  engineManagerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml")); // load engines
   trainManager = TrainManager::instance();
   trainManagerXml = TrainManagerXml::instance();
   locationManager = LocationManager::instance();
@@ -560,7 +561,7 @@ namespace Operations
 
  /*private*/ void TrainsTableFrame::updateTitle() {
      QString title = tr("Trains Table");
-     TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(trainManager->getTrainScheduleActiveId());
+     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(trainManager->getTrainScheduleActiveId());
      if (sch != NULL) {
          title = title + " (" + sch->getName() + ")";
      }

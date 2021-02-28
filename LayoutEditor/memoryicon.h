@@ -12,9 +12,10 @@
 class NamedIcon;
 class AbstractNamedBean;
 //class PositionableLabel;
-class LIBLAYOUTEDITORSHARED_EXPORT MemoryIcon : public PositionableLabel
+class LIBLAYOUTEDITORSHARED_EXPORT MemoryIcon : public PositionableLabel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit DisplayMemoryIcon(QObject *parent = 0);
     /*public*/ MemoryIcon(QString s, Editor* editor, QObject *parent = 0);
@@ -68,6 +69,7 @@ public:
     /*public*/ bool setEditIconMenu(QMenu* popup);
     /*public*/ void dispose();
     /*public*/ QString getGroupName();
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     

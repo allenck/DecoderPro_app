@@ -2,6 +2,7 @@
 #include "nmrapacket.h"
 #include "loggerfactory.h"
 #include "namedbeanpropertydescriptor.h"
+#include "eventobject.h"
 
 /*static*/ QStringList Manager::legacyPrefixes = QStringList() << "DX" << "DCCPP" << "DP" << "MR" << "MC" << "PI" << "TM";
 
@@ -201,10 +202,10 @@
 /*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const throw (NamedBean::BadSystemNameException) {
     QString prefix = getSystemNamePrefix();
     if (name == (prefix)) {
-        throw NamedBean::BadSystemNameException(locale, tr("System name \"%1\" is missing suffix.").arg(name),name);
+        throw NamedBean::BadSystemNameException(locale, QString("System name \"%1\" is missing suffix.").arg(name),name);
     }
     if (!name.startsWith(prefix)) {
-        throw NamedBean::BadSystemNameException(locale, tr("System name must start with \"%1\".").arg(prefix),prefix);
+        throw NamedBean::BadSystemNameException(locale, QString("System name must start with \"%1\".").arg(prefix),prefix);
     }
     return name;
 }
@@ -230,7 +231,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix !=(suffix.trimmed())) {
-        throw NamedBean::BadSystemNameException(locale, tr("System name \"%1\" contains trailing white space characters, but should not.").arg(name),name, prefix);
+        throw NamedBean::BadSystemNameException(locale, QString("System name \"%1\" contains trailing white space characters, but should not.").arg(name),name, prefix);
     }
     return name;
 }
@@ -256,7 +257,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix != (suffix.toUpper())) {
-        throw NamedBean::BadSystemNameException(locale, tr("System name \"%1\" contains lowercase characters, but must be all uppercase.").arg(name), name, prefix);
+        throw NamedBean::BadSystemNameException(locale, QString("System name \"%1\" contains lowercase characters, but must be all uppercase.").arg(name), name, prefix);
     }
     return name;
 }
@@ -285,12 +286,12 @@
     try {
         int number = (suffix.toInt());
         if (number < min) {
-            throw NamedBean::BadSystemNameException(locale, tr("Number in \"%1\" must be greater than or equal to %2.").arg(name).arg(min), name, QString::number(min));
+            throw NamedBean::BadSystemNameException(locale, QString("Number in \"%1\" must be greater than or equal to %2.").arg(name).arg(min), name, QString::number(min));
         } else if (number > max) {
-            throw NamedBean::BadSystemNameException(locale, tr("Number in \"%1\" must be less than or equal to %2.").arg(name).arg(max), name, QString::number(max));
+            throw NamedBean::BadSystemNameException(locale, QString("Number in \"%1\" must be less than or equal to %2.").arg(name).arg(max), name, QString::number(max));
         }
     } catch (NumberFormatException ex) {
-        throw NamedBean::BadSystemNameException(locale, tr("\"%1\" must be an integer after \"%2\".").arg(name).arg(prefix), name, prefix);
+        throw NamedBean::BadSystemNameException(locale, QString("\"%1\" must be an integer after \"%2\".").arg(name).arg(prefix), name, prefix);
     }
     return name;
 }
@@ -413,7 +414,7 @@
       *                    otherwise null
       */
      /*public*/ Manager::ManagerDataEvent::ManagerDataEvent(/*@Nonnull*/ Manager/*<E>*/* source, int type, int index0, int index1, /*E*/NamedBean* changedBean)
-     : EventObject(source)
+     : EventObject(source->self())
      {
          //super(source);
          this->source = source;

@@ -50,7 +50,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString TrainManager::TRAINS_BUILT_CHANGED_PROPERTY = "TrainsBuiltChange"; // NOI18N
 
  /*public*/ TrainManager::TrainManager(QObject *parent) :
- QObject(parent)
+ PropertyChangeSupport(this, parent)
  {
   log = new Logger("TrainManager");
   setObjectName("TrainManager");

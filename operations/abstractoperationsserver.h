@@ -55,16 +55,19 @@ namespace Operations
   /*protected*/ TrainListener* getListener(QString trainId);
   friend class TrainListener;
  };
- /*protected*/ class TrainListener : public PropertyChangeListener
+ /*protected*/ class TrainListener : public QObject, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
      /*private*/ /*final*/ Train* train;
   AbstractOperationsServer* parent;
   Logger* log;
   protected:
      /*protected*/ TrainListener(QString trainId, AbstractOperationsServer* parent);
+  QObject* self() {return (QObject*)this;}
   public slots:
      /*public*/ void propertyChange(PropertyChangeEvent* e);
+
   friend class AbstractOperationsServer;
  };
 

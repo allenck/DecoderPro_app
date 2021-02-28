@@ -8,6 +8,7 @@
 #include "timebase.h"
 #include "rosterentry.h"
 #include <QComboBox>
+#include "instancemanagerautodefault.h"
 
 
 class Block;
@@ -31,9 +32,11 @@ class TransitManager;
 class AllocationRequest;
 class ActiveTrain;
 class LayoutEditor;
-class DispatcherFrame : public JmriJFrame
+class DispatcherFrame : public JmriJFrame, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+    Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
  Q_INVOKABLE DispatcherFrame(QWidget* parent = 0);
  static DispatcherFrame* _instance;// = NULL;

@@ -14,9 +14,10 @@ class SignalHead;
 class NamedBean;
 class PropertyChangeEvent;
 class SignalHeadItemPanel;
-class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
+class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
     //explicit SignalHeadIcon(QObject *parent = 0);
     QVector<QString> _validKey;
@@ -48,6 +49,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
     /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e)  override;
     /*public*/ void performMouseClicked(QGraphicsSceneMouseEvent* e);
     /*public*/ void dispose() override;
+    QObject* self() override {return (QObject*)this;}
+
  signals:
 
  public slots:

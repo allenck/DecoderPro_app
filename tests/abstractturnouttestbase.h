@@ -46,12 +46,12 @@ protected:
  friend class ListenO1;
 };
 
-/*public*/ class ListenO1 : public PropertyChangeListener {
+/*public*/ class ListenO1 : public QObject, public PropertyChangeListener {
 Q_OBJECT
-    AbstractTurnoutTestBase* base;
+   Q_INTERFACES(PropertyChangeListener) AbstractTurnoutTestBase* base;
 public:
     ListenO1(AbstractTurnoutTestBase* base) {this->base = base;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e) {
         base->listenerResult = true;

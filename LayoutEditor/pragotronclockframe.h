@@ -8,16 +8,19 @@
 #include <QPushButton>
 #include "propertychangelistener.h"
 
-class PragotronClockFrame : public JmriJFrame
+class PragotronClockFrame : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  PragotronClockFrame(QWidget* parent = nullptr);
  /*public*/ void dispose() override;
- /*public*/ QString getClassName();
+ /*public*/ QString getClassName() override;
+ QObject* self() override{return (QObject*)this;}
+
 public slots:
  void update();
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 
 private:
  // GUI member declarations
@@ -57,16 +60,16 @@ public slots:
     /*public*/ void actionPerformed(/*ActionEvent a*/);
 };
 
-class PCMinuteChangeListener : public PropertyChangeListener
-{
- Q_OBJECT
- PragotronClockFrame* frame;
-public:
- PCMinuteChangeListener(PragotronClockFrame* frame) {this->frame = frame;}
-public slots:
-    //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* /*e*/) {
-     frame->update();
-    }
-};
+//class PCMinuteChangeListener : public PropertyChangeListener
+//{
+// Q_OBJECT
+// PragotronClockFrame* frame;
+//public:
+// PCMinuteChangeListener(PragotronClockFrame* frame) {this->frame = frame;}
+//public slots:
+//    //@Override
+//    /*public*/ void propertyChange(PropertyChangeEvent* /*e*/) {
+//     frame->update();
+//    }
+//};
 #endif // PRAGOTRONCLOCKFRAME_H

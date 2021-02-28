@@ -5,7 +5,6 @@
 
 ConstrainedBean::ConstrainedBean(QObject *parent) : Bean(parent)
 {
- vetoableChangeSupport = new VetoableChangeSupport(this);
 
 }
 /**

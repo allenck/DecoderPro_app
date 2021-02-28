@@ -199,9 +199,10 @@ class SensorIcon;
 class RosterEntrySelectorPanel;
 class Positionable;
 class SignalMastIcon;
-class LIBLAYOUTEDITORSHARED_EXPORT Editor : public JmriJFrame
+class LIBLAYOUTEDITORSHARED_EXPORT Editor : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit Editor(QWidget *parent = 0);
     /*public*/ Editor(QString name, bool saveSize, bool savePosition, QWidget* parent=0);
@@ -355,17 +356,18 @@ public:
     /*abstract*/ virtual /*public*/ void mouseWheelMoved(QGraphicsSceneWheelEvent* /*event*/) {}
 
     //@Override
-    /*abstract*/ virtual /*public*/ void mouseExited(QGraphicsSceneMouseEvent* event){}
+    /*abstract*/ virtual /*public*/ void mouseExited(QGraphicsSceneMouseEvent* /*event*/){}
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ void addPropertyChangeListener(QString name, PropertyChangeListener* listener);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ void removePropertyChangeListener(QString name, PropertyChangeListener* listener);
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent *);
+    /*public*/ void propertyChange(PropertyChangeEvent *) override;
     /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/;
     /*public*/ virtual void setAllPositionable(bool state) ;
     /*public*/ void setShowHidden(bool state);

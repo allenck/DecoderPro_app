@@ -4,13 +4,15 @@
 #include "layoutblock.h"
 //#include "signalhead.h"
 #include "runnable.h"
+#include "instancemanagerautodefault.h"
 
 class SignalHead;
 class SignalMast;
 class LayoutBlockConnectivityTools;
-class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlockManager : public AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlockManager : public AbstractManager, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
 public:
  explicit LayoutBlockManager(QObject *parent = 0);
  ~LayoutBlockManager() {}

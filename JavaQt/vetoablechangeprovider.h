@@ -29,7 +29,7 @@ public:
      *
      * @param listener The VetoableChangeListener to be added
      */
-    virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* listener) {}
+  virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* listener) {}
 
     /**
      * Add a {@link java.beans.VetoableChangeListener} for a specific property.
@@ -37,7 +37,7 @@ public:
      * @param propertyName The name of the property to listen on.
      * @param listener     The VetoableChangeListener to be added
      */
-    virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener listener) {}
+    virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* listener) {}
 
     /**
      * Get all {@link java.beans.VetoableChangeListener}s currently attached to
@@ -46,7 +46,7 @@ public:
      * @return An array of VetoableChangeListeners.
      */
     //@Nonnull
-    virtual /*public*/ QList<VetoableChangeListener*> getVetoableChangeListeners() {return QList<VetoableChangeListener*>();}
+    virtual /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() {return QVector<VetoableChangeListener*>();}
 
     /**
      * Get all {@link java.beans.VetoableChangeListener}s currently listening to
@@ -56,7 +56,7 @@ public:
      * @return An array of VetoableChangeListeners.
      */
     //@Nonnull
-    virtual /*public*/ QList<VetoableChangeListener*> getVetoableChangeListeners(/*@CheckForNull*/ QString propertyName) {return QList<VetoableChangeListener*>();}
+    virtual /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(/*@CheckForNull*/ QString propertyName) {return QVector<VetoableChangeListener*>();}
 
     /**
      * Remove the specified listener from this object.
@@ -72,8 +72,9 @@ public:
      * @param listener     The {@link java.beans.VetoableChangeListener} to
      *                     remove.
      */
-    virtual /*public*/ void removeVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener listener) {}
+    virtual /*public*/ void removeVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* listener) {}
 
+  virtual QObject* self() = 0;
 };
 Q_DECLARE_INTERFACE(VetoableChangeProvider, "VetoableChangeProvider")
 #endif // VETOABLECHANGEPROVIDER_H

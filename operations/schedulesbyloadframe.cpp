@@ -20,6 +20,7 @@
 #include "scheduleitem.h"
 #include "trainschedulemanager.h"
 #include "trainschedule.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -98,11 +99,11 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // property changes
      //locationManager.addPropertyChangeListener(this);
-     connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes::instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarLoads::instance().addPropertyChangeListener(this);
-     connect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
@@ -173,13 +174,13 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              }
              // listen for changes
              //spur.removePropertyChangeListener(this);
-             disconnect(spur->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             disconnect(spur, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              //spur.addPropertyChangeListener(this);
-             connect(spur->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             connect(spur, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              //sch.removePropertyChangeListener(this);
-             disconnect(sch->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             disconnect(sch, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              //sch.addPropertyChangeListener(this);
-             connect(sch->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             connect(sch, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              // determine if schedule is requesting car type and load
              foreach (ScheduleItem* si, sch->getItemsBySequenceList()) {
                  if (si->getTypeName()==(type) && si->getReceiveLoadName()==(load)
@@ -197,8 +198,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                      // create string Receive(type, delivery, road, load)
                      QString s = si->getTypeName();
                      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-                             && TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId()) != NULL) {
-                         s = s  + ", " + TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId())->getName();
+                             && ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId()) != NULL) {
+                         s = s  + ", " + ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId())->getName();
                      } else {
                          s = s + ",";
                      }
@@ -212,8 +213,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                      // create string Ship(load, pickup)
                      s = "";
                      if (si->getPickupTrainScheduleId()!=(ScheduleItem::NONE)
-                             && TrainScheduleManager::instance()->getScheduleById(si->getPickupTrainScheduleId()) != NULL) {
-                         s = ", "+ TrainScheduleManager::instance()->getScheduleById(si->getPickupTrainScheduleId())->getName();
+                             && ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId()) != NULL) {
+                         s = ", "+ ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId())->getName();
                      }
                      addItemLeft(locationsPanel, new QLabel(tr("Ship") +
                              " (" + si->getShipLoadName() + s + ")"), 3, x++);
@@ -240,20 +241,20 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void SchedulesByLoadFrame::dispose() {
      //locationManager.removePropertyChangeListener(this);
- disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarLoads.instance().removePropertyChangeListener(this);
- disconnect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (Track* spur, locationManager->getTracks(Track::SPUR)) {
          Schedule* sch = spur->getSchedule();
          if (sch == NULL) {
              continue;
          }
          //spur.removePropertyChangeListener(this);
-         disconnect(spur->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         disconnect(spur, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          //sch.removePropertyChangeListener(this);
-         disconnect(sch->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         disconnect(sch, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      OperationsFrame::dispose();
  }

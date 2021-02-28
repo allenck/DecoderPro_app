@@ -78,6 +78,7 @@ HEADERS += \
 }
 
 SOURCES += \
+ metatypes.cpp \
         operations.cpp \
         operationsmenu.cpp \
         trainmanifesttext.cpp \
@@ -376,6 +377,7 @@ SOURCES += \
     taskallocaterelease.cpp
 
 HEADERS += \
+ metatypes.h \
         operations.h \
         operations_global.h \
         operationsmenu.h \

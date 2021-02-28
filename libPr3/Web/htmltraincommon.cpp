@@ -13,6 +13,7 @@
 #include "location.h"
 #include "trainschedulemanager.h"
 #include "trainschedule.h"
+#include "instancemanager.h"
 
 /**
  *
@@ -309,7 +310,7 @@ namespace Operations
 {
  if (Operations::Setup::isPrintTimetableNameEnabled()) {
      return String::format(locale, strings->getProperty("ManifestValidityWithSchedule"), getDate(true),
-             TrainScheduleManager::instance()->getScheduleById(train->getId())->toString());
+             ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(train->getId())->toString());
  } else {
      return String::format(locale, strings->getProperty("ManifestValidity"), getDate(true));
  }

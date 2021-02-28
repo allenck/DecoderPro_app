@@ -96,7 +96,7 @@ namespace Operations
   doc.appendChild(root);
 
   Operations::TrainManager::instance()->store(root, doc);
-  TrainScheduleManager::instance()->store(root, doc);
+  ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->store(root, doc);
 
   writeXML(file, doc);
 

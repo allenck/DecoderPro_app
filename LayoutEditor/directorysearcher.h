@@ -4,13 +4,16 @@
 #include <QObject>
 #include <QFileDialog>
 #include "actionlistener.h"
+#include "instancemanagerautodefault.h"
 
 class JTextField;
 class PreviewDialog;
 class JFrame;
-class DirectorySearcher : public QObject
+class DirectorySearcher : public QObject, public InstanceManagerAutoDefault
 {
     Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
     /*public*/ static DirectorySearcher* instance();
     /*public*/ QDir* searchFS();

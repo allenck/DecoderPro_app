@@ -2,18 +2,20 @@
 #define LIGHTICON_H
 #include "positionableicon.h"
 #include "abstractnamedbean.h"
+#include "propertychangelistener.h"
 
 class QGraphicsSceneMouseEvent;
 class Light;
 class PropertyChangeEvent;
-class LightIcon : public PositionableIcon
+class LightIcon : public PositionableIcon, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit LightIcon(QObject *parent = 0);
     /*public*/ LightIcon(Editor* editor, QObject *parent = 0);
-    /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* deepClone() override;
+    /*public*/ Positionable* finishClone(Positionable* p) override;
     /*public*/ void setLight(QString pName);
     /*public*/ void setLight(Light* to);
     /*public*/ Light* getLight();
@@ -25,25 +27,26 @@ public:
     /*public*/ void setInconsistentIcon(NamedIcon* i);
     /*public*/ NamedIcon* getUnknownIcon();
     /*public*/ void setUnknownIcon(NamedIcon* i) ;
-    /*public*/ int maxHeight();
-    /*public*/ int maxWidth();
+    /*public*/ int maxHeight() override;
+    /*public*/ int maxWidth() override;
     int lightState();
 //    /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public*/ QString getNameString();
-    /*public*/ void setScale(double s);
-    /*public*/ void rotate(int deg);
-    void displayState(int state);
-    /*public*/ void dispose();
+    /*public*/ QString getNameString() override;
+    /*public*/ void setScale(double s) override;
+    /*public*/ void rotate(int deg) override;
+    void displayState(int state) override;
+    /*public*/ void dispose() override;
     NamedIcon* getIcon(int state);
     NamedIcon* getIcon(QString sState);
-    /*public*/ bool updateScene();
+    /*public*/ bool updateScene() override;
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
-    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e);
+    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e) override;
     void propertyChange(QString propertyName, int old, int now);
-    void propertyChange(PropertyChangeEvent* e);
+    void propertyChange(PropertyChangeEvent* e) override;
     void updateLight();
 private:
     // the associated Light object
@@ -58,9 +61,9 @@ private:
     NamedIcon* inconsistent;// = new NamedIcon(inconsistentLName, inconsistentLName);
     QString unknownLName;// = "resources/icons/smallschematics/tracksegments/os-lefthand-east-unknown.gif";
     NamedIcon* unknown;// = new NamedIcon(unknownLName, unknownLName);
-    /*protected*/ void rotateOrthogonal();
+    /*protected*/ void rotateOrthogonal() override;
 
-    /*protected*/ void edit();
+    /*protected*/ void edit() override;
 
 };
 class LightIconActionListener : public ActionListener

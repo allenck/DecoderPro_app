@@ -6,9 +6,10 @@
 //class NamedBeanHandle;
 class Conditional;
 class Logger;
-class JmriSimplePropertyListener : public PropertyChangeListener
+class JmriSimplePropertyListener : public QObject, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit JmriSimplePropertyListener(QObject *parent = 0);
     JmriSimplePropertyListener(QString propName, int type, QString varName, int varType, Conditional* client, QObject *parent = 0);
@@ -23,6 +24,7 @@ public:
     /*public*/ void addConditional(Conditional* client);
     /*public*/ void setEnabled(bool state);
     /*public*/ void calculateClient(int idx, PropertyChangeEvent* evt);
+     QObject* self() override{return (QObject*)this;}
 signals:
 
 public slots:

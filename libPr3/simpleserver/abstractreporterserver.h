@@ -35,8 +35,10 @@ protected:
 
  friend class ARSReporterListener;
 };
-class ARSReporterListener : public PropertyChangeListener {
+
+class ARSReporterListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  AbstractReporterServer* ars;
 public:
     ARSReporterListener(QString reporterName, AbstractReporterServer* ars) {
@@ -44,6 +46,7 @@ public:
         name = reporterName;
         reporter = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getReporter(reporterName);
     }
+    QObject* self() override{return (QObject*)this;}
 
     // update state as state of reporter changes
     //@Override

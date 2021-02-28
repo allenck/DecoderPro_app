@@ -704,7 +704,7 @@ void BlockTableAction::common()
  setColumnToHoldButton(table, EDITCOL);
  setColumnToHoldButton(table, DELETECOL);
 
- InstanceManager::sensorManagerInstance()->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
+ InstanceManager::sensorManagerInstance()->addPropertyChangeListener(/*QPointer<PropertyChangeListener>*/((PropertyChangeListener*)this));
  ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
  configStateColumn(table);
  BeanTableDataModel::configureTable(table);

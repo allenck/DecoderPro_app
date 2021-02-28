@@ -149,8 +149,10 @@ public:
         * @param curAddress - The hardware address of the turnout we which to check.
         */
 
- virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) const {return "";}
-/*public*/ QString toString() {return "ReporterManager";}
+       virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) const {return "";}
+       /*public*/ QString toString() {return "ReporterManager";}
+       QObject* self() {return (QObject*)this;}
+
 signals:
     
 public slots:

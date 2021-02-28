@@ -3,14 +3,19 @@
 #include "rollingstockattribute.h"
 #include "appslib_global.h"
 #include "jcombobox.h"
+#include "instancemanagerautodefault.h"
+
 namespace Operations
 {
  class CarLoad;
- class APPSLIBSHARED_EXPORT CarLoads : public RollingStockAttribute
+ class APPSLIBSHARED_EXPORT CarLoads : public RollingStockAttribute, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+     Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  /*public*/ CarLoads(QObject* parent =0);
+  Q_INVOKABLE /*public*/ CarLoads(QObject* parent =0);
+  ~CarLoads() {}
+  CarLoads(const CarLoads&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString NONE;// = ""; // NOI18N
 
   // for property change
@@ -66,4 +71,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::CarLoads)
 #endif // CARLOADS_H

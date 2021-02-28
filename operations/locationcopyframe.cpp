@@ -113,7 +113,7 @@ namespace Operations
 
   // get notified if combo box gets modified
   //locationManager.addPropertyChangeListener(this);
-  connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // add help menu to window
   addHelpMenu("package.jmri.jmrit.operations.Operations_Locations", true); // NOI18N
@@ -252,7 +252,7 @@ namespace Operations
 
   /*public*/ void LocationCopyFrame::dispose() {
      //locationManager.removePropertyChangeListener(this);
-   disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
 

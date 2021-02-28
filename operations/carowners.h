@@ -2,14 +2,18 @@
 #define CAROWNERS_H
 #include "rollingstockattribute.h"
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
 
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT CarOwners : public RollingStockAttribute
+ class APPSLIBSHARED_EXPORT CarOwners : public RollingStockAttribute, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+     Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  CarOwners(QObject* parent = 0);
+  Q_INVOKABLE CarOwners(QObject* parent = 0);
+  ~CarOwners() {}
+  CarOwners(const CarOwners&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString CAROWNERS_NAME_CHANGED_PROPERTY;// = "CarOwners Name"; // NOI18N
   /*public*/ static /*final*/ QString CAROWNERS_CHANGED_PROPERTY;// = "CarOwners Length"; // NOI18N
   /*public*/ static /*synchronized*/ CarOwners* instance();
@@ -27,4 +31,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::CarOwners)
 #endif // CAROWNERS_H

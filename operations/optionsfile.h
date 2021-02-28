@@ -2,11 +2,15 @@
 #define OPTIONSFILE_H
 #include "xmlfile.h"
 #include "exceptions.h"
+#include "instancemanagerautodefault.h"
 
 class IOException;
 class DispatcherFrame;
-class OptionsFile : public XmlFile
+class OptionsFile : public XmlFile, public InstanceManagerAutoDefault
 {
+    Q_OBJECT
+    Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
     OptionsFile(QObject* parent = nullptr);
     ~OptionsFile(){}

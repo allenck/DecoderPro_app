@@ -7,22 +7,26 @@
 class Logger;
 class JsonRosterHttpService;
 class JsonRosterSocketService;
-/*private*/ class JsonRosterEntryListener : public PropertyChangeListener {
+/*private*/ class JsonRosterEntryListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  JsonRosterSocketService* jrss;
 public:
  JsonRosterEntryListener( JsonRosterSocketService* jrss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
 };
 
-/*private*/ class JsonRosterListener : public PropertyChangeListener {
+/*private*/ class JsonRosterListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     //@Override
  JsonRosterSocketService* jrss;
 public:
  JsonRosterListener(JsonRosterSocketService* jrss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
 };

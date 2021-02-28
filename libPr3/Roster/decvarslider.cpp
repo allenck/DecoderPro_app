@@ -40,8 +40,8 @@ DecVarSlider::DecVarSlider(DecVariableValue* var, int min, int max, QWidget *par
  connect(_var->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
-DVSPropertyChangeListener::DVSPropertyChangeListener(DecVarSlider *self) { this->self = self;}
-void DVSPropertyChangeListener::propertyChange(PropertyChangeEvent* e) {self->originalPropertyChanged(e);}
+DVSPropertyChangeListener::DVSPropertyChangeListener(DecVarSlider *decVarSlider) { this->decVarSlider = decVarSlider;}
+void DVSPropertyChangeListener::propertyChange(PropertyChangeEvent* e) {decVarSlider->originalPropertyChanged(e);}
 
 void DecVarSlider::propertyChange(PropertyChangeEvent* e)
 {

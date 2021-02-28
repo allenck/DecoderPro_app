@@ -6,11 +6,12 @@
 #include <QStringList>
 #include "javaqt_global.h"
 
-class JAVAQTSHARED_EXPORT PropertyChangeListener : public QObject
+class JAVAQTSHARED_EXPORT PropertyChangeListener //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
- explicit PropertyChangeListener(QObject *parent = 0);
+ //explicit PropertyChangeListener(QObject *parent = 0);
+  virtual QObject* self() =0;
 public slots:
  virtual void propertyChange(PropertyChangeEvent* e);
 // {

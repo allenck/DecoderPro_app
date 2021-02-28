@@ -16,6 +16,7 @@
 #include "trainmanifesttext.h"
 #include "routelocation.h"
 #include "location.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -69,7 +70,7 @@ namespace Operations
 
   if (Setup::isPrintTimetableNameEnabled())
   {
-   TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(
+   TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
            TrainManager::instance()->getTrainScheduleActiveId());
    if (sch != NULL)
    {

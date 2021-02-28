@@ -1,16 +1,20 @@
 ﻿#ifndef BLOCKMANAGER_H
 #define BLOCKMANAGER_H
+
 #include "abstractblockmanager.h"
 #include "block.h"
 #include "exceptions.h"
 #include <QCompleter>
 #include "decimalformat.h"
 #include "abstractshutdowntask.h"
+#include "instancemanagerautodefault.h"
+#include "propertyvetoexception.h"
 
 class RosterEntry;
-class LIBPR3SHARED_EXPORT BlockManager : public AbstractBlockManager
+class LIBPR3SHARED_EXPORT BlockManager : public AbstractBlockManager, public InstanceManagerAutoDefault
 {
     Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault )
 public:
     Q_INVOKABLE explicit BlockManager(QObject *parent = 0);
     ~BlockManager() {}
@@ -48,13 +52,14 @@ public:
     virtual /*public*/ Block* provide(QString name) const throw (IllegalArgumentException) ;
     /*public*/ qint64 timeSinceLastLayoutPowerOn()const;
     /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     //void propertyChange(PropertyChangeEvent *e);
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
-    /*public*/ void vetoableChange(PropertyChangeEvent*) override;
+//    /*public*/ void vetoableChange(PropertyChangeEvent* e) throw (PropertyVetoException) override;
 private:
  /*private*/ bool saveBlockPath;// = true;
     DecimalFormat* paddedNumber;// =  DecimalFormat("0000");

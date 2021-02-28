@@ -31,6 +31,7 @@
 #include "restoredialog.h"
 #include "webserverpreferences.h"
 #include "joptionpane.h"
+#include "instancemanager.h"
 
 //OperationsSetupPanel::OperationsSetupPanel(QWidget *parent) :
 //  OperationsPreferencesPanel(parent)
@@ -129,7 +130,7 @@ OperationsPreferencesPanel(parent)
 
   // the following code sets the frame's initial state
   // create manager to load operation settings
-  OperationsSetupXml::instance();
+  (OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml");
 
   // load fields
   maxLengthTextField->setText(QString::number(Setup::getMaxTrainLength()));
@@ -701,7 +702,7 @@ OperationsPreferencesPanel(parent)
  Setup::setMaxTrainLength(maxLengthTextField->text().toInt());
  Setup::setComment(commentTextArea->toHtml());
 
- OperationsSetupXml::instance()->writeOperationsFile();
+ ((OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
  if (Setup::isCloseWindowOnSaveEnabled() && qobject_cast<OperationsSetupFrame*>(this->getTopLevelAncestor()) ) {
      ((OperationsSetupFrame*) this->getTopLevelAncestor())->dispose();
  }
@@ -720,7 +721,7 @@ OperationsPreferencesPanel(parent)
   if (maxLength < Setup::getMaxTrainLength())
   {
    QString sb;// = new StringBuilder();
-   RouteManager* routeManager = RouteManager::instance();
+   RouteManager* routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
    QList<Route*> routes = routeManager->getRoutesByNameList();
    int count = 0;
    foreach (Route* route, routes)

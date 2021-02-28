@@ -43,12 +43,12 @@ protected:
  friend class LnSensorManagerTest;
 };
 
-/*protected*/ class ListenO3 : public PropertyChangeListener {
+/*protected*/ class ListenO3 : public QObject, public PropertyChangeListener {
  Q_OBJECT
- AbstractSensorMgrTestBase* base;
+ Q_INTERFACES(PropertyChangeListener)AbstractSensorMgrTestBase* base;
 public:
  ListenO3(AbstractSensorMgrTestBase* base) {this->base = base;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

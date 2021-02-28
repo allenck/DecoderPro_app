@@ -148,7 +148,7 @@ SectionTableDataModel::SectionTableDataModel(SectionTableAction *act)
  this->act = act;
  log = new Logger("SectionTableAction");
  setManager(act->sectionManager);
- connect(act->sectionManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(act->sectionManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  init();
 }
 
@@ -1477,7 +1477,7 @@ void SectionTableAction::OnRemoveDirSensors()
     //super();
 this->act = act;
     act->blockManager->addPropertyChangeListener((PropertyChangeListener*)this);
-    connect(act->blockManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect(act->blockManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void BlockTableModel::propertyChange(PropertyChangeEvent* e) {

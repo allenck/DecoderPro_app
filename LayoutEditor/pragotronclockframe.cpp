@@ -87,7 +87,7 @@
         pack();
 
         // request callback to update time
-        clock->addMinuteChangeListener(new PCMinuteChangeListener(this));
+        clock->addMinuteChangeListener(/*new PCMinuteChangeListener(this)*/this);
 //        {
 //            @Override
 //             /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {

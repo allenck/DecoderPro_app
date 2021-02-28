@@ -141,7 +141,9 @@ public:
          * @return true if pull up/pull down configuration is supported.
          */
         virtual /*public*/ bool isPullResistanceConfigurable() {return false;}
-    /*public*/ QString toString() {return "SensorManager";}
+    /*public*/ QString toString() override {return "SensorManager";}
+    QObject* self() override{return (QObject*)this;}
+    QString getNamedBeanClass() const override {return "SensorManager";}
 signals:
     
 public slots:

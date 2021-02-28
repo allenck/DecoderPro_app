@@ -5,10 +5,15 @@
 #include <QString>
 #include "decimalformat.h"
 #include "liblayouteditor_global.h"
+#include "propertychangeevent.h"
+#include "instancemanagerautodefault.h"
+#include "propertyvetoexception.h"
 
-class LIBLAYOUTEDITORSHARED_EXPORT SectionManager : public AbstractSectionManager
+class LIBLAYOUTEDITORSHARED_EXPORT SectionManager : public AbstractSectionManager, public InstanceManagerAutoDefault
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
     explicit SectionManager(QObject *parent = 0);
     ~SectionManager() {}
@@ -64,9 +69,11 @@ public:
      */
     /*public*/ void initializeBlockingSensors ();
     /*public*/ QString getNamedBeanClass()const override;
+    QObject* self() override {return (QObject*)this;}
 
     
 public slots:
+    //void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
 private:
     DecimalFormat* paddedNumber;// =  new DecimalFormat("0000");
 

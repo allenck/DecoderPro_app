@@ -201,7 +201,7 @@ log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
 /*private*/ /*<T> */void DefaultSystemConnectionMemo::removeRegisteredObject(/*Class<T>*/QString c) {
     Manager* object = get(c);
     if (object != nullptr) {
-        InstanceManager::deregister(object, c);
+        InstanceManager::deregister(object->self(), c);
         deregister(object, c);
         disposeIfPossible(c, object);
     }

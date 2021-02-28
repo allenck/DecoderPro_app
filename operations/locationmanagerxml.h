@@ -4,14 +4,17 @@
 #include "logger.h"
 #include <QtXml>
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT LocationManagerXml : public OperationsXml
+ class APPSLIBSHARED_EXPORT LocationManagerXml : public OperationsXml, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
+     Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
-  explicit LocationManagerXml(QObject *parent = 0);
+  Q_INVOKABLE explicit LocationManagerXml(QObject *parent = 0);
   QT_DEPRECATED/*public*/ static /*synchronized*/ LocationManagerXml* instance();
   /*public*/ void writeFile(QString name) throw (FileNotFoundException, IOException);
   /*public*/ void readFile(QString name) throw (JDOMException, IOException);

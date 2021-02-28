@@ -52,6 +52,7 @@
 #include "trainmanifestoptionaction.h"
 #include "trainbycartypeaction.h"
 #include "trainscriptaction.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -128,7 +129,7 @@ namespace Operations
   // combo boxes
    hourBox = new JComboBox();
    minuteBox = new JComboBox();
-   routeBox = RouteManager::instance()->getComboBox();
+   routeBox = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getComboBox();
    roadCabooseBox = new JComboBox();
    roadEngineBox = new JComboBox();
    modelEngineBox = EngineModels::instance()->getComboBox();
@@ -173,7 +174,7 @@ namespace Operations
 
   // load managers
   trainManager = TrainManager::instance();
-  routeManager = RouteManager::instance();
+  routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
   boxMapper = new QSignalMapper();
   connect(boxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(locationCheckBoxActionPerformed(QWidget*)));
   typeCheckBoxMapper = new QSignalMapper;
@@ -405,12 +406,12 @@ namespace Operations
       enableButtons(true);
       // listen for train changes
       //_train->addPropertyChangeListener(this);
-      connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       // listen for route changes
       Route* route = _train->getRoute();
       if (route != NULL) {
           //route.addPropertyChangeListener(this);
-       connect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+       connect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
            if(_train->getTrainDepartsRouteLocation() != NULL && !_train->getTrainDepartsRouteLocation()->getLocation()->isStaging())
               numEnginesBox->addItem(Train::AUTO_HPT);
       }
@@ -467,18 +468,18 @@ namespace Operations
 
   // get notified if combo box gets modified
   //routeManager.addPropertyChangeListener(this);
-  connect(routeManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   // get notified if car types or roads gets modified
   //CarTypes::instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarRoads.instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
-  connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
-  connect(EngineModels::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(EngineModels::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //LocationManager.instance().addPropertyChangeListener(this);
-  connect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   packFrame();
  }
@@ -583,7 +584,7 @@ namespace Operations
      _train = train;
      if (_train != NULL) {
          //_train->addPropertyChangeListener(this);
-      connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      // update check boxes
      updateCarTypeCheckboxes();
@@ -749,14 +750,14 @@ namespace Operations
          checkBox->setChecked(enable);
          if (_train != NULL) {
              //_train->removePropertyChangeListener(this);
-          disconnect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              if (enable) {
                  _train->addTypeName(checkBox->text());
              } else {
                  _train->deleteTypeName(checkBox->text());
              }
              //_train->addPropertyChangeListener(this);
-             connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
      }
  }
@@ -779,14 +780,14 @@ namespace Operations
              Route* route = _train->getRoute();
              if (route != NULL) {
                  //route.removePropertyChangeListener(this);
-              disconnect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+              disconnect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              }
              QVariant selected = routeBox->currentData();
              if (selected != QVariant()) {
                  route = (Route*) VPtr<Route*>::asPtr(selected);
                  _train->setRoute(route);
                  //route.addPropertyChangeListener(this);
-                 connect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 connect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              } else {
                  _train->setRoute(NULL);
              }
@@ -1046,9 +1047,9 @@ namespace Operations
     {
      // need to listen for name and direction changes
      //loc.removePropertyChangeListener(this);
-     disconnect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //loc.addPropertyChangeListener(this);
-     connect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      bool services = false;
      // does train direction service location?
      if ((rl->getTrainDirection() & loc->getTrainDirections()) > 0)
@@ -1164,17 +1165,17 @@ namespace Operations
 
  /*public*/ void TrainEditFrame::dispose() {
 //     LocationManager.instance().removePropertyChangeListener(this);
- disconnect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineTypes.instance().removePropertyChangeListener(this);
- disconnect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineModels.instance().removePropertyChangeListener(this);
- disconnect(EngineModels::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(EngineModels::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarTypes::instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarRoads.instance().removePropertyChangeListener(this);
- disconnect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     routeManager.removePropertyChangeListener(this);
- disconnect(routeManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (JmriJFrame* frame, children)
      {
          frame->dispose();
@@ -1182,17 +1183,17 @@ namespace Operations
      if (_train != NULL)
      {
          //_train->removePropertyChangeListener(this);
-      disconnect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          Route* route = _train->getRoute();
          if (route != NULL) {
              //route.removePropertyChangeListener(this);
-          disconnect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              QList<RouteLocation*>* routeList = route->getLocationsBySequenceList();
              for (int i = 0; i < routeList->size(); i++) {
                  Location* loc = LocationManager::instance()->getLocationByName(routeList->at(i)->getName());
                  if (loc != NULL) {
                      //loc.removePropertyChangeListener(this);
-                  disconnect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                  disconnect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
                  }
              }
          }

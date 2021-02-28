@@ -50,8 +50,8 @@
 
   //InstanceManager::layoutBlockManagerInstance().addPropertyChangeListener(this);
   LayoutBlockManager* lbm = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"));
-  connect(lbm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  connect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 
   setLayout(new /*BorderLayout()*/QVBoxLayout);
@@ -130,9 +130,9 @@
 /*public*/ void SignallingSourcePanel::dispose()
 {
     //static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->removePropertyChangeListener(this);
- disconnect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     //InstanceManager.getDefault(jmri.SignalMastLogicManager.class).removePropertyChangeListener(this);
- disconnect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     JmriPanel::dispose();
 }
 

@@ -22,6 +22,7 @@
 #include <QGroupBox>
 #include <gridbaglayout.h>
 #include <QBoxLayout>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -770,7 +771,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + routeType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Route* route = RouteManager::instance()->getRouteById(id);
+             Route* route = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteById(id);
              if (route == NULL) {
                  log->info("Could not find a route for id: " + id + " location (" + track->getLocation()->getName()
                          + ") track (" + track->getName() + ")"); // NOI18N
@@ -824,7 +825,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + routeType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Route* route = RouteManager::instance()->getRouteById(id);
+             Route* route = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteById(id);
              if (route == NULL) {
                  log->info("Could not find a route for id: " + id + " location (" + track->getLocation()->getName()
                          + ") track (" + track->getName() + ")"); // NOI18N

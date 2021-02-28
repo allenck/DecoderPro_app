@@ -9,6 +9,7 @@
 #include "operationssetupxml.h"
 #include "trainmanager.h"
 #include <QIntValidator>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -125,7 +126,7 @@ namespace Operations
 //         log.error("Tab wasn't a number");
 //     }
 
-     OperationsSetupXml::instance()->writeOperationsFile();
+     ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
 
      // recreate all train manifests
      TrainManager::instance()->setTrainsModified();

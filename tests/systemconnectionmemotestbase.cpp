@@ -18,9 +18,9 @@ SystemConnectionMemoTestBase::SystemConnectionMemoTestBase(QObject *parent) : QO
     /*public*/ void SystemConnectionMemoTestBase::getTest(QString t){
        if(scm->provides(t)){
           // if the manager reports providing the class, make sure it exists.
-          Assert::assertNotNull("Provides Class " + t/*->getName()*/, scm->get(t), __FILE__, __LINE__);
+          Assert::assertNotNull("Provides Class " + t/*->getName()*/, scm->get(t)->toString(), __FILE__, __LINE__);
        } else {
-          Assert::assertNull("Provides Class " + t/*->getName()*/, scm->get(t), __FILE__, __LINE__);
+          Assert::assertNull("Provides Class " + t/*->getName()*/, scm->get(t)->toString(), __FILE__, __LINE__);
        }
     }
 

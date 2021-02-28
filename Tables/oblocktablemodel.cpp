@@ -64,8 +64,8 @@
  }
  updateNameList();
  initTempRow();
- AbstractManager* mgr = (AbstractManager*)getManager();
- connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ AbstractManager* mgr = (AbstractManager*)getManager()->self();
+ connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 void OBlockTableModel::addHeaderListener(JTable* table)
@@ -962,7 +962,7 @@ void OBlockTableModel::deleteBean(OBlock* bean)
      //java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(bean);
      QVector<PropertyChangeListener*> listener = ((AbstractNamedBean*) bean)->getPropertyChangeListeners();
      for (int i = 0; i < listener.length(); i++) {
-         log->debug(QString::number(i) + ") " + QString(listener.at(i)->metaObject()->className()));
+         log->debug(QString::number(i) + ") " + QString(listener.at(i)->self()->metaObject()->className()));
      }
  }
  if (!noWarnDelete)

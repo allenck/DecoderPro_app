@@ -14,6 +14,7 @@
 #include "logger.h"
 #include <QMessageBox>
 #include "operationssetupxml.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -357,7 +358,7 @@ namespace Operations
   // VSD
   Setup::setVsdPhysicalLocationEnabled(enableVsdCheckBox->isChecked());
   // write the file
-  OperationsSetupXml::instance()->writeOperationsFile();
+  ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
  }
 
  //@Override

@@ -44,7 +44,7 @@ namespace Operations
  {
   //super(tr("MenuSetTrainIcon"));
   log = new Logger("SetTrainIconPositionFrame");
-  routeManager = RouteManager::instance();
+  routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
 
      // labels
      textEastX = new QLabel("   X  ");
@@ -402,7 +402,7 @@ namespace Operations
  }
 
  /*public*/ void SetTrainIconPositionFrame::updateTrainIconCoordinates(Location* l) {
-     foreach (Route* route, RouteManager::instance()->getRoutesByIdList()) {
+     foreach (Route* route, ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRoutesByIdList()) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
              if (rl->getName()==(l->getName())) {
                  log->debug(tr("Updating train icon for route location %1 in route %2").arg(rl->getName()).arg(route->getName()));

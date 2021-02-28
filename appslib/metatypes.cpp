@@ -339,6 +339,8 @@
 #include "decoderindexfile.h"
 #include "querycvdialog.h"
 #include "namedbeanhandlemanager.h"
+#include "catalogtreemodel.h"
+
 
 bool Metatypes::done = false;
 
@@ -693,6 +695,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LncvProgPane>("LncvProgPane");
  qRegisterMetaType<DecoderIndexFile>("DecoderIndexFile");
  qRegisterMetaType<QueryCvDialog>("QueryCvDialog");
+ qRegisterMetaType<CatalogTreeModel>("CatalogTreeModel");
+
 
  Metatypes::done = true;
 }

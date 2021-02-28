@@ -270,13 +270,13 @@ void ATABeanTableFrame::extras()
         /*Class<? extends Manager<E>>*/QString managerClass) {
     Manager/*<E>*/* defaultManager = (Manager*)InstanceManager::getDefault(managerClass);
     // populate comboBox
-    if(qobject_cast<ProxyManager*>(defaultManager)) {
+    if(qobject_cast<ProxyManager*>(defaultManager->self())) {
         comboBox->setManagers(defaultManager);
     } else {
         comboBox->setManagers(manager);
     }
     // set current selection
-    if (qobject_cast<ProxyManager*>(defaultManager)) {
+    if (qobject_cast<ProxyManager*>(defaultManager->self())) {
         UserPreferencesManager* upm = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
         QString systemSelectionCombo = /*this.getClass().getName()*/QString("jmri.jmrit.beantable.")+metaObject()->className() + ".SystemSelected";
         if (upm->getComboBoxLastSelection(systemSelectionCombo) != "") {
@@ -285,13 +285,13 @@ void ATABeanTableFrame::extras()
             comboBox->setSelectedItem(/*memo->get*/(managerClass));
         } else {
             //ProxyManager/*<E>*/* proxy = (ProxyManager/*<E>*/*) manager;
-            if(qobject_cast<ProxyTurnoutManager*>(manager))
+            if(qobject_cast<ProxyTurnoutManager*>(manager->self()))
              comboBox->setSelectedItem(((ProxyTurnoutManager*)manager)->getDefaultManager()->toString());
-            if(qobject_cast<ProxySensorManager*>(manager))
+            if(qobject_cast<ProxySensorManager*>(manager->self()))
              comboBox->setSelectedItem(((ProxySensorManager*)manager)->getDefaultManager()->toString());
-            if(qobject_cast<ProxyLightManager*>(manager))
+            if(qobject_cast<ProxyLightManager*>(manager->self()))
              comboBox->setSelectedItem(((ProxyLightManager*)manager)->getDefaultManager()->toString());
-            if(qobject_cast<ProxyReporterManager*>(manager))
+            if(qobject_cast<ProxyReporterManager*>(manager->self()))
              comboBox->setSelectedItem(((ProxyReporterManager*)manager)->getDefaultManager()->toString());
         }
     } else {

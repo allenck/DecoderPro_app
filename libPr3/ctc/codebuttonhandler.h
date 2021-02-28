@@ -115,24 +115,28 @@ class CodeButtonHandler : public QObject
   friend class OsSectionPropertyChangeEventListener;
 };
 
-class CodeButtonStateChangeListener : public PropertyChangeListener
+class CodeButtonStateChangeListener : public QObject,public PropertyChangeListener
 {
   Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
   CodeButtonHandler* cbh;
  public:
   CodeButtonStateChangeListener(CodeButtonHandler* cbh) {this->cbh = cbh;}
+  QObject* self() override{return (QObject*)this;}
  public slots:
-  void propertyChange(PropertyChangeEvent* e) {cbh->codeButtonStateChange(e); }
+  void propertyChange(PropertyChangeEvent* e) override {cbh->codeButtonStateChange(e); }
 };
 
-class OsSectionPropertyChangeEventListener  : public PropertyChangeListener
+class OsSectionPropertyChangeEventListener  : public QObject,public PropertyChangeListener
 {
   Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
   CodeButtonHandler* cbh;
  public:
   OsSectionPropertyChangeEventListener(CodeButtonHandler* cbh) {this->cbh = cbh;}
+  QObject* self() override{return (QObject*)this;}
  public slots:
-  void propertyChange(PropertyChangeEvent* e) {cbh->osSectionPropertyChangeEvent(e); }
+  void propertyChange(PropertyChangeEvent* e) override {cbh->osSectionPropertyChangeEvent(e); }
 };
 
 #endif // CODEBUTTONHANDLER_H

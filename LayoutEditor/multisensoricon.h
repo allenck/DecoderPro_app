@@ -16,9 +16,10 @@ public:
   /*static*/ NamedIcon* icon;
     MultiSensorIconEntry(NamedIcon* icon, NamedBeanHandle<Sensor*>* namedSensor);
 };
-class MultiSensorIcon : public PositionableLabel
+class MultiSensorIcon : public PositionableLabel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
 
     //explicit MultiSensorIcon(QObject *parent = 0);
@@ -61,10 +62,11 @@ public:
          NamedIcon* icon;
     };
  /*public*/ QString getGroupName()override;
+  QObject* self() override {return (QObject*)this;}
 
 public slots:
     // update icon as state of turnout changes
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
     void updateItem();
     /*public*/ void setInactiveIcon(NamedIcon* i);
     /*public*/ void setInconsistentIcon(NamedIcon* i);

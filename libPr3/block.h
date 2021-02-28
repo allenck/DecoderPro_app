@@ -231,13 +231,16 @@ private:
     /*private*/ int infoMessageCount = 0;
 };
 
-class BlockSensorListener : public PropertyChangeListener
+class BlockSensorListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  Block* block;
 public:
  BlockSensorListener(Block* block) {this->block = block;}
+ QObject* self() override{return (QObject*)this;}
+
 public slots:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*)override;
 };
 #endif // BLOCK_H

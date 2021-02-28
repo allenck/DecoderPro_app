@@ -143,15 +143,17 @@ public:
     }
 };
 
-class NxButtonListener : public PropertyChangeListener
+class NxButtonListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  PointDetails* pd;
 public:
  NxButtonListener(PointDetails* pd) {this->pd = pd;}
- void propertyChange(PropertyChangeEvent* e)
+ void propertyChange(PropertyChangeEvent* e) override
  {
   pd->nxButtonStateChange(e);
  }
+ QObject* self() override{return (QObject*)this;}
 };
 #endif // POINTDETAILS_H

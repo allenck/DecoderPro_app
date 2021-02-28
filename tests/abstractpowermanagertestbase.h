@@ -58,12 +58,12 @@ protected:
     static /*protected*/ bool listenerResult;// = false;
     friend class Listen;
 };
-/*protected*/ class Listen : public PropertyChangeListener {
+/*protected*/ class Listen : public QObject, public PropertyChangeListener {
 Q_OBJECT
-    AbstractPowerManagerTestBase* tb;
+    Q_INTERFACES(PropertyChangeListener)AbstractPowerManagerTestBase* tb;
 public:
     Listen(AbstractPowerManagerTestBase* tb) {this->tb = tb;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e) {
         tb->listenerResult = true;

@@ -27,7 +27,6 @@ namespace Operations {
  /*public*/ RollingStockAttribute::RollingStockAttribute(QObject *parent) :
   PropertyChangeSupport(parent)
  {
-  pcs = new PropertyChangeSupport(this);
   list = QStringList();
   maxNameLength = 0;
   log = new Logger("RollingStockAttribute");
@@ -147,9 +146,11 @@ namespace Operations {
 
  /*public*/ int RollingStockAttribute::getMaxNameLength() {
      if (maxNameLength == 0) {
+      maxName = "";
          maxNameLength = MIN_NAME_LENGTH;
          foreach (QString name, getNames()) {
              if (name.length() > maxNameLength) {
+                 maxName = name;
                  maxNameLength = name.length();
              }
          }
@@ -236,6 +237,6 @@ namespace Operations {
  }
 #endif
  /*protected*/ void RollingStockAttribute::firePropertyChange(QString p, QVariant old, QVariant n) {
-     pcs->firePropertyChange(p, old, n);
+     firePropertyChange(p, old, n);
  }
 }

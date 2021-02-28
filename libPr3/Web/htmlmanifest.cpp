@@ -11,6 +11,7 @@
 #include "routelocation.h"
 #include "location.h"
 #include "stringescapeutils.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 /**
@@ -578,7 +579,7 @@ using namespace Operations;
    return String::format(locale, strings->getProperty(this->resourcePrefix + "ValidityWithSchedule"),
 //              getDate((new ISO8601DateFormat()).parse(this->getJsonManifest().value(JsonOperations::DATE).toString())),
                 getDate(QDateTime::fromString(this->getJsonManifest().value(JsonOperations::DATE).toString(),Qt::ISODate)),
-              Operations::TrainScheduleManager::instance()->getScheduleById(train->getId())->toString());
+              ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(train->getId())->toString());
   }
   else
   {

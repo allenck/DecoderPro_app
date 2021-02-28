@@ -25,12 +25,14 @@ private:
  DecVariableValue* _var;
  Logger* logit;
 };
-class DVSPropertyChangeListener : public PropertyChangeListener
+class DVSPropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
-  DecVarSlider* self;
+  Q_INTERFACES(PropertyChangeListener)
+  DecVarSlider* decVarSlider;
  public:
-  DVSPropertyChangeListener(DecVarSlider* self);
+  DVSPropertyChangeListener(DecVarSlider* decVarSlider);
+  QObject* self() override{return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent*);
 };

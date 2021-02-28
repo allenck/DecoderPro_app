@@ -37,19 +37,21 @@ protected:
  friend class ALSLightListener;
 };
 
-class ALSLightListener : public PropertyChangeListener {
+class ALSLightListener : public QObject,public PropertyChangeListener {
  AbstractLightServer* asl;
 Q_OBJECT
+ Q_INTERFACES(PropertyChangeListener)
 public:
     ALSLightListener(QString lightName, AbstractLightServer* asl) {
      this->asl = asl;
         name = lightName;
         light = InstanceManager::lightManagerInstance()->getLight(lightName);
     }
-
+    QObject* self() override{return (QObject*)this;}
+public slots:
     // update state as state of light changes
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e) {
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override {
         // If the Commanded State changes, show transition state as "<inconsistent>"
         if (e->getPropertyName()==("KnownState")) {
             int now = ( e->getNewValue()).toInt();

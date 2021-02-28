@@ -25,6 +25,7 @@
 #include "control.h"
 #include "carcolors.h"
 #include "cartypes.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -104,7 +105,7 @@ namespace Operations
          QString valid = QString(messageFormatText = TrainManifestText::getStringValid()).arg(
                  getDate(true));
          if (Setup::isPrintTimetableNameEnabled()) {
-             TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(
+             TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
                      trainManager->getTrainScheduleActiveId());
              if (sch != NULL) {
                  valid = valid + " (" + sch->getName() + ")";
@@ -370,7 +371,7 @@ namespace Operations
                                                  padAndTruncateString(car->getLength() + LENGTHABV, Control::max_len_string_length_name)).arg(
                                                  padAndTruncateString(car->getLoadName(), CarLoads::instance()->getMaxNameLength())).arg(
                                                  padAndTruncateString(trackName, locationManager->getMaxTrackNameLength())).arg(
-                                                 padAndTruncateString(car->getColor(), CarColors::instance()->getMaxNameLength())));
+                                                 padAndTruncateString(car->getColor(), ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength())));
                              }
                          }
                      }

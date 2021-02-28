@@ -27,6 +27,7 @@
 #include "trainmanager.h"
 #include "trainschedule.h"
 #include "trainschedulemanager.h"
+#include "instancemanager.h"
 
 //Track::Track(QObject *parent) :
 //  QObject(parent)
@@ -1658,13 +1659,13 @@ if (loads.length() == 0) {
   {
    // check train schedules
    if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-           && TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId()) == NULL)
+           && ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId()) == NULL)
    {
        status = (tr("Not Valid <%1>").arg(si->getSetoutTrainScheduleId()));
        break;
    }
    if (si->getPickupTrainScheduleId()!=(ScheduleItem::NONE)
-           && TrainScheduleManager::instance()->getScheduleById(si->getPickupTrainScheduleId()) == NULL)
+           && ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId()) == NULL)
    {
        status = (tr("Not Valid <%1>").arg(si->getPickupTrainScheduleId()));
        break;
@@ -1816,7 +1817,7 @@ if (loads.length() == 0) {
  /*private*/ QString Track::checkScheduleItem(ScheduleItem* si, Car* car) {
      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
              && TrainManager::instance()->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
-         TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId());
+         TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
          if (sch != NULL) {
              return SCHEDULE + " (" + getScheduleName() + ") " + tr("requestCarOnly") + " ("
                      + sch->getName() + ")";
@@ -1927,12 +1928,12 @@ if (loads.length() == 0) {
       // build return message
       QString timetableName = "";
       QString currentTimetableName = "";
-      TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(
+      TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
               TrainManager::instance()->getTrainScheduleActiveId());
       if (sch != NULL) {
           timetableName = sch->getName();
       }
-      sch = TrainScheduleManager::instance()->getScheduleById(currentSi->getSetoutTrainScheduleId());
+      sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(currentSi->getSetoutTrainScheduleId());
       if (sch != NULL) {
           currentTimetableName = sch->getName();
       }

@@ -27,6 +27,7 @@ public:
     /*public*/ SignalMast* provideSignalMast(QString name) override;
     /*public*/ SignalMast* getBySystemName(QString key) const override;
     /*public*/ SignalMast* getByUserName(QString key) const override;
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
 #if 1
     /*public*/ void addRepeater(SignalMastRepeater* rp) throw (JmriException);
     /*public*/ void removeRepeater(SignalMastRepeater* rp);

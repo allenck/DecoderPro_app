@@ -38,14 +38,16 @@ protected:
 
 };
 
-/*protected*/ class SSTurnoutListener : public PropertyChangeListener {
+/*protected*/ class SSTurnoutListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  AbstractTurnoutServer* abstractTurnoutServer;
  QString name;// = null;
  Turnout* turnout = nullptr;
 
 public:
     /*protected*/ SSTurnoutListener(QString turnoutName, AbstractTurnoutServer* abstractTurnoutServer);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);

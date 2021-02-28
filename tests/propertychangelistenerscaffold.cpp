@@ -10,8 +10,8 @@
 // /*public*/ class PropertyChangeListenerScaffold implements PropertyChangeListener {
 
 
-/*public*/ PropertyChangeListenerScaffold::PropertyChangeListenerScaffold(QObject *parent)
-: PropertyChangeListener(parent) {
+/*public*/ PropertyChangeListenerScaffold::PropertyChangeListenerScaffold(/*QObject *parent*/)
+: PropertyChangeListener(/*parent*/) {
    propertyChanged = false;
    callCount = 0;
    lastChange = "";

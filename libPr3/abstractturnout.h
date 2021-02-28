@@ -11,17 +11,18 @@
 
 class TurnoutOperation;
 class TurnoutOperator;
-class LIBPR3SHARED_EXPORT AbstractTurnout : public Turnout
+class LIBPR3SHARED_EXPORT AbstractTurnout : public Turnout, public PropertyChangeListener
 {
  friend class InternalTurnoutManager;
  Q_OBJECT
+ Q_INTERFACES(PropertyChangeListener)
 public:
  explicit AbstractTurnout(QObject *parent = 0);
  /*public*/ int getKnownState() override;
  /*public*/ QString describeState(int state) override;
 
      //@Override
-     /*public*/ QString getBeanType() {
+     /*public*/ QString getBeanType() override{
          return tr("Turnout");
      }
     /**
@@ -153,12 +154,13 @@ public:
     /*public*/ float getStraightLimit() override;
     /*public*/ QString getStraightSpeed() override;
     /*public*/ void setStraightSpeed(QString s)const  throw(JmriException) override;
+    QObject* self() override{return (QObject*)this;}
 
 signals:
     //void propertyChange(PropertyChangeEvent *);
 
 public slots:
-    void propertyChange(PropertyChangeEvent *evt);
+    void propertyChange(PropertyChangeEvent *evt) override;
 
 private:
     mutable QString _divergeSpeed;

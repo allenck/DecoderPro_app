@@ -216,14 +216,14 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
 //        };
   try
   {
-   //nxPairs.addPropertyChangeListener(propertyNXListener);
-   connect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
+   nxPairs->addPropertyChangeListener(propertyNXListener);
+   //connect(nxPairs->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
    nxPairs->automaticallyDiscoverEntryExitPairs(panels->at(selectPanel->currentIndex()), typeBox->currentIndex());
   }
   catch (JmriException e)
   {
-   //nxPairs->removePropertyChangeListener(propertyNXListener);
-   disconnect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
+   nxPairs->removePropertyChangeListener(propertyNXListener);
+   //disconnect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
    //OptionPane.showMessageDialog(NULL, e.toString());
    entryExitFrame->setVisible(false);
   }
@@ -366,7 +366,7 @@ AEPTableModel::AEPTableModel(LayoutEditor* panel, AddEntryExitPairPanel* parent)
 
  setPanel(panel);
  //nxPairs.addPropertyChangeListener(this);
- connect(parent->nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(parent->nxPairs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  source = parent->nxPairs->getNxSource(panel);
  dest = parent->nxPairs->getNxDestination();
  log = new Logger("AEPTableModel");

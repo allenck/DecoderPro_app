@@ -15,6 +15,8 @@
 #include "copyrosteritemaction.h"
 //#include "twopanetbwindow.h"
 #include "paneprogframe.h"
+#include "rosterentryselector.h"
+#include "rostergroupselector.h"
 
 namespace Ui {
 class RosterFrame;
@@ -36,17 +38,17 @@ class RosterEntry;
 class Roster;
 class PaneProgFrame;
 class RosterEntryUpdateListener;
-class LIBPR3SHARED_EXPORT RosterFrame : public JmriJFrame
+class LIBPR3SHARED_EXPORT RosterFrame : public JmriJFrame, public RosterEntrySelector, public RosterGroupSelector
 {
     Q_OBJECT
-
+Q_INTERFACES(RosterEntrySelector RosterGroupSelector)
 public:
     explicit RosterFrame(QWidget *parent = 0);
     RosterFrame(QString name, QWidget *parent = 0);
     RosterFrame(QString name, QString menubarFile, QString toolbarFile, QWidget *parent = 0);
     ~RosterFrame();
     RosterFrame(const RosterFrame&) : JmriJFrame() {}
-    QString getTitle();
+    QString getTitle() override;
 //    void propertyChange(PropertyChangeEvent*);
     //static int openWindowInstances;// = 0;
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
@@ -57,12 +59,13 @@ public:
     /*public*/ void hideBottomPane(bool hide);
     QSignalMapper* currentMapper;
     /*public*/ void hideGroupsPane(bool hide);
-    /*public*/ QString getSelectedRosterGroup();
-    /*public*/ QList<RosterEntry*>* getSelectedRosterEntries();
+    /*public*/ QString getSelectedRosterGroup() override;
+    /*public*/ QList<RosterEntry*>* getSelectedRosterEntries()override;
     /*public*/ void setTitle(QString title)  override;
     /*public*/ QVariant getProperty(QString key) override;
     /*public*/ void setProgrammerLaunch(int buttonId, QString programmer, QString buttonText);
     /*public*/ void setSelectedRosterGroup(QString rosterGroup);
+    QObject* self() override{return (QObject*)this;}
 
 
 public slots:
@@ -205,16 +208,19 @@ protected slots:
  friend class DefaultFilePropertyChangeListener;
 };
 
-class  PwrListener : public PropertyChangeListener
+class  PwrListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  PwrListener(RosterFrame* parent)
  {
   this->parent = parent;
 
  }
- void propertyChange(PropertyChangeEvent *e)
+ QObject* self() override{return (QObject*)this;}
+ public slots:
+ void propertyChange(PropertyChangeEvent *e) override
  {
   if(e->getPropertyName() == "Power")
   {
@@ -284,11 +290,13 @@ protected:
     }
 };
 
-class RosterEntryUpdateListener : public PropertyChangeListener
+class RosterEntryUpdateListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
     RosterEntryUpdateListener(RosterFrame* f);
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *);
 
@@ -337,12 +345,14 @@ public:
     }
 };
 
-class DefaultFilePropertyChangeListener : public PropertyChangeListener
+class DefaultFilePropertyChangeListener :public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  RosterFrame* frame;
 public:
  DefaultFilePropertyChangeListener(RosterFrame* frame) {this->frame = frame;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt);
 };

@@ -31,6 +31,8 @@
 #include "routecopyaction.h"
 #include "settrainiconrouteaction.h"
 #include "printrouteaction.h"
+#include "instancemanager.h"
+
 namespace Operations
 {
 /**
@@ -100,7 +102,7 @@ namespace Operations
      QString routeName = NULL;
 
      // load managers
-     routeManager = RouteManager::instance();
+     routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
 
      // Set up the jtable in a Scroll Pane..
      routePane = new QGroupBox(/*routeTable*/);
@@ -246,7 +248,7 @@ namespace Operations
 
      // get notified if combo box gets modified
      //LocationManager::instance().addPropertyChangeListener(this);
-     connect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // set frame size and route for display
      initMinimumSize(QSize(Control::panelWidth700, Control::panelHeight400));
  }

@@ -124,6 +124,7 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+    namedbeancombobox.cpp \
     serialport.cpp \
     dccmanufacturerlist.cpp \
     lnconnectiontypelist.cpp \
@@ -1109,6 +1110,7 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+    namedbeancombobox.h \
     serialport.h \
     dccmanufacturerlist.h \
     lnconnectiontypelist.h \
@@ -2011,7 +2013,6 @@ HEADERS += \
     rfid/addressedidtag.h \
     rfid/reportervariant.h \
     loconet/lndeferprogrammer.h \
-    vetoablechangeprovider.h \
     abstractproxyturnoutmanager.h \
     proxyturnoutmanagerxml.h \
     proxysensormanagerxml.h \

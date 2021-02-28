@@ -99,9 +99,9 @@
 // }
 // else
  {
-  QPointer<PropertyChangeListener> l = listener;
-  this->map->add("", l);
-  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+  //QPointer<PropertyChangeListener> l = listener;
+  this->map->add("", /*l*/listener);
+  //connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -123,7 +123,7 @@
   return;
  }
 #if 1
- if (qobject_cast<PropertyChangeListenerProxy*>(listener) != nullptr)
+ if (qobject_cast<PropertyChangeListenerProxy*>(listener->self()) != nullptr)
  {
   PropertyChangeListenerProxy* proxy =
                 (PropertyChangeListenerProxy*)listener;
@@ -135,7 +135,7 @@
 #endif
  {
   this->map->remove("", listener);
-  disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+//  disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -199,7 +199,7 @@
  if (listener != NULL)
  {
   this->map->add(propertyName, listener);
-  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+//  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -260,7 +260,7 @@
  * @param oldValue      the old value of the property
  * @param newValue      the new value of the property
  */
-/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue)
+/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue) const
 {
  if (!oldValue.isNull() && oldValue==(newValue))
   return;
@@ -306,7 +306,7 @@
  *
  * @param event  the {@code PropertyChangeEvent} to be fired
  */
-/*public*/ void PropertyChangeSupport::firePropertyChange(PropertyChangeEvent* event)
+/*public*/ void PropertyChangeSupport::firePropertyChange(PropertyChangeEvent* event) const
 {
  QVariant oldValue = event->getOldValue();
  QVariant newValue = event->getNewValue();
@@ -319,12 +319,12 @@
 
   fire(common, event);
   fire(named, event);
-  emit propertyChange(event);
+  //emit propertyChange(event);
   foreach (PropertyChangeListener* l, common)
   {
-   if(!QMetaObject::invokeMethod(l, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
+   if(!QMetaObject::invokeMethod(/*l->self()*/l->self(), "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
    {
-       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->metaObject()->className()));
+       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->self()->metaObject()->className()));
        return;
    }
   }
@@ -338,21 +338,24 @@
   foreach(PropertyChangeListener* listener, listeners)
   {
    if(listener != NULL)
-   {
-    //if(qobject_cast<PropertyChangeListener*>(listener) != NULL)
+   { // NOTE: listener MUST be derived from PropertyChangeListener!!!
+    if(qobject_cast<PropertyChangeListener*>(listener->self()) != NULL)
     {
      //((PropertyChangeListener*)listener)->propertyChange(event);
-     if(!QMetaObject::invokeMethod(listener, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
+     QObject* s = listener->self();
+     //int ix = s->metaObject()->indexOfMethod("propertyChange");
+
+     if(!QMetaObject::invokeMethod(s, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent *, event)))
      {
-         Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(listener->metaObject()->className()));
+         Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(s->metaObject()->className()));
          return;
      }
     }
-//    else
-//    {
-//     Logger::error(tr("not implemented %1").arg(listener->metaObject()->className()));
-//    //Q_ASSERT(false);
-//    }
+    else
+    {
+     Logger::error(tr("not implemented %1").arg(listener->self()->metaObject()->className()));
+    //Q_ASSERT(false);
+    }
      // NOTE: Class must have a Q_OBJECT macro otherwise you will get  a "void value not ignored as it ought to be error on Q_OBJECT!
    }
   }
@@ -376,7 +379,7 @@
  * @param newValue      the new value of the property
  * @since 1.5
  */
-/*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue)
+/*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue) const
 {
  if (oldValue == QVariant() || newValue == QVariant() || !(oldValue == newValue))
  {

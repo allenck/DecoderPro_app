@@ -33,7 +33,7 @@
     extendedtime = false;
     log = new Logger("PointDetails");
     pcs = new PropertyChangeSupport(this);
-    nxButtonListener = new PropertyChangeListener(this);
+    nxButtonListener = new NxButtonListener(this);//new PropertyChangeListener(this);
 
     this->facing=facing;
     protectingBlocks = protecting;

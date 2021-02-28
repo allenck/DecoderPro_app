@@ -8,10 +8,14 @@
 #include "javaqt_global.h"
 //template <typename T> class NamedBeanhandle;
 //template <class T>
+#include "instancemanagerautodefault.h"
 
-class JAVAQTSHARED_EXPORT NamedBeanHandleManager:  public AbstractNamedBeanHandleManager
+
+class JAVAQTSHARED_EXPORT NamedBeanHandleManager:  public AbstractNamedBeanHandleManager, public InstanceManagerAutoDefault
 {
-//Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
 explicit NamedBeanHandleManager(QObject *parent = 0);
  ~NamedBeanHandleManager() {}
@@ -35,6 +39,7 @@ NamedBeanHandle<T>* getNamedBeanHandle(QString name, T bean)
  namedBeanHandles->append(temp);
  return temp;
 }
+QObject* self() {return (QObject*)this;}
 
 /**
 * A Method to update the name on a bean.
@@ -72,8 +77,8 @@ template<class T>
 /*public*/ QStringList getSystemNameArray() override;
 /*public*/ QStringList getSystemNameList()override;
 PropertyChangeSupport* pcs; // = new PropertyChangeSupport(this);
-/*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
-/*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
+///*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
+///*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
  /*public*/ void Register(NamedBean* n)const override;
 /*public*/ void deregister(NamedBean* n)const override;
 /*public*/ int getXMLOrder()const override;

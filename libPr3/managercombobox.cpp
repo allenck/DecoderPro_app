@@ -75,17 +75,17 @@
      *                {@link ProxyManager#getDefaultManager()}
      */
     /*public*/ void ManagerComboBox::setManagers(/*@Nonnull*/ Manager/*<B>*/* manager) {
-        if (qobject_cast<ProxyManager*>(manager)) {
+        if (qobject_cast<ProxyManager*>(manager->self())) {
             //ProxyManager<B> proxy = (ProxyManager<B>) manager;
-            if(qobject_cast<ProxyTurnoutManager*>(manager))
+            if(qobject_cast<ProxyTurnoutManager*>(manager->self()))
             //setManagers(proxy.getDisplayOrderManagerList(), proxy.getDefaultManager());
-             setManagers(((ProxyTurnoutManager*)manager)->getDisplayOrderManagerList(), ((ProxyTurnoutManager*)manager)->getDefaultManager());
-            if(qobject_cast<ProxySensorManager*>(manager))
-             setManagers(((ProxySensorManager*)manager)->getDisplayOrderManagerList(), ((ProxySensorManager*)manager)->getDefaultManager());
-            if(qobject_cast<ProxyLightManager*>(manager))
-             setManagers(((ProxyLightManager*)manager)->getDisplayOrderManagerList(), ((ProxyLightManager*)manager)->getDefaultManager());
-            if(qobject_cast<ProxyReporterManager*>(manager))
-             setManagers(((ProxyReporterManager*)manager)->getDisplayOrderManagerList(), ((ProxyReporterManager*)manager)->getDefaultManager());
+             setManagers(((ProxyTurnoutManager*)manager->self())->getDisplayOrderManagerList(), ((ProxyTurnoutManager*)manager->self())->getDefaultManager());
+            if(qobject_cast<ProxySensorManager*>(manager->self()))
+             setManagers(((ProxySensorManager*)manager->self())->getDisplayOrderManagerList(), ((ProxySensorManager*)manager->self())->getDefaultManager());
+            if(qobject_cast<ProxyLightManager*>(manager->self()))
+             setManagers(((ProxyLightManager*)manager->self())->getDisplayOrderManagerList(), ((ProxyLightManager*)manager->self())->getDefaultManager());
+            if(qobject_cast<ProxyReporterManager*>(manager->self()))
+             setManagers(((ProxyReporterManager*)manager->self())->getDisplayOrderManagerList(), ((ProxyReporterManager*)manager->self())->getDefaultManager());
         } else {
             QList<Manager/*<B>*/*> list = QList<Manager/*<B>*/*>();
             list.append(manager);

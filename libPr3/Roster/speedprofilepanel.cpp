@@ -447,7 +447,7 @@ void SpeedProfilePanel::setupProfile()
 //  };
   startListener = new StartListenerB(this);
   //startSensor.addPropertyChangeListener(startListener);
-  connect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
   int startstep = speedStepFrom->text().toInt();
   Q_ASSERT(startstep > 0 && startstep <= 126);
   isForward = true;
@@ -557,10 +557,10 @@ void SpeedProfilePanel::startProfile()
  }
  startSensor = middleBlockSensor->getSensor();
  //startSensor.addPropertyChangeListener(startListener);
- connect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 
  //finishSensor.addPropertyChangeListener(finishListener);
- connect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  t->setIsForward(isForward);
  log->debug("Set speed to " + QString::number(profileSpeed) + " isForward " + (isForward?"yes":"no"));
  t->setSpeedSetting(profileSpeed);
@@ -582,7 +582,7 @@ void SpeedProfilePanel::stopCurrentSpeedStep()
  timerDuration = durationTimer->nsecsElapsed();
  stepCalculated = true;
  //finishSensor.removePropertyChangeListener(finishListener);
- disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  sourceLabel->setText(tr("Calculating Speed"));
  if (profileStep >= 4)
  {
@@ -599,9 +599,9 @@ void SpeedProfilePanel::stopLoco()
  }
 
  //startSensor.removePropertyChangeListener(startListener);
- disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  //finishSensor.removePropertyChangeListener(finishListener);
- disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 
  isForward = !isForward;
  if (isForward)
@@ -703,17 +703,17 @@ void SpeedProfilePanel::on_cancelButton_clicked()
  if (startSensor != NULL)
  {
   //startSensor.removePropertyChangeListener(startListener);
-  disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if (finishSensor != NULL)
  {
   //finishSensor.removePropertyChangeListener(finishListener);
-  disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if (middleListener != NULL)
  {
   //middleBlockSensor->getSensor().removePropertyChangeListener(middleListener);
-  disconnect(middleBlockSensor->getSensor(), SIGNAL(propertyChange(PropertyChangeEvent*)), middleListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(middleBlockSensor->getSensor(), SIGNAL(propertyChange(PropertyChangeEvent*)), middleListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  }
  setButtonStates(true);
 
@@ -749,7 +749,7 @@ void SpeedProfilePanel::stopTrainTest()
     re->getSpeedProfile()->changeLocoSpeed(t, sectionlength, 0.0f);
     setButtonStates(true);
     //startSensor->removePropertyChangeListener(startListener);
-    disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+    disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 

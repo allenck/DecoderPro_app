@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QHash>
 #include "schedule.h"
+#include "propertychangelistener.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 class QDomDocument;
 class QDomElement;
@@ -14,9 +17,10 @@ class PropertyChangeEvent;
 namespace Operations
 {
  class Schedule;
- class ScheduleManager : public QObject
+ class ScheduleManager : public QObject, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize, public PropertyChangeListener
  {
   Q_OBJECT
+     Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize PropertyChangeListener)
  public:
   explicit ScheduleManager(QObject *parent = 0);
   PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);

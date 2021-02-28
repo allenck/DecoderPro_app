@@ -25,6 +25,7 @@
 #include "trainswitchlists.h"
 #include "operationsxml.h"
 #include "control.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -50,7 +51,7 @@ namespace Operations
  {
   log = new Logger("TrainsScheduleTableFrame");
   trainManager = TrainManager::instance();
-  scheduleManager = TrainScheduleManager::instance();
+  scheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"));
   locationManager = LocationManager::instance();
 
   trainsScheduleModel = new TrainsScheduleTableModel();
@@ -324,7 +325,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::updateCheckboxes(bool selected) {
-     TrainSchedule* ts = TrainScheduleManager::instance()->getScheduleById(getSelectedScheduleId());
+     TrainSchedule* ts = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(getSelectedScheduleId());
      if (ts != NULL) {
          foreach (Train* train, trainManager->getTrainsByIdList()) {
              if (selected) {
@@ -337,7 +338,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::applySchedule() {
-     TrainSchedule* ts = TrainScheduleManager::instance()->getScheduleById(getSelectedScheduleId());
+     TrainSchedule* ts = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(getSelectedScheduleId());
      if (ts != NULL) {
          foreach (Train* train, trainManager->getTrainsByIdList()) {
              train->setBuildEnabled(ts->containsTrainId(train->getId()));

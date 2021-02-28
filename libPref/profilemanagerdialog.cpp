@@ -75,20 +75,20 @@
 //    });
 }
 
-void PMDPropertyChangeListener1::propertyChange(PropertyChangeEvent *evt)
-{
- Profile* profile = ProfileManager::getDefault()->getActiveProfile();
- dlg->profiles->setSelectedValue(profile->getName(), true);
- dlg->profiles->ensureIndexIsVisible(dlg->profiles->currentIndex().row());
- dlg->profiles->repaint();
-}
+//void PMDPropertyChangeListener1::propertyChange(PropertyChangeEvent *evt)
+//{
+// Profile* profile = ProfileManager::getDefault()->getActiveProfile();
+// dlg->profiles->setSelectedValue(profile->getName(), true);
+// dlg->profiles->ensureIndexIsVisible(dlg->profiles->currentIndex().row());
+// dlg->profiles->repaint();
+//}
 
-void PMDPropertyChangeListener2::propertyChange(PropertyChangeEvent * evt)
-{
- if (QString(evt->getSource()->metaObject()->className()) == ("Profile") && evt->getPropertyName() == (Profile::NAME)) {
-     dlg->profileNameChanged(((Profile*) evt->getSource()));
- }
-}
+//void PMDPropertyChangeListener2::propertyChange(PropertyChangeEvent * evt)
+//{
+// if (QString(evt->getSource()->metaObject()->className()) == ("Profile") && evt->getPropertyName() == (Profile::NAME)) {
+//     dlg->profileNameChanged(((Profile*) evt->getSource()));
+// }
+//}
 
 /**
  * This method is called from within the constructor to initialize the form.

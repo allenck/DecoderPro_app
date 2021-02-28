@@ -24,7 +24,7 @@ public:
      * @param comment Null means no comment associated.
      */
     void setComment(QString comment) override;
-    QString getDisplayName();
+    QString getDisplayName() override;
     /*final*/ /*public*/ QString getDisplayName(DisplayOptions displayOptions) override;
 
     /*public*/ QString getFullyFormattedDisplayName() override;
@@ -60,11 +60,11 @@ public:
     /*public java.util.*/QSet<QString> getPropertyKeys() override;
     PropertyChangeSupport* pcs = nullptr;
     /*public*/ void removeProperty(QString key) override;
-    /*public*/ QString describeState(int state);
+    /*public*/ QString describeState(int state) override;
     Q_INVOKABLE /*public*/ bool equals(QObject* obj) override;
     /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
-    /*public*/ uint hashCode() { return qHash(mSystemName, qGlobalQHashSeed());}
+    /*public*/ uint hashCode() override { return qHash(mSystemName, qGlobalQHashSeed());}
     inline bool operator ==(const AbstractNamedBean &e2)
     {
      return mSystemName == e2.mSystemName;

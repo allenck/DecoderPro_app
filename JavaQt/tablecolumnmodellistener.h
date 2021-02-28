@@ -14,8 +14,9 @@ class ChangeEvent;
 class ListSelectionEvent;
 /*public*/ /*interface*/class  TableColumnModelListener : public PropertyChangeListener //extends java.util.EventListener
 {
+  Q_INTERFACES(PropertyChangeListener)
 public:
- TableColumnModelListener(QObject* parent = 0) : PropertyChangeListener(parent) {}
+ //TableColumnModelListener(QObject* parent = 0) : PropertyChangeListener(this) {}
    /** Tells listeners that a column was added to the model. */
    /*public*/ virtual void columnAdded(TableColumnModelEvent* /*e*/) {}
 
@@ -34,5 +35,5 @@ public:
     */
    /*public*/ virtual void columnSelectionChanged(ListSelectionEvent* /*e*/) {}
 };
-
+Q_DECLARE_INTERFACE(TableColumnModelListener, "TableColumnModelListener")
 #endif // TABLECOLUMNMODELLISTENER_H

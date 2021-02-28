@@ -117,8 +117,8 @@ QString AbstractNamedBean::getDisplayName()
                                                    /*@Nonnull*/ PropertyChangeListener* l,
                                                        QString beanRef, QString listenerRef)
 {
- QPointer<PropertyChangeListener> listener = l;
-    pcs->addPropertyChangeListener(propertyName, listener);
+ //QPointer<PropertyChangeListener> listener = (PropertyChangeListener*)l->self();
+    pcs->addPropertyChangeListener(propertyName, /*listener*/l);
     if (beanRef != "") {
         _register->insert(l, beanRef);
     }

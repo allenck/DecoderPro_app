@@ -5,6 +5,7 @@
 #include "location.h"
 #include "logger.h"
 #include "engine.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -30,9 +31,9 @@ namespace Operations
      tm = TrainManager::instance();
      //tm.addPropertyChangeListener(this);
      connect(tm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
-     lm = LocationManager::instance();
+     lm = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
      //lm.addPropertyChangeListener(this);
-     connect(lm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(lm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      addPropertyChangeListeners();
      trains = QMap<QString, TrainListener*>();
  }
@@ -298,7 +299,7 @@ namespace Operations
      }
      if (lm != NULL) {
          //lm.removePropertyChangeListener(this);
-      disconnect(lm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(lm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      //for (Map.Entry<String, TrainListener> train : this.trains.entrySet()) {
      QMapIterator<QString, TrainListener*> it(this->trains);

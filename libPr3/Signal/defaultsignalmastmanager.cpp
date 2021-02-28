@@ -15,11 +15,10 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  log = new Logger("DefaultSignalMastManager");
  repeaterList = new QList<SignalMastRepeater*>();
  registerSelf();
- //jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
- connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
-
+ ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener(this);
+ //connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener(this);
+ //connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
 }
 /**
  * Default implementation of a SignalMastManager.
@@ -93,7 +92,11 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
 /*public*/ SignalMast* DefaultSignalMastManager::getByUserName(QString key) const {
     return (SignalMast*)_tuser->value(key);
 }
-
+//@Override
+//@Nonnull
+/*public*/ QString DefaultSignalMastManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "SignalMasts" : "SignalMast");
+}
 #if 1
 /*public*/ void DefaultSignalMastManager::addRepeater(SignalMastRepeater* rp) throw (JmriException){
     foreach(SignalMastRepeater* rpeat, *repeaterList)

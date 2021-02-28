@@ -6,19 +6,25 @@
 #include "logger.h"
 #include <QtXml>
 #include "appslib_global.h"
+#include "propertychangelistener.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
+#include "propertychangesupport.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 class Reporter;
 class JComboBox;
-class PropertyChangeSupport;
 namespace Operations
 {
  class Track;
  class Location;
- class APPSLIBSHARED_EXPORT LocationManager : public QObject
+ class APPSLIBSHARED_EXPORT LocationManager : public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
+     Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
-  explicit LocationManager(QObject *parent = 0);
+  Q_INVOKABLE explicit LocationManager(QObject *parent = 0);
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "locationsListLength"; // NOI18N
   QT_DEPRECATED /*public*/ static /*synchronized*/ LocationManager* instance();
   /*public*/ void dispose();
@@ -30,7 +36,7 @@ namespace Operations
   /*public*/ QList<Location*> getLocationsByIdList();
   /*public*/ QList<Location*> getList();
   /*public*/ void _register(Location* location);
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  //PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ Location* getLocationByReporter(Reporter* r);
   /*public*/ Location* newLocation(QString name);
   /*public*/ JComboBox* getComboBox();

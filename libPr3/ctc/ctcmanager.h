@@ -12,10 +12,10 @@
 class OtherData;
 class CTCSerialData;
 class ProgramProperties;
-class CtcManager : public QObject, public InstanceManagerAutoDefault/*, public VetoableChangeListener*/
+class CtcManager : public QObject, public InstanceManagerAutoDefault, public VetoableChangeListener
 {
   Q_OBJECT
-  Q_INTERFACES(InstanceManagerAutoDefault /*VetoableChangeListener*/)
+  Q_INTERFACES(InstanceManagerAutoDefault VetoableChangeListener)
  public:
   Q_INVOKABLE explicit CtcManager(QObject *parent = nullptr);
   ~CtcManager() {}

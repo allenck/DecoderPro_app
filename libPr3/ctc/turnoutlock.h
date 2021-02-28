@@ -63,14 +63,16 @@ class TurnoutLock : public QObject
   friend class TurnoutsMonitoredPropertyChangeListener;
 };
 
-class TurnoutsMonitoredPropertyChangeListener : public PropertyChangeListener
+class TurnoutsMonitoredPropertyChangeListener : public QObject,public PropertyChangeListener
 {
   Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
   TurnoutLock* turnoutLock;
  public:
   TurnoutsMonitoredPropertyChangeListener(TurnoutLock* turnoutLock) {this->turnoutLock = turnoutLock;}
+  QObject* self() override{return (QObject*)this;}
  public slots:
-  void propertyChange(PropertyChangeEvent* e)
+  void propertyChange(PropertyChangeEvent* e)override
   {
    turnoutLock->handleTurnoutChange(e);
   }

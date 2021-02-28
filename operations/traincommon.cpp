@@ -1414,7 +1414,7 @@ namespace Operations {
   }
 
   else if (attribute==(Setup::COLOR)) {
-      return " " + padAndTruncateString(rs->getColor(), CarColors::instance()->getMaxNameLength());
+      return " " + padAndTruncateString(rs->getColor(), ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength());
   }
   else if (((attribute==(Setup::LOCATION)) && (isPickup || isLocal))
           || (attribute==(Setup::TRACK) && isPickup))
@@ -1502,7 +1502,7 @@ namespace Operations {
   } else if (attribute==(Setup::NO_ROAD)) {
       return " " + padAndTruncateString("", CarRoads::instance()->getMaxNameLength());
   } else if (attribute==(Setup::NO_COLOR)) {
-      return " " + padAndTruncateString("", CarColors::instance()->getMaxNameLength());
+      return " " + padAndTruncateString("", ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength());
   } // there are four truncated manifest attributes
   else if (attribute==(Setup::NO_DEST_TRACK))
   {
@@ -1719,7 +1719,7 @@ namespace Operations {
                ->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::COLOR)) {
-       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Color(), CarColors::instance()
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Color(), ((CarColors*)InstanceManager::getDefault("CarColors"))
                ->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::OWNER)) {

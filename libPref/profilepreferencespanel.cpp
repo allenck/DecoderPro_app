@@ -9,7 +9,7 @@
 #include "profile.h"
 #include "profiletablemodel.h"
 #include "flowlayout.h"
-#include "searchpathslistmodel.h"
+//#include "searchpathslistmodel.h"
 #include <QFileDialog>
 #include "fileutil.h"
 #include "profilefileview.h"
@@ -262,13 +262,13 @@
 
  jTabbedPane1->addTab(enabledPanel, tr("Config Profiles")); // NOI18N
 
- searchPaths->setModel(new SearchPathsListModel());
+// searchPaths->setModel(new SearchPathsListModel());
 //        searchPaths.addListSelectionListener(new ListSelectionListener() {
 //            /*public*/ void valueChanged(ListSelectionEvent evt) {
 //                searchPathsValueChanged(evt);
 //            }
 //        });
- connect(searchPaths, SIGNAL(clicked(QModelIndex)), this, SLOT(searchPathsValueChanged()));
+// connect(searchPaths, SIGNAL(clicked(QModelIndex)), this, SLOT(searchPathsValueChanged()));
         //jScrollPane2.setViewportView(searchPaths);
 
 

@@ -61,9 +61,9 @@ AbstractTableTabAction::~AbstractTableTabAction()
  QGridLayout* dataPanelLayout;
  dataPanel->setLayout(dataPanelLayout = new QGridLayout());
  //if (getManager() instanceof jmri.managers.AbstractProxyManager)
- if(qobject_cast<ProxyManager*>(getManager())!= nullptr)
+ if(qobject_cast<ProxyManager*>(getManager()->self())!= nullptr)
  {
-  ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager());
+  ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager()->self());
   QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
   AbstractTableAction* a = getNewTableAction("All");
   Q_UNUSED(a);

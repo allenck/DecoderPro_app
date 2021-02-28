@@ -41,11 +41,12 @@ protected:
  friend class ListenO6;
 };
 
-/*protected*/ class ListenO6 : public PropertyChangeListener {
+/*protected*/ class ListenO6 : public QObject, public PropertyChangeListener {
 Q_OBJECT
- AbstractReporterMgrTestBase* base;
+ Q_INTERFACES(PropertyChangeListener)AbstractReporterMgrTestBase* base;
 public:
  ListenO6(AbstractReporterMgrTestBase* base) { this->base = base;}
+QObject* self() {return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);

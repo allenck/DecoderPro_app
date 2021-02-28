@@ -14,10 +14,11 @@
 class PropertyChangeEvent;
 class Timebase;
 class NamedIcon;
-class LIBLAYOUTEDITORSHARED_EXPORT AnalogClock2Display : public PositionableJComponent, public LinkingObject
+class LIBLAYOUTEDITORSHARED_EXPORT AnalogClock2Display : public PositionableJComponent,
+  public LinkingObject, public PropertyChangeListener
 {
  Q_OBJECT
- Q_INTERFACES(LinkingObject)
+ Q_INTERFACES(LinkingObject PropertyChangeListener)
 public:
     //explicit AnalogClock2Display(QWidget *parent = 0);
     /*public*/ AnalogClock2Display(Editor* editor, QObject *parent=0);
@@ -39,23 +40,25 @@ public:
     /*public*/ void setRun(bool next);
     void cleanup();
     /*public*/ void dispose();
-    /*public*/ bool updateScene();
-    /*public*/ QString getURL();
-    /*public*/ void setULRL(QString u);
-    /*public*/ bool setLinkMenu(QMenu* popup);
-    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* event);
-    /*public*/ void setFont(QFont);
-    QObject* jself() {return (QObject*)this;}
+    /*public*/ bool updateScene() override;
+    /*public*/ QString getURL() override;
+    /*public*/ void setULRL(QString u) override;
+    /*public*/ bool setLinkMenu(QMenu* popup) override;
+    /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void setFont(QFont) override;
+    QObject* jself()  override{return (QObject*)this;}
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
-    /*public*/ Border* getBorder() {return _border;}
-    /*public*/ void setEnabled(bool b) {QWidget::setEnabled(b);}
-signals:
+    /*public*/ Border* getBorder()  override{return _border;}
+    /*public*/ void setEnabled(bool b)  override{QWidget::setEnabled(b);}
+    QObject* self() override {return (QObject*)this;}
+
+ signals:
 
 public slots:
     /*public*/ void update();
     void actActivated();
     void rateChange(int);
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*) override;
 
 private:
     Timebase* clock;

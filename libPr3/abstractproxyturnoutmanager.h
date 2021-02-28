@@ -82,10 +82,13 @@ public:
      * Forwards the deregister request to the matching system
      */
     /*public*/ void deregister(NamedBean* s) const override;
-    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
-    /**
-     * @return The system-specific prefix letter for the primary implementation
+    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
+    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
+    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l)override;
+    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l)override;
+    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
+    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
+    /* @return The system-specific prefix letter for the primary implementation
      */
     /*public*/ QString getSystemPrefix() const override;
     /**
@@ -107,10 +110,10 @@ public:
     QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList()  override;
     QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList() override;
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
     /*public*/ Turnout* getBySystemName(/*@Nonnull*/ QString systemName) const ;
     /*public*/ Turnout* getByUserName(/*@Nonnull*/ QString userName) const ;
     /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException);
@@ -134,7 +137,11 @@ private:
     QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
     QMap<QString, QVector<VetoableChangeListener*>*> namedPropertyVetoListenerMap;// = new HashMap<>();
     QString createSystemName(QString curAddress, QString prefix, QString managerType)const throw (JmriException);
-
+    /**
+     * List of names of bound properties requested to be listened to by
+     * PropertyChangeListeners.
+     */
+    /*private*/ /*final*/ QList<QString> boundPropertyNames = QList<QString>();
 protected:
     /**
      * Number of managers available through

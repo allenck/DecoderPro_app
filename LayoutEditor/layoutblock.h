@@ -39,12 +39,13 @@ class ThroughPaths;
 class Routes;
 class LayoutTurnout;
 class LayoutConnectivity;
-class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlock : public AbstractNamedBean
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlock : public AbstractNamedBean, public PropertyChangeListener
 {
     friend class LevelXing;
     friend class LayoutEditor;
     friend class LayoutBlockManager;
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit LayoutBlock(QObject *parent = 0);
     /*public*/ bool enableAddRouteLogging;// = false;
@@ -362,6 +363,7 @@ public:
     /*public*/ int getNeighbourDirection(int i);
     /*public*/ int getNeighbourMetric(int i);
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     
@@ -376,7 +378,7 @@ public slots:
     void blockEditCancelPressed(ActionEvent* a = 0);
     void blockEditDonePressed(ActionEvent* a = 0);
 #endif
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 private:
     //static bool InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() = true;
     QStringList working;// = {"Bi-Directional", "Receive Only", "Send Only"};
@@ -773,14 +775,16 @@ int getPacketId() { return packetRef; }
 friend class LoadXml;
 };
 
-class HandleBlockChangeListener : public PropertyChangeListener
+class HandleBlockChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
     HandleBlockChangeListener(LayoutBlock* parent)
     {
      this->parent = parent;
     }
+    QObject* self() {return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *e) override
     {

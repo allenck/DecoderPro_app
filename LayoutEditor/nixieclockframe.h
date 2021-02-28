@@ -5,19 +5,22 @@
 #include "namedicon.h"
 #include "positionableicon.h"
 #include "jmrijframe.h"
+#include "propertychangelistener.h"
 
 class SimpleTimebase;
 class QPushButton;
 class JLabel;
-class LIBLAYOUTEDITORSHARED_EXPORT NixieClockFrame : public JmriJFrame
+class LIBLAYOUTEDITORSHARED_EXPORT NixieClockFrame : public JmriJFrame, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     /*public*/ NixieClockFrame( QObject *parent=0);
     /*public*/ void scaleImage();
 //    void paint(QGraphicsScene* g);
-    /*public*/ void dispose();
- /*public*/ QString getClassName();
+    /*public*/ void dispose()override;
+ /*public*/ QString getClassName() override;
+  QObject* self() {return (QObject*)this;}
 
 signals:
 

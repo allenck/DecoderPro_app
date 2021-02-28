@@ -267,8 +267,8 @@ void ControllerFilterFrame::on_save()
     }
 
     /*public*/ void AbstractFilterModel::dispose() {
-        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
-        ((RouteManager*)InstanceManager::getDefault("RouteManager"))->removePropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
+        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener(/*QPointer<PropertyChangeListener>((PropertyChangeListener*)*/this);
+        ((RouteManager*)InstanceManager::getDefault("RouteManager"))->removePropertyChangeListener(/*QPointer<PropertyChangeListener>((PropertyChangeListener*)*/this);
     }
 
     //@Override
@@ -330,7 +330,7 @@ void ControllerFilterFrame::on_save()
     {
      mgr = InstanceManager::turnoutManagerInstance();
      sysNameList = mgr->getSystemNameList();
-     mgr->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
+     mgr->addPropertyChangeListener(/*QPointer<PropertyChangeListener>((PropertyChangeListener*)*/this);
     }
 
     //@Override
@@ -428,7 +428,7 @@ void ControllerFilterFrame::on_save()
     {
      mgr = (RouteManager*)InstanceManager::getDefault("RouteManager");
      sysNameList = mgr->getSystemNameList();
-     mgr->addPropertyChangeListener(QPointer<PropertyChangeListener>((PropertyChangeListener*)this));
+     mgr->addPropertyChangeListener(/*QPointer<PropertyChangeListener>((PropertyChangeListener*)*/this);
     }
 
     //@Override

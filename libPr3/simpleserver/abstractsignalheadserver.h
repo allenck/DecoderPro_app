@@ -36,8 +36,9 @@ protected:
 friend class ASHSignalHeadListener;
 };
 
-class ASHSignalHeadListener : public PropertyChangeListener {
+class ASHSignalHeadListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     QString name = "";
     SignalHead* signalHead = nullptr;
     AbstractSignalHeadServer* ashs;
@@ -46,6 +47,7 @@ public:
         name = signalHeadName;
         signalHead = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
     }
+    QObject* self() override{return (QObject*)this;}
 public slots:
     // update state as state of signalHead changes
     //@Override

@@ -5,13 +5,15 @@
 #include <QBoxLayout>
 #include "jlabel.h"
 #include "jcombobox.h"
+#include "propertychangelistener.h"
 
 class JActionEvent;
 class GlobalProgrammerManager;
 class PropertyChangeEvent;
-class ProgServiceModeComboBox : public ProgModeSelector
+class ProgServiceModeComboBox : public ProgModeSelector, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
     explicit ProgServiceModeComboBox(QBoxLayout::Direction direction = QBoxLayout::LeftToRight, QWidget *parent = 0);
     /*public*/ Programmer* getProgrammer();
@@ -23,6 +25,7 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ void dispose();
     /*public*/ void actionPerformed(JActionEvent* e = 0);
+    QObject* self() override {return (QObject*)this;}
 
 private:
     // GUI member declarations

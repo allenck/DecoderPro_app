@@ -24,6 +24,7 @@
 #include <QScrollArea>
 #include "carstablemodel.h"
 #include <QRadioButton>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -163,7 +164,7 @@ namespace Operations
                  weight = padAttribute(car->getWeight().trimmed(), Control::max_len_string_weight_name);
              }
              if (cpof->printCarColor->isChecked()) {
-                 color = padAttribute(car->getColor().trimmed(), CarColors::instance()->getMaxNameLength());
+                 color = padAttribute(car->getColor().trimmed(), ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength());
              }
              if (cpof->printCarLoad->isChecked()) {
                  load = padAttribute(car->getLoadName().trimmed(), CarLoads::instance()->getMaxNameLength());
@@ -247,7 +248,7 @@ namespace Operations
              + padAttribute(tr("Type"), CarTypes::instance()->getMaxFullNameLength())
              + (cpof->printCarLength->isChecked() ? tr("Len") + "  " : "")
              + (cpof->printCarWeight->isChecked() ? "     " : "")
-             + (cpof->printCarColor->isChecked() ? padAttribute(tr("Color"), CarColors::instance()
+             + (cpof->printCarColor->isChecked() ? padAttribute(tr("Color"), ((CarColors*)InstanceManager::getDefault("CarColors"))
                              ->getMaxNameLength()) : "")
              + (cpof->printCarLoad->isChecked() ? padAttribute(tr("Load"), CarLoads::instance()
                              ->getMaxNameLength()) : "")

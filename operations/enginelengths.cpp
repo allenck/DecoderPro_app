@@ -3,6 +3,7 @@
 #include "logger.h"
 #include "control.h"
 #include "enginemanagerxml.h"
+#include "instancemanager.h"
 
 //EngineLengths::EngineLengths()
 //{
@@ -90,8 +91,15 @@ namespace Operations
 
  /*protected*/ void EngineLengths::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     EngineManagerXml::instance()->setDirty(true);
+     ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
+
+ //@Override
+    /*public*/ void EngineLengths::initialize() {
+        InstanceManager::getDefault("OperationsSetupXml"); // load setup
+        // create manager to load engines and their attributes
+        InstanceManager::getDefault("EngineManagerXml");
+    }
 
 }

@@ -105,7 +105,7 @@ namespace Operations
   // combo boxes
   roadComboBox = CarRoads::instance()->getComboBox();
   typeComboBox = CarTypes::instance()->getComboBox();
-  colorComboBox = CarColors::instance()->getComboBox();
+  colorComboBox = ((CarColors*)InstanceManager::getDefault("CarColors"))->getComboBox();
   lengthComboBox = CarLengths::instance()->getComboBox();
   ownerComboBox = new JComboBox(); //.instance().getComboBox();
   locationBox = locationManager->getComboBox();
@@ -404,21 +404,21 @@ namespace Operations
 
   // get notified if combo box gets modified
   //CarRoads::instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarLoads::instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarLengths.instance().addPropertyChangeListener(this);
-  connect(CarLengths::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarLengths::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarColors.instance().addPropertyChangeListener(this);
-  connect(CarColors::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarOwners.instance().addPropertyChangeListener(this);
-  connect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //locationManager.addPropertyChangeListener(this);
-  connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //carManager.addPropertyChangeListener(this);
-  connect(carManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   adjustSize();
   setMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
@@ -460,12 +460,12 @@ namespace Operations
      }
      lengthComboBox->setCurrentIndex(lengthComboBox->findText(car->getLength()));
 
-     if (!CarColors::instance()->containsName(car->getColor())) {
+     if (!((CarColors*)InstanceManager::getDefault("CarColors"))->containsName(car->getColor())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("colorNameNotExist"),
 //                 new Object[]{car.getColor()}), tr("carAddColor"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add car color?"), tr("Color \"%1\" does not exist in your roster, add?").arg(car->getColor()), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
       {
-             CarColors::instance()->addName(car->getColor());
+             ((CarColors*)InstanceManager::getDefault("CarColors"))->addName(car->getColor());
          }
      }
 
@@ -506,7 +506,7 @@ namespace Operations
      }
      // listen for changes in car load
      //car.addPropertyChangeListener(this);
-     connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      CarLoads::instance()->updateComboBox(car->getTypeName(), loadComboBox);
      loadComboBox->setCurrentIndex(loadComboBox->findText(car->getLoadName()));
 
@@ -747,7 +747,7 @@ namespace Operations
              || _car->getNumber()!=(roadNumberTextField->text())) {
          _car = carManager->newCar( roadComboBox->currentText(), roadNumberTextField->text());
          //_car->addPropertyChangeListener(this);
-         connect(_car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         connect(_car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      if (typeComboBox->currentText() != NULL) {
          _car->setTypeName( typeComboBox->currentText());
@@ -1006,7 +1006,7 @@ namespace Operations
      f = new CarAttributeEditFrame();
 //     f->setLocationRelativeTo(this);
      //f.addPropertyChangeListener(this);
-     connect(f->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(f, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      editActive = true;
  QPushButton* source = (QPushButton*)ae;
      if (source == editRoadButton) {
@@ -1037,22 +1037,22 @@ namespace Operations
  /*private*/ void CarEditFrame::removePropertyChangeListeners()
  {
   //CarRoads::instance().removePropertyChangeListener(this);
-  disconnect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarLoads::instance().removePropertyChangeListener(this);
-  disconnect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().removePropertyChangeListener(this);
-  disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //  CarLengths.instance().removePropertyChangeListener(this);
 //  CarColors.instance().removePropertyChangeListener(this);
-  disconnect(CarColors::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //  CarOwners.instance().removePropertyChangeListener(this);
   //locationManager.removePropertyChangeListener(this);
-  disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //carManager.removePropertyChangeListener(this);
-  disconnect(carManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   if (_car != NULL) {
       //_car->removePropertyChangeListener(this);
-   disconnect(_car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   disconnect(_car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
  }
 
@@ -1075,7 +1075,7 @@ namespace Operations
      }
 
      if (e->getPropertyName()==(CarColors::CARCOLORS_CHANGED_PROPERTY)) {
-         CarColors::instance()->updateComboBox(colorComboBox);
+         ((CarColors*)InstanceManager::getDefault("CarColors"))->updateComboBox(colorComboBox);
          if (_car != NULL) {
              colorComboBox->setCurrentIndex(colorComboBox->findText(_car->getColor()));
          }

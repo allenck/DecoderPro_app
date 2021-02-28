@@ -45,6 +45,7 @@ public:
     /*public*/ void setDefaultSensorDebounceGoingActive(long timer) override;
     /*public*/ void setDefaultSensorDebounceGoingInActive(long timer) override;
 //    /*static*/ /*final java.util.regex.Matcher*/ QRegExp numberMatcher("\\d++");// = java.util.regex.Pattern.compile("\\d++").matcher("");
+    QObject* self() {return (QObject*)this;}
 
 signals:
     //void newSensorCreated(AbstractSensorManager*, Sensor* s);

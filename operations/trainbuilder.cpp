@@ -33,6 +33,7 @@
 #include "traincsvmanifest.h"
 #include "buildfailedexception.h"
 #include "joptionpane.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -1632,7 +1633,7 @@ namespace Operations
                  if (car->getPickupScheduleId()==(TrainManager::instance()->getTrainScheduleActiveId())) {
                      car->setPickupScheduleId(Car::NONE);
                  } else {
-                     TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(car->getPickupScheduleId());
+                     TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(car->getPickupScheduleId());
                      if (sch != NULL) {
                          addLine(_buildReport, SEVEN, tr("Exclude car (%1) type (%2) at location (%3, %4) scheduled pickup on (%5)").arg(car->toString(),
                                  car->getTypeName()).arg(car->getLocationName()).arg(car->getTrackName()).arg(sch->getName()));
@@ -3479,9 +3480,9 @@ namespace Operations
              && TrainManager::instance()->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
         log->debug("Schedule item isn't active");
          // build the status message
-         TrainSchedule* aSch = TrainScheduleManager::instance()->getScheduleById(
+         TrainSchedule* aSch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
                  TrainManager::instance()->getTrainScheduleActiveId());
-         TrainSchedule* tSch = TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId());
+         TrainSchedule* tSch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
          QString aName = "";
          QString tName = "";
          if (aSch != NULL) {

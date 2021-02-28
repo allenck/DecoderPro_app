@@ -1535,7 +1535,7 @@ LnIplImplementationTest::LnIplImplementationTest(QObject *parent) : QObject(pare
 
     //@Test
     /*public*/ void LnIplImplementationTest::testConnectMethod() {
-        PropertyChangeListener* l = new PropertyChangeListener(this) ;
+        PropertyChangeListener* l = new LNIPLI_PropertyChangeListener(this) ;
 //        {
 //            @Override
 //            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {

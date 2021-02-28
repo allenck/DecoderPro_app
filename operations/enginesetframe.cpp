@@ -8,6 +8,7 @@
 #include <QScrollArea>
 #include <QGroupBox>
 #include "consist.h"
+#include "instancemanager.h"
 
 //EngineSetFrame::EngineSetFrame()
 //{
@@ -36,7 +37,7 @@ namespace Operations
  /*public*/ EngineSetFrame::EngineSetFrame(QObject* parent) : RollingStockSetFrame(tr("Set Locomotive")) {
      //super(Bundle.getMessage("TitleEngineSet"));
   manager = EngineManager::instance();
-  managerXml = EngineManagerXml::instance();
+  managerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"));
  }
 
  /*public*/ void EngineSetFrame::initComponents()

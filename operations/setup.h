@@ -4,14 +4,17 @@
 #include <QObject>
 #include <QtXml>
 #include "propertychangesupport.h"
+#include "instancemanagerautodefault.h"
 
 class JComboBox;
 namespace Operations
 {
  class Control;
- class Setup : public QObject
+ class Setup : public PropertyChangeSupport, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+   Q_INTERFACES(InstanceManagerAutoDefault)
+
  public:
   explicit Setup(QObject *parent = 0);
   /*public*/ static bool isMainMenuEnabled();
@@ -389,15 +392,12 @@ namespace Operations
    G_SCALE =  11 // NMRA #1
   };
   /*public*/ static void setDoc(QDomDocument doc);
-  PropertyChangeSupport* pcs;
-  static Setup* instance();
 
  signals:
 
  public slots:
 
  private:
-  static Setup* _instance;
 
   // scale ratios from NMRA
   /*private*/ static /*final*/ int Z_RATIO;// 220;

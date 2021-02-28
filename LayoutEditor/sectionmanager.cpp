@@ -263,4 +263,7 @@ Section* SectionManager::createNewSection(QString userName) {
  return "Section";
 }
 
+//void SectionManager::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException){
+
+//}
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SectionManager.class.getName());

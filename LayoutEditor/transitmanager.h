@@ -4,11 +4,14 @@
 #include "logger.h"
 #include "transit.h"
 #include "liblayouteditor_global.h"
+#include "instancemanagerautodefault.h"
 
 class DecimalFormat;
-class LIBLAYOUTEDITORSHARED_EXPORT TransitManager : public AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT TransitManager : public AbstractManager, public InstanceManagerAutoDefault
 {
     Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
     explicit TransitManager(QObject *parent = 0);
     ~TransitManager() override{}

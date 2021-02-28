@@ -4,7 +4,7 @@
 #include "control.h"
 #include "routemanager.h"
 #include "route.h"
-
+#include "instancemanager.h"
 namespace Operations
 {
  /**
@@ -43,7 +43,7 @@ namespace Operations
 //         log.debug("Print cancelled");
 //         return;
 //     }
-  QList<Route*> routes = RouteManager::instance()->getRoutesByNameList();
+  QList<Route*> routes = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRoutesByNameList();
   for (int i = 0; i < routes.size(); i++) {
       Route* route = routes.at(i);
       //try {

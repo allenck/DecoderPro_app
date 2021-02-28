@@ -20,15 +20,18 @@ private:
  /*private*/ QLocale locale;
 friend class LightListener;
 };
-/*private*/ class LightListener : public PropertyChangeListener {
+
+/*private*/ class LightListener : public QObject,public PropertyChangeListener {
 private:
  JsonLightSocketService* jlss;
 Q_OBJECT
+ Q_INTERFACES(PropertyChangeListener)
 protected:
     /*protected*/ /*final*/ Light* light;
 public:
  LightListener();
     /*public*/ LightListener(Light* light, JsonLightSocketService* jlss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
  friend class JsonLightSocketService;

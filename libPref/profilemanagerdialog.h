@@ -60,25 +60,25 @@ private slots:
     friend class PMDPropertyChangeListener2;
 };
 
-class PMDPropertyChangeListener1 : public PropertyChangeListener
-{
- Q_OBJECT
- ProfileManagerDialog* dlg;
-public:
- PMDPropertyChangeListener1(ProfileManagerDialog* dlg) {this->dlg = dlg;}
-public slots:
- void propertyChange(PropertyChangeEvent* evt);
-};
+//class PMDPropertyChangeListener1 : public PropertyChangeListener
+//{
+// Q_OBJECT
+// ProfileManagerDialog* dlg;
+//public:
+// PMDPropertyChangeListener1(ProfileManagerDialog* dlg) {this->dlg = dlg;}
+//public slots:
+// void propertyChange(PropertyChangeEvent* evt);
+//};
 
-class PMDPropertyChangeListener2 : public PropertyChangeListener
-{
- Q_OBJECT
- ProfileManagerDialog* dlg;
-public:
- PMDPropertyChangeListener2(ProfileManagerDialog* dlg) {this->dlg = dlg;}
-public slots:
- void propertyChange(PropertyChangeEvent*evt);
-};
+//class PMDPropertyChangeListener2 : public PropertyChangeListener
+//{
+// Q_OBJECT
+// ProfileManagerDialog* dlg;
+//public:
+// PMDPropertyChangeListener2(ProfileManagerDialog* dlg) {this->dlg = dlg;}
+//public slots:
+// void propertyChange(PropertyChangeEvent*evt);
+//};
 
 
 #endif // PROFILEMANAGERDIALOG_H

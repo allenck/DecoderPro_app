@@ -38,7 +38,7 @@ namespace Operations
   BACK = -1;
   NONE = 0;
 
-  routeManager = RouteManager::instance();
+  routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
 
   // labels
   textX = new JLabel("   X  ");
@@ -75,7 +75,7 @@ namespace Operations
   if (routeName == NULL) {
       return;
   }
-  _route = RouteManager::instance()->getRouteByName(routeName);
+  _route = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteByName(routeName);
   //_route.addPropertyChangeListener(this);
   connect(_route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -169,7 +169,7 @@ namespace Operations
          updateTrainIconCoordinates();
      }
      if (source == saveButton) {
-         RouteManagerXml::instance()->writeOperationsFile();
+         ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->writeOperationsFile();
          if (Setup::isCloseWindowOnSaveEnabled()) {
              dispose();
          }

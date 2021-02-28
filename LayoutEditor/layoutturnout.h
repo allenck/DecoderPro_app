@@ -37,9 +37,10 @@ class QMenuItem;
 class LayoutEditor;
 class LayoutBlock;
 class LayoutEditorTools;
-class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurnout : public LayoutTrack
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurnout : public LayoutTrack, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit LayoutTurnout(QObject *parent = 0);
     // defined constants - turnout types
@@ -362,11 +363,13 @@ public:
                              */
  /*private*/ bool secondTurnoutInverted = false;
  QGraphicsItemGroup* itemGroup = nullptr;
+ QObject* self() override {return (QObject*)this;}
 
 signals:
- void propertyChange(PropertyChangeEvent*);
+ //void propertyChange(PropertyChangeEvent*);
 
 public slots:
+ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  int version;
@@ -536,15 +539,15 @@ class ETWindowListener : public WindowListener
  void windowClosing(QCloseEvent *e);
 };
 
-class MTurnoutListener : public PropertyChangeListener
-{
- Q_OBJECT
- LayoutTurnout* layoutTurnout;
-public:
- MTurnoutListener(LayoutTurnout* layoutTurnout) {this->layoutTurnout = layoutTurnout;}
-public slots:
- void propertyChange(PropertyChangeEvent* e) override;
-};
+//class MTurnoutListener : public PropertyChangeListener
+//{
+// Q_OBJECT
+// LayoutTurnout* layoutTurnout;
+//public:
+// MTurnoutListener(LayoutTurnout* layoutTurnout) {this->layoutTurnout = layoutTurnout;}
+//public slots:
+// void propertyChange(PropertyChangeEvent* e) override;
+//};
 
 /*private*/ /*static*/ class AbstractActionImpl : public AbstractAction
 {

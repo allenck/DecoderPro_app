@@ -2512,7 +2512,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
     //super();
     this->act = act;
     //sectionManager.addPropertyChangeListener(this);
-    connect(act->sectionManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect(act->sectionManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void SectionTableModel::propertyChange(PropertyChangeEvent* e) {
@@ -2646,7 +2646,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
     //super();
  this->act = act;
  //sectionManager.addPropertyChangeListener(this);
- connect(this->act->sectionManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(this->act->sectionManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void SpecialActionTableModel::propertyChange(PropertyChangeEvent* e) {

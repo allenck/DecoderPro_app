@@ -2,14 +2,17 @@
 #define BLOCKBOSSLOGICPROVIDER_H
 
 #include <QObject>
+#include "instancemanagerautodefault.h"
+
 
 class Logger;
 class SignalHeadManager;
 class SignalHead;
 class BlockBossLogic;
-class BlockBossLogicProvider : public QObject
+class BlockBossLogicProvider : public QObject, public InstanceManagerAutoDefault
 {
   Q_OBJECT
+  Q_INTERFACES( InstanceManagerAutoDefault)
  public:
   explicit BlockBossLogicProvider(QObject *parent = nullptr);
   /*public*/ BlockBossLogic* provide(/*@Nonnull*/ QString signalName);

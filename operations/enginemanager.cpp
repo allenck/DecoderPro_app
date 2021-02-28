@@ -373,7 +373,7 @@ setProperty("InstanceManagerAutoInitialize", "true");
 
     /*public*/ void EngineManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
         // Set dirty
-        EngineManagerXml::instance()->setDirty(true);
+        ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
         RollingStockManager::firePropertyChange(p, old, n);
     }
  //@Override

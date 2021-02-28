@@ -9,6 +9,9 @@
 #include "namedbeancomparator.h"
 #include <QAtomicInteger>
 #include "decimalformat.h"
+#include "vetoablechangelistener.h"
+#include "vetoablechangesupport.h"
+
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -19,13 +22,14 @@
  * @version	$Revision: 19272 $
  */
 //class Manager;
-class VetoableChangeSupport;
+//class VetoableChangeSupport;
 class PropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyChangeEvent;
-class LIBPR3SHARED_EXPORT AbstractManager : public  Manager
+class LIBPR3SHARED_EXPORT AbstractManager : public VetoableChangeSupport, public  Manager, public VetoableChangeListener, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(Manager VetoableChangeListener PropertyChangeListener)
 public:
     AbstractManager(QObject *parent = 0);
     AbstractManager(SystemConnectionMemo* memo, QObject *parent = 0);
@@ -83,11 +87,11 @@ public:
      * are not added to newly registered objects.
      */
     //virtual /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public synchronized */ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public synchronized*/  void removePropertyChangeListener(PropertyChangeListener* l) override;
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+//    /*public synchronized */ void addPropertyChangeListener(PropertyChangeListener* l) override;
+//    /*public synchronized*/  void removePropertyChangeListener(PropertyChangeListener* l) override;
+//    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+//    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
 
     /**
      * Get all {@link java.beans.PropertyChangeListener}s currently attached to
@@ -105,15 +109,13 @@ public:
     QT_DEPRECATED /*public*/ QList<NamedBean*> *getNamedBeanList() override;
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
 
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override; //throws NamedBean.BadSystemNameException
-    VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
-    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
-    /*public*/ /*synchronized*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* l) override;
-    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l) override;
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
-    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
+//    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
+//    /*public*/ /*synchronized*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* l) override;
+//    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l) override;
+//    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
+//    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
+//    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
     /*public*/ /*final*/ QString getSystemPrefix() const override;
     /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)const override;
     /*public*/ void setDataListenerMute(bool m);
@@ -127,6 +129,10 @@ public:
     /*public*/ void updateAutoNumber(QString systemName) const;
     /*public*/ QString getAutoSystemName()const;
 
+    QObject* self() override{return (QObject*)this;}
+    QString getNamedBeanClass() const override{return "AbstractManager";}
+    int getXMLOrder() const override {return 0;}
+    /*public*/ void setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced);
 
 signals:
 //    void beanDeleted(NamedBean* s);
@@ -139,7 +145,8 @@ signals:
 
 public slots:
     virtual void propertyChange(PropertyChangeEvent* e);
-    /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt); //throw PropertyVetoException
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) ;
+
 protected:
     /*protected*/void registerSelf();
     /*protected*/ void registerUserName(NamedBean* s)const;
@@ -193,13 +200,15 @@ QObject* getInstanceBySystemName(QString systemName);
 QT_DEPRECATED QObject* getInstanceByUserName(QString userName);
 
 
-void firePropertyChange(QString p, QVariant old, QVariant n) const;
-void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const;
+//void firePropertyChange(QString p, QVariant old, QVariant n) const;
+//void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const;
 
-/*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) /*throws PropertyVetoException*/;
+/*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) throw (PropertyVetoException)override;
 /*protected*/ void handleUserNameUniqueness(NamedBean* s) const;
 /*protected Hashtable*/mutable QHash<QString, NamedBean*>* _tsys; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by system name
 /*protected Hashtable*/mutable QHash<QString, NamedBean*>* _tuser; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by user name
+/*protected*/ /*final*/ QMap<QString, bool> silencedProperties = QMap<QString, bool>();
+/*protected*/ /*final*/ QSet<QString> silenceableProperties = QSet<QString>();
 
 protected slots:
 

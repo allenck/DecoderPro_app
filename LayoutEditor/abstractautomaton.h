@@ -16,6 +16,7 @@
 #include "rosterentry.h"
 #include <QEventLoop>
 #include "liblayouteditor_global.h"
+#include "vetoablechangelistener.h"
 
 //class Runnable;
 class AutomatSummary;
@@ -25,9 +26,10 @@ class NamedBean;
 class DccThrottle;
 class BasicRosterEntry;
 class PropertyChangeListener;
-class LIBLAYOUTEDITORSHARED_EXPORT AbstractAutomaton : public QObject
+class LIBLAYOUTEDITORSHARED_EXPORT AbstractAutomaton : public QObject, public VetoableChangeListener, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(VetoableChangeListener PropertyChangeListener)
 public:
     //explicit AbstractAutomaton(QObject *parent = 0);
     /*public*/ AbstractAutomaton(QObject *parent = 0);
@@ -62,6 +64,7 @@ public:
     /*public*/ void notifyThrottleFound(DccThrottle* t);
     /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
     /*public*/ void setTerminateSensor(Sensor* ts);
+    QObject* self() override {return (QObject*)this;}
 
 signals:
  void finished();
@@ -91,7 +94,7 @@ private:
   */
  /*private*/ bool inThread;// = false;
 
- /*private*/ AbstractAutomaton* self;// = this;
+ /*private*/ AbstractAutomaton* _self;// = this;
  /*private*/ bool checkForState(QList<Sensor*> mSensors, int state) ;
  /*private*/ bool checkForConsistent(QList<Turnout*> mTurnouts);
  /*private*/ DccThrottle* throttle;

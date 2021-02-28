@@ -138,62 +138,75 @@ protected:
     friend class LightTableAction;
 };
 
-class LC1PropertyChangeListener : public PropertyChangeListener
+class LC1PropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  LightControl* lc;
  public:
  LC1PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
+
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };
 
-class LC2PropertyChangeListener : public PropertyChangeListener
+class LC2PropertyChangeListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  LightControl* lc;
  public:
  LC2PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*) override;
 };
 
-class LC3PropertyChangeListener : public PropertyChangeListener
+class LC3PropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  LightControl* lc;
  public:
  LC3PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };
 
-class LC4PropertyChangeListener : public PropertyChangeListener
+class LC4PropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  LightControl* lc;
  public:
  LC4PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };
 
-class LC5PropertyChangeListener : public PropertyChangeListener
+class LC5PropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  LightControl* lc;
  public:
  LC5PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };
 
-class LC6PropertyChangeListener : public PropertyChangeListener
+class LC6PropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  LightControl* lc;
  public:
  LC6PropertyChangeListener(LightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };

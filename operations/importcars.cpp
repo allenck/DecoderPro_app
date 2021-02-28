@@ -27,6 +27,7 @@
 #include "rollingstock.h"
 #include "car.h"
 #include "jmrijframe.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -650,12 +651,12 @@ namespace Operations
       }
 
       // add new colors
-      if (!CarColors::instance()->containsName(carColor))
+      if (!((CarColors*)InstanceManager::getDefault("CarColors"))->containsName(carColor))
       {
        if (autoCreateColors)
        {
         log->debug(tr("add car color %1").arg(carColor));
-        CarColors::instance()->addName(carColor);
+        ((CarColors*)InstanceManager::getDefault("CarColors"))->addName(carColor);
        }
       }
 

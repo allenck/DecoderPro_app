@@ -99,7 +99,7 @@
  pack();
 
  // request callback to update time
- clock->addMinuteChangeListener( new PropertyChangeListener());
+ clock->addMinuteChangeListener( this);
  //connect(clock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //    {
 //     /*public*/ void propertyChange(PropertyChangeEvent* e)

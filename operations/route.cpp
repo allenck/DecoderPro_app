@@ -8,7 +8,7 @@
 #include "control.h"
 #include <QComboBox>
 #include <vptr.h>
-
+#include "instancemanager.h"
 namespace Operations
 {
 // Route::Route(QObject *parent) :
@@ -488,7 +488,7 @@ return out;
  }
 #endif
  /*protected*/ void Route::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     RouteManagerXml::instance()->setDirty(true);
+     ((RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
 

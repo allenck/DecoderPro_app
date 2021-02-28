@@ -181,9 +181,9 @@ template<class T>
  {
   QString listenerRef = oldBean->getListenerRef(l);
   oldBean->removePropertyChangeListener(l);
-  disconnect(((AbstractNamedBean*)newBean)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(((AbstractNamedBean*)newBean)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
   newBean->addPropertyChangeListener(l, currentName, listenerRef);
-  connect(((AbstractNamedBean*)newBean)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(((AbstractNamedBean*)newBean)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -241,15 +241,15 @@ template<class T>
 
 //        @Override
 //template<class T>
-/*public synchronized*/ void NamedBeanHandleManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
-}
+///*public synchronized*/ void NamedBeanHandleManager::addPropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->addPropertyChangeListener(l);
+//}
 
 //        @Override
 //template<class T>
-/*public synchronized*/ void NamedBeanHandleManager::removePropertyChangeListener(PropertyChangeListener* l) {
-    pcs->removePropertyChangeListener(l);
-}
+///*public synchronized*/ void NamedBeanHandleManager::removePropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->removePropertyChangeListener(l);
+//}
 
 //        @Override
 //template<class T>

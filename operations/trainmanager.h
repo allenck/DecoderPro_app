@@ -8,6 +8,8 @@
 #include "logger.h"
 #include "jcombobox.h"
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 class PrintWriter;
 class QDomDocument;
@@ -17,11 +19,15 @@ namespace Operations
  class Location;
  class Car;
  class Train;
- class APPSLIBSHARED_EXPORT TrainManager : public QObject
+ class APPSLIBSHARED_EXPORT TrainManager : public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
+   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
+
  public:
-  explicit TrainManager(QObject *parent = 0);
+  Q_INVOKABLE explicit TrainManager(QObject *parent = 0);
+   ~TrainManager() {}
+   TrainManager(const TrainManager&) : PropertyChangeSupport(this) {}
   // property changes
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "TrainsListLength"; // NOI18N
   /*public*/ static /*final*/ QString PRINTPREVIEW_CHANGED_PROPERTY;// = "TrainsPrintPreview"; // NOI18N
@@ -177,4 +183,5 @@ namespace Operations
    void error(QString title, QString msg);
  };
 } // end operations
+Q_DECLARE_METATYPE(Operations::TrainManager)
 #endif // TRAINMANAGER_H

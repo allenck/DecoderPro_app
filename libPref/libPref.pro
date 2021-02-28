@@ -51,7 +51,6 @@ SOURCES += libpref.cpp \
     railroadnamepreferencespanel.cpp \
     profilepreferencespanel.cpp \
     profiletablemodel.cpp \
-    searchpathslistmodel.cpp \
     profilefileview.cpp \
     fileview.cpp \
     profilefilefilter.cpp \
@@ -107,7 +106,6 @@ HEADERS += libpref.h\
     railroadnamepreferencespanel.h \
     profilepreferencespanel.h \
     profiletablemodel.h \
-    searchpathslistmodel.h \
     profilefileview.h \
     fileview.h \
     profilefilefilter.h \

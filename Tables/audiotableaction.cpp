@@ -379,7 +379,7 @@ void AudioTableSourceThread::run()
  this->subType = subType;
  //getManager()->addPropertyChangeListener(this);
 AbstractManager* mgr = (AbstractManager*)getManager();
-connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  updateSpecificNameList(subType);
 }
 

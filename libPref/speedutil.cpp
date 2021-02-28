@@ -226,7 +226,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
         setDccAddress(getAddress());
     }
     if (log->isDebugEnabled()) log->debug(tr("makeSpeedTree for %1.").arg(_rosterId));
-    WarrantManager* manager = static_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"));
+    WarrantManager* manager = qobject_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"));
     _mergeProfile = manager->getMergeProfile(_rosterId);
     _sessionProfile = manager->getSessionProfile(_rosterId);
     if (_sessionProfile == nullptr) {
@@ -392,7 +392,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
 
 /*protected*/ void SpeedUtil::stopRun(bool updateSpeedProfile) {
     if (updateSpeedProfile && _sessionProfile != nullptr) {
-        WarrantManager* manager = static_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"));
+        WarrantManager* manager = qobject_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"));
         manager->setSpeedProfiles(_rosterId, _mergeProfile, _sessionProfile);
     }
 }

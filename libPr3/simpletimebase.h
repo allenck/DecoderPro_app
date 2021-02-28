@@ -114,12 +114,14 @@ protected:
   friend class ClockSensorPropertChangeListener;
 };
 
-class ClockSensorPropertChangeListener : public PropertyChangeListener
+class ClockSensorPropertChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  SimpleTimebase* stb;
 public:
  ClockSensorPropertChangeListener(SimpleTimebase* stb) {this->stb = stb;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };

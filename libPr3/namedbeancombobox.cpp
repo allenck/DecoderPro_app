@@ -2,6 +2,9 @@
 #include "vptr.h"
 #include "loggerfactory.h"
 #include "namedbeanusernamecomparator.h"
+#include "propertychangesupport.h"
+#include "abstractmanager.h"
+
 NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 {
  excludedItems = QSet<NamedBean*>();
@@ -72,8 +75,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     NamedBeanEditor namedBeanEditor = new NamedBeanEditor(getEditor());
     setEditor(namedBeanEditor);
 #endif
-    this->manager->addPropertyChangeListener("beans", managerListener);
-    this->manager->addPropertyChangeListener("DisplayListName", managerListener);
+    ((PropertyChangeSupport*)this->manager->self())->addPropertyChangeListener("beans", managerListener);
+    ((PropertyChangeSupport*)this->manager->self())->addPropertyChangeListener("DisplayListName", managerListener);
     sort();
 }
 
@@ -91,7 +94,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     //this(manager, selection, DisplayOptions::DISPLAYNAME);
   this->manager = manager;
   JComboBox::setToolTip(
-         tr("%1 not shown cannot be used in this context.").arg(this->manager->getBeanTypeHandled(true)));
+         tr("%1 not shown cannot be used in this context.").arg(((AbstractManager*)this->manager->self())->getBeanTypeHandled(true)));
  setDisplayOrder(NamedBean::DisplayOptions::DISPLAYNAME);
  this->setEditable(false); // prevent overriding method
 #if 0
@@ -101,8 +104,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     NamedBeanEditor namedBeanEditor = new NamedBeanEditor(getEditor());
     setEditor(namedBeanEditor);
 #endif
-    this->manager->addPropertyChangeListener("beans", managerListener);
-    this->manager->addPropertyChangeListener("DisplayListName", managerListener);
+    ((PropertyChangeSupport*)((AbstractManager*)this->manager->self()))->addPropertyChangeListener("beans", managerListener);
+    ((PropertyChangeSupport*)((AbstractManager*)this->manager->self()))->addPropertyChangeListener("DisplayListName", managerListener);
     sort();
     setSelectedItem(selection);
 }
@@ -121,8 +124,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 {
     //super();
     this->manager = manager;
-    JComboBox::setToolTip(
-            tr("%1 not shown cannot be used in this context.").arg(this->manager->getBeanTypeHandled(true)));
+//    JComboBox::setToolTip(
+//            tr("%1 not shown cannot be used in this context.").arg(this->manager->getBeanTypeHandled(true)));
     setDisplayOrder(displayOrder);
     this->setEditable(false); // prevent overriding method
                                                // call in constructor
@@ -133,8 +136,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     NamedBeanEditor namedBeanEditor = new NamedBeanEditor(getEditor());
     setEditor(namedBeanEditor);
 #endif
-    this->manager->addPropertyChangeListener("beans", managerListener);
-    this->manager->addPropertyChangeListener("DisplayListName", managerListener);
+    ((PropertyChangeSupport*)this->manager->self())->addPropertyChangeListener("beans", managerListener);
+    ((PropertyChangeSupport*)this->manager->self())->addPropertyChangeListener("DisplayListName", managerListener);
     sort();
     setSelectedItem(selection);
 }
@@ -334,8 +337,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 }
 
 /*public*/ void NamedBeanComboBox::dispose() {
-    manager->removePropertyChangeListener("beans", managerListener);
-    manager->removePropertyChangeListener("DisplayListName", managerListener);
+    ((PropertyChangeSupport*)this->manager->self())->removePropertyChangeListener("beans", managerListener);
+    ((PropertyChangeSupport*)this->manager->self())->removePropertyChangeListener("DisplayListName", managerListener);
 }
 
 /*private*/ void NamedBeanComboBox::sort() {
@@ -374,8 +377,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 /*public*/ void NamedBeanComboBox::setManager(Manager* manager)
 {
  this->manager = manager;
- this->manager->addPropertyChangeListener("beans", managerListener);
- this->manager->addPropertyChangeListener("DisplayListName", managerListener);
+ ((PropertyChangeSupport*)this->manager->self())->addPropertyChangeListener("beans", managerListener);
+ ((PropertyChangeSupport*)this->manager->self())->addPropertyChangeListener("DisplayListName", managerListener);
  sort();
 
 }

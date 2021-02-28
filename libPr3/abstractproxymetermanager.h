@@ -78,8 +78,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public AbstractMeterManag
      * Forwards the deregister request to the matching system
      */
     /*public*/ void deregister(NamedBean* s)const override;
-    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
+    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
+    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
     /**
      * @return The system-specific prefix letter for the primary implementation
      */
@@ -98,17 +98,17 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public AbstractMeterManag
     /**
      * Get a list of all system names.
      */
-    /*public*/ virtual QStringList getSystemNameList();
+    /*public*/ virtual QStringList getSystemNameList()override;
     //QT_DEPRECATED/*public*/ virtual QStringList getUserNameList() const override;
     QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList()  override;
     QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList() override;
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() override;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
-    /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const ;
-    /*public*/ NamedBean *getByUserName(/*@Nonnull*/ QString userName) const ;
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
+    /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const override;
+    /*public*/ NamedBean *getByUserName(/*@Nonnull*/ QString userName) const override;
 
  signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
@@ -128,6 +128,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public AbstractMeterManag
     QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
     QMap<QString, QVector<VetoableChangeListener*>*> namedPropertyVetoListenerMap;// = new HashMap<>();
     /*private*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ QString systemPrefix) const;
+    QStringList boundPropertyNames = QStringList();
 
  protected:
     /**

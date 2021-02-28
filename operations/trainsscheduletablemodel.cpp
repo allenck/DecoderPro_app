@@ -8,6 +8,8 @@
 #include "tablecolumnmodel.h"
 #include "trainschedule.h"
 #include "trainsscheduletableframe.h"
+#include "instancemanager.h"
+
 namespace Operations
 {
  /**
@@ -27,7 +29,7 @@ namespace Operations
      //super();
   log = new Logger("TrainsScheduleTableModel");
   trainManager = TrainManager::instance();
-  scheduleManager = TrainScheduleManager::instance();
+  scheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"));
   _sort = SORTBYTIME;
  _frame = NULL;
   sysList = QList<Train*>();

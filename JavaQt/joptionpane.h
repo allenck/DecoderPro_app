@@ -13,9 +13,10 @@ class Component;
 class JTextField;
 class PropertyChangeEvent;
 class OptionPaneUI;
-class JOptionPane : public QWidget
+class JOptionPane : public QWidget, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
 
  /*public*/ static /*final*/ QVariant      UNINITIALIZED_VALUE;// = "uninitializedValue";
@@ -174,11 +175,12 @@ public:
  /*public*/ JDialog* createDialog(QWidget* parentComponent, QString title);
  /*public*/ JDialog* createDialog(QString title);
  /*public*/ void setValidator(QValidator* val);
+ QObject* self() override {return (QObject*)this;}
 
  signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* event);
+ /*public*/ void propertyChange(PropertyChangeEvent* event) override;
  void handleTextInput();
  void handleOk();
  void handleCancel();

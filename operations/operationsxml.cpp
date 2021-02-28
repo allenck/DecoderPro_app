@@ -8,6 +8,7 @@
 #include "routemanagerxml.h"
 #include "carmanagerxml.h"
 #include "enginemanagerxml.h"
+#include "instancemanager.h"
 
 /*private*/ /*static*/ QString OperationsXml::operationsDirectoryName = "operations"; // NOI18N
 
@@ -241,12 +242,12 @@ OperationsXml::OperationsXml(QObject *parent) :
  */
 /*public*/ /*static*/ void OperationsXml::save()
 {
- Operations::OperationsSetupXml::instance()->writeFileIfDirty();
+ ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeFileIfDirty();
 
  Operations::LocationManagerXml::instance()->writeFileIfDirty(); // Need to save "moves" for track location
- Operations::RouteManagerXml::instance()->writeFileIfDirty(); // Only if user used setX&Y
+ ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->writeFileIfDirty(); // Only if user used setX&Y
  Operations::CarManagerXml::instance()->writeFileIfDirty(); // save train assignments
- Operations::EngineManagerXml::instance()->writeFileIfDirty(); // save train assignments
+ ((Operations::EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->writeFileIfDirty(); // save train assignments
  Operations::TrainManagerXml::instance()->writeFileIfDirty(); // save train changes
 
 }
@@ -258,9 +259,9 @@ OperationsXml::OperationsXml(QObject *parent) :
  */
 /*public*/ /*static*/ bool OperationsXml::areFilesDirty()
 {
- if (Operations::OperationsSetupXml::instance()->isDirty() || Operations::LocationManagerXml::instance()->isDirty()
-         || Operations::RouteManagerXml::instance()->isDirty() || Operations::CarManagerXml::instance()->isDirty()
-         || Operations::EngineManagerXml::instance()->isDirty() || Operations::TrainManagerXml::instance()->isDirty())
+ if (((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->isDirty() || Operations::LocationManagerXml::instance()->isDirty()
+         || ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->isDirty() || Operations::CarManagerXml::instance()->isDirty()
+         || ((Operations::EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->isDirty() || Operations::TrainManagerXml::instance()->isDirty())
  {
      return true;
  }

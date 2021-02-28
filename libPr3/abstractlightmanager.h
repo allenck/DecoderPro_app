@@ -111,6 +111,8 @@ public:
     /*public*/ bool allowMultipleAdditions(QString systemName) override;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ QString getEntryToolTip() override;
+  QObject* self() {return (QObject*)this;}
+  QString getNamedBeanClass() const {return "AbstractLightManager";}
 
 
 signals:

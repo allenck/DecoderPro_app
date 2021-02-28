@@ -6,6 +6,7 @@
 #include "logger.h"
 #include "liblayouteditor_global.h"
 #include <QItemDelegate>
+#include "propertychangelistener.h"
 
 class NamedBeanPropertyDescriptor;
 class RowSorter;
@@ -21,9 +22,10 @@ class QDialog;
 class PropertyChangeEvent;
 class NamedBean;
 class Manager;
-class LIBLAYOUTEDITORSHARED_EXPORT BeanTableDataModel : public AbstractTableModel
+class LIBLAYOUTEDITORSHARED_EXPORT BeanTableDataModel : public AbstractTableModel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit BeanTableDataModel(QObject *parent = 0);
  enum COLUMNS
@@ -70,6 +72,7 @@ public:
  /*public*/ void moveBean(int);
  virtual /*public*/ void addToPopUp(QMenu* popup);
  /*public*/ void setPropertyColumnsVisible(JTable* table, bool visible);
+ QObject* self() override {return (QObject*)this;}
 
 
 signals:

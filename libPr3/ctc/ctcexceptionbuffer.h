@@ -2,11 +2,14 @@
 #define CTCEXCEPTIONBUFFER_H
 
 #include <QObject>
+#include "instancemanagerautodefault.h"
 
 class ExceptionBufferRecord;
-class CTCExceptionBuffer : public QObject
+class CTCExceptionBuffer : public QObject, public InstanceManagerAutoDefault
 {
   Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
  public:
   /*public*/ enum ExceptionBufferRecordSeverity {
       INFO = 0,

@@ -45,7 +45,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     // test creation - real work is in the setup() routine
     //@Test
     /*public*/ void AbstractReporterMgrTestBase::testCreate() {
-        Assert::assertNotNull(l, __FILE__, __LINE__);
+        Assert::assertNotNull(l->self(), __FILE__, __LINE__);
     }
 
     //@Test

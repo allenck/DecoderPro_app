@@ -100,12 +100,12 @@ namespace Operations
      updateTrainPane();
 
      //location.addPropertyChangeListener(this);
-     connect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      addPropertyChangeAllTrains();
 
      if (_track != NULL) {
          //_track.addPropertyChangeListener(this);
-      connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
          setTitle(tr("Show Trains Servicing %1").arg(_track->getName()));
      } else {
@@ -141,9 +141,9 @@ namespace Operations
      bool setout = false;
      // monitor move count in the route for this location
      //train.getRoute().removePropertyChangeListener(this);
-     disconnect(train->getRoute()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(train->getRoute(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //train.getRoute().addPropertyChangeListener(this);
-     connect(train->getRoute()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(train->getRoute(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if(rl->isPickUpAllowed()
              && rl->getMaxCarMoves() > 0
              && !train->skipsLocation(rl->getId())
@@ -235,14 +235,14 @@ namespace Operations
 
  /*public*/ void ShowTrainsServingLocationFrame::dispose() {
      //_location.removePropertyChangeListener(this);
- disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_track != NULL) {
          //_track->removePropertyChangeListener(this);
-      disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
 
      //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      removePropertyChangeAllTrains();
      OperationsFrame::dispose();
@@ -251,22 +251,22 @@ namespace Operations
  /*public*/ void ShowTrainsServingLocationFrame::addPropertyChangeAllTrains()
  {
   //TrainManager::instance().addPropertyChangeListener(this);
-  connect(TrainManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(TrainManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (Train* train, TrainManager::instance()->getTrainsByNameList()) {
          //train.addPropertyChangeListener(this);
-      connect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
  }
 
  /*public*/ void ShowTrainsServingLocationFrame::removePropertyChangeAllTrains() {
      //TrainManager.instance().removePropertyChangeListener(this);
- disconnect(TrainManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(TrainManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (Train* train, TrainManager::instance()->getTrainsByNameList()) {
          //train.removePropertyChangeListener(this);
-      disconnect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          if (train->getRoute() != NULL) {
              //train.getRoute().removePropertyChangeListener(this);
-          connect(train->getRoute()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(train->getRoute(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
      }
  }

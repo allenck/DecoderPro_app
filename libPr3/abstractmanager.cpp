@@ -20,7 +20,7 @@
  * @author      Bob Jacobsen Copyright (C) 2003
  * @version	$Revision: 19272 $
  */
-AbstractManager::AbstractManager(QObject *parent) : Manager(nullptr, parent)
+AbstractManager::AbstractManager(QObject *parent) : VetoableChangeSupport(this, parent)
 {
   Q_UNUSED(parent);
   log = new Logger("AbstractManager");
@@ -29,13 +29,11 @@ AbstractManager::AbstractManager(QObject *parent) : Manager(nullptr, parent)
  _beans = QSet<NamedBean*>( _beans);
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
  lastAutoNamedBeanRef = QAtomicInteger<int>(0);
-
- pcs = new PropertyChangeSupport((QObject*)this);
- vcs = new VetoableChangeSupport((QObject*)this);
+ silenceableProperties.insert("beans");
  listeners = QList<QObject*>();
 }
 
-AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : Manager(memo,parent)
+AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : VetoableChangeSupport(this, parent)
 {
   Q_UNUSED(parent);
  this->memo = memo;
@@ -46,8 +44,6 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
 
- pcs = new PropertyChangeSupport((QObject*)this);
- vcs = new VetoableChangeSupport((QObject*)this);
 }
 
 //abstract public class AbstractManager
@@ -307,8 +303,10 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
   // notifications
   int position = getPosition(s);
 //  fireDataListenersAdded(position, position, s);
-  fireIndexedPropertyChange("beans", position, QVariant(), VPtr<NamedBean>::asQVariant(s));
-  firePropertyChange("length", QVariant(), _beans.size());
+  if (!silencedProperties.value("beans", false)) {
+      fireIndexedPropertyChange("beans", position, QVariant(), VPtr<NamedBean>::asQVariant(s));
+  }
+  firePropertyChange("length", 0, _beans.size());
   // listen for name and state changes to forward
   s->addPropertyChangeListener((PropertyChangeListener*)this);
   AbstractNamedBean* ab = (AbstractNamedBean*)s;
@@ -386,7 +384,8 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
     if (userName != "")
      _tuser->remove(userName);
 //    fireDataListenersRemoved(position, position, s);
-    fireIndexedPropertyChange("beans", position, VPtr<NamedBean>::asQVariant(s), QVariant());
+    if (!silencedProperties.value("beans", false))
+        fireIndexedPropertyChange("beans", position, VPtr<NamedBean>::asQVariant(s), QVariant());
     firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
     // listen for name and state changes to forward
 //    emit beanDeleted(s);
@@ -514,49 +513,49 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
     return out;
 }
 
-/*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
-{
- pcs->addPropertyChangeListener(l);
- //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-}
+///*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
+//{
+// pcs->addPropertyChangeListener(l);
+// //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//}
 
-/*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {
-    pcs->removePropertyChangeListener(l);
-}
+///*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->removePropertyChangeListener(l);
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
-}
+///*public*/ void AbstractManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+//    pcs->addPropertyChangeListener(propertyName, listener);
+//}
 
 /*public*/ QVector<PropertyChangeListener *> AbstractManager::getPropertyChangeListeners()
 {
- return pcs->getPropertyChangeListeners();
+ return getPropertyChangeListeners();
 }
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ QVector<PropertyChangeListener*> AbstractManager::getPropertyChangeListeners(QString propertyName) {
-    return pcs->getPropertyChangeListeners(propertyName);
+    return getPropertyChangeListeners(propertyName);
 }
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->removePropertyChangeListener(propertyName, listener);
-}
+///*public*/ void AbstractManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+//    pcs->removePropertyChangeListener(propertyName, listener);
+//}
 
-void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n) const
-{ pcs->firePropertyChange(p,old,n);}
+//void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n) const
+//{ firePropertyChange(p,old,n);}
 
-void AbstractManager::fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const
-{
- pcs->fireIndexedPropertyChange(p,pos,old,n);
-}
+//void AbstractManager::fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const
+//{
+// PropertyChangeSupport::fireIndexedPropertyChange(p,pos,old,n);
+//}
 
 QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 {
@@ -567,46 +566,46 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ /*synchronized*/ void AbstractManager::addVetoableChangeListener(VetoableChangeListener* l) {
-    vcs->addVetoableChangeListener(l);
-    //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+///*public*/ /*synchronized*/ void AbstractManager::addVetoableChangeListener(VetoableChangeListener* l) {
+//    vcs->addVetoableChangeListener(l);
+//    //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
 
-}
-
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ /*synchronized*/ void AbstractManager::removeVetoableChangeListener(VetoableChangeListener* l) {
-    vcs->removeVetoableChangeListener(l);
-}
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    vcs->addVetoableChangeListener(propertyName, listener);
-}
+///*public*/ /*synchronized*/ void AbstractManager::removeVetoableChangeListener(VetoableChangeListener* l) {
+//    vcs->removeVetoableChangeListener(l);
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners() {
-    return vcs->getVetoableChangeListeners();
-}
+///*public*/ void AbstractManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+//    vcs->addVetoableChangeListener(propertyName, listener);
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners(QString propertyName) {
-    return vcs->getVetoableChangeListeners(propertyName);
-}
+///*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners() {
+//    return vcs->getVetoableChangeListeners();
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    vcs->removeVetoableChangeListener(propertyName, listener);
-}
+///*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners(QString propertyName) {
+//    return vcs->getVetoableChangeListeners(propertyName);
+//}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+///*public*/ void AbstractManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+//    vcs->removeVetoableChangeListener(propertyName, listener);
+//}
 
 /**
  * Method to inform all registered listerners of a vetoable change. If the
@@ -625,41 +624,53 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * @throws PropertyVetoException - if the recipients wishes the delete to be
  *                               aborted.
  */
+
+/**
+ * Inform all registered listeners of a vetoable change. If the
+ * propertyName is "CanDelete" ALL listeners with an interest in the bean
+ * will throw an exception, which is recorded returned back to the invoking
+ * method, so that it can be presented back to the user. However if a
+ * listener decides that the bean can not be deleted then it should throw an
+ * exception with a property name of "DoNotDelete", this is thrown back up
+ * to the user and the delete process should be aborted.
+ *
+ * @param p   The programmatic name of the property that is to be changed.
+ *            "CanDelete" will inquire with all listeners if the item can
+ *            be deleted. "DoDelete" tells the listener to delete the item.
+ * @param old The old value of the property.
+ * @param n   The new value of the property.
+ * @throws PropertyVetoException if the recipients wishes the delete to be
+ *                               aborted.
+ */
 //@OverridingMethodsMustInvokeSuper
-/*protected*/ void AbstractManager::fireVetoableChange(QString p, QVariant old, QVariant n) /*throws PropertyVetoException*/
-{
+//@Override
+/*public*/ void AbstractManager::fireVetoableChange(QString p, QVariant old, QVariant n) throw (PropertyVetoException) {
     PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, n);
-#if 0
-    if (p ==("CanDelete"))
-    { //IN18N
+    if (p == ("CanDelete")) { // NOI18N
         QString message;// = new StringBuilder();
-        for (VetoableChangeListener vc : vcs.getVetoableChangeListeners()) {
+        for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
             try {
-                vc.vetoableChange(evt);
+                vc->vetoableChange(evt);
             } catch (PropertyVetoException e) {
-                if (e.getPropertyChangeEvent().getPropertyName().equals("DoNotDelete")) { //IN18N
-                    log.info(e.getMessage());
+                if (e.getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { // NOI18N
+                    log->info(e.getMessage());
                     throw e;
                 }
-                message.append(e.getMessage());
-                message.append("<hr>"); //IN18N
+                message.append(e.getMessage()).append("<hr>"); // NOI18N
             }
         }
-        throw new PropertyVetoException(message.toString(), evt);
+        throw PropertyVetoException(message/*.toString()*/, evt);
     } else {
         try {
-            vcs.fireVetoableChange(evt);
+            vetoableChangeSupport->fireVetoableChange(evt);
         } catch (PropertyVetoException e) {
-            log.error("Change vetoed.", e);
+            log->error("Change vetoed.", e);
         }
     }
-#endif
-    emit vetoablePropertyChange(evt);
 }
-
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) //throw PropertyVetoException
+/*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
 {
 #if 1 // TODO:
  if ("CanDelete" == (evt->getPropertyName())) { //IN18N
@@ -732,6 +743,20 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
    return prefix;
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced) {
+    if (!silenceableProperties.contains(propertyName)) {
+        throw  IllegalArgumentException("Property " + propertyName + " cannot be silenced.");
+    }
+    silencedProperties.insert(propertyName, silenced);
+    if (propertyName == ("beans") && !silenced) {
+        fireIndexedPropertyChange("beans", _beans.size(), QVariant(), QVariant());
+    }
+}
 /**
  * Enforces, and as a user convenience converts to, the standard form for a
  * system name for the NamedBeans handled by this manager.

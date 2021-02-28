@@ -76,13 +76,16 @@ Q_DECLARE_METATYPE(JmriJTablePersistenceManager)
     /*public*/ bool getHidden();
 };
 
-/*protected*/ /*final*/ /*static*/ class JTableListener : public RowSorterListener
+/*protected*/ /*final*/ /*static*/ class JTableListener : public QObject, public RowSorterListener
 {
  Q_OBJECT
+  Q_INTERFACES(RowSorterListener)
     /*private*/ /*final*/ JTable* table;
     /*private*/ /*final*/ JmriJTablePersistenceManager* manager;
     /*private*/ QTimer* delay = NULL;
  Logger* log;
+ QObject* self() {return (QObject*)this;}
+
 public:
     /*public*/ JTableListener(JTable* table, JmriJTablePersistenceManager* manager);
 #if 1

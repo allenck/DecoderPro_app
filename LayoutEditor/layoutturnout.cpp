@@ -2381,23 +2381,23 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 //public:
 // MTurnoutListener(LayoutTurnout* layoutTurnout) {this->layoutTurnout = layoutTurnout;}
 //public slots:
- void MTurnoutListener::propertyChange(PropertyChangeEvent* e)
+ void LayoutTurnout::propertyChange(PropertyChangeEvent* e)
  {
-  if (layoutTurnout->secondNamedTurnout != nullptr) {
-      int new2ndState = layoutTurnout->secondNamedTurnout->getBean()->getState();
-      if (e->getSource() == (layoutTurnout->secondNamedTurnout->getBean())
+  if (secondNamedTurnout != nullptr) {
+      int new2ndState = secondNamedTurnout->getBean()->getState();
+      if (e->getSource() == (secondNamedTurnout->getBean())
       && e->getNewValue().toInt() == (new2ndState)) {
-          int old1stState = layoutTurnout->namedTurnout->getBean()->getState();
+          int old1stState = namedTurnout->getBean()->getState();
           int new1stState = new2ndState;
-          if (layoutTurnout->secondTurnoutInverted) {
+          if (secondTurnoutInverted) {
               new1stState = Turnout::invertTurnoutState(new1stState);
           }
           if (old1stState != new1stState) {
-              layoutTurnout->namedTurnout->getBean()->setCommandedState(new1stState);
+              namedTurnout->getBean()->setCommandedState(new1stState);
           }
       }
   }
-  layoutTurnout->layoutEditor->redrawPanel();
+  layoutEditor->redrawPanel();
 
  }
 //};
@@ -2450,7 +2450,8 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 //             namedTurnout.getName(),
 //             "Layout Editor Turnout"
 //     );
-  namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener = new MTurnoutListener(this), namedTurnout->getName(),  "Layout Editor Turnout");
+  //namedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener = new MTurnoutListener(this), namedTurnout->getName(),  "Layout Editor Turnout");
+  namedTurnout->getBean()->addPropertyChangeListener((PropertyChangeListener*)this);
  }
  if (secondNamedTurnout != nullptr) {
      secondNamedTurnout->getBean()->addPropertyChangeListener(mTurnoutListener, secondNamedTurnout->getName(), "Layout Editor Turnout");

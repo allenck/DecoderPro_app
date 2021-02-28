@@ -39,12 +39,12 @@ protected:
  friend class ListenO5;
 };
 
-/*protected*/ class ListenO5 : public PropertyChangeListener {
+/*protected*/ class ListenO5 : public QObject, public PropertyChangeListener {
 Q_OBJECT
- ProxyTurnoutManagerTest* test;
+ Q_INTERFACES(PropertyChangeListener)ProxyTurnoutManagerTest* test;
 public:
  ListenO5(ProxyTurnoutManagerTest* test) {this->test = test;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

@@ -23,7 +23,7 @@
 #include "operationssetupxml.h"
 #include "htmltextedit.h"
 #include "flowlayout.h"
-
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -967,7 +967,7 @@ namespace Operations
      // recreate all train manifests
      TrainManager::instance()->setTrainsModified();
 
-     OperationsSetupXml::instance()->writeOperationsFile();
+     ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
  }
 
  //@Override

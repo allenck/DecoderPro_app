@@ -163,16 +163,18 @@ friend class SignalMastLogicWidget;
 };
 
 //This is the listener on the destination signalMast
-class PropertyDestinationMastListener : public PropertyChangeListener
+class PropertyDestinationMastListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertyDestinationMastListener(DefaultSignalMastLogic* parent)
     {
      this->parent = parent;
     }
     DefaultSignalMastLogic* parent;
-    void propertyChange(PropertyChangeEvent *e)
+public slots:
+    void propertyChange(PropertyChangeEvent *e) override
     {
         SignalMast* mast = (SignalMast*) e->getSource();
         if (mast==parent->destination)
@@ -182,19 +184,22 @@ public:
             parent->setSignalAppearance();
         }
     }
+    QObject* self() override{return (QObject*)this;}
 };
 
 //This is the listener on the source signalMast
-class PropertySourceMastListener : public PropertyChangeListener
+class PropertySourceMastListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertySourceMastListener(DefaultSignalMastLogic* parent)
     {
      this->parent = parent;
     }
     DefaultSignalMastLogic* parent;
-    void propertyChange(PropertyChangeEvent *e)
+public slots:
+    void propertyChange(PropertyChangeEvent *e) override
     {
         SignalMast* mast = (SignalMast*) e->getSource();
         if ((mast==parent->source) && (e->getPropertyName()==("Held")))
@@ -204,6 +209,7 @@ public:
             parent->setSignalAppearance();
         }
     }
+    QObject* self() override{return (QObject*)this;}
 };
 
 class DestinationMast : public QObject
@@ -385,15 +391,17 @@ public:
       }
   };
 
-class PropertySensorListener : public PropertyChangeListener
+class PropertySensorListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertySensorListener(DestinationMast* parent)
     {
      this->parent = parent;
     }
     DestinationMast* parent;
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *e) override
     {
@@ -423,9 +431,10 @@ public slots:
      }
     }
 };
-class PropertyTurnoutListener : public PropertyChangeListener
+class PropertyTurnoutListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertyTurnoutListener(DestinationMast* parent)
     {
@@ -491,10 +500,12 @@ public:
       parent->calculateSpeed();
      }
     }
+    QObject* self() override{return (QObject*)this;}
 };
-class PropertyBlockListener : public PropertyChangeListener
+class PropertyBlockListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertyBlockListener(DestinationMast* parent)
     {
@@ -562,10 +573,12 @@ public:
             parent->calculateSpeed();
         }
     }
+    QObject* self() override{return (QObject*)this;}
 };
-class PropertySignalMastListener : public PropertyChangeListener
+class PropertySignalMastListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertySignalMastListener(DestinationMast* parent)
     {
@@ -617,6 +630,7 @@ public:
             }
         }
     }
+    QObject* self() override{return (QObject*)this;}
 };
 
 #endif // DEFAULTSIGNALMASTLOGIC_H

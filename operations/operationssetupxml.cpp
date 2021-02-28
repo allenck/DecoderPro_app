@@ -29,17 +29,6 @@ namespace Operations
  ///*public*/ OperationsSetupXml() {
  //}
 
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ OperationsSetupXml* OperationsSetupXml::_instance = NULL;
-
- //@Deprecated
- /*public*/ /*static*/ /*synchronized*/ OperationsSetupXml* OperationsSetupXml::instance()
- {
-  return static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml"));
- }
-
  /*public*/ void OperationsSetupXml::writeFile(QString name) //throw (FileNotFoundException, IOException)
  {
      if (log->isDebugEnabled()) {

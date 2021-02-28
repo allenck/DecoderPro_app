@@ -21,13 +21,15 @@ private:
  /*private*/  QLocale locale;
 friend class BlockListener;
 };
-/*private*/ class BlockListener : public PropertyChangeListener {
+/*private*/ class BlockListener : public QObject,public PropertyChangeListener {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  JsonBlockSocketService* jbss;
 protected:
    /*protected*/ /*final*/ Block* block;
 
    /*public*/ BlockListener(Block* block, JsonBlockSocketService* jbss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
    /*public*/ void propertyChange(PropertyChangeEvent* e) ;
  friend class JsonBlockSocketService;

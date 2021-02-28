@@ -451,7 +451,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  /*synchronized*/ /*public*/ void SmlBeanTableDataModel::dispose() {
 
      //getManager().removePropertyChangeListener(this);
-     disconnect(getManager(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(getManager()->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (act->signalMastLogicList != NULL) {
          for (int i = 0; i < act->signalMastLogicList->size(); i++) {
              SignalMastLogic* b = getLogicFromRow(i);

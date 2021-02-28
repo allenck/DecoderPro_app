@@ -221,9 +221,9 @@
     QLabel* beanManuTitle = new QLabel(tr("%1").arg(tr("Label")));
     beanSetupPaneLayout->addWidget(beanManuTitle);
     beanManuNames = new QComboBox();
-    if (qobject_cast<ProxyManager*>(getManager(beanTypeChar))!= nullptr)
+    if (qobject_cast<ProxyManager*>(getManager(beanTypeChar)->self())!= nullptr)
     { // from abstractTableTabAction
-        ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager(beanTypeChar));
+        ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager(beanTypeChar)->self());
         QList<Manager*> managerList = proxy->getManagerList(); // picks up all managers to fetch
         for (int x = 0; x < managerList.size(); x++) {
             QString manuPrefix = managerList.value(x)->getSystemPrefix();

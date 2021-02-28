@@ -7,6 +7,7 @@
 #include "control.h"
 #include "colorutil.h"
 #include "traincommon.h"
+#include "instancemanager.h"
 
 //RouteLocation::RouteLocation(QObject *parent) :
 //  QObject(parent)
@@ -484,7 +485,7 @@ QObject(parent)
           connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
          // force rewrite of route file
-         RouteManagerXml::instance()->setDirty(true);
+         ((RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
      }
      if ((a = e.attribute (Xml::TRAIN_DIRECTION)) != NULL) {
          // early releases had text for train direction
@@ -626,7 +627,7 @@ QDomElement e = doc.createElement(Xml::LOCATION);
  }
 
  /*protected*/ void RouteLocation::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     RouteManagerXml::instance()->setDirty(true);
+     ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
      firePropertyChange(p, old, n);
  }
 

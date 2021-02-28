@@ -351,13 +351,13 @@ namespace Operations
         Location* old = _finalDestination;
         if (old != NULL) {
             //old.removePropertyChangeListener(this);
-         disconnect(old->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         disconnect(old, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         }
         _finalDestination = destination;
         if (_finalDestination != NULL) {
             //_finalDestination.addPropertyChangeListener(this);
-         connect(_finalDestination->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         connect(_finalDestination, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
         }
         // log->debug("Next destination for car ("+toString()+") old: "+old+" new: "+destination);
@@ -392,13 +392,13 @@ namespace Operations
         if ((old != NULL && old!=(track)) || (track != NULL && track!=(old))) {
             if (old != NULL) {
                 //old.removePropertyChangeListener(this);
-             disconnect(old->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             disconnect(old, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
                 old->deleteReservedInRoute(this);
             }
             if (_finalDestTrack != NULL) {
                 _finalDestTrack->addReservedInRoute(this);
                 //_finalDestTrack->addPropertyChangeListener(this);
-                connect(_finalDestTrack->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                connect(_finalDestTrack, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
             }
             setDirtyAndFirePropertyChange(FINAL_DESTINATION_TRACK_CHANGED_PROPERTY, VPtr<Track>::asQVariant(old), VPtr<Track>::asQVariant(track));
         }
@@ -754,7 +754,7 @@ namespace Operations
         setFinalDestination(NULL); // removes property change listener
         setFinalDestinationTrack(NULL); // removes property change listener
 //        CarTypes.instance().removePropertyChangeListener(this);
-        disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarLengths.instance().remov))ePropertyChangeListener(this);
         RollingStock::dispose();
     }
@@ -969,7 +969,7 @@ namespace Operations
 
     /*private*/ void Car::addPropertyChangeListeners() {
         //CarTypes.instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 //        CarLengths.instance().addPropertyChangeListener(this);
     }

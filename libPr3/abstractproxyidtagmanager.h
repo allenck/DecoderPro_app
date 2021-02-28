@@ -84,8 +84,8 @@ public:
      * Forwards the deregister request to the matching system
      */
     /*public*/ void deregister(NamedBean* s) const override;
-    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
+    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
+    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
     /**
      * @return The system-specific prefix letter for the primary implementation
      */
@@ -109,10 +109,10 @@ public:
     QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList() override ;
     QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList() override;
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() override;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
     /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
     /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l) override;
     /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) override;
@@ -137,7 +137,11 @@ private:
     QMap<QString, QVector<PropertyChangeListener*>*> namedPropertyListenerMap;// = new HashMap<>();
     QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
     QMap<QString, QVector<VetoableChangeListener*>*> namedPropertyVetoListenerMap;// = new HashMap<>();
-
+    /**
+     * List of names of bound properties requested to be listened to by
+     * PropertyChangeListeners.
+     */
+    /*private*/ /*final*/ QList<QString> boundPropertyNames = QList<QString>();
 protected:
     /**
      * Number of managers available through

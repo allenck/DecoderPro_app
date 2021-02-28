@@ -335,7 +335,7 @@ void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed) const //throws
  }
  QString oldSpeed = defaultClosedSpeed;
  defaultClosedSpeed = speed;
- firePropertyChange("DefaultTurnoutClosedSpeedChange", oldSpeed, speed);
+ firePropertyChange("DefaultTurnoutClosedSpeedChange", QVariant(oldSpeed), QVariant(speed));
 }
 
 void AbstractTurnoutManager::setDefaultThrownSpeed(QString speed) const// throws JmriException

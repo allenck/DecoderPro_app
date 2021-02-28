@@ -40,7 +40,7 @@
     log = new Logger("DefaultSignalMastLogicManager");
     //_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
     signalMastLogic =  QList<SignalMastLogic*>();
-    pcs = new PropertyChangeSupport(this);
+    //pcs = new PropertyChangeSupport(this);
     signalLogicDelay = 500L;
     runWhenStablised = false;
     propertyBlockManagerListener = new PropertyBlockManagerListener(this);
@@ -285,15 +285,15 @@
 ///*public*/ QSet<NamedBean*> DefaultSignalMastLogicManager::getNamedBeanSet(){
 //    throw new UnsupportedOperationException("Not supported yet.");
 //}
-/*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    QMutexLocker locker(&mutex);
+///*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::addPropertyChangeListener(PropertyChangeListener* l) {
+//    QMutexLocker locker(&mutex);
 
-    pcs->addPropertyChangeListener(l);
-}
-/*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::removePropertyChangeListener(PropertyChangeListener* l) {
-    QMutexLocker locker(&mutex);
-    pcs->removePropertyChangeListener(l);
-}
+//    pcs->addPropertyChangeListener(l);
+//}
+///*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::removePropertyChangeListener(PropertyChangeListener* l) {
+//    QMutexLocker locker(&mutex);
+//    pcs->removePropertyChangeListener(l);
+//}
 /*protected*/ void DefaultSignalMastLogicManager::firePropertyChange(QString p, QVariant old, QVariant n)
 {
     //pcs->firePropertyChange(p,old,n);

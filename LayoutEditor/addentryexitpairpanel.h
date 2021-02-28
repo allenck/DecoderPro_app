@@ -174,12 +174,15 @@ public slots:
 
 };
 
-class PropertyNXListener : public PropertyChangeListener
+class PropertyNXListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  AddEntryExitPairPanel* panel;
 public:
  PropertyNXListener(AddEntryExitPairPanel* panel) {this->panel = panel;}
+ QObject* self() {return (QObject*)this;}
+
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };

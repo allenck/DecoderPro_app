@@ -3,6 +3,7 @@
 #include "control.h"
 #include "xml.h"
 #include "enginemanagerxml.h"
+#include "instancemanager.h"
 
 //EngineTypes::EngineTypes(QObject *parent) :
 //  RollingStockAttribute(parent)
@@ -88,7 +89,7 @@ RollingStockAttribute(parent) {
 
  /*protected*/ void EngineTypes::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     EngineManagerXml::instance()->setDirty(true);
+     ((Operations::EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 }

@@ -35,6 +35,7 @@ isEmpty( PROJ_DIR ) {
 
 
 SOURCES += javaqt.cpp \
+    jvetoablechangesupport.cpp \
     loggerfactory.cpp \
     loggerbase.cpp \
     logger.cpp \
@@ -257,7 +258,6 @@ SOURCES += javaqt.cpp \
     colorlistpopupmenu.cpp \
     externallinkcontentviewerui.cpp \
     propertychangelistener.cpp \
-    namedbeancombobox.cpp \
     jcheckbox.cpp \
     etchedborder.cpp \
     jcheckboxmenuitem.cpp \
@@ -278,9 +278,12 @@ HEADERS += javaqt.h\
     jtextarea.h \
     jseparator.h \
     abstractaction.h \
+ jvetoablechangesupport.h \
     logger.h \
     gridbagconstraints.h \
     insets.h \
+ vetoablechangefirer.h \
+ vetoablechangeprovider.h \
     vptr.h \
     jtextfield.h \
     tablemodel.h \
@@ -563,7 +566,6 @@ HEADERS += javaqt.h\
     colorlistpopupmenu.h \
     splitbuttonactionlistener.h \
     externallinkcontentviewerui.h \
-    namedbeancombobox.h \
     namedbeanusernamecomparator.h \
     focuslistener.h \
     focusevent.h \

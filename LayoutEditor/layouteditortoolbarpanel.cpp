@@ -14,6 +14,7 @@
 #include "multisensoriconframe.h"
 #include <QButtonGroup>
 #include "joptionpane.h"
+#include "signalmastmanager.h"
 
 LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, QWidget *parent)
  : JPanel(parent)
@@ -88,13 +89,13 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
  multiSensorButton = new QRadioButton(tr("MultiSensor") + "...");
 
  signalMastButton = new QRadioButton(tr("Signal Mast Icon"));
- signalMastComboBox = new NamedBeanComboBox((Manager*)InstanceManager::getDefault("SignalMastManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ signalMastComboBox = new NamedBeanComboBox((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  sensorButton = new QRadioButton(tr("Sensor Icon"));
  sensorComboBox = new NamedBeanComboBox((ProxySensorManager*)InstanceManager::getDefault("SensorManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  signalButton = new QRadioButton(tr("Signal Head Icon"));
- signalHeadComboBox = new NamedBeanComboBox((Manager*)InstanceManager::getDefault("SignalHeadManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ signalHeadComboBox = new NamedBeanComboBox((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  iconLabelButton = new QRadioButton(tr("Icon Label"));
  shapeButton = new QRadioButton(tr("Shape"));

@@ -99,7 +99,7 @@ return (settingRouteColor == QColor() ? false : true);
 
 /*static*/ QWidget* EntryExitPairs::glassPane = NULL; //new QWidget();
 
-/*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/)
+/*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/) :VetoableChangeSupport(this)
 {
  setObjectName("EntryExitPairs");
  setProperty("JavaClassName", "jmri.jmrit.entryexit.EntryExitPairs");
@@ -124,7 +124,7 @@ return (settingRouteColor == QColor() ? false : true);
  nxpair = QHash<PointDetails*, Source*>();
  vcs = new VetoableChangeSupport(this);
  listeners = QVector</*ManagerDataListener*/QObject*>();
- pcs = new PropertyChangeSupport(this);
+ //pcs = new PropertyChangeSupport(this);
 
  memo = (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
@@ -1265,16 +1265,16 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 //}
 
 //java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
-/*public*/ /*synchronized*/ void EntryExitPairs::addPropertyChangeListener(PropertyChangeListener* /*l*/) {
-    //pcs.addPropertyChangeListener(l);
+/*public*/ /*synchronized*/ void EntryExitPairs::addPropertyChangeListener(PropertyChangeListener* l) {
+    addPropertyChangeListener(l);
     //disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 }
-/*public*/ /*synchronized*/ void EntryExitPairs::removePropertyChangeListener(PropertyChangeListener* /*l*/) {
-    //pcs.removePropertyChangeListener(l);
+/*public*/ /*synchronized*/ void EntryExitPairs::removePropertyChangeListener(PropertyChangeListener* l) {
+    removePropertyChangeListener(l);
 }
 /*protected*/ void EntryExitPairs::firePropertyChange(QString p, QVariant old, QVariant n)
 {
- pcs->firePropertyChange(p,old,n);
+ firePropertyChange(p,old,n);
  //emit propertyChange(new PropertyChangeEvent(this, p, old, n));
 }
 
@@ -1367,22 +1367,22 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 
 //@Override
 /*public*/ void EntryExitPairs::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
+    addPropertyChangeListener(propertyName, listener);
 }
 
 //@Override
 /*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners() {
-    return pcs->getPropertyChangeListeners();
+    return getPropertyChangeListeners();
 }
 
 //@Override
 /*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners(QString propertyName) {
-    return pcs->getPropertyChangeListeners(propertyName);
+    return getPropertyChangeListeners(propertyName);
 }
 
 //@Override
 /*public*/ void EntryExitPairs::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->removePropertyChangeListener(propertyName, listener);
+   removePropertyChangeListener(propertyName, listener);
 }
 
 //@Override

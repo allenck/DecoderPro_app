@@ -14,7 +14,7 @@ class LIBPR3SHARED_EXPORT ManagerDefaultSelector : public AbstractPreferencesMan
 {
     Q_OBJECT
 public:
-    explicit ManagerDefaultSelector(QObject *parent = 0);
+ explicit ManagerDefaultSelector(QObject *parent = 0);
  ~ManagerDefaultSelector() {}
  ManagerDefaultSelector(const ManagerDefaultSelector&) : AbstractPreferencesManager() {}
  /*public*/ /*final*/ QMap<QString, QString> defaults;// = new Hashtable<>();
@@ -32,6 +32,7 @@ public:
  private:
  };
  /*final*/ /*public*/ QList<Item1> knownManagers;
+ ManagerDefaultSelector* self() {return this;}
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent *);
 
@@ -45,12 +46,14 @@ private:
 };
 Q_DECLARE_METATYPE(ManagerDefaultSelector)
 
-class MemoListener : public PropertyChangeListener
+class MemoListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  ManagerDefaultSelector* mds;
 public:
  MemoListener(ManagerDefaultSelector* mds) {this->mds = mds;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* e);
 };

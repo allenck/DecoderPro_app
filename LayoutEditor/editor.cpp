@@ -1403,8 +1403,8 @@ void Editor::On_removeMenuAction_triggered()
    //         }
    //     }
    // });
-    rosterBox->addPropertyChangeListener("selectedRosterEntries", (PropertyChangeListener*)this);
-    //connect(rosterBox, SIGNAL(propertyChange(QString,QObject*,QObject*)), this, SLOT(On_rosterBoxSelectionChanged(QString,QObject*,QObject*)));
+    //rosterBox->addPropertyChangeListener("selectedRosterEntries", (PropertyChangeListener*)this);
+    connect(rosterBox, SIGNAL(propertyChange(QString,QObject*,QObject*)), this, SLOT(On_rosterBoxSelectionChanged(QString,QObject*,QObject*)));
     //connect(rosterBox, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     //locoRosterFrame.getContentPane().add(rosterBox);

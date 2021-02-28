@@ -53,13 +53,13 @@ private:
  friend class ReleaseUntilO16;
 };
 
-class ControlListen : public PropertyChangeListener
+class ControlListen : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
- LightControlTest* test;
+ Q_INTERFACES(PropertyChangeListener)LightControlTest* test;
 public:
  ControlListen(LightControlTest* test) { this->test = test;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
  //@Override
  /*public*/ void propertyChange(PropertyChangeEvent* e);
 

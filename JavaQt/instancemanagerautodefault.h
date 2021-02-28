@@ -28,6 +28,7 @@
  * @author Bob Jacobsen Copyright (C) 2012
  */
 /*public*/ class InstanceManagerAutoDefault {
+
 };
 Q_DECLARE_INTERFACE(InstanceManagerAutoDefault, "InstanceManagerAutoDefault")
 #endif // INSTANCEMANAGERAUTODEFAULT_H

@@ -31,12 +31,12 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString LocationManager::LISTLENGTH_CHANGED_PROPERTY = "locationsListLength"; // NOI18N
 
  /*public*/ LocationManager::LocationManager(QObject *parent) :
-QObject(parent)
+PropertyChangeSupport(this, parent)
  {
   _id = 0;
   log = new Logger("LocationManager");
   _locationHashTable = QHash<QString, Location*>();
-  pcs = new PropertyChangeSupport(this);
+  //pcs = new PropertyChangeSupport(this);
   _maxLocationNameLength = 0;
    _maxTrackNameLength = 0;
    _maxLocationAndTrackNameLength = 0;
@@ -435,7 +435,7 @@ QObject(parent)
  /*protected*/ void LocationManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // set dirty
      LocationManagerXml::instance()->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+     firePropertyChange(p, old, n);
  }
 
 //@Override

@@ -140,9 +140,9 @@ namespace Operations
      addCheckBoxAction(copyCheckBox);
 
      //manager.addPropertyChangeListener(this);
-     connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
@@ -268,7 +268,7 @@ namespace Operations
        continue;
    }
    //loc.addPropertyChangeListener(this);
-   connect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    QCheckBox* cb = new QCheckBox(loc->getName());
    cb->setObjectName(loc->getId());
    cb->setToolTip(tr("Select this location if it services car type %1").arg(carType));
@@ -282,7 +282,7 @@ namespace Operations
    foreach (Track* track, tracks)
    {
     //track.addPropertyChangeListener(this);
-    connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     cb = new QCheckBox(track->getName());
     cb->setObjectName(track->getId());
     cb->setToolTip(tr("Select this track if it services car type %1").arg(carType));
@@ -367,12 +367,12 @@ namespace Operations
              Location* loc = manager->getLocationById(locationCheckBoxList.at(i)->objectName());
              if (loc != NULL) {
                  //loc.removePropertyChangeListener(this);
-              disconnect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+              disconnect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
                  QList<Track*> tracks = loc->getTrackList();
                  foreach (Track* track, tracks) {
                      //track.removePropertyChangeListener(this);
-                  disconnect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                  disconnect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
                  }
              }
          }
@@ -381,9 +381,9 @@ namespace Operations
 
  /*public*/ void LocationsByCarTypeFrame::dispose() {
      //manager.removePropertyChangeListener(this);
- disconnect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeLocations();
      OperationsFrame::dispose();
  }

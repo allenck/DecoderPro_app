@@ -406,7 +406,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 /*public*/ void AbstractThrottle::addPropertyChangeListener(PropertyChangeListener* l) {
     if ( getPropertyChangeListeners().contains(l) )
     {
-        log->warn(tr("Preventing %1 adding duplicate PCL").arg(l->objectName()));
+        log->warn(tr("Preventing %1 adding duplicate PCL").arg(l->self()->objectName()));
         return;
     }
     PropertyChangeSupport::addPropertyChangeListener(l);
@@ -417,7 +417,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
  */
 //@Override
 /*public*/ void AbstractThrottle::removePropertyChangeListener(PropertyChangeListener* l) {
-    log->debug(tr("Removing property change %1").arg(l->objectName()));
+    log->debug(tr("Removing property change %1").arg(l->self()->objectName()));
     PropertyChangeSupport::removePropertyChangeListener(l);
     log->debug(tr("remove listeners size is %1").arg(getPropertyChangeListeners().length()));
     if (getPropertyChangeListeners().length() == 0) {

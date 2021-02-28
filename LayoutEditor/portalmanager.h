@@ -4,11 +4,14 @@
 #include "abstractmanager.h"
 #include "liblayouteditor_global.h"
 #include "propertychangesupport.h"
+#include "instancemanagerautodefault.h"
+#include "propertychangelistener.h"
 
 class Portal;
-class LIBLAYOUTEDITORSHARED_EXPORT PortalManager : public AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT PortalManager : public AbstractManager, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault )
 public:
  explicit PortalManager(QObject *parent = 0);
  ~PortalManager() {}
@@ -32,6 +35,7 @@ public:
      return "Portal";
  }
  /*public*/ QSet<Portal*> getPortalSet();
+ QObject* self() {return (QObject*)this;}
 
 signals:
 

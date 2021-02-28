@@ -341,13 +341,13 @@ QCompleter* BlockManager::getCompleter(QString text)
         return LONG_LONG_MAX;
     }
     //return Instant.now().toEpochMilli() - lastTimeLayoutPowerOn.toEpochMilli();
-    QDateTime::currentMSecsSinceEpoch() - lastTimeLayoutPowerOn;
+   return QDateTime::currentMSecsSinceEpoch() - lastTimeLayoutPowerOn;
 }
 
-/*public*/ void BlockManager::vetoableChange(PropertyChangeEvent* evt)
-{
- AbstractManager::vetoableChange(evt);
-}
+///*public*/ void BlockManager::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+//{
+// AbstractManager::vetoableChange(evt);
+//}
 
 //@Override
 /*public*/ Block* BlockManager::provide(QString name) const throw (IllegalArgumentException) {
