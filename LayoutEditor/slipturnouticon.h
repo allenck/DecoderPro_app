@@ -4,12 +4,14 @@
 #include "namedbeanhandle.h"
 #include <QThread>
 #include "windowlistener.h"
+#include "propertychangelistener.h"
 
 class SlipIconAdder;
 class Turnout;
-class SlipTurnoutIcon : public PositionableLabel
+class SlipTurnoutIcon : public PositionableLabel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit SlipTurnoutIcon(Editor* editor, QObject *parent = 0);
     /*public*/ void setTurnout(QString pName, int turn);
@@ -48,12 +50,12 @@ public:
  /*public*/ void setInconsistentIcon(NamedIcon* i);
  /*public*/ NamedIcon* getUnknownIcon();
  /*public*/ void setUnknownIcon(NamedIcon* i);
- /*public*/ int maxHeight();
- /*public*/ int maxWidth();
- /*public*/ QString getNameString();
+ /*public*/ int maxHeight() override;
+ /*public*/ int maxWidth() override;
+ /*public*/ QString getNameString() override;
  /*public*/ bool getTristate();
- /*public*/ void setScale(double s);
- /*public*/ void rotate(int deg) ;
+ /*public*/ void setScale(double s) override;
+ /*public*/ void rotate(int deg) override ;
  /*public*/ QString getLWUEText();
  /*public*/ QString getUWLEText();
  /*public*/ QString getLWLEText();
@@ -62,17 +64,19 @@ public:
  /*public*/ void setUWLEText(QString txt);
  /*public*/ void setLWLEText(QString txt);
  /*public*/ void setUWUEText(QString txt);
- /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e);
- /*public*/ bool showPopUp(QMenu* popup);
- /*public*/ bool setTextEditMenu(QMenu* popup);
+ /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e) override;
+ /*public*/ bool showPopUp(QMenu* popup) override;
+ /*public*/ bool setTextEditMenu(QMenu* popup) override;
  /*public*/ void slipTurnoutTextEdit(QString name);
- /*public*/ void dispose();
- /*public*/ bool setEditIconMenu(QMenu* popup);
- /*public*/ QString getGroupName();
+ /*public*/ void dispose() override;
+ /*public*/ bool setEditIconMenu(QMenu* popup) override;
+ /*public*/ QString getGroupName() override;
+ QObject* self() override {return (QObject*)this;}
+
 signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  /*public*/ void setTristate(bool set);
 
 private:

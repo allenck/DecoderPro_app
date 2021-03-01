@@ -2,6 +2,7 @@
 #define SIMPLETURNOUTCTRLFRAME_H
 #include "jmrijframe.h"
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
 
 class Exception;
 class AbstractTurnout;
@@ -10,12 +11,14 @@ class QLabel;
 class QPushButton;
 class JTextField;
 class Turnout;
-class LIBLAYOUTEDITORSHARED_EXPORT SimpleTurnoutCtrlFrame : public JmriJFrame
+class LIBLAYOUTEDITORSHARED_EXPORT SimpleTurnoutCtrlFrame : public JmriJFrame, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit SimpleTurnoutCtrlFrame(QWidget *parent = 0);
- /*public*/ QString getClassName();
+ /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this;}
 
 signals:
 
@@ -24,7 +27,7 @@ public slots:
     /*public*/ void throwButtonActionPerformed(JActionEvent* e = 0);
     /*public*/ void lockButtonActionPerformed(JActionEvent* e = 0);
     /*public*/ void lockPushButtonActionPerformed(JActionEvent* e = 0);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     // GUI member declarations

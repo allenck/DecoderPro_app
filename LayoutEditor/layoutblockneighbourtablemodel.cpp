@@ -75,7 +75,7 @@ return lBlock->getNumberOfNeighbours();
 }
 
 //@Override
-/*private*/ QString LayoutBlockNeighbourTableModel::getColumnClass(int col) {
+/*private*/ QString LayoutBlockNeighbourTableModel::getColumnClass(int col) const {
     if (col == METRICCOL) {
         return "Integer";
     } else {

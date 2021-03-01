@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QDrag>
+#include "propertychangelistener.h"
 
 namespace Ui {
 class MultiSensorIconWidget;
@@ -18,9 +19,10 @@ class QSignalMapper;
 class Editor;
 class MultiSensorIcon;
 class AbstractSensor;
-class MultiSensorIconWidget : public QWidget
+class MultiSensorIconWidget : public QWidget, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 
 public:
     explicit MultiSensorIconWidget(MultiSensorIcon* icon, Editor* editor,QWidget *parent = 0);
@@ -28,6 +30,7 @@ public:
     void setIcon(MultiSensorIcon* icon);
 
     bool on_btnChangeIcon_clicked();
+    QObject* self() override {return (QObject*)this;}
 
 public slots:
     void on_tableWidget_cellClicked(int row, int col);
@@ -36,7 +39,7 @@ public slots:
     void on_rbUpDown_toggled(bool);
     void on_deleteRequested(int);
     void on_newSensorCreated(AbstractSensorManager*,Sensor*);
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*) override;
 signals:
     void iconValid(bool bValid);
 private:

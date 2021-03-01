@@ -2,6 +2,7 @@
 #define LEMEMORYICON_H
 #include "memoryicon.h"
 #include "Roster/roster.h"
+#include "propertychangelistener.h"
 
 class LayoutBlock;
 class Editor;
@@ -14,9 +15,9 @@ public:
     /*public*/ void setText(QString text) ;
     /*public*/ LayoutBlock* getLayoutBlock();
     /*public*/ void setLayoutBlock(LayoutBlock* lb);
-    /*public*/ void displayState();
-    /*public*/ void setMemory(QString pName);
-    /*public*/ bool showPopUp(QMenu* popup);
+    /*public*/ void displayState() override;
+    /*public*/ void setMemory(QString pName) override;
+    /*public*/ bool showPopUp(QMenu* popup) override;
     enum POS
     {
      LEFT = 0x00,
@@ -24,12 +25,13 @@ public:
      CENTRE = 0x04
     };
     Q_ENUM(POS)
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
     void on_updateBlockItemAction_toggled(bool bState);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  QString defaultText;// = " ";

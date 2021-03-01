@@ -108,7 +108,7 @@ public:
 
 
 signals:
- void propertyChange(PropertyChangeEvent *e);
+ void propertyChange(PropertyChangeEvent *e) override;
 
 public slots:
  void passPropertyChange(PropertyChangeEvent*);

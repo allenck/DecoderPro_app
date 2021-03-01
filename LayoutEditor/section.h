@@ -10,6 +10,7 @@
 #include "entrypoint.h"
 #include "memory.h"
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
 
 class Scale;
 class JmriJFrame;
@@ -20,9 +21,10 @@ class LayoutSlip;
 class LayoutTurnout;
 class ConnectivityUtil;
 class LayoutEditor;
-class LIBLAYOUTEDITORSHARED_EXPORT Section : public AbstractNamedBean
+class LIBLAYOUTEDITORSHARED_EXPORT Section : public AbstractNamedBean, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit Section(QObject *parent = 0);
     /*public*/ Section(QString systemName, QString userName="", QObject *parent = 0);
@@ -253,7 +255,9 @@ public:
     /*public*/ int getSectionType();
     /*public*/ QString getBeanType()  override;
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
- /*public*/ Block* getLastBlock();
+    /*public*/ Block* getLastBlock();
+
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     
@@ -261,7 +265,7 @@ public slots:
     /**
      * Handle change in occupancy of a Block in the Section
      */
-    void propertyChange(PropertyChangeEvent* e);
+    void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  Logger log;

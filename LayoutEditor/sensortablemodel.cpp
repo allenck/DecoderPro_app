@@ -50,7 +50,7 @@
 // disconnect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
-/*public*/ Manager* SensorTableModel::getManager() {
+/*public*/ Manager* SensorTableModel::getManager() const {
     return InstanceManager::sensorManagerInstance();
 }
 

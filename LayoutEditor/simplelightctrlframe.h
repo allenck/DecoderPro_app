@@ -1,6 +1,7 @@
 #ifndef SIMPLELIGHTCTRLFRAME_H
 #define SIMPLELIGHTCTRLFRAME_H
 #include "jmrijframe.h"
+#include "propertychangelistener.h"
 
 class Logger;
 class JActionEvent;
@@ -10,12 +11,14 @@ class DecimalFormat;
 class Light;
 class JTextField;
 class QLabel;
-class SimpleLightCtrlFrame : public JmriJFrame
+class SimpleLightCtrlFrame : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit SimpleLightCtrlFrame(QWidget *parent = 0);
- /*public*/ QString getClassName();
+ /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this;}
 
 signals:
 
@@ -25,7 +28,7 @@ public slots:
  /*public*/ void intensityButtonActionPerformed(JActionEvent* e = 0);
  /*public*/ void applyButtonActionPerformed(JActionEvent* e = 0);
  /*public*/ void statusButtonActionPerformed(JActionEvent* e = 0);
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  DecimalFormat* threeDigits; // newDecimalFormat("000");

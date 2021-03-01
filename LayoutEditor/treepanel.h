@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "logger.h"
 #include "controller.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class JTextField;
@@ -13,16 +14,18 @@ class UsbNode;
 class JTree;
 namespace Usb
 {
-class TreePanel : public QWidget
+class TreePanel : public QWidget, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit TreePanel(QWidget *parent = 0);
+  QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  JTree* dTree;

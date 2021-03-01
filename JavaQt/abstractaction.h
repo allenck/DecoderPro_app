@@ -3,14 +3,15 @@
 #include "action.h"
 #include "javaqt_global.h"
 #include "propertychangelistener.h"
+#include "propertychangesupport.h"
 
-class SwingPropertyChangeSupport;
+//class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
 class ArrayTable;
-class JAVAQTSHARED_EXPORT AbstractAction : public Action//, public PropertyChangeListener
+class JAVAQTSHARED_EXPORT AbstractAction : public Action, public PropertyChangeListener
 {
  Q_OBJECT
-  //Q_INTERFACES(PropertyChangeListener)
+  Q_INTERFACES(PropertyChangeListener)
 public:
  //explicit AbstractAction(QObject *parent = 0);
  /*public*/  AbstractAction(QObject *parent = 0);
@@ -31,11 +32,11 @@ public:
  /*public*/  /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener) override;
  Q_INVOKABLE /*public*/ void setClassname(QString);
  /*public*/ QString getClassname();
- //QObject* self() override {return (QObject*)this;}
+ QObject* self() override {return (QObject*)this;}
 
 
 signals:
- void propertyChange(PropertyChangeEvent*) ;
+ void propertyChange(PropertyChangeEvent*) override;
 
 public slots:
  virtual void actionPerformed(JActionEvent* = 0)  override{}
@@ -50,7 +51,7 @@ private:
   * If any <code>PropertyChangeListeners</code> have been registered, the
   * <code>changeSupport</code> field describes them.
   */
-// /*protected*/  SwingPropertyChangeSupport* changeSupport;
+ /*protected*/  PropertyChangeSupport* changeSupport;
  void common();
  QString _class;
 

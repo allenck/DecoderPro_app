@@ -2,14 +2,16 @@
 #define LAYOUTBLOCKROUTETABLEMODEL_H
 
 #include "abstracttablemodel.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class Logger;
 class Manager;
 class LayoutBlock;
-class LayoutBlockRouteTableModel : public AbstractTableModel
+class LayoutBlockRouteTableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  //explicit LayoutBlockRouteTableModel(QObject *parent = 0);
 enum COLUMNS
@@ -34,11 +36,12 @@ enum COLUMNS
 /*public*/ int getPreferredWidth(int column);
 /*public*/ void dispose();
 /*public*/ Manager* getManager();
+QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
-/*public*/ void propertyChange(PropertyChangeEvent* e);
+/*public*/ void propertyChange(PropertyChangeEvent* e) override;
 private:
      LayoutBlock* lBlock;
      static /*final*/ int NUMCOL;// = 7 + 1;

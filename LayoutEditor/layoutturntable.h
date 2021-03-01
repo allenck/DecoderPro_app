@@ -4,6 +4,7 @@
 #include <QPointF>
 #include "namedbeanhandle.h"
 #include "layouttrack.h"
+#include "propertychangelistener.h"
 
 class EditScene;
 class LayoutBlock;
@@ -28,9 +29,10 @@ class TrackSegment;
 class QMenu;
 class QPointF;
 class LayoutEditor;
-class RayTrack : public QObject
+class RayTrack : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  // persistant instance variables
  double rayAngle;// = 0.0;
  TrackSegment* _connect;// = NULL;
@@ -60,8 +62,11 @@ public:
  /*public*/  QWidget* getPanel();
  ///*public*/  bool isTurnoutControlled();
  ///*public*/  void setTurnoutControlled(bool boo);
+
+ QObject* self() override {return (QObject*)this;}
+
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  void on_deleteRayButton_clicked();
 
   private:

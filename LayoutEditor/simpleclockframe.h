@@ -5,6 +5,7 @@
 #include "liblayouteditor_global.h"
 #include "focuslistener.h"
 #include "jtextfield.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class JLabel;
@@ -14,14 +15,16 @@ class QCheckBox;
 class QComboBox;
 class DecimalFormat;
 class Timebase;
-class LIBLAYOUTEDITORSHARED_EXPORT SimpleClockFrame : public JmriJFrame
+class LIBLAYOUTEDITORSHARED_EXPORT SimpleClockFrame : public JmriJFrame, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit SimpleClockFrame(QWidget *parent = 0);
     ~SimpleClockFrame();
-    /*public*/ void initComponents() throw (Exception);
-    /*public*/ QString getClassName();
+    /*public*/ void initComponents() throw (Exception) override;
+    /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this;}
 
 signals:
 
@@ -30,7 +33,7 @@ public slots:
     /*public*/ void setTimeButtonActionPerformed();
     /*public*/ void startButtonActionPerformed();
     /*public*/ void stopButtonActionPerformed();
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  enum START

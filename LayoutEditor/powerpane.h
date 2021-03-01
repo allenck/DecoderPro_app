@@ -3,21 +3,25 @@
 #include "jmripanel.h"
 #include "logger.h"
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
+
 class PropertyChangeEvent;
 class PowerManager;
 class PowerManagerMenu;
 class QLabel;
 class QPushButton;
-class LIBLAYOUTEDITORSHARED_EXPORT PowerPane : public JmriPanel
+class LIBLAYOUTEDITORSHARED_EXPORT PowerPane : public JmriPanel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit PowerPane(QWidget *parent = 0);
     PowerManagerMenu* selectMenu;
-    /*public*/ QString getHelpTarget();
-    /*public*/ QString getTitle();
-    /*public*/ QList<QMenu*> getMenus();
-    /*public*/ void dispose();
+    /*public*/ QString getHelpTarget() override;
+    /*public*/ QString getTitle() override;
+    /*public*/ QList<QMenu*> getMenus() override;
+    /*public*/ void dispose() override;
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
@@ -25,7 +29,7 @@ public slots:
     void managerChanged();
     /*public*/ void onButtonPushed();
     /*public*/ void offButtonPushed();
-    /*public*/ void propertyChange(PropertyChangeEvent* ev);
+    /*public*/ void propertyChange(PropertyChangeEvent* ev) override;
 
 private:
     QLabel* onOffStatus;// 	= new QLabel(tr("Unknown"));
