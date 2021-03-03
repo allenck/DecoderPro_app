@@ -1324,7 +1324,7 @@ namespace Operations {
  // @param isPickup true when rolling stock is being picked up
  /*private*/ QString TrainCommon::getEngineAttribute(Engine* engine, QString attribute, bool isPickup) {
      if (attribute==(Setup::MODEL)) {
-         return " " + padAndTruncateString(engine->getModel(), EngineModels::instance()->getMaxNameLength());
+         return " " + padAndTruncateString(engine->getModel(), ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getMaxNameLength());
      }
      if (attribute==(Setup::CONSIST)) {
          return " " + padAndTruncateString(engine->getConsistName(), engineManager->getConsistMaxNameLength());
@@ -1701,8 +1701,8 @@ namespace Operations {
                ->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::MODEL)) {
-       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Model(), EngineModels
-               ::instance()->getMaxNameLength())
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Model(),
+                                       ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::CONSIST)) {
        buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Consist(), engineManager

@@ -2794,7 +2794,7 @@ if (loads.length() == 0) {
  }
 #endif
  /*protected*/ void Track::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     LocationManagerXml::instance()->setDirty(true);
+     ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
 

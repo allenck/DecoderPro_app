@@ -353,7 +353,7 @@
     }
     else
     {
-     Logger::error(tr("not implemented %1").arg(listener->self()->metaObject()->className()));
+     Logger::error(tr("PropertyChangeListener not implemented %1").arg(listener->self()->metaObject()->className()));
     //Q_ASSERT(false);
     }
      // NOTE: Class must have a Q_OBJECT macro otherwise you will get  a "void value not ignored as it ought to be error on Q_OBJECT!

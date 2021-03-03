@@ -633,7 +633,7 @@ RollingStockManager(parent)
 
  /*protected*/ void CarManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockManager::firePropertyChange(p, old, n);
  }
 

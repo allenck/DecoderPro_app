@@ -29,7 +29,7 @@ friend class TrainListener;
  JsonOperationsSocketService* joss;
 public :
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  QObject* self() override{return (QObject*)this;}
 
 protected:

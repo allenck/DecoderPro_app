@@ -17,6 +17,7 @@
 #include "blockvaluefile.h"
 #include "system.h"
 #include "metatypes.h"
+#include "../operations/metatypes.h"
 #include "properties.h"
 #include "jmriconfigurationmanager.h"
 #include "jmriuserpreferencesmanager.h"
@@ -26,6 +27,7 @@ AppsBase::AppsBase(QObject *parent) :
     QObject(parent)
 {
  new Metatypes();
+ new Operations::Metatypes();
  configDeferredLoadOK = false;
 }
 /**

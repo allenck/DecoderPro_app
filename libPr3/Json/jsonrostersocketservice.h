@@ -16,7 +16,7 @@ public:
  QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* evt);
+    /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 };
 
 /*private*/ class JsonRosterListener : public QObject,public PropertyChangeListener {
@@ -28,7 +28,7 @@ public:
  JsonRosterListener(JsonRosterSocketService* jrss);
  QObject* self() override{return (QObject*)this;}
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* evt);
+    /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 };
 class JsonRosterSocketService : public JsonSocketService
 {

@@ -206,7 +206,7 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
 /*public*/ /*synchronized*/ void ConnectionStatus::addPropertyChangeListener(PropertyChangeListener* l)
 {
  pcs->addPropertyChangeListener(l);
- connect(pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l->self(), SLOT(propertyChange(PropertyChangeEvent*)));
+ //connect(pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*protected*/ void ConnectionStatus::firePropertyChange(QString p, QVariant old, QVariant n)

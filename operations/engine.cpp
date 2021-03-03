@@ -46,7 +46,7 @@ namespace Operations
      _consist = NULL;
      _model = NONE;
      verboseStore = false;
-   engineModels = EngineModels::instance();
+     engineModels = (EngineModels*)InstanceManager::getDefault("EngineModels");
  }
 
  /**

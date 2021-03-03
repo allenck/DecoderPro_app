@@ -11,6 +11,7 @@
 #include "carloads.h"
 #include "carload.h"
 #include "locationmanager.h"
+#include "instancemanager.h"
 
 //Car::Car()
 //{
@@ -963,7 +964,7 @@ namespace Operations
 
     /*protected*/ void Car::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
         // Set dirty
-        CarManagerXml::instance()->setDirty(true);
+        ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
         RollingStock::setDirtyAndFirePropertyChange(p, old, n);
     }
 

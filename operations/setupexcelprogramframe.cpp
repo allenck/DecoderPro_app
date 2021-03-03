@@ -6,7 +6,7 @@
 #include "jfilechooser.h"
 #include "xmlfile.h"
 #include "operationsmanager.h"
-
+#include "instancemanager.h"
 using namespace Operations;
 
 SetupExcelProgramFrame::SetupExcelProgramFrame(QWidget* parent) : OperationsFrame(parent)
@@ -90,7 +90,7 @@ SetupExcelProgramFrame::SetupExcelProgramFrame(QWidget* parent) : OperationsFram
  */
 /*protected*/ File* SetupExcelProgramFrame::selectFile(QString directoryName) {
     JFileChooser* fc = XmlFile::userFileChooser(tr("Excel programFiles"), "xls", "xlsm"); // NOI18N
-    fc->setCurrentDirectory(OperationsManager::getInstance()->getFile(directoryName));
+    fc->setCurrentDirectory(((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->getFile(directoryName));
     fc->setDialogTitle(tr("Find desired Excel file"));
     // when reusing the chooser, make sure new files are included
 //    fc->rescanCurrentDirectory();

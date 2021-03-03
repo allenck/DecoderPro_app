@@ -16,9 +16,9 @@ public:
  RosterConfigManager(const RosterConfigManager&): AbstractPreferencesManager() {}
  /*public*/ static /*final*/ QString DIRECTORY;// = "directory";
  /*public*/ static /*final*/ QString DEFAULT_OWNER;// = "defaultOwner";
- /*public*/ void initialize(Profile* profile)throw (InitializationException);
- /*public*/ void savePreferences(Profile* profile);
- /*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* getRequires();
+ /*public*/ void initialize(Profile* profile)throw (InitializationException) override;
+ /*public*/ void savePreferences(Profile* profile) override;
+ /*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* getRequires() override;
  /*public*/ QString getDefaultOwner();
  /*public*/ QString getDefaultOwner(/*@CheckForNull*/ Profile* profile);
  /*public*/ void setDefaultOwner(Profile *profile, QString defaultOwner);
@@ -30,7 +30,7 @@ public:
  QObject* self() override {return (QObject*)this;}
 
 public slots:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*) override;
 
 private:
  Logger* log;

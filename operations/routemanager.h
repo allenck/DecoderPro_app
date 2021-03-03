@@ -1,5 +1,5 @@
-#ifndef ROUTEMANAGER_H
-#define ROUTEMANAGER_H
+#ifndef OROUTEMANAGER_H
+#define OROUTEMANAGER_H
 
 #include <QObject>
 #include <QHash>
@@ -55,10 +55,10 @@ namespace Operations {
 
  protected:
   // stores known Route instances by id
-  /*protected*/ QHash<QString, Route*> _routeHashTable;// = new QHash<QString, Route*>();
+  /*protected*/ QHash<QString, Route*> _routeHashTable = QHash<QString, Route*>();
   /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
 
  };
 }
 Q_DECLARE_METATYPE(Operations::RouteManager)
-#endif // ROUTEMANAGER_H
+#endif // OROUTEMANAGER_H

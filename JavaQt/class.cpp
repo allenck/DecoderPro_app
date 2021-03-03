@@ -205,6 +205,7 @@
      QObject* obj;
      if(id != 0)
      {
+      log->debug(tr("Id found %1 typename: %2").arg(id).arg(QMetaType::typeName(id)));
    #if QT_VERSION < 0x050000
       obj = (QObject*)QMetaType::construct(id);
    #else
@@ -214,14 +215,14 @@
        obj->setObjectName(className);
       return (Class*)obj;
     }
-     else
-     {
+    else
+    {
 //      qDebug() << "class not found: " << className;
 //      if(className == "AbstractProxyManagerXml" || className == "AbstractTurnoutManagerXml")
 //       qDebug() << "stop";
       throw ClassNotFoundException(className);
-     }
     }
+}
 
 #if 0
 

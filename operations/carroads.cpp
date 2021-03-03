@@ -2,6 +2,7 @@
 #include "control.h"
 #include "xml.h"
 #include "carmanagerxml.h"
+#include "instancemanager.h"
 
 //CarRoads::CarRoads(QObject *parent) :
 //  RollingStockAttribute(parent)
@@ -111,7 +112,7 @@ Logger*  log = new Logger("CarRoads");
 
     /*protected*/ void CarRoads::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
         // Set dirty
-        CarManagerXml::instance()->setDirty(true);
+        ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
         RollingStockAttribute::firePropertyChange(p, old, n);
     }
 }

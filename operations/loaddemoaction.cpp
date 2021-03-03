@@ -4,6 +4,8 @@
 #include "autobackup.h"
 #include "operationsmanager.h"
 #include "apps.h"
+#include "instancemanager.h"
+
 /**
  * Swing action to load the operation demo files.
  *
@@ -62,7 +64,7 @@ namespace Operations
       // now deregister shut down task
       // If Trains window was opened, then task is active
       // otherwise it is normal to not have the task running
-      OperationsManager::getInstance()->setShutDownTask(NULL);
+      ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->setShutDownTask(NULL);
 
  //     JOptionPane.showMessageDialog(null, Bundle.getMessage("YouMustRestartAfterLoadDemo"),
  //             Bundle.getMessage("LoadDemoSuccessful"), JOptionPane.INFORMATION_MESSAGE);

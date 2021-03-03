@@ -30,6 +30,7 @@
 #include "gridbagconstraints.h"
 #include "location.h"
 #include "vptr.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -141,7 +142,7 @@ namespace Operations
   routeDrop1Box = new JComboBox();
   roadCaboose1Box = new JComboBox();
   roadEngine1Box = CarRoads::instance()->getComboBox();
-  modelEngine1Box = EngineModels::instance()->getComboBox();
+  modelEngine1Box = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
   numEngines1Box = new JComboBox();
 
   // train requirements 2nd set
@@ -149,7 +150,7 @@ namespace Operations
   routeDrop2Box = new JComboBox();
   roadCaboose2Box = new JComboBox();
   roadEngine2Box = CarRoads::instance()->getComboBox();
-  modelEngine2Box = EngineModels::instance()->getComboBox();
+  modelEngine2Box = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
   numEngines2Box = new JComboBox();
 }
 
@@ -474,8 +475,8 @@ namespace Operations
   // get notified if car owners or engine models gets modified
   //CarOwners::instance().addPropertyChangeListener(this);
   connect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //EngineModels::instance()->addPropertyChangeListener(this);
-  connect(EngineModels::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((EngineModels*)InstanceManager::getDefault("EngineModels"))->addPropertyChangeListener(this);
+  connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   initMinimumSize();
 }
@@ -947,8 +948,8 @@ JComboBox* source = (JComboBox*)ae;
 }
 
 /*private*/ void TrainEditBuildOptionsFrame::updateModelComboBoxes() {
-  EngineModels::instance()->updateComboBox(modelEngine1Box);
-  EngineModels::instance()->updateComboBox(modelEngine2Box);
+  ((EngineModels*)InstanceManager::getDefault("EngineModels"))->updateComboBox(modelEngine1Box);
+  ((EngineModels*)InstanceManager::getDefault("EngineModels"))->updateComboBox(modelEngine2Box);
   modelEngine1Box->insertItem(0,"");
   modelEngine2Box->insertItem(0,"");
   if (_train != NULL) {
@@ -1072,8 +1073,8 @@ while ( ( item = engine1caboose->layout()->takeAt( 0 ) ) != NULL )
  {
     //CarOwners::instance()->removePropertyChangeListener(this);
   disconnect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-    //EngineModels::instance().removePropertyChangeListener(this);
-  disconnect(EngineModels::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    //((EngineModels*)InstanceManager::getDefault("EngineModels")).removePropertyChangeListener(this);
+  disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   if (_train != NULL) {
       //_train->removePropertyChangeListener(this);
    disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

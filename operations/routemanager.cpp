@@ -31,12 +31,11 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString RouteManager::LISTLENGTH_CHANGED_PROPERTY = "routesListLengthChanged"; // NOI18N
 
  /*public*/ RouteManager::RouteManager(QObject *parent)
-   : PropertyChangeSupport(parent)
+   : PropertyChangeSupport(this, parent)
  {
   log = new ::Logger("RouteManager");
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
-
  }
 
  /*public*/ void RouteManager::dispose() {
@@ -347,7 +346,7 @@ namespace Operations
 
  //@Override
  /*public*/ void RouteManager::initialize() {
-     static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
-     static_cast<RouteManagerXml*>(InstanceManager::getDefault("RouteManagerXml")); // load routes
+     InstanceManager::getDefault("OperationsSetupXml"); // load setup
+     InstanceManager::getDefault("RouteManagerXml"); // load routes
  }
 }

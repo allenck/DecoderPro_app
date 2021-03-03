@@ -434,7 +434,7 @@ PropertyChangeSupport(this, parent)
 #endif
  /*protected*/ void LocationManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // set dirty
-     LocationManagerXml::instance()->setDirty(true);
+     ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
      firePropertyChange(p, old, n);
  }
 

@@ -3496,7 +3496,7 @@ if (roads.length() == 0) {
 //        CarOwners.instance().removePropertyChangeListener(this);
      disconnect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        EngineModels.instance().removePropertyChangeListener(this);
-     disconnect(EngineModels::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      setDirtyAndFirePropertyChange(DISPOSE_CHANGED_PROPERTY, QVariant(), "Dispose"); // NOI18N
  }
@@ -3939,7 +3939,7 @@ if (roads.length() == 0) {
   //CarOwners.instance().addPropertyChangeListener(this);
  connect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
-  connect(EngineModels::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }
  /**

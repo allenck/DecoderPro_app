@@ -10,7 +10,7 @@ namespace Operations
  class APPSLIBSHARED_EXPORT RouteManagerXml : public OperationsXml, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
-   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
+  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
   Q_INVOKABLE explicit RouteManagerXml(QObject *parent = 0);
    ~RouteManagerXml(){}

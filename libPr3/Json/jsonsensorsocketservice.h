@@ -36,7 +36,7 @@ public:
 
 public slots:
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  friend class JsonSensorSocketService;
 };
 

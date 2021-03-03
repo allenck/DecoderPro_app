@@ -7,6 +7,7 @@
 #include "operationsxml.h"
 #include "joptionpane.h"
 #include "loggerfactory.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 SetupExcelProgramManifestFrame::SetupExcelProgramManifestFrame(QWidget* parent) : SetupExcelProgramFrame(parent)
@@ -29,7 +30,7 @@ SetupExcelProgramManifestFrame::SetupExcelProgramManifestFrame(QWidget* parent) 
     generateCheckBox->setText(tr("Generate Csv Manifest"));
     generateCheckBox->setChecked(Setup::isGenerateCsvManifestEnabled());
     fileNameTextField->setText(TrainCustomManifest::instance()->getFileName());
-    pDirectoryNameLayout->addWidget(new QLabel(OperationsManager::getInstance()->getFile(TrainCustomManifest::instance()->getDirectoryName())->getPath()));
+    pDirectoryNameLayout->addWidget(new QLabel(((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->getFile(TrainCustomManifest::instance()->getDirectoryName())->getPath()));
 }
 
 // Save and Test

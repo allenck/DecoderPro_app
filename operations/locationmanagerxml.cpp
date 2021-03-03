@@ -30,19 +30,8 @@ OperationsXml(parent)
 
 }
 
- /**
-  * record the single instance *
-  */
- //  /*private*/ /*static*/ LocationManagerXml* LocationManagerXml::_instance = nullptr;
-
-
- /*public*/ /*static*/ /*synchronized*/ LocationManagerXml* LocationManagerXml::instance()
+ /*public*/ void LocationManagerXml::writeFile(QString name) throw (FileNotFoundException, IOException)
  {
-  return static_cast<LocationManagerXml*>(InstanceManager::getDefault("LocationManagerXml"));
- }
-
-/*public*/ void LocationManagerXml::writeFile(QString name) throw (FileNotFoundException, IOException)
-{
      if (log->isDebugEnabled()) {
          log->debug(tr("writeFile %1").arg(name));
      }

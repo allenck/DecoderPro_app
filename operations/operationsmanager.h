@@ -15,26 +15,26 @@ namespace Operations
  class APPSLIBSHARED_EXPORT OperationsManager : public QObject, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
-     Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
+  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
 
  public:
   Q_INVOKABLE explicit OperationsManager(QObject *parent = 0);
+   ~OperationsManager() {}
+   OperationsManager(const OperationsManager&) : QObject() {}
   /*public*/ ShutDownTask* getDefaultShutDownTask();
-  /*public*/ static OperationsManager* getInstance();
   /*public*/ QString getPath();
   /*public*/ QString getPath(QString name) ;
   /*public*/ File* getFile(QString name);
   /*public*/ void setShutDownTask(ShutDownTask* shutDownTask);
   /*public*/ QString getOperationsFolderName();
-  Q_INVOKABLE   void initialize();
 
  signals:
 
  public slots:
  private:
   /*private*/ ShutDownTask* shutDownTask;// = null;
-//  static /*private*/ OperationsManager* instance;// = null;
   Logger* log;
+  Q_INVOKABLE void initialize();
 
   class MyQuietShutdownTask : public QuietShutDownTask
   {
@@ -48,4 +48,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::OperationsManager)
 #endif // OPERATIONSMANAGER_H

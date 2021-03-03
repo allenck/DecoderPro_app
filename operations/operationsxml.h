@@ -2,13 +2,15 @@
 #define OPERATIONSXML_H
 #include "xmlfile.h"
 #include "logger.h"
-#include "appslib_global.h"
+#include "operations_global.h"
 
-class APPSLIBSHARED_EXPORT OperationsXml : public XmlFile
+class OPERATIONSSHARED_EXPORT OperationsXml : public XmlFile
 {
  Q_OBJECT
 public:
- explicit OperationsXml(QObject *parent = 0);
+ Q_INVOKABLE explicit OperationsXml(QObject *parent = 0);
+  ~OperationsXml() {}
+  OperationsXml(const OperationsXml&) : XmlFile() {}
  /*public*/ void writeOperationsFile();
  /*abstract*/ /*public*/ virtual void readFile(QString filename);// throw (JDOMException, IOException);
  /*public*/ void setDirty(bool b);
@@ -43,5 +45,5 @@ protected:
  /*protected*/ virtual void writeFile(QString filename);// throw (FileNotFoundException, IOException);
  friend class CarManagerXml;
 };
-
+Q_DECLARE_METATYPE(OperationsXml)
 #endif // OPERATIONSXML_H

@@ -1,5 +1,5 @@
-#ifndef METATYPES_H
-#define METATYPES_H
+#ifndef OMETATYPES_H
+#define OMETATYPES_H
 
 #include <QObject>
 namespace Operations {
@@ -15,4 +15,4 @@ namespace Operations {
 
  };
 }
-#endif // METATYPES_H
+#endif // OMETATYPES_H

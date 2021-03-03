@@ -74,6 +74,7 @@
 #include "appsconfigurationmanager.h"
 #include "warrantpreferences.h"
 #include "jmriclient/jmriclientsystemconnectionmemo.h"
+#include "../operations/routemanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -180,6 +181,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "RouteManager") {
   return new DefaultRouteManager(memo);
+ }
+
+ if (type == "Operations::RouteManager") {
+  Operations::RouteManager* mgr = new Operations::RouteManager();
+  mgr->initialize();
+  InstanceManager::store(mgr, type);
+  return mgr;
  }
 
  if (type == "SensorManager")

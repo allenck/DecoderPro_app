@@ -3,7 +3,7 @@
 #include "xml.h"
 #include "control.h"
 #include "loggerfactory.h"
-
+#include "instancemanager.h"
 namespace Operations
 {
 /**
@@ -69,7 +69,7 @@ namespace Operations
 
  /*protected*/ void CarColors::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
  /*private*/ /*final*/ /*static*/ Logger* CarColors::log = LoggerFactory::getLogger("CarColors");

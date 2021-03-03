@@ -197,7 +197,7 @@ namespace Operations
 
  /*public*/ void Location::setPhysicalLocation(PhysicalLocation* l) {
      _physicalLocation = l;
-// TODO:       LocationManagerXml::instance().setDirty(true);
+// TODO:       ((LocationManagerXmll*)InstanceManager::getDefault("LocationManagerXml")).setDirty(true);
  }
 
  /**
@@ -1592,7 +1592,7 @@ connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), t
 #endif
 
  /*protected*/ void Location::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
- LocationManagerXml::instance()->setDirty(true);
+ ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
 }

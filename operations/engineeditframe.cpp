@@ -66,13 +66,13 @@ namespace Operations
  {
  log = new Logger("EngineEditFrame");
         //super();
-  manager = EngineManager::instance();
+  manager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
   //managerXml = EngineManagerXml::instance();
-  engineModels = EngineModels::instance();
-  engineTypes = EngineTypes::instance();
-  engineLengths = EngineLengths::instance();
-  carManagerXml = CarManagerXml::instance();
-  locationManager = LocationManager::instance();
+  engineModels = (EngineModels*)InstanceManager::getDefault("EngineModels");
+  engineTypes = ((EngineTypes*)InstanceManager::getDefault("EngineTypes"));
+  engineLengths = ((EngineLengths*)InstanceManager::getDefault("EngineLengths"));
+  carManagerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
   // major buttons
   editRoadButton = new QPushButton(tr("Edit"));
@@ -892,7 +892,7 @@ namespace Operations
      }
 
      if (e->getPropertyName()==(LocationManager::LISTLENGTH_CHANGED_PROPERTY)) {
-         LocationManager::instance()->updateComboBox(locationBox);
+         ((LocationManager*)InstanceManager::getDefault("LocationManager"))->updateComboBox(locationBox);
          if (_engine != NULL) {
              locationBox->setCurrentIndex(locationBox->findText(_engine->getLocation()->getName()));
          }

@@ -9,10 +9,11 @@
 
 class JTable;
 class QSignalMapper;
-class LIBPR3SHARED_EXPORT CvTableModel : public AbstractTableModel
+class LIBPR3SHARED_EXPORT CvTableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
-public:
+Q_INTERFACES(PropertyChangeListener)
+ public:
 //    CvTableModel(QObject *parent = 0);
 //    /*public*/ QVector<CvValue*>* allCvVector();
     /*public*/ QLabel* getStatusLabel();
@@ -36,9 +37,9 @@ public:
     void configureTable(JTable*);
     /*public*/ QMap<QString, CvValue*>* allCvMap();
     /*public*/ void resetDecoderDirty(int newStatus);
-
+QObject* self() override {(QObject*)this;}
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 signals:
     //void modelChange(CvValue*, int);

@@ -28,6 +28,7 @@
 #include "locationmanager.h"
 #include "schedulecopyaction.h"
 #include "scheduleoptionsaction.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -94,7 +95,7 @@ namespace Operations
 
      // load managers
      manager = ScheduleManager::instance();
-     managerXml = LocationManagerXml::instance();
+     managerXml = ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"));
 
      // Set up the jtable in a Scroll Pane..
 //     schedulePane = new JScrollPane(scheduleTable);

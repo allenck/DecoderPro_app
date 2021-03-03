@@ -59,25 +59,6 @@ namespace Operations {
 /**
  * record the single instance *
  */
-/*private*/ /*static*/  EngineModels* EngineModels::_instance = NULL;
-
-
- /*public*/ /*static*/  /*synchronized*/ EngineModels* EngineModels::instance()
- {
- Logger* log = new Logger("EngineModels");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("EngineModels creating instance");
-         }
-         // create and load
-         _instance = new EngineModels();
-         _instance->loadDefaults();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("EngineModels returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
 
  /*protected*/ QString EngineModels::getDefaultNames() {
      return MODELS;

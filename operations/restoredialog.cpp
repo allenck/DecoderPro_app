@@ -16,6 +16,7 @@
 #include "backupset.h"
 #include "operationsmanager.h"
 #include "apps.h"
+#include "instancemanager.h"
 
 //RestoreDialog::RestoreDialog(QWidget *parent) :
 //  JDialog(parent)
@@ -219,7 +220,7 @@ namespace Operations
          // now deregister shut down task
          // If Trains window was opened, then task is active
          // otherwise it is normal to not have the task running
-         OperationsManager::getInstance()->setShutDownTask(NULL);
+         ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->setShutDownTask(NULL);
 
 //         JOptionPane.showMessageDialog(this, tr("YouMustRestartAfterRestore"),
 //                 tr("RestoreSuccessful"), JOptionPane.INFORMATION_MESSAGE);

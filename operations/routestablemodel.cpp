@@ -39,7 +39,7 @@ namespace Operations
   log = new Logger("RoutesTableModel");
 
 
-     manager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
+     manager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
      //manager.addPropertyChangeListener(this);
      connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //LocationManager::instance().addPropertyChangeListener(this);

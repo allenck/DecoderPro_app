@@ -6,7 +6,7 @@
 #include "logger.h"
 #include "appslib_global.h"
 #include "filedrop.h"
-
+#include "propertychangelistener.h"
 
 
 class QMenuBar;
@@ -20,9 +20,10 @@ class File;
 class AWTEventListener;
 class SplashWindow;
 class AppConfigBase;
-class APPSLIBSHARED_EXPORT Apps : public QWidget
+class APPSLIBSHARED_EXPORT Apps : public QWidget, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit Apps(QWidget *parent = 0);
     /*public*/ Apps(JFrame* frame, QWidget *parent = 0);
@@ -42,12 +43,13 @@ void initGui();
 #ifdef SCRIPTING_ENABLED
 /*public*/ static void ynstrument(QString path);
 #endif
+QObject* self() override {(QObject*)this;}
 
 
 signals:
 
 public slots:
-/*public*/ void propertyChange(PropertyChangeEvent* ev);
+/*public*/ void propertyChange(PropertyChangeEvent* ev) override;
 void On_handleQuit();
 
 private:

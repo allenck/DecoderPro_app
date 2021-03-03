@@ -33,7 +33,7 @@ public:
     /*public*/ LightListener(Light* light, JsonLightSocketService* jlss);
  QObject* self() override{return (QObject*)this;}
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  friend class JsonLightSocketService;
 };
 

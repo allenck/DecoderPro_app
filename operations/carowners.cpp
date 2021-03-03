@@ -4,7 +4,7 @@
 #include "xml.h"
 #include "carmanagerxml.h"
 #include "logger.h"
-
+#include "instancemanager.h"
 //CarOwners::CarOwners()
 //{
 
@@ -83,7 +83,7 @@ namespace Operations
 
  /*protected*/ void CarOwners::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 }

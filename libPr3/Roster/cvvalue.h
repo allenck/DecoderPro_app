@@ -8,10 +8,10 @@
 
 class Programmer;
 class JTextField;
-class LIBPR3SHARED_EXPORT CvValue : public AbstractValue, ProgListener
+class LIBPR3SHARED_EXPORT CvValue : public AbstractValue, public ProgListener, public PropertyChangeListener
 {
     Q_OBJECT
-  Q_INTERFACES(ProgListener)
+  Q_INTERFACES(ProgListener PropertyChangeListener)
 public:
     //explicit CvValue(QObject *parent = 0);
     /*public*/ CvValue(QString num, Programmer* pProgrammer, QObject *parent = 0);
@@ -50,10 +50,10 @@ public:
     void setProgrammer(Programmer* p);
     void resetStatus(int newState);
 
-    QObject* self() {return (QObject*)this;}
+    QObject* self() override{return (QObject*)this;}
 
 signals:
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*) override;
 
 public slots:
     /*public*/ void programmingOpReply(int value, int retval) override;

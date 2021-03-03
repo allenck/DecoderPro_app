@@ -19,14 +19,13 @@ namespace Operations
  */
 ///*public*/ class RouteManagerXml extends OperationsXml {
 
-/*public*/ RouteManagerXml::RouteManagerXml(QObject *parent) :
-OperationsXml(parent)
+/*public*/ RouteManagerXml::RouteManagerXml(QObject *parent)
+  : OperationsXml(parent)
 {
  log = new Logger("RouteManagerXml");
  operationsFileName = "OperationsRouteRoster.xml"; // NOI18N
  setProperty("InstanceManagerAutoDefault", "true");
  setProperty("InstanceManagerAutoInitialize", "true");
-
 }
 
 /*public*/ void RouteManagerXml::writeFile(QString name) //throws java.io.FileNotFoundException, java.io.IOException

@@ -62,12 +62,12 @@ namespace Operations
 //     m.put("href", xsltLocation + "operations-engines.xsl"); // NOI18N
 //     ProcessingInstruction p = new ProcessingInstruction("xml-stylesheet", m); // NOI18N
 //     doc.addContent(0, p);
-       QDomProcessingInstruction p = doc.createProcessingInstruction("type", "text/xsl");
-       root.appendChild(p);
-       p = doc.createProcessingInstruction("href", tr("%1operations-operations-engines.xsl").arg(xsltLocation));
+      QDomProcessingInstruction p = doc.createProcessingInstruction("type", "text/xsl");
       root.appendChild(p);
-      doc.appendChild(root);
-     EngineModels::instance()->store(root, doc);
+      p = doc.createProcessingInstruction("href", tr("%1operations-operations-engines.xsl").arg(xsltLocation));
+     root.appendChild(p);
+     doc.appendChild(root);
+     ((EngineModels*)InstanceManager::getDefault("EngineModels"))->store(root, doc);
      EngineTypes::instance()->store(root, doc);
      EngineLengths::instance()->store(root, doc);
      EngineManager::instance()->store(root,doc);
@@ -97,7 +97,7 @@ namespace Operations
          return;
      }
 
-     EngineModels::instance()->load(root);
+     ((EngineModels*)InstanceManager::getDefault("EngineModels"))->load(root);
      EngineTypes::instance()->load(root);
      EngineLengths::instance()->load(root);
      EngineManager::instance()->load(root);

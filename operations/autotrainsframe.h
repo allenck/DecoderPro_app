@@ -20,7 +20,7 @@ public:
  /*public*/ QList<AutoActiveTrain*>* getAutoTrainsList();
  /*public*/ void addAutoActiveTrain(AutoActiveTrain* aat);
  /*public*/ void removeAutoActiveTrain(AutoActiveTrain* aat);
- /*public*/ QString getClassName();
+ /*public*/ QString getClassName() override;
 
 private:
  Logger* log;

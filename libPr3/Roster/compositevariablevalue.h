@@ -106,7 +106,7 @@ public:
     /*public*/ void writeChanges() ;
     /*public*/ void readAll() ;
     /*public*/ void writeAll();
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
     void findValue();
     // clean up connections when done
     /*public*/ void dispose();

@@ -7,6 +7,7 @@
 #include "jfilechooser.h"
 #include "operationsmanager.h"
 #include "defaultbackup.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -94,7 +95,7 @@ namespace Operations
       // now deregister shut down task
       // If Trains window was opened, then task is active
       // otherwise it is normal to not have the task running
-      OperationsManager::getInstance()->setShutDownTask(NULL);
+      ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->setShutDownTask(NULL);
 
       Apps::handleRestart();
 

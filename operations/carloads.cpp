@@ -6,6 +6,7 @@
 #include "carmanagerxml.h"
 #include "cartypes.h"
 #include "stringutil.h"
+#include "instancemanager.h"
 
 //CarLoads::CarLoads()
 //{
@@ -612,7 +613,7 @@ namespace Operations
 
  /*protected*/ void CarLoads::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 

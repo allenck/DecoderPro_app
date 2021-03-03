@@ -25,6 +25,8 @@ namespace Operations
      Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
   Q_INVOKABLE explicit LocationManager(QObject *parent = 0);
+   ~LocationManager(){}
+   LocationManager(const LocationManager&) : PropertyChangeSupport(nullptr) {}
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "locationsListLength"; // NOI18N
   QT_DEPRECATED /*public*/ static /*synchronized*/ LocationManager* instance();
   /*public*/ void dispose();
@@ -70,4 +72,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::LocationManager)
 #endif // LOCATIONMANAGER_H

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class Insets;
 class JActionEvent;
@@ -16,20 +17,21 @@ class JTextField;
 class QLabel;
 class QRadioButton;
 class PropertyChangeEvent;
-class APPSLIBSHARED_EXPORT VSDecoderPreferencesPane : public QWidget
+class APPSLIBSHARED_EXPORT VSDecoderPreferencesPane : public QWidget, public PropertyChangeListener
 {
  Q_OBJECT
+Q_INTERFACES(PropertyChangeListener)
 public:
  explicit VSDecoderPreferencesPane(QWidget *parent = 0);
  /*public*/ VSDecoderPreferencesPane(VSDecoderPreferences* tp,QWidget *parent = 0);
  /*public*/ void setContainer(JFrame* f);
-
+QObject* self() override {(QObject*)this;}
 signals:
 
 public slots:
  void checkConsistency();
  /*public*/ void jbSaveActionPerformed(JActionEvent* evt = 0);
- /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 
 private:
  /*private*/ QCheckBox* cbAutoStartEngine;

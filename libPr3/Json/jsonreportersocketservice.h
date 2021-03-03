@@ -31,7 +31,7 @@ private:
  QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  friend class JsonReporterSocketService;
 };
 

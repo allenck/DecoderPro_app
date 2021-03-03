@@ -389,7 +389,7 @@ namespace Operations
 #endif
  /*protected*/ void ScheduleManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // set dirty
-     LocationManagerXml::instance()->setDirty(true);
+     ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
 

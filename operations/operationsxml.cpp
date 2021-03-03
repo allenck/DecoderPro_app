@@ -244,9 +244,9 @@ OperationsXml::OperationsXml(QObject *parent) :
 {
  ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeFileIfDirty();
 
- Operations::LocationManagerXml::instance()->writeFileIfDirty(); // Need to save "moves" for track location
+ ((Operations::LocationManagerXml*)InstanceManager::getDefault("Operations::LocationManagerXml"))->writeFileIfDirty(); // Need to save "moves" for track location
  ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->writeFileIfDirty(); // Only if user used setX&Y
- Operations::CarManagerXml::instance()->writeFileIfDirty(); // save train assignments
+ ((Operations::CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->writeFileIfDirty(); // save train assignments
  ((Operations::EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->writeFileIfDirty(); // save train assignments
  Operations::TrainManagerXml::instance()->writeFileIfDirty(); // save train changes
 
@@ -259,8 +259,8 @@ OperationsXml::OperationsXml(QObject *parent) :
  */
 /*public*/ /*static*/ bool OperationsXml::areFilesDirty()
 {
- if (((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->isDirty() || Operations::LocationManagerXml::instance()->isDirty()
-         || ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->isDirty() || Operations::CarManagerXml::instance()->isDirty()
+ if (((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->isDirty() || ((Operations::LocationManagerXml*)InstanceManager::getDefault("Operations::LocationManagerXml"))->isDirty()
+         || ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->isDirty() || ((Operations::CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->isDirty()
          || ((Operations::EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->isDirty() || Operations::TrainManagerXml::instance()->isDirty())
  {
      return true;

@@ -27,7 +27,6 @@ namespace Operations
 ///*public*/ final class OperationsManager {
 
 
-//    /*static*/ /*private*/ OperationsManager* OperationsManager::instance = nullptr;
     //static private final Logger log = LoggerFactory.getLogger(OperationsManager.class);
 
 /*public*/ OperationsManager::OperationsManager(QObject *parent) :
@@ -66,14 +65,6 @@ void OperationsManager::initialize()
 
 }
 
-    /**
-     * Get the OperationsManager.
-     *
-     * @return The OperationsManager default instance.
-     */
-    /*public*/ /*static*/ OperationsManager* OperationsManager::getInstance() {
-        return static_cast<OperationsManager*>(InstanceManager::getDefault("OperationsManager"));
-    }
 
     /**
      * Get the path to the Operations folder, rooted in the User's file path, as

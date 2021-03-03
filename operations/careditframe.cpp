@@ -61,9 +61,9 @@ namespace Operations
  {
      //super();
   setObjectName("CarEditFrame");
-  carManager = CarManager::instance();
-  managerXml = CarManagerXml::instance();
-  locationManager = LocationManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+  managerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
   log = new Logger("CarEditFrame");
 
   textWeightOz = new QLabel(tr("Road"));
@@ -1104,7 +1104,7 @@ namespace Operations
 
      if (e->getPropertyName()==(LocationManager::LISTLENGTH_CHANGED_PROPERTY)
              || e->getPropertyName()==(RollingStock::TRACK_CHANGED_PROPERTY)) {
-         LocationManager::instance()->updateComboBox(locationBox);
+         ((LocationManager*)InstanceManager::getDefault("LocationManager"))->updateComboBox(locationBox);
          updateTrackLocationBox();
          if (_car != NULL && _car->getLocation() != NULL) {
              locationBox->setCurrentIndex(locationBox->findText(_car->getLocation()->getName()));

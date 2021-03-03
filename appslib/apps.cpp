@@ -99,6 +99,7 @@
 #include "appsconfigurationmanager.h"
 #include "appspreferencesactionfactory.h"
 #include "guilafpreferencesmanager.h"
+#include "../operations/metatypes.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -145,6 +146,7 @@ bool Apps::configDeferredLoadOK = false;
  connection = QVector<ConnectionConfig*>(4,nullptr);
 
  new Metatypes();
+ new Operations::Metatypes();
  QString path = FileUtil::getProgramPath();
  QString curDir = QDir::currentPath();
 
@@ -1093,8 +1095,8 @@ void Apps::On_handleQuit()
   pane2Layout->addWidget(new QLabel(tr("Failed Profile:")));
  }
  // add listerner for Com port updates
- //ConnectionStatus::instance().addPropertyChangeListener(this);
- connect(ConnectionStatus::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,  SLOT(propertyChange(PropertyChangeEvent*)));
+ ConnectionStatus::instance()->addPropertyChangeListener(this);
+ //connect(ConnectionStatus::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,  SLOT(propertyChange(PropertyChangeEvent*)));
  //ArrayList<Object> connList = InstanceManager::configureManagerInstance().getInstanceList(ConnectionConfig.class);
  QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
 

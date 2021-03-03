@@ -4,6 +4,7 @@
 #include "xml.h"
 #include <QDomElement>
 #include "carmanagerxml.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -88,7 +89,7 @@ namespace Operations
 
  /*protected*/ void CarLengths::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 }

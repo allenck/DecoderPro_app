@@ -20,6 +20,7 @@
 #include "htmlconductor.h"
 #include "stringescapeutils.h"
 #include "../operations/engine.h"
+#include "instancemanager.h"
 
 OperationsServlet::OperationsServlet() : HttpServlet()
 {
@@ -48,7 +49,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
     if (this->getServletContext()->getContextPath() == ("/operations")) { // NOI18N
         this->mapper =  ObjectMapper();
         // ensure all operations managers are functional before handling first request
-        Operations::OperationsManager::getInstance();
+        InstanceManager::getDefault("Operations::OperationsManager");
     }
 }
 

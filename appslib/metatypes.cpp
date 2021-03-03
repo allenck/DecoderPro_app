@@ -282,10 +282,7 @@
 #include "../libPr3/rfid/rfidreportermanagerxml.h"
 #include "../libPr3/rfid/rfidserialconnectionconfig.h"
 #include "../libPr3/rfid/rfidserialconnectionconfigxml.h"
-#include "operationssetupxml.h"
 #include "sensortabledatamodel.h"
-#include "enginemanager.h"
-#include "enginemanagerxml.h"
 #include "jmriclient/jmriclientconnectionconfigxml.h"
 #include "jmriclient/jmriclientconnectionconfig.h"
 #include "simpleserveraction.h"
@@ -473,7 +470,6 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LnLightManagerXml>("LnLightManagerXml");
  qRegisterMetaType<LnSensorManagerXml>("LnSensorManagerXml");
  qRegisterMetaType<InternalReporterManagerXml>("InternalReporterManagerXml");
- qRegisterMetaType<InternalReporterManagerXml>("InternalReporterManagerXml");
  qRegisterMetaType<DefaultLogixManagerXml>("DefaultLogixManagerXml");
  qRegisterMetaType<LocoIOPanel>("LocoIOPanel");
  qRegisterMetaType<GuiLafConfigPaneXml>("GuiLafConfigPaneXml");
@@ -525,7 +521,6 @@ Metatypes::Metatypes(QObject *parent) :
  //qRegisterMetaType<CatalogTreeManager>("CatalogTreeManager");
  //qRegisterMetaType<SystemConnectionMemo>("SystemConnectionMemo");
  //qRegisterMetaType<ConfigureManager>("ConfigureManager");
- qRegisterMetaType<Operations::TrainManifestText>("TrainManifestText");
  qRegisterMetaType<LayoutTurntableXml>("LayoutTurntableXml");
  qRegisterMetaType<FileHistory>("FileHistory");
  qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");
@@ -638,11 +633,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<RfidSensorManagerXml>("RfidSensorManagerXml");
  qRegisterMetaType<RfidSerialConnectionConfig>("RfidSerialConnectionConfig");
  qRegisterMetaType<RfidSerialConnectionConfigXml>("RfidSerialConnectionConfigXml");
- qRegisterMetaType<Operations::OperationsSetupXml>("OperationsSetupXml");
  qRegisterMetaType<SensorTableDataModel>("SensorTableDataModel");
  qRegisterMetaType<SensorTableAction>("SensorTableAction");
- qRegisterMetaType<Operations::EngineManager>("EngineManager");
- qRegisterMetaType<Operations::EngineManagerXml>("EngineManagerXml");
  qRegisterMetaType<JMRIClientConnectionConfigXml>("JMRIClientConnectionConfigXml");
  qRegisterMetaType<JMRIClientConnectionConfig>("JMRIClientConnectionConfig");
  qRegisterMetaType<SimpleServerAction>("SimpleServerAction");

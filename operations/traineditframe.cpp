@@ -132,7 +132,7 @@ namespace Operations
    routeBox = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getComboBox();
    roadCabooseBox = new JComboBox();
    roadEngineBox = new JComboBox();
-   modelEngineBox = EngineModels::instance()->getComboBox();
+   modelEngineBox = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
    numEnginesBox = new JComboBox();
    ref = NULL;
 
@@ -477,7 +477,7 @@ namespace Operations
   //EngineTypes.instance().addPropertyChangeListener(this);
   connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
-  connect(EngineModels::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //LocationManager.instance().addPropertyChangeListener(this);
   connect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -670,7 +670,7 @@ namespace Operations
      if (numEnginesBox->currentText()==("0") || model==(NONE)) {
          return true;
      }
-     QString type = EngineModels::instance()->getModelType(model);
+     QString type = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getModelType(model);
      if (!_train->acceptsTypeName(type)) {
 //         JOptionPane.showMessageDialog(this, MessageFormat.format(tr("TrainModelService"),
 //                 new Object[]{model, type}), MessageFormat.format(tr("CanNot"),
@@ -1169,7 +1169,7 @@ namespace Operations
 //     EngineTypes.instance().removePropertyChangeListener(this);
  disconnect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineModels.instance().removePropertyChangeListener(this);
- disconnect(EngineModels::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarTypes::instance().removePropertyChangeListener(this);
  disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarRoads.instance().removePropertyChangeListener(this);
@@ -1227,7 +1227,7 @@ namespace Operations
          updateRoadComboBoxes();
      }
      if (e->getPropertyName()==(EngineModels::ENGINEMODELS_CHANGED_PROPERTY)) {
-         EngineModels::instance()->updateComboBox(modelEngineBox);
+         ((EngineModels*)InstanceManager::getDefault("EngineModels"))->updateComboBox(modelEngineBox);
          modelEngineBox->insertItem(0,NONE);
          modelEngineBox->setCurrentIndex(0);
          if (_train != NULL) {

@@ -32,30 +32,9 @@ namespace Operations
  OperationsXml(parent)
  {
   log = new Logger("CarManagerXml");
-  setOperationsFileName("OperationsCarRoster.xml"); // NOI18N
+  setProperty("InstanceManagerAutoInitialize", "true");
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ CarManagerXml* CarManagerXml::_instance = NULL;
-
- /*public*/ /*static*/  CarManagerXml* CarManagerXml::instance() {
-Logger* log = new Logger("CarManagerXml");
-     if (_instance == NULL)
-     {
-         if (log->isDebugEnabled()) {
-             log->debug("CarManagerXml creating instance");
-         }
-         // create and load
-         _instance = new CarManagerXml();
-         _instance->load();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("CarManagerXml returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
 
  /*public*/ void CarManagerXml::writeFile(QString name) //throws java.io.FileNotFoundException, java.io.IOException
   {
@@ -91,13 +70,13 @@ Logger* log = new Logger("CarManagerXml");
      doc.appendChild(root);
 
      // note all comments line feeds have been changed to processor directives
-     CarRoads::instance()->store(root,doc);
-     CarTypes::instance()->store(root,doc);
+     ((CarRoads*)InstanceManager::getDefault("CarRoads"))->store(root,doc);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->store(root,doc);
      ((CarColors*)InstanceManager::getDefault("CarColors"))->store(root, doc);
-     CarLengths::instance()->store(root, doc);
-     CarOwners::instance()->store(root, doc);
-     CarLoads::instance()->store(root, doc);
-     CarManager::instance()->store(root, doc);
+     ((CarLengths*)InstanceManager::getDefault("CarLengths"))->store(root, doc);
+     ((CarOwners*)InstanceManager::getDefault("CarOwners"))->store(root, doc);
+     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->store(root, doc);
+     ((CarManager*)InstanceManager::getDefault("CarManager"))->store(root, doc);
 
      writeXML(file, doc);
 
@@ -124,20 +103,20 @@ Logger* log = new Logger("CarManagerXml");
          return;
      }
 
-     CarRoads::instance()->load(root);
-     CarTypes::instance()->load(root);
+     ((CarRoads*)InstanceManager::getDefault("CarRoads"))->load(root);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->load(root);
      ((CarColors*)InstanceManager::getDefault("CarColors"))->load(root);
-     CarLengths::instance()->load(root);
-     CarOwners::instance()->load(root);
-     CarLoads::instance()->load(root);
-     CarManager::instance()->load(root);
+     ((CarLengths*)InstanceManager::getDefault("CarLengths"))->load(root);
+     ((CarOwners*)InstanceManager::getDefault("CarOwners"))->load(root);
+     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->load(root);
+     ((CarManager*)InstanceManager::getDefault("CarManager"))->load(root);
 
      log->debug("Cars have been loaded!");
 //        RollingStockLogger.instance().enableCarLogging(Setup.isCarLoggerEnabled());
      // clear dirty bit
      setDirty(false);
      // clear location dirty flag, locations get modified during the loading of cars and locos
-     LocationManagerXml::instance()->setDirty(false);
+     ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(false);
  }
 
  /*public*/ void CarManagerXml::setOperationsFileName(QString name) {
@@ -150,6 +129,12 @@ Logger* log = new Logger("CarManagerXml");
  }
 
  /*public*/ void CarManagerXml::dispose(){
-     _instance = NULL;
+ }
+
+ //@Override
+ /*public*/ void CarManagerXml::initialize() {
+     InstanceManager::getDefault("OperationsSetupXml"); // load setup
+     InstanceManager::getDefault("LocationManagerXml"); // load locations
+     load();
  }
 }

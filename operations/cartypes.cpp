@@ -3,6 +3,7 @@
 #include "control.h"
 #include "setup.h"
 #include "carmanagerxml.h"
+#include "instancemanager.h"
 
 //CarTypes::CarTypes(QObject *parent) :
 //  RollingStockAttribute(parent)
@@ -178,7 +179,7 @@ namespace Operations
 
  /*protected*/ void CarTypes::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 

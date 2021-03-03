@@ -41,7 +41,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e) ;
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override ;
 private:
     // place to keep the items
     QStringList* _itemArray;// = NULL;

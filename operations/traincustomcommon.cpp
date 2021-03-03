@@ -6,6 +6,7 @@
 #include "operationsmanager.h"
 #include "fileutil.h"
 #include "control.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 
@@ -68,7 +69,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
     waitTimeSeconds = getFileCount() * Control::excelWaitTime;
     alive = true;
 
-    File* csvNamesFile = new File(Operations::OperationsManager::getInstance()->getFile(getDirectoryName()), csvNamesFileName);
+    File* csvNamesFile = new File(((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->getFile(getDirectoryName()), csvNamesFileName);
 
     try {
         FileUtil::appendTextToFile(csvNamesFile, csvFile->getAbsolutePath());
@@ -137,7 +138,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
 }
 
 /*public*/ bool TrainCustomCommon::excelFileExists() {
-    File* file = new File(OperationsManager::getInstance()->getFile(getDirectoryName()), getFileName());
+    File* file = new File(((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->getFile(getDirectoryName()), getFileName());
     return file->exists();
 }
 #if 0

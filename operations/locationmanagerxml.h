@@ -15,7 +15,8 @@ namespace Operations
      Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
   Q_INVOKABLE explicit LocationManagerXml(QObject *parent = 0);
-  QT_DEPRECATED/*public*/ static /*synchronized*/ LocationManagerXml* instance();
+   ~LocationManagerXml() {}
+   LocationManagerXml(const LocationManagerXml&) : OperationsXml() {}
   /*public*/ void writeFile(QString name) throw (FileNotFoundException, IOException);
   /*public*/ void readFile(QString name) throw (JDOMException, IOException);
   /*public*/ void setOperationsFileName(QString name);
@@ -34,4 +35,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::LocationManagerXml)
 #endif // LOCATIONMANAGERXML_H

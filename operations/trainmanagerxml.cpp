@@ -208,7 +208,7 @@ namespace Operations
     }
 
     /*private*/ QString TrainManagerXml::getDefaultManifestFilename(QString name, QString ext) {
-        return OperationsManager::getInstance()->getPath(MANIFESTS) + File::separator + "train-" + name + "." + ext; // NOI18N
+        return ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->getPath(MANIFESTS) + File::separator + "train-" + name + "." + ext; // NOI18N
     }
 
     /**

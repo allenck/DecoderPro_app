@@ -6,6 +6,7 @@
 #include "logger.h"
 #include "dccaddressvarhandler.h"
 #include "libPr3_global.h"
+#include "propertychangelistener.h"
 
 class VariableValue;
 class EnumVariableValue;
@@ -14,10 +15,11 @@ class PropertyChangeListener;
 class PropertyChangeEvent;
 class JTextField;
 class JActionEvent;
-class LIBPR3SHARED_EXPORT DccAddressPanel : public QWidget
+class LIBPR3SHARED_EXPORT DccAddressPanel : public QWidget, public PropertyChangeListener
 {
     Q_OBJECT
-public:
+Q_INTERFACES(PropertyChangeListener)
+ public:
     //explicit DccAddressPanel(QWidget *parent = 0);
 //    /*public*/ DccAddressPanel(VariableTableModel* mod, QWidget *parent = 0);
     /*public*/ DccAddressPanel(VariableTableModel* mod, QString label= tr("Active DCC Address:"), QWidget *parent = 0);
@@ -26,11 +28,11 @@ public:
     void exitField();
     void updateDccAddress();
     //void actionPerformed(ActionEvent* /*e*/);
-
+QObject* self() override {(QObject*)this;}
 signals:
 
 public slots:
-    void propertyChange(PropertyChangeEvent* e);
+    void propertyChange(PropertyChangeEvent* e) override;
     void actionPerformed();
     void valueChanged();
     void focusGained();

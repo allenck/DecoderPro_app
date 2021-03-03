@@ -444,6 +444,12 @@ void InstanceManager::deregister(QObject* item, QString type)
    setInitializationState(type, InitializationState::FAILED);
    obj1 = nullptr;
   }
+  catch (std::exception& ex)
+  {
+   setInitializationState(type, InitializationState::FAILED);
+   log->debug(tr("std::exception creating %1").arg(type));
+   obj1 = nullptr;
+  }
   if(obj1 != nullptr )
   {
    QVariant property= obj1->property("InstanceManagerAutoDefault");
@@ -496,12 +502,12 @@ void InstanceManager::deregister(QObject* item, QString type)
        obj = obj1;
   if (obj != nullptr)
   {
-    log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
-    setInitializationState(type, InitializationState::DONE);
-    l->append(obj);
-    //store(obj,type);
-    return l->at(l->size() - 1);
-   }
+   log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
+   setInitializationState(type, InitializationState::DONE);
+   l->append(obj);
+   //store(obj,type);
+   return l->at(l->size() - 1);
+  }
 //  }
   // don't have, can't make
   setInitializationState(type, InitializationState::FAILED);

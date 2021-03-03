@@ -12,7 +12,7 @@ public:
  PowerButtonAction(const PowerButtonAction&) : AbstractAction() {}
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* ev);
+ /*public*/ void propertyChange(PropertyChangeEvent* ev) override;
  /*public*/ void actionPerformed(ActionEvent* e = 0);
 
 private:
