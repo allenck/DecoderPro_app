@@ -262,6 +262,17 @@ public:
      QT_DEPRECATED virtual NamedBean* getBeanByUserName(QString /*userName*/)  const {return NULL;}
 
      /**
+      * Locate an existing instance based on a system name.
+      *
+      * @param systemName System Name of the required NamedBean
+      * @return requested NamedBean object or null if none exists
+      * @throws IllegalArgumentException if provided name is invalid
+      */
+     //@CheckReturnValue
+     //@CheckForNull
+     /*public*/ Manager* getBySystemName(/*@Nonnull*/ QString /*systemName*/)  const {return NULL;}
+
+     /**
       * Locate an instance based on a name.  Returns null if no
       * instance already exists.
       * @param name System Name of the required NamedBean
@@ -622,6 +633,10 @@ public:
       */
      /*public*/ /*default*/ void setDataListenerMute(bool muted);
      virtual /*public*/QString toString() {return "Manager";}
+     bool operator==(const Manager& other)
+     {
+      return this->getSystemNamePrefix() == other.getSystemPrefix();
+     }
      virtual QObject* self() =0;
 signals:
     //void vetoablePropertyChange(PropertyChangeEvent*);

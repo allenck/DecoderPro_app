@@ -89,7 +89,7 @@ void OBlockTableModel::initTempRow()
 }
 
 //@Override
-/*public*/ Manager* OBlockTableModel::getManager() {
+/*public*/ AbstractManager *OBlockTableModel::getManager() {
  _manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
  return _manager;
 }

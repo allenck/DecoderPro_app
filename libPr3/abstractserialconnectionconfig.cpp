@@ -186,7 +186,7 @@ void AbstractSerialConnectionConfig::On_baudBox_currentIndexChanged(QString s)
 
 void AbstractSerialConnectionConfig::On_systemPrefixField_editingFinished()
 {
- if(!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if(!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
     //                    JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"),"System Prefix " + systemPrefixField->text() + " is already assigned");
@@ -220,7 +220,7 @@ void AbstractSerialConnectionConfig::On_connectionNameField_editingFinished()
   adapter->setOptionState(i, options.value(i)->getItem());
  }
 
- if(adapter->getSystemConnectionMemo()!=NULL && !adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if(adapter->getSystemConnectionMemo()!=NULL && !((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
   systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
   connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());

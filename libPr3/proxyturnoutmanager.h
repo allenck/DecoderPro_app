@@ -13,7 +13,7 @@ public:
  /**
   * Revise superclass behavior: support TurnoutOperations
   */
- /*public*/ void addManager(Manager* m) override;
+ /*public*/ void addManager(AbstractManager* m) override;
  /**
   * Locate via user name, then system name if needed.
   *
@@ -135,7 +135,7 @@ signals:
 private:
  Logger log;
 protected:
- virtual /*protected*/ Manager* makeInternalManager() const ;
+ virtual /*protected*/ AbstractManager* makeInternalManager() const ;
  virtual/*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) const;
  ///*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
 

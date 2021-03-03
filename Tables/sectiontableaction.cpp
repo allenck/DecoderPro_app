@@ -156,7 +156,7 @@ SectionTableDataModel::SectionTableDataModel(SectionTableAction *act)
 {
     return "";
 }
-/*public*/ Manager* SectionTableDataModel::getManager() { return ((SectionManager*)InstanceManager::getDefault("SectionManager")); }
+/*public*/ AbstractManager *SectionTableDataModel::getManager() { return ((SectionManager*)InstanceManager::getDefault("SectionManager")); }
 /*public*/ NamedBean* SectionTableDataModel::getBySystemName(QString name) const
 {
     return ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getBySystemName(name);

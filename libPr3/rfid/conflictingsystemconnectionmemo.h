@@ -2,7 +2,7 @@
 #define CONFLICTINGSYSTEMCONNECTIONMEMO_H
 #include "defaultsystemconnectionmemo.h"
 
-class ConflictingSystemConnectionMemo : public DefaultSystemConnectionMemo
+QT_DEPRECATED class ConflictingSystemConnectionMemo : public DefaultSystemConnectionMemo
 {
  Q_OBJECT
 public:

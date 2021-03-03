@@ -354,7 +354,7 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
     else return "Unexpected NULL value";
 
 }
-/*public*/ Manager* SHBeanTableDataModel::getManager() { return qobject_cast<Manager*>(InstanceManager::getDefault("SignalHeadManager")); }
+/*public*/ AbstractManager *SHBeanTableDataModel::getManager() { return qobject_cast<AbstractManager*>(InstanceManager::getDefault("SignalHeadManager")); }
 
 /*public*/ NamedBean* SHBeanTableDataModel::getBySystemName(QString name) const
 { return static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);}

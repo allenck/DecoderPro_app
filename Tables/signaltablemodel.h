@@ -6,6 +6,7 @@
 #include "comparatort.h"
 #include "tableframes.h"
 #include "namedbean.h"
+#include "propertychangelistener.h"
 
 class QPushButton;
 class JTable;
@@ -19,9 +20,10 @@ class DecimalFormat;
 class PortalManager;
 class PropertyChangeEvent;
 
-class LIBTABLESSHARED_EXPORT SignalTableModel : public AbstractTableModel
+class LIBTABLESSHARED_EXPORT SignalTableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
   /*static*/ class SignalRow
   {
@@ -81,21 +83,22 @@ public:
  };
  /*public*/ SignalTableModel(TableFrames* parent);
  /*public*/ void init();
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ int rowCount(const QModelIndex &parent) const;
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+ /*public*/ int columnCount(const QModelIndex &parent) const override;
+ /*public*/ int rowCount(const QModelIndex &parent) const override;
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
  static /*public*/ int getPreferredWidth(int col);
- /*public*/ QString getColumnClass(int col);
+ /*public*/ QString getColumnClass(int col)const override;
  /*public*/ bool editMode();
  /*public*/ void setEditMode(bool editing);
+ QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 private:
  PortalManager* _portalMgr;
  /*private*/ float _tempLen;// = 0.0f;      // mm for length col of tempRow
@@ -124,8 +127,8 @@ private:
  QList<int> buttonMap;
  void setPersistentButtons();
  JTable* table;
- void fireTableRowsUpdated(int, int);
- void fireTableDataChanged();
+ void fireTableRowsUpdated(int, int) override;
+ void fireTableDataChanged() override;
  void initTempRow();
  int _lastIdx; // for debug
 

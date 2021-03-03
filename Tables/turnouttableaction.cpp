@@ -788,7 +788,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   default: return "Unexpected value: "+val;
  }
 }
-/*public*/ Manager* TurnoutTableDataModel::getManager() { return turnoutTableAction->turnManager; }
+/*public*/ AbstractManager *TurnoutTableDataModel::getManager() { return turnoutTableAction->turnManager; }
 
 /*public*/ NamedBean* TurnoutTableDataModel::getBySystemName(QString name) const
  {
@@ -2104,7 +2104,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
     if (QString(turnManager->metaObject()->className()).contains("ProxyTurnoutManager"))
     {
         ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) turnManager;
-        QList<Manager*> managerList = proxy->getManagerList();
+        QList<AbstractManager*> managerList = proxy->getManagerList();
         QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName( connectionChoice);
         for(int x = 0; x<managerList.size(); x++){
             TurnoutManager* mgr = (TurnoutManager*) managerList.at(x);

@@ -25,7 +25,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 //    public ProxyReporterManager() {
 //    	super();
 //    }
-    /*protected*/ Manager* ProxyReporterManager::makeInternalManager() const
+    /*protected*/ AbstractManager *ProxyReporterManager::makeInternalManager() const
 {
         return ((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getReporterManager();
     }

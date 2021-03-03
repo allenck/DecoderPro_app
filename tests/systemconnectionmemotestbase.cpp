@@ -66,7 +66,7 @@ SystemConnectionMemoTestBase::SystemConnectionMemoTestBase(QObject *parent) : QO
 
     //@Test
     /*public*/ void SystemConnectionMemoTestBase::testGetAndSetPrefix() {
-       scm->setSystemPrefix("A2");
+       ((DefaultSystemConnectionMemo*)scm)->setSystemPrefix("A2");
        Assert::assertEquals("System Prefix after set", "A2", scm->getSystemPrefix(), __FILE__, __LINE__);
     }
 
@@ -82,8 +82,8 @@ SystemConnectionMemoTestBase::SystemConnectionMemoTestBase(QObject *parent) : QO
         Assert::assertEquals("t", t->getSystemPrefix(), __FILE__, __LINE__);
         t->_register();
         Assert::assertTrue(InstanceManager::getList("SystemConnectionMemo")->contains(t->self()), __FILE__, __LINE__);
-        Assert::assertFalse(scm->setSystemPrefix("t"), __FILE__, __LINE__);
-        Assert::assertTrue(scm->setSystemPrefix("t2"), __FILE__, __LINE__);
+        Assert::assertFalse(((DefaultSystemConnectionMemo*)scm)->setSystemPrefix("t"), __FILE__, __LINE__);
+        Assert::assertTrue(((DefaultSystemConnectionMemo*)scm)->setSystemPrefix("t2"), __FILE__, __LINE__);
         Assert::assertEquals("t2", scm->getSystemPrefix(), __FILE__, __LINE__);
     }
 

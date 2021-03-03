@@ -377,7 +377,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
     return true;
 }
 
-/*public*/ Manager* LTBeanTableDataModel::getManager() {
+/*public*/ AbstractManager* LTBeanTableDataModel::getManager() {
     return lta->lightManager;
 }
 

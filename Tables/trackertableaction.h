@@ -41,9 +41,10 @@ friend class TableFrame;
 friend class TrackerTableModel;
 };
 
-class TableFrame : public JmriJFrame
+class TableFrame : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
  ///*private*/ static final long serialVersionUID = -56337259221744388L;
  /*private*/ TrackerTableModel* _model;
  /*private*/ JmriJFrame* _pickFrame;
@@ -67,12 +68,13 @@ TableFrame();
  /*public*/ void mouseExited(QMouseEvent* event);
  /*public*/ void mouseReleased(QMouseEvent* event);
  /*public*/ QString getClassName();
+ QObject* self() override {return (QObject*)this;}
 
 
 public slots:
  void on_doneButton_clicked();
  void on_refreshClicked();
- /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 
 private:
  /*private*/ void newTrackerDialog();

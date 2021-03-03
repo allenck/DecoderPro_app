@@ -384,8 +384,8 @@ connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyCh
 }
 
 //@Override
-/*public*/ Manager* AudioTableDataModel::getManager() {
-    return (Manager*)((AudioManager*)InstanceManager::getDefault("AudioManager"));
+/*public*/ AbstractManager* AudioTableDataModel::getManager() {
+    return (AbstractManager*)((AudioManager*)InstanceManager::getDefault("AudioManager"));
 }
 /*public int AudioTableDataModel::getDisplayDeleteMsg() { return InstanceManager.getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
 public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption(getClassName(), "delete", boo); }*/

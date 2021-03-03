@@ -20,7 +20,7 @@
 AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
     : TurnoutManager(new DefaultSystemConnectionMemo(), parent)
 {
- mgrs = QList<Manager*>();
+ mgrs = QList<AbstractManager*>();
  internalManager = nullptr;
  defaultManager = nullptr;
  addedOrderList = QStringList();
@@ -65,7 +65,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  return mgrs.size();
 }
 
-/*protected*/ Manager* AbstractProxyTurnoutManager::getMgr(int index) const
+/*protected*/ AbstractManager *AbstractProxyTurnoutManager::getMgr(int index) const
 {
  // make sure internal present
  initInternal();
@@ -82,11 +82,11 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxyTurnoutManager::getManagerList() const
+/*public*/ QList<AbstractManager *> AbstractProxyTurnoutManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
- QList<Manager*> retval = QList<Manager*>(mgrs);
+ QList<AbstractManager*> retval = QList<AbstractManager*>(mgrs);
  return retval;
 }
 
@@ -96,24 +96,24 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxyTurnoutManager::getDisplayOrderManagerList() const {
+/*public*/ QList<AbstractManager*> AbstractProxyTurnoutManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 
-    QList<Manager*> retval =  QList<Manager*>();
-    if (defaultManager != nullptr) { retval.append(defaultManager); }
+    QList<AbstractManager*> retval =  QList<AbstractManager*>();
+    if (defaultManager != nullptr) { retval.append((AbstractManager*)defaultManager); }
     foreach (Manager* manager, mgrs) {
         if (manager != defaultManager && manager != internalManager) {
-            retval.append(manager);
+            retval.append((AbstractManager*)manager);
         }
     }
     if (internalManager != nullptr && internalManager != defaultManager) {
-        retval.append(internalManager);
+        retval.append((AbstractManager*)internalManager);
     }
     return retval;
 }
 
-/*public*/ Manager* AbstractProxyTurnoutManager::getInternalManager() const {
+/*public*/ AbstractManager* AbstractProxyTurnoutManager::getInternalManager() const {
     initInternal();
     return internalManager;
 }
@@ -121,13 +121,13 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
 /**
  * Returns the set default or, if not present, the internal manager as defacto default
  */
-/*public*/ Manager* AbstractProxyTurnoutManager::getDefaultManager() const {
+/*public*/ AbstractManager *AbstractProxyTurnoutManager::getDefaultManager() const {
     if (defaultManager != nullptr) return defaultManager;
 
     return getInternalManager();
 }
 
-/*public*/ void AbstractProxyTurnoutManager::addManager(Manager* m)
+/*public*/ void AbstractProxyTurnoutManager::addManager(AbstractManager *m)
 {
  // check for already present
  if (mgrs.contains(m))
@@ -136,7 +136,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
   log->warn(tr("Manager already present: %1").arg(m->self()->metaObject()->className()));
   return;
  }
- mgrs.append(static_cast<AbstractManager*>(m));
+ mgrs.append(/*static_cast<AbstractManager*>*/(m));
 
  if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
 
@@ -182,7 +182,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  }
 }
 
-/*private*/ Manager* AbstractProxyTurnoutManager::initInternal() const
+/*private*/ AbstractManager* AbstractProxyTurnoutManager::initInternal() const
 {
  if (internalManager == nullptr) {
   if(log)
@@ -192,7 +192,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  return internalManager;
 }
 
-/*abstract protected*/ Manager* AbstractProxyTurnoutManager::makeInternalManager() const
+/*abstract protected*/ AbstractManager* AbstractProxyTurnoutManager::makeInternalManager() const
 {
  return nullptr;
 }

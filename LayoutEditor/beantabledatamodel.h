@@ -7,6 +7,7 @@
 #include "liblayouteditor_global.h"
 #include <QItemDelegate>
 #include "propertychangelistener.h"
+#include "abstractmanager.h"
 
 class NamedBeanPropertyDescriptor;
 class RowSorter;
@@ -104,8 +105,8 @@ private:
  //void setPersistentButtons();
 
 protected:
- /*abstract*/ /*protected*/ virtual Manager* getManager();
- /*protected*/ virtual void setManager(Manager* /*man*/);
+ /*abstract*/ /*protected*/ virtual AbstractManager* getManager();
+ /*protected*/ virtual void setManager(AbstractManager* /*man*/);
 
  /*abstract*/ /*protected*/ virtual  NamedBean* getBySystemName(QString name) const ;
  /*abstract*/ /*protected*/ virtual  NamedBean* getByUserName(QString name);

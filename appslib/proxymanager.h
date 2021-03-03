@@ -1,6 +1,6 @@
 #ifndef PROXYMANAGER_H
 #define PROXYMANAGER_H
-#include "manager.h"
+#include "abstractmanager.h"
 
 /**
  * Interface for Managers of NamedBeans that are proxies for a collection of
@@ -21,7 +21,7 @@ public:
      * @param manager the Manager to add; if manager has already been added, it
      *                will not be added again
      */
- /*public*/ virtual void addManager(/*@Nonnull*/ Manager* /*manager*/) {}
+ /*public*/ virtual void addManager(/*@Nonnull*/ AbstractManager* /*manager*/) {}
 
     /**
      * Get the default manager or the internal manager if no default manager has
@@ -30,7 +30,7 @@ public:
      * @return the default manager or the internal manager
      */
     /*@Nonnull*/
- /*public*/ virtual Manager* getDefaultManager() const {return  nullptr;}
+ /*public*/ virtual AbstractManager* getDefaultManager() const {return  nullptr;}
 
     /**
      * Returns a list of all managers, including the internal manager. This is
@@ -39,7 +39,7 @@ public:
      *
      * @return the list of managers
      */
- /*public*/ virtual QList<Manager*> getManagerList() const {return QList<Manager*>();}
+ /*public*/ virtual QList<AbstractManager*> getManagerList() const {return QList<AbstractManager*>();}
 
     /**
      * Get a list of all managers, with the default as the first item and internal
@@ -47,7 +47,7 @@ public:
      *
      * @return the list of managers
      */
-    /*public*/ virtual QList<Manager*> getDisplayOrderManagerList() const {return QList<Manager*>();}
+    /*public*/ virtual QList<AbstractManager*> getDisplayOrderManagerList() const {return QList<AbstractManager*>();}
 };
 Q_DECLARE_INTERFACE(ProxyManager, "ProxyManager")
 #endif // PROXYMANAGER_H

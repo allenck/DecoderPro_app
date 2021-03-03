@@ -41,7 +41,6 @@ PythonQt::priv()->registerClass(&DefaultLogixManager::staticMetaObject, "Jmri", 
 PythonQt::priv()->registerClass(&DefaultMemoryManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_DefaultMemoryManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_DefaultMemoryManager>, module, 0);
 PythonQt::priv()->registerClass(&DefaultProgrammerManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_DefaultProgrammerManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_DefaultProgrammerManager>, module, 0);
 PythonQt::priv()->registerClass(&EditScene::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_EditScene>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_EditScene>, module, 0);
-PythonQt::priv()->registerClass(&Editor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Editor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Editor>, module, 0);
 PythonQt::priv()->registerClass(&EventObject::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_EventObject>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_EventObject>, module, 0);
 PythonQt::priv()->registerClass(&FileUtil::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_FileUtil>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_FileUtil>, module, 0);
 PythonQt::priv()->registerClass(&FlowLayout::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_FlowLayout>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_FlowLayout>, module, PythonQt::Type_NonZero);
@@ -74,7 +73,7 @@ PythonQt::priv()->registerClass(&LocoNetInterface::staticMetaObject, "Jmri", Pyt
 PythonQt::priv()->registerClass(&LocoNetMessage::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LocoNetMessage>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LocoNetMessage>, module, 0);
 PythonQt::priv()->registerClass(&LocoNetSystemConnectionMemo::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LocoNetSystemConnectionMemo>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LocoNetSystemConnectionMemo>, module, 0);
 PythonQt::priv()->registerClass(&Logger::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Logger>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Logger>, module, 0);
-PythonQt::priv()->registerCPPClass("Manager", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_Manager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Manager>, module, 0);
+PythonQt::priv()->registerCPPClass("Manager", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_Manager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Manager>, module, PythonQt::Type_RichCompare);
 PythonQt::priv()->registerClass(&MultiIconEditor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_MultiIconEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_MultiIconEditor>, module, 0);
 PythonQt::priv()->registerCPPClass("MyGraphicsItemGroup", "QGraphicsItemGroup", "Jmri", PythonQtCreateObject<PythonQtWrapper_MyGraphicsItemGroup>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_MyGraphicsItemGroup>, module, 0);
 PythonQt::priv()->registerClass(&NamedBean::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_NamedBean>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_NamedBean>, module, 0);

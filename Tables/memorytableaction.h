@@ -63,7 +63,7 @@ class MtBeanTableDataModel : public BeanTableDataModel
 public:
     MtBeanTableDataModel(MemoryTableAction* mt);
     /*public*/ QString getValue(QString name) const;
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager* getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name) ;
     /*public*/ void clickOn(NamedBean* t);

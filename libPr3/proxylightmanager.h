@@ -36,7 +36,7 @@ public slots:
 private:
  Logger* log;
 protected:
- /*protected*/ Manager* makeInternalManager() const override;
+ /*protected*/ AbstractManager *makeInternalManager() const override;
  /*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) override;
  friend class AbstractProxyManager;
 };

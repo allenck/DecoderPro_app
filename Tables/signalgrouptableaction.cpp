@@ -152,16 +152,17 @@ void SignalGroupTableAction::setEnabled(bool b) { bEnabled = b;}
 {
  SGBeanTableDataModel* mm = new SGBeanTableDataModel(this);
  m = (BeanTableDataModel*)mm;
+ mm->init();
 }
 
 SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
  : BeanTableDataModel(act)
 {
  this->act = act;
- DefaultSignalGroupManager* mgr = (DefaultSignalGroupManager*)getManager();
- connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+// DefaultSignalGroupManager* mgr = (DefaultSignalGroupManager*)getManager()->self();
+// connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  //updateNameList();
- init();
+ // init(); must be called after constructor is complete
 }
 
 /*public*/ int SGBeanTableDataModel::columnCount(const QModelIndex &/*parent*/) const { return 6;}
@@ -334,10 +335,10 @@ void SGBeanTableDataModel::doDelete(NamedBean* bean) {
     else return BeanTableDataModel::matchPropertyName(e);
 }
 
-/*public*/ Manager* SGBeanTableDataModel::getManager()
+/*public*/ AbstractManager *SGBeanTableDataModel::getManager()
 {
  //return static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"));
- return (Manager*)InstanceManager::getNullableDefault("SignalGroupManager");
+ return (AbstractManager*)InstanceManager::getNullableDefault("SignalGroupManager");
 }
 
 /*public*/ NamedBean* SGBeanTableDataModel::getBySystemName(QString name) const

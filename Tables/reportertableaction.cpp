@@ -107,7 +107,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
    }
 }
 
-/*public*/ Manager* RtBeanTableDataModel::getManager() {
+/*public*/ AbstractManager *RtBeanTableDataModel::getManager() {
     return act->reporterManager;
 }
 
@@ -417,7 +417,7 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
  if (QString(reporterManager->metaObject()->className()).contains("ProxyReporterManager"))
  {
   ProxyReporterManager* proxy = (ProxyReporterManager*) reporterManager;
-  QList<Manager*> managerList = proxy->getManagerList();
+  QList<AbstractManager*> managerList = proxy->getManagerList();
   QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName(connectionChoice);
   for (int x = 0; x < managerList.size(); x++) {
       ReporterManager* mgr = (ReporterManager*) managerList.at(x);

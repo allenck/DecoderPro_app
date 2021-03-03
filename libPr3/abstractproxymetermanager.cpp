@@ -13,7 +13,7 @@
 AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
     : AbstractMeterManager(new DefaultSystemConnectionMemo(), parent)
 {
- mgrs = QList<Manager*>();
+ mgrs = QList<AbstractManager*>();
  internalManager = nullptr;
  defaultManager = nullptr;
  addedOrderList = QStringList();
@@ -74,11 +74,11 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxyMeterManager::getManagerList() const
+/*public*/ QList<AbstractManager*> AbstractProxyMeterManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
- QList<Manager*> retval = QList<Manager*>(mgrs);
+ QList<AbstractManager*> retval = QList<AbstractManager*>(mgrs);
  return retval;
 }
 
@@ -88,24 +88,24 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxyMeterManager::getDisplayOrderManagerList() const {
+/*public*/ QList<AbstractManager *> AbstractProxyMeterManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 
-    QList<Manager*> retval =  QList<Manager*>();
-    if (defaultManager != nullptr) { retval.append(defaultManager); }
+    QList<AbstractManager*> retval =  QList<AbstractManager*>();
+    if (defaultManager != nullptr) { retval.append((AbstractManager*)defaultManager); }
     foreach (Manager* manager, mgrs) {
         if (manager != defaultManager && manager != internalManager) {
-            retval.append(manager);
+            retval.append((AbstractManager*)manager);
         }
     }
     if (internalManager != nullptr && internalManager != defaultManager) {
-        retval.append(internalManager);
+        retval.append((AbstractManager*)internalManager);
     }
     return retval;
 }
 
-/*public*/ Manager* AbstractProxyMeterManager::getInternalManager() const{
+/*public*/ AbstractManager* AbstractProxyMeterManager::getInternalManager() const{
     initInternal();
     return internalManager;
 }
@@ -113,7 +113,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
 /**
  * Returns the set default or, if not present, the internal manager as defacto default
  */
-/*public*/ Manager* AbstractProxyMeterManager::getDefaultManager() const {
+/*public*/ AbstractManager *AbstractProxyMeterManager::getDefaultManager() const {
     if (defaultManager != nullptr)
      return defaultManager;
 
@@ -125,7 +125,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  */
 //@Override
 //@SuppressWarnings("deprecation")
-/*public*/ void AbstractProxyMeterManager::addManager(/*@Nonnull*/ Manager* m)
+/*public*/ void AbstractProxyMeterManager::addManager(/*@Nonnull*/ AbstractManager *m)
 {
  //Objects.requireNonNull(m, "Can only add non-null manager");
  // check for already present
@@ -179,7 +179,7 @@ AbstractProxyMeterManager::AbstractProxyMeterManager(QObject *parent)
  }
 }
 
-/*private*/ Manager* AbstractProxyMeterManager::initInternal() const
+/*private*/ AbstractManager* AbstractProxyMeterManager::initInternal() const
 {
  if (internalManager == nullptr) {
      log->debug("create internal manager when first requested");

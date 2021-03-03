@@ -5,15 +5,16 @@
 #include "propertychangelistener.h"
 #include "rosterentry.h"
 #include "jcomponent.h"
+#include "propertychangelistener.h"
 
 class InternalFrameListener;
 class QVBoxLayout;
 class JDesktopIcon;
 class JRootPane;
-class JInternalFrame : public QMdiSubWindow, public JComponent
+class JInternalFrame : public QMdiSubWindow, public JComponent, public PropertyChangeListener
 {
  Q_OBJECT
-    Q_INTERFACES(JComponent)
+    Q_INTERFACES(JComponent PropertyChangeListener)
 public:
  explicit JInternalFrame(QWidget *parent = 0);
  /*public*/ JInternalFrame(QString title, QWidget *parent = 0);
@@ -77,20 +78,21 @@ public:
  /*public*/ void toBack();
  /*public*/ void moveToBack();
 
-    void setEnabled(bool b) override {setEnabled(b);}
-    bool isOpaque() {return true;}
-    QColor getForeground()  {return Qt::black;}
-    QColor getBackground() {return Qt::lightGray;}
-    void setBackground(QColor){return;}
-    void setOpaque(bool) {}
-    QFont getFont() {return font();}
-    void setFont(QFont f) {QWidget::setFont(f);}
-    QObject* jself() {(QObject*)this;}
-    void setBorder(Border* b) {}
-    Border* getBorder() {return nullptr;}
+    void setEnabled(bool b) override {QMdiSubWindow::setEnabled(b);}
+    bool isOpaque()  override{return true;}
+    QColor getForeground()   override{return Qt::black;}
+    QColor getBackground()  override{return Qt::lightGray;}
+    void setBackground(QColor) override{return;}
+    void setOpaque(bool) override {}
+    QFont getFont()  override{return font();}
+    void setFont(QFont f)  override{QWidget::setFont(f);}
+    QObject* jself() override {return (QObject*)this;}
+    void setBorder(Border* b)  override{}
+    Border* getBorder()  override{return nullptr;}
+    QObject* self() override {return (QObject*)this;}
 
 signals:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*) override;
 
 public slots:
 

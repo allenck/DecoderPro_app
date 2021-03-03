@@ -304,7 +304,7 @@ void AbstractNetworkConnectionConfig::on_serviceTypeField_leave()
 }
 void AbstractNetworkConnectionConfig::on_systemPrefixField_editingFinished()
 {
- if (!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if (!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
  //                    JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"), tr("System Prefix ") + systemPrefixField->text() + " is already assigned");
@@ -315,7 +315,7 @@ void AbstractNetworkConnectionConfig::on_systemPrefixField_editingFinished()
 
 void AbstractNetworkConnectionConfig::on_systemPrefixField_leave()
 {
- if (!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if (!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
  //                    JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"), tr("System Prefix ") + systemPrefixField->text() + " is already assigned");
@@ -365,7 +365,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  {
   adapter->setOptionState(i, options.value(i)->getItem());
  }
- if (adapter->getSystemConnectionMemo() != NULL && !adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if (adapter->getSystemConnectionMemo() != NULL && !((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
   systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
   connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());

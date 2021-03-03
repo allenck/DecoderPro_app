@@ -23,7 +23,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 //        super();
 //    }
 
-/*protected*/ Manager* ProxyTurnoutManager::makeInternalManager() const
+/*protected*/ AbstractManager *ProxyTurnoutManager::makeInternalManager() const
 {
  return ((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getTurnoutManager();
 
@@ -33,7 +33,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * Revise superclass behavior: support TurnoutOperations
  */
 //@Override
-/*public*/ void ProxyTurnoutManager::addManager(Manager* m)
+/*public*/ void ProxyTurnoutManager::addManager(AbstractManager* m)
 {
     AbstractProxyTurnoutManager::addManager(m);
     ((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"))->loadOperationTypes();

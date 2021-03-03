@@ -2,6 +2,7 @@
 #define SIGNALMASTTABLEDATAMODEL_H
 #include "beantabledatamodel.h"
 #include "jtable.h"
+#include "propertychangelistener.h"
 
 class SignalMastJTable;
 class SignalMastTableDataModel : public BeanTableDataModel
@@ -16,19 +17,20 @@ public:
      LITCOL = EDITLOGICCOL + 1,
      HELDCOL = LITCOL + 1
     };
-    /*public*/ QString getValue(QString name) const;
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ QString getColumnClass(int col);
-    /*public*/ int getPreferredWidth(int col);
+    /*public*/ QString getValue(QString name) const override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ QString getColumnClass(int col) const override;
+    /*public*/ int getPreferredWidth(int col) override;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     Q_INVOKABLE /*public*/ QString getClassDescription();
-    /*public*/ void configureTable(JTable *table);
+    /*public*/ void configureTable(JTable *table) override;
+    QObject* self() override {return (QObject*)this;}
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     Logger* log;
@@ -37,15 +39,15 @@ private:
     QSortFilterProxyModel* sorter;
 
 protected:
-    /*protected*/ Manager* getManager() ;
-    /*protected*/ NamedBean* getBySystemName(QString name) const;
-    /*protected*/ NamedBean* getByUserName(QString name);
-    /*protected*/ QString getMasterClassName();
-    /*protected*/ void clickOn(NamedBean* t);
+    /*protected*/ AbstractManager* getManager()  override;
+    /*protected*/ NamedBean* getBySystemName(QString name) const override;
+    /*protected*/ NamedBean* getByUserName(QString name) override;
+    /*protected*/ QString getMasterClassName() override;
+    /*protected*/ void clickOn(NamedBean* t) override;
     /*public*/ JTable* makeJTable(QSortFilterProxyModel* srtr);
     SignalMastJTable* table;
-    /*protected*/ QString getBeanType() ;
-    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
+    /*protected*/ QString getBeanType()  override;
+    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
     /*protected*/ QString getClassName();
 
 };

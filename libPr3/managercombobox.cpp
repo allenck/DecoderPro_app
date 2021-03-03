@@ -16,15 +16,15 @@
 
     /*public*/ ManagerComboBox::ManagerComboBox(QObject* parent) {
         //this(new QList<Manager/*<B>*/*>());
-     this->setManagers(QList<Manager/*<B>*/*>(), nullptr);
+     this->setManagers(QList<AbstractManager/*<B>*/*>(), nullptr);
     }
 
-    /*public*/ ManagerComboBox::ManagerComboBox(/*@Nonnull*/ QList<Manager/*<B>*/*> list, QObject* parent) {
+    /*public*/ ManagerComboBox::ManagerComboBox(/*@Nonnull*/ QList<AbstractManager/*<B>*/*> list, QObject* parent) {
         //this(list, null);
      this->setManagers(list, nullptr);
     }
 
-    /*public*/ ManagerComboBox::ManagerComboBox(/*@Nonnull*/ QList<Manager/*<B>*/*> list, Manager/*<B>*/* selection, QObject* parent) {
+    /*public*/ ManagerComboBox::ManagerComboBox(/*@Nonnull*/ QList<AbstractManager/*<B>*/*> list, Manager/*<B>*/* selection, QObject* parent) {
         //super();
 //        setRenderer(new ManagerRenderer(getRenderer()));
         // prevent overriding method from being used
@@ -36,7 +36,7 @@
      *
      * @param list the ,list of managers
      */
-    /*public*/ void ManagerComboBox::setManagers(/*@Nonnull*/ QList<Manager/*<B>*/*> list) {
+    /*public*/ void ManagerComboBox::setManagers(/*@Nonnull*/ QList<AbstractManager/*<B>*/*> list) {
         setManagers(list, nullptr);
     }
 
@@ -47,7 +47,7 @@
      * @param selection the manager to select; if null, the first manager in the
      *                  list is selected
      */
-    /*public*/ void ManagerComboBox::setManagers(/*@Nonnull*/ QList<Manager/*<B>*/*> list, Manager/*<B>*/* selection) {
+    /*public*/ void ManagerComboBox::setManagers(/*@Nonnull*/ QList<AbstractManager/*<B>*/*> list, Manager/*<B>*/* selection) {
         //setModel(new DefaultComboBoxModel<Manager*>( QVector<Manager*>(list.toVector())));
         foreach (Manager* m, list) {
          addItem(m->getMemo()->getUserName(), VPtr<Manager>::asQVariant(m));
@@ -64,6 +64,24 @@
             }
         }
     }
+
+/*public*/ void ManagerComboBox::setManagers(/*@Nonnull*/ QList<Manager *> list, Manager/*<B>*/* selection)
+{
+ foreach (Manager* m, list) {
+  addItem(m->getMemo()->getUserName(), VPtr<Manager>::asQVariant(m));
+  vl.append(VPtr<Manager>::asQVariant(m));
+ }
+ int i=0;
+ for(QVariant v : vl)
+  setItemData(i++, v, Qt::UserRole);
+ if (!list.isEmpty()) {
+     if (selection == nullptr) {
+         setSelectedIndex(0);
+     } else {
+         setSelectedItem(selection->toString());
+     }
+ }
+}
 
     /**
      * Set the list of managers to the single passed in manager, and select it.
@@ -87,8 +105,8 @@
             if(qobject_cast<ProxyReporterManager*>(manager->self()))
              setManagers(((ProxyReporterManager*)manager->self())->getDisplayOrderManagerList(), ((ProxyReporterManager*)manager->self())->getDefaultManager());
         } else {
-            QList<Manager/*<B>*/*> list = QList<Manager/*<B>*/*>();
-            list.append(manager);
+            QList<AbstractManager/*<B>*/*> list = QList<AbstractManager/*<B>*/*>();
+            list.append((AbstractManager*)manager);
             setManagers(list, manager);
         }
     }

@@ -125,8 +125,8 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  init();
 }
  //We have to set a manager first off, but this gets replaced.
- /*protected*/ Manager* SmlBeanTableDataModel::getManager() {
-     return (Manager*)InstanceManager::getDefault("SignalMastLogicManager");
+ /*protected*/ AbstractManager *SmlBeanTableDataModel::getManager() {
+     return ( AbstractManager*)InstanceManager::getDefault("SignalMastLogicManager");
  }
 
  /*public EcosLocoAddress getByDccAddress(int address) {return getManager().getByDccAddress(address);}*/

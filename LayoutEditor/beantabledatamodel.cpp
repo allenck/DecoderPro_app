@@ -64,12 +64,12 @@
 //template<class T>
 void /*public*/ BeanTableDataModel::init() // SLOT
 {
- AbstractManager* manager = (AbstractManager*)getManager();
+ AbstractManager* manager = getManager();
  if(manager != NULL)
  {
   manager->addPropertyChangeListener((PropertyChangeListener*)this);
   updateNameList();
-  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
@@ -91,10 +91,10 @@ BeanTableDataModel::~BeanTableDataModel()
         return propertyColumns->value(tgt);
     }
 //template<class T>
-Manager* BeanTableDataModel::getManager() {return NULL;}
+AbstractManager* BeanTableDataModel::getManager() {return NULL;}
 
 //template<class T>
-void BeanTableDataModel::setManager(Manager *) {}
+void BeanTableDataModel::setManager(AbstractManager *) {}
 
 /*protected*/ /*synchronized*/ void BeanTableDataModel::updateNameList()
 {

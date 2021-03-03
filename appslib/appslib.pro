@@ -75,6 +75,7 @@ HEADERS += jynstrument.h \
 SOURCES += appslib.cpp \
     appspreferencesactionfactory.cpp \
     jmripreferencesactionfactory.cpp \
+    manager.cpp \
     metatypes.cpp \
     instancemanager.cpp \
     apps.cpp \
@@ -82,6 +83,7 @@ SOURCES += appslib.cpp \
     appsbase.cpp \
     defaultinstanceinitializer.cpp \
     jmripreferencesprovider.cpp \
+    namedbean.cpp \
     nodeidentity.cpp \
     properties.cpp \
     fileutil.cpp \
@@ -91,6 +93,7 @@ SOURCES += appslib.cpp \
     myapplication.cpp \
     createbuttonmodel.cpp \
     splashwindow.cpp \
+    systemnamevalidator.cpp \
     toolsmenu.cpp \
     jlist.cpp \
     powerpanelaction.cpp \
@@ -225,9 +228,13 @@ HEADERS += appslib.h\
     apps.h \
     appspreferencesactionfactory.h \
     jmripreferencesactionfactory.h \
+    manager.h \
     myapplication.h \
     createbuttonmodel.h \
+    namedbean.h \
+    proxymanager.h \
     splashwindow.h \
+    systemnamevalidator.h \
     toolsmenu.h \
     powerpanelaction.h \
     simpleturnoutctrlaction.h \

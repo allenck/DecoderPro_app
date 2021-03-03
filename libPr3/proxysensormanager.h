@@ -54,11 +54,11 @@ public:
   * be looking them up.
   * @return requested Sensor object (never null)
   */
- /*public*/ Sensor* newSensor(QString systemName, QString userName);
+ /*public*/ Sensor* newSensor(QString systemName, QString userName) override;
  // null implementation to satisfy the SensorManager interface
  /*public*/ void updateAll()const override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
+ ///*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
  /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) throw (JmriException) override;
  /*public*/ long getDefaultSensorDebounceGoingActive() override;
  /*public*/ long getDefaultSensorDebounceGoingInActive() override;
@@ -71,9 +71,11 @@ public:
  }
  /*public*/ QString getEntryToolTip() override;
  /*public*/ bool isPullResistanceConfigurable() override;
-/*public*/ QString toString() {return "ProxySensorManager";}
-signals:
- void propertyChange(PropertyChangeEvent *e);
+/*public*/ QString toString() override{return "ProxySensorManager";}
+ /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException) override;
+
+ signals:
+ void propertyChange(PropertyChangeEvent *e) override;
  //void newSensorCreated(AbstractSensorManager*,Sensor*);
 
 private:
@@ -81,8 +83,8 @@ private:
 
 protected:
  ///*private*/ AbstractManager* getInternal();
- virtual /*protected*/ Manager* makeInternalManager() const;
- virtual /*protected*/ Sensor* makeBean(int i, QString systemName, QString userName);
+ virtual /*protected*/ AbstractManager* makeInternalManager() const;
+ virtual /*protected*/ Sensor* makeBean(Manager *, QString systemName, QString userName);
  // /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
  // /*protected*/ NamedBean* provideNamedBean(QString name);
 

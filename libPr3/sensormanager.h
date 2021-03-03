@@ -124,9 +124,23 @@ public:
         * @param curAddress - The hardware address of the turnout we which to check.
         */
 
-        virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) {return "";}// throws JmriException;
+        QT_DEPRECATED virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) {return "";}// throws JmriException;
 
-        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const {return "";}// throws JmriException;
+        /**
+         * Get the Next valid Sensor address.
+         * <p>
+         * @param curAddress the starting hardware address to get the next valid from.
+         * @param prefix system prefix, just system name, not type letter.
+         * @param ignoreInitialExisting false to return the starting address if it 
+         *                          does not exist, else true to force an increment.
+         * @return the next valid system name, excluding both system name prefix and type letter.
+         * @throws JmriException    if unable to get the current / next address, 
+         *                          or more than 10 next addresses in use.
+         */
+        //@Nonnull
+        virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException) {return "";}
+        
+        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const throw (JmriException) {return "";}
 
         virtual long getDefaultSensorDebounceGoingActive() {return 0;}
         virtual long getDefaultSensorDebounceGoingInActive() {return 0;}

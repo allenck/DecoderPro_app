@@ -38,7 +38,7 @@ public:
     Q_INVOKABLE /*public*/ void setMessagePreferencesDetails() override;
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
+    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent) override;
 
 private:
     void common();
@@ -199,7 +199,7 @@ public:
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
     void doDelete(NamedBean* bean);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name) ;
     /*public*/ void clickOn(NamedBean* t);
@@ -231,10 +231,10 @@ protected:
  friend class LTAValidator;
 };
 
-/*public*/ class LightControlTableModel : public AbstractTableModel //implements
-//        java.beans.PropertyChangeListener {
+/*public*/ class LightControlTableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
     LightTableAction* lta;
  public:
     enum COLUMNS
@@ -246,16 +246,17 @@ protected:
     };
 
     /*public*/ LightControlTableModel(LightTableAction* lta, QObject* parent = 0);
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     /*public*/ int getPreferredWidth(int col);
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    QObject* self() override {return (QObject*)this;}
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 };
 

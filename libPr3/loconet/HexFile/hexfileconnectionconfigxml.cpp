@@ -2,7 +2,7 @@
 #include "hexfileframe.h"
 #include "hexfileserver.h"
 #include "serialportadapter.h"
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include "connectionconfig.h"
 #include "instancemanager.h"
 #include "lnhexfileport.h"
@@ -225,7 +225,7 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
         }
 
         if (shared.attribute("systemPrefix") != NULL) { // NOI18N
-            adapter->getSystemConnectionMemo()->setSystemPrefix(shared.attribute("systemPrefix")); // NOI18N
+            ((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(shared.attribute("systemPrefix")); // NOI18N
         }
     }
     if (shared.attribute("disabled") != NULL) { // NOI18N

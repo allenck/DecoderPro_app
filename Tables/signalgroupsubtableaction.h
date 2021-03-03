@@ -164,17 +164,18 @@ private slots:
     friend class SignalGroupTurnoutModel;
     friend class SGSTASignalGroupOutputModel;
 };
-/*public*/ /*abstract*/ class SGSTASignalGroupOutputModel : public AbstractTableModel //implements PropertyChangeListener
+/*public*/ /*abstract*/ class SGSTASignalGroupOutputModel : public AbstractTableModel, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
     SignalGroupSubTableAction* act;
 public:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
     /*public*/ void dispose();
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ int columnCount(const QModelIndex &parent) const;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
 
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
     enum COLUMNS
     {
      SNAME_COLUMN = 0,
@@ -183,7 +184,8 @@ public:
      STATE_COLUMN = 3
     };
 
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    QObject* self() override {return (QObject*)this;}
 
 };
 /**

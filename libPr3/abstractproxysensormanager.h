@@ -22,11 +22,11 @@ public:
      * Returns a list of all managers, including the
      * internal manager.  This is not a live list.
      */
-    /*public*/ QList<Manager*> getManagerList() const override;
-    /*public*/ QList<Manager*> getDisplayOrderManagerList() const override ;
-    /*public*/ Manager* getInternalManager() const ;
-    /*public*/ Manager* getDefaultManager() const override;
-    virtual /*public*/ void addManager(Manager* m) override;
+    /*public*/ QList<AbstractManager *> getManagerList() const override;
+    /*public*/ QList<AbstractManager *> getDisplayOrderManagerList() const  ;
+    /*public*/ AbstractManager* getInternalManager() const ;
+    /*public*/ AbstractManager* getDefaultManager() const override;
+    virtual /*public*/ void addManager(AbstractManager *m) override;
     /**
      * Locate via user name, then system name if needed.
      * Subclasses use this to provide e.g. getSensor, getTurnout, etc
@@ -36,7 +36,7 @@ public:
      * @return Null if nothing by that name exists
      */
     /*public*/ NamedBean* getNamedBean(QString name) const override;
-    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override /*throw (NamedBean::BadSystemNameException)*/;
+//    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override /*throw (NamedBean::BadSystemNameException)*/;
 
 //    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
 //    /*public*/ NamedBean* getBeanByUserName(QString userName) const override;
@@ -123,6 +123,10 @@ public:
     /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) override;
     /*public*/ Sensor *getBySystemName(/*@Nonnull */ QString systemName) const override;
     /*public*/ Sensor* getByUserName(/*@Nonnull*/ QString userName) const override;
+    /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) const throw (JmriException);
+    /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException);
+    /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, char typeLetter) throw (JmriException);
+    /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) override;
 
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
@@ -131,12 +135,12 @@ public slots:
 
 private:
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractProxyManager");
-    /*private*/ Manager* initInternal() const;
-    /*private*/ mutable Manager* internalManager; //= null;
-    /*private*/ Manager* defaultManager;
+    /*private*/ AbstractManager* initInternal() const;
+    /*private*/ mutable AbstractManager* internalManager= nullptr;
+    /*private*/ AbstractManager* defaultManager = nullptr;
     /*private*/ QStringList addedOrderList;// = QStringList();
     /*private*/ QSet<NamedBean*>* namedBeanSet = nullptr;
-    /*private java.util.ArrayList*/QList<Manager*> mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
+    /*private java.util.ArrayList*/QList<AbstractManager*> mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
     QVector<PropertyChangeListener*> propertyListenerList;// = new ArrayList<>();
     QMap<QString, QVector<PropertyChangeListener*>*> namedPropertyListenerMap;// = new HashMap<>();
     QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
@@ -146,15 +150,18 @@ private:
      * PropertyChangeListeners.
      */
     /*private*/ /*final*/ QList<QString> boundPropertyNames = QList<QString>();
+    QString createSystemName(QString curAddress, QString prefix, QString beanType) const throw (JmriException);
+    /*private*/ AbstractManager *createSystemManager(/*@Nonnull*/ QString systemPrefix) const;
+
 protected:
     /**
      * Number of managers available through
      * getManager(i) and getManagerList(),
      * including the Internal manager
      */
-    /*protected*/ virtual int nMgrs() const;
-    /*protected*/ virtual Manager* getMgr(int index) const;
-    virtual /*abstract protected*/ Manager* makeInternalManager() const  =0;
+//    /*protected*/ virtual int nMgrs() const;
+//    /*protected*/ virtual Manager* getMgr(int index) const;
+    virtual /*abstract protected*/ AbstractManager* makeInternalManager() const  =0;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new NamedBean: If the name
@@ -167,12 +174,12 @@ protected:
      * @param name
      * @return Never null under normal circumstances
      */
-    /*protected*/ virtual NamedBean* provideNamedBean(QString name) ;
+//    /*protected*/ virtual NamedBean* provideNamedBean(QString name) ;
     /**
      * Defer creation of the proper type to the subclass
      * @param index Which manager to invoke
      */
-    virtual/*abstract protected*/ NamedBean* makeBean(int, QString /*systemName*/, QString /*userName*/) /*const*/  /*=0*/;
+    //virtual/*abstract protected*/ NamedBean* makeBean(int, QString /*systemName*/, QString /*userName*/) /*const*/  /*=0*/;
 
 
     /**
@@ -180,16 +187,20 @@ protected:
      * Returns -1 if there is no match, which is not considered an
      * error
      */
-    /*protected*/ virtual int matchTentative(QString /*systemname*/) const ;
+//    /*protected*/ virtual int matchTentative(QString /*systemname*/) const ;
     /**
      * Find the index of a matching manager.
      * Throws IllegalArgumentException if there is no match,
      * here considered to be an error that must be reported.
      */
-    /*protected*/ virtual int match(QString systemname) const ;
+//    /*protected*/ virtual int match(QString systemname) const ;
     /*protected*/ void updateOrderList();
     /*protected*/ void recomputeNamedBeanSet();
-
+    /*protected*/ Manager/*<E>*/* getManager(/*@Nonnull*/ QString systemName) const;
+    /*protected*/ /*E*/NamedBean *provideNamedBean(QString name) throw (IllegalArgumentException);
+    /*protected*/ virtual NamedBean* makeBean(Manager/*<E>*/* manager, QString systemName, QString userName) = 0;
+    /*protected*/ Manager/*<E>*/* getManagerOrDefault(/*@Nonnull*/ QString systemName);
+    /*protected*/ AbstractManager *createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const;
 
  friend class ProxyReporterManager;
  friend class ProxySensorManager;

@@ -1,6 +1,6 @@
 #include "abstractportcontroller.h"
 #include "exceptions.h"
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include "sleeperthread.h"
 #include <QDataStream>
 #include "loggerfactory.h"
@@ -221,7 +221,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
 
 //@Override
 /*public*/ void AbstractPortController::setSystemPrefix(QString systemPrefix) {
-    if (!this->getSystemConnectionMemo()->setSystemPrefix(systemPrefix)) {
+    if (!((DefaultSystemConnectionMemo*) this->getSystemConnectionMemo())->setSystemPrefix(systemPrefix)) {
         throw IllegalArgumentException();
     }
 }

@@ -127,7 +127,7 @@ public:
  };
 
  /*public*/ QString getValue(QString name) const override;
- /*public*/ Manager* getManager() override;
+ /*public*/ AbstractManager* getManager() override;
  /*public*/ NamedBean* getBySystemName(QString name) const override;
  /*public*/ NamedBean* getByUserName(QString name)  override;
  /*public*/ void clickOn(NamedBean* t) override;

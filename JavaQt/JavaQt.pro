@@ -102,7 +102,6 @@ SOURCES += javaqt.cpp \
     defaultmutabletreenode.cpp \
     catalogtreeleaf.cpp \
     abstractnamedbean.cpp \
-    namedbean.cpp \
     namedbeanhandle.cpp \
     treeselectionmodel.cpp \
     treeselectionevent.cpp \
@@ -175,7 +174,6 @@ SOURCES += javaqt.cpp \
     charbuffer.cpp \
     spliterator.cpp \
     printwriter.cpp \
-    manager.cpp \
     abstractlistmodel.cpp \
     compoundborder.cpp \
     listdataevent.cpp \
@@ -231,7 +229,6 @@ SOURCES += javaqt.cpp \
     collection.cpp \
     timer.cpp \
     beans.cpp \
-    systemnamevalidator.cpp \
     scalemanager.cpp \
     scale.cpp \
     scaleconfigxml.cpp \
@@ -356,9 +353,7 @@ HEADERS += javaqt.h\
     defaultmutabletreenode.h \
     catalogtreeleaf.h \
     abstractnamedbean.h \
-    namedbean.h \
     namedbeanhandle.h \
-    manager.h \
     treeselectionmodel.h \
     treeselectionevent.h \
     defaulttreeselectionmodel.h \
@@ -529,7 +524,6 @@ HEADERS += javaqt.h\
     providingmanager.h \
     nmrapacket.h \
     vetoablechangelistenerproxy.h \
-    proxymanager.h \
     predicate.h \
     comparatort.h \
     alphanumcomparator.h \
@@ -537,7 +531,6 @@ HEADERS += javaqt.h\
     discoverylistener.h \
     timer.h \
     beans.h \
-    systemnamevalidator.h \
     scalemanager.h \
     scale.h \
     scaleconfigxml.h \

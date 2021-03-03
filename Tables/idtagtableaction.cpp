@@ -90,7 +90,7 @@ IdTagBeanTableDataModel::IdTagBeanTableDataModel(IdTagTableAction *act)
 }
 
 //@Override
-/*public*/ Manager* IdTagBeanTableDataModel::getManager() {
+/*public*/ AbstractManager* IdTagBeanTableDataModel::getManager() {
     IdTagManager* m = (IdTagManager*)InstanceManager::getDefault("IdTagManager");
     if (!m->isInitialised()) {
         m->init();

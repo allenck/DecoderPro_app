@@ -87,7 +87,7 @@ MtBeanTableDataModel::MtBeanTableDataModel(MemoryTableAction* mt)
     }
 }
 
-/*public*/ Manager* MtBeanTableDataModel::getManager() {
+/*public*/ AbstractManager *MtBeanTableDataModel::getManager() {
     return InstanceManager::memoryManagerInstance();
 }
 

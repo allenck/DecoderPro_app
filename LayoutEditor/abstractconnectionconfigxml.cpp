@@ -1,6 +1,6 @@
 #include "abstractconnectionconfigxml.h"
 #include "portadapter.h"
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include "connectionconfig.h"
 #include "stringutils.h"
 #include "loggerfactory.h"
@@ -108,7 +108,7 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
      }
 
      if (shared.attribute("systemPrefix") != NULL) {
-         adapter->getSystemConnectionMemo()->setSystemPrefix(shared.attribute("systemPrefix"));
+         ((DefaultSystemConnectionMemo*) adapter->getSystemConnectionMemo())->setSystemPrefix(shared.attribute("systemPrefix"));
          checkAndWarnPrefix(shared.attribute("systemPrefix")); // for removal after #4670 resolved
 
      }

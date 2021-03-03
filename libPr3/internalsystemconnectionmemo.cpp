@@ -10,6 +10,7 @@
 #include "loggerfactory.h"
 #include "internalconsistmanager.h"
 #include "internalmetermanager.h"
+#include "defaultpowermanager.h"
 
 //InternalSystemConnectionMemo::InternalSystemConnectionMemo()
 //{
@@ -81,7 +82,8 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
  */
 /*public*/ void InternalSystemConnectionMemo::configureManagers() {
     log->debug("Do configureManagers - doesn't pre-build anything");
-    if (configured) log->warn("configureManagers called for a second time"/*, new Exception("traceback")*/);
+    if (configured)
+     log->warn("configureManagers called for a second time"/*, new Exception("traceback")*/);
     configured = true;
 
 }
@@ -89,17 +91,37 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 //@Override
 /*public*/ InternalConsistManager* InternalSystemConnectionMemo::getConsistManager()
 {
-    if (consistManager == nullptr) {
-        log->debug("Create InternalConsistManager by request");
-        consistManager = new InternalConsistManager();
-        // special due to ProxyManager support
-        InstanceManager::store(consistManager,"ConsistManager");
-    }
-    return consistManager;
+ if (defaultInstanceType) {
+     return nullptr;
+ }
+// return (InternalConsistManager*) classObjectMap.computeIfAbsent(("ConsistManager"), (Class c) -> {
+  InternalConsistManager* cm = (InternalConsistManager*)classObjectMap.value("ConsistManager", nullptr);
+  if(cm == nullptr)
+  {
+   log->debug("Create InternalConsistManager by request");
+     InternalConsistManager* consistManager = new InternalConsistManager();
+     InstanceManager::store((QObject*)consistManager, "ConsistManager");
+     return consistManager;
+  }
+  return cm;
+}
+
+/*public*/ InternalSensorManager* InternalSystemConnectionMemo::getSensorManager()
+{
+ InternalSensorManager* sensorManager = (InternalSensorManager*) classObjectMap.value("SensorManager");
+ if (sensorManager == nullptr) {
+     log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
+     sensorManager = new InternalSensorManager(this);
+     store(sensorManager, "SensorManager");
+     // special due to ProxyManager support
+     InstanceManager::setSensorManager(sensorManager);
+ }
+ return sensorManager;
 }
 
 /*public*/ InternalLightManager* InternalSystemConnectionMemo::getLightManager()
 {
+ InternalLightManager* lightManager = (InternalLightManager*) classObjectMap.value("LightManager");
  if (lightManager == nullptr)
  {
      log->debug("Create InternalLightManager by request");
@@ -110,21 +132,12 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
  return lightManager;
 }
 
-/*public*/ InternalSensorManager* InternalSystemConnectionMemo::getSensorManager()
-{
- if (sensorManager == nullptr) {
-     log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
-     sensorManager = new InternalSensorManager(this);
-     // special due to ProxyManager support
-     InstanceManager::setSensorManager(sensorManager);
- }
- return sensorManager;
-}
-
 /*public*/ InternalReporterManager* InternalSystemConnectionMemo::getReporterManager() {
+ InternalReporterManager* reporterManager = (InternalReporterManager*) classObjectMap.value("ReporterManager");
     if (reporterManager == nullptr) {
         log->debug("Create InternalReporterManager by request");
         reporterManager = new InternalReporterManager(this);
+        store(reporterManager, "ReporterManager");
         // special due to ProxyManager support
         InstanceManager::setReporterManager(reporterManager);
     }
@@ -132,9 +145,11 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ InternalTurnoutManager* InternalSystemConnectionMemo::getTurnoutManager() {
+ InternalTurnoutManager* turnoutManager = (InternalTurnoutManager*) classObjectMap.value("TurnoutManager");
  if (turnoutManager == nullptr) {
      log->debug(tr("Create InternalTurnoutManager \"%1\" by request").arg(getSystemPrefix()));
      turnoutManager = new InternalTurnoutManager(this);
+     store(turnoutManager, "TurnoutManager");
      // special due to ProxyManager support
      InstanceManager::setTurnoutManager(turnoutManager);
     }
@@ -142,7 +157,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ InternalMeterManager* InternalSystemConnectionMemo::getMeterManager() {
-    //InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager");
+    InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager");
     if (meterManager == nullptr) {
         log->debug("Create InternalMeterManager by request", getSystemPrefix());
         meterManager = new InternalMeterManager(this);
@@ -153,33 +168,48 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ DebugThrottleManager* InternalSystemConnectionMemo::getThrottleManager() {
-    if (throttleManager == nullptr) {
-        log->debug("Create DebugThrottleManager by request");
-        // Install a debug throttle manager
-        throttleManager = new DebugThrottleManager(this->self());
-        InstanceManager::setThrottleManager(throttleManager);
-    }
-    return throttleManager;
+ if (defaultInstanceType) {
+     return nullptr;
+ }
+// return (InternalConsistManager*) classObjectMap.computeIfAbsent(("ConsistManager"), (Class c) -> {
+  DebugThrottleManager* dtm = (DebugThrottleManager*)classObjectMap.value("ThrottleManager", nullptr);
+  if(dtm == nullptr)
+  {
+   log->debug("Create DebugThrottleManager by request");
+     DebugThrottleManager* throttleManager = new DebugThrottleManager();
+     InstanceManager::store((QObject*)throttleManager, "DebugThrottleManager");
+     return throttleManager;
+  }
+  return dtm;
 }
 
 /*public*/ DefaultPowerManager* InternalSystemConnectionMemo::getPowerManager() {
-    if (powerManager == nullptr) {
-        log->debug("Create DefaultPowerManager by request");
-        powerManager = new DefaultPowerManager();
-        InstanceManager::store(powerManager, "PowerManager");
-    }
-    return powerManager;
+ //return (DefaultPowerManager) classObjectMap.computeIfAbsent(PowerManager.class, (Class c) -> {
+ PowerManager* pm = (PowerManager*)classObjectMap.value("PowerManager");
+ if(pm == nullptr)
+ {
+     log->debug("Create DefaultPowerManager by request");
+     PowerManager* powerManager = new DefaultPowerManager(this);
+     InstanceManager::store(powerManager, "PowerManager");
+     return (DefaultPowerManager*)powerManager;
+ }
+ return (DefaultPowerManager*)pm;
 }
 
 /*public*/ DebugProgrammerManager* InternalSystemConnectionMemo::getProgrammerManager() {
-    if (programManager == nullptr) {
-        log->debug("Create DebugProgrammerManager by request");
-        // Install a debug programmer
-        programManager = new DebugProgrammerManager(this->self());
-        // Don't auto-enter, as that messes up selection in Single CV programmer
-        //InstanceManager.setProgrammerManager(programManager);
-    }
-    return programManager;
+ if (defaultInstanceType) {
+     return nullptr;
+ }
+ //return (DebugProgrammerManager) classObjectMap.computeIfAbsent(DefaultProgrammerManager.class,
+//         (Class c) -> {
+ DebugProgrammerManager* dpm = (DebugProgrammerManager*)classObjectMap.value("DefaultProgrammerManager");
+ if(dpm == nullptr)
+ {
+      // Install a debug programmer
+      log->debug("Create DebugProgrammerManager by request");
+      return new DebugProgrammerManager(this);
+  }
+ return dpm;
 }
 
 //@Override
@@ -270,13 +300,14 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 
 //@Override
 /*public*/ void InternalSystemConnectionMemo::dispose() {
+ SensorManager* sensorManager = (SensorManager*) classObjectMap.value("SensorManager");
     if (sensorManager != nullptr) {
         sensorManager->dispose();
-        sensorManager = nullptr;
     }
+
+    TurnoutManager* turnoutManager = (TurnoutManager*) classObjectMap.value("TurnoutManager");
     if (turnoutManager != nullptr) {
         turnoutManager->dispose();
-        turnoutManager = nullptr;
     }
     SystemConnectionMemo::dispose();
 }

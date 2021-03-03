@@ -78,7 +78,7 @@ public slots:
 private:
  Logger log;
 protected:
- virtual /*protected*/ Manager* makeInternalManager() const override;
+ virtual /*protected*/ AbstractManager* makeInternalManager() const override;
  virtual /*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) const override;
 
 };

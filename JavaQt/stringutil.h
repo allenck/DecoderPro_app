@@ -32,6 +32,10 @@ public:
     static /*public*/ QString escapeString(QString s);
     static /*public*/ QString unescapeString(QString s);
     /*public*/ static QString concatTextHtmlAware(QString baseText, QString extraText);
+    /*public*/ static int getFirstIntFromString(/*@Nonnull*/ QString str);
+    /*public*/ static int getLastIntFromString(/*@Nonnull*/ QString str);
+    /*public*/ static QString incrementLastNumberInString(/*@Nonnull*/ QString str, int increment);
+    /*public*/ static QString replaceLast(/*@Nonnull*/ QString string, /*@Nonnull*/ QString from, /*@Nonnull*/ QString to);
 
 private:
     /*private*/ static QTranslator* translator;// = QTranslator();

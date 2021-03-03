@@ -43,7 +43,7 @@ public:
   */
     virtual QString getSystemPrefix() const {return QString();}
  //This should probably throwing an exception
-    virtual bool setSystemPrefix(QString systemPrefix) {return false;}
+    //virtual bool setSystemPrefix(QString systemPrefix) {return false;}
     virtual QString getUserName()const {return QString();}
   /**
    * Get if connection is dirty. Checked fields are disabled, prefix, userName

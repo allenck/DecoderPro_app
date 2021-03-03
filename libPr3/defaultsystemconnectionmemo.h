@@ -10,10 +10,10 @@ class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo
   Q_OBJECT
   //Q_INTERFACES(SystemConnectionMemo)
  public:
-  DefaultSystemConnectionMemo(QObject* parent = nullptr) {}
+  DefaultSystemConnectionMemo(QObject* parent = nullptr) : SystemConnectionMemo(parent){}
   /*public*/ void _register() override;
   /*public*/ QString getSystemPrefix() const override;
-  /*public*/ /*final*/ bool setSystemPrefix(/*@Nonnull*/ QString systemPrefix) override;
+  /*public*/ /*final*/ bool setSystemPrefix(/*@Nonnull*/ QString systemPrefix);
   /*public*/ QString getUserName() const override;
   /*public*/ /*final*/ bool setUserName(/*@Nonnull*/ QString userName) override;
   /*public*/ bool provides(/*Class<?>*/QString c) override;

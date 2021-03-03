@@ -91,7 +91,7 @@ BeanTableDataModel(parent)
 }
 
 //@Override
-/*public*/ Manager* WarrantTableModel::getManager() {
+/*public*/ AbstractManager* WarrantTableModel::getManager() {
  _manager = (WarrantManager*)InstanceManager::getDefault("WarrantManager");
     return _manager;
 }

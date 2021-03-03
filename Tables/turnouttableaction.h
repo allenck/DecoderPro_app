@@ -44,13 +44,14 @@ public:
     /*public*/ Q_INVOKABLE TurnoutTableAction(QString actionName, QObject *parent);
     ~TurnoutTableAction() {}
     Q_INVOKABLE TurnoutTableAction(const TurnoutTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*public*/ void setManager(Manager* man);
-    Q_INVOKABLE /*public*/ QString getClassDescription();
+    /*public*/ void setManager(Manager* man) override;
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
     static QString getName();
     /*public*/ static void updateAutomationBox(Turnout* t, JComboBox *cb);
-    /*public*/ void addToFrame(BeanTableFrame* f);
-    /*public*/ void setMenuBar(BeanTableFrame* f);
-    /*public*/ void addToPanel(AbstractTableTabAction* f);
+    /*public*/ void addToFrame(BeanTableFrame* f) override;
+    /*public*/ void setMenuBar(BeanTableFrame* f) override;
+    /*public*/ void addToPanel(AbstractTableTabAction* f) override;
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
@@ -61,7 +62,7 @@ public slots:
     void showLockChanged();
     /*public*/ void showTurnoutSpeedChanged();
     void On_doAutomationBox_toggled(bool);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     void common();
@@ -210,7 +211,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     /*public*/ QString getValue(QString name) const override;
-    /*public*/ Manager* getManager() override;
+    /*public*/ AbstractManager* getManager() override;
     /*public*/ NamedBean* getBySystemName(QString name) const override;
     /*public*/ NamedBean* getByUserName(QString name) override;
     /*public*/ void clickOn(NamedBean* t) override;
@@ -305,9 +306,10 @@ public slots:
  void actionPerformed(JActionEvent *e = 0);
 };
 
-/*protected*/ /*static*/ class TurnoutOperationEditor : public JDialog
+/*protected*/ /*static*/ class TurnoutOperationEditor : public JDialog, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
     /**
      *
      */
@@ -317,8 +319,9 @@ public slots:
     Turnout* myTurnout;
  public:
     TurnoutOperationEditor(TurnoutTableAction* tta, JFrame* parent, TurnoutOperation* op, Turnout* t, /*JComboBox* box*/ QString val);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* evt);
+    /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
     void On_nameButton_clicked();
     void On_okButton_clicked();
     void On_cancelButton_clicked();

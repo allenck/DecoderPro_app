@@ -4,31 +4,34 @@
 #include <QVector>
 #include <tablecolumn.h>
 #include "javaqt_global.h"
+#include "propertychangelistener.h"
 
 class AbstractTableModel;
 class TableColumnModelEvent;
 class PropertyChangeEvent;
-class JAVAQTSHARED_EXPORT DefaultTableColumnModel : public TableColumnModel
+class JAVAQTSHARED_EXPORT DefaultTableColumnModel : public TableColumnModel, public PropertyChangeListener
 {
+  Q_INTERFACES(PropertyChangeListener)
  Q_OBJECT
 public:
  explicit DefaultTableColumnModel(JTable *parent);
- /*public*/ void setSelectionModel(ListSelectionModel* newModel);
- /*public*/ ListSelectionModel* getSelectionModel();
- /*public*/ void setColumnMargin(int newMargin);
- /*public*/ int getColumnCount();
- /*public*/ QListIterator<TableColumn*> getColumns();
- /*public*/ void setColumnSelectionAllowed(bool flag);
- /*public*/ void addColumn(TableColumn* aColumn) ;
- /*public*/ void removeColumn(TableColumn* column);
- /*public*/ TableColumn* getColumn(int columnIndex);
- /*public*/ int getColumnMargin();
+ /*public*/ void setSelectionModel(ListSelectionModel* newModel) override;
+ /*public*/ ListSelectionModel* getSelectionModel() override;
+ /*public*/ void setColumnMargin(int newMargin) override;
+ /*public*/ int getColumnCount() override;
+ /*public*/ QListIterator<TableColumn*> getColumns() override;
+ /*public*/ void setColumnSelectionAllowed(bool flag) override;
+ /*public*/ void addColumn(TableColumn* aColumn)  override;
+ /*public*/ void removeColumn(TableColumn* column) override;
+ /*public*/ TableColumn* getColumn(int columnIndex) override;
+ /*public*/ int getColumnMargin() override;
+  QObject* self() override {return (QObject*)this;}
 
 signals:
  void firePropertyChange(PropertyChangeEvent*);
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 
 private:
  /*private*/ void invalidateWidthCache();

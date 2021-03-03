@@ -1111,11 +1111,11 @@ JScrollPane actionTableScrollPane = new JScrollPane(actionTable);
 
 ECFWindowListener::ECFWindowListener(ConditionalListEdit *self)
 {
- this->self = self;
+ this->_self = self;
 }
 void ECFWindowListener::windowClosing(QCloseEvent */*e*/)
 {
- self->cancelConditionalPressed(NULL);
+ _self->cancelConditionalPressed(NULL);
 }
 
 void ConditionalListEdit::on_deleteConditionalPressed()
@@ -2003,12 +2003,12 @@ void ConditionalListEdit::itemStateChanged(int )
 
 EditVariableFrameWindowListener::EditVariableFrameWindowListener(ConditionalListEdit *self)
 {
- this->self = self;
+ this->_self = self;
 }
 
 void EditVariableFrameWindowListener::windowClosing(QCloseEvent */*e*/)
 {
- self->cancelEditVariablePressed();
+ _self->cancelEditVariablePressed();
 }
 
 // ------------ Main Variable methods ------------
@@ -2862,25 +2862,25 @@ void ConditionalListEdit::variableSignalMastNameListener() // SLOT[]
 #if 1
 //};
 ///*transient*/ CLESelectLogixBoxListener* selectLogixBoxListener = new CLESelectLogixBoxListener(this);
-CLESelectLogixBoxListener::CLESelectLogixBoxListener(ConditionalListEdit *self) {this->self = self;}
+CLESelectLogixBoxListener::CLESelectLogixBoxListener(ConditionalListEdit *self) {this->_self = self;}
      //QOverride
     /*public*/ void CLESelectLogixBoxListener::actionPerformed(/*ActionEvent e*/) {
-        int lgxIndex = self->_selectLogixBox->currentIndex();
-        if (lgxIndex >= 0 && lgxIndex < self->_selectLogixList.size()) {
-            QString lgxName = self->_selectLogixList.at(lgxIndex);
-            self->loadSelectConditionalBox(lgxName);
+        int lgxIndex = _self->_selectLogixBox->currentIndex();
+        if (lgxIndex >= 0 && lgxIndex < _self->_selectLogixList.size()) {
+            QString lgxName = _self->_selectLogixList.at(lgxIndex);
+            _self->loadSelectConditionalBox(lgxName);
         }
     }
 //};
 
 ///*transient*/ CLESelectConditionalBoxListener* selectConditionalBoxListener = new CLESelectConditionalBoxListener(this);
-CLESelectConditionalBoxListener::CLESelectConditionalBoxListener(ConditionalListEdit *self) {this->self = self;}
+CLESelectConditionalBoxListener::CLESelectConditionalBoxListener(ConditionalListEdit *self) {this->_self = self;}
      //QOverride
     /*public*/ void CLESelectConditionalBoxListener::actionPerformed(/*ActionEvent e*/) {
-        int cdlIndex = self->_selectConditionalBox->currentIndex();
-        if (cdlIndex > 0 && cdlIndex < self->_selectConditionalList.size()) {
-            QString cdlName = self->_selectConditionalList.at(cdlIndex);
-            self->_variableNameField->setText(cdlName);
+        int cdlIndex = _self->_selectConditionalBox->currentIndex();
+        if (cdlIndex > 0 && cdlIndex < _self->_selectConditionalList.size()) {
+            QString cdlName = _self->_selectConditionalList.at(cdlIndex);
+            _self->_variableNameField->setText(cdlName);
         }
     }
 //};
@@ -3734,11 +3734,11 @@ void ConditionalListEdit::actionItemChanged(int type)
 
 EditActionFrameWindowListener::EditActionFrameWindowListener(ConditionalListEdit *self)
 {
- this->self = self;
+ this->_self = self;
 }
 void EditActionFrameWindowListener::windowClosing(QCloseEvent */*e*/)
 {
- self->cancelEditActionPressed();
+ _self->cancelEditActionPressed();
 }
 /**
  * Update the name combo box selection based on the current contents of the
@@ -4330,25 +4330,25 @@ ActionTypeListener::ActionTypeListener(LogixTableAction *self)
  this->self = self;
 }
 /*public*/ void ActionTypeListener::actionPerformed(ActionEvent* /*e*/) {
-    int select1 = self->_actionItemTypeBox->currentIndex();
-    int select2 = self->_actionTypeBox->currentIndex()-1;
-    if (self->log->isDebugEnabled()) self->log->debug("ActionTypeListener: actionItemType= "+QString::number(select1)+", _itemType= "
+    int select1 = _self->_actionItemTypeBox->currentIndex();
+    int select2 = _self->_actionTypeBox->currentIndex()-1;
+    if (_self->log->isDebugEnabled()) _self->log->debug("ActionTypeListener: actionItemType= "+QString::number(select1)+", _itemType= "
                                         +QString::number(_itemType)+", action= "+QString::number(select2));
     if (select1 != _itemType) {
-        if (self->log->isDebugEnabled()) self->log->error("ActionTypeListener actionItem selection ("+QString::number(select1)+
+        if (_self->log->isDebugEnabled()) _self->log->error("ActionTypeListener actionItem selection ("+QString::number(select1)+
                                             ") != expected actionItem ("+QString::number(_itemType)+")");
     }
-    if (self->_curAction!=NULL) {
+    if (_self->_curAction!=NULL) {
         if (select1 > 0 && _itemType==select1) {
-                ((ConditionalAction*)self->_curAction)->setType(self->getActionTypeFromBox(_itemType, select2));
+                ((ConditionalAction*)_self->_curAction)->setType(_self->getActionTypeFromBox(_itemType, select2));
                 if (select1 == _itemType) {
-                    QString text = self->_actionNameField->text();
+                    QString text = _self->_actionNameField->text();
                     if (text != NULL && text.length()>0) {
-                        ((ConditionalAction*)self->_curAction)->setDeviceName(text);
+                        ((ConditionalAction*)_self->_curAction)->setDeviceName(text);
                     }
                 }
-                self->actionItemChanged(_itemType);
-                self->initializeActionVariables();
+                _self->actionItemChanged(_itemType);
+                _self->initializeActionVariables();
         }
     }
 }
@@ -4359,30 +4359,30 @@ ActionTypeListener::ActionTypeListener(LogixTableAction *self)
 //};
 ActionTypeListener::ActionTypeListener(ConditionalListEdit* self) // SLOT[]
 {
- this->self = self;
+ this->_self = self;
 }
 
 void ActionTypeListener::setItemType(int type) { this->_itemType = type;}
 
 void ActionTypeListener::actionPerformed()
 {
- int select1 = self->_actionItemBox->currentIndex();
- int select2 = self->_actionTypeBox->currentIndex() - 1;
- self->log->debug(tr("ActionTypeListener: actionItemType= %1, _itemType= %2, action= %3").arg(select1).arg(_itemType).arg(select2));  // NOI18N
+ int select1 = _self->_actionItemBox->currentIndex();
+ int select2 = _self->_actionTypeBox->currentIndex() - 1;
+ _self->log->debug(tr("ActionTypeListener: actionItemType= %1, _itemType= %2, action= %3").arg(select1).arg(_itemType).arg(select2));  // NOI18N
  if (select1 != _itemType) {
-     self->log->debug(tr("ActionTypeListener actionItem selection (%1) != expected actionItem (%2)").arg(select1).arg(_itemType));  // NOI18N
+     _self->log->debug(tr("ActionTypeListener actionItem selection (%1) != expected actionItem (%2)").arg(select1).arg(_itemType));  // NOI18N
  }
- if (self->_curAction != nullptr) {
+ if (_self->_curAction != nullptr) {
      if (select1 > 0 && _itemType == select1) {
-         self->_curAction->setType(self->getActionTypeFromBox(_itemType, select2));
+         _self->_curAction->setType(_self->getActionTypeFromBox(_itemType, select2));
          if (select1 == _itemType) {
-             QString text = self->_actionNameField->text();
+             QString text = _self->_actionNameField->text();
              if (text != "" && text.length() > 0) {
-                 self->_curAction->setDeviceName(text);
+                 _self->_curAction->setDeviceName(text);
              }
          }
-         self->actionItemChanged(_itemType);
-         self->initializeActionVariables();
+         _self->actionItemChanged(_itemType);
+         _self->initializeActionVariables();
      }
  }
 }
@@ -4409,9 +4409,9 @@ void ConditionalListEdit::actionSignalMastNameListener() // SLOT[]
 /*public*/ ConditionalTableModel::ConditionalTableModel(QObject* parent) : AbstractTableModel(parent)
 {
  //super();
- self = (ConditionalListEdit*)parent;
+ _self = (ConditionalListEdit*)parent;
 
- ((DefaultConditionalManager*)self->_conditionalManager)->addPropertyChangeListener((PropertyChangeListener*)this);
+ ((DefaultConditionalManager*)_self->_conditionalManager)->addPropertyChangeListener((PropertyChangeListener*)this);
 
  updateConditionalListeners();
 }
@@ -4421,18 +4421,18 @@ void ConditionalListEdit::actionSignalMastNameListener() // SLOT[]
  // first, remove listeners from the individual objects
  QString sNam = "";
  Conditional* c = NULL;
- self->_numConditionals = ((DefaultLogix*)self->_curLogix)->getNumConditionals();
- for (int i = 0; i < self->_numConditionals; i++) {
+ _self->_numConditionals = ((DefaultLogix*)_self->_curLogix)->getNumConditionals();
+ for (int i = 0; i < _self->_numConditionals; i++) {
      // if object has been deleted, it's not here; ignore it
-     sNam = ((DefaultLogix*)self->_curLogix)->getConditionalByNumberOrder(i);
-     c = ((DefaultConditionalManager*)self->_conditionalManager)->getBySystemName(sNam);
+     sNam = ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(i);
+     c = ((DefaultConditionalManager*)_self->_conditionalManager)->getBySystemName(sNam);
      if (c != NULL)
          ((DefaultConditional*)c)->removePropertyChangeListener((PropertyChangeListener*)this);
  }
  // and add them back in
- for (int i = 0; i < self->_numConditionals; i++) {
-     sNam = ((DefaultLogix*)self->_curLogix)->getConditionalByNumberOrder(i);
-     c = ((DefaultConditionalManager*)self->_conditionalManager)->getBySystemName(sNam);
+ for (int i = 0; i < _self->_numConditionals; i++) {
+     sNam = ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(i);
+     c = ((DefaultConditionalManager*)_self->_conditionalManager)->getBySystemName(sNam);
      if (c != NULL)
          ((DefaultConditional*)c)->addPropertyChangeListener((PropertyChangeListener*)this);
      connect(((DefaultConditional*)c)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -4461,7 +4461,7 @@ bool ConditionalTableModel::matchPropertyName(PropertyChangeEvent* e) {
             ->getPropertyName().indexOf("Appearance") >= 0);
 }
 
-/*public*/ QString ConditionalTableModel::getColumnClass(int c) {
+/*public*/ QString ConditionalTableModel::getColumnClass(int c) const {
     if (c == BUTTON_COLUMN) {
         return "JButton";
     } else {
@@ -4476,12 +4476,12 @@ bool ConditionalTableModel::matchPropertyName(PropertyChangeEvent* e) {
 
 /*public*/ int ConditionalTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
-    return (self->_numConditionals);
+    return (_self->_numConditionals);
 }
 
 /*public*/ Qt::ItemFlags ConditionalTableModel::flags(const QModelIndex &index) const
 {
- if (!self->_inReorderMode)
+ if (!_self->_inReorderMode)
  {
   if ((index.column() == UNAME_COLUMN) || (index.column() == BUTTON_COLUMN))
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
@@ -4491,7 +4491,7 @@ bool ConditionalTableModel::matchPropertyName(PropertyChangeEvent* e) {
  }
  else if (index.column() == BUTTON_COLUMN)
  {
-  if (index.row() >= self->_nextInOrder)
+  if (index.row() >= _self->_nextInOrder)
       return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
      else
      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -4541,42 +4541,42 @@ bool ConditionalTableModel::matchPropertyName(PropertyChangeEvent* e) {
  if(role == Qt::DisplayRole || role == Qt::EditRole)
  {
   int rx = index.row();
-  if ((rx > self->_numConditionals) || (self->_curLogix == NULL))
+  if ((rx > _self->_numConditionals) || (_self->_curLogix == NULL))
   {
    return QVariant();
   }
   switch (index.column())
   {
   case BUTTON_COLUMN:
-   if (!self->_inReorderMode)
+   if (!_self->_inReorderMode)
    {
 
     return tr("Edit");
    }
-   else if (self->_nextInOrder == 0)
+   else if (_self->_nextInOrder == 0)
    {
     return tr("First");
    }
-   else if (self->_nextInOrder <= index.row())
+   else if (_self->_nextInOrder <= index.row())
    {
     return tr("Next");
    }
    else
     return rx + 1;
   case SNAME_COLUMN:
-    return ((DefaultLogix*)self->_curLogix)->getConditionalByNumberOrder(rx);
+    return ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(rx);
   case UNAME_COLUMN:
   {
             //log->debug("ConditionalTableModel: "+_curLogix.getConditionalByNumberOrder(rx));
-   Conditional* c = ((DefaultConditionalManager*)self->_conditionalManager)->getBySystemName(
-   ((DefaultLogix*)self->_curLogix)->getConditionalByNumberOrder(rx));
+   Conditional* c = ((DefaultConditionalManager*)_self->_conditionalManager)->getBySystemName(
+   ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(rx));
    if (c!=NULL) return ((DefaultConditional*)c)->getUserName();
    else return "";
   }
   case STATE_COLUMN:
   {
-   Conditional* c = ((DefaultConditionalManager*)self->_conditionalManager)->getBySystemName(
-            ((DefaultLogix*)self->_curLogix)->getConditionalByNumberOrder(rx));
+   Conditional* c = ((DefaultConditionalManager*)_self->_conditionalManager)->getBySystemName(
+            ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(rx));
     if (c != NULL)
     {
      int curState = ((DefaultConditional*)c)->getState();
@@ -4599,23 +4599,23 @@ bool ConditionalTableModel::matchPropertyName(PropertyChangeEvent* e) {
  if(role == Qt::EditRole)
  {
   int rx = index.row();
-  if ((rx > self->_numConditionals) || (self->_curLogix == NULL))
+  if ((rx > _self->_numConditionals) || (_self->_curLogix == NULL))
   {
    return true;
   }
   if (index.column() == BUTTON_COLUMN)
   {
-   if (self->_inReorderMode)
+   if (_self->_inReorderMode)
    {
-       self->swapConditional(index.row());
+       _self->swapConditional(index.row());
    }
-   else if (((DefaultLogix*)self->_curLogix)->getSystemName()==(SensorGroupFrame::logixSysName))
+   else if (((DefaultLogix*)_self->_curLogix)->getSystemName()==(SensorGroupFrame::logixSysName))
    {
 //            javax.swing.JOptionPane.showMessageDialog(
 //                        editConditionalFrame, java.text.MessageFormat.format(tr("Warn8"),
 //                        new Object[] {SensorGroupFrame.logixUserName, SensorGroupFrame.logixSysName}),
 //                        rbx .getString("WarnTitle"), javax.swing.JOptionPane.WARNING_MESSAGE);
-    QMessageBox::warning(self->_editConditionalFrame, tr("Warning"), tr("Conditionals in Logix \"%1\" (%2) cannot be edited.\nGo to the Sensor Group Table to edit sensor groups.").arg(SensorGroupFrame::logixUserName).arg(SensorGroupFrame::logixSysName));
+    QMessageBox::warning(_self->_editConditionalFrame, tr("Warning"), tr("Conditionals in Logix \"%1\" (%2) cannot be edited.\nGo to the Sensor Group Table to edit sensor groups.").arg(SensorGroupFrame::logixUserName).arg(SensorGroupFrame::logixSysName));
    }
    else
    {
@@ -4631,35 +4631,35 @@ bool ConditionalTableModel::matchPropertyName(PropertyChangeEvent* e) {
      /*public*/ void run()
      {
       //Thread.yield();
-      self->editConditionalPressed(row);
+      _self->editConditionalPressed(row);
      }
     };
     WindowMaker* t = new WindowMaker(rx);
     invokeLater(t);
 #endif
-    self->editConditionalPressed(index.row());
+    _self->editConditionalPressed(index.row());
    }
   }
   else if (index.column() == UNAME_COLUMN)
   {
    QString uName =  value.toString();
-   if ( self->_curLogix != NULL)
+   if ( _self->_curLogix != NULL)
    {
-    Conditional* cn = ((DefaultConditionalManager*)self->_conditionalManager)->getByUserName(self->_curLogix,
+    Conditional* cn = ((DefaultConditionalManager*)_self->_conditionalManager)->getByUserName(_self->_curLogix,
             uName.trimmed());
     if (cn == NULL)
     {
-     ((DefaultConditionalManager*)self->_conditionalManager)->getBySystemName(
-               ((DefaultLogix*)self->_curLogix)->getConditionalByNumberOrder(rx))
+     ((DefaultConditionalManager*)_self->_conditionalManager)->getBySystemName(
+               ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(rx))
                 ->setUserName(uName.trimmed());
      fireTableRowsUpdated(rx, rx);
     }
     else
     {
-     QString svName = ((DefaultLogix*)self->_curLogix)->getConditionalByNumberOrder(rx);
-     if (cn != ((DefaultConditionalManager*)self->_conditionalManager)->getBySystemName(svName))
+     QString svName = ((DefaultLogix*)_self->_curLogix)->getConditionalByNumberOrder(rx);
+     if (cn != ((DefaultConditionalManager*)_self->_conditionalManager)->getBySystemName(svName))
      {
-      self->messageDuplicateConditionalUserName(((DefaultConditional*)cn)->getSystemName());
+      _self->messageDuplicateConditionalUserName(((DefaultConditional*)cn)->getSystemName());
      }
     }
    }
@@ -4700,7 +4700,7 @@ void ConditionalTableModel::fireTableRowsDeleted(int /*r1*/, int /*r2*/)
 
 LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(parent)
 {
-  self = (ConditionalListEdit*) parent;
+  _self = (ConditionalListEdit*) parent;
 
 }
 
@@ -4734,7 +4734,7 @@ LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(p
 
 /*public*/ int LVariableTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
-    return self->_variableList->size();
+    return _self->_variableList->size();
 }
 
 /*public*/ Qt::ItemFlags LVariableTableModel::flags(const QModelIndex &index) const
@@ -4743,7 +4743,7 @@ LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(p
         case ROWNUM_COLUMN:
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
         case AND_COLUMN:
-            if(self->_logicType == Conditional::MIXED )
+            if(_self->_logicType == Conditional::MIXED )
              return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
             else
              return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -4803,11 +4803,11 @@ LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(p
 {
   int r = index.row();
   int c = index.column();
-  if ( r >= self->_variableList->size() )
+  if ( r >= _self->_variableList->size() )
   {
    return QVariant();
   }
-  ConditionalVariable* variable = self->_variableList->at(r);
+  ConditionalVariable* variable = _self->_variableList->at(r);
   if(role == Qt::DisplayRole)
   {
    switch (c)
@@ -4815,7 +4815,7 @@ LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(p
         case ROWNUM_COLUMN:
             return (tr("R") + QString::number(r + 1));
         case AND_COLUMN:
-            if (r==0 || self->_logicType==Conditional::MIXED) {
+            if (r==0 || _self->_logicType==Conditional::MIXED) {
                 return "";
             }
             return variable->getOpernString();
@@ -4855,20 +4855,20 @@ LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(p
 {
   int r = index.row();
   int c = index.column();
-  if ( r >= self->_variableList->size() )
+  if ( r >= _self->_variableList->size() )
   {
    return false;
   }
-  ConditionalVariable* variable = self->_variableList->at(r);
+  ConditionalVariable* variable = _self->_variableList->at(r);
   if(role == Qt::EditRole )
   {
    switch (c)
    {
     case AND_COLUMN:
-     self->variableOperatorChanged(r,value.toString());
+     _self->variableOperatorChanged(r,value.toString());
      break;
     case NOT_COLUMN:
-     self->variableNegationChanged(r, value.toString());
+     _self->variableNegationChanged(r, value.toString());
      break;
     case STATE_COLUMN:
     {
@@ -4888,12 +4888,12 @@ LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(p
      break;
     case EDIT_COLUMN:
     {
-     if (/*LRouteTableAction::LOGIX_INITIALIZER*/"RTXINITIALIZER"==(((DefaultLogix*)self->_curLogix)->getSystemName()))
+     if (/*LRouteTableAction::LOGIX_INITIALIZER*/"RTXINITIALIZER"==(((DefaultLogix*)_self->_curLogix)->getSystemName()))
      {
 //        javax.swing.JOptionPane.showMessageDialog(editConditionalFrame,
 //                tr("Error49"), tr("ErrorTitle"),
 //                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(self->_editConditionalFrame,tr("Error"),  tr("LRoute Initializer antecedent cannot be edited.  (The actions may be edited)"));
+        QMessageBox::critical(_self->_editConditionalFrame,tr("Error"),  tr("LRoute Initializer antecedent cannot be edited.  (The actions may be edited)"));
         break;
     }
 //    // Use separate Thread so window is created on top
@@ -4909,11 +4909,11 @@ LVariableTableModel::LVariableTableModel(QObject* parent) : AbstractTableModel(p
 //        }
 //    WindowMaker t = new WindowMaker(r);
 //    javax.swing.SwingUtilities.invokeLater(t);
-      self->makeEditVariableWindow(r);
+      _self->makeEditVariableWindow(r);
       break;
      }
      case DELETE_COLUMN:
-      self->deleteVariablePressed(r);
+      _self->deleteVariablePressed(r);
       break;
      default : break;
     }
@@ -4958,7 +4958,7 @@ void LVariableTableModel::fireTableRowsUpdated(int /*row1*/, int /*row2*/)
 
 ActionTableModel::ActionTableModel(QObject *parent) : AbstractTableModel(parent)
 {
-    this->self = (ConditionalListEdit*)parent;
+    this->_self = (ConditionalListEdit*)parent;
 }
 
 /*public*/ QString ActionTableModel::getColumnClass(int c) {
@@ -4976,7 +4976,7 @@ ActionTableModel::ActionTableModel(QObject *parent) : AbstractTableModel(parent)
 
 /*public*/ int ActionTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
-    return self->_actionList->size();
+    return _self->_actionList->size();
 }
 
 /*public*/ Qt::ItemFlags ActionTableModel::flags(const QModelIndex &index) const
@@ -4984,7 +4984,7 @@ ActionTableModel::ActionTableModel(QObject *parent) : AbstractTableModel(parent)
     if (index.column() == DESCRIPTION_COLUMN)  {
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
     }
-    if ( self->_inReorderMode && (index.column() ==EDIT_COLUMN || index.row() < self->_nextInOrder) ) {
+    if ( _self->_inReorderMode && (index.column() ==EDIT_COLUMN || index.row() < _self->_nextInOrder) ) {
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled ;
     }
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
@@ -5014,7 +5014,7 @@ ActionTableModel::ActionTableModel(QObject *parent) : AbstractTableModel(parent)
 {
  if(role == Qt::DisplayRole)
  {
-  if (index.row() >= self->_actionList->size())
+  if (index.row() >= _self->_actionList->size())
   {
    return QVariant();
   }
@@ -5022,17 +5022,17 @@ ActionTableModel::ActionTableModel(QObject *parent) : AbstractTableModel(parent)
   {
   case DESCRIPTION_COLUMN:
   {
-   ConditionalAction* action = self->_actionList->at(index.row());
-   return action->description(self->_triggerOnChangeButton->isChecked());
+   ConditionalAction* action = _self->_actionList->at(index.row());
+   return action->description(_self->_triggerOnChangeButton->isChecked());
   }
         case EDIT_COLUMN:
             return tr("Edit");
         case DELETE_COLUMN:
-            if (!self->_inReorderMode) {
+            if (!_self->_inReorderMode) {
                 return tr("Delete");
-            } else if (self->_nextInOrder == 0) {
+            } else if (_self->_nextInOrder == 0) {
                 return tr("First");
-            } else if (self->_nextInOrder <= index.row()) {
+            } else if (_self->_nextInOrder <= index.row()) {
                 return tr("Next");
             }
       return (index.row() + 1);
@@ -5059,13 +5059,13 @@ ActionTableModel::ActionTableModel(QObject *parent) : AbstractTableModel(parent)
 //            }
 //        WindowMaker t = new WindowMaker(row);
 //        javax.swing.SwingUtilities.invokeLater(t);
-        self->makeEditActionWindow(index.row());
+        _self->makeEditActionWindow(index.row());
     }
     else if (index.column() == DELETE_COLUMN) {
-        if (self->_inReorderMode)
-            self->swapActions(index.row());
+        if (_self->_inReorderMode)
+            _self->swapActions(index.row());
         else
-            self->deleteActionPressed(index.row());
+            _self->deleteActionPressed(index.row());
     }
  }
  return false;
@@ -5102,15 +5102,15 @@ void ActionTableModel::fireTableRowsInserted(int, int)
 
 EditLogixFrameWindowListener::EditLogixFrameWindowListener(ConditionalListEdit *self)
 {
- this->self = self;
+ this->_self = self;
 }
 void EditLogixFrameWindowListener::windowClosing(QCloseEvent */*e*/)
 {
- if (self->_inEditMode)
+ if (_self->_inEditMode)
  {
-  self->donePressed(NULL);
+  _self->donePressed(NULL);
  }
  {
-  self->finishDone();
+  _self->finishDone();
  }
 }

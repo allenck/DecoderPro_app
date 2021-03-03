@@ -201,7 +201,7 @@ public:
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ void configureTable(JTable* table);
  void doDelete(NamedBean* bean);
- /*public*/ Manager* getManager();
+ /*public*/ AbstractManager* getManager();
  /*public*/ NamedBean* getBySystemName(QString name) const;
  /*public*/ NamedBean* getByUserName(QString name);
  /*public*/ int getDisplayDeleteMsg();

@@ -11,7 +11,7 @@ class PortalTableModel : public BeanTableDataModel
 public:
  explicit PortalTableModel(TableFrames* _parent, QObject *parent = 0);
  /*public*/ void init();
- /*public*/ Manager* getManager() ;
+ /*public*/ AbstractManager* getManager() ;
  /*public*/ NamedBean* getBySystemName(QString name) const ;
  /*public*/ NamedBean* getByUserName(QString name) const;
  /*protected*/ QString getBeanType();

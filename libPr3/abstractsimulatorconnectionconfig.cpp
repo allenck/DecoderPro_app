@@ -1,7 +1,7 @@
 #include "abstractsimulatorconnectionconfig.h"
 #include <jtextfield.h>
 #include "serialportadapter.h"
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include <QMessageBox>
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -122,7 +122,7 @@
 }
 void AbstractSimulatorConnectionConfig::On_systemPrefixField_editingFinished()
 {
- if(!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if(!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
 //  JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"), tr("System Prefix ") + systemPrefixField->text() + " is already assigned");
@@ -131,7 +131,7 @@ void AbstractSimulatorConnectionConfig::On_systemPrefixField_editingFinished()
 }
 void AbstractSimulatorConnectionConfig::On_connectionNameField_editingFinished()
 {
- if(!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if(!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
 //  JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"), tr("Connection Name") + connectionNameField->text() + " is already assigned");
@@ -156,7 +156,7 @@ void ASCCActionListener::actionPerformed(JActionEvent */*e*/)
   adapter->setOptionState(i, options.value(i)->getItem());
  }
 
- if(!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text().trimmed()))
+ if(!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text().trimmed()))
  {
   systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
   connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());

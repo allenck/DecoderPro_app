@@ -9,13 +9,15 @@
 #include <QBoxLayout>
 #include <QPainter>
 #include <QString>
+#include "propertychangelistener.h"
 
 class Manager;
 class NamedBean;
 class PropertyChangeEvent;
-QT_DEPRECATED class LIBTABLESSHARED_EXPORT JmriBeanComboBox : public QComboBox
+QT_DEPRECATED class LIBTABLESSHARED_EXPORT JmriBeanComboBox : public QComboBox, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
     explicit JmriBeanComboBox(QWidget *parent = nullptr);
     /*public*/ JmriBeanComboBox(Manager* manager, QWidget *parent = nullptr);
@@ -178,11 +180,12 @@ public:
     /*public*/ void setSelectedBeanByName(QString inBeanName);
     /*public*/ void setItemEnabled(int inIndex, bool inEnabled);
     /*public*/ bool isItemEnabled(int inIndex);
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
 

@@ -9,6 +9,7 @@
 //#include "libPr3_global.h"
 #include "locoio_global.h"
 #include "locoioaddress.h"
+#include "propertychangelistener.h"
 
 
 class LocoIOAddress;
@@ -34,9 +35,10 @@ class PropertyChangeSupport;
 Q_DECLARE_METATYPE(QList<int>*)
 class LocoIOMode;
 class LocoIOModeList;
-class LOCOIOSHARED_EXPORT LocoIOData : public QObject
+class LOCOIOSHARED_EXPORT LocoIOData : public QObject, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 
 public:
  //explicit LocoIOData(QObject *parent = 0);
@@ -226,6 +228,7 @@ public:
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* pcl);
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* pcl);
  LnTrafficController* getTrafficController();
+ QObject* self() override {return (QObject*)this;}
 
 signals:
  //void firePropertyChange(QString s_property, QVariant oldVal, QVariant newVal);
@@ -275,7 +278,7 @@ public slots:
  /*public synchronized*/ void message(LocoNetMessage* m);
  void onCvRead(int cv, int val);
  /*public*/ /*synchronized*/ void message_alt(LocoNetMessage* m);
- /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
  QString getFirmwareVersion();
 
 private:

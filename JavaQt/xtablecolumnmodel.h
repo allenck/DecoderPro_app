@@ -2,6 +2,7 @@
 #define XTABLECOLUMNMODEL_H
 #include "defaulttablecolumnmodel.h"
 #include "javaqt_global.h"
+#include "propertychangelistener.h"
 
 class JAVAQTSHARED_EXPORT XTableColumnModel : public DefaultTableColumnModel
 {
@@ -20,6 +21,7 @@ public:
  /*public*/ QListIterator<TableColumn*> getColumns(bool onlyVisible);
  /*public*/ int getColumnIndex(QVariant identifier, bool onlyVisible);
  /*public*/ TableColumn* getColumn(int columnIndex, bool onlyVisible = true);
+  QObject* self() override {return (QObject*)this;}
 
 signals:
 

@@ -18,11 +18,11 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public AbstractMeterManag
      * Returns a list of all managers, including the
      * internal manager.  This is not a live list.
      */
-    /*public*/ QList<Manager*> getManagerList() const override;
-    /*public*/ QList<Manager*> getDisplayOrderManagerList() const override;
-    /*public*/ Manager* getInternalManager() const;
-    /*public*/ Manager* getDefaultManager()const override;
-    /*public*/ void addManager(Manager* m) override;
+    /*public*/ QList<AbstractManager*> getManagerList() const override;
+    /*public*/ QList<AbstractManager*> getDisplayOrderManagerList() const /*override*/;
+    /*public*/ AbstractManager* getInternalManager() const;
+    /*public*/ AbstractManager* getDefaultManager()const override;
+    /*public*/ void addManager(AbstractManager* m) override;
     /**
      * Locate via user name, then system name if needed.
      * Subclasses use this to provide e.g. getSensor, getTurnout, etc
@@ -117,12 +117,12 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public AbstractMeterManag
 
  private:
     /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("AbstractProxyManager");
-    /*private*/ Manager* initInternal() const;
-    /*private*/ mutable Manager* internalManager; //= null;
-    /*private*/ Manager* defaultManager;
+    /*private*/ AbstractManager* initInternal() const;
+    /*private*/ mutable AbstractManager* internalManager; //= null;
+    /*private*/ AbstractManager* defaultManager;
     /*private*/ QStringList addedOrderList;// = QStringList();
     /*private*/ QSet<NamedBean*> namedBeanSet;// = null;
-    /*private java.util.ArrayList*/QList<Manager*> mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
+    /*private java.util.ArrayList*/QList<AbstractManager*> mgrs;// = new /*java.util.ArrayList*/QList<AbstractManager>();
     QVector<PropertyChangeListener*> propertyListenerList;// = new ArrayList<>();
     QMap<QString, QVector<PropertyChangeListener*>*> namedPropertyListenerMap;// = new HashMap<>();
     QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
@@ -138,7 +138,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyMeterManager :  public AbstractMeterManag
      */
     /*protected*/ virtual int nMgrs() const;
     /*protected*/ virtual Manager* getMgr(int index) const;
-    virtual /*abstract protected*/ Manager* makeInternalManager() const =0;
+    virtual /*abstract protected*/ AbstractManager* makeInternalManager() const =0;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new NamedBean: If the name

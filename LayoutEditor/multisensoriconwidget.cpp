@@ -65,9 +65,9 @@ void MultiSensorIconWidget::fillSensorTable()
 {
  ProxySensorManager* mgr = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
 
- for(int i=0; i < mgr->nMgrs(); i++)
+ for(int i=0; i < mgr->mgrs.count(); i++)
  {
-  AbstractSensorManager* sMgr = (AbstractSensorManager*)mgr->getMgr(i);
+  AbstractSensorManager* sMgr = (AbstractSensorManager*)mgr->mgrs.at(i);
   connect(sMgr, SIGNAL(newSensorCreated(AbstractSensorManager*,Sensor*)), this, SLOT(on_newSensorCreated(AbstractSensorManager*,Sensor*)));
   connect(sMgr, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
   int row = ui->tableWidget->rowCount();

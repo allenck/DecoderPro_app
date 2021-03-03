@@ -262,7 +262,7 @@ RouteTableDataModel::RouteTableDataModel(QObject *parent) : BeanTableDataModel(p
 }
 
 //@Override
-/*public*/ Manager *RouteTableDataModel::getManager() {
+/*public*/ AbstractManager *RouteTableDataModel::getManager() {
     return (RouteManager*)InstanceManager::getDefault("RouteManager");
 }
 

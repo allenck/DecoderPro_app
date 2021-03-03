@@ -359,7 +359,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
         return BeanTableDataModel::matchPropertyName(e);
 }
 
-/*public*/ Manager* LogixTableModel::getManager()
+/*public*/ AbstractManager *LogixTableModel::getManager()
 {
  return (LogixManager*)InstanceManager::getDefault("LogixManager");
  //return self->_logixManager;

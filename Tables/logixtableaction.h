@@ -392,7 +392,7 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
  void doDelete(NamedBean* bean) override;
- /*public*/ Manager* getManager()override;
+ /*public*/ AbstractManager* getManager()override;
  /*public*/ NamedBean* getBySystemName(QString name) const override;
  /*public*/ NamedBean* getByUserName(QString name) override;
  /*public*/ int getDisplayDeleteMsg();

@@ -25,7 +25,7 @@
 if(!log)
 log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
 
-    classObjectMap = QMap</*Class<?>*/QString,Manager*>();
+    classObjectMap = QMap</*Class<?>*/QString, Manager*>();
     if (qobject_cast<ConflictingSystemConnectionMemo*>(this)) {
         this->prefix = prefix;
         this->userName = userName;

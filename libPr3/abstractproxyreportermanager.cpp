@@ -21,7 +21,7 @@
 AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
     : ReporterManager(new DefaultSystemConnectionMemo(), parent)
 {
- mgrs = QList<Manager*>();
+ mgrs = QList<AbstractManager*>();
  internalManager = nullptr;
  defaultManager = nullptr;
  addedOrderList = QStringList();
@@ -65,7 +65,7 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
  return mgrs.size();
 }
 
-/*protected*/ Manager* AbstractProxyReporterManager::getMgr(int index) const
+/*protected*/ AbstractManager* AbstractProxyReporterManager::getMgr(int index) const
 {
  // make sure internal present
  initInternal();
@@ -82,11 +82,11 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
  * Returns a list of all managers, including the
  * internal manager.  This is not a live list.
  */
-/*public*/ QList<Manager*> AbstractProxyReporterManager::getManagerList() const
+/*public*/ QList<AbstractManager *> AbstractProxyReporterManager::getManagerList() const
 {
  // make sure internal present
  initInternal();
- QList<Manager*> retval = QList<Manager*>(mgrs);
+ QList<AbstractManager*> retval = QList<AbstractManager*>(mgrs);
  return retval;
 }
 
@@ -96,24 +96,24 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
  *
  * @return the list of managers
  */
-/*public*/ QList<Manager*> AbstractProxyReporterManager::getDisplayOrderManagerList() const {
+/*public*/ QList<AbstractManager *> AbstractProxyReporterManager::getDisplayOrderManagerList() const {
     // make sure internal present
     initInternal();
 
-    QList<Manager*> retval =  QList<Manager*>();
-    if (defaultManager != nullptr) { retval.append(defaultManager); }
+    QList<AbstractManager*> retval =  QList<AbstractManager*>();
+    if (defaultManager != nullptr) { retval.append((AbstractManager*)defaultManager->self()); }
     foreach (Manager* manager, mgrs) {
         if (manager != defaultManager && manager != internalManager) {
-            retval.append(manager);
+            retval.append((AbstractManager*)manager);
         }
     }
     if (internalManager != nullptr && internalManager != defaultManager) {
-        retval.append(internalManager);
+        retval.append((AbstractManager*)internalManager);
     }
     return retval;
 }
 
-/*public*/ Manager* AbstractProxyReporterManager::getInternalManager() const{
+/*public*/ AbstractManager *AbstractProxyReporterManager::getInternalManager() const{
     initInternal();
     return internalManager;
 }
@@ -121,13 +121,13 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
 /**
  * Returns the set default or, if not present, the internal manager as defacto default
  */
-/*public*/ Manager* AbstractProxyReporterManager::getDefaultManager() const {
+/*public*/ AbstractManager* AbstractProxyReporterManager::getDefaultManager() const {
     if (defaultManager != nullptr) return defaultManager;
 
     return getInternalManager();
 }
 
-/*public*/ void AbstractProxyReporterManager::addManager(Manager* m)
+/*public*/ void AbstractProxyReporterManager::addManager(AbstractManager *m)
 {
  // check for already present
  if (mgrs.contains(m))
@@ -182,7 +182,7 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
  }
 }
 
-/*private*/ Manager* AbstractProxyReporterManager::initInternal() const
+/*private*/ AbstractManager *AbstractProxyReporterManager::initInternal() const
 {
  if (internalManager == nullptr) {
      log->debug("create internal manager when first requested");
@@ -195,7 +195,7 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
  return internalManager;
 }
 
-/*abstract protected*/ Manager* AbstractProxyReporterManager::makeInternalManager() const
+/*abstract protected*/ AbstractManager* AbstractProxyReporterManager::makeInternalManager() const
 {
  return nullptr;
 }

@@ -2,6 +2,7 @@
 #define BLOCKPATHTABLEMODEL_H
 #include "abstracttablemodel.h"
 #include <QStringList>
+#include "propertychangelistener.h"
 
 class QPushButton;
 class JTable;
@@ -12,9 +13,10 @@ class OPath;
 class DecimalFormat;
 class OBlock;
 class TableFrames;
-class BlockPathTableModel : public AbstractTableModel
+class BlockPathTableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
  explicit BlockPathTableModel(QObject *parent = 0);
  enum COLUMNS
@@ -31,16 +33,18 @@ public:
  /*public*/ BlockPathTableModel(OBlock* block, TableFrames* _parent, QObject *parent = 0);
  /*public*/ void init();
  /*public*/ void removeListener();
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ int rowCount(const QModelIndex &parent) const;
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;QVariant data(const QModelIndex &index, int role) const;
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+ /*public*/ int columnCount(const QModelIndex &parent) const override;
+ /*public*/ int rowCount(const QModelIndex &parent) const override;
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
  /*public*/ int getPreferredWidth(int col);
+ QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e) ;
+ /*public*/ void propertyChange(PropertyChangeEvent* e)  override;
 private:
  Logger* log;
  void common();

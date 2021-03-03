@@ -21,7 +21,7 @@
 /*public*/ TurnoutOperationFrame::TurnoutOperationFrame(QWidget* parent) : QDialog(parent)
 {
  //super(parent, "Turnout Operation Editor");
- self = this;
+ _self = this;
  currentConfig = NULL;
  currentOperation = NULL;
  setWindowTitle(tr("Turnout Operation Editor"));

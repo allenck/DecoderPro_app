@@ -33,11 +33,13 @@ public:
     ~SignalHeadTableAction() {}
     SignalHeadTableAction(const SignalHeadTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
     /*protected*/ void addPressed(ActionEvent* e=0);
-    /*public*/ void setEnabled(bool newValue);
-    /*public*/ void dispose();
-    Q_INVOKABLE /*public*/ QString getClassDescription();
+    /*public*/ void setEnabled(bool newValue) override;
+    /*public*/ void dispose() override;
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
+    QObject* self() override {return (QObject*)this;}
+
 signals:
-    void propertyChange(PropertyChangeEvent *);
+    void propertyChange(PropertyChangeEvent *) override;
 public slots:
     void typeChanged();
     void okPressed(JActionEvent* e = nullptr);
@@ -250,26 +252,26 @@ public:
      HELDCOL = LITCOL+1,
      EDITCOL = HELDCOL+1
     };
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ int getPreferredWidth(int col);
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ QString getValue(QString name) const;
-    /*public*/ Manager* getManager();
-    /*public*/ NamedBean* getBySystemName(QString name) const;
-    /*public*/ NamedBean* getByUserName(QString name);
-    /*public*/ void clickOn(NamedBean* t);
-    /*public*/ QPushButton* configureButton();
-    /*public*/ void configureTable(JTable *table);
-    /*public*/ bool matchPropertyName(PropertyChangeEvent* e);
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ int getPreferredWidth(int col) override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    /*public*/ QString getValue(QString name) const override;
+    /*public*/ AbstractManager* getManager() override;
+    /*public*/ NamedBean* getBySystemName(QString name) const override;
+    /*public*/ NamedBean* getByUserName(QString name) override;
+    /*public*/ void clickOn(NamedBean* t) override;
+    /*public*/ QPushButton* configureButton() override;
+    /*public*/ void configureTable(JTable *table) override;
+    /*public*/ bool matchPropertyName(PropertyChangeEvent* e) override;
 
 private:
     Logger* log;
 protected:
-    /*protected*/ QString getMasterClassName();
-    /*protected*/ QString getBeanType();
+    /*protected*/ QString getMasterClassName() override;
+    /*protected*/ QString getBeanType() override;
 };
 
 

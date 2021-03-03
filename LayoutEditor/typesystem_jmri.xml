@@ -44,6 +44,7 @@
  <rejection class="LayoutTrack" />
  <rejection class="LogixManager" />
  <rejection class="MemoryManager" />
+  <rejection class="Editor" />
 
  <object-type name="NamedBean" />
  <object-type name="AbstractNamedBean" />

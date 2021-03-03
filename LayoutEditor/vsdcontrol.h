@@ -3,6 +3,8 @@
 
 #include <QFrame>
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
+
 class JActionEvent;
 class QGridLayout;
 class Logger;
@@ -13,9 +15,10 @@ class SoundEvent;
 class QPushButton;
 class QLabel;
 class VSDConfig;
-class LIBLAYOUTEDITORSHARED_EXPORT VSDControl : public QFrame
+class LIBLAYOUTEDITORSHARED_EXPORT VSDControl : public QFrame, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit VSDControl(QWidget *parent = 0);
  static /*public*/ QWidget* generateBlank();
@@ -29,9 +32,10 @@ public:
  /*public*/ VSDControl(VSDConfig* c, QWidget *parent = 0);
  /*public*/ void addSoundButtons(QList<SoundEvent*> elist);
  /*public*/ void firePropertyChange(PropertyChangeID id, QVariant oldProp, QVariant newProp);
+ QObject* self() override {return (QObject*)this;}
 
 signals:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*) override;
 public slots:
 private:
  QString address;

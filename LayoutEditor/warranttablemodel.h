@@ -13,7 +13,7 @@ public:
  //explicit WarrantTableModel(QObject *parent = 0);
  /*public*/ WarrantTableModel(WarrantTableFrame* frame, QObject *parent = 0);
  /*public*/ void addHeaderListener(JTable* table);
- /*public*/ Manager* getManager();
+ /*public*/ AbstractManager *getManager() override;
  /*public*/ NamedBean* getBySystemName(QString name) const;
  /*public*/ QString getValue(QString name) ;
  /*public*/ NamedBean* getByUserName(QString name);

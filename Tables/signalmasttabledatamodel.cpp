@@ -53,7 +53,7 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
  return BeanTableDataModel::headerData(section, orientation, role);
 }
 
-/*public*/ QString SignalMastTableDataModel::getColumnClass(int col) {
+/*public*/ QString SignalMastTableDataModel::getColumnClass(int col) const{
     if (col == VALUECOL) {
         return "JComboBox";
     } else if (col == EDITMASTCOL) {
@@ -124,7 +124,7 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
     }
 }
 
-/*protected*/ Manager* SignalMastTableDataModel::getManager() {
+/*protected*/ AbstractManager *SignalMastTableDataModel::getManager() {
     return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
 }
 

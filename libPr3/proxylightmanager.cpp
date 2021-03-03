@@ -31,7 +31,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
     return Manager::LIGHTS;
 }
 
-/*protected*/ Manager* ProxyLightManager::makeInternalManager() const
+/*protected*/ AbstractManager* ProxyLightManager::makeInternalManager() const
 {
  return ((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getLightManager();
 }

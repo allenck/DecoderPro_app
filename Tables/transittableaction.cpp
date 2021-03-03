@@ -195,8 +195,8 @@ TransitTableDataModel::TransitTableDataModel(TransitTableAction* act)
     return "Transit";
 }
 
-/*public*/ Manager* TransitTableDataModel::getManager() {
-    return ((Manager*)InstanceManager::getNullableDefault("TransitManager"));
+/*public*/ AbstractManager *TransitTableDataModel::getManager() {
+    return ((AbstractManager*)InstanceManager::getNullableDefault("TransitManager"));
 }
 
 /*public*/ NamedBean* TransitTableDataModel::getBySystemName(QString name) const {

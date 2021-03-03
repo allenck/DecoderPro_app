@@ -70,7 +70,7 @@ void PortalTableModel::initTempRow()
 }
 
 //@Override
-/*public*/ Manager* PortalTableModel::getManager() {
+/*public*/ AbstractManager *PortalTableModel::getManager() {
  _manager = (PortalManager*)InstanceManager::getDefault("PortalManager");
     return _manager;
 }

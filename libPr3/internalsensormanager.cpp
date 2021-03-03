@@ -14,7 +14,7 @@
 ///*public*/ class InternalSensorManager extends AbstractSensorManager {
 InternalSensorManager::InternalSensorManager(QObject *parent) : AbstractSensorManager(parent)
 {
- setObjectName("InternalSensorManager");
+ //setObjectName("InternalSensorManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
 
  prefix = memo->getSystemPrefix();//"I";
@@ -24,7 +24,7 @@ InternalSensorManager::InternalSensorManager(QObject *parent) : AbstractSensorMa
 
 InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo, QObject *parent) : AbstractSensorManager(memo,parent)
 {
- setObjectName("InternalSensorManager");
+ //setObjectName("InternalSensorManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
 
  prefix = "I";
@@ -32,9 +32,9 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
 
 }
 
-/*public*/ InternalSensorManager::InternalSensorManager(QString prefix) {
+/*public*/ InternalSensorManager::InternalSensorManager(QString prefix, QObject* parent) : AbstractSensorManager(parent) {
     //super();
- setObjectName("InternalSensorManager");
+ //setObjectName("InternalSensorManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
 
  this->prefix = prefix;

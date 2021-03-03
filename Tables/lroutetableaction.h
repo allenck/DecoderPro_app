@@ -7,6 +7,7 @@
 #include "windowlistener.h"
 #include "abstracttableaction.h"
 #include "libtables_global.h"
+#include "abstractmanager.h"
 
 class JFileChooser;
 class AddFrameWindowListener;
@@ -301,7 +302,7 @@ public:
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
- /*public*/ virtual Manager* getManager();
+ /*public*/ virtual AbstractManager *getManager();
  /*public*/ virtual NamedBean* getBySystemName(QString name) const;
  /*public*/ virtual NamedBean* getByUserName(QString name);
  /*public*/ int getDisplayDeleteMsg() ;
@@ -319,7 +320,7 @@ public:
 
 private:
  Logger* log;
- LRouteTableAction* self;
+ LRouteTableAction* _self;
 protected:
  /*protected*/ QString enabledString;// = tr("Enabled");
  /*protected*/ /*synchronized*/ void updateNameList();
@@ -333,9 +334,10 @@ protected:
 friend class LRouteWidget;
 };
 
-/*public*/ /*abstract*/ class RouteElementModel : public  QAbstractTableModel //implements PropertyChangeListener
+/*public*/ /*abstract*/ class RouteElementModel : public  QAbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
   RouteElementModel(LRouteTableAction* self);
  public:
   enum COLUMNS
@@ -355,10 +357,12 @@ friend class LRouteWidget;
   /*public*/ void dispose();
   void fireTableDataChanged();
   Logger* log;
+  QObject* self() override {return (QObject*)this;}
+
 public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 private:
-  LRouteTableAction* self;
+  LRouteTableAction* _self;
   friend class RouteInputModel;
   friend class RouteOutputModelX;
   friend class AlignmentModel;
@@ -537,13 +541,13 @@ public:
 
 private:
   RouteElementModel* model;
-  LRouteTableAction* self;
+  LRouteTableAction* _self;
 };
 
 class AddFrameWindowListener : public WindowListener
 {
   Q_OBJECT
- LRouteTableAction* self;
+ LRouteTableAction* _self;
 public:
  AddFrameWindowListener(LRouteTableAction* self);
  void windowClosing(QCloseEvent *e);

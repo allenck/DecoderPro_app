@@ -86,7 +86,7 @@ public:
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     void editLogic(int row, int col);
@@ -95,7 +95,7 @@ private:
     QList<SignalMastLogic*> source;// = getManager().getSignalMastLogicList();
 
 protected:
-    /*protected*/ Manager* getManager();
+    /*protected*/ AbstractManager* getManager();
     /*protected*/ QString getMasterClassName() ;
     /*protected*/ void configDeleteColumn(JTable* table);
     /*protected*/ /*synchronized*/ void updateNameList();

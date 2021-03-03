@@ -364,7 +364,7 @@ public:
     /*public*/ void removePropertyChangeListener(QString name, PropertyChangeListener* listener);
     QObject* self() override {return (QObject*)this;}
 
-signals:
+ signals:
     
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent *) override;
@@ -825,7 +825,7 @@ public:
     JFrameItem (QString name, IconAdder* editor, QWidget* parent = 0);
     /*public*/ IconAdder* getEditor();
     /*public*/ QString toString();
-    /*public*/ QString getClassName();
+    /*public*/ QString getClassName()override;
 
 };
 

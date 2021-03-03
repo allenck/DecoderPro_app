@@ -41,15 +41,6 @@ private:
  void common(QString prefix, QString name, bool defaultInstanceType);
  bool configured = false;
  /*private*/ static /*final*/ Logger* log;// = LoggerFactory::getLogger("InternalSystemConnectionMemo");
- /*private*/ InternalConsistManager* consistManager = nullptr;
- /*private*/ InternalLightManager* lightManager = nullptr;
- /*private*/ InternalSensorManager* sensorManager = nullptr;
- /*private*/ InternalReporterManager* reporterManager = nullptr;
- /*private*/ InternalTurnoutManager* turnoutManager = nullptr;
- /*private*/ InternalMeterManager* meterManager = nullptr;
- /*private*/ DebugThrottleManager* throttleManager = nullptr;
- /*private*/ DefaultPowerManager* powerManager = nullptr;
- /*private*/ DebugProgrammerManager* programManager = nullptr;
  // if true, this is the default Internal instance, which
  // only provides a subset of types
  bool defaultInstanceType = false;

@@ -124,10 +124,10 @@ void SensorTableDataModel::common()
  case Sensor::INACTIVE: return tr("Inactive");
  case Sensor::UNKNOWN: return tr("Unknown");
  case Sensor::INCONSISTENT: return tr("Inconsistent");
- default: return "Unexpected value: "+val;
+ default: return "Unexpected value: "+QString::number(val);
  }
 }
-/*protected*/ void SensorTableDataModel::setManager(Manager* manager)
+/*protected*/ void SensorTableDataModel::setManager(AbstractManager *manager)
 {
  //((AbstractManager*)getManager())->removePropertyChangeListener((PropertyChangeListener*)this);
  ProxySensorManager* mgr = (ProxySensorManager*)getManager();
@@ -152,7 +152,7 @@ void SensorTableDataModel::common()
  //connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  updateNameList();
 }
-/*protected*/ Manager* SensorTableDataModel::getManager()
+/*protected*/ AbstractManager *SensorTableDataModel::getManager()
 {
  if (senManager==nullptr)
   senManager= InstanceManager::sensorManagerInstance();

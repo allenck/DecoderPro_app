@@ -332,7 +332,7 @@ bool systemNameComparator(QString o1, QString o2)
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
-  Manager* manager = getManager();
+  AbstractManager* manager = getManager();
   if(qobject_cast<ProxySensorManager*>(manager->self())!= NULL)
    ts->append(((ProxySensorManager*)manager->self())->getBySystemName(iter.next()));
   else if(qobject_cast<ProxyTurnoutManager*>(manager->self())!= NULL)
@@ -752,7 +752,7 @@ TurnoutPickModel::TurnoutPickModel (QObject *parent) : PickListModel(parent)
 //  connect(mgr, SIGNAL(newTurnoutCreated(AbstractTurnoutManager*,Turnout*)), this, SLOT(newTurnoutCreated(AbstractTurnoutManager*,Turnout*)));
 // }
 }
-/*public*/ Manager* TurnoutPickModel::getManager() {
+/*public*/ AbstractManager *TurnoutPickModel::getManager() {
  manager = InstanceManager::turnoutManagerInstance();
     return manager;
 }
@@ -799,7 +799,7 @@ SensorPickModel::SensorPickModel (QObject *parent) : PickListModel(parent)
 //  connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newSensorCreated(NamedBean*)));
 // }
 }
-/*public*/ Manager* SensorPickModel::getManager() {
+/*public*/ AbstractManager* SensorPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* SensorPickModel::getBySystemName(QString name) {
@@ -888,7 +888,7 @@ SignalHeadPickModel::SignalHeadPickModel (QObject *parent) : PickListModel(paren
  AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)manager;
  connect(mgr, SIGNAL(beanCreated(NamedBean*)),this, SLOT(newSignalHeadCreated(NamedBean*)));
 }
-/*public*/ Manager* SignalHeadPickModel::getManager() {
+/*public*/ AbstractManager* SignalHeadPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* SignalHeadPickModel::getBySystemName(QString name) {
@@ -933,8 +933,8 @@ SignalMastPickModel::SignalMastPickModel (QObject *parent) :PickListModel(parent
  DefaultSignalMastManager* mgr = (DefaultSignalMastManager*)manager;
  connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newSignalMastCreated(NamedBean*)));
 }
-/*public*/ Manager* SignalMastPickModel::getManager() {
-    return (Manager*)manager;
+/*public*/ AbstractManager* SignalMastPickModel::getManager() {
+    return (AbstractManager*)manager;
 }
 /*public*/ NamedBean* SignalMastPickModel::getBySystemName(QString name) {
     return (NamedBean*)((DefaultSignalMastManager*)manager)->getBySystemName(name);
@@ -977,7 +977,7 @@ MemoryPickModel::MemoryPickModel (QObject *parent) : PickListModel(parent) {
     AbstractMemoryManager* mgr = (AbstractMemoryManager*)manager;
     connect(mgr, SIGNAL(newMemoryCreated(Memory*)), this, SLOT(newMemoryCreated(Memory*)));
 }
-/*public*/ Manager*  MemoryPickModel::getManager() {
+/*public*/ AbstractManager*  MemoryPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* MemoryPickModel::getBySystemName(QString name) {
@@ -1016,7 +1016,7 @@ ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
  manager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
  _name = tr("Reporter Table");
  ProxyReporterManager* mgr = (ProxyReporterManager*)manager;
- QList<Manager*> mgrList = mgr->getManagerList();
+ QList<AbstractManager*> mgrList = mgr->getManagerList();
  for( int i=0; i< mgrList.count(); i++)
  {
   AbstractReporterManager* rMgr = (AbstractReporterManager*)mgrList.at(i);
@@ -1037,7 +1037,7 @@ ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Manager* BlockPickModel::getManager()
+    /*public*/ AbstractManager* BlockPickModel::getManager()
     {
      manager = (BlockManager*)InstanceManager::getDefault("BlockManager");
         return manager;
@@ -1062,7 +1062,7 @@ ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
     }
 //};
 
-/*public*/ Manager* ReporterPickModel::getManager() {
+/*public*/ AbstractManager *ReporterPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* ReporterPickModel::getBySystemName(QString name) {
@@ -1100,14 +1100,14 @@ LightPickModel::LightPickModel (QObject *parent) : PickListModel(parent)
 {
  manager = InstanceManager::lightManagerInstance();
  _name = tr("Light Table");
- QList<Manager*> list = ((ProxyLightManager*)manager)->getManagerList();
+ QList<AbstractManager*> list = ((ProxyLightManager*)manager)->getManagerList();
  foreach(Manager*m, list)
  {
   AbstractLightManager* mgr = (AbstractLightManager*)m;
   connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newLightCreated(NamedBean*)));
  }
 }
-/*public*/ Manager* LightPickModel::getManager() {
+/*public*/ AbstractManager* LightPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* LightPickModel::getBySystemName(QString name) {
@@ -1148,7 +1148,7 @@ OBlockPickModel::OBlockPickModel (QObject *parent) : PickListModel(parent)
  manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
  _name = tr("Block Table");
 }
-/*public*/ Manager* OBlockPickModel::getManager() {
+/*public*/ AbstractManager* OBlockPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* OBlockPickModel::getBySystemName(QString name) {
@@ -1173,7 +1173,7 @@ WarrantPickModel::WarrantPickModel (QObject *parent) : PickListModel(parent)
  manager = (WarrantManager*)InstanceManager::getDefault("WarrantManager");
  _name = tr("Warrant Table");
 }
-/*public*/ Manager* WarrantPickModel::getManager() {
+/*public*/ AbstractManager* WarrantPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* WarrantPickModel::getBySystemName(QString name) {
@@ -1196,7 +1196,7 @@ ConditionalPickModel::ConditionalPickModel (QObject* parent) : PickListModel(par
  manager = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"));
  _name = tr("Conditional Table");
 }
-/*public*/ Manager* ConditionalPickModel::getManager() {
+/*public*/ AbstractManager* ConditionalPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* ConditionalPickModel::getBySystemName(QString name) {
@@ -1239,8 +1239,8 @@ EntryExitPickModel::EntryExitPickModel (QObject* parent): PickListModel(parent) 
     manager = (EntryExitPairs*) InstanceManager::getDefault("EntryExitPairs");
     _name = tr("Entry Exit Table");
 }
-/*public*/ Manager* EntryExitPickModel::getManager() {
-    return manager;
+/*public*/ AbstractManager* EntryExitPickModel::getManager() {
+    return (AbstractManager*)manager;
 }
 /*public*/ NamedBean* EntryExitPickModel::getBySystemName(QString name) {
     return (NamedBean*)manager->getBySystemName(name);
@@ -1277,7 +1277,7 @@ LogixPickModel::LogixPickModel (QObject* parent): PickListModel(parent) {
     manager = (LogixManager*) InstanceManager::getDefault("LogixManager");
     _name = tr("Logix Table");
 }
-/*public*/ Manager* LogixPickModel::getManager() {
+/*public*/ AbstractManager* LogixPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* LogixPickModel::getBySystemName(QString name) {

@@ -133,6 +133,9 @@ public:
     QString getNamedBeanClass() const override{return "AbstractManager";}
     int getXMLOrder() const override {return 0;}
     /*public*/ void setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced);
+    /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
+    QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
+    QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException);
 
 signals:
 //    void beanDeleted(NamedBean* s);
@@ -152,6 +155,7 @@ protected:
     /*protected*/ void registerUserName(NamedBean* s)const;
     /*protected*/ void fireDataListenersAdded(int start, int end, NamedBean* changedBean);
     /*protected*/ void fireDataListenersRemoved(int start, int end, NamedBean* changedBean);
+    /*protected*/ QString checkNumeric(/*@Nonnull*/ QString curAddress) throw (JmriException);
 
 private:
     mutable QSet<NamedBean*> _beans;
@@ -199,6 +203,7 @@ QObject* getInstanceBySystemName(QString systemName);
  */
 QT_DEPRECATED QObject* getInstanceByUserName(QString userName);
 
+/*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const;
 
 //void firePropertyChange(QString p, QVariant old, QVariant n) const;
 //void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const;
@@ -209,10 +214,12 @@ QT_DEPRECATED QObject* getInstanceByUserName(QString userName);
 /*protected Hashtable*/mutable QHash<QString, NamedBean*>* _tuser; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by user name
 /*protected*/ /*final*/ QMap<QString, bool> silencedProperties = QMap<QString, bool>();
 /*protected*/ /*final*/ QSet<QString> silenceableProperties = QSet<QString>();
+/*protected*/ QString getIncrement(QString curAddress, int increment) throw (JmriException);
+/*protected*/ QString getIncrementFromExistingNumber(QString curAddress, int increment) throw (JmriException);
 
 protected slots:
 
- //friend class AbstractProxyManager;
+ friend class AbstractProxySensorManager;
  friend class PropertyChangeSupport;
  friend class BeanTableDataModel;
  friend class SGBeanTableDataModel;

@@ -5,6 +5,7 @@
 #include "windowlistener.h"
 #include "throttlesetting.h"
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
 
 class DecimalFormat;
 class JTable;
@@ -24,24 +25,26 @@ class ThrottleTableModel;
 class RouteTableModel;
 class Warrant;
 class RosterEntry;
-class LIBLAYOUTEDITORSHARED_EXPORT WarrantFrame : public WarrantRoute
+class LIBLAYOUTEDITORSHARED_EXPORT WarrantFrame : public WarrantRoute, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit WarrantFrame(QWidget *parent = 0);
     static int STRUT_SIZE;// = 10;
     static int ROW_HEIGHT;
     /*public*/ WarrantFrame(QString warrantName, QWidget *parent = 0);
     /*public*/ WarrantFrame(Warrant* warrant, bool create, QWidget *parent = 0);
-    /*public*/ QString getClassName();
+    /*public*/ QString getClassName() override;
     /*public*/ bool isRunning();
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
     void on_throttleFactorBoxLeave();
     void on_runButtonClicked();
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     QMenu* _warrantMenu;

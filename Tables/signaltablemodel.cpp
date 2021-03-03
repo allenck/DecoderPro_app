@@ -862,7 +862,7 @@ return _signalList.size() + 1;
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QString SignalTableModel::getColumnClass(int col) {
+/*public*/ QString SignalTableModel::getColumnClass(int col)const {
     switch (col) {
     case DELETE_COL:
     case EDIT_COL:

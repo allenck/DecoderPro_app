@@ -530,5 +530,102 @@ static /*public*/ java.util.List<String> splitParens(String in) {
     }
     return result;
 }
+/**
+ * Return the first int value within a string
+ * eg :X X123XX456X: will return 123
+ * eg :X123 456: will return 123
+ *
+ * @param str contents to process
+ * @return first value in int form , -1 if not found
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ int StringUtil::getFirstIntFromString(/*@Nonnull*/ QString str){
+    QString sb;// = new StringBuilder();
+    for (int i =0; i<str.length(); i ++) {
+        QChar c = str.at(i);
+        if (c != ' ' ){
+            if (c.isDigit()) {
+                sb.append(c);
+            } else {
+                if ( sb.length() > 0 ) {
+                    break;
+                }
+            }
+        } else {
+            if ( sb.length() > 0 ) {
+                break;
+            }
+        }
+    }
+    if ( sb.length() > 0 ) {
+        return sb.toInt();
+    }
+    return -1;
+}
+
+/**
+ * Return the last int value within a string
+ * eg :XX123XX456X: will return 456
+ * eg :X123 456: will return 456
+ *
+ * @param str contents to process
+ * @return last value in int form , -1 if not found
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ int StringUtil::getLastIntFromString(/*@Nonnull*/ QString str){
+    QString sb;// = new StringBuilder();
+    for (int i = str.length() - 1; i >= 0; i --) {
+        QChar c = str.at(i);
+        if(c != ' '){
+            if (c.isDigit()) {
+                sb.insert(0, c);
+            } else {
+                if ( sb.length() > 0 ) {
+                    break;
+                }
+            }
+        } else {
+            if ( sb.length() > 0 ) {
+                break;
+            }
+        }
+    }
+    if ( sb.length() > 0 ) {
+        return sb.toInt();
+    }
+    return -1;
+}
+
+/**
+ * Increment the last number found in a string.
+ * @param str Initial string to increment.
+ * @param increment number to increment by.
+ * @return null if not possible, else incremented String.
+ */
+//@CheckForNull
+/*public*/ /*static*/ QString StringUtil::incrementLastNumberInString(/*@Nonnull*/ QString str, int increment){
+    int num = getLastIntFromString(str);
+    return ( (num == -1) ? QString() : replaceLast(str,QString::number(num),QString::number(num+increment)));
+}
+
+/**
+ * Replace the last occurance of string value within a String
+ * eg  from ABC to DEF will convert XXABCXXXABCX to XXABCXXXDEFX
+ *
+ * @param string contents to process
+ * @param from value within string to be replaced
+ * @param to new value
+ * @return string with the replacement, original value if no match.
+ */
+//@CheckReturnValue
+//@Nonnull
+/*public*/ /*static*/ QString StringUtil::replaceLast(/*@Nonnull*/ QString string, /*@Nonnull*/ QString from, /*@Nonnull*/ QString to) {
+    int lastIndex = string.lastIndexOf(from);
+    if (lastIndex < 0) {
+        return string;
+    }
+    QString tail = string.mid(lastIndex).replace(from, to);
+    return string.mid(0, lastIndex) + tail;
+}
 
 /*private*/ /*final*/ /*static*/ Logger* StringUtil::log = LoggerFactory::getLogger("StringUtil");

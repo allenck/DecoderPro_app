@@ -53,12 +53,12 @@ enum Columns
  POSITION_COL = 2
 };
 static /*public*/ int getNumInstances(QString type);
-QT_DEPRECATED /*public*/ void init() ;
+QT_DEPRECATED /*public*/ void init()  override;
 /*public*/ NamedBean* getBeanAt(int index);
 /*public*/ int getIndexOf(NamedBean* bean) ;
 /*public*/ QList <NamedBean*>* getBeanList();
-/*abstract*/ virtual /*public*/ Manager* getManager() {return NULL;}
-/*abstract*/ virtual /*public*/ NamedBean* getBySystemName(QString /*name*/) {return NULL;}
+/*abstract*/ virtual /*public*/ AbstractManager* getManager() override{return NULL;}
+/*abstract*/ virtual /*public*/ NamedBean* getBySystemName(QString /*name*/) const override{return NULL;}
 /*abstract*/ virtual /*public*/ NamedBean* addBean(QString /*name*/) {return NULL;}
 /*abstract*/ virtual /*public*/ NamedBean* addBean(QString /*sysName*/, QString /*userName*/) {return NULL;}
 /*abstract*/ virtual /*public*/ bool canAddBean() {return false;}
@@ -124,7 +124,7 @@ class TurnoutPickModel : public  PickListModel
     TurnoutManager* manager;
 public:
     TurnoutPickModel (QObject *parent=0);
-    /*public*/ Manager* getManager() ;
+    /*public*/ AbstractManager* getManager() ;
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name) ;
     /*public*/ NamedBean* addBean(QString sysName, QString userName) ;
@@ -141,7 +141,7 @@ class SensorPickModel : public PickListModel
 public:
     SensorManager* manager;
     SensorPickModel (QObject *parent =  0) ;
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -169,7 +169,7 @@ class SignalHeadPickModel : public PickListModel
     SignalHeadManager* manager;
 public:
     SignalHeadPickModel (QObject *parent= 0);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName) ;
@@ -186,7 +186,7 @@ class SignalMastPickModel : public PickListModel
     SignalMastManager* manager;
 public:
     SignalMastPickModel (QObject *parent = 0) ;
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -202,7 +202,7 @@ class MemoryPickModel : public  PickListModel
     MemoryManager* manager;
 public:
     MemoryPickModel (QObject *parent = 0);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name) ;
     /*public*/ NamedBean* addBean(QString name) ;
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -218,7 +218,7 @@ public slots:
     BlockManager* manager;// = InstanceManager.getDefault(BlockManager.class);
 public:
     BlockPickModel();
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* addBean(QString name) throw (IllegalArgumentException);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
     /*public*/ bool canAddBean();
@@ -229,7 +229,7 @@ class ReporterPickModel : public PickListModel {
     ReporterManager* manager;
 public:
     ReporterPickModel (QObject *parent = 0);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager* getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -244,7 +244,7 @@ class LightPickModel : public PickListModel {
     LightManager* manager;
 public:
     LightPickModel (QObject *parent = 0);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -260,7 +260,7 @@ class OBlockPickModel : public PickListModel
 public:
     OBlockManager* manager;
     OBlockPickModel (QObject *parent = 0);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name) ;
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -272,7 +272,7 @@ class WarrantPickModel : public PickListModel {
 public:
     WarrantManager* manager;
     WarrantPickModel (QObject *parent = 0);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -284,7 +284,7 @@ class ConditionalPickModel : public PickListModel {
 public:
     ConditionalManager* manager;
     ConditionalPickModel (QObject *parent = 0) ;
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name) ;
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -318,7 +318,7 @@ public:
 
     EntryExitPairs* manager;
     EntryExitPickModel (QObject *parent = 0);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
@@ -332,7 +332,7 @@ public:
 
     LogixManager* manager;
     LogixPickModel (QObject *parent = 0);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName);

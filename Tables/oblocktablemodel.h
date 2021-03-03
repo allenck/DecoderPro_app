@@ -14,7 +14,7 @@ class OBlockTableModel : public BeanTableDataModel
 public:
 // explicit OBlockTableModel(QObject *parent = 0);
  /*public*/ OBlockTableModel(TableFrames* parent);
- /*public*/ Manager* getManager() override;
+ /*public*/ AbstractManager* getManager() override;
  /*public*/ NamedBean* getBySystemName(QString name) const override;
  /*public*/ NamedBean* getByUserName(QString name) override;
  /*public*/ void clickOn(NamedBean* t) override;

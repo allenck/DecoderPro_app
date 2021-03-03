@@ -162,7 +162,7 @@ void BlockTableAction::common()
  }
 }
 
-/*public*/ Manager* BlockTableDataModel::getManager()
+/*public*/ AbstractManager *BlockTableDataModel::getManager()
 {
  return ((BlockManager*)InstanceManager::getDefault("BlockManager"));
 }

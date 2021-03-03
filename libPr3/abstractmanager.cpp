@@ -10,7 +10,7 @@
 #include "namedbeancomparator.h"
 #include "namedbean.h"
 #include "vptr.h"
-
+#include "stringutil.h"
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -160,6 +160,11 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
     return _tuser->value(userName);
 }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
+    return (NamedBean*)_tsys->value(systemName);
+}
 /** {@inheritDoc} */
 ////@Override
 ///*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
@@ -842,4 +847,129 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     return b;
 }
 
+/**
+ * Create a System Name from hardware address and system letter prefix.
+ * AbstractManager performs no validation.
+ * @param curAddress hardware address, no system prefix or type letter.
+ * @param prefix - just system prefix, not including Type Letter.
+ * @return full system name with system prefix, type letter and hardware address.
+ * @throws JmriException if unable to create a system name.
+ */
+/*public*/ QString AbstractManager::createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException) {
+    return prefix + typeLetter() + curAddress;
+}
+
+/**
+ * checks for numeric-only system names.
+ * @param curAddress the System name ( excluding both prefix and type letter) to check.
+ * @return unchanged if is numeric string.
+ * @throws JmriException if not numeric.
+ */
+/*protected*/ QString AbstractManager::checkNumeric(/*@Nonnull*/ QString curAddress) throw (JmriException) {
+    bool ok;
+        curAddress.toInt(&ok);
+    if(!ok) {
+        throw new JmriException("Hardware Address passed "+curAddress+" should be a number");
+    }
+    return curAddress;
+}
+
+/**
+ * Get the Next valid hardware address.
+ * Used by the Turnout / Sensor / Reporter / Light Manager classes.
+ * <p>
+ * @param curAddress the starting hardware address to get the next valid from.
+ * @param prefix system prefix, just system name, not type letter.
+ * @return the next valid system name, excluding both system name prefix and type letter.
+ * @throws JmriException    if unable to get the current / next address,
+ *                          or more than 10 next addresses in use.
+ * @deprecated since 4.21.3; use #getNextValidAddress(String, String, boolean) instead.
+ */
+//@Nonnull
+//@Deprecated
+/*public*/ /*final*/ QString AbstractManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException) {
+    //jmri.util.LoggingUtil.deprecationWarning(log, "getNextValidAddress");
+    return getNextValidAddress(curAddress, prefix, false);
+}
+
+/**
+ * Get the Next valid hardware address.
+ * Used by the Turnout / Sensor / Reporter / Light Manager classes.
+ * <p>
+ * System-specific methods may want to override getIncrement() rather than this one.
+ * @param curAddress the starting hardware address to get the next valid from.
+ * @param prefix system prefix, just system name, not type letter.
+ * @param ignoreInitialExisting false to return the starting address if it
+ *                          does not exist, else true to force an increment.
+ * @return the next valid system name, excluding both system name prefix and type letter.
+ * @throws JmriException    if unable to get the current / next address,
+ *                          or more than 10 next addresses in use.
+ */
+//@Nonnull
+/*public*/ QString AbstractManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException) {
+    log->debug(tr("getNextValid for address %1").arg(curAddress));
+    QString testAddr;
+    NamedBean* bean;
+    int increment;
+    // If hardware address passed does not already exist then this is the next valid address.
+    try {
+        // System.out.format("curaddress: "+curAddress);
+        testAddr = validateSystemNameFormat(createSystemName(curAddress,prefix));
+        // System.out.format("testaddr: "+testAddr);
+        bean = getBySystemName(testAddr);
+        increment = ( qobject_cast<Turnout*>(bean)? ((Turnout*)bean)->getNumberOutputBits() : 1);
+        testAddr = testAddr.mid(getSystemNamePrefix().length());
+        getIncrement(testAddr, increment);
+    }
+    catch ( NamedBean::BadSystemNameException ex){
+        throw  JmriException(ex.getMessage());
+    }
+    catch (JmriException ex ){
+        throw JmriException(ex.getMessage());
+    }
+    if (bean == nullptr && !ignoreInitialExisting) {
+        log->debug(tr("address %1 not in use").arg(curAddress));
+        return curAddress;
+    }
+    for (int i = 0; i <10; i++) {
+        testAddr = getIncrement(testAddr, increment);
+        bean = getBySystemName(validateSystemNameFormat(createSystemName(testAddr,prefix)));
+        if ( bean == nullptr) {
+            return testAddr;
+        }
+    }
+    throw  JmriException(tr("10 %1 starting at %2 up to %3 already in use.").arg(getBeanTypeHandled(true)).arg(curAddress).arg(testAddr));
+}
+
+/**
+ * Increment a hardware address.
+ * <p>
+ * Default is to increment only an existing number.
+ * Sub-classes may wish to override this.
+ * @param curAddress the address to increment, excluding both system name prefix and type letter.
+ * @param increment the amount to increment by.
+ * @return incremented address, no system prefix or type letter.
+ * @throws JmriException if unable to increment the address.
+ */
+//@Nonnull
+/*protected*/ QString AbstractManager::getIncrement(QString curAddress, int increment) throw (JmriException) {
+    return getIncrementFromExistingNumber(curAddress,increment);
+}
+
+/**
+ * Increment a hardware address with an existing number.
+ * <p>
+ * @param curAddress the address to increment, excluding both system name prefix and type letter
+ * @param increment the amount to increment by.
+ * @return incremented number.
+ * @throws JmriException if unable to increment the address.
+ */
+//@Nonnull
+/*protected*/ QString AbstractManager::getIncrementFromExistingNumber(QString curAddress, int increment) throw (JmriException) {
+    QString newIncrement = StringUtil::incrementLastNumberInString(curAddress, increment);
+    if (newIncrement=="") {
+        throw  JmriException("No existing number found when incrementing " + curAddress);
+    }
+    return newIncrement;
+}
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractManager.class.getName());
