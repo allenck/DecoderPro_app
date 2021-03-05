@@ -281,7 +281,7 @@ namespace Operations
  }
 #endif
  /*protected*/ void TrainScheduleManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     TrainManagerXml::instance()->setDirty(true);
+     ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
 

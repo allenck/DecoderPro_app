@@ -1680,8 +1680,8 @@ if (loads.length() == 0) {
    }
    // check roads, accepted by track, valid road, and there's at least one car with that road
    if (si->getRoadName()!=(ScheduleItem::NONE)
-           && (!acceptsRoadName(si->getRoadName()) || !CarRoads::instance()->containsName(si->getRoadName()) || CarManager
-           ::instance()->getByTypeAndRoad(si->getTypeName(), si->getRoadName()) == NULL)) {
+           && (!acceptsRoadName(si->getRoadName()) || !CarRoads::instance()->containsName(si->getRoadName()) ||
+               ((CarManager*)InstanceManager::getDefault("CarManager"))->getByTypeAndRoad(si->getTypeName(), si->getRoadName()) == NULL)) {
        status = (tr("Not Valid <%1>").arg(si->getRoadName()));
        break;
    }
@@ -1699,7 +1699,7 @@ if (loads.length() == 0) {
    }
    // check destination
    if (si->getDestination() != NULL
-           && (!si->getDestination()->acceptsTypeName(si->getTypeName()) || LocationManager::instance()
+           && (!si->getDestination()->acceptsTypeName(si->getTypeName()) || ((LocationManager*)InstanceManager::getDefault("LocationManager"))
            ->getLocationById(si->getDestination()->getId()) == NULL)) {
        status = tr("Not Valid <%1>").arg(si->getDestination()->toString());
        break;
@@ -1816,7 +1816,7 @@ if (loads.length() == 0) {
 
  /*private*/ QString Track::checkScheduleItem(ScheduleItem* si, Car* car) {
      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-             && TrainManager::instance()->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
+             && ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
          TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
          if (sch != NULL) {
              return SCHEDULE + " (" + getScheduleName() + ") " + tr("requestCarOnly") + " ("
@@ -1910,7 +1910,7 @@ if (loads.length() == 0) {
   log->debug(tr("Destination track (%1) has schedule (%2) item id (%3) mode: %4 (%5)").arg(getName()).arg(getScheduleName()).arg(
           getScheduleItemId()).arg(getScheduleMode()).arg(getScheduleMode() == SEQUENTIAL ? "Sequential" : "Match")); // NOI18N
   if (currentSi != NULL
-          && (currentSi->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || TrainManager::instance()
+          && (currentSi->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || ((TrainManager*)InstanceManager::getDefault("TrainManager"))
           ->getTrainScheduleActiveId()==(currentSi->getSetoutTrainScheduleId()))
           && car->getTypeName()==(currentSi->getTypeName())
           && (currentSi->getRoadName()==(ScheduleItem::NONE) || car->getRoadName()==(
@@ -1929,7 +1929,7 @@ if (loads.length() == 0) {
       QString timetableName = "";
       QString currentTimetableName = "";
       TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
-              TrainManager::instance()->getTrainScheduleActiveId());
+              ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainScheduleActiveId());
       if (sch != NULL) {
           timetableName = sch->getName();
       }
@@ -2746,7 +2746,7 @@ if (loads.length() == 0) {
              QDomElement destinations = QDomElement();
              destinations.setTagName(Xml::DESTINATIONS);
              foreach (QString id, destIds) {
-                 Location* loc = LocationManager::instance()->getLocationById(id);
+                 Location* loc = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(id);
                  if (loc != NULL) {
                      QDomElement destination = QDomElement();
                      destination.setTagName(Xml::DESTINATION);

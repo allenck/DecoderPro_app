@@ -45,10 +45,10 @@ void OperationsManager::initialize()
  // ensure the default instance of all operations managers
  // are initialized by calling their instance() methods
  // Is there a different, more optimal order for this?
- CarManager::instance();
- EngineManager::instance();
- TrainManager::instance();
- LocationManager::instance();
+ ((CarManager*)InstanceManager::getDefault("CarManager"));
+ ((EngineManager*)InstanceManager::getDefault("EngineManager"));
+ ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+ ((LocationManager*)InstanceManager::getDefault("LocationManager"));
  ((Operations::RouteManager*)InstanceManager::getDefault("RouteManager"));
  ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
  (TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager");

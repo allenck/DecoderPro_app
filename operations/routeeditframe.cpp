@@ -58,7 +58,7 @@ namespace Operations
      //super(tr("TitleRouteEdit"));
   routeModel = new RouteEditTableModel();
   routeTable = new JTable(routeModel);
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
   _route = NULL;
   _routeLocation = NULL;
@@ -87,7 +87,7 @@ namespace Operations
   commentTextField = new JTextField(35);
 
   // combo boxes
-  locationBox = LocationManager::instance()->getComboBox();
+  locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
 
  }
 
@@ -247,8 +247,8 @@ namespace Operations
      addHelpMenu("package.jmri.jmrit.operations.Operations_EditRoute", true); // NOI18N
 
      // get notified if combo box gets modified
-     //LocationManager::instance().addPropertyChangeListener(this);
-     connect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("LocationManager")).addPropertyChangeListener(this);
+     connect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // set frame size and route for display
      initMinimumSize(QSize(Control::panelWidth700, Control::panelHeight400));
  }

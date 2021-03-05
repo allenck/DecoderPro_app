@@ -410,7 +410,7 @@ namespace Operations
 
  /*private*/ void PrintLocationsAction::printAnalysisSelected() //throws IOException
  {
-     CarManager* carManager = CarManager::instance();
+     CarManager* carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
      QList<Location*> locations = manager->getLocationsByNameList();
      QList<RollingStock*>* cars = carManager->getByLocationList();
      QStringList carTypes = CarTypes::instance()->getNames();
@@ -752,7 +752,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + trainType + NEW_LINE + TAB + TAB);
          foreach (QString id, ids) {
-             Train* train = TrainManager::instance()->getTrainById(id);
+             Train* train = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
              if (train == NULL) {
                  log->info("Could not find a train for id: " + id + " track (" + track->getName() + ")");
                  continue;
@@ -806,7 +806,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + trainType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Train* train = TrainManager::instance()->getTrainById(id);
+             Train* train = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
              if (train == NULL) {
                  log->info("Could not find a train for id: " + id + " track (" + track->getName() + ")");
                  continue;
@@ -854,7 +854,7 @@ namespace Operations
              + tr("Destinations") + ":";
      if (track->getDestinationOption()==(Track::EXCLUDE_DESTINATIONS)) {
          op = tr("Exclude") + " "
-                 + (LocationManager::instance()->getNumberOfLocations() - track->getDestinationListSize()) + " "
+                 + QString::number(((LocationManager*)InstanceManager::getDefault("LocationManager"))->getNumberOfLocations() - track->getDestinationListSize()) + " "
                  + tr("Destinations") + ":";
      }
      QString buf = QString(TAB + TAB + op + NEW_LINE + TAB + TAB);

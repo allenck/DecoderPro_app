@@ -8,6 +8,7 @@
 #include "engine.h"
 #include "control.h"
 #include <QMessageBox>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -25,7 +26,7 @@ namespace Operations
 
  ImportRosterEngines::ImportRosterEngines(QObject *parent) : QObject(parent)
  {
-  manager = EngineManager::instance();
+  manager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
   log = new Logger("ImportRosterEngines");
 //  textEngine = new QLabel();
 //  textId = new QLabel();

@@ -11,6 +11,7 @@
 #include "abstracttabletabaction.h"
 #include <QBoxLayout>
 #include "addnewdevicepanel.h"
+#include "rfid/proxyidtagmanager.h"
 
 //IdTagTableAction::IdTagTableAction()
 //{
@@ -402,6 +403,13 @@ void FastClockUsedActionListener::actionPerformed()
 
 //@Override
 /*public*/ void IdTagTableAction::addToPanel(AbstractTableTabAction* f) {
+    QString connectionName = tagManager->getMemo()->getUserName();
+    if (qobject_cast<ProxyIdTagManager*>(tagManager)) {
+        connectionName = "All";
+    }
+//    else if (connectionName == nullptr && (tagManager instanceof DefaultRailComManager)) {
+//        connectionName = "RailCom"; // NOI18N (proper name).
+//    }
     f->addToBottomBox(isStateStored, this->metaObject()->className());
     isStateStored->setChecked(((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->isStateStored());
 //    isStateStored.addActionListener((ActionEvent e) -> {

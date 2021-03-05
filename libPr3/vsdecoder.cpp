@@ -549,7 +549,7 @@ void VSDecoder::common()
 #if 1 // TODO:
             if (property==(VSDControl::PCIDMap.value(VSDControl::OPTION_CHANGE)))
             {
-                Operations::Train* selected_train = Operations::TrainManager::instance()->getTrainByName( evt->getNewValue().toString());
+                Operations::Train* selected_train = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainByName( evt->getNewValue().toString());
                 if (selected_train != NULL) {
                     //selected_train.addPropertyChangeListener(this);
                  connect(selected_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

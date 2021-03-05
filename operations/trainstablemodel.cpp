@@ -15,6 +15,7 @@
 #include "routeeditframe.h"
 #include <QMessageBox>
 #include <QPen>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -40,7 +41,7 @@ namespace Operations
      //super();
   SORTBYTIME = 2;
   SORTBYID = 7;
- trainManager = TrainManager::instance(); // There is only one manager
+ trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager")); // There is only one manager
  _sort = SORTBYTIME;
  _showAll = true;
  tef = NULL;

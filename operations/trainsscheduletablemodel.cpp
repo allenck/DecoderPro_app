@@ -28,7 +28,7 @@ namespace Operations
  /*public*/ TrainsScheduleTableModel::TrainsScheduleTableModel(QObject* parent) : AbstractTableModel(parent) {
      //super();
   log = new Logger("TrainsScheduleTableModel");
-  trainManager = TrainManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
   scheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"));
   _sort = SORTBYTIME;
  _frame = NULL;

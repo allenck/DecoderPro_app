@@ -125,9 +125,9 @@ OperationsServlet::OperationsServlet() : HttpServlet()
   //StringBuilder html = new StringBuilder();
   QString html;
   QString format = FileUtil::readURL(FileUtil::findURL("web/servlet/operations/TrainsSnippet.html"));
-  foreach (Operations::Train* train, Operations::TrainManager::instance()->getTrainsByNameList())
+  foreach (Operations::Train* train, ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByNameList())
   {
-   if (showAll || !Operations::CarManager::instance()->getByTrainDestinationList(train)->isEmpty())
+   if (showAll || !((Operations::CarManager*)InstanceManager::getDefault("CarManager"))->getByTrainDestinationList(train)->isEmpty())
    {
 //       html.append(String.format(request->getLocale(), format,
 //               train.getIconName(),
@@ -188,7 +188,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
 
 /*private*/ void OperationsServlet::processManifest(QString id, HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
 {
- Operations::Train* train = Operations::TrainManager::instance()->getTrainById(id);
+ Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
  log->debug(tr("train id=%1 name=%2 %3").arg(id).arg(train->getName()).arg(train->getDescription()));
 #if 1
  if ("html" == (request->getParameter("format")))
@@ -271,7 +271,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
 
 /*private*/ void OperationsServlet::processConductor(QString id, HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
 {
- Operations::Train* train = Operations::TrainManager::instance()->getTrainById(id);
+ Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
  QJsonObject data;
 #if 1
  if (request->getContentType() != NULL && request->getContentType().contains(ServletUtil::APPLICATION_JSON))

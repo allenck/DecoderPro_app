@@ -5,6 +5,7 @@
 #include "track.h"
 #include "carmanager.h"
 #include "logger.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -51,7 +52,7 @@ namespace Operations
    if(QMessageBox::question(NULL, tr("Delete all cars?"), tr("Are you sure you want to delete all the cars in your roster?"),QMessageBox::Ok | QMessageBox::Cancel )== QMessageBox::Ok)
    {
     log->debug("removing all cars from roster");
-    CarManager::instance()->deleteAll();
+    ((CarManager*)InstanceManager::getDefault("CarManager"))->deleteAll();
    }
   }
   else
@@ -63,7 +64,7 @@ namespace Operations
    {
     foreach (RollingStock* car, *_carsTableFrame->carsTableModel->getSelectedCarList())
     {
-     CarManager::instance()->deregister(car);
+     ((CarManager*)InstanceManager::getDefault("CarManager"))->deregister(car);
     }
    }
   }

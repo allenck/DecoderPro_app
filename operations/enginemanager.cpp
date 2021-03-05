@@ -38,16 +38,6 @@ setProperty("InstanceManagerAutoInitialize", "true");
  }
 
  /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ EngineManager* EngineManager::_instance = nullptr;
-
- /*public*/ /*static*/ /*synchronized*/ EngineManager* EngineManager::instance()
- {
-  return static_cast<EngineManager*>(InstanceManager::getDefault("EngineManager"));
- }
-
- /**
   * @return requested Engine object or NULL if none exists
   */
  /*public*/ Engine* EngineManager::getById(QString id) {

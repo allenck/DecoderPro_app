@@ -20,6 +20,7 @@
 #include "trainswitchlists.h"
 #include "htmltextedit.h"
 #include <QLabel>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -41,7 +42,7 @@ namespace Operations
     : OperationsFrame(tr("SwitchLists"), parent)
  {
   //super(tr("TitleSwitchLists"));
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
   locationCheckBoxes = QList<QCheckBox*>();
   locationComboBoxes = QList<JComboBox*>();
   locationPanelCheckBoxes = new QWidget();
@@ -270,7 +271,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          }
      }
      // set trains switch lists unknown, any built trains should remain on the switch lists
-     TrainManager::instance()->setTrainsSwitchListStatus(Train::UNKNOWN);
+     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsSwitchListStatus(Train::UNKNOWN);
  }
 
  // save printer selection
@@ -329,7 +330,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          }
      }
      // set trains switch lists printed
-     TrainManager::instance()->setTrainsSwitchListStatus(Train::PRINTED);
+     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
  }
 
  /*private*/ void TrainSwitchListEditFrame::selectCheckboxes(bool enable) {
@@ -467,7 +468,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      TrainCustomSwitchList.process();
 #endif
      // set trains switch lists printed
-     TrainManager::instance()->setTrainsSwitchListStatus(Train::PRINTED);
+     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
  }
 
  /*private*/ void TrainSwitchListEditFrame::enableSaveButton(bool enable) {

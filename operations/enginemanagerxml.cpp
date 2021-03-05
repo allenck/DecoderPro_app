@@ -70,7 +70,7 @@ namespace Operations
      ((EngineModels*)InstanceManager::getDefault("EngineModels"))->store(root, doc);
      EngineTypes::instance()->store(root, doc);
      EngineLengths::instance()->store(root, doc);
-     EngineManager::instance()->store(root,doc);
+     ((EngineManager*)InstanceManager::getDefault("EngineManager"))->store(root,doc);
 
      writeXML(file, doc);
 
@@ -100,7 +100,7 @@ namespace Operations
      ((EngineModels*)InstanceManager::getDefault("EngineModels"))->load(root);
      EngineTypes::instance()->load(root);
      EngineLengths::instance()->load(root);
-     EngineManager::instance()->load(root);
+     ((EngineManager*)InstanceManager::getDefault("EngineManager"))->load(root);
 
      log->debug("Engines have been loaded!");
 //     RollingStockLogger.instance().enableEngineLogging(Setup.isEngineLoggerEnabled());

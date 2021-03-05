@@ -21,6 +21,7 @@
 #include "enginemanager.h"
 #include "rollingstock.h"
 #include "location.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -46,7 +47,7 @@ namespace Operations
    : OperationsFrame(parent)
   {
    log = new Logger("LocationCopyFrame");
-   locationManager = LocationManager::instance();
+   locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
    // text field
    locationNameTextField = new JTextField(Control::max_len_string_location_name);
@@ -238,8 +239,8 @@ namespace Operations
  }
 
  /*protected*/ void LocationCopyFrame::moveRollingStock(Track* fromTrack, Track* toTrack) {
-     moveRollingStock(fromTrack, toTrack, CarManager::instance());
-     moveRollingStock(fromTrack, toTrack, EngineManager::instance());
+     moveRollingStock(fromTrack, toTrack, ((CarManager*)InstanceManager::getDefault("CarManager")));
+     moveRollingStock(fromTrack, toTrack, ((EngineManager*)InstanceManager::getDefault("EngineManager")));
  }
 
  /*private*/ void LocationCopyFrame::moveRollingStock(Track* fromTrack, Track* toTrack, RollingStockManager* manager) {

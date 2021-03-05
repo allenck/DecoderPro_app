@@ -44,7 +44,7 @@ namespace Operations
  TrainSwitchLists::TrainSwitchLists(QObject* parent) : TrainCommon(parent)
  {
   messageFormatText = ""; // the text being formated in case there's an exception
-  trainManager = TrainManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
   log = new Logger("TrainSwitchLists");
  }
  /**
@@ -71,7 +71,7 @@ namespace Operations
      log->debug(tr("Append: %1 for location (%2)").arg(append).arg(location->getName()));
 
      // create switch list file
-     File* file = TrainManagerXml::instance()->createSwitchListFile(location->getName());
+     File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createSwitchListFile(location->getName());
 
      PrintWriter* fileOut = NULL;
      //try {
@@ -411,7 +411,7 @@ namespace Operations
  }
 
  /*public*/ void TrainSwitchLists::printSwitchList(Location* location, bool isPreview) {
-     File* buildFile = TrainManagerXml::instance()->getSwitchListFile(location->getName());
+     File* buildFile = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getSwitchListFile(location->getName());
      if (!buildFile->exists()) {
          log->warn(tr("Switch list file missing for location (%1)").arg(location->getName()));
          return;

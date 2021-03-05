@@ -5,6 +5,7 @@
 #include <QComboBox>
 #include "propertychangeevent.h"
 #include "trainmanager.h"
+#include "instancemanager.h"
 
 //VSDOptionsDialog::VSDOptionsDialog(QWidget *parent) :
 //  JDialog(parent)
@@ -67,7 +68,7 @@
     QLabel* x = new QLabel();
     x->setText(tr("Select Train"));
     thisLayout->addWidget(x);
-    opsTrainComboBox = Operations::TrainManager::instance()->getTrainComboBox();
+    opsTrainComboBox = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainComboBox();
     thisLayout->addWidget(opsTrainComboBox);
 
     QPushButton* closeButton = new QPushButton(tr("OK"));

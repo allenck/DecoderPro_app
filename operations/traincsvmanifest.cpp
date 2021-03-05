@@ -17,13 +17,14 @@
 #include "car.h"
 #include "track.h"
 #include "carloads.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 TrainCsvManifest::TrainCsvManifest()
 {
- engineManager = EngineManager::instance();
- carManager = CarManager::instance();
- locationManager = LocationManager::instance();
+ engineManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
+ carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+ locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
 }
 /**
@@ -41,7 +42,7 @@ TrainCsvManifest::TrainCsvManifest()
 /*public*/ TrainCsvManifest::TrainCsvManifest(Train* train)
 {
  // create comma separated value manifest file
- File* file = TrainManagerXml::instance()->createTrainCsvManifestFile(train->getName());
+ File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createTrainCsvManifestFile(train->getName());
 
  PrintWriter* fileOut;
 
@@ -206,7 +207,7 @@ TrainCsvManifest::TrainCsvManifest()
    }
   }
   // car holds
-  QList<RollingStock*>* rsByLocation = CarManager::instance()->getByLocationList();
+  QList<RollingStock*>* rsByLocation = ((CarManager*)InstanceManager::getDefault("CarManager"))->getByLocationList();
   QList<Car*> cList = QList<Car*>();
   for (RollingStock* rs : *rsByLocation) {
       if (rs->getLocation() == rl->getLocation() && rs->getRouteLocation() == NULL && rs->getTrack() != NULL) {

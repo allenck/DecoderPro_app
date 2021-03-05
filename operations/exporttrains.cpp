@@ -9,7 +9,7 @@
 #include "route.h"
 #include "routelocation.h"
 #include <QMessageBox>
-
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -102,7 +102,7 @@ namespace Operations
 
      int count = 0;
 
-     foreach (Train* train, TrainManager::instance()->getTrainsByTimeList()) {
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByTimeList()) {
          if (!train->isBuildEnabled())
              continue;
          count++;
@@ -127,7 +127,7 @@ namespace Operations
              del + tr("Attributes");
      fileOut->println(header);
 
-     foreach (Train* train, TrainManager::instance()->getTrainsByTimeList()) {
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByTimeList()) {
          if (!train->isBuildEnabled())
              continue;
 

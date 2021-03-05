@@ -3,6 +3,8 @@
 #include "rollingstockmanager.h"
 #include <QtXml>
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 class JComboBox;
 class QDomElement;
@@ -11,15 +13,15 @@ namespace Operations
 {
  class Consist;
  class Engine;
- class APPSLIBSHARED_EXPORT EngineManager : public RollingStockManager
+ class APPSLIBSHARED_EXPORT EngineManager : public RollingStockManager, public InstanceManagerAutoDefault,  public InstanceManagerAutoInitialize
  {
   Q_OBJECT
+   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
   Q_INVOKABLE explicit EngineManager(QObject *parent = 0);
   ~EngineManager() {}
   EngineManager(const EngineManager&) : RollingStockManager() {}
   /*public*/ static /*final*/ QString CONSISTLISTLENGTH_CHANGED_PROPERTY;// = "ConsistListLength"; // NOI18N
-  QT_DEPRECATED /*public*/ static /*synchronized*/ EngineManager* instance() ;
   /*public*/ Engine* getById(QString id);
   /*public*/ Engine* getByRoadAndNumber(QString engineRoad, QString engineNumber) ;
   /*public*/ Engine* newEngine(QString engineRoad, QString engineNumber);
@@ -40,8 +42,7 @@ namespace Operations
   /*public*/ void dispose();
   /*public*/ int getConsistMaxNameLength();
   /*public*/ QList<Engine*> getAvailableTrainList(Train* train);
-  Q_INVOKABLE  /*public*/ void initialize();
-
+  Q_INVOKABLE  /*public*/ void initialize() override;
 
  signals:
 

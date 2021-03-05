@@ -15,7 +15,6 @@ namespace Operations
   Q_INVOKABLE explicit TrainManagerXml(QObject *parent = 0);
    ~TrainManagerXml() {}
    TrainManagerXml(const TrainManagerXml&) : OperationsXml() {}
-  /*public*/ static /*synchronized*/ TrainManagerXml* instance();
   /*public*/ bool isTrainFileLoaded();
   /*public*/ void writeFile(QString name); //throw FileNotFoundException, IOException
   /*public*/ void readFile(QString name); //throw (JDOMException,IOException)

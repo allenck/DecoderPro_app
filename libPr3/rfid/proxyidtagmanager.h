@@ -14,8 +14,8 @@ public:
  ProxyIdTagManager(const ProxyIdTagManager& ) : AbstractProxyIdTagManager() {}
  /*public*/ int getXMLOrder()const  override;
  /*public*/ void init();
- /*public*/ bool isInitialised();
- /*public*/ DefaultIdTag* getIdTag(QString name);
+ /*public*/ bool isInitialised()override;
+ /*public*/ DefaultIdTag* getIdTag(QString name)override;
  /*public*/ DefaultIdTag* provide(/*@Nonnull */QString name) throw (IllegalArgumentException) override;
  /*public*/ DefaultIdTag* provideIdTag(QString name) throw (IllegalArgumentException) override;
  /*public*/ NamedBean* getBySystemName(QString systemName)const override;

@@ -396,7 +396,7 @@ namespace Operations
 
  /*private*/ void SchedulesTableModel::addPropertyChangeTracks() {
      // only spurs have schedules
-     foreach (Track* track, LocationManager::instance()->getTracks(Track::SPUR)) {
+     foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getTracks(Track::SPUR)) {
          //track.addPropertyChangeListener(this);
          connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
@@ -404,7 +404,7 @@ namespace Operations
  }
 
  /*private*/ void SchedulesTableModel::removePropertyChangeTracks() {
-     foreach (Track* track, LocationManager::instance()->getTracks(Track::SPUR)) {
+     foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getTracks(Track::SPUR)) {
          //track.removePropertyChangeListener(this);
          disconnect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }

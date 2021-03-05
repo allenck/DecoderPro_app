@@ -86,6 +86,7 @@ public:
     /*public*/ void deregister(NamedBean* s);
     /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
     /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
+    /*public*/ SystemConnectionMemo* getMemo() const override;
     /**
      * @return The system-specific prefix letter for the primary implementation
      */

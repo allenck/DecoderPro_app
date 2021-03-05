@@ -8,6 +8,7 @@
 #include "cartypes.h"
 #include "carload.h"
 #include "carloads.h"
+#include "instancemanager.h"
 
 namespace Operations
  {
@@ -37,7 +38,7 @@ namespace Operations
    : AbstractAction(actionName, pWho)
  {
      //super(actionName);
-     manager = CarManager::instance();
+     manager = ((CarManager*)InstanceManager::getDefault("CarManager"));
 
      isPreview = preview;
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));

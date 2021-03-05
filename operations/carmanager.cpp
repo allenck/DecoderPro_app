@@ -44,15 +44,6 @@ RollingStockManager(parent)
  }
 
  /**
-  * record the single instance *
-  */
- // /*private*/ /*static*/ CarManager* CarManager::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarManager* CarManager::instance() {
-  return static_cast<CarManager*>(InstanceManager::getDefault("CarManager"));
- }
-
- /**
   * Finds an existing Car* or creates a new Car* if needed requires car's road
   * and number
   *

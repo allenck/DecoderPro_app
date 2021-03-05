@@ -11,6 +11,7 @@
 #include "trainmanager.h"
 #include "routelocation.h"
 #include "route.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -82,7 +83,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  QPushButton* source = (QPushButton*)ae;
      if (source == changeButton) {
          log->debug("change button activated");
-         TrainManager* trainManager = TrainManager::instance();
+         TrainManager* trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
          QList<Train*> trains = trainManager->getTrainsByIdList();
          foreach (Train* train, trains) {
              train->setDepartureTime(adjustHour(train->getDepartureTimeHour()), train->getDepartureTimeMinute());

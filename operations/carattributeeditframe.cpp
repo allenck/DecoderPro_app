@@ -69,7 +69,7 @@ namespace Operations
   setObjectName("CarAttributeEditFrame");
   log = new Logger("CarAttributeEditFrame");
   pcs = new PropertyChangeSupport(this);
-  carManager = CarManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
  }
 
 

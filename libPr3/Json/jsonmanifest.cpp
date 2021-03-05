@@ -16,7 +16,7 @@
 #include "track.h"
 #include "fileutil.h"
 #include "stringescapeutils.h"
-
+#include "instancemanager.h"
 using namespace Operations;
 
 //JsonManifest::JsonManifest(QObject* parent) : TrainCommon(parent)
@@ -58,7 +58,7 @@ using namespace Operations;
 /*public*/ File* JsonManifest::getFile()
 {
  QString trainName = this->train->getName();
- return TrainManagerXml::instance()->getManifestFile(trainName, JSON::_JSON);
+ return ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getManifestFile(trainName, JSON::_JSON);
 }
 
 /*public*/ void JsonManifest::build() throw (IOException)
@@ -81,7 +81,7 @@ using namespace Operations;
 #if 0 // TODO
  this->mapper.writeValue(TrainManagerXml::instance()->createManifestFile(this->train->getName(),  JSON::_JSON), root);
 #else
- File* file = TrainManagerXml::instance()->createManifestFile(this->train->getName(),  JSON::_JSON);
+ File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createManifestFile(this->train->getName(),  JSON::_JSON);
 
  QFile f(file->getPath());
  if(f.open(QIODevice::WriteOnly))

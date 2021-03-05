@@ -53,8 +53,6 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
     InstanceManager::deregister(internal->self(), "SystemConnectionMemo");
     InstanceManager::store(memo->self(), "SystemConnectionMemo");
     InstanceManager::store(internal->self(), "SystemConnectionMemo");
-    InstanceManager::store(internal->self(), "InternalSystemConnectionMemo");
-
   }
   else {
     // just add on end
@@ -122,6 +120,8 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
  * @return true if available; false if already in use
  */
 /*public*/ /*synchronized*/ bool SystemConnectionMemoManager::isSystemPrefixAvailable(/*@Nonnull*/ QString systemPrefix) {
+ if(systemPrefix == "I")
+  return true;
 //        return InstanceManager.getList(SystemConnectionMemo.class).stream().noneMatch((memo) -> (memo.getSystemPrefix().equals(systemPrefix)));
  QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
  foreach (QObject* obj, *InstanceManager::getList("SystemConnectionMemo"))

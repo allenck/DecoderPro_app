@@ -8,6 +8,7 @@
 #include <QLabel>
 #include "jtable.h"
 #include "pushbuttondelegate.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -303,7 +304,7 @@ namespace Operations
     case DESTINATION_COLUMN: {
         int length = track->getDestinationListSize();
         if (track->getDestinationOption()==(Track::EXCLUDE_DESTINATIONS)) {
-            length = LocationManager::instance()->getNumberOfLocations() - length;
+            length = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getNumberOfLocations() - length;
         }
         return getModifiedString(length, track->getDestinationOption()==(Track::ALL_DESTINATIONS), track
                 ->getDestinationOption()==(track->INCLUDE_DESTINATIONS));

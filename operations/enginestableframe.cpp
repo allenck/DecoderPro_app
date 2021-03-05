@@ -25,6 +25,7 @@
 #include <QStatusBar>
 #include "operationsxml.h"
 #include "enginerostermenu.h"
+#include "instancemanager.h"
 
 //EnginesTableFrame::EnginesTableFrame(QObject *parent) :
 //  OperationsFrame(parent)
@@ -53,7 +54,7 @@ namespace Operations
         // general GUI config
  setObjectName("EnginesTableFrame");
  log = new Logger("EnginesTableFrame");
-  engineManager = EngineManager::instance();
+  engineManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
   // labels
   numEngines = new QLabel();
   textEngines = new QLabel();

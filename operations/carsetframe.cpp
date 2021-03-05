@@ -31,7 +31,7 @@
 #include "enabledestinationaction.h"
 #include "carloadeditframe.h"
 #include "schedule.h"
-
+#include "instancemanager.h"
 //CarSetFrame::CarSetFrame()
 //{
 
@@ -64,10 +64,10 @@ namespace Operations
   setObjectName("CarSetFrame");
   editActive = false;
   f = NULL;
-  carManager = CarManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
 
   askKernelChange = true;
-  destReturnWhenEmptyBox = LocationManager::instance()->getComboBox();
+  destReturnWhenEmptyBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
   trackReturnWhenEmptyBox = new JComboBox();
   loadReturnWhenEmptyBox = CarLoads::instance()->getComboBox();
   loadComboBox = CarLoads::instance()->getComboBox();

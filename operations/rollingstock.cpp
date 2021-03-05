@@ -83,7 +83,7 @@ void RollingStock::common()
 log = new Logger("RollingStocK");
 setObjectName("RollingStock");
 pcs = new PropertyChangeSupport(this);
-locationManager = LocationManager::instance();
+locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 _id = NONE;
 _number = NONE;
 _road = NONE;
@@ -1264,9 +1264,9 @@ return "";
          _lastLocationId = a;
      }
      if ((a = e.attribute (Xml::TRAIN_ID)) != NULL) {
-         setTrain(TrainManager::instance()->getTrainById(a));
+         setTrain(((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(a));
      } else if ((a = e.attribute (Xml::TRAIN)) != NULL) {
-         setTrain(TrainManager::instance()->getTrainByName(a));
+         setTrain(((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainByName(a));
      }
     if (getTrain() != NULL && getTrain()->getRoute() != NULL &&
              (a = e.attribute (Xml::ROUTE_LOCATION_ID)) != NULL) {

@@ -12,6 +12,7 @@
 #include "flowlayout.h"
 #include "vptr.h"
 #include "traineditframe.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -32,7 +33,7 @@ namespace Operations
 
  /*public*/ TrainCopyFrame::TrainCopyFrame(Train* train, QWidget* parent) : OperationsFrame(parent){
  log = new Logger("TrainCopyFrame");
- trainManager = TrainManager::instance();
+ trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
 
  // labels
  // text field
@@ -42,7 +43,7 @@ namespace Operations
  copyButton = new QPushButton(tr("Copy"));
 
  // combo boxes
- trainBox = TrainManager::instance()->getTrainComboBox();
+ trainBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainComboBox();
      // general GUI config
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

@@ -8,6 +8,7 @@
 #include "train.h"
 #include <QCheckBox>
 #include "route.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -25,7 +26,7 @@ namespace Operations
  /*public*/ PrintTrainsAction::PrintTrainsAction(QString actionName, JFrame* mframe, bool preview, JFrame* frame)
      : PrintTrainAction(actionName, mframe, preview, frame)
  {
-     trainManager = TrainManager::instance();
+     trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 

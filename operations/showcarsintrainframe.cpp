@@ -18,6 +18,7 @@
 #include "route.h"
 #include <QCheckBox>
 #include <QThread>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -39,7 +40,7 @@ namespace Operations
      //super();
  log = new Logger("ShowCarsInTrainFrame");
      _train = NULL;
-     carManager = CarManager::instance();
+     carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
      trainCommon = new TrainCommon();
 
      // labels

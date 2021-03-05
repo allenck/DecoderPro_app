@@ -13,6 +13,8 @@
 #include "flowlayout.h"
 #include "operationsxml.h"
 #include "setup.h"
+#include "instancemanager.h"
+
 namespace Operations
 {
  /**
@@ -34,7 +36,7 @@ namespace Operations
  /*public*/ TrainsTableSetColorFrame::TrainsTableSetColorFrame(Train* train, QWidget* parent)
     : OperationsFrame(parent)
  {
- trainManager = TrainManager::instance();
+ trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
 
  // labels
  // text field
@@ -46,13 +48,13 @@ namespace Operations
  saveButton = new QPushButton(tr("Save"));
 
  // combo boxes
- trainBox = TrainManager::instance()->getTrainComboBox();
- colorBox = TrainManager::instance()->getRowColorComboBox();
+ trainBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainComboBox();
+ colorBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getRowColorComboBox();
 
- colorBuiltBox = TrainManager::instance()->getRowColorComboBox();
- colorBuildFailedBox = TrainManager::instance()->getRowColorComboBox();
- colorTrainEnRouteBox = TrainManager::instance()->getRowColorComboBox();
- colorTerminatedBox = TrainManager::instance()->getRowColorComboBox();
+ colorBuiltBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getRowColorComboBox();
+ colorBuildFailedBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getRowColorComboBox();
+ colorTrainEnRouteBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getRowColorComboBox();
+ colorTerminatedBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getRowColorComboBox();
 
      // general GUI config
 

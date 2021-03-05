@@ -566,7 +566,7 @@ namespace Operations
      bool old = generateCsvManifest;
      generateCsvManifest = enabled;
      if (enabled && !old) {
-     TrainManagerXml::instance()->createDefaultCsvManifestDirectory();
+     ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createDefaultCsvManifestDirectory();
      }
      setDirtyAndFirePropertyChange(MANIFEST_CSV_PROPERTY_CHANGE, old, enabled);
  }
@@ -579,7 +579,7 @@ namespace Operations
      bool old = generateCsvSwitchList;
      generateCsvSwitchList = enabled;
      if (enabled && !old) {
-      TrainManagerXml::instance()->createDefaultCsvSwitchListDirectory();
+      ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createDefaultCsvSwitchListDirectory();
      }
      setDirtyAndFirePropertyChange(SWITCH_LIST_CSV_PROPERTY_CHANGE, old, enabled);
  }

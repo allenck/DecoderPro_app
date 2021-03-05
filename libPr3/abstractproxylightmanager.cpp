@@ -515,6 +515,23 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 }
 
 /**
+ * {@inheritDoc}
+ *
+ * @return The system connection memo for the manager returned by
+ *         {@link #getDefaultManager()}, or the Internal system connection
+ *         memo if there is no default manager
+ */
+//@Override
+//@Nonnull
+/*public*/ SystemConnectionMemo* AbstractProxyLightManager::getMemo() const{
+    try {
+        return getDefaultManager()->getMemo();
+    } catch (IndexOutOfBoundsException ex) {
+        return (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
+    }
+}
+
+/**
  * @return The system-specific prefix letter for the primary implementation
  */
 /*public*/ QString AbstractProxyLightManager::getSystemPrefix() const {

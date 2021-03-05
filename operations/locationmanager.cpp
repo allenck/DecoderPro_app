@@ -44,16 +44,6 @@ PropertyChangeSupport(this, parent)
    setProperty("InstanceManagerAutoInitialize", "true");
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ LocationManager* LocationManager::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ LocationManager* LocationManager::instance()
-{
- return static_cast<LocationManager*>(InstanceManager::getDefault("LocationManager"));
- }
-
  /*public*/ void LocationManager::dispose() {
      _locationHashTable.clear();
      _id = 0;

@@ -80,9 +80,9 @@ namespace Operations
   log = new Logger("TrainsTableFrame");
   carManagerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml")); // load cars
   engineManagerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml")); // load engines
-  trainManager = TrainManager::instance();
-  trainManagerXml = TrainManagerXml::instance();
-  locationManager = LocationManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+  trainManagerXml = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
   // labels
   numTrains = new QLabel();

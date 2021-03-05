@@ -26,7 +26,6 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 /*protected*/ AbstractManager *ProxyTurnoutManager::makeInternalManager() const
 {
  return ((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getTurnoutManager();
-
 }
 
 /**
@@ -229,14 +228,14 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     for (int i=0; i<nMgrs(); ++i)
     {
      QStringList thisTypes = ((AbstractTurnoutManager*)getMgr(i))->getValidOperationTypes();
-     // TODO:        typeList.addAll(Arrays.asList(thisTypes));
+     // typeList.addAll(Arrays.asList(thisTypes));
      foreach (QString s, thisTypes)
      {
       typeList.append(s);
      }
     }
-// TODO:    return TurnoutOperationManager::concatenateTypeLists(typeList.toArray(new QString[0]));
-    return typeList;
+    //return TurnoutOperationManager.concatenateTypeLists(typeList.toArray(new String[0]));
+    return TurnoutOperationManager::concatenateTypeLists(typeList);
 }
 
 /*public*/ bool ProxyTurnoutManager::allowMultipleAdditions(QString systemName) {

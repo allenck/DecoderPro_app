@@ -7,6 +7,7 @@
 #include "location.h"
 #include "xml.h"
 #include "locationmanager.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -334,7 +335,7 @@ namespace Operations
          _ship = a;
      }
      if ((a = e.attribute(Xml::DESTINATION_ID)) != NULL) {
-         _destination = LocationManager::instance()->getLocationById(a);
+         _destination = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a);
      }
      if ((a = e.attribute(Xml::DEST_TRACK_ID)) != NULL && _destination != NULL) {
          _trackDestination = _destination->getTrackById(a);

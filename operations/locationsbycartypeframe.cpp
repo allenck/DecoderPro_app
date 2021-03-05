@@ -20,6 +20,7 @@
 #include "operationsxml.h"
 #include "setup.h"
 #include "printlocationsbycartypesaction.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -80,7 +81,7 @@ namespace Operations
  /*public*/ void LocationsByCarTypeFrame::initComponents(QString carType) {
 
      // load managers
-     manager = LocationManager::instance();
+     manager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
      // general GUI config
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

@@ -25,6 +25,7 @@
 #include "htmltextedit.h"
 #include "joptionpane.h"
 #include "carstableframe.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -53,9 +54,9 @@ namespace Operations
   _location = NULL;
   _train = NULL;
 
-  trainManager = TrainManager::instance();
-  engManager = EngineManager::instance();
-  carManager = CarManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+  engManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
+  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
   trainCommon = new TrainCommon();
 
   // labels

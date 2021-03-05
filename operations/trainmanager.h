@@ -40,7 +40,6 @@ namespace Operations
   /*public*/ int getNumEntries();
   /*public*/ bool isBuildMessagesEnabled();
   /*public*/ void setBuildMessagesEnabled(bool enable);
-  /*public*/ static /*synchronized*/ TrainManager* instance();
   /*public*/ JComboBox* getTrainComboBox();
   /*public*/ void updateTrainComboBox(JComboBox* box);
   /*public*/ QList<Train*> getTrainsByNameList();

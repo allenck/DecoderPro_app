@@ -82,7 +82,7 @@ namespace Operations
   interchangeTable = new JTable(interchangeModel);
   stagingModel = new StagingTableModel();
   stagingTable = new JTable(stagingModel);
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
   _location = NULL;
   checkBoxes =  QList<QCheckBox*>();

@@ -26,6 +26,7 @@
 #include "car.h"
 #include "carmanager.h"
 #include "router.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -53,7 +54,7 @@ namespace Operations
  log = new Logger("TrackDestinationEditFrame");
       _track = NULL;
 
-      locationManager = LocationManager::instance();
+      locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
      // panels
      pControls = new QWidget();
@@ -482,7 +483,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                          }
                          // is there a car with this road?
                          bool foundCar = false;
-                         foreach (RollingStock* rs, *CarManager::instance()->getList()) {
+                         foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList()) {
                              if (rs->getTypeName()==(type) && rs->getRoadName()==(road)) {
                                  foundCar = true;
                                  break;

@@ -65,9 +65,9 @@ namespace Operations
   multipass = false;
 
   // managers
-  carManager = CarManager::instance();
-  locationManager = LocationManager::instance();
-  engineManager = EngineManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+  engineManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
   log = new Logger("TrainBuilder");
  }
 
@@ -111,7 +111,7 @@ namespace Operations
    _train->setLeadEngine(NULL);
 
    // create build report file
-   File* file = TrainManagerXml::instance()->createTrainBuildReportFile(_train->getName());
+   File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createTrainBuildReportFile(_train->getName());
    try
    {
     QFile* qFile = new QFile(file->getPath());
@@ -201,7 +201,7 @@ namespace Operations
     {
      addLine(_buildReport, FIVE, tr("WARNING only selected trains used for routing:"));
      // list the selected trains
-     foreach (Train* train, TrainManager::instance()->getTrainsByNameList())
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByNameList())
      {
       if (train->isBuildEnabled())
       {
@@ -1630,7 +1630,7 @@ namespace Operations
                  continue;
              }
              if (car->getPickupScheduleId()!=(Car::NONE)) {
-                 if (car->getPickupScheduleId()==(TrainManager::instance()->getTrainScheduleActiveId())) {
+                 if (car->getPickupScheduleId()==(((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainScheduleActiveId())) {
                      car->setPickupScheduleId(Car::NONE);
                  } else {
                      TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(car->getPickupScheduleId());
@@ -3477,11 +3477,11 @@ namespace Operations
          return NULL;
      }
      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-             && TrainManager::instance()->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
+             && ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
         log->debug("Schedule item isn't active");
          // build the status message
          TrainSchedule* aSch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
-                 TrainManager::instance()->getTrainScheduleActiveId());
+                 ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainScheduleActiveId());
          TrainSchedule* tSch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
          QString aName = "";
          QString tName = "";
@@ -4645,7 +4645,7 @@ namespace Operations
      }
      int numberLocos = 0;
      // determine how many locos have already been assigned to the train
-     QList<RollingStock*>* engines = EngineManager::instance()->getList(_train);
+     QList<RollingStock*>* engines = ((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList(_train);
      foreach (RollingStock* rs,  *engines) {
          if (rs->getRouteLocation() == rl) {
              numberLocos++;
@@ -4683,7 +4683,7 @@ namespace Operations
   if (log->isDebugEnabled()) {
      log->debug(msg);
   }
-  if (TrainManager::instance()->isBuildMessagesEnabled()) {
+  if (((TrainManager*)InstanceManager::getDefault("TrainManager"))->isBuildMessagesEnabled()) {
 //         if (e->getExceptionType()==(BuildFailedException.NORMAL)) {
 //             JOptionPane.showMessageDialog(NULL, msg, tr("buildErrorMsg"),
 //                     _train->getName(), _train->getDescription()}), JOptionPane.ERROR_MESSAGE);
@@ -4746,7 +4746,7 @@ namespace Operations
  _train->setBuildFailed(true);
  log->debug(msg);
 
- if (TrainManager::instance()->isBuildMessagesEnabled())
+ if (((TrainManager*)InstanceManager::getDefault("TrainManager"))->isBuildMessagesEnabled())
  {
   if (e.getExceptionType() ==(BuildFailedException::NORMAL))
   {

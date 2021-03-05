@@ -332,7 +332,7 @@ namespace Operations
          setBunit(a == (Xml::_TRUE));
      }
      if ((a = e.attribute (Xml::CONSIST)) != NULL) {
-         Consist* c = EngineManager::instance()->getConsistByName(a);
+         Consist* c = ((EngineManager*)InstanceManager::getDefault("EngineManager"))->getConsistByName(a);
          if (c != NULL) {
              setConsist(c);
              if ((a = e.attribute (Xml::LEAD_CONSIST)) != NULL && a==(Xml::_TRUE)) {

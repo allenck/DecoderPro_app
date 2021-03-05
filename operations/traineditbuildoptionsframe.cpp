@@ -966,7 +966,7 @@ JComboBox* source = (JComboBox*)ae;
 /*private*/ void TrainEditBuildOptionsFrame::updateCabooseRoadComboBox(JComboBox* box) {
   box->clear();
   box->addItem("");
-  QStringList roads = CarManager::instance()->getCabooseRoadNames();
+  QStringList roads = ((CarManager*)InstanceManager::getDefault("CarManager"))->getCabooseRoadNames();
   foreach (QString road, roads) {
       box->addItem(road);
   }
@@ -978,7 +978,7 @@ JComboBox* source = (JComboBox*)ae;
   }
   box->clear();
   box->addItem("");
-  QStringList roads = EngineManager::instance()->getEngineRoadNames(engineModel);
+  QStringList roads = ((EngineManager*)InstanceManager::getDefault("EngineManager"))->getEngineRoadNames(engineModel);
   foreach (QString road, roads) {
       box->addItem(road);
   }

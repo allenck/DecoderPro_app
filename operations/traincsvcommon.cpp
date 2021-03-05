@@ -8,6 +8,7 @@
 #include "routelocation.h"
 #include "carmanager.h"
 #include "setup.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 
@@ -301,7 +302,7 @@ TrainCsvCommon::TrainCsvCommon()
 }
 
 /*protected*/ void TrainCsvCommon::listCarsLocationUnknown(PrintWriter* fileOut) {
-    QList<Car*>* cars = CarManager::instance()->getCarsLocationUnknown();
+    QList<Car*>* cars = ((CarManager*)InstanceManager::getDefault("CarManager"))->getCarsLocationUnknown();
     if (cars->size() == 0) {
         return; // no cars to search for!
     }

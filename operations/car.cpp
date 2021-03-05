@@ -792,7 +792,7 @@ namespace Operations
             _utility = a==(Xml::_TRUE);
         }
         if ((a = e.attribute(Xml::KERNEL)) != NULL) {
-            Kernel* k = CarManager::instance()->getKernelByName(a);
+            Kernel* k = ((CarManager*)InstanceManager::getDefault("CarManager"))->getKernelByName(a);
             if (k != NULL) {
                 setKernel(k);
                 if ((a = e.attribute(Xml::LEAD_KERNEL)) != NULL && a==(Xml::_TRUE)) {
@@ -839,13 +839,13 @@ namespace Operations
             _nextPickupScheduleId = a;
         }
         if ((a = e.attribute(Xml::NEXT_DEST_ID)) != NULL) {
-            setFinalDestination(LocationManager::instance()->getLocationById(a));
+            setFinalDestination(((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a));
         }
         if (getFinalDestination() != NULL && (a = e.attribute(Xml::NEXT_DEST_TRACK_ID)) != NULL) {
             setFinalDestinationTrack(getFinalDestination()->getTrackById(a));
         }
         if ((a = e.attribute(Xml::PREVIOUS_NEXT_DEST_ID)) != NULL) {
-            setPreviousFinalDestination(LocationManager::instance()->getLocationById(a));
+            setPreviousFinalDestination(((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a));
         }
         if (getPreviousFinalDestination() != NULL && (a = e.attribute(Xml::PREVIOUS_NEXT_DEST_TRACK_ID)) != NULL) {
             setPreviousFinalDestinationTrack(getPreviousFinalDestination()->getTrackById(a));
@@ -854,7 +854,7 @@ namespace Operations
             setPreviousScheduleId(a);
         }
         if ((a = e.attribute(Xml::RWE_DEST_ID)) != NULL) {
-            _rweDestination = LocationManager::instance()->getLocationById(a);
+            _rweDestination = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a);
         }
         if (_rweDestination != NULL && (a = e.attribute(Xml::RWE_DEST_TRACK_ID)) != NULL) {
             _rweDestTrack = _rweDestination->getTrackById(a);

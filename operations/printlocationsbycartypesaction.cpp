@@ -6,6 +6,7 @@
 #include "cartypes.h"
 #include "location.h"
 #include "track.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -36,7 +37,7 @@ namespace Operations
 {
   //super(actionName);
  log = new Logger("PrintLocationsByCarTypesAction");
- locManager = LocationManager::instance();
+ locManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
   mFrame = frame;
   isPreview = preview;

@@ -3,6 +3,7 @@
 #include "abstracttableaction.h"
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
+#include "instancemanager.h"
 
 class AddNewDevicePanel;
 class JTextField;
@@ -38,6 +39,7 @@ protected:
     /*protected*/ QString getClassName();
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();
+    /*protected*/ IdTagManager* tagManager = (IdTagManager*)InstanceManager::getDefault("IdTagManager");
 
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e);

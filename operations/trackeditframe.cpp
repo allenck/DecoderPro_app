@@ -69,7 +69,7 @@ namespace Operations
  {
      //super();
   log = new Logger("TrackEditFrame");
-  trainManager = TrainManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
   routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
 
   _location = NULL;
@@ -1352,7 +1352,7 @@ if (!anyDrops->isChecked())
           pDestinationOption->setVisible(true);
           destinationOption->setText(tr("Exclude")
                   + " "
-                  + QString::number(LocationManager::instance()->getNumberOfLocations() - _track
+                  + QString::number(((LocationManager*)InstanceManager::getDefault("LocationManager"))->getNumberOfLocations() - _track
                   ->getDestinationListSize()) + " " + tr("Destinations"));
       } else {
           destinationOption->setText(tr("Accept all"));

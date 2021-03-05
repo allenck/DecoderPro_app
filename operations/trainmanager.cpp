@@ -90,16 +90,6 @@ namespace Operations
  }
 
  /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ TrainManager* TrainManager::_instance = nullptr;
-
- /*public*/ /*static*/ /*synchronized*/ TrainManager* TrainManager::instance()
- {
-  return static_cast<TrainManager*>(InstanceManager::getDefault("TrainManager"));
- }
-
- /**
   * Get the number of items in the roster
   *
   * @return Number of trains in the roster
@@ -310,7 +300,7 @@ namespace Operations
 */
 /*public*/ Train* TrainManager::getTrainByName(QString name)
 {
- if (!TrainManagerXml::instance()->isTrainFileLoaded()) {
+ if (!((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->isTrainFileLoaded()) {
      log->error("TrainManager getTrainByName called before trains completely loaded!");
  }
  Train* train;
@@ -328,7 +318,7 @@ namespace Operations
 }
 
 /*public*/ Train* TrainManager::getTrainById(QString id) {
- if (!TrainManagerXml::instance()->isTrainFileLoaded()) {
+ if (!((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->isTrainFileLoaded()) {
      log->error("TrainManager getTrainById called before trains completely loaded!");
  }
  return _trainHashTable.value(id);
@@ -598,7 +588,7 @@ namespace Operations
 }
 
 /*private*/ QList<Train*> TrainManager::getList() {
- if (!TrainManagerXml::instance()->isTrainFileLoaded()) {
+ if (!((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->isTrainFileLoaded()) {
      log->error("TrainManager getList called before trains completely loaded!");
  }
  QList<Train*> out = QList<Train*>();
@@ -1205,7 +1195,7 @@ namespace Operations
  }
 #endif
  /*private*/ void TrainManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     TrainManagerXml::instance()->setDirty(true);
+     ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
  //@Override

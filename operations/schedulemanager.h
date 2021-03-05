@@ -20,7 +20,7 @@ namespace Operations
  class ScheduleManager : public QObject, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize, public PropertyChangeListener
  {
   Q_OBJECT
-     Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize PropertyChangeListener)
+  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize PropertyChangeListener)
  public:
   Q_INVOKABLE explicit ScheduleManager(QObject *parent = 0);
    ~ScheduleManager() {}
@@ -48,7 +48,7 @@ namespace Operations
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   Q_INVOKABLE /*public*/ void initialize() override;
-  QObject* self() {return (QObject*)this;}
+  QObject* self() override {return (QObject*)this;}
 
  signals:
 

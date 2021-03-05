@@ -22,7 +22,6 @@ namespace Operations
      ~CarManager() {}
      CarManager(const CarManager&) : RollingStockManager() {}
   /*public*/ static /*final*/ QString KERNEL_LISTLENGTH_CHANGED_PROPERTY;// = "KernelListLength"; // NOI18N
-  QT_DEPRECATED/*public*/ static /*synchronized*/ CarManager* instance();
   /*public*/ Car* newCar(QString road, QString number);
   /*public*/ Car* getById(QString id);
   /*public*/ Car* getByRoadAndNumber(QString road, QString number);

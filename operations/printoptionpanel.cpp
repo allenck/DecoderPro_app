@@ -965,7 +965,7 @@ namespace Operations
      }
 
      // recreate all train manifests
-     TrainManager::instance()->setTrainsModified();
+     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsModified();
 
      ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
  }

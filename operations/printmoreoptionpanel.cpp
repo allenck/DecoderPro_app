@@ -129,7 +129,7 @@ namespace Operations
      ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
 
      // recreate all train manifests
-     TrainManager::instance()->setTrainsModified();
+     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsModified();
  }
 
  //@Override

@@ -12,6 +12,7 @@
 #include "operationsxml.h"
 #include "setup.h"
 #include <QLabel>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -33,7 +34,7 @@ namespace Operations
  /*public*/ TrainsScriptFrame::TrainsScriptFrame(QWidget* parent)  : OperationsFrame(parent){
      //super();
  log = new Logger("TrainsScriptFrame");
-     trainManager = TrainManager::instance();
+     trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
 
      // script panels
      pStartUpScript = new QWidget();

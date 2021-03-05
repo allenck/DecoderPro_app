@@ -12,6 +12,7 @@
 #include "trainmanagerxml.h"
 #include "printwriter.h"
 #include "jcombobox.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -276,7 +277,7 @@ namespace Operations
 //         return;
 //     }
   PrintWriter* out;
-  File* buildReport = TrainManagerXml::instance()->createTrainBuildReportFile(
+  File* buildReport = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createTrainBuildReportFile(
           tr("Report") + " " + name);
   //try {
   qFile = new QFile(buildReport->getPath());

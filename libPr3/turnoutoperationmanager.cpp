@@ -203,7 +203,6 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  */
 /*public*/ void TurnoutOperationManager::loadOperationTypes()
 {
- #if 1 // TODO:
  QStringList validTypes = ((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getValidOperationTypes();
  for (int i=0; i<validTypes.length(); ++i)
  {
@@ -223,12 +222,14 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
     //thisClass.getDeclaredConstructor().newInstance();
     thisClass->newInstance();
     if (log->isDebugEnabled()) { log->debug("loaded TurnoutOperation class "+thisClassName); }
-} catch (ClassNotFoundException e1) { log->error("during loadOperationTypes", e1); }
-  catch (InstantiationException e2) { log->error("during loadOperationTypes", e2); }
-  catch (IllegalAccessException e3) { log->error("during loadOperationTypes", e3); }
-  }
+    }
+    catch (ClassNotFoundException e1) { log->error("during loadOperationTypes", e1); }
+    catch (InstantiationException e2) { log->error("during loadOperationTypes", e2); }
+    catch (IllegalAccessException e3) { log->error("during loadOperationTypes", e3); }
+    catch (NoSuchMethodException e4) { log->error("during loadOperationTypes", e4); }
+    catch (InvocationTargetException e5) { log->error("during loadOperationTypes", e5); }
+   }
  }
-#endif
 }
 
 /**

@@ -268,7 +268,7 @@ namespace Operations
  {
   log->debug("radio button selected");
   // can't change the build option if there are trains built
-  if (TrainManager::instance()->isAnyTrainBuilt()) {
+  if (((TrainManager*)InstanceManager::getDefault("TrainManager"))->isAnyTrainBuilt()) {
       setBuildOption(); // restore the correct setting
 //         JOptionPane.showMessageDialog(this, tr("CanNotChangeBuild"), Bundle
 //                 .getMessage("MustTerminateOrReset"), JOptionPane.ERROR_MESSAGE);

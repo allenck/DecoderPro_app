@@ -23,6 +23,7 @@
 #include "locationmanagerxml.h"
 #include "trainmanager.h"
 #include "schedulemanager.h"
+#include "operationsmanager.h"
 
 namespace Operations
 {
@@ -55,6 +56,8 @@ int id;
   qRegisterMetaType<Operations::TrainManifestText>("TrainManifestText");
   qRegisterMetaType<LocationManagerXml>("LocationManagerXml");
   qRegisterMetaType<ScheduleManager>("ScheduleManager");
+  qRegisterMetaType<OperationsManager>("OperationsManager");
+
   Metatypes::done = true;
  }
 }

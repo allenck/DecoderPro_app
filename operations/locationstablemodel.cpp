@@ -9,6 +9,7 @@
 #include "jtable.h"
 #include "QLabel"
 #include "pushbuttondelegate.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -35,7 +36,7 @@ namespace Operations
   log = new Logger("OperationsTableModel");
   _sort = SORTBYNAME;
 
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
   //locationManager.addPropertyChangeListener(this);
   connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();

@@ -82,9 +82,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyLightManager :  public LightManager, publ
     /*public*/ void deregister(NamedBean* s)const override;
     /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
     /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
-    /**
-     * @return The system-specific prefix letter for the primary implementation
-     */
+    /*public*/ SystemConnectionMemo* getMemo() const override;
     /*public*/ QString getSystemPrefix() const override;
     /**
      * @return The type letter for lights

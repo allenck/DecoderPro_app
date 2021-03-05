@@ -36,7 +36,7 @@ namespace Operations
   log = new Logger("TrainManifest");
   messageFormatText = "";
   // create manifest file
-  File* file = TrainManagerXml::instance()->createTrainManifestFile(train->getName());
+  File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createTrainManifestFile(train->getName());
 
   PrintWriter* fileOut;
 
@@ -71,7 +71,7 @@ namespace Operations
   if (Setup::isPrintTimetableNameEnabled())
   {
    TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
-           TrainManager::instance()->getTrainScheduleActiveId());
+           ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainScheduleActiveId());
    if (sch != NULL)
    {
     valid = valid + " (" + sch->getName() + ")";

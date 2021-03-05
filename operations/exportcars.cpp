@@ -8,6 +8,7 @@
 #include "qmessagebox.h"
 #include "operationssetupxml.h"
 #include "setup.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -87,7 +88,7 @@ namespace Operations
 //         return;
 //     }
 
-     CarManager* manager = CarManager::instance();
+     CarManager* manager = ((CarManager*)InstanceManager::getDefault("CarManager"));
      QList<RollingStock*>* carList = manager->getByNumberList();
      QString line = "";
      // check for delimiter in the following car fields

@@ -16,6 +16,7 @@
 #include <QSignalMapper>
 #include <QList>
 #include "pushbuttondelegate.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -41,7 +42,7 @@ namespace Operations
 : AbstractTableModel(parent)
  {
      //super();
-  manager = CarManager::instance(); // There is only one manager
+  manager = ((CarManager*)InstanceManager::getDefault("CarManager")); // There is only one manager
  _sort = SORTBY_NUMBER;
   sysList = NULL;
   cef = NULL;

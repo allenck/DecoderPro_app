@@ -44,6 +44,7 @@
 #include <QTextEdit>
 #include "traincustommanifest.h"
 #include "joptionpane.h"
+#include "instancemanager.h"
 
 /**
  * Represents a train on the layout
@@ -455,7 +456,7 @@ _roadList = QStringList();
      if (routeLocation == getTrainDepartsRouteLocation())
          return minutes;
      // add any work at this location
-     foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
          if (rs->getRouteLocation() == routeLocation && rs->getTrackName()!=(RollingStock::NONE)) {
              minutes += Setup::getSwitchTime();
          }
@@ -1880,7 +1881,7 @@ if (roads.length() == 0) {
   */
  /*public*/ int Train::getNumberCarsWorked() {
      int count = 0;
-     foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
          if (rs->getRouteLocation() != NULL) {
              count++;
          }
@@ -1925,7 +1926,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs,* CarManager::instance()->getList(this)) {
+             foreach (RollingStock* rs,* ((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      number++;
@@ -1954,7 +1955,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getLoadType()!=(CarLoad::LOAD_TYPE_EMPTY)) {
                      continue;
@@ -1995,7 +1996,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *EngineManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      length += eng->getTotalLength();
@@ -2004,7 +2005,7 @@ if (roads.length() == 0) {
                      length += -eng->getTotalLength();
                  }
              }
-             foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      length += car->getTotalLength();
@@ -2035,7 +2036,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *EngineManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      weight += eng->getAdjustedWeightTons();
@@ -2044,7 +2045,7 @@ if (roads.length() == 0) {
                      weight += -eng->getAdjustedWeightTons();
                  }
              }
-             foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      weight += car->getAdjustedWeightTons();
@@ -2072,7 +2073,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *EngineManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      hp += eng->getHpInteger();
@@ -2098,7 +2099,7 @@ if (roads.length() == 0) {
  /*public*/ QString Train::getCabooseRoadAndNumber() {
      QString cabooseRoadNumber = NONE;
      RouteLocation* rl = getCurrentLocation();
-     QList<RollingStock*>* cars = CarManager::instance()->getByTrainList(this);
+     QList<RollingStock*>* cars = ((CarManager*)InstanceManager::getDefault("CarManager"))->getByTrainList(this);
      foreach (RollingStock* rs, *cars) {
          Car* car = (Car*) rs;
          if (car->getRouteLocation() == rl && car->getRouteDestination() != rl && car->isCaboose()) {
@@ -2905,13 +2906,13 @@ if (roads.length() == 0) {
  }
 
  /*public*/ void Train::printBuildReport() {
-     bool isPreview = (TrainManager::instance()->isPrintPreviewEnabled() || Setup
+     bool isPreview = (((TrainManager*)InstanceManager::getDefault("TrainManager"))->isPrintPreviewEnabled() || Setup
              ::isBuildReportAlwaysPreviewEnabled());
      printBuildReport(isPreview);
  }
 
  /*public*/ bool Train::printBuildReport(bool isPreview) {
-     File* buildFile = TrainManagerXml::instance()->getTrainBuildReportFile(getName());
+     File* buildFile = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getTrainBuildReportFile(getName());
      if (!buildFile->exists()) {
          log->warn("Build file missing for train " + getName());
          return false;
@@ -2966,7 +2967,7 @@ if (roads.length() == 0) {
  {
   if (isBuilt())
   {
-   bool isPreview = TrainManager::instance()->isPrintPreviewEnabled();
+   bool isPreview = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->isPrintPreviewEnabled();
    printManifest(isPreview);
   }
   else
@@ -2998,7 +2999,7 @@ if (roads.length() == 0) {
    }
 
   }
-  File* file = TrainManagerXml::instance()->getTrainManifestFile(getName());
+  File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getTrainManifestFile(getName());
   if (!file->exists())
   {
    log->warn(tr("Manifest file missing for train %1").arg(getName()));
@@ -3018,7 +3019,7 @@ if (roads.length() == 0) {
   } else if (Setup::getManifestLogoURL()!=(Setup::NONE)) {
       logoURL = FileUtil::getExternalFilename(Setup::getManifestLogoURL());
   }
-  Location* departs = LocationManager::instance()->getLocationByName(getTrainDepartsName());
+  Location* departs = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(getTrainDepartsName());
   QString printerName = Location::NONE;
   if (departs != NULL)
   {
@@ -3077,7 +3078,7 @@ if (roads.length() == 0) {
              new TrainCsvManifest(this);
          }
      }
-     File* file = TrainManagerXml::instance()->getTrainCsvManifestFile(getName());
+     File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getTrainCsvManifestFile(getName());
      if (!file->exists()) {
          log->warn("CSV manifest file was not created for train " + getName());
          return NULL;
@@ -3312,7 +3313,7 @@ if (roads.length() == 0) {
  */
  /*public*/ Engine* Train::getLeadEngine() {
   if (_leadEngine ==NULL&& _leadEngineId!=(NONE)) {
-      _leadEngine = EngineManager::instance()->getById(_leadEngineId);
+      _leadEngine = ((EngineManager*)InstanceManager::getDefault("EngineManager"))->getById(_leadEngineId);
   }
   return _leadEngine;
  }
@@ -3851,7 +3852,7 @@ if (roads.length() == 0) {
              _leg3End = _route->getLocationById(a);
          }
          if ((a = e.attribute(Xml::DEPARTURE_TRACK)) != NULL) {
-             Location* location = LocationManager::instance()->getLocationByName(getTrainDepartsName());
+             Location* location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(getTrainDepartsName());
              if (location != NULL) {
                  _departureTrack = location->getTrackById(a);
              } else {
@@ -3859,7 +3860,7 @@ if (roads.length() == 0) {
              }
          }
          if ((a = e.attribute(Xml::TERMINATION_TRACK)) != NULL) {
-             Location* location = LocationManager::instance()->getLocationByName(getTrainTerminatesName());
+             Location* location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(getTrainTerminatesName());
              if (location != NULL) {
                  _terminationTrack = location->getTrackById(a);
              } else {
@@ -4254,7 +4255,7 @@ if (roads.length() == 0) {
  }
 #endif
 /*protected*/ void Train::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-    TrainManagerXml::instance()->setDirty(true);
+    ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
     pcs->firePropertyChange(p, old, n);
  }
 } //end namespace

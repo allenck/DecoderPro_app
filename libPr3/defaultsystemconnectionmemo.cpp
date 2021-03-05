@@ -37,7 +37,7 @@ if(!log)
         while (!setSystemPrefix(prefix + QString::number(x))) {
             x++;
         }
-        log->debug(tr("created system prefix %1%2").arg(prefix).arg(x));
+        log->debug(tr("created system prefix %1%2").arg(userName).arg(x));
     }
 
     if (!setUserName(userName)) {

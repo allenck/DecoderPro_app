@@ -349,7 +349,7 @@ namespace Operations
 //     }
      if (_track != NULL ) {
          if (_track->getScheduleId()!=(_schedule->getId())) {
-             LocationManager::instance()->resetMoves();
+             ((LocationManager*)InstanceManager::getDefault("LocationManager"))->resetMoves();
          }
          _track->setScheduleId(_schedule->getId());
          if (sequentialRadioButton->isChecked()) {

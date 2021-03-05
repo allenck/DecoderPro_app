@@ -12,7 +12,7 @@
 #include "gridbaglayout.h"
 #include <QGroupBox>
 #include "vptr.h"
-
+#include "instancemanager.h"
 
 namespace Operations
  {
@@ -48,7 +48,7 @@ namespace Operations
   saveButton = new QPushButton(tr("Save"));
 
   // combo boxes
-  locationBox = LocationManager::instance()->getComboBox();
+  locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
   trackBox = new JComboBox();
 
   // checkboxes
@@ -113,8 +113,8 @@ namespace Operations
      deleteTrackCheckBox->setEnabled(moveRollingStockCheckBox->isChecked());
 
      // get notified if combo box gets modified
-     //LocationManager::instance().addPropertyChangeListener(this);
-     connect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("LocationManager")).addPropertyChangeListener(this);
+     connect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // add help menu to window
      addHelpMenu("package.jmri.jmrit.operations.Operations_Locations", true); // NOI18N
@@ -233,7 +233,7 @@ namespace Operations
 #endif
  /*protected*/ void TrackCopyFrame::updateComboBoxes() {
      log->debug("update location combobox");
-     LocationManager::instance()->updateComboBox(locationBox);
+     ((LocationManager*)InstanceManager::getDefault("LocationManager"))->updateComboBox(locationBox);
  }
 #if 0
  /**
@@ -279,8 +279,8 @@ namespace Operations
  }
 #endif
  /*public*/ void TrackCopyFrame::dispose() {
-     //LocationManager::instance().removePropertyChangeListener(this);
- disconnect(LocationManager::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("LocationManager")).removePropertyChangeListener(this);
+ disconnect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_location != NULL) {
          //_location.removePropertyChangeListener(this);
       disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

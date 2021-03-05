@@ -23,7 +23,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
 
 /*public*/ void TrainCustomCommon::setFileName(QString name) {
     mcAppName = name;
-    Operations::TrainManagerXml::instance()->setDirty(true);
+    ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
 }
 
 /*public*/ QString TrainCustomCommon::getCommonFileName() {

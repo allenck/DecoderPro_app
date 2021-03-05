@@ -422,7 +422,7 @@ QObject(parent)
 * Coordinates are dependent on the train's departure direction.
 */
 /*public*/ void RouteLocation::setTrainIconCoordinates() {
- Location* l = LocationManager::instance()->getLocationByName(getName());
+ Location* l = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(getName());
  if ((getTrainDirection() & Location::EAST) > 0) {
   setTrainIconX(l->getTrainIconEast().x());
   setTrainIconY(l->getTrainIconEast().y());
@@ -471,7 +471,7 @@ QObject(parent)
      }
      if ((a = e.attribute (Xml::LOCATION_ID)) != NULL) {
          _locationId = a;
-         _location = LocationManager::instance()->getLocationById(a);
+         _location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a);
          if (_location != NULL)
          {
              //_location.addPropertyChangeListener(this);
@@ -479,7 +479,7 @@ QObject(parent)
          }
      } // old way of storing a route location
      else if ((a = e.attribute (Xml::NAME)) != NULL) {
-         _location = LocationManager::instance()->getLocationByName(a);
+         _location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(a);
          if (_location != NULL) {
              //_location.addPropertyChangeListener(this);
           connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

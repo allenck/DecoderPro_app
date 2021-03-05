@@ -47,7 +47,7 @@ namespace Operations
  allLoadsCheckBox = new QCheckBox(tr("All Loads"));
 
  // managers'
- locationManager = LocationManager::instance();
+ locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
      // the following code sets the frame's initial state
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

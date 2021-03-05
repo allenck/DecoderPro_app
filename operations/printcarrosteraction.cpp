@@ -136,7 +136,7 @@ namespace Operations
                  if (car->getLocation() != NULL) {
                      location = car->getLocationName().trimmed() + " - " + car->getTrackName().trimmed();
                  }
-                 location = padAttribute(location, LocationManager::instance()->getMaxLocationAndTrackNameLength() + 3);
+                 location = padAttribute(location, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getMaxLocationAndTrackNameLength() + 3);
              }
              // Page break between locations?
              if (previousLocation != NULL && car->getLocationName().trimmed()!=(previousLocation)
@@ -201,7 +201,7 @@ namespace Operations
                  if (car->getDestination() != NULL) {
                      destination = car->getDestinationName().trimmed() + " - " + car->getDestinationTrackName();
                  }
-                 destination = padAttribute(destination, LocationManager::instance()
+                 destination = padAttribute(destination, ((LocationManager*)InstanceManager::getDefault("LocationManager"))
                          ->getMaxLocationAndTrackNameLength() + 3);
              }
              if (cpof->printCarFinalDestination->isChecked()) {
@@ -209,7 +209,7 @@ namespace Operations
                      finalDestination = car->getFinalDestinationName().trimmed() + " - "
                              + car->getFinalDestinationTrackName().trimmed();
                  }
-                 finalDestination = padAttribute(finalDestination, LocationManager::instance()
+                 finalDestination = padAttribute(finalDestination, ((LocationManager*)InstanceManager::getDefault("LocationManager"))
                          ->getMaxLocationAndTrackNameLength() + 3);
              }
              if (cpof->printCarRWE->isChecked()) {
@@ -217,7 +217,7 @@ namespace Operations
                      returnWhenEmpty = car->getReturnWhenEmptyDestinationName().trimmed() + " - "
                              + car->getReturnWhenEmptyDestTrackName().trimmed();
                  }
-                 returnWhenEmpty = padAttribute(returnWhenEmpty, LocationManager::instance()
+                 returnWhenEmpty = padAttribute(returnWhenEmpty, ((LocationManager*)InstanceManager::getDefault("LocationManager"))
                          ->getMaxLocationAndTrackNameLength() + 3);
              }
              if (cpof->printCarComment->isChecked()) {
@@ -260,16 +260,14 @@ namespace Operations
              + (cpof->printCarPickup->isChecked() ? padAttribute(tr("Pickup"), 10) : "")
              + (cpof->printCarValue->isChecked() ? Setup::getValueLabel() + "        " : "")
              + (cpof->printCarRfid->isChecked() ? Setup::getRfidLabel() + "        " : "")
-             + (cpof->printCarLocation->isChecked() ? padAttribute(tr("Location"), LocationManager
-                             ::instance()->getMaxLocationAndTrackNameLength() + 3) : "")
+             + (cpof->printCarLocation->isChecked() ? padAttribute(tr("Location"),
+                                                                   ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getMaxLocationAndTrackNameLength() + 3) : "")
              + (cpof->printCarTrain->isChecked() ? padAttribute(tr("Train"),
                              Control::max_len_string_train_name / 2) : "")
-             + (cpof->printCarDestination->isChecked() ? padAttribute(tr("Destination"), LocationManager
-                             ::instance()->getMaxLocationAndTrackNameLength() + 3) : "")
+             + (cpof->printCarDestination->isChecked() ? padAttribute(tr("Destination"), ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getMaxLocationAndTrackNameLength() + 3) : "")
              + (cpof->printCarFinalDestination->isChecked() ? padAttribute(tr("FinalDestination"),
-                             LocationManager::instance()->getMaxLocationAndTrackNameLength() + 3) : "")
-             + (cpof->printCarRWE->isChecked() ? padAttribute(tr("ReturnWhenEmpty"), LocationManager
-                             ::instance()->getMaxLocationAndTrackNameLength() + 3) : "")
+                             ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getMaxLocationAndTrackNameLength() + 3) : "")
+             + (cpof->printCarRWE->isChecked() ? padAttribute(tr("ReturnWhenEmpty"), ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getMaxLocationAndTrackNameLength() + 3) : "")
              + (cpof->printCarComment->isChecked() ? tr("Comment") : "");
      if (s.length() > numberCharPerLine) {
          s = s.mid(0, numberCharPerLine);

@@ -19,6 +19,7 @@
 #include <QSignalMapper>
 #include <QMessageBox>
 #include "jmriscriptenginemanager.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -115,8 +116,8 @@ namespace Operations
   _train = parent->_train;
 
   // load managers
-  manager = TrainManager::instance();
-  managerXml = TrainManagerXml::instance();
+  manager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+  managerXml = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"));
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());

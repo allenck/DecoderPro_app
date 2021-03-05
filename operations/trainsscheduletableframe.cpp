@@ -50,9 +50,9 @@ namespace Operations
  /*public*/ TrainsScheduleTableFrame::TrainsScheduleTableFrame(QWidget* parent) : OperationsFrame(parent)
  {
   log = new Logger("TrainsScheduleTableFrame");
-  trainManager = TrainManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
   scheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"));
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
   trainsScheduleModel = new TrainsScheduleTableModel();
   trainsScheduleTable = new JTable(trainsScheduleModel);
@@ -410,12 +410,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              trainSwitchLists->buildSwitchList(location);
              // // print or print changes
              if (Setup::isSwitchListRealTime() && location->getStatus()!=(Location::PRINTED)) {
-                 trainSwitchLists->printSwitchList(location, TrainManager::instance()->isPrintPreviewEnabled());
+                 trainSwitchLists->printSwitchList(location, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->isPrintPreviewEnabled());
              }
          }
      }
      // set trains switch lists printed
-     TrainManager::instance()->setTrainsSwitchListStatus(Train::PRINTED);
+     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
  }
 
  /*private*/ void TrainsScheduleTableFrame::updateSwitchListButton() {

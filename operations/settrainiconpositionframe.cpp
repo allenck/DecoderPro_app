@@ -64,7 +64,7 @@ namespace Operations
      saveButton = new QPushButton(tr("Save"));
 
      // combo boxes
-     locationBox = LocationManager::instance()->getComboBox();
+     locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
 
      //Spinners
      spinTrainIconEastX = new QSpinBox(/*new SpinnerNumberModel(0, 0, 10000, 1)*/);

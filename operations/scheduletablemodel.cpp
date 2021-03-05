@@ -471,7 +471,7 @@ namespace Operations
   {
    if (getTrack()->acceptsRoadName(roadName))
    {
-    Car* car = CarManager::instance()->getByTypeAndRoad(si->getTypeName(), roadName);
+    Car* car = ((CarManager*)InstanceManager::getDefault("CarManager"))->getByTypeAndRoad(si->getTypeName(), roadName);
     if (car != NULL )
     {
      cb->addItem(roadName);
@@ -532,7 +532,7 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getDestComboBox(ScheduleItem* si) {
      // log->debug("getDestComboBox for ScheduleItem "+si->getType());
-     QComboBox* cb = LocationManager::instance()->getComboBox();
+     QComboBox* cb = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
      filterDestinations(cb, si->getTypeName());
      if (si->getDestination() != NULL  && cb->currentIndex() == -1) {
          // user deleted destination

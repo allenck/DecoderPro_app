@@ -19,6 +19,7 @@
 #include "train.h"
 #include "operationsxml.h"
 #include "printtrainsbycartypesaction.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -52,7 +53,7 @@ namespace Operations
  /*public*/ void TrainsByCarTypeFrame::initComponents(QString carType) {
 
      // load managers
-     manager = TrainManager::instance();
+     manager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
 
      // general GUI config
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

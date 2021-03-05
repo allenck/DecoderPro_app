@@ -320,7 +320,7 @@ namespace Operations
 {
   JComboBox* box = new JComboBox();
   // search all spurs for that use schedule
-  foreach (Location* location, LocationManager::instance()->getLocationsByNameList())
+  foreach (Location* location, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationsByNameList())
   {
    foreach (Track* spur, location->getTrackByNameList(Track::SPUR))
    {

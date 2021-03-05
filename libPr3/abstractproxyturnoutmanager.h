@@ -88,8 +88,7 @@ public:
     /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l)override;
     /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
     /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
-    /* @return The system-specific prefix letter for the primary implementation
-     */
+    /*public*/ SystemConnectionMemo* getMemo() const override;
     /*public*/ QString getSystemPrefix() const override;
     /**
      * @return The type letter for turnouts

@@ -307,13 +307,17 @@ void LocoNetSystemConnectionMemo::configureManagers()
  InstanceManager::setThrottleManager(
   getThrottleManager());
 
- if (getProgrammerManager()->isAddressedModePossible())
+ DefaultProgrammerManager* programmerManager = getProgrammerManager();
+
+ if (programmerManager->isAddressedModePossible())
  {
-  InstanceManager::store(getProgrammerManager(), "AddressedProgrammerManager");
+  store((AbstractManager*)programmerManager, "AddressedProgrammerManager");
+  InstanceManager::store(programmerManager, "AddressedProgrammerManager");
  }
- if (getProgrammerManager()->isGlobalProgrammerAvailable())
+ if (programmerManager->isGlobalProgrammerAvailable())
  {
-  InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
+  store((AbstractManager*)programmerManager, "GlobalProgrammerManager");
+  InstanceManager::store(programmerManager, "GlobalProgrammerManager");
  }
 
  InstanceManager::setReporterManager((ReporterManager*)getReporterManager());

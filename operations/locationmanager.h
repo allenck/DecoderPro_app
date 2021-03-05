@@ -28,7 +28,6 @@ namespace Operations
    ~LocationManager(){}
    LocationManager(const LocationManager&) : PropertyChangeSupport(nullptr) {}
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "locationsListLength"; // NOI18N
-  QT_DEPRECATED /*public*/ static /*synchronized*/ LocationManager* instance();
   /*public*/ void dispose();
   /*public*/ int getNumberOfLocations() ;
   /*public*/ Location* getLocationByName(QString name);

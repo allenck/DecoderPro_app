@@ -56,7 +56,7 @@ namespace Operations
  {
   setObjectName("CarsTableFrame");
   log = new Logger("CarsTableFrame");
-  carManager = CarManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
   setStatusBar(new QStatusBar());
   statusBar()->setSizeGripEnabled(true);
 
@@ -401,19 +401,18 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          f->initComponents();
          f->setTitle(tr("Add Car"));
      }
-#if 0
+
      if (source == saveButton) {
-         if (carsTable.isEditing()) {
-             log->debug("cars table edit true");
-             carsTable.getCellEditor().stopCellEditing();
-         }
+//         if (carsTable->isEditing()) {
+//             log->debug("cars table edit true");
+//             carsTable.getCellEditor().stopCellEditing();
+//         }
          OperationsXml::save();
          saveTableDetails(carsTable);
          if (Setup::isCloseWindowOnSaveEnabled()) {
              dispose();
          }
      }
-#endif
  }
 #if 0
  /*protected*/ int[] getCurrentTableColumnWidths() {
@@ -442,7 +441,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 #endif
  /*private*/ void CarsTableFrame::updateNumCars() {
-     QString totalNumber = QString::number(CarManager::instance()->getNumEntries());
+     QString totalNumber = QString::number(((CarManager*)InstanceManager::getDefault("CarManager"))->getNumEntries());
      if (showAllCars) {
          numCars->setText(totalNumber);
          return;

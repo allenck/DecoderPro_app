@@ -13,6 +13,7 @@
 #include "operationsxml.h"
 #include "setup.h"
 #include "logger.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -39,7 +40,7 @@ namespace Operations
      trackTable = new JTable(trackModel);
      //trackPane = new QScrollArea(/*trackTable*/);
 
-     locationManager = LocationManager::instance();
+     locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
      _location = NULL;
 
@@ -119,7 +120,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 //         }
          _location->resequnceTracksByBlockingOrder();
          // recreate all train manifests
-         TrainManager::instance()->setTrainsModified();
+         ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsModified();
          // save location file
          OperationsXml::save();
          if (Setup::isCloseWindowOnSaveEnabled()) {

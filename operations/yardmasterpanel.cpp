@@ -18,6 +18,7 @@
 #include "routelocation.h"
 #include "htmltextedit.h"
 #include <QScrollArea>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -330,7 +331,7 @@ namespace Operations
 
  /*private*/ void YardmasterPanel::addTrainListeners() {
      log->debug("Adding train listerners");
-     QList<Train*> trains = TrainManager::instance()->getTrainsByIdList();
+     QList<Train*> trains = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByIdList();
 //     trains.stream().forEach((train) -> {
 //         Train::addPropertyChangeListener(this);
 //     });
@@ -341,7 +342,7 @@ namespace Operations
 
      // listen for new trains being added
      //TrainManager::instance().addPropertyChangeListener(this);
-     connect(TrainManager::instance()->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((TrainManager*)InstanceManager::getDefault("TrainManager"))->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 #if 0
  private void removeTrainListeners() {
