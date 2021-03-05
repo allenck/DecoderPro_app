@@ -22,10 +22,12 @@ namespace Operations
   Q_OBJECT
      Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize PropertyChangeListener)
  public:
-  explicit ScheduleManager(QObject *parent = 0);
+  Q_INVOKABLE explicit ScheduleManager(QObject *parent = 0);
+   ~ScheduleManager() {}
+   ScheduleManager(const ScheduleManager&) : QObject() {}
   PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "scheduleListLength"; // NOI18N
-  /*public*/ static /*synchronized*/ ScheduleManager* instance();
+//  /*public*/ static /*synchronized*/ ScheduleManager* instance();
   /*public*/ void dispose();
   /*public*/ int numEntries();
   /*public*/ Schedule* getScheduleByName(QString name);
@@ -45,7 +47,8 @@ namespace Operations
   /*public*/ JComboBox* getSpursByScheduleComboBox(Schedule* schedule);
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
-  Q_INVOKABLE /*public*/ void initialize();
+  Q_INVOKABLE /*public*/ void initialize() override;
+  QObject* self() {return (QObject*)this;}
 
  signals:
 
@@ -66,4 +69,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::ScheduleManager);
 #endif // SCHEDULEMANAGER_H

@@ -13,6 +13,8 @@
 #include "jcombobox.h"
 #include "vptr.h"
 #include "propertychangesupport.h"
+#include "instancemanager.h"
+
 namespace Operations
 {
  /**
@@ -47,7 +49,7 @@ namespace Operations
  void ScheduleCopyFrame::common(Schedule* schedule)
  {
   log = new Logger("ScheduleCopyFrame");
-  scheduleManager = ScheduleManager::instance();
+  scheduleManager = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
 
   // text field
   scheduleNameTextField = new JTextField(Control::max_len_string_location_name);

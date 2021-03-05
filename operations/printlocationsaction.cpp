@@ -249,7 +249,7 @@ namespace Operations
      QString s = padOutString(tr("Schedules"), MAX_NAME_LENGTH) + " " + tr("Location")
              + " - " + tr("SpurName") + NEW_LINE;
      writer->write(s);
-     QList<Schedule*> schedules = ScheduleManager::instance()->getSchedulesByNameList();
+     QList<Schedule*> schedules = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getSchedulesByNameList();
      foreach (Schedule* schedule, schedules) {
          foreach (Location* location, locations) {
              if (_location != NULL && location != _location) {

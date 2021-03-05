@@ -50,7 +50,7 @@ void OperationsManager::initialize()
  TrainManager::instance();
  LocationManager::instance();
  ((Operations::RouteManager*)InstanceManager::getDefault("RouteManager"));
- ScheduleManager::instance();
+ ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
  (TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager");
  this->setShutDownTask(this->getDefaultShutDownTask());
  // auto backup?

@@ -31,6 +31,7 @@
 #include "jtable.h"
 #include "modifylocationsaction.h"
 #include "trainsbycartypeaction.h"
+#include "instancemanager.h"
 
 //CarsTableFrame::CarsTableFrame()
 //{
@@ -160,7 +161,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       movepLayout->addWidget(sortByRfid);
   }
 
-     if (ScheduleManager::instance()->numEntries() > 0) {
+     if (((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->numEntries() > 0) {
          movepLayout->addWidget(sortByWait);
          movepLayout->addWidget(sortByPickup);
      }

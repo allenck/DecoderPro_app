@@ -18,6 +18,7 @@
 #include "changetracktypeaction.h"
 #include "ignoreusedtrackaction.h"
 #include "alternatetrackaction.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -43,7 +44,7 @@ namespace Operations
   textSchedule = new QLabel(tr("Delivery Schedule"));
   textSchError = new QLabel();
   editScheduleButton = new QPushButton();
-  comboBoxSchedules = ScheduleManager::instance()->getComboBox();
+  comboBoxSchedules = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getComboBox();
 
   panelSchedule = panelOpt4;
   sef = NULL;
@@ -89,8 +90,8 @@ namespace Operations
   // Select the spur's Schedule
   updateScheduleComboBox();
 
-  //ScheduleManager::instance().addPropertyChangeListener(this);
-  connect(ScheduleManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((ScheduleManager*)InstanceManager::getDefault("ScheduleManager")).addPropertyChangeListener(this);
+  connect(((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // finish
   panelOrder->setVisible(false); // Car order out of spurs is not available
@@ -168,10 +169,10 @@ namespace Operations
 
  /*private*/ void SpurEditFrame::updateScheduleComboBox()
  {
-  ScheduleManager::instance()->updateComboBox(comboBoxSchedules);
+  ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->updateComboBox(comboBoxSchedules);
   if (_track != NULL)
   {
-   Schedule* sch = ScheduleManager::instance()->getScheduleById(_track->getScheduleId());
+   Schedule* sch = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getScheduleById(_track->getScheduleId());
    comboBoxSchedules->setCurrentIndex(comboBoxSchedules->findData(VPtr<Schedule>::asQVariant(sch)));
    textSchError->setText(_track->checkScheduleValid());
    if (sch != NULL)
@@ -187,11 +188,11 @@ namespace Operations
  /*public*/ void SpurEditFrame::dispose()
  {
 
-  //ScheduleManager::instance().removePropertyChangeListener(this);
-  disconnect(ScheduleManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((ScheduleManager*)InstanceManager::getDefault("ScheduleManager")).removePropertyChangeListener(this);
+  disconnect(((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   if (_track != NULL)
   {
-   Schedule* sch = ScheduleManager::instance()->getScheduleById(_track->getScheduleId());
+   Schedule* sch = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getScheduleById(_track->getScheduleId());
    if (sch != NULL)
        //sch.removePropertyChangeListener(this);
     disconnect(sch->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

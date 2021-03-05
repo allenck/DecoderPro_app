@@ -22,6 +22,8 @@
 #include "trainmanifesttext.h"
 #include "locationmanagerxml.h"
 #include "trainmanager.h"
+#include "schedulemanager.h"
+
 namespace Operations
 {
 bool Metatypes::done = false;
@@ -52,7 +54,7 @@ int id;
   qRegisterMetaType<TrainManagerXml>("TrainManagerXml");
   qRegisterMetaType<Operations::TrainManifestText>("TrainManifestText");
   qRegisterMetaType<LocationManagerXml>("LocationManagerXml");
-
+  qRegisterMetaType<ScheduleManager>("ScheduleManager");
   Metatypes::done = true;
  }
 }

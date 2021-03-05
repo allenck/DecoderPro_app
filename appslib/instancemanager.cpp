@@ -73,6 +73,7 @@
 //#include "proxymanager.h"
 #include "proxylightmanager.h"
 #include "proxymetermanager.h"
+#include "instancemanagerautoinitialize.h"
 
 class ManagerLists : public QHash<QString,QObjectList*>
 {
@@ -429,77 +430,54 @@ void InstanceManager::deregister(QObject* item, QString type)
   }
 
   // see if can autocreate
-  if(log)
-   log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
-        //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
   if(Metatypes::done == 0)
    new Metatypes();
+  if(log)
+   log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
+  //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
+  if(Class::isAssignableFrom(type,"InstanceManagerAutoDefault"))
+  {
   QObject* obj1;
   try
   {
    obj1 = (QObject*)Class::forName(type);
+   l->append((QObject*)obj1);
+   if(qobject_cast<InstanceManagerAutoInitialize*>(obj1))
+   {
+    ((InstanceManagerAutoInitialize*) obj1)->initialize();
+   }
+  }
+  catch (NoSuchMethodException ex)
+  {
+   log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
+   setInitializationState(type, InitializationState::FAILED);
+   return nullptr;
   }
   catch (ClassNotFoundException ex)
   {
+   log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
    setInitializationState(type, InitializationState::FAILED);
-   obj1 = nullptr;
+   return nullptr;
   }
   catch (std::exception& ex)
   {
+   log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/)/*, ex*/);
    setInitializationState(type, InitializationState::FAILED);
-   log->debug(tr("std::exception creating %1").arg(type));
-   obj1 = nullptr;
+   return nullptr;
   }
-  if(obj1 != nullptr )
-  {
-   QVariant property= obj1->property("InstanceManagerAutoDefault");
-   if(property != QVariant())
-   {
-   try
-   {
-    property = obj1->property("InstanceManagerAutoInitialize");
-    if(property != QVariant())
-    {
-     int methodIndex = obj1->metaObject()->indexOfMethod(QMetaObject::normalizedSignature("initialize()"));
-     if(methodIndex >= 0)
-     {
-      //QMetaMethod  method = obj1->metaObject()->method(methodIndex);
-      if(!QMetaObject::invokeMethod(obj1, QMetaObject::normalizedSignature("initialize"), Qt::DirectConnection))
-       throw NoSuchMethodException(tr("no method initialize found for type %1").arg(type));
-     }
-     else throw NoSuchMethodException(tr("no method initialize found for type %1").arg(type));
-     log->debug(tr("      auto-created default of %1").arg(type/*.getName()*/));
-    }
-    setInitializationState(type, InitializationState::DONE);
-    l->append((QObject*)obj1);
-     //store(obj1, type);
-     return l->value(l->size() - 1);
-
- //      try {
-           //l.add(type.getConstructor((Class[]) null).newInstance((Object[]) null));
-   }
- //      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
- //          log.error("Exception creating auto-default object", e); // unexpected
- //          return null;
- //      }
-    catch (NoSuchMethodException e)
-    {
-     log->error("Exception creating auto-default object", e); // unexpected
-     setInitializationState(type, InitializationState::FAILED);
-     return nullptr;
-    }
-   }
-  }
-  // see if initializer can handle
-  if(log)
-   log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
+  setInitializationState(type, InitializationState::DONE);
+  return l->value(l->size() - 1);
+ }
+ // see if initializer can handle
+ if(log)
+  log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
   //@SuppressWarnings("unchecked")
 //  if(initializers.contains(type))
 //  {
    //QObject* obj = initializers.value(type);//->getDefault(type);//initializer->getDefault(type);
   QObject* obj = ((DefaultInstanceInitializer*)*initializer)->getDefault(type);
-  if(type == "InternalSystemConnectionMemo")
-       obj = obj1;
+//  if(type == "InternalSystemConnectionMemo")
+//       obj = obj1;
   if (obj != nullptr)
   {
    log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));

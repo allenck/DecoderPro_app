@@ -160,7 +160,7 @@ public:
     /*public*/ void updatePaths();
 
 
-    /*public*/ int getState();
+    /*public*/ int getState() override;
     // dummy for completion of NamedBean interface
     /*public*/ void setState(int i) override;
 
@@ -557,9 +557,10 @@ protected:
 
 }; // end class LayoutBlock
 
-class Routes : public QObject
+class Routes : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  LayoutBlock* block;
 public:
     /*public*/ Routes(Block* dstBlock, Block* nxtBlock, int hop, int dir, int met, float len, LayoutBlock* block);
@@ -634,10 +635,11 @@ public:
     * the route with the lowest count is returned.
     */
     /*public*/ int getBlockHopCount(Block* destination, Block* nextBlock);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-    /*public*/ void on_propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 signals:
-    void propertyChange(PropertyChangeEvent*);
+    //void propertyChange(PropertyChangeEvent*);
 
 private:
     int direction;
@@ -702,10 +704,11 @@ private:
 
 };
 
-class ThroughPaths : public QObject
+class ThroughPaths : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
-    LayoutBlock* parent;
+ Q_INTERFACES(PropertyChangeListener)
+ LayoutBlock* parent;
 public:
     ThroughPaths(Block* srcBlock, Path* srcPath, Block* destBlock, Path* dstPath, LayoutBlock * parent);
     Block* getSourceBlock();
@@ -715,10 +718,11 @@ public:
     bool isPathActive();
     void setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>*> turnouts);
     /*/*public*/ QHash<Turnout*, int> getTurnoutList();
+    QObject* self() override{return (QObject*)this;}
 
 public slots:
-    void handlePropertyChange(QString propertyName, Turnout* source, int newVal);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+//    void handlePropertyChange(QString propertyName, Turnout* source, int newVal);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     Block* sourceBlock;

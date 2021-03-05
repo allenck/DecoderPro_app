@@ -3978,7 +3978,7 @@ int LayoutBlock::getRouteIndex(Routes* r){
 
 }
 
-/*public*/ void Routes::on_propertyChange(PropertyChangeEvent* e)
+/*public*/ void Routes::propertyChange(PropertyChangeEvent* e)
 {
  if (e->getPropertyName()==("state"))
  {
@@ -4205,42 +4205,42 @@ void ThroughPaths::setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>
   pathActive=allset;
  }
 }
-void ThroughPaths::handlePropertyChange(QString propertyName, Turnout* source, int newVal)
-{
- if (propertyName==("KnownState"))
- {
-  Turnout* srcTurnout = (Turnout*) source;
-  //int newVal =  e->getNewValue().toInt();
-  int values = _turnouts.value(srcTurnout);
-  bool allset=false;
-  pathActive=false;
-  if (newVal==values)
-  {
-   allset=true;
-   if (_turnouts.size()>1)
-   {
-    //Enumeration<Turnout> en = _turnouts->keys();
-    QHashIterator<Turnout*, int> en(_turnouts);
-    while (en.hasNext())
-    {
-     en.next();
-     Turnout* listTurnout = en.key();
-     if (srcTurnout!=listTurnout)
-     {
-      int state = listTurnout->getState();
-      int required = _turnouts.value(listTurnout);
-      if (state!=required)
-      {
-       allset=false;
-      }
-     }
-    }
-   }
-  }
-  parent->updateActiveThroughPaths(this, allset);
-  pathActive=allset;
- }
-}
+//void ThroughPaths::handlePropertyChange(QString propertyName, Turnout* source, int newVal)
+//{
+// if (propertyName==("KnownState"))
+// {
+//  Turnout* srcTurnout = (Turnout*) source;
+//  //int newVal =  e->getNewValue().toInt();
+//  int values = _turnouts.value(srcTurnout);
+//  bool allset=false;
+//  pathActive=false;
+//  if (newVal==values)
+//  {
+//   allset=true;
+//   if (_turnouts.size()>1)
+//   {
+//    //Enumeration<Turnout> en = _turnouts->keys();
+//    QHashIterator<Turnout*, int> en(_turnouts);
+//    while (en.hasNext())
+//    {
+//     en.next();
+//     Turnout* listTurnout = en.key();
+//     if (srcTurnout!=listTurnout)
+//     {
+//      int state = listTurnout->getState();
+//      int required = _turnouts.value(listTurnout);
+//      if (state!=required)
+//      {
+//       allset=false;
+//      }
+//     }
+//    }
+//   }
+//  }
+//  parent->updateActiveThroughPaths(this, allset);
+//  pathActive=allset;
+// }
+//}
 
 //}; // end ThroughPaths
 

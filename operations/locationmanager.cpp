@@ -423,14 +423,6 @@ PropertyChangeSupport(this, parent)
              .getOldValue(), e.getNewValue()); // NOI18N
  }
 
-
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
 #endif
  /*protected*/ void LocationManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // set dirty

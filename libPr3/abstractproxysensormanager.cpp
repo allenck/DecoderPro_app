@@ -397,7 +397,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
 /*protected*/ Manager/*<E>*/* AbstractProxySensorManager::getManager(/*@Nonnull*/ QString systemName) const {
     // make sure internal present
     initInternal();
-    for (Manager/*<E>*/* m : getManagerList()) {
+    for (AbstractManager/*<E>*/* m : getManagerList()) {
         if (systemName.startsWith(m->getSystemNamePrefix())) {
             return m;
         }
@@ -758,7 +758,7 @@ QString AbstractProxySensorManager::createSystemName(QString curAddress, QString
  */
 /*public*/ QString AbstractProxySensorManager::getSystemPrefix() const {
 //    try {
-      return mgrs.at(0)->getSystemPrefix();
+      return getDefaultManager()->getSystemPrefix();
 //        } catch(IndexOutOfBoundsException* ie) {
 //          return "?";
 //        }
@@ -988,7 +988,7 @@ void AbstractProxySensorManager::propertyChange(PropertyChangeEvent *e)
     initInternal();
 
     // if the systemName is specified, find that system
-    Manager/*<E>*/* m = getManager(systemName);
+    AbstractManager/*<E>*/* m = (AbstractManager*)getManager(systemName);
     if (m != nullptr) {
         return makeBean(m, systemName, userName);
     }

@@ -1,6 +1,7 @@
 #ifndef INTERNALSYSTEMCONNECTIONMEMO_H
 #define INTERNALSYSTEMCONNECTIONMEMO_H
 #include "defaultsystemconnectionmemo.h"
+#include "instancemanagerautodefault.h"
 
 class InternalMeterManager;
 class InternalConsistManager;
@@ -11,9 +12,10 @@ class InternalTurnoutManager;
 class DebugThrottleManager;
 class DefaultPowerManager;
 class DebugProgrammerManager;
-class InternalSystemConnectionMemo : public DefaultSystemConnectionMemo
+class InternalSystemConnectionMemo : public DefaultSystemConnectionMemo, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
 public:
  Q_INVOKABLE /*public*/ InternalSystemConnectionMemo(QObject* parent=nullptr);
  InternalSystemConnectionMemo(QString prefix, QString name, bool defaultInstanceType, QObject* parent = nullptr);

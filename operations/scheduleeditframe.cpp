@@ -94,7 +94,7 @@ namespace Operations
      _track = track;
 
      // load managers
-     manager = ScheduleManager::instance();
+     manager = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
      managerXml = ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"));
 
      // Set up the jtable in a Scroll Pane..

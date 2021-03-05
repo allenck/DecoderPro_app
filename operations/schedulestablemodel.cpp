@@ -19,10 +19,11 @@
 #include "pushbuttondelegate.h"
 #include <QMessageBox>
 #include "operationsxml.h"
+#include "instancemanager.h"
 
 /*private*/ JComboBox* getComboBox(Operations::Schedule* schedule, Operations::SchedulesTableModel* model)
 {
- JComboBox* box = Operations::ScheduleManager::instance()->getSpursByScheduleComboBox(schedule);
+ JComboBox* box = ((Operations::ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getSpursByScheduleComboBox(schedule);
  return box;
 }
 
@@ -55,7 +56,7 @@ namespace Operations
   log = new Logger("SchedulesTableModel");
   comboSelect = QHash<Schedule*, QString>();
 
-  scheduleManager = ScheduleManager::instance();
+  scheduleManager = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
   //scheduleManager.addPropertyChangeListener(this);
   connect(scheduleManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();
@@ -488,7 +489,7 @@ namespace Operations
   {
    Schedule* schedule = model->sysList.at(index.row());
    //editor = new JComboBox(box(si, this->model));
-   JComboBox* b = ScheduleManager::instance()->getSpursByScheduleComboBox(schedule);
+   JComboBox* b = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getSpursByScheduleComboBox(schedule);
    editor = new JComboBox(parent);
    for(int i=0; i < b->count(); i++)
    {

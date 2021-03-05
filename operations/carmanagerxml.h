@@ -3,13 +3,15 @@
 #include "operationsxml.h"
 #include "appslib_global.h"
 #include "instancemanagerautoinitialize.h"
+#include "instancemanagerautodefault.h"
+
 class Logger;
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT CarManagerXml : public OperationsXml, public InstanceManagerAutoInitialize
+ class APPSLIBSHARED_EXPORT CarManagerXml : public OperationsXml, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
-   Q_INTERFACES(InstanceManagerAutoInitialize)
+   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
   Q_INVOKABLE explicit CarManagerXml(QObject *parent = 0);
    ~CarManagerXml() {}

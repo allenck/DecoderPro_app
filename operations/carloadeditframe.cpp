@@ -22,7 +22,7 @@
 #include "schedulemanager.h"
 #include "printcarloadsaction.h"
 #include "carloadattributeaction.h"
-
+#include "instancemanager.h"
 namespace Operations
 {
 /**
@@ -327,7 +327,7 @@ namespace Operations
      CarManager::instance()->replaceLoad(type, oldLoad, newLoad);
      // now adjust schedules
 
-     ScheduleManager::instance()->replaceLoad(type, oldLoad, newLoad);
+     ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->replaceLoad(type, oldLoad, newLoad);
 
      // now adjust trains
      TrainManager::instance()->replaceLoad(type, oldLoad, newLoad);

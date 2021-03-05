@@ -10,7 +10,7 @@ class LIBPR3SHARED_EXPORT DefaultRouteManager : public AbstractRouteManager //, 
 {
     Q_OBJECT
 public:
-    /*Q_INVOKABLE*/ explicit DefaultRouteManager(InternalSystemConnectionMemo* memo, QObject *parent = 0);
+    Q_INVOKABLE explicit DefaultRouteManager(InternalSystemConnectionMemo* memo, QObject *parent = 0);
     ~DefaultRouteManager() {}
     DefaultRouteManager(const DefaultRouteManager& other) : AbstractRouteManager(other.memo) {}
     /*public*/ int getXMLOrder() const override;

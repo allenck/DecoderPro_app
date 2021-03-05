@@ -1,5 +1,6 @@
 #include "schedulesresethitsaction.h"
 #include "schedulemanager.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -22,6 +23,6 @@ namespace Operations
  }
 
  /*public*/ void SchedulesResetHitsAction::actionPerformed(ActionEvent* /*e*/) {
-     ScheduleManager::instance()->resetHitCounts();
+     ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->resetHitCounts();
  }
 }

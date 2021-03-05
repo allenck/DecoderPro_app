@@ -205,7 +205,7 @@
         throw NamedBean::BadSystemNameException(locale, QString("System name \"%1\" is missing suffix.").arg(name),name);
     }
     if (!name.startsWith(prefix)) {
-        throw NamedBean::BadSystemNameException(locale, QString("System name must start with \"%1\".").arg(prefix),prefix);
+        throw NamedBean::BadSystemNameException(locale, QString("System name '%1' must start with \"%1\".").arg(name).arg(prefix),prefix);
     }
     return name;
 }

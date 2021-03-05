@@ -61,8 +61,8 @@ OperationsXml(parent)
      doc.appendChild(root);
 
 
-     LocationManager::instance()->store(root, doc);
-     ScheduleManager::instance()->store(root, doc);
+     ((LocationManager*)InstanceManager::getDefault("LocationManager"))->store(root, doc);
+     ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->store(root, doc);
 
      writeXML(file, doc);
 
@@ -89,8 +89,8 @@ OperationsXml(parent)
          return;
      }
 
-     LocationManager::instance()->load(root);
-     ScheduleManager::instance()->load(root);
+     ((LocationManager*)InstanceManager::getDefault("LocationManager"))->load(root);
+     ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->load(root);
 
      setDirty(false);
      log->debug("Locations have been loaded!");
@@ -104,12 +104,12 @@ OperationsXml(parent)
      return operationsFileName;
  }
 
-//@Override
- /*public*/ void LocationManagerXml::initialize() {
-     this->load();
- }
-
  /*public*/ void LocationManagerXml::dispose(){
      //_instance = nullptr;
  }
+
+ //@Override
+  /*public*/ void LocationManagerXml::initialize() {
+    this->load();
+  }
 }

@@ -56,10 +56,10 @@ namespace Operations
   */
 // /*private*/ /*static*/ ScheduleManager* ScheduleManager::_instance = NULL;
 
- /*public*/ /*static*/ /*synchronized*/ ScheduleManager* ScheduleManager::instance()
- {
-  return static_cast<ScheduleManager*>(InstanceManager::getDefault("ScheduleManager"));
- }
+// /*public*/ /*static*/ /*synchronized*/ ScheduleManager* ScheduleManager::instance()
+// {
+//  return static_cast<ScheduleManager*>(InstanceManager::getDefault("ScheduleManager"));
+// }
 
  /*public*/ void ScheduleManager::dispose() {
      _scheduleHashTable.clear();

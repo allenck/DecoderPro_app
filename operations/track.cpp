@@ -1498,7 +1498,7 @@ if (loads.length() == 0) {
      if (getScheduleId()==(NONE)) {
          return NULL;
      }
-     Schedule* schedule = ScheduleManager::instance()->getScheduleById(getScheduleId());
+     Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getScheduleById(getScheduleId());
      if (schedule == NULL) {
          log->error("No schedule for id: " + getScheduleId());
      }
@@ -1512,7 +1512,7 @@ if (loads.length() == 0) {
      }
      // old code only stored schedule name, so create id if needed.
      if (_scheduleId==(NONE) && _scheduleName!=(NONE)) {
-         Schedule* schedule = ScheduleManager::instance()->getScheduleByName(_scheduleName);
+         Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getScheduleByName(_scheduleName);
          if (schedule == NULL) {
              log->error("No schedule for name: " + _scheduleName);
          } else {
@@ -1526,7 +1526,7 @@ if (loads.length() == 0) {
      QString old = _scheduleId;
      _scheduleId = id;
      if (old!=(id)) {
-         Schedule* schedule = ScheduleManager::instance()->getScheduleById(id);
+         Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getScheduleById(id);
          if (schedule == NULL) {
              _scheduleName = NONE;
          } else {

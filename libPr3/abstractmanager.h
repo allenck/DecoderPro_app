@@ -116,7 +116,7 @@ public:
 //    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
 //    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
 //    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
-    /*public*/ /*final*/ QString getSystemPrefix() const override;
+    /*public*/  QString getSystemPrefix() const /*final*/ override;
     /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)const override;
     /*public*/ void setDataListenerMute(bool m);
     /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e) override;

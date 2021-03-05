@@ -3,6 +3,7 @@
 #include "exceptions.h"
 #include <QDebug>
 #include "loggerfactory.h"
+#include "instancemanagerautodefault.h"
 
 /**
  * Instances of the class {@code Class} represent classes and
@@ -522,8 +523,28 @@
      {
       return false;
      }
+    }
 
-
+    /*public*/ /*static*/ bool Class::isAssignableFrom(QString clazz, QString type){
+     int id = QMetaType::type(clazz.toLocal8Bit());
+     QObject* obj;
+     if(id != 0)
+     {
+      log->debug(tr("Id found %1 typename: %2").arg(id).arg(QMetaType::typeName(id)));
+   #if QT_VERSION < 0x050000
+      obj = (QObject*)QMetaType::construct(id);
+   #else
+      obj = (QObject*)QMetaType::create(id);
+   #endif
+      if(obj == nullptr)
+       return false;
+      //return ((Class*)obj)->isAssignableFrom(type);
+      if(type == "InstanceManagerAutoDefault")
+       return qobject_cast<InstanceManagerAutoDefault*>(obj);
+      return false;
+     }
+     else
+      return false;
     }
 
 #if 0
