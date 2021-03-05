@@ -23,7 +23,7 @@
     : SystemConnectionMemo(parent)
 {
 if(!log)
-log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
+ log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
 
     classObjectMap = QMap</*Class<?>*/QString, Manager*>();
     if (qobject_cast<ConflictingSystemConnectionMemo*>(this)) {
@@ -34,7 +34,7 @@ log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
     log->debug(tr("SystemConnectionMemo created for prefix \"%1\" user name \"%2\"").arg(prefix).arg(userName));
     if (!setSystemPrefix(prefix)) {
         int x = 2;
-        while (!setSystemPrefix(prefix + x)) {
+        while (!setSystemPrefix(prefix + QString::number(x))) {
             x++;
         }
         log->debug(tr("created system prefix %1%2").arg(prefix).arg(x));
@@ -42,7 +42,7 @@ log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
 
     if (!setUserName(userName)) {
         int x = 2;
-        while (!setUserName(userName + x)) {
+        while (!setUserName(userName + QString::number(x))) {
             x++;
         }
         log->debug(tr("created user name %1%2").arg(prefix).arg(x));
@@ -60,7 +60,7 @@ log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
  * This operation should occur only when the SystemConnectionMemo is ready for use.
  */
 /*public*/ void DefaultSystemConnectionMemo::_register() {
-    log->debug(tr("register as SystemConnectionMemo, really of type %1", this->metaObject()->className()));
+    log->debug(tr("register as SystemConnectionMemo, really of type %1").arg(this->metaObject()->className()));
     SystemConnectionMemoManager::getDefault()->_register(this);
 }
 

@@ -125,7 +125,7 @@
     // the one special case that is not caught by validation here
     if (name.trimmed().isEmpty()) { // In Java 9+ use name.isBlank() instead
         //throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameInvalidPrefix", prefix);
-     throw NamedBean::BadSystemNameException(locale, QString("System name must start with \"%21\".").arg(prefix), name, prefix);
+     throw NamedBean::BadSystemNameException(locale, QString("System name must start with \"%1\".").arg(prefix), name, prefix);
     }
     return validateSystemNameFormat(name.startsWith(prefix) ? name : prefix + name, locale);
 }
@@ -205,7 +205,7 @@
         throw NamedBean::BadSystemNameException(locale, QString("System name \"%1\" is missing suffix.").arg(name),name);
     }
     if (!name.startsWith(prefix)) {
-        throw NamedBean::BadSystemNameException(locale, QString("System name '%1' must start with \"%1\".").arg(name).arg(prefix),prefix);
+        throw NamedBean::BadSystemNameException(locale, QString("System name '%1' must start with \"%2\".").arg(name, prefix),prefix);
     }
     return name;
 }

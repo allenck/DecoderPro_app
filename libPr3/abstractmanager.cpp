@@ -745,7 +745,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 //@Override
 /*public*/ /*final*/ QString AbstractManager::getSystemPrefix() const {
    QString prefix =  memo->getSystemPrefix();
-   return prefix;
+   return prefix.mid(0,1); // ACK hack to fiz incorrect prefix
 }
 
 /**

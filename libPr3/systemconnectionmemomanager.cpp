@@ -53,6 +53,8 @@ SystemConnectionMemoManager::SystemConnectionMemoManager()
     InstanceManager::deregister(internal->self(), "SystemConnectionMemo");
     InstanceManager::store(memo->self(), "SystemConnectionMemo");
     InstanceManager::store(internal->self(), "SystemConnectionMemo");
+    InstanceManager::store(internal->self(), "InternalSystemConnectionMemo");
+
   }
   else {
     // just add on end
