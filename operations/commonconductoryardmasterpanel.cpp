@@ -439,8 +439,7 @@ namespace Operations
           locoPaneFrame->setVisible(true);
              pPickupLocos->setVisible(true);
              rollingStock.append(engine);
-             //engine.addPropertyChangeListener(this);
-             connect(engine->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             engine->addPropertyChangeListener(this);
              QCheckBox* checkBox = new QCheckBox(trainCommon->pickupEngine(engine));
              setCheckBoxFont(checkBox);
              pPickupLocos->layout()->addWidget(checkBox);
@@ -450,8 +449,7 @@ namespace Operations
              locoPaneFrame->setVisible(true);
              pSetoutLocos->setVisible(true);
              rollingStock.append(engine);
-             //engine.addPropertyChangeListener(this);
-             connect(engine->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             engine->addPropertyChangeListener(this);
              QCheckBox* checkBox = new QCheckBox(trainCommon->dropEngine(engine));
              setCheckBoxFont(checkBox);
              pSetoutLocos->layout()->addWidget(checkBox);
@@ -512,8 +510,7 @@ namespace Operations
       if (!rollingStock.contains(car))
       {
           rollingStock.append(car);
-          //car.addPropertyChangeListener(this);
-          connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          car->addPropertyChangeListener(this);
       }
       // did we already process this car?
       if (checkBoxes.contains("p" + car->getId()))
@@ -570,8 +567,7 @@ namespace Operations
         setoutPaneFrame->setVisible(true);
         if (!rollingStock.contains(car)) {
             rollingStock.append(car);
-            //car.addPropertyChangeListener(this);
-            connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            car->addPropertyChangeListener(this);
         }
         if (checkBoxes.contains("s" + car->getId())) {
             if (isSetMode && !checkBoxes.value("s" + car->getId())->isChecked()) {
@@ -734,7 +730,7 @@ namespace Operations
 //         rs.removePropertyChangeListener(this);
 //     });
   foreach (RollingStock* rs, rollingStock) {
-   disconnect(rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  rs->removePropertyChangeListener(this);
   }
   rollingStock.clear();
  }

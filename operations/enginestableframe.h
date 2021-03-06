@@ -2,7 +2,7 @@
 #define ENGINESTABLEFRAME_H
 
 #include "operationsframe.h"
-
+#include "propertychangelistener.h"
 class JActionEvent;
 class QButtonGroup;
 class QLabel;
@@ -17,21 +17,23 @@ namespace Operations
  class EngineEditFrame;
  class EngineManager;
  class EnginesTableModel;
- class EnginesTableFrame : public OperationsFrame
+ class EnginesTableFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
- public:
+ Q_INTERFACES(PropertyChangeListener)
+  public:
   explicit EnginesTableFrame(QWidget *parent = 0);
   /*public*/ QList<RollingStock*>* getSortByList();
-  /*public*/ QString getClassName();
+  /*public*/ QString getClassName() override;
+   QObject* self() override {return (QObject*)this; }
 
  signals:
 
  public slots:
   /* public*/ void addButton_clicked();
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void radioButtonActionPerformed(QWidget* source);
-  /*public*/ void buttonActionPerformed(QWidget* source);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void radioButtonActionPerformed(QWidget* source) override;
+  /*public*/ void buttonActionPerformed(QWidget* source) override;
 
  private:
   EnginesTableModel* enginesModel;

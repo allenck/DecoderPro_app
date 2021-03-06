@@ -47,7 +47,7 @@ namespace Operations
      saveButton = new QPushButton(tr("Save"));
      copyCheckBox = new QCheckBox(tr("Copy"));
      textCarType = new QLabel(Empty);
-     typeComboBox = CarTypes::instance()->getComboBox();
+     typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
  }
 
  /*public*/ void TrainsByCarTypeFrame::initComponents(QString carType) {
@@ -110,7 +110,7 @@ namespace Operations
      //manager.addPropertyChangeListener(this);
      connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes::instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
@@ -215,7 +215,7 @@ namespace Operations
 
  /*private*/ void TrainsByCarTypeFrame::updateComboBox() {
      log->debug("update combobox");
-     CarTypes::instance()->updateComboBox(typeComboBox);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
  }
 
  /*private*/ void TrainsByCarTypeFrame::selectCheckboxes(bool b) {
@@ -262,7 +262,7 @@ namespace Operations
      //manager.removePropertyChangeListener(this);
  disconnect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeTrains();
      OperationsFrame::dispose();
  }

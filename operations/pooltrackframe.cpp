@@ -95,17 +95,15 @@ common();
    }
    // the following code sets the frame's initial state
    //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
-   //_track.addPropertyChangeListener(this);
-connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
-   //_track.getLocation().addPropertyChangeListener(this);
-connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+   _track->addPropertyChangeListener(this);
+   _track->getLocation()->addPropertyChangeListener(this);
 
    _pool = _track->getPool();
 
    if (_pool != NULL) {
        //_pool.addPropertyChangeListener(this);
-       connect(_pool->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+       connect(_pool, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
    }
 
    // load the panel
@@ -276,12 +274,12 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
 
          if (_pool != NULL) {
              //_pool.removePropertyChangeListener(this);
-          disconnect(_pool->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+          disconnect(_pool, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
          }
          _pool = (Pool*) VPtr<Pool>::asPtr(comboBoxPools->currentData());
          if (_pool != NULL) {
              //_pool.addPropertyChangeListener(this);
-          connect(_pool->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+          connect(_pool, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
          }
          _track->setPool(_pool);	// this causes a property change to this frame
 
@@ -295,14 +293,12 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
 
  /*public*/ void PoolTrackFrame::dispose() {
      if (_track != NULL) {
-         //_track.removePropertyChangeListener(this);
-      disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
-         //_track.getLocation().removePropertyChangeListener(this);
-      disconnect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+      _track->removePropertyChangeListener(this);
+      _track->getLocation()->removePropertyChangeListener(this);
      }
      if (_pool != NULL) {
          //_pool.removePropertyChangeListener(this);
-      disconnect(_pool->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+      disconnect(_pool, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
      }
      OperationsFrame::dispose();
  }

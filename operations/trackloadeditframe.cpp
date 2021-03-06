@@ -21,6 +21,7 @@
 #include "operationsxml.h"
 #include <QMessageBox>
 #include "carload.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -88,10 +89,10 @@ namespace Operations
   shipLoadNameExclude = new QRadioButton(tr("Exclude"));
 
   // combo box
-  comboBoxLoads = CarLoads::instance()->getComboBox(NULL);
-  comboBoxShipLoads = CarLoads::instance()->getComboBox(NULL);
-  comboBoxTypes = CarTypes::instance()->getComboBox();
-  comboBoxShipTypes = CarTypes::instance()->getComboBox();
+  comboBoxLoads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox(NULL);
+  comboBoxShipLoads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox(NULL);
+  comboBoxTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
+  comboBoxShipTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
 
   // labels
   trackName = new QLabel();
@@ -107,9 +108,9 @@ namespace Operations
   connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   // listen for car load name and type changes
   //CarLoads.instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   // the following code sets the frame's initial state
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -433,9 +434,9 @@ namespace Operations
 
  /*private*/ void TrackLoadEditFrame::updateLoadComboBoxes() {
      QString carType =  comboBoxTypes->currentText();
-     CarLoads::instance()->updateComboBox(carType, comboBoxLoads);
+     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(carType, comboBoxLoads);
      carType =  comboBoxShipTypes->currentText();
-     CarLoads::instance()->updateComboBox(carType, comboBoxShipLoads);
+     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(carType, comboBoxShipLoads);
  }
 
  /*private*/ void TrackLoadEditFrame::updateLoadNames()
@@ -543,7 +544,7 @@ namespace Operations
  }
 
  /*private*/ void TrackLoadEditFrame::updateTypeComboBoxes() {
-     CarTypes::instance()->updateComboBox(comboBoxTypes);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(comboBoxTypes);
      // remove car types not serviced by this location and track
      for (int i = comboBoxTypes->count() - 1; i >= 0; i--) {
          QString type = comboBoxTypes->itemText(i);
@@ -551,7 +552,7 @@ namespace Operations
              comboBoxTypes->removeItem(comboBoxTypes->findText(type));
          }
      }
-     CarTypes::instance()->updateComboBox(comboBoxShipTypes);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(comboBoxShipTypes);
      // remove car types not serviced by this location and track
      for (int i = comboBoxShipTypes->count() - 1; i >= 0; i--) {
          QString type = comboBoxShipTypes->itemText(i);
@@ -578,9 +579,9 @@ namespace Operations
      //_location.removePropertyChangeListener(this);
      disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarLoads.instance().removePropertyChangeListener(this);
-     disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
 

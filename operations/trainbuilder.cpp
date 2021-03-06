@@ -1918,13 +1918,13 @@ namespace Operations
                                      car->getFinalDestination()->getName()));
                              continue;
                          }
-                         if (car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName())
-                                 && car->getLoadName()!=(CarLoads::instance()->getDefaultLoadName())) {
+                         if (car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())
+                                 && car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultLoadName())) {
                              addLine(_buildReport, SEVEN, tr("Not able to block car (%1), it has custom load (%2)").arg(car->toString()).arg(
                                      car->getLoadName()));
                              continue;
                          }
-                         if (car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())
+                         if (car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())
                                  && (_departStageTrack->isAddCustomLoadsEnabled()
                                          || _departStageTrack->isAddCustomLoadsAnySpurEnabled() || _departStageTrack
                                              ->isAddCustomLoadsAnyStagingTrackEnabled())) {
@@ -2780,7 +2780,7 @@ namespace Operations
              // does the train accept the car load from the staging track?
              if (!car->isCaboose()
                      && !car->isPassenger()
-                     && (car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName()) || !departStageTrack
+                     && (car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName()) || !departStageTrack
                              ->isAddCustomLoadsEnabled()
                              && !departStageTrack->isAddCustomLoadsAnySpurEnabled()
                              && !departStageTrack->isAddCustomLoadsAnyStagingTrackEnabled())
@@ -2922,7 +2922,7 @@ namespace Operations
          }
      } else if (_train->getRoadOption()==(Train::EXCLUDE_ROADS)) {
          QStringList roads = QStringList();
-         foreach (QString road, CarRoads::instance()->getNames()) {
+         foreach (QString road, ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getNames()) {
              roads.append(road);
          }
          foreach (QString road, _train->getRoadNames()) {
@@ -2964,7 +2964,7 @@ namespace Operations
          // build a list of loads that the staging track must accept
          QStringList loads = QStringList();
          foreach (QString type, _train->getTypeNames()) {
-             foreach (QString load, CarLoads::instance()->getNames(type)) {
+             foreach (QString load, ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getNames(type)) {
                  if (!loads.contains(load)) {
                      loads.append(load);
                  }
@@ -3011,8 +3011,8 @@ namespace Operations
  /*private*/ bool TrainBuilder::findFinalDestinationForCarLoad(Car* car) //throws BuildFailedException
                                         {
      bool routeToSpurFound = false;
-     if (car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())
-             || car->getLoadName()==(CarLoads::instance()->getDefaultLoadName()) || car->getDestination() != NULL
+     if (car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())
+             || car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultLoadName()) || car->getDestination() != NULL
              || car->getFinalDestination() != NULL) {
          return false; // no schedule found for this car
      }
@@ -3215,7 +3215,7 @@ namespace Operations
 {
      if (car->getTrack() == NULL || car->getTrack()->getTrackType()!=(Track::STAGING)
              || (!car->getTrack()->isAddCustomLoadsAnySpurEnabled() && !car->getTrack()->isAddCustomLoadsEnabled())
-             || car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName()) || car->getDestination() != NULL
+             || car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName()) || car->getDestination() != NULL
              || car->getFinalDestination() != NULL) {
         log->debug(tr("No load generation for car (%1) isAddLoadsAnySpurEnabled: ").arg(car->toString()) // NOI18N
                  +
@@ -3226,7 +3226,7 @@ namespace Operations
          // if car has a destination or /*final*/ destination add "no load generated" message to report
          if (car->getTrack() != NULL && car->getTrack()->getTrackType()==(Track::STAGING)
                  && car->getTrack()->isAddCustomLoadsAnySpurEnabled()
-                 && car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())) {
+                 && car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())) {
              addLine(_buildReport, FIVE, tr("Car (%1) departing staging with load (%2) has destination (%3) or final destination (%4) no load generated for this car").arg(
                      car->toString()).arg(car->getLoadName()).arg(car->getDestinationName()).arg(
                              car->getFinalDestinationName()));
@@ -3236,7 +3236,7 @@ namespace Operations
      addLine(_buildReport, FIVE, tr("Generate load for (%1) type (%2) load (%3) at (%4, %5)").arg(
              car->toString(), car->getTypeName(), car->getLoadName(), car->getLocationName(), car->getTrackName()));
      // check to see if car type has custom loads
-     if (CarLoads::instance()->getNames(car->getTypeName()).size() == 2) {
+     if (((CarLoads*)InstanceManager::getDefault("CarLoads"))->getNames(car->getTypeName()).size() == 2) {
          addLine(_buildReport, SEVEN, tr("Car (%1) type (%2) doesn''t have a custom load,").arg(
                  car->toString(), car->getTypeName()));
          return false;
@@ -3328,7 +3328,7 @@ namespace Operations
 {
      if (car->getTrack() == NULL || car->getTrack()->getTrackType()!=(Track::STAGING)
              || !car->getTrack()->isAddCustomLoadsAnyStagingTrackEnabled()
-             || car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName()) || car->getDestination() != NULL
+             || car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName()) || car->getDestination() != NULL
              || car->getFinalDestination() != NULL) {
         log->debug(tr("No load generation for car (%1) isAddCustomLoadsAnyStagingTrackEnabled: ").arg(car->toString()) // NOI18N
                  +
@@ -3381,7 +3381,7 @@ namespace Operations
              addLine(_buildReport, SEVEN, tr("Staging track (%1, %2) not reachable with custom load (%3)").arg(
                      track->getLocation()->getName()).arg(track->getName()).arg(car->getLoadName()));
              // return car to original state
-             car->setLoadName(CarLoads::instance()->getDefaultEmptyName());
+             car->setLoadName(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName());
              car->setLoadGeneratedFromStaging(false);
              car->setFinalDestination(NULL);
              car->updateKernel();
@@ -3454,8 +3454,8 @@ namespace Operations
   */
  /*private*/ ScheduleItem* TrainBuilder::checkScheduleItem(ScheduleItem* si, Car* car, Track* track) {
      if (car->getTypeName()!=(si->getTypeName()) || si->getReceiveLoadName()==(ScheduleItem::NONE)
-             || si->getReceiveLoadName()==(CarLoads::instance()->getDefaultEmptyName())
-             || si->getReceiveLoadName()==(CarLoads::instance()->getDefaultLoadName())) {
+             || si->getReceiveLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())
+             || si->getReceiveLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultLoadName())) {
         log->debug(tr("Not using track (%1) schedule request type (%2) road (%3) load (%4)").arg(track->getName()).arg(si
                  ->getTypeName()).arg(si->getRoadName()).arg(si->getReceiveLoadName())); // NOI18N
          return NULL;
@@ -3977,7 +3977,7 @@ namespace Operations
                  // only generate a new load if there aren't any other tracks available for this car
              } else if (status.startsWith(Track::LOAD)
                      && car->getTrack() == _departStageTrack
-                     && car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())
+                     && car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())
                      && rldSave == NULL
                      && (_departStageTrack->isAddCustomLoadsAnyStagingTrackEnabled()
                              || _departStageTrack->isAddCustomLoadsEnabled() || _departStageTrack
@@ -4042,8 +4042,8 @@ namespace Operations
                  // Could be a caboose or car with FRED with a custom load
                  // is the destination a spur with a schedule demanding this car's custom load?
                  if (status==(Track::OKAY) && testTrack->getScheduleId()!=(Track::NONE)
-                         && car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName())
-                         && car->getLoadName()!=(CarLoads::instance()->getDefaultLoadName())) {
+                         && car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())
+                         && car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultLoadName())) {
                      addLine(_buildReport, FIVE, tr("Spur (%1) has schedule requesting car load (%2)").arg(
                              testTrack->getName()).arg(car->getLoadName()));
                      addCarToTrain(car, rl, rld, testTrack);
@@ -4066,7 +4066,7 @@ namespace Operations
                          (car->getTrack()->isAddCustomLoadsEnabled() || car->getTrack()
                                  ->isAddCustomLoadsAnySpurEnabled())
                          &&
-                         car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())) {
+                         car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())) {
                      // can we use this track?
                      if (!testTrack->isSpaceAvailable(car)) {
                          addLine(_buildReport, SEVEN, tr("Car (%1) would overload track (%2, %3), currently %4 inbound cars, length (%5) %6, %7% loading from staging").arg(car->toString()).arg(
@@ -4282,10 +4282,10 @@ namespace Operations
          return false;
      }
      // figure out which loads the car can use
-     QStringList loads = CarLoads::instance()->getNames(car->getTypeName());
+     QStringList loads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getNames(car->getTypeName());
      // remove the default names
-     loads.removeOne(CarLoads::instance()->getDefaultEmptyName());
-     loads.removeOne(CarLoads::instance()->getDefaultLoadName());
+     loads.removeOne(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName());
+     loads.removeOne(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultLoadName());
      if (loads.size() == 0) {
         log->debug(tr("No custom loads for car type (%1) ignoring staging track (%2)").arg(car->getTypeName()).arg(stageTrack
                  ->getName()));

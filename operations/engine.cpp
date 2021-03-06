@@ -294,10 +294,8 @@ namespace Operations
 
  /*public*/ void Engine::dispose() {
      setConsist(NULL);
-     //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //EngineLengths.instance().removePropertyChangeListener(this);
-     disconnect(EngineLengths::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->removePropertyChangeListener(this);
+     ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->removePropertyChangeListener(this);
      RollingStock::dispose();
  }
 
@@ -387,10 +385,8 @@ namespace Operations
  }
 
  /*private*/ void Engine::addPropertyChangeListeners() {
-//     EngineTypes.instance().addPropertyChangeListener(this);
- connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//     EngineLengths.instance().addPropertyChangeListener(this);
- connect(EngineLengths::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->addPropertyChangeListener(this);
+  ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->addPropertyChangeListener(this);
  }
 
  /*public*/ void Engine::propertyChange(PropertyChangeEvent* e)

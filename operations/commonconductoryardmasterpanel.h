@@ -2,6 +2,7 @@
 #define COMMONCONDUCTORYARDMASTERPANEL_H
 #include "operationspanel.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class QVBoxLayout;
 class QGroupBox;
@@ -21,16 +22,18 @@ namespace Operations
  class CarManager;
  class TrainCommon;
  class Car;
- class APPSLIBSHARED_EXPORT CommonConductorYardmasterPanel : public OperationsPanel
+ class APPSLIBSHARED_EXPORT CommonConductorYardmasterPanel : public OperationsPanel, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   CommonConductorYardmasterPanel(QWidget* parent = 0);
   /*public*/ void initComponents();
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
   /*public*/ void setCarButtonActionPerfomed(QWidget* ae);
 
  private:

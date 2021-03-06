@@ -5,6 +5,7 @@
 #include <QList>
 #include <QItemDelegate>
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class QSignalMapper;
 class PropertyChangeEvent;
@@ -17,11 +18,12 @@ namespace Operations
  class RollingStock;
  class CarsTableFrame;
  class CarManager;
- class APPSLIBSHARED_EXPORT CarsTableModel : public AbstractTableModel
+ class APPSLIBSHARED_EXPORT CarsTableModel : public AbstractTableModel, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES()
  public:
-  //CarsTableModel();
+  //CarsTableModel(PropertyChangeListener);
   /*public*/ CarsTableModel(bool showAllCars, QString locationName, QString trackName, QObject* parent =0);
   enum SORTOPTIONS
   {
@@ -62,12 +64,14 @@ namespace Operations
   /*public*/ int findCarByRoadNumber(QString roadNumber);
   /*public*/ Car* getCarAtIndex(int index);
   /*public*/ void dispose();
-  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+  QObject* self() override {return (QObject*)this; }
+
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
   /*public*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/);
-  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
-  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+  /*public*/ int getRowCount() const  override{return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() const  override{return columnCount(QModelIndex());}
 
  private:
   CarManager* manager;// = CarManager.instance(); // There is only one manager

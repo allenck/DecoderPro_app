@@ -29,27 +29,6 @@ namespace Operations
 
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ EngineLengths* EngineLengths::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ EngineLengths* EngineLengths::instance()
- {
-  Logger log("EngineLengths");
-     if (_instance == NULL) {
-         if (log.isDebugEnabled()) {
-             log.debug("EngineLengths creating instance");
-         }
-         // create and load
-         _instance = new EngineLengths();
-     }
-     if (Control::showInstance) {
-         log.debug(tr("EngineLengths returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
-
  /*protected*/ QString EngineLengths::getDefaultNames() {
      return LENGTHS;
  }

@@ -47,16 +47,15 @@ namespace Operations
 
  /*public*/ /*static final*/ QString RouteLocation::DISABLED = "Off";
 
- /*public*/ RouteLocation::RouteLocation(QString id, Location* location, QObject *parent) :
-QObject(parent)
+ /*public*/ RouteLocation::RouteLocation(QString id, Location* location, QObject *parent)
+   : PropertyChangeSupport(this, parent)
  {
   common();
   log->debug(tr("New route location (%1) id: %2").arg(location->getName()).arg(id));
    _location = location;
    _id = id;
    // listen for name change or delete
-   //location.addPropertyChangeListener(this);
-   connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   location->addPropertyChangeListener(this);
 
  }
  void RouteLocation::common()
@@ -447,8 +446,7 @@ QObject(parent)
 
 /*public*/ void RouteLocation::dispose() {
      if (_location != NULL) {
-         //_location.removePropertyChangeListener(this);
-      disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _location->removePropertyChangeListener(this);
      }
      firePropertyChange(DISPOSE, QVariant(), DISPOSE);
  }
@@ -459,7 +457,7 @@ QObject(parent)
   *
   * @param e Consist XML element
   */
- /*public*/ RouteLocation::RouteLocation(QDomElement e)
+ /*public*/ RouteLocation::RouteLocation(QDomElement e, QObject* parent) : PropertyChangeSupport(this, parent)
  {
   common();
      // if (log->isDebugEnabled()) log->debug("ctor from element "+e);
@@ -474,15 +472,13 @@ QObject(parent)
          _location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a);
          if (_location != NULL)
          {
-             //_location.addPropertyChangeListener(this);
-          connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          _location->addPropertyChangeListener(this);
          }
      } // old way of storing a route location
      else if ((a = e.attribute (Xml::NAME)) != NULL) {
          _location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(a);
          if (_location != NULL) {
-             //_location.addPropertyChangeListener(this);
-          connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          _location->addPropertyChangeListener(this);
          }
          // force rewrite of route file
          ((RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
@@ -602,8 +598,7 @@ QDomElement e = doc.createElement(Xml::LOCATION);
      }
      if (e->getPropertyName()==(Location::DISPOSE_CHANGED_PROPERTY)) {
          if (_location != NULL) {
-             //_location.removePropertyChangeListener(this);
-          disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          _location->removePropertyChangeListener(this);
          }
          _location = NULL;
      }

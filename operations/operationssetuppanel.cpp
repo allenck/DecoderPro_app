@@ -586,10 +586,10 @@ OperationsPreferencesPanel(parent)
 //          }
 
   if (typeDesc->isChecked()) {
-      CarTypes::instance()->changeDefaultNames(Setup::DESCRIPTIVE);
+      ((CarTypes*)InstanceManager::getDefault("CarTypes"))->changeDefaultNames(Setup::DESCRIPTIVE);
       Setup::setCarTypes(Setup::DESCRIPTIVE);
   } else {
-      CarTypes::instance()->changeDefaultNames(Setup::AAR);
+      ((CarTypes*)InstanceManager::getDefault("CarTypes"))->changeDefaultNames(Setup::AAR);
       Setup::setCarTypes(Setup::AAR);
   }
 

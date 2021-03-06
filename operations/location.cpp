@@ -73,7 +73,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Location::TRACK_BLOCKING_ORDER_CHANGED_PROPERTY = "locationTrackBlockingOrder";// NOI18N
 
  /*public*/ Location::Location(QString id, QString name,QObject *parent)
-  : QObject(parent) {
+  : PropertyChangeSupport(this, parent) {
   common();
   if(log->isDebugEnabled()) log->debug(tr("New location (%1) id: %2").arg(name).arg(id));
   _name = name;
@@ -85,8 +85,8 @@ namespace Operations
   log = new Logger("Location");
     setObjectName("Location");
      // a new location accepts all types
-     setTypeNames(CarTypes::instance()->getNames());
-     setTypeNames(EngineTypes::instance()->getNames());
+     setTypeNames(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+     setTypeNames(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
      addPropertyChangeListeners();
      _id = NONE;
      _name = NONE;
@@ -120,7 +120,6 @@ namespace Operations
      // Pool
      _idPoolNumber = 0;
      _poolHashTable = QHash<QString, Pool*>();
-  pcs = new PropertyChangeSupport(this);
  }
 
  /*public*/ QString Location::getId() {
@@ -1219,24 +1218,18 @@ if (types.length() == 0) {
      foreach (Track* track, tracks) {
          deleteTrack(track);
      }
-     //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //CarRoads.instance().removePropertyChangeListener(this);
-     disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->removePropertyChangeListener(this);
+     ((CarRoads*)InstanceManager::getDefault("CarRoads"))->removePropertyChangeListener(this);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->removePropertyChangeListener(this);
      // Change name in case object is still in use, for example Schedules
      setName(tr("NotValid %1").arg(getName()));
      setDirtyAndFirePropertyChange(DISPOSE_CHANGED_PROPERTY, QVariant(), DISPOSE_CHANGED_PROPERTY);
  }
 
  /*private*/ void Location::addPropertyChangeListeners() {
-     //CarTypes.instance().addPropertyChangeListener(this);
-connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //CarRoads.instance().addPropertyChangeListener(this);
-connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //EngineTypes.instance().addPropertyChangeListener(this);
-connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addPropertyChangeListener(this);
+     ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addPropertyChangeListener(this);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->addPropertyChangeListener(this);
  }
 
  /**
@@ -1245,7 +1238,7 @@ connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), t
   *
   * @param e Consist XML element
   */
- /*public*/ Location::Location(QDomElement e)
+ /*public*/ Location::Location(QDomElement e, QObject* parent) :PropertyChangeSupport(this, parent)
  {
   common();
   // if (log.isDebugEnabled())log->debug("ctor from element "+e);
@@ -1441,8 +1434,8 @@ connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), t
          QString buf;// = new StringBuffer();
          foreach (QString type, types) {
              // remove types that have been deleted by user
-             if (CarTypes::instance()->containsName(type)
-                     || EngineTypes::instance()->containsName(type)) {
+             if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)
+                     || ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
                  buf.append(type + "%%"); // NOI18N
              }
          }
@@ -1453,12 +1446,12 @@ connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), t
               QDomElement eTypes = doc.createElement(Xml::TYPES);
      foreach (QString type, types) {
          // don't save types that have been deleted by user
-         if (EngineTypes::instance()->containsName(type)) {
+         if (((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
              //QDomElement eType = QDomElement (Xml::LOCO_TYPE);
               QDomElement eType = doc.createElement(Xml::LOCO_TYPE);
              eType.setAttribute(Xml::NAME, type);
              eTypes.appendChild(eType);
-         } else if (CarTypes::instance()->containsName(type)) {
+         } else if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)) {
              //QDomElement eType = QDomElement (Xml::CAR_TYPE);
               QDomElement eType = doc.createElement(Xml::CAR_TYPE);
              eType.setAttribute(Xml::NAME, type);
@@ -1581,18 +1574,8 @@ connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), t
      }
  }
 
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
-
  /*protected*/ void Location::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
  ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+     firePropertyChange(p, old, n);
  }
 }

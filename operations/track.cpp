@@ -139,7 +139,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Track::TRACK_BLOCKING_ORDER_CHANGED_PROPERTY = "trackBlockingOrder"; // NOI18N
 
  /*public*/ Track::Track(QString id, QString name, QString type, Location* location,QObject *parent) :
- QObject(parent)
+ PropertyChangeSupport(this, parent)
  {
   common();
   log->debug(tr("New (%1) track (%2) id: %3").arg(type).arg(name).arg(id));
@@ -207,9 +207,8 @@ namespace Operations
 
 
   // a new track accepts all types
-  setTypeNames(CarTypes::instance()->getNames());
-  setTypeNames(EngineTypes::instance()->getNames());
-  pcs = new PropertyChangeSupport(this);
+  setTypeNames(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+  setTypeNames(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
   _typeList = QStringList();
   _loadList = QStringList();
    debugFlag = false;
@@ -1680,13 +1679,13 @@ if (loads.length() == 0) {
    }
    // check roads, accepted by track, valid road, and there's at least one car with that road
    if (si->getRoadName()!=(ScheduleItem::NONE)
-           && (!acceptsRoadName(si->getRoadName()) || !CarRoads::instance()->containsName(si->getRoadName()) ||
+           && (!acceptsRoadName(si->getRoadName()) || !((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(si->getRoadName()) ||
                ((CarManager*)InstanceManager::getDefault("CarManager"))->getByTypeAndRoad(si->getTypeName(), si->getRoadName()) == NULL)) {
        status = (tr("Not Valid <%1>").arg(si->getRoadName()));
        break;
    }
    // check loads
-   QStringList loads = CarLoads::instance()->getNames(si->getTypeName());
+   QStringList loads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getNames(si->getTypeName());
    if (si->getReceiveLoadName()!=(ScheduleItem::NONE)
            && (!acceptsLoad(si->getReceiveLoadName(), si->getTypeName()) || !loads.contains(si
                    ->getReceiveLoadName()))) {
@@ -1755,8 +1754,8 @@ if (loads.length() == 0) {
      }
      if (getScheduleId()==(NONE)) {
          // does car have a scheduled load?
-         if (car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())
-                 || car->getLoadName()==(CarLoads::instance()->getDefaultLoadName())) {
+         if (car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())
+                 || car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultLoadName())) {
              return OKAY; // no
          }
          return tr("carHasA").arg(CUSTOM, LOAD).arg(car->getLoadName());
@@ -2244,7 +2243,7 @@ if (loads.length() == 0) {
   *
   * @param e Consist XML element
   */
- /*public*/ Track::Track(QDomElement e, Location* location)
+ /*public*/ Track::Track(QDomElement e, Location* location) : PropertyChangeSupport(this)
  {
   common();
      _location = location;
@@ -2582,7 +2581,7 @@ if (loads.length() == 0) {
          QString buf;// = new StringBuffer();
          foreach (QString type, types) {
              // remove types that have been deleted by user
-             if (CarTypes::instance()->containsName(type) || EngineTypes::instance()->containsName(type)) {
+             if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type) || ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
                  buf.append(type + "%%"); // NOI18N
              }
          }
@@ -2592,12 +2591,12 @@ if (loads.length() == 0) {
      QDomElement eTypes = doc.createElement(Xml::TYPES);
      foreach (QString type, types) {
          // don't save types that have been deleted by user
-         if (EngineTypes::instance()->containsName(type)) {
+         if (((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
              QDomElement eType = QDomElement();
              eType.setTagName(Xml::LOCO_TYPE);
              eType.setAttribute(Xml::NAME, type);
              eTypes.appendChild(eType);
-         } else if (CarTypes::instance()->containsName(type)) {
+         } else if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)) {
              QDomElement eType =QDomElement();
              eType.setTagName(Xml::CAR_TYPE);
              eType.setAttribute(Xml::NAME, type);
@@ -2784,18 +2783,9 @@ if (loads.length() == 0) {
      return e;
  }
 
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
  /*protected*/ void Track::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+     firePropertyChange(p, old, n);
  }
 
 }

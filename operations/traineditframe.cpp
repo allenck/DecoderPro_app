@@ -471,11 +471,11 @@ namespace Operations
   connect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   // get notified if car types or roads gets modified
   //CarTypes::instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarRoads.instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
-  connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
   connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //LocationManager.instance().addPropertyChangeListener(this);
@@ -862,7 +862,7 @@ namespace Operations
   int numberOfCheckboxes = getNumberOfCheckboxesPerLine();	// number per line
   int x = 0;
   int y = 1; // vertical position in panel
-  foreach (QString type, CarTypes::instance()->getNames())
+  foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames())
   {
    QCheckBox* checkBox = new QCheckBox();
    typeCarCheckBoxes.append(checkBox);
@@ -912,7 +912,7 @@ namespace Operations
   int numberOfCheckboxes = getNumberOfCheckboxesPerLine();	// number per line
   int x = 0;
   int y = 1;
-  foreach (QString type, EngineTypes::instance()->getNames())
+  foreach (QString type, ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames())
   {
    QCheckBox* checkBox = new QCheckBox();
    typeEngineCheckBoxes.append(checkBox);
@@ -1167,13 +1167,13 @@ namespace Operations
 //     LocationManager.instance().removePropertyChangeListener(this);
  disconnect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineTypes.instance().removePropertyChangeListener(this);
- disconnect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineModels.instance().removePropertyChangeListener(this);
  disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarTypes::instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarRoads.instance().removePropertyChangeListener(this);
- disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     routeManager.removePropertyChangeListener(this);
  disconnect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (JmriJFrame* frame, children)

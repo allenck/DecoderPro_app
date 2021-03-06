@@ -28,26 +28,6 @@ namespace Operations
 
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ CarOwners* CarOwners::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarOwners* CarOwners::instance() {
-  Logger log("CarOwners");
-     if (_instance == NULL) {
-         if (log.isDebugEnabled()) {
-             log.debug("CarOwners creating instance");
-         }
-         // create and load
-         _instance = new CarOwners();
-     }
-     if (Control::showInstance) {
-         log.debug(tr("CarOwners returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
-
  /*protected*/ QString CarOwners::getDefaultNames() {
      return ""; // there aren't any
  }

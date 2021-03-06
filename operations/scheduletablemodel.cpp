@@ -63,13 +63,11 @@ namespace Operations
          // TODO the following two property changes could be moved to ScheduleItem
          // covers the cases where destination or track is deleted
          if (si->getDestination() != NULL ) {
-             //.getDestination().addPropertyChangeListener(this);
-          connect(si->getDestination()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             si->getDestination()->addPropertyChangeListener(this);
 
          }
          if (si->getDestinationTrack() != NULL ) {
-             //si.getDestinationTrack().addPropertyChangeListener(this);
-          connect(si->getDestinationTrack()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          si->getDestinationTrack()->addPropertyChangeListener(this);
          }
      }
  }
@@ -87,10 +85,8 @@ namespace Operations
          //_schedule.addPropertyChangeListener(this);
       connect(_schedule->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
-     //_location.addPropertyChangeListener(this);
-     connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //_track.addPropertyChangeListener(this);
-     connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _location->addPropertyChangeListener(this);
+     _track->addPropertyChangeListener(this);
      initTable(table);
  }
 
@@ -221,7 +217,7 @@ namespace Operations
   return QVariant();
  }
 
- /*public*/ QString ScheduleTableModel::getColumnClass(int col) {
+ /*public*/ QString ScheduleTableModel::getColumnClass(int col) const{
      switch (col) {
          case ID_COLUMN:
              return "String";
@@ -467,7 +463,7 @@ namespace Operations
   // log->debug("getRoadComboBox for ScheduleItem "+si->getType());
   QComboBox* cb = new QComboBox();
   cb->addItem(ScheduleItem::NONE);
-  foreach (QString roadName, CarRoads::instance()->getNames())
+  foreach (QString roadName, ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getNames())
   {
    if (getTrack()->acceptsRoadName(roadName))
    {
@@ -490,7 +486,7 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getLoadComboBox(ScheduleItem* si) {
      // log->debug("getLoadComboBox for ScheduleItem "+si->getType());
-     QComboBox* cb = CarLoads::instance()->getSelectComboBox(si->getTypeName());
+     QComboBox* cb = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getSelectComboBox(si->getTypeName());
      filterLoads(si, cb); // remove loads not accepted by this track
      cb->setCurrentIndex(cb->findText(si->getReceiveLoadName()));
      if (cb->currentText()!=(si->getReceiveLoadName())) {
@@ -520,7 +516,7 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getShipComboBox(ScheduleItem* si) {
      // log->debug("getShipComboBox for ScheduleItem "+si->getType());
-     QComboBox* cb = CarLoads::instance()->getSelectComboBox(si->getTypeName());
+     QComboBox* cb = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getSelectComboBox(si->getTypeName());
      cb->setCurrentIndex(cb->findText(si->getShipLoadName()));
      if (cb->currentText()!=(si->getShipLoadName())) {
          QString notValid = tr("Not Valid <%1>").arg(si->getShipLoadName());
@@ -798,12 +794,10 @@ namespace Operations
          //si->removePropertyChangeListener(this);
       disconnect(si->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          if (si->getDestination() != NULL ) {
-             //si->getDestination().removePropertyChangeListener(this);
-          disconnect(si->getDestination()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          si->getDestination()->removePropertyChangeListener(this);
          }
          if (si->getDestinationTrack() != NULL ) {
-             //si->getDestinationTrack().removePropertyChangeListener(this);
-          disconnect(si->getDestinationTrack()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          si->getDestinationTrack()->removePropertyChangeListener(this);
          }
      }
  }
@@ -817,10 +811,8 @@ namespace Operations
          //_schedule.removePropertyChangeListener(this);
          disconnect(_schedule->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
-     //_location.removePropertyChangeListener(this);
-     connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //_track.removePropertyChangeListener(this);
-     connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _location->removePropertyChangeListener(this);
+     _track->removePropertyChangeListener(this);
 
  }
  /*public*/ Track* ScheduleTableModel::getTrack() {return _track;}

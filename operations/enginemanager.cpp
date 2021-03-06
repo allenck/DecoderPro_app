@@ -368,8 +368,8 @@ setProperty("InstanceManagerAutoInitialize", "true");
     }
  //@Override
  /*public*/ void EngineManager::initialize() {
-  static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
-  //static_cast<EngineManagerXml*>(InstanceManager::getDefault("EngineManagerXml", InstanceManager::InitializationState::Done)); // load routes
+  (OperationsSetupXml*)(InstanceManager::getDefault("OperationsSetupXml")); // load setup
+  // create manager to load engines and their attributes
+  (EngineManagerXml*)(InstanceManager::getDefault("EngineManagerXml"));
  }
-
 }

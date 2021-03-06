@@ -45,7 +45,7 @@ namespace Operations
  {
   log = new Logger("CarEditFrame");
   setObjectName("CarEditFrame");
-  carLoads = CarLoads::instance();
+  carLoads = ((CarLoads*)InstanceManager::getDefault("CarLoads"));
 
   // labels
   textSep = new QLabel();
@@ -307,7 +307,7 @@ namespace Operations
 
  // replace the default empty and load for all car types
  /*private*/ void CarLoadEditFrame::replaceAllLoads(QString oldLoad, QString newLoad) {
-     foreach (QString type, CarTypes::instance()->getNames()) {
+     foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
          addLoadToCombobox(type, newLoad);
          replaceLoad(type, oldLoad, newLoad);
          deleteLoadFromCombobox(type, oldLoad);
@@ -373,7 +373,7 @@ namespace Operations
         int ix = loadTypeComboBox->findText(loadType);
         loadTypeComboBox->setCurrentIndex(ix);
         if (loadName != NULL
-                && (loadName==(CarLoads::instance()->getDefaultEmptyName()) || loadName==(CarLoads::instance()
+                && (loadName==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName()) || loadName==(((CarLoads*)InstanceManager::getDefault("CarLoads"))
                         ->getDefaultLoadName()))) {
             loadTypeComboBox->setEnabled(false);
         } else {

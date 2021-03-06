@@ -146,8 +146,8 @@ QObject(parent)
  _name = name;
  _id = id;
  // a new train accepts all types
- setTypeNames(CarTypes::instance()->getNames());
- setTypeNames(EngineTypes::instance()->getNames());
+ setTypeNames(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+ setTypeNames(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
  addPropertyChangeListerners();
 }
 
@@ -991,7 +991,7 @@ _roadList = QStringList();
  /*protected*/ QStringList Train::getCarTypeNames() {
      QStringList list = QStringList();
      foreach (QString type, _typeList) {
-         if (CarTypes::instance()->containsName(type)) {
+         if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)) {
              list.append(type);
          }
      }
@@ -1005,7 +1005,7 @@ _roadList = QStringList();
  /*protected*/ QStringList Train::getLocoTypeNames() {
      QStringList list = QStringList();
      foreach (QString type, _typeList) {
-         if (EngineTypes::instance()->containsName(type)) {
+         if (((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
              list.append(type);
          }
      }
@@ -3489,13 +3489,13 @@ if (roads.length() == 0) {
          //getRoute().removePropertyChangeListener(this);
      }
      //CarRoads.instance().removePropertyChangeListener(this);
-     disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarOwners.instance().removePropertyChangeListener(this);
-     disconnect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        EngineModels.instance().removePropertyChangeListener(this);
      disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -3932,13 +3932,13 @@ if (roads.length() == 0) {
  /*private*/ void Train::addPropertyChangeListerners()
 {
   //CarRoads.instance().addPropertyChangeListener(this);
- connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().addPropertyChangeListener(this);
- connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
- connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarOwners.instance().addPropertyChangeListener(this);
- connect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
   connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -4048,7 +4048,7 @@ if (roads.length() == 0) {
          QString buf = ""; //new StringBuffer();
          foreach (QString type, types) {
              // remove types that have been deleted by user
-             if (CarTypes::instance()->containsName(type) || EngineTypes::instance()->containsName(type)) {
+             if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type) || ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
                  buf.append(type + "%%"); // NOI18N
              }
          }
@@ -4058,11 +4058,11 @@ if (roads.length() == 0) {
      QDomElement eTypes = doc.createElement(Xml::TYPES);
      foreach (QString type, types) {
          // don't save types that have been deleted by user
-         if (EngineTypes::instance()->containsName(type)) {
+         if (((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
              QDomElement eType = doc.createElement(Xml::LOCO_TYPE);
              eType.setAttribute(Xml::NAME, type);
              eTypes.appendChild(eType);
-         } else if (CarTypes::instance()->containsName(type)) {
+         } else if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)) {
              QDomElement eType = doc.createElement(Xml::CAR_TYPE);
              eType.setAttribute(Xml::NAME, type);
              eTypes.appendChild(eType);

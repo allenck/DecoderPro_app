@@ -26,27 +26,6 @@ namespace Operations
 
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ CarLengths* CarLengths::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarLengths* CarLengths::instance()
-{
- Logger* log = new Logger("CarLengths");
-     if (_instance == NULL)
-     {
-         if (log->isDebugEnabled()) {
-             log->debug("CarLengths creating instance");
-         }
-         // create and load
-         _instance = new CarLengths();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("CarLengths returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
 
  /*protected*/ QString CarLengths::getDefaultNames() {
      return LENGTHS;

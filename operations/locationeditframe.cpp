@@ -345,10 +345,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   addCheckBoxTrainAction(westCheckBox);
 
   // add property listeners
-  //CarTypes.instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((CarTypes*)InstanceManager::getDefault("CarTypes"))->addPropertyChangeListener(this);
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
-  connect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // build menu
   QMenuBar* menuBar = new QMenuBar();
@@ -687,8 +687,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
        delete o;
       }
      }
-     loadTypes(CarTypes::instance()->getNames());
-     loadTypes(EngineTypes::instance()->getNames());
+     loadTypes(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+     loadTypes(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
      QWidget* p = new QWidget();
      QHBoxLayout* pLayout = new QHBoxLayout(p);
      pLayout->addWidget(clearButton);
@@ -762,12 +762,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      if (_location == NULL) {
          return;
      }
-    // _location->removePropertyChangeListener(this);
+     _location->removePropertyChangeListener(this);
      disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (b->isChecked()) {
          _location->addTypeName(b->text());
          // show which tracks will service this car type
-         if (CarTypes::instance()->containsName(b->text())) {
+         if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(b->text())) {
 #if 0
              if (lctf != NULL) {
                  lctf.dispose();
@@ -834,9 +834,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      //CarTypes::instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      yardModel->dispose();
      spurModel->dispose();
      interchangeModel->dispose();

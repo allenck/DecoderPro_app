@@ -2,7 +2,7 @@
 #define TRAINSSCHEDULETABLEFRAME_H
 
 #include "operationsframe.h"
-
+#include "propertychangelistener.h"
 class QGroupBox;
 class QButtonGroup;
 class QLabel;
@@ -14,19 +14,22 @@ namespace Operations
  class TrainScheduleManager;
  class LocationManager;
  class TrainsScheduleTableModel;
- class TrainsScheduleTableFrame : public OperationsFrame
+ class TrainsScheduleTableFrame : public OperationsFrame, public PropertyChangeListener
  {
+   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   TrainsScheduleTableFrame(QWidget* parent = 0);
   /*public*/ static /*final*/ QString NAME;// = Bundle.getMessage("Name"); // Sort by choices
   /*public*/ static /*final*/ QString TIME;// = Bundle.getMessage("Time");
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose() override;
+  /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void radioButtonActionPerformed(QWidget* ae);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void radioButtonActionPerformed(QWidget* ae) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
 
  private:
   Logger* log;

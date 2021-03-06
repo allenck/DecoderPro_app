@@ -18,7 +18,7 @@ namespace Operations
  class RollingStock;
  class Pool;
  class Location;
-class APPSLIBSHARED_EXPORT Track : public QObject
+class APPSLIBSHARED_EXPORT Track : public PropertyChangeSupport
 {
  Q_OBJECT
 public:
@@ -100,7 +100,6 @@ public:
  /*public*/ static /*final*/ QString SERVICE_ORDER_CHANGED_PROPERTY; //="trackServiceOrder"; // NOI18N
  /*public*/ static /*final*/ QString ALTERNATE_TRACK_CHANGED_PROPERTY; //="trackAlternate"; // NOI18N
  /*public*/ static /*final*/ QString TRACK_BLOCKING_ORDER_CHANGED_PROPERTY; //="trackBlockingOrder"; // NOI18N
- PropertyChangeSupport* pcs;
  /*public*/ Track* copyTrack(QString newName, Location* newLocation) ;
  /*public*/ QString toString() ;
  /*public*/ QString getId() ;

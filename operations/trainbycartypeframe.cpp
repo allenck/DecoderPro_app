@@ -53,7 +53,7 @@ namespace Operations
      // radio buttons
      // combo boxes
      trainsComboBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainComboBox();
-     typeComboBox = CarTypes::instance()->getComboBox();
+     typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
      carsComboBox = new JComboBox();
  }
 
@@ -121,7 +121,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      //locationManager.addPropertyChangeListener(this);
      connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // listen to all tracks and locations
      addLocationAndTrackPropertyChange();
 
@@ -361,7 +361,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*private*/ void TrainByCarTypeFrame::updateComboBox() {
      log->debug("update combobox");
-     CarTypes::instance()->updateComboBox(typeComboBox);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
  }
 
  /*private*/ void TrainByCarTypeFrame::updateCarsComboBox() {
@@ -434,7 +434,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      //locationManager.removePropertyChangeListener(this);
  disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removeLocationAndTrackPropertyChange();
      if (_train != NULL) {
          //_train->removePropertyChangeListener(this);

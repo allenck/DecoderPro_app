@@ -8,9 +8,10 @@ namespace Operations
 {
  class CarLoads;
  class Kernel;
- class APPSLIBSHARED_EXPORT Car : public RollingStock
+ class APPSLIBSHARED_EXPORT Car : public RollingStock//, public PropertyChangeListener
  {
   Q_OBJECT
+   //Q_INTERFACES(PropertyChangeListener)
  public:
   Car(QObject* parent = 0);
   /*public*/ Car(QString road, QString number,QObject* parent =0);
@@ -92,13 +93,14 @@ namespace Operations
   /*public*/ void setReturnWhenEmptyDestTrack(Track* track);
   /*public*/ void updateLoad();
   /*public*/ void reset();
-  /*public*/ QString testDestination(Location* destination, Track* track);
+  /*public*/ QString testDestination(Location* destination, Track* track)override;
   /*public*/ void loadNext(Track* destTrack);
   /*public*/ QString setDestination(Location* destination, Track* track);
   /*public*/ QString setDestination(Location* destination, Track* track, bool force);
+  QObject* self() override {return (QObject*)this; }
 
 public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   Logger* log;

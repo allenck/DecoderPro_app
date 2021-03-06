@@ -103,14 +103,14 @@ namespace Operations
   valueTextField = new JTextField(8);
 
   // combo boxes
-  roadComboBox = CarRoads::instance()->getComboBox();
-  typeComboBox = CarTypes::instance()->getComboBox();
+  roadComboBox = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
+  typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
   colorComboBox = ((CarColors*)InstanceManager::getDefault("CarColors"))->getComboBox();
-  lengthComboBox = CarLengths::instance()->getComboBox();
+  lengthComboBox = ((CarLengths*)InstanceManager::getDefault("CarLengths"))->getComboBox();
   ownerComboBox = new JComboBox(); //.instance().getComboBox();
   locationBox = locationManager->getComboBox();
   trackLocationBox = new JComboBox();
-  loadComboBox = CarLoads::instance()->getComboBox();
+  loadComboBox = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox();
   kernelComboBox = carManager->getKernelComboBox();
   rfidComboBox = new JComboBox();
 
@@ -402,60 +402,39 @@ namespace Operations
   // setJMenuBar(menuBar);
   addHelpMenu("package.jmri.jmrit.operations.Operations_CarsEdit", true); // NOI18N
 
-  // get notified if combo box gets modified
-  //CarRoads::instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //CarLoads::instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //CarTypes.instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//     CarLengths.instance().addPropertyChangeListener(this);
-  connect(CarLengths::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//     CarColors.instance().addPropertyChangeListener(this);
-  connect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//     CarOwners.instance().addPropertyChangeListener(this);
-  connect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //locationManager.addPropertyChangeListener(this);
-  connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //carManager.addPropertyChangeListener(this);
-  connect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
-  adjustSize();
-  setMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
-  setVisible(true);
  }
 
  /*public*/ void CarEditFrame::loadCar(Car* car) {
      _car = car;
 
-     if (!CarRoads::instance()->containsName(car->getRoadName())) {
+     if (!((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(car->getRoadName())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("roadNameNotExist"),
 //                 new Object[]{car.getRoadName()}), tr("carAddRoad"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add road name?"), tr("Road name \"%1\" does not exist in your roster, add?").arg(car->getRoadName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
       {
-             CarRoads::instance()->addName(car->getRoadName());
+             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addName(car->getRoadName());
          }
      }
      roadComboBox->setCurrentIndex(roadComboBox->findText(car->getRoadName()));
 
      roadNumberTextField->setText(car->getNumber());
 
-     if (!CarTypes::instance()->containsName(car->getTypeName())) {
+     if (!((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(car->getTypeName())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("typeNameNotExist"),
 //                 new Object[]{car.getTypeName()}), tr("carAddType"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add car type?"), tr("Type \"%1\" does not exist in your roster, add?").arg(car->getTypeName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
       {
-             CarTypes::instance()->addName(car->getTypeName());
+             ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addName(car->getTypeName());
          }
      }
      typeComboBox->setCurrentIndex(typeComboBox->findText(car->getTypeName()));
 
-     if (!CarLengths::instance()->containsName(car->getLength())) {
+     if (!((CarLengths*)InstanceManager::getDefault("CarLengths"))->containsName(car->getLength())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("lengthNameNotExist"),
 //                 new Object[]{car.getLength()}), tr("carAddLength"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add car length?"), tr("Length \"%1\" does not exist in your roster, add?").arg(car->getLength()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
       {
-             CarLengths::instance()->addName(car->getLength());
+             ((CarLengths*)InstanceManager::getDefault("CarLengths"))->addName(car->getLength());
          }
      }
      lengthComboBox->setCurrentIndex(lengthComboBox->findText(car->getLength()));
@@ -486,28 +465,28 @@ namespace Operations
 
      builtTextField->setText(car->getBuilt());
 
-     if (!CarOwners::instance()->containsName(car->getOwner())) {
+     if (!((CarOwners*)InstanceManager::getDefault("CarOwners"))->containsName(car->getOwner())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("ownerNameNotExist"),
 //                 new Object[]{car.getOwner()}), tr("addOwner"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add owner?"), tr("Owner \"%1\" does not exist in your roster, add?").arg(car->getOwner()), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
       {
-       CarOwners::instance()->addName(car->getOwner());
+       ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addName(car->getOwner());
       }
      }
      ownerComboBox->setCurrentIndex(ownerComboBox->findText(car->getOwner()));
 
-     if (!CarLoads::instance()->containsName(car->getTypeName(), car->getLoadName())) {
+     if (!((CarLoads*)InstanceManager::getDefault("CarLoads"))->containsName(car->getTypeName(), car->getLoadName())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("loadNameNotExist"),
 //                 new Object[]{car.getLoadName()}), tr("addLoad"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add load?"), tr("Load \"%1\" does not exist in your roster, add?").arg(car->getLoadName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
       {
-             CarLoads::instance()->addName(car->getTypeName(), car->getLoadName());
+             ((CarLoads*)InstanceManager::getDefault("CarLoads"))->addName(car->getTypeName(), car->getLoadName());
          }
      }
      // listen for changes in car load
      //car.addPropertyChangeListener(this);
      connect(car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     CarLoads::instance()->updateComboBox(car->getTypeName(), loadComboBox);
+     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(car->getTypeName(), loadComboBox);
      loadComboBox->setCurrentIndex(loadComboBox->findText(car->getLoadName()));
 
      kernelComboBox->setCurrentIndex(kernelComboBox->findText(car->getKernelName()));
@@ -527,7 +506,7 @@ namespace Operations
  JComboBox* source = (JComboBox*)ae;
      if (source == typeComboBox && typeComboBox->currentText() != NULL) {
          log->debug("Type comboBox sees change, update car loads");
-         CarLoads::instance()->updateComboBox( typeComboBox->currentText(), loadComboBox);
+         ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox( typeComboBox->currentText(), loadComboBox);
          // turnout off auto for location tracks
          autoTrackCheckBox->setChecked(false);
          autoTrackCheckBox->setEnabled(false);
@@ -903,7 +882,7 @@ namespace Operations
               {
                      // go through the entire list and change the loads for all cars
                      foreach (Car* car, cars) {
-                         if (CarLoads::instance()->containsName(car->getTypeName(), _car->getLoadName())) {
+                         if (((CarLoads*)InstanceManager::getDefault("CarLoads"))->containsName(car->getTypeName(), _car->getLoadName())) {
                              car->setLoadName(_car->getLoadName());
                          }
                      }
@@ -1037,11 +1016,11 @@ namespace Operations
  /*private*/ void CarEditFrame::removePropertyChangeListeners()
  {
   //CarRoads::instance().removePropertyChangeListener(this);
-  disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //CarLoads::instance().removePropertyChangeListener(this);
-  disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((CarLoads*)InstanceManager::getDefault("CarLoads")).removePropertyChangeListener(this);
+  disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().removePropertyChangeListener(this);
-  disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //  CarLengths.instance().removePropertyChangeListener(this);
 //  CarColors.instance().removePropertyChangeListener(this);
   disconnect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -1062,13 +1041,13 @@ namespace Operations
                  ->getNewValue().toString()));
      }
      if (e->getPropertyName()==(CarRoads::CARROADS_CHANGED_PROPERTY)) {
-         CarRoads::instance()->updateComboBox(roadComboBox);
+         ((CarRoads*)InstanceManager::getDefault("CarRoads"))->updateComboBox(roadComboBox);
          if (_car != NULL) {
              roadComboBox->setCurrentIndex(roadComboBox->findText(_car->getRoadName()));
          }
      }
      if (e->getPropertyName()==(CarTypes::CARTYPES_CHANGED_PROPERTY)) {
-         CarTypes::instance()->updateComboBox(typeComboBox);
+         ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
          if (_car != NULL) {
              typeComboBox->setCurrentIndex(typeComboBox->findText(_car->getTypeName()));
          }
@@ -1081,7 +1060,7 @@ namespace Operations
          }
      }
      if (e->getPropertyName()==(CarLengths::CARLENGTHS_CHANGED_PROPERTY)) {
-         CarLengths::instance()->updateComboBox(lengthComboBox);
+         ((CarLengths*)InstanceManager::getDefault("CarLengths"))->updateComboBox(lengthComboBox);
          if (_car != NULL) {
              lengthComboBox->setCurrentIndex(lengthComboBox->findText(_car->getLength()));
          }
@@ -1096,7 +1075,7 @@ namespace Operations
      }
 
      if (e->getPropertyName()==(CarOwners::CAROWNERS_CHANGED_PROPERTY)) {
-         CarOwners::instance()->updateComboBox(ownerComboBox);
+         ((CarOwners*)InstanceManager::getDefault("CarOwners"))->updateComboBox(ownerComboBox);
          if (_car != NULL) {
              ownerComboBox->setCurrentIndex(ownerComboBox->findText(_car->getOwner()));
          }
@@ -1117,7 +1096,7 @@ namespace Operations
      }
      if (e->getPropertyName()==(CarLoads::LOAD_CHANGED_PROPERTY)) {
          if (_car != NULL) {
-             CarLoads::instance()->updateComboBox(typeComboBox->currentText(), loadComboBox);
+             ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(typeComboBox->currentText(), loadComboBox);
              loadComboBox->setCurrentIndex(loadComboBox->findText(_car->getLoadName()));
          }
      }

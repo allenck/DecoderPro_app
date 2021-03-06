@@ -2,6 +2,7 @@
 #define LOCATIONEDITFRAME_H
 #include "operationsframe.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class QGroupBox;
 class JTextArea;
@@ -22,23 +23,25 @@ namespace Operations
  class InterchangeTableModel;
  class YardTableModel;
  class SpurTableModel;
- class APPSLIBSHARED_EXPORT LocationEditFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT LocationEditFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   /*public*/ LocationEditFrame(Location* location, QWidget* parent= 0);
   /*public*/ static /*final*/ QString NAME;// = Bundle.getMessage("Name");
   /*public*/ static /*final*/ int MAX_NAME_LENGTH;// = Control.max_len_string_location_name;
   /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose()override;
+  /*public*/ QString getClassName()override;
+   QObject* self() override {return (QObject*)this; }
 
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
-  /*public*/ void radioButtonActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override;
+  /*public*/ void buttonActionPerformed(QWidget* ae)override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae)override;
+  /*public*/ void radioButtonActionPerformed(QWidget* ae)override;
 
 
  private:

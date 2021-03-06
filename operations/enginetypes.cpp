@@ -32,27 +32,6 @@ RollingStockAttribute(parent) {
 
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ EngineTypes* EngineTypes::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ EngineTypes* EngineTypes::instance()
- {
-  Logger* log = new Logger("EngineTypes");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("EngineTypes creating instance");
-         }
-         // create and load
-         _instance = new EngineTypes();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("EngineTypes returns instance %1}").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
-
  /*protected*/ QString EngineTypes::getDefaultNames() {
      return TYPES;
  }

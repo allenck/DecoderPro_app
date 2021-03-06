@@ -2,6 +2,7 @@
 #define ENGINESTABLEMODEL_H
 #include "abstracttablemodel.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class Logger;
 class PropertyChangeEvent;
@@ -12,9 +13,10 @@ namespace Operations
  class EnginesTableFrame;
  class RollingStock;
  class EngineManager;
- class APPSLIBSHARED_EXPORT EnginesTableModel : public AbstractTableModel
+ class APPSLIBSHARED_EXPORT EnginesTableModel : public AbstractTableModel, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   explicit EnginesTableModel(QObject *parent = 0);
  enum SORTOPTIONS
@@ -35,20 +37,21 @@ namespace Operations
    SORTBYHP = 14
  };
  /*public*/ QList<RollingStock*>* getSelectedEngineList();
- /*public*/ int rowCount(const QModelIndex &parent) const;
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
+ /*public*/ int rowCount(const QModelIndex &parent) const override;
+ /*public*/ int columnCount(const QModelIndex &parent) const override;
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  /*public*/ void dispose() ;
  /*public*/ void setSort(int sort);
  /*public*/ int findEngineByRoadNumber(QString roadNumber);
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ QObject* self() override {return (QObject*)this; }
 
  signals:
 
  public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
 

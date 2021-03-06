@@ -153,9 +153,9 @@ namespace Operations
              // car number
              number = padAttribute(car->getNumber().trimmed(), Control::max_len_string_print_road_number);
              // car road
-             road = padAttribute(car->getRoadName().trimmed(), CarRoads::instance()->getMaxNameLength());
+             road = padAttribute(car->getRoadName().trimmed(), ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getMaxNameLength());
              // car type
-             type = padAttribute(car->getTypeName().trimmed(), CarTypes::instance()->getMaxFullNameLength());
+             type = padAttribute(car->getTypeName().trimmed(), ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxFullNameLength());
 
              if (cpof->printCarLength->isChecked()) {
                  length = padAttribute(car->getLength().trimmed(), Control::max_len_string_length_name);
@@ -167,13 +167,13 @@ namespace Operations
                  color = padAttribute(car->getColor().trimmed(), ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength());
              }
              if (cpof->printCarLoad->isChecked()) {
-                 load = padAttribute(car->getLoadName().trimmed(), CarLoads::instance()->getMaxNameLength());
+                 load = padAttribute(car->getLoadName().trimmed(), ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength());
              }
              if (cpof->printCarKernel->isChecked()) {
                  kernel = padAttribute(car->getKernelName().trimmed(), Control::max_len_string_attibute);
              }
              if (cpof->printCarOwner->isChecked()) {
-                 owner = padAttribute(car->getOwner().trimmed(), CarOwners::instance()->getMaxNameLength());
+                 owner = padAttribute(car->getOwner().trimmed(), ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getMaxNameLength());
              }
              if (cpof->printCarBuilt->isChecked()) {
                  built = padAttribute(car->getBuilt().trimmed(), Control::max_len_string_built_name);
@@ -244,16 +244,16 @@ namespace Operations
  /*private*/ void PrintCarRosterAction::printTitleLine(HardcopyWriter* writer) //throws IOException
  {
      QString s = padAttribute(tr("Number"), Control::max_len_string_print_road_number)
-             + padAttribute(tr("Road"), CarRoads::instance()->getMaxNameLength())
-             + padAttribute(tr("Type"), CarTypes::instance()->getMaxFullNameLength())
+             + padAttribute(tr("Road"), ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getMaxNameLength())
+             + padAttribute(tr("Type"), ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxFullNameLength())
              + (cpof->printCarLength->isChecked() ? tr("Len") + "  " : "")
              + (cpof->printCarWeight->isChecked() ? "     " : "")
              + (cpof->printCarColor->isChecked() ? padAttribute(tr("Color"), ((CarColors*)InstanceManager::getDefault("CarColors"))
                              ->getMaxNameLength()) : "")
-             + (cpof->printCarLoad->isChecked() ? padAttribute(tr("Load"), CarLoads::instance()
+             + (cpof->printCarLoad->isChecked() ? padAttribute(tr("Load"), ((CarLoads*)InstanceManager::getDefault("CarLoads"))
                              ->getMaxNameLength()) : "")
              + (cpof->printCarKernel->isChecked() ? padAttribute(("Kernel"), Control::max_len_string_attibute) : "")
-             + (cpof->printCarOwner->isChecked() ? padAttribute(tr("Owner"), CarOwners::instance()->getMaxNameLength()) : "")
+             + (cpof->printCarOwner->isChecked() ? padAttribute(tr("Owner"), ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getMaxNameLength()) : "")
              + (cpof->printCarBuilt->isChecked() ? tr("Built") + " " : "")
              + (cpof->printCarLast->isChecked() ? tr("LastMoved") + " " : "")
              + (cpof->printCarWait->isChecked() ? tr("Wait") + " " : "")

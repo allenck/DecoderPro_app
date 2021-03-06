@@ -452,15 +452,13 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*private*/ void TrainsScheduleTableFrame::addPropertyChangeLocations() {
      foreach (Location* location, locationManager->getList()) {
-         //location.addPropertyChangeListener(this);
-      connect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      location->addPropertyChangeListener(this);
      }
  }
 
  /*private*/ void TrainsScheduleTableFrame::removePropertyChangeLocations() {
      foreach (Location* location, locationManager->getList()) {
-         //location.removePropertyChangeListener(this);
-         disconnect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         location->removePropertyChangeListener(this);
      }
  }
 

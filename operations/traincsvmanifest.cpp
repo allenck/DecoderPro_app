@@ -192,7 +192,7 @@ TrainCsvManifest::TrainCsvManifest()
    {
     cars--;
     newWork = true;
-    if (CarLoads::instance()->getLoadType(car->getTypeName(), car->getLoadName()) == (
+    if (((CarLoads*)InstanceManager::getDefault("CarLoads"))->getLoadType(car->getTypeName(), car->getLoadName()) == (
             CarLoad::LOAD_TYPE_EMPTY)) {
         emptyCars--;
     }

@@ -24,7 +24,6 @@ namespace Operations
   /*public*/ static /*final*/ QString LOAD_PRIORITY_CHANGED_PROPERTY;// = "CarLoads_Load_Priority"; // NOI18N
   /*public*/ static /*final*/ QString LOAD_NAME_CHANGED_PROPERTY;// = "CarLoads_Name"; // NOI18N
   /*public*/ static /*final*/ QString LOAD_COMMENT_CHANGED_PROPERTY;// = "CarLoads_Load_Comment"; // NOI18N
-  /*public*/ static /*synchronized*/ CarLoads* instance();
   /*public*/ void addType(QString type);
   /*public*/ void replaceType(QString oldType, QString newType);
   /*public*/ QString getDefaultEmptyName();
@@ -59,7 +58,6 @@ namespace Operations
   /**
    * record the single instance *
    */
-  /*private*/ static CarLoads* _instance;// = null;
   Logger* log;
   /*private*/ QList<CarLoad*>* getSortedList(QString type);
 

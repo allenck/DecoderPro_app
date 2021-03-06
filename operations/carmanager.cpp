@@ -493,7 +493,7 @@ RollingStockManager(parent)
              if (newLoadName != NULL) {
                  car->setLoadName(newLoadName);
              } else {
-                 car->setLoadName(CarLoads::instance()->getDefaultEmptyName());
+                 car->setLoadName(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName());
              }
          }
      }

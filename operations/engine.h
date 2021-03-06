@@ -3,6 +3,7 @@
 #include "rollingstock.h"
 #include <QtXml>
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class QDomElement;
@@ -11,9 +12,10 @@ namespace Operations
 {
  class EngineModels;
  class Consist;
- class APPSLIBSHARED_EXPORT Engine : public RollingStock
+ class APPSLIBSHARED_EXPORT Engine : public RollingStock//, public PropertyChangeListener
  {
   Q_OBJECT
+  //Q_INTERFACES(PropertyChangeListener)
  public:
   //explicit Engine(QObject *parent = 0);
   /*public*/ Engine(QString road, QString number, QObject *parent = 0);
@@ -40,10 +42,11 @@ namespace Operations
   /*public*/ void setBunit(bool bUnit) ;
   /*public*/ bool isBunit();
 
+   QObject* self() override {return (QObject*)this; }
  signals:
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   /*private*/ Consist* _consist;// = null;

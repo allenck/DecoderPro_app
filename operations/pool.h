@@ -1,7 +1,7 @@
 #ifndef POOL_H
 #define POOL_H
 
-#include <QObject>
+#include "bean.h"
 #include "appslib_global.h"
 
 class Logger;
@@ -9,7 +9,7 @@ class PropertyChangeSupport;
 namespace Operations
 {
  class Track;
- class APPSLIBSHARED_EXPORT Pool : public QObject
+ class APPSLIBSHARED_EXPORT Pool : public Bean
  {
   Q_OBJECT
  public:
@@ -28,7 +28,6 @@ namespace Operations
   /*public*/ QList<Track*> getTracks();
   /*public*/ int getTotalLengthTracks() ;
   /*public*/ bool requestTrackLength(Track* track, int length);
-  PropertyChangeSupport* propertyChangeSupport;
 
  signals:
 

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QHash>
 #include "appslib_global.h"
+#include "rollingstock.h"
 
 class PropertyChangeSupport;
 class PropertyChangeListener;
@@ -12,10 +13,11 @@ namespace Operations
 
  class RollingStock;
  class Train;
- class APPSLIBSHARED_EXPORT RollingStockManager : public QObject
+ class APPSLIBSHARED_EXPORT RollingStockManager : public RollingStock//, public PropertyChangeListener
  {
   Q_OBJECT
- public:
+  //Q_INTERFACES(PropertyChangeListener)
+  public:
   explicit RollingStockManager(QObject *parent = 0);
   /*public*/ static /*final*/ QString NONE;// = "";
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "RollingStockListLength"; // NOI18N
@@ -23,7 +25,6 @@ namespace Operations
   /*public*/ void dispose();
   /*public*/ RollingStock* getById(QString id);
   /*public*/ RollingStock* getByRoadAndNumber(QString road, QString number);
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ void deleteAll();
   /*public*/ void _register(RollingStock* rs);
   /*public*/ void deregister(RollingStock* rs);
@@ -50,12 +51,15 @@ namespace Operations
   /*public*/ QList<RollingStock*>* getByLastDateList(QList<RollingStock*>* inList);
   /*public*/ QList<RollingStock*>* getByTrainList(Train* train);
   /*public*/ void resetMoves();
-  /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+  /*public*/ QList<RollingStock*> getList(Location* location);
+  /*public*/ QList<RollingStock *> getList(Track* track);
+  QObject* self() override {return (QObject*)this; }
 
  signals:
 
  public slots:
+  /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
+
  private:
   /*private*/ static /*final*/ int pageSize;// = 64;
 
@@ -63,7 +67,7 @@ namespace Operations
  protected:
   // RollingStock
   /*protected*/ QHash<QString, RollingStock*> _hashTable;// = new Hashtable<String, RollingStock>();
-  /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+  ///*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
   /*protected*/ QList<RollingStock*>* getByList(QList<RollingStock*>* sortIn, int attribute);
   // The various sort options for RollingStock
   // see CarManager and EngineManger for other values

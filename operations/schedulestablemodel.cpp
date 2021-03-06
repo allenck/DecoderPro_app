@@ -179,7 +179,7 @@ namespace Operations
   return QVariant();
  }
 
- /*public*/ QString SchedulesTableModel::getColumnClass(int col) {
+ /*public*/ QString SchedulesTableModel::getColumnClass(int col) const{
      switch (col) {
          case ID_COLUMN:
              return "String";
@@ -397,16 +397,14 @@ namespace Operations
  /*private*/ void SchedulesTableModel::addPropertyChangeTracks() {
      // only spurs have schedules
      foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getTracks(Track::SPUR)) {
-         //track.addPropertyChangeListener(this);
-         connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         track->addPropertyChangeListener(this);
      }
 
  }
 
  /*private*/ void SchedulesTableModel::removePropertyChangeTracks() {
      foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getTracks(Track::SPUR)) {
-         //track.removePropertyChangeListener(this);
-         disconnect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         track->removePropertyChangeListener(this);
      }
  }
 

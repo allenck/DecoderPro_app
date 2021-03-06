@@ -62,8 +62,8 @@ namespace Operations
   // radio buttons
   // text field
   // combo boxes
-  typeComboBox = CarTypes::instance()->getComboBox();
-  loadComboBox = CarLoads::instance()->getComboBox(NULL);
+  typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
+  loadComboBox = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox(NULL);
 
  }
 
@@ -141,9 +141,9 @@ namespace Operations
   //locationManager.addPropertyChangeListener(this);
   connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes::instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //CarLoads::instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((CarLoads*)InstanceManager::getDefault("CarLoads")).addPropertyChangeListener(this);
+  connect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // build menu
   QMenuBar* menuBar = new QMenuBar();
@@ -286,7 +286,7 @@ namespace Operations
 
  /*private*/ void LocationsByCarLoadFrame::updateTypeComboBox() {
      log->debug("update type combobox");
-     CarTypes::instance()->updateComboBox(typeComboBox);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
  }
 
  /*private*/ void LocationsByCarLoadFrame::updateLoadComboBox() {
@@ -295,7 +295,7 @@ namespace Operations
          QString type =  typeComboBox->currentText();
          QString load =  loadComboBox->currentText();
          log->debug(tr("Selected car type : (%1) load (%2)").arg(type).arg(load));
-         CarLoads::instance()->updateComboBox(type, loadComboBox);
+         ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(type, loadComboBox);
          loadComboBox->setEnabled(false); // used as a flag to prevent updateLocations()
          if (load != NULL) {
              loadComboBox->setCurrentIndex(loadComboBox->findText(load));
@@ -467,9 +467,9 @@ namespace Operations
      //locationManager.removePropertyChangeListener(this);
      disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes::instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //CarLoads::instance().removePropertyChangeListener(this);
-     disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((CarLoads*)InstanceManager::getDefault("CarLoads")).removePropertyChangeListener(this);
+     disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeLocations();
      OperationsFrame::dispose();
  }

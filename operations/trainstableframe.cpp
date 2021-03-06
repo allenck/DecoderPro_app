@@ -592,8 +592,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void TrainsTableFrame::addPropertyChangeLocations() {
      QList<Location*> locations = locationManager->getList();
      foreach (Location* location, locations) {
-         //location.addPropertyChangeListener(this);
-      connect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+      location->addPropertyChangeListener(this);
 
      }
  }
@@ -601,8 +600,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void TrainsTableFrame::removePropertyChangeLocations() {
      QList<Location*> locations = locationManager->getList();
      foreach (Location* location, locations) {
-         //location.removePropertyChangeListener(this);
-      disconnect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+      location->removePropertyChangeListener(this);
      }
  }
 

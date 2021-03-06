@@ -365,11 +365,11 @@ namespace Operations
                                  }
                              } else {
                                  newLine(fileOut, QString(messageFormatText = TrainSwitchListText::getStringHoldCar()).arg(
-                                         padAndTruncateString(car->getRoadName(), CarRoads::instance()->getMaxNameLength())).arg(
+                                         padAndTruncateString(car->getRoadName(), ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(car->getNumber(), Control::max_len_string_print_road_number)).arg(
-                                                 padAndTruncateString(car->getTypeName().split("-")[0], CarTypes::instance()->getMaxNameLength())).arg(
+                                                 padAndTruncateString(car->getTypeName().split("-")[0], ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(car->getLength() + LENGTHABV, Control::max_len_string_length_name)).arg(
-                                                 padAndTruncateString(car->getLoadName(), CarLoads::instance()->getMaxNameLength())).arg(
+                                                 padAndTruncateString(car->getLoadName(), ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(trackName, locationManager->getMaxTrackNameLength())).arg(
                                                  padAndTruncateString(car->getColor(), ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength())));
                              }

@@ -113,8 +113,7 @@ namespace Operations
   deleteTrackCheckBox->setEnabled(moveRollingStockCheckBox->isChecked());
 
   // get notified if combo box gets modified
-  //locationManager.addPropertyChangeListener(this);
-  connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  locationManager->addPropertyChangeListener(this);
 
   // add help menu to window
   addHelpMenu("package.jmri.jmrit.operations.Operations_Locations", true); // NOI18N
@@ -252,9 +251,8 @@ namespace Operations
  }
 
   /*public*/ void LocationCopyFrame::dispose() {
-     //locationManager.removePropertyChangeListener(this);
-   disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     OperationsFrame::dispose();
+   locationManager->removePropertyChangeListener(this);
+   OperationsFrame::dispose();
  }
 
   /*public*/ void LocationCopyFrame::propertyChange(PropertyChangeEvent* e) {

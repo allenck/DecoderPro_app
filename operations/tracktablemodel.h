@@ -3,6 +3,7 @@
 
 #include "abstracttablemodel.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class Logger;
@@ -11,9 +12,10 @@ namespace Operations
  class TrackEditFrame;
  class Track;
  class Location;
- class APPSLIBSHARED_EXPORT TrackTableModel : public AbstractTableModel
+ class APPSLIBSHARED_EXPORT TrackTableModel : public AbstractTableModel, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   TrackTableModel(QObject* parent = 0);
   enum SORTOPTS
@@ -22,16 +24,17 @@ namespace Operations
    SORTBYID = 2
   };
   /*public*/ void setSort(int sort);
-  /*public*/ int rowCount(const QModelIndex &parent) const;
-  /*public*/ int columnCount(const QModelIndex &parent) const;
-  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-  /*public*/ QVariant data(const QModelIndex &index, int role) const;
-  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+  /*public*/ int rowCount(const QModelIndex &parent) const override;
+  /*public*/ int columnCount(const QModelIndex &parent) const override;
+  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
   /*public*/ void dispose();
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ virtual void propertyChange(PropertyChangeEvent* e);
+  /*public*/ virtual void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   Logger* log;

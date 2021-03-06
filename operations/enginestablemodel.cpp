@@ -51,7 +51,7 @@ namespace Operations
 
 
   //manager->addPropertyChangeListener(this);
-  connect(engineManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(engineManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();
  }
 
@@ -145,8 +145,7 @@ namespace Operations
      sysList = getSelectedEngineList();
      // and add listeners back in
      foreach (RollingStock* rs, *sysList) {
-         //rs->addPropertyChangeListener(this);
-      connect(rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      rs->addPropertyChangeListener(this);
      }
  }
 
@@ -478,8 +477,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
      if (log->isDebugEnabled()) {
          log->debug("dispose EngineTableModel");
      }
-     //manager->removePropertyChangeListener(this);
-     disconnect(engineManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     engineManager->removePropertyChangeListener(this);
      removePropertyChangeEngines();
 
      if (esf != NULL) {
@@ -497,8 +495,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
   {
    foreach (RollingStock* rs, *sysList)
    {
-       //rs.removePropertyChangeListener(this);
-    disconnect(rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    rs->removePropertyChangeListener(this);
    }
   }
  }

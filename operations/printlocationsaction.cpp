@@ -413,7 +413,7 @@ namespace Operations
      CarManager* carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
      QList<Location*> locations = manager->getLocationsByNameList();
      QList<RollingStock*>* cars = carManager->getByLocationList();
-     QStringList carTypes = CarTypes::instance()->getNames();
+     QStringList carTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames();
 
      QString s = tr("Track Analysis") + NEW_LINE;
      writer->write(s);
@@ -566,7 +566,7 @@ namespace Operations
      int charCount = 0;
      int typeCount = 0;
 
-     foreach (QString type, CarTypes::instance()->getNames()) {
+     foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
          if (location->acceptsTypeName(type)) {
              typeCount++;
              charCount += type.length() + 2;
@@ -578,7 +578,7 @@ namespace Operations
          }
      }
 
-     foreach (QString type, EngineTypes::instance()->getNames()) {
+     foreach (QString type, ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames()) {
          if (location->acceptsTypeName(type)) {
              typeCount++;
              charCount += type.length() + 2;
@@ -593,7 +593,7 @@ namespace Operations
          //buf = buf.mid(0, buf.length() - 2); // remove trailing separators
       buf = buf.mid(0, buf.length() - 2);
      }		// does this location accept all types?
-     if (typeCount == CarTypes::instance()->getNames().length() + EngineTypes::instance()->getNames().length()) {
+     if (typeCount == ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames().length() + ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames().length()) {
          buf = QString(TAB + TAB + tr("LocationAcceptsAllTypes"));
      }
      buf.append(NEW_LINE);
@@ -605,7 +605,7 @@ namespace Operations
      int charCount = 0;
      int typeCount = 0;
 
-     foreach(QString type, CarTypes::instance()->getNames()) {
+     foreach(QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
          if (track->acceptsTypeName(type)) {
              typeCount++;
              charCount += type.length() + 2;
@@ -617,7 +617,7 @@ namespace Operations
          }
      }
 
-     foreach(QString type, EngineTypes::instance()->getNames()) {
+     foreach(QString type, ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames()) {
          if (track->acceptsTypeName(type)) {
              typeCount++;
              charCount += type.length() + 2;
@@ -632,7 +632,7 @@ namespace Operations
          //buf = buf.mid(0, buf.length() - 2); // remove trailing separators
       buf = buf.mid(0,buf.length()-2);
      }		// does this track accept all types?
-     if (typeCount == CarTypes::instance()->getNames().length() + EngineTypes::instance()->getNames().length()) {
+     if (typeCount == ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames().length() + ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames().length()) {
          buf = QString(TAB + TAB + tr("TrackAcceptsAllTypes"));
      }
      buf.append(NEW_LINE);

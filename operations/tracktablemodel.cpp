@@ -58,8 +58,7 @@ namespace Operations
   // and add them back in
   foreach (Track* track, tracksList)
   {
-   //track->addPropertyChangeListener(this);
-   connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   track->addPropertyChangeListener(this);
   }
   if (_location->hasPools() && !_showPoolColumn)
   {
@@ -79,8 +78,7 @@ namespace Operations
   }
   if (_location != NULL)
   {
-   //_location.addPropertyChangeListener(this);
-   connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   _location->addPropertyChangeListener(this);
   }
   initTable();
   // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
@@ -406,8 +404,7 @@ namespace Operations
  {
   foreach (Track* t, tracksList)
   {
-      //t.removePropertyChangeListener(this);
-   disconnect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   t->removePropertyChangeListener(this);
   }
  }
 
@@ -417,8 +414,7 @@ namespace Operations
   // log.debug("dispose");
   removePropertyChangeTracks();
   if (_location != NULL) {
-      //_location.removePropertyChangeListener(this);
-   disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   _location->removePropertyChangeListener(this);
   }
 
   if (tef != NULL) {

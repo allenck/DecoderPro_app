@@ -124,8 +124,7 @@ namespace Operations
 
      if (_location != NULL) {
          setTitle(tr("Copy Track to (%1)").arg(_location->getName()));
-         //_location.addPropertyChangeListener(this);
-         connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _location->addPropertyChangeListener(this);
      } else {
          copyButton->setEnabled(false);
      }
@@ -282,8 +281,7 @@ namespace Operations
      //((LocationManager*)InstanceManager::getDefault("LocationManager")).removePropertyChangeListener(this);
  disconnect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_location != NULL) {
-         //_location.removePropertyChangeListener(this);
-      disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _location->removePropertyChangeListener(this);
      }
      OperationsFrame::dispose();
  }

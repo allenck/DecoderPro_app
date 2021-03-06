@@ -68,8 +68,8 @@ namespace Operations
      root.appendChild(p);
      doc.appendChild(root);
      ((EngineModels*)InstanceManager::getDefault("EngineModels"))->store(root, doc);
-     EngineTypes::instance()->store(root, doc);
-     EngineLengths::instance()->store(root, doc);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->store(root, doc);
+     ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->store(root, doc);
      ((EngineManager*)InstanceManager::getDefault("EngineManager"))->store(root,doc);
 
      writeXML(file, doc);
@@ -98,8 +98,8 @@ namespace Operations
      }
 
      ((EngineModels*)InstanceManager::getDefault("EngineModels"))->load(root);
-     EngineTypes::instance()->load(root);
-     EngineLengths::instance()->load(root);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->load(root);
+     ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->load(root);
      ((EngineManager*)InstanceManager::getDefault("EngineManager"))->load(root);
 
      log->debug("Engines have been loaded!");

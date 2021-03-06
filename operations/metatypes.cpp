@@ -24,6 +24,7 @@
 #include "trainmanager.h"
 #include "schedulemanager.h"
 #include "operationsmanager.h"
+#include "carroads.h"
 
 namespace Operations
 {
@@ -37,6 +38,7 @@ int id;
   qRegisterMetaType<CarColors>("CarColors");
   qRegisterMetaType<CarLengths>("CarLengths");
   qRegisterMetaType<CarLoads>("CarLoads");
+  qRegisterMetaType<CarRoads>("CarRoads");
   qRegisterMetaType<EngineLengths>("EngineLengths");
   qRegisterMetaType<EngineModels>("EngineModels");
   qRegisterMetaType<EngineTypes>("EngineTypes");

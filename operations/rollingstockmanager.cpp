@@ -3,6 +3,7 @@
 #include "rollingstock.h"
 #include <QVariant>
 #include "stringutil.h"
+#include "xml.h"
 
 //RollingStockManager::RollingStockManager(QObject *parent) :
 //  QObject(parent)
@@ -24,11 +25,10 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString RollingStockManager::LISTLENGTH_CHANGED_PROPERTY = "RollingStockListLength"; // NOI18N
 
  /*public*/ RollingStockManager::RollingStockManager(QObject *parent) :
-   QObject(parent)
+   RollingStock(parent)
  {
   // RollingStock
   _hashTable = QHash<QString, RollingStock*>();
-  pcs = new PropertyChangeSupport(this);
 
  }
 
@@ -548,19 +548,21 @@ namespace Operations
         }
         return out;
     }
-#if 0
+#if 1
     /**
      * Returns a list (no order) of RollingStock at a location.
      *
      * @param location location to search for.
      * @return list of RollingStock
      */
-    /*public*/ QList<RollingStock*>* getList(Location location) {
-        QList<RollingStock*>* out = new ArrayList<RollingStock>();
-        _hashTable.forEach((key, rs) -> {
-            if (rs.getLocation() == location)
-                out.add(rs);
-        });
+    /*public*/ QList<RollingStock*> RollingStockManager::getList(Location* location) {
+        QList<RollingStock*> out = QList<RollingStock*>();
+        //_hashTable.forEach((key, rs) -> {
+        foreach(RollingStock* rs, _hashTable.values())
+        {
+            if (rs->getLocation() == location)
+                out.append(rs);
+        }//);
         return out;
     }
 
@@ -570,25 +572,28 @@ namespace Operations
      * @param track Track to search for.
      * @return list of RollingStock
      */
-    /*public*/ QList<RollingStock*>* getList(Track track) {
-        QList<RollingStock*>* out = new ArrayList<RollingStock>();
-        _hashTable.forEach((key, rs) -> {
-            if (rs.getTrack() == track)
-                out.add(rs);
-        });
+    /*public*/ QList<RollingStock*> RollingStockManager::getList(Track* track) {
+        QList<RollingStock*> out = QList<RollingStock*>();
+        //_hashTable.forEach((key, rs) ->
+        foreach(RollingStock* rs, _hashTable.values())
+        {
+            if (rs->getTrack() == track)
+                out.append(rs);
+        }//);
         return out;
     }
 
 #endif
-    /*public*/ /*synchronized*/ void RollingStockManager::addPropertyChangeListener(PropertyChangeListener* l) {
-        pcs->addPropertyChangeListener(l);
-    }
-
-    /*public*/ /*synchronized*/ void RollingStockManager::removePropertyChangeListener(PropertyChangeListener* l) {
-        pcs->removePropertyChangeListener(l);
-    }
-
-    /*protected*/ void RollingStockManager::firePropertyChange(QString p, QVariant old, QVariant n) {
-        pcs->firePropertyChange(p, old, n);
-    }
+ //@Override
+ //@OverridingMethodsMustInvokeSuper
+ /*public*/ void RollingStockManager::propertyChange(PropertyChangeEvent* evt) {
+     if (evt->getPropertyName() ==(Xml::ID)) {
+         //@SuppressWarnings("unchecked")
+         RollingStock* rs = /*(T)*/ (RollingStock*)evt->getSource(); // unchecked cast to T
+         _hashTable.remove(evt->getOldValue().toString());
+         _hashTable.insert(rs->getId(), rs);
+         // fire so listeners that rebuild internal lists get signal of change in id, even without change in size
+         firePropertyChange(LISTLENGTH_CHANGED_PROPERTY, _hashTable.size(), _hashTable.size());
+     }
+ }
 }

@@ -16,7 +16,6 @@ namespace Operations
    EngineTypes(const EngineTypes&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString ENGINETYPES_CHANGED_PROPERTY;// = "EngineTypesLength"; // NOI18N
   /*public*/ static /*final*/ QString ENGINETYPES_NAME_CHANGED_PROPERTY;// = "EngineTypesName"; // NOI18N
-  /*public*/ static /*synchronized*/ EngineTypes* instance();
   /*public*/ void addName(QString type) ;
   /*public*/ void deleteName(QString type) ;
   /*public*/ void replaceName(QString oldName, QString newName) ;

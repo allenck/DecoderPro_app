@@ -229,7 +229,7 @@ namespace Operations
 
      // get notified if car types or roads are changed
      //CarTypes::instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //_location.addPropertyChangeListener(this);
      connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     // _track.addPropertyChangeListener(this);
@@ -367,7 +367,7 @@ namespace Operations
  /*private*/ void ScheduleEditFrame::loadTypeComboBox()
 {
   typeBox->clear();
-  foreach (QString typeName, CarTypes::instance()->getNames())
+  foreach (QString typeName, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames())
   {
    if (_track->acceptsTypeName(typeName))
    {
@@ -422,7 +422,7 @@ namespace Operations
 
  /*public*/ void ScheduleEditFrame::dispose() {
      //CarTypes::instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      //_location.removePropertyChangeListener(this);
      disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

@@ -325,8 +325,7 @@ void RollingStockSetFrame::common()
           QMessageBox::warning(this, tr("Car has been assigned a destination and train"), tr(""));
          }
      }
-     //_rs->addPropertyChangeListener(this);
-     connect(rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _rs->addPropertyChangeListener(this);
  }
 
  // Save button
@@ -853,8 +852,7 @@ void RollingStockSetFrame::common()
 
  /*public*/ void RollingStockSetFrame::dispose() {
      if (_rs != NULL) {
-         //_rs->removePropertyChangeListener(this);
-      disconnect(_rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _rs->removePropertyChangeListener(this);
      }
      //LocationManager.instance().removePropertyChangeListener(this);
      disconnect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

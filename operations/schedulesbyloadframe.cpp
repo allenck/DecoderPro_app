@@ -40,7 +40,7 @@ namespace Operations
  /*public*/ SchedulesByLoadFrame::SchedulesByLoadFrame(QWidget* parent) : OperationsFrame(tr("Show Schedule by Load"), parent){
      //super(tr("MenuItemShowSchedulesByLoad"));
  // combo box
- typesComboBox= CarTypes::instance()->getComboBox();
+ typesComboBox= ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
  loadsComboBox = new JComboBox();
 
  // checkbox
@@ -101,9 +101,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      //locationManager.addPropertyChangeListener(this);
      connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes::instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //CarLoads::instance().addPropertyChangeListener(this);
-     connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((CarLoads*)InstanceManager::getDefault("CarLoads")).addPropertyChangeListener(this);
+     connect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
@@ -140,7 +140,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  /*private*/ void SchedulesByLoadFrame::updateLoadComboBox() {
      if (typesComboBox->currentText() != NULL) {
          QString type =  typesComboBox->currentText();
-         CarLoads::instance()->updateComboBox(type, loadsComboBox);
+         ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(type, loadsComboBox);
      }
  }
 
@@ -243,9 +243,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      //locationManager.removePropertyChangeListener(this);
  disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarLoads.instance().removePropertyChangeListener(this);
- disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (Track* spur, locationManager->getTracks(Track::SPUR)) {
          Schedule* sch = spur->getSchedule();
          if (sch == NULL) {
@@ -264,10 +264,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          log->debug(tr("Property change (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e->getNewValue().toString())); // NOI18N
 
      if (e->getPropertyName()==(CarTypes::CARTYPES_CHANGED_PROPERTY)) {
-         CarTypes::instance()->updateComboBox(typesComboBox);
+         ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typesComboBox);
      }
      if (e->getSource()->metaObject()->className()==("CarLoads")) {
-         CarLoads::instance()->updateComboBox( typesComboBox->currentText(), loadsComboBox);
+         ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox( typesComboBox->currentText(), loadsComboBox);
      }
      if (e->getSource()->metaObject()->className()==("Schedule") || e->getSource()->metaObject()->className()==("LocationManager")
              || e->getPropertyName()==(Track::LOADS_CHANGED_PROPERTY)) {

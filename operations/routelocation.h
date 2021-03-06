@@ -13,9 +13,10 @@ namespace Operations
 {
  class  Setup;
  class Location;
- class APPSLIBSHARED_EXPORT RouteLocation : public QObject
+ class APPSLIBSHARED_EXPORT RouteLocation : public PropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   //explicit RouteLocation(QObject *parent = 0);
   /*public*/ static /*final*/ QString NONE; //="";
@@ -66,7 +67,7 @@ namespace Operations
   /*public*/ void setTrainIconCoordinates() ;
   /*public*/ QPoint getTrainIconCoordinates();
   /*public*/ void dispose();
-  /*public*/ RouteLocation(QDomElement e);
+  /*public*/ RouteLocation(QDomElement e, QObject *parent = nullptr);
   /*public*/ QDomElement store(QDomDocument doc);
   /*public*/ int getMaxCarMoves();
   /*public*/ void setRandomControl(QString value);
@@ -92,11 +93,12 @@ namespace Operations
   /*public*/ int getTrainLength();
   /*public*/ void setTrainWeight(int weight);
   /*public*/ int getTrainWeight();
+  QObject* self() override {return (QObject*)this; }
 
  signals:
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 
  private:
   Logger* log;

@@ -17,6 +17,7 @@
 #include "operationsxml.h"
 #include "setup.h"
 #include <QLabel>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -67,7 +68,7 @@ namespace Operations
      // check boxes
      // text field
      // combo boxes
-     comboBoxRoads = CarRoads::instance()->getComboBox();
+     comboBoxRoads = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
  }
 
  /*public*/ void TrainRoadOptionsFrame::initComponents(TrainEditFrame* parent) {
@@ -193,9 +194,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // get notified if car roads, roads, and owners gets modified
      //CarTypes.instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarRoads.instance().addPropertyChangeListener(this);
-     connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      initMinimumSize(QSize(Control::panelWidth500, Control::panelHeight400));
  }
@@ -317,14 +318,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainRoadOptionsFrame::updateRoadComboBoxes() {
-     CarRoads::instance()->updateComboBox(comboBoxRoads);
+    ((CarRoads*)InstanceManager::getDefault("CarRoads"))->updateComboBox(comboBoxRoads);
  }
 
  /*public*/ void TrainRoadOptionsFrame::dispose() {
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarRoads.instance().removePropertyChangeListener(this);
- connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_train != NULL) {
          //_train->removePropertyChangeListener(this);
       disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

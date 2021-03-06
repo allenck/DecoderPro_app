@@ -67,7 +67,7 @@ namespace Operations
  log = new Logger("EngineEditFrame");
         //super();
   manager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
-  //managerXml = EngineManagerXml::instance();
+  managerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"));
   engineModels = (EngineModels*)InstanceManager::getDefault("EngineModels");
   engineTypes = ((EngineTypes*)InstanceManager::getDefault("EngineTypes"));
   engineLengths = ((EngineLengths*)InstanceManager::getDefault("EngineLengths"));
@@ -99,11 +99,11 @@ namespace Operations
   valueTextField = new JTextField(8);
 
   // combo boxes
-  roadComboBox = CarRoads::instance()->getComboBox();
+  roadComboBox = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
   modelComboBox = engineModels->getComboBox();
   typeComboBox = engineTypes->getComboBox();
   lengthComboBox = engineLengths->getComboBox();
-  ownerComboBox = CarOwners::instance()->getComboBox();
+  ownerComboBox = ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getComboBox();
   locationBox = locationManager->getComboBox();
   trackLocationBox = new JComboBox();
   consistComboBox = manager->getConsistComboBox();
@@ -350,14 +350,14 @@ namespace Operations
 
      // get notified if combo box gets modified
      //CarRoads.instance().addPropertyChangeListener(this);
-     connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //engineModels.addPropertyChangeListener(this);
      connect(engineModels, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     engineTypes.addPropertyChangeListener(this);
      connect(engineTypes, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     engineLengths.addPropertyChangeListener(this);
      //CarOwners::instance().addPropertyChangeListener(this);
-     connect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //locationManager.addPropertyChangeListener(this);
      connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      //manager.addPropertyChangeListener(this);
@@ -371,13 +371,13 @@ namespace Operations
  {
      _engine = engine;
 
-     if (!CarRoads::instance()->containsName(engine->getRoadName()))
+     if (!((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(engine->getRoadName()))
      {
          QString msg = tr("Road name \"%1\" does not exist in your roster, add?").arg(engine->getRoadName());
 //         if (JOptionPane.showConfirmDialog(this, msg, tr("engineAddRoad"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
          if(QMessageBox::question(this, tr("Add road name?"), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
          {
-             CarRoads::instance()->addName(engine->getRoadName());
+             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addName(engine->getRoadName());
          }
      }
      roadComboBox->setCurrentIndex(roadComboBox->findText(engine->getRoadName()));
@@ -433,12 +433,12 @@ namespace Operations
 
      builtTextField->setText(engine->getBuilt());
 
-     if (!CarOwners::instance()->containsName(engine->getOwner())) {
+     if (!((CarOwners*)InstanceManager::getDefault("CarOwners"))->containsName(engine->getOwner())) {
          QString msg = tr("Owner \"%1\" does not exist in your roster, add?").arg(engine->getOwner());
 //         if (JOptionPane.showConfirmDialog(this, msg, tr("addOwner"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
          if(QMessageBox::question(this, tr("Add Owner"), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
          {
-          CarOwners::instance()->addName(engine->getOwner());
+          ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addName(engine->getOwner());
          }
      }
 
@@ -829,20 +829,13 @@ namespace Operations
 
  /*private*/ void EngineEditFrame::removePropertyChangeListeners()
  {
-//     CarRoads.instance().removePropertyChangeListener(this);
-  connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //engineModels.removePropertyChangeListener(this);
-  disconnect(engineModels, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//     engineTypes.removePropertyChangeListener(this);
-  connect(engineTypes, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//     engineLengths.removePropertyChangeListener(this);
-  connect(engineLengths, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//     CarOwners.instance().removePropertyChangeListener(this);
-  disconnect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //locationManager.removePropertyChangeListener(this);
-  disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //manager.removePropertyChangeListener(this);
-  disconnect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  ((CarRoads*)InstanceManager::getDefault("CarRoads"))->removePropertyChangeListener(this);
+  engineModels->removePropertyChangeListener(this);
+  engineTypes->removePropertyChangeListener(this);
+  engineLengths->removePropertyChangeListener(this);
+  ((CarOwners*)InstanceManager::getDefault("CarOwners"))->removePropertyChangeListener(this);
+  locationManager->removePropertyChangeListener(this);
+  manager->removePropertyChangeListener(this);
  }
 
  /*public*/ void EngineEditFrame::propertyChange(PropertyChangeEvent* e) {
@@ -851,7 +844,7 @@ namespace Operations
      }
 
      if (e->getPropertyName()==(CarRoads::CARROADS_CHANGED_PROPERTY)) {
-         CarRoads::instance()->updateComboBox(roadComboBox);
+         ((CarRoads*)InstanceManager::getDefault("CarRoads"))->updateComboBox(roadComboBox);
          if (_engine != NULL) {
              roadComboBox->setCurrentIndex(roadComboBox->findText(_engine->getRoadName()));
          }
@@ -885,7 +878,7 @@ namespace Operations
      }
 
      if (e->getPropertyName()==(CarOwners::CAROWNERS_CHANGED_PROPERTY)) {
-         CarOwners::instance()->updateComboBox(ownerComboBox);
+         ((CarOwners*)InstanceManager::getDefault("CarOwners"))->updateComboBox(ownerComboBox);
          if (_engine != NULL) {
              ownerComboBox->setCurrentIndex(ownerComboBox->findText(_engine->getOwner()));
          }

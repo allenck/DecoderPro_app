@@ -69,8 +69,8 @@ namespace Operations
   askKernelChange = true;
   destReturnWhenEmptyBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
   trackReturnWhenEmptyBox = new JComboBox();
-  loadReturnWhenEmptyBox = CarLoads::instance()->getComboBox();
-  loadComboBox = CarLoads::instance()->getComboBox();
+  loadReturnWhenEmptyBox = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox();
+  loadComboBox =((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox();
   kernelComboBox = carManager->getKernelComboBox();
 
   // buttons
@@ -174,8 +174,8 @@ namespace Operations
      autoReturnWhenEmptyTrackCheckBox->setToolTip(tr("NOT USED! Only here for eliminate warnings from i18n consistency check"));
 
      // get notified if combo box gets modified
-     //CarLoads::instance().addPropertyChangeListener(this);
-     connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((CarLoads*)InstanceManager::getDefault("CarLoads")).addPropertyChangeListener(this);
+     connect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarManager::addPropertyChangeListener(this);
      connect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -312,7 +312,7 @@ namespace Operations
    QString load = loadComboBox->currentText();
    if (car->getLoadName()!=(load))
    {
-    if (CarLoads::instance()->containsName(car->getTypeName(), load))
+    if (((CarLoads*)InstanceManager::getDefault("CarLoads"))->containsName(car->getTypeName(), load))
     {
         car->setLoadName(load);
         updateComboBoxesLoadChange();
@@ -544,7 +544,7 @@ namespace Operations
          }
          // update car load
          if (!ignoreLoadCheckBox->isChecked()
-                 && CarLoads::instance()->containsName(car->getTypeName(), _car->getLoadName())) {
+                 && ((CarLoads*)InstanceManager::getDefault("CarLoads"))->containsName(car->getTypeName(), _car->getLoadName())) {
              car->setLoadName(_car->getLoadName());
          }
          // update kernel
@@ -635,9 +635,9 @@ namespace Operations
  /*protected*/ void CarSetFrame::updateLoadComboBox() {
      if (_car != NULL) {
          log->debug(tr("Updating load box for car (%1)").arg(_car->toString()));
-         CarLoads::instance()->updateComboBox(_car->getTypeName(), loadComboBox);
+         ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(_car->getTypeName(), loadComboBox);
          loadComboBox->setCurrentIndex(loadComboBox->findText(_car->getLoadName()));
-         CarLoads::instance()->updateRweComboBox(_car->getTypeName(), loadReturnWhenEmptyBox);
+         ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateRweComboBox(_car->getTypeName(), loadReturnWhenEmptyBox);
          loadReturnWhenEmptyBox->setCurrentIndex(loadReturnWhenEmptyBox->findText(_car->getReturnWhenEmptyLoadName()));
      }
  }
@@ -667,7 +667,7 @@ namespace Operations
      // clone car and set the load to default empty and a length of zero
      if (car != NULL) {
          c = car->copy();
-         c->setLoadName(CarLoads::instance()->getDefaultEmptyName());
+         c->setLoadName(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName());
          c->setLength("0"); // ignore car length
      }
      return c;
@@ -680,8 +680,8 @@ namespace Operations
  }
 
  /*public*/ void CarSetFrame::dispose() {
-     //CarLoads::instance().removePropertyChangeListener(this);
-     disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((CarLoads*)InstanceManager::getDefault("CarLoads")).removePropertyChangeListener(this);
+     disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarManager::removePropertyChangeListener(this);
      connect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      RollingStockSetFrame::dispose();

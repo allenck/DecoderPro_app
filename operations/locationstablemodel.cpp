@@ -62,8 +62,7 @@ namespace Operations
      }
      // and add them back in
      foreach (Location* loc, locationsList) {
-         //loc.addPropertyChangeListener(this);
-      connect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      loc->addPropertyChangeListener(this);
      }
  }
 
@@ -199,11 +198,11 @@ namespace Operations
    int row = index.row();
    int col =index.column();
      if (row >= rowCount(QModelIndex())) {
-         return "ERROR row " + row; // NOI18N
+         return "ERROR row " + QString::number(row); // NOI18N
      }
      Location* l = locationsList.at(row);
      if (l == NULL) {
-         return "ERROR location unknown " + row; // NOI18N
+         return "ERROR location unknown " + QString::number(row); // NOI18N
      }
      switch (col) {
          case IDCOLUMN:
@@ -329,8 +328,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void LocationsTableModel::removePropertyChangeLocations() {
      if (!locationsList.isEmpty()) {
          foreach (Location* loc, locationsList) {
-             //loc.removePropertyChangeListener(this);
-          disconnect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          loc->removePropertyChangeListener(this);
          }
      }
  }

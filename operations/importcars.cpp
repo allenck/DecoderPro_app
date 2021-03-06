@@ -206,7 +206,7 @@ namespace Operations
     carBuilt = "";
     carLocation = "";
     carTrack = "";
-    carLoad = CarLoads::instance()->getDefaultEmptyName();
+    carLoad = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName();
     carKernel = "";
     carMoves = 0;
     carValue = "";
@@ -251,12 +251,12 @@ namespace Operations
         break;
     }
 
-    if (!CarTypes::instance()->containsName(carType))
+    if (!((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(carType))
     {
      if (autoCreateTypes)
      {
       log->debug(tr("Adding car type (%1)").arg(carType));
-      CarTypes::instance()->addName(carType);
+      ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addName(carType);
      }
      else
      {
@@ -269,7 +269,7 @@ namespace Operations
       int results = QMessageBox::question(NULL, tr("Add car type?"), tr("Car")+ " (" + carRoad + " " + carNumber + ")" + NEW_LINE + tr("Type \"%1\" does not exist in your roster, add?").arg(carType), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
       if (results == QMessageBox::Yes)
       {
-       CarTypes::instance()->addName(carType);
+       ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addName(carType);
        if (askAutoCreateTypes)
        {
 //        results = JOptionPane.showConfirmDialog(NULL, Bundle
@@ -631,22 +631,22 @@ namespace Operations
       }
 
       // add new roads
-      if (!CarRoads::instance()->containsName(carRoad))
+      if (!((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(carRoad))
       {
        if (autoCreateRoads)
        {
            log->debug(tr("add car road %1").arg(carRoad));
-           CarRoads::instance()->addName(carRoad);
+           ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addName(carRoad);
        }
       }
 
       // add new lengths
-      if (!CarLengths::instance()->containsName(carLength))
+      if (!((CarLengths*)InstanceManager::getDefault("CarLengths"))->containsName(carLength))
       {
        if (autoCreateLengths)
        {
         log->debug(tr("add car length %1").arg(carLength));
-        CarLengths::instance()->addName(carLength);
+        ((CarLengths*)InstanceManager::getDefault("CarLengths"))->addName(carLength);
        }
       }
 
@@ -661,12 +661,12 @@ namespace Operations
       }
 
       // add new owners
-      if (!CarOwners::instance()->containsName(carOwner))
+      if (!((CarOwners*)InstanceManager::getDefault("CarOwners"))->containsName(carOwner))
       {
        if (autoCreateOwners)
        {
         log->debug(tr("add car owner %1").arg(carOwner));
-        CarOwners::instance()->addName(carOwner);
+        ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addName(carOwner);
        }
       }
 

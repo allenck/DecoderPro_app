@@ -58,7 +58,7 @@ namespace Operations
 
   // Loop through the car types showing which locations and tracks will
   // service that car type
-  QStringList carTypes = CarTypes::instance()->getNames();
+  QStringList carTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames();
 
   QList<Location*> locations = locManager->getLocationsByNameList();
 

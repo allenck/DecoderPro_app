@@ -30,27 +30,6 @@ namespace Operations {
 
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ CarRoads* CarRoads::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarRoads* CarRoads::instance() {
-Logger*  log = new Logger("CarRoads");
-
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("CarRoads creating instance");
-         }
-         // create and load
-         _instance = new CarRoads();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("CarRoads returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
-
     /*protected*/ QString CarRoads::getDefaultNames() {
         return ROADS;
     }

@@ -2,22 +2,25 @@
 #define TRACKCOPYFRAME_H
 
 #include "operationsframe.h"
+#include "propertychangelistener.h"
 
 class JTextField;
 namespace Operations
 {
  class LocationEditFrame;
  class Location;
- class TrackCopyFrame : public OperationsFrame
+ class TrackCopyFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   TrackCopyFrame(LocationEditFrame* lef);
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose() override;
+  /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   // text field
@@ -43,7 +46,7 @@ namespace Operations
   Logger * log;
 
  protected slots:
-  /*protected*/ void comboBoxActionPerformed(QWidget* ae);
+  /*protected*/ void comboBoxActionPerformed(QWidget* ae) override;
  protected:
   /*protected*/ void updateTrackComboBox();
   /*protected*/ void updateTrackName();

@@ -196,7 +196,7 @@ namespace Operations
      }
      QString padding = QString("X");
 
-     for (int i = 0; i < CarTypes::instance()->getMaxFullNameLength(); i++) {
+     for (int i = 0; i < ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxFullNameLength(); i++) {
          padding.append("X");
      }
 

@@ -43,28 +43,6 @@ namespace Operations
 
  }
 
-/**
- * record the single instance *
- */
-/*private*/ /*static*/ CarLoads* CarLoads::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarLoads* CarLoads::instance()
-{
- Logger* log = new Logger("");
- if (_instance == NULL)
- {
-  if (log->isDebugEnabled()) {
-      log->debug("CarLoads creating instance");
-  }
-  // create and load
-  _instance = new CarLoads();
- }
- if (Control::showInstance)
- {
-  log->debug(tr("CarLoads returns instance %1").arg(_instance->metaObject()->className()));
- }
- return _instance;
- }
 
  /**
   * Add a car type with specific loads
@@ -498,7 +476,7 @@ namespace Operations
   while (en.hasNext()) {
       QString carType = en.next();
       // check to see if car type still exists
-      if (!CarTypes::instance()->containsName(carType)) {
+      if (!((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(carType)) {
           continue;
       }
       QList<CarLoad*>* loads = getSortedList(carType);

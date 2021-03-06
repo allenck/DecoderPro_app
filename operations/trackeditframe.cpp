@@ -176,11 +176,11 @@ namespace Operations
   connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   // listen for car road name and type changes
   //CarRoads::instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   //CarLoads.instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  connect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   //CarTypes.instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   //trainManager.addPropertyChangeListener(this);
   connect(trainManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   //routeManager.addPropertyChangeListener(this);
@@ -1196,8 +1196,8 @@ if (!anyDrops->isChecked())
   // Now add the checkboxes to the panelCheckBoxes
   x = 0;
   y = 0; // vertical position in panel
-  loadTypes(CarTypes::instance()->getNames());
-  loadTypes(EngineTypes::instance()->getNames());
+  loadTypes(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+  loadTypes(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
   enableCheckboxes(_track != NULL);
 
   QWidget* p = new QWidget();
@@ -1370,11 +1370,11 @@ if (!anyDrops->isChecked())
   //_location->removePropertyChangeListener(this);
   disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarRoads.instance().removePropertyChangeListener(this);
-  disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarLoads.instance().removePropertyChangeListener(this);
-  disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().removePropertyChangeListener(this);
-  disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     ScheduleManager.instance().removePropertyChangeListener(this);
   //trainManager.removePropertyChangeListener(this);
   disconnect(trainManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

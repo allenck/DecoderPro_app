@@ -2,7 +2,7 @@
 #define ENGINEEDITFRAME_H
 #include "operationsframe.h"
 #include "appslib_global.h"
-
+#include "propertychangelistener.h"
 class Logger;
 class QSignalMapper;
 class JTextField;
@@ -19,9 +19,10 @@ namespace Operations
  class EngineLengths;
  class CarManagerXml;
  class LocationManager;
- class APPSLIBSHARED_EXPORT EngineEditFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT EngineEditFrame : public OperationsFrame, public PropertyChangeListener
  {
    Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
   public:
    explicit EngineEditFrame(QWidget *parent = 0);
   //private static final long serialVersionUID = 7527604846983933144L;
@@ -32,19 +33,20 @@ namespace Operations
   /*public*/ static /*final*/ QString LENGTH; //=Bundle.getMessage("Length");
   /*public*/ static /*final*/ QString OWNER; //=Bundle.getMessage("Owner");
   /*public*/ static /*final*/ QString CONSIST; //=Bundle.getMessage("Consist");
-  /*public*/ void initComponents();
-  /*public*/ void dispose();
+  /*public*/ void initComponents() override;
+  /*public*/ void dispose() override;
   /*public*/ void loadEngine(Engine* engine);
-  /*public*/ QString getClassName();
+  /*public*/ QString getClassName() override;
+   QObject* self() override {return (QObject*)this; }
 
   signals:
 
   public slots:
   /*public*/ void buttonEditActionPerformed(QWidget* ae);
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void comboBoxActionPerformed(QWidget* ae);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
 
 
  private:

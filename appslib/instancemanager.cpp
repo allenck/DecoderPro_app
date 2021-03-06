@@ -437,55 +437,61 @@ void InstanceManager::deregister(QObject* item, QString type)
   //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
   if(Class::isAssignableFrom(type,"InstanceManagerAutoDefault"))
   {
-  QObject* obj1;
-  try
-  {
-   obj1 = (QObject*)Class::forName(type);
-   l->append((QObject*)obj1);
-   if(qobject_cast<InstanceManagerAutoInitialize*>(obj1))
+   QObject* obj1;
+   try
    {
-    ((InstanceManagerAutoInitialize*) obj1)->initialize();
+    obj1 = (QObject*)Class::forName(type);
+    l->append((QObject*)obj1);
+    //if(qobject_cast<InstanceManagerAutoInitialize*>(obj1))
+    if(Class::isAssignableFrom(type, "InstanceManagerAutoInitialize"))
+    {
+     //((InstanceManagerAutoInitialize*) obj1)->initialize();
+     if(!QMetaObject::invokeMethod(obj1, "initialize", Qt::AutoConnection))
+     {
+         Logger::error(tr("invoke method 'initialize' failed for %1").arg(obj1->metaObject()->className()));
+         throw NoSuchMethodException("no such method initialize");
+     }
+    }
    }
+   catch (NoSuchMethodException ex)
+   {
+    log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
+    setInitializationState(type, InitializationState::FAILED);
+    return nullptr;
+   }
+   catch (ClassNotFoundException ex)
+   {
+    log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
+    setInitializationState(type, InitializationState::FAILED);
+    return nullptr;
+   }
+   catch (std::exception& ex)
+   {
+    log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/)/*, ex*/);
+    setInitializationState(type, InitializationState::FAILED);
+    return nullptr;
+   }
+   setInitializationState(type, InitializationState::DONE);
+   return l->value(l->size() - 1);
   }
-  catch (NoSuchMethodException ex)
-  {
-   log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
-   setInitializationState(type, InitializationState::FAILED);
-   return nullptr;
-  }
-  catch (ClassNotFoundException ex)
-  {
-   log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
-   setInitializationState(type, InitializationState::FAILED);
-   return nullptr;
-  }
-  catch (std::exception& ex)
-  {
-   log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/)/*, ex*/);
-   setInitializationState(type, InitializationState::FAILED);
-   return nullptr;
-  }
-  setInitializationState(type, InitializationState::DONE);
-  return l->value(l->size() - 1);
- }
- // see if initializer can handle
- if(log)
-  log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
+  // see if initializer can handle
+  if(log)
+   log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
   //@SuppressWarnings("unchecked")
 //  if(initializers.contains(type))
 //  {
    //QObject* obj = initializers.value(type);//->getDefault(type);//initializer->getDefault(type);
-  QObject* obj = ((DefaultInstanceInitializer*)*initializer)->getDefault(type);
+   QObject* obj = ((DefaultInstanceInitializer*)*initializer)->getDefault(type);
 //  if(type == "InternalSystemConnectionMemo")
 //       obj = obj1;
-  if (obj != nullptr)
-  {
-   log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
-   setInitializationState(type, InitializationState::DONE);
-   l->append(obj);
-   //store(obj,type);
-   return l->at(l->size() - 1);
-  }
+   if (obj != nullptr)
+   {
+    log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
+    setInitializationState(type, InitializationState::DONE);
+    l->append(obj);
+    //store(obj,type);
+    return l->at(l->size() - 1);
+   }
 //  }
   // don't have, can't make
   setInitializationState(type, InitializationState::FAILED);

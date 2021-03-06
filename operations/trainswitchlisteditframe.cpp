@@ -348,8 +348,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
     QList<Location*> locations = locationManager->getLocationsByNameList();
      /*synchronized (this)*/ {
          foreach (Location* location, locations) {
-             //location.removePropertyChangeListener(this);
-          disconnect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          location->removePropertyChangeListener(this);
          }
      }
 
@@ -417,8 +416,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // restore listeners
      /*synchronized (this)*/ {
          foreach (Location* location, locations) {
-             //location.addPropertyChangeListener(this);
-          connect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          location->addPropertyChangeListener(this);
          }
      }
 
@@ -550,8 +548,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     Setup::removePropertyChangeListener(this);
      foreach (Location* location, locationManager->getLocationsByNameList()) {
-         //location->removePropertyChangeListener(this);
-      disconnect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      location->removePropertyChangeListener(this);
      }
      OperationsFrame::dispose();
  }

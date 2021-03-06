@@ -2,7 +2,7 @@
 #define TRAINSWITCHLISTEDITFRAME_H
 
 #include "operationsframe.h"
-
+#include "propertychangelistener.h"
 class JActionEvent;
 class QGroupBox;
 namespace Operations
@@ -10,20 +10,22 @@ namespace Operations
  class Location;
  class TrainSwitchListCommentFrame;
  class LocationManager;
- class TrainSwitchListEditFrame : public OperationsFrame
+ class TrainSwitchListEditFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   TrainSwitchListEditFrame(QWidget* parent = 0);
-  /*public*/ void initComponents();
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void initComponents() override;
+  /*public*/ void dispose() override;
+  /*public*/ QString getClassName() override;
 
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
   /*public*/ void locationCheckBoxActionPerformed(QWidget*);
   /*public*/ void commentButtonActionPerformed(JActionEvent* ae = 0);
 

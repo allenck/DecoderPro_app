@@ -62,13 +62,13 @@ namespace Operations
 /*protected*/ /*static*/ /*final*/ QString RollingStock::DEFAULT_WEIGHT = "0";
 
 /*public*/ RollingStock::RollingStock(QObject *parent) :
- QObject(parent) {
+ PropertyChangeSupport(this, parent) {
 common();
  _lastDate = QDateTime(); //(new GregorianCalendar()).getGregorianChange(); // set to change date of the Gregorian Calendar.
 }
 
 /*public*/ RollingStock::RollingStock(QString road, QString number, QObject *parent) :
- QObject(parent)
+ PropertyChangeSupport(this, parent)
 {
  //this();
 common();
@@ -82,7 +82,6 @@ void RollingStock::common()
 {
 log = new Logger("RollingStocK");
 setObjectName("RollingStock");
-pcs = new PropertyChangeSupport(this);
 locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 _id = NONE;
 _number = NONE;
@@ -460,14 +459,12 @@ return getLength().toInt();
   if (oldLocation != NULL)
   {
    oldLocation->deleteRS(this);
-   //oldLocation::removePropertyChangeListener(this);
-   disconnect(oldLocation, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent())));
+   oldLocation->removePropertyChangeListener(this);
    // if track is NULL, then rolling stock is in a train
    if (oldTrack != NULL)
    {
     oldTrack->deleteRS(this);
-    //oldTrack::removePropertyChangeListener(this);
-    disconnect(oldTrack, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent())));
+    oldTrack->removePropertyChangeListener(this);
     // if there's a destination then pickup complete
     if (_destination != NULL)
     {
@@ -485,15 +482,13 @@ return getLength().toInt();
   {
    _location->addRS(this);
    // Need to know if location name changes so we can forward to listeners
-   // _location->addPropertyChangeListener(this);
-   connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  _location->addPropertyChangeListener(this);
   }
   if (_trackLocation != NULL)
   {
    _trackLocation->addRS(this);
    // Need to know if location name changes so we can forward to listeners
-   //_trackLocation addPropertyChangeListener(this);
-   connect(_trackLocation, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   _trackLocation->addPropertyChangeListener(this);
    // if there's a destination then there's a pick up
    if (_destination != NULL)
    {
@@ -1179,9 +1174,9 @@ return "";
      setDestination(NULL, NULL);
      setLocation(NULL, NULL);
      //CarRoads::instance().removePropertyChangeListener(this);
-     disconnect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarOwners.instance().removePropertyChangeListener(this);
-     disconnect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarColors.instance().removePropertyChangeListener(this);
      disconnect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_tag != NULL) {
@@ -1196,6 +1191,7 @@ return "";
   * @param e RollingStock XML element
   */
  /*public*/ RollingStock::RollingStock(QDomElement e, QObject* parent)
+ : PropertyChangeSupport(this, parent)
  {
      //this();
   common();
@@ -1399,11 +1395,11 @@ return "";
 
  /*private*/ void RollingStock::addPropertyChangeListeners() {
      //CarRoads.instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //        CarOwners.instance().addPropertyChangeListener(this);
-  connect(CarOwners::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //        CarColors.instance().addPropertyChangeListener(this);
-  connect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
  // rolling stock listens for changes in a location name or if a location is deleted
@@ -1501,18 +1497,10 @@ return "";
       }
   }
  }
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
 
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
  /*protected*/ void RollingStock::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n)
  {
-  pcs->firePropertyChange(p, old, n);
+  firePropertyChange(p, old, n);
  }
 
 } // end namespace

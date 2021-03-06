@@ -1,6 +1,6 @@
 #ifndef TRACKDESTINATIONEDITFRAME_H
 #define TRACKDESTINATIONEDITFRAME_H
-
+#include "propertychangelistener.h"
 #include "operationsframe.h"
 class QGroupBox;
 class QLabel;
@@ -8,21 +8,23 @@ namespace Operations
 {
  class Track;
  class LocationManager;
- class TrackDestinationEditFrame : public OperationsFrame
+ class TrackDestinationEditFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   TrackDestinationEditFrame(QWidget* parent = 0);
   /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
   /*public*/ void initComponents(Track* track);
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose() override;
+  /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void radioButtonActionPerformed(QWidget* ae);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
+  /*public*/ void radioButtonActionPerformed(QWidget* ae) override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
   void on_msg(QString msg);
 
  private:

@@ -169,8 +169,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // load fields and enable buttons
      if (_track != NULL) {
-         //_track->addPropertyChangeListener(this);
-      connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _track->addPropertyChangeListener(this);
          trackName->setText(_track->getName());
          enableButtons(true);
      } else {
@@ -345,7 +344,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                  continue;
              }
              // now check to see if the track's rolling stock is accepted by the destination
-             checkTypes: foreach (QString type, CarTypes::instance()->getNames()) {
+             checkTypes: foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
                  if (!_track->acceptsTypeName(type)) {
                      continue;
                  }
@@ -377,7 +376,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                  return false; // done
              }
              // now check road names
-             checkRoads: foreach (QString road, CarRoads::instance()->getNames())
+             checkRoads: foreach (QString road, ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getNames())
              {
               if (!_track->acceptsRoadName(road))
               {
@@ -407,11 +406,11 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
               return false; // done
              }
              // now check load names
-             foreach (QString type, CarTypes::instance()->getNames()) {
+             foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
                  if (!_track->acceptsTypeName(type)) {
                      continue;
                  }
-                 QList<QString> loads = CarLoads::instance()->getNames(type);
+                 QList<QString> loads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getNames(type);
                  checkLoads: foreach (QString load, loads) {
                      if (!_track->acceptsLoadName(load)) {
                          continue;
@@ -468,16 +467,16 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              // need to check all car types, loads, and roads that this track services
              Car* car = new Car();
              car->setLength(QString::number(-RollingStock::COUPLER)); // set car length to net out to zero
-             foreach (QString type, CarTypes::instance()->getNames()) {
+             foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
                  if (!_track->acceptsTypeName(type)) {
                      continue;
                  }
-                 QStringList loads = CarLoads::instance()->getNames(type);
+                 QStringList loads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getNames(type);
                  foreach (QString load, loads) {
                      if (!_track->acceptsLoad(load, type)) {
                          continue;
                      }
-                     foreach (QString road, CarRoads::instance()->getNames()) {
+                     foreach (QString road, ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getNames()) {
                          if (!_track->acceptsRoadName(road)) {
                              continue;
                          }
@@ -557,8 +556,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void TrackDestinationEditFrame::dispose() {
      if (_track != NULL) {
-         //_track->removePropertyChangeListener(this);
-      disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _track->removePropertyChangeListener(this);
      }
      //locationManager.removePropertyChangeListener(this);
      disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

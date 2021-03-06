@@ -72,11 +72,11 @@ namespace Operations
 //         }
 
          // Loop through the Roster, printing as needed
-         QStringList carTypes = CarTypes::instance()->getNames();
-         QHash<QString, QList<CarLoad*>*>* list = CarLoads::instance()->getList();
+         QStringList carTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames();
+         QHash<QString, QList<CarLoad*>*>* list = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getList();
          //try {
              QString s = tr("Type") + TAB
-                     + parent->tabString(tr("Load"), CarLoads::instance()->getMaxNameLength() + 1)
+                     + parent->tabString(tr("Load"), ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength() + 1)
                      + tr("Type") + "  " + tr("Priority") + "  "
                      + tr("Load Pick Up Car Message") + "   " + tr("Load Set Out Car Message")
                      + NEW_LINE;
@@ -89,8 +89,8 @@ namespace Operations
                  bool printType = true;
                  foreach (CarLoad* carLoad, *carLoads) {
                      // don't print out default load or empty
-                     if ((carLoad->getName()==(CarLoads::instance()->getDefaultEmptyName()) || carLoad->getName()
-                             ==(CarLoads::instance()->getDefaultLoadName()))
+                     if ((carLoad->getName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName()) || carLoad->getName()
+                             ==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultLoadName()))
                              && carLoad->getPickupComment()==(CarLoad::NONE)
                              && carLoad->getDropComment()==(CarLoad::NONE)
                              && carLoad->getPriority()==(CarLoad::PRIORITY_LOW)) {
@@ -102,7 +102,7 @@ namespace Operations
                          printType = false;
                      }
                      QString buf = "";//new StringBuffer(TAB);
-                     buf.append(parent->tabString(carLoad->getName(), CarLoads::instance()->getMaxNameLength() + 1));
+                     buf.append(parent->tabString(carLoad->getName(), ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength() + 1));
                      buf.append(parent->tabString(carLoad->getLoadType(), 6)); // load or empty
                      buf.append(parent->tabString(carLoad->getPriority(), 5)); // low or high
                      buf.append(parent->tabString(carLoad->getPickupComment(), 27));

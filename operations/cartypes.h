@@ -16,7 +16,6 @@ namespace Operations
    CarTypes(const CarTypes&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString CARTYPES_CHANGED_PROPERTY;// = "CarTypes Length"; // NOI18N
   /*public*/ static /*final*/ QString CARTYPES_NAME_CHANGED_PROPERTY;// = "CarTypes Name"; // NOI18N
-  /*public*/ static /*synchronized*/ CarTypes* instance();
   /*public*/ void changeDefaultNames(QString type);
   /*public*/ void addName(QString type);
   /*public*/ void deleteName(QString type);
@@ -44,7 +43,7 @@ namespace Operations
    /*private*/ int maxNameLengthSubType;// = 0;
 
 protected:
-  /*protected*/ QString getDefaultNames();
+  /*protected*/ QString getDefaultNames() override;
   /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
 
  };

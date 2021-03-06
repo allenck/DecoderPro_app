@@ -142,8 +142,7 @@ void YardmasterByTrackPanel::common()
         textSwitchListCommentPane->setText(_location->getSwitchListComment());
         textSwitchListCommentPane->setVisible(_location->getSwitchListComment() != (Location::NONE));
         updateTrackComboBox();
-        //_location->addPropertyChangeListener(this);
-        connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        _location->addPropertyChangeListener(this);
     }
 
     update();
@@ -257,8 +256,7 @@ void YardmasterByTrackPanel::common()
             }
             for (Engine* engine : *engList) {
                 if (engine->getTrack() == _track) {
-                    //engine.addPropertyChangeListener(this);
-                 connect(engine->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 engine->addPropertyChangeListener(this);
                     rollingStock.append(engine);
                     QCheckBox* checkBox = new QCheckBox(trainCommon->pickupEngine(engine));
                     setCheckBoxFont(checkBox);
@@ -280,8 +278,7 @@ void YardmasterByTrackPanel::common()
             }
             for (Engine* engine : *engList) {
                 if (engine->getDestinationTrack() == _track) {
-                    //engine.addPropertyChangeListener(this);
-                 connect(engine->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 engine->addPropertyChangeListener(this);
                     rollingStock.append(engine);
                     QCheckBox* checkBox = new QCheckBox(trainCommon->dropEngine(engine));
                     setCheckBoxFont(checkBox);
@@ -310,8 +307,7 @@ void YardmasterByTrackPanel::common()
                     if (car->getTrack() == _track &&
                             car->getRouteDestination() != car->getRouteLocation() &&
                             car->getRouteDestination() == rl) {
-                        //car->addPropertyChangeListener(this);
-                     connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                     car->addPropertyChangeListener(this);
                         rollingStock.append(car);
                         QString text;
                         if (car->isUtility()) {
@@ -347,8 +343,7 @@ void YardmasterByTrackPanel::common()
             for (Car* car : *carList) {
                 if (car->getDestinationTrack() == _track &&
                         car->getRouteLocation() != car->getRouteDestination()) {
-                    //car->addPropertyChangeListener(this);
-                 connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 car->addPropertyChangeListener(this);
                     rollingStock.append(car);
                     QString text;
                     if (car->isUtility()) {
@@ -382,8 +377,7 @@ void YardmasterByTrackPanel::common()
             for (Car* car : *carList) {
                 if ((car->getTrack() == _track || car->getDestinationTrack() == _track) &&
                         car->getRouteLocation() != NULL && car->getRouteLocation() == car->getRouteDestination()) {
-                    //car->addPropertyChangeListener(this);
-                 connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 car->addPropertyChangeListener(this);
                     rollingStock.append(car);
                     QString text;
                     if (car->isUtility()) {
@@ -476,8 +470,7 @@ void YardmasterByTrackPanel::common()
 //@Override
 /*public*/ void YardmasterByTrackPanel::dispose() {
     if (_location != NULL)
-        //_location->removePropertyChangeListener(this);
-     disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _location->removePropertyChangeListener(this);
     CommonConductorYardmasterPanel::removePropertyChangeListerners();
 }
 

@@ -5,13 +5,13 @@
 #include <QDate>
 #include "propertychangelistener.h"
 #include "appslib_global.h"
+#include "propertychangesupport.h"
 
 class DefaultIdTag;
 class PropertyChangeEvent;
 class QDomElement;
 class Logger;
 class QDate;
-class PropertyChangeSupport;
 namespace Operations
 {
  class LocationManager;
@@ -19,12 +19,12 @@ namespace Operations
  class Train;
  class RouteLocation;
  class Location;
- class APPSLIBSHARED_EXPORT RollingStock : public QObject
+ class APPSLIBSHARED_EXPORT RollingStock : public PropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   //explicit RollingStock(QObject *parent = 0);
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ static /*final*/ QString NONE;// = "";
   /*public*/ static /*final*/ int DEFAULT_BLOCKING_ORDER;// = 0;
   /*public*/ static /*final*/ bool FORCE;// = true; // ignore length, type, etc. when setting car's track
@@ -131,11 +131,12 @@ namespace Operations
   /*public*/ void dispose();
   /*public*/ Q_DECL_DEPRECATED QString getType();
   /*public*/ void setLength(QString length);
+   QObject* self() override {return (QObject*)this; }
 
  signals:
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   void common();

@@ -3,13 +3,15 @@
 #include "rollingstockattribute.h"
 #include <QHash>
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
 
 class QDomElement;
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT EngineModels : public RollingStockAttribute
+ class APPSLIBSHARED_EXPORT EngineModels : public RollingStockAttribute, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
  public:
   Q_INVOKABLE explicit EngineModels(QObject *parent = 0);
    ~EngineModels() {}

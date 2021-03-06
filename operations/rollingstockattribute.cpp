@@ -25,7 +25,7 @@ namespace Operations {
  /*protected*/ /*static*/ /*final*/ int RollingStockAttribute::MIN_NAME_LENGTH = 4;
 
  /*public*/ RollingStockAttribute::RollingStockAttribute(QObject *parent) :
-  PropertyChangeSupport(parent)
+  PropertyChangeSupport(this, parent)
  {
   list = QStringList();
   maxNameLength = 0;

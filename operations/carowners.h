@@ -16,14 +16,12 @@ namespace Operations
   CarOwners(const CarOwners&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString CAROWNERS_NAME_CHANGED_PROPERTY;// = "CarOwners Name"; // NOI18N
   /*public*/ static /*final*/ QString CAROWNERS_CHANGED_PROPERTY;// = "CarOwners Length"; // NOI18N
-  /*public*/ static /*synchronized*/ CarOwners* instance();
   /*public*/ void addName(QString owner);
   /*public*/ void deleteName(QString owner);
   /*public*/ void replaceName(QString oldName, QString newName);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ void load(QDomElement root);
  private:
-  /*private*/ static CarOwners* _instance;// = null;
 
  protected:
   /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);

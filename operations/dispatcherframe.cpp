@@ -1269,7 +1269,7 @@ void DispatcherFrame::allocateNextRequested(int index) {
         //TODO: Need to check signalMasts as well
         // this train is OK, activate the AutoTrains window, if needed
         if (_autoTrainsFrame == NULL) {
-            _autoTrainsFrame = new AutoTrainsFrame(_instance);
+            _autoTrainsFrame = new AutoTrainsFrame(this);
         } else {
             _autoTrainsFrame->setVisible(true);
         }
@@ -2501,16 +2501,6 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
 // Protection changed to /*public*/ to allow access via scripting
 /*public*/ AutoTrainsFrame* DispatcherFrame::getAutoTrainsFrame() {
     return _autoTrainsFrame;
-}
-
-/*static*/ DispatcherFrame* DispatcherFrame::_instance = NULL;
-
-/*static*/ /*public*/ DispatcherFrame* DispatcherFrame::instance() {
-    if (_instance == NULL) {
-        _instance = new DispatcherFrame();
-        InstanceManager::store(_instance, "DispatcherFrame");
-    }
-    return (_instance);
 }
 
 /**

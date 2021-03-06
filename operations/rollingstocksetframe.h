@@ -3,6 +3,7 @@
 #include "operationsframe.h"
 #include "appslib_global.h"
 #include "jcombobox.h"
+#include "propertychangelistener.h"
 
 class JActionEvent;
 class QGroupBox;
@@ -18,22 +19,25 @@ namespace Operations
  class TrainManager;
  class RollingStock;
  class RollingStockManager;
- class APPSLIBSHARED_EXPORT RollingStockSetFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT RollingStockSetFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   /*public*/ RollingStockSetFrame(QWidget* parent= 0);
   /*public*/ RollingStockSetFrame(QString title, QWidget* parent = 0);
-  /*public*/ void initComponents();
+  /*public*/ void initComponents() override;
   /*public*/ void load(RollingStock* rs);
+   QObject* self() override {return (QObject*)this; }
+
  public slots:
-  /*public*/ void comboBoxActionPerformed(QWidget* ae);
-  /*public*/ void dispose();
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
+  /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
+  /*public*/ void dispose() override;
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
 
 public slots:
-  /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
 
  private:
   RollingStockManager* manager;

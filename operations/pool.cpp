@@ -54,7 +54,7 @@ namespace Operations {
     }
 
     /*public*/ Pool::Pool(QString id, QString name,QObject *parent) :
-  QObject(parent) {
+  Bean(parent) {
         log->debug(tr("New pool (%1) id: %2").arg(name).arg(id));
         _name = name;
         _id = id;

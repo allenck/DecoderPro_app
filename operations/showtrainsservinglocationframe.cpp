@@ -209,7 +209,7 @@ namespace Operations
  /*private*/ void ShowTrainsServingLocationFrame::updateComboBox() {
      log->debug("update combobox");
      typeComboBox->setEnabled(false);
-     CarTypes::instance()->updateComboBox(typeComboBox);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
      // remove car types not serviced by this location and track
      for (int i = typeComboBox->count() - 1; i >= 0; i--) {
          QString type = typeComboBox->itemText(i);
@@ -243,7 +243,7 @@ namespace Operations
      }
 
      //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      removePropertyChangeAllTrains();
      OperationsFrame::dispose();

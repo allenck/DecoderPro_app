@@ -19,6 +19,7 @@
 #include "operationsxml.h"
 #include "setup.h"
 #include "carload.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -72,8 +73,8 @@ namespace Operations
 
   // text field
   // combo boxes
-  comboBoxTypes = CarTypes::instance()->getComboBox();
-  comboBoxLoads = CarLoads::instance()->getComboBox(NULL);
+  comboBoxTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
+  comboBoxLoads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox(NULL);
  }
 
  /*public*/ void TrainLoadOptionsFrame::initComponents(TrainEditFrame* parent)
@@ -207,9 +208,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
   // get notified if car roads, loads, and owners gets modified
   //CarTypes::instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarLoads.instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   loadAndTypeCheckBox->setChecked(loadAndType);
 
   initMinimumSize(QSize(Control::panelWidth600, Control::panelHeight400));
@@ -352,7 +353,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainLoadOptionsFrame::updateTypeComboBoxes() {
-     CarTypes::instance()->updateComboBox(comboBoxTypes);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(comboBoxTypes);
      // remove types not serviced by this train
      for (int i = comboBoxTypes->count() - 1; i >= 0; i--) {
          QString type = comboBoxTypes->itemText(i);
@@ -364,14 +365,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*private*/ void TrainLoadOptionsFrame::updateLoadComboBoxes() {
      QString carType =  comboBoxTypes->currentText();
-     CarLoads::instance()->updateComboBox(carType, comboBoxLoads);
+     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(carType, comboBoxLoads);
  }
 
  /*public*/ void TrainLoadOptionsFrame::dispose() {
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarLoads.instance().removePropertyChangeListener(this);
- disconnect(CarLoads::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_train != NULL) {
          //_train->removePropertyChangeListener(this);
       disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

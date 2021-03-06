@@ -26,6 +26,7 @@
 #include "operationsxml.h"
 #include "enginerostermenu.h"
 #include "instancemanager.h"
+#include "propertychangelistener.h"
 
 //EnginesTableFrame::EnginesTableFrame(QObject *parent) :
 //  OperationsFrame(parent)
@@ -102,8 +103,7 @@ namespace Operations
 
   // load the number of engines and listen for changes
   numEngines->setText(QString::number(engineManager->getNumEntries()));
-  //engineManager.addPropertyChangeListener(this);
-  connect(engineManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  engineManager->addPropertyChangeListener(this);
   textEngines->setText(tr("engines"));
 
   // Set up the control panel

@@ -39,7 +39,6 @@ class DispatcherFrame : public JmriJFrame, public InstanceManagerAutoDefault
 
 public:
  Q_INVOKABLE DispatcherFrame(QWidget* parent = 0);
- static DispatcherFrame* _instance;// = NULL;
  ~DispatcherFrame() {}
  DispatcherFrame(const DispatcherFrame&) :JmriJFrame() {}
 

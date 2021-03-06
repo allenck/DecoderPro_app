@@ -38,24 +38,6 @@ namespace Operations
 
  }
 
-
- /*public*/ /*static*/ /*synchronized*/ CarTypes* CarTypes::instance()
- {
-  Logger* log = new Logger("CarTypes");
-  log->setDebugEnabled(false);
-  if (_instance == NULL) {
-      if (log->isDebugEnabled()) {
-          log->debug("CarTypes creating instance");
-      }
-      // create and load
-      _instance = new CarTypes();
-  }
-  if (Control::showInstance) {
-      log->debug(tr("CarTypes returns instance %1").arg(_instance->metaObject()->className()));
-  }
-  return _instance;
- }
-
  /*protected*/ QString CarTypes::getDefaultNames() {
      if (Setup::getCarTypes()==(Setup::AAR)) {
          return ARR_TYPES;

@@ -15,12 +15,12 @@ namespace Operations {
  class RollingStock;
  class Pool;
  class Track;
- class APPSLIBSHARED_EXPORT Location : public QObject
+ class APPSLIBSHARED_EXPORT Location : public PropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   //explicit Location(QObject *parent = 0);
-  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
   /*public*/ Location(QString id, QString name,QObject *parent = 0);
   /*public*/ static /*final*/ QString NONE;// = "";
   /*public*/ static /*final*/ int NORMAL; //=1; // types of track allowed at this location
@@ -86,7 +86,7 @@ namespace Operations {
   /*public*/ void _register(Track* track);
   /*public*/ void deleteTrack(Track* track);
   /*public*/ QList<Track*> getTrackList();
-  /*public*/ Location(QDomElement e);
+  /*public*/ Location(QDomElement e, QObject *parent = nullptr);
   /*public*/ int getSwitchListState();
   /*public*/ void setStatusModified();
   /*public*/ void setStatus(QString status);
@@ -152,11 +152,12 @@ namespace Operations {
   /*public*/ void changeTrackBlockingOrderEarlier(Track* track);
   /*public*/ void changeTrackBlockingOrderLater(Track* track);
   /*private*/ Track* getTrackByBlockingOrder(int order);
+  QObject* self() override {return (QObject*)this; }
 
  signals:
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   Logger* log;

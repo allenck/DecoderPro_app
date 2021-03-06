@@ -4,7 +4,7 @@
 #include <QDebug>
 #include "loggerfactory.h"
 #include "instancemanagerautodefault.h"
-
+#include "instancemanagerautoinitialize.h"
 /**
  * Instances of the class {@code Class} represent classes and
  * interfaces in a running Java application.  An enum is a kind of
@@ -541,6 +541,8 @@
       //return ((Class*)obj)->isAssignableFrom(type);
       if(type == "InstanceManagerAutoDefault")
        return qobject_cast<InstanceManagerAutoDefault*>(obj);
+      if(type == "InstanceManagerAutoInitialize")
+       return qobject_cast<InstanceManagerAutoInitialize*>(obj);
       return false;
      }
      else

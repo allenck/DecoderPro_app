@@ -56,8 +56,7 @@ namespace Operations
   this->locationName = locationName;
   this->trackName = trackName;
 
-// manager->addPropertyChangeListener(this);
-  connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  manager->addPropertyChangeListener(this);
   updateList();
  }
 
@@ -691,8 +690,7 @@ namespace Operations
   {
       log->debug("dispose CarTableModel");
   }
-  //manager->removePropertyChangeListener(this);
-  disconnect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  manager->removePropertyChangeListener(this);
   removePropertyChangeCars();
 
   if (csf != NULL) {
@@ -708,8 +706,7 @@ namespace Operations
  {
   foreach (RollingStock* car, *manager->getList())
   {
-   //car->addPropertyChangeListener(this);
-   connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   car->addPropertyChangeListener(this);
   }
  }
 
@@ -717,8 +714,7 @@ namespace Operations
  {
   foreach (RollingStock* car, *manager->getList())
   {
-      //car->removePropertyChangeListener(this);
-   disconnect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   car->removePropertyChangeListener(this);
   }
  }
 

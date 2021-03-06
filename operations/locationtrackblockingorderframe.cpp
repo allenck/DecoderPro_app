@@ -137,8 +137,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void LocationTrackBlockingOrderFrame::dispose() {
      if (_location != NULL) {
-         //_location->removePropertyChangeListener(this);
-      disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _location->removePropertyChangeListener(this);
      }
      trackModel->dispose();
      OperationsFrame::dispose();

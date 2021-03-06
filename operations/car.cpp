@@ -90,7 +90,7 @@ namespace Operations
       _pickupScheduleId = NONE;
      _nextPickupScheduleId = NONE; // when the car needs to be pulled
 
-     carLoads = CarLoads::instance();
+     carLoads = ((CarLoads*)InstanceManager::getDefault("CarLoads"));
 
     }
 
@@ -744,7 +744,7 @@ namespace Operations
         setFinalDestinationTrack(getPreviousFinalDestinationTrack()); // revert to previous
         if (isLoadGeneratedFromStaging()) {
             setLoadGeneratedFromStaging(false);
-            setLoadName(CarLoads::instance()->getDefaultEmptyName());
+            setLoadName(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName());
         }
 
         RollingStock::reset();
@@ -754,9 +754,8 @@ namespace Operations
         setKernel(NULL);
         setFinalDestination(NULL); // removes property change listener
         setFinalDestinationTrack(NULL); // removes property change listener
-//        CarTypes.instance().removePropertyChangeListener(this);
-        disconnect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//        CarLengths.instance().remov))ePropertyChangeListener(this);
+        ((CarTypes*)InstanceManager::getDefault("CarTypes"))->removePropertyChangeListener(this);
+//        CarLengths.instance().removePropertyChangeListener(this);
         RollingStock::dispose();
     }
 
@@ -970,7 +969,7 @@ namespace Operations
 
     /*private*/ void Car::addPropertyChangeListeners() {
         //CarTypes.instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 //        CarLengths.instance().addPropertyChangeListener(this);
     }
