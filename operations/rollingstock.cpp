@@ -584,7 +584,7 @@ return getLength().toInt();
       } else {
           // rolling stock has been terminated or reset, bump rolling stock moves
           if (getTrain() != NULL && getTrain()->getRoute() != NULL) {
-              setSavedRouteId(getTrain()->getRoute()->getId());
+              setLastRouteId(getTrain()->getRoute()->getId());
           }
           if (getRouteDestination() != NULL) {
               setMoves(getMoves() + 1);
@@ -785,7 +785,7 @@ return getLength().toInt();
 *
 * @param id The route id.
 */
-/*public*/ void RollingStock::setSavedRouteId(QString id) {
+/*public*/ void RollingStock::setLastRouteId(QString id) {
   _routeId = id;
 }
 

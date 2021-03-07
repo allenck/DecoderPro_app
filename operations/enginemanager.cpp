@@ -57,7 +57,7 @@ setProperty("InstanceManagerAutoInitialize", "true");
   * @param engineNumber
   * @return new engine or existing engine
   */
- /*public*/ Engine* EngineManager::newEngine(QString engineRoad, QString engineNumber) {
+ /*public*/ RollingStock* EngineManager::newRS(QString engineRoad, QString engineNumber) {
      Engine* engine = getByRoadAndNumber(engineRoad, engineNumber);
      if (engine == nullptr) {
          engine = new Engine(engineRoad, engineNumber);

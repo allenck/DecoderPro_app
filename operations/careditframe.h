@@ -2,8 +2,9 @@
 #define CAREDITFRAME_H
 
 #include <QObject>
-#include "operationsframe.h"
+#include "rollingstockeditframe.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class QGroupBox;
 class QPushButton;
@@ -20,10 +21,11 @@ namespace Operations
  class LocationManager;
  class Car;
  class CarLoadEditFrame;
- class APPSLIBSHARED_EXPORT CarEditFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT CarEditFrame : public RollingStockEditFrame//, public  PropertyChangeListener
  {
   Q_OBJECT
- public:
+ //Q_INTERFACES(PropertyChangeListener)
+  public:
   CarEditFrame(QWidget* parent = 0);
   /*public*/ static /*final*/ QString ROAD;//= tr("Road");
   /*public*/ static /*final*/ QString TYPE;//= tr("Type");
@@ -31,17 +33,18 @@ namespace Operations
   /*public*/ static /*final*/ QString LENGTH;//= tr("Length");
   /*public*/ static /*final*/ QString OWNER;//= tr("Owner");
   /*public*/ static /*final*/ QString KERNEL;//= tr("Kernel");
-  /*public*/ void initComponents();
-  /*public*/ void dispose();
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
-  /*public*/ void loadCar(Car* car);
-  /*public*/ QString getClassName();
+  /*public*/ void initComponents() override;
+  /*public*/ void dispose() override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
+  /*public*/ void load(Car* car);
+  /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonEditActionPerformed(QWidget* ae);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void comboBoxActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void buttonEditActionPerformed(QWidget* ae) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
+  /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
 
  private:
   /**
@@ -51,7 +54,7 @@ namespace Operations
   CarManager* carManager;//= CarManager.instance();
   CarManagerXml* managerXml;//= CarManagerXml.instance();
   LocationManager* locationManager;//= LocationManager.instance();
-
+  CarAttributeEditFrame* carAttributeEditFrame = nullptr;
   Car* _car;
 
   // labels
@@ -106,19 +109,25 @@ namespace Operations
   // panels
   QGroupBox* pBlocking;//= new JPanel();
 
-  CarLoadEditFrame* lef;//= NULL;
+  CarLoadEditFrame* carLoadEditFrame = nullptr;
   /*private*/ void addEditButtonAction(QPushButton* b);
   Logger* log;
   /*private*/ void updateTrackLocationBox();
   /*private*/ bool editActive;// = false;
-  CarAttributeEditFrame* f;
   /*private*/ void removePropertyChangeListeners();
   QSignalMapper* editButtonMapper;
   /*private*/ void calculateWeight();
-  /*private*/ void saveCar(bool isSave);
+  /*private*/ void save(bool isSave)override;
   /*private*/ void setLocation(Car* car);
   /*private*/ void writeFiles();
   /*private*/ bool checkCar(Car* c);
+
+  protected:
+  /*protected*/ void addPropertyChangeListeners();
+  /*protected*/ ResourceBundle* getRb()override;
+  /*protected*/ RollingStockAttribute* getTypeManager();
+  /*protected*/ RollingStockAttribute* getLengthManager()override;
+  /*protected*/ void _delete()override;
 
  };
 }

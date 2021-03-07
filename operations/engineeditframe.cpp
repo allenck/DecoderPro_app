@@ -580,7 +580,7 @@ namespace Operations
      if (roadComboBox->currentText() != NULL && roadComboBox->currentText()!=("")) {
          if (_engine == NULL || _engine->getRoadName()!=(roadComboBox->currentText())
                  || _engine->getNumber()!=(roadNumberTextField->text())) {
-             _engine = manager->newEngine( roadComboBox->currentText(), roadNumberTextField->text());
+             _engine = (Engine*)manager->newRS( roadComboBox->currentText(), roadNumberTextField->text());
          }
          if (modelComboBox->currentText() != NULL) {
              _engine->setModel( modelComboBox->currentText());
@@ -687,7 +687,7 @@ namespace Operations
         if (_engine == NULL ||
                 _engine->getRoadName() != (roadComboBox->currentText()) ||
                  _engine->getNumber() != (roadNumberTextField->text())) {
-            _engine = manager->newEngine( roadComboBox->currentText(), roadNumberTextField->text());
+            _engine = (Engine*)manager->newRS( roadComboBox->currentText(), roadNumberTextField->text());
         }
         if (modelComboBox->currentText() != NULL) {
              _engine->setModel( modelComboBox->currentText());

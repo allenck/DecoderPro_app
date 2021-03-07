@@ -58,7 +58,7 @@ public:
     QObject* self() {return (QObject*)this;}
     /*public*/ void setEnabled(bool b) override {QLineEdit::setEnabled(b);}
     /*public*/ void setEditable(bool b) {setEnabled(b);}
-
+    /*public*/ void requestFocus() { QLineEdit::setFocus();};
 signals:
  void enterField();
  void leaveField();

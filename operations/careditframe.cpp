@@ -1,4 +1,4 @@
-#include "careditframe.h"
+﻿#include "careditframe.h"
 #include "carmanager.h"
 #include "carmanagerxml.h"
 #include "car.h"
@@ -25,6 +25,7 @@
 #include "instancemanager.h"
 #include "idtagmanager.h"
 #include "carattributeeditframe.h"
+#include "joptionpane.h"
 #include <QMessageBox>
 #include "kernel.h"
 #include "gridbaglayout.h"
@@ -33,6 +34,7 @@
 #include "carowners.h"
 #include "rollingstockattribute.h"
 #include "carloadeditframe.h"
+#include "rollingstockeditframe.h"
 
 //CarEditFrame::CarEditFrame()
 //{
@@ -57,7 +59,8 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString CarEditFrame::OWNER = tr("Owner");
  /*public*/ /*static*/ /*final*/ QString CarEditFrame::KERNEL = tr("Kernel");
 
- /*public*/ CarEditFrame::CarEditFrame(QWidget* parent) : OperationsFrame(parent)
+ /*public*/ CarEditFrame::CarEditFrame(QWidget* parent)
+  : RollingStockEditFrame(tr("Add Car"), parent)
  {
      //super();
   setObjectName("CarEditFrame");
@@ -117,9 +120,7 @@ namespace Operations
   // panels
   pBlocking = new QGroupBox();
 
-  lef = NULL;
   editActive = false;
-  f = NULL;
   _car = NULL;
 
   editButtonMapper = new QSignalMapper();
@@ -403,8 +404,21 @@ namespace Operations
   addHelpMenu("package.jmri.jmrit.operations.Operations_CarsEdit", true); // NOI18N
 
  }
+ //@Override
+ /*protected*/ ResourceBundle* getRb() {
+     return nullptr;
+ }
 
- /*public*/ void CarEditFrame::loadCar(Car* car) {
+ //@Override
+ /*protected*/ RollingStockAttribute* getTypeManager() {
+   return  (CarTypes*) InstanceManager::getDefault("CarTypes");
+ }
+
+ //@Override
+ /*protected*/ RollingStockAttribute* getLengthManager() {
+     return (CarLengths*)InstanceManager::getDefault("CarLengths");
+ }
+ /*public*/ void CarEditFrame::load(Car* car) {
      _car = car;
 
      if (!((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(car->getRoadName())) {
@@ -484,8 +498,7 @@ namespace Operations
          }
      }
      // listen for changes in car load
-     //car.addPropertyChangeListener(this);
-     connect(car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     car->addPropertyChangeListener(this);
      ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(car->getTypeName(), loadComboBox);
      loadComboBox->setCurrentIndex(loadComboBox->findText(car->getLoadName()));
 
@@ -557,78 +570,19 @@ namespace Operations
  // Save, Delete, Add, Clear, Calculate, Edit Load buttons
  /*public*/ void CarEditFrame::buttonActionPerformed(QWidget* ae)
 {
- QPushButton* source = (QPushButton*)ae;
-
-     if (source == saveButton)
-     {
-         // log->debug("car save button pressed");
-         if (!checkCar(_car)) {
-             return;
-         }
-         // if the car's road or number changes, the car needs a new id
-         if (_car != NULL
-                 && _car->getRoadName()!=(Car::NONE)
-                 && (_car->getRoadName()!=(roadComboBox->currentText()) || _car->getNumber()
-                         !=(roadNumberTextField->text()))) {
-             QString road =  roadComboBox->currentText();
-             QString number = roadNumberTextField->text();
-             carManager->changeId(_car, road, number);
-             _car->setRoadName(road);
-             _car->setNumber(number);
-         }
-         saveCar(true);
-         // save car file
-         writeFiles();
-         if (Setup::isCloseWindowOnSaveEnabled()) {
-             dispose();
-         }
-     }
-     if (source == deleteButton) {
-         log->debug("car delete button activated");
-         if (_car != NULL && _car->getRoadName()==(roadComboBox->currentText())
-                 && _car->getNumber()==(roadNumberTextField->text())) {
-             carManager->deregister(_car);
-             _car = NULL;
-             // save car file
-             writeFiles();
-         } else {
-             Car* car = carManager->getByRoadAndNumber( roadComboBox->currentText(), roadNumberTextField
-                     ->text());
-             if (car != NULL) {
-                 carManager->deregister(car);
-                 // save car file
-                 writeFiles();
-             }
-         }
-     }
-
-     if (source == addButton) {
-         if (!checkCar(NULL)) {
-             return;
-         }
-         saveCar(false);
-         // save car file
-         writeFiles();
-     }
-
-     if (source == clearRoadNumberButton) {
-         roadNumberTextField->setText("");
-         roadNumberTextField->setFocus();
-     }
-
-     if (source == fillWeightButton) {
-         calculateWeight();
-     }
-
-     if (source == editLoadButton) {
-         if (lef != NULL) {
-             lef->dispose();
-         }
-         lef = new CarLoadEditFrame();
-         //lef.setLocationRelativeTo(this);
-         lef->initComponents( typeComboBox->currentText(),  loadComboBox->currentText());
-     }
-
+  RollingStockEditFrame::buttonActionPerformed(ae);
+  if (ae == fillWeightButton) {
+      calculateWeight();
+  }
+  if (ae == editLoadButton) {
+      if (carLoadEditFrame != nullptr) {
+          carLoadEditFrame->dispose();
+      }
+      carLoadEditFrame = new CarLoadEditFrame();
+      //carLoadEditFrame->setLocationRelativeTo(this);
+      carLoadEditFrame->initComponents(/*(String)*/ typeComboBox->getSelectedItem(),
+              /*(String)*/ loadComboBox->getSelectedItem());
+  }
  }
 
  /**
@@ -718,228 +672,242 @@ namespace Operations
   }
  }
 
- /*private*/ void CarEditFrame::saveCar(bool isSave) {
-     if (roadComboBox->currentText() == NULL) {
-         return;
-     }
-     if (_car == NULL || _car->getRoadName()!=(roadComboBox->currentText())
-             || _car->getNumber()!=(roadNumberTextField->text())) {
-         _car = carManager->newCar( roadComboBox->currentText(), roadNumberTextField->text());
-         //_car->addPropertyChangeListener(this);
-         connect(_car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     }
-     if (typeComboBox->currentText() != NULL) {
-         _car->setTypeName( typeComboBox->currentText());
-     }
-     if (lengthComboBox->currentText() != NULL) {
-         _car->setLength( lengthComboBox->currentText());
-     }
-     if (colorComboBox->currentText() != NULL) {
-         _car->setColor( colorComboBox->currentText());
-     }
-     //try {
-         //_car->setWeight(NumberFormat.getNumberInstance().parse(weightTextField->text()).toString());
-     _car->setWeight(weightTextField->text());
-     //} catch (ParseException e1) {
+ /*private*/ void CarEditFrame::save(bool isSave) {
+  if (roadComboBox->currentText() == NULL) {
+      return;
+  }
+  if (_car == NULL || _car->getRoadName()!=(roadComboBox->currentText())
+          || _car->getNumber()!=(roadNumberTextField->text())) {
+      _car = (Car*)carManager->newRS( roadComboBox->currentText(), roadNumberTextField->text());
+      _car->addPropertyChangeListener(this);
+  }
+  if (typeComboBox->currentText() != NULL) {
+      _car->setTypeName( typeComboBox->currentText());
+  }
+  if (lengthComboBox->currentText() != NULL) {
+      _car->setLength( lengthComboBox->currentText());
+  }
+  if (colorComboBox->currentText() != NULL) {
+      _car->setColor( colorComboBox->currentText());
+  }
+  //try {
+      //_car->setWeight(NumberFormat.getNumberInstance().parse(weightTextField->text()).toString());
+  _car->setWeight(weightTextField->text());
+  //} catch (ParseException e1) {
 
-     //}
-     _car->setWeightTons(weightTonsTextField->text());
+  //}
+  _car->setWeightTons(weightTonsTextField->text());
 
-     // ask if all cars of this type should be passenger
-     if (isSave && _car->isPassenger() ^ passengerCheckBox->isChecked()) {
+  // ask if all cars of this type should be passenger
+  if (isSave && _car->isPassenger() ^ passengerCheckBox->isChecked()) {
 //         if (JOptionPane.showConfirmDialog(this, passengerCheckBox->isChecked() ? Bundle
 //                 .getMessage("carModifyTypePassenger") : tr("carRemoveTypePassenger"),
 //                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"),
 //                 new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      QString msg = passengerCheckBox->isChecked() ? tr("Change all of your cars of type %1 to passenger?").arg(_car->getTypeName()) : tr("Remove passenger from all of your car of type %1?").arg(_car->getTypeName());
-                                                     //                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"
-      if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-      {
-             // go through the entire list and change the passenger setting
-             // for all cars of this type
-             foreach (RollingStock* rs, *carManager->getList()) {
-                 Car* c = (Car*) rs;
-                 if (c->getTypeName()==(_car->getTypeName())) {
-                     c->setPassenger(passengerCheckBox->isChecked());
-                 }
-             }
-         }
-     }
-     _car->setPassenger(passengerCheckBox->isChecked());
-     int blocking = 0;
-     //try {
-     bool ok;
-         blocking = blockingTextField->text().toInt(&ok);
-         // only allow numbers between 0 and 100
-         if (blocking < 0 || blocking > 100) {
-             blocking = 0;
-         }
-     if(!ok) {
-         log->warn("Blocking must be a number between 0 and 100");
-     }
-     // ask if blocking order should be the same
-     if (isSave && _car->getKernel() == NULL && passengerCheckBox->isChecked() && _car->getBlocking() != blocking) {
+   QString msg = passengerCheckBox->isChecked() ? tr("Change all of your cars of type %1 to passenger?").arg(_car->getTypeName()) : tr("Remove passenger from all of your car of type %1?").arg(_car->getTypeName());
+                                                  //                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"
+   if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   {
+          // go through the entire list and change the passenger setting
+          // for all cars of this type
+          foreach (RollingStock* rs, *carManager->getList()) {
+              Car* c = (Car*) rs;
+              if (c->getTypeName()==(_car->getTypeName())) {
+                  c->setPassenger(passengerCheckBox->isChecked());
+              }
+          }
+      }
+  }
+  _car->setPassenger(passengerCheckBox->isChecked());
+  int blocking = 0;
+  //try {
+  bool ok;
+      blocking = blockingTextField->text().toInt(&ok);
+      // only allow numbers between 0 and 100
+      if (blocking < 0 || blocking > 100) {
+          blocking = 0;
+      }
+  if(!ok) {
+      log->warn("Blocking must be a number between 0 and 100");
+  }
+  // ask if blocking order should be the same
+  if (isSave && _car->getKernel() == NULL && passengerCheckBox->isChecked() && _car->getBlocking() != blocking) {
 //         if (JOptionPane.showConfirmDialog(this, tr("carChangeBlocking"),
 //                 new Object[]{blocking, _car->getTypeName()}), Bundle
 //                 .getMessage("carModifyAllType"), new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), tr("Change passenger car order blocking to %1 for all of your %2 cars?").arg(blocking).arg(_car->getTypeName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-      {
-             // go through the entire list and change the passenger setting
-             // for all cars of this type
-             foreach (RollingStock* rs, *carManager->getList()) {
-                 Car* c = (Car*) rs;
-                 if (c->isPassenger() && c->getTypeName()==(_car->getTypeName())) {
-                     c->setBlocking(blocking);
-                 }
-             }
-         }
-     }
-     _car->setBlocking(blocking);
-     // ask if all cars of this type should be caboose
-     if (isSave && _car->isCaboose() ^ cabooseCheckBox->isChecked()) {
+   if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), tr("Change passenger car order blocking to %1 for all of your %2 cars?").arg(blocking).arg(_car->getTypeName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   {
+       // go through the entire list and change the passenger setting
+       // for all cars of this type
+       foreach (RollingStock* rs, *carManager->getList()) {
+           Car* c = (Car*) rs;
+           if (c->isPassenger() && c->getTypeName()==(_car->getTypeName())) {
+               c->setBlocking(blocking);
+           }
+       }
+   }
+  }
+  _car->setBlocking(blocking);
+  // ask if all cars of this type should be caboose
+  if (isSave && _car->isCaboose() ^ cabooseCheckBox->isChecked()) {
 //         if (JOptionPane.showConfirmDialog(this, cabooseCheckBox->isChecked() ? Bundle
 //                 .getMessage("carModifyTypeCaboose") : tr("carRemoveTypeCaboose"),
 //                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"),
 //                 new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      QString msg = cabooseCheckBox->isChecked() ? tr("Change all of your cars of type %1 to caboose?").arg(_car->getTypeName()) : tr("Remove caboose from all of your car of type %1?").arg(_car->getTypeName());
-      if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-      {
-             // go through the entire list and change the caboose setting for all cars of this type
-             foreach (RollingStock* rs, *carManager->getList()) {
-                 Car* c = (Car*) rs;
-                 if (c->getTypeName()==(_car->getTypeName())) {
-                     c->setCaboose(cabooseCheckBox->isChecked());
-                 }
-             }
-         }
-     }
-     _car->setCaboose(cabooseCheckBox->isChecked());
-     // ask if all cars of this type should be utility
-     if (isSave && _car->isUtility() ^ utilityCheckBox->isChecked()) {
+   QString msg = cabooseCheckBox->isChecked() ? tr("Change all of your cars of type %1 to caboose?").arg(_car->getTypeName()) : tr("Remove caboose from all of your car of type %1?").arg(_car->getTypeName());
+   if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   {
+          // go through the entire list and change the caboose setting for all cars of this type
+          foreach (RollingStock* rs, *carManager->getList()) {
+              Car* c = (Car*) rs;
+              if (c->getTypeName()==(_car->getTypeName())) {
+                  c->setCaboose(cabooseCheckBox->isChecked());
+              }
+          }
+      }
+  }
+  _car->setCaboose(cabooseCheckBox->isChecked());
+  // ask if all cars of this type should be utility
+  if (isSave && _car->isUtility() ^ utilityCheckBox->isChecked()) {
 //         if (JOptionPane.showConfirmDialog(this, utilityCheckBox->isChecked() ? Bundle
 //                 .getMessage("carModifyTypeUtility") : tr("carRemoveTypeUtility"),
 //                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"),
 //                 new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      QString msg = utilityCheckBox->isChecked() ? tr("Change all of your cars of type %1 to utility?").arg(_car->getTypeName()) : tr("Remove utility from all of your car of type %1?").arg(_car->getTypeName());
-      if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-      {
-             // go through the entire list and change the utility for all cars of this type
-             foreach (RollingStock* rs, *carManager->getList()) {
-                 Car* c = (Car*) rs;
-                 if (c->getTypeName()==(_car->getTypeName())) {
-                     c->setUtility(utilityCheckBox->isChecked());
-                 }
-             }
-         }
-     }
-     _car->setUtility(utilityCheckBox->isChecked());
-     // ask if all cars of this type should be hazardous
-     if (isSave && _car->isHazardous() ^ hazardousCheckBox->isChecked()) {
-//         if (JOptionPane.showConfirmDialog(this, hazardousCheckBox->isChecked() ? Bundle
-//                 .getMessage("carModifyTypeHazardous") : tr("carRemoveTypeHazardous"),
-//                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"),
-//                 new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      QString msg = hazardousCheckBox->isChecked() ? tr("carModifyTypeHazardous").arg(_car->getTypeName()) : tr("carRemoveTypeHazardous").arg(_car->getTypeName());
-      if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-      {
-             // go through the entire list and change the hazardous setting for all cars of this type
-             foreach (RollingStock* rs, *carManager->getList()) {
-                 Car* c = (Car*) rs;
-                 if (c->getTypeName()==(_car->getTypeName())) {
-                     c->setHazardous(hazardousCheckBox->isChecked());
-                 }
-             }
-         }
-     }
-     _car->setHazardous(hazardousCheckBox->isChecked());
-     _car->setFred(fredCheckBox->isChecked());
-     _car->setBuilt(builtTextField->text());
-     if (ownerComboBox->currentText() != NULL) {
-         _car->setOwner( ownerComboBox->currentText());
-     }
-     if (kernelComboBox->currentText() != NULL) {
-         if (kernelComboBox->currentText()==(CarManager::NONE)) {
-             _car->setKernel(NULL);
-         } else if (_car->getKernelName()!=(kernelComboBox->currentText())) {
-             _car->setKernel(carManager->getKernelByName( kernelComboBox->currentText()));
-             // if car has FRED or caboose make lead
-             if (_car->hasFred() || _car->isCaboose()) {
-                 _car->getKernel()->setLead(_car);
-             }
-             _car->setBlocking(_car->getKernel()->getSize());
-         }
-     }
-     if (loadComboBox->currentText() != NULL && _car->getLoadName()!=(loadComboBox->currentText())) {
-         _car->setLoadName( loadComboBox->currentText());
-         // check to see if car is part of kernel, and ask if all the other cars in the kernel should be changed
-         if (_car->getKernel() != NULL) {
-             QList<Car*> cars = _car->getKernel()->getCars();
-             if (cars.size() > 1) {
+   QString msg = utilityCheckBox->isChecked() ? tr("Change all of your cars of type %1 to utility?").arg(_car->getTypeName()) : tr("Remove utility from all of your car of type %1?").arg(_car->getTypeName());
+   if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   {
+          // go through the entire list and change the utility for all cars of this type
+          foreach (RollingStock* rs, *carManager->getList()) {
+              Car* c = (Car*) rs;
+              if (c->getTypeName()==(_car->getTypeName())) {
+                  c->setUtility(utilityCheckBox->isChecked());
+              }
+          }
+      }
+  }
+  _car->setUtility(utilityCheckBox->isChecked());
+  // ask if all cars of this type should be hazardous
+  if (isSave && _car->isHazardous() ^ hazardousCheckBox->isChecked())
+  {
+   if (JOptionPane::showConfirmDialog(this, hazardousCheckBox->isChecked() ? tr("Change all of your cars of type %1 to Hazardous?") : tr("Remove Passenger from all of your car of type %1?").arg(
+           _car->getTypeName()), tr("Modify all cars of type %1?").arg(
+           _car->getTypeName()), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
+   {
+       // go through the entire list and change the hazardous setting for all cars of this type
+       foreach (RollingStock* rs, *carManager->getList()) {
+           Car* c = (Car*) rs;
+           if (c->getTypeName()==(_car->getTypeName())) {
+               c->setHazardous(hazardousCheckBox->isChecked());
+           }
+       }
+   }
+  }
+  _car->setHazardous(hazardousCheckBox->isChecked());
+  _car->setFred(fredCheckBox->isChecked());
+  _car->setBuilt(builtTextField->text());
+  if (ownerComboBox->currentText() != NULL) {
+      _car->setOwner( ownerComboBox->currentText());
+  }
+  if (kernelComboBox->currentText() != NULL) {
+      if (kernelComboBox->currentText()==(CarManager::NONE)) {
+          _car->setKernel(NULL);
+      } else if (_car->getKernelName()!=(kernelComboBox->currentText())) {
+          _car->setKernel(carManager->getKernelByName( kernelComboBox->currentText()));
+          // if car has FRED or caboose make lead
+          if (_car->hasFred() || _car->isCaboose()) {
+              _car->getKernel()->setLead(_car);
+          }
+          _car->setBlocking(_car->getKernel()->getSize());
+      }
+  }
+  if (loadComboBox->currentText() != NULL && _car->getLoadName()!=(loadComboBox->currentText()))
+  {
+   _car->setLoadName( loadComboBox->currentText());
+   // check to see if car is part of kernel, and ask if all the other cars in the kernel should be changed
+   if (_car->getKernel() != NULL)
+   {
+    QList<Car*> cars = _car->getKernel()->getCars();
+    if (cars.size() > 1) {
 //                 if (JOptionPane.showConfirmDialog(this, tr("carInKernel"),
 //                         new Object[]{_car->toString()}), tr("carPartKernel"),
 //                         new Object[]{_car->getKernelName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-              if(QMessageBox::question(this, tr("Car is part of kernel (%1)").arg(_car->getKernelName()), tr("Car (%1) is part of a kernel, do you want the other cars to also have the same settings?").arg(_car->toString()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-              {
-                     // go through the entire list and change the loads for all cars
-                     foreach (Car* car, cars) {
-                         if (((CarLoads*)InstanceManager::getDefault("CarLoads"))->containsName(car->getTypeName(), _car->getLoadName())) {
-                             car->setLoadName(_car->getLoadName());
-                         }
-                     }
-                 }
-             }
-         }
+     if(QMessageBox::question(this, tr("Car is part of kernel (%1)").arg(_car->getKernelName()), tr("Car (%1) is part of a kernel, do you want the other cars to also have the same settings?").arg(_car->toString()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+     {
+      // go through the entire list and change the loads for all cars
+      foreach (Car* car, cars)
+      {
+       if (((CarLoads*)InstanceManager::getDefault("CarLoads"))->containsName(car->getTypeName(), _car->getLoadName())) {
+           car->setLoadName(_car->getLoadName());
+       }
+      }
      }
-     _car->setComment(commentTextField->text());
-     _car->setValue(valueTextField->text());
-     int ix = rfidComboBox->currentIndex();
-     DefaultIdTag* t =  VPtr<DefaultIdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex()));
-     if(rfidComboBox->currentIndex() >= 0)
-      _car->setIdTag( VPtr<DefaultIdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex())));
-     else
-      _car->setIdTag(NULL);
-     autoTrackCheckBox->setEnabled(true);
+    }
+   }
+  }
+  _car->setComment(commentTextField->text());
+  _car->setValue(valueTextField->text());
+  int ix = rfidComboBox->currentIndex();
+  DefaultIdTag* t =  VPtr<DefaultIdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex()));
+  if(rfidComboBox->currentIndex() >= 0)
+   _car->setIdTag( VPtr<DefaultIdTag>::asPtr(rfidComboBox->itemData(rfidComboBox->currentIndex())));
+  else
+   _car->setIdTag(NULL);
+  autoTrackCheckBox->setEnabled(true);
 
-     // update blocking
-     blockingTextField->setText(QString::number(_car->getBlocking()));
+  // update blocking
+  blockingTextField->setText(QString::number(_car->getBlocking()));
 
-     if (locationBox->currentText() != NULL && trackLocationBox->currentText() == NULL) {
+  if (locationBox->currentText() != NULL && trackLocationBox->currentText() == NULL) {
 //         JOptionPane.showMessageDialog(this, tr("rsFullySelect"), Bundle
 //                 .getMessage("rsCanNotLoc"), JOptionPane.ERROR_MESSAGE);
-      QMessageBox::information(this, tr("Can not update car location"), tr("To place a car, you must select the car's location and track"));
-     } else {
-         // update location only if it has changed
-         if (_car->getLocation() == NULL || _car->getLocation()!=(VPtr<Location>::asPtr(locationBox->itemData(locationBox->currentIndex())))
-                 || _car->getTrack() == NULL || _car->getTrack()!=(VPtr<Track>::asPtr(trackLocationBox->itemData(trackLocationBox->currentIndex())))) {
-             setLocation(_car);
-             // is this car part of a kernel?
-             if (_car->getKernel() != NULL) {
-                 QList<Car*> cars = _car->getKernel()->getCars();
-                 if (cars.size() > 1) {
+   QMessageBox::information(this, tr("Can not update car location"), tr("To place a car, you must select the car's location and track"));
+  }
+  else
+  {
+   // update location only if it has changed
+   if (_car->getLocation() == NULL || _car->getLocation()!=(VPtr<Location>::asPtr(locationBox->itemData(locationBox->currentIndex())))
+           || _car->getTrack() == NULL || _car->getTrack()!=(VPtr<Track>::asPtr(trackLocationBox->itemData(trackLocationBox->currentIndex()))))
+   {
+    setLocation(_car);
+    // is this car part of a kernel?
+    if (_car->getKernel() != NULL)
+    {
+     QList<Car*> cars = _car->getKernel()->getCars();
+     if (cars.size() > 1)
+     {
 //                     if (JOptionPane.showConfirmDialog(this, Bundle
 //                             .getMessage("carInKernel"), new Object[]{_car->toString()}), MessageFormat
 //                             .format(tr("carPartKernel"), new Object[]{_car->getKernelName()}),
 //                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                  if(QMessageBox::question(this, tr("Car is part of kernel (%1)").arg(_car->getKernelName()), tr("Car (%1) is part of a kernel, do you want the other cars to also have the same settings?").arg(_car->toString()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-                  {
-                         // go through the entire list and change the location for all cars
-                         foreach (Car* car, cars) {
-                             if (car != _car) {
-                                 setLocation(car);
-                             }
-                         }
-                     }
-                 }
-             }
-         }
+      if(QMessageBox::question(this, tr("Car is part of kernel (%1)").arg(_car->getKernelName()), tr("Car (%1) is part of a kernel, do you want the other cars to also have the same settings?").arg(_car->toString()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+      {
+       // go through the entire list and change the location for all cars
+       foreach (Car* car, cars) {
+           if (car != _car) {
+               setLocation(car);
+           }
+       }
+      }
      }
+    }
+   }
+  }
  }
+
+ //@Override
+/*protected*/ void CarEditFrame::_delete() {
+    Car* car = carManager->getByRoadAndNumber(/*(String)*/ roadComboBox->getSelectedItem(), roadNumberTextField
+            ->text());
+    if (car != nullptr) {
+        carManager->deregister(car);
+    }
+}
 
  /*private*/ void CarEditFrame::setLocation(Car* car) {
      if (locationBox->currentText() == NULL) {
          car->setLocation(NULL, NULL);
      } else {
-         car->setSavedRouteId(RollingStock::NONE); // clear last route id
+         car->setLastRouteId(RollingStock::NONE); // clear last route id
          QString status = car->setLocation( VPtr<Location>::asPtr(locationBox->itemData(locationBox->currentIndex())), VPtr<Track>::asPtr(trackLocationBox
                  ->itemData(trackLocationBox->currentIndex())));
          if (status!=(Track::OKAY)) {
@@ -978,34 +946,33 @@ namespace Operations
 
  // edit buttons only one frame active at a time
  /*public*/ void CarEditFrame::buttonEditActionPerformed(QWidget* ae) {
+  if (carAttributeEditFrame != nullptr) {
+      carAttributeEditFrame->dispose();
+  }
+  carAttributeEditFrame = new CarAttributeEditFrame();
+  //carAttributeEditFrame->setLocationRelativeTo(this);
+//  carAttributeEditFrame->addPropertyChangeListener(this);
 
-     if (editActive) {
-         f->dispose();
-     }
-     f = new CarAttributeEditFrame();
-//     f->setLocationRelativeTo(this);
-     //f.addPropertyChangeListener(this);
-     connect(f, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     editActive = true;
- QPushButton* source = (QPushButton*)ae;
-     if (source == editRoadButton) {
-         f->initComponents(ROAD,  roadComboBox->currentText());
-     }
-     if (source == editTypeButton) {
-         f->initComponents(TYPE,  typeComboBox->currentText());
-     }
-     if (source == editColorButton) {
-         f->initComponents(COLOR,  colorComboBox->currentText());
-     }
-     if (source == editLengthButton) {
-         f->initComponents(LENGTH,  lengthComboBox->currentText());
-     }
-     if (source == editOwnerButton) {
-         f->initComponents(OWNER,  ownerComboBox->currentText());
-     }
-     if (source == editKernelButton) {
-         f->initComponents(KERNEL,  kernelComboBox->currentText());
-     }
+  if (ae == editRoadButton) {
+      carAttributeEditFrame->initComponents(CarAttributeEditFrame::ROAD, /*(String)*/ roadComboBox->getSelectedItem());
+  }
+  if (ae == editTypeButton) {
+      carAttributeEditFrame->initComponents(CarAttributeEditFrame::TYPE, /*(String)*/ typeComboBox->getSelectedItem());
+  }
+  if (ae == editColorButton) {
+      carAttributeEditFrame->initComponents(CarAttributeEditFrame::COLOR, /*(String)*/ colorComboBox->getSelectedItem());
+  }
+  if (ae == editLengthButton) {
+      carAttributeEditFrame->initComponents(CarAttributeEditFrame::LENGTH,
+              /*(String)*/ lengthComboBox->getSelectedItem());
+  }
+  if (ae == editOwnerButton) {
+      carAttributeEditFrame->initComponents(CarAttributeEditFrame::OWNER, /*(String)*/ ownerComboBox->getSelectedItem());
+  }
+  if (ae == editGroupButton) {
+      carAttributeEditFrame->initComponents(CarAttributeEditFrame::KERNEL,
+              /*(String)*/ groupComboBox->getSelectedItem());
+  }
  }
 
  /*public*/ void CarEditFrame::dispose() {
@@ -1013,26 +980,22 @@ namespace Operations
      OperationsFrame::dispose();
  }
 
+ //@Override
+ /*protected*/ void CarEditFrame::addPropertyChangeListeners() {
+     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->addPropertyChangeListener(this);
+     ((CarColors*)InstanceManager::getDefault("CarColors"))->addPropertyChangeListener(this);
+     carManager->addPropertyChangeListener(this);
+     RollingStockEditFrame::addPropertyChangeListeners();
+ }
  /*private*/ void CarEditFrame::removePropertyChangeListeners()
  {
-  //CarRoads::instance().removePropertyChangeListener(this);
-  disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //((CarLoads*)InstanceManager::getDefault("CarLoads")).removePropertyChangeListener(this);
-  disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //CarTypes.instance().removePropertyChangeListener(this);
-  disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//  CarLengths.instance().removePropertyChangeListener(this);
-//  CarColors.instance().removePropertyChangeListener(this);
-  disconnect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//  CarOwners.instance().removePropertyChangeListener(this);
-  //locationManager.removePropertyChangeListener(this);
-  disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //carManager.removePropertyChangeListener(this);
-  disconnect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  if (_car != NULL) {
-      //_car->removePropertyChangeListener(this);
-   disconnect(_car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  ((CarLoads*)InstanceManager::getDefault("CarLoads"))->removePropertyChangeListener(this);
+  ((CarColors*)InstanceManager::getDefault("CarColors"))->removePropertyChangeListener(this);
+  carManager->removePropertyChangeListener(this);
+  if (_rs != nullptr) {
+      _rs->removePropertyChangeListener(this);
   }
+  RollingStockEditFrame::removePropertyChangeListeners();
  }
 
  /*public*/ void CarEditFrame::propertyChange(PropertyChangeEvent* e) {

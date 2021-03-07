@@ -644,7 +644,7 @@ namespace Operations
 //                 /*public*/ void run() {
                      cef = new CarEditFrame();
                      cef->initComponents();
-                     cef->loadCar(car);
+                     cef->load(car);
 //                 }
 //             });
              break;

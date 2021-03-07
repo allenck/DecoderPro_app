@@ -81,6 +81,7 @@ SOURCES += \
  metatypes.cpp \
         operations.cpp \
         operationsmenu.cpp \
+ rollingstockeditframe.cpp \
         trainmanifesttext.cpp \
         operationsxml.cpp \
         trainswitchlisttext.cpp \
@@ -382,6 +383,7 @@ HEADERS += \
         operations_global.h \
         operationsmenu.h \
         operationsxml.h \
+ rollingstockeditframe.h \
         trainswitchlisttext.h \
         routemanagerxml.h \
         routemanager.h \

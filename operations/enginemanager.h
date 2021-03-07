@@ -24,7 +24,7 @@ namespace Operations
   /*public*/ static /*final*/ QString CONSISTLISTLENGTH_CHANGED_PROPERTY;// = "ConsistListLength"; // NOI18N
   /*public*/ Engine* getById(QString id);
   /*public*/ Engine* getByRoadAndNumber(QString engineRoad, QString engineNumber) ;
-  /*public*/ Engine* newEngine(QString engineRoad, QString engineNumber);
+  /*public*/ RollingStock* newRS(QString engineRoad, QString engineNumber)override;
   /*public*/ Consist* newConsist(QString name);
   /*public*/ void deleteConsist(QString name);
   /*public*/ Consist* getConsistByName(QString name);

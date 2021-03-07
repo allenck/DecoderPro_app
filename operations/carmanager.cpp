@@ -51,7 +51,7 @@ RollingStockManager(parent)
   * @param number car number
   * @return new car or existing Car
   */
- /*public*/ Car* CarManager::newCar(QString road, QString number) {
+ /*public*/ RollingStock* CarManager::newRS(QString road, QString number) {
      Car* car = getByRoadAndNumber(road, number);
      if (car == NULL) {
          car = new Car(road, number);

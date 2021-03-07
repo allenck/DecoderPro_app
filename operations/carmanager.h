@@ -22,7 +22,7 @@ namespace Operations
      ~CarManager() {}
      CarManager(const CarManager&) : RollingStockManager() {}
   /*public*/ static /*final*/ QString KERNEL_LISTLENGTH_CHANGED_PROPERTY;// = "KernelListLength"; // NOI18N
-  /*public*/ Car* newCar(QString road, QString number);
+  /*public*/ RollingStock* newRS(QString road, QString number)override;
   /*public*/ Car* getById(QString id);
   /*public*/ Car* getByRoadAndNumber(QString road, QString number);
   /*public*/ Car* getByTypeAndRoad(QString type, QString road);

@@ -582,7 +582,7 @@ namespace Operations
 
       log->debug(tr("Add car (%1 %2) owner (%3) built (%4) location (%5, %6)").arg(carRoad).arg(carNumber).arg(carOwner).arg(
               carBuilt).arg(carLocation).arg(carTrack));
-      Car* car = manager->newCar(carRoad, carNumber);
+      Car* car = (Car*)manager->newRS(carRoad, carNumber);
       car->setTypeName(carType);
       car->setLength(carLength);
       car->setWeight(carWeight);

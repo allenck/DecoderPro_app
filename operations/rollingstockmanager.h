@@ -54,6 +54,7 @@ namespace Operations
   /*public*/ QList<RollingStock*> getList(Location* location);
   /*public*/ QList<RollingStock *> getList(Track* track);
   QObject* self() override {return (QObject*)this; }
+  /*abstract*/ virtual /*public*/ RollingStock* newRS(QString road, QString number) =0;
 
  signals:
 

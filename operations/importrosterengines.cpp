@@ -69,7 +69,7 @@ namespace Operations
              textId= (road + " " + re->getRoadNumber());
              Engine* engine = manager->getByRoadAndNumber(road, re->getRoadNumber());
              if (engine == NULL) {
-                 engine = manager->newEngine(road, re->getRoadNumber());
+                 engine = (Engine*)manager->newRS(road, re->getRoadNumber());
                  QString model = re->getModel();
                  if (model.length() > Control::max_len_string_attibute) {
                      model = model.mid(0, Control::max_len_string_attibute);

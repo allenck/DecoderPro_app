@@ -17,12 +17,11 @@ namespace Operations
   Q_OBJECT
  public:
   CarAttributeEditFrame(QWidget* parent = 0);
-  PropertyChangeSupport* pcs;//;//= new java.beans.PropertyChangeSupport(this);
   // property change
   /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
   /*public*/ void initComponents(QString comboboxName);
   /*public*/ void initComponents(QString comboboxName, QString select);
-  /*public*/ QString getClassName();
+  /*public*/ QString getClassName() override;
   // valid attributes for this frame
   /*public*/ static /*final*/ QString ROAD;//  Bundle.getMessage("Road");
   /*public*/ static /*final*/ QString TYPE;//  Bundle.getMessage("Type");
@@ -32,10 +31,10 @@ namespace Operations
   /*public*/ static /*final*/ QString KERNEL;//  Bundle.getMessage("Kernel");
   /*public*/ void toggleShowQuanity();
   /*public*/ void deleteUnusedAttributes();
-  /*public*/ void dispose();
-
+  /*public*/ void dispose() override;
+ QObject* self() override {return (QObject*)this; }
 public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   CarManager* carManager;//= CarManager.instance();

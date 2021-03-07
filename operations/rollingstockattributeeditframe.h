@@ -9,9 +9,10 @@
 
 namespace Operations
 {
-    class RollingStockAttributeEditFrame : public OperationsFrame
+    class RollingStockAttributeEditFrame : public OperationsFrame, public PropertyChangeListener
     {
       Q_OBJECT
+      Q_INTERFACES(PropertyChangeListener)
     public:
         RollingStockAttributeEditFrame(QObject* parent = 0);
         // labels

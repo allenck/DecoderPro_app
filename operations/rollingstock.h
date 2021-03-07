@@ -80,7 +80,7 @@ namespace Operations
   /*public*/ QString setDestination(Location* destination, Track* track, bool force);
   /*public*/ virtual QString testDestination(Location* destination, Track* track) ;
   /*public*/ QString getSavedRouteId();
-  /*public*/ void setSavedRouteId(QString id);
+  /*public*/ void setLastRouteId(QString id);
   /*public*/ QString getValue();
   /*public*/ void setMoves(int moves);
   /*public*/ int getMoves();

@@ -161,8 +161,10 @@ public:
  /*public*/ QAbstractItemDelegate *getCellRenderer(int row, int column);
  /*public*/ QAbstractItemDelegate* getCellEditor(int row, int column);
  /*public*/ void clearSelection();
-
-signals:
+ /*public*/ void changeSelection(int row, int col, bool, bool) {
+  setCurrentIndex( model()->index(row, col));
+ }
+ signals:
  void propertyChange(PropertyChangeEvent*);
 
 public slots:

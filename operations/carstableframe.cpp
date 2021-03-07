@@ -32,6 +32,8 @@
 #include "modifylocationsaction.h"
 #include "trainsbycartypeaction.h"
 #include "instancemanager.h"
+#include "joptionpane.h"
+
 
 //CarsTableFrame::CarsTableFrame()
 //{
@@ -377,42 +379,37 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  // add, find or save button
  /*public*/ void CarsTableFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
-     // log->debug("car button activated");
-     if (source == findButton) {
+  // log.debug("car button activated");
+  if (ae == findButton) {
       int rowindex = carsTableModel->findCarByRoadNumber(findCarTextBox->text());
-         if (rowindex < 0) {
-//             JOptionPane.showMessageDialog(this, MessageFormat.format(tr("carWithRoadNumNotFound"),
-//                 new Object[]{findCarTextBox.getText()}), Bundle.getMessage("carCouldNotFind"),
-//                     JOptionPane.INFORMATION_MESSAGE);
-          QMessageBox::information(this, tr("Could not find car!"), tr("Car with road number \"%1\" not found ").arg(findCarTextBox->text()));
-             return;
-         }
-         // clear any sorts by column
-         clearTableSort(carsTable);
-// TODO:         carsTable->changeSelection(rowindex, 0, false, false);
-         return;
-     }
-     if (source == addButton) {
-         if (f != NULL) {
-             f->dispose();
-         }
-         f = new CarEditFrame();
-         f->initComponents();
-         f->setTitle(tr("Add Car"));
-     }
-
-     if (source == saveButton) {
-//         if (carsTable->isEditing()) {
-//             log->debug("cars table edit true");
-//             carsTable.getCellEditor().stopCellEditing();
-//         }
-         OperationsXml::save();
-         saveTableDetails(carsTable);
-         if (Setup::isCloseWindowOnSaveEnabled()) {
-             dispose();
-         }
-     }
+      if (rowindex < 0) {
+          JOptionPane::showMessageDialog(this, tr("Car with road number \"%1\" not found ").arg(
+                  findCarTextBox->text()),tr("Could not find car!"),
+                  JOptionPane::INFORMATION_MESSAGE);
+          return;
+      }
+      // clear any sorts by column
+      clearTableSort(carsTable);
+      carsTable->changeSelection(rowindex, 0, false, false);
+      return;
+  }
+  if (ae == addButton) {
+      if (f != nullptr) {
+          f->dispose();
+      }
+      f = new CarEditFrame();
+      f->initComponents(); // default is add car
+  }
+  if (ae == saveButton) {
+//      if (carsTable->isEditing()) {
+//          log.debug("cars table edit true");
+//          carsTable.getCellEditor().stopCellEditing();
+//      }
+      OperationsXml::save();
+      if (Setup::isCloseWindowOnSaveEnabled()) {
+          dispose();
+      }
+  }
  }
 #if 0
  /*protected*/ int[] getCurrentTableColumnWidths() {

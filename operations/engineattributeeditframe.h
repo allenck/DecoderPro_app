@@ -31,6 +31,8 @@ namespace Operations
   /*public*/ static /*final*/ QString OWNER;// = tr("Owner");
   /*public*/ static /*final*/ QString CONSIST;// = tr("Consist");
 
+  QObject* self() override {return (QObject*)this; }
+
  signals:
 
  public slots:

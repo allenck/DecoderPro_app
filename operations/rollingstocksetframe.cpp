@@ -513,7 +513,7 @@ void RollingStockSetFrame::common()
     {
      QString status = rs->setLocation((Location*) VPtr<Location>::asPtr(locationBox->itemData(locationBox->currentIndex())),
              (Track*) VPtr<Track>::asPtr(trackLocationBox->currentData(/*trackLocationBox->currentIndex()*/)));
-     rs->setSavedRouteId(RollingStock::NONE); // clear last route id
+     rs->setLastRouteId(RollingStock::NONE); // clear last route id
      if (status!=(Track::OKAY))
      {
       log->debug(tr("Can't set rs's location because of %1").arg(status));
