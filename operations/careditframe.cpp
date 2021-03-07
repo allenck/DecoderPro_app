@@ -405,19 +405,20 @@ namespace Operations
 
  }
  //@Override
- /*protected*/ ResourceBundle* getRb() {
+ /*protected*/ ResourceBundle* CarEditFrame::getRb() {
      return nullptr;
  }
 
  //@Override
- /*protected*/ RollingStockAttribute* getTypeManager() {
+ /*protected*/ RollingStockAttribute* CarEditFrame::getTypeManager() {
    return  (CarTypes*) InstanceManager::getDefault("CarTypes");
  }
 
  //@Override
- /*protected*/ RollingStockAttribute* getLengthManager() {
+ /*protected*/ RollingStockAttribute* CarEditFrame::getLengthManager() {
      return (CarLengths*)InstanceManager::getDefault("CarLengths");
  }
+
  /*public*/ void CarEditFrame::load(Car* car) {
      _car = car;
 
