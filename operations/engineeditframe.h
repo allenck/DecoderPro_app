@@ -3,6 +3,9 @@
 #include "operationsframe.h"
 #include "appslib_global.h"
 #include "propertychangelistener.h"
+#include "rollingstockeditframe.h"
+#include "instancemanager.h"
+
 class Logger;
 class QSignalMapper;
 class JTextField;
@@ -19,10 +22,10 @@ namespace Operations
  class EngineLengths;
  class CarManagerXml;
  class LocationManager;
- class APPSLIBSHARED_EXPORT EngineEditFrame : public OperationsFrame, public PropertyChangeListener
+ class APPSLIBSHARED_EXPORT EngineEditFrame : public RollingStockEditFrame//, public PropertyChangeListener
  {
    Q_OBJECT
-   Q_INTERFACES(PropertyChangeListener)
+   //Q_INTERFACES(PropertyChangeListener)
   public:
    explicit EngineEditFrame(QWidget *parent = 0);
   //private static final long serialVersionUID = 7527604846983933144L;
@@ -35,17 +38,16 @@ namespace Operations
   /*public*/ static /*final*/ QString CONSIST; //=Bundle.getMessage("Consist");
   /*public*/ void initComponents() override;
   /*public*/ void dispose() override;
-  /*public*/ void loadEngine(Engine* engine);
+  /*public*/ void load(Engine* engine);
   /*public*/ QString getClassName() override;
    QObject* self() override {return (QObject*)this; }
 
   signals:
 
   public slots:
-  /*public*/ void buttonEditActionPerformed(QWidget* ae);
+  /*public*/ void buttonEditActionPerformed(QWidget* ae)override;
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;
   /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
-  /*public*/ void buttonActionPerformed(QWidget* ae) override;
   /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
 
 
@@ -99,11 +101,19 @@ namespace Operations
   EngineAttributeEditFrame* f;
   /*private*/ void addEditButtonAction(QPushButton* b);
   QSignalMapper* buttonEditMapper;
-  /*private*/ void removePropertyChangeListeners();
   Logger* log;
   /*private*/ void addEngine();
   /*private*/ bool checkRoadNumber(QString roadNum);
-  /*private*/ void saveEngine();
+  /*private*/ void save(bool isSave)override;
+  EngineManager* engineManager = (EngineManager*)InstanceManager::getDefault("EngineManager");
+
+  protected:
+  /*protected*/ ResourceBundle* getRb()override;
+  /*protected*/ RollingStockAttribute* getTypeManager() override;
+  /*protected*/ RollingStockAttribute* getLengthManager() override;
+  /*protected*/ void addPropertyChangeListeners();
+  /*protected*/ void removePropertyChangeListeners();
+  /*protected*/ void _delete()override;
 
  };
 }

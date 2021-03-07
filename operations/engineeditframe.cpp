@@ -27,7 +27,6 @@
 #include "rosterentry.h"
 #include "consist.h"
 #include "idtagmanager.h"
-#include "instancemanager.h"
 #include "rosterentry.h"
 #include "enginetypes.h"
 #include "carowners.h"
@@ -62,7 +61,7 @@ namespace Operations
  /*public static final*/ QString EngineEditFrame::CONSIST = tr("Consist");
 
  /*public*/ EngineEditFrame::EngineEditFrame(QWidget *parent) :
-  OperationsFrame(parent)
+  RollingStockEditFrame(tr("Edit Engine"), parent)
  {
  log = new Logger("EngineEditFrame");
         //super();
@@ -366,8 +365,22 @@ namespace Operations
      setMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
      setVisible(true);
  }
+ //@Override
+ /*protected*/ ResourceBundle* EngineEditFrame::getRb() {
+     return /*rb*/nullptr;
+ }
 
- /*public*/ void EngineEditFrame::loadEngine(Engine* engine)
+ //@Override
+ /*protected*/ RollingStockAttribute* EngineEditFrame::getTypeManager() {
+     return (EngineTypes*)InstanceManager::getDefault("EngineTypes");
+ }
+
+ //@Override
+ /*protected*/ RollingStockAttribute* EngineEditFrame::getLengthManager() {
+     return (EngineLengths*)InstanceManager::getDefault("EngineLengths");
+ }
+
+ /*public*/ void EngineEditFrame::load(Engine* engine)
  {
      _engine = engine;
 
@@ -491,90 +504,7 @@ namespace Operations
      log->debug("checkbox change " + b->text());
  }
 
- // Save, Delete, Add, Clear, Calculate buttons
- /*public*/ void EngineEditFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
-     if (source == saveButton) {
-         // log->debug("engine save button activated");
-         QString roadNum = roadNumberTextField->text();
-         if (roadNum.length() > 10) {
-//             JOptionPane.showMessageDialog(this, tr("engineRoadNum"), Bundle
-//                     .getMessage("engineRoadLong"), JOptionPane.ERROR_MESSAGE);
-          QMessageBox::information(this, tr("Locomotive road number too long!"), tr("Locomotive road number must be less than 10 characters"));
-             return;
-         }
-         // check to see if engine with road and number already exists
-         Engine* engine = manager->getByRoadAndNumber( roadComboBox->currentText(), roadNumberTextField
-                 ->text());
-         if (engine != NULL) {
-             if (_engine == NULL || engine->getId()!=(_engine->getId())) {
-//                 JOptionPane.showMessageDialog(this, tr("engineExists"), Bundle
-//                         .getMessage("engineCanNotUpdate"), JOptionPane.ERROR_MESSAGE);
-              QMessageBox::warning(this, tr("Can not update locomotive!"), tr("Locomotive with this road name and number already exists!"));
-                 return;
-             }
-         }
 
-         // if the road or number changes, the loco needs a new id
-         if (_engine != NULL
-                 && _engine->getRoadName() != NULL
-                 && _engine->getRoadName()!=(Engine::NONE)
-                 && (_engine->getRoadName()!=(roadComboBox->currentText()) || _engine
-                         ->getNumber()!=(roadNumberTextField->text()))) {
-             QString road =  roadComboBox->currentText();
-             QString number = roadNumberTextField->text();
-             manager->changeId(_engine, road, number);
-             _engine->setRoadName(road);
-             _engine->setNumber(number);
-         }
-         saveEngine();
-         OperationsXml::save(); // save engine file
-         if (Setup::isCloseWindowOnSaveEnabled()) {
-             dispose();
-         }
-     }
-     if (source == deleteButton) {
-         log->debug("engine delete button activated");
-         if (_engine != NULL && _engine->getRoadName()==(roadComboBox->currentText())
-                 && _engine->getNumber()==(roadNumberTextField->text())) {
-             manager->deregister(_engine);
-             _engine = NULL;
-             OperationsXml::save(); // save engine file
-         } else {
-             Engine* e = manager->getByRoadAndNumber( roadComboBox->currentText(), roadNumberTextField->text());
-             if (e != NULL) {
-                 manager->deregister(e);
-                 OperationsXml::save(); // save engine file
-             }
-         }
-     }
-     if (source == addButton) {
-      if (!checkRoadNumber(roadNumberTextField->text())) {
-          return;
-      }
-
-      // check to see if engine already exists
-      Engine* existingEngine =
-              manager->getByRoadAndNumber( roadComboBox->currentText(), roadNumberTextField
-                      ->text());
-      if (existingEngine != NULL) {
-          log->info("Can not add, engine already exists");
-          JOptionPane::showMessageDialog(this, tr("Locomotive with this road name and number already exists!"), tr("Can not update locomotive!"), JOptionPane::ERROR_MESSAGE);
-          return;
-      }
-
-      // enable delete and save buttons
-      deleteButton->setEnabled(true);
-      saveButton->setEnabled(true);
-
-      saveEngine();
-      OperationsXml::save(); // save engine file
-     }
-     if (source == clearRoadNumberButton) {
-         roadNumberTextField->setText("");
-         //roadNumberTextField.requestFocus();
-     }
- }
 
  /*private*/ void EngineEditFrame::addEngine() {
      if (roadComboBox->currentText() != NULL && roadComboBox->currentText()!=("")) {
@@ -682,99 +612,37 @@ namespace Operations
     return true;
 }
 
-/*private*/ void EngineEditFrame::saveEngine() {
-    if (roadComboBox->currentText() != NULL && roadComboBox->currentText() != ("")) {
-        if (_engine == NULL ||
-                _engine->getRoadName() != (roadComboBox->currentText()) ||
-                 _engine->getNumber() != (roadNumberTextField->text())) {
-            _engine = (Engine*)manager->newRS( roadComboBox->currentText(), roadNumberTextField->text());
-        }
-        if (modelComboBox->currentText() != NULL) {
-             _engine->setModel( modelComboBox->currentText());
-        }
-        if (typeComboBox->currentText() != NULL) {
-             _engine->setTypeName( typeComboBox->currentText());
-        }
-         _engine->setBunit(bUnitCheckBox->isChecked());
-        if (lengthComboBox->currentText() != NULL) {
-             _engine->setLength( lengthComboBox->currentText());
-        }
-         _engine->setBuilt(builtTextField->text());
-        if (ownerComboBox->currentText() != NULL) {
-             _engine->setOwner( ownerComboBox->currentText());
-        }
-        if (consistComboBox->currentText() != NULL) {
-            if (consistComboBox->currentText() == (EngineManager::NONE)) {
-                 _engine->setConsist(NULL);
-                if ( _engine->isBunit())
-                     _engine->setBlocking(Engine::B_UNIT_BLOCKING);
-                else
-                     _engine->setBlocking(Engine::DEFAULT_BLOCKING_ORDER);
-            } else {
-                 _engine->setConsist(manager->getConsistByName( consistComboBox->currentText()));
-                if ( _engine->getConsist() != NULL) {
-                     _engine->setBlocking( _engine->getConsist()->getSize());
-                }
-            }
-        }
-        // confirm that weight is a number
-        if (weightTextField->text() != ("")) {
-            try {
-          bool bok;
-                (weightTextField->text().toInt(&bok));
-          if(!bok) throw Exception();
-                 _engine->setWeightTons(weightTextField->text());
-            } catch (Exception e) {
-                JOptionPane::showMessageDialog(this, tr("Locomotive weight must be a number"), tr("Can not save locomotive weight!"), JOptionPane::ERROR_MESSAGE);
-            }
-        }
-        // confirm that horsepower is a number
-        if (hpTextField->text() != ("")) {
-            try {
-          bool bok;
-                (hpTextField->text().toInt(&bok));
-                if(!bok) throw Exception();
-                 _engine->setHp(hpTextField->text());
-            } catch (Exception e) {
-                JOptionPane::showMessageDialog(this, tr("Locomotive horsepower must be a number"), tr("Can not save locomotive horsepower!"), JOptionPane::ERROR_MESSAGE);
-            }
-        }
-        if (locationBox->currentText() == NULL) {
-             _engine->setLocation(NULL, NULL);
-        } else {
-            if (trackLocationBox->currentText() == NULL) {
-                JOptionPane::showMessageDialog(this, tr("To place a locomotive, you must select the location and track"),tr("Can not update locomotive location"), JOptionPane::ERROR_MESSAGE);
+/*private*/ void EngineEditFrame::save(bool isSave) {
+  RollingStockEditFrame::save(engineManager, isSave);
+  Engine* engine = (Engine*) _rs;
 
-            } else {
-                QString status = _engine->setLocation(VPtr<Location>::asPtr( locationBox->currentData()),
-                        VPtr<Track>::asPtr( trackLocationBox->currentData()));
-                if (status != (Track::OKAY)) {
-                    log->debug(tr("Can't set engine's location because of %1").arg(status));
-                    JOptionPane::showMessageDialog(this, tr("Can''t set locomotive (%1) location due to %2").arg(_engine->toString()).arg( status), tr("Can not update locomotive location"),
-                            JOptionPane::ERROR_MESSAGE);
-                    // does the user want to force the rolling stock to this track?
-                    int results = JOptionPane::showOptionDialog(this, tr("Do you want to force locomotive (%1) to track (%2)?").arg(_engine->toString()).arg(
-                                    VPtr<Track>::asPtr( trackLocationBox->currentData())->toString()),
-                            tr("Do you want to override track''s %1?").arg(status),
-                            JOptionPane::YES_NO_OPTION,
-                            JOptionPane::QUESTION_MESSAGE, QIcon(), QList<QVariant>(), QVariant());
-                    if (results == JOptionPane::YES_OPTION) {
-                        log->debug("Force rolling stock to track");
-                         _engine->setLocation(VPtr<Location>::asPtr( locationBox->currentData()), VPtr<Track>::asPtr( trackLocationBox
-                                ->currentData()), RollingStock::FORCE);
-                    }
-                }
-            }
-        }
-         _engine->setComment(commentTextField->text());
-         _engine->setValue(valueTextField->text());
-        // save the IdTag for this engine
-        IdTag* idTag = VPtr<IdTag>::asPtr( rfidComboBox->currentData());
-        if (idTag != NULL) {
-             _engine->setRfid(idTag->toString());
-        }
-    }
-}
+  engine->setBunit(bUnitCheckBox->isChecked());
+
+  if (groupComboBox->getSelectedItem() != nullptr) {
+     if (groupComboBox->getSelectedItem() ==(EngineManager::NONE)) {
+         engine->setConsist(nullptr);
+         engine->setBlocking(Engine::DEFAULT_BLOCKING_ORDER);
+     } else if (engine->getConsistName() != (groupComboBox->getSelectedItem())) {
+         engine->setConsist(engineManager->getConsistByName(/*(String)*/ groupComboBox->getSelectedItem()));
+         if (engine->getConsist() != nullptr) {
+             engine->setBlocking(engine->getConsist()->getSize());
+             blockingTextField->setText(QString::number(engine->getBlocking()));
+         }
+     }
+  }
+  pBlocking->setVisible(engine->getConsist() != nullptr);
+
+  // confirm that horsepower is a number
+  if (!hpTextField->text().trimmed().isEmpty()) {
+      bool ok;
+          hpTextField->text().toInt(&ok);
+          engine->setHp(hpTextField->text());
+      if(!ok) {
+          JOptionPane::showMessageDialog(this, tr("Locomotive horsepower must be a number"),
+                  tr("Can not save locomotive horsepower!"), JOptionPane::ERROR_MESSAGE);
+      }
+  }
+ }
 
  /*private*/ void EngineEditFrame::addEditButtonAction(QPushButton* b) {
  //     b.addActionListener(new java.awt.event.ActionListener() {
@@ -784,6 +652,15 @@ namespace Operations
  //     });
   connect(b, SIGNAL(clicked()), buttonEditMapper, SLOT(map()));
   buttonEditMapper->setMapping(b,b);
+ }
+
+ //@Override
+ /*protected*/ void EngineEditFrame::_delete() {
+     Engine* engine = engineManager->getByRoadAndNumber(/*(String)*/ roadComboBox->getSelectedItem(), roadNumberTextField
+             ->text());
+     if (engine != nullptr) {
+         engineManager->deregister(engine);
+     }
  }
 
 // edit buttons only one frame active at a time
@@ -827,15 +704,21 @@ namespace Operations
      OperationsFrame::dispose();
  }
 
- /*private*/ void EngineEditFrame::removePropertyChangeListeners()
- {
-  ((CarRoads*)InstanceManager::getDefault("CarRoads"))->removePropertyChangeListener(this);
-  engineModels->removePropertyChangeListener(this);
-  engineTypes->removePropertyChangeListener(this);
-  engineLengths->removePropertyChangeListener(this);
-  ((CarOwners*)InstanceManager::getDefault("CarOwners"))->removePropertyChangeListener(this);
-  locationManager->removePropertyChangeListener(this);
-  manager->removePropertyChangeListener(this);
+ //@Override
+ /*protected*/ void EngineEditFrame::addPropertyChangeListeners() {
+     engineModels->addPropertyChangeListener(this);
+     engineManager->addPropertyChangeListener(this);
+     RollingStockEditFrame::addPropertyChangeListeners();
+ }
+
+ //@Override
+ /*protected*/ void EngineEditFrame::removePropertyChangeListeners() {
+     engineModels->removePropertyChangeListener(this);
+     engineManager->removePropertyChangeListener(this);
+     if (_rs != nullptr) {
+         _rs->removePropertyChangeListener(this);
+     }
+     RollingStockEditFrame::removePropertyChangeListeners();
  }
 
  /*public*/ void EngineEditFrame::propertyChange(PropertyChangeEvent* e) {

@@ -444,7 +444,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
 //                 /*public*/ void run() {
                      eef = new EngineEditFrame();
                      eef->initComponents();
-                     eef->loadEngine(engine);
+                     eef->load(engine);
 //                 }
 //             });
              break;

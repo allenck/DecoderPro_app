@@ -124,8 +124,8 @@ namespace Operations
 
   protected:
   /*protected*/ void addPropertyChangeListeners();
-  /*protected*/ ResourceBundle* getRb()override;
-  /*protected*/ RollingStockAttribute* getTypeManager();
+  /*protected*/ ResourceBundle* getRb() override;
+  /*protected*/ RollingStockAttribute* getTypeManager() override;
   /*protected*/ RollingStockAttribute* getLengthManager()override;
   /*protected*/ void _delete()override;
 

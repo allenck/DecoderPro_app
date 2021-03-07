@@ -97,7 +97,7 @@ namespace Operations
    /*protected*/ RollingStock* _rs;
 
    /*protected*/ LocationManager* locationManager = (LocationManager*)InstanceManager::getDefault("LocationManager");
-   /*protected*/ RollingStockAttribute* getTypeManager();
+   /*protected*/ virtual RollingStockAttribute* getTypeManager() = 0;
 
    /*abstract*/ virtual /*protected*/ RollingStockAttribute* getLengthManager() = 0;
 
