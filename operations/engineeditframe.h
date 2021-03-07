@@ -5,6 +5,7 @@
 #include "propertychangelistener.h"
 #include "rollingstockeditframe.h"
 #include "instancemanager.h"
+#include "resourcebundle.h"
 
 class Logger;
 class QSignalMapper;
@@ -13,6 +14,15 @@ class JComboBox;
 class QPushButton;
 namespace Operations
 {
+ class EngineResourceBundle : public ResourceBundle
+ {
+  public:
+   EngineResourceBundle();
+   QString getString(QString key);
+  private:
+   QMap<QString, QString> map = QMap<QString, QString>();
+ };
+
  class EngineAttributeEditFrame;
  class Engine;
  class EngineManager;
@@ -37,7 +47,6 @@ namespace Operations
   /*public*/ static /*final*/ QString OWNER; //=Bundle.getMessage("Owner");
   /*public*/ static /*final*/ QString CONSIST; //=Bundle.getMessage("Consist");
   /*public*/ void initComponents() override;
-  /*public*/ void dispose() override;
   /*public*/ void load(Engine* engine);
   /*public*/ QString getClassName() override;
    QObject* self() override {return (QObject*)this; }
@@ -48,64 +57,24 @@ namespace Operations
   /*public*/ void buttonEditActionPerformed(QWidget* ae)override;
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;
   /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
-  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
-
 
  private:
-  EngineManager* manager;// = EngineManager.instance();
-  EngineManagerXml* managerXml;// = EngineManagerXml.instance();
-  EngineModels* engineModels;// = EngineModels.instance();
-  EngineTypes* engineTypes;// = EngineTypes.instance();
-  EngineLengths* engineLengths;// = EngineLengths.instance();
-  CarManagerXml* carManagerXml;// = CarManagerXml.instance();
-  LocationManager* locationManager;// = LocationManager.instance();
-
-  Engine* _engine;
-
-  // major buttons
-  QPushButton* editRoadButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* clearRoadNumberButton; //=new JButton(Bundle.getMessage("Clear"));
-  QPushButton* editModelButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editTypeButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editLengthButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* fillWeightButton; //=new JButton();
-  QPushButton* editConsistButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editOwnerButton; //=new JButton(Bundle.getMessage("Edit"));
-
-  QPushButton* saveButton; //=new JButton(Bundle.getMessage("Save"));
-  QPushButton* deleteButton; //=new JButton(Bundle.getMessage("Delete"));
-  QPushButton* addButton; //=new JButton(Bundle.getMessage("Add"));
-
-  // check boxes
-  QCheckBox* bUnitCheckBox;// = new JCheckBox(Bundle.getMessage("BUnit"));
-
-  // text field
-  JTextField* roadNumberTextField; //=new JTextField(Control.max_len_string_road_number);
-  JTextField* builtTextField; //=new JTextField(Control.max_len_string_built_name + 3);
-  JTextField* hpTextField; //=new JTextField(8);
-  JTextField* weightTextField; //=new JTextField(Control.max_len_string_weight_name);
-  JTextField* commentTextField; //=new JTextField(35);
-  JTextField* valueTextField; //=new JTextField(8);
-
-  // combo boxes
-  JComboBox* roadComboBox; //=CarRoads.instance().getComboBox();
-  JComboBox* modelComboBox; //=engineModels.getComboBox();
-  JComboBox* typeComboBox; //=engineTypes.getComboBox();
-  JComboBox* lengthComboBox; //=engineLengths.getComboBox();
-  JComboBox* ownerComboBox; //=CarOwners.instance().getComboBox();
-  JComboBox* locationBox; //=locationManager.getComboBox();
-  JComboBox* trackLocationBox; //=new JComboBox<>();
-  JComboBox* consistComboBox; //=manager.getConsistComboBox();
-  JComboBox* rfidComboBox; //=new JComboBox<IdTag>();
-  /*private*/ bool editActive;// = false;
-  EngineAttributeEditFrame* f;
-  /*private*/ void addEditButtonAction(QPushButton* b);
-  QSignalMapper* buttonEditMapper;
-  Logger* log;
-  /*private*/ void addEngine();
-  /*private*/ bool checkRoadNumber(QString roadNum);
-  /*private*/ void save(bool isSave)override;
   EngineManager* engineManager = (EngineManager*)InstanceManager::getDefault("EngineManager");
+  EngineManagerXml* managerXml = (EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml");
+  EngineModels* engineModels = (EngineModels*)InstanceManager::getDefault("EngineModels");
+
+  JButton* editModelButton = new JButton(tr("Edit"));
+
+  JCheckBox* bUnitCheckBox = new JCheckBox(tr("B Unit"));
+
+  JTextField* hpTextField = new JTextField(8);
+
+  EngineAttributeEditFrame* engineAttributeEditFrame;
+
+  QSignalMapper* buttonEditMapper;
+  static Logger* log;
+  /*private*/ void save(bool isSave)override;
+  ResourceBundle* rb = new EngineResourceBundle();
 
   protected:
   /*protected*/ ResourceBundle* getRb()override;
@@ -114,7 +83,9 @@ namespace Operations
   /*protected*/ void addPropertyChangeListeners();
   /*protected*/ void removePropertyChangeListeners();
   /*protected*/ void _delete()override;
+  /*protected*/ bool check(RollingStock* engine) override;
 
  };
+
 }
 #endif // ENGINEEDITFRAME_H

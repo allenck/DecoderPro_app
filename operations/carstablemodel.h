@@ -21,7 +21,7 @@ namespace Operations
  class APPSLIBSHARED_EXPORT CarsTableModel : public AbstractTableModel, public PropertyChangeListener
  {
   Q_OBJECT
-   Q_INTERFACES()
+   Q_INTERFACES(PropertyChangeListener)
  public:
   //CarsTableModel(PropertyChangeListener);
   /*public*/ CarsTableModel(bool showAllCars, QString locationName, QString trackName, QObject* parent =0);

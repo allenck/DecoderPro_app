@@ -125,7 +125,7 @@ namespace Operations
  }
 
  /*public*/ QString CarManagerXml::getOperationsFileName() {
-     return OperationsXml::getOperationsFileName();
+     return operationsFileName;
  }
 
  /*public*/ void CarManagerXml::dispose(){

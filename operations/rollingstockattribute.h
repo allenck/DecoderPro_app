@@ -38,7 +38,6 @@ namespace Operations
  protected:
   /*protected*/ static /*final*/ int MIN_NAME_LENGTH;// = 4;
   /*protected*/ QStringList list;// = new ArrayList<String>();
-  /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
   /*protected*/ virtual QString getDefaultNames();
   /*protected*/ QString maxName = "";
   /*protected*/ int maxNameLength = 0;

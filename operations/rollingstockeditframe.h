@@ -55,12 +55,12 @@ namespace Operations
 
    // combo boxes
    /*public*/ JComboBox* roadComboBox = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
-   /*public*/ JComboBox* typeComboBox = getTypeManager()->getComboBox();
-   /*public*/ JComboBox* lengthComboBox = getLengthManager()->getComboBox();
+   /*public*/ JComboBox* typeComboBox;// = getTypeManager()->getComboBox();
+   /*public*/ JComboBox* lengthComboBox;// = getLengthManager()->getComboBox();
    /*public*/ JComboBox* ownerComboBox = ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getComboBox();
    /*public*/ JComboBox* groupComboBox;
    /*public*/ JComboBox* modelComboBox; // for engines
-   /*public*/ JComboBox/*<Location>*/* locationBox = locationManager->getComboBox();
+   /*public*/ JComboBox/*<Location>*/* locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
    /*public*/ JComboBox/*<Track>*/* trackLocationBox = new JComboBox();
 
    /*public*/ NamedBeanComboBox/*<IdTag>*/* rfidComboBox;
@@ -110,7 +110,7 @@ namespace Operations
    /*abstract*/ virtual /*protected*/ void _delete() =0;
    /*protected*/ void load(RollingStock* rs);
    /*protected*/ void updateTrackLocationBox();
-   /*protected*/ bool check(RollingStock* rs);
+   /*protected*/ virtual bool check(RollingStock* rs);
    /*protected*/ /*<T extends RollingStock> */void save(RollingStockManager/*<T>*/* manager, bool isSave);
    /*protected*/ void setLocationAndTrack(RollingStock* rs);
    /*protected*/ void addEditButtonAction(JButton* b);

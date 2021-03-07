@@ -73,15 +73,15 @@ namespace Operations
   textWeightTons = new QLabel(tr("Tons"));
 
   // major buttons
-  editRoadButton = new QPushButton(tr("Edit"));
+  editRoadButton = new JButton(tr("Edit"));
   clearRoadNumberButton = new QPushButton(tr("Clear"));
-  editTypeButton = new QPushButton(tr("Edit"));
-  editColorButton = new QPushButton(tr("Edit"));
-  editLengthButton = new QPushButton(tr("Edit"));
+  editTypeButton = new JButton(tr("Edit"));
+  editColorButton = new JButton(tr("Edit"));
+  editLengthButton = new JButton(tr("Edit"));
   fillWeightButton = new QPushButton(tr("Calculate"));
   editLoadButton = new QPushButton(tr("Edit"));
-  editKernelButton = new QPushButton(tr("Edit"));
-  editOwnerButton = new QPushButton(tr("Edit"));
+  editKernelButton = new JButton(tr("Edit"));
+  editOwnerButton = new JButton(tr("Edit"));
 
   saveButton = new QPushButton(tr("Save"));
   deleteButton = new QPushButton(tr("Delete"));
@@ -406,7 +406,7 @@ namespace Operations
  }
  //@Override
  /*protected*/ ResourceBundle* CarEditFrame::getRb() {
-     return nullptr;
+     return rb;
  }
 
  //@Override
@@ -594,56 +594,30 @@ namespace Operations
      OperationsXml::save();
  }
 
- /*private*/ bool CarEditFrame::checkCar(Car* c) {
-     QString roadNum = roadNumberTextField->text();
-     if (roadNum.length() > Control::max_len_string_road_number) {
-//         JOptionPane.showMessageDialog(this, tr("carRoadNum"),
-//                 new Object[]{Control::max_len_string_road_number + 1}), tr("carRoadLong"),
-//                 JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(this, tr("Car road number too long!"), tr("Car road number must be less than %1 characters").arg(Control::max_len_string_road_number + 1) );
-         return false;
-     }
-     // check to see if car with road and number already exists
-     Car* car = carManager->getByRoadAndNumber( roadComboBox->currentText(), roadNumberTextField
-             ->text());
-     if (car != NULL) {
-         // new car?
-         if (c == NULL) {
-//             JOptionPane.showMessageDialog(this, tr("carRoadExists"), Bundle
-//                     .getMessage("carCanNotAdd"), JOptionPane.ERROR_MESSAGE);
-          QMessageBox::critical(this, tr("Can not add car!"), tr("Car with this road name and number already exists!"));
-             return false;
-         }
-         // old car with new road or number?
-         if (car->getId()!=(c->getId())) {
-//             JOptionPane.showMessageDialog(this, tr("carRoadExists"), Bundle
-//                     .getMessage("carCanNotUpdate"), JOptionPane.ERROR_MESSAGE);
-             QMessageBox::critical(this, tr("Can not update car!"), tr("Car with this road name and number already exists!"));
-             return false;
-         }
-     }
-     // check car's weight has proper format
-     bool ok;
-     //try {
-         //Number number = NumberFormat.getNumberInstance().parse(weightTextField->text());
-         double number = weightTextField->text().toDouble(&ok);
-         log->debug(tr("Car weight in oz: %1").arg(number));
-     if(!ok) {
-//         JOptionPane.showMessageDialog(this, tr("carWeightFormat"), Bundle
-//                 .getMessage("carActualWeight"), JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(this, tr("Car's actual weight incorrect"), tr("Car's weight must be in the format of xx.x oz"));
-         return false;
-     }
-     // check car's weight in tons has proper format
-     //try {
-         weightTonsTextField->text().toInt(&ok);
-     if(!ok) {
-//         JOptionPane.showMessageDialog(this, tr("carWeightFormatTon"), Bundle
-//                 .getMessage("carWeightTon"), JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(this, tr("Car weight in tons incorrect"), tr("Car's weight must be in the format of xx tons"));
-         return false;
-     }
-     return true;
+ /*private*/ bool CarEditFrame::check(RollingStock* car) {
+  QString roadNum = roadNumberTextField->text();
+  if (roadNum.length() > Control::max_len_string_road_number) {
+      JOptionPane::showMessageDialog(this, tr("Car road number must be less than %1 characters").arg({Control::max_len_string_road_number + 1}),  tr("Car road number too long!"),
+              JOptionPane::ERROR_MESSAGE);
+      return false;
+  }
+  if (roadNum.length() > Control::max_len_string_road_number) {
+    JOptionPane::showMessageDialog(this,
+            getRb()->getString("RoadNumMustBeLess").arg(Control::max_len_string_road_number + 1 ),
+            getRb()->getString("RoadNumTooLong"), JOptionPane::ERROR_MESSAGE);
+    return false;
+ }
+ // check rolling stock's weight in tons has proper format
+ if (!weightTonsTextField->text().trimmed().isEmpty()) {
+   bool ok;
+       weightTonsTextField->text().toUInt(&ok);
+   if(!ok) {
+       JOptionPane::showMessageDialog(this, getRb()->getString("Locomotive weight must be in the format of xx tons"),
+               getRb()->getString("WeightTonError"), JOptionPane::ERROR_MESSAGE);
+       return false;
+   }
+  }
+  return true;
  }
 
  /*private*/ void CarEditFrame::calculateWeight()
@@ -933,18 +907,6 @@ namespace Operations
      }
  }
 
- /*private*/ void CarEditFrame::addEditButtonAction(QPushButton* b)
-{
-//     b.addActionListener(new java.awt.event.ActionListener() {
-//         /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//             buttonEditActionPerformed(e);
-//         }
-//     });
- editButtonMapper->setMapping(b,b);
- connect(b, SIGNAL(clicked()), editButtonMapper, SLOT(map()));
- }
-
-
  // edit buttons only one frame active at a time
  /*public*/ void CarEditFrame::buttonEditActionPerformed(QWidget* ae) {
   if (carAttributeEditFrame != nullptr) {
@@ -1004,29 +966,18 @@ namespace Operations
          log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e
                  ->getNewValue().toString()));
      }
-     if (e->getPropertyName()==(CarRoads::CARROADS_CHANGED_PROPERTY)) {
-         ((CarRoads*)InstanceManager::getDefault("CarRoads"))->updateComboBox(roadComboBox);
-         if (_car != NULL) {
-             roadComboBox->setCurrentIndex(roadComboBox->findText(_car->getRoadName()));
-         }
-     }
-     if (e->getPropertyName()==(CarTypes::CARTYPES_CHANGED_PROPERTY)) {
-         ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
-         if (_car != NULL) {
-             typeComboBox->setCurrentIndex(typeComboBox->findText(_car->getTypeName()));
-         }
-     }
+     RollingStockEditFrame::propertyChange(e);
 
-     if (e->getPropertyName()==(CarColors::CARCOLORS_CHANGED_PROPERTY)) {
-         ((CarColors*)InstanceManager::getDefault("CarColors"))->updateComboBox(colorComboBox);
-         if (_car != NULL) {
-             colorComboBox->setCurrentIndex(colorComboBox->findText(_car->getColor()));
-         }
-     }
      if (e->getPropertyName()==(CarLengths::CARLENGTHS_CHANGED_PROPERTY)) {
          ((CarLengths*)InstanceManager::getDefault("CarLengths"))->updateComboBox(lengthComboBox);
          if (_car != NULL) {
              lengthComboBox->setCurrentIndex(lengthComboBox->findText(_car->getLength()));
+         }
+     }
+     if (e->getPropertyName()==(CarColors::CARCOLORS_CHANGED_PROPERTY)) {
+         ((CarColors*)InstanceManager::getDefault("CarColors"))->updateComboBox(colorComboBox);
+         if (_car != NULL) {
+             colorComboBox->setCurrentIndex(colorComboBox->findText(_car->getColor()));
          }
      }
 
@@ -1038,21 +989,7 @@ namespace Operations
          }
      }
 
-     if (e->getPropertyName()==(CarOwners::CAROWNERS_CHANGED_PROPERTY)) {
-         ((CarOwners*)InstanceManager::getDefault("CarOwners"))->updateComboBox(ownerComboBox);
-         if (_car != NULL) {
-             ownerComboBox->setCurrentIndex(ownerComboBox->findText(_car->getOwner()));
-         }
-     }
 
-     if (e->getPropertyName()==(LocationManager::LISTLENGTH_CHANGED_PROPERTY)
-             || e->getPropertyName()==(RollingStock::TRACK_CHANGED_PROPERTY)) {
-         ((LocationManager*)InstanceManager::getDefault("LocationManager"))->updateComboBox(locationBox);
-         updateTrackLocationBox();
-         if (_car != NULL && _car->getLocation() != NULL) {
-             locationBox->setCurrentIndex(locationBox->findText(_car->getLocation()->getName()));
-         }
-     }
      if (e->getPropertyName()==(Car::LOAD_CHANGED_PROPERTY)) {
          if (_car != NULL) {
              loadComboBox->setCurrentIndex(loadComboBox->findText(_car->getLoadName()));
@@ -1076,4 +1013,11 @@ namespace Operations
   return "jmri.jmrit.operations.rollingstock.cars.CarEditFrame";
  }
 
+ /*public*/ CarResourceBundle::CarResourceBundle()
+ {
+  map.insert("RoadNumMustBeLess", tr("Car road number must be less than {0} characters"));
+  map.insert("RoadNumTooLong", tr("Car road number too long!"));
+  map.insert("WeightFormatTon", tr("Car's weight must be in the format of xx tons"));
+  map.insert("WeightTonError", tr("Car weight in tons incorrect"));
+ }
 }

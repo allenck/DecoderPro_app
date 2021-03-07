@@ -117,13 +117,13 @@ common();
  /*protected*/ void OperationsFrame::addItem(QWidget* c, int x, int y) {
      ((OperationsPanel*) this->getContentPane())->addItem(c, x, y);
  }
-#if 0
- /*protected*/ void addItemLeft(QWidget* c, int x, int y) {
-     ((OperationsPanel) this->getContentPane()).addItemLeft(c, x, y);
+#if 1
+ /*protected*/ void OperationsFrame::addItemLeft(QWidget* c, int x, int y) {
+     ((OperationsPanel*) this->getContentPane())->addItemLeft(c, x, y);
  }
 
- /*protected*/ void addItemWidth(QWidget* c, int width, int x, int y) {
-     ((OperationsPanel) this->getContentPane()).addItemWidth(c, width, x, y);
+ /*protected*/ void OperationsFrame::addItemWidth(QWidget* c, int width, int x, int y) {
+     ((OperationsPanel*) this->getContentPane())->addItemWidth(c, width, x, y);
  }
 #endif
  /*protected*/ void OperationsFrame::addItem(QWidget* p, QWidget* c, int x, int y) {

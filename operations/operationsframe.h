@@ -59,6 +59,8 @@ protected:
   /*protected*/ int getNumberOfCheckboxesPerLine();
   /*protected*/ void saveTableDetails(JTable* table);
   /*protected*/ void addItem(QWidget* c, int x, int y);
+  /*protected*/ void addItemLeft(QWidget* c, int x, int y);
+  /*protected*/ void addItemWidth(QWidget* c, int width, int x, int y);
   QString gbStyleSheet;
   /*protected*/ void storeValues();
 

@@ -32,6 +32,7 @@ namespace Operations
   * record the single instance *
   */
   Logger* log;
+ /*private*/ QString operationsFileName = "OperationsCarRoster.xml"; // NOI18N
  };
 }
 Q_DECLARE_METATYPE(Operations::CarManagerXml)

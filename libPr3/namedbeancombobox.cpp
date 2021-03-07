@@ -312,10 +312,16 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
  */
 //@Override
 /*public*/ void NamedBeanComboBox::setSelectedItem(NamedBean* item) {
-    JComboBox::setCurrentIndex(JComboBox::findData(VPtr<NamedBean>::asQVariant(item)));
-    if (itemData(currentIndex()) !=QVariant()) {
-        userInput = QString();
-    }
+ if(item == nullptr)
+ {
+  JComboBox::setCurrentIndex(-1);
+  return;
+ }
+
+ JComboBox::setCurrentIndex(JComboBox::findData(VPtr<NamedBean>::asQVariant(item)));
+ if (itemData(currentIndex()) !=QVariant()) {
+     userInput = QString();
+ }
 }
 
 /**

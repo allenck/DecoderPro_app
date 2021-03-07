@@ -226,17 +226,4 @@ namespace Operations {
          setNames(names);
      }
  }
-#if 0
-
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
- /*protected*/ void RollingStockAttribute::firePropertyChange(QString p, QVariant old, QVariant n) {
-     firePropertyChange(p, old, n);
- }
 }

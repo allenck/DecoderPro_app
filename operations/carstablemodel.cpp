@@ -730,7 +730,7 @@ namespace Operations
    updateList();
    fireTableDataChanged();
   } // must be a car change
-  else if (e->getSource()->metaObject()->className() ==("Car"))
+  else if (QString(e->getSource()->metaObject()->className()) ==("Car"))
   {
    Car* car = (Car*) e->getSource();
    int row = sysList->indexOf(car);

@@ -1,4 +1,4 @@
-#include "rollingstockeditframe.h"
+﻿#include "rollingstockeditframe.h"
 #include "loggerfactory.h"
 #include "operationsxml.h"
 #include "joptionpane.h"
@@ -15,6 +15,7 @@
 #include "setup.h"
 #include "control.h"
 #include "track.h"
+#include "resourcebundle.h"
 
 namespace Operations
 {
@@ -55,6 +56,8 @@ namespace Operations
      //@SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE", justification = "Checks for null")
      //@Override
      /*public*/ void RollingStockEditFrame::initComponents() {
+      typeComboBox = getTypeManager()->getComboBox();
+      lengthComboBox= getLengthManager()->getComboBox();
 
          // disable delete and save buttons
          deleteButton->setEnabled(false);
@@ -397,18 +400,25 @@ namespace Operations
          }
      }
 
-     /*protected*/ void RollingStockEditFrame::updateTrackLocationBox() {
-         if (locationBox->getSelectedItem() == nullptr) {
-             trackLocationBox->clear();
-         } else {
-             log->debug(tr("Update tracks for location: %1").arg(locationBox->getSelectedItem()));
-             Location* loc = (/*(Location)*/ VPtr<Location>::asPtr(locationBox->currentData()));
-             loc->updateComboBox(trackLocationBox, _rs, autoTrackCheckBox->isChecked(), false);
-             if (_rs != nullptr && _rs->getLocation() == loc) {
-                 //trackLocationBox->setSelectedItem(_rs->getTrack());
-              trackLocationBox->setCurrentText(_rs->getTrack()->getName());
-             }
-         }
+     /*protected*/ void RollingStockEditFrame::updateTrackLocationBox()
+     {
+      if (locationBox->getSelectedItem() == "") {
+          trackLocationBox->clear();
+      }
+      else {
+       log->debug(tr("Update tracks for location: %1").arg(locationBox->getSelectedItem()));
+       Location* loc;
+       QVariant v = locationBox->currentData();
+       if(v.isValid())
+        loc = (/*(Location)*/ VPtr<Location>::asPtr(locationBox->currentData()));
+       else
+        loc = locationManager->getLocationByName(locationBox->currentText());
+       loc->updateComboBox(trackLocationBox, _rs, autoTrackCheckBox->isChecked(), false);
+       if (_rs != nullptr && _rs->getLocation() == loc) {
+           //trackLocationBox->setSelectedItem(_rs->getTrack());
+        trackLocationBox->setCurrentText(_rs->getTrack()->getName());
+       }
+      }
      }
 
      /*protected*/ bool RollingStockEditFrame::check(RollingStock* rs) {
@@ -420,10 +430,9 @@ namespace Operations
              return false;
          }
          if (roadNum.length() > Control::max_len_string_road_number) {
-             JOptionPane::showMessageDialog(this,
-                     tr("Car road number must be less than %1 characters").arg(
-                             Control::max_len_string_road_number + 1 ),
-                     tr("Car road number too long!"), JOptionPane::ERROR_MESSAGE);
+          JOptionPane::showMessageDialog(this,
+                  getRb()->getString("RoadNumMustBeLess").arg( Control::max_len_string_road_number + 1 ),
+                  getRb()->getString("RoadNumTooLong"), JOptionPane::ERROR_MESSAGE);
              return false;
          }
          // check rolling stock's weight in tons has proper format
@@ -431,8 +440,9 @@ namespace Operations
              bool ok;
                  weightTonsTextField ->text().toUInt(&ok);
              if(!ok) {
-                 JOptionPane::showMessageDialog(this, tr("Car's weight must be in the format of xx tons"),
-                         tr("Car weight in tons incorrect"), JOptionPane::ERROR_MESSAGE);
+              JOptionPane::showMessageDialog(this, getRb()->getString("WeightFormatTon"),
+                      getRb()->getString("WeightTonError"), JOptionPane::ERROR_MESSAGE);
+              return false;
                  return false;
              }
          }
