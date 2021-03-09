@@ -684,7 +684,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    if (shared.attribute("openDispatcher")==("yes"))
    {
     panel->setOpenDispatcherOnLoad(true);
-    DispatcherFrame::instance();
+    DispatcherFrame* df = (DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame");
+    df->loadAtStartup();
    }
    else
    {

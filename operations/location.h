@@ -18,10 +18,12 @@ namespace Operations {
  class APPSLIBSHARED_EXPORT Location : public PropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
-   Q_INTERFACES(PropertyChangeListener)
+  Q_INTERFACES(PropertyChangeListener)
  public:
-  //explicit Location(QObject *parent = 0);
+  explicit Location(QObject *parent = 0) : PropertyChangeSupport(this, parent){}
   /*public*/ Location(QString id, QString name,QObject *parent = 0);
+  ~Location() {}
+  Location(const Location&) : PropertyChangeSupport(this, nullptr){}
   /*public*/ static /*final*/ QString NONE;// = "";
   /*public*/ static /*final*/ int NORMAL; //=1; // types of track allowed at this location
   /*public*/ static /*final*/ int STAGING; //=2; // staging only
@@ -59,7 +61,7 @@ namespace Operations {
   /*public*/ QString getId();
   /*public*/ void setName(QString name) ;
   /*public*/ QString toString() ;
-  /*public*/ QString getName() ;
+  /*public*/ QString getName() const;
   /*public*/ void copyLocation(Location* newLocation) ;
   /*public*/ void copyTracksLocation(Location* location);
   /*public*/ PhysicalLocation* getPhysicalLocation();
@@ -151,8 +153,11 @@ namespace Operations {
   /*public*/ void resequnceTracksByBlockingOrder();
   /*public*/ void changeTrackBlockingOrderEarlier(Track* track);
   /*public*/ void changeTrackBlockingOrderLater(Track* track);
-  /*private*/ Track* getTrackByBlockingOrder(int order);
   QObject* self() override {return (QObject*)this; }
+  inline bool operator==(const Location &e1)
+  {
+     return this->_name == e1.getName();
+  }
 
  signals:
 
@@ -169,6 +174,7 @@ namespace Operations {
   /*private*/ void replaceRoad(QString oldRoad, QString newRoad);
   /*private*/ void replaceType(QString oldType, QString newType);
   void common();
+  /*private*/ Track* getTrackByBlockingOrder(int order);
 
  protected:
   /*protected*/ QString _id; //=NONE;
@@ -208,4 +214,5 @@ namespace Operations {
  friend class LocationEditFrame;
  };
 }
+Q_DECLARE_METATYPE(Operations::Location)
 #endif // LOCATION_H

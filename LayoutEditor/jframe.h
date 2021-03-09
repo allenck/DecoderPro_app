@@ -6,6 +6,7 @@
 #include "javaqt_global.h"
 #include "jcomponent.h"
 #include "jpanel.h"
+#include "propertychangesupport.h"
 
 class WindowListener;
 class PropertyChangeEvent;
@@ -99,7 +100,10 @@ public:
     /*public*/ virtual void componentResized(QResizeEvent* ) {}
 
     /*public*/void setBounds(QRect r);
-
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener*);
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener*);
+    /*public*/ void firePropertyChange(QString, QVariant, QVariant);
+    /*public*/ void firePropertyChange(QString pName, QObject* _old, QObject* _new);
 
 signals:
     void propertyChange(PropertyChangeEvent*);
@@ -117,6 +121,7 @@ private:
  //void moveEvent(QMoveEvent*);
  Border* _border = nullptr;
  bool _windowClosing = false;
+ PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
 
 protected:
     /*protected*/ void frameInit();

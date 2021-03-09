@@ -6,6 +6,7 @@
 #include "transitsection.h"
 #include "transit.h"
 #include "eventlistenerlist.h"
+#include "instancemanager.h"
 
 //AllocatedSection::AllocatedSection(QObject *parent) : QObject(parent)
 //{
@@ -228,8 +229,8 @@
 }
 
 /*public*/ int AllocatedSection::getLength() {
-    return mSection->getLengthI(DispatcherFrame::instance()->getUseScaleMeters(),
-            DispatcherFrame::instance()->getScale());
+    return mSection->getLengthI(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getUseScaleMeters(),
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getScale());
 }
 
 /*public*/ void AllocatedSection::reset() {
@@ -303,7 +304,7 @@
             tBlockChange.start();
 #endif
             addToActiveBlockList(b);
-            if (DispatcherFrame::instance()->getSupportVSDecoder()) {
+            if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSupportVSDecoder()) {
                 firePropertyChangeEvent("BlockStateChange", QVariant(), b->getSystemName()); // NOI18N
             }
         }

@@ -78,7 +78,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -594,6 +593,7 @@ JFrame* new_JFrame(QString  _title, QWidget*  parent = nullptr);
 JFrame* new_JFrame(QWidget*  parent = nullptr);
 JFrame* new_JFrame(const JFrame&  arg__1);
 void delete_JFrame(JFrame* obj) { delete obj; } 
+   void addPropertyChangeListener(JFrame* theWrappedObject, PropertyChangeListener*  arg__1);
    void addWindowListener(JFrame* theWrappedObject, WindowListener*  l);
    bool  closedNormally(JFrame* theWrappedObject);
    bool  py_q_closedNormally(JFrame* theWrappedObject){  return (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_closedNormally());}
@@ -603,6 +603,8 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void py_q_componentResized(JFrame* theWrappedObject, QResizeEvent*  arg__1){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_componentResized(arg__1));}
    void dispose(JFrame* theWrappedObject);
    void py_q_dispose(JFrame* theWrappedObject){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_dispose());}
+   void firePropertyChange(JFrame* theWrappedObject, QString  arg__1, QVariant  arg__2, QVariant  arg__3);
+   void firePropertyChange(JFrame* theWrappedObject, QString  pName, QObject*  _old, QObject*  _new);
    void frameInit(JFrame* theWrappedObject);
    QColor  getBackground(JFrame* theWrappedObject);
    QFont  getFont(JFrame* theWrappedObject);
@@ -623,6 +625,7 @@ void delete_JFrame(JFrame* obj) { delete obj; }
    void py_q_pack(JFrame* theWrappedObject){  (((PythonQtPublicPromoter_JFrame*)theWrappedObject)->py_q_pack());}
    void reSizeToFitOnScreen(JFrame* theWrappedObject);
    void removeAll(JFrame* theWrappedObject);
+   void removePropertyChangeListener(JFrame* theWrappedObject, PropertyChangeListener*  arg__1);
    void removeWindowListener(JFrame* theWrappedObject, WindowListener*  l);
    void setAlwaysOnTop(JFrame* theWrappedObject, bool  checked);
    void setBackground(JFrame* theWrappedObject, QColor  arg__1);
@@ -1036,6 +1039,7 @@ JTable* new_JTable(QAbstractItemModel*  dm, QWidget*  parent = 0);
 JTable* new_JTable(QWidget*  parent = 0);
 void delete_JTable(JTable* obj) { delete obj; } 
    void addColumn(JTable* theWrappedObject, TableColumn*  aColumn);
+   void changeSelection(JTable* theWrappedObject, int  row, int  col, bool  arg__3, bool  arg__4);
    void clearSelection(JTable* theWrappedObject);
    int  columnAtPoint(JTable* theWrappedObject, QPoint  arg__1);
    void columnResized(JTable* theWrappedObject, int  column, int  oldWidth, int  newWidth);

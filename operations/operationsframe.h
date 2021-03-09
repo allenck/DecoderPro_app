@@ -27,11 +27,11 @@ namespace Operations
   /*public*/ OperationsFrame(QWidget* parent = 0);
   /*public*/ OperationsFrame(OperationsPanel* p, QWidget* parent = 0);
   /*public*/ QT_DEPRECATED OperationsFrame(QString s, OperationsPanel* p, QWidget* parent = 0);
-  /*public*/ void initComponents();
+  /*public*/ void initComponents() override;
   /*public*/ void initMinimumSize();
   /*public*/ void initMinimumSize(QSize dimension);
   /*public*/ bool loadTableDetails(JTable* table);
-  /*public*/ virtual void dispose();
+  /*public*/ void dispose()override;
 
  private:
   QSignalMapper* buttonMapper;

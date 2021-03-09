@@ -80,9 +80,8 @@ namespace Operations
     // add, delete, or replace button
     //@Override
     //@SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "GUI ease of use")
-    /*public*/ void RollingStockAttributeEditFrame::buttonActionPerformed(/*ActionEvent ae*/) {
+    /*public*/ void RollingStockAttributeEditFrame::buttonActionPerformed(QWidget *ae) {
         log->debug("edit frame button activated");
-        QObject* ae = QObject::sender();
         if (ae == addButton) {
             QString addItem = addTextBox->text().trimmed();
             if (!checkItemName(addItem, tr("Can not add %1"))) {
@@ -160,7 +159,7 @@ namespace Operations
             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->replaceName(deleteItem, "");
         }
         if (_attribute == (OWNER)) {
-            ((CarRoads*)InstanceManager::getDefault("CarRoads"))->deleteName(deleteItem);
+            ((CarOwners*)InstanceManager::getDefault("CarOwners"))->deleteName(deleteItem);
         }
     }
 
@@ -170,7 +169,7 @@ namespace Operations
             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addName(addItem);
         }
         if (_attribute == (OWNER)) {
-            ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addName(addItem);
+            ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addName(addItem);
         }
     }
 
@@ -179,7 +178,7 @@ namespace Operations
             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->replaceName(oldItem, newItem);
         }
         if (_attribute == (OWNER)) {
-            ((CarRoads*)InstanceManager::getDefault("CarRoads"))->replaceName(oldItem, newItem);
+            ((CarOwners*)InstanceManager::getDefault("CarOwners"))->replaceName(oldItem, newItem);
         }
     }
 
@@ -189,8 +188,8 @@ namespace Operations
             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addPropertyChangeListener((PropertyChangeListener*)this);
         }
         if (_attribute == (OWNER)) {
-            comboBox = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
-            ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addPropertyChangeListener((PropertyChangeListener*)this);
+            comboBox = ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getComboBox();
+            ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addPropertyChangeListener((PropertyChangeListener*)this);
         }
     }
 
@@ -252,8 +251,8 @@ namespace Operations
     //@Override
     /*public*/ void RollingStockAttributeEditFrame::dispose() {
         ((CarRoads*)InstanceManager::getDefault("CarRoads"))->removePropertyChangeListener((PropertyChangeListener*)this);
-        ((CarRoads*)InstanceManager::getDefault("CarRoads"))->removePropertyChangeListener((PropertyChangeListener*)this);
-//        firePropertyChange(DISPOSE, _attribute, "");
+        ((CarOwners*)InstanceManager::getDefault("CarOwners"))->removePropertyChangeListener((PropertyChangeListener*)this);
+        //firePropertyChange(DISPOSE, _attribute, "");
         OperationsFrame::dispose();
     }
 
@@ -267,7 +266,7 @@ namespace Operations
             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->updateComboBox(comboBox);
         }
         if (e->getPropertyName() == (CarOwners::CAROWNERS_CHANGED_PROPERTY)) {
-            ((CarRoads*)InstanceManager::getDefault("CarRoads"))->updateComboBox(comboBox);
+            ((CarOwners*)InstanceManager::getDefault("CarOwners"))->updateComboBox(comboBox);
         }
     }
 

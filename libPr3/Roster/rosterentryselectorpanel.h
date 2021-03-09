@@ -5,8 +5,9 @@
 #include "rosterentrycombobox.h"
 #include "rostergroupcombobox.h"
 #include <QFormLayout>
+#include "jframe.h"
 
-class LIBPR3SHARED_EXPORT RosterEntrySelectorPanel : public QFrame, public RosterEntrySelector, public RosterGroupSelector
+class LIBPR3SHARED_EXPORT RosterEntrySelectorPanel : public JFrame, public RosterEntrySelector, public RosterGroupSelector
 {
     Q_OBJECT
     Q_INTERFACES(RosterEntrySelector RosterGroupSelector)
@@ -38,6 +39,9 @@ private:
     /*private*/ RosterGroupComboBox* groupCombo;
 QHBoxLayout* horizontalLayout;
 void init(RosterEntry* re, QString rg);
+
+ protected:
+/*protected*/ void fireSelectedRosterEntriesPropertyChange(QObject* oldValue, QObject* newValue);
 
 };
 

@@ -138,7 +138,7 @@ void RosterFrame::common()
  opsModeProCon = NULL;
  programmer1 = tr("Comprehensive");
  programmer2 = tr("Basic");
- pcs = new PropertyChangeSupport(this);
+ //pcs = new PropertyChangeSupport(this);
  inStartProgrammer = false;
  re = NULL;
  bUpdating =false;
@@ -735,12 +735,12 @@ void DefaultFilePropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
    }
 }
 
-/*protected*/ void RosterFrame::firePropertyChange(QString p, QVariant old, QVariant n)
-{
- if (pcs==NULL)
-  return;
- pcs->firePropertyChange(p,old,n);
-}
+///*protected*/ void RosterFrame::firePropertyChange(QString p, QVariant old, QVariant n)
+//{
+// if (pcs==NULL)
+//  return;
+// pcs->firePropertyChange(p,old,n);
+//}
 /*
  * this handles setting up and updating the GUI for the types of programmer
  * available.

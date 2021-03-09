@@ -80,7 +80,7 @@ Roster::Roster(QObject *parent) :
 {
  setObjectName("Roster");
  _list = new QList<RosterEntry*>();
- pcs = new PropertyChangeSupport(this);
+ //pcs = new PropertyChangeSupport(this);
  //schemaVersion = "";
  defaultRosterGroup = "";
  rosterGroups = QMap<QString, RosterGroup*>();

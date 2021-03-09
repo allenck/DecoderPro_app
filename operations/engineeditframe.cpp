@@ -190,7 +190,7 @@ namespace Operations
     Location* l;
     QVariant v = locationBox->currentData();
     if(v.isValid())
-     l = VPtr<Location>::asPtr(locationBox->currentData());
+     l = VPtr<Operations::Location>::asPtr(locationBox->currentData());
     else
      l= locationManager->getLocationByName(locationBox->currentText());
     l->updateComboBox(trackLocationBox);
@@ -262,7 +262,7 @@ namespace Operations
   }
   engineAttributeEditFrame = new EngineAttributeEditFrame();
   //engineAttributeEditFrame->setLocationRelativeTo(this);
-  //engineAttributeEditFrame->addPropertyChangeListener(this);
+  engineAttributeEditFrame->addPropertyChangeListener(this);
 
   if (ae == editRoadButton) {
       engineAttributeEditFrame->initComponents(ROAD,  roadComboBox->currentText());
@@ -342,6 +342,9 @@ namespace Operations
   map.insert("RoadNumTooLong", tr("Locomotive road number too long!"));
   map.insert("WeightFormatTon", tr("Locomotive weight must be in the format of xx tons"));
   map.insert("WeightTonError", tr("Can not save locomotive weight!"));
+  map.insert("rsFullySelect", tr("To place a locomotive, you must select the locomotive's's location and track"));
+  map.insert("rsCanNotLoc", tr("Can not update locomotive location"));
+  map.insert("rsType", tr("Car"));
  }
  /*private*/ /*final*/ /*static*/ Logger* EngineEditFrame::log = LoggerFactory::getLogger("EngineEditFrame");
 }

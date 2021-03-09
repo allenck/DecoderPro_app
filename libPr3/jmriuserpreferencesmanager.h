@@ -90,7 +90,7 @@ public:
  /*public*/ QString getClassDescription();
  /*public*/ int getPreferencesSize(QString strClass) override;
  /*public*/ /*final*/ void readUserPreferences();
- /*public*/ void initialize() override;
+ Q_INVOKABLE /*public*/ void initialize() override;
 
 
 private:

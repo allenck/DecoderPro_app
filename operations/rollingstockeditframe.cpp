@@ -65,7 +65,7 @@ namespace Operations
 
          editRoadButton->setToolTip(tr("Add, delete or replace %1 names").arg(
                   tr("road") )); // initial caps for some languages i.e. German
-         editTypeButton->setToolTip(tr("TipAddDeleteReplace").arg(
+         editTypeButton->setToolTip(tr("Add, delete or replace %1 names").arg(
                  tr("type") )); // initial caps for some languages i.e. German
          editLengthButton->setToolTip(tr("Add, delete or replace %1 names").arg(
                  tr("length") )); // initial caps for some languages i.e. German
@@ -407,11 +407,9 @@ namespace Operations
       }
       else {
        log->debug(tr("Update tracks for location: %1").arg(locationBox->getSelectedItem()));
-       Location* loc;
+       Location* loc = (/*(Location)*/ VPtr<Operations::Location>::asPtr(locationBox->currentData()));
        QVariant v = locationBox->currentData();
-       if(v.isValid())
-        loc = (/*(Location)*/ VPtr<Location>::asPtr(locationBox->currentData()));
-       else
+       if(loc == nullptr)
         loc = locationManager->getLocationByName(locationBox->currentText());
        loc->updateComboBox(trackLocationBox, _rs, autoTrackCheckBox->isChecked(), false);
        if (_rs != nullptr && _rs->getLocation() == loc) {
@@ -555,7 +553,7 @@ namespace Operations
 
              //@Override
 //             /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-                 buttonEditActionPerformed(nullptr);
+                 buttonEditActionPerformed(b);
 //             }
          });
      }

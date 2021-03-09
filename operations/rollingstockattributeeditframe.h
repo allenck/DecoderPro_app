@@ -38,14 +38,14 @@ namespace Operations
         /*public*/ bool showQuanity = false;
         /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
         /*public*/ QString _attribute; // used to determine which attribute is being edited
-        /*public*/ void initComponents(QString attribute, QString name);
-        /*public*/ void buttonActionPerformed(/*ActionEvent ae*/);
+        /*public*/ virtual void initComponents(QString attribute, QString name);
+        /*public*/ void buttonActionPerformed(QWidget* ae) override;
         /*public*/ static /*final*/ QString FAILED;// = "failed";
         /*public*/ QString convertLength(QString addItem);
-        /*public*/ void dispose();
+        /*public*/ void dispose() override;
 
      public slots:
-        /*public*/ virtual void propertyChange(PropertyChangeEvent* e);
+        /*public*/ virtual void propertyChange(PropertyChangeEvent* e)override;
 
     private:
         static Logger* log;

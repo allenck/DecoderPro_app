@@ -119,6 +119,7 @@
  * Returns 'true' if a Section has been allocated, returns 'false' if not.
  */
 /*protected*/ void AutoAllocate::scanAllocationRequestList(QList<AllocationRequest*>* list) {
+    bool okToAllocate = false;
     if (list->size() <= 0) {
         return;
     }
@@ -126,16 +127,15 @@
     // copy AllocationRequests in order of priority of ActiveTrain.
     copyAndSortARs(list);
     removeCompletePlans();
-
     for (int i = 0; i < orderedRequests->size(); i++) {
-
-        //try {
-            AllocationRequest* ar = orderedRequests->at(i);
-            if (ar == NULL) {
-                log->error("error in allocation request list - AllocationRequest is NULL");
-                return;
-            }
-            if (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALMAST && isSignalHeldAtStartOfSection(ar)) {
+     try {
+      okToAllocate = false;
+      AllocationRequest* ar = orderedRequests->at(i);
+      if (ar == NULL) {
+          log->error("error in allocation request list - AllocationRequest is NULL");
+          continue;
+      }
+            if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALMAST && isSignalHeldAtStartOfSection(ar)) {
                 return;
             }
 #if 0
@@ -232,10 +232,10 @@
                 }
             }
 #endif
-//        } catch (Exception e) {
-//            log->warn("scanAllocationRequestList - maybe the allocationrequest was removed due to a terminating train??"+e.toString());
-//            continue;
-//        }
+        } catch (Exception e) {
+            log->warn("scanAllocationRequestList - maybe the allocationrequest was removed due to a terminating train??"+e.toString());
+            continue;
+        }
     }
 
 }

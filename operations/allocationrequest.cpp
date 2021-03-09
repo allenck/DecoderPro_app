@@ -152,7 +152,7 @@
  * Methods
  */
 /*private*/ void AllocationRequest::handleSectionChange(PropertyChangeEvent* e) {
-    DispatcherFrame::instance()->sectionOccupancyChanged();
+    ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->sectionOccupancyChanged();
     //This forces us to rescan the allocation list if the section has gone unoccupied, thus this might get re-allocated
     if (e->getPropertyName() == ("occupancy")) {
         if (( e->getNewValue()).toInt() == Section::UNOCCUPIED) {

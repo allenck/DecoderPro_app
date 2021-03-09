@@ -314,7 +314,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 /*public*/ void NamedBeanComboBox::setSelectedItem(NamedBean* item) {
  if(item == nullptr)
  {
-  JComboBox::setCurrentIndex(-1);
+  //JComboBox::setCurrentIndex(-1);
   return;
  }
 

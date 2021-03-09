@@ -42,7 +42,6 @@ public:
  ~DispatcherFrame() {}
  DispatcherFrame(const DispatcherFrame&) :JmriJFrame() {}
 
- static /*public*/ DispatcherFrame* instance();
  enum SIGNALS
  {
   SIGNALHEAD = 0x00,

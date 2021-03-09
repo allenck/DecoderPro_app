@@ -269,13 +269,13 @@
  firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
 }
 
-//void PropertyChangeSupport::firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue)
-//{
-// if ( !(oldValue==newValue))
-// {
-//  firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
-// }
-//}
+/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue) const
+{
+ if ( !(oldValue==newValue))
+ {
+  firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
+ }
+}
 /**
  * Reports a boolean bound property update to listeners
  * that have been registered to track updates of
@@ -290,7 +290,7 @@
  * @param oldValue      the old value of the property
  * @param newValue      the new value of the property
  */
-/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, bool oldValue, bool newValue)
+/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, bool oldValue, bool newValue) const
 {
  if (oldValue != newValue)
  {

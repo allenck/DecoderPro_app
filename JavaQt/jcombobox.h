@@ -20,16 +20,16 @@ public:
  ~JComboBox() {}
  JComboBox(const JComboBox&) : QComboBox() {}
 
- bool isOpaque();
- /*public*/ QColor getForeground();
- QColor getBackground();
- void setBackground(QColor);
- void setOpaque(bool);
- QFont getFont();
- void setFont(QFont);
- QObject* jself() {return (QObject*)this;}
+ bool isOpaque() override;
+ /*public*/ QColor getForeground() override;
+ QColor getBackground() override;
+ void setBackground(QColor) override;
+ void setOpaque(bool) override;
+ QFont getFont() override;
+ void setFont(QFont) override;
+ QObject* jself() override {return (QObject*)this;}
  /*public*/ void setBorder(Border* border) override {this->_border = border;}
- /*public*/ Border* getBorder() {return _border;}
+ /*public*/ Border* getBorder() override {return _border;}
  /*public*/ void addChangeListener(ChangeListener* l);
  /*public*/ void removeChangeListener(ChangeListener* l);
  /*public*/ void addFocusListener(FocusListener *l);
@@ -43,7 +43,10 @@ public:
  /*public*/ int getItemCount() {return count();}
  /*public*/ QStringList itemList();
  /*public*/ QVariant getItemAt(int i);
-
+ /*public*/ void clear();
+ /*public*/ QVariant currentData();
+ /*public*/ void addItem(QString text, const QVariant &data = QVariant());
+// /*public*/ void  addItem(QString text) {QComboBox::addItem(text);}
 signals:
  void itemStateChanged(ItemEvent* e);
  /*public*/ void focusGained(FocusEvent* fe);
@@ -55,9 +58,11 @@ signals:
 private:
  bool _opaque = false;
  Border* _border = nullptr;
- /*private*/ void focusInEvent(QFocusEvent* e);
- /*private*/ void focusOutEvent(QFocusEvent* e);
+ /*private*/ void focusInEvent(QFocusEvent* e)override;
+ /*private*/ void focusOutEvent(QFocusEvent* e)override;
  QStringListModel* cbModel;
+ QMap<QString, QVariant> map = QMap<QString, QVariant>();
+
 private slots:
  //void on_selected();
 };

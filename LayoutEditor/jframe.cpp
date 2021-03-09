@@ -593,3 +593,23 @@ void JFrame::setVisible(bool visible)
  resize(r.width(), r.height());
  setLocation(r.left(), r.top());
 }
+
+/*public*/ void JFrame::addPropertyChangeListener(PropertyChangeListener* l)
+{
+ pcs->addPropertyChangeListener(l);
+}
+
+/*public*/ void JFrame::removePropertyChangeListener(PropertyChangeListener* l)
+{
+ pcs->removePropertyChangeListener(l);
+}
+
+/*public*/ void JFrame::firePropertyChange(QString pName, QVariant _old, QVariant _new)
+{
+ pcs->firePropertyChange(pName, _old, _new);
+}
+/*public*/ void JFrame::firePropertyChange(QString pName, QObject* _old, QObject* _new)
+{
+ pcs->firePropertyChange(pName, _old, _new);
+}
+

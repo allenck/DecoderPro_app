@@ -49,7 +49,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -68,7 +67,6 @@
 #include <qstringlist.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
-#include <qurl.h>
 #include <qvector.h>
 #include <qwidget.h>
 #include <roster.h>
@@ -15192,12 +15190,17 @@ void PythonQtWrapper_PropertyChangeSupport::firePropertyChange(PropertyChangeSup
   ( theWrappedObject->firePropertyChange(event));
 }
 
+void PythonQtWrapper_PropertyChangeSupport::firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QObject*  oldValue, QObject*  newValue) const
+{
+  ( theWrappedObject->firePropertyChange(propertyName, oldValue, newValue));
+}
+
 void PythonQtWrapper_PropertyChangeSupport::firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue) const
 {
   ( theWrappedObject->firePropertyChange(propertyName, oldValue, newValue));
 }
 
-void PythonQtWrapper_PropertyChangeSupport::firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue)
+void PythonQtWrapper_PropertyChangeSupport::firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue) const
 {
   ( theWrappedObject->firePropertyChange(propertyName, oldValue, newValue));
 }
@@ -19560,50 +19563,17 @@ PythonQtShell_Roster::~PythonQtShell_Roster() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-QString  PythonQtShell_Roster::backupFileName(QString  name0) const
+void PythonQtShell_Roster::propertyChange(PropertyChangeEvent*  evt0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("backupFileName");
+    static PyObject* name = PyString_FromString("propertyChange");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"QString" , "QString"};
+      static const char* argumentList[] ={"" , "PropertyChangeEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      QString returnValue{};
-      void* args[2] = {NULL, (void*)&name0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("backupFileName", methodInfo, result);
-          } else {
-            returnValue = *((QString*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return Roster::backupFileName(name0);
-}
-void PythonQtShell_Roster::childEvent(QChildEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("childEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QChildEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
+      void* args[2] = {NULL, (void*)&evt0};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -19613,116 +19583,28 @@ if (_wrapper) {
     }
   }
 }
-  Roster::childEvent(event0);
+  Roster::propertyChange(evt0);
 }
-void PythonQtShell_Roster::customEvent(QEvent*  event0)
+QObject*  PythonQtShell_Roster::self()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("customEvent");
+    static PyObject* name = PyString_FromString("self");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  Roster::customEvent(event0);
-}
-bool  PythonQtShell_Roster::event(QEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("event");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      bool returnValue{};
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("event", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return Roster::event(event0);
-}
-bool  PythonQtShell_Roster::eventFilter(QObject*  watched0, QEvent*  event1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("eventFilter");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"bool" , "QObject*" , "QEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      bool returnValue{};
-      void* args[3] = {NULL, (void*)&watched0, (void*)&event1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("eventFilter", methodInfo, result);
-          } else {
-            returnValue = *((bool*)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return Roster::eventFilter(watched0, event1);
-}
-XmlFile::Validate  PythonQtShell_Roster::getValidate()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("getValidate");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"XmlFile::Validate"};
+      static const char* argumentList[] ={"QObject*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      XmlFile::Validate returnValue{};
+      QObject* returnValue{};
       void* args[1] = {NULL};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
         if (args[0]!=&returnValue) {
           if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("getValidate", methodInfo, result);
+            PythonQt::priv()->handleVirtualOverloadReturnError("self", methodInfo, result);
           } else {
-            returnValue = *((XmlFile::Validate*)args[0]);
+            returnValue = *((QObject**)args[0]);
           }
         }
       }
@@ -19734,51 +19616,7 @@ if (_wrapper) {
     }
   }
 }
-  return Roster::getValidate();
-}
-void PythonQtShell_Roster::setValidate(XmlFile::Validate  v0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("setValidate");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "XmlFile::Validate"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&v0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  Roster::setValidate(v0);
-}
-void PythonQtShell_Roster::timerEvent(QTimerEvent*  event0)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("timerEvent");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "QTimerEvent*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  Roster::timerEvent(event0);
+  return Roster::self();
 }
 Roster* PythonQtWrapper_Roster::new_Roster(QObject*  parent)
 { 
@@ -20079,6 +19917,11 @@ void PythonQtWrapper_Roster::renameRosterGroupList(Roster* theWrappedObject, QSt
 void PythonQtWrapper_Roster::rosterGroupRenamed(Roster* theWrappedObject, QString  oldName, QString  newName)
 {
   ( theWrappedObject->rosterGroupRenamed(oldName, newName));
+}
+
+QObject*  PythonQtWrapper_Roster::self(Roster* theWrappedObject)
+{
+  return ( theWrappedObject->self());
 }
 
 void PythonQtWrapper_Roster::setDefaultRosterGroup(Roster* theWrappedObject, QString  defaultRosterGroup)

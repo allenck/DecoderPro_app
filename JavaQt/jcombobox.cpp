@@ -108,3 +108,22 @@ void JComboBox::currentIndexChanged(int)
 {
  return itemData(i);
 }
+
+/*public*/ void JComboBox::clear()
+{
+ map.clear();
+ QComboBox::clear();
+}
+
+/*public*/ QVariant JComboBox::currentData() {
+ return map.value(QComboBox::currentText());
+}
+
+/*public*/ void JComboBox::addItem(QString text, const QVariant &data)
+{
+ if(data.isValid())
+ {
+  map.insert(text, data);
+ }
+ QComboBox::addItem(text, data);
+}

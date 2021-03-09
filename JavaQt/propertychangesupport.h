@@ -131,7 +131,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param newValue      the new value of the property
  */
 /*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue) const;
-//void firePropertyChange(QString properyName, QObject* oldValue, QObject* newValue);
+/*public*/ void firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue) const;
 
 /**
  * Reports a boolean bound property update to listeners
@@ -147,7 +147,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param oldValue      the old value of the property
  * @param newValue      the new value of the property
  */
-/*public*/ void firePropertyChange(QString propertyName, bool oldValue, bool newValue);
+/*public*/ void firePropertyChange(QString propertyName, bool oldValue, bool newValue) const;
 /**
  * Fires a property change event to listeners
  * that have been registered to track updates of

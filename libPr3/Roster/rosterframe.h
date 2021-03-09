@@ -51,7 +51,7 @@ public:
     QString getTitle() override;
 //    void propertyChange(PropertyChangeEvent*);
     //static int openWindowInstances;// = 0;
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+//    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     static QList<RosterFrame*> frameInstances;// = new ArrayList<RosterFrame>();
     /*public*/ QMenuBar* getMenu();
     /*public*/ void setAllowQuit(bool allowQuit);
@@ -166,7 +166,7 @@ private slots:
 
 protected:
     /*protected*/ bool _allowQuit;// = true;
-    /*protected*/ void firePropertyChange(QString prefsMgr, QVariant old, QVariant n);
+//    /*protected*/ void firePropertyChange(QString prefsMgr, QVariant old, QVariant n);
     /*protected*/ QVector<RosterEntry*> selectRosterEntry(QString rosterGroup);
     /*protected*/ void buildGUI(QString menubarFile, QString toolbarFile);
     /*protected*/ void addMainMenuBar(QString menuFile);

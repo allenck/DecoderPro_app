@@ -58,6 +58,12 @@ namespace Operations
      initComponents(attribute, NONE);
  }
 
+ /**
+  *
+  * @param attribute One of the seven possible attributes for an engine.
+  * @param name      The name of the attribute to edit.
+  */
+ //@Override
  /*public*/ void EngineAttributeEditFrame::initComponents(QString attribute, QString name)
  {
   RollingStockAttributeEditFrame::initComponents(attribute, name);
@@ -65,26 +71,24 @@ namespace Operations
 
   // add help menu to window
   addHelpMenu("package.jmri.jmrit.operations.Operations_Locomotives", true); // NOI18N
-
-  initMinimumSize(QSize(Control::panelWidth400, Control::panelHeight250));
  }
 
  //@Override
-     /*protected*/ void EngineAttributeEditFrame::deleteAttributeName(QString deleteItem) {
-         RollingStockAttributeEditFrame::deleteAttributeName(deleteItem);
-         if (_attribute == (MODEL)) {
-             ((EngineModels*)InstanceManager::getDefault("EngineModels"))->deleteName(deleteItem);
-         }
-         if (_attribute == (TYPE)) {
-             ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->deleteName(deleteItem);
-         }
-         if (_attribute == (LENGTH)) {
-             ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->deleteName(deleteItem);
-         }
-         if (_attribute == (CONSIST)) {
-             engineManager->deleteConsist(deleteItem);
-         }
+ /*protected*/ void EngineAttributeEditFrame::deleteAttributeName(QString deleteItem) {
+     RollingStockAttributeEditFrame::deleteAttributeName(deleteItem);
+     if (_attribute == (MODEL)) {
+         ((EngineModels*)InstanceManager::getDefault("EngineModels"))->deleteName(deleteItem);
      }
+     if (_attribute == (TYPE)) {
+         ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->deleteName(deleteItem);
+     }
+     if (_attribute == (LENGTH)) {
+         ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->deleteName(deleteItem);
+     }
+     if (_attribute == (CONSIST)) {
+         engineManager->deleteConsist(deleteItem);
+     }
+ }
 
      //@Override
      /*protected*/ void EngineAttributeEditFrame::addAttributeName(QString addItem) {

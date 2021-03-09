@@ -58,7 +58,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -77,7 +76,6 @@
 #include <qstringlist.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
-#include <qurl.h>
 #include <qvector.h>
 #include <qwidget.h>
 #include <reportermanager.h>
@@ -2160,8 +2158,9 @@ void delete_PropertyChangeSupport(PropertyChangeSupport* obj) { delete obj; }
    void fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, bool  oldValue, bool  newValue);
    void fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, int  oldValue, int  newValue);
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, PropertyChangeEvent*  event) const;
+   void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QObject*  oldValue, QObject*  newValue) const;
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue) const;
-   void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue);
+   void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue) const;
    QVector<PropertyChangeListener* >  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject);
    QVector<PropertyChangeListener* >  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
    bool  hasListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
@@ -2665,18 +2664,18 @@ public:
 
    ~PythonQtShell_Roster();
 
-virtual QString  backupFileName(QString  name) const;
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual XmlFile::Validate  getValidate();
-virtual void setValidate(XmlFile::Validate  v);
-virtual void timerEvent(QTimerEvent*  event);
+virtual void propertyChange(PropertyChangeEvent*  evt);
+virtual QObject*  self();
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_Roster : public Roster
+{ public:
+inline void py_q_propertyChange(PropertyChangeEvent*  evt) { Roster::propertyChange(evt); }
+inline QObject*  py_q_self() { return Roster::self(); }
 };
 
 class PythonQtWrapper_Roster : public QObject
@@ -2735,6 +2734,7 @@ void delete_Roster(Roster* obj) { delete obj; }
    QList<RosterEntry* >  matchingList(Roster* theWrappedObject, QString  roadName, QString  roadNumber, QString  dccAddress, QString  mfg, QString  decoderMfgID, QString  decoderVersionID, QString  id);
    int  numEntries(Roster* theWrappedObject);
    int  numGroupEntries(Roster* theWrappedObject, QString  group);
+   void py_q_propertyChange(Roster* theWrappedObject, PropertyChangeEvent*  evt){  (((PythonQtPublicPromoter_Roster*)theWrappedObject)->py_q_propertyChange(evt));}
    void reindex(Roster* theWrappedObject);
    void removeEntry(Roster* theWrappedObject, RosterEntry*  e);
    void removePropertyChangeListener(Roster* theWrappedObject, PropertyChangeListener*  l);
@@ -2742,6 +2742,8 @@ void delete_Roster(Roster* obj) { delete obj; }
    void removeRosterGroup(Roster* theWrappedObject, RosterGroup*  rg);
    void renameRosterGroupList(Roster* theWrappedObject, QString  oldName, QString  newName);
    void rosterGroupRenamed(Roster* theWrappedObject, QString  oldName, QString  newName);
+   QObject*  self(Roster* theWrappedObject);
+   QObject*  py_q_self(Roster* theWrappedObject){  return (((PythonQtPublicPromoter_Roster*)theWrappedObject)->py_q_self());}
    void setDefaultRosterGroup(Roster* theWrappedObject, QString  defaultRosterGroup);
    void setRosterIndexFileName(Roster* theWrappedObject, QString  fileName);
    void setRosterLocation(Roster* theWrappedObject, QString  f);

@@ -144,7 +144,7 @@ namespace Operations
      return _name;
  }
 
- /*public*/ QString Location::getName() {
+ /*public*/ QString Location::getName() const{
      return _name;
  }
 

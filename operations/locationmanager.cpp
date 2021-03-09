@@ -280,8 +280,9 @@ PropertyChangeSupport(this, parent)
  /*public*/ void LocationManager::updateComboBox(JComboBox* box) {
      box->clear();
      box->addItem("");
-     foreach (Location* loc, getLocationsByNameList()) {
-      box->addItem(loc->getName(), VPtr<Location>::asQVariant(loc));
+     foreach (Operations::Location* loc, getLocationsByNameList()) {
+      QVariant v = VPtr<Operations::Location>::asQVariant(loc);
+      box->addItem(loc->getName(), v);
      }
  }
 

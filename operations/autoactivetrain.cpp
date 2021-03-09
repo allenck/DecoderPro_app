@@ -313,7 +313,7 @@ static final ResourceBundle rb = ResourceBundle
         _activeTrain->setStatus(ActiveTrain::RUNNING);
         setEngineDirection();
         setSpeedBySignal();
-    } else if (DispatcherFrame::instance()->getAutoAllocate()) {
+    } else if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getAutoAllocate()) {
         // starting for the first time with automatic allocation of Sections
         setSpeedBySignal();
     }
@@ -506,7 +506,7 @@ static final ResourceBundle rb = ResourceBundle
         _needSetSpeed = true;
     }
     // request next allocation if appropriate--Dispatcher must decide whether to allocate it and when
-    if ((!DispatcherFrame::instance()->getAutoAllocate()) && ((_lastAllocatedSection == NULL)
+    if ((!((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getAutoAllocate()) && ((_lastAllocatedSection == NULL)
             || (_lastAllocatedSection->getNextSection() == as->getSection()))) {
         // if AutoAllocate, this is now done in DispatcherFrame::java for all trains
         _lastAllocatedSection = as;
@@ -514,7 +514,7 @@ static final ResourceBundle rb = ResourceBundle
             Section* nSection = as->getNextSection();
             int nextSeq = as->getNextSectionSequence();
             int nextDir = _activeTrain->getAllocationDirectionFromSectionAndSeq(nSection, nextSeq);
-            DispatcherFrame::instance()->requestAllocation(_activeTrain, nSection, nextDir, nextSeq, true, NULL);
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->requestAllocation(_activeTrain, nSection, nextDir, nextSeq, true, NULL);
         }
     }
 }
@@ -572,7 +572,7 @@ static final ResourceBundle rb = ResourceBundle
 /*protected*/ /*synchronized*/ void AutoActiveTrain::setupNewCurrentSignal(AllocatedSection* as) {
 #if 1
     removeCurrentSignal();
-    if (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD) {
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALHEAD) {
         SignalHead* sh = _lbManager->getFacingSignalHead(_currentBlock, _nextBlock);
         if (sh != NULL) {
             _controllingSignal = sh;
@@ -703,15 +703,15 @@ static final ResourceBundle rb = ResourceBundle
 /*protected*/ /*synchronized*/ void AutoActiveTrain::setSpeedBySignal() {
     if (_pausingActive || ((_activeTrain->getStatus() != ActiveTrain::RUNNING)
             && (_activeTrain->getStatus() != ActiveTrain::WAITING)) || ((_controllingSignal == NULL)
-            && DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD)
-            || (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALMAST && (_controllingSignalMast == NULL
+            && ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALHEAD)
+            || (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALMAST && (_controllingSignalMast == NULL
             || (_activeTrain->getStatus() == ActiveTrain::WAITING && !_activeTrain->getStarted())))
             || (_activeTrain->getMode() != ActiveTrain::AUTOMATIC)) {
         // train is pausing or not RUNNING or WAITING in AUTOMATIC mode, or no controlling signal,
         //			don't set speed based on controlling signal
         return;
     }
-    if (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD) {
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALHEAD) {
      //set speed using signalHeads
         switch (_controllingSignal->getAppearance()) {
             case SignalHead::DARK:
@@ -1042,7 +1042,7 @@ protected synchronized void executeStopTasks(int task) {
             AllocatedSection aSec = _activeTrain->reverseAllAllocatedSections();
             setEngineDirection();
             if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                DispatcherFrame::instance().forceScanOfAllocation();
+                ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).forceScanOfAllocation();
                 break;
             }
             setupNewCurrentSignal(aSec);
@@ -1061,7 +1061,7 @@ protected synchronized void executeStopTasks(int task) {
                     _activeTrain->resetAllAllocatedSections();
                     setEngineDirection();
                     if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                        DispatcherFrame::instance().forceScanOfAllocation();
+                        ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).forceScanOfAllocation();
                         break;
                     }
                     setupNewCurrentSignal(NULL);
@@ -1073,7 +1073,7 @@ protected synchronized void executeStopTasks(int task) {
                     setEngineDirection();
                     _activeTrain->setRestart();
                     if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                        DispatcherFrame::instance().forceScanOfAllocation();
+                        ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).forceScanOfAllocation();
                         break;
                     }
                     setupNewCurrentSignal(NULL);
@@ -1423,7 +1423,7 @@ class PauseTrain implements Runnable {
         slowToStop(false);
 
         //calculate speed increment to use in each minInterval time
-        _speedIncrement = (100.0f / (DispatcherFrame::instance()->getFullRampTime() / DispatcherFrame::instance()->getMinThrottleInterval())
+        _speedIncrement = (100.0f / (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getFullRampTime() / ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getMinThrottleInterval())
                 / aat->_currentRampRate) / 100.0f;
        log->debug(tr("%1: _speedIncrement=%2").arg(  aat->_activeTrain->getTrainName()).arg( _speedIncrement));
 
@@ -1432,8 +1432,8 @@ class PauseTrain implements Runnable {
         aat->_throttle->setIsForward(aat->_forward);
 
         // Give command station a chance to handle direction command
-        //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval() * 2); } catch(Exception ex) {}
-        SleeperThread::sleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
+        //try { Thread.sleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).getMinThrottleInterval() * 2); } catch(Exception ex) {}
+        SleeperThread::sleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getMinThrottleInterval() * 2);
 
 //            setSpeedStep(aat->_throttle->getSpeedStepMode());
         aat->_throttle->setSpeedSetting(_currentSpeed);
@@ -1468,8 +1468,8 @@ class PauseTrain implements Runnable {
                     aat->_throttle->setIsForward(aat->_forward);
 
                     // Give command station a chance to handle reversing.
-                    //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval() * 2); } catch(Exception ex) {}
-                SleeperThread::msleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
+                    //try { Thread.sleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).getMinThrottleInterval() * 2); } catch(Exception ex) {}
+                SleeperThread::msleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getMinThrottleInterval() * 2);
                 }
                 // test if need to change speed
                 if (qAbs(_currentSpeed - aat->_targetSpeed) > 0.001) {
@@ -1526,8 +1526,8 @@ class PauseTrain implements Runnable {
 //                    _lastAllocatedSection = _currentAllocatedSection;
 //                }
             // Give other threads a chance to work
-            //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval()); } catch(Exception ex) {}
- SleeperThread::msleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
+            //try { Thread.sleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).getMinThrottleInterval()); } catch(Exception ex) {}
+ SleeperThread::msleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getMinThrottleInterval() * 2);
 
         } //while !abort
         // shut down

@@ -188,7 +188,7 @@
     mStarted = true;
     mStatus = RUNNING;
     setStatus(WAITING);
-    if (mAutoActiveTrain != NULL && DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALMAST) {
+    if (mAutoActiveTrain != NULL && ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALMAST) {
         mAutoActiveTrain->setupNewCurrentSignal(NULL);
     }
 }
@@ -249,7 +249,7 @@
             firePropertyChange("status", (old), (mStatus));
         }
         if (mStatus == DONE && terminateWhenFinished) {
-            DispatcherFrame::instance()->terminateActiveTrain(this);
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->terminateActiveTrain(this);
         }
     } else {
         log->error("Invalid ActiveTrain status - " + status);
@@ -617,8 +617,8 @@
 }
 #endif
 /*private*/ void ActiveTrain::refreshPanel() {
-    if (DispatcherFrame::instance()->getLayoutEditor() != NULL) {
-        DispatcherFrame::instance()->getLayoutEditor()->redrawPanel();
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getLayoutEditor() != NULL) {
+        ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getLayoutEditor()->redrawPanel();
     }
 }
 
@@ -641,7 +641,7 @@
     if (mAutoRun) {
         mAutoActiveTrain->removeAllocatedSection(as);
     }
-    if (DispatcherFrame::instance()->getNameInAllocatedBlock()) {
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getNameInAllocatedBlock()) {
         as->getSection()->clearNameInUnoccupiedBlocks();
         as->getSection()->suppressNameUpdate(false);
     }
@@ -663,13 +663,13 @@
     setStatus(WAITING);
     setTransitReversed(false);
     QList<AllocatedSection*>* sectionsToRelease = new QList<AllocatedSection*>();
-    for (AllocatedSection* as : *DispatcherFrame::instance()->getAllocatedSectionsList()) {
+    for (AllocatedSection* as : *((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getAllocatedSectionsList()) {
         if (as->getActiveTrain() == this) {
             sectionsToRelease->append(as);
         }
     }
     for (AllocatedSection* as : *sectionsToRelease) {
-        DispatcherFrame::instance()->releaseAllocatedSection(as, true); // need to find Allocated Section
+        ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->releaseAllocatedSection(as, true); // need to find Allocated Section
         as->getSection()->setState(Section::FREE);
     }
     if (mLastAllocatedSection != NULL) {
@@ -680,7 +680,7 @@
     if (mAutoRun) {
         mAutoActiveTrain->allocateAFresh();
     }
-    DispatcherFrame::instance()->allocateNewActiveTrain(this);
+    ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->allocateNewActiveTrain(this);
 }
 
 /*public*/ void ActiveTrain::clearAllocations() {
@@ -921,17 +921,17 @@ protected Section* getSecondAllocatedSection() {
         log->error("ERROR - Insufficient information to initialize first allocation");
         return NULL;
     }
-    if (!DispatcherFrame::instance()->requestAllocation(this,
+    if (!((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->requestAllocation(this,
             mNextSectionToAllocate, mNextSectionDirection, mNextSectionSeqNumber, true, NULL)) {
         log->error("Allocation request failed for first allocation of " + getActiveTrainName());
     }
-    if (DispatcherFrame::instance()->getRosterEntryInBlock() && getRosterEntry() != NULL) {
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getRosterEntryInBlock() && getRosterEntry() != NULL) {
         mStartBlock->setValue(VPtr<RosterEntry>::asQVariant(getRosterEntry()));
      //mStartBlock->setValue(QVariant(getRosterEntry()));
-    } else if (DispatcherFrame::instance()->getShortNameInBlock()) {
+    } else if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getShortNameInBlock()) {
         mStartBlock->setValue(mTrainName);
     }
-    AllocationRequest* ar = DispatcherFrame::instance()->findAllocationRequestInQueue(mNextSectionToAllocate,
+    AllocationRequest* ar = ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->findAllocationRequestInQueue(mNextSectionToAllocate,
             mNextSectionSeqNumber, mNextSectionDirection, this);
     return ar;
 }
@@ -1008,7 +1008,7 @@ protected AllocatedSection reverseAllAllocatedSections() {
         restartHr = nowHours + hours + ((nowMinutes + minutes) / 60);
         restartMin = ((nowMinutes + minutes) % 60);
     }
-    DispatcherFrame::instance()->addDelayedTrain(this);
+    ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->addDelayedTrain(this);
 }
 
 /*protected*/ void ActiveTrain::holdAllocation(bool boo) {

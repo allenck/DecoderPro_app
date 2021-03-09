@@ -914,7 +914,7 @@ namespace Operations
   }
   carAttributeEditFrame = new CarAttributeEditFrame();
   //carAttributeEditFrame->setLocationRelativeTo(this);
-//  carAttributeEditFrame->addPropertyChangeListener(this);
+  carAttributeEditFrame->addPropertyChangeListener(this);
 
   if (ae == editRoadButton) {
       carAttributeEditFrame->initComponents(CarAttributeEditFrame::ROAD, /*(String)*/ roadComboBox->getSelectedItem());
@@ -1019,5 +1019,8 @@ namespace Operations
   map.insert("RoadNumTooLong", tr("Car road number too long!"));
   map.insert("WeightFormatTon", tr("Car's weight must be in the format of xx tons"));
   map.insert("WeightTonError", tr("Car weight in tons incorrect"));
+  map.insert("rsFullySelect", tr("To place a car, you must select the car's's location and track"));
+  map.insert("rsCanNotLoc", tr("Can not update car location"));
+  map.insert("rsType", tr("Locomotive"));
  }
 }

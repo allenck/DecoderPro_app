@@ -18,7 +18,7 @@
 /*public*/ /*interface*/ class LIBPR3SHARED_EXPORT RosterEntrySelector
 {
 public:
-    //static /*final*/ QString SELECTED_ROSTER_ENTRIES;
+    //static /*final*/ QString SELECTED_ROSTER_ENTRIES = "selectedRosterEntries";//static /*final*/ QString SELECTED_ROSTER_ENTRIES;
 /**
  * Get the currently selected roster entries. Since the selection could contain
  * multiple roster entries, this returns an array of RosterEntry instead of a

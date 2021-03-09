@@ -63,7 +63,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -3770,6 +3769,11 @@ int PythonQtShell_JFrame::qt_metacall(QMetaObject::Call call, int id, void** arg
   int result = JFrame::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
+void PythonQtWrapper_JFrame::addPropertyChangeListener(JFrame* theWrappedObject, PropertyChangeListener*  arg__1)
+{
+  ( theWrappedObject->addPropertyChangeListener(arg__1));
+}
+
 void PythonQtWrapper_JFrame::addWindowListener(JFrame* theWrappedObject, WindowListener*  l)
 {
   ( theWrappedObject->addWindowListener(l));
@@ -3793,6 +3797,16 @@ void PythonQtWrapper_JFrame::componentResized(JFrame* theWrappedObject, QResizeE
 void PythonQtWrapper_JFrame::dispose(JFrame* theWrappedObject)
 {
   ( theWrappedObject->dispose());
+}
+
+void PythonQtWrapper_JFrame::firePropertyChange(JFrame* theWrappedObject, QString  arg__1, QVariant  arg__2, QVariant  arg__3)
+{
+  ( theWrappedObject->firePropertyChange(arg__1, arg__2, arg__3));
+}
+
+void PythonQtWrapper_JFrame::firePropertyChange(JFrame* theWrappedObject, QString  pName, QObject*  _old, QObject*  _new)
+{
+  ( theWrappedObject->firePropertyChange(pName, _old, _new));
 }
 
 void PythonQtWrapper_JFrame::frameInit(JFrame* theWrappedObject)
@@ -3878,6 +3892,11 @@ void PythonQtWrapper_JFrame::reSizeToFitOnScreen(JFrame* theWrappedObject)
 void PythonQtWrapper_JFrame::removeAll(JFrame* theWrappedObject)
 {
   ( theWrappedObject->removeAll());
+}
+
+void PythonQtWrapper_JFrame::removePropertyChangeListener(JFrame* theWrappedObject, PropertyChangeListener*  arg__1)
+{
+  ( theWrappedObject->removePropertyChangeListener(arg__1));
 }
 
 void PythonQtWrapper_JFrame::removeWindowListener(JFrame* theWrappedObject, WindowListener*  l)
@@ -9940,6 +9959,11 @@ int PythonQtShell_JTable::qt_metacall(QMetaObject::Call call, int id, void** arg
 void PythonQtWrapper_JTable::addColumn(JTable* theWrappedObject, TableColumn*  aColumn)
 {
   ( theWrappedObject->addColumn(aColumn));
+}
+
+void PythonQtWrapper_JTable::changeSelection(JTable* theWrappedObject, int  row, int  col, bool  arg__3, bool  arg__4)
+{
+  ( theWrappedObject->changeSelection(row, col, arg__3, arg__4));
 }
 
 void PythonQtWrapper_JTable::clearSelection(JTable* theWrappedObject)

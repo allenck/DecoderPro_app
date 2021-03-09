@@ -69,7 +69,7 @@ namespace Operations
 
   JTextField* hpTextField = new JTextField(8);
 
-  EngineAttributeEditFrame* engineAttributeEditFrame;
+  EngineAttributeEditFrame* engineAttributeEditFrame = nullptr;
 
   QSignalMapper* buttonEditMapper;
   static Logger* log;

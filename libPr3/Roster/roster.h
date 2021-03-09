@@ -12,14 +12,15 @@
 #include "propertychangelistener.h"
 #include <QMutex>
 #include "propertychangeprovider.h"
+#include "propertychangelistener.h"
 
 class Profile;
 class RosterGroup;
 class RosterEntry;
-class LIBPR3SHARED_EXPORT Roster : public XmlFile, public PropertyChangeProvider
+class LIBPR3SHARED_EXPORT Roster : public XmlFile, public PropertyChangeProvider, public PropertyChangeListener
 {
     Q_OBJECT
- Q_INTERFACES(PropertyChangeProvider)
+ Q_INTERFACES(PropertyChangeProvider PropertyChangeListener)
 public:
     explicit Roster(QObject *parent = 0);
     /** record the single instance of Roster **/
@@ -152,18 +153,19 @@ public:
     static const QString schemaVersion;// = "";
     /*public*/ QMap<QString, RosterGroup*> getRosterGroups();
     /*public*/ void rosterGroupRenamed(QString oldName, QString newName);
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
     /*public*/ void addRosterGroup(RosterGroup* rg);
     /*public*/ void addRosterGroup(QString str);
     /*public*/ QString getRosterFilesLocation();
     /*public*/ void addRosterGroups(QList<RosterGroup*> groups);
     /*public*/ void removeRosterGroup(RosterGroup* rg);
 
+    QObject* self() override {return (QObject*)this;}
 signals:
     //void propertyChange(QString text, QObject* o, QObject* n);
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent *evt);
+    /*public*/ void propertyChange(PropertyChangeEvent *evt) override;
     /*public*/ void reloadRosterFile();
 
 
