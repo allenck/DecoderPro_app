@@ -30,7 +30,7 @@ namespace Operations
   QCheckBox* buildReportAlwaysPreviewCheckBox;// = new JCheckBox(Bundle.getMessage("BuildReportAlwaysPreview"));
 
   // combo boxes
-  QComboBox* fontSizeComboBox;// = new JComboBox<>();
+  JComboBox* fontSizeComboBox;// = new JComboBox<>();
   /*private*/ void setBuildReportRadioButton();
   /*private*/ void setBuildReportRouterRadioButton();
  };

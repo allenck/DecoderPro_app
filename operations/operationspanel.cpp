@@ -6,7 +6,7 @@
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <QComboBox>
+#include  "jcombobox.h"
 #include <QSortFilterProxyModel>
 #include <jtable.h>
 #include "logger.h"
@@ -52,19 +52,9 @@ namespace Operations
  {
        //super();
   setObjectName("OperationsPanel");
-  buttonMapper = new QSignalMapper();
   OperationsFrame* owner = (OperationsFrame*)this->parent();
   Q_ASSERT(owner != NULL);
-  connect(buttonMapper, SIGNAL(mapped(QWidget*)), owner, SLOT(buttonActionPerformed(QWidget*)));
-  radioButtonMapper = new QSignalMapper();
-  connect(radioButtonMapper, SIGNAL(mapped(QWidget*)), this, SLOT(radioButtonActionPerformed(QWidget*)));
-  checkBoxMapper = new QSignalMapper();
-  connect(checkBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(checkBoxActionPerformed(QWidget*)));
-  comboBoxMapper = new QSignalMapper();
-  connect(comboBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(comboBoxActionPerformed(QWidget*)));
   log = new Logger("OperationsPanel");
-  gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 5px; margin-top: 1ex; /* leave space at the top for the title */} "
-                 "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
  }
 
  /*public*/ void OperationsPanel::initMinimumSize() {
@@ -213,12 +203,9 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addButtonAction(QPushButton* b) {
 //        b.addActionListener((ActionEvent e) -> {
-//            buttonActionPerformed(e);
-//        });
- Q_ASSERT(b != NULL);
-  connect(b, SIGNAL(clicked()), buttonMapper, SLOT(map()));
-  buttonMapper->setMapping(b,b);
-
+  connect(b, &QPushButton::clicked, [=]{
+            buttonActionPerformed(b);
+        });
  }
 
  /*protected*/ void OperationsPanel::buttonActionPerformed(QWidget* /*b*/) {
@@ -227,11 +214,9 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addRadioButtonAction(QRadioButton* b) {
 //        b.addActionListener((ActionEvent e) -> {
-//            radioButtonActionPerformed(e);
-//        });
- //connect(radioButtonMapper, SIGNAL(mapped(QObject*)), this, SLOT(radioButtonActionPerformed(QWidget* )));
- connect(b, SIGNAL(clicked()), radioButtonMapper, SLOT(map()));
- radioButtonMapper->setMapping(b,b);
+  connect(b, &QRadioButton::clicked, [=]{
+            radioButtonActionPerformed(b);
+        });
  }
 
  /*protected*/ void OperationsPanel::radioButtonActionPerformed(QWidget* /*b*/) {
@@ -240,11 +225,9 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addCheckBoxAction(QCheckBox* b) {
 //     b.addActionListener((ActionEvent e) -> {
-//         checkBoxActionPerformed(e);
-//     });
- //connect(checkBoxMapper, SIGNAL(mapped(int)),this, SLOT(checkBoxActionPerformed(QWidget* )));
- connect(b, SIGNAL(clicked()), checkBoxMapper, SLOT(map()));
-  checkBoxMapper->setMapping(b,b);
+  connect(b, &QCheckBox::toggled, [=]{
+         checkBoxActionPerformed(b);
+     });
  }
 
 /*protected*/ void OperationsPanel::checkBoxActionPerformed(QWidget* /*b*/) {
@@ -253,29 +236,28 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addSpinnerChangeListerner(QSpinBox* s) {
 //     s.addChangeListener((ChangeEvent e) -> {
-//         spinnerChangeEvent(e);
-//     });
- connect(s, SIGNAL(valueChanged(int)), this, SLOT(spinnerChangeEvent()));
-
+  void (QSpinBox::*mySignal)(int) = &QSpinBox::valueChanged;
+  connect(s, mySignal, [=](int){
+         spinnerChangeEvent(s);
+     });
  }
 
- /*protected*/ void OperationsPanel::spinnerChangeEvent(ChangeEvent* ae) {
+ /*protected*/ void OperationsPanel::spinnerChangeEvent(QWidget* /*ae*/) {
      log->debug("spinner action not overridden");
  }
 
- /*protected*/ void OperationsPanel::addComboBoxAction(QComboBox* b) {
+ /*protected*/ void OperationsPanel::addComboBoxAction(JComboBox* b) {
 //     b.addActionListener((ActionEvent e) -> {
-//         comboBoxActionPerformed(e);
-//     });
- connect(b, SIGNAL(currentIndexChanged(int)), comboBoxMapper, SLOT(map()));
- comboBoxMapper->setMapping(b,b);
+   connect(b, &JComboBox::currentIndexChanged, [=]{
+         comboBoxActionPerformed(b);
+     });
  }
 
- /*protected*/ void OperationsPanel::comboBoxActionPerformed(QWidget* ae) {
+ /*protected*/ void OperationsPanel::comboBoxActionPerformed(QWidget* /*ae*/) {
      log->debug("combobox action not overridden");
  }
 
- /*protected*/ void OperationsPanel::selectNextItemComboBox(QComboBox*  b) {
+ /*protected*/ void OperationsPanel::selectNextItemComboBox(JComboBox *b) {
      int newIndex = b->currentIndex() + 1;
      if (newIndex < b->count()) {
          b->setCurrentIndex(newIndex);

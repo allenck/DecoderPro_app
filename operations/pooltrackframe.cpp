@@ -18,6 +18,7 @@
 #include "setup.h"
 #include "trackeditframe.h"
 #include "gridbaglayout.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -81,7 +82,7 @@ common();
   saveButton = new QPushButton(tr("Save"));
 
   // pool status
-  poolStatus = new QGroupBox();
+  poolStatus = new JPanel();
 
  }
 
@@ -107,7 +108,7 @@ common();
    }
 
    // load the panel
-   QGroupBox* p1Frame = new QGroupBox;
+   JPanel* p1Frame = new JPanel;
    p1Frame->setLayout(new QVBoxLayout);
    QWidget* p1 = new QWidget();
    p1->setLayout(new QVBoxLayout); //(p1, BoxLayout.Y_AXIS));
@@ -115,39 +116,29 @@ common();
    p1Pane->setWidgetResizable(true);
    p1Frame->layout()->addWidget(p1Pane);
    //p1Pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-   //p1Pane.setBorder(BorderFactory.createTitledBorder(""));
-   p1Frame->setStyleSheet(gbStyleSheet);
+   p1Frame->setBorder(BorderFactory::createTitledBorder(""));
 
-   QGroupBox* poolName = new QGroupBox();
+   JPanel* poolName = new JPanel();
    poolName->setLayout(new GridBagLayout());
-   //poolName.setBorder(BorderFactory.createTitledBorder(tr("PoolName")));
-   poolName->setStyleSheet(gbStyleSheet);
-   poolName->setTitle(tr("Pool Name"));
+   poolName->setBorder(BorderFactory::createTitledBorder(tr("Pool Name")));
    addItem(poolName, trackPoolNameTextField, 0, 0);
    addItem(poolName, addButton, 1, 0);
 
-   QGroupBox* selectPool = new QGroupBox();
+   JPanel* selectPool = new JPanel();
    selectPool->setLayout(new GridBagLayout());
-   //selectPool.setBorder(BorderFactory.createTitledBorder(tr("PoolSelect")));
-   selectPool->setStyleSheet(gbStyleSheet);
-   selectPool->setTitle(tr("Pool Select"));
+   selectPool->setBorder(BorderFactory::createTitledBorder(tr("Pool Select")));
    addItem(selectPool, comboBoxPools, 0, 0);
 
-   QGroupBox* minLengthTrack = new QGroupBox();
+   JPanel* minLengthTrack = new JPanel();
    minLengthTrack->setLayout(new GridBagLayout());
-//   minLengthTrack.setBorder(BorderFactory.createTitledBorder(MessageFormat.format(Bundle
-//           .getMessage("PoolTrackMinimum"), new Object[]{_track.getName()})));
-   minLengthTrack->setStyleSheet(gbStyleSheet);
-   minLengthTrack->setTitle(tr("Minimum track length %1").arg(_track->getName()));
+   minLengthTrack->setBorder(BorderFactory::createTitledBorder(tr("Minimum track length %1").arg(_track->getName())));
    addItem(minLengthTrack, trackMinLengthTextField, 0, 0);
 
    trackMinLengthTextField->setText(QString::number(_track->getMinimumLength()));
 
-   QGroupBox* savePool = new QGroupBox();
+   JPanel* savePool = new JPanel();
    savePool->setLayout(new GridBagLayout());
-   //savePool.setBorder(BorderFactory.createTitledBorder(""));
-   savePool->setStyleSheet(gbStyleSheet);
-   //savePool->setTitle(tr(""));
+   savePool->setBorder(BorderFactory::createTitledBorder(""));
    addItem(savePool, saveButton, 0, 0);
 
    p1->layout()->addWidget(poolName);
@@ -155,7 +146,7 @@ common();
    p1->layout()->addWidget(minLengthTrack);
    p1->layout()->addWidget(savePool);
 
-   QGroupBox* p2Frame = new QGroupBox;
+   JPanel* p2Frame = new JPanel;
    p2Frame->setLayout(new QVBoxLayout);
    QWidget* p2 = new QWidget();
    p2->setLayout(new QVBoxLayout); //(p2, BoxLayout.Y_AXIS));
@@ -163,8 +154,7 @@ common();
    p2Pane->setWidgetResizable(true);
    p2Frame->layout()->addWidget(p2Pane);
 //   p2Pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//   p2Pane.setBorder(BorderFactory.createTitledBorder(""));
-   p2Frame->setStyleSheet(gbStyleSheet);
+   p2Frame->setBorder(BorderFactory::createTitledBorder(""));
 
    // pool status panel
    poolStatus->setLayout(new GridBagLayout());
@@ -244,10 +234,7 @@ common();
          totalLen->setText(QString::number(totalLength));
          addItem(poolStatus, totalLen, 2, tracks.size() + 1);
      }
-//     poolStatus.setBorder(BorderFactory.createTitledBorder(MessageFormat.format(tr("PoolTracks"),
-//             new Object[]{poolName})));
-     poolStatus->setStyleSheet(gbStyleSheet);
-     poolStatus->setTitle(tr("Tracks in pool %1").arg(poolName));
+     poolStatus->setBorder(BorderFactory::createTitledBorder(tr("Tracks in pool %1").arg(poolName)));
      poolStatus->update();
      //poolStatus->repaint();
      resize(QSize()); // kill JMRI window size

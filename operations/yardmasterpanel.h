@@ -2,6 +2,7 @@
 #define YARDMASTERPANEL_H
 #include "commonconductoryardmasterpanel.h"
 #include "appslib_global.h"
+#include "jpanel.h"
 
 class JTextPane;
 namespace Operations
@@ -26,14 +27,14 @@ namespace Operations
   HtmlTextEdit* textSwitchListComment;// = new JTextPane();
 
    // combo boxes
-   QComboBox* trainComboBox;// = new JComboBox<>();
-   QComboBox* trainVisitComboBox;// = new JComboBox<>();
+   JComboBox* trainComboBox;// = new JComboBox<>();
+   JComboBox* trainVisitComboBox;// = new JComboBox<>();
 
    // buttons
    QPushButton* nextButton;// = new JButton(Bundle.getMessage("Next"));
 
    // panels
-   QGroupBox* pTrainVisit;// = new JPanel();
+   JPanel* pTrainVisit;// = new JPanel();
    Logger* log;
    /*private*/ void addTrainListeners();
    /*private*/ void update();

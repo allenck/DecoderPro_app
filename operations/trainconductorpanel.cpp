@@ -17,6 +17,8 @@
 #include <QPushButton>
 #include "htmltextedit.h"
 #include <QScrollArea>
+#include "jpanel.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -61,7 +63,7 @@ namespace Operations
   textNextLocationName = new QLabel();
 
   // panels
-  pTrainDepartureTime = new QGroupBox();
+  pTrainDepartureTime = new JPanel();
 
   initComponents();
 
@@ -72,11 +74,9 @@ namespace Operations
   pRow2->setLayout(new QHBoxLayout); //(pRow2, BoxLayout.X_AXIS));
 
   // row 2a (train name)
-  QGroupBox* pTrainName = new QGroupBox();
+  JPanel* pTrainName = new JPanel();
   pTrainName->setLayout(new QVBoxLayout);
-  //pTrainName->setBorder(BorderFactory.createTitledBorder(tr("Train")));
-  pTrainName->setStyleSheet(gbStyleSheet);
-  pTrainName->setTitle(tr("Train"));
+  pTrainName->setBorder(BorderFactory::createTitledBorder(tr("Train")));
   pTrainName->layout()->addWidget(textTrainName);
 
   pRow2->layout()->addWidget(pTrainName);
@@ -88,16 +88,12 @@ namespace Operations
 
   // row 10b (train departure time)
   pTrainDepartureTime->setLayout(new QVBoxLayout);
-  //pTrainDepartureTime->setBorder(BorderFactory.createTitledBorder(tr("DepartTime")));
-  pTrainDepartureTime->setStyleSheet(gbStyleSheet);
-  pTrainDepartureTime->setTitle(tr("Departure Time (hh:mm)"));
+  pTrainDepartureTime->setBorder(BorderFactory::createTitledBorder(tr("Departure Time (hh:mm)")));
   pTrainDepartureTime->layout()->addWidget(textTrainDepartureTime);
 
   // row 10c (next location name)
-  QGroupBox* pNextLocationName = new QGroupBox();
-  //pNextLocationName->setBorder(BorderFactory.createTitledBorder(tr("NextLocation")));
-  pNextLocationName->setStyleSheet(gbStyleSheet);
-  pNextLocationName->setTitle(tr("Next Location"));
+  JPanel* pNextLocationName = new JPanel();
+  pNextLocationName->setBorder(BorderFactory::createTitledBorder(tr("Next Location")));
   pNextLocationName->setLayout(new QHBoxLayout);
   pNextLocationName->layout()->addWidget(textNextLocationName);
 
@@ -111,11 +107,9 @@ namespace Operations
   pRow14->setMaximumSize(QSize(2000, 200));
 
   // row 14b
-  QGroupBox* pMoveButton = new QGroupBox();
+  JPanel* pMoveButton = new JPanel();
   pMoveButton->setLayout(new GridBagLayout());
-  //pMoveButton->setBorder(BorderFactory.createTitledBorder(tr("Train")));
-  pMoveButton->setStyleSheet(gbStyleSheet);
-  pMoveButton->setTitle(tr("Train"));
+  pMoveButton->setBorder(BorderFactory::createTitledBorder(tr("Train")));
   addItem(pMoveButton, moveButton, 1, 0);
 
   pRow14->layout()->addWidget(pButtons);

@@ -27,11 +27,8 @@
 #include "enginerostermenu.h"
 #include "instancemanager.h"
 #include "propertychangelistener.h"
+#include "borderfactory.h"
 
-//EnginesTableFrame::EnginesTableFrame(QObject *parent) :
-//  OperationsFrame(parent)
-//{
-//}
 namespace Operations
 {
 /**
@@ -108,12 +105,9 @@ namespace Operations
 
   // Set up the control panel
   // row 1
-  QGroupBox* cp1 = new QGroupBox();
-  //cp1.setBorder(BorderFactory.createTitledBorder(tr("SortBy")));
-  QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-  cp1->setStyleSheet(gbStyleSheet);
+  JPanel* cp1 = new JPanel();
+  cp1->setBorder(BorderFactory::createTitledBorder(tr("Sort By")));
   FlowLayout * cp1Layout = new FlowLayout(cp1);
-  cp1->setTitle(tr("Sort By"));
   cp1Layout->addWidget(sortByNumber);
   cp1Layout->addWidget(sortByRoad);
   cp1Layout->addWidget(sortByModel);
@@ -153,10 +147,8 @@ namespace Operations
   cp2AddLayout->addWidget(addButton);
   cp2Layout->addWidget(cp2Add);
 
-  QGroupBox* cp2Find = new QGroupBox();
-  //cp2Find.setBorder(BorderFactory.createTitledBorder(""));
-  cp2Find->setStyleSheet(gbStyleSheet);
-  cp2Find->setTitle("");
+  JPanel* cp2Find = new JPanel();
+  cp2Find->setBorder(BorderFactory::createTitledBorder(""));
   FlowLayout* cp2FindLayout = new FlowLayout(cp2Find);
   findButton->setToolTip(tr("Find locomotive by road number. Asterisk \"*\" = wild card."));
   findEngineTextBox->setToolTip(tr("Find locomotive by road number. Asterisk \"*\" = wild card."));
@@ -164,8 +156,8 @@ namespace Operations
   cp2FindLayout->addWidget(findEngineTextBox);
   cp2Layout->addWidget(cp2Find);
 
-  QWidget* cp2Save = new QWidget();
-  //cp2Save.setBorder(BorderFactory.createTitledBorder(""));
+  JPanel* cp2Save = new JPanel();
+  cp2Save->setBorder(BorderFactory::createTitledBorder(""));
   FlowLayout* cp2SaveLayout = new FlowLayout(cp2Save);
   cp2SaveLayout->addWidget(saveButton);
   cp2Layout->addWidget(cp2Save);

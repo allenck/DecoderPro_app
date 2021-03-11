@@ -41,13 +41,13 @@ namespace Operations
   JComboBox* colorTerminatedBox;// = TrainManager::instance().getRowColorComboBox();
 
   // display panels based on which option is selected
-  QGroupBox* pTrains;
-  QGroupBox* pColor;
+  JPanel* pTrains;
+  JPanel* pColor;
 
-  QGroupBox* pColorBuilt;
-  QGroupBox* pColorBuildFailed;
-  QGroupBox* pColorTrainEnRoute;
-  QGroupBox* pColorTerminated;
+  JPanel* pColorBuilt;
+  JPanel* pColorBuildFailed;
+  JPanel* pColorTrainEnRoute;
+  JPanel* pColorTerminated;
   /*private*/ void makePanelsVisible();
   Logger* log;
 

@@ -201,6 +201,7 @@ protected slots:
  friend class ActiveTrain;
  friend class AutoEngineer;
  friend class AutoTrainAction;
+ friend class AutoTrainsFrame;
 };
 
 class AutoEngineer : public  Runnable

@@ -21,6 +21,7 @@
 #include "trainschedulemanager.h"
 #include "trainschedule.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -58,25 +59,21 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      p1->setMaximumSize(QSize(2000, 200));
      p1->setLayout(new QVBoxLayout);//(p1, BoxLayout.X_AXIS));
 
-     QGroupBox* type = new QGroupBox();
+     JPanel* type = new JPanel();
      type->setLayout(new GridBagLayout());
-     //type.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     type->setStyleSheet(gbStyleSheet);
-     type->setTitle(tr("Type"));
+     type->setBorder(BorderFactory::createTitledBorder(tr("Type")));
      addItem(type, typesComboBox, 0, 0);
 
-     QGroupBox* load = new QGroupBox();
+     JPanel* load = new JPanel();
      load->setLayout(new GridBagLayout());
-     //load.setBorder(BorderFactory.createTitledBorder(tr("Load")));
-     load->setStyleSheet(gbStyleSheet);
-     load->setTitle(tr("Load"));
+     load->setBorder(BorderFactory::createTitledBorder(tr("Load")));
      addItem(load, loadsComboBox, 0, 0);
      addItem(load, allLoadsCheckBox, 1, 0);
 
      p1->layout()->addWidget(type);
      p1->layout()->addWidget(load);
 
-     QGroupBox* locationsPanelFrame = new QGroupBox;
+     JPanel* locationsPanelFrame = new JPanel;
      locationsPanelFrame->setLayout(new QVBoxLayout);
      locationsPanel = new QWidget();
      locationsPanel->setLayout(new GridBagLayout());
@@ -84,9 +81,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      locationsPanelFrame->layout()->addWidget(locationsPane);
      locationsPane->setWidgetResizable(true);
      //locationsPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //locationsPane.setBorder(BorderFactory.createTitledBorder(tr("Locations")));
-     locationsPanelFrame->setStyleSheet(gbStyleSheet);
-     locationsPanelFrame->setTitle(tr("Locations"));
+     locationsPanelFrame->setBorder(BorderFactory::createTitledBorder(tr("Locations")));
 
      thisLayout->addWidget(p1);
      locationsPane->setWidget(locationsPanel);

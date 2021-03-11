@@ -39,13 +39,13 @@ namespace Operations
   QScrollArea* trainReq1Pane;
   QScrollArea* trainReq2Pane;
 
-  QGroupBox*  engine1Option;//= new JPanel();
+  JPanel*  engine1Option;//= new JPanel();
   QWidget*  engine1DropOption;//= new JPanel();
-  QGroupBox*  engine1caboose;//= new JPanel();
+  JPanel*  engine1caboose;//= new JPanel();
 
-  QGroupBox*  engine2Option;//= new JPanel();
+  JPanel*  engine2Option;//= new JPanel();
   QWidget*  engine2DropOption;//= new JPanel();
-  QGroupBox*  engine2caboose;//= new JPanel();
+  JPanel*  engine2caboose;//= new JPanel();
 
   // labels
   QLabel* trainName;//= new JLabel();

@@ -50,6 +50,7 @@
 #include "exporttrainrosteraction.h"
 #include "setupexcelprogramframeaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -145,20 +146,16 @@ namespace Operations
   QWidget* cp1 = new QWidget();
   cp1->setLayout(new QVBoxLayout);//(cp1, BoxLayout.X_AXIS));
 
-  QGroupBox* show = new QGroupBox();
+  JPanel* show = new JPanel();
   show->setLayout(new QHBoxLayout);
-  show->setStyleSheet(gbStyleSheet);
-  show->setTitle(tr("Click to sort"));
-  //show.setBorder(BorderFactory.createTitledBorder(tr("ShowClickToSort")));
+  show->setBorder(BorderFactory::createTitledBorder(tr("Click to sort")));
   show->layout()->addWidget(showTime);
   show->layout()->addWidget(showId);
 
 
-  QGroupBox* options = new QGroupBox();
-  //options.setBorder(BorderFactory.createTitledBorder(tr("Options")));
+  JPanel* options = new JPanel();
+  options->setBorder(BorderFactory::createTitledBorder(tr("Options")));
   options->setLayout(new FlowLayout);
-  options->setStyleSheet(gbStyleSheet);
-  options->setTitle(tr("Options"));
   options->layout()->addWidget(showAllBox);
   options->layout()->addWidget(buildMsgBox);
   options->layout()->addWidget(buildReportBox);
@@ -166,11 +163,9 @@ namespace Operations
   options->layout()->addWidget(openFileBox);
   options->layout()->addWidget(runFileBox);
 
-  QGroupBox* action = new QGroupBox();
-  //action.setBorder(BorderFactory.createTitledBorder(tr("Action")));
+  JPanel* action = new JPanel();
+  action->setBorder(BorderFactory::createTitledBorder(tr("Action")));
   action->setLayout(new FlowLayout);
-  action->setStyleSheet(gbStyleSheet);
-  action->setTitle(tr("Action"));
   action->layout()->addWidget(moveRB);
   action->layout()->addWidget(conductorRB);
   action->layout()->addWidget(terminateRB);
@@ -200,11 +195,9 @@ namespace Operations
   resetRB->setToolTip(tr("When selected, show Reset button for train"));
 
   // row 2
-  QGroupBox* addTrain = new QGroupBox();
-  //addTrain.setBorder(BorderFactory.createTitledBorder(""));
+  JPanel* addTrain = new JPanel();
+  addTrain->setBorder(BorderFactory::createTitledBorder(""));
   addTrain->setLayout(new QHBoxLayout);
-  addTrain->setStyleSheet(gbStyleSheet);
-  //addTrain->setTitle(tr("Options"));
   addTrain->layout()->addWidget(numTrains);
   addTrain->layout()->addWidget(textTrains);
   addTrain->layout()->addWidget(textSep1);
@@ -212,11 +205,9 @@ namespace Operations
 
   numTrains->setText(QString::number(trainManager->getNumEntries()));
 
-  QWidget* select = new QGroupBox();
-  //select.setBorder(BorderFactory.createTitledBorder(""));
+  JPanel* select = new JPanel();
+  select->setBorder(BorderFactory::createTitledBorder(""));
   select->setLayout(new QHBoxLayout);
-  select->setStyleSheet(gbStyleSheet);
-  //select->setTitle(tr("Options"));
   select->layout()->addWidget(buildButton);
   select->layout()->addWidget(printButton);
   select->layout()->addWidget(openFileButton);

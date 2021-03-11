@@ -20,6 +20,7 @@
 #include <QMessageBox>
 #include "jmriscriptenginemanager.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -69,17 +70,15 @@ namespace Operations
  /*public*/ void TrainScriptFrame::initComponents(TrainEditFrame* parent)
 {
   // Set up script options in a Scroll Pane..
-  QGroupBox* buildScriptFrame = new QGroupBox;
+  JPanel* buildScriptFrame = new JPanel;
   buildScriptFrame->setLayout(new QVBoxLayout);
   buildScriptPane = new QScrollArea(/*pBuildScript*/);
   buildScriptPane->setWidgetResizable(true);
   buildScriptFrame->layout()->addWidget(buildScriptPane);
   //buildScriptPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //buildScriptPane->setBorder(BorderFactory.createTitledBorder(tr("ScriptsBeforeBuild")));
-  buildScriptFrame->setStyleSheet(gbStyleSheet);
-  buildScriptFrame->setTitle(tr("Run the following scripts before building this train"));
+  buildScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts before building this train")));
 
-  QGroupBox* afterBuildScriptFrame = new QGroupBox;
+  JPanel* afterBuildScriptFrame = new JPanel;
   afterBuildScriptFrame->setLayout(new QVBoxLayout);
   afterBuildScriptPane = new QScrollArea(/*pAfterBuildScript*/);
   afterBuildScriptPane->setWidgetResizable(true);
@@ -87,20 +86,18 @@ namespace Operations
  // afterBuildScriptPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 //  afterBuildScriptPane->setBorder(BorderFactory.createTitledBorder(Bundle
 //          .getMessage("ScriptsAfterBuild")));
-  afterBuildScriptFrame->setStyleSheet(gbStyleSheet);
-  afterBuildScriptFrame->setTitle(tr("Run the following scripts after building this train"));
+  afterBuildScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts after building this train")));
 
-  QGroupBox* moveScriptFrame = new QGroupBox;
+  JPanel* moveScriptFrame = new JPanel;
   moveScriptFrame->setLayout(new QVBoxLayout);
   moveScriptPane = new QScrollArea(/*pMoveScript*/);
   moveScriptPane->setWidgetResizable(true);
   moveScriptFrame->layout()->addWidget(moveScriptPane);
 //  moveScriptPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 //  moveScriptPane->setBorder(BorderFactory.createTitledBorder(tr("ScriptsWhenMoved")));
-  moveScriptFrame->setStyleSheet(gbStyleSheet);
-  moveScriptFrame->setTitle(tr("Run the following scripts after this train is moved"));
+  moveScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts after this train is moved")));
 
-  QGroupBox* terminationScriptFrame = new QGroupBox;
+  JPanel* terminationScriptFrame = new JPanel;
   terminationScriptFrame->setLayout(new QVBoxLayout);
   terminationScriptPane = new QScrollArea(/*pTerminationScript*/);
   terminationScriptPane->setWidgetResizable(true);
@@ -108,8 +105,7 @@ namespace Operations
 //  terminationScriptPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 //  terminationScriptPane->setBorder(BorderFactory.createTitledBorder(Bundle
 //          .getMessage("ScriptsWhenTerminated")));
-  terminationScriptFrame->setStyleSheet(gbStyleSheet);
-  terminationScriptFrame->setTitle(tr("Run the following scripts after this train terminates"));
+  terminationScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts after this train terminates")));
 
   // remember who called us
   //parent->setChildFrame(this);
@@ -127,19 +123,15 @@ namespace Operations
   p1->setLayout(new QHBoxLayout);//(p1, BoxLayout.X_AXIS));
 
   // row 1a
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setLayout(new GridBagLayout());
-  //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-  pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle(tr("Name"));
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
   addItem(pName, trainName, 0, 0);
 
   // row 1b
-  QGroupBox* pDesc = new QGroupBox();
+  JPanel* pDesc = new JPanel();
   pDesc->setLayout(new GridBagLayout());
-  //pDesc->setBorder(BorderFactory.createTitledBorder(tr("Description")));
-  pDesc->setStyleSheet(gbStyleSheet);
-  pDesc->setTitle(tr("Description"));
+  pDesc->setBorder(BorderFactory::createTitledBorder(tr("Description")));
   addItem(pDesc, trainDescription, 0, 0);
 
   p1->layout()->addWidget(pName);

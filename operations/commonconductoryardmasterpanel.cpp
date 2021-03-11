@@ -26,6 +26,7 @@
 #include "joptionpane.h"
 #include "carstableframe.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -79,9 +80,8 @@ namespace Operations
    textTrainRouteLocationCommentPane = new HtmlTextEdit();
 
    // panels
-   pRailRoadName = new QGroupBox();
-   pTrainDescription = new QGroupBox();
-   pLocationName = new QGroupBox();
+   pRailRoadName = new JPanel();
+   pTrainDescription = new JPanel();
    pLocos = new QWidget();
    pPickupLocos = new QWidget();
    pSetoutLocos = new QWidget();
@@ -89,8 +89,6 @@ namespace Operations
    pSetouts = new QWidget();
    pWorkPanes = new QWidget(); // place car pick ups and set outs side by side using two columns
    pMoves = new QWidget();
-   pStatus = new QGroupBox();
-   pButtons = new QGroupBox();
 
    // check boxes
    checkBoxes =  QHash<QString, QCheckBox*>();
@@ -107,7 +105,7 @@ namespace Operations
   //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   thisLayout = new QVBoxLayout(this);
 
-  locoPaneFrame = new QGroupBox;
+  locoPaneFrame = new JPanel;
   locoPaneFrame->setLayout(new QVBoxLayout);
   locoPane = new QScrollArea(); //JScrollPane(pLocos);
   locoPane->setWidgetResizable(true);
@@ -115,44 +113,38 @@ namespace Operations
   pLocos = new QWidget;
   //pLocos->setLayout(new QVBoxLayout); // is set later!
   locoPaneFrame->layout()->addWidget(locoPane);
-  //locoPane->setBorder(BorderFactory.createTitledBorder(tr("Engines")));
-  locoPaneFrame->setStyleSheet(gbStyleSheet);
-  locoPaneFrame->setTitle(tr("Engines"));
+  locoPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Engines")));
 
 //        pickupPane = new JScrollPane(pPickups);
 //        pickupPane->setBorder(BorderFactory.createTitledBorder(tr("Pickup")));
-  pickupPaneFrame = new QGroupBox;
+  pickupPaneFrame = new JPanel;
   pickupPaneFrame->setLayout(new QVBoxLayout);
   pickupPane = new QScrollArea(); //JScrollPane(pLocos);
   pickupPaneFrame->layout()->addWidget(pickupPane);
   pPickups = new QWidget;
   pPickups->setLayout(new QVBoxLayout);
   pickupPane->setWidgetResizable(true);
-  pickupPaneFrame->setStyleSheet(gbStyleSheet);
-  pickupPaneFrame->setTitle(tr("Pickup"));
-
+  pickupPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Pickup")));
 //        setoutPane = new JScrollPane(pSetouts);
-//        setoutPane->setBorder(BorderFactory.createTitledBorder(tr("SetOut")));
-  setoutPaneFrame = new QGroupBox;
+//        setoutPane->setBorder(BorderFactory.createTitledBorder(tr("Setut")));
+  setoutPaneFrame = new JPanel;
   setoutPaneFrame->setLayout(new QVBoxLayout);
   setoutPane = new QScrollArea(); //JScrollPane(pLocos);
   setoutPane->setWidgetResizable(true);
   setoutPaneFrame->layout()->addWidget(setoutPane);
   pSetouts = new QWidget;
   pSetouts->setLayout(new QVBoxLayout);
-  setoutPaneFrame->setStyleSheet(gbStyleSheet);
-  setoutPaneFrame->setTitle(tr("Set out"));
+  setoutPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Set out")));
 
 //        movePane = new JScrollPane(pMoves);
 //        movePane->setBorder(BorderFactory.createTitledBorder(tr("LocalMoves")));
-  movePaneFrame = new QGroupBox;
+  movePaneFrame = new JPanel();
   movePaneFrame->setLayout(new QVBoxLayout);
   movePane = new QScrollArea;
   movePane->setWidgetResizable(true);
   pMoves = new QWidget;
   pMoves->setLayout(new QVBoxLayout);
-  movePaneFrame->setStyleSheet(gbStyleSheet);
-  movePaneFrame->setTitle(tr("Moves"));
+  movePaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Local moves")));
 
   // Set up the panels
   pPickupLocos->setLayout(new QVBoxLayout);//(pPickupLocos, BoxLayout.Y_AXIS));
@@ -162,24 +154,18 @@ namespace Operations
   pMoves->setLayout(new QVBoxLayout);//(pMoves, BoxLayout.Y_AXIS));
 
   // railroad name
-  //pRailRoadName->setBorder(BorderFactory.createTitledBorder(tr("RailroadName")));
-  pRailRoadName->setStyleSheet(gbStyleSheet);
-  pRailRoadName->setTitle(tr("Railroad Name"));
+  pRailRoadName->setBorder(BorderFactory::createTitledBorder(tr("Railroad Name")));
   pRailRoadName->setLayout(new QHBoxLayout);
   pRailRoadName->layout()->addWidget(textRailRoadName);
 
   // location name
-  //pLocationName->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-  pLocationName->setStyleSheet(gbStyleSheet);
-  pLocationName->setTitle(tr("Location"));
+  pLocationName->setBorder(BorderFactory::createTitledBorder(tr("Location")));
   pLocationName->setLayout(new QHBoxLayout);
   pLocationName->layout()->addWidget(textLocationName);
 
   // location comment
-  //textLocationCommentPane->setBorder(BorderFactory.createTitledBorder(tr("LocationComment")));
-  textLocationCommentGB = new QGroupBox;
-  textLocationCommentGB->setStyleSheet(gbStyleSheet);
-  textLocationCommentGB->setTitle(tr("Location Comment"));
+  textLocationCommentGB = new JPanel;
+  textLocationCommentGB->setBorder(BorderFactory::createTitledBorder(tr("Location Comment")));
   textLocationCommentGB->setLayout(new QVBoxLayout);
   textLocationCommentGB->layout()->addWidget(textLocationCommentPane);
   //textLocationCommentPane->setBackground(NULL);
@@ -187,28 +173,22 @@ namespace Operations
   textLocationCommentPane->setMaximumSize(QSize(2000, 200));
 
   // train description
-  //pTrainDescription->setBorder(BorderFactory.createTitledBorder(tr("Description")));
-  pTrainDescription->setStyleSheet(gbStyleSheet);
-  pTrainDescription->setTitle(tr("Description"));
+  pTrainDescription->setBorder(BorderFactory::createTitledBorder(tr("Description")));
   pTrainDescription->setLayout(new QHBoxLayout);
   pTrainDescription->layout()->addWidget(textTrainDescription);
 
   // train comment
-  //textTrainCommentPane->setBorder(BorderFactory.createTitledBorder(tr("TrainComment")));
+  textTrainCommentGB = new JPanel;
+  textTrainCommentGB->setBorder(BorderFactory::createTitledBorder(tr("Train Comment")));
   //textTrainCommentPane->setBackground(NULL);
-  textTrainCommentGB = new QGroupBox;
-  textTrainCommentGB->setStyleSheet(gbStyleSheet);
-  textTrainCommentGB->setTitle(tr("Train Comment"));
   textTrainCommentGB->setLayout(new QVBoxLayout);
   textTrainCommentGB->layout()->addWidget(textTrainCommentPane);
   textTrainCommentPane->setEditable(false);
   textTrainCommentPane->setMaximumSize(QSize(2000, 200));
 
   // train route comment
-  //textTrainRouteCommentPane->setBorder(BorderFactory.createTitledBorder(tr("RouteComment")));
-  textTrainRouteCommentGB = new QGroupBox;
-  textTrainRouteCommentGB->setStyleSheet(gbStyleSheet);
-  textTrainRouteCommentGB->setTitle(tr("Route Comment"));
+  textTrainRouteCommentGB = new JPanel;
+  textTrainRouteCommentGB->setBorder(BorderFactory::createTitledBorder(tr("Route Comment")));
   textTrainRouteCommentGB->setLayout(new QVBoxLayout);
   //textTrainRouteCommentPane->setBackground(NULL);
   textTrainRouteCommentGB->layout()->addWidget(textTrainRouteCommentPane);
@@ -216,11 +196,8 @@ namespace Operations
   textTrainRouteCommentPane->setMaximumSize(QSize(2000, 200));
 
   // train route location comment
-  //textTrainRouteLocationCommentPane->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("RouteLocationComment")));
-  textTrainRouteLocationCommentGB = new QGroupBox;
-  textTrainRouteLocationCommentGB->setStyleSheet(gbStyleSheet);
-  textTrainRouteLocationCommentGB->setTitle(tr("Location"));
+  textTrainRouteLocationCommentGB = new JPanel;
+  textTrainRouteLocationCommentGB->setBorder(BorderFactory::createTitledBorder(tr("Location")));
   textTrainRouteLocationCommentGB->setLayout(new QVBoxLayout);
   //textTrainRouteLocationCommentPane->setBackground(NULL);
   textTrainRouteLocationCommentGB->layout()->addWidget(textTrainRouteLocationCommentPane);
@@ -246,15 +223,12 @@ namespace Operations
 
   // row 13
   pStatus->setLayout(new GridBagLayout());
-  //pStatus->setBorder(BorderFactory.createTitledBorder(""));
-  pStatus->setStyleSheet(gbStyleSheet);
+  pStatus->setBorder(BorderFactory::createTitledBorder(""));
   addItem(pStatus, textStatus, 0, 0);
 
   // row 14
   pButtons->setLayout(new GridBagLayout());
-  //pButtons->setBorder(BorderFactory.createTitledBorder(tr("Work")));
-  pButtons->setStyleSheet(gbStyleSheet);
-  pButtons->setTitle(tr("Work"));
+  pButtons->setBorder(BorderFactory::createTitledBorder(tr("Work")));
   addItem(pButtons, selectButton, 0, 0);
   addItem(pButtons, clearButton, 1, 0);
   addItem(pButtons, modifyButton, 2, 0);

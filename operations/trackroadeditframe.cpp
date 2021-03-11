@@ -5,7 +5,7 @@
 #include "track.h"
 #include <QPushButton>
 #include <QRadioButton>
-#include <QGroupBox>
+#include "jpanel.h"
 #include <QScrollArea>
 #include "carroads.h"
 #include <QLabel>
@@ -20,6 +20,7 @@
 #include <QCheckBox>
 #include <QMessageBox>
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -48,7 +49,7 @@ namespace Operations
   _track = NULL;
 
   // panels
-  pRoadControls = new QGroupBox();
+  pRoadControls = new JPanel();
   panelRoads = new QWidget();
   paneRoads = new QScrollArea(/*panelRoads*/);
 
@@ -92,34 +93,28 @@ namespace Operations
      p1->setMaximumSize(QSize(2000, 250));
 
      // row 1a
-     QGroupBox* pTrackName = new QGroupBox();
+     JPanel* pTrackName = new JPanel();
      pTrackName->setLayout(new GridBagLayout());
-     //pTrackName->setBorder(BorderFactory.createTitledBorder(tr("Track")));
-     pTrackName->setStyleSheet(gbStyleSheet);
-     pTrackName->setTitle(tr("Track"));
+     pTrackName->setBorder(BorderFactory::createTitledBorder(tr("Track")));
      addItem(pTrackName, trackName, 0, 0);
 
      // row 1b
-     QGroupBox* pLocationName = new QGroupBox();
+     JPanel* pLocationName = new JPanel();
      pLocationName->setLayout(new GridBagLayout());
-     //pLocationName->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-     pLocationName->setStyleSheet(gbStyleSheet);
-     pLocationName->setTitle(tr("Location"));
+     pLocationName->setBorder(BorderFactory::createTitledBorder(tr("Location")));
      addItem(pLocationName, new QLabel(_location->getName()), 0, 0);
 
      p1->layout()->addWidget(pTrackName);
      p1->layout()->addWidget(pLocationName);
 
      // row 3
-     QGroupBox* p3Frame = new QGroupBox;
+     JPanel* p3Frame = new JPanel;
      p3Frame->setLayout(new QVBoxLayout);
      QWidget* p3 = new QWidget();
      p3->setLayout(new QVBoxLayout); //(p3, BoxLayout.Y_AXIS));
      QScrollArea* pane3 = new QScrollArea(/*p3*/);
      pane3->setWidgetResizable(true);
-     //pane3->setBorder(BorderFactory.createTitledBorder(tr("RoadsTrack")));
-     p3Frame->setStyleSheet(gbStyleSheet);
-     p3Frame->setTitle(tr("Select the roads serviced by this track"));
+     p3Frame->setBorder(BorderFactory::createTitledBorder(tr("Select the roads serviced by this track")));
      pane3->setMaximumSize(QSize(2000, 400));
 
      QWidget* pRoadRadioButtons = new QWidget();
@@ -143,14 +138,12 @@ namespace Operations
      pane3->setWidget(p3);
 
      // row 4
-     QGroupBox* paneRoadsFrame= new QGroupBox;
+     JPanel* paneRoadsFrame= new JPanel;
      paneRoadsFrame->setLayout(new QVBoxLayout);
      paneRoadsFrame->layout()->addWidget(paneRoads);
      paneRoads->setWidgetResizable(true);
      panelRoads->setLayout(new GridBagLayout());
-     //paneRoads->setBorder(BorderFactory.createTitledBorder(tr("Roads")));
-     paneRoadsFrame->setStyleSheet(gbStyleSheet);
-     paneRoadsFrame->setTitle(tr("Roads"));
+     paneRoadsFrame->setBorder(BorderFactory::createTitledBorder(tr("Roads")));
 
      QButtonGroup* roadGroup = new QButtonGroup();
      roadGroup->addButton(roadNameAll);
@@ -158,10 +151,9 @@ namespace Operations
      roadGroup->addButton(roadNameExclude);
 
      // row 12
-     QGroupBox* panelButtons = new QGroupBox();
+     JPanel* panelButtons = new JPanel();
      panelButtons->setLayout(new GridBagLayout());
-     //panelButtons->setBorder(BorderFactory.createTitledBorder(""));
-     panelButtons->setStyleSheet(gbStyleSheet);
+     panelButtons->setBorder(BorderFactory::createTitledBorder(""));
      panelButtons->setMaximumSize(QSize(2000, 200));
 
      // row 13

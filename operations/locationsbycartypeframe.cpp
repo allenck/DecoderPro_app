@@ -3,7 +3,7 @@
 #include "cartypes.h"
 #include "locationmanager.h"
 #include <QBoxLayout>
-#include <QGroupBox>
+#include "jpanel.h"
 #include "gridbaglayout.h"
 #include <QScrollArea>
 #include <QComboBox>
@@ -21,6 +21,7 @@
 #include "setup.h"
 #include "printlocationsbycartypesaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -88,11 +89,9 @@ namespace Operations
      QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // Set up the panels
-     QGroupBox* pCarType = new QGroupBox();
+     JPanel* pCarType = new JPanel();
      pCarType->setLayout(new GridBagLayout());
-     //pCarType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     pCarType->setStyleSheet(gbStyleSheet);
-     pCarType->setTitle(tr("Type"));
+     pCarType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
 
      addItem(pCarType, typeComboBox, 0, 0);
      addItem(pCarType, copyCheckBox, 1, 0);
@@ -100,24 +99,21 @@ namespace Operations
      typeComboBox->setCurrentIndex(typeComboBox->findText(carType));
      copyCheckBox->setToolTip(tr("First select the car type you want to copy, then select Copy, then the car type you want to copy to, then Save"));
 
-     QGroupBox* pLocationsGroupBox = new QGroupBox;
+     JPanel* pLocationsGroupBox = new JPanel;
      pLocationsGroupBox->setLayout(new QVBoxLayout);
      pLocations = new QWidget();
      pLocations->setLayout(new GridBagLayout());
      locationPane = new QScrollArea; //(pLocations);
      //locationPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //locationPane.setBorder(BorderFactory.createTitledBorder(tr("Locations")));
-     pLocationsGroupBox->setStyleSheet(gbStyleSheet);
-     pLocationsGroupBox->setTitle("Locations");
+     pLocationsGroupBox->setBorder(BorderFactory::createTitledBorder(tr("Locations")));
      locationPane->setWidgetResizable(true);
      pLocationsGroupBox->layout()->addWidget(locationPane);
      updateLocations();
      pLocations->layout()->addWidget(new QLabel("Test Widget"));
 
-     QGroupBox* pButtons = new QGroupBox();
+     JPanel* pButtons = new JPanel();
      pButtons->setLayout(new GridBagLayout());
-     //pButtons.setBorder(BorderFactory.createTitledBorder(""));
-     pLocationsGroupBox->setStyleSheet(gbStyleSheet);
+     pButtons->setBorder(BorderFactory::createTitledBorder(""));
      //pLocationsGroupBox->setTitle("Locations");
 
      addItem(pButtons, (QWidget*)clearButton, 0, 0);

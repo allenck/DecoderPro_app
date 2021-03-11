@@ -19,6 +19,8 @@
 #include "htmltextedit.h"
 #include <QScrollArea>
 #include "instancemanager.h"
+#include "borderfactory.h"
+#include "jpanel.h"
 
 namespace Operations
 {
@@ -60,14 +62,14 @@ namespace Operations
   textSwitchListComment = new HtmlTextEdit();
 
       // combo boxes
-  trainComboBox = new QComboBox();
-  trainVisitComboBox = new QComboBox();
+  trainComboBox = new JComboBox();
+  trainVisitComboBox = new JComboBox();
 
       // buttons
   nextButton = new QPushButton(tr("Next"));
 
    // panels
-   pTrainVisit = new QGroupBox();
+   pTrainVisit = new JPanel();
   initComponents();
   _location = location;
 
@@ -91,18 +93,15 @@ namespace Operations
   pRow6->setLayout(new QHBoxLayout);
 
   // row 6a (train name)
-  QGroupBox* pTrainName = new QGroupBox();
-  //pTrainName->setBorder(BorderFactory.createTitledBorder(tr("Train")));
-  pTrainName->setStyleSheet(gbStyleSheet);
-  pTrainName->setTitle(tr("Train"));
+  JPanel* pTrainName = new JPanel();
+  pTrainName->setBorder(BorderFactory::createTitledBorder(tr("Train")));
   pTrainName->setLayout(new QHBoxLayout);
   pTrainName->layout()->addWidget(trainComboBox);
   // add next button for web server
   pTrainName->layout()->addWidget(nextButton);
 
   // row 6b (train visit)
-  //pTrainVisit->setBorder(BorderFactory.createTitledBorder(tr("Visit")));
-  pTrainVisit->setStyleSheet(gbStyleSheet);
+  pTrainVisit->setBorder(BorderFactory::createTitledBorder(tr("Visit")));
   pTrainVisit->setLayout(new QHBoxLayout);
   pTrainVisit->layout()->addWidget(trainVisitComboBox);
 

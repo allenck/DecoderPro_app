@@ -90,23 +90,23 @@ namespace Operations
 
   // combo boxes
   QFontComboBox* fontComboBox;//= new JComboBox<>();
-  QComboBox* manifestFormatComboBox;//= Setup.getManifestFormatComboBox();
-  QComboBox* manifestOrientationComboBox;//= Setup.getOrientationComboBox();
-  QComboBox* fontSizeComboBox;//= new JComboBox<>();
-  QComboBox* pickupComboBox;//= Setup.getPrintColorComboBox(); // colors
-  QComboBox* dropComboBox;//= Setup.getPrintColorComboBox();
-  QComboBox* localComboBox;//= Setup.getPrintColorComboBox();
-  QComboBox* switchListOrientationComboBox;//= Setup.getOrientationComboBox();
+  JComboBox* manifestFormatComboBox;//= Setup.getManifestFormatComboBox();
+  JComboBox* manifestOrientationComboBox;//= Setup.getOrientationComboBox();
+  JComboBox* fontSizeComboBox;//= new JComboBox<>();
+  JComboBox* pickupComboBox;//= Setup.getPrintColorComboBox(); // colors
+  JComboBox* dropComboBox;//= Setup.getPrintColorComboBox();
+  JComboBox* localComboBox;//= Setup.getPrintColorComboBox();
+  JComboBox* switchListOrientationComboBox;//= Setup.getOrientationComboBox();
 
   // message formats
-  QList<QComboBox*> enginePickupMessageList;//= new ArrayList<>();
-  QList<QComboBox*> engineDropMessageList;//= new ArrayList<>();
-  QList<QComboBox*> carPickupMessageList;//= new ArrayList<>();
-  QList<QComboBox*> carDropMessageList;//= new ArrayList<>();
-  QList<QComboBox*> localMessageList;//= new ArrayList<>();
-  QList<QComboBox*> switchListCarPickupMessageList;//= new ArrayList<>();
-  QList<QComboBox*> switchListCarDropMessageList;//= new ArrayList<>();
-  QList<QComboBox*> switchListLocalMessageList;//= new ArrayList<>();
+  QList<JComboBox*> enginePickupMessageList;//= new ArrayList<>();
+  QList<JComboBox*> engineDropMessageList;//= new ArrayList<>();
+  QList<JComboBox*> carPickupMessageList;//= new ArrayList<>();
+  QList<JComboBox*> carDropMessageList;//= new ArrayList<>();
+  QList<JComboBox*> localMessageList;//= new ArrayList<>();
+  QList<JComboBox*> switchListCarPickupMessageList;//= new ArrayList<>();
+  QList<JComboBox*> switchListCarDropMessageList;//= new ArrayList<>();
+  QList<JComboBox*> switchListLocalMessageList;//= new ArrayList<>();
 
   // manifest panels
   QWidget* pManifest;//= new JPanel();
@@ -131,8 +131,8 @@ namespace Operations
   /*private*/ File* selectFile();
   /*private*/ void updateLogoButtons();
   /*private*/ void loadFormatComboBox();
-  /*private*/ void addComboBox(QWidget* panel, QList<QComboBox*> list, QComboBox* box);
-  /*private*/ void removeComboBox(QWidget* panel, QList<QComboBox*>list);
+  /*private*/ void addComboBox(QWidget* panel, QList<JComboBox*> list, JComboBox* box);
+  /*private*/ void removeComboBox(QWidget* panel, QList<JComboBox*>list);
 
  };
 }

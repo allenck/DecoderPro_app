@@ -23,6 +23,7 @@
 #include "carmanager.h"
 #include "rollingstock.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -66,21 +67,17 @@ namespace Operations
 QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // Set up the panels
-     QGroupBox* pTrain = new QGroupBox();
+     JPanel* pTrain = new JPanel();
      pTrain->setLayout(new GridBagLayout());
-     //pTrain::setBorder(BorderFactory.createTitledBorder(tr("Train")));
-     pTrain->setStyleSheet(gbStyleSheet);
-     pTrain->setTitle(tr(""));
+     pTrain->setBorder(BorderFactory::createTitledBorder(tr("Train")));
      pTrain->setMaximumSize(QSize(2000, 50));
 
      addItem(pTrain, trainsComboBox, 0, 0);
      trainsComboBox->setCurrentIndex(trainsComboBox->findData(VPtr<Train>::asQVariant(train)));
 
-     QGroupBox* pCarType = new QGroupBox();
+     JPanel* pCarType = new JPanel();
      pCarType->setLayout(new GridBagLayout());
-     //pCarType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     pCarType->setStyleSheet(gbStyleSheet);
-     pCarType->setTitle(tr("Type"));
+     pCarType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
      pCarType->setMaximumSize(QSize(2000, 50));
 
      addItem(pCarType, typeComboBox, 0, 0);
@@ -97,14 +94,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      adjustCarsComboBoxSize();
 
-     QGroupBox*pRouteFrame = new QGroupBox;
+     JPanel*pRouteFrame = new JPanel;
      pRouteFrame->setLayout(new QVBoxLayout);
      pRoute->setLayout(new GridBagLayout());
      QScrollArea* locationPane = new QScrollArea(/*pRoute*/);
      pRouteFrame->layout()->addWidget(locationPane);
      locationPane->setWidgetResizable(true);
      //locationPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //locationPane.setBorder(BorderFactory.createTitledBorder(tr("Route")));
+     pRouteFrame->setBorder(BorderFactory::createTitledBorder(tr("Route")));
      updateCarsComboBox();
      updateRoute();
 

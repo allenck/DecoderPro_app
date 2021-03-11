@@ -40,8 +40,8 @@ namespace Operations
   QWidget* panelLoads;//= new JPanel();
   QScrollArea* paneLoads;//= new JScrollPane(panelLoads);
 
-  QGroupBox* pShipLoadControls;//= new JPanel();
-  QGroupBox* panelShipLoads;//= new JPanel();
+  JPanel* pShipLoadControls;//= new JPanel();
+  JPanel* panelShipLoads;//= new JPanel();
   QScrollArea* paneShipLoadControls;
   QScrollArea* paneShipLoads;//= new JScrollPane(panelShipLoads);
 

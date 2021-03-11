@@ -119,14 +119,13 @@ namespace Operations
   JComboBox* rfidComboBox;//= new JComboBox<IdTag>();
 
   // panels
-  QGroupBox* pBlocking;//= new JPanel();
+  JPanel* pBlocking;//= new JPanel();
 
   CarLoadEditFrame* carLoadEditFrame = nullptr;
   Logger* log;
   /*private*/ void updateTrackLocationBox();
   /*private*/ bool editActive;// = false;
   /*private*/ void removePropertyChangeListeners();
-  QSignalMapper* editButtonMapper;
   /*private*/ void calculateWeight();
   /*private*/ void save(bool isSave)override;
   /*private*/ void setLocation(Car* car);

@@ -29,6 +29,7 @@
 #include "schedulecopyaction.h"
 #include "scheduleoptionsaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -129,27 +130,21 @@ namespace Operations
      p1Pane->setMaximumSize(QSize(2000, 200));
 
      // row 1a name
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
-     //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
      addItem(pName, scheduleNameTextField, 0, 0);
 
      // row 1b comment
-     QGroupBox* pC = new QGroupBox();
+     JPanel* pC = new JPanel();
      pC->setLayout(new GridBagLayout());
-     //pC->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-     pC->setStyleSheet(gbStyleSheet);
-     pC->setTitle(tr("Comment"));
+     pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
      addItem(pC, commentTextField, 0, 0);
 
      // row 1c mode
-     QGroupBox* pMode = new QGroupBox();
+     JPanel* pMode = new JPanel();
      pMode->setLayout(new GridBagLayout());
-     //pMode->setBorder(BorderFactory.createTitledBorder(tr("ScheduleMode")));
-     pMode->setStyleSheet(gbStyleSheet);
-     pMode->setTitle(tr("Schedule Mode"));
+     pMode->setBorder(BorderFactory::createTitledBorder(tr("Schedule Mode")));
      addItem(pMode, sequentialRadioButton, 0, 0);
      addItem(pMode, matchRadioButton, 1, 0);
 
@@ -169,11 +164,9 @@ namespace Operations
      p1Pane->setWidget(p1);
 
      // row 2
-     QGroupBox* p3 = new QGroupBox();
+     JPanel* p3 = new JPanel();
      p3->setLayout(new GridBagLayout());
-     //p3->setBorder(BorderFactory.createTitledBorder(tr("AddItem")));
-     p3->setStyleSheet(gbStyleSheet);
-     p3->setTitle(tr("Add New Delivery"));
+     p3->setBorder(BorderFactory::createTitledBorder(tr("Add New Delivery")));
      addItem(p3, typeBox, 0, 1);
      addItem(p3, addTypeButton, 1, 1);
      addItem(p3, addLocAtTop, 2, 1);
@@ -186,11 +179,10 @@ namespace Operations
      p3->setMaximumSize(QSize(2000, 200));
 
      // row 11 buttons
-     QGroupBox* pB = new QGroupBox();
+     JPanel* pB = new JPanel();
      pB->setLayout(new GridBagLayout());
-     //pB->setBorder(BorderFactory.createTitledBorder(""));
-     pB->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
+     pB->setBorder(BorderFactory::createTitledBorder(""));
+     //pName->setTitle(tr("Name"));
      pB->setMaximumSize(QSize(2000, 200));
 
      // row 13

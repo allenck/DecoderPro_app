@@ -14,6 +14,7 @@
 #include "setup.h"
 #include "logger.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -56,11 +57,10 @@ namespace Operations
 
 //     trackPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 //     trackPane.setBorder(BorderFactory.createTitledBorder(tr("ServiceOrderMessage")));
-     QGroupBox* trackPaneFrame = new QGroupBox;
+     JPanel* trackPaneFrame = new JPanel;
      trackPaneFrame->setLayout(new QVBoxLayout);
      trackPaneFrame->layout()->addWidget(trackTable);
-     trackPaneFrame->setStyleSheet(gbStyleSheet);
-     trackPaneFrame->setTitle(tr("Higher Order Tracks Serviced Last for Westbound and Northbound Trains"));
+     trackPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Higher Order Tracks Serviced Last for Westbound and Northbound Trains")));
      if (_location != NULL) {
          trackModel->initTable(trackTable, location);
          locationName->setText(_location->getName());
@@ -70,13 +70,11 @@ namespace Operations
      }
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+     QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // Layout the panel by rows
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     //pName.setBorder(BorderFactory.createTitledBorder(tr("Location")));
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Location"));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Location")));
      addItem(pName, locationName, 0, 0);
 
      // row buttons

@@ -64,9 +64,9 @@ namespace Operations
      load(engine);
  }
 
-// /*protected*/ ResourceBundle getRb() {
-//     return rb;
-// }
+ /*protected*/ ResourceBundle* EngineSetFrame::getRb() {
+     return rb;
+ }
 
  /*protected*/ bool EngineSetFrame::save()
  {
@@ -100,4 +100,12 @@ namespace Operations
   return "jmri.jmrit.operations.rollingstock.engines.EngineSetFrame";
  }
 
+ ESResourceBundle::ESResourceBundle()
+ {
+  map.insert("rsType", "Locomotive");
+  map.insert("rsNeedToRemoveStaging", tr(""));
+  map.insert("rsInStaging", tr(""));
+  map.insert("rsTrainNotServType", tr(""));
+  map.insert("rsNotMove", tr(""));
+ }
 }

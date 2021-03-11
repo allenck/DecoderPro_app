@@ -8,7 +8,6 @@
 #include "resourcebundle.h"
 
 class Logger;
-class QSignalMapper;
 class JTextField;
 class JComboBox;
 class QPushButton;
@@ -71,7 +70,6 @@ namespace Operations
 
   EngineAttributeEditFrame* engineAttributeEditFrame = nullptr;
 
-  QSignalMapper* buttonEditMapper;
   static Logger* log;
   /*private*/ void save(bool isSave)override;
   ResourceBundle* rb = new EngineResourceBundle();

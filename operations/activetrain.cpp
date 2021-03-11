@@ -1031,25 +1031,25 @@ protected AllocatedSection reverseAllAllocatedSections() {
         mAutoActiveTrain->setupNewCurrentSignal(NULL);
     }
 }
-#if 0
-/*public*/ void terminate() {
-    DispatcherFrame.instance().removeDelayedTrain(this);
+#if 1
+/*public*/ void ActiveTrain::terminate() {
+    ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->removeDelayedTrain(this);
     if (getDelaySensor() != NULL && delaySensorListener != NULL) {
-        getDelaySensor().removePropertyChangeListener(delaySensorListener);
+        getDelaySensor()->removePropertyChangeListener(delaySensorListener);
     }
     if (getRestartSensor() != NULL && restartSensorListener != NULL) {
-        getRestartSensor().removePropertyChangeListener(restartSensorListener);
+        getRestartSensor()->removePropertyChangeListener(restartSensorListener);
     }
-    mTransit.setState(jmri.Transit.IDLE);
+    mTransit->setState(Transit::IDLE);
 }
 
-/*public*/ void dispose() {
-    getTransit().removeTemporarySections();
+/*public*/ void ActiveTrain::dispose() {
+    getTransit()->removeTemporarySections();
 }
 
 
-/*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener l) {
-    pcs.addPropertyChangeListener(l);
+/*public*/ /*synchronized*/ void ActiveTrain::addPropertyChangeListener(PropertyChangeListener* l) {
+    pcs->addPropertyChangeListener(l);
 }
 #endif
 /*protected*/ void ActiveTrain::firePropertyChange(QString p, QVariant old, QVariant n) {

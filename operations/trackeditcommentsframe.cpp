@@ -2,12 +2,13 @@
 #include "control.h"
 #include "setup.h"
 #include "operationsxml.h"
-#include <QGroupBox>
+#include "jpanel.h"
 #include "track.h"
 #include <QPushButton>
 #include "jtextarea.h"
 #include "gridbaglayout.h"
 #include <QBoxLayout>
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -41,26 +42,20 @@ namespace Operations
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
-  QGroupBox* pCb = new QGroupBox();
-  //pCb.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("CommentBoth")));
-  pCb->setStyleSheet(gbStyleSheet);
-  pCb->setTitle(tr("Comment when there are set outs and pick ups"));
+  JPanel* pCb = new JPanel();
+  pCb->setBorder(BorderFactory::createTitledBorder(tr("Comment when there are set outs and pick ups")));
   pCb->setLayout(new GridBagLayout());
   //commentBothScroller.setMinimumSize(minScrollerDim);
   addItem(pCb, commentBothTextArea, 1, 0);
 
-  QGroupBox* pCp = new QGroupBox();
-  //pCp.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("CommentPickup")));
-  pCp->setStyleSheet(gbStyleSheet);
-  pCp->setTitle(tr("Comment when there is only pick ups"));
+  JPanel* pCp = new JPanel();
+  pCp->setBorder(BorderFactory::createTitledBorder(tr("Comment when there is only pick ups")));
   pCp->setLayout(new GridBagLayout());
   //commentPickupScroller.setMinimumSize(minScrollerDim);
   addItem(pCp, commentPickupTextArea, 1, 0);
 
-  QGroupBox* pCs = new QGroupBox();
-  //pCs.setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("CommentSetout")));
-  pCs->setStyleSheet(gbStyleSheet);
-  pCs->setTitle(tr("Comment when there is only set outs"));
+  JPanel* pCs = new JPanel();
+  pCs->setBorder(BorderFactory::createTitledBorder(tr("Comment when there is only set outs")));
   pCs->setLayout(new GridBagLayout());
   //commentSetoutScroller.setMinimumSize(minScrollerDim);
   addItem(pCs, commentSetoutTextArea, 1, 0);

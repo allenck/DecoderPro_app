@@ -23,6 +23,8 @@
 #include "printcarloadsaction.h"
 #include "carloadattributeaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
+
 namespace Operations
 {
 /**
@@ -98,11 +100,9 @@ namespace Operations
   quanity->setVisible(showQuanity);
 
   // load panel
-  QGroupBox* pLoad = new QGroupBox();
+  JPanel* pLoad = new JPanel();
   pLoad->setLayout(new GridBagLayout());
-  pLoad->setStyleSheet(gbStyleSheet);
-  pLoad->setTitle(tr("Load"));
-  //pLoad.setBorder(BorderFactory.createTitledBorder(tr("Load")));
+  pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
 
   // row 2
   addItem(pLoad, addTextBox, 2, 2);
@@ -117,36 +117,28 @@ namespace Operations
   addItem(pLoad, replaceButton, 3, 4);
 
   // row 6
-  QGroupBox* pLoadType = new QGroupBox();
+  JPanel* pLoadType = new JPanel();
   pLoadType->setLayout(new GridBagLayout); //(pLoadType, BoxLayout.Y_AXIS));
-  //pLoadType.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutLoadType")));
-  pLoadType->setStyleSheet(gbStyleSheet);
-  pLoadType->setTitle(tr("Load Type"));
+  pLoadType->setBorder(BorderFactory::createTitledBorder(tr("Load Type")));
   addItem(pLoadType, loadTypeComboBox, 0, 0);
 
   // row 8
-  QGroupBox* pPriority = new QGroupBox();
+  JPanel* pPriority = new JPanel();
   pPriority->setLayout(new GridBagLayout); //(pPriority, BoxLayout.Y_AXIS));
-  //pPriority.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutPriority")));
-  pPriority->setStyleSheet(gbStyleSheet);
-  pPriority->setTitle(tr("Priority"));
+  pPriority->setBorder(BorderFactory::createTitledBorder(tr("tPriority")));
   addItem(pPriority, priorityComboBox, 0, 0);
 
   // row 10
   // optional panel
-  QGroupBox* pOptionalPickup = new QGroupBox();
+  JPanel* pOptionalPickup = new JPanel();
   pOptionalPickup->setLayout(new QVBoxLayout); //(pOptionalPickup, BoxLayout.Y_AXIS));
-  //pOptionalPickup.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptionalPickup")));
-  pOptionalPickup->setStyleSheet(gbStyleSheet);
-  pOptionalPickup->setTitle(tr("Optional Pickup"));
+  pOptionalPickup->setBorder(BorderFactory::createTitledBorder(tr("Optional Pickup")));
   addItem(pOptionalPickup, pickupCommentTextField, 0, 0);
 
   // row 12
-  QGroupBox* pOptionalDrop = new QGroupBox();
+  JPanel* pOptionalDrop = new JPanel();
   pOptionalDrop->setLayout(new QVBoxLayout); //(pOptionalDrop, BoxLayout.Y_AXIS));
-  //pOptionalDrop.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptionalDrop")));
-  pOptionalDrop->setStyleSheet(gbStyleSheet);
-  pOptionalDrop->setTitle(tr("Optional Drop"));
+  pOptionalDrop->setBorder(BorderFactory::createTitledBorder(tr("Optional Drop")));
   addItem(pOptionalDrop, dropCommentTextField, 0, 0);
 
   // row 14

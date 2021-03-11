@@ -59,7 +59,7 @@ namespace Operations
   JComboBox* switchListPageComboBox;// = Setup.getSwitchListPageFormatComboBox();
 
   // panels
-  QGroupBox* customPanel;
+  JPanel* customPanel;
   /*private*/ void reset();
   /*private*/ void save();
   Logger* log;

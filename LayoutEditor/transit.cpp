@@ -495,6 +495,22 @@
     return numErrors;
 }
 
+//@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "UC_USELESS_OBJECT",
+//            justification = "SpotBugs doesn't see that toBeRemoved is being read by the forEach clause")
+/*public*/ void Transit::removeTemporarySections() {
+    QList<TransitSection*> toBeRemoved = QList<TransitSection*>();
+    for (TransitSection* ts : *mTransitSectionList) {
+        if (ts->isTemporary()) {
+            toBeRemoved.append(ts);
+        }
+    }
+    //toBeRemoved.forEach((ts) -> {
+    foreach(TransitSection* ts, toBeRemoved)
+    {
+     mTransitSectionList->removeOne(ts);
+
+    }//);
+}
 
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Transit.class.getName());
 

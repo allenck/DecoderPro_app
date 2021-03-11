@@ -49,6 +49,7 @@ public:
     /*public*/ int checkSignals(LayoutEditor* panel);
     /*public*/ int validateConnectivity(LayoutEditor* panel);
     /*public*/ int initializeBlockingSensors();
+    /*public*/ void removeTemporarySections();
 
 signals:
     

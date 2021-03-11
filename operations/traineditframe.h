@@ -108,8 +108,6 @@ namespace Operations
   RouteEditFrame* ref;
   /*private*/ void enableCheckboxes(bool enable);
   /*private*/ void addLocationCheckBoxAction(QCheckBox* b);
-  QSignalMapper* boxMapper;
-  QSignalMapper* typeCheckBoxMapper;
   Logger*log;
   /*private*/ void updateRoadAndLoadStatus();
   /*private*/ void updateRouteComboBox();

@@ -10,6 +10,8 @@
 #include "trainmanager.h"
 #include <QIntValidator>
 #include "instancemanager.h"
+#include "jpanel.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -44,27 +46,21 @@ namespace Operations
      QWidget* p1 = new QWidget();
      p1->setLayout(new QVBoxLayout);//(p1, BoxLayout.Y_AXIS));
 
-     QGroupBox* pTab = new QGroupBox();
+     JPanel* pTab = new JPanel();
      pTab->setLayout(new QHBoxLayout);
-    // pTab.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutTab1")));
-     pTab->setStyleSheet(gbStyleSheet);
-     pTab->setTitle(tr("Tab Length"));
+     pTab->setBorder(BorderFactory::createTitledBorder(tr("Tab Length")));
      pTab->layout()->addWidget(tab1TextField);
      p1->layout()->addWidget(pTab);
 
-     QGroupBox* pTab2 = new QGroupBox();
+     JPanel* pTab2 = new JPanel();
      pTab2->setLayout(new QHBoxLayout);
-     //pTab2.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutTab2")));
-     pTab2->setStyleSheet(gbStyleSheet);
-     pTab2->setTitle(tr("Tab 2 Length"));
+     pTab2->setBorder(BorderFactory::createTitledBorder(tr("Tab 2 Length")));
      pTab2->layout()->addWidget(tab2TextField);
      p1->layout()->addWidget(pTab2);
 
-     QGroupBox* pTab3 = new QGroupBox();
+     JPanel* pTab3 = new JPanel();
      pTab3->setLayout(new QHBoxLayout);
-    // pTab3.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutTab3")));
-     pTab3->setStyleSheet(gbStyleSheet);
-     pTab3->setTitle(tr("Tab 3 Length"));
+     pTab3->setBorder(BorderFactory::createTitledBorder(tr("Tab 3 Length")));
      pTab3->layout()->addWidget(tab3TextField);
      p1->layout()->addWidget(pTab3);
 
@@ -76,9 +72,8 @@ namespace Operations
      saveButton->setToolTip(tr("Writes this window's settings to file"));
 
      // row 11
-     QGroupBox* pControl = new QGroupBox();
-     //pControl.setBorder(BorderFactory.createTitledBorder(""));
-     pControl->setStyleSheet(gbStyleSheet);
+     JPanel* pControl = new JPanel();
+     pControl->setBorder(BorderFactory::createTitledBorder(""));
      //pControl->setTitle(tr("Tab Length"));
      pControl->setLayout(new GridBagLayout());
      addItem(pControl, saveButton, 0, 0);

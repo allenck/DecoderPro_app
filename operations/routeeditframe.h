@@ -37,7 +37,7 @@ namespace Operations
  private:
   RouteEditTableModel* routeModel;// = new RouteEditTableModel();
   JTable* routeTable;// = new JTable(routeModel);
-  QGroupBox* routePane;
+  JPanel* routePane;
 
   RouteManager* routeManager;
   RouteManagerXml* managerXml;

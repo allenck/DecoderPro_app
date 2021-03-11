@@ -14,6 +14,7 @@
 #include "operationsxml.h"
 #include "setup.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -62,11 +63,9 @@ namespace Operations
 // Layout the panel by rows
 QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // row 1
-     QGroupBox* pOption = new QGroupBox();
+     JPanel* pOption = new JPanel();
      pOption->setLayout(new GridBagLayout());
-     //pOption->setBorder(BorderFactory.createTitledBorder(tr("Option")));
-     pOption->setStyleSheet(gbStyleSheet);
-     pOption->setTitle(tr("Option"));
+     pOption->setBorder(BorderFactory::createTitledBorder(tr("Option")));
      addItem(pOption, manualRadioButton, 0, 0);
      addItem(pOption, autoRadioButton, 1, 0);
 
@@ -77,55 +76,43 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      manualRadioButton->setChecked(trainManager->isRowColorManual());
      autoRadioButton->setChecked(!trainManager->isRowColorManual());
 
-     pTrains = new QGroupBox();
+     pTrains = new JPanel();
      pTrains->setLayout(new GridBagLayout());
-     //pTrains->setBorder(BorderFactory.createTitledBorder(tr("Train")));
-     pTrains->setStyleSheet(gbStyleSheet);
-     pTrains->setTitle(tr("Train"));
+     pTrains->setBorder(BorderFactory::createTitledBorder(tr("Train")));
      addItem(pTrains, trainBox, 0, 0);
 
      trainBox->setCurrentIndex(trainBox->findData(VPtr<Train>::asQVariant(train)));
 
-     pColor = new QGroupBox();
+     pColor = new JPanel();
      pColor->setLayout(new GridBagLayout());
-     //pColor->setBorder(BorderFactory.createTitledBorder(tr("SelectRowColor")));
-     pColor->setStyleSheet(gbStyleSheet);
-     pColor->setTitle(tr("Select Row Color"));
+     pColor->setBorder(BorderFactory::createTitledBorder(tr("Select Row Color")));
      addItem(pColor, colorBox, 0, 0);
 
-     pColorBuilt = new QGroupBox();
+     pColorBuilt = new JPanel();
      pColorBuilt->setLayout(new GridBagLayout());
-     //pColorBuilt->setBorder(BorderFactory.createTitledBorder(tr("SelectRowColorBuilt")));
-     pColorBuilt->setStyleSheet(gbStyleSheet);
-     pColorBuilt->setTitle(tr("Select Row Color Train Built"));
+     pColorBuilt->setBorder(BorderFactory::createTitledBorder(tr("Select Row Color Train Built")));
      addItem(pColorBuilt, colorBuiltBox, 0, 0);
 
      colorBuiltBox->setCurrentIndex(colorBuiltBox->findText(trainManager->getRowColorNameForBuilt()));
 
-     pColorBuildFailed = new QGroupBox();
+     pColorBuildFailed = new JPanel();
      pColorBuildFailed->setLayout(new GridBagLayout());
-     //pColorBuildFailed->setBorder(BorderFactory.createTitledBorder(tr("SelectRowColorBuildFailed")));
-     pColorBuildFailed->setStyleSheet(gbStyleSheet);
-     pColorBuildFailed->setTitle(tr("Select Row Color Train Build Failed"));
+     pColorBuildFailed->setBorder(BorderFactory::createTitledBorder(tr("Select Row Color Train Build Failed")));
      addItem(pColorBuildFailed, colorBuildFailedBox, 0, 0);
 
      colorBuildFailedBox->setCurrentIndex(colorBuildFailedBox->findText(trainManager->getRowColorNameForBuildFailed()));
 
-     pColorTrainEnRoute = new QGroupBox();
+     pColorTrainEnRoute = new JPanel();
      pColorTrainEnRoute->setLayout(new GridBagLayout());
-     //pColorTrainEnRoute->setBorder(BorderFactory.createTitledBorder(tr("SelectRowColorTrainEnRoute")));
-     pColorTrainEnRoute->setStyleSheet(gbStyleSheet);
-     pColorTrainEnRoute->setTitle(tr("Select Row Color Train En Route"));
+     pColorTrainEnRoute->setBorder(BorderFactory::createTitledBorder(tr("Select Row Color Train EnRoute")));
      addItem(pColorTrainEnRoute, colorTrainEnRouteBox, 0, 0);
 
      colorTrainEnRouteBox->setCurrentIndex(colorTrainEnRouteBox->findText(trainManager->getRowColorNameForTrainEnRoute()));
 
      // row 5
-     pColorTerminated = new QGroupBox();
+     pColorTerminated = new JPanel();
      pColorTerminated->setLayout(new GridBagLayout());
-     //pColorTerminated->setBorder(BorderFactory.createTitledBorder(tr("SelectRowColorTerminated")));
-     pColorTerminated->setStyleSheet(gbStyleSheet);
-     pColorTerminated->setTitle(tr("SelectRowColorTerminated"));
+     pColorTerminated->setBorder(BorderFactory::createTitledBorder(tr("Select Row ColorTerminated")));
      addItem(pColorTerminated, colorTerminatedBox, 0, 0);
 
      colorTerminatedBox->setCurrentIndex(colorTerminatedBox->findText(trainManager->getRowColorNameForTerminated()));

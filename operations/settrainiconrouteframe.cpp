@@ -19,6 +19,7 @@
 #include "panelmenu.h"
 #include "editor.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -89,31 +90,24 @@ namespace Operations
   saveButton->setToolTip(tr("Saves the train icon coordinates for the selected location"));
 
   // Set up the panels
-  QGroupBox* pRoute = new QGroupBox();
-//  pRoute.setBorder(BorderFactory
-//          .createTitledBorder(tr("Route") + " " + _route.getName()));
-  pRoute->setStyleSheet(gbStyleSheet);
-  pRoute->setTitle(tr("Route"));
+  JPanel* pRoute = new JPanel();
+  pRoute->setBorder(BorderFactory::createTitledBorder(tr("Route") + " " + _route->getName()));
   pRoute->setLayout(new GridBagLayout());
   addItem(pRoute, previousButton, 0, 0);
   addItem(pRoute, routeLocationName, 1, 0);
   addItem(pRoute, nextButton, 2, 0);
 
-  QGroupBox* pSpin = new QGroupBox();
+  JPanel* pSpin = new JPanel();
   pSpin->setLayout(new GridBagLayout());
-  //pSpin.setBorder(BorderFactory.createTitledBorder(tr("TrainIcon")));
-  pSpin->setStyleSheet(gbStyleSheet);
-  pSpin->setTitle(tr("Train Icon"));
+  pSpin->setBorder(BorderFactory::createTitledBorder(tr("Train Icon")));
   addItem(pSpin, textX, 0, 0);
   addItem(pSpin, spinTrainIconX, 1, 0);
   addItem(pSpin, textY, 2, 0);
   addItem(pSpin, spinTrainIconY, 3, 0);
 
-  QGroupBox* pControl = new QGroupBox();
+  JPanel* pControl = new JPanel();
   pControl->setLayout(new GridBagLayout());
-  //pControl.setBorder(BorderFactory.createTitledBorder(""));
-  pControl->setStyleSheet(gbStyleSheet);
-  pControl->setTitle(tr("Route"));
+  pControl->setBorder(BorderFactory::createTitledBorder(""));
   addItem(pControl, placeButton, 0, 0);
   addItem(pControl, applyButton, 1, 0);
   addItem(pControl, saveButton, 2, 0);

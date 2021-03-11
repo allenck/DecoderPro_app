@@ -5,7 +5,7 @@
 #include "setup.h"
 #include <QBoxLayout>
 #include <gridbaglayout.h>
-#include <QGroupBox>
+#include "jpanel.h"
 #include <QCheckBox>
 #include "jcombobox.h"
 #include "locationmanager.h"
@@ -21,6 +21,7 @@
 #include "htmltextedit.h"
 #include <QLabel>
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -87,13 +88,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      changeButton->setToolTip(tr("Print switch lists for locations selected and with changes"));
      resetButton->setToolTip(tr("Removes terminated and reset trains from switch lists"));
 
-     QGroupBox* switchPaneFrame = new QGroupBox;
+     JPanel* switchPaneFrame = new JPanel;
      switchPaneFrame->setLayout(new QVBoxLayout);
      switchPane = new QScrollArea(/*locationPanelCheckBoxes*/);
      switchPaneFrame->layout()->addWidget(switchPane);
      //switchPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //switchPane->setBorder(BorderFactory.createTitledBorder(""));
-     switchPaneFrame->setStyleSheet(gbStyleSheet);
+     switchPaneFrame->setBorder(BorderFactory::createTitledBorder(""));
 
      // Layout the panel by rows
      locationPanelCheckBoxes->setLayout(new GridBagLayout());
@@ -101,25 +101,20 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      enableChangeButtons();
 
      // Clear and set buttons
-     QGroupBox* pButtons = new QGroupBox();
+     JPanel* pButtons = new JPanel();
      pButtons->setLayout(new GridBagLayout());
-     //pButtons->setBorder(BorderFactory.createTitledBorder(""));
-     pButtons->setStyleSheet(gbStyleSheet);
+     pButtons->setBorder(BorderFactory::createTitledBorder(""));
      addItem(pButtons, clearButton, 0, 1);
      addItem(pButtons, setButton, 1, 1);
 
      // options
-     QGroupBox* pSwitchListOptions = new QGroupBox();
+     JPanel* pSwitchListOptions = new JPanel();
      pSwitchListOptions->setLayout(new GridBagLayout());
-//     pSwitchListOptions->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutSwitchListOptions")));
-     pSwitchListOptions->setStyleSheet(gbStyleSheet);
+     pSwitchListOptions->setBorder(BorderFactory::createTitledBorder(tr("Switch List Options")));
 
-     QGroupBox* pSwitchListPageFormat = new QGroupBox();
+     JPanel* pSwitchListPageFormat = new JPanel();
      pSwitchListPageFormat->setLayout(new FlowLayout);
-     //pSwitchListPageFormat->setBorder(BorderFactory.createTitledBorder(Bundle
-     //        .getMessage("BorderLayoutSwitchListPageFormat")));
-     pSwitchListPageFormat->setStyleSheet(gbStyleSheet);
+     pSwitchListPageFormat->setBorder(BorderFactory::createTitledBorder(tr("Switch List Page Format")));
      pSwitchListPageFormat->layout()->addWidget(switchListPageComboBox);
 
      addItem(pSwitchListOptions, switchListAllTrainsCheckBox, 1, 0);
@@ -128,10 +123,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      addItem(pSwitchListOptions, saveButton, 4, 0);
 
      // buttons
-     QGroupBox* controlPanel = new QGroupBox();
+     JPanel* controlPanel = new JPanel();
      controlPanel->setLayout(new GridBagLayout());
-     //controlPanel->setBorder(BorderFactory.createTitledBorder(""));
-     controlPanel->setStyleSheet(gbStyleSheet);
+     controlPanel->setBorder(BorderFactory::createTitledBorder(""));
 
      // row 3
      addItem(controlPanel, previewButton, 0, 2);
@@ -142,11 +136,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      addItem(controlPanel, resetButton, 1, 3);
 
      // row 5
-     customPanel = new QGroupBox();
+     customPanel = new JPanel();
      customPanel->setLayout(new GridBagLayout());
-     //customPanel->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutCustomSwitchLists")));
-     customPanel->setStyleSheet(gbStyleSheet);
-     customPanel->setTitle(tr("Custom Switch Lists"));
+     customPanel->setBorder(BorderFactory::createTitledBorder(tr("Custom Switch Lists")));
 
      addItem(customPanel, csvGenerateButton, 1, 4);
      addItem(customPanel, csvChangeButton, 2, 4);
@@ -600,10 +592,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
          QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
-         QGroupBox* pC = new QGroupBox();
-         //pC->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-         pC->setStyleSheet(gbStyleSheet);
-         pC->setTitle(tr("Comment"));
+         JPanel* pC = new JPanel();
+         pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
          pC->setLayout(new GridBagLayout());
          //commentScroller->setMinimumSize(minScrollerDim);
          addItem(pC, /*commentScroller*/commentTextArea, 1, 0);

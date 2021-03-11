@@ -24,6 +24,7 @@
 #include "route.h"
 #include <QList>
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 //RollingStockFrame::RollingStockFrame()
 //{
@@ -107,11 +108,11 @@ void RollingStockSetFrame::common()
  ignoreTrainCheckBox = new QCheckBox(tr("Ignore"));
 
  // optional panels
- pOptional = new QGroupBox();
+ pOptional = new JPanel();
  pOptional->setLayout(new QVBoxLayout);
  paneOptional = new QScrollArea(/*pOptional*/);
  pOptional->layout()->addWidget(paneOptional);
- pFinalDestination = new QGroupBox();
+ pFinalDestination = new JPanel();
 }
 
  /*public*/ void RollingStockSetFrame::initComponents() {
@@ -127,30 +128,24 @@ void RollingStockSetFrame::common()
      QHBoxLayout* pRow1Layout = new QHBoxLayout(pRow1);
 
      // row 1a
-     QGroupBox* pRs = new QGroupBox();
+     JPanel* pRs = new JPanel();
      pRs->setLayout(new GridBagLayout());
-     //prs->setBorder(BorderFactory.createTitledBorder(getRb().getString("rsType")));
-     pRs->setStyleSheet(gbStyleSheet);
-     pRs->setTitle("Rolling Stock");
+     pRs->setBorder(BorderFactory::createTitledBorder(getRb()->getString("rsType")));
      addItem(pRs, textRoad, 1, 0);
      pRow1Layout->addWidget(pRs);
 
      // row 1b
-     QGroupBox* pType = new QGroupBox();
+     JPanel* pType = new JPanel();
      pType->setLayout(new GridBagLayout());
-     //pType->setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     pType->setStyleSheet(gbStyleSheet);
-     pType->setTitle("Type");
+     pType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
 
      addItem(pType, textType, 1, 0);
      pRow1Layout->addWidget(pType);
 
      // row 1c
-     QGroupBox*pStatus = new QGroupBox();
+     JPanel*pStatus = new JPanel();
      pStatus->setLayout(new GridBagLayout());
-     //pStatus->setBorder(BorderFactory.createTitledBorder(tr("Status")));
-     pStatus->setStyleSheet(gbStyleSheet);
-     pStatus->setTitle("Status");
+     pStatus->setBorder(BorderFactory::createTitledBorder(tr("Status")));
 
      addItemLeft(pStatus, ignoreStatusCheckBox, 0, 0);
      addItemLeft(pStatus, locationUnknownCheckBox, 1, 1);
@@ -160,11 +155,9 @@ void RollingStockSetFrame::common()
      pPanelLayout->addWidget(pRow1);
 
      // row 2
-     QGroupBox* pLocation = new QGroupBox();
+     JPanel* pLocation = new JPanel();
      pLocation->setLayout(new GridBagLayout());
-     //pLocation->setBorder(BorderFactory.createTitledBorder(tr("LocationAndTrack")));
-     pLocation->setStyleSheet(gbStyleSheet);
-     pLocation->setTitle("Location and Track");
+     pLocation->setBorder(BorderFactory::createTitledBorder(tr("Location and Track")));
      addItemLeft(pLocation, ignoreLocationCheckBox, 0, 1);
      addItem(pLocation, locationBox, 1, 1);
      addItem(pLocation, trackLocationBox, 2, 1);
@@ -172,10 +165,9 @@ void RollingStockSetFrame::common()
      pPanelLayout->addWidget(pLocation);
 
      // optional panel 2
-     QGroupBox* pOptionalFrame = new QGroupBox("Optional -- Normally Set by Program --");
+     JPanel* pOptionalFrame = new JPanel();
      pOptionalFrame->setLayout(new QVBoxLayout);
-     pOptionalFrame->setStyleSheet(gbStyleSheet);
-     pOptionalFrame->setTitle(tr("Optional -- Normally Set by Program --"));
+     pOptionalFrame->setBorder(BorderFactory::createTitledBorder(tr("Optional -- Normally Set by Program --")));
      QWidget* pOptional2 = new QWidget();
      QVBoxLayout* paneOptional2Layout = new QVBoxLayout(pOptional2);
      QScrollArea* paneOptional2 = new QScrollArea(/*pOptional2*/);
@@ -187,11 +179,9 @@ void RollingStockSetFrame::common()
 //             .getMessage("BorderLayoutOptionalProgram")));
 
      // row 6
-     QGroupBox* pDestination = new QGroupBox();
+     JPanel* pDestination = new JPanel();
      pDestination->setLayout(new GridBagLayout());
-     //pDestination->setBorder(BorderFactory.createTitledBorder(tr("DestinationAndTrack")));
-     pDestination->setStyleSheet(gbStyleSheet);
-     pDestination->setTitle("Destination and Track");
+     pDestination->setBorder(BorderFactory::createTitledBorder(tr("Destination and Track")));
      addItemLeft(pDestination, ignoreDestinationCheckBox, 0, 1);
      addItem(pDestination, destinationBox, 1, 1);
      addItem(pDestination, trackDestinationBox, 2, 1);
@@ -200,10 +190,7 @@ void RollingStockSetFrame::common()
 
      // row 7
      pFinalDestination->setLayout(new GridBagLayout());
-//     pFinalDestination->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("FinalDestinationAndTrack")));
-     pFinalDestination->setStyleSheet(gbStyleSheet);
-     pFinalDestination->setTitle("Final Destination And Track");
+     pFinalDestination->setBorder(BorderFactory::createTitledBorder(tr("Final Destination And Track")));
      addItemLeft(pFinalDestination, ignoreFinalDestinationCheckBox, 0, 1);
      addItem(pFinalDestination, finalDestinationBox, 1, 1);
      addItem(pFinalDestination, finalDestTrackBox, 2, 1);
@@ -211,11 +198,9 @@ void RollingStockSetFrame::common()
      paneOptional2Layout->addWidget(pFinalDestination);
 
      // row 8
-     QGroupBox*pTrain = new QGroupBox();
+     JPanel*pTrain = new JPanel();
      pTrain->setLayout(new GridBagLayout());
-     //pTrain->setBorder(BorderFactory.createTitledBorder(tr("Train")));
-     pTrain->setStyleSheet(gbStyleSheet);
-     pTrain->setTitle("Train");
+     pTrain->setBorder(BorderFactory::createTitledBorder(tr("Train")));
      addItemLeft(pTrain, ignoreTrainCheckBox, 0, 0);
      addItem(pTrain, trainBox, 1, 0);
      addItem(pTrain, autoTrainCheckBox, 2, 0);
@@ -341,9 +326,7 @@ void RollingStockSetFrame::common()
      }
  }
 
-// /*protected*/ ResourceBundle getRb() {
-//     return rb;
-// }
+///*abstract*/ protected ResourceBundle getRb();
 
  /*protected*/ bool RollingStockSetFrame::save() {
      return change(_rs);

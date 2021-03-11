@@ -3,7 +3,7 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QButtonGroup>
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QBoxLayout>
 #include "jtextfield.h"
 #include <QRadioButton>
@@ -15,6 +15,8 @@
 #include <QMessageBox>
 #include "operationssetupxml.h"
 #include "instancemanager.h"
+#include "jpanel.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -75,7 +77,7 @@ namespace Operations
  valueTextField = new JTextField(10);
 
  // combo boxes
- numberPassesComboBox = new QComboBox();
+ numberPassesComboBox = new JComboBox();
 
   // load checkboxes
   localInterchangeCheckBox->setChecked(Setup::isLocalInterchangeMovesEnabled());
@@ -129,11 +131,9 @@ namespace Operations
   panelPane->setWidgetResizable(true);
 
   // Build Options panel
-  QGroupBox* pBuild = new QGroupBox();
+  JPanel* pBuild = new JPanel();
   pBuild->setLayout(new GridBagLayout); //(pBuild, BoxLayout.Y_AXIS));
-  //pBuild.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutBuildOptions")));
-  pBuild->setStyleSheet(gbStyleSheet);
-  pBuild->setTitle(tr("Build Options"));
+  pBuild->setBorder(BorderFactory::createTitledBorder(tr("Build Options")));
   QWidget* pOpt = new QWidget();
   pOpt->setLayout(new GridBagLayout());
 
@@ -141,21 +141,17 @@ namespace Operations
   addItem(pOpt, buildAggressive, 2, 0);
   addItem(pBuild, pOpt, 1, 0);
 
-  QGroupBox* pPasses = new QGroupBox();
+  JPanel* pPasses = new JPanel();
   pPasses->setLayout(new GridBagLayout());
-  //pPasses.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutNumberPasses")));
-  pPasses->setStyleSheet(gbStyleSheet);
-  pPasses->setTitle(tr("Number of Passes During Build"));
+  pPasses->setBorder(BorderFactory::createTitledBorder(tr("Number of Passes During Build")));
   addItem(pPasses, numberPassesComboBox, 0, 0);
   addItem(pBuild, pPasses, 1, 1);
 
   // Switcher Service
-  QGroupBox* pSwitcher = new QGroupBox();
+  JPanel* pSwitcher = new JPanel();
   pSwitcher->setLayout(new GridBagLayout());
-//     pSwitcher.setBorder(BorderFactory
-//             .createTitledBorder(tr("BorderLayoutSwitcherService")));
-  pSwitcher->setStyleSheet(gbStyleSheet);
-  pSwitcher->setTitle(tr("Switcher Service"));
+     pSwitcher->setBorder(BorderFactory
+             ::createTitledBorder(tr("Switcher Service")));
 
   addItemLeft(pSwitcher, localInterchangeCheckBox, 1, 1);
   addItemLeft(pSwitcher, localSpurCheckBox, 1, 2);
@@ -163,11 +159,9 @@ namespace Operations
   addItemLeft(pBuild, pSwitcher, 1, 2);
 
   // Staging
-  QGroupBox* pStaging = new QGroupBox();
+  JPanel* pStaging = new JPanel();
   pStaging->setLayout(new GridBagLayout());
-  //pStaging.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutStaging")));
-  pStaging->setStyleSheet(gbStyleSheet);
-  pStaging->setTitle(tr("Build Options"));
+  pStaging->setBorder(BorderFactory::createTitledBorder(tr("Build Options")));
 
   addItemLeft(pStaging, trainIntoStagingCheckBox, 1, 4);
   addItemLeft(pStaging, stagingAvailCheckBox, 1, 5);
@@ -177,11 +171,9 @@ namespace Operations
   addItemLeft(pBuild, pStaging, 1, 3);
 
   // Router panel
-  QGroupBox* pRouter = new QGroupBox();
+  JPanel* pRouter = new JPanel();
   pRouter->setLayout(new GridBagLayout());
-  //pRouter.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutRouterOptions")));
-  pRouter->setStyleSheet(gbStyleSheet);
-  pRouter->setTitle(tr("Car Routing Options"));
+  pRouter->setBorder(BorderFactory::createTitledBorder(tr("Car Routing Options")));
   addItemLeft(pRouter, routerCheckBox, 1, 0);
   addItemLeft(pRouter, routerYardCheckBox, 1, 1);
   addItemLeft(pRouter, routerStagingCheckBox, 1, 2);
@@ -189,30 +181,24 @@ namespace Operations
   addItemLeft(pRouter, routerRestrictBox, 1, 4);
 
   // Logger panel
-  QGroupBox* pLogger = new QGroupBox();
+  JPanel* pLogger = new JPanel();
   pLogger->setLayout(new GridBagLayout());
-  //pLogger.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutLoggerOptions")));
-  pLogger->setStyleSheet(gbStyleSheet);
-  pLogger->setTitle(tr("Logging Options"));
+  pLogger->setBorder(BorderFactory::createTitledBorder(tr("Logging Options")));
   addItemLeft(pLogger, engineLoggerCheckBox, 1, 0);
   addItemLeft(pLogger, carLoggerCheckBox, 1, 1);
   addItemLeft(pLogger, trainLoggerCheckBox, 1, 2);
 
   // Custom Manifests and Switch Lists
-  QGroupBox* pCustom = new QGroupBox();
+  JPanel* pCustom = new JPanel();
   pCustom->setLayout(new GridBagLayout());
-  //pCustom.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutCustomManifests")));
-  pCustom->setStyleSheet(gbStyleSheet);
-  pCustom->setTitle(tr("Custom Manifest and Switch Lists"));
+  pCustom->setBorder(BorderFactory::createTitledBorder(tr("Custom Manifest and Switch Lists")));
   addItemLeft(pCustom, generateCvsManifestCheckBox, 1, 0);
   addItemLeft(pCustom, generateCvsSwitchListCheckBox, 1, 1);
 
   // Options
-  QGroupBox* pOption = new QGroupBox();
+  JPanel* pOption = new JPanel();
   pOption->setLayout(new GridBagLayout());
-  //pOption.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptions")));
-  pOption->setStyleSheet(gbStyleSheet);
-  pOption->setTitle(tr("Options"));
+  pOption->setBorder(BorderFactory::createTitledBorder(tr("Options")));
   addItemLeft(pOption, valueCheckBox, 1, 2);
   addItemLeft(pOption, valueTextField, 2, 2);
   addItemLeft(pOption, rfidCheckBox, 1, 3);

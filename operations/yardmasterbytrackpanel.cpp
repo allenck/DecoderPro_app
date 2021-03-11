@@ -4,7 +4,7 @@
 #include <QGroupBox>
 #include "htmltextedit.h"
 #include "location.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QPushButton>
 #include "borderfactory.h"
 #include <QScrollArea>
@@ -31,6 +31,8 @@
 #include "instancemanager.h"
 #include <QCheckBox>
 #include "control.h"
+#include "jpanel.h"
+#include "borderfactory.h"
 
 using namespace Operations;
 /**
@@ -59,7 +61,7 @@ void YardmasterByTrackPanel::common()
  textTrackCommentWorkPane = new HtmlTextEdit();
 
  // combo boxes
- trackComboBox = new QComboBox(); // <Track>
+ trackComboBox = new JComboBox(); // <Track>
 
  // buttons
  nextButton = new QPushButton(tr("Next"));
@@ -79,36 +81,31 @@ void YardmasterByTrackPanel::common()
 
     _location = location;
 
-    QGroupBox* textSwitchListCommentFrame = new QGroupBox(tr("Comment"));
+    JPanel* textSwitchListCommentFrame = new JPanel();
+    textSwitchListCommentFrame->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
     textSwitchListCommentFrame->setLayout(new QVBoxLayout());
-    textSwitchListCommentFrame->setStyleSheet(gbStyleSheet);
-//    textSwitchListCommentPane->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
-    textSwitchListCommentPane->setStyleSheet(gbStyleSheet);
+    //textSwitchListCommentPane->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
 //    textSwitchListCommentPane->setBackground(NULL);
     textSwitchListCommentPane->setEditable(false);
     textSwitchListCommentPane->setMaximumSize(QSize(2000, 200));
 
-    QGroupBox* textTrackCommentFrame = new QGroupBox(tr("Comment"));
+    JPanel* textTrackCommentFrame = new JPanel();
     textTrackCommentFrame->setLayout(new QVBoxLayout());
-    textTrackCommentFrame->setStyleSheet(gbStyleSheet);
-//    textTrackCommentPane->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
+    textTrackCommentFrame->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
 //    textTrackCommentPane->setBackground(NULL);
     textTrackCommentPane->setEditable(false);
     textTrackCommentPane->setMaximumSize(QSize(2000, 200));
 
-    QGroupBox* textTrackCommentWorkFrame = new QGroupBox(tr("Comments"));
+    JPanel* textTrackCommentWorkFrame = new JPanel();
     textTrackCommentWorkFrame->setLayout(new QVBoxLayout());
-    textTrackCommentWorkFrame->setStyleSheet(gbStyleSheet);
-//    textTrackCommentWorkPane->setBorder(BorderFactory::createTitledBorder(tr("Comments")));
+    textTrackCommentWorkFrame->setBorder(BorderFactory::createTitledBorder(tr("Comments")));
 //    textTrackCommentWorkPane->setBackground(NULL);
     textTrackCommentWorkPane->setEditable(false);
     textTrackCommentWorkPane->setMaximumSize(QSize(2000, 200));
 
-    QGroupBox* pTrackSelect = new QGroupBox();
+    JPanel* pTrackSelect = new JPanel();
     QVBoxLayout* pTrackSelectLayout = new QVBoxLayout(pTrackSelect);
-    //pTrackSelect->setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("Track")));
-    pTrackSelect->setStyleSheet(gbStyleSheet);
-    pTrackSelect->setTitle(tr("Track"));
+    pTrackSelect->setBorder(BorderFactory::createTitledBorder(tr("Track")));
     pTrackSelectLayout->addWidget(trackComboBox);
     // add next button for web server
     pTrackSelectLayout->addWidget(nextButton);

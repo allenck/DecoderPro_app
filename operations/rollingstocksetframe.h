@@ -4,6 +4,7 @@
 #include "appslib_global.h"
 #include "jcombobox.h"
 #include "propertychangelistener.h"
+#include "resourcebundle.h"
 
 class JActionEvent;
 class QGroupBox;
@@ -95,9 +96,9 @@ public slots:
   /*protected*/ QCheckBox* ignoreTrainCheckBox;//= new JCheckBox(Bundle.getMessage("Ignore"));
 
   // optional panels
-  /*protected*/ QGroupBox* pOptional;//= new JPanel();
+  /*protected*/ JPanel* pOptional;//= new JPanel();
   /*protected*/ QScrollArea* paneOptional;//= new JScrollPane(pOptional);
-  /*protected*/ QGroupBox* pFinalDestination;//= new JPanel();
+  /*protected*/ JPanel* pFinalDestination;//= new JPanel();
   /*protected*/ void updateComboBoxes();
   /*protected*/ void updateLocationComboBoxes();
   /*protected*/ void updateLocationTrackComboBox();
@@ -112,6 +113,7 @@ public slots:
   /*protected*/ void setRouteLocationAndDestination(RollingStock* rs, Train* train, RouteLocation* rl,
  RouteLocation* rd);
   /*protected*/ bool updateGroup(QList<RollingStock*> list);
+  /*abstract*/ /*protected*/ virtual ResourceBundle* getRb() = 0;
 
  };
 }

@@ -32,6 +32,7 @@
 #include "settrainiconrouteaction.h"
 #include "printrouteaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -105,10 +106,9 @@ namespace Operations
      routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
 
      // Set up the jtable in a Scroll Pane..
-     routePane = new QGroupBox(/*routeTable*/);
+     routePane = new JPanel();
      //routePane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //routePane->setBorder(BorderFactory.createTitledBorder(""));
-     routePane->setStyleSheet(gbStyleSheet);
+     routePane->setBorder(BorderFactory::createTitledBorder(""));
      QVBoxLayout* routePaneLayout = new QVBoxLayout(routePane);
      routePaneLayout->addWidget(routeTable);
 
@@ -139,19 +139,15 @@ namespace Operations
      p1Pane->setFrameStyle(QFrame::Panel | QFrame::Plain);
 
      // name panel
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
      addItem(pName, routeNameTextField, 0, 0);
 
      // comment panel
-     QGroupBox* pComment = new QGroupBox();
+     JPanel* pComment = new JPanel();
      pComment->setLayout(new GridBagLayout());
-     //pComment->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-     pComment->setStyleSheet(gbStyleSheet);
-     pComment->setTitle(tr("Comment"));
+     pComment->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
      addItem(pComment, commentTextField, 0, 0);
 
      p1->layout()->addWidget(pName);
@@ -167,15 +163,13 @@ namespace Operations
      p2Pane->verticalScrollBar()->setEnabled(false);
      p2Pane->setMinimumSize(QSize(300, 3 * routeNameTextField->sizeHint().height()));
      p2Pane->setMaximumSize(QSize(2000, 200));
-     //p2Pane->setBorder(BorderFactory.createTitledBorder(""));
+     //p2Pane->setBorder(BorderFactory:createTitledBorder(""));
      p2Pane->setFrameStyle(QFrame::Panel | QFrame::Plain);
 
      // location panel
-     QGroupBox* pLoc = new QGroupBox();
+     JPanel* pLoc = new JPanel();
      pLoc->setLayout(new GridBagLayout());
-     //pLoc->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-     pLoc->setStyleSheet(gbStyleSheet);
-     pLoc->setTitle(tr("Location"));
+     pLoc->setBorder(BorderFactory::createTitledBorder(tr("Location")));
      addItem(pLoc, locationBox, 0, 1);
      addItem(pLoc, addLocationButton, 1, 1);
      addItem(pLoc, addLocAtTop, 2, 1);
@@ -185,11 +179,9 @@ namespace Operations
      addLocAtBottom->setChecked(true);
 
      // Wait or Depart Time panel
-     QGroupBox* pWait = new QGroupBox();
+     JPanel* pWait = new JPanel();
      pWait->setLayout(new GridBagLayout());
-     //pWait->setBorder(BorderFactory.createTitledBorder(tr("Display")));
-     pWait->setStyleSheet(gbStyleSheet);
-     pWait->setTitle(tr("Display"));
+     pWait->setBorder(BorderFactory::createTitledBorder(tr("Display")));
      addItem(pWait, showWait, 0, 1);
      addItem(pWait, showDepartTime, 1, 1);
      groupTime->addButton(showWait);

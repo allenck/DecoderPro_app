@@ -25,6 +25,7 @@
 #include "trackloadeditframe.h"
 #include "printlocationsbycartypesaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -82,23 +83,19 @@ namespace Operations
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
   // Set up the panels
-  QGroupBox* pCarType = new QGroupBox();
+  JPanel* pCarType = new JPanel();
   pCarType->setLayout(new GridBagLayout());
-  //pCarType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-  pCarType->setStyleSheet(gbStyleSheet);
-  pCarType->setTitle(tr("Type"));
+  pCarType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
   addItem(pCarType, typeComboBox, 0, 0);
 
-  QGroupBox* pLoad = new QGroupBox();
+  JPanel* pLoad = new JPanel();
   pLoad->setLayout(new GridBagLayout());
-  //pLoad.setBorder(BorderFactory.createTitledBorder(tr("Load")));
-  pLoad->setStyleSheet(gbStyleSheet);
-  pLoad->setTitle(tr("Load"));
+  pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
 
   addItem(pLoad, loadComboBox, 0, 0);
   addItem(pLoad, loadAndTypeCheckBox, 1, 0);
 
-  QGroupBox* pLocationsFrame = new QGroupBox;
+  JPanel* pLocationsFrame = new JPanel;
   pLocationsFrame->setLayout(new QVBoxLayout);
   pLocations = new QWidget();
   pLocations->setLayout(new GridBagLayout());
@@ -106,15 +103,12 @@ namespace Operations
   locationPane->setWidgetResizable(true);
   pLocationsFrame->layout()->addWidget(locationPane);
   //locationPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //locationPane.setBorder(BorderFactory.createTitledBorder(tr("Locations")));
-  pLocationsFrame->setStyleSheet(gbStyleSheet);
-  pLocationsFrame->setTitle(tr("Locations"));
+  pLocationsFrame->setBorder(BorderFactory::createTitledBorder(tr("Locations")));
   updateLoadComboBox();
 
-  QGroupBox* pButtons = new QGroupBox();
+  JPanel* pButtons = new JPanel();
   pButtons->setLayout(new GridBagLayout());
-  //pButtons.setBorder(BorderFactory.createTitledBorder(""));
-  pButtons->setStyleSheet(gbStyleSheet);
+  pButtons->setBorder(BorderFactory::createTitledBorder(""));
 
   addItem(pButtons, clearButton, 0, 0);
   addItem(pButtons, setButton, 1, 0);

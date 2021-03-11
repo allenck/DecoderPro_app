@@ -26,6 +26,7 @@
 #include "operationsxml.h"
 #include "control.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -84,7 +85,7 @@ namespace Operations
 
   // check boxes
   // panel
-  schedule = new QGroupBox();
+  schedule = new JPanel();
 
      // general GUI configuration
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -101,19 +102,15 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      cp1->setLayout(new QHBoxLayout); //(cp1, BoxLayout.X_AXIS));
 
      // row 1
-     QGroupBox* sortBy = new QGroupBox();
+     JPanel* sortBy = new JPanel();
      sortBy->setLayout(new FlowLayout);
-     //sortBy.setBorder(BorderFactory.createTitledBorder(tr("SortBy")));
-     sortBy->setStyleSheet(gbStyleSheet);
-     sortBy->setTitle(tr("Sort By"));
+     sortBy->setBorder(BorderFactory::createTitledBorder(tr("Sort By")));
      sortBy->layout()->addWidget(sortByTime);
      sortBy->layout()->addWidget(sortByName);
 
      // row 2
-     //schedule.setBorder(BorderFactory.createTitledBorder(tr("Active")));
+     schedule->setBorder(BorderFactory::createTitledBorder(tr("Active")));
      schedule->setLayout(new QHBoxLayout);
-     schedule->setStyleSheet(gbStyleSheet);
-     schedule->setTitle(tr("Active"));
 
      updateControlPanel();
 
@@ -123,18 +120,16 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      QWidget* pButtons = new QWidget();
      pButtons->setLayout(new QHBoxLayout);//(pButtons, BoxLayout.X_AXIS));
 
-     QGroupBox* cp3 = new QGroupBox();
+     JPanel* cp3 = new JPanel();
      cp3->setLayout(new FlowLayout);
-     //cp3.setBorder(BorderFactory.createTitledBorder(""));
-     cp3->setStyleSheet(gbStyleSheet);
+     cp3->setBorder(BorderFactory::createTitledBorder(""));
      //cp3->setTitle(tr(""));
      cp3->layout()->addWidget(clearButton);
      cp3->layout()->addWidget(selectButton);
 
-     QGroupBox* cp4 = new QGroupBox();
+     JPanel* cp4 = new JPanel();
      cp4->setLayout(new FlowLayout);
-     //cp4.setBorder(BorderFactory.createTitledBorder(""));
-     cp4->setStyleSheet(gbStyleSheet);
+     cp4->setBorder(BorderFactory::createTitledBorder(""));
      //cp4->setTitle(tr(""));
      cp4->layout()->addWidget(applyButton);
      cp4->layout()->addWidget(buildButton);
@@ -142,10 +137,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      cp4->layout()->addWidget(switchListsButton);
      cp4->layout()->addWidget(terminateButton);
 
-     QGroupBox* cp5 = new QGroupBox();
+     JPanel* cp5 = new JPanel();
      cp5->setLayout(new FlowLayout);
-     //cp5.setBorder(BorderFactory.createTitledBorder(""));
-     cp5->setStyleSheet(gbStyleSheet);
+     cp5->setBorder(BorderFactory::createTitledBorder(""));
      //cp5->setTitle(tr(""));
      cp5->layout()->addWidget(activateButton);
      cp5->layout()->addWidget(saveButton);

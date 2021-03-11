@@ -13,6 +13,7 @@
 #include "setup.h"
 #include <QLabel>
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -57,28 +58,23 @@ namespace Operations
  /*public*/ void TrainsScriptFrame::initComponents()
  {
      // Set up script options in a Scroll Pane..
-  QGroupBox* startupScriptFrame = new QGroupBox;
+  JPanel* startupScriptFrame = new JPanel;
   startupScriptFrame->setLayout(new QVBoxLayout);
   startUpScriptPane = new QScrollArea(/*pStartUpScript*/);
   startUpScriptPane->setWidgetResizable(true);
   startupScriptFrame->layout()->addWidget(startUpScriptPane);
 //     startUpScriptPane
 //             .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-//     startUpScriptPane.setBorder(BorderFactory.createTitledBorder(tr("ScriptsStartUp")));
-  startupScriptFrame->setStyleSheet(gbStyleSheet);
-  startupScriptFrame->setTitle(tr("Run the following scripts at startup"));
+  startupScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts at startup")));
 
-  QGroupBox* shutDownScriptFrame = new QGroupBox;
+  JPanel* shutDownScriptFrame = new JPanel;
   shutDownScriptFrame->setLayout(new QVBoxLayout);
   shutDownScriptPane = new QScrollArea(/*pShutDownScript*/);
   shutDownScriptPane->setWidgetResizable(true);
   shutDownScriptFrame->layout()->addWidget(shutDownScriptPane);
 //    shutDownScriptPane
 //            .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-//    shutDownScriptPane
-//            .setBorder(BorderFactory.createTitledBorder(tr("ScriptsShutDown")));
-  shutDownScriptFrame->setStyleSheet(gbStyleSheet);
-  shutDownScriptFrame->setTitle(tr("Run the following scripts at shutdown"));
+    shutDownScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts at shutdown")));
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());

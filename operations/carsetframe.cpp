@@ -32,10 +32,8 @@
 #include "carloadeditframe.h"
 #include "schedule.h"
 #include "instancemanager.h"
-//CarSetFrame::CarSetFrame()
-//{
+#include "borderfactory.h"
 
-//}
 namespace Operations
 {
 /**
@@ -97,9 +95,7 @@ namespace Operations
      addHelpMenu("package.jmri.jmrit.operations.Operations_CarsSet", true); // NOI18N
 
      // optional panel return when empty, load, and kernel
-     //paneOptional->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptional")));
-     pOptional->setStyleSheet(gbStyleSheet);
-     pOptional->setTitle("optional");
+     pOptional->setBorder(BorderFactory::createTitledBorder(tr("optional")));
      //pOptional->setLayout(new BoxLayout(pOptional, BoxLayout.Y_AXIS));
      QWidget* pOptionalPane = new QWidget;
      QVBoxLayout* pOptionalLayout = new QVBoxLayout(pOptionalPane);
@@ -107,12 +103,9 @@ namespace Operations
      paneOptional->setWidgetResizable(true);
 
      // row 5
-     QGroupBox* pReturnWhenEmpty = new QGroupBox();
+     JPanel* pReturnWhenEmpty = new JPanel();
      pReturnWhenEmpty->setLayout(new GridBagLayout());
-     //pReturnWhenEmpty->setBorder(BorderFactory.createTitledBorder(Bundle
-     //        .getMessage("BorderLayoutReturnWhenEmpty")));
-     pReturnWhenEmpty->setStyleSheet(gbStyleSheet);
-     pReturnWhenEmpty->setTitle(tr("Return wnen empty"));
+     pReturnWhenEmpty->setBorder(BorderFactory::createTitledBorder(tr("Return wnen empty")));
      addItem(pReturnWhenEmpty, new QLabel(tr("Location")), 1, 0);
      addItem(pReturnWhenEmpty, new QLabel(tr("Track")), 2, 0);
      addItem(pReturnWhenEmpty, new QLabel(tr("Load")), 3, 0);
@@ -124,22 +117,18 @@ namespace Operations
      pOptionalLayout->addWidget(pReturnWhenEmpty);
 
      // add load fields
-     QGroupBox* pLoad = new QGroupBox();
+     JPanel* pLoad = new JPanel();
      pLoad->setLayout(new GridBagLayout());
-     //pLoad->setBorder(BorderFactory.createTitledBorder(tr("Load")));
-     pLoad->setStyleSheet(gbStyleSheet);
-     pLoad->setTitle(tr("Return wnen empty"));
+     pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
      addItemLeft(pLoad, ignoreLoadCheckBox, 1, 0);
      addItem(pLoad, loadComboBox, 2, 0);
      addItem(pLoad, editLoadButton, 3, 0);
      pOptionalLayout->addWidget(pLoad);
 
      // add kernel fields
-     QGroupBox* pKernel = new QGroupBox();
+     JPanel* pKernel = new JPanel();
      pKernel->setLayout(new GridBagLayout());
-     //pKernel->setBorder(BorderFactory.createTitledBorder(tr("Kernel")));
-     pKernel->setStyleSheet(gbStyleSheet);
-     pKernel->setTitle(tr("Return wnen empty"));
+     pKernel->setBorder(BorderFactory::createTitledBorder(tr("Kernel")));
      addItemLeft(pKernel, ignoreKernelCheckBox, 1, 0);
      addItem(pKernel, kernelComboBox, 2, 0);
      addItem(pKernel, editKernelButton, 3, 0);
@@ -187,6 +176,11 @@ namespace Operations
      load(car);
      updateLoadComboBox();
      updateKernelComboBox();
+ }
+
+ //@Override
+ /*protected*/ ResourceBundle* CarSetFrame::getRb() {
+     return rb;
  }
 
  /*protected*/ void CarSetFrame::updateComboBoxes() {
@@ -719,4 +713,11 @@ namespace Operations
   return "jmri.jmrit.operations.rollingstock.cars.CarSetFrame";
  }
 
+ CSResourceBundle::CSResourceBundle()
+ {
+  map.insert("rsType", "Car");
+  map.insert("rsNeedToRemoveStaging", tr(""));
+  map.insert("rsInStaging", tr(""));
+  map.insert("rsTrainNotServType", tr(""));
+  map.insert("rsNotMove", tr(""));}
 }

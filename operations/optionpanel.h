@@ -61,7 +61,7 @@ namespace Operations
   JTextField* valueTextField;//= new JTextField(10);
 
   // combo boxes
-  QComboBox* numberPassesComboBox;//= new JComboBox<>();
+  JComboBox* numberPassesComboBox;// = new JComboBox();
   /*private*/ void setBuildOption();
   Logger* log;
   /*private*/ void setRouterCheckBoxesEnabled();

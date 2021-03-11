@@ -13,7 +13,6 @@
 #include "carload.h"
 #include "carsetframe.h"
 #include <QPushButton>
-#include <QSignalMapper>
 #include <QList>
 #include "pushbuttondelegate.h"
 #include "instancemanager.h"

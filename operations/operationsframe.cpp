@@ -6,7 +6,6 @@
 #include "jcombobox.h"
 #include <QCheckBox>
 #include <QSpinBox>
-#include <QSignalMapper>
 #include "logger.h"
 #include "jtable.h"
 #include "userpreferencesmanager.h"
@@ -83,19 +82,6 @@ common();
  {
   setObjectName("OperationsFrame");
   log = new Logger("OperationsFrame");
-  buttonMapper = new QSignalMapper(this);
-  connect(buttonMapper, SIGNAL(mapped(QWidget*)), this, SLOT(on_buttonActionPerformed(QWidget*)));
-  radioButtonMapper = new QSignalMapper();
-  connect(radioButtonMapper, SIGNAL(mapped(QWidget*)), this, SLOT(on_radioButtonActionPerformed(QWidget*)));
-  checkBoxMapper = new QSignalMapper();
-  connect(checkBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(on_checkBoxActionPerformed(QWidget*)));
-  comboBoxMapper = new QSignalMapper();
-  connect(comboBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(on_comboBoxActionPerformed(QWidget*)));
-  spinBoxMapper = new QSignalMapper();
-  connect(spinBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(on_spinnerChangeEvent(QWidget*)));
-  gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 5px; margin-top: 1ex; /* leave space at the top for the title */} "
-                 "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-
  }
 // @Override
  /*public*/ void OperationsFrame::initComponents()
@@ -155,13 +141,9 @@ common();
  /*protected*/ void OperationsFrame::addButtonAction(QPushButton* b)
  {
     // b.addActionListener(this->buttonActionPerformed);
- connect(b, SIGNAL(clicked()), buttonMapper, SLOT(map()));
- buttonMapper->setMapping(b,b);
- }
-
- /*protected*/ void OperationsFrame::on_buttonActionPerformed(QWidget* ae)
- {
-  buttonActionPerformed(ae);
+  connect(b, &QPushButton::clicked,  [=]{
+   buttonActionPerformed(b);
+  });
  }
 
  /*protected*/ void OperationsFrame::buttonActionPerformed(QWidget* ae) {
@@ -171,13 +153,9 @@ common();
 
  /*protected*/ void OperationsFrame::addRadioButtonAction(QRadioButton* b) {
  //b.addActionListener(this->radioButtonActionPerformed());
-  connect(b, SIGNAL(clicked()), radioButtonMapper , SLOT(map()));
-  radioButtonMapper->setMapping(b,b);
- }
-
- /*protected*/ void OperationsFrame::on_radioButtonActionPerformed(QWidget* b)
- {
-  radioButtonActionPerformed(b);
+  connect(b, &QRadioButton::clicked, [=]{
+   radioButtonActionPerformed(b);
+  });
  }
 
  /*protected*/ void OperationsFrame::radioButtonActionPerformed(QWidget* /*b*/)
@@ -187,13 +165,9 @@ common();
 
  /*protected*/ void OperationsFrame::addCheckBoxAction(QCheckBox* b) {
      //b.addActionListener(this->checkBoxActionPerformed);
-  connect(b, SIGNAL(clicked()), checkBoxMapper, SLOT(map()));
-  checkBoxMapper->setMapping(b,b);
- }
-
- /*protected*/ void OperationsFrame::on_checkBoxActionPerformed(QWidget* b)
- {
-  checkBoxActionPerformed(b);
+  connect(b, &QCheckBox::toggled, [=]{
+   checkBoxActionPerformed(b);
+  });
  }
 
  /*protected*/ void OperationsFrame::checkBoxActionPerformed(QWidget* /*b*/)
@@ -203,12 +177,10 @@ common();
 
  /*protected*/ void OperationsFrame::addSpinnerChangeListerner(QSpinBox* s) {
      //s.addChangeListener(this::spinnerChangeEvent);
-  spinBoxMapper->setMapping(s,s);
-  connect(s, SIGNAL(valueChanged(int)), spinBoxMapper, SLOT(map()));
- }
-
- /*protected*/ void OperationsFrame::on_spinnerChangeEvent(QWidget* ae) {
-  spinnerChangeEvent(ae);
+  void (QSpinBox::*mySignal)(int) = &QSpinBox::valueChanged;
+  connect(s,  mySignal,  [=](int ){
+   spinnerChangeEvent(s);
+  });
  }
 
  /*protected*/ void OperationsFrame::spinnerChangeEvent(QWidget* /*ae*/) {
@@ -217,13 +189,9 @@ common();
 
  /*protected*/ void OperationsFrame::addComboBoxAction(JComboBox* b) {
      //b.addActionListener(this::comboBoxActionPerformed);
-  connect(b, SIGNAL(currentIndexChanged(int)), comboBoxMapper, SLOT(map()));
-  comboBoxMapper->setMapping(b,b);
- }
-
- /*protected*/ void OperationsFrame::on_comboBoxActionPerformed(QWidget *ae)
- {
-  comboBoxActionPerformed(ae);
+  connect(b, &JComboBox::currentIndexChanged, [=]{
+   comboBoxActionPerformed(b);
+  });
  }
 
  /*protected*/ void OperationsFrame::comboBoxActionPerformed(QWidget* /*ae*/)

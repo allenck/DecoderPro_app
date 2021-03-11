@@ -68,7 +68,7 @@ namespace Operations
 
   // check boxes
   // panel
-  QGroupBox* schedule;// new JPanel();
+  JPanel* schedule;// new JPanel();
   /*private*/ void updateControlPanel();
   /*private*/ void updateCheckboxes(bool selected);
   /*private*/ void applySchedule();

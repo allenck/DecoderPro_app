@@ -23,6 +23,7 @@
 #include <gridbaglayout.h>
 #include <QBoxLayout>
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -924,10 +925,9 @@ namespace Operations
          //super();
          this->pla = pla;
          // create panel
-         QGroupBox* pPanel = new QGroupBox();
+         JPanel* pPanel = new JPanel();
          pPanel->setLayout(new GridBagLayout());
-         //pPanel.setBorder(BorderFactory.createTitledBorder(tr("PrintOptions")));
-         pPanel->setStyleSheet(gbStyleSheet);
+         pPanel->setBorder(BorderFactory::createTitledBorder(tr("Print Options")));
          addItemLeft(pPanel, pla->_printLocations, 0, 0);
          addItemLeft(pPanel, pla->printSchedules, 0, 3);
          addItemLeft(pPanel, pla->printComments, 0, 5);

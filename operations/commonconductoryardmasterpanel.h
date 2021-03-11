@@ -3,6 +3,7 @@
 #include "operationspanel.h"
 #include "appslib_global.h"
 #include "propertychangelistener.h"
+#include "jpanel.h"
 
 class QVBoxLayout;
 class QGroupBox;
@@ -54,13 +55,13 @@ namespace Operations
   /*protected*/ TrainCommon* trainCommon;//= new TrainCommon();
   /*protected*/ void setCheckBoxFont(QCheckBox* checkBox);
 
-  QGroupBox* locoPaneFrame;
+  JPanel* locoPaneFrame;
   /*protected*/ QScrollArea* locoPane;
-  QGroupBox* pickupPaneFrame;
+  JPanel* pickupPaneFrame;
   /*protected*/ QScrollArea* pickupPane;
-  QGroupBox* setoutPaneFrame;
+  JPanel* setoutPaneFrame;
   /*protected*/ QScrollArea* setoutPane;
-  QGroupBox* movePaneFrame;
+  JPanel* movePaneFrame;
   /*protected*/ QScrollArea* movePane;
 
   // labels
@@ -77,19 +78,19 @@ namespace Operations
   /*protected*/ QPushButton* moveButton;//= new JButton(Bundle.getMessage("Move"));
 
   // text panes
-  QGroupBox* textLocationCommentGB;
+  JPanel* textLocationCommentGB;
   /*protected*/ HtmlTextEdit* textLocationCommentPane;//= new JTextPane();
-  QGroupBox* textTrainCommentGB;
+  JPanel* textTrainCommentGB;
   /*protected*/ HtmlTextEdit* textTrainCommentPane;//= new JTextPane();
-  QGroupBox* textTrainRouteCommentGB;
+  JPanel* textTrainRouteCommentGB;
   /*protected*/ HtmlTextEdit* textTrainRouteCommentPane;//= new JTextPane();
-  QGroupBox* textTrainRouteLocationCommentGB;
+  JPanel* textTrainRouteLocationCommentGB;
   /*protected*/ HtmlTextEdit* textTrainRouteLocationCommentPane;//= new JTextPane();
 
   // panels
-  /*protected*/ QGroupBox* pRailRoadName;//= new JPanel();
-  /*protected*/ QGroupBox* pTrainDescription;//= new JPanel();
-  /*protected*/ QGroupBox* pLocationName;//= new JPanel();
+  /*protected*/ JPanel* pRailRoadName;// = new JPanel();
+  /*protected*/ JPanel* pTrainDescription;//= new JPanel();
+  /*protected*/ JPanel* pLocationName = new JPanel();
   /*protected*/ QWidget* pLocos;//= new JPanel();
   /*protected*/ QWidget* pPickupLocos;//= new JPanel();
   /*protected*/ QWidget* pSetoutLocos;//= new JPanel();
@@ -97,8 +98,8 @@ namespace Operations
   /*protected*/ QWidget* pSetouts;//= new JPanel();
   /*protected*/ QWidget* pWorkPanes;//= new JPanel(); // place car pick ups and set outs side by side using two columns
   /*protected*/ QWidget* pMoves;//= new JPanel();
-  /*protected*/ QGroupBox* pStatus;//= new JPanel();
-  /*protected*/ QGroupBox* pButtons;//= new JPanel();
+  /*protected*/ JPanel* pStatus= new JPanel();
+  /*protected*/ JPanel* pButtons= new JPanel();
 
   // check boxes
   /*protected*/ QHash<QString, QCheckBox*> checkBoxes;//= new Hashtable<>();

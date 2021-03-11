@@ -25,6 +25,7 @@
 #include "carstablemodel.h"
 #include <QRadioButton>
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -327,29 +328,23 @@ namespace Operations
 
  okayButton = new QPushButton(tr("OK"));this->pcr = pcr;
      // create panel
-     QGroupBox* pSortBy = new QGroupBox();
+     JPanel* pSortBy = new JPanel();
      pSortBy->setLayout(new FlowLayout);
-     //pSortBy.setBorder(BorderFactory.createTitledBorder(tr("SortBy")));
-     pSortBy->setStyleSheet(gbStyleSheet);
-     pSortBy->setTitle(tr("Sort by"));
+     pSortBy->setBorder(BorderFactory::createTitledBorder(tr("Sort By")));
      pSortBy->layout()->addWidget(pcr->sortByComboBox);
      addComboBoxAction(pcr->sortByComboBox);
 
-     QGroupBox* pOrientation = new QGroupBox();
+     JPanel* pOrientation = new JPanel();
      pOrientation->setLayout(new FlowLayout);
-     //pOrientation.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOrientation")));
-     pOrientation->setStyleSheet(gbStyleSheet);
-     pOrientation->setTitle(tr("Orientation"));
+     pOrientation->setBorder(BorderFactory::createTitledBorder(tr("Orientation")));
      pOrientation->layout()->addWidget(pcr->manifestOrientationComboBox);
 
      pcr->manifestOrientationComboBox->addItem(Setup::PORTRAIT);
      pcr->manifestOrientationComboBox->addItem(Setup::LANDSCAPE);
 
-     QGroupBox* pFontSize = new QGroupBox();
+     JPanel* pFontSize = new JPanel();
      pFontSize->setLayout(new FlowLayout);
-     //pFontSize.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFontSize")));
-     pFontSize->setStyleSheet(gbStyleSheet);
-     pFontSize->setTitle(tr("Font Size"));
+     pFontSize->setBorder(BorderFactory::createTitledBorder(tr("Font Size")));
      pFontSize->layout()->addWidget(pcr->fontSizeComboBox);
 
      // load font sizes 5 through 14
@@ -359,15 +354,13 @@ namespace Operations
 
      pcr->fontSizeComboBox->setCurrentIndex(pcr->fontSizeComboBox->findData(Control::reportFontSize));
 
-     QGroupBox* pPanelFrame = new QGroupBox;
+     JPanel* pPanelFrame = new JPanel;
      pPanelFrame->setLayout(new QVBoxLayout);
      QWidget* pPanel = new QWidget();
      pPanel->setLayout(new GridBagLayout());
      QScrollArea* panePanel = new QScrollArea(/*pPanel*/);
      pPanelFrame->layout()->addWidget(panePanel);
-     //panePanel.setBorder(BorderFactory.createTitledBorder(tr("PrintOptions")));
-     pPanelFrame->setStyleSheet(gbStyleSheet);
-     pPanelFrame->setTitle(tr("Print Options"));
+     pPanelFrame->setBorder(BorderFactory::createTitledBorder(tr("Print Options")));
      addItemLeft(pPanel, printCarsWithLocation, 0, 0);
      addItemLeft(pPanel, printCarLength, 0, 1);
      addItemLeft(pPanel, printCarWeight, 0, 2);
@@ -421,11 +414,10 @@ namespace Operations
      printSpace->setToolTip(tr("Select sort by location to enable"));
      printPage->setToolTip(tr("TipSelectSortByLoc"));
 
-     QGroupBox* pButtons = new QGroupBox();
+     JPanel* pButtons = new JPanel();
      pButtons->setLayout(new GridBagLayout());
      pButtons->layout()->addWidget(okayButton);
-     //pButtons.setBorder(BorderFactory.createTitledBorder(""));
-     pButtons->setStyleSheet(gbStyleSheet);
+     pButtons->setBorder(BorderFactory::createTitledBorder(""));
      addButtonAction(okayButton);
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

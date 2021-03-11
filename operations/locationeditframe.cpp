@@ -45,6 +45,7 @@
 #include "modifylocationscarloadsaction.h"
 #include "showtrainsservinglocationaction.h"
 #include "locationtrackblockingorderaction.h"
+#include "borderfactory.h"
 
 //LocationEditFrame::LocationEditFrame()
 //{
@@ -89,7 +90,7 @@ namespace Operations
   panelCheckBoxes = new QWidget();
   panelCheckBoxes->setLayout(new GridBagLayout()); //layout must be set before setting QScrollArea's widget.
 
-  directionPanel = new QGroupBox();
+  directionPanel = new JPanel();
 
      // major buttons
   clearButton = new QPushButton(tr("Clear"));
@@ -125,8 +126,6 @@ namespace Operations
   readerSelector = new JComboBox();
 
   _location = location;
-   chkBoxMapper = new QSignalMapper;
-   connect(chkBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(checkBoxActionTrainPerformed(QWidget*)));
    yef = NULL;
    sef = NULL;
    ief = NULL;
@@ -136,15 +135,13 @@ namespace Operations
    lctf = NULL;
 
    // Set up the jtable in a Scroll Pane..
-   typePane = new QGroupBox();
+   typePane = new JPanel();
    typePane->setLayout(new QVBoxLayout);
    QScrollArea* typePaneScroll = new QScrollArea(/*panelCheckBoxes*/);
    typePaneScroll->setWidget(panelCheckBoxes);
    typePaneScroll->setWidgetResizable(true);
 //     typePane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-//     typePane->setBorder(BorderFactory.createTitledBorder(tr("Types")));
-   typePane->setStyleSheet(gbStyleSheet);
-   typePane->setTitle(tr("Types"));
+   typePane->setBorder(BorderFactory::createTitledBorder(tr("Types")));
    typePane->layout()->addWidget(typePaneScroll);
 
 //     yardPane = new JScrollPane(yardTable);
@@ -240,19 +237,15 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 //     p1Pane->setBorder(BorderFactory.createTitledBorder(""));
 
   // row 1a
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setLayout(new GridBagLayout());
- // pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-  pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle(tr("Name"));
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
 
   addItem(pName, locationNameTextField, 0, 0);
 
   // row 1b
   directionPanel->setLayout(new GridBagLayout());
-  //directionPanel->setBorder(BorderFactory.createTitledBorder(tr("TrainLocation")));
-  directionPanel->setStyleSheet(gbStyleSheet);
-  directionPanel->setTitle(tr("Train Location"));
+  directionPanel->setBorder(BorderFactory::createTitledBorder(tr("Train Location")));
   addItem(directionPanel, northCheckBox, 1, 0);
   addItem(directionPanel, southCheckBox, 2, 0);
   addItem(directionPanel, eastCheckBox, 3, 0);
@@ -265,34 +258,28 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   updateCheckboxes();
 
   // row 9
-  QGroupBox* pOp = new QGroupBox();
+  JPanel* pOp = new JPanel();
   FlowLayout* pOpLayout;
   pOp->setLayout(pOpLayout = new FlowLayout());
-  //pOp->setBorder(BorderFactory.createTitledBorder(tr("TracksAtLocation")));
-  pOp->setStyleSheet(gbStyleSheet);
-  pOp->setTitle(tr("Tracks at Location"));
+  pOp->setBorder(BorderFactory::createTitledBorder(tr("Tracks at Location")));
   pOpLayout->addWidget(spurRadioButton);
   pOpLayout->addWidget(yardRadioButton);
   pOpLayout->addWidget(interchangeRadioButton);
   pOpLayout->addWidget(stageRadioButton);
 
   // row 11
-  QGroupBox* pC = new QGroupBox();
+  JPanel* pC = new JPanel();
   pC->setLayout(new GridBagLayout());
-  //pC->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-  pC->setStyleSheet(gbStyleSheet);
-  pC->setTitle(tr("Comment"));
+  pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   addItem(pC, /*commentScroller*/commentTextArea, 0, 0);
 
   // adjust text area width based on window size
   adjustTextAreaColumnWidth(pC, commentTextArea);
 
   // reader row
-  QGroupBox* readerPanel = new QGroupBox();
+  JPanel* readerPanel = new JPanel();
   readerPanel->setLayout(new GridBagLayout());
-  //readerPanel->setBorder(BorderFactory.createTitledBorder(tr("IdTag Reader at this Location ")));
-  readerPanel->setStyleSheet(gbStyleSheet);
-  readerPanel->setTitle(tr("Comment"));
+  readerPanel->setBorder(BorderFactory::createTitledBorder(tr("IdTag Reader at this Location ")));
   addItem(readerPanel, readerSelector, 0, 0);
 
   readerPanel->setVisible(Setup::isRfidEnabled());
@@ -787,11 +774,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  {
 //     b.addActionListener(new java.awt.event.ActionListener() {
 //         /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//             checkBoxActionTrainPerformed(e);
+  connect(b, &QCheckBox::toggled, [=]{
+             checkBoxActionTrainPerformed(b);
 //         }
-//     });
-  chkBoxMapper->setMapping(b,b);
-  connect(b, SIGNAL(clicked(bool)), chkBoxMapper, SLOT(map()));
+     });
  }
 
  /*private*/ void LocationEditFrame::checkBoxActionTrainPerformed(QWidget* /*ae*/) {

@@ -19,7 +19,7 @@
 #include "jtextarea.h"
 #include "enginemodels.h"
 #include <QScrollArea>
-#include <QGroupBox>
+#include "jpanel.h"
 #include "routelocation.h"
 #include <QMenu>
 #include <QMenuBar>
@@ -53,6 +53,7 @@
 #include "trainbycartypeaction.h"
 #include "trainscriptaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -137,36 +138,30 @@ namespace Operations
    ref = NULL;
 
   // Set up the jtable in a Scroll Pane..
-  QGroupBox* locationsPaneFrame = new QGroupBox;
+  JPanel* locationsPaneFrame = new JPanel;
   locationsPaneFrame->setObjectName("locationsPaneFrame");
   locationsPaneFrame->setLayout(new QVBoxLayout);
   locationsPane = new QScrollArea(/*locationPanelCheckBoxes*/);
   //locationsPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //locationsPane->setBorder(BorderFactory.createTitledBorder(tr("Stops")));
-  locationsPaneFrame->setStyleSheet(gbStyleSheet);
-  locationsPaneFrame->setTitle(tr("Stops"));
   locationsPaneFrame->layout()->addWidget(locationsPane);
+  locationsPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Stops")));
   locationsPane->setWidgetResizable(true);
 
-  QGroupBox* typeCarPaneFrame = new QGroupBox;
+  JPanel* typeCarPaneFrame = new JPanel;
   typeCarPaneFrame->setObjectName("typeCarPaneFrame");
   typeCarPaneFrame->setLayout(new QVBoxLayout);
   typeCarPane = new QScrollArea(/*typeCarPanelCheckBoxes*/);
-  //typeCarPane->setBorder(BorderFactory.createTitledBorder(tr("TypesCar")));
-  typeCarPaneFrame->setStyleSheet(gbStyleSheet);
-  typeCarPaneFrame->setTitle(tr("Car Types"));
+  typeCarPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Car")));
   //typeCarPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
   typeCarPaneFrame->layout()->addWidget(typeCarPane);
   typeCarPane->setWidgetResizable(true);
 
-  QGroupBox* typeEnginePaneFrame = new QGroupBox;
+  JPanel* typeEnginePaneFrame = new JPanel;
   typeEnginePaneFrame->setObjectName("typeEnginePaneFrame");
   typeEnginePaneFrame->setLayout(new QVBoxLayout);
   typeEnginePane = new QScrollArea(/*typeEnginePanelCheckBoxes*/);
   //typeEnginePane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //typeEnginePane->setBorder(BorderFactory.createTitledBorder(tr("TypesEngine")));
-  typeEnginePaneFrame->setStyleSheet(gbStyleSheet);
-  typeEnginePaneFrame->setTitle(tr("Engine Types"));
+  typeEnginePaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Engine")));
   typeEnginePaneFrame->layout()->addWidget(typeEnginePane);
   typeEnginePane->setWidgetResizable(true);
 
@@ -175,12 +170,7 @@ namespace Operations
   // load managers
   trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
   routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
-  boxMapper = new QSignalMapper();
-  connect(boxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(locationCheckBoxActionPerformed(QWidget*)));
-  typeCheckBoxMapper = new QSignalMapper;
-  connect(typeCheckBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(typeCheckBoxActionPerformed(QWidget*)));
   children = QList<JmriJFrame*>();
-
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
@@ -190,27 +180,23 @@ namespace Operations
   p->setLayout(new QVBoxLayout); //(p, BoxLayout.Y_AXIS));
   QScrollArea* pPane = new QScrollArea(/*p*/);
   pPane->setMinimumSize(QSize(300, 5 * trainNameTextField->sizeHint().height()));
-  //pPane->setBorder(BorderFactory.createTitledBorder(""));
+  //pPane->setBorder(BorderFactory::createTitledBorder(""));
   pPane->setFrameStyle(QFrame::Panel | QFrame::Plain);
   // Layout the panel by rows
   // row 1
   QWidget* p1 = new QWidget();
   p1->setLayout(new QHBoxLayout);//(p1, BoxLayout.X_AXIS));
   // row 1a
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setObjectName("pName");
   pName->setLayout(new GridBagLayout());
-  //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-  pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle(tr("Name"));
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
   addItem(pName, trainNameTextField, 0, 0);
   // row 1b
-  QGroupBox* pDesc = new QGroupBox();
+  JPanel* pDesc = new JPanel();
   pDesc->setObjectName("pDesc");
   pDesc->setLayout(new GridBagLayout());
-  //pDesc->setBorder(BorderFactory.createTitledBorder(tr("Description")));
-  pDesc->setStyleSheet(gbStyleSheet);
-  pDesc->setTitle(tr("Description"));
+  pDesc->setBorder(BorderFactory::createTitledBorder(tr("Description")));
   trainDescriptionTextField->setToolTip("%1 = lead engine number, %2 = departure direction, %3 = lead engine road");
   addItem(pDesc, trainDescriptionTextField, 0, 0);
 
@@ -221,12 +207,10 @@ namespace Operations
   QWidget* p2 = new QWidget();
   p2->setLayout(new QHBoxLayout);//(p2, BoxLayout.X_AXIS));
   // row 2a
-  QGroupBox* pdt = new QGroupBox();
+  JPanel* pdt = new JPanel();
   pdt->setObjectName("pdt");
   pdt->setLayout(new GridBagLayout());
-  //pdt->setBorder(BorderFactory.createTitledBorder(tr("DepartTime")));
-  pdt->setStyleSheet(gbStyleSheet);
-  pdt->setTitle(tr("Depart time"));
+  pdt->setBorder(BorderFactory::createTitledBorder(tr("DepartTime")));
   // build hour and minute menus
   for (int i = 0; i < 24; i++) {
       if (i < 10) {
@@ -252,12 +236,10 @@ namespace Operations
 
   // row 2b
   // BUG! routeBox needs its own panel when resizing frame!
-  QGroupBox* pr = new QGroupBox();
+  JPanel* pr = new JPanel();
   pr->setObjectName("pr");
   pr->setLayout(new GridBagLayout());
-  //pr->setBorder(BorderFactory.createTitledBorder(tr("Route")));
-  pr->setStyleSheet(gbStyleSheet);
-  pr->setTitle(tr("Route"));
+  pr->setBorder(BorderFactory::createTitledBorder(tr("Route")));
   addItem(pr, routeBox, 0, 5);
   addItem(pr, space4, 1, 5);
   addItem(pr, editButton, 2, 5);
@@ -281,20 +263,16 @@ namespace Operations
 
   // status panel for roads and loads
   roadAndLoadStatusPanel->setLayout(new QHBoxLayout); //(roadAndLoadStatusPanel, BoxLayout.X_AXIS));
-  QGroupBox* pRoadOption = new QGroupBox();
+  JPanel* pRoadOption = new JPanel();
   pRoadOption->setObjectName("pRoadOption");
   pRoadOption->setLayout(new QVBoxLayout);
-  //pRoadOption->setBorder(BorderFactory.createTitledBorder(tr("RoadOption")));
-  pRoadOption->setStyleSheet(gbStyleSheet);
-  pRoadOption->setTitle(tr("Road Option"));
+  pRoadOption->setBorder(BorderFactory::createTitledBorder(tr("Road Option")));
   pRoadOption->layout()->addWidget(roadOption);
 
-  QGroupBox* pLoadOption = new QGroupBox();
+  JPanel* pLoadOption = new JPanel();
   pLoadOption->setObjectName("pLoadOption");
   pLoadOption->setLayout(new QVBoxLayout);
-  //pLoadOption->setBorder(BorderFactory.createTitledBorder(tr("LoadOption")));
-  pLoadOption->setStyleSheet(gbStyleSheet);
-  pLoadOption->setTitle(tr("Load Option"));
+  pLoadOption->setBorder(BorderFactory::createTitledBorder(tr("Load Option")));
   pLoadOption->layout()->addWidget(loadOption);
 
   roadAndLoadStatusPanel->layout()->addWidget(pRoadOption);
@@ -302,12 +280,10 @@ namespace Operations
   roadAndLoadStatusPanel->setVisible(false); // don't show unless there's a restriction
 
   // row 10
-  QGroupBox* trainReq = new QGroupBox();
+  JPanel* trainReq = new JPanel();
   trainReq->setObjectName("trainReq");
   trainReq->setLayout(new GridBagLayout());
-  //trainReq->setBorder(BorderFactory.createTitledBorder(tr("TrainRequires")));
-  trainReq->setStyleSheet(gbStyleSheet);
-  trainReq->setTitle(tr("Optional train requirements"));
+  trainReq->setBorder(BorderFactory::createTitledBorder(tr("Optional train requirements")));
 
   for (int i = 0; i < Setup::getMaxNumberEngines() + 1; i++) {
       numEnginesBox->addItem(QString::number(i));
@@ -346,11 +322,9 @@ namespace Operations
   noneRadioButton->setChecked(true);
 
   // row 13 comment
-  QGroupBox* pC = new QGroupBox();
+  JPanel* pC = new JPanel();
   pC->setObjectName("pC");
-  //pC->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-  pC->setStyleSheet(gbStyleSheet);
-  pC->setTitle(tr("Comment"));
+  pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   pC->setLayout(new GridBagLayout());
   addItem(pC, /*commentScroller*/commentTextArea, 1, 0);
 
@@ -812,8 +786,9 @@ namespace Operations
 //             locationCheckBoxActionPerformed(e);
 //         }
 //     });
-  boxMapper->setMapping(b,b);
-  connect(b, SIGNAL(clicked(bool)), boxMapper, SLOT(map()));
+  connect(b, &QCheckBox::toggled, [=]{
+   locationCheckBoxActionPerformed(b);
+  });
  }
 
  /*public*/ void TrainEditFrame::locationCheckBoxActionPerformed(QWidget* ae)
@@ -986,8 +961,9 @@ namespace Operations
 //             typeCheckBoxActionPerformed(e);
 //         }
 //     });
-  typeCheckBoxMapper->setMapping(b,b);
-  connect(b,SIGNAL(clicked(bool)), typeCheckBoxMapper, SLOT(map()));
+  connect(b, &QCheckBox::toggled, [=]{
+   typeCheckBoxActionPerformed(b);
+  });
  }
 
  /*public*/ void TrainEditFrame::typeCheckBoxActionPerformed(QWidget* ae) {

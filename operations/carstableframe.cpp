@@ -33,7 +33,7 @@
 #include "trainsbycartypeaction.h"
 #include "instancemanager.h"
 #include "joptionpane.h"
-
+#include "borderfactory.h"
 
 //CarsTableFrame::CarsTableFrame()
 //{
@@ -120,18 +120,15 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
   // Set up the control panel
   // row 1
-  QGroupBox* cp1 = new QGroupBox();
-  //cp1.setBorder(BorderFactory.createTitledBorder(tr("SortBy")));
-  cp1->setStyleSheet(gbStyleSheet);
-  cp1->setTitle(tr("Sort by"));
+  JPanel* cp1 = new JPanel();
+  cp1->setBorder(BorderFactory::createTitledBorder(tr("Sort by")));
   QHBoxLayout* cp1Layout = new QHBoxLayout(cp1);
   cp1Layout->addWidget(sortByNumber);
   cp1Layout->addWidget(sortByRoad);
   cp1Layout->addWidget(sortByType);
 
-  QGroupBox* clp = new QGroupBox();
-  //clp.setBorder(BorderFactory.createTitledBorder(""));
-  clp->setStyleSheet(gbStyleSheet);
+  JPanel* clp = new JPanel();
+  clp->setBorder(BorderFactory::createTitledBorder(""));
   QHBoxLayout* clpLayout = new QHBoxLayout(clp);
   clpLayout->addWidget(sortByColor);
   clpLayout->addWidget(sortByLoad);
@@ -139,9 +136,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   cp1Layout->addWidget(sortByKernel);
   cp1Layout->addWidget(sortByLocation);
 
-  QGroupBox* destp = new QGroupBox();
-  //destp.setBorder(BorderFactory.createTitledBorder(""));
-  destp->setStyleSheet(gbStyleSheet);
+  JPanel* destp = new JPanel();
+  destp->setBorder(BorderFactory::createTitledBorder(""));
   QHBoxLayout* destpLayout = new QHBoxLayout(destp);
   destpLayout->addWidget(sortByDestination);
   destpLayout->addWidget(sortByFinalDestination);
@@ -149,9 +145,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   cp1Layout->addWidget(destp);
   cp1Layout->addWidget(sortByTrain);
 
-  QGroupBox* movep = new QGroupBox();
-  //movep.setBorder(BorderFactory.createTitledBorder(""));
-  movep->setStyleSheet(gbStyleSheet);
+  JPanel* movep = new JPanel();
+  movep->setBorder(BorderFactory::createTitledBorder(""));
   QHBoxLayout* movepLayout = new QHBoxLayout(movep);
   movepLayout->addWidget(sortByMoves);
   movepLayout->addWidget(sortByBuilt);
@@ -176,32 +171,27 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   //cp2.setLayout(new BoxLayout(cp2, BoxLayout.X_AXIS));
   QHBoxLayout* cp2Layout = new QHBoxLayout(cp2);
 
-  QGroupBox* cp2Add = new QGroupBox();
+  JPanel* cp2Add = new JPanel();
   FlowLayout* cp2AddLayout = new FlowLayout(cp2Add);
-  //cp2Add.setBorder(BorderFactory.createTitledBorder(""));
-  cp2Add->setStyleSheet(gbStyleSheet);
+  cp2Add->setBorder(BorderFactory::createTitledBorder(""));
   cp2AddLayout->addWidget(numCars);
   cp2AddLayout->addWidget(textCars);
   cp2AddLayout->addWidget(textSep1);
   cp2AddLayout->addWidget(addButton);
   cp2Layout->addWidget(cp2Add);
 
-  QGroupBox* cp2Find = new QGroupBox();
-  //cp2Find.setBorder(BorderFactory.createTitledBorder(""));
-  cp2Find->setStyleSheet(gbStyleSheet);
+  JPanel* cp2Find = new JPanel();
+  cp2Find->setBorder(BorderFactory::createTitledBorder(""));
   FlowLayout * cp2FindLayout = new FlowLayout(cp2Find);
-  cp2Find->setStyleSheet(gbStyleSheet);
   findButton->setToolTip(tr("Find car by road number. Asterisk \"*\" = wild card."));
   findCarTextBox->setToolTip(tr("Find car by road number. Asterisk \"*\" = wild card."));
   cp2FindLayout->addWidget(findButton);
   cp2FindLayout->addWidget(findCarTextBox);
   cp2Layout->addWidget(cp2Find);
 
-  QGroupBox* cp2Save = new QGroupBox();
-  //cp2Save.setBorder(BorderFactory.createTitledBorder(""));
-  cp2Save->setStyleSheet(gbStyleSheet);
+  JPanel* cp2Save = new JPanel();
+  cp2Save->setBorder(BorderFactory::createTitledBorder(""));
   FlowLayout* cp2SaveLayout = new FlowLayout(cp2Save);
-  cp2Save->setStyleSheet(gbStyleSheet);
   cp2SaveLayout->addWidget(saveButton);
   cp2Layout->addWidget(cp2Save);
 

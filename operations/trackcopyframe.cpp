@@ -10,9 +10,10 @@
 #include <QCheckBox>
 #include "propertychangeevent.h"
 #include "gridbaglayout.h"
-#include <QGroupBox>
+#include "jpanel.h"
 #include "vptr.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
  {
@@ -66,28 +67,22 @@ namespace Operations
      // Set up the panels
      // Layout the panel by rows
      // row 1
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     //pName.setBorder(BorderFactory.createTitledBorder(tr("TrackName")));
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Track Name"));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Track Name")));
      addItem(pName, trackNameTextField, 0, 0);
 
      // row 2
-     QGroupBox* pCopy = new QGroupBox();
+     JPanel* pCopy = new JPanel();
      pCopy->setLayout(new GridBagLayout());
-     //pCopy.setBorder(BorderFactory.createTitledBorder(tr("SelectTrackToCopy")));
-     pCopy->setStyleSheet(gbStyleSheet);
-     pCopy->setTitle(tr("Select track to copy"));
+     pCopy->setBorder(BorderFactory::createTitledBorder(tr("Select track to copy")));
      addItem(pCopy, locationBox, 0, 0);
      addItem(pCopy, trackBox, 1, 0);
 
      // row 3
-     QGroupBox* pOptions = new QGroupBox();
+     JPanel* pOptions = new JPanel();
      pOptions->setLayout(new GridBagLayout());
-     //pOptions.setBorder(BorderFactory.createTitledBorder(tr("Options")));
-     pOptions->setStyleSheet(gbStyleSheet);
-     pOptions->setTitle(tr("Options"));
+     pOptions->setBorder(BorderFactory::createTitledBorder(tr("Options")));
      addItemLeft(pOptions, sameNameCheckBox, 0, 0);
      addItemLeft(pOptions, moveRollingStockCheckBox, 0, 1);
      addItemLeft(pOptions, deleteTrackCheckBox, 0, 2);

@@ -63,8 +63,8 @@ namespace Operations
   Location* _location;// = null;
   QList<QCheckBox*> checkBoxes;// = new ArrayList<JCheckBox>();
   QWidget* panelCheckBoxes;// = new JPanel();
-  QGroupBox* typePane;
-  QGroupBox* directionPanel;// = new JPanel();
+  JPanel* typePane;
+  JPanel* directionPanel;// = new JPanel();
 
   // major buttons
   QPushButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
@@ -107,7 +107,6 @@ namespace Operations
   /*private*/ void setVisibleLocations();
   /*private*/ void setEnabledLocations();
   /*private*/ void addCheckBoxTrainAction(QCheckBox* b);
-  QSignalMapper* chkBoxMapper;
   YardEditFrame* yef;// = NULL;
   SpurEditFrame* sef;// = NULL;
   InterchangeEditFrame* ief;// = NULL;

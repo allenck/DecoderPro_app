@@ -6,6 +6,17 @@
 
 namespace Operations
 {
+ class CSResourceBundle : public ResourceBundle
+ {
+  public:
+   CSResourceBundle();
+   QString getMessage(QString key)
+   {
+    return map.value(key);
+   }
+  private:
+   QMap<QString, QString> map = QMap<QString, QString>();
+ };
  class CarAttributeEditFrame;
  class CarLoadEditFrame;
  class CarManager;
@@ -20,6 +31,7 @@ namespace Operations
   /*public*/ void setDestinationEnabled(bool enable);
   /*public*/ void dispose();
   /*public*/ QString getClassName();
+  /*public*/ ResourceBundle* getRb();
 
  public slots:
   /*public*/ void comboBoxActionPerformed(QWidget* ae);
@@ -40,7 +52,7 @@ namespace Operations
   CarAttributeEditFrame* f;
   /*private*/ Car* getTestCar(Car* car);
   /*private*/ void enableDestinationFields(bool enabled);
-
+  CSResourceBundle* rb = new CSResourceBundle();
 
  protected:
   // combo boxes
@@ -75,5 +87,6 @@ namespace Operations
   /*protected*/ bool save();
   friend class CarsSetFrame;
  };
+
 }
 #endif // CARSETFRAME_H

@@ -6,7 +6,7 @@
 #include "track.h"
 #include "train.h"
 #include "control.h"
-#include <QGroupBox>
+#include "jpanel.h"
 #include <QScrollArea>
 #include <QCheckBox>
 #include "jcombobox.h"
@@ -15,7 +15,7 @@
 #include "cartypes.h"
 #include <QLabel>
 #include "instancemanager.h"
-
+#include "borderfactory.h"
 namespace Operations
 {
  /**
@@ -50,19 +50,15 @@ namespace Operations
      QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // Set up the panels
-     QGroupBox* pOptions = new QGroupBox();
+     JPanel* pOptions = new JPanel();
      pOptions->setLayout(new GridBagLayout());
-     //pOptions.setBorder(BorderFactory.createTitledBorder(tr("Options")));
-     pOptions->setStyleSheet(gbStyleSheet);
-     pOptions->setTitle(tr("Options"));
+     pOptions->setBorder(BorderFactory::createTitledBorder(tr("Options")));
 
      addItem(pOptions, showAllTrainsCheckBox, 0, 0);
 
-     QGroupBox* pCarType = new QGroupBox();
+     JPanel* pCarType = new JPanel();
      pCarType->setLayout(new GridBagLayout());
-     //pCarType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     pCarType->setStyleSheet(gbStyleSheet);
-     pCarType->setTitle(tr("Type"));
+     pCarType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
      pCarType->setMaximumSize(QSize(2000, 50));
 
      addItem(pCarType, typeComboBox, 0, 0);
@@ -70,9 +66,7 @@ namespace Operations
      pTrains->setLayout(new GridBagLayout());
      QScrollArea* trainsPane = new QScrollArea(/*pTrains*/);
      //trainsPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //trainsPane.setBorder(BorderFactory.createTitledBorder(tr("Trains")));
-     pTrains->setStyleSheet(gbStyleSheet);
-     pTrains->setTitle(tr("Trains"));
+     pTrains->setBorder(BorderFactory::createTitledBorder(tr("Trains")));
 
      thisLayout->addWidget(pOptions);
      thisLayout->addWidget(pCarType);

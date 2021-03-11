@@ -13,6 +13,7 @@
 #include "vptr.h"
 #include "traineditframe.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -47,23 +48,19 @@ namespace Operations
      // general GUI config
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+     QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // Set up the panels
      // Layout the panel by rows
      // row 1
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     //pName.setBorder(BorderFactory.createTitledBorder(tr("Name")));
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
      addItem(pName, trainNameTextField, 0, 0);
 
      // row 2
-     QGroupBox* pCopy = new QGroupBox();
+     JPanel* pCopy = new JPanel();
      pCopy->setLayout(new GridBagLayout());
-     //pCopy.setBorder(BorderFactory.createTitledBorder(tr("SelectTrain")));
-     pCopy->setStyleSheet(gbStyleSheet);
-     pCopy->setTitle(tr("Select Train to Copy"));
+     pCopy->setBorder(BorderFactory::createTitledBorder(tr("Select Train to Copy")));
      addItem(pCopy, trainBox, 0, 0);
 
      trainBox->setCurrentIndex(trainBox->findData(VPtr<Train>::asQVariant(train)));

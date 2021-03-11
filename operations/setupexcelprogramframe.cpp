@@ -7,6 +7,8 @@
 #include "xmlfile.h"
 #include "operationsmanager.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
+
 using namespace Operations;
 
 SetupExcelProgramFrame::SetupExcelProgramFrame(QWidget* parent) : OperationsFrame(parent)
@@ -16,7 +18,7 @@ SetupExcelProgramFrame::SetupExcelProgramFrame(QWidget* parent) : OperationsFram
  addButton = new QPushButton(tr("Add"));
  testButton = new QPushButton(tr("Test"));
  saveButton = new QPushButton(tr("Save"));
- pDirectoryName = new QGroupBox();
+ pDirectoryName = new JPanel();
 }
 /**
  * Frame for user edit of the file name and setup of an Excel program.
@@ -37,24 +39,18 @@ SetupExcelProgramFrame::SetupExcelProgramFrame(QWidget* parent) : OperationsFram
 
     // Layout the panel by rows
     // row 1
-    QGroupBox* pOptions = new QGroupBox();
+    JPanel* pOptions = new JPanel();
     QVBoxLayout* pOptionsLayout = new QVBoxLayout(pOptions);
-    //pOptions.setBorder(BorderFactory.createTitledBorder(tr("Options")));
-    pOptions->setStyleSheet(gbStyleSheet);
-    pOptions->setTitle(tr("Options"));
+    pOptions->setBorder(BorderFactory::createTitledBorder(tr("Options")));
     pOptionsLayout->addWidget(generateCheckBox);
 
     // row 2
-    //pDirectoryName.setBorder(BorderFactory.createTitledBorder(tr("Directory")));
+    pDirectoryName->setBorder(BorderFactory::createTitledBorder(tr("Directory")));
     pDirectoryNameLayout = new QVBoxLayout(pDirectoryName);
-    pDirectoryName->setStyleSheet(gbStyleSheet);
-    pDirectoryName->setTitle(tr("Directory"));
 
-    QGroupBox* pFileName = new QGroupBox();
-    //pFileName.setBorder(BorderFactory.createTitledBorder(tr("FileName")));
+    JPanel* pFileName = new JPanel();
+    pFileName->setBorder(BorderFactory::createTitledBorder(tr("File Name")));
     QVBoxLayout* pFileNameLayout = new QVBoxLayout(pFileName);
-    pFileName->setStyleSheet(gbStyleSheet);
-    pFileName->setTitle(tr("FileName"));
     pFileNameLayout->addWidget(fileNameTextField);
 
     // row 4 buttons

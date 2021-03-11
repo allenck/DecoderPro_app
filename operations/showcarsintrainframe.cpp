@@ -19,6 +19,7 @@
 #include <QCheckBox>
 #include <QThread>
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -66,15 +67,14 @@ namespace Operations
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
-     QGroupBox* carPaneFrame = new QGroupBox;
+     JPanel* carPaneFrame = new JPanel;
      carPaneFrame->setLayout(new QVBoxLayout);
      carPane = new QScrollArea(/*pCars*/);
      carPane->setWidgetResizable(true);
      carPaneFrame->layout()->addWidget(carPane);
-     //carPane.setBorder(BorderFactory.createTitledBorder(tr("Cars")));
+     carPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Cars")));
      //carPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 // carPane.setPreferredSize(new Dimension(200, 300));
-     carPaneFrame->setStyleSheet(gbStyleSheet);
 
      // Set up the panels
      // Layout the panel by rows
@@ -83,11 +83,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      pRow2->setLayout(new QVBoxLayout);//(pRow2, BoxLayout.X_AXIS));
 
      // row 2a (train name)
-     QGroupBox* pTrainName = new QGroupBox();
+     JPanel* pTrainName = new JPanel();
      pTrainName->setLayout(new QHBoxLayout);
-     //pTrainName.setBorder(BorderFactory.createTitledBorder(tr("Train")));
-     pTrainName->setStyleSheet(gbStyleSheet);
-     pTrainName->setTitle(tr("Train"));
+     pTrainName->setBorder(BorderFactory::createTitledBorder(tr("Train")));
      pTrainName->layout()->addWidget(textTrainName);
 
      pRow2->layout()->addWidget(pTrainName);
@@ -101,17 +99,13 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      pRow10->setLayout(new QHBoxLayout);//(pRow10, BoxLayout.X_AXIS));
 
      // row 10a (location name)
-     QGroupBox* pLocationName = new QGroupBox();
-     //pLocationName.setBorder(BorderFactory.createTitledBorder("Location"));
-     pLocationName->setStyleSheet(gbStyleSheet);
-     pLocationName->setTitle(tr("Location"));
+     JPanel* pLocationName = new JPanel();
+     pLocationName->setBorder(BorderFactory::createTitledBorder("Location"));
      pLocationName->layout()->addWidget(textLocationName);
 
      // row 10c (next location name)
-     QGroupBox* pNextLocationName = new QGroupBox();
-     //pNextLocationName.setBorder(BorderFactory.createTitledBorder(tr("NextLocation")));
-     pNextLocationName->setStyleSheet(gbStyleSheet);
-     pNextLocationName->setTitle(tr("Next Location"));
+     JPanel* pNextLocationName = new JPanel();
+     pNextLocationName->setBorder(BorderFactory::createTitledBorder(tr("Next Location")));
      pNextLocationName->layout()->addWidget(textNextLocationName);
 
      pRow10->layout()->addWidget(pLocationName);
@@ -129,9 +123,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 //		JPanel pStatus = new JPanel();
 //		pStatus.setLayout(new GridBagLayout());
      //textStatus.setBorder(BorderFactory.createTitledBorder(""));
-     QGroupBox* textStatusFrame = new QGroupBox;
+     JPanel* textStatusFrame = new JPanel;
      textStatusFrame->setLayout(new QVBoxLayout);
-     textStatusFrame->setStyleSheet(gbStyleSheet);
+     textStatusFrame->setBorder(BorderFactory::createTitledBorder(""));
      textStatusFrame->layout()->addWidget(textStatus);
 //		addItem(pStatus, textStatus, 0, 0);
      //textStatus.setBackground(NULL);

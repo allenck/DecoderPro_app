@@ -21,6 +21,9 @@ class ActiveTrain : public QObject
 public:
  //explicit ActiveTrain(QObject *parent = 0);
  /*public*/ ActiveTrain(Transit* t, QString name, int trainSource, QObject *parent = 0);
+  /*public*/ void terminate();
+  /*public*/ void dispose();
+  /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
 
  /**
   * Constants representing the Status of this ActiveTrain When created, the
@@ -233,6 +236,7 @@ protected:
  /*protected*/ void setRestart();
 
  friend class DispatcherFrame;
+ friend class AutoTrainsFrame;
 };
 
 #endif // ACTIVETRAIN_H

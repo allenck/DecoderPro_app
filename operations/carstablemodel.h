@@ -7,7 +7,6 @@
 #include "appslib_global.h"
 #include "propertychangelistener.h"
 
-class QSignalMapper;
 class PropertyChangeEvent;
 class Logger;
 namespace Operations

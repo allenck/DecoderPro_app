@@ -7,9 +7,11 @@
 #include "gridbaglayout.h"
 #include <QGroupBox>
 #include <QCheckBox>
-#include <QComboBox>
+#include "jcombobox.h"
 #include "setup.h"
 #include "control.h"
+#include "jpanel.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -46,7 +48,7 @@ namespace Operations
  buildReportAlwaysPreviewCheckBox = new QCheckBox(tr("BuildReportAlwaysPreview"));
 
  // combo boxes
- fontSizeComboBox = new QComboBox();
+ fontSizeComboBox = new JComboBox();
      // the following code sets the frame's initial state
      // add tool tips
      saveButton->setToolTip(tr("Writes this window's settings to file"));
@@ -55,27 +57,21 @@ namespace Operations
      setLayout(new QVBoxLayout);//(this, BoxLayout.Y_AXIS));
 
      // build report
-     QGroupBox* pReport = new QGroupBox();
+     JPanel* pReport = new JPanel();
      pReport->setLayout(new GridBagLayout());
-     //pReport->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutReportOptions")));
-     pReport->setStyleSheet(gbStyleSheet);
-     pReport->setTitle(tr("Build Report Options"));
+     pReport->setBorder(BorderFactory::createTitledBorder(tr("Build Report Options")));
      // build report options
      addItemWidth(pReport, buildReportCheckBox, 3, 1, 1);
      addItemWidth(pReport, buildReportIndentCheckBox, 3, 1, 2);
      addItemWidth(pReport, buildReportAlwaysPreviewCheckBox, 3, 1, 3);
 
-     QGroupBox* pFontSize = new QGroupBox();
-     //pFontSize->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFontSize")));
-     pFontSize->setStyleSheet(gbStyleSheet);
-     pFontSize->setTitle(tr("Font Size"));
+     JPanel* pFontSize = new JPanel();
+     pFontSize->setBorder(BorderFactory::createTitledBorder(tr("Font Size")));
      pFontSize->layout()->addWidget(fontSizeComboBox);
 
-     QGroupBox* pLevel = new QGroupBox();
+     JPanel* pLevel = new JPanel();
      pLevel->setLayout(new GridBagLayout());
-     //pLevel->setBorder(BorderFactory.createTitledBorder(tr("BuildReport")));
-     pLevel->setStyleSheet(gbStyleSheet);
-     pLevel->setTitle(tr("Detail Level"));
+     pLevel->setBorder(BorderFactory::createTitledBorder(tr("Detail Level")));
 
      // build report level radio buttons
      addItemLeft(pLevel, buildReportMin, 1, 0);
@@ -83,11 +79,9 @@ namespace Operations
      addItemLeft(pLevel, buildReportMax, 3, 0);
      addItemLeft(pLevel, buildReportVD, 4, 0);
 
-     QGroupBox* pRouterLevel = new QGroupBox();
+     JPanel* pRouterLevel = new JPanel();
      pRouterLevel->setLayout(new GridBagLayout());
-     //pRouterLevel->setBorder(BorderFactory.createTitledBorder(tr("BuildReportRouter")));
-     pRouterLevel->setStyleSheet(gbStyleSheet);
-     pRouterLevel->setTitle(tr("Router Detail Level"));
+     pRouterLevel->setBorder(BorderFactory::createTitledBorder(tr("Router Detail Level")));
 
      // build report level radio buttons
      addItemLeft(pRouterLevel, buildReportRouterNor, 2, 0);
@@ -95,9 +89,8 @@ namespace Operations
      addItemLeft(pRouterLevel, buildReportRouterVD, 4, 0);
 
      // controls
-     QGroupBox* pControl = new QGroupBox();
-     //pControl->setBorder(BorderFactory.createTitledBorder(""));
-     pControl->setStyleSheet(gbStyleSheet);
+     JPanel* pControl = new JPanel();
+     pControl->setBorder(BorderFactory::createTitledBorder(""));
      pControl->setLayout(new GridBagLayout());
      addItem(pControl, saveButton, 0, 0);
 

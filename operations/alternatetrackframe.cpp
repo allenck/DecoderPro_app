@@ -12,6 +12,7 @@
 #include "control.h"
 #include "operationsxml.h"
 #include "setup.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -43,10 +44,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // load the panel
      // row 2
-     QGroupBox* pAlternate = new QGroupBox();
+     JPanel* pAlternate = new JPanel();
      pAlternate->setLayout(new GridBagLayout());
-     //pAlternate.setBorder(BorderFactory.createTitledBorder(""));
-     pAlternate->setStyleSheet(gbStyleSheet);
+     pAlternate->setBorder(BorderFactory::createTitledBorder(""));
      addItem(pAlternate, trackBox, 0, 0);
 
      _track->getLocation()->updateComboBox(trackBox);

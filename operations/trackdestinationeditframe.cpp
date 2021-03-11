@@ -27,6 +27,7 @@
 #include "carmanager.h"
 #include "router.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -79,7 +80,7 @@ namespace Operations
      // property changes
      // the following code sets the frame's initial state
      //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+     QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // Set up the panels
      // Layout the panel by rows
      // row 1
@@ -88,32 +89,26 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      p1->setMaximumSize(QSize(2000, 250));
 
      // row 1a
-     QGroupBox* pTrackName = new QGroupBox();
+     JPanel* pTrackName = new JPanel();
      pTrackName->setLayout(new GridBagLayout());
-     //pTrackName->setBorder(BorderFactory.createTitledBorder(tr("Track")));
-     pTrackName->setStyleSheet(gbStyleSheet);
-     pTrackName->setTitle(tr("Track"));
+     pTrackName->setBorder(BorderFactory::createTitledBorder(tr("Track")));
      addItem(pTrackName, trackName, 0, 0);
 
      // row 1b
-     QGroupBox* pLocationName = new QGroupBox();
+     JPanel* pLocationName = new JPanel();
      pLocationName->setLayout(new GridBagLayout());
-     //pLocationName->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-     pLocationName->setStyleSheet(gbStyleSheet);
-     pLocationName->setTitle(tr("Location"));
+     pLocationName->setBorder(BorderFactory::createTitledBorder(tr("Location")));
      addItem(pLocationName, new QLabel(_track->getLocation()->getName()), 0, 0);
 
      p1->layout()->addWidget(pTrackName);
      p1->layout()->addWidget(pLocationName);
 
      // row 3
-     QGroupBox* p3Frame = new QGroupBox;
+     JPanel* p3Frame = new JPanel;
      QWidget* p3 = new QWidget();
      p3->setLayout(new QVBoxLayout);//(p3, BoxLayout.Y_AXIS));
      QScrollArea* pane3 = new QScrollArea(/*p3*/);
-     //pane3->setBorder(BorderFactory.createTitledBorder(tr("DestinationTrack")));
-     p3Frame->setStyleSheet(gbStyleSheet);
-     p3Frame->setTitle(tr("Destination Track"));
+     p3Frame->setBorder(BorderFactory::createTitledBorder(tr("Destination Track")));
      pane3->setMaximumSize(QSize(2000, 400));
 
      QWidget* pRadioButtons = new QWidget();
@@ -126,14 +121,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      p3->layout()->addWidget(pRadioButtons);
 
      // row 4
-     QGroupBox* panelDestinationsFrame = new QGroupBox;
+     JPanel* panelDestinationsFrame = new JPanel;
      panelDestinationsFrame->setLayout(new QVBoxLayout);
      panelDestinationsFrame->layout()->addWidget(paneDestinations);
      paneDestinations->setWidgetResizable(true);
      panelDestinations->setLayout(new GridBagLayout());
-     //paneDestinations->setBorder(BorderFactory.createTitledBorder(tr("Destinations")));
-     panelDestinationsFrame->setStyleSheet(gbStyleSheet);
-     panelDestinationsFrame->setTitle(tr("Destinations"));
+     panelDestinationsFrame->setBorder(BorderFactory::createTitledBorder(tr("Destinations")));
 
      QButtonGroup* bGroup = new QButtonGroup();
      bGroup->addButton(destinationsAll);
@@ -141,10 +134,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      bGroup->addButton(destinationsExclude);
 
      // row 12
-     QGroupBox* panelButtons = new QGroupBox();
+     JPanel* panelButtons = new JPanel();
      panelButtons->setLayout(new GridBagLayout());
-     //panelButtons->setBorder(BorderFactory.createTitledBorder(""));
-     panelButtons->setStyleSheet(gbStyleSheet);
+     panelButtons->setBorder(BorderFactory::createTitledBorder(""));
      //panelButtons->setTitle(tr(""));
      panelButtons->setMaximumSize(QSize(2000, 200));
 

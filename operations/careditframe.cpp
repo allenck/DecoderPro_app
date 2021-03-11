@@ -15,7 +15,7 @@
 #include "carroads.h"
 #include "cartypes.h"
 #include <QBoxLayout>
-#include <QGroupBox>
+#include "jpanel.h"
 #include "jcombobox.h"
 #include <QScrollArea>
 #include "logger.h"
@@ -35,11 +35,8 @@
 #include "rollingstockattribute.h"
 #include "carloadeditframe.h"
 #include "rollingstockeditframe.h"
+#include "borderfactory.h"
 
-//CarEditFrame::CarEditFrame()
-//{
-
-//}
 namespace Operations
 {
 /**
@@ -118,13 +115,10 @@ namespace Operations
   rfidComboBox = new JComboBox();
 
   // panels
-  pBlocking = new QGroupBox();
+  pBlocking = new JPanel();
 
   editActive = false;
   _car = NULL;
-
-  editButtonMapper = new QSignalMapper();
-  connect(editButtonMapper, SIGNAL(mapped(QWidget*)), this, SLOT(buttonEditActionPerformed(QWidget*)));
  }
 
  /*public*/ void CarEditFrame::initComponents()
@@ -169,31 +163,25 @@ namespace Operations
 
   // Layout the panel by rows
   // row 1
-  QGroupBox* pRoad = new QGroupBox();
+  JPanel* pRoad = new JPanel();
   //pRoad.setLayout(new GridBagLayout());
-  //pRoad.setBorder(BorderFactory.createTitledBorder(tr("Road")));
-  pRoad->setStyleSheet(gbStyleSheet);
-  pRoad->setTitle(tr("Road"));
+  pRoad->setBorder(BorderFactory::createTitledBorder(tr("Road")));
   addItem(pRoad, roadComboBox, 1, 0);
   addItem(pRoad, editRoadButton, 2, 0);
   pPanelLayout->addWidget(pRoad);
 
   // row 2
-  QGroupBox* pRoadNumber = new QGroupBox();
+  JPanel* pRoadNumber = new JPanel();
   //pRoadNumber.setLayout(new GridBagLayout());
-  //pRoadNumber.setBorder(BorderFactory.createTitledBorder(tr("RoadNumber")));
-  pRoadNumber->setStyleSheet(gbStyleSheet);
-  pRoadNumber->setTitle(tr("Road Number"));
+  pRoadNumber->setBorder(BorderFactory::createTitledBorder(tr("Road Number")));
   addItem(pRoadNumber, roadNumberTextField, 1, 0);
   addItem(pRoadNumber, clearRoadNumberButton, 2, 0);
   pPanelLayout->addWidget(pRoadNumber);
 
   // row 3
-  QGroupBox* pType = new QGroupBox();
+  JPanel* pType = new JPanel();
   //pType.setLayout(new GridBagLayout());
-  //pType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-  pType->setStyleSheet(gbStyleSheet);
-  pType->setTitle(tr("Type"));
+  pType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
   addItem(pType, typeComboBox, 0, 0);
   addItem(pType, editTypeButton, 2, 0);
   addItem(pType, hazardousCheckBox, 3, 0);
@@ -205,31 +193,25 @@ namespace Operations
 
   // row 3a
   //pBlocking.setLayout(new GridBagLayout());
-  //pBlocking.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutPassengerBlocking")));
-  pBlocking->setStyleSheet(gbStyleSheet);
-  pBlocking->setTitle(tr("Passenger Car Blocking Order"));
+  pBlocking->setBorder(BorderFactory::createTitledBorder(tr("Passenger Car Blocking Order")));
   addItem(pBlocking, blockingTextField, 0, 0);
   blockingTextField->setText("0");
   pPanelLayout->addWidget(pBlocking);
   pBlocking->setVisible(false);
 
   // row 4
-  QGroupBox* pLength = new QGroupBox();
+  JPanel* pLength = new JPanel();
   //pLength.setLayout(new GridBagLayout());
-  //pLength.setBorder(BorderFactory.createTitledBorder(tr("Length")));
-  pLength->setStyleSheet(gbStyleSheet);
-  pLength->setTitle("Length");
+  pLength->setBorder(BorderFactory::createTitledBorder(tr("Length")));
   addItem(pLength, lengthComboBox, 1, 0);
   addItem(pLength, editLengthButton, 2, 0);
   pPanelLayout->addWidget(pLength);
 
   // row 5
   // row 7
-  QGroupBox* pWeight = new QGroupBox();
+  JPanel* pWeight = new JPanel();
   //pWeight.setLayout(new GridBagLayout());
-  //pWeight.setBorder(BorderFactory.createTitledBorder(tr("Weight")));
-  pWeight->setStyleSheet(gbStyleSheet);
-  pWeight->setTitle("Weight");
+  pWeight->setBorder(BorderFactory::createTitledBorder(tr("Weight")));
   addItem(pWeight, textWeightOz, 0, 0);
   addItem(pWeight, weightTextField, 1, 0);
   addItem(pWeight, fillWeightButton, 2, 0);
@@ -239,20 +221,17 @@ namespace Operations
   pPanelLayout->addWidget(pWeight);
 
   // row 11
-  QGroupBox* pLocation = new QGroupBox();
+  JPanel* pLocation = new JPanel();
 //     pLocation.setLayout(new GridBagLayout());
-//     pLocation.setBorder(BorderFactory.createTitledBorder(tr("LocationAndTrack")));
-  pLocation->setStyleSheet(gbStyleSheet);
-  pLocation->setTitle(tr("Location and Track"));
+  pLocation->setBorder(BorderFactory::createTitledBorder(tr("Location and Track")));
   addItem(pLocation, locationBox, 1, 0);
   addItem(pLocation, trackLocationBox, 2, 0);
   addItem(pLocation, autoTrackCheckBox, 3, 0);
   pPanelLayout->addWidget(pLocation);
 
   // optional panel
-  QGroupBox* pOptional = new QGroupBox();
-  pOptional->setStyleSheet(gbStyleSheet);
-  pOptional->setTitle("Optional");
+  JPanel* pOptional = new JPanel();
+  pOptional->setBorder(BorderFactory::createTitledBorder(tr("Optional")));
   QVBoxLayout* pOptionalLayout1 = new QVBoxLayout(pOptional);
   //pOptional.setLayout(new BoxLayout(pOptional, BoxLayout.Y_AXIS));
   QScrollArea* optionPane = new QScrollArea(/*pOptional*/);
@@ -262,55 +241,44 @@ namespace Operations
   optionPane->setWidget(scrollWidget);
   optionPane->setWidgetResizable(true);
 
-//   optionPane.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptional")));
+//   optionPane->setBorder(BorderFactory::createTitledBorder(tr("BorderLayoutOptional")));
 
   // row 12
-  QGroupBox* pColor = new QGroupBox();
-  pColor->setStyleSheet(gbStyleSheet);
+  JPanel* pColor = new JPanel();
   //pColor.setLayout(new GridBagLayout());
-  //pColor.setBorder(BorderFactory.createTitledBorder(tr("Color")));
-  pColor->setStyleSheet(gbStyleSheet);
-  pColor->setTitle(tr("Color"));
+  pColor->setBorder(BorderFactory::createTitledBorder(tr("Color")));
   addItem(pColor, colorComboBox, 1, 0);
   addItem(pColor, editColorButton, 2, 0);
   pOptionalLayout->addWidget(pColor);
 
   // row 13
-  QGroupBox* pLoad = new QGroupBox();
+  JPanel* pLoad = new JPanel();
 //     pLoad.setLayout(new GridBagLayout());
-//     pLoad.setBorder(BorderFactory.createTitledBorder(tr("Load")));
-  pLoad->setStyleSheet(gbStyleSheet);
-  pLoad->setTitle(tr("Load"));
+  pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
   pLoad->setLayout(new GridBagLayout);
   addItem(pLoad, loadComboBox, 1, 0);
   addItem(pLoad, editLoadButton, 2, 0);
   pOptionalLayout->addWidget(pLoad);
 
   // row 15
-  QGroupBox* pKernel = new QGroupBox();
+  JPanel* pKernel = new JPanel();
 //     pKernel.setLayout(new GridBagLayout());
-//     pKernel.setBorder(BorderFactory.createTitledBorder(tr("Kernel")));
-  pKernel->setStyleSheet(gbStyleSheet);
-  pKernel->setTitle(tr("Kernel"));
+  pKernel->setBorder(BorderFactory::createTitledBorder(tr("Kernel")));
   addItem(pKernel, kernelComboBox, 1, 0);
   addItem(pKernel, editKernelButton, 2, 0);
   pOptionalLayout->addWidget(pKernel);
 
   // row 17
-  QGroupBox* pBuilt = new QGroupBox();
+  JPanel* pBuilt = new JPanel();
 //     pBuilt.setLayout(new GridBagLayout());
-//     pBuilt.setBorder(BorderFactory.createTitledBorder(tr("Built")));
-  pBuilt->setStyleSheet(gbStyleSheet);
-  pBuilt->setTitle(tr("Built"));
+  pBuilt->setBorder(BorderFactory::createTitledBorder(tr("Built")));
   addItem(pBuilt, builtTextField, 1, 0);
   pOptionalLayout->addWidget(pBuilt);
 
   // row 19
-  QGroupBox* pOwner = new QGroupBox();
+  JPanel* pOwner = new JPanel();
 //     pOwner.setLayout(new GridBagLayout());
-//     pOwner.setBorder(BorderFactory.createTitledBorder(tr("Owner")));
-  pOwner->setStyleSheet(gbStyleSheet);
-  pOwner->setTitle(tr("Owner"));
+  pOwner->setBorder(BorderFactory::createTitledBorder(tr("Owner")));
   addItem(pOwner, ownerComboBox, 1, 0);
   addItem(pOwner, editOwnerButton, 2, 0);
   pOptionalLayout->addWidget(pOwner);
@@ -318,11 +286,9 @@ namespace Operations
   // row 20
   if (Setup::isValueEnabled())
   {
-   QGroupBox* pValue = new QGroupBox();
+   JPanel* pValue = new JPanel();
 //         pValue.setLayout(new GridBagLayout());
-//         pValue.setBorder(BorderFactory.createTitledBorder(Setup::getValueLabel()));
-   pValue->setStyleSheet(gbStyleSheet);
-   pValue->setTitle(Setup::getValueLabel());
+   pValue->setBorder(BorderFactory::createTitledBorder(Setup::getValueLabel()));
    addItem(pValue, valueTextField, 1, 0);
    pOptionalLayout->addWidget(pValue);
   }
@@ -330,11 +296,9 @@ namespace Operations
   // row 22
   if (Setup::isRfidEnabled())
   {
-   QGroupBox* pRfid = new QGroupBox();
+   JPanel* pRfid = new JPanel();
 //         pRfid.setLayout(new GridBagLayout());
-//         pRfid.setBorder(BorderFactory.createTitledBorder(Setup::getRfidLabel()));
-   pRfid->setStyleSheet(gbStyleSheet);
-   pRfid->setTitle(Setup::getRfidLabel());
+   pRfid->setBorder(BorderFactory::createTitledBorder(Setup::getRfidLabel()));
    addItem(pRfid, rfidComboBox, 1, 0);
    rfidComboBox->addItem("", VPtr<IdTag>::asQVariant(NULL));
    //InstanceManager::getDefault("IdTagManager").getNamedBeanList().forEach((tag) -> rfidComboBox.addItem((IdTag) tag));
@@ -347,11 +311,9 @@ namespace Operations
   }
 
   // row 24
-  QGroupBox* pComment = new QGroupBox();
+  JPanel* pComment = new JPanel();
 //     pComment.setLayout(new GridBagLayout());
-//     pComment.setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-  pComment->setStyleSheet(gbStyleSheet);
-  pComment->setTitle(tr("Comment"));
+  pComment->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   addItem(pComment, commentTextField, 1, 0);
   pOptionalLayout->addWidget(pComment);
 

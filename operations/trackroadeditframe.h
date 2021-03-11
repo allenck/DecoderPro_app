@@ -32,7 +32,7 @@ namespace Operations
   Track* _track;//= null;
 
   // panels
-  QGroupBox* pRoadControls;//= new JPanel();
+  JPanel* pRoadControls;//= new JPanel();
   QWidget* panelRoads;//= new JPanel();
   QScrollArea* paneRoads;//= new JScrollPane(panelRoads);
 

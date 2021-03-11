@@ -19,6 +19,7 @@
 #include "file.h"
 #include "logger.h"
 #include "fileutil.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -81,30 +82,25 @@ namespace Operations
       //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
-      QGroupBox* pOptionNameFrame = new QGroupBox();
+      JPanel* pOptionNameFrame = new JPanel();
       pOptionNameFrame->setLayout(new QVBoxLayout);
       QWidget* pOptionName = new QWidget();
       pOptionName->setLayout(new GridBagLayout());
       QScrollArea* pOptionNamePane = new QScrollArea(/*pOptionName*/);
       pOptionNamePane->setWidgetResizable(true);
       pOptionNameFrame->layout()->addWidget(pOptionNamePane);
-//      ->setBorder(BorderFactory.createTitledBorder(Bundle
-//              .getMessage("BorderLayoutRailRoadName")));
-      pOptionNameFrame->setStyleSheet(gbStyleSheet);
-      pOptionNameFrame->setTitle(tr("Optional Railroad Name for this Train"));
+      pOptionNameFrame->setBorder(BorderFactory::createTitledBorder(tr("Optional Railroad Name for this Train")));
       addItem(pOptionName, railroadNameTextField, 0, 0);
 
       // manifest logo
-      QGroupBox* pOptionLogoFrame = new QGroupBox;
+      JPanel* pOptionLogoFrame = new JPanel;
       pOptionLogoFrame->setLayout(new QVBoxLayout);
       QWidget* pOptionLogo = new QWidget();
       pOptionLogo->setLayout(new GridBagLayout());
       QScrollArea* pOptionLogoPane = new QScrollArea(/*pOptionLogo*/);
       pOptionLogoPane->setWidgetResizable(true);
       pOptionLogoFrame->layout()->addWidget(pOptionLogoPane);
-      //pOptionLogoPane->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutLogo")));
-      pOptionLogoFrame->setStyleSheet(gbStyleSheet);
-      pOptionLogoFrame->setTitle(tr("Optional Logo for this Train "));
+      pOptionLogoFrame->setBorder(BorderFactory::createTitledBorder(tr("Optional Logo for this Train ")));
       addItem(pOptionLogo, textPad, 2, 18);
       addItem(pOptionLogo, addLogoButton, 2, 20);
       addItemLeft(pOptionLogo, removeLogoButton, 0, 21);
@@ -112,17 +108,15 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       updateLogoButtons();
 
       // Checkboxes
-      QGroupBox* pCheckboxesFrame = new QGroupBox;
+      JPanel* pCheckboxesFrame = new JPanel;
       pCheckboxesFrame->setLayout(new QVBoxLayout);
       QWidget* pCheckboxes = new QWidget();
       pCheckboxes->setLayout(new GridBagLayout());
       QScrollArea* pCheckboxesPane = new QScrollArea(/*pCheckboxes*/);
       pCheckboxesPane->setWidgetResizable(true);
       pCheckboxesFrame->layout()->addWidget(pCheckboxesPane);
-//      pCheckboxesPane
-//              ->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutManifest")));
-      pCheckboxesFrame->setStyleSheet(gbStyleSheet);
-      pCheckboxesFrame->setTitle(tr("Manifest"));
+      pCheckboxesFrame
+              ->setBorder(BorderFactory::createTitledBorder(tr("Manifest")));
       addItem(pCheckboxes, ShowTimesCheckBox, 0, 0);
 
       // row 11

@@ -31,7 +31,7 @@ namespace Operations
   HtmlTextEdit* textTrackCommentWorkPane;// = new JTextPane();
 
   // combo boxes
-  QComboBox* trackComboBox;// = new QComboBox(); // <Track>
+  JComboBox* trackComboBox;// = new QComboBox(); // <Track>
 
   // buttons
   QPushButton* nextButton;// = new JButton(Bundle.getMessage("Next"));

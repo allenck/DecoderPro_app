@@ -20,6 +20,7 @@
 #include "operationsxml.h"
 #include "printtrainsbycartypesaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -60,32 +61,27 @@ namespace Operations
      QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // Set up the panels
-     QGroupBox* pCarType = new QGroupBox();
+     JPanel* pCarType = new JPanel();
      pCarType->setLayout(new GridBagLayout());
-     //pCarType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     pCarType->setStyleSheet(gbStyleSheet);
-     pCarType->setTitle(tr("Type"));
+     pCarType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
      addItem(pCarType, typeComboBox, 0, 0);
      addItem(pCarType, copyCheckBox, 1, 0);
      addItem(pCarType, textCarType, 2, 0);
      typeComboBox->setCurrentIndex(typeComboBox->findText(carType));
      copyCheckBox->setToolTip(tr("First select the car type you want to copy, then select Copy, then the car type you want to copy to, then Save"));
 
-     QGroupBox* pTrainsFrame = new QGroupBox();
+     JPanel* pTrainsFrame = new JPanel();
      pTrainsFrame->setLayout(new QVBoxLayout);
      pTrains = new QWidget();
      pTrains->setLayout(new GridBagLayout());
      QScrollArea* trainPane = new QScrollArea(/*pTrains*/);
      //trainPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //trainPane.setBorder(BorderFactory.createTitledBorder(tr("Trains")));
-     pTrainsFrame->setStyleSheet(gbStyleSheet);
-     pTrainsFrame->setTitle(tr("Trains"));
+     pTrainsFrame->setBorder(BorderFactory::createTitledBorder(tr("Trains")));
      updateTrains();
 
-     QFrame* pButtons = new QFrame();
+     JPanel* pButtons = new JPanel();
      pButtons->setLayout(new GridBagLayout());
-     //pButtons.setBorder(BorderFactory.createEtchedBorder());
-     pButtons->setFrameStyle(QFrame::Box | QFrame::Sunken);
+     pButtons->setBorder(BorderFactory::createEtchedBorder());
 
      addItem(pButtons, clearButton, 0, 0);
      addItem(pButtons, setButton, 1, 0);

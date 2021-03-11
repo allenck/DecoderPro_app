@@ -34,11 +34,6 @@ namespace Operations
   /*public*/ void dispose()override;
 
  private:
-  QSignalMapper* buttonMapper;
-  QSignalMapper* radioButtonMapper;
-  QSignalMapper* comboBoxMapper;
-  QSignalMapper* checkBoxMapper;
-  QSignalMapper* spinBoxMapper;
   void common();
   Logger* log;
 
@@ -61,7 +56,6 @@ protected:
   /*protected*/ void addItem(QWidget* c, int x, int y);
   /*protected*/ void addItemLeft(QWidget* c, int x, int y);
   /*protected*/ void addItemWidth(QWidget* c, int width, int x, int y);
-  QString gbStyleSheet;
   /*protected*/ void storeValues();
 
   protected slots:
@@ -70,13 +64,8 @@ protected:
   /*protected*/ virtual void radioButtonActionPerformed(QWidget* b);
   /*protected*/ virtual void checkBoxActionPerformed(QWidget* b) ;
   /*protected*/ virtual void spinnerChangeEvent(QWidget* ae) ;
-  /*protected*/ void on_buttonActionPerformed(QWidget* b);
-  /*protected*/ void on_radioButtonActionPerformed(QWidget* b);
-  /*protected*/ void on_checkBoxActionPerformed(QWidget* b) ;
-  /*protected*/ void on_spinnerChangeEvent(QWidget* ae) ;
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, JTextArea* textArea);
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, HtmlTextEdit* textArea);
-  /*protected*/ void on_comboBoxActionPerformed(QWidget* ae);
 
  };
 }

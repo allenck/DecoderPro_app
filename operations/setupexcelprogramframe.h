@@ -27,7 +27,7 @@ namespace Operations
   QPushButton* saveButton;// = new JButton(Bundle.getMessage("ButtonSave"));
 
   // directory
-  QGroupBox* pDirectoryName;// = new JPanel();
+  JPanel* pDirectoryName;// = new JPanel();
   QVBoxLayout* pDirectoryNameLayout;
  protected:
   /*protected*/ File* selectFile(QString directoryName);

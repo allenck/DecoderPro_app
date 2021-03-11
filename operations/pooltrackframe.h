@@ -44,7 +44,7 @@ namespace Operations
   QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   // pool status
-  QGroupBox* poolStatus;//= new JPanel();
+  JPanel* poolStatus;//= new JPanel();
 
   /*private*/ TrackEditFrame* _tefx;
   void common();

@@ -12,6 +12,7 @@
 #include "logger.h"
 #include <QGroupBox>
 #include "flowlayout.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -53,11 +54,9 @@ namespace Operations
 
      // load the panel
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
-     QGroupBox* p1 = new QGroupBox();
-     //p1.setBorder(BorderFactory.createTitledBorder(tr("PrePlanedPickups")));
-     p1->setStyleSheet(gbStyleSheet);
-     p1->setTitle(tr("PrePlanned Pickups"));
+     QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+     JPanel* p1 = new JPanel();
+     p1->setBorder(BorderFactory::createTitledBorder(tr("PrePlanned Pickups")));
 
      p1->layout()->addWidget(zeroPercent);
      p1->layout()->addWidget(twentyfivePercent);

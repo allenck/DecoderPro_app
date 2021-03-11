@@ -2,7 +2,6 @@
 #define AUTOTRAINSFRAME_H
 #include "jmrijframe.h"
 
-class QSignalMapper;
 class QVBoxLayout;
 class QLabel;
 class QRadioButton;
@@ -21,6 +20,12 @@ public:
  /*public*/ void addAutoActiveTrain(AutoActiveTrain* aat);
  /*public*/ void removeAutoActiveTrain(AutoActiveTrain* aat);
  /*public*/ QString getClassName() override;
+  /*public*/ void stopResume(QString s);
+  /*public*/ void manualAuto(QString s);
+  /*public*/ void resumeAutoOperation(QString s);
+  /*public*/ void directionButton(QString s);
+  /*public*/ void sliderChanged(QString s, int value);
+  /*public*/ void stopAllPressed(/*ActionEvent e*/);
 
 private:
  Logger* log;
@@ -47,18 +52,14 @@ private:
  /*private*/ QList<QRadioButton*>* _forwardButtons;// = new QList<QRadioButton*>();
  /*private*/ QList<QRadioButton*>* _reverseButtons;// = new QList<QRadioButton*>();
  /*private*/ QList<QSlider*>* _speedSliders;// = new QList<JSlider>();
- QSignalMapper* tStopMapper;
- QSignalMapper* tManualMapper;
- QSignalMapper* tResumeAutoOperationMapper;
- QSignalMapper* fButMapper;
- QSignalMapper* rButMapper;
- QSignalMapper* speedSlidersMapper;
 
  /*private*/ QList<JSeparator*>* _separators;// = new QList<JSeparator*>();
  /*private*/ void initializeAutoTrainsWindow();
  /*private*/ void removeThrottleListener(AutoActiveTrain* aat);
  /*private*/ void newSeparator();
  /*private*/ void newTrainLine();
+ /*private*/ void placeWindow();
+ /*private*/ int getTrainIndex(QString s);
 
 protected:
  /*protected*/ void displayAutoTrains();

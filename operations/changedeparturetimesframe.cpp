@@ -12,6 +12,7 @@
 #include "routelocation.h"
 #include "route.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -52,11 +53,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      }
 
      // row 2
-     QGroupBox* pHour = new QGroupBox();
+     JPanel* pHour = new JPanel();
      pHour->setLayout(new GridBagLayout());
-     //pHour.setBorder(BorderFactory.createTitledBorder(tr("SelectHours")));
-     pHour->setStyleSheet(gbStyleSheet);
-     pHour->setTitle(tr("Select the hours to add to each train's departure time"));
+     pHour->setBorder(BorderFactory::createTitledBorder(tr("Select the hours to add to each train's departure time")));
      addItem(pHour, hourBox, 0, 0);
 
      // row 4
