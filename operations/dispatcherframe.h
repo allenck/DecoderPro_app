@@ -237,6 +237,7 @@ protected:
  friend class OptionsMenu;
  friend class OptionsFile;
  friend class OptionsMenuTest;
+ friend class ActivateTrainFrame;
 };
 
 /**
