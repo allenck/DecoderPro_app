@@ -53,6 +53,7 @@ SOURCES += javaqt.cpp \
     jtogglebutton.cpp \
     dataflavor.cpp \
     exceptions.cpp \
+    thread.cpp \
     xmlfile.cpp \
     tablecolumn.cpp \
     xtablecolumnmodel.cpp \
@@ -279,6 +280,7 @@ HEADERS += javaqt.h\
     logger.h \
     gridbagconstraints.h \
     insets.h \
+ thread.h \
  vetoablechangefirer.h \
  vetoablechangeprovider.h \
     vptr.h \

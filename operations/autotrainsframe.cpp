@@ -2,9 +2,9 @@
 #include "dispatcherframe.h"
 #include "autoactivetrain.h"
 #include "throttle.h"
-#include <QLabel>
+#include "jlabel.h"
 #include <QRadioButton>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QSlider>
 #include "jseparator.h"
 #include "activetrain.h"
@@ -59,8 +59,8 @@
  //This would be better refactored this all into a sub-class, rather than multiple arraylists.
  // note: the following array lists are synchronized with _autoTrainsList
  _JPanels = new QList<QWidget*>();
- _throttleStatus = new QList<QLabel*>();
- _trainLabels = new QList<QLabel*>();
+ _throttleStatus = new QList<JLabel*>();
+ _trainLabels = new QList<JLabel*>();
  _stopButtons = new QList<QPushButton*>();
  _manualButtons = new QList<QPushButton*>();
  _resumeAutoRunningButtons = new QList<QPushButton*>();
@@ -87,13 +87,15 @@
 /*public*/ void AutoTrainsFrame::addAutoActiveTrain(AutoActiveTrain* aat) {
     if (aat != NULL) {
         _autoTrainsList->append(aat);
-#if 0
-        java.beans.PropertyChangeListener throttleListener = new java.beans.PropertyChangeListener() {
-            @Override
-            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-                handleThrottleChange(e);
-            }
-        };
+#if 1
+        PropertyChangeListener* throttleListener = new ATFThrottleListener(this);
+//        {
+//            @Override
+//            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
+//                handleThrottleChange(e);
+//            }
+//        };
+
         _throttleListeners->append(throttleListener);
 
         _throttles->append(NULL); //adds a place holder
@@ -101,14 +103,15 @@
         setupThrottle(aat);
 
         ActiveTrain* at = aat->getActiveTrain();
-        java.beans.PropertyChangeListener listener = NULL;
-        at->addPropertyChangeListener(listener = new java.beans.PropertyChangeListener() {
-            @Override
-            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-                handleActiveTrainChange(e);
-            }
-        });
-        _listeners.add(listener);
+        PropertyChangeListener* listener = NULL;
+        at->addPropertyChangeListener(listener = new TrainChangeListener(this));
+//        {
+//            @Override
+//            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
+//                handleActiveTrainChange(e);
+//            }
+//        });
+        _listeners->append(listener);
 
         displayAutoTrains();
 #endif
@@ -130,21 +133,21 @@
         }
     }
 }
-#if 0
-/*private*/ void handleActiveTrainChange(java.beans.PropertyChangeEvent e) {
-    if (e.getPropertyName().equals("mode")) {
+#if 1
+/*private*/ void AutoTrainsFrame::handleActiveTrainChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() ==("mode")) {
         handleChangeOfMode(e);
     }
     displayAutoTrains();
 }
 
-/*private*/ void handleChangeOfMode(java.beans.PropertyChangeEvent e) {
-    for (AutoActiveTrain aat : _autoTrainsList) {
-        if (aat->getActiveTrain() == e.getSource()) {
-            int newValue = ((Integer) e.getNewValue()).intValue();
-            int oldValue = ((Integer) e.getOldValue()).intValue();
+/*private*/ void AutoTrainsFrame::handleChangeOfMode(PropertyChangeEvent* e) {
+    for (AutoActiveTrain* aat : *_autoTrainsList) {
+        if (aat->getActiveTrain() == e->getSource()) {
+            int newValue = e->getNewValue().toInt();
+            int oldValue = e->getOldValue().toInt();
             if (newValue == ActiveTrain::DISPATCHED) {
-                removeThrottleListener((AutoActiveTrain) e.getSource());
+                removeThrottleListener((AutoActiveTrain*)e->getSource());
 //                } else if (oldValue == ActiveTrain::DISPATCHED && newValue != ActiveTrain::DISPATCHED) {
             } else if (oldValue == ActiveTrain::DISPATCHED) {
                 setupThrottle(aat);
@@ -153,62 +156,62 @@
     }
 }
 
-/*private*/ void setupThrottle(AutoActiveTrain aat) {
+/*private*/ void AutoTrainsFrame::setupThrottle(AutoActiveTrain* aat) {
     if (aat->getThrottle() != NULL) {
-        int index = _autoTrainsList.indexOf(aat);
+        int index = _autoTrainsList->indexOf(aat);
         if (_throttles->at(index) == NULL) {
-            _throttles.add(index, aat->getThrottle());
+            _throttles->insert(index, aat->getThrottle());
             addThrottleListener(aat);
         }
     }
 }
 
-/*private*/ void handleThrottleChange(java.beans.PropertyChangeEvent e) {
-    if (!e.getPropertyName().equals("SpeedSetting") && !e.getPropertyName().equals("IsForward")) {
+/*private*/ void AutoTrainsFrame::handleThrottleChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() != ("SpeedSetting") && e->getPropertyName() != ("IsForward")) {
         return; //ignore if not speed or direction
     }
-    int index = _throttles.indexOf(e.getSource());
+    int index = _throttles->indexOf((Throttle*)e->getSource());
     if (index == -1) {
-        log.warn("handleThrottleChange - cannot find throttle index");
+        log->warn("handleThrottleChange - cannot find throttle index");
         return;
     }
-    JLabel status = _throttleStatus->at(index);
-    if (!status.isVisible()) {
+    JLabel* status = _throttleStatus->at(index);
+    if (!status->isVisible()) {
         return;
     }
-    jmri.DccLocoAddress addy = (jmri.DccLocoAddress) _throttles->at(index).getLocoAddress();
-    updateStatusLabel(status, jmri.InstanceManager.throttleManagerInstance().getThrottleInfo(addy, "SpeedSetting"), jmri.InstanceManager.throttleManagerInstance().getThrottleInfo(addy, "IsForward"));
+    DccLocoAddress* addy = (DccLocoAddress*) _throttles->at(index)->getLocoAddress();
+    updateStatusLabel(status, InstanceManager::throttleManagerInstance()->getThrottleInfo(addy, "SpeedSetting"), InstanceManager::throttleManagerInstance()->getThrottleInfo(addy, "IsForward"));
 }
 
-/*private*/ void updateStatusLabel(JLabel status, Object speed, Object forward) {
-    StringBuilder sb = new StringBuilder();
-    int spd = Math.round(((Float) speed).floatValue() * 100);
+/*private*/ void AutoTrainsFrame::updateStatusLabel(JLabel* status, QVariant speed, QVariant forward) {
+    QString sb;// = new StringBuilder();
+    int spd = qRound(( speed).toFloat() * 100);
     sb.append("" + spd);
     sb.append("% ");
-    if (((Boolean) forward).booleanValue()) {
+    if (( forward).toBool()) {
         sb.append("(fwd)");
     } else {
         sb.append("(rev)");
     }
     //Only repack if the text size has increased.
-    if (status.getText().length() < sb.toString().length()) {
-        status->setText(sb.toString());
-        autoTrainsFrame.pack();
+    if (status->text().length() < sb.length()) {
+        status->setText(sb);
+        autoTrainsFrame->pack();
     } else {
-        status->setText(sb.toString());
+        status->setText(sb);
     }
 }
 
-/*private*/ void addThrottleListener(AutoActiveTrain aat) {
-    int index = _autoTrainsList.indexOf(aat);
+/*private*/ void AutoTrainsFrame::addThrottleListener(AutoActiveTrain* aat) {
+    int index = _autoTrainsList->indexOf(aat);
     if (index == -1) {
         return;
     }
     if (_throttles->at(index) != NULL) {
-        jmri.DccLocoAddress addy = (jmri.DccLocoAddress) _throttles->at(index).getLocoAddress();
-        jmri.InstanceManager.throttleManagerInstance().attachListener(addy, _throttleListeners->at(index));
-        JLabel status = _throttleStatus->at(index);
-        updateStatusLabel(status, jmri.InstanceManager.throttleManagerInstance().getThrottleInfo(addy, "SpeedSetting"), jmri.InstanceManager.throttleManagerInstance().getThrottleInfo(addy, "IsForward"));
+        DccLocoAddress* addy = (DccLocoAddress*) _throttles->at(index)->getLocoAddress();
+        InstanceManager::throttleManagerInstance()->attachListener(addy, _throttleListeners->at(index));
+        JLabel* status = _throttleStatus->at(index);
+        updateStatusLabel(status, InstanceManager::throttleManagerInstance()->getThrottleInfo(addy, "SpeedSetting"), InstanceManager::throttleManagerInstance()->getThrottleInfo(addy, "IsForward"));
     }
 }
 #endif
@@ -232,7 +235,7 @@
     contentPane = autoTrainsFrame->getContentPane();
     contentPane->setLayout(contentPaneLayout = new QVBoxLayout); //(contentPane, BoxLayout.Y_AXIS));
     // set up 6 auto trains to size the panel
-#if 0
+#if 1
     for (int i = 0; i < 6; i++) {
         newTrainLine();
         if (i == 0) {
@@ -243,17 +246,18 @@
     contentPaneLayout->addWidget(new JSeparator());
     QWidget* pB = new QWidget();
     pB->setLayout(new FlowLayout());
-    JButton stopAllButton = new JButton(tr("StopAll"));
-    pB.add(stopAllButton);
-    stopAllButton.addActionListener(new ActionListener() {
-        @Override
-        /*public*/ void actionPerformed(ActionEvent e) {
-            stopAllPressed(e);
-        }
+    JButton* stopAllButton = new JButton(tr("Stop All"));
+    pB->layout()->addWidget(stopAllButton);
+//    stopAllButton.addActionListener(new ActionListener() {
+//        @Override
+//        /*public*/ void actionPerformed(ActionEvent e) {
+    connect(stopAllButton, &JButton::clicked, [=]{
+            stopAllPressed(/*e*/);
+//        }
     });
-    stopAllButton->setToolTip(tr("StopAllButtonHint"));
+    stopAllButton->setToolTip(tr("Press to stop all automatically running Trains."));
     contentPaneLayout->addWidget(pB);
-    autoTrainsFrame.pack();
+    autoTrainsFrame->pack();
     placeWindow();
 #endif
     displayAutoTrains();
@@ -274,7 +278,7 @@
     FlowLayout* pxLayout;
     px->setLayout(pxLayout = new FlowLayout());
     _JPanels->append(px);
-    QLabel* tLabel = new QLabel("      ");
+    JLabel* tLabel = new JLabel("      ");
     pxLayout->addWidget(tLabel);
     pxLayout->addWidget(tLabel);
     _trainLabels->append(tLabel);
@@ -353,7 +357,7 @@
 //        }
     });
 
-    QLabel* _throttle = new QLabel();
+    JLabel* _throttle = new JLabel();
     _throttle->setText("Speed Unknown");
     _throttleStatus->append(_throttle);
     pxLayout->addWidget(_throttle);

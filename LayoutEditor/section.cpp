@@ -669,6 +669,22 @@ void Section::propertyChange(PropertyChangeEvent* e)
     if ( (blockIndex>mBlockEntries->size()) || (blockIndex<=0) ) return nullptr;
     return mBlockEntries->at(blockIndex-1);
 }
+
+/*public*/ Block* Section::getExitBlock() {
+    if (initializationNeeded) {
+        initializeBlocks();
+    }
+    if (mBlockEntries->size() <= 0) {
+        return nullptr;
+    }
+    if (mState == REVERSE) {
+        blockIndex = 1;
+    } else {
+        blockIndex = mBlockEntries->size();
+    }
+    return mBlockEntries->at(blockIndex - 1);
+}
+
 /*public*/ bool Section::containsBlock(Block* b) {
     for (int i = 0; i<mBlockEntries->size(); i++) {
         if (b == mBlockEntries->at(i)) return true;

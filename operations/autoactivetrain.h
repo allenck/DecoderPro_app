@@ -4,7 +4,10 @@
 #include <QObject>
 #include "runnable.h"
 #include "throttlelistener.h"
+#include "propertychangelistener.h"
 
+class JThread;
+class AutoEngineer;
 class PropertyChangeEvent;
 class DccLocoAddress;
 class Logger;
@@ -89,6 +92,10 @@ public:
  /*public*/ static int getRampRateFromName(QString rampRate);
  /*public*/ bool initialize();
  /*public*/QObject* self() {return (QObject*)this;}
+
+ /*public*/ Thread *pauseTrain(int fastMinutes);
+ /*public*/ void terminate();
+ /*public*/ void dispose();
 
 signals:
 
@@ -193,6 +200,8 @@ protected:
   /*protected*/ void resumeAutomaticRunning();
   /*protected*/ void initiateWorking();
   /*protected*/ void removeAllocatedSection(AllocatedSection* as);
+  /*protected*/ void handleBlockStateChange(AllocatedSection* as, Block* b);
+  /*protected*/ /*synchronized*/ void executeStopTasks(int task);
 
 protected slots:
   /*protected*/ void handleSectionStateChange(AllocatedSection* as) ;
@@ -202,17 +211,71 @@ protected slots:
  friend class AutoEngineer;
  friend class AutoTrainAction;
  friend class AutoTrainsFrame;
+ friend class AllocatedSection;
+ friend class HornExecution;
+ friend class RespondToBlockStateChange;
+ friend class WaitForTrainToStop;
+ friend class PauseTrain;
+};
+
+// _________________________________________________________________________________________
+// This class waits for train stop in a separate thread
+class WaitForTrainToStop : public  Runnable {
+Q_OBJECT
+  AutoActiveTrain* aat;
+ public:
+    /*public*/ WaitForTrainToStop(int task, AutoActiveTrain* aat) {
+        _task = task;
+        this->aat = aat;
+    }
+
+    //@Override
+    /*public*/ void run();
+ private:
+    /*private*/ int _delay = 91;
+    /*private*/ int _task = 0;
+};
+
+// _________________________________________________________________________________________
+// This class pauses the train in a separate thread
+//  Train is stopped, then restarted after specified number of fast Minutes have elapsed
+class PauseTrain : public  Runnable , public PropertyChangeListener{
+Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  AutoActiveTrain* aat;
+  public:
+    /**
+     * A runnable that executes a pause train for a specified number of Fast
+     * Clock minutes
+     */
+    /*public*/ PauseTrain(int fastMinutes, AutoActiveTrain* aat) {
+        _fastMinutes = fastMinutes;
+        this->aat = aat;
+    }
+
+    //@Override
+    /*public*/ void run();
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  /*public*/ void propertyChange(PropertyChangeEvent* e) {
+      _fastMinutes--;
+  }
+
+ private:
+    /*private*/ int _fastMinutes = 0;
+    /*private*/ float _savedTargetSpeed = 0.0f;
+    /*private*/ int _savedRampRate = AutoActiveTrain::RAMP_NONE;
 };
 
 class AutoEngineer : public  Runnable
 {
  Q_OBJECT
+  AutoActiveTrain* aat;
 public:
     AutoEngineer(AutoActiveTrain* aat);
 
  private:
     Logger* log;
-    AutoActiveTrain* aat;
     // operational instance variables and flags
 //        private float _minSpeedStep = 1.0f;
     /*private*/ bool _abort;// = false;
@@ -234,6 +297,7 @@ public:
 protected:
     /*protected*/ void setFunction(int cmdNum, bool isSet);
     friend class AutoTrainAction;
+    friend class HornExecution;
 };
 
 #endif // AUTOACTIVETRAIN_H

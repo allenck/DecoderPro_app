@@ -3,7 +3,7 @@
 #include "jmrijframe.h"
 
 class QVBoxLayout;
-class QLabel;
+class JLabel;
 class QRadioButton;
 class QPushButton;
 class QSlider;
@@ -14,6 +14,7 @@ class PropertyChangeListener;
 class DispatcherFrame;
 class AutoTrainsFrame : public JmriJFrame
 {
+  Q_OBJECT
 public:
  /*public*/ AutoTrainsFrame(DispatcherFrame* disp);
  /*public*/ QList<AutoActiveTrain*>* getAutoTrainsList();
@@ -44,8 +45,8 @@ private:
  //This would be better refactored this all into a sub-class, rather than multiple arraylists.
  // note: the following array lists are synchronized with _autoTrainsList
  /*private*/ QList<QWidget*>* _JPanels;// = new QList<JPanel>();
- /*private*/ QList<QLabel*>* _throttleStatus;// = new QList<QLabel* >();
- /*private*/ QList<QLabel* >* _trainLabels;// = new QList<QLabel* >();
+ /*private*/ QList<JLabel*>* _throttleStatus;// = new QList<QLabel* >();
+ /*private*/ QList<JLabel* >* _trainLabels;// = new QList<QLabel* >();
  /*private*/ QList<QPushButton* >* _stopButtons;// = new QList<QPushButton* >();
  /*private*/ QList<QPushButton* >* _manualButtons;// = new QList<QPushButton* >();
  /*private*/ QList<QPushButton* >* _resumeAutoRunningButtons;// = new QList<QPushButton* >();
@@ -60,10 +61,49 @@ private:
  /*private*/ void newTrainLine();
  /*private*/ void placeWindow();
  /*private*/ int getTrainIndex(QString s);
+ /*private*/ void setupThrottle(AutoActiveTrain* aat);
+ /*private*/ void updateStatusLabel(JLabel *status, QVariant speed, QVariant forward);
+ /*private*/ void addThrottleListener(AutoActiveTrain* aat);
+
+ private slots:
+ /*private*/ void handleActiveTrainChange(PropertyChangeEvent* e);
+ /*private*/ void handleChangeOfMode(PropertyChangeEvent* e);
+ /*private*/ void handleThrottleChange(PropertyChangeEvent* e);
 
 protected:
  /*protected*/ void displayAutoTrains();
+friend class ATFThrottleListener;
+friend class TrainChangeListener;
+};
 
+class ATFThrottleListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  AutoTrainsFrame* atf;
+public:
+  ATFThrottleListener(AutoTrainsFrame* atf) { this->atf = atf;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  void propertyChange(PropertyChangeEvent* e)
+  {
+   atf->handleThrottleChange(e);
+  }
+};
+
+class TrainChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  AutoTrainsFrame* atf;
+public:
+  TrainChangeListener(AutoTrainsFrame* atf) { this->atf = atf;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  void propertyChange(PropertyChangeEvent* e)
+  {
+   atf->handleActiveTrainChange(e);
+  }
 };
 
 #endif // AUTOTRAINSFRAME_H

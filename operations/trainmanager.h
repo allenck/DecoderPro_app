@@ -10,6 +10,8 @@
 #include "appslib_global.h"
 #include "instancemanagerautodefault.h"
 #include "instancemanagerautoinitialize.h"
+#include "runnable.h"
+#include "train.h"
 
 class PrintWriter;
 class QDomDocument;
@@ -165,6 +167,7 @@ namespace Operations
   /*protected*/ QStringList _shutDownScripts;// = new ArrayQStringList(); // list of script pathnames to run at shut down
 //  /*private*/ static TrainManager* _instance;// = null;
  friend class MyBuild;
+ friend class TMRunnable;
  };
 
  class MyBuild : public QObject
@@ -180,6 +183,24 @@ namespace Operations
  signals:
    void finished();
    void error(QString title, QString msg);
+ };
+
+ class TMRunnable : public Runnable
+ {
+   Q_OBJECT
+   QList<Train*> trains;
+   TrainManager* tm;
+  public:
+   TMRunnable(QList<Train*> trains, TrainManager* tm) {
+    this->trains = trains;
+   this->tm = tm;
+   }
+   /*public*/ void run() {
+       for (Train* train : trains) {
+           train->buildIfSelected();
+       }
+       tm->setDirtyAndFirePropertyChange(TrainManager::TRAINS_BUILT_CHANGED_PROPERTY, false, true);
+   }
  };
 } // end operations
 Q_DECLARE_METATYPE(Operations::TrainManager)

@@ -114,10 +114,10 @@
 /**
  * Get a copy of this Transit's TransitSection list
  */
-/*public*/ QList<TransitSection*>* Transit::getTransitSectionList() {
-    QList<TransitSection*>* list = new QList<TransitSection*>();
+/*public*/ QList<TransitSection*> Transit::getTransitSectionList() {
+    QList<TransitSection*> list = QList<TransitSection*>();
     for (int i = 0; i<mTransitSectionList->size(); i++)
-        list->append(mTransitSectionList->at(i));
+        list.append(mTransitSectionList->at(i));
     return list;
 }
 
@@ -147,12 +147,12 @@
 /**
  * Get a List of Sections with a given sequence number
  */
-/*public*/ QList<Section*>* Transit::getSectionListBySeq(int seq) {
-    QList<Section*>* list = new QList<Section*>();
+/*public*/ QList<Section*> Transit::getSectionListBySeq(int seq) {
+    QList<Section*> list = QList<Section*>();
     for (int i = 0; i<mTransitSectionList->size(); i++) {
         TransitSection* ts = mTransitSectionList->at(i);
         if (seq == ts->getSequenceNumber()) {
-            list->append(ts->getSection());
+            list.append(ts->getSection());
         }
     }
     return list;
@@ -161,12 +161,12 @@
 /**
  * Get a List of Transit Sections with a given sequence number
  */
-/*public*/ QList<TransitSection*>* Transit::getTransitSectionListBySeq(int seq) {
-    QList<TransitSection*>* list = new QList<TransitSection*>();
+/*public*/ QList<TransitSection*> Transit::getTransitSectionListBySeq(int seq) {
+    QList<TransitSection*> list =  QList<TransitSection*>();
     for (int i = 0; i<mTransitSectionList->size(); i++) {
         TransitSection* ts = mTransitSectionList->at(i);
         if (seq == ts->getSequenceNumber()) {
-            list->append(ts);
+            list.append(ts);
         }
     }
     return list;

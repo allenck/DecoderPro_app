@@ -149,6 +149,7 @@ public:
      */
     /*public*/ Block* getEntryBlock();
     /*public*/ Block* getNextBlock();
+    /*public*/ Block* getExitBlock();
     /*public*/ bool containsBlock(Block* b);
     /*public*/ bool connectsToBlock(Block* b);
     /**

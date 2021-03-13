@@ -163,6 +163,9 @@ private slots:
  /*private*/ void handleATSelectionChanged(JActionEvent* e = 0);
  /*private*/ void handleAutoAllocateChanged(JActionEvent* e = 0);
  void terminateTrain(JActionEvent* e = 0);
+ /*private*/ Section* autoChoice(QList<Section*> sList, AllocationRequest* ar);
+ /*private*/ Section* dispatcherChoice(QList<Section*> sList, AllocationRequest* ar);
+ /*private*/ void requestNextAllocation(ActiveTrain* at);
 
 protected:
  /*protected*/ int getSignalType();
@@ -223,6 +226,7 @@ protected:
  /*protected*/  bool getSupportVSDecoder();
  /*protected*/ void setSupportVSDecoder( bool set);
  /*protected*/ QList<AllocatedSection*>* getAllocatedSectionsList();
+ /*protected*/ Section* checkBlocksNotInAllocatedSection(Section* s, AllocationRequest* ar);
 
  friend class ActiveTrain;
  friend class ActiveTrainsTableModel;
@@ -238,6 +242,10 @@ protected:
  friend class OptionsFile;
  friend class OptionsMenuTest;
  friend class ActivateTrainFrame;
+ friend class DSLPropertyChangeListener;
+ friend class RSLPropertyChangeListener;
+ friend class SignalMastListener;
+ friend class WaitingOnBlockListener;
 };
 
 /**

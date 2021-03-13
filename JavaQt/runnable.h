@@ -4,6 +4,7 @@
 #include <QObject>
 #include "javaqt_global.h"
 #include <QThread>
+#include "thread.h"
 #include <QMutex>
 
 /**
@@ -38,7 +39,7 @@ class JAVAQTSHARED_EXPORT Runnable : public QThread
  Q_OBJECT
 public:
     //QMutex mutex;
-    Runnable(QObject* as = 0) : QThread(as) {}
+    explicit Runnable(QObject* as = 0) : QThread(as) {}
     void run() {}
  private:
   QObject* as;

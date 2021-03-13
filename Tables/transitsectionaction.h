@@ -35,7 +35,6 @@ public:
      */
     enum WHAT
     {
-     NUM_WHATS = 13, // Must correspond to the number of entries below
      PAUSE = 1,    // pause for the number of fast minutes in mDataWhat (e.g. station stop)
      SETMAXSPEED = 2, // set maximum train speed to value entered
      SETCURRENTSPEED = 3, // set current speed to target speed immediately - no ramping
@@ -50,7 +49,10 @@ public:
     //													(only works with sound decoder, function 2)
      LOCOFUNCTION = 11,  // execute the specified decoder function
      SETSENSORACTIVE = 12, // set specified sensor active (offers access to Logix)
-     SETSENSORINACTIVE = 13 // set specified sensor inactive
+     SETSENSORINACTIVE = 13, // set specified sensor inactive
+     HOLDSIGNAL = 14,    // set specified signalhead or signalmast to HELD
+     RELEASESIGNAL = 15, // set specified signalhead or signalmast to NOT HELD
+     NUM_WHATS = 15 // Must correspond to the number of entries above
     // other action 'whats" may be defined here
     };
     /*public*/ int getWhenCode();

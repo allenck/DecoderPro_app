@@ -885,29 +885,21 @@ namespace Operations
  }
 
  /*public*/ void TrainManager::buildSelectedTrains(/*final*/ QList<Train*> trains) {
-#if 0
+#if 1
      // use a thread to allow table updates during build
-     Thread build = new Thread(new Runnable() {
-         /*public*/ void run() {
-             for (Train train : trains) {
-                 train.buildIfSelected();
-             }
-             setDirtyAndFirePropertyChange(TRAINS_BUILT_CHANGED_PROPERTY, false, true);
-         }
-     });
-     build.setName("Build Trains"); // NOI18N
-     build.start();
+     Thread* build = new Thread(new TMRunnable(trains, this));
+//     {
+//         /*public*/ void run() {
+//             for (Train train : trains) {
+//                 train.buildIfSelected();
+//             }
+//             setDirtyAndFirePropertyChange(TRAINS_BUILT_CHANGED_PROPERTY, false, true);
+//         }
+//     });
+     build->setName("Build Trains"); // NOI18N
+     build->start();
 #endif
-     QThread* thread = new QThread();
-     thread->setObjectName("Build Trains");
-     MyBuild* build = new MyBuild(trains, this);
-     connect(thread, SIGNAL(started()), build, SLOT(process()));
-     connect(build, SIGNAL(finished()), thread, SLOT(quit()));
-     connect(build, SIGNAL(finished()), build, SLOT(deleteLater()));
-     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-     connect(build, SIGNAL(error(QString,QString)), this, SLOT(onError(QString,QString)));
-     build->moveToThread(thread);
-     thread->start();
+
  }
 
  void TrainManager::onError(QString title, QString msg)

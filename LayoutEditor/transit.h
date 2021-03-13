@@ -27,12 +27,12 @@ public:
     /*public*/ int getState();
     /*public*/ void setState(int state);
     /*public*/ void addTransitSection(TransitSection* s);
-    /*public*/ QList<TransitSection*>* getTransitSectionList();
+    /*public*/ QList<TransitSection *> getTransitSectionList();
     /*public*/ int getMaxSequence();
     /*public*/ void removeAllSections();
     /*public*/ bool containsSection(Section* s);
-    /*public*/ QList<Section*>* getSectionListBySeq(int seq);
-    /*public*/ QList<TransitSection*>* getTransitSectionListBySeq(int seq);
+    /*public*/ QList<Section *> getSectionListBySeq(int seq);
+    /*public*/ QList<TransitSection *> getTransitSectionListBySeq(int seq);
     /*public*/ QList<int>* getSeqListBySection(Section* s);
     /*public*/ bool containsBlock(Block* b);
     /*public*/ int getBlockCount(Block* b);

@@ -706,9 +706,9 @@ void TransitTableAction::addEditPressed()
     if (curTransit != NULL)
     {
         userName->setText(curTransit->getUserName());
-        QList<TransitSection*>* tsList = curTransit->getTransitSectionList();
-        for (int i = 0; i < tsList->size(); i++) {
-            TransitSection* ts = tsList->at(i);
+        QList<TransitSection*> tsList = curTransit->getTransitSectionList();
+        for (int i = 0; i < tsList.size(); i++) {
+            TransitSection* ts = tsList.at(i);
             if (ts != NULL) {
                 sectionList->append(ts->getSection());
                 sequence->replace(i, ts->getSequenceNumber());

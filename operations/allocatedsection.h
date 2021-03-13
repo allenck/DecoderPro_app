@@ -2,6 +2,8 @@
 #define ALLOCATEDSECTION_H
 
 #include <QObject>
+#include "propertychangelistener.h"
+#include "runnable.h"
 
 class PropertyChangeEvent;
 class TransitSection;
@@ -41,6 +43,8 @@ public:
  /*public*/ int getIndex();
  /*public*/ void setExitSignalListener(PropertyChangeListener* xSigListener);
  /*public*/ PropertyChangeListener* getExitSignalListener();
+  /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
+ /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
 
 signals:
 
@@ -53,13 +57,14 @@ private:
  /*private*/ int mSequence;// = 0;
  /*private*/ Section* mNextSection;// = NULL;
  /*private*/ int mNextSectionSequence;// = 0;
- /*private*/ PropertyChangeListener* mSectionListener;// = NULL;
+ /*private*/ PropertyChangeListener* mSectionListener = NULL;
  /*private*/ bool mEntered;// = false;
  /*private*/ bool mExited;// = false;
  /*private*/ int mAllocationNumber;// = 0;     // used to keep track of allocation order
  /*private*/ Sensor* mForwardStoppingSensor;// = NULL;
  /*private*/ Sensor* mReverseStoppingSensor;// = NULL;
  /*private*/ EventListenerList* listenerList;
+ /*private*/ /*synchronized*/ void handleSectionChange(PropertyChangeEvent* e);
 
 
  // instance variables used with automatic running of trains
@@ -87,6 +92,50 @@ protected:
 
  friend class AutoActiveTrain;
  friend class ActiveTrain;
+ friend class ASSPropertyChangeListener;
+ friend class ASBPropertyChangeListener;
+ friend class RespondToBlockStateChange;
+};
+
+class ASSPropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  AllocatedSection* as;
+ public:
+  ASSPropertyChangeListener(AllocatedSection* as) {this->as = as;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  void propertyChange(PropertyChangeEvent* e) override{
+   as->handleSectionChange(e);
+  }
+};
+
+class ASBPropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  AllocatedSection* as;
+  int index;
+ public:
+  ASBPropertyChangeListener(AllocatedSection* as, int index) {this->as = as; this->index = index;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  void propertyChange(PropertyChangeEvent* e) override{
+   as->handleBlockChange(index, e);
+  }
+};
+
+class RespondToBlockStateChange : public  Runnable {
+Q_OBJECT
+ public:
+    /*public*/ RespondToBlockStateChange(Block* b, int occ, AllocatedSection* as);
+    /*public*/ void run() override;
+ private:
+    /*private*/ int _delay = 250;
+    /*private*/ Block* _block = NULL;
+    /*private*/ int _occ = 0;
+    /*private*/ AllocatedSection* _aSection = NULL;
 };
 
 #endif // ALLOCATEDSECTION_H

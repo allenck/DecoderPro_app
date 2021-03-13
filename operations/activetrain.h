@@ -154,13 +154,14 @@ public:
  /*public*/ void setEndBlockSection(Section* eSection);
  /*public*/ int getEndBlockSectionSequenceNumber();
  /*public*/ void setEndBlockSectionSequenceNumber(int eBlockSeqNum);
- /*public*/ QList<AllocatedSection*>* getAllocatedSectionList();
+ /*public*/ QList<AllocatedSection *> getAllocatedSectionList();
  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
  /*public*/ AllocationRequest* initializeFirstAllocation();
  /*public*/ void removeAllocatedSection(AllocatedSection* as);
  /*public*/ void allocateAFresh();
  /*public*/ void clearAllocations();
  /*public*/ void addAllocatedSection(AllocatedSection* as);
+ /*public*/ QList<Block*> getBlockList();
 
 signals:
 
@@ -224,6 +225,7 @@ private:
  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
  /*private*/ QString getSectionName(Section* sc);
  /*private*/ void refreshPanel();
+ /*private*/ bool connected(Block* b1, Block* b2);
 
 
 protected:
@@ -234,9 +236,40 @@ protected:
  /*protected*/ void restart();
  /*protected*/ void resetAllAllocatedSections();
  /*protected*/ void setRestart();
+ /*protected*/ Section* getSecondAllocatedSection();
+ /*protected*/ bool addEndSection(Section* s, int seq);
+ /*protected*/ void removeLastAllocatedSection();
+ /*protected*/ AllocatedSection* reverseAllAllocatedSections();
 
  friend class DispatcherFrame;
  friend class AutoTrainsFrame;
+ friend class DSLPropertyChangeListener;
+ friend class RSLPropertyChangeListener;
+ friend class RespondToBlockStateChange;
+ friend class AutoActiveTrain;
+ friend class AutoAllocate;
+};
+
+class DSLPropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  ActiveTrain* at;
+ public:
+  DSLPropertyChangeListener(ActiveTrain* at) {this->at = at;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  void propertyChange(PropertyChangeEvent*) override;
+};
+
+class RSLPropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  ActiveTrain* at;
+ public:
+  RSLPropertyChangeListener(ActiveTrain* at) {this->at = at;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  void propertyChange(PropertyChangeEvent*) override;
 };
 
 #endif // ACTIVETRAIN_H

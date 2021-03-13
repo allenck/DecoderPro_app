@@ -922,9 +922,9 @@ Maintenance::Maintenance(QObject *parent) :
      }
      QString uName = transit->getUserName();
      QString line1 = tr("%1%2: \"%3\" (%4)\n").arg(" ").arg(tr("Transit")).arg(uName).arg(sName);
-     QList<TransitSection*>* sectionList = transit->getTransitSectionList();
-        for (int i=0; i<sectionList->size(); i++) {
-            TransitSection* transitSection = sectionList->at(i);
+     QList<TransitSection*> sectionList = transit->getTransitSectionList();
+        for (int i=0; i<sectionList.size(); i++) {
+            TransitSection* transitSection = sectionList.at(i);
             Section* section = transitSection->getSection();
             uName = section->getUserName();
             sName = section->getSystemName();
@@ -1016,9 +1016,9 @@ Maintenance::Maintenance(QObject *parent) :
         QString sName = iter1.next();
         Transit* transit = transitManager->getBySystemName(sName);
         if (transit!=NULL) {
-            QList<TransitSection*>* sectionList = transit->getTransitSectionList();
-            for (int i=0; i<sectionList->size(); i++) {
-                TransitSection* transitSection = sectionList->at(i);
+            QList<TransitSection*> sectionList = transit->getTransitSectionList();
+            for (int i=0; i<sectionList.size(); i++) {
+                TransitSection* transitSection = sectionList.at(i);
                 Section* section = transitSection->getSection();
                 sysNameList.removeAt(sysNameList.indexOf(section->getSystemName()));
             }

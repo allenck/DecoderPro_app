@@ -6,6 +6,8 @@
 #include "stringutil.h"
 #include "backupset.h"
 #include <QDir>
+#include "runtimeexception.h"
+#include "calendar.h"
 
 //BackupBase::BackupBase(QObject *parent) :
 //  QObject(parent)
@@ -269,10 +271,10 @@ QObject(parent)
          }
 
      }
-#if 0
+#if 1
      // Throw a test exception, if we have one.
      if (testException != NULL) {
-         testException.fillInStackTrace();
+         //testException->fillInStackTrace();
          throw testException;
      }
 #endif
@@ -407,19 +409,19 @@ QObject(parent)
   */
  /*private*/ QString BackupBase::getDate() {
      // This could use some clean-up.... but works OK for now
-#if 0
-     Calendar now = Calendar.getInstance();
-     int month = now.get(Calendar.MONTH) + 1;
-     QString m = Integer.toString(month);
+#if 1
+     Calendar* now = Calendar::getInstance();
+     int month = now->get(Calendar::MONTH) + 1;
+     QString m = QString::number(month);
      if (month < 10) {
-         m = "0" + Integer.toString(month);
+         m = "0" + QString::number(month);
      }
-     int day = now.get(Calendar.DATE);
-     QString d = Integer.toString(day);
+     int day = now->get(Calendar::DATE);
+     QString d = QString::number(day);
      if (day < 10) {
-         d = "0" + Integer.toString(day);
+         d = "0" + QString::number(day);
      }
-     QString date = "" + now.get(Calendar.YEAR) + "_" + m + "_" + d;
+     QString date = QString() + now->get(Calendar::YEAR) + "_" + m + "_" + d;
      return date;
 #else
  return QDate::currentDate().toString("yyyy_MM_dd");
