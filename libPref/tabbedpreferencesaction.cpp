@@ -32,7 +32,6 @@
  * @param category
  * @param subCategory
  */
-TabbedPreferencesFrame* TabbedPreferencesAction::f;
 
 /*public*/ TabbedPreferencesAction::TabbedPreferencesAction(QString s, QString category, QString subCategory, QObject* parent)
     : JmriAbstractAction(s, parent)
@@ -99,90 +98,30 @@ void TabbedPreferencesAction::common()
  preferenceSubCat = "";
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
-/*static*/ bool TabbedPreferencesAction::inWait = false;
 
 /*public*/ void TabbedPreferencesAction::actionPerformed()
 {
- // create the JTable model, with changes for specific NamedBean
- // create the frame
- if(inWait)
- {
-  log->info("We are already waiting for the preferences to be displayed");
-  return;
- }
+    TabbedPreferencesFrame* f = (TabbedPreferencesFrame*)InstanceManager::getOptionalDefault("TabbedPreferencesFrame");// .orElseGet(() -> {
+    if(f == nullptr)
+        InstanceManager::setDefault("TabbedPreferencesFrame", f = new TabbedPreferencesFrame());
+//    }//);
 
- if (f==NULL)
- {
-  f = new TabbedPreferencesFrame();
-//  {
-
-//    /**
-//     *
-//     */
-//  private static final long serialVersionUID = 400412053977528653L;
-//  };
-  TPRunnable* r = new TPRunnable(this);
-//          /*public*/ void run() {
-//            try {
-//                setWait(true);
-//                while(jmri.InstanceManager.tabbedPreferencesInstance().init()!=0x02){
-//                    Thread.sleep(50);
-//                }
-//                SwingUtilities.updateComponentTreeUI(f);
-//                showPreferences();
-//            } catch (InterruptedException ex) {
-//                Thread.currentThread().interrupt();
-//                setWait(false);
-//            }
-//          }
-//        };
-//  QThread* thr = new QThread(r);
-//  thr->start();
-  connect(r, SIGNAL(waitChange(bool)), this, SLOT(setWait(bool)));
-  connect(r, SIGNAL(showPreferences()), this, SLOT(showPreferences()));
-  ((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->init();
-  r->start();
- }
- else
- {
-  showPreferences();
- }
-}
-void TPRunnable::run()
-{
- try
- {
-  emit waitChange(true);
-  while(((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->init()!=0x02)
-  {
-   QThread::sleep(50);
-  }
-  //SwingUtilities.updateComponentTreeUI(f);
-  emit showPreferences();
- }
- catch (InterruptedException ex)
- {
-  //Thread.currentThread().interrupt();
-  emit waitChange(false);
- }
+    showPreferences(f);
 }
 
-
-/*private*/ void TabbedPreferencesAction::showPreferences()
+/*private*/ void TabbedPreferencesAction::showPreferences(TabbedPreferencesFrame* f)
 {
- // Update the GUI Look and Feel
- // This is needed as certain controls are instantiated
- // prior to the setup of the Look and Feel
- setWait(false);
- f->gotoPreferenceItem(preferencesItem, preferenceSubCat);
- f->adjustSize();
+    // Update the GUI Look and Feel
+    // This is needed as certain controls are instantiated
+    // prior to the setup of the Look and Feel
 
- f->setVisible(true);
-}
+    // might not be a preferences item set yet
+    if (preferencesItem != nullptr)
+        f->gotoPreferenceItem(preferencesItem, preferenceSubCat);
 
-/*synchronized*/ /*static*/ void TabbedPreferencesAction::setWait(bool boo)
-{
- inWait = boo;
+    f->pack();
+
+    f->setVisible(true);
 }
 
 //@Override

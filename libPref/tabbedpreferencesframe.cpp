@@ -98,8 +98,10 @@
  {
   tpc = (TabbedPreferences*)InstanceManager::setDefault("TabbedPreferences", (QObject*)new TabbedPreferences());
  }
+ tpc->init();
  return tpc;
 }
+
 /*public*/ QString TabbedPreferencesFrame::getClassName()
 {
  return "apps.gui.tabbedpreferences.TabbedPreferencesFrame";

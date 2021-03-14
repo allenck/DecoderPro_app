@@ -4,7 +4,6 @@
 #include "jmriabstractaction.h"
 #include "logger.h"
 #include "tabbedpreferencesframe.h"
-#include "runnable.h"
 #include "libpref_global.h"
 
 class WindowInterface;
@@ -26,8 +25,7 @@ public:
     /*public*/ JmriPanel* makePanel();
 private:
 private slots:
-    /*private*/ void showPreferences();
-    /*synchronized*/ static void setWait(bool boo);
+    /*private*/ void showPreferences(TabbedPreferencesFrame *f);
  /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
 
@@ -36,27 +34,15 @@ public slots:
     virtual /*public*/ void actionPerformed();
 
 private:
-    static TabbedPreferencesFrame* f;
+    //static TabbedPreferencesFrame* f;
     QString preferencesItem;// = null;
     QString preferenceSubCat;// = null;
-    static bool inWait;// = false;
     Logger* log;
     void setTitle(); //Note required as sub-panels will set them
     QString helpTarget();
     void common();
- friend class TPRunnable;
+ friend class TabbedPreferencesProfileAction;
 };
 
-class TPRunnable : public Runnable
-{
- Q_OBJECT
-    TabbedPreferencesAction* parent;
- public:
-    TPRunnable(TabbedPreferencesAction* parent) {this->parent = parent;}
-    void run();
- signals:
-    void waitChange(bool bWait);
-    void showPreferences();
-};
 Q_DECLARE_METATYPE(TabbedPreferencesAction)
 #endif // TABBEDPREFERENCESACTION_H

@@ -28,6 +28,7 @@ SOURCES += libpref.cpp \
     tabbedpreferencesframe.cpp \
     tabbedpreferences.cpp \
     tabbedpreferencesaction.cpp \
+    tabbedpreferencesprofileaction.cpp \
     usermessagepreferencespane.cpp \
     programmerconfigpane.cpp \
     performfilepanel.cpp \
@@ -79,6 +80,7 @@ HEADERS += libpref.h\
     tabbedpreferences.h \
     tabbedpreferencesframe.h \
     tabbedpreferencesaction.h \
+    tabbedpreferencesprofileaction.h \
     usermessagepreferencespane.h \
 #    appconfigbase.h \
     preferencessubpanel.h \
