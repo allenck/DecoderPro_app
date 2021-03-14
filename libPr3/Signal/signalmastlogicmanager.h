@@ -51,16 +51,6 @@ public:
     /*public*/ virtual void automaticallyDiscoverSignallingPairs() throw (JmriException) = 0;
 
     /**
-     * This uses the layout editor to check if the destination signalmast is
-     * reachable from the source signalmast
-     *
-     * @param sourceMast Source SignalMast
-     * @param destMast Destination SignalMast
-     * @return true if valid, false if not valid.
-     */
-   // /*public*/ boolean checkValidDest(SignalMast sourceMast, SignalMast destMast) throws JmriException;
-
-    /**
      * Discover valid destination signalmasts for a given source signal on a
      * given layout editor panel.
      * @param source Source SignalMast

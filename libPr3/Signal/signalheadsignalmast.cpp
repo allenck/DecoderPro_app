@@ -165,7 +165,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
         log->error("No appearance map defined, unable to set appearance " + getDisplayName());
         return;
     }
-#if 0 // TODO: SignalSystem not defined, causes crash.
+#if 1 // TODO: SignalSystem not defined, causes crash.
     if (map->getSignalSystem() !=NULL && ((DefaultSignalSystem*)map->getSignalSystem())->checkAspect(aspect) && map->getAspectSettings(aspect)!=NULL)
         log->warn("Attempt to set "+getSystemName()+" to undefined aspect: "+aspect);
     else if ((map->getAspectSettings(aspect)!=NULL) && (heads->size() > map->getAspectSettings(aspect)->count()))

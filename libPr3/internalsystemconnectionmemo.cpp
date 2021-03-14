@@ -218,78 +218,88 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
         return false;
     }
 
-    if (!configured) configureManagers();
+    if (!configured)
+     configureManagers();
 
-    if (type == ("GlobalProgrammerManager")) {
-        return getProgrammerManager()->isGlobalProgrammerAvailable();
-    }
-    if (type == ("AddressedProgrammerManager")) {
-        return getProgrammerManager()->isAddressedModePossible();
-    }
-
-    if (type == ("ThrottleManager")) {
-        return true;
-    }
-    if (type == ("PowerManager")) {
-        return true;
-    }
     if (type == ("SensorManager")) {
-        return true;
-    }
-    if (type == ("LightManager")) {
-        return true;
-    }
-    if (type == ("ReporterManager")) {
-        return true;
-    }
-    if (type == ("TurnoutManager")) {
-        return true;
-    }
-    if (type == ("ConsistManager")) {
-      return true;
-    }
-    return false; // nothing, by default
+     return true;
+ }
+ if (type == ("LightManager")) {
+     return true;
+ }
+ if (type == ("ReporterManager")) {
+     return true;
+ }
+ if (type == ("TurnoutManager")) {
+     return true;
+ }
+
+ if (!defaultInstanceType) {
+     if (type == ("PowerManager")) {
+         return true;
+     }
+
+     if (type == ("GlobalProgrammerManager")) {
+         return getProgrammerManager()->isGlobalProgrammerAvailable();
+     }
+     if (type == ("AddressedProgrammerManager")) {
+         return getProgrammerManager()->isAddressedModePossible();
+     }
+
+     if (type == ("ThrottleManager")) {
+         return true;
+     }
+     if (type == ("ConsistManager")) {
+         return true;
+     }
+ }
+
+ return DefaultSystemConnectionMemo::provides(type);
 }
 
 //@SuppressWarnings("unchecked")
 //@Override
-/*public*/ Manager *InternalSystemConnectionMemo::get(/*Class<?>*/ QString className) {
+/*public*/ Manager *InternalSystemConnectionMemo::get(/*Class<?>*/ QString type) {
     if (getDisabled()) {
         return nullptr;
     }
 
     if (!configured) configureManagers();
 
-    if (className== ("GlobalProgrammerManager")) {
-        return (Manager*) getProgrammerManager();
-    }
-    if (className == ("AddressedProgrammerManager")) {
-        return (Manager*) getProgrammerManager();
-    }
+    if (type == ("SensorManager")) {
+     return (Manager*) getSensorManager();
+ }
+ if (type == ("LightManager")) {
+     return (Manager*) getLightManager();
+ }
+ if (type == ("ReporterManager")) {
+     return (Manager*) getReporterManager();
+ }
+ if (type == ("TurnoutManager")) {
+     return (Manager*) getTurnoutManager();
+ }
 
-    if (className == ("ThrottleManager")) {
-        return (Manager*) getThrottleManager();
-    }
-    if (className == ("PowerManager")) {
-        return (Manager*) getPowerManager();
-    }
-    if (className == ("LightManager")) {
-        return (LightManager*) getLightManager();
-    }
-    if (className == ("SensorManager")) {
-        return (SensorManager*) getSensorManager();
-    }
-    if (className == ("ReporterManager")) {
-        return (ReporterManager*) getReporterManager();
-    }
-    if (className == ("TurnoutManager")) {
-        return (TurnoutManager*) getTurnoutManager();
-    }
-    if (className == ("ConsistManager")) {
-        return (Manager*) getConsistManager();
-    }
+ if (!defaultInstanceType) {
+     if (type == ("PowerManager")) {
+         return (Manager*) getPowerManager();
+     }
 
-    return nullptr; // nothing, by default
+     if (type == ("GlobalProgrammerManager")) {
+         return (Manager*) getProgrammerManager();
+     }
+     if (type == ("AddressedProgrammerManager")) {
+         return (Manager*) getProgrammerManager();
+     }
+
+     if (type == ("ThrottleManager")) {
+         return (Manager*) getThrottleManager();
+     }
+     if (type == ("ConsistManager")) {
+         return (Manager*) getConsistManager();
+     }
+ }
+
+ return DefaultSystemConnectionMemo::get(type);
 }
 
 //@Override
