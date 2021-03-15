@@ -56,7 +56,8 @@ JComboBox::JComboBox(ComboBoxModel* model, QWidget* parent)
 void JComboBox::currentIndexChanged(int)
 {
  ItemEvent* itemEvent = new ItemEvent(this);
- itemEvent->setItem(currentData());
+// if(currentData().isValid())
+//  itemEvent->setItem(currentData());
  emit itemStateChanged(itemEvent);
 }
 

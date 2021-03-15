@@ -192,7 +192,7 @@ void ListedTableFrame::common()
     connect(cardHolder, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int, int)));
  //    cardHolder->setOneTouchExpandable(true);
  getContentPane()->layout()->addWidget(cardHolder);
- adjustSize();
+ pack();
  actionList->selectListItem(0);
 }
 

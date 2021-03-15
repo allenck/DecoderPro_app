@@ -6,6 +6,9 @@
 #include <QThread>
 #include "thread.h"
 #include <QMutex>
+#include <functional>
+#include <QTimer>
+#include <QApplication>
 
 /**
  * The <code>Runnable</code> interface should be implemented by any
@@ -41,6 +44,21 @@ public:
     //QMutex mutex;
     explicit Runnable(QObject* as = 0) : QThread(as) {}
     void run() {}
+    void dispatchToMainThread(std::function<void()> callback)
+    {
+        // any thread
+        QTimer* timer = new QTimer();
+        timer->moveToThread(qApp->thread());
+        timer->setSingleShot(true);
+        QObject::connect(timer, &QTimer::timeout, [=]()
+        {
+            // main thread
+            callback();
+            timer->deleteLater();
+        });
+        QMetaObject::invokeMethod(timer, "start", Qt::QueuedConnection, Q_ARG(int, 0));
+    }
+
  private:
   QObject* as;
   int restartcount;
