@@ -62,8 +62,8 @@
  */
 //abstract public class LayoutXOver extends LayoutTurnout {
 
-    /*public*/ LayoutXOver::LayoutXOver(/*@Nonnull*/ QString id, TurnoutType t, /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v) : LayoutTurnout(id, t, c, rot, xFactor, yFactor, layoutEditor, 1){
+    /*public*/ LayoutXOver::LayoutXOver(/*@Nonnull*/ QString id, TurnoutType t, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
+        : LayoutTurnout(id, t,  layoutEditor, 1){
         //super(id, t, c, rot, xFactor, yFactor, layoutEditor, 1);
 
         editor = new LayoutXOverEditor(layoutEditor);

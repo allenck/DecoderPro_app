@@ -2,7 +2,10 @@
 #define HITPOINTTYPE_H
 
 #include <QObject>
+#include <QMetaEnum>
+//#include "layouteditor.h"
 
+class LayoutEditor;
 class HitPointType : public QObject
 {
   Q_OBJECT
@@ -124,12 +127,50 @@ class HitPointType : public QObject
    TURNTABLE_RAY_62,   //     112    /
    TURNTABLE_RAY_63   //     113
   };
+  Q_ENUM(TYPES)
   /*public*/ static /*final*/ int NUM_SHAPE_POINTS;// = 10;
   /*public*/ static /*final*/ int NUM_BEZIER_CONTROL_POINTS;// = 9;
+  HitPointType::TYPES type() {return _type;}
+  explicit HitPointType(QObject *parent = nullptr);
+    HitPointType(TYPES t) { this->_type = t;}
+    HitPointType(const HitPointType& other) : QObject() { this->_type = other._type;}
+    void setType(HitPointType::TYPES t) {this->_type = t;}
+    void setType(HitPointType& t) {this->_type = t._type;}
+    bool operator==(const HitPointType& other)
+    {
+     return  this->_type == other._type;
+    }
+    bool operator==(const int other)
+    {
+     return  (int)this->_type == other;
+    }
+    bool operator>=(const int other)
+    {
+     return  (int)this->_type >= other;
+    }
+    bool operator<=(const int other)
+    {
+     return  (int)this->_type <= other;
+    }
+    bool operator!=(const int other)
+    {
+     return  (int)this->_type != other;
+    }
+    QString toString(){return metaEnum.valueToKey(_type);}
+    /*public*/ static QString toString(TYPES);
+    void operator=(HitPointType other) {this->_type = other._type;}
+    void operator=(HitPointType::TYPES other) {this->_type = other;}
+    void operator=(int other) {this->_type = (HitPointType::TYPES)other;}
+    static HitPointType fromType(const HitPointType::TYPES);
+    /*public*/ static int bezierPointIndex(HitPointType::TYPES t);
+
  signals:
+ private:
+  HitPointType::TYPES _type = NONE;
+    QMetaEnum metaEnum = QMetaEnum::fromType<TYPES>();
 
  public slots:
- protected:  explicit HitPointType(QObject *parent = nullptr);
+ protected:
 
   /*protected*/ static bool isConnectionHitType(HitPointType::TYPES hitType);
   /*protected*/ static bool isControlHitType(HitPointType::TYPES hitType);
@@ -139,16 +180,25 @@ class HitPointType : public QObject
   /*protected*/ static bool isLevelXingHitType(HitPointType::TYPES hitType);
   /*protected*/ static bool isTurntableRayHitType(HitPointType::TYPES hitType);
   /*protected*/ static bool isPopupHitType(HitPointType::TYPES hitType);
-//  /*protected*/ int turntableTrackIndex();
-  /*protected*/ static HitPointType turntableTrackIndexedValue(int i);
+  /*protected*/ int turntableTrackIndex();
+  /*protected*/ static int turntableTrackIndex(HitPointType::TYPES type);
+  /*protected*/ static HitPointType::TYPES turntableTrackIndexedValue(int i);
   /*protected*/ static QVector<HitPointType::TYPES> turntableValues();
-//  /*protected*/ int shapePointIndex();
+  /*protected*/ static int shapePointIndex(HitPointType::TYPES);
   /*protected*/ static int shapePointIndexedValue(int i);
   /*protected*/ static QVector<HitPointType::TYPES> shapePointValues();
   /*protected*/ static bool isShapePointOffsetHitPointType(HitPointType::TYPES t);
 //  /*protected*/ int bezierPointIndex();
   /*protected*/ static int bezierPointIndexedValue(int i);
 
+  friend class TrackSegment;
+  friend class LayoutTrack;
+  friend class LayoutTurntable;
+  friend class LayoutEditor;
+  friend class LayoutShape;
+  friend class TrackSegmentView;
+  friend class LayoutTurntableView;
+  friend class LayoutEditorAuxTools;
 };
 
 #endif // HITPOINTTYPE_H

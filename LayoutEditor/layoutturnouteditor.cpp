@@ -33,10 +33,11 @@
      * Invoked for any of the subtypes, has conditional code for crossovers
      */
     //@Override
-    /*public*/ void LayoutTurnoutEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) {
-        log->trace(tr("LayoutTurnoutEditor.editLayoutTrack(%1) of a %2").arg(layoutTrack->getName()).arg(layoutTrack->metaObject()->className()));
-        if ( qobject_cast<LayoutTurnout*>(layoutTrack) ) {
-            this->layoutTurnout = (LayoutTurnout*) layoutTrack;
+    /*public*/ void LayoutTurnoutEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrackView) {
+        log->trace(tr("LayoutTurnoutEditor.editLayoutTrack(%1) of a %2").arg(layoutTrackView->getName()).arg(layoutTrackView->metaObject()->className()));
+        if ( qobject_cast<LayoutTurnoutView*>(layoutTrackView) ) {
+         this->layoutTurnoutView = (LayoutTurnoutView*) layoutTrackView;
+         this->layoutTurnout = this->layoutTurnoutView->getLayoutTurnout();
         } else {
             log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTurnout->getName()),  Exception("traceback"));
         }
@@ -143,7 +144,7 @@
 
         setUpForEdit();
 
-        editLayoutTurnoutHiddenCheckBox->setChecked(layoutTurnout->isHidden());
+        editLayoutTurnoutHiddenCheckBox->setChecked(layoutTurnoutView->isHidden());
 
         QList<Turnout*> currentTurnouts = QList<Turnout*>();
         currentTurnouts.append(layoutTurnout->getTurnout());
@@ -375,9 +376,9 @@
         checkBlock234Changed();
 
         // set hidden
-        bool oldHidden = layoutTurnout->isHidden();
+        bool oldHidden = layoutTurnoutView->isHidden();
         layoutTurnout->setHidden(editLayoutTurnoutHiddenCheckBox->isChecked());
-        if (oldHidden != layoutTurnout->isHidden()) {
+        if (oldHidden != layoutTurnoutView->isHidden()) {
             editLayoutTurnoutNeedRedraw = true;
         }
         editLayoutTurnoutOpen = false;

@@ -11,34 +11,44 @@ class LayoutEditor;
 class LayoutEditorTools;
 class LIBLAYOUTEDITORSHARED_EXPORT PositionablePoint : public LayoutTrack
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    //explicit PositionablePoint(QObject *parent = 0);
-    /*public*/ PositionablePoint(QString id, int t, QPointF c, LayoutEditor* layoutEditor, QObject *parent = 0);
+  // defined constants
+  enum PointType
+  {
+   NONE,
+   ANCHOR = 1,
+   END_BUMPER = 2,
+   EDGE_CONNECTOR = 3
+  };
+  Q_ENUM(PointType)
+  //explicit PositionablePoint(QObject *parent = 0);
+    /*public*/ PositionablePoint(QString id, PointType t, LayoutEditor* layoutEditor, QObject *parent = 0);
 
-    // defined constants
-    enum CONSTANTS
-    {
-     ANCHOR = 1,
-     END_BUMPER = 2,
-     EDGE_CONNECTOR = 3
-    };
-    /*public*/ QString toString();
+
+    /*public*/ QString toString()override;
 
     /**
      * Accessor methods
     */
 //    /*public*/ QString getID();
-    /*public*/ int getType() const;
-    /*public*/ void setType(int newType);
+    /*public*/ PositionablePoint::PointType getType() const;
+    /*public*/ void setType(PositionablePoint::PointType newType);
     /*public*/ TrackSegment* getConnect1() const;
+    /*public*/ void setConnect1(TrackSegment* trk);
     /*public*/ TrackSegment* getConnect2() const;
+    /*public*/ void setConnect2(TrackSegment* trk);
+    /*public*/ TrackSegment* getConnect2Actual();
+    /*public*/ void setConnect2Actual(TrackSegment* trk);
+    /*public*/ QString getLinkedEditorName();
+    /*public*/ PositionablePoint* getLinkedPoint();
+    /*public*/ void setLinkedPoint(PositionablePoint* p);
 //    /*public*/ QPointF getCoords();
 //    /*public*/ void setCoords(QPointF p);
-    /*public*/ void scaleCoords(double xFactor, double yFactor) override;
-    /*public*/ void translateCoords(double xFactor, double yFactor) override;
+//    /*public*/ void scaleCoords(double xFactor, double yFactor) override;
+//    /*public*/ void translateCoords(double xFactor, double yFactor) override;
     /*public*/ void rotateCoords(double angleDEG);
-    /*public*/ QRectF getBounds();
+//    /*public*/ QRectF getBounds();
     /*public*/ QString getEastBoundSignalMastName();
     /*public*/ QString getEastBoundSignal();
     /*public*/ SignalHead* getEastBoundSignalHead();
@@ -87,27 +97,26 @@ public:
      * "active" means that the object is still displayed, and should be stored.
      */
     /*public*/ bool isActive();
-    /*public*/ bool removeTrackConnection (TrackSegment* track) const;
+    /*public*/ bool removeTrackConnection (TrackSegment* track);
     /*public*/ void reCheckBlockBoundary() const override;
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* e);
-    /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* e);
-    /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* e);
+//    /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* e);
+//    /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* e);
     /*public*/ QString getLinkEditorName();
     /*public*/ PositionablePoint* getLinkedPoint() const;
     /*public*/ QString getLinkedPointId();
-    /*public*/ void setLinkedPoint(PositionablePoint* p);
     /*public*/ LayoutEditor* getLinkedEditor() const;
     /*public*/ QWidget* getLinkPanel();
-    /*public*/ bool isDisconnected(int connectionType)override;
+    /*public*/ bool isDisconnected(HitPointType::TYPES connectionType)override;
     /*public*/ bool isMainline()override;
-    /*public*/ QPointF getCoordsForConnectionType(int connectionType)override;
-    /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException)override;
-    /*public*/ void setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException)override;
-    /*public*/ bool replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack) const;
-    /*public*/ QList<int> checkForFreeConnections()override;
+//    /*public*/ QPointF getCoordsForConnectionType(int connectionType)override;
+    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException)override;
+    /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;
+    /*public*/ bool replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack);
+    /*public*/ QList<HitPointType::TYPES> checkForFreeConnections()override;
     /*public*/ bool checkForUnAssignedBlocks()override;
     /*public*/ void checkForNonContiguousBlocks(
-            /*@Nonnullptr*/ QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetsMap)override;
+            /*@Nonnullptr*/ QMap<QString, QList<QSet<QString>*>*> blockNamesToTrackNameSetsMap)override;
     /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnullptr*/ QString blockName,
             /*@Nonnullptr*/ QSet<QString>* TrackNameSet)override;
     /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock)override;
@@ -115,19 +124,19 @@ public:
 signals:
     
 public slots:
-    void On_setSignals();
-    void On_setSensors();
-    void On_setSignalMasts();
+//    void On_setSignals();
+//    void On_setSensors();
+//    void On_setSignalMasts();
     /*public*/ void updateLink();
 
 private:
     static Logger* log;
-    /*private*/ PositionablePoint* instance = nullptr;
+    ///*private*/ PositionablePoint* instance = nullptr;
     /*private*/ LayoutEditor* layoutEditor = nullptr;
 
     // persistent instances variables (saved between sessions)
     ///*private*/ QString ident; //"";
-    /*private*/ int type; //0;
+    /*private*/ PositionablePoint::PointType type; //0;
     /*private*/ mutable TrackSegment* connect1; //null;
     /*private*/ mutable TrackSegment* connect2; //null;
     /*private*/ QPointF coords; //new QPointF(10.0,10.0);
@@ -154,15 +163,17 @@ private:
     /*private*/ void setEastBoundSignalName(/*@CheckForNull*/ QString signalHead);
     /*private*/ void setWestBoundSignalName(/*@CheckForNull*/ QString signalHead);
     void removeSML(SignalMast* signalMast);
-    void removeLinkedPoint() const;
+    /*public*/ bool canRemove() override;
+    /*public*/ QList<QString> getSegmentReferences(TrackSegment* ts);
+    void removeLinkedPoint();
     QGraphicsItem* rects = nullptr;
     /*private*/ void setTypeAnchor();
     /*private*/ void setTypeEndBumper();
     /*private*/ void setTypeEdgeConnector();
+    /*private*/ PositionablePoint* linkedPoint;
 
  QMenu* popup;// = NULL;
  //QGraphicsItem* item;
- /*private*/ mutable PositionablePoint* linkedPoint = nullptr;
  JDialog* editLink;// = null;
  QList<PositionablePoint*>* pointList = nullptr;
  void /*private*/ invalidate(EditScene * g2)override;
@@ -178,18 +189,18 @@ protected:
 /**
  * For editing: only provides remove
  */
-/*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
+ // /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
  /*protected*/ LayoutEditor* getLayoutEditor();
  /*protected*/ int getConnect1Dir() const;
  /*protected*/ NamedBeanHandle<SignalHead*>* signalEastHeadNamed = nullptr; // signal head for east (south) bound trains
  /*protected*/ NamedBeanHandle<SignalHead*>* signalWestHeadNamed = nullptr; // signal head for west (north) bound trains
- /*protected*/ void drawTurnoutControls(EditScene* g2)override;
+ // /*protected*/ void drawTurnoutControls(EditScene* g2)override;
  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE type = track);
  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE type = track);
- /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
- /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2);
- /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
- /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity();
+// /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
+// /*protected*/ /*abstract*/ void drawEditControls(EditScene *g2);
+// /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected)override;
+ /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity() override;
  /*protected*/ int maxWidth();
  /*protected*/ int maxHeight();
 

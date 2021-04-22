@@ -7,11 +7,8 @@ class LayoutDoubleXOver : public LayoutXOver
   Q_OBJECT
  public:
   /*public*/ LayoutDoubleXOver(/*@Nonnull*/ QString id,
-          /*@Nonnull*/ QPointF c, double rot,
-          double xFactor, double yFactor,
           /*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ LayoutDoubleXOver(/*@Nonnull*/ QString id, /*@Nonnull*/ QPointF c, double rot,
-          double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v);
+  /*public*/ LayoutDoubleXOver(/*@Nonnull*/ QString id, LayoutEditor* layoutEditor, int v);
 };
 
 #endif // LAYOUTDOUBLEXOVER_H

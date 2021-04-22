@@ -1,4 +1,5 @@
 #include "layoutlhturnoutview.h"
+#include "layoutlhturnout.h"
 
 /**
  * MVC View component for the LayoutLHTurnout class.
@@ -12,8 +13,12 @@
      * Constructor method.
      * @param turnout the layout left hand turnout to create view for.
      */
-    /*public*/ LayoutLHTurnoutView::LayoutLHTurnoutView(/*@Nonnull*/ LayoutLHTurnout* turnout): LayoutTurnoutView(turnout) {
-        //super(turnout);
+    /*public*/ LayoutLHTurnoutView::LayoutLHTurnoutView(/*@Nonnull*/ LayoutLHTurnout* turnout,
+                                /*@Nonnull*/ QPointF c, double rot,
+                                double xFactor, double yFactor,
+                                /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutTurnoutView(turnout, c, rot, xFactor, yFactor, layoutEditor) {
+                            //super(turnout, c, rot, xFactor, yFactor, layoutEditor);
+
         // this.turnout = turnout;
     }
 

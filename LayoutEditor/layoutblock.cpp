@@ -11,6 +11,9 @@
 #include "memoryicon.h"
 #include "jmricolorchooser.h"
 #include "joptionpane.h"
+#include "limits.h"
+#include "joptionpane.h"
+
 
 QVector<int>* LayoutBlock::updateReferences = new QVector<int>();
 long LayoutBlock::time=0;
@@ -647,28 +650,20 @@ long LayoutBlock::time=0;
  */
 /*public*/ LayoutEditor*  LayoutBlock::getMaxConnectedPanel()
 {
- LayoutEditor* panel = NULL;
- if ( (block!=NULL) && (panels->size() > 0) )
- {
-  // a block is attached and this LayoutBlock is used
-  // initialize connectivity as defined in first Layout Editor panel
-  panel = panels->at(0);
-  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
-  // if more than one panel, find panel with the highest connectivity
-  if (panels->size()>1)
-  {
-   for (int i = 1;i < panels->size();i++)
-   {
-    if (c->size()<panels->at(i)->auxTools->
-                                    getConnectivityList(this)->size())
-    {
-     panel = panels->at(i);
-     c = panel->auxTools->getConnectivityList(this);
-    }
-   }
-  }
+ LayoutEditor* result = NULL;
+ // a block is attached and this LayoutBlock is used
+ if ((block != nullptr) && (panels->size() > 0)) {
+     // initialize connectivity as defined in first Layout Editor panel
+     int maxConnectivity = INT_MIN;//Integer.MIN_VALUE;
+     for (LayoutEditor* panel : *panels) {
+         QVector<LayoutConnectivity*>* c = panel->getLEAuxTools()->getConnectivityList(this);
+         if (maxConnectivity < c->size()) {
+             maxConnectivity = c->size();
+             result = panel;
+         }
+     }
  }
- return panel;
+ return result;
 }
 
 /**
@@ -685,45 +680,51 @@ long LayoutBlock::time=0;
   // a block is attached and this LayoutBlock is used
   // initialize connectivity as defined in first Layout Editor panel
   LayoutEditor* panel = panels->at(0);
-  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
+  QVector<LayoutConnectivity*>* c = panel->getLEAuxTools()->getConnectivityList(this);
 
   // if more than one panel, find panel with the highest connectivity
   if (panels->size()>1)
   {
    for (int i = 1;i < panels->size();i++)
    {
-    if (c->size()<panels->at(i)->auxTools->
-                                    getConnectivityList(this)->size())
-    {
-     panel = panels->at(i);
-     c = panel->auxTools->getConnectivityList(this);
+    if (c->size() < panels->at(i)->getLEAuxTools()->
+            getConnectivityList(this)->size()) {
+        panel = panels->at(i);
+        c = panel->getLEAuxTools()->getConnectivityList(this);
     }
    }
-   // check that this connectivity is compatible with that of other panels.
-   for (int j = 0;j < panels->size();j++)
-   {
-    LayoutEditor* tPanel = panels->at(j);
-    if ( (tPanel!=panel) && ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->
-                            warn() && ( !compareConnectivity(c,
-                                    tPanel->auxTools->getConnectivityList(this)) )  )
-    {
-     // send user an error message
-//     int response = JOptionPane.showOptionDialog(NULL,
-//                            java.text.MessageFormat.format(tr("Warn1"),
-//                            new Object[]{blockName,tPanel.getLayoutName(),
-//                            panel.getLayoutName()}),tr("WarningTitle"),
-//                            JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
-//                            NULL,new Object[] {tr("ButtonOK"),
-//                            tr("ButtonOKPlus")},tr("ButtonOK"));
-    int response = QMessageBox::warning(NULL, tr("Warning"), tr("Warning - Connectivities for block \"%1\" in panels \"%2\" and \"%3\" are not compatible.").arg(blockName).arg(tPanel->getLayoutName()).arg(panel->getLayoutName()),QMessageBox::Yes | QMessageBox::No);
-    if (response!=0)
-      // user elected to disable messages
-     ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->turnOffWarning();
-    }
-   }
+
+   // Now try to determine if this block is across two panels due to a linked point
+      PositionablePoint* point = panel->getFinder()->findPositionableLinkPoint(this);
+      if ((point != nullptr) && (point->getLinkedEditor() != nullptr) && panels->contains(point->getLinkedEditor())) {
+          c = panel->getLEAuxTools()->getConnectivityList(this);
+          //c->addAll(point.getLinkedEditor().getLEAuxTools().getConnectivityList(this));
+          for(LayoutConnectivity* lc : *point->getLinkedEditor()->getLEAuxTools()->getConnectivityList(this))
+           c->append(lc);
+      } else {
+          // check that this connectivity is compatible with that of other panels.
+          for (LayoutEditor* tPanel : *panels) {
+              if ((tPanel != panel) && ((LayoutBlockManager*)InstanceManager::getDefault(
+                      "LayoutBlockManager"))->warn()
+                      && (!compareConnectivity(c, tPanel->getLEAuxTools()->getConnectivityList(this)))) {
+                  // send user an error message
+                  int response = JOptionPane::showOptionDialog(nullptr,
+                          tr("Warning - Connectivities for Block \"%1\" in Panels \"%2\" and \"%3\" are not compatible.").arg(
+                                  getUserName(), tPanel->getLayoutName(),
+                                      panel->getLayoutName()), tr("Warning"),
+                          JOptionPane::YES_NO_OPTION, JOptionPane::QUESTION_MESSAGE,
+                          QIcon(), QVariantList{tr("OK"),
+                              tr("OK - Stop Reminders")}, tr("OK"));
+                  if (response != 0) {    // user elected to disable messages
+                      ((LayoutBlockManager*)InstanceManager::getDefault(
+                              "LayoutBlockManager"))->turnOffWarning();
+                  }
+              }
+          }
+      }
   }
   // update block Paths to reflect connectivity as needed
-  updateBlockPaths(c,panel);
+  updateBlockPaths(c, panel);
  }
 }
 
@@ -746,7 +747,7 @@ long LayoutBlock::time=0;
 {
  if(enableAddRouteLogging)
   log->info("From " + this->getDisplayName() + " updatePaths Called");
- LayoutEditorAuxTools* auxTools = new LayoutEditorAuxTools(panel);
+ auxTools = panel->getLEAuxTools();
  QVector<Path*>* paths = block->getPaths();
  QVector<bool> used =  QVector<bool>(c->size(),false);
  QVector<int> need = QVector<int>(paths->size(),-1);
@@ -1601,7 +1602,7 @@ void LayoutBlock::setBlockMetric(){
     }
    }
   }
-  LayoutEditorAuxTools* auxTools = new LayoutEditorAuxTools(panel);
+  auxTools = panel->getLEAuxTools();
   QVector<LayoutConnectivity*>* d = auxTools->getConnectivityList(this);
   QVector<LayoutBlock*>* attachedBlocks = new QVector<LayoutBlock*>();
   for (int i = 0; i<d->size(); i++)

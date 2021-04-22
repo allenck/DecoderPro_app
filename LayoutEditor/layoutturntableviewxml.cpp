@@ -1,4 +1,4 @@
-#include "layoutturntablexml.h"
+#include "layoutturntableviewxml.h"
 #include "layoutturntable.h"
 #include "tracksegment.h"
 #include "layouteditor.h"
@@ -11,7 +11,7 @@
  */
 // /*public*/ class LayoutTurntableXml extends AbstractXmlAdapter {
 
-/*public*/ LayoutTurntableXml::LayoutTurntableXml() : AbstractXmlAdapter() {
+/*public*/ LayoutTurntableViewXml::LayoutTurntableViewXml() : AbstractXmlAdapter() {
  log = new Logger("LayoutTurntable");
 }
 
@@ -21,16 +21,17 @@
  * @param o Object to store, of type LayoutTurntable
  * @return QDomElement containing the complete info
  */
-/*public*/ QDomElement LayoutTurntableXml::store(QObject* o)
+/*public*/ QDomElement LayoutTurntableViewXml::store(QObject* o)
 {
- LayoutTurntable* p = (LayoutTurntable*) o;
+  LayoutTurntableView* pv = (LayoutTurntableView*) o;
+  LayoutTurntable* p = (LayoutTurntable*) o;
 
  QDomElement element = doc.createElement("layoutturntable");
  bool turnoutControl = p->isTurnoutControlled();
  // include attributes
  element.setAttribute("ident", p->getID());
  element.setAttribute("radius", p->getRadius());
- QPointF coords = p->getCoordsCenter();
+ QPointF coords = pv->getCoordsCenter();
  element.setAttribute("xcen", coords.x());
  element.setAttribute("ycen", coords.y());
  element.setAttribute("turnoutControlled", (turnoutControl ? "yes" : "no"));
@@ -42,7 +43,7 @@
   rElem.setAttribute("angle", p->getRayAngle(i));
   TrackSegment* t = p->getRayConnectOrdered(i);
   if (t != NULL) {
-      rElem.setAttribute("connectname", t->getID());
+      rElem.setAttribute("connectname", p->getID());
   }
   rElem.setAttribute("index", p->getRayIndex(i));
   if (turnoutControl && p->getRayTurnoutName(i) != NULL)
@@ -62,7 +63,7 @@
  return element;
 }
 
-/*public*/ bool LayoutTurntableXml::load(QDomElement element) throw (Exception)
+/*public*/ bool LayoutTurntableViewXml::load(QDomElement element) throw (Exception)
 {
     log->error("Invalid method called");
     return false;
@@ -74,7 +75,7 @@
  * @param element Top level QDomElement to unpack.
  * @param o       LayoutEditor as an Object
  */
-/*public*/ void LayoutTurntableXml::load(QDomElement element, QObject* o) throw (Exception)
+/*public*/ void LayoutTurntableViewXml::load(QDomElement element, QObject* o) throw (Exception)
 {
     // create the objects
     LayoutEditor* p = (LayoutEditor*) o;
@@ -92,7 +93,7 @@
 //        log->error("failed to convert layoutturntable center or radius attributes");
 //    }
     // create the new LayoutTurntable
-    LayoutTurntable* l = new LayoutTurntable(name, QPointF(x, y), p);
+    LayoutTurntable* l = new LayoutTurntable(name,  p);
     l->setRadius(radius);
 
     bool turnoutControl = false;

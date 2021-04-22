@@ -52,9 +52,10 @@ public:
 // display dialog for Set Signals at Turnout* tool
 /*public*/ void setSignalsAtTurnoutFromMenu( LayoutTurnout* to,
                 MultiIconEditor* theEditor, JFrame* theFrame ) ;
-/*public*/ void setSignalsAtTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
+    /*public*/ void setSignalsAtTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ bool reachedEndBumper();
-    /*public*/ static bool isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p);
+    /*public*/ bool isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p);
+    /*public*/ static bool isAtWestEndOfAnchor(LayoutEditor* layoutEditor, TrackSegment* t, PositionablePoint* p);
     /*public*/ void setSignalsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void setSignalsAtBlockBoundary( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void removeSignalHeadFromPanel(QString signalName);
@@ -564,7 +565,7 @@ private:
     /*private*/ void SetLogicSSLWestBound();
     /*private*/ int isHeadAssignedHere(SignalHead* head, LayoutTurnout* lTurnout);
     /*private*/ void warnOfSkippedTurnout(JmriJFrame* frame, QString turnoutName, QString headName);
-    /*private*/ TrackSegment* getContinuingTrack(LayoutTurnout* to, int type);
+    /*private*/ TrackSegment* getContinuingTrack(LayoutTurnout* to, HitPointType &type);
     /*private*/ bool getTurnoutInformation(bool isCrossover);
     /*private*/ bool getTurnoutSignalHeadInformation();
     /*private*/ void placeThroatContinuing();
@@ -581,15 +582,17 @@ private:
     void createListUsedSignalMasts();
     void refreshSignalMastAtTurnoutComboBox();
     /*private*/ int isMastAssignedHere(SignalMast* mast, LayoutTurnout* lTurnout);
+    /*<T extends LayoutTurnout>*/ void setTurnoutSensor(LayoutTurnout* trackItem, Sensor* newSensor, Sensor* currSensor,
+            BeanDetails* beanDetail, LayoutTrack* connect, QPointF coords, QString position);
     /*private*/ bool getTurnoutSensorInformation();
     bool sensorAssignedElseWhere(Sensor* sensor);
     /*private*/ bool getSimpleBlockInformation();
     /*private*/ void placeEastBoundIcon(PositionableIcon* icon, bool right, double fromPoint);
     /*private*/ void placeWestBoundIcon(PositionableIcon* icon, bool right, double fromPoint);
-    /*private*/ void placingBlock(PositionableIcon* icon, bool right, double fromPoint);
-    /*private*/ void placingBlockB(PositionableIcon* icon, bool right, double fromPoint);
-    /*private*/ void placingBlockC(PositionableIcon* icon, bool right, double fromPoint);
-    /*private*/ void placingBlockD(PositionableIcon* icon, bool right, double fromPoint);
+    /*private*/ void placingBlock(PositionableIcon* icon, bool right, double fromPoint, QObject *obj, QPointF p);
+//    /*private*/ void placingBlockB(PositionableIcon* icon, bool right, double fromPoint);
+//    /*private*/ void placingBlockC(PositionableIcon* icon, bool right, double fromPoint);
+//    /*private*/ void placingBlockD(PositionableIcon* icon, bool right, double fromPoint);
     /*private*/ bool getTurnoutMastInformation();
     void setIconOnPanel(TrackSegment* t, PositionableIcon* l, bool eastbound, QPoint p, QPoint pt2, bool side, double fromPoint);
     QPoint southToNorth(QPoint p, PositionableIcon* l, bool right, double fromPoint);
@@ -650,7 +653,7 @@ private:
     /*private*/ bool	layoutTurnout2BLeft;// = false;
     /*private*/ bool getTToTTurnoutInformation();
     /*private*/ bool getTToTSignalHeadInformation();
-    /*private*/ void placeA1TToT(QString headName);
+    /*private*/ void placeA1TToT(QString signalHeadName);
     /*private*/ void placeA2TToT(QString headName);
     /*private*/ void placeB1TToT(QString headName);
     /*private*/ void placeB2TToT(QString headName);
@@ -908,10 +911,9 @@ private:
   QGridLayout* signalMastLayoutSlipPanelLayout;
   void refreshSignalMastAtXingComboBox();
   /*private*/ bool getLevelCrossingMastInformation();
-  /*private*/ void placeXingAIcon(PositionableIcon* icon, bool right, double fromPoint);
-  /*private*/ void placeXingBIcon(PositionableIcon* icon, bool right, double fromPoint);
-  /*private*/ void placeXingCIcon(PositionableIcon* icon, bool right, double fromPoint);
-  /*private*/ void placeXingDIcon(PositionableIcon* icon, bool right, double fromPoint);
+  void setLevelXingSensor(Sensor* newSensor, Sensor* currSensor, BeanDetails* beanDetail,
+          LayoutTrack* connect, QPointF coords, QString position);
+
   QGridLayout* signalMastLevelXingPanelLayout;
   /*private*/ bool getLevelCrossingSensorInformation();
   QGridLayout* sensorXingPanelLayout;
@@ -1121,6 +1123,8 @@ protected:
     friend class SBBWindowListener;
     friend class PositionablePoint;
     friend class LayoutEditorToolBarPanel;
+    friend class LayoutTurnoutView;
+    friend class LayoutSlipView;
 };
 
 /*static*/ class BeanDetails : public QObject
@@ -1159,6 +1163,7 @@ public:
     QWidget* addIconPanel();
 
     //Border blackline = BorderFactory.createLineBorder(Color.black);
+    friend class LayoutSlipView;
 };
 class SSWindowListener: public WindowListener
 {

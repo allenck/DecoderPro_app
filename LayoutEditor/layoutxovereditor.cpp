@@ -28,7 +28,7 @@
      * Edit a XOver
      */
     //@Override
-    /*public*/ void LayoutXOverEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) {
+    /*public*/ void LayoutXOverEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrackView *layoutTrack) {
         log->trace(tr("LayoutXOverEditor.editLayoutTrack(%1) of a %2").arg(layoutTrack->getName()).arg(layoutTrack->metaObject()->className()));
         LayoutTurnoutEditor::editLayoutTrack(layoutTrack);
     }

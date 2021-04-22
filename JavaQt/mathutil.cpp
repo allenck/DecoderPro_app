@@ -1098,5 +1098,9 @@ MathUtil::MathUtil()
     return (a * p3X + b * p3Y + c) / qSqrt(a * a + b * b);
 }
 
+/*public*/ /*static*/ double MathUtil::hypot(double a, double b)
+{
+ return qSqrt((a*a) + (b*b));
+}
 /*private*/ /*final*/ /*static*/ Logger* MathUtil::log = LoggerFactory::getLogger("MathUtil");
 

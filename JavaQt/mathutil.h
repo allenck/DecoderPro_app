@@ -96,6 +96,7 @@ public:
          /*@Nonnull*/ QPointF p1,
          /*@Nonnull*/ QPointF p2,
          /*@Nonnull*/ QPointF p3);
+  /*public*/ static double hypot(double a, double b);
 
 private:
  MathUtil();

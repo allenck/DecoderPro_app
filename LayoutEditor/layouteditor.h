@@ -38,6 +38,15 @@
 #include "popupmenulistener.h"
 #include "popupmenuevent.h"
 #include "namedbeancombobox.h"
+//#include "layoutmodels.h"
+#include "layoutslipview.h"
+#include "layouteditorviewcontext.h"
+#include "levelxing.h"
+#include "tracksegmentview.h"
+#include "layoutturntableview.h"
+#include "levelxingview.h"
+#include "path.h"
+
 enum TOOLBARSIDES
 {
    eTOP, //("top"),
@@ -137,8 +146,10 @@ class LnSensorManager;
 class LayoutSlip;
 class LayoutTurnout;
 class TrackSegment;
+class TrackSegmentView;
 class PositionablePoint;
 class LevelXing;
+class LevelXingView;
 class Positionable;
 class PositionableLabel;
 class LayoutEditorAuxTools;
@@ -150,9 +161,10 @@ class JmriJFrame;
 class LayoutEditorToolBarPanel;
 class LayoutShape;
 
-class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditor : public PanelEditor
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditor : public PanelEditor//, public LayoutModels
 {
  Q_OBJECT
+ //Q_INTERFACES(LayoutModels)
     friend class LayoutTurnout;
     friend class LayoutEditorAuxTools;
     friend class LevelXing;
@@ -224,7 +236,7 @@ public:
     /*public*/ void addTrackSegment();
     /*public*/ void addLevelXing();
     /*public*/ void addLayoutSlip(LayoutTurnout::TurnoutType type);
-    /*public*/ void addLayoutTurnout(int type);
+    /*public*/ void addLayoutTurnout(LayoutTurnout::TurnoutType type);
     /*public*/ bool validatePhysicalTurnout(QString inTurnoutName, QWidget* openPane = 0);
     /*public*/ QVector<SensorIcon*>* sensorImage = new QVector<SensorIcon*>();  // sensor images
     /*public*/ QVector<LayoutTurntable*>* turntableList = new QVector<LayoutTurntable*>(); // Turntable list
@@ -331,6 +343,7 @@ public:
     QT_DEPRECATED bool getSnapOnAdd();
     QT_DEPRECATED bool getSnapOnMove();
     bool getAntialiasingOn();
+    /*public*/ bool isDrawLayoutTracksLabel();
     /*public*/ bool getHighlightSelectedBlock();
     /*public*/ void setLayoutName(QString name);
     void setDrawGrid(bool state);
@@ -377,6 +390,7 @@ public:
     /*public*/ void setSnapOnAdd(bool state);
     /*public*/ void setSnapOnMove(bool state);
     /*public*/ void setAntialiasingOn(bool state);
+    /*public*/ void setDrawLayoutTracksLabel(bool state);
     /*public*/ void setAutoBlockAssignment(bool boo);
     /*public*/ void setScroll(int state);
     /*public*/ void setConnections();
@@ -389,7 +403,8 @@ public:
     /*public*/ QList<SignalMastIcon*> getSignalMastList();
     /*public*/ LayoutEditorFindItems* finder = new LayoutEditorFindItems(this);
     /*public*/ LayoutEditorFindItems* getFinder();
-    void setDirty(bool b = true);
+    void setDirty(bool b );
+    /*public*/ void setDirty() /*override*/;
     /*public*/ void addTurntable(QPointF pt);
     /*public*/ bool containsSignalHead(SignalHead* head) ;
     /*public*/ void removeSignalHead(SignalHead* head);
@@ -410,22 +425,40 @@ public:
     /*public*/ double getZoom();
     /*public*/ QVector<SignalHeadIcon*>* signalList = new QVector<SignalHeadIcon*>();  // Signal Head Icons
     /*public*/ QVector<SignalMastIcon*>* signalMastList = new QVector<SignalMastIcon*>();  // Signal Head Icons
-    /*private*/ /*transient*/ QList<LayoutShape*>* layoutShapes = new QList<LayoutShape*>();               // LayoutShap list
+    /*private*/ /*transient*/ QList<LayoutShape*> layoutShapes = QList<LayoutShape*>();               // LayoutShap list
     /*public*/ QVector<MultiSensorIcon*>* multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
     /*public*/ void dispose();
-    /*public*/ QList<PositionablePoint *> getPositionablePoints();
-    /*public*/ QList<LayoutSlip *> getLayoutSlips();
-    /*public*/ QList<TrackSegment *> getTrackSegments();
-    /*public*/ QList<LayoutTurnout *> getLayoutTurnouts();
-    /*public*/ QList<LayoutTurntable *> getLayoutTurntables();
-    /*public*/ QList<LevelXing*> getLevelXings();
-    /*final*/ /*public*/ void addLayoutTrack(/*@Nonnull*/ LayoutTrack* trk);
-    /*public*/ QList<LayoutTrack *> *getLayoutTracks();
-    /*public*/ QList<LayoutTurnout*>* getLayoutTurnoutsAndSlips();
-    /*public*/ /*@Nonnull*/ QList<LayoutShape *> *getLayoutShapes();
+    /*public*/ QList<PositionablePoint *> getPositionablePoints() /*override*/;
+    /*public*/ QList<LayoutSlip *> getLayoutSlips()/*override*/;
+    /*public*/ /*QNonnull*/ QList<TrackSegmentView*> getTrackSegmentViews() /*override*/;
+    /*public*/ QList<TrackSegment *> getTrackSegments() /*override*/;
+    /*public*/ /*@Nonnull*/ QList<LayoutTurnoutView*> getLayoutTurnoutViews(); // this specifically does not include slips
+    /*public*/ QList<LayoutTurnout *> getLayoutTurnouts() /*override*/;
+    /*public*/ QList<LayoutTurntable *> getLayoutTurntables()/*override*/;
+    /*public*/ QList<LevelXing*> getLevelXings() /*override*/;
+    /*public*/ QList<LevelXingView*> getLevelXingViews() /*override*/;
+
+    /*final*/ /*public*/ void addLayoutTrack(/*@Nonnull*/ LayoutTrack* trk, LayoutTrackView *v);
+    /*public*/ QList<LayoutTrack *> getLayoutTracks() /*override*/;
+    /*public*/ /*@Nonnull*/ QList<LayoutTurnoutView*> getLayoutTurnoutAndSlipViews();
+    /*public*/ /*@Nonnull*/QList<LayoutTurnout*> getLayoutTurnoutsAndSlips() /*override*/;
+    /*final*/ /*public*/ QList<LayoutTrackView*> getLayoutTrackViews() /*override*/;
+    /*final*/ /*public*/ LayoutTrackView* getLayoutTrackView(LayoutTrack* trk) /*override*/;
+    /*final*/ /*public*/ LevelXingView* getLevelXingView(LevelXing* xing) /*override*/;
+    /*final*/ /*public*/ LayoutTurnoutView* getLayoutTurnoutView(LayoutTurnout* to) /*override*/;
+    /*final*/ /*public*/ LayoutTurntableView* getLayoutTurntableView(LayoutTurntable* to) /*override*/;
+    /*final*/ /*public*/ LayoutSlipView* getLayoutSlipView(LayoutSlip* to);
+    /*final*/ /*public*/ TrackSegmentView* getTrackSegmentView(TrackSegment* to) /*override*/;
+    /*final*/ /*public*/ PositionablePointView* getPositionablePointView(const PositionablePoint *to) /*override*/;
+
+    /*public*/ /*@Nonnull*/ QList<LayoutShape *> getLayoutShapes()/*override*/;
     /*public*/ void sortLayoutShapesByLevel();
+    /*public*/ int computeDirection(LayoutTrack* trk1, HitPointType::TYPES h1, LayoutTrack* trk2, HitPointType::TYPES h2) /*override*/;
+    /*public*/ int computeDirectionToCenter(/*@Nonnull*/ LayoutTrack* trk1, /*@Nonnull*/ HitPointType::TYPES h1, /*@Nonnull*/ PositionablePoint* p) /*override*/;
+    /*public*/ int computeDirectionFromCenter(/*@Nonnull*/ const PositionablePoint *p, /*@Nonnull*/ LayoutTrack* trk1, /*@Nonnull*/ HitPointType::TYPES h1) /*override*/;
     /*public*/ bool removeFromContents(Positionable* l);
-    /*public*/ static QPointF getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType);
+    /*public*/ QPointF getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, HitPointType::TYPES connectionType);
+    /*public*/ QPointF getCoords(/*@Nonnull*/ LayoutTrackView* trkv, HitPointType::TYPES connectionType);
     /*public*/ QRectF trackEditControlRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ QRectF trackControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ void setSelectionRect(/*@Nonnull*/ QRectF selectionRect);
@@ -445,19 +478,18 @@ public:
     /*public*/ void setTurnoutAnimation(bool state);
     /*public*/ void setDirectTurnoutControl(bool boo);
     /*public*/ void setIncludedTurnoutSkipped(bool boo);
-    /*public*/ void setAllEditable(bool editable);
+    /*public*/ void setAllEditable(bool editable) override;
     /*public*/ void setShowHelpBar(bool state);
     /*public*/ bool translateTrack(float xDel, float yDel);
     /*public*/ int setAllTracksToDefaultColors();
     /*public*/ bool scaleTrack(float xFactor, float yFactor);
     /*public*/ void clearSelectionGroups();
-    /*public*/ void keyPressEvent(QKeyEvent *event);
-    /*final*/ /*public*/ QList<LayoutTrackView *> *getLayoutTrackViews();
+    /*public*/ void keyPressEvent(QKeyEvent *event) override;
     /*protected*/ void paintTargetPanel(EditScene* g2);
     /*private*/ QRectF getSelectionRect();
-    /*public*/ QList<PositionablePointView*> getPositionablePointViews();
+    /*public*/ QList<PositionablePointView*> getPositionablePointViews() /*override*/;
     /*final*/ /*public*/ bool removeLayoutTrackAndRedraw(/*@Nonnull*/ LayoutTrack* trk);
-    /*final*/ /*public*/ void removeLayoutTrack(/*@Nonnull */LayoutTrack* trk);
+    /*final*/ /*public*/ void removeLayoutTrack(/*@Nonnull */LayoutTrack* trk) /*override*/;
     /*public*/ ToolBarSide *getToolBarSide();
     /*public*/ void setToolBarSide(ToolBarSide* newToolBarSide);
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
@@ -469,9 +501,61 @@ public:
     /*public*/ double getMaxZoom();
     /*public*/ void setAwaitingIconChange();
     /*public*/ void resetAwaitingIconChange();
+    /*public*/ LayoutTrackView* foundTrackView = nullptr;                 // found view object, null if nothing found
 
+    /*public*/ QList<Positionable*>* _positionableSelection = new QList<Positionable*>();
+    /*public*/ QList<LayoutTrack*> _layoutTrackSelection = QList<LayoutTrack*>();
+    /*public*/ QList<LayoutShape*> _layoutShapeSelection = QList<LayoutShape*>();
 
-public slots:
+    // LayoutModels stuff
+    /*default*/ /*public*/ virtual int computeDirectionAB( /*@Nonnull*/ LayoutTurnout* track) {
+        LayoutTurnoutView* tv = getLayoutTurnoutView(track);
+        return Path::computeDirection(tv->getCoordsA(), tv->getCoordsB());
+    }
+
+    /*default*/ /*public*/ virtual int computeDirectionAC( /*@Nonnull*/ LayoutTurnout* track) {
+        LayoutTurnoutView* tv = getLayoutTurnoutView(track);
+        return Path::computeDirection(tv->getCoordsA(), tv->getCoordsC());
+    }
+
+    /*default*/ /*public*/ virtual int computeDirectionAD( /*@Nonnull*/ LayoutTurnout* track) {
+        LayoutTurnoutView* tv = getLayoutTurnoutView(track);
+        return Path::computeDirection(tv->getCoordsA(), tv->getCoordsD());
+    }
+
+    /*default*/ /*public*/ virtual int computeDirectionBC( /*@Nonnull*/ LayoutTurnout* track) {
+        LayoutTurnoutView* tv = getLayoutTurnoutView(track);
+        return Path::computeDirection(tv->getCoordsB(), tv->getCoordsC());
+    }
+
+    /*default*/ /*public*/ virtual int computeDirectionBD( /*@Nonnull*/ LayoutTurnout* track) {
+        LayoutTurnoutView* tv = getLayoutTurnoutView(track);
+        return Path::computeDirection(tv->getCoordsB(), tv->getCoordsD());
+    }
+
+    /*default*/ /*public*/ virtual int computeDirectionCD( /*@Nonnull*/ LayoutTurnout* track) {
+        LayoutTurnoutView* tv = getLayoutTurnoutView(track);
+        return Path::computeDirection(tv->getCoordsC(), tv->getCoordsD());
+    }
+
+    /**
+     * Invoked to display a warning about removal.
+     * Lists the attached items that prevent removing the layout track item.
+     * <p>
+     * The default implementation refers this to a View object for displaying a Dialog.
+     *
+     * @param track The involved track
+     * @param itemList A list of the attached heads, masts and/or sensors.
+     * @param typeKey  The object type such as Turnout, Level Crossing, etc.
+     */
+    /*default*/ /*public*/ virtual void displayRemoveWarning(LayoutTrack* track, QList<QString> itemList, QString typeKey) {
+        getLayoutTrackView(track)->displayRemoveWarningDialog(itemList, typeKey);
+    }
+    /*public*/ QList<Positionable *> *getPositionalSelection();
+    /*public*/ QList<LayoutTrack*> getLayoutTrackSelection();
+    /*public*/ QList<LayoutShape*> getLayoutShapeSelection();
+
+ public slots:
 
 private:
  //Operational instance variables - not saved to disk
@@ -533,6 +617,7 @@ private:
  /*private*/ /*transient*/ QAction* snapToGridOnAddCheckBoxMenuItem = nullptr;
  /*private*/ /*transient*/ QAction* snapToGridOnMoveCheckBoxMenuItem = nullptr;
  /*private*/ /*transient*/ QAction* antialiasingOnCheckBoxMenuItem = nullptr;
+ /*private*/ JCheckBoxMenuItem* drawLayoutTracksLabelCheckBoxMenuItem = nullptr;
  /*private*/ /*transient*/ QAction* turnoutCirclesOnCheckBoxMenuItem = nullptr;
  /*private*/ /*transient*/ QAction* turnoutDrawUnselectedLegCheckBoxMenuItem = nullptr;
  /*private*/ /*transient*/ QAction* hideTrackSegmentConstructionLinesCheckBoxMenuItem = nullptr;
@@ -561,7 +646,7 @@ private:
  /*private*/ /*transient*/ QMenu* assignBlockToSelectionMenuItem = new QMenu(tr("Assign Block To Selection") + "...");
 
  QPointF startDelta;
- /*private*/ /*transient*/ int selectedHitPointType = 0;         //hit point type within the selected object
+ /*private*/ /*transient*/ HitPointType::TYPES selectedHitPointType;// = 0;         //hit point type within the selected object
 
  // counts used to determine unique internal names
  /*private*/ /*transient*/ int numAnchors = 0;
@@ -639,17 +724,16 @@ private:
  bool isDirty();
  void resetDirty();
  ///*private*/ QObject* beginObject;// = nullptr; // begin track segment connection object, NULL if none
- /*private*/ void setLink(QObject* fromObject,int fromPointType, QObject* toObject,int toPointType);
+ /*private*/ void setLink(QObject* fromObject, HitPointType::TYPES fromPointType, QObject* toObject, HitPointType::TYPES toPointType);
  LayoutEditorAuxTools* auxTools = nullptr;
  // selection variables
- /*private*/ QVector<Positionable*>*  _positionableSelection = new QVector<Positionable*>();
  /*private*/ QVector<LayoutTurnout*>* _turnoutSelection = nullptr; //new QVector<LayoutTurnout>();  // LayoutTurnouts
  /*private*/ QVector<LevelXing*>* _xingSelection = nullptr; //new QVector<LevelXing>();  // LevelXing list
  /*private*/ QVector<LayoutSlip*>* _slipSelection = nullptr; //new QVector<LayoutSlip*>();  // LayoutSlip list
  /*private*/ QVector<LayoutTurntable*>* _turntableSelection = nullptr; //new ArrayList<LayoutTurntable>(); // Turntable list
  /*private*/ QVector<PositionablePoint*>* _pointSelection = nullptr; //new QVector<PositionablePoint>();  // PositionablePoint list
  QVector<PositionableLabel*>* _labelSelection; //new QVector<PositionableLabel>();  // PositionableLabel list
-/*private*/ QList<LayoutTrack*>* getLayoutTracksOfClass(QString type);
+/*private*/ QList<LayoutTrack *> getLayoutTracksOfClass(QString type);
 
   bool isDrawing = false;
 
@@ -798,8 +882,6 @@ private:
  /*private*/ bool scaleTrackDiagramOpen = false;
  /*private*/ /*transient*/ QPushButton* scaleTrackDiagramDone = nullptr;
  /*private*/ /*transient*/ QPushButton* scaleTrackDiagramCancel =nullptr;
- /*private*/ /*transient*/ QList<LayoutTrack*> _layoutTrackSelection = QList<LayoutTrack*>();
- /*public*/  QList<LayoutShape*> _layoutShapeSelection = QList<LayoutShape*>();
  /*private*/ void showEditPopUps(/*@Nonnull */QGraphicsSceneMouseEvent* event);
  /*private*/ void hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt);
  /*private*/ void hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc);
@@ -828,15 +910,15 @@ private:
  /*private*/ void createFloatingHelpPanel();
  /*private*/ void setScrollbarScale(double ratio);
  BorderLayout* borderLayout = nullptr;
- /*private*/ void alignToGrid(QVector<Positionable *> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes);
+ /*private*/ void alignToGrid(QList<Positionable *> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes);
  /*private*/ qint64 whenReleased = 0; //used to identify event that was popup trigger
  /*private*/ bool awaitingIconChange = false;
 
  /*private*/ /*transient*/ bool toolBarIsWide = true;
  /*private*/ void setToolBarSide(QString);
  /*private*/ void setupMenuBar();
- /*private*/ /*final*/ QList<LayoutTrack*>* layoutTrackList = new QList<LayoutTrack*>();
- /*private*/ /*final*/ QList<LayoutTrackView*>* layoutTrackViewList =  new QList<LayoutTrackView*>();
+ /*private*/ /*final*/ QList<LayoutTrack*> layoutTrackList = QList<LayoutTrack*>();
+ /*private*/ /*final*/ QList<LayoutTrackView*> layoutTrackViewList =  QList<LayoutTrackView*>();
  /*private*/ /*final*/ QMap<LayoutTrack*, LayoutTrackView*> trkToView = QMap<LayoutTrack*, LayoutTrackView*>();
  /*private*/ /*final*/ QMap<LayoutTrackView*, LayoutTrack*> viewToTrk = QMap<LayoutTrackView*, LayoutTrack*>();
  QList<NamedBeanUsageReport*> usageReport;
@@ -893,10 +975,10 @@ protected:
 
  /*protected*/ /*transient*/ LayoutTrack* foundTrack = nullptr;      //found object, null if nothing found
  /*protected*/ /*transient*/ QPointF foundLocation;// = new Point2D.Double(0.0, 0.0); //location of found object
- /*protected*/ /*transient*/ int foundHitPointType = 0;          //connection type within the found object
+ /*protected*/ /*transient*/ HitPointType::TYPES foundHitPointType;// = 0;          //connection type within the found object
  /*protected*/ /*transient*/ LayoutTrack* beginTrack = nullptr;      //begin track segment connection object, null if none
  /*protected*/ /*transient*/ QPointF beginLocation = QPointF(0.0, 0.0); //location of begin object
- /*protected*/ /*transient*/ int beginHitPointType = LayoutTrack::NONE; //connection type within begin connection object
+ /*protected*/ /*transient*/ HitPointType::TYPES beginHitPointType = HitPointType::NONE; //connection type within begin connection object
 
  /*protected*/ /*transient*/ QPointF currentLocation;// = new Point2D.Double(0.0, 0.0); //current location
 
@@ -907,6 +989,7 @@ protected:
  /*protected*/ /*transient*/ QColor defaultAlternativeTrackColor = QColor(Qt::white);
 
  /*protected*/ /*transient*/ bool antialiasingOn = false;
+ /*private*/ bool drawLayoutTracksLabel = false;
  /*protected*/ /*transient*/ bool highlightSelectedBlockFlag = false;
 
  /*protected*/ /*transient*/ bool turnoutCirclesWithoutEditMode = false;
@@ -970,29 +1053,37 @@ protected slots:
  /*protected*/ void assignBlockToSelection();
  void undoMoveSelection();
 
-friend class TrackSegment;
-friend class EditLevelXingDlg;
-friend class LayoutSlip;
-friend class SaveXml;
-friend class PositionableLabel;
-friend class LocoIconXml;
-friend class LayoutBlockManager;
-friend class LayoutEditorTools;
-friend class EditTrackSegmentDlg;
-friend class EditTurnout;
-friend class LayoutEditorXml;
-friend class LayoutTurntable;
-friend class PositionablePoint;
-friend class LoadXml;
-friend class LayoutEditorChecks;
-friend class EnterTrackWidthFrameWindowListener;
-friend class EnterGridSizesFrameWindowListener;
-friend class LayoutEditorToolBarPanel;
-friend class LayoutShape;
-friend class EditToolBarContainerPanel;
-friend class LayoutEditorComponent;
-friend class TurnoutComboBoxPopupMenuListener;
-friend class LayoutTrack;
+ friend class TrackSegment;
+ friend class EditLevelXingDlg;
+ friend class LayoutSlip;
+ friend class SaveXml;
+ friend class PositionableLabel;
+ friend class LocoIconXml;
+ friend class LayoutBlockManager;
+ friend class LayoutEditorTools;
+ friend class EditTrackSegmentDlg;
+ friend class EditTurnout;
+ friend class LayoutEditorXml;
+ friend class LayoutTurntable;
+ friend class PositionablePoint;
+ friend class LoadXml;
+ friend class LayoutEditorChecks;
+ friend class EnterTrackWidthFrameWindowListener;
+ friend class EnterGridSizesFrameWindowListener;
+ friend class LayoutEditorToolBarPanel;
+ friend class LayoutShape;
+ friend class EditToolBarContainerPanel;
+ friend class LayoutEditorComponent;
+ friend class TurnoutComboBoxPopupMenuListener;
+ friend class LayoutTrack;
+ friend class LayoutTurnoutView;
+ friend class LayoutTrackView;
+ friend class TrackSegmentView;
+ friend class LayoutSlipView;
+ friend class LevelXingView;
+ friend class LayoutTurntableView;
+ friend class PositionablePointView;
+
 };
 Q_DECLARE_METATYPE(LayoutEditor)
 
@@ -1136,13 +1227,13 @@ public:
     }
 
     //@Override
-    /*public*/ void popupMenuWillBecomeInvisible(PopupMenuEvent* event) {
+    /*public*/ void popupMenuWillBecomeInvisible(PopupMenuEvent* event) override {
         // This method is called before the popup menu becomes invisible
         layoutEditor->log->debug("PopupMenuWillBecomeInvisible");
     }
 
     //@Override
-    /*public*/ void popupMenuCanceled(PopupMenuEvent* event) {
+    /*public*/ void popupMenuCanceled(PopupMenuEvent* event) override{
         // This method is called when the popup menu is canceled
         layoutEditor->log->debug("PopupMenuCanceled");
     }

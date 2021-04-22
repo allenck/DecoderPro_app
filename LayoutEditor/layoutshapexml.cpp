@@ -170,7 +170,7 @@ LayoutShapeXml::LayoutShapeXml(QObject* parent)
         } else {
             log->error("Layout Shape points element not found.");
         }
-        p->getLayoutShapes()->append(s);
+        p->getLayoutShapes().append(s);
     }
 
     /*private*/ /*final*/ /*static*/ Logger* LayoutShapeXml::log = LoggerFactory::getLogger("LayoutShapeXml");

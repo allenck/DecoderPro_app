@@ -6,13 +6,15 @@
 #include "instancemanager.h"
 #include "windowlistener.h"
 #include "actionlistener.h"
+#include "layouttrackview.h"
+#include "layoutturnoutview.h"
 
 class LayoutTurnoutEditor : public LayoutTrackEditor
 {
   Q_OBJECT
  public:
   /*public*/ LayoutTurnoutEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) override;
+  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrack) override;
 
 
  private:
@@ -22,6 +24,7 @@ class LayoutTurnoutEditor : public LayoutTrackEditor
   /*private*/ void editLayoutTurnoutCancelPressed(/*ActionEvent* a*/);
 
  protected:
+  /*protected*/ LayoutTurnoutView* layoutTurnoutView = nullptr;
   /*protected*/ LayoutTurnout* layoutTurnout = nullptr;
 
   /*protected*/ JmriJFrame* editLayoutTurnoutFrame = nullptr;

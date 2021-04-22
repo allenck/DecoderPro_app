@@ -4,6 +4,7 @@
 #include "bean.h"
 #include "editor.h"
 #include "instancemanagerautodefault.h"
+#include "class.h"
 
 class Editor;
 class EditorManager : public Bean, public PropertyChangeListener, public InstanceManagerAutoDefault
@@ -21,6 +22,7 @@ public:
  /*public*/ bool contains(QString name);
  /*public*/ QSet<Editor*> getAll();
  /*public*/ Editor* get(/*@Nonnull*/ QString name);
+ /*public*/ /*<T extends Editor>*/ QObject* get(/*@Nonnull*/ QString type, /*@Nonnull*/ QString name);
 
  /*synchronized*/ /*public*/ QList<Editor *> getEditorsList();
  /*public*/ QList<Editor*> getEditorsList(QString type);

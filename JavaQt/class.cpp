@@ -5,6 +5,7 @@
 #include "loggerfactory.h"
 #include "instancemanagerautodefault.h"
 #include "instancemanagerautoinitialize.h"
+#include "classmigration.h"
 /**
  * Instances of the class {@code Class} represent classes and
  * interfaces in a running Java application.  An enum is a kind of
@@ -200,6 +201,7 @@
 //        Class<?> caller = Reflection.getCallerClass();
 //        return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
      QString clazz = className;
+     className = ClassMigration::migrateName(className);
      if(className.contains("."))
       clazz = className.mid(className.lastIndexOf(".")+1);
      int id = QMetaType::type(clazz.toLocal8Bit());

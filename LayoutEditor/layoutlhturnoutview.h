@@ -7,7 +7,10 @@ class LayoutLHTurnoutView : public LayoutTurnoutView
 {
   Q_OBJECT
  public:
-  /*public*/ LayoutLHTurnoutView(/*@Nonnull*/ LayoutLHTurnout* turnout);
+  /*public*/ LayoutLHTurnoutView(/*@Nonnull*/ LayoutLHTurnout* turnout,
+                              /*@Nonnull*/ QPointF c, double rot,
+                              double xFactor, double yFactor,
+                              /*@Nonnull*/ LayoutEditor* layoutEditor);
 
 };
 

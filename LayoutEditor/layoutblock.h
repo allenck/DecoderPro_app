@@ -28,6 +28,7 @@
 #include "layouteditor.h"
 #include "instancemanager.h"
 #include "beanedititem.h"
+#include "layoutturnout.h"
 
 class ConnectivityUtil;
 class JActionEvent;
@@ -37,7 +38,7 @@ class LayoutEditorAuxTools;
 class Adjacencies;
 class ThroughPaths;
 class Routes;
-class LayoutTurnout;
+//class LayoutTurnout;
 class LayoutConnectivity;
 class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlock : public AbstractNamedBean, public PropertyChangeListener
 {
@@ -380,6 +381,7 @@ public slots:
 #endif
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 private:
+    LayoutEditorAuxTools* auxTools= nullptr;
     //static bool InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() = true;
     QStringList working;// = {"Bi-Directional", "Receive Only", "Send Only"};
 

@@ -18,7 +18,7 @@ class LayoutEditorFindItems : public QObject
 {
  Q_OBJECT
 public:
- explicit LayoutEditorFindItems(LayoutEditor *parent = 0);
+ explicit LayoutEditorFindItems(LayoutEditor *models = 0);
  /*public*/ TrackSegment* findTrackSegmentByName(QString name);
  /*public*/ PositionablePoint* findPositionablePointByName(QString name);
  /*public*/ LayoutTurntable* findLayoutTurntableByName(QString name);
@@ -56,7 +56,7 @@ signals:
 public slots:
 private:
  static Logger* log;
- LayoutEditor* layoutEditor;
+ LayoutEditor* layoutModels;
 
 };
 

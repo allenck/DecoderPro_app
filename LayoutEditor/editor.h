@@ -674,6 +674,7 @@ protected slots:
   friend class ColorDialog;
   friend class DecoratorPanel;
   friend class LayoutEditorComponent;
+  friend class LayoutEditorAuxTools;
 public:
   class AddRightTOActionListener : public ActionListener
   {

@@ -13,6 +13,7 @@
 #include "panelmenu.h"
 #include "layouteditorfinditems.h"
 #include <QHash>
+#include "positionablepoint.h"
 
 //PointDetails::PointDetails(QObject *parent) :
 //    QObject(parent)

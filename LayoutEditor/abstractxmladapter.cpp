@@ -132,7 +132,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
     try {
         a = element.attribute(name);
         if (a == "") return def;
-        val = a/*.getValue()*/;
+        val = a/* */;
         if ( val == ("yes") || val == ("true") ) return true;  // non-externalized strings
         if ( val == ("no") || val == ("false") ) return false;
         return def;
@@ -165,7 +165,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
     bool bok;
         a = element.attribute(name);
         if (a == "") return def;
-        val = a/*.getValue()*/;
+        val = a/* */;
         return a.toInt(&bok);
     if(!bok) {
         log->debug("caught exception"/*, ex*/);
@@ -179,7 +179,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
         return def;
     }
 }
-#if 0
+#if 1
 /**
  * Service method to handle attribute input of
  * double values.  Not being present
@@ -190,23 +190,23 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
  * @param def default value if name not present in element.
  * @return double value of attribute, else default if not present or error.
  */
-final public double getAttributeDoubleValue(@Nonnull Element element, @Nonnull String name, double def) {
-    Attribute a;
-    String val = null;
-    try {
-        a = element.getAttribute(name);
-        if (a == null) return def;
-        val = a.getValue();
-        return a.getDoubleValue();
-    } catch (Exception ex) {
-        log.debug("caught exception", ex);
-        ErrorMemo em = new ErrorMemo(this,
+/*final*/ /*public*/ double AbstractXmlAdapter::getAttributeDoubleValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, double def) {
+    QString a;
+    QString val = QString();
+    bool ok;
+        a = element.attribute(name);
+        if (a == "") return def;
+        val = a;
+        return a.toDouble(&ok);
+    if(!ok) {
+        log->debug("caught exception"/*, ex*/);
+        ErrorMemo* em = new ErrorMemo(this,
                                         "getAttributeDoubleValue threw exception",
-                                        "element: "+element.getName(),
+                                        "element: "+element.tagName(),
                                         "attribute: "+name,
                                         "value: "+val,
-                                        ex);
-        getExceptionHandler().handle(em);
+                                        nullptr);
+        getExceptionHandler()->handle(em);
         return def;
     }
 }
@@ -222,23 +222,23 @@ final public double getAttributeDoubleValue(@Nonnull Element element, @Nonnull S
  * @param def default value if name not present in element.
  * @return float value of attribute, else default if not present or error.
  */
-final public float getAttributeFloatValue(@Nonnull Element element, @Nonnull String name, float def) {
-    Attribute a;
-    String val = null;
-    try {
-        a = element.getAttribute(name);
-        if (a == null) return def;
-        val = a.getValue();
-        return a.getFloatValue();
-    } catch (Exception ex) {
-        log.debug("caught exception", ex);
-        ErrorMemo em = new ErrorMemo(this,
+/*final*/ /*public*/ float AbstractXmlAdapter::getAttributeFloatValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, float def) {
+    QString a;
+    QString val = "";
+    bool ok;
+        a = element.attribute(name);
+        if (a == "") return def;
+        val = a ;
+        return a.toFloat(&ok);
+    if(!ok) {
+        log->debug("caught exception"/*, ex*/);
+        ErrorMemo* em = new ErrorMemo(this,
                                         "getAttributeFloatValue threw exception",
-                                        "element: "+element.getName(),
+                                        "element: "+element.tagName(),
                                         "attribute: "+name,
                                         "value: "+val,
-                                        ex);
-        getExceptionHandler().handle(em);
+                                        new Throwable());
+        getExceptionHandler()->handle(em);
         return def;
     }
 }

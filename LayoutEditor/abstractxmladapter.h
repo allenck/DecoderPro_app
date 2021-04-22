@@ -28,6 +28,8 @@ public:
     /*public*/ ErrorHandler* getExceptionHandler();
     /*final*/ /*public*/ bool getAttributeBooleanValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, bool def) ;
     /*final*/ /*public*/ int getAttributeIntegerValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, int def) ;
+    /*final*/ /*public*/ double getAttributeDoubleValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, double def);
+    /*final*/ /*public*/ float getAttributeFloatValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, float def);
 
 signals:
 

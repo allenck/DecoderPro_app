@@ -32,7 +32,7 @@
      * Edit a Turntable.
      */
     //@Override
-    /*public*/ void LayoutTurntableEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) {
+    /*public*/ void LayoutTurntableEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrackView *layoutTrack) {
         if (qobject_cast<LayoutTurntable*>(layoutTrack) ) {
             this->layoutTurntable = (LayoutTurntable*) layoutTrack;
         } else {

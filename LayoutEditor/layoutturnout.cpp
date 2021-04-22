@@ -28,6 +28,7 @@
 //#include "layouttrackeditors.h"
 #include "layoutturnouteditor.h"
 #include "layouteditortoolbarpanel.h"
+#include "loggerfactory.h"
 
 //LayoutTurnout::LayoutTurnout(QObject *parent) :
 //    QObject(parent)
@@ -148,42 +149,34 @@
 /**
  * constructor method
  */
-/*protected*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id,
-        /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor)
- : LayoutTrack(id, c, layoutEditor) {
-    //super(id, c, layoutEditor);
-
- editor = new LayoutTurnoutEditor(layoutEditor);
-}
 
 /*protected*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id,
-        /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, LayoutTurnout::TurnoutType t)
- : LayoutTrack(id, c, layoutEditor) {
+        /*@Nonnull*/ LayoutEditor* models, LayoutTurnout::TurnoutType t)
+ : LayoutTrack(id, models) {
     //super(id, c, layoutEditor);
- type = t;
-
- editor = new LayoutTurnoutEditor(layoutEditor);
+ common(id, t, models, 1);
 }
 
-/*public*/ LayoutTurnout::LayoutTurnout(QString id, LayoutTurnout::TurnoutType t, QPointF c, double rot, double xFactor, double yFactor,
-                                        LayoutEditor* layoutEditor)
- : LayoutTrack(id, c, layoutEditor)
+/*protected*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id,
+        /*@Nonnull*/ LayoutEditor* models)
+ : LayoutTrack(id, models) {
+    //super(id, c, layoutEditor);
+ common(id, TurnoutType::NONE, models, 1);
+}
+
+/*public*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ LayoutEditor* models, int v)
+  : LayoutTrack(id, models)
 {
- common(id, t, c, rot, xFactor, yFactor, layoutEditor, 1);
-}
-
-/*public*/ LayoutTurnout::LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ QPointF c, double rot,
-           double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
-  : LayoutTrack(id, c, layoutEditor)
-{
- common(id, t, c, rot, xFactor, yFactor, layoutEditor, v);
+ common(id, t, models, v);
 }
 
 
-void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, double rot, double xFactor, double yFactor, LayoutEditor *layoutEditor, int v)
+void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEditor *layoutEditor, int v)
 {
  log = new Logger("LayoutTurnout");
 
+ this->type = t;
+ this->version = v;
  setObjectName(id);
  editor = new LayoutTurnoutEditor(layoutEditor);
 
@@ -222,7 +215,6 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
  sensorBNamed = nullptr; // Continuing
  sensorCNamed = nullptr; // diverging
  sensorDNamed = nullptr; // single or double crossover only
- type = RH_TURNOUT;
  connectA = nullptr;		// throat of LH, RH, RH Xover, LH Xover, and WYE turnouts
  connectB = nullptr;		// straight leg of LH and RH turnouts
  connectC = nullptr;
@@ -231,11 +223,11 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
  disabled = false;
  hidden = false;
  disableWhenOccupied = false;
- dispB =  QPointF(20.0,0.0);
- pointA = QPointF(0, 0);
- pointB = QPointF(40, 0);
- pointC = QPointF(60, 20);
- pointD = QPointF(20, 20);
+// dispB =  QPointF(20.0,0.0);
+// pointA = QPointF(0, 0);
+// pointB = QPointF(40, 0);
+// pointC = QPointF(60, 20);
+// pointD = QPointF(20, 20);
  linkedTurnoutName = ""; // name of the linked Turnout (as entered in tool)
  linkType = NO_LINK;
  popup = nullptr;
@@ -272,7 +264,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
  signalCMastNamed = nullptr; // diverging
  signalDMastNamed = nullptr; // single or double crossover only
 
-
+#if 0
     //instance = this;
     namedTurnout = nullptr;
     turnoutName = "";
@@ -355,45 +347,48 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
     pt =  QPointF(round(dispA.x()*xFactor),
                                     round(dispA.y()*yFactor));
     dispA = pt;
+#endif
 }
+
 // this should only be used for debugging...
-    //@Override
-    /*public*/ QString LayoutTurnout::toString() {
-        return "LayoutTurnout " + getId();
-    }
+//@Override
+/*public*/ QString LayoutTurnout::toString() {
+    return "LayoutTurnout " + getId();
+}
+
 /*private*/ double LayoutTurnout::round (double x) {
     int i = (int)(x+0.5);
     return i;
 }
 
-/*protected*/ void LayoutTurnout::rotateCoords(double angleDEG)
-{
-    // rotate coordinates
- double rotRAD = qDegreesToRadians(angleDEG);
- double sineRot = qSin(rotRAD);
- double cosineRot = qCos(rotRAD);
+///*protected*/ void LayoutTurnout::rotateCoords(double angleDEG)
+//{
+//    // rotate coordinates
+// double rotRAD = qDegreesToRadians(angleDEG);
+// double sineRot = qSin(rotRAD);
+// double cosineRot = qCos(rotRAD);
 
- // rotate displacements around origin {0, 0}
- QPointF center_temp = center;
- center = MathUtil::zeroPoint2D;
- dispA = rotatePoint(dispA, sineRot, cosineRot);
- dispB = rotatePoint(dispB, sineRot, cosineRot);
- center = center_temp;
+// // rotate displacements around origin {0, 0}
+// QPointF center_temp = center;
+// center = MathUtil::zeroPoint2D;
+// dispA = rotatePoint(dispA, sineRot, cosineRot);
+// dispB = rotatePoint(dispB, sineRot, cosineRot);
+// center = center_temp;
 
- pointA = rotatePoint(pointA, sineRot, cosineRot);
- pointB = rotatePoint(pointB, sineRot, cosineRot);
- pointC = rotatePoint(pointC, sineRot, cosineRot);
- pointD = rotatePoint(pointD, sineRot, cosineRot);
-}
+// pointA = rotatePoint(pointA, sineRot, cosineRot);
+// pointB = rotatePoint(pointB, sineRot, cosineRot);
+// pointC = rotatePoint(pointC, sineRot, cosineRot);
+// pointD = rotatePoint(pointD, sineRot, cosineRot);
+//}
 
-/*protected*/ QPointF LayoutTurnout::rotatePoint(QPointF p, double sineAng, double cosineAng)
-{
- double cX = center.x();
- double cY = center.y();
- double x = cX + cosineAng * (p.x() - cX) - sineAng * (p.y() - cY);
- double y = cY + sineAng * (p.x() - cX) + cosineAng * (p.y() - cY);
- return  QPointF(x, y);
-}
+///*protected*/ QPointF LayoutTurnout::rotatePoint(QPointF p, double sineAng, double cosineAng)
+//{
+// double cX = center.x();
+// double cY = center.y();
+// double x = cX + cosineAng * (p.x() - cX) - sineAng * (p.y() - cY);
+// double y = cY + sineAng * (p.x() - cX) + cosineAng * (p.y() - cY);
+// return  QPointF(x, y);
+//}
 
 /**
  * Accessor methods
@@ -829,7 +824,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
 /*public*/ bool LayoutTurnout::canRemove() {
     QList<QString> beanReferences = getBeanReferences("All");  // NOI18N
     if (!beanReferences.isEmpty()) {
-        displayRemoveWarningDialog(beanReferences, "BeanNameTurnout");  // NOI18N
+        models->displayRemoveWarning(this, beanReferences, "BeanNameTurnout");  // NOI18N
     }
     return beanReferences.isEmpty();
 }
@@ -1151,8 +1146,8 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
 /*public*/ QString LayoutTurnout::getLinkedTurnoutName() {return linkedTurnoutName;}
 /*public*/ void LayoutTurnout::setLinkedTurnoutName(QString s) {linkedTurnoutName = s;}
 
-/*public*/ int LayoutTurnout::getLinkType() {return linkType;}
-/*public*/ void LayoutTurnout::setLinkType(int type) {linkType = type;}
+/*public*/ LayoutTurnout::LinkType LayoutTurnout::getLinkType() {return linkType;}
+/*public*/ void LayoutTurnout::setLinkType(LayoutTurnout::LinkType type) {linkType = type;}
 /*public*/ LayoutTurnout::TurnoutType LayoutTurnout::getTurnoutType() const {return type;}
 /**
  * Returns true if this is a turnout (not a crossover or slip)
@@ -1246,10 +1241,10 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
     return hasEnteringDoubleTrack(getTurnoutType());
 }
 
-/*public*/ QObject* LayoutTurnout::getConnectA() {return connectA;}
-/*public*/ QObject* LayoutTurnout::getConnectB() {return connectB;}
-/*public*/ QObject* LayoutTurnout::getConnectC() {return connectC;}
-/*public*/ QObject* LayoutTurnout::getConnectD() {return connectD;}
+/*public*/ LayoutTrack* LayoutTurnout::getConnectA() {return connectA;}
+/*public*/ LayoutTrack *LayoutTurnout::getConnectB() {return connectB;}
+/*public*/ LayoutTrack* LayoutTurnout::getConnectC() {return connectC;}
+/*public*/ LayoutTrack *LayoutTurnout::getConnectD() {return connectD;}
 
 /*public*/ Turnout* LayoutTurnout::getTurnout()
 {
@@ -1347,7 +1342,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
   secondNamedTurnout = nullptr;
  }
  if ( (type == RH_TURNOUT) || (type ==LH_TURNOUT) || (type == WYE_TURNOUT) ){
-  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+  LayoutEditorFindItems* lf = new LayoutEditorFindItems(models);
   if(oldSecondTurnoutName!=nullptr && oldSecondTurnoutName!=(""))
   {
    Turnout* oldTurnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
@@ -1382,44 +1377,48 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
 /*public*/ void LayoutTurnout::setDisableWhenOccupied(bool state) {disableWhenOccupied = state;}
 /*public*/ bool LayoutTurnout::isDisabledWhenOccupied() {return disableWhenOccupied;}
 
-/*public*/ LayoutTrack *LayoutTurnout::getConnection(int location) throw (JmriException)
+/*public*/ LayoutTrack *LayoutTurnout::getConnection(HitPointType::TYPES location) throw (JmriException)
 {
  switch (location)
  {
-     case TURNOUT_A:
+     case HitPointType::TURNOUT_A:
          return connectA;
-     case TURNOUT_B:
+     case HitPointType::TURNOUT_B:
          return connectB;
-     case TURNOUT_C:
+     case HitPointType::TURNOUT_C:
          return connectC;
-     case TURNOUT_D:
+     case HitPointType::TURNOUT_D:
          return connectD;
+ default:
+  return nullptr;
  }
  log->error("Invalid Point Type " + QString::number(location)); //I18IN
  throw new JmriException("Invalid Point");
 }
 
-/*public*/ void LayoutTurnout::setConnection(int location, LayoutTrack* o, int type) throw (JmriException)
+/*public*/ void LayoutTurnout::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException)
 {
-    if ((type != TRACK) && (type != NONE)) {
-        log->error("unexpected type of connection to layoutturnout - " + QString::number(type));
-        throw JmriException("unexpected type of connection to layoutturnout - " + QString::number(type));
-    }
-    switch (location) {
-        case TURNOUT_A:
+ QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
+    if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
+     QString errString = tr("%1.setConnection(%2, %3, %4); unexpected type").arg(
+                         getName(), metaEnum.valueToKey((int)connectionType), (o == nullptr) ? "null" : o->getName(), metaEnum.valueToKey(type),  "traceback"); // I18IN
+                 log->error(tr("will throw %1").arg(errString));
+                 throw JmriException(errString);    }
+    switch (connectionType) {
+        case HitPointType::TURNOUT_A:
             connectA = o;
             break;
-        case TURNOUT_B:
+        case HitPointType::TURNOUT_B:
             connectB = o;
             break;
-        case TURNOUT_C:
+        case HitPointType::TURNOUT_C:
             connectC = o;
             break;
-        case TURNOUT_D:
+        case HitPointType::TURNOUT_D:
             connectD = o;
             break;
         default:
-            log->error("Invalid Point Type " + QString::number(location)); //I18IN
+            log->error("Invalid Point Type " + QString::number(connectionType)); //I18IN
             throw JmriException("Invalid Point");
     }
 }
@@ -1479,48 +1478,48 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
 }
 
 ///*public*/ QPointF LayoutTurnout::getCoordsCenter() {return center;}
-/*public*/ QPointF LayoutTurnout::getCoordsA()
-{
- if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) || (type==DOUBLE_SLIP) || (type==SINGLE_SLIP))
- {
-  if (version == 2) {
-      return pointA;
-  }
-  return MathUtil::subtract(center, dispA);
- }
- else if (type==WYE_TURNOUT)
- {
-  return MathUtil::subtract(center, MathUtil::midPoint(dispB, dispA));
- }
- else
- {
-  double x = center.x() - dispB.x();
-  double y = center.y() - dispB.y();
-  return  QPointF(x,y);
- }
-}
-/*public*/ QPointF LayoutTurnout::getCoordsB()
-{
- double x = center.x() + dispB.x();
- double y = center.y() + dispB.y();
- return  QPointF(x,y);
-}
-/*public*/ QPointF LayoutTurnout::getCoordsC()
-{
- if ((version == 2) && ((getTurnoutType() == DOUBLE_XOVER)
-         || (getTurnoutType() == LH_XOVER)
-         || (getTurnoutType() == RH_XOVER))) {
-     return pointC;
- }
- return MathUtil::add(center, dispA);
-}
-/*public*/ QPointF LayoutTurnout::getCoordsD()
-{
- // only allowed for single and double crossovers
- double x = center.x() - dispB.x();
- double y = center.y() - dispB.y();
- return  QPointF(x,y);
-}
+///*public*/ QPointF LayoutTurnout::getCoordsA()
+//{
+// if ( (type==DOUBLE_XOVER) || (type==LH_XOVER) || (type==RH_XOVER) || (type==DOUBLE_SLIP) || (type==SINGLE_SLIP))
+// {
+//  if (version == 2) {
+//      return pointA;
+//  }
+//  return MathUtil::subtract(center, dispA);
+// }
+// else if (type==WYE_TURNOUT)
+// {
+//  return MathUtil::subtract(center, MathUtil::midPoint(dispB, dispA));
+// }
+// else
+// {
+//  double x = center.x() - dispB.x();
+//  double y = center.y() - dispB.y();
+//  return  QPointF(x,y);
+// }
+//}
+///*public*/ QPointF LayoutTurnout::getCoordsB()
+//{
+// double x = center.x() + dispB.x();
+// double y = center.y() + dispB.y();
+// return  QPointF(x,y);
+//}
+///*public*/ QPointF LayoutTurnout::getCoordsC()
+//{
+// if ((version == 2) && ((getTurnoutType() == DOUBLE_XOVER)
+//         || (getTurnoutType() == LH_XOVER)
+//         || (getTurnoutType() == RH_XOVER))) {
+//     return pointC;
+// }
+// return MathUtil::add(center, dispA);
+//}
+///*public*/ QPointF LayoutTurnout::getCoordsD()
+//{
+// // only allowed for single and double crossovers
+// double x = center.x() - dispB.x();
+// double y = center.y() - dispB.y();
+// return  QPointF(x,y);
+//}
 /**
  * return the coordinates for a specified connection type
  *
@@ -1528,45 +1527,45 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
  * @return the coordinates for the specified connection type
  */
 //@Override
-/*public*/ QPointF LayoutTurnout::getCoordsForConnectionType(int connectionType) {
-    QPointF result = center;
-    switch (connectionType) {
-        case TURNOUT_CENTER:
-            break;
-        case TURNOUT_A:
-            result = getCoordsA();
-            break;
-        case TURNOUT_B:
-            result = getCoordsB();
-            break;
-        case TURNOUT_C:
-            result = getCoordsC();
-            break;
-        case TURNOUT_D:
-            result = getCoordsD();
-            break;
-        default:
-            log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
-    }
-    return result;
-}
+///*public*/ QPointF LayoutTurnout::getCoordsForConnectionType(int connectionType) {
+//    QPointF result = center;
+//    switch (connectionType) {
+//        case TURNOUT_CENTER:
+//            break;
+//        case TURNOUT_A:
+//            result = getCoordsA();
+//            break;
+//        case TURNOUT_B:
+//            result = getCoordsB();
+//            break;
+//        case TURNOUT_C:
+//            result = getCoordsC();
+//            break;
+//        case TURNOUT_D:
+//            result = getCoordsD();
+//            break;
+//        default:
+//            log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
+//    }
+//    return result;
+//}
 
 /**
  * @return the bounds of this turnout
  */
 //@Override
-/*public*/ QRectF LayoutTurnout::getBounds() {
- QRectF result;
+///*public*/ QRectF LayoutTurnout::getBounds() {
+// QRectF result;
 
- QPointF pointA = getCoordsA();
- result = QRectF(pointA.x(), pointA.y(), 0, 0);
- result = MathUtil::add(result, getCoordsB());
- result = MathUtil::add(result,getCoordsC());
- if (isTurnoutTypeXover() || isTurnoutTypeSlip()) {
-     result = MathUtil::add(result, getCoordsD());
- }
- return result;
-}
+// QPointF pointA = getCoordsA();
+// result = QRectF(pointA.x(), pointA.y(), 0, 0);
+// result = MathUtil::add(result, getCoordsB());
+// result = MathUtil::add(result,getCoordsC());
+// if (isTurnoutTypeXover() || isTurnoutTypeSlip()) {
+//     result = MathUtil::add(result, getCoordsD());
+// }
+// return result;
+//}
 
 // updates connectivity for blocks assigned to this turnout and connected track segments
 /*private*/ void LayoutTurnout::updateBlockInfo()
@@ -1575,7 +1574,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
  LayoutBlock* bB = nullptr;
  LayoutBlock* bC = nullptr;
  LayoutBlock* bD = nullptr;
- layoutEditor->auxTools->setBlockConnectivityChanged();
+ models->getLEAuxTools()->setBlockConnectivityChanged();
  if (block!=nullptr) block->updatePaths();
  if (connectA!=nullptr)
  {
@@ -1610,50 +1609,50 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
 /**
  * Set default size parameters to correspond to this turnout's size
  */
-/*private*/ void LayoutTurnout::setUpDefaultSize()
-{
- // remove the overall scale factor
- double bX = dispB.x()/layoutEditor->gContext->getXScale();
- double bY = dispB.y()/layoutEditor->gContext->getYScale();
- double cX = dispA.x()/layoutEditor->gContext->getXScale();
- double cY = dispA.y()/layoutEditor->gContext->getYScale();
- // calculate default parameters according to type of turnout
- double lenB = qSqrt((bX*bX) + (bY*bY));
- double lenC = qSqrt((cX*cX) + (cY*cY));
- double distBC = qSqrt(((bX-cX)*(bX-cX)) + ((bY-cY)*(bY-cY)));
- if ( (type == LH_TURNOUT) || (type == RH_TURNOUT) ) {
-     layoutEditor->setTurnoutBX(round(lenB+0.1));
-     double xc = ((bX*cX)+(bY*cY))/lenB;
-     layoutEditor->setTurnoutCX(round(xc+0.1));
-     layoutEditor->setTurnoutWid(round(qSqrt((lenC*lenC)-(xc*xc))+0.1));
- }
- else if (type == WYE_TURNOUT) {
-     double xx = qSqrt((lenB*lenB)-(0.25*(distBC*distBC)));
-     layoutEditor->setTurnoutBX(round(xx+0.1));
-     layoutEditor->setTurnoutCX(round(xx+0.1));
-     layoutEditor->setTurnoutWid(round(distBC+0.1));
- }
- else if (type == DOUBLE_XOVER) {
-     double lng = qSqrt((lenB*lenB)-(0.25*(distBC*distBC)));
-     layoutEditor->setXOverLong(round(lng+0.1));
-     layoutEditor->setXOverHWid(round((0.5*distBC)+0.1));
-     layoutEditor->setXOverShort(round((0.5*lng)+0.1));
- }
- else if (type == RH_XOVER) {
-     double distDC = qSqrt(((bX+cX)*(bX+cX)) + ((bY+cY)*(bY+cY)));
-     layoutEditor->setXOverShort(round((0.25*distDC)+0.1));
-     layoutEditor->setXOverLong(round((0.75*distDC)+0.1));
-     double hwid = qSqrt((lenC*lenC)-(0.5625*distDC*distDC));
-     layoutEditor->setXOverHWid(round(hwid+0.1));
- }
- else if (type == LH_XOVER) {
-     double distDC = qSqrt(((bX+cX)*(bX+cX)) + ((bY+cY)*(bY+cY)));
-     layoutEditor->setXOverShort(round((0.25*distDC)+0.1));
-     layoutEditor->setXOverLong(round((0.75*distDC)+0.1));
-     double hwid = qSqrt((lenC*lenC)-(0.0625*distDC*distDC));
-     layoutEditor->setXOverHWid(round(hwid+0.1));
- }
-}
+///*private*/ void LayoutTurnout::setUpDefaultSize()
+//{
+// // remove the overall scale factor
+// double bX = dispB.x()/layoutEditor->gContext->getXScale();
+// double bY = dispB.y()/layoutEditor->gContext->getYScale();
+// double cX = dispA.x()/layoutEditor->gContext->getXScale();
+// double cY = dispA.y()/layoutEditor->gContext->getYScale();
+// // calculate default parameters according to type of turnout
+// double lenB = qSqrt((bX*bX) + (bY*bY));
+// double lenC = qSqrt((cX*cX) + (cY*cY));
+// double distBC = qSqrt(((bX-cX)*(bX-cX)) + ((bY-cY)*(bY-cY)));
+// if ( (type == LH_TURNOUT) || (type == RH_TURNOUT) ) {
+//     layoutEditor->setTurnoutBX(round(lenB+0.1));
+//     double xc = ((bX*cX)+(bY*cY))/lenB;
+//     layoutEditor->setTurnoutCX(round(xc+0.1));
+//     layoutEditor->setTurnoutWid(round(qSqrt((lenC*lenC)-(xc*xc))+0.1));
+// }
+// else if (type == WYE_TURNOUT) {
+//     double xx = qSqrt((lenB*lenB)-(0.25*(distBC*distBC)));
+//     layoutEditor->setTurnoutBX(round(xx+0.1));
+//     layoutEditor->setTurnoutCX(round(xx+0.1));
+//     layoutEditor->setTurnoutWid(round(distBC+0.1));
+// }
+// else if (type == DOUBLE_XOVER) {
+//     double lng = qSqrt((lenB*lenB)-(0.25*(distBC*distBC)));
+//     layoutEditor->setXOverLong(round(lng+0.1));
+//     layoutEditor->setXOverHWid(round((0.5*distBC)+0.1));
+//     layoutEditor->setXOverShort(round((0.5*lng)+0.1));
+// }
+// else if (type == RH_XOVER) {
+//     double distDC = qSqrt(((bX+cX)*(bX+cX)) + ((bY+cY)*(bY+cY)));
+//     layoutEditor->setXOverShort(round((0.25*distDC)+0.1));
+//     layoutEditor->setXOverLong(round((0.75*distDC)+0.1));
+//     double hwid = qSqrt((lenC*lenC)-(0.5625*distDC*distDC));
+//     layoutEditor->setXOverHWid(round(hwid+0.1));
+// }
+// else if (type == LH_XOVER) {
+//     double distDC = qSqrt(((bX+cX)*(bX+cX)) + ((bY+cY)*(bY+cY)));
+//     layoutEditor->setXOverShort(round((0.25*distDC)+0.1));
+//     layoutEditor->setXOverLong(round((0.75*distDC)+0.1));
+//     double hwid = qSqrt((lenC*lenC)-(0.0625*distDC*distDC));
+//     layoutEditor->setXOverHWid(round(hwid+0.1));
+// }
+//}
 
 /**
  * Set Up a Layout Block(s) for this Turnout
@@ -1687,7 +1686,6 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
                 && ((blockA == blockB) || (blockA == blockC) || (blockA == blockD))) {
             blockA->decrementUse();
         }
-        setTrackSegmentBlocks();
     }
 }
 
@@ -1720,7 +1718,6 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
                     && ((blockB == blockA) || (blockB == blockC) || (blockB == blockD))) {
                 blockB->decrementUse();
             }
-            setTrackSegmentBlocks();
         }
     } else {
         log->error("Attempt to set block B, but not a crossover");
@@ -1756,7 +1753,6 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
                     && ((blockC == blockA) || (blockC == blockB) || (blockC == blockD))) {
                 blockC->decrementUse();
             }
-            setTrackSegmentBlocks();
         }
     } else {
         log->error("Attempt to set block C, but not a crossover");
@@ -1792,7 +1788,6 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
                     && ((blockD == blockA) || (blockD == blockB) || (blockD == blockC))) {
                 blockD->decrementUse();
             }
-            setTrackSegmentBlocks();
         }
     } else {
         log->error("Attempt to set block D, but not a crossover");
@@ -1833,14 +1828,14 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t, QPointF c, 
  *
  * @since 4.11.6
  */
-void LayoutTurnout::setTrackSegmentBlocks() {
-    setTrackSegmentBlock(TURNOUT_A, false);
-    setTrackSegmentBlock(TURNOUT_B, false);
-    setTrackSegmentBlock(TURNOUT_C, false);
-    if (getTurnoutType() > WYE_TURNOUT) {
-        setTrackSegmentBlock(TURNOUT_D, false);
-    }
-}
+//void LayoutTurnout::setTrackSegmentBlocks() {
+//    setTrackSegmentBlock(TURNOUT_A, false);
+//    setTrackSegmentBlock(TURNOUT_B, false);
+//    setTrackSegmentBlock(TURNOUT_C, false);
+//    if (getTurnoutType() > WYE_TURNOUT) {
+//        setTrackSegmentBlock(TURNOUT_D, false);
+//    }
+//}
 
 /**
  * Update the block for a track segment that provides a short connection
@@ -1859,117 +1854,117 @@ void LayoutTurnout::setTrackSegmentBlocks() {
  *                    connections which require a track segment length
  *                    calculation.
  */
-void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
-    TrackSegment* trkSeg;
-    QPointF pointCoord;
-    LayoutBlock* currBlk = block;
-    bool xOver = getTurnoutType() > WYE_TURNOUT && getTurnoutType() < SINGLE_SLIP;
-    switch (pointType) {
-        case TURNOUT_A:
-        case SLIP_A:
-            if (signalA1HeadNamed != nullptr) {
-                return;
-            }
-            if (signalA2HeadNamed != nullptr) {
-                return;
-            }
-            if (signalA3HeadNamed != nullptr) {
-                return;
-            }
-            if (getSignalAMast() != nullptr) {
-                return;
-            }
-            if (getSensorA() != nullptr) {
-                return;
-            }
-            trkSeg = (TrackSegment*) connectA;
-            pointCoord = getCoordsA();
-            break;
-        case TURNOUT_B:
-        case SLIP_B:
-            if (signalB1HeadNamed != nullptr) {
-                return;
-            }
-            if (signalB2HeadNamed != nullptr) {
-                return;
-            }
-            if (getSignalBMast() != nullptr) {
-                return;
-            }
-            if (getSensorB() != nullptr) {
-                return;
-            }
-            trkSeg = (TrackSegment*) connectB;
-            pointCoord = getCoordsB();
-            if (xOver) {
-                currBlk = blockB != nullptr ? blockB : block;
-            }
-            break;
-        case TURNOUT_C:
-        case SLIP_C:
-            if (signalC1HeadNamed != nullptr) {
-                return;
-            }
-            if (signalC2HeadNamed != nullptr) {
-                return;
-            }
-            if (getSignalCMast() != nullptr) {
-                return;
-            }
-            if (getSensorC() != nullptr) {
-                return;
-            }
-            trkSeg = (TrackSegment*) connectC;
-            pointCoord = getCoordsC();
-            if (xOver) {
-                currBlk = blockC != nullptr ? blockC : block;
-            }
-            break;
-        case TURNOUT_D:
-        case SLIP_D:
-            if (signalD1HeadNamed != nullptr) {
-                return;
-            }
-            if (signalD2HeadNamed != nullptr) {
-                return;
-            }
-            if (getSignalDMast() != nullptr) {
-                return;
-            }
-            if (getSensorD() != nullptr) {
-                return;
-            }
-            trkSeg = (TrackSegment*) connectD;
-            pointCoord = getCoordsD();
-            if (xOver) {
-                currBlk = blockD != nullptr ? blockD : block;
-            }
-            break;
-        default:
-            log->error(tr("setTrackSegmentBlock: Invalid pointType: %1").arg(pointType));
-            return;
-    }
-    if (trkSeg != nullptr) {
-        double chkSize = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
-        double segLength = 0;
-        if (!isAutomatic) {
-            QPointF segCenter = trkSeg->getCoordsCenter();
-            segLength = MathUtil::distance(pointCoord, segCenter) * 2;
-        }
-        if (segLength < chkSize) {
-            if (log->isDebugEnabled()) {
-                log->debug("Set block:");
-                log->debug(tr("    seg: %1").arg(trkSeg->getName()));
-                log->debug(tr("    cor: %1,%2").arg(pointCoord.x()).arg(pointCoord.y()));
-                log->debug(tr("    blk: %1").arg((currBlk == nullptr) ? "nullptr" : currBlk->getDisplayName()));
-                log->debug(tr("    len: %1").arg(segLength));
-            }
+//void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
+//    TrackSegment* trkSeg;
+//    QPointF pointCoord;
+//    LayoutBlock* currBlk = block;
+//    bool xOver = getTurnoutType() > WYE_TURNOUT && getTurnoutType() < SINGLE_SLIP;
+//    switch (pointType) {
+//        case TURNOUT_A:
+//        case SLIP_A:
+//            if (signalA1HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (signalA2HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (signalA3HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (getSignalAMast() != nullptr) {
+//                return;
+//            }
+//            if (getSensorA() != nullptr) {
+//                return;
+//            }
+//            trkSeg = (TrackSegment*) connectA;
+//            pointCoord = getCoordsA();
+//            break;
+//        case TURNOUT_B:
+//        case SLIP_B:
+//            if (signalB1HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (signalB2HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (getSignalBMast() != nullptr) {
+//                return;
+//            }
+//            if (getSensorB() != nullptr) {
+//                return;
+//            }
+//            trkSeg = (TrackSegment*) connectB;
+//            pointCoord = getCoordsB();
+//            if (xOver) {
+//                currBlk = blockB != nullptr ? blockB : block;
+//            }
+//            break;
+//        case TURNOUT_C:
+//        case SLIP_C:
+//            if (signalC1HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (signalC2HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (getSignalCMast() != nullptr) {
+//                return;
+//            }
+//            if (getSensorC() != nullptr) {
+//                return;
+//            }
+//            trkSeg = (TrackSegment*) connectC;
+//            pointCoord = getCoordsC();
+//            if (xOver) {
+//                currBlk = blockC != nullptr ? blockC : block;
+//            }
+//            break;
+//        case TURNOUT_D:
+//        case SLIP_D:
+//            if (signalD1HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (signalD2HeadNamed != nullptr) {
+//                return;
+//            }
+//            if (getSignalDMast() != nullptr) {
+//                return;
+//            }
+//            if (getSensorD() != nullptr) {
+//                return;
+//            }
+//            trkSeg = (TrackSegment*) connectD;
+//            pointCoord = getCoordsD();
+//            if (xOver) {
+//                currBlk = blockD != nullptr ? blockD : block;
+//            }
+//            break;
+//        default:
+//            log->error(tr("setTrackSegmentBlock: Invalid pointType: %1").arg(pointType));
+//            return;
+//    }
+//    if (trkSeg != nullptr) {
+//        double chkSize = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+//        double segLength = 0;
+//        if (!isAutomatic) {
+//            QPointF segCenter = trkSeg->getCoordsCenter();
+//            segLength = MathUtil::distance(pointCoord, segCenter) * 2;
+//        }
+//        if (segLength < chkSize) {
+//            if (log->isDebugEnabled()) {
+//                log->debug("Set block:");
+//                log->debug(tr("    seg: %1").arg(trkSeg->getName()));
+//                log->debug(tr("    cor: %1,%2").arg(pointCoord.x()).arg(pointCoord.y()));
+//                log->debug(tr("    blk: %1").arg((currBlk == nullptr) ? "nullptr" : currBlk->getDisplayName()));
+//                log->debug(tr("    len: %1").arg(segLength));
+//            }
 
-            trkSeg->setLayoutBlock(currBlk);
-            layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
-        }
-    }
-}
+//            trkSeg->setLayoutBlock(currBlk);
+//            layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
+//        }
+//    }
+//}
 
 /**
  * Methods to test if turnout legs are mainline track or not
@@ -2099,280 +2094,280 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ int LayoutTurnout::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
-    int result = NONE;  // assume point not on connection
-    //note: optimization here: instead of creating rectangles for all the
-    // points to check below, we create a rectangle for the test point
-    // and test if the points below are in that rectangle instead.
-    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
-    QPointF p, minPoint = MathUtil::zeroPoint2D;
+///*protected*/ int LayoutTurnout::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+//    int result = NONE;  // assume point not on connection
+//    //note: optimization here: instead of creating rectangles for all the
+//    // points to check below, we create a rectangle for the test point
+//    // and test if the points below are in that rectangle instead.
+//    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
+//    QPointF p, minPoint = MathUtil::zeroPoint2D;
 
-    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
-    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
+//    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+//    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
 
-    // check center coordinates
-    if (!requireUnconnected) {
-        p = getCoordsCenter();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = TURNOUT_CENTER;
-        }
-    }
+//    // check center coordinates
+//    if (!requireUnconnected) {
+//        p = getCoordsCenter();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = TURNOUT_CENTER;
+//        }
+//    }
 
-    //check the A connection point
-    if (!requireUnconnected || (getConnectA() == nullptr)) {
-        p = getCoordsA();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = TURNOUT_A;
-        }
-    }
+//    //check the A connection point
+//    if (!requireUnconnected || (getConnectA() == nullptr)) {
+//        p = getCoordsA();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = TURNOUT_A;
+//        }
+//    }
 
-    //check the B connection point
-    if (!requireUnconnected || (getConnectB() == nullptr)) {
-        p = getCoordsB();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = TURNOUT_B;
-        }
-    }
+//    //check the B connection point
+//    if (!requireUnconnected || (getConnectB() == nullptr)) {
+//        p = getCoordsB();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = TURNOUT_B;
+//        }
+//    }
 
-    //check the C connection point
-    if (!requireUnconnected || (getConnectC() == nullptr)) {
-        p = getCoordsC();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = TURNOUT_C;
-        }
-    }
+//    //check the C connection point
+//    if (!requireUnconnected || (getConnectC() == nullptr)) {
+//        p = getCoordsC();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = TURNOUT_C;
+//        }
+//    }
 
-    //check the D connection point
-    if ((getTurnoutType() == DOUBLE_XOVER)
-            || (getTurnoutType() == LH_XOVER)
-            || (getTurnoutType() == RH_XOVER)) {
-        if (!requireUnconnected || (getConnectD() == nullptr)) {
-            p = getCoordsD();
-            distance = MathUtil::distance(p, hitPoint);
-            if (distance < minDistance) {
-                minDistance = distance;
-                minPoint = p;
-                result = TURNOUT_D;
-            }
-        }
-    }
-    if ((useRectangles && !r.contains(minPoint))
-            || (!useRectangles && (minDistance > circleRadius))) {
-        result = NONE;
-    }
-    return result;
-}   // findHitPointType
+//    //check the D connection point
+//    if ((getTurnoutType() == DOUBLE_XOVER)
+//            || (getTurnoutType() == LH_XOVER)
+//            || (getTurnoutType() == RH_XOVER)) {
+//        if (!requireUnconnected || (getConnectD() == nullptr)) {
+//            p = getCoordsD();
+//            distance = MathUtil::distance(p, hitPoint);
+//            if (distance < minDistance) {
+//                minDistance = distance;
+//                minPoint = p;
+//                result = TURNOUT_D;
+//            }
+//        }
+//    }
+//    if ((useRectangles && !r.contains(minPoint))
+//            || (!useRectangles && (minDistance > circleRadius))) {
+//        result = NONE;
+//    }
+//    return result;
+//}   // findHitPointType
 
 /**
  * Modify coordinates methods
  */
-/*public*/ void LayoutTurnout::setCoordsCenter(QPointF p) {
-    center = p;
-}
+///*public*/ void LayoutTurnout::setCoordsCenter(QPointF p) {
+//    center = p;
+//}
 
-/*private*/ void LayoutTurnout::reCalculateCenter() {
-    center = MathUtil::midPoint(pointA, pointC);
-}
+///*private*/ void LayoutTurnout::reCalculateCenter() {
+//    center = MathUtil::midPoint(pointA, pointC);
+//}
 
-/*public*/ void LayoutTurnout::setCoordsA(QPointF p) {
- pointA = p;
- if (version == 2) {
-     reCalculateCenter();
- }
- double x = center.x() - p.x();
- double y = center.y() - p.y();
- if (getTurnoutType() == DOUBLE_XOVER) {
-     dispA = QPointF(x, y);
-     // adjust to maintain rectangle
-     double oldLength = MathUtil::length(dispB);
-     //double newLength = qHypot(x, y);
-     double newLength = qSqrt(x*x + y*y);
-     dispB = MathUtil::multiply(dispB, newLength / oldLength);
- } else if ((getTurnoutType() == RH_XOVER)
-         || (getTurnoutType() == LH_XOVER)) {
-     dispA = QPointF(x, y);
-     // adjust to maintain the parallelogram
-     double a = 0.0;
-     double b = -y;
-     double xi = 0.0;
-     double yi = b;
-     if ((dispB.x() + x) != 0.0) {
-         a = (dispB.y() + y) / (dispB.x() + x);
-         b = -y + (a * x);
-         xi = -b / (a + (1.0 / a));
-         yi = (a * xi) + b;
-     }
-     if (getTurnoutType() == RH_XOVER) {
-         x = xi - (0.333333 * (-x - xi));
-         y = yi - (0.333333 * (-y - yi));
-     } else if (getTurnoutType() == LH_XOVER) {
-         x = xi - (3.0 * (-x - xi));
-         y = yi - (3.0 * (-y - yi));
-     }
-     dispB = QPointF(x, y);
- } else if (getTurnoutType() == WYE_TURNOUT) {
-     // modify both to maintain same angle at wye
-     double temX = (dispB.x() + dispA.x());
-     double temY = (dispB.y() + dispA.y());
-     double temXx = (dispB.x() - dispA.x());
-     double temYy = (dispB.y() - dispA.y());
-     double tan = qSqrt(((temX * temX) + (temY * temY))
-             / ((temXx * temXx) + (temYy * temYy)));
-     double xx = x + (y / tan);
-     double yy = y - (x / tan);
-     dispA = QPointF(xx, yy);
-     xx = x - (y / tan);
-     yy = y + (x / tan);
-     dispB = QPointF(xx, yy);
- } else {
-     dispB = QPointF(x, y);
- }
-}
-/*public*/ void LayoutTurnout::setCoordsB(QPointF p) {
- pointB = p;
- double x = center.x() - p.x();
- double y = center.y() - p.y();
- dispB = QPointF(-x, -y);
- if ((getTurnoutType() == DOUBLE_XOVER)
-         || (getTurnoutType() == WYE_TURNOUT)) {
-     // adjust to maintain rectangle or wye shape
-     double oldLength = MathUtil::length(dispA);
-     //double newLength = Math.hypot(x, y);
-     double newLength  = qSqrt(x*x + y*y);
-     dispA = MathUtil::multiply(dispA, newLength / oldLength);
- } else if ((getTurnoutType() == RH_XOVER)
-         || (getTurnoutType() == LH_XOVER)) {
-     // adjust to maintain the parallelogram
-     double a = 0.0;
-     double b = y;
-     double xi = 0.0;
-     double yi = b;
-     if ((dispA.x() - x) != 0.0) {
-         if ((-dispA.x() + x) == 0) {
-             /* we can in some situations eg 90' vertical end up with a 0 value,
-             so hence remove a small amount so that we
-             don't have a divide by zero issue */
-             x = x - 0.0000000001;
-         }
-         a = (dispA.y() - y) / (dispA.x() - x);
-         b = y - (a * x);
-         xi = -b / (a + (1.0 / a));
-         yi = (a * xi) + b;
-     }
-     if (getTurnoutType() == LH_XOVER) {
-         x = xi - (0.333333 * (x - xi));
-         y = yi - (0.333333 * (y - yi));
-     } else if (getTurnoutType() == RH_XOVER) {
-         x = xi - (3.0 * (x - xi));
-         y = yi - (3.0 * (y - yi));
-     }
-     dispA = QPointF(x, y);
- }
-}
-/*public*/ void LayoutTurnout::setCoordsC(QPointF p) {
- pointC = p;
- if (version == 2) {
-     reCalculateCenter();
- }
- double x = center.x() - p.x();
- double y = center.y() - p.y();
- dispA = QPointF(-x, -y);
- if ((getTurnoutType() == DOUBLE_XOVER)
-         || (getTurnoutType() == WYE_TURNOUT)) {
-     // adjust to maintain rectangle or wye shape
-     double oldLength = MathUtil::length(dispB);
-     //double newLength = Math.hypot(x, y);
-     double newLength  = qSqrt(x*x + y*y);
-     dispB = MathUtil::multiply(dispB, newLength / oldLength);
- } else if ((getTurnoutType() == RH_XOVER)
-         || (getTurnoutType() == LH_XOVER)) {
-     double a = 0.0;
-     double b = -y;
-     double xi = 0.0;
-     double yi = b;
-     if ((dispB.x() + x) != 0.0) {
-         if ((-dispB.x() + x) == 0) {
-             /* we can in some situations eg 90' vertical end up with a 0 value,
-             so hence remove a small amount so that we
-             don't have a divide by zero issue */
+///*public*/ void LayoutTurnout::setCoordsA(QPointF p) {
+// pointA = p;
+// if (version == 2) {
+//     reCalculateCenter();
+// }
+// double x = center.x() - p.x();
+// double y = center.y() - p.y();
+// if (getTurnoutType() == DOUBLE_XOVER) {
+//     dispA = QPointF(x, y);
+//     // adjust to maintain rectangle
+//     double oldLength = MathUtil::length(dispB);
+//     //double newLength = qHypot(x, y);
+//     double newLength = qSqrt(x*x + y*y);
+//     dispB = MathUtil::multiply(dispB, newLength / oldLength);
+// } else if ((getTurnoutType() == RH_XOVER)
+//         || (getTurnoutType() == LH_XOVER)) {
+//     dispA = QPointF(x, y);
+//     // adjust to maintain the parallelogram
+//     double a = 0.0;
+//     double b = -y;
+//     double xi = 0.0;
+//     double yi = b;
+//     if ((dispB.x() + x) != 0.0) {
+//         a = (dispB.y() + y) / (dispB.x() + x);
+//         b = -y + (a * x);
+//         xi = -b / (a + (1.0 / a));
+//         yi = (a * xi) + b;
+//     }
+//     if (getTurnoutType() == RH_XOVER) {
+//         x = xi - (0.333333 * (-x - xi));
+//         y = yi - (0.333333 * (-y - yi));
+//     } else if (getTurnoutType() == LH_XOVER) {
+//         x = xi - (3.0 * (-x - xi));
+//         y = yi - (3.0 * (-y - yi));
+//     }
+//     dispB = QPointF(x, y);
+// } else if (getTurnoutType() == WYE_TURNOUT) {
+//     // modify both to maintain same angle at wye
+//     double temX = (dispB.x() + dispA.x());
+//     double temY = (dispB.y() + dispA.y());
+//     double temXx = (dispB.x() - dispA.x());
+//     double temYy = (dispB.y() - dispA.y());
+//     double tan = qSqrt(((temX * temX) + (temY * temY))
+//             / ((temXx * temXx) + (temYy * temYy)));
+//     double xx = x + (y / tan);
+//     double yy = y - (x / tan);
+//     dispA = QPointF(xx, yy);
+//     xx = x - (y / tan);
+//     yy = y + (x / tan);
+//     dispB = QPointF(xx, yy);
+// } else {
+//     dispB = QPointF(x, y);
+// }
+//}
+///*public*/ void LayoutTurnout::setCoordsB(QPointF p) {
+// pointB = p;
+// double x = center.x() - p.x();
+// double y = center.y() - p.y();
+// dispB = QPointF(-x, -y);
+// if ((getTurnoutType() == DOUBLE_XOVER)
+//         || (getTurnoutType() == WYE_TURNOUT)) {
+//     // adjust to maintain rectangle or wye shape
+//     double oldLength = MathUtil::length(dispA);
+//     //double newLength = Math.hypot(x, y);
+//     double newLength  = qSqrt(x*x + y*y);
+//     dispA = MathUtil::multiply(dispA, newLength / oldLength);
+// } else if ((getTurnoutType() == RH_XOVER)
+//         || (getTurnoutType() == LH_XOVER)) {
+//     // adjust to maintain the parallelogram
+//     double a = 0.0;
+//     double b = y;
+//     double xi = 0.0;
+//     double yi = b;
+//     if ((dispA.x() - x) != 0.0) {
+//         if ((-dispA.x() + x) == 0) {
+//             /* we can in some situations eg 90' vertical end up with a 0 value,
+//             so hence remove a small amount so that we
+//             don't have a divide by zero issue */
+//             x = x - 0.0000000001;
+//         }
+//         a = (dispA.y() - y) / (dispA.x() - x);
+//         b = y - (a * x);
+//         xi = -b / (a + (1.0 / a));
+//         yi = (a * xi) + b;
+//     }
+//     if (getTurnoutType() == LH_XOVER) {
+//         x = xi - (0.333333 * (x - xi));
+//         y = yi - (0.333333 * (y - yi));
+//     } else if (getTurnoutType() == RH_XOVER) {
+//         x = xi - (3.0 * (x - xi));
+//         y = yi - (3.0 * (y - yi));
+//     }
+//     dispA = QPointF(x, y);
+// }
+//}
+///*public*/ void LayoutTurnout::setCoordsC(QPointF p) {
+// pointC = p;
+// if (version == 2) {
+//     reCalculateCenter();
+// }
+// double x = center.x() - p.x();
+// double y = center.y() - p.y();
+// dispA = QPointF(-x, -y);
+// if ((getTurnoutType() == DOUBLE_XOVER)
+//         || (getTurnoutType() == WYE_TURNOUT)) {
+//     // adjust to maintain rectangle or wye shape
+//     double oldLength = MathUtil::length(dispB);
+//     //double newLength = Math.hypot(x, y);
+//     double newLength  = qSqrt(x*x + y*y);
+//     dispB = MathUtil::multiply(dispB, newLength / oldLength);
+// } else if ((getTurnoutType() == RH_XOVER)
+//         || (getTurnoutType() == LH_XOVER)) {
+//     double a = 0.0;
+//     double b = -y;
+//     double xi = 0.0;
+//     double yi = b;
+//     if ((dispB.x() + x) != 0.0) {
+//         if ((-dispB.x() + x) == 0) {
+//             /* we can in some situations eg 90' vertical end up with a 0 value,
+//             so hence remove a small amount so that we
+//             don't have a divide by zero issue */
 
-             x = x - 0.0000000001;
-         }
-         a = (-dispB.y() + y) / (-dispB.y() + x);
-         b = -y + (a * x);
-         xi = -b / (a + (1.0 / a));
-         yi = (a * xi) + b;
-     }
-     if (getTurnoutType() == RH_XOVER) {
-         x = xi - (0.333333 * (-x - xi));
-         y = yi - (0.333333 * (-y - yi));
-     } else if (getTurnoutType() == LH_XOVER) {
-         x = xi - (3.0 * (-x - xi));
-         y = yi - (3.0 * (-y - yi));
-     }
-     dispB = QPointF(-x, -y);
- }
-}
+//             x = x - 0.0000000001;
+//         }
+//         a = (-dispB.y() + y) / (-dispB.y() + x);
+//         b = -y + (a * x);
+//         xi = -b / (a + (1.0 / a));
+//         yi = (a * xi) + b;
+//     }
+//     if (getTurnoutType() == RH_XOVER) {
+//         x = xi - (0.333333 * (-x - xi));
+//         y = yi - (0.333333 * (-y - yi));
+//     } else if (getTurnoutType() == LH_XOVER) {
+//         x = xi - (3.0 * (-x - xi));
+//         y = yi - (3.0 * (-y - yi));
+//     }
+//     dispB = QPointF(-x, -y);
+// }
+//}
 
-/*public*/ void LayoutTurnout::setCoordsD(QPointF p) {
- pointD = p;
+///*public*/ void LayoutTurnout::setCoordsD(QPointF p) {
+// pointD = p;
 
- // only used for crossovers
- double x = center.x() - p.x();
- double y = center.y() - p.y();
- dispB = QPointF(x, y);
- if (getTurnoutType() == DOUBLE_XOVER) {
-     // adjust to maintain rectangle
-     double oldLength = MathUtil::length(dispA);
-     //double newLength = Math.hypot(x, y);
-     double newLength  = qSqrt(x*x + y*y);
-     dispA = MathUtil::multiply(dispA, newLength / oldLength);
- } else if ((getTurnoutType() == RH_XOVER)
-         || (getTurnoutType() == LH_XOVER)) {
-     // adjust to maintain the parallelogram
-     double a = 0.0;
-     double b = y;
-     double xi = 0.0;
-     double yi = b;
-     if ((dispA.x() + x) != 0.0) {
-         a = (dispA.y() + y) / (dispA.x() + x);
-         b = -y + (a * x);
-         xi = -b / (a + (1.0 / a));
-         yi = (a * xi) + b;
-     }
-     if (getTurnoutType() == LH_XOVER) {
-         x = xi - (0.333333 * (-x - xi));
-         y = yi - (0.333333 * (-y - yi));
-     } else if (getTurnoutType() == RH_XOVER) {
-         x = xi - (3.0 * (-x - xi));
-         y = yi - (3.0 * (-y - yi));
-     }
-     dispA = QPointF(x, y);
- }
-}
-/*public*/ void LayoutTurnout::scaleCoords(double xFactor, double yFactor) {
-    QPointF pt =  QPointF(round(center.x()*xFactor),
-                                    round(center.y()*yFactor));
-    center = pt;
-    pt =  QPointF(round(dispB.x()*xFactor),
-                                    round(dispB.y()*yFactor));
-    dispB = pt;
-    pt =  QPointF(round(dispA.x()*xFactor),
-                                    round(dispA.y()*yFactor));
-    dispA = pt;
-}
+// // only used for crossovers
+// double x = center.x() - p.x();
+// double y = center.y() - p.y();
+// dispB = QPointF(x, y);
+// if (getTurnoutType() == DOUBLE_XOVER) {
+//     // adjust to maintain rectangle
+//     double oldLength = MathUtil::length(dispA);
+//     //double newLength = Math.hypot(x, y);
+//     double newLength  = qSqrt(x*x + y*y);
+//     dispA = MathUtil::multiply(dispA, newLength / oldLength);
+// } else if ((getTurnoutType() == RH_XOVER)
+//         || (getTurnoutType() == LH_XOVER)) {
+//     // adjust to maintain the parallelogram
+//     double a = 0.0;
+//     double b = y;
+//     double xi = 0.0;
+//     double yi = b;
+//     if ((dispA.x() + x) != 0.0) {
+//         a = (dispA.y() + y) / (dispA.x() + x);
+//         b = -y + (a * x);
+//         xi = -b / (a + (1.0 / a));
+//         yi = (a * xi) + b;
+//     }
+//     if (getTurnoutType() == LH_XOVER) {
+//         x = xi - (0.333333 * (-x - xi));
+//         y = yi - (0.333333 * (-y - yi));
+//     } else if (getTurnoutType() == RH_XOVER) {
+//         x = xi - (3.0 * (-x - xi));
+//         y = yi - (3.0 * (-y - yi));
+//     }
+//     dispA = QPointF(x, y);
+// }
+//}
+///*public*/ void LayoutTurnout::scaleCoords(double xFactor, double yFactor) {
+//    QPointF pt =  QPointF(round(center.x()*xFactor),
+//                                    round(center.y()*yFactor));
+//    center = pt;
+//    pt =  QPointF(round(dispB.x()*xFactor),
+//                                    round(dispB.y()*yFactor));
+//    dispB = pt;
+//    pt =  QPointF(round(dispA.x()*xFactor),
+//                                    round(dispA.y()*yFactor));
+//    dispA = pt;
+//}
 
 //class MTurnoutListener : public PropertyChangeListener
 //{
@@ -2397,7 +2392,7 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
           }
       }
   }
-  layoutEditor->redrawPanel();
+  models->redrawPanel();
 
  }
 //};
@@ -2732,391 +2727,391 @@ void LayoutTurnout::setTrackSegmentBlock(int pointType, bool isAutomatic) {
 /**
  * Display popup menu for information and editing
  */
-/*protected*/ QMenu *LayoutTurnout::showPopup(QGraphicsSceneMouseEvent* /*e*/)
-{
-  // TODO: incorporate latest Java code!!
+///*protected*/ QMenu *LayoutTurnout::showPopup(QGraphicsSceneMouseEvent* /*e*/)
+//{
+//  // TODO: incorporate latest Java code!!
 
- if (popup != nullptr )
- {
-  popup->clear();
- }
- else
- {
-  popup = new QMenu();
- }
+// if (popup != nullptr )
+// {
+//  popup->clear();
+// }
+// else
+// {
+//  popup = new QMenu();
+// }
 
- if(layoutEditor->isEditable())
- {
-  switch (getTurnoutType())
-  {
-   case RH_TURNOUT:
-    //popup.add(tr("RHTurnout"));
-    //actionRHTurnout = new QAction(tr("RHTurnout"), this);
-    popup->addSection(tr("RH Turnout"));
-    break;
-   case LH_TURNOUT:
-    //popup.add(tr("LHTurnout"));
-    //actionLHTurnout = new QAction(tr("LHTurnout"), this);
-    popup->addSection(tr("LH Turnout"));
-    break;
-   case WYE_TURNOUT:
-   //popup.add(tr("WYETurnout"));
-    //actionWYETurnout = new QAction(tr("WYETurnout"), this);
-      popup->addSection(tr("WYETurnout"));
-    break;
-   case DOUBLE_XOVER:
-    //popup.add(tr("XOverTurnout"));
-    //actionXOverTurnout = new QAction(tr("Double Crossover"), this);
-      popup->addSection(tr("Double Crossover"));
-    break;
-   case RH_XOVER:
-    //popup.add(tr("RHXOverTurnout"));
-    //actionRHXOverTurnout = new QAction(tr("Right-Hand Crossover "), this);
-    popup->addSection(tr("Right-Hand Crossover "));
-    break;
-   case LH_XOVER:
-    //popup.add(tr("LHXOverTurnout"));
-    //actionLHXOverTurnout = new QAction(tr("Left-Hand Crossover "), this);
-    popup->addSection(tr("Left-Hand Crossover "));
-    break;
-   default : break;
-  }
-  //popup.add(ident);
-  QAction* jmi;
-
-  if (getTurnout()==nullptr)
-  {
-   //popup.add(tr("NoTurnout"));
-   jmi = popup->addSection(tr("No Turnout set"));
-  }
-  else
-  {
-   //popup.add(tr("Turnout")+": "+turnoutName);
-   QString stateString = getTurnoutStateString(getTurnout()->getKnownState());
-   stateString = tr(" (%1)").arg(stateString);
-   jmi = popup->addSection(QString("Turnout")+": "+getTurnoutName() + stateString);
-  }
-  jmi->setEnabled(false);
-
-  if (getSecondTurnout() != nullptr) {
-      QString stateString = getTurnoutStateString(getSecondTurnout()->getKnownState());
-      stateString = tr(" (%1)").arg(stateString);
-      jmi = popup->addSection(tr("Supporting %1:").arg(
-             tr("Turnout"))
-              + ": " + getSecondTurnoutName() + stateString);
-  }
-  jmi->setEnabled(false);
-
-  QAction* act;
-
-  // if there are any track connections
-  if ((connectA != nullptr) || (connectB != nullptr)
-          || (connectC != nullptr) || (connectD != nullptr)) {
-      QMenu* connectionsMenu = new QMenu(tr("Connections")); // there is no pane opening (which is what ... implies)
-      if (connectA != nullptr)
-      {
-          connectionsMenu->addAction(act = new AbstractAction("A" + connectA->getName(),this));
-//          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-          connect(act, &QAction::triggered, [=]{
-                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
-                  LayoutTrack* lt = lf->findObjectByName(connectA->getName());
-                  // this shouldn't ever be null... however...
-                  if (lt != nullptr) {
-                      layoutEditor->setSelectionRect(lt->getBounds());
-                      lt->showPopup();
-                  }
-//              }
-          });
-      }
-      if (connectB != nullptr) {
-          connectionsMenu->addAction(act = new AbstractAction( "B" + connectB->getName(),this));
-//          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-            connect(act, &QAction::triggered, [=]{
-                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
-                  LayoutTrack* lt = lf->findObjectByName(connectB->getName());
-                  // this shouldn't ever be null... however...
-                  if (lt != nullptr) {
-                      layoutEditor->setSelectionRect(lt->getBounds());
-                      lt->showPopup();
-                  }
-//              }
-          });
-      }
-      if (connectC != nullptr) {
-          connectionsMenu->addAction(act = new AbstractAction( "C" + connectC->getName(),this));
-//          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-          connect(act, &QAction::triggered, [=]{
-                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
-                  LayoutTrack* lt = lf->findObjectByName(connectC->getName());
-                  // this shouldn't ever be null... however...
-                  if (lt != nullptr) {
-                      layoutEditor->setSelectionRect(lt->getBounds());
-                      lt->showPopup();
-                  }
-//              }
-          });
-      }
-      if (connectD != nullptr) {
-          connectionsMenu->addAction(jmi = new AbstractAction("D" + connectD->getName(),this));
-          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-           connect(act, &QAction::triggered, [=]{
-                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
-                  LayoutTrack* lt = lf->findObjectByName(connectD->getName());
-                  // this shouldn't ever be null... however...
-                  if (lt != nullptr) {
-                      layoutEditor->setSelectionRect(lt->getBounds());
-                      lt->showPopup();
-                  }
-//              }
-          });
-      }
-      popup->addMenu(connectionsMenu);
-  }
-  popup->addSeparator(); //new JSeparator(JSeparator.HORIZONTAL));
-
-  QAction* hiddenCheckBoxMenuItem = new QAction(tr("Hidden"),this);
-  hiddenCheckBoxMenuItem->setCheckable(true);
-  hiddenCheckBoxMenuItem->setChecked(hidden);
-  popup->addAction(hiddenCheckBoxMenuItem);
-  //hiddenCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e1) -> {
-  connect(hiddenCheckBoxMenuItem, &QAction::triggered, [=]{
-//      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e1.getSource();
-      setHidden(hiddenCheckBoxMenuItem->isChecked());
-  });
-
-  QAction* cbmi = new QAction(tr("Disabled"), this);
-  cbmi->setCheckable(true);
-  cbmi->setChecked(disabled);
-  popup->addAction(cbmi);
-  //cbmi.addActionListener((java.awt.event.ActionEvent e2) -> {
-  connect(cbmi, &QAction::triggered, [=]{
-//      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e2.getSource();
-      setDisabled(cbmi->isChecked());
-  });
-
-  cbmi = new QAction(tr("Disable When Occupied"),this);
-  cbmi->setCheckable(true);
-  if (getTurnout() == nullptr || getBlockName().isEmpty()) {
-      cbmi->setEnabled(false);
-  }
-  cbmi->setChecked(disableWhenOccupied);
-  popup->addAction(cbmi);
-//  cbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
-//      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e3.getSource();
-  connect(cbmi, &QAction::triggered, [=]{
-      setDisableWhenOccupied(cbmi->isChecked());
-  });
-
-  // Rotate if there are no track connections
-  if ((connectA == nullptr) && (connectB == nullptr)
-          && (connectC == nullptr)
-          && (connectD == nullptr))
-  {
-      QAction* rotateItem = new QAction(tr("Rotate") + "...",this);
-      popup->addAction(rotateItem);
-//      rotateItem.addActionListener((ActionEvent event) -> {
-      connect(rotateItem, &QAction::triggered, [=]{
-          bool entering = true;
-          bool error = false;
-          QString newAngle = "";
-          while (entering) {
-              // prompt for rotation angle
-              error = false;
-              newAngle = JOptionPane::showInputDialog(layoutEditor,
-                      tr("Enter Rotation Angle (degrees CW)"));
-              if (newAngle.isEmpty()) {
-                  return;  // cancelled
-              }
-              double rot = 0.0;
-              bool bok;
-                  rot = newAngle.toDouble(&bok);
-              if(!bok) {
-                  JOptionPane::showMessageDialog(layoutEditor, tr("Error in rotation entry:")
-                          + " " /*+ e1*/, tr("Error"), JOptionPane::ERROR_MESSAGE);
-                  error = true;
-                  newAngle = "";
-              }
-              if (!error) {
-                  entering = false;
-                  if (rot != 0.0) {
-                      rotateCoords(rot);
-                      layoutEditor->redrawPanel();
-                  }
-              }
-          }
-      });
-  }
-
-  popup->addAction(act = new AbstractAction(tr("Use Size As Default"),this));
+// if(layoutEditor->isEditable())
+// {
+//  switch (getTurnoutType())
 //  {
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-  connect(act, &QAction::triggered, [=]{
-          setUpDefaultSize();
-//      }
-  });
-  popup->addAction(act = new AbstractAction(tr("Edit"),this));
-//  {
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-  connect(act, &QAction::triggered, [=]{
-          //layoutEditor->getLayoutTrackEditors()->editLayoutTurnout(this);
-      editor->editLayoutTrack(this);
-//      }
-  });
-  popup->addAction(act = new AbstractAction(tr("Delete"),this));
-//  {
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-   connect(act, &QAction::triggered, [=]{
-          if (canRemove() && layoutEditor->removeLayoutTurnout(this)) {
-              // Returned true if user did not cancel
-              remove();
-              dispose();
-          }
-//      }
-  });
+//   case RH_TURNOUT:
+//    //popup.add(tr("RHTurnout"));
+//    //actionRHTurnout = new QAction(tr("RHTurnout"), this);
+//    popup->addSection(tr("RH Turnout"));
+//    break;
+//   case LH_TURNOUT:
+//    //popup.add(tr("LHTurnout"));
+//    //actionLHTurnout = new QAction(tr("LHTurnout"), this);
+//    popup->addSection(tr("LH Turnout"));
+//    break;
+//   case WYE_TURNOUT:
+//   //popup.add(tr("WYETurnout"));
+//    //actionWYETurnout = new QAction(tr("WYETurnout"), this);
+//      popup->addSection(tr("WYETurnout"));
+//    break;
+//   case DOUBLE_XOVER:
+//    //popup.add(tr("XOverTurnout"));
+//    //actionXOverTurnout = new QAction(tr("Double Crossover"), this);
+//      popup->addSection(tr("Double Crossover"));
+//    break;
+//   case RH_XOVER:
+//    //popup.add(tr("RHXOverTurnout"));
+//    //actionRHXOverTurnout = new QAction(tr("Right-Hand Crossover "), this);
+//    popup->addSection(tr("Right-Hand Crossover "));
+//    break;
+//   case LH_XOVER:
+//    //popup.add(tr("LHXOverTurnout"));
+//    //actionLHXOverTurnout = new QAction(tr("Left-Hand Crossover "), this);
+//    popup->addSection(tr("Left-Hand Crossover "));
+//    break;
+//   default : break;
+//  }
+//  //popup.add(ident);
+//  QAction* jmi;
 
-  if (getTurnout() != nullptr)
-  {
-      AbstractAction* ssaa = new AbstractAction(tr("Set Signal Heads..."),this);
+//  if (getTurnout()==nullptr)
+//  {
+//   //popup.add(tr("NoTurnout"));
+//   jmi = popup->addSection(tr("No Turnout set"));
+//  }
+//  else
+//  {
+//   //popup.add(tr("Turnout")+": "+turnoutName);
+//   QString stateString = getTurnoutStateString(getTurnout()->getKnownState());
+//   stateString = tr(" (%1)").arg(stateString);
+//   jmi = popup->addSection(QString("Turnout")+": "+getTurnoutName() + stateString);
+//  }
+//  jmi->setEnabled(false);
+
+//  if (getSecondTurnout() != nullptr) {
+//      QString stateString = getTurnoutStateString(getSecondTurnout()->getKnownState());
+//      stateString = tr(" (%1)").arg(stateString);
+//      jmi = popup->addSection(tr("Supporting %1:").arg(
+//             tr("Turnout"))
+//              + ": " + getSecondTurnoutName() + stateString);
+//  }
+//  jmi->setEnabled(false);
+
+//  QAction* act;
+
+//  // if there are any track connections
+//  if ((connectA != nullptr) || (connectB != nullptr)
+//          || (connectC != nullptr) || (connectD != nullptr)) {
+//      QMenu* connectionsMenu = new QMenu(tr("Connections")); // there is no pane opening (which is what ... implies)
+//      if (connectA != nullptr)
 //      {
-//          @Override
-//          public void actionPerformed(ActionEvent e) {
-      connect(ssaa, &AbstractAction::triggered, [=]{
-              LayoutEditorTools* tools = layoutEditor->getLETools();
-              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
-              if (isTurnoutTypeXover()) {
-                  tools->setSignalsAtXoverTurnoutFromMenu(this,
-                          letbp->signalIconEditor, letbp->signalFrame);
-              } else if (linkType == NO_LINK) {
-                  tools->setSignalsAtTurnoutFromMenu(this,
-                          letbp->signalIconEditor, letbp->signalFrame);
-              } else if (linkType == THROAT_TO_THROAT) {
-                  tools->setSignalsAtThroatToThroatTurnoutsFromMenu(this, linkedTurnoutName,
-                          letbp->signalIconEditor, letbp->signalFrame);
-              } else if (linkType == FIRST_3_WAY) {
-                  tools->setSignalsAt3WayTurnoutFromMenu(getTurnoutName(), linkedTurnoutName,
-                          letbp->signalIconEditor, letbp->signalFrame);
-              } else if (linkType == SECOND_3_WAY) {
-                  tools->setSignalsAt3WayTurnoutFromMenu(linkedTurnoutName, getTurnoutName(),
-                          letbp->signalIconEditor, letbp->signalFrame);
-              }
+//          connectionsMenu->addAction(act = new AbstractAction("A" + connectA->getName(),this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//          connect(act, &QAction::triggered, [=]{
+//                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+//                  LayoutTrack* lt = lf->findObjectByName(connectA->getName());
+//                  // this shouldn't ever be null... however...
+//                  if (lt != nullptr) {
+//                      layoutEditor->setSelectionRect(lt->getBounds());
+//                      lt->showPopup();
+//                  }
+////              }
+//          });
+//      }
+//      if (connectB != nullptr) {
+//          connectionsMenu->addAction(act = new AbstractAction( "B" + connectB->getName(),this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//            connect(act, &QAction::triggered, [=]{
+//                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+//                  LayoutTrack* lt = lf->findObjectByName(connectB->getName());
+//                  // this shouldn't ever be null... however...
+//                  if (lt != nullptr) {
+//                      layoutEditor->setSelectionRect(lt->getBounds());
+//                      lt->showPopup();
+//                  }
+////              }
+//          });
+//      }
+//      if (connectC != nullptr) {
+//          connectionsMenu->addAction(act = new AbstractAction( "C" + connectC->getName(),this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//          connect(act, &QAction::triggered, [=]{
+//                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+//                  LayoutTrack* lt = lf->findObjectByName(connectC->getName());
+//                  // this shouldn't ever be null... however...
+//                  if (lt != nullptr) {
+//                      layoutEditor->setSelectionRect(lt->getBounds());
+//                      lt->showPopup();
+//                  }
+////              }
+//          });
+//      }
+//      if (connectD != nullptr) {
+//          connectionsMenu->addAction(jmi = new AbstractAction("D" + connectD->getName(),this));
+//          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//           connect(act, &QAction::triggered, [=]{
+//                  LayoutEditorFindItems* lf = layoutEditor->getFinder();
+//                  LayoutTrack* lt = lf->findObjectByName(connectD->getName());
+//                  // this shouldn't ever be null... however...
+//                  if (lt != nullptr) {
+//                      layoutEditor->setSelectionRect(lt->getBounds());
+//                      lt->showPopup();
+//                  }
+////              }
+//          });
+//      }
+//      popup->addMenu(connectionsMenu);
+//  }
+//  popup->addSeparator(); //new JSeparator(JSeparator.HORIZONTAL));
+
+//  QAction* hiddenCheckBoxMenuItem = new QAction(tr("Hidden"),this);
+//  hiddenCheckBoxMenuItem->setCheckable(true);
+//  hiddenCheckBoxMenuItem->setChecked(hidden);
+//  popup->addAction(hiddenCheckBoxMenuItem);
+//  //hiddenCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e1) -> {
+//  connect(hiddenCheckBoxMenuItem, &QAction::triggered, [=]{
+////      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e1.getSource();
+//      setHidden(hiddenCheckBoxMenuItem->isChecked());
+//  });
+
+//  QAction* cbmi = new QAction(tr("Disabled"), this);
+//  cbmi->setCheckable(true);
+//  cbmi->setChecked(disabled);
+//  popup->addAction(cbmi);
+//  //cbmi.addActionListener((java.awt.event.ActionEvent e2) -> {
+//  connect(cbmi, &QAction::triggered, [=]{
+////      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e2.getSource();
+//      setDisabled(cbmi->isChecked());
+//  });
+
+//  cbmi = new QAction(tr("Disable When Occupied"),this);
+//  cbmi->setCheckable(true);
+//  if (getTurnout() == nullptr || getBlockName().isEmpty()) {
+//      cbmi->setEnabled(false);
+//  }
+//  cbmi->setChecked(disableWhenOccupied);
+//  popup->addAction(cbmi);
+////  cbmi.addActionListener((java.awt.event.ActionEvent e3) -> {
+////      JCheckBoxMenuItem o = (JCheckBoxMenuItem) e3.getSource();
+//  connect(cbmi, &QAction::triggered, [=]{
+//      setDisableWhenOccupied(cbmi->isChecked());
+//  });
+
+//  // Rotate if there are no track connections
+//  if ((connectA == nullptr) && (connectB == nullptr)
+//          && (connectC == nullptr)
+//          && (connectD == nullptr))
+//  {
+//      QAction* rotateItem = new QAction(tr("Rotate") + "...",this);
+//      popup->addAction(rotateItem);
+////      rotateItem.addActionListener((ActionEvent event) -> {
+//      connect(rotateItem, &QAction::triggered, [=]{
+//          bool entering = true;
+//          bool error = false;
+//          QString newAngle = "";
+//          while (entering) {
+//              // prompt for rotation angle
+//              error = false;
+//              newAngle = JOptionPane::showInputDialog(layoutEditor,
+//                      tr("Enter Rotation Angle (degrees CW)"));
+//              if (newAngle.isEmpty()) {
+//                  return;  // cancelled
+//              }
+//              double rot = 0.0;
+//              bool bok;
+//                  rot = newAngle.toDouble(&bok);
+//              if(!bok) {
+//                  JOptionPane::showMessageDialog(layoutEditor, tr("Error in rotation entry:")
+//                          + " " /*+ e1*/, tr("Error"), JOptionPane::ERROR_MESSAGE);
+//                  error = true;
+//                  newAngle = "";
+//              }
+//              if (!error) {
+//                  entering = false;
+//                  if (rot != 0.0) {
+//                      rotateCoords(rot);
+//                      layoutEditor->redrawPanel();
+//                  }
+//              }
 //          }
-      });
+//      });
+//  }
 
-      QMenu* jm = new QMenu(tr("Set Signal Heads..."));
-      if (layoutEditor->getLETools()->addLayoutTurnoutSignalHeadInfoToMenu(
-              getTurnoutName(), linkedTurnoutName, jm)) {
-          jm->addAction(ssaa);
-          popup->addMenu(jm);
-      } else {
-          popup->addAction(ssaa);
-      }
-  }
-  if (!getBlockName().isEmpty())
-  {
-      /*final*/ QStringList boundaryBetween = getBlockBoundaries();
-      bool blockBoundaries = false;
-      for (int i = 0; i < 4; i++) {
-          if (boundaryBetween[i] != "") {
-              blockBoundaries = true;
+//  popup->addAction(act = new AbstractAction(tr("Use Size As Default"),this));
+////  {
+////      @Override
+////      public void actionPerformed(ActionEvent e) {
+//  connect(act, &QAction::triggered, [=]{
+//          setUpDefaultSize();
+////      }
+//  });
+//  popup->addAction(act = new AbstractAction(tr("Edit"),this));
+////  {
+////      @Override
+////      public void actionPerformed(ActionEvent e) {
+//  connect(act, &QAction::triggered, [=]{
+//          //layoutEditor->getLayoutTrackEditors()->editLayoutTurnout(this);
+//      editor->editLayoutTrack(this);
+////      }
+//  });
+//  popup->addAction(act = new AbstractAction(tr("Delete"),this));
+////  {
+////      @Override
+////      public void actionPerformed(ActionEvent e) {
+//   connect(act, &QAction::triggered, [=]{
+//          if (canRemove() && layoutEditor->removeLayoutTurnout(this)) {
+//              // Returned true if user did not cancel
+//              remove();
+//              dispose();
+//          }
+////      }
+//  });
 
-          }
-      }
-
-      if (blockBoundaries) {
-          popup->addAction(act = new AbstractAction(tr("Set Signal Masts..."),this));
-//          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-           connect(act, &QAction::triggered, [=]{
-
-                  layoutEditor->getLETools()->setSignalMastsAtTurnoutFromMenu(this,
-                          boundaryBetween);
+//  if (getTurnout() != nullptr)
+//  {
+//      AbstractAction* ssaa = new AbstractAction(tr("Set Signal Heads..."),this);
+////      {
+////          @Override
+////          public void actionPerformed(ActionEvent e) {
+//      connect(ssaa, &AbstractAction::triggered, [=]{
+//              LayoutEditorTools* tools = layoutEditor->getLETools();
+//              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+//              if (isTurnoutTypeXover()) {
+//                  tools->setSignalsAtXoverTurnoutFromMenu(this,
+//                          letbp->signalIconEditor, letbp->signalFrame);
+//              } else if (linkType == NO_LINK) {
+//                  tools->setSignalsAtTurnoutFromMenu(this,
+//                          letbp->signalIconEditor, letbp->signalFrame);
+//              } else if (linkType == THROAT_TO_THROAT) {
+//                  tools->setSignalsAtThroatToThroatTurnoutsFromMenu(this, linkedTurnoutName,
+//                          letbp->signalIconEditor, letbp->signalFrame);
+//              } else if (linkType == FIRST_3_WAY) {
+//                  tools->setSignalsAt3WayTurnoutFromMenu(getTurnoutName(), linkedTurnoutName,
+//                          letbp->signalIconEditor, letbp->signalFrame);
+//              } else if (linkType == SECOND_3_WAY) {
+//                  tools->setSignalsAt3WayTurnoutFromMenu(linkedTurnoutName, getTurnoutName(),
+//                          letbp->signalIconEditor, letbp->signalFrame);
 //              }
-          });
-          popup->addAction(act =new AbstractAction(tr("Set Sensors..."),this));
+////          }
+//      });
+
+//      QMenu* jm = new QMenu(tr("Set Signal Heads..."));
+//      if (layoutEditor->getLETools()->addLayoutTurnoutSignalHeadInfoToMenu(
+//              getTurnoutName(), linkedTurnoutName, jm)) {
+//          jm->addAction(ssaa);
+//          popup->addMenu(jm);
+//      } else {
+//          popup->addAction(ssaa);
+//      }
+//  }
+//  if (!getBlockName().isEmpty())
+//  {
+//      /*final*/ QStringList boundaryBetween = getBlockBoundaries();
+//      bool blockBoundaries = false;
+//      for (int i = 0; i < 4; i++) {
+//          if (boundaryBetween[i] != "") {
+//              blockBoundaries = true;
+
+//          }
+//      }
+
+//      if (blockBoundaries) {
+//          popup->addAction(act = new AbstractAction(tr("Set Signal Masts..."),this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//           connect(act, &QAction::triggered, [=]{
+
+//                  layoutEditor->getLETools()->setSignalMastsAtTurnoutFromMenu(this,
+//                          boundaryBetween);
+////              }
+//          });
+//          popup->addAction(act =new AbstractAction(tr("Set Sensors..."),this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//           connect(act, &QAction::triggered, [=]{
+//                  LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+//                  layoutEditor->getLETools()->setSensorsAtTurnoutFromMenu(
+//                          this,
+//                          boundaryBetween,
+//                          letbp->sensorIconEditor,
+//                          letbp->sensorFrame);
+////              }
+//          });
+
+//      }
+
+//      if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
+//      {
+//          QMap<QString, LayoutBlock*> map = QMap<QString, LayoutBlock*>();
+//          if (!getBlockName().isEmpty()) {
+//              map.insert(getBlockName(), getLayoutBlock());
+//          }
+//          if (!getBlockBName().isEmpty()) {
+//              map.insert(getBlockBName(), getLayoutBlockB());
+//          }
+//          if (!getBlockCName().isEmpty()) {
+//              map.insert(getBlockCName(), getLayoutBlockC());
+//          }
+//          if (!getBlockDName().isEmpty()) {
+//              map.insert(getBlockDName(), getLayoutBlockD());
+//          }
+//          if (blockBoundaries)
 //          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-           connect(act, &QAction::triggered, [=]{
-                  LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
-                  layoutEditor->getLETools()->setSensorsAtTurnoutFromMenu(
-                          this,
-                          boundaryBetween,
-                          letbp->sensorIconEditor,
-                          letbp->sensorFrame);
-//              }
-          });
-
-      }
-
-      if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
-      {
-          QMap<QString, LayoutBlock*> map = QMap<QString, LayoutBlock*>();
-          if (!getBlockName().isEmpty()) {
-              map.insert(getBlockName(), getLayoutBlock());
-          }
-          if (!getBlockBName().isEmpty()) {
-              map.insert(getBlockBName(), getLayoutBlockB());
-          }
-          if (!getBlockCName().isEmpty()) {
-              map.insert(getBlockCName(), getLayoutBlockC());
-          }
-          if (!getBlockDName().isEmpty()) {
-              map.insert(getBlockDName(), getLayoutBlockD());
-          }
-          if (blockBoundaries)
-          {
-              if (map.size() == 1) {
-                  popup->addAction(act = new AbstractAction(tr("View Block Routing"),this));
+//              if (map.size() == 1) {
+//                  popup->addAction(act = new AbstractAction(tr("View Block Routing"),this));
+////                  {
+////                      @Override
+////                      public void actionPerformed(ActionEvent e) {
+//                   connect(act, &QAction::triggered, [=]{
+//                          AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("View Block Routing", getLayoutBlock());
+//                          routeTableAction->actionPerformed(/*e*/);
+////                      }
+//                  });
+//              } else if (map.size() > 1) {
+//                  QMenu* viewRouting = new QMenu(tr("View Block Routing"));
+//                  //for (Map.Entry<String, LayoutBlock> entry : map.entrySet())
+//                  QMapIterator<QString, LayoutBlock*> entry(map);
+//                  while(entry.hasNext())
 //                  {
-//                      @Override
-//                      public void actionPerformed(ActionEvent e) {
-                   connect(act, &QAction::triggered, [=]{
-                          AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("View Block Routing", getLayoutBlock());
-                          routeTableAction->actionPerformed(/*e*/);
-//                      }
-                  });
-              } else if (map.size() > 1) {
-                  QMenu* viewRouting = new QMenu(tr("View Block Routing"));
-                  //for (Map.Entry<String, LayoutBlock> entry : map.entrySet())
-                  QMapIterator<QString, LayoutBlock*> entry(map);
-                  while(entry.hasNext())
-                  {
-                   entry.next();
-                      QString blockName = entry.key();
-                      LayoutBlock* layoutBlock = entry.value();
-                      viewRouting->addAction(new AbstractActionImpl(blockName, getBlockBName(), layoutBlock, this));
-                  }
-                  popup->addMenu(viewRouting);
-              }
-          }   // if (blockBoundaries)
-      }   // .isAdvancedRoutingEnabled()
-   }   // getBlockName().isEmpty()
-   setAdditionalEditPopUpMenu(popup);
-   layoutEditor->setShowAlignmentMenu(popup);
-   //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
-   popup->exec(QCursor::pos());
- } else if (!viewAdditionalMenu->isEmpty()) {
-   setAdditionalViewPopUpMenu(popup);
-   //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
-   popup->exec(QCursor::pos());
- }
- return popup;
-} // showPopup
+//                   entry.next();
+//                      QString blockName = entry.key();
+//                      LayoutBlock* layoutBlock = entry.value();
+//                      viewRouting->addAction(new AbstractActionImpl(blockName, getBlockBName(), layoutBlock, this));
+//                  }
+//                  popup->addMenu(viewRouting);
+//              }
+//          }   // if (blockBoundaries)
+//      }   // .isAdvancedRoutingEnabled()
+//   }   // getBlockName().isEmpty()
+//   setAdditionalEditPopUpMenu(popup);
+//   layoutEditor->setShowAlignmentMenu(popup);
+//   //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+//   popup->exec(QCursor::pos());
+// } else if (!viewAdditionalMenu->isEmpty()) {
+//   setAdditionalViewPopUpMenu(popup);
+//   //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+//   popup->exec(QCursor::pos());
+// }
+// return popup;
+//} // showPopup
 
- tools->setSensorsAtTurnoutFromMenu(this, boundaryBetween.toList(), layoutEditor->getLETools()->sensorIconEditor, layoutEditor->getLETools()->sensorFrame);
-}
+// tools->setSensorsAtTurnoutFromMenu(this, boundaryBetween.toList(), layoutEditor->getLETools()->sensorIconEditor, layoutEditor->getLETools()->sensorFrame);
+//}
 
 
 /*public*/ QStringList LayoutTurnout::getBlockBoundaries()
@@ -3476,577 +3471,577 @@ boundaryBetween = QVector<QString>(4);
 /**
  * Edit a Layout Turnout
  */
-/*protected*/ void LayoutTurnout::editLayoutTurnout()
-{
-// if(editLayoutTurnoutFrame == nullptr)
+///*protected*/ void LayoutTurnout::editLayoutTurnout()
+//{
+//// if(editLayoutTurnoutFrame == nullptr)
+//// {
+////  editLayoutTurnoutFrame = new EditTurnout(this,layoutEditor);
+////  editOpen = true;
+////  editLayoutTurnoutFrame->show();
+////  editLayoutTurnoutFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutTurnout", true);
+////  editLayoutTurnoutFrame->setLocation(50,30);
+//// }
+// if (editOpen)
 // {
-//  editLayoutTurnoutFrame = new EditTurnout(this,layoutEditor);
-//  editOpen = true;
-//  editLayoutTurnoutFrame->show();
+//  editLayoutTurnoutFrame->setVisible(true);
+
+//  return;
+// }
+//#if 1 // see EditTurnout for implementation:
+// // Initialize if needed
+// if (editLayoutTurnoutFrame == nullptr)
+// {
+//  editLayoutTurnoutFrame = new JmriJFrameX( tr("Edit Turnout"), false, true );
 //  editLayoutTurnoutFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutTurnout", true);
 //  editLayoutTurnoutFrame->setLocation(50,30);
+////     Container contentPane = editLayoutTurnoutFrame.getContentPane();
+////     contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+//  QWidget* centralWidget = new QWidget();
+//  QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);
+//  editLayoutTurnoutFrame->setCentralWidget(centralWidget);
+//  // setup turnout name
+//  QWidget* panel1 = new QWidget();
+//  //panel1.setLayout(new FlowLayout());
+//  FlowLayout* panel1Layout = new FlowLayout(panel1);
+//  QLabel* turnoutNameLabel = new QLabel( tr("Turnout")+" "+tr("Name") );
+//  panel1Layout->addWidget(turnoutNameLabel);
+//  panel1Layout->addWidget(turnoutNameField);
+//  turnoutNameField->setToolTip( tr("Edit turnout name to change the physical turnout linked to this panel Turnout::") );
+//  centralWidgetLayout->addWidget(panel1);
+
+//  QWidget* panel1a = new QWidget();
+//  //panel1a.setLayout(new BoxLayout(panel1a, BoxLayout.Y_AXIS));
+//  QVBoxLayout* panel1aLayout = new QVBoxLayout(panel1a);
+//  secondTurnoutComboBox = new JmriBeanComboBox(InstanceManager::turnoutManagerInstance(), getSecondTurnout(), JmriBeanComboBox::DISPLAYNAME);
+////  additionalTurnout::addActionListener(new ActionListener() {
+////      /*public*/ void actionPerformed(ActionEvent e) {
+////          if(additionalTurnout::isSelected()){
+////              secondTurnoutLabel.setEnabled(true);
+////              secondTurnoutComboBox.setEnabled(true);
+////          } else  {
+////              secondTurnoutLabel.setEnabled(false);
+////              secondTurnoutComboBox.setEnabled(false);
+////          }
+////      }
+////  });
+//  connect(additionalTurnout, SIGNAL(toggled(bool)), this, SLOT(on_additionalTurnout_toggled(bool)));
+//  if ( (type != DOUBLE_XOVER) && (type != RH_XOVER) && (type != LH_XOVER) )
+//  {
+//   additionalTurnout->setText(tr("Throw Two Turnouts"));
+//  }
+//  panel1aLayout->addWidget(additionalTurnout);
+//  centralWidgetLayout->addWidget(panel1a);
+//  secondTurnoutLabel = new QLabel( tr("Supporting") + tr("Turnout")+" "+tr("Name") );
+//  secondTurnoutLabel->setEnabled(false);
+//  secondTurnoutComboBox->setEnabled(false);
+//  QWidget* panel1b = new QWidget();
+//  QHBoxLayout* panel1bLayout = new QHBoxLayout(panel1b);
+//  panel1bLayout->addWidget(secondTurnoutLabel);
+//  panel1bLayout->addWidget(secondTurnoutComboBox);
+//  centralWidgetLayout->addWidget(panel1b);
+
+
+//  // add continuing state choice, if not crossover
+//  if ( (type != DOUBLE_XOVER) && (type != RH_XOVER) && (type != LH_XOVER) )
+//  {
+//   QWidget* panel3 = new QWidget();
+//   //panel3.setLayout(new FlowLayout());
+//   FlowLayout* panel3Layout = new FlowLayout(panel3);
+//   stateBox->clear();
+//   stateBox->addItem( ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText() );
+//   turnoutClosedIndex = 0;
+//   stateBox->addItem( ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText() );
+//   turnoutThrownIndex = 1;
+//   stateBox->setToolTip(tr("Select turnout state corresponding to continuing route."));
+//   panel3Layout->addWidget( new QLabel(tr("Continuing Route Turnout State")));
+//   panel3Layout->addWidget( stateBox);
+//   centralWidgetLayout->addWidget(panel3);
+//  }
+
+//  QWidget* panel33 = new QWidget();
+//  //panel33.setLayout(new FlowLayout());
+//  FlowLayout* panel33Layout = new FlowLayout(panel33);
+//  hiddenBox->setToolTip(tr("Check to hide this track segment when not in edit mode."));
+//  panel33Layout->addWidget( hiddenBox);
+//  centralWidgetLayout->addWidget(panel33);
+
+//  // setup block name
+//  QGroupBox* panel2 = new QGroupBox();
+//  panel2->setTitle("Block");
+//  //panel2.setLayout(new FlowLayout());
+//  FlowLayout* panel2Layout = new FlowLayout(panel2);
+//  //QLabel* blockNameLabel = new QLabel( tr("Block: Name"));
+//  //panel2Layout->addWidget(blockNameLabel);
+//  panel2Layout->addWidget(blockNameField);
+//  blockNameField->setToolTip( tr("Edit block name to change the linked block. If new name, block will be created.") );
+//  panel2Layout->addWidget(turnoutEditBlock = new QPushButton(tr("Create/Edit")));
+////  turnoutEditBlock.addActionListener(new ActionListener() {
+////      public void actionPerformed(ActionEvent e) {
+////          turnoutEditBlockPressed(e);
+////      }
+////              });
+//  connect(turnoutEditBlock, SIGNAL(clicked()), this, SLOT(turnoutEditBlockPressed()));
+//  centralWidgetLayout->addWidget(panel2);
+//  if ( (type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER) )
+//  {
+//   QWidget* panel21 = new QWidget();
+//   //panel21.setLayout(new FlowLayout());
+//   FlowLayout* panel21Layout = new FlowLayout(panel21);
+//   QLabel* blockBNameLabel = new QLabel( tr("Block 2"));
+//   panel21Layout->addWidget(blockBNameLabel);
+//   panel21Layout->addWidget(blockBNameField);
+//   blockBNameField->setToolTip( tr("Edit this block name to change the block linked to second connecting point.") );
+//   centralWidgetLayout->addWidget(panel21);
+//   QWidget* panel22 = new QWidget();
+//   //panel22.setLayout(new FlowLayout());
+//   FlowLayout* panel22Layout = new FlowLayout(panel22);
+//   QLabel* blockCNameLabel = new JLabel( tr("Block 3"));
+//   panel22Layout->addWidget(blockCNameLabel);
+//   panel22Layout->addWidget(blockCNameField);
+//   blockCNameField->setToolTip( tr("Edit this block name to change the block linked to third connecting point.") );
+//   centralWidgetLayout->addWidget(panel22);
+
+//   QWidget* panel23 = new QWidget();
+//   //panel23.setLayout(new FlowLayout());
+//   FlowLayout* panel23Layout = new FlowLayout(panel23);
+//   QLabel* blockDNameLabel = new QLabel( tr("Block 4"));
+//   panel23Layout->addWidget(blockDNameLabel);
+//   panel23Layout->addWidget(blockDNameField);
+//   blockDNameField->setToolTip( tr("Edit this block name to change the block linked to fourth connecting point.") );
+//   centralWidgetLayout->addWidget(panel23);
+//  }
+//  // set up Edit Block, Done and Cancel buttons
+//  QWidget* panel5 = new QWidget();
+//  FlowLayout* panel5Layout = new FlowLayout(panel5);
+//  //panel5.setLayout(new FlowLayout());
+//  // Edit Block
+//  turnoutEditBlock->setToolTip(tr("Click here to create/edit information for the Block shown above."));
+//  // Done
+//  panel5Layout->addWidget(turnoutEditDone = new QPushButton(tr("Done")));
+////  turnoutEditDone.addActionListener(new ActionListener() {
+////      public void actionPerformed(ActionEvent e) {
+////          turnoutEditDonePressed(e);
+////      }
+////  });
+//  connect(turnoutEditDone, SIGNAL(clicked()), this, SLOT(turnoutEditDonePressed()));
+//  turnoutEditDone->setToolTip(tr("Click Done to accept any changes made above and dismiss this dialog->"));
+//  // Cancel
+//  panel5Layout->addWidget(turnoutEditCancel = new QPushButton(tr("Cancel")));
+////  turnoutEditCancel.addActionListener(new ActionListener() {
+////      public void actionPerformed(ActionEvent e) {
+////          turnoutEditCancelPressed(e);
+////      }
+////  });
+//  connect(turnoutEditCancel, SIGNAL(clicked()), this, SLOT(turnoutEditCancelPressed()));
+//  turnoutEditCancel->setToolTip(tr("Click Cancel to dismiss this dialog without making changes."));
+//  centralWidgetLayout->addWidget(panel5);
 // }
- if (editOpen)
- {
-  editLayoutTurnoutFrame->setVisible(true);
 
-  return;
- }
-#if 1 // see EditTurnout for implementation:
- // Initialize if needed
- if (editLayoutTurnoutFrame == nullptr)
- {
-  editLayoutTurnoutFrame = new JmriJFrameX( tr("Edit Turnout"), false, true );
-  editLayoutTurnoutFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutTurnout", true);
-  editLayoutTurnoutFrame->setLocation(50,30);
-//     Container contentPane = editLayoutTurnoutFrame.getContentPane();
-//     contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-  QWidget* centralWidget = new QWidget();
-  QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);
-  editLayoutTurnoutFrame->setCentralWidget(centralWidget);
-  // setup turnout name
-  QWidget* panel1 = new QWidget();
-  //panel1.setLayout(new FlowLayout());
-  FlowLayout* panel1Layout = new FlowLayout(panel1);
-  QLabel* turnoutNameLabel = new QLabel( tr("Turnout")+" "+tr("Name") );
-  panel1Layout->addWidget(turnoutNameLabel);
-  panel1Layout->addWidget(turnoutNameField);
-  turnoutNameField->setToolTip( tr("Edit turnout name to change the physical turnout linked to this panel Turnout::") );
-  centralWidgetLayout->addWidget(panel1);
+// hiddenBox->setChecked(hidden);
 
-  QWidget* panel1a = new QWidget();
-  //panel1a.setLayout(new BoxLayout(panel1a, BoxLayout.Y_AXIS));
-  QVBoxLayout* panel1aLayout = new QVBoxLayout(panel1a);
-  secondTurnoutComboBox = new JmriBeanComboBox(InstanceManager::turnoutManagerInstance(), getSecondTurnout(), JmriBeanComboBox::DISPLAYNAME);
-//  additionalTurnout::addActionListener(new ActionListener() {
-//      /*public*/ void actionPerformed(ActionEvent e) {
-//          if(additionalTurnout::isSelected()){
-//              secondTurnoutLabel.setEnabled(true);
-//              secondTurnoutComboBox.setEnabled(true);
-//          } else  {
-//              secondTurnoutLabel.setEnabled(false);
-//              secondTurnoutComboBox.setEnabled(false);
-//          }
-//      }
-//  });
-  connect(additionalTurnout, SIGNAL(toggled(bool)), this, SLOT(on_additionalTurnout_toggled(bool)));
-  if ( (type != DOUBLE_XOVER) && (type != RH_XOVER) && (type != LH_XOVER) )
-  {
-   additionalTurnout->setText(tr("Throw Two Turnouts"));
-  }
-  panel1aLayout->addWidget(additionalTurnout);
-  centralWidgetLayout->addWidget(panel1a);
-  secondTurnoutLabel = new QLabel( tr("Supporting") + tr("Turnout")+" "+tr("Name") );
-  secondTurnoutLabel->setEnabled(false);
-  secondTurnoutComboBox->setEnabled(false);
-  QWidget* panel1b = new QWidget();
-  QHBoxLayout* panel1bLayout = new QHBoxLayout(panel1b);
-  panel1bLayout->addWidget(secondTurnoutLabel);
-  panel1bLayout->addWidget(secondTurnoutComboBox);
-  centralWidgetLayout->addWidget(panel1b);
+// // Set up for Edit
+// blockNameField->setText(blockName);
+// if ( (type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER) )
+// {
+//  blockBNameField->setText(blockBName);
+//  blockCNameField->setText(blockCName);
+//  blockDNameField->setText(blockDName);
+// }
+// turnoutNameField->setText(turnoutName);
 
 
-  // add continuing state choice, if not crossover
-  if ( (type != DOUBLE_XOVER) && (type != RH_XOVER) && (type != LH_XOVER) )
-  {
-   QWidget* panel3 = new QWidget();
-   //panel3.setLayout(new FlowLayout());
-   FlowLayout* panel3Layout = new FlowLayout(panel3);
-   stateBox->clear();
-   stateBox->addItem( ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText() );
-   turnoutClosedIndex = 0;
-   stateBox->addItem( ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText() );
-   turnoutThrownIndex = 1;
-   stateBox->setToolTip(tr("Select turnout state corresponding to continuing route."));
-   panel3Layout->addWidget( new QLabel(tr("Continuing Route Turnout State")));
-   panel3Layout->addWidget( stateBox);
-   centralWidgetLayout->addWidget(panel3);
-  }
+// if(secondNamedTurnout!=nullptr)
+// {
+//  additionalTurnout->setChecked(true);
+//  secondTurnoutLabel->setEnabled(true);
+//  secondTurnoutComboBox->setEnabled(true);
+// }
 
-  QWidget* panel33 = new QWidget();
-  //panel33.setLayout(new FlowLayout());
-  FlowLayout* panel33Layout = new FlowLayout(panel33);
-  hiddenBox->setToolTip(tr("Check to hide this track segment when not in edit mode."));
-  panel33Layout->addWidget( hiddenBox);
-  centralWidgetLayout->addWidget(panel33);
+// if ( (type != DOUBLE_XOVER) && (type != RH_XOVER) && (type != LH_XOVER) )
+// {
+//  if (continuingSense==Turnout::CLOSED) {
+//      stateBox->setCurrentIndex(turnoutClosedIndex);
+//  }
+//  else
+//  {
+//   stateBox->setCurrentIndex(turnoutThrownIndex);
+//  }
+// }
 
-  // setup block name
-  QGroupBox* panel2 = new QGroupBox();
-  panel2->setTitle("Block");
-  //panel2.setLayout(new FlowLayout());
-  FlowLayout* panel2Layout = new FlowLayout(panel2);
-  //QLabel* blockNameLabel = new QLabel( tr("Block: Name"));
-  //panel2Layout->addWidget(blockNameLabel);
-  panel2Layout->addWidget(blockNameField);
-  blockNameField->setToolTip( tr("Edit block name to change the linked block. If new name, block will be created.") );
-  panel2Layout->addWidget(turnoutEditBlock = new QPushButton(tr("Create/Edit")));
-//  turnoutEditBlock.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent e) {
-//          turnoutEditBlockPressed(e);
-//      }
-//              });
-  connect(turnoutEditBlock, SIGNAL(clicked()), this, SLOT(turnoutEditBlockPressed()));
-  centralWidgetLayout->addWidget(panel2);
-  if ( (type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER) )
-  {
-   QWidget* panel21 = new QWidget();
-   //panel21.setLayout(new FlowLayout());
-   FlowLayout* panel21Layout = new FlowLayout(panel21);
-   QLabel* blockBNameLabel = new QLabel( tr("Block 2"));
-   panel21Layout->addWidget(blockBNameLabel);
-   panel21Layout->addWidget(blockBNameField);
-   blockBNameField->setToolTip( tr("Edit this block name to change the block linked to second connecting point.") );
-   centralWidgetLayout->addWidget(panel21);
-   QWidget* panel22 = new QWidget();
-   //panel22.setLayout(new FlowLayout());
-   FlowLayout* panel22Layout = new FlowLayout(panel22);
-   QLabel* blockCNameLabel = new JLabel( tr("Block 3"));
-   panel22Layout->addWidget(blockCNameLabel);
-   panel22Layout->addWidget(blockCNameField);
-   blockCNameField->setToolTip( tr("Edit this block name to change the block linked to third connecting point.") );
-   centralWidgetLayout->addWidget(panel22);
+//// editLayoutTurnoutFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+////         /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
+////             turnoutEditCancelPressed(nullptr);
+////         }
+////     });
+// editLayoutTurnoutFrame->addWindowListener(new ETWindowListener(this));
+// editLayoutTurnoutFrame->adjustSize();
+// editLayoutTurnoutFrame->setVisible(true);
+// editOpen = true;
+// needsBlockUpdate = false;
+//#endif
+//}
 
-   QWidget* panel23 = new QWidget();
-   //panel23.setLayout(new FlowLayout());
-   FlowLayout* panel23Layout = new FlowLayout(panel23);
-   QLabel* blockDNameLabel = new QLabel( tr("Block 4"));
-   panel23Layout->addWidget(blockDNameLabel);
-   panel23Layout->addWidget(blockDNameField);
-   blockDNameField->setToolTip( tr("Edit this block name to change the block linked to fourth connecting point.") );
-   centralWidgetLayout->addWidget(panel23);
-  }
-  // set up Edit Block, Done and Cancel buttons
-  QWidget* panel5 = new QWidget();
-  FlowLayout* panel5Layout = new FlowLayout(panel5);
-  //panel5.setLayout(new FlowLayout());
-  // Edit Block
-  turnoutEditBlock->setToolTip(tr("Click here to create/edit information for the Block shown above."));
-  // Done
-  panel5Layout->addWidget(turnoutEditDone = new QPushButton(tr("Done")));
-//  turnoutEditDone.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent e) {
-//          turnoutEditDonePressed(e);
-//      }
-//  });
-  connect(turnoutEditDone, SIGNAL(clicked()), this, SLOT(turnoutEditDonePressed()));
-  turnoutEditDone->setToolTip(tr("Click Done to accept any changes made above and dismiss this dialog->"));
-  // Cancel
-  panel5Layout->addWidget(turnoutEditCancel = new QPushButton(tr("Cancel")));
-//  turnoutEditCancel.addActionListener(new ActionListener() {
-//      public void actionPerformed(ActionEvent e) {
-//          turnoutEditCancelPressed(e);
-//      }
-//  });
-  connect(turnoutEditCancel, SIGNAL(clicked()), this, SLOT(turnoutEditCancelPressed()));
-  turnoutEditCancel->setToolTip(tr("Click Cancel to dismiss this dialog without making changes."));
-  centralWidgetLayout->addWidget(panel5);
- }
+//ETWindowListener::ETWindowListener(LayoutTurnout *parent)
+//{
+// this->parent = parent;
+//}
 
- hiddenBox->setChecked(hidden);
+//void ETWindowListener::windowClosing(QCloseEvent*)
+//{
+// parent->turnoutEditCancelPressed();
+//}
 
- // Set up for Edit
- blockNameField->setText(blockName);
- if ( (type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER) )
- {
-  blockBNameField->setText(blockBName);
-  blockCNameField->setText(blockCName);
-  blockDNameField->setText(blockDName);
- }
- turnoutNameField->setText(turnoutName);
+//void LayoutTurnout::on_additionalTurnout_toggled(bool)
+//{
+// if(additionalTurnout->isChecked())
+// {
+//  secondTurnoutLabel->setEnabled(true);
+//  secondTurnoutComboBox->setEnabled(true);
+// } else
+// {
+//  secondTurnoutLabel->setEnabled(false);
+//  secondTurnoutComboBox->setEnabled(false);
+// }
+//}
 
+//void LayoutTurnout::turnoutEditBlockPressed(JActionEvent* /*a*/)
+//{
+// // check if a block name has been entered
+// if (blockName!=(blockNameField->text().trimmed()))
+// {
+//  // block has changed, if old block exists, decrement use
+//  if ((block != nullptr) && (block != blockB) && (block != blockC)
+//          && (block != blockD))
+//  {
+//   block->decrementUse();
+//  }
+//  // get new block, or nullptr if block has been removed
+//  blockName = blockNameField->text().trimmed();
+//  block = layoutEditor->provideLayoutBlock(blockName);
+//  if (block == nullptr)
+//  {
+//   blockName = "";
+//  }
+//  // decrement use if block was already counted
+//  if ((block != nullptr) && ((block == blockB) || (block == blockC)
+//          || (block == blockD)))
+//  {
+//   block->decrementUse();
+//  }
+//  needRedraw = true;
+//  needsBlockUpdate = true;
+// }
+// // check if a block exists to edit
+// if (block == nullptr)
+// {
+////     JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
+////             rb.getString("Error1"),
+////             rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
+//  QMessageBox::critical(editLayoutTurnoutFrame, tr("Error"),tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."));
+//     return;
+// }
+// block->editLayoutBlock(editLayoutTurnoutFrame);
+// needRedraw = true;
+// layoutEditor->setDirty();
+//}
 
- if(secondNamedTurnout!=nullptr)
- {
-  additionalTurnout->setChecked(true);
-  secondTurnoutLabel->setEnabled(true);
-  secondTurnoutComboBox->setEnabled(true);
- }
+//void LayoutTurnout::turnoutEditBlockBPressed(JActionEvent* /*a*/)
+//{
+// // check if a block name has been entered
+// if (blockBName != (blockBNameField->text().trimmed()))
+// {
+//  // block has changed, if old block exists, decrement use
+//  if ((blockB != nullptr) && (block != blockB) && (blockB != blockC)
+//          && (blockB != blockD)) {
+//      blockB->decrementUse();
+//  }
+//  // get new block, or nullptr if block has been removed
+//  blockBName = blockBNameField->text().trimmed();
+//  blockB = layoutEditor->provideLayoutBlock(blockBName);
+//  if (blockB == nullptr) {
+//      blockBName = "";
+//  }
+//  // decrement use if block was already counted
+//  if ((blockB != nullptr) && ((block == blockB) || (blockB == blockC)
+//          || (blockB == blockD))) {
+//      blockB->decrementUse();
+//  }
+//  needRedraw = true;
+//  needsBlockUpdate = true;
+// }
+// // check if a block exists to edit
+// if (blockB == nullptr) {
+////     JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
+////             rb.getString("Error1"),
+////             rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
+//  QMessageBox::critical(editLayoutTurnoutFrame, tr("Error"),tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."));
+//     return;
+// }
+// blockB->editLayoutBlock(editLayoutTurnoutFrame);
+// needRedraw = true;
+// layoutEditor->setDirty();
+//}
 
- if ( (type != DOUBLE_XOVER) && (type != RH_XOVER) && (type != LH_XOVER) )
- {
-  if (continuingSense==Turnout::CLOSED) {
-      stateBox->setCurrentIndex(turnoutClosedIndex);
-  }
-  else
-  {
-   stateBox->setCurrentIndex(turnoutThrownIndex);
-  }
- }
+//void LayoutTurnout::turnoutEditBlockCPressed(JActionEvent* /*a*/) {
+//    // check if a block name has been entered
+//    if (blockCName != (blockCNameField->text().trimmed())) {
+//        // block has changed, if old block exists, decrement use
+//        if ((blockC != nullptr) && (block != blockC) && (blockB != blockC)
+//                && (blockC != blockD)) {
+//            blockC->decrementUse();
+//        }
+//        // get new block, or nullptr if block has been removed
+//        blockCName = blockCNameField->text().trimmed();
+//        blockC = layoutEditor->provideLayoutBlock(blockCName);
+//        if (blockC == nullptr) {
+//            blockCName = "";
+//        }
+//        // decrement use if block was already counted
+//        if ((blockC != nullptr) && ((block == blockC) || (blockB == blockC)
+//                || (blockC == blockD))) {
+//            blockD->decrementUse();
+//        }
+//        needRedraw = true;
+//        needsBlockUpdate = true;
+//    }
+//    // check if a block exists to edit
+//    if (blockC == nullptr) {
+////        JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
+////                rb.getString("Error1"),
+////                rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
+//     QMessageBox::critical(editLayoutTurnoutFrame, tr("Error"),tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."));
+//     return;
+//    }
+//    blockC->editLayoutBlock(editLayoutTurnoutFrame);
+//    needRedraw = true;
+//    layoutEditor->setDirty();
+//}
 
-// editLayoutTurnoutFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-//         /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//             turnoutEditCancelPressed(nullptr);
-//         }
-//     });
- editLayoutTurnoutFrame->addWindowListener(new ETWindowListener(this));
- editLayoutTurnoutFrame->adjustSize();
- editLayoutTurnoutFrame->setVisible(true);
- editOpen = true;
- needsBlockUpdate = false;
-#endif
-}
+//void LayoutTurnout::turnoutEditBlockDPressed(JActionEvent* /*a*/) {
+//    // check if a block name has been entered
+//    if (blockDName!=(blockDNameField->text().trimmed())) {
+//        // block has changed, if old block exists, decrement use
+//        if ((blockD != nullptr) && (block != blockD) && (blockB != blockD)
+//                && (blockC != blockD)) {
+//            blockD->decrementUse();
+//        }
+//        // get new block, or nullptr if block has been removed
+//        blockDName = blockDNameField->text().trimmed();
+//        blockD = layoutEditor->provideLayoutBlock(blockDName);
+//        if (blockD == nullptr) {
+//            blockDName = "";
+//        }
+//        // decrement use if block was already counted
+//        if ((blockD != nullptr) && ((block == blockD) || (blockB == blockD)
+//                || (blockC == blockD))) {
+//            blockD->decrementUse();
+//        }
+//        needRedraw = true;
+//        needsBlockUpdate = true;
+//    }
+//    // check if a block exists to edit
+//    if (blockD == nullptr) {
+////        JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
+////                rb.getString("Error1"),
+////                rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
+//        QMessageBox::critical(editLayoutTurnoutFrame, tr("Error"),tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."));
+//        return;
+//    }
+//    blockD->editLayoutBlock(editLayoutTurnoutFrame);
+//    needRedraw = true;
+//    layoutEditor->setDirty();
+//}
 
-ETWindowListener::ETWindowListener(LayoutTurnout *parent)
-{
- this->parent = parent;
-}
+//void LayoutTurnout::turnoutEditDonePressed(JActionEvent* /*a*/) {
+//    // check if Turnout changed
+//    if (turnoutName!=(turnoutNameField->text().trimmed())) {
+//        // turnout has changed
+//        QString newName = turnoutNameField->text().trimmed();
+//        if (layoutEditor->validatePhysicalTurnout(newName,
+//                editLayoutTurnoutFrame)) {
+//            setTurnout(newName);
+//        } else {
+//            namedTurnout = nullptr;
+//            turnoutName = "";
+//            turnoutNameField->setText("");
+//        }
+//        needRedraw = true;
+//    }
 
-void ETWindowListener::windowClosing(QCloseEvent*)
-{
- parent->turnoutEditCancelPressed();
-}
+//    if (additionalTurnout->isChecked()) {
+//        if (secondTurnoutName!=(secondTurnoutComboBox->currentText())) {
+//            if ((type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER)) {
+//                // turnout has changed
+//                QString newName = secondTurnoutComboBox->currentText();
+//                if (layoutEditor->validatePhysicalTurnout(newName,
+//                        editLayoutTurnoutFrame)) {
+//                    setSecondTurnout(newName);
+//                } else {
+//                    additionalTurnout->setChecked(false);
+//                    secondNamedTurnout = nullptr;
+//                    secondTurnoutName = "";
+//                    //secondTurnoutNameField.setText("");
+//                }
+//                needRedraw = true;
+//            } else {
+//                setSecondTurnout(secondTurnoutComboBox->currentText());
+//            }
+//        }
+//    } else {
+//        setSecondTurnout(nullptr);
+//    }
+//    // set the continuing route Turnout State
+//    if ((type == RH_TURNOUT) || (type == LH_TURNOUT) || (type == WYE_TURNOUT)) {
+//        continuingSense = Turnout::CLOSED;
+//        if (stateBox->currentIndex() == turnoutThrownIndex) {
+//            continuingSense = Turnout::THROWN;
+//        }
+//    }
+//    // check if Block changed
+//    if (blockName!=(blockNameField->text().trimmed())) {
+//        // block has changed, if old block exists, decrement use
+//        if ((block != nullptr) && (block != blockB) && (block != blockC)
+//                && (block != blockD)) {
+//            block->decrementUse();
+//        }
+//        // get new block, or nullptr if block has been removed
+//        blockName = blockNameField->text().trimmed();
+//        block = layoutEditor->provideLayoutBlock(blockName);
+//        if (block == nullptr) {
+//            blockName = "";
+//        }
+//        // decrement use if block was already counted
+//        if ((block != nullptr) && ((block == blockB) || (block == blockC)
+//                || (block == blockD))) {
+//            block->decrementUse();
+//        }
+//        needRedraw = true;
+//        needsBlockUpdate = true;
+//    }
+//    if ((type == DOUBLE_XOVER) || (type == LH_XOVER) || (type == RH_XOVER)) {
+//        // check if Block 2 changed
+//        if (blockBName!=(blockBNameField->text().trimmed())) {
+//            // block has changed, if old block exists, decrement use
+//            if ((blockB != nullptr) && (block != blockB) && (blockB != blockC)
+//                    && (blockB != blockD)) {
+//                blockB->decrementUse();
+//            }
+//            // get new block, or nullptr if block has been removed
+//            blockBName = blockBNameField->text().trimmed();
+//            blockB = layoutEditor->provideLayoutBlock(blockBName);
+//            if (blockB == nullptr) {
+//                blockBName = "";
+//            }
+//            // decrement use if block was already counted
+//            if ((blockB != nullptr) && ((block == blockB) || (blockB == blockC)
+//                    || (blockB == blockD))) {
+//                blockB->decrementUse();
+//            }
+//            needRedraw = true;
+//            needsBlockUpdate = true;
+//        }
+//        // check if Block 3 changed
+//        if (blockCName!=(blockCNameField->text().trimmed())) {
+//            // block has changed, if old block exists, decrement use
+//            if ((blockC != nullptr) && (block != blockC) && (blockB != blockC)
+//                    && (blockC != blockD)) {
+//                blockC->decrementUse();
+//            }
+//            // get new block, or nullptr if block has been removed
+//            blockCName = blockCNameField->text().trimmed();
+//            blockC = layoutEditor->provideLayoutBlock(blockCName);
+//            if (blockC == nullptr) {
+//                blockCName = "";
+//            }
 
-void LayoutTurnout::on_additionalTurnout_toggled(bool)
-{
- if(additionalTurnout->isChecked())
- {
-  secondTurnoutLabel->setEnabled(true);
-  secondTurnoutComboBox->setEnabled(true);
- } else
- {
-  secondTurnoutLabel->setEnabled(false);
-  secondTurnoutComboBox->setEnabled(false);
- }
-}
+//            // decrement use if block was already counted
+//            if ((blockC != nullptr) && ((block == blockC) || (blockB == blockC)
+//                    || (blockC == blockD))) {
+//                blockC->decrementUse();
+//            }
+//            needRedraw = true;
+//            needsBlockUpdate = true;
+//        }
+//        // check if Block 4 changed
+//        if (blockDName!=(blockDNameField->text().trimmed())) {
+//            // block has changed, if old block exists, decrement use
+//            if ((blockD != nullptr) && (block != blockD) && (blockB != blockD)
+//                    && (blockC != blockD)) {
+//                blockD->decrementUse();
+//            }
+//            // get new block, or nullptr if block has been removed
+//            blockDName = blockDNameField->text().trimmed();
+//            blockD = layoutEditor->provideLayoutBlock(blockDName);
+//            if (blockD == nullptr) {
+//                blockDName = "";
+//            }
+//            // decrement use if block was already counted
+//            if ((blockD != nullptr) && ((block == blockD) || (blockB == blockD)
+//                    || (blockC == blockD))) {
+//                blockD->decrementUse();
+//            }
+//            needRedraw = true;
+//            needsBlockUpdate = true;
+//        }
+//    }
+//    // set hidden
+//    bool oldHidden = hidden;
+//    hidden = hiddenBox->isChecked();
+//    if (oldHidden != hidden) {
+//        needRedraw = true;
+//    }
+//    editOpen = false;
+//    editLayoutTurnoutFrame->setVisible(false);
+//    editLayoutTurnoutFrame->dispose();
+//    editLayoutTurnoutFrame = nullptr;
+//    if (needsBlockUpdate) {
+//        updateBlockInfo();
+//        reCheckBlockBoundary();
+//    }
+//    if (needRedraw) {
+//        layoutEditor->redrawPanel();
+//        layoutEditor->setDirty();
+//    }
+//}
 
-void LayoutTurnout::turnoutEditBlockPressed(JActionEvent* /*a*/)
-{
- // check if a block name has been entered
- if (blockName!=(blockNameField->text().trimmed()))
- {
-  // block has changed, if old block exists, decrement use
-  if ((block != nullptr) && (block != blockB) && (block != blockC)
-          && (block != blockD))
-  {
-   block->decrementUse();
-  }
-  // get new block, or nullptr if block has been removed
-  blockName = blockNameField->text().trimmed();
-  block = layoutEditor->provideLayoutBlock(blockName);
-  if (block == nullptr)
-  {
-   blockName = "";
-  }
-  // decrement use if block was already counted
-  if ((block != nullptr) && ((block == blockB) || (block == blockC)
-          || (block == blockD)))
-  {
-   block->decrementUse();
-  }
-  needRedraw = true;
-  needsBlockUpdate = true;
- }
- // check if a block exists to edit
- if (block == nullptr)
- {
-//     JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
-//             rb.getString("Error1"),
-//             rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
-  QMessageBox::critical(editLayoutTurnoutFrame, tr("Error"),tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."));
-     return;
- }
- block->editLayoutBlock(editLayoutTurnoutFrame);
- needRedraw = true;
- layoutEditor->setDirty();
-}
+//void LayoutTurnout::turnoutEditCancelPressed(JActionEvent* /*a*/) {
+//    editOpen = false;
+//    editLayoutTurnoutFrame->setVisible(false);
+//    editLayoutTurnoutFrame->dispose();
+//    editLayoutTurnoutFrame = nullptr;
+//    if (needsBlockUpdate) {
+//        updateBlockInfo();
+//    }
+//    if (needRedraw) {
+//        layoutEditor->redrawPanel();
+//        layoutEditor->setDirty();
+//    }
+//}
 
-void LayoutTurnout::turnoutEditBlockBPressed(JActionEvent* /*a*/)
-{
- // check if a block name has been entered
- if (blockBName != (blockBNameField->text().trimmed()))
- {
-  // block has changed, if old block exists, decrement use
-  if ((blockB != nullptr) && (block != blockB) && (blockB != blockC)
-          && (blockB != blockD)) {
-      blockB->decrementUse();
-  }
-  // get new block, or nullptr if block has been removed
-  blockBName = blockBNameField->text().trimmed();
-  blockB = layoutEditor->provideLayoutBlock(blockBName);
-  if (blockB == nullptr) {
-      blockBName = "";
-  }
-  // decrement use if block was already counted
-  if ((blockB != nullptr) && ((block == blockB) || (blockB == blockC)
-          || (blockB == blockD))) {
-      blockB->decrementUse();
-  }
-  needRedraw = true;
-  needsBlockUpdate = true;
- }
- // check if a block exists to edit
- if (blockB == nullptr) {
-//     JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
-//             rb.getString("Error1"),
-//             rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
-  QMessageBox::critical(editLayoutTurnoutFrame, tr("Error"),tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."));
-     return;
- }
- blockB->editLayoutBlock(editLayoutTurnoutFrame);
- needRedraw = true;
- layoutEditor->setDirty();
-}
-
-void LayoutTurnout::turnoutEditBlockCPressed(JActionEvent* /*a*/) {
-    // check if a block name has been entered
-    if (blockCName != (blockCNameField->text().trimmed())) {
-        // block has changed, if old block exists, decrement use
-        if ((blockC != nullptr) && (block != blockC) && (blockB != blockC)
-                && (blockC != blockD)) {
-            blockC->decrementUse();
-        }
-        // get new block, or nullptr if block has been removed
-        blockCName = blockCNameField->text().trimmed();
-        blockC = layoutEditor->provideLayoutBlock(blockCName);
-        if (blockC == nullptr) {
-            blockCName = "";
-        }
-        // decrement use if block was already counted
-        if ((blockC != nullptr) && ((block == blockC) || (blockB == blockC)
-                || (blockC == blockD))) {
-            blockD->decrementUse();
-        }
-        needRedraw = true;
-        needsBlockUpdate = true;
-    }
-    // check if a block exists to edit
-    if (blockC == nullptr) {
-//        JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
-//                rb.getString("Error1"),
-//                rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
-     QMessageBox::critical(editLayoutTurnoutFrame, tr("Error"),tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."));
-     return;
-    }
-    blockC->editLayoutBlock(editLayoutTurnoutFrame);
-    needRedraw = true;
-    layoutEditor->setDirty();
-}
-
-void LayoutTurnout::turnoutEditBlockDPressed(JActionEvent* /*a*/) {
-    // check if a block name has been entered
-    if (blockDName!=(blockDNameField->text().trimmed())) {
-        // block has changed, if old block exists, decrement use
-        if ((blockD != nullptr) && (block != blockD) && (blockB != blockD)
-                && (blockC != blockD)) {
-            blockD->decrementUse();
-        }
-        // get new block, or nullptr if block has been removed
-        blockDName = blockDNameField->text().trimmed();
-        blockD = layoutEditor->provideLayoutBlock(blockDName);
-        if (blockD == nullptr) {
-            blockDName = "";
-        }
-        // decrement use if block was already counted
-        if ((blockD != nullptr) && ((block == blockD) || (blockB == blockD)
-                || (blockC == blockD))) {
-            blockD->decrementUse();
-        }
-        needRedraw = true;
-        needsBlockUpdate = true;
-    }
-    // check if a block exists to edit
-    if (blockD == nullptr) {
-//        JOptionPane.showMessageDialog(editLayoutTurnoutFrame,
-//                rb.getString("Error1"),
-//                rb.getString("Error"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(editLayoutTurnoutFrame, tr("Error"),tr("Error - Cannot create or edit a block without a name.\nPlease enter a block name and try again."));
-        return;
-    }
-    blockD->editLayoutBlock(editLayoutTurnoutFrame);
-    needRedraw = true;
-    layoutEditor->setDirty();
-}
-
-void LayoutTurnout::turnoutEditDonePressed(JActionEvent* /*a*/) {
-    // check if Turnout changed
-    if (turnoutName!=(turnoutNameField->text().trimmed())) {
-        // turnout has changed
-        QString newName = turnoutNameField->text().trimmed();
-        if (layoutEditor->validatePhysicalTurnout(newName,
-                editLayoutTurnoutFrame)) {
-            setTurnout(newName);
-        } else {
-            namedTurnout = nullptr;
-            turnoutName = "";
-            turnoutNameField->setText("");
-        }
-        needRedraw = true;
-    }
-
-    if (additionalTurnout->isChecked()) {
-        if (secondTurnoutName!=(secondTurnoutComboBox->currentText())) {
-            if ((type == DOUBLE_XOVER) || (type == RH_XOVER) || (type == LH_XOVER)) {
-                // turnout has changed
-                QString newName = secondTurnoutComboBox->currentText();
-                if (layoutEditor->validatePhysicalTurnout(newName,
-                        editLayoutTurnoutFrame)) {
-                    setSecondTurnout(newName);
-                } else {
-                    additionalTurnout->setChecked(false);
-                    secondNamedTurnout = nullptr;
-                    secondTurnoutName = "";
-                    //secondTurnoutNameField.setText("");
-                }
-                needRedraw = true;
-            } else {
-                setSecondTurnout(secondTurnoutComboBox->currentText());
-            }
-        }
-    } else {
-        setSecondTurnout(nullptr);
-    }
-    // set the continuing route Turnout State
-    if ((type == RH_TURNOUT) || (type == LH_TURNOUT) || (type == WYE_TURNOUT)) {
-        continuingSense = Turnout::CLOSED;
-        if (stateBox->currentIndex() == turnoutThrownIndex) {
-            continuingSense = Turnout::THROWN;
-        }
-    }
-    // check if Block changed
-    if (blockName!=(blockNameField->text().trimmed())) {
-        // block has changed, if old block exists, decrement use
-        if ((block != nullptr) && (block != blockB) && (block != blockC)
-                && (block != blockD)) {
-            block->decrementUse();
-        }
-        // get new block, or nullptr if block has been removed
-        blockName = blockNameField->text().trimmed();
-        block = layoutEditor->provideLayoutBlock(blockName);
-        if (block == nullptr) {
-            blockName = "";
-        }
-        // decrement use if block was already counted
-        if ((block != nullptr) && ((block == blockB) || (block == blockC)
-                || (block == blockD))) {
-            block->decrementUse();
-        }
-        needRedraw = true;
-        needsBlockUpdate = true;
-    }
-    if ((type == DOUBLE_XOVER) || (type == LH_XOVER) || (type == RH_XOVER)) {
-        // check if Block 2 changed
-        if (blockBName!=(blockBNameField->text().trimmed())) {
-            // block has changed, if old block exists, decrement use
-            if ((blockB != nullptr) && (block != blockB) && (blockB != blockC)
-                    && (blockB != blockD)) {
-                blockB->decrementUse();
-            }
-            // get new block, or nullptr if block has been removed
-            blockBName = blockBNameField->text().trimmed();
-            blockB = layoutEditor->provideLayoutBlock(blockBName);
-            if (blockB == nullptr) {
-                blockBName = "";
-            }
-            // decrement use if block was already counted
-            if ((blockB != nullptr) && ((block == blockB) || (blockB == blockC)
-                    || (blockB == blockD))) {
-                blockB->decrementUse();
-            }
-            needRedraw = true;
-            needsBlockUpdate = true;
-        }
-        // check if Block 3 changed
-        if (blockCName!=(blockCNameField->text().trimmed())) {
-            // block has changed, if old block exists, decrement use
-            if ((blockC != nullptr) && (block != blockC) && (blockB != blockC)
-                    && (blockC != blockD)) {
-                blockC->decrementUse();
-            }
-            // get new block, or nullptr if block has been removed
-            blockCName = blockCNameField->text().trimmed();
-            blockC = layoutEditor->provideLayoutBlock(blockCName);
-            if (blockC == nullptr) {
-                blockCName = "";
-            }
-
-            // decrement use if block was already counted
-            if ((blockC != nullptr) && ((block == blockC) || (blockB == blockC)
-                    || (blockC == blockD))) {
-                blockC->decrementUse();
-            }
-            needRedraw = true;
-            needsBlockUpdate = true;
-        }
-        // check if Block 4 changed
-        if (blockDName!=(blockDNameField->text().trimmed())) {
-            // block has changed, if old block exists, decrement use
-            if ((blockD != nullptr) && (block != blockD) && (blockB != blockD)
-                    && (blockC != blockD)) {
-                blockD->decrementUse();
-            }
-            // get new block, or nullptr if block has been removed
-            blockDName = blockDNameField->text().trimmed();
-            blockD = layoutEditor->provideLayoutBlock(blockDName);
-            if (blockD == nullptr) {
-                blockDName = "";
-            }
-            // decrement use if block was already counted
-            if ((blockD != nullptr) && ((block == blockD) || (blockB == blockD)
-                    || (blockC == blockD))) {
-                blockD->decrementUse();
-            }
-            needRedraw = true;
-            needsBlockUpdate = true;
-        }
-    }
-    // set hidden
-    bool oldHidden = hidden;
-    hidden = hiddenBox->isChecked();
-    if (oldHidden != hidden) {
-        needRedraw = true;
-    }
-    editOpen = false;
-    editLayoutTurnoutFrame->setVisible(false);
-    editLayoutTurnoutFrame->dispose();
-    editLayoutTurnoutFrame = nullptr;
-    if (needsBlockUpdate) {
-        updateBlockInfo();
-        reCheckBlockBoundary();
-    }
-    if (needRedraw) {
-        layoutEditor->redrawPanel();
-        layoutEditor->setDirty();
-    }
-}
-
-void LayoutTurnout::turnoutEditCancelPressed(JActionEvent* /*a*/) {
-    editOpen = false;
-    editLayoutTurnoutFrame->setVisible(false);
-    editLayoutTurnoutFrame->dispose();
-    editLayoutTurnoutFrame = nullptr;
-    if (needsBlockUpdate) {
-        updateBlockInfo();
-    }
-    if (needRedraw) {
-        layoutEditor->redrawPanel();
-        layoutEditor->setDirty();
-    }
-}
-
-void LayoutTurnout::on_blockNameField_textEdited(QString text)
-{
- QCompleter* completer;
- if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
- blockNameField->setCompleter(completer);
-}
-void LayoutTurnout::on_blockBNameField_textEdited(QString text)
-{
- QCompleter* completer;
- if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
- blockBNameField->setCompleter(completer);
-}
-void LayoutTurnout::on_blockCNameField_textEdited(QString text)
-{
- QCompleter* completer;
- if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
- blockCNameField->setCompleter(completer);
-}
-void LayoutTurnout::on_blockDNameField_textEdited(QString text)
-{
- QCompleter* completer;
- if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
- blockDNameField->setCompleter(completer);
-}
+//void LayoutTurnout::on_blockNameField_textEdited(QString text)
+//{
+// QCompleter* completer;
+// if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
+// blockNameField->setCompleter(completer);
+//}
+//void LayoutTurnout::on_blockBNameField_textEdited(QString text)
+//{
+// QCompleter* completer;
+// if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
+// blockBNameField->setCompleter(completer);
+//}
+//void LayoutTurnout::on_blockCNameField_textEdited(QString text)
+//{
+// QCompleter* completer;
+// if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
+// blockCNameField->setCompleter(completer);
+//}
+//void LayoutTurnout::on_blockDNameField_textEdited(QString text)
+//{
+// QCompleter* completer;
+// if((completer = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getCompleter(text)) != nullptr)
+// blockDNameField->setCompleter(completer);
+//}
 /*
     this is used by ConnectivityUtil to determine the turnout state necessary to get from prevLayoutBlock*  ==> currLayoutBlock*  ==> nextLayoutBlock
  */
@@ -4283,9 +4278,9 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ QList<LayoutConnectivity *> *LayoutTurnout::getLayoutConnectivity()
+/*protected*/ QList<LayoutConnectivity *> LayoutTurnout::getLayoutConnectivity()
 {
- QList<LayoutConnectivity*>* results = new QList<LayoutConnectivity*>();
+ QList<LayoutConnectivity*> results = QList<LayoutConnectivity*>();
 
  LayoutConnectivity* lc = nullptr;
 
@@ -4299,32 +4294,32 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
              log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lbA->getDisplayName()).arg(lbB->getDisplayName()).arg(this->getTurnoutName()));
              lc = new LayoutConnectivity(lbA, lbB);
              lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_AB);
-             lc->setDirection(Path::computeDirection(getCoordsA(), getCoordsB()));
-             results->append(lc);
+             lc->setDirection(models->computeDirectionAB(this));
+             results.append(lc);
          }
          if ((getTurnoutType() != LayoutTurnout::LH_XOVER) && (lbA != lbC)) {
              // have a AC block boundary, create a LayoutConnectivity
              log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lbA->getDisplayName()).arg(lbC->getDisplayName()).arg(this->getTurnoutName()));
              lc = new LayoutConnectivity(lbA, lbC);
              lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_AC);
-             lc->setDirection(Path::computeDirection(getCoordsA(), getCoordsC()));
-             results->append(lc);
+             lc->setDirection( models->computeDirectionAC(this));
+             results.append(lc);
          }
          if (lbC != lbD) {
              // have a CD block boundary, create a LayoutConnectivity
              log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lbC->getDisplayName()).arg(lbD->getDisplayName()).arg(this->getTurnoutName()));
              lc = new LayoutConnectivity(lbC, lbD);
              lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_CD);
-             lc->setDirection(Path::computeDirection(getCoordsC(), getCoordsD()));
-             results->append(lc);
+             lc->setDirection(models->computeDirectionCD(this));
+             results.append(lc);
          }
          if ((getTurnoutType() != LayoutTurnout::RH_XOVER) && (lbB != lbD)) {
              // have a BD block boundary, create a LayoutConnectivity
              log->debug(tr("Block boundary  ('%1'<->'%2') found at %3").arg(lbB->getDisplayName()).arg(lbD->getDisplayName()).arg(this->getTurnoutName()));
              lc = new LayoutConnectivity(lbB, lbD);
              lc->setXoverBoundary(this, LayoutConnectivity::XOVER_BOUNDARY_BD);
-             lc->setDirection(Path::computeDirection(getCoordsB(), getCoordsD()));
-             results->append(lc);
+             lc->setDirection(models->computeDirectionBD(this));
+             results.append(lc);
          }
      }
  }
@@ -4335,22 +4330,22 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QList<int> LayoutTurnout::checkForFreeConnections() {
-    QList<int> result = QList<int>();
+/*public*/ QList<HitPointType::TYPES> LayoutTurnout::checkForFreeConnections() {
+    QList<HitPointType::TYPES > result = QList<HitPointType::TYPES >();
 
     //check the A connection point
     if (getConnectA() == nullptr) {
-        result.append((TURNOUT_A));
+        result.append(HitPointType::TURNOUT_A);
     }
 
     //check the B connection point
     if (getConnectB() == nullptr) {
-        result.append((TURNOUT_B));
+        result.append((HitPointType::TURNOUT_B));
     }
 
     //check the C connection point
     if (getConnectC() == nullptr) {
-        result.append((TURNOUT_C));
+        result.append((HitPointType::TURNOUT_C));
     }
 
     //check the D connection point
@@ -4358,7 +4353,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
             || (getTurnoutType() == LH_XOVER)
             || (getTurnoutType() == RH_XOVER)) {
         if (getConnectD() == nullptr) {
-            result.append((TURNOUT_D));
+            result.append((HitPointType::TURNOUT_D));
         }
     }
     return result;
@@ -4378,7 +4373,7 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void LayoutTurnout::checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap) {
+/*public*/ void LayoutTurnout::checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString> *> *> blockNamesToTrackNameSetsMap) {
     /*
      * For each (non-null) blocks of this track do:
      * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
@@ -4413,8 +4408,8 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
             blocksAndTracksMap.insert(connectD, getBlockDName());
         }
     }
-    QList<QSet<QString>* >* TrackNameSets = nullptr;
-    QSet<QString>* TrackNameSet = nullptr;
+    QList<QSet<QString>* >* trackNameSets = nullptr;
+    QSet<QString>* trackNameSet = nullptr;
     //for (Map.Entry<LayoutTrack, String> entry : blocksAndTracksMap.entrySet()) {
     QHashIterator<LayoutTrack*, QString> entry(blocksAndTracksMap);
     while(entry.hasNext())
@@ -4423,29 +4418,29 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
         LayoutTrack* theConnect = entry.key();
         QString theBlockName = entry.value();
 
-        TrackNameSet = new QSet<QString>();    // assume not found (pessimist!)
-        TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
-        if (TrackNameSets && !TrackNameSets->isEmpty()) { // (#1)
-            for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
+        trackNameSet = new QSet<QString>();    // assume not found (pessimist!)
+        trackNameSets = blockNamesToTrackNameSetsMap.value(theBlockName);
+        if (trackNameSets && !trackNameSets->isEmpty()) { // (#1)
+            for (QSet<QString>* checkTrackNameSet : *trackNameSets) {
                 if (checkTrackNameSet->contains(getName())) { // (#2)
-                    TrackNameSet = checkTrackNameSet;
+                    trackNameSet = checkTrackNameSet;
                     break;
                 }
             }
         } else {    // (#3)
             log->debug(tr("*New block ('%1') trackNameSets").arg(theBlockName));
-            TrackNameSets = new QList<QSet<QString>* >();
-            blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
+            trackNameSets = new QList<QSet<QString>* >();
+            blockNamesToTrackNameSetsMap.insert(theBlockName, trackNameSets);
         }
-        if (TrackNameSet == nullptr || TrackNameSet->isEmpty()) {
-            TrackNameSet = new QSet<QString>();
-            TrackNameSets->append(TrackNameSet);
+        if (trackNameSet == nullptr || trackNameSet->isEmpty()) {
+            trackNameSet = new QSet<QString>();
+            trackNameSets->append(trackNameSet);
         }
-        TrackNameSet->insert(getName());
-        if (TrackNameSet->contains(getName())) {
+        trackNameSet->insert(getName());
+        if (trackNameSet->contains(getName())) {
             log->debug(tr("*    Add track '%1' to trackNameSet for block '%2'").arg(getName()).arg(theBlockName));
         }
-        theConnect->collectContiguousTracksNamesInBlockNamed(theBlockName, TrackNameSet);
+        theConnect->collectContiguousTracksNamesInBlockNamed(theBlockName, trackNameSet);
     }
 }   // collectContiguousTracksNamesInBlockNamed
 
@@ -4454,8 +4449,8 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
  */
 //@Override
 /*public*/ void LayoutTurnout::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-        /*@Nonnull*/ QSet<QString> *TrackNameSet) {
-    if (!TrackNameSet->contains(getName())) {
+        /*@Nonnull*/ QSet<QString> *trackNameSet) {
+    if (!trackNameSet->contains(getName())) {
 
         // create list of our connects
         QList<LayoutTrack*> connects = QList<LayoutTrack*>();
@@ -4484,12 +4479,12 @@ void LayoutTurnout::on_blockDNameField_textEdited(QString text)
 
         for (LayoutTrack* connect : connects) {
             // if we are added to the TrackNameSet
-         TrackNameSet->insert(getName());
-            if (TrackNameSet->contains(getName())) {
+         trackNameSet->insert(getName());
+            if (trackNameSet->contains(getName())) {
                 log->debug(tr("*    Add track '%1'for block '%2'").arg(getName()).arg(blockName));
             }
             // it's time to play... flood your neighbour!
-            connect->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+            connect->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
         }
     }
 }   // collectContiguousTracksNamesInBlockNamed
@@ -4592,1677 +4587,1677 @@ void LayoutTurnout::remove()
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock)
-{
- if (isBlock && getLayoutBlock() == nullptr) {
-     // Skip the block layer if there is no block assigned.
-     return;
- }
+///*protected*/ void LayoutTurnout::draw1(EditScene* g2, bool isMain, bool isBlock)
+//{
+// if (isBlock && getLayoutBlock() == nullptr) {
+//     // Skip the block layer if there is no block assigned.
+//     return;
+// }
 
- QPointF pA = getCoordsA();
- QPointF pB = getCoordsB();
- QPointF pC = getCoordsC();
- QPointF pD = getCoordsD();
+// QPointF pA = getCoordsA();
+// QPointF pB = getCoordsB();
+// QPointF pC = getCoordsC();
+// QPointF pD = getCoordsD();
 
- bool mainlineA = isMainlineA();
- bool mainlineB = isMainlineB();
- bool mainlineC = isMainlineC();
- bool mainlineD = isMainlineD();
+// bool mainlineA = isMainlineA();
+// bool mainlineB = isMainlineB();
+// bool mainlineC = isMainlineC();
+// bool mainlineD = isMainlineD();
 
- bool drawUnselectedLeg = layoutEditor->isTurnoutDrawUnselectedLeg();
+// bool drawUnselectedLeg = layoutEditor->isTurnoutDrawUnselectedLeg();
 
- //Color color = g2.getColor();
- QColor color = layoutEditor->drawingStroke.color();
+// //Color color = g2.getColor();
+// QColor color = layoutEditor->drawingStroke.color();
 
- // if this isn't a block line all these will be the same color
- QColor colorA = color;
- QColor colorB = color;
- QColor colorC = color;
- QColor colorD = color;
+// // if this isn't a block line all these will be the same color
+// QColor colorA = color;
+// QColor colorB = color;
+// QColor colorC = color;
+// QColor colorD = color;
 
- if (isBlock) {
-     LayoutBlock* lb = getLayoutBlock();
-     colorA = (lb == nullptr) ? color : lb->getBlockColor();
-     lb = getLayoutBlockB();
-     colorB = (lb == nullptr) ? color : lb->getBlockColor();
-     lb = getLayoutBlockC();
-     colorC = (lb == nullptr) ? color : lb->getBlockColor();
-     lb = getLayoutBlockD();
-     colorD = (lb == nullptr) ? color : lb->getBlockColor();
- }
+// if (isBlock) {
+//     LayoutBlock* lb = getLayoutBlock();
+//     colorA = (lb == nullptr) ? color : lb->getBlockColor();
+//     lb = getLayoutBlockB();
+//     colorB = (lb == nullptr) ? color : lb->getBlockColor();
+//     lb = getLayoutBlockC();
+//     colorC = (lb == nullptr) ? color : lb->getBlockColor();
+//     lb = getLayoutBlockD();
+//     colorD = (lb == nullptr) ? color : lb->getBlockColor();
+// }
 
  // middles
- QPointF pM = getCoordsCenter();
- QPointF pABM = MathUtil::midPoint(pA, pB);
- QPointF pAM = MathUtil::lerp(pA, pABM, 5.0 / 8.0);
- QPointF pAMP = MathUtil::midPoint(pAM, pABM);
- QPointF pBM = MathUtil::lerp(pB, pABM, 5.0 / 8.0);
- QPointF pBMP = MathUtil::midPoint(pBM, pABM);
+// QPointF pM = getCoordsCenter();
+// QPointF pABM = MathUtil::midPoint(pA, pB);
+// QPointF pAM = MathUtil::lerp(pA, pABM, 5.0 / 8.0);
+// QPointF pAMP = MathUtil::midPoint(pAM, pABM);
+// QPointF pBM = MathUtil::lerp(pB, pABM, 5.0 / 8.0);
+// QPointF pBMP = MathUtil::midPoint(pBM, pABM);
 
- QPointF pCDM = MathUtil::midPoint(pC, pD);
- QPointF pCM = MathUtil::lerp(pC, pCDM, 5.0 / 8.0);
- QPointF pCMP = MathUtil::midPoint(pCM, pCDM);
- QPointF pDM = MathUtil::lerp(pD, pCDM, 5.0 / 8.0);
- QPointF pDMP = MathUtil::midPoint(pDM, pCDM);
+// QPointF pCDM = MathUtil::midPoint(pC, pD);
+// QPointF pCM = MathUtil::lerp(pC, pCDM, 5.0 / 8.0);
+// QPointF pCMP = MathUtil::midPoint(pCM, pCDM);
+// QPointF pDM = MathUtil::lerp(pD, pCDM, 5.0 / 8.0);
+// QPointF pDMP = MathUtil::midPoint(pDM, pCDM);
 
- QPointF pAF = MathUtil::midPoint(pAM, pM);
- QPointF pBF = MathUtil::midPoint(pBM, pM);
- QPointF pCF = MathUtil::midPoint(pCM, pM);
- QPointF pDF = MathUtil::midPoint(pDM, pM);
+// QPointF pAF = MathUtil::midPoint(pAM, pM);
+// QPointF pBF = MathUtil::midPoint(pBM, pM);
+// QPointF pCF = MathUtil::midPoint(pCM, pM);
+// QPointF pDF = MathUtil::midPoint(pDM, pM);
 
- int state = UNKNOWN;
- if (layoutEditor->isAnimating()) {
-  state = getState();
- }
+// int state = UNKNOWN;
+// if (layoutEditor->isAnimating()) {
+//  state = getState();
+// }
 
- if(log->isDebugEnabled())
-  log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
+// if(log->isDebugEnabled())
+//  log->debug(tr("draw1 turnout %1 isMain = %2, state = %3").arg(getTurnoutName()).arg(isMain?"true":"false").arg(getTurnoutStateString(getState())));
 
- int toType = getTurnoutType();
+// int toType = getTurnoutType();
 
- QGraphicsLineItem* lineItem;
+// QGraphicsLineItem* lineItem;
 
- itemGroup = invalidateItem(g2,itemGroup);
- if(itemGroup == nullptr)
- {
-  itemGroup = new QGraphicsItemGroup();
-  itemGroup->setZValue(Editor::HANDLES+1);
- }
- g2->addItem(itemGroup);
+// itemGroup = invalidateItem(g2,itemGroup);
+// if(itemGroup == nullptr)
+// {
+//  itemGroup = new QGraphicsItemGroup();
+//  itemGroup->setZValue(Editor::HANDLES+1);
+// }
+// g2->addItem(itemGroup);
 
- if (toType == DOUBLE_XOVER)
- {
-  if (state != Turnout::THROWN && state != Turnout::INCONSISTENT)
-  { // unknown or continuing path - not crossed over
-   if (isMain == mainlineA) {
-       //g2.setColor(colorA);
-    layoutEditor->drawingStroke.setColor(colorA);
-       //g2.draw(new Line2D.Double(pA, pABM));
-    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    if (!isBlock || drawUnselectedLeg)
-    {
-       // g2.draw(new Line2D.Double(pAF, pM));
-     lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-   if (isMain == mainlineB)
-   {
-       //g2.setColor(colorB);
-    layoutEditor->drawingStroke.setColor(colorB);
-//             g2.draw(new Line2D.Double(pB, pABM));
-    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    if (!isBlock || drawUnselectedLeg) {
-        //g2.draw(new Line2D.Double(pBF, pM));
-     lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-   if (isMain == mainlineC)
-   {
-       //g2.setColor(colorC);
-    layoutEditor->drawingStroke.setColor(colorC);
-       //g2.draw(new Line2D.Double(pC, pCDM));
-    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    if (!isBlock || drawUnselectedLeg)
-    {
-     //g2.draw(new Line2D.Double(pCF, pM));
-     lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-   if (isMain == mainlineD)
-   {
-    //g2.setColor(colorD);
-    layoutEditor->drawingStroke.setColor(colorD);
-    //g2.draw(new Line2D.Double(pD, pCDM));
-    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    if (!isBlock || drawUnselectedLeg)
-    {
-           //g2.draw(new Line2D.Double(pDF, pM));
-     lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-  }
-  if (state != Turnout::CLOSED && state != Turnout::INCONSISTENT)
-  { // unknown or diverting path - crossed over
-   if (isMain == mainlineA)
-   {
-    //g2.setColor(colorA);
-    layoutEditor->drawingStroke.setColor(colorA);
-    //g2.draw(new Line2D.Double(pA, pAM));
-    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    //g2.draw(new Line2D.Double(pAM, pM));
-    lineItem = new QGraphicsLineItem(pAM.x(), pAM.y(), pM.x(), pM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    if (!isBlock || drawUnselectedLeg) {
-        //g2.draw(new Line2D.Double(pAMP, pABM));
-     lineItem = new QGraphicsLineItem(pAMP.x(), pAMP.y(), pABM.x(), pABM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-   if (isMain == mainlineB) {
-       //g2.setColor(colorB);
-    layoutEditor->drawingStroke.setColor(colorB);
-    //g2.draw(new Line2D.Double(pB, pBM));
-    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    //g2.draw(new Line2D.Double(pBM, pM));
-    lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pM.x(), pM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    if (!isBlock || drawUnselectedLeg)
-    {
-     //g2.draw(new Line2D.Double(pBMP, pABM));
-     lineItem = new QGraphicsLineItem(pBMP.x(), pBMP.y(), pABM.x(), pABM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-   if (isMain == mainlineC)
-   {
-    //g2.setColor(colorC);
-    layoutEditor->drawingStroke.setColor(colorC);
-    //g2.draw(new Line2D.Double(pC, pCM));
-    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    //g2.draw(new Line2D.Double(pCM, pM));
-     lineItem = new QGraphicsLineItem(pCM.x(), pCM.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    if (!isBlock || drawUnselectedLeg) {
-        //g2.draw(new Line2D.Double(pCMP, pCDM));
-     lineItem = new QGraphicsLineItem(pCMP.x(), pCMP.y(), pCDM.x(), pCDM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-   if (isMain == mainlineD)
-   {
-       //g2.setColor(colorD);
-    layoutEditor->drawingStroke.setColor(colorD);
-       //g2.draw(new Line2D.Double(pD, pDM));
-    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-       //g2.draw(new Line2D.Double(pDM, pM));
-    lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pM.x(), pM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-    if (!isBlock || drawUnselectedLeg)
-    {
-     //g2.draw(new Line2D.Double(pDMP, pCDM));
-     lineItem = new QGraphicsLineItem(pDMP.x(), pDMP.y(), pCDM.x(), pCDM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-  }
-  if (state == Turnout::INCONSISTENT)
-  {
-   if (isMain == mainlineA)
-   {
-       //g2.setColor(colorA);
-    layoutEditor->drawingStroke.setColor(colorA);
-       //g2.draw(new Line2D.Double(pA, pAM));
-    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-
-   }
-   if (isMain == mainlineB) {
-       //g2.setColor(colorB);
-    layoutEditor->drawingStroke.setColor(colorB);
-//      g2.draw(new Line2D.Double(pB, pBM));
-    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-   }
-   if (isMain == mainlineC) {
-       //g2.setColor(colorC);
-    layoutEditor->drawingStroke.setColor(colorC);
-       //g2.draw(new Line2D.Double(pC, pCM));
-    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-   }
-   if (isMain == mainlineD) {
-       //g2.setColor(colorD);
-    layoutEditor->drawingStroke.setColor(colorD);
-       //g2.draw(new Line2D.Double(pD, pDM));
-    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
-    lineItem->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(lineItem);
-   }
-   if (!isBlock || drawUnselectedLeg)
-   {
-    if (isMain == mainlineA)
-    {
-//           g2.setColor(colorA);
-     layoutEditor->drawingStroke.setColor(colorA);
-        //g2.draw(new Line2D.Double(pAF, pM));
-     lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-    if (isMain == mainlineC) {
-        //g2.setColor(colorC);
-     layoutEditor->drawingStroke.setColor(colorC);
-        //g2.draw(new Line2D.Double(pCF, pM));
-     lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-    if (isMain == mainlineB) {
-        //g2.setColor(colorB);
-     layoutEditor->drawingStroke.setColor(colorB);
-        //g2.draw(new Line2D.Double(pBF, pM));
-     lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-    if (isMain == mainlineD) {
-        //g2.setColor(colorD);
-     layoutEditor->drawingStroke.setColor(colorD);
-        //g2.draw(new Line2D.Double(pDF, pM));
-     lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-    }
-   }
-  }
- }
- else if ((toType == RH_XOVER)
-      || (toType == LH_XOVER))
- {    // draw (rh & lh) cross overs
-  pAF = MathUtil::midPoint(pABM, pM);
-  pBF = MathUtil::midPoint(pABM, pM);
-  pCF = MathUtil::midPoint(pCDM, pM);
-  pDF = MathUtil::midPoint(pCDM, pM);
-  if (state != Turnout::THROWN && state != Turnout::INCONSISTENT)
-  { // unknown or continuing path - not crossed over
-         if (isMain == mainlineA) {
-             //g2.setColor(colorA);
-          layoutEditor->drawingStroke.setColor(colorA);
-             //g2.draw(new Line2D.Double(pA, pABM));
-          lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-         if (isMain == mainlineB) {
-//             g2.setColor(colorB);
-          layoutEditor->drawingStroke.setColor(colorB);
-//             g2.draw(new Line2D.Double(pABM, pB));
-          lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-         if (isMain == mainlineC) {
-             //g2.setColor(colorC);
-          layoutEditor->drawingStroke.setColor(colorC);
-             //g2.draw(new Line2D.Double(pC, pCDM));
-          lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-         if (isMain == mainlineD) {
-             //g2.setColor(colorD);
-          layoutEditor->drawingStroke.setColor(colorD);
-             //g2.draw(new Line2D.Double(pCDM, pD));
-          lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-         if (!isBlock || drawUnselectedLeg) {
-             if (getTurnoutType() == RH_XOVER) {
-                 if (isMain == mainlineA) {
-                     //g2.setColor(colorA);
-                  layoutEditor->drawingStroke.setColor(colorA);
-                     //g2.draw(new Line2D.Double(pAF, pM));
-                  lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-                 if (isMain == mainlineC) {
-                     //g2.setColor(colorC);
-                  layoutEditor->drawingStroke.setColor(colorC);
-                     //g2.draw(new Line2D.Double(pCF, pM));
-                  lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-             } else if (getTurnoutType() == LH_XOVER) {
-                 if (isMain == mainlineB) {
-                     //g2.setColor(colorB);
-                  layoutEditor->drawingStroke.setColor(colorB);
-                     //g2.draw(new Line2D.Double(pBF, pM));
-                  lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-                 if (isMain == mainlineD) {
-                     //g2.setColor(colorD);
-                  layoutEditor->drawingStroke.setColor(colorD);
-                     //g2.draw(new Line2D.Double(pDF, pM));
-                  lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-             }
-         }
-     }
-     if (state != Turnout::CLOSED && state != Turnout::INCONSISTENT) { // unknown or diverting path - crossed over
-         if (getTurnoutType() == RH_XOVER) {
-             if (isMain == mainlineA) {
-                 //g2.setColor(colorA);
-              layoutEditor->drawingStroke.setColor(colorA);
-                 //g2.draw(new Line2D.Double(pA, pABM));
-              lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
-              lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroup->addToGroup(lineItem);
-                //;g2.draw(new Line2D.Double(pABM, pM));
-                lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
-                lineItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(lineItem);
-             }
-             if (!isBlock || drawUnselectedLeg) {
-                 if (isMain == mainlineB) {
-                     //g2.setColor(colorB);
-                  layoutEditor->drawingStroke.setColor(colorB);
-                     //g2.draw(new Line2D.Double(pBM, pB));
-                  lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pB.x(), pB.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-             }
-             if (isMain == mainlineC) {
-                 //g2.setColor(colorC);
-              layoutEditor->drawingStroke.setColor(colorC);
-                 //g2.draw(new Line2D.Double(pC, pCDM));
-              lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
-              lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroup->addToGroup(lineItem);
-              //g2.draw(new Line2D.Double(pCDM, pM));
-              lineItem = new QGraphicsLineItem(pCDM.x(), pCDM.y(), pM.x(), pM.y());
-              lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroup->addToGroup(lineItem);
-             }
-             if (!isBlock || drawUnselectedLeg) {
-                 if (isMain == mainlineD) {
-                     //g2.setColor(colorD);
-                  layoutEditor->drawingStroke.setColor(colorD);
-                     //g2.draw(new Line2D.Double(pDM, pD));
-                  lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pD.x(), pD.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-             }
-         } else if (getTurnoutType() == LH_XOVER) {
-             if (!isBlock || drawUnselectedLeg) {
-                 if (isMain == mainlineA) {
-                     //g2.setColor(colorA);
-                  layoutEditor->drawingStroke.setColor(colorA);
-                     //g2.draw(new Line2D.Double(pA, pAM));
-                  lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-             }
-             if (isMain == mainlineB) {
-                 //g2.setColor(colorB);
-              layoutEditor->drawingStroke.setColor(colorB);
-                 //g2.draw(new Line2D.Double(pB, pABM));
-              lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
-              lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroup->addToGroup(lineItem);
-              //g2.draw(new Line2D.Double(pABM, pM));
-              lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
-              lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroup->addToGroup(lineItem);}
-             if (!isBlock || drawUnselectedLeg) {
-                 if (isMain == mainlineC) {
-                     //g2.setColor(colorC);
-                  layoutEditor->drawingStroke.setColor(colorC);
-                     //g2.draw(new Line2D.Double(pC, pCM));
-                  lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);}
-             }
-             if (isMain == mainlineD) {
-                 //g2.setColor(colorD);
-              layoutEditor->drawingStroke.setColor(colorD);
-                 //g2.draw(new Line2D.Double(pD, pCDM));
-              lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
-              lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroup->addToGroup(lineItem);
-              //g2.draw(new Line2D.Double(pCDM, pM));
-              lineItem = new QGraphicsLineItem(pCDM.x(), pCDM.y(), pM.x(), pM.y());
-              lineItem->setPen(layoutEditor->drawingStroke);
-              itemGroup->addToGroup(lineItem);}
-         }
-     }
-     if (state == Turnout::INCONSISTENT) {
-         if (isMain == mainlineA) {
-             //g2.setColor(colorA);
-          layoutEditor->drawingStroke.setColor(colorA);
-             //g2.draw(new Line2D.Double(pA, pAM));
-          lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-         if (isMain == mainlineB) {
-             //g2.setColor(colorB);
-          layoutEditor->drawingStroke.setColor(colorB);
-             //g2.draw(new Line2D.Double(pB, pBM));
-          lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-         if (isMain == mainlineC) {
-             //g2.setColor(colorC);
-          layoutEditor->drawingStroke.setColor(colorC);
-             //g2.draw(new Line2D.Double(pC, pCM));
-          lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-         if (isMain == mainlineD) {
-             //g2.setColor(colorD);
-          layoutEditor->drawingStroke.setColor(colorD);
-             //g2.draw(new Line2D.Double(pD, pDM));
-          lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-         if (!isBlock || drawUnselectedLeg) {
-             if (getTurnoutType() == RH_XOVER) {
-                 if (isMain == mainlineA) {
-                     //g2.setColor(colorA);
-                  layoutEditor->drawingStroke.setColor(colorA);
-                     //g2.draw(new Line2D.Double(pAF, pM));
-                  lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-                 if (isMain == mainlineC) {
-                     //g2.setColor(colorC);
-                  layoutEditor->drawingStroke.setColor(colorC);
-                     //g2.draw(new Line2D.Double(pCF, pM));
-                  lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-             } else if (getTurnoutType() == LH_XOVER) {
-                 if (isMain == mainlineB) {
-                     //g2.setColor(colorB);
-                  layoutEditor->drawingStroke.setColor(colorB);
-                     //g2.draw(new Line2D.Double(pBF, pM));
-                  lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-                 if (isMain == mainlineD) {
-                     //g2.setColor(colorD);
-                  layoutEditor->drawingStroke.setColor(colorD);
-                     //g2.draw(new Line2D.Double(pDF, pM));
-                  lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
-                  lineItem->setPen(layoutEditor->drawingStroke);
-                  itemGroup->addToGroup(lineItem);
-                 }
-             }
-         }
-     }
- }
- else if ((toType == SINGLE_SLIP) || (toType == DOUBLE_SLIP)) {
-     log->error("slips should be being drawn by LayoutSlip sub-class");
- }
- else {    // LH, RH, or WYE Turnouts
-     // draw A<===>center
-     if (isMain == mainlineA) {
-         //g2.setColor(colorA);
-      layoutEditor->drawingStroke.setColor(colorA);
-         //g2.draw(new Line2D.Double(pA, pM));
-      lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pM.x(), pM.y());
-      lineItem->setPen(layoutEditor->drawingStroke);
-      itemGroup->addToGroup(lineItem);
-     }
-
-     if (state == UNKNOWN || (continuingSense == state && state != Turnout::INCONSISTENT))
-     { // unknown or continuing path
-         // draw center<===>B
-         if (isMain == mainlineB) {
-             //g2.setColor(colorB);
-          layoutEditor->drawingStroke.setColor(colorB);
-             //g2.draw(new Line2D.Double(pM, pB));
-          lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pB.x(), pB.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-     } else if (!isBlock || drawUnselectedLeg) {
-         // draw center<--=>B
-         if (isMain == mainlineB) {
-             //g2.setColor(colorB);
-          layoutEditor->drawingStroke.setColor(colorB);
-             //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pB), pB));
-          lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pB).x(), MathUtil::twoThirdsPoint(pM, pB).y(), pB.x(), pB.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-     }
-
-     if (state == UNKNOWN || (continuingSense != state && state != Turnout::INCONSISTENT))
-     { // unknown or diverting path
-         // draw center<===>C
-         if (isMain == mainlineC)
-         {
-             //g2.setColor(colorC);
-          layoutEditor->drawingStroke.setColor(colorC);
-             //g2.draw(new Line2D.Double(pM, pC));
-          lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pC.x(), pC.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-     } else if (!isBlock || drawUnselectedLeg) {
-         // draw center<--=>C
-         if (isMain == mainlineC) {
-             //g2.setColor(colorC);
-          layoutEditor->drawingStroke.setColor(colorC);
-             //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pC), pC));
-          lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pC).x(), MathUtil::twoThirdsPoint(pM, pC).y(), pC.x(), pC.y());
-          lineItem->setPen(layoutEditor->drawingStroke);
-          itemGroup->addToGroup(lineItem);
-         }
-     }
- }
-}   // draw1
-
-/**
- * {@inheritDoc}
- */
-//@Override
-/*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement) {
-    int toType = getTurnoutType();
-
-    QPointF pA = getCoordsA();
-    QPointF pB = getCoordsB();
-    QPointF pC = getCoordsC();
-    QPointF pD = getCoordsD();
-    QPointF pM = getCoordsCenter();
-
-    QPointF vAM = MathUtil::normalize(MathUtil::subtract(pM, pA));
-    QPointF vAMo = MathUtil::orthogonal(MathUtil::normalize(vAM, railDisplacement));
-
-    QPointF pAL = MathUtil::subtract(pA, vAMo);
-    QPointF pAR = MathUtil::add(pA, vAMo);
-
-    QPointF vBM = MathUtil::normalize(MathUtil::subtract(pB, pM));
-    double dirBM_DEG = MathUtil::computeAngleDEG(vBM);
-    QPointF vBMo = MathUtil::normalize(MathUtil::orthogonal(vBM), railDisplacement);
-    QPointF pBL = MathUtil::subtract(pB, vBMo);
-    QPointF pBR = MathUtil::add(pB, vBMo);
-    QPointF pMR = MathUtil::add(pM, vBMo);
-
-    QPointF vCM = MathUtil::normalize(MathUtil::subtract(pC, pM));
-    double dirCM_DEG = MathUtil::computeAngleDEG(vCM);
-
-    QPointF vCMo = MathUtil::normalize(MathUtil::orthogonal(vCM), railDisplacement);
-    QPointF pCL = MathUtil::subtract(pC, vCMo);
-    QPointF pCR = MathUtil::add(pC, vCMo);
-    QPointF pML = MathUtil::subtract(pM, vBMo);
-
-    double deltaBMC_DEG = MathUtil::absDiffAngleDEG(dirBM_DEG, dirCM_DEG);
-    double deltaBMC_RAD = qDegreesToRadians(deltaBMC_DEG);
-
-    double hypotF = railDisplacement / qSin(deltaBMC_RAD / 2.0);
-
-    QPointF vDisF = MathUtil::normalize(MathUtil::add(vAM, vCM), hypotF);
-    if (toType == WYE_TURNOUT) {
-        vDisF = MathUtil::normalize(vAM, hypotF);
-    }
-    QPointF pF = MathUtil::add(pM, vDisF);
-
-    QPointF pFR = MathUtil::add(pF, MathUtil::multiply(vBMo, 2.0));
-    QPointF pFL = MathUtil::subtract(pF, MathUtil::multiply(vCMo, 2.0));
-
-    // QPointF pFPR = MathUtil::add(pF, MathUtil::normalize(vBMo, 2.0));
-    // QPointF pFPL = MathUtil::subtract(pF, MathUtil::normalize(vCMo, 2.0));
-    QPointF vDisAP = MathUtil::normalize(vAM, hypotF);
-    QPointF pAP = MathUtil::subtract(pM, vDisAP);
-    QPointF pAPR = MathUtil::add(pAP, vAMo);
-    QPointF pAPL = MathUtil::subtract(pAP, vAMo);
-
-    // QPointF vSo = MathUtil::normalize(vAMo, 2.0);
-    // QPointF pSL = MathUtil::add(pAPL, vSo);
-    // QPointF pSR = MathUtil::subtract(pAPR, vSo);
-
-    bool mainlineA = isMainlineA();
-    bool mainlineB = isMainlineB();
-    bool mainlineC = isMainlineC();
-    bool mainlineD = isMainlineD();
-
-    int state = UNKNOWN;
-    if (layoutEditor->isAnimating()) {
-         Turnout* to = getTurnout();
-        if (to != nullptr) {
-            state = to->getKnownState();
-        }
-    }
-
-    //if(!isMain && itemGroup)
-     itemGroup = invalidateItem(g2,itemGroup);
-    if(itemGroup == nullptr)
-    {
-     itemGroup = new QGraphicsItemGroup();
-     itemGroup->setZValue(Editor::HANDLES+1);
-     g2->addItem(itemGroup);
-    }
-
-    QGraphicsLineItem* lineItem;
-    switch (toType) {
-        case RH_TURNOUT: {
-            if (isMain == mainlineA) {
-                //g2.draw(new Line2D.Double(pAL, pML));
-             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pML.x(), pML.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-                //g2.draw(new Line2D.Double(pAR, pAPR));
-             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pAPR.x(), pAPR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-            }
-            if (isMain == mainlineB) {
-                //g2.draw(new Line2D.Double(pML, pBL));
-             lineItem = new QGraphicsLineItem(pML.x(), pML.y(), pBL.x(), pBL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-                //g2.draw(new Line2D.Double(pF, pBR));
-             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBR.x(), pBR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-
-                if (continuingSense == state)
-                {  // unknown or diverting path
-//                         g2.draw(new Line2D.Double(pSR, pFPR));
-//                     } else {
-                    //g2.draw(new Line2D.Double(pAPR, pF));
-                 lineItem = new QGraphicsLineItem(pAPR.x(), pAPR.y(), pF.x(), pF.y());
-                 lineItem->setPen(layoutEditor->drawingStroke);
-                 itemGroup->addToGroup(lineItem);
-                }
-            }
-            if (isMain == mainlineC) {
-                //g2.draw(new Line2D.Double(pF, pCL));
-             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCL.x(), pCL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-                //g2.draw(new Line2D.Double(pFR, pCR));
-             lineItem = new QGraphicsLineItem(pFR.x(), pFR.y(), pCR.x(), pCR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-
-                QPainterPath* path = new QPainterPath();
-                path->moveTo(pAPR.x(), pAPR.y());
-                path->quadTo(pMR.x(), pMR.y(), pFR.x(), pFR.y());
-                path->lineTo(pCR.x(), pCR.y());
-                //g2.draw(path);
-                QGraphicsPathItem* pathItem = new QGraphicsPathItem(*path);
-                pathItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(pathItem);
-                if (continuingSense != state) {  // unknown or diverting path
-                    path = new QPainterPath();
-                    path->moveTo(pAPL.x(), pAPL.y());
-                    path->quadTo(pML.x(), pML.y(), pF.x(), pF.y());
-                    //g2.draw(path);
-                    pathItem = new QGraphicsPathItem(*path);
-                    pathItem->setPen(layoutEditor->drawingStroke);
-                    itemGroup->addToGroup(pathItem);//                     } else {
-//                         path = new QPainterPath();
-//                         path.moveTo(pSL.x(), pSL.y());
-//                         path.quadTo(pML.x(), pML.y(), pFPL.x(), pFPL.y());
-//                         g2.draw(path);
-                }
-            }
-            break;
-        }   // case RH_TURNOUT
-
-        case LH_TURNOUT: {
-            if (isMain == mainlineA) {
-                //g2.draw(new Line2D.Double(pAR, pMR));
-             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pMR.x(), pMR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-                //g2.draw(new Line2D.Double(pAL, pAPL));
-             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pAPL.x(), pAPL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-            }
-            if (isMain == mainlineB) {
-                //g2.draw(new Line2D.Double(pMR, pBR));
-             lineItem = new QGraphicsLineItem(pMR.x(), pMR.y(), pBR.x(), pBR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-                //g2.draw(new Line2D.Double(pF, pBL));
-             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBL.x(), pBL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-                if (continuingSense == state) {  // straight path
-//                         g2.draw(new Line2D.Double(pSL, pFPL));  Offset problem
-//                     } else {
-                    //g2.draw(new Line2D.Double(pAPL, pF));
-                 lineItem = new QGraphicsLineItem(pAPL.x(), pAPL.y(), pF.x(), pF.y());
-                 lineItem->setPen(layoutEditor->drawingStroke);
-                 itemGroup->addToGroup(lineItem);
-                }
-            }
-            if (isMain == mainlineC) {
-                //g2.draw(new Line2D.Double(pF, pCR));
-             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCR.x(), pCR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-                QPainterPath path = QPainterPath();
-                path.moveTo(pAPL.x(), pAPL.y());
-                path.quadTo(pML.x(), pML.y(), pFL.x(), pFL.y());
-                path.lineTo(pCL.x(), pCL.y());
-                //g2.draw(path);
-                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-                pathItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(pathItem);
-                //                     } else {
-                if (continuingSense != state) {  // unknown or diverting path
-                    path =  QPainterPath();
-                    path.moveTo(pAPR.x(), pAPR.y());
-                    path.quadTo(pMR.x(), pMR.y(), pF.x(), pF.y());
-                    //g2.draw(path);
-                    pathItem = new QGraphicsPathItem(path);
-                    pathItem->setPen(layoutEditor->drawingStroke);
-                    itemGroup->addToGroup(pathItem);
-//                     } else {
-//                     } else {
-//                         path = new QPainterPath();
-//                         path.moveTo(pSR.x(), pSR.y());
-//                         path.quadTo(pMR.x(), pMR.y(), pFPR.x(), pFPR.y());
-//                         g2.draw(path);
-                }
-            }
-            break;
-        }   // case LH_TURNOUT
-        case WYE_TURNOUT: {
-            if (isMain == mainlineA) {
-                //g2.draw(new Line2D.Double(pAL, pAPL));
-             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pAPL.x(), pAPL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pAR, pAPR));
-             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pAPR.x(), pAPR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);}
-            if (isMain == mainlineB) {
-                //g2.draw(new Line2D.Double(pF, pBL));
-             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBL.x(), pBL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             QPainterPath path = QPainterPath();
-                path.moveTo(pAPR.x(), pAPR.y());
-                path.quadTo(pMR.x(), pMR.y(), pFR.x(), pFR.x());
-                path.lineTo(pBR.x(), pBR.y());
-                //g2.draw(path);
-                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-                pathItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(pathItem);
-                if (continuingSense != state) {  // unknown or diverting path
-                    path = QPainterPath();
-                    path.moveTo(pAPR.x(), pAPR.y());
-                    path.quadTo(pMR.x(), pMR.y(), pF.x(), pF.y());
-                    //g2.draw(path);
-                    pathItem = new QGraphicsPathItem(path);
-                    pathItem->setPen(layoutEditor->drawingStroke);
-                    itemGroup->addToGroup(pathItem);
-                    //                     } else {
-//                         path = new QPainterPath();
-//                         path.moveTo(pSR.x(), pSR.y());
-//                         path.quadTo(pMR.x(), pMR.y(), pFPR.x(), pFPR.y());
-//     bad                    g2.draw(path);
-                }
-            }
-            if (isMain == mainlineC) {
-                pML = MathUtil::subtract(pM, vCMo);
-                QPainterPath path = QPainterPath();
-                path.moveTo(pAPL.x(), pAPL.y());
-                path.quadTo(pML.x(), pML.y(), pFL.x(), pFL.y());
-                path.lineTo(pCL.x(), pCL.y());
-                //g2.draw(path);
-                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-                pathItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(pathItem);
-                //g2.draw(new Line2D.Double(pF, pCR));
-                lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCR.x(), pCR.y());
-                lineItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(lineItem);
-                if (continuingSense != state) {  // unknown or diverting path
-//                         path = new QPainterPath();
-//                         path.moveTo(pSL.x(), pSL.y());
-//                         path.quadTo(pML.x(), pML.y(), pFPL.x(), pFPL.y());
-//           bad              g2.draw(path);
-                } else {
-                    path = QPainterPath();
-                    path.moveTo(pAPL.x(), pAPL.y());
-                    path.quadTo(pML.x(), pML.y(), pF.x(), pF.y());
-                    //g2.draw(path);
-                    pathItem = new QGraphicsPathItem(path);
-                    pathItem->setPen(layoutEditor->drawingStroke);
-                    itemGroup->addToGroup(pathItem);}
-            }
-            break;
-        }   // case WYE_TURNOUT
-
-        case DOUBLE_XOVER: {
-            // A, B, C, D end points (left and right)
-            QPointF vAB = MathUtil::normalize(MathUtil::subtract(pB, pA), railDisplacement);
-            double dirAB_DEG = MathUtil::computeAngleDEG(vAB);
-            QPointF vABo = MathUtil::orthogonal(MathUtil::normalize(vAB, railDisplacement));
-            pAL = MathUtil::subtract(pA, vABo);
-            pAR = MathUtil::add(pA, vABo);
-            pBL = MathUtil::subtract(pB, vABo);
-            pBR = MathUtil::add(pB, vABo);
-            QPointF vCD = MathUtil::normalize(MathUtil::subtract(pD, pC), railDisplacement);
-            QPointF vCDo = MathUtil::orthogonal(MathUtil::normalize(vCD, railDisplacement));
-            pCL = MathUtil::add(pC, vCDo);
-            pCR = MathUtil::subtract(pC, vCDo);
-            QPointF pDL = MathUtil::add(pD, vCDo);
-            QPointF pDR = MathUtil::subtract(pD, vCDo);
-
-            // AB, CD mid points (left and right)
-            QPointF pABM = MathUtil::midPoint(pA, pB);
-            QPointF pABL = MathUtil::midPoint(pAL, pBL);
-            QPointF pABR = MathUtil::midPoint(pAR, pBR);
-            QPointF pCDM = MathUtil::midPoint(pC, pD);
-            QPointF pCDL = MathUtil::midPoint(pCL, pDL);
-            QPointF pCDR = MathUtil::midPoint(pCR, pDR);
-
-            // A, B, C, D mid points
-            double halfParallelDistance = MathUtil::distance(pABM, pCDM) / 2.0;
-            QPointF pAM = MathUtil::subtract(pABM, MathUtil::normalize(vAB, halfParallelDistance));
-            QPointF pAML = MathUtil::subtract(pAM, vABo);
-            QPointF pAMR = MathUtil::add(pAM, vABo);
-            QPointF pBM = MathUtil::add(pABM, MathUtil::normalize(vAB, halfParallelDistance));
-            QPointF pBML = MathUtil::subtract(pBM, vABo);
-            QPointF pBMR = MathUtil::add(pBM, vABo);
-            QPointF pCM = MathUtil::subtract(pCDM, MathUtil::normalize(vCD, halfParallelDistance));
-            QPointF pCML = MathUtil::subtract(pCM, vABo);
-            QPointF pCMR = MathUtil::add(pCM, vABo);
-            QPointF pDM = MathUtil::add(pCDM, MathUtil::normalize(vCD, halfParallelDistance));
-            QPointF pDML = MathUtil::subtract(pDM, vABo);
-            QPointF pDMR = MathUtil::add(pDM, vABo);
-
-            // crossing points
-            QPointF vACM = MathUtil::normalize(MathUtil::subtract(pCM, pAM), railDisplacement);
-            QPointF vACMo = MathUtil::orthogonal(vACM);
-            QPointF vBDM = MathUtil::normalize(MathUtil::subtract(pDM, pBM), railDisplacement);
-            QPointF vBDMo = MathUtil::orthogonal(vBDM);
-            QPointF pBDR = MathUtil::add(pM, vACM);
-            QPointF pBDL = MathUtil::subtract(pM, vACM);
-
-            // crossing diamond point (no gaps)
-            QPointF pVR = MathUtil::add(pBDL, vBDM);
-            QPointF pKL = MathUtil::subtract(pBDL, vBDM);
-            QPointF pKR = MathUtil::add(pBDR, vBDM);
-            QPointF pVL = MathUtil::subtract(pBDR, vBDM);
-
-            // crossing diamond points (with gaps)
-            QPointF vACM2 = MathUtil::normalize(vACM, 2.0);
-            QPointF vBDM2 = MathUtil::normalize(vBDM, 2.0);
-            // (syntax of "pKLtC" is "point LK toward C", etc.)
-            QPointF pKLtC = MathUtil::add(pKL, vACM2);
-            QPointF pKLtD = MathUtil::add(pKL, vBDM2);
-            QPointF pVLtA = MathUtil::subtract(pVL, vACM2);
-            QPointF pVLtD = MathUtil::add(pVL, vBDM2);
-            QPointF pKRtA = MathUtil::subtract(pKR, vACM2);
-            QPointF pKRtB = MathUtil::subtract(pKR, vBDM2);
-            QPointF pVRtB = MathUtil::subtract(pVR, vBDM2);
-            QPointF pVRtC = MathUtil::add(pVR, vACM2);
-
-            // A, B, C, D frog points
-            vCM = MathUtil::normalize(MathUtil::subtract(pCM, pM));
-            dirCM_DEG = MathUtil::computeAngleDEG(vCM);
-            double deltaBAC_DEG = MathUtil::absDiffAngleDEG(dirAB_DEG, dirCM_DEG);
-            double deltaBAC_RAD = qDegreesToRadians(deltaBAC_DEG);
-            hypotF = railDisplacement / qSin(deltaBAC_RAD / 2.0);
-            QPointF vACF = MathUtil::normalize(MathUtil::add(vACM, vAB), hypotF);
-            QPointF pAFL = MathUtil::add(pAM, vACF);
-            QPointF pCFR = MathUtil::subtract(pCM, vACF);
-            QPointF vBDF = MathUtil::normalize(MathUtil::add(vBDM, vCD), hypotF);
-            QPointF pBFL = MathUtil::add(pBM, vBDF);
-            QPointF pDFR = MathUtil::subtract(pDM, vBDF);
-
-            // A, B, C, D frog points
-            QPointF pAFR = MathUtil::add(MathUtil::add(pAFL, vACMo), vACMo);
-            QPointF pBFR = MathUtil::subtract(MathUtil::subtract(pBFL, vBDMo), vBDMo);
-            QPointF pCFL = MathUtil::subtract(MathUtil::subtract(pCFR, vACMo), vACMo);
-            QPointF pDFL = MathUtil::add(MathUtil::add(pDFR, vBDMo), vBDMo);
-
-            // end of switch rails (closed)
-            QPointF vABF = MathUtil::normalize(vAB, hypotF);
-            pAP = MathUtil::subtract(pAM, vABF);
-            pAPL = MathUtil::subtract(pAP, vABo);
-            pAPR = MathUtil::add(pAP, vABo);
-            QPointF pBP = MathUtil::add(pBM, vABF);
-            QPointF pBPL = MathUtil::subtract(pBP, vABo);
-            QPointF pBPR = MathUtil::add(pBP, vABo);
-
-            QPointF vCDF = MathUtil::normalize(vCD, hypotF);
-            QPointF pCP = MathUtil::subtract(pCM, vCDF);
-            QPointF pCPL = MathUtil::add(pCP, vCDo);
-            QPointF pCPR = MathUtil::subtract(pCP, vCDo);
-            QPointF pDP = MathUtil::add(pDM, vCDF);
-            QPointF pDPL = MathUtil::add(pDP, vCDo);
-            QPointF pDPR = MathUtil::subtract(pDP, vCDo);
-
-            // end of switch rails (open)
-            QPointF vS = MathUtil::normalize(vABo, 2.0);
-            QPointF pASL = MathUtil::add(pAPL, vS);
-            // QPointF pASR = MathUtil::subtract(pAPR, vS);
-            QPointF pBSL = MathUtil::add(pBPL, vS);
-            // QPointF pBSR = MathUtil::subtract(pBPR, vS);
-            QPointF pCSR = MathUtil::subtract(pCPR, vS);
-            // QPointF pCSL = MathUtil::add(pCPL, vS);
-            QPointF pDSR = MathUtil::subtract(pDPR, vS);
-            // QPointF pDSL = MathUtil::add(pDPL, vS);
-
-            // end of switch rails (open at frogs)
-            QPointF pAFS = MathUtil::subtract(pAFL, vS);
-            QPointF pBFS = MathUtil::subtract(pBFL, vS);
-            QPointF pCFS = MathUtil::add(pCFR, vS);
-            QPointF pDFS = MathUtil::add(pDFR, vS);
-
-            // vSo = MathUtil::orthogonal(vS);
-            // QPointF pAFSR = MathUtil::add(pAFL, vSo);
-            // QPointF pBFSR = MathUtil::subtract(pBFL, vSo);
-            // QPointF pCFSL = MathUtil::subtract(pCFR, vSo);
-            // QPointF pDFSL = MathUtil::add(pDFR, vSo);
-
-            if (isMain == mainlineA) {
-                //g2.draw(new Line2D.Double(pAL, pABL));
-             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pABL.x(), pABL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pVRtB, pKLtD));
-             lineItem = new QGraphicsLineItem(pVRtB.x(), pVRtB.y(), pKLtD.x(), pKLtD.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pAFL, pABR));
-             lineItem = new QGraphicsLineItem(pAFL.x(), pAFL.y(), pABR.x(), pABR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-               //g2.draw(new Line2D.Double(pAFL, pKL));
-             lineItem = new QGraphicsLineItem(pAFL.x(), pAFL.y(), pKL.x(), pKL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             QPainterPath path = QPainterPath();
-                path.moveTo(pAR.x(), pAR.y());
-                path.lineTo(pAPR.x(), pAPR.y());
-                path.quadTo(pAMR.x(), pAMR.y(), pAFR.x(), pAFR.y());
-                path.lineTo(pVR.x(), pVR.y());
-                //g2.draw(path);
-                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-                pathItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(pathItem);
-                if (state != Turnout::CLOSED) {  // unknown or diverting path
-                    path = QPainterPath();
-                    path.moveTo(pAPL.x(), pAPL.y());
-                    path.quadTo(pAML.x(), pAML.y(), pAFL.x(), pAFL.y());
-                    //g2.draw(path);
-                    pathItem = new QGraphicsPathItem(path);
-                    pathItem->setPen(layoutEditor->drawingStroke);
-                    itemGroup->addToGroup(pathItem);//                         g2.draw(new Line2D.Double(pASR, pAFSR));
-                } else {                        // continuing path
-                    //g2.draw(new Line2D.Double(pAPR, pAFL));
-                 lineItem = new QGraphicsLineItem(pAPR.x(), pAPR.y(), pAFL.x(), pAFL.y());
-                 lineItem->setPen(layoutEditor->drawingStroke);
-                 itemGroup->addToGroup(lineItem);
-                 path = QPainterPath();
-                    path.moveTo(pASL.x(), pASL.y());
-                    path.quadTo(pAML.x(), pAML.y(), pAFS.x(), pAFS.y());
-//                         g2.draw(path);
-                }
-            }
-            if (isMain == mainlineB) {
-                //g2.draw(new Line2D.Double(pABL, pBL));
-             lineItem = new QGraphicsLineItem(pABL.x(), pABL.y(), pBL.x(), pBL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pKLtC, pVLtA));
-             lineItem = new QGraphicsLineItem(pKLtC.x(), pKLtC.y(), pVLtA.x(), pVLtA.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pBFL, pABR));
-             lineItem = new QGraphicsLineItem(pBFL.x(), pBFL.y(), pABR.x(), pABR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pBFL, pKL));
-             lineItem = new QGraphicsLineItem(pBFL.x(), pBFL.y(), pKL.x(), pKL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             QPainterPath path =  QPainterPath();
-                path.moveTo(pBR.x(), pBR.y());
-                path.lineTo(pBPR.x(), pBPR.y());
-                path.quadTo(pBMR.x(), pBMR.y(), pBFR.x(), pBFR.y());
-                path.lineTo(pVL.x(), pVL.y());
-                //g2.draw(path);
-                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-                pathItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(pathItem);
-                if (state != Turnout::CLOSED) {  // unknown or diverting path
-                    path = QPainterPath();
-                    path.moveTo(pBPL.x(), pBPL.y());
-                    path.quadTo(pBML.x(), pBML.y(), pBFL.x(), pBFL.y());
-                    //g2.draw(path);
-                    pathItem = new QGraphicsPathItem(path);
-                    pathItem->setPen(layoutEditor->drawingStroke);
-                    itemGroup->addToGroup(pathItem);//                         g2.draw(new Line2D.Double(pBSR, pBFSR));
-                } else {
-                    //g2.draw(new Line2D.Double(pBPR, pBFL));
-                 lineItem = new QGraphicsLineItem(pBPR.x(), pBPR.y(), pBFL.x(), pBFL.y());
-                 lineItem->setPen(layoutEditor->drawingStroke);
-                 itemGroup->addToGroup(lineItem);
-                 path = QPainterPath();
-                    path.moveTo(pBSL.x(), pBSL.y());
-                    path.quadTo(pBML.x(), pBML.y(), pBFS.x(), pBFS.y());
-//                         g2.draw(path);
-                }
-            }
-            if (isMain == mainlineC) {
-                //g2.draw(new Line2D.Double(pCR, pCDR));
-             lineItem = new QGraphicsLineItem(pCR.x(), pCR.y(), pCR.x(), pCDR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pKRtB, pVLtD));
-             lineItem = new QGraphicsLineItem(pKRtB.x(), pKRtB.y(), pVLtD.x(), pVLtD.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pCFR, pCDL));
-             lineItem = new QGraphicsLineItem(pCFR.x(), pCFR.y(), pCDL.x(), pCDL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pCFR, pKR));
-             lineItem = new QGraphicsLineItem(pCFR.x(), pCFR.y(), pKR.x(), pKR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             QPainterPath path = QPainterPath();
-                path.moveTo(pCL.x(), pCL.y());
-                path.lineTo(pCPL.x(), pCPL.y());
-                path.quadTo(pCML.x(), pCML.y(), pCFL.x(), pCFL.y());
-                path.lineTo(pVL.x(), pVL.y());
-                //g2.draw(path);
-                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-                pathItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(pathItem);
-                if (state != Turnout::CLOSED) {  // unknown or diverting path
-                    path = QPainterPath();
-                    path.moveTo(pCPR.x(), pCPR.y());
-                    path.quadTo(pCMR.x(), pCMR.y(), pCFR.x(), pCFR.y());
-                    //g2.draw(path);
-                    pathItem = new QGraphicsPathItem(path);
-                    pathItem->setPen(layoutEditor->drawingStroke);
-                    itemGroup->addToGroup(pathItem);
-                    //                         g2.draw(new Line2D.Double(pCSL, pCFSL));
-                } else {
-                    //g2.draw(new Line2D.Double(pCPL, pCFR));
-                 lineItem = new QGraphicsLineItem(pCPL.x(), pCPL.y(), pCFR.x(), pCFR.y());
-                 lineItem->setPen(layoutEditor->drawingStroke);
-                 itemGroup->addToGroup(lineItem);
-                 path = QPainterPath();
-                    path.moveTo(pCSR.x(), pCSR.y());
-                    path.quadTo(pCMR.x(), pCMR.y(), pCFS.x(), pCFS.y());
-//                         g2.draw(path);
-                }
-            }
-            if (isMain == mainlineD) {
-                //g2.draw(new Line2D.Double(pCDR, pDR));
-             lineItem = new QGraphicsLineItem(pCDR.x(), pCDR.y(), pDR.x(), pDR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pKRtA, pVRtC));
-             lineItem = new QGraphicsLineItem(pKRtA.x(), pKRtA.y(), pVRtC.x(), pVRtC.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pDFR, pCDL));
-             lineItem = new QGraphicsLineItem(pDFR.x(), pDFR.y(), pCDL.x(), pCDL.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             //g2.draw(new Line2D.Double(pDFR, pKR));
-             lineItem = new QGraphicsLineItem(pDFR.x(), pDFR.y(), pKR.x(), pKR.y());
-             lineItem->setPen(layoutEditor->drawingStroke);
-             itemGroup->addToGroup(lineItem);
-             QPainterPath path = QPainterPath();
-                path.moveTo(pDL.x(), pDL.y());
-                path.lineTo(pDPL.x(), pDPL.y());
-                path.quadTo(pDML.x(), pDML.y(), pDFL.x(), pDFL.y());
-                path.lineTo(pVR.x(), pVR.y());
-                //g2.draw(path);
-                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
-                pathItem->setPen(layoutEditor->drawingStroke);
-                itemGroup->addToGroup(pathItem);
-                if (state != Turnout::CLOSED) {  // unknown or diverting path
-                    path = QPainterPath();
-                    path.moveTo(pDPR.x(), pDPR.y());
-                    path.quadTo(pDMR.x(), pDMR.y(), pDFR.x(), pDFR.y());
-                    //g2.draw(path);
-                    pathItem = new QGraphicsPathItem(path);
-                    pathItem->setPen(layoutEditor->drawingStroke);
-                    itemGroup->addToGroup(pathItem);
-                    //                         g2.draw(new Line2D.Double(pDSL, pDFSL));
-                } else {
-                    //g2.draw(new Line2D.Double(pDPL, pDFR));
-                 lineItem = new QGraphicsLineItem(pDPL.x(), pDPL.y(), pDFR.x(), pDFR.y());
-                 lineItem->setPen(layoutEditor->drawingStroke);
-                 itemGroup->addToGroup(lineItem);
-                 path = QPainterPath();
-                    path.moveTo(pDSR.x(), pDSR.y());
-                    path.quadTo(pDMR.x(), pDMR.y(), pDFS.x(), pDFS.y());
-//                         g2.draw(path);
-                }
-            }
-            break;
-        }   // case DOUBLE_XOVER
-#if 0
-        case RH_XOVER: {
-            // A, B, C, D end points (left and right)
-            QPointF vAB = MathUtil::normalize(MathUtil::subtract(pB, pA), railDisplacement);
-            double dirAB_DEG = MathUtil::computeAngleDEG(vAB);
-            QPointF vABo = MathUtil::orthogonal(MathUtil::normalize(vAB, railDisplacement));
-            pAL = MathUtil::subtract(pA, vABo);
-            pAR = MathUtil::add(pA, vABo);
-            pBL = MathUtil::subtract(pB, vABo);
-            pBR = MathUtil::add(pB, vABo);
-            QPointF vCD = MathUtil::normalize(MathUtil::subtract(pD, pC), railDisplacement);
-            QPointF vCDo = MathUtil::orthogonal(MathUtil::normalize(vCD, railDisplacement));
-            pCL = MathUtil::add(pC, vCDo);
-            pCR = MathUtil::subtract(pC, vCDo);
-            QPointF pDL = MathUtil::add(pD, vCDo);
-            QPointF pDR = MathUtil::subtract(pD, vCDo);
-
-            // AB and CD mid points
-            QPointF pABM = MathUtil::midPoint(pA, pB);
-            QPointF pABL = MathUtil::subtract(pABM, vABo);
-            QPointF pABR = MathUtil::add(pABM, vABo);
-            QPointF pCDM = MathUtil::midPoint(pC, pD);
-            QPointF pCDL = MathUtil::subtract(pCDM, vABo);
-            QPointF pCDR = MathUtil::add(pCDM, vABo);
-
-            // directions
-            QPointF vAC = MathUtil::normalize(MathUtil::subtract(pCDM, pABM), railDisplacement);
-            QPointF vACo = MathUtil::orthogonal(MathUtil::normalize(vAC, railDisplacement));
-            double dirAC_DEG = MathUtil::computeAngleDEG(vAC);
-            double deltaBAC_DEG = MathUtil::absDiffAngleDEG(dirAB_DEG, dirAC_DEG);
-            double deltaBAC_RAD = Math.toRadians(deltaBAC_DEG);
-
-            // AC mid points
-            QPointF pACL = MathUtil::subtract(pM, vACo);
-            QPointF pACR = MathUtil::add(pM, vACo);
-
-            // frogs
-            hypotF = railDisplacement / Math.sin(deltaBAC_RAD / 2.0);
-            QPointF vF = MathUtil::normalize(MathUtil::add(vAB, vAC), hypotF);
-            QPointF pABF = MathUtil::add(pABM, vF);
-            QPointF pCDF = MathUtil::subtract(pCDM, vF);
-
-            // frog primes
-            QPointF pABFP = MathUtil::add(MathUtil::add(pABF, vACo), vACo);
-            QPointF pCDFP = MathUtil::subtract(MathUtil::subtract(pCDF, vACo), vACo);
-
-            // end of switch rails (closed)
-            QPointF vABF = MathUtil::normalize(vAB, hypotF);
-            pAP = MathUtil::subtract(pABM, vABF);
-            pAPL = MathUtil::subtract(pAP, vABo);
-            pAPR = MathUtil::add(pAP, vABo);
-            QPointF pCP = MathUtil::add(pCDM, vABF);
-            QPointF pCPL = MathUtil::add(pCP, vCDo);
-            QPointF pCPR = MathUtil::subtract(pCP, vCDo);
-
-            // end of switch rails (open)
-            QPointF vS = MathUtil::normalize(vAB, 2.0);
-            QPointF vSo = MathUtil::orthogonal(vS);
-            QPointF pASL = MathUtil::add(pAPL, vSo);
-            // QPointF pASR = MathUtil::subtract(pAPR, vSo);
-            // QPointF pCSL = MathUtil::add(pCPL, vSo);
-            QPointF pCSR = MathUtil::subtract(pCPR, vSo);
-
-            // end of switch rails (open at frogs)
-            QPointF pABFS = MathUtil::subtract(pABF, vSo);
-            // QPointF pABFSP = MathUtil::subtract(pABF, vS);
-            QPointF pCDFS = MathUtil::add(pCDF, vSo);
-            // QPointF pCDFSP = MathUtil::add(pCDF, vS);
-
-            if (isMain == mainlineA) {
-                g2.draw(new Line2D.Double(pAL, pABL));
-                QPainterPath path = new QPainterPath();
-                path.moveTo(pAR.x(), pAR.y());
-                path.lineTo(pAPR.x(), pAPR.y());
-                path.quadTo(pABR.x(), pABR.y(), pABFP.x(), pABFP.y());
-                path.lineTo(pACR.x(), pACR.y());
-                g2.draw(path);
-                g2.draw(new Line2D.Double(pABF, pACL));
-                if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new QPainterPath();
-                    path.moveTo(pAPL.x(), pAPL.y());
-                    path.quadTo(pABL.x(), pABL.y(), pABF.x(), pABF.y());
-                    g2.draw(path);
-//                         g2.draw(new Line2D.Double(pASR, pABFSP));
-                } else {                        // continuing path
-                    g2.draw(new Line2D.Double(pAPR, pABF));
-                    path = new QPainterPath();
-                    path.moveTo(pASL.x(), pASL.y());
-                    path.quadTo(pABL.x(), pABL.y(), pABFS.x(), pABFS.y());
-//                         g2.draw(path);
-                }
-            }
-            if (isMain == mainlineB) {
-                g2.draw(new Line2D.Double(pABL, pBL));
-                g2.draw(new Line2D.Double(pABF, pBR));
-            }
-            if (isMain == mainlineC) {
-                g2.draw(new Line2D.Double(pCR, pCDR));
-                QPainterPath path = new QPainterPath();
-                path.moveTo(pCL.x(), pCL.y());
-                path.lineTo(pCPL.x(), pCPL.y());
-                path.quadTo(pCDL.x(), pCDL.y(), pCDFP.x(), pCDFP.y());
-                path.lineTo(pACL.x(), pACL.y());
-                g2.draw(path);
-                g2.draw(new Line2D.Double(pCDF, pACR));
-                if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new QPainterPath();
-                    path.moveTo(pCPR.x(), pCPR.y());
-                    path.quadTo(pCDR.x(), pCDR.y(), pCDF.x(), pCDF.y());
-                    g2.draw(path);
-//                         g2.draw(new Line2D.Double(pCSL, pCDFSP));
-                } else {                        // continuing path
-                    g2.draw(new Line2D.Double(pCPL, pCDF));
-                    path = new QPainterPath();
-                    path.moveTo(pCSR.x(), pCSR.y());
-                    path.quadTo(pCDR.x(), pCDR.y(), pCDFS.x(), pCDFS.y());
-//                         g2.draw(path);
-                }
-            }
-            if (isMain == mainlineD) {
-                g2.draw(new Line2D.Double(pCDR, pDR));
-                g2.draw(new Line2D.Double(pCDF, pDL));
-            }
-            break;
-        }   // case RH_XOVER
-
-        case LH_XOVER: {
-            // B, A, D, C end points (left and right)
-            QPointF vBA = MathUtil::normalize(MathUtil::subtract(pA, pB), railDisplacement);
-            double dirBA_DEG = MathUtil::computeAngleDEG(vBA);
-            QPointF vBAo = MathUtil::orthogonal(MathUtil::normalize(vBA, railDisplacement));
-            pBL = MathUtil::add(pB, vBAo);
-            pBR = MathUtil::subtract(pB, vBAo);
-            pAL = MathUtil::add(pA, vBAo);
-            pAR = MathUtil::subtract(pA, vBAo);
-            QPointF vDC = MathUtil::normalize(MathUtil::subtract(pC, pD), railDisplacement);
-            QPointF vDCo = MathUtil::orthogonal(MathUtil::normalize(vDC, railDisplacement));
-            QPointF pDL = MathUtil::subtract(pD, vDCo);
-            QPointF pDR = MathUtil::add(pD, vDCo);
-            pCL = MathUtil::subtract(pC, vDCo);
-            pCR = MathUtil::add(pC, vDCo);
-
-            // BA and DC mid points
-            QPointF pBAM = MathUtil::midPoint(pB, pA);
-            QPointF pBAL = MathUtil::add(pBAM, vBAo);
-            QPointF pBAR = MathUtil::subtract(pBAM, vBAo);
-            QPointF pDCM = MathUtil::midPoint(pD, pC);
-            QPointF pDCL = MathUtil::add(pDCM, vBAo);
-            QPointF pDCR = MathUtil::subtract(pDCM, vBAo);
-
-            // directions
-            QPointF vBD = MathUtil::normalize(MathUtil::subtract(pDCM, pBAM), railDisplacement);
-            QPointF vBDo = MathUtil::orthogonal(MathUtil::normalize(vBD, railDisplacement));
-            double dirBD_DEG = MathUtil::computeAngleDEG(vBD);
-            double deltaABD_DEG = MathUtil::absDiffAngleDEG(dirBA_DEG, dirBD_DEG);
-            double deltaABD_RAD = Math.toRadians(deltaABD_DEG);
-
-            // BD mid points
-            QPointF pBDL = MathUtil::add(pM, vBDo);
-            QPointF pBDR = MathUtil::subtract(pM, vBDo);
-
-            // frogs
-            hypotF = railDisplacement / Math.sin(deltaABD_RAD / 2.0);
-            QPointF vF = MathUtil::normalize(MathUtil::add(vBA, vBD), hypotF);
-            QPointF pBFL = MathUtil::add(pBAM, vF);
-            QPointF pBF = MathUtil::subtract(pBFL, vBDo);
-            QPointF pBFR = MathUtil::subtract(pBF, vBDo);
-            QPointF pDFR = MathUtil::subtract(pDCM, vF);
-            QPointF pDF = MathUtil::add(pDFR, vBDo);
-            QPointF pDFL = MathUtil::add(pDF, vBDo);
-
-            // end of switch rails (closed)
-            QPointF vBAF = MathUtil::normalize(vBA, hypotF);
-            QPointF pBP = MathUtil::subtract(pBAM, vBAF);
-            QPointF pBPL = MathUtil::add(pBP, vBAo);
-            QPointF pBPR = MathUtil::subtract(pBP, vBAo);
-            QPointF pDP = MathUtil::add(pDCM, vBAF);
-            QPointF pDPL = MathUtil::subtract(pDP, vDCo);
-            QPointF pDPR = MathUtil::add(pDP, vDCo);
-
-            // end of switch rails (open)
-            QPointF vS = MathUtil::normalize(vBA, 2.0);
-            QPointF vSo = MathUtil::orthogonal(vS);
-            QPointF pBSL = MathUtil::subtract(pBPL, vSo);
-            // QPointF pBSR = MathUtil::add(pBPR, vSo);
-            // QPointF pDSL = MathUtil::subtract(pDPL, vSo);
-            QPointF pDSR = MathUtil::add(pDPR, vSo);
-
-            // end of switch rails (open at frogs)
-            QPointF pBAFS = MathUtil::add(pBFL, vSo);
-            // QPointF pBAFSP = MathUtil::subtract(pBFL, vS);
-            QPointF pDCFS = MathUtil::subtract(pDFR, vSo);
-            // QPointF pDCFSP = MathUtil::add(pDFR, vS);
-
-            if (isMain == mainlineA) {
-                g2.draw(new Line2D.Double(pBAL, pAL));
-                g2.draw(new Line2D.Double(pBFL, pAR));
-            }
-            if (isMain == mainlineB) {
-                g2.draw(new Line2D.Double(pBL, pBAL));
-                QPainterPath path = new QPainterPath();
-                path.moveTo(pBR.x(), pBR.y());
-                path.lineTo(pBPR.x(), pBPR.y());
-                path.quadTo(pBAR.x(), pBAR.y(), pBFR.x(), pBFR.y());
-                path.lineTo(pBDR.x(), pBDR.y());
-                g2.draw(path);
-                g2.draw(new Line2D.Double(pBFL, pBDL));
-                if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new QPainterPath();
-                    path.moveTo(pBPL.x(), pBPL.y());
-                    path.quadTo(pBAL.x(), pBAL.y(), pBFL.x(), pBFL.y());
-                    g2.draw(path);
-//                         g2.draw(new Line2D.Double(pBSR, pBAFSP));
-                } else {                        // continuing path
-                    g2.draw(new Line2D.Double(pBPR, pBFL));
-                    path = new QPainterPath();
-                    path.moveTo(pBSL.x(), pBSL.y());
-                    path.quadTo(pBAL.x(), pBAL.y(), pBAFS.x(), pBAFS.y());
-//                         g2.draw(path);
-                }
-            }
-            if (isMain == mainlineC) {
-                g2.draw(new Line2D.Double(pDCR, pCR));
-                g2.draw(new Line2D.Double(pDFR, pCL));
-            }
-            if (isMain == mainlineD) {
-                g2.draw(new Line2D.Double(pDR, pDCR));
-                QPainterPath path = new QPainterPath();
-                path.moveTo(pDL.x(), pDL.y());
-                path.lineTo(pDPL.x(), pDPL.y());
-                path.quadTo(pDCL.x(), pDCL.y(), pDFL.x(), pDFL.y());
-                path.lineTo(pBDL.x(), pBDL.y());
-                g2.draw(path);
-                g2.draw(new Line2D.Double(pDFR, pBDR));
-                if (state != Turnout.CLOSED) {  // unknown or diverting path
-                    path = new QPainterPath();
-                    path.moveTo(pDPR.x(), pDPR.y());
-                    path.quadTo(pDCR.x(), pDCR.y(), pDFR.x(), pDFR.y());
-                    g2.draw(path);
-//                         g2.draw(new Line2D.Double(pDSL, pDCFSP));
-                } else {                        // continuing path
-                    g2.draw(new Line2D.Double(pDPL, pDFR));
-                    path = new QPainterPath();
-                    path.moveTo(pDSR.x(), pDSR.y());
-                    path.quadTo(pDCR.x(), pDCR.y(), pDCFS.x(), pDCFS.y());
-//                         g2.draw(path);
-                }
-            }
-            break;
-        }   // case LH_XOVER
-#endif
-        case SINGLE_SLIP:
-        case DOUBLE_SLIP: {
-            log->error("slips should be being drawn by LayoutSlip sub-class");
-            break;
-        }
-        default: {
-            // this should never happen... but...
-            log->error("Unknown turnout type: " + toType);
-            break;
-        }
-    }
-//    if(isMain)
+// if (toType == DOUBLE_XOVER)
+// {
+//  if (state != Turnout::THROWN && state != Turnout::INCONSISTENT)
+//  { // unknown or continuing path - not crossed over
+//   if (isMain == mainlineA) {
+//       //g2.setColor(colorA);
+//    layoutEditor->drawingStroke.setColor(colorA);
+//       //g2.draw(new Line2D.Double(pA, pABM));
+//    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    if (!isBlock || drawUnselectedLeg)
 //    {
-     itemMain = itemGroup;
-     g2->addItem(itemMain);
+//       // g2.draw(new Line2D.Double(pAF, pM));
+//     lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
 //    }
-//    else
+//   }
+//   if (isMain == mainlineB)
+//   {
+//       //g2.setColor(colorB);
+//    layoutEditor->drawingStroke.setColor(colorB);
+////             g2.draw(new Line2D.Double(pB, pABM));
+//    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    if (!isBlock || drawUnselectedLeg) {
+//        //g2.draw(new Line2D.Double(pBF, pM));
+//     lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//   }
+//   if (isMain == mainlineC)
+//   {
+//       //g2.setColor(colorC);
+//    layoutEditor->drawingStroke.setColor(colorC);
+//       //g2.draw(new Line2D.Double(pC, pCDM));
+//    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    if (!isBlock || drawUnselectedLeg)
 //    {
-//     itemSide = itemGroup;
-//     g2->addItem(itemSide);
+//     //g2.draw(new Line2D.Double(pCF, pM));
+//     lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
 //    }
-}
-#if 1
-/**
- * {@inheritDoc}
- */
-//@Override
-/*protected*/ void LayoutTurnout::highlightUnconnected(EditScene* g2, int specificType) {
-    if (((specificType == NONE) || (specificType == TURNOUT_A))
-            && (getConnectA() == nullptr)) {
-        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsA()));
-     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsA());
-     item->setPen(QPen(defaultTrackColor, 1));
-    }
-
-    if (((specificType == NONE) || (specificType == TURNOUT_B))
-            && (getConnectB() == nullptr)) {
-        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsB()));
-     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsB());
-     item->setPen(QPen(defaultTrackColor, 1));
-    }
-
-    if (((specificType == NONE) || (specificType == TURNOUT_C))
-            && (getConnectC() == nullptr)) {
-        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsC()));
-     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsC());
-     item->setPen(QPen(defaultTrackColor, 1));
-    }
-    if ((getTurnoutType() == DOUBLE_XOVER)
-            || (getTurnoutType() == RH_XOVER)
-            || (getTurnoutType() == LH_XOVER)) {
-        if (((specificType == NONE) || (specificType == TURNOUT_D))
-                && (getConnectD() == nullptr)) {
-            //g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
-         QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsD());
-         item->setPen(QPen(defaultTrackColor, 1));
-        }
-    }
-    rects = item;
-    g2->addItem(rects);
-
-}
-
-//@Override
-/*protected*/ void LayoutTurnout::drawTurnoutControls(EditScene* g2)
-{
- if (!disabled && !(disableWhenOccupied && isOccupied()))
- {
-  invalidateItem(g2,circles);
-  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
-  if (!disabled && !(disableWhenOccupied && isOccupied()))
-  {
-   //QColor foregroundColor = g2.getColor();
-   //if turnout is not continuing state
-//   if (getState() != continuingSense) {
-//       //then switch to background color
-//       g2.setColor(g2.getBackground());
 //   }
-
-      //g2.draw(layoutEditor.trackControlCircleAt(center));
-   QGraphicsEllipseItem* item = trackControlCircleAt(center);
-   item->setPen(layoutEditor->drawingStroke);
-   if (layoutEditor->isTurnoutFillControlCircles()) {
-    QBrush brush = QBrush(layoutEditor->drawingStroke.color());
-    item->setBrush(brush);
-   }
-   itemGroup->addToGroup(item);
-   //if turnout is not continuing state
-//   if (getState() != continuingSense) {
-//       //then restore foreground color
-//       g2.setColor(foregroundColor);
+//   if (isMain == mainlineD)
+//   {
+//    //g2.setColor(colorD);
+//    layoutEditor->drawingStroke.setColor(colorD);
+//    //g2.draw(new Line2D.Double(pD, pCDM));
+//    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    if (!isBlock || drawUnselectedLeg)
+//    {
+//           //g2.draw(new Line2D.Double(pDF, pM));
+//     lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
 //   }
-   circles = itemGroup;
-   g2->addItem(circles);
-  }
- }
-}
+//  }
+//  if (state != Turnout::CLOSED && state != Turnout::INCONSISTENT)
+//  { // unknown or diverting path - crossed over
+//   if (isMain == mainlineA)
+//   {
+//    //g2.setColor(colorA);
+//    layoutEditor->drawingStroke.setColor(colorA);
+//    //g2.draw(new Line2D.Double(pA, pAM));
+//    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    //g2.draw(new Line2D.Double(pAM, pM));
+//    lineItem = new QGraphicsLineItem(pAM.x(), pAM.y(), pM.x(), pM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    if (!isBlock || drawUnselectedLeg) {
+//        //g2.draw(new Line2D.Double(pAMP, pABM));
+//     lineItem = new QGraphicsLineItem(pAMP.x(), pAMP.y(), pABM.x(), pABM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//   }
+//   if (isMain == mainlineB) {
+//       //g2.setColor(colorB);
+//    layoutEditor->drawingStroke.setColor(colorB);
+//    //g2.draw(new Line2D.Double(pB, pBM));
+//    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    //g2.draw(new Line2D.Double(pBM, pM));
+//    lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pM.x(), pM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    if (!isBlock || drawUnselectedLeg)
+//    {
+//     //g2.draw(new Line2D.Double(pBMP, pABM));
+//     lineItem = new QGraphicsLineItem(pBMP.x(), pBMP.y(), pABM.x(), pABM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//   }
+//   if (isMain == mainlineC)
+//   {
+//    //g2.setColor(colorC);
+//    layoutEditor->drawingStroke.setColor(colorC);
+//    //g2.draw(new Line2D.Double(pC, pCM));
+//    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    //g2.draw(new Line2D.Double(pCM, pM));
+//     lineItem = new QGraphicsLineItem(pCM.x(), pCM.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    if (!isBlock || drawUnselectedLeg) {
+//        //g2.draw(new Line2D.Double(pCMP, pCDM));
+//     lineItem = new QGraphicsLineItem(pCMP.x(), pCMP.y(), pCDM.x(), pCDM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//   }
+//   if (isMain == mainlineD)
+//   {
+//       //g2.setColor(colorD);
+//    layoutEditor->drawingStroke.setColor(colorD);
+//       //g2.draw(new Line2D.Double(pD, pDM));
+//    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//       //g2.draw(new Line2D.Double(pDM, pM));
+//    lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pM.x(), pM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//    if (!isBlock || drawUnselectedLeg)
+//    {
+//     //g2.draw(new Line2D.Double(pDMP, pCDM));
+//     lineItem = new QGraphicsLineItem(pDMP.x(), pDMP.y(), pCDM.x(), pCDM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//   }
+//  }
+//  if (state == Turnout::INCONSISTENT)
+//  {
+//   if (isMain == mainlineA)
+//   {
+//       //g2.setColor(colorA);
+//    layoutEditor->drawingStroke.setColor(colorA);
+//       //g2.draw(new Line2D.Double(pA, pAM));
+//    lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
 
-//@Override
-/*protected*/ void LayoutTurnout::drawEditControls(EditScene* g2)
-{
- invalidateItem(g2,rects);
- QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
- if(rects!=nullptr && rects->scene()!=nullptr)
- {
-  g2->removeItem(rects);
-  rects = nullptr;
- }
+//   }
+//   if (isMain == mainlineB) {
+//       //g2.setColor(colorB);
+//    layoutEditor->drawingStroke.setColor(colorB);
+////      g2.draw(new Line2D.Double(pB, pBM));
+//    lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//   }
+//   if (isMain == mainlineC) {
+//       //g2.setColor(colorC);
+//    layoutEditor->drawingStroke.setColor(colorC);
+//       //g2.draw(new Line2D.Double(pC, pCM));
+//    lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//   }
+//   if (isMain == mainlineD) {
+//       //g2.setColor(colorD);
+//    layoutEditor->drawingStroke.setColor(colorD);
+//       //g2.draw(new Line2D.Double(pD, pDM));
+//    lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
+//    lineItem->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(lineItem);
+//   }
+//   if (!isBlock || drawUnselectedLeg)
+//   {
+//    if (isMain == mainlineA)
+//    {
+////           g2.setColor(colorA);
+//     layoutEditor->drawingStroke.setColor(colorA);
+//        //g2.draw(new Line2D.Double(pAF, pM));
+//     lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//    if (isMain == mainlineC) {
+//        //g2.setColor(colorC);
+//     layoutEditor->drawingStroke.setColor(colorC);
+//        //g2.draw(new Line2D.Double(pCF, pM));
+//     lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//    if (isMain == mainlineB) {
+//        //g2.setColor(colorB);
+//     layoutEditor->drawingStroke.setColor(colorB);
+//        //g2.draw(new Line2D.Double(pBF, pM));
+//     lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//    if (isMain == mainlineD) {
+//        //g2.setColor(colorD);
+//     layoutEditor->drawingStroke.setColor(colorD);
+//        //g2.draw(new Line2D.Double(pDF, pM));
+//     lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//    }
+//   }
+//  }
+// }
+// else if ((toType == RH_XOVER)
+//      || (toType == LH_XOVER))
+// {    // draw (rh & lh) cross overs
+//  pAF = MathUtil::midPoint(pABM, pM);
+//  pBF = MathUtil::midPoint(pABM, pM);
+//  pCF = MathUtil::midPoint(pCDM, pM);
+//  pDF = MathUtil::midPoint(pCDM, pM);
+//  if (state != Turnout::THROWN && state != Turnout::INCONSISTENT)
+//  { // unknown or continuing path - not crossed over
+//         if (isMain == mainlineA) {
+//             //g2.setColor(colorA);
+//          layoutEditor->drawingStroke.setColor(colorA);
+//             //g2.draw(new Line2D.Double(pA, pABM));
+//          lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//         if (isMain == mainlineB) {
+////             g2.setColor(colorB);
+//          layoutEditor->drawingStroke.setColor(colorB);
+////             g2.draw(new Line2D.Double(pABM, pB));
+//          lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//         if (isMain == mainlineC) {
+//             //g2.setColor(colorC);
+//          layoutEditor->drawingStroke.setColor(colorC);
+//             //g2.draw(new Line2D.Double(pC, pCDM));
+//          lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//         if (isMain == mainlineD) {
+//             //g2.setColor(colorD);
+//          layoutEditor->drawingStroke.setColor(colorD);
+//             //g2.draw(new Line2D.Double(pCDM, pD));
+//          lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//         if (!isBlock || drawUnselectedLeg) {
+//             if (getTurnoutType() == RH_XOVER) {
+//                 if (isMain == mainlineA) {
+//                     //g2.setColor(colorA);
+//                  layoutEditor->drawingStroke.setColor(colorA);
+//                     //g2.draw(new Line2D.Double(pAF, pM));
+//                  lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//                 if (isMain == mainlineC) {
+//                     //g2.setColor(colorC);
+//                  layoutEditor->drawingStroke.setColor(colorC);
+//                     //g2.draw(new Line2D.Double(pCF, pM));
+//                  lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//             } else if (getTurnoutType() == LH_XOVER) {
+//                 if (isMain == mainlineB) {
+//                     //g2.setColor(colorB);
+//                  layoutEditor->drawingStroke.setColor(colorB);
+//                     //g2.draw(new Line2D.Double(pBF, pM));
+//                  lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//                 if (isMain == mainlineD) {
+//                     //g2.setColor(colorD);
+//                  layoutEditor->drawingStroke.setColor(colorD);
+//                     //g2.draw(new Line2D.Double(pDF, pM));
+//                  lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//             }
+//         }
+//     }
+//     if (state != Turnout::CLOSED && state != Turnout::INCONSISTENT) { // unknown or diverting path - crossed over
+//         if (getTurnoutType() == RH_XOVER) {
+//             if (isMain == mainlineA) {
+//                 //g2.setColor(colorA);
+//              layoutEditor->drawingStroke.setColor(colorA);
+//                 //g2.draw(new Line2D.Double(pA, pABM));
+//              lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pABM.x(), pABM.y());
+//              lineItem->setPen(layoutEditor->drawingStroke);
+//              itemGroup->addToGroup(lineItem);
+//                //;g2.draw(new Line2D.Double(pABM, pM));
+//                lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
+//                lineItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(lineItem);
+//             }
+//             if (!isBlock || drawUnselectedLeg) {
+//                 if (isMain == mainlineB) {
+//                     //g2.setColor(colorB);
+//                  layoutEditor->drawingStroke.setColor(colorB);
+//                     //g2.draw(new Line2D.Double(pBM, pB));
+//                  lineItem = new QGraphicsLineItem(pBM.x(), pBM.y(), pB.x(), pB.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//             }
+//             if (isMain == mainlineC) {
+//                 //g2.setColor(colorC);
+//              layoutEditor->drawingStroke.setColor(colorC);
+//                 //g2.draw(new Line2D.Double(pC, pCDM));
+//              lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCDM.x(), pCDM.y());
+//              lineItem->setPen(layoutEditor->drawingStroke);
+//              itemGroup->addToGroup(lineItem);
+//              //g2.draw(new Line2D.Double(pCDM, pM));
+//              lineItem = new QGraphicsLineItem(pCDM.x(), pCDM.y(), pM.x(), pM.y());
+//              lineItem->setPen(layoutEditor->drawingStroke);
+//              itemGroup->addToGroup(lineItem);
+//             }
+//             if (!isBlock || drawUnselectedLeg) {
+//                 if (isMain == mainlineD) {
+//                     //g2.setColor(colorD);
+//                  layoutEditor->drawingStroke.setColor(colorD);
+//                     //g2.draw(new Line2D.Double(pDM, pD));
+//                  lineItem = new QGraphicsLineItem(pDM.x(), pDM.y(), pD.x(), pD.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//             }
+//         } else if (getTurnoutType() == LH_XOVER) {
+//             if (!isBlock || drawUnselectedLeg) {
+//                 if (isMain == mainlineA) {
+//                     //g2.setColor(colorA);
+//                  layoutEditor->drawingStroke.setColor(colorA);
+//                     //g2.draw(new Line2D.Double(pA, pAM));
+//                  lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//             }
+//             if (isMain == mainlineB) {
+//                 //g2.setColor(colorB);
+//              layoutEditor->drawingStroke.setColor(colorB);
+//                 //g2.draw(new Line2D.Double(pB, pABM));
+//              lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pABM.x(), pABM.y());
+//              lineItem->setPen(layoutEditor->drawingStroke);
+//              itemGroup->addToGroup(lineItem);
+//              //g2.draw(new Line2D.Double(pABM, pM));
+//              lineItem = new QGraphicsLineItem(pABM.x(), pABM.y(), pM.x(), pM.y());
+//              lineItem->setPen(layoutEditor->drawingStroke);
+//              itemGroup->addToGroup(lineItem);}
+//             if (!isBlock || drawUnselectedLeg) {
+//                 if (isMain == mainlineC) {
+//                     //g2.setColor(colorC);
+//                  layoutEditor->drawingStroke.setColor(colorC);
+//                     //g2.draw(new Line2D.Double(pC, pCM));
+//                  lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);}
+//             }
+//             if (isMain == mainlineD) {
+//                 //g2.setColor(colorD);
+//              layoutEditor->drawingStroke.setColor(colorD);
+//                 //g2.draw(new Line2D.Double(pD, pCDM));
+//              lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pCDM.x(), pCDM.y());
+//              lineItem->setPen(layoutEditor->drawingStroke);
+//              itemGroup->addToGroup(lineItem);
+//              //g2.draw(new Line2D.Double(pCDM, pM));
+//              lineItem = new QGraphicsLineItem(pCDM.x(), pCDM.y(), pM.x(), pM.y());
+//              lineItem->setPen(layoutEditor->drawingStroke);
+//              itemGroup->addToGroup(lineItem);}
+//         }
+//     }
+//     if (state == Turnout::INCONSISTENT) {
+//         if (isMain == mainlineA) {
+//             //g2.setColor(colorA);
+//          layoutEditor->drawingStroke.setColor(colorA);
+//             //g2.draw(new Line2D.Double(pA, pAM));
+//          lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pAM.x(), pAM.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//         if (isMain == mainlineB) {
+//             //g2.setColor(colorB);
+//          layoutEditor->drawingStroke.setColor(colorB);
+//             //g2.draw(new Line2D.Double(pB, pBM));
+//          lineItem = new QGraphicsLineItem(pB.x(), pB.y(), pBM.x(), pBM.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//         if (isMain == mainlineC) {
+//             //g2.setColor(colorC);
+//          layoutEditor->drawingStroke.setColor(colorC);
+//             //g2.draw(new Line2D.Double(pC, pCM));
+//          lineItem = new QGraphicsLineItem(pC.x(), pC.y(), pCM.x(), pCM.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//         if (isMain == mainlineD) {
+//             //g2.setColor(colorD);
+//          layoutEditor->drawingStroke.setColor(colorD);
+//             //g2.draw(new Line2D.Double(pD, pDM));
+//          lineItem = new QGraphicsLineItem(pD.x(), pD.y(), pDM.x(), pDM.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//         if (!isBlock || drawUnselectedLeg) {
+//             if (getTurnoutType() == RH_XOVER) {
+//                 if (isMain == mainlineA) {
+//                     //g2.setColor(colorA);
+//                  layoutEditor->drawingStroke.setColor(colorA);
+//                     //g2.draw(new Line2D.Double(pAF, pM));
+//                  lineItem = new QGraphicsLineItem(pAF.x(), pAF.y(), pM.x(), pM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//                 if (isMain == mainlineC) {
+//                     //g2.setColor(colorC);
+//                  layoutEditor->drawingStroke.setColor(colorC);
+//                     //g2.draw(new Line2D.Double(pCF, pM));
+//                  lineItem = new QGraphicsLineItem(pCF.x(), pCF.y(), pM.x(), pM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//             } else if (getTurnoutType() == LH_XOVER) {
+//                 if (isMain == mainlineB) {
+//                     //g2.setColor(colorB);
+//                  layoutEditor->drawingStroke.setColor(colorB);
+//                     //g2.draw(new Line2D.Double(pBF, pM));
+//                  lineItem = new QGraphicsLineItem(pBF.x(), pBF.y(), pM.x(), pM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//                 if (isMain == mainlineD) {
+//                     //g2.setColor(colorD);
+//                  layoutEditor->drawingStroke.setColor(colorD);
+//                     //g2.draw(new Line2D.Double(pDF, pM));
+//                  lineItem = new QGraphicsLineItem(pDF.x(), pDF.y(), pM.x(), pM.y());
+//                  lineItem->setPen(layoutEditor->drawingStroke);
+//                  itemGroup->addToGroup(lineItem);
+//                 }
+//             }
+//         }
+//     }
+// }
+// else if ((toType == SINGLE_SLIP) || (toType == DOUBLE_SLIP)) {
+//     log->error("slips should be being drawn by LayoutSlip sub-class");
+// }
+// else {    // LH, RH, or WYE Turnouts
+//     // draw A<===>center
+//     if (isMain == mainlineA) {
+//         //g2.setColor(colorA);
+//      layoutEditor->drawingStroke.setColor(colorA);
+//         //g2.draw(new Line2D.Double(pA, pM));
+//      lineItem = new QGraphicsLineItem(pA.x(), pA.y(), pM.x(), pM.y());
+//      lineItem->setPen(layoutEditor->drawingStroke);
+//      itemGroup->addToGroup(lineItem);
+//     }
 
-    QPointF pt = getCoordsA();
-    if (getTurnoutType() >= DOUBLE_XOVER && getTurnoutType() <= DOUBLE_SLIP)
-    {
-        if (getConnectA() == nullptr) {
-            //g2.setColor(Color.magenta);
-         layoutEditor->drawingStroke.setColor(QColor(Qt::magenta));
-        } else {
-            //g2.setColor(Color.blue);
-         layoutEditor->drawingStroke.setColor(Qt::blue);
-        }
-    } else {
-        if (getConnectA() == nullptr) {
-            //g2.setColor(Color.red);
-         layoutEditor->drawingStroke.setColor(Qt::red);
-        } else {
-            //g2.setColor(Color.green);
-         layoutEditor->drawingStroke.setColor(Qt::green);
-        }
-    }
-    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
-    QGraphicsRectItem* item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
-    item->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(item);
+//     if (state == UNKNOWN || (continuingSense == state && state != Turnout::INCONSISTENT))
+//     { // unknown or continuing path
+//         // draw center<===>B
+//         if (isMain == mainlineB) {
+//             //g2.setColor(colorB);
+//          layoutEditor->drawingStroke.setColor(colorB);
+//             //g2.draw(new Line2D.Double(pM, pB));
+//          lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pB.x(), pB.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//     } else if (!isBlock || drawUnselectedLeg) {
+//         // draw center<--=>B
+//         if (isMain == mainlineB) {
+//             //g2.setColor(colorB);
+//          layoutEditor->drawingStroke.setColor(colorB);
+//             //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pB), pB));
+//          lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pB).x(), MathUtil::twoThirdsPoint(pM, pB).y(), pB.x(), pB.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//     }
 
-    pt = getCoordsB();
-    if (getConnectB() == nullptr) {
-        //g2.setColor(Color.red);
-     layoutEditor->drawingStroke.setColor(Qt::red);
-    } else {
-        //g2.setColor(Color.green);
-     layoutEditor->drawingStroke.setColor(Qt::green);
-    }
-    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
-    item =  new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
-    item->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(item);
+//     if (state == UNKNOWN || (continuingSense != state && state != Turnout::INCONSISTENT))
+//     { // unknown or diverting path
+//         // draw center<===>C
+//         if (isMain == mainlineC)
+//         {
+//             //g2.setColor(colorC);
+//          layoutEditor->drawingStroke.setColor(colorC);
+//             //g2.draw(new Line2D.Double(pM, pC));
+//          lineItem = new QGraphicsLineItem(pM.x(), pM.y(), pC.x(), pC.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//     } else if (!isBlock || drawUnselectedLeg) {
+//         // draw center<--=>C
+//         if (isMain == mainlineC) {
+//             //g2.setColor(colorC);
+//          layoutEditor->drawingStroke.setColor(colorC);
+//             //g2.draw(new Line2D.Double(MathUtil::twoThirdsPoint(pM, pC), pC));
+//          lineItem = new QGraphicsLineItem(MathUtil::twoThirdsPoint(pM, pC).x(), MathUtil::twoThirdsPoint(pM, pC).y(), pC.x(), pC.y());
+//          lineItem->setPen(layoutEditor->drawingStroke);
+//          itemGroup->addToGroup(lineItem);
+//         }
+//     }
+// }
+//}   // draw1
 
-    pt = getCoordsC();
-    if (getConnectC() == nullptr) {
-     //g2.setColor(Color.red);
-     layoutEditor->drawingStroke.setColor(Qt::red);
-    } else {
-     //g2.setColor(Color.green);
-     layoutEditor->drawingStroke.setColor(Qt::green);
-    }
-    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
-    item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
-    item->setPen(layoutEditor->drawingStroke);
-    itemGroup->addToGroup(item);
+///**
+// * {@inheritDoc}
+// */
+////@Override
+///*protected*/ void LayoutTurnout::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+//    int toType = getTurnoutType();
 
-    if ((getTurnoutType() == DOUBLE_XOVER)
-            || (getTurnoutType() == RH_XOVER)
-            || (getTurnoutType() == LH_XOVER)
-            || (getTurnoutType() == SINGLE_SLIP)
-            || (getTurnoutType() == DOUBLE_SLIP)) {
-        pt = getCoordsD();
-        if (getConnectD() == nullptr) {
-         //g2.setColor(Color.red);
-         layoutEditor->drawingStroke.setColor(Qt::red);
-        } else {
-         //g2.setColor(Color.green);
-         layoutEditor->drawingStroke.setColor(Qt::green);
-        //g2.draw(layoutEditor.trackEditControlRectAt(pt));
-         item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
-         item->setPen(layoutEditor->drawingStroke);
-         itemGroup->addToGroup(item);
-        }
-        rects = itemGroup;
-        g2->addItem(rects);
-    }
-}   // drawEditControls
+//    QPointF pA = getCoordsA();
+//    QPointF pB = getCoordsB();
+//    QPointF pC = getCoordsC();
+//    QPointF pD = getCoordsD();
+//    QPointF pM = getCoordsCenter();
 
-#endif
+//    QPointF vAM = MathUtil::normalize(MathUtil::subtract(pM, pA));
+//    QPointF vAMo = MathUtil::orthogonal(MathUtil::normalize(vAM, railDisplacement));
+
+//    QPointF pAL = MathUtil::subtract(pA, vAMo);
+//    QPointF pAR = MathUtil::add(pA, vAMo);
+
+//    QPointF vBM = MathUtil::normalize(MathUtil::subtract(pB, pM));
+//    double dirBM_DEG = MathUtil::computeAngleDEG(vBM);
+//    QPointF vBMo = MathUtil::normalize(MathUtil::orthogonal(vBM), railDisplacement);
+//    QPointF pBL = MathUtil::subtract(pB, vBMo);
+//    QPointF pBR = MathUtil::add(pB, vBMo);
+//    QPointF pMR = MathUtil::add(pM, vBMo);
+
+//    QPointF vCM = MathUtil::normalize(MathUtil::subtract(pC, pM));
+//    double dirCM_DEG = MathUtil::computeAngleDEG(vCM);
+
+//    QPointF vCMo = MathUtil::normalize(MathUtil::orthogonal(vCM), railDisplacement);
+//    QPointF pCL = MathUtil::subtract(pC, vCMo);
+//    QPointF pCR = MathUtil::add(pC, vCMo);
+//    QPointF pML = MathUtil::subtract(pM, vBMo);
+
+//    double deltaBMC_DEG = MathUtil::absDiffAngleDEG(dirBM_DEG, dirCM_DEG);
+//    double deltaBMC_RAD = qDegreesToRadians(deltaBMC_DEG);
+
+//    double hypotF = railDisplacement / qSin(deltaBMC_RAD / 2.0);
+
+//    QPointF vDisF = MathUtil::normalize(MathUtil::add(vAM, vCM), hypotF);
+//    if (toType == WYE_TURNOUT) {
+//        vDisF = MathUtil::normalize(vAM, hypotF);
+//    }
+//    QPointF pF = MathUtil::add(pM, vDisF);
+
+//    QPointF pFR = MathUtil::add(pF, MathUtil::multiply(vBMo, 2.0));
+//    QPointF pFL = MathUtil::subtract(pF, MathUtil::multiply(vCMo, 2.0));
+
+//    // QPointF pFPR = MathUtil::add(pF, MathUtil::normalize(vBMo, 2.0));
+//    // QPointF pFPL = MathUtil::subtract(pF, MathUtil::normalize(vCMo, 2.0));
+//    QPointF vDisAP = MathUtil::normalize(vAM, hypotF);
+//    QPointF pAP = MathUtil::subtract(pM, vDisAP);
+//    QPointF pAPR = MathUtil::add(pAP, vAMo);
+//    QPointF pAPL = MathUtil::subtract(pAP, vAMo);
+
+//    // QPointF vSo = MathUtil::normalize(vAMo, 2.0);
+//    // QPointF pSL = MathUtil::add(pAPL, vSo);
+//    // QPointF pSR = MathUtil::subtract(pAPR, vSo);
+
+//    bool mainlineA = isMainlineA();
+//    bool mainlineB = isMainlineB();
+//    bool mainlineC = isMainlineC();
+//    bool mainlineD = isMainlineD();
+
+//    int state = UNKNOWN;
+//    if (layoutEditor->isAnimating()) {
+//         Turnout* to = getTurnout();
+//        if (to != nullptr) {
+//            state = to->getKnownState();
+//        }
+//    }
+
+//    //if(!isMain && itemGroup)
+//     itemGroup = invalidateItem(g2,itemGroup);
+//    if(itemGroup == nullptr)
+//    {
+//     itemGroup = new QGraphicsItemGroup();
+//     itemGroup->setZValue(Editor::HANDLES+1);
+//     g2->addItem(itemGroup);
+//    }
+
+//    QGraphicsLineItem* lineItem;
+//    switch (toType) {
+//        case RH_TURNOUT: {
+//            if (isMain == mainlineA) {
+//                //g2.draw(new Line2D.Double(pAL, pML));
+//             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pML.x(), pML.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//                //g2.draw(new Line2D.Double(pAR, pAPR));
+//             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pAPR.x(), pAPR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//            }
+//            if (isMain == mainlineB) {
+//                //g2.draw(new Line2D.Double(pML, pBL));
+//             lineItem = new QGraphicsLineItem(pML.x(), pML.y(), pBL.x(), pBL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//                //g2.draw(new Line2D.Double(pF, pBR));
+//             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBR.x(), pBR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+
+//                if (continuingSense == state)
+//                {  // unknown or diverting path
+////                         g2.draw(new Line2D.Double(pSR, pFPR));
+////                     } else {
+//                    //g2.draw(new Line2D.Double(pAPR, pF));
+//                 lineItem = new QGraphicsLineItem(pAPR.x(), pAPR.y(), pF.x(), pF.y());
+//                 lineItem->setPen(layoutEditor->drawingStroke);
+//                 itemGroup->addToGroup(lineItem);
+//                }
+//            }
+//            if (isMain == mainlineC) {
+//                //g2.draw(new Line2D.Double(pF, pCL));
+//             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCL.x(), pCL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//                //g2.draw(new Line2D.Double(pFR, pCR));
+//             lineItem = new QGraphicsLineItem(pFR.x(), pFR.y(), pCR.x(), pCR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+
+//                QPainterPath* path = new QPainterPath();
+//                path->moveTo(pAPR.x(), pAPR.y());
+//                path->quadTo(pMR.x(), pMR.y(), pFR.x(), pFR.y());
+//                path->lineTo(pCR.x(), pCR.y());
+//                //g2.draw(path);
+//                QGraphicsPathItem* pathItem = new QGraphicsPathItem(*path);
+//                pathItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(pathItem);
+//                if (continuingSense != state) {  // unknown or diverting path
+//                    path = new QPainterPath();
+//                    path->moveTo(pAPL.x(), pAPL.y());
+//                    path->quadTo(pML.x(), pML.y(), pF.x(), pF.y());
+//                    //g2.draw(path);
+//                    pathItem = new QGraphicsPathItem(*path);
+//                    pathItem->setPen(layoutEditor->drawingStroke);
+//                    itemGroup->addToGroup(pathItem);//                     } else {
+////                         path = new QPainterPath();
+////                         path.moveTo(pSL.x(), pSL.y());
+////                         path.quadTo(pML.x(), pML.y(), pFPL.x(), pFPL.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            break;
+//        }   // case RH_TURNOUT
+
+//        case LH_TURNOUT: {
+//            if (isMain == mainlineA) {
+//                //g2.draw(new Line2D.Double(pAR, pMR));
+//             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pMR.x(), pMR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//                //g2.draw(new Line2D.Double(pAL, pAPL));
+//             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pAPL.x(), pAPL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//            }
+//            if (isMain == mainlineB) {
+//                //g2.draw(new Line2D.Double(pMR, pBR));
+//             lineItem = new QGraphicsLineItem(pMR.x(), pMR.y(), pBR.x(), pBR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//                //g2.draw(new Line2D.Double(pF, pBL));
+//             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBL.x(), pBL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//                if (continuingSense == state) {  // straight path
+////                         g2.draw(new Line2D.Double(pSL, pFPL));  Offset problem
+////                     } else {
+//                    //g2.draw(new Line2D.Double(pAPL, pF));
+//                 lineItem = new QGraphicsLineItem(pAPL.x(), pAPL.y(), pF.x(), pF.y());
+//                 lineItem->setPen(layoutEditor->drawingStroke);
+//                 itemGroup->addToGroup(lineItem);
+//                }
+//            }
+//            if (isMain == mainlineC) {
+//                //g2.draw(new Line2D.Double(pF, pCR));
+//             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCR.x(), pCR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//                QPainterPath path = QPainterPath();
+//                path.moveTo(pAPL.x(), pAPL.y());
+//                path.quadTo(pML.x(), pML.y(), pFL.x(), pFL.y());
+//                path.lineTo(pCL.x(), pCL.y());
+//                //g2.draw(path);
+//                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+//                pathItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(pathItem);
+//                //                     } else {
+//                if (continuingSense != state) {  // unknown or diverting path
+//                    path =  QPainterPath();
+//                    path.moveTo(pAPR.x(), pAPR.y());
+//                    path.quadTo(pMR.x(), pMR.y(), pF.x(), pF.y());
+//                    //g2.draw(path);
+//                    pathItem = new QGraphicsPathItem(path);
+//                    pathItem->setPen(layoutEditor->drawingStroke);
+//                    itemGroup->addToGroup(pathItem);
+////                     } else {
+////                     } else {
+////                         path = new QPainterPath();
+////                         path.moveTo(pSR.x(), pSR.y());
+////                         path.quadTo(pMR.x(), pMR.y(), pFPR.x(), pFPR.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            break;
+//        }   // case LH_TURNOUT
+//        case WYE_TURNOUT: {
+//            if (isMain == mainlineA) {
+//                //g2.draw(new Line2D.Double(pAL, pAPL));
+//             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pAPL.x(), pAPL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pAR, pAPR));
+//             lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pAPR.x(), pAPR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);}
+//            if (isMain == mainlineB) {
+//                //g2.draw(new Line2D.Double(pF, pBL));
+//             lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pBL.x(), pBL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             QPainterPath path = QPainterPath();
+//                path.moveTo(pAPR.x(), pAPR.y());
+//                path.quadTo(pMR.x(), pMR.y(), pFR.x(), pFR.x());
+//                path.lineTo(pBR.x(), pBR.y());
+//                //g2.draw(path);
+//                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+//                pathItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(pathItem);
+//                if (continuingSense != state) {  // unknown or diverting path
+//                    path = QPainterPath();
+//                    path.moveTo(pAPR.x(), pAPR.y());
+//                    path.quadTo(pMR.x(), pMR.y(), pF.x(), pF.y());
+//                    //g2.draw(path);
+//                    pathItem = new QGraphicsPathItem(path);
+//                    pathItem->setPen(layoutEditor->drawingStroke);
+//                    itemGroup->addToGroup(pathItem);
+//                    //                     } else {
+////                         path = new QPainterPath();
+////                         path.moveTo(pSR.x(), pSR.y());
+////                         path.quadTo(pMR.x(), pMR.y(), pFPR.x(), pFPR.y());
+////     bad                    g2.draw(path);
+//                }
+//            }
+//            if (isMain == mainlineC) {
+//                pML = MathUtil::subtract(pM, vCMo);
+//                QPainterPath path = QPainterPath();
+//                path.moveTo(pAPL.x(), pAPL.y());
+//                path.quadTo(pML.x(), pML.y(), pFL.x(), pFL.y());
+//                path.lineTo(pCL.x(), pCL.y());
+//                //g2.draw(path);
+//                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+//                pathItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(pathItem);
+//                //g2.draw(new Line2D.Double(pF, pCR));
+//                lineItem = new QGraphicsLineItem(pF.x(), pF.y(), pCR.x(), pCR.y());
+//                lineItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(lineItem);
+//                if (continuingSense != state) {  // unknown or diverting path
+////                         path = new QPainterPath();
+////                         path.moveTo(pSL.x(), pSL.y());
+////                         path.quadTo(pML.x(), pML.y(), pFPL.x(), pFPL.y());
+////           bad              g2.draw(path);
+//                } else {
+//                    path = QPainterPath();
+//                    path.moveTo(pAPL.x(), pAPL.y());
+//                    path.quadTo(pML.x(), pML.y(), pF.x(), pF.y());
+//                    //g2.draw(path);
+//                    pathItem = new QGraphicsPathItem(path);
+//                    pathItem->setPen(layoutEditor->drawingStroke);
+//                    itemGroup->addToGroup(pathItem);}
+//            }
+//            break;
+//        }   // case WYE_TURNOUT
+
+//        case DOUBLE_XOVER: {
+//            // A, B, C, D end points (left and right)
+//            QPointF vAB = MathUtil::normalize(MathUtil::subtract(pB, pA), railDisplacement);
+//            double dirAB_DEG = MathUtil::computeAngleDEG(vAB);
+//            QPointF vABo = MathUtil::orthogonal(MathUtil::normalize(vAB, railDisplacement));
+//            pAL = MathUtil::subtract(pA, vABo);
+//            pAR = MathUtil::add(pA, vABo);
+//            pBL = MathUtil::subtract(pB, vABo);
+//            pBR = MathUtil::add(pB, vABo);
+//            QPointF vCD = MathUtil::normalize(MathUtil::subtract(pD, pC), railDisplacement);
+//            QPointF vCDo = MathUtil::orthogonal(MathUtil::normalize(vCD, railDisplacement));
+//            pCL = MathUtil::add(pC, vCDo);
+//            pCR = MathUtil::subtract(pC, vCDo);
+//            QPointF pDL = MathUtil::add(pD, vCDo);
+//            QPointF pDR = MathUtil::subtract(pD, vCDo);
+
+//            // AB, CD mid points (left and right)
+//            QPointF pABM = MathUtil::midPoint(pA, pB);
+//            QPointF pABL = MathUtil::midPoint(pAL, pBL);
+//            QPointF pABR = MathUtil::midPoint(pAR, pBR);
+//            QPointF pCDM = MathUtil::midPoint(pC, pD);
+//            QPointF pCDL = MathUtil::midPoint(pCL, pDL);
+//            QPointF pCDR = MathUtil::midPoint(pCR, pDR);
+
+//            // A, B, C, D mid points
+//            double halfParallelDistance = MathUtil::distance(pABM, pCDM) / 2.0;
+//            QPointF pAM = MathUtil::subtract(pABM, MathUtil::normalize(vAB, halfParallelDistance));
+//            QPointF pAML = MathUtil::subtract(pAM, vABo);
+//            QPointF pAMR = MathUtil::add(pAM, vABo);
+//            QPointF pBM = MathUtil::add(pABM, MathUtil::normalize(vAB, halfParallelDistance));
+//            QPointF pBML = MathUtil::subtract(pBM, vABo);
+//            QPointF pBMR = MathUtil::add(pBM, vABo);
+//            QPointF pCM = MathUtil::subtract(pCDM, MathUtil::normalize(vCD, halfParallelDistance));
+//            QPointF pCML = MathUtil::subtract(pCM, vABo);
+//            QPointF pCMR = MathUtil::add(pCM, vABo);
+//            QPointF pDM = MathUtil::add(pCDM, MathUtil::normalize(vCD, halfParallelDistance));
+//            QPointF pDML = MathUtil::subtract(pDM, vABo);
+//            QPointF pDMR = MathUtil::add(pDM, vABo);
+
+//            // crossing points
+//            QPointF vACM = MathUtil::normalize(MathUtil::subtract(pCM, pAM), railDisplacement);
+//            QPointF vACMo = MathUtil::orthogonal(vACM);
+//            QPointF vBDM = MathUtil::normalize(MathUtil::subtract(pDM, pBM), railDisplacement);
+//            QPointF vBDMo = MathUtil::orthogonal(vBDM);
+//            QPointF pBDR = MathUtil::add(pM, vACM);
+//            QPointF pBDL = MathUtil::subtract(pM, vACM);
+
+//            // crossing diamond point (no gaps)
+//            QPointF pVR = MathUtil::add(pBDL, vBDM);
+//            QPointF pKL = MathUtil::subtract(pBDL, vBDM);
+//            QPointF pKR = MathUtil::add(pBDR, vBDM);
+//            QPointF pVL = MathUtil::subtract(pBDR, vBDM);
+
+//            // crossing diamond points (with gaps)
+//            QPointF vACM2 = MathUtil::normalize(vACM, 2.0);
+//            QPointF vBDM2 = MathUtil::normalize(vBDM, 2.0);
+//            // (syntax of "pKLtC" is "point LK toward C", etc.)
+//            QPointF pKLtC = MathUtil::add(pKL, vACM2);
+//            QPointF pKLtD = MathUtil::add(pKL, vBDM2);
+//            QPointF pVLtA = MathUtil::subtract(pVL, vACM2);
+//            QPointF pVLtD = MathUtil::add(pVL, vBDM2);
+//            QPointF pKRtA = MathUtil::subtract(pKR, vACM2);
+//            QPointF pKRtB = MathUtil::subtract(pKR, vBDM2);
+//            QPointF pVRtB = MathUtil::subtract(pVR, vBDM2);
+//            QPointF pVRtC = MathUtil::add(pVR, vACM2);
+
+//            // A, B, C, D frog points
+//            vCM = MathUtil::normalize(MathUtil::subtract(pCM, pM));
+//            dirCM_DEG = MathUtil::computeAngleDEG(vCM);
+//            double deltaBAC_DEG = MathUtil::absDiffAngleDEG(dirAB_DEG, dirCM_DEG);
+//            double deltaBAC_RAD = qDegreesToRadians(deltaBAC_DEG);
+//            hypotF = railDisplacement / qSin(deltaBAC_RAD / 2.0);
+//            QPointF vACF = MathUtil::normalize(MathUtil::add(vACM, vAB), hypotF);
+//            QPointF pAFL = MathUtil::add(pAM, vACF);
+//            QPointF pCFR = MathUtil::subtract(pCM, vACF);
+//            QPointF vBDF = MathUtil::normalize(MathUtil::add(vBDM, vCD), hypotF);
+//            QPointF pBFL = MathUtil::add(pBM, vBDF);
+//            QPointF pDFR = MathUtil::subtract(pDM, vBDF);
+
+//            // A, B, C, D frog points
+//            QPointF pAFR = MathUtil::add(MathUtil::add(pAFL, vACMo), vACMo);
+//            QPointF pBFR = MathUtil::subtract(MathUtil::subtract(pBFL, vBDMo), vBDMo);
+//            QPointF pCFL = MathUtil::subtract(MathUtil::subtract(pCFR, vACMo), vACMo);
+//            QPointF pDFL = MathUtil::add(MathUtil::add(pDFR, vBDMo), vBDMo);
+
+//            // end of switch rails (closed)
+//            QPointF vABF = MathUtil::normalize(vAB, hypotF);
+//            pAP = MathUtil::subtract(pAM, vABF);
+//            pAPL = MathUtil::subtract(pAP, vABo);
+//            pAPR = MathUtil::add(pAP, vABo);
+//            QPointF pBP = MathUtil::add(pBM, vABF);
+//            QPointF pBPL = MathUtil::subtract(pBP, vABo);
+//            QPointF pBPR = MathUtil::add(pBP, vABo);
+
+//            QPointF vCDF = MathUtil::normalize(vCD, hypotF);
+//            QPointF pCP = MathUtil::subtract(pCM, vCDF);
+//            QPointF pCPL = MathUtil::add(pCP, vCDo);
+//            QPointF pCPR = MathUtil::subtract(pCP, vCDo);
+//            QPointF pDP = MathUtil::add(pDM, vCDF);
+//            QPointF pDPL = MathUtil::add(pDP, vCDo);
+//            QPointF pDPR = MathUtil::subtract(pDP, vCDo);
+
+//            // end of switch rails (open)
+//            QPointF vS = MathUtil::normalize(vABo, 2.0);
+//            QPointF pASL = MathUtil::add(pAPL, vS);
+//            // QPointF pASR = MathUtil::subtract(pAPR, vS);
+//            QPointF pBSL = MathUtil::add(pBPL, vS);
+//            // QPointF pBSR = MathUtil::subtract(pBPR, vS);
+//            QPointF pCSR = MathUtil::subtract(pCPR, vS);
+//            // QPointF pCSL = MathUtil::add(pCPL, vS);
+//            QPointF pDSR = MathUtil::subtract(pDPR, vS);
+//            // QPointF pDSL = MathUtil::add(pDPL, vS);
+
+//            // end of switch rails (open at frogs)
+//            QPointF pAFS = MathUtil::subtract(pAFL, vS);
+//            QPointF pBFS = MathUtil::subtract(pBFL, vS);
+//            QPointF pCFS = MathUtil::add(pCFR, vS);
+//            QPointF pDFS = MathUtil::add(pDFR, vS);
+
+//            // vSo = MathUtil::orthogonal(vS);
+//            // QPointF pAFSR = MathUtil::add(pAFL, vSo);
+//            // QPointF pBFSR = MathUtil::subtract(pBFL, vSo);
+//            // QPointF pCFSL = MathUtil::subtract(pCFR, vSo);
+//            // QPointF pDFSL = MathUtil::add(pDFR, vSo);
+
+//            if (isMain == mainlineA) {
+//                //g2.draw(new Line2D.Double(pAL, pABL));
+//             lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pABL.x(), pABL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pVRtB, pKLtD));
+//             lineItem = new QGraphicsLineItem(pVRtB.x(), pVRtB.y(), pKLtD.x(), pKLtD.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pAFL, pABR));
+//             lineItem = new QGraphicsLineItem(pAFL.x(), pAFL.y(), pABR.x(), pABR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//               //g2.draw(new Line2D.Double(pAFL, pKL));
+//             lineItem = new QGraphicsLineItem(pAFL.x(), pAFL.y(), pKL.x(), pKL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             QPainterPath path = QPainterPath();
+//                path.moveTo(pAR.x(), pAR.y());
+//                path.lineTo(pAPR.x(), pAPR.y());
+//                path.quadTo(pAMR.x(), pAMR.y(), pAFR.x(), pAFR.y());
+//                path.lineTo(pVR.x(), pVR.y());
+//                //g2.draw(path);
+//                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+//                pathItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(pathItem);
+//                if (state != Turnout::CLOSED) {  // unknown or diverting path
+//                    path = QPainterPath();
+//                    path.moveTo(pAPL.x(), pAPL.y());
+//                    path.quadTo(pAML.x(), pAML.y(), pAFL.x(), pAFL.y());
+//                    //g2.draw(path);
+//                    pathItem = new QGraphicsPathItem(path);
+//                    pathItem->setPen(layoutEditor->drawingStroke);
+//                    itemGroup->addToGroup(pathItem);//                         g2.draw(new Line2D.Double(pASR, pAFSR));
+//                } else {                        // continuing path
+//                    //g2.draw(new Line2D.Double(pAPR, pAFL));
+//                 lineItem = new QGraphicsLineItem(pAPR.x(), pAPR.y(), pAFL.x(), pAFL.y());
+//                 lineItem->setPen(layoutEditor->drawingStroke);
+//                 itemGroup->addToGroup(lineItem);
+//                 path = QPainterPath();
+//                    path.moveTo(pASL.x(), pASL.y());
+//                    path.quadTo(pAML.x(), pAML.y(), pAFS.x(), pAFS.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            if (isMain == mainlineB) {
+//                //g2.draw(new Line2D.Double(pABL, pBL));
+//             lineItem = new QGraphicsLineItem(pABL.x(), pABL.y(), pBL.x(), pBL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pKLtC, pVLtA));
+//             lineItem = new QGraphicsLineItem(pKLtC.x(), pKLtC.y(), pVLtA.x(), pVLtA.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pBFL, pABR));
+//             lineItem = new QGraphicsLineItem(pBFL.x(), pBFL.y(), pABR.x(), pABR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pBFL, pKL));
+//             lineItem = new QGraphicsLineItem(pBFL.x(), pBFL.y(), pKL.x(), pKL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             QPainterPath path =  QPainterPath();
+//                path.moveTo(pBR.x(), pBR.y());
+//                path.lineTo(pBPR.x(), pBPR.y());
+//                path.quadTo(pBMR.x(), pBMR.y(), pBFR.x(), pBFR.y());
+//                path.lineTo(pVL.x(), pVL.y());
+//                //g2.draw(path);
+//                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+//                pathItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(pathItem);
+//                if (state != Turnout::CLOSED) {  // unknown or diverting path
+//                    path = QPainterPath();
+//                    path.moveTo(pBPL.x(), pBPL.y());
+//                    path.quadTo(pBML.x(), pBML.y(), pBFL.x(), pBFL.y());
+//                    //g2.draw(path);
+//                    pathItem = new QGraphicsPathItem(path);
+//                    pathItem->setPen(layoutEditor->drawingStroke);
+//                    itemGroup->addToGroup(pathItem);//                         g2.draw(new Line2D.Double(pBSR, pBFSR));
+//                } else {
+//                    //g2.draw(new Line2D.Double(pBPR, pBFL));
+//                 lineItem = new QGraphicsLineItem(pBPR.x(), pBPR.y(), pBFL.x(), pBFL.y());
+//                 lineItem->setPen(layoutEditor->drawingStroke);
+//                 itemGroup->addToGroup(lineItem);
+//                 path = QPainterPath();
+//                    path.moveTo(pBSL.x(), pBSL.y());
+//                    path.quadTo(pBML.x(), pBML.y(), pBFS.x(), pBFS.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            if (isMain == mainlineC) {
+//                //g2.draw(new Line2D.Double(pCR, pCDR));
+//             lineItem = new QGraphicsLineItem(pCR.x(), pCR.y(), pCR.x(), pCDR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pKRtB, pVLtD));
+//             lineItem = new QGraphicsLineItem(pKRtB.x(), pKRtB.y(), pVLtD.x(), pVLtD.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pCFR, pCDL));
+//             lineItem = new QGraphicsLineItem(pCFR.x(), pCFR.y(), pCDL.x(), pCDL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pCFR, pKR));
+//             lineItem = new QGraphicsLineItem(pCFR.x(), pCFR.y(), pKR.x(), pKR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             QPainterPath path = QPainterPath();
+//                path.moveTo(pCL.x(), pCL.y());
+//                path.lineTo(pCPL.x(), pCPL.y());
+//                path.quadTo(pCML.x(), pCML.y(), pCFL.x(), pCFL.y());
+//                path.lineTo(pVL.x(), pVL.y());
+//                //g2.draw(path);
+//                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+//                pathItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(pathItem);
+//                if (state != Turnout::CLOSED) {  // unknown or diverting path
+//                    path = QPainterPath();
+//                    path.moveTo(pCPR.x(), pCPR.y());
+//                    path.quadTo(pCMR.x(), pCMR.y(), pCFR.x(), pCFR.y());
+//                    //g2.draw(path);
+//                    pathItem = new QGraphicsPathItem(path);
+//                    pathItem->setPen(layoutEditor->drawingStroke);
+//                    itemGroup->addToGroup(pathItem);
+//                    //                         g2.draw(new Line2D.Double(pCSL, pCFSL));
+//                } else {
+//                    //g2.draw(new Line2D.Double(pCPL, pCFR));
+//                 lineItem = new QGraphicsLineItem(pCPL.x(), pCPL.y(), pCFR.x(), pCFR.y());
+//                 lineItem->setPen(layoutEditor->drawingStroke);
+//                 itemGroup->addToGroup(lineItem);
+//                 path = QPainterPath();
+//                    path.moveTo(pCSR.x(), pCSR.y());
+//                    path.quadTo(pCMR.x(), pCMR.y(), pCFS.x(), pCFS.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            if (isMain == mainlineD) {
+//                //g2.draw(new Line2D.Double(pCDR, pDR));
+//             lineItem = new QGraphicsLineItem(pCDR.x(), pCDR.y(), pDR.x(), pDR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pKRtA, pVRtC));
+//             lineItem = new QGraphicsLineItem(pKRtA.x(), pKRtA.y(), pVRtC.x(), pVRtC.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pDFR, pCDL));
+//             lineItem = new QGraphicsLineItem(pDFR.x(), pDFR.y(), pCDL.x(), pCDL.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             //g2.draw(new Line2D.Double(pDFR, pKR));
+//             lineItem = new QGraphicsLineItem(pDFR.x(), pDFR.y(), pKR.x(), pKR.y());
+//             lineItem->setPen(layoutEditor->drawingStroke);
+//             itemGroup->addToGroup(lineItem);
+//             QPainterPath path = QPainterPath();
+//                path.moveTo(pDL.x(), pDL.y());
+//                path.lineTo(pDPL.x(), pDPL.y());
+//                path.quadTo(pDML.x(), pDML.y(), pDFL.x(), pDFL.y());
+//                path.lineTo(pVR.x(), pVR.y());
+//                //g2.draw(path);
+//                QGraphicsPathItem* pathItem = new QGraphicsPathItem(path);
+//                pathItem->setPen(layoutEditor->drawingStroke);
+//                itemGroup->addToGroup(pathItem);
+//                if (state != Turnout::CLOSED) {  // unknown or diverting path
+//                    path = QPainterPath();
+//                    path.moveTo(pDPR.x(), pDPR.y());
+//                    path.quadTo(pDMR.x(), pDMR.y(), pDFR.x(), pDFR.y());
+//                    //g2.draw(path);
+//                    pathItem = new QGraphicsPathItem(path);
+//                    pathItem->setPen(layoutEditor->drawingStroke);
+//                    itemGroup->addToGroup(pathItem);
+//                    //                         g2.draw(new Line2D.Double(pDSL, pDFSL));
+//                } else {
+//                    //g2.draw(new Line2D.Double(pDPL, pDFR));
+//                 lineItem = new QGraphicsLineItem(pDPL.x(), pDPL.y(), pDFR.x(), pDFR.y());
+//                 lineItem->setPen(layoutEditor->drawingStroke);
+//                 itemGroup->addToGroup(lineItem);
+//                 path = QPainterPath();
+//                    path.moveTo(pDSR.x(), pDSR.y());
+//                    path.quadTo(pDMR.x(), pDMR.y(), pDFS.x(), pDFS.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            break;
+//        }   // case DOUBLE_XOVER
+//#if 0
+//        case RH_XOVER: {
+//            // A, B, C, D end points (left and right)
+//            QPointF vAB = MathUtil::normalize(MathUtil::subtract(pB, pA), railDisplacement);
+//            double dirAB_DEG = MathUtil::computeAngleDEG(vAB);
+//            QPointF vABo = MathUtil::orthogonal(MathUtil::normalize(vAB, railDisplacement));
+//            pAL = MathUtil::subtract(pA, vABo);
+//            pAR = MathUtil::add(pA, vABo);
+//            pBL = MathUtil::subtract(pB, vABo);
+//            pBR = MathUtil::add(pB, vABo);
+//            QPointF vCD = MathUtil::normalize(MathUtil::subtract(pD, pC), railDisplacement);
+//            QPointF vCDo = MathUtil::orthogonal(MathUtil::normalize(vCD, railDisplacement));
+//            pCL = MathUtil::add(pC, vCDo);
+//            pCR = MathUtil::subtract(pC, vCDo);
+//            QPointF pDL = MathUtil::add(pD, vCDo);
+//            QPointF pDR = MathUtil::subtract(pD, vCDo);
+
+//            // AB and CD mid points
+//            QPointF pABM = MathUtil::midPoint(pA, pB);
+//            QPointF pABL = MathUtil::subtract(pABM, vABo);
+//            QPointF pABR = MathUtil::add(pABM, vABo);
+//            QPointF pCDM = MathUtil::midPoint(pC, pD);
+//            QPointF pCDL = MathUtil::subtract(pCDM, vABo);
+//            QPointF pCDR = MathUtil::add(pCDM, vABo);
+
+//            // directions
+//            QPointF vAC = MathUtil::normalize(MathUtil::subtract(pCDM, pABM), railDisplacement);
+//            QPointF vACo = MathUtil::orthogonal(MathUtil::normalize(vAC, railDisplacement));
+//            double dirAC_DEG = MathUtil::computeAngleDEG(vAC);
+//            double deltaBAC_DEG = MathUtil::absDiffAngleDEG(dirAB_DEG, dirAC_DEG);
+//            double deltaBAC_RAD = Math.toRadians(deltaBAC_DEG);
+
+//            // AC mid points
+//            QPointF pACL = MathUtil::subtract(pM, vACo);
+//            QPointF pACR = MathUtil::add(pM, vACo);
+
+//            // frogs
+//            hypotF = railDisplacement / Math.sin(deltaBAC_RAD / 2.0);
+//            QPointF vF = MathUtil::normalize(MathUtil::add(vAB, vAC), hypotF);
+//            QPointF pABF = MathUtil::add(pABM, vF);
+//            QPointF pCDF = MathUtil::subtract(pCDM, vF);
+
+//            // frog primes
+//            QPointF pABFP = MathUtil::add(MathUtil::add(pABF, vACo), vACo);
+//            QPointF pCDFP = MathUtil::subtract(MathUtil::subtract(pCDF, vACo), vACo);
+
+//            // end of switch rails (closed)
+//            QPointF vABF = MathUtil::normalize(vAB, hypotF);
+//            pAP = MathUtil::subtract(pABM, vABF);
+//            pAPL = MathUtil::subtract(pAP, vABo);
+//            pAPR = MathUtil::add(pAP, vABo);
+//            QPointF pCP = MathUtil::add(pCDM, vABF);
+//            QPointF pCPL = MathUtil::add(pCP, vCDo);
+//            QPointF pCPR = MathUtil::subtract(pCP, vCDo);
+
+//            // end of switch rails (open)
+//            QPointF vS = MathUtil::normalize(vAB, 2.0);
+//            QPointF vSo = MathUtil::orthogonal(vS);
+//            QPointF pASL = MathUtil::add(pAPL, vSo);
+//            // QPointF pASR = MathUtil::subtract(pAPR, vSo);
+//            // QPointF pCSL = MathUtil::add(pCPL, vSo);
+//            QPointF pCSR = MathUtil::subtract(pCPR, vSo);
+
+//            // end of switch rails (open at frogs)
+//            QPointF pABFS = MathUtil::subtract(pABF, vSo);
+//            // QPointF pABFSP = MathUtil::subtract(pABF, vS);
+//            QPointF pCDFS = MathUtil::add(pCDF, vSo);
+//            // QPointF pCDFSP = MathUtil::add(pCDF, vS);
+
+//            if (isMain == mainlineA) {
+//                g2.draw(new Line2D.Double(pAL, pABL));
+//                QPainterPath path = new QPainterPath();
+//                path.moveTo(pAR.x(), pAR.y());
+//                path.lineTo(pAPR.x(), pAPR.y());
+//                path.quadTo(pABR.x(), pABR.y(), pABFP.x(), pABFP.y());
+//                path.lineTo(pACR.x(), pACR.y());
+//                g2.draw(path);
+//                g2.draw(new Line2D.Double(pABF, pACL));
+//                if (state != Turnout.CLOSED) {  // unknown or diverting path
+//                    path = new QPainterPath();
+//                    path.moveTo(pAPL.x(), pAPL.y());
+//                    path.quadTo(pABL.x(), pABL.y(), pABF.x(), pABF.y());
+//                    g2.draw(path);
+////                         g2.draw(new Line2D.Double(pASR, pABFSP));
+//                } else {                        // continuing path
+//                    g2.draw(new Line2D.Double(pAPR, pABF));
+//                    path = new QPainterPath();
+//                    path.moveTo(pASL.x(), pASL.y());
+//                    path.quadTo(pABL.x(), pABL.y(), pABFS.x(), pABFS.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            if (isMain == mainlineB) {
+//                g2.draw(new Line2D.Double(pABL, pBL));
+//                g2.draw(new Line2D.Double(pABF, pBR));
+//            }
+//            if (isMain == mainlineC) {
+//                g2.draw(new Line2D.Double(pCR, pCDR));
+//                QPainterPath path = new QPainterPath();
+//                path.moveTo(pCL.x(), pCL.y());
+//                path.lineTo(pCPL.x(), pCPL.y());
+//                path.quadTo(pCDL.x(), pCDL.y(), pCDFP.x(), pCDFP.y());
+//                path.lineTo(pACL.x(), pACL.y());
+//                g2.draw(path);
+//                g2.draw(new Line2D.Double(pCDF, pACR));
+//                if (state != Turnout.CLOSED) {  // unknown or diverting path
+//                    path = new QPainterPath();
+//                    path.moveTo(pCPR.x(), pCPR.y());
+//                    path.quadTo(pCDR.x(), pCDR.y(), pCDF.x(), pCDF.y());
+//                    g2.draw(path);
+////                         g2.draw(new Line2D.Double(pCSL, pCDFSP));
+//                } else {                        // continuing path
+//                    g2.draw(new Line2D.Double(pCPL, pCDF));
+//                    path = new QPainterPath();
+//                    path.moveTo(pCSR.x(), pCSR.y());
+//                    path.quadTo(pCDR.x(), pCDR.y(), pCDFS.x(), pCDFS.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            if (isMain == mainlineD) {
+//                g2.draw(new Line2D.Double(pCDR, pDR));
+//                g2.draw(new Line2D.Double(pCDF, pDL));
+//            }
+//            break;
+//        }   // case RH_XOVER
+
+//        case LH_XOVER: {
+//            // B, A, D, C end points (left and right)
+//            QPointF vBA = MathUtil::normalize(MathUtil::subtract(pA, pB), railDisplacement);
+//            double dirBA_DEG = MathUtil::computeAngleDEG(vBA);
+//            QPointF vBAo = MathUtil::orthogonal(MathUtil::normalize(vBA, railDisplacement));
+//            pBL = MathUtil::add(pB, vBAo);
+//            pBR = MathUtil::subtract(pB, vBAo);
+//            pAL = MathUtil::add(pA, vBAo);
+//            pAR = MathUtil::subtract(pA, vBAo);
+//            QPointF vDC = MathUtil::normalize(MathUtil::subtract(pC, pD), railDisplacement);
+//            QPointF vDCo = MathUtil::orthogonal(MathUtil::normalize(vDC, railDisplacement));
+//            QPointF pDL = MathUtil::subtract(pD, vDCo);
+//            QPointF pDR = MathUtil::add(pD, vDCo);
+//            pCL = MathUtil::subtract(pC, vDCo);
+//            pCR = MathUtil::add(pC, vDCo);
+
+//            // BA and DC mid points
+//            QPointF pBAM = MathUtil::midPoint(pB, pA);
+//            QPointF pBAL = MathUtil::add(pBAM, vBAo);
+//            QPointF pBAR = MathUtil::subtract(pBAM, vBAo);
+//            QPointF pDCM = MathUtil::midPoint(pD, pC);
+//            QPointF pDCL = MathUtil::add(pDCM, vBAo);
+//            QPointF pDCR = MathUtil::subtract(pDCM, vBAo);
+
+//            // directions
+//            QPointF vBD = MathUtil::normalize(MathUtil::subtract(pDCM, pBAM), railDisplacement);
+//            QPointF vBDo = MathUtil::orthogonal(MathUtil::normalize(vBD, railDisplacement));
+//            double dirBD_DEG = MathUtil::computeAngleDEG(vBD);
+//            double deltaABD_DEG = MathUtil::absDiffAngleDEG(dirBA_DEG, dirBD_DEG);
+//            double deltaABD_RAD = Math.toRadians(deltaABD_DEG);
+
+//            // BD mid points
+//            QPointF pBDL = MathUtil::add(pM, vBDo);
+//            QPointF pBDR = MathUtil::subtract(pM, vBDo);
+
+//            // frogs
+//            hypotF = railDisplacement / Math.sin(deltaABD_RAD / 2.0);
+//            QPointF vF = MathUtil::normalize(MathUtil::add(vBA, vBD), hypotF);
+//            QPointF pBFL = MathUtil::add(pBAM, vF);
+//            QPointF pBF = MathUtil::subtract(pBFL, vBDo);
+//            QPointF pBFR = MathUtil::subtract(pBF, vBDo);
+//            QPointF pDFR = MathUtil::subtract(pDCM, vF);
+//            QPointF pDF = MathUtil::add(pDFR, vBDo);
+//            QPointF pDFL = MathUtil::add(pDF, vBDo);
+
+//            // end of switch rails (closed)
+//            QPointF vBAF = MathUtil::normalize(vBA, hypotF);
+//            QPointF pBP = MathUtil::subtract(pBAM, vBAF);
+//            QPointF pBPL = MathUtil::add(pBP, vBAo);
+//            QPointF pBPR = MathUtil::subtract(pBP, vBAo);
+//            QPointF pDP = MathUtil::add(pDCM, vBAF);
+//            QPointF pDPL = MathUtil::subtract(pDP, vDCo);
+//            QPointF pDPR = MathUtil::add(pDP, vDCo);
+
+//            // end of switch rails (open)
+//            QPointF vS = MathUtil::normalize(vBA, 2.0);
+//            QPointF vSo = MathUtil::orthogonal(vS);
+//            QPointF pBSL = MathUtil::subtract(pBPL, vSo);
+//            // QPointF pBSR = MathUtil::add(pBPR, vSo);
+//            // QPointF pDSL = MathUtil::subtract(pDPL, vSo);
+//            QPointF pDSR = MathUtil::add(pDPR, vSo);
+
+//            // end of switch rails (open at frogs)
+//            QPointF pBAFS = MathUtil::add(pBFL, vSo);
+//            // QPointF pBAFSP = MathUtil::subtract(pBFL, vS);
+//            QPointF pDCFS = MathUtil::subtract(pDFR, vSo);
+//            // QPointF pDCFSP = MathUtil::add(pDFR, vS);
+
+//            if (isMain == mainlineA) {
+//                g2.draw(new Line2D.Double(pBAL, pAL));
+//                g2.draw(new Line2D.Double(pBFL, pAR));
+//            }
+//            if (isMain == mainlineB) {
+//                g2.draw(new Line2D.Double(pBL, pBAL));
+//                QPainterPath path = new QPainterPath();
+//                path.moveTo(pBR.x(), pBR.y());
+//                path.lineTo(pBPR.x(), pBPR.y());
+//                path.quadTo(pBAR.x(), pBAR.y(), pBFR.x(), pBFR.y());
+//                path.lineTo(pBDR.x(), pBDR.y());
+//                g2.draw(path);
+//                g2.draw(new Line2D.Double(pBFL, pBDL));
+//                if (state != Turnout.CLOSED) {  // unknown or diverting path
+//                    path = new QPainterPath();
+//                    path.moveTo(pBPL.x(), pBPL.y());
+//                    path.quadTo(pBAL.x(), pBAL.y(), pBFL.x(), pBFL.y());
+//                    g2.draw(path);
+////                         g2.draw(new Line2D.Double(pBSR, pBAFSP));
+//                } else {                        // continuing path
+//                    g2.draw(new Line2D.Double(pBPR, pBFL));
+//                    path = new QPainterPath();
+//                    path.moveTo(pBSL.x(), pBSL.y());
+//                    path.quadTo(pBAL.x(), pBAL.y(), pBAFS.x(), pBAFS.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            if (isMain == mainlineC) {
+//                g2.draw(new Line2D.Double(pDCR, pCR));
+//                g2.draw(new Line2D.Double(pDFR, pCL));
+//            }
+//            if (isMain == mainlineD) {
+//                g2.draw(new Line2D.Double(pDR, pDCR));
+//                QPainterPath path = new QPainterPath();
+//                path.moveTo(pDL.x(), pDL.y());
+//                path.lineTo(pDPL.x(), pDPL.y());
+//                path.quadTo(pDCL.x(), pDCL.y(), pDFL.x(), pDFL.y());
+//                path.lineTo(pBDL.x(), pBDL.y());
+//                g2.draw(path);
+//                g2.draw(new Line2D.Double(pDFR, pBDR));
+//                if (state != Turnout.CLOSED) {  // unknown or diverting path
+//                    path = new QPainterPath();
+//                    path.moveTo(pDPR.x(), pDPR.y());
+//                    path.quadTo(pDCR.x(), pDCR.y(), pDFR.x(), pDFR.y());
+//                    g2.draw(path);
+////                         g2.draw(new Line2D.Double(pDSL, pDCFSP));
+//                } else {                        // continuing path
+//                    g2.draw(new Line2D.Double(pDPL, pDFR));
+//                    path = new QPainterPath();
+//                    path.moveTo(pDSR.x(), pDSR.y());
+//                    path.quadTo(pDCR.x(), pDCR.y(), pDCFS.x(), pDCFS.y());
+////                         g2.draw(path);
+//                }
+//            }
+//            break;
+//        }   // case LH_XOVER
+//#endif
+//        case SINGLE_SLIP:
+//        case DOUBLE_SLIP: {
+//            log->error("slips should be being drawn by LayoutSlip sub-class");
+//            break;
+//        }
+//        default: {
+//            // this should never happen... but...
+//            log->error("Unknown turnout type: " + toType);
+//            break;
+//        }
+//    }
+////    if(isMain)
+////    {
+//     itemMain = itemGroup;
+//     g2->addItem(itemMain);
+////    }
+////    else
+////    {
+////     itemSide = itemGroup;
+////     g2->addItem(itemSide);
+////    }
+//}
+//#if 1
+///**
+// * {@inheritDoc}
+// */
+////@Override
+///*protected*/ void LayoutTurnout::highlightUnconnected(EditScene* g2, int specificType) {
+//    if (((specificType == NONE) || (specificType == TURNOUT_A))
+//            && (getConnectA() == nullptr)) {
+//        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsA()));
+//     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsA());
+//     item->setPen(QPen(defaultTrackColor, 1));
+//    }
+
+//    if (((specificType == NONE) || (specificType == TURNOUT_B))
+//            && (getConnectB() == nullptr)) {
+//        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsB()));
+//     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsB());
+//     item->setPen(QPen(defaultTrackColor, 1));
+//    }
+
+//    if (((specificType == NONE) || (specificType == TURNOUT_C))
+//            && (getConnectC() == nullptr)) {
+//        //g2.fill(layoutEditor->trackControlCircleAt(getCoordsC()));
+//     QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsC());
+//     item->setPen(QPen(defaultTrackColor, 1));
+//    }
+//    if ((getTurnoutType() == DOUBLE_XOVER)
+//            || (getTurnoutType() == RH_XOVER)
+//            || (getTurnoutType() == LH_XOVER)) {
+//        if (((specificType == NONE) || (specificType == TURNOUT_D))
+//                && (getConnectD() == nullptr)) {
+//            //g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
+//         QGraphicsEllipseItem* item = trackControlCircleAt(getCoordsD());
+//         item->setPen(QPen(defaultTrackColor, 1));
+//        }
+//    }
+//    rects = item;
+//    g2->addItem(rects);
 
 //}
-void LayoutTurnout::on_removeAction_triggered() // [slot]
-{
- if(layoutEditor->removeLayoutTurnout(this))
- {
-  remove();
-  dispose();
- }
-}
-void LayoutTurnout::on_rotateItemAction_triggered()
-{
- bool entering = true;
- bool error = false;
- QString newAngle = "";
- while (entering)
- {
-  // prompt for rotation angle
-  error = false;
-  newAngle = InputDialog::showInputDialog(tr("EnterRotation Angle (degrees CW)")+" :", layoutEditor);
-  if (newAngle.length()<1) return;  // cancelled
-  double rot = 0.0;
-  try
-  {
-   bool bOk=false;
-   rot = newAngle.toDouble(&bOk);
-   if(!bOk) throw new Exception;
-  }
-  catch (Exception e)
-  {
-//   JOptionPane.showMessageDialog(layoutEditor,tr("Error3")+
-//            " "+e,tr("Error"),JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(layoutEditor, "Error", tr("Invalid value"));
-   error = true;
-   newAngle = "";
-  }
-  if (!error)
-  {
-   entering = false;
-   if (rot!=0.0)
-   {
-    rotateCoords(rot);
-    layoutEditor->redrawPanel();
-   }
-  }
- }
-}
+
+////@Override
+///*protected*/ void LayoutTurnout::drawTurnoutControls(EditScene* g2)
+//{
+// if (!disabled && !(disableWhenOccupied && isOccupied()))
+// {
+//  invalidateItem(g2,circles);
+//  QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+//  if (!disabled && !(disableWhenOccupied && isOccupied()))
+//  {
+//   //QColor foregroundColor = g2.getColor();
+//   //if turnout is not continuing state
+////   if (getState() != continuingSense) {
+////       //then switch to background color
+////       g2.setColor(g2.getBackground());
+////   }
+
+//      //g2.draw(layoutEditor.trackControlCircleAt(center));
+//   QGraphicsEllipseItem* item = trackControlCircleAt(center);
+//   item->setPen(layoutEditor->drawingStroke);
+//   if (layoutEditor->isTurnoutFillControlCircles()) {
+//    QBrush brush = QBrush(layoutEditor->drawingStroke.color());
+//    item->setBrush(brush);
+//   }
+//   itemGroup->addToGroup(item);
+//   //if turnout is not continuing state
+////   if (getState() != continuingSense) {
+////       //then restore foreground color
+////       g2.setColor(foregroundColor);
+////   }
+//   circles = itemGroup;
+//   g2->addItem(circles);
+//  }
+// }
+//}
+
+////@Override
+///*protected*/ void LayoutTurnout::drawEditControls(EditScene* g2)
+//{
+// invalidateItem(g2,rects);
+// QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+// if(rects!=nullptr && rects->scene()!=nullptr)
+// {
+//  g2->removeItem(rects);
+//  rects = nullptr;
+// }
+
+//    QPointF pt = getCoordsA();
+//    if (getTurnoutType() >= DOUBLE_XOVER && getTurnoutType() <= DOUBLE_SLIP)
+//    {
+//        if (getConnectA() == nullptr) {
+//            //g2.setColor(Color.magenta);
+//         layoutEditor->drawingStroke.setColor(QColor(Qt::magenta));
+//        } else {
+//            //g2.setColor(Color.blue);
+//         layoutEditor->drawingStroke.setColor(Qt::blue);
+//        }
+//    } else {
+//        if (getConnectA() == nullptr) {
+//            //g2.setColor(Color.red);
+//         layoutEditor->drawingStroke.setColor(Qt::red);
+//        } else {
+//            //g2.setColor(Color.green);
+//         layoutEditor->drawingStroke.setColor(Qt::green);
+//        }
+//    }
+//    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+//    QGraphicsRectItem* item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+//    item->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(item);
+
+//    pt = getCoordsB();
+//    if (getConnectB() == nullptr) {
+//        //g2.setColor(Color.red);
+//     layoutEditor->drawingStroke.setColor(Qt::red);
+//    } else {
+//        //g2.setColor(Color.green);
+//     layoutEditor->drawingStroke.setColor(Qt::green);
+//    }
+//    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+//    item =  new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+//    item->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(item);
+
+//    pt = getCoordsC();
+//    if (getConnectC() == nullptr) {
+//     //g2.setColor(Color.red);
+//     layoutEditor->drawingStroke.setColor(Qt::red);
+//    } else {
+//     //g2.setColor(Color.green);
+//     layoutEditor->drawingStroke.setColor(Qt::green);
+//    }
+//    //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+//    item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+//    item->setPen(layoutEditor->drawingStroke);
+//    itemGroup->addToGroup(item);
+
+//    if ((getTurnoutType() == DOUBLE_XOVER)
+//            || (getTurnoutType() == RH_XOVER)
+//            || (getTurnoutType() == LH_XOVER)
+//            || (getTurnoutType() == SINGLE_SLIP)
+//            || (getTurnoutType() == DOUBLE_SLIP)) {
+//        pt = getCoordsD();
+//        if (getConnectD() == nullptr) {
+//         //g2.setColor(Color.red);
+//         layoutEditor->drawingStroke.setColor(Qt::red);
+//        } else {
+//         //g2.setColor(Color.green);
+//         layoutEditor->drawingStroke.setColor(Qt::green);
+//        //g2.draw(layoutEditor.trackEditControlRectAt(pt));
+//         item = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(pt));
+//         item->setPen(layoutEditor->drawingStroke);
+//         itemGroup->addToGroup(item);
+//        }
+//        rects = itemGroup;
+//        g2->addItem(rects);
+//    }
+//}   // drawEditControls
+
+//#endif
+
+//}
+//void LayoutTurnout::on_removeAction_triggered() // [slot]
+//{
+// if(layoutEditor->removeLayoutTurnout(this))
+// {
+//  remove();
+//  dispose();
+// }
+//}
+//void LayoutTurnout::on_rotateItemAction_triggered()
+//{
+// bool entering = true;
+// bool error = false;
+// QString newAngle = "";
+// while (entering)
+// {
+//  // prompt for rotation angle
+//  error = false;
+//  newAngle = InputDialog::showInputDialog(tr("EnterRotation Angle (degrees CW)")+" :", layoutEditor);
+//  if (newAngle.length()<1) return;  // cancelled
+//  double rot = 0.0;
+//  try
+//  {
+//   bool bOk=false;
+//   rot = newAngle.toDouble(&bOk);
+//   if(!bOk) throw new Exception;
+//  }
+//  catch (Exception e)
+//  {
+////   JOptionPane.showMessageDialog(layoutEditor,tr("Error3")+
+////            " "+e,tr("Error"),JOptionPane.ERROR_MESSAGE);
+//      QMessageBox::critical(layoutEditor, "Error", tr("Invalid value"));
+//   error = true;
+//   newAngle = "";
+//  }
+//  if (!error)
+//  {
+//   entering = false;
+//   if (rot!=0.0)
+//   {
+//    rotateCoords(rot);
+//    layoutEditor->redrawPanel();
+//   }
+//  }
+// }
+//}
 
 void LayoutTurnout::invalidate(EditScene *g2)
 {
@@ -7265,8 +7260,8 @@ void LayoutTurnout::repaint(LayoutEditor *editor, QGraphicsScene *g2)
 #endif
 void LayoutTurnout::redrawPanel()
 {
- invalidate(layoutEditor->getTargetPanel());
- layoutEditor->redrawPanel();
+ invalidate(models->getTargetPanel());
+ models->redrawPanel();
 }
 
 

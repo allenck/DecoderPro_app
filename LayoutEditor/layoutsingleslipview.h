@@ -7,7 +7,7 @@ class LayoutSingleSlipView : public LayoutSlipView
 {
   Q_OBJECT
  public:
-  /*public*/ LayoutSingleSlipView(/*@Nonnull*/ LayoutSingleSlip* slip);
+  /*public*/ LayoutSingleSlipView(/*@Nonnull*/ LayoutSingleSlip* slip, QPointF c, double rot, /*@Nonnull*/ LayoutEditor* layoutEditor);
 
 };
 

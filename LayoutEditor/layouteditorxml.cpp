@@ -13,11 +13,14 @@
 #include <QMenuBar>
 #include "guilafpreferencesmanager.h"
 #include "userpreferencesmanager.h"
+#include "positionablepoint.h"
+#include "classmigration.h"
 
 LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   AbstractXmlAdapter(parent)
 {
- log = new Logger("LayoutEditorXml");log->setDebugEnabled(true);
+ log = new Logger("LayoutEditorXml");
+ log->setDebugEnabled(true);
  setObjectName("LayoutEditorXml");
 }
 /**
@@ -161,8 +164,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
 
  // include LayoutTracks
-    QList<LayoutTrack*>* layoutTracks = p->getLayoutTracks();
-    num = layoutTracks->size();
+    QList<LayoutTrack*> layoutTracks = p->getLayoutTracks();
+    num = layoutTracks.size();
     if (log->isDebugEnabled()) {
         log->debug("N LayoutTrack elements: " + QString::number(num));
     }
@@ -177,7 +180,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 //            .map(item -> (LayoutTurnout) item)
 //            .collect(Collectors.toList());
     QList<LayoutTrack*> orderedList = QList<LayoutTrack*>();
-    for(LayoutTrack* lt : *layoutTracks) {
+    for(LayoutTrack* lt : layoutTracks) {
      if(qobject_cast<LayoutTurnout*>(lt) && !qobject_cast<LayoutSlip*>(lt))
       orderedList.append(lt);
     }
@@ -185,7 +188,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 //            .filter(item -> item instanceof TrackSegment)
 //            .map(item -> (TrackSegment) item)
 //            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
+    for(LayoutTrack* lt : layoutTracks) {
      if(qobject_cast<TrackSegment*>(lt))
       orderedList.append(lt);
     }
@@ -193,7 +196,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 //            .filter(item -> item instanceof PositionablePoint)
 //            .map(item -> (PositionablePoint) item)
 //            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
+    for(LayoutTrack* lt : layoutTracks) {
      if(qobject_cast<PositionablePoint*>(lt))
       orderedList.append(lt);
     }
@@ -201,7 +204,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 //            .filter(item -> item instanceof LevelXing)
 //            .map(item -> (LevelXing) item)
 //            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
+    for(LayoutTrack* lt : layoutTracks) {
      if(qobject_cast<LevelXing*>(lt))
       orderedList.append(lt);
     }
@@ -209,7 +212,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 //            .filter(item -> item instanceof LayoutSlip)
 //            .map(item -> (LayoutSlip) item)
 //            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
+    for(LayoutTrack* lt : layoutTracks) {
      if(qobject_cast<LayoutSlip*>(lt))
       orderedList.append(lt);
     }
@@ -217,7 +220,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 //            .filter(item -> item instanceof LayoutTurntable)
 //            .map(item -> (LayoutTurntable) item)
 //            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
+    for(LayoutTrack* lt : layoutTracks) {
      if(qobject_cast<LayoutTurntable*>(lt))
       orderedList.append(lt);
     }
@@ -379,17 +382,17 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  // panel->setXScale(xScale);
  // panel->setYScale(yScale);
  //panel->setScale(xScale, yScale);
- QString defaultColor = ColorUtil::ColorDarkGray;
+ QString color = ColorUtil::ColorDarkGray;
  if ((a = shared.attribute("defaulttrackcolor")) != "") {
-     defaultColor = a;
+     color = a;
  }
- panel->setDefaultTrackColor(ColorUtil::stringToColor(defaultColor));
+ panel->setDefaultTrackColor(ColorUtil::stringToColor(color));
 
  QString defaultTextColor = ColorUtil::ColorBlack;
  if ((a = shared.attribute("defaulttextcolor")) != "") {
-     defaultTextColor = a;
+     color = a;
  }
- panel->setDefaultTextColor(ColorUtil::stringToColor(defaultTextColor));
+ panel->setDefaultTextColor(ColorUtil::stringToColor(color));
 
  QString turnoutCircleColor = "track";  //default to using use default track color for circle color
  if ((a = shared.attribute("turnoutcirclecolor")) != "") {
@@ -621,8 +624,11 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   }
   try
   {
+   adapterName = ClassMigration::migrateName(adapterName);
+
    XmlAdapter* adapter;// = (XmlAdapter*) Class.forName(adapterName).newInstance();
    QString className = adapterName.mid(adapterName.lastIndexOf(".") +1);
+
    int typeId = QMetaType::type(className.toLocal8Bit());
    if(typeId > 0)
    {

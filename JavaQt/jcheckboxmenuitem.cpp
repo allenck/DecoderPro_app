@@ -5,3 +5,6 @@ JCheckBoxMenuItem::JCheckBoxMenuItem(QString text, QObject *parent)
 {
  setCheckable(true);
 }
+/*public*/ JCheckBoxMenuItem::JCheckBoxMenuItem(ImageIcon* icon) {
+        // compiled code
+    }

@@ -148,10 +148,12 @@ protected:
 
  friend class LayoutEditorToolsTest;
  friend class LayoutEditor;
- friend class LayoutTurnout;
+ friend class LayoutTurnoutView;
  friend class LevelXing;
  friend class LayoutSlip;
  friend class LayoutEditorComponent;
+ friend class PositionablePointView;
+ friend class LayoutSlipView;
 };
 
 #endif // LAYOUTEDITORTOOLBARPANEL_H

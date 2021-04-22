@@ -21,7 +21,7 @@ class LayoutTurntableEditor : public LayoutTrackEditor
   Q_OBJECT
  public:
   /*public*/ LayoutTurntableEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) override;
+  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrack) override;
 
  private:
   static Logger* log;

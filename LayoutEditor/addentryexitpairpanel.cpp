@@ -15,6 +15,7 @@
 #include "joptionpane.h"
 #include "jtextfield.h"
 #include "propertychangeevent.h"
+#include "positionablepoint.h"
 
 //AddEntryExitPairPanel::AddEntryExitPairPanel(QWidget *parent) :
 //  JmriPanel(parent)

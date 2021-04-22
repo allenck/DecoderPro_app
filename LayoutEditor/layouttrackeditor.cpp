@@ -25,6 +25,7 @@
 #include "blockmanager.h"
 #include "positionablepoint.h"
 #include "entryexitpairs.h"
+#include "loggerfactory.h"
 
 /**
  * MVC root Editor component for LayoutTrack hierarchy objects.

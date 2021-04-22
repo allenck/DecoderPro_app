@@ -30,11 +30,11 @@
 #include "multisensoriconxml.h"
 #include "positionablelabelxml.h"
 #include "activesystemsmenu.h"
-#include "tracksegmentxml.h"
+#include "tracksegmentviewxml.h"
 #include "signalmasticonxml.h"
-#include "layoutturnoutxml.h"
-#include "positionablepointxml.h"
-#include "levelxingxml.h"
+#include "layoutturnoutviewxml.h"
+#include "positionablepointviewxml.h"
+#include "levelxingviewxml.h"
 #include "virtualsignalheadxml.h"
 #include "turnoutsignalmastxml.h"
 #include "systemconsoleconfigpanelxml.h"
@@ -129,7 +129,7 @@
 #include "lnreportermanagerxml.h"
 #include "internalsensormanagerxml.h"
 #include "internallightmanagerxml.h"
-#include "layoutslipxml.h"
+#include "layoutslipviewxml.h"
 #include "layoutblockmanager.h"
 #include "blocktableaction.h"
 #include "importrosteritemaction.h"
@@ -171,7 +171,7 @@
 #include "sectionmanager.h"
 #include "configuremanager.h"
 #include "trainmanifesttext.h"
-#include "layoutturntablexml.h"
+#include "layoutturntableviewxml.h"
 #include "filehistory.h"
 #include "lighttabletabaction.h"
 #include "signalmasttableaction.h"
@@ -337,7 +337,11 @@
 #include "querycvdialog.h"
 #include "namedbeanhandlemanager.h"
 #include "catalogtreemodel.h"
-
+#include "tracksegmentviewxml.h"
+#include "slipturnouticonxml.h"
+#include "layoutdoublexoverviewxml.h"
+#include "layoutlhxoverviewxml.h"
+#include "layoutrhxoverviewxml.h"
 
 bool Metatypes::done = false;
 
@@ -393,11 +397,10 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SignalHeadIconXml>("SignalHeadIconXml");
  qRegisterMetaType<MultiSensorIconXml>("MultiSensorIconXml");
  qRegisterMetaType<PositionableLabelXml>("PositionableLabelXml");
- qRegisterMetaType<TrackSegmentXml>("TrackSegmentXml");
  qRegisterMetaType<SignalMastIconXml>("SignalMastIconXml");
- qRegisterMetaType<LayoutTurnoutXml>("LayoutTurnoutXml");
- qRegisterMetaType<PositionablePointXml>("PositionablePointXml");
- qRegisterMetaType<LevelXingXml>("LevelXingXml");
+ qRegisterMetaType<LayoutTurnoutViewXml>("LayoutTurnoutXml");
+ qRegisterMetaType<PositionablePointViewXml>("PositionablePointXml");
+ qRegisterMetaType<LevelXingViewXml>("LevelXingXml");
  qRegisterMetaType<VirtualSignalHeadXml>("VirtualSignalHeadXml");
  qRegisterMetaType<TurnoutSignalMastXml>("TurnoutSignalMastXml");
  qRegisterMetaType<SystemConsoleConfigPanelXml>("SystemConsoleConfigPanelXml");
@@ -476,7 +479,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LnReporterManagerXml>("LnReporterManagerXml");
  qRegisterMetaType<InternalSensorManagerXml>("InternalSensorManagerXml");
  qRegisterMetaType<InternalLightManagerXml>("InternalLightManagerXml");
- qRegisterMetaType<LayoutSlipXml>("LayoutSlipXml");
+ qRegisterMetaType<LayoutSlipViewXml>("LayoutSlipXml");
  qRegisterMetaType<LayoutBlockManager>("LayoutBlockManager");
  qRegisterMetaType<RfidSensorManagerXml>("RfidSensorManagerXml");
  qRegisterMetaType<BlockTableAction>("BlockTableAction");
@@ -521,7 +524,7 @@ Metatypes::Metatypes(QObject *parent) :
  //qRegisterMetaType<CatalogTreeManager>("CatalogTreeManager");
  //qRegisterMetaType<SystemConnectionMemo>("SystemConnectionMemo");
  //qRegisterMetaType<ConfigureManager>("ConfigureManager");
- qRegisterMetaType<LayoutTurntableXml>("LayoutTurntableXml");
+ qRegisterMetaType<LayoutTurntableViewXml>("LayoutTurntableViewXml");
  qRegisterMetaType<FileHistory>("FileHistory");
  qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");
  //qRegisterMetaType<ListedTableFrame>("ListedTableFrame");
@@ -688,7 +691,12 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<DecoderIndexFile>("DecoderIndexFile");
  qRegisterMetaType<QueryCvDialog>("QueryCvDialog");
  qRegisterMetaType<CatalogTreeModel>("CatalogTreeModel");
-
+ qRegisterMetaType<TrackSegmentViewXml>("TrackSegmentViewXml");
+ qRegisterMetaType<SlipTurnoutIconXml>("SlipTurnoutIconXml");
+ qRegisterMetaType<LayoutXOverViewXml>("LayoutXOverViewXml");
+ qRegisterMetaType<LayoutDoubleXOverViewXml>("LayoutDoubleXOverViewXml");
+ qRegisterMetaType<LayoutLHXOverViewXml>("LayoutLHXOverViewXml");
+ qRegisterMetaType<LayoutRHXOverViewXml>("LayoutRHXOverViewXml");
 
  Metatypes::done = true;
 }

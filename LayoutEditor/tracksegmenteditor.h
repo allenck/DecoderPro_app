@@ -2,7 +2,7 @@
 #define TRACKSEGMENTEDITOR_H
 #include "layouttrackeditor.h"
 #include "jcheckbox.h"
-#include "tracksegment.h"
+//#include "tracksegment.h"
 #include "jcombobox.h"
 #include "namedbeancombobox.h"
 #include "jtextfield.h"
@@ -13,18 +13,21 @@
 #include "jmrijframe.h"
 #include <QPushButton>
 #include "layouteditor.h"
+#include "tracksegmentview.h"
 
-//class TrackSegment;
+class TrackSegmentView;
+class TrackSegment;
 class LIBLAYOUTEDITORSHARED_EXPORT TrackSegmentEditor : public LayoutTrackEditor
 {
   Q_OBJECT
  public:
   /*public*/ TrackSegmentEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) override;
+  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrack) override;
 
  private:
   static Logger* log;
   // variables for Edit Track Segment pane
+  /*private*/ TrackSegmentView* trackSegmentView;
   /*private*/ TrackSegment* trackSegment = nullptr;
 
   /*private*/ JmriJFrame* editTrackSegmentFrame = nullptr;

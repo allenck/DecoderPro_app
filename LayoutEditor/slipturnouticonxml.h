@@ -8,8 +8,8 @@ class SlipTurnoutIconXml : public PositionableLabelXml
     Q_OBJECT
 public:
     Q_INVOKABLE explicit SlipTurnoutIconXml(QObject *parent = 0);
- ~SlipTurnoutIconXml() {}
- SlipTurnoutIconXml(const SlipTurnoutIconXml&) : PositionableLabelXml() {}
+    ~SlipTurnoutIconXml() {}
+    SlipTurnoutIconXml(const SlipTurnoutIconXml&) : PositionableLabelXml() {}
     /*public*/ QDomElement store(QObject* o);
     QDomElement storeIcon(QString elemName, NamedIcon* icon, QString text);
     /*public*/ bool load(QDomElement element) throw (Exception);
@@ -24,5 +24,5 @@ public slots:
                                      QDomElement element, Editor* ed);
  Logger* log;
 };
-
+Q_DECLARE_METATYPE(SlipTurnoutIconXml)
 #endif // SLIPTURNOUTICONXML_H

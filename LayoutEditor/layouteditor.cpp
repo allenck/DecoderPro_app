@@ -102,6 +102,17 @@
 #include <QButtonGroup>
 #include "limits.h"
 #include <vptr.h>
+#include "positionablepointview.h"
+#include "layoutrhturnoutview.h"
+#include "layoutlhturnoutview.h"
+#include "layoutwyeview.h"
+#include "layoutdoublexoverview.h"
+#include "layoutrhxoverview.h"
+#include "layoutlhxoverview.h"
+#include "layoutdoubleslipview.h"
+#include "layoutsingleslipview.h"
+#include "tracksegmentview.h"
+#include "layoutturntableview.h"
 
 /*private*/ /*static*/ const double LayoutEditor::SIZE = 3.0;
 /*private*/ /*static*/ const double LayoutEditor::SIZE2 = 6.0;  // must be twice SIZE
@@ -515,6 +526,10 @@ void LayoutEditor::common()
      //log.debug("{}.antialiasingOn is {}", windowFrameRef, prefsAntialiasingOn);
      setAntialiasingOn(prefsAntialiasingOn);
 
+     bool prefsDrawLayoutTracksLabel = prefsMgr->getSimplePreferenceState(windowFrameRef + ".drawLayoutTracksLabel");
+     // log.debug("{}.drawLayoutTracksLabel is {}", windowFrameRef, prefsDrawLayoutTracksLabel);
+     setDrawLayoutTracksLabel(prefsDrawLayoutTracksLabel);
+
      bool prefsHighlightSelectedBlockFlag
              = prefsMgr->getSimplePreferenceState(windowFrameRef + ".highlightSelectedBlock");
      //log.debug("{}.highlightSelectedBlock is {}", windowFrameRef, prefsHighlightSelectedBlockFlag);
@@ -723,7 +738,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
   {
    //if dragging an item, identify the item for mouseDragging
    selectedObject = nullptr;
-   selectedHitPointType = LayoutTrack::NONE;
+   selectedHitPointType = HitPointType::NONE;
 
    if (findLayoutTracksHitPoint(dLoc))
    {
@@ -737,7 +752,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     selectedObject = checkMarkerPopUps(dLoc);
     if (selectedObject != nullptr)
     {
-     selectedHitPointType = LayoutTrack::MARKER;
+     selectedHitPointType = HitPointType::MARKER;
      startDelta = MathUtil::subtract(((LocoIcon*) selectedObject)->getLocation(), dLoc);
     }
     else
@@ -745,7 +760,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
      selectedObject = checkClockPopUps(dLoc);
      if (selectedObject != nullptr)
      {
-      selectedHitPointType = LayoutTrack::LAYOUT_POS_JCOMP;
+      selectedHitPointType = HitPointType::LAYOUT_POS_JCOMP;
       startDelta = (MathUtil::subtract(((PositionableJComponent*) selectedObject)->getLocation(), dLoc));
      }
      else
@@ -753,7 +768,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
       selectedObject = checkMultiSensorPopUps(dLoc);
       if (selectedObject != nullptr)
       {
-       selectedHitPointType = LayoutTrack::MULTI_SENSOR;
+       selectedHitPointType = HitPointType::MULTI_SENSOR;
        startDelta = (MathUtil::subtract(((MultiSensorIcon*) selectedObject)->getLocation(), dLoc));
       }
      }
@@ -775,7 +790,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 
      if (selectedObject != nullptr)
      {
-      selectedHitPointType = LayoutTrack::LAYOUT_POS_LABEL;
+      selectedHitPointType = HitPointType::LAYOUT_POS_LABEL;
       startDelta = (MathUtil::subtract(((PositionableLabel*) selectedObject)->getLocation(), dLoc));
       if(qobject_cast<LEMemoryIcon*>(selectedObject))
       {
@@ -800,12 +815,12 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 
       if (selectedObject != nullptr)
       {
-       selectedHitPointType = LayoutTrack::LAYOUT_POS_LABEL;
+       selectedHitPointType = HitPointType::LAYOUT_POS_LABEL;
        startDelta = (MathUtil::subtract(((PositionableLabel*) selectedObject)->getLocation(), dLoc));
 
       } else {
        //dragging a shape?
-       QListIterator<LayoutShape*> listIterator(*layoutShapes);// = layoutShapes.listIterator(layoutShapes.size());
+       QListIterator<LayoutShape*> listIterator(layoutShapes);// = layoutShapes.listIterator(layoutShapes.size());
        listIterator.toBack();
        //hit test in front to back order (reverse order of list)
        while (listIterator.hasPrevious())
@@ -851,10 +866,10 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
   {
    //adding or extending a shape
    selectedObject = nullptr;  // assume we're adding...
-   for (LayoutShape* ls : *layoutShapes)
+   for (LayoutShape* ls : layoutShapes)
    {
        selectedHitPointType = ls->findHitPointType(dLoc, true);
-       if (LayoutShape::isShapePointOffsetHitPointType(selectedHitPointType)) {
+       if (HitPointType::isShapePointOffsetHitPointType(selectedHitPointType)) {
            //log.warn("extend selectedObject: ", lt);
            selectedObject = ls;    // nope, we're extending
            beginLocation = dLoc;
@@ -895,7 +910,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
   selectedObject = checkMarkers(dLoc);
   if (selectedObject!=nullptr)
   {
-   selectedHitPointType = MARKER;
+   selectedHitPointType = HitPointType::MARKER;
    startDelta= QPointF((((PositionableLabel*)selectedObject)->getX()-dLoc.x()),
                                             (((PositionableLabel*)selectedObject)->getY()-dLoc.y()));
    //selectedNeedsConnect = false;
@@ -933,11 +948,11 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
  */
 /*private*/ void LayoutEditor::checkControls(bool useRectangles) {
     selectedObject = nullptr;  // deliberate side-effect
-    for (LayoutTrack* theTrack : *layoutTrackList)
+    for (LayoutTrackView* theTrackView : getLayoutTrackViews())
     {
-        selectedHitPointType = theTrack->findHitPointType(dLoc, useRectangles); // deliberate side-effect
-        if (LayoutTrack::isControlHitType(selectedHitPointType)) {
-            selectedObject = theTrack; // deliberate side-effect
+     selectedHitPointType = theTrackView->findHitPointType(dLoc, useRectangles); // deliberate side-effect
+     if (HitPointType::isControlHitType(selectedHitPointType)) {
+      selectedObject = theTrackView->getLayoutTrack(); // deliberate side-effect
             return;
         }
     }
@@ -959,16 +974,16 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     bool result = false; // assume failure (pessimist!)
 
     foundTrack = nullptr;
-    foundHitPointType = LayoutTrack::NONE;
+    foundHitPointType = HitPointType::NONE;
 
-    Optional<LayoutTrack*> opt;// = layoutTrackList->stream().filter(layoutTrack ->
-    for(LayoutTrack* layoutTrack : *layoutTrackList)
+    Optional<LayoutTrack*> opt;// = layoutTrackList.stream().filter(layoutTrack ->
+    for(LayoutTrack* layoutTrack : getLayoutTracks())
     {
         if ((layoutTrack != avoid) && (layoutTrack != selectedObject))
-            foundHitPointType = layoutTrack->findHitPointType(loc, false, requireUnconnected);
+            foundHitPointType = getLayoutTrackView(layoutTrack)->findHitPointType(loc, false, requireUnconnected);
 
-//        return (LayoutTrack::NONE != foundPointType);
-        if(LayoutTrack::NONE != foundHitPointType)
+//        return (HitPointType::NONE != foundPointType);
+        if(HitPointType::NONE != foundHitPointType)
         {
          foundTrack = layoutTrack;
          break;
@@ -981,8 +996,10 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 //    }
     if (layoutTrack != nullptr) {
         foundTrack = layoutTrack;
-        foundLocation = layoutTrack->getCoordsForConnectionType(foundHitPointType);
-        //foundNeedsConnect = layoutTrack->isDisconnected(foundTrack);
+        foundTrackView = this->getLayoutTrackView(layoutTrack);
+        // get screen coordinates
+        foundLocation = foundTrackView->getCoordsForConnectionType(foundHitPointType);
+        /// foundNeedsConnect = isDisconnected(foundHitPointType);
         result = true;
     }
     return result;
@@ -998,9 +1015,9 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     QRectF r = trackControlCircleRectAt(loc);
 
     //check Track Segments, if any
-    for (TrackSegment* ts : getTrackSegments()) {
-        if (r.contains(ts->getCentreSeg())) {
-            result = ts;
+    for (TrackSegmentView* tsv : getTrackSegmentViews()) {
+        if (r.contains(tsv->getCentreSeg())) {
+            result = tsv->getTrackSegment();
             break;
         }
     }
@@ -1138,7 +1155,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 
 /*private*/ LayoutShape* LayoutEditor::checkLayoutShapePopUps(/*@Nonnull*/ QPointF loc) {
     LayoutShape* result = nullptr;
-    for (LayoutShape* ls : *layoutShapes) {
+    for (LayoutShape* ls : layoutShapes) {
         selectedHitPointType = ls->findHitPointType(loc, true);
         if (LayoutShape::isShapeHitPointType(selectedHitPointType)) {
             result = ls;
@@ -1156,11 +1173,26 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
  * @return the coordinates for the connection type of the specified object
  */
 //@Nonnull
-/*public*/ /*static*/ QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrack* layoutTrack, int connectionType) {
-    if (layoutTrack == nullptr) throw NullPointerException("layoutTrack is marked @NonNull but is null");
-    return layoutTrack->getCoordsForConnectionType(connectionType);
+/*public*/  QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrack* trk, HitPointType::TYPES connectionType) {
+ Q_ASSERT(trk != nullptr);
+
+ return getCoords(getLayoutTrackView(trk), connectionType);
 }
 
+/**
+ * Get the coordinates for the connection type of the specified
+ * LayoutTrackView or subtype.
+ *
+ * @param trkv           the object (LayoutTrackView subclass)
+ * @param connectionType the type of connection
+ * @return the coordinates for the connection type of the specified object
+ */
+//@Nonnull
+/*public*/ QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrackView* trkv, HitPointType::TYPES connectionType) {
+    Q_ASSERT( trkv != nullptr);
+
+    return trkv->getCoordsForConnectionType(connectionType);
+}
 
 // mouse pressed and released.
 /*public*/ void LayoutEditor::mouseClicked(QGraphicsSceneMouseEvent* event)
@@ -1191,7 +1223,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
    if (isEditable())
    {
     selectedObject = nullptr;
-    selectedHitPointType = LayoutTrack::NONE;
+    selectedHitPointType = HitPointType::NONE;
     showEditPopUps(event);
    } else {
     LocoIcon* lo = checkMarkerPopUps(dLoc);
@@ -1208,12 +1240,12 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
    // show popup menu
    switch (foundHitPointType)
    {
-   case LayoutTrack::POS_POINT:
-   case LayoutTrack::TURNOUT_CENTER:
-   case LayoutTrack::LEVEL_XING_CENTER:
-   case LayoutTrack::SLIP_LEFT:
-   case LayoutTrack::SLIP_RIGHT:
-   case LayoutTrack::TURNTABLE_CENTER: {
+   case HitPointType::POS_POINT:
+   case HitPointType::TURNOUT_CENTER:
+   case HitPointType::LEVEL_XING_CENTER:
+   case HitPointType::SLIP_LEFT:
+   case HitPointType::SLIP_RIGHT:
+   case HitPointType::TURNTABLE_CENTER: {
        amendSelectionGroup(foundTrack);
        break;
    }
@@ -1299,14 +1331,15 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
      return;
  }
  beginTrack = p;
- beginHitPointType = LayoutTrack::POS_POINT;
- QPointF loc = p->getCoordsCenter();
+ beginHitPointType = HitPointType::POS_POINT;
+ PositionablePointView* pv = getPositionablePointView(p);
+ QPointF loc = pv->getCoordsCenter();
 
  if (findLayoutTracksHitPoint(loc, true, p))
  {
   switch (foundHitPointType)
   {
-   case LayoutTrack::POS_POINT:
+   case HitPointType::POS_POINT:
    {
     PositionablePoint* p2 = (PositionablePoint*) foundTrack;
 
@@ -1314,9 +1347,9 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     {
      if (t->getConnect1() == p)
      {
-        t->setNewConnect1(p2, LayoutTrack::POS_POINT);
+        t->setNewConnect1(p2, foundHitPointType);
      } else {
-        t->setNewConnect2(p2, LayoutTrack::POS_POINT);
+        t->setNewConnect2(p2, foundHitPointType);
      }
      p->removeTrackConnection(t);
 
@@ -1327,12 +1360,46 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     }
     break;
    }
+  case HitPointType::TURNOUT_A:
+  case HitPointType::TURNOUT_B:
+  case HitPointType::TURNOUT_C:
+  case HitPointType::TURNOUT_D:
+  case HitPointType::SLIP_A:
+  case HitPointType::SLIP_B:
+  case HitPointType::SLIP_C:
+  case HitPointType::SLIP_D:
+  case HitPointType::LEVEL_XING_A:
+  case HitPointType::LEVEL_XING_B:
+  case HitPointType::LEVEL_XING_C:
+  case HitPointType::LEVEL_XING_D: {
+   try
+   {
+    if (foundTrack->getConnection(foundHitPointType) == nullptr)
+    {
+     foundTrack->setConnection(foundHitPointType, t, HitPointType::TRACK);
+
+     if (t->getConnect1() == p) {
+         t->setNewConnect1(foundTrack, foundHitPointType);
+     } else {
+         t->setNewConnect2(foundTrack, foundHitPointType);
+     }
+     p->removeTrackConnection(t);
+
+     if ((p->getConnect1() == nullptr) && (p->getConnect2() == nullptr)) {
+         removePositionablePoint(p);
+     }
+    }
+   } catch (JmriException e) {
+       log->debug("Unable to set location");
+   }
+   break;
+  }
   default:
   {
-   if (foundHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET)
+   if (HitPointType::isTurntableRayHitType(foundHitPointType))
    {
         LayoutTurntable* tt = (LayoutTurntable*) foundTrack;
-        int ray = foundHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET;
+        int ray = HitPointType::turntableTrackIndex(foundHitPointType);
 
         if (tt->getRayConnectIndexed(ray) == nullptr) {
             tt->setRayConnect(t, ray);
@@ -1364,140 +1431,39 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
  beginTrack = nullptr;
 }   //checkPointOfPositionable
 
-#if 0
-/*private*/ void LayoutEditor::checkPointsOfTurnout(LayoutTurnout* lt)
-{
- beginObject = lt;
-
- if (lt->getConnectA() == nullptr) {
-     beginPointType = LayoutTrack::TURNOUT_A;
-     dLoc = lt->getCoordsA();
-     checkPointsOfTurnoutSub(lt->getCoordsA());
- }
-
- if (lt->getConnectB() == nullptr) {
-     beginPointType = LayoutTrack::TURNOUT_B;
-     dLoc = lt->getCoordsB();
-     checkPointsOfTurnoutSub(lt->getCoordsB());
- }
-
- if (lt->getConnectC() == nullptr) {
-     beginPointType = LayoutTrack::TURNOUT_C;
-     dLoc = lt->getCoordsC();
-     checkPointsOfTurnoutSub(lt->getCoordsC());
- }
-
- if ((lt->getConnectD() == nullptr) && ((lt->getTurnoutType() == LayoutTurnout::DOUBLE_XOVER) ||
-                                    (lt->getTurnoutType() == LayoutTurnout::LH_XOVER) ||
-                                    (lt->getTurnoutType() == LayoutTurnout::RH_XOVER))) {
-     beginPointType = LayoutTrack::TURNOUT_D;
-     dLoc = lt->getCoordsD();
-     checkPointsOfTurnoutSub(lt->getCoordsD());
- }
- beginObject = nullptr;
- foundObject = nullptr;
-}   //checkPointsOfTurnout
-
-/*private*/ void LayoutEditor::checkPointsOfTurnoutSub(QPointF dLoc)
-{
- if (checkSelect(dLoc, true))
- {
-  switch (foundPointType)
-  {
-   case LayoutTrack::POS_POINT:
-   {
-    PositionablePoint* p2 = (PositionablePoint*) foundObject;
-
-    if (((p2->getConnect1() == nullptr) && (p2->getConnect2() != nullptr)) ||
-        ((p2->getConnect1() != nullptr) && (p2->getConnect2() == nullptr)))
-    {
-     TrackSegment* t = p2->getConnect1();
-
-     if (t == nullptr) {
-         t = p2->getConnect2();
-     }
-
-     if (t == nullptr) {
-         return;
-     }
-     LayoutTurnout* lt = (LayoutTurnout*) beginObject;
-     try
-     {
-      if (lt->getConnection(beginPointType) == nullptr)
-      {
-       lt->setConnection(beginPointType, t, LayoutTrack::TRACK);
-       p2->removeTrackConnection(t);
-
-       if (t->getConnect1() == p2) {
-           t->setNewConnect1(lt, beginPointType);
-       } else {
-           t->setNewConnect2(lt, beginPointType);
-       }
-       removePositionablePoint(p2);
-      }
-
-      if (t->getLayoutBlock() != nullptr) {
-          auxTools->setBlockConnectivityChanged();
-      }
-     } catch (JmriException e) {
-         log->debug("Unable to set location");
-     }
-    }
-    break;
-   }
-
-   case LayoutTrack::TURNOUT_A:
-   case LayoutTrack::TURNOUT_B:
-   case LayoutTrack::TURNOUT_C:
-   case LayoutTrack::TURNOUT_D: {
-       LayoutTurnout* ft = (LayoutTurnout*) foundObject;
-       addTrackSegment();
-
-       if ((ft->getTurnoutType() == LayoutTurnout::RH_TURNOUT) || (ft->getTurnoutType() == LayoutTurnout::LH_TURNOUT)) {
-           rotateTurnout(ft);
-       }
-       break;
-   }
-
-   default: {
-       log->warn(tr("Unexpected foundPointType %1  in checkPointsOfTurnoutSub").arg(foundPointType));
-       break;
-   }
-  }   //switch
- }
-}   //checkPointsOfTurnoutSub
-#endif
 // We just dropped a turnout->.. see if it will connect to anything
 /*private*/ void LayoutEditor::hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt) {
     beginTrack = lt;
 
+    LayoutTurnoutView* ltv = getLayoutTurnoutView(lt);
+
     if (lt->getConnectA() == nullptr) {
         if (qobject_cast<LayoutSlip*>(lt)) {
-            beginHitPointType = LayoutTrack::SLIP_A;
+            beginHitPointType = HitPointType::SLIP_A;
         } else {
-            beginHitPointType = LayoutTrack::TURNOUT_A;
+            beginHitPointType = HitPointType::TURNOUT_A;
         }
-        dLoc = lt->getCoordsA();
+        dLoc = ltv->getCoordsA();
         hitPointCheckLayoutTurnoutSubs(dLoc);
     }
 
     if (lt->getConnectB() == nullptr) {
         if (qobject_cast<LayoutSlip*>(lt)) {
-            beginHitPointType = LayoutTrack::SLIP_B;
+            beginHitPointType = HitPointType::SLIP_B;
         } else {
-            beginHitPointType = LayoutTrack::TURNOUT_B;
+            beginHitPointType = HitPointType::TURNOUT_B;
         }
-        dLoc = lt->getCoordsB();
+        dLoc = ltv->getCoordsB();
         hitPointCheckLayoutTurnoutSubs(dLoc);
     }
 
     if (lt->getConnectC() == nullptr) {
         if (qobject_cast<LayoutSlip*>(lt)) {
-            beginHitPointType = LayoutTrack::SLIP_C;
+            beginHitPointType = HitPointType::SLIP_C;
         } else {
-            beginHitPointType = LayoutTrack::TURNOUT_C;
+            beginHitPointType = HitPointType::TURNOUT_C;
         }
-        dLoc = lt->getCoordsC();
+        dLoc = ltv->getCoordsC();
         hitPointCheckLayoutTurnoutSubs(dLoc);
     }
 
@@ -1507,11 +1473,11 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
             || (lt->getTurnoutType() == LayoutTurnout::SINGLE_SLIP)
             || (lt->getTurnoutType() == LayoutTurnout::DOUBLE_SLIP))) {
         if (qobject_cast<LayoutSlip*>(lt)) {
-            beginHitPointType = LayoutTrack::SLIP_D;
+            beginHitPointType = HitPointType::SLIP_D;
         } else {
-            beginHitPointType = LayoutTrack::TURNOUT_D;
+            beginHitPointType = HitPointType::TURNOUT_D;
         }
-        dLoc = lt->getCoordsD();
+        dLoc = ltv->getCoordsD();
         hitPointCheckLayoutTurnoutSubs(dLoc);
     }
     beginTrack = nullptr;
@@ -1521,7 +1487,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 /*private*/ void LayoutEditor::hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc) {
     if (findLayoutTracksHitPoint(dLoc, true)) {
         switch (foundHitPointType) {
-            case LayoutTrack::POS_POINT: {
+            case HitPointType::POS_POINT: {
                 PositionablePoint* p2 = (PositionablePoint*) foundTrack;
 
                 if (((p2->getConnect1() == nullptr) && (p2->getConnect2() != nullptr))
@@ -1538,7 +1504,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
                     LayoutTurnout* lt = (LayoutTurnout*) beginTrack;
                     try {
                         if (lt->getConnection(beginHitPointType) == nullptr) {
-                            lt->setConnection(beginHitPointType, t, LayoutTrack::TRACK);
+                            lt->setConnection(beginHitPointType, t, HitPointType::TRACK);
                             p2->removeTrackConnection(t);
 
                             if (t->getConnect1() == p2) {
@@ -1559,14 +1525,14 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
                 break;
             }
 
-            case LayoutTrack::TURNOUT_A:
-            case LayoutTrack::TURNOUT_B:
-            case LayoutTrack::TURNOUT_C:
-            case LayoutTrack::TURNOUT_D:
-            case LayoutTrack::SLIP_A:
-            case LayoutTrack::SLIP_B:
-            case LayoutTrack::SLIP_C:
-            case LayoutTrack::SLIP_D: {
+            case HitPointType::TURNOUT_A:
+            case HitPointType::TURNOUT_B:
+            case HitPointType::TURNOUT_C:
+            case HitPointType::TURNOUT_D:
+            case HitPointType::SLIP_A:
+            case HitPointType::SLIP_B:
+            case HitPointType::SLIP_C:
+            case HitPointType::SLIP_D: {
                 LayoutTurnout* ft = (LayoutTurnout*) foundTrack;
                 addTrackSegment();
 
@@ -1575,12 +1541,13 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
                 }
 
                 // Assign a block to the new zero length track segment.
-                ft->setTrackSegmentBlock(foundHitPointType, true);
+                ((LayoutTurnoutView*) foundTrackView)->setTrackSegmentBlock(foundHitPointType, true);
                 break;
             }
 
             default: {
-                log->warn(tr("Unexpected foundPointType %1 in hitPointCheckLayoutTurnoutSubs").arg(foundHitPointType));
+
+                log->warn(tr("Unexpected foundPointType %1 in hitPointCheckLayoutTurnoutSubs").arg(HitPointType::toString(foundHitPointType)));
                 break;
             }
         }
@@ -1588,11 +1555,12 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 }
 
 /*private*/ void LayoutEditor::rotateTurnout(LayoutTurnout* t) {
+ LayoutTurnoutView* tv = getLayoutTurnoutView(t);
     LayoutTurnout* be = (LayoutTurnout*) beginTrack;
-
-    if (((beginHitPointType == LayoutTrack::TURNOUT_A) && ((be->getConnectB() != nullptr) || (be->getConnectC() != nullptr))) ||
-        ((beginHitPointType == LayoutTrack::TURNOUT_B) && ((be->getConnectA() != nullptr) || (be->getConnectC() != nullptr))) ||
-        ((beginHitPointType == LayoutTrack::TURNOUT_C) && ((be->getConnectB() != nullptr) || (be->getConnectA() != nullptr)))) {
+ LayoutTurnoutView* bev = getLayoutTurnoutView(be);
+    if (((beginHitPointType == HitPointType::TURNOUT_A) && ((be->getConnectB() != nullptr) || (be->getConnectC() != nullptr))) ||
+        ((beginHitPointType == HitPointType::TURNOUT_B) && ((be->getConnectA() != nullptr) || (be->getConnectC() != nullptr))) ||
+        ((beginHitPointType == HitPointType::TURNOUT_C) && ((be->getConnectB() != nullptr) || (be->getConnectA() != nullptr)))) {
         return;
     }
 
@@ -1607,50 +1575,50 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     QPointF diverg;
     QPointF xy2;
 
-    if ((foundHitPointType == LayoutTrack::TURNOUT_C) && (beginHitPointType == LayoutTrack::TURNOUT_C)) {
-        c = t->getCoordsA();
-        diverg = t->getCoordsB();
+    if ((foundHitPointType == HitPointType::TURNOUT_C) && (beginHitPointType == HitPointType::TURNOUT_C)) {
+        c = tv->getCoordsA();
+        diverg = tv->getCoordsB();
         xy2 = MathUtil::subtract(c, diverg);
-    } else if ((foundHitPointType == LayoutTrack::TURNOUT_C) &&
-               ((beginHitPointType == LayoutTrack::TURNOUT_A) || (beginHitPointType == LayoutTrack::TURNOUT_B))) {
-        c = t->getCoordsCenter();
-        diverg = t->getCoordsC();
+    } else if ((foundHitPointType == HitPointType::TURNOUT_C) &&
+               ((beginHitPointType == HitPointType::TURNOUT_A) || (beginHitPointType == HitPointType::TURNOUT_B))) {
+        c = tv->getCoordsCenter();
+        diverg = tv->getCoordsC();
 
-        if (beginHitPointType == LayoutTrack::TURNOUT_A) {
-         xy2 = MathUtil::subtract(be->getCoordsB(), be->getCoordsA());
+        if (beginHitPointType == HitPointType::TURNOUT_A) {
+         xy2 = MathUtil::subtract(bev->getCoordsB(), bev->getCoordsA());
      } else {
-         xy2 = MathUtil::subtract(be->getCoordsA(), be->getCoordsB());
+         xy2 = MathUtil::subtract(bev->getCoordsA(), bev->getCoordsB());
      }
-    } else if (foundHitPointType == LayoutTrack::TURNOUT_B) {
-        c = t->getCoordsA();
-        diverg = t->getCoordsB();
+    } else if (foundHitPointType == HitPointType::TURNOUT_B) {
+        c = tv->getCoordsA();
+        diverg = tv->getCoordsB();
 
         switch (beginHitPointType) {
            case TURNOUT_B:
-               xy2 = MathUtil::subtract(be->getCoordsA(), be->getCoordsB());
+               xy2 = MathUtil::subtract(bev->getCoordsA(), bev->getCoordsB());
                break;
            case TURNOUT_A:
-               xy2 = MathUtil::subtract(be->getCoordsB(), be->getCoordsA());
+               xy2 = MathUtil::subtract(bev->getCoordsB(), bev->getCoordsA());
                break;
            case TURNOUT_C:
            default:
-               xy2 = MathUtil::subtract(be->getCoordsCenter(), be->getCoordsC());
+               xy2 = MathUtil::subtract(bev->getCoordsCenter(), bev->getCoordsC());
                break;
        }
-    } else if (foundHitPointType == LayoutTrack::TURNOUT_A) {
-        c = t->getCoordsA();
-        diverg = t->getCoordsB();
+    } else if (foundHitPointType == HitPointType::TURNOUT_A) {
+        c = tv->getCoordsA();
+        diverg = tv->getCoordsB();
 
         switch (beginHitPointType) {
             case TURNOUT_A:
-                xy2 = MathUtil::subtract(be->getCoordsA(), be->getCoordsB());
+                xy2 = MathUtil::subtract(bev->getCoordsA(), bev->getCoordsB());
                 break;
             case TURNOUT_B:
-                xy2 = MathUtil::subtract(be->getCoordsB(), be->getCoordsA());
+                xy2 = MathUtil::subtract(bev->getCoordsB(), bev->getCoordsA());
                 break;
             case TURNOUT_C:
             default:
-                xy2 = MathUtil::subtract(be->getCoordsC(), be->getCoordsCenter());
+                xy2 = MathUtil::subtract(bev->getCoordsC(), bev->getCoordsCenter());
                 break;
         }
     } else {
@@ -1661,27 +1629,27 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     double eRadius = qRadiansToDegrees(qAtan2(xy2.y(), xy2.x()));
     be->rotateCoords(radius - eRadius);
 
-    QPointF conCord = be->getCoordsA();
-    QPointF tCord = t->getCoordsC();
+    QPointF conCord = bev->getCoordsA();
+    QPointF tCord = tv->getCoordsC();
 
-    if (foundHitPointType == LayoutTrack::TURNOUT_B) {
-        tCord = t->getCoordsB();
+    if (foundHitPointType == HitPointType::TURNOUT_B) {
+        tCord = tv->getCoordsB();
     }
 
-    if (foundHitPointType == LayoutTrack::TURNOUT_A) {
-        tCord = t->getCoordsA();
+    if (foundHitPointType == HitPointType::TURNOUT_A) {
+        tCord = tv->getCoordsA();
     }
 
-    if (beginHitPointType == LayoutTrack::TURNOUT_B) {
-        conCord = be->getCoordsB();
-    } else if (beginHitPointType == LayoutTrack::TURNOUT_C) {
-        conCord = be->getCoordsC();
-    } else if (beginHitPointType == LayoutTrack::TURNOUT_A) {
-        conCord = be->getCoordsA();
+    if (beginHitPointType == HitPointType::TURNOUT_B) {
+        conCord = bev->getCoordsB();
+    } else if (beginHitPointType == HitPointType::TURNOUT_C) {
+        conCord = bev->getCoordsC();
+    } else if (beginHitPointType == HitPointType::TURNOUT_A) {
+        conCord = bev->getCoordsA();
     }
     xy = MathUtil::subtract(conCord, tCord);
-    QPointF offset = MathUtil::subtract(be->getCoordsCenter(), xy);
-    be->setCoordsCenter(offset);
+    QPointF offset = MathUtil::subtract(bev->getCoordsCenter(), xy);
+    bev->setCoordsCenter(offset);
 }   //rotateTurnout
 
 /*public*/ void LayoutEditor::mouseReleased(QGraphicsSceneMouseEvent* event)
@@ -1808,7 +1776,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
      if(qobject_cast<LayoutShape*>(selectedObject))
      {
         LayoutShape* ls = (LayoutShape*) selectedObject;
-        ls->addPoint(currentPoint, selectedHitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN);
+        ls->addPoint(currentPoint, selectedHitPointType - HitPointType::shapePointIndex(selectedHitPointType));
      }
     }
    }
@@ -1828,7 +1796,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
   else if ( (bPopupTrigger || delayedPopupTrigger)  && !isDragging)
   {
    selectedObject = nullptr;
-   selectedHitPointType = LayoutTrack::NONE;
+   selectedHitPointType = HitPointType::NONE;
    whenReleased = QDateTime::currentMSecsSinceEpoch();
    showEditPopUps(event);
   }
@@ -1841,9 +1809,9 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
    LayoutTurnout* t = (LayoutTurnout*)selectedObject;
    t->toggleTurnout();
   }
-  else if ( ( selectedObject!=nullptr) && ((selectedHitPointType == LayoutTrack::SLIP_CENTER) ||
-                                        (selectedHitPointType == LayoutTrack::SLIP_LEFT) ||
-                                        (selectedHitPointType == LayoutTrack::SLIP_RIGHT))/* &&
+  else if ( ( selectedObject!=nullptr) && ((selectedHitPointType == HitPointType::SLIP_CENTER) ||
+                                        (selectedHitPointType == HitPointType::SLIP_LEFT) ||
+                                        (selectedHitPointType == HitPointType::SLIP_RIGHT))/* &&
                allControlling() && (!event.isMetaDown()) && (!(event->modifiers()&Qt::AltModifier) && (!event.isPopupTrigger())*/ &&
                    (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) )
   {
@@ -1859,7 +1827,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
    LayoutTurntable* t =  (LayoutTurntable*)selectedObject;
    t->setPosition(selectedHitPointType-TURNTABLE_RAY_OFFSET);
   }
-  else if ((selectedObject != nullptr) && (selectedHitPointType == LayoutTrack::TURNOUT_CENTER) /*&&
+  else if ((selectedObject != nullptr) && (selectedHitPointType == HitPointType::TURNOUT_CENTER) /*&&
                          allControlling() && (event.isMetaDown()) && (!event.isAltDown()) &&
                          (!event.isShiftDown()) && (!event.isControlDown()) && isDragging)*/
            && (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) && isDragging)
@@ -1867,7 +1835,7 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
         //controlling layout, in edit mode
         hitPointCheckLayoutTurnouts((LayoutTurnout*) selectedObject);
   }
-  else if ((selectedObject != nullptr) && (selectedHitPointType == LayoutTrack::POS_POINT) /*&&
+  else if ((selectedObject != nullptr) && (selectedHitPointType == HitPointType::POS_POINT) /*&&
                allControlling() && (event.isMetaDown()) && (!event.isAltDown()) &&
                (!event.isShiftDown()) && (!event.isControlDown()) && isDragging) */
            && (!(event->modifiers()&Qt::ShiftModifier)) && (!(event->modifiers()&Qt::ControlModifier)) && isDragging)
@@ -1900,9 +1868,9 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
    t->toggleTurnout();
   }
     // check if controlling turnouts out of edit mode
-    else if ( ( selectedObject!=nullptr) && ((selectedHitPointType == LayoutTrack::SLIP_CENTER) ||
-                                          (selectedHitPointType == LayoutTrack::SLIP_LEFT) ||
-                                          (selectedHitPointType == LayoutTrack::SLIP_RIGHT)) /*&&
+    else if ( ( selectedObject!=nullptr) && ((selectedHitPointType == HitPointType::SLIP_CENTER) ||
+                                          (selectedHitPointType == HitPointType::SLIP_LEFT) ||
+                                          (selectedHitPointType == HitPointType::SLIP_RIGHT)) /*&&
             allControlling() && (!event.isMetaDown())*/ && (!(event->modifiers()&Qt::AltModifier))/* && (!event.isPopupTrigger())*/ &&
                 (!(event->modifiers()&Qt::ShiftModifier)) && (!delayedPopupTrigger) )
   {
@@ -1931,15 +1899,22 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
       // show popup menu
       switch (foundHitPointType)
       {
-       case TURNOUT_CENTER:
-        ((LayoutTurnout*)foundTrack)->showPopup(event);
-        break;
-       case LEVEL_XING_CENTER:
-        ((LevelXing*)foundTrack)->showPopup(event);
-        break;
-       case SLIP_CENTER:
-        ((LayoutSlip*)foundTrack)->showPopup(event);
-        break;
+      case HitPointType::TURNOUT_CENTER: {
+          if (useDirectTurnoutControl) {
+              LayoutTurnout* t = (LayoutTurnout*) foundTrack;
+              t->setState(Turnout::THROWN);
+          } else {
+              foundTrackView->showPopup(event);
+          }
+          break;
+      }
+
+      case HitPointType::LEVEL_XING_CENTER:
+      case HitPointType::SLIP_RIGHT:
+      case HitPointType::SLIP_LEFT: {
+          foundTrackView->showPopup(event);
+                                  break;
+                              }
        default: break;
       }
      }
@@ -1991,25 +1966,20 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
 {
   if (findLayoutTracksHitPoint(dLoc))
   {
-   if ((foundHitPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
-           && (foundHitPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
-       ((TrackSegment*) foundTrack)->showBezierPopUp(event, foundHitPointType);
-   }
-   else if (foundHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET) {
+   if (HitPointType::isBezierHitType(foundHitPointType)) {
+       getTrackSegmentView((TrackSegment*) foundTrack)->showBezierPopUp(event, foundHitPointType);
+   } else if (HitPointType::isTurntableRayHitType(foundHitPointType)) {
        LayoutTurntable* t = (LayoutTurntable*) foundTrack;
        if (t->isTurnoutControlled()) {
-           ((LayoutTurntable*) foundTrack)->showRayPopUp(event, foundHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
+           LayoutTurntableView* ltview = getLayoutTurntableView((LayoutTurntable*) foundTrack);
+           ltview->showRayPopUp(event, HitPointType::turntableTrackIndex(foundHitPointType));
        }
-   }
-   else if (LayoutTrack::isPopupHitType(foundHitPointType)) {
-       foundTrack->showPopup(event);
-   }
-   else if ((foundHitPointType >= LayoutTrack::TURNOUT_A)
-           && (foundHitPointType <= LayoutTrack::TURNOUT_D)) {
+   } else if (HitPointType::isPopupHitType(foundHitPointType)) {
+       foundTrackView->showPopup(event);
+   } else if (HitPointType::isTurnoutHitType(foundHitPointType)) {
        // don't curently have edit popup for these
-   }
-   else {
-       log->warn("Unknown foundPointType:" + QString::number(foundHitPointType));
+   } else {
+       log->warn(tr("Unknown foundPointType:%1").arg(HitPointType::toString(foundHitPointType)));
    }
   }
   else
@@ -2017,7 +1987,8 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
       do {
           TrackSegment* ts = checkTrackSegmentPopUps(dLoc);
           if (ts != nullptr) {
-              ts->showPopup(event);
+           TrackSegmentView* tsv = getTrackSegmentView(ts);
+              tsv->showPopup(event);
               break;
           }
 
@@ -2346,11 +2317,12 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
        }
 
        for (LayoutTrack* lt : _layoutTrackSelection) {
-           QPointF center = lt->getCoordsCenter();
+           LayoutTrackView* ltv = getLayoutTrackView(lt);
+           QPointF center = ltv->getCoordsCenter();
            newPoint = MathUtil::add(center, offset);
            //don't allow negative placement, objects could become unreachable
            newPoint = MathUtil::max(newPoint, MathUtil::zeroPoint2D);
-           lt->setCoordsCenter(newPoint);
+           ltv->setCoordsCenter(newPoint);
        }
 
        for (LayoutShape* ls : _layoutShapeSelection)
@@ -2367,114 +2339,88 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
     else
     {
        switch (selectedHitPointType) {
-           case LayoutTrack::POS_POINT: {
-               ((PositionablePoint*) selectedObject)->setCoordsCenter(currentPoint);
+           case HitPointType::POS_POINT:
+           case HitPointType::TURNOUT_CENTER:
+           case HitPointType::LEVEL_XING_CENTER:
+           case HitPointType::SLIP_LEFT:
+           case HitPointType::SLIP_RIGHT:
+           case HitPointType::TURNTABLE_CENTER:{
+        getLayoutTrackView((LayoutTrack*) selectedObject)->setCoordsCenter(currentPoint);
                isDragging = true;
                break;
            }
-
-           case LayoutTrack::TURNOUT_CENTER: {
-            LayoutTurnout* t = ((LayoutTurnout*) selectedObject);
-               t->setCoordsCenter(currentPoint);
-//               if(t->connectA) t->connectA->invalidateItemType(editScene);
-//               if(t->connectB) t->connectB->invalidateItemType(editScene);
-//               if(t->connectC) t->connectC->invalidateItemType(editScene);
-//               if(t->connectD) t->connectD->invalidateItemType(editScene);
-               isDragging = true;
+           case HitPointType::TURNOUT_A: {
+            getLayoutTurnoutView((LayoutTurnout*) selectedObject)->setCoordsA(currentPoint);
                break;
            }
 
-           case LayoutTrack::TURNOUT_A: {
-               ((LayoutTurnout*) selectedObject)->setCoordsA(currentPoint);
+       case HitPointType::TURNOUT_B: {
+               getLayoutTurnoutView((LayoutTurnout*) selectedObject)->setCoordsB(currentPoint);
                break;
            }
 
-           case LayoutTrack::TURNOUT_B: {
-               ((LayoutTurnout*) selectedObject)->setCoordsB(currentPoint);
+           case HitPointType::TURNOUT_C: {
+               getLayoutTurnoutView((LayoutTurnout*) selectedObject)->setCoordsC(currentPoint);
                break;
            }
 
-           case LayoutTrack::TURNOUT_C: {
-               ((LayoutTurnout*) selectedObject)->setCoordsC(currentPoint);
+           case HitPointType::TURNOUT_D: {
+               getLayoutTurnoutView((LayoutTurnout*) selectedObject)->setCoordsD(currentPoint);
                break;
            }
 
-           case LayoutTrack::TURNOUT_D: {
-               ((LayoutTurnout*) selectedObject)->setCoordsD(currentPoint);
+           case HitPointType::LEVEL_XING_A: {
+               getLevelXingView((LevelXing*) selectedObject)->setCoordsA(currentPoint);
                break;
            }
 
-           case LayoutTrack::LEVEL_XING_CENTER: {
-               ((LevelXing*) selectedObject)->setCoordsCenter(currentPoint);
-               isDragging = true;
+           case HitPointType::LEVEL_XING_B: {
+               getLevelXingView((LevelXing*) selectedObject)->setCoordsB(currentPoint);
                break;
            }
 
-           case LayoutTrack::LEVEL_XING_A: {
-               ((LevelXing*) selectedObject)->setCoordsA(currentPoint);
+           case HitPointType::LEVEL_XING_C: {
+               getLevelXingView((LevelXing*) selectedObject)->setCoordsC(currentPoint);
                break;
            }
 
-           case LayoutTrack::LEVEL_XING_B: {
-               ((LevelXing*) selectedObject)->setCoordsB(currentPoint);
+           case HitPointType::LEVEL_XING_D: {
+               getLevelXingView((LevelXing*) selectedObject)->setCoordsD(currentPoint);
                break;
            }
 
-           case LayoutTrack::LEVEL_XING_C: {
-               ((LevelXing*) selectedObject)->setCoordsC(currentPoint);
+           case HitPointType::SLIP_A: {
+               getLayoutSlipView((LayoutSlip*) selectedObject)->setCoordsA(currentPoint);
                break;
            }
 
-           case LayoutTrack::LEVEL_XING_D: {
-               ((LevelXing*) selectedObject)->setCoordsD(currentPoint);
+           case HitPointType::SLIP_B: {
+               getLayoutSlipView((LayoutSlip*) selectedObject)->setCoordsB(currentPoint);
                break;
            }
 
-           case LayoutTrack::SLIP_LEFT:
-           case LayoutTrack::SLIP_RIGHT: {
-               ((LayoutSlip*) selectedObject)->setCoordsCenter(currentPoint);
-               isDragging = true;
+           case HitPointType::SLIP_C: {
+               getLayoutSlipView((LayoutSlip*) selectedObject)->setCoordsC(currentPoint);
                break;
            }
 
-           case LayoutTrack::SLIP_A: {
-               ((LayoutSlip*) selectedObject)->setCoordsA(currentPoint);
+           case HitPointType::SLIP_D: {
+               getLayoutSlipView((LayoutSlip*) selectedObject)->setCoordsD(currentPoint);
                break;
            }
 
-           case LayoutTrack::SLIP_B: {
-               ((LayoutSlip*) selectedObject)->setCoordsB(currentPoint);
-               break;
-           }
-
-           case LayoutTrack::SLIP_C: {
-               ((LayoutSlip*) selectedObject)->setCoordsC(currentPoint);
-               break;
-           }
-
-           case LayoutTrack::SLIP_D: {
-               ((LayoutSlip*) selectedObject)->setCoordsD(currentPoint);
-               break;
-           }
-
-           case LayoutTrack::TURNTABLE_CENTER: {
-               ((LayoutTurntable*) selectedObject)->setCoordsCenter(currentPoint);
-               isDragging = true;
-               break;
-           }
-
-           case LayoutTrack::LAYOUT_POS_LABEL:
-           case LayoutTrack::MULTI_SENSOR: {
+           case HitPointType::LAYOUT_POS_LABEL:
+           case HitPointType::MULTI_SENSOR: {
                PositionableLabel* pl = (PositionableLabel*) selectedObject;
 
-               if (pl && pl->isPositionable()) {
+               if (pl->isPositionable()) {
                    pl->setLocation((int) currentPoint.x(), (int) currentPoint.y());
                    isDragging = true;
                }
                break;
            }
 
-           case LayoutTrack::LAYOUT_POS_JCOMP: {
+           case HitPointType::LAYOUT_POS_JCOMP: {
                PositionableJComponent* c = (PositionableJComponent*) selectedObject;
 
                if (c->isPositionable()) {
@@ -2484,34 +2430,28 @@ void LayoutEditor::on_scenePos(QGraphicsSceneMouseEvent* event)
                break;
            }
 
-           case LayoutTrack::TRACK_CIRCLE_CENTRE: {
-               TrackSegment* t = (TrackSegment*) selectedObject;
-               t->reCalculateTrackSegmentAngle(currentPoint.x(), currentPoint.y());
+           case HitPointType::TRACK_CIRCLE_CENTRE: {
+               TrackSegmentView* tv = getTrackSegmentView((TrackSegment*) selectedObject);
+               tv->reCalculateTrackSegmentAngle(currentPoint.x(), currentPoint.y());
                break;
            }
 
            default:
            {
-               if ((foundHitPointType >= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN)
-                       && (foundHitPointType <= LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MAX)) {
-                   int index = selectedHitPointType - LayoutTrack::BEZIER_CONTROL_POINT_OFFSET_MIN;
-                   ((TrackSegment*) selectedObject)->setBezierControlPoint(currentPoint, index);
-               }
-               else if ((selectedHitPointType == LayoutTrack::SHAPE_CENTER))
-               {
-                   ((LayoutShape*) selectedObject)->setCoordsCenter(currentPoint);
-               }
-               else if (LayoutShape::isShapePointOffsetHitPointType(selectedHitPointType))
-               {
-                   int index = selectedHitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN;
-                   ((LayoutShape*) selectedObject)->setPoint(index, currentPoint);
-               }
-               else if (selectedHitPointType >= LayoutTrack::TURNTABLE_RAY_OFFSET)
-               {
-                   LayoutTurntable* turn = (LayoutTurntable*) selectedObject;
-                   turn->setRayCoordsIndexed(currentPoint.x(), currentPoint.y(),
-                           selectedHitPointType - LayoutTrack::TURNTABLE_RAY_OFFSET);
-               }
+        if (HitPointType::isBezierHitType(foundHitPointType)) {
+            int index = HitPointType::bezierPointIndex(selectedHitPointType);
+            getTrackSegmentView((TrackSegment*) selectedObject)->setBezierControlPoint(currentPoint, index);
+        } else if (selectedHitPointType == HitPointType::SHAPE_CENTER) {
+            ((LayoutShape*) selectedObject)->setCoordsCenter(currentPoint);
+        } else if (HitPointType::isShapePointOffsetHitPointType(selectedHitPointType)) {
+            int index = HitPointType::shapePointIndex(selectedHitPointType);
+            ((LayoutShape*) selectedObject)->setPoint(index, currentPoint);
+        } else if (HitPointType::isTurntableRayHitType(selectedHitPointType)) {
+            LayoutTurntable* turn = (LayoutTurntable*) selectedObject;
+            LayoutTurntableView* turnView = getLayoutTurntableView(turn);
+            turnView->setRayCoordsIndexed(currentPoint.x(), currentPoint.y(),
+                    HitPointType::turntableTrackIndex(selectedHitPointType));
+        }
                break;
            }
        }
@@ -2569,28 +2509,20 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 }
 
 /*private*/ PositionablePoint* LayoutEditor::addAnchor(QPointF p) {
-    numAnchors++;
-    // get unique name
-    QString name = "";
-    bool duplicate = true;
-    while (duplicate) {
-        name = "A" + numAnchors;
-        if (finder->findPositionablePointByName(name) == nullptr) {
-            duplicate = false;
-        }
-        if (duplicate) {
-            numAnchors++;
-        }
-    }
-    // create object
-    PositionablePoint* o = new PositionablePoint(name,
-            PositionablePoint::ANCHOR, p, this);
-    //if (o!=nullptr) {
-    layoutTrackList->append(o);
-    unionToPanelBounds(o->getBounds());
-    setDirty(true);
-    //}
-    return o;
+ Q_ASSERT( !p.isNull());
+
+ // get unique name
+ QString name = finder->uniqueName("A", ++numAnchors);
+
+ // create object
+ PositionablePoint* o = new PositionablePoint(name,
+         PositionablePoint::PointType::ANCHOR, this);
+ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
+ addLayoutTrack(o, pv);
+
+ setDirty();
+
+ return o;
 }
 #if 1
 //@Override
@@ -2971,9 +2903,10 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
     QString name = finder->uniqueName("EB", ++numEndBumpers);
     // create object
     PositionablePoint* o = new PositionablePoint(name,
-                        PositionablePoint::END_BUMPER, currentPoint, this);
-    layoutTrackList->append(o);
-    unionToPanelBounds(o->getBounds());
+                        PositionablePoint::END_BUMPER, this);
+    PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
+    layoutTrackList.append(o);
+    unionToPanelBounds(pv->getBounds());
     setDirty(true);
 }
 
@@ -2998,10 +2931,10 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 
  //create object
  PositionablePoint* o = new PositionablePoint(name,
-         PositionablePoint::EDGE_CONNECTOR, currentPoint, this);
-
- layoutTrackList->append(o);
- unionToPanelBounds(o->getBounds());
+         PositionablePoint::EDGE_CONNECTOR, this);
+PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
+ layoutTrackList.append(o);
+ unionToPanelBounds(pv->getBounds());
 }
 
 /**
@@ -3014,41 +2947,47 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  QString name = finder->uniqueName("T", ++numTrackSegments);
 
  // create object
- newTrack = new TrackSegment(name,(LayoutTrack*)beginTrack,beginHitPointType,
-                 (LayoutTrack*)foundTrack,foundHitPointType,leToolBarPanel->dashedLine->isChecked(), leToolBarPanel->mainlineTrack->isChecked(),this);
- if (newTrack!=nullptr)
- {
-  layoutTrackList->append(newTrack);
-  unionToPanelBounds(newTrack->getBounds());
-  setDirty(true);
-  // link to connected objects
-  setLink(newTrack,TRACK,beginTrack,beginHitPointType);
-  setLink(newTrack,TRACK,foundTrack,foundHitPointType);
-  // check on layout block
-  LayoutBlock* b = provideLayoutBlock(leToolBarPanel->blockLabel->text().trimmed());
-  if (b!=nullptr)
-  {
-   newTrack->setLayoutBlock(b);
-   auxTools->setBlockConnectivityChanged();
-   // check on occupancy sensor
-   QString sensorName = (leToolBarPanel->blockSensorLabel->text().trimmed());
-   if (sensorName.length()>0)
-   {
-    if (!validateSensor(sensorName,b,(Component*)this))
-    {
-     b->setOccupancySensorName("");
-    }
-    else
-    {
-     leToolBarPanel->blockSensorLabel->setText( b->getOccupancySensorName() );
-    }
-   }
-   newTrack->updateBlockInfo();
-  }
+ newTrack = new TrackSegment(name, beginTrack, beginHitPointType,
+         foundTrack, foundHitPointType,
+         leToolBarPanel->mainlineTrack->isChecked(), this);
+
+ TrackSegmentView* tsv = new TrackSegmentView(
+         newTrack,
+         this
+ );
+ addLayoutTrack(newTrack, tsv);
+
+ setDirty();
+
+ // link to connected objects
+ setLink(beginTrack, beginHitPointType, newTrack, HitPointType::TRACK);
+ setLink(foundTrack, foundHitPointType, newTrack, HitPointType::TRACK);
+
+ // check on layout block
+ QString newName = leToolBarPanel->blockIDComboBox->getSelectedItemDisplayName();
+ if (newName.isNull()) {
+     newName = "";
  }
- else
- {
-  log->error("Failure to create a new Track Segment");
+ LayoutBlock* b = provideLayoutBlock(newName);
+
+ if (b != nullptr) {
+     newTrack->setLayoutBlock(b);
+     getLEAuxTools()->setBlockConnectivityChanged();
+
+     // check on occupancy sensor
+     QString sensorName = leToolBarPanel->blockSensorComboBox->getSelectedItemDisplayName();
+     if (sensorName.isNull()) {
+         sensorName = "";
+     }
+
+     if (!sensorName.isEmpty()) {
+         if (!validateSensor(sensorName, b, this)) {
+             b->setOccupancySensorName("");
+         } else {
+             leToolBarPanel->blockSensorComboBox->setSelectedItem(b->getOccupancySensor());
+         }
+     }
+     newTrack->updateBlockInfo();
  }
 }
 
@@ -3061,11 +3000,11 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  // get unique name
  QString name = finder->uniqueName("X", ++numLevelXings);
  // create object
- LevelXing* o = new LevelXing(name,currentPoint,this);
+ LevelXing* o = new LevelXing(name, this);
  if (o!=nullptr)
  {
   //xingList->append(o);
-  layoutTrackList->append(o);
+  layoutTrackList.append(o);
   setDirty(true);
   // check on layout block
   LayoutBlock* b = provideLayoutBlock(leToolBarPanel->blockLabel->text().trimmed());
@@ -3121,19 +3060,28 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  QString name = finder->uniqueName("SL", ++numLayoutSlips);
  // create object
  LayoutSlip* o;
+ LayoutSlipView* ov;
+
  switch(type) {
-     case LayoutTurnout::TurnoutType::DOUBLE_SLIP :
-         o = new LayoutDoubleSlip(name, currentPoint, rot, this);
+  case LayoutTurnout::TurnoutType::DOUBLE_SLIP :
+  {
+   LayoutDoubleSlip* lds = new LayoutDoubleSlip(name, this);
+   o = lds;
+   ov = new LayoutDoubleSlipView(lds, currentPoint, rot, this);
+   break;
+  }
+  case LayoutTurnout::TurnoutType::SINGLE_SLIP :
+  {
+  LayoutSingleSlip* lss = new LayoutSingleSlip(name, this);
+  ov = new LayoutSingleSlipView(lss, currentPoint, rot, this);
          break;
-     case LayoutTurnout::TurnoutType::SINGLE_SLIP :
-         o = new LayoutSingleSlip(name, currentPoint, rot, this);
-         break;
-     default:
-         log->error(tr("can't create slip %1 with type %2").arg(name).arg(type));
-         return; // without creating
+  }
+  default:
+   log->error(tr("can't create slip %1 with type %2").arg(name).arg(type));
+   return; // without creating
  }
 
- addLayoutTrack(o);
+ addLayoutTrack(o, ov);
  setDirty();
 
  // check on layout block
@@ -3191,7 +3139,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 /**
  * Add a Layout Turnout
  */
-/*public*/ void LayoutEditor::addLayoutTurnout(int type)
+/*public*/ void LayoutEditor::addLayoutTurnout(LayoutTurnout::TurnoutType type)
 {
  // get the rotation entry
  double rot = 0.0;
@@ -3222,42 +3170,74 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  QString name = finder->uniqueName("TO", ++numLayoutTurnouts);
  // create object - check all types, although not clear all actually reach here
  LayoutTurnout* o;
+ LayoutTurnoutView* ov;
  switch(type) {
 
-     case LayoutTurnout::RH_TURNOUT :
-         o = new LayoutRHTurnout(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
-         break;
-     case LayoutTurnout::LH_TURNOUT :
-         o = new LayoutLHTurnout(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
-         break;
-     case LayoutTurnout::WYE_TURNOUT :
-         o = new LayoutWye(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
-         break;
-     case LayoutTurnout::DOUBLE_XOVER :
-         o = new LayoutDoubleXOver(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
-         break;
-     case LayoutTurnout::RH_XOVER :
-         o = new LayoutRHXOver(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
-         break;
-     case LayoutTurnout::LH_XOVER :
-         o = new LayoutLHXOver(name, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
-         break;
-
-     case LayoutTurnout::DOUBLE_SLIP :
-         o = new LayoutDoubleSlip(name, currentPoint, rot, this);
-         log->error(tr("Found SINGLE_SLIP in addLayoutTurnout for element %1").arg(name));
-         break;
-     case LayoutTurnout::SINGLE_SLIP :
-         o = new LayoutSingleSlip(name, currentPoint, rot, this);
-         log->error(tr("Found SINGLE_SLIP in addLayoutTurnout for element %1").arg(name));
-         break;
-
+ case LayoutTurnout::RH_TURNOUT :
+ {
+  LayoutRHTurnout* lrht = new LayoutRHTurnout(name, this);
+  o = lrht;
+  ov = new LayoutRHTurnoutView(lrht, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+  break;
+ }
+ case LayoutTurnout::LH_TURNOUT :
+ {
+  LayoutLHTurnout* llht = new LayoutLHTurnout(name, this);
+  o = llht;
+  ov = new LayoutLHTurnoutView(llht, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+  break;
+ }
+ case LayoutTurnout::WYE_TURNOUT:
+ {
+     LayoutWye* lw = new LayoutWye(name, this);
+     o = lw;
+     ov = new LayoutWyeView(lw, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+     break;
+ }
+ case LayoutTurnout::DOUBLE_XOVER:
+ {
+     LayoutDoubleXOver* ldx = new LayoutDoubleXOver(name, this);
+     o = ldx;
+     ov = new LayoutDoubleXOverView(ldx, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+     break;
+ }
+ case LayoutTurnout::RH_XOVER:
+ {
+     LayoutRHXOver* lrx = new LayoutRHXOver(name, this);
+     o = lrx;
+     ov = new LayoutRHXOverView(lrx, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+     break;
+ }
+ case LayoutTurnout::LH_XOVER:
+ {
+     LayoutLHXOver* llx = new LayoutLHXOver(name, this);
+     o = llx;
+     ov = new LayoutLHXOverView(llx, currentPoint, rot, gContext->getXScale(), gContext->getYScale(), this);
+     break;
+ }
+ case LayoutTurnout::DOUBLE_SLIP:
+ {
+     LayoutDoubleSlip* lds = new LayoutDoubleSlip(name, this);
+     o = lds;
+     ov = new LayoutDoubleSlipView(lds, currentPoint, rot, this);
+     log->error(tr("Found SINGLE_SLIP in addLayoutTurnout for element %1").arg(name));
+     break;
+ }
+ case LayoutTurnout::SINGLE_SLIP:
+ {
+     LayoutSingleSlip* lss = new LayoutSingleSlip(name, this);
+     o = lss;
+     ov = new LayoutSingleSlipView(lss, currentPoint, rot, this);
+     log->error(tr("Found SINGLE_SLIP in addLayoutTurnout for element %1").arg(name));
+     break;
+ }
      default:
-         log->error(tr("can't create LayoutTrack %1 with type %2").arg(name).arg(type));
-         return; // without creating
+      QMetaEnum metaEnum = QMetaEnum::fromType<LayoutTurnout::TurnoutType>();
+      log->error(tr("can't create LayoutTrack %1 with type %2").arg(name).arg(metaEnum.valueToKey(type)));
+      return; // without creating
  }
 
- addLayoutTrack(o);
+ addLayoutTrack(o, ov);
  setDirty();
 
  // check on layout block
@@ -3314,7 +3294,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 // LayoutTurnout* o = new LayoutTurnout(name,type,                                   currentPoint,rot,xScale,yScale,this);
 // //if (o!=nullptr) {
 // //turnoutList->append(o);
-// layoutTrackList->append(o);
+// layoutTrackList.append(o);
 // setDirty(true);
 // // check on layout block
 // LayoutBlock* b = provideLayoutBlock(leToolBarPanel->blockLabel->text().trimmed());
@@ -3584,6 +3564,21 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //  g->addItem(highlightRect);
 //}
 
+//@Nonnull
+/*public*/ QList<Positionable*>* LayoutEditor::getPositionalSelection() {
+    return _positionableSelection;
+}
+
+//@Nonnull
+/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTrackSelection() {
+    return _layoutTrackSelection;
+}
+
+//@Nonnull
+/*public*/ QList<LayoutShape*> LayoutEditor::getLayoutShapeSelection() {
+    return _layoutShapeSelection;
+}
+
 /*private*/ void LayoutEditor::createSelectionGroups()
 {
   QList <Positionable*> contents = getContents();
@@ -3599,8 +3594,9 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
    }
  }
 
- for (LayoutTrack* lt : *layoutTrackList) {
-     QPointF center = lt->getCoordsCenter();
+ for (LayoutTrack* lt : layoutTrackList) {
+     LayoutTrackView* ltv = getLayoutTrackView(lt);
+     QPointF center = ltv->getCoordsCenter();
      if (selectionRect.contains(center)) {
          if (!_layoutTrackSelection.contains(lt)) {
              _layoutTrackSelection.append(lt);
@@ -3610,7 +3606,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  assignBlockToSelectionMenuItem->setEnabled(_layoutTrackSelection.size() > 0);
 
  //layoutShapes.forEach((ls) ->
- foreach(LayoutShape* ls, *layoutShapes)
+ foreach(LayoutShape* ls, layoutShapes)
  {
      if (selectionRect.intersects(ls->getBounds())) {
          if (!_layoutShapeSelection.contains(ls)) {
@@ -3677,7 +3673,10 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
   return selections->toList();
 }
 
-void LayoutEditor::setDirty(bool b) {bDirty = b;}
+void LayoutEditor::setDirty(bool b) {bDirty = b; panelChanged = b;}
+/*public*/ void LayoutEditor::setDirty(){
+    setDirty(true);
+}
 bool LayoutEditor::isDirty() {return bDirty;}
 
 /**
@@ -3707,8 +3706,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /**
 * Adds a link in the 'to' object to the 'from' object
 */
-/*private*/ void LayoutEditor::setLink(QObject* fromObject,int fromPointType,
-                                      QObject* toObject,int toPointType)
+/*private*/ void LayoutEditor::setLink(QObject* fromObject,HitPointType::TYPES fromPointType,
+                                      QObject* toObject,HitPointType::TYPES toPointType)
 {
  switch (toPointType)
  {
@@ -4097,6 +4096,12 @@ bool LayoutEditor::isDirty() {return bDirty;}
  if(layoutEditorComponent == nullptr)
   layoutEditorComponent = new LayoutEditorComponent(this);
  layoutEditorComponent->paintTargetPanel(g2);
+
+ // Nothing to do here
+ // All drawing has been moved into LayoutEditorComponent
+ // which calls draw.
+ // This is so the layout is drawn at level three
+ // (above or below the Positionables)
 }
 
 // get selection rectangle
@@ -4167,38 +4172,47 @@ bool LayoutEditor::isDirty() {return bDirty;}
     }
 }
 
-/*private*/ QList<LayoutTrack *> *LayoutEditor::getLayoutTracksOfClass(QString type)
+/*private*/ QList<LayoutTrack *> LayoutEditor::getLayoutTracksOfClass(QString type)
 {
- QList<LayoutTrack*>* list = new QList<LayoutTrack*>();
- foreach(LayoutTrack* lt, *layoutTrackList)
+ QList<LayoutTrack*> list =  QList<LayoutTrack*>();
+ foreach(LayoutTrack* lt, layoutTrackList)
  {
   if(QString(lt->metaObject()->className()) == type)
-   list->append(lt);
+   list.append(lt);
  }
  return list;
 }
-
+#if 0
+/*public*/ /*@Nonnull*/
+    Stream<LayoutTrackView> getLayoutTrackViewsOfClass(Class<? extends LayoutTrackView> layoutTrackViewClass) {
+        return getLayoutTrackViews().stream()
+                .filter(layoutTrackViewClass::isInstance)
+                .map(layoutTrackViewClass::cast);
+    }
+#endif
 /*@Nonnull*/
 /*public*/ QList<PositionablePointView*> LayoutEditor::getPositionablePointViews() {
-    QList<PositionablePointView*> list = QList<PositionablePointView*>();
-    for (PositionablePoint* p : getPositionablePoints()) {
-        list.append(new PositionablePointView(p));
-    }
-    return list;
+//     return getLayoutTrackViewsOfClass("PositionablePointView")
+//             .map(PositionablePointView.class::cast)
+//             .collect(Collectors.toCollection(ArrayList::new));
+     QList<PositionablePointView*> list = QList<PositionablePointView*>();
+     for(LayoutTrackView* view : getLayoutTrackViews())
+     {
+      if(qobject_cast<PositionablePointView*>(view))
+       list.append((PositionablePointView*)view);
+     }
+     return list;
 }
 
 /*public*/ QList<PositionablePoint*> LayoutEditor::getPositionablePoints()
 {
     //return getLayoutTracksOfClass("PositionablePoint");
- QList<LayoutTrack*>* list1 = getLayoutTracksOfClass("PositionablePoint");
  QList<PositionablePoint*> list = QList<PositionablePoint*>();
- foreach(LayoutTrack* lt, *layoutTrackList)
+ foreach(LayoutTrack* lt, layoutTrackList)
  {
   if(qobject_cast<PositionablePoint*>(lt))
    list.append((PositionablePoint*)lt);
  }
- if(list.size() != list1->size())
-  log->debug(tr("list sizes differ"));
  return list;
 //    )
 //            .map(Positionablepoint->class::cast)
@@ -4490,7 +4504,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*public*/ QList<LayoutSlip*> LayoutEditor::getLayoutSlips() {
 //    return getLayoutTracksOfClass("LayoutSlip");
  QList<LayoutSlip*> list = QList<LayoutSlip*>();
- foreach(LayoutTrack* lt, *layoutTrackList)
+ foreach(LayoutTrack* lt, getLayoutTracks())
  {
   if(qobject_cast<LayoutSlip*>(lt))
    list.append((LayoutSlip*)lt);
@@ -4498,10 +4512,23 @@ bool LayoutEditor::isDirty() {return bDirty;}
  return list;
 }
 
+/*public*/ /*@Nonnull*/ QList<TrackSegmentView*> LayoutEditor::getTrackSegmentViews() {
+//        return getLayoutTrackViewsOfClass("TrackSegmentView")
+//                .map(TrackSegmentView.class::cast)
+//                .collect(Collectors.toCollection(ArrayList::new));
+     QList<TrackSegmentView*> list = QList<TrackSegmentView*>();
+     for(LayoutTrackView* view : getLayoutTrackViews())
+     {
+      if(qobject_cast<TrackSegmentView*>(view))
+       list.append((TrackSegmentView*)view);
+     }
+     return list;
+    }
+
 /*public*/ QList<TrackSegment*> LayoutEditor::getTrackSegments() {
 //    return getLayoutTracksOfClass("TrackSegment");
  QList<TrackSegment*> list = QList<TrackSegment*>();
- foreach(LayoutTrack* lt, *layoutTrackList)
+ foreach(LayoutTrack* lt, getLayoutTracks())
  {
   if(qobject_cast<TrackSegment*>(lt))
    list.append((TrackSegment*)lt);
@@ -4509,13 +4536,28 @@ bool LayoutEditor::isDirty() {return bDirty;}
  return list;
 }
 
+/*public*/ /*@Nonnull*/
+    QList<LayoutTurnoutView*> LayoutEditor::getLayoutTurnoutViews() { // this specifically does not include slips
+//        return getLayoutTrackViews().stream() // next line excludes LayoutSlips
+//                .filter((o) -> (!(o instanceof LayoutSlipView) && (o instanceof LayoutTurnoutView)))
+//                .map(LayoutTurnoutView.class::cast)
+//                .collect(Collectors.toCollection(ArrayList::new));
+    QList<LayoutTurnoutView*> list = QList<LayoutTurnoutView*>();
+    for(LayoutTrackView* ltv : getLayoutTrackViews())
+    {
+     if(qobject_cast<LayoutSlipView*>(ltv) || qobject_cast<LayoutTurnoutView*>(ltv))
+      list.append((LayoutTurnoutView*)ltv);
+    }
+    return list;
+}
+
 /*public*/ QList<LayoutTurnout*> LayoutEditor::getLayoutTurnouts() {
-//    return layoutTrackList->stream() // next line excludes LayoutSlips
+//    return layoutTrackList.stream() // next line excludes LayoutSlips
 //            .filter((o) -> (!(o instanceof LayoutSlip) && (o instanceof LayoutTurnout)))
 //            .map(Layoutturnout->class::cast).map(Layoutturnout->class::cast)
 //            .collect(Collectors.toCollection(ArrayList<LayoutTurnout>::new));
  QList<LayoutTurnout*> list = QList<LayoutTurnout*>();
- foreach (LayoutTrack* lt, *layoutTrackList)
+ foreach (LayoutTrack* lt, getLayoutTracks())
  {
   if(qobject_cast<LayoutSlip*>(lt))
    continue;
@@ -4528,7 +4570,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*public*/ QList<LayoutTurntable*> LayoutEditor::getLayoutTurntables() {
 //    return getLayoutTracksOfClass("LayoutTurntable");
  QList<LayoutTurntable*> list = QList<LayoutTurntable*>();
- foreach(LayoutTrack* lt, *layoutTrackList)
+ foreach(LayoutTrack* lt, getLayoutTracks())
  {
   if(qobject_cast<LayoutTurntable*>(lt))
    list.append((LayoutTurntable*)lt);
@@ -4536,15 +4578,169 @@ bool LayoutEditor::isDirty() {return bDirty;}
  return list;}
 
 /*public*/ QList<LevelXing*> LayoutEditor::getLevelXings() {
-    QList<LayoutTrack*>* layoutTracks =  getLayoutTracksOfClass("LevelXing");
+    QList<LayoutTrack*> layoutTracks =  getLayoutTracksOfClass("LevelXing");
     QList<LevelXing*> l = QList<LevelXing*>();
-    for(LayoutTrack* t : *layoutTracks)
+    for(LayoutTrack* t : layoutTracks)
      l.append((LevelXing*)t);
   return l;
 }
+/*public*/ /*@Nonnull*/
+QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
+//    return getLayoutTrackViewsOfClass("LevelXingView")
+//            .map(LevelXingView.class::cast)
+//            .collect(Collectors.toCollection(ArrayList::new));
+    QList<LevelXingView*> list = QList<LevelXingView*>();
+    for(LayoutTrackView* ltv : getLayoutTrackViews())
+    {
+     if(qobject_cast<LayoutSlipView*>(ltv) || qobject_cast<LayoutTurnoutView*>(ltv))
+      list.append((LevelXingView*)ltv);
+    }
+    return list;
+}
 
-/*public*/ QList<LayoutTrack*>* LayoutEditor::getLayoutTracks() {
+/*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTracks() {
     return layoutTrackList;
+}
+/*public*/ /*@Nonnull*/ QList<LayoutTurnoutView*> LayoutEditor::getLayoutTurnoutAndSlipViews() {
+//    return getLayoutTrackViewsOfClass("LayoutTurnoutView"
+//    )
+//            .map(LayoutTurnoutView.class::cast)
+//            .collect(Collectors.toCollection(ArrayList::new));
+ QList<LayoutTurnoutView*> list = QList<LayoutTurnoutView*>();
+ for(LayoutTrackView* ltv : getLayoutTrackViews())
+ {
+  if(qobject_cast<LayoutTurnoutView*>(ltv))
+   list.append((LayoutTurnoutView*)ltv);
+ }
+ return list;
+}
+
+/*public*/ /*@Nonnull*/QList<LayoutTurnout*> LayoutEditor::getLayoutTurnoutsAndSlips() {
+//    return getLayoutTracksOfClass("LayoutTurnout"
+//    )
+//            .map(LayoutTurnout.class::cast)
+//            .collect(Collectors.toCollection(ArrayList::new));
+ QList<LayoutTurnout*> list = QList<LayoutTurnout*>();
+ for(LayoutTrack* lt : getLayoutTracksOfClass("LayoutTurnout"))
+ {
+  if(qobject_cast<LayoutTurnout*>(lt))
+   list.append((LayoutTurnout*)lt);
+ }
+ return list;
+}
+
+/**
+ * Read-only access to the list of LayoutTrackView family objects. The
+ * returned list will throw UnsupportedOperationException if you attempt to
+ * modify it.
+ *
+ * @return unmodifiable copy of track views.
+ */
+//@Nonnull
+/*final*/ /*public*/ QList<LayoutTrackView*> LayoutEditor::getLayoutTrackViews() {
+    //return Collections.unmodifiableList(layoutTrackViewList);
+ return QList<LayoutTrackView*>(layoutTrackViewList);
+}
+
+
+// temporary
+/*final*/ /*public*/ LayoutTrackView* LayoutEditor::getLayoutTrackView(LayoutTrack* trk) {
+    LayoutTrackView* lv = trkToView.value(trk);
+    if (lv == nullptr) {
+        log->warn(tr("No View found for %1 class %2").arg(trk->toString(), trk->metaObject()->className()));
+        throw IllegalArgumentException(QString("No View found: ") + trk->metaObject()->className());
+    }
+    return lv;
+}
+
+// temporary
+/*final*/ /*public*/ LevelXingView* LayoutEditor::getLevelXingView(LevelXing* xing) {
+    LayoutTrackView* lv = trkToView.value(xing);
+    if (lv == nullptr) {
+        log->warn(tr("No View found for %1 class %2").arg(xing->toString(), xing->metaObject()->className()));
+        throw  IllegalArgumentException(QString("No View found: ") + xing->metaObject()->className());
+    }
+    if (qobject_cast<LevelXingView*>(lv)) {
+        return (LevelXingView*) lv;
+    } else {
+        log->error(tr("wrong type %1 %2 found %3").arg(xing->toString(), xing->metaObject()->className(), lv->getName()));
+    }
+    throw  IllegalArgumentException(QString("Wrong type: ") + xing->metaObject()->className());
+}
+
+// temporary
+/*final*/ /*public*/ LayoutTurnoutView* LayoutEditor::getLayoutTurnoutView(LayoutTurnout* to) {
+    LayoutTrackView* lv = trkToView.value(to);
+    if (lv == nullptr) {
+        log->warn(tr("No View found for %1 class %2").arg(to->getId(), to->metaObject()->className()));
+        throw  IllegalArgumentException(QString("No View found: ") + toString());
+    }
+    if (qobject_cast< LayoutTurnoutView*>(lv)) {
+        return (LayoutTurnoutView*) lv;
+    } else {
+        log->error(tr("wrong type %1 %2 found %3").arg(to->toString(), to->metaObject()->className(), lv->getName()));
+    }
+    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+}
+
+// temporary
+/*final*/ /*public*/ LayoutTurntableView* LayoutEditor::getLayoutTurntableView(LayoutTurntable* to) {
+    LayoutTrackView* lv = trkToView.value(to);
+    if (lv == nullptr) {
+        log->warn(tr("No View found for %1 class %2").arg(to->toString(), to->metaObject()->className()));
+        throw  IllegalArgumentException(QString("No matching View found: ") + to->getName());
+    }
+    if (qobject_cast<LayoutTurntableView*>(lv)) {
+        return (LayoutTurntableView*) lv;
+    } else {
+        log->error(tr("wrong type %1 %2 found %3").arg(to->toString(), to->metaObject()->className(), lv->getName()));
+    }
+    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+}
+
+// temporary
+/*final*/ /*public*/ LayoutSlipView* LayoutEditor::getLayoutSlipView(LayoutSlip* to) {
+    LayoutTrackView* lv = trkToView.value(to);
+    if (lv == nullptr) {
+        log->warn(tr("No View found for %1 class %2").arg(to->toString(), to->metaObject()->className()));
+        throw  IllegalArgumentException(QString("No matching View found: ") + to->toString());
+    }
+    if (qobject_cast<LayoutSlipView*>(lv)) {
+        return (LayoutSlipView*) lv;
+    } else {
+     log->error(tr("wrong type %1 %2 found %3").arg(to->toString(), to->metaObject()->className(), lv->getName()));
+    }
+    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+}
+
+// temporary
+/*final*/ /*public*/ TrackSegmentView* LayoutEditor::getTrackSegmentView(TrackSegment* to) {
+    LayoutTrackView* lv = trkToView.value(to);
+    if (lv == nullptr) {
+     log->warn(tr("No View found for %1 class %2").arg(to->toString(), to->metaObject()->className()));
+        throw  IllegalArgumentException(QString("No matching View found: ") + to->toString());
+    }
+    if (qobject_cast<TrackSegmentView*>(lv)) {
+        return (TrackSegmentView*) lv;
+    } else {
+     log->error(tr("wrong type %1 %2 found %3").arg(to->toString(), to->metaObject()->className(), lv->getName()));
+    }
+    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+}
+
+// temporary
+/*final*/ /*public*/ PositionablePointView* LayoutEditor::getPositionablePointView(const PositionablePoint *to) {
+    LayoutTrackView* lv = trkToView.value((LayoutTrack*)to);
+    if (lv == nullptr) {
+     log->warn(tr("No View found for %1 class %2").arg(((LayoutTrack*)to)->toString(), to->metaObject()->className()));
+        throw  IllegalArgumentException(QString("No matching View found: ") + ((LayoutTrack*)to)->toString());
+    }
+    if (qobject_cast< PositionablePointView*>(lv)) {
+        return (PositionablePointView*) lv;
+    } else {
+     log->error(tr("wrong type %1 %2 found %3").arg(((LayoutTrack*)to)->toString(), ((LayoutTrack*)to)->metaObject()->className(), lv->getName()));
+    }
+    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
 }
 
 /**
@@ -4554,25 +4750,24 @@ bool LayoutEditor::isDirty() {return bDirty;}
  * @return unmodifiable copy of track views.
  */
 //@Nonnull
-/*final*/ /*public*/ QList<LayoutTrackView*>* LayoutEditor::getLayoutTrackViews() {
-    return /*Collections.unmodifiableList*/(layoutTrackViewList);
-}
+///*final*/ /*public*/ QList<LayoutTrackView*> LayoutEditor::getLayoutTrackViews() {
+//    return /*Collections.unmodifiableList*/(layoutTrackViewList);
+//}
 
 /**
  * Add a LayoutTrack to the list of LayoutTrack family objects.
  * @param trk the layout track to add.
  */
-/*final*/ /*public*/ void LayoutEditor::addLayoutTrack(/*@Nonnull*/ LayoutTrack* trk) {
+/*final*/ /*public*/ void LayoutEditor::addLayoutTrack(/*@Nonnull*/ LayoutTrack* trk, /*@Nonnull*/ LayoutTrackView* v) {
     log->trace(tr("addLayoutTrack %1").arg(trk->getName()));
-    if (layoutTrackList->contains(trk)) log->warn(tr("LayoutTrack %1 already being maintained").arg(trk->getName()));
-    layoutTrackList->append(trk);
+    if (layoutTrackList.contains(trk)) log->warn(tr("LayoutTrack %1 already being maintained").arg(trk->getName()));
 
-    // create the view on the fly
-    LayoutTrackView* v = LayoutTrackView::makeTrackView(trk);
-    layoutTrackViewList->append(v);
+    layoutTrackList.append(trk);
+    layoutTrackViewList.append(v);
     trkToView.insert(trk, v);
     viewToTrk.insert(v, trk);
-    unionToPanelBounds(trk->getBounds());
+
+    unionToPanelBounds(v->getBounds());
 }
 
 /**
@@ -4582,7 +4777,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
  * @return true is item was deleted and a redraw done.
  */
 /*final*/ /*public*/ bool LayoutEditor::removeLayoutTrackAndRedraw(/*@Nonnull*/ LayoutTrack* trk) {
-    if (layoutTrackList->contains(trk)) {
+    if (layoutTrackList.contains(trk)) {
         removeLayoutTrack(trk);
         setDirty();
         redrawPanel();
@@ -4600,9 +4795,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
  */
 /*final*/ /*public*/ void LayoutEditor::removeLayoutTrack(/*@Nonnull */LayoutTrack* trk) {
     log->trace(tr("removeLayoutTrack %1").arg(trk->getId()));
-    layoutTrackList->removeOne(trk);
+    layoutTrackList.removeOne(trk);
     LayoutTrackView* v = trkToView.value(trk);
-    layoutTrackViewList->removeOne(v);
+    layoutTrackViewList.removeOne(v);
     trkToView.remove(trk);
     viewToTrk.remove(v);
 }
@@ -4611,24 +4806,24 @@ bool LayoutEditor::isDirty() {return bDirty;}
  *
  */
 /*private*/ void LayoutEditor::clearLayoutTracks() {
-    layoutTrackList->clear();
-    layoutTrackViewList->clear();
+    layoutTrackList.clear();
+    layoutTrackViewList.clear();
     trkToView.clear();
     viewToTrk.clear();
 }
 
-/*public*/ QList<LayoutTurnout *> *LayoutEditor::getLayoutTurnoutsAndSlips() {
-//    return getLayoutTracksOfClass("LayoutTurnout");
- QList<LayoutTurnout*>* list = new QList<LayoutTurnout*>();
- foreach(LayoutTrack* lt, *layoutTrackList)
- {
-  if(qobject_cast<LayoutTurnout*>(lt))
-   list->append((LayoutTurnout*)lt);
- }
- return list;
-}
+///*public*/ QList<LayoutTurnout *> *LayoutEditor::getLayoutTurnoutsAndSlips() {
+////    return getLayoutTracksOfClass("LayoutTurnout");
+// QList<LayoutTurnout*>* list = new QList<LayoutTurnout*>();
+// foreach(LayoutTrack* lt, getLayoutTracks())
+// {
+//  if(qobject_cast<LayoutTurnout*>(lt))
+//   list->append((LayoutTurnout*)lt);
+// }
+// return list;
+//}
 
-/*public*/ /*@Nonnull*/ QList<LayoutShape*>* LayoutEditor::getLayoutShapes() {
+/*public*/ /*@Nonnull*/ QList<LayoutShape*> LayoutEditor::getLayoutShapes() {
     return layoutShapes;
 }
 
@@ -4644,7 +4839,35 @@ bool LayoutEditor::isDirty() {return bDirty;}
     });
 #endif
 }
+/**
+ * {@inheritDoc}
+ * <p>
+ * This implementation is temporary, using the on-screen points from the
+ * LayoutTrackViews via @{link LayoutEditor#getCoords}.
+ */
+//Override
+/*public*/ int LayoutEditor::computeDirection(LayoutTrack* trk1, HitPointType::TYPES h1, LayoutTrack* trk2, HitPointType::TYPES h2) {
+    return Path::computeDirection(
+            getCoords(trk1, h1),
+            getCoords(trk2, h2)
+    );
+}
 
+//@Override
+/*public*/ int LayoutEditor::computeDirectionToCenter(/*@Nonnull*/ LayoutTrack* trk1, /*@Nonnull*/ HitPointType::TYPES h1, /*@Nonnull*/ PositionablePoint* p) {
+    return Path::computeDirection(
+            getCoords(trk1, h1),
+            getPositionablePointView(p)->getCoordsCenter()
+    );
+}
+
+//@Override
+/*public*/ int LayoutEditor::computeDirectionFromCenter(/*@Nonnull*/ const PositionablePoint* p, /*@Nonnull*/ LayoutTrack* trk1, /*@Nonnull*/ HitPointType::TYPES h1) {
+    return Path::computeDirection(
+            getPositionablePointView(p)->getCoordsCenter(),
+            getCoords(trk1, h1)
+    );
+}
 /*public*/ void LayoutEditor::alignSelection(bool alignX) {
     QPointF minPoint = MathUtil::infinityPoint2D();
     QPointF maxPoint = MathUtil::zeroPoint2D;
@@ -4663,7 +4886,8 @@ bool LayoutEditor::isDirty() {return bDirty;}
     }
 
     for (LayoutTrack* lt : _layoutTrackSelection) {
-        QPointF p = lt->getCoordsCenter();
+     LayoutTrackView* ltv = getLayoutTrackView(lt);
+        QPointF p = ltv->getCoordsCenter();
         minPoint = MathUtil::min(minPoint, p);
         maxPoint = MathUtil::max(maxPoint, p);
         sumPoint = MathUtil::add(sumPoint, p);
@@ -4697,10 +4921,11 @@ bool LayoutEditor::isDirty() {return bDirty;}
     //_layoutTrackSelection.forEach((lt) ->
     foreach(LayoutTrack* lt, _layoutTrackSelection)
     {
+        LayoutTrackView* ltv = getLayoutTrackView(lt);
         if (alignX) {
-            lt->setCoordsCenter(QPointF(aveX, lt->getCoordsCenter().y()));
+            ltv->setCoordsCenter(QPointF(aveX, ltv->getCoordsCenter().y()));
         } else {
-            lt->setCoordsCenter(QPointF(lt->getCoordsCenter().x(), aveY));
+            ltv->setCoordsCenter(QPointF(ltv->getCoordsCenter().x(), aveY));
         }
     }//);
 
@@ -4771,7 +4996,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 
             QPointF delta = QPointF(deltaX, deltaY);
             //_positionableSelection.forEach((c) ->
-            foreach(Positionable* c, *_positionableSelection)
+            for(Positionable* c : *_positionableSelection)
             {
                 QPointF newPoint = c->getLocation();
                 //if ((c instanceof MemoryIcon) && (c.getPopupUtility().getFixedWidth() == 0))
@@ -4786,15 +5011,16 @@ bool LayoutEditor::isDirty() {return bDirty;}
             }//);
 
             //_layoutTrackSelection.forEach((lt) ->
-            foreach(LayoutTrack*lt, _layoutTrackSelection)
+            for(LayoutTrack* lt : _layoutTrackSelection)
             {
-                QPointF newPoint = MathUtil::add(lt->getCoordsCenter(), delta);
+             LayoutTrackView* ltv = getLayoutTrackView(lt);
+                QPointF newPoint = MathUtil::add(ltv->getCoordsCenter(), delta);
                 newPoint = MathUtil::max(MathUtil::zeroPoint2D, newPoint);
-                lt->setCoordsCenter(newPoint);
+                ltv->setCoordsCenter(newPoint);
             }//);
 
             //_layoutShapeSelection.forEach((ls) -> {
-            foreach(LayoutShape* ls, _layoutShapeSelection)
+            for(LayoutShape* ls : _layoutShapeSelection)
             {
                 QPointF newPoint = MathUtil::add(ls->getCoordsCenter(), delta);
                 newPoint = MathUtil::max(MathUtil::zeroPoint2D, newPoint);
@@ -4906,7 +5132,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
   for (TrackSegment* t : getTrackSegments()) {
       if (t==o) {
           // found object
-          layoutTrackList->removeOne(t);
+          layoutTrackList.removeOne(t);
       }
   }
   // update affected blocks
@@ -4954,26 +5180,18 @@ bool LayoutEditor::isDirty() {return bDirty;}
      prevSelectedObject = nullptr;
  }
  // remove connections if any
+ LayoutTurntableView* ov = getLayoutTurntableView(o);
  for (int j = 0; j < o->getNumberRays(); j++) {
-     TrackSegment* t = o->getRayConnectOrdered(j);
+     TrackSegment* t = ov->getRayConnectOrdered(j);
+
      if (t != nullptr) {
-         substituteAnchor(o->getRayCoordsIndexed(j), o, t);
+         substituteAnchor(ov->getRayCoordsIndexed(j), o, t);
      }
  }
- // delete from array
- for (int i = 0; i < turntableList->size(); i++) {
-     LayoutTurntable* lx = turntableList->at(i);
-     if (lx == o) {
-         // found object
-         turntableList->remove(i);
-         o->remove();
-         setDirty(true);
-         repaint();
-         return (true);
-     }
- }
- return (false);
+
+return removeLayoutTrackAndRedraw(o);
 }
+
 /*private*/ void LayoutEditor::disconnect(QObject* o, int type) {
   if (o==nullptr) return;
   switch (type) {
@@ -5808,10 +6026,12 @@ void LayoutEditor::addSensor()
 
 /*public*/ bool LayoutEditor::translateTrack(float xDel, float yDel) {
     QPointF delta = QPointF(xDel, yDel);
-    //layoutTrackList->forEach((lt) ->
-    foreach (LayoutTrack*lt, *layoutTrackList)
+    //layoutTrackList.forEach((lt) ->
+    for (LayoutTrack* lt : getLayoutTracks())
     {
-        lt->setCoordsCenter(MathUtil::add(lt->getCoordsCenter(), delta));
+     LayoutTrackView* ltv = getLayoutTrackView(lt);
+
+        ltv->setCoordsCenter(MathUtil::add(ltv->getCoordsCenter(), delta));
     }//);
     resizePanelBounds(true);
     return true;
@@ -5824,10 +6044,11 @@ void LayoutEditor::addSensor()
  * @param yFactor the amount to scale Y coordinates
  */
 /*public*/ bool LayoutEditor::scaleTrack(float xFactor, float yFactor) {
-    //layoutTrackList->forEach((lt) -> {
- foreach (LayoutTrack*lt, *layoutTrackList)
+    //layoutTrackList.forEach((lt) -> {
+ for(LayoutTrack*lt : getLayoutTracks())
  {
-     lt->scaleCoords(xFactor, yFactor);
+  LayoutTrackView* ltv = getLayoutTrackView(lt);
+     ltv->scaleCoords(xFactor, yFactor);
  }//);
 
  //update the overall scale factors
@@ -6044,9 +6265,9 @@ void LayoutEditor::addIcon() {
   }
   selectionActive = false;
 
-  //layoutShapes->removeAll(_layoutShapeSelection);
+  //layoutShapes.removeAll(_layoutShapeSelection);
   foreach(LayoutShape* ls, _layoutShapeSelection)
-   layoutShapes->removeOne(ls);
+   layoutShapes.removeOne(ls);
 
   clearSelectionGroups();
   //repaint();
@@ -6110,8 +6331,8 @@ void LayoutEditor::addIcon() {
                   (b4!=b2) && (b4!=b3) ) b4->decrementUse();
   }
   // delete from array
-  if (layoutTrackList->contains(o)) {
-      layoutTrackList->removeOne(o);
+  if (layoutTrackList.contains(o)) {
+      layoutTrackList.removeOne(o);
       setDirty();
       redrawPanel();
       return true;
@@ -6122,10 +6343,10 @@ void LayoutEditor::addIcon() {
 {
     PositionablePoint* p = addAnchor(loc);
     if (t->getConnect1() == o) {
-        t->setNewConnect1(p, POS_POINT);
+        t->setNewConnect1(p, HitPointType::POS_POINT);
     }
     if (t->getConnect2() == o) {
-        t->setNewConnect2(p, POS_POINT);
+        t->setNewConnect2(p, HitPointType::POS_POINT);
     }
     p->setTrackConnection(t);
 }
@@ -6180,8 +6401,8 @@ void LayoutEditor::addIcon() {
  if (lb != nullptr) lb->decrementUse();
 
  // delete from array
- if (layoutTrackList->contains(o)) {
-     layoutTrackList->removeOne(o);
+ if (layoutTrackList.contains(o)) {
+     layoutTrackList.removeOne(o);
      o->remove();
      setDirty();
      redrawPanel();
@@ -6238,8 +6459,8 @@ switch(QMessageBox::question(this,tr("Warning"),tr("Are you sure that you want t
  LayoutBlock* lbx = o->getLayoutBlockBD();
  if (lbx!=nullptr && lb!=nullptr && lbx!=lb) lb->decrementUse();
  // delete from array
- if (layoutTrackList->contains(o)) {
-     layoutTrackList->removeOne(o);
+ if (layoutTrackList.contains(o)) {
+     layoutTrackList.removeOne(o);
      o->remove();
      setDirty();
      redrawPanel();
@@ -6311,6 +6532,10 @@ return icon;
     return antialiasingOn;
 }
 
+/*public*/ bool LayoutEditor::isDrawLayoutTracksLabel() {
+    return drawLayoutTracksLabel;
+}
+
 //TODO: @Deprecated // Java standard pattern for boolean getters is "isShowHelpBar()"
 /*public*/ bool LayoutEditor::getHighlightSelectedBlock() {
     return highlightSelectedBlockFlag;
@@ -6368,7 +6593,7 @@ return icon;
     if (!Editor::deletePanel()) {
         return false; //return without deleting if "No" response
     }
-    layoutTrackList->clear();
+    layoutTrackList.clear();
     return true;
 }
 
@@ -6443,7 +6668,7 @@ return icon;
  //if (nb instanceof Turnout)
  if(qobject_cast<Turnout*>(nb)!=nullptr)
  {
-  for (LayoutTurnout* lt : *getLayoutTurnoutsAndSlips())
+  for (LayoutTurnout* lt : getLayoutTurnoutsAndSlips())
   {
    if(lt->getTurnout()==(nb))
    {
@@ -6737,7 +6962,7 @@ QString LayoutEditor::toString() {
 
     //create object
     LayoutShape* o = new LayoutShape(name, p, this);
-    layoutShapes->append(o);
+    layoutShapes.append(o);
     unionToPanelBounds(o->getBounds());
     setDirty();
     return o;
@@ -6751,8 +6976,8 @@ QString LayoutEditor::toString() {
  */
 /*protected*/ bool LayoutEditor::removeLayoutShape(/*@Nonnull*/ LayoutShape* s) {
     bool result = false;
-    if (layoutShapes->contains(s)) {
-        layoutShapes->removeOne(s);
+    if (layoutShapes.contains(s)) {
+        layoutShapes.removeOne(s);
         setDirty();
         result = true;
         redrawPanel();
@@ -6827,7 +7052,8 @@ void LayoutEditor::closeEvent(QCloseEvent *)
         }
 
         for (LayoutTrack* lt : _layoutTrackSelection) {
-            lt->setCoordsCenter(MathUtil::add(lt->getCoordsCenter(), delta));
+         LayoutTrackView* ltv = getLayoutTrackView(lt);
+            ltv->setCoordsCenter(MathUtil::add(ltv->getCoordsCenter(), delta));
         }
 
         for (LayoutShape* ls : _layoutShapeSelection) {
@@ -6859,10 +7085,11 @@ void LayoutEditor::undoMoveSelection() {
         }
 
         QPointF delta = QPointF(undoDeltaX, undoDeltaY);
-        for (LayoutTrack* lt : *layoutTrackList) {
-            QPointF center = lt->getCoordsCenter();
+        for (LayoutTrack* lt : _layoutTrackSelection) {
+         LayoutTrackView* ltv = getLayoutTrackView(lt);
+            QPointF center = ltv->getCoordsCenter();
             if (undoRect.contains(center)) {
-                lt->setCoordsCenter(MathUtil::add(center, delta));
+                ltv->setCoordsCenter(MathUtil::add(center, delta));
             }
         }
         undoRect = MathUtil::offset(undoRect, delta.x(), delta.y());
@@ -6901,8 +7128,9 @@ void LayoutEditor::undoMoveSelection() {
     }
 
     for (LayoutTrack* lt : _layoutTrackSelection) {
-        lt->setCoordsCenter(MathUtil::rotateDEG(lt->getCoordsCenter(), center, 90));
-        lt->rotateCoords(90);
+     LayoutTrackView* ltv = getLayoutTrackView(lt);
+        ltv->setCoordsCenter(MathUtil::rotateDEG(ltv->getCoordsCenter(), center, 90));
+        ltv->rotateCoords(90);
     }
 
     for (LayoutShape* ls : _layoutShapeSelection) {
@@ -6979,7 +7207,7 @@ void LayoutEditor::undoMoveSelection() {
         }
     }
 
-    for (LayoutTrack* ltv : *layoutTrackList) {
+    for (LayoutTrackView* ltv : getLayoutTrackViews()) {
         try {
             QPointF newPoint = MathUtil::subtract(MathUtil::rotateDEG(ltv->getCoordsCenter(), lowerLeft, 90), lowerLeft);
             ltv->setCoordsCenter(newPoint);
@@ -6989,7 +7217,7 @@ void LayoutEditor::undoMoveSelection() {
         }
     }
 
-    for (LayoutShape* ls : *layoutShapes) {
+    for (LayoutShape* ls : layoutShapes) {
         QPointF newPoint = MathUtil::subtract(MathUtil::rotateDEG(ls->getCoordsCenter(), lowerLeft, 90), lowerLeft);
         ls->setCoordsCenter(newPoint);
         ls->rotateCoords(90);
@@ -7049,18 +7277,20 @@ void LayoutEditor::undoMoveSelection() {
     alignToGrid(*_positionableSelection, _layoutTrackSelection, _layoutShapeSelection);
 }
 
-/*private*/ void LayoutEditor::alignToGrid(QVector<Positionable*> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes) {
+/*private*/ void LayoutEditor::alignToGrid(QList<Positionable*> positionables, QList<LayoutTrack*> tracks, QList<LayoutShape*> shapes) {
     for (Positionable* positionable : positionables) {
         QPointF newLocation = MathUtil::granulize(positionable->getLocation(), gContext->getGridSize());
         positionable->setLocation((int) (newLocation.x()), (int) newLocation.y());
     }
     for (LayoutTrack* lt : tracks) {
-        lt->setCoordsCenter(MathUtil::granulize(lt->getCoordsCenter(), gContext->getGridSize()));
+     LayoutTrackView* ltv = getLayoutTrackView(lt);
+        ltv->setCoordsCenter(MathUtil::granulize(ltv->getCoordsCenter(), gContext->getGridSize()));
         if (qobject_cast<LayoutTurntable*>(lt)) {
             LayoutTurntable* tt = (LayoutTurntable*) lt;
+            LayoutTurntableView* ttv = getLayoutTurntableView(tt);
             for (RayTrack* rt : tt->getRayTrackList()) {
                 int rayIndex = rt->getConnectionIndex();
-                tt->setRayCoordsIndexed(MathUtil::granulize(tt->getRayCoordsIndexed(rayIndex), gContext->getGridSize()), rayIndex);
+                ttv->setRayCoordsIndexed(MathUtil::granulize(ttv->getRayCoordsIndexed(rayIndex), gContext->getGridSize()), rayIndex);
             }
         }
     }
@@ -7181,7 +7411,6 @@ void LayoutEditor::undoMoveSelection() {
  * @param color value to set the default track color to.
  */
 /*public*/ void LayoutEditor::setDefaultTrackColor(/*@Nonnull*/ QColor color) {
-    LayoutTrack::setDefaultTrackColor(color);
     defaultTrackColor = color;
     JmriColorChooser::addRecentColor(color);
 }
@@ -7334,6 +7563,25 @@ void LayoutEditor::undoMoveSelection() {
  }
 }
 
+/**
+ *
+ * @param state true to set anti-aliasing flag on, else false.
+ */
+/*public*/ void LayoutEditor::setDrawLayoutTracksLabel(bool state) {
+    if (drawLayoutTracksLabel != state) {
+        drawLayoutTracksLabel = state;
+
+        // this may not be set up yet...
+        if (drawLayoutTracksLabelCheckBoxMenuItem != nullptr) {
+            drawLayoutTracksLabelCheckBoxMenuItem->setChecked(drawLayoutTracksLabel);
+
+        }
+        if(InstanceManager::getOptionalDefault("UserPreferencesManager"))//.ifPresent((prefsMgr) -> prefsMgr.setSimplePreferenceState(getWindowFrameRef() + ".drawLayoutTracksLabel", drawLayoutTracksLabel));
+         ((UserPreferencesManager*)InstanceManager::getOptionalDefault("UserPreferencesManager"))->
+    setSimplePreferenceState(getWindowFrameRef() + ".drawLayoutTracksLabel", drawLayoutTracksLabel);
+   }
+}
+
 //enable/disable using the "Extra" color to highlight the selected block
 /*public*/ void LayoutEditor::setHighlightSelectedBlock(bool state) {
     if (highlightSelectedBlockFlag != state) {
@@ -7462,10 +7710,10 @@ void LayoutEditor::undoMoveSelection() {
     numLayoutTurntables++;
    }
  }
- LayoutTurntable* x = new LayoutTurntable(name, pt, this);
+ LayoutTurntable* x = new LayoutTurntable(name,  this);
  //if (x != nullptr) {
  turntableList->append(x);
- layoutTrackList->append(x);
+ layoutTrackList.append(x);
  setDirty(true);
  //}
  x->addRay(0.0);
@@ -7476,7 +7724,7 @@ void LayoutEditor::undoMoveSelection() {
 // final initialization routine for loading a LayoutEditor
 /*public*/ void LayoutEditor::setConnections()
 {
- for (LayoutTrack* lt : *layoutTrackList) {
+ foreach (LayoutTrack* lt , getLayoutTracks()) {
      lt->setObjects(this);
  }
  getLEAuxTools()->initializeBlockConnectivity();
@@ -8725,7 +8973,7 @@ void LayoutEditor::undoMoveSelection() {
 }
 
 void LayoutEditor::findTurnoutUsage(NamedBean* bean) {
-    for (LayoutTurnout* turnout : *getLayoutTurnoutsAndSlips()) {
+    for (LayoutTurnout* turnout : getLayoutTurnoutsAndSlips()) {
         QString data = getUsageData(turnout);
 
         if (bean->equals(turnout->getTurnout())) {
@@ -8848,26 +9096,27 @@ void LayoutEditor::findXingWhereUsed(NamedBean* bean) {
         if (isLBLockUsed(bean, xing->getLayoutBlockBD())) {
             usageReport.append(new NamedBeanUsageReport("LayoutEditorXingBlock", data));
         }
-        if (isUsedInXing(bean, xing, LevelXing::GEOMETRY::POINTA)) {
+        if (isUsedInXing(bean, xing, LevelXing::Geometry::POINTA)) {
             usageReport.append(new NamedBeanUsageReport("LayoutEditorXingOther", data));
         }
-        if (isUsedInXing(bean, xing, LevelXing::GEOMETRY::POINTB)) {
+        if (isUsedInXing(bean, xing, LevelXing::Geometry::POINTB)) {
             usageReport.append(new NamedBeanUsageReport("LayoutEditorXingOther", data));
         }
-        if (isUsedInXing(bean, xing, LevelXing::GEOMETRY::POINTC)) {
+        if (isUsedInXing(bean, xing, LevelXing::Geometry::POINTC)) {
             usageReport.append(new NamedBeanUsageReport("LayoutEditorXingOther", data));
         }
-        if (isUsedInXing(bean, xing, LevelXing::GEOMETRY::POINTD)) {
+        if (isUsedInXing(bean, xing, LevelXing::Geometry::POINTD)) {
             usageReport.append(new NamedBeanUsageReport("LayoutEditorXingOther", data));
         }
     }
 }
 
 QString LayoutEditor::getUsageData(LayoutTrack* track) {
-    QPointF point = track->getCoordsCenter();
-    if (qobject_cast<TrackSegment*>(track)) {
-        TrackSegment* segment = (TrackSegment*) track;
-        point = QPointF(segment->getCentreSegX(), segment->getCentreSegY());
+ LayoutTrackView* trackView = getLayoutTrackView(track);
+    QPointF point = trackView->getCoordsCenter();
+    if (qobject_cast<TrackSegmentView*>(trackView)) {
+        TrackSegmentView* segmentView = (TrackSegmentView*) trackView;
+        point = QPointF(segmentView->getCentreSegX(), segmentView->getCentreSegY());
     }
     return tr("%1 :: x=%d, y=%d").arg(
             track->metaObject()->className()).arg(
@@ -8887,13 +9136,13 @@ bool LayoutEditor::isLBLockUsed(NamedBean* bean, LayoutBlock* lblock) {
 
 bool LayoutEditor::isUsedInXing(NamedBean* bean, LevelXing* xing, int point) {
     bool result = false;
-    if (bean->equals(xing->getSensor((LevelXing::GEOMETRY)point))) {
+    if (bean->equals(xing->getSensor((LevelXing::Geometry)point))) {
         result = true;
     }
-    if (bean->equals(xing->getSignalHead((LevelXing::GEOMETRY)point))) {
+    if (bean->equals(xing->getSignalHead((LevelXing::Geometry)point))) {
         result = true;
     }
-    if (bean->equals(xing->getSignalMast((LevelXing::GEOMETRY)point))) {
+    if (bean->equals(xing->getSignalMast((LevelXing::Geometry)point))) {
         result = true;
     }
     return result;

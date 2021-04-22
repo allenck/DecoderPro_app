@@ -5,7 +5,7 @@
 #include "turnout.h"
 #include "signalhead.h"
 #include "sensor.h"
-#include "layoutturnout.h"
+#include "layoutrhturnout.h"
 #include "positionablepoint.h"
 #include "junitutil.h"
 #include "assert1.h"
@@ -14,6 +14,7 @@
 #include "../positionables/editorframeoperator.h"
 #include "jframeoperator.h"
 #include "layouteditortoolbarpanel.h"
+#include "positionablepointview.h"
 
 LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
 {
@@ -70,22 +71,27 @@ LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
 
         //create a new Layout Turnout
-        layoutTurnout = new LayoutTurnout("Right Hand",
-                LayoutTurnout::RH_TURNOUT, QPointF(150.0, 100.0),
-                33.0, 1.1, 1.2, layoutEditor);
+        layoutTurnout = new LayoutRHTurnout("Right Hand",layoutEditor);
+        LayoutTurnoutView* ltv = new LayoutTurnoutView(layoutTurnout,
+                        QPointF(150.0, 100.0),
+                        33.0, 1.1, 1.2,
+                        layoutEditor);
         Assert::assertNotNull("RH turnout for testSetSignalsAtTurnoutWithDone", layoutTurnout, __FILE__, __LINE__);
-        layoutEditor->getLayoutTracks()->append(layoutTurnout);
+        layoutEditor->addLayoutTrack(layoutTurnout, ltv);
 
-        positionablePoint1 = new PositionablePoint("A1", PositionablePoint::ANCHOR, QPointF(250.0, 100.0), layoutEditor);
+        positionablePoint1 = new PositionablePoint("A1", PositionablePoint::ANCHOR,layoutEditor);
+        PositionablePointView* pp1v = new PositionablePointView(positionablePoint2, QPointF(250.0, 100.0), layoutEditor);
         Assert::assertNotNull("positionablePoint1 for testSetSignalsAtTurnoutWithDone", positionablePoint1, __FILE__, __LINE__);
-        layoutEditor->getLayoutTracks()->append(positionablePoint1);
+        layoutEditor->addLayoutTrack(positionablePoint2, pp1v);
 
-        positionablePoint2 = new PositionablePoint("A2", PositionablePoint::ANCHOR, QPointF(50.0, 100.0), layoutEditor);
-        layoutEditor->getLayoutTracks()->append(positionablePoint2);
+        positionablePoint2 = new PositionablePoint("A2", PositionablePoint::ANCHOR,  layoutEditor);
+        PositionablePointView* pp2v = new PositionablePointView(positionablePoint2, QPointF(250.0, 100.0), layoutEditor);
+        layoutEditor->addLayoutTrack(positionablePoint2, pp2v);
         Assert::assertNotNull("positionablePoint2 for testSetSignalsAtTurnoutWithDone", positionablePoint2, __FILE__, __LINE__);
 
-        positionablePoint3 = new PositionablePoint("A3", PositionablePoint::ANCHOR, QPointF(250.0, 150.0), layoutEditor);
-        layoutEditor->getLayoutTracks()->append(positionablePoint3);
+        positionablePoint3 = new PositionablePoint("A3", PositionablePoint::ANCHOR,  layoutEditor);
+        PositionablePointView* pp3v = new PositionablePointView(positionablePoint2, QPointF(250.0, 100.0), layoutEditor);
+        layoutEditor->addLayoutTrack(positionablePoint2, pp3v);
         Assert::assertNotNull("positionablePoint3 for testSetSignalsAtTurnoutWithDone", positionablePoint3, __FILE__, __LINE__);
 
         //this causes a "set Signal Heads Turnout" dialog to be (re)displayed.

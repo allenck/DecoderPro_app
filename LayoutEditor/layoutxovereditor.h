@@ -7,7 +7,7 @@ class LayoutXOverEditor : public LayoutTurnoutEditor
   Q_OBJECT
  public:
   /*public*/ LayoutXOverEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) override;
+  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrack) override;
 
   private:
    static Logger* log;

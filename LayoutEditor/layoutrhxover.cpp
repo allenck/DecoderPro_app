@@ -100,9 +100,7 @@
 ///*public*/ class LayoutRHXOver extends LayoutXOver {
 
     /*public*/ LayoutRHXOver::LayoutRHXOver(/*@Nonnull*/ QString id,
-            /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor,
-            /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutXOver(id, TurnoutType::RH_XOVER, c, rot, xFactor, yFactor, layoutEditor, 1) {
+            /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutXOver(id, TurnoutType::RH_XOVER,  layoutEditor, 1) {
         //this(id, c, rot, xFactor, yFactor, layoutEditor, 1);
 
         editor = new LayoutRHXOverEditor(layoutEditor);
@@ -118,9 +116,8 @@
      * @param layoutEditor main layout editor.
      * @param v version, unused.
      */
-    /*public*/ LayoutRHXOver::LayoutRHXOver(/*@Nonnull*/ QString id, /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v) : LayoutXOver(id, TurnoutType::RH_XOVER, c, rot, xFactor, yFactor, layoutEditor, 1) {
-        //super(id, TurnoutType::RH_XOVER, c, rot, xFactor, yFactor, layoutEditor, 1);
+    /*public*/ LayoutRHXOver::LayoutRHXOver(/*@Nonnull*/ QString id,  LayoutEditor* layoutEditor, int v) : LayoutXOver(id, TurnoutType::RH_XOVER,  layoutEditor, 1) {
+        //super(id, TurnoutType::RH_XOVER,  layoutEditor, 1);
 
         editor = new LayoutRHXOverEditor(layoutEditor);
     }

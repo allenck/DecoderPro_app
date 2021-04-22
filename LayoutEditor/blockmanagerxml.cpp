@@ -454,7 +454,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
 {
  int setting = 0;
  bool bok;
-     setting = element.attribute("setting").toInt();
+     setting = element.attribute("setting").toInt(&bok);
  if(!bok) {
      log->error("Could not parse beansetting attribute");
  }

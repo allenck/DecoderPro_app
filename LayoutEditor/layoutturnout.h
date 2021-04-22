@@ -11,6 +11,8 @@
 #include "exceptions.h"
 #include "abstractaction.h"
 #include "layoutblockroutetableaction.h"
+#include "propertychangelistener.h"
+#include "hitpointtype.h"
 
 class LayoutTurnoutEditor;
 class SignalHead;
@@ -34,18 +36,19 @@ class QPushButton;
 class QGraphicsItem;
 class EditTurnout;
 class QMenuItem;
-class LayoutEditor;
-class LayoutBlock;
+//class LayoutEditor;
+//class LayoutBlock;
 class LayoutEditorTools;
 class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurnout : public LayoutTrack, public PropertyChangeListener
 {
-    Q_OBJECT
+  Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit LayoutTurnout(QObject *parent = 0);
     // defined constants - turnout types
  enum TurnoutType
  {
+  NONE,
     RH_TURNOUT = 1,
     LH_TURNOUT = 2,
     WYE_TURNOUT = 3,
@@ -57,7 +60,7 @@ public:
      };
  Q_ENUM(TurnoutType)
     // defined constants - link types
- enum LINKTYPES
+ enum LinkType
  {
    NO_LINK = 0,
    FIRST_3_WAY = 1,       // this turnout is the first turnout of a 3-way
@@ -66,8 +69,8 @@ public:
                                                     // turnout pair (furthest from the throat)
    THROAT_TO_THROAT = 3  // this turnout is one of two throat-to-throat
  };                                   // turnouts - no signals at throat
- Q_ENUM(LINKTYPES)
- enum POINTS
+ Q_ENUM(LinkType)
+ enum Geometry
  {
   POINTA1 = 0x01,
   POINTA2 = 0x03,
@@ -79,7 +82,7 @@ public:
   POINTD1 = 0x30,
   POINTD2 = 0x32
  };
- Q_ENUM(POINTS)
+ Q_ENUM(Geometry)
  // operational instance variables (not saved between sessions)
  enum STATES
  {
@@ -120,10 +123,6 @@ public:
     /*public*/ QString signalBMast;// = ""; // Continuing
     /*public*/ QString signalCMast;// = ""; // diverging
     /*public*/ QString signalDMast;// = ""; // single or double crossover only
-    /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorANamed = NULL; // Throat
-    /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorBNamed = NULL; // Continuing
-    /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorCNamed = NULL; // diverging
-    /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorDNamed = NULL; // single or double crossover only
     /*public*/ LayoutTurnout::TurnoutType type;// = RH_TURNOUT;
     /*public*/ LayoutTrack* connectA = NULL;		// throat of LH, RH, RH Xover, LH Xover, and WYE turnouts
     /*public*/ LayoutTrack* connectB = NULL;		// straight leg of LH and RH turnouts
@@ -132,22 +131,20 @@ public:
     /*public*/ int continuingSense = Turnout::CLOSED;
     /*public*/ bool disabled = false;
     /*public*/ bool disableWhenOccupied = false;
-    /*public*/ QPointF dispB;// = new QPoint.Double(20.0,0.0);
-    /*public*/ QPointF dispA;// = new QPoint.Double(20.0,10.0);
-    /*public*/ QPointF pointA;// = new Point2D.Double(0, 0);
-    /*public*/ QPointF pointB;// = new Point2D.Double(40, 0);
-    /*public*/ QPointF pointC;// = new Point2D.Double(60, 20);
-    /*public*/ QPointF pointD;// = new Point2D.Double(20, 20);
+//    /*public*/ QPointF dispB;// = new QPoint.Double(20.0,0.0);
+//    /*public*/ QPointF dispA;// = new QPoint.Double(20.0,10.0);
+//    /*public*/ QPointF pointA;// = new Point2D.Double(0, 0);
+//    /*public*/ QPointF pointB;// = new Point2D.Double(40, 0);
+//    /*public*/ QPointF pointC;// = new Point2D.Double(60, 20);
+//    /*public*/ QPointF pointD;// = new Point2D.Double(20, 20);
     /*public*/ QString linkedTurnoutName;// = ""; // name of the linked Turnout (as entered in tool)
-    /*public*/ int linkType;// = NO_LINK;
+    /*public*/ LinkType linkType;// = NO_LINK;
     /**
      * constructor method
      */
 
-    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor);
-    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int version);
+    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t, /*@Nonnull*/ LayoutEditor* models);
+    /*public*/ LayoutTurnout(/*@Nonnull*/ QString id, LayoutTurnout::TurnoutType t,  /*@Nonnull*/ LayoutEditor* models, int version);
     /*public*/ QString toString() override;
 
     /**
@@ -223,8 +220,8 @@ public:
     /*public*/ QString getLinkedTurnoutName();
     /*public*/ void setLinkedTurnoutName(QString s);
 
-    /*public*/ int getLinkType();
-    /*public*/ void setLinkType(int type);
+    /*public*/ LayoutTurnout::LinkType getLinkType();
+    /*public*/ void setLinkType(LayoutTurnout::LinkType type);
     /*public*/ TurnoutType getTurnoutType() const;
     /*public*/ static bool isTurnoutTypeTurnout(TurnoutType type) ;
     /*public*/ bool isTurnoutTypeTurnout() const;
@@ -236,10 +233,10 @@ public:
     /*public*/ bool hasEnteringSingleTrack();
     /*public*/ static bool hasEnteringDoubleTrack(TurnoutType type);
     /*public*/ bool hasEnteringDoubleTrack();
-    /*public*/ QObject* getConnectA();
-    /*public*/ QObject* getConnectB();
-    /*public*/ QObject* getConnectC();
-    /*public*/ QObject* getConnectD();
+    /*public*/ LayoutTrack *getConnectA();
+    /*public*/ LayoutTrack* getConnectB();
+    /*public*/ LayoutTrack *getConnectC();
+    /*public*/ LayoutTrack* getConnectD();
     /*public*/ Turnout* getTurnout();
     /**
      * Accessor methods
@@ -261,10 +258,10 @@ public:
     /*public*/ LayoutBlock* getLayoutBlockC() const ;
     /*public*/ LayoutBlock* getLayoutBlockD() const;
 //    /*public*/ QPointF getCoordsCenter();
-    /*public*/ QPointF getCoordsA();
-    /*public*/ QPointF getCoordsB();
-    /*public*/ QPointF getCoordsC();
-    /*public*/ QPointF getCoordsD();
+//    /*public*/ QPointF getCoordsA();
+//    /*public*/ QPointF getCoordsB();
+//    /*public*/ QPointF getCoordsC();
+//    /*public*/ QPointF getCoordsD();
     /**
      * Set Up a Layout Block(s) for this Turnout
      */
@@ -288,12 +285,12 @@ public:
     /**
      * Modify coordinates methods
      */
-    /*public*/ void setCoordsCenter(QPointF p) override ;
-    /*public*/ void setCoordsA(QPointF p);
-    /*public*/ void setCoordsB(QPointF p);
-    /*public*/ void setCoordsC(QPointF p);
-    /*public*/ void setCoordsD(QPointF p);
-    /*public*/ void scaleCoords(double xFactor, double yFactor) override;
+//    /*public*/ void setCoordsCenter(QPointF p) override ;
+//    /*public*/ void setCoordsA(QPointF p);
+//    /*public*/ void setCoordsB(QPointF p);
+//    /*public*/ void setCoordsC(QPointF p);
+//    /*public*/ void setCoordsD(QPointF p);
+//    /*public*/ void scaleCoords(double xFactor, double yFactor) override;
     /**
      * Toggle turnout if clicked on, physical turnout exists, and
      *    not disabled
@@ -339,13 +336,13 @@ public:
  /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
  /*public*/ int getVersion() ;
  /*public*/ void setVersion(int v);
- /*public*/ LayoutTrack* getConnection(int location) throw (JmriException) override;
- /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException) override;
- /*public*/ QPointF getCoordsForConnectionType(int connectionType) override;
- /*public*/ QRectF getBounds() override;
- /*public*/ QList<int> checkForFreeConnections() override;
+ /*public*/ LayoutTrack* getConnection(HitPointType::TYPES location) throw (JmriException) override;
+/*public*/ void setConnection(HitPointType::TYPES location, LayoutTrack *o, HitPointType::TYPES type) throw (JmriException) override;
+// /*public*/ QPointF getCoordsForConnectionType(int connectionType) override;
+// /*public*/ QRectF getBounds() override;
+ /*public*/ QList<HitPointType::TYPES> checkForFreeConnections() override;
  /*public*/ bool checkForUnAssignedBlocks() override;
- /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetsMap) override;
+ /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/QMap<QString, QList<QSet<QString> *>* > blockNamesToTrackNameSetsMap) override;
  /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
    /*@Nonnull*/ QSet<QString>* TrackNameSet) override;
  /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock) override;
@@ -373,7 +370,7 @@ public slots:
 
 private:
  int version;
- void common(QString id, LayoutTurnout::TurnoutType t, QPointF c, double rot, double xFactor, double yFactor,
+ void common(QString id, LayoutTurnout::TurnoutType t,
              LayoutEditor* myPanel, int v);
     /*private*/ LayoutBlock* blockB = NULL;  // Xover - second block, if there is one
     /*private*/ LayoutBlock* blockC = NULL;  // Xover - third block, if there is one
@@ -432,53 +429,55 @@ private:
     QGraphicsEllipseItem* circle;
     QVector<QString> boundaryBetween;
     void windowClosing(QCloseEvent*);
-    void setTrackSegmentBlocks();
-    void setTrackSegmentBlock(int pointType, bool isAutomatic);
+//    void setTrackSegmentBlocks();
+//    void setTrackSegmentBlock(int pointType, bool isAutomatic);
     /*private*/ bool isOccupied();
-    /*private*/ void reCalculateCenter();
+//    /*private*/ void reCalculateCenter();
 
 
 private slots:
- /*private*/ void setUpDefaultSize();
- void editLayoutTurnout();
- void on_removeAction_triggered();
+ ///*private*/ void setUpDefaultSize();
+ //void editLayoutTurnout();
+ //void on_removeAction_triggered();
  /*public*/ void setDisabled(bool state);
  /*public*/ void setDisableWhenOccupied(bool state);
- void on_rotateItemAction_triggered();
+// void on_rotateItemAction_triggered();
  void redrawPanel();
  //void on_viewRoutingAct_triggered();
- void on_additionalTurnout_toggled(bool);
- void turnoutEditBlockPressed(JActionEvent* a = 0);
- void turnoutEditBlockBPressed(JActionEvent* a = 0);
- void turnoutEditBlockCPressed(JActionEvent* a = 0);
- void turnoutEditBlockDPressed(JActionEvent* a = 0);
- void turnoutEditDonePressed(JActionEvent* a = 0);
- void turnoutEditCancelPressed(JActionEvent* a = 0);
- void on_blockNameField_textEdited(QString);
- void on_blockBNameField_textEdited(QString);
- void on_blockCNameField_textEdited(QString);
- void on_blockDNameField_textEdited(QString);
+//void on_additionalTurnout_toggled(bool);
+// void turnoutEditBlockPressed(JActionEvent* a = 0);
+// void turnoutEditBlockBPressed(JActionEvent* a = 0);
+// void turnoutEditBlockCPressed(JActionEvent* a = 0);
+// void turnoutEditBlockDPressed(JActionEvent* a = 0);
+// void turnoutEditDonePressed(JActionEvent* a = 0);
+// void turnoutEditCancelPressed(JActionEvent* a = 0);
+// void on_blockNameField_textEdited(QString);
+// void on_blockBNameField_textEdited(QString);
+// void on_blockCNameField_textEdited(QString);
+// void on_blockDNameField_textEdited(QString);
 
 protected:
  // temporary reference to the Editor that will eventually be part of View - should be moved to ctors and final
   /*protected*/ LayoutTurnoutEditor* editor;
+ /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorANamed = NULL; // Throat
+ /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorBNamed = NULL; // Continuing
+ /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorCNamed = NULL; // diverging
+ /*protected*/ mutable NamedBeanHandle<Sensor*>* sensorDNamed = NULL; // single or double crossover only
 
- /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id,
-     /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor);
- /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id,
-         /*@Nonnull*/ QPointF c, /*@Nonnull*/ LayoutEditor* layoutEditor, LayoutTurnout::TurnoutType t);
+ /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id, /*@Nonnull*/ LayoutEditor* models, LayoutTurnout::TurnoutType t);
+ /*protected*/ LayoutTurnout(/*@Nonnull*/ QString id, /*@Nonnull*/ LayoutEditor* models);
 
  // operational instance variables (not saved between sessions)
  //private Turnout turnout = NULL;
- /*protected*/ NamedBeanHandle<Turnout*>* namedTurnout;// = NULL;
+ /*protected*/ NamedBeanHandle<Turnout*>* namedTurnout = nullptr;
  //Second turnout is used to either throw a second turnout in a cross over or if one turnout address is used to throw two physical ones
- /*protected*/ NamedBeanHandle<Turnout*>* secondNamedTurnout;// = NULL;
- /*protected*/ LayoutBlock* block;// = NULL;
- /*protected*/ void rotateCoords(double angleDEG);
- /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e) override;
- /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity() override;
+ /*protected*/ NamedBeanHandle<Turnout*>* secondNamedTurnout = nullptr;
+ /*protected*/ LayoutBlock* block = nullptr;
+// /*protected*/ void rotateCoords(double angleDEG) override;
+ // /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e) override;
+ /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity() override;
 
- /*protected*/ JmriJFrame* editLayoutTurnoutFrame;// = NULL;
+ /*protected*/ JmriJFrame* editLayoutTurnoutFrame = nullptr;
  /*protected*/ JTextField* blockNameField;// = new QLineEdit(16);
  /*protected*/ bool needRedraw;// = false;
  /*protected*/ bool needsBlockUpdate;// = false;
@@ -486,7 +485,7 @@ protected:
  /*protected*/ mutable NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // Continuing
  /*protected*/ mutable NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // diverging
  /*protected*/ mutable NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // single or double crossover only
- /*protected*/ QPointF rotatePoint(QPointF p, double sineAng, double cosineAng);
+// /*protected*/ QPointF rotatePoint(QPointF p, double sineAng, double cosineAng);
  /*protected*/ int getConnectivityStateForLayoutBlocks(        LayoutBlock* currLayoutBlock,
                                                                LayoutBlock* prevLayoutBlock,
                                                                LayoutBlock* nextLayoutBlock,
@@ -506,12 +505,12 @@ protected:
  /*protected*/ NamedBeanHandle<SignalHead*>* signalC2HeadNamed = nullptr; // RH_Xover and double crossover only
  /*protected*/ NamedBeanHandle<SignalHead*>* signalD1HeadNamed = nullptr; // single or double crossover only
  /*protected*/ NamedBeanHandle<SignalHead*>* signalD2HeadNamed = nullptr; // LH_Xover and double crossover only
- /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock) override;
- /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement) override;
- /*protected*/ void highlightUnconnected(EditScene* g2, int specificType) override;
- /*protected*/ void drawTurnoutControls(EditScene* g2) override;
- /*protected*/ void drawEditControls(EditScene* g2) override;
- /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) override;
+// /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock) override;
+// /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement) override;
+// /*protected*/ void highlightUnconnected(EditScene* g2, int specificType) override;
+// /*protected*/ void drawTurnoutControls(EditScene* g2) override;
+// /*protected*/ void drawEditControls(EditScene* g2) override;
+// /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) override;
 
 
  friend class LayoutEditor;
@@ -528,16 +527,19 @@ protected:
  friend class LayoutTurnoutEditor;
  friend class LayoutTurnoutView;
  friend class LayoutEditorComponent;
+ friend class LayoutSlipView;
+ friend class LayoutTurnoutViewXml;
+ friend class LayoutSlipViewXml;
 };
 
-class ETWindowListener : public WindowListener
-{
- Q_OBJECT
- LayoutTurnout* parent;
- public:
- ETWindowListener(LayoutTurnout* parent);
- void windowClosing(QCloseEvent *e);
-};
+//class ETWindowListener : public WindowListener
+//{
+// Q_OBJECT
+// LayoutTurnout* parent;
+// public:
+// ETWindowListener(LayoutTurnout* parent);
+// void windowClosing(QCloseEvent *e);
+//};
 
 //class MTurnoutListener : public PropertyChangeListener
 //{
@@ -549,24 +551,24 @@ class ETWindowListener : public WindowListener
 // void propertyChange(PropertyChangeEvent* e) override;
 //};
 
-/*private*/ /*static*/ class AbstractActionImpl : public AbstractAction
-{
- Q_OBJECT
-    /*private*/ /*final*/ QString blockName;
-    /*private*/ /*final*/ LayoutBlock* layoutBlock;
-public:
-    /*public*/ AbstractActionImpl(QString name, QString blockName, LayoutBlock* layoutBlock, QObject* parent)
-  : AbstractAction(name, parent)
-    {
-        //super(name);
-        this->blockName = blockName;
-        this->layoutBlock = layoutBlock;
-    }
-public slots:
-    //@Override
-    /*public*/ void actionPerformed(/*ActionEvent e*/) {
-        AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(blockName, layoutBlock);
-        routeTableAction->actionPerformed(/*e*/);
-    }
-};
+///*private*/ /*static*/ class AbstractActionImpl : public AbstractAction
+//{
+// Q_OBJECT
+//    /*private*/ /*final*/ QString blockName;
+//    /*private*/ /*final*/ LayoutBlock* layoutBlock;
+//public:
+//    /*public*/ AbstractActionImpl(QString name, QString blockName, LayoutBlock* layoutBlock, QObject* parent)
+//  : AbstractAction(name, parent)
+//    {
+//        //super(name);
+//        this->blockName = blockName;
+//        this->layoutBlock = layoutBlock;
+//    }
+//public slots:
+//    //@Override
+//    /*public*/ void actionPerformed(/*ActionEvent e*/) {
+//        AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(blockName, layoutBlock);
+//        routeTableAction->actionPerformed(/*e*/);
+//    }
+//};
 #endif // LAYOUTTURNOUT_H

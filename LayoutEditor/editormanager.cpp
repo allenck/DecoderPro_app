@@ -86,12 +86,28 @@ EditorManager::EditorManager(QObject *parent) : Bean(parent)
     foreach (Editor* e, getAll()) {
         if(e->getTitle() == name)
             return e;
-        else
-            return nullptr;
     }
+    return nullptr;
 }
 
+/**
+ * Get the editor with the given name and type.
+ *
+ * @param <T> the type of the editor
+ * @param type the type of the editor
+ * @param name the name of the editor
+ * @return the editor with the given name or null if no editor by that name
+ * exists
+ */
+//@CheckForNull
 
+/*public*/ /*<T extends Editor>*/ QObject* EditorManager::get(/*@Nonnull*/ QString type, /*@Nonnull*/ QString name) {
+//    return type.cast(set.stream()
+//            .filter(e -> e.getClass().isAssignableFrom(type) && e.getTitle().equals(name))
+//            .findFirst().orElse(null));
+ Class* obj = Class::forName(type);
+return (QObject*)obj;
+}
 #if 0
     /*private*/ /*final*/ SortedSet<Editor> editors = new TreeSet<>(new Comparator<Editor>() {
 

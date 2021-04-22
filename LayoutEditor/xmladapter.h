@@ -80,17 +80,17 @@ public:
  /*public*/ virtual void load(QDomElement /*shared*/, QDomElement /*perNode*/, QObject* /*o*/) throw (JmriConfigureXmlException) {}
 
  /**
-     * Store the
-     * @param o The object to be recorded.  Specific XmlAdapter
-     *          implementations will require this to be of a specific
-     *          type; that binding is done in ConfigXmlManager.
-     * @return The XML representation QDomElement
-     */
-    /*public*/ virtual QDomElement store(QObject* o)
-    {
-     Q_UNUSED(o)
-     return QDomElement();
-    }
+ * Store the
+ * @param o The object to be recorded.  Specific XmlAdapter
+ *          implementations will require this to be of a specific
+ *          type; that binding is done in ConfigXmlManager.
+ * @return The XML representation QDomElement
+ */
+/*public*/ virtual QDomElement store(QObject* o)
+{
+ Q_UNUSED(o)
+ return QDomElement();
+}
 
 /**
   * Store the object in XML

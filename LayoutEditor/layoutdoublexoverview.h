@@ -6,7 +6,11 @@
 class LayoutDoubleXOverView : public LayoutXOverView
 {
  public:
-  /*public*/ LayoutDoubleXOverView(/*@Nonnull*/ LayoutDoubleXOver* xover);
+  /*public*/ LayoutDoubleXOverView(/*@Nonnull*/ LayoutDoubleXOver* xover,
+                                /*@Nonnull*/ QPointF c, double rot,
+                                double xFactor, double yFactor,
+                                /*@Nonnull*/ LayoutEditor* layoutEditor);
+
 
 };
 

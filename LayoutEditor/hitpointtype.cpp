@@ -1,4 +1,4 @@
-#include "hitpointtype.h"
+﻿#include "hitpointtype.h"
 #include "exceptions.h"
 #include <QVector>
 
@@ -224,7 +224,7 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
         return false; // This is unexpected
     }
 
-    /*protected*/ /*static*/ bool HitPointType::isTurnoutHitType(HitPointType::TYPES hitType) {
+    /*protected*/ /*static*/ bool HitPointType::isTurnoutHitType(TYPES hitType) {
         return (hitType >=  (HitPointType::TURNOUT_A) ) && (hitType <=  (HitPointType::TURNOUT_D));
     }
 
@@ -232,11 +232,11 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
         return (hitType >=  (HitPointType::SLIP_A)) && (hitType <=  (HitPointType::SLIP_RIGHT));
     }
 
-    /*protected*/ /*static*/ bool HitPointType::isBezierHitType(HitPointType::TYPES hitType) {
+    /*protected*/ /*static*/ bool HitPointType::isBezierHitType(TYPES hitType) {
         return (hitType >=  (HitPointType::BEZIER_CONTROL_POINT_0)) && (hitType <=  (HitPointType::BEZIER_CONTROL_POINT_8));
     }
 
-    /*protected*/ /*static*/ bool HitPointType::isLevelXingHitType(HitPointType::TYPES hitType) {
+    /*protected*/ /*static*/ bool HitPointType::isLevelXingHitType(TYPES hitType) {
         return (hitType >=  (HitPointType::LEVEL_XING_A)) && (hitType <=  (HitPointType::LEVEL_XING_D));
     }
 
@@ -289,6 +289,13 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
         return false;
     }
 
+/*public*/ /*static*/ HitPointType HitPointType::fromType(const TYPES t){
+ HitPointType hitPointype = HitPointType();
+ hitPointype.setType(t);
+ return hitPointype;
+}
+
+
     // *****************************************************************
     //    TURNTABLE_RAY support
     // *****************************************************************
@@ -302,16 +309,29 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
      * to implement hit points.
      * @return (Temporary) 0-63 index of the enum element
      */
-//    /*protected*/ int HitPointType::turntableTrackIndex() {
-//        int result = this->ordinal() - HitPointType::TURNTABLE_RAY_0.ordinal();
-//        if (result < 0) {
-//            throw  IllegalArgumentException(this.toString() + "is not a valid TURNTABLE_RAY");
-//        }
-//        if (result > 63) {
-//            throw  IllegalArgumentException(this.toString() + "is not a valid TURNTABLE_RAY");
-//        }
-//        return result;
-//    }
+    /*protected*/ int HitPointType::turntableTrackIndex() {
+        int result = this->/*ordinal()*/type() - HitPointType::TURNTABLE_RAY_0/*.ordinal()*/;
+        if (result < 0) {
+            throw  IllegalArgumentException(this->toString() + "is not a valid TURNTABLE_RAY");
+        }
+        if (result > 63) {
+            throw  IllegalArgumentException(this->toString() + "is not a valid TURNTABLE_RAY");
+        }
+        return result;
+    }
+
+    /*protected*/ /*static*/ int HitPointType::turntableTrackIndex(HitPointType::TYPES type) {
+    int result = type - HitPointType::TURNTABLE_RAY_0/*.ordinal()*/;
+    QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
+    if (result < 0) {
+        throw  IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid TURNTABLE_RAY");
+    }
+    if (result > 63) {
+        throw  IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid TURNTABLE_RAY");
+    }
+    return result;
+}
+
 
     /**
      * Return a specific TURNTABLE_RAY from its 0-63 index.
@@ -324,13 +344,17 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
      * @param i (Temporary) 0-63 index of the enum element
      * @return Requested enum element
      */
-    /*protected*/ /*static*/ HitPointType HitPointType::turntableTrackIndexedValue(int i) {
+    /*protected*/ /*static*/ HitPointType::TYPES HitPointType::turntableTrackIndexedValue(int i) {
         if (i < 0 || i > 63) {
             throw  IllegalArgumentException(QString::number(i) + "is not a valid TURNTABLE_RAY index");
         }
         //return HitPointType::values()[(TURNTABLE_RAY_0.ordinal() + i)];
-        TURNTABLE_RAY_0 + i;
+        (int)TURNTABLE_RAY_0 + i;
+//        HitPointType* ht = new HitPointType();
+//        ht->_type = (TYPES)((int)TURNTABLE_RAY_0 + i);
+        return (TYPES)((int)TURNTABLE_RAY_0 + i);
     }
+
 
     /**
      * Return an array of the valid TURNTABLE_RAY enum values.
@@ -355,16 +379,18 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
      * to implement hit points.
      * @return (Temporary) 0-9 index of the enum element
      */
-//    /*protected*/ int HitPointType::shapePointIndex() {
-//        int result = this.ordinal() - HitPointType::SHAPE_POINT_0.ordinal();
-//        if (result < 0) {
-//            throw  IllegalArgumentException(this.toString() + "is not a valid SHAPE_POINT");
-//        }
-//        if (result > 9) {
-//            throw  IllegalArgumentException(this.toString() + "is not a valid SHAPE_POINT");
-//        }
-//        return result;
-//    }
+    /*protected*/ int HitPointType::shapePointIndex(HitPointType::TYPES type) {
+        int result = type - HitPointType::SHAPE_POINT_0;
+        QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
+
+        if (result < 0) {
+            throw  IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid SHAPE_POINT");
+        }
+        if (result > 9) {
+            throw  IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid SHAPE_POINT");
+        }
+        return result;
+    }
 
     /**
      * Return a specific SHAPE_POINT from its 0-9 index.
@@ -385,6 +411,7 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
         return SHAPE_POINT_0 +i;
     }
 
+
     /**
      * Return an array of the valid SHAPE_POINT enum values.
      * Meant for interations over the set of points.  Order is
@@ -400,6 +427,13 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
     }
     // limited use, remove?
     /*public*/ /*static*/ /*final*/ int HitPointType::NUM_SHAPE_POINTS = 10;
+
+    /*public*/ /*static*/ QString HitPointType::toString(TYPES t)
+    {
+     QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
+     return metaEnum.valueToKey(t);
+    }
+
 
     // *****************************************************************
     //    BEZIER_CONTROL_POINT support
@@ -424,6 +458,17 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
 //        }
 //        return result;
 //    }
+
+    /*public*/ /*static*/ int HitPointType::bezierPointIndex(HitPointType::TYPES t) {
+        int result = t - /*HitPointType::*/BEZIER_CONTROL_POINT_0;
+        if (result < 0) {
+            throw  IllegalArgumentException(HitPointType::toString(t) + "is not a valid BEZIER_CONTROL_POINT");
+        }
+        if (result > 8) {
+            throw  IllegalArgumentException(HitPointType::toString(t) + "is not a valid BEZIER_CONTROL_POINT");
+        }
+        return result;
+    }
 
     /**
      * Return a specific BEZIER_CONTROL_POINT from its 0-8 index.

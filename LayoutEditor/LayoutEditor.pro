@@ -114,11 +114,20 @@ message("Qt path=" + $$(QTDIR))
 
 SOURCES += \
     jmrijframe.cpp \
+    layoutdoublexoverviewxml.cpp \
     layouteditorviewcontext.cpp \
+    layoutlhxoverviewxml.cpp \
+    layoutrhxoverviewxml.cpp \
+    layoutslipviewxml.cpp \
     layoutturnout.cpp \
+    layoutturnoutviewxml.cpp \
+    layoutturntableviewxml.cpp \
+    layoutxoverviewxml.cpp \
     levelxing.cpp \
     layoutblock.cpp \
     layoutconnectivity.cpp \
+    levelxingviewxml.cpp \
+    positionablepointviewxml.cpp \
     tracknode.cpp \
     tracksegment.cpp \
     positionablepoint.cpp \
@@ -145,6 +154,7 @@ SOURCES += \
     editlevelxingdlg.cpp \
     layoutslip.cpp \
     memoryiconcoordinateedit.cpp \
+    tracksegmentviewxml.cpp \
     turnoutoperationmanagerxml.cpp \
     turnoutoperationxml.cpp \
     commonturnoutoperationxml.cpp \
@@ -359,10 +369,6 @@ SOURCES += \
     layouteditorxml.cpp \
     defaultroutemanagerxml.cpp \
     consisttoolframe.cpp \
-    tracksegmentxml.cpp \
-    positionablepointxml.cpp \
-    layoutturnoutxml.cpp \
-    levelxingxml.cpp \
     layoutturntable.cpp \
     lnlightmanagerxml.cpp \
     layoutblockroutetableaction.cpp \
@@ -373,7 +379,6 @@ SOURCES += \
     automattableaction.cpp \
     automattableframe.cpp \
     automattabledatamodel.cpp \
-    layoutslipxml.cpp \
     storexmlallaction.cpp \
     filehistoryaction.cpp \
     addentryexitpairaction.cpp \
@@ -408,7 +413,6 @@ SOURCES += \
     jmriabstractaction.cpp \
     jmrijframeinterface.cpp \
     layouteditorfinditems.cpp \
-    layoutturntablexml.cpp \
     layouteditor.cpp \
     xmlfilelocationaction.cpp \
     reportcontextaction.cpp \
@@ -566,11 +570,21 @@ SOURCES += \
 HEADERS += liblayouteditor_global.h \
     jmrijframeinterface.h \
     jmrijframe.h \
+    layoutdoublexoverviewxml.h \
     layouteditorviewcontext.h \
+    layoutlhxoverviewxml.h \
+    layoutmodels.h \
+    layoutrhxoverviewxml.h \
+    layoutslipviewxml.h \
     layoutturnout.h \
+    layoutturnoutviewxml.h \
+    layoutturntableviewxml.h \
+    layoutxoverviewxml.h \
     levelxing.h \
     layoutblock.h \
     layoutconnectivity.h \
+    levelxingviewxml.h \
+    positionablepointviewxml.h \
     tracksegment.h \
     tracknode.h \
     positionablepoint.h \
@@ -598,6 +612,7 @@ HEADERS += liblayouteditor_global.h \
     editlevelxingdlg.h \
     layoutslip.h \
     memoryiconcoordinateedit.h \
+    tracksegmentviewxml.h \
     turnoutoperationmanagerxml.h \
     turnoutoperationxml.h \
     commonturnoutoperationxml.h \
@@ -814,10 +829,6 @@ HEADERS += liblayouteditor_global.h \
     layouteditorxml.h \
     defaultroutemanagerxml.h \
     consisttoolframe.h \
-    tracksegmentxml.h \
-    positionablepointxml.h \
-    layoutturnoutxml.h \
-    levelxingxml.h \
     layoutturntable.h \
     lnlightmanagerxml.h \
     layoutblockroutetableaction.h \
@@ -828,7 +839,6 @@ HEADERS += liblayouteditor_global.h \
     automattableaction.h \
     automattableframe.h \
     automattabledatamodel.h \
-    layoutslipxml.h \
     storexmlallaction.h \
     filehistoryaction.h \
     addentryexitpairaction.h \
@@ -862,7 +872,6 @@ HEADERS += liblayouteditor_global.h \
     dropjlabel.h \
     jmriabstractaction.h \
     layouteditorfinditems.h \
-    layoutturntablexml.h \
     layouteditor.h \
     xmlfilelocationaction.h \
     reportcontextaction.h \

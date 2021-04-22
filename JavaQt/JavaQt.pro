@@ -35,6 +35,7 @@ isEmpty( PROJ_DIR ) {
 
 
 SOURCES += javaqt.cpp \
+    classmigration.cpp \
     jvetoablechangesupport.cpp \
     loggerfactory.cpp \
     loggerbase.cpp \
@@ -269,6 +270,7 @@ SOURCES += javaqt.cpp \
     defaultcomboboxmodel.cpp
 
 HEADERS += javaqt.h\
+ classmigration.h \
         javaqt_global.h \
     calendar.h \
     box.h \

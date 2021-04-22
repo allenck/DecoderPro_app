@@ -106,7 +106,7 @@
             contentPane->layout()->addWidget(panel5);
         }
 
-        editLevelXingHiddenCheckBox->setChecked(levelXing->isHidden());
+        editLevelXingHiddenCheckBox->setChecked(levelXingView->isHidden());
 
         // Set up for Edit
         BlockManager* bm = (BlockManager*)InstanceManager::getDefault("BlockManager");
@@ -205,9 +205,9 @@
         }
 
         // set hidden
-        bool oldHidden = levelXing->isHidden();
-        levelXing->setHidden(editLevelXingHiddenCheckBox->isChecked());
-        if (oldHidden != levelXing->isHidden()) {
+        bool oldHidden = levelXingView->isHidden();
+        levelXingView->setHidden(editLevelXingHiddenCheckBox->isChecked());
+        if (oldHidden != levelXingView->isHidden()) {
             editLevelXingNeedsRedraw = true;
         }
 

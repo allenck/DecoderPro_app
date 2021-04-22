@@ -94,6 +94,7 @@ public slots:
  PropertyChangeListener* mTurnoutListener = nullptr;
 
  friend class LayoutTurntable;
+ friend class LayoutTurntableView;
 };
 
 class LayoutTurntable : public LayoutTrack
@@ -101,16 +102,16 @@ class LayoutTurntable : public LayoutTrack
  Q_OBJECT
 public:
  //explicit LayoutTurntable(QObject *parent = 0);
- /*public*/  LayoutTurntable(QString id, QPointF c, LayoutEditor* myPanel, QObject *parent=0);
+ /*public*/  LayoutTurntable(QString id, LayoutEditor* myPanel, QObject *parent=0);
 
  /*public*/  void setObjects(LayoutEditor* p);
  /*public*/  QString getID();
- /*public*/  QPointF getCoordsCenter() ;
+// /*public*/  QPointF getCoordsCenter() ;
  /*public*/  double getRadius() ;
  /*public*/  void setRadius(double r);
  /*public*/ QString getBlockName();
- /*public*/  void setCoordsCenter(QPointF p) ;
- /*public*/  void scaleCoords(float xFactor, float yFactor);
+// /*public*/  void setCoordsCenter(QPointF p) ;
+// /*public*/  void scaleCoords(float xFactor, float yFactor);
  /*public*/  double normalizeAngle(double a);
  /*public*/  void addRayTrack(double angle, int index, QString name);
  /*public*/  TrackSegment* getRayConnectIndexed(int index);
@@ -123,13 +124,17 @@ public:
  /*public*/  QString getRayTurnoutName(int i);
  /*public*/  Turnout* getRayTurnout(int i);
  /*public*/  int getRayTurnoutState(int i);
- /*public*/  QPointF getRayCoordsIndexed(int index);
- /*public*/  QPointF getRayCoordsOrdered(int i);
- /*public*/  void setRayCoordsIndexed(double x, double y, int index);
- /*public*/ void setRayCoordsIndexed(QPointF point, int index);
- /*public*/ QPointF getCoordsForConnectionType(int locationType);
- /*public*/ LayoutTrack* getConnection(int connectionType) throw (JmriException);
- /*public*/ void setConnection(int connectionType, LayoutTrack* o, int type) throw (JmriException);
+ /*public*/ bool isRayDisabled(int i);
+ /*public*/ void setRayDisabled(int i, bool boo);
+ /*public*/ bool isRayDisabledWhenOccupied(int i);
+  /*public*/ void setRayDisabledWhenOccupied(int i, bool boo);
+// /*public*/  QPointF getRayCoordsIndexed(int index);
+// /*public*/  QPointF getRayCoordsOrdered(int i);
+// /*public*/  void setRayCoordsIndexed(double x, double y, int index);
+// /*public*/ void setRayCoordsIndexed(QPointF point, int index);
+ ///*public*/ QPointF getCoordsForConnectionType(int locationType);
+ /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) override;
+ /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;
  /*public*/  bool isMainlineIndexed(int index);
  /*public*/  bool isMainlineOrdered(int i);
  /*public*/  bool isTurnoutControlled();
@@ -138,18 +143,19 @@ public:
  /*public*/  int getPosition();
  /*public*/  double diffAngle(double a, double b);
  /*public*/  bool isActive();
- /*public*/ QRectF getBounds()override;
- /*public*/ void translateCoords(double xFactor, double yFactor)override;
- /*public*/ QList<int> checkForFreeConnections()override;
+ // /*public*/ QRectF getBounds()override;
+ // /*public*/ void translateCoords(double xFactor, double yFactor)override;
+ /*public*/ QList<HitPointType::TYPES> checkForFreeConnections()override;
  /*public*/ bool checkForUnAssignedBlocks()override;
  /*public*/ void checkForNonContiguousBlocks(
-         /*@Nonnull*/ QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetsMap) override;
+         /*@Nonnull*/ QMap<QString, QList<QSet<QString>*>*> blockNamesToTrackNameSetsMap) override;
  /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
                                                           /*@Nonnull*/ QSet<QString>* TrackNameSet) override;
  /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock)override;
  /*public*/ LayoutBlock* getLayoutBlock();
  /*public*/ void setLayoutBlock(/*@CheckForNull*/ LayoutBlock* newLayoutBlock);
  /*public*/ void setLayoutBlockByName(/*@CheckForNull*/ QString name);
+  /*public*/ bool canRemove() override;
 
 signals:
 
@@ -177,7 +183,7 @@ private:
  ///*private*/ QPointF center;// = new Point2D.Double(50.0, 50.0);
  /*private*/ QList<RayTrack*> rayTrackList;// = new QList<RayTrack>(); // list of Ray Track objects.
  /*private*/ int lastKnownIndex;// = -1;
- double round(double x);
+  //double round(double x);
   QMenu* popup;// = null;
   /*private*/ int getNewIndex();
   QMenu* rayPopup;// = NULL;
@@ -214,17 +220,17 @@ private slots:
 
  protected:
   /*protected*/ RayTrack* addRay(double angle);
-  /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
+//  /*protected*/ void showPopUp(QGraphicsSceneMouseEvent* e);
   /*protected*/ void showRayPopUp(QGraphicsSceneMouseEvent* e, int index);
 //  /*protected*/ void editTurntable(LayoutTurntable* x);
-  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
-  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType);
-  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType);
-  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
-  /*protected*/ void drawTurnoutControls(EditScene* g2);
-  /*protected*/ void drawEditControls(EditScene* g2);
+//  /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+//  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock, ITEMTYPE itemType);
+//  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement, ITEMTYPE itemType);
+//  /*protected*/ void highlightUnconnected(EditScene* g2, int specificType);
+//  /*protected*/ void drawTurnoutControls(EditScene* g2);
+//  /*protected*/ void drawEditControls(EditScene* g2);
   /*protected*/ void reCheckBlockBoundary();
-  /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity();
+  /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity() override;
   /*protected*/ QList<RayTrack*> getRayTrackList();
 
  friend class RayTrack;

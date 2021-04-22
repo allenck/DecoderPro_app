@@ -12,7 +12,7 @@
 //#include "layouttrackeditors.h"
 #include "layouteditortoolbarpanel.h"
 #include "levelxingeditor.h"
-
+#include "levelxingview.h"
 
 //LevelXing::LevelXing(QObject *parent) :
 //    QObject(parent)
@@ -54,8 +54,8 @@
 /**
  * constructor method
  */
-/*public*/ LevelXing::LevelXing(QString id, QPointF c, LayoutEditor* myPanel)
- : LayoutTrack(id, c, myPanel)
+/*public*/ LevelXing::LevelXing(QString id, LayoutEditor* myPanel)
+ : LayoutTrack(id,  myPanel)
 {
  blockAC = NULL;
  blockBD = NULL;
@@ -103,9 +103,9 @@
  connectB = NULL;
  connectC = NULL;
  connectD = NULL;
- center = QPointF(50.0,50.0);
- dispA =  QPointF(-20.0,0.0);
- dispB =  QPointF(-14.0,14.0);
+// center = QPointF(50.0,50.0);
+// dispA =  QPointF(-20.0,0.0);
+// dispB =  QPointF(-14.0,14.0);
  connectAName = "";
  connectBName = "";
  connectCName = "";
@@ -152,19 +152,19 @@
     return result;
 }
 
-/*public*/ SignalHead* LevelXing::getSignalHead(GEOMETRY loc) {
+/*public*/ SignalHead* LevelXing::getSignalHead(/*LevelXing::Geometry*/int loc) {
     NamedBeanHandle<SignalHead*>* namedBean = nullptr;
     switch (loc) {
-        case POINTA:
+        case LevelXing::POINTA:
             namedBean = signalAHeadNamed;
             break;
-        case POINTB:
+        case LevelXing::POINTB:
             namedBean = signalBHeadNamed;
             break;
-        case POINTC:
+        case LevelXing::POINTC:
             namedBean = signalCHeadNamed;
             break;
-        case POINTD:
+        case LevelXing::POINTD:
             namedBean = signalDHeadNamed;
             break;
         default:
@@ -177,19 +177,19 @@
     return nullptr;
 }
 
-/*public*/ SignalMast* LevelXing::getSignalMast(GEOMETRY loc) {
+/*public*/ SignalMast* LevelXing::getSignalMast(int loc) {
     NamedBeanHandle<SignalMast*>* namedBean = nullptr;
     switch (loc) {
-        case POINTA:
+        case LevelXing::Geometry::POINTA:
             namedBean = signalAMastNamed;
             break;
-        case POINTB:
+        case LevelXing::POINTB:
             namedBean = signalBMastNamed;
             break;
-        case POINTC:
+        case LevelXing::POINTC:
             namedBean = signalCMastNamed;
             break;
-        case POINTD:
+        case LevelXing::POINTD:
             namedBean = signalDMastNamed;
             break;
         default:
@@ -202,19 +202,19 @@
     return nullptr;
 }
 
-/*public*/ Sensor* LevelXing::getSensor(GEOMETRY loc) {
+/*public*/ Sensor* LevelXing::getSensor(LevelXing::Geometry loc) {
     NamedBeanHandle<Sensor*>* namedBean = nullptr;
     switch (loc) {
-        case POINTA:
+        case LevelXing::POINTA:
             namedBean = sensorANamed;
             break;
-        case POINTB:
+        case LevelXing::POINTB:
             namedBean = sensorBNamed;
             break;
-        case POINTC:
+        case LevelXing::POINTC:
             namedBean = sensorCNamed;
             break;
-        case POINTD:
+        case LevelXing::POINTD:
             namedBean = sensorDNamed;
             break;
         default:
@@ -356,19 +356,19 @@
         }
     }
     if (qobject_cast<SignalHead*>(nb)) {
-        if (nb->equals(getSignalHead(POINTA))) {
+        if (nb->equals(getSignalHead(LevelXing::POINTA))) {
             setSignalAName("");
             return;
         }
-        if (nb->equals(getSignalHead(POINTB))) {
+        if (nb->equals(getSignalHead(LevelXing::POINTB))) {
             setSignalBName("");
             return;
         }
-        if (nb->equals(getSignalHead(POINTC))) {
+        if (nb->equals(getSignalHead(LevelXing::POINTC))) {
             setSignalCName("");
             return;
         }
-        if (nb->equals(getSignalHead(POINTD))) {
+        if (nb->equals(getSignalHead(LevelXing::POINTD))) {
             setSignalDName("");
             return;
         }
@@ -391,30 +391,30 @@
  return NULL;
 }
 
-/*public*/ SignalHead* LevelXing::getSignalHead(int loc) {
-    NamedBeanHandle<SignalHead*>* namedBean = nullptr;
-    switch (loc) {
-        case POINTA:
-            namedBean = signalAHeadNamed;
-            break;
-        case POINTB:
-            namedBean = signalBHeadNamed;
-            break;
-        case POINTC:
-            namedBean = signalCHeadNamed;
-            break;
-        case POINTD:
-            namedBean = signalDHeadNamed;
-            break;
-        default:
-            log.warn(tr("Unhandled loc: %1").arg(loc));
-            break;
-    }
-    if (namedBean != nullptr) {
-        return namedBean->getBean();
-    }
-    return nullptr;
-}
+///*public*/ SignalHead* LevelXing::getSignalHead(LevelXing::Geometry loc) {
+//    NamedBeanHandle<SignalHead*>* namedBean = nullptr;
+//    switch (loc) {
+//        case LevelXing::POINTA:
+//            namedBean = signalAHeadNamed;
+//            break;
+//        case LevelXing::POINTB:
+//            namedBean = signalBHeadNamed;
+//            break;
+//        case LevelXing::POINTC:
+//            namedBean = signalCHeadNamed;
+//            break;
+//        case LevelXing::POINTD:
+//            namedBean = signalDHeadNamed;
+//            break;
+//        default:
+//            log.warn(tr("Unhandled loc: %1").arg(loc));
+//            break;
+//    }
+//    if (namedBean != nullptr) {
+//        return namedBean->getBean();
+//    }
+//    return nullptr;
+//}
 
 /*public*/ void LevelXing::setSignalAMast(QString signalMast) {
     if (signalMast == NULL || signalMast==("")) {
@@ -608,38 +608,42 @@
     }
 }
 
-/*public*/ LayoutTrack *LevelXing::getConnection(int location) throw (JmriException)
+/*public*/ LayoutTrack *LevelXing::getConnection(HitPointType::TYPES location) throw (JmriException)
 {
     switch (location) {
-        case LEVEL_XING_A:
+        case HitPointType::LEVEL_XING_A:
             return connectA;
-        case LEVEL_XING_B:
+        case HitPointType::LEVEL_XING_B:
             return connectB;
-        case LEVEL_XING_C:
+        case HitPointType::LEVEL_XING_C:
             return connectC;
-        case LEVEL_XING_D:
+        case HitPointType::LEVEL_XING_D:
             return connectD;
+    default:
+     return nullptr;
     }
-    log.error("Invalid Point Type " + QString::number(location)); //I18IN
+    QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
+    log.error(QString("Invalid Point Type ") + metaEnum.valueToKey((int)location)); //I18IN
     throw JmriException("Invalid Point");
 }
 
-/*public*/ void LevelXing::setConnection(int location, LayoutTrack* o, int type) throw (JmriException) {
-    if ((type != TRACK) && (type != NONE)) {
-        log.error("unexpected type of connection to layoutturnout - " + QString::number(type));
-        throw JmriException("unexpected type of connection to layoutturnout - " + QString::number(type));
+/*public*/ void LevelXing::setConnection(HitPointType::TYPES location, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+    if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
+     QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
+        log.error(QString("unexpected type of connection to layoutturnout - ") + metaEnum.valueToKey((int)type));
+        throw JmriException(QString("unexpected type of connection to layoutturnout - ") + metaEnum.valueToKey((int)type));
     }
     switch (location) {
-        case LEVEL_XING_A:
+        case HitPointType::LEVEL_XING_A:
             connectA = o;
             break;
-        case LEVEL_XING_B:
+        case HitPointType::LEVEL_XING_B:
             connectB = o;
             break;
-        case LEVEL_XING_C:
+        case HitPointType::LEVEL_XING_C:
             connectC = o;
             break;
-        case LEVEL_XING_D:
+        case HitPointType::LEVEL_XING_D:
             connectD = o;
             break;
         default:
@@ -688,27 +692,27 @@
     }
     return blockBD;
 }
-/*public*/ QPointF LevelXing::getCoordsCenter() {return center;}
-/*public*/ QPointF  LevelXing::getCoordsA() {
-    double x = center.x() + dispA.x();
-    double y = center.y() + dispA.y();
-    return  QPointF(x,y);
-}
-/*public*/ QPointF LevelXing::getCoordsB() {
-    double x = center.x() + dispB.x();
-    double y = center.y() + dispB.y();
-    return  QPointF(x,y);
-}
-/*public*/ QPointF LevelXing::getCoordsC() {
-    double x = center.x() - dispA.x();
-    double y = center.y() - dispA.y();
-    return  QPointF(x,y);
-}
-/*public*/ QPointF LevelXing::getCoordsD() {
-    double x = center.x() - dispB.x();
-    double y = center.y() - dispB.y();
-    return  QPointF(x,y);
-}
+///*public*/ QPointF LevelXing::getCoordsCenter() {return center;}
+///*public*/ QPointF  LevelXing::getCoordsA() {
+//    double x = center.x() + dispA.x();
+//    double y = center.y() + dispA.y();
+//    return  QPointF(x,y);
+//}
+///*public*/ QPointF LevelXing::getCoordsB() {
+//    double x = center.x() + dispB.x();
+//    double y = center.y() + dispB.y();
+//    return  QPointF(x,y);
+//}
+///*public*/ QPointF LevelXing::getCoordsC() {
+//    double x = center.x() - dispA.x();
+//    double y = center.y() - dispA.y();
+//    return  QPointF(x,y);
+//}
+///*public*/ QPointF LevelXing::getCoordsD() {
+//    double x = center.x() - dispB.x();
+//    double y = center.y() - dispB.y();
+//    return  QPointF(x,y);
+//}
 
 /**
  * Add Layout Blocks
@@ -819,276 +823,276 @@ void LevelXing::removeSML(SignalMast* signalMast) {
  * @param g2 the graphics port to draw to
  */
 //@Override
-/*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock) {
+///*protected*/ void LevelXing::draw1(EditScene* g2, bool isMain, bool isBlock) {
 
 
- invalidateItem(g2,itemGroup);
- if(itemGroup == nullptr)
- {
-  itemGroup = new QGraphicsItemGroup();
-  itemGroup->setZValue(Editor::HANDLES+1);
-  g2->addItem(itemGroup);
- }
+// invalidateItem(g2,itemGroup);
+// if(itemGroup == nullptr)
+// {
+//  itemGroup = new QGraphicsItemGroup();
+//  itemGroup->setZValue(Editor::HANDLES+1);
+//  g2->addItem(itemGroup);
+// }
 
- if (isMain == isMainlineAC()) {
-  if (isBlock) {
-      layoutEditor->drawingStroke.setColor(setColorForTrackBlock(g2, getLayoutBlockAC()));
-  }
-  //g2.draw(new Line2D.Double(getCoordsA(), getCoordsC()));
-  QGraphicsLineItem* lineItem = new QGraphicsLineItem(getCoordsA().x(), getCoordsA().y(), getCoordsC().x(), getCoordsC().y());
-  lineItem->setPen(layoutEditor->drawingStroke);
-  itemGroup->addToGroup(lineItem);
- }
- if (isMain == isMainlineBD())
- {
-  if (isBlock) {
-      layoutEditor->drawingStroke.setColor(setColorForTrackBlock(g2, getLayoutBlockBD()));
-  }
-  //g2.draw(new Line2D.Double(getCoordsB(), getCoordsD()));
-  QGraphicsLineItem* lineItem = new QGraphicsLineItem(getCoordsB().x(), getCoordsB().y(), getCoordsD().x(), getCoordsD().y());
-  lineItem->setPen(layoutEditor->drawingStroke);
-  itemGroup->addToGroup(lineItem);
- }
-}
+// if (isMain == isMainlineAC()) {
+//  if (isBlock) {
+//      layoutEditor->drawingStroke.setColor(setColorForTrackBlock(g2, getLayoutBlockAC()));
+//  }
+//  //g2.draw(new Line2D.Double(getCoordsA(), getCoordsC()));
+//  QGraphicsLineItem* lineItem = new QGraphicsLineItem(getCoordsA().x(), getCoordsA().y(), getCoordsC().x(), getCoordsC().y());
+//  lineItem->setPen(layoutEditor->drawingStroke);
+//  itemGroup->addToGroup(lineItem);
+// }
+// if (isMain == isMainlineBD())
+// {
+//  if (isBlock) {
+//      layoutEditor->drawingStroke.setColor(setColorForTrackBlock(g2, getLayoutBlockBD()));
+//  }
+//  //g2.draw(new Line2D.Double(getCoordsB(), getCoordsD()));
+//  QGraphicsLineItem* lineItem = new QGraphicsLineItem(getCoordsB().x(), getCoordsB().y(), getCoordsD().x(), getCoordsD().y());
+//  lineItem->setPen(layoutEditor->drawingStroke);
+//  itemGroup->addToGroup(lineItem);
+// }
+//}
+
+///**
+// * {@inheritDoc}
+// */
+////@Override
+///*protected*/ void LevelXing::draw2(EditScene* g2, bool isMain, float railDisplacement) {
+//    QPointF pA = getCoordsA();
+//    QPointF pB = getCoordsB();
+//    QPointF pC = getCoordsC();
+//    QPointF pD = getCoordsD();
+//    QPointF pM = getCoordsCenter();
+
+//    QPointF vAC = MathUtil::normalize(MathUtil::subtract(pC, pA), railDisplacement);
+//    double dirAC_DEG = MathUtil::computeAngleDEG(pA, pC);
+//    QPointF vACo = MathUtil::orthogonal(vAC);
+//    QPointF pAL = MathUtil::subtract(pA, vACo);
+//    QPointF pAR = MathUtil::add(pA, vACo);
+//    QPointF pCL = MathUtil::subtract(pC, vACo);
+//    QPointF pCR = MathUtil::add(pC, vACo);
+
+//    QPointF vBD = MathUtil::normalize(MathUtil::subtract(pD, pB), railDisplacement);
+//    double dirBD_DEG = MathUtil::computeAngleDEG(pB, pD);
+//    QPointF vBDo = MathUtil::orthogonal(vBD);
+//    QPointF pBL = MathUtil::subtract(pB, vBDo);
+//    QPointF pBR = MathUtil::add(pB, vBDo);
+//    QPointF pDL = MathUtil::subtract(pD, vBDo);
+//    QPointF pDR = MathUtil::add(pD, vBDo);
+
+//    double deltaDEG = MathUtil::absDiffAngleDEG(dirAC_DEG, dirBD_DEG);
+//    double deltaRAD = qDegreesToRadians(deltaDEG);
+
+//    double hypotK = railDisplacement / qCos((M_PI - deltaRAD) / 2.0);
+//    double hypotV = railDisplacement / qCos(deltaRAD / 2.0);
+
+//    log.debug(tr("dir AC: %1, BD: %2, diff: %3").arg(dirAC_DEG).arg(dirBD_DEG).arg(deltaDEG));
+
+//    QPointF vDisK = MathUtil::normalize(MathUtil::add(vAC, vBD), hypotK);
+//    QPointF vDisV = MathUtil::normalize(MathUtil::orthogonal(vDisK), hypotV);
+//    QPointF pKL = MathUtil::subtract(pM, vDisK);
+//    QPointF pKR = MathUtil::add(pM, vDisK);
+//    QPointF pVL = MathUtil::subtract(pM, vDisV);
+//    QPointF pVR = MathUtil::add(pM, vDisV);
+
+//    invalidateItem(g2,itemGroup);
+//    if(itemGroup == nullptr)
+//    {
+//     itemGroup = new QGraphicsItemGroup();
+//     itemGroup->setZValue(Editor::HANDLES+1);
+//     g2->addItem(itemGroup);
+//    }
+
+//    if (isMain == isMainlineAC()) {
+//        // this is the *2.0 vector (rail gap) for the AC diamond parts
+//        QPointF vAC2 = MathUtil::normalize(vAC, 2.0);
+//        // KL toward C, VR toward A, VL toward C and KR toward A
+//        QPointF pKLtC = MathUtil::add(pKL, vAC2);
+//        QPointF pVRtA = MathUtil::subtract(pVR, vAC2);
+//        QPointF pVLtC = MathUtil::add(pVL, vAC2);
+//        QPointF pKRtA = MathUtil::subtract(pKR, vAC2);
+
+//        // draw right AC rail: AR====KL == VR====CR
+//        //g2.draw(new Line2D.Double(pAR, pKL));
+//        QGraphicsLineItem* lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pKL.x(), pKL.y());
+//        lineItem->setPen(layoutEditor->drawingStroke);
+//        itemGroup->addToGroup(lineItem);
+//        //g2.draw(new Line2D.Double(pKLtC, pVRtA));
+//        lineItem = new QGraphicsLineItem(pKLtC.x(), pKLtC.y(), pVRtA.x(), pVRtA.y());
+//        lineItem->setPen(layoutEditor->drawingStroke);
+//        itemGroup->addToGroup(lineItem);
+//        //g2.draw(new Line2D.Double(pVR, pCR));
+//        lineItem = new QGraphicsLineItem(pVR.x(), pVR.y(), pCR.x(), pCR.y());
+//        lineItem->setPen(layoutEditor->drawingStroke);
+//        itemGroup->addToGroup(lineItem);
+
+//        // draw left AC rail: AL====VL == KR====CL
+//        //g2.draw(new Line2D.Double(pAL, pVL));
+//        lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pVL.x(), pVL.y());
+//        lineItem->setPen(layoutEditor->drawingStroke);
+//        itemGroup->addToGroup(lineItem);
+//        //g2.draw(new Line2D.Double(pVLtC, pKRtA));
+//        lineItem = new QGraphicsLineItem(pVLtC.x(), pVLtC.y(), pKRtA.x(), pKRtA.y());
+//        //g2.draw(new Line2D.Double(pKR, pCL));
+//    lineItem = new QGraphicsLineItem(pKR.x(), pKR.y(), pCL.x(), pCL.y());
+//    }
+//    if (isMain == isMainlineBD())
+//    {
+//     // this is the *2.0 vector (rail gap) for the BD diamond parts
+//     QPointF vBD2 = MathUtil::normalize(vBD, 2.0);
+//     // VR toward D, KR toward B, KL toward D and VL toward B
+//     QPointF pVRtD = MathUtil::add(pVR, vBD2);
+//     QPointF pKRtB = MathUtil::subtract(pKR, vBD2);
+//     QPointF pKLtD = MathUtil::add(pKL, vBD2);
+//     QPointF pVLtB = MathUtil::subtract(pVL, vBD2);
+
+//     // draw right BD rail: BR====VR == KR====DR
+//     //g2.draw(new Line2D.Double(pBR, pVR));
+//     QGraphicsLineItem* lineItem = new QGraphicsLineItem(pBR.x(), pBR.y(), pVR.x(), pVR.y());
+//     lineItem->setPen(layoutEditor->drawingStroke);
+//     itemGroup->addToGroup(lineItem);
+//     //g2.draw(new Line2D.Double(pVRtD, pKRtB));
+//     lineItem = new QGraphicsLineItem(pVRtD.x(), pVRtD.y(), pKRtB.x(), pKRtB.y());
+//     //g2.draw(new Line2D.Double(pKR, pDR));
+//     lineItem = new QGraphicsLineItem(pKR.x(), pKR.y(), pDR.x(), pDR.y());
+
+//     // draw left BD rail: BL====KL == VL====DL
+//     //g2.draw(new Line2D.Double(pBL, pKL));
+//     lineItem = new QGraphicsLineItem(pBL.x(), pBL.y(), pKL.x(), pKL.y());
+//     //g2.draw(new Line2D.Double(pKLtD, pVLtB));
+//     lineItem = new QGraphicsLineItem(pKLtD.x(), pKLtD.y(), pVLtB.x(), pVLtB.y());
+//     //g2.draw(new Line2D.Double(pVL, pDL));
+//     lineItem = new QGraphicsLineItem(pVL.x(), pVL.y(), pDL.x(), pDL.y());
+//    }
+////    if(isMain)
+////    {
+////     itemMain = itemGroup;
+////     g2->addItem(itemMain);
+////    }
+////    else
+////    {
+////     itemSide = itemGroup;
+////     g2->addItem(itemSide);
+////    }
+//}
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void LevelXing::draw2(EditScene* g2, bool isMain, float railDisplacement) {
-    QPointF pA = getCoordsA();
-    QPointF pB = getCoordsB();
-    QPointF pC = getCoordsC();
-    QPointF pD = getCoordsD();
-    QPointF pM = getCoordsCenter();
+///*protected*/ void LevelXing::highlightUnconnected(EditScene* g2, int specificType)
+//{
+// QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+//  QPen stroke = QPen(defaultTrackColor, 1);
 
-    QPointF vAC = MathUtil::normalize(MathUtil::subtract(pC, pA), railDisplacement);
-    double dirAC_DEG = MathUtil::computeAngleDEG(pA, pC);
-    QPointF vACo = MathUtil::orthogonal(vAC);
-    QPointF pAL = MathUtil::subtract(pA, vACo);
-    QPointF pAR = MathUtil::add(pA, vACo);
-    QPointF pCL = MathUtil::subtract(pC, vACo);
-    QPointF pCR = MathUtil::add(pC, vACo);
-
-    QPointF vBD = MathUtil::normalize(MathUtil::subtract(pD, pB), railDisplacement);
-    double dirBD_DEG = MathUtil::computeAngleDEG(pB, pD);
-    QPointF vBDo = MathUtil::orthogonal(vBD);
-    QPointF pBL = MathUtil::subtract(pB, vBDo);
-    QPointF pBR = MathUtil::add(pB, vBDo);
-    QPointF pDL = MathUtil::subtract(pD, vBDo);
-    QPointF pDR = MathUtil::add(pD, vBDo);
-
-    double deltaDEG = MathUtil::absDiffAngleDEG(dirAC_DEG, dirBD_DEG);
-    double deltaRAD = qDegreesToRadians(deltaDEG);
-
-    double hypotK = railDisplacement / qCos((M_PI - deltaRAD) / 2.0);
-    double hypotV = railDisplacement / qCos(deltaRAD / 2.0);
-
-    log.debug(tr("dir AC: %1, BD: %2, diff: %3").arg(dirAC_DEG).arg(dirBD_DEG).arg(deltaDEG));
-
-    QPointF vDisK = MathUtil::normalize(MathUtil::add(vAC, vBD), hypotK);
-    QPointF vDisV = MathUtil::normalize(MathUtil::orthogonal(vDisK), hypotV);
-    QPointF pKL = MathUtil::subtract(pM, vDisK);
-    QPointF pKR = MathUtil::add(pM, vDisK);
-    QPointF pVL = MathUtil::subtract(pM, vDisV);
-    QPointF pVR = MathUtil::add(pM, vDisV);
-
-    invalidateItem(g2,itemGroup);
-    if(itemGroup == nullptr)
-    {
-     itemGroup = new QGraphicsItemGroup();
-     itemGroup->setZValue(Editor::HANDLES+1);
-     g2->addItem(itemGroup);
-    }
-
-    if (isMain == isMainlineAC()) {
-        // this is the *2.0 vector (rail gap) for the AC diamond parts
-        QPointF vAC2 = MathUtil::normalize(vAC, 2.0);
-        // KL toward C, VR toward A, VL toward C and KR toward A
-        QPointF pKLtC = MathUtil::add(pKL, vAC2);
-        QPointF pVRtA = MathUtil::subtract(pVR, vAC2);
-        QPointF pVLtC = MathUtil::add(pVL, vAC2);
-        QPointF pKRtA = MathUtil::subtract(pKR, vAC2);
-
-        // draw right AC rail: AR====KL == VR====CR
-        //g2.draw(new Line2D.Double(pAR, pKL));
-        QGraphicsLineItem* lineItem = new QGraphicsLineItem(pAR.x(), pAR.y(), pKL.x(), pKL.y());
-        lineItem->setPen(layoutEditor->drawingStroke);
-        itemGroup->addToGroup(lineItem);
-        //g2.draw(new Line2D.Double(pKLtC, pVRtA));
-        lineItem = new QGraphicsLineItem(pKLtC.x(), pKLtC.y(), pVRtA.x(), pVRtA.y());
-        lineItem->setPen(layoutEditor->drawingStroke);
-        itemGroup->addToGroup(lineItem);
-        //g2.draw(new Line2D.Double(pVR, pCR));
-        lineItem = new QGraphicsLineItem(pVR.x(), pVR.y(), pCR.x(), pCR.y());
-        lineItem->setPen(layoutEditor->drawingStroke);
-        itemGroup->addToGroup(lineItem);
-
-        // draw left AC rail: AL====VL == KR====CL
-        //g2.draw(new Line2D.Double(pAL, pVL));
-        lineItem = new QGraphicsLineItem(pAL.x(), pAL.y(), pVL.x(), pVL.y());
-        lineItem->setPen(layoutEditor->drawingStroke);
-        itemGroup->addToGroup(lineItem);
-        //g2.draw(new Line2D.Double(pVLtC, pKRtA));
-        lineItem = new QGraphicsLineItem(pVLtC.x(), pVLtC.y(), pKRtA.x(), pKRtA.y());
-        //g2.draw(new Line2D.Double(pKR, pCL));
-    lineItem = new QGraphicsLineItem(pKR.x(), pKR.y(), pCL.x(), pCL.y());
-    }
-    if (isMain == isMainlineBD())
-    {
-     // this is the *2.0 vector (rail gap) for the BD diamond parts
-     QPointF vBD2 = MathUtil::normalize(vBD, 2.0);
-     // VR toward D, KR toward B, KL toward D and VL toward B
-     QPointF pVRtD = MathUtil::add(pVR, vBD2);
-     QPointF pKRtB = MathUtil::subtract(pKR, vBD2);
-     QPointF pKLtD = MathUtil::add(pKL, vBD2);
-     QPointF pVLtB = MathUtil::subtract(pVL, vBD2);
-
-     // draw right BD rail: BR====VR == KR====DR
-     //g2.draw(new Line2D.Double(pBR, pVR));
-     QGraphicsLineItem* lineItem = new QGraphicsLineItem(pBR.x(), pBR.y(), pVR.x(), pVR.y());
-     lineItem->setPen(layoutEditor->drawingStroke);
-     itemGroup->addToGroup(lineItem);
-     //g2.draw(new Line2D.Double(pVRtD, pKRtB));
-     lineItem = new QGraphicsLineItem(pVRtD.x(), pVRtD.y(), pKRtB.x(), pKRtB.y());
-     //g2.draw(new Line2D.Double(pKR, pDR));
-     lineItem = new QGraphicsLineItem(pKR.x(), pKR.y(), pDR.x(), pDR.y());
-
-     // draw left BD rail: BL====KL == VL====DL
-     //g2.draw(new Line2D.Double(pBL, pKL));
-     lineItem = new QGraphicsLineItem(pBL.x(), pBL.y(), pKL.x(), pKL.y());
-     //g2.draw(new Line2D.Double(pKLtD, pVLtB));
-     lineItem = new QGraphicsLineItem(pKLtD.x(), pKLtD.y(), pVLtB.x(), pVLtB.y());
-     //g2.draw(new Line2D.Double(pVL, pDL));
-     lineItem = new QGraphicsLineItem(pVL.x(), pVL.y(), pDL.x(), pDL.y());
-    }
-//    if(isMain)
-//    {
-//     itemMain = itemGroup;
-//     g2->addItem(itemMain);
+//    if (((specificType == NONE) || (specificType == LEVEL_XING_A))
+//            && (getConnectA() == nullptr)) {
+//        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsA()));
+//     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsA());
+//     ellipseItem->setPen(stroke);
+//     itemGroup->addToGroup(ellipseItem);
 //    }
-//    else
-//    {
-//     itemSide = itemGroup;
-//     g2->addItem(itemSide);
+
+//    if (((specificType == NONE) || (specificType == LEVEL_XING_B))
+//            && (getConnectB() == nullptr)) {
+//        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsB()));
+//     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsB());
+//     ellipseItem->setPen(stroke);
+//     itemGroup->addToGroup(ellipseItem);
 //    }
-}
 
-/**
- * {@inheritDoc}
- */
-//@Override
-/*protected*/ void LevelXing::highlightUnconnected(EditScene* g2, int specificType)
-{
- QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
-  QPen stroke = QPen(defaultTrackColor, 1);
+//    if (((specificType == NONE) || (specificType == LEVEL_XING_C))
+//            && (getConnectC() == nullptr)) {
+//        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsC()));
+//     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsC());
+//     ellipseItem->setPen(stroke);
+//     itemGroup->addToGroup(ellipseItem);
+//    }
 
-    if (((specificType == NONE) || (specificType == LEVEL_XING_A))
-            && (getConnectA() == nullptr)) {
-        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsA()));
-     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsA());
-     ellipseItem->setPen(stroke);
-     itemGroup->addToGroup(ellipseItem);
-    }
+//    if (((specificType == NONE) || (specificType == LEVEL_XING_D))
+//            && (getConnectD() == nullptr)) {
+//        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
+//     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsD());
+//     ellipseItem->setPen(stroke);
+//     itemGroup->addToGroup(ellipseItem);
+//    }
 
-    if (((specificType == NONE) || (specificType == LEVEL_XING_B))
-            && (getConnectB() == nullptr)) {
-        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsB()));
-     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsB());
-     ellipseItem->setPen(stroke);
-     itemGroup->addToGroup(ellipseItem);
-    }
-
-    if (((specificType == NONE) || (specificType == LEVEL_XING_C))
-            && (getConnectC() == nullptr)) {
-        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsC()));
-     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsC());
-     ellipseItem->setPen(stroke);
-     itemGroup->addToGroup(ellipseItem);
-    }
-
-    if (((specificType == NONE) || (specificType == LEVEL_XING_D))
-            && (getConnectD() == nullptr)) {
-        //g2.fill(layoutEditor.trackControlCircleAt(getCoordsD()));
-     QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(getCoordsD());
-     ellipseItem->setPen(stroke);
-     itemGroup->addToGroup(ellipseItem);
-    }
-
-    ((QGraphicsItemGroup*)item)->addToGroup(itemGroup);
-}
+//    ((QGraphicsItemGroup*)item)->addToGroup(itemGroup);
+//}
 
 //@Override
-/*protected*/ void LevelXing::drawEditControls(EditScene* g2)
-{
- QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
- if(rects!=nullptr && rects->scene()!=nullptr)
- {
-  g2->removeItem(rects);
-  rects = nullptr;
- }
-    //g2.setColor(defaultTrackColor);
- QPen stroke = layoutEditor->drawingStroke;
+///*protected*/ void LevelXing::drawEditControls(EditScene* g2)
+//{
+// QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+// if(rects!=nullptr && rects->scene()!=nullptr)
+// {
+//  g2->removeItem(rects);
+//  rects = nullptr;
+// }
+//    //g2.setColor(defaultTrackColor);
+// QPen stroke = layoutEditor->drawingStroke;
 
-    //TODO:uncomment this line g2.draw(layoutEditor.trackEditControlCircleAt(getCoordsCenter()));
+//    //TODO:uncomment this line g2.draw(layoutEditor.trackEditControlCircleAt(getCoordsCenter()));
 
-    if (getConnectA() == nullptr) {
-        //g2.setColor(Color.magenta);
-     stroke.setColor(Qt::magenta);
-    } else {
-        //g2.setColor(Color.blue);
-     stroke.setColor(Qt::blue);
-    }
-    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsA()));
-    QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsA()));
-    rectItem->setPen(stroke);
-    itemGroup->addToGroup(rectItem);
+//    if (getConnectA() == nullptr) {
+//        //g2.setColor(Color.magenta);
+//     stroke.setColor(Qt::magenta);
+//    } else {
+//        //g2.setColor(Color.blue);
+//     stroke.setColor(Qt::blue);
+//    }
+//    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsA()));
+//    QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsA()));
+//    rectItem->setPen(stroke);
+//    itemGroup->addToGroup(rectItem);
 
-    if (getConnectB() == nullptr) {
-        //g2.setColor(Color.red);
-    stroke.setColor(Qt::red);
-    } else {
-        //g2.setColor(Color.green);
-     stroke.setColor(Qt::green);
-    }
-    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsB()));
-    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsB()));
-    rectItem->setPen(stroke);
-    itemGroup->addToGroup(rectItem);
+//    if (getConnectB() == nullptr) {
+//        //g2.setColor(Color.red);
+//    stroke.setColor(Qt::red);
+//    } else {
+//        //g2.setColor(Color.green);
+//     stroke.setColor(Qt::green);
+//    }
+//    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsB()));
+//    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsB()));
+//    rectItem->setPen(stroke);
+//    itemGroup->addToGroup(rectItem);
 
-    if (getConnectC() == nullptr) {
-        //g2.setColor(Color.red);
-     stroke.setColor(Qt::red);
-    } else {
-        //g2.setColor(Color.green);
-     stroke.setColor(Qt::green);
-    }
-    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsC()));
-    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsC()));
-    rectItem->setPen(stroke);
-    itemGroup->addToGroup(rectItem);
+//    if (getConnectC() == nullptr) {
+//        //g2.setColor(Color.red);
+//     stroke.setColor(Qt::red);
+//    } else {
+//        //g2.setColor(Color.green);
+//     stroke.setColor(Qt::green);
+//    }
+//    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsC()));
+//    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsC()));
+//    rectItem->setPen(stroke);
+//    itemGroup->addToGroup(rectItem);
 
-    if (getConnectD() == nullptr) {
-        //g2.setColor(Color.red);
-     stroke.setColor(Qt::red);
-    } else {
-        //g2.setColor(Color.green);
-     stroke.setColor(Qt::green);
-    }
-    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsD()));
-    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsB()));
-    rectItem->setPen(stroke);
-    itemGroup->addToGroup(rectItem);
+//    if (getConnectD() == nullptr) {
+//        //g2.setColor(Color.red);
+//     stroke.setColor(Qt::red);
+//    } else {
+//        //g2.setColor(Color.green);
+//     stroke.setColor(Qt::green);
+//    }
+//    //g2.draw(layoutEditor.trackEditControlRectAt(getCoordsD()));
+//    rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsB()));
+//    rectItem->setPen(stroke);
+//    itemGroup->addToGroup(rectItem);
 
-    rects = itemGroup;
-    g2->addItem(rects);
-}
+//    rects = itemGroup;
+//    g2->addItem(rects);
+//}
 
 //@Override
-/*protected*/ void LevelXing::drawTurnoutControls(EditScene* g2) {
-    // LevelXings don't have turnout controls...
-    // nothing to see here... move along...
-}
+///*protected*/ void LevelXing::drawTurnoutControls(EditScene* g2) {
+//    // LevelXings don't have turnout controls...
+//    // nothing to see here... move along...
+//}
 //@Override
 /*public*/ void LevelXing::reCheckBlockBoundary() const {
     // nothing to see here... move along...
@@ -1098,40 +1102,40 @@ void LevelXing::removeSML(SignalMast* signalMast) {
 /**
  * Modify coordinates methods
  */
-/*public*/ void LevelXing::setCoordsCenter(QPointF p) {
-    center = p;
-}
-/*public*/ void LevelXing::setCoordsA(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispA = QPointF(-x,-y);
-}
-/*public*/ void LevelXing::setCoordsB(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispB = QPointF(-x,-y);
-}
-/*public*/ void LevelXing::setCoordsC(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispA =  QPointF(x,y);
-}
-/*public*/ void LevelXing::setCoordsD(QPointF p) {
-    double x = center.x() - p.x();
-    double y = center.y() - p.y();
-    dispB =  QPointF(x,y);
-}
-/*public*/ void LevelXing::scaleCoords(double xFactor, double yFactor) {
-    QPointF pt (round(center.x()*xFactor),
-                                    round(center.y()*yFactor));
-    center = pt;
-    pt =  QPointF(round(dispA.x()*xFactor),
-                                    round(dispA.y()*yFactor));
-    dispA = pt;
-    pt =  QPointF(round(dispB.x()*xFactor),
-                                    round(dispB.y()*yFactor));
-    dispB = pt;
-}
+///*public*/ void LevelXing::setCoordsCenter(QPointF p) {
+//    center = p;
+//}
+///*public*/ void LevelXing::setCoordsA(QPointF p) {
+//    double x = center.x() - p.x();
+//    double y = center.y() - p.y();
+//    dispA = QPointF(-x,-y);
+//}
+///*public*/ void LevelXing::setCoordsB(QPointF p) {
+//    double x = center.x() - p.x();
+//    double y = center.y() - p.y();
+//    dispB = QPointF(-x,-y);
+//}
+///*public*/ void LevelXing::setCoordsC(QPointF p) {
+//    double x = center.x() - p.x();
+//    double y = center.y() - p.y();
+//    dispA =  QPointF(x,y);
+//}
+///*public*/ void LevelXing::setCoordsD(QPointF p) {
+//    double x = center.x() - p.x();
+//    double y = center.y() - p.y();
+//    dispB =  QPointF(x,y);
+//}
+///*public*/ void LevelXing::scaleCoords(double xFactor, double yFactor) {
+//    QPointF pt (round(center.x()*xFactor),
+//                                    round(center.y()*yFactor));
+//    center = pt;
+//    pt =  QPointF(round(dispA.x()*xFactor),
+//                                    round(dispA.y()*yFactor));
+//    dispA = pt;
+//    pt =  QPointF(round(dispB.x()*xFactor),
+//                                    round(dispB.y()*yFactor));
+//    dispB = pt;
+//}
 double LevelXing::round (double x) {
     int i = (int)(x+0.5);
     return i;
@@ -1144,86 +1148,86 @@ double LevelXing::round (double x) {
  * @param yFactor the amount to translate Y coordinates
  */
 //@Override
-/*public*/ void LevelXing::translateCoords(double xFactor, double yFactor) {
-    QPointF factor =  QPointF(xFactor, yFactor);
-    center = MathUtil::add(center, factor);
-}
+///*public*/ void LevelXing::translateCoords(double xFactor, double yFactor) {
+//    QPointF factor =  QPointF(xFactor, yFactor);
+//    center = MathUtil::add(center, factor);
+//}
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ int LevelXing::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
-    int result = NONE;  // assume point not on connection
-    //note: optimization here: instead of creating rectangles for all the
-    // points to check below, we create a rectangle for the test point
-    // and test if the points below are in that rectangle instead.
-    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
-    QPointF p, minPoint = MathUtil::zeroPoint2D;
+///*protected*/ int LevelXing::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+//    int result = HitPointType::NONE;  // assume point not on connection
+//    //note: optimization here: instead of creating rectangles for all the
+//    // points to check below, we create a rectangle for the test point
+//    // and test if the points below are in that rectangle instead.
+//    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
+//    QPointF p, minPoint = MathUtil::zeroPoint2D;
 
-    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
-    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
+//    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+//    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
 
-    //check the center point
-    if (!requireUnconnected) {
-        p = getCoordsCenter();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = LEVEL_XING_CENTER;
-        }
-    }
+//    //check the center point
+//    if (!requireUnconnected) {
+//        p = getCoordsCenter();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = HitPointType::LEVEL_XING_CENTER;
+//        }
+//    }
 
-    //check the A connection point
-    if (!requireUnconnected || (getConnectA() == nullptr)) {
-        p = getCoordsA();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = LEVEL_XING_A;
-        }
-    }
+//    //check the A connection point
+//    if (!requireUnconnected || (getConnectA() == nullptr)) {
+//        p = getCoordsA();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = HitPointType::LEVEL_XING_A;
+//        }
+//    }
 
-    //check the B connection point
-    if (!requireUnconnected || (getConnectB() == nullptr)) {
-        p = getCoordsB();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = LEVEL_XING_B;
-        }
-    }
+//    //check the B connection point
+//    if (!requireUnconnected || (getConnectB() == nullptr)) {
+//        p = getCoordsB();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = HitPointType::LEVEL_XING_B;
+//        }
+//    }
 
-    //check the C connection point
-    if (!requireUnconnected || (getConnectC() == nullptr)) {
-        p = getCoordsC();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = LEVEL_XING_C;
-        }
-    }
+//    //check the C connection point
+//    if (!requireUnconnected || (getConnectC() == nullptr)) {
+//        p = getCoordsC();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = HitPointType::LEVEL_XING_C;
+//        }
+//    }
 
-    //check the D connection point
-    if (!requireUnconnected || (getConnectD() == nullptr)) {
-        p = getCoordsD();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = LEVEL_XING_D;
-        }
-    }
-    if ((useRectangles && !r.contains(minPoint))
-            || (!useRectangles && (minDistance > circleRadius))) {
-        result = NONE;
-    }
-    return result;
-}   // findHitPointType
+//    //check the D connection point
+//    if (!requireUnconnected || (getConnectD() == nullptr)) {
+//        p = getCoordsD();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = HitPointType::LEVEL_XING_D;
+//        }
+//    }
+//    if ((useRectangles && !r.contains(minPoint))
+//            || (!useRectangles && (minDistance > circleRadius))) {
+//        result = HitPointType::NONE;
+//    }
+//    return result;
+//}   // findHitPointType
 
 /**
  * Initialization method
@@ -1273,271 +1277,339 @@ double LevelXing::round (double x) {
 /**
  * Display popup menu for information and editing
  */
-/*protected*/ QMenu *LevelXing::showPopup(QGraphicsSceneMouseEvent* /*e*/)
-{
- if (popup != NULL )
- {
-  popup->clear();
- }
- else
- {
-  popup = new QMenu();
- }
+///*protected*/ QMenu *LevelXing::showPopup(QGraphicsSceneMouseEvent* /*e*/)
+//{
+// if (popup != NULL )
+// {
+//  popup->clear();
+// }
+// else
+// {
+//  popup = new QMenu();
+// }
 
- AbstractAction* act;
+// AbstractAction* act;
 
- if(layoutEditor->isEditable())
- {
-  QAction* jmi = popup->addSection(tr("Level Crossing"));
-  bool blockACAssigned = false;
-  bool blockBDAssigned = false;
-  if (getLayoutBlockAC() == nullptr)
-  {
-   popup->addAction(new QAction(tr("Block %1 Not Set").arg("AC"),this));
-  }
-  else
-  {
-   jmi = popup->addSection( tr("Block %1").arg("AC") + getLayoutBlockAC()->getDisplayName());
-   blockACAssigned = true;
-  }
-  jmi->setEnabled(false);
-
-  if (getLayoutBlockBD() == nullptr) {
-   jmi = popup->addSection(tr("Block %1 Not Set").arg("BD"));
-  }
-  else
-  {
-   jmi = popup->addSection(tr("Block %1").arg("BD") + getLayoutBlockBD()->getDisplayName());
-   blockBDAssigned = true;
-  }
-  jmi->setEnabled(false);
-
-  // if there are any track connections
-  if ((connectA != nullptr) || (connectB != nullptr)
-          || (connectC != nullptr) || (connectD != nullptr))
-  {
-   QMenu* connectionsMenu = new QMenu(tr("Connections")); // there is no pane opening (which is what ... implies)
-   if (connectA != nullptr)
-   {
-       connectionsMenu->addAction(act = new AbstractAction( "A" + connectA->getName(),this));
-//        {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-       connect(act, &QAction::triggered, [=]{
-               LayoutEditorFindItems* lf = layoutEditor->getFinder();
-               LayoutTrack* lt = lf->findObjectByName(connectA->getName());
-               // this shouldn't ever be null... however...
-               if (lt != nullptr) {
-                   layoutEditor->setSelectionRect(lt->getBounds());
-                   lt->showPopup();
-               }
-//            }
-       });
-   }
-   if (connectB != nullptr) {
-       connectionsMenu->addAction(act = new AbstractAction( "B" + connectB->getName(), this));
-//        {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-       connect(act, &QAction::triggered, [=]{
-               LayoutEditorFindItems* lf = layoutEditor->getFinder();
-               LayoutTrack* lt = lf->findObjectByName(connectB->getName());
-               // this shouldn't ever be null... however...
-               if (lt != nullptr) {
-                   layoutEditor->setSelectionRect(lt->getBounds());
-                   lt->showPopup();
-               }
-//            }
-       });
-   }
-   if (connectC != nullptr) {
-       connectionsMenu->addAction(new AbstractAction("C" + connectC->getName(),this));
-//        {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-       connect(act, &QAction::triggered, [=]{
-               LayoutEditorFindItems* lf = layoutEditor->getFinder();
-               LayoutTrack* lt = lf->findObjectByName(connectC->getName());
-               // this shouldn't ever be null... however...
-               if (lt != nullptr) {
-                   layoutEditor->setSelectionRect(lt->getBounds());
-                   lt->showPopup();
-               }
-//            }
-       });
-   }
-   if (connectD != nullptr) {
-       connectionsMenu->addAction(act = new AbstractAction("D" + connectD->getName(), this));
-//        {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-       connect(act, &QAction::triggered, [=]{
-               LayoutEditorFindItems* lf = layoutEditor->getFinder();
-               LayoutTrack* lt = lf->findObjectByName(connectD->getName());
-               // this shouldn't ever be null... however...
-               if (lt != nullptr) {
-                   layoutEditor->setSelectionRect(lt->getBounds());
-                   lt->showPopup();
-               }
-//            }
-       });
-   }
-   popup->addMenu(connectionsMenu);
-  }
-
-  popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
-
-  QAction* hiddenCheckBoxMenuItem = new QAction(tr("Hidden"), this);
-  hiddenCheckBoxMenuItem->setCheckable(true);
-  hiddenCheckBoxMenuItem->setChecked(hidden);
-  popup->addAction(hiddenCheckBoxMenuItem);
-  //hiddenCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
-  connect(hiddenCheckBoxMenuItem, &QAction::triggered, [=]{
-      setHidden(hiddenCheckBoxMenuItem->isChecked());
-  });
-
-  popup->addAction(act = new AbstractAction(tr("Edit"), this));
+// if(layoutEditor->isEditable())
+// {
+//  QAction* jmi = popup->addSection(tr("Level Crossing"));
+//  bool blockACAssigned = false;
+//  bool blockBDAssigned = false;
+//  if (getLayoutBlockAC() == nullptr)
 //  {
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-  connect(act, &QAction::triggered, [=]{
-//          layoutEditor->getLayoutTrackEditors()->editLevelXing(this);
-      editor->editLayoutTrack(this);
-//      }
-  });
-  popup->addAction(act = new AbstractAction(tr("Delete"),this));
+//   popup->addAction(new QAction(tr("Block %1 Not Set").arg("AC"),this));
+//  }
+//  else
 //  {
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-   connect(act, &QAction::triggered, [=]{
-          if (canRemove() && layoutEditor->removeLevelXing(this)) {
-              // Returned true if user did not cancel
-              remove();
-              dispose();
-          }
+//   jmi = popup->addSection( tr("Block %1").arg("AC") + getLayoutBlockAC()->getDisplayName());
+//   blockACAssigned = true;
+//  }
+//  jmi->setEnabled(false);
+
+//  if (getLayoutBlockBD() == nullptr) {
+//   jmi = popup->addSection(tr("Block %1 Not Set").arg("BD"));
+//  }
+//  else
+//  {
+//   jmi = popup->addSection(tr("Block %1").arg("BD") + getLayoutBlockBD()->getDisplayName());
+//   blockBDAssigned = true;
+//  }
+//  jmi->setEnabled(false);
+
+//  // if there are any track connections
+//  if ((connectA != nullptr) || (connectB != nullptr)
+//          || (connectC != nullptr) || (connectD != nullptr))
+//  {
+//   QMenu* connectionsMenu = new QMenu(tr("Connections")); // there is no pane opening (which is what ... implies)
+//   if (connectA != nullptr)
+//   {
+//       connectionsMenu->addAction(act = new AbstractAction( "A" + connectA->getName(),this));
+////        {
+////            @Override
+////            public void actionPerformed(ActionEvent e) {
+//       connect(act, &QAction::triggered, [=]{
+//               LayoutEditorFindItems* lf = layoutEditor->getFinder();
+//               LayoutTrack* lt = lf->findObjectByName(connectA->getName());
+//               // this shouldn't ever be null... however...
+//               if (lt != nullptr) {
+//                   layoutEditor->setSelectionRect(lt->getBounds());
+//                   lt->showPopup();
+//               }
+////            }
+//       });
+//   }
+//   if (connectB != nullptr) {
+//       connectionsMenu->addAction(act = new AbstractAction( "B" + connectB->getName(), this));
+////        {
+////            @Override
+////            public void actionPerformed(ActionEvent e) {
+//       connect(act, &QAction::triggered, [=]{
+//               LayoutEditorFindItems* lf = layoutEditor->getFinder();
+//               LayoutTrack* lt = lf->findObjectByName(connectB->getName());
+//               // this shouldn't ever be null... however...
+//               if (lt != nullptr) {
+//                   layoutEditor->setSelectionRect(lt->getBounds());
+//                   lt->showPopup();
+//               }
+////            }
+//       });
+//   }
+//   if (connectC != nullptr) {
+//       connectionsMenu->addAction(new AbstractAction("C" + connectC->getName(),this));
+////        {
+////            @Override
+////            public void actionPerformed(ActionEvent e) {
+//       connect(act, &QAction::triggered, [=]{
+//               LayoutEditorFindItems* lf = layoutEditor->getFinder();
+//               LayoutTrack* lt = lf->findObjectByName(connectC->getName());
+//               // this shouldn't ever be null... however...
+//               if (lt != nullptr) {
+//                   layoutEditor->setSelectionRect(lt->getBounds());
+//                   lt->showPopup();
+//               }
+////            }
+//       });
+//   }
+//   if (connectD != nullptr) {
+//       connectionsMenu->addAction(act = new AbstractAction("D" + connectD->getName(), this));
+////        {
+////            @Override
+////            public void actionPerformed(ActionEvent e) {
+//       connect(act, &QAction::triggered, [=]{
+//               LayoutEditorFindItems* lf = layoutEditor->getFinder();
+//               LayoutTrack* lt = lf->findObjectByName(connectD->getName());
+//               // this shouldn't ever be null... however...
+//               if (lt != nullptr) {
+//                   layoutEditor->setSelectionRect(lt->getBounds());
+//                   lt->showPopup();
+//               }
+////            }
+//       });
+//   }
+//   popup->addMenu(connectionsMenu);
+//  }
+
+//  popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
+
+//  QAction* hiddenCheckBoxMenuItem = new QAction(tr("Hidden"), this);
+//  hiddenCheckBoxMenuItem->setCheckable(true);
+//  hiddenCheckBoxMenuItem->setChecked(hidden);
+//  popup->addAction(hiddenCheckBoxMenuItem);
+//  //hiddenCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
+//  connect(hiddenCheckBoxMenuItem, &QAction::triggered, [=]{
+//      setHidden(hiddenCheckBoxMenuItem->isChecked());
+//  });
+
+//  popup->addAction(act = new AbstractAction(tr("Edit"), this));
+////  {
+////      @Override
+////      public void actionPerformed(ActionEvent e) {
+//  connect(act, &QAction::triggered, [=]{
+////          layoutEditor->getLayoutTrackEditors()->editLevelXing(this);
+//      editor->editLayoutTrack(this);
+////      }
+//  });
+//  popup->addAction(act = new AbstractAction(tr("Delete"),this));
+////  {
+////      @Override
+////      public void actionPerformed(ActionEvent e) {
+//   connect(act, &QAction::triggered, [=]{
+//          if (canRemove() && layoutEditor->removeLevelXing(this)) {
+//              // Returned true if user did not cancel
+//              remove();
+//              dispose();
+//          }
+////      }
+//  });
+//  if (blockACAssigned && blockBDAssigned) {
+//      AbstractAction* ssaa = new AbstractAction(tr("Set Signal Heads..."), this);
+////      {
+////          @Override
+////          public void actionPerformed(ActionEvent e) {
+//      connect(ssaa, &AbstractAction::triggered, [=]{
+//              // bring up signals at level crossing tool dialog
+//              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+//              layoutEditor->getLETools()->
+//                      setSignalsAtLevelXingFromMenu(this,
+//                              letbp->signalIconEditor,
+//                              letbp->signalFrame);
+////          }
+//      });
+//      QMenu* jm = new QMenu(tr("Signal Heads"));
+//      if (layoutEditor->getLETools()->
+//              addLevelXingSignalHeadInfoToMenu(this, jm)) {
+//          jm->addAction(ssaa);
+//          popup->addMenu(jm);
+//      } else {
+//          popup->addAction(ssaa);
 //      }
-  });
-  if (blockACAssigned && blockBDAssigned) {
-      AbstractAction* ssaa = new AbstractAction(tr("Set Signal Heads..."), this);
-//      {
-//          @Override
-//          public void actionPerformed(ActionEvent e) {
-      connect(ssaa, &AbstractAction::triggered, [=]{
-              // bring up signals at level crossing tool dialog
-              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
-              layoutEditor->getLETools()->
-                      setSignalsAtLevelXingFromMenu(this,
-                              letbp->signalIconEditor,
-                              letbp->signalFrame);
-//          }
-      });
-      QMenu* jm = new QMenu(tr("Signal Heads"));
-      if (layoutEditor->getLETools()->
-              addLevelXingSignalHeadInfoToMenu(this, jm)) {
-          jm->addAction(ssaa);
-          popup->addMenu(jm);
-      } else {
-          popup->addAction(ssaa);
-      }
-  }
+//  }
 
-  /*final*/ QVector<QString>* boundaryBetween = getBlockBoundaries();
-  bool blockBoundaries = false;
-  if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
-  {
-      if (blockACAssigned && !blockBDAssigned) {
-          popup->addAction(act = new AbstractAction(tr("View Block Routing"), this));
-//          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-          connect(act, &QAction::triggered, [=]{
-                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockAC());
-                  routeTableAction->actionPerformed(/*e*/);
-//              }
-          });
-      } else if (!blockACAssigned && blockBDAssigned) {
-          popup->addAction(act = new AbstractAction(tr("View Block Routing"), this));
-//          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-          connect(act, &QAction::triggered, [=]{
-                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockBD());
-                  routeTableAction->actionPerformed(/*e*/);
-//              }
-          });
-      } else if (blockACAssigned && blockBDAssigned) {
-          QMenu* viewRouting = new QMenu(tr("View Block Routing"));
-          viewRouting->addAction(act = new AbstractAction(getLayoutBlockAC()->getDisplayName(), this));
-//          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-          connect(act, &QAction::triggered, [=]{
-                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(getLayoutBlockAC()->getDisplayName(), getLayoutBlockAC());
-                  routeTableAction->actionPerformed(/*e*/);
-//              }
-          });
+//  /*final*/ QVector<QString>* boundaryBetween = getBlockBoundaries();
+//  bool blockBoundaries = false;
+//  if (((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
+//  {
+//      if (blockACAssigned && !blockBDAssigned) {
+//          popup->addAction(act = new AbstractAction(tr("View Block Routing"), this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//          connect(act, &QAction::triggered, [=]{
+//                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockAC());
+//                  routeTableAction->actionPerformed(/*e*/);
+////              }
+//          });
+//      } else if (!blockACAssigned && blockBDAssigned) {
+//          popup->addAction(act = new AbstractAction(tr("View Block Routing"), this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//          connect(act, &QAction::triggered, [=]{
+//                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction("ViewRouting", getLayoutBlockBD());
+//                  routeTableAction->actionPerformed(/*e*/);
+////              }
+//          });
+//      } else if (blockACAssigned && blockBDAssigned) {
+//          QMenu* viewRouting = new QMenu(tr("View Block Routing"));
+//          viewRouting->addAction(act = new AbstractAction(getLayoutBlockAC()->getDisplayName(), this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//          connect(act, &QAction::triggered, [=]{
+//                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(getLayoutBlockAC()->getDisplayName(), getLayoutBlockAC());
+//                  routeTableAction->actionPerformed(/*e*/);
+////              }
+//          });
 
-          viewRouting->addAction(act = new AbstractAction(getLayoutBlockBD()->getDisplayName(), this));
-//          {
-//              @Override
-//              public void actionPerformed(ActionEvent e) {
-          connect(act, &QAction::triggered, [=]{
-                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(getLayoutBlockBD()->getDisplayName(), getLayoutBlockBD());
-                  routeTableAction->actionPerformed(/*e*/);
-//              }
-          });
+//          viewRouting->addAction(act = new AbstractAction(getLayoutBlockBD()->getDisplayName(), this));
+////          {
+////              @Override
+////              public void actionPerformed(ActionEvent e) {
+//          connect(act, &QAction::triggered, [=]{
+//                  AbstractAction* routeTableAction = new LayoutBlockRouteTableAction(getLayoutBlockBD()->getDisplayName(), getLayoutBlockBD());
+//                  routeTableAction->actionPerformed(/*e*/);
+////              }
+//          });
 
-          popup->addMenu(viewRouting);
-      }
-  }
+//          popup->addMenu(viewRouting);
+//      }
+//  }
 
-  for (int i = 0; i < 4; i++) {
-      if (boundaryBetween->at(i) != "") {
-          blockBoundaries = true;
-      }
-  }
-  if (blockBoundaries) {
-      popup->addAction(act = new AbstractAction(tr("Set Signal Masts..."), this));
-//      {
-//          @Override
-//          public void actionPerformed(ActionEvent e) {
-      connect(act, &QAction::triggered, [=]{
-              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
-              layoutEditor->getLETools()->
-                      setSignalMastsAtLevelXingFromMenu(
-                              this, boundaryBetween,
-                              letbp->signalFrame);
-//          }
-      });
-      popup->addAction(act = new AbstractAction(tr("Set Sensors..."), this));
-//      {
-//          @Override
-//          public void actionPerformed(ActionEvent e) {
-      connect(act, &QAction::triggered, [=]{
-              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
-              layoutEditor->getLETools()->setSensorsAtLevelXingFromMenu(
-                      this, boundaryBetween,
-                      letbp->sensorIconEditor,
-                      letbp->sensorFrame);
-//          }
-      });
-  }
+//  for (int i = 0; i < 4; i++) {
+//      if (boundaryBetween->at(i) != "") {
+//          blockBoundaries = true;
+//      }
+//  }
+//  if (blockBoundaries) {
+//      popup->addAction(act = new AbstractAction(tr("Set Signal Masts..."), this));
+////      {
+////          @Override
+////          public void actionPerformed(ActionEvent e) {
+//      connect(act, &QAction::triggered, [=]{
+//              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+//              layoutEditor->getLETools()->
+//                      setSignalMastsAtLevelXingFromMenu(
+//                              this, boundaryBetween,
+//                              letbp->signalFrame);
+////          }
+//      });
+//      popup->addAction(act = new AbstractAction(tr("Set Sensors..."), this));
+////      {
+////          @Override
+////          public void actionPerformed(ActionEvent e) {
+//      connect(act, &QAction::triggered, [=]{
+//              LayoutEditorToolBarPanel* letbp = getLayoutEditorToolBarPanel();
+//              layoutEditor->getLETools()->setSensorsAtLevelXingFromMenu(
+//                      this, boundaryBetween,
+//                      letbp->sensorIconEditor,
+//                      letbp->sensorFrame);
+////          }
+//      });
+//  }
 
-  layoutEditor->setShowAlignmentMenu(popup);
-  //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
-  popup->exec(QCursor::pos());
- } else if (!viewAdditionalMenu->isEmpty()) {
-    setAdditionalViewPopUpMenu(popup);
-    //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
-    popup->exec(QCursor::pos());
- }
- return popup;
-}   // showPopup
+//  layoutEditor->setShowAlignmentMenu(popup);
+//  //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+//  popup->exec(QCursor::pos());
+// } else if (!viewAdditionalMenu->isEmpty()) {
+//    setAdditionalViewPopUpMenu(popup);
+//    //popup.show(mouseEvent.getComponent(), mouseEvent.getX(), mouseEvent.getY());
+//    popup->exec(QCursor::pos());
+// }
+// return popup;
+//}   // showPopup
 
 // this should only be used for debugging
 //@Override
 /*public*/ QString LevelXing::toString() {
     return "LevelXing " + getName();
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool LevelXing::canRemove() {
+    QList<QString> beanReferences = getBeanReferences("All");  // NOI18N
+    if (!beanReferences.isEmpty()) {
+        models->displayRemoveWarning(this, beanReferences, "LevelCrossing");  // NOI18N
+    }
+    return beanReferences.isEmpty();
+}
+
+/**
+ * Build a list of sensors, signal heads, and signal masts attached to a
+ * level crossing point.
+ *
+ * @param pointName Specify the point (A-D) or all (All) points.
+ * @return a list of bean reference names.
+ */
+/*public*/ QList<QString> LevelXing::getBeanReferences(QString pointName) {
+    QList<QString> references = QList<QString>();
+    if (pointName == ("A") || pointName == ("All")) {  // NOI18N
+        if (!getSignalAMastName().isEmpty()) {
+            references.append(getSignalAMastName());
+        }
+        if (!getSensorAName().isEmpty()) {
+            references.append(getSensorAName());
+        }
+        if (!getSignalAName().isEmpty()) {
+            references.append(getSignalAName());
+        }
+    }
+    if (pointName == ("B") || pointName == ("All")) {  // NOI18N
+        if (!getSignalBMastName().isEmpty()) {
+            references.append(getSignalBMastName());
+        }
+        if (!getSensorBName().isEmpty()) {
+            references.append(getSensorBName());
+        }
+        if (!getSignalBName().isEmpty()) {
+            references.append(getSignalBName());
+        }
+    }
+    if (pointName == ("C") || pointName == ("All")) {  // NOI18N
+        if (!getSignalCMastName().isEmpty()) {
+            references.append(getSignalCMastName());
+        }
+        if (!getSensorCName().isEmpty()) {
+            references.append(getSensorCName());
+        }
+        if (!getSignalCName().isEmpty()) {
+            references.append(getSignalCName());
+        }
+    }
+    if (pointName == ("D") || pointName == ("All")) {  // NOI18N
+        if (!getSignalDMastName().isEmpty()) {
+            references.append(getSignalDMastName());
+        }
+        if (!getSensorDName().isEmpty()) {
+            references.append(getSensorDName());
+        }
+        if (!getSignalDName().isEmpty()) {
+            references.append(getSignalDName());
+        }
+    }
+    return references;
 }
 
 /*public*/ QVector<QString>* LevelXing::getBlockBoundaries()
@@ -1762,79 +1834,79 @@ void LevelXing::drawXings(LayoutEditor* editor, QGraphicsScene* g2)
   item->addToGroup(line);
 }
 #endif
-void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
-{
- QColor color;
- rects = new QGraphicsItemGroup();
+//void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
+//{
+// QColor color;
+// rects = new QGraphicsItemGroup();
 
- QPointF pt = getCoordsCenter();
-//      g2.setColor(defaultTrackColor);
-//      g2.draw(new Ellipse2D.Double (
-//                      pt.x()-SIZE2, pt.y()-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2));
- QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(pt.x()-LayoutEditor::SIZE2, pt.y()-LayoutEditor::SIZE2, LayoutEditor::SIZE2+LayoutEditor::SIZE2, LayoutEditor::SIZE2+LayoutEditor::SIZE2, 0);
-  ellipse->setPen(QPen(editor->defaultTrackColor, 1, Qt::SolidLine ) );
-  //g2->addItem(ellipse);
-  rects->addToGroup(ellipse);
-  pt = getCoordsA();
- if (getConnectA()==NULL)
- {
-  //g2.setColor(Color.red);
-  color = QColor(Qt::red);
- }
- else {
-  //g2.setColor(Color.green);
-  color = QColor(Qt::green);
- }
- QGraphicsRectItem* rectItem1 = new QGraphicsRectItem (QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
- rectItem1->setPen(QPen(color, 1, Qt::SolidLine ) );
- //g2->addItem(rectItem1);
- rects->addToGroup(rectItem1);
- pt = getCoordsB();
- if (getConnectB()==NULL)
- {
-  //g2.setColor(Color.red);
-  color = QColor(Qt::red);
- }
- else {
-         //g2.setColor(Color.green);
-  color = QColor(Qt::green);
- }
- QGraphicsRectItem* rectItem2 = new QGraphicsRectItem (QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
- rectItem2->setPen(QPen(color, 1, Qt::SolidLine ) );
- //g2->addItem(rectItem2);
- rects->addToGroup(rectItem2);
- pt = getCoordsC();
- if (getConnectC()==NULL)
- {
-  //g2.setColor(Color.red);
-  color = QColor(Qt::red);
- }
- else {
-  //g2.setColor(Color.green);
-  color = QColor(Qt::green);
- }
- QGraphicsRectItem* rectItem3 = new QGraphicsRectItem (QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
- rectItem3->setPen(QPen(color, 1, Qt::SolidLine ) );
- //g2->addItem(rectItem3);
- rects->addToGroup(rectItem3);
- pt = getCoordsD();
- if (getConnectD()==NULL)
- {
-  //g2.setColor(Color.red);
-  color = QColor(Qt::red);
- }
- else
- {
-  //g2.setColor(Color.green);
-  color = QColor(Qt::green);
- }
- QGraphicsRectItem* rectItem4 = new QGraphicsRectItem (QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
- rectItem4->setPen(QPen(color, 1, Qt::SolidLine ) );
- //g2->addItem(rectItem4);
- rects->addToGroup(rectItem4);
+// QPointF pt = getCoordsCenter();
+////      g2.setColor(defaultTrackColor);
+////      g2.draw(new Ellipse2D.Double (
+////                      pt.x()-SIZE2, pt.y()-SIZE2, SIZE2+SIZE2, SIZE2+SIZE2));
+// QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(pt.x()-LayoutEditor::SIZE2, pt.y()-LayoutEditor::SIZE2, LayoutEditor::SIZE2+LayoutEditor::SIZE2, LayoutEditor::SIZE2+LayoutEditor::SIZE2, 0);
+//  ellipse->setPen(QPen(editor->defaultTrackColor, 1, Qt::SolidLine ) );
+//  //g2->addItem(ellipse);
+//  rects->addToGroup(ellipse);
+//  pt = getCoordsA();
+// if (getConnectA()==NULL)
+// {
+//  //g2.setColor(Color.red);
+//  color = QColor(Qt::red);
+// }
+// else {
+//  //g2.setColor(Color.green);
+//  color = QColor(Qt::green);
+// }
+// QGraphicsRectItem* rectItem1 = new QGraphicsRectItem (QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
+// rectItem1->setPen(QPen(color, 1, Qt::SolidLine ) );
+// //g2->addItem(rectItem1);
+// rects->addToGroup(rectItem1);
+// pt = getCoordsB();
+// if (getConnectB()==NULL)
+// {
+//  //g2.setColor(Color.red);
+//  color = QColor(Qt::red);
+// }
+// else {
+//         //g2.setColor(Color.green);
+//  color = QColor(Qt::green);
+// }
+// QGraphicsRectItem* rectItem2 = new QGraphicsRectItem (QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
+// rectItem2->setPen(QPen(color, 1, Qt::SolidLine ) );
+// //g2->addItem(rectItem2);
+// rects->addToGroup(rectItem2);
+// pt = getCoordsC();
+// if (getConnectC()==NULL)
+// {
+//  //g2.setColor(Color.red);
+//  color = QColor(Qt::red);
+// }
+// else {
+//  //g2.setColor(Color.green);
+//  color = QColor(Qt::green);
+// }
+// QGraphicsRectItem* rectItem3 = new QGraphicsRectItem (QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
+// rectItem3->setPen(QPen(color, 1, Qt::SolidLine ) );
+// //g2->addItem(rectItem3);
+// rects->addToGroup(rectItem3);
+// pt = getCoordsD();
+// if (getConnectD()==NULL)
+// {
+//  //g2.setColor(Color.red);
+//  color = QColor(Qt::red);
+// }
+// else
+// {
+//  //g2.setColor(Color.green);
+//  color = QColor(Qt::green);
+// }
+// QGraphicsRectItem* rectItem4 = new QGraphicsRectItem (QRect(pt.x()-LayoutEditor::SIZE, pt.y()-LayoutEditor::SIZE, LayoutEditor::SIZE2, LayoutEditor::SIZE2),0);
+// rectItem4->setPen(QPen(color, 1, Qt::SolidLine ) );
+// //g2->addItem(rectItem4);
+// rects->addToGroup(rectItem4);
 
- g2->addItem(rects);
-}
+// g2->addItem(rects);
+//}
 
 /**
  * return the coordinates for a specified connection type
@@ -1843,78 +1915,78 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
  * @return the coordinates for the specified connection type
  */
 //@Override
-/*public*/ QPointF LevelXing::LevelXing::LevelXing::getCoordsForConnectionType(int connectionType) {
-    QPointF result = center;
-    switch (connectionType) {
-        case LEVEL_XING_CENTER:
-            break;
-        case LEVEL_XING_A:
-            result = getCoordsA();
-            break;
-        case LEVEL_XING_B:
-            result = getCoordsB();
-            break;
-        case LEVEL_XING_C:
-            result = getCoordsC();
-            break;
-        case LEVEL_XING_D:
-            result = getCoordsD();
-            break;
-        default:
-            log.error("Invalid connection type " + QString::number(connectionType)); //I18IN
-    }
-    return result;
-}
+///*public*/ QPointF LevelXing::LevelXing::LevelXing::getCoordsForConnectionType(int connectionType) {
+//    QPointF result = center;
+//    switch (connectionType) {
+//        case LEVEL_XING_CENTER:
+//            break;
+//        case LEVEL_XING_A:
+//            result = getCoordsA();
+//            break;
+//        case LEVEL_XING_B:
+//            result = getCoordsB();
+//            break;
+//        case LEVEL_XING_C:
+//            result = getCoordsC();
+//            break;
+//        case LEVEL_XING_D:
+//            result = getCoordsD();
+//            break;
+//        default:
+//            log.error("Invalid connection type " + QString::number(connectionType)); //I18IN
+//    }
+//    return result;
+//}
 
 /**
  * @return the bounds of this crossing
  */
 //@Override
-/*public*/ QRectF LevelXing::getBounds() {
- QRectF result;
+///*public*/ QRectF LevelXing::getBounds() {
+// QRectF result;
 
- QPointF pointA = getCoordsA();
- result = QRectF(pointA.x(), pointA.y(), 0, 0);
- result = MathUtil::add(result,getCoordsB());
- result = MathUtil::add(result,getCoordsC());
- result = MathUtil::add(result,getCoordsD());
- return result;
-}
+// QPointF pointA = getCoordsA();
+// result = QRectF(pointA.x(), pointA.y(), 0, 0);
+// result = MathUtil::add(result,getCoordsB());
+// result = MathUtil::add(result,getCoordsC());
+// result = MathUtil::add(result,getCoordsD());
+// return result;
+//}
 
 /*
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ QList<LayoutConnectivity*>* LevelXing::getLayoutConnectivity() {
+/*protected*/ QList<LayoutConnectivity*> LevelXing::getLayoutConnectivity() {
     // nothing to see here... move along...
-    return nullptr;
+    return QList<LayoutConnectivity*>();
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QList<int> LevelXing::checkForFreeConnections() {
-    QList<int> result = QList<int>();
+/*public*/ QList<HitPointType::TYPES> LevelXing::checkForFreeConnections() {
+    QList<HitPointType::TYPES> result = QList<HitPointType::TYPES>();
 
     //check the A connection point
     if (getConnectA() == nullptr) {
-        result.append((LEVEL_XING_A));
+        result.append(HitPointType::LEVEL_XING_A);
     }
 
     //check the B connection point
     if (getConnectB() == nullptr) {
-        result.append((LEVEL_XING_B));
+        result.append((HitPointType::LEVEL_XING_B));
     }
 
     //check the C connection point
     if (getConnectC() == nullptr) {
-        result.append((LEVEL_XING_C));
+        result.append((HitPointType::LEVEL_XING_C));
     }
 
     //check the D connection point
     if (getConnectD() == nullptr) {
-        result.append((LEVEL_XING_D));
+        result.append((HitPointType::LEVEL_XING_D));
     }
     return result;
 }
@@ -1931,8 +2003,7 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void LevelXing::checkForNonContiguousBlocks(
-        /*@Nonnull*/ QMap<QString, QList<QSet<QString>* >* >* blockNamesToTrackNameSetsMap) {
+/*public*/ void LevelXing::checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> *> *> blockNamesToTrackNameSetsMap) {
     /*
      * For each (non-null) blocks of this track do:
      * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
@@ -1973,7 +2044,7 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
         QString theBlockName = entry.value();
 
         TrackNameSet = nullptr;    // assume not found (pessimist!)
-        TrackNameSets = blockNamesToTrackNameSetsMap->value(theBlockName);
+        TrackNameSets = blockNamesToTrackNameSetsMap.value(theBlockName);
         if (TrackNameSets != nullptr) { // (#1)
             for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
                 if (checkTrackNameSet->contains(getName())) { // (#2)
@@ -1984,7 +2055,7 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
         } else {    // (#3)
             log.debug(tr("*New block ('%1') trackNameSets").arg(theBlockName));
             TrackNameSets = new QList<QSet<QString>*>();
-            blockNamesToTrackNameSetsMap->insert(theBlockName, TrackNameSets);
+            blockNamesToTrackNameSetsMap.insert(theBlockName, TrackNameSets);
         }
         if (TrackNameSet == nullptr) {
             TrackNameSet = new QSet<QString>();
@@ -2003,39 +2074,39 @@ void LevelXing::drawXingRects(LayoutEditor* editor, QGraphicsScene* g2)
  */
 //@Override
 /*public*/ void LevelXing::collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-        /*@Nonnull*/ QSet<QString>* TrackNameSet) {
-    if (!TrackNameSet->contains(getName())) {
+        /*@Nonnull*/ QSet<QString>* trackNameSet) {
+    if (!trackNameSet->contains(getName())) {
         // check all the matching blocks in this track and...
         //  #1) add us to TrackNameSet and...
         //  #2) flood them
         //check the AC blockName
         if (getBlockNameAC()==(blockName)) {
             // if we are added to the TrackNameSet
-            TrackNameSet->insert(getName());
-            if (TrackNameSet->contains(getName())) {
+            trackNameSet->insert(getName());
+            if (trackNameSet->contains(getName())) {
                 log.debug(tr("*    Add track ''%1'for block ''%2''").arg(getName()).arg(blockName));
             }
             // it's time to play... flood your neighbours!
             if (connectA != nullptr) {
-                connectA->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+                connectA->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
             }
             if (connectC != nullptr) {
-                connectC->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+                connectC->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
             }
         }
         //check the BD blockName
         if (getBlockNameBD() == (blockName)) {
             // if we are added to the TrackNameSet
-         TrackNameSet->insert(getName());
-            if (TrackNameSet->contains(getName())) {
+         trackNameSet->insert(getName());
+            if (trackNameSet->contains(getName())) {
                 log.debug(tr("*    Add track ''%1''for block ''%2''").arg(getName()).arg(blockName));
             }
             // it's time to play... flood your neighbours!
             if (connectB != nullptr) {
-                connectB->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+                connectB->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
             }
             if (connectD != nullptr) {
-                connectD->collectContiguousTracksNamesInBlockNamed(blockName, TrackNameSet);
+                connectD->collectContiguousTracksNamesInBlockNamed(blockName, trackNameSet);
             }
         }
     }

@@ -12,6 +12,7 @@
 #include "blockvaluefile.h"
 #include "panelmenu.h"
 #include "layouteditorfinditems.h"
+#include "positionablepoint.h"
 
 //LayoutBlockManager* LayoutBlockManager::_instance = NULL;
 
@@ -316,11 +317,11 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     // blocks are connected, get connection item types
     LayoutTurnout* lt = NULL;
     TrackSegment* tr = lc->getTrackSegment();
-    int cType = 0;
+    HitPointType::TYPES cType = HitPointType::NONE;
     if (tr==NULL) {
         // this is an internal crossover block boundary
         lt = lc->getXover();
-        cType = lc->getXoverBoundaryType();
+        cType = (HitPointType::TYPES)lc->getXoverBoundaryType();
         switch (cType) {
             case LayoutConnectivity::XOVER_BOUNDARY_AB:
                 if (facingIsBlock1)
@@ -362,6 +363,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
                     else
                         return (((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(lt->getSignalD2Name()));
                 }
+        default:
+         break;
         }
         // should never reach here, but ...
         log.error("crossover turnout block boundary not found in getFacingSignal");
@@ -1743,14 +1746,14 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 
   if (east)
   {
-   if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+   if (LayoutEditorTools::isAtWestEndOfAnchor(panel, pp->getConnect1(), pp)) {
        tr = pp->getConnect2();
    } else {
        tr = pp->getConnect1();
    }
   }
   else {
-   if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+   if (LayoutEditorTools::isAtWestEndOfAnchor(panel, pp->getConnect1(), pp)) {
        tr = pp->getConnect1();
    } else {
        tr = pp->getConnect2();
@@ -1878,13 +1881,13 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         //            LayoutEditorTools tools = panel.getLETools(); //TODO: Dead-code strip this
 
         if (east) {
-            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(panel, pp->getConnect1(), pp)) {
                 tr = pp->getConnect2();
             } else {
                 tr = pp->getConnect1();
             }
         } else {
-            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(panel, pp->getConnect1(), pp)) {
                 tr = pp->getConnect1();
             } else {
                 tr = pp->getConnect2();
@@ -2022,13 +2025,13 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 //            LayoutEditorTools tools = panel.getLETools(); //TODO: Dead-code strip this
 
         if (east) {
-            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(panel, pp->getConnect1(), pp)) {
                 tr = pp->getConnect1();
             } else {
                 tr = pp->getConnect2();
             }
         } else {
-            if (LayoutEditorTools::isAtWestEndOfAnchor(pp->getConnect1(), pp)) {
+            if (LayoutEditorTools::isAtWestEndOfAnchor(panel, pp->getConnect1(), pp)) {
                 tr = pp->getConnect2();
             } else {
                 tr = pp->getConnect1();

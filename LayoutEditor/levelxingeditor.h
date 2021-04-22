@@ -1,7 +1,9 @@
 #ifndef LEVELXINGEDITOR_H
 #define LEVELXINGEDITOR_H
 #include "layoutturntableeditor.h"
+#include "levelxingview.h"
 
+class LevelXingView;
 class LevelXing;
 class LevelXingEditor : public LayoutTurntableEditor
 {
@@ -13,6 +15,7 @@ class LevelXingEditor : public LayoutTurntableEditor
 
  private:
   // variables for Edit Track Segment pane
+  /*private*/ LevelXingView* levelXingView;
   /*private*/ LevelXing* levelXing;
 
   // variables for Edit Level Crossing pane

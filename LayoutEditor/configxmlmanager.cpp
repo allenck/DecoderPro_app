@@ -793,7 +793,9 @@ File userPrefsFile;*/
     if (log->isDebugEnabled()) log->debug("skipping " + item.tagName());
      continue;
    }
+
    QString adapterName = item.attribute("class");
+
    if (log->isDebugEnabled()) log->debug("attempt to get adapter "+adapterName + " for " + item.attribute("name"));
    XmlAdapter* adapter = nullptr;
 #if 1

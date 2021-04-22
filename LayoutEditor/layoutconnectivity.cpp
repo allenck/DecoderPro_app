@@ -1,5 +1,6 @@
 #include "layoutconnectivity.h"
-#include "path.h"
+#include "loggerfactory.h"
+
 /**
  * A LayoutConnectivity object represents a junction between two LayoutBlocks
  *		on a LayoutEditor panel.
@@ -45,27 +46,20 @@
  * @author Dave Duchamp Copyright (c) 2007-2008
  * @version $Revision: 17977 $
  */
-///*public*/ class LayoutConnectivity {
+// /*public*/ class LayoutConnectivity {
 
 /**
  * Constructor
  */
-/*public*/ LayoutConnectivity::LayoutConnectivity (LayoutBlock* b1, LayoutBlock* b2)
+/*public*/ LayoutConnectivity::LayoutConnectivity (LayoutBlock* b1, LayoutBlock* b2, QObject *parent)
+ : QObject(parent)
 {
- block1 = NULL;
- block2 = NULL;
- direction = Path::NONE;
- track1 = NULL;
- connect2 = NULL;
- typeConnect2 = 0;
- xover = NULL;
- xoverBoundaryType = NONE;
- anchor = NULL;
-
-    block1 = b1;
-    if (block1==NULL) log.error("NULL block1 when creating Layout Connectivity");
-    block2 = b2;
-    if (block2==NULL) log.error("NULL block2 when creating Layout Connectivity");
+ block1 = b1;
+ if (block1==nullptr)
+  log->error("NULL block1 when creating Layout Connectivity");
+ block2 = b2;
+ if (block2==NULL)
+  log->error("NULL block2 when creating Layout Connectivity");
 }
 
 
@@ -99,26 +93,26 @@
     direction = Path::NONE;
     return (false);
 }
-/*public*/ void LayoutConnectivity::setConnections (TrackSegment* t, QObject* o, int type, PositionablePoint* p) {
+/*public*/ void LayoutConnectivity::setConnections (TrackSegment* t, LayoutTrack* o, HitPointType::TYPES type, PositionablePoint* p) {
     track1 = t;
-    if (t==NULL) log.error("NULL track1 when setting up LayoutConnectivity");
+    if (t==NULL) log->error("NULL track1 when setting up LayoutConnectivity");
     connect2 = o;
-    if (o==NULL) log.error("NULL connect object when setting up LayoutConnectivity");
+    if (o==NULL) log->error("NULL connect object when setting up LayoutConnectivity");
     typeConnect2 = type;
     anchor = p;
 }
 /*public*/ void LayoutConnectivity::setXoverBoundary (LayoutTurnout* t, int type) {
     xover = t;
-    if (t==NULL) log.error("NULL XOver when setting up LayoutConnectivity");
+    if (t==NULL) log->error("NULL XOver when setting up LayoutConnectivity");
     xoverBoundaryType = type;
 }
 /*public*/ TrackSegment* LayoutConnectivity::getTrackSegment() {return track1;}
-/*public*/ QObject* LayoutConnectivity::getConnectedObject() {return connect2;}
-/*public*/ int LayoutConnectivity::getConnectedType() {return typeConnect2;}
+/*public*/ LayoutTrack* LayoutConnectivity::getConnectedObject() {return connect2;}
+/*public*/ HitPointType::TYPES LayoutConnectivity::getConnectedType() {return typeConnect2;}
 /*public*/ LayoutTurnout* LayoutConnectivity::getXover() {return xover;}
 /*public*/ int LayoutConnectivity::getXoverBoundaryType() {return xoverBoundaryType;}
 /*public*/ PositionablePoint* LayoutConnectivity::getAnchor() {return anchor;}
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LayoutConnectivity.class.getName());
+/*static*/ Logger* LayoutConnectivity::log = LoggerFactory::getLogger("LayoutConnectivity");
 
 //}

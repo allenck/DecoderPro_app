@@ -9,6 +9,8 @@
 #include "layoutturntable.h"
 #include "layoutshape.h"
 #include "leblockcontentsicon.h"
+#include "layoutturnoutview.h"
+#include "layoutturntableview.h"
 
 //LayoutEditorComponent::LayoutEditorComponent(QWidget *parent) : QWidget(parent)
 //{
@@ -42,6 +44,8 @@
 //public void paint(Graphics g) {
 /*public*/ void LayoutEditorComponent::paintTargetPanel(EditScene* g2)
 {
+ if(!initialized)
+  return;
  if (qobject_cast<EditScene*>(g2))
  {
         // layoutEditor.draw((Graphics2D) g);
@@ -104,7 +108,11 @@
 
             drawTrackSegmentInProgress(g2);
             drawShapeInProgress(g2);
-        } else if (layoutEditor->turnoutCirclesWithoutEditMode) {
+
+            if (layoutEditor->isDrawLayoutTracksLabel()) {
+                drawLayoutTracksLabel(g2);
+            }
+        } else if (layoutEditor->getTurnoutCircles()) {
             if (layoutEditor->allControlling()) {
                 drawTurnoutControls(g2);
             }
@@ -538,7 +546,7 @@
         bool isBlock,
         bool isHidden,
         bool isDashed) {
- for (LayoutTrackView* layoutTrackView : *layoutEditor->getLayoutTrackViews()) {
+ for (LayoutTrackView* layoutTrackView : layoutEditor->getLayoutTrackViews()) {
      if (!(qobject_cast<PositionablePointView*>(layoutTrackView))) {
          if (isHidden == layoutTrackView->isHidden()) {
              if ((qobject_cast<TrackSegmentView*>(layoutTrackView))) {
@@ -568,7 +576,7 @@
 // draw parallel lines (rails)
 /*private*/ void LayoutEditorComponent::draw2(EditScene* g2, bool isMain,
         float railDisplacement, bool isDashed) {
-    for (LayoutTrackView* layoutTrackView : *layoutEditor->getLayoutTrackViews()) {
+    for (LayoutTrackView* layoutTrackView : layoutEditor->getLayoutTrackViews()) {
         if ((qobject_cast<TrackSegmentView*>(layoutTrackView))) {
             if (((TrackSegmentView*) layoutTrackView)->isDashed() == isDashed) {
                 layoutTrackView->draw2(g2, isMain, railDisplacement);
@@ -582,7 +590,7 @@
 // draw decorations
 /*private*/ void LayoutEditorComponent::drawDecorations(EditScene* g2) {
     //layoutEditor->getLayoutTrackViews().forEach((tr) -> tr.drawDecorations(g2));
- for (LayoutTrack* tr : *layoutEditor->layoutTrackList) {
+ for (LayoutTrackView* tr : layoutEditor->getLayoutTrackViews()) {
      tr->drawDecorations(g2);
  }
 }
@@ -590,7 +598,7 @@
 // draw shapes
 /*private*/ void LayoutEditorComponent::drawShapes(EditScene* g2, bool isBackground) {
  //layoutEditor.getLayoutShapes().forEach((s) ->
-foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
+foreach(LayoutShape* s, layoutEditor->getLayoutShapes())
 {
   if (isBackground == (s->getLevel() < 3)) {
       s->draw(g2);
@@ -616,17 +624,18 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
 //        g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
      stroke = QPen(highlightColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
 
-     for (LayoutTrack* lt : *layoutEditor->getLayoutTracks()) {
+     for (LayoutTrack* lt : layoutEditor->getLayoutTracks()) {
          if (lt != layoutEditor->beginTrack) {
+           LayoutTrackView* ltv = layoutEditor->getLayoutTrackView(lt);
              if (lt == layoutEditor->foundTrack) {
-                 lt->highlightUnconnected(g2);
+                 ltv->highlightUnconnected(g2);
 //                    g2.setColor(connectColor);
                  layoutEditor->drawingStroke.setColor(connectColor);
-                 lt->highlightUnconnected(g2, layoutEditor->foundHitPointType);
+                 ltv->highlightUnconnected(g2, layoutEditor->foundHitPointType);
 //                    g2.setColor(highlightColor);
                  layoutEditor->drawingStroke.setColor(highlightColor);
              } else {
-                 lt->highlightUnconnected(g2);
+                 ltv->highlightUnconnected(g2);
              }
          }
      }
@@ -658,7 +667,7 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
  //g2.setStroke(new BasicStroke(1.0F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
  QPen stroke = QPen(layoutEditor->defaultTrackColor, 1, Qt::SolidLine,Qt::RoundCap, Qt::RoundJoin);
  layoutEditor->drawingStroke = stroke;
-  for (LayoutTrack* tr : *layoutEditor->layoutTrackList) {
+  for (LayoutTrackView* tr : layoutEditor->getLayoutTrackViews()) {
      tr->drawEditControls(g2);
  }
 }
@@ -669,7 +678,7 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
  layoutEditor->drawingStroke = stroke;
 
  //layoutEditor.getLayoutShapes().forEach((s) ->
- foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
+ foreach(LayoutShape* s, layoutEditor->getLayoutShapes())
  {
    s->drawEditControls(g2);
  }//);
@@ -686,14 +695,14 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
   layoutEditor->drawingStroke = stroke;
      // loop over all turnouts
      bool editable = layoutEditor->isEditable();
-     for (LayoutTrack* tr : *layoutEditor->layoutTrackList) {
-         if (qobject_cast<LayoutTurnout*>(tr)) {  //<== this includes LayoutSlips
-             LayoutTurnout* lt = (LayoutTurnout*) tr;
+     for (LayoutTrackView* tr : layoutEditor->getLayoutTrackViews()) {
+         if (qobject_cast<LayoutTurnoutView*>(tr)) {  //<== this includes LayoutSlips
+             LayoutTurnoutView* lt = (LayoutTurnoutView*) tr;
              if (editable || !(lt->isHidden() || lt->isDisabled())) {
                  lt->drawTurnoutControls(g2);
              }
          } else if (qobject_cast<LayoutTurntable*>(tr)) {
-             LayoutTurntable* lt = (LayoutTurntable*) tr;
+             LayoutTurntableView* lt = (LayoutTurntableView*) tr;
              if (editable || !lt->isHidden()) {
                  lt->drawTurnoutControls(g2);
              }
@@ -754,7 +763,7 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
      }
  }
 
-/*private*/ void LayoutEditorComponent::highLightSelection(EditScene* g) {
+/*private*/ void LayoutEditorComponent::highLightSelection(EditScene* g) { // TODO: must be updated
  //java.awt.Stroke stroke = g.getStroke();
  //  Color color = g.getColor();
  //  g.setColor(new Color(204, 207, 88));
@@ -767,6 +776,7 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
  }
  layoutEditor->highlightRect = new QGraphicsItemGroup();
 
+#if 0
  if (layoutEditor->_positionableSelection!=nullptr)
  {
   for (int i = 0; i<layoutEditor->_positionableSelection->size(); i++)
@@ -789,25 +799,28 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
   }
  }
  // loop over all defined turnouts
+
  if (layoutEditor->_turnoutSelection!=nullptr)
  {
   for (int i = 0; i<layoutEditor->_turnoutSelection->size();i++)
   {
    LayoutTurnout* t = layoutEditor->_turnoutSelection->at(i);
-   int minx = (int) qMin(qMin(t->getCoordsA().x(), t->getCoordsB().x()),qMin(t->getCoordsC().x(), t->getCoordsD().x()));
+   LayoutTrackView* ltv = layoutEditor->getLayoutTrackView(t);
+   int minx = (int) qMin(qMin(ltv->getCoordsA().x(), ltv->getCoordsB().x()),qMin(ltv->getCoordsC().x(), ltv->getCoordsD().x()));
    int miny = (int) qMin(qMin(t->getCoordsA().y(), t->getCoordsB().y()),qMin(t->getCoordsC().y(), t->getCoordsD().y()));
    int maxx = (int) qMax(qMax(t->getCoordsA().x(), t->getCoordsB().x()),qMax(t->getCoordsC().x(), t->getCoordsD().x()));
    int maxy = (int) qMax(qMax(t->getCoordsA().y(), t->getCoordsB().y()),qMax(t->getCoordsC().y(), t->getCoordsD().y()));
    int width = maxx-minx;
    int height = maxy-miny;
-   int x = (int) t->getCoordsCenter().x()-(width/2);
-   int y = (int) t->getCoordsCenter().y()-(height/2);
+   int x = (int) ltv->getCoordsCenter().x()-(width/2);
+   int y = (int) ltv->getCoordsCenter().y()-(height/2);
    //g.drawRect(x, y, width, height);
    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF(x, y, width, height));
    item->setPen(pen);
    layoutEditor->highlightRect->addToGroup(item);
   }
  }
+
  if (layoutEditor->_xingSelection!=nullptr)
  {
   // loop over all defined level crossings
@@ -869,13 +882,56 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
   for (int i = 0; i<layoutEditor->_pointSelection->size();i++)
   {
    PositionablePoint* p = layoutEditor->_pointSelection->at(i);
-   QPointF coord = p->getCoordsCenter();
+   PositionablePointView* pv = layoutEditor->getPositionablePointView(p);
+   QPointF coord = pv->getCoordsCenter();
    //g.drawRect((int)coord.getX()-4, (int)coord.getY()-4, 9, 9);
    QGraphicsRectItem* item = new QGraphicsRectItem(QRectF((int)coord.x()-4, (int)coord.y()-4, 9, 9));
    item->setPen(pen);
    layoutEditor->highlightRect->addToGroup(item);
   }
  }
+#else
+ //layoutEditor.getPositionalSelection().forEach((c) -> g.drawRect(c.getX(), c.getY(), c.maxWidth(), c.maxHeight()));
+ for(Positionable* c : *layoutEditor->getPositionalSelection())
+ {
+  //g.drawRect(c->getX(), c->getY(), c->maxWidth(), c->maxHeight());
+  QGraphicsRectItem* item;
+  SensorIcon* si;
+  LocoIcon* li;
+  LEMemoryIcon* mi;
+  if((si = static_cast<SensorIcon*>(c->self()))!=nullptr)
+   item = new QGraphicsRectItem(QRectF(si->getX(), si->getY(), si->maxWidth(), si->maxHeight()));
+  else if((li = static_cast<LocoIcon*>(c))!=nullptr)
+   item = new QGraphicsRectItem(QRectF(li->getX(), li->getY(), li->maxWidth(), li->maxHeight()));
+  else if((mi = static_cast<LEMemoryIcon*>(c))!=nullptr)
+   item = new QGraphicsRectItem(QRectF(mi->getX(), mi->getY(), mi->maxWidth(), mi->maxHeight()));
+
+  item->setPen(pen);
+  layoutEditor->highlightRect->addToGroup(item);
+ }
+#if 0 //TODO
+         //layoutEditor._layoutTrackSelection.stream().map((lt) -> {
+ for(LayoutTrack* lt : layoutEditor->_layoutTrackSelection)
+ {
+     LayoutTrackView* ltv = layoutEditor->getLayoutTrackView(lt);
+     QRectF r = ltv->getBounds();
+     if (r.isEmpty()) {
+         r = MathUtil::inset(r, -4.0);
+     }
+     //r = MathUtil.centerRectangleOnPoint(r, ltv.getCoordsCenter());
+     return r;
+ }//).forEachOrdered(g::draw);
+
+         layoutEditor._layoutShapeSelection.stream().map((ls) -> {
+             Rectangle2D r = ls.getBounds();
+             if (r.isEmpty()) {
+                 r = MathUtil.inset(r, -4.0);
+             }
+             //r = MathUtil.centerRectangleOnPoint(r, ls.getCoordsCenter());
+             return r;
+         }).forEachOrdered(g::draw);
+#endif
+#endif
 //  g.setColor(color);
 //  g.setStroke(stroke);
  if(layoutEditor->highlightRect && layoutEditor->highlightRect->scene())
@@ -883,6 +939,16 @@ foreach(LayoutShape* s, *layoutEditor->getLayoutShapes())
  g->addItem(layoutEditor->highlightRect);
 }
 
+/*private*/ void LayoutEditorComponent::drawLayoutTracksLabel(EditScene* g) {
+//    g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
+
+//    g.setColor(Color.red);
+ //QPen pen(Qt::red);
+
+ for (LayoutTrackView* layoutTrackView : layoutEditor->getLayoutTrackViews()) {
+     layoutTrackView->drawLayoutTrackText(g);
+ }
+}
 /*
 * {@inheritDoc}
  */
