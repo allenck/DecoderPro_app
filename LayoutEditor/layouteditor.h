@@ -555,6 +555,14 @@ public:
     /*public*/ QList<LayoutTrack*> getLayoutTrackSelection();
     /*public*/ QList<LayoutShape*> getLayoutShapeSelection();
 
+    // use turnoutCircleSize when you need an int and these when you need a double
+    // note: these only change when setTurnoutCircleSize is called
+    // using these avoids having to call getTurnoutCircleSize() and
+    // the multiply (x2) and the int -> double conversion overhead
+    /*public*/ /*transient*/ double circleRadius = SIZE * getTurnoutCircleSize();
+    /*public*/ /*transient*/ double circleDiameter = 2.0 * circleRadius;
+
+
  public slots:
 
 private:
@@ -957,13 +965,6 @@ protected:
  /*protected*/ QColor turnoutCircleThrownColor= QColor(Qt::black);
  /*protected*/ bool turnoutFillControlCircles = false;
  /*protected*/ int turnoutCircleSize = 4; //matches earlier versions
-
- //use turnoutCircleSize when you need an int and these when you need a double
- //note: these only change when setTurnoutCircleSize is called
- //using these avoids having to call getTurnoutCircleSize() and
- //the multiply (x2) and the int -> double conversion overhead
- /*protected*/ /*transient*/ double circleRadius = SIZE * getTurnoutCircleSize();
- /*protected*/ /*transient*/ double circleDiameter = 2.0 * circleRadius;
 
  //selection variables
  /*protected*/ /*transient*/ bool selectionActive = false;

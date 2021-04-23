@@ -183,10 +183,9 @@
 /*final*/ /*public*/ QGraphicsEllipseItem* LayoutTrackView::trackControlCircleAt(/*@Nonnull*/ QPointF inPoint) {
  if(inPoint.isNull())
   log->debug("null point");
-    return new QGraphicsEllipseItem(inPoint.x() - layoutEditor->circleRadius,
+ return new QGraphicsEllipseItem(inPoint.x() - layoutEditor->circleRadius,
             inPoint.y() - layoutEditor->circleRadius,
             layoutEditor->circleDiameter, layoutEditor->circleDiameter);
-
 }
 
 // compute the turnout circle control rect at inPoint
@@ -255,6 +254,9 @@
  * note: currently can't override (final); change this if you need to
  */
 /*final*/ /*protected*/ void LayoutTrackView::drawLayoutTrackText(EditScene* g) {
+ QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
+ invalidateItem(g, labels);
+
     // get the center coordinates
     int x = (int) center.x(), y = (int) center.y();
 
@@ -262,7 +264,7 @@
     QString name = getName();
 #if 1 // TODO:
     // get the FontMetrics
-    QFontMetrics metrics = QFontMetrics(g->font());
+    QFontMetrics metrics = QFontMetrics(/*g->font()*/textFont);
 
     // determine the X coordinate for the text
     //x -= metrics.stringWidth(name) / 2;
@@ -278,11 +280,22 @@
 
     //g->drawString(name, x, y);
     QGraphicsTextItem * io = new QGraphicsTextItem;
-    io->setPos(boundingRect.x(), boundingRect.y());
-    io->setPlainText("Barev");
+    io->setPos(boundingRect.x() + center.x(), boundingRect.y() + center.y());
+    io->setPlainText(name);
+    io->setDefaultTextColor(textColor);
+    io->setFont(textFont);
 
-    g->addItem(io);
+    itemGroup->addToGroup(io);
+    labels  = itemGroup;
+    g->addItem(labels);
 #endif
+}
+
+/*protected*/ void LayoutTrackView::drawLayoutTrackText(EditScene* g, QColor c, QFont f)
+{
+ textColor = c;
+ textFont = f;
+ drawLayoutTrackText(g);
 }
 /**
      * Load a file for a specific arrow ending.

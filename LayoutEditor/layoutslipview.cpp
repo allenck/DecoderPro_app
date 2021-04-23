@@ -1397,34 +1397,34 @@
 
     //@Override
     /*protected*/ void LayoutSlipView::drawTurnoutControls(EditScene* g2) {
-            // drawHidden left/right turnout control circles
+      // drawHidden left/right turnout control circles
       QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
-            QPointF leftCircleCenter = getCoordsLeft();
+      QPointF leftCircleCenter = getCoordsLeft();
 
-            invalidateItem(g2,circles);
+      invalidateItem(g2,circles);
 
-            //g2.draw(layoutEditor->trackControlCircleAt(leftCircleCenter));
-            QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(leftCircleCenter);
-            ellipseItem->setPen(layoutEditor->drawingStroke);
-            if (layoutEditor->isTurnoutFillControlCircles()) {
-             QBrush brush = QBrush(layoutEditor->drawingStroke.color());
-             ellipseItem->setBrush(brush);
-            }
-            itemGroup->addToGroup(ellipseItem);
+      //g2.draw(layoutEditor->trackControlCircleAt(leftCircleCenter));
+      QGraphicsEllipseItem* ellipseItem = trackControlCircleAt(leftCircleCenter);
+      ellipseItem->setPen(layoutEditor->drawingStroke);
+      if (layoutEditor->isTurnoutFillControlCircles()) {
+       QBrush brush = QBrush(layoutEditor->drawingStroke.color());
+       ellipseItem->setBrush(brush);
+      }
+      itemGroup->addToGroup(ellipseItem);
 
-            QPointF rightCircleCenter = getCoordsRight();
-            //g2.draw(layoutEditor->trackControlCircleAt(rightCircleCenter));
-            ellipseItem = trackControlCircleAt(rightCircleCenter);
-            ellipseItem->setPen(layoutEditor->drawingStroke);
-            if (layoutEditor->isTurnoutFillControlCircles()) {
-             QBrush brush = QBrush(layoutEditor->drawingStroke.color());
-             ellipseItem->setBrush(brush);
-            }
+      QPointF rightCircleCenter = getCoordsRight();
+      //g2.draw(layoutEditor->trackControlCircleAt(rightCircleCenter));
+      ellipseItem = trackControlCircleAt(rightCircleCenter);
+      ellipseItem->setPen(layoutEditor->drawingStroke);
+      if (layoutEditor->isTurnoutFillControlCircles()) {
+       QBrush brush = QBrush(layoutEditor->drawingStroke.color());
+       ellipseItem->setBrush(brush);
+      }
 
-            itemGroup->addToGroup(ellipseItem);
+      itemGroup->addToGroup(ellipseItem);
 
-            circles = itemGroup;
-            g2->addItem(circles);
+      circles = itemGroup;
+      g2->addItem(circles);
     } // drawTurnoutControls
 #if 0
     /*public*/ static class TurnoutState {

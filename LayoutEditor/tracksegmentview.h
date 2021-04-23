@@ -303,20 +303,21 @@ class TrackSegmentView : public LayoutTrackView
   /*private*/ int tunnelFloorWidth = 10;
   /*private*/ int tunnelLineWidth = 1;
   /*private*/ int tunnelEntranceWidth = 16;
+  QGraphicsItemGroup* rects = nullptr;
 
  protected:
-  /*protected*/ HitPointType::TYPES findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected);
+  /*protected*/ HitPointType::TYPES findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected)override;
   /*protected*/ void setNewConnect1(/*@CheckForNull*/ LayoutTrack* connectTrack, HitPointType::TYPES connectionType);
   /*protected*/ void setNewConnect2(/*@CheckForNull*/ LayoutTrack* connectTrack, HitPointType::TYPES connectionType);
-  /*protected*/ QMenu* showPopup(/*@Nonnull*/ QGraphicsSceneMouseEvent* mouseEvent);
+  /*protected*/ QMenu* showPopup(/*@Nonnull*/ QGraphicsSceneMouseEvent* mouseEvent)override;
   /*protected*/ void showBezierPopUp(QGraphicsSceneMouseEvent* e, HitPointType::TYPES hitPointType);
   /*protected*/ void reCalculateTrackSegmentAngle(double x, double y);
   /*protected*/ void calculateTrackSegmentAngle();
-  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock);
-  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement);
-  /*protected*/ void highlightUnconnected(EditScene* g2, HitPointType::TYPES selectedType);
-  /*protected*/ void drawEditControls(EditScene* g2);
-  /*protected*/ void drawTurnoutControls(EditScene* g2);
+  /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock)override;
+  /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement)override;
+  /*protected*/ void highlightUnconnected(EditScene* g2, HitPointType::TYPES selectedType)override;
+  /*protected*/ void drawEditControls(EditScene* g2)override;
+  /*protected*/ void drawTurnoutControls(EditScene* g2)override;
   /*protected*/ void drawDecorations(EditScene* g2) override;
   /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity() override;
 

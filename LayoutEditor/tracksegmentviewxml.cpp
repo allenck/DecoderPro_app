@@ -305,7 +305,7 @@
     }
 
     if ( getAttributeBooleanValue(element, "hideConLines", false) ) {
-        lv->hideConstructionLines(TrackSegment::HIDECON);
+        lv->hideConstructionLines(TrackSegmentView::HIDECON);
     }
     // load decorations
     QDomElement decorationsElement = element.firstChildElement("decorations");

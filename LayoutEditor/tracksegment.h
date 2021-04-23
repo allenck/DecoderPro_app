@@ -102,9 +102,9 @@ public:
      * "active" means that the object is still displayed, and should be stored.
      */
     /*public*/ bool isActive();
-    /*public*/ bool isShowConstructionLines();
-    /*public*/ void hideConstructionLines(int hide);
-    /*public*/ bool hideConstructionLines();
+//    /*public*/ bool isShowConstructionLines();
+//    /*public*/ void hideConstructionLines(int hide);
+//    /*public*/ bool hideConstructionLines();
     /*public*/ void reCheckBlockBoundary() const override;
     /**
     * The following are used only as a temporary store after a circle or arc has been calculated.
@@ -141,13 +141,13 @@ public:
 ////    void changeType(int choice);
 //    double radToDeg(double radians);
 //    double degToRad(double degrees);
-    /*public*/ enum CONSTRUCT
-    {
-     SHOWCON = 0x01,
-     HIDECON = 0x02,//flag set on a segment basis.
-     HIDECONALL = 0x04  //Used by layout editor for hiding all
-    };
-    /*public*/ int showConstructionLine;// = SHOWCON;
+//    /*public*/ enum CONSTRUCT
+//    {
+//     SHOWCON = 0x01,
+//     HIDECON = 0x02,//flag set on a segment basis.
+//     HIDECONALL = 0x04  //Used by layout editor for hiding all
+//    };
+//    /*public*/ int showConstructionLine;// = SHOWCON;
 //    /*public*/ QRectF getBounds() override;
 //    /*public*/ bool hasDecorations() override;
 //    /*public*/ QMap<QString, QString>* getDecorations() override;
@@ -245,7 +245,8 @@ public:
     /*public*/ QList<QString> getPointReferences(HitPointType::TYPES, LayoutTrack* conn);
 
 signals:
-    
+    void objectsSet();
+
 public slots:
     //void on_actionEdit_triggered();
 //    void on_changeType(QAction* act);

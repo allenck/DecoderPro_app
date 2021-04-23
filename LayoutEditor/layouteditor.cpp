@@ -423,6 +423,9 @@ void LayoutEditor::common()
  JmriJFrame::initComponents();
  PanelEditor::init(layoutName);
 
+ circleRadius = SIZE * getTurnoutCircleSize();
+ circleDiameter = 2.0 * circleRadius;
+
  setupToolBar();
  setupMenuBar();
 
@@ -8108,6 +8111,21 @@ void LayoutEditor::undoMoveSelection() {
     antialiasingOnCheckBoxMenuItem->setChecked(antialiasingOn);
 
     //
+    // drawLayoutTracksLabel
+    //
+    drawLayoutTracksLabelCheckBoxMenuItem = new JCheckBoxMenuItem(tr("Toggle Track labels in Edit mode"), this);
+    optionMenu->addAction(drawLayoutTracksLabelCheckBoxMenuItem);
+//    drawLayoutTracksLabelCheckBoxMenuItem.setMnemonic(stringsToVTCodes.get(Bundle.getMessage("DrawLayoutTracksMnemonic")));
+//    drawLayoutTracksLabelCheckBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+//            stringsToVTCodes.get(Bundle.getMessage("DrawLayoutTracksAccelerator")), primary_modifier));
+    //drawLayoutTracksLabelCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
+    connect(drawLayoutTracksLabelCheckBoxMenuItem, &QAction::triggered, [=]{
+        setDrawLayoutTracksLabel(drawLayoutTracksLabelCheckBoxMenuItem->isChecked());
+        redrawPanel();
+    });
+    drawLayoutTracksLabelCheckBoxMenuItem->setChecked(drawLayoutTracksLabel);
+
+    //
     // edit title
     //
     optionMenu->addSeparator();
@@ -8408,14 +8426,14 @@ void LayoutEditor::undoMoveSelection() {
     trackMenu->addAction(hideTrackSegmentConstructionLinesCheckBoxMenuItem);
 //    hideTrackSegmentConstructionLinesCheckBoxMenuItem.addActionListener((ActionEvent event) -> {
     connect(hideTrackSegmentConstructionLinesCheckBoxMenuItem, &QAction::triggered, [=]{
-        int show = TrackSegment::SHOWCON;
+        int show = TrackSegmentView::SHOWCON;
 
         if (hideTrackSegmentConstructionLinesCheckBoxMenuItem->isChecked()) {
-            show = TrackSegment::HIDECONALL;
+            show = TrackSegmentView::HIDECONALL;
         }
 
-        for (TrackSegment* ts : getTrackSegments()) {
-            ts->hideConstructionLines(show);
+        for (TrackSegmentView* tsv : getTrackSegmentViews()) {
+            tsv->hideConstructionLines(show);
         }
         redrawPanel();
     });

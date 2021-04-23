@@ -8,6 +8,7 @@
 #include "tracksegmentview.h"
 #include "jmricolorchooser.h"
 #include "layouteditortoolbarpanel.h"
+#include "quickpromptutil.h"
 
 /**
  * MVC View component for the PositionablePoint class.
@@ -944,7 +945,7 @@ void PositionablePointView::removeSML(SignalMast* signalMast) {
 
          jcbmi = new JCheckBoxMenuItem(tr("None"),this);
          arrowsDirMenu->addAction(jcbmi);
-         jcbmi->setToolTip(tr("DecorationNoneMenuItemToolTip"));
+         jcbmi->setToolTip(tr("Select this to remove this decoration from this track"));
          connect(jcbmi, &JCheckBoxMenuItem::triggered, [=]{
           TrackSegmentView* ctv = layoutEditor->getTrackSegmentView(getConnect1());
              ctv->setArrowDirIn(false);
@@ -982,7 +983,7 @@ void PositionablePointView::removeSML(SignalMast* signalMast) {
          });
          jcbmi->setChecked(ctv1->isArrowDirIn() && ctv1->isArrowDirOut());
 
-         jmi = arrowsMenu->addMenu(tr("ColorMenu"));
+         jmi = arrowsMenu->addMenu(tr("Color"));
          jmi->setToolTip(tr("Select this to change the color of this decoration"));
          connect(jcbmi, &JCheckBoxMenuItem::triggered, [=]{
              TrackSegmentView*  ctv = layoutEditor->getTrackSegmentView(getConnect1());
@@ -991,108 +992,114 @@ void PositionablePointView::removeSML(SignalMast* signalMast) {
                  ctv->setArrowColor(newColor);
              }
          });
-#if 0
-         jmi->setForeground(ctv1->getArrowColor());
-         jmi->setBackground(ColorUtil.contrast(ctv1->getArrowColor()));
 
-         jmi = arrowsMenu.add(new QMenuItem(Bundle.getMessage("MakeLabel",
-                 Bundle.getMessage("DecorationLineWidthMenuItemTitle")) + ctv1->getArrowLineWidth()));
-         jmi->setToolTip(tr("DecorationLineWidthMenuItemToolTip"));
-         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+//         jmi->setForeground(ctv1->getArrowColor());
+//         jmi->setBackground(ColorUtil::contrast(ctv1->getArrowColor()));
+
+         /*jmi = */arrowsMenu->addAction(act =new QAction(tr("%1:").arg(
+                 tr("Line Width")) + QString::number(ctv1->getArrowLineWidth()),this));
+         act->setToolTip(tr("Select this to change the line width of this decoration"));
+         //jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         connect(act, &QAction::triggered, [=]{
              TrackSegmentView*  ctv = layoutEditor->getTrackSegmentView(getConnect1());
              //prompt for arrow line width
-             int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-                     Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
-                     Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
+             int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+                     tr("Line Width"),
+                     tr("Line Width"),
                      ctv->getArrowLineWidth());
              ctv->setArrowLineWidth(newValue);
          });
 
-         jmi = arrowsMenu.add(new QMenuItem(Bundle.getMessage("MakeLabel",
-                 Bundle.getMessage("DecorationLengthMenuItemTitle")) + ctv1->getArrowLength()));
-         jmi->setToolTip(tr("DecorationLengthMenuItemToolTip"));
-         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         /*jmi =*/ arrowsMenu->addAction(act = new QAction(tr("%1:").arg(
+                 tr("Length")) + ctv1->getArrowLength()));
+         act->setToolTip(tr("Select this to change the length of this decoration"));
+         //jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         connect(act, &QAction::triggered, [=]{
              TrackSegmentView*  ctv = layoutEditor->getTrackSegmentView(getConnect1());
              //prompt for arrow length
-             int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-                     Bundle.getMessage("DecorationLengthMenuItemTitle"),
-                     Bundle.getMessage("DecorationLengthMenuItemTitle"),
+             int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+                     tr("Length"),
+                     tr("Length"),
                      ctv->getArrowLength());
              ctv->setArrowLength(newValue);
          });
 
-         jmi = arrowsMenu.add(new QMenuItem(Bundle.getMessage("MakeLabel",
-                 Bundle.getMessage("DecorationGapMenuItemTitle")) + ctv1->getArrowGap()));
-         jmi->setToolTip(tr("DecorationGapMenuItemToolTip"));
-         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         /*jmi =*/ arrowsMenu->addAction(act = new QAction(tr("%1:").arg(
+                 tr("Space")) + ctv1->getArrowGap()));
+         jmi->setToolTip(tr("Select this to change the space between multiple decorations"));
+         //jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         connect(act, &QAction::triggered, [=]{
              TrackSegmentView*  ctv = layoutEditor->getTrackSegmentView(getConnect1());
              //prompt for arrow gap
-             int newValue = QuickPromptUtil.promptForInt(layoutEditor,
-                     Bundle.getMessage("DecorationGapMenuItemTitle"),
-                     Bundle.getMessage("DecorationGapMenuItemTitle"),
+             int newValue = QuickPromptUtil::promptForInt((Component*)layoutEditor,
+                     tr("Space"),
+                     tr("Space"),
                      ctv->getArrowGap());
              ctv->setArrowGap(newValue);
          });
-#endif
      } // if (getType() == EDGE_CONNECTOR)
-#if 0
-     if (getType() == PointType.END_BUMPER) {
-         QMenu endBumperMenu = new QMenu(Bundle.getMessage("EndBumperMenuTitle"));
-         decorationsMenu->setToolTip(tr("EndBumperMenuToolTip"));
-         decorationsMenu.add(endBumperMenu);
 
-         JCheckBoxMenuItem enableCheckBoxMenuItem = new JCheckBoxMenuItem(Bundle.getMessage("EndBumperEnableMenuItemTitle"));
-         enableCheckBoxMenuItem->setToolTip(tr("EndBumperEnableMenuItemToolTip"));
+     if (getType() == PositionablePoint::PointType::END_BUMPER) {
+         QMenu* endBumperMenu = new QMenu(tr("End Bumpers"));
+         decorationsMenu->setToolTip(tr("Select this menu to change the end bumper decoration settings"));
+         decorationsMenu->addMenu(endBumperMenu);
 
-         endBumperMenu.add(enableCheckBoxMenuItem);
-         enableCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
+         JCheckBoxMenuItem* enableCheckBoxMenuItem = new JCheckBoxMenuItem(tr("Enable"),this);
+         enableCheckBoxMenuItem->setToolTip(tr("Select this menu to enable or disable the end bumper decoration"));
+
+         endBumperMenu->addAction(enableCheckBoxMenuItem);
+//         enableCheckBoxMenuItem.addActionListener((java.awt.event.ActionEvent e3) -> {
+         connect(enableCheckBoxMenuItem, &QAction::triggered, [=]{
              TrackSegmentView*  ctv = layoutEditor->getTrackSegmentView(getConnect1());
-             if (getConnect1().getConnect1() == positionablePoint) {
-                 ctv->setBumperEndStart(enableCheckBoxMenuItem.isSelected());
+             if (getConnect1()->getConnect1() == positionablePoint) {
+                 ctv->setBumperEndStart(enableCheckBoxMenuItem->isChecked());
              }
-             if (getConnect1().getConnect2() == positionablePoint) {
-                 ctv->setBumperEndStop(enableCheckBoxMenuItem.isSelected());
+             if (getConnect1()->getConnect2() == positionablePoint) {
+                 ctv->setBumperEndStop(enableCheckBoxMenuItem->isChecked());
              }
          });
-         if (getConnect1().getConnect1() == positionablePoint) {
+         if (getConnect1()->getConnect1() == positionablePoint) {
              enableCheckBoxMenuItem->setChecked(ctv1->isBumperEndStart());
          }
-         if (getConnect1().getConnect2() == positionablePoint) {
+         if (getConnect1()->getConnect2() == positionablePoint) {
              enableCheckBoxMenuItem->setChecked(ctv1->isBumperEndStop());
          }
 
-         jmi = endBumperMenu.add(new QMenuItem(Bundle.getMessage("DecorationColorMenuItemTitle")));
-         jmi->setToolTip(tr("DecorationColorMenuItemToolTip"));
-         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         /*jmi =*/ endBumperMenu->addAction(act =new QAction(tr("Color"),this));
+         act->setToolTip(tr("Select this to change the color of this decoration"));
+//         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         connect(act, &QAction::triggered, [=]{
              TrackSegmentView*  ctv = layoutEditor->getTrackSegmentView(getConnect1());
-             Color newColor = JmriColorChooser.showDialog(null, "Choose a color", ctv->getBumperColor());
-             if ((newColor != null) && !newColor.equals(ctv->getBumperColor())) {
+             QColor newColor = JmriColorChooser::showDialog(nullptr, "Choose a color", ctv->getBumperColor());
+             if ((!newColor.isValid()) && newColor!=(ctv->getBumperColor())) {
                  ctv->setBumperColor(newColor);
              }
          });
-         jmi->setForeground(ctv1->getBumperColor());
-         jmi->setBackground(ColorUtil.contrast(ctv1->getBumperColor()));
+#if 0
+//         jmi->setForeground(ctv1->getBumperColor());
+//         jmi->setBackground(ColorUtil.contrast(ctv1->getBumperColor()));
 
-         jmi = endBumperMenu.add(new QMenuItem(Bundle.getMessage("MakeLabel",
-                 Bundle.getMessage("DecorationLineWidthMenuItemTitle")) + ctv1->getBumperLineWidth()));
-         jmi->setToolTip(tr("DecorationLineWidthMenuItemToolTip"));
-         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         /*jmi =*/ endBumperMenu->addAction(new QAction(tr("%1:").arg(
+                 tr("Line Width")) + ctv1->getBumperLineWidth(), this));
+         act->setToolTip(tr("Select this to change the line width of this decoration"));
+//         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         connect(act, &QAction::triggered, [=]{
              TrackSegmentView*  ctv = layoutEditor->getTrackSegmentView(getConnect1());
              //prompt for width
-             int newValue = QuickPromptUtil.promptForInteger(layoutEditor,
-                     Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
-                     Bundle.getMessage("DecorationLineWidthMenuItemTitle"),
+             int newValue = QuickPromptUtil::promptForInteger((Component*)layoutEditor,
+                     tr("Line Width"),
+                     tr("Line Width"),
                      ctv->getBumperLineWidth(), t -> {
-                         if (t < 0 || t > TrackSegmentView.MAX_BUMPER_WIDTH) {
-                             throw new IllegalArgumentException(
-                                     Bundle.getMessage("DecorationLengthMenuItemRange", TrackSegmentView.MAX_BUMPER_WIDTH));
+                         if (t < 0 || t > TrackSegmentView::MAX_BUMPER_WIDTH) {
+                             throw  IllegalArgumentException(
+                                     tr("Value must be 0-%1").arg(TrackSegmentView::MAX_BUMPER_WIDTH));
                          }
                          return true;
                      });
              ctv->setBumperLineWidth(newValue);
          });
 
-         jmi = endBumperMenu.add(new QMenuItem(Bundle.getMessage("MakeLabel",
+         jmi = endBumperMenu.add(new QMenuItem(tr("%1:").arg(
                  Bundle.getMessage("DecorationLengthMenuItemTitle")) + ctv1->getBumperLength()));
          jmi->setToolTip(tr("DecorationLengthMenuItemToolTip"));
          jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
@@ -1110,14 +1117,14 @@ void PositionablePointView::removeSML(SignalMast* signalMast) {
                      });
              ctv->setBumperLength(newValue);
          });
-
-     }
 #endif
- }   // if ((getType() == EDGE_CONNECTOR) || (getType() == END_BUMPER))
-#if 0
- popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
+     }
 
- if (getType() == PointType.ANCHOR) {
+ }   // if ((getType() == EDGE_CONNECTOR) || (getType() == END_BUMPER))
+
+ popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
+#if 0
+ if (getType() == PositionablePoint::PointType::ANCHOR) {
      if (blockBoundary) {
          jmi = popup.add(new QMenuItem(Bundle.getMessage("CanNotMergeAtBlockBoundary")));
          jmi->setEnabled(false);
@@ -1209,29 +1216,34 @@ void PositionablePointView::removeSML(SignalMast* signalMast) {
          });
      }
  }
+#endif
+ popup->addAction(act = new AbstractAction(tr("Delete"), this));
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e
+//     ) {
+ connect(act, &QAction::triggered, [=]{
 
- popup.add(new AbstractAction(Bundle.getMessage("ButtonDelete")) {
-     @Override
-     public void actionPerformed(ActionEvent e
-     ) {
          if (canRemove() && layoutEditor->removePositionablePoint(positionablePoint)) {
              // user is serious about removing this point from the panel
              remove();
              dispose();
          }
-     }
+//     }
  });
 
- QMenu lineType = new QMenu(Bundle.getMessage("ChangeTo"));
- jmi = lineType.add(new JCheckBoxMenuItem(new AbstractAction(Bundle.getMessage("Anchor")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
+ QMenu* lineType = new QMenu(tr("Change To"));
+ /*jmi =*/ lineType->addAction(act = new JCheckBoxMenuItem(tr("Anchor"), this));//(new AbstractAction(Bundle.getMessage("Anchor"))
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+   connect(act, &QAction::triggered, [=]{
          setTypeAnchor();
-     }
- }));
+//     }
+ });
 
- jmi->setChecked(getType() == PointType.ANCHOR);
-
+ act->setChecked(getType() == PositionablePoint::PointType::ANCHOR);
+#if 0
  // you can't change it to an anchor if it has a 2nd connection
  // TODO: add error dialog if you try?
  if ((getType() == PointType.EDGE_CONNECTOR) && (getConnect2() != null)) {

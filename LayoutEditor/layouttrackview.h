@@ -64,7 +64,9 @@ class LayoutTrackView : public QObject
   QGraphicsItemGroup* itemBlock = nullptr;
   QGraphicsItemGroup* itemBlockSide = nullptr;
   /*public*/ QGraphicsItemGroup* invalidateItem(EditScene* g2, QGraphicsItemGroup* turnoutItem);
-
+  QGraphicsItemGroup* labels = nullptr;
+  QColor textColor = QColor(Qt::red);
+  QFont textFont = QFont("Helvetica",12);
  signals:
 
  public slots:
@@ -77,6 +79,7 @@ class LayoutTrackView : public QObject
   QGraphicsItemGroup* decorationItems = nullptr;
   QGraphicsItemGroup* rects = nullptr;
   QGraphicsItemGroup* itemGroup = nullptr;
+  QGraphicsItemGroup* circles = nullptr;
  protected:
   /*final*/ /*protected*/ void setIdent(/*@Nonnull*/ QString ident);
   virtual /*protected*/ void drawEditControls(EditScene *g2) =0;
@@ -87,6 +90,7 @@ class LayoutTrackView : public QObject
   /*final*/ /*protected*/ LayoutEditor* layoutEditor;
   /*final*/ /*protected*/ void drawHidden(EditScene* g2);
   /*final*/ /*protected*/ void drawLayoutTrackText(EditScene* g);
+  /*protected*/ void drawLayoutTrackText(EditScene* g, QColor c, QFont f);
   virtual /*abstract*/ /*protected*/ HitPointType::TYPES findHitPointType(/*@Nonnull*/ QPointF hitPoint,
                                                   bool useRectangles,
                                                   bool requireUnconnected) = 0;

@@ -3448,9 +3448,9 @@ void LayoutTurnoutView::reCalculateCenter() {
   if (!disabled && !(disableWhenOccupied && isOccupied()))
   {
    invalidateItem(g2,circles);
-   QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
    if (!disabled && !(disableWhenOccupied && isOccupied()))
    {
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
     //QColor foregroundColor = g2.getColor();
     //if turnout is not continuing state
  //   if (getState() != continuingSense) {

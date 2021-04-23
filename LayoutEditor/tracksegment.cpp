@@ -108,18 +108,18 @@ void TrackSegment::init(QString id)
  setObjectName("TS_"+id);
 
  //instance = NULL;
- itemMain = nullptr;
+// itemMain = nullptr;
 // circleItem = NULL;
 // trackOval = NULL;
- showConstructionLine = SHOWCON;
+// showConstructionLine = SHOWCON;
 
 // persistent instances variables (saved between sessions)
  //QString ident = "";
- connect1 = NULL;
- type1= HitPointType::NONE;
- connect2 = NULL;
- type2 = HitPointType::NONE;
- mainline = false;
+// connect1 = NULL;
+// type1= HitPointType::NONE;
+// connect2 = NULL;
+// type2 = HitPointType::NONE;
+// mainline = false;
 // tunnelColor = QColor(Qt::black);
 
 // bezierControlPoints = QList<QPointF>(); // list of control point displacements
@@ -594,6 +594,9 @@ TrackSegment::getLayoutBlock()
 
   connect1 = p->getFinder()->findObjectByName(tConnect1Name);
   connect2 = p->getFinder()->findObjectByName(tConnect2Name);
+
+
+  emit objectsSet();
 
 }
 
@@ -2904,13 +2907,13 @@ void TrackSegment::remove() {
     return active;
 }
 
-/*public*/ bool TrackSegment::isShowConstructionLines() {
-    if ((showConstructionLine & HIDECON) == HIDECON
-            || (showConstructionLine & HIDECONALL) == HIDECONALL) {
-        return false;
-    }
-    return true;
-}
+///*public*/ bool TrackSegment::isShowConstructionLines() {
+//    if ((showConstructionLine & HIDECON) == HIDECON
+//            || (showConstructionLine & HIDECONALL) == HIDECONALL) {
+//        return false;
+//    }
+//    return true;
+//}
 
 
 /**
@@ -3725,27 +3728,27 @@ void TrackSegment::drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g
 // double toRadians = M_PI/180.0;
 // return degrees * toRadians;
 //}
-/*public*/ void TrackSegment::hideConstructionLines(int hide)
-{
- if (hide == HIDECONALL)
- {
-     showConstructionLine = showConstructionLine + HIDECONALL;
- } else if (hide == SHOWCON) {
-     if ((showConstructionLine & HIDECONALL) == HIDECONALL) {
-         showConstructionLine = (showConstructionLine & (~HIDECONALL));
-     } else {
-         showConstructionLine = hide;
-     }
- } else {
-     showConstructionLine = HIDECON;
- }
- //layoutEditor.redrawPanel();
- models->setDirty();
-}
+///*public*/ void TrackSegment::hideConstructionLines(int hide)
+//{
+// if (hide == HIDECONALL)
+// {
+//     showConstructionLine = showConstructionLine + HIDECONALL;
+// } else if (hide == SHOWCON) {
+//     if ((showConstructionLine & HIDECONALL) == HIDECONALL) {
+//         showConstructionLine = (showConstructionLine & (~HIDECONALL));
+//     } else {
+//         showConstructionLine = hide;
+//     }
+// } else {
+//     showConstructionLine = HIDECON;
+// }
+// //layoutEditor.redrawPanel();
+// models->setDirty();
+//}
 
-/*public*/ bool TrackSegment::hideConstructionLines() {
- return ((showConstructionLine & SHOWCON) != SHOWCON);
-}
+///*public*/ bool TrackSegment::hideConstructionLines() {
+// return ((showConstructionLine & SHOWCON) != SHOWCON);
+//}
 
 /**
  * temporary fill of abstract from above
