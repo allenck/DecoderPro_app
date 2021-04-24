@@ -143,6 +143,7 @@ QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
         }
         return result;
     }
+
 #if 0
 template<class T>
 /*private*/ static  T promptForData(Component* parentComponent,

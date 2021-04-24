@@ -21,6 +21,7 @@ public:
  QT_DEPRECATED/*public*/ bool contains(/*@Nonnull*/ Editor* editor);
  /*public*/ bool contains(QString name);
  /*public*/ QSet<Editor*> getAll();
+ /*public*/ /*<T extends Editor>*/ QSet<Editor*> getAll(/*@Nonnull Class<T>*/QString type);
  /*public*/ Editor* get(/*@Nonnull*/ QString name);
  /*public*/ /*<T extends Editor>*/ QObject* get(/*@Nonnull*/ QString type, /*@Nonnull*/ QString name);
 

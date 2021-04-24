@@ -6,6 +6,8 @@
 #include "loggerfactory.h"
 #include "layoutturnouteditor.h"
 #include "layouteditortoolbarpanel.h"
+#include "joptionpane.h"
+
 /**
  * MVC View component for the LayoutTurnout class.
  *
@@ -1661,33 +1663,34 @@ void LayoutTurnoutView::reCalculateCenter() {
 //            JCheckBoxMenuItem o = (JCheckBoxMenuItem) e3.getSource();
             setDisableWhenOccupied(cbmi->isChecked());
         });
-#if 0
+#if 1
         // Rotate if there are no track connections
 //            if ((getConnectA() == nullptr) && (getConnectB() == nullptr)
 //                    && (getConnectC() == nullptr)
 //                    && (getConnectD() == nullptr))
         {
-            JMenuItem rotateItem = new JMenuItem(tr("Rotate_",
-                    String.format("%.1f", getRotationDEG())) + "...");
-            popup->add(rotateItem);
-            rotateItem.addActionListener((ActionEvent event) -> {
+            QAction* rotateItem = new QAction(tr("Rotate (%1°)").arg(
+                    getRotationDEG(),0,'g') + "...", this);
+            popup->addAction(rotateItem);
+//            rotateItem.addActionListener((ActionEvent event) -> {
+            connect(rotateItem, &QAction::triggered, [=]{
                 bool entering = true;
                 bool error = false;
-                String newAngle = "";
+                QString newAngle = "";
                 while (entering) {
                     // prompt for rotation angle
                     error = false;
-                    newAngle = JOptionPane.showInputDialog(layoutEditor,
-                            tr("%1:").arg(("EnterRotation")));
+                    newAngle = JOptionPane::showInputDialog(layoutEditor,
+                            tr("%1:").arg(("Enter Rotation Angle (degrees CW)")));
                     if (newAngle.isEmpty()) {
                         return;  // cancelled
                     }
                     double rot = 0.0;
-                    try {
-                        rot = Double.parseDouble(newAngle);
-                    } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(layoutEditor, tr("Error3")
-                                + " " + e1, tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                    bool ok;
+                        rot = newAngle.toDouble(&ok);
+                    if(!ok) {
+                        JOptionPane::showMessageDialog(layoutEditor, tr("Error in rotation entry:")
+                                + " " /*+ e1*/, tr("Error"), JOptionPane::ERROR_MESSAGE);
                         error = true;
                         newAngle = "";
                     }

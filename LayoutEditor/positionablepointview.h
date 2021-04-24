@@ -128,4 +128,60 @@ class PositionablePointView : public LayoutTrackView
   friend class LayoutEditorComponent;
 };
 
+/**
+ * Wrap an object for easier null handling in a JComboBox. ("JCB" refers to
+ * JComboBox)
+ *
+ * Define a {@code JComboBox<JCBHandle<Foo>>}, then fill it with a new
+ * {@code JCBHandle("None string")} and your new {@code JCBHandle(foo)} entries.
+ *
+ * @param <T> the class accepted by the JComboBox
+ */
+template<class T>
+/*public*/ class JCBHandle {
+
+    T _item = nullptr;
+    QString label;
+public:
+    /**
+     * Create a handle with a handled object.
+     *
+     * @param t the class accepted by the JComboBox
+     */
+    /*public*/ JCBHandle(T t) {
+        _item = t;
+    }
+
+    /**
+     * Create a handle without a handled object, just a display label.
+     *
+     * @param l label for handle
+     */
+    /*public*/ JCBHandle(QString l) {
+        label = l;
+    }
+
+    /**
+     * Display the handled item, or if there isn't one, the null-case label.
+     *
+     * @return the item's String representation or the default label
+     */
+    //@Override
+    /*public*/ QString toString() {
+        if (_item != nullptr) {
+            return _item.toString();
+        } else {
+            return label;
+        }
+    }
+
+    /**
+     * Retrieve the handled object for this handle
+     * @return the object
+     */
+    /*public*/ T item() {
+        return _item;
+    }
+
+};
 #endif // POSITIONABLEPOINTVIEW_H

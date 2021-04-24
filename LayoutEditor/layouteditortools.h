@@ -1125,6 +1125,7 @@ protected:
     friend class LayoutEditorToolBarPanel;
     friend class LayoutTurnoutView;
     friend class LayoutSlipView;
+    friend class PositionablePointView;
 };
 
 /*static*/ class BeanDetails : public QObject

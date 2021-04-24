@@ -427,6 +427,7 @@ protected:
  //friend class LayoutTrackEditors;
  friend class TrackSegmentEditor;
  friend class TrackSegmentView;
+ friend class PositionablePointView;
 };
 
 class TSAbstractAction : public AbstractAction

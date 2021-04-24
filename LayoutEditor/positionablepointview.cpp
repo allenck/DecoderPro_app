@@ -9,6 +9,8 @@
 #include "jmricolorchooser.h"
 #include "layouteditortoolbarpanel.h"
 #include "quickpromptutil.h"
+#include "editormanager.h"
+#include "vptr.h"
 
 /**
  * MVC View component for the PositionablePoint class.
@@ -1075,7 +1077,7 @@ void PositionablePointView::removeSML(SignalMast* signalMast) {
                  ctv->setBumperColor(newColor);
              }
          });
-#if 0
+#if 1
 //         jmi->setForeground(ctv1->getBumperColor());
 //         jmi->setBackground(ColorUtil.contrast(ctv1->getBumperColor()));
 
@@ -1089,130 +1091,137 @@ void PositionablePointView::removeSML(SignalMast* signalMast) {
              int newValue = QuickPromptUtil::promptForInteger((Component*)layoutEditor,
                      tr("Line Width"),
                      tr("Line Width"),
-                     ctv->getBumperLineWidth(), t -> {
-                         if (t < 0 || t > TrackSegmentView::MAX_BUMPER_WIDTH) {
-                             throw  IllegalArgumentException(
-                                     tr("Value must be 0-%1").arg(TrackSegmentView::MAX_BUMPER_WIDTH));
-                         }
-                         return true;
-                     });
+                     ctv->getBumperLineWidth(), new QIntValidator(0, TrackSegmentView::MAX_BUMPER_WIDTH));
+//                                                              [=] (int t) {
+//                         if (t < 0 || t > TrackSegmentView::MAX_BUMPER_WIDTH) {
+//                             throw  IllegalArgumentException(
+//                                     tr("Value must be 0-%1").arg(TrackSegmentView::MAX_BUMPER_WIDTH));
+//                         }
+//                         return true;
+//                     });
              ctv->setBumperLineWidth(newValue);
          });
 
-         jmi = endBumperMenu.add(new QMenuItem(tr("%1:").arg(
-                 Bundle.getMessage("DecorationLengthMenuItemTitle")) + ctv1->getBumperLength()));
-         jmi->setToolTip(tr("DecorationLengthMenuItemToolTip"));
-         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         /*jmi =*/ endBumperMenu->addAction(act = new QAction(tr("%1:").arg(
+                 tr("Length")) + QString::number(ctv1->getBumperLength())));
+         act->setToolTip(tr("Select this to change the length of this decoration"));
+//         jmi->addActionListener((java.awt.event.ActionEvent e3) -> {
+         connect(act, &QAction::triggered, [=]{
+
              TrackSegmentView*  ctv = layoutEditor->getTrackSegmentView(getConnect1());
              //prompt for length
-             int newValue = QuickPromptUtil.promptForInteger(layoutEditor,
-                     Bundle.getMessage("DecorationLengthMenuItemTitle"),
-                     Bundle.getMessage("DecorationLengthMenuItemTitle"),
-                     ctv->getBumperLength(), t -> {
-                         if (t < 0 || t > TrackSegmentView.MAX_BUMPER_LENGTH) {
-                             throw new IllegalArgumentException(
-                                     Bundle.getMessage("DecorationLengthMenuItemRange", TrackSegmentView.MAX_BUMPER_LENGTH));
-                         }
-                         return true;
-                     });
+             int newValue = QuickPromptUtil::promptForInteger((Component*)layoutEditor,
+                     tr("Length"),
+                     tr("Length"),
+                     ctv->getBumperLength(), new QIntValidator(0, TrackSegmentView::MAX_BUMPER_LENGTH));
+//                                                              [=](int t) {
+//                         if (t < 0 || t > TrackSegmentView::MAX_BUMPER_LENGTH) {
+//                             throw  IllegalArgumentException(
+//                                     tr("Value must be 0-%1").arg(TrackSegmentView::MAX_BUMPER_LENGTH));
+//                         }
+//                         return true;
+//                     });
              ctv->setBumperLength(newValue);
          });
 #endif
+
      }
 
  }   // if ((getType() == EDGE_CONNECTOR) || (getType() == END_BUMPER))
 
  popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
-#if 0
+#if 1
  if (getType() == PositionablePoint::PointType::ANCHOR) {
      if (blockBoundary) {
-         jmi = popup.add(new QMenuItem(Bundle.getMessage("CanNotMergeAtBlockBoundary")));
-         jmi->setEnabled(false);
-     } else if ((getConnect1() != null) && (getConnect2() != null)) {
-         jmi = popup.add(new AbstractAction(Bundle.getMessage("MergeAdjacentTracks")) {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 PositionablePoint pp_this = positionablePoint;
+         /*jmi =*/ popup->addAction(act =new QAction(tr("Cannot Merge at Block Boundary")));
+         act->setEnabled(false);
+     } else if ((getConnect1() != nullptr) && (getConnect2() != nullptr)) {
+         /*jmi =*/ popup->addAction(new AbstractAction(tr("Merge Adjacent Tracks"),this));
+//      {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+      connect(act, &QAction::triggered, [=]{
+                 PositionablePoint* pp_this = positionablePoint;
                  // if I'm fully connected...
-                 if ((getConnect1() != null) && (getConnect2() != null)) {
+                 if ((getConnect1() != nullptr) && (getConnect2() != nullptr)) {
                      // who is my connection 2 connected to (that's not me)?
-                     LayoutTrack newConnect2 = null;
-                     HitPointType newType2 = HitPointType.TRACK;
-                     if (getConnect2().getConnect1() == pp_this) {
-                         newConnect2 = getConnect2().getConnect2();
-                         newType2 = getConnect2().type2;
-                     } else if (getConnect2().getConnect2() == pp_this) {
-                         newConnect2 = getConnect2().getConnect1();
-                         newType2 = getConnect2().type1;
+                     LayoutTrack* newConnect2 = nullptr;
+                     HitPointType::TYPES newType2 = HitPointType::TRACK;
+                     if (getConnect2()->getConnect1() == pp_this) {
+                         newConnect2 = getConnect2()->getConnect2();
+                         newType2 = getConnect2()->type2;
+                     } else if (getConnect2()->getConnect2() == pp_this) {
+                         newConnect2 = getConnect2()->getConnect1();
+                         newType2 = getConnect2()->type1;
                      } else {
                          //this should never happen however...
-                         log.error("Join: wrong getConnect2() error.");
+                         log->error("Join: wrong getConnect2() error.");
                      }
 
                      // connect the other connection to my connection 2 to my connection 1
-                     if (newConnect2 == null) {
+                     if (newConnect2 == nullptr) {
                          // (this should NEVER happen... however...)
-                         log.error("Merge: no 'other' connection to getConnect2().");
+                         log->error("Merge: no 'other' connection to getConnect2().");
                      } else {
-                         if (newConnect2 instanceof PositionablePoint) {
-                             PositionablePoint pp = (PositionablePoint) newConnect2;
-                             pp.replaceTrackConnection(getConnect2(), getConnect1());
+                         if (qobject_cast<PositionablePoint*>(newConnect2)) {
+                             PositionablePoint* pp = (PositionablePoint*) newConnect2;
+                             pp->replaceTrackConnection(getConnect2(), getConnect1());
                          } else {
-                             layoutEditor->setLink(newConnect2, newType2, getConnect1(), HitPointType.TRACK);
+                             layoutEditor->setLink(newConnect2, newType2, getConnect1(), HitPointType::TRACK);
                          }
                          // connect the track at my getConnect1() to the newConnect2
-                         if (getConnect1().getConnect1() == pp_this) {
-                             getConnect1().setNewConnect1(newConnect2, newType2);
-                         } else if (getConnect1().getConnect2() == pp_this) {
-                             getConnect1().setNewConnect2(newConnect2, newType2);
+                         if (getConnect1()->getConnect1() == pp_this) {
+                             getConnect1()->setNewConnect1(newConnect2, newType2);
+                         } else if (getConnect1()->getConnect2() == pp_this) {
+                             getConnect1()->setNewConnect2(newConnect2, newType2);
                          } else {
                              // (this should NEVER happen... however...)
-                             log.error("Merge: no connection to connection 1.");
+                             log->error("Merge: no connection to connection 1.");
                          }
                      }
 
                      // remove connection 2 from selection information
                      if (layoutEditor->selectedObject == getConnect2()) {
-                         layoutEditor->selectedObject = null;
+                         layoutEditor->selectedObject = nullptr;
                      }
                      if (layoutEditor->prevSelectedObject == getConnect2()) {
-                         layoutEditor->prevSelectedObject = null;
+                         layoutEditor->prevSelectedObject = nullptr;
                      }
 
                      // remove connection 2 from the layoutEditor's list of layout tracks
                      layoutEditor->removeLayoutTrackAndRedraw(getConnect2());
 
                      // update affected block
-                     LayoutBlock block = getConnect2().getLayoutBlock();
-                     if (block != null) {
+                     LayoutBlock* block = getConnect2()->getLayoutBlock();
+                     if (block != nullptr) {
                          //decrement Block use count
-                         block.decrementUse();
-                         layoutEditor->getLEAuxTools().setBlockConnectivityChanged();
-                         block.updatePaths();
+                         block->decrementUse();
+                         layoutEditor->getLEAuxTools()->setBlockConnectivityChanged();
+                         block->updatePaths();
                      }
-                     getConnect2().remove();
-                     positionablePoint.setConnect2Actual(null);
+                     getConnect2()->remove();
+                     positionablePoint->setConnect2Actual(nullptr);
 
                      //remove this PositionablePoint from selection information
                      if (layoutEditor->selectedObject == pp_this) {
-                         layoutEditor->selectedObject = null;
+                         layoutEditor->selectedObject = nullptr;
                      }
                      if (layoutEditor->prevSelectedObject == pp_this) {
-                         layoutEditor->prevSelectedObject = null;
+                         layoutEditor->prevSelectedObject = nullptr;
                      }
 
                      // remove this PositionablePoint and PositionablePointView from the layoutEditor's list of layout tracks
                      layoutEditor->removeLayoutTrackAndRedraw(pp_this);
-                     pp_this.remove();
+                     pp_this->remove();
                      dispose();
 
                      layoutEditor->setDirty();
                      layoutEditor->redrawPanel();
                  } else {
                      // (this should NEVER happen... however...)
-                     log.error("Merge: missing connection(s).");
+                     log->error("Merge: missing connection(s).");
                  }
-             }
+//             }
          });
      }
  }
@@ -1243,78 +1252,90 @@ void PositionablePointView::removeSML(SignalMast* signalMast) {
  });
 
  act->setChecked(getType() == PositionablePoint::PointType::ANCHOR);
-#if 0
+#if 1
  // you can't change it to an anchor if it has a 2nd connection
  // TODO: add error dialog if you try?
- if ((getType() == PointType.EDGE_CONNECTOR) && (getConnect2() != null)) {
+ if ((getType() == PositionablePoint::PointType::EDGE_CONNECTOR) && (getConnect2() != nullptr)) {
      jmi->setEnabled(false);
  }
 
- jmi = lineType.add(new JCheckBoxMenuItem(new AbstractAction(Bundle.getMessage("EndBumper")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
+ /*jmi =*/ lineType->addAction(act = new JCheckBoxMenuItem(tr("End Bumper"),this));
+// {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+   connect(act, &QAction::triggered, [=]{
          setTypeEndBumper();
-     }
- }));
+//     }
+ });
 
- jmi->setChecked(getType() == PointType.END_BUMPER);
+ act->setChecked(getType() == PositionablePoint::PointType::END_BUMPER);
 
- jmi = lineType.add(new JCheckBoxMenuItem(new AbstractAction(Bundle.getMessage("EdgeConnector")) {
-     @Override
-     public void actionPerformed(ActionEvent e) {
+ /*jmi =*/ lineType->addAction(act =new JCheckBoxMenuItem(tr("Edge Connector"),this));
+//                               {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+   connect(act, &QAction::triggered, [=]{
          setTypeEdgeConnector();
-     }
- }));
+//     }
+ });
 
- jmi->setChecked(getType() == PointType.EDGE_CONNECTOR);
+ act->setChecked(getType() == PositionablePoint::PointType::EDGE_CONNECTOR);
 
- popup.add(lineType);
+ popup->addMenu(lineType);
 
- if (!blockBoundary && getType() == PointType.EDGE_CONNECTOR) {
-     popup.add(new JSeparator(JSeparator.HORIZONTAL));
-     popup.add(new AbstractAction(Bundle.getMessage("EdgeEditLink")) {
-         @Override
-         public void actionPerformed(ActionEvent e) {
+ if (!blockBoundary && getType() == PositionablePoint::PointType::EDGE_CONNECTOR) {
+     popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
+     popup->addAction(act = new AbstractAction(tr("Edit Link"),this));
+//     {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+     connect(act, &QAction::triggered, [=]{
              setLink();
-         }
+//         }
      });
  }
 
  if (blockBoundary) {
-     popup.add(new JSeparator(JSeparator.HORIZONTAL));
-     if (getType() == PointType.EDGE_CONNECTOR) {
-         popup.add(new AbstractAction(Bundle.getMessage("EdgeEditLink")) {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 setLink();
-             }
+     popup->addSeparator();// new JSeparator(JSeparator.HORIZONTAL));
+     if (getType() == PositionablePoint::PointType::EDGE_CONNECTOR) {
+         popup->addAction(new AbstractAction(tr("Edit Link"),this));
+//         {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+         connect(act, &QAction::triggered, [=]{
+//             }
          });
-         popup.add(new AbstractAction(Bundle.getMessage("SetSignals")) {
-             @Override
-             public void actionPerformed(ActionEvent e) {
+         popup->addAction(act = new AbstractAction(tr("Set Signal Heads..."),this));
+//         {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+         connect(act, &QAction::triggered, [=]{
                  // bring up signals at edge connector tool dialog
-                 layoutEditor->getLETools().setSignalsAtBlockBoundaryFromMenu(positionablePoint,
-                         getLayoutEditorToolBarPanel().signalIconEditor,
-                         getLayoutEditorToolBarPanel().signalFrame);
-             }
+                 layoutEditor->getLETools()->setSignalsAtBlockBoundaryFromMenu(positionablePoint,
+                         getLayoutEditorToolBarPanel()->signalIconEditor,
+                         getLayoutEditorToolBarPanel()->signalFrame);
+//             }
          });
      } else {
-         AbstractAction ssaa = new AbstractAction(Bundle.getMessage("SetSignals")) {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                 // bring up signals at level crossing tool dialog
-                 layoutEditor->getLETools().setSignalsAtBlockBoundaryFromMenu(positionablePoint,
-                         getLayoutEditorToolBarPanel().signalIconEditor,
-                         getLayoutEditorToolBarPanel().signalFrame);
-             }
-         };
+         AbstractAction* ssaa = new AbstractAction(tr("Set Signal Heads..."),this);
+//         {
+//             @Override
+//             public void actionPerformed(ActionEvent e) {
+         connect(ssaa, &QAction::triggered, [=]{
 
-         QMenu jm = new QMenu(Bundle.getMessage("SignalHeads"));
-         if (layoutEditor->getLETools().addBlockBoundarySignalHeadInfoToMenu(positionablePoint, jm)) {
-             jm.add(ssaa);
-             popup.add(jm);
+                 // bring up signals at level crossing tool dialog
+                 layoutEditor->getLETools()->setSignalsAtBlockBoundaryFromMenu(positionablePoint,
+                         getLayoutEditorToolBarPanel()->signalIconEditor,
+                         getLayoutEditorToolBarPanel()->signalFrame);
+//             }
+         });
+
+         QMenu* jm = new QMenu(tr("Set Signal Heads..."));
+         if (layoutEditor->getLETools()->addBlockBoundarySignalHeadInfoToMenu(positionablePoint, jm)) {
+             jm->addAction(ssaa);
+             popup->addMenu(jm);
          } else {
-             popup.add(ssaa);
+             popup->addAction(ssaa);
          }
      }
      addSensorsAndSignalMasksMenuItemsFlag = true;
@@ -1472,26 +1493,28 @@ void PositionablePointView::setLink() {
         return;
     }
     editLink = new JDialog();
-#if 0
-    editLink->setTitle(tr("EdgeEditLinkFrom", getConnect1()->getLayoutBlock()->getDisplayName()));
+#if 1
+    editLink->setTitle(tr("Edit Link from %1").arg(getConnect1()->getLayoutBlock()->getDisplayName()));
 
     JPanel* container = new JPanel();
     container->setLayout(new BorderLayout());
 
     JButton* done = new JButton(("Done"));
-    done.addActionListener((ActionEvent a) -> updateLink());
+    //done.addActionListener((ActionEvent a) -> updateLink());
+    connect(done, &QPushButton::clicked, [=]{updateLink();});
 
-    container.add(getLinkPanel(), BorderLayout.NORTH);
-    container.add(done, BorderLayout.SOUTH);
-    container.revalidate();
+    ((BorderLayout*)container->layout())->addWidget(getLinkPanel(), BorderLayout::North);
+    ((BorderLayout*)container->layout())->addWidget(done, BorderLayout::South);
+    container->update();
 
-    editLink.add(container);
+    editLink->layout()->addWidget(container);
 
     // make this button the default button (return or enter activates)
-    JRootPane rootPane = SwingUtilities.getRootPane(done);
-    rootPane->setDefaultButton(done);
+//    JRootPane* rootPane = SwingUtilities.getRootPane(done);
+//    rootPane->setDefaultButton(done);
+    done->setDefault(true);
 
-    editLink.pack();
+    editLink->pack();
     editLink->setModal(false);
     editLink->setVisible(true);
 #endif
@@ -1499,34 +1522,38 @@ void PositionablePointView::setLink() {
 
 
 /*public*/ JPanel* PositionablePointView::getLinkPanel() {
-#if 0
+#if 1
     editorCombo = new JComboBox();
-    QSet<LayoutEditor*> panels = ((EditorManager*)InstanceManager::getDefault("EditorManager"))
-            ->getAll(layoutEditor->class);
-    editorCombo.addItem(new JCBHandle<>("None"));
+    QSet<Editor*> panels = ((EditorManager*)InstanceManager::getDefault("EditorManager"))
+            ->getAll("LayoutEditor");
+    //editorCombo->addItem(new JCBHandle<Editor*>("None"));
+    editorCombo->addItem("None");
     //if (panels.contains(layoutEditor)) {
     //    panels.remove(layoutEditor);
     //}
-    for (LayoutEditor* p : panels) {
-        JCBHandle<LayoutEditor> h = new JCBHandle<>(p);
-        editorCombo.addItem(h);
+    for (Editor* p : panels) {
+//        JCBHandle<Editor*> h =  JCBHandle<Editor*>(p);
+        editorCombo->addItem(p->metaObject()->className(), VPtr<Editor>::asQVariant(p));
         if (p == getLinkedEditor()) {
-            editorCombo->setSelectedItem(h);
+            editorCombo->setSelectedItem(p->metaObject()->className());
         }
     }
 
-    ActionListener selectPanelListener = (ActionEvent a) -> updatePointBox();
+    //ActionListener selectPanelListener = (ActionEvent a) -> updatePointBox();
 
-    editorCombo.addActionListener(selectPanelListener);
+    //editorCombo.addActionListener(selectPanelListener);
+    connect(editorCombo, &JComboBox::currentIndexChanged, [=]{
+     updatePointBox();
+    });
 #endif
     JPanel* selectorPanel = new JPanel();
-#if 0
-    selectorPanel.add(new JLabel(Bundle.getMessage("SelectPanel")));
-    selectorPanel.add(editorCombo);
-    linkPointsBox = new JComboBox<>();
+#if 1
+    selectorPanel->layout()->addWidget(new JLabel(tr("Select Panel")));
+    selectorPanel->layout()->addWidget(editorCombo);
+    linkPointsBox = new JComboBox();
     updatePointBox();
-    selectorPanel.add(new JLabel(Bundle.getMessage("ConnectingTo")));
-    selectorPanel.add(linkPointsBox);
+    selectorPanel->layout()->addWidget(new JLabel(tr("Connecting to")));
+    selectorPanel->layout()->addWidget(linkPointsBox);
 #endif
     return selectorPanel;
 }

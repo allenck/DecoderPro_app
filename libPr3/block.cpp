@@ -213,6 +213,7 @@
    _current = UNDETECTED;
   }
 }
+
 void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
 {
  block->handleSensorChange(e);
@@ -1021,4 +1022,37 @@ return(PhysicalLocation::getBeanPhysicalLocation(this));
 return(PhysicalLocation::getBeanPhysicalLocation(this));
 }
 
-    //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Block.class.getName());
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> Block::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        if (bean->equals(getSensor())) {
+            report.append(new NamedBeanUsageReport("BlockSensor"));  // NOI18N
+        }
+        if (bean->equals(getReporter())) {
+            report.append(new NamedBeanUsageReport("BlockReporter"));  // NOI18N
+        }
+        // Block paths
+//        getPaths().forEach((path) ->
+        for(Path* path : *getPaths())
+        {
+            if (bean->equals(path.getBlock())) {
+                report.append(new NamedBeanUsageReport("BlockPathNeighbor"));  // NOI18N
+            }
+            //path.getSettings().forEach((setting) ->
+             for(BeanSetting* setting : path->getSettings())                          {
+                if (bean->equals(setting->getBean())) {
+                    report.append(new NamedBeanUsageReport("BlockPathTurnout"));  // NOI18N
+                }
+            }//);
+        }//);
+    }
+    return report;
+}
+
+//@Override
+/*public*/ QString Block::getBeanType() {
+    return tr("Block");
+}
+
+//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Block.class.getName());

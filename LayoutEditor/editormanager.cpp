@@ -1,6 +1,7 @@
 #include "editormanager.h"
 #include "editor.h"
 #include "vptr.h"
+#include "class.h"
 
 EditorManager::EditorManager(QObject *parent) : Bean(parent)
 {
@@ -56,7 +57,7 @@ EditorManager::EditorManager(QObject *parent) : Bean(parent)
 /*public*/ QSet<Editor*> EditorManager::getAll() {
     return QSet<Editor*>(set);
 }
-#if 0
+#if 1
 /**
  * Get all managed editors that implement the specified type. This set is
  * sorted by the title of the editor.
@@ -66,11 +67,19 @@ EditorManager::EditorManager(QObject *parent) : Bean(parent)
  * @return the set of all editors of the specified type
  */
 //@Nonnull
-/*public*/ <T extends Editor> SortedSet<T> getAll(@Nonnull Class<T> type) {
-    return set.stream()
-            .filter(e -> type.isAssignableFrom(e.getClass()))
-            .map(type::cast)
-            .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Editor::getTitle))));
+/*public*/ /*<T extends Editor>*/ QSet<Editor*> EditorManager::getAll(/*@Nonnull Class<T>*/QString type) {
+//    return set.stream()
+//            .filter(e -> type.isAssignableFrom(e.getClass()))
+//            .map(type::cast)
+//            .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(Editor::getTitle))));
+ QSet<Editor*> myset = QSet<Editor*>();
+ for( Editor* e : set)
+ {
+  Class* clazz = (Class*)e;
+  if(clazz->isAssignableFrom(type))
+   myset.insert(e);
+ }
+ return myset;
 }
 #endif
 /**
