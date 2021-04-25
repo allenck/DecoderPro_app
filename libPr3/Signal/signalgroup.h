@@ -1,7 +1,7 @@
 #ifndef SIGNALGROUP_H
 #define SIGNALGROUP_H
 
-#include "namedbean.h"
+#include "abstractnamedbean.h"
 #include "signalmast.h"
 #include "signalhead.h"
 #include "turnout.h"
@@ -40,8 +40,10 @@
 
 /*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalGroup : public AbstractNamedBean
 {
+  Q_OBJECT
  public:
-    SignalGroup(QString systemName, QString userName, QObject* parent) : AbstractNamedBean(systemName, userName, parent) {}
+  SignalGroup(QString systemName, QString userName, QObject* parent)
+   : AbstractNamedBean(systemName, userName, parent){}
     /**
      * Set enabled status.
      */
@@ -115,27 +117,27 @@
      */
     /*public*/ virtual void addSignalHead(SignalHead* /*mHead*/) {}
 
-    /*public*/ virtual SignalHead* getSignalHeadItemBeanByIndex(int n) = 0;
+    /*public*/ virtual SignalHead* getHeadItemBeanByIndex(int n) = 0;
 
     /**
      * Method to get a SignalHead by Index
      *  Returns null if there are no Signal Heads with that index
      */
-    /*public*/ virtual QString getSignalHeadItemNameByIndex(int n) = 0;
+    /*public*/ virtual QString getHeadItemNameByIndex(int n) = 0;
 
     /**
      * Method to get the On State of a SignalState at Index n
      * <P>
      * @return -1 if there are less than 'n' SignalHeads defined
      */
-    /*public*/ int virtual getSignalHeadOnStateByIndex(int n) = 0;
+    /*public*/ int virtual getHeadOnStateByIndex(int n) = 0;
 
     /**
      * Method to get the Off State of a SignalState at Index n
      * <P>
      * @return -1 if there are less than 'n' SignalHeads defined
      */
-    /*public*/ int virtual getSignalHeadOffStateByIndex(int n) = 0;
+    /*public*/ int virtual getHeadOffStateByIndex(int n) = 0;
 
     /**
     * Delete Signal Head by Name
@@ -147,24 +149,24 @@
     */
     /*public*/ virtual void deleteSignalHead(NamedBeanHandle<SignalHead*>* /*sh*/) {}
 
-    /*public*/ virtual int getNumSignalHeadItems() = 0;
+    /*public*/ virtual int getNumHeadItems() = 0;
 
     /**
      * Method to inquire if a Signal Head is included in this Group
      */
-    /*public*/ virtual bool isSignalIncluded(SignalHead* signalHead) = 0;
+    /*public*/ virtual bool isHeadIncluded(SignalHead* signalHead) = 0;
 
      /**
      * Method to get the On State of Signal Head
      * @param signalHead The signal head object we are querying
      */
-    /*public*/ virtual int getSignalHeadOnState(SignalHead* signalHead) = 0;
+    /*public*/ virtual int getHeadOnState(SignalHead* signalHead) = 0;
 
     /**
      * Method to get the Off State of Signal Head
      * @param signalHead The signal head bean object we are querying
      */
-    /*public*/ int virtual getSignalHeadOffState(SignalHead* signalHead) = 0;
+    /*public*/ int virtual getHeadOffState(SignalHead* signalHead) = 0;
 
         /**
      * Sets the On State of the Signal in the Group
@@ -172,7 +174,7 @@
      * @param state The Apperance that the SignalHead will change to
      *      when the conditions are met.
      */
-    /*public*/ virtual void setSignalHeadOnState(SignalHead* head, int state) = 0;
+    /*public*/ virtual void setHeadOnState(SignalHead* head, int state) = 0;
 
     /**
      * Sets the Off State of the Signal in the Group
@@ -180,7 +182,7 @@
      * @param state The Apperance that the SignalHead will change to
      *      when the conditions are NOT met.
      */
-    /*public*/ virtual void setSignalHeadOffState(SignalHead* head, int state) = 0;
+    /*public*/ virtual void setHeadOffState(SignalHead* head, int state) = 0;
 
     /**
     * Sets whether the sensors and turnouts should be treated as seperate
@@ -197,7 +199,7 @@
      * <P>
      * @return -1 if there are less than 'n' SignalHeads defined
      */
-    /*public*/ virtual int getNumSignalHeadTurnoutsByIndex(int x) = 0;
+    /*public*/ virtual int getNumHeadTurnoutsByIndex(int x) = 0;
 
     /**
     * Method to add a Turnout and its state to a signal head.
@@ -206,7 +208,7 @@
     * @param mTurn Turnout Bean
     * @param state The State that the turnout must be set to.
     */
-    /*public*/ virtual void setSignalHeadAlignTurnout(SignalHead* mHead, Turnout* mTurn, int state) = 0;
+    /*public*/ virtual void setHeadAlignTurnout(SignalHead* mHead, Turnout* mTurn, int state) = 0;
 
     /**
      * Inquire if a Turnout is included in the Signal Head Calculation.
@@ -262,7 +264,7 @@
     * @param mSensor Sensor Bean
     * @param state The State that the sensor must be set to.
     */
-    /*public*/ virtual void setSignalHeadAlignSensor(SignalHead* mHead, Sensor* mSensor, int state) = 0;
+    /*public*/ virtual void setHeadAlignSensor(SignalHead* mHead, Sensor* mSensor, int state) = 0;
 
     /**
      * Inquire if a Sensor is included in the Signal Head Calculation.
@@ -311,7 +313,7 @@
      * <P>
      * @return -1 if there are less than 'n' SignalHeads defined
      */
-    /*public*/ virtual int getNumSignalHeadSensorsByIndex(int x) = 0;
+    /*public*/ virtual int getNumHeadSensorsByIndex(int x) = 0;
 
     /**
      * Delete all Turnouts for a given SignalHead in the group
@@ -337,6 +339,9 @@
      ONCLOSED = 2,    // route fires if turnout goes closed
      ONTHROWN = 4  // route fires if turnout goes thrown
     };
+
+    virtual QObject* self() =0;
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SignalGroup.class.getName()) = 0;
 };
+Q_DECLARE_INTERFACE(SignalGroup, "SignalGroup")
 #endif // SIGNALGROUP_H

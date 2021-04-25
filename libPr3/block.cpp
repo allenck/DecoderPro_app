@@ -1036,7 +1036,7 @@ return(PhysicalLocation::getBeanPhysicalLocation(this));
 //        getPaths().forEach((path) ->
         for(Path* path : *getPaths())
         {
-            if (bean->equals(path.getBlock())) {
+            if (bean->equals(path->getBlock())) {
                 report.append(new NamedBeanUsageReport("BlockPathNeighbor"));  // NOI18N
             }
             //path.getSettings().forEach((setting) ->

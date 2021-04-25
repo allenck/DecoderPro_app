@@ -9,6 +9,8 @@
 #include "nbhsignal.h"
 #include "nbhturnout.h"
 
+class TrafficLockingData;
+class CodeButtonHandlerData;
 class OtherData;
 class CTCSerialData;
 class ProgramProperties;
@@ -34,6 +36,7 @@ class CtcManager : public QObject, public InstanceManagerAutoDefault, public Vet
   /*public*/ NamedBeanHandle<Block*>* getBlock(QString name);
   /*public*/ void putBlock(QString name, NamedBeanHandle<Block*>* block);
   /*public*/ int getXMLOrder();
+  /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean *bean);
 
  signals:
 
@@ -49,6 +52,20 @@ class CtcManager : public QObject, public InstanceManagerAutoDefault, public Vet
   QMap<QString, NBHTurnout*> nbhTurnouts = QMap<QString, NBHTurnout*>();
 
   QMap<QString, NamedBeanHandle<Block*>*> blocks = QMap<QString, NamedBeanHandle<Block*>*>();
+  QString getVetoDetails(NamedBean* nb);
+  bool findNBHforBean(NamedBean* nb);
+  // Search results
+  NBHSensor*  foundSensor;
+  NBHSignal*  foundSignal;
+  NBHTurnout* foundTurnout;
+  Block*      foundBlock;
+
+  QList<NamedBeanUsageReport*> usageReport;
+
+  void getCodeButtonHandleDataUsage(CodeButtonHandlerData* cbhd);
+  void callOnDataUsage(CodeButtonHandlerData* cbhd, QString osName);
+  void traffficLockingDataUsage(CodeButtonHandlerData* cbhd, QString osName);
+  void traffficLockingRuleDataUsage(TrafficLockingData* rule, QString osName);
 
 };
 Q_DECLARE_METATYPE(CtcManager)

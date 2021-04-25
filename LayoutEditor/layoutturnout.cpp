@@ -1297,6 +1297,11 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
  {
   turnoutName = "";
   namedTurnout = nullptr;
+  setDisableWhenOccupied(false);
+ }
+ Turnout* secondTurnout = getSecondTurnout();
+ if (secondTurnout != nullptr && secondTurnout->getFeedbackMode() == Turnout::DIRECT) {
+     secondTurnout->setLeadingTurnout(turnout, false);
  }
 }
 

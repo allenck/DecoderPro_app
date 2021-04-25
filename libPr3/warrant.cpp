@@ -3125,3 +3125,24 @@ bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockId
     //return (getSystemName().concat(_speedUtil->getDccAddress()->toString())).hashCode();
  return qHash(mSystemName+_speedUtil->getDccAddress()->toString(),qGlobalQHashSeed());
 }
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> Warrant::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        if (bean->equals(getBlockingWarrant())) {
+            report.append(new NamedBeanUsageReport("WarrantBlocking"));
+        }
+        //getBlockOrders().forEach((blockOrder) ->
+        for(BlockOrder* blockOrder : *getBlockOrders())
+        {
+            if (bean->equals(blockOrder->getBlock())) {
+                report.append(new NamedBeanUsageReport("WarrantBlock"));
+            }
+            if (bean->equals(blockOrder->getSignal())) {
+                report.append(new NamedBeanUsageReport("WarrantSignal"));
+            }
+        }//);
+    }
+    return report;
+}

@@ -8,6 +8,7 @@
 //#include "instancemanager.h"
 #include "namedbeanhandlemanager.h"
 #include "libPr3_global.h"
+#include "localdatetime.h"
 
 class TurnoutOperation;
 class TurnoutOperator;
@@ -33,6 +34,7 @@ public:
      */
     /*public*/ void setCommandedState(int s) override;
     /*public*/ int getCommandedState() override;
+    /*public*/ void setCommandedStateAtInterval(int s) override;
     /**
      * Show whether state is one you can safely run trains over
      * @return	true iff state is a valid one and the known state is the same as commanded
@@ -155,9 +157,15 @@ public:
     /*public*/ QString getStraightSpeed() override;
     /*public*/ void setStraightSpeed(QString s)const  throw(JmriException) override;
     QObject* self() override{return (QObject*)this;}
-
-signals:
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ bool isCanFollow()override;
+    /*public*/ Turnout* getLeadingTurnout()override;
+    /*public*/ void setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout)override;
+    /*public*/ void setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout, bool followingCommandedState)override;
+    /*public*/ bool isFollowingCommandedState()override;
+    /*public*/ void setFollowingCommandedState(bool following)override;
     //void propertyChange(PropertyChangeEvent *);
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)override;
 
 public slots:
     void propertyChange(PropertyChangeEvent *evt) override;
@@ -177,7 +185,9 @@ private:
     //Sensor getSecondSensor() = null;
     /*private*/ NamedBeanHandle<Sensor*>* _secondNamedSensor;
     static Logger* log;
-
+    /*private*/ Turnout* leadingTurnout = nullptr;
+    /*private*/ bool followingCommandedState = true;
+    LocalDateTime nextWait;
 protected:
     AbstractTurnout(QString systemName, QObject *parent=0);
     AbstractTurnout(QString systemName, QString userName, QObject *parent=0);

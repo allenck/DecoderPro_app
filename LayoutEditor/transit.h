@@ -2,6 +2,7 @@
 #define TRANSIT_H
 #include "abstractnamedbean.h"
 #include "logger.h"
+#include "exceptions.h"
 
 class LayoutEditor;
 class Block;
@@ -50,6 +51,10 @@ public:
     /*public*/ int validateConnectivity(LayoutEditor* panel);
     /*public*/ int initializeBlockingSensors();
     /*public*/ void removeTemporarySections();
+    /*public*/ bool removeLastTemporarySection(Section* s);
+    /*public*/ QString getBeanType() override;
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt)  throw (PropertyVetoException) override;
 
 signals:
     

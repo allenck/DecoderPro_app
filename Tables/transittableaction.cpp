@@ -84,7 +84,7 @@ void TransitTableAction::common()
  sectionList = new QList<Section*>();
  direction = new QVector<int>(150);
  sequence = new QVector<int>(150);
- action = new QVector<QList<TransitSectionAction*>*>(150);
+ action =  QVector<QList<TransitSectionAction*>*>(150);
  alternate = new QVector<bool>(150);
  maxSections = 150;  // must be equal to the dimension of the above arrays
  primarySectionBoxList = new QList<Section*>();
@@ -713,9 +713,10 @@ void TransitTableAction::addEditPressed()
                 sectionList->append(ts->getSection());
                 sequence->replace(i, ts->getSequenceNumber());
                 direction->replace(i,  ts->getDirection());
-                action->replace(i, ts->getTransitSectionActionList());
+                action.replace(i, ts->getTransitSectionActionList());
                 alternate->replace(i, ts->isAlternate());
-            }
+                safe.replace(i, ts->isSafe());
+                sensorStopAllocation[i] = ts->getStopAllocatingSensor();}
         }
         int index = sectionList->size() - 1;
         while (alternate->at(index) && (index > 0)) {
@@ -745,7 +746,7 @@ void TransitTableAction::addEditPressed()
     for (int i = 0; i < maxSections; i++) {
         direction->replace(i,  Section::FORWARD);
         sequence->replace(i,  0);
-        action->replace(i,  NULL);
+        action.replace(i,  NULL);
         alternate->replace(i,  false);
     }
     curSection = NULL;
@@ -781,7 +782,7 @@ void TransitTableAction::addNextSectionPressed(ActionEvent* /*e*/) {
         direction->replace(j, priSectionDirection->at(index));
         curSequenceNum++;
         sequence->replace(j, curSequenceNum);
-        action->replace(j, NULL);
+        action.replace(j, NULL);
         alternate->replace(j, false);
         if ((sectionList->size() == 2) && (curSection != NULL)) {
             if (forwardConnected(curSection, s, 0)) {
@@ -844,14 +845,14 @@ void TransitTableAction::insertAtBeginningPressed(ActionEvent* /*e*/) {
         for (int i = sectionList->size() - 2; i > 0; i--) {
             direction->replace(i + 1, direction->at(i));
             alternate->replace(i + 1, alternate->at(i));
-            action->replace(i + 1, action->at(i));
+            action.replace(i + 1, action.at(i));
             sequence->replace(i + 1, sequence->at(i) + 1);
         }
         direction->replace(0, insertAtBeginningDirection->at(index));
         curSequenceNum++;
         sequence->replace(0, 1);
         alternate->replace(0, false);
-        action->replace(0, NULL);
+        action.replace(0, NULL);
         if (curSequenceNum == 2) {
             prevSectionDirection = direction->at(0);
             prevSection = s;
@@ -872,7 +873,7 @@ void TransitTableAction::removeFirstSectionPressed(ActionEvent* /*e*/) {
         for (int i = keep, j = 0; i < sectionList->size(); i++, j++) {
             sequence->replace(j, sequence->at(i) - 1);
             direction->replace(j, direction->at(i));
-            action->replace(j, action->at(i));
+            action.replace(j, action.at(i));
             alternate->replace(j, alternate->at(i));
         }
         for (int k = 0; k < keep; k++) {
@@ -1069,7 +1070,7 @@ void TransitTableAction::deleteAlternateForSeqPressed(ActionEvent* /*e*/) {
                 for (int j = i; j < sectionList->size() - 1; j++) {
                     sequence->replace(j,sequence->at(j + 1));
                     direction->replace(j, direction->at(j + 1));
-                    action->replace(j, action->at(j + 1));
+                    action.replace(j, action.at(j + 1));
                     alternate->replace(j, alternate->at(j + 1));
                 }
                 sectionList->removeAt(i);
@@ -1220,13 +1221,13 @@ void TransitTableAction::addAlternateForSeqPressed(ActionEvent* /*e*/) {
     for (int i = sectionList->size() - 2; i >= index; i--) {
         direction->replace(i + 1, direction->at(i));
         alternate->replace(i + 1, alternate->at(i));
-        action->replace(i + 1, action->at(i));
+        action.replace(i + 1, action.at(i));
         sequence->replace(i + 1, sequence->at(i));
     }
     direction->replace(index, possiblesDirection.at(k));
     sequence->replace(index, sequence->at(index - 1));
     alternate->replace(index, true);
-    action->replace(index, new QList<TransitSectionAction*>());
+    action.replace(index, new QList<TransitSectionAction*>());
     initializeSectionCombos();
 
     sectionTableModel->fireTableDataChanged();
@@ -1254,7 +1255,7 @@ void TransitTableAction::addAlternateSectionPressed(ActionEvent* /*e*/) {
         sectionList->append(s);
         direction->replace(j, altSectionDirection->at(index));
         sequence->replace(j, curSequenceNum);
-        action->replace(j, new QList<TransitSectionAction*>());
+        action.replace(j, new QList<TransitSectionAction*>());
         alternate->replace(j, true);
         initializeSectionCombos();
     }
@@ -1352,7 +1353,7 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
             log->error("Trouble creating TransitSection");
             return false;
         }
-        QList<TransitSectionAction*>* list = action->at(i);
+        QList<TransitSectionAction*>* list = action.at(i);
         if (list != NULL) {
             for (int j = 0; j < list->size(); j++) {
                 ts->addAction(list->at(j));
@@ -1986,7 +1987,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
     if (curTSA == NULL) {
         log->error("Failure when creating new TransitSectionAction");
     }
-    QList<TransitSectionAction*>* list = action->at(activeRow);
+    QList<TransitSectionAction*>* list = action.at(activeRow);
     list->append(curTSA);
     actionTableModel->fireTableDataChanged();
     addEditActionFrame->setVisible(false);
@@ -2341,14 +2342,14 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 }
 
 /*private*/ void TransitTableAction::editAction(int r) {
-    curTSA = action->at(activeRow)->at(r);
+    curTSA = action.at(activeRow)->at(r);
     editActionMode = true;
     addEditActionWindow();
 }
 
 /*private*/ void TransitTableAction::deleteAction(int r) {
-    TransitSectionAction* tsa = action->at(activeRow)->at(r);
-    action->at(activeRow)->removeAt(r);
+    TransitSectionAction* tsa = action.at(activeRow)->at(r);
+    action.at(activeRow)->removeAt(r);
     tsa->dispose();
     actionTableModel->fireTableDataChanged();
 }
@@ -2360,7 +2361,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 
 /*private*/ QString TransitTableAction::getWhenText(int r)
 {
-    TransitSectionAction* tsa = action->at(activeRow)->at(r);
+    TransitSectionAction* tsa = action.at(activeRow)->at(r);
     switch (tsa->getWhenCode()) {
         case TransitSectionAction::ENTRY:
             if (tsa->getDataWhen() > 0) {
@@ -2436,7 +2437,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
  */
 
 /*private*/ QString TransitTableAction::getWhatText(int r) {
-    TransitSectionAction* tsa = action->at(activeRow)->at(r);
+    TransitSectionAction* tsa = action.at(activeRow)->at(r);
     switch (tsa->getWhatCode())
     {
         case TransitSectionAction::PAUSE:
@@ -2679,7 +2680,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 
 /*public*/ int SpecialActionTableModel::rowCount(const QModelIndex &parent) const
 {
-    return (act->action->at(act->activeRow)->size());
+    return (act->action.at(act->activeRow)->size());
 }
 
 /*public*/ Qt::ItemFlags SpecialActionTableModel::flags(const QModelIndex &index) const

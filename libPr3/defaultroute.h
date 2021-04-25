@@ -77,6 +77,8 @@ public:
     /*public*/ int getState() override ;
     /*public*/ void setState(int state) override ;
     /*public*/ QObject* self() override {return (QObject*)this;}
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
+
 signals:
 
 public slots:

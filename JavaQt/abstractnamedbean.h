@@ -11,6 +11,7 @@
 class JAVAQTSHARED_EXPORT AbstractNamedBean :  public NamedBean
 {
     Q_OBJECT
+    Q_INTERFACES(NamedBean)
 public:
     explicit AbstractNamedBean(QObject *parent = 0);
     /**
@@ -63,7 +64,7 @@ public:
     /*public*/ QString describeState(int state) override;
     Q_INVOKABLE /*public*/ bool equals(QObject* obj) override;
     /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException) override;
     /*public*/ uint hashCode() override { return qHash(mSystemName, qGlobalQHashSeed());}
     inline bool operator ==(const AbstractNamedBean &e2)
     {
@@ -80,6 +81,7 @@ public:
      return hashCode();
     }
 
+    // /*public*/ QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:

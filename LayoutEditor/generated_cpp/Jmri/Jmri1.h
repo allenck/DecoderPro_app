@@ -1600,6 +1600,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    bool  getDrawGrid(LayoutEditor* theWrappedObject);
    bool  getHighlightSelectedBlock(LayoutEditor* theWrappedObject);
    QString  getLayoutName(LayoutEditor* theWrappedObject);
+   QList<LayoutTrack* >  getLayoutTrackSelection(LayoutEditor* theWrappedObject);
    QList<LayoutTrack* >  getLayoutTracks(LayoutEditor* theWrappedObject);
    QList<LayoutTurnout* >  getLayoutTurnouts(LayoutEditor* theWrappedObject);
    QList<LayoutTurnout* >  getLayoutTurnoutsAndSlips(LayoutEditor* theWrappedObject);
@@ -1607,6 +1608,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    double  getMinZoom(LayoutEditor* theWrappedObject);
    bool  getOpenDispatcherOnLoad(LayoutEditor* theWrappedObject);
    QRectF  getPanelBounds(LayoutEditor* theWrappedObject);
+   QList<Positionable* >*  getPositionalSelection(LayoutEditor* theWrappedObject);
    EditScene*  getScene(LayoutEditor* theWrappedObject);
    bool  getScroll(LayoutEditor* theWrappedObject);
    QList<Positionable* >  getSelectedItems(LayoutEditor* theWrappedObject, QGraphicsSceneMouseEvent*  event);
@@ -1633,6 +1635,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void py_q_init(LayoutEditor* theWrappedObject, QString  name){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_init(name));}
    void py_q_initView(LayoutEditor* theWrappedObject){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_initView());}
    bool  isAnimating(LayoutEditor* theWrappedObject);
+   bool  isDrawLayoutTracksLabel(LayoutEditor* theWrappedObject);
    bool  isEditable(LayoutEditor* theWrappedObject);
    bool  isIncludedTurnoutSkipped(LayoutEditor* theWrappedObject);
    bool  isTurnoutDrawUnselectedLeg(LayoutEditor* theWrappedObject);
@@ -1678,6 +1681,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    void setDirty(LayoutEditor* theWrappedObject);
    void setDirty(LayoutEditor* theWrappedObject, bool  b);
    void setDrawGrid(LayoutEditor* theWrappedObject, bool  state);
+   void setDrawLayoutTracksLabel(LayoutEditor* theWrappedObject, bool  state);
    void setHighlightSelectedBlock(LayoutEditor* theWrappedObject, bool  state);
    void setIncludedTurnoutSkipped(LayoutEditor* theWrappedObject, bool  boo);
    void setLayoutDimensions(LayoutEditor* theWrappedObject, int  windowW, int  windowH, int  x, int  y, int  panelW, int  panelH, bool  merge);
@@ -1734,6 +1738,10 @@ void py_set__positionableSelection(LayoutEditor* theWrappedObject, QList<Positio
 QList<Positionable* >*  py_get__positionableSelection(LayoutEditor* theWrappedObject){ return theWrappedObject->_positionableSelection; }
 void py_set_backgroundImage(LayoutEditor* theWrappedObject, QVector<PositionableLabel* >*  backgroundImage){ theWrappedObject->backgroundImage = backgroundImage; }
 QVector<PositionableLabel* >*  py_get_backgroundImage(LayoutEditor* theWrappedObject){ return theWrappedObject->backgroundImage; }
+void py_set_circleDiameter(LayoutEditor* theWrappedObject, double  circleDiameter){ theWrappedObject->circleDiameter = circleDiameter; }
+double  py_get_circleDiameter(LayoutEditor* theWrappedObject){ return theWrappedObject->circleDiameter; }
+void py_set_circleRadius(LayoutEditor* theWrappedObject, double  circleRadius){ theWrappedObject->circleRadius = circleRadius; }
+double  py_get_circleRadius(LayoutEditor* theWrappedObject){ return theWrappedObject->circleRadius; }
 void py_set_labelImage(LayoutEditor* theWrappedObject, QList<PositionableLabel* >*  labelImage){ theWrappedObject->labelImage = labelImage; }
 QList<PositionableLabel* >*  py_get_labelImage(LayoutEditor* theWrappedObject){ return theWrappedObject->labelImage; }
 };
@@ -2061,7 +2069,7 @@ virtual void setTransitionTime(double  arg__1);
 virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException) ;
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException) ;
+virtual void vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -2733,7 +2741,7 @@ virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
 virtual bool  useDefaultTimerSettings();
 virtual void useDefaultTimerSettings(bool  boo);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException) ;
+virtual void vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -2938,6 +2946,7 @@ virtual Sensor*  getFirstSensor();
 virtual bool  getInhibitOperation();
 virtual bool  getInverted();
 virtual int  getKnownState();
+virtual Turnout*  getLeadingTurnout();
 virtual bool  getLocked(int  turnoutLockout);
 virtual int  getNumberOutputBits();
 virtual bool  getReportLocked();
@@ -2949,7 +2958,9 @@ virtual TurnoutOperation*  getTurnoutOperation();
 virtual QStringList  getValidDecoderNames();
 virtual QVector<QString >  getValidFeedbackNames();
 virtual int  getValidFeedbackTypes();
+virtual bool  isCanFollow();
 virtual bool  isConsistentState();
+virtual bool  isFollowingCommandedState();
 virtual void propertyChange(PropertyChangeEvent*  evt);
 virtual void provideFirstFeedbackSensor(QString  pName) throw(JmriException) ;
 virtual void provideSecondFeedbackSensor(QString  pName) throw(JmriException) ;
@@ -2957,14 +2968,18 @@ virtual void requestUpdateFromLayout();
 virtual QObject*  self();
 virtual void setBinaryOutput(bool  state);
 virtual void setCommandedState(int  s);
+virtual void setCommandedStateAtInterval(int  s);
 virtual void setControlType(int  num);
 virtual void setDecoderName(QString  decoderName);
 virtual void setDivergingSpeed(QString  s) const throw(JmriException) ;
 virtual void setFeedbackMode(QString  mode) throw(IllegalArgumentException) ;
 virtual void setFeedbackMode(int  mode) throw(IllegalArgumentException) ;
+virtual void setFollowingCommandedState(bool  following);
 virtual void setInhibitOperation(bool  io);
 virtual void setInitialKnownStateFromFeedback();
 virtual void setInverted(bool  inverted);
+virtual void setLeadingTurnout(Turnout*  turnout);
+virtual void setLeadingTurnout(Turnout*  turnout, bool  followingCommandedState);
 virtual void setLocked(int  turnoutLockout, bool  locked);
 virtual void setNumberOutputBits(int  num);
 virtual void setReportLocked(bool  reportLocked);
@@ -2972,6 +2987,7 @@ virtual void setState(int  s);
 virtual void setStraightSpeed(QString  s) const throw(JmriException) ;
 virtual void setTurnoutOperation(TurnoutOperation*  toper);
 virtual void turnoutPushbuttonLockout(bool  _pushButtonLockout);
+virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -3034,6 +3050,7 @@ virtual Turnout*  getByUserName(QString  key) const;
 virtual QString  getClosedText();
 virtual QString  getDefaultClosedSpeed() const;
 virtual QString  getDefaultThrownSpeed() const;
+virtual QString  getEntryToolTip();
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;

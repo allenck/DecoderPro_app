@@ -42,8 +42,11 @@ private:
    /*private*/ QList<Section*>* sectionList;// = new QList<>();
    /*private*/ QVector<int>* direction;// = new int[150];
    /*private*/ QVector<int>* sequence;// = new int[150];
-   /*private*/ QVector<QList<TransitSectionAction*>*>* action;// = new QList[150];
+   /*private*/ QVector<QList<TransitSectionAction*>*> action;// = new QList[150];
    /*private*/ QVector<bool>* alternate;// = new boolean[150];
+   /*private*/ QVector<bool> safe = QVector<bool>(150);
+   /*private*/ QVector<QString> sensorList;
+   /*private*/ /*final*/ QVector<QString> sensorStopAllocation = QVector<QString>(150);
    /*private*/ int maxSections;// = 150;  // must be equal to the dimension of the above arrays
    /*private*/ QList<Section*>* primarySectionBoxList;// = new QList<>();
    /*private*/ QVector<int>* priSectionDirection;// = new int[150];

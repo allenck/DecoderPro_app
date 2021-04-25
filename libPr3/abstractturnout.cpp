@@ -8,6 +8,7 @@
 #include "rosterentry.h"
 #include "loggerfactory.h"
 #include "signalspeedmap.h"
+#include "vptr.h"
 
 AbstractTurnout::AbstractTurnout(QObject *parent) :
     Turnout(parent)
@@ -228,7 +229,37 @@ _reportLocked = true;
 /*public*/ int AbstractTurnout::getCommandedState() {
     return _commandedState;
 }
-
+/** {@inheritDoc}
+ * Used in {@link jmri.implementation.DefaultRoute#setRoute()} and
+ * {@link jmri.implementation.MatrixSignalMast#updateOutputs(char[])}.
+ */
+//@Override
+/*public*/ void AbstractTurnout::setCommandedStateAtInterval(int s) {
+    nextWait = InstanceManager::turnoutManagerInstance()->outputIntervalEnds();
+    // nextWait time is calculated using actual turnoutInterval in TurnoutManager
+#if 0
+    if (nextWait->isAfter(LocalDateTime::now())) { // don't sleep if nextWait =< now()
+        log->debug(tr("Turnout now() = %1, waitUntil = %2").arg(LocalDateTime::now(), nextWait));
+        // insert wait before sending next output command to the layout
+        r = () -> {
+            log.debug("go to sleep for {} ms...", Math.max(0L, LocalDateTime.now().until(nextWait, ChronoUnit.MILLIS)));
+            try {
+                Thread.sleep(Math.max(0L, LocalDateTime.now().until(nextWait, ChronoUnit.MILLIS))); // nextWait might have passed in the meantime
+                log.debug("back from sleep, forward on {}", LocalDateTime.now());
+                setCommandedState(s);
+            } catch (InterruptedException ex) {
+                log.debug("setCommandedStateAtInterval(s) interrupted at {}", LocalDateTime.now());
+                Thread.currentThread().interrupt(); // retain if needed later
+            }
+        };
+        thr = new Thread(r);
+        thr.start();
+    } else {
+        log.debug("nextWait has passed");
+        setCommandedState(s);
+    }
+#endif
+}
 /**
  * Add a protected newKnownState() for use by implementations.
  * <P>
@@ -1034,4 +1065,93 @@ if(!bok)
     firePropertyChange("TurnoutStraightSpeedChange", oldSpeed, s);
 }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractTurnout::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+    if ("CanDelete" ==(evt->getPropertyName())) { // NOI18N
+        QVariant old = evt->getOldValue();
+        if (old == VPtr<Sensor>::asQVariant(getFirstSensor()) || old == VPtr<Sensor>::asQVariant(getSecondSensor()) || old ==VPtr<Turnout>::asQVariant(leadingTurnout)) {
+            PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+            throw PropertyVetoException(tr("Sensor is in use by Turnout \"%1\" for feedback").arg(getDisplayName()), e); // NOI18N
+        }
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> AbstractTurnout::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        if (bean->equals(getFirstSensor())) {
+            report.append(new NamedBeanUsageReport("TurnoutFeedback1"));  // NOI18N
+        }
+        if (bean->equals(getSecondSensor())) {
+            report.append(new NamedBeanUsageReport("TurnoutFeedback2"));  // NOI18N
+        }
+        if (bean->equals(getLeadingTurnout())) {
+            report.append(new NamedBeanUsageReport("LeadingTurnout")); // NOI18N
+        }
+    }
+    return report;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool AbstractTurnout::isCanFollow() {
+    return false;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+//@CheckForNull
+/*public*/ Turnout* AbstractTurnout::getLeadingTurnout() {
+    return leadingTurnout;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractTurnout::setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout) {
+    if (isCanFollow()) {
+        Turnout* old = leadingTurnout;
+        leadingTurnout = turnout;
+        firePropertyChange("LeadingTurnout", VPtr<Turnout>::asQVariant(old), VPtr<Turnout>::asQVariant(leadingTurnout));
+        if (old != nullptr) {
+            old->removePropertyChangeListener("KnownState", this);
+        }
+        if (leadingTurnout != nullptr) {
+            leadingTurnout->addPropertyChangeListener("KnownState", this);
+        }
+    }
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractTurnout::setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout, bool followingCommandedState) {
+    setLeadingTurnout(turnout);
+    setFollowingCommandedState(followingCommandedState);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool AbstractTurnout::isFollowingCommandedState() {
+    return followingCommandedState;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractTurnout::setFollowingCommandedState(bool following) {
+    followingCommandedState = following;
+}
 /*static*/ Logger* AbstractTurnout::log = LoggerFactory::getLogger("AbstractTurnout");

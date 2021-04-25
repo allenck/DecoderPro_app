@@ -41,6 +41,7 @@ public:
     void setActiveEntryExit(bool boo);
     /*synchronized*/ void activeBean(bool reverseDirection, bool showMessage);
     /*public*/ void setInterlockRoute(bool reverseDirection);
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
 signals:
 

@@ -1187,3 +1187,34 @@ void OutputTurnout::removeListener()
  r->checkTurnoutAlignment();
 }
 
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> DefaultRoute::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        for (int i = 0; i < getNumOutputTurnouts(); i++) {
+            if (bean->equals(getOutputTurnout(i))) {
+                report.append(new NamedBeanUsageReport("RouteTurnoutOutput"));  // NOI18N
+            }
+        }
+        for (int i = 0; i < getNumOutputSensors(); i++) {
+            if (bean->equals(getOutputSensor(i))) {
+                report.append(new NamedBeanUsageReport("RouteSensorOutput"));  // NOI18N
+            }
+        }
+        for (int i = 0; i < _controlSensorList->size(); i++) {
+            if (bean->equals(getRouteSensor(i))) {
+                report.append(new NamedBeanUsageReport("RouteSensorControl"));  // NOI18N
+            }
+        }
+        if (bean->equals(getTurnoutsAlgdSensor())) {
+            report.append(new NamedBeanUsageReport("RouteSensorAligned"));  // NOI18N
+        }
+        if (bean->equals(getCtlTurnout())) {
+            report.append(new NamedBeanUsageReport("default Route {} created"));  // NOI18N
+        }
+        if (bean->equals(getLockCtlTurnout())) {
+            report.append(new NamedBeanUsageReport("RouteTurnoutLock"));  // NOI18N
+        }
+    }
+    return report;
+}

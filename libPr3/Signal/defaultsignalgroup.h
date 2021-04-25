@@ -4,6 +4,7 @@
 #include "namedbeanhandle.h"
 #include "libPr3_global.h"
 #include "propertychangelistener.h"
+#include "abstractnamedbean.h"
 
 class SignalSensor;
 class Turnout;
@@ -18,60 +19,61 @@ class LIBPR3SHARED_EXPORT DefaultSignalGroup : public SignalGroup, public Proper
 public:
     //explicit DefaultSignalGroup(QObject *parent = 0);
     /*public*/ DefaultSignalGroup(QString systemName, QString userName = "", QObject* parent = 0);
-    /*public*/ void setEnabled(bool boo);
-    /*public*/ bool getEnabled();
-    /*public*/ void setSignalMast(QString pName);
-    /*public*/ void setSignalMast(SignalMast* mMast, QString pName);
-    /*public*/ SignalMast* getSignalMast();
-    /*public*/ QString getSignalMastName();
-    /*public*/ void addSignalMastAspect(QString aspect);
-    /*public*/ bool isSignalMastAspectIncluded(QString aspect);
-    /*public*/ void deleteSignalMastAspect(QString aspect);
-    /*public*/ int getNumSignalMastAspects() ;
-    /*public*/ QString getSignalMastAspectByIndex(int x);
-    /*public*/ void clearSignalMastAspect();
-    /*public*/ void addSignalHead(NamedBeanHandle<SignalHead*>* sh);
+    /*public*/ void setEnabled(bool boo) override;
+    /*public*/ bool getEnabled()override;
+    /*public*/ void setSignalMast(QString pName)override;
+    /*public*/ void setSignalMast(SignalMast* mMast, QString pName)override;
+    /*public*/ SignalMast* getSignalMast() override;
+    /*public*/ QString getSignalMastName() override;
+    /*public*/ void addSignalMastAspect(QString aspect) override;
+    /*public*/ bool isSignalMastAspectIncluded(QString aspect) override;
+    /*public*/ void deleteSignalMastAspect(QString aspect) override;
+    /*public*/ int getNumSignalMastAspects() override;
+    /*public*/ QString getSignalMastAspectByIndex(int x) override;
+    /*public*/ void clearSignalMastAspect()override;
+    /*public*/ void addSignalHead(NamedBeanHandle<SignalHead*>* sh) override;
     /*public*/ void addSignalHead(QString pName);
-    /*public*/ void addSignalHead(SignalHead* mHead);
-    /*public*/ void setSignalHeadAlignTurnout(SignalHead* mHead, Turnout* mTurn, int state);
-    /*public*/ void setSignalHeadAlignSensor(SignalHead* mHead, Sensor* mSen, int state);
-    /*public*/ SignalHead* getSignalHeadItemBeanByIndex(int n);
-    /*public*/ int getNumSignalHeadItems();
-    /*public*/ int getSignalHeadOffState(SignalHead* bean);
-    /*public*/ int getSignalHeadOnState(SignalHead* bean);
-    /*public*/ int getSignalHeadOffStateByIndex(int n);
-    /*public*/ void deleteSignalHead(SignalHead* pSignal);
-    /*public*/ void deleteSignalHead(NamedBeanHandle<SignalHead*>* sh);
-    /*public*/ void setSignalHeadOnState(SignalHead* head, int state);
-    /*public*/ void setSignalHeadOffState(SignalHead* head, int state);
-    /*public*/ bool isSignalIncluded(SignalHead* bean);
-    /*public*/ bool isTurnoutIncluded(SignalHead* pSignal, Turnout* pTurnout);
-    /*public*/ int getTurnoutState(SignalHead* pSignal, Turnout* pTurnout);
-    /*public*/ int getTurnoutStateByIndex(int x, Turnout* pTurnout);
-    /*public*/ int getTurnoutStateByIndex(int x, int pTurnout);
-    /*public*/ QString getTurnoutNameByIndex(int x, int pTurnout);
-    /*public*/ Turnout* getTurnoutByIndex(int x, int pTurnout);
-    /*public*/ int getSensorStateByIndex(int x, int pSensor);
-    /*public*/ QString getSensorNameByIndex(int x, int pSensor);
-    /*public*/ Sensor* getSensorByIndex(int x, int pSensor);
-    /*public*/ bool isSensorIncluded(SignalHead* pSignal, Sensor* pSensor);
-    /*public*/ int getSensorState(SignalHead* pSignal, Sensor* pSensor);
-    /*public*/ bool getSensorTurnoutOper(SignalHead* pSignal);
-    /*public*/ bool getSensorTurnoutOperByIndex(int x);
-    /*public*/ void setSensorTurnoutOper(SignalHead* pSignal, bool boo);
-    /*public*/ void clearSignalTurnout(SignalHead* pSignal);
-    /*public*/ void clearSignalSensor(SignalHead* pSignal);
-    /*public*/ int getNumSignalHeadSensorsByIndex(int x);
-    /*public*/ int getNumSignalHeadTurnoutsByIndex(int x);
-    /*public*/ int getSignalHeadOnStateByIndex(int n);
-    /*public*/ QString getSignalHeadItemNameByIndex(int n);
-    /*public*/ int getState();
-    /*public*/ void setState(int state);
-    /*public*/ /*synchronized*/ int getNumPropertyChangeListeners();
+    /*public*/ void addSignalHead(SignalHead* mHead)override;
+    /*public*/ void setHeadAlignTurnout(SignalHead* mHead, Turnout* mTurn, int state)override;
+    /*public*/ void setHeadAlignSensor(SignalHead* mHead, Sensor* mSen, int state)override;
+    /*public*/ SignalHead* getHeadItemBeanByIndex(int n)override;
+    /*public*/ int getNumHeadItems()override;
+    /*public*/ int getHeadOffState(SignalHead* bean)override;
+    /*public*/ int getHeadOnState(SignalHead* bean)override;
+    /*public*/ int getHeadOffStateByIndex(int n)override;
+    /*public*/ void deleteSignalHead(SignalHead* pSignal)override;
+    /*public*/ void deleteSignalHead(NamedBeanHandle<SignalHead*>* sh)override;
+    /*public*/ void setHeadOnState(SignalHead* head, int state)override;
+    /*public*/ void setHeadOffState(SignalHead* head, int state)override;
+    /*public*/ bool isHeadIncluded(SignalHead* bean)override;
+    /*public*/ bool isTurnoutIncluded(SignalHead* pSignal, Turnout* pTurnout)override;
+    /*public*/ int getTurnoutState(SignalHead* pSignal, Turnout* pTurnout)override;
+    /*public*/ int getTurnoutStateByIndex(int x, Turnout* pTurnout)override;
+    /*public*/ int getTurnoutStateByIndex(int x, int pTurnout)override;
+    /*public*/ QString getTurnoutNameByIndex(int x, int pTurnout)override;
+    /*public*/ Turnout* getTurnoutByIndex(int x, int pTurnout)override;
+    /*public*/ int getSensorStateByIndex(int x, int pSensor) override;
+    /*public*/ QString getSensorNameByIndex(int x, int pSensor) override;
+    /*public*/ Sensor* getSensorByIndex(int x, int pSensor) override;
+    /*public*/ bool isSensorIncluded(SignalHead* pSignal, Sensor* pSensor) override;
+    /*public*/ int getSensorState(SignalHead* pSignal, Sensor* pSensor) override;
+    /*public*/ bool getSensorTurnoutOper(SignalHead* pSignal) override;
+    /*public*/ bool getSensorTurnoutOperByIndex(int x) override;
+    /*public*/ void setSensorTurnoutOper(SignalHead* pSignal, bool boo) override;
+    /*public*/ void clearSignalTurnout(SignalHead* pSignal) override;
+    /*public*/ void clearSignalSensor(SignalHead* pSignal) override;
+    /*public*/ int getNumHeadSensorsByIndex(int x)override;
+    /*public*/ int getNumHeadTurnoutsByIndex(int x)override;
+    /*public*/ int getHeadOnStateByIndex(int n)override;
+    /*public*/ QString getHeadItemNameByIndex(int n)override;
+    /*public*/ int getState()override;
+    /*public*/ void setState(int state)override;
+    /*public*/ /*synchronized*/ int getNumPropertyChangeListeners()override;
     /*public*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
-    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
+    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l)override;
     QObject* self() override {return (QObject*)this;}
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
 
 signals:
 
@@ -91,7 +93,8 @@ PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
 /*private*/ SignalHeadItem* getSignalHeadItem(NamedBean* bean);
 /*private*/ void resetHeads();
 /*private*/ void setHead();
-/*private*/ SignalHeadItem* getSignalHeadItemByIndex(int n);
+/*private*/ SignalHeadItem* getHeadItemByIndex(int n);
+/*private*/ SignalHeadItem* getHeadItem(QString name);
 
 protected:
 /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);

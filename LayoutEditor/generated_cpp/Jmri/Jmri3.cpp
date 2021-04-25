@@ -2550,7 +2550,7 @@ if (_wrapper) {
 }
   Sensor::useDefaultTimerSettings(arg__1);
 }
-void PythonQtShell_Sensor::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
+void PythonQtShell_Sensor::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -2560,7 +2560,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&evt0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -2570,7 +2570,7 @@ if (_wrapper) {
     }
   }
 }
-  Sensor::vetoableChange(evt0);
+  Sensor::vetoableChange(arg__1);
 }
 Sensor* PythonQtWrapper_Sensor::new_Sensor(QObject*  parent)
 { 
@@ -14670,6 +14670,39 @@ if (_wrapper) {
 }
   return Turnout::getKnownState();
 }
+Turnout*  PythonQtShell_Turnout::getLeadingTurnout()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getLeadingTurnout");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"Turnout*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      Turnout* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getLeadingTurnout", methodInfo, result);
+          } else {
+            returnValue = *((Turnout**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return 0;
+}
 QString  PythonQtShell_Turnout::getListenerRef(PropertyChangeListener*  l0)
 {
 if (_wrapper) {
@@ -15429,6 +15462,39 @@ if (_wrapper) {
 }
   return Turnout::hashCode();
 }
+bool  PythonQtShell_Turnout::isCanFollow()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isCanFollow");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isCanFollow", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return bool();
+}
 bool  PythonQtShell_Turnout::isConsistentState()
 {
 if (_wrapper) {
@@ -15461,6 +15527,39 @@ if (_wrapper) {
   }
 }
   return Turnout::isConsistentState();
+}
+bool  PythonQtShell_Turnout::isFollowingCommandedState()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isFollowingCommandedState");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isFollowingCommandedState", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return bool();
 }
 void PythonQtShell_Turnout::provideFirstFeedbackSensor(QString  arg__1) throw (JmriException) 
 {
@@ -15638,6 +15737,28 @@ if (_wrapper) {
 }
   Turnout::setCommandedState(arg__1);
 }
+void PythonQtShell_Turnout::setCommandedStateAtInterval(int  s0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setCommandedStateAtInterval");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&s0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  
+}
 void PythonQtShell_Turnout::setComment(QString  comment0)
 {
 if (_wrapper) {
@@ -15770,6 +15891,28 @@ if (_wrapper) {
 }
   Turnout::setFeedbackMode(arg__1);
 }
+void PythonQtShell_Turnout::setFollowingCommandedState(bool  following0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setFollowingCommandedState");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&following0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  
+}
 void PythonQtShell_Turnout::setInhibitOperation(bool  arg__1)
 {
 if (_wrapper) {
@@ -15835,6 +15978,50 @@ if (_wrapper) {
   }
 }
   Turnout::setInverted(arg__1);
+}
+void PythonQtShell_Turnout::setLeadingTurnout(Turnout*  turnout0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setLeadingTurnout");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "Turnout*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&turnout0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  
+}
+void PythonQtShell_Turnout::setLeadingTurnout(Turnout*  turnout0, bool  followingCommandedState1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setLeadingTurnout");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "Turnout*" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&turnout0, (void*)&followingCommandedState1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  
 }
 void PythonQtShell_Turnout::setLocked(int  arg__1, bool  arg__2)
 {
@@ -16056,7 +16243,7 @@ if (_wrapper) {
 }
   Turnout::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_Turnout::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
+void PythonQtShell_Turnout::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16066,7 +16253,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&evt0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -16076,7 +16263,7 @@ if (_wrapper) {
     }
   }
 }
-  Turnout::vetoableChange(evt0);
+  Turnout::vetoableChange(arg__1);
 }
 Turnout* PythonQtWrapper_Turnout::new_Turnout(QObject*  parent)
 { 
@@ -16173,6 +16360,11 @@ int  PythonQtWrapper_Turnout::getKnownState(Turnout* theWrappedObject)
   return ( theWrappedObject->getKnownState());
 }
 
+Turnout*  PythonQtWrapper_Turnout::getLeadingTurnout(Turnout* theWrappedObject)
+{
+  return ( theWrappedObject->getLeadingTurnout());
+}
+
 bool  PythonQtWrapper_Turnout::getLocked(Turnout* theWrappedObject, int  arg__1)
 {
   return ( theWrappedObject->getLocked(arg__1));
@@ -16233,9 +16425,19 @@ int  PythonQtWrapper_Turnout::static_Turnout_invertTurnoutState(int  inState)
   return (Turnout::invertTurnoutState(inState));
 }
 
+bool  PythonQtWrapper_Turnout::isCanFollow(Turnout* theWrappedObject)
+{
+  return ( theWrappedObject->isCanFollow());
+}
+
 bool  PythonQtWrapper_Turnout::isConsistentState(Turnout* theWrappedObject)
 {
   return ( theWrappedObject->isConsistentState());
+}
+
+bool  PythonQtWrapper_Turnout::isFollowingCommandedState(Turnout* theWrappedObject)
+{
+  return ( theWrappedObject->isFollowingCommandedState());
 }
 
 void PythonQtWrapper_Turnout::provideFirstFeedbackSensor(Turnout* theWrappedObject, QString  arg__1) throw (JmriException) 
@@ -16263,6 +16465,11 @@ void PythonQtWrapper_Turnout::setCommandedState(Turnout* theWrappedObject, int  
   ( theWrappedObject->setCommandedState(arg__1));
 }
 
+void PythonQtWrapper_Turnout::setCommandedStateAtInterval(Turnout* theWrappedObject, int  s)
+{
+  ( theWrappedObject->setCommandedStateAtInterval(s));
+}
+
 void PythonQtWrapper_Turnout::setControlType(Turnout* theWrappedObject, int  arg__1)
 {
   ( theWrappedObject->setControlType(arg__1));
@@ -16288,6 +16495,11 @@ void PythonQtWrapper_Turnout::setFeedbackMode(Turnout* theWrappedObject, int  ar
   ( theWrappedObject->setFeedbackMode(arg__1));
 }
 
+void PythonQtWrapper_Turnout::setFollowingCommandedState(Turnout* theWrappedObject, bool  following)
+{
+  ( theWrappedObject->setFollowingCommandedState(following));
+}
+
 void PythonQtWrapper_Turnout::setInhibitOperation(Turnout* theWrappedObject, bool  arg__1)
 {
   ( theWrappedObject->setInhibitOperation(arg__1));
@@ -16301,6 +16513,16 @@ void PythonQtWrapper_Turnout::setInitialKnownStateFromFeedback(Turnout* theWrapp
 void PythonQtWrapper_Turnout::setInverted(Turnout* theWrappedObject, bool  arg__1)
 {
   ( theWrappedObject->setInverted(arg__1));
+}
+
+void PythonQtWrapper_Turnout::setLeadingTurnout(Turnout* theWrappedObject, Turnout*  turnout)
+{
+  ( theWrappedObject->setLeadingTurnout(turnout));
+}
+
+void PythonQtWrapper_Turnout::setLeadingTurnout(Turnout* theWrappedObject, Turnout*  turnout, bool  followingCommandedState)
+{
+  ( theWrappedObject->setLeadingTurnout(turnout, followingCommandedState));
 }
 
 void PythonQtWrapper_Turnout::setLocked(Turnout* theWrappedObject, int  arg__1, bool  arg__2)

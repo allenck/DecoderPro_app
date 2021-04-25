@@ -20,7 +20,7 @@
  *		have any control mechanisms defined.
  * <P>
  * Information for each control mechanism is held in LightControl
- *		objects, which also implement the logic for control. A
+ *		objects, which also implement the logic for control-> A
  *		list of LightControls, if any, is kept here, and
  *		activation and deactivation of LightControls is through
  *		this module.
@@ -431,3 +431,29 @@ void AbstractLight::common()
  return listCopy;
 }
 
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> AbstractLight::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    SensorManager* sm = (SensorManager*)InstanceManager::getDefault("SensorManager");
+    TurnoutManager* tm = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
+    if (bean != nullptr) {
+        //getLightControlList().forEach((control) ->
+     for(LightControl* control : getLightControlList())
+        {
+            QString descText = control->getDescriptionText("");
+            if (bean->equals(sm->getSensor(control->getControlSensorName()))) {
+                report.append(new NamedBeanUsageReport("LightControlSensor1", descText));  // NOI18N
+            }
+            if (bean->equals(sm->getSensor(control->getControlSensor2Name()))) {
+                report.append(new NamedBeanUsageReport("LightControlSensor2", descText));  // NOI18N
+            }
+            if (bean->equals(sm->getSensor(control->getControlTimedOnSensorName()))) {
+                report.append(new NamedBeanUsageReport("LightControlSensorTimed", descText));  // NOI18N
+            }
+            if (bean->equals(tm->getTurnout(control->getControlTurnoutName()))) {
+                report.append(new NamedBeanUsageReport("LightControlTurnout", descText));  // NOI18N
+            }
+        }//);
+    }
+    return report;
+}

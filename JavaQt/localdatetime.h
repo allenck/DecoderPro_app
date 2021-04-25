@@ -7,6 +7,7 @@ class LocalDateTime : public QDateTime
  public:
   LocalDateTime();
   static LocalDateTime now();
+  /*public*/ bool isAfter(LocalDateTime );
 };
 
 #endif // LOCALDATETIME_H

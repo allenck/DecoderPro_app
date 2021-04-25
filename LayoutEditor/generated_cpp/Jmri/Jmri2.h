@@ -693,7 +693,7 @@ virtual void setState(int  arg__1);
 virtual void setUserName(QString  s);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  arg__2);
-virtual void vetoableChange(PropertyChangeEvent*  arg__1);
+virtual void vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -733,7 +733,7 @@ inline void py_q_setProperty(QString  key, QVariant  arg__2) { NamedBean::setPro
 inline void py_q_setState(int  arg__1) { NamedBean::setState(arg__1); }
 inline void py_q_setUserName(QString  s) { NamedBean::setUserName(s); }
 inline void py_q_updateListenerRef(PropertyChangeListener*  l, QString  arg__2) { NamedBean::updateListenerRef(l, arg__2); }
-inline void py_q_vetoableChange(PropertyChangeEvent*  arg__1) { NamedBean::vetoableChange(arg__1); }
+inline void py_q_vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException)  { NamedBean::vetoableChange(arg__1); }
 };
 
 class PythonQtWrapper_NamedBean : public QObject
@@ -807,8 +807,8 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    void py_q_setUserName(NamedBean* theWrappedObject, QString  s){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_setUserName(s));}
    void updateListenerRef(NamedBean* theWrappedObject, PropertyChangeListener*  l, QString  arg__2);
    void py_q_updateListenerRef(NamedBean* theWrappedObject, PropertyChangeListener*  l, QString  arg__2){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_updateListenerRef(l, arg__2));}
-   void vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1);
-   void py_q_vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_vetoableChange(arg__1));}
+   void vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
+   void py_q_vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_vetoableChange(arg__1));}
 };
 
 
@@ -3028,7 +3028,7 @@ virtual void setTurnoutsAlignedSensor(QString  arg__1);
 virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException) ;
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException) ;
+virtual void vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);

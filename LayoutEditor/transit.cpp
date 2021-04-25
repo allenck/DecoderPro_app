@@ -4,6 +4,13 @@
 #include "section.h"
 #include "block.h"
 #include "transitsection.h"
+#include "vptr.h"
+#include "sensormanager.h"
+#include "instancemanager.h"
+#include "signalheadmanager.h"
+#include "signalmastmanager.h"
+#include "transitsection.h"
+#include "transitsectionaction.h"
 
 //Transit::Transit(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -510,6 +517,85 @@
      mTransitSectionList->removeOne(ts);
 
     }//);
+}
+
+/*public*/ bool Transit::removeLastTemporarySection(Section* s) {
+    TransitSection* last = mTransitSectionList->at(mTransitSectionList->size() - 1);
+    if (last->getSection() != s) {
+        log->info("Section asked to be removed is not the last one");
+        return false;
+    }
+    if (!last->isTemporary()) {
+        log->info("Section asked to be removed is not a temporary section");
+        return false;
+    }
+    mTransitSectionList->removeOne(last);
+    return true;
+
+}
+
+//@Override
+/*public*/ QString Transit::getBeanType() {
+    return tr("Transit");
+}
+
+//@Override
+/*public*/ void Transit::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+    if ("CanDelete" == (evt->getPropertyName())) { // NOI18N
+        NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
+        if (qobject_cast<Section*>(nb)) {
+            if (containsSection((Section*) nb)) {
+                throw  PropertyVetoException(tr("Is in use with Transit %1").arg(getDisplayName()), evt);
+            }
+        }
+    }
+    // we ignore the property setConfigureManager
+}
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> Transit::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    SensorManager* sm = (SensorManager*)InstanceManager::getDefault("SensorManager");
+    SignalHeadManager* head = (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager");
+    SignalMastManager* mast = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
+    if (bean != nullptr) {
+        //getTransitSectionList().forEach((transitSection) ->
+          for(TransitSection* transitSection : getTransitSectionList())
+        {
+            if (bean->equals(transitSection->getSection())) {
+                report.append(new NamedBeanUsageReport("TransitSection"));
+            }
+            if (bean->equals(sm->getSensor(transitSection->getStopAllocatingSensor()))) {
+                report.append(new NamedBeanUsageReport("TransitSensorStopAllocation"));
+            }
+            // Process actions
+            //transitSection->getTransitSectionActionList().forEach((action) ->
+            for(TransitSectionAction* action : *transitSection->getTransitSectionActionList())
+            {
+                int whenCode = action->getWhenCode();
+                int whatCode = action->getWhatCode();
+                if (whenCode == TransitSectionAction::SENSORACTIVE || whenCode == TransitSectionAction::SENSORINACTIVE) {
+                    if (bean->equals(sm->getSensor(action->getStringWhen()))) {
+                        report.append(new NamedBeanUsageReport("TransitActionSensorWhen", transitSection->getSection()));
+                    }
+                }
+                if (whatCode == TransitSectionAction::SETSENSORACTIVE || whatCode == TransitSectionAction::SETSENSORINACTIVE) {
+                    if (bean->equals(sm->getSensor(action->getStringWhat()))) {
+                        report.append(new NamedBeanUsageReport("TransitActionSensorWhat", transitSection->getSection()));
+                    }
+                }
+                if (whatCode == TransitSectionAction::HOLDSIGNAL || whatCode == TransitSectionAction::RELEASESIGNAL) {
+                    // Could be a signal head or a signal mast.
+                    if (bean->equals(head->getSignalHead(action->getStringWhat()))) {
+                        report.append(new NamedBeanUsageReport("TransitActionSignalHeadWhat", transitSection->getSection()));
+                    }
+                    if (bean->equals(mast->getSignalMast(action->getStringWhat()))) {
+                        report.append(new NamedBeanUsageReport("TransitActionSignalMastWhat", transitSection->getSection()));
+                    }
+                }
+            }//);
+        }//);
+    }
+    return report;
 }
 
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Transit.class.getName());

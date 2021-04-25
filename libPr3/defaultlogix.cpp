@@ -1322,6 +1322,35 @@ ArrayList <String[]> loopGremlins = NULL;
   }
  }
 }
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> DefaultLogix::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        for (int i = 0; i < getNumConditionals(); i++) {
+            DefaultConditional* cdl = (DefaultConditional*) getConditional(getConditionalByNumberOrder(i));
+            //cdl.getStateVariableList().forEach((variable) ->
+            for(ConditionalVariable* variable :  *cdl->getStateVariableList())
+            {
+                if (bean->equals(variable->getBean())) {
+                    report.append(new NamedBeanUsageReport("ConditionalVariable", cdl, variable->toString()));
+                }
+                if (bean->equals(variable->getNamedBeanData())) {
+                    report.append(new NamedBeanUsageReport("ConditionalVariableData", cdl, variable->toString()));
+                }
+            }//);
+            //cdl.getActionList().forEach((action) ->
+            for(ConditionalAction* action :cdl->getActionList())
+            {
+                if (bean->equals(action->getBean())) {
+                    bool triggerType = cdl->getTriggerOnChange();
+                    report.append(new NamedBeanUsageReport("ConditionalAction", cdl, action->description(triggerType)));
+                }
+            }//);
+        }
+    }
+    return report;
+}
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultLogix->class.getName());
 //}
 

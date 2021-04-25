@@ -2,6 +2,9 @@
 #define SWITCHBOARDEDITOR_H
 #include "editor.h"
 #include "jpanel.h"
+#include "jspinner.h"
+#include "jbutton.h"
+#include "jtextarea.h"
 
 class NamedBeanHandleManager;
 class BeanSwitch;
@@ -58,6 +61,8 @@ public:
 // /*public*/ void windowClosing(QCloseEvent* e);
 // /*public*/ void showEvent(QShowEvent *event);
  /*public*/ QString getClassName();
+ /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
+ /*public*/ int getTileSize(); //tmp synchronized
 
 public slots:
  /*public*/ void updatePressed();
@@ -118,7 +123,16 @@ private:
  /*private*/ QWidget* editorContainer;// = null;
  /*private*/ QColor defaultTextColor;// = QColor(Qt::black);
  /*private*/ bool _hideUnconnected = false;
- /*private*/ /*final*/ QLabel* help2;// = new JTextArea(tr("Help2"));
+ /*private*/ bool _autoItemRange = true;
+ /*private*/ int rows = 4; // matches initial autoRows pref for default pane size
+ /*private*/ /*final*/ float cellProportion = 1.0f; // TODO analyse actual W:H per switch type/shape: worthwhile?
+ /*private*/ int _tileSize = 100;
+ /*private*/ int _iconSquare = 75;
+ /*private*/ /*final*/ JSpinner* rowsSpinner = new JSpinner(new SpinnerNumberModel(rows, 1, 25, 1));
+ /*private*/ /*final*/ JButton* updateButton = new JButton(tr("Update"));
+ // number of rows displayed on switchboard, disabled when autoRows is on
+ /*private*/ /*final*/ JTextArea* help2 = new JTextArea(tr("Greyed out buttons are not connected to layout."));
+ /*private*/ /*final*/ JTextArea* help3 = new JTextArea(tr("Empty Switchboard (uncheck [%1] to fix).").arg(tr("Hide unconnected switches")));
  // saved state of options when panel was loaded or created
  /*private*/ /*transient*/ bool savedEditMode = true;
  /*private*/ /*transient*/ bool savedControlLayout = true; // menu option to turn this off

@@ -365,6 +365,8 @@ public:
     /*public*/ int getNeighbourMetric(int i);
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     QObject* self() override {return (QObject*)this;}
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+    /*public*/ QString getBeanType() override;
 
 signals:
     

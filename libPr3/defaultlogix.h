@@ -26,6 +26,7 @@ public:
     /*public*/ void setState(int state);
     /*public*/ Conditional* getConditional(QString systemName) ;
     /*public*/ void setGuiNames();
+  /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
 signals:
 

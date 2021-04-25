@@ -15026,6 +15026,11 @@ QString  PythonQtWrapper_LayoutEditor::getLayoutName(LayoutEditor* theWrappedObj
   return ( theWrappedObject->getLayoutName());
 }
 
+QList<LayoutTrack* >  PythonQtWrapper_LayoutEditor::getLayoutTrackSelection(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getLayoutTrackSelection());
+}
+
 QList<LayoutTrack* >  PythonQtWrapper_LayoutEditor::getLayoutTracks(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getLayoutTracks());
@@ -15059,6 +15064,11 @@ bool  PythonQtWrapper_LayoutEditor::getOpenDispatcherOnLoad(LayoutEditor* theWra
 QRectF  PythonQtWrapper_LayoutEditor::getPanelBounds(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getPanelBounds());
+}
+
+QList<Positionable* >*  PythonQtWrapper_LayoutEditor::getPositionalSelection(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getPositionalSelection());
 }
 
 EditScene*  PythonQtWrapper_LayoutEditor::getScene(LayoutEditor* theWrappedObject)
@@ -15179,6 +15189,11 @@ bool  PythonQtWrapper_LayoutEditor::highlightBlock(LayoutEditor* theWrappedObjec
 bool  PythonQtWrapper_LayoutEditor::isAnimating(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->isAnimating());
+}
+
+bool  PythonQtWrapper_LayoutEditor::isDrawLayoutTracksLabel(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->isDrawLayoutTracksLabel());
 }
 
 bool  PythonQtWrapper_LayoutEditor::isEditable(LayoutEditor* theWrappedObject)
@@ -15384,6 +15399,11 @@ void PythonQtWrapper_LayoutEditor::setDirty(LayoutEditor* theWrappedObject, bool
 void PythonQtWrapper_LayoutEditor::setDrawGrid(LayoutEditor* theWrappedObject, bool  state)
 {
   ( theWrappedObject->setDrawGrid(state));
+}
+
+void PythonQtWrapper_LayoutEditor::setDrawLayoutTracksLabel(LayoutEditor* theWrappedObject, bool  state)
+{
+  ( theWrappedObject->setDrawLayoutTracksLabel(state));
 }
 
 void PythonQtWrapper_LayoutEditor::setHighlightSelectedBlock(LayoutEditor* theWrappedObject, bool  state)
@@ -18078,7 +18098,7 @@ if (_wrapper) {
 }
   Light::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_Light::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
+void PythonQtShell_Light::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -18088,7 +18108,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&evt0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -18098,7 +18118,7 @@ if (_wrapper) {
     }
   }
 }
-  Light::vetoableChange(evt0);
+  Light::vetoableChange(arg__1);
 }
 Light* PythonQtWrapper_Light::new_Light(QObject*  parent)
 { 
@@ -24903,7 +24923,7 @@ if (_wrapper) {
 }
   LnSensor::useDefaultTimerSettings(boo0);
 }
-void PythonQtShell_LnSensor::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
+void PythonQtShell_LnSensor::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24913,7 +24933,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&evt0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -24923,7 +24943,7 @@ if (_wrapper) {
     }
   }
 }
-  LnSensor::vetoableChange(evt0);
+  LnSensor::vetoableChange(arg__1);
 }
 LnSensor* PythonQtWrapper_LnSensor::new_LnSensor(QString  systemName, LnTrafficController*  tc, QString  prefix, QObject*  parent)
 { 
@@ -27149,6 +27169,39 @@ if (_wrapper) {
 }
   return LnTurnout::getKnownState();
 }
+Turnout*  PythonQtShell_LnTurnout::getLeadingTurnout()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getLeadingTurnout");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"Turnout*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      Turnout* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getLeadingTurnout", methodInfo, result);
+          } else {
+            returnValue = *((Turnout**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnTurnout::getLeadingTurnout();
+}
 bool  PythonQtShell_LnTurnout::getLocked(int  turnoutLockout0)
 {
 if (_wrapper) {
@@ -27512,6 +27565,39 @@ if (_wrapper) {
 }
   return LnTurnout::getValidFeedbackTypes();
 }
+bool  PythonQtShell_LnTurnout::isCanFollow()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isCanFollow");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isCanFollow", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnTurnout::isCanFollow();
+}
 bool  PythonQtShell_LnTurnout::isConsistentState()
 {
 if (_wrapper) {
@@ -27544,6 +27630,39 @@ if (_wrapper) {
   }
 }
   return LnTurnout::isConsistentState();
+}
+bool  PythonQtShell_LnTurnout::isFollowingCommandedState()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("isFollowingCommandedState");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      bool returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("isFollowingCommandedState", methodInfo, result);
+          } else {
+            returnValue = *((bool*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnTurnout::isFollowingCommandedState();
 }
 void PythonQtShell_LnTurnout::propertyChange(PropertyChangeEvent*  evt0)
 {
@@ -27710,6 +27829,28 @@ if (_wrapper) {
 }
   LnTurnout::setCommandedState(s0);
 }
+void PythonQtShell_LnTurnout::setCommandedStateAtInterval(int  s0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setCommandedStateAtInterval");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&s0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LnTurnout::setCommandedStateAtInterval(s0);
+}
 void PythonQtShell_LnTurnout::setControlType(int  num0)
 {
 if (_wrapper) {
@@ -27820,6 +27961,28 @@ if (_wrapper) {
 }
   LnTurnout::setFeedbackMode(mode0);
 }
+void PythonQtShell_LnTurnout::setFollowingCommandedState(bool  following0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setFollowingCommandedState");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&following0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LnTurnout::setFollowingCommandedState(following0);
+}
 void PythonQtShell_LnTurnout::setInhibitOperation(bool  io0)
 {
 if (_wrapper) {
@@ -27885,6 +28048,50 @@ if (_wrapper) {
   }
 }
   LnTurnout::setInverted(inverted0);
+}
+void PythonQtShell_LnTurnout::setLeadingTurnout(Turnout*  turnout0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setLeadingTurnout");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "Turnout*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&turnout0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LnTurnout::setLeadingTurnout(turnout0);
+}
+void PythonQtShell_LnTurnout::setLeadingTurnout(Turnout*  turnout0, bool  followingCommandedState1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setLeadingTurnout");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "Turnout*" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&turnout0, (void*)&followingCommandedState1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LnTurnout::setLeadingTurnout(turnout0, followingCommandedState1);
 }
 void PythonQtShell_LnTurnout::setLocked(int  turnoutLockout0, bool  locked1)
 {
@@ -28039,6 +28246,28 @@ if (_wrapper) {
   }
 }
   LnTurnout::turnoutPushbuttonLockout(_pushButtonLockout0);
+}
+void PythonQtShell_LnTurnout::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("vetoableChange");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "PropertyChangeEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&evt0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LnTurnout::vetoableChange(evt0);
 }
 LnTurnout* PythonQtWrapper_LnTurnout::new_LnTurnout(QString  prefix, int  number, LocoNetInterface*  controller, QObject*  parent)
 { 
@@ -28593,6 +28822,39 @@ if (_wrapper) {
   }
 }
   return LnTurnoutManager::getDefaultThrownSpeed();
+}
+QString  PythonQtShell_LnTurnoutManager::getEntryToolTip()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getEntryToolTip");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getEntryToolTip", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LnTurnoutManager::getEntryToolTip();
 }
 SystemConnectionMemo*  PythonQtShell_LnTurnoutManager::getMemo() const
 {

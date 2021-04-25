@@ -132,10 +132,10 @@ void SignalGroupTableAction::setEnabled(bool b) { bEnabled = b;}
    SignalGroupSignal* signal = _signalList.at(i);
     //String tSysName = signal.getSysName();
    SignalHead* sigBean = signal->getBean();
-    if (curSignalGroup->isSignalIncluded(sigBean) ) {
+    if (curSignalGroup->isHeadIncluded(sigBean) ) {
         signal->setIncluded(true);
-        signal->setOnState(curSignalGroup->getSignalHeadOnState(sigBean));
-        signal->setOffState(curSignalGroup->getSignalHeadOffState(sigBean));
+        signal->setOnState(curSignalGroup->getHeadOnState(sigBean));
+        signal->setOffState(curSignalGroup->getHeadOffState(sigBean));
     } else {
         signal->setIncluded(false);
     }
@@ -822,8 +822,8 @@ SignalGroup* SignalGroupTableAction::checkNamesOK() {
 }
 
 int SignalGroupTableAction::setSignalInformation(SignalGroup* g) {
-    for (int i=0; i<g->getNumSignalHeadItems(); i++) {
-        SignalHead* sig = g->getSignalHeadItemBeanByIndex(i);
+    for (int i=0; i<g->getNumHeadItems(); i++) {
+        SignalHead* sig = g->getHeadItemBeanByIndex(i);
         bool valid = false;
         for (int x = 0; x<_includedSignalList.size(); x++) {
             SignalGroupSignal* s = _includedSignalList.at(x);
@@ -841,10 +841,10 @@ int SignalGroupTableAction::setSignalInformation(SignalGroup* g) {
     for (int i=0; i<_includedSignalList.size(); i++){
         SignalGroupSignal* s = _includedSignalList.at(i);
         SignalHead* sig = s->getBean();
-        if (!g->isSignalIncluded(sig)){
+        if (!g->isHeadIncluded(sig)){
             g->addSignalHead(sig);
-            g->setSignalHeadOnState(sig, s->getOnStateInt());
-            g->setSignalHeadOffState(sig, s->getOffStateInt());
+            g->setHeadOnState(sig, s->getOnStateInt());
+            g->setHeadOffState(sig, s->getOffStateInt());
         }
     }
 
@@ -929,10 +929,10 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
         SignalGroupSignal* signal = _signalList.at(i);
         //String tSysName = signal.getSysName();
         SignalHead* sigBean = signal->getBean();
-        if (g->isSignalIncluded(sigBean) ) {
+        if (g->isHeadIncluded(sigBean) ) {
             signal->setIncluded(true);
-            signal->setOnState(g->getSignalHeadOnState(sigBean));
-            signal->setOffState(g->getSignalHeadOffState(sigBean));
+            signal->setOnState(g->getHeadOnState(sigBean));
+            signal->setOffState(g->getHeadOffState(sigBean));
             setRow = i;
         } else {
             signal->setIncluded(false);
@@ -1428,7 +1428,7 @@ void SignalGroupTableAction::signalEditPressed(int row)
    return;
   updatePressed(NULL, true, false);
  }
- if(!((DefaultSignalGroup*)curSignalGroup)->isSignalIncluded(_signalGroupSignalModel->getBean(row)))
+ if(!((DefaultSignalGroup*)curSignalGroup)->isHeadIncluded(_signalGroupSignalModel->getBean(row)))
  {
   ((DefaultSignalGroup*)curSignalGroup)->addSignalHead( _signalGroupSignalModel->getBean(row));
  }

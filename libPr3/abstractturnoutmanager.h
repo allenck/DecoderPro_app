@@ -75,10 +75,10 @@ public:
       QString getDefaultThrownSpeed()const override;
       QString getDefaultClosedSpeed()const override;
 //      /*public*/ SystemConnectionMemo* getMemo() override;
-      /*public*/ QString getEntryToolTip();
-      /*public*/ int getOutputInterval();
-      /*public*/ void setOutputInterval(int newInterval);
-      /*public*/ LocalDateTime outputIntervalEnds();
+      /*public*/ QString getEntryToolTip()override;
+      /*public*/ int getOutputInterval()override;
+      /*public*/ void setOutputInterval(int newInterval)override;
+      /*public*/ LocalDateTime outputIntervalEnds() override;
 
 signals:
       void newTurnoutCreated(AbstractTurnoutManager* mgr, Turnout* t);

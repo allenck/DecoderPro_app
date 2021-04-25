@@ -21,13 +21,17 @@ public:
     /*public*/ void addAction( TransitSectionAction* act );
     /*public*/ bool isAlternate();
     /*public*/ void setAlternate( bool alt );
+    /*public*/ bool isSafe() ;
+    /*public*/ void setSafe(bool safe);
+    /*public*/ QString getStopAllocatingSensor();
+    /*public*/ void setStopAllocatingSensor(QString stopAllocatingSensor );
     /*public*/ void setTemporary(bool boo);
     /*public*/ bool isTemporary();
 
     /** 
      * Get a copy of this TransitSection's TransitSectionAction list
      */
-    /*public*/ QList<TransitSectionAction*>* getTransitSectionActionList();
+    /*public*/ QList<TransitSectionAction *> *getTransitSectionActionList();
 
 signals:
 
@@ -37,9 +41,11 @@ private:
     /*private*/ Section* mSection;// = null;
     /*private*/ int mSequence;// = 0;
     /*private*/ int mDirection;// = 0;
-    /*private*/ QList<TransitSectionAction*>* mTransitSectionActionList;// = newQList<TransitSectionAction>();
+    /*private*/ QList<TransitSectionAction*> mTransitSectionActionList = QList<TransitSectionAction*>();
     /*private*/ bool mAlternate;// = false;
-    
+    /*private*/ bool mSafe = false;
+    /*private*/ QString mStopAllocatingSensorName = "";
+
     // temporary variables and method for delayed initialization of Section
     /*private*/ QString tSectionName;// = "";
     /*private*/ bool needsInitialization;// = false;

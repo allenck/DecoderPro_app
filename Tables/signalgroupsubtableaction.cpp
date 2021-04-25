@@ -253,13 +253,13 @@ if (addFrame==NULL)
  if (QString(curSignalHead->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
   SingleTurnoutSignalHead* Signal = (SingleTurnoutSignalHead*) ((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(curSignal);
-  if ((((DefaultSignalGroup*)g)->getSignalHeadOnState(curSignalHead)==0x00) && (((DefaultSignalGroup*)g)->getSignalHeadOffState(curSignalHead)==0x00)){
-            ((DefaultSignalGroup*)g)->setSignalHeadOnState(curSignalHead, Signal->getOnAppearance());
-            ((DefaultSignalGroup*)g)->setSignalHeadOffState(curSignalHead, Signal->getOffAppearance());
+  if ((((DefaultSignalGroup*)g)->getHeadOnState(curSignalHead)==0x00) && (((DefaultSignalGroup*)g)->getHeadOffState(curSignalHead)==0x00)){
+            ((DefaultSignalGroup*)g)->setHeadOnState(curSignalHead, Signal->getOnAppearance());
+            ((DefaultSignalGroup*)g)->setHeadOffState(curSignalHead, Signal->getOffAppearance());
  }
 }
-setSignalStateBox(((DefaultSignalGroup*)g)->getSignalHeadOnState(curSignalHead), _OnAppearance);
-setSignalStateBox(((DefaultSignalGroup*)g)->getSignalHeadOffState(curSignalHead), _OffAppearance);
+setSignalStateBox(((DefaultSignalGroup*)g)->getHeadOnState(curSignalHead), _OnAppearance);
+setSignalStateBox(((DefaultSignalGroup*)g)->getHeadOffState(curSignalHead), _OffAppearance);
 // add Turnout Display Choice
 //QWidget* py = new QWidget();
 FlowLayout* pyFlowLayout = new FlowLayout;
@@ -479,8 +479,8 @@ pyFlowLayout->addWidget(allButton);
 //            });
 addFrame->setVisible(true);
 setoperBox(curSignalGroup->getSensorTurnoutOper(curSignalHead), _SensorTurnoutOper);
-setSignalStateBox(curSignalGroup->getSignalHeadOnState(curSignalHead), _OnAppearance);
-setSignalStateBox(curSignalGroup->getSignalHeadOffState(curSignalHead), _OffAppearance);
+setSignalStateBox(curSignalGroup->getHeadOnState(curSignalHead), _OnAppearance);
+setSignalStateBox(curSignalGroup->getHeadOffState(curSignalHead), _OffAppearance);
 int setRow = 0;
 for (int i=_turnoutList.size()-1; i>=0; i--)
 {
@@ -561,7 +561,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     int SignalGroupSubTableAction::setTurnoutInformation(SignalGroup* g) {
         for (int i=0; i<_includedTurnoutList.size(); i++) {
             SignalGroupTurnout* t = _includedTurnoutList.at(i);
-            ((DefaultSignalGroup*)g)->setSignalHeadAlignTurnout(curSignalHead, t->getTurnout(), t->getState());
+            ((DefaultSignalGroup*)g)->setHeadAlignTurnout(curSignalHead, t->getTurnout(), t->getState());
         }
         return _includedTurnoutList.size();
     }
@@ -572,7 +572,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     int SignalGroupSubTableAction::setSensorInformation(SignalGroup* g) {
         for (int i=0; i<_includedSensorList.size(); i++) {
             SignalGroupSensor* s = _includedSensorList.at(i);
-            ((DefaultSignalGroup*)g)->setSignalHeadAlignSensor(curSignalHead, s->getSensor(), s->getState());
+            ((DefaultSignalGroup*)g)->setHeadAlignSensor(curSignalHead, s->getSensor(), s->getState());
         }
         return _includedSensorList.size();
     }
@@ -587,8 +587,8 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
         initializeIncludedList();
         setTurnoutInformation(curSignalGroup);
         setSensorInformation(curSignalGroup);
-        ((DefaultSignalGroup*)curSignalGroup)->setSignalHeadOnState(curSignalHead, signalStateFromBox(_OnAppearance));
-        ((DefaultSignalGroup*)curSignalGroup)->setSignalHeadOffState(curSignalHead, signalStateFromBox(_OffAppearance));
+        ((DefaultSignalGroup*)curSignalGroup)->setHeadOnState(curSignalHead, signalStateFromBox(_OnAppearance));
+        ((DefaultSignalGroup*)curSignalGroup)->setHeadOffState(curSignalHead, signalStateFromBox(_OffAppearance));
         ((DefaultSignalGroup*)curSignalGroup)->setSensorTurnoutOper(curSignalHead, operFromBox(_SensorTurnoutOper));
         // add control Sensors and a control Turnout if entered in the window
         finishUpdate();

@@ -200,7 +200,7 @@ virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
 virtual bool  useDefaultTimerSettings();
 virtual void useDefaultTimerSettings(bool  arg__1);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException) ;
+virtual void vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -1773,6 +1773,7 @@ virtual QString  getFullyFormattedDisplayName();
 virtual bool  getInhibitOperation();
 virtual bool  getInverted();
 virtual int  getKnownState();
+virtual Turnout*  getLeadingTurnout();
 virtual QString  getListenerRef(PropertyChangeListener*  l);
 virtual QList<QString >*  getListenerRefs();
 virtual bool  getLocked(int  arg__1);
@@ -1796,7 +1797,9 @@ virtual QStringList  getValidDecoderNames();
 virtual QVector<QString >  getValidFeedbackNames();
 virtual int  getValidFeedbackTypes();
 virtual uint  hashCode();
+virtual bool  isCanFollow();
 virtual bool  isConsistentState();
+virtual bool  isFollowingCommandedState();
 virtual void provideFirstFeedbackSensor(QString  arg__1) throw (JmriException) ;
 virtual void provideSecondFeedbackSensor(QString  arg__1) throw (JmriException) ;
 virtual void removeProperty(QString  key);
@@ -1805,15 +1808,19 @@ virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeL
 virtual void requestUpdateFromLayout();
 virtual void setBinaryOutput(bool  arg__1);
 virtual void setCommandedState(int  arg__1);
+virtual void setCommandedStateAtInterval(int  s);
 virtual void setComment(QString  comment);
 virtual void setControlType(int  arg__1);
 virtual void setDecoderName(QString  arg__1);
 virtual void setDivergingSpeed(QString  arg__1) const throw (JmriException) ;
 virtual void setFeedbackMode(QString  arg__1);
 virtual void setFeedbackMode(int  arg__1);
+virtual void setFollowingCommandedState(bool  following);
 virtual void setInhibitOperation(bool  arg__1);
 virtual void setInitialKnownStateFromFeedback();
 virtual void setInverted(bool  arg__1);
+virtual void setLeadingTurnout(Turnout*  turnout);
+virtual void setLeadingTurnout(Turnout*  turnout, bool  followingCommandedState);
 virtual void setLocked(int  arg__1, bool  arg__2);
 virtual void setNumberOutputBits(int  arg__1);
 virtual void setProperty(QString  key, QVariant  value);
@@ -1824,7 +1831,7 @@ virtual void setTurnoutOperation(TurnoutOperation*  arg__1);
 virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException) ;
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException) ;
+virtual void vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -1847,6 +1854,7 @@ inline Sensor*  py_q_getFirstSensor() { return Turnout::getFirstSensor(); }
 inline bool  py_q_getInhibitOperation() { return Turnout::getInhibitOperation(); }
 inline bool  py_q_getInverted() { return Turnout::getInverted(); }
 inline int  py_q_getKnownState() { return Turnout::getKnownState(); }
+inline Turnout*  py_q_getLeadingTurnout() { return this->getLeadingTurnout(); }
 inline bool  py_q_getLocked(int  arg__1) { return Turnout::getLocked(arg__1); }
 inline int  py_q_getNumberOutputBits() { return Turnout::getNumberOutputBits(); }
 inline int  py_q_getPossibleLockModes() { return Turnout::getPossibleLockModes(); }
@@ -1858,20 +1866,26 @@ inline TurnoutOperation*  py_q_getTurnoutOperation() { return Turnout::getTurnou
 inline QStringList  py_q_getValidDecoderNames() { return Turnout::getValidDecoderNames(); }
 inline QVector<QString >  py_q_getValidFeedbackNames() { return Turnout::getValidFeedbackNames(); }
 inline int  py_q_getValidFeedbackTypes() { return Turnout::getValidFeedbackTypes(); }
+inline bool  py_q_isCanFollow() { return this->isCanFollow(); }
 inline bool  py_q_isConsistentState() { return Turnout::isConsistentState(); }
+inline bool  py_q_isFollowingCommandedState() { return this->isFollowingCommandedState(); }
 inline void py_q_provideFirstFeedbackSensor(QString  arg__1) throw (JmriException)  { Turnout::provideFirstFeedbackSensor(arg__1); }
 inline void py_q_provideSecondFeedbackSensor(QString  arg__1) throw (JmriException)  { Turnout::provideSecondFeedbackSensor(arg__1); }
 inline void py_q_requestUpdateFromLayout() { Turnout::requestUpdateFromLayout(); }
 inline void py_q_setBinaryOutput(bool  arg__1) { Turnout::setBinaryOutput(arg__1); }
 inline void py_q_setCommandedState(int  arg__1) { Turnout::setCommandedState(arg__1); }
+inline void py_q_setCommandedStateAtInterval(int  s) { this->setCommandedStateAtInterval(s); }
 inline void py_q_setControlType(int  arg__1) { Turnout::setControlType(arg__1); }
 inline void py_q_setDecoderName(QString  arg__1) { Turnout::setDecoderName(arg__1); }
 inline void py_q_setDivergingSpeed(QString  arg__1) const throw (JmriException)  { Turnout::setDivergingSpeed(arg__1); }
 inline void py_q_setFeedbackMode(QString  arg__1) { Turnout::setFeedbackMode(arg__1); }
 inline void py_q_setFeedbackMode(int  arg__1) { Turnout::setFeedbackMode(arg__1); }
+inline void py_q_setFollowingCommandedState(bool  following) { this->setFollowingCommandedState(following); }
 inline void py_q_setInhibitOperation(bool  arg__1) { Turnout::setInhibitOperation(arg__1); }
 inline void py_q_setInitialKnownStateFromFeedback() { Turnout::setInitialKnownStateFromFeedback(); }
 inline void py_q_setInverted(bool  arg__1) { Turnout::setInverted(arg__1); }
+inline void py_q_setLeadingTurnout(Turnout*  turnout) { this->setLeadingTurnout(turnout); }
+inline void py_q_setLeadingTurnout(Turnout*  turnout, bool  followingCommandedState) { this->setLeadingTurnout(turnout, followingCommandedState); }
 inline void py_q_setLocked(int  arg__1, bool  arg__2) { Turnout::setLocked(arg__1, arg__2); }
 inline void py_q_setNumberOutputBits(int  arg__1) { Turnout::setNumberOutputBits(arg__1); }
 inline void py_q_setReportLocked(bool  arg__1) { Turnout::setReportLocked(arg__1); }
@@ -1915,6 +1929,8 @@ void delete_Turnout(Turnout* obj) { delete obj; }
    bool  py_q_getInverted(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getInverted());}
    int  getKnownState(Turnout* theWrappedObject);
    int  py_q_getKnownState(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getKnownState());}
+   Turnout*  getLeadingTurnout(Turnout* theWrappedObject);
+   Turnout*  py_q_getLeadingTurnout(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getLeadingTurnout());}
    bool  getLocked(Turnout* theWrappedObject, int  arg__1);
    bool  py_q_getLocked(Turnout* theWrappedObject, int  arg__1){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getLocked(arg__1));}
    int  getNumberOutputBits(Turnout* theWrappedObject);
@@ -1938,8 +1954,12 @@ void delete_Turnout(Turnout* obj) { delete obj; }
    int  getValidFeedbackTypes(Turnout* theWrappedObject);
    int  py_q_getValidFeedbackTypes(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_getValidFeedbackTypes());}
    int  static_Turnout_invertTurnoutState(int  inState);
+   bool  isCanFollow(Turnout* theWrappedObject);
+   bool  py_q_isCanFollow(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_isCanFollow());}
    bool  isConsistentState(Turnout* theWrappedObject);
    bool  py_q_isConsistentState(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_isConsistentState());}
+   bool  isFollowingCommandedState(Turnout* theWrappedObject);
+   bool  py_q_isFollowingCommandedState(Turnout* theWrappedObject){  return (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_isFollowingCommandedState());}
    void provideFirstFeedbackSensor(Turnout* theWrappedObject, QString  arg__1) throw (JmriException) ;
    void py_q_provideFirstFeedbackSensor(Turnout* theWrappedObject, QString  arg__1) throw (JmriException) {  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_provideFirstFeedbackSensor(arg__1));}
    void provideSecondFeedbackSensor(Turnout* theWrappedObject, QString  arg__1) throw (JmriException) ;
@@ -1950,6 +1970,8 @@ void delete_Turnout(Turnout* obj) { delete obj; }
    void py_q_setBinaryOutput(Turnout* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setBinaryOutput(arg__1));}
    void setCommandedState(Turnout* theWrappedObject, int  arg__1);
    void py_q_setCommandedState(Turnout* theWrappedObject, int  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setCommandedState(arg__1));}
+   void setCommandedStateAtInterval(Turnout* theWrappedObject, int  s);
+   void py_q_setCommandedStateAtInterval(Turnout* theWrappedObject, int  s){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setCommandedStateAtInterval(s));}
    void setControlType(Turnout* theWrappedObject, int  arg__1);
    void py_q_setControlType(Turnout* theWrappedObject, int  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setControlType(arg__1));}
    void setDecoderName(Turnout* theWrappedObject, QString  arg__1);
@@ -1960,12 +1982,18 @@ void delete_Turnout(Turnout* obj) { delete obj; }
    void py_q_setFeedbackMode(Turnout* theWrappedObject, QString  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setFeedbackMode(arg__1));}
    void setFeedbackMode(Turnout* theWrappedObject, int  arg__1);
    void py_q_setFeedbackMode(Turnout* theWrappedObject, int  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setFeedbackMode(arg__1));}
+   void setFollowingCommandedState(Turnout* theWrappedObject, bool  following);
+   void py_q_setFollowingCommandedState(Turnout* theWrappedObject, bool  following){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setFollowingCommandedState(following));}
    void setInhibitOperation(Turnout* theWrappedObject, bool  arg__1);
    void py_q_setInhibitOperation(Turnout* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setInhibitOperation(arg__1));}
    void setInitialKnownStateFromFeedback(Turnout* theWrappedObject);
    void py_q_setInitialKnownStateFromFeedback(Turnout* theWrappedObject){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setInitialKnownStateFromFeedback());}
    void setInverted(Turnout* theWrappedObject, bool  arg__1);
    void py_q_setInverted(Turnout* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setInverted(arg__1));}
+   void setLeadingTurnout(Turnout* theWrappedObject, Turnout*  turnout);
+   void py_q_setLeadingTurnout(Turnout* theWrappedObject, Turnout*  turnout){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setLeadingTurnout(turnout));}
+   void setLeadingTurnout(Turnout* theWrappedObject, Turnout*  turnout, bool  followingCommandedState);
+   void py_q_setLeadingTurnout(Turnout* theWrappedObject, Turnout*  turnout, bool  followingCommandedState){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setLeadingTurnout(turnout, followingCommandedState));}
    void setLocked(Turnout* theWrappedObject, int  arg__1, bool  arg__2);
    void py_q_setLocked(Turnout* theWrappedObject, int  arg__1, bool  arg__2){  (((PythonQtPublicPromoter_Turnout*)theWrappedObject)->py_q_setLocked(arg__1, arg__2));}
    void setNumberOutputBits(Turnout* theWrappedObject, int  arg__1);

@@ -71,7 +71,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
    }
    e.setAttribute("signalMast", sg->getSignalMastName());
 
-   for (int x=0; x<sg->getNumSignalHeadItems(); x++)
+   for (int x=0; x<sg->getNumHeadItems(); x++)
    {
      storeSignalHead(e, sg, x);
    }
@@ -82,19 +82,19 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
 
 /*private*/ void DefaultSignalGroupManagerXml::storeSignalHead(QDomElement element, SignalGroup* _group, int x){
     QDomElement group = doc.createElement("signalHead");
-    QString name = _group->getSignalHeadItemNameByIndex(x);
+    QString name = _group->getHeadItemNameByIndex(x);
     group.setAttribute("name", name);
-    group.setAttribute("onAppearance", getSignalColour(_group->getSignalHeadOnStateByIndex(x)));
-    group.setAttribute("offAppearance", getSignalColour(_group->getSignalHeadOffStateByIndex(x)));
+    group.setAttribute("onAppearance", getSignalColour(_group->getHeadOnStateByIndex(x)));
+    group.setAttribute("offAppearance", getSignalColour(_group->getHeadOffStateByIndex(x)));
     if(_group->getSensorTurnoutOperByIndex(x))
         group.setAttribute("sensorTurnoutLogic", "AND");
     else
         group.setAttribute("sensorTurnoutLogic", "OR");
 
-    for (int i = 0; i<_group->getNumSignalHeadTurnoutsByIndex(x); i++){
+    for (int i = 0; i<_group->getNumHeadTurnoutsByIndex(x); i++){
         storeTurnout(group, _group, x, i);
     }
-    for (int i = 0; i<_group->getNumSignalHeadSensorsByIndex(x); i++){
+    for (int i = 0; i<_group->getNumHeadSensorsByIndex(x); i++){
         storeSensor(group, _group, x, i);
     }
 
@@ -209,13 +209,13 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
 
     try
     {
-     sg->setSignalHeadOnState(sigHead, getIntFromColour(signalHeadList.at(y).toElement().attribute("onAppearance")));
+     sg->setHeadOnState(sigHead, getIntFromColour(signalHeadList.at(y).toElement().attribute("onAppearance")));
     }
      catch ( NullPointerException ex) {  // considered normal if the attributes are not present
     }
     try
     {
-     sg->setSignalHeadOffState(sigHead, getIntFromColour(signalHeadList.at(y).toElement().attribute("offAppearance")));
+     sg->setHeadOffState(sigHead, getIntFromColour(signalHeadList.at(y).toElement().attribute("offAppearance")));
     }
     catch ( NullPointerException ex) {  // considered normal if the attributes are not present
     }
@@ -235,7 +235,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
       {
        log->warn("invalid state attribute value");
       }
-      sg->setSignalHeadAlignTurnout(sigHead, turnout, state);
+      sg->setHeadAlignTurnout(sigHead, turnout, state);
      }
     }
     QDomNodeList signalSensorList = signalHeadList.at(y).toElement().elementsByTagName("sensor");
@@ -254,7 +254,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
       {
        log->warn("invalid style attribute value");
       }
-      sg->setSignalHeadAlignSensor(sigHead, sensor, state);
+      sg->setHeadAlignSensor(sigHead, sensor, state);
      }
     }
    }

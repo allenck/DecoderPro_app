@@ -4828,7 +4828,7 @@ if (_wrapper) {
 }
   NamedBean::updateListenerRef(l0, arg__2);
 }
-void PythonQtShell_NamedBean::vetoableChange(PropertyChangeEvent*  arg__1)
+void PythonQtShell_NamedBean::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -5035,7 +5035,7 @@ void PythonQtWrapper_NamedBean::updateListenerRef(NamedBean* theWrappedObject, P
   ( theWrappedObject->updateListenerRef(l, arg__2));
 }
 
-void PythonQtWrapper_NamedBean::vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1)
+void PythonQtWrapper_NamedBean::vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
 {
   ( theWrappedObject->vetoableChange(arg__1));
 }
@@ -23278,7 +23278,7 @@ if (_wrapper) {
 }
   Route::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_Route::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException) 
+void PythonQtShell_Route::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23288,7 +23288,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "PropertyChangeEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&evt0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -23298,7 +23298,7 @@ if (_wrapper) {
     }
   }
 }
-  Route::vetoableChange(evt0);
+  Route::vetoableChange(arg__1);
 }
 Route* PythonQtWrapper_Route::new_Route(QString  systemName, QString  userName, QObject*  parent)
 { 

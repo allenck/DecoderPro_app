@@ -136,7 +136,7 @@
  editorContainer = nullptr;
  defaultTextColor = QColor(Qt::black);
  hideUnconnected = new QCheckBox(tr("Hide unconnected switches"));
- help2 = new QLabel(tr("Greyed out buttons are not connected to layout."));
+ help2 = new JTextArea(tr("Greyed out buttons are not connected to layout."));
  controllingBox = new QAction(tr("Panel items control layout"),this);
  controllingBox->setCheckable(true);
  hideUnconnectedBox->setCheckable(true);
@@ -559,7 +559,7 @@ void SwitchboardEditor::onUpdateButton()
     //innerBorderPanel.setBorder(TitleBorder);
     innerBorderPanelLayout->addWidget(new QLabel(tr("Click to set turnout etc.\nUse context menu to set details.")));
     // help2 explains: dimmed icons = unconnected
-    innerBorderPanelLayout->addWidget(help2 = new QLabel(tr("Greyed out buttons are not connected to layout.")));
+    innerBorderPanelLayout->addWidget(help2 = new JTextArea(tr("Greyed out buttons are not connected to layout.")));
     if (!getHideUnconnected()) {
         help2->setVisible(false); // hide this panel when hideUnconnected() is set to false from menu or checkbox
     }
@@ -1505,6 +1505,26 @@ void SwitchboardEditor::onAddAction()
 /*protected*/ QList<Positionable*>* SwitchboardEditor::getSelectionGroup() {
     return _selectionGroup;
 }
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> SwitchboardEditor::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        //getSwitches().forEach((beanSwitch) ->
+     for(BeanSwitch* beanSwitch : getSwitches())
+        {
+            if (bean->equals(beanSwitch->getNamedBean())) {
+                report.append(new NamedBeanUsageReport("SwitchBoard", getName()));
+            }
+        }//);
+    }
+    return report;
+}
+
+/*public*/ int SwitchboardEditor::getTileSize() { //tmp synchronized
+    return _tileSize; // initially 100
+}
+
 /*public*/ void SwitchboardEditor::setScroll(QString strState) {
     int state = SCROLL_BOTH;
     if (strState.toLower()=="none" || strState.toLower()=="no") state = SCROLL_NONE;

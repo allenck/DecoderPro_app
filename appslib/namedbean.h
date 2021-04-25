@@ -4,9 +4,8 @@
 #include <QObject>
 #include "propertychangelistener.h"
 #include "javaqt_global.h"
-#include "exceptions.h"
-#include "namedbean.h"
 #include "namedbeanusagereport.h"
+#include "propertyvetoexception.h"
 
 class JAVAQTSHARED_EXPORT NamedBean : public  QObject
 {
@@ -417,7 +416,7 @@ public:
      * Retrieve the complete current set of keys.
      */
     virtual QSet<QString> getPropertyKeys();
-    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* /*evt*/) {}//throws java.beans.PropertyVetoException;
+    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* /*evt*/) throw (PropertyVetoException) {}
 
 
     virtual uint hashCode() {return 0;}
@@ -479,7 +478,7 @@ public:
     //@CheckReturnValue
     /*public*/ virtual int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1,/* @Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n2);
 
-
+    // /*public*/ virtual QObject* self()=0;
 signals:
 
 public slots:
