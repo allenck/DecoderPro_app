@@ -9,7 +9,9 @@
 #include "namedbeanhandlemanager.h"
 #include "libPr3_global.h"
 #include "localdatetime.h"
+#include "sleeperthread.h"
 
+class IntervalCheck;
 class TurnoutOperation;
 class TurnoutOperator;
 class LIBPR3SHARED_EXPORT AbstractTurnout : public Turnout, public PropertyChangeListener
@@ -187,7 +189,9 @@ private:
     static Logger* log;
     /*private*/ Turnout* leadingTurnout = nullptr;
     /*private*/ bool followingCommandedState = true;
-    LocalDateTime nextWait;
+    LocalDateTime* nextWait;
+    IntervalCheck* thr = nullptr;
+
 protected:
     AbstractTurnout(QString systemName, QObject *parent=0);
     AbstractTurnout(QString systemName, QString userName, QObject *parent=0);
@@ -280,6 +284,34 @@ protected:
     /*protected*/ TurnoutOperator*  getTurnoutOperator();
     friend class NoFeedbackTurnoutOperator;
     friend class SensorTurnoutOperator;
+    friend class IntervalCheck;
+
+};
+
+class IntervalCheck : public QObject
+{
+  Q_OBJECT
+  AbstractTurnout* at;
+  int s;
+ public:
+  IntervalCheck(int s, AbstractTurnout* at) {this->s = s; this->at = at;}
+ signals:
+  void finished();
+ public slots:
+  void process()
+  {
+   at->log->debug(tr("go to sleep for %1 ms...").arg(qMax(0ULL, LocalDateTime::now()->until(at->nextWait, LocalDateTime::ChronoUnit::MILLIS))));
+   try {
+       SleeperThread::msleep(qMax(0ULL, LocalDateTime::now()->until(at->nextWait, LocalDateTime::ChronoUnit::MILLIS))); // nextWait might have passed in the meantime
+       at->log->debug(tr("back from sleep, forward on %1").arg(LocalDateTime::now()->toString()));
+       at->setCommandedState(s);
+   } catch (InterruptedException ex) {
+       at->log->debug(tr("setCommandedStateAtInterval(s) interrupted at %1").arg(LocalDateTime::now()->toString()));
+//       Thread.currentThread().interrupt(); // retain if needed later
+       emit finished();
+   }
+
+  }
 };
 
 #endif // ABSTRACTTURNOUT_H

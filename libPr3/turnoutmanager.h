@@ -196,7 +196,7 @@ public:
          * @return end time in milliseconds or current time if no interval was set or timer has completed
          */
         //@Nonnull
-  virtual /*public*/ LocalDateTime outputIntervalEnds() {return LocalDateTime();}
+  virtual /*public*/ LocalDateTime* outputIntervalEnds() {return nullptr;}
 
         virtual /*public*/ QString toString() {return "TurnoutManager";}
   QObject* self() {return (QObject*)this;}

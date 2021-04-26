@@ -92,7 +92,8 @@
         //_itemTypeBox.addActionListener((e) -> {
 #if 1
         connect(_itemTypeBox, &QComboBox::currentTextChanged, [=]{
-            _itemType = (ItemType::ITEMTYPE)_itemTypeBox->itemData(_itemTypeBox->currentIndex()).toInt();
+            //_itemType = (ItemType::ITEMTYPE)_itemTypeBox->itemData(_itemTypeBox->currentIndex()).toInt();
+            _itemType = (ItemType::ITEMTYPE)_itemTypeBox->currentIndex();
             setItemNameBox(_itemType);
         });
 #endif

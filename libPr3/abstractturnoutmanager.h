@@ -78,7 +78,7 @@ public:
       /*public*/ QString getEntryToolTip()override;
       /*public*/ int getOutputInterval()override;
       /*public*/ void setOutputInterval(int newInterval)override;
-      /*public*/ LocalDateTime outputIntervalEnds() override;
+      /*public*/ LocalDateTime *outputIntervalEnds() override;
 
 signals:
       void newTurnoutCreated(AbstractTurnoutManager* mgr, Turnout* t);
@@ -89,7 +89,6 @@ public slots:
 
   mutable QString defaultClosedSpeed;
   mutable QString defaultThrownSpeed;
-
  private:
  /**
   * Duration in milliseconds of interval between separate Turnout commands on the same connection.
@@ -97,7 +96,7 @@ public slots:
   * Change from e.g. XNetTurnout extensions and scripts using {@link #setOutputInterval(int)}
   */
  /*private*/ int turnoutInterval;// = memo->getOutputInterval();
- /*private*/ LocalDateTime waitUntil = LocalDateTime::now();
+ /*private*/ LocalDateTime* waitUntil = LocalDateTime::now();
  /*private*/ void handleIntervalChange(int newVal);
 
 protected:

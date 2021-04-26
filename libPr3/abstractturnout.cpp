@@ -237,25 +237,31 @@ _reportLocked = true;
 /*public*/ void AbstractTurnout::setCommandedStateAtInterval(int s) {
     nextWait = InstanceManager::turnoutManagerInstance()->outputIntervalEnds();
     // nextWait time is calculated using actual turnoutInterval in TurnoutManager
-#if 0
+#if 1
     if (nextWait->isAfter(LocalDateTime::now())) { // don't sleep if nextWait =< now()
-        log->debug(tr("Turnout now() = %1, waitUntil = %2").arg(LocalDateTime::now(), nextWait));
+        log->debug(tr("Turnout now() = %1, waitUntil = %2").arg(LocalDateTime::now()->toString(), nextWait->toString()));
         // insert wait before sending next output command to the layout
-        r = () -> {
-            log.debug("go to sleep for {} ms...", Math.max(0L, LocalDateTime.now().until(nextWait, ChronoUnit.MILLIS)));
-            try {
-                Thread.sleep(Math.max(0L, LocalDateTime.now().until(nextWait, ChronoUnit.MILLIS))); // nextWait might have passed in the meantime
-                log.debug("back from sleep, forward on {}", LocalDateTime.now());
-                setCommandedState(s);
-            } catch (InterruptedException ex) {
-                log.debug("setCommandedStateAtInterval(s) interrupted at {}", LocalDateTime.now());
-                Thread.currentThread().interrupt(); // retain if needed later
-            }
-        };
-        thr = new Thread(r);
-        thr.start();
+//        r = []() {
+//            log->debug(tr("go to sleep for %1 ms...").arg(qMax(0ULL, LocalDateTime::now()->until(nextWait, LocalDateTime::ChronoUnit::MILLIS))));
+//            try {
+//                Thread.sleep(qMax(0L, LocalDateTime::now()->until(nextWait, LocalDateTime::ChronoUnit::MILLIS))); // nextWait might have passed in the meantime
+//                log->debug(tr("back from sleep, forward on %1").arg(LocalDateTime::now()->toString()));
+//                setCommandedState(s);
+//            } catch (InterruptedException ex) {
+//                log->debug(tr("setCommandedStateAtInterval(s) interrupted at {}", LocalDateTime.now());
+//                Thread.currentThread().interrupt(); // retain if needed later
+//            }
+//        };
+//        thr = new Thread(r);
+//        thr.start();
+        thr = new IntervalCheck(s, this);
+        QThread* thread = new QThread();
+        connect(thread, SIGNAL(started()), thr, SLOT(process()));
+        connect(thr, SIGNAL(finished()), thread, SLOT(quit()));
+        thr->moveToThread(thread);
+        thread->start();
     } else {
-        log.debug("nextWait has passed");
+        log->debug("nextWait has passed");
         setCommandedState(s);
     }
 #endif

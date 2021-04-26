@@ -408,13 +408,13 @@ QString AbstractTurnoutManager::getDefaultClosedSpeed() const{
 /** {@inheritDoc} */
 //@Override
 //@Nonnull
-/*public*/ LocalDateTime AbstractTurnoutManager::outputIntervalEnds() {
-#if 0 // TODO:
+/*public*/ LocalDateTime* AbstractTurnoutManager::outputIntervalEnds() {
+#if 1 // TODO:
     log->debug("outputIntervalEnds called in AbstractTurnoutManager");
-    if (waitUntil.isAfter(LocalDateTime.now())) {
-        waitUntil = waitUntil.plus(turnoutInterval, ChronoUnit.MILLIS);
+    if (waitUntil->isAfter(LocalDateTime::now())) {
+        waitUntil = waitUntil->plus(turnoutInterval, LocalDateTime::ChronoUnit::MILLIS);
     } else {
-        waitUntil = LocalDateTime.now().plus(turnoutInterval, ChronoUnit.MILLIS); // default interval = 250 Msec
+        waitUntil = LocalDateTime::now()->plus(turnoutInterval, LocalDateTime::ChronoUnit::MILLIS); // default interval = 250 Msec
     }
 #endif
     return waitUntil;

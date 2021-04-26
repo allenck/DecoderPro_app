@@ -5,12 +5,28 @@ LocalDateTime::LocalDateTime()
 
 }
 
-LocalDateTime LocalDateTime::now()
+LocalDateTime* LocalDateTime::now()
 {
- // TODO:
-
+ LocalDateTime* ldt = new LocalDateTime();
+ ldt->msec = QDateTime::currentMSecsSinceEpoch();
 }
-/*public*/ bool isAfter(LocalDateTime t)
+
+/*public*/ bool LocalDateTime::isAfter(LocalDateTime* t)
 {
- return  false;
+ if(t->msec > msec)
+  return true;
+ return false;
+}
+
+/*public*/ LocalDateTime* LocalDateTime::plus(quint64 intvl, LocalDateTime::ChronoUnit)
+{
+ LocalDateTime* ldt = new LocalDateTime();
+ ldt->msec = this->msec + intvl;
+ return ldt;
+}
+
+/*public*/ QString LocalDateTime::toString()
+{
+ QDateTime dt = QDateTime::fromMSecsSinceEpoch(msec);
+ return dt.toString();
 }
