@@ -15,20 +15,20 @@ OBlockWhereUsed::OBlockWhereUsed(QObject *parent) : QObject(parent)
 
 // /*public*/ class OBlockWhereUsed {
 
-    /**
-     * Populate a textarea with the where used content for the supplied sensor.
-     * @param oblock The oblock bean.
-     * @return a populated textarea.
-     */
-    /*static*/ /*public*/ JTextArea* OBlockWhereUsed::getWhereUsed(NamedBean* oblock) {
-        JTextArea* textArea = new JTextArea();
-        QString label = tr("OBlock");  // NOI18N
-        textArea->append(tr("\t\t%1 %2	").arg(label).arg(oblock->getDisplayName()));  // NOI18N
-        textArea->append(tr("\t\tListener count: %1	\n").arg(oblock->getNumPropertyChangeListeners()));  // NOI18N
+/**
+ * Populate a textarea with the where used content for the supplied sensor.
+ * @param oblock The oblock bean.
+ * @return a populated textarea.
+ */
+/*static*/ /*public*/ JTextArea* OBlockWhereUsed::getWhereUsed(NamedBean* oblock) {
+    JTextArea* textArea = new JTextArea();
+    QString label = tr("OBlock");  // NOI18N
+    textArea->append(tr("\t\t%1 %2	").arg(label).arg(oblock->getDisplayName()));  // NOI18N
+    textArea->append(tr("\t\tListener count: %1	\n").arg(oblock->getNumPropertyChangeListeners()));  // NOI18N
 
-        textArea->append(WhereUsedCollectors::checkLogixConditionals(oblock));
-        textArea->append(WhereUsedCollectors::checkOBlocks(oblock));
-        textArea->append(WhereUsedCollectors::checkWarrants(oblock));
-        textArea->append(WhereUsedCollectors::checkPanels(oblock));
-        return textArea;
-    }
+    textArea->append(WhereUsedCollectors::checkLogixConditionals(oblock));
+    textArea->append(WhereUsedCollectors::checkOBlocks(oblock));
+    textArea->append(WhereUsedCollectors::checkWarrants(oblock));
+    textArea->append(WhereUsedCollectors::checkPanels(oblock));
+    return textArea;
+}

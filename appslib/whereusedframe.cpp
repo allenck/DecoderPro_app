@@ -90,13 +90,13 @@
         _topPanel->layout()->addWidget(new JLabel(tr("Item Name")));  // NOI18N
         _topPanel->layout()->addWidget(_itemNameBox);
         //_itemTypeBox.addActionListener((e) -> {
-#if 1
+
         connect(_itemTypeBox, &QComboBox::currentTextChanged, [=]{
             //_itemType = (ItemType::ITEMTYPE)_itemTypeBox->itemData(_itemTypeBox->currentIndex()).toInt();
             _itemType = (ItemType::ITEMTYPE)_itemTypeBox->currentIndex();
             setItemNameBox(_itemType);
         });
-#endif
+
         _createButton = new QPushButton(tr("Create"));  // NOI18N
         //_createButton.addActionListener((e) -> buildWhereUsedListing(_itemType, _itemBean));
         connect(_createButton, &QPushButton::clicked, [=]{
@@ -168,48 +168,48 @@
      */
     void WhereUsedFrame::buildWhereUsedListing(ItemType::ITEMTYPE type, NamedBean* bean) {
         switch (type) {
-            case ItemType::TURNOUT:
-                _textArea = TurnoutWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::SENSOR:
-                _textArea = SensorWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::LIGHT:
-                _textArea = LightWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::SIGNALHEAD:
-                _textArea = SignalHeadWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::SIGNALMAST:
-                _textArea = SignalMastWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::REPORTER:
-                _textArea = ReporterWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::MEMORY:
-                _textArea = MemoryWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::ROUTE:
-                _textArea = RouteWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::OBLOCK:
-                _textArea = OBlockWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::BLOCK:
-                _textArea = BlockWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::SECTION:
-                _textArea = SectionWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::WARRANT:
-                _textArea = WarrantWhereUsed::getWhereUsed(bean);
-                break;
-            case ItemType::ENTRYEXIT:
-                _textArea = EntryExitWhereUsed::getWhereUsed(bean);
-                break;
-            default:
-                _textArea = new JTextArea(tr("	Select an item type, then select an item name and then press Create.	"));
-                break;
+         case ItemType::TURNOUT:
+             _textArea = TurnoutWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::SENSOR:
+             _textArea = SensorWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::LIGHT:
+             _textArea = LightWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::SIGNALHEAD:
+             _textArea = SignalHeadWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::SIGNALMAST:
+             _textArea = SignalMastWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::REPORTER:
+             _textArea = ReporterWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::MEMORY:
+             _textArea = MemoryWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::ROUTE:
+             _textArea = RouteWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::OBLOCK:
+             _textArea = OBlockWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::BLOCK:
+             _textArea = BlockWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::SECTION:
+             _textArea = SectionWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::WARRANT:
+             _textArea = WarrantWhereUsed::getWhereUsed(bean);
+             break;
+         case ItemType::ENTRYEXIT:
+             _textArea = EntryExitWhereUsed::getWhereUsed(bean);
+             break;
+         default:
+             _textArea = new JTextArea(tr("	Select an item type, then select an item name and then press Create.	"));
+             break;
         }
 
         _textArea->setFont(QFont("Monospaced", 12)); //new Font(Font.MONOSPACED, Font.PLAIN, 12));
