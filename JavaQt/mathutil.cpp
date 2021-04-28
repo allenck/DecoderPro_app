@@ -597,6 +597,18 @@ MathUtil::MathUtil()
 /*public*/ /*static*/ QPointF MathUtil::infinityPoint2D() {
     return QPointF(INFINITY, INFINITY);
 }
+/**
+ * @param a the first number
+ * @param b the second number
+ * @return the greatest common divisor of a and b
+ */
+/*public*/ /*static*/ int MathUtil::gcd(int a, int b) {
+    int result = b;
+    if (a != 0) {
+        result = gcd(b % a, a);
+    }
+    return result;
+}
 
 /**
  * Convert Point to Point2D.

@@ -3040,7 +3040,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 * Return a List of all items whose bounding rectangle contain the mouse position.
 * ordered from top level to bottom
 */
-/*protected*/ QList <Positionable*>* Editor::getSelectedItems(QGraphicsSceneMouseEvent* event)
+/*protected*/ QList <Positionable*> Editor::getSelectedItems(QGraphicsSceneMouseEvent* event)
 {
  double x = event->scenePos().x();
  double y = event->scenePos().y();
@@ -3200,13 +3200,13 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  return selections->toList();
 }
 #else
-/*protected*/ QList <Positionable*>* Editor::getSelectedItems(QPointF pt)
+/*protected*/ QList <Positionable*> Editor::getSelectedItems(QPointF pt)
 {
  double x = pt.x();
  double y = pt.y();
  QRectF rect;
  int level;
- QList<Positionable*>* selections = new QList<Positionable*>();
+ QList<Positionable*> selections = QList<Positionable*>();
  for (int i=0; i<_contents->size(); i++)
  {
   Positionable* p = _contents->at(i);
@@ -3221,7 +3221,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
       //qDebug() << tr("rect %1,%2,%3,%4 contains %5,%6").arg(rect2D.x()).arg(rect2D.y()).arg(rect2D.width()).arg(rect2D.height()).arg(x).arg(y);
    bool added =false;
       //int level = ((PositionableLabel*)p)->getDisplayLevel();
-   for (int k=0; k<selections->size(); k++)
+   for (int k=0; k<selections.size(); k++)
    {
     int selLevel;
 //    if(qobject_cast<PositionableJComponent*>(selections->at(k))!= NULL)
@@ -3230,19 +3230,19 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 //    }
 //    else
     {
-     selLevel = selections->at(k)->getDisplayLevel();
+     selLevel = selections.at(k)->getDisplayLevel();
     }
 
     if (level >= selLevel)
     {
-     selections->insert(k, p);
+     selections.insert(k, p);
      added = true;       // OK to lie in the case of background icon
      break;
     }
    }
    if (!added)
    {
-    selections->append(p);
+    selections.append(p);
     statusBar()->showMessage( tr("select %1 x=%2,y=%3, w=%4, h= %5").arg(p->self()->metaObject()->className()).arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
    }
   }

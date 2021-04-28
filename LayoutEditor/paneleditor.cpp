@@ -861,20 +861,20 @@ protected void paintTargetPanel(Graphics g) {
  _anchorY = event->scenePos().y();
  _lastX = _anchorX;
  _lastY = _anchorY;
- QList <Positionable*>* selections = getSelectedItems(event);
+ QList <Positionable*> selections = getSelectedItems(event);
  if (_dragging)
  {
   return;
  }
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
-  if (bShift && selections->size() > 1)
+  if (bShift && selections.size() > 1)
   {
-   _currentSelection = selections->at(1);
+   _currentSelection = selections.at(1);
   }
   else
   {
-   _currentSelection = selections->at(0);
+   _currentSelection = selections.at(0);
   }
   if (bRightButton) //isPopupTrigger()
   {
@@ -991,7 +991,7 @@ protected void paintTargetPanel(Graphics g) {
  //setToolTip("NULL"); // ends tooltip if displayed
  if (_debug) log->debug("mouseReleased at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") dragging= "+(_dragging?"true":"false")
                           +" selectRect is "+(_selectRect.isNull()? "NULL":"not NULL"));
- QList <Positionable*>* selections = getSelectedItems(event);
+ QList <Positionable*> selections = getSelectedItems(event);
 
  if (_dragging)
  {
@@ -1002,15 +1002,15 @@ protected void paintTargetPanel(Graphics g) {
   _currentSelection = nullptr;
   return;
  }
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
-  if (bShift && selections->size() > 1)
+  if (bShift && selections.size() > 1)
   {
-   _currentSelection = selections->at(1);
+   _currentSelection = selections.at(1);
   }
   else
   {
-    _currentSelection = selections->at(0);
+    _currentSelection = selections.at(0);
   }
   if (_multiItemCopyGroup!=NULL && !_multiItemCopyGroup->contains(_currentSelection))
    _multiItemCopyGroup = NULL;
@@ -1103,10 +1103,10 @@ protected void paintTargetPanel(Graphics g) {
  {
   if (_currentSelection!=NULL)
   {
-   QList <Positionable*>* selections = getSelectedItems(event);
-   if (selections->size() > 0)
+   QList <Positionable*> selections = getSelectedItems(event);
+   if (selections.size() > 0)
    {
-    if (selections->at(0)!=_currentSelection)
+    if (selections.at(0)!=_currentSelection)
     {
      _currentSelection->doMouseReleased(event);
     }
@@ -1207,17 +1207,17 @@ protected void paintTargetPanel(Graphics g) {
  if (_dragging || bRightButton)
   return;
 
- QList <Positionable*>* selections = getSelectedItems(event);
+ QList <Positionable*> selections = getSelectedItems(event);
  Positionable* selection = NULL;
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
-  if (bShift && selections->size() > 1)
+  if (bShift && selections.size() > 1)
   {
-    selection = selections->at(1);
+    selection = selections.at(1);
   }
   else
   {
-   selection = selections->at(0);
+   selection = selections.at(0);
   }
  }
  if (isEditable() && selection!=NULL && qobject_cast<PositionableLabel*>(selection->self()) && ((PositionableLabel*)selection->self())->getDisplayLevel()>BKG)
@@ -1261,17 +1261,17 @@ protected void paintTargetPanel(Graphics g) {
  bool bCtrl = ((event->modifiers())&Qt::ControlModifier) == Qt::ControlModifier;
  //setToolTip(NULL); // ends tooltip if displayed
  if (_debug) log->debug("mouseClicked at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") dragging= "+(_dragging?"true":"false") +" selectRect is "+(_selectRect.isNull()? "NULL":"not NULL"));
- QList <Positionable*>* selections = getSelectedItems(event);
+ QList <Positionable*> selections = getSelectedItems(event);
 
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
-  if (bShift && selections->size() > 1)
+  if (bShift && selections.size() > 1)
   {
-    _currentSelection = selections->at(1);
+    _currentSelection = selections.at(1);
   }
   else
   {
-   _currentSelection = selections->at(0);
+   _currentSelection = selections.at(0);
   }
  }
  else

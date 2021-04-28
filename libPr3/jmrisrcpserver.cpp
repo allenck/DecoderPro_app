@@ -10,22 +10,9 @@
  */
 ///*public*/ class JmriSRCPServer extends JmriServer {
 
-    /*private*/ /*static*/ JmriServer* JmriSRCPServer::_instance = nullptr;
 
     //static ResourceBundle rb = ResourceBundle.getBundle("jmri.jmris.srcp.JmriSRCPServerBundle");
 
-    /*
-     * @deprecated since 4.7.1 use @link{jmri.InstanceManager.getDefault()} instead.
-     */
-//    @Deprecated  // will be removed when class is refactored
-//    @SuppressWarnings("deprecation")  // temporary implementation of method
-    /*synchronized*/ /*public*/ /*static*/ JmriServer* JmriSRCPServer::instance() {
-        if (_instance == nullptr) {
-            int port = tr("4303").toInt();
-            _instance = new JmriSRCPServer(port);
-        }
-        return _instance;
-    }
 
     // Create a new server using the default port
     /*public*/ JmriSRCPServer::JmriSRCPServer(QObject *parent) : JmriServer(4303, parent){

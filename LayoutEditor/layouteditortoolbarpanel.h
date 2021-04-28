@@ -1,6 +1,7 @@
 #ifndef LAYOUTEDITORTOOLBARPANEL_H
 #define LAYOUTEDITORTOOLBARPANEL_H
 #include "jpanel.h"
+#include "mathutil.h"
 
 class Logger;
 class LayoutEditor;
@@ -23,14 +24,34 @@ class LayoutEditorToolBarPanel : public JPanel
 
 public:
  LayoutEditorToolBarPanel(LayoutEditor* layoutEditor, QWidget *parent = nullptr);
+ /*=========================*\
+ |* toolbar location format *|
+ \*=========================*/
+ /*public*/ enum LocationFormat {
+     ePIXELS,
+     eMETRIC_CM,
+     eENGLISH_FEET_INCHES
+
+//        LocationFormat() {
+//        }
+ };
+ Q_ENUM(LocationFormat)
+ /*public*/ LocationFormat getLocationFormat();
+ /*public*/ void setLocationFormat(LocationFormat locationFormat);
+ /*public*/ void setLocationText(QPointF p);
 
 private:
  static Logger* log;
+ /*private*/ LocationFormat locationFormat = LocationFormat::ePIXELS;
+ /*private*/ QPointF lastLocation = MathUtil::zeroPoint2D;
+
 private slots:
  void on_selectionListAction();
  void on_highlightBlockCheckBox();
  void on_blockIdComboBox();
  void on_changeIconsButton();
+ /*private*/ QString getEnglishFeetInchesText(int v);
+ /*private*/ QString getMetricCMText(int v);
 
 protected:
  /*protected*/ LayoutEditor* layoutEditor = nullptr;

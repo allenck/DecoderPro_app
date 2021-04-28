@@ -509,8 +509,8 @@ private slots:
   /*protected*/ PositionableLabel* addLabel(QString text);
   /*protected*/ void removeFromTarget(Positionable* l);
   /*protected*/ void moveItem(Positionable* p, int deltaX, int deltaY);
-  /*protected*/ QList <Positionable*>* getSelectedItems(QGraphicsSceneMouseEvent* event);
-  /*protected*/ QList <Positionable*>* getSelectedItems(QPointF pt);
+  /*protected*/ QList <Positionable*> getSelectedItems(QGraphicsSceneMouseEvent* event);
+  /*protected*/ QList<Positionable *> getSelectedItems(QPointF pt);
   /*protected*/ void makeSelectionGroup(QGraphicsSceneMouseEvent* event);
   /*protected*/ void modifySelectionGroup(Positionable* selection, QGraphicsSceneMouseEvent* event);
   /*protected*/ bool setTextAttributes(Positionable* p, QMenu* popup);

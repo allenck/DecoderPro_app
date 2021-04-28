@@ -1135,13 +1135,13 @@ void ControlPanelEditor::selectAllAction()
  if (_pastePending && !bPopupTrigger && !bMetaDown && !bAltDown) {
      return getCopySelection(event);
  }
- QList <Positionable*>* selections = getSelectedItems(event);
- if(selections->count() > 0)
-  log->debug(tr("getCurrentSelection: %1 selections").arg(selections->count()));
- if( (_disableShapeSelection || _disablePortalSelection) && selections->count())
+ QList <Positionable*> selections = getSelectedItems(event);
+ if(selections.count() > 0)
+  log->debug(tr("getCurrentSelection: %1 selections").arg(selections.count()));
+ if( (_disableShapeSelection || _disablePortalSelection) && selections.count())
  {
-  QList<Positionable*>* list = new QList<Positionable*>();
-  QListIterator<Positionable*> it(*selections);
+  QList<Positionable*> list = QList<Positionable*>();
+  QListIterator<Positionable*> it(selections);
   while (it.hasNext())
   {
    Positionable* pos = it.next();
@@ -1151,16 +1151,16 @@ void ControlPanelEditor::selectAllAction()
    if (_disablePortalSelection && qobject_cast<PortalIcon*>(pos->self())) {
        continue;
    }
-   list->append(pos);
+   list.append(pos);
   }
   selections = list;
  }
  Positionable* selection = nullptr;
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
   if (bControlDown)
   {
-   if (bShiftDown && selections->size() > 3)
+   if (bShiftDown && selections.size() > 3)
    {
     if (_manualSelection) {
         // selection made - don't change it
@@ -1168,8 +1168,8 @@ void ControlPanelEditor::selectAllAction()
         return _currentSelection;
     }
     // show list
-    QVector<QString> selects = QVector<QString>(selections->size());
-    QListIterator<Positionable*> iter(*selections);
+    QVector<QString> selects = QVector<QString>(selections.size());
+    QListIterator<Positionable*> iter(selections);
     int i = 0;
     while (iter.hasNext())
     {
@@ -1188,7 +1188,7 @@ void ControlPanelEditor::selectAllAction()
             QIcon(), vl, QVariant());
     if (select != QVariant())
     {
-     QListIterator<Positionable*> iter(*selections);
+     QListIterator<Positionable*> iter(selections);
      while (iter.hasNext())
      {
       Positionable* pos = iter.next();
@@ -1204,21 +1204,21 @@ void ControlPanelEditor::selectAllAction()
       }
      }
     } else {
-        selection = selections->at(selections->size() - 1);
+        selection = selections.at(selections.size() - 1);
     }
    } else {
        // select bottom-most item over the background, otherwise take the background item
-       selection = selections->at(selections->size() - 1);
-       if (selection->getDisplayLevel() <= BKG && selections->size() > 1) {
-           selection = selections->at(selections->size() - 2);
+       selection = selections.at(selections.size() - 1);
+       if (selection->getDisplayLevel() <= BKG && selections.size() > 1) {
+           selection = selections.at(selections.size() - 2);
        }
 //              _manualSelection = false;
    }
   } else {
-      if (bShiftDown && selections->size() > 1) {
-          selection = selections->at(1);
+      if (bShiftDown && selections.size() > 1) {
+          selection = selections.at(1);
       } else {
-          selection = selections->at(0);
+          selection = selections.at(0);
       }
       if (selection->getDisplayLevel() <= BKG) {
           selection = nullptr;

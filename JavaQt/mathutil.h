@@ -65,6 +65,7 @@ public:
  /*public*/ static QRectF scale(/*@Nonnull*/ QRectF r, double s);
  /*public*/ static /*final*/ QPointF zeroPoint2D;// = QPointF();
  /*public*/ static QPointF infinityPoint2D();
+ /*public*/ static int gcd(int a, int b);
  /*public*/ static QPointF pointToPoint2D(/*@Nonnull */QPoint p);
  /*public*/ static QPoint point2DToPoint(/*@Nonnull*/ QPointF p);
  /*public*/ static bool isEqualToZeroPoint2D(/*@Nonnull*/ QPointF p);

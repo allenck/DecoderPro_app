@@ -13473,6 +13473,11 @@ void PythonQtWrapper_AbstractTurnout::turnoutPushbuttonLockout(AbstractTurnout* 
   ( ((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->promoted_turnoutPushbuttonLockout(locked));
 }
 
+void PythonQtWrapper_AbstractTurnout::vetoableChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt) throw (PropertyVetoException)
+{
+  ( theWrappedObject->vetoableChange(evt));
+}
+
 
 
 PythonQtShell_AbstractTurnoutManager::~PythonQtShell_AbstractTurnoutManager() {

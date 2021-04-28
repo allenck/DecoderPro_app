@@ -151,7 +151,7 @@ private:
     QList<Positionable*>* _saveSelectionGroup;
     /*private*/ void handleSelection(Positionable* selection, QGraphicsSceneMouseEvent* event);
     /*private*/ bool okToAdd(Positionable* pos, OBlock* editBlock);
-    /*private*/ Positionable* getSelection(QList<Positionable*>* tracks);
+    /*private*/ Positionable* getSelection(QList<Positionable *> tracks);
     enum TYPES
     {
     NONE = 0,
@@ -174,7 +174,7 @@ protected:
     /*protected*/ QMenu* makeMenu();
     /*protected*/ QList<Positionable*>* getCircuitIcons(OBlock* block);
     /*protected*/ QList<PortalIcon *>* getPortalIconMap(/*@Nonnull*/ Portal* portal);
-    /*protected*/ bool doMouseClicked(QList<Positionable*>* selections, QGraphicsSceneMouseEvent* event);
+    /*protected*/ bool doMouseClicked(QList<Positionable *> selections, QGraphicsSceneMouseEvent* event);
     /*protected*/ bool saveSelectionGroup(QList<Positionable*>* selectionGroup);
     /*protected*/ void doMousePressed(QGraphicsSceneMouseEvent* event, Positionable* selection);
 //    /*protected*/ void convertIcons(QList<Positionable*>* iconList);

@@ -1545,6 +1545,7 @@ void delete_AbstractTurnout(AbstractTurnout* obj) { delete obj; }
    void turnoutPushbuttonLockout(AbstractTurnout* theWrappedObject);
    void turnoutPushbuttonLockout(AbstractTurnout* theWrappedObject, bool  locked);
    void py_q_turnoutPushbuttonLockout(AbstractTurnout* theWrappedObject, bool  locked){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_turnoutPushbuttonLockout(locked));}
+   void vetoableChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt) throw (PropertyVetoException);
    void py_q_vetoableChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt) throw (PropertyVetoException){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_vetoableChange(evt));}
 };
 

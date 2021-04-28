@@ -15021,6 +15021,11 @@ bool  PythonQtWrapper_LayoutEditor::getHighlightSelectedBlock(LayoutEditor* theW
   return ( theWrappedObject->getHighlightSelectedBlock());
 }
 
+QList<PositionableLabel* >  PythonQtWrapper_LayoutEditor::getLabelImageList(LayoutEditor* theWrappedObject)
+{
+  return ( theWrappedObject->getLabelImageList());
+}
+
 QString  PythonQtWrapper_LayoutEditor::getLayoutName(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getLayoutName());
@@ -15079,11 +15084,6 @@ EditScene*  PythonQtWrapper_LayoutEditor::getScene(LayoutEditor* theWrappedObjec
 bool  PythonQtWrapper_LayoutEditor::getScroll(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getScroll());
-}
-
-QList<Positionable* >  PythonQtWrapper_LayoutEditor::getSelectedItems(LayoutEditor* theWrappedObject, QGraphicsSceneMouseEvent*  event)
-{
-  return ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_getSelectedItems(event));
 }
 
 QRectF  PythonQtWrapper_LayoutEditor::getSelectionRect(LayoutEditor* theWrappedObject)

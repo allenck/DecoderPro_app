@@ -1507,7 +1507,6 @@ inline void promoted_alignSelection(bool  alignX) { this->alignSelection(alignX)
 inline void promoted_assignBlockToSelection() { this->assignBlockToSelection(); }
 inline void promoted_common() { this->common(); }
 inline void promoted_drawTurnouts(EditScene*  g2) { this->drawTurnouts(g2); }
-inline QList<Positionable* >  promoted_getSelectedItems(QGraphicsSceneMouseEvent*  event) { return this->getSelectedItems(event); }
 inline bool  promoted_remove(QObject*  s) { return this->remove(s); }
 inline void promoted_removeBackground(PositionableLabel*  b) { this->removeBackground(b); }
 inline bool  promoted_removeLayoutSlip(LayoutTurnout*  o) { return this->removeLayoutSlip(o); }
@@ -1599,6 +1598,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    bool  getDirectTurnoutControl(LayoutEditor* theWrappedObject);
    bool  getDrawGrid(LayoutEditor* theWrappedObject);
    bool  getHighlightSelectedBlock(LayoutEditor* theWrappedObject);
+   QList<PositionableLabel* >  getLabelImageList(LayoutEditor* theWrappedObject);
    QString  getLayoutName(LayoutEditor* theWrappedObject);
    QList<LayoutTrack* >  getLayoutTrackSelection(LayoutEditor* theWrappedObject);
    QList<LayoutTrack* >  getLayoutTracks(LayoutEditor* theWrappedObject);
@@ -1611,7 +1611,6 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    QList<Positionable* >*  getPositionalSelection(LayoutEditor* theWrappedObject);
    EditScene*  getScene(LayoutEditor* theWrappedObject);
    bool  getScroll(LayoutEditor* theWrappedObject);
-   QList<Positionable* >  getSelectedItems(LayoutEditor* theWrappedObject, QGraphicsSceneMouseEvent*  event);
    QRectF  getSelectionRect(LayoutEditor* theWrappedObject);
    bool  getShowHelpBar(LayoutEditor* theWrappedObject);
    SignalHead*  getSignalHead(LayoutEditor* theWrappedObject, QString  name);
@@ -1742,8 +1741,8 @@ void py_set_circleDiameter(LayoutEditor* theWrappedObject, double  circleDiamete
 double  py_get_circleDiameter(LayoutEditor* theWrappedObject){ return theWrappedObject->circleDiameter; }
 void py_set_circleRadius(LayoutEditor* theWrappedObject, double  circleRadius){ theWrappedObject->circleRadius = circleRadius; }
 double  py_get_circleRadius(LayoutEditor* theWrappedObject){ return theWrappedObject->circleRadius; }
-void py_set_labelImage(LayoutEditor* theWrappedObject, QList<PositionableLabel* >*  labelImage){ theWrappedObject->labelImage = labelImage; }
-QList<PositionableLabel* >*  py_get_labelImage(LayoutEditor* theWrappedObject){ return theWrappedObject->labelImage; }
+void py_set_labelImage(LayoutEditor* theWrappedObject, QList<PositionableLabel* >  labelImage){ theWrappedObject->labelImage = labelImage; }
+QList<PositionableLabel* >  py_get_labelImage(LayoutEditor* theWrappedObject){ return theWrappedObject->labelImage; }
 };
 
 

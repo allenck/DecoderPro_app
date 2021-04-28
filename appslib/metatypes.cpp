@@ -342,6 +342,7 @@
 #include "layoutdoublexoverviewxml.h"
 #include "layoutlhxoverviewxml.h"
 #include "layoutrhxoverviewxml.h"
+#include "jmrisrcpserver.h"
 
 bool Metatypes::done = false;
 
@@ -697,6 +698,6 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LayoutDoubleXOverViewXml>("LayoutDoubleXOverViewXml");
  qRegisterMetaType<LayoutLHXOverViewXml>("LayoutLHXOverViewXml");
  qRegisterMetaType<LayoutRHXOverViewXml>("LayoutRHXOverViewXml");
-
+ qRegisterMetaType<JmriSRCPServer>("JmriSRCPServer");
  Metatypes::done = true;
 }
