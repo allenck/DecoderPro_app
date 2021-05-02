@@ -265,29 +265,30 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  int mainlinetrackwidth = 3;
  try
  {
-  x = shared.attribute("x").toInt();
-  y = shared.attribute("y").toInt();
+  bool ok;
+  x = shared.attribute("x").toInt(&ok); if(!ok) throw DataConversionException();
+  y = shared.attribute("y").toInt(&ok); if(!ok) throw DataConversionException();
   // For compatibility with previous versions, try and see if height and width tags are contained in the file
-  if ((a = shared.attribute("height")) != nullptr) {
-      windowHeight = a.toInt();
+  if ((a = shared.attribute("height")) != "") {
+      windowHeight = a.toInt(&ok); if(!ok) throw DataConversionException();
       panelHeight = windowHeight - 60;
   }
-  if ((a = shared.attribute("width")) != nullptr) {
-      windowWidth = a.toInt();
+  if ((a = shared.attribute("width")) != "") {
+      windowWidth = a.toInt(&ok); if(!ok) throw DataConversionException();
       panelWidth = windowWidth - 18;
   }
   // For files created by the new version, retrieve window and panel sizes
-  if ((a = shared.attribute("windowheight")) != nullptr) {
-      windowHeight = a.toInt();
+  if ((a = shared.attribute("windowheight")) != "") {
+      windowHeight = a.toInt(&ok); if(!ok) throw DataConversionException();
   }
-  if ((a = shared.attribute("windowwidth")) != nullptr) {
-      windowWidth = a.toInt();
+  if ((a = shared.attribute("windowwidth")) != "") {
+      windowWidth = a.toInt(&ok); if(!ok) throw DataConversionException();
   }
-  if ((a = shared.attribute("panelheight")) != nullptr) {
-      panelHeight = a.toInt();
+  if ((a = shared.attribute("panelheight")) != "") {
+      panelHeight = a.toInt(&ok); if(!ok) throw DataConversionException();
   }
-  if ((a = shared.attribute("panelwidth")) != nullptr) {
-      panelWidth = a.toInt();
+  if ((a = shared.attribute("panelwidth")) != "") {
+      panelWidth = a.toInt(&ok); if(!ok) throw DataConversionException();
   }
 
   mainlinetrackwidth = shared.attribute("mainlinetrackwidth").toInt();
@@ -302,7 +303,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  double yScale = 1.0;
  a = shared.attribute("xscale");
  bool bok;
- if (a != nullptr)
+ if (a != "")
  {
   try
   {
@@ -316,7 +317,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   }
  }
  a = shared.attribute("yscale");
- if (a != nullptr)
+ if (a != "")
  {
   try
   {
@@ -329,6 +330,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
    result = false;
   }
  }
+
  // find the name and default track color
  QString name = "";
  if (shared.attribute("name") != nullptr)
@@ -363,7 +365,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
          }
 
          QSize prefsWindowSize = prefsMgr->getWindowSize(windowFrameRef);
-         if (!prefsWindowSize.isNull() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
+         if (prefsWindowSize.isValid() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
              windowHeight = (int) prefsWindowSize.height();
              windowWidth = (int) prefsWindowSize.width();
          }
@@ -379,29 +381,39 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  //panel->setFilename(LoadXmlConfigAction::currentFile);
  panel->gContext->setMainlineTrackWidth(mainlinetrackwidth);
  panel->gContext->setSidelineTrackWidth(sidetrackwidth);
- // panel->setXScale(xScale);
- // panel->setYScale(yScale);
- //panel->setScale(xScale, yScale);
+ panel->gContext->setXScale(xScale);
+ panel->gContext->setYScale(yScale);
+
  QString color = ColorUtil::ColorDarkGray;
  if ((a = shared.attribute("defaulttrackcolor")) != "") {
      color = a;
  }
  panel->setDefaultTrackColor(ColorUtil::stringToColor(color));
 
- QString defaultTextColor = ColorUtil::ColorBlack;
+ color = ColorUtil::ColorBlack;
  if ((a = shared.attribute("defaulttextcolor")) != "") {
      color = a;
  }
  panel->setDefaultTextColor(ColorUtil::stringToColor(color));
 
- QString turnoutCircleColor = "track";  //default to using use default track color for circle color
+ color = "track";  //default to using use default track color for circle color
  if ((a = shared.attribute("turnoutcirclecolor")) != "") {
-     turnoutCircleColor = a;
+     color = a;
  }
- panel->setTurnoutCircleColor(ColorUtil::stringToColor(turnoutCircleColor));
+ panel->setTurnoutCircleColor(ColorUtil::stringToColor(color));
 
- if ((a = shared.attribute("turnoutcirclesize")) != "")
- {
+ // default to using turnout circle color just set
+ if ((a = shared.attribute("turnoutcirclethrowncolor")) != "") {
+     color = a;
+ }
+ panel->setTurnoutCircleThrownColor(ColorUtil::stringToColor(color));
+
+ // the "turnoutfillcontrolcircles" attribute has a default="no" value in the schema;
+ // it will always return a "no" attribute if the attribute is not present.
+ panel->setTurnoutFillControlCircles(shared.attribute("turnoutfillcontrolcircles")=="yes");
+
+if ((a = shared.attribute("turnoutcirclesize")) != "")
+{
      bool bok;
          panel->setTurnoutCircleSize(a.toInt(&bok));
      if(!bok) {
@@ -421,7 +433,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  // turnout size parameters
  double sz = 20.0;
  a = shared.attribute("turnoutbx");
- if (a != nullptr)
+ if (a != "")
  {
   try
   {
@@ -434,7 +446,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   }
  }
  a = shared.attribute("turnoutcx");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();
          panel->setTurnoutCX(sz);
@@ -444,7 +456,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      }
  }
  a = shared.attribute("turnoutwid");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();;
          panel->setTurnoutWid(sz);
@@ -454,7 +466,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      }
  }
  a = shared.attribute("xoverlong");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();;
          panel->setXOverLong(sz);
@@ -464,7 +476,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      }
  }
  a = shared.attribute("xoverhwid");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();;
          panel->setXOverHWid(sz);
@@ -474,7 +486,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      }
  }
  a = shared.attribute("xovershort");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();;
          panel->setXOverShort(sz);

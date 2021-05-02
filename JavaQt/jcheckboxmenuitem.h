@@ -7,7 +7,7 @@ class JCheckBoxMenuItem : public AbstractAction
 {
 public:
     JCheckBoxMenuItem(QString text, QObject*parent);
-    /*public*/ JCheckBoxMenuItem(ImageIcon* icon);
+    /*public*/ JCheckBoxMenuItem(ImageIcon* icon, QObject *parent);
 };
 
 #endif // JCHECKBOXMENUITEM_H

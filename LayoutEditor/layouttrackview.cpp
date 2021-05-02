@@ -307,7 +307,7 @@
      */
     /*public*/ JCheckBoxMenuItem* LayoutTrackView::loadArrowImageToJCBItem(int n, QMenu* arrowsCountMenu) {
         ImageIcon* imageIcon = new ImageIcon(FileUtil::findURL("program:resources/icons/decorations/ArrowStyle" + QString::number(n) + ".png"));
-        JCheckBoxMenuItem* jcbmi = new JCheckBoxMenuItem(imageIcon);
+        JCheckBoxMenuItem* jcbmi = new JCheckBoxMenuItem(imageIcon, this);
         arrowsCountMenu->addAction(jcbmi);
         jcbmi->setToolTip(tr("Select the style of arrow decorations to add to this track"));
         // can't set selected here because the ActionListener has to be set first

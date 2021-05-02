@@ -177,12 +177,12 @@
 //protected PropertyChangeListener mSignalMastListener = NULL;
 
 /*public*/ void DefaultSignalGroup::setHeadAlignTurnout(SignalHead* mHead, Turnout* mTurn, int state){
-    SignalHeadItem* sh = getSignalHeadItem(mHead);
+    SignalHeadItem* sh = getHeadItem(mHead);
     sh->addTurnout(mTurn, state);
 }
 
 /*public*/ void DefaultSignalGroup::setHeadAlignSensor(SignalHead* mHead, Sensor* mSen, int state){
-    SignalHeadItem* sh = getSignalHeadItem(mHead);
+    SignalHeadItem* sh = getHeadItem(mHead);
     sh->addSensor(mSen, state);
 }
 
@@ -226,7 +226,7 @@ Returns the 'n' signalheaditem
 
 /*public*/ int DefaultSignalGroup::getHeadOffState(SignalHead* bean){
     try {
-        return getSignalHeadItem(bean)->getOffAppearance();
+        return getHeadItem(bean)->getOffAppearance();
     } catch (NullPointerException e) {
         return -1;
     }
@@ -234,7 +234,7 @@ Returns the 'n' signalheaditem
 
 /*public*/ int DefaultSignalGroup::getHeadOnState(SignalHead* bean){
     try {
-        return getSignalHeadItem(bean)->getOnAppearance();
+        return getHeadItem(bean)->getOnAppearance();
     } catch (NullPointerException e) {
         return -1;
     }
@@ -257,20 +257,20 @@ Returns the 'n' signalheaditem
 }
 
 /*public*/ void DefaultSignalGroup::deleteSignalHead(SignalHead* pSignal){
-    _signalHeadItem.removeOne(getSignalHeadItem(pSignal));
+    _signalHeadItem.removeOne(getHeadItem(pSignal));
 }
 
 /*public*/ void DefaultSignalGroup::deleteSignalHead(NamedBeanHandle<SignalHead*>* sh){
-    _signalHeadItem.removeOne(getSignalHeadItem(sh->getName()));
+    _signalHeadItem.removeOne(getHeadItem(sh->getName()));
 }
 
 /*public*/ void DefaultSignalGroup::setHeadOnState(SignalHead* head, int state){
-    getSignalHeadItem(head)->setOnAppearance(state);
+    getHeadItem(head)->setOnAppearance(state);
     firePropertyChange("UpdateCondition", QVariant(),QVariant());
 }
 
 /*public*/ void DefaultSignalGroup::setHeadOffState(SignalHead* head, int state){
-    getSignalHeadItem(head)->setOffAppearance(state);
+    getHeadItem(head)->setOffAppearance(state);
     firePropertyChange("UpdateCondition", QVariant(),QVariant());
 }
 
@@ -299,7 +299,7 @@ Returns the 'n' signalheaditem
     return NULL;
 }
 
-/*private*/ SignalHeadItem* DefaultSignalGroup::getSignalHeadItem(NamedBean* bean) {
+/*private*/ SignalHeadItem* DefaultSignalGroup::getHeadItem(NamedBean* bean) {
     for (int i=0; i<_signalHeadItem.size(); i++) {
         if ( _signalHeadItem.at(i)->getSignal()==(bean) ) {
             return _signalHeadItem.at(i);
@@ -309,11 +309,11 @@ Returns the 'n' signalheaditem
 }
 
 /*public*/ bool DefaultSignalGroup::isTurnoutIncluded(SignalHead* pSignal, Turnout* pTurnout){
-    return getSignalHeadItem(pSignal)->isTurnoutIncluded(pTurnout);
+    return getHeadItem(pSignal)->isTurnoutIncluded(pTurnout);
 }
 
 /*public*/ int DefaultSignalGroup::getTurnoutState(SignalHead* pSignal, Turnout* pTurnout){
-    SignalHeadItem* sig = getSignalHeadItem(pSignal);
+    SignalHeadItem* sig = getHeadItem(pSignal);
     if (sig != NULL)
         return sig->getTurnoutState(pTurnout);
     return -1;
@@ -375,18 +375,18 @@ Returns the 'n' signalheaditem
 }
 
 /*public*/ bool DefaultSignalGroup::isSensorIncluded(SignalHead* pSignal, Sensor* pSensor){
-    return getSignalHeadItem(pSignal)->isSensorIncluded(pSensor);
+    return getHeadItem(pSignal)->isSensorIncluded(pSensor);
 }
 
 /*public*/ int DefaultSignalGroup::getSensorState(SignalHead* pSignal, Sensor* pSensor){
-    SignalHeadItem* sig = getSignalHeadItem(pSignal);
+    SignalHeadItem* sig = getHeadItem(pSignal);
     if (sig != NULL)
         return sig->getSensorState(pSensor);
     return -1;
 }
 
 /*public*/ bool DefaultSignalGroup::getSensorTurnoutOper(SignalHead* pSignal){
-    return getSignalHeadItem(pSignal)->getSensorTurnoutOper();
+    return getHeadItem(pSignal)->getSensorTurnoutOper();
 }
 
 /*public*/ bool DefaultSignalGroup::getSensorTurnoutOperByIndex(int x){
@@ -394,15 +394,15 @@ Returns the 'n' signalheaditem
 }
 
 /*public*/ void DefaultSignalGroup::setSensorTurnoutOper(SignalHead* pSignal, bool boo){
-    getSignalHeadItem(pSignal)->setSensorTurnoutOper(boo);
+    getHeadItem(pSignal)->setSensorTurnoutOper(boo);
     firePropertyChange("UpdateCondition", QVariant(),QVariant());
 }
 
 /*public*/ void DefaultSignalGroup::clearSignalTurnout(SignalHead* pSignal){
-    getSignalHeadItem(pSignal)->clearSignalTurnouts();
+    getHeadItem(pSignal)->clearSignalTurnouts();
 }
 /*public*/ void DefaultSignalGroup::clearSignalSensor(SignalHead* pSignal){
-    getSignalHeadItem(pSignal)->clearSignalSensors();
+    getHeadItem(pSignal)->clearSignalSensors();
 }
 
 /*private*/ void DefaultSignalGroup::resetHeads(){

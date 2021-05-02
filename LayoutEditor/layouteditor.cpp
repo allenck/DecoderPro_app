@@ -451,7 +451,8 @@ LayoutEditor::~LayoutEditor()
 /*public*/ void LayoutEditor::setSize(int w, int h)
 {
  log->debug("Frame size now w=" + QString::number(w) + ", h=" + QString::number(h));
- Editor::resize(w, h);
+ if(w >0 && h >0)
+  Editor::resize(w, h);
 }
 
 /*protected*/ void  LayoutEditor::targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* /*e*/)

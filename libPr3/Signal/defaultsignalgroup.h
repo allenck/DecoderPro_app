@@ -89,12 +89,11 @@ private:
 Logger* log;
 QList <SignalHeadItem*> _signalHeadItem;// = new QList<SignalHeadItem>();
 PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
-/*private*/ SignalHeadItem* getSignalHeadItem(QString name);
-/*private*/ SignalHeadItem* getSignalHeadItem(NamedBean* bean);
+/*private*/ SignalHeadItem* getHeadItem(QString name);
+/*private*/ SignalHeadItem* getHeadItem(NamedBean* bean);
 /*private*/ void resetHeads();
 /*private*/ void setHead();
 /*private*/ SignalHeadItem* getHeadItemByIndex(int n);
-/*private*/ SignalHeadItem* getHeadItem(QString name);
 
 protected:
 /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);

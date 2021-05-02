@@ -109,7 +109,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
   }
  }
  QDomElement root;
- if (doc.isNull())
+ if (doc.documentElement().isNull())
  {
     //doc = XMLUtil.createDocument("auxiliary-configuration", JmriConfigurationProvider::NAMESPACE, NULL, NULL); // NOI18N
    doc =  QDomDocument();

@@ -5,6 +5,11 @@ JCheckBoxMenuItem::JCheckBoxMenuItem(QString text, QObject *parent)
 {
  setCheckable(true);
 }
-/*public*/ JCheckBoxMenuItem::JCheckBoxMenuItem(ImageIcon* icon) {
+/*public*/ JCheckBoxMenuItem::JCheckBoxMenuItem(ImageIcon* imageIcon, QObject *parent) : AbstractAction("", parent) {
         // compiled code
-    }
+
+ setCheckable(true);
+
+ QIcon icon = QIcon(QPixmap::fromImage( imageIcon->getImage()));
+ setIcon(icon);
+}

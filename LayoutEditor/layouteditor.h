@@ -380,7 +380,7 @@ public:
     /*public*/ void setAntialiasingOn(bool state);
     /*public*/ void setDrawLayoutTracksLabel(bool state);
     /*public*/ void setAutoBlockAssignment(bool boo);
-    /*public*/ void setScroll(int state) override;
+    /*public*/ void setScroll(int state);
     /*public*/ void setConnections();
     /*public*/ /*@Nonnull*/ QRectF layoutEditorControlRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ /*@Nonnull*/ QRectF layoutEditorControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
@@ -400,7 +400,7 @@ public:
     /*public*/ void setDefaultTrackColor(QColor color);
     /*public*/ void setDefaultOccupiedTrackColor(QColor color);
     /*public*/ void setDefaultAlternativeTrackColor(QColor color);
-    /*public*/ QString getClassName() override;
+    /*public*/ QString getClassName();
     /*public*/ LayoutTrackDrawingOptions* getLayoutTrackDrawingOptions();
     /*public*/ void setLayoutTrackDrawingOptions(LayoutTrackDrawingOptions* ltdo);
     /*public*/ static void setupComboBox(/*@Nonnull*/ NamedBeanComboBox* inComboBox, bool inValidateMode, bool inEnable, bool inFirstBlank);
@@ -415,7 +415,7 @@ public:
     /*public*/ QVector<SignalMastIcon*>* signalMastList = new QVector<SignalMastIcon*>();  // Signal Head Icons
     /*private*/ /*transient*/ QList<LayoutShape*> layoutShapes = QList<LayoutShape*>();               // LayoutShap list
     /*public*/ QVector<MultiSensorIcon*>* multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
-    /*public*/ void dispose() override;
+    /*public*/ void dispose();
     /*public*/ QList<PositionablePoint *> getPositionablePoints() /*override*/;
     /*public*/ /*@Nonnull*/ QList<LayoutSlipView*> getLayoutSlipViews();
     /*public*/ QList<LayoutSlip *> getLayoutSlips()/*override*/;
@@ -473,7 +473,7 @@ public:
     /*public*/ bool scaleTrack(float xFactor, float yFactor);
     /*public*/ void clearSelectionGroups();
     /*public*/ void keyPressEvent(QKeyEvent *event) override;
-    /*protected*/ void paintTargetPanel(EditScene* g2) override;
+    /*protected*/ void paintTargetPanel(EditScene* g2);
     /*private*/ QRectF getSelectionRect();
     /*public*/ QList<PositionablePointView*> getPositionablePointViews() /*override*/;
     /*final*/ /*public*/ bool removeLayoutTrackAndRedraw(/*@Nonnull*/ LayoutTrack* trk);
@@ -560,7 +560,7 @@ public:
      */
     /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event) override;
     /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event) override;
-    /*public*/ void mouseWheelMoved(/*@Nonnull*/ QGraphicsSceneWheelEvent* event) override;
+    /*public*/ void mouseWheelMoved(/*@Nonnull*/ QGraphicsSceneWheelEvent* event);
 
 private:
  //Operational instance variables - not saved to disk

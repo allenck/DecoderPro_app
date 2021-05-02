@@ -30,3 +30,8 @@ LocalDateTime* LocalDateTime::now()
  QDateTime dt = QDateTime::fromMSecsSinceEpoch(msec);
  return dt.toString();
 }
+
+/*public*/ quint64 LocalDateTime::until(LocalDateTime* ldt, ChronoUnit)
+{
+ return ldt->msec;
+}
