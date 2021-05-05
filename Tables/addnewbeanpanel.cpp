@@ -98,12 +98,12 @@
 
      QWidget* panelBottom = new QWidget();
      panelBottom->setLayout(new FlowLayout(/*FlowLayout::TRAILING*/));
-     QPushButton* cancel;
-     panelBottom->layout()->addWidget(cancel = new QPushButton(tr("Cancel")));
+     JButton* cancel;
+     panelBottom->layout()->addWidget(cancel = new JButton(tr("Cancel")));
      //cancel.addActionListener(cancelListener);
      connect(cancel, SIGNAL(clicked()), cancelListener, SLOT(actionPerformed()));
 
-     panelBottom->layout()->addWidget(ok = new QPushButton(addButtonLabel));
+     panelBottom->layout()->addWidget(ok = new JButton(addButtonLabel));
      //ok.addActionListener(okListener);
      connect(ok, SIGNAL(clicked(bool)), listener, SLOT(actionPerformed()));
 

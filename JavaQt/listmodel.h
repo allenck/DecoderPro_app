@@ -20,7 +20,7 @@ public:
        * @return the value at <code>index</code>
        */
 //    template <class E>
-      virtual QVariant getElementAt(int /*index*/) {return QVariant();}
+      virtual QVariant getElementAt(int /*index*/) const{return QVariant();}
       virtual QVariant get(int /*index*/) {return QVariant();}
       virtual void set(int /*index*/, QVariant /*value*/) {}
 

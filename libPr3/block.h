@@ -26,10 +26,13 @@ public:
     };
     Q_ENUM(STATE)
     // Curvature attributes
-    static /*const*/ int NONE;// = 0x00;
-    static /*const*/ int GRADUAL;// = 0x01;
-    static /*const*/ int TIGHT;// = 0x02;
-    static /*const*/ int SEVERE;// = 0x04;
+    enum CURVATURE
+    {
+    NONE = 0x00,
+    GRADUAL = 0x01,
+    TIGHT = 0x02,
+    SEVERE = 0x04
+    };
 
     /*public*/ virtual bool setSensor(QString pName);
     /*public*/ virtual void setNamedSensor(NamedBeanHandle<Sensor*>* s);

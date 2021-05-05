@@ -3,11 +3,11 @@
 #include "jmripanel.h"
 #include "jcheckbox.h"
 #include "jspinner.h"
+#include "jbutton.h"
 
 class QLabel;
 class ActionListener;
 class QCheckBox;
-class QPushButton;
 class JLabel;
 class JTextField;
 class AddNewBeanPanel : public JmriPanel
@@ -22,7 +22,6 @@ signals:
 
 public slots:
 private:
- QPushButton* ok;
  JTextField* sysName;
  QLabel* sysNameLabel;// = new JLabel(rb.getString("LabelSystemName"));
  QLabel* userNameLabel;// = new JLabel(rb.getString("LabelUserName"));
@@ -35,6 +34,10 @@ private slots:
  /*private*/ void autoSystemName();
  /*private*/ void rangeState();
 
+protected:
+ JButton* ok;
+
+ friend class BlockTableAction;
 };
 
 #endif // ADDNEWBEANPANEL_H

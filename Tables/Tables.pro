@@ -27,6 +27,8 @@ CONFIG(debug, debug|release) {
 
 SOURCES +=  slotmonitor.cpp \
     beanselectcreatepanel.cpp \
+    blockcurvaturejcombobox.cpp \
+    blocktabledatamodel.cpp \
     jmribeancombobox.cpp \
     dialogsignalgroupstablewidget.cpp \
     logixtableaction.cpp \
@@ -120,6 +122,8 @@ SOURCES +=  slotmonitor.cpp \
     routeexporttologix.cpp
 
 HEADERS += libtables_global.h \
+    blockcurvaturejcombobox.h \
+    blocktabledatamodel.h \
     slotmonitor.h \
     beanselectcreatepanel.h \
     jmribeancombobox.h \

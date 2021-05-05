@@ -6,6 +6,7 @@
 //template <class E>
 class ComboBoxModel //: public ListModel
 {
+ public:
     /**
        * Set the selected item. The implementation of this  method should notify
        * all registered <code>ListDataListener</code>s that the contents

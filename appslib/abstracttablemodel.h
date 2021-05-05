@@ -15,9 +15,9 @@ class JAVAQTSHARED_EXPORT AbstractTableModel : public TableModel
     Q_OBJECT
 public:
     explicit AbstractTableModel(QObject *parent = 0);
-    /*public*/ QString getColumnName(int column) const;
+    /*public*/ QString getColumnName(int column) const override;
     virtual /*public*/ int findColumn(QString columnName);
-    /*public*/ QString getColumnClass(int columnIndex) const;
+    /*public*/ QString getColumnClass(int columnIndex) const override;
     /*public*/ bool isCellEditable(int rowIndex, int columnIndex) const override;
     /*public*/ void setValueAt(QVariant aValue, int rowIndex, int columnIndex) override;
     /*public*/ virtual void addTableModelListener(TableModelListener* l) override;
@@ -29,15 +29,17 @@ public:
     /*public*/ virtual void fireTableRowsDeleted(int firstRow, int lastRow);
     /*public*/ virtual void fireTableCellUpdated(int row, int column);
     /*public*/ virtual void fireTableChanged(TableModelEvent* e = 0);
-    /*public*/ int getRowCount() const {return rowCount(QModelIndex());}
-    /*public*/ int getColumnCount() const {return columnCount(QModelIndex());}
-    /*public*/ QVariant getValueAt(int row, int col) const;
+    /*public*/ int getRowCount() const override{return rowCount(QModelIndex());}
+    /*public*/ int getColumnCount() const override{return columnCount(QModelIndex());}
+    /*public*/ QVariant getValueAt(int row, int col) const override;
     virtual /*public*/ QVariant getToolTip(int /*col*/)const { return QString();}
     void setTable(JTable*);
 //    void setPersistentButtons();
-    JTable* table();
+    JTable* table() const;
     virtual QString toString() {return metaObject()->className();}
-
+    virtual QString getCellToolTip(JTable* /*table*/, int /*row*/, int /*col*/) const {return QString();}
+    bool isLegacy() const {return bLegacy;}
+    void setLegacy(bool b) {bLegacy = b;}
 signals:
 
 public slots:
@@ -52,6 +54,7 @@ private:
     QVariant data(const QModelIndex &index, int role) const override;
     JTable* _table = nullptr;
 //    QList<int> buttonMap;
+    bool bLegacy = false;
 
 protected:
     /** List of listeners */

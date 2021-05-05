@@ -33,6 +33,11 @@
 #include <QSignalMapper>
 #include "borderfactory.h"
 #include "namedbeanpropertydescriptor.h"
+#include "jtextarea.h"
+#include "signalmast.h"
+#include "signalmastmanager.h"
+#include "signalmastlogicmanager.h"
+#include "signalmastlogic.h"
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -90,6 +95,13 @@ BeanTableDataModel::~BeanTableDataModel()
         }
         return propertyColumns->value(tgt);
     }
+/**
+ * Get the current Bean state value in human readable form.
+ * @param systemName System name of Bean.
+ * @return state value in localised human readable form.
+ */
+//abstract public String getValue(String systemName);
+
 //template<class T>
 AbstractManager* BeanTableDataModel::getManager() {return NULL;}
 
@@ -197,7 +209,11 @@ void BeanTableDataModel::setManager(AbstractManager *) {}
     default: break;
     }
  }
- return QVariant();
+ if(isLegacy())
+  return AbstractTableModel::headerData(section, orientation, role);
+ else
+  return QVariant();
+
 }
 
  /*public*/ QString BeanTableDataModel::getColumnClass(int col) const {
@@ -234,6 +250,8 @@ void BeanTableDataModel::setManager(AbstractManager *) {}
   default:
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
  }
+ if(isLegacy())
+  return AbstractTableModel::flags(index);
  return Qt::NoItemFlags;
 }
 
@@ -264,6 +282,9 @@ void BeanTableDataModel::setManager(AbstractManager *) {}
         break;
   }
  }
+ if(isLegacy())
+  return AbstractTableModel::data(index, role);
+ else
   return QVariant();
 }
 
@@ -397,6 +418,8 @@ void BeanTableDataModel::setManager(AbstractManager *) {}
   }
   return true;
  }
+ if(isLegacy())
+  AbstractTableModel::setData(index, value, role);
  return false;
 }
 
@@ -1180,6 +1203,80 @@ void BeanTableDataModel::On_moveBean_triggered()
         showInfoMessage("Reminder",getBeanType() + " " + tr("UpdateComplete"),"BeanTableDataModel", "remindSaveReLoad");
     //JOptionPane.showMessageDialog(NULL, getBeanType() + " " + AbstractTableAction.rb.getString("UpdateComplete"));
  }
+}
+
+/*public*/ void BeanTableDataModel::editComment(int row, int column) {
+    NamedBean* nBean = getBySystemName(sysNameList.at(row));
+    JTextArea* commentField = new JTextArea(5, 50);
+#if 0
+    JScrollPane commentFieldScroller = new JScrollPane(commentField);
+    commentField.setText(nBean.getComment());
+    Object[] editCommentOption = {Bundle.getMessage("ButtonCancel"), Bundle.getMessage("ButtonUpdate")};
+    int retval = JOptionPane.showOptionDialog(null,
+            commentFieldScroller, Bundle.getMessage("EditComment"),
+            JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
+            editCommentOption, editCommentOption[1]);
+    if (retval != 1) {
+        return;
+    }
+
+    nBean->setComment(commentField->text());
+#endif
+}
+
+/**
+ * Display the comment text for the current row as a tool tip.
+ *
+ * Most of the bean tables use the standard model with comments in column 3.
+ * The SignalMastLogic table uses column 4 for the comment field.
+ * TurnoutTableAction has its own getCellToolTip.
+ * <p>
+ * @param table The current table.
+ * @param row The current row.
+ * @param col The current column.
+ * @return a formatted tool tip or null if there is none.
+ */
+/*public*/ QString BeanTableDataModel::getCellToolTip(JTable* table, int row, int col) const{
+    QString tip = QString();
+    if (!table->getName().contains("SignalMastLogic")) {
+        int column = COMMENTCOL;
+        if (table->getName().contains("SignalGroup")) column = 2;
+        if (col == column) {
+            NamedBean* nBean = getBySystemName(sysNameList.at(row));
+            if (nBean != nullptr) {
+                tip = formatToolTip(nBean->getComment());
+            }
+        }
+    } else {
+        // SML comments are in column 4
+        if (col == 4) {
+            // The table does not have a "system name"
+            SignalMastManager* smm = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
+            SignalMast* source = smm->getSignalMast( ((AbstractTableModel*)table->getModel())->getValueAt(row, 0).toString());
+            SignalMast* dest = smm->getSignalMast(((AbstractTableModel*) table->getModel())->getValueAt(row, 2).toString());
+            if (source != nullptr) {
+                SignalMastLogic* sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(source);
+                if (sml != nullptr && dest != nullptr) {
+                    tip = formatToolTip(sml->getComment(dest));
+                }
+            }
+        }
+    }
+    return tip;
+}
+
+/**
+ * Format a comment field as a tool tip string. Multi line comments are supported.
+ * @param comment The comment string.
+ * @return a html formatted string or null if the comment is empty.
+ */
+QString BeanTableDataModel::formatToolTip(QString comment)const{
+    QString tip = QString();
+    if (!comment.isNull() && !comment.isEmpty()) {
+//        tip = "<html>" + comment.replaceAll(System.getProperty("line.separator"), "<br>") + "</html>";
+     tip = comment; // temp
+    }
+    return tip;
 }
 
 /*protected*/ void BeanTableDataModel::showTableHeaderPopup(QMouseEvent* e, JTable* table) {

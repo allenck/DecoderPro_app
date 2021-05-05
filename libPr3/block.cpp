@@ -11,10 +11,6 @@
 ///*static*/ const int Block::OCCUPIED = Sensor::ACTIVE;
 ///*static*/ const int Block::UNOCCUPIED = Sensor::INACTIVE;
 //const int Block::UNOCCUPIED = 0x04;
-/*static const*/ int Block::NONE = 0x00;
-/*static const*/ int Block::GRADUAL = 0x01;
-/*static const*/ int Block::TIGHT = 0x02;
-/*static const*/ int Block::SEVERE = 0x04;
 
 // this should only be used for debugging...
 /*public*/ QString Block::toDebugString() {

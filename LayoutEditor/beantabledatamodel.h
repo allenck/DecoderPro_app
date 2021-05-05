@@ -50,13 +50,14 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  virtual /*public*/ int getPreferredWidth(int col) ;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ /*abstract*/ /*public*/ virtual QString getValue(QString systemName) {return QString();}
 
 // virtual void fireTableDataChanged();
 // virtual void fireTableRowsUpdated(int, int);
  /*public*/ int getDisplayDeleteMsg();
  /*public*/ void setDisplayDeleteMsg(int boo);
  virtual /*public*/ void configureTable(JTable* table);
- /*synchronized*/ /*public*/ void dispose();
+ virtual /*synchronized*/ /*public*/ void dispose();
  virtual /*public*/ QPushButton* configureButton();
 // /*public*/ void saveTableColumnDetails(JTable* table);
 // QT_DEPRECATED/*public*/ void saveTableColumnDetails(JTable* table, QString beantableref);
@@ -74,6 +75,8 @@ public:
  virtual /*public*/ void addToPopUp(QMenu* popup);
  /*public*/ void setPropertyColumnsVisible(JTable* table, bool visible);
  QObject* self() override {return (QObject*)this;}
+ /*public*/ void editComment(int row, int column);
+ /*public*/ QString getCellToolTip(JTable* table, int row, int col) const override;
 
 
 signals:
@@ -103,6 +106,7 @@ private:
  //JTable* _table = nullptr;
  int row;
  //void setPersistentButtons();
+ QString formatToolTip(QString comment) const;
 
 protected:
  /*abstract*/ /*protected*/ virtual AbstractManager* getManager();

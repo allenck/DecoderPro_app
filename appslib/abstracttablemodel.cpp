@@ -153,6 +153,7 @@ int AbstractTableModel::rowCount(const QModelIndex &parent) const
 {
  return this->getRowCount();
 }
+
 int AbstractTableModel::columnCount(const QModelIndex &parent) const
 {
  return this->getColumnCount();
@@ -441,7 +442,7 @@ void AbstractTableModel::setTable(JTable * t)
  _table = t;
 }
 
-JTable* AbstractTableModel::table() { return _table;}
+JTable* AbstractTableModel::table() const { return _table;}
 
 /*public*/ QVariant AbstractTableModel::getValueAt(int row, int col) const
 {
@@ -450,7 +451,11 @@ JTable* AbstractTableModel::table() { return _table;}
 
 QVariant AbstractTableModel::data(const QModelIndex &index, int role) const
 {
- if((getColumnClass(index.column()) == "Boolean") && (role == Qt::CheckStateRole))
+ if(role == Qt::ToolTipRole)
+ {
+   return getCellToolTip(table(), index.row(), index.column());
+ }
+ if((role == Qt::CheckStateRole) && (getColumnClass(index.column()) == "Boolean")  )
  {
   return getValueAt(index.row(), index.column()).toBool()?Qt::Checked:Qt::Unchecked;
  }

@@ -25,13 +25,9 @@
 #include <QPointer>
 #include "fileutil.h"
 #include "joptionpane.h"
-
-
-BlockTableAction::BlockTableAction(QObject *parent) :
-  AbstractTableAction(tr("Block Table"), parent)
-{
- common();
-}
+#include <QButtonGroup>
+#include "loggerfactory.h"
+#include "blocktabledatamodel.h"
 /**
  * Swing action to create and register a BlockTable GUI.
  *
@@ -44,6 +40,8 @@ BlockTableAction::BlockTableAction(QObject *parent) :
  *
  */
 ///*private*/ static final long serialVersionUID = 6207247759586108823L;
+
+/*public*/ /*final*/ /*static*/ QString BlockTableAction::BLOCK_METRIC_PREF = /*BlockTableAction.class.getName()*/".jmri.jmrit.beantable.BlockTableAction:LengthUnitMetric"; // NOI18N
 
 /**
  * Create an action with a specific title.
@@ -66,7 +64,6 @@ void BlockTableAction::common()
  tightText = tr("Tight");
  severeText = tr("Severe");
  curveOptions = QStringList() << noneText << gradualText << tightText << severeText;
- speedList = QVector<QString>();
  twoDigit = new DecimalFormat("0.00");
  inchBox = new QCheckBox(tr("Length in Inches"));
  centimeterBox = new QCheckBox(tr("Length in Centimeters"));
@@ -92,20 +89,13 @@ void BlockTableAction::common()
   centimeterBox->setChecked(true);
  }
 
- defaultBlockSpeedText = ("Use Global " + ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getDefaultSpeed());
- speedList.append(defaultBlockSpeedText);
- QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
- for (int i = 0; i < _speedMap.size(); i++) {
-     if (!speedList.contains(_speedMap.at(i))) {
-         speedList.append(_speedMap.at(i));
-     }
- }
- updateSensorList();
 }
-#if 1
-///*public*/ BlockTableAction() {
-//    this("Block Table");
-//}
+
+BlockTableAction::BlockTableAction(QObject *parent) :
+  AbstractTableAction(tr("Block Table"), parent)
+{
+ common();
+}
 
 
 /**
@@ -117,9 +107,15 @@ void BlockTableAction::common()
  // load graphic state column display preference
  _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
 
- m = new BlockTableDataModel(inchBox, this);
+ m = new BlockTableDataModel(getManager());
 }
 
+//@Nonnull
+//@Override
+/*protected*/ Manager/*<Block>*/* BlockTableAction::getManager() {
+    return (BlockManager*)InstanceManager::getDefault("BlockManager");
+}
+#if 0
 /*public*/ BlockTableDataModel::BlockTableDataModel(QCheckBox* inchBox, BlockTableAction* blockTableAction)
 {
  this->blockTableAction = blockTableAction;
@@ -427,7 +423,7 @@ void BlockTableAction::common()
  //  }
    if (!speedList.contains(speed) && !speed.contains("Global"))
    {
-    blockTableAction->speedList.append(speed);
+    speedList.append(speed);
    }
    fireTableRowsUpdated(row, row);
   }
@@ -673,7 +669,7 @@ void BlockTableAction::common()
          speedList.append(_speedMap.at(i));
      }
  }
- table->setItemDelegateForColumn(SPEEDCOL, new OBSComboBoxDelegate(this, speedList));
+ table->setItemDelegateForColumn(SPEEDCOL, new OBSComboBoxDelegate(this, speedList.toList()));
  //buttonMap.append(SPEEDCOL);
 
  QStringList nameList = InstanceManager::sensorManagerInstance()->getSystemNameArray();
@@ -729,12 +725,17 @@ void BlockTableAction::common()
  {
   if (e->getPropertyName()==("length") || e->getPropertyName()==("DisplayListName"))
   {
-   blockTableAction->updateSensorList();
+   updateSensorList();
   }
+ }
+ if (qobject_cast<ReporterManager*>(e->getSource()) ) {
+     if (e->getPropertyName() == ("length") || e->getPropertyName() ==("DisplayListName")) { // NOI18N
+         updateReporterList();
+     }
  }
  if (e->getPropertyName()==("DefaultBlockSpeedChange"))
  {
-  blockTableAction->updateSpeedList();
+  updateSpeedList();
  }
  else
  {
@@ -742,8 +743,105 @@ void BlockTableAction::common()
  }
 }
 
-/*protected*/ QString BlockTableDataModel::getBeanType() {
-    return tr("Block");
+/**
+ * Set and refresh the UI to use Metric or Imperial values.
+ * @param boo true if metric, false for Imperial.
+ */
+/*public*/ void BlockTableDataModel::setMetric(bool boo){
+    metricUi = boo;
+    fireTableDataChanged();
+}
+
+/*private*/ void BlockTableDataModel::updateSensorList() {
+    QSet<NamedBean*> nameSet = InstanceManager::sensorManagerInstance()->getNamedBeanSet();
+    QVector<QString> displayList = QVector<QString>(nameSet.size());
+    int i = 0;
+    for (NamedBean* nb : nameSet) {
+     Sensor* nBean  = (Sensor*)nb;
+        if (nBean != nullptr) {
+            displayList[i++] = nBean->getDisplayName();
+        }
+    }
+    //Arrays.sort(displayList);
+    qSort(displayList.begin(), displayList.end());
+    sensorList = QVector<QString>(displayList.length() + 1);
+    sensorList[0] = "";
+    i = 1;
+    for (QString name : displayList) {
+        sensorList[i] = name;
+        i++;
+    }
+}
+
+/*private*/ void BlockTableDataModel::updateReporterList() {
+ QSet<NamedBean*> nameSet = InstanceManager::sensorManagerInstance()->getNamedBeanSet();
+ QVector<QString> displayList = QVector<QString>(nameSet.size());
+    int i = 0;
+    for (NamedBean* nb : nameSet) {
+     Reporter* nBean = (Reporter*)nb;
+        if (nBean != nullptr) {
+            displayList[i++] = nBean->getDisplayName();
+        }
+    }
+    //Arrays.sort(displayList);
+    qSort(displayList.begin(), displayList.end());
+    reporterList = QVector<QString>(displayList.length() + 1);
+    reporterList[0] = "";
+    i = 1;
+    for (QString name : displayList) {
+        reporterList[i] = name;
+        i++;
+    }
+}
+
+/*private*/ void BlockTableDataModel::updateSpeedList() {
+    speedList.removeOne(defaultBlockSpeedText);
+    defaultBlockSpeedText = (tr("Use %1").arg("Global") + " " + ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed());
+    speedList.insert(0, defaultBlockSpeedText);
+    fireTableDataChanged();
+}
+
+/*public*/ void BlockTableDataModel::setDefaultSpeeds(JFrame* _who) {
+    JComboBox* blockSpeedCombo = new JComboBox(speedList.toList());
+
+    blockSpeedCombo->setEditable(true);
+
+    JPanel* block = new JPanel(new FlowLayout());
+    block->layout()->addWidget(new JLabel(tr("%1:").arg(tr("Block Speed"))));
+    block->layout()->addWidget(blockSpeedCombo);
+
+    blockSpeedCombo->removeItem(blockSpeedCombo->findText(defaultBlockSpeedText));
+
+    blockSpeedCombo->setSelectedItem(((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed());
+
+    // block of options above row of buttons; gleaned from Maintenance.makeDialog()
+    // can be accessed by Jemmy in GUI test
+    QString title = tr("Block Speed");
+    // build JPanel for comboboxes
+    JPanel* speedspanel = new JPanel();
+    speedspanel->setLayout(new QVBoxLayout(speedspanel));//, BoxLayout.PAGE_AXIS));
+    speedspanel->layout()->addWidget(new JLabel(tr("Select the default values for the speeds through the blocks")));
+    //default LEFT_ALIGNMENT
+    ((QVBoxLayout*)speedspanel->layout())->addWidget(block,0, Qt::AlignLeft);
+
+    int retval = JOptionPane::showConfirmDialog(
+            _who,
+            speedspanel->windowTitle(),
+            title,
+            JOptionPane::OK_CANCEL_OPTION,
+            JOptionPane::INFORMATION_MESSAGE);
+    log->debug(tr("Retval = %1").arg(retval));
+    if (retval != JOptionPane::OK_OPTION) { // OK button not clicked
+        return;
+    }
+
+    QString speedValue =  blockSpeedCombo->getSelectedItem();
+    //We will allow the turnout manager to handle checking if the values have changed
+    try {
+        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speedValue);
+    } catch (IllegalArgumentException ex) {
+        JOptionPane::showMessageDialog(_who, ex.getMessage() + "\n" + speedValue);
+    }
 }
 
 /*synchronized*/ /*public*/ void BlockTableDataModel::dispose()
@@ -782,69 +880,39 @@ void BlockTableDataModel::editButton(Block* b)
 #endif
 }
 #endif
-/*private*/ void BlockTableAction::updateSensorList()
-{
- QStringList nameList = InstanceManager::sensorManagerInstance()->getSystemNameArray();
- QVector<QString> displayList = QVector<QString>(nameList.length());
- for (int i = 0; i < nameList.length(); i++)
- {
-  NamedBean* nBean = InstanceManager::sensorManagerInstance()->getBeanBySystemName(nameList[i]);
-  if (nBean != NULL) {
-      displayList.replace(i, nBean->getDisplayName());
-  }
- }
- //java.util.Arrays.sort(displayList);
- QVector<QString> sensorList = QVector<QString>(displayList.size() + 1);
- sensorList.replace(0,"");
- int i = 1;
- foreach (QString name, displayList)
- {
-  sensorList.replace(i,name);
-     i++;
- }
- this->sensorList = sensorList.toList();
-}
-
-/**
- * Read and buffer graphics. Only called once for this table.
- *
- * @see #getTableCellEditorComponent(JTable, Object, boolean, int, int)
- */
-/*protected*/ void BlockTableDataModel::loadIcons() {
-    try {
-        onImage = ImageIO::read(new File(onIconPath));
-        offImage = ImageIO::read(new File(offIconPath));
-    } catch (IOException ex) {
-        log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
-    }
-    log->debug("Success reading images");
-    int imageWidth = onImage->width();
-    int imageHeight = onImage->height();
-    // scale icons 50% to fit in table rows
-    QImage smallOnImage = onImage->getScaledInstance(imageWidth / 2, imageHeight / 2,0/*, Image.SCALE_DEFAULT*/);
-    QImage smallOffImage = offImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0/*, Image.SCALE_DEFAULT*/);
-//        onIcon = new ImageIcon(smallOnImage);
-    onIcon = QPixmap::fromImage(smallOnImage);
-//        offIcon = new ImageIcon(smallOffImage);
-    offIcon = QPixmap::fromImage(smallOffImage);
-    iconHeight = onIcon.height();
-}
-
-/*private*/ void BlockTableAction::updateSpeedList() {
-    speedList.remove(speedList.indexOf(defaultBlockSpeedText));
-    defaultBlockSpeedText = ("Use Global " + ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed());
-    speedList.insert(0, defaultBlockSpeedText);
-    m->fireTableDataChanged();
-}
 
 /*protected*/ void BlockTableAction::setTitle() {
     f->setTitle(tr("Block Table"));
+}
+
+/*private*/ void BlockTableAction::initRadioButtons(){
+
+    inchBox->setToolTip(tr("Check to display Length in inches.")); // NOI18N
+    centimeterBox->setToolTip(tr("Check to display Length in centimeters.")); // NOI18N
+
+    QButtonGroup* group = new QButtonGroup();
+    group->addButton(inchBox);
+    group->addButton(centimeterBox);
+    inchBox->setChecked(true);
+    centimeterBox->setChecked( ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))
+        ->getSimplePreferenceState(BLOCK_METRIC_PREF));
+
+    //inchBox.addActionListener(this::metricSelectionChanged);
+    connect(inchBox, &QCheckBox::clicked, [=]{metricSelectionChanged();});
+    //centimeterBox.addActionListener(this::metricSelectionChanged);
+    connect(centimeterBox, &QCheckBox::clicked, [=]{metricSelectionChanged();});
+
+    // disabling keyboard input as when focused, does not fire actionlistener
+    // and appears selected causing mismatch with button selected and what the table thinks is selected.
+//    inchBox->setFocusable(false);
+//    centimeterBox.setFocusable(false);
 }
 
 /**
  * Add the checkboxes
  */
 /*public*/ void BlockTableAction::addToFrame(BeanTableFrame* f) {
+ initRadioButtons();
     //final BeanTableFrame finalF = f;	// needed for anonymous ActionListener class
     f->addToBottomBox(inchBox, this->metaObject()->className());
 //    inchBox->setToolTip(tr("Check to display Length in inches."));
@@ -873,79 +941,33 @@ void BlockTableDataModel::editButton(Block* b)
     pathMenu->addAction(item);
 //    item.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            deletePaths(finalF);
+    connect(item, &QAction::triggered, [=]{
+            deletePaths(finalF);
 //        }
-//    });
-    connect(item, SIGNAL(triggered()), this, SLOT(on_deletePaths()));
+    });
     QMenu* speedMenu = new QMenu("Speeds");
     item = new QAction("Defaults...", this);
     speedMenu->addAction(item);
 //    item.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            setDefaultSpeeds(finalF);
+    connect(item, &QAction::triggered, [=]{
+     ((BlockTableDataModel*)m)->setDefaultSpeeds(finalF);
 //        }
-//    });
+    });
 
     menuBar->addMenu(speedMenu);
 
 }
-void BlockTableAction::on_deletePaths()
-{
- deletePaths(finalF);
+
+/*private*/ void BlockTableAction::metricSelectionChanged(/*ActionEvent e*/) {
+    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))
+        ->setSimplePreferenceState(BLOCK_METRIC_PREF, centimeterBox->isChecked());
+    ((BlockTableDataModel*)m)->setMetric(centimeterBox->isChecked());
 }
 
-void BlockTableAction::on_defaultSpeeds()
-{
- setDefaultSpeeds(finalF);
-}
-
-/*protected*/ void BlockTableAction::setDefaultSpeeds(JFrame* _who)
-{
- QComboBox* blockSpeedCombo = new QComboBox(/*speedList*/);
- blockSpeedCombo->addItems(speedList.toList());
- blockSpeedCombo->setEditable(true);
-
- QWidget* block = new QWidget();
- FlowLayout* blockLayout = new FlowLayout(block);
- blockLayout->addWidget(new QLabel("Block Speed"));
- blockLayout->addWidget(blockSpeedCombo);
-
- blockSpeedCombo->removeItem(blockSpeedCombo->findText(defaultBlockSpeedText));
-
- blockSpeedCombo->setCurrentIndex(blockSpeedCombo->findText(((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed()));
-
-// int retval = JOptionPane.showOptionDialog(_who,
-//         "Select the default values for the speeds through the blocks\n", "Block Speeds",
-//         0, JOptionPane.INFORMATION_MESSAGE, NULL,
-//         new Object[]{"Cancel", "OK", block}, NULL);
- int retval = QMessageBox::information(_who, tr("Information"), tr("Select the default values for the speeds through the blocks\n", "Block Speeds"), QMessageBox::Ok | QMessageBox::Cancel);
- if (retval != QMessageBox::Ok)
- {
-  return;
- }
-
- QString speedValue =  blockSpeedCombo->currentText();
- //We will allow the turnout manager to handle checking if the values have changed
- //try {
-     ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speedValue);
-// } catch (JmriException ex) {
-//     JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speedValue);
-//     return;
-// }
-}
-
-/*private*/ void BlockTableAction::inchBoxChanged() {
-    centimeterBox->setChecked(!inchBox->isChecked());
-    m->fireTableDataChanged();  // update view
-}
-
-/*private*/ void BlockTableAction::centimeterBoxChanged() {
-    inchBox->setChecked(!centimeterBox->isChecked());
-    m->fireTableDataChanged();  // update view
-}
-
+//@Override
 /*protected*/ QString BlockTableAction::helpTarget() {
-    return "package.jmrit.beantable.BlockTable";
+    return "package.jmri.jmrit.beantable.BlockTable";
 }
 
 
@@ -955,81 +977,40 @@ void BlockTableAction::on_defaultSpeeds()
  if (addFrame == NULL)
  {
   addFrame = new JmriJFrameX(tr("Add Block"), false, true);
+  addFrame->setEscapeKeyClosesWindow(true);
   addFrame->addWindowListener(new ABWindowListener(this));
   addFrame->addHelpMenu("package.jmrit.beantable.BlockAddEdit", true); //IN18N
 //        addFrame.getContentPane().setLayout(new BoxLayout(addFrame.getContentPane(), BoxLayout.Y_AXIS));
   QWidget* centralWidget = new QWidget();
   QVBoxLayout* centralWidgetLayout = new QVBoxLayout(centralWidget);
-  addFrame->setCentralWidget(centralWidget);
-  ActionListener* okListener = new BTActionListener(this);
+  ActionListener* oklistener = new BTActionListener(this);
 //  {
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                okPressed(e);
 //            }
 //        };
-  BTCancelListener* cancelListener = new BTCancelListener(this);
+  BTCancelListener* cancellistener = new BTCancelListener(this);
 
-  // if the add dialog was previosly closed, these may be invalid so re-initialize them.
-  sysName = new JTextField(20);
-  userName = new JTextField(20);
-  sysNameLabel = new JLabel(tr("SystemName"));
-  userNameLabel = new JLabel(tr("UserName"));
-  numberToAddSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
-  numberToAddSpinner = new JSpinner(numberToAddSpinnerNumberModel);
-  addRangeCheckBox = new JCheckBox(tr("Add a sequential range"));
-  _autoSystemNameCheckBox = new JCheckBox(tr("Automatically generate System Name"));
-  statusBar = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
+  AddNewBeanPanel* anbp = new AddNewBeanPanel(sysName, userName, numberToAddSpinner, addRangeCheckBox, _autoSystemNameCheckBox, tr("Create"), oklistener, cancellistener, statusBar);
+  addFrame->setCentralWidget(centralWidget);
+  newButton = anbp->ok;
+  sysName->setToolTip(tr("<html>Enter System Name for this new item, e.g. X{0}12<br>where X = the prefix for your connection<br>and %1 = is the letter for the item type.</html>").arg("B")); // override tooltip with bean specific letter
+ }
 
-  centralWidgetLayout->addWidget(new AddNewBeanPanel(sysName, userName, numberToAddSpinner, addRangeCheckBox, _autoSystemNameCheckBox, "OK", okListener, cancelListener, statusBar));
-  sysName->setToolTip(tr("<html>Enter System Name for this new item, e.g. X%112<br>where X = the prefix for your connection<br>and %1 = is the letter for the item type.</html>").arg("B")); // override tooltip with bean specific letter
- }
- if (pref->getSimplePreferenceState(systemNameAuto))
- {
-  _autoSystemNameCheckBox->setChecked(true);
- }
  sysName->setBackground(Qt::white);
  // reset statusBar text
  statusBar->setText(tr("Enter a System Name and (optional) User Name."));
  statusBar->setForeground(Qt::gray);
- if (pref->getSimplePreferenceState(systemNameAuto)) {
+ if (((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getSimplePreferenceState(systemNameAuto)) {
      _autoSystemNameCheckBox->setChecked(true);
  }
- addRangeCheckBox->setChecked(false);
- addFrame->adjustSize();
- addFrame->setVisible(true);
-}
-
-BTActionListener::BTActionListener(BlockTableAction *blockTableAction)
-{
- this->blockTableAction = blockTableAction;
-}
-void BTActionListener::actionPerformed(JActionEvent *)
-{
- blockTableAction->okPressed();
-}
-BTCancelListener::BTCancelListener(BlockTableAction *blockTableAction)
-{
- this->blockTableAction = blockTableAction;
-}
-void BTCancelListener::actionPerformed(JActionEvent *)
-{
- blockTableAction->cancelPressed();
-}
-
-
-bool BlockTableAction::validateNumericalInput(QString text)
-{
- bool bOk = true;
- if (text.length() != 0)
- {
-//     try {
-//         Integer.parseInt(text);
-//     } catch (java.lang.NumberFormatException ex) {
-//         return false;
-//     }
-  int i = text.toInt(&bOk);
+ if (newButton!=nullptr){
+//     addFrame.getRootPane().setDefaultButton(newButton);
+     newButton->setDefault(true);
  }
- return bOk;
+ addRangeCheckBox->setChecked(false);
+ addFrame->pack();
+ addFrame->setVisible(true);
 }
 
 void BlockTableAction::cancelPressed(JActionEvent* /*e*/) {
@@ -1079,91 +1060,96 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
  // Add some entry pattern checking, before assembling sName and handing it to the blockManager
  QString statusMessage = QString(tr("New %1(s) added:").arg(tr("Block")));
 
- for (int x = 0; x < numberOfBlocks; x++) {
-     if (x != 0) { // start at 2nd Block
-         if (!_autoSystemNameCheckBox->isChecked()) {
-             // Find first block with unused system name
-             while (true) {
-                 system = nextName(system);
-                 // log.warn("Trying " + system);
-                 Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(system);
-                 if (blk == nullptr) {
-                     sName = system;
-                     break;
-                 }
-             }
-         }
-         if (user != "") {
-             // Find first block with unused user name
-             while (true) {
-                 user = nextName(user);
-                 //log.warn("Trying " + user);
-                 Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(user);
-                 if (blk == nullptr) {
-                     uName = user;
-                     break;
-                 }
-             }
-         }
+ for (int x = 0; x < numberOfBlocks; x++)
+ {
+  if (x != 0)
+  { // start at 2nd Block
+   if (!_autoSystemNameCheckBox->isChecked())
+   {
+    // Find first block with unused system name
+    while (true) {
+     system = nextName(system);
+     // log.warn("Trying " + system);
+     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(system);
+     if (blk == nullptr) {
+         sName = system;
+         break;
      }
-     Block* blk;
-     QString xName = "";
-     try {
-         if (_autoSystemNameCheckBox->isChecked())
-         {
-            blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(user);
-            if (blk == nullptr)
-            {
-               xName = uName;
-               throw IllegalArgumentException();
-            }
-         } else {
-             blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(sName, user);
-             if (blk == nullptr) {
-                 xName = sName;
-                 throw IllegalArgumentException();
-             }
-         }
-     } catch (IllegalArgumentException ex) {
-      // user input no good
-      handleCreateException(xName);
-      statusBar->setText(tr("Check that number/name is OK and not in use."));
-      statusBar->setForeground(Qt::red);
-      return; // without creating
+    }
+   }
+   if (user != "")
+   {
+    // Find first block with unused user name
+    while (true)
+    {
+     user = nextName(user);
+     //log.warn("Trying " + user);
+     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(user);
+     if (blk == nullptr) {
+         uName = user;
+         break;
      }
-     if (blk != NULL)
-     {
-         if (lengthField->text().length() != 0) {
-             blk->setLength((lengthField->text().toInt()));
-         }
-         /*if (blockSpeed.getText().length()!=0)
-          blk->setSpeedLimit(Integer.parseInt(blockSpeed.getText()));*/
-         try {
-             blk->setBlockSpeed( speeds->currentText());
-         } catch (JmriException ex) {
-             JOptionPane::showMessageDialog(NULL, ex.getMessage() + "\n" +  speeds->currentText());
-         }
-         if (checkPerm->isChecked()) {
-             blk->setPermissiveWorking(true);
-         }
-         QString cName =  cur->currentText();
-         if (cName==(noneText)) {
-             blk->setCurvature(Block::NONE);
-         } else if (cName==(gradualText)) {
-             blk->setCurvature(Block::GRADUAL);
-         } else if (cName==(tightText)) {
-             blk->setCurvature(Block::TIGHT);
-         } else if (cName==(severeText)) {
-             blk->setCurvature(Block::SEVERE);
-         }
-         // add first and last names to statusMessage user feedback string
-         if (x == 0 || x == numberOfBlocks - 1) {
-             statusMessage.append(" ").append(sName).append(" (").append(user).append(")");
-         }
-         if (x == numberOfBlocks - 2) {
-             statusMessage.append(" ").append(tr("up to")).append(" ");
-         }
-     }
+    }
+   }
+  }
+  Block* blk;
+  QString xName = "";
+  try {
+   if (_autoSystemNameCheckBox->isChecked())
+   {
+      blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(user);
+      if (blk == nullptr)
+      {
+         xName = uName;
+         throw IllegalArgumentException();
+      }
+   } else {
+       blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(sName, user);
+       if (blk == nullptr) {
+           xName = sName;
+           throw IllegalArgumentException();
+       }
+   }
+  } catch (IllegalArgumentException ex) {
+   // user input no good
+   handleCreateException(xName);
+   statusBar->setText(tr("Check that number/name is OK and not in use."));
+   statusBar->setForeground(Qt::red);
+   return; // without creating
+  }
+  if (blk != NULL)
+  {
+   if (lengthField->text().length() != 0) {
+       blk->setLength((lengthField->text().toInt()));
+   }
+   /*if (blockSpeed.getText().length()!=0)
+    blk->setSpeedLimit(Integer.parseInt(blockSpeed.getText()));*/
+   try {
+       blk->setBlockSpeed( speeds->currentText());
+   } catch (JmriException ex) {
+       JOptionPane::showMessageDialog(NULL, ex.getMessage() + "\n" +  speeds->currentText());
+   }
+   if (checkPerm->isChecked()) {
+       blk->setPermissiveWorking(true);
+   }
+   QString cName =  cur->currentText();
+   if (cName==(noneText)) {
+       blk->setCurvature(Block::NONE);
+   } else if (cName==(gradualText)) {
+       blk->setCurvature(Block::GRADUAL);
+   } else if (cName==(tightText)) {
+       blk->setCurvature(Block::TIGHT);
+   } else if (cName==(severeText)) {
+       blk->setCurvature(Block::SEVERE);
+   }
+   // add first and last names to statusMessage user feedback string
+   if (x == 0 || x == numberOfBlocks - 1) {
+       statusMessage.append(" ").append(sName).append(" (").append(user).append(")");
+   }
+   if (x == numberOfBlocks - 2) {
+       statusMessage.append(" ").append(tr("up to")).append(" ");
+   }
+  }
  }
 
  // provide feedback to user
@@ -1174,40 +1160,31 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
  // ((BlockManager*)InstanceManager::getDefault("BlockManager")).createNewBlock(sName, user);
 }
 
-void BlockTableAction::handleCreateException(QString sysName) {
-//    JOptionPane.showMessageDialog(addFrame,
-//            java.text.MessageFormat.format(
-//                    tr("ErrorBlockAddFailed"),
-//                    new Object[]{sysName}),
-//            tr("ErrorTitle"),
-//            javax.swing.JOptionPane.ERROR_MESSAGE);
+void BlockTableAction::handleCreateException(QString sysName)
+{
+    JOptionPane::showMessageDialog(addFrame,
+            tr("Could not create block \%1\" to add it. Check that number/name is OK.").arg(sysName),
+            tr("Error"),
+            JOptionPane::ERROR_MESSAGE);
  QMessageBox::critical(addFrame, tr("Error"), tr("Could not create block \%1\" to add it. Check that number/name is OK.").arg(sysName));
 }
-///*private*/ boolean noWarn = false;
 
 void BlockTableAction::deletePaths(JmriJFrame* f) {
     // Set option to prevent the path information from being saved.
 
-//    Object[] options = {"Remove",
-//        "Keep"};
+    QVariantList options = {"Remove",
+        "Keep"};
 
-//    int retval = JOptionPane.showOptionDialog(f, tr("BlockPathMessage"), tr("BlockPathSaveTitle"),
-//            JOptionPane.YES_NO_OPTION,
-//            JOptionPane.QUESTION_MESSAGE, NULL, options, options[1]);
-    int retval = QMessageBox::question(f, tr("Save Block Path Information"), tr("Any path information will not be saved, and will be\nrebuilt by the Layout Editor when the panel is re-opened"), QMessageBox::Yes | QMessageBox::No);
-    if (retval != QMessageBox::No) {
+    int retval = JOptionPane::showOptionDialog(f, tr("Any path information will not be saved, and will be\nrebuilt by the Layout Editor when the panel is re-opened"), tr("Save Block Path Information"),
+            JOptionPane::YES_NO_OPTION,
+            JOptionPane::QUESTION_MESSAGE, QIcon(), options, options[1]);
+    if (retval != 0) {
         ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setSavedPathInfo(true);
         log->info("Requested to save path information via Block Menu.");
     } else {
         ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setSavedPathInfo(false);
         log->info("Requested not to save path information via Block Menu.");
     }
-}
-
-//@Override
-/*public*/ void BlockTableAction::dispose() {
- ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setSimplePreferenceState(getClassName() + ":LengthUnitMetric", centimeterBox->isChecked());
-    AbstractTableAction::dispose();
 }
 
 /*public*/ QString BlockTableAction::getClassDescription() {
@@ -1219,7 +1196,4 @@ void BlockTableAction::deletePaths(JmriJFrame* f) {
  return "jmri.jmrit.beantable.BlockTableAction";
 }
 
-/*public*/ void BlockTableAction::setMessagePreferencesDetails()
-{
- AbstractTableAction::setMessagePreferencesDetails();
-}
+/*private*/ /*final*/ /*static*/ Logger* BlockTableAction::log = LoggerFactory::getLogger("BlockTableAction");
