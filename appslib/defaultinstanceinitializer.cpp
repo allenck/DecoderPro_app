@@ -582,7 +582,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "UserPreferencesManager") {
      JmriUserPreferencesManager* jupm = new JmriUserPreferencesManager();
      InstanceManager::store(jupm, type);
-//     jupm->initialize();  // called instead of Java InstanceManagerAutoInitialize
+     jupm->initialize();  // called instead of Java InstanceManagerAutoInitialize
      return jupm;
  }
 

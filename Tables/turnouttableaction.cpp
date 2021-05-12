@@ -48,6 +48,7 @@
 #include "loggerfactory.h"
 #include <QHeaderView>
 #include "systemnamevalidator.h"
+#include "turnouttabledatamodel.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)
@@ -88,16 +89,15 @@ TurnoutTableAction::TurnoutTableAction(QObject *parent) :
 void TurnoutTableAction::common()
 {
  setObjectName("TurnoutTableAction");
- useBlockSpeed = "Use Block Speed";
- bothText = "Both";
- cabOnlyText = "Cab only";
- pushbutText = "Pushbutton only";
- noneText = "None";
- lockOperations = QStringList();
- lockOperations  << bothText << cabOnlyText << pushbutText<< noneText;
- speedListClosed =  QVector<QString>();
- speedListThrown =  QVector<QString>();
- turnManager = InstanceManager::turnoutManagerInstance();
+// useBlockSpeed = "Use Block Speed";
+// bothText = "Both";
+// cabOnlyText = "Cab only";
+// pushbutText = "Pushbutton only";
+// noneText = "None";
+// lockOperations = QStringList();
+// lockOperations  << bothText << cabOnlyText << pushbutText<< noneText;
+// speedListClosed =  QVector<QString>();
+// speedListThrown =  QVector<QString>();
  noWarn = false;
  table = NULL;
  if(parent() == NULL)
@@ -121,47 +121,51 @@ void TurnoutTableAction::common()
 
  pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  // disable ourself if there is no primary turnout manager available
- if (turnManager==NULL) {
+ if (turnoutManager==NULL) {
      setEnabled(false);
  }
 
  //This following must contain the word Global for a correct match in the abstract turnout
- if(qobject_cast<ProxyTurnoutManager*>(turnManager)!=NULL)
- {
-  defaultThrownSpeedText = ("Use Global " + ((ProxyTurnoutManager*)turnManager)->getDefaultThrownSpeed());
-  defaultClosedSpeedText = ("Use Global " + ((ProxyTurnoutManager*)turnManager)->getDefaultClosedSpeed());
- }
- else
- {
-  defaultThrownSpeedText = ("Use Global " + turnManager->getDefaultThrownSpeed());
-  defaultClosedSpeedText = ("Use Global " + turnManager->getDefaultClosedSpeed());
- }
+// if(qobject_cast<ProxyTurnoutManager*>(turnoutManager)!=NULL)
+// {
+//  defaultThrownSpeedText = ("Use Global " + ((ProxyTurnoutManager*)turnoutManager)->getDefaultThrownSpeed());
+//  defaultClosedSpeedText = ("Use Global " + ((ProxyTurnoutManager*)turnoutManager)->getDefaultClosedSpeed());
+// }
+// else
+// {
+//  defaultThrownSpeedText = ("Use Global " + turnoutManager->getDefaultThrownSpeed());
+//  defaultClosedSpeedText = ("Use Global " + turnoutManager->getDefaultClosedSpeed());
+// }
  //This following must contain the word Block for a correct match in the abstract turnout
- useBlockSpeed = "Use Block Speed";
+// useBlockSpeed = "Use Block Speed";
 
- speedListClosed.append(defaultClosedSpeedText);
- speedListThrown.append(defaultThrownSpeedText);
- speedListClosed.append(useBlockSpeed);
- speedListThrown.append(useBlockSpeed);
- QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
- for(int i = 0; i<_speedMap.size(); i++)
- {
-  if (!speedListClosed.contains(_speedMap.at(i)))
-  {
-   speedListClosed.append(_speedMap.at(i));
-  }
-  if (!speedListThrown.contains(_speedMap.at(i)))
-  {
-   speedListThrown.append(_speedMap.at(i));
-  }
- }
+// speedListClosed.append(defaultClosedSpeedText);
+// speedListThrown.append(defaultThrownSpeedText);
+// speedListClosed.append(useBlockSpeed);
+// speedListThrown.append(useBlockSpeed);
+// QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
+// for(int i = 0; i<_speedMap.size(); i++)
+// {
+//  if (!speedListClosed.contains(_speedMap.at(i)))
+//  {
+//   speedListClosed.append(_speedMap.at(i));
+//  }
+//  if (!speedListThrown.contains(_speedMap.at(i)))
+//  {
+//   speedListThrown.append(_speedMap.at(i));
+//  }
+// }
 
 }
 
 //@Override
 /*public*/ void TurnoutTableAction::setManager(Manager* man)
 {
-    turnManager = (TurnoutManager*) man;
+// log->debug(tr("setting manager of TTAction %1 to %2").arg(this->objectName(),man->self()->metaObject->classname()));
+ turnoutManager = (TurnoutManager*) man;
+ if (m!=nullptr){ // also update Table Model
+     m->setManager((AbstractManager*)man->self());
+ }
 }
 
 /**
@@ -171,25 +175,25 @@ void TurnoutTableAction::common()
 /*protected*/ void TurnoutTableAction::createModel()
 {
  // store the terminology
- if(qobject_cast<ProxyManager*>(turnManager)!= NULL)
- {
-  closedText = ((ProxyTurnoutManager*)turnManager)->getClosedText();
-  thrownText = ((ProxyTurnoutManager*)turnManager)->getThrownText();
- }
- else
- {
-  closedText = turnManager->getClosedText();
-  thrownText = turnManager->getThrownText();
- }
+// if(qobject_cast<ProxyManager*>(turnoutManager)!= NULL)
+// {
+//  closedText = ((ProxyTurnoutManager*)turnoutManager)->getClosedText();
+//  thrownText = ((ProxyTurnoutManager*)turnoutManager)->getThrownText();
+// }
+// else
+// {
+//  closedText = turnoutManager->getClosedText();
+//  thrownText = turnoutManager->getThrownText();
+// }
  // load graphic state column display preference
  // from apps/GuiLafConfigPane.java
- _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+// _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
 
  // create the data model object that drives the table;
  // note that this is a class creation, and very long
- m = new TurnoutTableDataModel(this);
+ m = new TurnoutTableDataModel(turnoutManager);
 }
-
+#if 0
 /**
  *
  */
@@ -306,7 +310,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
  if(row < 0)
      return 0;
  QString name = sysNameList.at(row);
- TurnoutManager* manager = turnoutTableAction->turnManager;
+ TurnoutManager* manager = turnoutTableAction->turnoutManager;
  AbstractTurnout* t;
  if(qobject_cast<ProxyManager*>(manager))
   t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
@@ -345,7 +349,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 {
  int row = index.row();
  QString name = sysNameList.at(row);
- TurnoutManager* manager = turnoutTableAction->turnManager;
+ TurnoutManager* manager = turnoutTableAction->turnoutManager;
  AbstractTurnout* t;
  if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
   t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
@@ -567,7 +571,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 {
  int row = index.row();
  QString name = sysNameList.at(row);
- TurnoutManager* manager = turnoutTableAction->turnManager;
+ TurnoutManager* manager = turnoutTableAction->turnoutManager;
  AbstractTurnout* t;
  if(qobject_cast<ProxyTurnoutManager*>(manager)!= NULL)
   t = (AbstractTurnout*)((ProxyTurnoutManager*)manager)->getBySystemName(name);
@@ -771,7 +775,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
 
 /*public*/ QString TurnoutTableDataModel::getValue(QString name) const
 {
- TurnoutManager* manager = turnoutTableAction->turnManager;
+ TurnoutManager* manager = turnoutTableAction->turnoutManager;
  Turnout* t;
  if(qobject_cast<AbstractProxyTurnoutManager*>(manager)!= NULL)
   t= (Turnout*)((ProxyTurnoutManager*)manager)->getBySystemName(name);
@@ -788,22 +792,22 @@ TurnoutTableDataModel::TurnoutTableDataModel(TurnoutTableAction *self)
   default: return "Unexpected value: "+val;
  }
 }
-/*public*/ AbstractManager *TurnoutTableDataModel::getManager() { return turnoutTableAction->turnManager; }
+/*public*/ AbstractManager *TurnoutTableDataModel::getManager() { return turnoutTableAction->turnoutManager; }
 
 /*public*/ NamedBean* TurnoutTableDataModel::getBySystemName(QString name) const
  {
-  if(qobject_cast<AbstractProxyTurnoutManager*>(turnoutTableAction->turnManager)!= NULL)
-   return ((ProxyTurnoutManager*)turnoutTableAction->turnManager)->getBySystemName(name);
+  if(qobject_cast<AbstractProxyTurnoutManager*>(turnoutTableAction->turnoutManager)!= NULL)
+   return ((ProxyTurnoutManager*)turnoutTableAction->turnoutManager)->getBySystemName(name);
   else
-   return ((AbstractTurnoutManager*)turnoutTableAction->turnManager)->getBySystemName(name);
+   return ((AbstractTurnoutManager*)turnoutTableAction->turnoutManager)->getBySystemName(name);
  }
 
 /*public*/ NamedBean* TurnoutTableDataModel::getByUserName(QString name)
  {
-  if(qobject_cast<AbstractProxyTurnoutManager*>(turnoutTableAction->turnManager)!= NULL)
-     return ((ProxyTurnoutManager*)turnoutTableAction->turnManager)->getByUserName(name);
+  if(qobject_cast<AbstractProxyTurnoutManager*>(turnoutTableAction->turnoutManager)!= NULL)
+     return ((ProxyTurnoutManager*)turnoutTableAction->turnoutManager)->getByUserName(name);
   else
-  return ((AbstractTurnoutManager*)turnoutTableAction->turnManager)->getByUserName(name);
+  return ((AbstractTurnoutManager*)turnoutTableAction->turnoutManager)->getByUserName(name);
  }
 
 /*protected*/ QString TurnoutTableDataModel::getMasterClassName() { return turnoutTableAction->getClassName(); }
@@ -1083,7 +1087,7 @@ TableSorter sorter;
             }
 
             if (retval == NULL) {
-                Turnout* t = turnManager->getBySystemName(sorter.getValueAt(row,SYSNAMECOL));
+                Turnout* t = turnoutManager->getBySystemName(sorter.getValueAt(row,SYSNAMECOL));
                 retval = new BeanBoxRenderer();
                 if(column==SENSOR1COL){
                     ((JmriBeanComboBox)retval).setSelectedBean(t.getFirstSensor());
@@ -1108,7 +1112,7 @@ TableSorter sorter;
             else
                 return NULL;
             if (retval == NULL) {
-                Turnout* t = turnManager->getBySystemName(sorter.getValueAt(row,SYSNAMECOL));
+                Turnout* t = turnoutManager->getBySystemName(sorter.getValueAt(row,SYSNAMECOL));
 
                 JmriBeanComboBox c;
 
@@ -1163,20 +1167,21 @@ TableSorter sorter;
 }
 //};  // end of custom data model
 //}
+#endif
 
-/*private*/ void TurnoutTableAction::updateClosedList(){
-    speedListClosed.remove(speedListClosed.indexOf(defaultClosedSpeedText));
-    defaultClosedSpeedText = ("Use Global " + turnManager->getDefaultClosedSpeed());
-    speedListClosed.insert(0, defaultClosedSpeedText);
-    m->fireTableDataChanged();
-}
+///*private*/ void TurnoutTableAction::updateClosedList(){
+//    speedListClosed.remove(speedListClosed.indexOf(defaultClosedSpeedText));
+//    defaultClosedSpeedText = ("Use Global " + turnoutManager->getDefaultClosedSpeed());
+//    speedListClosed.insert(0, defaultClosedSpeedText);
+//    m->fireTableDataChanged();
+//}
 
-/*private*/ void TurnoutTableAction::updateThrownList(){
-    speedListThrown.remove(speedListThrown.indexOf(defaultThrownSpeedText));
-    defaultThrownSpeedText = ("Use Global " + turnManager->getDefaultThrownSpeed());
-    speedListThrown.insert(0, defaultThrownSpeedText);
-    m->fireTableDataChanged();
-}
+///*private*/ void TurnoutTableAction::updateThrownList(){
+//    speedListThrown.remove(speedListThrown.indexOf(defaultThrownSpeedText));
+//    defaultThrownSpeedText = ("Use Global " + turnoutManager->getDefaultThrownSpeed());
+//    speedListThrown.insert(0, defaultThrownSpeedText);
+//    m->fireTableDataChanged();
+//}
 
 /*protected*/ void TurnoutTableAction::setTitle() {
     f->setTitle(f->tr("Turnout Table"));
@@ -1602,9 +1607,9 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 /*protected*/ void TurnoutTableAction::setDefaultSpeeds(JFrame* _who)
 {
     JComboBox* thrownCombo = new JComboBox();
-    thrownCombo->addItems(speedListThrown.toList());
+    thrownCombo->addItems((( TurnoutTableDataModel*)m)->speedListThrown.toList());
     JComboBox* closedCombo = new JComboBox();
-    closedCombo->addItems(speedListClosed.toList());
+    closedCombo->addItems((( TurnoutTableDataModel*)m)->speedListClosed.toList());
     thrownCombo->setEditable(true);
     closedCombo->setEditable(true);
 
@@ -1620,11 +1625,11 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
     closedLayout->addWidget(new QLabel("Closed Speed"));
     closedLayout->addWidget(closedCombo);
 
-    thrownCombo->removeItem(thrownCombo->findText(defaultThrownSpeedText));
-    closedCombo->removeItem(closedCombo->findText(defaultClosedSpeedText));
+    thrownCombo->removeItem(thrownCombo->findText((( TurnoutTableDataModel*)m)->defaultThrownSpeedText));
+    closedCombo->removeItem(closedCombo->findText((( TurnoutTableDataModel*)m)->defaultClosedSpeedText));
 
-    thrownCombo->setCurrentIndex(thrownCombo->findText(turnManager->getDefaultThrownSpeed()));
-    closedCombo->setCurrentIndex(closedCombo->findText(turnManager->getDefaultClosedSpeed()));
+    thrownCombo->setCurrentIndex(thrownCombo->findText(turnoutManager->getDefaultThrownSpeed()));
+    closedCombo->setCurrentIndex(closedCombo->findText(turnoutManager->getDefaultClosedSpeed()));
 
     int retval = JOptionPane::showOptionDialog(_who,
                                       tr("Select the default values for the speed through the turnout") , tr("Turnout Speeds"),
@@ -1637,13 +1642,13 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
     QString thrownValue =  thrownCombo->currentText();
     //We will allow the turnout manager to handle checking if the values have changed
     try {
-        turnManager->setDefaultThrownSpeed(thrownValue);
+        turnoutManager->setDefaultThrownSpeed(thrownValue);
     } catch (JmriException ex) {
 //        JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + thrownValue);
     }
 
     try {
-        turnManager->setDefaultClosedSpeed(closedValue);
+        turnoutManager->setDefaultClosedSpeed(closedValue);
     } catch (JmriException ex) {
 //        JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + closedValue);
     }
@@ -1703,9 +1708,9 @@ void TurnoutOperationEditor::propertyChange(PropertyChangeEvent *evt)
 //@Override
 /*public*/ void TurnoutTableAction::addToPanel(AbstractTableTabAction* f)
 {
- QString systemPrefix = ConnectionNameFromSystemName::getConnectionName(turnManager->getSystemPrefix());
+ QString systemPrefix = ConnectionNameFromSystemName::getConnectionName(turnoutManager->getSystemPrefix());
 
- if (QString(turnManager->metaObject()->className()).contains("ProxyTurnoutManager"))
+ if (QString(turnoutManager->metaObject()->className()).contains("ProxyTurnoutManager"))
   systemPrefix = "All";
  f->addToBottomBox(showFeedbackBox, systemPrefix);
  showFeedbackBox->setToolTip(tr("Show extra columns for configuring turnout feedback?"));
@@ -2101,9 +2106,9 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
         // Tab All or first time opening, use default tooltip
         connectionChoice = "TBD";
     }
-    if (QString(turnManager->metaObject()->className()).contains("ProxyTurnoutManager"))
+    if (QString(turnoutManager->metaObject()->className()).contains("ProxyTurnoutManager"))
     {
-        ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) turnManager;
+        ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) turnoutManager;
         QList<AbstractManager*> managerList = proxy->getManagerList();
         QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName( connectionChoice);
         for(int x = 0; x<managerList.size(); x++){
@@ -2114,12 +2119,12 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
             }
         }
     }
-    else if (turnManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText())))
+    else if (turnoutManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText())))
     {
      rangeBox->setEnabled(true);
      log->debug("T Add box enabled2");
      // get tooltip from turnout manager
-     addEntryToolTip = turnManager->getEntryToolTip();
+     addEntryToolTip = turnoutManager->getEntryToolTip();
      log->debug("TurnoutManager tip");
     }
     // show sysName (HW address) field tooltip in the Add Turnout pane that matches system connection selected from combobox
@@ -2205,7 +2210,7 @@ QWidget* TTComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
  AbstractTurnout* t;
  int row = index.row();
- TurnoutManager* manager = turnoutTableAction->turnManager;
+ TurnoutManager* manager = turnoutTableAction->turnoutManager;
  QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
   t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
  else
@@ -2253,7 +2258,7 @@ void TTComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
   {
    AbstractTurnout* t;
    int row = index.row();
-   TurnoutManager* manager = turnoutTableAction->turnManager;
+   TurnoutManager* manager = turnoutTableAction->turnoutManager;
    QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
     t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
    else
@@ -2281,7 +2286,7 @@ void TTComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
  {
   AbstractTurnout* t;
   int row = index.row();
-  TurnoutManager* manager = turnoutTableAction->turnManager;
+  TurnoutManager* manager = turnoutTableAction->turnoutManager;
   QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
    t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
   else

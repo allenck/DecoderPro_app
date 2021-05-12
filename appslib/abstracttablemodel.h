@@ -40,6 +40,7 @@ public:
     virtual QString getCellToolTip(JTable* /*table*/, int /*row*/, int /*col*/) const {return QString();}
     bool isLegacy() const {return bLegacy;}
     void setLegacy(bool b) {bLegacy = b;}
+    virtual /*public*/ void configureColumnDelegates(JTable*);
 signals:
 
 public slots:

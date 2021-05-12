@@ -45,6 +45,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -24656,6 +24657,28 @@ if (_wrapper) {
 }
   return BeanTableDataModel::data(index0, role1);
 }
+void PythonQtShell_BeanTableDataModel::dispose()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("dispose");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  BeanTableDataModel::dispose();
+}
 Qt::ItemFlags  PythonQtShell_BeanTableDataModel::flags(const QModelIndex&  index0) const
 {
 if (_wrapper) {
@@ -24788,6 +24811,39 @@ if (_wrapper) {
 }
   return BeanTableDataModel::getByUserName(name0);
 }
+QString  PythonQtShell_BeanTableDataModel::getCellToolTip(JTable*  table0, int  row1, int  col2) const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getCellToolTip");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "JTable*" , "int" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      QString returnValue{};
+      void* args[4] = {NULL, (void*)&table0, (void*)&row1, (void*)&col2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getCellToolTip", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::getCellToolTip(table0, row1, col2);
+}
 QString  PythonQtShell_BeanTableDataModel::getColumnClass(int  col0) const
 {
 if (_wrapper) {
@@ -24919,6 +24975,39 @@ if (_wrapper) {
   }
 }
   return BeanTableDataModel::getPreferredWidth(col0);
+}
+QString  PythonQtShell_BeanTableDataModel::getValue(QString  systemName0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getValue");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&systemName0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getValue", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::getValue(systemName0);
 }
 QString  PythonQtShell_BeanTableDataModel::getValue(QString  systemName0) const
 {
@@ -25283,6 +25372,11 @@ void PythonQtWrapper_BeanTableDataModel::dispose(BeanTableDataModel* theWrappedO
   ( theWrappedObject->dispose());
 }
 
+void PythonQtWrapper_BeanTableDataModel::editComment(BeanTableDataModel* theWrappedObject, int  row, int  column)
+{
+  ( theWrappedObject->editComment(row, column));
+}
+
 Qt::ItemFlags  PythonQtWrapper_BeanTableDataModel::flags(BeanTableDataModel* theWrappedObject, const QModelIndex&  index) const
 {
   return ( theWrappedObject->flags(index));
@@ -25301,6 +25395,11 @@ NamedBean*  PythonQtWrapper_BeanTableDataModel::getBySystemName(BeanTableDataMod
 NamedBean*  PythonQtWrapper_BeanTableDataModel::getByUserName(BeanTableDataModel* theWrappedObject, QString  name)
 {
   return ( ((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->promoted_getByUserName(name));
+}
+
+QString  PythonQtWrapper_BeanTableDataModel::getCellToolTip(BeanTableDataModel* theWrappedObject, JTable*  table, int  row, int  col) const
+{
+  return ( theWrappedObject->getCellToolTip(table, row, col));
 }
 
 QString  PythonQtWrapper_BeanTableDataModel::getColumnClass(BeanTableDataModel* theWrappedObject, int  col) const
@@ -25333,6 +25432,11 @@ int  PythonQtWrapper_BeanTableDataModel::getPropertyColumnCount(BeanTableDataMod
   return ( ((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->promoted_getPropertyColumnCount());
 }
 
+QString  PythonQtWrapper_BeanTableDataModel::getValue(BeanTableDataModel* theWrappedObject, QString  systemName)
+{
+  return ( theWrappedObject->getValue(systemName));
+}
+
 QString  PythonQtWrapper_BeanTableDataModel::getValue(BeanTableDataModel* theWrappedObject, QString  systemName) const
 {
   return ( theWrappedObject->getValue(systemName));
@@ -25348,9 +25452,9 @@ bool  PythonQtWrapper_BeanTableDataModel::matchPropertyName(BeanTableDataModel* 
   return ( ((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->promoted_matchPropertyName(e));
 }
 
-void PythonQtWrapper_BeanTableDataModel::moveBean(BeanTableDataModel* theWrappedObject, int  arg__1)
+void PythonQtWrapper_BeanTableDataModel::moveBean(BeanTableDataModel* theWrappedObject, int  arg__1, int  col)
 {
-  ( theWrappedObject->moveBean(arg__1));
+  ( theWrappedObject->moveBean(arg__1, col));
 }
 
 void PythonQtWrapper_BeanTableDataModel::persistTable(BeanTableDataModel* theWrappedObject, JTable*  table)

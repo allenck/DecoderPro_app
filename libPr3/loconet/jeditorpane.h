@@ -10,12 +10,14 @@ public:
  /*public*/ JEditorPane(QUrl* initialPage, QWidget *parent = 0);
  /*public*/ JEditorPane(QString url, QWidget *parent = 0);
  /*public*/ JEditorPane(QString type, QString text, QWidget *parent = 0);
+  /*public*/ void setContentType(QString) {this->type = type;}
 
 signals:
 
 public slots:
 private:
  void common();
+ QString type;
 };
 
 #endif // JEDITORPANE_H

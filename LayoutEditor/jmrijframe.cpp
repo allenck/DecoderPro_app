@@ -136,6 +136,7 @@
 void JmriJFrame::init(bool saveSize, bool savePosition)
 {
  log = new Logger("JmriJFrame");
+ log->setDebugEnabled(true);
  setVisible(true);
  //reuseFrameSavedPosition = true;
  //reuseFrameSavedSized = true;
@@ -291,8 +292,9 @@ void JmriJFrame::setupWindowRef()
             (prefsMgr->getWindowSize(windowFrameRef).height()==0.0))))
   {
 #ifdef Q_OS_LINUX
-   if (log->isDebugEnabled()) log->debug("setFrameLocation 2nd clause sets preferredSize to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
-            this->resize(prefsMgr->getWindowSize(windowFrameRef));
+   if (log->isDebugEnabled())
+    log->debug("setFrameLocation 2nd clause sets preferredSize to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
+   this->resize(prefsMgr->getWindowSize(windowFrameRef));
 #endif
 #ifdef Q_OS_WIN32
   if (log->isDebugEnabled()) log->debug("setFrameLocation 2nd clause sets size to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));

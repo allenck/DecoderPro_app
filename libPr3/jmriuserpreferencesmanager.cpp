@@ -1428,8 +1428,10 @@
     entry.next();
     QDomElement window = doc.createElement("window");
     window.setAttribute("class", entry.key());
-//    if(entry.key() == "LocoMonPane" && entry.value()->getLocation().x() ==0)
-//     log->debug("x=0");
+    if(entry.key() == "jmri.jmrit.beantable.ListedTableFrame:Turnout Table" )
+    {
+     log->debug("x=0");
+    }
     if (entry.value()->saveLocation)
     {
      try
@@ -1543,7 +1545,7 @@
 //@Override
     /*public*/ void JmriUserPreferencesManager::initialize() {
         this->readUserPreferences();
-    }
+}
 /**
  * Holds details about the specific class.
  */

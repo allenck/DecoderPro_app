@@ -226,10 +226,10 @@ public slots:
   static TurnoutManager* turnoutManagerInstance();
   static LightManager* lightManagerInstance();
   /*public*/ QObject* getInstance(/*@Nonnull Class<T>*/QString type);
-  static ProxyTurnoutManager* proxyTurnoutManagerInstance();
-  static ProxySensorManager* proxySensorManagerInstance();
-  static ProxyLightManager* proxyLightManagerInstance();
-  static ProxyReporterManager* proxyReporterManagerInstance();
+//  static ProxyTurnoutManager* proxyTurnoutManagerInstance();
+//  static ProxySensorManager* proxySensorManagerInstance();
+//  static ProxyLightManager* proxyLightManagerInstance();
+//  static ProxyReporterManager* proxyReporterManagerInstance();
 
 
 

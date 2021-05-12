@@ -11,6 +11,9 @@
 #include "joptionpane.h"
 #include <QVector>
 #include "blockeditaction.h"
+#include "imageio.h"
+#include "file.h"
+#include "fileutil.h"
 
 /**
  * Data model for a Block Table.
@@ -29,6 +32,10 @@
     //super();
     setManager((AbstractManager*)mgr); // for consistency with other BeanTableModels, default BlockManager always used.
     updateNameList();
+    rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+    beanTypeChar = 'S'; // reuse Sensor icon for block state
+    onIconPath = rootPath + beanTypeChar + "-on-s.png";
+    offIconPath = rootPath + beanTypeChar + "-off-s.png";
 
     defaultBlockSpeedText = (tr("Use %1").arg("Global") + " " + ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getDefaultSpeed()); // first entry in drop down list
     speedList->append(defaultBlockSpeedText);
@@ -101,7 +108,7 @@
 }
 
 //@Override
-/*public*/ QVariant BlockTableDataModel::getValueAt(int row, int col) const {
+/*public*/ QVariant BlockTableDataModel::getValueAtX(int row, int col) const {
     // some error checking
     if (row >= sysNameList.size()) {
         log->error(tr("requested getValueAt(\"%1\"), row outside of range").arg(row));
@@ -118,9 +125,10 @@
             return Path::decodeDirection(b->getDirection());
         case CURVECOL:
         {
-            BlockCurvatureJComboBox* box = new BlockCurvatureJComboBox(b->getCurvature());
-            box->setJTableCellClientProperties();
-            return VPtr<BlockCurvatureJComboBox>::asQVariant(box);
+//            BlockCurvatureJComboBox* box = new BlockCurvatureJComboBox(b->getCurvature());
+//            box->setJTableCellClientProperties();
+//            return VPtr<BlockCurvatureJComboBox>::asQVariant(box);
+         return b->getCurvature();
         }
         case LENGTHCOL:
             return (twoDigit.format(metricUi ?  b->getLengthCm() : b->getLengthIn()));
@@ -129,28 +137,30 @@
         case SPEEDCOL:
         {
             QString speed = b->getBlockSpeed();
-            if (! speedList->contains(speed)) {
-                 speedList->append(speed);
-            }
-            JComboBox* c = new JComboBox( speedList->toList());
-            c->setEditable(true);
-            c->setSelectedItem(speed);
-//            JComboBoxUtil::setupComboBoxMaxRows(c);
-            return VPtr<JComboBox>::asQVariant(c);
+//            if (! speedList->contains(speed)) {
+//                 speedList->append(speed);
+//            }
+//            JComboBox* c = new JComboBox( speedList->toList());
+//            c->setEditable(true);
+//            c->setSelectedItem(speed);
+////            JComboBoxUtil::setupComboBoxMaxRows(c);
+//            return VPtr<JComboBox>::asQVariant(c);
+            return speed;
         }
         case STATECOL:
             return blockDescribeState(b->getState());
         case SENSORCOL:
         {
             Sensor* sensor = b->getSensor();
-            JComboBox* cs = new JComboBox(sensorList.toList());
+//            JComboBox* cs = new JComboBox(sensorList.toList());
             QString name = "";
             if (sensor != nullptr) {
                 name = sensor->getDisplayName();
             }
-            cs->setSelectedItem(name);
-//            JComboBoxUtil.setupComboBoxMaxRows(cs);
-            return VPtr<JComboBox>::asQVariant(cs);
+//            cs->setSelectedItem(name);
+////            JComboBoxUtil.setupComboBoxMaxRows(cs);
+//            return VPtr<JComboBox>::asQVariant(cs);
+            return name;
         }
         case REPORTERCOL:
         {
@@ -160,40 +170,105 @@
             if (reporter != nullptr) {
                 repname = reporter->getDisplayName();
             }
-            rs->setSelectedItem(repname);
-//            JComboBoxUtil.setupComboBoxMaxRows(rs);
-            return VPtr<JComboBox>::asQVariant(rs);
+//            rs->setSelectedItem(repname);
+////            JComboBoxUtil.setupComboBoxMaxRows(rs);
+//            return VPtr<JComboBox>::asQVariant(rs);
+            return repname;
         }
         case CURRENTREPCOL:
             return b->isReportingCurrent();
         case EDITCOL:
             return tr("Edit");
         default:
-            return BeanTableDataModel::getValueAt(row, col);
+            //return BeanTableDataModel::getValueAt(row, col);
+     return QVariant();
     }
 }
 
-//QVariant BlockTableDataModel::data(const QModelIndex &index, int role) const
-//{
-// if(role == Qt::ToolTipRole)
+QVariant BlockTableDataModel::data(const QModelIndex &index, int role) const
+{
+ QVariant ret;
+ if(role == Qt::ToolTipRole)
+ {
+   return this->getCellToolTip(table(), index.row(), index.column());
+ }
+ else if(role == Qt::CheckStateRole)
+ {
+  if(index.column() == PERMISCOL)
+   return  this->getValueAtX(index.row(), index.column()).toBool()?Qt::Checked:Qt::Unchecked;
+ }
+// else if(role == Qt::ToolTipRole)
 // {
-//   return this->getCellToolTip(table(), index.row(), index.column());
+//  ret = getToolTip(index.column());
 // }
-// if((this->getColumnClass(index.column()) == "Boolean") && (role == Qt::CheckStateRole))
-// {
-//  return this->getValueAt(index.row(), index.column()).toBool()?Qt::Checked:Qt::Unchecked;
-// }
-// if(role == Qt::ToolTipRole)
-// {
-//  return getToolTip(index.column());
-// }
-// if(role == Qt::DisplayRole)
-// {
-//  return this->getValueAt(index.row(), index.column());
-// }
-// return QVariant();
-//}
+ else if(role == Qt::DisplayRole)
+ {
+  ret = this->getValueAtX(index.row(), index.column());
+  if(ret != QVariant())
+   return  ret;;
+ }
+ else if(_graphicState && role == Qt::DecorationRole)
+ {
+  if(index.column() == STATECOL)
+  {
+   Block* b = (Block*)getBySystemName(sysNameList.at(index.row()));
 
+   if (b->getState()==Block::UNOCCUPIED && offIcon != QPixmap()) {
+    return offIcon;
+   }
+   else if (b->getState()==Block::OCCUPIED && onIcon != QPixmap()) {
+    return onIcon;
+   }
+   else if (b->getState()==Block::INCONSISTENT) {
+//       label = new JLabel("X", JLabel.CENTER); // centered text alignment
+//       label.setForeground(Color.red);
+//       iconHeight = 0;
+   } else { // Unknown Undetected Other
+//       label = new JLabel("?", JLabel.CENTER); // centered text alignment
+//       iconHeight = 0;
+    return  QColor(Qt::red);
+   }
+  }
+ }
+  return BeanTableDataModel::data(index, role);
+}
+
+/*public*/ void BlockTableDataModel::configureColumnDelegates(JTable* t)
+{
+ for(int i=0; i < columnCount(QModelIndex()); i++)
+ {
+  if(getColumnClass(i) == "JButton")
+  {
+   t->setItemDelegateForColumn(i, new ButtonEditor());
+  }
+  if(getColumnClass(i) == "JComboBox")
+  {
+   //t->setItemDelegateForColumn(i, new JComboBoxEditor());
+   switch(i)
+   {
+   case CURVECOL:
+   {
+     BlockCurvatureJComboBox* box = new BlockCurvatureJComboBox();
+     box->setJTableCellClientProperties();
+     QStringList list = {"NONE","GRADUAL","TIGHT","SEVERE"};
+     t->setItemDelegateForColumn(i, new JComboBoxEditor(list));
+     break;
+   }
+   case SPEEDCOL:
+      t->setItemDelegateForColumn(i, new JComboBoxEditor(speedList->toList()));
+    break;
+   case SENSORCOL:
+    t->setItemDelegateForColumn(i, new JComboBoxEditor(sensorList.toList()));
+    break;
+   case REPORTERCOL:
+   t->setItemDelegateForColumn(i, new JComboBoxEditor(reporterList.toList()));
+    break;
+   default:
+    break;
+   }
+  }
+ }
+}
 
 // TODO : Add Block.UNDETECTED
 // TODO : Move to Block.describeState(int)
@@ -211,10 +286,29 @@
 }
 
 //@Override
-/*public*/ void BlockTableDataModel::setValueAt(QVariant value, int row, int col) {
-    // no setting of block state from table
-    Block* b = (Block*)getBySystemName(sysNameList.at(row));
-    switch (col) {
+///*public*/ void BlockTableDataModel::setValueAt(QVariant value, int row, int col)
+/*public*/bool BlockTableDataModel::setData( const QModelIndex &index, const QVariant &value, int role)
+{
+ int row = index.row();
+   // no setting of block state from table
+   Block* b = (Block*)getBySystemName(sysNameList.at(row));
+
+ if(role == Qt::CheckStateRole)
+ {
+  switch (index.column()) {
+  case PERMISCOL:
+   b->setPermissiveWorking( value.toBool());
+   fireTableRowsUpdated(row, row);
+   break;
+  case CURRENTREPCOL:
+   b->setReportingCurrent(value.toBool());
+   fireTableRowsUpdated(row, row);
+   break;
+  }
+ }
+ if(role == Qt::EditRole)
+ {
+    switch (index.column()) {
         case VALUECOL:
             b->setValue(value);
             break;
@@ -230,20 +324,20 @@
             break;
         }
         case CURVECOL:
-            b->setCurvature(BlockCurvatureJComboBox::getCurvatureFromObject(value));
+            b->setCurvature(value.toInt());//BlockCurvatureJComboBox::getCurvatureFromObject(value));
             break;
-        case PERMISCOL:
-            b->setPermissiveWorking( value.toBool());
-            break;
+//        case PERMISCOL:
+//            b->setPermissiveWorking( value.toBool());
+//            break;
         case SPEEDCOL:
         {
             //@SuppressWarnings("unchecked")
-            QString speed =  (VPtr<JComboBox>::asPtr( value)->getSelectedItem());
+            QString speed =  value.toString();//(VPtr<JComboBox>::asPtr( value)->getSelectedItem());
             try {
                 b->setBlockSpeed(speed);
             } catch (JmriException ex) {
                 JOptionPane::showMessageDialog(nullptr, ex.getMessage() + "\n" + speed);
-                return;
+                return false;
             }
             if (! speedList->contains(speed) && !speed.contains("Global")) { // NOI18N
                  speedList->append(speed);
@@ -253,35 +347,46 @@
         case REPORTERCOL:
         {
             //@SuppressWarnings("unchecked")
-            QString strReporter = VPtr<JComboBox>::asPtr(value)->getSelectedItem();
-            Reporter* r = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter(strReporter);
-            b->setReporter(r);
+            QString strReporter = value.toString();//VPtr<JComboBox>::asPtr(value)->getSelectedItem();
+            if(strReporter != "")
+            {
+             Reporter* r = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter(strReporter);
+             b->setReporter(r);
+            }
             break;
         }
         case SENSORCOL:
         {
             //@SuppressWarnings("unchecked")
-            QString strSensor = VPtr<JComboBox>::asPtr(value)->getSelectedItem();
+            QString strSensor = value.toString();//VPtr<JComboBox>::asPtr(value)->getSelectedItem();
             b->setSensor(strSensor);
             break;
         }
-        case CURRENTREPCOL:
-            b->setReportingCurrent(value.toBool());
-            break;
+//        case CURRENTREPCOL:
+//            b->setReportingCurrent(value.toBool());
+//            break;
         case EDITCOL:
 //            javax.swing.SwingUtilities.invokeLater(() -> {
                 editButton(b);
 //            });
             break;
         default:
-            BeanTableDataModel::setValueAt(value, row, col);
+            BeanTableDataModel::setData(index, value, role);
             break;
     }
+    fireTableRowsUpdated(row, row);
+    return true;
+ }
+ return false;
 }
 
 //@Override
-/*public*/ QString BlockTableDataModel::getColumnName(int col) const {
-    switch (col) {
+///*public*/ QString BlockTableDataModel::getColumnName(int col) const {
+/*public*/ QVariant BlockTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+ if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
+ {
+    switch (section) {
         case DIRECTIONCOL:
             return  tr("Direction");
         case VALUECOL:
@@ -305,8 +410,10 @@
         case EDITCOL:
             return  tr("Edit");
         default:
-            return BeanTableDataModel::getColumnName(col);
+            break;
     }
+ }
+ return  BeanTableDataModel::headerData(section, orientation, role);
 }
 
 //@Override
@@ -363,29 +470,50 @@
 }
 
 //@Override
-/*public*/ bool BlockTableDataModel::isCellEditable(int row, int col) const{
-    switch (col) {
-        case CURVECOL:
-        case LENGTHCOL:
-        case PERMISCOL:
-        case SPEEDCOL:
-        case REPORTERCOL:
-        case SENSORCOL:
-        case CURRENTREPCOL:
-        case EDITCOL:
-            return true;
-        case STATECOL:
-            return false;
-        default:
-            return BeanTableDataModel::isCellEditable(row, col);
-    }
+///*public*/ bool BlockTableDataModel::isCellEditable(int row, int col) const{
+//    switch (col) {
+//        case CURVECOL:
+//        case LENGTHCOL:
+//        case PERMISCOL:
+//        case SPEEDCOL:
+//        case REPORTERCOL:
+//        case SENSORCOL:
+//        case CURRENTREPCOL:
+//        case EDITCOL:
+//            return true;
+//        case STATECOL:
+//            return false;
+//        default:
+//            return BeanTableDataModel::isCellEditable(row, col);
+//    }
+//}
+/*private*/ Qt::ItemFlags BlockTableDataModel::flags(const QModelIndex &index) const
+{
+     switch (index.column()) {
+     case PERMISCOL:
+      return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+     case CURVECOL:
+     case LENGTHCOL:
+     case SPEEDCOL:
+     case REPORTERCOL:
+     case SENSORCOL:
+     case CURRENTREPCOL:
+     case EDITCOL:
+      return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+     case STATECOL:
+      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+     default:
+      return BeanTableDataModel::flags(index);
+     }
 }
+
 
 //@Override
 /*public*/ void BlockTableDataModel::configureTable(JTable* table) {
     InstanceManager::sensorManagerInstance()->addPropertyChangeListener(this);
     ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addPropertyChangeListener(this);
     configStateColumn(table);
+    configureColumnDelegates(table);
     BeanTableDataModel::configureTable(table);
 }
 
@@ -554,6 +682,7 @@ void BlockTableDataModel::editButton(Block* b) {
     // add extras, override BeanTableDataModel
     log->debug(tr("Block configStateColumn (I am %1)").arg(BeanTableDataModel::toString()));
     if (_graphicState) { // load icons, only once
+     loadIcons();
         //table.setDefaultEditor(JLabel.class, new ImageIconRenderer()); // there's no editor for state column in BlockTable
 // TODO       table->setDefaultRenderer("JLabel", new ImageIconRenderer()); // item class copied from SwitchboardEditor panel
         // else, classic text style state indication, do nothing extra
@@ -564,17 +693,27 @@ void BlockTableDataModel::editButton(Block* b) {
 // length column tooltip confirms inches or cm.
 //@Override
 /*public*/ QString BlockTableDataModel::getCellToolTip(JTable* table, int row, int col) const {
-    switch (col) {
-        case BlockTableDataModel::STATECOL:
-        {
-            Block* b = VPtr<Block>::asPtr(getValueAt(row, 0));
-            return blockDescribeState(b->getState());
-        }
-        case BlockTableDataModel::LENGTHCOL:
-            return ( metricUi ?  tr("LengthCentimeters"):  tr("LengthInches"));
-        default:
-            return BeanTableDataModel::getCellToolTip(table, row, col);
-    }
+ switch (col) {
+  case BlockTableDataModel::STATECOL:
+  {
+   //QVariant v = getValueAt(row, 0);
+   //Block* b = VPtr<Block>::asPtr(v);
+   if (row >= sysNameList.size()) {
+       log->error(tr("requested getValueAt(\"%1\"), row outside of range").arg(row));
+       return "Error table size";
+   }
+   Block* b = (Block*)getBySystemName(sysNameList.at(row));
+   if (b == nullptr) {
+       log->error(tr("requested getValueAt(\"%1\"), Block doesn't exist").arg(row));
+       return "(no Block)";
+   }
+   return blockDescribeState(b->getState());
+  }
+  case BlockTableDataModel::LENGTHCOL:
+   return ( metricUi ?  tr("LengthCentimeters"):  tr("LengthInches"));
+  default:
+   return BeanTableDataModel::getCellToolTip(table, row, col);
+ }
 }
 #if 0
 /**
@@ -682,4 +821,29 @@ static class ImageIconRenderer extends AbstractCellEditor implements TableCellEd
 
 }; // end of ImageIconRenderer class
 #endif
+/**
+ * Read and buffer graphics. Only called once for this table.
+ *
+ * @see #getTableCellEditorComponent(JTable, Object, boolean, int, int)
+ */
+/*protected*/ void BlockTableDataModel::loadIcons() {
+    try {
+        onImage = ImageIO::read(new File(onIconPath));
+        offImage = ImageIO::read(new File(offIconPath));
+    } catch (IOException ex) {
+        log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
+    }
+    log->debug("Success reading images");
+    int imageWidth = onImage->width();
+    int imageHeight = onImage->height();
+    // scale icons 50% to fit in table rows
+    QImage smallOnImage = onImage->getScaledInstance(imageWidth / 2, imageHeight / 2,0/*, Image.SCALE_DEFAULT*/);
+    QImage smallOffImage = offImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0/*, Image.SCALE_DEFAULT*/);
+//        onIcon = new ImageIcon(smallOnImage);
+    onIcon = QPixmap::fromImage(smallOnImage);
+//        offIcon = new ImageIcon(smallOffImage);
+    offIcon = QPixmap::fromImage(smallOffImage);
+    iconHeight = onIcon.height();
+}
+
 /*private*/ /*final*/ /*static*/ Logger* BlockTableDataModel::log = LoggerFactory::getLogger("BlockTableDataModel");

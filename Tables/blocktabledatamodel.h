@@ -6,6 +6,7 @@
 #include "instancemanager.h"
 #include "userpreferencesmanager.h"
 #include "blocktableaction.h"
+#include "bufferedimage.h"
 
 class BlockTableDataModel : public BeanTableDataModel
 {
@@ -31,13 +32,18 @@ class BlockTableDataModel : public BeanTableDataModel
   /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString name) override;
   /*public*/ void clickOn(NamedBean* t) override;
   /*public*/ int getColumnCount() const override;
-  /*public*/ QVariant getValueAt(int row, int col) const override;
-  /*public*/ void setValueAt(QVariant value, int row, int col) override;
-  /*public*/ QString getColumnName(int col) const override;
+  //QVariant data(const QModelIndex &index, int role) const override;
+  QVariant data(const QModelIndex &index, int role) const override;
+  /*public*/ QVariant getValueAtX(int row, int col) const ;
+  ///*public*/ void setValueAt(QVariant value, int row, int col) override;
+  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+  ///*public*/ QString getColumnName(int col) const override;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   /*public*/ QString getColumnClass(int col)const override;
   /*public*/ int getPreferredWidth(int col)override;
   /*public*/ void configValueColumn(JTable* table) override;
-  /*public*/ bool isCellEditable(int row, int col) const override;
+  ///*public*/ bool isCellEditable(int row, int col) const override;
+  /*private*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
   /*public*/ void configureTable(JTable* table)override;
   /*public*/ JButton* configureButton() override;
   /*public*/ void setMetric(bool boo);
@@ -45,6 +51,8 @@ class BlockTableDataModel : public BeanTableDataModel
   /*synchronized*/ /*public*/ void dispose() override;
   /*public*/ QString getCellToolTip(JTable* table, int row, int col) const override;
   /*public*/ int columnCount(const QModelIndex &parent) const override {return getColumnCount();}
+  /*public*/ void configureColumnDelegates(JTable* t) override;
+
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
@@ -72,6 +80,16 @@ class BlockTableDataModel : public BeanTableDataModel
   /*protected*/ QString getMasterClassName() override;
   /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
   /*protected*/ void configStateColumn(JTable* table);
+  /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
+  /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
+  /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";
+  /*protected*/ QString offIconPath;// = rootPath + beanTypeChar + "-off-s.png";
+  /*protected*/ BufferedImage* onImage;
+  /*protected*/ BufferedImage* offImage;
+  /*protected*/ QPixmap onIcon;
+  /*protected*/ QPixmap offIcon;
+  /*protected*/ int iconHeight = -1;
+  /*protected*/ void loadIcons();
 
 };
 

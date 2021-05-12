@@ -10,8 +10,7 @@
 class LIBPR3SHARED_EXPORT AbstractProxyManager :  public AbstractManager
 {
     Q_OBJECT
-  //Q_INTERFACES(IdTagManager)
-public:
+ public:
     explicit AbstractProxyManager(QObject *parent = 0);
     /**
      * Returns a list of all managers, including the

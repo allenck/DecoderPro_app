@@ -32,14 +32,17 @@ void TurnoutTableTabAction::common()
 {
 }
 
+//@Override
 /*protected*/ Manager* TurnoutTableTabAction::getManager() {
     return InstanceManager::turnoutManagerInstance();
 }
 
+//@Override
 /*protected*/ QString TurnoutTableTabAction::getClassName() {
     return /*TurnoutTableAction.class.getName()*/ "jmri.jmrit.beantable.TurnoutTableTabAction";
 }
 
+//@Override
 /*protected*/ AbstractTableAction* TurnoutTableTabAction::getNewTableAction (QString choice){
     return new TurnoutTableAction(choice,parent());
 }

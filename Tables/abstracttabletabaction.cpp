@@ -68,7 +68,7 @@ AbstractTableTabAction::~AbstractTableTabAction()
   AbstractTableAction* a = getNewTableAction("All");
   Q_UNUSED(a);
   tabbedTableArray.append(new TabbedTableItem("All", true, getManager(), getNewTableAction("All")));
-  for(AbstractManager* manager : managerList)
+  for(Manager* manager : managerList)
   {
    QString manuName = manager->getMemo()->getUserName();
    TabbedTableItem* itemModel = new TabbedTableItem(manuName, true, manager, getNewTableAction(manuName));

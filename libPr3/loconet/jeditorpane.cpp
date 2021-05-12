@@ -274,7 +274,7 @@ void JEditorPane::common()
 {
     //this();
  common();
-#if 0
+#if 1
     setContentType(type);
     setText(text);
 #endif

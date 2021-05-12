@@ -35,7 +35,7 @@ public:
 
 signals:
 private:
- NamedBean* bean;
+ NamedBean* bean = nullptr;
  Logger* log;
 
 public slots:

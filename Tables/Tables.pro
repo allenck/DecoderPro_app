@@ -49,8 +49,10 @@ SOURCES +=  slotmonitor.cpp \
     sensortableaction.cpp \
     slotmondatamodel.cpp \
     abstracttableaction.cpp \
+    turnoutoperationeditordialog.cpp \
     turnouttableaction.cpp \
     abstracttabletabaction.cpp \
+    turnouttabledatamodel.cpp \
     turnouttabletabaction.cpp \
     turnouteditaction.cpp \
     beaneditaction.cpp \
@@ -146,8 +148,10 @@ HEADERS += libtables_global.h \
     sensortableaction.h \
     slotmondatamodel.h \
     abstracttableaction.h \
+    turnoutoperationeditordialog.h \
     turnouttableaction.h \
     abstracttabletabaction.h \
+    turnouttabledatamodel.h \
     turnouttabletabaction.h \
     turnouteditaction.h \
     beaneditaction.h \

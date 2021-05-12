@@ -28,8 +28,8 @@ public:
 //    /*public*/ void pack();
 //    /*public*/ QSize getPreferredSize();
 //    /*public*/ QSize getMaximumSize();
-    /*public*/ void moveEvent(QMoveEvent* e);
-    /*public*/ void resizeEvent(QResizeEvent* e);
+    /*public*/ void moveEvent(QMoveEvent* e) override;
+    /*public*/ void resizeEvent(QResizeEvent* e) override;
     /*public*/ void generateWindowRef();
     /*public*/ QString getWindowFrameRef();
     /*public*/ void setModifiedFlag(bool flag);
@@ -76,8 +76,9 @@ public:
     /*public*/ QWidget* getGlassPane();
     /*public*/ void setGlassPane(QWidget* glassPane);
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
-    /*public*/ Border* getBorder() {return _border;}
+    /*public*/ Border* getBorder() override {return _border;}
     /*public*/ JRootPane* getRootPane() {return (JRootPane*)centralWidget();}
+    QString windowFrameRef = QString();
 
 
 signals:
@@ -88,7 +89,6 @@ public slots:
 
 private:
     static /*volatile*/ QList<JmriJFrame*>* frameList;// = new QList<JmriJFrame*>();
-    QString windowFrameRef = QString();
     void offSetFrameOnScreen(JmriJFrame* f);
     /*private*/ AbstractShutDownTask* task = nullptr;
     Logger* log;

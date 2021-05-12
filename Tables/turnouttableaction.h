@@ -66,22 +66,22 @@ public slots:
 
 private:
     void common();
-    QString closedText;
-    QString thrownText;
-    QString defaultThrownSpeedText;
-    QString defaultClosedSpeedText;
-    QString useBlockSpeed;// = "Use Block Speed";
-    QString bothText;// = "Both";
-    QString cabOnlyText;// = "Cab only";
-    QString pushbutText;// = "Pushbutton only";
-    QString noneText;// = "None";
-    QStringList lockOperations;// = {bothText, cabOnlyText, pushbutText, noneText};
-    /*private*/ QVector<QString> speedListClosed;// =  QVector<QString>();
-    /*private*/ QVector<QString> speedListThrown;// =  QVector<QString>();
+//    QString closedText;
+//    QString thrownText;
+//    QString defaultThrownSpeedText;
+//    QString defaultClosedSpeedText;
+//    QString useBlockSpeed;// = "Use Block Speed";
+//    QString bothText;// = "Both";
+//    QString cabOnlyText;// = "Cab only";
+//    QString pushbutText;// = "Pushbutton only";
+//    QString noneText;// = "None";
+//    QStringList lockOperations;// = {bothText, cabOnlyText, pushbutText, noneText};
+//    /*private*/ QVector<QString> speedListClosed;// =  QVector<QString>();
+//    /*private*/ QVector<QString> speedListThrown;// =  QVector<QString>();
     /*private*/ bool noWarn;// = false;
-    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
-    /*private*/ void updateClosedList();
-    /*private*/ void updateThrownList();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails() override;
+//    /*private*/ void updateClosedList();
+//    /*private*/ void updateThrownList();
     JmriJFrame* addFrame;// = NULL;
     JTextField* userNameTextField;// = new JTextField(40);
     JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
@@ -110,7 +110,6 @@ private:
     QString addEntryToolTip;
 
 protected:
-    /*protected*/ TurnoutManager* turnManager;// = InstanceManager::turnoutManagerInstance();
 //    /*protected*/ QTableView* table;
     /*protected*/ QString getClassName();
     /*protected*/ void createModel();
@@ -176,7 +175,7 @@ public:
 public slots:
     void actionPerformed(JActionEvent *e = 0);
 };
-
+#if 0
 class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
@@ -285,7 +284,7 @@ public:
 private:
   TurnoutTableAction* self;
 };
-
+#endif
 class ItemListener1 : public ActionListener
 {
  Q_OBJECT
@@ -346,7 +345,7 @@ public:
 public slots:
  void prefixBoxChanged(QString);
 };
-
+#if 0
 class TTJTable : public JTable{
   Q_OBJECT
   //TableModel* model;
@@ -368,7 +367,7 @@ private:
   QHash<Turnout*, TableCellRenderer*>* rendererMapSensor2 = new QHash<Turnout*, TableCellRenderer*>();
   QHash<Turnout*, TableCellEditor*>* editorMapSensor2 = new QHash<Turnout*, TableCellEditor*>();
 };
-
+#endif
 class BeanBoxRenderer : public JComboBoxEditor
 {
   Q_OBJECT

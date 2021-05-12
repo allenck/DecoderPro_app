@@ -59,17 +59,6 @@
 }
 void BlockTableAction::common()
 {
- noneText = tr("None");
- gradualText = tr("Gradual");
- tightText = tr("Tight");
- severeText = tr("Severe");
- curveOptions = QStringList() << noneText << gradualText << tightText << severeText;
- twoDigit = new DecimalFormat("0.00");
- inchBox = new QCheckBox(tr("Length in Inches"));
- centimeterBox = new QCheckBox(tr("Length in Centimeters"));
- cur = new QComboBox(/*curveOptions*/);
- cur->addItems(curveOptions);
-
 
  systemNameAuto = QString(getClassName()) + ".AutoSystemName";
  log = new Logger("BlockTableAction");
@@ -80,15 +69,6 @@ void BlockTableAction::common()
  {
   setEnabled(false);
  }
- inchBox->setChecked(true);
- centimeterBox->setChecked(false);
-
- if (((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getSimplePreferenceState(getClassName() + ":LengthUnitMetric"))
- {
-  inchBox->setChecked(false);
-  centimeterBox->setChecked(true);
- }
-
 }
 
 BlockTableAction::BlockTableAction(QObject *parent) :
@@ -1117,39 +1097,7 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
    statusBar->setForeground(Qt::red);
    return; // without creating
   }
-  if (blk != NULL)
-  {
-   if (lengthField->text().length() != 0) {
-       blk->setLength((lengthField->text().toInt()));
-   }
-   /*if (blockSpeed.getText().length()!=0)
-    blk->setSpeedLimit(Integer.parseInt(blockSpeed.getText()));*/
-   try {
-       blk->setBlockSpeed( speeds->currentText());
-   } catch (JmriException ex) {
-       JOptionPane::showMessageDialog(NULL, ex.getMessage() + "\n" +  speeds->currentText());
-   }
-   if (checkPerm->isChecked()) {
-       blk->setPermissiveWorking(true);
-   }
-   QString cName =  cur->currentText();
-   if (cName==(noneText)) {
-       blk->setCurvature(Block::NONE);
-   } else if (cName==(gradualText)) {
-       blk->setCurvature(Block::GRADUAL);
-   } else if (cName==(tightText)) {
-       blk->setCurvature(Block::TIGHT);
-   } else if (cName==(severeText)) {
-       blk->setCurvature(Block::SEVERE);
-   }
-   // add first and last names to statusMessage user feedback string
-   if (x == 0 || x == numberOfBlocks - 1) {
-       statusMessage.append(" ").append(sName).append(" (").append(user).append(")");
-   }
-   if (x == numberOfBlocks - 2) {
-       statusMessage.append(" ").append(tr("up to")).append(" ");
-   }
-  }
+
  }
 
  // provide feedback to user
@@ -1166,7 +1114,6 @@ void BlockTableAction::handleCreateException(QString sysName)
             tr("Could not create block \%1\" to add it. Check that number/name is OK.").arg(sysName),
             tr("Error"),
             JOptionPane::ERROR_MESSAGE);
- QMessageBox::critical(addFrame, tr("Error"), tr("Could not create block \%1\" to add it. Check that number/name is OK.").arg(sysName));
 }
 
 void BlockTableAction::deletePaths(JmriJFrame* f) {
@@ -1187,12 +1134,13 @@ void BlockTableAction::deletePaths(JmriJFrame* f) {
     }
 }
 
+//@Override
 /*public*/ QString BlockTableAction::getClassDescription() {
     return tr("Block Table");
 }
 
+//@Override
 /*protected*/ QString BlockTableAction::getClassName() {
- //return QString(this->metaObject()->className());
  return "jmri.jmrit.beantable.BlockTableAction";
 }
 

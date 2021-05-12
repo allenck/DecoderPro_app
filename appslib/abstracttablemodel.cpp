@@ -4,6 +4,7 @@
 #include "pushbuttondelegate.h"
 #include "buttoncolumndelegate.h"
 #include <QPushButton>
+#include "tabledelegates.h"
 
 AbstractTableModel::AbstractTableModel(QObject *parent) :
     TableModel(parent)
@@ -65,6 +66,7 @@ AbstractTableModel::AbstractTableModel(QObject *parent) :
     }
     return result;
 }
+
 /*private*/ QVariant AbstractTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
   if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
@@ -459,10 +461,10 @@ QVariant AbstractTableModel::data(const QModelIndex &index, int role) const
  {
   return getValueAt(index.row(), index.column()).toBool()?Qt::Checked:Qt::Unchecked;
  }
- if(role == Qt::ToolTipRole)
- {
-  return getToolTip(index.column());
- }
+// if(role == Qt::ToolTipRole)
+// {
+//  return getToolTip(index.column());
+// }
  if(role == Qt::DisplayRole)
  {
   return getValueAt(index.row(), index.column());
@@ -473,4 +475,19 @@ QVariant AbstractTableModel::data(const QModelIndex &index, int role) const
 /*public*/ QString AbstractTableModel::getColumnClass(int col) const
 {
  return "";
+}
+
+/*public*/ void AbstractTableModel::configureColumnDelegates(JTable* t)
+{
+ for(int i=0; i < columnCount(QModelIndex()); i++)
+ {
+  if(getColumnClass(i) == "JButton")
+  {
+   t->setItemDelegateForColumn(i, new ButtonEditor());
+  }
+  if(getColumnClass(i) == "JComboBox")
+  {
+   t->setItemDelegateForColumn(i, new JComboBoxEditor());
+  }
+ }
 }

@@ -59,6 +59,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -2581,14 +2582,17 @@ virtual void configValueColumn(JTable*  table);
 virtual QPushButton*  configureButton();
 virtual void configureTable(JTable*  table);
 virtual QVariant  data(const QModelIndex&  index, int  role) const;
+virtual void dispose();
 virtual Qt::ItemFlags  flags(const QModelIndex&  index) const;
 virtual QString  getBeanType();
 virtual NamedBean*  getBySystemName(QString  name) const;
 virtual NamedBean*  getByUserName(QString  name);
+virtual QString  getCellToolTip(JTable*  table, int  row, int  col) const;
 virtual QString  getColumnClass(int  col) const;
 virtual AbstractManager*  getManager();
 virtual QString  getMasterClassName();
 virtual int  getPreferredWidth(int  col);
+virtual QString  getValue(QString  systemName);
 virtual QString  getValue(QString  systemName) const;
 virtual QVariant  headerData(int  section, Qt::Orientation  orientation, int  role) const;
 virtual void init();
@@ -2635,14 +2639,17 @@ inline void py_q_configValueColumn(JTable*  table) { BeanTableDataModel::configV
 inline QPushButton*  py_q_configureButton() { return BeanTableDataModel::configureButton(); }
 inline void py_q_configureTable(JTable*  table) { BeanTableDataModel::configureTable(table); }
 inline QVariant  py_q_data(const QModelIndex&  index, int  role) const { return BeanTableDataModel::data(index, role); }
+inline void py_q_dispose() { BeanTableDataModel::dispose(); }
 inline Qt::ItemFlags  py_q_flags(const QModelIndex&  index) const { return BeanTableDataModel::flags(index); }
 inline QString  py_q_getBeanType() { return BeanTableDataModel::getBeanType(); }
 inline NamedBean*  py_q_getBySystemName(QString  name) const { return BeanTableDataModel::getBySystemName(name); }
 inline NamedBean*  py_q_getByUserName(QString  name) { return BeanTableDataModel::getByUserName(name); }
+inline QString  py_q_getCellToolTip(JTable*  table, int  row, int  col) const { return BeanTableDataModel::getCellToolTip(table, row, col); }
 inline QString  py_q_getColumnClass(int  col) const { return BeanTableDataModel::getColumnClass(col); }
 inline AbstractManager*  py_q_getManager() { return BeanTableDataModel::getManager(); }
 inline QString  py_q_getMasterClassName() { return BeanTableDataModel::getMasterClassName(); }
 inline int  py_q_getPreferredWidth(int  col) { return BeanTableDataModel::getPreferredWidth(col); }
+inline QString  py_q_getValue(QString  systemName) { return BeanTableDataModel::getValue(systemName); }
 inline QString  py_q_getValue(QString  systemName) const { return BeanTableDataModel::getValue(systemName); }
 inline QVariant  py_q_headerData(int  section, Qt::Orientation  orientation, int  role) const { return BeanTableDataModel::headerData(section, orientation, role); }
 inline void py_q_init() { BeanTableDataModel::init(); }
@@ -2681,6 +2688,8 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    QVariant  py_q_data(BeanTableDataModel* theWrappedObject, const QModelIndex&  index, int  role) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_data(index, role));}
    void deleteBean(BeanTableDataModel* theWrappedObject, int  row, int  col);
    void dispose(BeanTableDataModel* theWrappedObject);
+   void py_q_dispose(BeanTableDataModel* theWrappedObject){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_dispose());}
+   void editComment(BeanTableDataModel* theWrappedObject, int  row, int  column);
    Qt::ItemFlags  flags(BeanTableDataModel* theWrappedObject, const QModelIndex&  index) const;
    Qt::ItemFlags  py_q_flags(BeanTableDataModel* theWrappedObject, const QModelIndex&  index) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_flags(index));}
    QString  getBeanType(BeanTableDataModel* theWrappedObject);
@@ -2689,6 +2698,8 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    NamedBean*  py_q_getBySystemName(BeanTableDataModel* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getBySystemName(name));}
    NamedBean*  getByUserName(BeanTableDataModel* theWrappedObject, QString  name);
    NamedBean*  py_q_getByUserName(BeanTableDataModel* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getByUserName(name));}
+   QString  getCellToolTip(BeanTableDataModel* theWrappedObject, JTable*  table, int  row, int  col) const;
+   QString  py_q_getCellToolTip(BeanTableDataModel* theWrappedObject, JTable*  table, int  row, int  col) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getCellToolTip(table, row, col));}
    QString  getColumnClass(BeanTableDataModel* theWrappedObject, int  col) const;
    QString  py_q_getColumnClass(BeanTableDataModel* theWrappedObject, int  col) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getColumnClass(col));}
    int  getDisplayDeleteMsg(BeanTableDataModel* theWrappedObject);
@@ -2699,6 +2710,8 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    int  getPreferredWidth(BeanTableDataModel* theWrappedObject, int  col);
    int  py_q_getPreferredWidth(BeanTableDataModel* theWrappedObject, int  col){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getPreferredWidth(col));}
    int  getPropertyColumnCount(BeanTableDataModel* theWrappedObject) const;
+   QString  getValue(BeanTableDataModel* theWrappedObject, QString  systemName);
+   QString  py_q_getValue(BeanTableDataModel* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getValue(systemName));}
    QString  getValue(BeanTableDataModel* theWrappedObject, QString  systemName) const;
    QString  py_q_getValue(BeanTableDataModel* theWrappedObject, QString  systemName) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_getValue(systemName));}
    QVariant  headerData(BeanTableDataModel* theWrappedObject, int  section, Qt::Orientation  orientation, int  role) const;
@@ -2706,7 +2719,7 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    void py_q_init(BeanTableDataModel* theWrappedObject){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_init());}
    bool  matchPropertyName(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e);
    bool  py_q_matchPropertyName(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_matchPropertyName(e));}
-   void moveBean(BeanTableDataModel* theWrappedObject, int  arg__1);
+   void moveBean(BeanTableDataModel* theWrappedObject, int  arg__1, int  col);
    void persistTable(BeanTableDataModel* theWrappedObject, JTable*  table);
    void py_q_propertyChange(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_propertyChange(e));}
    void removeName(BeanTableDataModel* theWrappedObject, int  arg__1);

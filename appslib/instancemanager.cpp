@@ -665,25 +665,25 @@ TurnoutManager* InstanceManager::turnoutManagerInstance()
 }
 
 // helper function for scripts that use Proxy managers
-ProxyTurnoutManager* InstanceManager::proxyTurnoutManagerInstance()
-{
- return (ProxyTurnoutManager*)getDefault("TurnoutManager");
-}
+//ProxyTurnoutManager* InstanceManager::proxyTurnoutManagerInstance()
+//{
+// return (ProxyTurnoutManager*)getDefault("TurnoutManager");
+//}
 
-ProxySensorManager* InstanceManager::proxySensorManagerInstance()
-{
- return (ProxySensorManager*)getDefault("SensorManager");
-}
+//ProxySensorManager* InstanceManager::proxySensorManagerInstance()
+//{
+// return (ProxySensorManager*)getDefault("SensorManager");
+//}
 
-ProxyLightManager* InstanceManager::proxyLightManagerInstance()
-{
- return (ProxyLightManager*)getDefault("LightManager");
-}
+//ProxyLightManager* InstanceManager::proxyLightManagerInstance()
+//{
+// return (ProxyLightManager*)getDefault("LightManager");
+//}
 
-ProxyReporterManager* InstanceManager::proxyReporterManagerInstance()
-{
- return (ProxyReporterManager*)getDefault("ReporterManager");
-}
+//ProxyReporterManager* InstanceManager::proxyReporterManagerInstance()
+//{
+// return (ProxyReporterManager*)getDefault("ReporterManager");
+//}
 
 
 ThrottleManager* InstanceManager::throttleManagerInstance()  {

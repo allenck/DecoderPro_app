@@ -2,6 +2,7 @@
 #include "tablesframe.h"
 #include "libtables.h"
 #include "instancemanager.h"
+#include "userpreferencesmanager.h"
 
 //ListedTableAction::ListedTableAction(QObject *parent) :
 //  QAction(parent)
@@ -105,6 +106,8 @@ void ListedTableAction::common()
   f->gotoListItem(gotoListItem);
   return;
  }
+//  UserPreferencesManager* prefs = ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"));
+//  QSize saveSize = prefs->getWindowSize("jmri.jmrit.beantable.ListedTableFrame:Turnout Table");
   f = new ListedTableFrame(title);
   f->setDefaultCloseOperation(JFrame::HIDE_ON_CLOSE);
   //                /**
@@ -114,13 +117,14 @@ void ListedTableAction::common()
   //            };
   f->initComponents();
   addToFrame(f);
-
   f->gotoListItem(gotoListItem);
   f->adjustSize();
 
   f->setDividerLocation(dividerLocation);
   f->setVisible(true);
   f->setFrameLocation();
+//  f->resize(saveSize);
+
 //        }
 //    };
 //    Thread thr = new Thread(r, "Listed Table Generation");

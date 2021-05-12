@@ -20,7 +20,14 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  bottomBox =  Box::createHorizontalBox();
  //bottomBox->setLayout(new QHBoxLayout);
  //bottomBox.add(Box.createHorizontalGlue());	// stays at end of box
- bottomBoxIndex = 0;}
+ bottomBoxIndex = 0;
+ //if(windowFrameRef.isEmpty())
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
+}
+
 /**
  * Provide a JFrame to display a table of NamedBeans.
  * <P>
@@ -59,7 +66,13 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  bottomBox = Box::createHorizontalBox();
  //bottomBox->setLayout(new QHBoxLayout);
  //bottomBox.add(Box.createHorizontalGlue());	// stays at end of box
- bottomBoxIndex = 0;}
+ bottomBoxIndex = 0;
+ //if(windowFrameRef.isEmpty())
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
+}
 
 /*public*/ BeanTableFrame::BeanTableFrame(BeanTableDataModel* model, QString helpTarget, JTable* dataTab, QWidget *parent) : JmriJFrame(parent)
 {
@@ -146,6 +159,12 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
 //    dataScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 // dataModel->loadTableColumnDetails(dataTable);
  dataModel->persistTable(dataTable);
+
+ //if(windowFrameRef.isEmpty())
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
 }
 
 /**
@@ -188,6 +207,7 @@ void BeanTableFrame::extras() {}
     JmriJFrame::dispose();
     //close();
 }
+
 /*public*/ QString BeanTableFrame::getClassName()
 {
  return "jmri.jmrit.beantable.BeanTableFrame";

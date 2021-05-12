@@ -271,32 +271,49 @@ public:
     {
         this->values = values;
     }
+
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        JComboBox* editor = new JComboBox(parent);
-        editor->addItems(values);
-        return editor;
+//     QVariant v = index.model()->data(index, Qt::DisplayRole);
+     JComboBox* editor;
+//     if( (editor =VPtr<JComboBox>::asPtr(v)))
+//      return editor;
+
+     editor = new JComboBox(parent);
+     editor->addItems(values);
+     return editor;
     }
+
     void setEditorData(QWidget *editor, const QModelIndex &index) const{
         JComboBox *comboBox = static_cast<JComboBox*>(editor);
         QString value = index.model()->data(index, Qt::DisplayRole).toString();
-        comboBox->setCurrentText(value);
+//        QVariant var = index.model()->data(index, Qt::DisplayRole);
+//        if(! VPtr<JComboBox>::asPtr(var))
+//         comboBox->setCurrentText(var.toString());
     }
+
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
     {
         JComboBox *comboBox = static_cast<JComboBox*>(editor);
         model->setData(index, comboBox->currentText(), Qt::EditRole);
     }
+
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const{
         editor->setGeometry(option.rect);
     }
+
     void setValues(QStringList values) {this->values = values;}
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
      //bool state = index.data().toString() == this->on;
-     JComboBox* widget = new JComboBox(values);
-     widget->setCurrentText(index.model()->data(index, Qt::DisplayRole).toString());
+//     QVariant v = index.model()->data(index, Qt::DisplayRole);
+     JComboBox* widget;
+//     if( !(widget =VPtr<JComboBox>::asPtr(v)))
+//     {
+      widget = new JComboBox(values);
+      widget->setCurrentText(index.model()->data(index, Qt::DisplayRole).toString());
+//     }
      widget->resize(option.rect.size());
      QPixmap pixmap(option.rect.size());
      widget->render(&pixmap);

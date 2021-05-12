@@ -27,7 +27,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  *
  * @param listener  The PropertyChangeListener to be added
  */
-/*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
+virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
 /**
  * Remove a PropertyChangeListener from the listener list.
  * This removes a PropertyChangeListener that was registered
@@ -39,7 +39,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  *
  * @param listener  The PropertyChangeListener to be removed
  */
-/*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
+virtual /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
 /**
  * Returns an array of all the listeners that were added to the
  * PropertyChangeSupport object with addPropertyChangeListener().
@@ -71,7 +71,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  *         empty array if no listeners have been added
  * @since 1.4
  */
-/*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners();
+virtual /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners();
 /**
  * Add a PropertyChangeListensourceer for a specific property.  The listener
  * will be invoked only when a call on firePropertyChange names that
@@ -85,7 +85,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param propertyName  The name of the property to listen on.
  * @param listener  The PropertyChangeListener to be added
  */
-/*public*/ void addPropertyChangeListener(
+virtual /*public*/ void addPropertyChangeListener(
             QString propertyName,
             PropertyChangeListener* listener);
 /**
@@ -101,7 +101,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param propertyName  The name of the property that was listened on.
  * @param listener  The PropertyChangeListener to be removed
  */
-/*public*/ void removePropertyChangeListener(
+virtual /*public*/ void removePropertyChangeListener(
             QString propertyName,
             PropertyChangeListener* listener);
 /**
@@ -115,7 +115,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  *         returned.
  * @since 1.4
  */
-/*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners(QString propertyName);
+virtual /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners(QString propertyName);
 /**
  * Reports a bound property update to listeners
  * that have been registered to track updates of
@@ -130,7 +130,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param oldValue      the old value of the property
  * @param newValue      the new value of the property
  */
-/*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue) const;
+virtual /*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue) const;
 /*public*/ void firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue) const;
 
 /**
@@ -147,7 +147,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param oldValue      the old value of the property
  * @param newValue      the new value of the property
  */
-/*public*/ void firePropertyChange(QString propertyName, bool oldValue, bool newValue) const;
+virtual /*public*/ void firePropertyChange(QString propertyName, bool oldValue, bool newValue) const;
 /**
  * Fires a property change event to listeners
  * that have been registered to track updates of
@@ -157,7 +157,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  *
  * @param event  the {@code PropertyChangeEvent} to be fired
  */
-/*public*/ void firePropertyChange(PropertyChangeEvent* event) const;
+virtual /*public*/ void firePropertyChange(PropertyChangeEvent* event) const;
 /**
  * Reports a bound indexed property update to listeners
  * that have been registered to track updates of
@@ -174,7 +174,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param newValue      the new value of the property
  * @since 1.5
  */
-/*public*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue) const;
+virtual /*public*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue) const;
 /**
  * Reports an integer bound indexed property update to listeners
  * that have been registered to track updates of
@@ -191,7 +191,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param newValue      the new value of the property
  * @since 1.5
  */
-/*public*/ void fireIndexedPropertyChange(QString propertyName, int index, int oldValue, int newValue);
+virtual /*public*/ void fireIndexedPropertyChange(QString propertyName, int index, int oldValue, int newValue);
 /**
  * Reports a boolean bound indexed property update to listeners
  * that have been registered to track updates of
@@ -208,7 +208,7 @@ PropertyChangeSupport(QObject* sourceBean, QObject *parent = 0);
  * @param newValue      the new value of the property
  * @since 1.5
  */
-/*public*/ void fireIndexedPropertyChange(QString propertyName, int index, bool oldValue, bool newValue);
+virtual /*public*/ void fireIndexedPropertyChange(QString propertyName, int index, bool oldValue, bool newValue);
 /**
  * Check if there are any listeners for a specific property, including
  * those registered on all properties.  If <code>propertyName</code>

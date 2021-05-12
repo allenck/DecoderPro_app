@@ -38,6 +38,9 @@
 #include "signalmastmanager.h"
 #include "signalmastlogicmanager.h"
 #include "signalmastlogic.h"
+#include "joptionpane.h"
+#include "jeditorpane.h"
+#include <QThread>
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -407,33 +410,31 @@ void BeanTableDataModel::setManager(AbstractManager *) {}
   else
   {
    NamedBeanPropertyDescriptor/*<?>*/* desc = getPropertyColumnDescriptor(col);
-   if (desc == nullptr) {
-       return true;
-   }
+   if (desc != nullptr) {
 //   if (value instanceof JComboBox) {
 //       value = ((JComboBox<?>) value).getSelectedItem();
 //   }
-   NamedBean* b = getBySystemName(sysNameList.at(row));
-   b->setProperty(desc->propertyKey, value);
+    NamedBean* b = getBySystemName(sysNameList.at(row));
+    b->setProperty(desc->propertyKey, value);
+   }
   }
+  if(isLegacy())
+   //return AbstractTableModel::setData(index, value, role);
+   setValueAt(value, index.row(), index.column());
   return true;
  }
- if(isLegacy())
-  AbstractTableModel::setData(index, value, role);
  return false;
-}
-
-void BeanTableDataModel::On_deleteBean_triggered()
-{
- deleteBean(row, 0);
 }
 
 /*protected*/ void BeanTableDataModel::deleteBean(int row, int /*col*/)
 {
+#if 1
  /*final*/ t = getBySystemName(sysNameList.at(row));
+ if(t == nullptr)
+  return;
  int count = ((AbstractNamedBean*)t)->getNumPropertyChangeListeners()-1; // one is this table
  if (log->isDebugEnabled()) log->debug("Delete with "+QString::number(count));
- if (getDisplayDeleteMsg()==QMessageBox::Yes)
+ if (getDisplayDeleteMsg()==0x02)
  {
   this->row = row;
   doDelete(t);
@@ -444,6 +445,14 @@ void BeanTableDataModel::On_deleteBean_triggered()
   QString msg;
   QString msg1;
   dialog->setWindowTitle(tr("Warning"));
+  connect(dialog, &QDialog::accepted, [=]{
+   doDelete(t);
+   dialog->accept();
+  });
+  connect(dialog, &QDialog::rejected, [=]{
+   dialog->reject();
+  });
+
   //dialog.setLocationRelativeTo(NULL);
   //dialog.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
   JPanel* container = new JPanel();
@@ -542,6 +551,15 @@ void BeanTableDataModel::On_deleteBean_triggered()
   dialog.setVisible(true)*/;
   dialog->exec();
  }
+#else
+ DeleteBeanWorker* worker = new DeleteBeanWorker(getBySystemName(sysNameList.at(row)), this);
+ //worker.execute();
+ QThread * thread = new QThread();
+ connect(thread,  SIGNAL(started()), worker, SLOT(doInBackground()));
+ connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
+ worker->moveToThread(thread);
+ thread->start();
+#endif
 }
 
 void BeanTableDataModel::on_noButton_clicked()
@@ -983,19 +1001,19 @@ class PopupListener extends MouseAdapter {
  menuItem = new QAction(tr("Move"),this);
 //    menuItem.addActionListener(new ActionListener(){
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            moveBean(rowindex, 0);
+ connect(menuItem, &QAction::triggered, [=]{
+            moveBean(row, 0);
 //        }
-//    });
- connect(menuItem, SIGNAL(triggered()), this, SLOT(On_moveBean_triggered()));
+    });
  popupMenu->addAction(menuItem);
 
  menuItem = new QAction(tr("Delete"),this);
 //    menuItem.addActionListener(new ActionListener(){
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            deleteBean(rowindex, 0);
+ connect(menuItem, &QAction::triggered, [=]{
+            deleteBean(row, 0);
 //        }
-//    });
- connect(menuItem, SIGNAL(triggered()), this, SLOT(On_deleteBean_triggered()));
+    });
  popupMenu->addAction(menuItem);
  addToPopUp(popupMenu);
  popupMenu->popup(_table->viewport()->mapToGlobal(p));
@@ -1063,14 +1081,10 @@ void BeanTableDataModel::On_renameBean_triggered()
   if (nB != NULL)
   {
    log->error("User name is not unique " + value);
-   QString msg;
-//      msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//              .getString("WarningUserName"),
-//              new Object[] { ("" + value) });
-//      JOptionPane.showMessageDialog(NULL, msg,
-//              AbstractTableAction.rb.getString("WarningTitle"),
-//              JOptionPane.ERROR_MESSAGE);
-   QMessageBox::warning(NULL, tr("Warning"), tr("User Name \" %1 \" has already been used.").arg(value));
+   QString msg = tr("User Name \" %1 \" has already been used.").arg(value);
+      JOptionPane::showMessageDialog(nullptr, msg,
+              tr("Warning"),
+              JOptionPane::ERROR_MESSAGE);
    return;
   }
  }
@@ -1083,14 +1097,11 @@ void BeanTableDataModel::On_renameBean_triggered()
   {
    if(!nbMan->inUse(sysNameList.at(row), nBean))
     return;
-//   QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//           .getString("UpdateToUserName"),
-//           new Object[] { getBeanType(),value,sysNameList.get(row) });
-//   int optionPane = JOptionPane.showConfirmDialog(NULL,
-//       msg, AbstractTableAction.rb.getString("UpdateToUserNameTitle"),
-//       JOptionPane.YES_NO_OPTION);
-//   if(optionPane == JOptionPane.YES_OPTION)
-   if(QMessageBox::question(NULL, tr("Update usage to UserName"), tr("Do you want to update references to this %1\nto use the UserName \"%2\" rather than its SystemName \"%3?\"").arg(getBeanType()).arg(value).arg(sysNameList.at(row)),QMessageBox::Yes | QMessageBox::No)!= QMessageBox::Yes)
+   QString msg = tr("Do you want to update references to this %1\nto use the UserName \"%2\" rather than its SystemName \"%3?\"").arg(getBeanType()).arg(value).arg(sysNameList.at(row));
+   int optionPane = JOptionPane::showConfirmDialog(nullptr,
+       msg, tr("Update usage to UserName"),
+       JOptionPane::YES_NO_OPTION);
+   if(optionPane == JOptionPane::YES_OPTION)
    {
     //This will update the bean reference from the systemName to the userName
     try
@@ -1122,26 +1133,19 @@ void BeanTableDataModel::On_removeName_triggered()
 
 /*public*/ void BeanTableDataModel::removeName(int row){
     NamedBean* nBean = getBySystemName(sysNameList.at(row));
-//    QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//            .getString("UpdateToSystemName"),
-//            new Object[] { getBeanType()});
-//    int optionPane = JOptionPane.showConfirmDialog(NULL,
-//        msg, AbstractTableAction.rb.getString("UpdateToSystemNameTitle"),
-//        JOptionPane.YES_NO_OPTION);
-//    if(optionPane == JOptionPane.YES_OPTION)
-    if(QMessageBox::question(NULL, tr("Update usage to SystemName").arg(getBeanType()), tr("Do you want to update references to this %1\nto use the SystemName?").arg(getBeanType()), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
+    QString msg = tr("Do you want to update references to this %1\nto use the SystemName?").arg(getBeanType());
+    int optionPane = JOptionPane::showConfirmDialog(nullptr,
+        msg, tr("Update usage to SystemName").arg(getBeanType()),
+        JOptionPane::YES_NO_OPTION);
+    if(optionPane == JOptionPane::YES_OPTION)
     {
      nbMan->updateBeanFromUserToSystem(nBean);
     }
     nBean->setUserName("");
     fireTableRowsUpdated(row, row);
 }
-void BeanTableDataModel::On_moveBean_triggered()
-{
- moveBean(row);
-}
 
-/*public*/ void BeanTableDataModel::moveBean(int row)
+/*public*/ void BeanTableDataModel::moveBean(int row, int /*col*/)
 {
  /*final*/ NamedBean* t = getBySystemName(sysNameList.at(row));
  QString currentName = t->getUserName();
@@ -1149,8 +1153,7 @@ void BeanTableDataModel::On_moveBean_triggered()
 
  if((currentName==NULL) || currentName==(""))
  {
-  //        JOptionPane.showMessageDialog(NULL,"Can not move an empty UserName");
-  QMessageBox::warning(NULL, tr("Warning"), tr("Can not move an empty UserName"));
+  JOptionPane::showMessageDialog(NULL,"Can not move an empty UserName");
   return;
  }
 
@@ -1341,6 +1344,147 @@ void BeanTableDataModel::onColumnSelected(QObject* obj)
    _table->setColumnWidth(column, 22);
  }
 }
+//class DeleteBeanWorker extends SwingWorker<Void, Void> {
+
+//private final T t;
+
+/*public*/ DeleteBeanWorker::DeleteBeanWorker(NamedBean* bean, BeanTableDataModel* model) {
+    t = bean;
+    this->model = model;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void* DeleteBeanWorker::doInBackground() {
+    QString message;// = new StringBuilder();
+    try {
+        model->getManager()->deleteBean(t, "CanDelete");  // NOI18N
+    } catch (PropertyVetoException e) {
+        if (e.getPropertyChangeEvent()->getPropertyName() ==("DoNotDelete")) { // NOI18N
+            model->log->warn(e.getMessage());
+            tr("%1 %2 Can not be deleted\n%3").arg(t->getBeanType(), t->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME), e.getMessage());
+            JOptionPane::showMessageDialog(nullptr, message,
+                    tr("Warning"),
+                    JOptionPane::ERROR_MESSAGE);
+            return nullptr;
+        }
+        message.append(e.getMessage());
+    }
+    int count = t->getListenerRefs()->size();
+    model->log->debug(tr("Delete with %1").arg(count));
+    if (model->getDisplayDeleteMsg() == 0x02 && message.isEmpty()) {
+        model->doDelete(t);
+    } else {
+        /*final*/ JDialog* dialog = new JDialog();
+        dialog->setTitle(tr("Warning"));
+        dialog->setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
+        JPanel* container = new JPanel();
+        container->setBorder(BorderFactory::createEmptyBorder(10, 10, 10, 10));
+        container->setLayout(new QVBoxLayout());//container, BoxLayout.Y_AXIS));
+        if (count > 0) { // warn of listeners attached before delete
+
+            JLabel* question = new JLabel(tr("Are you sure you want to delete %1?").arg(t->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME)));
+            question->setAlignment(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
+            container->layout()->addWidget(question);
+
+            QList<QString>* listenerRefs = t->getListenerRefs();
+            if (listenerRefs->size() > 0) {
+                QList<QString> listeners = QList<QString>();
+                for (QString listenerRef : *listenerRefs) {
+                    if (!listeners.contains(listenerRef)) {
+                        listeners.append(listenerRef);
+                    }
+                }
+
+                message.append("<br>");
+                message.append(tr("It is in use by %1 other objects including.").arg(count));
+                message.append("<ul>");
+                for (QString listener : listeners) {
+                    message.append("<li>");
+                    message.append(listener);
+                    message.append("</li>");
+                }
+                message.append("</ul>");
+
+                JEditorPane* pane = new JEditorPane();
+                pane->setContentType("text/html");
+                pane->setText("<html>" + message + "</html>");
+//                pane->setEditable(false);
+//                JScrollPane jScrollPane = new JScrollPane(pane);
+                container->layout()->addWidget(/*jScrollPane*/pane);
+            }
+        } else {
+            QString msg = tr("Are you sure you want to delete %1?").arg(t->getSystemName());
+            JLabel* question = new JLabel(msg);
+            question->setAlignment(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
+            container->layout()->addWidget(question);
+        }
+
+        /*final*/ JCheckBox* remember = new JCheckBox(tr("Remember this setting for next time?"));
+//        remember.setFont(remember.getFont().deriveFont(10f));
+//        remember.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton* yesButton = new JButton(tr("Yes"));
+        JButton* noButton = new JButton(tr("No"));
+        JPanel* button = new JPanel(new FlowLayout());
+//        button->setAlignment(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
+        button->layout()->addWidget(yesButton);
+        button->layout()->addWidget(noButton);
+        container->layout()->addWidget(button);
+
+//        noButton.addActionListener((ActionEvent e) -> {
+            //there is no point in remembering this the user will never be
+            //able to delete a bean!
+        connect(noButton, &JButton::clicked, [=]{
+            dialog->dispose();
+        });
+
+//        yesButton.addActionListener((ActionEvent e) -> {
+        connect(yesButton, &JButton::clicked, [=]{
+            if (remember->isChecked()) {
+                model->setDisplayDeleteMsg(0x02);
+            }
+            model->doDelete(t);
+            dialog->dispose();
+        });
+        container->layout()->addWidget(remember);
+//        container.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        container.setAlignmentY(Component.CENTER_ALIGNMENT);
+        dialog->getContentPane()->layout()->addWidget(container);
+        dialog->pack();
+
+//        dialog.getRootPane().setDefaultButton(noButton);
+        noButton->setDefault(true);
+//        noButton.requestFocusInWindow(); // set default keyboard focus, after pack() before setVisible(true)
+//        dialog.getRootPane().registerKeyboardAction(e -> { // escape to exit
+//                dialog.setVisible(false);
+//                dialog.dispose(); },
+//            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+//        dialog->move((Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - dialog.getWidth() / 2, (Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - dialog.getHeight() / 2);
+        dialog->setModal(true);
+        dialog->setVisible(true);
+    }
+    return nullptr;
+}
+
+/**
+ * {@inheritDoc} Minimal implementation to catch and log errors
+ */
+//@Override
+/*protected*/ void DeleteBeanWorker::done() {
+    try {
+//        model->get();  // called to get errors
+    }
+    catch (InterruptedException e) {
+        model->log->error("Exception while deleting bean", e);
+    }
+// catch (ExecutionException e) {
+//     model->log->error("Exception while deleting bean", e);
+// }
+}
 #if 0
 static class headerActionListener implements ActionListener {
     TableColumn tc;
@@ -1463,6 +1607,40 @@ class TableHeaderListener extends MouseAdapter {
     if (manager != NULL) {
         manager->stopPersisting(table); // throws NPE if table name is null
     }
+}
+
+/**
+ * Set identities for any columns that need an identity.
+ *
+ * It is recommended that all columns get a constant identity to
+ * prevent identities from being subject to changes due to translation.
+ * <p>
+ * The default implementation sets column identities to the String
+ * {@code Column#} where {@code #} is the model index for the column.
+ * Note that if the TableColumnModel is a {@link jmri.util.swing.XTableColumnModel},
+ * the index includes hidden columns.
+ *
+ * @param table the table to set identities for.
+ */
+/*protected*/ void BeanTableDataModel::setColumnIdentities(JTable* table) {
+//    Objects.requireNonNull(table.getModel(), "Table must have data model");
+//    Objects.requireNonNull(table.getColumnModel(), "Table must have column model");
+#if 0
+    Enumeration<TableColumn*> columns;
+    if (table.getColumnModel() instanceof XTableColumnModel) {
+        columns = ((XTableColumnModel) table.getColumnModel()).getColumns(false);
+    } else {
+        columns = table.getColumnModel().getColumns();
+    }
+    int i = 0;
+    while (columns.hasMoreElements()) {
+        TableColumn column = columns.nextElement();
+        if (column.getIdentifier() == null || column.getIdentifier().toString().isEmpty()) {
+            column.setIdentifier(String.format("Column%d", i));
+        }
+        i += 1;
+    }
+#endif
 }
 
 /*private*/ /*final*/ /*static*/ Logger* BeanTableDataModel::log = LoggerFactory::getLogger("BeanTableDataModel");

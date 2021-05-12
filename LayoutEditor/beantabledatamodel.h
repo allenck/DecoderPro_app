@@ -71,7 +71,7 @@ public:
  /*public*/ void copyName(int);
  /*public*/ void renameBean(int);
  /*public*/ void removeName(int);
- /*public*/ void moveBean(int);
+ /*public*/ void moveBean(int, int col);
  virtual /*public*/ void addToPopUp(QMenu* popup);
  /*public*/ void setPropertyColumnsVisible(JTable* table, bool visible);
  QObject* self() override {return (QObject*)this;}
@@ -90,8 +90,6 @@ public slots:
  void On_copyName_triggered();
  void On_renameBean_triggered();
  void On_removeName_triggered();
- void On_moveBean_triggered();
- void On_deleteBean_triggered();
  virtual void /*public*/ init();
 
 private:
@@ -132,6 +130,7 @@ protected:
  /*protected*/ /*final*/ QList<NamedBeanPropertyDescriptor*>* propertyColumns = nullptr;
  /*protected*/ NamedBeanPropertyDescriptor *getPropertyColumnDescriptor(int column);
  /*protected*/ JTable* configureJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ JTable* table, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter);
+ virtual /*protected*/ void setColumnIdentities(JTable* table);
 
 protected slots:
  void On_itemClicked(QModelIndex);
@@ -162,7 +161,32 @@ friend class SignalMastTableAction;
 friend class OBlockTableAction;
 friend class TTComboBoxDelegate;
 friend class SensorTableDataModel;
+friend class DeleteBeanWorker;
+friend class TurnoutTableAction;
+
 };
 
+class DeleteBeanWorker : public QObject//extends SwingWorker<Void, Void>
+{
+Q_OBJECT
+/*private*/ /*final*/ NamedBean* t;
+BeanTableDataModel *model;
+
+public:
+/*public*/ DeleteBeanWorker(NamedBean* bean, BeanTableDataModel *model);
+
+ signals:
+  void finished();
+
+ public slots:
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void *doInBackground();
+ protected:
+
+/*protected*/ void done();
+};
 
 #endif // BEANTABLEDATAMODEL_H

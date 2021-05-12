@@ -69,7 +69,11 @@ void ListedTableFrame::common()
  thisLayout = new QVBoxLayout(getContentPane());
  statusBar()->show();
  setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
-
+ //if(windowFrameRef.isEmpty())
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
 
  if (InstanceManager::getNullableDefault("ListedTableFrame") == nullptr) {
     //We add this to the instanceManager so that other components can add to the table

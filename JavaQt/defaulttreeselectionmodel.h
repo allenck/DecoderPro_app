@@ -54,7 +54,7 @@ private:
 protected:
 
  /** Used to messaged registered listeners. */
- /*protected*/ PropertyChangeSupport*     changeSupport;
+ /*protected*/ PropertyChangeSupport*     changeSupport = nullptr;
 
  /** Paths that are currently selected.  Will be null if nothing is
    * currently selected. */

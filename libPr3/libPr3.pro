@@ -121,6 +121,7 @@ equals(ENABLE_SCRIPTING, "Y") {
 DEFINES += USE_THREAD
 
 SOURCES += \
+ #abstractproxymanager.cpp \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \

@@ -12,6 +12,7 @@
 #include "windowadapter.h"
 #include "instancemanager.h"
 #include "userpreferencesmanager.h"
+#include <QRadioButton>
 
 class Block;
 class UserPreferencesManager;
@@ -42,19 +43,17 @@ public slots:
 
 private:
  void common();
- /*private*/ QString noneText;// = tr("BlockNone");
- /*private*/ QString gradualText;// = tr("BlockGradual");
- /*private*/ QString tightText;// = tr("BlockTight");
- /*private*/ QString severeText;// = tr("BlockSevere");
- /*private*/ QStringList curveOptions;// = {noneText, gradualText, tightText, severeText};
- /*private*/ DecimalFormat* twoDigit;// = new DecimalFormat("0.00");
- QCheckBox* inchBox;// = new JCheckBox(tr("LengthInches"));
- QCheckBox* centimeterBox;// = new JCheckBox(tr("LengthCentimeters"));
  JmriJFrame* addFrame = NULL;
  JTextField* sysName = new JTextField(20);
  JTextField* userName = new JTextField(20);
  JLabel* sysNameLabel = new JLabel(tr("SystemName"));
  JLabel* userNameLabel = new JLabel(tr("UserName"));
+
+ SpinnerNumberModel* numberToAddSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+ JSpinner* numberToAddSpinner = new JSpinner(numberToAddSpinnerNumberModel);
+ JCheckBox* addRangeCheckBox = new JCheckBox(tr("Add a sequential range"));
+ JCheckBox* _autoSystemNameCheckBox = new JCheckBox(tr("Automatically generate System Name"));
+ JLabel* statusBar = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
  /*private*/ JButton* newButton = nullptr;
 
 
@@ -63,11 +62,6 @@ private:
  JTextField* blockSpeed = new JTextField(7);
  QCheckBox* checkPerm = new QCheckBox(tr("Permissive"));
 
- SpinnerNumberModel* numberToAddSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
- JSpinner* numberToAddSpinner = new JSpinner(numberToAddSpinnerNumberModel);
- JCheckBox* addRangeCheckBox = new JCheckBox(tr("Add a sequential range"));
- JCheckBox* _autoSystemNameCheckBox = new JCheckBox(tr("Automatically generate System Name"));
- JLabel* statusBar = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
  UserPreferencesManager* pref;
 
  QComboBox* speeds = new QComboBox();
@@ -79,6 +73,8 @@ private:
 
  // for icon state col
  bool _graphicState = false; // updated from prefs
+ /*private*/ /*final*/ QRadioButton* inchBox = new QRadioButton(tr("Length in Inches")); // NOI18N
+ /*private*/ /*final*/ QRadioButton* centimeterBox = new QRadioButton(tr("Length in Centimeters")); // NOI18N
  /*private*/ void initRadioButtons();
  /*private*/ void metricSelectionChanged(/*ActionEvent e*/);
 

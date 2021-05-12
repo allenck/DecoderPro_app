@@ -63,6 +63,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -14667,6 +14668,94 @@ if (_wrapper) {
 }
   LayoutEditor::keyPressEvent(event0);
 }
+void PythonQtShell_LayoutEditor::mouseClicked(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseClicked");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::mouseClicked(event0);
+}
+void PythonQtShell_LayoutEditor::mouseMoved(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseMoved");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::mouseMoved(event0);
+}
+void PythonQtShell_LayoutEditor::mousePressed(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mousePressed");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::mousePressed(event0);
+}
+void PythonQtShell_LayoutEditor::mouseReleased(QGraphicsSceneMouseEvent*  event0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("mouseReleased");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QGraphicsSceneMouseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&event0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::mouseReleased(event0);
+}
 void PythonQtShell_LayoutEditor::newPanelDefaults()
 {
 if (_wrapper) {
@@ -14711,6 +14800,50 @@ if (_wrapper) {
 }
   LayoutEditor::putItem(l0);
 }
+void PythonQtShell_LayoutEditor::redrawPanel()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("redrawPanel");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::redrawPanel();
+}
+void PythonQtShell_LayoutEditor::repaint()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("repaint");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={""};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::repaint();
+}
 void PythonQtShell_LayoutEditor::setAllEditable(bool  editable0)
 {
 if (_wrapper) {
@@ -14733,6 +14866,28 @@ if (_wrapper) {
 }
   LayoutEditor::setAllEditable(editable0);
 }
+void PythonQtShell_LayoutEditor::setNextLocation(Positionable*  obj0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setNextLocation");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "Positionable*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&obj0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::setNextLocation(obj0);
+}
 void PythonQtShell_LayoutEditor::showPopUp(Positionable*  p0, QGraphicsSceneMouseEvent*  event1)
 {
 if (_wrapper) {
@@ -14754,6 +14909,28 @@ if (_wrapper) {
   }
 }
   LayoutEditor::showPopUp(p0, event1);
+}
+void PythonQtShell_LayoutEditor::vetoableChange(PropertyChangeEvent*  evt0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("vetoableChange");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "PropertyChangeEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&evt0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::vetoableChange(evt0);
 }
 LayoutEditor* PythonQtWrapper_LayoutEditor::new_LayoutEditor(QString  name, QWidget*  parent)
 { 
@@ -14853,7 +15030,7 @@ void PythonQtWrapper_LayoutEditor::alignLayoutToGrid(LayoutEditor* theWrappedObj
 
 void PythonQtWrapper_LayoutEditor::alignSelection(LayoutEditor* theWrappedObject, bool  alignX)
 {
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_alignSelection(alignX));
+  ( theWrappedObject->alignSelection(alignX));
 }
 
 void PythonQtWrapper_LayoutEditor::alignSelectionToGrid(LayoutEditor* theWrappedObject)
@@ -15291,11 +15468,6 @@ void PythonQtWrapper_LayoutEditor::removeSignalHead(LayoutEditor* theWrappedObje
   ( theWrappedObject->removeSignalHead(head));
 }
 
-void PythonQtWrapper_LayoutEditor::repaint(LayoutEditor* theWrappedObject)
-{
-  ( theWrappedObject->repaint());
-}
-
 void PythonQtWrapper_LayoutEditor::resetAwaitingIconChange(LayoutEditor* theWrappedObject)
 {
   ( theWrappedObject->resetAwaitingIconChange());
@@ -15431,11 +15603,6 @@ void PythonQtWrapper_LayoutEditor::setLayoutName(LayoutEditor* theWrappedObject,
   ( theWrappedObject->setLayoutName(name));
 }
 
-void PythonQtWrapper_LayoutEditor::setNextLocation(LayoutEditor* theWrappedObject, Positionable*  obj)
-{
-  ( theWrappedObject->setNextLocation(obj));
-}
-
 void PythonQtWrapper_LayoutEditor::setOpenDispatcherOnLoad(LayoutEditor* theWrappedObject, bool  boo)
 {
   ( theWrappedObject->setOpenDispatcherOnLoad(boo));
@@ -15534,6 +15701,11 @@ void PythonQtWrapper_LayoutEditor::setTurnoutCircles(LayoutEditor* theWrappedObj
 void PythonQtWrapper_LayoutEditor::setTurnoutDrawUnselectedLeg(LayoutEditor* theWrappedObject, bool  state)
 {
   ( theWrappedObject->setTurnoutDrawUnselectedLeg(state));
+}
+
+void PythonQtWrapper_LayoutEditor::setTurnoutFillControlCircles(LayoutEditor* theWrappedObject, bool  state)
+{
+  ( theWrappedObject->setTurnoutFillControlCircles(state));
 }
 
 void PythonQtWrapper_LayoutEditor::setTurnoutWid(LayoutEditor* theWrappedObject, double  wid)
