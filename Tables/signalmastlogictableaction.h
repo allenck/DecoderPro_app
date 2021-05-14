@@ -23,7 +23,7 @@ public slots:
 private:
     void common();
     SignallingAction* sigLog;// = new jmri.jmrit.signalling.SignallingAction();
-    QList<QHash<SignalMastLogic*, SignalMast*>*>* signalMastLogicList;// = null;
+    QList<QHash<SignalMastLogic*, SignalMast*>*>* signalMastLogicList = nullptr;
     QWidget* update;
     bool suppressUpdate;// = false;
     JmriJFrame* signalMastLogicFrame;// = null;

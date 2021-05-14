@@ -56,7 +56,7 @@ private:
   * <code>changeSupport</code> field describes them.
   */
 // /*private*/ SwingPropertyChangeSupport changeSupport;
- PropertyChangeSupport* changeSupport;
+ PropertyChangeSupport* changeSupport = nullptr;
 
  void common();
  /*private*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);

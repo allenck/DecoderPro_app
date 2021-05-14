@@ -279,7 +279,6 @@ void TabbedTableItem::createDataModel()
  sorter->setSourceModel(dataModel);
  dataTable = dataModel->makeJTable(dataModel->getMasterClassName() + ":" + getItemString(), dataModel, sorter);
 
- tableAction->table = dataTable;
  //sorter->setSourceModel(dataModel);
  dataTable->setSortingEnabled(true);
  //sorter.setTableHeader(dataTable.getTableHeader());
@@ -410,7 +409,7 @@ void TabbedTableItem::addPanelModel()
  */
 /*private*/ void TabbedTableItem::fireColumnsUpdated(){
     TableColumnModel* model = dataTable->getColumnModel();
-    if (qobject_cast<XTableColumnModel*>(model)) {
+    if (qobject_cast<XTableColumnModel*>(model->self())) {
         QListIterator<TableColumn *> e = ((XTableColumnModel*) model)->getColumns(false);
         int numCols = ((XTableColumnModel*) model)->getColumnCount(false);
         // XTableColumnModel has been spotted to return a fleeting different

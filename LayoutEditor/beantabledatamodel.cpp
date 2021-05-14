@@ -1631,7 +1631,7 @@ class TableHeaderListener extends MouseAdapter {
 #if 1
     //Enumeration<TableColumn*> columns;
  QListIterator<TableColumn*> columns = table->getColumnModel()->getColumns();
-    if (qobject_cast<XTableColumnModel*>(table->getColumnModel())) {
+    if (static_cast<XTableColumnModel*>(table->getColumnModel())) {
         columns = ((XTableColumnModel*) table->getColumnModel())->getColumns(false);
     } else {
         columns = table->getColumnModel()->getColumns();

@@ -99,7 +99,6 @@ void TurnoutTableAction::common()
 // speedListClosed =  QVector<QString>();
 // speedListThrown =  QVector<QString>();
  noWarn = false;
- table = NULL;
  if(parent() == NULL)
   return;
 
@@ -496,54 +495,54 @@ qSort(defStrings.begin(), defStrings.end());
 
 }
 
-void TurnoutTableAction::On_doAutomationBox_toggled(bool b)
-{
- TurnoutOperationManager::getInstance()->setDoOperations(doAutomationBox->isChecked());
- pref->setSimplePreferenceState(this->getClassName()+".doAutomation", b);
-}
+//void TurnoutTableAction::On_doAutomationBox_toggled(bool b)
+//{
+// TurnoutOperationManager::getInstance()->setDoOperations(doAutomationBox->isChecked());
+// pref->setSimplePreferenceState(this->getClassName()+".doAutomation", b);
+//}
 
-void TurnoutTableAction::showFeedbackChanged()
-{
- bool showFeedback = showFeedbackBox->isChecked();
- XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
- TableColumn* column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::KNOWNCOL);
- columnModel->setColumnVisible(column, showFeedback);
- column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::MODECOL);
- columnModel->setColumnVisible(column, showFeedback);
- column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::SENSOR1COL);
- columnModel->setColumnVisible(column, showFeedback);
- column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::SENSOR2COL);
- columnModel->setColumnVisible(column, showFeedback);
- column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::OPSONOFFCOL);
- columnModel->setColumnVisible(column, showFeedback);
- column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::OPSEDITCOL);
- columnModel->setColumnVisible(column, showFeedback);
- pref->setSimplePreferenceState(this->getClassName()+".showFeedback", showFeedback);
+//void TurnoutTableAction::showFeedbackChanged()
+//{
+// bool showFeedback = showFeedbackBox->isChecked();
+// XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
+// TableColumn* column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::KNOWNCOL);
+// columnModel->setColumnVisible(column, showFeedback);
+// column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::MODECOL);
+// columnModel->setColumnVisible(column, showFeedback);
+// column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::SENSOR1COL);
+// columnModel->setColumnVisible(column, showFeedback);
+// column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::SENSOR2COL);
+// columnModel->setColumnVisible(column, showFeedback);
+// column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::OPSONOFFCOL);
+// columnModel->setColumnVisible(column, showFeedback);
+// column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::OPSEDITCOL);
+// columnModel->setColumnVisible(column, showFeedback);
+// pref->setSimplePreferenceState(this->getClassName()+".showFeedback", showFeedback);
 
-}
+//}
 
-void TurnoutTableAction::showLockChanged()
-{
- bool showLock = showLockBox->isChecked();
-    XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
-    TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(TurnoutTableDataModel::LOCKDECCOL);
-    columnModel->setColumnVisible(column, showLock);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::LOCKOPRCOL);
-    columnModel->setColumnVisible(column, showLock);
-    pref->setSimplePreferenceState(this->getClassName()+".showLockBox", showLock);
-}
+//void TurnoutTableAction::showLockChanged()
+//{
+// bool showLock = showLockBox->isChecked();
+//    XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
+//    TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(TurnoutTableDataModel::LOCKDECCOL);
+//    columnModel->setColumnVisible(column, showLock);
+//    column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::LOCKOPRCOL);
+//    columnModel->setColumnVisible(column, showLock);
+//    pref->setSimplePreferenceState(this->getClassName()+".showLockBox", showLock);
+//}
 
-//bool showTurnoutSpeed = false;
-/*public*/ void TurnoutTableAction::showTurnoutSpeedChanged()
-{
-    bool showTurnoutSpeed = showTurnoutSpeedBox->isChecked();
-    XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
-    TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(TurnoutTableDataModel::STRAIGHTCOL);
-    columnModel->setColumnVisible(column, showTurnoutSpeed);
-    column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::DIVERGCOL);
-    columnModel->setColumnVisible(column, showTurnoutSpeed);
-    pref->setSimplePreferenceState(this->getClassName()+".showTurnoutSpeed", showTurnoutSpeed);
-}
+////bool showTurnoutSpeed = false;
+///*public*/ void TurnoutTableAction::showTurnoutSpeedChanged()
+//{
+//    bool showTurnoutSpeed = showTurnoutSpeedBox->isChecked();
+//    XTableColumnModel* columnModel = (XTableColumnModel*)table->getColumnModel();
+//    TableColumn* column  = ((XTableColumnModel*)table->getColumnModel())->getColumnByModelIndex(TurnoutTableDataModel::STRAIGHTCOL);
+//    columnModel->setColumnVisible(column, showTurnoutSpeed);
+//    column  = columnModel->getColumnByModelIndex(TurnoutTableDataModel::DIVERGCOL);
+//    columnModel->setColumnVisible(column, showTurnoutSpeed);
+//    pref->setSimplePreferenceState(this->getClassName()+".showTurnoutSpeed", showTurnoutSpeed);
+//}
 
 //@Override
 /*public*/ void TurnoutTableAction::setMenuBar(BeanTableFrame* f)

@@ -41,25 +41,28 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
  * to be added to the table.
  */
 //@Override
-/*public*/ void JmriJTablePersistenceManager::persist(/*@NonNULL*/ JTable* table) //throws IllegalArgumentException, NullPointerException
+/*public*/ void JmriJTablePersistenceManager::persist(/*@NonNULL*/ JTable* table, bool resetState) //throws IllegalArgumentException, NullPointerException
 {
 //    Objects.requireNonNull(table->getName(), "Table name must be nonNULL");
  if ( this->listeners->contains(table->getName()) && this->listeners->value(table->getName())->getTable() != (table))
  {
   throw  IllegalArgumentException("Table name must be unique");
  }
+ if (resetState) {
+     this->resetState(table);
+ }
  if (! this->listeners->contains(table->getName())) {
   JTableListener* listener = new JTableListener(table, this);
    this->listeners->insert(table->getName(), listener);
 #if 1
   //if (!Arrays.asList(table->getPropertyChangeListeners()).contains(this))
-
   {
    //table->addPropertyChangeListener(this);
    connect(table, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    //table->addPropertyChangeListener(listener);
    connect(table, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-   table->getColumnModel()->addColumnModelListener(listener);
+   if(qobject_cast<TableColumnModelListener*>(listener))
+    table->getColumnModel()->addColumnModelListener(listener);
 #if 1
    RowSorter* sorter = table->getRowSorter();
    if (sorter != NULL) {
@@ -124,7 +127,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
     RowSorter* sorter = table->getRowSorter();
     //bool isXModel = model instanceof XTableColumnModel;
     bool isXModel = false;
-    if(qobject_cast<XTableColumnModel*>(model) != NULL)
+    if(static_cast<XTableColumnModel*>(model) != NULL)
        isXModel = true;
     QListIterator<TableColumn*> e = model->getColumns();
     while (e.hasNext()) {
@@ -168,7 +171,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
     RowSorter* sorter = table->getRowSorter();
 #endif
     //bool isXModel = model instanceof XTableColumnModel;
-    bool isXModel = qobject_cast<XTableColumnModel*>(model) != NULL;
+    bool isXModel = static_cast<XTableColumnModel*>(model) != NULL;
 
 //    QListIterator<TableColumn*> e = QListIterator<TableColumn*>();
 //    if (isXModel) {
@@ -614,9 +617,9 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
 log = new Logger("JTableListener");
      this->table = table;
      this->manager = manager;
- connect(table->getColumnModel(),SIGNAL(notifycolumnadded(TableColumnModelEvent*)), this, SLOT(columnAdded(TableColumnModelEvent*)));
-   connect(table->getColumnModel(),SIGNAL(notifycolumnremoved(TableColumnModelEvent*)), this, SLOT(columnRemoved(TableColumnModelEvent*)));
-   connect(table->getColumnModel(),SIGNAL(notifycolumnmoved(TableColumnModelEvent*)), this, SLOT(columnMoved(TableColumnModelEvent*)));
+// connect(table->getColumnModel(),SIGNAL(notifycolumnadded(TableColumnModelEvent*)), this, SLOT(columnAdded(TableColumnModelEvent*)));
+//   connect(table->getColumnModel(),SIGNAL(notifycolumnremoved(TableColumnModelEvent*)), this, SLOT(columnRemoved(TableColumnModelEvent*)));
+//   connect(table->getColumnModel(),SIGNAL(notifycolumnmoved(TableColumnModelEvent*)), this, SLOT(columnMoved(TableColumnModelEvent*)));
 
 }
 

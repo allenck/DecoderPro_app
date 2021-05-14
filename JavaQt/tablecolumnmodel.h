@@ -15,14 +15,14 @@ class JTable;
 class TableColumnModelListener;
 class ListSelectionModel;
 class TableColumn;
-/*public*/ /*interface*/ class TableColumnModel : public QObject
+/*public*/ /*interface*/ class TableColumnModel //: public QObject
 {
- Q_OBJECT
+ //Q_OBJECT
 //
 // Modifying the model
 //
 public:
- TableColumnModel(JTable* parent) : QObject((QObject*)parent) {}
+ //TableColumnModel(JTable* parent) : QObject((QObject*)parent) {}
     /**
      *  Appends <code>aColumn</code> to the end of the
      *  <code>tableColumns</code> array.
@@ -217,12 +217,13 @@ public:
      */
     virtual /*public*/ void removeColumnModelListener(TableColumnModelListener* /*x*/) {}
 
+    virtual QObject* self() =0;
 signals:
- void notifycolumnadded(TableColumnModelEvent*);
- void notifycolumnremoved(TableColumnModelEvent*);
- void notifycolumnmoved(TableColumnModelEvent*);
+// void notifycolumnadded(TableColumnModelEvent*);
+// void notifycolumnremoved(TableColumnModelEvent*);
+// void notifycolumnmoved(TableColumnModelEvent*);
 
 
 };
-
+Q_DECLARE_INTERFACE(TableColumnModel, "TableColumnModel")
 #endif // TABLECOLUMNMODEL_H

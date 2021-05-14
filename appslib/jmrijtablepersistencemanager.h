@@ -28,7 +28,7 @@ public:
  /*public*/ /*final*/ static QString TABLES_NAMESPACE;// = "http://jmri.org/xml/schema/auxiliary-configuration/table-details-4-3-5.xsd"; // NOI18N
  /*public*/ /*final*/ static QString TABLES_ELEMENT;// = "tableDetails"; // NOI18N
  /*public*/ /*final*/ static QString SORT_ORDER;// = "sortOrder"; // NOI18N
- /*public*/ virtual void persist(/*@NonNULL*/ JTable* table) override; //throws IllegalArgumentException, NullPointerException
+ /*public*/ virtual void persist(/*@NonNULL*/ JTable* table, bool resetState =false) ; //throws IllegalArgumentException, NullPointerException
  /*public*/ virtual void cacheState(JTable* table) override;
  /*public*/ TableColumnPreferences* getTableColumnPreferences(/*@NonNULL*/ QString table, /*@NonNULL*/ QString column);
  QT_DEPRECATED /*public*/ QMap<QString, TableColumnPreferences*>* getTableColumnPreferences(/*@NonNULL*/ QString table);

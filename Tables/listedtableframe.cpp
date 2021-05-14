@@ -137,7 +137,7 @@ void ListedTableFrame::common()
   }
   catch (Exception ex) {
    detailpanel->addWidget(errorPanel(item->getItemString())/*, item->getClassAsString()*/);
-   log->error("Error when adding " + item->getClassAsString() + " to display\n" /*+ ex*/);
+   log->error("Error when adding " + item->getClassAsString() + " to display\n", ex);
   //ex.printStackTrace();
    removeItem->append(item);
   }
@@ -163,9 +163,11 @@ void ListedTableFrame::common()
  buttonpanel->setLayout(new QVBoxLayout); //BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
  buttonpanel->layout()->addWidget(/*listScroller*/list);
 
- buildMenus(tabbedTableArray->at(0));
- setTitle(tabbedTableArray->value(0)->getItemString());
-
+ if(!tabbedTableArray->isEmpty())
+ {
+  buildMenus(tabbedTableArray->at(0));
+  setTitle(tabbedTableArray->value(0)->getItemString());
+ }
  cardHolder = new QSplitter(Qt::Horizontal); //JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
  //            buttonpanel, detailpanel);
  cardHolder->addWidget(buttonpanel);
@@ -817,6 +819,8 @@ void ActionJList::openNewTableWindow(int index) {
 
 void ActionJList::selectListItem(int index) {
     currentItemSelected = index;
+    if(((ListedTableFrame*)frame)->tabbedTableArray->isEmpty())
+     return;
     LTFTabbedTableItem* item = ((ListedTableFrame*)frame)->tabbedTableArray->at(index);
     QStackedLayout* cl = (QStackedLayout*) (((ListedTableFrame*)frame)->detailpanel->layout());
     //cl->show(detailpanel, item->getClassAsString());

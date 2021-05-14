@@ -59,10 +59,10 @@ signals:
 public slots:
     void createPressed(ActionEvent* e = 0);
     void cancelPressed(ActionEvent* e = 0);
-    void showFeedbackChanged();
-    void showLockChanged();
-    /*public*/ void showTurnoutSpeedChanged();
-    void On_doAutomationBox_toggled(bool);
+//    void showFeedbackChanged();
+//    void showLockChanged();
+//    /*public*/ void showTurnoutSpeedChanged();
+//    void On_doAutomationBox_toggled(bool);
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:

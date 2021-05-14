@@ -877,7 +877,7 @@ return configureJTable(name, new /*TurnoutTableJTable*/JTable((TurnoutTableDataM
 #if 1
     //java.util.Enumeration<TableColumn> columns;
     QListIterator<TableColumn*> columns = table->getColumnModel()->getColumns();
-    if (qobject_cast<XTableColumnModel*>(table->getColumnModel())) {
+    if (static_cast<XTableColumnModel*>(table->getColumnModel())) {
     } else {
         columns = table->getColumnModel()->getColumns();
     }

@@ -43,9 +43,8 @@ public slots:
     virtual /*public*/ void actionPerformed(JActionEvent* e = 0);
 private:
     static Logger* log;
-    JTable* dataTable;
 protected:
-    /*protected*/ BeanTableDataModel* m;
+    /*protected*/ BeanTableDataModel* m = nullptr;
     virtual /*protected*/ /*abstract*/ void createModel();
     virtual /*protected*/ /*abstract*/ void setTitle();
     /*protected*/ BeanTableFrame* f;
@@ -53,7 +52,7 @@ protected:
     virtual/*protected*/ QString helpTarget();
     virtual /*protected*/ /*abstract*/ QString getClassName();
     /*protected*/ bool _includeAddButton = true;
-    /*protected*/ JTable* table;
+//    /*protected*/ JTable* table = nullptr;
     /*protected*/ /*@Nonnull*/ QString nextName(/*@Nonnull*/ QString name);
     /*protected*/ void configureManagerComboBox(ManagerComboBox/*<E>*/* comboBox, Manager/*<E>*/* manager,
                                                 /*Class<? extends Manager<E>>*/QString managerClass);

@@ -39,10 +39,6 @@ AbstractTableAction::AbstractTableAction(QObject *parent) :
     AbstractAction(actionName, parent)
 {
  //super(actionName);
- _includeAddButton = true;
- m=NULL;
- table = NULL;
- //connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
 ///*public*/ AbstractTableAction(QString actionName, QObject option, QObject *parent) :
@@ -78,7 +74,7 @@ AbstractTableAction::AbstractTableAction(QObject *parent) :
  //TableSorter sorter = new TableSorter(m);
  MySortFilterProxyModel* sorter = new MySortFilterProxyModel(m);
  //sorter->setSourceModel((QAbstractItemModel*)m);
- dataTable = m->makeJTable(m->getMasterClassName(), m, sorter);
+ JTable *dataTable = m->makeJTable(m->getMasterClassName(), m, sorter);
  dataTable->setSortingEnabled(true);
  //sorter.setTableHeader(dataTable.getTableHeader());
 

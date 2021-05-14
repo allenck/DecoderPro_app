@@ -2600,6 +2600,7 @@ virtual bool  matchPropertyName(PropertyChangeEvent*  e);
 virtual void propertyChange(PropertyChangeEvent*  e);
 virtual int  rowCount(const QModelIndex&  parent) const;
 virtual QObject*  self();
+virtual void setColumnIdentities(JTable*  table);
 virtual bool  setData(const QModelIndex&  index, const QVariant&  value, int  role);
 virtual void setManager(AbstractManager*  arg__1);
 virtual void updateNameList();
@@ -2625,6 +2626,7 @@ inline QString  promoted_getMasterClassName() { return this->getMasterClassName(
 inline int  promoted_getPropertyColumnCount() const { return this->getPropertyColumnCount(); }
 inline bool  promoted_matchPropertyName(PropertyChangeEvent*  e) { return this->matchPropertyName(e); }
 inline void promoted_onColumnSelected(QObject*  obj) { this->onColumnSelected(obj); }
+inline void promoted_setColumnIdentities(JTable*  table) { this->setColumnIdentities(table); }
 inline void promoted_setColumnToHoldButton(JTable*  table, int  column, QPushButton*  sample = NULL) { this->setColumnToHoldButton(table, column, sample); }
 inline void promoted_setManager(AbstractManager*  arg__1) { this->setManager(arg__1); }
 inline void promoted_showPopup(QPoint  p) { this->showPopup(p); }
@@ -2657,6 +2659,7 @@ inline bool  py_q_matchPropertyName(PropertyChangeEvent*  e) { return BeanTableD
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { BeanTableDataModel::propertyChange(e); }
 inline int  py_q_rowCount(const QModelIndex&  parent) const { return BeanTableDataModel::rowCount(parent); }
 inline QObject*  py_q_self() { return BeanTableDataModel::self(); }
+inline void py_q_setColumnIdentities(JTable*  table) { BeanTableDataModel::setColumnIdentities(table); }
 inline bool  py_q_setData(const QModelIndex&  index, const QVariant&  value, int  role) { return BeanTableDataModel::setData(index, value, role); }
 inline void py_q_setManager(AbstractManager*  arg__1) { BeanTableDataModel::setManager(arg__1); }
 inline void py_q_updateNameList() { BeanTableDataModel::updateNameList(); }
@@ -2727,6 +2730,8 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    int  rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const;
    int  py_q_rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_rowCount(parent));}
    QObject*  py_q_self(BeanTableDataModel* theWrappedObject){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_self());}
+   void setColumnIdentities(BeanTableDataModel* theWrappedObject, JTable*  table);
+   void py_q_setColumnIdentities(BeanTableDataModel* theWrappedObject, JTable*  table){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_setColumnIdentities(table));}
    void setColumnToHoldButton(BeanTableDataModel* theWrappedObject, JTable*  table, int  column, QPushButton*  sample = NULL);
    bool  setData(BeanTableDataModel* theWrappedObject, const QModelIndex&  index, const QVariant&  value, int  role);
    bool  py_q_setData(BeanTableDataModel* theWrappedObject, const QModelIndex&  index, const QVariant&  value, int  role){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_setData(index, value, role));}

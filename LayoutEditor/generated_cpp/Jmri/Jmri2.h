@@ -2136,15 +2136,43 @@ public:
 
    ~PythonQtShell_PropertyChangeSupport();
 
+virtual void addPropertyChangeListener(PropertyChangeListener*  listener);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual void fireIndexedPropertyChange(QString  propertyName, int  index, QVariant  oldValue, QVariant  newValue) const;
+virtual void fireIndexedPropertyChange(QString  propertyName, int  index, bool  oldValue, bool  newValue);
+virtual void fireIndexedPropertyChange(QString  propertyName, int  index, int  oldValue, int  newValue);
+virtual void firePropertyChange(PropertyChangeEvent*  event) const;
+virtual void firePropertyChange(QString  propertyName, QVariant  oldValue, QVariant  newValue) const;
+virtual void firePropertyChange(QString  propertyName, bool  oldValue, bool  newValue) const;
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_PropertyChangeSupport : public PropertyChangeSupport
+{ public:
+inline void py_q_addPropertyChangeListener(PropertyChangeListener*  listener) { PropertyChangeSupport::addPropertyChangeListener(listener); }
+inline void py_q_addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener) { PropertyChangeSupport::addPropertyChangeListener(propertyName, listener); }
+inline void py_q_fireIndexedPropertyChange(QString  propertyName, int  index, QVariant  oldValue, QVariant  newValue) const { PropertyChangeSupport::fireIndexedPropertyChange(propertyName, index, oldValue, newValue); }
+inline void py_q_fireIndexedPropertyChange(QString  propertyName, int  index, bool  oldValue, bool  newValue) { PropertyChangeSupport::fireIndexedPropertyChange(propertyName, index, oldValue, newValue); }
+inline void py_q_fireIndexedPropertyChange(QString  propertyName, int  index, int  oldValue, int  newValue) { PropertyChangeSupport::fireIndexedPropertyChange(propertyName, index, oldValue, newValue); }
+inline void py_q_firePropertyChange(PropertyChangeEvent*  event) const { PropertyChangeSupport::firePropertyChange(event); }
+inline void py_q_firePropertyChange(QString  propertyName, QVariant  oldValue, QVariant  newValue) const { PropertyChangeSupport::firePropertyChange(propertyName, oldValue, newValue); }
+inline void py_q_firePropertyChange(QString  propertyName, bool  oldValue, bool  newValue) const { PropertyChangeSupport::firePropertyChange(propertyName, oldValue, newValue); }
+inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners() { return PropertyChangeSupport::getPropertyChangeListeners(); }
+inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(QString  propertyName) { return PropertyChangeSupport::getPropertyChangeListeners(propertyName); }
+inline void py_q_removePropertyChangeListener(PropertyChangeListener*  listener) { PropertyChangeSupport::removePropertyChangeListener(listener); }
+inline void py_q_removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener) { PropertyChangeSupport::removePropertyChangeListener(propertyName, listener); }
 };
 
 class PythonQtWrapper_PropertyChangeSupport : public QObject
@@ -2154,19 +2182,31 @@ public slots:
 PropertyChangeSupport* new_PropertyChangeSupport(QObject*  sourceBean, QObject*  parent = 0);
 void delete_PropertyChangeSupport(PropertyChangeSupport* obj) { delete obj; } 
    void addPropertyChangeListener(PropertyChangeSupport* theWrappedObject, PropertyChangeListener*  listener);
+   void py_q_addPropertyChangeListener(PropertyChangeSupport* theWrappedObject, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_addPropertyChangeListener(listener));}
    void addPropertyChangeListener(PropertyChangeSupport* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
+   void py_q_addPropertyChangeListener(PropertyChangeSupport* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_addPropertyChangeListener(propertyName, listener));}
    void fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, QVariant  oldValue, QVariant  newValue) const;
+   void py_q_fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, QVariant  oldValue, QVariant  newValue) const{  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_fireIndexedPropertyChange(propertyName, index, oldValue, newValue));}
    void fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, bool  oldValue, bool  newValue);
+   void py_q_fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, bool  oldValue, bool  newValue){  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_fireIndexedPropertyChange(propertyName, index, oldValue, newValue));}
    void fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, int  oldValue, int  newValue);
+   void py_q_fireIndexedPropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, int  index, int  oldValue, int  newValue){  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_fireIndexedPropertyChange(propertyName, index, oldValue, newValue));}
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, PropertyChangeEvent*  event) const;
+   void py_q_firePropertyChange(PropertyChangeSupport* theWrappedObject, PropertyChangeEvent*  event) const{  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_firePropertyChange(event));}
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QObject*  oldValue, QObject*  newValue) const;
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue) const;
+   void py_q_firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, QVariant  oldValue, QVariant  newValue) const{  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_firePropertyChange(propertyName, oldValue, newValue));}
    void firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue) const;
+   void py_q_firePropertyChange(PropertyChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue) const{  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_firePropertyChange(propertyName, oldValue, newValue));}
    QVector<PropertyChangeListener* >  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject);
+   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject){  return (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_getPropertyChangeListeners());}
    QVector<PropertyChangeListener* >  getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
+   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName){  return (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_getPropertyChangeListeners(propertyName));}
    bool  hasListeners(PropertyChangeSupport* theWrappedObject, QString  propertyName);
    void removePropertyChangeListener(PropertyChangeSupport* theWrappedObject, PropertyChangeListener*  listener);
+   void py_q_removePropertyChangeListener(PropertyChangeSupport* theWrappedObject, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_removePropertyChangeListener(listener));}
    void removePropertyChangeListener(PropertyChangeSupport* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener);
+   void py_q_removePropertyChangeListener(PropertyChangeSupport* theWrappedObject, QString  propertyName, PropertyChangeListener*  listener){  (((PythonQtPublicPromoter_PropertyChangeSupport*)theWrappedObject)->py_q_removePropertyChangeListener(propertyName, listener));}
 };
 
 

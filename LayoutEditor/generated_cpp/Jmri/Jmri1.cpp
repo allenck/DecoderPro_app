@@ -30,9 +30,6 @@
 #include <positionablelabel.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
-#include <proxylightmanager.h>
-#include <proxysensormanager.h>
-#include <proxyturnoutmanager.h>
 #include <qabstractitemdelegate.h>
 #include <qabstractitemmodel.h>
 #include <qaction.h>

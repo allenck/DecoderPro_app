@@ -45,9 +45,6 @@
 #include <positionablelabel.h>
 #include <propertychangeevent.h>
 #include <propertychangelistener.h>
-#include <proxylightmanager.h>
-#include <proxysensormanager.h>
-#include <proxyturnoutmanager.h>
 #include <qabstractitemdelegate.h>
 #include <qabstractitemmodel.h>
 #include <qaction.h>
@@ -1379,6 +1376,8 @@ void delete_JmriJFrame(JmriJFrame* obj) { delete obj; }
    void py_q_storeValues(JmriJFrame* theWrappedObject){  (((PythonQtPublicPromoter_JmriJFrame*)theWrappedObject)->py_q_storeValues());}
    void windowClosing(JmriJFrame* theWrappedObject, QCloseEvent*  e);
    void py_q_windowClosing(JmriJFrame* theWrappedObject, QCloseEvent*  e){  (((PythonQtPublicPromoter_JmriJFrame*)theWrappedObject)->py_q_windowClosing(e));}
+void py_set_windowFrameRef(JmriJFrame* theWrappedObject, QString  windowFrameRef){ theWrappedObject->windowFrameRef = windowFrameRef; }
+QString  py_get_windowFrameRef(JmriJFrame* theWrappedObject){ return theWrappedObject->windowFrameRef; }
 void py_set_windowMenu(JmriJFrame* theWrappedObject, QMenu*  windowMenu){ theWrappedObject->windowMenu = windowMenu; }
 QMenu*  py_get_windowMenu(JmriJFrame* theWrappedObject){ return theWrappedObject->windowMenu; }
 };

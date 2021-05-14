@@ -25218,6 +25218,28 @@ if (_wrapper) {
 }
   return BeanTableDataModel::self();
 }
+void PythonQtShell_BeanTableDataModel::setColumnIdentities(JTable*  table0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setColumnIdentities");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "JTable*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&table0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  BeanTableDataModel::setColumnIdentities(table0);
+}
 bool  PythonQtShell_BeanTableDataModel::setData(const QModelIndex&  index0, const QVariant&  value1, int  role2)
 {
 if (_wrapper) {
@@ -25475,6 +25497,11 @@ void PythonQtWrapper_BeanTableDataModel::renameBean(BeanTableDataModel* theWrapp
 int  PythonQtWrapper_BeanTableDataModel::rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const
 {
   return ( theWrappedObject->rowCount(parent));
+}
+
+void PythonQtWrapper_BeanTableDataModel::setColumnIdentities(BeanTableDataModel* theWrappedObject, JTable*  table)
+{
+  ( ((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->promoted_setColumnIdentities(table));
 }
 
 void PythonQtWrapper_BeanTableDataModel::setColumnToHoldButton(BeanTableDataModel* theWrappedObject, JTable*  table, int  column, QPushButton*  sample)

@@ -5,7 +5,6 @@
 #include <basicrosterentry.h>
 #include <dcclocoaddress.h>
 #include <dccthrottle.h>
-#include <jtable.h>
 #include <listselectionmodel.h>
 #include <locoaddress.h>
 #include <manager.h>
@@ -971,15 +970,11 @@ void delete_TableColumn(TableColumn* obj) { delete obj; }
 class PythonQtShell_TableColumnModel : public TableColumnModel
 {
 public:
-    PythonQtShell_TableColumnModel(JTable*  parent):TableColumnModel(parent),_wrapper(NULL) {}
+    PythonQtShell_TableColumnModel():TableColumnModel(),_wrapper(NULL) {}
 
    ~PythonQtShell_TableColumnModel();
 
 virtual void addColumn(TableColumn*  arg__1);
-virtual void childEvent(QChildEvent*  event);
-virtual void customEvent(QEvent*  event);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual TableColumn*  getColumn(int  arg__1);
 virtual int  getColumnCount();
 virtual int  getColumnIndex(QObject*  arg__1);
@@ -992,13 +987,11 @@ virtual ListSelectionModel*  getSelectionModel();
 virtual int  getTotalColumnWidth();
 virtual void moveColumn(int  arg__1, int  arg__2);
 virtual void removeColumn(TableColumn*  arg__1);
+virtual QObject*  self();
 virtual void setColumnMargin(int  arg__1);
 virtual void setColumnSelectionAllowed(bool  arg__1);
 virtual void setSelectionModel(ListSelectionModel*  arg__1);
-virtual void timerEvent(QTimerEvent*  event);
 
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
@@ -1017,6 +1010,7 @@ inline ListSelectionModel*  py_q_getSelectionModel() { return TableColumnModel::
 inline int  py_q_getTotalColumnWidth() { return TableColumnModel::getTotalColumnWidth(); }
 inline void py_q_moveColumn(int  arg__1, int  arg__2) { TableColumnModel::moveColumn(arg__1, arg__2); }
 inline void py_q_removeColumn(TableColumn*  arg__1) { TableColumnModel::removeColumn(arg__1); }
+inline QObject*  py_q_self() { return this->self(); }
 inline void py_q_setColumnMargin(int  arg__1) { TableColumnModel::setColumnMargin(arg__1); }
 inline void py_q_setColumnSelectionAllowed(bool  arg__1) { TableColumnModel::setColumnSelectionAllowed(arg__1); }
 inline void py_q_setSelectionModel(ListSelectionModel*  arg__1) { TableColumnModel::setSelectionModel(arg__1); }
@@ -1026,7 +1020,7 @@ class PythonQtWrapper_TableColumnModel : public QObject
 { Q_OBJECT
 public:
 public slots:
-TableColumnModel* new_TableColumnModel(JTable*  parent);
+TableColumnModel* new_TableColumnModel();
 void delete_TableColumnModel(TableColumnModel* obj) { delete obj; } 
    void addColumn(TableColumnModel* theWrappedObject, TableColumn*  arg__1);
    void py_q_addColumn(TableColumnModel* theWrappedObject, TableColumn*  arg__1){  (((PythonQtPublicPromoter_TableColumnModel*)theWrappedObject)->py_q_addColumn(arg__1));}
@@ -1054,6 +1048,8 @@ void delete_TableColumnModel(TableColumnModel* obj) { delete obj; }
    void py_q_moveColumn(TableColumnModel* theWrappedObject, int  arg__1, int  arg__2){  (((PythonQtPublicPromoter_TableColumnModel*)theWrappedObject)->py_q_moveColumn(arg__1, arg__2));}
    void removeColumn(TableColumnModel* theWrappedObject, TableColumn*  arg__1);
    void py_q_removeColumn(TableColumnModel* theWrappedObject, TableColumn*  arg__1){  (((PythonQtPublicPromoter_TableColumnModel*)theWrappedObject)->py_q_removeColumn(arg__1));}
+   QObject*  self(TableColumnModel* theWrappedObject);
+   QObject*  py_q_self(TableColumnModel* theWrappedObject){  return (((PythonQtPublicPromoter_TableColumnModel*)theWrappedObject)->py_q_self());}
    void setColumnMargin(TableColumnModel* theWrappedObject, int  arg__1);
    void py_q_setColumnMargin(TableColumnModel* theWrappedObject, int  arg__1){  (((PythonQtPublicPromoter_TableColumnModel*)theWrappedObject)->py_q_setColumnMargin(arg__1));}
    void setColumnSelectionAllowed(TableColumnModel* theWrappedObject, bool  arg__1);
@@ -2227,14 +2223,26 @@ public:
 
    ~PythonQtShell_VetoableChangeSupport();
 
+virtual void addPropertyChangeListener(PropertyChangeListener*  listener);
+virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual void fireIndexedPropertyChange(QString  propertyName, int  index, QVariant  oldValue, QVariant  newValue) const;
+virtual void fireIndexedPropertyChange(QString  propertyName, int  index, bool  oldValue, bool  newValue);
+virtual void fireIndexedPropertyChange(QString  propertyName, int  index, int  oldValue, int  newValue);
+virtual void firePropertyChange(PropertyChangeEvent*  event) const;
+virtual void firePropertyChange(QString  propertyName, QVariant  oldValue, QVariant  newValue) const;
+virtual void firePropertyChange(QString  propertyName, bool  oldValue, bool  newValue) const;
 virtual void fireVetoableChange(PropertyChangeEvent*  event) throw (PropertyVetoException) ;
 virtual void fireVetoableChange(QString  propertyName, QVariant  oldValue, QVariant  newValue) throw (PropertyVetoException) ;
 virtual void fireVetoableChange(QString  propertyName, bool  oldValue, bool  newValue) throw (PropertyVetoException) ;
 virtual void fireVetoableChange(QString  propertyName, int  oldValue, int  newValue) throw (PropertyVetoException) ;
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
+virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
+virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
+virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void timerEvent(QTimerEvent*  event);
 
   const QMetaObject* metaObject() const;

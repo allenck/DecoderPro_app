@@ -110,7 +110,7 @@ PythonQt::priv()->registerCPPClass("Sound", "", "Jmri", PythonQtCreateObject<Pyt
 PythonQt::priv()->registerClass(&SystemConnectionMemo::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_SystemConnectionMemo>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_SystemConnectionMemo>, module, 0);
 PythonQt::priv()->registerCPPClass("TableCellEditor", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_TableCellEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableCellEditor>, module, 0);
 PythonQt::priv()->registerClass(&TableColumn::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumn>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumn>, module, 0);
-PythonQt::priv()->registerClass(&TableColumnModel::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumnModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumnModel>, module, 0);
+PythonQt::priv()->registerCPPClass("TableColumnModel", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumnModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumnModel>, module, 0);
 PythonQt::priv()->registerCPPClass("Throttle", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_Throttle>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Throttle>, module, 0);
 PythonQt::priv()->registerClass(&ThrottleManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_ThrottleManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_ThrottleManager>, module, 0);
 PythonQt::priv()->registerClass(&Turnout::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Turnout>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Turnout>, module, PythonQt::Type_RichCompare);
