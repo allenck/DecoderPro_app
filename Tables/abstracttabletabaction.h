@@ -2,6 +2,9 @@
 #define ABSTRACTTABLETABACTION_H
 #include "abstracttableaction.h"
 #include "libtables_global.h"
+#include "tristatejcheckbox.h"
+#include "tablecolumnmodelevent.h"
+#include "tablecolumnmodellistener.h"
 
 class QGridLayout;
 class QFrame;
@@ -46,6 +49,7 @@ protected:
     /*protected*/ void setTitle();
     virtual /*abstract*/ /*protected*/ QString helpTarget();
     void buildMenus(BeanTableFrame* f);
+    virtual /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible);
 
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
@@ -56,10 +60,10 @@ friend class SensorTableTabAction;
 friend class LightTableTabAction;
 };
 
-/*protected*/ /*static*/ class TabbedTableItem : public QObject
+/*protected*/ /*static*/ class TabbedTableItem : public QObject, public TableColumnModelListener
 {
  Q_OBJECT
-
+ Q_INTERFACES(TableColumnModelListener)
     AbstractTableAction* tableAction;
     QString itemText;
     BeanTableDataModel* dataModel;
@@ -68,6 +72,7 @@ friend class LightTableTabAction;
     QFrame* bottomBox;
     bool AddToFrameRan;// = false;
     Manager* manager;
+    /*private*/ /*final*/ TriStateJCheckBox* propertyVisible = new TriStateJCheckBox(tr("Show System-specific columns"));
 
     int bottomBoxIndex;	// index to insert extra stuff
     static /*final*/ int bottomStrutWidth;// = 20;
@@ -76,6 +81,8 @@ friend class LightTableTabAction;
 
     /*final*/ QWidget* dataPanel;// = new JPanel();
     QGridLayout* dataPanelLayout;
+    /*private*/ void fireColumnsUpdated();
+    /*private*/ void setPropertyVisibleCheckbox(QVector<bool> colsVisible);
 
 public:
     /*public*/ TabbedTableItem(QString choice, bool stdModel, Manager* manager, AbstractTableAction* tableAction);
@@ -88,6 +95,9 @@ public:
     /*public*/ bool getAdditionsToFrameDone();
     /*public*/ void setAddToFrameRan();
     /*public*/ JTable* getDataTable();
+    virtual /*public*/ void columnAdded(TableColumnModelEvent* e)override;
+    virtual /*public*/ void columnRemoved(TableColumnModelEvent* e)override;
+    QObject* self() override {return this;}
 protected:
     /*protected*/ void addToBottomBox(QWidget* comp);
     /*protected*/ void dispose();

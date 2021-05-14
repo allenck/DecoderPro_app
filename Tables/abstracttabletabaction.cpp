@@ -17,6 +17,7 @@
 #include "instancemanager.h"
 #include "proxymanager.h"
 #include "proxylightmanager.h"
+#include "xtablecolumnmodel.h"
 
 //AbstractTableTabAction::AbstractTableTabAction(QObject *parent) :
 //    AbstractTableAction(parent)
@@ -159,6 +160,21 @@ void AbstractTableTabAction::actionPerformed(JActionEvent */*e*/)
  currTab = 0;
  f->pack();
  f->setVisible(true);
+}
+
+/**
+ * Notification that column visibility for the JTable has updated.
+ * <p>
+ * This is overridden by classes which have column visibility Checkboxes on bottom bar.
+ * <p>
+ *
+ * Called on table startup and whenever a column goes hidden / visible.
+ *
+ * @param colsVisible   array of ALL table columns and their visibility
+ *                      status in order of main Table Model, NOT XTableColumnModel.
+ */
+/*protected*/ void AbstractTableTabAction::columnsVisibleUpdated(QVector<bool> colsVisible){
+    log->debug(tr("columns updated %1").arg(colsVisible.count()));
 }
 
 /*public*/ void AbstractTableTabAction::addToFrame(BeanTableFrame* f)
@@ -321,6 +337,18 @@ void TabbedTableItem::createDataModel()
   addButton->setSizePolicy(sizePolicy);
   connect(addButton, SIGNAL(clicked()), tableAction, SLOT(addPressed()));
  }
+ if (dataModel->getPropertyColumnCount() > 0) {
+     propertyVisible->setToolTip(tr
+             ("If the underlying hardware has additional options to set, shows the columns for these options."));
+     addToBottomBox(propertyVisible);
+     //propertyVisible.addActionListener((ActionEvent e) -> {
+     connect(propertyVisible, &TriStateJCheckBox::clicked, [=]{
+         dataModel->setPropertyColumnsVisible(dataTable, propertyVisible->isSelected());
+     });
+ }
+
+ fireColumnsUpdated(); // init bottom buttons
+ dataTable->getColumnModel()->addColumnModelListener(this);
 }
 
 void TabbedTableItem::addPanelModel()
@@ -373,7 +401,123 @@ void TabbedTableItem::addPanelModel()
   // log.error (ex.getLocalizedMessage(), ex);
  }
 }
+/**
+ * Notify the subclasses that column visibility has been updated,
+ * or the table has finished loading.
+ *
+ * Sends notification to the tableAction with boolean array of column visibility.
+ *
+ */
+/*private*/ void TabbedTableItem::fireColumnsUpdated(){
+    TableColumnModel* model = dataTable->getColumnModel();
+    if (qobject_cast<XTableColumnModel*>(model)) {
+        QListIterator<TableColumn *> e = ((XTableColumnModel*) model)->getColumns(false);
+        int numCols = ((XTableColumnModel*) model)->getColumnCount(false);
+        // XTableColumnModel has been spotted to return a fleeting different
+        // column count to actual model, generally if manager is changed at startup
+        // so we do a sanity check to make sure the models are in synch.
+        if (numCols != dataModel->getColumnCount()){
+            tableAction->log->debug(tr("Difference with Xtable cols: %1 Model cols: %2").arg(numCols,dataModel->getColumnCount()));
+            return;
+        }
+        QVector<bool> colsVisible = QVector<bool>(numCols);
+        while (e.hasNext()) {
+            TableColumn* column = e.next();
+            bool visible = ((XTableColumnModel*) model)->isColumnVisible(column);
+            colsVisible[column->getModelIndex()] = visible;
+        }
+        tableAction->columnsVisibleUpdated(colsVisible);
+        setPropertyVisibleCheckbox(colsVisible);
+    }
+}
 
+/**
+ * Updates the custom bean property columns checkbox.
+ * @param colsVisible array of column visibility
+ */
+/*private*/ void TabbedTableItem::setPropertyVisibleCheckbox(QVector<bool> colsVisible){
+    int numberofCustomCols = dataModel->getPropertyColumnCount();
+    if (numberofCustomCols>0){
+        QVector<bool> customColVisibility = QVector<bool>(numberofCustomCols);
+        for ( int i=0; i<numberofCustomCols; i++){
+            customColVisibility[i]=colsVisible[colsVisible.length()-i-1];
+        }
+        propertyVisible->setState(customColVisibility);
+    }
+}
+
+/**
+ * {@inheritDoc}
+ * A column is now visible.  fireColumnsUpdated()
+ */
+//@Override
+/*public*/ void TabbedTableItem::columnAdded(TableColumnModelEvent* e) {
+    fireColumnsUpdated();
+}
+
+/**
+ * {@inheritDoc}
+ * A column is now hidden.  fireColumnsUpdated()
+ */
+//@Override
+/*public*/ void TabbedTableItem::columnRemoved(TableColumnModelEvent* e) {
+    fireColumnsUpdated();
+}
+#if 0
+/**
+ * {@inheritDoc}
+ * Unused.
+ */
+@Override
+public void columnMoved(TableColumnModelEvent e) {}
+
+/**
+ * {@inheritDoc}
+ * Unused.
+ */
+@Override
+public void columnSelectionChanged(ListSelectionEvent e) {}
+
+/**
+ * {@inheritDoc}
+ * Unused.
+ */
+@Override
+public void columnMarginChanged(ChangeEvent e) {}
+
+final void addPanelModel() {
+    dataPanel.add(tableAction.getPanel(), BorderLayout.CENTER);
+    dataPanel.add(bottomBox, BorderLayout.SOUTH);
+}
+
+/*public*/ bool getStandardTableModel() {
+    return standardModel;
+}
+
+/*public*/ QString getItemString() {
+    return itemText;
+}
+
+/*public*/ AbstractTableAction/*<E>*/* getAAClass() {
+    return tableAction;
+}
+
+/*public*/ JPanel* getPanel() {
+    return dataPanel;
+}
+
+/*public*/ bool getAdditionsToFrameDone() {
+    return addToFrameRan;
+}
+
+public void setAddToFrameRan() {
+    addToFrameRan = true;
+}
+
+public JTable getDataTable() {
+    return dataTable;
+}
+#endif
 /*protected*/ void TabbedTableItem::dispose()
 {
  if (dataModel != nullptr)

@@ -467,6 +467,35 @@ qSort(defStrings.begin(), defStrings.end());
  f->addToBottomBox(showStateForgetAndQueryBox, connectionName);
 }
 
+/**
+ * Override to update column select checkboxes.
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void TurnoutTableAction::columnsVisibleUpdated(QVector<bool> colsVisible){
+    log->debug(tr("columns updated %1").arg(colsVisible.count()));
+    showFeedbackBox->setState(QVector<bool>{
+        colsVisible[TurnoutTableDataModel::KNOWNCOL],
+        colsVisible[TurnoutTableDataModel::MODECOL],
+        colsVisible[TurnoutTableDataModel::SENSOR1COL],
+        colsVisible[TurnoutTableDataModel::SENSOR2COL],
+        colsVisible[TurnoutTableDataModel::OPSONOFFCOL],
+        colsVisible[TurnoutTableDataModel::OPSEDITCOL]});
+
+    showLockBox->setState(QVector<bool>{
+        colsVisible[TurnoutTableDataModel::LOCKDECCOL],
+        colsVisible[TurnoutTableDataModel::LOCKOPRCOL]});
+
+    showTurnoutSpeedBox->setState(QVector<bool>{
+        colsVisible[TurnoutTableDataModel::STRAIGHTCOL],
+        colsVisible[TurnoutTableDataModel::DIVERGCOL]});
+
+    showStateForgetAndQueryBox->setState(QVector<bool>{
+        colsVisible[TurnoutTableDataModel::FORGETCOL],
+        colsVisible[TurnoutTableDataModel::QUERYCOL]});
+
+}
+
 void TurnoutTableAction::On_doAutomationBox_toggled(bool b)
 {
  TurnoutOperationManager::getInstance()->setDoOperations(doAutomationBox->isChecked());

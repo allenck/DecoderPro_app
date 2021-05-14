@@ -102,6 +102,7 @@ protected:
     /*protected*/ void setDefaultState(JFrame* _who);
     /*protected*/ SensorManager* sensorManager = (SensorManager*)InstanceManager::getDefault("SensorManager");
     /*protected*/ void configureTable(JTable* table);
+    /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible) override;
 
 protected slots:
     /*protected*/ void addPressed();

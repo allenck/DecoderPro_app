@@ -123,6 +123,21 @@ AbstractTableAction::AbstractTableAction(QObject *parent) :
  f->setVisible(true);
 }
 
+/**
+ * Notification that column visibility for the JTable has updated.
+ * <p>
+ * This is overridden by classes which have column visibility Checkboxes on bottom bar.
+ * <p>
+ *
+ * Called on table startup and whenever a column goes hidden / visible.
+ *
+ * @param colsVisible   array of ALL table columns and their visibility
+ *                      status in order of main Table Model, NOT XTableColumnModel.
+ */
+/*protected*/ void AbstractTableAction::columnsVisibleUpdated(QVector<bool> colsVisible){
+    log->debug(tr("columns updated %1").arg(colsVisible.count()));
+}
+
 ATABeanTableFrame::ATABeanTableFrame(AbstractTableAction *act)
 {
  this->act = act;
@@ -132,6 +147,7 @@ ATABeanTableFrame::ATABeanTableFrame(BeanTableDataModel *m, QString helpTarget, 
 {
  this->act = act;
 }
+
 void ATABeanTableFrame::extras()
 {
  if(act->includeAddButton())

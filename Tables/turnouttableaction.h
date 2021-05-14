@@ -112,6 +112,7 @@ protected:
     /*protected*/ bool _graphicState = false; // updated from prefs
     /*protected*/ TurnoutManager* turnoutManager = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
     /*protected*/ void configureTable(JTable* table) override;
+    /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible) override;
 
 protected slots:
     /*protected*/ void addPressed(/*ActionEvent* e = 0*/) override;

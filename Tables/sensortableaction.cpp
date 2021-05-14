@@ -501,6 +501,24 @@ void DefaultStateActionListener::actionPerformed(JActionEvent */*e*/)
  showStateForgetAndQueryBox->setToolTip(tr("Displays columns for clearing and querying state"));
 }
 
+/**
+ * Override to update showDebounceBox, showPullUpBox, showStateForgetAndQueryBox.
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void SensorTableAction::columnsVisibleUpdated(QVector<bool> colsVisible){
+    log->debug(tr("columns updated %1").arg(colsVisible.count()));
+    showDebounceBox->setState(QVector<bool>{
+        colsVisible[SensorTableDataModel::ACTIVEDELAY],
+        colsVisible[SensorTableDataModel::INACTIVEDELAY],
+        colsVisible[SensorTableDataModel::USEGLOBALDELAY] });
+    showPullUpBox->setState(QVector<bool>{
+        colsVisible[SensorTableDataModel::PULLUPCOL]});
+    showStateForgetAndQueryBox->setState(QVector<bool>{
+        colsVisible[SensorTableDataModel::FORGETCOL],
+        colsVisible[SensorTableDataModel::QUERYCOL] });
+}
+
 /*public*/ void SensorTableAction::addToPanel(AbstractTableTabAction* f) {
  QString connectionName = sensorManager->getMemo()->getUserName();
 

@@ -60,6 +60,7 @@ protected:
     /*protected*/ void removePrefixBoxListener(ManagerComboBox/*<E>*/* prefixBox);
     /*protected*/ void displayHwError(QString curAddress, Exception ex);
     virtual /*protected*/ void configureTable(JTable* table);
+    virtual /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible);
 
   protected slots:
     virtual /*protected*/ /*abstract*/ void addPressed(/*JActionEvent* e = 0*/);
