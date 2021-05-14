@@ -41,6 +41,7 @@
 #include "joptionpane.h"
 #include "jeditorpane.h"
 #include <QThread>
+#include "xtablecolumnmodel.h"
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -878,32 +879,33 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 //    table->horizontalHeader()->setStretchLastSection(true);
 
 //    addMouseListenerToHeader(table);
-    return table;
+    //return table;
+    return this->configureJTable(name, table, sorter);
 }
 
-/*public*/ JTable* BeanTableDataModel::makeJTable(QSortFilterProxyModel* sorter)
-{
- JTable* table = new JTable(sorter);
- table->setObjectName(this->metaObject()->className());
+///*public*/ JTable* BeanTableDataModel::makeJTable(QSortFilterProxyModel* sorter)
+//{
+// JTable* table = new JTable(sorter);
+// table->setObjectName(this->metaObject()->className());
 
-// {
-//  /*public*/ boolean editCellAt(int row, int column, java.util.EventObject e) {
-//      boolean res = super.editCellAt(row, column, e);
-//      java.awt.Component c = this->getEditorComponent();
-//      if (c instanceof javax.swing.JTextField) {
-//          ( (JTextField) c).selectAll();
-//      }
-//      return res;
-//  }
-// };
-// table.getTableHeader().setReorderingAllowed(true);
- table->resizeRowsToContents();
- table->setColumnModel(new XTableColumnModel(table));
- table->createDefaultColumnsFromModel();
+//// {
+////  /*public*/ boolean editCellAt(int row, int column, java.util.EventObject e) {
+////      boolean res = super.editCellAt(row, column, e);
+////      java.awt.Component c = this->getEditorComponent();
+////      if (c instanceof javax.swing.JTextField) {
+////          ( (JTextField) c).selectAll();
+////      }
+////      return res;
+////  }
+//// };
+//// table.getTableHeader().setReorderingAllowed(true);
+// table->resizeRowsToContents();
+// table->setColumnModel(new XTableColumnModel(table));
+// table->createDefaultColumnsFromModel();
 
-// addMouseListenerToHeader(table);
- return table;
-}
+//// addMouseListenerToHeader(table);
+// return table;
+//}
 /**
  * Configure a new table using the given model and row sorter.
  *
@@ -1590,6 +1592,7 @@ class TableHeaderListener extends MouseAdapter {
 {
     JTablePersistenceManager* manager = (JTablePersistenceManager*) InstanceManager::getNullableDefault("JTablePersistenceManager");
     if (manager != NULL) {
+     setColumnIdentities(table);
         manager->resetState(table); // throws NPE if table name is null
         manager->persist(table);
     }
@@ -1625,18 +1628,19 @@ class TableHeaderListener extends MouseAdapter {
 /*protected*/ void BeanTableDataModel::setColumnIdentities(JTable* table) {
 //    Objects.requireNonNull(table.getModel(), "Table must have data model");
 //    Objects.requireNonNull(table.getColumnModel(), "Table must have column model");
-#if 0
-    Enumeration<TableColumn*> columns;
-    if (table.getColumnModel() instanceof XTableColumnModel) {
-        columns = ((XTableColumnModel) table.getColumnModel()).getColumns(false);
+#if 1
+    //Enumeration<TableColumn*> columns;
+ QListIterator<TableColumn*> columns = table->getColumnModel()->getColumns();
+    if (qobject_cast<XTableColumnModel*>(table->getColumnModel())) {
+        columns = ((XTableColumnModel*) table->getColumnModel())->getColumns(false);
     } else {
-        columns = table.getColumnModel().getColumns();
+        columns = table->getColumnModel()->getColumns();
     }
     int i = 0;
-    while (columns.hasMoreElements()) {
-        TableColumn column = columns.nextElement();
-        if (column.getIdentifier() == null || column.getIdentifier().toString().isEmpty()) {
-            column.setIdentifier(String.format("Column%d", i));
+    while (columns.hasNext()) {
+        TableColumn* column = columns.next();
+        if (column->getIdentifier() == "" || column->getIdentifier().toString().isEmpty()) {
+            column->setIdentifier(QString("Column%1").arg(i));
         }
         i += 1;
     }

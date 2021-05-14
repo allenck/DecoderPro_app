@@ -19,7 +19,6 @@ public:
     /*public*/ void setMenuBar(BeanTableFrame* f);
 
 public slots:
-    /*public*/ void actionPerformed(JActionEvent* /*e*/)override;
 
 private:
     void common();
@@ -95,13 +94,14 @@ private:
     QList<SignalMastLogic*> source;// = getManager().getSignalMastLogicList();
 
 protected:
-    /*protected*/ AbstractManager* getManager();
-    /*protected*/ QString getMasterClassName() ;
-    /*protected*/ void configDeleteColumn(JTable* table);
-    /*protected*/ /*synchronized*/ void updateNameList();
-    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
-    /*protected*/ QString getBeanType();
+    /*protected*/ AbstractManager* getManager() override;
+    /*protected*/ QString getMasterClassName() override;
+    /*protected*/ void configDeleteColumn(JTable* table)override;
+    /*protected*/ /*synchronized*/ void updateNameList()override;
+    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e)override;
+    /*protected*/ QString getBeanType()override;
     /*protected*/ void showPopup(QMouseEvent* e);
+    /*protected*/ void setColumnIdentities(JTable* table) override;
 
 };
 

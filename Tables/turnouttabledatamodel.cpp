@@ -746,12 +746,12 @@ this->table = table;
 //    setColumnToHoldButton(table,TurnoutTableAction::EDITCOL,editButton());
  setColumnToHoldButton(table,OPSEDITCOL);
  setColumnToHoldButton(table, EDITCOL);
- setColumnToHoldDelegate(table, MODECOL, modeColDelegate = new TTComboBoxDelegate(turnoutTableAction));
- sensorsColDelegate = new TTEditDelegate(turnoutTableAction);
- setColumnToHoldDelegate(table, SENSOR1COL, sensorsColDelegate);
- setColumnToHoldDelegate(table, SENSOR2COL, sensorsColDelegate);
- setColumnToHoldDelegate(table, OPSONOFFCOL, opsOnOffColDelegate =  new TTComboBoxDelegate(turnoutTableAction)); //Each row needs it's own instance
- setColumnToHoldDelegate(table, LOCKDECCOL, lockDecColDelegate = new TTComboBoxDelegate(turnoutTableAction));
+ setColumnToHoldDelegate(table, MODECOL,  new TTComboBoxDelegate(turnoutTableAction));
+ //sensorsColDelegate = new TTEditDelegate(turnoutTableAction);
+ setColumnToHoldDelegate(table, SENSOR1COL, new TTEditDelegate(turnoutTableAction));
+ setColumnToHoldDelegate(table, SENSOR2COL, new TTEditDelegate(turnoutTableAction));
+ //setColumnToHoldDelegate(table, OPSONOFFCOL, new TTComboBoxDelegate(turnoutTableAction)); //Each row needs it's own instance
+ setColumnToHoldDelegate(table, LOCKDECCOL, new TTComboBoxDelegate(turnoutTableAction));
  QStringList lockOperations = {"Undefined"};
  setColumnToHoldDelegate(table, LOCKOPRCOL, new JComboBoxEditor(lockOperations/*, turnoutTableAction*/));
  setColumnToHoldDelegate(table, STRAIGHTCOL, new JComboBoxEditor(speedListClosed.toList()));
@@ -863,8 +863,8 @@ this->table = table;
  if (!(qobject_cast<TurnoutTableDataModel*>(model))){
      throw IllegalArgumentException("Model is not a TurnoutTableDataModel");
  }
- return configureJTable(name, new /*TurnoutTableJTable*/TTJTable((TurnoutTableDataModel*)model), sorter);
-}
+ //return configureJTable(name, new /*TurnoutTableJTable*/TTJTable((TurnoutTableDataModel*)model), sorter);
+return configureJTable(name, new /*TurnoutTableJTable*/JTable((TurnoutTableDataModel*)model), sorter);}
 
 ///*private*/ JTable* TurnoutTableDataModel::makeJTable(TableModel* model) {
 //    return new TTJTable(model);
@@ -874,24 +874,25 @@ this->table = table;
 //@Override
 /*protected*/ void TurnoutTableDataModel::setColumnIdentities(JTable* table) {
     BeanTableDataModel::setColumnIdentities(table);
-#if 0
-    java.util.Enumeration<TableColumn> columns;
-    if (table.getColumnModel() instanceof XTableColumnModel) {
-        columns = ((XTableColumnModel) table.getColumnModel()).getColumns(false);
+#if 1
+    //java.util.Enumeration<TableColumn> columns;
+    QListIterator<TableColumn*> columns = table->getColumnModel()->getColumns();
+    if (qobject_cast<XTableColumnModel*>(table->getColumnModel())) {
     } else {
-        columns = table.getColumnModel().getColumns();
+        columns = table->getColumnModel()->getColumns();
     }
-    while (columns.hasMoreElements()) {
-        TableColumn column = columns.nextElement();
-        switch (column.getModelIndex()) {
+    while (columns.hasNext()) {
+        TableColumn* column = columns.next();
+        switch (column->getModelIndex()) {
             case FORGETCOL:
-                column.setIdentifier("ForgetState");
+                column->setIdentifier("ForgetState");
                 break;
             case QUERYCOL:
-                column.setIdentifier("QueryState");
+                column->setIdentifier("QueryState");
                 break;
             default:
             // use existing value
+         break;
         }
     }
 #endif
@@ -935,7 +936,7 @@ this->table = table;
  * @param t the turnout
  * @return the JComboBox
  */
-/*protected*/ JComboBox* TurnoutTableDataModel::makeAutomationBox(Turnout* t) {
+/*protected*/ JComboBox* TurnoutTableDataModel::makeAutomationBox(Turnout* t)const {
     QStringList str = {"empty"};
     /*final*/ JComboBox* cb = new JComboBox(str);
     /*final*/ Turnout* myTurnout = t;
@@ -959,7 +960,7 @@ this->table = table;
  * @param t  turnout being configured
  * @param cb JComboBox for ops for t in the TurnoutTable
  */
-/*protected*/ void TurnoutTableDataModel::setTurnoutOperation(Turnout* t, JComboBox* cb) {
+/*protected*/ void TurnoutTableDataModel::setTurnoutOperation(Turnout* t, JComboBox* cb) const {
     switch (cb->getSelectedIndex()) {
         case 0:   // Off
             t->setInhibitOperation(true);
@@ -1009,6 +1010,165 @@ void TurnoutTableDataModel::editButton(Turnout* t) {
     defaultThrownSpeedText = (tr("Use %1").arg("Global") + " " + turnoutManager->getDefaultThrownSpeed());
     speedListThrown.insert(0, defaultThrownSpeedText);
     fireTableDataChanged();
+}
+
+/*public*/ void TurnoutTableDataModel::showFeedbackChanged(bool visible, JTable* table ) {
+   XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+   TableColumn* column = columnModel->getColumnByModelIndex(KNOWNCOL);
+   columnModel->setColumnVisible(column, visible);
+   column = columnModel->getColumnByModelIndex(MODECOL);
+   columnModel->setColumnVisible(column, visible);
+   column = columnModel->getColumnByModelIndex(SENSOR1COL);
+   columnModel->setColumnVisible(column, visible);
+   column = columnModel->getColumnByModelIndex(SENSOR2COL);
+   columnModel->setColumnVisible(column, visible);
+   column = columnModel->getColumnByModelIndex(OPSONOFFCOL);
+   columnModel->setColumnVisible(column, visible);
+   column = columnModel->getColumnByModelIndex(OPSEDITCOL);
+   columnModel->setColumnVisible(column, visible);
+}
+
+/*public*/ void TurnoutTableDataModel::showLockChanged(bool visible, JTable* table) {
+   XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+   TableColumn* column = ((XTableColumnModel*) table->getColumnModel())->getColumnByModelIndex(LOCKDECCOL);
+   columnModel->setColumnVisible(column, visible);
+   column = columnModel->getColumnByModelIndex(LOCKOPRCOL);
+   columnModel->setColumnVisible(column, visible);
+}
+
+/*public*/ void TurnoutTableDataModel::showTurnoutSpeedChanged(bool visible, JTable* table) {
+   XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+   TableColumn* column = ((XTableColumnModel*) table->getColumnModel())->getColumnByModelIndex(STRAIGHTCOL);
+   columnModel->setColumnVisible(column, visible);
+   column = columnModel->getColumnByModelIndex(DIVERGCOL);
+   columnModel->setColumnVisible(column, visible);
+}
+
+/*public*/ void TurnoutTableDataModel::showStateForgetAndQueryChanged(bool visible, JTable* table) {
+   XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+   TableColumn* column = columnModel->getColumnByModelIndex(FORGETCOL);
+   columnModel->setColumnVisible(column, visible);
+   column = columnModel->getColumnByModelIndex(QUERYCOL);
+   columnModel->setColumnVisible(column, visible);
+}
+
+TTComboBoxDelegate::TTComboBoxDelegate(TurnoutTableAction *turnoutTableAction, bool editable, QObject * parent) : QStyledItemDelegate(parent)
+{
+ this->turnoutTableAction = turnoutTableAction;
+ this->editable = editable;
+
+}
+
+QWidget* TTComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
+{
+ JComboBox* editor = new JComboBox(parent);
+ editor->setEditable(editable);
+
+ AbstractTurnout* t;
+ int row = index.row();
+ TurnoutManager* manager = turnoutTableAction->turnoutManager;
+ QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
+  t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
+ else
+  t = (AbstractTurnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
+ if (t == NULL)
+ {
+  TurnoutTableAction::log->debug("error NULL turnout!");
+  throw NullPointerException();
+ }
+ switch(index.column())
+ {
+ case TurnoutTableDataModel::MODECOL:
+   editor->addItems( t->getValidFeedbackNames().toList());
+   break;
+ case TurnoutTableDataModel::OPSONOFFCOL:
+ {
+//  connect(editor, &JComboBox::currentTextChanged, [=]{
+//   turnoutTableAction->setTurnoutOperation(t, editor);
+//   //cb.removeActionListener(this);  // avoid recursion
+//   turnoutTableAction->updateAutomationBox(t, editor);
+//   //cb.addActionListener(this);
+//  });
+   turnoutTableAction->updateAutomationBox(t, editor);
+       break;
+ }
+ case TurnoutTableDataModel::LOCKDECCOL:
+   editor->addItems( t->getValidDecoderNames());
+   break;
+ }
+ return editor;
+}
+
+void TTComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+ JComboBox *comboBox = static_cast<JComboBox*>(editor);
+ QString value = index.model()->data(index, Qt::DisplayRole).toString();
+ comboBox->setCurrentText(value);
+}
+
+void TTComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+  JComboBox *comboBox = static_cast<JComboBox*>(editor);
+  model->setData(index, comboBox->currentText(), Qt::EditRole);
+//  if(index.column() == TurnoutTableDataModel::OPSONOFFCOL)
+//  {
+//   AbstractTurnout* t;
+//   int row = index.row();
+//   TurnoutManager* manager = turnoutTableAction->turnoutManager;
+//   QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);
+//   if(qobject_cast<AbstractProxyTurnoutManager*>(manager))
+//    t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
+//   else
+//    t = (AbstractTurnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
+//   if (t == NULL)
+//   {
+//    TurnoutTableAction::log->debug("error NULL turnout!");
+//    throw NullPointerException();
+//   }
+//   ((TurnoutTableDataModel*)model)->setTurnoutOperation(t, comboBox);
+//   turnoutTableAction->updateAutomationBox(t, comboBox);
+//  }
+//  else
+//  {
+//    model->setData(index, comboBox->currentText(), Qt::EditRole);
+//  }
+}
+
+void TTComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+{
+  editor->setGeometry(option.rect);
+}
+
+void TTComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+ JComboBox* widget = new JComboBox();
+ widget->setEditable(true);
+// if(index.column() == TurnoutTableDataModel::OPSONOFFCOL)
+// {
+//  AbstractTurnout* t;
+//  int row = index.row();
+//  TurnoutManager* manager = turnoutTableAction->turnoutManager;
+//  QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);
+//  if(static_cast<AbstractProxyTurnoutManager*>(manager))
+//   t = (AbstractTurnout*)((AbstractProxyTurnoutManager*)manager)->getBeanBySystemName(name);
+//  else
+//   t = (AbstractTurnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
+//  if (t == NULL)
+//  {
+//   TurnoutTableAction::log->debug("error NULL turnout!");
+//   throw NullPointerException();
+//  }
+////  turnoutTableAction->updateAutomationBox(t, widget);
+// }
+// else
+ {
+  QString value = index.model()->data(index, Qt::DisplayRole).toString();
+  widget->setCurrentText(value);
+ }
+ widget->resize(option.rect.size());
+ QPixmap pixmap(option.rect.size());
+ widget->render(&pixmap);
+ painter->drawPixmap(option.rect,pixmap);
 }
 
 //@Override

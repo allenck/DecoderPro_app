@@ -289,7 +289,7 @@ public:
         QString value = index.model()->data(index, Qt::DisplayRole).toString();
 //        QVariant var = index.model()->data(index, Qt::DisplayRole);
 //        if(! VPtr<JComboBox>::asPtr(var))
-//         comboBox->setCurrentText(var.toString());
+         comboBox->setCurrentText(value);
     }
 
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const

@@ -898,18 +898,18 @@ void BlockTableDataModel::editButton(Block* b)
 //    inchBox->setToolTip(tr("Check to display Length in inches."));
 //    inchBox.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            inchBoxChanged();
+    connect(inchBox, &QRadioButton::clicked, [=]{
+            metricSelectionChanged();
 //        }
-//    });
-    connect(inchBox, SIGNAL(toggled(bool)), this, SLOT(inchBoxChanged()));
+    });
     f->addToBottomBox(centimeterBox, this->metaObject()->className());
     centimeterBox->setToolTip(tr("Check to display Length in centimeters."));
 //    centimeterBox.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            centimeterBoxChanged();
+    connect(centimeterBox, &QRadioButton::clicked, [=]{
+            metricSelectionChanged();
 //        }
-//    });
-    connect(centimeterBox, SIGNAL(toggled(bool)), this, SLOT(centimeterBoxChanged()));
+    });
 }
 
 /*public*/ void BlockTableAction::setMenuBar(BeanTableFrame* f) {

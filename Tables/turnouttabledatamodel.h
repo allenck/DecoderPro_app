@@ -6,6 +6,7 @@
 #include <QStyledItemDelegate>
 #include "jcombobox.h"
 #include "jtable.h"
+#include "namedbeancombobox.h"
 
 class Sensor;
 class TurnoutManager;
@@ -60,6 +61,10 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ QString defaultClosedSpeedText;
     /*public*/ /*final*/ QVector<QString> speedListClosed = QVector<QString>();
     /*public*/ /*final*/ QVector<QString> speedListThrown = QVector<QString>();
+    /*public*/ void showFeedbackChanged(bool visible, JTable* table );
+    /*public*/ void showLockChanged(bool visible, JTable* table);
+    /*public*/ void showTurnoutSpeedChanged(bool visible, JTable* table);
+    /*public*/ void showStateForgetAndQueryChanged(bool visible, JTable* table);
 
  public slots:
     /*public*/ void comboBoxAction(JActionEvent* e = 0);
@@ -67,11 +72,11 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
 
  private:
     static Logger* log;
-    TTComboBoxDelegate* modeColDelegate = nullptr;
-    TTComboBoxDelegate* lockDecColDelegate = nullptr;
-    TTComboBoxDelegate* opsEditColDelegate = nullptr;
-    TTComboBoxDelegate* opsOnOffColDelegate = nullptr;
-    TTEditDelegate* sensorsColDelegate = nullptr;
+//    TTComboBoxDelegate* modeColDelegate = nullptr;
+//    TTComboBoxDelegate* lockDecColDelegate = nullptr;
+//    TTComboBoxDelegate* opsEditColDelegate = nullptr;
+//    TTComboBoxDelegate* opsOnOffColDelegate = nullptr;
+//    TTEditDelegate* sensorsColDelegate = nullptr;
 //    /*private*/ JTable* makeJTable(TableModel* model);
     /*private*/ void initTable();
     QString closedText;
@@ -108,13 +113,14 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     QStringList getDecoderList(Turnout* t, QModelIndex &);
     /*protected*/ void setColumnIdentities(JTable* table)override;
     /*protected*/ void editTurnoutOperation(Turnout* t, JComboBox* box);
-    /*protected*/ JComboBox* makeAutomationBox(Turnout* t);
-    /*protected*/ void setTurnoutOperation(Turnout* t, JComboBox* cb);
+    /*protected*/ JComboBox* makeAutomationBox(Turnout* t) const;
+    /*protected*/ void setTurnoutOperation(Turnout* t, JComboBox* cb) const;
     /*protected*/ JButton* editButton();
     /*protected*/ /*final*/ void setManager(/*@Nonnull*/ AbstractManager* manager)override;
 
  protected slots:
 
+    friend class TTComboBoxDelegate;
 };  // end of custom data model
 
 class TTComboBoxDelegate : public QStyledItemDelegate
@@ -172,4 +178,25 @@ private:
   QHash<Turnout*, TableCellRenderer*>* rendererMapSensor2 = new QHash<Turnout*, TableCellRenderer*>();
   QHash<Turnout*, TableCellEditor*>* editorMapSensor2 = new QHash<Turnout*, TableCellEditor*>();
 };
+
+class BeanBoxRenderer : public JComboBoxEditor
+{
+  Q_OBJECT
+ public:
+  BeanBoxRenderer(NamedBeanComboBox* beanBox)
+  {
+   setValues(beanBox->itemList());
+  }
+};
+
+class BeanComboBoxEditor : public JComboBoxEditor
+{
+  Q_OBJECT
+ public:
+  BeanComboBoxEditor(NamedBeanComboBox* beanBox)
+  {
+   setValues(beanBox->itemList());
+  }
+};
+
 #endif // TURNOUTTABLEDATAMODEL_H

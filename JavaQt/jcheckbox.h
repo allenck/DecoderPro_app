@@ -17,7 +17,8 @@ public:
  /*public*/ void removeChangeListener(ChangeListener* l);
  /*public*/ void addFocusListener(FocusListener* l);
  /*public*/ void removeFocusListener(FocusListener *l);
-
+ virtual /*public*/ void setSelected(bool b) {setChecked(b);}
+ virtual /*public*/ bool isSelected() {return isChecked();}
 public slots:
 
 signals:

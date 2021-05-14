@@ -16,6 +16,7 @@
 #include "fileutil.h"
 #include "jbutton.h"
 #include "sensoreditaction.h"
+#include "xtablecolumnmodel.h"
 
 SensorTableDataModel::SensorTableDataModel(QObject *parent) :
     BeanTableDataModel(parent)
@@ -674,21 +675,19 @@ void SensorTableDataModel::common()
 //@Override
 /*public*/ void SensorTableDataModel::configureTable(JTable* table)
 {
- this->table = table;
- showDebounce(false);
- //setColumnToHoldButton(table, PULLUPCOL, new JComboBoxEditor(QStringList({tr("Pull-up Resistor Enabled"), tr("Pull-down Resistor Enabled"), tr("No Pull-up/Pull-down")})));
- table->setItemDelegateForColumn(PULLUPCOL, new JComboBoxEditor(QStringList({tr("Pull-up Resistor Enabled"), tr("Pull-down Resistor Enabled"), tr("No Pull-up/Pull-down")})));
  BeanTableDataModel::configureTable(table);
- table->resizeRowsToContents();
-
+ XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+// columnModel->getColumnByModelIndex(FORGETCOL)->setHeaderValue(QVariant());
+// columnModel->getColumnByModelIndex(QUERYCOL)->setHeaderValue(QVariant());
 }
+
 void SensorTableDataModel::editButton(Sensor* s) {
     SensorEditAction* beanEdit = new SensorEditAction();
     beanEdit->setBean(s);
     beanEdit->actionPerformed(/*null*/);
 }
 
-/*public*/ void SensorTableDataModel::showDebounce(bool show)
+/*public*/ void SensorTableDataModel::showDebounce(bool show, JTable* table)
 {
  if(table == nullptr) return;
 //    XTableColumnModel columnModel = (XTableColumnModel)table.getColumnModel();
@@ -703,60 +702,74 @@ void SensorTableDataModel::editButton(Sensor* s) {
  table->setColumnHidden(INACTIVEDELAY, !show);
 }
 
+/**
+ * Show or hide the Pullup column.
+ * PULLUPCOL
+ * @param show true to display, false to hide.
+ * @param table the JTable to set column visibility on.
+ */
+/*public*/ void SensorTableDataModel::showPullUp(bool show, JTable* table) {
+    XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+    TableColumn* column = columnModel->getColumnByModelIndex(PULLUPCOL);
+    columnModel->setColumnVisible(column, show);
+}
+
+/**
+ * Show or hide the State - Forget and Query columns.FORGETCOL, QUERYCOL
+ * @param show true to display, false to hide.
+ * @param table the JTable to set column visibility on.
+ */
+/*public*/ void SensorTableDataModel::showStateForgetAndQuery(bool show, JTable* table) {
+    XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+    TableColumn* column = columnModel->getColumnByModelIndex(FORGETCOL);
+    columnModel->setColumnVisible(column, show);
+    column = columnModel->getColumnByModelIndex(QUERYCOL);
+    columnModel->setColumnVisible(column, show);
+}
+
 /*protected*/ QString SensorTableDataModel::getClassName() { return "jmri.jmrit.beantable.SensorTableAction"; }
 
 // /*public*/ static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.beantable.BeanTableBundle");
 /*public*/ QString SensorTableDataModel::getClassDescription() { return tr("Sensor Table"); }
 
-// /*protected*/ /*synchronized*/ void SensorTableDataModel::updateNameList()
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*protected*/ void SensorTableDataModel::setColumnIdentities(JTable* table) {
+    BeanTableDataModel::setColumnIdentities(table);
+    //Enumeration<TableColumn> columns;
+    QListIterator<TableColumn*> columns = table->getColumnModel()->getColumns();
+    if (qobject_cast<XTableColumnModel*>(table->getColumnModel())) {
+        columns = ((XTableColumnModel*) table->getColumnModel())->getColumns(false);
+    } else {
+        columns = table->getColumnModel()->getColumns();
+    }
+    while (columns.hasNext()) {
+        TableColumn* column = columns.next();
+        switch (column->getModelIndex()) {
+            case FORGETCOL:
+                column->setIdentifier("ForgetState");
+                break;
+            case QUERYCOL:
+                column->setIdentifier("QueryState");
+                break;
+            default:
+            // use existing value
+         break;
+    }
+  }
+}
+//}
+//void SensorTableDataModel::OnDelete(int row)
 //{
-// //Manager* mgr = getManager();
-// Manager* mgr = senManager;
-
-// // first, remove listeners from the individual objects
-// if (!sysNameList.isEmpty())
+// QString name = sysNameList.at(row);
+// ProxySensorManager* mgr = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
+// NamedBean* bean = mgr->getBeanBySystemName(name);
+// if(bean != nullptr)
 // {
-//  for (int i = 0; i< sysNameList.size(); i++)
-//  {
-//   // if object has been deleted, it's not here; ignore it
-//   NamedBean* b = getBySystemName(sysNameList.at(i));
-//   if (b!=NULL)
-//   {
-//    b->removePropertyChangeListener((PropertyChangeListener*)this);
-//    AbstractNamedBean* anb = (AbstractNamedBean*)b;
-//    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
-//   }
-//  }
-// }
-// if(qobject_cast<ProxySensorManager*>(mgr) != NULL)
-//  sysNameList = ((ProxySensorManager*)mgr)->getSystemNameList();
-// else
-//  sysNameList = ((AbstractSensorManager*)mgr)->getSystemNameList();
-// qSort(sysNameList.begin(), sysNameList.end(), SystemNameComparator::compare);
-// // and add them back in
-// for (int i = 0; i< sysNameList.size(); i++)
-// {
-//  //getBySystemName(sysNameList.at(i))->addPropertyChangeListener((PropertyChangeListener*)this, NULL, "Table View");
-////  connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//  NamedBean* b = getBySystemName(sysNameList.at(i));
-//  if (b!=NULL)
-//  {
-//   b->addPropertyChangeListener((PropertyChangeListener*)this, NULL, "Table View");
-//   AbstractNamedBean* anb = (AbstractNamedBean*)b;
-//   connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//  }
+//  mgr->deregister(bean);
+//  sysNameList.removeAt(row);
+//  fireTableDataChanged();
 // }
 //}
-void SensorTableDataModel::OnDelete(int row)
-{
- QString name = sysNameList.at(row);
- ProxySensorManager* mgr = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
- NamedBean* bean = mgr->getBeanBySystemName(name);
- if(bean != nullptr)
- {
-  mgr->deregister(bean);
-  sysNameList.removeAt(row);
-  fireTableDataChanged();
- }
-}

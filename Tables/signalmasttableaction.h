@@ -18,12 +18,10 @@ public:
      VALUECOL = BeanTableDataModel::VALUECOL,
      SYSNAMECOL = BeanTableDataModel::SYSNAMECOL
     };
-    /*public*/ void setMenuBar(BeanTableFrame* f);
-    Q_INVOKABLE /*public*/ QString getClassDescription();
+    /*public*/ void setMenuBar(BeanTableFrame* f)override;
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
 
 public slots:
-    /*public*/ void actionPerformed(JActionEvent* e = 0)override;
-
 
 private:
     AddSignalMastJFrame* addFrame;// = null;

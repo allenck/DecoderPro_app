@@ -19,6 +19,7 @@
 #include <QCheckBox>
 #include "layoutblockmanager.h"
 #include "mysortfilterproxymodel.h"
+#include "xtablecolumnmodel.h"
 
 //SignalMastLogicTableAction::SignalMastLogicTableAction()
 //{
@@ -41,37 +42,19 @@
     : AbstractTableAction(tr("Signal Mast Logic Table"), parent)
 {
      //this(tr("TitleSignalMastLogicTable"));
-    common();
- }
+ common();
+}
 
 void SignalMastLogicTableAction::common()
 {
-    sigLog = new SignallingAction();
-    signalMastLogicList = NULL;
-     suppressUpdate = false;
-    signalMastLogicFrame = NULL;
-    sourceLabel = new QLabel();
+ sigLog = new SignallingAction();
+ signalMastLogicList = NULL;
+  suppressUpdate = false;
+ signalMastLogicFrame = NULL;
+ sourceLabel = new QLabel();
 
 }
 
- //@Override
- /*public*/ void SignalMastLogicTableAction::actionPerformed(JActionEvent * /*e*/) {
-#if 1
-     // create the JTable model, with changes for specific NamedBean
-     createModel();
-     MySortFilterProxyModel* sorter = new MySortFilterProxyModel(m);
-     JTable* dataTable = m->makeJTable(sorter);
-     dataTable->setObjectName("SignalMastLogicTable");
-     //sorter.setTableHeader(dataTable.getTableHeader());
-     // create the frame
-     f = new BeanTableFrame(m, helpTarget(), dataTable);
-     setMenuBar(f);
-     setTitle();
-     addToFrame(f);
-     f->pack();
-     f->setVisible(true);
-#endif
- }
 
  /*public*/ void SignalMastLogicTableAction::setMenuBar(BeanTableFrame* f) {
      finalF = f;			// needed for anonymous ActionListener class
@@ -529,7 +512,37 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  /*protected*/ void SmlBeanTableDataModel::showPopup(QMouseEvent* e) {
 
  }
-
+ //@Override
+ /*protected*/ void SmlBeanTableDataModel::setColumnIdentities(JTable* table) {
+     BeanTableDataModel::setColumnIdentities(table);
+     //Enumeration<TableColumn> columns;
+     QListIterator<TableColumn*> columns = table->getColumnModel()->getColumns();
+     if (qobject_cast<XTableColumnModel*>(table->getColumnModel())) {
+         columns = ((XTableColumnModel*) table->getColumnModel())->getColumns(false);
+     } else {
+         columns = table->getColumnModel()->getColumns();
+     }
+     while (columns.hasNext()) {
+         TableColumn* column = columns.next();
+         switch (column->getModelIndex()) {
+             case SOURCEAPPCOL:
+                 column->setIdentifier("SrcAspect");
+                 break;
+             case DESTAPPCOL:
+                 column->setIdentifier("DstAspect");
+                 break;
+             case DELCOL:
+                 column->setIdentifier("Delete");
+                 break;
+             case EDITLOGICCOL:
+                 column->setIdentifier("Edit");
+                 break;
+             default:
+             // use existing value
+          break;
+         }
+     }
+ }
 
  /*protected*/ void SignalMastLogicTableAction::setTitle() {
      f->setTitle(tr("TitleSignalMastLogicTable"));

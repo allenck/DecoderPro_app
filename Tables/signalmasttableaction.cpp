@@ -56,22 +56,6 @@ SignalMastTableAction::SignalMastTableAction(QObject*parent)
     return "package.jmri.jmrit.beantable.SignalMastTable";
 }
 
-/*public*/ void SignalMastTableAction::actionPerformed(JActionEvent * /*e*/) {
-    // create the JTable model, with changes for specific NamedBean
-    createModel();
-    MySortFilterProxyModel* sorter = new MySortFilterProxyModel(m);
-    JTable* dataTable = m->makeJTable(sorter);
-    //sorter.setTableHeader(dataTable.getTableHeader());
-    m->setColumnToHoldButton(dataTable, SignalMastTableDataModel::EDITMASTCOL);
-    m->setColumnToHoldButton(dataTable, SignalMastTableDataModel::EDITLOGICCOL);
-
-    // create the frame
-    f = new SMTBeanTableFrame(m, helpTarget(), dataTable, this);
-    setTitle();
-    addToFrame(f);
-    f->adjustSize();
-    f->setVisible(true);
-}
 SMTBeanTableFrame::SMTBeanTableFrame(BeanTableDataModel *m, QString helpTarget, JTable * dataTable, SignalMastTableAction* act)
     : BeanTableFrame(m, helpTarget, dataTable)
 {

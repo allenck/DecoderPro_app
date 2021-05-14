@@ -43,14 +43,16 @@ enum COLUMNS
 /*public*/ QVariant data(const QModelIndex &index, int role) const override;
 /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 /*public*/ void configureTable(JTable* table) override;
-/*public*/ void showDebounce(bool show);
+/*public*/ void showDebounce(bool show, JTable *table);
 Q_INVOKABLE /*public*/ QString getClassDescription() ;
 /*public*/ QString getColumnClass(int col) const override;
+/*public*/ void showPullUp(bool show, JTable* table);
+/*public*/ void showStateForgetAndQuery(bool show, JTable* table);
 
 signals:
 
 public slots:
- void OnDelete(int);
+ //void OnDelete(int);
 private:
  SensorManager* senManager;// = InstanceManager.sensorManagerInstance();
  void common();
@@ -82,7 +84,8 @@ protected:
  /*protected*/ QPixmap offIcon;
  /*protected*/ int iconHeight = -1;
  /*protected*/ void loadIcons();
- /*protected*/ void configValueColumn(JTable* table);
+ /*protected*/ void configValueColumn(JTable* table) override;
+ /*protected*/ void setColumnIdentities(JTable* table)override;
 
 
 protected slots:

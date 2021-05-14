@@ -116,6 +116,7 @@ AbstractTableAction::AbstractTableAction(QObject *parent) :
  //buildMenus(f);
  setMenuBar(f); // comes after the Help menu is added by f = new
                 // BeanTableFrame(etc.) in stand alone application
+ configureTable(dataTable);
  setTitle();
  addToFrame(f);
  f->adjustSize();
@@ -193,6 +194,13 @@ void ATABeanTableFrame::extras()
 
 /*public*/ QWidget* AbstractTableAction::getPanel(){
     return NULL;
+}
+
+/**
+ * Perform configuration of the JTable as required by a specific TableAction.
+ * @param table The table to configure.
+ */
+/*protected*/ void AbstractTableAction::configureTable(JTable* /*table*/){
 }
 
 /*public*/ void AbstractTableAction::dispose() {

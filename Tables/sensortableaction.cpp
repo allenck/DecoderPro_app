@@ -55,7 +55,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 
  systemSelectionCombo = QString( metaObject()->className())+".SystemSelected";
  userNameError = QString( metaObject()->className())+".DuplicateUserName";
- showDebounceBox = new QCheckBox(tr("Show Sensor Debounce Information"));
+// showDebounceBox = new QCheckBox(tr("Show Sensor Debounce Information"));
 
  // disable ourself if there is no primary sensor manager available
  if (sensorManager==nullptr)
@@ -476,40 +476,43 @@ void DefaultStateActionListener::actionPerformed(JActionEvent */*e*/)
  act->setDefaultState(finalF);
 }
 
-void SensorTableAction::showDebounceChanged(bool bChecked)
-{
-    SensorTableDataModel* a = (SensorTableDataModel*)m;
-    a->showDebounce(/*showDebounceBox->isChecked()*/bChecked);
-    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setSimplePreferenceState(getClassName()+".SensorTableAction"+".showDebounce", bChecked);
-}
+//void SensorTableAction::showDebounceChanged(bool bChecked)
+//{
+//    SensorTableDataModel* a = (SensorTableDataModel*)m;
+//    a->showDebounce(/*showDebounceBox->isChecked()*/bChecked);
+//    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setSimplePreferenceState(getClassName()+".SensorTableAction"+".showDebounce", bChecked);
+//}
 
+//@Override
+/*protected*/ void SensorTableAction::configureTable(JTable* table){
+    AbstractTableAction::configureTable(table);
+    connect(showDebounceBox, &TriStateJCheckBox::clicked, [=] { ((SensorTableDataModel*)m)->showDebounce(showDebounceBox->isSelected(), table); });
+    connect(showPullUpBox, &TriStateJCheckBox::clicked, [=] { ((SensorTableDataModel*)m)->showPullUp(showPullUpBox->isSelected(), table); });
+    connect(showStateForgetAndQueryBox, &TriStateJCheckBox::clicked, [=] { ((SensorTableDataModel*)m)->showStateForgetAndQuery(showStateForgetAndQueryBox->isSelected(), table); });
+}
 
 /*public*/ void SensorTableAction::addToFrame(BeanTableFrame* f)
 {
-    f->addToBottomBox(showDebounceBox, "SensorTableAction");
-    showDebounceBox->setToolTip(tr("Show extra columns for configuring sensor debounce timers"));
-//    showDebounceBox.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            showDebounceChanged();
-//        }
-//    });
-    showDebounceBox->setChecked(((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getSimplePreferenceState(getClassName()+".SensorTableAction"+".showDebounce"));
-    connect(showDebounceBox, SIGNAL(clicked(bool)), this, SLOT(showDebounceChanged(bool)) );
+ f->addToBottomBox(showDebounceBox, metaObject()->className());
+ showDebounceBox->setToolTip(tr("Show extra columns for configuring sensor debounce delays"));
+ f->addToBottomBox(showPullUpBox, metaObject()->className());
+ showPullUpBox->setToolTip(tr("Show extra columns for configuring sensor pull-up or pull-down."));
+ f->addToBottomBox(showStateForgetAndQueryBox, metaObject()->className());
+ showStateForgetAndQueryBox->setToolTip(tr("Displays columns for clearing and querying state"));
 }
 
 /*public*/ void SensorTableAction::addToPanel(AbstractTableTabAction* f) {
-    QString connectionName = ConnectionNameFromSystemName::getConnectionName(sensorManager->getSystemPrefix());
+ QString connectionName = sensorManager->getMemo()->getUserName();
 
-    if (QString(sensorManager->metaObject()->className()).contains("ProxySensorManager"))
-        connectionName = "All";
-    f->addToBottomBox(showDebounceBox, connectionName);
-    showDebounceBox->setToolTip(tr("Show extra columns for configuring sensor debounce timers"));
-//    showDebounceBox.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e) {
-//            showDebounceChanged();
-//        }
-//    });
-    connect(showDebounceBox, SIGNAL(clicked(bool)), this, SLOT(showDebounceChanged(bool)));
+ if (QString(sensorManager->metaObject()->className()).contains("ProxySensorManager")) {
+     connectionName = "All";
+ }
+ f->addToBottomBox(showDebounceBox, connectionName);
+ showDebounceBox->setToolTip(tr("Show extra columns for configuring sensor debounce delays"));
+ f->addToBottomBox(showPullUpBox, connectionName);
+ showPullUpBox->setToolTip(tr("Show extra columns for configuring sensor pull-up or pull-down."));
+ f->addToBottomBox(showStateForgetAndQueryBox, connectionName);
+ showStateForgetAndQueryBox->setToolTip(tr("Displays columns for clearing and querying state"));
 }
 
 /*public*/ void SensorTableAction::setMessagePreferencesDetails(){

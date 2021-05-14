@@ -12,7 +12,7 @@
 #include "spinnernumbermodel.h"
 #include "instancemanager.h"
 #include "jspinner.h"
-#include "jcheckbox.h"
+#include "tristatejcheckbox.h"
 #include "jlabel.h"
 #include "managercombobox.h"
 #include "systemnamevalidator.h"
@@ -80,7 +80,9 @@ private:
 
     BeanTableFrame* f;
     //BeanTableDataModel* m;
-    QCheckBox* showDebounceBox;// = new JCheckBox(tr("SensorDebounceCheckBox"));
+    /*private*/ /*final*/ TriStateJCheckBox* showDebounceBox = new TriStateJCheckBox(tr("Show Debounce Delay Information"));
+    /*private*/ /*final*/ TriStateJCheckBox* showPullUpBox = new TriStateJCheckBox(tr("Show Pull-Up/Down Information"));
+    /*private*/ /*final*/ TriStateJCheckBox* showStateForgetAndQueryBox = new TriStateJCheckBox(tr("Show State Query actions"));
     bool enabled = true;
     QString  addEntryToolTip;
     STAValidator* validator;
@@ -88,7 +90,7 @@ private:
 
 private slots:
     /*private*/ void canAddRange();
-    void showDebounceChanged(bool);
+//    void showDebounceChanged(bool);
     void createPressed();
 
 protected:
@@ -99,6 +101,7 @@ protected:
     /*protected*/ QString getClassName();
     /*protected*/ void setDefaultState(JFrame* _who);
     /*protected*/ SensorManager* sensorManager = (SensorManager*)InstanceManager::getDefault("SensorManager");
+    /*protected*/ void configureTable(JTable* table);
 
 protected slots:
     /*protected*/ void addPressed();

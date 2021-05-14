@@ -55,6 +55,7 @@ SOURCES += javaqt.cpp \
     dataflavor.cpp \
     exceptions.cpp \
     thread.cpp \
+    tristatejcheckbox.cpp \
     xmlfile.cpp \
     tablecolumn.cpp \
     xtablecolumnmodel.cpp \
@@ -283,6 +284,7 @@ HEADERS += javaqt.h\
     gridbagconstraints.h \
     insets.h \
  thread.h \
+ tristatejcheckbox.h \
  vetoablechangefirer.h \
  vetoablechangeprovider.h \
     vptr.h \
