@@ -306,8 +306,8 @@ void RangeListener::actionPerformed(JActionEvent */*e*/)
  //log->setDebugEnabled(true);
  QList<TurnoutOperation*> ops = TurnoutOperationManager::getInstance()->getTurnoutOperations();
  cb->clear();
- QVector<QString> strings =  QVector<QString>(20);
- QVector<QString> defStrings =  QVector<QString>(20);
+ QVector<QString> strings =  QVector<QString>(/*20*/);
+ QVector<QString> defStrings =  QVector<QString>(/*20*/);
  log->debug(tr("opsCombo start %1").arg(ops.length()));
  for (TurnoutOperation* op : ops) {
   if(log->isDebugEnabled()) log->debug(QString("isDef ")+(op->isDefinitive()?"true":"false")+ " mFMM "+(op->matchFeedbackMode(t->getFeedbackMode())?"true":"false")+ " isNonce "+(op->isNonce()?"true":"false"));
@@ -939,55 +939,6 @@ static class BeanComboBoxEditor extends DefaultCellEditor {
 QString TurnoutTableAction::getName() { return "jmri.jmrit.beantable.TurnoutTableAction";}
 
 
-TTEditDelegate::TTEditDelegate(TurnoutTableAction *self)
-{
- this->self = self;
-}
-QWidget* TTEditDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
-{
- QStringList sensors = InstanceManager::sensorManagerInstance()->getSystemNameList();
- qSort(sensors.begin(), sensors.end(), SystemNameComparator::compare);
-
- QLineEdit* editor = new QLineEdit(parent);
- QCompleter* completer = new QCompleter(sensors);
- completer->setCaseSensitivity(Qt::CaseInsensitive);
- editor->setCompleter(completer);
- return editor;
-}
-void TTEditDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
-{
- QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
- QString value = index.model()->data(index, Qt::DisplayRole).toString();
- //comboBox->setCurrentIndex(value);
- lineEdit->setText(value);
-}
-void TTEditDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
-{
-  QLineEdit *lineEdit = static_cast<QLineEdit*>(editor);
-  model->setData(index, lineEdit->text(), Qt::EditRole);
-}
-
-void TTEditDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
-{
-  editor->setGeometry(option.rect);
-}
-
-void TTEditDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
- QLineEdit* widget = new QLineEdit();
- QString value = index.model()->data(index, Qt::DisplayRole).toString();
-// QStringList sensors = InstanceManager::sensorManagerInstance()->getSystemNameList();
-// qSort(sensors.begin(), sensors.end(), SystemNameComparator::compare);
-// QCompleter* completer = new QCompleter(sensors);
-// completer->setCaseSensitivity(Qt::CaseInsensitive);
-// widget->setCompleter(completer);
- widget->setText(value);
- widget->resize(option.rect.size());
- QPixmap pixmap(option.rect.size());
- widget->render(&pixmap);
- painter->drawPixmap(option.rect,pixmap);
-
-}
 
 TTAValidator::TTAValidator(JTextField *fld, TurnoutTableAction *act)
 {

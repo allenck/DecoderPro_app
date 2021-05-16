@@ -518,7 +518,7 @@
         uNameColumnS->setMaxWidth(260);
         TableColumn* stateColumnS = routeSensorColumnModel->
                 getColumn(RouteOutputModel::STATE_COLUMN);
-        stateColumnS->setCellEditor(new /*DefaultCellEditor(stateSCombo)*/JComboBoxEditor(stateSCombo->itemList()));
+        stateColumnS->setCellEditor(new /*DefaultCellEditor(stateSCombo)*/JComboBoxEditor(stateSCombo->itemList(), true));
         stateColumnS->setResizable(false);
         stateColumnS->setMinWidth(90);
         stateColumnS->setMaxWidth(100);

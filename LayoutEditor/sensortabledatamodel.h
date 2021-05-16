@@ -5,8 +5,10 @@
 #include <QPixmap>
 #include "tablecelleditor.h"
 #include "tablecellrenderer.h"
+#include "tabledelegates.h"
+#include "sensor.h"
+#include <QLineEdit>
 
-class Sensor;
 class Component;
 class QLabel;
 class BufferedImage;
@@ -95,43 +97,36 @@ friend class SensorTableWidget;
 };
 Q_DECLARE_METATYPE(SensorTableDataModel)
 
-#if 0
-class ImageIconRenderer : public QItemDelegate , public TableCellEditor, public TableCellRenderer
+class PullResistanceComboBox : public JComboBoxEditor
 {
- Q_OBJECT
-  Q_INTERFACES(TableCellEditor TableCellRenderer)
- static Logger* log;
- QObject* self() {return (QObject*)this;}
-protected:
-    /*protected*/ QLabel* label;
-    /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
-    /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
-    /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";
-    /*protected*/ QString offIconPath;// = rootPath + beanTypeChar + "-off-s.png";
-    /*protected*/ BufferedImage* onImage;
-    /*protected*/ BufferedImage* offImage;
-    /*protected*/ QPixmap onIcon;
-    /*protected*/ QPixmap offIcon;
-    /*protected*/ int iconHeight = -1;
-public:
- /*public*/ ImageIconRenderer();
-#if 0
-    /**
-     * {@inheritDoc}
-     */
-    //@Override
-    /*public*/ Component* getTableCellRendererComponent(
-            JTable* table, QVariant value, bool isSelected,
-            bool hasFocus, int row, int column);
-    /*public*/ Component* getTableCellEditorComponent(
-            JTable* table, QVariant value, bool isSelected,
-            int row, int column);
-    /*public*/ QLabel* updateLabel(QString value, int row);
-    /*public*/ QVariant getCellEditorValue();
-#endif
-protected:
-    /*protected*/ void loadIcons();
- friend class SensorTableDataModel;
-}; // end of ImageIconRenderer class
-#endif
+  Q_OBJECT
+ public:
+  PullResistanceComboBox(QStringList values, QObject* parent = nullptr) : JComboBoxEditor(parent)
+  {
+      this->values = values;
+  }
+
+  void setEditorData(QWidget *editor, const QModelIndex &index) const{
+      JComboBox *comboBox = static_cast<JComboBox*>(editor);
+      int value = index.model()->data(index, Qt::DisplayRole).toInt();
+      comboBox->setCurrentIndex(value);
+  }
+
+  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+  {
+      JComboBox *comboBox = static_cast<JComboBox*>(editor);
+      model->setData(index, comboBox->currentIndex(), Qt::EditRole);
+  }
+
+  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+  {
+   QLineEdit* widget;
+    widget = new QLineEdit();
+    widget->setText(values.at(index.model()->data(index, Qt::DisplayRole).toInt()));
+   widget->resize(option.rect.size());
+   QPixmap pixmap(option.rect.size());
+   widget->render(&pixmap);
+   painter->drawPixmap(option.rect,pixmap);
+  }
+};
 #endif // SENSORTABLEDATAMODEL_H

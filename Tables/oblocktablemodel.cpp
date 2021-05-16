@@ -1102,8 +1102,8 @@ void OBlockTableModel::deleteBean(OBlock* bean)
     table->setDefaultEditor("OBlockTableModel::SpeedComboBoxPanel", new OBlockTableModel::SpeedComboBoxPanel());
     table->setDefaultRenderer("OBlockTableModel::SpeedComboBoxPanel", new OBlockTableModel::SpeedComboBoxPanel()); // use same class as renderer
 #else
-    table->setDefaultEditor("OBlockTableModel::SpeedComboBoxPanel", new JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList()));
-    table->setDefaultRenderer("OBlockTableModel::SpeedComboBoxPanel", new JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList()));
+    table->setDefaultEditor("OBlockTableModel::SpeedComboBoxPanel", new JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList(), false));
+    table->setDefaultRenderer("OBlockTableModel::SpeedComboBoxPanel", new JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList(), false));
 #endif
     // Set more things?
 }
@@ -1195,8 +1195,8 @@ void OBSComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOpti
  table->setDefaultEditor("OBlockTableModel::CurveComboBoxPanel", new OBlockTableModel::CurveComboBoxPanel());
  table->setDefaultRenderer("OBlockTableModel::CurveComboBoxPanel", new OBlockTableModel::CurveComboBoxPanel()); // use same class as renderer
 #else
- table->setDefaultEditor("OBlockTableModel::CurveComboBoxPanel", new JComboBoxEditor(curveOptions));
- table->setDefaultRenderer("OBlockTableModel::CurveComboBoxPanel", new JComboBoxEditor(curveOptions)); // use same class as renderer
+ table->setDefaultEditor("OBlockTableModel::CurveComboBoxPanel", new JComboBoxEditor(curveOptions, true));
+ table->setDefaultRenderer("OBlockTableModel::CurveComboBoxPanel", new JComboBoxEditor(curveOptions, true)); // use same class as renderer
  // Set more things?
 #endif
  // Set more things?

@@ -423,7 +423,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
  QStringList blockStates;
  blockStates << SET_TO_UNOCCUPIED << SET_TO_OCCUPIED << SET_TO_ANY;
  //manualBlockTable->setItemDelegateForColumn(BlockModel::STATE_COLUMN, new SPComboBoxDelegate(blockStates));
- _blockModel->setColumnToHoldDelegate(manualBlockTable, BlockModel::STATE_COLUMN, new JComboBoxEditor(blockStates));
+ _blockModel->setColumnToHoldDelegate(manualBlockTable, BlockModel::STATE_COLUMN, new JComboBoxEditor(blockStates, true));
 
 // TableColumnModel _manualBlockColumnModel = manualBlockTable.getColumnModel();
 // TableColumn includeColumnC = _manualBlockColumnModel.
@@ -683,7 +683,7 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     QStringList statesList;
     statesList << SET_TO_THROWN <<SET_TO_CLOSED << SET_TO_ANY;
     //manualTurnoutTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate(statesList));
-    _turnoutModel->setColumnToHoldDelegate(manualTurnoutTable, SPTableModel::STATE_COLUMN, new JComboBoxEditor(statesList));
+    _turnoutModel->setColumnToHoldDelegate(manualTurnoutTable, SPTableModel::STATE_COLUMN, new JComboBoxEditor(statesList, true));
 
 //    TableColumnModel _manualTurnoutColumnModel = manualTurnoutTable.getColumnModel();
 //    TableColumn includeColumnC = _manualTurnoutColumnModel.
@@ -827,7 +827,7 @@ QWidget* SignallingPanel::buildSensorPanel(){
     QStringList statesList;
     statesList << SET_TO_INACTIVE << SET_TO_ACTIVE;
     //manualSensorTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate( statesList));
-    _sensorModel->setColumnToHoldDelegate(manualSensorTable, SPTableModel::STATE_COLUMN, new JComboBoxEditor( statesList) );
+    _sensorModel->setColumnToHoldDelegate(manualSensorTable, SPTableModel::STATE_COLUMN, new JComboBoxEditor( statesList, true) );
 
 //    TableColumnModel _manualSensorColumnModel = manualSensorTable.getColumnModel();
 //    TableColumn includeColumnC = _manualSensorColumnModel.

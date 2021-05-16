@@ -251,17 +251,17 @@ QVariant BlockTableDataModel::data(const QModelIndex &index, int role) const
      BlockCurvatureJComboBox* box = new BlockCurvatureJComboBox();
      box->setJTableCellClientProperties();
      QStringList list = {"NONE","GRADUAL","TIGHT","SEVERE"};
-     t->setItemDelegateForColumn(i, new JComboBoxEditor(list));
+     t->setItemDelegateForColumn(i, new JComboBoxEditor(list, true));
      break;
    }
    case SPEEDCOL:
-      t->setItemDelegateForColumn(i, new JComboBoxEditor(speedList->toList()));
+      t->setItemDelegateForColumn(i, new JComboBoxEditor(speedList->toList(), false));
     break;
    case SENSORCOL:
-    t->setItemDelegateForColumn(i, new JComboBoxEditor(sensorList.toList()));
+    t->setItemDelegateForColumn(i, new JComboBoxEditor(sensorList.toList(), false));
     break;
    case REPORTERCOL:
-   t->setItemDelegateForColumn(i, new JComboBoxEditor(reporterList.toList()));
+   t->setItemDelegateForColumn(i, new JComboBoxEditor(reporterList.toList(), false));
     break;
    default:
     break;

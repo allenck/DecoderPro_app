@@ -19,7 +19,6 @@ class TurnoutTableAction;
 class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
-    TurnoutTableAction* turnoutTableAction;
 
  public:
     enum COLUMNS
@@ -127,7 +126,7 @@ class TTComboBoxDelegate : public QStyledItemDelegate
 {
 Q_OBJECT
 public:
-  TTComboBoxDelegate(TurnoutTableAction* turnoutTableAction, bool editable = false, QObject *parent = 0);
+  TTComboBoxDelegate(bool editable = false, QObject *parent = 0);
 
   QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
   void setEditorData(QWidget *editor, const QModelIndex &index) const;
@@ -136,26 +135,11 @@ public:
   void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:
-  TurnoutTableAction* turnoutTableAction;
+  TurnoutTableAction* turnoutTableAction = nullptr;
   //mutable QStringList items;
   bool editable;
 };
 
-class TTEditDelegate : public QStyledItemDelegate
-{
-Q_OBJECT
-public:
-  TTEditDelegate( TurnoutTableAction* self);
-
-  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-  void setEditorData(QWidget *editor, const QModelIndex &index) const;
-  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-
-private:
-  TurnoutTableAction* self;
-};
 
 class TTJTable : public JTable{
   Q_OBJECT
@@ -197,6 +181,22 @@ class BeanComboBoxEditor : public JComboBoxEditor
   {
    setValues(beanBox->itemList());
   }
+};
+
+class TTEditDelegate : public QStyledItemDelegate
+{
+Q_OBJECT
+public:
+  TTEditDelegate( );
+
+  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  void setEditorData(QWidget *editor, const QModelIndex &index) const;
+  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+private:
+  TurnoutTableAction* self;
 };
 
 #endif // TURNOUTTABLEDATAMODEL_H

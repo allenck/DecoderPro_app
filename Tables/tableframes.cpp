@@ -734,12 +734,12 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
             new ToggleButtonEditor(tr("Current"), tr("Last")));
     model->configSpeedColumn(_oBlockTable); // use real combo
     //        JComboBox<String> box = new JComboBox<>(OBlockTableModel::curveOptions);
-            _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::CURVECOL)->setCellEditor(new /*DefaultCellEditor(box))*/JComboBoxEditor(OBlockTableModel::curveOptions));
+            _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::CURVECOL)->setCellEditor(new /*DefaultCellEditor(box))*/JComboBoxEditor(OBlockTableModel::curveOptions, true));
     model->configCurveColumn(_oBlockTable); // use real combo
     //        box = new JComboBox<>(jmri.InstanceManager.getDefault(SignalSpeedMap.class).getValidSpeedNames());
 //        box.addItem("");
 //        _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::SPEEDCOL)->setCellRenderer(new DefaultCellRenderer(new _oBlockModel.SpeedComboBoxPanel()));
-    _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::SPEEDCOL)->setCellEditor(new /*DefaultCellEditor(box)*/JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList()));
+    _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::SPEEDCOL)->setCellEditor(new /*DefaultCellEditor(box)*/JComboBoxEditor(((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames().toList(), false));
     _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::PERMISSIONCOL)->setCellRenderer(
             new ToggleButtonRenderer(tr("Permissive"), tr("Absolute")));
     _oBlockTable->getColumnModel()->getColumn(OBlockTableModel::PERMISSIONCOL)->setCellEditor(

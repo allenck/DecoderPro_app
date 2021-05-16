@@ -10,6 +10,8 @@
 #include "togglebutton.h"
 #include <QApplication>
 #include "vptr.h"
+#include <QLineEdit>
+#include "exceptions.h"
 
 class ButtonRenderer : public QStyledItemDelegate, public TableCellEditor, public TableCellRenderer
 {
@@ -264,12 +266,14 @@ class JComboBoxEditor : public QStyledItemDelegate, public TableCellEditor, publ
     Q_OBJECT
     Q_INTERFACES(TableCellEditor TableCellRenderer )
     QStringList values = QStringList();
+    bool isInt;
 public:
     JComboBoxEditor(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
-    JComboBoxEditor(QStringList values, QObject* parent = nullptr) : QStyledItemDelegate(parent)
+    JComboBoxEditor(QStringList values, bool isInt, QObject* parent = nullptr) : QStyledItemDelegate(parent)
     {
         this->values = values;
+     this->isInt = isInt;
     }
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -286,16 +290,24 @@ public:
 
     void setEditorData(QWidget *editor, const QModelIndex &index) const{
         JComboBox *comboBox = static_cast<JComboBox*>(editor);
-        QString value = index.model()->data(index, Qt::DisplayRole).toString();
-//        QVariant var = index.model()->data(index, Qt::DisplayRole);
-//        if(! VPtr<JComboBox>::asPtr(var))
-         comboBox->setCurrentText(value);
+        QVariant value = index.model()->data(index, Qt::DisplayRole);
+        if(isInt)
+        {
+         bool ok;
+         comboBox->setCurrentIndex(value.toInt(&ok));
+         if(!ok) throw IllegalArgumentException();
+        }
+        else
+         comboBox->setCurrentText(value.toString());
     }
 
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
     {
         JComboBox *comboBox = static_cast<JComboBox*>(editor);
-        model->setData(index, comboBox->currentText(), Qt::EditRole);
+        if(isInt)
+         model->setData(index, comboBox->currentIndex(), Qt::EditRole);
+        else
+         model->setData(index, comboBox->currentText());
     }
 
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const{
@@ -308,16 +320,22 @@ public:
     {
      //bool state = index.data().toString() == this->on;
 //     QVariant v = index.model()->data(index, Qt::DisplayRole);
-     JComboBox* widget;
+     QLineEdit* widget;
 //     if( !(widget =VPtr<JComboBox>::asPtr(v)))
 //     {
-      widget = new JComboBox(values);
-      widget->setCurrentText(index.model()->data(index, Qt::DisplayRole).toString());
+     //widget = new JComboBox(values);
+     widget = new QLineEdit();
+     QVariant var = index.model()->data(index, Qt::DisplayRole);
+     if(var.canConvert<int>())
+      widget->setText(values.at(var.toInt()));
+     else
+      widget->setText(var.toString());
 //     }
      widget->resize(option.rect.size());
      QPixmap pixmap(option.rect.size());
      widget->render(&pixmap);
      painter->drawPixmap(option.rect,pixmap);
     }
+    friend class PullResistanceComboBox;
 };
 #endif // TABLEDELEGATES_H

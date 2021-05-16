@@ -5,7 +5,7 @@
 #include "jtextfield.h"
 #include "jtable.h"
 #include "abstractsensormanager.h"
-#include "../Tables/logixtableaction.h" // for PushButtonItemDelegate
+//#include "../Tables/logixtableaction.h" // for PushButtonItemDelegate
 #include <QSignalMapper>
 #include "systemnamecomparator.h"
 #include "guilafpreferencesmanager.h"
@@ -374,6 +374,7 @@ void SensorTableDataModel::common()
 //   PullResistanceComboBox c = new PullResistanceComboBox(Sensor.PullResistance.values());
 //                   c.setSelectedItem(s.getPullResistance());
 //                   c.addActionListener(super::comboBoxAction);
+   return s->getPullResistance();
   }
   else if(col == FORGETCOL) return tr("Forget");
   else if(col == QUERYCOL) return tr("Query");
@@ -429,12 +430,14 @@ void SensorTableDataModel::common()
   {
 //        boolean b = ((Boolean)value).booleanValue();
    s->setInverted(value.toBool());
+   fireTableRowsUpdated(row,row);
    return true;
   }
   else if(col==USEGLOBALDELAY)
   {
 //        boolean b = ((Boolean)value).booleanValue();
    s->useDefaultTimerSettings(value.toBool());
+   fireTableRowsUpdated(row,row);
    return true;
   }
  }
@@ -445,6 +448,7 @@ void SensorTableDataModel::common()
 //        String val = (String)value;
 //        long goingActive = Long.valueOf(val);
    s->setSensorDebounceGoingActiveTimer(value.toInt());
+   fireTableRowsUpdated(row,row);
    return true;
   }
   else if(col==INACTIVEDELAY)
@@ -452,6 +456,7 @@ void SensorTableDataModel::common()
 //        String val = (String)value;
 //        long goingInActive = Long.valueOf(val);
    s->setSensorDebounceGoingInActiveTimer(value.toInt());
+   fireTableRowsUpdated(row,row);
    return true;
   }
   else if(col == VALUECOL)
@@ -460,43 +465,56 @@ void SensorTableDataModel::common()
    { // respond to clicking on ImageIconRenderer CellEditor
        clickOn(s);
        fireTableRowsUpdated(row, row);
+       return true;
    } else {
-       BeanTableDataModel::setData(index, value, role);
+      return BeanTableDataModel::setData(index, value, role);
    }
   }
-  else if(EDITCOL)
+  else if(col ==EDITCOL)
   {
    editButton(s);
+   return true;
   }
   else if(col == PULLUPCOL)
   {
-//   s->setPullResistance(value.toString());
+   s->setPullResistance((Sensor::PullResistance::PULLRESISTANCE)value.toInt());
+   fireTableRowsUpdated(row,row);
+   return true;
   }
   else if(col == FORGETCOL)
   {
    try {
        s->setKnownState(Sensor::UNKNOWN);
+       fireTableRowsUpdated(row,row);
+       return true;
    } catch (JmriException e) {
        log->warn("Failed to set state to UNKNOWN: ", e);
+       return false;
    }
   }
   else if(col == QUERYCOL)
   {
    try {
         s->setKnownState(Sensor::UNKNOWN);
+        fireTableRowsUpdated(row,row);
+        return true;
     } catch (JmriException e) {
         log->warn("Failed to set state to UNKNOWN: ", e);
-    }
+    return false;
+   }
     s->requestUpdateFromLayout();
-    //break;
+    fireTableRowsUpdated(row,row);
+    return true;
+
   }
   else if(col == VALUECOL)
   {
    if (_graphicState) { // respond to clicking on ImageIconRenderer CellEditor
        clickOn(s);
        fireTableRowsUpdated(row, row);
+       return true;
    } else {
-       BeanTableDataModel::setValueAt(value, row, col);
+       return BeanTableDataModel::setData(index, value, role);
    }
   }
  }
@@ -643,30 +661,30 @@ void SensorTableDataModel::common()
 //      offIconPath = rootPath + beanTypeChar + "-off-s.png";
 //      loadIcons();
 //    }
-    /**
-     * Read and buffer graphics. Only called once for this table.
-     *
-     * @see #getTableCellEditorComponent(JTable, Object, boolean, int, int)
-     */
-    /*protected*/ void SensorTableDataModel::loadIcons() {
-        try {
-            onImage = ImageIO::read(new File(onIconPath));
-            offImage = ImageIO::read(new File(offIconPath));
-        } catch (IOException ex) {
-            log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
-        }
-        log->debug("Success reading images");
-        int imageWidth = onImage->width();
-        int imageHeight = onImage->height();
-        // scale icons 50% to fit in table rows
-        QImage smallOnImage = onImage->getScaledInstance(imageWidth / 2, imageHeight / 2,0/*, Image.SCALE_DEFAULT*/);
-        QImage smallOffImage = offImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0/*, Image.SCALE_DEFAULT*/);
-//        onIcon = new ImageIcon(smallOnImage);
-        onIcon = QPixmap::fromImage(smallOnImage);
-//        offIcon = new ImageIcon(smallOffImage);
-        offIcon = QPixmap::fromImage(smallOffImage);
-        iconHeight = onIcon.height();
+/**
+ * Read and buffer graphics. Only called once for this table.
+ *
+ * @see #getTableCellEditorComponent(JTable, Object, boolean, int, int)
+ */
+/*protected*/ void SensorTableDataModel::loadIcons() {
+    try {
+        onImage = ImageIO::read(new File(onIconPath));
+        offImage = ImageIO::read(new File(offIconPath));
+    } catch (IOException ex) {
+        log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
     }
+    log->debug("Success reading images");
+    int imageWidth = onImage->width();
+    int imageHeight = onImage->height();
+    // scale icons 50% to fit in table rows
+    QImage smallOnImage = onImage->getScaledInstance(imageWidth / 2, imageHeight / 2,0/*, Image.SCALE_DEFAULT*/);
+    QImage smallOffImage = offImage->getScaledInstance(imageWidth / 2, imageHeight / 2, 0/*, Image.SCALE_DEFAULT*/);
+//        onIcon = new ImageIcon(smallOnImage);
+    onIcon = QPixmap::fromImage(smallOnImage);
+//        offIcon = new ImageIcon(smallOffImage);
+    offIcon = QPixmap::fromImage(smallOffImage);
+    iconHeight = onIcon.height();
+}
 
 //} // end of ImageIconRenderer class
 
@@ -677,8 +695,12 @@ void SensorTableDataModel::common()
 {
  BeanTableDataModel::configureTable(table);
  XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
-// columnModel->getColumnByModelIndex(FORGETCOL)->setHeaderValue(QVariant());
-// columnModel->getColumnByModelIndex(QUERYCOL)->setHeaderValue(QVariant());
+ columnModel->getColumnByModelIndex(FORGETCOL)->setHeaderValue(QVariant());
+ columnModel->getColumnByModelIndex(QUERYCOL)->setHeaderValue(QVariant());
+ setColumnToHoldDelegate(table, PULLUPCOL, new PullResistanceComboBox(QStringList{"up", "down", "off"}/*, turnoutTableAction*/));
+ setColumnToHoldButton(table,FORGETCOL);
+ setColumnToHoldButton(table,QUERYCOL);
+
 }
 
 void SensorTableDataModel::editButton(Sensor* s) {
