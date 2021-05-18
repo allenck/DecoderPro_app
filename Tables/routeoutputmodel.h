@@ -7,7 +7,7 @@
 class RouteOutputModel : public AbstractTableModel, public PropertyChangeListener
 {
   Q_OBJECT
-    Q_INTERFACES(PropertyChangeListener)
+  Q_INTERFACES(PropertyChangeListener)
  public:
   RouteOutputModel(QObject* parent=nullptr) : AbstractTableModel(parent){}
   enum COLS

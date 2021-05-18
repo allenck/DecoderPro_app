@@ -45,13 +45,16 @@
             return QVariant();
         }
         if(role == Qt::CheckStateRole)
+        {
          switch (index.column()) {
             case INCLUDE_COLUMN:
                 return sensorList.value(index.row())->isIncluded()?Qt::Checked:Qt::Unchecked;
-        default:
-            return QVariant();
+         default:
+             break;;
+         }
         }
-        if(role == Qt::EditRole)
+        if(role == Qt::DisplayRole)
+        {
          switch (index.column()) {
 
             case SNAME_COLUMN:  // slot number
@@ -61,8 +64,10 @@
             case STATE_COLUMN:  //
                 return sensorList.value(index.row())->getSetToState();
             default:
-                return QVariant();
+                break;
         }
+     }
+     return QVariant();
     }
 
     //@Override

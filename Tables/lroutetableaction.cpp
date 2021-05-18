@@ -111,7 +111,6 @@ void LRouteTableAction::common()
   {
    setEnabled(false);
   }
-
 }
 
 
@@ -483,8 +482,6 @@ void LRouteTableAction::buildLists()
  QList<LRouteInputElement*>* inputTS = new QList<LRouteInputElement*>();
  QList<LRouteOutputElement*>* outputTS = new QList<LRouteOutputElement*>();
 
- //TreeSet <RouteInputElement>inputTS = new TreeSet<RouteInputElement>();
- //TreeSet <RouteOutputElement>outputTS = new TreeSet<RouteOutputElement>();
  TurnoutManager* tm = InstanceManager::turnoutManagerInstance();
  QStringList systemNameList = ((ProxyTurnoutManager*)tm)->getSystemNameList();
  QStringListIterator iter(systemNameList);
@@ -542,11 +539,11 @@ while (iter.hasNext()) {
    {
     LRouteInputElement* elt = it.next();
     _inputList->append(elt);
-    QString key = elt->getType()+elt->getSysName();
+    QString key = QString::number(elt->getType())+elt->getSysName();
     _inputMap->insert(key, elt);
     QString user = elt->getUserName();
-    if (user != NULL) {
-        key = elt->getType()+user;
+    if (user != "") {
+        key = QString::number(elt->getType())+user;
         _inputUserMap->insert(key, elt);
     }
    }
@@ -555,11 +552,11 @@ while (iter.hasNext()) {
    {
     LRouteOutputElement* elt = itOut.next();
     _outputList->append(elt);
-    QString key = elt->getType()+elt->getSysName();
+    QString key = QString::number(elt->getType())+elt->getSysName();
     _outputMap->insert(key, elt);
     QString user = elt->getUserName();
     if (user != NULL) {
-        key = elt->getType()+user;
+        key = QString::number(elt->getType())+user;
         _outputUserMap->insert(key, elt);
    }
   }
@@ -572,11 +569,11 @@ while (iter.hasNext()) {
   {
     LAlignElement* elt = itAlign.next();
     _alignList->append(elt);
-    QString key = elt->getType()+elt->getSysName();
+    QString key = QString::number(elt->getType())+elt->getSysName();
     _alignMap->insert(key, elt);
     QString user = elt->getUserName();
     if (user != NULL) {
-        key = elt->getType()+user;
+        key = QString::number(elt->getType())+user;
         _alignUserMap->insert(key, elt);
   }
  }
@@ -1117,7 +1114,9 @@ void LRouteTableAction::makeEditWindow()
     tab1->layout()->addWidget(pa);
 
     _newRouteButton = new QRadioButton(tr("New")/*,true*/);
+    _newRouteButton->setChecked(true);
     QRadioButton* oldRoute = new QRadioButton(tr("Old")/*,false*/);
+    oldRoute->setChecked(false);
     _initializeButton = new QRadioButton(tr("Initialize")/*,false*/);
     _initializeButton->setChecked(false);
     _newRouteButton->setToolTip(tr("All triggers and vetoes enabled in a single Conditional:: "));
@@ -1128,13 +1127,14 @@ void LRouteTableAction::makeEditWindow()
 //            }
 //        });
     connect(_newRouteButton, SIGNAL(clicked()), this, SLOT(newRoutePressed()));
-    oldRoute->setToolTip(tr("OldRouteHint"));
+    oldRoute->setToolTip(tr("Each trigger has a single Conditional with vetoes not enabled."));
 //    oldRoute::addActionListener(new ActionListener(){
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                _newRouteType = false;
-//                _systemName.setEnabled(true);
+    connect(oldRoute, &QRadioButton::clicked, [=]{
+            _newRouteType = false;
+            _systemName->setEnabled(true);
 //            }
-//        });
+    });
     _initializeButton->setToolTip(tr("Defines a Logix that executes before all other Logixs to initialize devices at load time. "));
 //    _initializeButton.addActionListener(new ActionListener(){
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -1145,7 +1145,7 @@ void LRouteTableAction::makeEditWindow()
 //            }
 //        });
     connect(_initializeButton, SIGNAL(clicked()), this, SLOT(initializePressed()));
-    _typePanel = makeShowButtons(_newRouteButton, oldRoute, _initializeButton, "LRouteType");
+    _typePanel = makeShowButtons(_newRouteButton, oldRoute, _initializeButton, tr("Route Logix Type"));
     //_typePanel.setBorder(BorderFactory.createEtchedBorder());
     _typePanel->setFrameStyle(QFrame::Box | QFrame::Raised);
     _typePanel->setLineWidth(2);
@@ -2576,7 +2576,7 @@ RouteInputModel::RouteInputModel(LRouteTableAction* self) : RouteElementModel(se
         case STATE_COLUMN:
             return inputList->at(r)->getTestState();
         default:
-        return QVariant();
+     break;;
     }
  }
  else if(role == Qt::CheckStateRole)
@@ -2586,6 +2586,7 @@ RouteInputModel::RouteInputModel(LRouteTableAction* self) : RouteElementModel(se
  }
  return QVariant();
 }
+
 /*public*/ bool RouteInputModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
  QList <LRouteInputElement*>* inputList = NULL;
@@ -2630,9 +2631,11 @@ RouteInputModel::RouteInputModel(LRouteTableAction* self) : RouteElementModel(se
 RouteOutputModelX::RouteOutputModelX(LRouteTableAction *self) : RouteElementModel(self)
 {
 }
+
 /*public*/ bool RouteOutputModelX::isInput() {
     return false;
 }
+
 /*public*/ QVariant RouteOutputModelX::headerData(int section, Qt::Orientation orientation, int role) const
 {
  if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
@@ -2642,53 +2645,64 @@ RouteOutputModelX::RouteOutputModelX(LRouteTableAction *self) : RouteElementMode
     }
     return RouteElementModel::headerData(section,orientation, role);
  }
- return QVariant();
+ return RouteElementModel::headerData(section, orientation, role);
 }
- /*public*/ int RouteOutputModelX::rowCount(const QModelIndex &/*parent*/) const
+
+/*public*/ int RouteOutputModelX::rowCount(const QModelIndex &/*parent*/) const
 {
  if (_self->_showAllOutput)
-        return _self->_outputList->size();
-    else
-        return _self->_includedOutputList->size();
+  return _self->_outputList->size();
+ else
+  return _self->_includedOutputList->size();
 }
+
 /*public*/ QVariant RouteOutputModelX::data(const QModelIndex &index, int role) const
 {
+ int r = index.row();
+ QList<LRouteOutputElement*>* outputList = NULL;
+ if (_self->_showAllOutput)
+ {
+  outputList = _self->_outputList;
+ }
+ else
+ {
+  outputList = _self->_includedOutputList;
+ }
+ // some error checking
+ if (r >= outputList->size())
+ {
+     log->debug("row out of range");
+     return QVariant();
+ }
+
  if(role == Qt::DisplayRole)
  {
-  int r = index.row();
-  QList<LRouteOutputElement*>* outputList = NULL;
-  if (_self->_showAllOutput)
-  {
-   outputList = _self->_outputList;
-  }
-  else
-  {
-   outputList = _self->_includedOutputList;
-  }
-    // some error checking
-    if (r >= outputList->size())
-    {
-        log->debug("row out of range");
-        return QVariant();
-    }
     switch (index.column())
     {
         case SNAME_COLUMN:  // slot number
             return outputList->at(r)->getSysName();
         case UNAME_COLUMN:  //
             return outputList->at(r)->getUserName();
-        case INCLUDE_COLUMN:
-            return outputList->at(r)->isIncluded()?Qt::Checked:Qt::Unchecked;
+//        case INCLUDE_COLUMN:
+//            return outputList->at(r)->isIncluded()?Qt::Checked:Qt::Unchecked;
         case TYPE_COLUMN:
             return outputList->at(r)->getTypeString();
         case STATE_COLUMN:  //
             return outputList->at(r)->getSetToState();
         default:
-        return QVariant();
+        break;
+  }
+ }
+ if(role == Qt::CheckStateRole)
+ {
+  if(index.column() == INCLUDE_COLUMN)
+  {
+   return outputList->at(r)->isIncluded()?Qt::Checked:Qt::Unchecked;
   }
  }
  return QVariant();
 }
+
 /*public*/ bool  RouteOutputModelX::setData(const QModelIndex &index, const QVariant &value, int role)
 {
  if(role == Qt::EditRole)
@@ -2708,7 +2722,10 @@ RouteOutputModelX::RouteOutputModelX(LRouteTableAction *self) : RouteElementMode
         case STATE_COLUMN:
             outputList->at(r)->setSetToState(value.toString());
             break;
+    default:
+     return false;
     }
+    fireTableDataChanged();
     return true;
  }
  return false;
@@ -3376,7 +3393,7 @@ AbstractTableAction::setMessagePreferencesDetails();
  }
 }
 LComboBoxDelegate::LComboBoxDelegate(RouteElementModel* model, LRouteTableAction* self, QObject *parent)
-: JComboBoxEditor(parent)
+: JComboBoxEditor(false, parent)
 {
  this->model  = model;
  this->_self = self;
@@ -3428,19 +3445,20 @@ QWidget *LComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionView
 //  editor->setGeometry(option.rect);
 //}
 
-//void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-//{
-// //bool state = index.data().toString() == this->on;
-// JComboBox* widget = new JComboBox(values);
-// widget->setEditable(true);
-// widget->setCurrentText(index.model()->data(index, Qt::DisplayRole).toString());
-// widget->resize(option.rect.size());
-// QPixmap pixmap(option.rect.size());
-// widget->render(&pixmap);
-// painter->drawPixmap(option.rect,pixmap);
-//}
+void LComboBoxDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+ //bool state = index.data().toString() == this->on;
+ QLineEdit* widget = new QLineEdit();
+ widget->setText(index.model()->data(index, Qt::DisplayRole).toString());
+ widget->resize(option.rect.size());
+ QPixmap pixmap(option.rect.size());
+ widget->render(&pixmap);
+ painter->drawPixmap(option.rect,pixmap);
+}
 
 QString LRouteTableAction::getName()
 {
  return "jmri.jmrit.beantable.LRouteTableAction";
 }
+
+/*static*/ AlphanumComparator* RouteElementComparatorac = new AlphanumComparator();

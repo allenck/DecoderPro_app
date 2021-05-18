@@ -67,10 +67,11 @@
             case STATE_COLUMN:  //
                 return turnoutList.value(index.row())->getSetToState();
             default:
-                return QVariant();
+           break;
           }
          }
      }
+     return QVariant();
     }
 
     //@Override

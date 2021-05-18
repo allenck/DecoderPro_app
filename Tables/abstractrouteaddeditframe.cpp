@@ -187,7 +187,7 @@
              _systemName->setEnabled(false);
          }
         });
-        _systemName->setToolTip(tr("TooltipRouteSystemName"));
+        _systemName->setToolTip(tr("Enter System Name for the new Route, e.g. 'IO12'"));
         contentPanel->layout()->addWidget(ps);
         // add user name
         JPanel* p = new JPanel();
@@ -232,8 +232,8 @@
         py->layout()->addWidget(new JLabel(tr("%1 and %2").arg(tr("Turnouts")).arg(tr("Sensors"))));
         // keys are in jmri.jmrit.Bundle
         contentPanel->layout()->addWidget(py);
-        contentPanel->layout()->addWidget(getTurnoutPanel());
-        contentPanel->layout()->addWidget(getSensorPanel());
+        ((QVBoxLayout*)contentPanel->layout())->addWidget(getTurnoutPanel(), 1);
+        ((QVBoxLayout*)contentPanel->layout())->addWidget(getSensorPanel(), 1);
         contentPanel->layout()->addWidget(getFileNamesPanel());
         contentPanel->layout()->addWidget(getAlignedSensorPanel());
         contentPanel->layout()->addWidget(getControlsPanel());
@@ -243,6 +243,7 @@
 
         QScrollArea* scrollArea = new QScrollArea();
         scrollArea->setWidget(contentPanel);
+        scrollArea->setWidgetResizable(true);
         if(getContentPane()->layout() == nullptr)
          getContentPane()->setLayout(new QVBoxLayout());
         getContentPane()->layout()->addWidget(scrollArea);//new JScrollPane(contentPanel), BorderLayout.CENTER);
@@ -260,7 +261,7 @@
     }
 
     ///*protected*/ abstract JPanel* getButtonPanel();
-#if 1
+
     /*private*/ JPanel* AbstractRouteAddEditFrame::getNotesPanel() {
         // add notes panel
         JPanel* pa = new JPanel();
@@ -315,7 +316,7 @@
         JPanel* p3 = new JPanel();
         p3->setLayout(new QVBoxLayout());//p3, BoxLayout.Y_AXIS));
         JPanel* p31 = new JPanel(new FlowLayout());
-        p31->layout()->addWidget(new JLabel(tr("LabelEnterSensors")));
+        p31->layout()->addWidget(new JLabel(tr("Sensors that trigger this Route (optional)")));
         p3->layout()->addWidget(p31);
         JPanel* p32 = new JPanel(new FlowLayout());
         //Sensor 1
@@ -382,7 +383,7 @@
         //add turnouts aligned Sensor
         JPanel* p27 = new JPanel();
         p27->setLayout(new FlowLayout());
-        p27->layout()->addWidget(new JLabel(tr("LabelEnterSensorAligned")));
+        p27->layout()->addWidget(new JLabel(tr("Sensor that Activates when all Route Turnouts are correctly aligned (optional):")));
         p27->layout()->addWidget(turnoutsAlignedSensor);
         turnoutsAlignedSensor->setAllowNull(true);
         turnoutsAlignedSensor->setSelectedItem(nullptr);
@@ -394,7 +395,7 @@
         // Enter filenames for sound, script
         JPanel* p25 = new JPanel();
         p25->setLayout(new FlowLayout());
-        p25->layout()->addWidget(new JLabel(tr("LabelPlaySound")));
+        p25->layout()->addWidget(new JLabel(tr("Play Sound:")));
         p25->layout()->addWidget(soundFile);
         JButton* ss = new JButton("..."); //NO18N
         //ss->layout()->addWidgetActionListener((ActionEvent e1) -> setSoundPressed());
@@ -414,7 +415,7 @@
     /*private*/ JPanel* AbstractRouteAddEditFrame::getTurnoutPanel(){
         // add Turnout table
         // Turnout list table
-        JPanel* p2xt = new JPanel(new FlowLayout());
+        JPanel* p2xt = new JPanel(new QHBoxLayout());
         JPanel* p2xtSpace = new JPanel();
         p2xtSpace->setLayout(new QVBoxLayout());//p2xtSpace, BoxLayout.Y_AXIS));
         p2xtSpace->layout()->addWidget(Box::createRigidArea(QSize(30,0)));
@@ -426,23 +427,23 @@
         p2xt->layout()->addWidget(p21t);
         _routeTurnoutModel = new RouteTurnoutModel(this);
         JTable* routeTurnoutTable = new JTable(_routeTurnoutModel);
-//        TableRowSorter/*<RouteTurnoutModel*>*/* rtSorter = new TableRowSorter(_routeTurnoutModel);
+        TableRowSorter/*<RouteTurnoutModel*>*/* rtSorter = new TableRowSorter(_routeTurnoutModel);
 
 //        // Use AlphanumComparator for SNAME and UNAME columns.  Start with SNAME sort.
-//        rtSorter->setComparator(RouteOutputModel::SNAME_COLUMN, (Comparator*)new AlphanumComparator());
-//        rtSorter->setComparator(RouteOutputModel::UNAME_COLUMN, (Comparator*)new AlphanumComparator());
-//        RowSorterUtil::setSortOrder(rtSorter, RouteOutputModel::SNAME_COLUMN, SortOrder::ASCENDING);
+        rtSorter->setComparator(RouteOutputModel::SNAME_COLUMN, (Comparator*)new AlphanumComparator());
+        rtSorter->setComparator(RouteOutputModel::UNAME_COLUMN, (Comparator*)new AlphanumComparator());
+        RowSorterUtil::setSortOrder(rtSorter, RouteOutputModel::SNAME_COLUMN, SortOrder::ASCENDING);
 
-//        routeTurnoutTable->setRowSorter(rtSorter);
+        routeTurnoutTable->setRowSorter(rtSorter);
         routeTurnoutTable->setRowSelectionAllowed(false);
 //        routeTurnoutTable->setPreferredScrollableViewportSize(QSize(480, 80));
         routeTurnoutTable->resize(QSize(480, 80));
 
         setRowHeight(routeTurnoutTable->getRowHeight());
-        JComboBox* stateTCombo = new JComboBox();
-        stateTCombo->addItem(SET_TO_CLOSED);
-        stateTCombo->addItem(SET_TO_THROWN);
-        stateTCombo->addItem(SET_TO_TOGGLE);
+//        JComboBox* stateTCombo = new JComboBox();
+//        stateTCombo->addItem(SET_TO_CLOSED);
+//        stateTCombo->addItem(SET_TO_THROWN);
+//        stateTCombo->addItem(SET_TO_TOGGLE);
         TableColumnModel* routeTurnoutColumnModel = routeTurnoutTable->getColumnModel();
         TableColumn* includeColumnT = routeTurnoutColumnModel->
                 getColumn(RouteOutputModel::INCLUDE_COLUMN);
@@ -461,7 +462,7 @@
         uNameColumnT->setMaxWidth(260);
         TableColumn* stateColumnT = routeTurnoutColumnModel->
                 getColumn(RouteOutputModel::STATE_COLUMN);
-        stateColumnT->setCellEditor(new /*DefaultCellEditor(stateTCombo)*/JComboBoxEditor(stateTCombo));
+        stateColumnT->setCellEditor(new /*DefaultCellEditor(stateTCombo)*/JComboBoxEditor(/*stateTCombo*/QStringList{SET_TO_CLOSED, SET_TO_THROWN, SET_TO_TOGGLE}, true));
         stateColumnT->setResizable(false);
         stateColumnT->setMinWidth(90);
         stateColumnT->setMaxWidth(100);
@@ -474,7 +475,7 @@
     /*private*/ JPanel* AbstractRouteAddEditFrame::getSensorPanel(){
         // add Sensor table
         // Sensor list table
-        JPanel* p2xs = new JPanel(new FlowLayout());
+        JPanel* p2xs = new JPanel(new QVBoxLayout());
         JPanel* p2xsSpace = new JPanel();
         p2xsSpace->setLayout(new QVBoxLayout());//p2xsSpace, BoxLayout.Y_AXIS));
         p2xsSpace->layout()->addWidget(Box::createRigidArea(QSize(30,0)));
@@ -528,7 +529,7 @@
         p2xs->setVisible(true);
         return p2xs;
     }
-#endif
+
     /**
      * Initialize list of included turnout positions.
      */

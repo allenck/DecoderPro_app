@@ -269,10 +269,12 @@ class JComboBoxEditor : public QStyledItemDelegate, public TableCellEditor, publ
     bool isInt;
 public:
     JComboBoxEditor(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
+    JComboBoxEditor(bool isInt, QObject* parent = nullptr) : QStyledItemDelegate(parent) {this->isInt = isInt;}
+
     QObject* self() {return (QObject*)this;}
     JComboBoxEditor(QStringList values, bool isInt, QObject* parent = nullptr) : QStyledItemDelegate(parent)
     {
-        this->values = values;
+     this->values = values;
      this->isInt = isInt;
     }
 

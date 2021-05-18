@@ -55,5 +55,6 @@
       return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
      if( index.column() == STATE_COLUMN)
       return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+     return Qt::ItemIsEnabled ;
     }
 

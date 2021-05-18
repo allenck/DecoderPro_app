@@ -70,7 +70,7 @@ class AbstractRouteAddEditFrame : public JmriJFrameX
 //  };
   /*final*/ JTextField* _systemName = new JTextField(10);
   /*final*/ JTextField* _userName = new JTextField(22);
-  /*final*/ JCheckBox* _autoSystemName = new JCheckBox(tr("LabelAutoSysName"));
+  /*final*/ JCheckBox* _autoSystemName = new JCheckBox(tr("Automatically generate System Name"));
   /*final*/ JTextField* soundFile = new JTextField(20);
   /*final*/ JTextField* scriptFile = new JTextField(20);
   /*final*/ JComboBox* sensor1mode = new JComboBox(sensorInputModes);
@@ -79,8 +79,8 @@ class AbstractRouteAddEditFrame : public JmriJFrameX
   /*final*/ JSpinner* timeDelay = new JSpinner();
   /*final*/ JComboBox* cTurnoutStateBox = new JComboBox(turnoutInputModes);
   /*final*/ JComboBox* cLockTurnoutStateBox = new JComboBox(lockTurnoutInputModes);
-  /*final*/ JLabel* nameLabel = new JLabel(tr("LabelSystemName"));
-  /*final*/ JLabel* userLabel = new JLabel(tr("LabelUserName"));
+  /*final*/ JLabel* nameLabel = new JLabel(tr("System Name:"));
+  /*final*/ JLabel* userLabel = new JLabel(tr("User Name:"));
   /*final*/ JLabel* status1 = new JLabel();
   /*final*/ JLabel* status2 = new JLabel();
 

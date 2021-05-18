@@ -8,7 +8,10 @@
 #include "abstracttableaction.h"
 #include "libtables_global.h"
 #include "abstractmanager.h"
+#include "comparatort.h"
+#include "alphanumcomparator.h"
 
+class LRouteElement;
 class JFileChooser;
 class AddFrameWindowListener;
 class ConditionalVariable;
@@ -73,8 +76,8 @@ public:
     /*public*/ static /*final*/ int CLEAR_SIGNAL_HELD;// = Conditional.ACTION_CLEAR_SIGNAL_HELD + OFFSET;
     /*public*/ static /*final*/ int SET_SIGNAL_DARK;// = Conditional.ACTION_SET_SIGNAL_DARK + OFFSET;
     /*public*/ static /*final*/ int SET_SIGNAL_LIT;//  = Conditional.ACTION_SET_SIGNAL_LIT + OFFSET;
-    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
-    Q_INVOKABLE /*public*/ QString getClassDescription();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails()override;
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
     void initializeIncludedInputList();
     void initializeIncludedOutputList();
     void  initializeIncludedAlignList();
@@ -240,20 +243,20 @@ private:
 
     bool routeDirty;// = false;  // true to fire reminder to save work
 
-    QList <LRouteInputElement*>* _inputList;
-    /*private*/ QMap <QString, LRouteInputElement*>* _inputMap;
-    /*private*/ QMap <QString, LRouteInputElement*>* _inputUserMap;
-    /*private*/ QList <LRouteInputElement*>* _includedInputList;
+    QList <LRouteInputElement*>* _inputList = nullptr;
+    /*private*/ QMap <QString, LRouteInputElement*>* _inputMap = nullptr;
+    /*private*/ QMap <QString, LRouteInputElement*>* _inputUserMap = nullptr;
+    /*private*/ QList <LRouteInputElement*>* _includedInputList = nullptr;
 
-    QList <LRouteOutputElement*>* _outputList;
-    /*private*/ QMap <QString, LRouteOutputElement*>* _outputMap;
-    /*private*/ QMap <QString, LRouteOutputElement*>* _outputUserMap;
-    /*private*/ QList <LRouteOutputElement*>* _includedOutputList;
+    QList <LRouteOutputElement*>* _outputList = nullptr;
+    /*private*/ QMap <QString, LRouteOutputElement*>* _outputMap = nullptr;
+    /*private*/ QMap <QString, LRouteOutputElement*>* _outputUserMap = nullptr;
+    /*private*/ QList <LRouteOutputElement*>* _includedOutputList = nullptr;
 
     QList <LAlignElement*>* _alignList;
-    /*private*/ QMap <QString, LAlignElement*>* _alignMap;
-    /*private*/ QMap <QString, LAlignElement*>* _alignUserMap;
-    /*private*/ QList <LAlignElement*>* _includedAlignList;
+    /*private*/ QMap <QString, LAlignElement*>* _alignMap = nullptr;
+    /*private*/ QMap <QString, LAlignElement*>* _alignUserMap = nullptr;
+    /*private*/ QList <LAlignElement*>* _includedAlignList = nullptr;
 
     bool enabled;
     JmriJFrame* f;
@@ -264,11 +267,11 @@ private:
 
     protected:
  ///*protected*/ LBeanTableDataModel* m;
- /*protected*/ QString getClassName();
+ /*protected*/ QString getClassName()override;
 protected slots:
  /*protected*/ void addPressed(ActionEvent* e = 0);
- /*protected*/ void setTitle();
- /*protected*/ QString helpTarget();
+ /*protected*/ void setTitle() override;
+ /*protected*/ QString helpTarget()override;
 
     friend class LBeanTableDataModel;
     friend class RouteInputModel;
@@ -351,9 +354,9 @@ friend class LRouteWidget;
 
   virtual /*public*/ bool isInput();
 
-  /*public*/ int columnCount(const QModelIndex &parent) const;
-  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+  /*public*/ int columnCount(const QModelIndex &parent) const override;
+  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
   /*public*/ void dispose();
   void fireTableDataChanged();
   Logger* log;
@@ -367,6 +370,7 @@ private:
   friend class RouteOutputModelX;
   friend class AlignmentModel;
 };
+
 class RouteInputModel : public RouteElementModel
 {
  Q_OBJECT
@@ -379,6 +383,7 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
+
 class RouteOutputModelX : public RouteElementModel
 {
     Q_OBJECT
@@ -390,6 +395,7 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
+
 
 class AlignmentModel : public RouteElementModel
 {
@@ -537,13 +543,45 @@ public:
 //  void setEditorData(QWidget *editor, const QModelIndex &index) const;
 //  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 //  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-//  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 private:
   RouteElementModel* model;
   LRouteTableAction* _self;
 };
+#if 1
+/**
+ * Sorts RouteElement
+ */
+/*public*/ /*static*/ class RouteElementComparator : public ComparatorT<LRouteElement*> {
+    // RouteElement objects aren't really NamedBeans, as they don't inherit
+    // so we have to create our own comparator object here.  This assumes they
+    // the do have a named-bean-like system name format.
+    RouteElementComparator() {
+    }
 
+    static AlphanumComparator* ac;// = new AlphanumComparator();
+
+    //@Override
+    /*public*/ int compare(LRouteElement* e1, LRouteElement* e2) {
+        QString s1 = e1->getSysName();
+        QString s2 = e2->getSysName();
+
+        int p1len = Manager::getSystemPrefixLength(s1);
+        int p2len = Manager::getSystemPrefixLength(s2);
+
+        int comp = ac->compare(s1.mid(0, p1len), s2.mid(0, p2len));
+        if (comp != 0) return comp;
+
+        QChar c1 = s1.at(p1len);
+        QChar c2 = s2.at(p2len);
+
+        if (c1 == c2) return ac->compare(s1.mid(p1len+1), s2.mid(p2len+1));
+        else return (c1 > c2) ? +1 : -1 ;
+    }
+
+};
+#endif
 class AddFrameWindowListener : public WindowListener
 {
   Q_OBJECT
