@@ -33,12 +33,12 @@ private:
    void duplicatePressed(QString sName);
 
    // instance variables
-   /*private*/ bool editMode;// = false;
-   /*private*/ bool duplicateMode;// = false;
-   /*private*/ TransitManager* transitManager;// = NULL;
+   /*private*/ bool editMode = false;
+   /*private*/ bool duplicateMode = false;
+   /*private*/ TransitManager* transitManager = nullptr;
    /*private*/ SectionManager* sectionManager;// = InstanceManager::sectionManagerInstance();
-   /*private*/ Transit* curTransit;// = NULL;
-   /*private*/ SectionTableModel* sectionTableModel;// = NULL;
+   /*private*/ Transit* curTransit = nullptr;
+   /*private*/ SectionTableModel* sectionTableModel = nullptr;
    /*private*/ QList<Section*>* sectionList;// = new QList<>();
    /*private*/ QVector<int>* direction;// = new int[150];
    /*private*/ QVector<int>* sequence;// = new int[150];
@@ -67,8 +67,8 @@ private:
    JTextField* userName;// = new JTextField(17);
    QLabel* sysNameLabel;// = new JLabel(tr("LabelSystemName"));
    QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
-   QPushButton* create;// = NULL;
-   QPushButton* update;// = NULL;
+   QPushButton* create = nullptr;
+   QPushButton* update = nullptr;
    QPushButton* deleteSections;// = NULL;
    QComboBox* primarySectionBox;// = new JComboBox<>();
    QPushButton* addNextSection;// = NULL;
@@ -179,13 +179,13 @@ private slots:
 
 
 protected:
-   /*protected*/ void setTitle();
-   /*protected*/ QString helpTarget();
-   /*protected*/ void createModel();
-   /*protected*/ QString getClassName();
+   /*protected*/ void setTitle()override;
+   /*protected*/ QString helpTarget()override;
+   /*protected*/ void createModel()override;
+   /*protected*/ QString getClassName()override;
 
 protected slots:
-   /*protected*/ void addPressed(ActionEvent* /*e*/);
+   /*protected*/ void addPressed(/*ActionEvent *e*/)override;
    void On_whenBox_currentIndexChanged();
    void On_whatBox_currentIndexChanged();
 

@@ -81,8 +81,8 @@ void JmriBeanComboBox::common(Manager *manager, NamedBean *nBean, int displayOrd
 /*public*/ void JmriBeanComboBox::setManager(Manager* manager)
 {
  this->_manager = manager;
- //((AbstractManager*)_manager)->addPropertyChangeListener((PropertyChangeListener*)this);
- connect(((AbstractManager*)_manager->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ ((AbstractManager*)_manager->self())->addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect(((AbstractManager*)_manager->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  refreshCombo();
 }
 

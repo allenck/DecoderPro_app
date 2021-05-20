@@ -51,12 +51,14 @@ private slots:
  void addSourcePressed(ActionEvent* /*e*/ = 0);
  void addBufferPressed(ActionEvent* /*e*/ = 0);
  void common();
+
 protected:
  /*protected*/ void createModel()override;
  /*protected*/ void setTitle()override;
  /*protected*/ QString helpTarget()override;
+
 protected slots:
- /*protected*/ void addPressed(ActionEvent* e = 0);
+ /*protected*/ void addPressed(/*e e = 0*/) override;
  /*protected*/ void editAudio(Audio* a);
  /*protected*/ QString getClassName()override;
 
@@ -86,6 +88,7 @@ AudioTableAction* act;
 /*public*/ int rowCount(const QModelIndex &parent) const override;
 /*public*/ int columnCount(const QModelIndex &parent) const override;
 /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+/*public*/ QString getColumnClass(int col) const override;
 /*public*/ QString getValue(QString systemName) const override ;
 /*public*/ QVariant data(const QModelIndex &index, int role) const override;
 /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
@@ -94,12 +97,12 @@ AudioTableAction* act;
 private:
  Logger* log;
 protected:
-/*protected*/ QString getMasterClassName();
+/*protected*/ QString getMasterClassName() override;
 /*protected*/ /*synchronized*/ void updateSpecificNameList(QChar subType);
-/*protected*/ void clickOn(NamedBean* t);
-/*protected*/ void configValueColumn(JTable* table);
+/*protected*/ void clickOn(NamedBean* t) override;
+/*protected*/ void configValueColumn(JTable* table) override;
 /*protected*/ void configEditColumn(JTable* table);
-/*protected*/ QString getBeanType();
+/*protected*/ QString getBeanType() override;
  friend class AudioListenerTableDataModel;
  friend class AudioSourceTableDataModel;
  friend class AudioBufferTableDataModel;

@@ -46,7 +46,16 @@ private:
  bool allowNull=false;
  bool providing = false;
  QString userInput;
- PropertyChangeListener* managerListener = nullptr;
  QSet<NamedBean*> excludedItems;
+ PropertyChangeListener* managerListener = nullptr;
+
+ private slots:
+ void PropertyChange(PropertyChangeEvent* evt)
+ {
+  if(evt->getPropertyName() == "bean")
+  {
+
+  }
+ }
 };
 #endif // NAMEDBEANCOMBOBOX_H

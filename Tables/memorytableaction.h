@@ -19,8 +19,8 @@ public:
     Q_INVOKABLE/*public*/ MemoryTableAction(QString actionName, QObject* parent);
     ~MemoryTableAction() {}
     MemoryTableAction(const MemoryTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    Q_INVOKABLE /*public*/ QString getClassDescription();
-    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails() override;
 
 private:
     void common();
@@ -39,13 +39,13 @@ private:
     void handleCreateException(QString sysNameField);
 
 protected:
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
-    /*protected*/ QString getClassName();
+    /*protected*/ void createModel() override;
+    /*protected*/ void setTitle() override;
+    /*protected*/ QString helpTarget() override;
+    /*protected*/ QString getClassName() override;
 
 protected slots:
-    /*protected*/ void addPressed(JActionEvent* /*e*/);
+    /*protected*/ void addPressed() override;
     void cancelPressed(JActionEvent* e = 0);
     void okPressed(JActionEvent* e = 0);
 

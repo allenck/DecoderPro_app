@@ -253,14 +253,14 @@ QVariant NamedBean::getProperty(QString /*key*/)
  */
 //@CheckReturnValue
 /*public*/ /*default*/ int NamedBean::compareTo(/*@Nonnull*/ NamedBean* n2) {
-    AlphanumComparator ac = AlphanumComparator();
+    AlphanumComparator* ac = new AlphanumComparator();
     QString o1 = this->getSystemName();
     QString o2 = n2->getSystemName();
 
     int p1len = Manager::getSystemPrefixLength(o1);
     int p2len = Manager::getSystemPrefixLength(o2);
 
-    int comp = ac.compare(o1.mid(0, p1len), o2.mid(0, p2len));
+    int comp = ac->compare(o1.mid(0, p1len), o2.mid(0, p2len));
     if (comp != 0) return comp;
 
     QChar c1 = o1.at(p1len);

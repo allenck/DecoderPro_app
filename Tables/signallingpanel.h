@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "logger.h"
 #include <QLabel>
-#include <QCheckBox>
+#include "jcheckbox.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QRadioButton>
@@ -13,7 +13,11 @@
 #include <QItemDelegate>
 #include "libtables_global.h"
 #include "tabledelegates.h"
+#include "jframe.h"
+#include "jmripanel.h"
+#include "namedbeancombobox.h"
 
+class SignalMastLogic;
 class SignalMast;
 class NamedBeanHandleManager;
 class JmriBeanComboBox;
@@ -35,7 +39,7 @@ class AutoSignalMastList;
 class ManualSensorList;
 class Block;
 class PropertyChangeEvent;
-class LIBTABLESSHARED_EXPORT SignallingPanel : public QWidget
+class LIBTABLESSHARED_EXPORT SignallingPanel : public JmriPanel
 {
     Q_OBJECT
   public:
@@ -43,8 +47,8 @@ class LIBTABLESSHARED_EXPORT SignallingPanel : public QWidget
 
 public:
     //explicit SignallingPanel(QWidget *parent = 0);
-    /*public*/ SignallingPanel(QFrame* frame, QWidget* parent = 0);
-    /*public*/ SignallingPanel(SignalMast* source, SignalMast* dest, QFrame* frame, QWidget* parent = 0);
+    /*public*/ SignallingPanel(JFrame *frame, QWidget* parent = 0);
+    /*public*/ SignallingPanel(SignalMast* source, SignalMast* dest, JFrame* frame, QWidget* parent = 0);
     /*public*/ void dispose();
 
 signals:
@@ -55,43 +59,53 @@ public slots:
     void on_useLayoutEditor_toggled(bool);
     void on_includedButton_toggled(bool);
     void updatePressed(/*ActionEvent e*/);
+    void applyPressed(/*ActionEvent e*/);
+    void cancelPressed(/*ActionEvent e*/);
 
 private:
     Logger* log;
-    JmriBeanComboBox* sourceMastBox;
-    JmriBeanComboBox* destMastBox;
+    NamedBeanComboBox* sourceMastBox;
+    NamedBeanComboBox* destMastBox;
     QLabel* fixedSourceMastLabel;// = new QLabel();
     QLabel* fixedDestMastLabel;// = new QLabel();
     QLabel* sourceMastLabel;// = new JLabel(tr("Source Mast"));
     QLabel* destMastLabel;// = new JLabel(tr("Dest Mast"));
     QPushButton* updateButton;// = new JButton(tr("Update Logic"));
-    QCheckBox* useLayoutEditor;// = new JCheckBox(tr("UseLayoutEditorPaths"));
-    QCheckBox* useLayoutEditorTurnout;// = new JCheckBox(tr("UseTurnoutDetails"));
-    QCheckBox* useLayoutEditorBlock;// = new JCheckBox(tr("UseBlockDetails"));
-    QCheckBox* allowAutoMastGeneration;// = new JCheckBox(tr("AllowAutomaticSignalMast"));
-    QCheckBox* lockTurnouts;// = new JCheckBox(tr("LockTurnouts"));
+    JCheckBox* useLayoutEditor;// = new JCheckBox(tr("UseLayoutEditorPaths"));
+    JCheckBox* useLayoutEditorTurnout;// = new JCheckBox(tr("UseTurnoutDetails"));
+    JCheckBox* useLayoutEditorBlock;// = new JCheckBox(tr("UseBlockDetails"));
+    JCheckBox* allowAutoMastGeneration;// = new JCheckBox(tr("AllowAutomaticSignalMast"));
+    JCheckBox* lockTurnouts;// = new JCheckBox(tr("LockTurnouts"));
+//    /*private*/ static /*final*/ JButton* sizer;// = new JButton("Sizer");  // NOI18N
 
 
     SignalMast* sourceMast;
     SignalMast* destMast;
-    SignalMastLogic* sml;
-
-    SignalMastManager* smm;// = InstanceManager.signalMastManagerInstance();
+    /*private*/ SignalMastLogic* sml = nullptr;
 
     NamedBeanHandleManager* nbhm;// = InstanceManager.getDefault("NamedBeanHandleManager");
 
-    QFrame* jFrame;
+    JFrame* jFrame;
     void init();
-    void common(SignalMast* source, SignalMast* dest, QFrame* frame);
+    void common(SignalMast* source, SignalMast* dest, JFrame* frame);
+    /*private*/ bool destOK = true; // false indicates destMast and sourceMast are identical
+    int blockModeFromBox(JComboBox/*<String>*/* box);
+    void setBlockModeBox(int mode, JComboBox/*<String>*/* box);
 
-    QScrollArea* _manualBlockScrollPane;
-    QScrollArea* _autoBlockScrollPane;
-    QScrollArea* _manualTurnoutScrollPane;
-    QScrollArea* _manualSignalMastScrollPane;
-    QScrollArea* _autoSignalMastScrollPane;
-    QScrollArea* _autoTurnoutScrollPane;
-
-    QScrollArea* _manualSensorScrollPane;
+    //QScrollArea* _manualBlockScrollPane;
+    JTable* manualBlockTable=nullptr;
+    //QScrollArea* _autoBlockScrollPane;
+    JTable* manualSensorTable = nullptr;
+    //QScrollArea* _manualTurnoutScrollPane;
+    JTable* manualTurnoutTable = nullptr;
+    //QScrollArea* _manualSignalMastScrollPane;
+    JTable* manualSignalMastTable= nullptr;
+    //QScrollArea* _autoSignalMastScrollPane;
+    JTable* autoSignalMastTable = nullptr;
+    //QScrollArea* _autoTurnoutScrollPane;
+    JTable* autoTurnoutTable = nullptr;
+    //QScrollArea* _manualSensorScrollPane;
+    JTable* autoBlockTable = nullptr;
 
     QWidget* p2xc;// = NULL;
     QWidget* p2xt;// = NULL;
@@ -148,6 +162,7 @@ private:
     /*private*/ QList <ManualSignalMastList*> _includedManualSignalMastList;
 
     void editDetails();
+    void setAssociatedSection(SignalMast* destMast);
 
     friend class ManualBlockList;
     friend class BlockModel;
@@ -162,14 +177,15 @@ friend class SensorModel;
 friend class AutoMastModel;
 friend class SignalMastModel;
 friend class SignalMastComboBoxDelegate;
+friend class SPTableModel;
 };
 
 /*private*/ /*abstract*/ class SignalMastElement : public QObject
 {
  Q_OBJECT
 public:
-    SignalMastElement(SignallingPanel* self);
-    SignalMastElement(QString sysName, QString userName, SignallingPanel* self);
+    SignalMastElement(SignallingPanel* signallingPanel);
+    SignalMastElement(QString sysName, QString userName, SignallingPanel* signallingPanel);
     QString getSysName() ;
     QString getUserName();
     QString getDisplayName();
@@ -185,7 +201,7 @@ public:
     bool _included;
     int _setToState;
 private:
-    SignallingPanel* self;
+    SignallingPanel* signallingPanel;
     friend class ManualBlockList;
     friend class ManualTurnoutList;
     friend class ManualSensorList;
@@ -195,7 +211,7 @@ private:
 {
  Q_OBJECT
 public:
-    ManualBlockList(Block* block, SignallingPanel* self);
+    ManualBlockList(Block* block, SignallingPanel* signallingPanel);
     QString getSysName() ;
      QString getUserName() ;
      bool getPermissiveWorking();
@@ -215,17 +231,18 @@ private:
     void setSetToState(QString state);
 };
 
-/*abstract*/ class SPTableModel : public  AbstractTableModel //implements PropertyChangeListener
+/*abstract*/ class SPTableModel : public  AbstractTableModel,  public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
-    SPTableModel(SignallingPanel* self);
+    SPTableModel(SignallingPanel* signallingPanel);
     //QVariant data(const QModelIndex &index, int role) const;
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    int columnCount(const QModelIndex &parent) const;
-    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    int columnCount(const QModelIndex &parent) const override;
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ void dispose();
-
+    QObject* self() override {return (QObject*)this;}
     enum COLUMNS
     {
         SNAME_COLUMN = 0,
@@ -236,12 +253,12 @@ private:
         PERMISSIVE_COLUMN = 5
 
     };
-    void fireTableDataChanged();
+    void fireTableDataChanged()override;
 public slots:
-    /*public*/ virtual void propertyChange(PropertyChangeEvent* e);
+    /*public*/ virtual void propertyChange(PropertyChangeEvent* e) override;
 
 private:
-    SignallingPanel* self;
+    SignallingPanel* signallingPanel;
     friend class BlockModel;
     friend class TurnoutModel;
     friend class SensorModel;
@@ -252,15 +269,16 @@ class BlockModel : public  SPTableModel
 {
     Q_OBJECT
 public:
-     BlockModel(SignallingPanel* self);
-     int rowCount(const QModelIndex &parent) const;
-     int columnCount(const QModelIndex &parent) const;
-     QVariant data(const QModelIndex &index, int role) const;
-     bool setData(const QModelIndex &index, const QVariant &value, int role);
-     virtual /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+     BlockModel(SignallingPanel* signallingPanel);
+     int rowCount(const QModelIndex &parent) const override;
+     int columnCount(const QModelIndex &parent) const override;
+     QVariant data(const QModelIndex &index, int role) const override;
+     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+     /*public*/ QString getColumnClass(int c) const override;
+     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 //     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 public slots:
-     void propertyChange(PropertyChangeEvent *e);
+     void propertyChange(PropertyChangeEvent *e)override;
  private:
 };
 
@@ -268,7 +286,7 @@ public slots:
 {
     Q_OBJECT
  public:
-    AutoTableModel(SignallingPanel* self);
+    AutoTableModel(SignallingPanel* signallingPanel);
     /*public*/ void smlValid();
 //        /*public*/ Class<?> getColumnClass(int c);
     /*public*/ void dispose();
@@ -286,7 +304,7 @@ public slots:
     void propertyChange(PropertyChangeEvent*);
 
  private:
-    SignallingPanel* self;
+    SignallingPanel* signallingPanel;
     friend class AutoBlockModel;
     friend class AutoTurnoutModel;
     friend class AutoMastModel;
@@ -304,7 +322,7 @@ class AutoBlockModel : public AutoTableModel
     };
     /*public*/ int columnCount(const QModelIndex &parent) const;
     virtual /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    ///*public*/ Class<?> getColumnClass(int c) ;
+    /*public*/ QString getColumnClass(int c);
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;

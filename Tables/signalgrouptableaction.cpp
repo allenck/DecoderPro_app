@@ -276,7 +276,7 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
             }
             /*public*/ void run() {
                     //Thread.yield();
-                    _act->addPressed(NULL);
+                    _act->addPressed();
                     _act->_systemName->setText(_model->data(_model->index(row, SYSNAMECOL),Qt::DisplayRole).toString());
                     _act->editPressed(NULL); // don't really want to stop SignalGroup w/o user action
                 }
@@ -393,8 +393,8 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
     box->setCurrentIndex(box->findText(result));
 }
 
-
-/*protected*/ void SignalGroupTableAction::addPressed(ActionEvent* /*e*/)
+//@Override
+/*protected*/ void SignalGroupTableAction::addPressed(/*ActionEvent* e*/)
 {
     /*if (editMode) {
         cancelEdit();

@@ -550,7 +550,8 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
  * GUI are displayed when the selected type is
  * changed.
  */
-/*protected*/ void SignalHeadTableAction::addPressed(ActionEvent* /*e*/)
+//@Override
+/*protected*/ void SignalHeadTableAction::addPressed(/*ActionEvent* e*/)
 {
  if (addFrame==nullptr)
  {

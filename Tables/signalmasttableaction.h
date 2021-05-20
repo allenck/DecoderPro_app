@@ -27,13 +27,13 @@ private:
     AddSignalMastJFrame* addFrame;// = null;
 
  protected:
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
-    /*protected*/ QString getClassName();
+    /*protected*/ void createModel() override;
+    /*protected*/ void setTitle() override;
+    /*protected*/ QString helpTarget() override;
+    /*protected*/ QString getClassName() override;
 
 protected slots:
-    /*protected*/ void addPressed(JActionEvent* e = 0);
+    /*protected*/ void addPressed(/*JActionEvent* e = 0*/) override;
     void On_repeatersTriggered();
 
 };

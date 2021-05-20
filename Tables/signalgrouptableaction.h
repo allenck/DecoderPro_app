@@ -163,13 +163,13 @@ private:
 private slots:
 
 protected:
-    /*protected*/ void createModel();
-    /*protected*/ QString getClassName();
- /*protected*/ void setTitle() ;
- /*protected*/ QString helpTarget();
+    /*protected*/ void createModel() override;
+    /*protected*/ QString getClassName() override;
+ /*protected*/ void setTitle()  override;
+ /*protected*/ QString helpTarget() override;
  /*protected*/ /*BeanTableFrame*/ JmriJFrame* f;
 protected slots:
- /*protected*/ void addPressed(ActionEvent* e = 0);
+ /*protected*/ void addPressed(/*ActionEvent* e = 0*/) override;
 
  friend class SGBeanTableDataModel;
  friend class ATSignalMastAppearanceModel;

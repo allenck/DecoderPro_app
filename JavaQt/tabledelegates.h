@@ -328,7 +328,7 @@ public:
      //widget = new JComboBox(values);
      widget = new QLineEdit();
      QVariant var = index.model()->data(index, Qt::DisplayRole);
-     if(var.canConvert<int>())
+     if(isInt)
       widget->setText(values.at(var.toInt()));
      else
       widget->setText(var.toString());

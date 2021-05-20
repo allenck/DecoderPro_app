@@ -75,7 +75,8 @@ void SMTBeanTableFrame::extras() {
     connect(addButton, SIGNAL(clicked()), act, SLOT(addPressed()));
 }
 
-/*protected*/ void SignalMastTableAction::addPressed(JActionEvent* /*e*/) {
+//@Override
+/*protected*/ void SignalMastTableAction::addPressed(/*JActionEvent* *e*/) {
     if (addFrame == NULL) {
         addFrame = new AddSignalMastJFrame();
     } else {

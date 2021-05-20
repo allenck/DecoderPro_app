@@ -178,7 +178,7 @@ void AudioTableAction::common()
 }
 
 //@Override
-/*protected*/ void AudioTableAction::addPressed(ActionEvent* /*e*/)
+/*protected*/ void AudioTableAction::addPressed(/*ActionEvent* e*/)
 {
  log->warn("This should not have happened");
 }
@@ -469,19 +469,19 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
  return BeanTableDataModel::headerData(section, orientation, role);
 }
 
-//    //@Override
-//    /*public*/ Class<?> getColumnClass(int col) {
-//        switch (col) {
-//            case VALUECOL:
-//                return String.class;
-//            case EDITCOL:
-//                return QPushButton.class;
-//            case DELETECOL:
-//                return (subType != Audio::LISTENER) ? QPushButton.class : String.class;
-//            default:
-//                return super.getColumnClass(col);
-//        }
-//    }
+//@Override
+/*public*/ QString AudioTableDataModel::getColumnClass(int col) const {
+    switch (col) {
+        case VALUECOL:
+            return "String";
+        case EDITCOL:
+            return "JButton";
+        case DELETECOL:
+            return (subType != Audio::LISTENER) ? "JButton" : "String";
+        default:
+            return BeanTableDataModel::getColumnClass(col);
+    }
+}
 
 //@Override
 /*public*/ QString AudioTableDataModel::getValue(QString systemName)  const
@@ -536,7 +536,8 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
    case EDITCOL:
     a = (Audio*)getBySystemName(sysNameList.at(row));
     act->editAudio(a);
-    break;
+    fireTableRowsUpdated(row, row);
+    return true;
    default:
     break;
   }

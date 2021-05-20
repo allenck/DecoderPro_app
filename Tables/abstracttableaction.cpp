@@ -288,9 +288,9 @@ void ATABeanTableFrame::extras()
  */
 /*protected*/ void AbstractTableAction::configureManagerComboBox(ManagerComboBox/*<E>*/* comboBox, Manager/*<E>*/* manager,
         /*Class<? extends Manager<E>>*/QString managerClass) {
-    Manager/*<E>*/* defaultManager = (Manager*)InstanceManager::getDefault(managerClass);
+    AbstractManager/*<E>*/* defaultManager = (AbstractManager*)InstanceManager::getDefault(managerClass);
     // populate comboBox
-    if(qobject_cast<ProxyManager*>(defaultManager->self())) {
+    if(qobject_cast<ProxyManager*>(defaultManager)) {
         comboBox->setManagers(defaultManager);
     } else {
         comboBox->setManagers(manager);

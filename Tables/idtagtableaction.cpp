@@ -7,7 +7,7 @@
 #include "jtextfield.h"
 #include <QCheckBox>
 #include "reporter.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "abstracttabletabaction.h"
 #include <QBoxLayout>
 #include "addnewdevicepanel.h"
@@ -286,7 +286,7 @@ void IdTagBeanTableDataModel::configureTable(JTable *table)
 
 
 //@Override
-/*protected*/ void IdTagTableAction::addPressed(ActionEvent* /*e*/) {
+/*protected*/ void IdTagTableAction::addPressed(/*ActionEvent* e*/) {
     if (addFrame == NULL) {
         addFrame = new JmriJFrameX(tr("Add Id Tag"), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.IdTagAddEdit", true);
@@ -350,13 +350,10 @@ void CancelListener::actionPerformed()
 }
 
 void IdTagTableAction::handleCreateException(QString sysName) {
-//    javax.swing.JOptionPane.showMessageDialog(addFrame,
-//            java.text.MessageFormat.format(
-//                    tr("ErrorIdTagAddFailed"),
-//                    new Object[]{sysName}),
-//            tr("ErrorTitle"),
-//            javax.swing.JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(addFrame, tr("Error"), tr("Could not create ID tag \"%1\" to add it. Check that number/name is OK."));
+    JOptionPane::showMessageDialog(addFrame,
+            tr("Could not create ID tag \"%1\" to add it. Check that number/name is OK.").arg(sysName),
+            tr("Error"),
+            JOptionPane::ERROR_MESSAGE);
 }
 
 //@Override

@@ -35,14 +35,14 @@ private slots:
 
 
 protected:
-    /*protected*/ void createModel();
-    /*protected*/ QString getClassName();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
+    /*protected*/ void createModel() override;
+    /*protected*/ QString getClassName() override;
+    /*protected*/ void setTitle() override;
+    /*protected*/ QString helpTarget() override;
     /*protected*/ IdTagManager* tagManager = (IdTagManager*)InstanceManager::getDefault("IdTagManager");
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e);
+    /*protected*/ void addPressed() override;
 
  friend class IdTagBeanTableDataModel;
  friend class StateStoredActionListener;

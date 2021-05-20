@@ -286,6 +286,8 @@ int AbstractTableModel::columnCount(const QModelIndex &parent) const
 // beginInsertRows(QModelIndex(), firstRow, lastRow);
 // endInsertRows();
  //setPersistentButtons();
+ int cols = columnCount(QModelIndex());
+ emit dataChanged(index(firstRow, 0), index(lastRow, cols-1));
 }
 
 /**

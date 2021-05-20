@@ -368,8 +368,8 @@ QString AbstractNamedBean::getDisplayName()
  */
 //@CheckReturnValue
 /*public*/ int AbstractNamedBean::compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* /*n*/) {
-    AlphanumComparator ac = AlphanumComparator();
-    return ac.compare(suffix1, suffix2);
+    AlphanumComparator* ac = new AlphanumComparator();
+    return ac->compare(suffix1, suffix2);
 }
 
 /*private*/ /*static*/ Logger* AbstractNamedBean::log = LoggerFactory::getLogger("AbstractNamedBean");

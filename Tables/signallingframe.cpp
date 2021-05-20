@@ -23,22 +23,25 @@
 
 /*public*/ void SignallingFrame::initComponents(SignalMast* source, SignalMast* dest) throw (Exception)
 {
+ setFrameRef(getClassName());
     // the following code sets the frame's initial state
-    sigPanel = new SignallingPanel(source, dest, (QFrame*)this);
+    sigPanel = new SignallingPanel(source, dest, this);
 
-    setWindowTitle(tr("Signalling Pairs"));
-    QWidget* centralWidget = new QWidget();
-    centralWidget->setLayout(new QVBoxLayout());
-    setCentralWidget(centralWidget);
+    setTitle(tr("Signalling Pairs"));
+//    QWidget* centralWidget = new QWidget();
+//    centralWidget->setObjectName("centralWidget");
+//    centralWidget->setLayout(new QVBoxLayout());
+//    setCentralWidget(centralWidget);
     //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-    centralWidget->layout()->addWidget(sigPanel);
+    //centralWidget->layout()->addWidget(sigPanel);
 
     addHelpMenu("package.jmri.jmrit.signalling.AddEditSignallingLogic", true);
 
     resize(600, 800);
     // pack for display
     pack();
+    setVisible(true);
 }
 
 /*public*/ QString SignallingFrame::getClassName()

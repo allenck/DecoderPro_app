@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include "addnewbeanpanel.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include <QBoxLayout>
 #include "userpreferencesmanager.h"
 
@@ -175,16 +175,15 @@ MtBeanTableDataModel::MtBeanTableDataModel(MemoryTableAction* mt)
 /*protected*/ QString MemoryTableAction::helpTarget() {
 return "package.jmri.jmrit.beantable.MemoryTable";
 }
-#if 1
 
-
-/*protected*/ void MemoryTableAction::addPressed(JActionEvent * /*e*/) {
+//@Override
+/*protected*/ void MemoryTableAction::addPressed(/*JActionEvent * e*/) {
     p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if (addFrame == NULL) {
         addFrame = new JmriJFrameX(tr("Add Memory"), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.MemoryAddEdit", true);
         addFrame->getContentPane()->setLayout(new QVBoxLayout(addFrame->getContentPane()));//, BoxLayout.Y_AXIS));
-
+        addFrame->setFrameRef(addFrame->getClassName());
 //        ActionListener okListener = new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                okPressed(e);
@@ -195,7 +194,7 @@ return "package.jmri.jmrit.beantable.MemoryTable";
 //            /*public*/ void actionPerformed(ActionEvent e) { cancelPressed(e); }
 //        };
   MtCancelListener* cancelListener = new MtCancelListener(this);
-  addFrame->layout()->addWidget(new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, "ButtonCreate", okListener, cancelListener, statusBarLabel));
+  addFrame->layout()->addWidget(new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, tr("Create"), okListener, cancelListener, statusBarLabel));
  }
  sysNameField->setBackground(Qt::white);
  // reset status bar text
@@ -224,7 +223,6 @@ void MtCancelListener::actionPerformed()
  act->cancelPressed();
 }
 
-
 void MemoryTableAction::cancelPressed(JActionEvent * /*e*/) {
     addFrame->setVisible(false);
     addFrame->dispose();
@@ -250,10 +248,9 @@ void MemoryTableAction::okPressed(JActionEvent* /*e*/) {
 
     if (numberOfMemory >= 65)
     {
-//        if (JOptionPane.showConfirmDialog(addFrame,
-//                "You are about to add " + numberOfMemory + " Memory Objects into the configuration\nAre you sure?", "Warning",
-//                JOptionPane.YES_NO_OPTION) == 1) {
-        if(QMessageBox::warning(addFrame, tr("Warning"), tr("You are about to add %1 Memory Objects into the configuration\nAre you sure?").arg(numberOfMemory),QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+        if (JOptionPane::showConfirmDialog(addFrame,
+                tr("You are about to add %1 Memory Objects into the configuration\nAre you sure?").arg(numberOfMemory), tr("Warning"),
+                JOptionPane::YES_NO_OPTION) == 1)
         {
             return;
         }
@@ -305,23 +302,23 @@ void MemoryTableAction::okPressed(JActionEvent* /*e*/) {
 //private bool noWarn = false;
 
 void MemoryTableAction::handleCreateException(QString sysName) {
-//    javax.swing.JOptionPane.showMessageDialog(addFrame,
-//            java.text.MessageFormat.format(
-//                    tr("ErrorMemoryAddFailed"),
-//                    new Object[]{sysName}),
-//            tr("ErrorTitle"),
-//            javax.swing.JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(addFrame, tr("Error"), tr("Could not create memory %1 to add it. Check that number/name is OK.").arg(sysName));
+    JOptionPane::showMessageDialog(addFrame,
+            tr("Could not create memory %1 to add it. Check that number/name is OK.").arg(sysName),
+            tr("Error"),
+            JOptionPane::ERROR_MESSAGE);
 }
 
+//@Override
 /*public*/ QString MemoryTableAction::getClassDescription() {
     return tr("Memory Table");
 }
-#endif
+
+//@Override
 /*protected*/ QString MemoryTableAction::getClassName() {
     return "jmri.jmrit.beantable.MemoryTableAction";
 }
 
+//@Override
 /*public*/ void MemoryTableAction::setMessagePreferencesDetails()
 {
  AbstractTableAction::setMessagePreferencesDetails();

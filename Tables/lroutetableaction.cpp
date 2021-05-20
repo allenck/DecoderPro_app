@@ -1154,7 +1154,7 @@ void LRouteTableAction::makeEditWindow()
 
     // add buttons - Add Route button
     QWidget* pb = new QWidget();
-    pb->setLayout(new QHBoxLayout());
+    pb->setLayout(new FlowLayout());
     pb->layout()->addWidget(createButton);
 //    createButton.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {

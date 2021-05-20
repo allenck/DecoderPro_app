@@ -55,9 +55,9 @@ public:
     /*public*/ AbstractAction* getEscapeKeyAction();
     /*public*/ void setEscapeKeyClosesWindow(bool closesWindow);
     /*public*/ bool getEscapeKeyClosesWindow();
-    bool eventFilter(QObject *target, QEvent *event);
-    /*public*/ void componentMoved(QMoveEvent* e);
-    /*public*/ void componentResized(QResizeEvent* e);
+    bool eventFilter(QObject *target, QEvent *event)override;
+    /*public*/ void componentMoved(QMoveEvent* e)override;
+    /*public*/ void componentResized(QResizeEvent* e)override;
     /*public*/ void setSavePosition(bool save);
     /*public*/ void setSaveSize(bool save);
     /*public*/ bool getSavePosition();

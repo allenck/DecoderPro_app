@@ -16,7 +16,7 @@ public:
     Q_INVOKABLE /*public*/ SignalMastLogicTableAction(QString s, QObject* parent);
     ~SignalMastLogicTableAction() {}
     SignalMastLogicTableAction(const SignalMastLogicTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*public*/ void setMenuBar(BeanTableFrame* f);
+    /*public*/ void setMenuBar(BeanTableFrame* f) override;
 
 public slots:
 
@@ -34,10 +34,10 @@ private slots:
     void autoCreatePairs(/*jmri.util.JmriJFrame f*/);
 
    protected:
-    /*protected*/ QString getClassName();
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget() ;
+    /*protected*/ QString getClassName() override;
+    /*protected*/ void createModel() override;
+    /*protected*/ void setTitle() override;
+    /*protected*/ QString helpTarget() override ;
 
     protected slots:
     /*protected*/ void addPressed(/*JActionEvent *e = 0*/)override;
