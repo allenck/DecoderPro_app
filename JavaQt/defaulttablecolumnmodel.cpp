@@ -5,6 +5,8 @@
 #include "defaultlistselectionmodel.h"
 #include "tablecolumnmodelevent.h"
 #include "tablecolumnmodellistener.h"
+#include <QHeaderView>
+#include "jtable.h"
 
 //DefaultTableColumnModel::DefaultTableColumnModel(QObject *parent) :
 //  TableColumnModel(parent)
@@ -47,6 +49,12 @@ QObject((QObject*)parent)
  setColumnMargin(1);
  invalidateWidthCache();
  setColumnSelectionAllowed(false);
+
+// connect(parent->getTableHeader(), &QHeaderView::sectionResized, [=](int logicalIndex, int oldSize, int newSize)
+// {
+//  TableColumn* col = getColumn(logicalIndex);
+//  col->setWidth(newSize);
+// });
 }
 
 //
@@ -662,7 +670,7 @@ QObject((QObject*)parent)
   // This is a misnomer, we're using this method
   // simply to cause a relayout.
   fireColumnMarginChanged();
-  emit firePropertyChange(evt);
+  //emit firePropertyChange(evt);
  }
 }
 #if 0

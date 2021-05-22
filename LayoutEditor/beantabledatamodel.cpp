@@ -611,17 +611,17 @@ void BeanTableDataModel::doDelete(NamedBean*  bean)
 //    // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
 //    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
- // resize columns as requested
- for (int i=0; i<table->horizontalHeader()->count(); i++)
- {
-  int width = getPreferredWidth(i);
-  //table.getColumnModel().getColumn(i).setPreferredWidth(width);
-  table->setColumnWidth(i,width);
+
+ XTableColumnModel* columnModel = (XTableColumnModel*) table->getColumnModel();
+ for (int i = 0; i < columnModel->getColumnCount(false); i++) {
+
+     // resize columns as requested
+     int width = getPreferredWidth(i);
+     columnModel->getColumnByModelIndex(i)->setPreferredWidth(width);
+
  }
- //table.sizeColumnsToFit(-1);
+ //table->sizeColumnsToFit(-1);
  //table->resizeColumnsToContents();
- table->resizeRowsToContents();
- //table->setRowHeight(0, QPushButton().sizeHint().height());
 
  configValueColumn(table);
  configDeleteColumn(table);

@@ -33,7 +33,8 @@ private:
     JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
     JCheckBox* rangeBox = new JCheckBox(tr("Add Range Box"));
     JCheckBox* autoSystemNameBox = new JCheckBox(tr("Auto Sys Name"));
-    JLabel* statusBarLabel = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);UserPreferencesManager* p;
+    JLabel* statusBarLabel = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
+    UserPreferencesManager* p = nullptr;
     QString systemNameAuto;// = this.getClass().getName() + ".AutoSystemName";
     Logger* log;
     void handleCreateException(QString sysNameField);

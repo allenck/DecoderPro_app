@@ -177,13 +177,14 @@ return "package.jmri.jmrit.beantable.MemoryTable";
 }
 
 //@Override
-/*protected*/ void MemoryTableAction::addPressed(/*JActionEvent * e*/) {
-    p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-    if (addFrame == NULL) {
-        addFrame = new JmriJFrameX(tr("Add Memory"), false, true);
-        addFrame->addHelpMenu("package.jmri.jmrit.beantable.MemoryAddEdit", true);
-        addFrame->getContentPane()->setLayout(new QVBoxLayout(addFrame->getContentPane()));//, BoxLayout.Y_AXIS));
-        addFrame->setFrameRef(addFrame->getClassName());
+/*protected*/ void MemoryTableAction::addPressed(/*JActionEvent * e*/)
+{
+ p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ if (addFrame == NULL) {
+  addFrame = new JmriJFrameX(tr("Add Memory"), false, true);
+  addFrame->addHelpMenu("package.jmri.jmrit.beantable.MemoryAddEdit", true);
+  addFrame->getContentPane()->setLayout(new QVBoxLayout(addFrame->getContentPane()));//, BoxLayout.Y_AXIS));
+  addFrame->setFrameRef(getClassName() + ":AddMemory");
 //        ActionListener okListener = new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
 //                okPressed(e);
@@ -194,13 +195,26 @@ return "package.jmri.jmrit.beantable.MemoryTable";
 //            /*public*/ void actionPerformed(ActionEvent e) { cancelPressed(e); }
 //        };
   MtCancelListener* cancelListener = new MtCancelListener(this);
-  addFrame->layout()->addWidget(new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, tr("Create"), okListener, cancelListener, statusBarLabel));
+  AddNewBeanPanel* anbp;
+  autoSystemNameBox = new JCheckBox(tr("Auto Sys Name"));
+  rangeBox = new JCheckBox(tr("Add Range Box"));
+  sysNameField = new JTextField(5);
+  numberToAddSpinner = new JSpinner(rangeSpinner);
+  userNameField = new JTextField(5);
+  statusBarLabel = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
+  addFrame->layout()->addWidget(anbp = new AddNewBeanPanel(sysNameField, userNameField, numberToAddSpinner, rangeBox, autoSystemNameBox, tr("Create"), okListener, cancelListener, statusBarLabel));
+  //addFrame.getRootPane().setDefaultButton(anbp.ok);
+  anbp->ok->setDefault(true);
+  addFrame->setEscapeKeyClosesWindow(true);
+  QString msg = tr("<html>Enter System Name for this new item, e.g. X%1").arg("M") +tr("12<br>where X = the prefix for your connection<br>and %1 = is the letter for the item type.</html>").arg("M");
+  sysNameField->setToolTip(msg); // override tooltip with bean specific letter
  }
  sysNameField->setBackground(Qt::white);
  // reset status bar text
  statusBarLabel->setText(tr("Enter a System Name and (optional) User Name."));
- statusBarLabel->setForeground(Qt::gray);if (p->getSimplePreferenceState(systemNameAuto)) {
-     autoSystemNameBox->setChecked(true);
+ statusBarLabel->setForeground(Qt::gray);if (p->getSimplePreferenceState(systemNameAuto))
+ {
+  autoSystemNameBox->setChecked(true);
  }
  addFrame->pack();
  addFrame->setVisible(true);

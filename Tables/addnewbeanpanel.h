@@ -38,6 +38,7 @@ protected:
  JButton* ok;
 
  friend class BlockTableAction;
+ friend class MemoryTableAction;
 };
 
 #endif // ADDNEWBEANPANEL_H

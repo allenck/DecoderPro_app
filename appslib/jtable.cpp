@@ -9706,8 +9706,9 @@ void JTable::firePropertyChange(QString propertyName, QVariant oldValue, QVarian
  TableColumn* tc = tm->getColumn(col);
  if(tc == nullptr)
   return;
+ tc->setWidth(newWidth);
  tc->firePropertyChange("preferredWidth", oldWidth, newWidth);
- emit propertyChange(new PropertyChangeEvent(tc, "preferredWidth", oldWidth, newWidth));
+ //emit propertyChange(new PropertyChangeEvent(tc, "preferredWidth", oldWidth, newWidth));
 }
 
 /*private*/ void JTable::sectionClicked(int logicalindex) // SLOT

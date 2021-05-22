@@ -36,78 +36,78 @@
  userNameLabel = new QLabel(tr("User Name"));
  finishLabel = new QLabel(tr("Number To Add"));
 
-     sysName = sys;
-     //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-     QVBoxLayout* thisLayout = new QVBoxLayout(this);
-     _endRange = endRange;
-     _range = addRange;
-     _autoSys = autoSystem;
+ sysName = sys;
+ QVBoxLayout* thisLayout;
+ setLayout(thisLayout = new QVBoxLayout());//this, BoxLayout.Y_AXIS));
+ _endRange = endRange;
+ _range = addRange;
+ _autoSys = autoSystem;
 
-     QWidget* p;
-     p = new QWidget();
-     //p.setLayout(new FlowLayout());
-     QGridLayout* g;
-     p->setLayout(g = new QGridLayout());
-     GridBagConstraints c =  GridBagConstraints();
-     c.gridwidth = 1;
-     c.gridheight = 1;
-     c.gridx = 0;
-     c.gridy = 0;
-     c.anchor = GridBagConstraints::EAST;
-     c.gridx = 0;
-     c.gridy = 1;
-     g->addWidget(sysNameLabel, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
-     c.gridy = 2;
-     g->addWidget(userNameLabel, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
-     c.gridx = 2;
-     c.gridy = 1;
-     c.anchor = GridBagConstraints::WEST;
-     c.weightx = 1.0;
-     c.fill = GridBagConstraints::HORIZONTAL;  // text field will expand
-     c.gridy = 0;
-     g->addWidget(autoSystem, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
-     c.gridx = 3;
-     g->addWidget(addRange, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
-     c.gridx = 2;
-     c.gridy = 1;
-     g->addWidget(sys, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
-     c.gridx = 3;
-     g->addWidget(finishLabel, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
-     c.gridx = 4;
-     g->addWidget(endRange, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
-     c.gridx = 2;
-     c.gridy = 2;
-     g->addWidget(userName, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
-     thisLayout->addWidget(p);
+ QWidget* p;
+ p = new QWidget();
+ //p.setLayout(new FlowLayout());
+ QGridLayout* g;
+ p->setLayout(g = new QGridLayout());
+ GridBagConstraints c =  GridBagConstraints();
+ c.gridwidth = 1;
+ c.gridheight = 1;
+ c.gridx = 0;
+ c.gridy = 0;
+ c.anchor = GridBagConstraints::EAST;
+ c.gridx = 0;
+ c.gridy = 1;
+ g->addWidget(sysNameLabel, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
+ c.gridy = 2;
+ g->addWidget(userNameLabel, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
+ c.gridx = 2;
+ c.gridy = 1;
+ c.anchor = GridBagConstraints::WEST;
+ c.weightx = 1.0;
+ c.fill = GridBagConstraints::HORIZONTAL;  // text field will expand
+ c.gridy = 0;
+ g->addWidget(autoSystem, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
+ c.gridx = 3;
+ g->addWidget(addRange, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
+ c.gridx = 2;
+ c.gridy = 1;
+ g->addWidget(sys, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
+ c.gridx = 3;
+ g->addWidget(finishLabel, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
+ c.gridx = 4;
+ g->addWidget(endRange, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
+ c.gridx = 2;
+ c.gridy = 2;
+ g->addWidget(userName, c.gridy,c.gridx, c.rowSpan(), c.colSpan());
+ thisLayout->addWidget(p);
 
-     finishLabel->setEnabled(false);
-     _endRange->setEnabled(false);
+ finishLabel->setEnabled(false);
+ _endRange->setEnabled(false);
 
-     // add status bar above buttons
-     JPanel* panelStatus = new JPanel();
-     panelStatus->setLayout(new FlowLayout());
-     //statusBar.setFont(statusBar.getFont().deriveFont(0.9f * sysNameLabel.getFont().getSize())); // a bit smaller
-     QFont f = sysNameLabel->font();
-     float ps = f.pointSizeF();
-     QFont f2 = statusBar->font();
-     f2.setPointSizeF(.9 * ps);
-     statusBar->setFont(f2);
-     statusBar->setForeground(Qt::gray);
-     panelStatus->layout()->addWidget(statusBar);
-     thisLayout-> addWidget(panelStatus);// cancel + add buttons at bottom of window
+ // add status bar above buttons
+ JPanel* panelStatus = new JPanel();
+ panelStatus->setLayout(new FlowLayout());
+ //statusBar.setFont(statusBar.getFont().deriveFont(0.9f * sysNameLabel.getFont().getSize())); // a bit smaller
+ QFont f = sysNameLabel->font();
+ float ps = f.pointSizeF();
+ QFont f2 = statusBar->font();
+ f2.setPointSizeF(.9 * ps);
+ statusBar->setFont(f2);
+ statusBar->setForeground(Qt::gray);
+ panelStatus->layout()->addWidget(statusBar);
+ thisLayout-> addWidget(panelStatus);// cancel + add buttons at bottom of window
 
-     QWidget* panelBottom = new QWidget();
-     panelBottom->setLayout(new FlowLayout(/*FlowLayout::TRAILING*/));
-     JButton* cancel;
-     panelBottom->layout()->addWidget(cancel = new JButton(tr("Cancel")));
-     //cancel.addActionListener(cancelListener);
-     connect(cancel, SIGNAL(clicked()), cancelListener, SLOT(actionPerformed()));
+ QWidget* panelBottom = new QWidget();
+ panelBottom->setLayout(new FlowLayout(/*FlowLayout::TRAILING*/));
+ JButton* cancel;
+ panelBottom->layout()->addWidget(cancel = new JButton(tr("Cancel")));
+ //cancel.addActionListener(cancelListener);
+ connect(cancel, SIGNAL(clicked()), cancelListener, SLOT(actionPerformed()));
 
-     panelBottom->layout()->addWidget(ok = new JButton(addButtonLabel));
-     //ok.addActionListener(okListener);
-     connect(ok, SIGNAL(clicked(bool)), listener, SLOT(actionPerformed()));
+ panelBottom->layout()->addWidget(ok = new JButton(addButtonLabel));
+ //ok.addActionListener(okListener);
+ connect(ok, SIGNAL(clicked(bool)), listener, SLOT(actionPerformed()));
 
-     layout()->addWidget(panelBottom);
+ layout()->addWidget(panelBottom);
 
 
 //     addRange.addItemListener(
@@ -116,7 +116,7 @@
 //                     rangeState();
 //                 }
 //             });
-     connect(addRange, SIGNAL(clicked()), this, SLOT(rangeState()));
+ connect(addRange, SIGNAL(clicked()), this, SLOT(rangeState()));
 
 //     sysName.addKeyListener(new KeyAdapter() {
 //         /*public*/ void keyReleased(KeyEvent a) {
@@ -135,7 +135,7 @@
 //                     autoSystemName();
 //                 }
 //             });
-     connect(autoSystem, SIGNAL(clicked()), this, SLOT(autoSystemName()));
+ connect(autoSystem, SIGNAL(clicked()), this, SLOT(autoSystemName()));
 }
  /*private*/ void AddNewBeanPanel::autoSystemName() {
      if (_autoSys->isChecked()) {
