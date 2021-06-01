@@ -139,7 +139,7 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
     // native Manager interfaces
 
     QStringList nameList = QStringList();
-    for (QObject* obj : _manager->getNamedBeanSet()) {
+    for (NamedBean* obj : _manager->getNamedBeanSet()) {
         nameList.append(((NamedBean*)obj)->getSystemName());
         if(!itemMap.contains(((NamedBean*)obj)->getSystemName()))
             itemMap.insert(((NamedBean*)obj)->getSystemName(), false);

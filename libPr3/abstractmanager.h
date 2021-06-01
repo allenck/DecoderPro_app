@@ -29,7 +29,7 @@ class PropertyChangeEvent;
 class LIBPR3SHARED_EXPORT AbstractManager : public VetoableChangeSupport, public  Manager, public VetoableChangeListener, public PropertyChangeListener
 {
     Q_OBJECT
-  Q_INTERFACES(Manager VetoableChangeListener PropertyChangeListener)
+    Q_INTERFACES(Manager VetoableChangeListener PropertyChangeListener)
 public:
     AbstractManager(QObject *parent = 0);
     AbstractManager(SystemConnectionMemo* memo, QObject *parent = 0);
@@ -41,7 +41,7 @@ public:
      QStringList getSystemNameArray() override;
      QStringList getSystemNameList() override;
     QStringList getUserNameList();
-    QHash<QString, NamedBean*>* getSystemNameHash();
+    QMap<QString, NamedBean *> *getSystemNameHash();
     /**
      * Locate an instance based on a system name.  Returns NULL if no
      * instance already exists.
@@ -192,7 +192,7 @@ protected:
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QObject* getInstanceBySystemName(QString systemName);
+NamedBean *getInstanceBySystemName(QString systemName);
 /**
  * Locate an instance based on a user name.  Returns NULL if no
  * instance already exists. This is intended to be used by
@@ -201,17 +201,17 @@ QObject* getInstanceBySystemName(QString systemName);
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QT_DEPRECATED QObject* getInstanceByUserName(QString userName);
+QT_DEPRECATED NamedBean* getInstanceByUserName(QString userName);
 
-/*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const;
+/*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const override;
 
 //void firePropertyChange(QString p, QVariant old, QVariant n) const;
 //void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const;
 
 /*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) throw (PropertyVetoException)override;
 /*protected*/ void handleUserNameUniqueness(NamedBean* s) const;
-/*protected Hashtable*/mutable QHash<QString, NamedBean*>* _tsys; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by system name
-/*protected Hashtable*/mutable QHash<QString, NamedBean*>* _tuser; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by user name
+/*protected Hashtable*/mutable QMap<QString, NamedBean*>* _tsys; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by system name
+/*protected Hashtable*/mutable QMap<QString, NamedBean*>* _tuser; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by user name
 /*protected*/ /*final*/ QMap<QString, bool> silencedProperties = QMap<QString, bool>();
 /*protected*/ /*final*/ QSet<QString> silenceableProperties = QSet<QString>();
 /*protected*/ QString getIncrement(QString curAddress, int increment) throw (JmriException);
@@ -225,6 +225,8 @@ protected slots:
  friend class SGBeanTableDataModel;
  friend class SensorTableDataModel;
  friend class InternalSensorManager;
+ friend class LightTableDataModel;
+
 };
 
 #endif // ABSTRACTMANAGER_H

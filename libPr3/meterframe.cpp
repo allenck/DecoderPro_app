@@ -15,6 +15,7 @@
 #include <QString>
 #include <QChar>
 #include "abstractmetermanager.h"
+#include "proxymetermanager.h"
 
 /**
  * Frame providing a simple LCD-based display of track voltage.
@@ -38,7 +39,8 @@
 //        this(UUID.randomUUID());
 //    }
 
-    /*public*/ MeterFrame::MeterFrame(QUuid uuid, QWidget *parent) : JmriJFrame(tr("Voltage Meter"),parent){
+    /*public*/ MeterFrame::MeterFrame(QUuid uuid, QWidget *parent)
+     : JmriJFrame(tr("Voltage Meter"),parent){
         //super(Bundle.valueMessage("VoltageMeterTitle"));
         Unit::values->insert(Unit::Percent,  Unit(Unit::Percent));    // Not a unit, but here anyway
         Unit::values->insert(Unit::MicroVolt, Unit(Unit::MicroVolt));
@@ -72,8 +74,10 @@
 
 
         this->uuid = uuid;
+        voltageMeters = QList<Meter*>();
+        currentMeters = QList<Meter*>();
 
-        MeterManager* mm = (MeterManager*)InstanceManager::getNullableDefault("MeterManager");
+        /*MeterManager**/ mm = (MeterManager*)InstanceManager::getNullableDefault("MeterManager");
         if (mm == nullptr) throw RuntimeException("No meter manager exists");
 
         addAllMeters();
@@ -118,14 +122,14 @@
 
         if (meter != nullptr) {
             meter->disable();
-            ((DefaultMeter*)meter->self())->removePropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
+            ((AbstractNamedBean*)meter->self())->removePropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
         }
 
         meter = m;
 
         if (meter == nullptr) return;
 
-        ((DefaultMeter*)meter->self())->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
+        ((AbstractNamedBean*)meter->self())->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
         ((DefaultMeter*)meter->self())->enable();
 
         if (frameIsInitialized) {
@@ -142,18 +146,19 @@
         }
 
         if (qobject_cast<VoltageMeter*>(meter->self())) {
-            setTitle(tr("Voltage Meter - %1").arg(((DefaultMeter*)meter)->getDisplayName()));
+            setTitle(tr("Voltage Meter - %1").arg(((AbstractNamedBean*)meter)->getDisplayName()));
         } else {
-            setTitle(tr("Current Meter - %1").arg(((DefaultMeter*)meter)->getDisplayName()));
+            setTitle(tr("Current Meter - %1").arg(((AbstractNamedBean*)meter)->getDisplayName()));
         }
     }
+
     /*public*/ /*static*/ QMap<MeterFrame::Unit::UNITS, MeterFrame::Unit>* MeterFrame::Unit::values = new QMap<MeterFrame::Unit::UNITS, MeterFrame::Unit>();
     /*public*/ /*static*/ QMap<MeterFrame::Unit::UNITS, double>* MeterFrame::Unit::factors = new QMap<MeterFrame::Unit::UNITS, double>();
     /*public*/ /*static*/ QMap<MeterFrame::Unit::UNITS, QString>* MeterFrame::Unit::names = new QMap<MeterFrame::Unit::UNITS, QString>();
 
     //@Override
     /*public*/ void MeterFrame::initComponents() {
-        MeterManager* mm = ((MeterManager*)InstanceManager::getNullableDefault("MeterManager"));
+//        MeterManager* mm = ((MeterManager*)InstanceManager::getNullableDefault("MeterManager"));
         if (mm == nullptr) {
             return;
         }
@@ -164,7 +169,7 @@
         voltageMetersMenu = new QMenu(tr("Voltage Meters"));
         menuBar->addMenu(voltageMetersMenu);
         for (Meter* m : voltageMeters) {
-            QAction* item = new SelectMeterAction(((DefaultMeter*)m)->getDisplayName(), m, this);
+            QAction* item = new SelectMeterAction(((AbstractNamedBean*)m)->getDisplayName(), m, this);
             item->setCheckable(true);
             voltageMetersMenu->addAction(item);
             meter_MenuItemMap.insert(m, item);
@@ -173,7 +178,7 @@
         currentMetersMenu = new QMenu(tr("Current Meters"));
         menuBar->addMenu(currentMetersMenu);
         for (Meter* m : currentMeters) {
-            QAction* item = new SelectMeterAction(((DefaultMeter*)m)->getDisplayName(), m, this);
+            QAction* item = new SelectMeterAction(((AbstractNamedBean*)m)->getDisplayName(), m, this);
             item->setCheckable(true);
             currentMetersMenu->addAction(item);
             meter_MenuItemMap.insert(m, item);
@@ -325,7 +330,7 @@
             update();
         //};
         if (meter != nullptr) {
-            ((DefaultMeter*)meter)->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
+            ((AbstractNamedBean*)meter)->addPropertyChangeListener(NamedBean::PROPERTY_STATE, propertyChangeListener);
         }
 #if 0 // TODO:
         // Add component listener to handle frame resizing event
@@ -560,7 +565,7 @@
     /*public*/ void MeterFrame::dispose() {
         if (meter != nullptr) {
             ((DefaultMeter*)meter)->disable();
-            ((DefaultMeter*)meter)->removePropertyChangeListener(propertyChangeListener);
+            ((AbstractNamedBean*)meter)->removePropertyChangeListener(propertyChangeListener);
         }
         MeterFrameManager::getInstance()->deregister(this);
         JmriJFrame::dispose();
@@ -635,28 +640,30 @@
      * updates the list of available meters
      */
     /*private*/ void MeterFrame::addAllMeters() {
-        MeterManager* mm = (MeterManager*)InstanceManager::getNullableDefault("MeterManager");
+//        /*MeterManager**/ mm = (MeterManager*)InstanceManager::getNullableDefault("MeterManager");
         if (mm == nullptr) {
             return;
         }
         log->debug(tr("attempting to add all meters.  There are %1 meters to add.").arg(
                 mm->getNamedBeanSet().size()));
         //mm->getNamedBeanSet().forEach((m) ->
-        foreach(NamedBean* bean, mm->getNamedBeanSet())
+        for(NamedBean* bean : mm->getNamedBeanSet())
         {
-         DefaultMeter* m = (DefaultMeter*)bean;
-         if ((m != nullptr) && (qobject_cast<VoltageMeter*>(m->self()))) {
+         DefaultMeter* m = qobject_cast<DefaultMeter*>(bean);
+         QString n = bean->getDisplayName();
+         if ((m != nullptr) && (qobject_cast<VoltageMeter*>(m))) {
              if (voltageMeters.contains(m)) {
-                 log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)m)->getDisplayName()));
+                 log->trace(tr("meter %1 is already present").arg(n));
              } else {
                  voltageMeters.append(m);
-                 log->debug(tr("Added voltage meter %1").arg(((DefaultMeter*)m)->getSystemName()));
+                 log->trace(tr("Added voltage meter %1").arg(n));
              }
-         } else if ((m != nullptr) && (qobject_cast<CurrentMeter*>(m->self()))) {
+         } else if ((m != nullptr) && (qobject_cast<CurrentMeter*>(m))) {
              if (currentMeters.contains(m)) {
-                 log->debug(tr("meter %1 is already present").arg(((DefaultMeter*)m)->getDisplayName()));
+                 log->trace(tr("meter %1 is already present").arg(n));
              } else {
                  currentMeters.append(m);
+              log->trace(tr("Added current meter '%1'").arg(n));
              }
          }
         }//);
@@ -668,6 +675,7 @@
         if ((menuBar != nullptr) && (currentMetersMenu != nullptr)) {
             updateCurrentMeters(currentMetersMenu);
         }
+
     }
 
     /**
@@ -676,25 +684,25 @@
      */
     /*private*/ void MeterFrame::updateVoltageMeters(QMenu* voltageMetersMenu) {
         for (Meter* m : voltageMeters) {
-            log->debug(tr("Need to add a new checkbox for voltmeter %1?").arg(((DefaultMeter*)meter)->getDisplayName()));
+            log->debug(tr("Need to add a new checkbox for voltmeter %1?").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
             bool found = false;
 
             if (voltageMetersMenu->actions().count() > 0) {
                 for (int i =0; (i < voltageMetersMenu->actions().count()) && (!found);++i) {
                     QAction* jim = voltageMetersMenu->actions().at(i);
                     if (qobject_cast<QAction*>(jim)) {
-                        if (jim->text().compare(((DefaultMeter*)meter)->getDisplayName()) == 0 ) {
-                            log->debug(tr("item %1 is already in voltageMetersMenu").arg(((DefaultMeter*)meter)->getDisplayName()));
+                        if (jim->text().compare(((AbstractNamedBean*)meter)->getDisplayName()) == 0 ) {
+                            log->debug(tr("item %1 is already in voltageMetersMenu").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
                             found = true;
                         } else {
-                            log->debug(tr("item %1 is not already in voltageMetersMenu").arg(((DefaultMeter*)meter)->getDisplayName()));
+                            log->debug(tr("item %1 is not already in voltageMetersMenu").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
                         }
                     }
                 }
             }
             if (!found) {
-                log->debug(tr("Adding item %1 to voltageMetersMenu").arg(((DefaultMeter*)meter)->getDisplayName()));
-                QAction* item = new QAction(new SelectMeterAction(((DefaultMeter*)meter)->getDisplayName(), m, this));
+                log->debug(tr("Adding item %1 to voltageMetersMenu").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
+                QAction* item = new QAction(new SelectMeterAction(((AbstractNamedBean*)meter->self())->getDisplayName(), m, this));
                 item->setCheckable(true);
                 voltageMetersMenu->addAction(item);
                 meter_MenuItemMap.insert(m, item);
@@ -709,25 +717,25 @@
      */
     /*private*/ void MeterFrame::updateCurrentMeters(QMenu* currentMetersMenu) {
         for (Meter* m : currentMeters) {
-            log->debug(tr("need to add a new checkbox for ammeter %1?").arg(((DefaultMeter*)meter)->getDisplayName()));
+            log->debug(tr("need to add a new checkbox for ammeter %1?").arg(((AbstractNamedBean*)meter)->getDisplayName()));
             bool found = false;
 
             if (currentMetersMenu->actions().count() > 0) {
                 for (int i =0; (i < currentMetersMenu->actions().count()) && (!found);++i) {
                     QAction* jim = currentMetersMenu->actions().at(i);
                     if (qobject_cast<QAction*>(jim)) {
-                        if (jim->text().compare(((DefaultMeter*)meter)->getDisplayName()) == 0 ) {
-                            log->debug(tr("item %1 is already in currentMetersMenu").arg(((DefaultMeter*)meter)->getDisplayName()));
+                        if (jim->text().compare(((AbstractNamedBean*)meter->self())->getDisplayName()) == 0 ) {
+                            log->debug(tr("item %1 is already in currentMetersMenu").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
                             found = true;
                         } else {
-                            log->debug(tr("item %1 is not already in currentMetersMenu").arg(((DefaultMeter*)meter)->getDisplayName()));
+                            log->debug(tr("item %1 is not already in currentMetersMenu").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
                         }
                     }
                 }
             }
             if (!found) {
-                log->debug(tr("Adding item %1 to currentMetersMenu").arg(((DefaultMeter*)meter)->getDisplayName()));
-                QAction* item = new QAction(new SelectMeterAction(((DefaultMeter*)meter)->getDisplayName(), m,this));
+                log->debug(tr("Adding item %1 to currentMetersMenu").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
+                QAction* item = new QAction(new SelectMeterAction(((AbstractNamedBean*)meter->self())->getDisplayName(), m,this));
                 currentMetersMenu->addAction(item);
                 meter_MenuItemMap.insert(m, item);
             }

@@ -355,7 +355,7 @@
             return;
         }
     }
-    if (qobject_cast<SignalHead*>(nb)) {
+    if (static_cast<SignalHead*>(nb)) {
         if (nb->equals(getSignalHead(LevelXing::POINTA))) {
             setSignalAName("");
             return;

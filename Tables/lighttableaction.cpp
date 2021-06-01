@@ -572,7 +572,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         //panel3->setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
         QWidget* panel31 = new QWidget();
         QGridLayout* panel31Layout = new QGridLayout(panel31);
-        lightControlTableModel = new LightControlTableModel(this);
+//        lightControlTableModel = new LightControlTableModel(this);
         JTable* lightControlTable = new JTable(lightControlTableModel);
 //        lightControlTable->setRowSelectionAllowed(false);
 //        lightControlTable->setPreferredScrollableViewportSize(new java.awt.Dimension(550, 100));
@@ -1962,7 +1962,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
     lightControlTableModel->fireTableDataChanged();
     lightControlChanged = true;
 }
-
+#if 0
 /**
  * Table model for Light Controls in the Add/Edit Light window
  */
@@ -2120,6 +2120,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
     }
       return false;
 }
+#endif
 /*public*/ QString LightTableAction::getClassDescription() {
     return tr("Light Table");
 }

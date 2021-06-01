@@ -127,8 +127,8 @@ public:
     /*public*/ void addNXSourcePoint(NamedBean* source, LayoutEditor* panel);
     /*public*/ QObject* getEndPointLocation(NamedBean* source, LayoutEditor* panel);
     /*public*/ int getXMLOrder() const override;
-    /*public*/ DestinationPoints *getBySystemName(QString systemName) const;
-    /*public*/ DestinationPoints* getByUserName(QString systemName) const ;
+    /*public*/ NamedBean *getBySystemName(QString systemName) const;
+    /*public*/ NamedBean* getByUserName(QString systemName) const ;
 //    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
 //    /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
     /*public*/ NamedBean* getNamedBean(QString name) const override;
@@ -155,22 +155,22 @@ public:
     /*public*/ QList<LayoutEditor*> getSourcePanelList();
     /*public*/ void addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel);
     /*public*/ void addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel, QString id);
-    /*public*/ QObjectList* getDestinationList(QObject* obj, LayoutEditor* panel);
+    /*public*/ QObjectList* getDestinationList(NamedBean *obj, LayoutEditor* panel);
     /*public*/ void removeNXSensor(Sensor* sensor);
     /*public*/ bool deleteNxPair(NamedBean* sensor);
     /*public*/ bool deleteNxPair(NamedBean* source, NamedBean* exitSensor, LayoutEditor* panel);
-    /*public*/ bool isDestinationValid(QObject* source, QObject* dest, LayoutEditor* panel);
-    /*public*/ bool isUniDirection(QObject* source, LayoutEditor* panel, QObject* dest);
-    /*public*/ void setUniDirection(QObject* source, LayoutEditor* panel, QObject* dest, bool set);
-    /*public*/ bool canBeBiDirectional(QObject* source, LayoutEditor* panel, QObject* dest);
-    /*public*/ bool isEnabled(QObject* source, LayoutEditor* panel, QObject* dest);
-    /*public*/ void setEnabled(QObject* source, LayoutEditor* panel, QObject* dest, bool set);
-    /*public*/ void setEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest, int set);
-    /*public*/ int getEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest);
-    /*public*/ QString getUniqueId(QObject* source, LayoutEditor* panel, QObject* dest);
+    /*public*/ bool isDestinationValid(NamedBean *source, NamedBean* dest, LayoutEditor* panel);
+    /*public*/ bool isUniDirection(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
+    /*public*/ void setUniDirection(NamedBean *source, LayoutEditor* panel, NamedBean *dest, bool set);
+    /*public*/ bool canBeBiDirectional(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
+    /*public*/ bool isEnabled(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
+    /*public*/ void setEnabled(NamedBean *source, LayoutEditor* panel, NamedBean *dest, bool set);
+    /*public*/ void setEntryExitType(NamedBean *source, LayoutEditor* panel, NamedBean *dest, int set);
+    /*public*/ int getEntryExitType(NamedBean* source, LayoutEditor* panel, NamedBean* dest);
+    /*public*/ QString getUniqueId(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
     /*public*/ QStringList getEntryExitList();
-    /*public*/ bool isPathActive(QObject* sourceObj, QObject* destObj, LayoutEditor* panel);
-    /*public*/ void cancelInterlock(QObject* source, LayoutEditor* panel, QObject* dest);
+    /*public*/ bool isPathActive(NamedBean* sourceObj, NamedBean* destObj, LayoutEditor* panel);
+    /*public*/ void cancelInterlock(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
 
     /*public*/ /*final*/ static int CANCELROUTE;// = 0;
     /*public*/ /*final*/ static int CLEARROUTE;// = 1;
@@ -179,7 +179,7 @@ public:
     /*/*public*/ static void flashSensor(PointDetails* pd);
     /*public*/ static void stopFlashSensor(PointDetails* pd);
     /*synchronized*/ /*public*/ void setNXButtonState(PointDetails* nxPoint, int state);
-    /*public*/ PointDetails* getPointDetails(QObject* obj, LayoutEditor* panel);
+    /*public*/ PointDetails* getPointDetails(NamedBean *obj, LayoutEditor* panel);
     PointDetails* getPointDetails(LayoutBlock* source, QList<LayoutBlock *> destination, LayoutEditor* panel);
     //No point in have multiple copies of what is the same thing.
     /*public*/ QString getPointAsString(NamedBean* obj, LayoutEditor* panel);

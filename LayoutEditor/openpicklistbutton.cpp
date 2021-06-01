@@ -14,7 +14,7 @@
 // /*public*/ class OpenPickListButton<T extends NamedBean> {
 
 
-    OpenPickListButton::OpenPickListButton(QStringList blurbLines, PickListModel/*<T>*/* model, QWidget* parent) {
+    OpenPickListButton::OpenPickListButton(QStringList blurbLines, PickListModel/*<T>*/* model, QWidget* parent) :NamedBean() {
         _model = model;
         _blurbLines = blurbLines;
         _buttonPanel = makePickListPanel();

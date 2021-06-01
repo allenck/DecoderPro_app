@@ -478,8 +478,8 @@ Maintenance::Maintenance(QObject *parent) :
    l = (Light*)((AbstractLightManager*)lightManager)->getBySystemName(userName.toUpper());
    if (l!=NULL)
    {
-    sysName = ((AbstractLight*)l)->getSystemName();
-    userName = ((AbstractLight*)l)->getUserName();
+    sysName = ((NamedBean*)l)->getSystemName();
+    userName = ((NamedBean*)l)->getUserName();
     found = true;
    }
    else
@@ -496,7 +496,7 @@ Maintenance::Maintenance(QObject *parent) :
  {
 //        return (new String[] {"Light", userName, sysName,
 //                              Integer.toString(l.getNumPropertyChangeListeners())});
-  QStringList list = QStringList() << "Light"<< userName << sysName << QString::number(((AbstractLight*)l)->getNumPropertyChangeListeners());
+  QStringList list = QStringList() << "Light"<< userName << sysName << QString::number(((NamedBean*)l)->getNumPropertyChangeListeners());
   return list;
  }
 

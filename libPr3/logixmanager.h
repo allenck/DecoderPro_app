@@ -61,8 +61,8 @@ public:
          */
         virtual Logix* getLogix(QString /*name*/) {return NULL;}
 
-        virtual Logix* getByUserName(QString /*s*/) const =0;
-        virtual Logix* getBySystemName(QString /*s*/)const =0;
+        virtual NamedBean* getByUserName(QString /*s*/) const =0;
+        virtual NamedBean* getBySystemName(QString /*s*/)const =0;
 
         /**
          * Activate all Logixs that are not currently active

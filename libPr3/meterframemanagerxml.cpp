@@ -4,6 +4,8 @@
 #include "meterframe.h"
 #include "defaultmeter.h"
 #include "instancemanager.h"
+#include "proxymetermanager.h"
+
 /**
  * Stores MeterFrames to the panel file.
  * @author Daniel Bergqvist Copyright (c) 2020
@@ -66,6 +68,7 @@
     /*public*/ bool MeterFrameManagerXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) {
         // Don't create frames if headless
         //if (GraphicsEnvironment.isHeadless()) return true;
+ return true;
 
         QDomNodeList frames = shared.elementsByTagName("meterFrame");
         for(int i=0; i < frames.count(); i++) {
@@ -81,8 +84,8 @@
                 if(meter)
                  log->error(tr("uuid: %1, meter: %2, meter: %3, systemName: %4")
                            .arg(frame->getUUID().toString())
-                           .arg(((DefaultMeter*)meter)->getDisplayName())
-                           .arg(((DefaultMeter*)frame->getMeter())->getSystemName())
+                           .arg(((AbstractNamedBean*)meter)->getDisplayName())
+                           .arg(((DefaultMeter*)frame->getMeter()->self())->getSystemName())
                            .arg(meterSystemName));
             }
             if (meter != nullptr) frame->setMeter(meter);

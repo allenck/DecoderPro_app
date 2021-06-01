@@ -163,7 +163,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->a
     if (r!=NULL) return r;
     return (Block*)getBySystemName(name);
 }
-#if 1
+#if 0
 /*public*/ Block *BlockManager::getBySystemName(QString name) const {
     QString key = name.toUpper();
     return (Block*)_tsys->value(key);

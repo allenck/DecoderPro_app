@@ -181,7 +181,7 @@
             QString aspect = "none";
             if (_nextSignal != nullptr) {
                 signal = _nextSignal->getDisplayName();
-                if (qobject_cast<SignalHead*>(_nextSignal ) ) {
+                if (static_cast<SignalHead*>(_nextSignal ) ) {
                     int appearance = ((SignalHead*) _nextSignal)->getAppearance();
                     aspect = "appearance "+appearance;
                 } else {
@@ -338,7 +338,7 @@
         if (_nextSignal == nullptr) {
             _throttle->setSpeedSetting(speedFactor*SPEED_UNSIGNALLED);
         } else {
-            if (qobject_cast<SignalHead*>(_nextSignal)) {
+            if (static_cast<SignalHead*>(_nextSignal)) {
                 int appearance = ((SignalHead*) _nextSignal)->getAppearance();
                 speed = _speedMap->getAppearanceSpeed(((SignalHead*) _nextSignal)->getAppearanceName(appearance));
                 log->debug(tr("%1 SignalHead %2 shows appearance %3 which maps to speed %4").arg(_trainName).arg(((SignalHead*) _nextSignal)->getDisplayName()).arg(appearance).arg(speed));

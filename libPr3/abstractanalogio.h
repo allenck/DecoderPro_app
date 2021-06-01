@@ -3,9 +3,10 @@
 #include "abstractnamedbean.h"
 #include "analogio.h"
 
-class AbstractAnalogIO : public /*AbstractNamedBean*/ AnalogIO
+class AbstractAnalogIO : public AbstractNamedBean, public AnalogIO
 {
   Q_OBJECT
+  Q_INTERFACES(AnalogIO)
  public:
   AbstractAnalogIO(/*@Nonnull*/ QString systemName, bool commandedValueSetsKnownValue, QObject* parent = nullptr);
   /*public*/ AbstractAnalogIO(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName, bool commandedValueSetsKnownValue, QObject *parent=nullptr);

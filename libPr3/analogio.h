@@ -7,12 +7,13 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2018
  */
-/*public*/ /*interface*/class AnalogIO : public AbstractNamedBean {
-  Q_OBJECT
+/*public*/ /*interface*/class AnalogIO //: public NamedBean
+{
+  //Q_OBJECT
  public:
-    AnalogIO(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
-    AnalogIO(QString systemName, QObject* parent = nullptr) : AbstractNamedBean(systemName, parent) {}
-    AnalogIO(QString systemName, QString userName, QObject* parent = nullptr) : AbstractNamedBean(systemName, userName, parent) {}
+//    AnalogIO(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
+//    AnalogIO(QString systemName, QObject* parent = nullptr) : AbstractNamedBean(systemName, parent) {}
+//    AnalogIO(QString systemName, QString userName, QObject* parent = nullptr) : AbstractNamedBean(systemName, userName, parent) {}
 
     /**
      * Is the value an absolute value or a relative value?
@@ -23,6 +24,7 @@
 
 //        ABSOLUTE(tr("AnalogIO_Absolute")),
 //        RELATIVE(tr("AnalogIO_Relative"));
+   public:
       enum TYPE
       {
        ABSOLUTE,
@@ -146,7 +148,7 @@
      * @return if absolute or relative.
      */
     //@CheckReturnValue
-  virtual /*public*/ AbsoluteOrRelative getAbsoluteOrRelative() =0;
+  virtual /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative() =0;
 
     /**
      * Request an update from the layout soft/hardware. May not even happen, and
@@ -155,5 +157,5 @@
     virtual /*default*/ /*public*/ void requestUpdateFromLayout() {
     }
 };
-
+Q_DECLARE_INTERFACE(AnalogIO, "AnalogIO")
 #endif // ANALOGIO_H

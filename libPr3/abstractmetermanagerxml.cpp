@@ -42,7 +42,7 @@
             }
             // store the meters
             for (NamedBean* nb : memList) {
-             DefaultMeter* m = (DefaultMeter*)nb;
+             DefaultMeter* m = static_cast<DefaultMeter*>(nb);
                 QString mName = m->getSystemName();
                 log->debug(tr("system name is %1").arg(mName));
 
@@ -50,7 +50,7 @@
                 elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(mName)));
 
                 // store common part
-                storeCommon(m, elem);
+                storeCommon(nb, elem);
 
                 log->debug(tr("store Meter %1").arg(mName));
                 meters.appendChild(elem);
@@ -114,7 +114,7 @@
             log->debug(tr("get Meter: (%1)($2)").arg(sysName).arg((userName.isNull() ? "<null>" : userName)));
             Meter* m = (Meter*)mm->getBySystemName(sysName);
             if (m != nullptr) {
-                ((DefaultMeter*)m)->setUserName(userName);
+                ((AbstractNamedBean*)m)->setUserName(userName);
                 // load common parts
                 loadCommon((NamedBean*)m, el);
             } else {

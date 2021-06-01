@@ -56,7 +56,7 @@ private:
     bool isNumber(QString s) const;
     Logger* log;
 protected:
-    /*protected*/ QObject* getInstanceBySystemName(QString systemName);
+    /*protected*/ NamedBean *getInstanceBySystemName(QString systemName);
     /**
      * Internal method to invoke the factory, after all the
      * logic for returning an existing method has been invoked.

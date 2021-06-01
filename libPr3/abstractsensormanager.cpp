@@ -89,7 +89,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  return s;
 }
 
-/*protected*/ QObject* AbstractSensorManager::getInstanceBySystemName(QString systemName)
+/*protected*/ NamedBean* AbstractSensorManager::getInstanceBySystemName(QString systemName)
 {
  return getBySystemName(systemName);
 }
@@ -255,7 +255,7 @@ bool AbstractSensorManager::isNumber(QString s) const
   return;
  sensorDebounceGoingActive=timer;
  //Enumeration<QString> en = _tsys.keys();
- QHashIterator<QString, NamedBean*> en(*_tsys);
+ QMapIterator<QString, NamedBean*> en(*_tsys);
  //QMapIterator<QString, Sensor*> en(sensorMap);
  while (en.hasNext())
  {
@@ -274,7 +274,7 @@ bool AbstractSensorManager::isNumber(QString s) const
   return;
  sensorDebounceGoingInActive=timer;
  //Enumeration<String> en = _tsys.keys();
- QHashIterator<QString, NamedBean*> en(*_tsys);
+ QMapIterator<QString, NamedBean*> en(*_tsys);
  //QMapIterator<QString, Sensor*> en(sensorMap);
  while (en.hasNext())
   {

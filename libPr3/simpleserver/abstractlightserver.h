@@ -60,8 +60,8 @@ public slots:
             } catch (IOException ie) {
                 asl->log->debug("Error Sending Status");
                 // if we get an error, de-register
-//                light.removePropertyChangeListener(this);
-                disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                light->removePropertyChangeListener(this);
+                //disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
                 asl->removeLightFromList(name);
             }
         }

@@ -767,7 +767,7 @@ ThrottleRamp* Engineer::getRamp() {
 
 /*private*/ void Engineer::runWarrant(ThrottleSetting* ts) {
     NamedBean* bean = ts->getNamedBeanHandle()->getBean();
-    if (!(qobject_cast<Warrant*>(bean))) {
+    if (!(static_cast<Warrant*>(bean))) {
         log->error(tr("runWarrant: %1 not a warrant!").arg(bean->getDisplayName()));
         return;
     }
@@ -1094,7 +1094,7 @@ ThrottleRamp* Engineer::getRamp() {
                                 while (idx < _engineer->_commands->size()) {
                                     ThrottleSetting* ts = _engineer->_commands->value(idx);
                                     NamedBean* bean = ts->getNamedBeanHandle()->getBean();
-                                    if (qobject_cast<OBlock*>(bean)) {
+                                    if (static_cast<OBlock*>(bean)) {
                                         OBlock* blk = (OBlock*)bean;
                                         if (_endBlockIdx < _engineer->_warrant->getIndexOfBlock(blk, _endBlockIdx)) {
                                             // script is past end point, command should be NOOP

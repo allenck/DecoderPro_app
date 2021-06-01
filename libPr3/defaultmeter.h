@@ -24,11 +24,12 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
   /*public*/ double getMin();
   /*public*/ double getMax();
   /*public*/ double getResolution();
-  /*public*/ AbsoluteOrRelative getAbsoluteOrRelative();
-  QObject* self() {return (QObject*)this;}
+  /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative();
+  //QObject* self() {return (QObject*)this;}
   /*public*/ void dispose();
   /*public*/ void requestUpdateFromLayout();
   QString getSystemName() const {return AbstractNamedBean::getSystemName();}
+
  private:
   static Logger* log;
   /*@Nonnull*/ /*private*/ /*final*/ MeterUpdateTask* _updateTask;
@@ -50,7 +51,7 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
 /*public*/ /*static*/ class DefaultVoltageMeter : public DefaultMeter, public VoltageMeter
 {
   Q_OBJECT
-  Q_INTERFACES(VoltageMeter)
+  //Q_INTERFACES(VoltageMeter)
  public:
     /*public*/ DefaultVoltageMeter(/*@Nonnull*/ QString sys, Unit unit, double min, double max, double resolution, MeterUpdateTask* updateTask)
    : DefaultMeter(sys, unit, min, max, resolution, updateTask){

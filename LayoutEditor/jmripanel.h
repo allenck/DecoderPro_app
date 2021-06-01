@@ -16,7 +16,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT JmriPanel : public JPanel
     Q_OBJECT
 public:
     explicit JmriPanel(QWidget *parent = nullptr);
- virtual ~JmriPanel() {}
+    virtual ~JmriPanel() {}
     /*public*/ virtual QString getHelpTarget();
     /*public*/ virtual QString getTitle() ;
     /*public*/ virtual bool isMultipleInstances();

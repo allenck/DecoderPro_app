@@ -24,7 +24,6 @@
 #include <layoutblockmanager.h>
 #include <layouteditor.h>
 #include <layoutturnout.h>
-#include <light.h>
 #include <lightmanager.h>
 #include <listselectionmodel.h>
 #include <lncommandstationtype.h>
@@ -37,6 +36,7 @@
 #include <lntrafficcontroller.h>
 #include <lnturnout.h>
 #include <lnturnoutmanager.h>
+#include <locoaddress.h>
 #include <loconetinterface.h>
 #include <loconetmessage.h>
 #include <loconetsystemconnectionmemo.h>
@@ -75,7 +75,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1401,6 +1400,7 @@ virtual void dispose();
 virtual void fireVetoableChange(QString  p, QVariant  old, QVariant  n) throw (PropertyVetoException);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
+virtual NamedBean*  getBySystemName(QString  name) const;
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;
@@ -1427,6 +1427,7 @@ virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
 class PythonQtPublicPromoter_LayoutBlockManager : public LayoutBlockManager
 { public:
 inline QString  py_q_getBeanTypeHandled(bool  plural) const { return LayoutBlockManager::getBeanTypeHandled(plural); }
+inline NamedBean*  py_q_getBySystemName(QString  name) const { return LayoutBlockManager::getBySystemName(name); }
 inline QString  py_q_getNamedBeanClass() const { return LayoutBlockManager::getNamedBeanClass(); }
 inline int  py_q_getXMLOrder() const { return LayoutBlockManager::getXMLOrder(); }
 inline char  py_q_typeLetter() const { return LayoutBlockManager::typeLetter(); }
@@ -1443,6 +1444,8 @@ void delete_LayoutBlockManager(LayoutBlockManager* obj) { delete obj; }
    void enableAdvancedRouting(LayoutBlockManager* theWrappedObject, bool  boo);
    QString  getBeanTypeHandled(LayoutBlockManager* theWrappedObject, bool  plural) const;
    QString  py_q_getBeanTypeHandled(LayoutBlockManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_LayoutBlockManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
+   NamedBean*  py_q_getBySystemName(LayoutBlockManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_LayoutBlockManager*)theWrappedObject)->py_q_getBySystemName(name));}
+   NamedBean*  getByUserName(LayoutBlockManager* theWrappedObject, QString  key) const;
    QCompleter*  getCompleter(LayoutBlockManager* theWrappedObject, QString  text, bool  bIncludeUserNames = false);
    NamedBean*  getFacingNamedBean(LayoutBlockManager* theWrappedObject, Block*  facingBlock, Block*  protectedBlock, LayoutEditor*  panel);
    Sensor*  getFacingSensor(LayoutBlockManager* theWrappedObject, Block*  facingBlock, Block*  protectedBlock, LayoutEditor*  panel);
@@ -2026,150 +2029,6 @@ QString  py_get_turnoutName(LayoutTurnout* theWrappedObject){ return theWrappedO
 
 
 
-class PythonQtShell_Light : public Light
-{
-public:
-    PythonQtShell_Light(QObject*  parent = 0):Light(parent),_wrapper(NULL) {}
-    PythonQtShell_Light(QString  sysName, QObject*  parent = 0):Light(sysName, parent),_wrapper(NULL) {}
-    PythonQtShell_Light(QString  sysName, QString  userName, QObject*  parent = 0):Light(sysName, userName, parent),_wrapper(NULL) {}
-
-   ~PythonQtShell_Light();
-
-virtual void activateLight();
-virtual void addPropertyChangeListener(PropertyChangeListener*  l);
-virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  beanRef, const QString  listenerRef);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
-virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void childEvent(QChildEvent*  event);
-virtual void clearLightControls();
-virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
-virtual int  compareTo(NamedBean*  n2);
-virtual void customEvent(QEvent*  event);
-virtual void deactivateLight();
-virtual QString  describeState(int  state);
-virtual void dispose();
-virtual bool  equals(QObject*  obj);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
-virtual QString  getBeanType();
-virtual QString  getComment();
-virtual double  getCurrentIntensity();
-virtual QString  getDisplayName();
-virtual bool  getEnabled();
-virtual QString  getFullyFormattedDisplayName();
-virtual QString  getListenerRef(PropertyChangeListener*  l);
-virtual QList<QString >*  getListenerRefs();
-virtual double  getMaxIntensity();
-virtual double  getMinIntensity();
-virtual int  getNumPropertyChangeListeners();
-virtual QVariant  getProperty(QString  key);
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  name);
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListenersByReference(QString  propertyName);
-virtual QSet<QString >  getPropertyKeys();
-virtual int  getState();
-virtual QString  getSystemName() const;
-virtual double  getTargetIntensity();
-virtual double  getTransitionTime();
-virtual QString  getUserName() const;
-virtual uint  hashCode();
-virtual bool  isIntensityVariable();
-virtual bool  isTransitionAvailable();
-virtual bool  isTransitioning();
-virtual void removeProperty(QString  key);
-virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
-virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual void setComment(QString  comment);
-virtual void setEnabled(bool  arg__1);
-virtual void setMaxIntensity(double  arg__1);
-virtual void setMinIntensity(double  arg__1);
-virtual void setProperty(QString  key, QVariant  value);
-virtual void setState(int  arg__1);
-virtual void setTargetIntensity(double  arg__1);
-virtual void setTransitionTime(double  arg__1);
-virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException) ;
-virtual void timerEvent(QTimerEvent*  event);
-virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
-virtual void vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_Light : public Light
-{ public:
-inline void py_q_activateLight() { Light::activateLight(); }
-inline void py_q_clearLightControls() { Light::clearLightControls(); }
-inline void py_q_deactivateLight() { Light::deactivateLight(); }
-inline double  py_q_getCurrentIntensity() { return Light::getCurrentIntensity(); }
-inline bool  py_q_getEnabled() { return Light::getEnabled(); }
-inline double  py_q_getMaxIntensity() { return Light::getMaxIntensity(); }
-inline double  py_q_getMinIntensity() { return this->getMinIntensity(); }
-inline int  py_q_getState() { return Light::getState(); }
-inline double  py_q_getTargetIntensity() { return Light::getTargetIntensity(); }
-inline double  py_q_getTransitionTime() { return Light::getTransitionTime(); }
-inline bool  py_q_isIntensityVariable() { return Light::isIntensityVariable(); }
-inline bool  py_q_isTransitionAvailable() { return Light::isTransitionAvailable(); }
-inline bool  py_q_isTransitioning() { return Light::isTransitioning(); }
-inline void py_q_setEnabled(bool  arg__1) { Light::setEnabled(arg__1); }
-inline void py_q_setMaxIntensity(double  arg__1) { Light::setMaxIntensity(arg__1); }
-inline void py_q_setMinIntensity(double  arg__1) { Light::setMinIntensity(arg__1); }
-inline void py_q_setState(int  arg__1) { Light::setState(arg__1); }
-inline void py_q_setTargetIntensity(double  arg__1) { Light::setTargetIntensity(arg__1); }
-inline void py_q_setTransitionTime(double  arg__1) { Light::setTransitionTime(arg__1); }
-};
-
-class PythonQtWrapper_Light : public QObject
-{ Q_OBJECT
-public:
-public slots:
-Light* new_Light(QObject*  parent = 0);
-Light* new_Light(QString  sysName, QObject*  parent = 0);
-Light* new_Light(QString  sysName, QString  userName, QObject*  parent = 0);
-void delete_Light(Light* obj) { delete obj; } 
-   void activateLight(Light* theWrappedObject);
-   void py_q_activateLight(Light* theWrappedObject){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_activateLight());}
-   void clearLightControls(Light* theWrappedObject);
-   void py_q_clearLightControls(Light* theWrappedObject){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_clearLightControls());}
-   void deactivateLight(Light* theWrappedObject);
-   void py_q_deactivateLight(Light* theWrappedObject){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_deactivateLight());}
-   double  getCurrentIntensity(Light* theWrappedObject);
-   double  py_q_getCurrentIntensity(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_getCurrentIntensity());}
-   bool  getEnabled(Light* theWrappedObject);
-   bool  py_q_getEnabled(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_getEnabled());}
-   double  getMaxIntensity(Light* theWrappedObject);
-   double  py_q_getMaxIntensity(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_getMaxIntensity());}
-   double  getMinIntensity(Light* theWrappedObject);
-   double  py_q_getMinIntensity(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_getMinIntensity());}
-   int  py_q_getState(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_getState());}
-   double  getTargetIntensity(Light* theWrappedObject);
-   double  py_q_getTargetIntensity(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_getTargetIntensity());}
-   double  getTransitionTime(Light* theWrappedObject);
-   double  py_q_getTransitionTime(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_getTransitionTime());}
-   bool  isIntensityVariable(Light* theWrappedObject);
-   bool  py_q_isIntensityVariable(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_isIntensityVariable());}
-   bool  isTransitionAvailable(Light* theWrappedObject);
-   bool  py_q_isTransitionAvailable(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_isTransitionAvailable());}
-   bool  isTransitioning(Light* theWrappedObject);
-   bool  py_q_isTransitioning(Light* theWrappedObject){  return (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_isTransitioning());}
-   void setEnabled(Light* theWrappedObject, bool  arg__1);
-   void py_q_setEnabled(Light* theWrappedObject, bool  arg__1){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_setEnabled(arg__1));}
-   void setMaxIntensity(Light* theWrappedObject, double  arg__1);
-   void py_q_setMaxIntensity(Light* theWrappedObject, double  arg__1){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_setMaxIntensity(arg__1));}
-   void setMinIntensity(Light* theWrappedObject, double  arg__1);
-   void py_q_setMinIntensity(Light* theWrappedObject, double  arg__1){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_setMinIntensity(arg__1));}
-   void py_q_setState(Light* theWrappedObject, int  arg__1){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_setState(arg__1));}
-   void setTargetIntensity(Light* theWrappedObject, double  arg__1);
-   void py_q_setTargetIntensity(Light* theWrappedObject, double  arg__1){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_setTargetIntensity(arg__1));}
-   void setTransitionTime(Light* theWrappedObject, double  arg__1);
-   void py_q_setTransitionTime(Light* theWrappedObject, double  arg__1){  (((PythonQtPublicPromoter_Light*)theWrappedObject)->py_q_setTransitionTime(arg__1));}
-};
-
-
-
-
-
 class PythonQtShell_LightManager : public LightManager
 {
 public:
@@ -2186,9 +2045,7 @@ virtual void deregister(NamedBean*  s) const;
 virtual void dispose();
 virtual void fireVetoableChange(QString  p, QVariant  old, QVariant  n) throw (PropertyVetoException);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual Light*  getBySystemName(QString  arg__1) const;
-virtual Light*  getByUserName(QString  arg__1) const;
-virtual Light*  getLight(QString  arg__1);
+virtual NamedBean*  getBySystemName(QString  arg__1) const;
 virtual SystemConnectionMemo*  getMemo() const;
 virtual NamedBean*  getNamedBean(QString  name) const;
 virtual QString  getNamedBeanClass() const;
@@ -2201,12 +2058,8 @@ virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix() const;
 virtual int  getXMLOrder() const;
 virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
-virtual Light*  newLight(QString  arg__1, QString  arg__2);
 virtual QString  normalizeSystemName(QString  arg__1);
 virtual void propertyChange(PropertyChangeEvent*  e);
-virtual Light*  provide(QString  name) throw (IllegalArgumentException)
-;
-virtual Light*  provideLight(QString  arg__1);
 virtual void removeDataListener(QObject*  e);
 virtual QObject*  self();
 virtual bool  supportsVariableLights(QString  arg__1);
@@ -2224,15 +2077,9 @@ inline void py_q_activateAllLights() { LightManager::activateAllLights(); }
 inline bool  py_q_allowMultipleAdditions(QString  arg__1) { return LightManager::allowMultipleAdditions(arg__1); }
 inline QString  py_q_convertSystemNameToAlternate(QString  arg__1) { return LightManager::convertSystemNameToAlternate(arg__1); }
 inline void py_q_dispose() { LightManager::dispose(); }
-inline Light*  py_q_getBySystemName(QString  arg__1) const { return this->getBySystemName(arg__1); }
-inline Light*  py_q_getByUserName(QString  arg__1) const { return this->getByUserName(arg__1); }
-inline Light*  py_q_getLight(QString  arg__1) { return LightManager::getLight(arg__1); }
+inline NamedBean*  py_q_getBySystemName(QString  arg__1) const { return this->getBySystemName(arg__1); }
 inline QString  py_q_getNamedBeanClass() const { return LightManager::getNamedBeanClass(); }
-inline Light*  py_q_newLight(QString  arg__1, QString  arg__2) { return this->newLight(arg__1, arg__2); }
 inline QString  py_q_normalizeSystemName(QString  arg__1) { return LightManager::normalizeSystemName(arg__1); }
-inline Light*  py_q_provide(QString  name) throw (IllegalArgumentException)
- { return LightManager::provide(name); }
-inline Light*  py_q_provideLight(QString  arg__1) { return LightManager::provideLight(arg__1); }
 inline QObject*  py_q_self() { return LightManager::self(); }
 inline bool  py_q_supportsVariableLights(QString  arg__1) { return LightManager::supportsVariableLights(arg__1); }
 inline bool  py_q_validSystemNameConfig(QString  arg__1) const { return LightManager::validSystemNameConfig(arg__1); }
@@ -2251,21 +2098,10 @@ void delete_LightManager(LightManager* obj) { delete obj; }
    QString  convertSystemNameToAlternate(LightManager* theWrappedObject, QString  arg__1);
    QString  py_q_convertSystemNameToAlternate(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_convertSystemNameToAlternate(arg__1));}
    void py_q_dispose(LightManager* theWrappedObject){  (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_dispose());}
-   Light*  py_q_getBySystemName(LightManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   Light*  getByUserName(LightManager* theWrappedObject, QString  arg__1) const;
-   Light*  py_q_getByUserName(LightManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
-   Light*  getLight(LightManager* theWrappedObject, QString  arg__1);
-   Light*  py_q_getLight(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getLight(arg__1));}
+   NamedBean*  py_q_getBySystemName(LightManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
+   NamedBean*  getByUserName(LightManager* theWrappedObject, QString  arg__1) const;
    QString  py_q_getNamedBeanClass(LightManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_getNamedBeanClass());}
-   Light*  newLight(LightManager* theWrappedObject, QString  arg__1, QString  arg__2);
-   Light*  py_q_newLight(LightManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_newLight(arg__1, arg__2));}
    QString  py_q_normalizeSystemName(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_normalizeSystemName(arg__1));}
-   Light*  provide(LightManager* theWrappedObject, QString  name) throw (IllegalArgumentException)
-;
-   Light*  py_q_provide(LightManager* theWrappedObject, QString  name) throw (IllegalArgumentException)
-{  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_provide(name));}
-   Light*  provideLight(LightManager* theWrappedObject, QString  arg__1);
-   Light*  py_q_provideLight(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_provideLight(arg__1));}
    QObject*  py_q_self(LightManager* theWrappedObject){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_self());}
    bool  supportsVariableLights(LightManager* theWrappedObject, QString  arg__1);
    bool  py_q_supportsVariableLights(LightManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_LightManager*)theWrappedObject)->py_q_supportsVariableLights(arg__1));}
@@ -2718,7 +2554,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(QObject*  obj);
+virtual bool  equals(NamedBean*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -3128,6 +2964,65 @@ void delete_LnTurnoutManager(LnTurnoutManager* obj) { delete obj; }
    void py_q_dispose(LnTurnoutManager* theWrappedObject){  (((PythonQtPublicPromoter_LnTurnoutManager*)theWrappedObject)->py_q_dispose());}
    QString  py_q_getNamedBeanClass(LnTurnoutManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LnTurnoutManager*)theWrappedObject)->py_q_getNamedBeanClass());}
     QString py_toString(LnTurnoutManager*);
+};
+
+
+
+
+
+class PythonQtShell_LocoAddress : public LocoAddress
+{
+public:
+    PythonQtShell_LocoAddress(QObject*  parent = 0):LocoAddress(parent),_wrapper(NULL) {}
+
+   ~PythonQtShell_LocoAddress();
+
+virtual void childEvent(QChildEvent*  event);
+virtual void customEvent(QEvent*  event);
+virtual bool  equals(QObject*  a);
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual int  getNumber() const;
+virtual LocoAddress::Protocol  getProtocol() const;
+virtual int  hashCode() const;
+virtual void timerEvent(QTimerEvent*  event);
+virtual QString  toString();
+
+  const QMetaObject* metaObject() const;
+  int qt_metacall(QMetaObject::Call call, int id, void** args);
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_LocoAddress : public LocoAddress
+{ public:
+inline bool  py_q_equals(QObject*  a) { return LocoAddress::equals(a); }
+inline int  py_q_getNumber() const { return LocoAddress::getNumber(); }
+inline LocoAddress::Protocol  py_q_getProtocol() const { return LocoAddress::getProtocol(); }
+inline int  py_q_hashCode() const { return LocoAddress::hashCode(); }
+inline QString  py_q_toString() { return LocoAddress::toString(); }
+};
+
+class PythonQtWrapper_LocoAddress : public QObject
+{ Q_OBJECT
+public:
+public slots:
+LocoAddress* new_LocoAddress(QObject*  parent = 0);
+void delete_LocoAddress(LocoAddress* obj) { delete obj; } 
+   bool  equals(LocoAddress* theWrappedObject, QObject*  a);
+   bool  py_q_equals(LocoAddress* theWrappedObject, QObject*  a){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_equals(a));}
+   LocoAddress::Protocol  static_LocoAddress_getByPeopleName(QString  pName);
+   LocoAddress::Protocol  static_LocoAddress_getByShortName(QString  shName);
+   int  getNumber(LocoAddress* theWrappedObject) const;
+   int  py_q_getNumber(LocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_getNumber());}
+   QString  static_LocoAddress_getPeopleName(LocoAddress::Protocol  p);
+   LocoAddress::Protocol  getProtocol(LocoAddress* theWrappedObject) const;
+   LocoAddress::Protocol  py_q_getProtocol(LocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_getProtocol());}
+   QString  static_LocoAddress_getShortName(LocoAddress::Protocol  p);
+   int  hashCode(LocoAddress* theWrappedObject) const;
+   int  py_q_hashCode(LocoAddress* theWrappedObject) const{  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_hashCode());}
+   QString  toString(LocoAddress* theWrappedObject);
+   QString  py_q_toString(LocoAddress* theWrappedObject){  return (((PythonQtPublicPromoter_LocoAddress*)theWrappedObject)->py_q_toString());}
+    QString py_toString(LocoAddress*);
 };
 
 

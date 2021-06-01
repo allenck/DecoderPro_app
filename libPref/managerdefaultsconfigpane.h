@@ -1,8 +1,9 @@
 #ifndef MANAGERDEFAULTSCONFIGPANE_H
 #define MANAGERDEFAULTSCONFIGPANE_H
-#include "preferencespanel.h"
+#include "jmripanel.h"
 #include <QRadioButton>
 #include "libpref_global.h"
+#include "preferencespanel.h"
 
 class Logger;
 class PropertyChangeEvent;
@@ -10,10 +11,10 @@ class SystemConnectionMemo;
 class QVBoxLayout;
 class QGridLayout;
 class QButtonGroup;
-class LIBPREFSHARED_EXPORT ManagerDefaultsConfigPane : public QWidget, public PreferencesPanel
+class LIBPREFSHARED_EXPORT ManagerDefaultsConfigPane : public JmriPanel, public PreferencesPanel
 {
     Q_OBJECT
- Q_INTERFACES(PreferencesPanel)
+    Q_INTERFACES(PreferencesPanel)
 public:
     Q_INVOKABLE explicit ManagerDefaultsConfigPane(QWidget *parent = 0);
     ~ManagerDefaultsConfigPane();

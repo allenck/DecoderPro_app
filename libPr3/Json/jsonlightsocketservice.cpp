@@ -32,8 +32,8 @@
         Light* light = ((ProxyLightManager*)InstanceManager::getDefault("LightManager"))->getLight(name);
         if (light != NULL) {
             LightListener* listener = new LightListener(light, this);
-            //light.addPropertyChangeListener(listener);
-            connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+            light->addPropertyChangeListener(listener);
+            //connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
             this->lights->insert(name, listener);
         }
     }
@@ -50,8 +50,8 @@
     //lights.values().stream().forEach((light) ->
     foreach(LightListener* listener, lights->values())
     {
-        //light.removePropertyChangeListener(light);
-     disconnect(listener->light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//     listener->removePropertyChangeListener(listener);
+     //disconnect(listener->light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     }//);
     lights->clear();
@@ -78,8 +78,8 @@
                 }
             } catch (IOException ex) {
                 // if we get an error, de-register
-                //light.removePropertyChangeListener(this);
-          disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          light->removePropertyChangeListener(this);
+          //disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
                 jlss->lights->remove(this->light->getSystemName());
             }

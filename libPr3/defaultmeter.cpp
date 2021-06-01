@@ -103,15 +103,15 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ AnalogIO::AbsoluteOrRelative DefaultMeter::getAbsoluteOrRelative() {
-//        return (AnalogIO::AbsoluteOrRelative::TYPE)(_unit == Unit::Percent) ? AnalogIO::AbsoluteOrRelative::RELATIVE : AnalogIO::AbsoluteOrRelative::ABSOLUTE;
+    /*public*/ AnalogIO::AbsoluteOrRelative::TYPE DefaultMeter::getAbsoluteOrRelative() {
+        return (AnalogIO::AbsoluteOrRelative::TYPE)(_unit == Unit::Percent) ? AnalogIO::AbsoluteOrRelative::RELATIVE : AnalogIO::AbsoluteOrRelative::ABSOLUTE;
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/ void DefaultMeter::dispose() {
         _updateTask->removeMeter(this);
-        AbstractAnalogIO::dispose();
+        AbstractNamedBean::dispose();
     }
 
     /**

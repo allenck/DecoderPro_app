@@ -67,7 +67,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /**
  * Locate a Light by its system name
  */
-/*public*/ Light* AbstractLightManager::getBySystemName(QString name) const
+/*public*/ NamedBean* AbstractLightManager::getBySystemName(QString name) const
 {
  return (Light*)(_tsys->value(name));
 }
@@ -75,8 +75,8 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /**
  * Locate a Light by its user name
  */
-/*public*/ Light* AbstractLightManager::getByUserName(QString key) const {
-    return dynamic_cast<Light*>(_tuser->value(key));
+/*public*/ NamedBean *AbstractLightManager::getByUserName(QString key) const {
+    return /*dynamic_cast<Light*>*/(_tuser->value(key));
 }
 #endif
 /**
@@ -107,7 +107,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  if (log->isDebugEnabled()) log->debug("newLight:"
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
- if (systemName == NULL)
+ if (systemName.isNull())
  {
   log->error("SystemName cannot be NULL. UserName was "
                                     +( (userName==NULL) ? "NULL" : userName));
@@ -144,10 +144,10 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  if (s == NULL)
  {
   log->error("cannot create new light "+systemName);
-  throw new IllegalArgumentException("cannot create new light "+systemName);
+  throw IllegalArgumentException("cannot create new light "+systemName);
  }
  // save in the maps
- Register(s);
+ Register(static_cast<NamedBean*>(s));
  emit newLightCreated(this, s);
  return s;
 }

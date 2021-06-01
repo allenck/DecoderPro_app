@@ -8,12 +8,12 @@
 #include "exceptions.h"
 #include "propertyvetoexception.h"
 
-class JAVAQTSHARED_EXPORT AbstractNamedBean :  public NamedBean
+class JAVAQTSHARED_EXPORT AbstractNamedBean : /* public QObject,*/ public NamedBean
 {
     Q_OBJECT
-    Q_INTERFACES(NamedBean)
+    //Q_INTERFACES(NamedBean)
 public:
-    explicit AbstractNamedBean(QObject *parent = 0);
+    /*explicit*/ AbstractNamedBean(QObject *parent = 0);
     /**
      * Get associated comment text.
      */
@@ -62,7 +62,7 @@ public:
     PropertyChangeSupport* pcs = nullptr;
     /*public*/ void removeProperty(QString key) override;
     /*public*/ QString describeState(int state) override;
-    Q_INVOKABLE /*public*/ bool equals(QObject* obj) override;
+    Q_INVOKABLE /*public*/ bool equals(NamedBean* obj) override;
     /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
     /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException) override;
     /*public*/ uint hashCode() override { return qHash(mSystemName, qGlobalQHashSeed());}
@@ -81,16 +81,16 @@ public:
      return hashCode();
     }
 
-    // /*public*/ QObject* self() override {return (QObject*)this;}
+//    /*public*/ QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:
 private:
     /*private*/ static Logger* log;// = LoggerFactory::getLogger("AbstractNamedBean");
 
- void common(QString sys, QString user, QObject *parent);
+ void common(QString sys, QString user);
  QString comment;
- QMap<QString, QVariant>* parameters;
+ QMap<QString, QVariant>* parameters = nullptr;
  // implementing classes will typically have a function/listener to get
  // updates from the layout, which will then call
  //		public void firePropertyChange(String propertyName,
@@ -103,7 +103,7 @@ private:
  //PropertyChangeSupport* pcs;
  QHash<PropertyChangeListener*, QString>* _register;
  QHash<PropertyChangeListener*, QString>* listenerRefs;
- QObject* parent;
+ //QObject* parent;
 
 
  protected:

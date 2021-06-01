@@ -484,7 +484,7 @@
     QString blockName = block->getDisplayName();
     if (block->equals(_toBlock)) {
         if (_fromSignal != nullptr) {
-            if (qobject_cast<SignalHead*>(_fromSignal)) {
+            if (static_cast<SignalHead*>(_fromSignal)) {
                 speed = getPermissibleSignalSpeed((SignalHead*) _fromSignal, entrance);
             } else {
                 speed = getPermissibleSignalSpeed((SignalMast*) _fromSignal, entrance);
@@ -492,7 +492,7 @@
         }
     } else if (block->equals(_fromBlock)) {
         if (_toSignal != nullptr) {
-            if (qobject_cast<SignalHead*>(_toSignal)) {
+            if (static_cast<SignalHead*>(_toSignal)) {
                 speed = getPermissibleSignalSpeed((SignalHead*) _toSignal, entrance);
             } else {
                 speed = getPermissibleSignalSpeed((SignalMast*) _toSignal, entrance);

@@ -91,7 +91,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/ void ProxyLightManagerTest::testUpperLower() {
-        Light* t = l->provideLight("" + getNumToTest2());
+        Light* t = l->provideLight(QString::number(getNumToTest2()));
         QString name = t->getSystemName();
         Assert::assertNull(l->getLight(name.toLower()), __FILE__, __LINE__);
     }

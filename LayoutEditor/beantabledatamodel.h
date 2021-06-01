@@ -163,7 +163,7 @@ friend class TTComboBoxDelegate;
 friend class SensorTableDataModel;
 friend class DeleteBeanWorker;
 friend class TurnoutTableAction;
-
+friend class LightTableDataModel;
 };
 
 class DeleteBeanWorker : public QObject//extends SwingWorker<Void, Void>

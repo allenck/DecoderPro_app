@@ -1508,7 +1508,9 @@ void DestinationMast::setBlocks(QHash<Block*, int> blocks){
         QListIterator<Block*> e(blocks.keys());
         while(e.hasNext()){
             Block* blk = e.next();
-            NamedBeanHandle<NamedBean*>* nbh = ( NamedBeanHandle<NamedBean*>*)(NamedBeanHandle<Block*>*) ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(blk->getDisplayName(), blk);
+            NamedBean* nb = static_cast<NamedBean*>(blk);
+            QString bName = nb->getDisplayName();
+            NamedBeanHandle<NamedBean*>* nbh = /*( NamedBeanHandle<NamedBean*>*)(NamedBeanHandle<Block*>*)*/ ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(bName, nb);
             NamedBeanSetting* nbs = new NamedBeanSetting(nbh, blocks.value(blk));
             userSetBlocks.append(nbs);
         }

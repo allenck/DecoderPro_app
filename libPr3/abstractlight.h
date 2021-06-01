@@ -2,11 +2,13 @@
 #define ABSTRACTLIGHT_H
 #include <QList>
 #include "light.h"
+#include "abstractnamedbean.h"
 
 class LightControl;
-class LIBPR3SHARED_EXPORT AbstractLight : public Light
+class LIBPR3SHARED_EXPORT AbstractLight : /*public AbstractNamedBean,*/ public Light
 {
     Q_OBJECT
+    //Q_INTERFACES(Light)
 public:
     //explicit AbstractLight(QObject *parent = 0);
     /*public*/ AbstractLight(QString systemName, QString userName, QObject *parent = 0);
@@ -32,7 +34,10 @@ public:
     /*public*/ void clearLightControls()override;
     /*public*/ void addLightControl(LightControl* c)override;
     /*public*/ QList<LightControl*> getLightControlList()override;
-  /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+
+   /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
+  //QObject* self() override {return this;}
 
 signals:
     void propertyChange(QString propertyName, int oldState, int newState);

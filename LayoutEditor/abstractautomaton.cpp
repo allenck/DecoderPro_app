@@ -680,7 +680,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
   PropertyChangeListener* l = (PropertyChangeListener*)this;
   listeners.replace(i, l);
   //mInputs.at(i)->addPropertyChangeListener(l);
-  if(qobject_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
+  if(static_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
   {
    AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i);
    connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -705,7 +705,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  for (i=0; i<mInputs.size(); i++)
  {
   //mInputs.at(i)->removePropertyChangeListener(listeners.at(i));
-  if(qobject_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
+  if(static_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
   {
    AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i);
    disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

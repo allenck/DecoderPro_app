@@ -4,6 +4,8 @@
 #include "predicate.h"
 #include "lighttableaction.h"
 #include "loggerfactory.h"
+#include "lightcontroltablemodel.h"
+#include "defaultlightcontrol.h"
 
 LightControl::LightControl(QObject *parent) :
     QObject(parent)
@@ -199,7 +201,12 @@ void LightControl::common()
 /*public*/ void LightControl::setControlTurnout(QString turnoutName) {_controlTurnoutName = turnoutName;}
 /*public*/ int LightControl::getControlTurnoutState() {return _turnoutState;}
 /*public*/ void LightControl::setControlTurnoutState(int state) {_turnoutState = state;}
-
+/**
+ * Get the Timed On Trigger Sensor name.
+ *
+ * @return  The Sensor Name as set by #setControlTimedOnSensorName
+ */
+/*public*/ QString getTimedSensorName() {return QString();}
 /*public*/ QString LightControl::getControlTimedOnSensorName() {
     if(_namedTimedControlSensor!=nullptr)
         return _namedTimedControlSensor->getName();
@@ -725,6 +732,7 @@ void LightControl::common()
         lc->oneTurnoutChanged(  e->getNewValue().toInt() );
     }
 }
+
 /*public*/ void LC5PropertyChangeListener::propertyChange(PropertyChangeEvent* e) {
     if (e->getPropertyName()==("KnownState")) {
         if (e->getNewValue().toInt() == Sensor::ACTIVE) {
@@ -732,7 +740,7 @@ void LightControl::common()
                 // Turn light on
                 lc->_parentLight->setState(Light::ON);
                 // Create a timer if one does not exist
-                lc->_timedControlListener = new TimeLight(lc);
+                lc->_timedControlListener = new TimeLight((DefaultLightControl*)lc);
                 lc->_timedControlTimer = new QTimer();
                 lc->_timedControlTimer->setInterval(lc->_timeOnDuration);
 //                    _timedControlListener);
@@ -807,7 +815,8 @@ void LightControl::common()
 //class TimeLight : public ActionListener
 //{
 // public:
-    /*public*/ void TimeLight::actionPerformed(/*ActionEvent* event*/)
+#if 0
+    /*public*/ void TimeLight::actionPerformed(JActionEvent* event)
     {
         // Turn Light OFF
         lc->_parentLight->setState(Light::OFF);
@@ -815,6 +824,7 @@ void LightControl::common()
         lc->_timedControlTimer->stop();
         lc->_lightOnTimerActive = false;
     }
+#endif
 //}
 
 

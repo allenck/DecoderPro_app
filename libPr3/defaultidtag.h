@@ -7,9 +7,11 @@ class LIBPR3SHARED_EXPORT DefaultIdTag : public AbstractIdTag
 {
     Q_OBJECT
 public:
- explicit DefaultIdTag(QObject *parent = 0) : AbstractIdTag(parent) {}
+    /*explicit*/ DefaultIdTag(QObject *parent = 0) : AbstractIdTag(parent) {}
     /*public*/ DefaultIdTag(QString systemName, QObject *parent = 0);
     /*public*/ DefaultIdTag(QString systemName, QString userName, QObject *parent = 0);
+    ~DefaultIdTag() {}
+    DefaultIdTag(const DefaultIdTag&): AbstractIdTag() {}
     /*public*/ void setState(int s) throw (JmriException);
     /*public*/ int getState() ;
     /*public*/ QDomElement store(QDomDocument doc, bool storeState) ;

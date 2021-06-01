@@ -33,7 +33,7 @@
 //private static final ResourceBundle rb = ResourceBundle.getBundle("apps.AppsConfigBundle");
 
 /*public*/ ManagerDefaultsConfigPane::ManagerDefaultsConfigPane(QWidget *parent)
-    : QWidget(parent)
+    : JmriPanel(parent)
 {
  setObjectName("ManagerDefaultsConfigFile");
  dirty = false;

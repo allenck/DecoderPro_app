@@ -1106,7 +1106,7 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
    Block* blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(_includedManualBlockList.at(i)->getSysName());
         hashBlocks.insert(blk, _includedManualBlockList.at(i)->getState());
  }
- ((DefaultSignalMastLogic*)sml)->setBlocks(hashBlocks, destMast);
+ ((DefaultSignalMastLogic*)sml->self())->setBlocks(hashBlocks, destMast);
 
  QHash<NamedBeanHandle<Turnout*>*, int> hashTurnouts =  QHash<NamedBeanHandle<Turnout*>*, int>();
  for(int i = 0; i<_includedManualTurnoutList.size(); i++)

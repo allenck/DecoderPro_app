@@ -283,6 +283,7 @@ HEADERS += javaqt.h\
     logger.h \
     gridbagconstraints.h \
     insets.h \
+ preferNumericComparator.h \
  thread.h \
  tristatejcheckbox.h \
  vetoablechangefirer.h \

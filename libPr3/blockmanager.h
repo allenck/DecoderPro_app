@@ -39,8 +39,8 @@ public:
      *      that name is a System Name.  If both fail, returns NULL.
      */
     /*public*/ Block* getBlock(QString name)const;
-    /*public*/ Block *getBySystemName(QString name) const;
-    /*public*/ Block* getByUserName(QString key) const;
+//    /*public*/ Block *getBySystemName(QString name) const;
+//    /*public*/ Block* getByUserName(QString key) const;
     /*public*/ Block* getByDisplayName(QString key);
 //    static BlockManager* _instance;// = NULL;
 //    static /*public*/ BlockManager* instance();

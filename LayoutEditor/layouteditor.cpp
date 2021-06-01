@@ -6436,7 +6436,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
     bool found = false;
     QString sb;// = new StringBuilder();
     sb.append("This ");
-    if (qobject_cast<SignalMast*>(sm)) {
+    if (static_cast<SignalMast*>(sm)) {
         sb.append("Signal Mast");
         sb.append(" is linked to the following items<br> do you want to remove those references");
         if (((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->isSignalMastUsed((SignalMast*) sm)) {
@@ -6446,10 +6446,10 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
                 sb.append(" and any SignalMast Logic associated with it");
             }
         }
-    } else if (qobject_cast<Sensor*>(sm)) {
+    } else if (static_cast<Sensor*>(sm)) {
         sb.append("Sensor");
         sb.append(" is linked to the following items<br> do you want to remove those references");
-    } else if (qobject_cast<SignalHead*>(sm)) {
+    } else if (static_cast<SignalHead*>(sm)) {
         sb.append("SignalHead");
         sb.append(" is linked to the following items<br> do you want to remove those references");
     }
@@ -6523,7 +6523,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
         if (selectedValue == JOptionPane::CANCEL_OPTION) {
             return false; // do not delete the item
         }
-        if (qobject_cast<Sensor*>(bean)) {
+        if (static_cast<Sensor*>(bean)) {
             // Additional actions for NX sensor pairs
             return getLETools()->removeSensorAssignment((Sensor*) bean);
         } else {
@@ -8783,7 +8783,7 @@ QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
      return;
  }
  //if(nb instanceof Sensor)
- if(qobject_cast<Sensor*>(nb)!=nullptr)
+ if(static_cast<Sensor*>(nb)!=nullptr)
  {
      foreach(SensorIcon* si, *sensorList){
          if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
@@ -8798,7 +8798,7 @@ QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
  }
  else
   //if (nb instanceof SignalHead)
-  if(qobject_cast<SignalHead*>(nb)!=nullptr)
+  if(static_cast<SignalHead*>(nb)!=nullptr)
   {
      foreach(SignalHeadIcon* si, *signalList){
          if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
@@ -8813,7 +8813,7 @@ QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
  }
  else
  //if (nb instanceof SignalMast)
- if(qobject_cast<SignalMast*>(nb)!=nullptr)
+ if(static_cast<SignalMast*>(nb)!=nullptr)
   {
      foreach(SignalMastIcon* si,*signalMastList){
          if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
@@ -8828,7 +8828,7 @@ QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
  }
  else
  //if (nb instanceof Memory)
- if(qobject_cast<Memory*>(nb)!=nullptr)
+ if(static_cast<Memory*>(nb)!=nullptr)
  {
   foreach(LEMemoryIcon* si, *memoryLabelList)
   {
@@ -8846,7 +8846,7 @@ QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
  }
  else
  //if (nb instanceof Turnout)
- if(qobject_cast<Turnout*>(nb)!=nullptr)
+ if(static_cast<Turnout*>(nb)!=nullptr)
  {
   for (LayoutTurnout* lt : getLayoutTurnoutsAndSlips())
   {
@@ -8884,7 +8884,7 @@ QString LayoutEditor::toString() {
      message.append("<ul>");
      bool found = false;
 
-     if (qobject_cast<SignalHead*>(nb)) {
+     if (static_cast<SignalHead*>(nb)) {
          if (containsSignalHead((SignalHead*) nb)) {
              found = true;
              message.append("<li>");
@@ -8921,7 +8921,7 @@ QString LayoutEditor::toString() {
              message.append(tr("Is assigned to LayoutSlip %1").arg(ls->getTurnoutName()));
              message.append("</li>");
          }
-     } else if (qobject_cast<Turnout*>(nb)) {
+     } else if (static_cast<Turnout*>(nb)) {
          LayoutTurnout* lt = finder->findLayoutTurnoutByBean(nb);
 
          if (lt != nullptr) {
@@ -8975,7 +8975,7 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (qobject_cast<SignalMast*>(nb)) {
+     if (static_cast<SignalMast*>(nb)) {
          if (containsSignalMast((SignalMast*) nb)) {
              message.append("<li>");
              message.append("As an Icon");
@@ -8990,7 +8990,7 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (qobject_cast<Sensor*>(nb)) {
+     if (static_cast<Sensor*>(nb)) {
          int count = 0;
 
          for (SensorIcon* si : *sensorList) {
@@ -9013,7 +9013,7 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (qobject_cast<Memory*>(nb)) {
+     if (static_cast<Memory*>(nb)) {
          for (LEMemoryIcon* si : *memoryLabelList) {
              if (nb->equals(si->getMemory())) {
                  found = true;
@@ -9030,12 +9030,12 @@ QString LayoutEditor::toString() {
          throw  PropertyVetoException(message/*.toString()*/, evt);
      }
  } else if ("DoDelete" == (evt->getPropertyName())) { // NOI18N
-     if (qobject_cast<SignalHead*>(nb)) {
+     if (static_cast<SignalHead*>(nb)) {
          removeSignalHead((SignalHead*) nb);
          removeBeanRefs(nb);
      }
 
-     if (qobject_cast<Turnout*>(nb)) {
+     if (static_cast<Turnout*>(nb)) {
          LayoutTurnout* lt = finder->findLayoutTurnoutByBean(nb);
 
          if (lt != nullptr) {
@@ -9076,7 +9076,7 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (qobject_cast<SignalMast*>(nb)) {
+     if (static_cast<SignalMast*>(nb)) {
          removeBeanRefs(nb);
 
          if (containsSignalMast((SignalMast*) nb)) {
@@ -9096,7 +9096,7 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (qobject_cast<Sensor*>(nb)) {
+     if (static_cast<Sensor*>(nb)) {
          removeBeanRefs(nb);
          QVectorIterator<SensorIcon*> icon(*sensorImage);
 
@@ -9113,7 +9113,7 @@ QString LayoutEditor::toString() {
          redrawPanel();
      }
 
-     if (qobject_cast<Memory*>(nb)) {
+     if (static_cast<Memory*>(nb)) {
          QVectorIterator<LEMemoryIcon*> icon(*memoryLabelList);
 
          while (icon.hasNext()) {

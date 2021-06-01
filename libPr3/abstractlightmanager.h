@@ -38,11 +38,11 @@ public:
     /**
      * Locate a Light by its system name
      */
-    /*public*/ Light* getBySystemName(QString name)const;
+    /*public*/ NamedBean *getBySystemName(QString name)const;
     /**
      * Locate a Light by its user name
      */
-    /*public*/ Light* getByUserName(QString key) const;
+    /*public*/ NamedBean* getByUserName(QString key) const;
 #endif
     /**
      * Return an instance with the specified system and user names.
@@ -67,7 +67,7 @@ public:
      * be looking them up.
      * @return requested Light object (never NULL)
      */
-    /*public*/ Light* newLight(QString systemName, QString userName) override;
+    /*public*/ Light *newLight(QString systemName, QString userName) override;
     /**
      * Activate the control mechanism for each Light controlled by
      *    this LightManager.  Note that some Lights don't require

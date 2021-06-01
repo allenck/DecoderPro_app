@@ -754,7 +754,7 @@ QComboBox* MatrixSignalMastAddPane::copyFromMastSelection() {
 
     for (QString name : names) {
         // only accept MatrixSignalMast masts
-        if (qobject_cast<MatrixSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name))!= nullptr) {
+        if (static_cast<MatrixSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name))!= nullptr) {
             SignalMast* m = (SignalMast*) static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name);
             if (m!=nullptr) {
                 mastSelect->addItem(m->getDisplayName());

@@ -74,8 +74,8 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * instance already exists.
  * @return requested Light object or null if none exists
  */
-/*public*/ Light *ProxyLightManager::getBySystemName(QString systemName) const {
-    return (Light*)AbstractProxyLightManager::getBeanBySystemName(systemName);
+/*public*/ NamedBean *ProxyLightManager::getBySystemName(QString systemName) const {
+    return (NamedBean*)AbstractProxyLightManager::getBeanBySystemName(systemName);
 }
 
 /**
@@ -83,8 +83,8 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ Light *ProxyLightManager::getByUserName(QString userName) const {
-    return (Light*) AbstractProxyLightManager::getBeanByUserName(userName);
+/*public*/ NamedBean *ProxyLightManager::getByUserName(QString userName) const {
+    return (NamedBean*) AbstractProxyLightManager::getBeanByUserName(userName);
 }
 
 /**

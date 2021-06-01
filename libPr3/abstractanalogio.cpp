@@ -17,7 +17,7 @@
      * known value, false othervise
      */
     /*public*/ AbstractAnalogIO::AbstractAnalogIO(/*@Nonnull*/ QString systemName, bool commandedValueSetsKnownValue, QObject *parent)
-     : AnalogIO(systemName, parent)
+     : AbstractNamedBean(systemName, parent)
     {
         //super(systemName);
         this->_commandedValueSetsKnownValue = commandedValueSetsKnownValue;
@@ -32,7 +32,7 @@
      * known value, false othervise
      */
     /*public*/ AbstractAnalogIO::AbstractAnalogIO(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName, bool commandedValueSetsKnownValue, QObject *parent)
-     : AnalogIO(systemName, userName, parent)
+     : AbstractNamedBean(systemName, userName, parent)
     {
         //super(systemName, userName);
         this->_commandedValueSetsKnownValue = commandedValueSetsKnownValue;

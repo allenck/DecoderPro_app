@@ -270,7 +270,17 @@ public:
       */
      //@CheckReturnValue
      //@CheckForNull
-     /*public*/ Manager* getBySystemName(/*@Nonnull*/ QString /*systemName*/)  const {return NULL;}
+     virtual/*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString /*systemName*/)  const {return NULL;}
+
+     /**
+      * Locate an existing instance based on a user name.
+      *
+      * @param userName System Name of the required NamedBean
+      * @return requested NamedBean object or null if none exists
+      */
+     //@CheckReturnValue
+     //@CheckForNull
+     virtual /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString /*userName*/) const {return nullptr;}
 
      /**
       * Locate an instance based on a name.  Returns null if no

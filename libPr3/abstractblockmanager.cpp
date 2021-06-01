@@ -13,6 +13,10 @@ AbstractBlockManager::AbstractBlockManager(QObject *parent) : AbstractManager(pa
 /*public*/ Block* AbstractBlockManager::getByUserName(QString userName)const
 {
  QString normalizedUserName = NamedBean::normalizeUserName(userName);
- return normalizedUserName != "" ? (Block*)_tuser->value(normalizedUserName) : nullptr;
-
+ //return normalizedUserName != "" ? static_cast<Block*>(_tuser->value(normalizedUserName)) : nullptr;
+ NamedBean* bean = _tuser->value(normalizedUserName);
+ if(bean == nullptr)
+  return nullptr;
+ Block* b = (Block*)bean;
+ return b;
 }

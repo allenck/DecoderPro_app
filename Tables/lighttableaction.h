@@ -11,11 +11,12 @@
 #include "jspinner.h"
 #include "spinnernumbermodel.h"
 #include "systemnamevalidator.h"
+#include "lightcontroltablemodel.h"
 
 class BufferedImage;
 class LTAValidator;
 class QGroupBox;
-class LightControlTableModel;
+//class LightControlTableModel;
 class LightControl;
 class QLabel;
 class Light;
@@ -230,7 +231,7 @@ protected:
 
  friend class LTAValidator;
 };
-
+#if 0
 /*public*/ class LightControlTableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
@@ -259,7 +260,7 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 };
-
+#endif
 class LTAWindowListener : public WindowListener
 {
  Q_OBJECT

@@ -4,10 +4,6 @@
 #include "rosterentry.h"
 #include "clockcontrol.h"
 
-//DefaultIdTag::DefaultIdTag(QObject *parent) :
-//    AbstractIdTag(parent)
-//{
-//}
 /**
  * Concrete implementation of the {@link jmri.IdTag} interface
  * for the Internal system.

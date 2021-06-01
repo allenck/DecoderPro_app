@@ -20,8 +20,8 @@ class Source : public QObject
 public:
     //explicit Source(QObject *parent = 0);
     /*public*/ Source(PointDetails* point, QObject *parent = 0);
-    /*public*/ bool isEnabled(QObject* dest,LayoutEditor* panel);
-    /*public*/ void setEnabled(QObject* dest, LayoutEditor* panel, bool boo);
+    /*public*/ bool isEnabled(NamedBean *dest, LayoutEditor* panel);
+    /*public*/ void setEnabled(NamedBean* dest, LayoutEditor* panel, bool boo);
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
     //void createPopUpMenu();
@@ -34,19 +34,19 @@ public:
     /*public*/ void addDestination(PointDetails* dest, QString id);
     /*public*/ void removeDestination(PointDetails* dest);
     void addSourceObject(NamedBean* source);
-    QObject* getSourceObject();
+    NamedBean *getSourceObject();
     /*public*/ QList<PointDetails *> getDestinationPoints() ;
     /*public*/ bool isDestinationValid(PointDetails* destPoint);
-    /*public*/ bool getUniDirection(QObject* dest, LayoutEditor* panel);
-    /*public*/ void setUniDirection(QObject* dest, LayoutEditor* panel, bool set);
-    /*public*/ bool canBeBiDirection(QObject* dest, LayoutEditor* panel);
+    /*public*/ bool getUniDirection(NamedBean *dest, LayoutEditor* panel);
+    /*public*/ void setUniDirection(NamedBean* dest, LayoutEditor* panel, bool set);
+    /*public*/ bool canBeBiDirection(NamedBean *dest, LayoutEditor* panel);
     /*public*/ bool isRouteActive(PointDetails* endpoint);
     void activeBean(DestinationPoints* dest, bool reverseDirection);
     /*public*/ int getNumberOfDestinations();
-    /*public*/ void setEntryExitType(QObject* dest, LayoutEditor* panel, int type);
-    /*public*/ int getEntryExitType(QObject* dest, LayoutEditor* panel);
-    /*public*/ void cancelInterlock(QObject* dest, LayoutEditor* panel);
-    /*public*/ QString getUniqueId(QObject* dest, LayoutEditor* panel);
+    /*public*/ void setEntryExitType(NamedBean* dest, LayoutEditor* panel, int type);
+    /*public*/ int getEntryExitType(NamedBean* dest, LayoutEditor* panel);
+    /*public*/ void cancelInterlock(NamedBean *dest, LayoutEditor* panel);
+    /*public*/ QString getUniqueId(NamedBean* dest, LayoutEditor* panel);
     /*public*/ QStringList getDestinationUniqueId();
     /*public*/ DestinationPoints* getByUniqueId(QString id);
     /*public*/ DestinationPoints* getByUserName(QString id);

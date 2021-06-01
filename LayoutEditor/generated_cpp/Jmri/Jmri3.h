@@ -17,15 +17,12 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmetaobject.h>
 #include <qobject.h>
 #include <qstringlist.h>
 #include <qurl.h>
 #include <qvector.h>
-#include <route.h>
-#include <routemanager.h>
 #include <sensor.h>
 #include <sensormanager.h>
 #include <serialportadapter.h>
@@ -49,93 +46,6 @@
 
 
 
-class PythonQtShell_RouteManager : public RouteManager
-{
-public:
-    PythonQtShell_RouteManager(QObject*  parent = nullptr):RouteManager(parent),_wrapper(NULL) {}
-    PythonQtShell_RouteManager(SystemConnectionMemo*  memo, QObject*  parent = nullptr):RouteManager(memo, parent),_wrapper(NULL) {}
-
-   ~PythonQtShell_RouteManager();
-
-virtual void Register(NamedBean*  s) const;
-virtual void addDataListener(QObject*  e);
-virtual void deleteRoute(Route*  arg__1);
-virtual void deregister(NamedBean*  s) const;
-virtual void dispose();
-virtual void fireVetoableChange(QString  p, QVariant  old, QVariant  n) throw (PropertyVetoException);
-virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
-virtual Route*  getBySystemName(QString  arg__1) const;
-virtual Route*  getByUserName(QString  arg__1) const;
-virtual SystemConnectionMemo*  getMemo() const;
-virtual NamedBean*  getNamedBean(QString  name) const;
-virtual QString  getNamedBeanClass() const;
-virtual QSet<NamedBean* >  getNamedBeanSet();
-virtual int  getObjectCount();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
-virtual Route*  getRoute(QString  arg__1);
-virtual QStringList  getSystemNameArray();
-virtual QStringList  getSystemNameList();
-virtual QString  getSystemPrefix() const;
-virtual int  getXMLOrder() const;
-virtual QString  makeSystemName(QString  s, bool  logErrors = true, QLocale  locale = QLocale()) const;
-virtual Route*  newRoute(QString  arg__1);
-virtual QString  normalizeSystemName(QString  inputName) const;
-virtual void propertyChange(PropertyChangeEvent*  e);
-virtual Route*  provide(QString  name) throw (IllegalArgumentException);
-virtual Route*  provideRoute(QString  arg__1, QString  arg__2) const;
-virtual void removeDataListener(QObject*  e);
-virtual QObject*  self();
-virtual Manager::NameValidity  validSystemNameFormat(QString  systemName) const;
-
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
-  PythonQtInstanceWrapper* _wrapper; 
-};
-
-class PythonQtPublicPromoter_RouteManager : public RouteManager
-{ public:
-inline void py_q_deleteRoute(Route*  arg__1) { RouteManager::deleteRoute(arg__1); }
-inline void py_q_dispose() { RouteManager::dispose(); }
-inline Route*  py_q_getBySystemName(QString  arg__1) const { return this->getBySystemName(arg__1); }
-inline Route*  py_q_getByUserName(QString  arg__1) const { return this->getByUserName(arg__1); }
-inline QString  py_q_getNamedBeanClass() const { return RouteManager::getNamedBeanClass(); }
-inline Route*  py_q_getRoute(QString  arg__1) { return RouteManager::getRoute(arg__1); }
-inline Route*  py_q_newRoute(QString  arg__1) { return RouteManager::newRoute(arg__1); }
-inline Route*  py_q_provide(QString  name) throw (IllegalArgumentException) { return this->provide(name); }
-inline Route*  py_q_provideRoute(QString  arg__1, QString  arg__2) const { return RouteManager::provideRoute(arg__1, arg__2); }
-inline QObject*  py_q_self() { return RouteManager::self(); }
-};
-
-class PythonQtWrapper_RouteManager : public QObject
-{ Q_OBJECT
-public:
-public slots:
-RouteManager* new_RouteManager(QObject*  parent = nullptr);
-RouteManager* new_RouteManager(SystemConnectionMemo*  memo, QObject*  parent = nullptr);
-void delete_RouteManager(RouteManager* obj) { delete obj; } 
-   void deleteRoute(RouteManager* theWrappedObject, Route*  arg__1);
-   void py_q_deleteRoute(RouteManager* theWrappedObject, Route*  arg__1){  (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_deleteRoute(arg__1));}
-   void py_q_dispose(RouteManager* theWrappedObject){  (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_dispose());}
-   Route*  py_q_getBySystemName(RouteManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
-   Route*  getByUserName(RouteManager* theWrappedObject, QString  arg__1) const;
-   Route*  py_q_getByUserName(RouteManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
-   QString  py_q_getNamedBeanClass(RouteManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getNamedBeanClass());}
-   Route*  getRoute(RouteManager* theWrappedObject, QString  arg__1);
-   Route*  py_q_getRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getRoute(arg__1));}
-   Route*  newRoute(RouteManager* theWrappedObject, QString  arg__1);
-   Route*  py_q_newRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_newRoute(arg__1));}
-   Route*  provide(RouteManager* theWrappedObject, QString  name) throw (IllegalArgumentException);
-   Route*  py_q_provide(RouteManager* theWrappedObject, QString  name) throw (IllegalArgumentException){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provide(name));}
-   Route*  provideRoute(RouteManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
-   Route*  py_q_provideRoute(RouteManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provideRoute(arg__1, arg__2));}
-   QObject*  py_q_self(RouteManager* theWrappedObject){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_self());}
-};
-
-
-
-
-
 class PythonQtShell_Sensor : public Sensor
 {
 public:
@@ -156,7 +66,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(QObject*  obj);
+virtual bool  equals(NamedBean*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -1752,7 +1662,7 @@ virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
 virtual void enableLockOperation(int  arg__1, bool  arg__2);
-virtual bool  equals(QObject*  obj);
+virtual bool  equals(NamedBean*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -2304,7 +2214,7 @@ virtual void windowIconified(QResizeEvent*  arg__1);
 class PythonQtPublicPromoter_WindowListener : public WindowListener
 { public:
 inline void py_q_windowClosed(QCloseEvent*  arg__1) { WindowListener::windowClosed(arg__1); }
-inline void py_q_windowClosing(QCloseEvent*  arg__1) { this->windowClosing(arg__1); }
+inline void py_q_windowClosing(QCloseEvent*  arg__1) { WindowListener::windowClosing(arg__1); }
 inline void py_q_windowDeiconified(QResizeEvent*  arg__1) { WindowListener::windowDeiconified(arg__1); }
 inline void py_q_windowIconified(QResizeEvent*  arg__1) { WindowListener::windowIconified(arg__1); }
 };

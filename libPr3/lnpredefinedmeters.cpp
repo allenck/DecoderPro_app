@@ -76,11 +76,13 @@
         QString voltSysName = createSystemName(srcDeviceType, srcSerNum, "Voltage"); // NOI18N
         MeterManager* mm = ((MeterManager*)InstanceManager::getDefault("MeterManager"));
 //        ((AbstractProxyMeterManager*)mm)->createSystemManager("L");
-        Meter* m = (DefaultMeter*)((AbstractMeterManager*)mm)->getBySystemName(voltSysName);
+        //Meter* m = (DefaultMeter*)((AbstractMeterManager*)mm)->getBySystemName(voltSysName);
+        Meter* m = (Meter*)mm->getBySystemName(voltSysName);
         updateAddMeter(m, voltSysName, valVolts, true);
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
-        m = (DefaultMeter*)((AbstractMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
+        //m = (DefaultMeter*)((AbstractMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
+        m = (Meter*)mm->getBeanBySystemName(ampsSysName);
         updateAddMeter(m, ampsSysName, valAmps, false);
     }
 
@@ -127,7 +129,7 @@
                         (typeVolt?"volt":"current")).arg( // NOI18N
                         sysName).arg(value).arg(e.getMessage()));
             }
-            ((MeterManager*)InstanceManager::getDefault("MeterManager"))->Register(newMeter);
+            ((MeterManager*)InstanceManager::getDefault("MeterManager"))->Register(qobject_cast<NamedBean*>(newMeter));
             log->debug(tr("Added new %1Meter %2 with value %3").arg(
                         (typeVolt?"volt":"current")).arg( // NOI18N
                     sysName).arg(value));

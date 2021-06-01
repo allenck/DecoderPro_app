@@ -329,7 +329,7 @@ void DestinationPoints::setRoute(bool state){
   setRouteTo(false);
   setRouteFrom(false);
   //if((getSignal() instanceof SignalMast) && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
-  if(qobject_cast<SignalMast*>(getSignal())!= NULL && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
+  if(static_cast<SignalMast*>(getSignal())!= NULL && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
   {
    SignalMast* mast = (SignalMast*) getSignal();
          ((AbstractSignalMast*)mast)->setHeld(false);
@@ -517,7 +517,7 @@ void DestinationPoints::setRoute(bool state){
         }
     }
     //if((src->sourceSignal instanceof SignalMast) && (getSignal() instanceof SignalMast))
-    if(qobject_cast<SignalMast*>(p->src->sourceSignal) && qobject_cast<SignalMast*>(p->getSignal()))
+    if(static_cast<SignalMast*>(p->src->sourceSignal) && static_cast<SignalMast*>(p->getSignal()))
     {
         SignalMast* smSource = (SignalMast*) p->src->sourceSignal;
         SignalMast* smDest = (SignalMast*) p->getSignal();
@@ -557,12 +557,12 @@ void DestinationPoints::setRoute(bool state){
         p->src->pd->extendedtime=true;
         p->point->extendedtime=true;
     } else {
-        if (qobject_cast<SignalMast*>(p->src->sourceSignal)){
+        if (static_cast<SignalMast*>(p->src->sourceSignal)){
             SignalMast* mast = (SignalMast*) p->src->sourceSignal;
             mast->setHeld(false);
         }
         //else if (src->sourceSignal instanceof SignalHead){
-        else if (qobject_cast<SignalHead*>(p->src->sourceSignal)){
+        else if (static_cast<SignalHead*>(p->src->sourceSignal)){
     SignalHead* head = (SignalHead*) p->src->sourceSignal;
             head->setHeld(false);
         }
@@ -760,14 +760,14 @@ void DestinationPoints::cancelClearInterlock(int cancelClear)
  }
  src->setMenuEnabled(false);
  //if (src->sourceSignal instanceof SignalMast){
- if(qobject_cast<SignalMast*>(src->sourceSignal)  != NULL)
+ if(static_cast<SignalMast*>(src->sourceSignal)  != NULL)
  {
   SignalMast* mast = (SignalMast*) src->sourceSignal;
   mast->setAspect(mast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER));
   mast->setHeld(true);
  }
  //else if (src->sourceSignal instanceof SignalHead){
- else if(qobject_cast<SignalHead*>(src->sourceSignal)!= NULL)
+ else if(static_cast<SignalHead*>(src->sourceSignal)!= NULL)
  {
   SignalHead* head = (SignalHead*) src->sourceSignal;
   head->setHeld(true);
@@ -781,7 +781,7 @@ void DestinationPoints::cancelClearInterlock(int cancelClear)
 // synchronized(this)
  {
   //if((getSignal() instanceof SignalMast) && (sml!=NULL)){
-  if(qobject_cast<SignalMast*>(getSignal())!= NULL)
+  if(static_cast<SignalMast*>(getSignal())!= NULL)
   {
    SignalMast* mast = (SignalMast*) getSignal();
    if (sml->getStoreState(mast)==SignalMastLogic::STORENONE)

@@ -577,7 +577,7 @@ QString Block::getStateString()
  * some identity values.
  */
 //@Override
-/*public*/ bool Block::equals(QObject* obj) {
+/*public*/ bool Block::equals(NamedBean *obj) {
     if (obj == this) {
         return true;
     }

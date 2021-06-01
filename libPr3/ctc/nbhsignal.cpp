@@ -74,9 +74,9 @@
         return _mNamedBeanHandleSignalMast != nullptr || _mNamedBeanHandleSignalHead != nullptr;
     }  // For those that want to know the internal state.
 
-    /*public*/ QObject* NBHSignal::getBean() {
+    /*public*/ NamedBean* NBHSignal::getBean() {
         if (!valid()) return nullptr;
-        return isSignalMast ? (QObject*)_mNamedBeanHandleSignalMast->getBean() : (QObject*)_mNamedBeanHandleSignalHead->getBean();
+        return isSignalMast ? (NamedBean*)_mNamedBeanHandleSignalMast->getBean() : (NamedBean*)_mNamedBeanHandleSignalHead->getBean();
     }
 
     /*public*/ QObject* NBHSignal::getBeanHandle() {

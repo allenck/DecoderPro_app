@@ -38,7 +38,8 @@ InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, Q
 //            return 100;
 //        }
 //    };
- return new AbstractVariableLightO1(systemName, userName);
+ AbstractVariableLight* l = new AbstractVariableLightO1(systemName, userName);
+ return (VariableLight*)(l);
 }
 
 /**

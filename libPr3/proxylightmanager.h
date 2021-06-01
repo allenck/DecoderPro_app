@@ -11,8 +11,8 @@ public:
  /*public*/ int getXMLOrder() const override;
  /*public*/ Light* getLight(QString name)override;
  /*public*/ Light* provideLight(QString name)override;
- /*public*/ Light* getBySystemName(QString systemName) const override;
- /*public*/ Light* getByUserName(QString userName) const override;
+ /*public*/ NamedBean* getBySystemName(QString systemName) const override;
+ /*public*/ NamedBean* getByUserName(QString userName) const override;
  /*public*/ Light* newLight(QString systemName, QString userName)override;
 // /*public*/ NameValidity validSystemNameFormat(QString systemName);
  /*public*/ bool validSystemNameConfig(QString systemName)const override;

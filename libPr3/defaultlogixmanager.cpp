@@ -178,12 +178,12 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return (Logix*)getBySystemName(name);
 }
 
-/*public*/ Logix *DefaultLogixManager::getBySystemName(QString name) const {
-    return (Logix*)_tsys->value(name);
+/*public*/ NamedBean *DefaultLogixManager::getBySystemName(QString name) const {
+    return /*(Logix*)*/_tsys->value(name);
 }
 
-/*public*/ Logix *DefaultLogixManager::getByUserName(QString key) const {
-    return (Logix*)_tuser->value(key);
+/*public*/ NamedBean *DefaultLogixManager::getByUserName(QString key) const {
+    return /*(Logix*)*/_tuser->value(key);
 }
 
 /**

@@ -1,4 +1,4 @@
-#include "entryexitpairsxml.h"
+﻿#include "entryexitpairsxml.h"
 #include "entryexitpairs.h"
 #include "layouteditor.h"
 #include "signalhead.h"
@@ -76,7 +76,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
                 source.setAttribute("type", type);
                 source.setAttribute("item", item);
 
-                QObjectList* a = p->getDestinationList(key, panel);
+                QObjectList* a = p->getDestinationList((NamedBean*)key, panel);
                 for (int i = 0; i<a->size(); i++){
                     QObject* keyDest = a->at(i);
                     QString typeDest = "";
@@ -104,11 +104,11 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
                     QDomElement dest = doc.createElement("destination");
                     dest.setAttribute("type", typeDest);
                     dest.setAttribute("item", itemDest);
-                    if(!p->isUniDirection(key, panel, keyDest))
+                    if(!p->isUniDirection((NamedBean*)key, panel, (NamedBean*)keyDest))
                         dest.setAttribute("uniDirection", "no");
-                    if(!p->isEnabled(key, panel, keyDest))
+                    if(!p->isEnabled((NamedBean*)key, panel, (NamedBean*)keyDest))
                         dest.setAttribute("enabled", "no");
-                    int nxType = p->getEntryExitType(key, panel, keyDest);
+                    int nxType = p->getEntryExitType((NamedBean*)key, panel, (NamedBean*)keyDest);
                     switch (nxType){
                         case 0x00 : dest.setAttribute("nxType", "turnoutsetting");
                                     break;
@@ -119,8 +119,8 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
                         default   : dest.setAttribute("nxType", "turnoutsetting");
                                     break;
                     }
-                    if(p->getUniqueId(key, panel, keyDest)!=NULL)
-                        dest.setAttribute("uniqueid", p->getUniqueId(key, panel, keyDest));
+                    if(p->getUniqueId((NamedBean*)key, panel, (NamedBean*)keyDest)!=NULL)
+                        dest.setAttribute("uniqueid", p->getUniqueId((NamedBean*)key, panel, (NamedBean*)keyDest));
                     source.appendChild(dest);
                 }
                 panelElem.appendChild(source);

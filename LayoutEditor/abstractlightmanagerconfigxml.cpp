@@ -57,7 +57,7 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
   for (NamedBean* nb : lightList)
   {
    Light* lgt = (Light*)nb;
-   QString sname = lgt->getSystemName();
+   QString sname = nb->getSystemName();
    log->debug("system name is "+sname);
    QDomElement elem = doc.createElement("light");
    //elem.setAttribute("systemName", sname);
@@ -66,7 +66,7 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
    e1.appendChild(doc.createTextNode(sname));
 
    // store common parts
-   storeCommon(lgt, elem);
+   storeCommon(nb, elem);
 
    // write variable intensity attributes
    elem.setAttribute("minIntensity", lgt->getMinIntensity());
@@ -168,11 +168,11 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
 
  if (log->isDebugEnabled()) log->debug("create light: ("+sysName+")("+
                                                    (userName==NULL?"<NULL>":userName)+")");
- AbstractLight* lgt = (AbstractLight*)tm->newLight(sysName, userName);
+ Light* lgt = (Light*)tm->newLight(sysName, userName);
  if (lgt!=NULL)
  {
   // load common parts
-  loadCommon(lgt, lightList.at(i).toElement());
+  loadCommon((NamedBean*)lgt, lightList.at(i).toElement());
 
   // variable intensity, transition attributes
   double value;

@@ -7,6 +7,7 @@
 #include "libtables_global.h"
 #include <QStatusBar>
 #include <QLabel>
+#include "jbutton.h"
 
 class KeyValueModel;
 class NamedBeanHandleManager;
@@ -53,6 +54,7 @@ private:
  virtual BeanItemPanel* propertiesDetails();
  JmriJFrame* f;
  /*private*/ QTabWidget* detailsTab;// = new JTabbedPane();
+
  void formatTextAreaAsLabel(JTextArea* pane);
  static bool validateNumericalInput(QString text);
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class);
@@ -67,6 +69,11 @@ protected:
  virtual /*abstract*/ /*protected*/ QString helpTarget();
  /*protected*/QList<BeanItemPanel*> bei;// = new ArrayList<BeanItemPanel>(5);
  /*protected*/ QWidget* selectedTab;// = NULL;
+ /**
+  * Apply Button.
+  * Accessible so Edit Actions can set custom tool tip.
+  */
+ /*protected*/ JButton* applyBut;
 protected slots:
  /*protected*/ void applyButtonAction(ActionEvent* e = 0);
  /*protected*/ void cancelButtonAction(ActionEvent* e = 0);
@@ -97,6 +104,9 @@ protected slots:
  friend class OBTResetItemAction2;
  friend class OBTSaveItemAction3;
  friend class OBTResetItemAction3;
+ friend class LightEditAction;
+ friend class LEAResetAction;
+ friend class LEASaveAction;
 };
 /*private*/ /*static*/ class LIBTABLESSHARED_EXPORT BeanPropertiesTableModel : public  AbstractTableModel
 {

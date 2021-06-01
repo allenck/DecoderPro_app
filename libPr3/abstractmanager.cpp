@@ -24,8 +24,8 @@ AbstractManager::AbstractManager(QObject *parent) : VetoableChangeSupport(this, 
 {
   Q_UNUSED(parent);
   log = new Logger("AbstractManager");
- _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
- _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
+ _tsys = new QMap<QString, NamedBean*>;   // stores known Turnout instances by system name
+ _tuser = new QMap<QString, NamedBean*>;   // stores known Turnout instances by user name
  _beans = QSet<NamedBean*>( _beans);
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
  lastAutoNamedBeanRef = QAtomicInteger<int>(0);
@@ -38,8 +38,8 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
   Q_UNUSED(parent);
  this->memo = memo;
   log = new Logger("AbstractManager");
- _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
- _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
+ _tsys = new QMap<QString, NamedBean*>;   // stores known Turnout instances by system name
+ _tuser = new QMap<QString, NamedBean*>;   // stores known Turnout instances by user name
  _beans = QSet<NamedBean*>( _beans);
 
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
@@ -125,8 +125,8 @@ void AbstractManager::dispose()
 {
     if (((ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager"))!= nullptr)
         ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->deregister((QObject*)this);
-    _tsys = new QHash<QString, NamedBean*>();   // stores known Turnout instances by system name
-    _tuser = new QHash<QString, NamedBean*>();   // stores known Turnout instances by user name
+    _tsys = new QMap<QString, NamedBean*>();   // stores known Turnout instances by system name
+    _tuser = new QMap<QString, NamedBean*>();   // stores known Turnout instances by user name
 
     _beans.clear();
     _tsys->clear();
@@ -143,7 +143,7 @@ void AbstractManager::dispose()
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QObject* AbstractManager::getInstanceBySystemName(QString systemName)
+NamedBean* AbstractManager::getInstanceBySystemName(QString systemName)
 {
  return _tsys->value(systemName);
 }
@@ -156,7 +156,7 @@ QObject* AbstractManager::getInstanceBySystemName(QString systemName)
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QObject* AbstractManager::getInstanceByUserName(QString userName) {
+NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
     return _tuser->value(userName);
 }
 
@@ -253,7 +253,9 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
     emit beanCreated(s);
 #endif
   QString systemName = s->getSystemName();
-  Q_ASSERT(!systemName.isEmpty());
+  //Q_ASSERT(!systemName.isEmpty());
+  if(systemName.isEmpty())
+    throw NullPointerException();
   NamedBean* existingBean = getBeanBySystemName(systemName);
   if (existingBean != nullptr)
   {
@@ -315,7 +317,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
   // listen for name and state changes to forward
   s->addPropertyChangeListener((PropertyChangeListener*)this);
   AbstractNamedBean* ab = (AbstractNamedBean*)s;
-  connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }
   // not efficient, but does job for now
@@ -414,7 +416,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
      QString old = e->getOldValue().toString();  // previous user name
      QString now = e->getNewValue().toString();  // current user name
 //     try { // really should always succeed
-         QObject* t = e->getSource();
+         NamedBean* t = (NamedBean*)e->getSource();
          if (old != nullptr) {
              _tuser->remove(old); // remove old name for this bean
          }
@@ -461,7 +463,7 @@ QStringList AbstractManager::getSystemNameList()
     QStringList arr; // =  QList<QString>();
     QStringList out;// = new QStringList();
 //    Enumeration<String> en = _tsys.keys();
-    QHashIterator<QString, NamedBean*> en(*_tsys);
+    QMapIterator<QString, NamedBean*> en(*_tsys);
     int i=0;
     while (en.hasNext())
     {
@@ -504,7 +506,7 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
     QStringList arr;// = new QStringList();
     QStringList out;// = new QStringList();
 //    Enumeration<String> en = _tsys.keys();
-    QHashIterator<QString, NamedBean*> en(*_tuser);
+    QMapIterator<QString, NamedBean*> en(*_tuser);
     int i=0;
     while (en.hasNext())
     {
@@ -562,7 +564,7 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
 // PropertyChangeSupport::fireIndexedPropertyChange(p,pos,old,n);
 //}
 
-QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
+QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 {
  return _tsys;
 }
@@ -917,7 +919,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
         testAddr = validateSystemNameFormat(createSystemName(curAddress,prefix));
         // System.out.format("testaddr: "+testAddr);
         bean = getBySystemName(testAddr);
-        increment = ( qobject_cast<Turnout*>(bean)? ((Turnout*)bean)->getNumberOutputBits() : 1);
+        increment = ( static_cast<Turnout*>(bean)? ((Turnout*)bean)->getNumberOutputBits() : 1);
         testAddr = testAddr.mid(getSystemNamePrefix().length());
         getIncrement(testAddr, increment);
     }

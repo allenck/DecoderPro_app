@@ -98,7 +98,7 @@
  <object-type name="AudioSource" />
  <object-type name="SignalHead" />
  <object-type name="SignalMast" />
- <object-type name="Light" />
+ <!--object-type name="Light" /-->
  <object-type name="AbstractManager" />
  <rejection class="AbstractManager" function-name="getNamedBeanList" />
  <!--object-type name="AbstractProxyManager" />

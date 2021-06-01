@@ -20,7 +20,7 @@ class NBHSignal : public QObject
   /*public*/ static /*final*/ int DEFAULT_INT_RV;// = 0;                // For any function that returns int.
   /*public*/ static /*final*/ QString DEFAULT_STRING_RV;// = "UNKNOWN";  // NOI18N  For any function that returns String.
   /*public*/ bool valid();
-  /*public*/ QObject* getBean();
+  /*public*/ NamedBean *getBean();
   /*public*/ QObject* getBeanHandle();
   /*public*/ QString getHandleName();
   /*public*/ QString getDisplayName();

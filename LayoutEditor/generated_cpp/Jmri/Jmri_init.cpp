@@ -55,7 +55,6 @@ PythonQt::priv()->registerClass(&JmriJFrame::staticMetaObject, "Jmri", PythonQtC
 PythonQt::priv()->registerClass(&LayoutBlockManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutBlockManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutBlockManager>, module, 0);
 PythonQt::priv()->registerClass(&LayoutEditor::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutEditor>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutEditor>, module, 0);
 PythonQt::priv()->registerClass(&LayoutTurnout::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LayoutTurnout>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LayoutTurnout>, module, 0);
-PythonQt::priv()->registerClass(&Light::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Light>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Light>, module, PythonQt::Type_RichCompare);
 PythonQt::priv()->registerClass(&LightManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LightManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_LightManager>, module, 0);
 PythonQt::priv()->registerCPPClass("ListSelectionModel", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_ListSelectionModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_ListSelectionModel>, module, 0);
 PythonQt::priv()->registerClass(&LnCommandStationType::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_LnCommandStationType>, NULL, module, 0);

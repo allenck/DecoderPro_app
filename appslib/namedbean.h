@@ -19,7 +19,7 @@ public:
      * Parent class for a set of classes that describe if a user name or system
      * name is a bad name.
      */
-    /*public*/ class BadNameException : public IllegalArgumentException {
+   /*public*/ class BadNameException : public IllegalArgumentException {
 
         /*private*/ /*final*/ QString localizedMessage;
         protected:
@@ -192,7 +192,7 @@ public:
      UNKNOWN = 1,
      INCONSISTENT= 0x08
     };
-    Q_ENUM(STATES)
+    //Q_ENUM(STATES)
     /*public*/ static /*final*/ QString DISPLAY_NAME_FORMAT;// = "%1 (%2)";
 
     /**
@@ -254,7 +254,7 @@ public:
          */
         QUOTED_USERNAME_SYSTEMNAME
     };
-    Q_ENUM(DisplayOptions)
+    //Q_ENUM(DisplayOptions)
         // user identification, _bound_ parameter so manager(s) can listen
         virtual QString getUserName() const;
         virtual void setUserName(QString s);
@@ -263,7 +263,7 @@ public:
          * Get a system-specific name.  This encodes the hardware addressing
          * information.
          */
-        virtual QString getSystemName() const {return QString();}//=0;
+    virtual QString getSystemName() const =0;
         /*
         * return user name if it exists, otherwise return System name
         */
@@ -463,7 +463,7 @@ public:
     //@CheckReturnValue
     /*public*/ virtual /*default*/ int compareTo(/*@Nonnull*/ NamedBean* n2);
 
-    /*public*/ virtual bool equals(QObject* obj);
+    /*public*/ virtual bool equals(NamedBean *obj);
 
     /**
      * Compare the suffix of this NamedBean's name with the
@@ -478,7 +478,7 @@ public:
     //@CheckReturnValue
     /*public*/ virtual int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1,/* @Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n2);
 
-    // /*public*/ virtual QObject* self()=0;
+     // /*public*/ virtual QObject* self()=0;
 signals:
 
 public slots:
@@ -494,5 +494,5 @@ private:
  friend class AbstractAudio;
 };
 
-Q_DECLARE_INTERFACE(NamedBean, "Named bean")
+//Q_DECLARE_INTERFACE(NamedBean, "NamedBean")
 #endif // NAMEDBEAN_H

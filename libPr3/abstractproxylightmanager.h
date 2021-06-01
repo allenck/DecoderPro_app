@@ -163,8 +163,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyLightManager :  public LightManager, publ
      */
     virtual/*abstract protected*/ NamedBean* makeBean(int, QString /*systemName*/, QString /*userName*/) /*const*/ /*=0*/;
 
-    /*public*/ Light* getBySystemName(/*@Nonnull */ QString systemName) const override;
-    /*public*/ Light *getByUserName(/*@Nonnull*/ QString userName) const override;
+    /*public*/ NamedBean* getBySystemName(/*@Nonnull */ QString systemName) const override;
+    /*public*/ NamedBean *getByUserName(/*@Nonnull*/ QString userName) const override;
 
     /**
      * Find the index of a matching manager.

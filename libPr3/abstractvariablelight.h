@@ -4,22 +4,39 @@
 #include <QTimer>
 #include "timebase.h"
 #include "abstractlight.h"
-
+#include "variablelight.h"
 class PropertyChangeListener;
-class LIBPR3SHARED_EXPORT AbstractVariableLight : public AbstractLight
+class LIBPR3SHARED_EXPORT AbstractVariableLight : /*public AbstractLight,*/ public VariableLight
 {
     Q_OBJECT
+  //Q_INTERFACES(VariableLight);
 public:
     //explicit AbstractVariableLight(QObject *parent = 0);
     /*public*/ AbstractVariableLight(QString systemName, QString userName, QObject *parent = 0);
     /*public*/ AbstractVariableLight(QString systemName, QObject *parent = 0);
-    /*public*/ void setState(int newState);
-    /*public*/ void setTargetIntensity(double intensity);
-    /*public*/ bool isIntensityVariable();
-    /*public*/ bool isTransitionAvailable();
-    /*public*/ void setTransitionTime(double minutes);
-    /*public*/ double getTransitionTime();
-    /*public*/ bool isTransitioning();
+    /*public*/ void setState(int newState) override;
+    /*public*/ void setTargetIntensity(double intensity) override;
+    /*public*/ bool isIntensityVariable() override;
+    /*public*/ bool isTransitionAvailable() override;
+    /*public*/ void setTransitionTime(double minutes) override;
+    /*public*/ double getTransitionTime() override;
+    /*public*/ bool isTransitioning() override;
+    /*public*/ double getCurrentIntensity() override;
+    /*public*/ double getTargetIntensity() override;
+    /*public*/ void setCommandedAnalogValue(double value) throw (JmriException) override;
+    /*public*/ double getMinIntensity() override;
+    /*public*/ void setMinIntensity(double intensity) override;
+    /*public*/ double getMaxIntensity() override;
+    /*public*/ void setMaxIntensity(double intensity) override;
+    /*public*/ double getState(double v);
+    /*public*/ void setState(double newState) throw (JmriException) override;
+    /*public*/ double getResolution() override;
+    /*public*/ double getCommandedAnalogValue() override;
+    /*public*/ double getMin() override;
+    /*public*/ double getMax() override;
+    /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative() override;
+    //QObject* self() override {return this;}
+    //QString getSystemName() const override{return AbstractNamedBean::getSystemName();}
 
 signals:
 

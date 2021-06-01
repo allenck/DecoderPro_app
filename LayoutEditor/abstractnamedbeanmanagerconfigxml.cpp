@@ -56,7 +56,7 @@ AbstractNamedBeanManagerConfigXML::~AbstractNamedBeanManagerConfigXML()
  * @param t The NamedBean being loaded
  * @param elem The JDOM element containing the NamedBean
  */
-/*protected*/ void AbstractNamedBeanManagerConfigXML::loadCommon(NamedBean* t, QDomElement elem) {
+/*protected*/ void AbstractNamedBeanManagerConfigXML::loadCommon(NamedBean *t, QDomElement elem) {
     loadComment(t, elem);
     loadProperties(t, elem);
 }

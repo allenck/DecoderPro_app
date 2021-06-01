@@ -2394,7 +2394,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
     if ("CanDelete" == (evt->getPropertyName())) { //IN18N
         NamedBean* nb = (NamedBean*) VPtr<NamedBean*>::asPtr( evt->getOldValue());
         //if (nb instanceof Sensor) {
-        if(qobject_cast<Sensor*>(nb)!= nullptr)
+        if(static_cast<Sensor*>(nb)!= nullptr)
         {
             if (nb == (getForwardBlockingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
@@ -2414,7 +2414,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
             }
         }
         //if (nb instanceof Block) {
-        if(qobject_cast<Block*>(nb) != nullptr)
+        if(static_cast<Block*>(nb) != nullptr)
         {
             if (getBlockList()->contains((Block*)nb)) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());

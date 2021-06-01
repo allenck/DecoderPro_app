@@ -249,11 +249,11 @@
                 tr("OK")), false);
         fromBlock->setText(sr->getFromBlock()->getDisplayName());
         toBlock->setText(sr->getToBlock()->getDisplayName());
-        if (qobject_cast<SignalMast*>(signal)) {
+        if (static_cast<SignalMast*>(signal)) {
             mastName->setText(sr->getSignal()->getDisplayName());
             headName->setText("-");
             //sigMastComboBox->setSelectedItemByName(sr->getSignal()->getDisplayName()); // combo hidden for Edits
-        } else if (qobject_cast<SignalHead*>(signal)) {
+        } else if (static_cast<SignalHead*>(signal)) {
             mastName->setText("-");
             headName->setText(sr->getSignal()->getDisplayName());
             //sigHeadComboBox->setSelectedItemByName(sr->getSignal()->getDisplayName()); // combo hidden for Edits

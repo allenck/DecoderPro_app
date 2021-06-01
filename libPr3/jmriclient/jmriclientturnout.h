@@ -9,7 +9,7 @@ class JMRIClientTrafficController;
 class JMRIClientTurnout : public AbstractTurnout
 {
 public:
- JMRIClientTurnout(int number, JMRIClientSystemConnectionMemo* memo, QObject* paent = nullptr);
+ JMRIClientTurnout(int number, JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr);
  /*public*/ int getNumber();
  /*public*/ bool canInvert();
  /*public*/ void requestUpdateFromLayout();

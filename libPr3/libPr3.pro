@@ -122,6 +122,12 @@ DEFINES += USE_THREAD
 
 SOURCES += \
  #abstractproxymanager.cpp \
+ addeditsinglelightcontrolframe.cpp \
+ defaultlightcontrol.cpp \
+ lightcontrolpane.cpp \
+ lightcontroltablemodel.cpp \
+ lighteditaction.cpp \
+ lightintensitypane.cpp \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
@@ -1108,6 +1114,13 @@ SOURCES += \
     SOURCES +=
  }
 HEADERS += \
+ addeditsinglelightcontrolframe.h \
+ defaultlightcontrol.h \
+ digitalio.h \
+ lightcontrolpane.h \
+ lightcontroltablemodel.h \
+ lighteditaction.h \
+ lightintensitypane.h \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
@@ -1354,6 +1367,7 @@ HEADERS += \
     abstractaudio.h \
     oblock.h \
     portal.h \
+ variablelight.h \
     warrant.h \
     blockorder.h \
     opath.h \

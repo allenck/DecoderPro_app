@@ -784,19 +784,19 @@ return nullptr;
         if (nb == nullptr) {
             return;
         }
-        if (qobject_cast<SignalMast*>(nb)) {
-            if (nb->equals((QObject*)getWestBoundSignalMast())) {
+        if (static_cast<SignalMast*>(nb)) {
+            if (nb->equals((NamedBean*)getWestBoundSignalMast())) {
                 setWestBoundSignalMast(nullptr);
-            } else if (nb->equals((QObject*)getEastBoundSignalMast())) {
+            } else if (nb->equals((NamedBean*)getEastBoundSignalMast())) {
                 setEastBoundSignalMast(nullptr);
             }
-        } else if (qobject_cast<Sensor*>(nb)) {
+        } else if (static_cast<Sensor*>(nb)) {
             if (nb->equals(getWestBoundSensor())) {
                 setWestBoundSignalMast(nullptr);
             } else if (nb->equals(getEastBoundSensor())) {
                 setEastBoundSignalMast(nullptr);
             }
-        } else if (qobject_cast<SignalHead*>(nb)) {
+        } else if (static_cast<SignalHead*>(nb)) {
             if (nb->equals(getWestBoundSignalHead())) {
                 setWestBoundSignal(nullptr);
             }

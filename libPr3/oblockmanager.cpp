@@ -104,13 +104,13 @@ OBlockManager::OBlockManager(QObject *parent) :
     return (OBlock*)getBySystemName(name);
 }
 
-/*public*/ OBlock *OBlockManager::getBySystemName(QString name) const {
+/*public*/ NamedBean *OBlockManager::getBySystemName(QString name) const {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
     return (OBlock*)_tsys->value(key);
 }
 
-/*public*/ OBlock *OBlockManager::getByUserName(QString key)const  {
+/*public*/ NamedBean *OBlockManager::getByUserName(QString key)const  {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
     return (OBlock*)_tuser->value(key);
 }

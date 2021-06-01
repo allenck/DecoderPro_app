@@ -2,13 +2,15 @@
 #define LIGHT_H
 #include "abstractnamedbean.h"
 #include "lightcontrol.h"
+#include "digitalio.h"
 
 class LightControl;
-class Light :  public AbstractNamedBean
+class Light :  public AbstractNamedBean, public DigitalIO
 {
     //Q_OBJECT
+  Q_INTERFACES(DigitalIO)
 public:
- explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
+// explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
     Light(QString sysName, QString userName, QObject* parent = 0)
      : AbstractNamedBean(sysName, userName, parent) {}
     Light(QString sysName, QObject* parent = 0)
@@ -110,6 +112,38 @@ public:
         /** State value mask representing status where output is changing due to a request to transition. */
         const static int TRANSITIONING         = 0x010;
 
+        /** {@inheritDoc} */
+        //@Override
+        /*default*/ /*public*/ bool isConsistentState() {
+            return (getState() == ON)
+                    || (getState() == OFF);
+        }
+
+        /** {@inheritDoc} */
+//        @Override
+//        @InvokeOnLayoutThread
+        /*default*/ /*public*/ void setCommandedState(int s) {
+            setState(s);
+        }
+
+        /** {@inheritDoc} */
+        //@Override
+        /*default*/ /*public*/ int getCommandedState() {
+            return getState();
+        }
+
+        /** {@inheritDoc} */
+        //@Override
+        /*default*/ /*public*/ int getKnownState() {
+            return getState();
+        }
+
+        /** {@inheritDoc} */
+        //@Override
+        //@InvokeOnLayoutThread
+        /*default*/ /*public*/ void requestUpdateFromLayout() {
+            // Do nothing
+        }
 
         /**
          * Set the demanded output state. Valid values are ON and OFF.
@@ -315,5 +349,5 @@ signals:
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(Light, "Light")
 #endif // LIGHT_H

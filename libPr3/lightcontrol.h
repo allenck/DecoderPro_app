@@ -25,44 +25,45 @@ public:
     /**
      * Accessor methods
      */
-    /*public*/ int getControlType();
-    /*public*/ int hashCode();
-    /*public*/ void setControlType(int type);
-    /*public*/ void setControlSensorName(QString sensorName);
-    /*public*/ int getControlSensorSense() ;
-    /*public*/ QString getControlSensorName();
-    /*public*/ void setControlSensorSense(int sense);
-    /*public*/ int getFastClockOnHour();
-    /*public*/ int getFastClockOnMin();
-    /*public*/ int getFastClockOffHour();
-    /*public*/ int getFastClockOffMin();
-    /*public*/ void setFastClockControlSchedule(int onHour,int onMin,int offHour, int offMin);
-    /*public*/ QString getControlTurnoutName();
-    /*public*/ void setControlTurnout(QString turnoutName);
-    /*public*/ int getControlTurnoutState();
-    /*public*/ void setControlTurnoutState(int state);
-    /*public*/ QString getControlTimedOnSensorName();
-    /*public*/ void setControlTimedOnSensorName(QString sensorName);
-    /*public*/ int getTimedOnDuration();
-    /*public*/ void setTimedOnDuration(int duration);
-    /*public*/ QString getControlSensor2Name();
-    /*public*/ void setControlSensor2Name(QString sensorName);
-    /*public*/ void setParentLight(Light* l);
+    virtual /*public*/ int getControlType();
+    virtual /*public*/ int hashCode();
+    virtual /*public*/ void setControlType(int type);
+    virtual /*public*/ void setControlSensorName(QString sensorName);
+    virtual /*public*/ int getControlSensorSense() ;
+    virtual /*public*/ QString getControlSensorName();
+    virtual /*public*/ void setControlSensorSense(int sense);
+    virtual /*public*/ int getFastClockOnHour();
+    virtual /*public*/ int getFastClockOnMin();
+    virtual /*public*/ int getFastClockOffHour();
+    virtual /*public*/ int getFastClockOffMin();
+    virtual /*public*/ void setFastClockControlSchedule(int onHour,int onMin,int offHour, int offMin);
+    virtual /*public*/ QString getControlTurnoutName();
+    virtual /*public*/ void setControlTurnout(QString turnoutName);
+    virtual /*public*/ int getControlTurnoutState();
+    virtual /*public*/ void setControlTurnoutState(int state);
+    virtual /*public*/ QString getTimedSensorName() {return QString();}
+    virtual /*public*/ QString getControlTimedOnSensorName();
+    virtual /*public*/ void setControlTimedOnSensorName(QString sensorName);
+    virtual /*public*/ int getTimedOnDuration();
+    virtual /*public*/ void setTimedOnDuration(int duration);
+    virtual /*public*/ QString getControlSensor2Name();
+    virtual /*public*/ void setControlSensor2Name(QString sensorName);
+    virtual /*public*/ void setParentLight(Light* l);
     /**
      * Activates a Light Control by control type.  This method tests the
      *   control type, and set up a control mechanism, appropriate
      *   for the control type.
      */
-    /*public*/ void activateLightControl();
+    virtual /*public*/ void activateLightControl();
     /**
      * Deactivates a LightControl by control type.  This method tests the
      *   control type, and deactivates the control mechanism, appropriate
      *   for the control type.
      */
-    /*public*/ void deactivateLightControl();
-    /*public*/ bool onOffTimesFaulty();
-    /*public*/ bool areFollowerTimesFaulty( QList<LightControl*> compareList );
-    /*public*/ QString getDescriptionText(QString lightName);
+    virtual/*public*/ void deactivateLightControl();
+    virtual /*public*/ bool onOffTimesFaulty();
+    virtual /*public*/ bool areFollowerTimesFaulty( QList<LightControl*> compareList );
+    virtual /*public*/ QString getDescriptionText(QString lightName);
 
 
 signals:
@@ -124,8 +125,8 @@ protected:
     Turnout* _controlTurnout= nullptr;
     NamedBeanHandle<Sensor*>* _namedTimedControlSensor = nullptr;
     /*protected*/ void twoSensorChanged();
-    /*protected*/ int getFastClockOffCombined();
-    /*protected*/ int getFastClockOnCombined();
+    virtual /*protected*/ int getFastClockOffCombined();
+    virtual /*protected*/ int getFastClockOnCombined();
 
     friend class LightControlTest;
     friend class TimeLight;
@@ -136,6 +137,7 @@ protected:
     friend class LC5PropertyChangeListener;
     friend class LC6PropertyChangeListener;
     friend class LightTableAction;
+    friend class DefaultLightControl;
 };
 
 class LC1PropertyChangeListener : public QObject, public PropertyChangeListener
@@ -211,14 +213,14 @@ public slots:
  void propertyChange(PropertyChangeEvent*);
 };
 
-class TimeLight : public ActionListener
-{
- Q_OBJECT
- LightControl* lc;
-public:
- TimeLight(LightControl* lc) {this->lc = lc;}
- public slots:
-    /*public*/ void actionPerformed(/*ActionEvent* event*/);
-};
+//class TimeLight : public ActionListener
+//{
+// Q_OBJECT
+// LightControl* lc;
+//public:
+// TimeLight(LightControl* lc) {this->lc = lc;}
+// public slots:
+//    /*public*/ void actionPerformed(/*ActionEvent* event*/);
+//};
 
 #endif // LIGHTCONTROL_H

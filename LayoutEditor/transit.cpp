@@ -543,7 +543,7 @@
 /*public*/ void Transit::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
     if ("CanDelete" == (evt->getPropertyName())) { // NOI18N
         NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
-        if (qobject_cast<Section*>(nb)) {
+        if (static_cast<Section*>(nb)) {
             if (containsSection((Section*) nb)) {
                 throw  PropertyVetoException(tr("Is in use with Transit %1").arg(getDisplayName()), evt);
             }

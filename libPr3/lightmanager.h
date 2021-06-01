@@ -87,17 +87,17 @@ public:
          * @throws IllegalArgumentException if cannot create the Light
          * due to e.g. an illegal name or name that can't be parsed.
          */
-        virtual Light* newLight(QString /*systemName*/, QString /*userName*/) =0;
+  virtual Light* newLight(QString /*systemName*/, QString /*userName*/) {return nullptr;}
 
         /**
          * Locate a Light by its user name
          */
-        virtual Light* getByUserName(QString /*s*/) const =0;
+        NamedBean* getByUserName(QString /*s*/) const {return nullptr;}
 
         /**
          * Locate a Light by its system name
          */
-        virtual Light* getBySystemName(QString /*s*/) const =0;
+        virtual NamedBean* getBySystemName(QString /*s*/) const =0;
 
 //        /**
 //         * Validate system name format

@@ -28,8 +28,8 @@
         Light* li = InstanceManager::lightManagerInstance()->getLight(lightName);
         if (li != nullptr) {
             lights.insert(lightName, new ALSLightListener(lightName, this));
-            //li.addPropertyChangeListener(lights.get(lightName));
-            connect(li->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            li->addPropertyChangeListener(lights.value(lightName));
+            //connect(li->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         } else {
             log->error(tr("Failed to get light %1").arg(lightName));
         }
@@ -40,8 +40,8 @@
     if (lights.contains(lightName)) {
         Light* li = InstanceManager::lightManagerInstance()->getLight(lightName);
         if (li != nullptr) {
-            //li.removePropertyChangeListener(lights.get(lightName));
-            disconnect(li->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            li->removePropertyChangeListener(lights.value(lightName));
+            //disconnect(li->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
             lights.remove(lightName);
         } else {
             log->error(tr("Failed to get light %1").arg(lightName));
@@ -101,8 +101,8 @@
   light.next();
         Light* li = InstanceManager::lightManagerInstance()->getLight(light.key());
         if (li != nullptr) {
-            //li.removePropertyChangeListener(light.value());
-         disconnect(li, SIGNAL(propertyChange(PropertyChangeEvent*)), light.value(), SLOT(propertyChange(PropertyChangeEvent*)));
+         li->removePropertyChangeListener(light.value());
+         //disconnect(li, SIGNAL(propertyChange(PropertyChangeEvent*)), light.value(), SLOT(propertyChange(PropertyChangeEvent*)));
         }
     }
     this->lights.clear();

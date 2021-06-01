@@ -688,7 +688,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  QString userName = block->getUserName();
  LayoutBlock* lBlock = nullptr;
  if ((userName != "") && !userName.isEmpty()) {
-     lBlock = layoutBlockManager->getByUserName(userName);
+     lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(userName);
  }
  if (((p->getConnect1())->getLayoutBlock() == lBlock) && ((p->getConnect2())->getLayoutBlock() != lBlock)) {
      if ((LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect2(), p) && facing)
@@ -724,7 +724,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  QString userName = block->getUserName();
  LayoutBlock* lBlock = nullptr;
  if ((userName != "") && !userName.isEmpty()) {
-     lBlock = layoutBlockManager->getByUserName(userName);
+     lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(userName);
  }
  if (((p->getConnect1())->getLayoutBlock() == lBlock) && ((p->getConnect2())->getLayoutBlock() != lBlock)) {
      if ((LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect2(), p) && facing)

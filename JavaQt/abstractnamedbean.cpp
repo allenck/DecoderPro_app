@@ -6,18 +6,18 @@
 
 AbstractNamedBean::AbstractNamedBean(QObject *parent) : NamedBean(parent)
 {
- common("", "", parent);
+ common("", ""/*, parent*/);
 }
 
-void AbstractNamedBean::common(QString sys, QString user, QObject *parent)
+void AbstractNamedBean::common(QString sys, QString user/*, QObject *parent*/)
 {
- this->parent = parent;
+ //this->parent = parent;
  this->mSystemName = sys;
  this->mUserName = user;
  parameters = NULL;
  _register = new QHash<PropertyChangeListener*, QString>();
  listenerRefs = new QHash<PropertyChangeListener*, QString>();
- pcs = new PropertyChangeSupport((QObject*)this);
+ pcs = new PropertyChangeSupport(/*(QObject*)*/this);
 }
 
 /**
@@ -30,19 +30,19 @@ void AbstractNamedBean::common(QString sys, QString user, QObject *parent)
  */
 //public abstract class AbstractNamedBean implements NamedBean, java.io.Serializable {
 
-AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(sys, parent)
+AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(parent)
 {
  //Q_ASSERT(!sys.isEmpty());
  setObjectName(sys);
- common(sys, "", parent );
+ common(sys, ""/*, parent*/ );
  setObjectName(sys);
 }
 
-AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : NamedBean(sysName,parent)
+AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : NamedBean(parent)
 {
  //Q_ASSERT(!sysName.isEmpty());
- common(sysName, user, parent);
- setUserName(user);
+ common(sysName, user/*, parent*/);
+ //setUserName(user);
  setObjectName(sysName+"/"+user);
 }
 
@@ -248,6 +248,7 @@ QString AbstractNamedBean::getDisplayName()
 /*final*/ /*public*/ QString AbstractNamedBean::getSystemName() const{
     return mSystemName;
 }
+
 /*public*/ QString AbstractNamedBean::getUserName()const {return mUserName;}
 
 ///*public*/ void AbstractNamedBean::setSysName(QString s)
@@ -329,12 +330,12 @@ QString AbstractNamedBean::getDisplayName()
  *         {@code false} otherwise.
  */
 //@Override
-/*public*/ bool AbstractNamedBean::equals(QObject* obj)
+/*public*/ bool AbstractNamedBean::equals(NamedBean* obj)
 {
  if (obj == this) return true;  // for efficiency
  if (obj == nullptr) return false; // by contract
 
- if (qobject_cast<AbstractNamedBean*>(obj))
+ if (static_cast<AbstractNamedBean*>(obj))
  {  // NamedBeans are not equal to things of other types
      AbstractNamedBean* b = (AbstractNamedBean*) obj;
      return this->getSystemName() == (b->getSystemName());

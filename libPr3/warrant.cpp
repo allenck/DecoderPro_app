@@ -1570,7 +1570,7 @@
            property).arg(evt->getNewValue().toString()).arg(((NamedBean*) evt->getSource())->getDisplayName()).arg(getDisplayName()));
  }
 
-  if (_protectSignal != nullptr && _protectSignal == evt->getSource()) {
+  if (_protectSignal != nullptr && _protectSignal == (NamedBean*)evt->getSource()) {
       if (property == ("Aspect") || property == ("Appearance")) {
           // signal controlling warrant has changed.
           readStoppingSignal();
@@ -1631,7 +1631,7 @@
  }
 /*private*/ bool Warrant::readStoppingSignal() {
     QString speedType;
-    if (qobject_cast<SignalHead*>(_protectSignal)) {
+    if (static_cast<SignalHead*>(_protectSignal)) {
         SignalHead* head = (SignalHead*) _protectSignal;
         int appearance = head->getAppearance();
         speedType = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))
@@ -2395,7 +2395,7 @@
         {
             _stoppingSignal = bo->getSignal();
             _stoppingSignal->addPropertyChangeListener((PropertyChangeListener*)this);
-            connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            //connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         }
     } else {    //  if signal is configured, ignore block
         nextSpeed = nextBlock->getBlockSpeed();
@@ -2486,8 +2486,8 @@
         if (nextSpeed!=nullptr ) {
             if (nextSpeed==("Stop")) {
                 _stoppingSignal = bo->getSignal();
-                //_stoppingSignal.addPropertyChangeListener(this);
-                connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
+                _stoppingSignal->addPropertyChangeListener(this);
+                //connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
             }
             if(_debug) log->debug("signal indicates \""+nextSpeed+"\" entrance speed and \""+exitSpeed+
                     "\" exit speed on Warrant \""+getDisplayName()+"\".\n Set change speed Delay to "+
@@ -3098,10 +3098,10 @@ bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockId
  *         {@code false} otherwise.
  */
 //@Override
-/*public*/ bool Warrant::equals(QObject* obj) {
+/*public*/ bool Warrant::equals(NamedBean* obj) {
     if (obj == nullptr) return false; // by contract
 
-    if (qobject_cast< Warrant*>(obj)) {  // NamedBeans are not equal to things of other types
+    if (static_cast< Warrant*>(obj)) {  // NamedBeans are not equal to things of other types
         Warrant* b = (Warrant*) obj;
         DccLocoAddress* addr = this->_speedUtil->getDccAddress();
         if (addr == nullptr) {

@@ -209,27 +209,27 @@ return (settingRouteColor == QColor() ? false : true);
     return ENTRYEXIT;
 }
 
-/*public*/ DestinationPoints* EntryExitPairs::getBySystemName(QString systemName) const
+/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName) const
 {
  foreach(Source* e,   nxpair.values())
  {
      DestinationPoints* pd = e->getByUniqueId(systemName);
      if(pd!=NULL)
-         return pd;
+         return (NamedBean*)pd;
  }
  return NULL;
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ /*DestinationPoints*/DestinationPoints *EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) const {
+/*public*/ /*DestinationPoints*/NamedBean *EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) const {
  if(userName=="")
   throw NullPointerException(tr("userName is marked NonNull but is null"));
 
   for (Source* e : nxpair.values()) {
       DestinationPoints* pd = (DestinationPoints*)e->getByUserName(userName);
       if (pd != nullptr) {
-          return pd;
+          return (NamedBean*)pd;
       }
   }
   return nullptr;
@@ -393,7 +393,7 @@ public List<DestinationPoints> getNamedBeanList() {
     {
      e.next();
         //QObject* obj = (e.getKey()).getRefObject();
-     QObject* obj = e.key()->getRefObject();
+     NamedBean* obj = e.key()->getRefObject();
      LayoutEditor* pan = e.key()->getPanel();
      if(pan==panel)
      {
@@ -692,7 +692,7 @@ public List<DestinationPoints> getNamedBeanList() {
  firePropertyChange("length", QVariant(), QVariant());
 }
 
-/*public*/ QObjectList* EntryExitPairs::getDestinationList(QObject* obj, LayoutEditor* panel){
+/*public*/ QObjectList* EntryExitPairs::getDestinationList(NamedBean* obj, LayoutEditor* panel){
     QObjectList* list = new QObjectList();
     if( nxpair.contains(getPointDetails(obj, panel)))
     {
@@ -950,42 +950,42 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
  return blockSensors;
 }
 
-/*public*/ bool EntryExitPairs::isDestinationValid(QObject* source, QObject* dest, LayoutEditor* panel){
+/*public*/ bool EntryExitPairs::isDestinationValid(NamedBean* source, NamedBean* dest, LayoutEditor* panel){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->isDestinationValid(getPointDetails(dest, panel));
  return false;
 }
 
-/*public*/ bool EntryExitPairs::isUniDirection(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ bool EntryExitPairs::isUniDirection(NamedBean* source, LayoutEditor* panel, NamedBean* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getUniDirection(dest, panel);
  return false;
 }
 
-/*public*/ void EntryExitPairs::setUniDirection(QObject* source, LayoutEditor* panel, QObject* dest, bool set){
+/*public*/ void EntryExitPairs::setUniDirection(NamedBean* source, LayoutEditor* panel, NamedBean* dest, bool set){
  if( nxpair.contains(getPointDetails(source, panel)))
   nxpair.value(getPointDetails(source, panel))->setUniDirection(dest, panel, set);
 }
 
-/*public*/ bool EntryExitPairs::canBeBiDirectional(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ bool EntryExitPairs::canBeBiDirectional(NamedBean* source, LayoutEditor* panel, NamedBean* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
    return  nxpair.value(getPointDetails(source, panel))->canBeBiDirection(dest, panel);
  return false;
 }
 
-/*public*/ bool EntryExitPairs::isEnabled(QObject* source, LayoutEditor* panel, QObject* dest)
+/*public*/ bool EntryExitPairs::isEnabled(NamedBean* source, LayoutEditor* panel, NamedBean* dest)
 {
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->isEnabled(dest, panel);
  return false;
 }
 
-/*public*/ void EntryExitPairs::setEnabled(QObject* source, LayoutEditor* panel, QObject* dest, bool set){
+/*public*/ void EntryExitPairs::setEnabled(NamedBean* source, LayoutEditor* panel, NamedBean* dest, bool set){
  if( nxpair.contains(getPointDetails(source, panel)))
   nxpair.value(getPointDetails(source, panel))->setEnabled(dest, panel, set);
 }
 
-/*public*/ void EntryExitPairs::setEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest, int set){
+/*public*/ void EntryExitPairs::setEntryExitType(NamedBean* source, LayoutEditor* panel, NamedBean* dest, int set){
  if( nxpair.contains(getPointDetails(source, panel)))
  {
   nxpair.value(getPointDetails(source, panel))->setEntryExitType(dest, panel, set);
@@ -993,13 +993,13 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
  }
 }
 
-/*public*/ int EntryExitPairs::getEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ int EntryExitPairs::getEntryExitType(NamedBean *source, LayoutEditor* panel, NamedBean *dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getEntryExitType(dest, panel);
  return 0x00;
 }
 
-/*public*/ QString EntryExitPairs::getUniqueId(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ QString EntryExitPairs::getUniqueId(NamedBean* source, LayoutEditor* panel, NamedBean* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getUniqueId(dest, panel);
  return QString();
@@ -1016,7 +1016,7 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 //protecting helps us to determine which direction we are going in.
 //validateOnly flag is used, if all we are doing is simply checking to see if the source/destpoints are valid, when creating the pairs in the user GUI
 
-/*public*/ bool EntryExitPairs::isPathActive(QObject* sourceObj, QObject* destObj, LayoutEditor* panel)
+/*public*/ bool EntryExitPairs::isPathActive(NamedBean *sourceObj, NamedBean *destObj, LayoutEditor* panel)
 {
     PointDetails* pd = getPointDetails(sourceObj, panel);
  if( nxpair.contains(pd))
@@ -1027,7 +1027,7 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
  return false;
 }
 
-/*public*/ void EntryExitPairs::cancelInterlock(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ void EntryExitPairs::cancelInterlock(NamedBean* source, LayoutEditor* panel, NamedBean* dest){
 if( nxpair.contains(getPointDetails(source, panel)))
 {
  nxpair.value(getPointDetails(source, panel))->cancelInterlock(dest, panel);
@@ -1097,7 +1097,7 @@ if( nxpair.contains(getPointDetails(source, panel)))
     }
 }
 
-/*public*/ PointDetails* EntryExitPairs::getPointDetails(QObject* obj, LayoutEditor* panel)
+/*public*/ PointDetails* EntryExitPairs::getPointDetails(NamedBean* obj, LayoutEditor* panel)
 {
   for (int i = 0; i<pointDetails->size(); i++)
   {

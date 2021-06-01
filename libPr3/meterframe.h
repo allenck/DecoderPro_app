@@ -7,6 +7,7 @@
 #include "manager.h"
 #include "abstractaction.h"
 #include <QMetaEnum>
+#include "metermanager.h"
 
 class SelectMeterAction;
 class Meter;
@@ -137,6 +138,7 @@ private:
        }
        name = s;
       }
+
     friend class MeterFrame;
     friend class MeterFrameManagerXml;
   };
@@ -162,8 +164,8 @@ private:
   /*private*/ static /*final*/ int MAX_DECIMAL_DIGITS;// = 3;
   /*private*/ /*final*/ QUuid uuid;
 
-  /*private*/ /*final*/ QList<Meter*> voltageMeters = QList<Meter*>();
-  /*private*/ /*final*/ QList<Meter*> currentMeters = QList<Meter*>();
+  /*private*/ /*final*/ QList<Meter*> voltageMeters;// = QList<Meter*>();
+  /*private*/ /*final*/ QList<Meter*> currentMeters;// = QList<Meter*>();
 
   // GUI member declarations
   /*private*/ QMenuBar* menuBar = nullptr;
@@ -222,6 +224,7 @@ private:
   /*private*/ void updateVoltageMeters(QMenu* voltageMetersMenu);
   /*private*/ void updateCurrentMeters(QMenu* currentMetersMenu);
   /*private*/ void updateCheckboxList();
+  MeterManager* mm = nullptr;
 
   friend class BeanListListener;
   friend class SelectMeterAction;

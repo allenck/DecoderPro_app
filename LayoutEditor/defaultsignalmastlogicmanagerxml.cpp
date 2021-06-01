@@ -411,13 +411,14 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
            else if (state==("unoccupied"))
                value = Block::UNOCCUPIED;
 
-           Block* blk = ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getBlock(block);
+           BlockManager* bm = (BlockManager*)InstanceManager::getDefault("BlockManager");
+           Block* blk = bm->getBlock(block);
            if (blk!=NULL)
                list.insert(blk, value);
            else if (debug)
                log->debug("Unable to add Block " + block + " as it does not exist in the panel file");
        }
-       ((DefaultSignalMastLogic*)logic)->setBlocks(list, dest);
+       ((DefaultSignalMastLogic*)logic->self())->setBlocks(list, dest);
       }
      }
      QDomElement mastElem = d.firstChildElement("masts");

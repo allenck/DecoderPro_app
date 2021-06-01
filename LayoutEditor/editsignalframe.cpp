@@ -332,14 +332,14 @@
         if (log->isDebugEnabled()) {
             log->debug(tr("addMast \"%1\" icon =%2").arg(newMast->getDisplayName()));
         }
-        if (qobject_cast<SignalMast*>(newMast)) {
+        if (static_cast<SignalMast*>(newMast)) {
             SignalMast* mast = (SignalMast*)newMast;
             if (mast->getAspect() == "") {
                 mast->setAspect(mast->getValidAspects().at(0));
             }
         }
         if (log->isDebugEnabled()) {
-            if (qobject_cast<SignalHead*>(newMast)){
+            if (static_cast<SignalHead*>(newMast)){
                 log->debug(tr("addMast SignalHead state= %1, appearance= %2").arg(((SignalHead*)newMast)->getState()).arg(((SignalHead*)newMast)->getAppearanceName()));
             } else {
                 log->debug(tr("addMast SignalMast state= %1, aspect= %2").arg(((SignalHead*)newMast)->getState()).arg(((SignalMast*)newMast)->getAspect()));
@@ -357,10 +357,10 @@
         if (!mastIcons->isEmpty()) {
             icon = mastIcons->at(0);
             newIcon = false;
-        } else if (qobject_cast<SignalMast*>(newMast)) {
+        } else if (static_cast<SignalMast*>(newMast)) {
             icon = new SignalMastIcon(_parent->_editor);
             ((SignalMastIcon*)icon)->setSignalMast(newMast->getDisplayName());
-        } else if (qobject_cast<SignalHead*>(newMast)) {
+        } else if (static_cast<SignalHead*>(newMast)) {
             icon = new SignalHeadIcon(_parent->_editor);
             ((SignalHeadIcon*)icon)->setSignalHead(newMast->getDisplayName());
         }

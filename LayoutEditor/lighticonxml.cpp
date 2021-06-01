@@ -33,7 +33,7 @@ LightIconXml::LightIconXml(QObject *parent) :
      return QDomElement();  // if flagged as inactive, don't store
 
     QDomElement element = doc.createElement("LightIcon");
-    element.setAttribute("light", ((AbstractLight*)p->getLight())->getSystemName());
+    element.setAttribute("light", ((NamedBean*)p->getLight())->getSystemName());
     storeCommonAttributes((Positionable*)p, element);
 
     QDomElement elem =doc.createElement("icons");

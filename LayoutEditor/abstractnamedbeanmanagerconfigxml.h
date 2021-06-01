@@ -4,6 +4,7 @@
 #include "namedbean.h"
 #include "liblayouteditor_global.h"
 
+
 class Manager;
 class LIBLAYOUTEDITORSHARED_EXPORT AbstractNamedBeanManagerConfigXML : public AbstractXmlAdapter
 {
@@ -21,7 +22,7 @@ private:
 
 protected:
  /*protected*/ void storeCommon(NamedBean* t, QDomElement elem);
- /*protected*/ void loadCommon(NamedBean* t, QDomElement elem);
+ /*protected*/ void loadCommon(NamedBean *t, QDomElement elem);
  void storeComment(NamedBean* t, QDomElement elem);
  void storeUserName(NamedBean* t, QDomElement elem);
  /*protected*/ QString getUserName(QDomNodeList beanList, int i);
