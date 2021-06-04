@@ -3,7 +3,8 @@
 #include "borderfactory.h"
 #include "defaultlightcontrol.h"
 #include "threadingutil.h"
-
+#include "lightcontroltablemodel.h"
+#include "itemevent.h"
 /**
  * Frame to add or edit a single Light Control.
  * Code originally within LightTableAction.
@@ -43,13 +44,13 @@
     JPanel* controlTypePanel = new JPanel();
     controlTypePanel->setLayout(new FlowLayout());
     controlTypePanel->layout()->addWidget(new JLabel(tr("Controller Type:")));
-    typeBox = new JComboBox(LightControlTableModel::controlTypes.toList());
+    typeBox = new JComboBox(LightControlTableModel::controlTypes->toList());
 //    ComboBoxToolTipRenderer* typeBoxToolTipRenderer = new ComboBoxToolTipRenderer();
 //    typeBoxToolTipRenderer->setTooltips(LightControlTableModel.getControlTypeTips());
 //    typeBox->setRenderer(typeBoxToolTipRenderer);
 
     //typeBox.addActionListener((ActionEvent e) -> setUpControlType(typeBox.getSelectedIndex()));
-    connect(typeBox, &JComboBox::currentIndexChanged, [=]{typeBox->getSelectedIndex();});
+    connect(typeBox, &JComboBox::itemStateChanged, [=](ItemEvent* /*e*/){setUpControlType(typeBox->getSelectedIndex());});
     typeBox->setToolTip(tr("Select how the new Light is to be controlled"));
 
     controlTypePanel->layout()->addWidget(typeBox);
@@ -95,8 +96,6 @@
 
     JPanel* panel33 = new JPanel();
     panel33->setLayout(new FlowLayout());
-
-
     panel33->layout()->addWidget(f2Label);
 
     stateBox = new JComboBox(QStringList{
@@ -133,9 +132,9 @@
     contentPane->layout()->addWidget(mainContentPanel);
     contentPane->layout()->addWidget(getButtonPanel());
 
-    JPanel* statusPanel = new JPanel();
+    JPanel* statusPanel = new JPanel(new FlowLayout());
     statusPanel->layout()->addWidget(status1);
-    contentPane->layout()->addWidget(statusPanel);
+    ((QBoxLayout*)contentPane->layout())->addWidget(statusPanel, 0);
 
 //    addWindowListener(new java.awt.event.WindowAdapter() {
 //        @Override
@@ -151,6 +150,7 @@
         setFrameToControl(lc);
     }
 
+    setUpControlType(0);
 }
 
 /*private*/ JPanel* AddEditSingleLightControlFrame::getButtonPanel(){
@@ -167,7 +167,7 @@
     //createControl.addActionListener(this::createControlPressed);
     connect(createControl, &JButton::clicked, [=]{createControlPressed(nullptr);});
     createControl->setToolTip(tr("Click to create a new Light Controller"));
-    updateControl = new JButton(tr("ButtonUpdate"));
+    updateControl = new JButton(tr("Update"));
     buttonPanel->layout()->addWidget(updateControl);
     //updateControl.addActionListener(this::updateControlPressed);
     connect(updateControl, &JButton::clicked, [=]{updateControlPressed(nullptr);});
@@ -214,13 +214,13 @@
             // set up panel for sensor control
             f1Label->setText(tr("Controller Sensor{%1").arg(tr("%1:").arg(""))); // insert nothing before colon
             sensor1Box->setToolTip(tr("Select the Sensor controlling this Light"));
-            f2Label->setText(tr("LightSensorSense"));
+            f2Label->setText(tr("Sense for ON:"));
             stateBox->clear();
             stateBox->addItem(tr("Active"));
             stateBox->addItem(tr("Inactive"));
             stateTooltips = QStringList();
             stateTooltips.append(tr("<html>Light ON when Sensor changes to Active<br>Light OFF when Sensor changes to Inactive</html>"));
-            stateTooltips.append(tr("LightSensorSenseInactivTip"));
+            stateTooltips.append(tr("<html>Light ON when Sensor changes to Inactive<br>Light OFF when Sensor changes to Active</html>"));
 //            stateBoxToolTipRenderer->setTooltips(stateTooltips);
             stateBox->setToolTip(tr("Select Sensor state corresponding to Light ON"));
             f2Label->setVisible(true);
@@ -230,10 +230,10 @@
             break;
         case Light::FAST_CLOCK_CONTROL:
             // set up panel for fast clock control
-            f1Label->setText(tr("LightScheduleOn"));
+            f1Label->setText(tr("Time ON:"));
             fastHourSpinner1->setToolTip(tr("Enter hours as for a 24-hour clock"));
             fastMinuteSpinner1->setToolTip(tr("Enter the minutes"));
-            f2Label->setText(tr("LightScheduleOff"));
+            f2Label->setText(tr("Time OFF:"));
             fastHourSpinner2->setToolTip(tr("Enter hours as for a 24-hour clock"));
             fastMinuteSpinner2->setToolTip(tr("Enter the minutes"));
             clockSep1->setVisible(true);
@@ -274,9 +274,9 @@
             break;
         case Light::TIMED_ON_CONTROL:
             // set up panel for sensor control
-            f1Label->setText(tr("LightTimedSensor"));
+            f1Label->setText(tr("Trigger Sensor:"));
             sensorOnBox->setToolTip(tr("Select the Sensor triggering Timed ON"));
-            f2Label->setText(tr("LightTimedDurationOn"));
+            f2Label->setText(tr("Duration ON (ms):"));
             timedOnSpinner->setToolTip(tr("Enter duration of Timed ON in milliseconds"));
             f2Label->setVisible(true);
             sensorOnBox->setVisible(true);
@@ -289,11 +289,11 @@
             f1Label->setText(tr("Controller Sensor%1").arg(" " + tr("%1:").arg("1"))); // for 2-sensor use, insert number "1" before colon
             f1aLabel->setVisible(true);
             sensor1Box->setToolTip(tr("Select the Sensor controlling this Light"));
-            f2Label->setText(tr("LightSensorSense"));
+            f2Label->setText(tr("Sense for ON:"));
 
             stateBox->clear();
-            stateBox->addItem(tr("SensorStateActive"));
-            stateBox->addItem(tr("SensorStateInactive"));
+            stateBox->addItem(tr("Active"));
+            stateBox->addItem(tr("Inactive"));
             stateBox->setToolTip(tr("Select Sensor state corresponding to Light ON"));
 
             stateTooltips = QStringList();
@@ -310,7 +310,7 @@
             break;
         case Light::NO_CONTROL:
             // set up panel for no control
-            f1Label->setText(tr("LightNoneSelected"));
+            f1Label->setText(tr("No Automated Controller Selected"));
             f2Label->setVisible(false);
             createControl->setEnabled(false);
             updateControl->setEnabled(false);
@@ -323,7 +323,7 @@
     setVisible(true);
 }
 
-/*protected*/ void AddEditSingleLightControlFrame::cancelControlPressed(JActionEvent* e) {
+/*protected*/ void AddEditSingleLightControlFrame::cancelControlPressed(JActionEvent* /*e*/) {
     lcp->closeEditControlWindow();
 }
 
@@ -375,9 +375,9 @@
     status1->setText(message);
     status1->setForeground(color);
 //    ThreadingUtil::runOnGUIDelayed( ()->{
-        status1->setText(" ");
+//        status1->setText(" ");
 //    },5000);
-
+    QTimer::singleShot(50000, [=]() { status1->setText(" "); });
 }
 
 /**
@@ -414,12 +414,12 @@
                 }
             }
         }
-        int sState =  ( tr("SensorStateInactive") == (stateBox->getSelectedItem())
+        int sState =  ( tr("Inactive") == (stateBox->getSelectedItem())
             ? Sensor::INACTIVE : Sensor::ACTIVE);
         g->setControlSensorName(sensorName);
         g->setControlSensorSense(sState);
         if (s == nullptr) {
-            notifyUser(tr("LightWarn1"),Qt::red);
+            notifyUser(tr("Error: Sensor could not be provided. Light Control not created."),Qt::red);
             return false;
         }
     } else if (LightControlTableModel::fastClockControl == (typeBox->getSelectedItem())) {
@@ -434,12 +434,12 @@
         g->setFastClockControlSchedule(onHour, onMin, offHour, offMin);
 
         if (g->onOffTimesFaulty()) {
-            notifyUser(tr("LightWarn11"),Qt::red);
+            notifyUser(tr("Error: ON and OFF times should not be the same."),Qt::red);
             return false;
         }
 
         if (g->areFollowerTimesFaulty(currentList)) {
-            notifyUser(tr("LightWarn12"),Qt::red);
+            notifyUser(tr("Error: ON and OFF times should be unique for all Fast Clock Followers."),Qt::red);
             return false;
         }
 
@@ -453,7 +453,7 @@
         if (turnoutName == "") {
             // no turnout selected
             g->setControlType(Light::NO_CONTROL);
-            notifyUser(tr("LightWarn10"),Qt::gray);
+            notifyUser(tr("No Controller Turnout selected. Turnout Controller removed."),Qt::gray);
         } else {
 
             // TODO : Remove Turnouts which are actually lights ( ???? )
@@ -470,7 +470,7 @@
                         getBySystemName(testSN);
                 if (testLight != nullptr) {
                     // Requested turnout bit is already assigned to a Light
-                    notifyUser(tr("LightWarn3") + " " + testSN + ".",Qt::red);
+                    notifyUser(tr("LightWarning: Requested Turnout uses the same address as Light:Warn3") + " " + testSN + ".",Qt::red);
                     error = true;
                 }
             }

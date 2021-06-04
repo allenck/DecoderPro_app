@@ -13,6 +13,7 @@
 #include "systemnamevalidator.h"
 #include "lightcontroltablemodel.h"
 
+class LightIntensityPane;
 class BufferedImage;
 class LTAValidator;
 class QGroupBox;
@@ -58,7 +59,7 @@ private:
     ManagerComboBox* prefixBox = new ManagerComboBox/*<Light>*/();
     JCheckBox* addRangeBox = new JCheckBox(tr("Add a sequential range"));
     JTextField* hardwareAddressTextField = new JTextField(10);
-    SystemNameValidator* hardwareAddressValidator;
+    SystemNameValidator* hardwareAddressValidator = nullptr;
     SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 50, 1); // maximum 50 items
     JSpinner* numberToAdd = new JSpinner(rangeSpinner);
     JLabel* labelNumToAdd = new JLabel("   " + tr("Number to Add:"));
@@ -86,6 +87,8 @@ private:
     QLabel* status1;// = new JLabel(tr("LightCreateInst"));
     QLabel* status2;// = new JLabel("");
     Manager* connectionChoice = nullptr;
+    /*private*/ LightIntensityPane* lightIntensityPanel = nullptr;
+    /*private*/ LightControlPane* lightControlPanel = nullptr;
 
     // parts for supporting variable intensity, transition
     QLabel* labelMinIntensity;// = new JLabel(tr("LightMinIntensity") + "  ");
@@ -101,7 +104,7 @@ private:
     bool supportsVariableLights();
     Logger * log;
     /*private*/ void setLightControlInformation(Light* g);
-    /*private*/ void clearLightControls();
+//    /*private*/ void clearLightControls();
     QString formatTime(int hour, int minute);
     /*private*/ static QString getControlSensorSenseText(LightControl* lc);
     /*private*/ static QString getControlTurnoutStateText(LightControl* lc);
@@ -145,7 +148,7 @@ private:
 
 private slots:
     void createPressed(ActionEvent* e = nullptr);
-    void editPressed();
+//    void editPressed();
     void updatePressed(ActionEvent* e = nullptr);
     void cancelPressed(ActionEvent* e = nullptr);
     void controlTypeChanged();
@@ -153,13 +156,13 @@ private slots:
 
 protected:
     /*protected*/ LightManager* lightManager;// = InstanceManager.lightManagerInstance();
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
+    /*protected*/ void createModel() override;
+    /*protected*/ void setTitle()override;
+    /*protected*/ QString helpTarget()override;
     ///*protected*/ BeanTableDataModel* m;
-    /*protected*/ QString getClassName();
+    /*protected*/ QString getClassName() override;
     // for icon state col
-    /*protected*/ bool _graphicState = false; // updated from prefs
+    // /*protected*/ bool _graphicState = false; // updated from prefs
 
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
@@ -177,9 +180,10 @@ protected slots:
  friend class LTAWindowListener;
  friend class ACFWindowListener;
  friend class LTAValidator;
+ friend class HAVPropertyChangeListener;
 };
 Q_DECLARE_METATYPE(LightTableAction)
-
+#if 0
 class LTBeanTableDataModel : public BeanTableDataModel
 {
     Q_OBJECT
@@ -231,6 +235,7 @@ protected:
 
  friend class LTAValidator;
 };
+#endif
 #if 0
 /*public*/ class LightControlTableModel : public AbstractTableModel, public PropertyChangeListener
 {
@@ -295,4 +300,35 @@ public slots:
  void prefixBoxChanged(QString txt);
 
 };
+
+class HAVPropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  LightTableAction* lta;
+ public:
+  HAVPropertyChangeListener(LightTableAction* lta) {this->lta = lta;}
+ public slots:
+  void PropertyChange(PropertyChangeEvent* /*evt*/)
+  {
+   Validation* validation = lta->hardwareAddressValidator->getValidation();
+   Validation::Type type = validation->getType();
+   lta->create->setEnabled(type != Validation::Type::WARNING && type != Validation::Type::DANGER);
+   QString message = validation->getMessage();
+   if (message == "") {
+       lta->status1->setText("");
+   } else {
+       message = message.trimmed();
+       if (message.startsWith("<html>") && message.contains("<br>")) {
+           message = message.mid(0, message.indexOf("<br>"));
+           if (!message.endsWith("</html>")) {
+               message = message + "</html>";
+           }
+       }
+       lta->status1->setText(message);
+   }
+  }
+  QObject* self() override {return this;}
+};
+
 #endif // LIGHTTABLEACTION_H

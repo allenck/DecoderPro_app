@@ -48,9 +48,9 @@ AbstractBorder::AbstractBorder(QWidget* parent) : QWidget(parent)
  * @param c  the component for which this border insets value applies
  * @return a new {@link Insets} object
  */
-///*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c)       {
-//    return getBorderInsets(c, new Insets(0, 0, 0, 0));
-//}
+/*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c)       {
+    return getBorderInsets(c, new Insets(0, 0, 0, 0));
+}
 
 /**
  * Reinitializes the insets parameter with this Border's current Insets.

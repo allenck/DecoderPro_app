@@ -320,6 +320,7 @@ void JTextField::init()
 //    putClientProperty(JComponent_INPUT_VERIFIER, inputVerifier);
 //    firePropertyChange("inputVerifier", oldInputVerifier, inputVerifier);
  this->inputVerifier = inputVerifier;
+ this->setValidator((QValidator*)inputVerifier);
 }
 
 #if 0

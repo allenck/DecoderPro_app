@@ -214,7 +214,9 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
  */
 //@Override
 /*public*/ NamedBean* NamedBeanComboBox::getSelectedItem() {
-    NamedBean* item = VPtr<NamedBean>::asPtr(itemData(currentIndex()));
+    QString txt = currentText();
+    QVariant var = currentData();
+    NamedBean* item = VPtr<NamedBean>::asPtr(currentData());
     if (isEditable() && providing && item == nullptr)
     {
   #if 0

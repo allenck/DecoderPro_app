@@ -42,7 +42,7 @@ protected:
     /*protected*/ QTabWidget* dataTabs;
 
     /*protected*/ bool init;// = false;
-    /*protected*/ void createModel();
+    /*protected*/ void createModel() override;
     virtual /*abstract*/ /*protected*/ Manager* getManager();
     virtual /*abstract*/ /*protected*/ AbstractTableAction* getNewTableAction(QString choice);
     /*protected*/ QList<TabbedTableItem*> tabbedTableArray;// = new ArrayList<TabbedTableItem>();

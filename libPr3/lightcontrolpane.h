@@ -24,7 +24,7 @@ class LightControlPane : public JPanel
   /*private*/ JButton* addControl;
   /*private*/ int defaultControlIndex = Light::NO_CONTROL;
   /*private*/ void init();
-  /*private*/ AddEditSingleLightControlFrame* addEditCtrlFrame;
+  /*private*/ AddEditSingleLightControlFrame* addEditCtrlFrame = nullptr;
   /*private*/ void addEditControlWindow(LightControl* lc);
 
  protected:

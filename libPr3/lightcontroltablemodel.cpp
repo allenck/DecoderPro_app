@@ -19,20 +19,20 @@
 
 
 
-/*protected*/ /*static final*/ QString LightControlTableModel::sensorControl = tr("LightSensorControl");
-/*protected*/ /*static final*/ QString LightControlTableModel::fastClockControl = tr("LightFastClockControl");
-/*protected*/ /*static final*/ QString LightControlTableModel::turnoutStatusControl = tr("LightTurnoutStatusControl");
-/*protected*/ /*static final*/ QString LightControlTableModel::timedOnControl = tr("LightTimedOnControl");
-/*protected*/ /*static final*/ QString LightControlTableModel::twoSensorControl = tr("LightTwoSensorControl");
-/*protected*/ /*static final*/ QString LightControlTableModel::noControl = tr("LightNoControl");
+/*protected*/ /*static final*/ QString LightControlTableModel::sensorControl = tr("By Sensor");
+/*protected*/ /*static final*/ QString LightControlTableModel::fastClockControl = tr("By Fast Clock Follower");
+/*protected*/ /*static final*/ QString LightControlTableModel::turnoutStatusControl = tr("By Turnout Status");
+/*protected*/ /*static final*/ QString LightControlTableModel::timedOnControl = tr("By Timed ON");
+/*protected*/ /*static final*/ QString LightControlTableModel::twoSensorControl = tr("By Two Sensors");
+/*protected*/ /*static final*/ QString LightControlTableModel::noControl = tr("None");
 
-/*protected*/ /*static*/ /*final*/ QVector<QString> LightControlTableModel::controlTypes = QVector<QString>{
-    noControl,
-    sensorControl,
-    fastClockControl,
-    turnoutStatusControl,
-    timedOnControl,
-    twoSensorControl };
+/*protected*/ /*static*/ /*final*/ QVector<QString>* LightControlTableModel::controlTypes = new QVector<QString>{
+    LightControlTableModel::noControl,
+    LightControlTableModel::sensorControl,
+    LightControlTableModel::fastClockControl,
+    LightControlTableModel::turnoutStatusControl,
+    LightControlTableModel::timedOnControl,
+    LightControlTableModel::twoSensorControl };
 
 /*protected*/ /*static*/ /*final*/ QList<QString> LightControlTableModel::getControlTypeTips(){
     QList<QString> typeTooltips = QList<QString>();
@@ -165,12 +165,14 @@
 /*public*/ QVariant LightControlTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
  if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
+ {
     if (section == TYPE_COLUMN) {
         return tr("Controller Type:");
     } else if (section == DESCRIPTION_COLUMN) {
         return tr("Description");
     }
-    return "";
+ }
+ return QVariant();
 }
 
 /**
@@ -188,9 +190,9 @@
         case DESCRIPTION_COLUMN:
             return (LightTableAction::getDescriptionText(lc, lc->getControlType()));
         case EDIT_COLUMN:
-            return tr("ButtonEdit");
+            return tr("Edit");
         case REMOVE_COLUMN:
-            return tr("ButtonDelete");
+            return tr("Delete");
         default:
      break;;
     }
@@ -236,14 +238,14 @@
     descriptionColumn->setMinWidth(270);
     descriptionColumn->setMaxWidth(380);
 
-//    table.setDefaultRenderer(JButton.class, new ButtonRenderer());
-//    table.setDefaultEditor(JButton.class, new ButtonEditor(new JButton()));
+    table->setDefaultRenderer("JButton", new ButtonRenderer());
+    table->setDefaultEditor("JButton", new ButtonEditor(/*new JButton()*/));
 
     JButton* testButton = new JButton(tr("Delete"));
     table->setRowHeight(testButton->sizeHint().height());
     TableColumn* editColumn = lightControlColumnModel->getColumn(LightControlTableModel::EDIT_COLUMN);
     editColumn->setResizable(false);
-    editColumn->setMinWidth(JButton(tr("ButtonEdit")).sizeHint().width());
+    editColumn->setMinWidth(JButton(tr("Edit")).sizeHint().width());
     TableColumn* removeColumn = lightControlColumnModel->getColumn(LightControlTableModel::REMOVE_COLUMN);
     removeColumn->setResizable(false);
     removeColumn->setMinWidth(testButton->sizeHint().width());

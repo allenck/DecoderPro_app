@@ -10,6 +10,7 @@
 #include "lighteditaction.h"
 #include "imageio.h"
 #include "file.h"
+#include "fileutil.h"
 
 /**
  * Data model for a Light Table.
@@ -35,8 +36,11 @@
     }
 
     /*private*/ void LightTableDataModel::initTable() {
-
-        _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+    setObjectName("LightTableDataModel");
+     _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+     rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/";
+     onIconPath = rootPath + beanTypeChar + "-on-s.png";
+     offIconPath = rootPath + beanTypeChar + "-off-s.png";
      loadIcons();
     }
 
@@ -99,11 +103,11 @@
             case EDITCOL:
                 return ""; // no heading on "Edit"
             case INTENSITYCOL:
-                return tr("ColumnHeadIntensity");
+                return tr("Intensity");
             case ENABLECOL:
-                return tr("ColumnHeadEnabled");
+                return tr("Enabled");
             case CONTROLCOL:
-                return tr("LightControllerTitlePlural");
+                return tr("Light Controllers");
             default:
          break;
         }
@@ -142,7 +146,7 @@
             case CONTROLCOL:
                 return JTextField(16).sizeHint().width();
             case EDITCOL:
-                return  JButton(tr("ButtonEdit")).sizeHint().width()+4;
+                return  JButton(tr("Edit")).sizeHint().width()+4;
             case INTENSITYCOL:
             case ENABLECOL:
                 return  JTextField(6).getPreferredSize().width();
@@ -197,52 +201,49 @@
     // /*public*/ Object getValueAt(int row, int col)
     /*public*/ QVariant LightTableDataModel::data(const QModelIndex &mindex, int role) const
     {
-        Light* l = ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()));
-        if (l == nullptr){
-            return QVariant();
+     int col = mindex.column();
+
+     if(role == Qt::DisplayRole)
+     {
+        if (col == EDITCOL) {
+            return tr("Edit");
+        } else if (col == INTENSITYCOL) {
+            //return Double.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getTargetIntensity());
+            return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getTargetIntensity();
         }
-        if(role == Qt::DisplayRole)
+        else if(col == CONTROLCOL)
         {
-         switch (mindex.column()) {
-            case EDITCOL:
-                return tr("Edit");
-            case INTENSITYCOL:
-                if (static_cast<VariableLight*>(l)) {
-                    return ((VariableLight*)l)->getTargetIntensity();
-                } else {
-                    return 0.0;
-                }
-//            case ENABLECOL:
-//                return l->getEnabled();
-            case CONTROLCOL:
-            {
-                QString sb;// = new StringBuilder();
-                for (LightControl* lc : l->getLightControlList()) {
-                    sb.append(LightTableAction::getDescriptionText(lc, lc->getControlType()));
-                    sb.append(" ");
-                }
-                return sb/*.toString()*/;
-            }
-            default:
-         break;
+         QString sb;// = new StringBuilder();
+         for (LightControl* lc : ((Light*)getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getLightControlList())
+         {
+             sb.append(LightTableAction::getDescriptionText(lc, lc->getControlType()));
+             sb.append(" ");
          }
+         return sb/*.toString()*/;
+
         }
-        if(role == Qt::CheckStateRole)
-         {
-          if (mindex.column() == ENABLECOL) {
-                //return Boolean.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getEnabled());
-              return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? Qt::Checked : Qt::Unchecked;
-            }
-         }
-         if(_graphicState && role == Qt::DecorationRole )
-         {
-          if(mindex.column() == ENABLECOL)
-          {
-           return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? onIcon : offIcon;
+     }
+     if(role == Qt::CheckStateRole)
+     {
+      if (col == ENABLECOL) {
+            //return Boolean.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getEnabled());
+          return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? Qt::Checked : Qt::Unchecked;
+        }
+     }
+     if(_graphicState && role == Qt::DecorationRole )
+     {
+      if(mindex.column() == ENABLECOL)
+      {
+       return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? onIcon : offIcon;
 
-          }
-         }return BeanTableDataModel::data(mindex, role);
+      }
+      if(mindex.column() == VALUECOL)
+      {
+       return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getState()? onIcon : offIcon;
 
+      }
+     }
+     return BeanTableDataModel::data(mindex, role);
     }
 
     /**
@@ -261,7 +262,7 @@
             case EDITCOL:
                 // Use separate Runnable so window is created on top
 //                javax.swing.SwingUtilities.invokeLater(() -> {
-//                    editButton(l);
+                    editButton(l);
 //                });
                 break;
             case INTENSITYCOL:
@@ -345,6 +346,12 @@
     //@Override
     /*public*/ void LightTableDataModel::clickOn(NamedBean* t) {
         t->setState( t->getState()==Light::OFF ? Light::ON : Light::OFF );
+    }
+
+    /*public*/ void LightTableDataModel::configureTable(JTable *table)
+    {
+     setColumnToHoldButton(table, EDITCOL);
+     BeanTableDataModel::configureTable(table);
     }
 
     /**

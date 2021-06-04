@@ -26,7 +26,8 @@
 #include "jcolorchooser.h"
 #include <QCheckBox>
 #include "joptionpane.h"
-
+#include "jtabbedpane.h"
+#include "userpreferencesmanager.h"
 
 BeanEditAction::BeanEditAction(QObject *parent) :
   AbstractAction("Bean Edit", parent)
@@ -61,11 +62,11 @@ BeanEditAction::BeanEditAction(QObject *parent) :
 {
  userNameField = new JTextField(20);
  commentField = new JTextArea(3, 30);
- commentFieldScroller = new QScrollArea(/*commentField*/);
- commentFieldScroller->setWidget(commentField);
+// commentFieldScroller = new QScrollArea(/*commentField*/);
+// commentFieldScroller->setWidget(commentField);
  bei =  QList<BeanItemPanel*>(/*5*/);
  selectedTab = NULL;
- detailsTab = new QTabWidget();
+ detailsTab = new JTabbedPane();
  log = new Logger("BeanEditAction");
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  nbMan = (NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager");
@@ -113,7 +114,7 @@ BeanItemPanel* BeanEditAction::basicDetails()
 
  basic->addItem(new BeanEditItem(userNameField, tr("User Name"), QString()));
 
- basic->addItem(new BeanEditItem(commentFieldScroller, tr("Comment"), QString()));
+ basic->addItem(new BeanEditItem(/*commentFieldScroller*/commentField, tr("Comment"), QString()));
 
 //    basic->setSaveItem(new AbstractAction() {
 //        /**
@@ -294,6 +295,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
  {
   f = new JmriJFrameX("Edit " + getBeanType() + " " + bean->getDisplayName(), false, false);
   f->addHelpMenu(helpTarget(), true);
+  applyBut = new JButton(tr("Apply")); // create before initPanels()
   //java.awt.Container containerPanel = f.getContentPane();
   QWidget* containerPanel = new QWidget;
   QVBoxLayout* containerPanelLayout;
@@ -303,64 +305,83 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
   initPanels();
   initPanelsLast();
 
-  foreach (BeanItemPanel* bi, bei)
-  {
-   addToPanel(bi, bi->getListOfItems());
-   detailsTab->addTab(bi, bi->getName());
-  }
 
-  containerPanelLayout->addWidget(detailsTab, /*BorderLayout.CENTER*/0, Qt::AlignCenter);
-  //QWidget* buttons = new QWidget();
-  FlowLayout* buttonsLayout = new FlowLayout;
-  QPushButton* applyBut = new QPushButton(tr("Apply"));
-//  applyBut.addActionListener(new ActionListener() {
-//      /*public*/ void actionPerformed(ActionEvent e) {
-//          applyButtonAction(e);
-//      }
-//  });
+  int i=0;
+  for (BeanItemPanel* bi : bei) {
+      addToPanel(bi, bi->getListOfItems());
+      detailsTab->add(bi, bi->getName(),i);
+      detailsTab->setEnabledAt(i, bi->isEnabled());
+      detailsTab->setToolTipTextAt(i, /*bi->getToolTipText()*/bi->toolTip());
+      i++;
+  }
+  containerPanelLayout->addWidget(detailsTab, 1, Qt::AlignVCenter);//BorderLayout.CENTER);
+
+  // shared bottom panel part
+  JPanel* bottom = new JPanel();
+  bottom->setLayout(new QVBoxLayout());//bottom, BoxLayout.PAGE_AXIS));
   // shared status bar above buttons
-  //JPanel panelStatus = new JPanel();
-  QFont font = statusBarWidget->font();
-  //statusBar->setFont(statusBar.getFont().deriveFont(0.9f * userNameField.getFont().getSize())); // a bit smaller
-  //statusBar.setForeground(Color.gray);
-  statusBarWidget->setStyleSheet(tr("QLabel{color: gray; font-size: %1px;}").arg(font.pixelSize()*.9));
-  connect(applyBut, SIGNAL(clicked()), this, SLOT(applyButtonAction()));
-  QPushButton* okBut = new QPushButton(tr("OK"));
-//  okBut.addActionListener(new ActionListener() {
-//      /*public*/ void actionPerformed(ActionEvent e) {
-//          applyButtonAction(e);
-//          f.dispose();
-//      }
-//  });
-  connect(okBut, SIGNAL(clicked()), this, SLOT(On_okBut_clicked()));
-  QPushButton* cancelBut = new QPushButton(tr("Cancel"));
-//  cancelBut.addActionListener(new ActionListener() {
-//      /*public*/ void actionPerformed(ActionEvent e) {
-//          cancelButtonAction(e);
-//      }
-//  });
-  connect(cancelBut, SIGNAL(clicked()), this, SLOT(cancelButtonAction()));
-  buttonsLayout->addWidget(applyBut);
-  buttonsLayout->addWidget(okBut);
-  buttonsLayout->addWidget(cancelBut);
-  containerPanelLayout->addLayout(buttonsLayout); //, BorderLayout.SOUTH);
+  JPanel* panelStatus = new JPanel(new FlowLayout());
+  QFont font = statusBar->font();
+  //statusBar.setFont(statusBar.getFont().deriveFont(0.9f * userNameField.getFont().getSize())); // a bit smaller
+  font.setPointSizeF(userNameField->font().pointSizeF() * .9);
+  statusBar->setForeground(Qt::gray);
+  panelStatus->layout()->addWidget(statusBar);
+  bottom->layout()->addWidget(panelStatus);
+
+  // shared buttons
+  JPanel* buttons = new JPanel(new FlowLayout());
+  //applyBut.addActionListener(this::applyButtonAction);
+  connect(applyBut, &JButton::clicked, [=]{applyButtonAction();});
+  JButton* okBut = new JButton(tr("OK"));
+  //okBut.addActionListener((ActionEvent e1) -> {
+  connect(okBut, &JButton::clicked, [=]{
+      applyButtonAction(/*e1*/);
+      f->dispose();
+  });
+  JButton* cancelBut = new JButton(tr("Cancel"));
+  //cancelBut.addActionListener(this::cancelButtonAction);
+  connect(cancelBut, &JButton::clicked, [=]{cancelButtonAction();});
+  buttons->layout()->addWidget(applyBut);
+  buttons->layout()->addWidget(okBut);
+  buttons->layout()->addWidget(cancelBut);
+  bottom->layout()->addWidget(buttons);
+  containerPanelLayout->addWidget(bottom,0, Qt::AlignBottom);// BorderLayout.SOUTH);
  }
- foreach (BeanItemPanel* bi, bei)
- {
+ for (BeanItemPanel* bi : bei) {
   bi->resetField();
  }
- if (selectedTab != NULL)
- {
-  detailsTab->setCurrentWidget(selectedTab);
+ persistSelectedTab(); // use persistence unless specified by overriding class
+ if (selectedTab != nullptr) {
+  detailsTab->setSelectedComponent(selectedTab);
  }
+// f.addWindowListener(new java.awt.event.WindowAdapter() {
+//  @Override
+//  public void windowClosing(java.awt.event.WindowEvent e) {
+//      cancelButtonAction(null);
+//  }
+// });
+ f->addWindowListener(new BEWindowListener(this));
  f->pack();
  f->setVisible(true);
 }
-void BeanEditAction::On_okBut_clicked()
-{
- applyButtonAction(/*e*/);
- //f->dispose();
- f->close(); // will call dispose!
+
+/**
+ * Selects previously selected Tab Index for override class name.
+ * Adds listener when Tab changed update UI preference.
+ */
+/*private*/ void BeanEditAction::persistSelectedTab(){
+    QString TAB_SELECT_STRING = "selectedTabIndex"; // NOI18N
+    QVariant obj = ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))
+        ->getProperty(getClassname(), TAB_SELECT_STRING);
+    int previoustab = (obj!=QVariant() ? obj.toInt() : 0);
+    // make sure that valid index selected in case a tab is removed in future.
+    detailsTab->setSelectedIndex(qMax(qMin(detailsTab->count()-1, previoustab),0));
+    // add listener
+    //detailsTab.getModel().addChangeListener((ChangeEvent evt) -> {
+    connect(detailsTab, &JTabbedPane::currentChanged, [=]{
+        ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))
+            ->setProperty(getClassname(), TAB_SELECT_STRING, detailsTab->currentIndex());
+    });
 }
 
 /*protected*/ void BeanEditAction::applyButtonAction(ActionEvent* /*e*/) {

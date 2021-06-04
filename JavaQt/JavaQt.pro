@@ -36,6 +36,8 @@ isEmpty( PROJ_DIR ) {
 
 SOURCES += javaqt.cpp \
     classmigration.cpp \
+    jinputvalidator.cpp \
+    jinputvalidatorpreferences.cpp \
     jvetoablechangesupport.cpp \
     loggerfactory.cpp \
     loggerbase.cpp \
@@ -56,6 +58,8 @@ SOURCES += javaqt.cpp \
     exceptions.cpp \
     thread.cpp \
     tristatejcheckbox.cpp \
+    validation.cpp \
+    validatorborder.cpp \
     xmlfile.cpp \
     tablecolumn.cpp \
     xtablecolumnmodel.cpp \
@@ -276,6 +280,8 @@ HEADERS += javaqt.h\
     calendar.h \
     box.h \
     gridbaglayout.h \
+ jinputvalidator.h \
+ jinputvalidatorpreferences.h \
     jtextarea.h \
     jseparator.h \
     abstractaction.h \
@@ -286,6 +292,8 @@ HEADERS += javaqt.h\
  preferNumericComparator.h \
  thread.h \
  tristatejcheckbox.h \
+ validation.h \
+ validatorborder.h \
  vetoablechangefirer.h \
  vetoablechangeprovider.h \
     vptr.h \

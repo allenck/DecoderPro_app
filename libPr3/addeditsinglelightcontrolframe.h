@@ -99,7 +99,9 @@ class AESLCF_windowListener : public WindowAdapter
   AddEditSingleLightControlFrame* frame;
  public:
   AESLCF_windowListener(AddEditSingleLightControlFrame* frame) {this->frame = frame;}
-  void windowClosed(QCloseEvent*) override{}
+  void windowClosed(QCloseEvent*) override{
+   frame->lcp = nullptr;
+  }
   //@Override
   /*public*/ void windowClosing(QEvent* /*e*/) override{
       frame->cancelControlPressed(nullptr);

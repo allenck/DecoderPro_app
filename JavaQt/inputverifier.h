@@ -1,6 +1,8 @@
 #ifndef INPUTVERIFIER_H
 #define INPUTVERIFIER_H
 #include <QObject>
+#include <QValidator>
+#include "jcomponent.h"
 
 /**
  * The purpose of this class is to help clients support smooth focus
@@ -70,10 +72,13 @@
  */
 
 
-/*public*/ /*abstract*/ class InputVerifier : public QObject
+/*public*/ /*abstract*/ class InputVerifier : public QValidator
 {
  Q_OBJECT
+
 public:
+  InputVerifier(QObject* parent = nullptr): QValidator(parent){}
+
   /**
    * Checks whether the JComponent's input is valid. This method should
    * have no side effects. It returns a boolean indicating the status
@@ -86,7 +91,7 @@ public:
    *
    */
 
- virtual /*public*/ /*abstract*/ bool verify(QWidget* /*input*/) {return false;}
+ virtual /*public*/ /*abstract*/ bool verify(JComponent* /*input*/) {return false;}
 
 
   /**
@@ -105,7 +110,7 @@ public:
    *
    */
 
-  virtual /*public*/ bool shouldYieldFocus(QWidget* input) {
+  virtual /*public*/ bool shouldYieldFocus(JComponent* input) {
     return verify(input);
   }
 

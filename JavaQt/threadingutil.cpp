@@ -101,7 +101,7 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      *
      * @param ta What to run, usually as a lambda expression
      */
-    static /*public*/ void runOnGUI(@Nonnull ThreadAction ta) {
+    /*static*/ /*public*/ void ThreadingUtil::runOnGUI(/*@Nonnull*/ ThreadAction* ta) {
         if (isGUIThread()) {
             // run now
             ta.run();

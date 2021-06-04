@@ -29,6 +29,7 @@ class LightTableDataModel : public BeanTableDataModel
   /*public*/ QVariant data(const QModelIndex &index, int role) const override;
   /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
   /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString name) const override;
+  /*public*/ void configureTable(JTable *table) override;
   /*public*/ JButton* configureButton()override;
   /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString name) override;
   /*public*/ void clickOn(NamedBean* t)override;

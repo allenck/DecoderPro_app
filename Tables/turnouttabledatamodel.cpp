@@ -32,6 +32,7 @@ TurnoutTableDataModel::TurnoutTableDataModel()
  beanTypeChar = 'T'; // for Turnout
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";
+ setObjectName("TurnoutTableDataModel");
  init();
 }
 
@@ -42,8 +43,9 @@ TurnoutTableDataModel::TurnoutTableDataModel()
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";
  setManager(mgr);
+ setObjectName("TurnoutTableDataModel");
  init();
-    initTable();
+ initTable();
 }
 
 /*private*/ void TurnoutTableDataModel::initTable() {

@@ -56,7 +56,7 @@ AbstractTableAction::AbstractTableAction(QObject *parent) :
  * for the specific NamedBean type
  */
 
-/*protected*/ /*abstract*/ void AbstractTableAction::createModel() {}
+// /*protected*/ /*abstract*/ void AbstractTableAction::createModel() {}
 
 /**
  * Include the correct title

@@ -12,10 +12,10 @@ JComboBox::JComboBox(QWidget* parent) : QComboBox(parent)
 
 JComboBox::JComboBox(QStringList list, QWidget* parent) : QComboBox(parent)
 {
- addItems(list);
  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
  cbModel = new QStringListModel();
  setModel(cbModel);
+ addItems(list);
 }
 
 JComboBox::JComboBox(ComboBoxModel* model, QWidget* parent)

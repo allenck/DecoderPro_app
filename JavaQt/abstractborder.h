@@ -11,8 +11,9 @@ class AbstractBorder : public QWidget, public Border
 public:
  AbstractBorder(QWidget *parent = nullptr);
  ///*public*/ virtual Insets* getBorderInsets(QWidget* c);
- /*public*/ virtual Insets* getBorderInsets(QWidget* c, Insets* insets= nullptr);
- /*public*/ virtual bool isBorderOpaque();
+ /*public*/ virtual Insets* getBorderInsets(QWidget* c) override;
+ /*public*/ virtual Insets* getBorderInsets(QWidget* c, Insets* insets);
+ /*public*/ virtual bool isBorderOpaque()override;
  /*public*/ virtual QRect getInteriorRectangle(QWidget* c, int x, int y, int width, int height);
  /*public*/ static QRect getInteriorRectangle(QWidget* c, Border* b, int x, int y, int width, int height);
  /*public*/ virtual int getBaseline(QWidget c, int width, int height);

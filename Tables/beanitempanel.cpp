@@ -1,11 +1,13 @@
 #include "beanitempanel.h"
 #include "actionlistener.h"
+#include <QBoxLayout>
 
 BeanItemPanel::BeanItemPanel(QWidget* parent ) : QWidget(parent)
 {
  reset = NULL;
  save = NULL;
  items =  QList<BeanEditItem*>();
+ setLayout(new QVBoxLayout());
 }
 
 BeanItemPanel::~BeanItemPanel() {}

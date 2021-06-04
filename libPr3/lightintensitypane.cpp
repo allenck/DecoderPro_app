@@ -57,8 +57,8 @@ LightIntensityPane::LightIntensityPane()
     minPan->layout()->addWidget(new JLabel("   "));
     mainPanel->layout()->addWidget(minPan);
 
-    maxPan = new JPanel();
-    maxPan->layout()->addWidget(new JLabel(tr("LightMaxIntensity")));
+    maxPan = new JPanel(new FlowLayout());
+    maxPan->layout()->addWidget(new JLabel(tr("Maximum Intensity:")));
     maxIntensity->setModel(
             new SpinnerNumberModel(QVariant(1.0), QVariant(0.01), QVariant(1.0), QVariant(0.01))); // 100 - 1%
     maxIntensity->setEditor(new JSpinner::NumberEditor(maxIntensity, "##0 %"));
@@ -68,8 +68,8 @@ LightIntensityPane::LightIntensityPane()
     maxPan->layout()->addWidget(new JLabel("   "));
     mainPanel->layout()->addWidget(maxPan);
 
-    transitionPan = new JPanel();
-    transitionPan->layout()->addWidget(new JLabel(tr("LightTransitionTime")));
+    transitionPan = new JPanel(new FlowLayout());
+    transitionPan->layout()->addWidget(new JLabel(tr("Transition Time:")));
     transitionTime->setModel(
             new SpinnerNumberModel(QVariant(0.), QVariant(0.), QVariant(1000000.), QVariant(0.01)));
     transitionTime->setEditor(new JSpinner::NumberEditor(transitionTime, "###0.00"));
@@ -82,7 +82,7 @@ LightIntensityPane::LightIntensityPane()
 
     this->layout()->addWidget(mainPanel);
 
-    JPanel* statusPanel = new JPanel();
+    JPanel* statusPanel = new JPanel(new FlowLayout());
     statusPanel->layout()->addWidget(status1);
     this->layout()->addWidget(statusPanel);
 

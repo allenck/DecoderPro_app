@@ -45,7 +45,7 @@ private:
     static Logger* log;
 protected:
     /*protected*/ BeanTableDataModel* m = nullptr;
-    virtual /*protected*/ /*abstract*/ void createModel();
+    virtual /*protected*/ /*abstract*/ void createModel() = 0;
     virtual /*protected*/ /*abstract*/ void setTitle();
     /*protected*/ BeanTableFrame* f;
     virtual /*protected*/ void setManager(Manager* man);

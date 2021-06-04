@@ -28,11 +28,11 @@
 #include "loggerfactory.h"
 #include "file.h"
 #include "fileutil.h"
+#include "lighttabledatamodel.h"
+#include "lightintensitypane.h"
+#include "borderfactory.h"
+#include "namedbean.h"
 
-//LightTableAction::LightTableAction()
-//{
-
-//}
 /**
  * Swing action to create and register a LightTable GUI.
  * <P>
@@ -147,11 +147,12 @@ void LightTableAction::common()
 /*protected*/ void LightTableAction::createModel()
 {
  // load graphic state column display preference
- _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+ //_graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
 
- m = new LTBeanTableDataModel(this);
+ //m = new LTBeanTableDataModel(this);
+ m = new LightTableDataModel(lightManager);
 }
-
+#if 0
 LTBeanTableDataModel::LTBeanTableDataModel(LightTableAction* lta)
     : BeanTableDataModel()
 {
@@ -439,7 +440,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
 }
 //};
 //}
-
+#endif
 /*protected*/ void LightTableAction::setTitle() {
     f->setTitle(tr("Light Table"));
 }
@@ -466,6 +467,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         FlowLayout* panel1Layout;
         panel1->setLayout(panel1Layout = new FlowLayout());
         configureManagerComboBox(prefixBox, lightManager, "LightManager");
+        connectionChoice = prefixBox->getSelectedItem();
         hardwareAddressTextField->setValidator(validator = new LTAValidator(hardwareAddressTextField, this));
         panel1Layout->addWidget(systemLabel);
         panel1Layout->addWidget(prefixBox);
@@ -482,13 +484,13 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         systemNameLabel->setVisible(false);
         panel1Layout->addWidget(fixedSystemName);
         fixedSystemName->setVisible(false);
-        prefixBox->setToolTip(tr("LightSystemHint"));
+        prefixBox->setToolTip(tr("Select a system connection for the new Light"));
 //        prefixBox.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                prefixChanged();
+        connect(prefixBox, &ManagerComboBox::currentIndexChanged,[=]{
+                prefixChanged();
 //            }
-//        });
-        connect(prefixBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(prefixChanged()));
+        });
         contentPane->layout()->addWidget(panel1);
         panel1a = new QWidget();
         FlowLayout* panel1aLayout;
@@ -500,32 +502,39 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         hardwareAddressTextField->setToolTip(tr("Enter an integer as the hardware address for the (first) new Light, e.g. '13'"));
         hardwareAddressTextField->setName("hwAddressTextField"); // for GUI test NOI18N
         hardwareAddressTextField->setBackground(QColor(Qt::yellow)); // reset after possible error notificationpanel1aLayout->addWidget(labelNumToAdd);
+
+        if (hardwareAddressValidator==nullptr){
+            hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, /*Objects.requireNonNull*/(prefixBox->getSelectedItem()), true);
+        } else {
+            hardwareAddressValidator->setManager(prefixBox->getSelectedItem());
+        }
+
+        hardwareAddressTextField->setInputVerifier(hardwareAddressValidator);
+
+        //prefixBox.addActionListener((evt) -> hardwareAddressValidator.setManager(prefixBox.getSelectedItem()));
+        connect(prefixBox, &ManagerComboBox::currentIndexChanged, [=]{hardwareAddressValidator->setManager(prefixBox->getSelectedItem());});
 #if 0
-        connect(hardwareAddressTextField, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT());
-        hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox.getSelectedItem(), true);
-                    hardwareAddressTextField.setInputVerifier(hardwareAddressValidator);
-                    prefixBox.addActionListener((evt) -> {
-                        hardwareAddressValidator.setManager(prefixBox.getSelectedItem());
-                    });
-                    hardwareAddressValidator.addPropertyChangeListener("validation", (evt) -> { // NOI18N
-                        Validation validation = hardwareAddressValidator.getValidation();
-                        Validation.Type type = validation.getType();
-                        create.setEnabled(type != Validation.Type.WARNING && type != Validation.Type.DANGER);
-                        String message = validation.getMessage();
-                        if (message == null) {
-                            status1.setText("");
-                        } else {
-                            message = message.trim();
-                            if (message.startsWith("<html>") && message.contains("<br>")) {
-                                message = message.substring(0, message.indexOf("<br>"));
-                                if (!message.endsWith("</html>")) {
-                                    message = message + "</html>";
-                                }
-                            }
-                            status1.setText(message);
-                        }
-                    });
+        hardwareAddressValidator->addPropertyChangeListener("validation", /*(evt) ->*/&SystemNameValidator::prop
+        { // NOI18N
+            Validation* validation = hardwareAddressValidator->getValidation();
+            Validation::Type type = validation.getType();
+            create.setEnabled(type != Validation.Type.WARNING && type != Validation.Type.DANGER);
+            QString message = validation.getMessage();
+            if (message == "") {
+                status1->setText("");
+            } else {
+                message = message.trimmed();
+                if (message.startsWith("<html>") && message.contains("<br>")) {
+                    message = message.mid(0, message.indexOf("<br>"));
+                    if (!message.endsWith("</html>")) {
+                        message = message + "</html>";
+                    }
+                }
+                status1->setText(message);
+            }
+        });
 #endif
+        hardwareAddressValidator->addPropertyChangeListener("validation", new HAVPropertyChangeListener(this));
         panel1aLayout->addWidget(numberToAdd);
         numberToAdd->setToolTip(tr("Set the number of sequential address Lights to add (Max. 50)"));
         contentPane->layout()->addWidget(panel1a);
@@ -536,90 +545,17 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         panel2Layout->addWidget(userName);
         userName->setToolTip(tr("LightUserNameHint"));
         contentPane->layout()->addWidget(panel2);
-        // items for variable intensity lights
-        varPanel = new QGroupBox();
-        QHBoxLayout* varPanelLayout;
-        varPanel->setLayout(varPanelLayout = new QHBoxLayout); //new BoxLayout(varPanel, BoxLayout.X_AXIS));
-        varPanelLayout->addWidget(new QLabel(" "));
-        varPanelLayout->addWidget(labelMinIntensity);
-        fieldMinIntensity->setToolTip(tr("LightMinIntensityHint"));
-        //fieldMinIntensity->setHorizontalAlignment(JTextField.RIGHT);
-        fieldMinIntensity->setText("  0");
-        varPanelLayout->addWidget(fieldMinIntensity,0,Qt::AlignRight);
-        varPanelLayout->addWidget(labelMinIntensityTail);
-        varPanelLayout->addWidget(labelMaxIntensity);
-        fieldMaxIntensity->setToolTip(tr("LightMaxIntensityHint"));
-        //fieldMaxIntensity->setHorizontalAlignment(JTextField.RIGHT);
-        fieldMaxIntensity->setText("100");
-        varPanelLayout->addWidget(fieldMaxIntensity,0, Qt::AlignRight);
-        varPanelLayout->addWidget(labelMaxIntensityTail);
-        varPanelLayout->addWidget(labelTransitionTime);
-        fieldTransitionTime->setToolTip(tr("LightTransitionTimeHint"));
-        //fieldTransitionTime->setHorizontalAlignment(JTextField.RIGHT);
-        fieldTransitionTime->setText("0");
-        varPanelLayout->addWidget(fieldTransitionTime, 0, Qt::AlignRight);
-        varPanelLayout->addWidget(new QLabel(" "));
-//        Border varPanelBorder = BorderFactory.createEtchedBorder();
-//        Border varPanelTitled = BorderFactory.createTitledBorder(varPanelBorder,
-//                tr("LightVariableBorder"));
-        varPanel->setTitle(tr("Variable Intensity"));
-        varPanel->setStyleSheet(gbStyleSheet);
-        //varPanel->setBorder(varPanelTitled);
-        contentPane->layout()->addWidget(varPanel);
+        lightIntensityPanel = new LightIntensityPane(false);
+        Border* varPanelTitled = BorderFactory::createTitledBorder(BorderFactory::createEtchedBorder(),
+            tr("Variable Intensity"));
+        lightIntensityPanel->setBorder(varPanelTitled);
+        contentPane->layout()->addWidget(lightIntensityPanel);
         // light control table
-        QWidget* panel3 = new QWidget();
-        QVBoxLayout* panel3Layout = new QVBoxLayout(panel3);
-        //panel3->setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
-        QWidget* panel31 = new QWidget();
-        QGridLayout* panel31Layout = new QGridLayout(panel31);
-//        lightControlTableModel = new LightControlTableModel(this);
-        JTable* lightControlTable = new JTable(lightControlTableModel);
-//        lightControlTable->setRowSelectionAllowed(false);
-//        lightControlTable->setPreferredScrollableViewportSize(new java.awt.Dimension(550, 100));
-        TableColumnModel* lightControlColumnModel = lightControlTable->getColumnModel();
-        TableColumn* typeColumn = lightControlColumnModel->getColumn(LightControlTableModel::TYPE_COLUMN);
-//        typeColumn->setResizable(true);
-//        typeColumn->setMinWidth(110);
-//        typeColumn->setMaxWidth(150);
-        TableColumn* descriptionColumn = lightControlColumnModel->getColumn(
-                LightControlTableModel::DESCRIPTION_COLUMN);
-//        descriptionColumn->setResizable(true);
-//        descriptionColumn->setMinWidth(270);
-//        descriptionColumn->setMaxWidth(340);
-//        ButtonRenderer buttonRenderer = new ButtonRenderer();
-//        lightControlTable->setDefaultRenderer(JButton.class, buttonRenderer);
-//        TableCellEditor buttonEditor = new ButtonEditor(new JButton());
-//        lightControlTable->setDefaultEditor(JButton.class, buttonEditor);
-        QPushButton* testButton = new QPushButton(tr("Delete"));
-//        lightControlTable->setRowHeight(testButton.getPreferredSize().height);
-        TableColumn* editColumn = lightControlColumnModel->getColumn(LightControlTableModel::EDIT_COLUMN);
-//        editColumn->setResizable(false);
-//        editColumn->setMinWidth(testButton.sizeh().width);
-        TableColumn* removeColumn = lightControlColumnModel->getColumn(LightControlTableModel::REMOVE_COLUMN);
-//        removeColumn->setResizable(false);
-//        removeColumn->setMinWidth(testButton->sizeHint().width());
-        lightControlTableModel->setColumnToHoldButton(lightControlTable,LightControlTableModel::REMOVE_COLUMN);
-      lightControlTableModel->setColumnToHoldButton(lightControlTable,LightControlTableModel::EDIT_COLUMN);
-//        JScrollPane lightControlTableScrollPane = new JScrollPane(lightControlTable);
-        panel31Layout->addWidget(/*lightControlTableScrollPane*/lightControlTable, 0, 0); //BorderLayout.CENTER);
-        panel3Layout->addWidget(panel31);
-        QWidget* panel35 = new QWidget();
-        FlowLayout* panel35Layout;
-        panel35->setLayout(panel35Layout = new FlowLayout());
-        panel35Layout->addWidget(addControl = new QPushButton(tr("Add Control")));
-//        addControl.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                addControlPressed(e);
-//            }
-//        });
-        connect(addControl, SIGNAL(clicked()), this, SLOT(addControlPressed()));
-        addControl->setToolTip(tr("Press to add a Light Control to this Light"));
-        panel3Layout->addWidget(panel35);
-//        Border panel3Border = BorderFactory.createEtchedBorder();
-//        Border panel3Titled = BorderFactory.createTitledBorder(panel3Border,
-//                tr("LightControlBorder"));
-//        panel3->setBorder(panel3Titled);
-        contentPane->layout()->addWidget(panel3);
+        lightControlPanel = new LightControlPane();
+        Border* panel3Titled = BorderFactory::createTitledBorder(BorderFactory::createEtchedBorder(),
+            tr("Light Controllers"));
+        lightControlPanel->setBorder(panel3Titled);
+        contentPane->layout()->addWidget(lightControlPanel);
         // message items
         QGroupBox* panel4 = new QGroupBox();
         QVBoxLayout* panel4Layout = new QVBoxLayout(panel4);
@@ -675,13 +611,12 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         contentPane->layout()->addWidget(panel5);
     }
     prefixChanged();
-#if 0
-    addFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-        /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-            cancelPressed(NULL);
-        }
-    });
-#endif
+
+//    addFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+//        /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
+//            cancelPressed(NULL);
+//        }
+//    });
     addFrame->addWindowListener(new LTAWindowListener(this));
     addFrame->adjustSize();
     addFrame->setVisible(true);
@@ -708,44 +643,38 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
  lta->cancelPressed();
 }
 
-
 /*protected*/ void LightTableAction::prefixChanged() {
-    if (supportsVariableLights()) {
-        setupVariableDisplay(true, true);
-    } else {
-        varPanel->setVisible(false);
-    }
-    if (canAddRange()) { // behaves like the AddNewHardwareDevice pane (dim if not available, do not hide)
-     addRangeBox->setEnabled(true);
- } else {
-     addRangeBox->setEnabled(false);
+ if (prefixBox->getSelectedItem() != nullptr) {
+     lightIntensityPanel->setVisible(supportsVariableLights());
+     // behaves like the AddNewHardwareDevice pane (dim if not available, do not hide)
+     addRangeBox->setEnabled(canAddRange());
+     addRangeBox->setSelected(false);
+     numberToAdd->setValue(1);
+     numberToAdd->setEnabled(false);
+     labelNumToAdd->setEnabled(false);
+     // show tooltip for selected system connection
+     connectionChoice = prefixBox->getSelectedItem(); // store in Field for CheckedTextField
+     // Update tooltip in the Add Light pane to match system connection selected from combobox.
+     log->debug(tr("Connection choice = [%1]").arg(connectionChoice->getBeanTypeHandled()));
+     // get tooltip from ProxyLightManager
+     QString systemPrefix = connectionChoice->getSystemPrefix();
+     addEntryToolTip = connectionChoice->getEntryToolTip();
+     addRangeBox->setEnabled(((LightManager*) connectionChoice)->allowMultipleAdditions(systemPrefix));
+     log->debug(tr("DefaultLightManager tip: %1").arg(addEntryToolTip));
+     // show Hardware address field tooltip in the Add Light pane to match system connection selected from combobox
+     if (addEntryToolTip != "") {
+         hardwareAddressTextField->setToolTip(
+                 tr("<html>%1 %2 use one of these patterns:<br>%3</html>").arg(
+                         connectionChoice->getMemo()->getUserName(),
+                         tr("Lights"),
+                         addEntryToolTip));
+//         hardwareAddressValidator->setToolTip(hardwareAddressTextField->toolTip());
+         hardwareAddressValidator->verify(hardwareAddressTextField);
+     }
+     create->setEnabled(true); // too severe to start as disabled (false) until we fully support validation
+     addFrame->pack();
+     addFrame->setVisible(true);
  }
- addRangeBox->setChecked(false);
- numberToAdd->setValue(1);
- numberToAdd->setEnabled(false);
- labelNumToAdd->setEnabled(false);
- // show tooltip for selected system connection
- connectionChoice= prefixBox->getSelectedItem(); // store in Field for CheckedTextField
- // Update tooltip in the Add Light pane to match system connection selected from combobox.
- log->debug(tr("Connection choice = [%1]").arg(connectionChoice->toString()));
- // get tooltip from ProxyLightManager
- QString systemPrefix = connectionChoice->getSystemPrefix();
- addEntryToolTip = connectionChoice->getEntryToolTip();
-  addRangeBox->setEnabled(((LightManager*) connectionChoice)->allowMultipleAdditions(systemPrefix));
-  log->debug(tr("DefaultLightManager tip: %1").arg(addEntryToolTip));
-  // show Hardware address field tooltip in the Add Light pane to match system connection selected from combobox
-  if (addEntryToolTip != nullptr) {
-      hardwareAddressTextField->setToolTip(
-              tr("<html>%1 %2 use one of these patterns:<br>%3</html>").arg(
-                      connectionChoice->getMemo()->getUserName()).arg(
-                      tr("Lights")).arg(
-                      addEntryToolTip));
-      //hardwareAddressValidator.setToolTipText(hardwareAddressTextField.getToolTipText());
-      hardwareAddressValidator->verify(hardwareAddressTextField);
-  }
-  create->setEnabled(true); // too severe to start as disabled (false) until we fully support validation
-  addFrame->pack();
-  addFrame->setVisible(true);
 }
 
 /*protected*/ void LightTableAction::addRangeChanged() {
@@ -881,20 +810,16 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         // Address is already used as a Turnout
          log->warn("Requested Light " + sName + " uses same address as Turnout " + testT->getDisplayName());
         if (!noWarn) {
-//            int selectedValue = JOptionPane.showOptionDialog(addFrame,
-//                    tr("LightWarn5") + " " + sName + " " + tr("LightWarn6") + " "
-//                    + testSN + ".\n   " + tr("LightWarn7"), tr("WarningTitle"),
-//                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, NULL,
-//                    new Object[]{tr("ButtonYes"), tr("ButtonNo"),
-//                        tr("ButtonYesPlus")}, tr("ButtonNo"));
-            QMessageBox* msgBox = new QMessageBox( tr("Warning"), tr("Warning - Requested Light") + " " + sName + " " + tr("uses same address as Turnout") + " " + testSN + ".\n   " + tr("Do you still want to add this Light?"),QMessageBox::Warning, QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
-            QPushButton* buttonYesPlus = new QPushButton(tr("Yes - Stop Warnings"));
-            msgBox->addButton(buttonYesPlus, QMessageBox::ActionRole);
-            int selectedValue = msgBox->exec();
-            if (selectedValue == QMessageBox::No) {
+            int selectedValue = JOptionPane::showOptionDialog(addFrame,
+                    tr("Warning - Requested Light") + " " + sName + " " + tr("uses same address as Turnout") + " "
+                    + testSN + ".\n   " + tr("LightWarn7"), tr("WarningTitle"),
+                    JOptionPane::YES_NO_CANCEL_OPTION, JOptionPane::QUESTION_MESSAGE, QIcon(),
+                    QVariantList{tr("Yes"), tr("No"),
+                        tr("Yes - Stop Warnings")}, tr("No"));
+            if (selectedValue == 1) {
                 return;   // return without creating if "No" response
             }
-            if(msgBox->clickedButton() == buttonYesPlus){
+            if(selectedValue == 2){
                 // Suppress future warnings, and continue
                 noWarn = true;
             }
@@ -965,36 +890,18 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         handleCreateException(ex, sName);
         return; // without creating
     }
-    // set control information if any
-    setLightControlInformation(g);
-    clearLightControls();
-    g->activateLight();
-    lightCreatedOrUpdated = true;
-    QString p;
-    p = fieldMinIntensity->text();
-    if (p == ("")) {
-        p = "1.0";
-    }
-    g->setMinIntensity(p.toDouble() / 100);
+    lightControlPanel->setLightFromControlTable(g);
+    if (qobject_cast<VariableLight*>(g)) {
+         lightIntensityPanel->setLightFromPane((VariableLight*)g);
+     }
+     g->activateLight();
+     lightCreatedOrUpdated = true;
 
-    p = fieldMaxIntensity->text();
-    if (p == ("")) {
-        p = "0.0";
-    }
-    g->setMaxIntensity(p.toDouble() / 100);
+     status2->setText("");
+     status2->setVisible(false);
 
-    p = fieldTransitionTime->text();
-    if (p == ("")) {
-        p = "0";
-    }
-    try {
-        g->setTransitionTime(p.toDouble());
-    } catch (IllegalArgumentException e1) {
-        // set rate to 0.
-        g->setTransitionTime(0.0);
-    }
     // provide feedback to user
-    QString feedback = tr("LightCreateFeedback") + " " + sName + ", " + uName;
+    QString feedback = tr("New Light(s) added:") + " " + g->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
     // create additional lights if requested
     if (numberOfLights > 1) {
         QString sxName = "";
@@ -1023,7 +930,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     addFrame->adjustSize();
     addFrame->setVisible(true);
 }
-
+#if 0
 /**
  * Responds to the Edit button in the light table, window has already been
  * created
@@ -1096,7 +1003,7 @@ void LightTableAction::editPressed() {
     addFrame->setVisible(true);
     lightControlTableModel->fireTableDataChanged();
 }
-
+#endif
 void LightTableAction::handleCreateException(Exception ex, QString sysName) {
     JOptionPane::showMessageDialog(addFrame,
                    tr("Could not create light \"%1\" to add it.").arg(
@@ -1162,44 +1069,39 @@ void LightTableAction::updatePressed(ActionEvent* /*e*/) {
  * Responds to the Cancel button
  */
 void LightTableAction::cancelPressed(ActionEvent* /*e*/) {
-    if (inEditMode) {
-        // if in Edit mode, cancel the Edit and reactivate the Light
-        status1->setText(tr("LightCreateInst"));
-        update->setVisible(false);
-        create->setVisible(true);
-        fixedSystemName->setVisible(false);
-        prefixBox->setVisible(true);
-        systemNameLabel->setVisible(false);
-        systemLabel->setVisible(true);
-        panel1a->setVisible(true);
-        // reactivate the light
-        curLight->activateLight();
-        inEditMode = false;
-    }
-    // remind to save, if Light was created or edited
-    if (lightCreatedOrUpdated) {
-        ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-                showInfoMessage(tr("Reminder"), tr("<html>Remember to save your %1 information in your Configuration.<br>(choose Store &gt; Store Configuration... from the File menu)</html> ").arg( tr("Light Table")),
-                        getClassName(),
-                        "remindSaveLight"); // NOI18N
-    }
-    lightCreatedOrUpdated = false;
-    // get rid of the add/edit Frame
-    clearLightControls();
-    status2->setText("");
-    if (addFrame != NULL) {
-        addFrame->setVisible(false);
-        addFrame->dispose();
-        addFrame = NULL;
-    }
+ if (addFrame != nullptr) {
+     addFrame->setVisible(false); // hide first for cleaner display
+ }
+
+ // remind to save, if Light was created or edited
+ if (lightCreatedOrUpdated) {
+     ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage(
+             tr("Reminder"), tr("<html>Remember to save your %1 information in your Configuration.<br>(choose Store &gt; Store Configuration... from the File menu)</html>").arg(
+                     tr("Lights")),
+                     getClassName(),
+                     "remindSaveLight"); // NOI18N
+ }
+ lightCreatedOrUpdated = false;
+ // finally, get rid of the add/edit Frame
+ if (addFrame != nullptr) {
+
+     lightControlPanel->dispose(); // closes any popup windows
+
+     removePrefixBoxListener(prefixBox);
+     addFrame->dispose();
+     addFrame = nullptr;
+     //create->removePropertyChangeListener(colorChangeListener);
+
+ }
 }
 
-/*private*/ void LightTableAction::clearLightControls() {
-    for (int i = controlList.size(); i > 0; i--) {
-        controlList.removeAt(i - 1);
-    }
-    lightControlTableModel->fireTableDataChanged();
-}
+///*private*/ void LightTableAction::clearLightControls() {
+//    for (int i = controlList.size(); i > 0; i--) {
+//        controlList.removeAt(i - 1);
+//    }
+//    if(lightControlTableModel)
+//     lightControlTableModel->fireTableDataChanged();
+//}
 
 
 
@@ -2128,7 +2030,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
 /*protected*/ QString LightTableAction::getClassName() {
     return "jmri.jmrit.beantable.LightTableAction";
 }
-
+#if 0
 /**
 * Read and buffer graphics. Only called once for this table.
 *
@@ -2155,7 +2057,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
 }
 
 Logger* LTBeanTableDataModel::log = LoggerFactory::getLogger("LTBeanTableDataModel");
-
+#endif
 LTAValidator::LTAValidator(JTextField *fld, LightTableAction *act)
 {
  this->fld = fld;

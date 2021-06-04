@@ -41,7 +41,7 @@ class LightControlTableModel : public AbstractTableModel
   /*protected*/ static /*final*/ QString timedOnControl;// = Bundle.getMessage("LightTimedOnControl");
   /*protected*/ static /*final*/ QString twoSensorControl;// = Bundle.getMessage("LightTwoSensorControl");
   /*protected*/ static /*final*/ QString noControl;// = Bundle.getMessage("LightNoControl");
-  /*protected*/ static /*final*/ QVector<QString> controlTypes;// = QVector<QString>{
+  /*protected*/ static /*final*/ QVector<QString>* controlTypes;// = QVector<QString>{
   /*protected*/ static /*final*/ QList<QString> getControlTypeTips();
   /*protected*/ void configureJTable(JTable* table);
 

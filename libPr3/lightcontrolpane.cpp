@@ -58,7 +58,6 @@
     panel35->setLayout(new FlowLayout());
     panel35->layout()->addWidget(addControl);
     this->layout()->addWidget(panel35);
-
 }
 
 /**
@@ -168,6 +167,7 @@
         addEditCtrlFrame->dispose();
         addEditCtrlFrame = nullptr;
     }
+    addEditCtrlFrame = nullptr;
 }
 
 /*public*/ void LightControlPane::dispose(){

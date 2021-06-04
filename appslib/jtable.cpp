@@ -1194,22 +1194,22 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
 //    else {
 //        defaultEditorsByColumnClass.remove(columnClass);
 //    }
-    defaultItemDelegate = editor;
-    for(int i = 0; i < getColumnCount(); i++)
-    {
-        if(qobject_cast<BeanTableDataModel*>(getModel()))
-        {
-           if(columnClass == ((BeanTableDataModel*) getModel())->getColumnClass(i))
-           {
-               if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JButton")
-                ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
-               if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JToggleButton")
-                ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
-               if(((BeanTableDataModel*) getModel())->getColumnClass(i) == "JComboBox")
-                ((BeanTableDataModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
-           }
-        }
-    }
+ defaultItemDelegate = editor;
+ for(int i = 0; i < getColumnCount(); i++)
+ {
+  if(qobject_cast<AbstractTableModel*>(getModel()))
+  {
+   if(columnClass == ((AbstractTableModel*) getModel())->getColumnClass(i))
+   {
+    if(((AbstractTableModel*) getModel())->getColumnClass(i) == "JButton")
+     ((AbstractTableModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
+    if(((AbstractTableModel*) getModel())->getColumnClass(i) == "JToggleButton")
+     ((AbstractTableModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
+    if(((AbstractTableModel*) getModel())->getColumnClass(i) == "JComboBox")
+     ((AbstractTableModel*) getModel())->setColumnToHoldDelegate(this, i, editor);
+   }
+  }
+ }
 }
 #if 0
 /**

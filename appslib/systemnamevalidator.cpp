@@ -1,7 +1,13 @@
 #include "systemnamevalidator.h"
 #include "manager.h"
+#include "validation.h"
+#include "jinputvalidatorpreferences.h"
+#include "jtextfield.h"
+#include "abstractproxymanager.h"
+#include "namedbean.h"
+#include "vptr.h"
 
-SystemNameValidator::SystemNameValidator(QObject *parent) : InputVerifier()
+SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(nullptr)
 {
 
 }
@@ -48,37 +54,47 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : InputVerifier()
      *                  {@link javax.swing.InputVerifier#verify(javax.swing.JComponent)}
      *                  must return true to allow focus change; false otherwise
      */
-    /*public*/ SystemNameValidator::SystemNameValidator(/*@Nonnull*/ /*JComponent*/QWidget* component, /*@Nonnull*/ Manager* manager, bool required) {
+    /*public*/ SystemNameValidator::SystemNameValidator(/*@Nonnull*/ /*JComponent*/JComponent *component,
+                                                        /*@Nonnull*/ Manager* manager, bool required) : JInputValidator(component)
+    {
         //super(component, true, required);
         setManager(manager);
         this->required = required;
     }
-#if 0
+
+    /*public*/ Validation* SystemNameValidator::getValidation()
+    {
+     return JInputValidator::getValidation();
+    }
+#if 1
     //@Override
-    /*protected*/ Validation getValidation(/*JComponent*/QWidget* component, JInputValidatorPreferences preferences) {
-        if (component instanceof JTextComponent) {
-            JTextComponent jtc = (JTextComponent) component;
-            String text = jtc.getText();
-            if (text != null && !text.isEmpty()) {
+    /*protected*/ Validation* SystemNameValidator::getValidation(/*JComponent*/JComponent *component, JInputValidatorPreferences* preferences) {
+        //if (component instanceof JTextComponent)
+        if(qobject_cast<JTextField*>(component->jself()))
+        {
+         //JTextComponent jtc = (JTextComponent) component;
+         JTextField* jtc = (JTextField*)component->jself();
+         QString text = jtc->text();
+            if (!text .isNull() && !text.isEmpty()) {
                 try {
-                    if (manager instanceof ProxyManager) {
-                        ProxyManager<?> proxyManager = (ProxyManager<?>) manager;
-                        proxyManager.validateSystemNameFormat(text);
+                    if (static_cast<AbstractProxyManager*>(manager->self())) {
+                        AbstractProxyManager/*<?>*/* proxyManager = (AbstractProxyManager/*<?>*/*) manager->self();
+                        proxyManager->validateSystemNameFormat(text);
                     } else {
-                        manager.makeSystemName(text, false);
+                        manager->makeSystemName(text, false);
                     }
-                } catch (NamedBean.BadSystemNameException ex) {
-                    if (manager.validSystemNameFormat(text) == NameValidity.VALID_AS_PREFIX_ONLY) {
-                        return new Validation(Validation.Type.WARNING, Bundle.getMessage("SystemNameValidatorValidPrefix", text, manager.getBeanTypeHandled(),
+                } catch (NamedBean::BadSystemNameException ex) {
+                    if (manager->validSystemNameFormat(text) == Manager::NameValidity::VALID_AS_PREFIX_ONLY) {
+                        return new Validation(Validation::Type::WARNING, tr("<html>\"%1\" is an incomplete system name for a %2.<br><br>%3</html>").arg(text, manager->getBeanTypeHandled(),
                                 trimHtmlTags(getToolTipText())), preferences);
                     }
-                    return new Validation(Validation.Type.DANGER, Bundle.getMessage("SystemNameValidatorInvalid", ex.getMessage(), trimHtmlTags(getToolTipText())), preferences);
+                    return new Validation(Validation::Type::DANGER, tr("<html>{0}<br><br>{1}</html>").arg(ex.getMessage(), trimHtmlTags(getToolTipText())), preferences);
                 }
-                return new Validation(Validation.Type.SUCCESS, getToolTipText(), preferences);
+                return new Validation(Validation::Type::SUCCESS, getToolTipText(), preferences);
             }
         }
         if (required) {
-            return new Validation(Validation.Type.WARNING, Bundle.getMessage("SystemNameValidatorRequired", trimHtmlTags(getToolTipText())), preferences);
+            return new Validation(Validation::Type::WARNING, tr("<html>A system name is required.<br><br>%1</html>").arg(trimHtmlTags(getToolTipText())), preferences);
         }
         return getNoneValidation();
     }
@@ -105,11 +121,31 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : InputVerifier()
         Manager* old = this->manager;
         if (old == nullptr || old != (manager)) {
             this->manager = manager;
-#if 0
-            getPropertyChangeSupport().firePropertyChange("manager", old, this.manager);
+#if 1
+            getPropertyChangeSupport()->firePropertyChange("manager",VPtr<Manager>::asQVariant( old), VPtr<Manager>::asQVariant(this->manager));
             verify(getComponent());
 #endif
         }
     }
 
-
+    QValidator::State SystemNameValidator::validate(QString& text, int& pos) const
+    {
+     try {
+         if (static_cast<AbstractProxyManager*>(manager->self())) {
+             AbstractProxyManager/*<?>*/* proxyManager = (AbstractProxyManager/*<?>*/*) manager->self();
+             proxyManager->validateSystemNameFormat(text);
+         } else {
+             manager->makeSystemName(text, false);
+         }
+     } catch (NamedBean::BadSystemNameException ex) {
+         if (text.length()<2 || manager->validSystemNameFormat(text) == Manager::NameValidity::VALID_AS_PREFIX_ONLY) {
+//             return new Validation(Validation::Type::WARNING, tr("<html>\"%1\" is an incomplete system name for a %2.<br><br>%3</html>").arg(text, manager->getBeanTypeHandled(),
+//                     trimHtmlTags(getToolTipText())), preferences);
+          return QValidator::Intermediate;
+         }
+         //return new Validation(Validation::Type::DANGER, tr("<html>{0}<br><br>{1}</html>").arg(ex.getMessage(), trimHtmlTags(getToolTipText())), preferences);
+         return QValidator::Invalid;
+     }
+     //return new Validation(Validation::Type::SUCCESS, getToolTipText(), preferences);
+     return QValidator::Acceptable;
+    }
