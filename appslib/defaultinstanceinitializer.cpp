@@ -75,6 +75,8 @@
 #include "warrantpreferences.h"
 #include "jmriclient/jmriclientsystemconnectionmemo.h"
 #include "../operations/routemanager.h"
+#include "defaultvariablelightmanager.h"
+
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -633,11 +635,16 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return m;
  }
 
+ if (type == "VariableLightManager") {
+   return (new DefaultVariableLightManager(memo))->init();
+ }
+
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);
  if(log)
   log->warn("DefaultInstanceInitializer: Cannot create object of type " + type);
  return nullptr;
 }
+
 
 /*static*/ Logger* DefaultInstanceInitializer::log = LoggerFactory::getLogger("DefaultInstanceInitializer");

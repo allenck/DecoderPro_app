@@ -1104,7 +1104,7 @@ void LightTableAction::cancelPressed(ActionEvent* /*e*/) {
 //}
 
 
-
+#if 0
 /**
  * Responds to the Add Control button
  */
@@ -1256,7 +1256,7 @@ void ACFWindowListener::windowClosing(QCloseEvent *e)
 {
  lta->cancelControlPressed();
 }
-
+#endif
 /**
  * Reacts to a control type change
  */
@@ -1384,7 +1384,7 @@ void LightTableAction::setUpControlType(QString ctype) {
     addControlFrame->adjustSize();
     addControlFrame->setVisible(true);
 }
-
+#if 0
 /*protected*/ void LightTableAction::createControlPressed(ActionEvent* e) {
     if (typeBox->currentText() == (noControl)) {
         return;
@@ -1400,7 +1400,8 @@ void LightTableAction::setUpControlType(QString ctype) {
         addControlFrame->setVisible(true);
     }
 }
-
+#endif
+#if 0
 /*protected*/ void LightTableAction::updateControlPressed(ActionEvent* e) {
     if (setControlInformation(lc)) {
         lightControlChanged = true;
@@ -1691,6 +1692,8 @@ void LightTableAction::setUpControlType(QString ctype) {
     }
     return (true);
 }
+#endif
+#if 0
 /**
  * Formats time to hh:mm given integer hour and minute
  */
@@ -1736,7 +1739,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
             return noControl;
     }
 }
-
+#endif
 /**
  * Returns text showing the type of Light Control
  */
@@ -1779,7 +1782,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
     }
     return InstanceManager::turnoutManagerInstance()->getThrownText();
 }
-
+#if 0
 /**
  * Responds to Edit button on row in the Light Control Table
  */
@@ -1864,7 +1867,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
     lightControlTableModel->fireTableDataChanged();
     lightControlChanged = true;
 }
-#if 0
+
 /**
  * Table model for Light Controls in the Add/Edit Light window
  */

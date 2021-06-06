@@ -113,6 +113,7 @@ message("Qt path=" + $$(QTDIR))
 
 
 SOURCES += \
+    defaultvariablelightmanager.cpp \
     jmrijframe.cpp \
     layoutdoublexoverviewxml.cpp \
     layouteditorviewcontext.cpp \
@@ -569,6 +570,7 @@ SOURCES += \
     abstractnamedbeanmanager.cpp
 
 HEADERS += liblayouteditor_global.h \
+    defaultvariablelightmanager.h \
     jmrijframeinterface.h \
     jmrijframe.h \
     layoutdoublexoverviewxml.h \
@@ -625,6 +627,7 @@ HEADERS += liblayouteditor_global.h \
     configxmlmanager.h \
     errorhandler.h \
     errormemo.h \
+    variablelightmanager.h \
     xmladapter.h \
     locoiconxml.h \
     positionablelabelxml.h \

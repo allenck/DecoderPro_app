@@ -68,12 +68,19 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
    // store common parts
    storeCommon(nb, elem);
 
-   // write variable intensity attributes
-   elem.setAttribute("minIntensity", lgt->getMinIntensity());
-   elem.setAttribute("maxIntensity", lgt->getMaxIntensity());
+   if (qobject_cast<VariableLight*>(lgt)) {
+       elem.setAttribute("minIntensity",  QString::number(((VariableLight*)lgt)->getMinIntensity()));
+       elem.setAttribute("maxIntensity", QString::number(((VariableLight*)lgt)->getMaxIntensity()));
 
-   // write transition attribute
-   elem.setAttribute("transitionTime", lgt->getTransitionTime());
+       // write transition attribute
+       elem.setAttribute("transitionTime", QString::number(((VariableLight*)lgt)->getTransitionTime()));
+   } else {
+       elem.setAttribute("minIntensity", "0.0");
+       elem.setAttribute("maxIntensity", "1.0");
+
+       // write transition attribute
+       elem.setAttribute("transitionTime", "0.0");
+   }
 
    // save child lightcontrol entries
    QList<LightControl*> lcList = lgt->getLightControlList();
@@ -175,15 +182,18 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
   loadCommon((NamedBean*)lgt, lightList.at(i).toElement());
 
   // variable intensity, transition attributes
-  double value;
-  value = lightList.at(i).toElement().attribute("minIntensity").toDouble();
-  lgt->setMinIntensity(value);
+  if(qobject_cast<VariableLight*>(lgt))
+  {
+   double value;
+   value = lightList.at(i).toElement().attribute("minIntensity").toDouble();
+   lgt->setMinIntensity(value);
 
-  value = lightList.at(i).toElement().attribute("maxIntensity").toDouble();
-  lgt->setMaxIntensity(value);
+   value = lightList.at(i).toElement().attribute("maxIntensity").toDouble();
+   lgt->setMaxIntensity(value);
 
-  value = lightList.at(i).toElement().attribute("transitionTime").toDouble();
-  lgt->setTransitionTime(value);
+   value = lightList.at(i).toElement().attribute("transitionTime").toDouble();
+   lgt->setTransitionTime(value);
+  }
 
   // provide for legacy light control - panel files written by 2.9.5 or before
   if (lightList.at(i).toElement().attribute("controlType")!=NULL)

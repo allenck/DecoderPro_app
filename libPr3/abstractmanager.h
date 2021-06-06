@@ -183,6 +183,8 @@ friend class InternalMeterManager;
 friend class DefaultRouteManager;
 friend class SignalGroupManager;
 friend class DefaultSignalGroupManager;
+friend class DefaultVariableLightManager;
+
 protected:
 /**
  * Locate an instance based on a system name.  Returns NULL if no

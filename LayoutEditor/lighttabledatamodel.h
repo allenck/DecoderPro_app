@@ -5,6 +5,7 @@
 #include "light.h"
 #include "jbutton.h"
 #include "bufferedimage.h"
+#include "jlabel.h"
 
 class LightTableDataModel : public BeanTableDataModel
 {

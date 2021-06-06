@@ -34,7 +34,7 @@ public:
     LightTableAction(const LightTableAction&) : AbstractTableAction() {}
     /*public*/ void setManager(Manager* man) override;
     Q_INVOKABLE /*public*/ QString getClassDescription() override;
-    /*public*/ QString getControlTypeText(int type);
+//    /*public*/ QString getControlTypeText(int type);
     /*public*/ static QString getDescriptionText(LightControl* lc, int type);
     /*public*/ static QString lightControlTitle;// = Bundle.getMessage("LightControlBorder");
     Q_INVOKABLE /*public*/ void setMessagePreferencesDetails() override;
@@ -105,7 +105,7 @@ private:
     Logger * log;
     /*private*/ void setLightControlInformation(Light* g);
 //    /*private*/ void clearLightControls();
-    QString formatTime(int hour, int minute);
+//    QString formatTime(int hour, int minute);
     /*private*/ static QString getControlSensorSenseText(LightControl* lc);
     /*private*/ static QString getControlTurnoutStateText(LightControl* lc);
 
@@ -139,9 +139,9 @@ private:
     /*private*/ QPushButton* createControl;
     /*private*/ QPushButton* updateControl;
     /*private*/ QPushButton* cancelControl;
-    /*private*/ void addEditControlWindow();
+//    /*private*/ void addEditControlWindow();
     void setUpControlType(QString ctype);
-    /*private*/ bool setControlInformation(LightControl* g);
+//    /*private*/ bool setControlInformation(LightControl* g);
     QString addEntryToolTip;
     LTAValidator* validator;
     void handleCreateException(Exception ex, QString sysName);
@@ -166,14 +166,14 @@ protected:
 
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
-    /*protected*/ void editControlAction(int row);
-    /*protected*/ void deleteControlAction(int row);
-    /*protected*/ void createControlPressed(ActionEvent* e = 0);
-    /*protected*/ void updateControlPressed(ActionEvent* e = 0);
-    /*protected*/ void cancelControlPressed(ActionEvent* e = 0);
+//    /*protected*/ void editControlAction(int row);
+//    /*protected*/ void deleteControlAction(int row);
+//    /*protected*/ void createControlPressed(ActionEvent* e = 0);
+//    /*protected*/ void updateControlPressed(ActionEvent* e = 0);
+//    /*protected*/ void cancelControlPressed(ActionEvent* e = 0);
     /*protected*/ void addRangeChanged();
     /*protected*/ void prefixChanged();
-    /*protected*/ void addControlPressed(ActionEvent* e = 0);
+//    /*protected*/ void addControlPressed(ActionEvent* e = 0);
 
  friend class LTBeanTableDataModel;
  friend class LightControlTableModel;
@@ -275,6 +275,7 @@ public:
  void windowClosing(QCloseEvent *e);
 
 };
+#if 0
 class ACFWindowListener : public WindowListener
 {
  Q_OBJECT
@@ -284,6 +285,7 @@ public:
  void windowClosing(QCloseEvent *e);
 
 };
+#endif
 class LTAValidator : public QValidator
 {
  Q_OBJECT

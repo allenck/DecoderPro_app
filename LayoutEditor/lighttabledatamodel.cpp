@@ -202,19 +202,19 @@
     /*public*/ QVariant LightTableDataModel::data(const QModelIndex &mindex, int role) const
     {
      int col = mindex.column();
-
+     Light* l = (Light*)getBySystemName(sysNameList.at(mindex.row()));
      if(role == Qt::DisplayRole)
      {
         if (col == EDITCOL) {
             return tr("Edit");
         } else if (col == INTENSITYCOL) {
             //return Double.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getTargetIntensity());
-            return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getTargetIntensity();
+            return  l->getTargetIntensity();
         }
         else if(col == CONTROLCOL)
         {
          QString sb;// = new StringBuilder();
-         for (LightControl* lc : ((Light*)getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getLightControlList())
+         for (LightControl* lc : l->getLightControlList())
          {
              sb.append(LightTableAction::getDescriptionText(lc, lc->getControlType()));
              sb.append(" ");
@@ -227,20 +227,34 @@
      {
       if (col == ENABLECOL) {
             //return Boolean.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getEnabled());
-          return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? Qt::Checked : Qt::Unchecked;
-        }
+          return l->getEnabled()? Qt::Checked : Qt::Unchecked;
+      }
+      if(col == VALUECOL)
+       return l->getState()==Light::ON? Qt::Checked : Qt::Unchecked;
      }
      if(_graphicState && role == Qt::DecorationRole )
      {
       if(mindex.column() == ENABLECOL)
       {
-       return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? onIcon : offIcon;
+       return l->getEnabled()? onIcon : offIcon;
 
       }
       if(mindex.column() == VALUECOL)
       {
-       return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getState()? onIcon : offIcon;
-
+       //return l->getState()==Light::ON? onIcon : offIcon;
+       switch(l->getState())
+       {
+        case Light::ON:
+         return onIcon;
+        case Light::OFF:
+         return offIcon;
+        case Light::INCONSISTENT:
+         return QColor(Qt::red);
+//       case Light::INTERMEDIATE:
+//        return "...";
+       default:
+        break;
+       }
       }
      }
      return BeanTableDataModel::data(mindex, role);
@@ -264,7 +278,7 @@
 //                javax.swing.SwingUtilities.invokeLater(() -> {
                     editButton(l);
 //                });
-                break;
+                return true;
             case INTENSITYCOL:
                 // alternate
                 try {
@@ -278,14 +292,16 @@
                 } catch (IllegalArgumentException e1) {
                     JOptionPane::showMessageDialog(nullptr,  e1.getMessage());
                 }
-                break;
+                fireTableRowsUpdated(mindex.row(), mindex.row());
+                return true;
             case ENABLECOL:
                 l->setEnabled(!l->getEnabled());
-                break;
+                fireTableRowsUpdated(mindex.row(), mindex.row());
+                return true;
             case VALUECOL:
                 clickOn((NamedBean*)l);
                 fireTableRowsUpdated(mindex.row(), mindex.row());
-                break;
+                return true;
             default:
                 //super.setValueAt(value, row, col);
                 break;
@@ -376,12 +392,12 @@
         //setColumnToHoldButton(table, VALUECOL, new JLabel("123456")); // for small round icon, but cannot be converted to JButton
         // add extras, override BeanTableDataModel
         log->debug(tr("Light configValueColumn (I am %1)").arg(this->toString()));
-//        if (_graphicState) { // load icons, only once
+        if (_graphicState) { // load icons, only once
 //            table->setDefaultEditor("JLabel", new ImageIconRenderer()); // editor
 //            table.setDefaultRenderer(JLabel.class, new ImageIconRenderer()); // item class copied from SwitchboardEditor panel
-//        } else {
+        } else {
             BeanTableDataModel::configValueColumn(table); // classic text style state indication
-//        }
+        }
     }
 #if 0
     /**
@@ -522,5 +538,6 @@
      offIcon =  QPixmap::fromImage(smallOffImage);
      iconHeight = onIcon.height();
     }
-    /*private*/ /*final*/ /*static*/ Logger* LightTableDataModel::log = LoggerFactory::getLogger("LightTableDataModel");
+
+    /*static*/ Logger* LightTableDataModel::log = LoggerFactory::getLogger("LightTableDataModel");
 
