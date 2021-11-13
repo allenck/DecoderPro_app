@@ -9,6 +9,7 @@
 #include "loconetthrottle.h"
 #include "Roster/rosterentry.h"
 #include "libPr3_global.h"
+#include <QObject>
 
 /**
  * Abstract implementation of a ThrottleManager.
@@ -60,32 +61,33 @@ public:
   void removeListener(ThrottleListener* l);
   bool containsListener(ThrottleListener* l);
  private:
- Logger log;
+ static Logger* log;
 
  };
 
-class LIBPR3SHARED_EXPORT AbstractThrottleManager : public ThrottleManager
+class LIBPR3SHARED_EXPORT AbstractThrottleManager : public QObject, public ThrottleManager
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ThrottleManager)
 public:
     explicit AbstractThrottleManager(QObject *parent = 0);
     /*public*/ AbstractThrottleManager(SystemConnectionMemo* memo,QObject *parent = 0);
-    /*public*/ QString getUserName() override;
+    /*public*/ virtual QString getUserName() ;
     /**
      * By default, only DCC in this implementation
      */
     /*public*/ QStringList getAddressTypes() override;
-    /*public*/ QList<LocoAddress::Protocol> getAddressProtocolTypes() override;
+    /*public*/ QVector<LocoAddress::Protocol> getAddressProtocolTypes() override;
     /*public*/ LocoAddress* getAddress(QString value,LocoAddress::Protocol protocol) override;
     /*public*/ LocoAddress* getAddress(QString value, QString protocol) override;
     /*public*/ LocoAddress::Protocol getProtocolFromString(QString selection) override;
-    QT_DEPRECATED /*public*/ bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l) override;
-    QT_DEPRECATED /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l) override;
-    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress *la, ThrottleListener* l) override;
+//    QT_DEPRECATED /*public*/ bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l) ;
+//    QT_DEPRECATED /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l) ;
+//    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress *la, ThrottleListener* l) ;
     /*public*/ bool requestThrottle(int address, bool isLongAddress, ThrottleListener* l, bool canHandleDecisions) override;
     /*public*/ bool requestThrottle(/*@Nonnull*/ BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions) override;
     /*public*/ bool requestThrottle(LocoAddress* la, ThrottleListener* l, bool canHandleDecisions) override;
-    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l) override;
+//    QT_DEPRECATED /*public*/ bool requestThrottle(LocoAddress* la, BasicRosterEntry* re, ThrottleListener* l) ;
     /*public*/ bool requestThrottle(int address, ThrottleListener* l) override;
     /*public*/ bool requestThrottle(int address, ThrottleListener* l, bool canHandleDecisions) override;
 
@@ -107,9 +109,10 @@ public:
      */
     /*public*/ void cancelThrottleRequest(int address, bool isLong, ThrottleListener* l) override;
     /*public*/ void cancelThrottleRequest(BasicRosterEntry* re, ThrottleListener* l) override;
+    /*public*/ void cancelThrottleRequest(LocoAddress *la, ThrottleListener* l)override;
     /**
      * Cancel a request for a throttle.
-     * <P>
+  private   * <P>
      * This is a convenience version of the call, which uses system-specific
      * logic to tell whether the address is a short or long form.
      * @param address The decoder address desired.
@@ -146,6 +149,8 @@ public:
      * DccThrottle interface
      */
     /*public*/ QSet<SpeedStepMode::SSMODES> supportedSpeedModes() override;
+    /*public*/ bool enablePrefSilentStealOption()override;
+    /*public*/ bool enablePrefSilentShareOption()override;
     /*public*/ void attachListener(LocoAddress* la, PropertyChangeListener* p) override;
     /*public*/ void removeListener(LocoAddress* la, PropertyChangeListener* p) override;
     /*public*/ bool addressStillRequired(LocoAddress* la) override;
@@ -157,6 +162,7 @@ public:
     /*public*/ void responseThrottleDecision(int address, bool isLong, ThrottleListener* l, ThrottleListener::DecisionType decision) override;
     /*public*/ void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision) override;
 
+  QObject* self() override {return this;}
 signals:
     
 public slots:
@@ -187,7 +193,6 @@ private:
      * the number of requests and active users for this address.
      */
     /*private*/ QMap</*LocoAddress**/uint,Addresses*>* addressThrottles;// = new QHash<DccLocoAddress*,Addresses>();
-    /*private*/ void cancelThrottleRequest(LocoAddress *la, ThrottleListener* l);
 
 protected:
     /*protected*/ SystemConnectionMemo* adapterMemo;

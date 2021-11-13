@@ -195,7 +195,7 @@ AddressPanel::~AddressPanel()
  {
   log->warn("Not correct address, asked for "+QString::number(currentAddress->getNumber())+" got "+ t->getLocoAddress()->getNumber()+", requesting again..." );
   bool requestOK =
-            InstanceManager::throttleManagerInstance()->requestThrottle(currentAddress->getNumber(), currentAddress->isLongAddress(), (ThrottleListener*)this);
+            InstanceManager::throttleManagerInstance()->requestThrottle(currentAddress->getNumber(), currentAddress->isLongAddress(), (ThrottleListener*)this, true);
   if (!requestOK)
   {
    JOptionPane::showMessageDialog(mainPanel, tr("Address in use by another throttle."));
@@ -557,7 +557,7 @@ void AddressPanel::OnSetButton_clicked()
  }
 
  bool requestOK =
-     InstanceManager::throttleManagerInstance()->requestThrottle(consistAddress->getNumber(), consistAddress->isLongAddress(), (ThrottleListener*)this);
+     InstanceManager::throttleManagerInstance()->requestThrottle(consistAddress->getNumber(), consistAddress->isLongAddress(), (ThrottleListener*)this, true);
  if (!requestOK)
      //JOptionPane.showMessageDialog(mainPanel, Bundle.getMessage("AddressInUse"));
      QMessageBox::warning(mainPanel, tr("Warning"), tr("Address in use by another throttle."));

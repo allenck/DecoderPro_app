@@ -124,6 +124,11 @@ SOURCES += \
  #abstractproxymanager.cpp \
  addeditsinglelightcontrolframe.cpp \
  defaultlightcontrol.cpp \
+ defaultthrottle.cpp \
+ defaultthrottlemanager.cpp \
+ directcomponentfactory.cpp \
+ directmenu.cpp \
+ directsystemconnectionmemo.cpp \
  lightcontrolpane.cpp \
  lightcontroltablemodel.cpp \
  lighteditaction.cpp \
@@ -131,6 +136,7 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+ makepacket.cpp \
     namedbeancombobox.cpp \
     serialport.cpp \
     dccmanufacturerlist.cpp \
@@ -158,6 +164,7 @@ SOURCES += \
     lnprogrammermanager.cpp \
     defaultprogrammermanager.cpp \
     abstractturnout.cpp \
+ trafficcontroller.cpp \
     turnout.cpp \
     namedbeanhandlemanager.cpp \
     turnoutoperation.cpp \
@@ -217,7 +224,6 @@ SOURCES += \
     abstractthrottlemanager.cpp \
     lnthrottlemanager.cpp \
     proglistener.cpp \
-    throttlemanager.cpp \
     rfid/rfidusb.cpp \
     defaultroutemanager.cpp \
     defaultroute.cpp \
@@ -1116,7 +1122,12 @@ SOURCES += \
 HEADERS += \
  addeditsinglelightcontrolframe.h \
  defaultlightcontrol.h \
+ defaultthrottle.h \
+ defaultthrottlemanager.h \
  digitalio.h \
+ directcomponentfactory.h \
+ directmenu.h \
+ directsystemconnectionmemo.h \
  lightcontrolpane.h \
  lightcontroltablemodel.h \
  lighteditaction.h \
@@ -1124,6 +1135,7 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+ makepacket.h \
     namedbeancombobox.h \
     serialport.h \
     dccmanufacturerlist.h \
@@ -1159,6 +1171,7 @@ HEADERS += \
     loconetthrottledtransmitter.h \
     lnprogrammermanager.h \
     defaultprogrammermanager.h \
+ trafficcontroller.h \
     turnout.h \
     abstractturnout.h \
     namedbeanhandlemanager.h \

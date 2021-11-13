@@ -85,7 +85,6 @@
 #include <routemanager.h>
 #include <sensor.h>
 #include <systemconnectionmemo.h>
-#include <throttlemanager.h>
 #include <turnout.h>
 
 
@@ -253,14 +252,12 @@ void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { dele
    LnReporterManager*  getReporterManager(LocoNetSystemConnectionMemo* theWrappedObject);
    LnSensorManager*  getSensorManager(LocoNetSystemConnectionMemo* theWrappedObject);
    LnSensorManager*  py_q_getSensorManager(LocoNetSystemConnectionMemo* theWrappedObject){  return (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_getSensorManager());}
-   ThrottleManager*  getThrottleManager(LocoNetSystemConnectionMemo* theWrappedObject);
    LnTurnoutManager*  getTurnoutManager(LocoNetSystemConnectionMemo* theWrappedObject);
    bool  provides(LocoNetSystemConnectionMemo* theWrappedObject, QString  type);
    bool  py_q_provides(LocoNetSystemConnectionMemo* theWrappedObject, QString  type){  return (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q_provides(type));}
    void resetProgrammer(LocoNetSystemConnectionMemo* theWrappedObject);
    void setLnTrafficController(LocoNetSystemConnectionMemo* theWrappedObject, LnTrafficController*  lt);
    void setProgrammerManager(LocoNetSystemConnectionMemo* theWrappedObject, DefaultProgrammerManager*  p);
-   void setThrottleManager(LocoNetSystemConnectionMemo* theWrappedObject, ThrottleManager*  t);
 };
 
 

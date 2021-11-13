@@ -73,17 +73,17 @@
 }
 
 /*public*/ bool JsonThrottleManager::canBeLongAddress(int asInt) {
-    return ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->canBeLongAddress(asInt);
+    return ((ThrottleManager*)InstanceManager::getDefault("DefaultThrottleManager"))->canBeLongAddress(asInt);
 }
 
 /*public*/ bool JsonThrottleManager::canBeShortAddress(int asInt) {
-    return ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->canBeShortAddress(asInt);
+    return ((ThrottleManager*)InstanceManager::getDefault("DefaultThrottleManager"))->canBeShortAddress(asInt);
 }
 
 /*public*/ bool JsonThrottleManager::requestThrottle(DccLocoAddress* address, ThrottleListener* listener) {
-    return ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->requestThrottle(address, listener);
+    return ((ThrottleManager*)InstanceManager::getDefault("DefaultThrottleManager"))->requestThrottle(address, listener,true);
 }
 
 /*public*/ void JsonThrottleManager::attachListener(DccLocoAddress* address, JsonThrottle*throttle) {
-    ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->attachListener(address, (PropertyChangeListener*)throttle);
+    ((ThrottleManager*)InstanceManager::getDefault("DefaultThrottleManager"))->attachListener(address, (PropertyChangeListener*)throttle);
 }

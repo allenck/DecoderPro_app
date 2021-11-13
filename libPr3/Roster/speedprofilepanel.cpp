@@ -347,7 +347,7 @@ void SpeedProfilePanel::setupProfile()
   t = NULL;
  }
  re = reBox->getSelectedRosterEntries()->at(0);
- bool ok = InstanceManager::throttleManagerInstance()->requestThrottle(re, (ThrottleListener*)this);
+ bool ok = InstanceManager::throttleManagerInstance()->requestThrottle(re, (ThrottleListener*)this,true);
  if (!ok)
  {
   log->warn("Throttle for locomotive " + re->getId() + " could not be setup.");

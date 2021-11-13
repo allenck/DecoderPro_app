@@ -103,7 +103,6 @@
 #include <systemconnectionmemo.h>
 #include <tablecolumn.h>
 #include <tablecolumnmodel.h>
-#include <throttlemanager.h>
 #include <turnout.h>
 #include <turnoutmanager.h>
 #include <turnoutoperation.h>
@@ -2362,11 +2361,6 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setSensorManager(Se
   (InstanceManager::setSensorManager(p));
 }
 
-void PythonQtWrapper_InstanceManager::static_InstanceManager_setThrottleManager(ThrottleManager*  p)
-{
-  (InstanceManager::setThrottleManager(p));
-}
-
 void PythonQtWrapper_InstanceManager::static_InstanceManager_setTurnoutManager(TurnoutManager*  p)
 {
   (InstanceManager::setTurnoutManager(p));
@@ -2375,11 +2369,6 @@ void PythonQtWrapper_InstanceManager::static_InstanceManager_setTurnoutManager(T
 void PythonQtWrapper_InstanceManager::static_InstanceManager_store(QObject*  item, QString  type)
 {
   (InstanceManager::store(item, type));
-}
-
-ThrottleManager*  PythonQtWrapper_InstanceManager::static_InstanceManager_throttleManagerInstance()
-{
-  return (InstanceManager::throttleManagerInstance());
 }
 
 
@@ -18309,11 +18298,6 @@ bool  PythonQtWrapper_LnCommandStationType::getSupportsLocoReset(LnCommandStatio
 bool  PythonQtWrapper_LnCommandStationType::getSupportsMultimeter(LnCommandStationType* theWrappedObject)
 {
   return ( theWrappedObject->getSupportsMultimeter());
-}
-
-ThrottleManager*  PythonQtWrapper_LnCommandStationType::getThrottleManager(LnCommandStationType* theWrappedObject, LocoNetSystemConnectionMemo*  memo)
-{
-  return ( theWrappedObject->getThrottleManager(memo));
 }
 
 LnCommandStationType::LnCommandStationTypes  PythonQtWrapper_LnCommandStationType::getType(LnCommandStationType* theWrappedObject)

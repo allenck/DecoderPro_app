@@ -111,7 +111,6 @@ PythonQt::priv()->registerCPPClass("TableCellEditor", "", "Jmri", PythonQtCreate
 PythonQt::priv()->registerClass(&TableColumn::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumn>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumn>, module, 0);
 PythonQt::priv()->registerCPPClass("TableColumnModel", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_TableColumnModel>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TableColumnModel>, module, 0);
 PythonQt::priv()->registerCPPClass("Throttle", "", "Jmri", PythonQtCreateObject<PythonQtWrapper_Throttle>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Throttle>, module, 0);
-PythonQt::priv()->registerClass(&ThrottleManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_ThrottleManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_ThrottleManager>, module, 0);
 PythonQt::priv()->registerClass(&Turnout::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_Turnout>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_Turnout>, module, PythonQt::Type_RichCompare);
 PythonQt::priv()->registerClass(&TurnoutManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TurnoutManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TurnoutManager>, module, 0);
 PythonQt::priv()->registerClass(&TurnoutOperation::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TurnoutOperation>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TurnoutOperation>, module, 0);
@@ -120,7 +119,6 @@ PythonQt::priv()->registerClass(&WindowListener::staticMetaObject, "Jmri", Pytho
 PythonQt::priv()->registerClass(&XmlFile::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_XmlFile>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_XmlFile>, module, 0);
 
 
-PythonQtMethodInfo::addParameterTypeAlias("QList<LocoAddress::Protocol>", "QList<int>");
 PythonQtRegisterListTemplateConverterForKnownClass(QList, QModelIndex);
 PythonQtRegisterListTemplateConverterForKnownClass(QList, QString);
 PythonQtRegisterListTemplateConverterForKnownClass(QList, QTextEdit::ExtraSelection);

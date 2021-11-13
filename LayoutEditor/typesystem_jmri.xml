@@ -162,7 +162,7 @@
  <object-type name="DefaultProgrammerManager" />
  <object-type name="LnClockControl" />
  <object-type name="LnLightManager" />
- <object-type name="ThrottleManager" />
+ <object-type name="LnThrottleManager" />
  <object-type name="LnSensorManager" />
  <object-type name="LocoNetThrottledTransmitter" />
  <object-type name="WindowInterface" />

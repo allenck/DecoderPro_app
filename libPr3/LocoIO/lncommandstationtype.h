@@ -58,6 +58,7 @@ public:
      COMMAND_STATION_USB_DCS240_ALONE,
      COMMAND_STATION_USB_DCS52_ALONE
     };
+    Q_ENUM(LnCommandStationTypes)
     //explicit LnCommandStationType(QObject *parent = 0);
     LnCommandStationType(LnCommandStationTypes type, QString name, ReadsFromServiceModeTrack canRead,
             ProgDepowersTrack progEndOp,

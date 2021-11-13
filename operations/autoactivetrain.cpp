@@ -268,7 +268,7 @@ static final ResourceBundle rb = ResourceBundle
     if (_activeTrain->getTrainSource() == ActiveTrain::ROSTER) {
         if (_activeTrain->getRosterEntry() != NULL) {
             re = _activeTrain->getRosterEntry();
-            ok = InstanceManager::throttleManagerInstance()->requestThrottle(_activeTrain->getRosterEntry(), (ThrottleListener*)this);
+            ok = InstanceManager::throttleManagerInstance()->requestThrottle(_activeTrain->getRosterEntry(), (ThrottleListener*)this, false);
             if (re->getSpeedProfile() != NULL) {
                log->debug(tr("%1: using speed profile from roster entry %2").arg(_activeTrain->getTrainName()).arg( re->getId()));
                 useSpeedProfile = true;

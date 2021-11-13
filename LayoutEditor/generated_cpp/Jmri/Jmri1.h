@@ -118,7 +118,6 @@
 #include <systemconnectionmemo.h>
 #include <tablecolumn.h>
 #include <tablecolumnmodel.h>
-#include <throttlemanager.h>
 #include <turnout.h>
 #include <turnoutmanager.h>
 #include <turnoutoperation.h>
@@ -489,10 +488,8 @@ void delete_InstanceManager(InstanceManager* obj) { delete obj; }
    void static_InstanceManager_setLightManager(LightManager*  p);
    void static_InstanceManager_setReporterManager(ReporterManager*  p);
    void static_InstanceManager_setSensorManager(SensorManager*  p);
-   void static_InstanceManager_setThrottleManager(ThrottleManager*  p);
    void static_InstanceManager_setTurnoutManager(TurnoutManager*  p);
    void static_InstanceManager_store(QObject*  item, QString  type);
-   ThrottleManager*  static_InstanceManager_throttleManagerInstance();
 };
 
 
@@ -2235,7 +2232,6 @@ void delete_LnCommandStationType(LnCommandStationType* obj) { delete obj; }
    bool  getProgPowersOff(LnCommandStationType* theWrappedObject);
    bool  getSupportsLocoReset(LnCommandStationType* theWrappedObject);
    bool  getSupportsMultimeter(LnCommandStationType* theWrappedObject);
-   ThrottleManager*  getThrottleManager(LnCommandStationType* theWrappedObject, LocoNetSystemConnectionMemo*  memo);
    LnCommandStationType::LnCommandStationTypes  getType(LnCommandStationType* theWrappedObject);
    QString  toString(LnCommandStationType* theWrappedObject);
     QString py_toString(LnCommandStationType*);

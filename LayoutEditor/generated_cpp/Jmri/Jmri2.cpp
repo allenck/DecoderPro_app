@@ -72,7 +72,6 @@
 #include <route.h>
 #include <sensor.h>
 #include <systemconnectionmemo.h>
-#include <throttlemanager.h>
 #include <turnout.h>
 
 PythonQtShell_LocoNetInterface::~PythonQtShell_LocoNetInterface() {
@@ -696,11 +695,6 @@ LnSensorManager*  PythonQtWrapper_LocoNetSystemConnectionMemo::getSensorManager(
   return ( theWrappedObject->getSensorManager());
 }
 
-ThrottleManager*  PythonQtWrapper_LocoNetSystemConnectionMemo::getThrottleManager(LocoNetSystemConnectionMemo* theWrappedObject)
-{
-  return ( theWrappedObject->getThrottleManager());
-}
-
 LnTurnoutManager*  PythonQtWrapper_LocoNetSystemConnectionMemo::getTurnoutManager(LocoNetSystemConnectionMemo* theWrappedObject)
 {
   return ( theWrappedObject->getTurnoutManager());
@@ -724,11 +718,6 @@ void PythonQtWrapper_LocoNetSystemConnectionMemo::setLnTrafficController(LocoNet
 void PythonQtWrapper_LocoNetSystemConnectionMemo::setProgrammerManager(LocoNetSystemConnectionMemo* theWrappedObject, DefaultProgrammerManager*  p)
 {
   ( theWrappedObject->setProgrammerManager(p));
-}
-
-void PythonQtWrapper_LocoNetSystemConnectionMemo::setThrottleManager(LocoNetSystemConnectionMemo* theWrappedObject, ThrottleManager*  t)
-{
-  ( theWrappedObject->setThrottleManager(t));
 }
 
 

@@ -66,7 +66,7 @@ void ActiveSystemsMenu::common()
   for (QObject* obj : *list)
   {
    ComponentFactory* memo = (ComponentFactory*)obj;
-   QMenu* menu = memo->getMenu(frame);
+   QMenu* menu = memo->getMenu(/*frame*/);
    if (menu != NULL) {
        m->addMenu(menu);
    }
@@ -83,7 +83,7 @@ void ActiveSystemsMenu::common()
              = InstanceManager::getList("ComponentFactory");
 
      for (QObject* memo : *list) {
-         QMenu* menu = ((ComponentFactory*)memo)->getMenu(frame);
+         QMenu* menu = ((ComponentFactory*)memo)->getMenu(/*frame*/);
          if (menu != NULL) {
              m->addMenu(menu);
          }

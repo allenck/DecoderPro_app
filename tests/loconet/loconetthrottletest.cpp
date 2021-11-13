@@ -909,7 +909,7 @@ LocoNetThrottleTest::LocoNetThrottleTest()
 
     memo = new LocoNetSystemConnectionMemo(lnis, slotmanager);
     memo->setThrottleManager(new LnThrottleManager(memo));
-    InstanceManager::setDefault("ThrottleManager", memo->getThrottleManager());
+    InstanceManager::setDefault("ThrottleManager", (QObject*)memo->getThrottleManager());
 
     instance = new LocoNetThrottle(memo, new LocoNetSlot(0));
 }

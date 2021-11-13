@@ -28,7 +28,7 @@
 #include "lncabsignalmanager.h"
 #include "lnpredefinedmeters.h"
 #include "lncvdevicesmanager.h"
-
+#include <QMetaEnum>
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
  : DefaultSystemConnectionMemo("L","LocoNet", parent)
@@ -355,11 +355,22 @@ LnPowerManager* LocoNetSystemConnectionMemo::getPowerManager()
 
 
 ThrottleManager* LocoNetSystemConnectionMemo::getThrottleManager() {
-    if (getDisabled())
-        return NULL;
-    if (throttleManager == NULL)
-        throttleManager = (ThrottleManager*)new LnThrottleManager(this);
-    return throttleManager;
+ if (getSlotManager() != nullptr) {
+//     log->debug(tr("GetThrottleManager for %1").arg(QMetaEnum::fromType<LnCommandStationType::LnCommandStationTypes>().valueToKey(getSlotManager()->getCommandStationType())));
+ }
+ if (getDisabled()) {
+     return nullptr;
+ }
+ ThrottleManager* throttleManager = (ThrottleManager*)get("ThrottleManager");
+ if (throttleManager == nullptr && getSlotManager() != nullptr) {
+     // ask command station type for specific throttle manager
+     LnCommandStationType* cmdstation = getSlotManager()->getCommandStationType();
+     log->debug(tr("getThrottleManager constructs for %1").arg(cmdstation->getName()));
+     throttleManager = cmdstation->getThrottleManager(this);
+     log->debug(tr("result was type {}").arg(throttleManager->self()->metaObject()->className()));
+     store((Manager*)throttleManager,"ThrottleManager");
+ }
+ return throttleManager;
 }
 
 void LocoNetSystemConnectionMemo::setThrottleManager(ThrottleManager* t) {
@@ -555,9 +566,9 @@ ResourceBundle* LocoNetSystemConnectionMemo::getActionModelResourceBundle()
         InstanceManager::deregister(reporterManager, "LnReporterManager");
     }
     if (throttleManager != nullptr) {
-        if (qobject_cast<LnThrottleManager*>(throttleManager)) {
+        if (qobject_cast<LnThrottleManager*>(throttleManager->self())) {
             InstanceManager::deregister(((LnThrottleManager*) throttleManager), "LnThrottleManager");
-        } else if (qobject_cast<DebugThrottleManager*>(throttleManager)) {
+        } else if (qobject_cast<DebugThrottleManager*>(throttleManager->self())) {
             InstanceManager::deregister(((DebugThrottleManager*) throttleManager), "DebugThrottleManager");
         }
     }

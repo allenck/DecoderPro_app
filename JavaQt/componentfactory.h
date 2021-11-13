@@ -12,7 +12,7 @@ public:
  /**
       * Provide a menu with all items attached to this system connection
       */
- /*abstract*/ virtual /*public*/ QMenu* getMenu(QWidget* /*frame*/) { return NULL;}
+ /*abstract*/ virtual /*public*/ QMenu* getMenu(/*QWidget* frame*/) { return NULL;}
 signals:
 
 public slots:

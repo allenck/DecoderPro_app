@@ -76,7 +76,8 @@
 #include "jmriclient/jmriclientsystemconnectionmemo.h"
 #include "../operations/routemanager.h"
 #include "defaultvariablelightmanager.h"
-
+#include "defaultthrottlemanager.h"
+#include "directsystemconnectionmemo.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -622,12 +623,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return m;
  }
 
-// if (type == "CTCExceptionBuffer")
-// {
-//  CTCExceptionBuffer* m = new CTCExceptionBuffer();
-//  //InstanceManager::store(m, type);
-//  return m;
-// }
+ if (type == "ThrottleManager")
+ {
+  DirectSystemConnectionMemo* memo = new DirectSystemConnectionMemo();
+  AbstractThrottleManager* m = new AbstractThrottleManager(memo);
+  InstanceManager::store(m, type);
+  return m;
+ }
 
  if (type == "DefaultRouteManager")
  {

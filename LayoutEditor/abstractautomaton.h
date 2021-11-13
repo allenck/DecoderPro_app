@@ -17,6 +17,7 @@
 #include <QEventLoop>
 #include "liblayouteditor_global.h"
 #include "vetoablechangelistener.h"
+#include "throttlelistener.h"
 
 //class Runnable;
 class AutomatSummary;
@@ -55,7 +56,9 @@ public:
     /*public*/ void setTurnouts(QList<Turnout*> closed, QList<Turnout*> thrown);
     /*public*/ void waitChange(QVector<NamedBean*> mInputs);
     /*public*/ /*synchronized*/ void waitSensorChange(QList<Sensor*> mSensors);
+    /*public*/ DccThrottle* getThrottle(int address, bool longAddress, int waitSecs);
     /*public*/ DccThrottle* getThrottle(int address, bool longAddress);
+    /*public*/ DccThrottle* getThrottle(BasicRosterEntry* re, int waitSecs);
     /*public*/ DccThrottle* getThrottle(BasicRosterEntry* re);
     /*public*/ bool writeServiceModeCV(QString CV, int value);
     /*public*/ int readServiceModeCV(QString CV);
@@ -98,6 +101,8 @@ private:
  /*private*/ bool checkForState(QList<Sensor*> mSensors, int state) ;
  /*private*/ bool checkForConsistent(QList<Turnout*> mTurnouts);
  /*private*/ DccThrottle* throttle;
+ /*private*/ bool failedThrottleRequest = false;
+
  /*private*/ void debuggingWait();
  /*private*/ /*volatile*/ int cvReturnValue;
  QFrame* messageFrame;// = NULL;
@@ -108,6 +113,7 @@ private:
 
 
  friend class Runnable1;
+ friend class AAThrottleListener;
 #if 0
  class SensorListener : PropertyChangeListener
  {
@@ -272,4 +278,38 @@ private:
     AbstractAutomaton* self;
     QMainWindow* debugWaitFrame;
 };
+
+class AAThrottleListener : public QObject, public ThrottleListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ThrottleListener)
+  AbstractAutomaton* abstractAutomaton;
+ public:
+  AAThrottleListener(AbstractAutomaton* abstractAutomaton) {this->abstractAutomaton = abstractAutomaton;}
+  //@Override
+  /*public*/ void notifyThrottleFound(DccThrottle* t) {
+      abstractAutomaton->throttle = t;
+//      synchronized (self) {
+          abstractAutomaton->notifyAll(); // should be only one thread waiting, but just in case
+//      }
+  }
+
+  //@Override
+  /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason) {
+      abstractAutomaton->log->error(tr("Throttle request failed for %1 because %2").arg(address->toString()).arg(reason));
+      abstractAutomaton->failedThrottleRequest = true;
+//      synchronized (self) {
+          abstractAutomaton->notifyAll(); // should be only one thread waiting, but just in case
+//      }
+  }
+
+  /**
+   * No steal or share decisions made locally
+   */
+  //@Override
+  /*public*/ void notifyDecisionRequired(LocoAddress* address, DecisionType question) {
+  }
+  QObject* self() {return (QObject*)this;}
+};
+
 #endif // ABSTRACTAUTOMATON_H

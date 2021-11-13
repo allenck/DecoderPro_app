@@ -33,7 +33,7 @@
 {
  //super();
  init();
- ThrottleManager* throttleManager = (ThrottleManager*) InstanceManager::throttleManagerInstance();
+ ThrottleManager* throttleManager = /*(ThrottleManager*)*/ InstanceManager::throttleManagerInstance();
  if ((throttleManager !=NULL)
         && !throttleManager->addressTypeUnique())
  {

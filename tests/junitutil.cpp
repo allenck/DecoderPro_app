@@ -828,7 +828,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 #endif
 /*public*/ /*static*/ void JUnitUtil::initDebugThrottleManager() {
     ThrottleManager* m = new DebugThrottleManager();
-    InstanceManager::store(m, "ThrottleManager");
+    InstanceManager::store((QObject*)m, "ThrottleManager");
 }
 
 /*public*/ /*static*/ void JUnitUtil::initDebugProgrammerManager() {

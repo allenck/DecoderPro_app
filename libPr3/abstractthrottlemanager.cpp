@@ -22,7 +22,7 @@
  */
 
 AbstractThrottleManager::AbstractThrottleManager(QObject *parent)
-    : ThrottleManager(parent)
+    : QObject(parent)
 {
     this->parent = parent;
     log->setDebugEnabled(true);
@@ -36,7 +36,7 @@ AbstractThrottleManager::AbstractThrottleManager(QObject *parent)
 
     //public AbstractThrottleManager(){}
 
-/*public*/ AbstractThrottleManager::AbstractThrottleManager(SystemConnectionMemo* memo,QObject* parent) : ThrottleManager(parent)
+/*public*/ AbstractThrottleManager::AbstractThrottleManager(SystemConnectionMemo* memo,QObject* parent) : QObject(parent)
 {
     this->parent = parent;
     log = new Logger("AbstractThrottleManager");
@@ -71,8 +71,8 @@ list << "dcc" <<"dcc_short" << "dcc_long";
     return LocoAddress::getPeopleName(prot);
 }
 
-/*public*/ QList<LocoAddress::Protocol> AbstractThrottleManager::getAddressProtocolTypes(){
-    QList<LocoAddress::Protocol> list;
+/*public*/ QVector<LocoAddress::Protocol> AbstractThrottleManager::getAddressProtocolTypes(){
+    QVector<LocoAddress::Protocol> list;
     list << LocoAddress::DCC<< LocoAddress::DCC_SHORT<< LocoAddress::DCC_LONG;
     return list;
 }
@@ -119,9 +119,9 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      */
     //@Deprecated
     //@Override
-    /*public*/ bool AbstractThrottleManager::requestThrottle(BasicRosterEntry* re, ThrottleListener* l) {
-        return requestThrottle(re, l, false);
-    }
+//    /*public*/ bool AbstractThrottleManager::requestThrottle(BasicRosterEntry* re, ThrottleListener* l) {
+//        return requestThrottle(re, l, false);
+//    }
 
     /**
      * @deprecated since 4.15.7; use
@@ -129,10 +129,10 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      */
     //@Deprecated
     //@Override
-    /*public*/ bool AbstractThrottleManager::requestThrottle(int address, bool isLongAddress, ThrottleListener* l) {
-        DccLocoAddress* la = new DccLocoAddress(address, isLongAddress);
-        return requestThrottle(la, l, false);
-    }
+//    /*public*/ bool AbstractThrottleManager::requestThrottle(int address, bool isLongAddress, ThrottleListener* l) {
+//        DccLocoAddress* la = new DccLocoAddress(address, isLongAddress);
+//        return requestThrottle(la, l, false);
+//    }
 
     /**
      * @deprecated since 4.15.7; use
@@ -140,9 +140,9 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      */
     //@Deprecated
     //@Override
-    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, ThrottleListener* l) {
-        return requestThrottle(la, l, false);
-    }
+//    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* la, ThrottleListener* l) {
+//        return requestThrottle(la, l, false);
+//    }
 
     /**
      * {@inheritDoc}
@@ -175,9 +175,9 @@ list << "dcc" <<"dcc_short" << "dcc_long";
      */
     //@Deprecated
     //@Override
-    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* /*la*/, BasicRosterEntry* re, ThrottleListener* l) {
-        return requestThrottle(re, l, false);
-    }
+//    /*public*/ bool AbstractThrottleManager::requestThrottle(LocoAddress* /*la*/, BasicRosterEntry* re, ThrottleListener* l) {
+//        return requestThrottle(re, l, false);
+//    }
 
     /**
      * Request a throttle, given a decoder address.
@@ -531,6 +531,26 @@ list << "dcc" <<"dcc_short" << "dcc_long";
  return modes;
 }
 
+/**
+ * Hardware that uses the Silent Steal preference
+ * will need to override
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool AbstractThrottleManager::enablePrefSilentStealOption() {
+    return false;
+}
+
+/**
+ * Hardware that uses the Silent Share preference
+ * will need to override
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool AbstractThrottleManager::enablePrefSilentShareOption() {
+    return false;
+}
+
 /*public*/ void AbstractThrottleManager::attachListener(LocoAddress* la,PropertyChangeListener* p)
 {
 
@@ -746,7 +766,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
    {
     LocoNetThrottle* lnThrottle = (LocoNetThrottle*)throttle;
-    log.debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " increased Use Size to " + QString::number(useActiveCount));
+    log->debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " increased Use Size to " + QString::number(useActiveCount));
    }
   }
 
@@ -758,7 +778,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
    {
     LocoNetThrottle* lnThrottle = (LocoNetThrottle*)throttle;
-    log.debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " decreased Use Size to " + QString::number(useActiveCount));
+    log->debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " decreased Use Size to " + QString::number(useActiveCount));
    }
   }
 
@@ -784,7 +804,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
    {
     LocoNetThrottle* lnThrottle = (LocoNetThrottle*)throttle;
-    log.debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " throttle assigned " +
+    log->debug(QString::number(((DccLocoAddress*) lnThrottle->getLocoAddress())->getNumber()) + " throttle assigned " +
                  "has been changed need to notify throttle users");
    }
    this->throttle = throttle;
@@ -818,7 +838,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   void Addresses::addListener(ThrottleListener* l){
    // Check for duplication here
    if (listeners->contains(l))
-       log.debug(tr("this Addresses listeners already includes listener %1").arg(l->self()->metaObject()->className()));
+       log->debug(tr("this Addresses listeners already includes listener %1").arg(l->self()->metaObject()->className()));
    else
          listeners->append(l);
   }
@@ -831,5 +851,8 @@ list << "dcc" <<"dcc_short" << "dcc_long";
   bool Addresses::containsListener(ThrottleListener* l){
          return listeners->contains(l);
   }
+
+  /*static*/ Logger* Addresses::log = LoggerFactory::getLogger("Addresses");
+
 
 /*static*/ Logger* AbstractThrottleManager::log = LoggerFactory::getLogger("AbstractThrottleManager");

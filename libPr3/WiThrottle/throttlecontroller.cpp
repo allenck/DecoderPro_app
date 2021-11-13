@@ -540,9 +540,9 @@ controllerListeners = NULL;
 
 /*protected*/ void ThrottleController::setAddress(int number, bool isLong) {
     if (rosterLoco != NULL) {
-        InstanceManager::throttleManagerInstance()->requestThrottle(rosterLoco, (ThrottleListener*)this);
+        InstanceManager::throttleManagerInstance()->requestThrottle(rosterLoco, (ThrottleListener*)this,true);
     } else {
-        InstanceManager::throttleManagerInstance()->requestThrottle(number, isLong, (ThrottleListener*)this);
+        InstanceManager::throttleManagerInstance()->requestThrottle(number, isLong, (ThrottleListener*)this, true);
     }
 }
 
