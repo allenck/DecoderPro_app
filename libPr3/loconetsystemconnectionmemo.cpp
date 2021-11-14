@@ -290,7 +290,7 @@ void LocoNetSystemConnectionMemo::configureManagers()
  if (sm != NULL)
  {
   sm->setThrottledTransmitter(tm, mTurnoutNoRetry);
-  log->debug("set turnout retry: "+mTurnoutNoRetry);
+  log->debug(tr("set turnout retry: %1").arg(mTurnoutNoRetry?"true":"false"));
  }
 
  InstanceManager::store(getPowerManager(), "PowerManager");

@@ -788,7 +788,7 @@ void InstanceManager::setLightManager(LightManager* p) {
 
 void InstanceManager::setThrottleManager(ThrottleManager* p)
 {
-    store((QObject*)p, "ThrottleManager");
+    store((QObject*)p->self(), "ThrottleManager");
     //instance()->notifyPropertyChangeListener("throttlemanager", QVariant(), QVariant());
 }
 
