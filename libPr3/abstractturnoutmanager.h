@@ -20,6 +20,7 @@ public:
     Turnout* getBySystemName(QString name)const  override;
     Turnout* getByUserName(QString key)const  override;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
+    /*public*/ QString getNamedBeanClass() const override;
     QString getClosedText() override;
     /**
      * Get text to be used for the Turnout.THROWN state in user communication.

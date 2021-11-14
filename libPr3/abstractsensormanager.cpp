@@ -161,6 +161,13 @@ bool AbstractSensorManager::isNumber(QString s) const
 }
 
 /**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString AbstractSensorManager::getNamedBeanClass() const {
+    return "Sensor";
+}
+/**
  * Requests status of all layout sensors under this Sensor Manager.
  * This method may be invoked whenever the status of sensors needs to be updated from
  *		the layout, for example, when an XML configuration file is read in.

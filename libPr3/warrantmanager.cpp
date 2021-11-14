@@ -350,15 +350,8 @@ WarrantManager::WarrantManager(QObject *parent) :
 
 //@Override
 //@Nonnull
-/*public*/ QString WarrantManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString WarrantManager::getBeanTypeHandled(bool plural) const{
     return tr(plural ? "Warrants" : "Warrant");
-}
-/**
- * {@inheritDoc}
- */
-//@Override
-/*public*/ QString WarrantManager::getNamedBeanClass() {
-    return "Warrant";
 }
 
 /*protected*/ void WarrantManager::setSpeedProfiles(QString id, RosterSpeedProfile* merge, RosterSpeedProfile* session) {

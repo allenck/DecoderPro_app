@@ -272,4 +272,18 @@ template<class T>
     throw UnsupportedOperationException("Not supported yet.");
 }
 
+//@Override
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString NamedBeanHandleManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "Beans" : "Bean");
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ /*Class<NamedBean>*/QString NamedBeanHandleManager::getNamedBeanClass() const{
+    return "NamedBean";
+}
 //        static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(NamedBeanHandleManager.class.getName());

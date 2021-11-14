@@ -21,7 +21,8 @@ public:
     int getXMLOrder() const override;
     //QString getSystemPrefix();
     char typeLetter() const override;
-    /*public*/ QString getNamedBeanClass();
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+    /*public*/ QString getNamedBeanClass() const override;
 
     /**
      * Method to create a new Section if the Section does not exist
@@ -68,7 +69,6 @@ public:
      * Initialize all blocking sensors that exist - sets them to 'ACTIVE'
      */
     /*public*/ void initializeBlockingSensors ();
-    /*public*/ QString getNamedBeanClass()const override;
     QObject* self() override {return (QObject*)this;}
 
     

@@ -203,6 +203,7 @@ virtual void deregister(NamedBean*  s) const;
 virtual void dispose() const;
 virtual void fireVetoableChange(QString  p, QVariant  old, QVariant  n) throw (PropertyVetoException);
 virtual NamedBean*  getBeanBySystemName(QString  systemName) const;
+virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  arg__1) const;
 virtual NamedBean*  getByUserName(QString  arg__1) const;
 virtual long  getDefaultSensorDebounceGoingActive();
@@ -247,6 +248,7 @@ class PythonQtPublicPromoter_SensorManager : public SensorManager
 inline bool  py_q_allowMultipleAdditions(QString  arg__1) { return SensorManager::allowMultipleAdditions(arg__1); }
 inline QString  py_q_createSystemName(QString  arg__1, QString  arg__2) const throw (JmriException)  { return SensorManager::createSystemName(arg__1, arg__2); }
 inline void py_q_dispose() const { SensorManager::dispose(); }
+inline QString  py_q_getBeanTypeHandled(bool  plural) const { return SensorManager::getBeanTypeHandled(plural); }
 inline NamedBean*  py_q_getBySystemName(QString  arg__1) const { return SensorManager::getBySystemName(arg__1); }
 inline NamedBean*  py_q_getByUserName(QString  arg__1) const { return SensorManager::getByUserName(arg__1); }
 inline long  py_q_getDefaultSensorDebounceGoingActive() { return SensorManager::getDefaultSensorDebounceGoingActive(); }
@@ -278,6 +280,8 @@ void delete_SensorManager(SensorManager* obj) { delete obj; }
    bool  py_q_allowMultipleAdditions(SensorManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_allowMultipleAdditions(arg__1));}
    QString  py_q_createSystemName(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2) const throw (JmriException) {  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_createSystemName(arg__1, arg__2));}
    void py_q_dispose(SensorManager* theWrappedObject) const{  (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_dispose());}
+   QString  getBeanTypeHandled(SensorManager* theWrappedObject, bool  plural) const;
+   QString  py_q_getBeanTypeHandled(SensorManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    NamedBean*  py_q_getBySystemName(SensorManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getBySystemName(arg__1));}
    NamedBean*  getByUserName(SensorManager* theWrappedObject, QString  arg__1) const;
    NamedBean*  py_q_getByUserName(SensorManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_SensorManager*)theWrappedObject)->py_q_getByUserName(arg__1));}

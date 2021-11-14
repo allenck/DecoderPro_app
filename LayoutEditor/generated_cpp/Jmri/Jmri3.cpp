@@ -1935,6 +1935,39 @@ if (_wrapper) {
 }
   return SensorManager::getBeanBySystemName(systemName0);
 }
+QString  PythonQtShell_SensorManager::getBeanTypeHandled(bool  plural0) const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      QString returnValue{};
+      void* args[2] = {NULL, (void*)&plural0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return SensorManager::getBeanTypeHandled(plural0);
+}
 NamedBean*  PythonQtShell_SensorManager::getBySystemName(QString  arg__1) const
 {
 if (_wrapper) {
@@ -2961,6 +2994,11 @@ int PythonQtShell_SensorManager::qt_metacall(QMetaObject::Call call, int id, voi
 bool  PythonQtWrapper_SensorManager::allowMultipleAdditions(SensorManager* theWrappedObject, QString  arg__1)
 {
   return ( theWrappedObject->allowMultipleAdditions(arg__1));
+}
+
+QString  PythonQtWrapper_SensorManager::getBeanTypeHandled(SensorManager* theWrappedObject, bool  plural) const
+{
+  return ( theWrappedObject->getBeanTypeHandled(plural));
 }
 
 NamedBean*  PythonQtWrapper_SensorManager::getByUserName(SensorManager* theWrappedObject, QString  arg__1) const

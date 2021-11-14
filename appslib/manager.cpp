@@ -34,7 +34,7 @@
  */
 //@CheckReturnValue
 //@Nonnull
-/*public*/ QString Manager::getBeanTypeHandled(bool /*plural*/) const { return "??";}
+// /*public*/ QString Manager::getBeanTypeHandled(bool /*plural*/) const { return "??";}
 
 /*static*/ /*public*/ int Manager::getSystemPrefixLength(/*@Nonnull*/ QString inputName) throw (NamedBean::BadSystemNameException)
 {

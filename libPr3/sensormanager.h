@@ -158,6 +158,8 @@ public:
     /*public*/ QString toString() override {return "SensorManager";}
     QObject* self() override{return (QObject*)this;}
     QString getNamedBeanClass() const override {return "SensorManager";}
+    /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Sensors":"Sensor");}
+
 signals:
     
 public slots:

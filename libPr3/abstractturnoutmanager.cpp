@@ -159,6 +159,13 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
     return plural ? tr("Turnouts") : tr("Turnout");
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString AbstractTurnoutManager::getNamedBeanClass() const{
+    return "Turnout";
+}
 /*\\\\\\\\\\\ * Get text to be used for the Turnout.CLOSED state in user communication.
  * Allows text other than "CLOSED" to be use with certain hardware system
  * to represent the Turnout.CLOSED state.

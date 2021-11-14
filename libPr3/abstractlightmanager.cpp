@@ -234,7 +234,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  */
 //@Override
 /*public*/ QString AbstractLightManager::getBeanTypeHandled(bool plural) const {
-    return (plural ? tr("Lights") : ("Light"));
+    return (plural ? tr("Lights") : tr("Light"));
 }
 
 /**

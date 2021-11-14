@@ -30,8 +30,7 @@ public:
         return "Warrant";
     }
     /*public*/ static WarrantManager* getDefault();
-    /*public*/ QString getBeanTypeHandled(bool plural);
-    /*public*/ QString getNamedBeanClass();
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
     QObject* self() {return (QObject*)this;}
 
 signals:

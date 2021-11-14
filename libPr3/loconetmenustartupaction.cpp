@@ -1,6 +1,7 @@
 #include "loconetmenustartupaction.h"
 #include "loconetmenu.h"
 #include "instancemanager.h"
+#include "componentfactory.h"
 
 LocoNetMenuStartupAction::LocoNetMenuStartupAction(QObject* parent) : AbstractAction(tr("Monitor Loconet"), parent)
 {
@@ -15,9 +16,13 @@ LocoNetMenuStartupAction::LocoNetMenuStartupAction(QString title, QObject* paren
 
 void LocoNetMenuStartupAction::actionPerformed(JActionEvent *)
 {
+ ComponentFactory* factory = (ComponentFactory*)InstanceManager::getDefault("ComponentFactory*");
+ LocoNetMenu* menu = nullptr;
 
  if(LocoNetMenu::instance() != nullptr)
+ //if(factory != nullptr)
  {
+  //menu = factory->a()
   foreach(QAction* act, LocoNetMenu::instance()->actions())
   {
    if(act->text() == this->title)

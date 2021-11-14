@@ -452,9 +452,8 @@ public:
       */
      //@CheckReturnValue
      //@Nonnull
-     /*public*/ QString getBeanTypeHandled() const {return getBeanTypeHandled(false);}
-     /*public*/ virtual /*default*/ QString getBeanTypeHandled(bool plural) const;
-
+     /*public*/ virtual QString getBeanTypeHandled() const {return getBeanTypeHandled(false);}
+     /*public*/ virtual /*default*/ QString getBeanTypeHandled(bool /*plural*/) const {return "??";}
      /**
       * Enforces, and as a user convenience converts to, the standard form for a
       * system name for the NamedBeans handled by this manager.

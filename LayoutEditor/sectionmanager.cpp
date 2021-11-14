@@ -257,6 +257,12 @@ Section* SectionManager::createNewSection(QString userName) {
     }
 }
 
+//@Override
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString SectionManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "Sections" : "Section");
+}
 
 /*public*/ QString SectionManager::getNamedBeanClass() const
 {

@@ -322,6 +322,7 @@ virtual void deregister(NamedBean*  arg__1) const;
 virtual void dispose();
 virtual NamedBean*  getBeanBySystemName(QString  arg__1) const;
 virtual NamedBean*  getBeanByUserName(QString  arg__1) const;
+virtual QString  getBeanTypeHandled() const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  arg__1) const;
 virtual NamedBean*  getByUserName(QString  arg__1) const;
@@ -359,7 +360,8 @@ inline void py_q_deregister(NamedBean*  arg__1) const { Manager::deregister(arg_
 inline void py_q_dispose() { Manager::dispose(); }
 inline NamedBean*  py_q_getBeanBySystemName(QString  arg__1) const { return Manager::getBeanBySystemName(arg__1); }
 inline NamedBean*  py_q_getBeanByUserName(QString  arg__1) const { return Manager::getBeanByUserName(arg__1); }
-inline QString  py_q_getBeanTypeHandled(bool  plural) const { return Manager::getBeanTypeHandled(plural); }
+inline QString  py_q_getBeanTypeHandled() const { return Manager::getBeanTypeHandled(); }
+inline QString  py_q_getBeanTypeHandled(bool  plural) const { return this->getBeanTypeHandled(plural); }
 inline NamedBean*  py_q_getBySystemName(QString  arg__1) const { return Manager::getBySystemName(arg__1); }
 inline NamedBean*  py_q_getByUserName(QString  arg__1) const { return Manager::getByUserName(arg__1); }
 inline QString  py_q_getEntryToolTip() { return Manager::getEntryToolTip(); }
@@ -409,6 +411,7 @@ void delete_Manager(Manager* obj) { delete obj; }
    NamedBean*  getBeanByUserName(Manager* theWrappedObject, QString  arg__1) const;
    NamedBean*  py_q_getBeanByUserName(Manager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanByUserName(arg__1));}
    QString  getBeanTypeHandled(Manager* theWrappedObject) const;
+   QString  py_q_getBeanTypeHandled(Manager* theWrappedObject) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanTypeHandled());}
    QString  getBeanTypeHandled(Manager* theWrappedObject, bool  plural) const;
    QString  py_q_getBeanTypeHandled(Manager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    NamedBean*  getBySystemName(Manager* theWrappedObject, QString  arg__1) const;

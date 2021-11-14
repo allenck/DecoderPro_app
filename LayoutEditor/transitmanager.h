@@ -28,16 +28,16 @@ public:
     Transit* createNewTransit(QString systemName, QString userName);
     /*public*/ Transit* createNewTransit(QString userName);
     /*public*/ Transit* getTransit(QString name) ;
-    /*public*/ Transit* getBySystemName(QString name)const ;
-    /*public*/ Transit* getByUserName(QString key)const ;
+    /*public*/ Transit* getBySystemName(QString name)const override;
+    /*public*/ Transit* getByUserName(QString key)const override;
     /*public*/ void deleteTransit(Transit* z) ;
     /*public*/ QList<Transit*>* getListUsingSection(Section* s);
     /*static*/ /*public*/ TransitManager* instance();
     /*public*/ QList<Transit*> getListUsingBlock(Block* b);
     /*public*/ QList<Transit*> getListEntryBlock(Block* b);
-    /*public*/ QString getNamedBeanClass()const override {
-        return "Transit";
-    }
+    /*public*/ QString getNamedBeanClass()const override ;
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+    /*public*/ void dispose() override;
 
 signals:
     
@@ -48,6 +48,7 @@ private:
 
  int lastAutoTransitRef;// = 0;
  static TransitManager* _instance;// = NULL;
+ /*final*/ void addVetoListener();
 
     
 };

@@ -128,7 +128,9 @@ void delete_AbstractAutomaton(AbstractAutomaton* obj) { delete obj; }
    int  getCount(AbstractAutomaton* theWrappedObject);
    QString  getName(AbstractAutomaton* theWrappedObject);
    DccThrottle*  getThrottle(AbstractAutomaton* theWrappedObject, BasicRosterEntry*  re);
+   DccThrottle*  getThrottle(AbstractAutomaton* theWrappedObject, BasicRosterEntry*  re, int  waitSecs);
    DccThrottle*  getThrottle(AbstractAutomaton* theWrappedObject, int  address, bool  longAddress);
+   DccThrottle*  getThrottle(AbstractAutomaton* theWrappedObject, int  address, bool  longAddress, int  waitSecs);
    bool  handle(AbstractAutomaton* theWrappedObject);
    bool  py_q_handle(AbstractAutomaton* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractAutomaton*)theWrappedObject)->py_q_handle());}
    void py_q_init(AbstractAutomaton* theWrappedObject){  (((PythonQtPublicPromoter_AbstractAutomaton*)theWrappedObject)->py_q_init());}
@@ -1026,6 +1028,7 @@ inline NamedBean*  py_q_getBySystemName(QString  key) const { return AbstractSen
 inline NamedBean*  py_q_getByUserName(QString  key) const { return AbstractSensorManager::getByUserName(key); }
 inline long  py_q_getDefaultSensorDebounceGoingActive() { return AbstractSensorManager::getDefaultSensorDebounceGoingActive(); }
 inline long  py_q_getDefaultSensorDebounceGoingInActive() { return AbstractSensorManager::getDefaultSensorDebounceGoingInActive(); }
+inline QString  py_q_getNamedBeanClass() const { return AbstractSensorManager::getNamedBeanClass(); }
 inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) { return AbstractSensorManager::getNextValidAddress(curAddress, prefix); }
 inline Sensor*  py_q_getSensor(QString  name) const { return AbstractSensorManager::getSensor(name); }
 inline int  py_q_getXMLOrder() const { return AbstractSensorManager::getXMLOrder(); }
@@ -1050,13 +1053,13 @@ void delete_AbstractSensorManager(AbstractSensorManager* obj) { delete obj; }
    Sensor*  createNewSensor(AbstractSensorManager* theWrappedObject, QString  arg__1, QString  arg__2);
    Sensor*  py_q_createNewSensor(AbstractSensorManager* theWrappedObject, QString  arg__1, QString  arg__2){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_createNewSensor(arg__1, arg__2));}
    QString  py_q_createSystemName(AbstractSensorManager* theWrappedObject, QString  curAddress, QString  prefix) const throw (JmriException) {  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_createSystemName(curAddress, prefix));}
-   QString  getBeanTypeHandled(AbstractSensorManager* theWrappedObject, bool  plural) const;
    QString  py_q_getBeanTypeHandled(AbstractSensorManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    NamedBean*  py_q_getBySystemName(AbstractSensorManager* theWrappedObject, QString  key) const{  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getBySystemName(key));}
    NamedBean*  py_q_getByUserName(AbstractSensorManager* theWrappedObject, QString  key) const{  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getByUserName(key));}
    long  py_q_getDefaultSensorDebounceGoingActive(AbstractSensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingActive());}
    long  py_q_getDefaultSensorDebounceGoingInActive(AbstractSensorManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getDefaultSensorDebounceGoingInActive());}
    NamedBean*  getInstanceBySystemName(AbstractSensorManager* theWrappedObject, QString  systemName);
+   QString  py_q_getNamedBeanClass(AbstractSensorManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    QString  py_q_getNextValidAddress(AbstractSensorManager* theWrappedObject, QString  curAddress, QString  prefix){  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
    Sensor*  py_q_getSensor(AbstractSensorManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getSensor(name));}
    int  py_q_getXMLOrder(AbstractSensorManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->py_q_getXMLOrder());}
@@ -1615,6 +1618,7 @@ inline QString  py_q_getClosedText() { return AbstractTurnoutManager::getClosedT
 inline QString  py_q_getDefaultClosedSpeed() const { return AbstractTurnoutManager::getDefaultClosedSpeed(); }
 inline QString  py_q_getDefaultThrownSpeed() const { return AbstractTurnoutManager::getDefaultThrownSpeed(); }
 inline QString  py_q_getEntryToolTip() { return AbstractTurnoutManager::getEntryToolTip(); }
+inline QString  py_q_getNamedBeanClass() const { return AbstractTurnoutManager::getNamedBeanClass(); }
 inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) const { return AbstractTurnoutManager::getNextValidAddress(curAddress, prefix); }
 inline int  py_q_getOutputInterval() { return AbstractTurnoutManager::getOutputInterval(); }
 inline QString  py_q_getThrownText() { return AbstractTurnoutManager::getThrownText(); }
@@ -1652,6 +1656,7 @@ void delete_AbstractTurnoutManager(AbstractTurnoutManager* obj) { delete obj; }
    QString  py_q_getDefaultThrownSpeed(AbstractTurnoutManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getDefaultThrownSpeed());}
    QString  getEntryToolTip(AbstractTurnoutManager* theWrappedObject);
    QString  py_q_getEntryToolTip(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getEntryToolTip());}
+   QString  py_q_getNamedBeanClass(AbstractTurnoutManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    QString  py_q_getNextValidAddress(AbstractTurnoutManager* theWrappedObject, QString  curAddress, QString  prefix) const{  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
    int  py_q_getOutputInterval(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getOutputInterval());}
    QString  py_q_getThrownText(AbstractTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractTurnoutManager*)theWrappedObject)->py_q_getThrownText());}

@@ -117,6 +117,7 @@ public:
     /*public*/ Turnout* getByUserName(/*@Nonnull*/ QString userName) const ;
     /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException);
     /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) override;
+    /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Turnouts":"Turnout");}
 
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);

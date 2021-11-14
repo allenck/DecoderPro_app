@@ -164,6 +164,6 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
  */
 /*abstract*/ /*protected*/ Audio* AbstractAudioManager::createNewAudio(QString systemName, QString userName) /*throws AudioException*/ {return NULL;}
 
-/*public*/ QString AbstractAudioManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString AbstractAudioManager::getBeanTypeHandled(bool plural) const{
     return (plural ? tr("Audios") : tr("Audio"));
 }

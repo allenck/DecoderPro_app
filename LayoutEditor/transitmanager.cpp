@@ -1,6 +1,8 @@
 #include "transitmanager.h"
 #include "decimalformat.h"
 #include "section.h"
+#include "sectionmanager.h"
+#include "instancemanager.h"
 
 TransitManager::TransitManager(QObject *parent) :
     AbstractManager(parent)
@@ -9,6 +11,7 @@ TransitManager::TransitManager(QObject *parent) :
  lastAutoTransitRef = 0;
  registerSelf();
  setProperty("InstanceManagerAutoDefault", "yes");
+ addVetoListener();
 
 }
 /*static*/ TransitManager* TransitManager::_instance = NULL;
@@ -47,7 +50,9 @@ TransitManager::TransitManager(QObject *parent) :
 //        super();
 //    }
 
-int TransitManager::getXMLOrder()const{
+/*final*/ void TransitManager::addVetoListener(){
+        ((SectionManager*)InstanceManager::getDefault("SectionManager"))->addVetoableChangeListener(this);
+    } int TransitManager::getXMLOrder()const{
     return Manager::TRANSITS;
 }
 
@@ -161,41 +166,60 @@ Transit* TransitManager::createNewTransit(QString systemName, QString userName) 
     return list;
 }
 /*public*/ QList<Transit*> TransitManager::getListUsingBlock(Block* b) {
-        QList<Transit*> list =  QList<Transit*>();
-        QStringList tList = getSystemNameList();
-        for (int i = 0; i < tList.size(); i++) {
-            QString tName = tList.at(i);
-            if ((tName != NULL) && (tName.length() > 0)) {
-                Transit* tTransit = getTransit(tName);
-                if (tTransit != NULL) {
-                    if (tTransit->containsBlock(b)) {
-                        // this Transit uses the specified Section
-                        list.append(tTransit);
-                    }
+    QList<Transit*> list =  QList<Transit*>();
+    QStringList tList = getSystemNameList();
+    for (int i = 0; i < tList.size(); i++) {
+        QString tName = tList.at(i);
+        if ((tName != NULL) && (tName.length() > 0)) {
+            Transit* tTransit = getTransit(tName);
+            if (tTransit != NULL) {
+                if (tTransit->containsBlock(b)) {
+                    // this Transit uses the specified Section
+                    list.append(tTransit);
                 }
             }
         }
-        return list;
     }
+    return list;
+}
 
-    /*public*/ QList<Transit*> TransitManager::getListEntryBlock(Block* b) {
-        QList<Transit*> list =QList<Transit*>();
-        QStringList tList = getSystemNameList();
-        for (int i = 0; i < tList.size(); i++) {
-            QString tName = tList.at(i);
-            if ((tName != NULL) && (tName.length() > 0)) {
-                Transit* tTransit = getTransit(tName);
-                if (tTransit != NULL) {
-                    QList<Block*>* entryBlock = tTransit->getEntryBlocksList();
-                    if (entryBlock->contains(b)) {
-                        // this Transit uses the specified Section
-                        list.append(tTransit);
-                    }
+/*public*/ QList<Transit*> TransitManager::getListEntryBlock(Block* b) {
+    QList<Transit*> list =QList<Transit*>();
+    QStringList tList = getSystemNameList();
+    for (int i = 0; i < tList.size(); i++) {
+        QString tName = tList.at(i);
+        if ((tName != NULL) && (tName.length() > 0)) {
+            Transit* tTransit = getTransit(tName);
+            if (tTransit != NULL) {
+                QList<Block*>* entryBlock = tTransit->getEntryBlocksList();
+                if (entryBlock->contains(b)) {
+                    // this Transit uses the specified Section
+                    list.append(tTransit);
                 }
             }
         }
-        return list;
     }
+    return list;
+}
+//@Override
+//@Nonnull
+/*public*/ QString TransitManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "Transits" : "Transit");
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ /*Class<Transit>*/QString TransitManager::getNamedBeanClass() const{
+    return "Transit";
+}
+
+//@Override
+/*public*/ void TransitManager::dispose() {
+    ((SectionManager*)InstanceManager::getDefault("SectionManager"))->removeVetoableChangeListener(this);
+    AbstractManager::dispose();
+}
 
 /*static*/ /*public*/ TransitManager* TransitManager::instance()
 {

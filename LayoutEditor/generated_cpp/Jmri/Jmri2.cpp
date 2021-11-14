@@ -1121,6 +1121,39 @@ if (_wrapper) {
 }
   return Manager::getBeanByUserName(arg__1);
 }
+QString  PythonQtShell_Manager::getBeanTypeHandled() const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getBeanTypeHandled");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getBeanTypeHandled", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Manager::getBeanTypeHandled();
+}
 QString  PythonQtShell_Manager::getBeanTypeHandled(bool  plural0) const
 {
 if (_wrapper) {
@@ -1152,7 +1185,7 @@ if (_wrapper) {
     }
   }
 }
-  return Manager::getBeanTypeHandled(plural0);
+  return QString();
 }
 NamedBean*  PythonQtShell_Manager::getBySystemName(QString  arg__1) const
 {

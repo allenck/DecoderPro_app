@@ -211,9 +211,19 @@ DccThrottle*  PythonQtWrapper_AbstractAutomaton::getThrottle(AbstractAutomaton* 
   return ( theWrappedObject->getThrottle(re));
 }
 
+DccThrottle*  PythonQtWrapper_AbstractAutomaton::getThrottle(AbstractAutomaton* theWrappedObject, BasicRosterEntry*  re, int  waitSecs)
+{
+  return ( theWrappedObject->getThrottle(re, waitSecs));
+}
+
 DccThrottle*  PythonQtWrapper_AbstractAutomaton::getThrottle(AbstractAutomaton* theWrappedObject, int  address, bool  longAddress)
 {
   return ( theWrappedObject->getThrottle(address, longAddress));
+}
+
+DccThrottle*  PythonQtWrapper_AbstractAutomaton::getThrottle(AbstractAutomaton* theWrappedObject, int  address, bool  longAddress, int  waitSecs)
+{
+  return ( theWrappedObject->getThrottle(address, longAddress, waitSecs));
 }
 
 bool  PythonQtWrapper_AbstractAutomaton::handle(AbstractAutomaton* theWrappedObject)
@@ -9126,11 +9136,6 @@ int PythonQtShell_AbstractSensorManager::qt_metacall(QMetaObject::Call call, int
 Sensor*  PythonQtWrapper_AbstractSensorManager::createNewSensor(AbstractSensorManager* theWrappedObject, QString  arg__1, QString  arg__2)
 {
   return ( ((PythonQtPublicPromoter_AbstractSensorManager*)theWrappedObject)->promoted_createNewSensor(arg__1, arg__2));
-}
-
-QString  PythonQtWrapper_AbstractSensorManager::getBeanTypeHandled(AbstractSensorManager* theWrappedObject, bool  plural) const
-{
-  return ( theWrappedObject->getBeanTypeHandled(plural));
 }
 
 NamedBean*  PythonQtWrapper_AbstractSensorManager::getInstanceBySystemName(AbstractSensorManager* theWrappedObject, QString  systemName)

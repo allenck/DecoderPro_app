@@ -20,14 +20,18 @@ public:
     /*public*/ OBlock* createNewOBlock(/*@Nonnull*/ QString userName);
     /*public*/ OBlock* getOBlock(QString name);
     /*public*/ NamedBean* getBySystemName(QString name)const ;
-    /*public*/ NamedBean* getByUserName(QString key)const ;
+    /*public*/ NamedBean* getByUserName(QString key)const override;
     /*public*/ OBlock* provideOBlock(QString name)const ;
     static OBlockManager* _instance;// = NULL;
     static /*public*/ OBlockManager* instance();
     /*public*/ bool isAssignableFromType() {return true;}
     virtual /*public*/ OBlock *provide(QString name) const throw (IllegalArgumentException);
     /*public*/ QString getNamedBeanClass()const override {
-        return "QBlock";
+        return "OBlock";
+    }
+    /*public*/ QString getBeanTypeHandled(bool plural) const override
+    {
+     return tr(plural?"OBlocks":"OBlock");
     }
     QObject* self() {return (QObject*)this;}
 
