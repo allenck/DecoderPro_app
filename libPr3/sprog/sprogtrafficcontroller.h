@@ -12,7 +12,7 @@ class Logger;
 namespace Sprog
 {
  class SprogSystemConnectionMemo;
- class SerialDriverAdapter;
+ class SprogSerialDriverAdapter;
  class SprogTrafficController : public SprogInterface
  {
   Q_OBJECT
@@ -76,7 +76,7 @@ namespace Sprog
   /*protected*/ /*synchronized*/ void notifyMessage(SprogMessage* m, SprogListener* originator);
   /*protected*/ /*synchronized*/ void notifyReply(SprogReply* r);
   /*protected*/ /*synchronized*/ void notifyReply(SprogReply* r, SprogListener* lastSender);
-  /*protected*/ SerialDriverAdapter* getController();
+  /*protected*/ SprogSerialDriverAdapter* getController();
   friend class SprogSystemConnectionMemo;
   friend class ReplyWorker;
   friend class SprogRcvWorker;
@@ -100,7 +100,7 @@ namespace Sprog
  class SprogRcvWorker : public QObject
  {
   Q_OBJECT
-  SerialDriverAdapter* adapter;
+  SprogSerialDriverAdapter* adapter;
   SprogReply* reply;
   SprogTrafficController* myTC;
  public:

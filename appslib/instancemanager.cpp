@@ -74,7 +74,6 @@
 #include "proxylightmanager.h"
 #include "proxymetermanager.h"
 #include "instancemanagerautoinitialize.h"
-#include "defaultthrottlemanager.h"
 
 class ManagerLists : public QHash<QString,QObjectList*>
 {
@@ -788,8 +787,7 @@ void InstanceManager::setLightManager(LightManager* p) {
 
 void InstanceManager::setThrottleManager(ThrottleManager* p)
 {
-    store((QObject*)p->self(), "ThrottleManager");
-    //instance()->notifyPropertyChangeListener("throttlemanager", QVariant(), QVariant());
+ store((QObject*)p->self(), "ThrottleManager");
 }
 
 void InstanceManager::setReporterManager(ReporterManager* p) {

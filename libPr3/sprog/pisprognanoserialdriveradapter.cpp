@@ -16,7 +16,7 @@ using namespace Sprog;
 // /*public*/ class PiSprogNanoSerialDriverAdapter
 //
 /*public*/ PiSprogNanoSerialDriverAdapter::PiSprogNanoSerialDriverAdapter(QObject* parent)
- : SerialDriverAdapter(SprogConstants::SprogMode::OPS, 115200, parent)
+ : SprogSerialDriverAdapter(SprogConstants::SprogMode::OPS, 115200, parent)
 {
     //super(SprogMode.OPS, 115200);
     options.insert("TrackPowerState", new Option(tr("Track Power At StartUp:"),

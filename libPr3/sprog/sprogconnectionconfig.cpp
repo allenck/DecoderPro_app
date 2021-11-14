@@ -1,6 +1,6 @@
 #include "sprogconnectionconfig.h"
 #include <QSysInfo>
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 
 using namespace Sprog;
 /**
@@ -45,6 +45,6 @@ using namespace Sprog;
 //@Override
 /*protected*/ void SprogConnectionConfig::setInstance() {
     if(adapter == NULL) {
-       adapter = new SerialDriverAdapter();
+       adapter = new SprogSerialDriverAdapter();
     }
 }

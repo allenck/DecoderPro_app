@@ -1,7 +1,7 @@
 #include "sprogversionquery.h"
 #include "loggerfactory.h"
 #include "sprogreply.h"
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 
 using namespace Sprog;
 /**

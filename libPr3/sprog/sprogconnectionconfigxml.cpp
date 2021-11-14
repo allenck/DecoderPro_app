@@ -1,5 +1,5 @@
 #include "sprogconnectionconfigxml.h"
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 #include "sprogconnectionconfig.h"
 
 using namespace Sprog;
@@ -24,7 +24,7 @@ using namespace Sprog;
     //@Override
     /*protected*/ void SprogConnectionConfigXml::getInstance() {
         if (adapter == NULL) {
-            adapter = new SerialDriverAdapter();
+            adapter = new SprogSerialDriverAdapter();
         }
     }
 

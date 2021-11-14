@@ -1,4 +1,4 @@
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 #include "loggerfactory.h"
 #include "sprogtrafficcontroller.h"
 #include "systemconnectionmemo.h"
@@ -27,7 +27,7 @@ using namespace Sprog;
  */
 ///*public*/ class SerialDriverAdapter extends SprogPortController implements jmri.jmrix.SerialPortAdapter {
 
-/*public*/ SerialDriverAdapter::SerialDriverAdapter(QObject* parent)
+/*public*/ SprogSerialDriverAdapter::SprogSerialDriverAdapter(QObject* parent)
  : SprogPortController(new SprogSystemConnectionMemo(SprogConstants::SprogMode::SERVICE),parent)
 {
  //super(new SprogSystemConnectionMemo(SprogMode.SERVICE));
@@ -39,7 +39,7 @@ using namespace Sprog;
  ((SprogSystemConnectionMemo*)this->getSystemConnectionMemo())->setSprogTrafficController(new SprogTrafficController(this->getSystemConnectionMemo()));
 }
 
-/*public*/ SerialDriverAdapter::SerialDriverAdapter(SprogConstants::SprogMode sm, QObject* parent)
+/*public*/ SprogSerialDriverAdapter::SprogSerialDriverAdapter(SprogConstants::SprogMode sm, QObject* parent)
  : SprogPortController(new SprogSystemConnectionMemo(sm), parent)
 {
  //super(new SprogSystemConnectionMemo(sm));
@@ -50,7 +50,7 @@ using namespace Sprog;
  ((SprogSystemConnectionMemo*)this->getSystemConnectionMemo())->setSprogTrafficController(new SprogTrafficController(this->getSystemConnectionMemo()));
 }
 
-/*public*/ SerialDriverAdapter::SerialDriverAdapter(SprogConstants::SprogMode sm, int baud, SprogType* type, QObject* parent) : SprogPortController(new SprogSystemConnectionMemo(sm, type), parent)
+/*public*/ SprogSerialDriverAdapter::SprogSerialDriverAdapter(SprogConstants::SprogMode sm, int baud, SprogType* type, QObject* parent) : SprogPortController(new SprogSystemConnectionMemo(sm, type), parent)
 {
  //super(new SprogSystemConnectionMemo(sm, type));
  common();
@@ -60,7 +60,7 @@ using namespace Sprog;
  ((SprogSystemConnectionMemo*)this->getSystemConnectionMemo())->setSprogTrafficController(new SprogTrafficController(this->getSystemConnectionMemo()));
 }
 
-/*public*/ SerialDriverAdapter::SerialDriverAdapter(SprogConstants::SprogMode sm, int baud, QObject* parent)  : SprogPortController(new SprogSystemConnectionMemo(sm), parent)
+/*public*/ SprogSerialDriverAdapter::SprogSerialDriverAdapter(SprogConstants::SprogMode sm, int baud, QObject* parent)  : SprogPortController(new SprogSystemConnectionMemo(sm), parent)
 {
  //super(new SprogSystemConnectionMemo(sm));
  common();
@@ -70,7 +70,7 @@ using namespace Sprog;
  ((SprogSystemConnectionMemo*)this->getSystemConnectionMemo())->setSprogTrafficController(new SprogTrafficController(this->getSystemConnectionMemo()));
 }
 
-void SerialDriverAdapter::common()
+void SprogSerialDriverAdapter::common()
 {
  activeSerialPort = NULL;
  baudRate = -1;
@@ -79,7 +79,7 @@ void SerialDriverAdapter::common()
 }
 
 //@Override
-/*public*/ QString SerialDriverAdapter::openPort(QString portName, QString appName)
+/*public*/ QString SprogSerialDriverAdapter::openPort(QString portName, QString appName)
 {
  // open the port, check ability to set moderators
  try {
@@ -208,12 +208,12 @@ void SerialDriverAdapter::common()
 
 }
 
-void SerialDriverAdapter::bytesWritten(qint64 bytes)
+void SprogSerialDriverAdapter::bytesWritten(qint64 bytes)
 {
  log->info(tr("serial port reports %1 bytes written").arg(bytes));
 }
 
-/*public*/ void SerialDriverAdapter::setHandshake(QSerialPort::FlowControl mode) {
+/*public*/ void SprogSerialDriverAdapter::setHandshake(QSerialPort::FlowControl mode) {
     try {
         activeSerialPort->setFlowControl(mode);
     } catch (UnsupportedCommOperationException ex) {
@@ -223,7 +223,7 @@ void SerialDriverAdapter::bytesWritten(qint64 bytes)
 
 // base class methods for the SprogPortController interface
 //@Override
-/*public*/ QDataStream* SerialDriverAdapter::getInputStream() {
+/*public*/ QDataStream* SprogSerialDriverAdapter::getInputStream() {
     if (!opened) {
         log->error("getInputStream called before load(), stream not available");
         return NULL;
@@ -233,7 +233,7 @@ void SerialDriverAdapter::bytesWritten(qint64 bytes)
 }
 
 //@Override
-/*public*/ QDataStream* SerialDriverAdapter::getOutputStream() {
+/*public*/ QDataStream* SprogSerialDriverAdapter::getOutputStream() {
     if (!opened) {
         log->error("getOutputStream called before load(), stream not available");
     }
@@ -259,7 +259,7 @@ void SerialDriverAdapter::bytesWritten(qint64 bytes)
  * @deprecated JMRI Since 4.4 instance() shouldn't be used, convert to JMRI multi-system support structure
  */
 //@Deprecated
-/*static*/ /*public*/ SerialDriverAdapter* SerialDriverAdapter::instance() {
+/*static*/ /*public*/ SprogSerialDriverAdapter* SprogSerialDriverAdapter::instance() {
     return NULL;
 }
 
@@ -268,7 +268,7 @@ void SerialDriverAdapter::bytesWritten(qint64 bytes)
  * connected to this port.
  */
 //@Override
-/*public*/ void SerialDriverAdapter::configure()
+/*public*/ void SprogSerialDriverAdapter::configure()
 {
  // connect to the traffic controller
  this->getSystemConnectionMemo()->getSprogTrafficController()->connectPort(this);
@@ -288,15 +288,15 @@ void SerialDriverAdapter::bytesWritten(qint64 bytes)
 }
 
 //@Override
-/*public*/ void SerialDriverAdapter::dispose() {
+/*public*/ void SprogSerialDriverAdapter::dispose() {
     SprogPortController::dispose();
 }
 
-/*public*/void  SerialDriverAdapter::handleError(QSerialPort::SerialPortError error)
+/*public*/void  SprogSerialDriverAdapter::handleError(QSerialPort::SerialPortError error)
 {
  JOptionPane::showMessageDialog(NULL, tr("Comm error: %1 %2").arg(error).arg(activeSerialPort->errorString()));
 }
-QString SerialDriverAdapter::stopBits()
+QString SprogSerialDriverAdapter::stopBits()
 {
  int sb = activeSerialPort->stopBits();
  switch(sb)
@@ -311,7 +311,7 @@ QString SerialDriverAdapter::stopBits()
    return "Unknown";
  }
 }
-QString SerialDriverAdapter::parity()
+QString SprogSerialDriverAdapter::parity()
 {
  int p = activeSerialPort->parity();
  switch (p)
@@ -327,7 +327,7 @@ QString SerialDriverAdapter::parity()
  }
  return "unknown";
 }
-QString SerialDriverAdapter::flowControl()
+QString SprogSerialDriverAdapter::flowControl()
 {
  int f = activeSerialPort->flowControl();
  switch(f)
@@ -344,7 +344,7 @@ QString SerialDriverAdapter::flowControl()
  }
 }
 
-void SerialDriverAdapter::writeData(QByteArray bytes)
+void SprogSerialDriverAdapter::writeData(QByteArray bytes)
 {
  try
  {
@@ -360,10 +360,10 @@ void SerialDriverAdapter::writeData(QByteArray bytes)
  }
 }
 
-/*public*/ QString SerialDriverAdapter::className()
+/*public*/ QString SprogSerialDriverAdapter::className()
 {
  return "jmri.jmrix.sprog.serialdriver.SerialDriverAdapter";
 }
 
 
-/*private*/ /*final*/ /*static*/ Logger* SerialDriverAdapter::log = LoggerFactory::getLogger("SerialDriverAdapter");
+/*private*/ /*final*/ /*static*/ Logger* SprogSerialDriverAdapter::log = LoggerFactory::getLogger("SerialDriverAdapter");

@@ -3,7 +3,7 @@
 #include "exceptions.h"
 #include "sprogmessage.h"
 #include "sprogreply.h"
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 #include <QDataStream>
 #include "sleeperthread.h"
 #include <QThread>
@@ -308,7 +308,7 @@ SprogRcvWorker::SprogRcvWorker(SprogReply* reply, SprogTrafficController *myTC)
 SprogXmtWorker::SprogXmtWorker(SprogTrafficController *myTC)
 {
  this->myTC = myTC;
- connect(this, SIGNAL(writeData(QByteArray)), (SerialDriverAdapter*) myTC->getController(), SLOT(writeData(QByteArray)));
+ connect(this, SIGNAL(writeData(QByteArray)), (SprogSerialDriverAdapter*) myTC->getController(), SLOT(writeData(QByteArray)));
 }
 
 void SprogXmtWorker::process()
@@ -321,8 +321,8 @@ void SprogXmtWorker::process()
  *
  * @return the port controller
  */
-/*protected*/ SerialDriverAdapter* SprogTrafficController::getController(){
-   return (SerialDriverAdapter*) controller;
+/*protected*/ SprogSerialDriverAdapter* SprogTrafficController::getController(){
+   return (SprogSerialDriverAdapter*) controller;
 }
 
 /**

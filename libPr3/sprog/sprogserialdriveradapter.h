@@ -1,5 +1,5 @@
-#ifndef SERIALDRIVERADAPTER_H
-#define SERIALDRIVERADAPTER_H
+#ifndef SPROGSERIALDRIVERADAPTER_H
+#define SPROGSERIALDRIVERADAPTER_H
 #include "sprogportcontroller.h"
 #include "serialport.h"
 #include "sprogconstants.h"
@@ -8,16 +8,16 @@
 
 namespace Sprog
 {
- class SerialDriverAdapter : public SprogPortController
+ class SprogSerialDriverAdapter : public SprogPortController
  {
   Q_OBJECT
  public:
-  SerialDriverAdapter(QObject* parent = 0);
-  /*public*/ SerialDriverAdapter(SprogConstants::SprogMode sm, QObject* parent=0);
-  /*public*/ SerialDriverAdapter(SprogConstants::SprogMode sm, int baud, SprogType* type, QObject* parent = 0);
-  /*public*/ SerialDriverAdapter(SprogConstants::SprogMode sm, int baud, QObject* parent = 0);
+  SprogSerialDriverAdapter(QObject* parent = 0);
+  /*public*/ SprogSerialDriverAdapter(SprogConstants::SprogMode sm, QObject* parent=0);
+  /*public*/ SprogSerialDriverAdapter(SprogConstants::SprogMode sm, int baud, SprogType* type, QObject* parent = 0);
+  /*public*/ SprogSerialDriverAdapter(SprogConstants::SprogMode sm, int baud, QObject* parent = 0);
   /*public*/ QString openPort(QString portName, QString appName);
-  QT_DEPRECATED static /*public*/ SerialDriverAdapter* instance();
+  QT_DEPRECATED static /*public*/ SprogSerialDriverAdapter* instance();
   /*public*/ void setHandshake(QSerialPort::FlowControl mode);
   /*public*/ QDataStream* getInputStream();
   /*public*/ QDataStream* getOutputStream();
@@ -46,4 +46,4 @@ namespace Sprog
   friend class SprogRcvWorker;
  };
 }
-#endif // SERIALDRIVERADAPTER_H
+#endif // SPROGSERIALDRIVERADAPTER_H

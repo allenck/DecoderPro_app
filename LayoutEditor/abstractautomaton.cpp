@@ -774,7 +774,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
     throttle = NULL;
     ThrottleListener* throttleListener = new AAThrottleListener(this);
 
-    bool ok = ((ThrottleManager*)InstanceManager::getDefault("DefaultThrottleManager"))->requestThrottle(
+    bool ok = ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->requestThrottle(
         new DccLocoAddress(address, longAddress), throttleListener, false);
     // check if reply is coming
     if (!ok) {
@@ -845,7 +845,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
     // check if reply is coming
     if (!ok) {
         log->info(tr("Throttle for loco %1 not available").arg(re->getId()));
-        ((ThrottleManager*)InstanceManager::getDefault("DefaultThrottleManager"))->cancelThrottleRequest(
+        ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->cancelThrottleRequest(
             re->getDccLocoAddress(), throttleListener);  //kill the pending request
         return nullptr;
     }

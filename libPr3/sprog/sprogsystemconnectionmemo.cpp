@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "sprogconnectiontypelist.h"
 #include "instancemanager.h"
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 #include "globalprogrammermanager.h"
 #include "sprogversionquery.h"
 #include "sprogversion.h"

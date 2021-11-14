@@ -124,11 +124,14 @@ SOURCES += \
  #abstractproxymanager.cpp \
  addeditsinglelightcontrolframe.cpp \
  defaultlightcontrol.cpp \
- defaultthrottle.cpp \
- defaultthrottlemanager.cpp \
- directcomponentfactory.cpp \
- directmenu.cpp \
- directsystemconnectionmemo.cpp \
+# direct/defaultthrottle.cpp \
+# direct/defaultthrottlemanager.cpp \
+# direct/directcomponentfactory.cpp \
+# direct/directmenu.cpp \
+# direct/directsystemconnectionmemo.cpp \
+# direct/portcontroller.cpp \
+# direct/serialdriveradapter.cpp \
+# direct/trafficcontroller.cpp \
  lightcontrolpane.cpp \
  lightcontroltablemodel.cpp \
  lighteditaction.cpp \
@@ -136,8 +139,8 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
- makepacket.cpp \
     namedbeancombobox.cpp \
+ otherconnectiontypelist.cpp \
     serialport.cpp \
     dccmanufacturerlist.cpp \
     lnconnectiontypelist.cpp \
@@ -156,6 +159,7 @@ SOURCES += \
     slotmanager.cpp \
     abstractprogrammer.cpp \
     loconetslot.cpp \
+ sprog/sprogserialdriveradapter.cpp \
     systemconnectionmemomanager.cpp \
     loconetsystemconnectionmemo.cpp \
     abstractpowermanager.cpp \
@@ -164,7 +168,6 @@ SOURCES += \
     lnprogrammermanager.cpp \
     defaultprogrammermanager.cpp \
     abstractturnout.cpp \
- trafficcontroller.cpp \
     turnout.cpp \
     namedbeanhandlemanager.cpp \
     turnoutoperation.cpp \
@@ -751,7 +754,6 @@ SOURCES += \
     Throttle/locoaddressxml.cpp \
     loconetmenustartupaction.cpp \
     Web/aboutservlet.cpp \
-    sprog/serialdriveradapter.cpp \
     sprog/sprogportcontroller.cpp \
     sprog/sprogsystemconnectionmemo.cpp \
     sprog/sprogtrafficcontroller.cpp \
@@ -1122,12 +1124,15 @@ SOURCES += \
 HEADERS += \
  addeditsinglelightcontrolframe.h \
  defaultlightcontrol.h \
- defaultthrottle.h \
- defaultthrottlemanager.h \
  digitalio.h \
- directcomponentfactory.h \
- directmenu.h \
- directsystemconnectionmemo.h \
+# direct/defaultthrottle.h \
+# direct/defaultthrottlemanager.h \
+# direct/directcomponentfactory.h \
+# direct/directmenu.h \
+# direct/directsystemconnectionmemo.h \
+# direct/portcontroller.h \
+# direct/serialdriveradapter.h \
+# direct/trafficcontroller.h \
  lightcontrolpane.h \
  lightcontroltablemodel.h \
  lighteditaction.h \
@@ -1135,8 +1140,8 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
- makepacket.h \
     namedbeancombobox.h \
+ otherconnectiontypelist.h \
     serialport.h \
     dccmanufacturerlist.h \
     lnconnectiontypelist.h \
@@ -1162,6 +1167,7 @@ HEADERS += \
     programmer.h \
     loconetslot.h \
     slotlistener.h \
+ sprog/sprogserialdriveradapter.h \
     systemconnectionmemomanager.h \
     systemconnectionmemo.h \
     loconetsystemconnectionmemo.h \
@@ -1171,7 +1177,6 @@ HEADERS += \
     loconetthrottledtransmitter.h \
     lnprogrammermanager.h \
     defaultprogrammermanager.h \
- trafficcontroller.h \
     turnout.h \
     abstractturnout.h \
     namedbeanhandlemanager.h \
@@ -1830,7 +1835,6 @@ HEADERS += \
     Throttle/locoaddressxml.h \
     loconetmenustartupaction.h \
     Web/aboutservlet.h \
-    sprog/serialdriveradapter.h \
     sprog/sprogportcontroller.h \
     sprog/sprogsystemconnectionmemo.h \
     sprog/sprogconstants.h \
