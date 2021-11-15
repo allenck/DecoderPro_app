@@ -207,7 +207,7 @@ public:
  Logger* log;
 };
 
-class MTurnoutListener : public PropertyChangeListener
+class MTurnoutListener : public QObject, public PropertyChangeListener
 {
   Q_OBJECT
   DefaultRoute* dr;
@@ -225,7 +225,7 @@ class MTurnoutListener : public PropertyChangeListener
   }
 };
 
-class MLockTurnoutListener : public PropertyChangeListener
+class MLockTurnoutListener : public QObject, public PropertyChangeListener
 {
   Q_OBJECT
   DefaultRoute* dr;
