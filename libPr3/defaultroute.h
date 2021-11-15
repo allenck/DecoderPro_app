@@ -82,8 +82,8 @@ public:
 signals:
 
 public slots:
-    void propertyChange(PropertyChangeEvent* e);
-private:
+
+ private:
     /*private*/ DefaultRoute* r;
   Logger* log;
   /*private*/ static /*final*/ const long serialVersionUID = 1L;
@@ -98,6 +98,7 @@ private:
    * Lock or unlock turnouts that are part of a route
    */
   /*private*/ void lockTurnouts(bool lock);
+  /*private*/ bool activatedRoute = false;
 
 protected:
   /**
@@ -119,16 +120,18 @@ protected:
   /*protected*/ QString scriptFilename;
 
   /*protected*/ NamedBeanHandleManager* nbhm;// = InstanceManager::getDefault("NamedBeanHandleManager");
-  ///*protected*/ Turnout mTurnout = NULL;
   /*protected*/ /*transient*/ PropertyChangeListener* mTurnoutListener;// = NULL;
-  ///*protected*/ Turnout mLockTurnout = NULL;
   /*protected*/ /*transient*/ PropertyChangeListener* mLockTurnoutListener;// = NULL;
 
   QList <OutputTurnout*>* _outputTurnoutList;// = new QList<OutputTurnout*>();
   /*protected*/ void checkSensor(int newState, int oldState, Sensor* sensor);
 
  friend class ControlSensor;
+ friend class MLockTurnoutListener;
+ friend class MTurnoutListener;
+
 };
+
 /*private*/ class OutputSensor : public QObject
 {
     Q_OBJECT
@@ -146,8 +149,8 @@ private:
  Logger* log;
 protected:
     /*protected*/ NamedBeanHandleManager* nbhm;// = InstanceManager::getDefault("NamedBeanHandleManager");
-
 };
+
 /*private*/ class ControlSensor : public OutputSensor /*implements PropertyChangeListener*/
 {
     Q_OBJECT
@@ -159,6 +162,7 @@ protected:
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };
+
 /*private*/ class OutputTurnout : public QObject, public PropertyChangeListener
 {
     Q_OBJECT
@@ -184,6 +188,7 @@ private:
   Logger* log;
   NamedBeanHandleManager* nbhm;
 };
+
 /**
 * Class providing a thread to set route turnouts
 */
@@ -201,4 +206,41 @@ public:
  DefaultRoute* r;
  Logger* log;
 };
+
+class MTurnoutListener : public PropertyChangeListener
+{
+  Q_OBJECT
+  DefaultRoute* dr;
+ public:
+  MTurnoutListener(DefaultRoute* dr ){this->dr = dr;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override
+  {
+      if (e->getPropertyName() == ("KnownState")) {
+          int now = ( e->getNewValue()).toInt();
+          int then = ( e->getOldValue()).toInt();
+          dr->checkTurnout(now, then, (Turnout*)e->getSource());
+      }
+  }
+};
+
+class MLockTurnoutListener : public PropertyChangeListener
+{
+  Q_OBJECT
+  DefaultRoute* dr;
+ public:
+  QObject* self() override {return (QObject*)this;}
+  MLockTurnoutListener(DefaultRoute* dr ){this->dr = dr;}
+ public slots:
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override
+  {
+   if (e->getPropertyName() == ("KnownState")) {
+       int now = ( e->getNewValue().toInt());
+       int then = (e->getOldValue().toInt());
+       dr->checkLockTurnout(now, then, (Turnout*) e->getSource());
+   }
+  }
+};
+
 #endif // DEFAULTROUTE_H

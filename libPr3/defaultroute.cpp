@@ -773,17 +773,18 @@ void DefaultRoute::init()
     }
 }
 
-
+//@Override
 /**
  * Method to activate the Route via Sensors and control Turnout
  * Sets up for Route activation based on a list of Sensors and a control Turnout
  * Registers to receive known state changes for output turnouts
  */
-/*public*/ void DefaultRoute::activateRoute() {
+/*public*/ void DefaultRoute::activateRoute()
+{
+    activatedRoute = true;
 
     //register output turnouts to return Known State if a turnouts aligned sensor is defined
-    if (getTurnoutsAlignedSensor()!=("")) {
-
+    if (getTurnoutsAlignedSensor().isEmpty()) {
         for (int k=0; k< _outputTurnoutList->size(); k++) {
             _outputTurnoutList->at(k)->addListener();
         }
@@ -792,12 +793,11 @@ void DefaultRoute::init()
     for (int k=0; k< _controlSensorList->size(); k++) {
         _controlSensorList->at(k)->addListener();
     }
-    if (getCtlTurnout()!=NULL)
+    Turnout* ctl = getCtlTurnout();
+    if (ctl!=nullptr)
     {
 //        getCtlTurnout()->addPropertyChangeListener(mTurnoutListener =
 //                                        new PropertyChangeListener());
-        AbstractTurnout* t = (AbstractTurnout*)getCtlTurnout();
-        connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), SLOT(propertyChange(PropertyChangeEvent*)));
 //        {
 //                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //                    if (e.getPropertyName().equals("KnownState")) {
@@ -808,34 +808,23 @@ void DefaultRoute::init()
 //                }
 //            }, getControlTurnout(), "Route " + getDisplayName());
     }
+    ctl->addPropertyChangeListener(mTurnoutListener =new MTurnoutListener(this), getControlTurnout(), "Route " + getDisplayName());
 
-    if (getLockCtlTurnout()!=NULL)
-    {
-//        getLockCtlTurnout()->addPropertyChangeListener(mLockTurnoutListener =
-//                                        new PropertyChangeListener());
-      AbstractTurnout* t = (AbstractTurnout*)getLockCtlTurnout();
-      connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), SLOT(propertyChange(PropertyChangeEvent*)));
-//        {
-//                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                    if (e.getPropertyName().equals("KnownState")) {
-//                        int now = ((Integer) e.getNewValue()).intValue();
-//                        int then = ((Integer) e.getOldValue()).intValue();
-//                        checkLockTurnout(now, then, (Turnout)e.getSource());
-//                    }
-//                }
-//            }, getLockControlTurnout(), "Route " + getDisplayName());
+    Turnout* lockCtl = getLockCtlTurnout();
+    if (lockCtl != nullptr) {
+//        mLockTurnoutListener = (java.beans.PropertyChangeEvent e) -> {
+//            if (e.getPropertyName().equals("KnownState")) {
+//                int now = ((Integer) e.getNewValue());
+//                int then = ((Integer) e.getOldValue());
+//                checkLockTurnout(now, then, (Turnout) e.getSource());
+//            }
+//        };
+     mLockTurnoutListener = new MLockTurnoutListener(this);
+        lockCtl->addPropertyChangeListener(mLockTurnoutListener, getLockControlTurnout(), "Route " + getDisplayName());
     }
-// register for updates to the Output Turnouts
-}
 
-/*public*/ void DefaultRoute::propertyChange(PropertyChangeEvent* e) // SLOT[]
-{
-  if (e->getPropertyName()==("KnownState"))
-  {
-      int now =  e->getNewValue().toInt();
-      int then = e->getOldValue().toInt();
-      checkTurnout(now, then, (Turnout*)e->getSource());
-  }
+    checkTurnoutAlignment();
+    // register for updates to the Output Turnouts
 }
 
 /**
@@ -872,22 +861,34 @@ bool DefaultRoute::isVetoed() {
  * Deactivates Route based on a list of Sensors and two control Turnouts
  */
 /*public*/ void DefaultRoute::deActivateRoute() {
+ //Check that the route isn't already deactived.
+    if (!activatedRoute) {
+        return;
+    }
+
+    activatedRoute = false;
     // remove control turnout if there's one
-    for (int k=0; k<_controlSensorList->size(); k++) {
+    for (int k = 0; k < _controlSensorList->size(); k++) {
         _controlSensorList->at(k)->removeListener();
     }
-    if (mTurnoutListener!=NULL) {
-        getCtlTurnout()->removePropertyChangeListener(mTurnoutListener);
-        mTurnoutListener = NULL;
+    if (mTurnoutListener != nullptr) {
+        Turnout* ctl = getCtlTurnout();
+        if (ctl != nullptr) {
+            ctl->removePropertyChangeListener(mTurnoutListener);
+        }
+        mTurnoutListener = nullptr;
     }
     // remove lock control turnout if there's one
-    if (mLockTurnoutListener!=NULL) {
-        getLockCtlTurnout()->removePropertyChangeListener(mLockTurnoutListener);
-        mLockTurnoutListener = NULL;
+    if (mLockTurnoutListener != nullptr) {
+        Turnout* lockCtl = getCtlTurnout();
+        if (lockCtl != nullptr) {
+            lockCtl->removePropertyChangeListener(mLockTurnoutListener);
+        }
+        mLockTurnoutListener = nullptr;
     }
     //remove listeners on output turnouts if there are any
-    if (mTurnoutsAlignedSensor!=""){
-        for (int k=0; k< _outputTurnoutList->size(); k++) {
+    if (!mTurnoutsAlignedSensor.isEmpty()) {
+        for (int k = 0; k < _outputTurnoutList->size(); k++) {
             _outputTurnoutList->at(k)->removeListener();
         }
     }
