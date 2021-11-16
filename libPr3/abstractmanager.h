@@ -136,6 +136,7 @@ public:
     /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
     QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
     QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException);
+    /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const override;
 
 signals:
 //    void beanDeleted(NamedBean* s);
@@ -205,7 +206,6 @@ NamedBean *getInstanceBySystemName(QString systemName);
  */
 QT_DEPRECATED NamedBean* getInstanceByUserName(QString userName);
 
-/*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const override;
 
 //void firePropertyChange(QString p, QVariant old, QVariant n) const;
 //void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const;

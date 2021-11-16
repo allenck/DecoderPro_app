@@ -29,12 +29,15 @@ SOURCES +=  slotmonitor.cpp \
     beanselectcreatepanel.cpp \
     blockcurvaturejcombobox.cpp \
     blocktabledatamodel.cpp \
+    idtagtabledatamodel.cpp \
     jmribeancombobox.cpp \
     dialogsignalgroupstablewidget.cpp \
     logixtableaction.cpp \
     #defaultconditionalaction.cpp \
+    memorytabledatamodel.cpp \
     pickframe.cpp \
     lroutetableaction.cpp \
+    reportertabledatamodel.cpp \
     sectiontableaction.cpp \
     signalheadtableaction.cpp \
     signallingsourcepanel.cpp \
@@ -126,6 +129,9 @@ SOURCES +=  slotmonitor.cpp \
 HEADERS += libtables_global.h \
     blockcurvaturejcombobox.h \
     blocktabledatamodel.h \
+    idtagtabledatamodel.h \
+    memorytabledatamodel.h \
+    reportertabledatamodel.h \
     slotmonitor.h \
     beanselectcreatepanel.h \
     jmribeancombobox.h \
