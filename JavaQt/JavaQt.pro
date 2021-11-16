@@ -72,7 +72,6 @@ SOURCES += javaqt.cpp \
     defaultlistselectionmodel.cpp \
     defaulttablecolumnmodel.cpp \
     bitset.cpp \
-    windowlistener.cpp \
     abstractshutdowntask.cpp \
     action.cpp \
     pushbuttondelegate.cpp \

@@ -36,7 +36,7 @@ public:
      * Invoked when the user attempts to close the window
      * from the window's system menu.
      */
-  /*public*/ virtual void windowClosing(QCloseEvent* /*e*/);
+  /*public*/ virtual void windowClosing(QCloseEvent* /*e*/){};
 
     /**
      * Invoked when a window has been closed as the result
