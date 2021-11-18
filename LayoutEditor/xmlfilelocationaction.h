@@ -1,7 +1,7 @@
 #ifndef XMLFILELOCATIONACTION_H
 #define XMLFILELOCATIONACTION_H
 
-#include "abstractaction.h"
+#include "jmriabstractaction.h"
 class QTextBrowser;
 class XmlFileLocationAction : public AbstractAction
 {

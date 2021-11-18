@@ -27,7 +27,7 @@ public:
     QT_DEPRECATED /*public*/ /*synchronized*/ QString getConnectionState(QString portName);
     /*public*/ /*synchronized*/ QString getSystemState(QString systemName);
     /*public*/ /*synchronized*/ QString getConnectionState(QString systemName, QString portName);
-    /*public*/ /*synchronized*/ bool isConnectionOk(QString portName);
+    /*public*/ /*synchronized*/ bool isConnectionOk(QString systemName, /*@Nonnull*/QString portName);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);

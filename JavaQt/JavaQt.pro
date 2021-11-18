@@ -36,8 +36,11 @@ isEmpty( PROJ_DIR ) {
 
 SOURCES += javaqt.cpp \
     classmigration.cpp \
+    jeditorpane.cpp \
+    jframe.cpp \
     jinputvalidator.cpp \
     jinputvalidatorpreferences.cpp \
+    jtextpane.cpp \
     jvetoablechangesupport.cpp \
     loggerfactory.cpp \
     loggerbase.cpp \
@@ -279,11 +282,14 @@ HEADERS += javaqt.h\
     calendar.h \
     box.h \
     gridbaglayout.h \
+ jeditorpane.h \
+ jframe.h \
  jinputvalidator.h \
  jinputvalidatorpreferences.h \
     jtextarea.h \
     jseparator.h \
     abstractaction.h \
+ jtextpane.h \
  jvetoablechangesupport.h \
     logger.h \
     gridbagconstraints.h \
@@ -307,6 +313,7 @@ HEADERS += javaqt.h\
     exceptions.h \
     tablecolumn.h \
     tablecolumnmodel.h \
+ windowinterface.h \
     xtablecolumnmodel.h \
     propertychangeevent.h \
     propertychangelistener.h \

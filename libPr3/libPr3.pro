@@ -527,7 +527,6 @@ SOURCES += \
     loconet/editorframe.cpp \
     loconet/sdfeditorpane.cpp \
     loconet/sdfmacroeditor.cpp \
-    loconet/jeditorpane.cpp \
     loconet/monitoringlabel.cpp \
     loconet/defaultmutabletreemodel.cpp \
     loconet/channelstarteditor.cpp \
@@ -1588,7 +1587,6 @@ HEADERS += \
     loconet/editorframe.h \
     loconet/sdfeditorpane.h \
     loconet/sdfmacroeditor.h \
-    loconet/jeditorpane.h \
     loconet/monitoringlabel.h \
     loconet/defaultmutabletreemodel.h \
     loconet/channelstarteditor.h \

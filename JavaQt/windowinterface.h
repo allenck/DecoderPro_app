@@ -1,7 +1,7 @@
 #ifndef WINDOWINTERFACE_H
 #define WINDOWINTERFACE_H
 #include "jframe.h"
-#include "liblayouteditor_global.h"
+#include "javaqt_global.h"
 #include "jmriabstractaction.h"
 
 /**
@@ -26,7 +26,7 @@
  class JmriPanel;
  class QAction;
  class QFrame;
-/*public*/ /*interface*/ class LIBLAYOUTEDITORSHARED_EXPORT WindowInterface : public QObject
+/*public*/ /*interface*/ class JAVAQTSHARED_EXPORT WindowInterface : public QObject
  {
   Q_OBJECT
  public:

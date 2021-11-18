@@ -191,7 +191,7 @@ QWidget* AppsLaunchPane::_buttonSpace = NULL;
  if (name == NULL) {
      name = conn->getManufacturer();
  }
- if (ConnectionStatus::instance()->isConnectionOk(conn->getInfo()))
+ if (ConnectionStatus::instance()->isConnectionOk(nullptr, conn->getInfo()))
  {
   //cs.setForeground(Color.black);
   cs->setStyleSheet("QLabel { color: black};");

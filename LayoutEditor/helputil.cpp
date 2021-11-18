@@ -20,6 +20,9 @@
 #include "reportcontextaction.h"
 #include "exceptions.h"
 #include "loggerfactory.h"
+#include <QAbstractButton>
+#include "serviceloader.h"
+#include "helpmenuprovider.h"
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -27,9 +30,7 @@ HelpBroker*  HelpUtil::globalHelpBroker = NULL;
 HelpUtil::HelpUtil(QObject *parent) :
     QObject(parent)
 {
- thisMenu = NULL;
- _frame = NULL;
-
+ // this is a class of static methods
 }
 
 /*static*/ HelpUtil* HelpUtil::instance()
@@ -60,12 +61,15 @@ HelpUtil::HelpUtil(QObject *parent) :
 {
  QMenu* helpMenu = makeHelpMenu(ref, direct, menuBar->parent());
  menuBar->addMenu(helpMenu);
+ if (menuBar != nullptr) {
+     menuBar->addMenu(helpMenu);
+ }
  return helpMenu;
 }
 
 /*static*/ /*public*/ QMenu* HelpUtil::makeHelpMenu(QString ref, bool direct, QObject* parent)
 {
-
+#if 1
 // if (!initOK())
 // {
 //  log.warn("help initialization not completed");
@@ -74,7 +78,8 @@ HelpUtil::HelpUtil(QObject *parent) :
  QSignalMapper* mapper = new QSignalMapper;
 
  QMenu* helpMenu = new QMenu(tr("Help"));
- QAction* item = makeHelpMenuItem(ref);
+ helpMenu->addAction(makeHelpMenuItem(ref));
+ JMenuItem* item = makeHelpMenuItem(ref);
  if (item == NULL)
  {
   log->error("Can't make help menu item for "+ref/*, parent*/);
@@ -86,7 +91,7 @@ HelpUtil::HelpUtil(QObject *parent) :
 
  if (direct)
  {
-  item = new QAction(tr("General Help..."), parent);
+  item = new JMenuItem(tr("General Help..."), parent);
 //  globalHelpBroker->enableHelpOnButton(item, "index", NULL);
   item->setData("index");
   helpMenu->addAction(item);
@@ -94,19 +99,19 @@ HelpUtil::HelpUtil(QObject *parent) :
   connect(item, SIGNAL(triggered()), mapper, SLOT(map()));
 
   // add standard items
-  QAction* license = new QAction(tr("License..."),parent);
+  JMenuItem* license = new JMenuItem(tr("License..."),parent);
   helpMenu->addAction(license);
 //  license.addActionListener(new apps.LicenseAction());
   license->setDisabled(true);
 
-  QAction* directories = new QAction(tr("Locations..."),parent);
+  JMenuItem* directories = new JMenuItem(tr("Locations..."),parent);
   //mapper->setMapping(directories, directories);
   //directories->addAction(new XmlFileLocationAction(parent));
-  QAction* xmlFileLocation = new XmlFileLocationAction(parent);
+  JMenuItem* xmlFileLocation = (JMenuItem*)(new XmlFileLocationAction(parent));
   connect(directories, SIGNAL(triggered(bool)),xmlFileLocation, SLOT(actionPerformed()));
   helpMenu->addAction(directories);
 
-  QAction* context = new QAction(tr("Context..."),NULL);
+  JMenuItem* context = new JMenuItem(tr("Context..."),NULL);
   helpMenu->addAction(context);
 //        context.addActionListener(new apps.ReportContextAction());
   ReportContextAction* reportContextAction = new ReportContextAction(parent);
@@ -136,7 +141,7 @@ HelpUtil::HelpUtil(QObject *parent) :
   // Include About in Help menu if not on Mac OS X or not using Aqua Look and Feel
 //  if (!SystemType.isMacOSX() || !UIManager.getLookAndFeel().isNativeLookAndFeel()) {
    helpMenu->addSeparator();
-   QAction* about = new QAction(tr("About") + " " + QApplication::applicationName(), HelpUtil::instance());
+   JMenuItem* about = new JMenuItem(tr("About") + " " + QApplication::applicationName(), HelpUtil::instance());
    helpMenu->addAction(about);
 //   about.addActionListener(new AboutAction());
    about->setDisabled(true);
@@ -146,17 +151,34 @@ HelpUtil::HelpUtil(QObject *parent) :
  return helpMenu;
 }
 
-/*static*/ /*public*/ QAction* HelpUtil::makeHelpMenuItem(QString ref)
+/*static*/ /*public*/ JMenuItem* HelpUtil::makeHelpMenuItem(QString ref)
 {
  if (!initOK()) return NULL;  // initialization failed
 
- QAction* menuItem = new QAction(tr("Window Help..."), NULL);
+ JMenuItem* menuItem = new JMenuItem(tr("Window Help..."), NULL);
  menuItem->setData(ref);
 // globalHelpBroker->enableHelpOnButton(menuItem, ref, NULL);
 
  // start help to see what happend
 // log.debug("help: "+globalHelpSet->getHomeID()+":"+globalHelpSet->getTitle()+":"+globalHelpSet->getHelpSetURL());
     return menuItem;
+#else
+ QMenu* helpMenu = new QMenu(tr("Help"));
+         helpMenu->addAction(makeHelpMenuItem(ref));
+
+         if (direct) {
+             ServiceLoader<MenuProvider*>* providers = ServiceLoader<MenuProvider*>::load("MenuProvider");
+             //providers.forEach(provider -> provider.getHelpMenuItems().forEach(i ->
+             {
+                 if (i != nullptr) {
+                     helpMenu->addAction(i);
+                 } else {
+                     helpMenu.addSeparator();
+                 }
+             }));
+         }
+         return helpMenu;
+#endif
 }
 
 /*static*/ /*public*/ void HelpUtil::addHelpToComponent(QWidget* component, QString ref)
@@ -165,6 +187,22 @@ HelpUtil::HelpUtil(QObject *parent) :
   globalHelpBroker->enableHelpOnButton(component, ref, NULL);
 }
 
+// https://coderanch.com/how-to/javadoc/javahelp-2.0_05/javax/help/HelpBroker.html#enableHelpOnButton(java.awt.Component,%20java.lang.String,%20javax.help.HelpSet)
+/*public*/ /*static*/ void HelpUtil::enableHelpOnButton(QWidget* comp, QString id) {
+#if 0 // TODO
+    if (qobject_cast<QAbstractButton*>(comp)) {
+        ((javax.swing.AbstractButton) comp).addActionListener((ignore) -> {
+            displayHelpRef(id);
+        });
+    } else if (comp instanceof java.awt.Button) {
+        ((java.awt.Button) comp).addActionListener((ignore) -> {
+            displayHelpRef(id);
+        });
+    } else {
+        throw  IllegalArgumentException("comp is not a javax.swing.AbstractButton or a java.awt.Button");
+    }
+#endif
+}
 
 /*static*/ /*public*/ void HelpUtil::displayHelpRef(QString ref)
 {
@@ -242,7 +280,7 @@ failed = false;
     return globalHelpBroker;
 }
 
-/*static*/ /*public*/ QAction* HelpUtil::getHelpAction(/*final*/ QString name, /*final*/ QIcon icon, /*final*/ QString id)
+/*static*/ /*public*/ JMenuItem* HelpUtil::getHelpAction(/*final*/ QString name, /*final*/ QIcon icon, /*final*/ QString id)
 {
 //    return new AbstractAction(name, icon) {
 //        String helpID = id;
@@ -251,7 +289,7 @@ failed = false;
 //            globalHelpBroker.setDisplayed(true);
 //        }
 //    };
- return new HUAbstractAction(name, icon, id, NULL);
+ return (JMenuItem*)new HUAbstractAction(name, icon, id, NULL);
 }
 
 HUAbstractAction::HUAbstractAction(QString /*name*/, QIcon /*icon*/, QString id, HelpUtil* parent) : AbstractAction(parent)
@@ -324,7 +362,7 @@ HelpFrame::HelpFrame(QString ref)
 }
  void HelpUtil::On_mapped(QObject * o)
  {
-  QAction* act = (QAction*)o;
+  JMenuItem* act = (JMenuItem*)o;
   QString ref = act->data().toString();
   if(_frame == NULL)
   {
@@ -451,18 +489,19 @@ MyWebView::MyWebView(QWidget *parent) : QWebEngineView(parent)
  currHistoryItem = 0;
 }
 
-void MyWebView::contextMenuEvent(QContextMenuEvent *)
-{
- QMenu*menu = new QMenu;
- QAction* back = new QAction(QIcon(QPixmap(":/resources/icons/throttles/previous.png")), tr("Previous"),this);
- menu->addAction(back);
- connect(back, SIGNAL(triggered()), this, SLOT(previous()));
- QAction* forward = new QAction(QIcon(":/resources/icons/throttles/next.png"), tr("Next"),this);
- menu->addAction(forward);
- connect(forward, SIGNAL(triggered()), this, SLOT(next()));
+//void MyWebView::contextMenuEvent(QContextMenuEvent *)
+//{
+// QMenu*menu = new QMenu;
+// JMenuItem* back = new JMenuItem(QIcon(QPixmap(":/resources/icons/throttles/previous.png")), tr("Previous"),this);
+// menu->addAction(back);
+// connect(back, SIGNAL(triggered()), this, SLOT(previous()));
+// JMenuItem* forward = new JMenuItem(QIcon(":/resources/icons/throttles/next.png"), tr("Next"),this);
+// menu->addAction(forward);
+// connect(forward, SIGNAL(triggered()), this, SLOT(next()));
 
- menu->exec(QCursor::pos());
-}
+// menu->exec(QCursor::pos());
+//}
+
 void MyWebView::previous()
 {
 // QWebHistory* _history  = history();

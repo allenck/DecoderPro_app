@@ -475,6 +475,22 @@ FileUtil::FileUtil(QObject *parent) :
 }
 
 /**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.io.InputStream} for that file. Search order is defined by
+ * {@link #findURL(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...) }.
+ *
+ * @param path      The relative path of the file or resource
+ * @param locations The type of locations to limit the search to
+ * @return InputStream or null.
+ * @see #findInputStream(java.lang.String)
+ * @see #findInputStream(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*static*/ /*public*/ QTextStream* FileUtil::findInputStream(/*@Nonnull*/ QString path, Location locations) {
+    return FileUtilSupport::getDefault()->findInputStream(path, locations);
+}
+
+/**
  * Get the resources directory within the user's files directory.
  *
  * @return path to [user's file]/resources/

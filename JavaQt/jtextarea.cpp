@@ -880,3 +880,8 @@ void JTextArea::setEditable(bool b)
 {
  emit focusLost(new FocusEvent());
 }
+
+/*public*/ QString JTextArea::getText()
+{
+ return toPlainText();
+}

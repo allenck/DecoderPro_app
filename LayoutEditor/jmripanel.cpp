@@ -3,7 +3,7 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include "userpreferencesmanager.h"
-#include "instancemanager.h"
+#include "../appslib/instancemanager.h"
 #include "windowinterface.h"
 
 JmriPanel::JmriPanel(QWidget *parent) :

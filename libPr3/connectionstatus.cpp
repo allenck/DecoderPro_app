@@ -193,9 +193,9 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
  * @param portName
  * @return true if port connection is operational or unknown, false if not
  */
-/*public*/ /*synchronized*/ bool ConnectionStatus::isConnectionOk(QString portName)
+/*public*/ /*synchronized*/ bool ConnectionStatus::isConnectionOk(QString systemName, /*@Nonnull*/ QString portName)
 {
- QString stateText = getConnectionState(portName);
+ QString stateText = getConnectionState(systemName, portName);
  //QMutexLocker locker(mutex);
  if (stateText!=(CONNECTION_UP))
   return false;

@@ -37,6 +37,7 @@ public:
     static /*public*/ bool isPortableFilename(QString filename);
     static /*public*/ QTextStream* findInputStream(QString path);
     static /*public*/ QTextStream* findInputStream(QString path, /*@NonNull*/ QStringList searchPaths);
+    static /*public*/ QTextStream* findInputStream(/*@Nonnull*/ QString path, Location locations);
     /*public*/ static QString pathFromPortablePath(QString path);
 
     /**

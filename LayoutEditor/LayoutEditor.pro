@@ -113,8 +113,19 @@ message("Qt path=" + $$(QTDIR))
 
 
 SOURCES += \
+    aboutaction.cpp \
+    aboutdialog.cpp \
+    checkforupdateaction.cpp \
+    connectionlabel.cpp \
     defaultvariablelightmanager.cpp \
+    helpmenuprovider.cpp \
+    issuereporter.cpp \
+    issuereporteraction.cpp \
+    jmenuitem.cpp \
+    jmriabstractaction.cpp \
     jmrijframe.cpp \
+    jmrijframeinterface.cpp \
+    jmripanel.cpp \
     layoutdoublexoverviewxml.cpp \
     layouteditorviewcontext.cpp \
     layoutlhxoverviewxml.cpp \
@@ -128,6 +139,7 @@ SOURCES += \
     layoutblock.cpp \
     layoutconnectivity.cpp \
     levelxingviewxml.cpp \
+    licenseaction.cpp \
     lighttabledatamodel.cpp \
     positionablepointviewxml.cpp \
     tracknode.cpp \
@@ -412,8 +424,6 @@ SOURCES += \
     vsdoptionsdialog.cpp \
     dragjlabel.cpp \
     dropjlabel.cpp \
-    jmriabstractaction.cpp \
-    jmrijframeinterface.cpp \
     layouteditorfinditems.cpp \
     layouteditor.cpp \
     xmlfilelocationaction.cpp \
@@ -427,7 +437,6 @@ SOURCES += \
     generalpath.cpp \
     path2d.cpp \
     transitmanagerxml.cpp \
-    jframe.cpp \
     hardcopywriter.cpp \
     jframeinterface.cpp \
     treeframe.cpp \
@@ -468,7 +477,6 @@ SOURCES += \
     multisensoricondialog.cpp \
     displayframe.cpp \
     portalitempanel.cpp \
-    jmripanel.cpp \
     switchboardeditoraction.cpp \
     switchboardeditor.cpp \
     switchboardeditorxml.cpp \
@@ -570,9 +578,19 @@ SOURCES += \
     abstractnamedbeanmanager.cpp
 
 HEADERS += liblayouteditor_global.h \
+    aboutaction.h \
+    aboutdialog.h \
+    checkforupdateaction.h \
+    connectionlabel.h \
     defaultvariablelightmanager.h \
-    jmrijframeinterface.h \
+    helpmenuprovider.h \
+    issuereporter.h \
+    issuereporteraction.h \
+    jmenuitem.h \
+    jmriabstractaction.h \
     jmrijframe.h \
+    jmrijframeinterface.h \
+    jmripanel.h \
     layoutdoublexoverviewxml.h \
     layouteditorviewcontext.h \
     layoutlhxoverviewxml.h \
@@ -587,6 +605,7 @@ HEADERS += liblayouteditor_global.h \
     layoutblock.h \
     layoutconnectivity.h \
     levelxingviewxml.h \
+    licenseaction.h \
     lighttabledatamodel.h \
     positionablepointviewxml.h \
     tracksegment.h \
@@ -875,7 +894,6 @@ HEADERS += liblayouteditor_global.h \
     vsdoptionsdialog.h \
     dragjlabel.h \
     dropjlabel.h \
-    jmriabstractaction.h \
     layouteditorfinditems.h \
     layouteditor.h \
     xmlfilelocationaction.h \
@@ -891,8 +909,6 @@ HEADERS += liblayouteditor_global.h \
     generalpath.h \
     path2d.h \
     transitmanagerxml.h \
-    jframe.h \
-    windowinterface.h \
     hardcopywriter.h \
     jframeinterface.h \
     treeframe.h \
@@ -936,7 +952,6 @@ HEADERS += liblayouteditor_global.h \
     multisensoricondialog.h \
     displayframe.h \
     portalitempanel.h \
-    jmripanel.h \
     switchboardeditoraction.h \
     switchboardeditor.h \
     switchboardeditorxml.h \

@@ -3,10 +3,10 @@
 
 #include "abstractaction.h"
 #include "windowinterface.h"
-#include "liblayouteditor_global.h"
+#include "javaqt_global.h"
 #include "jmripanel.h"
 
-class LIBLAYOUTEDITORSHARED_EXPORT JmriAbstractAction : public AbstractAction
+class JAVAQTSHARED_EXPORT JmriAbstractAction : public AbstractAction
 {
  Q_OBJECT
 public:

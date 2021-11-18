@@ -4,11 +4,11 @@
 #include <QtXml>
 #include "errorhandler.h"
 #include "hasconnectionbutunabletoconnectexception.h"
+#include "connectionconfig.h"
 
 class ProxyConnectionTypeList;
 class ConnectionTypeList;
 class ConnectionTypeManager;
-class ConnectionConfig;
 class Logger;
 class ConnectionConfigManager : public AbstractPreferencesManager
 {

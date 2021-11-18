@@ -267,7 +267,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  setTabToolTip(tabPosition, title);
 
 
- if (ConnectionStatus::instance()->isConnectionOk(
+ if (ConnectionStatus::instance()->isConnectionOk(nullptr,
             configPane->getCurrentProtocolInfo()))
  {
   //tabLabel.setForeground(Color.black);

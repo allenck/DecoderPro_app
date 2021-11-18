@@ -809,7 +809,7 @@ void DefaultFilePropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
  if (serModeProCon != NULL)
  {
   //PR3Adapter* adapter = (PR3Adapter*)serModeProCon->getAdapter();
-  if (ConnectionStatus::instance()->isConnectionOk(serModeProCon->getInfo()/*adapter->getCurrentPortName()*/)
+  if (ConnectionStatus::instance()->isConnectionOk(opsModeProCon->getConnectionName(), serModeProCon->getInfo()/*adapter->getCurrentPortName()*/)
                 && gpm != NULL)
   {
    serviceModeProgrammerLabel->setText(
@@ -848,10 +848,10 @@ void DefaultFilePropertyChangeListener::propertyChange(PropertyChangeEvent *evt)
  if (opsModeProCon != NULL)
  {
   //PR3Adapter* adapter = (PR3Adapter*)opsModeProCon->getAdapter();
-  if (ConnectionStatus::instance()->isConnectionOk(opsModeProCon->getInfo()) && apm!=NULL )
+  if (ConnectionStatus::instance()->isConnectionOk(nullptr, opsModeProCon->getInfo()) && apm!=NULL )
   {
    operationsModeProgrammerLabel->setText(
-            tr("Operations Mode Programmer %1 Is Online").arg( opsModeProCon->getConnectionName()));
+            tr("Operations Mode Programmer %1 Is Online").arg(opsModeProCon->getConnectionName(), opsModeProCon->getConnectionName()));
     operationsModeProgrammerLabel->setStyleSheet("QLabel { color: rgb(0,128,0); }");
   }
   else

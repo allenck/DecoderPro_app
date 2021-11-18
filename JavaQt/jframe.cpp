@@ -12,7 +12,7 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include "userpreferencesmanager.h"
-#include "instancemanager.h"
+//#include "../appslib/instancemanager.h"
 #include "jpanel.h"
 
 JFrame::JFrame(QWidget *parent) :

@@ -4,7 +4,6 @@
 #include "auxiliaryconfiguration.h"
 #include "xmladapter.h"
 #include "metatypes.h"
-#include "connectionconfig.h"
 #include "vptr.h"
 #include "class.h"
 #include "loggerfactory.h"
