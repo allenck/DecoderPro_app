@@ -107,27 +107,29 @@ class SignalDirectionIndicators : public SignalDirectionIndicatorsInterface
   friend class CallOn;
 };
 
-class TimeLockingTimerActionListener : public ActionListener
+class TimeLockingTimerActionListener : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   SignalDirectionIndicators* sdi;
  public:
   TimeLockingTimerActionListener(SignalDirectionIndicators* sdi) {this->sdi = sdi;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
    sdi->timeLockingDone();
   }
 };
 
-class CodingTimeTimerActionListener: public ActionListener
+class CodingTimeTimerActionListener: public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   SignalDirectionIndicators* sdi;
  public:
   CodingTimeTimerActionListener(SignalDirectionIndicators* sdi) {this->sdi = sdi;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
    sdi->codingTimeDone();
   }

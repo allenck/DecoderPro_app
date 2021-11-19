@@ -81,24 +81,26 @@ protected:
     /*protected*/ QString getBeanType() ;
 };
 
-class MtOkListener : public ActionListener
+class MtOkListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  MemoryTableAction* act;
 public:
  MtOkListener(MemoryTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0) override;
 };
 
-class MtCancelListener : public ActionListener
+class MtCancelListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  MemoryTableAction* act;
 public:
  MtCancelListener(MemoryTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
 #endif // MEMORYTABLEACTION_H

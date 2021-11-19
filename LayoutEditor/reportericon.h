@@ -66,9 +66,10 @@ protected:
 
     
 };
-class AddReporterIconActionListener : public ActionListener
+class AddReporterIconActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ReporterIcon* self;
 public:
  AddReporterIconActionListener(ReporterIcon* self) {this->self = self;}

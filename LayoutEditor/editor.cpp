@@ -1323,7 +1323,7 @@ void Editor::On_actionHidden_toggled(bool bState) // [slot]
 //     }
 // }.init(p, showTooltipItem));
  ShowToolTipActionListener* showToolTipActionListener = new ShowToolTipActionListener( p,  p->showToolTip(), this);
- connect(showTooltipItem, SIGNAL(triggered()), showToolTipActionListener, SLOT(actionPerformed()));
+ connect(showTooltipItem, SIGNAL(triggered()), showToolTipActionListener->self(), SLOT(actionPerformed()));
 
  edit->addAction(showTooltipItem);
  edit->addAction(CoordinateEdit::getTooltipEditAction(p, this));
@@ -2741,7 +2741,7 @@ void Editor::putBackground() {
 //         }
 //     });
   EditItemActionListener* editItemActionListener = new EditItemActionListener();
-  connect(editItem, SIGNAL(triggered(bool)), editItemActionListener, SLOT(actionPerformed()));
+  connect(editItem, SIGNAL(triggered(bool)), editItemActionListener->self(), SLOT(actionPerformed()));
   findIcon->addAction(editItem);
   findIcon->addSeparator();
 
@@ -2762,7 +2762,7 @@ void Editor::putBackground() {
 //     }.init(editor));
   SearchItemActionListener* searchItemActionListener  = new SearchItemActionListener();
   searchItemActionListener->init(editor);
-  connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener, SLOT(actionPerformed()));
+  connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener->self(), SLOT(actionPerformed()));
 
   findIcon->addAction(searchItem);
   frame->setMenuBar(menuBar);
@@ -2826,7 +2826,7 @@ EditItemActionListener* EditItemActionListener::init(Editor *ed)
  editor = ed;
  return this;
 }
-void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
+void EditItemActionListener::actionPerformed(JActionEvent * /*e*/)
 {
  ImageIndexEditor* ii = ImageIndexEditor::instance(editor);
  ii->pack();

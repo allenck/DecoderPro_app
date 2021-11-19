@@ -583,7 +583,7 @@ qSort(defStrings.begin(), defStrings.end());
 //        }
 //        });
  ItemListener1* itemListener = new ItemListener1(F);
- connect(item, SIGNAL(triggered()), itemListener, SLOT(actionPerformed()));
+ connect(item, SIGNAL(triggered()), itemListener->self(), SLOT(actionPerformed()));
  menuBar->addMenu(opsMenu);
 
  if(speedMenu == NULL)
@@ -599,7 +599,7 @@ qSort(defStrings.begin(), defStrings.end());
 //        }
 //        });
  ItemListener2* itemListener2 = new ItemListener2(F,this);
- connect(item, SIGNAL(triggered()), itemListener2, SLOT(actionPerformed()));
+ connect(item, SIGNAL(triggered()), itemListener2->self(), SLOT(actionPerformed()));
 }
 
 ItemListener1::ItemListener1(JmriJFrame *F)
@@ -611,14 +611,14 @@ void ItemListener1::actionPerformed(JActionEvent */*e*/)
 {
    new TurnoutOperationFrame(/*final*/F);
 }
-ItemListener2::ItemListener2(JmriJFrame *F, TurnoutTableAction* self)
+ItemListener2::ItemListener2(JmriJFrame *F, TurnoutTableAction* tta)
 {
  this->F = F;
- this->self = self;
+ this->tta = tta;
 }
 void ItemListener2::actionPerformed(JActionEvent */*e*/)
 {
- self->setDefaultSpeeds(/*final*/F);
+ tta->setDefaultSpeeds(/*final*/F);
 }
 
 void TurnoutTableAction::cancelPressed(ActionEvent* /*e*/) {

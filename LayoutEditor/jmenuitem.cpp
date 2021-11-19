@@ -8,7 +8,7 @@ JMenuItem::JMenuItem(QString text, QObject *parent) : JmriAbstractAction(text, p
 {
 }
 
-/*public*/ void JMenuItem::addActionListener(ActionListener*)
+/*public*/ void JMenuItem::addActionListener(ActionListener* listener)
 {
-
+ connect(listener->self(), SIGNAL(triggered()), listener->self(), SLOT(actionPerformed()));
 }

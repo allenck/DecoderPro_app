@@ -2171,9 +2171,9 @@ void ConditionalListEdit::initializeStateVariables()
 //    _variableNameField->removeActionListener(variableSignalMastNameListener);
 //    _variableStateBox->removeActionListener(variableSignalTestStateListener);
 //    _selectLogixBox->removeActionListener(selectLogixBoxListener);
-    disconnect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener, SLOT());
+    disconnect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener->self(), SLOT());
 //    _selectConditionalBox->removeActionListener(selectConditionalBoxListener);
-    disconnect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectConditionalBoxListener, SLOT());
+    disconnect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectConditionalBoxListener->self(), SLOT());
 
     if (_selectionMode == SelectionMode::USECOMBO) {
         _variableComboNamePanel->setVisible(false);
@@ -2290,9 +2290,9 @@ void ConditionalListEdit::initializeStateVariables()
         case Conditional::ITEM_TYPE_CONDITIONAL:
             _variableNamePanel->setToolTip(tr("Enter System Name for Conditional (or User Name if in this Logix)"));  // NOI18N
             //_selectLogixBox.addActionListener(selectLogixBoxListener);
-            connect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener, SLOT());
+            connect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener->self(), SLOT());
             //_selectConditionalBox.addActionListener(selectConditionalBoxListener);
-            connect(_selectConditionalBox, SIGNAL(currentIndexChanged(int)), selectConditionalBoxListener, SLOT());
+            connect(_selectConditionalBox, SIGNAL(currentIndexChanged(int)), selectConditionalBoxListener->self(), SLOT());
             for (int i = 0; i < Conditional::ITEM_TO_CONDITIONAL_TEST.length(); i++)
             {
              _variableStateBox->addItem(
@@ -2380,7 +2380,7 @@ void ConditionalListEdit::setVariableNameBox(int itemType) {
     }
     //_comboNameBox.addActionListener(new NameBoxListener(_variableNameField));
     NameBoxListener* nameBoxListener = new NameBoxListener(_variableNameField, this);
-    connect(_comboNameBox, SIGNAL(currentIndexChanged(int)), nameBoxListener, SLOT(actionPerformed()));
+    connect(_comboNameBox, SIGNAL(currentIndexChanged(int)), nameBoxListener->self(), SLOT(actionPerformed()));
     _comboNameBox->setSelectedBeanByName(_curVariable->getName());
     //_variableComboNamePanel->remove(1);
     QObjectList children = _variableComboNamePanel->children();
@@ -2864,7 +2864,7 @@ void ConditionalListEdit::variableSignalMastNameListener() // SLOT[]
 ///*transient*/ CLESelectLogixBoxListener* selectLogixBoxListener = new CLESelectLogixBoxListener(this);
 CLESelectLogixBoxListener::CLESelectLogixBoxListener(ConditionalListEdit *self) {this->_self = self;}
      //QOverride
-    /*public*/ void CLESelectLogixBoxListener::actionPerformed(/*ActionEvent e*/) {
+    /*public*/ void CLESelectLogixBoxListener::actionPerformed(JActionEvent *) {
         int lgxIndex = _self->_selectLogixBox->currentIndex();
         if (lgxIndex >= 0 && lgxIndex < _self->_selectLogixList.size()) {
             QString lgxName = _self->_selectLogixList.at(lgxIndex);
@@ -2876,7 +2876,7 @@ CLESelectLogixBoxListener::CLESelectLogixBoxListener(ConditionalListEdit *self) 
 ///*transient*/ CLESelectConditionalBoxListener* selectConditionalBoxListener = new CLESelectConditionalBoxListener(this);
 CLESelectConditionalBoxListener::CLESelectConditionalBoxListener(ConditionalListEdit *self) {this->_self = self;}
      //QOverride
-    /*public*/ void CLESelectConditionalBoxListener::actionPerformed(/*ActionEvent e*/) {
+    /*public*/ void CLESelectConditionalBoxListener::actionPerformed(JActionEvent *) {
         int cdlIndex = _self->_selectConditionalBox->currentIndex();
         if (cdlIndex > 0 && cdlIndex < _self->_selectConditionalList.size()) {
             QString cdlName = _self->_selectConditionalList.at(cdlIndex);
@@ -3758,7 +3758,7 @@ void ConditionalListEdit::setActionNameBox(int itemType) {
     _comboNameBox->setSelectedBeanByName(_curAction->getDeviceName());
     NameBoxListener* listener = new NameBoxListener(_actionNameField, this);
     //_comboNameBox.addActionListener(new NameBoxListener(_actionNameField));
-    connect(_comboNameBox, SIGNAL(currentIndexChanged(QString)), listener, SLOT(actionPerformed()));
+    connect(_comboNameBox, SIGNAL(currentIndexChanged(QString)), listener->self(), SLOT(actionPerformed()));
 //    _actionComboNamePanel->remove(1);
 //    _actionComboNamePanel->layout()->addWidget(_comboNameBox, NULL, 1);
     _namePanel->setVisible(false);

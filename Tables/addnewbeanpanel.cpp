@@ -101,11 +101,11 @@
  JButton* cancel;
  panelBottom->layout()->addWidget(cancel = new JButton(tr("Cancel")));
  //cancel.addActionListener(cancelListener);
- connect(cancel, SIGNAL(clicked()), cancelListener, SLOT(actionPerformed()));
+ connect(cancel, SIGNAL(clicked()), cancelListener->self(), SLOT(actionPerformed()));
 
  panelBottom->layout()->addWidget(ok = new JButton(addButtonLabel));
  //ok.addActionListener(okListener);
- connect(ok, SIGNAL(clicked(bool)), listener, SLOT(actionPerformed()));
+ connect(ok, SIGNAL(clicked(bool)), listener->self(), SLOT(actionPerformed()));
 
  layout()->addWidget(panelBottom);
 

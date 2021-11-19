@@ -745,7 +745,7 @@ void AddColorMenuEntryActionListener::actionPerformed()
 
   QAction* r = new QAction(name, this);
   r->setCheckable(true);
-  connect(r, SIGNAL(triggered(bool)), a, SLOT(actionPerformed()));
+  connect(r, SIGNAL(triggered(bool)), a->self(), SLOT(actionPerformed()));
   if (debug)
   {
       log->debug("setColorButton: colorType=" + QString::number(colorType));

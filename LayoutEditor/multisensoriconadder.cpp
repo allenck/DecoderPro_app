@@ -156,7 +156,7 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
 //        delete.addActionListener(action);
   DeleteActionListener* dal = new DeleteActionListener();
   dal->init(key, this);
-  connect(deleteButton, SIGNAL(clicked()), dal, SLOT(actionPerformed()));
+  connect(deleteButton, SIGNAL(clicked()), dal->self(), SLOT(actionPerformed()));
   p2->layout()->addWidget(deleteButton);
 
   DropPanel* p3 = new DropPanel(this);

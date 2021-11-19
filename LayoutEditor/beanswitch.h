@@ -180,27 +180,29 @@ private:
  friend class BeanSwitch;
 };
 
-class OkActionListener : public ActionListener
+class OkActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BeanSwitch* bs;
 public:
  OkActionListener(BeanSwitch* bs) {this->bs = bs;}
 public slots:
- void actionPerformed()
+ void actionPerformed(JActionEvent */*e*/ = 0) override
  {
   bs->okAddPressed();
  }
 };
 
-class CancelActionListener : public ActionListener
+class CancelActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BeanSwitch* bs;
 public:
  CancelActionListener(BeanSwitch* bs) {this->bs = bs;}
 public slots:
- void actionPerformed()
+ void actionPerformed(JActionEvent */*e*/ = 0) override
  {
   bs->cancelAddPressed();
  }

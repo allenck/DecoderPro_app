@@ -6,12 +6,12 @@
 #include "javaqt_global.h"
 #include "eventlistener.h"
 
-class JAVAQTSHARED_EXPORT ActionListener : public QObject,  public EventListener
+class JAVAQTSHARED_EXPORT ActionListener : /*public QObject,*/  public EventListener
 {
-    Q_OBJECT
+ //Q_OBJECT
  Q_INTERFACES(EventListener)
 public:
- explicit ActionListener(QObject *parent = 0) : QObject(parent){}
+ //explicit ActionListener(QObject *parent = 0) : QObject(parent){}
     QObject* self() {return (QObject*)this;}
     /**
      * The listener interface for receiving action events.
@@ -40,5 +40,5 @@ signals:
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(ActionListener, "ActionListener")
 #endif // ACTIONLISTENER_H

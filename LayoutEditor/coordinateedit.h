@@ -132,9 +132,10 @@ protected:
  friend class MemoryIconCoordinateEdit;
 };
 
-class SetBorderSizeActionListener : public ActionListener
+class SetBorderSizeActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     Positionable* pos;
     QObject* parent;
 public:
@@ -162,7 +163,7 @@ class TooltipEditAction : public AbstractAction
 public:
  TooltipEditAction(Positionable* pos, QString name, QObject* parent);
 public slots:
- void actionPerformed(ActionEvent * = 0);
+ void actionPerformed(JActionEvent * = 0) override;
 };
 
 class ActionMarginEdit : public AbstractAction
@@ -208,10 +209,11 @@ public:
 public slots:
  void on_actionGetFixedSizeEdit_triggered();
 };
+
 class RotateAction : public AbstractAction
 {
  Q_OBJECT
- QObject* parent;
+QObject* parent;
  Positionable* pos;
 public:
  RotateAction(Positionable* pos, QString name, QObject *parent);

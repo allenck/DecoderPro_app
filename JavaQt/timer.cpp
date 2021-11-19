@@ -9,7 +9,7 @@ Timer::Timer(QObject *parent) : QTimer(parent)
     // compiled code
  setInterval(delay);
  initialDelay = delay;
- connect(this, SIGNAL(timeout()), listener, SLOT(actionPerformed()));
+ connect(this, SIGNAL(timeout()), listener->self(), SLOT(actionPerformed()));
 }
 /*public*/ void Timer::setDelay(int delay) {
     // compiled code

@@ -45,15 +45,16 @@ protected slots:
 
 friend class ASCCActionListener;
 };
-class ASCCActionListener : public ActionListener
+class ASCCActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  AbstractSimulatorConnectionConfig* parent;
  QString item;
 public:
  ASCCActionListener(QString item, AbstractSimulatorConnectionConfig* parent);
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0) override;
 };
 
 #endif // ABSTRACTSIMULATORCONNECTIONCONFIG_H

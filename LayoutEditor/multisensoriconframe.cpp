@@ -257,7 +257,7 @@ Entry::Entry(QWidget* self, JmriJFrame* frame, QString name)
 //        }
 //    }.init(this, self, frame);
 //    b->addActionListener(a);
- DeleteActionListener* a = new DeleteActionListener();
+ MSIFDeleteActionListener* a = new MSIFDeleteActionListener();
 
  connect(b, SIGNAL(clicked()), a, SLOT(actionPerformed()));
  a->init(this, self, frame);
@@ -268,7 +268,7 @@ void Entry::on_setIcon()
  edf->setVisible(true);
 }
 
-DeleteActionListener* DeleteActionListener::init(Entry *entry, QWidget *self, JmriJFrame *frame)
+MSIFDeleteActionListener* MSIFDeleteActionListener::init(Entry *entry, QWidget *self, JmriJFrame *frame)
 {
  this->entry = entry;
  this->self = self;
@@ -276,7 +276,7 @@ DeleteActionListener* DeleteActionListener::init(Entry *entry, QWidget *self, Jm
  return this;
 }
 
-void DeleteActionListener::actionPerformed()
+void MSIFDeleteActionListener::actionPerformed()
 {
  // remove this entry
  self->layout()->removeWidget(entry);

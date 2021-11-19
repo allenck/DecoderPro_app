@@ -74,19 +74,21 @@ public:
  QByteArray mimeData();
 };
 
-class AddTableActionListener : public ActionListener
+class AddTableActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     TableItemPanel* parent;
 public:
     AddTableActionListener(TableItemPanel* parent);
     void actionPerformed(JActionEvent *e = 0);
 };
 
-class AtCancelListener : public ActionListener
+class AtCancelListener : public QObject, public ActionListener
 {
   TableItemPanel* self;
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
 public:
   AtCancelListener(TableItemPanel* self);
 public slots:

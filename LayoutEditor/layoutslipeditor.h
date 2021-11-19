@@ -115,27 +115,29 @@ class LSEWindowListener : public WindowListener
 
 };
 
-class ActionListenerDone : public ActionListener
+class ActionListenerDone : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutSlipEditor* editor;
  public:
   ActionListenerDone(LayoutSlipEditor* editor) {this->editor = editor;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutSlipDonePressed();
   }
 };
 
-class ActionListenerCancel : public ActionListener
+class ActionListenerCancel : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutSlipEditor* editor;
  public:
   ActionListenerCancel(LayoutSlipEditor* editor) {this->editor = editor;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutSlipCancelPressed();
   }

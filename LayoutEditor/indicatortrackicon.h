@@ -61,9 +61,10 @@ protected slots:
  /*protected*/ void editItem();
 
 };
-class ItiActionListener : public ActionListener
+class ItiActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     IndicatorTrackIcon* self;
 public:
     ItiActionListener(IndicatorTrackIcon* self);

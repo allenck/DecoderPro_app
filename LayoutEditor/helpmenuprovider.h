@@ -16,6 +16,7 @@ class HelpMenuProvider : public QObject, public MenuProvider
  signals:
 private:
    static Logger* log;
+   QObject* parent;
 };
 
 #endif // HELPMENUPROVIDER_H

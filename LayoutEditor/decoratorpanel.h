@@ -306,9 +306,10 @@ public:
 
 }; // end DragDecoratorLabel
 
-class TextFieldListener : public ActionListener
+class TextFieldListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  DecoratorPanel* panel;
  JLabel* sample;
  JTextField* textField;
@@ -319,10 +320,11 @@ public slots:
 
 };
 
-class FontActionListener : public ActionListener
+class FontActionListener : public QObject, public ActionListener
 {
  DecoratorPanel* dc;
  Q_OBJECT
+ Q_INTERFACES(ActionListener)
 public:
  FontActionListener(DecoratorPanel* dc) {this->dc = dc;}
 public slots:

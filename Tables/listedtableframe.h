@@ -156,9 +156,10 @@ public slots:
     friend class ListedTableFrame;
 };
 
-class LTFrameActionListener : public ActionListener
+class LTFrameActionListener : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   ActionJList* ajl;
  int index;
 public:
@@ -167,7 +168,7 @@ public:
   this->index = index;
  }
 public slots:
- void actionPerformed()
+ void actionPerformed(JActionEvent */*e*/ = 0)override
  {
   ajl->openNewTableWindow(index);
  }

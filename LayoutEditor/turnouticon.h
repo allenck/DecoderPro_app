@@ -88,9 +88,11 @@ friend class UpdateTurnoutActionListener;
 friend class AddTurnoutIconActionListener;
 
 };
-class UpdateTurnoutActionListener : public ActionListener
+
+class UpdateTurnoutActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  TurnoutIcon* turnoutIcon;
 public:
  UpdateTurnoutActionListener(TurnoutIcon* turnoutIcon)
@@ -104,9 +106,11 @@ public slots:
   turnoutIcon->updateItem();
  }
 };
-class AddTurnoutIconActionListener : public ActionListener
+
+class AddTurnoutIconActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  TurnoutIcon* turnoutIcon;
 public:
  AddTurnoutIconActionListener(TurnoutIcon* turnoutIcon)

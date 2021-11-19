@@ -79,9 +79,10 @@ protected:
  /*protected*/ void addAdditionalButtons(QWidget* p);
 };
 
-class MiiActionListener : public ActionListener
+class MiiActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     MemoryInputIcon* parent;
 public:
     MiiActionListener(MemoryInputIcon* parent);

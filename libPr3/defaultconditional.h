@@ -81,29 +81,31 @@ private:
     BitSet* argsUsed;// = NULL;     // error detection for missing arguments
     DataPair();
 };
-class TimeSensor : public ActionListener
+class TimeSensor : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
 
     /*private*/ int mIndex;// = 0;
      DefaultConditional* self;
 public:
      TimeSensor(int index, DefaultConditional* self);
 public slots:
-     /*public*/ void actionPerformed(JActionEvent* event = 0);
+     /*public*/ void actionPerformed(JActionEvent* event = 0)override;
 
 };
 
-class TimeTurnout : public ActionListener
+class TimeTurnout : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
 
     /*private*/ int mIndex;// = 0;
      DefaultConditional* self;
 public:
     TimeTurnout(int index, DefaultConditional* self);
 public slots:
-    /*public*/ void actionPerformed(JActionEvent* event = 0);
+    /*public*/ void actionPerformed(JActionEvent* event = 0) override;
 
 };
 

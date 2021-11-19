@@ -410,7 +410,7 @@ void TurnoutEditAction::updateAutomationOptions() {
         }
     }
     //automationBox.addActionListener(automationSelectionListener);
-    connect(automationBox, SIGNAL(currentIndexChanged(QString)), automationSelectionListener, SLOT(actionPerformed()));
+    connect(automationBox, SIGNAL(currentIndexChanged(QString)), automationSelectionListener->self(), SLOT(actionPerformed()));
 }
 
 //@Override

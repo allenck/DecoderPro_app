@@ -615,7 +615,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
 //        }
 //    }.init(f));
     CrossReferenceActionListener* listener = new CrossReferenceActionListener(f, this);
-    connect(item, SIGNAL(triggered()), listener, SLOT(actionPerformed()));
+    connect(item, SIGNAL(triggered()), listener->self(), SLOT(actionPerformed()));
     menu->addAction(item);
 
     item = new QAction(tr("Display Where Used"), this);  // NOI18N
@@ -638,7 +638,7 @@ CrossReferenceActionListener::CrossReferenceActionListener(BeanTableFrame* frame
  this->frame = frame;
  this->parent = parent;
 }
-void CrossReferenceActionListener::actionPerformed()
+void CrossReferenceActionListener::actionPerformed(JActionEvent *)
 {
   new RefDialog(frame, parent);
 }

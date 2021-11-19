@@ -55,20 +55,21 @@ class ActualTurnoutPropertyChangeListener : public QObject,public PropertyChange
   ActualTurnoutPropertyChangeListener(SwitchDirectionIndicators* sdi) {this->sdi = sdi;}
   QObject* self() override{return (QObject*)this;}
  public slots:
-  void propertyChange(PropertyChangeEvent* e)
+  void propertyChange(PropertyChangeEvent* e) override
   {
     if (e->getPropertyName() == ("KnownState")) sdi->setSwitchIndicationSensorsToPresentState();
   }
 };
 
-class  SimulatedTurnoutFeedbackTimerActionListener : public ActionListener
+class  SimulatedTurnoutFeedbackTimerActionListener : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   SwitchDirectionIndicators* sdi;
  public:
   SimulatedTurnoutFeedbackTimerActionListener(SwitchDirectionIndicators* sdi) {this->sdi = sdi;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
 
   }

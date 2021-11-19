@@ -667,7 +667,7 @@ QListIterator <BeanSetting*> iter(myTOs);
 //    };
     //ok.addActionListener(new myListener());
  MyListener* myListener = new MyListener(_errorDialog);
- connect(ok, SIGNAL(clicked()),  myListener, SLOT(actionPerformed()));
+ connect(ok, SIGNAL(clicked()),  myListener->self(), SLOT(actionPerformed()));
     ok->setMaximumSize(ok->sizeHint());
 
 //    QWidget* contentPane = _errorDialog->getContentPane();

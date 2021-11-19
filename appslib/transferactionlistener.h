@@ -4,15 +4,16 @@
 
 class PropertyChangeEvent;
 class JComponent;
-class TransferActionListener : public ActionListener
+class TransferActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
 public:
  TransferActionListener();
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
- /*public*/ void actionPerformed(JActionEvent* e);
+ /*public*/ void actionPerformed(JActionEvent* e =0)override;
 
 private:
  /*private*/ JComponent* focusOwner = nullptr;

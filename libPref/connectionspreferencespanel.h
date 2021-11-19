@@ -74,9 +74,10 @@ private:
  friend class CloseButtonListener;
 };
 
-class DisableCheckboxListener : public ActionListener
+class DisableCheckboxListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     JmrixConfigPane* configPane;
     QCheckBox* checkBox;
 public:
@@ -85,9 +86,10 @@ public slots:
     void actionPerformed(JActionEvent * = 0);
 };
 
-class CloseButtonListener : public ActionListener
+class CloseButtonListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     int index;
     ConnectionsPreferencesPanel* parent;
 public:

@@ -97,25 +97,27 @@ public:
   friend class LayoutTurntableEditor;
 };
 
-class LTTE_editLayoutTurntableDonePressed : public ActionListener
+class LTTE_editLayoutTurntableDonePressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutTurntableEditor* editor;
 public:
   LTTE_editLayoutTurntableDonePressed(LayoutTurntableEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutTurntableDonePressed();
   }
 };
 
-class LTTE_turntableEditCancelPressed : public ActionListener
+class LTTE_turntableEditCancelPressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutTurntableEditor* editor;
 public:
   LTTE_turntableEditCancelPressed(LayoutTurntableEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
    editor->turntableEditCancelPressed();
   }

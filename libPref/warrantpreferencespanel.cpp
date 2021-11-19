@@ -359,7 +359,7 @@ QSize WarrantPreferencesPanel::sizeHint()
 //            insertSpeedNameRow();
 //        }
 //    };
- DeleteActionListener* deleteAction = new DeleteActionListener(this);
+ WPPDeleteActionListener* deleteAction = new WPPDeleteActionListener(this);
 //    {
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //           deleteSpeedNameRow();
@@ -378,11 +378,11 @@ QSize WarrantPreferencesPanel::sizeHint()
  {
   panel->insertSpeedNameRow();
  }
- DeleteActionListener::DeleteActionListener(WarrantPreferencesPanel *panel)
+ WPPDeleteActionListener::WPPDeleteActionListener(WarrantPreferencesPanel *panel)
  {
   this->panel = panel;
  }
- void DeleteActionListener::actionPerformed(JActionEvent *e)
+ void WPPDeleteActionListener::actionPerformed(JActionEvent *e)
  {
   panel->deleteSpeedNameRow();
  }
@@ -445,7 +445,7 @@ QSize WarrantPreferencesPanel::sizeHint()
  if (insertAction!=NULL) {
      QPushButton* insertButton =  new QPushButton(tr("Insert Row"));
      //insertButton.addActionListener(insertAction);
-     connect(insertButton, SIGNAL(clicked()), insertAction, SLOT(actionPerformed()));
+     connect(insertButton, SIGNAL(clicked()), insertAction->self(), SLOT(actionPerformed()));
      buttonPanelLayout->addWidget(insertButton);
      //buttonPanelLayout.adds(Box.createVerticalStrut(2*STRUT_SIZE));
  }
@@ -453,7 +453,7 @@ QSize WarrantPreferencesPanel::sizeHint()
  if (removeAction!=NULL) {
      QPushButton* deleteButton =  new QPushButton(tr("Delete Row"));
      //deleteButton.addActionListener(removeAction);
-     connect(deleteButton, SIGNAL(clicked()), removeAction, SLOT(actionPerformed()));
+     connect(deleteButton, SIGNAL(clicked()), removeAction->self(), SLOT(actionPerformed()));
      buttonPanelLayout->addWidget(deleteButton);
  }
  tablePanelLayout->addWidget(buttonPanel);

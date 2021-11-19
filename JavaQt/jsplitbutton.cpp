@@ -364,7 +364,7 @@ void JSplitButton::common()
  */
 /*public*/ void JSplitButton::addButtonActionListener(ActionListener *l) {
 //    listenerList.add("SplitButtonActionListener", l);
- connect(this, SIGNAL(buttonClicked(JActionEvent*)), l, SLOT(buttonClicked(JActionEvent*)) );
+ connect(this, SIGNAL(buttonClicked(JActionEvent*)), l->self(), SLOT(buttonClicked(JActionEvent*)) );
 }
 
 /**
@@ -390,7 +390,7 @@ void JSplitButton::common()
 //    } else {
 //        listenerList.remove(SplitButtonActionListener.class, l);
 //    }
- disconnect(this, SIGNAL(buttonClicked(JActionEvent*)), l, SLOT(buttonClicked(JActionEvent*)) );
+ disconnect(this, SIGNAL(buttonClicked(JActionEvent*)), l->self(), SLOT(buttonClicked(JActionEvent*)) );
 }
 
 /*public*/ void JSplitButton::removeSplitButtonActionListener(SplitButtonActionListener* l) {

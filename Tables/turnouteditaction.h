@@ -98,15 +98,18 @@ public:
 public slots:
  void actionPerformed(JActionEvent* = 0);
 };
-class AutomationSelectionListener : public ActionListener
+
+class AutomationSelectionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  TurnoutEditAction* act;
 public:
  AutomationSelectionListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(JActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0)override;
 };
+
 class LockSaveItemListener : public AbstractAction
 {
  Q_OBJECT
@@ -114,7 +117,7 @@ class LockSaveItemListener : public AbstractAction
 public:
  LockSaveItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(JActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0) override;
 };
 class LockResetItemListener : public AbstractAction
 {

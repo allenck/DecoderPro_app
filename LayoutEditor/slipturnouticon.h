@@ -146,6 +146,7 @@ protected slots:
  friend class SlipTurnoutActionListener;
  friend class STOWindowListener;
 };
+
 class SetSlipThread : public QThread
 {
 public:
@@ -155,15 +156,18 @@ public:
 private:
     SlipTurnoutIcon* s;
 };
-class SlipTurnoutActionListener : public ActionListener
+
+class SlipTurnoutActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  SlipTurnoutIcon* self;
 public:
  SlipTurnoutActionListener(SlipTurnoutIcon* self) { this->self = self;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) { self->updateTurnout();}
 };
+
 class STOWindowListener : public WindowListener
 {
  Q_OBJECT

@@ -73,7 +73,7 @@
         _mDispatcherSensorLockToggle->removePropertyChangeListener(_mAnySensorPropertyChangeListener);
         _mPauseTimer->stop();
         //_mPauseTimer->removeActionListener(_mPauseActionListener);
-        disconnect(_mPauseTimer, SIGNAL(timeout()), _mPauseActionListener, SLOT(actionPerformed()));
+        disconnect(_mPauseTimer, SIGNAL(timeout()), _mPauseActionListener->self(), SLOT(actionPerformed()));
     }
 
     /*private*/ void CodeButtonSimulator::pauseActionListener() {

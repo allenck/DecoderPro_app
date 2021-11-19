@@ -109,10 +109,10 @@
 }
 
 PSPCancelListener::PSPCancelListener(PickSinglePanel *panel) {this->panel = panel;}
-void PSPCancelListener::actionPerformed(){}
+void PSPCancelListener::actionPerformed(JActionEvent *){}
 
 PSPOkListener::PSPOkListener(PickSinglePanel *panel) {this->panel = panel;}
-void PSPOkListener::actionPerformed(){ panel->addToTable();}
+void PSPOkListener::actionPerformed(JActionEvent *){ panel->addToTable();}
 
 //template<class T>
 void PickSinglePanel::addToTable() {

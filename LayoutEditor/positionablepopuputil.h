@@ -166,9 +166,10 @@ protected:
  friend class DecoratorPanel;
 };
 
-class AddColorMenuEntryActionListener : public ActionListener
+class AddColorMenuEntryActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  QColor desiredColor;
  PositionablePopupUtil* util;
  int colorType;

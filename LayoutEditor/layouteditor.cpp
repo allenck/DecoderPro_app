@@ -3292,7 +3292,7 @@ void LayoutEditor::undoMoveSelection() {
     JRadioButtonMenuItem* result = new JRadioButtonMenuItem(inName, this);
     if (inActionListener != nullptr) {
 //            result.addActionListener(inActionListener);
-     connect(result, SIGNAL(triggered(bool)), inActionListener, SLOT(actionPerformed()));
+     connect(result, SIGNAL(triggered(bool)), inActionListener->self(), SLOT(actionPerformed()));
     }
     if (inButtonGroup != nullptr) {
         inButtonGroup->addAction(result);

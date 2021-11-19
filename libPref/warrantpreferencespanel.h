@@ -91,7 +91,7 @@ public slots:
 
  friend class ButtonActionListener;
  friend class InsertActionListener;
- friend class DeleteActionListener;
+ friend class WPPDeleteActionListener;
  friend class SpeedNameTableModel;
  friend class AppearanceTableModel;
  friend class StepIncrementTableModel;
@@ -150,27 +150,32 @@ public:
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
 
-class InsertActionListener : public ActionListener
+class InsertActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+ Q_INTERFACES(ActionListener)
  WarrantPreferencesPanel* panel;
 public:
  InsertActionListener(WarrantPreferencesPanel* panel);
 public slots:
  void actionPerformed(JActionEvent *e = 0);
 };
-class DeleteActionListener : public ActionListener
+
+class WPPDeleteActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+ Q_INTERFACES(ActionListener)
  WarrantPreferencesPanel* panel;
 public:
- DeleteActionListener(WarrantPreferencesPanel* panel);
+ WPPDeleteActionListener(WarrantPreferencesPanel* panel);
 public slots:
  void actionPerformed(JActionEvent *e = 0);
 };
-class ButtonActionListener : public ActionListener
+
+class ButtonActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+ Q_INTERFACES(ActionListener)
  int value;
  QRadioButton* but;
  WarrantPreferencesPanel* panel;

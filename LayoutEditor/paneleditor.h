@@ -158,9 +158,10 @@ public:
  AbstractAction* init(Positionable* pos);
 };
 
-class LockItemListener : public ActionListener
+class LockItemListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  Positionable* comp;
  QAction* checkBox;
  PanelEditor* editor;
@@ -171,9 +172,10 @@ public:
  ActionListener* init(Positionable* pos, QAction* cb);
 };
 
-class RenameActionListener : public ActionListener
+class RenameActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  PanelEditor* editor;
 
 public slots:

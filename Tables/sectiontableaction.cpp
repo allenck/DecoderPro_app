@@ -1173,7 +1173,7 @@ void SectionTableAction::addBlockPressed() {
     //        }
     //    });
  NoButtonActionListener* noButtonListener = new NoButtonActionListener(dialog);
- connect(noButton, SIGNAL(clicked()), noButtonListener, SLOT(actionPerformed()));
+ connect(noButton, SIGNAL(clicked()), noButtonListener->self(), SLOT(actionPerformed()));
 
 //    yesButton.addActionListener(new ActionListener(){
 //        /*public*/ void actionPerformed(ActionEvent e) {
@@ -1183,7 +1183,7 @@ void SectionTableAction::addBlockPressed() {
 //        }
 //    });
  YesButtonActionListener* addActionListener = new YesButtonActionListener(dialog, s);
- connect(yesButton, SIGNAL(clicked()), addActionListener, SLOT(actionPerformed()));
+ connect(yesButton, SIGNAL(clicked()), addActionListener->self(), SLOT(actionPerformed()));
  dialog->pack();
  dialog->setModal(true);
  dialog->setVisible(true);

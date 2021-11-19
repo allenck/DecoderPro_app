@@ -25,6 +25,7 @@
 
     /*public*/ HelpMenuProvider::HelpMenuProvider(QObject* parent) :QObject(parent) {
         // do nothing
+     this->parent = (QObject*)parent;
     }
 
     //@Override
@@ -37,7 +38,7 @@
 
         JMenuItem* license = new JMenuItem(tr("License"),this);
         items.append(license);
-        license->addActionListener((ActionListener*)(new LicenseAction((ActionListener*)this)));
+        license->addActionListener((ActionListener*)(new LicenseAction(this)));
 
         JMenuItem* directories = new JMenuItem(tr("Locations"),this);
         items.append(directories);
@@ -53,7 +54,7 @@
 
         JMenuItem* console = new JMenuItem(tr("Console"),this);
         items.append(console);
-        console->addActionListener((ActionListener*)(new SystemConsoleAction()));
+        console->addActionListener((ActionListener*)(new SystemConsoleAction(HelpUtil::instance())));
 
 //        items.append(new JMenuItem(new IssueReporterAction(this)));
 #if 0

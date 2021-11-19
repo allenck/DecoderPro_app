@@ -57,25 +57,27 @@ class LIBLAYOUTEDITORSHARED_EXPORT TrackSegmentEditor : public LayoutTrackEditor
   friend class TSE_windowListener;
 };
 
-class TSE_editTracksegmentDonePressed : public ActionListener
+class TSE_editTracksegmentDonePressed : public QObject, public ActionListener
 {
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
   TrackSegmentEditor* editor;
  public:
   TSE_editTracksegmentDonePressed(TrackSegmentEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editTracksegmentDonePressed();
   }
 };
 
-class TSE_editTracksegmentCancelPressed : public ActionListener
+class TSE_editTracksegmentCancelPressed : public QObject, public ActionListener
 {
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
   TrackSegmentEditor* editor;
  public:
   TSE_editTracksegmentCancelPressed(TrackSegmentEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editTrackSegmentCancelPressed();
   }

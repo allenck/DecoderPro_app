@@ -132,7 +132,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
   prefixBox->setName("prefixBox"); // NOI18N
   addButton = new JButton(tr("Create"));
   //addButton.addActionListener(createListener);
-  connect(addButton, SIGNAL(clicked(bool)), createListener, SLOT(actionPerformed()));
+  connect(addButton, SIGNAL(clicked(bool)), createListener->self(), SLOT(actionPerformed()));
   hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox->getSelectedItem(), true);
   // create panel
   addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, hardwareAddressValidator, userNameField, prefixBox,
@@ -170,13 +170,13 @@ STOkButtonActionListener::STOkButtonActionListener(SensorTableAction *act)
 {
  this->act = act;
 }
-void STOkButtonActionListener::actionPerformed()
+void STOkButtonActionListener::actionPerformed(JActionEvent *)
 {
  act->createPressed();
 }
 
 STCancelActionListener::STCancelActionListener(SensorTableAction *act) { this->act = act;}
-void STCancelActionListener::actionPerformed()
+void STCancelActionListener::actionPerformed(JActionEvent *)
 {
  act->cancelPressed();
 }
@@ -185,7 +185,7 @@ STRangeActionListener::STRangeActionListener(SensorTableAction *act)
 {
  this->act = act;
 }
-void STRangeActionListener::actionPerformed()
+void STRangeActionListener::actionPerformed(JActionEvent *)
 {
  act->canAddRange();
 }
@@ -443,7 +443,7 @@ void SensorTableAction::handleCreateException(QString sysName) {
 //        }
 //        });
     DebounceActionListener* listener = new DebounceActionListener(finalF, this);
-    connect(item, SIGNAL(triggered()), listener, SLOT(actionPerformed()));
+    connect(item, SIGNAL(triggered()), listener->self(), SLOT(actionPerformed()));
     item = new QAction(tr("Initial Sensor State"),this);
     optionsMenu->addAction(item);
 //    item.addActionListener(new ActionListener() {
@@ -452,7 +452,7 @@ void SensorTableAction::handleCreateException(QString sysName) {
 //        }
 //    });
     DefaultStateActionListener* dsListener = new DefaultStateActionListener(finalF,this);
-    connect(item, SIGNAL(triggered()), dsListener, SLOT(actionPerformed()));
+    connect(item, SIGNAL(triggered()), dsListener->self(), SLOT(actionPerformed()));
     menuBar->addMenu(optionsMenu);
 }
 

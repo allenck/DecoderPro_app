@@ -830,9 +830,10 @@ public:
 
 };
 
-class SearchItemActionListener : public ActionListener
+class SearchItemActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     IconAdder* ea;
 public slots:
     /*public*/ void actionPerformed(JActionEvent *e = 0);
@@ -840,33 +841,37 @@ public:
     SearchItemActionListener* init(IconAdder* ed);
 };
 
-class EditItemActionListener : public ActionListener
+class EditItemActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  Editor* editor;
 public slots:
- /*public*/ void actionPerformed();
+ /*public*/ void actionPerformed(JActionEvent* =0) override;
  EditItemActionListener* init(Editor* ed);
 };
 
-class AddPanelIconActionListener : public ActionListener
+class AddPanelIconActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     Editor* parent;
 public:
     AddPanelIconActionListener(Editor* parent);
-    void actionPerformed(JActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0) override;
 };
-class ShowToolTipActionListener : public ActionListener
+
+class ShowToolTipActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  Editor* editor;
  Positionable* comp;
  bool isChecked;
 public:
  ShowToolTipActionListener(Positionable* pos, bool isChecked, Editor* editor);
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0) override;
 };
 
 class AddIconFrameWindowListener : public WindowListener
@@ -1071,9 +1076,10 @@ protected:
   friend class CircuitBuilder;
  };
 
-  class AddBlockActionListener : public ActionListener
+  class AddBlockActionListener : public QObject, public ActionListener
   {
     Q_OBJECT
+      Q_INTERFACES(ActionListener)
     Editor* editor;
    public:
     AddBlockActionListener(Editor* editor) {this->editor = editor;}

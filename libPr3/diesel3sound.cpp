@@ -145,7 +145,7 @@
     /*protected*/ QTimer* Diesel3Sound::newTimer(long time, bool repeat, ActionListener* al) {
         time = qMax((long)1, time);  // make sure the time is > zero
         t = new QTimer(/*(int) time, al*/);
-        connect(t, SIGNAL(timeout()), al, SLOT(actionPerformed()));
+        connect(t, SIGNAL(timeout()), al->self(), SLOT(actionPerformed()));
         t->setInterval((int) time);
         t->setSingleShot(!repeat);
         return (t);

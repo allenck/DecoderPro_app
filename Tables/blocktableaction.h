@@ -94,21 +94,23 @@ Q_DECLARE_METATYPE(BlockTableAction)
 
 
 
-class BTActionListener : public ActionListener
+class BTActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BlockTableAction* blockTableAction;
 public:
  BTActionListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
 public slots:
- void actionPerformed(JActionEvent* = 0)
+ void actionPerformed(JActionEvent* = 0)override
  {
      blockTableAction->okPressed();
  }
 };
-class BTCancelListener : public ActionListener
+class BTCancelListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BlockTableAction* blockTableAction;
 public:
  BTCancelListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
@@ -125,10 +127,10 @@ class ABWindowListener : public WindowAdapter
   BlockTableAction* blockTableAction;
  public:
   ABWindowListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
-  void windowClosed(QCloseEvent *e)
+  void windowClosed(QCloseEvent */*e*/) override
   {
    blockTableAction->cancelPressed();
   }
-  void windowClosing(QCloseEvent*){}
+  void windowClosing(QEvent*)override{}
 };
 #endif // BLOCKTABLEACTION_H

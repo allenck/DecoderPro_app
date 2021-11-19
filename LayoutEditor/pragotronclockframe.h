@@ -50,8 +50,9 @@ private:
  friend class PCMinuteChangeListener;
 };
 
-/*private*/ class PCButtonListener : public ActionListener {
+/*private*/ class PCButtonListener : public QObject, public ActionListener {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  PragotronClockFrame* frame;
 public:
  PCButtonListener(PragotronClockFrame* frame) {this->frame = frame;}

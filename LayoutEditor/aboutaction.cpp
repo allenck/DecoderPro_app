@@ -19,7 +19,7 @@
     }
 
     //@Override
-    /*public*/ void AboutAction::actionPerformed(JActionEvent* e) {
+    /*public*/ void AboutAction::actionPerformed(JActionEvent* /*e*/) {
         (new AboutDialog(nullptr, true))->setVisible(true);
     }
 

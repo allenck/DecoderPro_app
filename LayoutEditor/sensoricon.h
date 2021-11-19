@@ -181,17 +181,21 @@ protected slots:
  friend class EditActionListener;
 
 };
-class UpdateActionListener : public ActionListener
+
+class UpdateActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  SensorIcon* parent;
 public:
  UpdateActionListener(SensorIcon* parent);
  /*public*/ void actionPerformed(JActionEvent* a = 0) override;
 };
-class EditActionListener : public ActionListener
+
+class EditActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  SensorIcon* parent;
 public:
  EditActionListener(SensorIcon* parent);

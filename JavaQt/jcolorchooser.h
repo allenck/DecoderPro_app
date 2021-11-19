@@ -99,8 +99,11 @@ protected:
 };
 
 
-class ColorTracker : public ActionListener/*, Serializable*/
+class ColorTracker : public QObject, public ActionListener/*, Serializable*/
 {
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+
     JColorChooser* chooser;
     QColor color;
 public:
@@ -121,9 +124,10 @@ public:
  * This method resets the JColorChooser color to the initial color when the
  * action is performed.
  */
- /*static*/ class DefaultResetListener : public ActionListener
+ /*static*/ class DefaultResetListener : public QObject, public ActionListener
  {
- Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
   /** The JColorChooser to reset. */
   /*private*/ JColorChooser* chooser;
 
@@ -156,9 +160,10 @@ public:
 /**
  * A helper class that hides a JDialog when the action is performed.
  */
- /*static*/ class DefaultOKCancelListener : public ActionListener
+ /*static*/ class DefaultOKCancelListener : public QObject, public ActionListener
  {
- Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
   /** The JDialog to hide. */
   /*private*/ JDialog* dialog;
   bool bAccept;

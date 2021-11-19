@@ -81,27 +81,29 @@ class ELTWindowListener : public WindowListener
   }
 };
 
-class ELT_editLayoutTurnoutDonePressed : public ActionListener
+class ELT_editLayoutTurnoutDonePressed : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutTurnoutEditor* editor;
  public:
   ELT_editLayoutTurnoutDonePressed(LayoutTurnoutEditor* editor) {this->editor = editor;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
    editor->editLayoutTurnoutDonePressed();
   }
 };
 
-class ELT_editLayoutTurnoutCancelPressed : public ActionListener
+class ELT_editLayoutTurnoutCancelPressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutTurnoutEditor* editor;
  public:
   ELT_editLayoutTurnoutCancelPressed(LayoutTurnoutEditor* editor) {this->editor = editor;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutTurnoutCancelPressed();
   }

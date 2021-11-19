@@ -113,7 +113,7 @@
 //                });
                 QComboBox* box = (QComboBox*)options.value(i)->getComponent();
                 ASCCActionListener* listener = new ASCCActionListener(item,this);
-                connect(box, SIGNAL(currentIndexChanged(QString)), listener, SLOT(actionPerformed()));
+                connect(box, SIGNAL(currentIndexChanged(QString)), listener->self(), SLOT(actionPerformed()));
             }
         }
 

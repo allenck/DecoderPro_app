@@ -23,6 +23,8 @@
 #include <QAbstractButton>
 #include "serviceloader.h"
 #include "helpmenuprovider.h"
+#include "aboutaction.h"
+#include "issuereporteraction.h"
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -99,7 +101,7 @@ HelpUtil::HelpUtil(QObject *parent) :
   connect(item, SIGNAL(triggered()), mapper, SLOT(map()));
 
   // add standard items
-  JMenuItem* license = new JMenuItem(tr("License..."),parent);
+  JMenuItem* license = new JMenuItem(tr("License..."), parent);
   helpMenu->addAction(license);
 //  license.addActionListener(new apps.LicenseAction());
   license->setDisabled(true);
@@ -111,7 +113,7 @@ HelpUtil::HelpUtil(QObject *parent) :
   connect(directories, SIGNAL(triggered(bool)),xmlFileLocation, SLOT(actionPerformed()));
   helpMenu->addAction(directories);
 
-  JMenuItem* context = new JMenuItem(tr("Context..."),NULL);
+  JMenuItem* context = new JMenuItem(tr("Context..."), parent);
   helpMenu->addAction(context);
 //        context.addActionListener(new apps.ReportContextAction());
   ReportContextAction* reportContextAction = new ReportContextAction(parent);
@@ -120,9 +122,10 @@ HelpUtil::HelpUtil(QObject *parent) :
   QMenu* console = new QMenu(tr("System console..."));
   helpMenu->addMenu(console);
 //       console.addActionListener(new apps.SystemConsoleAction());
-  console->addAction(new SystemConsoleAction());
+  console->addAction(new SystemConsoleAction( HelpUtil::instance()));
 
 //  helpMenu.add(new jmri.jmrit.mailreport.ReportAction());
+  //helpMenu->addAction(new IssueReporterAction());
 
  // Put about dialog in Apple's prefered area on Mac OS X
 // if (SystemType.isMacOSX()) {
@@ -143,8 +146,8 @@ HelpUtil::HelpUtil(QObject *parent) :
    helpMenu->addSeparator();
    JMenuItem* about = new JMenuItem(tr("About") + " " + QApplication::applicationName(), HelpUtil::instance());
    helpMenu->addAction(about);
-//   about.addActionListener(new AboutAction());
-   about->setDisabled(true);
+   about->addActionListener((ActionListener*)about);
+   about->setDisabled(false);
 //        }
    connect(mapper, SIGNAL(mapped(QObject*)), HelpUtil::instance(), SLOT(On_mapped(QObject*)));
  }
@@ -289,7 +292,7 @@ failed = false;
 //            globalHelpBroker.setDisplayed(true);
 //        }
 //    };
- return (JMenuItem*)new HUAbstractAction(name, icon, id, NULL);
+ return (JMenuItem*)new HUAbstractAction(name, icon, id, nullptr);
 }
 
 HUAbstractAction::HUAbstractAction(QString /*name*/, QIcon /*icon*/, QString id, HelpUtil* parent) : AbstractAction(parent)
@@ -299,17 +302,13 @@ HUAbstractAction::HUAbstractAction(QString /*name*/, QIcon /*icon*/, QString id,
  //connect(this, SIGNAL(triggered()), this, actionPerformed());
 }
 
-void HUAbstractAction::actionPerformed()
+void HUAbstractAction::actionPerformed(JActionEvent */*e*/)
 {
 // parent->globalHelpBroker->setCurrentID(helpID);
 // parent->globalHelpBroker->setDisplayed(true);
+ parent->displayHelpRef(helpID);
 }
 
-
-#if 0
-/*static*/ HelpSet* HelpUtil::globalHelpSet = NULL;
-/*static*/ HelpBroker* HelpUtil::globalHelpBroker = NULL;
-#endif
 HelpFrame::HelpFrame(QString ref)
 {
  this->ref = ref.replace(".", QDir::separator());

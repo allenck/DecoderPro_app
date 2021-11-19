@@ -238,9 +238,10 @@ protected slots:
 };
 
 
-class EditCircuitActionListener : public ActionListener
+class EditCircuitActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  CircuitBuilder* parent;
  QString command;
 public:

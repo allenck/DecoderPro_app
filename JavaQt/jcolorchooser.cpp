@@ -161,22 +161,22 @@
   QPushButton* ok = new QPushButton("OK");
 //  ok.addActionListener(okListener);
   if(okListener)
-   connect(ok, SIGNAL(clicked(bool)), okListener, SLOT(actionPerformed()));
+   connect(ok, SIGNAL(clicked(bool)), okListener->self(), SLOT(actionPerformed()));
 //  ok.addActionListener(al);
-  connect(ok, SIGNAL(clicked(bool)), al, SLOT(actionPerformed()));
+  connect(ok, SIGNAL(clicked(bool)), al->self(), SLOT(actionPerformed()));
 
   al = new DefaultOKCancelListener(dialog, false);
   QPushButton* cancel = new QPushButton("Cancel");
 //  cancel.addActionListener(cancelListener);
   if(cancelListener)
-   connect(cancel, SIGNAL(clicked(bool)), cancelListener, SLOT(actionPerformed()));
+   connect(cancel, SIGNAL(clicked(bool)), cancelListener->self(), SLOT(actionPerformed()));
 //  cancel.addActionListener(al);
-  connect(cancel, SIGNAL(clicked(bool)), al, SLOT(actionPerformed()));
+  connect(cancel, SIGNAL(clicked(bool)), al->self(), SLOT(actionPerformed()));
 
   QPushButton* reset = new QPushButton("Reset");
 //  reset.addActionListener(new DefaultResetListener(chooserPane));
   DefaultResetListener* resetListener = new DefaultResetListener(chooserPane);
-  connect(reset, SIGNAL(clicked(bool)), resetListener, SLOT(actionPerformed()));
+  connect(reset, SIGNAL(clicked(bool)), resetListener->self(), SLOT(actionPerformed()));
 
   thisLayout->addWidget(chooserPane, 1, Qt::AlignTop);//BorderLayout.NORTH);
 

@@ -36,24 +36,26 @@ private:
  friend class PSPOkListener;
  friend class PSPCancelListener;
 };
-class PSPOkListener : public ActionListener
+class PSPOkListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  PickSinglePanel* panel;
 public:
  PSPOkListener(PickSinglePanel* panel);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
-class PSPCancelListener : public ActionListener
+class PSPCancelListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  PickSinglePanel* panel;
 public:
  PSPCancelListener(PickSinglePanel* panel);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
 #endif // PICKSINGLEPANEL_H

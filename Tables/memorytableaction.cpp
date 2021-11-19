@@ -224,7 +224,7 @@ MtOkListener::MtOkListener(MemoryTableAction *act) : ActionListener()
 {
  this->act = act;
 }
-void MtOkListener::actionPerformed()
+void MtOkListener::actionPerformed(JActionEvent *)
 {
  act->okPressed();
 }
@@ -232,7 +232,7 @@ MtCancelListener::MtCancelListener(MemoryTableAction *act) : ActionListener()
 {
  this->act = act;
 }
-void MtCancelListener::actionPerformed()
+void MtCancelListener::actionPerformed(JActionEvent *)
 {
  act->cancelPressed();
 }

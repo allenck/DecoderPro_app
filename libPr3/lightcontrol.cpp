@@ -688,7 +688,7 @@ void LightControl::common()
                   _timedControlTimer->stop();
                   if (_timedControlListener != nullptr) {
                       //_timedControlTimer->removeActionListener(_timedControlListener);
-                   disconnect(_timedControlTimer, SIGNAL(timeout()), _timedControlListener, SLOT(timeout()));
+                   disconnect(_timedControlTimer, SIGNAL(timeout()), _timedControlListener->self(), SLOT(timeout()));
                       _timedControlListener = nullptr;
                   }
                   _timedControlTimer = nullptr;
@@ -744,7 +744,7 @@ void LightControl::common()
                 lc->_timedControlTimer = new QTimer();
                 lc->_timedControlTimer->setInterval(lc->_timeOnDuration);
 //                    _timedControlListener);
-                connect(lc->_timedControlTimer, SIGNAL(timeout()),lc->_timedControlListener, SLOT(actionPerformed()));
+                connect(lc->_timedControlTimer, SIGNAL(timeout()),lc->_timedControlListener->self(), SLOT(actionPerformed()));
                 // Start the Timer to turn the light OFF
                 lc->_timedControlTimer->start();
             }

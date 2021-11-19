@@ -849,18 +849,20 @@ private:
     friend class RoutingSetSaveItemListener;
     friend class RoutingSetResetItemListener;
 };
-class LayoutSetSaveItemListener : public ActionListener
+class LayoutSetSaveItemListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LayoutBlock* lb;
  LayoutSetSaveItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
  void actionPerformed();
 };
 
-class LayoutSetResetItemListener : public ActionListener
+class LayoutSetResetItemListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LayoutBlock* lb;
  LayoutSetResetItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
@@ -877,13 +879,14 @@ public slots:
  friend class LayoutBlockEditAction;
 };
 
-class RoutingSetResetItemListener : public ActionListener
+class RoutingSetResetItemListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LayoutBlock* lb;
  RoutingSetResetItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent *) override;
  friend class LayoutBlockEditAction;
 };
 

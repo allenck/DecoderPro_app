@@ -50,16 +50,20 @@ private:
     friend class LActionListener;
     friend class CActionListener;
 };
-class AActionListener : public  ActionListener {
+
+class AActionListener : public QObject, public  ActionListener {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     QDir* dir;
     DirectorySearcher* s;
 public:
     /*public*/ AActionListener(QDir* d, DirectorySearcher* s);
     /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
-class MActionListener : public  ActionListener {
+
+class MActionListener : public QObject, public  ActionListener {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     QDir* dir;
     bool oneDir;
     DirectorySearcher* s;
@@ -67,16 +71,18 @@ public:
     /*public*/ MActionListener(QDir* d, bool o, DirectorySearcher* s);
     /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
-class LActionListener : public  ActionListener {
+class LActionListener : public QObject, public  ActionListener {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     DirectorySearcher* s;
 public:
     LActionListener(DirectorySearcher* s);
 
     /*public*/ void actionPerformed(JActionEvent* a = 0);
 };
-class CActionListener : public  ActionListener {
+class CActionListener : public QObject, public  ActionListener {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     DirectorySearcher* s;
 public:
     CActionListener(DirectorySearcher* s);

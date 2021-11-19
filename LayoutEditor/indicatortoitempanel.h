@@ -78,9 +78,10 @@ public:
     QByteArray mimeData();
 };
 
-class EditIconActionListener : public ActionListener
+class EditIconActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  QString key;
  IndicatorTOItemPanel* parent;
 public:

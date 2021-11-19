@@ -56,9 +56,11 @@ protected:
  /*protected*/ void edit();
  friend class Editor;
 };
-class MSIActionListener : public ActionListener
+
+class MSIActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     MemorySpinnerIcon* parent;
 public:
     MSIActionListener(MemorySpinnerIcon* parent);

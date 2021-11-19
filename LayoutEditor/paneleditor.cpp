@@ -399,7 +399,7 @@ PanelEditor::~PanelEditor()
 // }.init(this));
  EditItemActionListener* editItemActionListener = new EditItemActionListener();
  editItemActionListener->init(this);
- connect(editItem, SIGNAL(triggered()), editItemActionListener, SLOT(actionPerformed()));
+ connect(editItem, SIGNAL(triggered()), editItemActionListener->self(), SLOT(actionPerformed()));
 
  ui->menuFile->addAction(editItem);
 

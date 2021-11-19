@@ -4,15 +4,17 @@
 #include <QAction>
 #include "javaqt_global.h"
 #include "actionevent.h"
+#include "actionlistener.h"
 
 class QIcon;
 class QVariant;
 class PropertyChangeListener;
 class QAction;
 class QMenu;
-class JAVAQTSHARED_EXPORT Action : public QAction
+class JAVAQTSHARED_EXPORT Action : public QAction, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
 public:
  //explicit Action();
  Action(QObject *parent = 0) : QAction(parent){};
@@ -37,12 +39,13 @@ public:
  /*public*/  virtual bool isEnabled();
  /*public*/  virtual void addPropertyChangeListener(PropertyChangeListener* listener);
  /*public*/  virtual void removePropertyChangeListener(PropertyChangeListener* listener);
- /*public*/ virtual QVariant getValue(QString /*key*/) {return QVariant();}
+ /*public*/  virtual QVariant getValue(QString /*key*/) {return QVariant();}
 
+ QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:
- virtual void  actionPerformed(JActionEvent*) {}
+ virtual void  actionPerformed(JActionEvent*) override{}
 
 private:
 

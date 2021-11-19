@@ -97,7 +97,7 @@ PPCancelListener::PPCancelListener(PickPanel *self)
 {
  this->self = self;
 }
-void PPCancelListener::actionPerformed()
+void PPCancelListener::actionPerformed(JActionEvent *)
 {
  self->close();
 }

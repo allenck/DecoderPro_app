@@ -234,19 +234,23 @@ public:
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
-class YesButtonActionListener : public ActionListener
+
+class YesButtonActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  Section* s;
  JDialog* dlg;
 public:
  YesButtonActionListener(JDialog* dlg, Section* s);
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0) override;
 };
-class NoButtonActionListener : public ActionListener
+
+class NoButtonActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  JDialog* dlg;
 public:
  NoButtonActionListener(JDialog* dlg);

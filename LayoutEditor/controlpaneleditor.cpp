@@ -571,7 +571,7 @@ ControlPanelEditor::~ControlPanelEditor()
 //        }.init(this));
     CPEditItemActionListener* eial = new CPEditItemActionListener();
     eial->init(this);
-    connect(editItem, SIGNAL(triggered()), eial, SLOT(actionPerformed()));
+    connect(editItem, SIGNAL(triggered()), eial->self(), SLOT(actionPerformed()));
     editItem = new QAction(tr("Change view to Panel Editor"),this);
     _fileMenu->addAction(editItem);
 
@@ -1890,7 +1890,7 @@ void ControlPanelEditor::abortPasteItems() {
 //        }
 //    }.init(p));
     popup->addAction(edit);
-    connect(edit, SIGNAL(triggered()), dal, SLOT(actionPerformed()));
+    connect(edit, SIGNAL(triggered()), dal->self(), SLOT(actionPerformed()));
 }
 
 //@Override
@@ -2042,7 +2042,7 @@ void ControlPanelEditor::abortPasteItems() {
 //        new ColorDialog(this, pos, type, null);
 //    });
     CPEEditListener* listener = new CPEEditListener(type, pos, this);
-    connect(edit, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
+    connect(edit, SIGNAL(triggered(bool)), listener->self(), SLOT(actionPerformed()));
     popup->addAction(edit);
 }
 

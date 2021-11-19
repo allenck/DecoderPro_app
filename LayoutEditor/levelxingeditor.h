@@ -44,6 +44,7 @@ class LevelXingEditor : public LayoutTurntableEditor
   friend class LXEeditLevelXingDonePressed;
   friend class LXEeditLevelXingCancelPressed;
 };
+
 class ELXWindowListener : public WindowListener
 {
   Q_OBJECT
@@ -55,24 +56,28 @@ class ELXWindowListener : public WindowListener
   }
 
 };
-class LXEeditLevelXingDonePressed : public ActionListener
+
+class LXEeditLevelXingDonePressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LevelXingEditor* editor;
  public:
   LXEeditLevelXingDonePressed(LevelXingEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
   editor->editLevelXingDonePressed();
  }
 };
-class LXEeditLevelXingCancelPressed : public ActionListener
+
+class LXEeditLevelXingCancelPressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LevelXingEditor* editor;
  public:
   LXEeditLevelXingCancelPressed(LevelXingEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
   editor->editLevelXingCancelPressed();
  }

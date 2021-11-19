@@ -51,13 +51,14 @@ protected:
 friend class MIActionListener;
 };
 
-class MIActionListener : public ActionListener
+class MIActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LEMemoryIcon* memoryIcon;
 public:
  MIActionListener(LEMemoryIcon* memoryIcon) {this->memoryIcon = memoryIcon;}
 public slots:
- void actionPerformed() { memoryIcon->editMemory();}
+ void actionPerformed(JActionEvent */*e*/ = 0)override { memoryIcon->editMemory();}
 };
 #endif // LEMEMORYICON_H

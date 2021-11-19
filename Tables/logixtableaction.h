@@ -461,16 +461,17 @@ public:
 //private slots:
 //};
 
-class CrossReferenceActionListener : public ActionListener
+class CrossReferenceActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BeanTableFrame* frame;
  LogixTableAction* parent;
 public:
  CrossReferenceActionListener(BeanTableFrame* frame, LogixTableAction* parent);
 
 public slots:
- void actionPerformed() ;
+ void actionPerformed(JActionEvent */*e*/ = 0) override;
 };
 
 class LTALogixEventListener : public LogixEventListener
@@ -482,7 +483,7 @@ class LTALogixEventListener : public LogixEventListener
 public:
  /*public*/ LTALogixEventListener(QString sName, LogixTableAction* lta);
  /*public*/ void logixEventOccurred() override;
- QObject* self() {return (QObject*)this;}
+ QObject* self() override{return (QObject*)this;}
 };
 
 class LTALogixEventListener1 : public LogixEventListener

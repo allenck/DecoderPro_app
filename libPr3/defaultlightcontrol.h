@@ -99,13 +99,14 @@ class DefaultLightControl : public LightControl
 /**
  * Class for defining ActionListener for TIMED_ON_CONTROL
  */
-/*private*/ class TimeLight : public ActionListener {
-Q_OBJECT
+/*private*/ class TimeLight : public QObject, public ActionListener {
+    Q_OBJECT
+    Q_INTERFACES(ActionListener)
   DefaultLightControl* ctl;
  public:
   TimeLight(DefaultLightControl* ctl){this->ctl = ctl;}
     //@Override
-    /*public*/ void actionPerformed(JActionEvent* /*event*/) {
+    /*public*/ void actionPerformed(JActionEvent* /*event*/) override{
         // Turn Light OFF
        ctl-> _parentLight->setState(Light::OFF);
         // Turn Timer OFF

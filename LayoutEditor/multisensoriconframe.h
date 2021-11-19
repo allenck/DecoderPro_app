@@ -66,15 +66,15 @@ public slots:
 
 };
 
-class DeleteActionListener : public QObject
+class MSIFDeleteActionListener : public QObject
 {
  Q_OBJECT
  Entry* entry;
  QWidget* self;
  JmriJFrame* frame;
 public:
- DeleteActionListener(){}
- DeleteActionListener* init(Entry* entry, QWidget* self, JmriJFrame* frame);
+ MSIFDeleteActionListener(){}
+ MSIFDeleteActionListener* init(Entry* entry, QWidget* self, JmriJFrame* frame);
 public slots:
  /*public*/ void actionPerformed(/*ActionEvent a*/);
 

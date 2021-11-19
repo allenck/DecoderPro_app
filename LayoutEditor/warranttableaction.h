@@ -119,9 +119,10 @@ protected:
 };
 Q_DECLARE_METATYPE(WarrantTableAction)
 
-class MyListener : /*java.awt.event.WindowAdapter implements*/ public ActionListener
+class MyListener : public QObject,  public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  JDialog* _errorDialog;
 
 public:
@@ -130,7 +131,7 @@ public:
 //         myListener(java.awt.Window w) {
 //             _w = w;
 //         }  */
- /*public*/ void actionPerformed(JActionEvent* /*e*/)
+ /*public*/ void actionPerformed(JActionEvent* /*e*/) override
  {
      _errorDialog->dispose();
  }
@@ -191,9 +192,10 @@ public:
 
 
 
-class CreateNXWarrantActionListener : public ActionListener
+class CreateNXWarrantActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
 
 public:
 

@@ -58,7 +58,7 @@
 
     panelBottomLayout->addWidget(ok = new QPushButton(addButtonLabel));
 //    ok->addActionListener(okListener);
-connect(ok, SIGNAL(clicked(bool)), okListener, SLOT(actionPerformed()));
+connect(ok, SIGNAL(clicked(bool)), okListener->self(), SLOT(actionPerformed()));
 //    ok.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent a) {

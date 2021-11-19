@@ -111,31 +111,34 @@ protected:
     /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
 };
 
-class RTACreateListener : public ActionListener
+class RTACreateListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     ReporterTableAction* act;
 public:
     RTACreateListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(JActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 };
 
-class RTACancelActionListener : public ActionListener
+class RTACancelActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     ReporterTableAction* act;
    public:
     RTACancelActionListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(JActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 };
 
-class ReporterRangeListener : public ActionListener
+class ReporterRangeListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     ReporterTableAction* act;
    public:
      ReporterRangeListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(JActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 };
 #if 0
 /**

@@ -4652,7 +4652,7 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
 }
 
 
-void RoutingSetResetItemListener::actionPerformed()
+void RoutingSetResetItemListener::actionPerformed(JActionEvent *)
 {
     lb->metricField->setText(QString::number(lb->metric));
     for (int i = 0; i < lb->getNumberOfNeighbours(); i++) {

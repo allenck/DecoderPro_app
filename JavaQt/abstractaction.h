@@ -39,7 +39,7 @@ signals:
  void propertyChange(PropertyChangeEvent*) override;
 
 public slots:
- virtual void actionPerformed(JActionEvent* = 0)  override{}
+ void actionPerformed(JActionEvent* = 0)  override{}
 
 private:
  /*private*/ static bool RECONFIGURE_ON_NULL;

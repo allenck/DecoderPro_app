@@ -116,9 +116,11 @@ protected slots:
 friend class MultiSensorIconWidget;
 friend class MultiSensorIconAdder;
 };
-class UIActionListener : public ActionListener
+
+class UIActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  MultiSensorIcon* parent;
 public:
  UIActionListener(MultiSensorIcon* parent)

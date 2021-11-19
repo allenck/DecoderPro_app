@@ -174,7 +174,7 @@ bool DoubleTurnoutSignalHead::isTurnoutUsed(Turnout* t)
 }
 //};
 
-void TimerActionListener::actionPerformed()
+void TimerActionListener::actionPerformed(JActionEvent *)
 {
  dtsh->readOutput();
 }

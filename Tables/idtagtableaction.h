@@ -87,45 +87,50 @@ protected:
     /*protected*/ QString getBeanType();
 };
 
-class StateStoredActionListener : public ActionListener
+class StateStoredActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  StateStoredActionListener(IdTagTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
  friend class IdTagTableAction;
 };
 
-class FastClockUsedActionListener : public ActionListener
+class FastClockUsedActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  FastClockUsedActionListener(IdTagTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
  friend class IdTagTableAction;
 };
-class IdTagOkListener : public ActionListener
+
+class IdTagOkListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  IdTagOkListener(IdTagTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
  friend class IdTagTableAction;
 };
 
-class CancelListener : public ActionListener
+class CancelListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  CancelListener(IdTagTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
  friend class IdTagTableAction;
 };

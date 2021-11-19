@@ -203,24 +203,7 @@ public:
      }
     };
 
-    class DeleteActionListener : public ActionListener
-    {
-     //Q_OBJECT
-       MultiSensorIconAdder* parent;
-     QString key;
-     public:
-     /*public*/ void actionPerformed(JActionEvent* a = 0)
-     {
-      Q_UNUSED(a);
-      parent->_delete(key);
-     }
-     DeleteActionListener* init(QString k,  MultiSensorIconAdder* parent)
-     {
-      this->parent = parent;
-      key = k;
-      return this;
-     }
-    };
+
 signals:
 
 public slots:
@@ -242,4 +225,23 @@ protected:
 
 };
 
+class DeleteActionListener : public QObject, public ActionListener
+{
+ Q_OBJECT
+  Q_INTERFACES(ActionListener)
+   MultiSensorIconAdder* parent;
+ QString key;
+ public:
+ /*public*/ void actionPerformed(JActionEvent* a = 0) override
+ {
+  Q_UNUSED(a);
+  parent->_delete(key);
+ }
+ DeleteActionListener* init(QString k,  MultiSensorIconAdder* parent)
+ {
+  this->parent = parent;
+  key = k;
+  return this;
+ }
+};
 #endif // MULTISENSORICONADDER_H

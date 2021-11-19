@@ -58,14 +58,15 @@ class AnySensorPropertyChangeListener : public QObject,public PropertyChangeList
   }
 };
 
-class PauseActionListener : public ActionListener
+class PauseActionListener : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   CodeButtonSimulator* codeButtonSimulator;
  public:
   PauseActionListener(CodeButtonSimulator* codeButtonSimulator) {this->codeButtonSimulator = codeButtonSimulator;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
    codeButtonSimulator->pauseActionListener();
   }

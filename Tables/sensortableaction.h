@@ -120,57 +120,62 @@ friend class STAValidator;
 };
 Q_DECLARE_METATYPE(SensorTableAction)
 
-class STOkButtonActionListener : public ActionListener
+class STOkButtonActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  SensorTableAction* act;
 public:
  STOkButtonActionListener(SensorTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
 };
 
-class STCancelActionListener : public ActionListener
+class STCancelActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  SensorTableAction* act;
 public:
  STCancelActionListener(SensorTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
-class STRangeActionListener : public ActionListener
+class STRangeActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  SensorTableAction* act;
 public:
  STRangeActionListener(SensorTableAction* act);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
-class DebounceActionListener : public ActionListener
+class DebounceActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  JmriJFrame* finalF;
  SensorTableAction* act;
 public:
  DebounceActionListener(JmriJFrame* finalF, SensorTableAction* act);
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0)override;
 };
 
-class DefaultStateActionListener : public ActionListener
+class DefaultStateActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  JmriJFrame* finalF;
  SensorTableAction* act;
 public:
  DefaultStateActionListener(JmriJFrame* finalF, SensorTableAction* act);
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0)override;
 };
 
 class STAValidator : public QValidator

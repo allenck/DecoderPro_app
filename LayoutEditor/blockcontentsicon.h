@@ -61,13 +61,14 @@ protected slots:
 
 };
 
-class AddBCIconActionListener : public ActionListener
+class AddBCIconActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BlockContentsIcon* icon;
 public:
  AddBCIconActionListener(BlockContentsIcon* icon);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 #endif // DISPLAYBLOCKCONTENTICON_H

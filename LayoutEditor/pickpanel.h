@@ -44,23 +44,27 @@ protected:
 //    void dragMoveEvent(QDragMoveEvent *);
  friend class ItActionListener;
 };
-class ItActionListener : public ActionListener
+
+class ItActionListener : public QObject, public ActionListener
 {
   PickPanel* self;
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
 public:
   ItActionListener(PickPanel* self);
 public slots:
   /*public*/ void actionPerformed(JActionEvent* a = 0) ;
 };
-class PPCancelListener : public ActionListener
+
+class PPCancelListener : public QObject, public ActionListener
 {
   PickPanel* self;
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
 public:
   PPCancelListener(PickPanel* self);
 public slots:
-  /*public*/ void actionPerformed() ;
+  /*public*/ void actionPerformed(JActionEvent *) ;
 };
 
 #endif // PICKPANEL_H

@@ -78,14 +78,15 @@ protected:
     /*protected*/ void addAdditionalButtons(QWidget* p);
     friend class MemoryComboIcon;
 };
-class MCIActionListener : public ActionListener
+class MCIActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     MemoryComboIcon* parent;
 public:
     MCIActionListener(MemoryComboIcon*);
 public slots:
-    void actionPerformed(JActionEvent *e);
+    void actionPerformed(JActionEvent *e = 0);
 };
 
 #endif // MEMORYCOMBOICON_H

@@ -60,9 +60,9 @@ class HUAbstractAction : public  AbstractAction
     QString helpID;
     HelpUtil* parent;
  public:
-    HUAbstractAction(QString, QIcon, QString, HelpUtil* parent);
+    HUAbstractAction(QString, QIcon, QString id, HelpUtil* parent);
 public slots:
-    void actionPerformed();
+    void actionPerformed(JActionEvent* e=0) override;
 };
 
 class MyWebView : public QWebEngineView
@@ -110,7 +110,7 @@ private slots:
 
  };
  /*public*/ /*interface*/class MenuProvider {
-
+  public:
  /**
   * Get the menu items to include in the menu. Any menu item that is null will be
   * replaced with a separator.
@@ -121,5 +121,6 @@ private slots:
  virtual QList<JMenuItem*> getHelpMenuItems()=0;
  virtual QObject* self() =0;
  };
+
 Q_DECLARE_INTERFACE(MenuProvider, "MenuProvider")
 #endif // HELPUTIL_H

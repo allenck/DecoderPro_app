@@ -127,54 +127,60 @@ protected slots:
 };
 Q_DECLARE_METATYPE(TurnoutTableAction)
 
-class OkListener : public ActionListener
+class OkListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     TurnoutTableAction* self;
 public:
     OkListener(TurnoutTableAction* self);
 public slots:
-    void actionPerformed(JActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0)override;
 };
 
-class ToCancelActionListener : public ActionListener
+class ToCancelActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     TurnoutTableAction* self;
 public:
     ToCancelActionListener(TurnoutTableAction* self);
 public slots:
-    void actionPerformed(JActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0) override;
 };
 
-class RangeListener : public ActionListener
+class RangeListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     TurnoutTableAction* self;
 public:
     RangeListener(TurnoutTableAction* self);
 public slots:
-    void actionPerformed(JActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0) override;
 };
 
-class ItemListener1 : public ActionListener
+class ItemListener1 : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  JmriJFrame* F;
 public:
  ItemListener1(JmriJFrame* F);
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0)override;
 };
-class ItemListener2 : public ActionListener
+
+class ItemListener2 : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  JmriJFrame* F;
- TurnoutTableAction* self;
+ TurnoutTableAction* tta;
 public:
- ItemListener2(JmriJFrame* F, TurnoutTableAction* self);
+ ItemListener2(JmriJFrame* F, TurnoutTableAction* tta);
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0) override;
 };
 
 #if 0

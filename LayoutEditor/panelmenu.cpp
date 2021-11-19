@@ -187,12 +187,12 @@
 //    //var = VPtr<Editor>::asQVariant(panel);
 //    act->setData(var);
 //    r.addActionListener(a);
-    PanelActionListener* a = new PanelActionListener(panel, this);
-    QAction* r = new QAction(panel->getTitle(), this);
-    r->setCheckable(true);
-    connect(r, SIGNAL(toggled(bool)), a, SLOT(actionPerformed()));
-    panelsSubMenu->addAction(r);
-    updateEditorPanel (panel);
+   PanelActionListener* a = new PanelActionListener(panel, this);
+   QAction* r = new QAction(panel->getTitle(), this);
+   r->setCheckable(true);
+   connect(r, SIGNAL(toggled(bool)), a->self(), SLOT(actionPerformed()));
+   panelsSubMenu->addAction(r);
+   updateEditorPanel (panel);
 }
 
 PanelActionListener::PanelActionListener(Editor *panel, PanelMenu* pm)

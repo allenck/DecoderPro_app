@@ -56,7 +56,7 @@
     /*protected*/ QTimer* VSDSound::newTimer(int time, bool repeat, ActionListener* al) {
         time = qMax(1, time);  // make sure the time is > zero
         t = new QTimer(/*time, al*/);
-        connect(t, SIGNAL(timeout()), al, SLOT(actionPerformed()));
+        connect(t, SIGNAL(timeout()), al->self(), SLOT(actionPerformed()));
         //t->setInitialDelay(time);
         t->setInterval(time);
         //t->setRepeats(repeat);

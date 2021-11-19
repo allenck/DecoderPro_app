@@ -170,18 +170,21 @@ friend class EPIconDragJLabel;
 };
 Q_DECLARE_METATYPE(ControlPanelEditor)
 
-class CPEditItemActionListener : public ActionListener
+class CPEditItemActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     ControlPanelEditor* panelEd;
 public slots:
     /*public*/ void actionPerformed(JActionEvent* e = 0);
 public:
     CPEditItemActionListener* init(ControlPanelEditor* pe);
 };
-class DuplicateActionListener : public ActionListener
+
+class DuplicateActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  Positionable* comp;
  ControlPanelEditor* edit;
 public slots:
@@ -190,9 +193,10 @@ public:
     DuplicateActionListener* init(Positionable* pos, ControlPanelEditor* edit);
 };
 
-class CPEEditListener : public ActionListener
+class CPEEditListener : public QObject, public ActionListener
 {
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
  ControlPanelEditor* edit;
  int type;
  QWidget* pos;

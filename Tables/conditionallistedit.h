@@ -394,24 +394,26 @@ public:
  void windowIconified(QResizeEvent *){}
 };
 
-class CLESelectLogixBoxListener : public ActionListener
+class CLESelectLogixBoxListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalListEdit* _self;
 public:
  CLESelectLogixBoxListener(ConditionalListEdit* self);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
-class CLESelectConditionalBoxListener : public ActionListener
+class CLESelectConditionalBoxListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalListEdit* _self;
 public:
  CLESelectConditionalBoxListener(ConditionalListEdit* self);
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
 #endif // CONDITIONALLISTEDIT_H

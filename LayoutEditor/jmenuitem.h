@@ -9,7 +9,7 @@ class JMenuItem : public JmriAbstractAction
  public:
   explicit JMenuItem(QObject *parent);
   JMenuItem(QString text, QObject *parent);
-  /*public*/ void addActionListener(ActionListener*);
+  /*public*/ void addActionListener(ActionListener* listener);
 };
 
 #endif // JMENUITEM_H

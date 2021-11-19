@@ -215,6 +215,7 @@ public:
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
+
 class PRWindowListener :public WindowListener
 {
  Q_OBJECT
@@ -227,9 +228,10 @@ public:
  }
 };
 
-class SelectActionListener : public ActionListener
+class SelectActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  QButtonGroup* buts;
  JDialog* dialog;
  QList <DefaultMutableTreeNode*>* dNodes;
@@ -261,9 +263,11 @@ public:
  return this;
  }
 };
-class ShowActionListener : public ActionListener
+
+class ShowActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  QButtonGroup* buts;
  QList <DefaultMutableTreeNode*>* destinationNodes;
  DefaultTreeModel* tree;

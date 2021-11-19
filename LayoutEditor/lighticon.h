@@ -66,14 +66,16 @@ private:
     /*protected*/ void edit() override;
 
 };
-class LightIconActionListener : public ActionListener
+
+class LightIconActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LightIcon* icon;
 public:
  LightIconActionListener(LightIcon*);
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0) override;
 };
 
 #endif // LIGHTICON_H

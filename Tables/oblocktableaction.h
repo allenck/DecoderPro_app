@@ -126,24 +126,26 @@ class OTAOBlockTableFrame : public OBlockTableFrame
 
 //ActionListener okListener = this::createObPressed;
 //ActionListener cancelListener = this::cancelObPressed;
-class OTAOkActionListener : public ActionListener
+class OTAOkActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  public:
  OBlockTableAction* act;
  OTAOkActionListener(OBlockTableAction* act){this->act = act;}
  public slots:
- void actionPerformed() {act->createObPressed();}
+ void actionPerformed(JActionEvent */*e*/ = 0) override{act->createObPressed();}
 };
 
-class OTACancelListener : public ActionListener
+class OTACancelListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  public:
  OBlockTableAction* act;
  OTACancelListener(OBlockTableAction* act){this->act = act;}
  public slots:
- void actionPerformed() {act->cancelObPressed();}
+ void actionPerformed(JActionEvent */*e*/ = 0) override{act->cancelObPressed();}
 };
 
 Q_DECLARE_METATYPE(OBlockTableAction)

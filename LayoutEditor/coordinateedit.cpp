@@ -133,7 +133,7 @@ TooltipEditAction::TooltipEditAction(Positionable* pos, QString name, QObject *p
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-void TooltipEditAction::actionPerformed(ActionEvent *)
+void TooltipEditAction::actionPerformed(JActionEvent *)
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
@@ -148,7 +148,7 @@ void TooltipEditAction::actionPerformed(ActionEvent *)
 {
  SetBorderSizeActionListener* actionListener = new SetBorderSizeActionListener(pos, parent);
  QAction* act = new QAction(tr("Set Border Size"),parent);
- connect(act, SIGNAL(triggered()), actionListener, SLOT(actionPerformed()));
+ connect(act, SIGNAL(triggered()), actionListener->self(), SLOT(actionPerformed()));
 //    {
 //                /*public*/ void actionPerformed(ActionEvent e) {
 //                    CoordinateEdit f = new CoordinateEdit();

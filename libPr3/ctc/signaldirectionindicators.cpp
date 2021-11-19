@@ -83,11 +83,11 @@
     /*public*/ void SignalDirectionIndicators::removeAllListeners() {
         _mCodingTimeTimer->stop();       // Safety:
         //_mCodingTimeTimer->removeActionListener(_mCodingTimeTimerActionListener);
-        disconnect(_mCodingTimeTimer, SIGNAL(timeout()), _mCodingTimeTimerActionListener, SLOT(actionPerformed()));
+        disconnect(_mCodingTimeTimer, SIGNAL(timeout()), _mCodingTimeTimerActionListener->self(), SLOT(actionPerformed()));
         _mTimeLockingTimer->stop();
         //_mTimeLockingTimer->removeActionListener(_mTimeLockingTimerActionListener);
         disconnect(_mTimeLockingTimer, SIGNAL(timeout()),
-         _mTimeLockingTimerActionListener, SLOT(actionPerformed()));
+         _mTimeLockingTimerActionListener->self(), SLOT(actionPerformed()));
 #if 0 // TODO:
         //_mSignalHeadPropertyChangeListenerLinkedList.forEach((signalHeadPropertyChangeListenerMaintainer) ->
         foreach(SignalHeadPropertyChangeListenerMaintainer* signalHeadPropertyChangeListenerMaintainer, SignalHeadPropertyChangeListenerMaintainer::_mSignalHeadPropertyChangeListenerLinkedList)

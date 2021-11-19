@@ -42,9 +42,10 @@ protected:
     friend class DefaultCabSignalTest;
 };
 
-class PanelActionListener : public ActionListener
+class PanelActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  Editor* panel;
  PanelMenu* pm;
 public:

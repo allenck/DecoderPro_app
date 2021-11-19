@@ -44,10 +44,10 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
   QString iconPath = child.firstChildElement("icon").text();
   //icon = new QIcon(FileUtil::findURL().toString());
   icon = new QIcon(":/" +iconPath);
-  act = new Action(name, *icon, wi);
+//  act = new Action(name, *icon, wi);
  }
  else
-  act = new Action(name, wi);
+//  act = new Action(name, wi);
 
  //This bit does not size very well, but it works for now.
  if (!child.firstChildElement("option").isNull())
@@ -356,7 +356,7 @@ connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  this->obj = obj;
 }
 
-/*public*/  void CallingAbstractAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/  void CallingAbstractAction::actionPerformed(JActionEvent* /*e*/)
 {
 //        try {
 #if 0 // TODO:
@@ -424,7 +424,7 @@ GUAbstractAction::GUAbstractAction(QString name, QIcon* icon)
   setIcon(*icon);
  }
 }
-/*public*/  void GUAbstractAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/  void GUAbstractAction::actionPerformed(JActionEvent* /*e*/) {
 }
 
 /*public*/  QString GUAbstractAction::toString() {

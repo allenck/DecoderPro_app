@@ -675,7 +675,7 @@ void IconAdder::checkIconSizes()
  sizePolicy.setHeightForWidth(_addButton->sizePolicy().hasHeightForWidth());
  _addButton->setSizePolicy(sizePolicy);
  //        _addButton.addActionListener(addIconAction);
- connect(_addButton, SIGNAL(clicked()), addIconAction, SLOT(actionPerformed()));
+ connect(_addButton, SIGNAL(clicked()), addIconAction->self(), SLOT(actionPerformed()));
  _addButton->setEnabled(true);
  if (changeIcon)
  {

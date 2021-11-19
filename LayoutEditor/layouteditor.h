@@ -1162,9 +1162,10 @@ public:
 
 };
 
-class AddTurnoutCircleSizeMenuEntryCactionListener : public ActionListener
+class AddTurnoutCircleSizeMenuEntryCactionListener : public QObject, public ActionListener
 {
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
   LayoutEditor* layoutEditor;
   int inSize;
  public:

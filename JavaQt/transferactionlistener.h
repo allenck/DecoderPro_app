@@ -3,10 +3,10 @@
 #include "actionlistener.h"
 #include "propertychangeevent.h"
 
-class TransferActionListener : public ActionListener
+class TransferActionListener : public QObject, public ActionListener
 {
   Q_OBJECT
-
+  Q_INTERFACES(ActionListener)
  public:
   TransferActionListener(QObject* parent = nullptr);
 

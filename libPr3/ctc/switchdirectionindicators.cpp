@@ -66,7 +66,7 @@ This object ACTUALLY CONTROLS THE SWITCH, AND sends commands to move the points.
     if (_mSimulatedTurnoutFeedbackTimer != nullptr) {
         _mSimulatedTurnoutFeedbackTimer->stop();
         //_mSimulatedTurnoutFeedbackTimer->removeActionListener(_mSimulatedTurnoutFeedbackTimerActionListener);
-        disconnect(_mSimulatedTurnoutFeedbackTimer, SIGNAL(timeout()), _mSimulatedTurnoutFeedbackTimerActionListener, SLOT(actionPerformed()));
+        disconnect(_mSimulatedTurnoutFeedbackTimer, SIGNAL(timeout()), _mSimulatedTurnoutFeedbackTimerActionListener->self(), SLOT(actionPerformed()));
     }
 }
 
