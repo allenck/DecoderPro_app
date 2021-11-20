@@ -33,6 +33,7 @@
         //this->add(pane);
         QVBoxLayout* thisLayout;
         this->setLayout(thisLayout = new QVBoxLayout());
+        thisLayout->addWidget(pane);
         this->pack();
 //        this->setResizable(false);
 //        this.setLocationRelativeTo(null); // center on screen
@@ -47,7 +48,8 @@
         if (log->isDebugEnabled()) {
             log->debug(tr("Fetch main logo: %1 (%2)").arg(logo, FileUtil::findURL(logo, FileUtil::Location::INSTALLED).toString()));
         }
-//        addCenteredComponent(new JLabel(new ImageIcon(getToolkit().getImage(FileUtil::findURL(logo, FileUtil::Location::INSTALLED)), "JMRI logo"), JLabel.CENTER), pane);
+        //addCenteredComponent(new JLabel(new ImageIcon(getToolkit().getImage(FileUtil::findURL(logo, FileUtil::Location::INSTALLED)), "JMRI logo"), JLabel::CENTER), pane);
+        addCenteredComponent(new JLabel("JMRI logo", new ImageIcon(logo, "JMRI logo"),JLabel::LEFT),pane);
         pane->layout()->addWidget(Box::createRigidArea(QSize(0, 15)));
         QString name = Application::getApplicationName();
         name = checkCopyright(name);

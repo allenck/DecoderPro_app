@@ -828,7 +828,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
             }
         }
      if (!threadStopRequest) { // if e.g. unexpected end
-         ConnectionStatus::instance()->setConnectionState(controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
+         ConnectionStatus::instance()->setConnectionState(controller->getUserName(),controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
          log->error(tr("Exit from rcv loop in %1").arg(this->metaObject()->className()));
          recovery(); // see if you can restart
      }
@@ -852,7 +852,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
 /*protected*/ void AbstractMRTrafficController::reportReceiveLoopException(Exception e) {
     log->error("run: Exception: "+e.getMessage());
     log->error(tr("run: Exception: %1 in %2").arg(e.getMessage()).arg(this->metaObject()->className()).arg(e.getMessage()));
-    ConnectionStatus::instance()->setConnectionState(controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
+    ConnectionStatus::instance()->setConnectionState(controller->getUserName(),controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
     if (qobject_cast<AbstractNetworkPortController*>(controller))
     {
         portWarnTCP(e);

@@ -38,11 +38,17 @@
 
         JMenuItem* license = new JMenuItem(tr("License"),this);
         items.append(license);
-        license->addActionListener((ActionListener*)(new LicenseAction(this)));
+        //license->addActionListener((ActionListener*)(new LicenseAction(this)));
+        connect(license, &QAction::triggered, [=]{
+         license->actionPerformed();
+        });
 
         JMenuItem* directories = new JMenuItem(tr("Locations"),this);
         items.append(directories);
-        directories->addActionListener((ActionListener*)(new XmlFileLocationAction(this)));
+        //directories->addActionListener((ActionListener*)(new XmlFileLocationAction(this)));
+        connect(directories, &QAction::triggered, [=]{
+         directories->actionPerformed();
+        });
 
         JMenuItem* updates = new JMenuItem(tr("CheckUpdates"),this);
         items.append(updates);
@@ -54,7 +60,10 @@
 
         JMenuItem* console = new JMenuItem(tr("Console"),this);
         items.append(console);
-        console->addActionListener((ActionListener*)(new SystemConsoleAction(HelpUtil::instance())));
+        //console->addActionListener((ActionListener*)(new SystemConsoleAction(HelpUtil::instance())));
+        connect(console, &QAction::triggered, [=]{
+         console->actionPerformed();
+        });
 
 //        items.append(new JMenuItem(new IssueReporterAction(this)));
 #if 0
@@ -74,7 +83,10 @@
             items.append(nullptr);
             JMenuItem* about = new JMenuItem(tr("About") + " " + Application::getApplicationName(),this);
             items.append(about);
-            about->addActionListener((ActionListener*)(new AboutAction(this)));
+            //about->addActionListener((ActionListener*)(new AboutAction(this)));
+            connect(about, &JMenuItem::triggered, [=]{
+             about->actionPerformed(nullptr);
+            });
 //       }
         return items;
     }

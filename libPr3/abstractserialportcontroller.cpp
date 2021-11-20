@@ -171,7 +171,7 @@ QString AbstractSerialPortController::getOptionState(QString option)
  log->error(portName+" port is in use: "+p.getMessage());
  JOptionPane::showMessageDialog(NULL, "Port is in use",
                                 "Error", JOptionPane::ERROR_MESSAGE);
- ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_DOWN);
+ ConnectionStatus::instance()->setConnectionState(this->getSystemPrefix(), portName, ConnectionStatus::CONNECTION_DOWN);
  return portName+" port is in use";
 }
 
@@ -184,7 +184,7 @@ QString AbstractSerialPortController::getOptionState(QString option)
             log->error("Serial port "+portName+" not found");
             JOptionPane::showMessageDialog(NULL, "Serial port "+portName+" not found",
                                             "Error", JOptionPane::ERROR_MESSAGE);
- ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_DOWN);
+ ConnectionStatus::instance()->setConnectionState(this->getSystemPrefix(), portName, ConnectionStatus::CONNECTION_DOWN);
             return portName+" not found";
 }
 

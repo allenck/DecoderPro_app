@@ -1021,7 +1021,7 @@ void Apps::On_handleQuit()
  {
   name = conn->getManufacturer();
  }
- if (ConnectionStatus::instance()->isConnectionOk(nullptr, conn->getInfo()))
+ if (ConnectionStatus::instance()->isConnectionOk(name, conn->getInfo()))
  {
   //cs->setForeground(QColor::black());
   cs->setStyleSheet("QLabel { color: black};");

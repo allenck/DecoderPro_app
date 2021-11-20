@@ -225,7 +225,7 @@ void LocoBufferAdapter::common()
   return false;
  }
 #endif
- ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_UP);
+// ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_UP);
 
  activeSerialPort->clear(); // clear out any data in serial port buffers.
 

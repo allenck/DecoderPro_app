@@ -25,6 +25,7 @@
 #include "helpmenuprovider.h"
 #include "aboutaction.h"
 #include "issuereporteraction.h"
+#include "aboutaction.h"
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -144,9 +145,13 @@ HelpUtil::HelpUtil(QObject *parent) :
   // Include About in Help menu if not on Mac OS X or not using Aqua Look and Feel
 //  if (!SystemType.isMacOSX() || !UIManager.getLookAndFeel().isNativeLookAndFeel()) {
    helpMenu->addSeparator();
-   JMenuItem* about = new JMenuItem(tr("About") + " " + QApplication::applicationName(), HelpUtil::instance());
+   //JMenuItem* about = new JMenuItem(tr("About") + " " + QApplication::applicationName(), HelpUtil::instance());
+   AboutAction* about = new AboutAction(tr("About") + " " + QApplication::applicationName(), (WindowInterface*)HelpUtil::instance());
    helpMenu->addAction(about);
-   about->addActionListener((ActionListener*)about);
+   //about->addActionListener(about);
+   connect(about, &JMenuItem::triggered, [=]{
+    about->actionPerformed(nullptr);
+   });
    about->setDisabled(false);
 //        }
    connect(mapper, SIGNAL(mapped(QObject*)), HelpUtil::instance(), SLOT(On_mapped(QObject*)));
