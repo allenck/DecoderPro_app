@@ -343,6 +343,7 @@
 #include "layoutlhxoverviewxml.h"
 #include "layoutrhxoverviewxml.h"
 #include "jmrisrcpserver.h"
+#include "helputilpreferencespanel.h"
 
 bool Metatypes::done = false;
 
@@ -699,5 +700,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LayoutLHXOverViewXml>("LayoutLHXOverViewXml");
  qRegisterMetaType<LayoutRHXOverViewXml>("LayoutRHXOverViewXml");
  qRegisterMetaType<JmriSRCPServer>("JmriSRCPServer");
+ qRegisterMetaType<HelpUtilPreferencesPanel>("HelpUtilPreferencesPanel");
+ qRegisterMetaType<HelpUtilPreferences>("HelpUtilPreferences");
+
  Metatypes::done = true;
 }

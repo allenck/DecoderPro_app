@@ -14,7 +14,9 @@
 #include "abstractaction.h"
 #include "liblayouteditor_global.h"
 #include "jmenuitem.h"
+#include "exceptions.h"
 
+class File;
 class WebHistoryItem;
 class QWebView;
 class HelpFrame;
@@ -41,6 +43,10 @@ public:
     static /*public*/ void displayHelpRef(QString ref);
     static /*public*/ HelpBroker* getGlobalHelpBroker();
     static /*public*/ JMenuItem* getHelpAction(/*final*/ QString name, /*final*/ QIcon icon, /*final*/ QString id);
+    /*public*/ static QString createStubFile(QString helpKey, QString locale) throw (IOException);
+    /*public*/ static void openWindowsFile(File* file) throw (JmriException);
+    /*public*/ static bool showWebPage(QString ref, QString url);
+    /*public*/ static void openWebPage(QString url) throw (JmriException);
 
 signals:
 

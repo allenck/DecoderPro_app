@@ -445,7 +445,8 @@ QSize WarrantPreferencesPanel::sizeHint()
  if (insertAction!=NULL) {
      QPushButton* insertButton =  new QPushButton(tr("Insert Row"));
      //insertButton.addActionListener(insertAction);
-     connect(insertButton, SIGNAL(clicked()), insertAction->self(), SLOT(actionPerformed()));
+     //connect(insertButton, SIGNAL(clicked()), insertAction->self(), SLOT(actionPerformed()));
+     connect(insertButton, &QPushButton::clicked, [=]{insertAction->actionPerformed();});
      buttonPanelLayout->addWidget(insertButton);
      //buttonPanelLayout.adds(Box.createVerticalStrut(2*STRUT_SIZE));
  }
@@ -453,7 +454,8 @@ QSize WarrantPreferencesPanel::sizeHint()
  if (removeAction!=NULL) {
      QPushButton* deleteButton =  new QPushButton(tr("Delete Row"));
      //deleteButton.addActionListener(removeAction);
-     connect(deleteButton, SIGNAL(clicked()), removeAction->self(), SLOT(actionPerformed()));
+     //connect(deleteButton, SIGNAL(clicked()), removeAction->self(), SLOT(actionPerformed()));
+     connect(deleteButton, &QPushButton::clicked, [=]{removeAction->actionPerformed();});
      buttonPanelLayout->addWidget(deleteButton);
  }
  tablePanelLayout->addWidget(buttonPanel);

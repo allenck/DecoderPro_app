@@ -26,6 +26,15 @@
 #include "aboutaction.h"
 #include "issuereporteraction.h"
 #include "aboutaction.h"
+#include "instancemanager.h"
+#include "helputilpreferences.h"
+#include "guilafpreferencesmanager.h"
+#include "webserverpreferences.h"
+#include "joptionpane.h"
+#include "systemtype.h"
+#include "file.h"
+#include "printwriter.h"
+#include <QDesktopServices>
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -81,7 +90,7 @@ HelpUtil::HelpUtil(QObject *parent) :
  QSignalMapper* mapper = new QSignalMapper;
 
  QMenu* helpMenu = new QMenu(tr("Help"));
- helpMenu->addAction(makeHelpMenuItem(ref));
+// helpMenu->addAction(makeHelpMenuItem(ref));
  JMenuItem* item = makeHelpMenuItem(ref);
  if (item == NULL)
  {
@@ -154,7 +163,7 @@ HelpUtil::HelpUtil(QObject *parent) :
    });
    about->setDisabled(false);
 //        }
-   connect(mapper, SIGNAL(mapped(QObject*)), HelpUtil::instance(), SLOT(On_mapped(QObject*)));
+   //connect(mapper, SIGNAL(mapped(QObject*)), HelpUtil::instance(), SLOT(On_mapped(QObject*)));
  }
  return helpMenu;
 }
@@ -164,6 +173,8 @@ HelpUtil::HelpUtil(QObject *parent) :
  if (!initOK()) return NULL;  // initialization failed
 
  JMenuItem* menuItem = new JMenuItem(tr("Window Help..."), NULL);
+
+ connect(menuItem, &JMenuItem::triggered, [=]{displayHelpRef(ref);});
  menuItem->setData(ref);
 // globalHelpBroker->enableHelpOnButton(menuItem, ref, NULL);
 
@@ -214,18 +225,172 @@ HelpUtil::HelpUtil(QObject *parent) :
 
 /*static*/ /*public*/ void HelpUtil::displayHelpRef(QString ref)
 {
-  if (globalHelpBroker == NULL)
-  {
-   log->debug("can't display "+ref+" help page because help system reference is NULL");
-        return;
+ // We only have English (en) and French (fr) help files.
+// bool isFrench = "fr"
+//          == ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->getLocale().language());
+ QString localeStr = /*isFrench ? "fr" :*/ "en";
+
+ HelpUtilPreferences* preferences = (HelpUtilPreferences*)InstanceManager::getDefault("HelpUtilPreferences");
+
+ QString tempFile = "help/" + localeStr + "/" + ref.replace(".", "/");
+ QStringList fileParts = tempFile.split("_"/*, 2*/);
+ QString file = fileParts[0] + ".shtml";
+ if (fileParts.length() > 1) {
+     file = file + "#" + fileParts[1];
+ }
+
+ QString url;
+ bool webError = false;
+
+ // Use jmri.org if selected.
+ if (preferences->getOpenHelpOnline()) {
+     url = "https://www.jmri.org/" + file;
+     if (HelpUtil::showWebPage(ref, url)) return;
+     webError = true;
+ }
+
+ // Use the local JMRI web server if selected.
+ if (preferences->getOpenHelpOnJMRIWebServer()) {
+     WebServerPreferences* webServerPreferences = (WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences");
+     QString port = QString::number(webServerPreferences->getPort());
+     url = "http://localhost:" + port + "/" + file;
+     if (HelpUtil::showWebPage(ref, url)) return;
+     webError = true;
+ }
+
+ if (webError) {
+     JOptionPane::showMessageDialog(nullptr,
+             tr("Unable to display the help page using a web server.\nDisplaying the local help page instead."),
+             tr("Web Help Error"),
+             JOptionPane::ERROR_MESSAGE);
+ }
+
+ // Open a local help file by default or a failure of jmri.org or the local JMRI web server.
+ QString fileName = "";
+ try {
+     fileName = HelpUtil::createStubFile(ref, localeStr);
+ } catch (IOException iox) {
+     log->error(tr("Unable to create the stub file for \"%1\" ").arg(ref));
+     JOptionPane::showMessageDialog(nullptr, tr("Unable to create the stub file for \"%1\"").arg(ref),
+             tr("Help Stub File Error"), JOptionPane::ERROR_MESSAGE);
+     return;
+ }
+
+ File* f = new File(fileName);
+ if (!f->exists()) {
+     log->error(tr("The help reference \"%1\" is not found. File is not found: %2").arg(ref, fileName));
+     JOptionPane::showMessageDialog(nullptr, tr("The help reference \"%1\" is not found").arg(ref),
+             tr("Help file not found"), JOptionPane::ERROR_MESSAGE);
+     return;
+ }
+
+ if (SystemType::isWindows()) {
+     try {
+         openWindowsFile(f);
+     } catch (JmriException e) {
+         log->error(tr("unable to show help page %1 in Windows due to:").arg(ref), e);
+     }
+     return;
+ }
+
+ url = "file://" + fileName;
+ HelpUtil::showWebPage(ref, url);
+
+}
+
+/*public*/ /*static*/ QString HelpUtil::createStubFile(QString helpKey, QString locale) throw (IOException) {
+    QString stubLocation = FileUtil::getPreferencesPath() + "jmrihelp/";
+    FileUtil::createDirectory(stubLocation);
+    log->debug(tr("---- stub location: %1").arg(stubLocation));
+
+    QString sb = QString(FileUtil::getProgramPath());
+    sb.append("help/");
+    sb.append(locale);
+    sb.append("/local/");
+    QString htmlLocation = sb;
+    log->debug(tr("---- html location: %1").arg(htmlLocation));
+
+    QString _template = FileUtil::readFile(new File(htmlLocation + "stub_template.html"));
+    QString expandedHelpKey = helpKey.replace(".", "/");
+    int pos = expandedHelpKey.indexOf('_');
+    if (pos == -1) {
+        expandedHelpKey = expandedHelpKey + ".shtml";
+    } else {
+        expandedHelpKey = expandedHelpKey.mid(0, pos) + ".shtml"
+                + "#" + expandedHelpKey.mid(pos+1);
     }
-//    try
-//    {
-        globalHelpBroker->setCurrentID(ref);
-        globalHelpBroker->setDisplayed(true);
-//    } catch (BadIDException e) {
-//        log.error("unable to show help page "+ref+" due to "+e.ge);
-//    }
+    QString contents = _template.replace("<!--HELP_KEY-->", htmlLocation + "index.html#" + helpKey);
+    contents = contents.replace("<!--URL_HELP_KEY-->", expandedHelpKey);
+
+    PrintWriter* printWriter = new PrintWriter(stubLocation + "stub.html");
+    printWriter->print(contents);
+    printWriter->close();
+    return stubLocation + "stub.html";
+}
+
+/*public*/ /*static*/ void HelpUtil::openWindowsFile(File* file) throw (JmriException) {
+#if 1
+    try {
+//        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN))
+//        {
+//            Desktop.getDesktop().open(file);
+         QDesktopServices::openUrl(file->getPath());
+
+//        } else {
+//            throw  JmriException(tr(
+//                    "Failed to connect to browser. java.awt.Desktop in Windows doesn't suppport Action.OPEN"));
+//        }
+    } catch (IOException ex) {
+        throw  JmriException(
+                QString("Failed to connect to browser. Error loading help file %1").arg(file->getPath())/*, ex*/);
+    }
+#endif
+}
+
+/*public*/ /*static*/ bool HelpUtil::showWebPage(QString ref, QString url) {
+    bool result = false;
+    try {
+        HelpUtil::openWebPage(url);
+        result = true;
+    } catch (JmriException e) {
+        log->warn(tr("unable to show help page %1 due to:").arg(ref), e);
+    }
+    return result;
+}
+
+/*public*/ /*static*/ void HelpUtil::openWebPage(QString url) throw (JmriException) {
+#if 0
+    try {
+        URI uri = new URI(url);
+        if (!url.toLower().startsWith("file://")) {
+            HttpURLConnection request = (HttpURLConnection) uri.toURL().openConnection();
+            request.setRequestMethod("GET");
+            request.connect();
+            if (request.getResponseCode() != 200) {
+                throw new JmriException(String.format("Failed to connect to web page: %d, %s",
+                        request.getResponseCode(), request.getResponseMessage()));
+            }
+        }
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            // Open browser to URL with draft report
+            Desktop.getDesktop().browse(uri);
+        } else {
+            throw new JmriException(String
+                    .format("Failed to connect to web page. java.awt.Desktop doesn't suppport Action.BROWSE"));
+        }
+    } catch (IOException  e) {
+        throw  JmriException(
+                tr("Failed to connect to web page. Exception thrown: %1").arg(e.getMessage()), e);
+    }catch ( URISyntaxException e) {
+  throw  JmriException(
+          tr("Failed to connect to web page. Exception thrown: %1").arg(e.getMessage()), e);
+}
+#else
+ if(!QDesktopServices::openUrl(url))
+  throw  JmriException(
+          tr("Failed to connect to web page %1.").arg(url));
+
+#endif
 }
 
 /*static*/ bool HelpUtil::init = false;
@@ -290,13 +455,6 @@ failed = false;
 
 /*static*/ /*public*/ JMenuItem* HelpUtil::getHelpAction(/*final*/ QString name, /*final*/ QIcon icon, /*final*/ QString id)
 {
-//    return new AbstractAction(name, icon) {
-//        String helpID = id;
-//        /*public*/ void actionPerformed(ActionEvent event) {
-//            globalHelpBroker.setCurrentID(helpID);
-//            globalHelpBroker.setDisplayed(true);
-//        }
-//    };
  return (JMenuItem*)new HUAbstractAction(name, icon, id, nullptr);
 }
 
@@ -309,8 +467,6 @@ HUAbstractAction::HUAbstractAction(QString /*name*/, QIcon /*icon*/, QString id,
 
 void HUAbstractAction::actionPerformed(JActionEvent */*e*/)
 {
-// parent->globalHelpBroker->setCurrentID(helpID);
-// parent->globalHelpBroker->setDisplayed(true);
  parent->displayHelpRef(helpID);
 }
 

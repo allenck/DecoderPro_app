@@ -119,6 +119,8 @@ SOURCES += \
     connectionlabel.cpp \
     defaultvariablelightmanager.cpp \
     helpmenuprovider.cpp \
+    helputilpreferences.cpp \
+    helputilpreferencespanel.cpp \
     issuereporter.cpp \
     issuereporteraction.cpp \
     jmenuitem.cpp \
@@ -584,6 +586,8 @@ HEADERS += liblayouteditor_global.h \
     connectionlabel.h \
     defaultvariablelightmanager.h \
     helpmenuprovider.h \
+    helputilpreferences.h \
+    helputilpreferencespanel.h \
     issuereporter.h \
     issuereporteraction.h \
     jmenuitem.h \

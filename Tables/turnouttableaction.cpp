@@ -583,7 +583,8 @@ qSort(defStrings.begin(), defStrings.end());
 //        }
 //        });
  ItemListener1* itemListener = new ItemListener1(F);
- connect(item, SIGNAL(triggered()), itemListener->self(), SLOT(actionPerformed()));
+ //connect(item, SIGNAL(triggered()), itemListener->self(), SLOT(actionPerformed()));
+ connect(item, &QAction::triggered, [=]{itemListener->actionPerformed();});
  menuBar->addMenu(opsMenu);
 
  if(speedMenu == NULL)

@@ -89,7 +89,7 @@ Version::Version()
   {
    addOn = "r" + revisionId;
   }
-  releaseName = major + "." + minor + getModifier() + "-" + addOn;
+  releaseName = QString::number(major) + "." + QString::number(minor) + getModifier() + "-" + addOn;
  }
  else if (revisionId==("unknown"))
  {
@@ -192,7 +192,7 @@ Version::Version()
  */
 /*static*/ /*public*/ QString Version::getCopyright()
 {
-    return "Copyright � 1997-2017 JMRI Community";
+    return "Copyright � 1997-2021 JMRI Community";
 }
 
 ///**

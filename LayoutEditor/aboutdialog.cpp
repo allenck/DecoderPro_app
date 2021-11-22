@@ -98,7 +98,7 @@
 
     /*protected*/ void AboutDialog::addCenteredComponent(JComponent* c, JPanel* p) {
 //        c->setAlignmentX(Component::CENTER_ALIGNMENT); // doesn't work
-         p->layout()->addWidget((QWidget*)c->jself());
+         ((QVBoxLayout*)p->layout())->addWidget((QWidget*)c->jself(), 1, Qt::AlignHCenter);
     }
 
     /*private*/ /*static*/ /*final*/ Logger* AboutDialog::log = LoggerFactory::getLogger("AboutDialog");

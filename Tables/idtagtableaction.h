@@ -90,7 +90,7 @@ protected:
 class StateStoredActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
-    Q_INTERFACES(ActionListener)
+ Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  StateStoredActionListener(IdTagTableAction* act);
 public slots:

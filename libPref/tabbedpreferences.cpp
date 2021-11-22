@@ -35,6 +35,7 @@
 #include "instancemanager.h"
 #include "webserverpreferencespanel.h"
 #include <QSplitter>
+#include "helputilpreferencespanel.h"
 
 //TabbedPreferences::TabbedPreferences(QObject *parent) :
 //    AppConfigBase(parent)
@@ -215,6 +216,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
   << QString( "jmri.profile.ProfilePreferencesPanel") << QString("apps.startup.StartupActionsPreferencesPanel")
   << QString("jmri.jmrix.loconet.LnTcpPreferencesPanel") << QString("jmri.server.json.JsonServerPreferencesPanel")
   << QString( "jmri.web.server.RailroadNamePreferencesPanel")   << QString("jmri.jmrit.logix.WarrantPreferencesPanel")
+  << QString("jmri.util.HelpUtilPreferencesPanel")
   ;
 
  // add preference panels registered with the Instance Manager

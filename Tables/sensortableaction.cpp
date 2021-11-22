@@ -132,7 +132,8 @@ SensorTableAction::SensorTableAction(QObject *parent) :
   prefixBox->setName("prefixBox"); // NOI18N
   addButton = new JButton(tr("Create"));
   //addButton.addActionListener(createListener);
-  connect(addButton, SIGNAL(clicked(bool)), createListener->self(), SLOT(actionPerformed()));
+  //connect(addButton, SIGNAL(clicked(bool)), createListener->self(), SLOT(actionPerformed()));
+  connect(addButton, &JButton::clicked, [=]{createListener->actionPerformed();});
   hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox->getSelectedItem(), true);
   // create panel
   addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, hardwareAddressValidator, userNameField, prefixBox,

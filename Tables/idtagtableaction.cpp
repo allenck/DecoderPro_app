@@ -370,14 +370,16 @@ void IdTagTableAction::handleCreateException(QString sysName) {
 //        ((IdTagManager*)InstanceManager::getDefault("IdTagManager")).setStateStored(isStateStored.isSelected());
 //    });
     StateStoredActionListener* stateStoredActionListener = new StateStoredActionListener(this);
-    connect(isStateStored, SIGNAL(toggled(bool)), stateStoredActionListener->self(), SLOT(actionPerformed()));
+    //connect(isStateStored, SIGNAL(toggled(bool)), stateStoredActionListener->self(), SLOT(actionPerformed()));
+    connect(isStateStored, &QCheckBox::clicked, [=]{stateStoredActionListener->actionPerformed();});
     f->addToBottomBox(isFastClockUsed, this->metaObject()->className());
     isFastClockUsed->setChecked(((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->isFastClockUsed());
 //    isFastClockUsed.addActionListener((ActionEvent e) -> {
 //        ((IdTagManager*)InstanceManager::getDefault("IdTagManager")).setFastClockUsed(isFastClockUsed.isSelected());
 //    });
     FastClockUsedActionListener* fastClockUsedActionListener = new FastClockUsedActionListener(this);
-    connect(isFastClockUsed, SIGNAL(toggled(bool)), fastClockUsedActionListener->self(), SLOT(actionPerformed()));
+    //connect(isFastClockUsed, SIGNAL(toggled(bool)), fastClockUsedActionListener->self(), SLOT(actionPerformed()));
+    connect(isFastClockUsed, &QCheckBox::clicked, [=]{fastClockUsedActionListener->actionPerformed();});
     log->debug("Added CheckBox in addToFrame method");
 }
 StateStoredActionListener::StateStoredActionListener(IdTagTableAction* act)

@@ -203,7 +203,8 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
         configPane.setDisabled(disable.isSelected());
     })*/;
  DisableCheckboxListener* dcl = new DisableCheckboxListener(configPane, disable);
- connect(disable, SIGNAL(toggled(bool)), dcl->self(), SLOT(actionPerformed()));
+ //connect(disable, SIGNAL(toggled(bool)), dcl->self(), SLOT(actionPerformed()));
+ connect(disable, &QCheckBox::clicked, [=]{dcl->actionPerformed();});
  cLayout->addWidget(disable);
  pLayout->addLayout(cLayout, 0);// /*BorderLayout.SOUTH*/ Qt::AlignBottom);
  QString title;
@@ -262,7 +263,8 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
 //        removeTab(e, this->indexOfTabComponent(tabTitle));
 //    });
  CloseButtonListener* cbl = new CloseButtonListener(tabPosition, this);
- connect(tabCloseButton, SIGNAL(clicked()), cbl->self(), SLOT(actionPerformed()));
+ //connect(tabCloseButton, SIGNAL(clicked()), cbl->self(), SLOT(actionPerformed()));
+ connect(tabCloseButton, &QToolButton::clicked, [=]{cbl->actionPerformed();});
 
  setTabToolTip(tabPosition, title);
 

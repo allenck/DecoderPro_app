@@ -1,5 +1,9 @@
 #include "printwriter.h"
 #include "exceptions.h"
+#include  "bufferedwriter.h"
+#include "outputstreamwriter.h"
+#include "fileoutputstream.h"
+#include <QFile>
 
 /**
  * Prints formatted representations of objects to a text-output stream.  This
@@ -115,7 +119,7 @@
             psOut = out;
         }
     }
-#if 0
+#if 1
     /**
      * Creates a new PrintWriter, without automatic line flushing, with the
      * specified file name.  This convenience constructor creates the necessary
@@ -143,11 +147,19 @@
      *
      * @since  1.5
      */
-    /*public*/ PrintWriter(String fileName) throws FileNotFoundException {
-        this(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName))),
-             false);
+    /*public*/ PrintWriter::PrintWriter(QString fileName) throw (FileNotFoundException) {
+//        this-(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName))),
+//             false);
+     QFile* file = new QFile(fileName);
+     if(!file->open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text))
+     {
+      throw FileNotFoundException("not opened:"+fileName + " " + file->errorString());
+     }
+     psOut = new QTextStream(file);
+     autoFlush = false;
     }
-
+#endif
+#if 0
     /* Private constructor */
     /*private*/ PrintWriter(Charset charset, File file)
         throws FileNotFoundException
@@ -287,27 +299,28 @@
             trouble = true;
         }
     }
-#if 0
+
     /**
      * Closes the stream and releases any system resources associated
      * with it. Closing a previously closed stream has no effect.
      *
      * @see #checkError()
      */
-    /*public*/ void close() {
+    /*public*/ void PrintWriter::close() throw (IOException) {
         try {
-            synchronized (lock) {
-                if (out == null)
-                    return;
-                out.close();
-                out = null;
-            }
+//            /*synchronized (lock)*/ {
+//                if (out == nullptr)
+//                    return;
+//                out->close();
+//                out = nullptr;
+//            }
+          psOut->device()->close();
         }
         catch (IOException x) {
             trouble = true;
         }
     }
-
+#if 0
     /**
      * Flushes the stream if it's not closed and checks its error state.
      *
