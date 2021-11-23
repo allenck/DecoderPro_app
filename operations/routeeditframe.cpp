@@ -6,7 +6,7 @@
 #include "locationmanager.h"
 #include "routelocation.h"
 #include "train.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QButtonGroup>
@@ -66,10 +66,10 @@ namespace Operations
   _train = NULL;
 
   // major buttons
-  addLocationButton = new QPushButton(tr("Add Location"));
-  saveRouteButton = new QPushButton(tr("Save Route"));
-  deleteRouteButton = new QPushButton(tr("Delete Route"));
-  addRouteButton = new QPushButton(tr("Add Route"));
+  addLocationButton = new JButton(tr("Add Location"));
+  saveRouteButton = new JButton(tr("Save Route"));
+  deleteRouteButton = new JButton(tr("Delete Route"));
+  addRouteButton = new JButton(tr("Add Route"));
 
   // check boxes
   checkBox = new QCheckBox();
@@ -193,7 +193,7 @@ namespace Operations
      p2Pane->setWidgetResizable(true);
 
      // row 12 buttons
-     QWidget* pB = new QWidget();
+     JPanel* pB = new JPanel();
      pB->setLayout(new GridBagLayout());
      QScrollArea* pBPane = new QScrollArea(/*pB*/);
      //pBPane->setWidget(pB);
@@ -247,7 +247,7 @@ namespace Operations
 
  // Save, Delete, Add
  /*public*/ void RouteEditFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == addLocationButton) {
          log->debug("route add location button activated");
          if (locationBox->currentText() != NULL) {

@@ -48,10 +48,10 @@ namespace Operations
   Train* _train;// = null;
 
   // major buttons
-  QPushButton* addLocationButton;// =  new JButton(Bundle.getMessage("AddLocation"));
-  QPushButton* saveRouteButton;// =  new JButton(Bundle.getMessage("SaveRoute"));
-  QPushButton* deleteRouteButton;// =  new JButton(Bundle.getMessage("DeleteRoute"));
-  QPushButton* addRouteButton;// =  new JButton(Bundle.getMessage("AddRoute"));
+  JButton* addLocationButton;// =  new JButton(Bundle.getMessage("AddLocation"));
+  JButton* saveRouteButton;// =  new JButton(Bundle.getMessage("SaveRoute"));
+  JButton* deleteRouteButton;// =  new JButton(Bundle.getMessage("DeleteRoute"));
+  JButton* addRouteButton;// =  new JButton(Bundle.getMessage("AddRoute"));
 
   // check boxes
   QCheckBox* checkBox;

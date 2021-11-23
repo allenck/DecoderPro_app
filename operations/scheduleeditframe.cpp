@@ -1,7 +1,7 @@
 #include "scheduleeditframe.h"
 #include "jtextfield.h"
 #include <QBoxLayout>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QGroupBox>
 #include <QCheckBox>
@@ -69,10 +69,10 @@ namespace Operations
 
      // labels
      // major buttons
-     addTypeButton = new QPushButton(tr("AddType"));
-     saveScheduleButton = new QPushButton(tr("Save Schedule"));
-     deleteScheduleButton = new QPushButton(tr("Delete Schedule"));
-     addScheduleButton = new QPushButton(tr("Add Schedule"));
+     addTypeButton = new JButton(tr("AddType"));
+     saveScheduleButton = new JButton(tr("Save Schedule"));
+     deleteScheduleButton = new JButton(tr("Delete Schedule"));
+     addScheduleButton = new JButton(tr("Add Schedule"));
 
      // check boxes
      QCheckBox* checkBox = NULL;
@@ -234,7 +234,7 @@ namespace Operations
  // Save, Delete, Add
  /*public*/ void ScheduleEditFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   if (source == addTypeButton) {
       addNewScheduleItem();
   }

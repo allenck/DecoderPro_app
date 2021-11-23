@@ -5,12 +5,11 @@
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include <QRadioButton>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QButtonGroup>
 #include "trackeditframe.h"
 #include "track.h"
 #include "logger.h"
-#include <QGroupBox>
 #include "flowlayout.h"
 #include "borderfactory.h"
 
@@ -41,7 +40,7 @@ namespace Operations
      hundredPercent = new QRadioButton("100%");		// NOI18N
 
      // major buttons
-     saveButton = new QPushButton(tr("Save"));
+     saveButton = new JButton(tr("Save"));
 
      setTitle(tr("Planned Pickups"));
 
@@ -89,7 +88,7 @@ namespace Operations
  }
 
  /*public*/ void IgnoreUsedTrackFrame::buttonActionPerformed(QWidget* ae) {
-     if ((QPushButton*)ae == saveButton) {
+     if ((JButton*)ae == saveButton) {
          // save percentage selected
          int percentage = 0;
          if (twentyfivePercent->isChecked()) {

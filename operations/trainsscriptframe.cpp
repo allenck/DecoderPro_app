@@ -2,7 +2,7 @@
 #include "jfilechooser.h"
 #include "trainmanager.h"
 #include <QScrollArea>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QGroupBox>
 #include <QBoxLayout>
 #include "gridbaglayout.h"
@@ -38,16 +38,16 @@ namespace Operations
      trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
 
      // script panels
-     pStartUpScript = new QWidget();
+     pStartUpScript = new JPanel();
      pStartUpScript->setLayout(new QVBoxLayout);
-     pShutDownScript = new QWidget();
+     pShutDownScript = new JPanel();
      pShutDownScript->setLayout(new QVBoxLayout);
      // major buttons
-     addStartUpScriptButton = new QPushButton(tr("Add Script"));
-     addShutDownScriptButton = new QPushButton(tr("Add Script"));
-     runStartUpScriptButton = new QPushButton(tr("Run Scripts"));
-     runShutDownScriptButton = new QPushButton(tr("Run Scripts"));
-     saveButton = new QPushButton(tr("Save"));
+     addStartUpScriptButton = new JButton(tr("Add Script"));
+     addShutDownScriptButton = new JButton(tr("Add Script"));
+     runStartUpScriptButton = new JButton(tr("Run Scripts"));
+     runShutDownScriptButton = new JButton(tr("Run Scripts"));
+     saveButton = new JButton(tr("Save"));
      /**
       * We always use the same file chooser in this class, so that the user's
       * last-accessed directory remains available.
@@ -87,7 +87,7 @@ namespace Operations
   updateShutDownScriptPanel();
 
   // row 4 buttons
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
   addItem(pB, saveButton, 3, 0);
 
@@ -129,7 +129,7 @@ namespace Operations
      }
      for (int i = 0; i < scripts.size(); i++)
      {
-      QPushButton* removeStartUpScripts = new QPushButton(tr("RemoveScript"));
+      JButton* removeStartUpScripts = new JButton(tr("RemoveScript"));
       removeStartUpScripts->setObjectName(scripts.at(i));
 //      removeStartUpScripts.addActionListener(new java.awt.event.ActionListener() {
 //          /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {

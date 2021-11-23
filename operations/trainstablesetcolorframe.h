@@ -29,7 +29,7 @@ namespace Operations
   QRadioButton* autoRadioButton;// = new JRadioButton(Bundle.getMessage("Auto"));
 
   // major buttons
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
   JComboBox* trainBox;// = TrainManager.instance().getTrainComboBox();

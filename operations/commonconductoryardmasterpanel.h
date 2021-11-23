@@ -13,6 +13,7 @@ class PropertyChangeEvent;
 class QLabel;
 namespace Operations
 {
+ class EngineSetFrame;
  class RouteLocation;
  class CarSetFrame;
  class RollingStock;
@@ -35,13 +36,15 @@ namespace Operations
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;
   /*public*/ void buttonActionPerformed(QWidget* ae) override;
-  /*public*/ void setCarButtonActionPerfomed(QWidget* ae);
+  /*public*/ void carSetButtonActionPerfomed(QWidget* ae);
+  /*public*/ void engineSetButtonActionPerfomed(QWidget* ae);
 
  private:
   Logger* log;
-  CarSetFrame* csf;// = NULL;
+  CarSetFrame* csf = nullptr;
   QVBoxLayout* thisLayout;
   /*private*/ void addCarToTrain();
+  EngineSetFrame* esf = nullptr;
 
  protected:
   /*protected*/ static /*final*/ QString Tab;//= "     "; // used to space out headers
@@ -108,6 +111,7 @@ namespace Operations
   /*protected*/ bool isSetMode;//= false; // when true, cars that aren't selected (checkbox) can be "set"
   /*protected*/ void initialize();
   /*protected*/ void setModifyButtonText();
+  /*protected*/ void removeCarFromList(Car* car);
   /*protected*/ void removePropertyChangeListerners();
   /*protected*/ void updateLocoPanes(RouteLocation* rl);
   /*protected*/ QString getStatus(RouteLocation* rl, bool isManifest);
@@ -117,7 +121,9 @@ namespace Operations
   /*protected*/ void checkBoxActionPerformed(QWidget* ae);
   /*protected*/ void blockCars(RouteLocation* rl, bool isManifest);
   /*protected*/ void setLabelFont(QLabel* label);
-  /*Protected*/ QWidget* addSet(Car* car);
+  /*Protected*/ JPanel* addSet(RollingStock *car);
+  /*protected*/ /*abstract*/ virtual void update();
+  /*protected*/ void clearAndUpdate();
 
  friend class YardmasterPanel;
  friend class TrainConductorPanel;

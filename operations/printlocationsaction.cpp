@@ -7,7 +7,7 @@
 #include "setup.h"
 #include "control.h"
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "cartypes.h"
 #include "enginetypes.h"
 #include "carmanager.h"
@@ -19,7 +19,6 @@
 #include "train.h"
 #include "routemanager.h"
 #include "route.h"
-#include <QGroupBox>
 #include <gridbaglayout.h>
 #include <QBoxLayout>
 #include "instancemanager.h"
@@ -79,7 +78,7 @@ namespace Operations
   printDetails = new QCheckBox(tr("Print Details"));
   printAnalysis = new QCheckBox(tr("Print Analysis"));
 
-  okayButton = new QPushButton(tr("Ok"));
+  okayButton = new JButton(tr("Ok"));
   charactersPerLine = 70;
   showStaging = false;
   lpof = NULL;

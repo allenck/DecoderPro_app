@@ -27,7 +27,7 @@ public:
  void setOpaque(bool) override;
  QFont getFont() override;
  void setFont(QFont) override;
- QObject* jself() override {return (QObject*)this;}
+ QWidget* jself() override {return (QWidget*)this;}
  /*public*/ void setBorder(Border* border) override {this->_border = border;}
  /*public*/ Border* getBorder() override {return _border;}
  /*public*/ void addChangeListener(ChangeListener* l);

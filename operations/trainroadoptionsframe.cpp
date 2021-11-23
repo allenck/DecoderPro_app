@@ -1,7 +1,6 @@
 #include "trainroadoptionsframe.h"
 #include "train.h"
-#include <QPushButton>
-#include <QGroupBox>
+#include "jbutton.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include <QScrollArea>
@@ -45,8 +44,8 @@ namespace Operations
  log = new Logger("TrainRoadOptionsFrame");
      _train = NULL;
 
-     pRoadControls = new QWidget();
-     panelRoads = new QGroupBox();
+     pRoadControls = new JPanel();
+     panelRoads = new JPanel();
      paneRoads = new QScrollArea(/*panelRoads*/);
 
      // labels
@@ -54,10 +53,10 @@ namespace Operations
      trainDescription = new QLabel();
 
      // major buttons
-     addRoadButton = new QPushButton(tr("Add Road"));
-     deleteRoadButton = new QPushButton(tr("Delete Road"));
-     deleteAllRoadsButton = new QPushButton(tr("Delete All"));
-     saveTrainButton = new QPushButton(tr("Save Train"));
+     addRoadButton = new JButton(tr("Add Road"));
+     deleteRoadButton = new JButton(tr("Delete Road"));
+     deleteAllRoadsButton = new JButton(tr("Delete All"));
+     saveTrainButton = new JButton(tr("Save Train"));
 
      // radio buttons
      roadNameAll = new QRadioButton(tr("Accept All"));
@@ -196,7 +195,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  // Save
  /*public*/ void TrainRoadOptionsFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
      if (_train != NULL) {
          if (source == saveTrainButton) {
              log->debug("train save button activated");

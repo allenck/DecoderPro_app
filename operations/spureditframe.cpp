@@ -1,7 +1,7 @@
 ﻿#include "spureditframe.h"
 #include "track.h"
 #include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "jcombobox.h"
 #include "control.h"
 #include <QLabel>
@@ -19,6 +19,7 @@
 #include "ignoreusedtrackaction.h"
 #include "alternatetrackaction.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -43,7 +44,7 @@ namespace Operations
   log = new Logger("SpurEditFrame");
   textSchedule = new QLabel(tr("Delivery Schedule"));
   textSchError = new QLabel();
-  editScheduleButton = new QPushButton();
+  editScheduleButton = new JButton();
   comboBoxSchedules = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getComboBox();
 
   panelSchedule = panelOpt4;
@@ -57,10 +58,9 @@ namespace Operations
 
   // setup the optional panel with schedule stuff
   panelSchedule->setLayout(new GridBagLayout());
-//        panelSchedule.setBorder(BorderFactory.createTitledBorder(Bundle
-//                .getMessage("DeliverySchedule")));
-  panelSchedule->setStyleSheet(gbStyleSheet);
-  panelSchedule->setTitle("Delivery Schedule");
+  panelSchedule->setBorder(BorderFactory::createTitledBorder(tr("Delivery Schedule")));
+//  panelSchedule->setStyleSheet(gbStyleSheet);
+//  panelSchedule->setTitle("Delivery Schedule");
   addItem(panelSchedule, comboBoxSchedules, 0, 0);
   addItem(panelSchedule, editScheduleButton, 1, 0);
   addItem(panelSchedule, textSchError, 2, 0);
@@ -75,10 +75,8 @@ namespace Operations
   addHelpMenu("package.jmri.jmrit.operations.Operations_Sidings", true); // NOI18N
 
   // override text strings for tracks
-  //panelTrainDir.setBorder(BorderFactory.createTitledBorder(tr("TrainSpur")));
-  panelTrainDir->setTitle(tr("This spur is serviced by trains traveling"));
-  //paneCheckBoxes.setBorder(BorderFactory.createTitledBorder(tr("TypesSpur")));
-  checkBoxesGroupBox->setTitle(tr("Select the rolling stock serviced by this spur"));
+  panelTrainDir->setBorder(BorderFactory::createTitledBorder(tr("This spur is serviced by trains traveling")));
+  panelCheckBoxes->setBorder(BorderFactory::createTitledBorder(tr("Select the rolling stock serviced by this spur")));
   deleteTrackButton->setText(tr("Delete Spur Track"));
   addTrackButton->setText(tr("Add Spur Track"));
   saveTrackButton->setText(tr("Save Spur Track"));
@@ -101,7 +99,7 @@ namespace Operations
 
  /*public*/ void SpurEditFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   if (source == editScheduleButton) {
 
       editAddSchedule();

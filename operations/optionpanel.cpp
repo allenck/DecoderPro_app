@@ -134,7 +134,7 @@ namespace Operations
   JPanel* pBuild = new JPanel();
   pBuild->setLayout(new GridBagLayout); //(pBuild, BoxLayout.Y_AXIS));
   pBuild->setBorder(BorderFactory::createTitledBorder(tr("Build Options")));
-  QWidget* pOpt = new QWidget();
+  JPanel* pOpt = new JPanel();
   pOpt->setLayout(new GridBagLayout());
 
   addItem(pOpt, buildNormal, 1, 0);
@@ -206,7 +206,7 @@ namespace Operations
   addItemLeft(pOption, enableVsdCheckBox, 1, 4);
 
   // row 11
-  QWidget* pControl = new QWidget();
+  JPanel* pControl = new JPanel();
   pControl->setLayout(new GridBagLayout());
   addItem(pControl, saveButton, 3, 9);
 

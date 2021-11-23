@@ -25,18 +25,18 @@ namespace Operations
   TrainManager* trainManager;// TrainManager.instance();
 
   // script panels
-  QWidget* pStartUpScript;// new JPanel();
-  QWidget* pShutDownScript;// new JPanel();
+  JPanel* pStartUpScript;// new JPanel();
+  JPanel* pShutDownScript;// new JPanel();
   QScrollArea* startUpScriptPane;
   QScrollArea* shutDownScriptPane;
 
   // labels
   // major buttons
-  QPushButton* addStartUpScriptButton;// new JButton(Bundle.getMessage("AddScript"));
-  QPushButton* addShutDownScriptButton;// new JButton(Bundle.getMessage("AddScript"));
-  QPushButton* runStartUpScriptButton;// new JButton(Bundle.getMessage("RunScripts"));
-  QPushButton* runShutDownScriptButton;// new JButton(Bundle.getMessage("RunScripts"));
-  QPushButton* saveButton;// new JButton(Bundle.getMessage("Save"));
+  JButton* addStartUpScriptButton;// new JButton(Bundle.getMessage("AddScript"));
+  JButton* addShutDownScriptButton;// new JButton(Bundle.getMessage("AddScript"));
+  JButton* runStartUpScriptButton;// new JButton(Bundle.getMessage("RunScripts"));
+  JButton* runShutDownScriptButton;// new JButton(Bundle.getMessage("RunScripts"));
+  JButton* saveButton;// new JButton(Bundle.getMessage("Save"));
   /*private*/ void updateStartUpScriptPanel();
   /*private*/ void updateShutDownScriptPanel();
   /*private*/ File* selectFile();

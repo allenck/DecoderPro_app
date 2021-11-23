@@ -2,7 +2,7 @@
 #include "location.h"
 #include "control.h"
 #include "locationmanager.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include <QScrollArea>
 #include <QRadioButton>
@@ -87,22 +87,22 @@ namespace Operations
 
   _location = NULL;
   checkBoxes =  QList<QCheckBox*>();
-  panelCheckBoxes = new QWidget();
+  panelCheckBoxes = new JPanel();
   panelCheckBoxes->setLayout(new GridBagLayout()); //layout must be set before setting QScrollArea's widget.
 
   directionPanel = new JPanel();
 
      // major buttons
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  autoSelectButton = new QPushButton(tr("Auto Select"));
-  saveLocationButton = new QPushButton(tr("Save Location"));
-  deleteLocationButton = new QPushButton(tr("DeleteLocation"));
-  addLocationButton = new QPushButton(tr("Add Location"));
-  addYardButton = new QPushButton(tr("Add Yard Track"));
-  addSpurButton = new QPushButton(tr("Add Spur Track"));
-  addInterchangeButton = new QPushButton(tr("Add C/I Track"));
-  addStagingButton = new QPushButton(tr("Add Staging Track"));
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  autoSelectButton = new JButton(tr("Auto Select"));
+  saveLocationButton = new JButton(tr("Save Location"));
+  deleteLocationButton = new JButton(tr("Delete Location"));
+  addLocationButton = new JButton(tr("Add Location"));
+  addYardButton = new JButton(tr("Add Yard Track"));
+  addSpurButton = new JButton(tr("Add Spur Track"));
+  addInterchangeButton = new JButton(tr("Add C/I Track"));
+  addStagingButton = new JButton(tr("Add Staging Track"));
 
      // check boxes
   northCheckBox = new QCheckBox(tr("North"));
@@ -285,7 +285,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   readerPanel->setVisible(Setup::isRfidEnabled());
 
   // row 12
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
   addItem(pB, deleteLocationButton, 0, 0);
   addItem(pB, addLocationButton, 1, 0);
@@ -370,7 +370,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  // Save, Delete, Add
  /*public*/ void LocationEditFrame::buttonActionPerformed(QWidget* ae) {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
      if (source == addYardButton) {
          yef = new YardEditFrame();
          yef->initComponents(_location, NULL);

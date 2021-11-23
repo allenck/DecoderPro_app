@@ -5,8 +5,7 @@
 #include "trainschedule.h"
 #include "locationmanager.h"
 #include "location.h"
-#include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QButtonGroup>
 #include <QBoxLayout>
@@ -71,17 +70,17 @@ namespace Operations
   schGroup = new QButtonGroup();
 
   // major buttons
-  selectButton = new QPushButton(tr("Select"));
-  clearButton = new QPushButton(tr("Clear"));
+  selectButton = new JButton(tr("Select"));
+  clearButton = new JButton(tr("Clear"));
 
-  applyButton = new QPushButton(tr("Apply"));
-  buildButton = new QPushButton(tr("Build"));
-  printButton = new QPushButton(tr("Print"));
-  switchListsButton = new QPushButton();
-  terminateButton = new QPushButton(tr("Terminate"));
+  applyButton = new JButton(tr("Apply"));
+  buildButton = new JButton(tr("Build"));
+  printButton = new JButton(tr("Print"));
+  switchListsButton = new JButton();
+  terminateButton = new JButton(tr("Terminate"));
 
-  activateButton = new QPushButton(tr("Activate"));
-  saveButton = new QPushButton(tr("Save"));
+  activateButton = new JButton(tr("Activate"));
+  saveButton = new JButton(tr("Save"));
 
   // check boxes
   // panel
@@ -238,7 +237,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  // add, build, print, switch lists, terminate, and save buttons
  /*public*/ void TrainsScheduleTableFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      log->debug("button activated");
      if (source == clearButton) {
          updateCheckboxes(false);
@@ -418,12 +417,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      foreach (Location* location, locations) {
          if (location != NULL && location->isSwitchListEnabled() && location->getStatus()==(Location::MODIFIED)) {
              //switchListsButton->setBackground(Qt::red);
-          switchListsButton->setStyleSheet("QPushButton {background-color: red; border: none");
+          switchListsButton->setStyleSheet("JButton {background-color: red; border: none");
              return;
          }
      }
      //switchListsButton->setBackground(Qt::green);
-     switchListsButton->setStyleSheet("QPushButton {background-color: green; border: none");
+     switchListsButton->setStyleSheet("JButton {background-color: green; border: none");
  }
 
  /*protected*/ void TrainsScheduleTableFrame::storeValues() {

@@ -1,5 +1,5 @@
 #include "trainswitchlisteditframe.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "operationsxml.h"
 #include <control.h>
 #include "setup.h"
@@ -46,25 +46,25 @@ namespace Operations
   locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
   locationCheckBoxes = QList<QCheckBox*>();
   locationComboBoxes = QList<JComboBox*>();
-  locationPanelCheckBoxes = new QWidget();
+  locationPanelCheckBoxes = new JPanel();
 
   // checkboxes
   switchListRealTimeCheckBox = new QCheckBox(tr("Real Time"));
   switchListAllTrainsCheckBox = new QCheckBox(tr("All Trains"));
 
      // major buttons
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  printButton = new QPushButton(tr("Print Switch Lists"));
-  previewButton = new QPushButton(tr("Preview Switch Lists"));
-  changeButton = new QPushButton(tr("Print Changes"));
-  runButton = new QPushButton(tr("Run"));
-  runChangeButton = new QPushButton(tr("Run Changes"));
-  csvGenerateButton = new QPushButton(tr("Generate CSV Switch Lists"));
-  csvChangeButton = new QPushButton(tr("Generate CSV Switch Lists Changes"));
-  updateButton = new QPushButton(tr("Update"));
-  resetButton = new QPushButton(tr("Reset Switch Lists"));
-  saveButton = new QPushButton(tr("Save"));
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  printButton = new JButton(tr("Print Switch Lists"));
+  previewButton = new JButton(tr("Preview Switch Lists"));
+  changeButton = new JButton(tr("Print Changes"));
+  runButton = new JButton(tr("Run"));
+  runChangeButton = new JButton(tr("Run Changes"));
+  csvGenerateButton = new JButton(tr("Generate CSV Switch Lists"));
+  csvChangeButton = new JButton(tr("Generate CSV Switch Lists Changes"));
+  updateButton = new JButton(tr("Update"));
+  resetButton = new JButton(tr("Reset Switch Lists"));
+  saveButton = new JButton(tr("Save"));
 
   switchListPageComboBox = Setup::getSwitchListPageFormatComboBox();
 
@@ -199,7 +199,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  // Buttons
  /*public*/ void TrainSwitchListEditFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
      if (source == clearButton) {
          selectCheckboxes(false);
      }
@@ -389,7 +389,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          QLabel* status = new QLabel(location->getStatus());
          addItem(locationPanelCheckBoxes, status, 2, y);
 
-         QPushButton* button = new QPushButton(tr("Add"));
+         JButton* button = new JButton(tr("Add"));
          if (location->getSwitchListComment()!=(Location::NONE)) {
              button->setText(tr("Edit"));
          }
@@ -514,7 +514,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      saveButton->setEnabled(true);
  }
 
- /*private*/ void TrainSwitchListEditFrame::addCommentButtonAction(QPushButton* b) {
+ /*private*/ void TrainSwitchListEditFrame::addCommentButtonAction(JButton* b) {
 //     b.addActionListener(new java.awt.event.ActionListener() {
 //         /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
 //             commentButtonActionPerformed(e);
@@ -524,7 +524,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void TrainSwitchListEditFrame::commentButtonActionPerformed(JActionEvent* ae) {
-  QPushButton* b = (QPushButton*) ae;
+  JButton* b = (JButton*) ae;
      log->debug("button action " + b->objectName());
      Location* l = locationManager->getLocationByName(b->objectName());
      new TrainSwitchListCommentFrame(l);
@@ -577,7 +577,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 //     JScrollPane commentScroller = new JScrollPane(commentTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 //             JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 //     Dimension minScrollerDim = new Dimension(1200, 500);
-//  saveButton = new QPushButton(tr("Save"));
+//  saveButton = new JButton(tr("Save"));
 
 //     Location _location;
 
@@ -600,7 +600,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
          commentTextArea->setText(location->getSwitchListComment());
 
-         QWidget* pB = new QWidget();
+         JPanel* pB = new JPanel();
          pB->setLayout(new GridBagLayout());
          addItem(pB, saveButton, 0, 0);
 
@@ -616,7 +616,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // Buttons
      /*public*/ void TrainSwitchListCommentFrame::buttonActionPerformed(QWidget* ae) {
-      QPushButton* source = (QPushButton*)ae;
+      JButton* source = (JButton*)ae;
          if (source == saveButton) {
              _location->setSwitchListComment(commentTextArea->toHtml());
              // save location file

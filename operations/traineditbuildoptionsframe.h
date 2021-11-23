@@ -29,10 +29,10 @@ namespace Operations
   Logger* log;
   Train* _train;//= null;
 
-  QWidget* panelOwnerNames;//= new JPanel();
-  QWidget* panelBuilt;//= new JPanel();
-  QWidget* panelTrainReq1;//= new JPanel();
-  QWidget*  panelTrainReq2;//= new JPanel();
+  JPanel* panelOwnerNames;//= new JPanel();
+  JPanel* panelBuilt;//= new JPanel();
+  JPanel* panelTrainReq1;//= new JPanel();
+  JPanel*  panelTrainReq2;//= new JPanel();
 
   QScrollArea* ownerPane;
   QScrollArea* builtPane;
@@ -40,11 +40,11 @@ namespace Operations
   QScrollArea* trainReq2Pane;
 
   JPanel*  engine1Option;//= new JPanel();
-  QWidget*  engine1DropOption;//= new JPanel();
+  JPanel*  engine1DropOption;//= new JPanel();
   JPanel*  engine1caboose;//= new JPanel();
 
   JPanel*  engine2Option;//= new JPanel();
-  QWidget*  engine2DropOption;//= new JPanel();
+  JPanel*  engine2DropOption;//= new JPanel();
   JPanel*  engine2caboose;//= new JPanel();
 
   // labels
@@ -54,9 +54,9 @@ namespace Operations
   QLabel* after;//= new JLabel(Bundle.getMessage("After"));
 
   // major buttons
-  QPushButton* addOwnerButton;//= new JButton(Bundle.getMessage("AddOwner"));
-  QPushButton* deleteOwnerButton;//= new JButton(Bundle.getMessage("DeleteOwner"));
-  QPushButton* saveTrainButton;//= new JButton(Bundle.getMessage("SaveTrain"));
+  JButton* addOwnerButton;//= new JButton(Bundle.getMessage("AddOwner"));
+  JButton* deleteOwnerButton;//= new JButton(Bundle.getMessage("DeleteOwner"));
+  JButton* saveTrainButton;//= new JButton(Bundle.getMessage("SaveTrain"));
 
   // radio buttons
   QRadioButton* ownerNameAll;//= new JRadioButton(Bundle.getMessage("AcceptAll"));

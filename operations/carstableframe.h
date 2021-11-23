@@ -12,7 +12,7 @@ class CarsTableModel;
 class CarManager;
 class JTextField;
 class QRadioButton;
-class QPushButton;
+class JButton;
 namespace Operations
 {
 class RollingStock;
@@ -67,9 +67,9 @@ class RollingStock;
   QButtonGroup* group;//= new ButtonGroup();
 
   // major buttons
-  QPushButton* addButton;//= new JButton(Bundle.getMessage("Add"));
-  QPushButton* findButton;//= new JButton(Bundle.getMessage("Find"));
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* addButton;//= new JButton(Bundle.getMessage("Add"));
+  JButton* findButton;//= new JButton(Bundle.getMessage("Find"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   JTextField* findCarTextBox;// = new JTextField(6);
   /*private*/ void updateNumCars();

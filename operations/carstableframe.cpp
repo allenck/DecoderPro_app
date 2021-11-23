@@ -1,7 +1,7 @@
 #include "carstableframe.h"
 #include "operationsxml.h"
 #include <jtextfield.h>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QButtonGroup>
 #include "carmanager.h"
@@ -90,9 +90,9 @@ namespace Operations
   group = new QButtonGroup();
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  findButton = new QPushButton(tr("Find"));
-  saveButton = new QPushButton(tr("Save"));
+  addButton = new JButton(tr("Add"));
+  findButton = new JButton(tr("Find"));
+  saveButton = new JButton(tr("Save"));
 
   findCarTextBox = new JTextField(6);
   f = NULL;

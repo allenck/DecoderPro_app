@@ -54,17 +54,17 @@ namespace Operations
   QButtonGroup* schGroup;// new ButtonGroup();
 
   // major buttons
-  QPushButton* selectButton;// new JButton(tr("Select"));
-  QPushButton* clearButton;// new JButton(tr("Clear"));
+  JButton* selectButton;// new JButton(tr("Select"));
+  JButton* clearButton;// new JButton(tr("Clear"));
 
-  QPushButton* applyButton;// new JButton(tr("Apply"));
-  QPushButton* buildButton;// new JButton(tr("Build"));
-  QPushButton* printButton;// new JButton(tr("Print"));
-  QPushButton* switchListsButton;// new JButton();
-  QPushButton* terminateButton;// new JButton(tr("Terminate"));
+  JButton* applyButton;// new JButton(tr("Apply"));
+  JButton* buildButton;// new JButton(tr("Build"));
+  JButton* printButton;// new JButton(tr("Print"));
+  JButton* switchListsButton;// new JButton();
+  JButton* terminateButton;// new JButton(tr("Terminate"));
 
-  QPushButton* activateButton;// new JButton(tr("Activate"));
-  QPushButton* saveButton;// new JButton(tr("Save"));
+  JButton* activateButton;// new JButton(tr("Activate"));
+  JButton* saveButton;// new JButton(tr("Save"));
 
   // check boxes
   // panel

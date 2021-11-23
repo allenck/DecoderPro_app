@@ -103,7 +103,7 @@ common();
  /*protected*/ void OperationsFrame::addItem(QWidget* c, int x, int y) {
      ((OperationsPanel*) this->getContentPane())->addItem(c, x, y);
  }
-#if 1
+#if 0
  /*protected*/ void OperationsFrame::addItemLeft(QWidget* c, int x, int y) {
      ((OperationsPanel*) this->getContentPane())->addItemLeft(c, x, y);
  }
@@ -112,19 +112,19 @@ common();
      ((OperationsPanel*) this->getContentPane())->addItemWidth(c, width, x, y);
  }
 #endif
- /*protected*/ void OperationsFrame::addItem(QWidget* p, QWidget* c, int x, int y) {
+ /*protected*/ void OperationsFrame::addItem(JPanel* p, QWidget* c, int x, int y) {
      ((OperationsPanel*) this->getContentPane())->addItem(p, c, x, y);
  }
 
- /*protected*/ void OperationsFrame::addItemLeft(QWidget* p, QWidget* c, int x, int y) {
+ /*protected*/ void OperationsFrame::addItemLeft(JPanel* p, QWidget* c, int x, int y) {
      ((OperationsPanel*) this->getContentPane())->addItemLeft(p, c, x, y);
  }
 
- /*protected*/ void OperationsFrame::addItemTop(QWidget* p, QWidget* c, int x, int y) {
+ /*protected*/ void OperationsFrame::addItemTop(JPanel *p, QWidget *c, int x, int y) {
      ((OperationsPanel*) this->getContentPane())->addItemTop(p, c, x, y);
  }
 
- /*protected*/ void OperationsFrame::addItemWidth(QWidget* p, QWidget* c, int width, int x, int y) {
+ /*protected*/ void OperationsFrame::addItemWidth(JPanel* p, QWidget* c, int width, int x, int y) {
      ((OperationsPanel*) this->getContentPane())->addItemWidth(p, c, width, x, y);
  }
 
@@ -138,10 +138,10 @@ common();
      return ((OperationsPanel*) this->getContentPane())->getNumberOfCheckboxesPerLine(this->sizeHint());
  }
 
- /*protected*/ void OperationsFrame::addButtonAction(QPushButton* b)
+ /*protected*/ void OperationsFrame::addButtonAction(JButton* b)
  {
     // b.addActionListener(this->buttonActionPerformed);
-  connect(b, &QPushButton::clicked,  [=]{
+  connect(b, &JButton::clicked,  [=]{
    buttonActionPerformed(b);
   });
  }

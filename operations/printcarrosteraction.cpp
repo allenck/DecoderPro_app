@@ -8,7 +8,7 @@
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "setup.h"
 #include "locationmanager.h"
 #include "control.h"
@@ -326,7 +326,7 @@ namespace Operations
  printSpace = new QCheckBox(tr("Add line between locations"));
  printPage = new QCheckBox(tr("Start each location on a new page"));
 
- okayButton = new QPushButton(tr("OK"));this->pcr = pcr;
+ okayButton = new JButton(tr("OK"));this->pcr = pcr;
      // create panel
      JPanel* pSortBy = new JPanel();
      pSortBy->setLayout(new FlowLayout);
@@ -356,7 +356,7 @@ namespace Operations
 
      JPanel* pPanelFrame = new JPanel;
      pPanelFrame->setLayout(new QVBoxLayout);
-     QWidget* pPanel = new QWidget();
+     JPanel* pPanel = new JPanel();
      pPanel->setLayout(new GridBagLayout());
      QScrollArea* panePanel = new QScrollArea(/*pPanel*/);
      pPanelFrame->layout()->addWidget(panePanel);

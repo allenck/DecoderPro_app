@@ -5,10 +5,9 @@
 #include "gridbaglayout.h"
 #include "trainmanager.h"
 #include "jtextfield.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QComboBox>
 #include "control.h"
-#include <QGroupBox>
 #include "flowlayout.h"
 #include "vptr.h"
 #include "traineditframe.h"
@@ -41,7 +40,7 @@ namespace Operations
  trainNameTextField = new JTextField(Control::max_len_string_train_name);
 
  // major buttons
- copyButton = new QPushButton(tr("Copy"));
+ copyButton = new JButton(tr("Copy"));
 
  // combo boxes
  trainBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainComboBox();
@@ -87,7 +86,7 @@ namespace Operations
  }
 
  /*public*/ void TrainCopyFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == copyButton) {
          log->debug("copy train button activated");
          if (!checkName()) {

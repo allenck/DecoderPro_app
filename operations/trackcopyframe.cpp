@@ -4,7 +4,7 @@
 #include "locationmanager.h"
 #include "locationeditframe.h"
 #include "jtextfield.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "jcombobox.h"
 #include "control.h"
 #include <QCheckBox>
@@ -45,8 +45,8 @@ namespace Operations
   trackNameTextField = new JTextField(Control::max_len_string_track_name);
 
   // major buttons
-  copyButton = new QPushButton(tr("Copy"));
-  saveButton = new QPushButton(tr("Save"));
+  copyButton = new JButton(tr("Copy"));
+  saveButton = new JButton(tr("Save"));
 
   // combo boxes
   locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
@@ -88,7 +88,7 @@ namespace Operations
      addItemLeft(pOptions, deleteTrackCheckBox, 0, 2);
 
      // row 4
-     QWidget* pButton = new QWidget();
+     JPanel* pButton = new JPanel();
      pButton->setLayout(new GridBagLayout());
      addItem(pButton, copyButton, 0, 0);
      addItem(pButton, saveButton, 1, 0);

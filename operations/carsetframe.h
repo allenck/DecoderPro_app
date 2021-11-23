@@ -63,8 +63,8 @@ namespace Operations
   JComboBox* kernelComboBox;//= carManager.getKernelComboBox();
 
   // buttons
-  QPushButton* editLoadButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editKernelButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* editLoadButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* editKernelButton;//= new JButton(Bundle.getMessage("Edit"));
 
   // check boxes
   /*protected*/ QCheckBox* ignoreRWECheckBox;//= new JCheckBox(Bundle.getMessage("Ignore"));

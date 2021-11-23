@@ -35,11 +35,11 @@ namespace Operations
   // text field
   // check boxes
   // major buttons
-  QPushButton* previousButton;//= new JButton(Bundle.getMessage("Previous"));
-  QPushButton* nextButton;//= new JButton(Bundle.getMessage("Next"));
-  QPushButton* placeButton;//= new JButton(Bundle.getMessage("PlaceTestIcon"));
-  QPushButton* applyButton;//= new JButton(Bundle.getMessage("Apply"));
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* previousButton;//= new JButton(Bundle.getMessage("Previous"));
+  JButton* nextButton;//= new JButton(Bundle.getMessage("Next"));
+  JButton* placeButton;//= new JButton(Bundle.getMessage("PlaceTestIcon"));
+  JButton* applyButton;//= new JButton(Bundle.getMessage("Apply"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
   // Spinners

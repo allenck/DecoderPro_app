@@ -26,7 +26,7 @@ namespace Operations
   QRadioButton* stagingRadioButton;// = new JRadioButton(Bundle.getMessage("Staging"));
 
   // major buttons
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   /*private*/ LocationEditFrame* _lef;
   /*private*/ Location* _location;

@@ -44,10 +44,10 @@ namespace Operations
 
   // labels
   // major buttons
-  QPushButton* addTypeButton;//= new JButton(Bundle.getMessage("AddType"));
-  QPushButton* saveScheduleButton;//= new JButton(Bundle.getMessage("SaveSchedule"));
-  QPushButton* deleteScheduleButton;//= new JButton(Bundle.getMessage("DeleteSchedule"));
-  QPushButton* addScheduleButton;//= new JButton(Bundle.getMessage("AddSchedule"));
+  JButton* addTypeButton;//= new JButton(Bundle.getMessage("AddType"));
+  JButton* saveScheduleButton;//= new JButton(Bundle.getMessage("SaveSchedule"));
+  JButton* deleteScheduleButton;//= new JButton(Bundle.getMessage("DeleteSchedule"));
+  JButton* addScheduleButton;//= new JButton(Bundle.getMessage("AddSchedule"));
 
   // check boxes
   QCheckBox* checkBox;

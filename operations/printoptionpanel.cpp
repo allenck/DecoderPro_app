@@ -24,6 +24,7 @@
 #include "htmltextedit.h"
 #include "flowlayout.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -132,44 +133,35 @@ namespace Operations
   switchListLocalMessageList = QList<JComboBox*>();
 
   // manifest panels
-  QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
 
   pManifest = new QWidget();
-  pEngPickup = new QGroupBox();
+  pEngPickup = new JPanel();
   pEngPickup->setLayout(new QHBoxLayout);
-  pEngPickup->setStyleSheet(gbStyleSheet);
-  pEngPickup->setTitle(tr("Pick Up Locomotive Message Format"));
-  pEngDrop = new QGroupBox();
+  pEngPickup->setBorder(BorderFactory::createTitledBorder(tr("Pick Up Locomotive Message Format")));
+  pEngDrop = new JPanel();
   pEngDrop->setLayout(new QHBoxLayout);
-  pEngDrop->setStyleSheet(gbStyleSheet);
-  pEngDrop->setTitle(tr("Set Out Locomotive Message Format"));
-  pPickup = new QGroupBox();
+  pEngDrop->setBorder(BorderFactory::createTitledBorder(tr("Set Out Locomotive Message Format")));
+  pPickup = new JPanel();
   pPickup->setLayout(new QHBoxLayout);
-  pPickup->setStyleSheet(gbStyleSheet);
-  pPickup->setTitle("Pick Up Car Message Format");
-  pDrop = new QGroupBox();
+  pPickup->setBorder(BorderFactory::createTitledBorder("Pick Up Car Message Format"));
+  pDrop = new JPanel();
   pDrop->setLayout(new QHBoxLayout);
-  pDrop->setStyleSheet(gbStyleSheet);
-  pDrop->setTitle("Set Out Car Message Format");
-  pLocal = new QGroupBox();
+  pDrop->setBorder(BorderFactory::createTitledBorder("Set Out Car Message Format"));
+  pLocal = new JPanel();
   pLocal->setLayout(new QHBoxLayout);
-  pLocal->setStyleSheet(gbStyleSheet);
-  pLocal->setTitle("Local Move Message Format");
+  pLocal->setBorder(BorderFactory::createTitledBorder("Local Move Message Format"));
 
   // switch list panels
-  pSwitchListOrientation = new QGroupBox();
-  pSwPickup = new QGroupBox();
+  pSwitchListOrientation = new JPanel();
+  pSwPickup = new JPanel();
   pSwPickup->setLayout(new QHBoxLayout);
-  pSwPickup->setStyleSheet(gbStyleSheet);
-  pSwPickup->setTitle("Switch List Pick Up Car Message Format");
-  pSwDrop = new QGroupBox();
+  pSwPickup->setBorder(BorderFactory::createTitledBorder("Switch List Pick Up Car Message Format"));
+  pSwDrop = new JPanel();
   pSwDrop->setLayout(new QHBoxLayout);
-  pSwDrop->setStyleSheet(gbStyleSheet);
-  pSwDrop->setTitle("Switch List Set Out Car Message Format");
-  pSwLocal = new QGroupBox();
+  pSwDrop->setBorder(BorderFactory::createTitledBorder("Switch List Set Out Car Message Format"));
+  pSwLocal = new JPanel();
   pSwLocal->setLayout(new QHBoxLayout);
-  pSwLocal->setStyleSheet(gbStyleSheet);
-  pSwLocal->setTitle("Switch List Local Move Message Format");
+  pSwLocal->setBorder(BorderFactory::createTitledBorder("Switch List Local Move Message Format"));
 
      // the following code sets the frame's initial state
      // add tool tips
@@ -223,60 +215,42 @@ namespace Operations
      p1->setLayout(new QVBoxLayout);//(p1, BoxLayout.X_AXIS));
 
 
-     QGroupBox* pFont = new QGroupBox();
+     JPanel* pFont = new JPanel();
      pFont->setLayout(new FlowLayout());
-     //pFont->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFont")));
-     pFont->setStyleSheet(gbStyleSheet);
-     pFont->setTitle(tr("Layout Font"));
+     pFont->setBorder(BorderFactory::createTitledBorder(tr("Layout Font")));
      pFont->layout()->addWidget(fontComboBox);
 
-     QGroupBox* pFontSize = new QGroupBox();
+     JPanel* pFontSize = new JPanel();
      pFontSize->setLayout(new FlowLayout());
-     //pFontSize->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFontSize")));
-     pFontSize->setStyleSheet(gbStyleSheet);
-     pFontSize->setTitle(tr("Layout Font Size"));
+     pFontSize->setBorder(BorderFactory::createTitledBorder(tr("Layout Font Size")));
      pFontSize->layout()->addWidget(fontSizeComboBox);
 
-     QGroupBox* pFormat = new QGroupBox();
+     JPanel* pFormat = new JPanel();
      pFormat->setLayout(new FlowLayout);
-     //pFormat->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFormat")));
-     pFormat->setStyleSheet(gbStyleSheet);
-     pFormat->setTitle(tr("Layout Format"));
+     pFormat->setBorder(BorderFactory::createTitledBorder(tr("Layout Format")));
      pFormat->layout()->addWidget(tabFormatCheckBox);
      pFormat->layout()->addWidget(manifestFormatComboBox);
 
      manifestFormatComboBox->setCurrentIndex(manifestFormatComboBox->findText(Setup::getManifestFormat()));
 
-     QGroupBox* pOrientation = new QGroupBox();
+     JPanel* pOrientation = new JPanel();
      pOrientation->setLayout(new FlowLayout);
-     //pOrientation->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutOrientation")));
-     pOrientation->setStyleSheet(gbStyleSheet);
-     pOrientation->setTitle(tr("Layout Orientation"));
+     pOrientation->setBorder(BorderFactory::createTitledBorder(tr("Layout Orientation")));
      pOrientation->layout()->addWidget(manifestOrientationComboBox);
 
-     QGroupBox* pPickupColor = new QGroupBox();
+     JPanel* pPickupColor = new JPanel();
      pPickupColor->setLayout(new FlowLayout);
-     //pPickupColor->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutPickupColor")));
-     pPickupColor->setStyleSheet(gbStyleSheet);
-     pPickupColor->setTitle(tr("Pick Up Text Color"));
+     pPickupColor->setBorder(BorderFactory::createTitledBorder(tr("Pick Up Text Color")));
      pPickupColor->layout()->addWidget(pickupComboBox);
 
-     QGroupBox* pDropColor = new QGroupBox();
+     JPanel* pDropColor = new JPanel();
      pDropColor->setLayout(new FlowLayout);
-//     pDropColor
-//             ->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutDropColor")));
-     pDropColor->setStyleSheet(gbStyleSheet);
-     pDropColor->setTitle(tr("Set Out Text Color"));
+     pDropColor->setBorder(BorderFactory::createTitledBorder(tr("Set Out Text Color")));
      pDropColor->layout()->addWidget(dropComboBox);
 
-     QGroupBox* pLocalColor = new QGroupBox();
+     JPanel* pLocalColor = new JPanel();
      pLocalColor->setLayout(new FlowLayout);
-//     pLocalColor->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutLocalColor")));
-     pLocalColor->setStyleSheet(gbStyleSheet);
-     pLocalColor->setTitle(tr("Local Move Text Color"));
+     pLocalColor->setBorder(BorderFactory::createTitledBorder(tr("Local Move Text Color")));
      pLocalColor->layout()->addWidget(localComboBox);
 
      p1->layout()->addWidget(pFont);
@@ -294,29 +268,22 @@ namespace Operations
      QWidget* pSl = new QWidget();
      pSl->setLayout(new QHBoxLayout);//(pSl, BoxLayout.X_AXIS));
 
-     QGroupBox* pSwitchFormat = new QGroupBox();
+     JPanel* pSwitchFormat = new JPanel();
      pSwitchFormat->setLayout(new FlowLayout);
-     //pSwitchFormat->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutSwitchListFormat")));
-     pSwitchFormat->setStyleSheet(gbStyleSheet);
-     pSwitchFormat->setTitle(tr("Switch List Format"));
+     pSwitchFormat->setBorder(BorderFactory::createTitledBorder(tr("Switch List Format")));
      pSwitchFormat->layout()->addWidget(formatSwitchListCheckBox);
 
      pSwitchListOrientation->setLayout(new GridBagLayout());
-     //pSwitchListOrientation->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutSwitchListOrientation")));
-     pSwitchListOrientation->setStyleSheet(gbStyleSheet);
-     pSwitchListOrientation->setTitle(tr("Switch List Page Orientation"));
+     pSwitchListOrientation->setBorder(BorderFactory::createTitledBorder(tr("Switch List Page Orientation")));
      pSwitchListOrientation->setMaximumSize(QSize(8000, 100));
      addItem(pSwitchListOrientation, switchListOrientationComboBox, 0, 0);
      addItem(pSwitchListOrientation, new QLabel(" "), 1, 0); // pad
      addItem(pSwitchListOrientation, new QLabel(" "), 2, 0); // pad
      addItem(pSwitchListOrientation, new QLabel(" "), 3, 0); // pad
 
-     QGroupBox* pSwitchOptions = new QGroupBox();
+     JPanel* pSwitchOptions = new JPanel();
      pSwitchOptions->setLayout(new FlowLayout);
-     //pSwitchOptions->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutSwitchListOptions")));
-     pSwitchOptions->setStyleSheet(gbStyleSheet);
-     pSwitchOptions->setTitle(tr("Switch List Options"));
+     pSwitchOptions->setBorder(BorderFactory::createTitledBorder(tr("Switch List Options")));
      pSwitchOptions->layout()->addWidget(trackSummaryCheckBox);
      pSwitchOptions->layout()->addWidget(routeLocationCheckBox);
 
@@ -325,12 +292,9 @@ namespace Operations
      pSl->layout()->addWidget(pSwitchOptions);
 
      // Manifest comments
-     QGroupBox* pManifestOptions = new QGroupBox();
+     JPanel* pManifestOptions = new JPanel();
      pManifestOptions->setLayout(new FlowLayout);
-//     pManifestOptions->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutManifestOptions")));
-     pManifestOptions->setStyleSheet(gbStyleSheet);
-     pManifestOptions->setTitle(tr("Manifest & Switch List Options"));
+     pManifestOptions->setBorder(BorderFactory::createTitledBorder(tr("Manifest & Switch List Options")));
      pManifestOptions->layout()->addWidget(printValidCheckBox);
      pManifestOptions->layout()->addWidget(printLocCommentsCheckBox);
      pManifestOptions->layout()->addWidget(printRouteCommentsCheckBox);
@@ -346,20 +310,15 @@ namespace Operations
      p2->setLayout(new QHBoxLayout);//(p2, BoxLayout.X_AXIS));
 
      // Use text editor for manifest
-     QGroupBox* pEdit = new QGroupBox();
+     JPanel* pEdit = new JPanel();
      pEdit->setLayout(new FlowLayout);
-//     pEdit->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutManifestPreview")));
-     pEdit->setStyleSheet(gbStyleSheet);
-     pEdit->setTitle(tr("Manifest & Switch List Preview"));
+     pEdit->setBorder(BorderFactory::createTitledBorder(tr("Manifest & Switch List Preview")));
      pEdit->layout()->addWidget(editManifestCheckBox);
 
      // manifest logo
-     QGroupBox* pLogo = new QGroupBox();
+     JPanel* pLogo = new JPanel();
      pLogo->setLayout(new FlowLayout);
-     //pLogo->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutLogo")));
-     pLogo->setStyleSheet(gbStyleSheet);
-     pLogo->setTitle(tr("Logo"));
+     pLogo->setBorder(BorderFactory::createTitledBorder(tr("Logo")));
      pLogo->layout()->addWidget(removeLogoButton);
      pLogo->layout()->addWidget(addLogoButton);
      pLogo->layout()->addWidget(logoURL);
@@ -372,21 +331,15 @@ namespace Operations
      pComments->setLayout(new QHBoxLayout);//(pComments, BoxLayout.X_AXIS));
 
      // missing cars comment
-     QGroupBox* pComment = new QGroupBox();
+     JPanel* pComment = new JPanel();
      pComment->setLayout(new GridBagLayout());
-//     pComment->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutCommentOptions")));
-     pComment->setStyleSheet(gbStyleSheet);
-     pComment->setTitle(tr("Misplaced Cars Comment"));
+     pComment->setBorder(BorderFactory::createTitledBorder(tr("Misplaced Cars Comment")));
      addItem(pComment, commentScroller, 0, 0);
 
      // Hazardous comment
-     QGroupBox* pHazardous = new QGroupBox();
+     JPanel* pHazardous = new JPanel();
      pHazardous->setLayout(new FlowLayout);
-//     pHazardous
-//             ->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutHazardous")));
-     pHazardous->setStyleSheet(gbStyleSheet);
-     pHazardous->setTitle(tr("Hazardous Comment"));
+     pHazardous->setBorder(BorderFactory::createTitledBorder(tr("Hazardous Comment")));
      pHazardous->layout()->addWidget(hazardousTextField);
 
      pComments->layout()->addWidget(pComment);
@@ -407,9 +360,8 @@ namespace Operations
      pManifest->layout()->addWidget(pComments);
 
      // row 11
-     QGroupBox* pControl = new QGroupBox();
-     //pControl->setBorder(BorderFactory.createTitledBorder(""));
-     pControl->setStyleSheet(gbStyleSheet);
+     JPanel* pControl = new JPanel();
+     pControl->setBorder(BorderFactory::createTitledBorder(""));
      pControl->setLayout(new GridBagLayout());
      addItem(pControl, saveButton, 0, 0);
 

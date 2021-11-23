@@ -1,7 +1,7 @@
 #include "carloadeditframe.h"
 #include "carloads.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QGroupBox>
 #include <QBoxLayout>
 #include "jcombobox.h"
@@ -54,10 +54,10 @@ namespace Operations
   quanity = new QLabel("0");
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  deleteButton = new QPushButton(tr("Delete"));
-  replaceButton = new QPushButton(tr("Replace"));
-  saveButton = new QPushButton(tr("Save"));
+  addButton = new JButton(tr("Add"));
+  deleteButton = new JButton(tr("Delete"));
+  replaceButton = new JButton(tr("Replace"));
+  saveButton = new JButton(tr("Save"));
 
   // text boxes
   addTextBox = new JTextField(10);
@@ -142,7 +142,7 @@ namespace Operations
   addItem(pOptionalDrop, dropCommentTextField, 0, 0);
 
   // row 14
-  QWidget* pControl = new QWidget();
+  JPanel* pControl = new JPanel();
   pControl->setLayout(new QVBoxLayout); //(pControl, BoxLayout.Y_AXIS));
   addItem(pControl, saveButton, 0, 0);
 
@@ -182,7 +182,7 @@ namespace Operations
 
  // add, delete, replace, and save buttons
  /*public*/ void CarLoadEditFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == addButton) {
          QString addLoad = addTextBox->text().trimmed();
          if (addLoad==(NONE)) {

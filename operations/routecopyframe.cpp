@@ -6,9 +6,8 @@
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include <gridbaglayout.h>
-#include <QGroupBox>
 #include "route.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "control.h"
 #include "logger.h"
 #include "vptr.h"
@@ -49,7 +48,7 @@ namespace Operations
   invertCheckBox = new QCheckBox(tr("Invert"));
 
   // major buttons
-  copyButton = new QPushButton(tr("Copy"));
+  copyButton = new JButton(tr("Copy"));
 
   // combo boxes
   routeBox = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getComboBox();
@@ -59,7 +58,7 @@ namespace Operations
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
   // Set up the panels
-  QWidget* p1 = new QWidget();
+  JPanel* p1 = new JPanel();
   p1->setLayout(new GridBagLayout());
 
   // Layout the panel by rows
@@ -91,7 +90,7 @@ namespace Operations
  }
 
  /*public*/ void RouteCopyFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == copyButton) {
          log->debug("copy route button activated");
          if (!checkName()) {

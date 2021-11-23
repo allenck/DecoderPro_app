@@ -4,7 +4,7 @@
 #include <QBoxLayout>
 #include <QLabel>
 #include <QRadioButton>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QButtonGroup>
 #include "jtextfield.h"
 #include "enginestablemodel.h"
@@ -78,9 +78,9 @@ namespace Operations
   QButtonGroup* group = new QButtonGroup();
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  findButton = new QPushButton(tr("Find"));
-  saveButton = new QPushButton(tr("Save"));
+  addButton = new JButton(tr("Add"));
+  findButton = new JButton(tr("Find"));
+  saveButton = new JButton(tr("Save"));
 
   findEngineTextBox = new JTextField(6);
   QVBoxLayout* thisLayout;
@@ -287,8 +287,8 @@ namespace Operations
  // add, save or find button
  /*public*/ void EnginesTableFrame::buttonActionPerformed(QWidget* obj) {
   // log->debug("engine button activated");
- QPushButton* source = (QPushButton*)obj;
-  if ((QPushButton*)source == findButton)
+ JButton* source = (JButton*)obj;
+  if ((JButton*)source == findButton)
   {
       int rowindex = enginesModel->findEngineByRoadNumber(findEngineTextBox->text());
       if (rowindex < 0) {

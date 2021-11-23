@@ -41,9 +41,9 @@ namespace Operations
   // text field
   // check boxes
   // major buttons
-  QPushButton* placeButton;// = new JButton(Bundle.getMessage("PlaceTestIcon"));
-  QPushButton* applyButton;// = new JButton(Bundle.getMessage("UpdateRoutes"));
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* placeButton;// = new JButton(Bundle.getMessage("PlaceTestIcon"));
+  JButton* applyButton;// = new JButton(Bundle.getMessage("UpdateRoutes"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
   JComboBox* locationBox;// = LocationManager.instance().getComboBox();

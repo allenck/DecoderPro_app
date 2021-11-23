@@ -11,7 +11,7 @@
 #include <QBoxLayout>
 #include <QGroupBox>
 #include "control.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <jtextarea.h>
 #include "gridbaglayout.h"
 #include "setup.h"
@@ -27,6 +27,7 @@
 #include "carstableframe.h"
 #include "instancemanager.h"
 #include "borderfactory.h"
+#include "enginesetframe.h"
 
 namespace Operations
 {
@@ -346,8 +347,8 @@ namespace Operations
  }
 
  // action for set button for a car, opens the set car window
- /*public*/ void CommonConductorYardmasterPanel::setCarButtonActionPerfomed(QWidget* ae) {
-     QString name = ((QPushButton*) ae)->objectName();
+ /*public*/ void CommonConductorYardmasterPanel::carSetButtonActionPerfomed(QWidget* ae) {
+     QString name = ((JButton*) ae)->objectName();
      log->debug("Set button for car " + name);
      Car* car = carManager->getById(name);
      if (csf != NULL) {
@@ -359,6 +360,19 @@ namespace Operations
      // csf->setTitle(tr("TitleCarSet"));
      csf->setVisible(true);
      //csf->setExtendedState(Frame.NORMAL);
+ }
+
+ // action for set button for an engine, opens the set engine window
+ /*public*/ void CommonConductorYardmasterPanel::engineSetButtonActionPerfomed(QWidget* ae) {
+  QString name = ((JButton*) ae)->objectName();
+     log->debug(tr("Set button for loco %1").arg(name));
+     Engine* eng = engManager->getById(name);
+     if (esf != nullptr) {
+         esf->dispose();
+     }
+     esf = new EngineSetFrame();
+     esf->initComponents();
+     esf->loadEngine(eng);
  }
 
  // confirm that all work is done
@@ -619,23 +633,29 @@ namespace Operations
   pMoves->layout()->addWidget(new QLabel(Space));
  }
 
- // replace the car checkbox and text with the car's road and number and a Set button
- /*Protected*/ QWidget* CommonConductorYardmasterPanel::addSet(Car* car) {
-     QWidget* pSet = new QWidget();
+ // replace the car or engine checkbox and text with only the road and number and
+ // a Set button
+ /*Protected*/ JPanel* CommonConductorYardmasterPanel::addSet(RollingStock* rs) {
+     JPanel* pSet = new JPanel();
      pSet->setLayout(new GridBagLayout());
-     QPushButton* carSetButton = new QPushButton(tr("Set"));
-     carSetButton->setObjectName(car->getId());
-//     carSetButton.addActionListener((ActionEvent e) -> {
-//         setCarButtonActionPerfomed(e);
-//     });
-     connect(carSetButton, SIGNAL(clicked()), this, SLOT(setCarButtonActionPerfomed()));
-     QLabel* label = new QLabel(TrainCommon::padString(car->toString(), Control::max_len_string_attibute
-             + Control::max_len_string_road_number));
+     JButton* setButton = new JButton(tr("Set"));
+     setButton->setObjectName(rs->getId());
+//     setButton.addActionListener((ActionEvent e) -> {
+     connect(setButton, &JButton::clicked, [=]{
+      if (qobject_cast<Car*>(rs)) {
+          carSetButtonActionPerfomed(setButton);
+      } else {
+          engineSetButtonActionPerfomed(setButton);
+      }
+     });
+     JLabel* label = new JLabel(TrainCommon::padString(rs->toString(),
+             Control::max_len_string_attibute + Control::max_len_string_road_number));
      setLabelFont(label);
      addItem(pSet, label, 0, 0);
-     addItemLeft(pSet, carSetButton, 1, 0);
+     addItemLeft(pSet, setButton, 1, 0);
+//     pSet->setAlignmentX(/*LEFT_ALIGNMENT*/Qt::AlignLeft);
      return pSet;
- }
+}
 
  /*protected*/ void CommonConductorYardmasterPanel::setCheckBoxFont(QCheckBox* checkBox) {
      if (Setup::isTabEnabled()) {
@@ -698,6 +718,26 @@ namespace Operations
              _train->getName());
      }
  }
+
+ /*protected*/ void CommonConductorYardmasterPanel::removeCarFromList(Car* car) {
+     checkBoxes.remove("p" + car->getId());
+     checkBoxes.remove("s" + car->getId());
+     checkBoxes.remove("m" + car->getId());
+     log->debug(tr("Car (%1) removed from list").arg(car->toString()));
+     if (car->isUtility()) {
+         clearAndUpdate(); // need to recalculate number of utility cars
+     }
+ }
+
+ /*protected*/ void CommonConductorYardmasterPanel::clearAndUpdate() {
+     trainCommon->clearUtilityCarTypes(); // reset the utility car counts
+     checkBoxes.clear();
+     isSetMode = false;
+     update();
+ }
+
+ // to be overridden
+ /*protected*/ /*abstract*/ void CommonConductorYardmasterPanel::update() {}
 
  /*protected*/ void CommonConductorYardmasterPanel::removePropertyChangeListerners() {
 //     rollingStock.stream().forEach((rs) -> {

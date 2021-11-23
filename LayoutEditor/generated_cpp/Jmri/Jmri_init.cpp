@@ -10,7 +10,6 @@
 void PythonQt_init_Jmri(PyObject* module) {
 PythonQt::priv()->registerClass(&AbstractAutomaton::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AbstractAutomaton>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AbstractAutomaton>, module, 0);
 PythonQt::priv()->registerClass(&AbstractLightManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AbstractLightManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AbstractLightManager>, module, 0);
-PythonQt::priv()->registerClass(&AbstractManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AbstractManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AbstractManager>, module, 0);
 PythonQt::priv()->registerClass(&AbstractNamedBean::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AbstractNamedBean>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AbstractNamedBean>, module, PythonQt::Type_RichCompare);
 PythonQt::priv()->registerClass(&AbstractPortController::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AbstractPortController>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AbstractPortController>, module, 0);
 PythonQt::priv()->registerClass(&AbstractPowerManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_AbstractPowerManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_AbstractPowerManager>, module, 0);

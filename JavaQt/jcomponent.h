@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include "insets.h"
+#include <QFontMetrics>
 
+class JPanel;
 class Border;
 class JComponent // : public QWidget
 {
@@ -18,7 +20,7 @@ public:
  virtual void setOpaque(bool) =0;
  virtual QFont getFont() =0;
  virtual void setFont(QFont) =0;
- virtual QObject* jself() = 0;
+ virtual QWidget* jself() = 0;
  /*public*/ void setInheritsPopupMenu(bool value) {
      inheritsPopupMenu = value;
  }
@@ -32,6 +34,7 @@ public:
  virtual void setBorder(Border*) =0;
  virtual Border* getBorder() =0;
  virtual QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
+ virtual QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
  virtual void setEnabled(bool) =0;
  virtual void setSize(int, int) {}
 

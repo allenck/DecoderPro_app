@@ -27,8 +27,8 @@ private:
   Logger* log;
   Train* _train;// =null;
 
-  QWidget* pRoadControls;// =new QWidget();
-  QGroupBox* panelRoads;// =new QWidget();
+  JPanel* pRoadControls;// =new JPanel();
+  JPanel* panelRoads;// =new JPanel();
   QScrollArea* paneRoads;// =new JScrollPane(panelRoads);
 
   // labels
@@ -36,10 +36,10 @@ private:
   QLabel* trainDescription;// =new JLabel();
 
   // major buttons
-  QPushButton* addRoadButton;// =new JButton(Bundle.getMessage("AddRoad"));
-  QPushButton* deleteRoadButton;// =new JButton(Bundle.getMessage("DeleteRoad"));
-  QPushButton* deleteAllRoadsButton;// =new JButton(Bundle.getMessage("DeleteAll"));
-  QPushButton* saveTrainButton;// =new JButton(Bundle.getMessage("SaveTrain"));
+  JButton* addRoadButton;// =new JButton(Bundle.getMessage("AddRoad"));
+  JButton* deleteRoadButton;// =new JButton(Bundle.getMessage("DeleteRoad"));
+  JButton* deleteAllRoadsButton;// =new JButton(Bundle.getMessage("DeleteAll"));
+  JButton* saveTrainButton;// =new JButton(Bundle.getMessage("SaveTrain"));
 
   // radio buttons
   QRadioButton* roadNameAll;// =new JRadioButton(Bundle.getMessage("AcceptAll"));

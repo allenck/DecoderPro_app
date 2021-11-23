@@ -23,10 +23,10 @@ namespace Operations {
  private:
   QLabel* textSchedule;// = new JLabel(Bundle.getMessage("DeliverySchedule"));
   QLabel* textSchError;// = new JLabel();
-  QPushButton* editScheduleButton;// = new JButton();
+  JButton* editScheduleButton;// = new JButton();
   JComboBox* comboBoxSchedules;// = ScheduleManager.instance().getComboBox();
   Logger* log;
-  QGroupBox* panelSchedule;// = panelOpt4;
+  JPanel* panelSchedule;// = panelOpt4;
   /*private*/ void updateScheduleButtonText();
   ScheduleEditFrame* sef;// = null;
   /*private*/ void updateScheduleComboBox();

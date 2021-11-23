@@ -19,7 +19,7 @@ namespace Operations
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);
   /*public*/ void comboBoxActionPerformed(QWidget* ae);
-  /*public*/ void buttonActionPerformed(QPushButton* ae);
+  /*public*/ void buttonActionPerformed(JButton* ae);
   /*public*/ void checkBoxActionPerformed(QWidget* ae);
 
  private:
@@ -27,15 +27,15 @@ namespace Operations
   QString Empty;//= "            ";
 
   QList<QCheckBox*> trainList;//= new ArrayList<JCheckBox>();
-  QWidget* trainCheckBoxes;//= new JPanel();
+  JPanel* trainCheckBoxes;//= new JPanel();
 
   // panels
-  QWidget* pTrains;
+  JPanel* pTrains;
 
   // major buttons
-  QPushButton* clearButton;//= new JButton(Bundle.getMessage("Clear"));
-  QPushButton* setButton;//= new JButton(Bundle.getMessage("Select"));
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* clearButton;//= new JButton(Bundle.getMessage("Clear"));
+  JButton* setButton;//= new JButton(Bundle.getMessage("Select"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   // check boxes
   QCheckBox* copyCheckBox;//= new JCheckBox(Bundle.getMessage("Copy"));

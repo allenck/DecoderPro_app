@@ -40,8 +40,8 @@ namespace Operations
   JComboBox* comboBoxPools;//= new JComboBox<>();
 
   // major buttons
-  QPushButton* addButton;//= new JButton(Bundle.getMessage("Add"));
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* addButton;//= new JButton(Bundle.getMessage("Add"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   // pool status
   JPanel* poolStatus;//= new JPanel();

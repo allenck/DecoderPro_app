@@ -8,7 +8,7 @@ class QButtonGroup;
 class QLabel;
 class QRadioButton;
 class QSortFilterProxyModel;
-class QPushButton;
+class JButton;
 class JTextField;
 class JTable;
 namespace Operations
@@ -64,9 +64,9 @@ namespace Operations
   QButtonGroup* group; //=new ButtonGroup();
 
   // major buttons
-  QPushButton* addButton; //=new JButton(Bundle.getMessage("Add"));
-  QPushButton* findButton; //=new JButton(Bundle.getMessage("Find"));
-  QPushButton* saveButton; //=new JButton(Bundle.getMessage("Save"));
+  JButton* addButton; //=new JButton(Bundle.getMessage("Add"));
+  JButton* findButton; //=new JButton(Bundle.getMessage("Find"));
+  JButton* saveButton; //=new JButton(Bundle.getMessage("Save"));
 
   JTextField* findEngineTextBox; //=new JTextField(6);
   EngineEditFrame* f;// = null;

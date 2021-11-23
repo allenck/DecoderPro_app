@@ -23,7 +23,7 @@ namespace Operations
   QRadioButton* hundredPercent;//= new JRadioButton("100%");		// NOI18N
 
   // major buttons
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   /*private*/ TrackEditFrame* _tef;
   Logger* log;

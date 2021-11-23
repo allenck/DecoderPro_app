@@ -1,7 +1,7 @@
 #include "settrainiconrouteframe.h"
 #include "routemanager.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QSpinBox>
 #include "trainicon.h"
 #include "route.h"
@@ -50,11 +50,11 @@ namespace Operations
   // text field
   // check boxes
   // major buttons
-  previousButton = new QPushButton(tr("Previous"));
-  nextButton = new QPushButton(tr("Next"));
-  placeButton = new QPushButton(tr("Place Test Icon"));
-  applyButton = new QPushButton(tr("Apply"));
-  saveButton = new QPushButton(tr("Save"));
+  previousButton = new JButton(tr("Previous"));
+  nextButton = new JButton(tr("Next"));
+  placeButton = new JButton(tr("Place Test Icon"));
+  applyButton = new JButton(tr("Apply"));
+  saveButton = new JButton(tr("Save"));
 
   // combo boxes
   // Spinners
@@ -140,7 +140,7 @@ namespace Operations
  }
 
  /*public*/ void SetTrainIconRouteFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == previousButton) {
          updateRouteLocation(BACK);
      }

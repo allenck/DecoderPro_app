@@ -14,26 +14,26 @@ public:
  JPanel(QLayout* layout, QWidget* parent=nullptr);
  JPanel(FlowLayout* layout, QWidget* parent=nullptr);
 
- /*public*/ void setBorder(Border* newBorder);
- /*public*/ Border* getBorder();
+ /*public*/ void setBorder(Border* newBorder) override;
+ /*public*/ Border* getBorder()override;
  /*public*/ virtual QString getTitle() {return "";}
- /*public*/ void setBackground(QColor color);
+ /*public*/ void setBackground(QColor color)override;
  /*public*/ void removeAll();
- /*public*/ QColor getForeground();
- /*public*/ QColor getBackground();
+ /*public*/ QColor getForeground()override;
+ /*public*/ QColor getBackground()override;
 
  //void paintEvent(QPaintEvent*);
  /*public*/void virtual paintComponent(QPainter*) {}
- /*public*/ bool isOpaque(){return _opaque;}
- /*public*/ /*public*/ void setOpaque(bool b){_opaque = b;}
- /*public*/ QFont getFont() {return QFrame::font();}
- /*public*/ void setFont(QFont f) {QFrame::setFont(f);}
- /*public*/ QObject* jself() {return (QObject*)this;}
+ /*public*/ bool isOpaque()override{return _opaque;}
+ /*public*/ /*public*/ void setOpaque(bool b)override{_opaque = b;}
+ /*public*/ QFont getFont() override{return QFrame::font();}
+ /*public*/ void setFont(QFont f) override{QFrame::setFont(f);}
+ /*public*/ QWidget* jself() override{return (QWidget*)this;}
  /*public*/ void setEnabled(bool b ) override {QWidget::setEnabled(b);}
 private:
  Border* border = nullptr;
 
- void paintEvent(QPaintEvent *evt);
+ void paintEvent(QPaintEvent *evt)override;
  QLayout* findParentLayout(QWidget* w);
  QLayout* findParentLayout(QWidget* w, QLayout* topLevelLayout);
 

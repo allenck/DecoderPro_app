@@ -37,8 +37,8 @@ namespace Operations
   QLabel* locationName;// = new JLabel();
 
   // major buttons
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
-  QPushButton* resetButton;//; = new JButton(Bundle.getMessage("Reset"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* resetButton;//; = new JButton(Bundle.getMessage("Reset"));
   /*private*/ void enableButtons(bool enabled);
 
  };

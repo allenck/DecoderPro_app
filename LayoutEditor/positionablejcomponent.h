@@ -92,23 +92,23 @@ public:
 //    bool isVisible();
     void setWidth(int width);
     void setHeight(int height);
-    int getWidth();
-    int getHeight();
-    void setOpaque(bool isOpaque);
-    bool isOpaque() ;
-    void setBackground(QColor bg);
-    QColor getBackground();
-    void setForeground(QColor bg);
-    QColor getForeground();
-    QFont getFont();
+    int getWidth()override;
+    int getHeight()override;
+    void setOpaque(bool isOpaque)override;
+    bool isOpaque() override;
+    void setBackground(QColor bg)override;
+    QColor getBackground()override;
+    void setForeground(QColor bg)override;
+    QColor getForeground()override;
+    QFont getFont()override;
     void invalidate();
     void repaint();
-    bool requestFocusInWindow();
-    QObject* self() {return (QObject*)this;}
-    QObject* jself() {return (QObject*)this;}
-    /*public*/ void setFont(QFont );
+    bool requestFocusInWindow()override;
+    QObject* self() override{return (QObject*)this;}
+    QWidget* jself() override{return (QWidget*)this;}
+    /*public*/ void setFont(QFont )override;
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
-    /*public*/ Border* getBorder() {return _border;}
+    /*public*/ Border* getBorder() override{return _border;}
 
 
 signals:

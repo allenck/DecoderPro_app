@@ -9,7 +9,7 @@ class JTextArea;
 class JTable;
 class ChangeEvent;
 class QSignalMapper;
-class QPushButton;
+class JButton;
 class QRadioButton;
 class JComboBox;
 class QCheckBox;
@@ -39,7 +39,7 @@ namespace Operations
 
 protected:
   /*protected*/ /*synchronized*/ void createShutDownTask();
-  /*protected*/ void addButtonAction(QPushButton* b);
+  /*protected*/ void addButtonAction(JButton* b);
   /*protected*/ void addRadioButtonAction(QRadioButton* b);
   /*protected*/ void addCheckBoxAction(QCheckBox* b);
   /*protected*/ void addSpinnerChangeListerner(QSpinBox* s);
@@ -47,15 +47,15 @@ protected:
   /*protected*/ void selectNextItemComboBox(JComboBox* b);
   /*protected*/ void clearTableSort(JTable* table);
 
-  /*protected*/ void addItem(QWidget* p, QWidget* c, int x, int y) ;
-  /*protected*/ void addItemLeft(QWidget* p, QWidget* c, int x, int y);
-  /*protected*/ void addItemTop(QWidget* p, QWidget* c, int x, int y) ;
-  /*protected*/ void addItemWidth(QWidget* p, QWidget* c, int width, int x, int y);
+  /*protected*/ void addItem(JPanel* p, QWidget* c, int x, int y) ;
+  /*protected*/ void addItemLeft(JPanel* p, QWidget* c, int x, int y);
+  /*protected*/ void addItemTop(JPanel* p, QWidget* c, int x, int y) ;
+  /*protected*/ void addItemWidth(JPanel *p, QWidget *c, int width, int x, int y);
   /*protected*/ int getNumberOfCheckboxesPerLine();
   /*protected*/ void saveTableDetails(JTable* table);
-  /*protected*/ void addItem(QWidget* c, int x, int y);
-  /*protected*/ void addItemLeft(QWidget* c, int x, int y);
-  /*protected*/ void addItemWidth(QWidget* c, int width, int x, int y);
+  /*protected*/ void addItem(QWidget *c, int x, int y);
+//  /*protected*/ void addItemLeft(QWidget* c, int x, int y);
+//  /*protected*/ void addItemWidth(QWidget* c, int width, int x, int y);
   /*protected*/ void storeValues();
 
   protected slots:

@@ -8,7 +8,7 @@
 #include "resourcebundle.h"
 
 class QGroupBox;
-class QPushButton;
+class JButton;
 class QLabel;
 class JComboBox;
 class QCheckBox;
@@ -75,18 +75,18 @@ namespace Operations
 
   // major buttons
   JButton* editRoadButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* clearRoadNumberButton;//= new JButton(Bundle.getMessage("Clear"));
+  JButton* clearRoadNumberButton;//= new JButton(Bundle.getMessage("Clear"));
   JButton* editTypeButton;//= new JButton(Bundle.getMessage("Edit"));
   JButton* editColorButton;//= new JButton(Bundle.getMessage("Edit"));
   JButton* editLengthButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* fillWeightButton;//= new JButton(Bundle.getMessage("Calculate"));
-  QPushButton* editLoadButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* fillWeightButton;//= new JButton(Bundle.getMessage("Calculate"));
+  JButton* editLoadButton;//= new JButton(Bundle.getMessage("Edit"));
   JButton* editKernelButton;//= new JButton(Bundle.getMessage("Edit"));
   JButton* editOwnerButton;//= new JButton(Bundle.getMessage("Edit"));
 
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
-  QPushButton* deleteButton;//= new JButton(Bundle.getMessage("Delete"));
-  QPushButton* addButton;//= new JButton(Bundle.getMessage("Add"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* deleteButton;//= new JButton(Bundle.getMessage("Delete"));
+  JButton* addButton;//= new JButton(Bundle.getMessage("Add"));
 
   // check boxes
   QCheckBox* autoCheckBox;//= new JCheckBox(Bundle.getMessage("Auto"));

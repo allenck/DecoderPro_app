@@ -3,7 +3,7 @@
 #include "location.h"
 #include "jtable.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include <QGroupBox>
@@ -48,8 +48,8 @@ namespace Operations
      locationName = new QLabel();
 
      // major buttons
-     saveButton = new QPushButton(tr("Save"));
-     resetButton = new QPushButton(tr("Reset"));
+     saveButton = new JButton(tr("Save"));
+     resetButton = new JButton(tr("Reset"));
  }
 
  /*public*/ void LocationTrackBlockingOrderFrame::initComponents(Location* location) {
@@ -78,7 +78,7 @@ namespace Operations
      addItem(pName, locationName, 0, 0);
 
      // row buttons
-     QWidget* pB = new QWidget();
+     JPanel* pB = new JPanel();
      pB->setLayout(new GridBagLayout());
      addItem(pB, resetButton, 0, 0);
      addItem(pB, saveButton, 1, 0);
@@ -107,7 +107,7 @@ namespace Operations
 
  // Reset and Save
  /*public*/ void LocationTrackBlockingOrderFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == resetButton && _location != NULL) {
          _location->resetTracksByBlockingOrder();
      }

@@ -5,8 +5,7 @@
 #include "jtextfield.h"
 #include "train.h"
 #include <QLabel>
-#include <QPushButton>
-#include <QGroupBox>
+#include "jbutton.h"
 #include "gridbaglayout.h"
 #include <QCheckBox>
 #include "traineditframe.h"
@@ -48,9 +47,9 @@ namespace Operations
       logoURL = new QLabel("");
 
       // major buttons
-      saveButton = new QPushButton(tr("Save"));
-      addLogoButton = new QPushButton(tr("Add Logo"));
-      removeLogoButton = new QPushButton(tr("Remove Logo"));
+      saveButton = new JButton(tr("Save"));
+      addLogoButton = new JButton(tr("Add Logo"));
+      removeLogoButton = new JButton(tr("Remove Logo"));
 
       // radio buttons
       // check boxes
@@ -84,7 +83,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
       JPanel* pOptionNameFrame = new JPanel();
       pOptionNameFrame->setLayout(new QVBoxLayout);
-      QWidget* pOptionName = new QWidget();
+      JPanel* pOptionName = new JPanel();
       pOptionName->setLayout(new GridBagLayout());
       QScrollArea* pOptionNamePane = new QScrollArea(/*pOptionName*/);
       pOptionNamePane->setWidgetResizable(true);
@@ -95,7 +94,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       // manifest logo
       JPanel* pOptionLogoFrame = new JPanel;
       pOptionLogoFrame->setLayout(new QVBoxLayout);
-      QWidget* pOptionLogo = new QWidget();
+      JPanel* pOptionLogo = new JPanel();
       pOptionLogo->setLayout(new GridBagLayout());
       QScrollArea* pOptionLogoPane = new QScrollArea(/*pOptionLogo*/);
       pOptionLogoPane->setWidgetResizable(true);
@@ -110,7 +109,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       // Checkboxes
       JPanel* pCheckboxesFrame = new JPanel;
       pCheckboxesFrame->setLayout(new QVBoxLayout);
-      QWidget* pCheckboxes = new QWidget();
+      JPanel* pCheckboxes = new JPanel();
       pCheckboxes->setLayout(new GridBagLayout());
       QScrollArea* pCheckboxesPane = new QScrollArea(/*pCheckboxes*/);
       pCheckboxesPane->setWidgetResizable(true);
@@ -120,7 +119,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       addItem(pCheckboxes, ShowTimesCheckBox, 0, 0);
 
       // row 11
-      QWidget* pControl = new QWidget();
+      JPanel* pControl = new JPanel();
       pControl->setLayout(new GridBagLayout());
       addItem(pControl, saveButton, 3, 9);
 
@@ -182,7 +181,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   // Save button
   /*public*/ void TrainManifestOptionFrame::buttonActionPerformed(QWidget* ae)
   {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
       if (source == addLogoButton) {
           log->debug("add logo button pressed");
           File* f = selectFile();

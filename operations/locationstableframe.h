@@ -39,7 +39,7 @@ namespace Operations
   QRadioButton* sortById;// = new javax.swing.JRadioButton(Bundle.getMessage("Id"));
 
   // major buttons
-  QPushButton* addButton;// = new JButton(Bundle.getMessage("Add"));
+  JButton* addButton;// = new JButton(Bundle.getMessage("Add"));
 //	JButton printTableButton = new JButton("Print Table");
   Logger* log;
  };

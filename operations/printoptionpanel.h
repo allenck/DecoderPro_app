@@ -110,17 +110,17 @@ namespace Operations
 
   // manifest panels
   QWidget* pManifest;//= new JPanel();
-  QGroupBox* pEngPickup;//= new JPanel();
-  QGroupBox* pEngDrop;//= new JPanel();
-  QGroupBox* pPickup;//= new JPanel();
-  QGroupBox* pDrop;//= new JPanel();
-  QGroupBox* pLocal;//= new JPanel();
+  JPanel* pEngPickup;//= new JPanel();
+  JPanel* pEngDrop;//= new JPanel();
+  JPanel* pPickup;//= new JPanel();
+  JPanel* pDrop;//= new JPanel();
+  JPanel* pLocal;//= new JPanel();
 
   // switch list panels
-  QGroupBox* pSwitchListOrientation;//= new JPanel();
-  QGroupBox* pSwPickup;//= new JPanel();
-  QGroupBox* pSwDrop;//= new JPanel();
-  QGroupBox* pSwLocal;//= new JPanel();
+  JPanel* pSwitchListOrientation;//= new JPanel();
+  JPanel* pSwPickup;//= new JPanel();
+  JPanel* pSwDrop;//= new JPanel();
+  JPanel* pSwLocal;//= new JPanel();
   /*private*/ void loadFontComboBox();
   /*private*/ void setSwitchListVisible(bool b);
   /**

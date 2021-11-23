@@ -252,10 +252,7 @@ namespace Operations
          // remove car from list
          if (e->getSource()->metaObject()->className()==("Car")) {
              Car* car = (Car*) e->getSource();
-             checkBoxes.remove("p" + car->getId());
-             checkBoxes.remove("s" + car->getId());
-             checkBoxes.remove("m" + car->getId());
-             log->debug(tr("Car (%1) removed from list").arg(car->toString()));
+             removeCarFromList(car);
          }
          this->update();
      }

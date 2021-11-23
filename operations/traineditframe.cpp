@@ -10,7 +10,7 @@
 #include "setup.h"
 #include "control.h"
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QButtonGroup>
 #include "gridbaglayout.h"
@@ -80,11 +80,11 @@ namespace Operations
    typeCarCheckBoxes = QList<QCheckBox*>();
   typeEngineCheckBoxes = QList<QCheckBox*>();
    locationCheckBoxes = QList<QCheckBox*>();
-  typeCarPanelCheckBoxes = new QWidget();
+  typeCarPanelCheckBoxes = new JPanel();
   typeCarPanelCheckBoxes->setObjectName("typeCarPanelCheckBoxes");
-  typeEnginePanelCheckBoxes = new QWidget();
-  roadAndLoadStatusPanel = new QWidget();
-  locationPanelCheckBoxes = new QWidget();
+  typeEnginePanelCheckBoxes = new JPanel();
+  roadAndLoadStatusPanel = new JPanel();
+  locationPanelCheckBoxes = new JPanel();
 
   // labels
   textRouteStatus = new QLabel();
@@ -96,13 +96,13 @@ namespace Operations
   textEngine = new QLabel(tr("Engines"));
 
   // major buttons
-  editButton = new QPushButton(tr("Edit"));	// edit route
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  resetButton = new QPushButton(tr("Reset Train"));
-  saveTrainButton = new QPushButton(tr("Save Train"));
-  deleteTrainButton = new QPushButton(tr("Delete Train"));
-  addTrainButton = new QPushButton(tr("Add Train"));
+  editButton = new JButton(tr("Edit"));	// edit route
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  resetButton = new JButton(tr("Reset Train"));
+  saveTrainButton = new JButton(tr("Save Train"));
+  deleteTrainButton = new JButton(tr("Delete Train"));
+  addTrainButton = new JButton(tr("Add Train"));
 
   // radio buttons
   noneRadioButton = new QRadioButton(tr("None"));
@@ -332,7 +332,7 @@ namespace Operations
   adjustTextAreaColumnWidth(/*commentScroller*/pC, commentTextArea);
 
   // row 15 buttons
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
   addItem(pB, deleteTrainButton, 0, 0);
   addItem(pB, resetButton, 1, 0);
@@ -461,7 +461,7 @@ namespace Operations
  // Save, Delete, Add, Edit, Reset, Set, Clear
  /*public*/ void TrainEditFrame::buttonActionPerformed(QWidget* ae)
  {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveTrainButton) {
          log->debug("train save button activated");
          Train* train = trainManager->getTrainByName(trainNameTextField->text());

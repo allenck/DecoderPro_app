@@ -2,7 +2,7 @@
 #define WINDOWINTERFACE_H
 #include "jframe.h"
 #include "javaqt_global.h"
-#include "jmriabstractaction.h"
+#include "abstractaction.h"
 
 /**
  * Interface for an object that can arrange for a

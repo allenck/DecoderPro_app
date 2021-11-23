@@ -58,7 +58,7 @@ namespace Operations
      // text field
      // combo boxes
      // panels
-     pCars = new QWidget();
+     pCars = new JPanel();
  }
 
  /*public*/ void ShowCarsInTrainFrame::initComponents(Train* train) {

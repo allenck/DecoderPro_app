@@ -7,7 +7,7 @@
 #include "jcombobox.h"
 #include <QGroupBox>
 #include <QRadioButton>
-#include <QPushButton>
+#include "jbutton.h"
 #include "jtextfield.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
@@ -58,17 +58,17 @@ namespace Operations
  log = new Logger("TrainEditBuildOptionsFrame");
   _train = NULL;
 
-  panelOwnerNames = new QWidget();
-  panelBuilt = new QWidget();
-  panelTrainReq1 = new QWidget();
-  panelTrainReq2 = new QWidget();
+  panelOwnerNames = new JPanel();
+  panelBuilt = new JPanel();
+  panelTrainReq1 = new JPanel();
+  panelTrainReq2 = new JPanel();
 
   engine1Option = new JPanel();
-  engine1DropOption = new QWidget();
+  engine1DropOption = new JPanel();
   engine1caboose = new JPanel();
 
   engine2Option = new JPanel();
-  engine2DropOption = new QWidget();
+  engine2DropOption = new JPanel();
   engine2caboose = new JPanel();
 
   // labels
@@ -78,9 +78,9 @@ namespace Operations
   after = new QLabel(tr("After"));
 
   // major buttons
-  addOwnerButton = new QPushButton(tr("Add Owner"));
-  deleteOwnerButton = new QPushButton(tr("Delete Owner"));
-  saveTrainButton = new QPushButton(tr("SaveT rain"));
+  addOwnerButton = new JButton(tr("Add Owner"));
+  deleteOwnerButton = new JButton(tr("Delete Owner"));
+  saveTrainButton = new JButton(tr("SaveT rain"));
 
   // radio buttons
   ownerNameAll = new QRadioButton(tr("Accept All"));
@@ -355,7 +355,7 @@ namespace Operations
   panelTrainReq2->layout()->addWidget(engine2DropOption);
 
   // row 15 buttons
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
 //		pB->setMaximumSize(QSize(2000, 250));
   addItem(pB, saveTrainButton, 3, 0);
@@ -469,7 +469,7 @@ namespace Operations
 // Save
 /*public*/ void TrainEditBuildOptionsFrame::buttonActionPerformed(QWidget* ae)
 {
-QPushButton* source = (QPushButton*)ae;
+JButton* source = (JButton*)ae;
   if (_train != NULL) {
       if (source == saveTrainButton) {
           log->debug("train save button activated");

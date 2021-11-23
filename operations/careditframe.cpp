@@ -7,7 +7,7 @@
 #include "locationmanager.h"
 #include "location.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include "jtextfield.h"
 #include "xml.h"
@@ -71,18 +71,18 @@ namespace Operations
 
   // major buttons
   editRoadButton = new JButton(tr("Edit"));
-  clearRoadNumberButton = new QPushButton(tr("Clear"));
+  clearRoadNumberButton = new JButton(tr("Clear"));
   editTypeButton = new JButton(tr("Edit"));
   editColorButton = new JButton(tr("Edit"));
   editLengthButton = new JButton(tr("Edit"));
-  fillWeightButton = new QPushButton(tr("Calculate"));
-  editLoadButton = new QPushButton(tr("Edit"));
+  fillWeightButton = new JButton(tr("Calculate"));
+  editLoadButton = new JButton(tr("Edit"));
   editKernelButton = new JButton(tr("Edit"));
   editOwnerButton = new JButton(tr("Edit"));
 
-  saveButton = new QPushButton(tr("Save"));
-  deleteButton = new QPushButton(tr("Delete"));
-  addButton = new QPushButton(tr("Add"));
+  saveButton = new JButton(tr("Save"));
+  deleteButton = new JButton(tr("Delete"));
+  addButton = new JButton(tr("Add"));
 
   // check boxes
   autoCheckBox = new QCheckBox(tr("Auto"));
@@ -318,7 +318,7 @@ namespace Operations
   pOptionalLayout->addWidget(pComment);
 
   // button panel
-  QWidget* pButtons = new QWidget();
+  JPanel* pButtons = new JPanel();
   //pButtons.setLayout(new GridBagLayout());
   addItem(pButtons, deleteButton, 0, 25);
   addItem(pButtons, addButton, 1, 25);

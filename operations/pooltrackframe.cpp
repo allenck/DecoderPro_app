@@ -4,13 +4,12 @@
 #include "track.h"
 #include <QBoxLayout>
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include "jtextfield.h"
 #include "jcombobox.h"
 #include "logger.h"
 #include "control.h"
 #include <QScrollArea>
-#include <QGroupBox>
 #include "location.h"
 #include <QMessageBox>
 #include "operationsxml.h"
@@ -78,8 +77,8 @@ common();
   comboBoxPools = new JComboBox();
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  saveButton = new QPushButton(tr("Save"));
+  addButton = new JButton(tr("Add"));
+  saveButton = new JButton(tr("Save"));
 
   // pool status
   poolStatus = new JPanel();
@@ -242,7 +241,7 @@ common();
  }
 
  /*public*/ void PoolTrackFrame::buttonActionPerformed(QWidget* ae) {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
      if (source == addButton) {
          Location* location = _track->getLocation();
          location->addPool(trackPoolNameTextField->text());

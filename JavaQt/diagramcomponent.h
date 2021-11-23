@@ -12,23 +12,23 @@ class DiagramComponent : public QFrame, public JComponent
  Q_INTERFACES(JComponent)
 public:
  DiagramComponent(ColorPanel* panel, bool diagram, QWidget* parent = nullptr);
- /*public*/ void mousePressEvent(QMouseEvent* event);
- /*public*/ void mouseReleaseEvent(QMouseEvent* event);
+ /*public*/ void mousePressEvent(QMouseEvent* event)override;
+ /*public*/ void mouseReleaseEvent(QMouseEvent* event)override;
  /*public*/ void mouseClicked(QMouseEvent* event);
  /*public*/ void mouseEntered(QMouseEvent* event);
  /*public*/ void mouseExited(QMouseEvent* event);
- /*public*/ void mouseMoveEvent(QMouseEvent* event);
+ /*public*/ void mouseMoveEvent(QMouseEvent* event)override;
  /*public*/ void mouseDragged(QMouseEvent* event);
 
- /*public*/ bool  isOpaque();
- /*public*/ QColor getBackground();
- /*public*/ void setBackground(QColor c);
- /*public*/ QFont getFont();
- /*public*/ void setOpaque(bool b);
- /*public*/ void setFont(QFont f);
- QObject* jself(){return (QObject*)this;}
+ /*public*/ bool  isOpaque()override;
+ /*public*/ QColor getBackground()override;
+ /*public*/ void setBackground(QColor c)override;
+ /*public*/ QFont getFont()override;
+ /*public*/ void setOpaque(bool b)override;
+ /*public*/ void setFont(QFont f)override;
+ QWidget* jself()override{return (QWidget*)this;}
  /*public*/ void setBorder(Border* border) override {this->_border = border;}
- /*public*/ Border* getBorder() {return _border;}
+ /*public*/ Border* getBorder() override{return _border;}
 
 
 private:

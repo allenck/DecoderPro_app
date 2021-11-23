@@ -1,6 +1,6 @@
 #include "changedeparturetimesframe.h"
 #include "schedule.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include <QGroupBox>
@@ -37,7 +37,7 @@ namespace Operations
  /*public*/ ChangeDepartureTimesFrame::ChangeDepartureTimesFrame(QWidget* parent)
 : OperationsFrame(parent)
 {
- changeButton = new QPushButton(tr("Change"));
+ changeButton = new JButton(tr("Change"));
 
 // combo boxes
  hourBox = new JComboBox();
@@ -79,7 +79,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void ChangeDepartureTimesFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == changeButton) {
          log->debug("change button activated");
          TrainManager* trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));

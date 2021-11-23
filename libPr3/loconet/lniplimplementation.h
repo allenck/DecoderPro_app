@@ -150,23 +150,23 @@ class LnIPLImplementation : public QObject, public JComponent, public LocoNetLis
   /*public*/ static /*final*/ QString interpretSlaveManufacturerDevice(int slaveMfr, int slaveDevice);
   /*public*/ void connect(LnTrafficController* t);
   /*public*/ void dispose();
-  /*public*/ void message(LocoNetMessage* m);
+  /*public*/ void message(LocoNetMessage* m)override;
   /*public*/ bool isIplQueryTimerRunning();
   /*public*/ static bool isValidMfgDevice(int mfg, int deviceType);
   /*public*/ static QString getManufacturer(int manuf);
   /*public*/ static QString getDeviceName(int manuf, int device, int slaveManuf, int slave);
 
-  /*public*/ bool isOpaque() {return true;}
-  /*public*/ QColor getForeground() {return QColor();}
-  /*public*/ QColor getBackground() {return QColor();}
-  /*public*/ void setBackground(QColor) {}
-  /*public*/ void setOpaque(bool) {}
-  /*public*/ QFont getFont() {return QFont();}
-  /*public*/ void setFont(QFont) {}
-  QObject* jself() {return (QObject*)this;}
-  /*public*/ void setBorder(Border*) {}
-  /*public*/ Border* getBorder() {return nullptr;}
-  /*public*/ void setEnabled(bool) {}
+  /*public*/ bool isOpaque() override{return true;}
+  /*public*/ QColor getForeground() override{return QColor();}
+  /*public*/ QColor getBackground() override{return QColor();}
+  /*public*/ void setBackground(QColor) override{}
+  /*public*/ void setOpaque(bool) override{}
+  /*public*/ QFont getFont() override{return QFont();}
+  /*public*/ void setFont(QFont) override{}
+  QWidget* jself() override{return (QWidget*)this;}
+  /*public*/ void setBorder(Border*) override{}
+  /*public*/ Border* getBorder() override{return nullptr;}
+  /*public*/ void setEnabled(bool) override{}
 
  private:
   /*private*/ bool waitingForIplReply;

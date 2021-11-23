@@ -50,12 +50,12 @@ namespace Operations
   QList<QCheckBox*> checkBoxes;//= new ArrayList<JCheckBox>();
 
   // panels
-  QWidget* panelCheckBoxes;//= new JPanel();
-  QGroupBox* checkBoxesGroupBox;//= new JScrollPane(panelCheckBoxes);
-  QGroupBox* panelTrainDir;//= new JPanel();
-  QGroupBox* pShipLoadOption;//= new JPanel();
-  QGroupBox* pDestinationOption;//= new JPanel();
-  QGroupBox* panelOrder;//= new JPanel();
+  JPanel* panelCheckBoxes;//= new JPanel();
+  JPanel* checkBoxesGroupBox;//= new JScrollPane(panelCheckBoxes);
+  JPanel* panelTrainDir;//= new JPanel();
+  JPanel* pShipLoadOption;//= new JPanel();
+  JPanel* pDestinationOption;//= new JPanel();
+  JPanel* panelOrder;//= new JPanel();
   QScrollArea* paneCheckBoxesScroll;
 
   // labels
@@ -65,16 +65,16 @@ namespace Operations
   QLabel* destinationOption;//= new JLabel();
 
   // major buttons
-  QPushButton* clearButton;//= new JButton(tr("Clear"));
-  QPushButton* setButton;//= new JButton(tr("Select"));
-  QPushButton* saveTrackButton;//= new JButton(tr("SaveTrack"));
-  QPushButton* deleteTrackButton;//= new JButton(tr("DeleteTrack"));
-  QPushButton* addTrackButton;//= new JButton(tr("AddTrack"));
+  JButton* clearButton;//= new JButton(tr("Clear"));
+  JButton* setButton;//= new JButton(tr("Select"));
+  JButton* saveTrackButton;//= new JButton(tr("SaveTrack"));
+  JButton* deleteTrackButton;//= new JButton(tr("DeleteTrack"));
+  JButton* addTrackButton;//= new JButton(tr("AddTrack"));
 
-  QPushButton* deleteDropButton;//= new JButton(tr("Delete"));
-  QPushButton* addDropButton;//= new JButton(tr("Add"));
-  QPushButton* deletePickupButton;//= new JButton(tr("Delete"));
-  QPushButton* addPickupButton;//= new JButton(tr("Add"));
+  JButton* deleteDropButton;//= new JButton(tr("Delete"));
+  JButton* addDropButton;//= new JButton(tr("Add"));
+  JButton* deletePickupButton;//= new JButton(tr("Delete"));
+  JButton* addPickupButton;//= new JButton(tr("Add"));
 
   // check boxes
   QCheckBox* northCheckBox;//= new JCheckBox(tr("North"));
@@ -116,12 +116,12 @@ namespace Operations
 //          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
   // optional panel for spurs, staging, and interchanges
-  QGroupBox* dropPanel;//= new JPanel();
+  JPanel* dropPanel;//= new JPanel();
   GridBagLayout* dropPanelLayout;
-  QGroupBox* pickupPanel;//= new JPanel();
+  JPanel* pickupPanel;//= new JPanel();
   FlowLayout* pickupPanelLayout;
-  QWidget* panelOpt3;//= new JPanel(); // not currently used
-  QGroupBox* panelOpt4;//= new JPanel();
+  JPanel* panelOpt3;//= new JPanel(); // not currently used
+  JPanel* panelOpt4;//= new JPanel();
   /*private*/ void updateCheckboxes();
   GridBagLayout* pcbLayout;
 

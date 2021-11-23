@@ -35,7 +35,7 @@ namespace Operations
   QCheckBox* invertCheckBox;//= new JCheckBox(Bundle.getMessage("Invert"));
 
   // major buttons
-  QPushButton* copyButton;//= new JButton(Bundle.getMessage("Copy"));
+  JButton* copyButton;//= new JButton(Bundle.getMessage("Copy"));
 
   // combo boxes
   JComboBox* routeBox;//= RouteManager.instance().getComboBox();

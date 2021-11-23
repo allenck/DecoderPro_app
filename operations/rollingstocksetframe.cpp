@@ -4,7 +4,7 @@
 #include "locationmanager.h"
 #include "trainmanager.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include "jcombobox.h"
 #include <QScrollArea>
@@ -80,8 +80,8 @@ void RollingStockSetFrame::common()
  textType = new QLabel();
 
  // major buttons
- saveButton = new QPushButton(tr("Save"));
- ignoreAllButton = new QPushButton(tr("IgnoreAll"));
+ saveButton = new JButton(tr("Save"));
+ ignoreAllButton = new JButton(tr("IgnoreAll"));
 
  // combo boxes
  locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
@@ -207,7 +207,7 @@ void RollingStockSetFrame::common()
      paneOptional2Layout->addWidget(pTrain);
 
      // button panel
-     QWidget*pButtons = new QWidget();
+     JPanel* pButtons = new JPanel();
      pButtons->setLayout(new GridBagLayout());
      addItem(pButtons, ignoreAllButton, 1, 0);
      addItem(pButtons, saveButton, 2, 0);
@@ -315,7 +315,7 @@ void RollingStockSetFrame::common()
 
  // Save button
  /*public*/ void RollingStockSetFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          _disableComboBoxUpdate = true; // need to stop property changes while we update
          save();

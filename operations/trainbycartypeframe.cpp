@@ -49,7 +49,7 @@ namespace Operations
  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
 // panels
- pRoute = new QWidget();
+ pRoute = new JPanel();
 
      // radio buttons
      // combo boxes

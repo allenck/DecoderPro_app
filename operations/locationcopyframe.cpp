@@ -2,10 +2,9 @@
 #include "locationmanager.h"
 #include "track.h"
 #include "jtextfield.h"
-#include <QPushButton>
 #include <QBoxLayout>
 #include "propertychangeevent.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include <QGroupBox>
 #include <gridbaglayout.h>
@@ -13,7 +12,6 @@
 #include "logger.h"
 #include "operationsxml.h"
 #include "vptr.h"
-#include <QPushButton>
 #include <QMessageBox>
 #include "jcombobox.h"
 #include "rollingstockmanager.h"
@@ -22,6 +20,7 @@
 #include "rollingstock.h"
 #include "location.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -53,8 +52,8 @@ namespace Operations
    locationNameTextField = new JTextField(Control::max_len_string_location_name);
 
    // major buttons
-   copyButton = new QPushButton(tr("Copy"));
-   saveButton = new QPushButton(tr("Save"));
+   copyButton = new JButton(tr("Copy"));
+   saveButton = new JButton(tr("Save"));
 
    // combo boxes
    JComboBox* locationBox = locationManager->getComboBox();
@@ -72,32 +71,29 @@ namespace Operations
    // row 1
    QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
 
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setLayout(new GridBagLayout());
-  //pName.setBorder(BorderFactory.createTitledBorder(tr("LocationName")));
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Location name")));
   pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle(tr("Location name"));
   addItem(pName, locationNameTextField, 0, 0);
 
   // row 2
-  QGroupBox* pCopy = new QGroupBox();
+  JPanel* pCopy = new JPanel();
   pCopy->setLayout(new GridBagLayout());
-  //pCopy.setBorder(BorderFactory.createTitledBorder(tr("SelectLocationToCopy")));
+  pCopy->setBorder(BorderFactory::createTitledBorder(tr("Select Location to Copy")));
   pCopy->setStyleSheet(gbStyleSheet);
-  pCopy->setTitle(tr("Select Location to Copy"));
   addItem(pCopy, locationBox, 0, 0);
 
   // row 3
-  QGroupBox* pOptions = new QGroupBox();
+  JPanel* pOptions = new JPanel();
   pOptions->setLayout(new GridBagLayout());
-  //pOptions.setBorder(BorderFactory.createTitledBorder(tr("Options")));
+  pOptions->setBorder(BorderFactory::createTitledBorder(tr("Options")));
   pOptions->setStyleSheet(gbStyleSheet);
-  pOptions->setTitle(tr("Options"));
   addItemLeft(pOptions, moveRollingStockCheckBox, 0, 1);
   addItemLeft(pOptions, deleteTrackCheckBox, 0, 2);
 
   // row 4
-  QWidget* pButton = new QWidget();
+  JPanel* pButton = new JPanel();
   pButton->setLayout(new GridBagLayout());
   addItem(pButton, copyButton, 0, 0);
   addItem(pButton, saveButton, 1, 0);
@@ -133,7 +129,7 @@ namespace Operations
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
  /*protected*/ void LocationCopyFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   if (source == copyButton)
   {
       log->debug("copy location button activated");

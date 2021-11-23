@@ -9,7 +9,7 @@
 #include <QBoxLayout>
 #include "jtable.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include <QComboBox>
 #include <QRadioButton>
@@ -100,14 +100,14 @@ namespace Operations
   conductorRB = new QRadioButton(CONDUCTOR);
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  buildButton = new QPushButton(tr("Build"));
-  printButton = new QPushButton(tr("Print"));
-  openFileButton = new QPushButton(tr("OpenFile"));
-  runFileButton = new QPushButton(tr("RunFile"));
-  switchListsButton = new QPushButton(tr("SwitchLists"));
-  terminateButton = new QPushButton(tr("Terminate"));
-  saveButton = new QPushButton(tr("SaveBuilds"));
+  addButton = new JButton(tr("Add"));
+  buildButton = new JButton(tr("Build"));
+  printButton = new JButton(tr("Print"));
+  openFileButton = new JButton(tr("OpenFile"));
+  runFileButton = new JButton(tr("RunFile"));
+  switchListsButton = new JButton(tr("SwitchLists"));
+  terminateButton = new JButton(tr("Terminate"));
+  saveButton = new JButton(tr("SaveBuilds"));
 
   // check boxes
   buildMsgBox = new QCheckBox(tr("BuildMessages"));
@@ -361,7 +361,7 @@ namespace Operations
  // add, build, print, switch lists, terminate, and save buttons
  /*public*/ void TrainsTableFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   // log->debug("train button activated");
 
   if (source == addButton)

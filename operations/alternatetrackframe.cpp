@@ -1,6 +1,6 @@
 #include "alternatetrackframe.h"
 #include "track.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
@@ -34,7 +34,7 @@ namespace Operations
      //super();
  trackBox = new JComboBox();
 
- saveButton = new QPushButton(tr("Save"));
+ saveButton = new JButton(tr("Save"));
 
 
      // the following code sets the frame's initial state
@@ -70,7 +70,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void AlternateTrackFrame::buttonActionPerformed(JActionEvent* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          _track->setAlternateTrack((Track*) VPtr<Track>::asPtr(trackBox->currentData()));
          OperationsXml::save();

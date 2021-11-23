@@ -36,25 +36,25 @@ namespace Operations
   LocationManager* locationManager;// = LocationManager.instance();
   QList<QCheckBox*> locationCheckBoxes;// = new ArrayList<JCheckBox>();
   QList<JComboBox*> locationComboBoxes;// = new ArrayList<JComboBox<String>>();
-  QWidget* locationPanelCheckBoxes;// = new JPanel();
+  JPanel* locationPanelCheckBoxes;// = new JPanel();
 
   // checkboxes
   QCheckBox* switchListRealTimeCheckBox;// = new JCheckBox(Bundle.getMessage("SwitchListRealTime"));
   QCheckBox* switchListAllTrainsCheckBox;// = new JCheckBox(Bundle.getMessage("SwitchListAllTrains"));
 
   // major buttons
-  QPushButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
-  QPushButton* setButton;// = new JButton(Bundle.getMessage("Select"));
-  QPushButton* printButton;// = new JButton(Bundle.getMessage("PrintSwitchLists"));
-  QPushButton* previewButton;// = new JButton(Bundle.getMessage("PreviewSwitchLists"));
-  QPushButton* changeButton;// = new JButton(Bundle.getMessage("PrintChanges"));
-  QPushButton* runButton;// = new JButton(Bundle.getMessage("RunFile"));
-  QPushButton* runChangeButton;// = new JButton(Bundle.getMessage("RunFileChanges"));
-  QPushButton* csvGenerateButton;// = new JButton(Bundle.getMessage("CsvGenerate"));
-  QPushButton* csvChangeButton;// = new JButton(Bundle.getMessage("CsvChanges"));
-  QPushButton* updateButton;// = new JButton(Bundle.getMessage("Update"));
-  QPushButton* resetButton;// = new JButton(Bundle.getMessage("ResetSwitchLists"));
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
+  JButton* setButton;// = new JButton(Bundle.getMessage("Select"));
+  JButton* printButton;// = new JButton(Bundle.getMessage("PrintSwitchLists"));
+  JButton* previewButton;// = new JButton(Bundle.getMessage("PreviewSwitchLists"));
+  JButton* changeButton;// = new JButton(Bundle.getMessage("PrintChanges"));
+  JButton* runButton;// = new JButton(Bundle.getMessage("RunFile"));
+  JButton* runChangeButton;// = new JButton(Bundle.getMessage("RunFileChanges"));
+  JButton* csvGenerateButton;// = new JButton(Bundle.getMessage("CsvGenerate"));
+  JButton* csvChangeButton;// = new JButton(Bundle.getMessage("CsvChanges"));
+  JButton* updateButton;// = new JButton(Bundle.getMessage("Update"));
+  JButton* resetButton;// = new JButton(Bundle.getMessage("ResetSwitchLists"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   JComboBox* switchListPageComboBox;// = Setup.getSwitchListPageFormatComboBox();
 
@@ -71,7 +71,7 @@ namespace Operations
   /*private*/ void enableChangeButtons();
   /*private*/ void addLocationCheckBoxAction(QCheckBox* b);
   QSignalMapper* locationCheckBoxMapper;
-  /*private*/ void addCommentButtonAction(QPushButton* b);
+  /*private*/ void addCommentButtonAction(JButton* b);
 
  private slots:
   /*private*/ void changeLocationCheckboxes(PropertyChangeEvent* e);
@@ -93,7 +93,7 @@ namespace Operations
   //QScrollArea* commentScroller;// = new JScrollPane(commentTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 //             JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   QSize minScrollerDim;// = new Dimension(1200, 500);
-  QPushButton* saveButton;// = new QPushButton(tr("Save"));
+  JButton* saveButton;// = new JButton(tr("Save"));
 
   Location* _location;
   Logger* log;

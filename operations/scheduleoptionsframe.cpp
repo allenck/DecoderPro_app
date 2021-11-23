@@ -5,10 +5,9 @@
 #include <jtextfield.h>
 #include "jcombobox.h"
 #include <QBoxLayout>
-#include <QPushButton>
+#include "jbutton.h"
 #include "track.h"
 #include "scheduleeditframe.h"
-#include <QGroupBox>
 #include "gridbaglayout.h"
 #include "location.h"
 #include "flowlayout.h"
@@ -46,7 +45,7 @@ namespace Operations
 
   // radio buttons
   // major buttons
-  saveButton = new QPushButton(tr("Save"));
+  saveButton = new JButton(tr("Save"));
 
   // the following code sets the frame's initial state
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -92,7 +91,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void ScheduleOptionsFrame::buttonActionPerformed(QWidget* ae)
 {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          // confirm that factor is between 0 and 1000
          bool ok;

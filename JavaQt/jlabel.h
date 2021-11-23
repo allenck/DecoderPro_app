@@ -321,20 +321,20 @@ public:
     virtual void setName(QString name);
     QString getName();
     /*public*/ void setBounds(int x, int y, int w, int h);
-    /*public*/ QObject* jself() {return (QObject*)this;}
-    /*public*/ bool isOpaque();
-    /*public*/ QColor getBackground();
-    /*public*/ void setBackground(QColor);
-    QColor getForeground();
+    /*public*/ QWidget* jself() override{return (QWidget*)this;}
+    /*public*/ bool isOpaque()override;
+    /*public*/ QColor getBackground()override;
+    /*public*/ void setBackground(QColor)override;
+    QColor getForeground()override;
     /*public*/ void setForeground(QColor);
 
-    /*public*/ QFont getFont();
-    /*public*/ void setOpaque(bool);
-    /*public*/ void setFont(QFont);
+    /*public*/ QFont getFont()override;
+    /*public*/ void setOpaque(bool)override;
+    /*public*/ void setFont(QFont)override;
 //    /*public*/ void setLabelFor(QWidget* labelFor) {this->labelFor = labelFor;}
-    /*public*/ QFontMetrics getFontMetrics();
+//    /*public*/ QFontMetrics getFontMetrics(QFont f)override;
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
-    /*public*/ Border* getBorder() {return _border;}
+    /*public*/ Border* getBorder() override{return _border;}
     /*public*/ int getBaseline(int w, int h);
 
     PropertyChangeSupport* pcs = new PropertyChangeSupport(this);

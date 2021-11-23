@@ -331,17 +331,17 @@ public:
     PathTurnoutTableModel* getModel() {
         return pathTurnoutModel;
     }
-    void setEnabled(bool b) override {setEnabled(b);}
-    bool isOpaque() {return true;}
-    QColor getForeground()  {return Qt::black;}
-    QColor getBackground() {return Qt::lightGray;}
-    void setBackground(QColor){return;}
-    void setOpaque(bool) {}
-    QFont getFont() {return font();}
-    void setFont(QFont f) {QWidget::setFont(f);}
-    QObject* jself() {(QObject*)this;}
-    void setBorder(Border* b) {}
-    Border* getBorder() {return nullptr;}
+    void setEnabled(bool b) override {QWidget::setEnabled(b);}
+    bool isOpaque() override{return true;}
+    QColor getForeground()  override{return Qt::black;}
+    QColor getBackground() override{return Qt::lightGray;}
+    void setBackground(QColor)override{return;}
+    void setOpaque(bool)override {}
+    QFont getFont() override{return font();}
+    void setFont(QFont f) override{QWidget::setFont(f);}
+    QWidget* jself() override{return (QWidget*)this;}
+    void setBorder(Border* /*b*/) override{}
+    Border* getBorder() override{return nullptr;}
 };
 
 class TFCloseWindowListener : public WindowAdapter

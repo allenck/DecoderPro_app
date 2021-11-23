@@ -27,8 +27,8 @@ namespace Operations
   JTextField* trackNameTextField;// =new JTextField(Control.max_len_string_track_name);
 
   // major buttons
-  QPushButton* copyButton;// =new JButton(Bundle.getMessage("Copy"));
-  QPushButton* saveButton;// =new JButton(Bundle.getMessage("Save"));
+  JButton* copyButton;// =new JButton(Bundle.getMessage("Copy"));
+  JButton* saveButton;// =new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
   JComboBox* locationBox;// =LocationManager.instance().getComboBox();

@@ -31,7 +31,7 @@ public:
  /*public*/ void setFont(QFont)override;
  /*public*/ int getValue() {return value();}
 
- /*public*/ QObject* jself() {return (QObject*)this;}
+ /*public*/ QWidget* jself()override {return (QWidget*)this;}
  /*public*/ void addChangeListener(ChangeListener*);
  /*public*/ void removeChangeListener(ChangeListener*);
  /*public*/ void addFocusListener(FocusListener *l);

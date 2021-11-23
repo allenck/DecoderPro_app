@@ -1,8 +1,7 @@
 #include "trackdestinationeditframe.h"
 #include "locationmanager.h"
 #include <QVBoxLayout>
-#include <QPushButton>
-#include <QGroupBox>
+#include "jbutton.h"
 #include "track.h"
 #include "gridbaglayout.h"
 #include <QScrollArea>
@@ -58,13 +57,13 @@ namespace Operations
       locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
 
      // panels
-     pControls = new QWidget();
-     panelDestinations = new QWidget();
+     pControls = new JPanel();
+     panelDestinations = new JPanel();
      paneDestinations = new QScrollArea(/*panelDestinations*/);
 
      // major buttons
-     saveTrackButton = new QPushButton(tr("SaveTrack"));
-     checkDestinationsButton = new QPushButton(tr("CheckDestinations"));
+     saveTrackButton = new JButton(tr("SaveTrack"));
+     checkDestinationsButton = new JButton(tr("CheckDestinations"));
 
      // radio buttons
      destinationsAll = new QRadioButton(tr("AcceptAll"));
@@ -84,7 +83,7 @@ namespace Operations
      // Set up the panels
      // Layout the panel by rows
      // row 1
-     QGroupBox* p1 = new QGroupBox();
+     JPanel* p1 = new JPanel();
      p1->setLayout(new QHBoxLayout);//(p1, BoxLayout.X_AXIS));
      p1->setMaximumSize(QSize(2000, 250));
 
@@ -186,7 +185,7 @@ namespace Operations
      if (_track == NULL) {
          return;
      }
-     QPushButton* source = (QPushButton*)ae;
+     JButton* source = (JButton*)ae;
      if (source == saveTrackButton) {
          log->debug("track save button activated");
          OperationsXml::save();

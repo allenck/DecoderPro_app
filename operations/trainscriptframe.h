@@ -40,10 +40,10 @@ namespace Operations
   Train* _train;// =NULL;
 
   // script panels
-  QWidget* pBuildScript;// =new JPanel();
-  QWidget* pAfterBuildScript;// =new JPanel();
-  QWidget* pMoveScript;// =new JPanel();
-  QWidget* pTerminationScript;// =new JPanel();
+  JPanel* pBuildScript;// =new JPanel();
+  JPanel* pAfterBuildScript;// =new JPanel();
+  JPanel* pMoveScript;// =new JPanel();
+  JPanel* pTerminationScript;// =new JPanel();
   QScrollArea* buildScriptPane;
   QScrollArea* afterBuildScriptPane;
   QScrollArea* moveScriptPane;
@@ -54,17 +54,17 @@ namespace Operations
   QLabel* trainDescription;// =new JLabel();
 
   // major buttons
-  QPushButton* addBuildScriptButton;// =new JButton(Bundle.getMessage("AddScript"));
-  QPushButton* addAfterBuildScriptButton;// =new JButton(Bundle.getMessage("AddScript"));
-  QPushButton* addMoveScriptButton;// =new JButton(Bundle.getMessage("AddScript"));
-  QPushButton* addTerminationScriptButton;// =new JButton(Bundle.getMessage("AddScript"));
+  JButton* addBuildScriptButton;// =new JButton(Bundle.getMessage("AddScript"));
+  JButton* addAfterBuildScriptButton;// =new JButton(Bundle.getMessage("AddScript"));
+  JButton* addMoveScriptButton;// =new JButton(Bundle.getMessage("AddScript"));
+  JButton* addTerminationScriptButton;// =new JButton(Bundle.getMessage("AddScript"));
 
-  QPushButton* runBuildScriptButton;// =new JButton(Bundle.getMessage("RunScripts"));
-  QPushButton* runAfterBuildScriptButton;// =new JButton(Bundle.getMessage("RunScripts"));
-  QPushButton* runMoveScriptButton;// =new JButton(Bundle.getMessage("RunScripts"));
-  QPushButton* runTerminationScriptButton;// =new JButton(Bundle.getMessage("RunScripts"));
+  JButton* runBuildScriptButton;// =new JButton(Bundle.getMessage("RunScripts"));
+  JButton* runAfterBuildScriptButton;// =new JButton(Bundle.getMessage("RunScripts"));
+  JButton* runMoveScriptButton;// =new JButton(Bundle.getMessage("RunScripts"));
+  JButton* runTerminationScriptButton;// =new JButton(Bundle.getMessage("RunScripts"));
 
-  QPushButton* saveTrainButton;// =new JButton(Bundle.getMessage("SaveTrain"));
+  JButton* saveTrainButton;// =new JButton(Bundle.getMessage("SaveTrain"));
   /*private*/ void updateBuildScriptPanel();
   /*private*/ void updateAfterBuildScriptPanel();
   /*private*/ void updateMoveScriptPanel();

@@ -8,7 +8,7 @@
 #include "trackeditframe.h"
 #include "track.h"
 #include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "gridbaglayout.h"
 #include "borderfactory.h"
 
@@ -41,7 +41,7 @@ namespace Operations
   group = new QButtonGroup();
 
   // major buttons
-  saveButton = new QPushButton(tr("Save"));
+  saveButton = new JButton(tr("Save"));
 
   _trackType = "";
   // the following code sets the frame's initial state
@@ -88,7 +88,7 @@ namespace Operations
  }
 
  /*public*/ void ChangeTrackFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          // check to see if button has changed
          if (spurRadioButton->isChecked() && _trackType!=(Track::SPUR)) {

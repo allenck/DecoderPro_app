@@ -46,7 +46,7 @@ namespace Operations
   QCheckBox* printDetails;//= new JCheckBox(tr("PrintDetails"));
   QCheckBox* printAnalysis;//= new JCheckBox(tr("PrintAnalysis"));
 
-  QPushButton* okayButton;//= new JButton(tr("ButtonOkay"));
+  JButton* okayButton;//= new JButton(tr("ButtonOkay"));
   void common();
   /*private*/ void printLocationsSelected();// //throws IOException
   /*private*/ void printSchedulesSelected();// //throws IOException

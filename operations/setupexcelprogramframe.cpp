@@ -15,9 +15,9 @@ SetupExcelProgramFrame::SetupExcelProgramFrame(QWidget* parent) : OperationsFram
 {
  generateCheckBox = new QCheckBox();
  fileNameTextField = new JTextField(30);
- addButton = new QPushButton(tr("Add"));
- testButton = new QPushButton(tr("Test"));
- saveButton = new QPushButton(tr("Save"));
+ addButton = new JButton(tr("Add"));
+ testButton = new JButton(tr("Test"));
+ saveButton = new JButton(tr("Save"));
  pDirectoryName = new JPanel();
 }
 /**
@@ -54,7 +54,7 @@ SetupExcelProgramFrame::SetupExcelProgramFrame(QWidget* parent) : OperationsFram
     pFileNameLayout->addWidget(fileNameTextField);
 
     // row 4 buttons
-    QWidget* pButtons = new QWidget();
+    JPanel* pButtons = new JPanel();
     GridBagLayout* g;
     pButtons->setLayout(g = new GridBagLayout());
     addItem(pButtons, addButton, 1, 0);

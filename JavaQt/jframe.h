@@ -73,14 +73,14 @@ public:
     void addWindowListener(WindowListener* l);
     /*public*/ /*synchronized*/ void removeWindowListener(WindowListener* l);
     QVector<WindowListener*> getWindowListeners();
-    bool isOpaque();
-    /*public*/ QColor getForeground();
-    QColor getBackground();
-    void setBackground(QColor);
-    void setOpaque(bool);
-    QFont getFont();
-    void setFont(QFont);
-    QObject* jself() {return (QObject*)this;}
+    bool isOpaque()override;
+    /*public*/ QColor getForeground()override;
+    QColor getBackground()override;
+    void setBackground(QColor)override;
+    void setOpaque(bool)override;
+    QFont getFont()override;
+    void setFont(QFont)override;
+    QWidget* jself() override{return (QWidget*)this;}
     /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
     bool _closed = false;
     virtual bool closedNormally() {return _closed;}
@@ -91,9 +91,9 @@ public:
 #endif
     void reSizeToFitOnScreen();
     /*public*/ virtual void pack();
-    void setVisible(bool visible);
+    void setVisible(bool visible)override;
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
-    /*public*/ Border* getBorder() {return _border;}
+    /*public*/ Border* getBorder() override{return _border;}
     /*public*/ void removeAll();
 
     /*public*/ virtual void componentMoved(QMoveEvent* ) {}

@@ -3,7 +3,7 @@
 #include "setup.h"
 #include "control.h"
 #include "track.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include "location.h"
 #include "locationeditframe.h"
@@ -43,7 +43,7 @@ namespace Operations
      stagingRadioButton = new QRadioButton(tr("Staging"));
 
      // major buttons
-     saveButton = new QPushButton(tr("Save"));
+     saveButton = new JButton(tr("Save"));
 
 
      // the following code sets the frame's initial state
@@ -85,7 +85,7 @@ namespace Operations
  }
 
  /*public*/ void ChangeTracksFrame::buttonActionPerformed(QWidget* ae) {
-QPushButton* source = (QPushButton*)ae;
+JButton* source = (JButton*)ae;
      if (source == saveButton) {
          // check to see if button has changed
          if (spurRadioButton->isChecked()) {

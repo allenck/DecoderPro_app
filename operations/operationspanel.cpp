@@ -69,7 +69,7 @@ namespace Operations
      // The default method does nothing.
  }
 
- /*protected*/ void OperationsPanel::addItem(QWidget* c, int x, int y) {
+ /*protected*/ void OperationsPanel::addItem(QWidget *c, int x, int y) {
      GridBagConstraints gc = GridBagConstraints();
      gc.gridx = x;
      gc.gridy = y;
@@ -78,107 +78,50 @@ namespace Operations
      ((QGridLayout*)this->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
  }
 
- /*protected*/ void OperationsPanel::addItemLeft(QWidget* c, int x, int y) {
-     GridBagConstraints gc = GridBagConstraints();
-     gc.gridx = x;
-     gc.gridy = y;
-     gc.weightx = 100.0;
-     gc.weighty = 100.0;
-     gc.anchor = GridBagConstraints::WEST;
-     ((QGridLayout*)this->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
- }
-
- /*protected*/ void OperationsPanel::addItemWidth(QWidget* c, int width, int x, int y) {
-     GridBagConstraints gc =  GridBagConstraints();
-     gc.gridx = x;
-     gc.gridy = y;
-     gc.gridwidth = width;
-     gc.weightx = 100.0;
-     gc.weighty = 100.0;
-     ((QGridLayout*)this->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
- }
-
- /*protected*/ void OperationsPanel::addItem(QWidget* p, QWidget* c, int x, int y)
-{
+ /*protected*/ void OperationsPanel::addItem(JPanel* p, QWidget* c, int x, int y)
+ {
   GridBagConstraints gc = GridBagConstraints();
-  if(p->layout() ==NULL)
-   p->setLayout(new QGridLayout);
-  //else
-  {
-   if(x == 0 && y == 0)
-   {
-    p->layout()->addWidget(c);
-    return;
-   }
-   Q_ASSERT(qobject_cast<QGridLayout*>(p->layout()) != NULL);
-  }
   gc.gridx = x;
   gc.gridy = y;
   gc.weightx = 100.0;
   gc.weighty = 100.0;
-  ((QGridLayout*)p->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
+  ((GridBagLayout*)p->layout())->addWidget(c, gc);
  }
 
- /*protected*/ void OperationsPanel::addItemLeft(QWidget* p, QWidget* c, int x, int y)
+ /*protected*/ void OperationsPanel::addItemLeft(JPanel* p, QWidget* c, int x, int y)
  {
   GridBagConstraints gc = GridBagConstraints();
-  if(p->layout() ==NULL)
-   p->setLayout(new QGridLayout);
-  else
-   Q_ASSERT(qobject_cast<QGridLayout*>(p->layout()) != NULL);
   gc.gridx = x;
   gc.gridy = y;
   gc.weightx = 100.0;
   gc.weighty = 100.0;
   gc.anchor = GridBagConstraints::WEST;
-  if(qobject_cast<GridBagLayout*>(p->layout()) !=NULL)
-   ((GridBagLayout*)p->layout())->addWidget(c, gc);
-   else
-  ((QGridLayout*)p->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
-  //log->debug(tr("layout has %1 boxes").arg(p->layout()->children().count()));
+  ((GridBagLayout*)p->layout())->addWidget(c, gc);
  }
 
- /*protected*/ void OperationsPanel::addItemTop(QWidget* p, QWidget* c, int x, int y) {
+ /*protected*/ void OperationsPanel::addItemTop(JPanel* p, QWidget* c, int x, int y) {
      GridBagConstraints gc =  GridBagConstraints();
-     if(p->layout() ==NULL)
-      p->setLayout(new QGridLayout);
-     else
-      Q_ASSERT(qobject_cast<QGridLayout*>(p->layout()) != NULL);
      gc.gridx = x;
      gc.gridy = y;
      gc.weightx = 100;
      gc.weighty = 100;
      gc.anchor = GridBagConstraints::NORTH;
-     ((QGridLayout*)p->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
+     ((GridBagLayout*)p->layout())->addWidget(c, gc);
  }
 
- /*protected*/ void OperationsPanel::addItemWidth(QWidget* p, QWidget* c, int width, int x, int y) {
+ /*protected*/ void OperationsPanel::addItemWidth(JPanel* p, QWidget* c, int width, int x, int y) {
      GridBagConstraints gc =  GridBagConstraints();
-     if(p->layout() ==NULL)
-      p->setLayout(new QGridLayout);
-     else
-      Q_ASSERT(qobject_cast<QGridLayout*>(p->layout()) != NULL);
      gc.gridx = x;
      gc.gridy = y;
      gc.gridwidth = width;
      gc.weightx = 100.0;
      gc.weighty = 100.0;
      gc.anchor = GridBagConstraints::WEST;
-     ((QGridLayout*)p->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
+     ((GridBagLayout*)p->layout())->addWidget(c, gc);
  }
 
  /*private*/ /*static*/ /*final*/ int OperationsPanel::MIN_CHECKBOXES = 5;
  /*private*/ /*static*/ /*final*/ int OperationsPanel::MAX_CHECKBOXES = 11;
-
- /**
-  * Gets the number of checkboxes(+1) that can fix in one row see
-  * OperationsFrame.minCheckboxes and OperationsFrame.maxCheckboxes
-  *
-  * @return the number of checkboxes, minimum is 5 (6 checkboxes)
-  */
- /*protected*/ int OperationsPanel::getNumberOfCheckboxesPerLine() {
-     return getNumberOfCheckboxesPerLine(this->sizeHint());
- }
 
  /*protected*/ int OperationsPanel::getNumberOfCheckboxesPerLine(QSize size) {
  if (size == QSize()) {

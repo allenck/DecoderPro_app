@@ -26,7 +26,7 @@ namespace Operations
   JComboBox* loadsComboBox;//= new JComboBox<>();
 
   // panels
-  QWidget* locationsPanel;
+  JPanel* locationsPanel;
 
   // checkbox
   QCheckBox* allLoadsCheckBox;//= new JCheckBox(Bundle.getMessage("allLoads"));

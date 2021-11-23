@@ -33,13 +33,13 @@ namespace Operations
   LocationManager* locationManager;//= LocationManager.instance();
 
   // panels
-  QWidget* pControls;//= new JPanel();
-  QWidget* panelDestinations;//= new JPanel();
+  JPanel* pControls;//= new JPanel();
+  JPanel* panelDestinations;//= new JPanel();
   QScrollArea* paneDestinations;//= new JScrollPane(panelDestinations);
 
   // major buttons
-  QPushButton* saveTrackButton;//= new JButton(Bundle.getMessage("SaveTrack"));
-  QPushButton* checkDestinationsButton;//= new JButton(Bundle.getMessage("CheckDestinations"));
+  JButton* saveTrackButton;//= new JButton(Bundle.getMessage("SaveTrack"));
+  JButton* checkDestinationsButton;//= new JButton(Bundle.getMessage("CheckDestinations"));
 
   // radio buttons
   QRadioButton* destinationsAll;//= new JRadioButton(Bundle.getMessage("AcceptAll"));

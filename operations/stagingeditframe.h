@@ -26,7 +26,7 @@ namespace Operations
   QCheckBox* loadAnyStagingCheckBox;// = new JCheckBox(Bundle.getMessage("LoadsStaging"));
   QCheckBox* blockCarsCheckBox;// = new JCheckBox(Bundle.getMessage("BlockCars"));
 
-  QGroupBox* panelLoad;// = panelOpt4;
+  JPanel* panelLoad;// = panelOpt4;
 
  protected:
   /*protected*/ void saveTrack(Track* track);

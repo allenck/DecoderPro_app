@@ -10,7 +10,7 @@ class JActionEvent;
 class QGroupBox;
 class QScrollArea;
 class QCheckbox;
-class QPushButton;
+class JButton;
 class QLabel;
 namespace Operations
 {
@@ -68,8 +68,8 @@ public slots:
   QLabel* textType;// = new JLabel();
 
   // major buttons
-  /*protected*/ QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
-  /*protected*/ QPushButton* ignoreAllButton;// = new JButton(Bundle.getMessage("IgnoreAll"));
+  /*protected*/ JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  /*protected*/ JButton* ignoreAllButton;// = new JButton(Bundle.getMessage("IgnoreAll"));
 
   // combo boxes
   /*protected*/ JComboBox* locationBox;//= LocationManager.instance().getComboBox();

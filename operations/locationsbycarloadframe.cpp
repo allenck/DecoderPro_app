@@ -3,8 +3,7 @@
 #include "track.h"
 #include "location.h"
 #include <QCheckBox>
-#include <QPushButton>
-#include <QGroupBox>
+#include "jbutton.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include "jcombobox.h"
@@ -49,12 +48,12 @@ namespace Operations
   log = new Logger("LocationsByCarLoadFrame");
   // checkboxes track id as the checkbox name
   trackCheckBoxList = QList<QCheckBox*>();
-  locationCheckBoxes = new QWidget();
+  locationCheckBoxes = new JPanel();
 
   // major buttons
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  saveButton = new QPushButton(tr("Save"));
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  saveButton = new JButton(tr("Save"));
 
   // check boxes
   // JCheckBox copyCheckBox = new JCheckBox(tr("Copy"));
@@ -97,7 +96,7 @@ namespace Operations
 
   JPanel* pLocationsFrame = new JPanel;
   pLocationsFrame->setLayout(new QVBoxLayout);
-  pLocations = new QWidget();
+  pLocations = new JPanel();
   pLocations->setLayout(new GridBagLayout());
   QScrollArea* locationPane = new QScrollArea(/*pLocations*/);
   locationPane->setWidgetResizable(true);
@@ -181,7 +180,7 @@ namespace Operations
 
  // Save, Delete, Add
  /*public*/ void LocationsByCarLoadFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          save();
      }

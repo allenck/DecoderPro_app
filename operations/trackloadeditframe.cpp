@@ -4,7 +4,7 @@
 #include "location.h"
 #include "track.h"
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QBoxLayout>
 #include "gridbaglayout.h"
@@ -56,8 +56,8 @@ namespace Operations
   _toolMenu = NULL;
 
   // panels
-  pLoadControls = new QGroupBox();
-  panelLoads = new QWidget();
+  pLoadControls = new JPanel();
+  panelLoads = new JPanel();
   paneLoads = new QScrollArea(/*panelLoads*/);
 
   pShipLoadControls = new JPanel();
@@ -66,15 +66,15 @@ namespace Operations
   paneShipLoads = new QScrollArea(/*panelShipLoads*/);
 
   // major buttons
-  saveTrackButton = new QPushButton(tr("Save Track"));
+  saveTrackButton = new JButton(tr("Save Track"));
 
-  addLoadButton = new QPushButton(tr("Add Load"));
-  deleteLoadButton = new QPushButton(tr("Delete Load"));
-  deleteAllLoadsButton = new QPushButton(tr("Delete All"));
+  addLoadButton = new JButton(tr("Add Load"));
+  deleteLoadButton = new JButton(tr("Delete Load"));
+  deleteAllLoadsButton = new JButton(tr("Delete All"));
 
-  addShipLoadButton = new QPushButton(tr("Add Load"));
-  deleteShipLoadButton = new QPushButton(tr("Delete Load"));
-  deleteAllShipLoadsButton = new QPushButton(tr("Delete All"));
+  addShipLoadButton = new JButton(tr("Add Load"));
+  deleteShipLoadButton = new JButton(tr("Delete Load"));
+  deleteAllShipLoadsButton = new JButton(tr("Delete All"));
 
   // check boxes
   loadAndTypeCheckBox = new QCheckBox(tr("Type And Load"));
@@ -310,7 +310,7 @@ namespace Operations
      if (_track == NULL) {
          return;
      }
-     QPushButton* source = (QPushButton*)ae;
+     JButton* source = (JButton*)ae;
      if (source == saveTrackButton) {
          log->debug("track save button activated");
          save();

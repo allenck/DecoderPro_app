@@ -32,6 +32,8 @@
 #include "webserverpreferences.h"
 #include "joptionpane.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
+#include "gridbaglayout.h"
 
 //OperationsSetupPanel::OperationsSetupPanel(QWidget *parent) :
 //  OperationsPreferencesPanel(parent)
@@ -177,7 +179,7 @@ OperationsPreferencesPanel(parent)
   QScrollArea* panelPane = new QScrollArea(/*panel*/);
   //panelPane->setWidget(panel);
   //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-  //panelPane.setBorder(BorderFactory.createTitledBorder(""));
+  //panelPane->setBorder(BorderFactory::createTitledBorder(""));
 
   // row 1a
   QWidget* p1 = new QWidget();
@@ -188,20 +190,18 @@ OperationsPreferencesPanel(parent)
   QString gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 5px; margin-top: 1ex; /* leave space at the top for the title */} "
                  "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
 
-  QGroupBox* pRailroadName = new QGroupBox();
+  JPanel* pRailroadName = new JPanel();
   pRailroadName->setLayout(new QGridLayout());
-  //pRailroadName.setBorder(BorderFactory.createTitledBorder(tr("RailroadName")));
+  pRailroadName->setBorder(BorderFactory::createTitledBorder(tr("Railroad Name")));
   pRailroadName->setStyleSheet(gbStyleSheet);
-  pRailroadName->setTitle(tr("Railroad Name"));
   addItem(pRailroadName, railroadNameTextField, 0, 0);
   p1Layout->addWidget(pRailroadName);
 
   // row 1b
-  QGroupBox* pTrainDir = new QGroupBox();
-  pTrainDir->setLayout(new QGridLayout());
-  //pTrainDir.setBorder(BorderFactory.createTitledBorder(tr("direction")));
+  JPanel* pTrainDir = new JPanel();
+  pTrainDir->setLayout(new GridBagLayout());
+  pTrainDir->setBorder(BorderFactory::createTitledBorder(tr("Direction")));
   pTrainDir->setStyleSheet(gbStyleSheet);
-  pTrainDir->setTitle(tr("direction"));
   addItemLeft(pTrainDir, northCheckBox, 1, 2);
   addItemLeft(pTrainDir, eastCheckBox, 2, 2);
   p1Layout->addWidget(pTrainDir);
@@ -214,55 +214,49 @@ OperationsPreferencesPanel(parent)
   //p3.setLayout(new BoxLayout(p3, BoxLayout.X_AXIS));
   QHBoxLayout* p3Layout = new QHBoxLayout(p3);
 
-  QGroupBox* pTrainLength = new QGroupBox();
+  JPanel* pTrainLength = new JPanel(new GridBagLayout());
   //pTrainLength->setLayout(new QGridLayout);
-  // /pTrainLength.setBorder(BorderFactory.createTitledBorder(tr("MaxLength")));
+  pTrainLength->setBorder(BorderFactory::createTitledBorder(tr("Maximum Train Length")));
   pTrainLength->setStyleSheet(gbStyleSheet);
-  pTrainLength->setTitle(tr("Maximum Train Length"));
   addItem(pTrainLength, maxLengthTextField, 0, 0);
   p3Layout->addWidget(pTrainLength);
 
   // row 3b
-  QGroupBox* pMaxEngine = new QGroupBox();
+  JPanel* pMaxEngine = new JPanel(new GridBagLayout());
   //pMaxEngine->setLayout(new QGridLayout);
-  //pMaxEngine.setBorder(BorderFactory.createTitledBorder(tr("MaxEngine")));
+  pMaxEngine->setBorder(BorderFactory::createTitledBorder(tr("Max Locos per Train")));
   pMaxEngine->setStyleSheet(gbStyleSheet);
-  pMaxEngine->setTitle(tr("Max Locos per Train"));
   addItem(pMaxEngine, maxEngineSizeTextField, 0, 0);
   p3Layout->addWidget(pMaxEngine);
 
   // row 3c
-  QGroupBox* pHPT = new QGroupBox();
+  JPanel* pHPT = new JPanel(new GridBagLayout());
   //pHPT->setLayout(new QGridLayout);
-  //pHPT.setBorder(BorderFactory.createTitledBorder(tr("HPT")));
+  pHPT->setBorder(BorderFactory::createTitledBorder(tr("Horsepower per Ton")));
   pHPT->setStyleSheet(gbStyleSheet);
-  pHPT->setTitle(tr("Horsepower per Ton"));
   addItem(pHPT, hptTextField, 0, 0);
   p3Layout->addWidget(pHPT);
 
-  QGroupBox* pSwitchTime = new QGroupBox();
+  JPanel* pSwitchTime = new JPanel(new GridBagLayout());
   //pSwitchTime->setLayout(new QGridLayout);
-  //pSwitchTime.setBorder(BorderFactory.createTitledBorder(tr("MoveTime")));
+  pSwitchTime->setBorder(BorderFactory::createTitledBorder(tr("Switch Time (minutes)")));
   pSwitchTime->setStyleSheet(gbStyleSheet);
-  pSwitchTime->setTitle(tr("Switch Time (minutes)"));
   addItem(pSwitchTime, switchTimeTextField, 0, 0);
   p3Layout->addWidget(pSwitchTime);
 
   // row 3d
-  QGroupBox* pTravelTime = new QGroupBox();
-  //pTravelTime.setBorder(BorderFactory.createTitledBorder(tr("TravelTime")));
+  JPanel* pTravelTime = new JPanel(new GridBagLayout());
+  pTravelTime->setBorder(BorderFactory::createTitledBorder(tr("Travel Time (minutes)")));
   pTravelTime->setStyleSheet(gbStyleSheet);
-  pTravelTime->setTitle(tr("Travel Time (minutes)"));
   addItem(pTravelTime, travelTimeTextField, 0, 0);
   p3Layout->addWidget(pTravelTime);
 
   // row 2
-  QGroupBox* pScale = new QGroupBox();
+  JPanel* pScale = new JPanel();
   pScale->setObjectName("pScale");
   FlowLayout* pScaleLayout = new FlowLayout(pScale);
-  //pScale.setBorder(BorderFactory.createTitledBorder(tr("Scale")));
+  pScale->setBorder(BorderFactory::createTitledBorder(tr("Scale")));
   pScale->setStyleSheet(gbStyleSheet);
-  pScale->setTitle(tr("Scale)"));
 
 
   QButtonGroup* scaleGroup = new QButtonGroup();
@@ -298,7 +292,7 @@ OperationsPreferencesPanel(parent)
 
 
   QGroupBox* pCarTypeButtons = new QGroupBox();
-  //pCarTypeButtons.setBorder(BorderFactory.createTitledBorder(tr("CarTypes")));
+  //pCarTypeButtons->setBorder(BorderFactory::createTitledBorder(tr("CarTypes")));
   QHBoxLayout* pCarTypeButtonsLayout = new QHBoxLayout(pCarTypeButtons);
   pCarTypeButtons->setStyleSheet(gbStyleSheet);
   pCarTypeButtons->setTitle(tr("Optional Year Modeled"));
@@ -313,7 +307,7 @@ OperationsPreferencesPanel(parent)
   // row 4b
   QGroupBox* pLengthUnit = new QGroupBox();
   QHBoxLayout* pLengthUnitLayout = new QHBoxLayout(pLengthUnit);
-  //pLengthUnit.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutLength")));
+  //pLengthUnit->setBorder(BorderFactory::createTitledBorder(tr("BorderLayoutLength")));
   QButtonGroup* lengthUnitGroup = new QButtonGroup();
   lengthUnitGroup->addButton(feetUnit);
   lengthUnitGroup->addButton(meterUnit);
@@ -325,7 +319,7 @@ OperationsPreferencesPanel(parent)
   // row 4c
   QGroupBox* pYearModeled = new QGroupBox();
   QHBoxLayout* pYearModeledLayout = new QHBoxLayout(pYearModeled);
-  //pYearModeled.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutYearModeled")));
+  //pYearModeled->setBorder(BorderFactory::createTitledBorder(tr("BorderLayoutYearModeled")));
   pYearModeled->setStyleSheet(gbStyleSheet);
   pYearModeled->setTitle(tr("Optional Year Modeled"));
   pYearModeledLayout->addWidget(yearTextField);
@@ -333,11 +327,10 @@ OperationsPreferencesPanel(parent)
   p9Layout->addWidget(pYearModeled);
 
   // Option panel
-  QGroupBox* options = new QGroupBox();
+  JPanel* options = new JPanel();
   options->setLayout(new QGridLayout());
-  //options.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptions")));
+  options->setBorder(BorderFactory::createTitledBorder(tr("Options")));
   options->setStyleSheet(gbStyleSheet);
-  options->setTitle(tr("Options"));
 
   addItem(options, mainMenuCheckBox, 0, 0);
   addItem(options, closeOnSaveCheckBox, 1, 0);
@@ -356,37 +349,35 @@ OperationsPreferencesPanel(parent)
   QVBoxLayout* pIconLayout = new QVBoxLayout(pIcon);
   QScrollArea* pIconPane = new QScrollArea(/*pIcon*/);
  // pIconPane->setWidget(pIcon);
-  //pIconPane.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutPanelOptions")));
+  //pIconPane->setBorder(BorderFactory::createTitledBorder(tr("BorderLayoutPanelOptions")));
   pIconPane->setWidgetResizable(true);
   // row 1 Icon panel
   QWidget* p1Icon = new QWidget();
   //p1Icon.setLayout(new BoxLayout(p1Icon, BoxLayout.X_AXIS));
   QHBoxLayout* p1IconLayout = new QHBoxLayout(p1Icon);
 
-  QGroupBox* pPanelName = new QGroupBox();
+  JPanel* pPanelName = new JPanel(new GridBagLayout());
   //pPanelName->setLayout(new QGridLayout());
-  //pPanelName.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutPanelName")));
+  pPanelName->setBorder(BorderFactory::createTitledBorder(tr("Panel Name")));
   pPanelName->setStyleSheet(gbStyleSheet);
-  pPanelName->setTitle(tr("Panel Name"));
   addItem(pPanelName, panelTextField, 0, 0);
   p1IconLayout->addWidget(pPanelName);
 
-  QGroupBox* pIconControl = new QGroupBox();
+  JPanel* pIconControl = new JPanel(new GridBagLayout());
   //pIconControl->setLayout(new QGridLayout());
-  //pIconControl.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutIconOptions")));
-  pIconControl->setStyleSheet(gbStyleSheet);
-  pIconControl->setTitle(tr("Icon Options"));
+  pIconControl->setBorder(BorderFactory::createTitledBorder(tr("Icon Options")));
+//  pIconControl->setStyleSheet(gbStyleSheet);
+//  pIconControl->setTitle(tr("Icon Options"));
   addItem(pIconControl, appendCheckBox, 0, 0);
   addItem(pIconControl, iconCheckBox, 1, 0);
   p1IconLayout->addWidget(pIconControl);
 
   pIconLayout->addWidget(p1Icon );
 
-  QGroupBox* pIconColors = new QGroupBox();
+  JPanel* pIconColors = new JPanel(new GridBagLayout());
   //pIconColors->setLayout(new QGridLayout());
-  //pIconColors.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutIconColors")));
+  pIconColors->setBorder(BorderFactory::createTitledBorder(tr("Icon Colors")));
   pIconColors->setStyleSheet(gbStyleSheet);
-  pIconColors->setTitle(tr("Icon Colors"));
 
   addItem(pIconColors, textIconNorth, 0, 4);
   addItemLeft(pIconColors, northComboBox, 1, 4);
@@ -417,11 +408,10 @@ OperationsPreferencesPanel(parent)
   terminateComboBox->setCurrentIndex(terminateComboBox->findText(Setup::getTrainIconColorTerminate()));
 
   // comment
-  QGroupBox* pC = new QGroupBox();
+  JPanel* pC = new JPanel(new GridBagLayout());
   //pC->setLayout(new QGridLayout());
-  //pC.setBorder(BorderFactory.createTitledBorder(tr("Comment")));
+  pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   pC->setStyleSheet(gbStyleSheet);
-  pC->setTitle(tr("Comment"));
   //JScrollPane commentScroller = new JScrollPane(commentTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 //                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   //QScrollArea* commentScroller = new
@@ -433,8 +423,8 @@ OperationsPreferencesPanel(parent)
   adjustTextAreaColumnWidth(pC, commentTextArea);
 
   // row 15
-  QWidget* pControl = new QWidget();
-  pControl->setLayout(new QGridLayout());
+  JPanel* pControl = new JPanel(new GridBagLayout());
+  //pControl->setLayout(new QGridLayout());
   addItem(pControl, restoreButton, 0, 9);
   addItem(pControl, backupButton, 1, 9);
   addItem(pControl, saveButton, 3, 9);

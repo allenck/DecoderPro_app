@@ -4,7 +4,6 @@
 #include <QPushButton>
 #include <QIcon>
 #include <QEvent>
-
 class Action;
 class JActionEvent;
 class JButton : public QPushButton
@@ -20,7 +19,8 @@ public:
 // /*public*/ void setIcon(const QIcon &icon);
  /*public*/ void setName(QString s) {setObjectName(s);}
 // /*public*/ void setRolloverIcon(QIcon icon);
-signals:
+
+ signals:
  void actionPerformed(JActionEvent*);
 
 public slots:

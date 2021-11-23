@@ -30,9 +30,9 @@ namespace Operations
   QLabel* logoURL;// =new JLabel("");
 
   // major buttons
-  QPushButton* saveButton;// =new JButton(Bundle.getMessage("Save"));
-  QPushButton* addLogoButton;// =new JButton(Bundle.getMessage("AddLogo"));
-  QPushButton* removeLogoButton;// =new JButton(Bundle.getMessage("RemoveLogo"));
+  JButton* saveButton;// =new JButton(Bundle.getMessage("Save"));
+  JButton* addLogoButton;// =new JButton(Bundle.getMessage("AddLogo"));
+  JButton* removeLogoButton;// =new JButton(Bundle.getMessage("RemoveLogo"));
 
   // radio buttons
   // check boxes

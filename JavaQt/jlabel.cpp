@@ -1752,10 +1752,10 @@ QColor JLabel::getForeground()
  QLabel::setFont(f);
 }
 
-/*public*/ QFontMetrics JLabel::getFontMetrics()
-{
- return QFontMetrics(font());
-}
+///*public*/ QFontMetrics JLabel::getFontMetrics(QFont f)
+//{
+// return QFontMetrics(f);
+//}
 
 /*public*/ int JLabel::getBaseline(int w, int h) { return 0;}
 

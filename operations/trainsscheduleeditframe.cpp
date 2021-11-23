@@ -1,11 +1,10 @@
 #include "trainsscheduleeditframe.h"
 #include "control.h"
 #include "jtextfield.h"
-#include <QGroupBox>
 #include "gridbaglayout.h"
 #include <QBoxLayout>
 #include "jcombobox.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "trainschedulemanager.h"
 #include "logger.h"
 #include "vptr.h"
@@ -42,11 +41,11 @@ namespace Operations
   addTextBox = new JTextField(Control::max_len_string_attibute);
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  deleteButton = new QPushButton(tr("Delete"));
-  replaceButton = new QPushButton(tr("Replace"));
+  addButton = new JButton(tr("Add"));
+  deleteButton = new JButton(tr("Delete"));
+  replaceButton = new JButton(tr("Replace"));
 
-  restoreButton = new QPushButton(tr("Restore"));
+  restoreButton = new JButton(tr("Restore"));
 
   trainScheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"));     // the following code sets the frame's initial state
 
@@ -82,7 +81,7 @@ namespace Operations
  }
 
  /*public*/ void TrainsScheduleEditFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == deleteButton && comboBox->currentText() != NULL) {
          trainScheduleManager->deregister((TrainSchedule*) VPtr<TrainSchedule>::asPtr(comboBox->currentData()));
      }

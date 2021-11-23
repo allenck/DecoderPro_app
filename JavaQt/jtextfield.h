@@ -31,22 +31,22 @@ public:
     /*public*/ int getColumns();
     /*public*/ void setColumns(int columns);
     /*public*/ /*synchronized*/ void addActionListener(ActionListener* l);
-    QColor getForeground();
-    QColor getBackground();
-    void setBackground(QColor);
+    QColor getForeground()override;
+    QColor getBackground()override;
+    void setBackground(QColor)override;
     /*public*/ QSize getPreferredSize();
-    /*public*/ void setFont(QFont f);
+    /*public*/ void setFont(QFont f)override;
     /*public*/ void setForeground(QColor);
-    void setOpaque(bool);
+    void setOpaque(bool)override;
     /*public*/ void setShare(JTextField* share);
     /*public*/ void setName(QString name);
     /*public*/ Document* getDocument();
     /*public*/ void setInputVerifier(InputVerifier* inputVerifier);
-    /*public*/ QObject* jself() {return (QObject*)this;}
-    /*public*/ bool isOpaque();
-    /*public*/ QFont getFont();
+    /*public*/ QWidget* jself() override{return (QWidget*)this;}
+    /*public*/ bool isOpaque()override;
+    /*public*/ QFont getFont()override;
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
-    /*public*/ Border* getBorder() {return _border;}
+    /*public*/ Border* getBorder() override{return _border;}
     /*public*/ void setData(QVariant v) {_data = v;}
     /*public*/ QVariant getDatat() {return _data;}
     /*public*/ void addChangeListener(ChangeListener* l);
@@ -55,7 +55,7 @@ public:
     /*public*/ void removeFocusListener(FocusListener* l);
     /*public*/ void addKeyListener(KeyAdapter*);
     /*public*/ void removeKeyListener(KeyAdapter*);
-    QObject* self() {return (QObject*)this;}
+    QObject* self() override{return (QObject*)this;}
     /*public*/ void setEnabled(bool b) override {QLineEdit::setEnabled(b);}
     /*public*/ void setEditable(bool b) {setEnabled(b);}
     /*public*/ void requestFocus() { QLineEdit::setFocus();};
@@ -78,15 +78,15 @@ private:
  QMutex mutex;
  JTextField* share;
  QString ss;
- void enterEvent(QEvent*);
- void leaveEvent(QEvent *);
+ void enterEvent(QEvent*)override;
+ void leaveEvent(QEvent *)override;
  Logger* log;
  bool nameExplicitlySet;
  InputVerifier* inputVerifier;
  Border* _border = nullptr;
  QVariant _data;
- /*private*/ void focusInEvent(QFocusEvent* e);
- /*private*/ void focusOutEvent(QFocusEvent* e);
+ /*private*/ void focusInEvent(QFocusEvent* e)override;
+ /*private*/ void focusOutEvent(QFocusEvent* e)override;
  QColor backgroundColor = Qt::white;
  QColor textColor = Qt::black;
  bool _opaque = true;

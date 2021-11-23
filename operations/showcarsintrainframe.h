@@ -42,7 +42,7 @@ namespace Operations
   // text field
   // combo boxes
   // panels
-  QWidget* pCars;// = new QWidget();
+  JPanel* pCars;// = new QWidget();
   /*private*/ void update();
   Logger* log;
   /*private*/ QString getStatus(RouteLocation* rl);

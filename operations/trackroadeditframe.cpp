@@ -3,7 +3,7 @@
 #include "control.h"
 #include "location.h"
 #include "track.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include "jpanel.h"
 #include <QScrollArea>
@@ -50,14 +50,14 @@ namespace Operations
 
   // panels
   pRoadControls = new JPanel();
-  panelRoads = new QWidget();
+  panelRoads = new JPanel();
   paneRoads = new QScrollArea(/*panelRoads*/);
 
   // major buttons
-  saveTrackButton = new QPushButton(tr("SaveTrack"));
-  addRoadButton = new QPushButton(tr("AddRoad"));
-  deleteRoadButton = new QPushButton(tr("DeleteRoad"));
-  deleteAllRoadsButton = new QPushButton(tr("DeleteAll"));
+  saveTrackButton = new JButton(tr("SaveTrack"));
+  addRoadButton = new JButton(tr("AddRoad"));
+  deleteRoadButton = new JButton(tr("DeleteRoad"));
+  deleteAllRoadsButton = new JButton(tr("DeleteAll"));
 
   // radio buttons
   roadNameAll = new QRadioButton(tr("AcceptAll"));
@@ -204,7 +204,7 @@ namespace Operations
   if (_track == NULL) {
       return;
   }
-  QPushButton* source =(QPushButton*)ae;
+  JButton* source =(JButton*)ae;
   if (source == saveTrackButton) {
       log->debug("track save button activated");
       checkForErrors();

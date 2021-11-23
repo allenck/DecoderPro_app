@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <QBoxLayout>
 #include "gridbaglayout.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QSpinBox>
 #include "jcombobox.h"
 #include "locationmanager.h"
@@ -60,9 +60,9 @@ namespace Operations
      // text field
      // check boxes
      // major buttons
-     placeButton = new QPushButton(tr("Place Test Icon"));
-     applyButton = new QPushButton(tr("Update Routes"));
-     saveButton = new QPushButton(tr("Save"));
+     placeButton = new JButton(tr("Place Test Icon"));
+     applyButton = new JButton(tr("Update Routes"));
+     saveButton = new JButton(tr("Save"));
 
      // combo boxes
      locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
@@ -209,7 +209,7 @@ namespace Operations
 
  //@Override
  /*public*/ void SetTrainIconPositionFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      // check to see if a location has been selected
      if (locationBox->currentText() == NULL) {
          //JOptionPane.showMessageDialog(this, tr("SelectLocationToEdit"), tr("NoLocationSelected"), JOptionPane.ERROR_MESSAGE);

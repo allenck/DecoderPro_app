@@ -6,7 +6,7 @@
 
 class JTextArea;
 class QSize;
-class QPushButton;
+class JButton;
 namespace Operations
 {
  class Track;
@@ -32,7 +32,7 @@ namespace Operations
  // JScrollPane commentSetoutScroller = new JScrollPane(commentSetoutTextArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
  //         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   QSize minScrollerDim;// = new Dimension(1200, 300);
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
   Track* _track;
   /*private*/ void initComponents(Track* track);
   Logger* log;

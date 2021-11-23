@@ -27,7 +27,7 @@ namespace Operations
   LocationManager* locationManager;// = LocationManager.instance();
 
   // panels
-  QWidget* pRoute;// = new JPanel();
+  JPanel* pRoute;// = new JPanel();
 
   // radio buttons
   // combo boxes

@@ -46,7 +46,7 @@ public:
     /*public*/ bool setLinkMenu(QMenu* popup) override;
     /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* event) override;
     /*public*/ void setFont(QFont) override;
-    QObject* jself()  override{return (QObject*)this;}
+    QWidget* jself()  override{return (QWidget*)this;}
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
     /*public*/ Border* getBorder()  override{return _border;}
     /*public*/ void setEnabled(bool b)  override{QWidget::setEnabled(b);}

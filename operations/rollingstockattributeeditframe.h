@@ -5,7 +5,7 @@
 #include "jcombobox.h"
 #include "jtextfield.h"
 #include "control.h"
-#include <QPushButton>
+#include "jbutton.h"
 
 namespace Operations
 {
@@ -21,9 +21,9 @@ namespace Operations
         /*public*/ JLabel* quanity = new JLabel("0");
 
         // major buttons
-        /*public*/ QPushButton* addButton = new QPushButton(tr("Add"));
-        /*public*/ QPushButton* deleteButton = new QPushButton(tr("Delete"));
-        /*public*/ QPushButton* replaceButton = new QPushButton(tr("Replace"));
+        /*public*/ JButton* addButton = new JButton(tr("Add"));
+        /*public*/ JButton* deleteButton = new JButton(tr("Delete"));
+        /*public*/ JButton* replaceButton = new JButton(tr("Replace"));
 
         // combo box
         /*public*/ JComboBox/*<String>*/* comboBox;

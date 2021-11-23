@@ -13,7 +13,7 @@
 #include "location.h"
 #include "track.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include "cartypes.h"
 #include "logger.h"
 #include <QMessageBox>
@@ -50,9 +50,9 @@ namespace Operations
   locationCheckBoxes = new QWidget();
 
   // major buttons
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  saveButton = new QPushButton(tr("Save"));
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  saveButton = new JButton(tr("Save"));
 
   // check boxes
   copyCheckBox = new QCheckBox(tr("Copy"));
@@ -101,7 +101,7 @@ namespace Operations
 
      JPanel* pLocationsGroupBox = new JPanel;
      pLocationsGroupBox->setLayout(new QVBoxLayout);
-     pLocations = new QWidget();
+     pLocations = new JPanel();
      pLocations->setLayout(new GridBagLayout());
      locationPane = new QScrollArea; //(pLocations);
      //locationPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -172,7 +172,7 @@ namespace Operations
  // Save, Delete, Add
  /*public*/ void LocationsByCarTypeFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   if (source == saveButton)
   {
       save();

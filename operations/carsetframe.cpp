@@ -13,7 +13,7 @@
 #include <QCheckBox>
 #include "jcombobox.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <propertychangesupport.h>
 #include "locationmanager.h"
 #include "trainmanager.h"
@@ -72,8 +72,8 @@ namespace Operations
   kernelComboBox = carManager->getKernelComboBox();
 
   // buttons
-  editLoadButton = new QPushButton(tr("Edit"));
-  editKernelButton = new QPushButton(tr("Edit"));
+  editLoadButton = new JButton(tr("Edit"));
+  editKernelButton = new JButton(tr("Edit"));
 
   // check boxes
   ignoreRWECheckBox = new QCheckBox(tr("Ignore"));
@@ -253,7 +253,7 @@ namespace Operations
  /*public*/ void CarSetFrame::buttonActionPerformed(QWidget* ae)
  {
   RollingStockSetFrame::buttonActionPerformed(ae);
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
 
   if (source == editLoadButton && _car != NULL)
   {

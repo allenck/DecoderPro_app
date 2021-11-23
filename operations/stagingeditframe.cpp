@@ -5,11 +5,12 @@
 #include <QGroupBox>
 #include <QCheckBox>
 #include "gridbaglayout.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "showcarsbylocationaction.h"
 #include "showtrainsservinglocationaction.h"
 #include <QMenu>
 #include "trackdestinationeditaction.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -47,29 +48,26 @@ namespace Operations
      //panelLoad->setLayout(panelLoad, BoxLayout.X_AXIS));
   QHBoxLayout* panelLoadLayout = new QHBoxLayout(panelLoad);
 
-     QGroupBox* p1 = new QGroupBox();
+     JPanel* p1 = new JPanel();
      p1->setLayout(new GridBagLayout());
-     //p1->setBorder(BorderFactory.createTitledBorder(tr("OptionalLoads")));
+     p1->setBorder(BorderFactory::createTitledBorder(tr("Optional car load controls")));
      p1->setStyleSheet(gbStyleSheet);
-     p1->setTitle(tr("Optional car load controls"));
      addItemLeft(p1, swapLoadsCheckBox, 0, 0);
      addItemLeft(p1, emptyCheckBox, 0, 1);
 
-     QGroupBox* p2 = new QGroupBox();
+     JPanel* p2 = new JPanel();
      p2->setLayout(new GridBagLayout());
-     //p2->setBorder(BorderFactory.createTitledBorder(tr("OptionalCustomLoads")));
+     p2->setBorder(BorderFactory::createTitledBorder(tr("Optional custom car load controls")));
      p2->setStyleSheet(gbStyleSheet);
-     p2->setTitle(tr("Optional custom car load controls"));
      addItemLeft(p2, emptyCustomCheckBox, 0, 0);
      addItemLeft(p2, loadCheckBox, 0, 1);
      addItemLeft(p2, loadAnyCheckBox, 0, 2);
      addItemLeft(p2, loadAnyStagingCheckBox, 0, 3);
 
-     QGroupBox* p3 = new QGroupBox();
+     JPanel* p3 = new JPanel();
      p3->setLayout(new GridBagLayout());
-     //p3->setBorder(BorderFactory.createTitledBorder(tr("OptionalBlocking")));
+     p3->setBorder(BorderFactory::createTitledBorder(tr("Optional Car Blocking")));
      p3->setStyleSheet(gbStyleSheet);
-     p3->setTitle(tr("Optional Car Blocking"));
      addItemLeft(p3, blockCarsCheckBox, 0, 0);
 
      // load tool tips
@@ -89,17 +87,12 @@ namespace Operations
      addHelpMenu("package.jmri.jmrit.operations.Operations_Staging", true); // NOI18N
 
      // override text strings for tracks
-     //panelTrainDir->setBorder(BorderFactory.createTitledBorder(tr("TrainStaging")));
-     panelTrainDir->setTitle(tr("This staging track is serviced by trains traveling"));
-     //paneCheckBoxes
-//             ->setBorder(BorderFactory.createTitledBorder(tr("TypesStaging")));
-     checkBoxesGroupBox->setTitle(tr("Select the rolling stock serviced by this staging track"));
-     //dropPanel
-//             ->setBorder(BorderFactory.createTitledBorder(tr("SelectTrainArrival")));
-     dropPanel->setTitle(tr("Select trains or routes for arrivals"));
-//     pickupPanel->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("SelectTrainDeparture")));
-     pickupPanel->setTitle(tr("SelectTrainDeparture"));
+     panelTrainDir->setBorder(BorderFactory::createTitledBorder(tr("This staging track is serviced by trains traveling")));
+     panelCheckBoxes
+             ->setBorder(BorderFactory::createTitledBorder(tr("Select the rolling stock serviced by this staging track")));
+     dropPanel
+             ->setBorder(BorderFactory::createTitledBorder(tr("Select trains or routes for arrivals")));
+     pickupPanel->setBorder(BorderFactory::createTitledBorder(tr("Select trains or routes for departures")));
      deleteTrackButton->setText(tr("Delete Staging"));
      addTrackButton->setText(tr("Add Staging"));
      saveTrackButton->setText(tr("Save Staging"));

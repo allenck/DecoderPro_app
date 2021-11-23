@@ -370,10 +370,7 @@ log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyNam
          // remove car from list
          if (e->getSource()->metaObject()->className()==("Car")) {
              Car* car = (Car*) e->getSource();
-             checkBoxes.remove("p" + car->getId());
-             checkBoxes.remove("s" + car->getId());
-             checkBoxes.remove("m" + car->getId());
-             log->debug(tr("Car (%1) removed from list").arg(car->toString()));
+             removeCarFromList(car);
          }
          update();
      }

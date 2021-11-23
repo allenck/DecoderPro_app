@@ -2,9 +2,8 @@
 #include "schedulemanager.h"
 #include "schedule.h"
 #include "jtextfield.h"
-#include <qpushbutton.h>
+#include "jbutton.h"
 #include <QBoxLayout>
-#include <QGroupBox>
 #include <gridbaglayout.h>
 #include "propertychangeevent.h"
 #include "logger.h"
@@ -56,7 +55,7 @@ namespace Operations
   scheduleNameTextField = new JTextField(Control::max_len_string_location_name);
 
   // major buttons
-  QPushButton* copyButton = new QPushButton(tr("Copy"));
+  JButton* copyButton = new JButton(tr("Copy"));
 
   // combo boxes
   JComboBox* scheduleBox = scheduleManager->getComboBox();// general GUI config
@@ -79,7 +78,7 @@ namespace Operations
   addItem(pCopy, scheduleBox, 0, 0);
 
   // row 4
-  QWidget* pButton = new QWidget();
+  JPanel* pButton = new JPanel();
   pButton->setLayout(new GridBagLayout());
   addItem(pButton, copyButton, 0, 0);
 
@@ -102,7 +101,7 @@ namespace Operations
 }
 
 /*protected*/ void ScheduleCopyFrame::buttonActionPerformed(QWidget* ae) {
-  QPushButton * source = (QPushButton*)ae;
+  JButton * source = (JButton*)ae;
   if (source == copyButton) {
       log->debug("copy Schedule button activated");
       if (!checkName()) {

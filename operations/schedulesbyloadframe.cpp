@@ -75,7 +75,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      JPanel* locationsPanelFrame = new JPanel;
      locationsPanelFrame->setLayout(new QVBoxLayout);
-     locationsPanel = new QWidget();
+     locationsPanel = new JPanel();
      locationsPanel->setLayout(new GridBagLayout());
      QScrollArea* locationsPane = new QScrollArea(/*locationsPanel*/);
      locationsPanelFrame->layout()->addWidget(locationsPane);

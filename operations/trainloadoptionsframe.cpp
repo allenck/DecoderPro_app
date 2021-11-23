@@ -1,11 +1,10 @@
 #include "trainloadoptionsframe.h"
 #include "control.h"
 #include "jcombobox.h"
-#include <QGroupBox>
 #include <QCheckBox>
 #include <QBoxLayout>
 #include "gridbaglayout.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "train.h"
 #include <QLabel>
 #include <QScrollArea>
@@ -48,8 +47,8 @@ namespace Operations
  log = new Logger("TrainLoadOptionsFrame");
   _train = NULL;
 
-  pLoadControls = new QWidget();
-  panelLoads = new QWidget();
+  pLoadControls = new JPanel();
+  panelLoads = new JPanel();
   paneLoads = new QScrollArea(/*panelLoads*/);
 
   // labels
@@ -57,10 +56,10 @@ namespace Operations
   trainDescription = new QLabel();
 
   // major buttons
-  addLoadButton = new QPushButton(tr("Add Load"));
-  deleteLoadButton = new QPushButton(tr("Delete Load"));
-  deleteAllLoadsButton = new QPushButton(tr("Delete All"));
-  saveTrainButton = new QPushButton(tr("Save Train"));
+  addLoadButton = new JButton(tr("Add Load"));
+  deleteLoadButton = new JButton(tr("Delete Load"));
+  deleteAllLoadsButton = new JButton(tr("Delete All"));
+  saveTrainButton = new JButton(tr("Save Train"));
 
   // radio buttons
   loadNameAll = new QRadioButton(tr("Accept All"));
@@ -210,7 +209,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  // Save
  /*public*/ void TrainLoadOptionsFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (_train != NULL) {
          if (source == saveTrainButton) {
              log->debug("train save button activated");

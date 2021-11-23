@@ -6,7 +6,7 @@
 #include "propertychangelistener.h"
 
 class QLabel;
-class QPushButton;
+class JButton;
 class QRadioButton;
 class QSortFilterProxyModel;
 namespace Operations
@@ -68,14 +68,14 @@ namespace Operations
   QRadioButton* conductorRB;//= new JRadioButton(CONDUCTOR);
 
   // major buttons
-  QPushButton* addButton;//= new JButton(tr("Add"));
-  QPushButton* buildButton;//= new JButton(tr("Build"));
-  QPushButton* printButton;//= new JButton(tr("Print"));
-  QPushButton* openFileButton;//= new JButton(tr("OpenFile"));
-  QPushButton* runFileButton;//= new JButton(tr("RunFile"));
-  QPushButton* switchListsButton;//= new JButton(tr("SwitchLists"));
-  QPushButton* terminateButton;//= new JButton(tr("Terminate"));
-  QPushButton* saveButton;//= new JButton(tr("SaveBuilds"));
+  JButton* addButton;//= new JButton(tr("Add"));
+  JButton* buildButton;//= new JButton(tr("Build"));
+  JButton* printButton;//= new JButton(tr("Print"));
+  JButton* openFileButton;//= new JButton(tr("OpenFile"));
+  JButton* runFileButton;//= new JButton(tr("RunFile"));
+  JButton* switchListsButton;//= new JButton(tr("SwitchLists"));
+  JButton* terminateButton;//= new JButton(tr("Terminate"));
+  JButton* saveButton;//= new JButton(tr("SaveBuilds"));
 
   // check boxes
   QCheckBox* buildMsgBox;//= new JCheckBox(tr("BuildMessages"));

@@ -4,8 +4,7 @@
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
-#include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "control.h"
 #include <propertychangeevent.h>
 #include "setup.h"
@@ -42,10 +41,10 @@ namespace Operations
  log = new Logger("TrainsByCarTypeFrame");
      Empty = "            ";
      trainList = QList<QCheckBox*>();
-     trainCheckBoxes = new QWidget();
-     clearButton = new QPushButton(tr("Clear"));
-     setButton = new QPushButton(tr("Select"));
-     saveButton = new QPushButton(tr("Save"));
+     trainCheckBoxes = new JPanel();
+     clearButton = new JButton(tr("Clear"));
+     setButton = new JButton(tr("Select"));
+     saveButton = new JButton(tr("Save"));
      copyCheckBox = new QCheckBox(tr("Copy"));
      textCarType = new QLabel(Empty);
      typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
@@ -72,7 +71,7 @@ namespace Operations
 
      JPanel* pTrainsFrame = new JPanel();
      pTrainsFrame->setLayout(new QVBoxLayout);
-     pTrains = new QWidget();
+     pTrains = new JPanel();
      pTrains->setLayout(new GridBagLayout());
      QScrollArea* trainPane = new QScrollArea(/*pTrains*/);
      //trainPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -131,8 +130,8 @@ namespace Operations
  }
 
  // Save, Delete, Add
- /*public*/ void TrainsByCarTypeFrame::buttonActionPerformed(QPushButton* ae) {
- QPushButton* source = (QPushButton*)ae;
+ /*public*/ void TrainsByCarTypeFrame::buttonActionPerformed(JButton* ae) {
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          save();
      }

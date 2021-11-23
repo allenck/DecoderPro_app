@@ -7,8 +7,7 @@
 #include "train.h"
 #include <QRadioButton>
 #include <QButtonGroup>
-#include <QPushButton>
-#include <QGroupBox>
+#include "jbutton.h"
 #include "vptr.h"
 #include "flowlayout.h"
 #include "operationsxml.h"
@@ -46,7 +45,7 @@ namespace Operations
  autoRadioButton = new QRadioButton(tr("Auto"));
 
  // major buttons
- saveButton = new QPushButton(tr("Save"));
+ saveButton = new JButton(tr("Save"));
 
  // combo boxes
  trainBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainComboBox();
@@ -151,7 +150,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void TrainsTableSetColorFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          // save option manual or auto
          trainManager->setRowColorsManual(manualRadioButton->isChecked());

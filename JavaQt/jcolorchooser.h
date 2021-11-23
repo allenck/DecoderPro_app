@@ -56,17 +56,17 @@ public:
  void addPropertyChangeListener(QString s, PropertyChangeListener* l);
  void removePropertyChangeListener(QString s, PropertyChangeListener* l);
  PropertyChangeSupport* pcs;
- /*public*/ QObject* jself() {return (QObject*)this;}
+ /*public*/ QWidget* jself() override{return (QWidget*)this;}
 
- /*public*/ bool isOpaque() {return true;}
- QColor getForeground();
- /*public*/ QColor getBackground() {return QColor();}
- /*public*/ void setBackground(QColor) {}
- /*public*/ void setOpaque(bool) {}
- /*public*/ QFont getFont() {return QFont();}
- /*public*/ void setFont(QFont) {}
+ /*public*/ bool isOpaque() override{return true;}
+ QColor getForeground()override;
+ /*public*/ QColor getBackground() override{return QColor();}
+ /*public*/ void setBackground(QColor) override{}
+ /*public*/ void setOpaque(bool) override{}
+ /*public*/ QFont getFont() override{return QFont();}
+ /*public*/ void setFont(QFont) override{}
  /*public*/ void setBorder(Border* border) override {this->_border = border;}
- /*public*/ Border* getBorder() {return _border;}
+ /*public*/ Border* getBorder() override{return _border;}
  /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
 signals:
 

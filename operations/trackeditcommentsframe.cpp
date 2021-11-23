@@ -4,7 +4,7 @@
 #include "operationsxml.h"
 #include "jpanel.h"
 #include "track.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "jtextarea.h"
 #include "gridbaglayout.h"
 #include <QBoxLayout>
@@ -27,7 +27,7 @@ namespace Operations
   commentBothTextArea = new JTextArea(5, 100);
   commentPickupTextArea = new JTextArea(5, 100);
   commentSetoutTextArea = new JTextArea(5, 100);
-  saveButton = new QPushButton(tr("Save"));
+  saveButton = new JButton(tr("Save"));
   initComponents(track);
  }
 
@@ -64,7 +64,7 @@ namespace Operations
   commentPickupTextArea->setText(track->getCommentPickup());
   commentSetoutTextArea->setText(track->getCommentSetout());
 
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
   addItem(pB, saveButton, 0, 0);
 
@@ -81,7 +81,7 @@ namespace Operations
 
  // Buttons
  /*public*/ void TrackEditCommentsFrame::buttonActionPerformed(QWidget* ae) {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
      if (source == saveButton) {
          _track->setCommentBoth(commentBothTextArea->toPlainText());
          _track->setCommentPickup(commentPickupTextArea->toPlainText());

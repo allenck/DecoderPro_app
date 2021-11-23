@@ -60,7 +60,7 @@ public:
     static int BUT_HGHT;// = 30;
     static int BUT_WDTH;// = 56;
     /*final*/ static int BUT_IMG_SIZE;// = 45;
-    QObject* jself() {return (QObject*)this;}
+    QWidget* jself() override{return (QWidget*)this;}
     /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
     /*public*/ bool isOpaque() override {return true;}
     /*public*/ QColor getForeground() override {return Qt::black;}

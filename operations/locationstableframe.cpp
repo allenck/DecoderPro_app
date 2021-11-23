@@ -4,7 +4,7 @@
 #include "jtable.h"
 #include <QRadioButton>
 #include <QButtonGroup>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QBoxLayout>
 #include "flowlayout.h"
 #include <QMenuBar>
@@ -58,7 +58,7 @@ namespace Operations
   sortById = new QRadioButton(tr("Id"));
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
+  addButton = new JButton(tr("Add"));
 //	JButton printTableButton = new JButton("Print Table");
 
      // general GUI config
@@ -146,7 +146,7 @@ namespace Operations
  // add button
  /*public*/ void LocationsTableFrame::buttonActionPerformed(QWidget* ae) {
 //		log.debug("location button activated");
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == addButton) {
 
          LocationEditFrame* f = new LocationEditFrame(NULL);

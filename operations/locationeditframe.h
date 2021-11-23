@@ -7,7 +7,7 @@
 class QGroupBox;
 class JTextArea;
 class JTextField;
-class QPushButton;
+class JButton;
 class QScrollArea;
 namespace Operations
 {
@@ -62,21 +62,21 @@ namespace Operations
 
   Location* _location;// = null;
   QList<QCheckBox*> checkBoxes;// = new ArrayList<JCheckBox>();
-  QWidget* panelCheckBoxes;// = new JPanel();
+  JPanel* panelCheckBoxes;// = new JPanel();
   JPanel* typePane;
   JPanel* directionPanel;// = new JPanel();
 
   // major buttons
-  QPushButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
-  QPushButton* setButton;//= new JButton(Bundle.getMessage("Select"));
-  QPushButton* autoSelectButton;// = new JButton(Bundle.getMessage("AutoSelect"));
-  QPushButton* saveLocationButton;// = new JButton(Bundle.getMessage("SaveLocation"));
-  QPushButton* deleteLocationButton;// = new JButton(Bundle.getMessage("DeleteLocation"));
-  QPushButton* addLocationButton;// = new JButton(Bundle.getMessage("AddLocation"));
-  QPushButton* addYardButton;// = new JButton(Bundle.getMessage("AddYard"));
-  QPushButton* addSpurButton;// = new JButton(Bundle.getMessage("AddSpur"));
-  QPushButton* addInterchangeButton;// = new JButton(Bundle.getMessage("AddInterchange"));
-  QPushButton* addStagingButton;// = new JButton(Bundle.getMessage("AddStaging"));
+  JButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
+  JButton* setButton;//= new JButton(Bundle.getMessage("Select"));
+  JButton* autoSelectButton;// = new JButton(Bundle.getMessage("AutoSelect"));
+  JButton* saveLocationButton;// = new JButton(Bundle.getMessage("SaveLocation"));
+  JButton* deleteLocationButton;// = new JButton(Bundle.getMessage("DeleteLocation"));
+  JButton* addLocationButton;// = new JButton(Bundle.getMessage("AddLocation"));
+  JButton* addYardButton;// = new JButton(Bundle.getMessage("AddYard"));
+  JButton* addSpurButton;// = new JButton(Bundle.getMessage("AddSpur"));
+  JButton* addInterchangeButton;// = new JButton(Bundle.getMessage("AddInterchange"));
+  JButton* addStagingButton;// = new JButton(Bundle.getMessage("AddStaging"));
 
   // check boxes
   QCheckBox* northCheckBox;// = new JCheckBox(Bundle.getMessage("North"));
