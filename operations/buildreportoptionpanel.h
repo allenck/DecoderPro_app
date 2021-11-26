@@ -8,7 +8,14 @@ namespace Operations
  {
  public:
   BuildReportOptionPanel(QWidget* parent);
+  /*public*/ QString getTabbedPreferencesTitle() override;
+  /*public*/ QString getPreferencesTooltip() override;
+  /*public*/ void savePreferences() override;
+  /*public*/ bool isDirty() override;
+  /*public*/ QString className() override {return "jmri.jmrit.operations.BuildReportOptionPanel";}
+
  public slots:
+  /*public*/ void buttonActionPerformed(QWidget* ae = 0) override;
 
  private:
   // major buttons
@@ -33,6 +40,11 @@ namespace Operations
   JComboBox* fontSizeComboBox;// = new JComboBox<>();
   /*private*/ void setBuildReportRadioButton();
   /*private*/ void setBuildReportRouterRadioButton();
+
+  protected slots:
+  /*protected*/ void checkBoxActionPerformed(QWidget* ae)override;
+  /*protected*/ void radioButtonActionPerformed(QWidget* ae) override;
+
  };
 }
 #endif // BUILDREPORTOPTIONPANEL_H

@@ -148,7 +148,7 @@ OperationsXml::OperationsXml(QObject *parent) :
  return operationsFileName;
 }
 
-/*private*/ /*static*/ QString OperationsXml::fileLocation = nullptr;//FileUtil::getUserFilesPath();
+/*private*/ /*static*/ QString OperationsXml::fileLocation = FileUtil::getUserFilesPath();
 
 /**
  * Absolute path to location of Operations files.

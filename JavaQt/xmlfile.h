@@ -108,7 +108,7 @@ static /*private*/ Validate defaultValidate;// = Validate.None;
 
 protected:
  /*protected*/ bool checkFile(QString name);
- /*protected*/ QFile* findFile(QString name) const;
+ /*protected*/ File *findFile(QString name) const;
  //QT_DEPRECATED /*protected*/ QDomElement getRoot(bool validate, QDataStream* stream) /*throw (JDOMException)*/;
  /*protected*/ QDomElement getRoot(QDataStream* stream) /*throw (JDOMException)*/;
  friend class LayoutEditor;

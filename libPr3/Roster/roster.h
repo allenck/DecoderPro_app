@@ -200,7 +200,7 @@ private:
  bool isDirty() {return dirty;}
  QDomDocument doc;
  /*private*/ static QString rosterFileName;// = "roster.xml";
- /*private*/ static QString fileLocation;//  = FileUtil.getUserFilesPath();
+ ///*private*/ static QString fileLocation;//  = FileUtil.getUserFilesPath();
   /*private*/ void delRosterGroupList(QString rg, bool notify);
   static QStringList getAllFileNames();
   /*private*/ /*final*/ QMap<QString, RosterGroup*> rosterGroups;// = new HashMap<>();

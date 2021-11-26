@@ -34,8 +34,8 @@ namespace Operations
  public slots:
  private:
 //  /*private*/ static OperationsSetupXml* _instance;// = NULL;
-  /*private*/ QString operationsFileName;// = "Operations.xml"; // NOI18N
-  Logger * log;
+  /*private*/ QString operationsFileName = "Operations.xml"; // NOI18N
+  static Logger * log;
   static OperationsSetupXml* _instance;
  };
 

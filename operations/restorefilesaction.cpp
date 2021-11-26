@@ -27,14 +27,14 @@ namespace Operations
 // static Logger log = LoggerFactory
 //         .getLogger(RestoreFilesAction.class.getName());
 
- /*public*/ RestoreFilesAction::RestoreFilesAction(QString s, QObject* parent)
-     : AbstractAction(s, parent)
+ /*public*/ RestoreFilesAction::RestoreFilesAction(QObject* parent)
+     : AbstractAction(tr("Restore"), parent)
  {
   //super(s);
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void RestoreFilesAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void RestoreFilesAction::actionPerformed(JActionEvent * /*e*/) {
      restore();
  }
 

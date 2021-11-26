@@ -1990,7 +1990,6 @@ virtual void timerEvent(QTimerEvent*  event);
 class PythonQtPublicPromoter_XmlFile : public XmlFile
 { public:
 inline bool  promoted_checkFile(QString  name) { return this->checkFile(name); }
-inline QFile*  promoted_findFile(QString  name) const { return this->findFile(name); }
 inline QDomElement  promoted_getRoot(QDataStream*  stream) { return this->getRoot(stream); }
 inline QString  py_q_backupFileName(QString  name) const { return XmlFile::backupFileName(name); }
 inline XmlFile::Validate  py_q_getValidate() { return XmlFile::getValidate(); }
@@ -2009,7 +2008,6 @@ void delete_XmlFile(XmlFile* obj) { delete obj; }
    bool  checkFile(XmlFile* theWrappedObject, QString  name);
    QString  createFileNameWithDate(XmlFile* theWrappedObject, QString  name) const;
    void static_XmlFile_dumpElement(QDomElement  name);
-   QFile*  findFile(XmlFile* theWrappedObject, QString  name) const;
    QString  static_XmlFile_getDefaultDtdLocation();
    XmlFile::Validate  static_XmlFile_getDefaultValidate();
    QString  getDtdLocation(XmlFile* theWrappedObject);

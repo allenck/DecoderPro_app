@@ -22,13 +22,13 @@ namespace Operations
   */
  ///*private*/ static final long serialVersionUID = -3591765950664839428L;
 
- /*public*/ ResetAction::ResetAction(QString s, QObject* parent ) : AbstractAction(s, parent)
+ /*public*/ ResetAction::ResetAction(QObject* parent ) : AbstractAction(tr("Reset"), parent)
  {
      //super(s);
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ResetAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void ResetAction::actionPerformed(JActionEvent* ) {
      // check to see if files are dirty
      if (OperationsXml::areFilesDirty()) {
 //         if (JOptionPane.showConfirmDialog(null, Bundle.getMessage("OperationsFilesModified"),

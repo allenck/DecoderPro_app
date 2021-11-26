@@ -14822,11 +14822,6 @@ void PythonQtWrapper_XmlFile::static_XmlFile_dumpElement(QDomElement  name)
   (XmlFile::dumpElement(name));
 }
 
-QFile*  PythonQtWrapper_XmlFile::findFile(XmlFile* theWrappedObject, QString  name) const
-{
-  return ( ((PythonQtPublicPromoter_XmlFile*)theWrappedObject)->promoted_findFile(name));
-}
-
 QString  PythonQtWrapper_XmlFile::static_XmlFile_getDefaultDtdLocation()
 {
   return (XmlFile::getDefaultDtdLocation());

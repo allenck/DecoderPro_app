@@ -4,6 +4,8 @@
 #include <rosterentry.h> // for VPtr
 #include "roster.h"
 #include "instancemanager.h"
+#include "file.h"
+
 
 NceConsistRoster::NceConsistRoster(QObject *parent) :
     XmlFile(parent)
@@ -203,7 +205,7 @@ void NceConsistRoster::writeFile(QString name) throw (FileNotFoundException, IOE
 {
  if (log->isDebugEnabled()) log->debug("writeFile "+name);
  // This is taken in large part from "Java and XML" page 368
- QFile* file = findFile(name);
+ QFile* file = findFile(name)->toQfile();
  if (file == NULL)
  {
   file = new QFile(name);

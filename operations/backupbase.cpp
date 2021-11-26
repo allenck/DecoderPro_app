@@ -8,6 +8,7 @@
 #include <QDir>
 #include "runtimeexception.h"
 #include "calendar.h"
+#include "loggerfactory.h"
 
 //BackupBase::BackupBase(QObject *parent) :
 //  QObject(parent)
@@ -49,36 +50,33 @@ namespace Operations
  /*protected*/ BackupBase::BackupBase(QString rootName, QObject *parent) :
 QObject(parent)
  {
-  testException = NULL;
-  _operationsRoot = NULL;
   _backupSetFileNames = QStringList() << "Operations.xml" << // NOI18N
   "OperationsCarRoster.xml" << "OperationsEngineRoster.xml" << // NOI18N
   "OperationsLocationRoster.xml" << "OperationsRouteRoster.xml" << // NOI18N
   "OperationsTrainRoster.xml"; // NOI18N
   _demoPanelFileName = "Operations Demo Panel.xml"; // NOI18N
-  log = new Logger("BackupBase");
 
-     // A root directory name for the backups must be supplied, which will be
-     // from the derived class constructors.
-     if (rootName == NULL) {
-         throw new IllegalArgumentException("Backup root name can't be NULL"); // NOI18N
-     }
-     _operationsRoot = new File(OperationsXml::getFileLocation(),
-             OperationsXml::getOperationsDirectoryName());
+  // A root directory name for the backups must be supplied, which will be
+  // from the derived class constructors.
+  if (rootName == NULL) {
+      throw IllegalArgumentException("Backup root name can't be NULL"); // NOI18N
+  }
+  _operationsRoot = new File(OperationsXml::getFileLocation(),
+          OperationsXml::getOperationsDirectoryName());
 
-     _backupRoot = new File(_operationsRoot, rootName);
+  _backupRoot = new File(_operationsRoot, rootName);
 
-     // Make sure it exists
-     if (!_backupRoot->exists()) {
-         bool ok = _backupRoot->mkdirs();
-         if (!ok) {
-//             throw new RuntimeException("Unable to make directory: " // NOI18N
-//                     + _backupRoot->getAbsolutePath());
-          Logger::error("Unable to make directory:" );
-         }
-     }
+  // Make sure it exists
+  if (!_backupRoot->exists()) {
+      bool ok = _backupRoot->mkdirs();
+      if (!ok) {
+       Logger::error("Unable to make directory:" + _backupRoot->getAbsolutePath());
+       throw RuntimeException("Unable to make directory: " // NOI18N
+                  + _backupRoot->getAbsolutePath());
+      }
+  }
 
-     // We maybe want to check if it failed and throw an exception.
+  // We maybe want to check if it failed and throw an exception.
  }
 
  /**
@@ -344,7 +342,7 @@ QObject(parent)
      for (int i = 0; i < 99; i++) {
          // Create the trial name, then see if it already exists.
          //fullName = QString.format("%s_%02d", baseName, i); // NOI18N
-      fullName = baseName+QString::number(i);
+      fullName = baseName + "_" + QString::number(i);
 
          bool foundFileNameMatch = false;
          foreach (QString name, dirNames) {
@@ -409,7 +407,7 @@ QObject(parent)
   */
  /*private*/ QString BackupBase::getDate() {
      // This could use some clean-up.... but works OK for now
-#if 1
+#if 0
      Calendar* now = Calendar::getInstance();
      int month = now->get(Calendar::MONTH) + 1;
      QString m = QString::number(month);
@@ -504,4 +502,6 @@ QObject(parent)
      }
  }
 #endif
+ /*private*/ /*final*/ /*static*/ Logger* BackupBase::log = LoggerFactory::getLogger("BackupBase");
+
 }

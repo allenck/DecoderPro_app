@@ -2334,6 +2334,11 @@ static {
  return QFileInfo(path).absoluteFilePath();
 }
 
+/*public*/ QFile* File::toQfile()
+{
+ return new QFile(absoluteFilePath());
+}
+
 /*public*/ bool File::equals(QObject* other)
 {
  if(qobject_cast<File*>(other) == nullptr)

@@ -24,7 +24,7 @@ namespace Operations
  class APPSLIBSHARED_EXPORT TrainManager : public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
-   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
+  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
 
  public:
   Q_INVOKABLE explicit TrainManager(QObject *parent = 0);

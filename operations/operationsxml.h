@@ -33,9 +33,9 @@ signals:
 
 public slots:
 private:
- /*private*/ bool dirty;// = false;
+ /*private*/ bool dirty = false;
  /*private*/ static QString operationsDirectoryName;// = "operations"; // NOI18N
- /*private*/ QString operationsFileName;// = "DefaultOperations.xml"; // NOI18N should be overridden
+ /*private*/ QString operationsFileName = "DefaultOperations.xml"; // NOI18N should be overridden
 
  /*private*/ static QString fileLocation;// = FileUtil.getUserFilesPath();
  Logger* log;

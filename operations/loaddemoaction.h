@@ -10,9 +10,9 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  LoadDemoAction(QString s, QObject* parent);
+  LoadDemoAction(QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0)override;
  private:
   AutoBackup* backup;// = new AutoBackup();
 

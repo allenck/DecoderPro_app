@@ -22,7 +22,7 @@
 //Roster* Roster::_instance = NULL;
 /*private*/ /*static*/ QString Roster::rosterFileName = "roster.xml";
 //QString Roster::fileLocation = FileUtil::getUserFilesPath();
-QString Roster::fileLocation = QDir::homePath() + QDir::separator() + ".jmri" + QDir::separator();
+//QString Roster::fileLocation = QDir::homePath() + QDir::separator() + ".jmri" + QDir::separator();
 /**
  * Name of the default roster index file. {@value #DEFAULT_ROSTER_INDEX}
  */
@@ -689,7 +689,7 @@ void Roster::writeFile(QString name) //throw (FileNotFoundException, IOException
 {
     if (log->isDebugEnabled()) log->debug("writeFile "+name);
     // This is taken in large part from "Java and XML" page 368
-    QFile* file = findFile(name);
+    QFile* file = findFile(name)->toQfile();
     if (file == NULL) {
         file = new QFile(name);
     }

@@ -1059,12 +1059,11 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
     }
 
     /*public*/ File* SpeedometerXml::getFile(bool store) {
-        QFile* file = findFile(getDefaultFileName());
+        File* file = findFile(getDefaultFileName());
         if (file == NULL && store) {
-            file = new QFile(getDefaultFileName());
+            file = new File(getDefaultFileName());
         }
-        QString path = getDefaultFileName();
-        return new File(path);
+        return file;
     }
 
     /*public*/ /*static*/ QString SpeedometerXml::baseFileName = "Speedometer.xml";
@@ -1079,12 +1078,12 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
      * @return path to location
      */
     /*public*/ /*static*/ QString SpeedometerXml::getFileLocation() {
- if(fileLocation == nullptr)
-  fileLocation = FileUtil::getUserFilesPath();
-        return fileLocation;
+     if(fileLocation == nullptr)
+      fileLocation = FileUtil::getUserFilesPath();
+            return fileLocation;
     }
 
-    /*public*/ /*static*/ QString SpeedometerXml::fileLocation = nullptr;//FileUtil::getUserFilesPath();
+    /*public*/ /*static*/ QString SpeedometerXml::fileLocation = FileUtil::getUserFilesPath();
 
 //};
 /*public*/ QString SpeedometerFrame::getClassName()

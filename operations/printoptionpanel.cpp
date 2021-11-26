@@ -361,8 +361,8 @@ namespace Operations
 
      // row 11
      JPanel* pControl = new JPanel();
-     pControl->setBorder(BorderFactory::createTitledBorder(""));
      pControl->setLayout(new GridBagLayout());
+     pControl->setBorder(BorderFactory::createTitledBorder(""));
      addItem(pControl, saveButton, 0, 0);
 
      pManifestPane->setWidget(pManifest);

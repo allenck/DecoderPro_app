@@ -8,10 +8,10 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  /*public*/ BackupFilesAction(QString s, QObject* parent);
+  /*public*/ BackupFilesAction(QObject* parent);
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
  private:
   /*private*/ void backUp();

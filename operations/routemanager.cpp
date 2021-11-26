@@ -12,6 +12,7 @@
 #include "routelocation.h"
 #include "locationmanager.h"
 #include "instancemanager.h"
+#include "loggerfactory.h"
 
 namespace Operations
 {
@@ -33,7 +34,6 @@ namespace Operations
  /*public*/ RouteManager::RouteManager(QObject *parent)
    : PropertyChangeSupport(this, parent)
  {
-  log = new ::Logger("RouteManager");
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
  }
@@ -311,6 +311,9 @@ namespace Operations
      ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
      firePropertyChange(p, old, n);
  }
+
+ /*private*/ /*final*/ /*static*/ Logger* RouteManager::log = LoggerFactory::getLogger("RouteManager");
+
  /**
   * Locate via user name, then system name if needed. Does not create a new
   * one if nothing found

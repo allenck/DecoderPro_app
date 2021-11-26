@@ -25,7 +25,7 @@
 
 namespace Operations
 {
- /*public*/ LoadDemoAction::LoadDemoAction(QString s, QObject* parent)  : AbstractAction(s, parent)
+ /*public*/ LoadDemoAction::LoadDemoAction(QObject* parent)  : AbstractAction(tr("Load Demo"), parent)
  {
      //super(s);
   backup = new Operations::AutoBackup();
@@ -34,7 +34,7 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void LoadDemoAction::actionPerformed(ActionEvent* /*e*/)
+ /*public*/ void LoadDemoAction::actionPerformed(JActionEvent * /*e*/)
  {
      // check to see if files are dirty
   if (OperationsXml::areFilesDirty())

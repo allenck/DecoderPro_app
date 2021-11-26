@@ -19,7 +19,7 @@ namespace Operations
   // Just for testing......
   // If this is not null, it will be thrown to simulate various IO exceptions
   // that are hard to reproduce when running tests..
-  /*public*/ RuntimeException* testException;// = null;
+  /*public*/ RuntimeException* testException = nullptr;
   /*public*/ File* getBackupRoot();
   /*public*/ void backupFilesToSetName(QString setName);// //throws IOException
   /*public*/ void backupFilesToDirectory(File* backupDirectory); //throws IOException
@@ -41,7 +41,7 @@ namespace Operations
  public slots:
 
  private:
-  Logger* log;
+  static Logger* log;
   // These constitute the set of files for a complete backup set.
   /*private*/ QStringList _backupSetFileNames;// = new QStringList{"Operations.xml", // NOI18N
 //      "OperationsCarRoster.xml", "OperationsEngineRoster.xml", // NOI18N
@@ -55,7 +55,7 @@ namespace Operations
   /*protected*/ BackupBase(QString rootName, QObject *parent= 0);
   // The root directory for all Operations files, usually
   // "user / name / JMRI / operations"
-  /*protected*/ File*_operationsRoot;// = null;
+  /*protected*/ File* _operationsRoot = nullptr;
   // This will be set to the appropriate backup root directory from the
   // derived
   // classes, as their constructor will fill in the correct directory.

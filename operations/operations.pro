@@ -81,6 +81,9 @@ SOURCES += \
  metatypes.cpp \
         operations.cpp \
         operationsmenu.cpp \
+ operationssettingsaction.cpp \
+ operationssettingsframe.cpp \
+ operationssettingspanel.cpp \
  rollingstockeditframe.cpp \
         trainmanifesttext.cpp \
         operationsxml.cpp \
@@ -131,9 +134,6 @@ SOURCES += \
         carmanagerxml.cpp \
         car.cpp \
         kernel.cpp \
-        operationssetupaction.cpp \
-        operationssetupframe.cpp \
-        operationssetuppanel.cpp \
         operationspreferencespanel.cpp \
         autobackup.cpp \
         backupbase.cpp \
@@ -382,6 +382,9 @@ HEADERS += \
         operations.h \
         operations_global.h \
         operationsmenu.h \
+ operationssettingsaction.h \
+ operationssettingsframe.h \
+ operationssettingspanel.h \
         operationsxml.h \
  rollingstockeditframe.h \
         trainswitchlisttext.h \
@@ -424,9 +427,6 @@ HEADERS += \
         carmanagerxml.h \
         car.h \
         kernel.h \
-        operationssetupaction.h \
-        operationssetupframe.h \
-        operationssetuppanel.h \
         operationspreferencespanel.h \
         autobackup.h \
         backupbase.h \

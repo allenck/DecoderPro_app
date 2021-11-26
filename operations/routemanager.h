@@ -49,7 +49,7 @@ namespace Operations {
  private:
   /*private*/ static RouteManager* _instance;// = null;
   /*private*/ int _id;// = 0;
-  Logger* log;
+  static Logger* log;
   /*private*/ QList<Route*> getList();
   /*private*/ void copyRouteLocation(Route* newRoute, RouteLocation* rl, RouteLocation* rlNext, bool invert);
 

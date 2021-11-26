@@ -12,6 +12,9 @@
 #include "control.h"
 #include "jpanel.h"
 #include "borderfactory.h"
+#include "joptionpane.h"
+#include "operationssetupxml.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -40,12 +43,12 @@ namespace Operations
 
  buildReportRouterNor = new QRadioButton(tr("Normal"));
  buildReportRouterMax = new QRadioButton(tr("Detailed"));
- buildReportRouterVD = new QRadioButton(tr("VeryDetailed"));
+ buildReportRouterVD = new QRadioButton(tr("Very Detailed"));
 
 // check boxes
- buildReportCheckBox = new QCheckBox(tr("BuildReportEdit"));
- buildReportIndentCheckBox = new QCheckBox(tr("BuildReportIndent"));
- buildReportAlwaysPreviewCheckBox = new QCheckBox(tr("BuildReportAlwaysPreview"));
+ buildReportCheckBox = new QCheckBox(tr("Use Text Editor to Preview Build Reports"));
+ buildReportIndentCheckBox = new QCheckBox(tr("Indent Build Report by Detail Level"));
+ buildReportAlwaysPreviewCheckBox = new QCheckBox(tr("Always use Preview for Build Reports"));
 
  // combo boxes
  fontSizeComboBox = new JComboBox();
@@ -65,7 +68,7 @@ namespace Operations
      addItemWidth(pReport, buildReportIndentCheckBox, 3, 1, 2);
      addItemWidth(pReport, buildReportAlwaysPreviewCheckBox, 3, 1, 3);
 
-     JPanel* pFontSize = new JPanel();
+     JPanel* pFontSize = new JPanel(new FlowLayout());
      pFontSize->setBorder(BorderFactory::createTitledBorder(tr("Font Size")));
      pFontSize->layout()->addWidget(fontSizeComboBox);
 
@@ -89,7 +92,7 @@ namespace Operations
      addItemLeft(pRouterLevel, buildReportRouterVD, 4, 0);
 
      // controls
-     JPanel* pControl = new JPanel();
+     JPanel* pControl = new JPanel(new GridBagLayout);
      pControl->setBorder(BorderFactory::createTitledBorder(""));
      pControl->setLayout(new GridBagLayout());
      addItem(pControl, saveButton, 0, 0);
@@ -135,28 +138,28 @@ namespace Operations
 
      initMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
  }
-#if 0
+
  // Save button
- @Override
- /*public*/ void buttonActionPerformed(ActionEvent ae) {
-     if (ae.getSource() == saveButton) {
-         this.savePreferences();
+ //@Override
+ /*public*/ void BuildReportOptionPanel::buttonActionPerformed(QWidget* ae) {
+     if (ae == saveButton) {
+         this->savePreferences();
          if (Setup::isCloseWindowOnSaveEnabled()) {
              dispose();
          }
      }
  }
 
- @Override
- protected void checkBoxActionPerformed(ActionEvent ae) {
+ //@Override
+ /*protected*/ void BuildReportOptionPanel::checkBoxActionPerformed(QWidget* /*ae*/) {
      buildReportIndentCheckBox->setEnabled(buildReportCheckBox->isChecked());
  }
 
- @Override
- protected void radioButtonActionPerformed(ActionEvent ae) {
+ //@Override
+ /*protected*/ void BuildReportOptionPanel::radioButtonActionPerformed(QWidget* /*ae*/) {
      setBuildReportRouterRadioButton();	// enable detailed and very detailed if needed
  }
-#endif
+
  /*private*/ void BuildReportOptionPanel::setBuildReportRadioButton() {
      buildReportMin->setChecked(Setup::getBuildReportLevel()==(Setup::BUILD_REPORT_MINIMAL));
      buildReportNor->setChecked(Setup::getBuildReportLevel()==(Setup::BUILD_REPORT_NORMAL));
@@ -177,21 +180,21 @@ namespace Operations
      buildReportRouterNor->setChecked(Setup::getRouterBuildReportLevel()==(Setup::BUILD_REPORT_NORMAL)
              || !buildReportVD->isChecked());
  }
-#if 0
- @Override
- /*public*/ String getTabbedPreferencesTitle() {
-     return tr("TitleBuildReportOptions");
+
+ //@Override
+ /*public*/ QString BuildReportOptionPanel::getTabbedPreferencesTitle() {
+     return tr("Build Report Options");
  }
 
- @Override
- /*public*/ String getPreferencesTooltip() {
-     return null;
+ //@Override
+ /*public*/ QString BuildReportOptionPanel::getPreferencesTooltip() {
+     return nullptr;
  }
 
- @Override
- /*public*/ void savePreferences() {
+ //@Override
+ /*public*/ void BuildReportOptionPanel::savePreferences() {
      // font size
-     Setup::setBuildReportFontSize((Integer) fontSizeComboBox.getSelectedItem());
+     Setup::setBuildReportFontSize( fontSizeComboBox->getSelectedItem().toInt());
 
      // build report level
      if (buildReportMin->isChecked()) {
@@ -205,7 +208,7 @@ namespace Operations
      }
 
      // router build report level
-     String oldReportLevel = Setup::getRouterBuildReportLevel();
+     QString oldReportLevel = Setup::getRouterBuildReportLevel();
      if (buildReportRouterNor->isChecked()) {
          Setup::setRouterBuildReportLevel(Setup::BUILD_REPORT_NORMAL);
      } else if (buildReportRouterMax->isChecked()) {
@@ -214,21 +217,20 @@ namespace Operations
          Setup::setRouterBuildReportLevel(Setup::BUILD_REPORT_VERY_DETAILED);
      }
 
-     if (!oldReportLevel==(Setup::getRouterBuildReportLevel())) {
-         JOptionPane.showMessageDialog(this, tr("buildReportRouter"), Bundle
-                 .getMessage("buildReportRouterTitle"), JOptionPane.INFORMATION_MESSAGE);
+     if (oldReportLevel!=(Setup::getRouterBuildReportLevel())) {
+      JOptionPane::showMessageDialog(this,tr("Build reports are not longer valid!"), tr("Build reports are not longer valid!"), JOptionPane::INFORMATION_MESSAGE);
      }
 
      Setup::setBuildReportEditorEnabled(buildReportCheckBox->isChecked());
      Setup::setBuildReportIndentEnabled(buildReportIndentCheckBox->isChecked());
      Setup::setBuildReportAlwaysPreviewEnabled(buildReportAlwaysPreviewCheckBox->isChecked());
 
-     OperationsSetupXml::instance().writeOperationsFile();
+     ((OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
  }
 
  //@Override
- /*public*/ boolean isDirty() {
-     String reportLevel = Setup::getBuildReportLevel();
+ /*public*/ bool BuildReportOptionPanel::isDirty() {
+     QString reportLevel = Setup::getBuildReportLevel();
      if (buildReportMin->isChecked()) {
          reportLevel = Setup::BUILD_REPORT_MINIMAL;
      } else if (buildReportNor->isChecked()) {
@@ -239,7 +241,7 @@ namespace Operations
          reportLevel = Setup::BUILD_REPORT_VERY_DETAILED;
      }
 
-     String routerReportLevel = Setup::getRouterBuildReportLevel();
+     QString routerReportLevel = Setup::getRouterBuildReportLevel();
      if (buildReportRouterNor->isChecked()) {
          routerReportLevel = Setup::BUILD_REPORT_NORMAL;
      } else if (buildReportRouterMax->isChecked()) {
@@ -248,12 +250,12 @@ namespace Operations
          routerReportLevel = Setup::BUILD_REPORT_VERY_DETAILED;
      }
 
-     return (Setup::getBuildReportFontSize() != (Integer) fontSizeComboBox.getSelectedItem()
-             || !reportLevel==(Setup::getBuildReportLevel())
-             || !routerReportLevel==(Setup::getRouterBuildReportLevel())
+     return (Setup::getBuildReportFontSize() != fontSizeComboBox->getSelectedItem().toInt()
+             || !reportLevel.toInt()==(Setup::getBuildReportLevel())
+             || !routerReportLevel.toInt()==(Setup::getRouterBuildReportLevel())
              || Setup::isBuildReportEditorEnabled() != buildReportCheckBox->isChecked()
              || Setup::isBuildReportIndentEnabled() != buildReportIndentCheckBox->isChecked()
              || Setup::isBuildReportAlwaysPreviewEnabled() != buildReportAlwaysPreviewCheckBox->isChecked());
  }
-#endif
+
 }

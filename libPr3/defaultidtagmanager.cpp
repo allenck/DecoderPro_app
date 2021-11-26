@@ -424,7 +424,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  if(log->isDebugEnabled()) log->debug("writeFile "+fileName);
  // This is taken in large part from "Java and XML" page 368
  QDomDocument doc;// = QDomDocument("IdTags");
- QFile* file = findFile(fileName);
+ QFile* file = findFile(fileName)->toQfile();
  if (file == NULL)
  {
   file = new QFile(fileName);

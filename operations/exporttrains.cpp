@@ -66,7 +66,7 @@ namespace Operations
          log->debug(tr("writeFile %1").arg(name));
      }
      // This is taken in large part from "Java and XML" page 368
-     QFile* file = findFile(name);
+     QFile* file = findFile(name)->toQfile();
      if (file == NULL) {
          file = new QFile(name);
      }

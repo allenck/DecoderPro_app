@@ -53,7 +53,7 @@ namespace Operations
        //super();
   setObjectName("OperationsPanel");
   OperationsFrame* owner = (OperationsFrame*)this->parent();
-  Q_ASSERT(owner != NULL);
+  //Q_ASSERT(owner != NULL);
   log = new Logger("OperationsPanel");
  }
 

@@ -36,6 +36,7 @@ isEmpty( PROJ_DIR ) {
 
 SOURCES += javaqt.cpp \
     classmigration.cpp \
+    filesystemview.cpp \
     jeditorpane.cpp \
     jframe.cpp \
     jinputvalidator.cpp \
@@ -279,6 +280,7 @@ SOURCES += javaqt.cpp \
 
 HEADERS += javaqt.h\
  classmigration.h \
+ filesystemview.h \
         javaqt_global.h \
     calendar.h \
     box.h \

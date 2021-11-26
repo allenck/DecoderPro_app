@@ -138,9 +138,9 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
         }
 
         /*public*/ File* ScaleXmlFile::getLoadFile() {
-            QFile* file = findFile(userPath + fileName);
+            QFile* file = findFile(userPath + fileName)->toQfile();
             if (file == nullptr) {
-                file = findFile(prodPath + fileName);
+                file = findFile(prodPath + fileName)->toQfile();
             }
             return new File(file->fileName());
         }

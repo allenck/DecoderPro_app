@@ -2,6 +2,13 @@
 #include <QFileDialog>
 #include "file.h"
 #include "propertychangesupport.h"
+#include "loggerfactory.h"
+#include "vptr.h"
+#include "filesystemview.h"
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QPushButton>
+#include <QLineEdit>
 
 JFileChooser::JFileChooser(QObject *parent) : QObject(parent)
 {
@@ -14,6 +21,7 @@ JFileChooser::JFileChooser(int dialogType, QObject *parent) :
  common();
  this->dialogType = dialogType;
 }
+
 void JFileChooser::common()
 {
  pcs = new PropertyChangeSupport(this);
@@ -47,7 +55,9 @@ void JFileChooser::common()
  */
 /*public*/ JFileChooser::JFileChooser(File* currentDirectory, QObject* parent) : QObject(parent)
 {
+ common();
  //this(currentDirectory, (FileSystemView) null);
+ this->currentDirectory = currentDirectory;
  this->currentDirectoryPath = currentDirectory->getPath();
 }
 
@@ -87,7 +97,29 @@ void JFileChooser::common()
   * Return value if an error occurred.
   */
  /*public*/ /*static*/ /*final*/ int JFileChooser::ERROR_OPTION = -1;
-/** Instruction to display only files. */
+
+/** Instruction to display only files. */  /*public*/ static /*final*/ int FILES_ONLY = 0;
+/*public*/ /*static*/ /*final*/ QString JFileChooser::CANCEL_SELECTION = "CancelSelection";
+///*public*/ /*static*/ /*final*/ QString JFileChooser::APPROVE_SELECTION = "ApproveSelection";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::APPROVE_BUTTON_TEXT_CHANGED_PROPERTY = "ApproveButtonTextChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::APPROVE_BUTTON_TOOL_TIP_TEXT_CHANGED_PROPERTY = "ApproveButtonToolTipTextChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::APPROVE_BUTTON_MNEMONIC_CHANGED_PROPERTY = "ApproveButtonMnemonicChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::CONTROL_BUTTONS_ARE_SHOWN_CHANGED_PROPERTY = "ControlButtonsAreShownChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::DIRECTORY_CHANGED_PROPERTY = "directoryChanged";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::SELECTED_FILE_CHANGED_PROPERTY = "SelectedFileChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::SELECTED_FILES_CHANGED_PROPERTY = "SelectedFilesChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::MULTI_SELECTION_ENABLED_CHANGED_PROPERTY = "MultiSelectionEnabledChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::FILE_SYSTEM_VIEW_CHANGED_PROPERTY = "FileSystemViewChanged";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::FILE_VIEW_CHANGED_PROPERTY = "fileViewChanged";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::FILE_HIDING_CHANGED_PROPERTY = "FileHidingChanged";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::FILE_FILTER_CHANGED_PROPERTY = "fileFilterChanged";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::FILE_SELECTION_MODE_CHANGED_PROPERTY = "fileSelectionChanged";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::ACCESSORY_CHANGED_PROPERTY = "AccessoryChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::ACCEPT_ALL_FILE_FILTER_USED_CHANGED_PROPERTY = "acceptAllFileFilterUsedChanged";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::DIALOG_TITLE_CHANGED_PROPERTY = "DialogTitleChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::DIALOG_TYPE_CHANGED_PROPERTY = "DialogTypeChangedProperty";
+/*public*/ /*static*/ /*final*/ QString JFileChooser::CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY = "ChoosableFileFilterChangedProperty";
+
 
 /*public*/ void JFileChooser::setDialogType(int dialogType)
 {
@@ -105,9 +137,9 @@ void JFileChooser::common()
  {
   setApproveButtonText("");
  }
-// firePropertyChange(DIALOG_TYPE_CHANGED_PROPERTY, oldValue, dialogType);
-
+ pcs->firePropertyChange(DIALOG_TYPE_CHANGED_PROPERTY, oldValue, dialogType);
 }
+
 /*public*/ int JFileChooser::showDialog(QWidget* parent, QString approveButtonText)
         /*throws HeadlessException*/
 {
@@ -117,12 +149,37 @@ void JFileChooser::common()
   return JFileChooser::ERROR_OPTION;
  }
 
- if(approveButtonText != "")
- {
-  setApproveButtonText(approveButtonText);
-  setDialogType(CUSTOM_DIALOG);
- }
  dialog = createDialog(parent);
+
+ if(!approveButtonText.isEmpty())
+ {
+  setDialogType(CUSTOM_DIALOG);
+  setApproveButtonText(approveButtonText);
+ }
+
+ if(!approveButtonToolTipText.isEmpty()){
+  QString label = dialog->labelText(QFileDialog::Accept);
+  QList<QPushButton*> buttons = dialog->findChildren<QPushButton*>();
+  foreach(QPushButton* button, buttons)
+  {
+   if(button->text() == label)
+   {
+    button->setToolTip(approveButtonToolTipText);
+    break;
+   }
+  }
+ }
+ if(!fileNameToolTipText.isEmpty())
+ {
+  setFileNameToolTipText(this->fileNameToolTipText);
+ }
+
+ if(dialogType == SAVE_DIALOG)
+ {
+  //QFileDialog::getSaveFileName((QWidget*)this->parent(), tr("Enter save folder name"), selectedFile->getPath(), "xml (*.xml)");
+  dialog->selectFile(selectedFile->fileName());
+ }
+
 // dialog.addWindowListener(new WindowAdapter() {
 //     public void windowClosing(WindowEvent e) {
 //         returnValue = CANCEL_OPTION;
@@ -130,19 +187,20 @@ void JFileChooser::common()
 // });
  returnValue = ERROR_OPTION;
  //rescanCurrentDirectory();
-  if(_timeout > 0)
+ if(_timeout > 0)
+ {
+  // One shot timer to close the dialog programmatically
+  timer = new QTimer(this);
+  timer->setSingleShot(true);
+  connect(timer, &QTimer::timeout, [=]
   {
-   // One shot timer to close the dialog programmatically
-   timer = new QTimer(this);
-   timer->setSingleShot(true);
-   connect(timer, &QTimer::timeout, [=]()
-   {
-       dialog->close();
-       timer->deleteLater();
-   } );
-   timer->start(_timeout);
-  }
+      dialog->close();
+      timer->deleteLater();
+  } );
+  timer->start(_timeout);
+ }
 
+ log->debug(tr("executing QFileDialog at %1").arg(dialog->directory().path()));
  int rslt = dialog->exec();
  switch (rslt)
  {
@@ -150,6 +208,11 @@ void JFileChooser::common()
   {
    returnValue = APPROVE_OPTION;
    files = dialog->selectedFiles();
+   selectedFiles->clear();
+   foreach(QString fn, files)
+   {
+    selectedFiles->append(new File(fn));
+   }
    if(files.count() == 1)
    {
     selectedFile = new File(files.at(0));
@@ -211,7 +274,7 @@ void JFileChooser::common()
 //        }
 //        dialog.pack();
 //        dialog.setLocationRelativeTo(parent);
- dialog = new QFileDialog(parent);
+ dialog = new QFileDialog(parent, QString(), currentDirectoryPath);
  dialog->setOption(QFileDialog::DontUseNativeDialog);
  if(dialogType == OPEN_DIALOG)
  {
@@ -227,7 +290,7 @@ void JFileChooser::common()
  {
  case FILES_ONLY:
   if(dialogType == OPEN_DIALOG)
-  dialog->setFileMode(QFileDialog::ExistingFile);
+  dialog->setFileMode(multiSelectionEnabled?QFileDialog::ExistingFiles: QFileDialog::ExistingFile);
   else
   dialog->setFileMode(QFileDialog::AnyFile);
   break;
@@ -238,7 +301,7 @@ void JFileChooser::common()
  default:
  case FILES_AND_DIRECTORIES:
   if(dialogType == OPEN_DIALOG)
-   dialog->setFileMode(QFileDialog::ExistingFile );
+   dialog->setFileMode(multiSelectionEnabled?QFileDialog::ExistingFiles: QFileDialog::ExistingFile );
   else
    dialog->setFileMode(QFileDialog::AnyFile );
   break;
@@ -247,8 +310,8 @@ void JFileChooser::common()
  dialog->setViewMode(QFileDialog::Detail);
  dialog->setDirectory(currentDirectoryPath);
  dialog->setNameFilter(fileFilter);
- if(dialogType == SAVE_DIALOG && selectedFile != nullptr)
-  dialog->selectFile(selectedFile->getAbsolutePath());
+// if(dialogType == SAVE_DIALOG && selectedFile != nullptr)
+//  dialog->selectFile(selectedFile->getAbsolutePath());
  if(selectedFilter != "" )
    dialog->selectNameFilter(selectedFilter);
  connect(dialog, SIGNAL(filterSelected(QString)), this, SLOT(on_filterSelected(QString)));
@@ -257,9 +320,21 @@ void JFileChooser::common()
  if(!this->title.isEmpty())
      dialog->setWindowTitle(this->title);
  else
+ {
      if(!approveButtonText.isEmpty())
          dialog->setWindowTitle(this->approveButtonText);
-
+  if(!approveButtonToolTipText.isEmpty())
+  {
+   QString label = dialog->labelText(QFileDialog::Accept);
+   QList<QPushButton*> buttons = dialog->findChildren<QPushButton*>();
+   foreach(QPushButton* button, buttons)
+   {
+    if(button->text() == approveButtonToolTipText)
+     button->setToolTip(approveButtonToolTipText);
+    break;
+   }
+  }
+ }
  dialog->showNormal();
  dialog->activateWindow();
  dialog->raise();
@@ -287,6 +362,7 @@ void JFileChooser::common()
  selectedFile = new File("");
  return selectedFile;
 }
+
 /*public*/ void JFileChooser::setDialogTitle(QString title)
 {
  if(dialog != nullptr)
@@ -295,6 +371,14 @@ void JFileChooser::common()
   dialog->setWindowTitle(title);
  }
  this->title = title;
+}
+
+/*public*/ QString JFileChooser::getDialogTitle() {
+ if(dialog != nullptr)
+ {
+  this->title = dialog->windowTitle();
+ }
+ return this->title;
 }
 
 /*public*/void JFileChooser::setFileFilter(QString fileFilter)
@@ -306,10 +390,35 @@ void JFileChooser::common()
 
 /*public*/void JFileChooser::setApproveButtonText(QString text)
 {
- this->approveButtonText = text;
  if(dialog != nullptr)
-  dialog->setLabelText(QFileDialog::Accept, this->approveButtonText);
+  dialog->setLabelText(QFileDialog::Accept, text);
+ this->approveButtonText = text;
 }
+
+/*public*/ QString JFileChooser::getApproveButtonText()
+{
+ return approveButtonText;
+}
+
+/*public*/ void JFileChooser::setApproveButtonToolTipText(QString string) {
+ if(dialog != nullptr)
+ {
+  QString label = dialog->labelText(QFileDialog::Accept);
+  QList<QPushButton*> buttons = dialog->findChildren<QPushButton*>();
+  foreach(QPushButton* button, buttons)
+  {
+   if(button->text() == string)
+    button->setToolTip(string);
+   break;
+  }
+ }
+ approveButtonToolTipText = string;
+}
+
+/*public*/ QString JFileChooser::getApproveButtonToolTipText() {
+  return approveButtonToolTipText;
+}
+
 /*public*/ int JFileChooser::showOpenDialog(QWidget* parent) /*throws HeadlessException*/
 {
  setDialogType(OPEN_DIALOG);
@@ -322,10 +431,27 @@ void JFileChooser::common()
  setDialogType(SAVE_DIALOG);
  return showDialog(parent, "");
 }
+
 /*public*/ void JFileChooser::setFileSelectionMode(int mode)
 {
  selectionMode = mode;
 }
+
+/*public*/ int JFileChooser::getFileSelectionMode() {
+ return selectionMode;
+}
+
+/*public*/ void JFileChooser::setFileNameToolTipText(QString txt)
+{
+ QList<QLineEdit*> widgets = dialog->findChildren<QLineEdit*>();
+ foreach(QLineEdit* widget, widgets)
+ {
+   widget->setToolTip(txt);
+  break;
+ }
+ this->fileNameToolTipText = txt;
+}
+
 /**
  * Sets the selected file. If the file's parent directory is
  * not the current directory, changes the current directory
@@ -343,19 +469,38 @@ void JFileChooser::common()
 {
  File* oldValue = selectedFile;
  selectedFile = file;
-#if 0
- if(selectedFile != NULL)
+#if 1
+ if(selectedFile != nullptr)
  {
-  if (file->isAbsolute() && !getFileSystemView().isParent(getCurrentDirectory(), selectedFile)) {
-         setCurrentDirectory(selectedFile.getParentFile());
+  if (file->isAbsolute() && !getFileSystemView()->isParent(getCurrentDirectory(), selectedFile)) {
+         setCurrentDirectory(selectedFile->getParentFile());
      }
-     if (!isMultiSelectionEnabled() || selectedFiles == null || selectedFiles.length == 1) {
+     if (!isMultiSelectionEnabled() || selectedFiles == nullptr || selectedFiles->length() == 1) {
          ensureFileIsVisible(selectedFile);
      }
+     //dialog->getSaveFileName(nullptr, tr("Enter save folder name"), selectedFile->getPath(), "xml (*.xml)");
  }
-    firePropertyChange(SELECTED_FILE_CHANGED_PROPERTY, oldValue, selectedFile);
+ pcs->firePropertyChange(SELECTED_FILE_CHANGED_PROPERTY, oldValue?oldValue->getPath():QString(), selectedFile->getPath());
 #endif
 }
+
+/*public*/ void JFileChooser::setMultiSelectionEnabled(bool bln) {
+ multiSelectionEnabled = bln;
+}
+
+/*public*/ bool JFileChooser::isMultiSelectionEnabled() {
+ return multiSelectionEnabled;
+}
+
+/*public*/ FileSystemView* JFileChooser::getFileSystemView(){
+ return new FileSystemView();
+}
+
+/*public*/ void JFileChooser::ensureFileIsVisible(File *file)
+{
+
+}
+
 /*public*/ void JFileChooser::on_filterSelected(QString filter)
 {
  selectedFilter = filter;
@@ -401,6 +546,7 @@ QString JFileChooser::getFileFilter() { return selectedFilter;}
  */
 /*public*/ void JFileChooser::setCurrentDirectory(File* dir) {
     File* oldValue = currentDirectory;
+    selectedFile = dir;
 
     if (dir != nullptr && !dir->exists()) {
         dir = currentDirectory;
@@ -422,7 +568,7 @@ QString JFileChooser::getFileFilter() { return selectedFilter;}
 //    }
 //    currentDirectory = dir;
 
-//    firePropertyChange(DIRECTORY_CHANGED_PROPERTY, oldValue, currentDirectory);
+    pcs->firePropertyChange(DIRECTORY_CHANGED_PROPERTY, oldValue, currentDirectory);
 }
 
 /*public*/ void JFileChooser::settimeout(int i)
@@ -445,3 +591,5 @@ QString JFileChooser::getFileFilter() { return selectedFilter;}
 /*public*/ int JFileChooser::getTimeout(){
  return _timeout / 1000;
 }
+
+Logger* JFileChooser::log = LoggerFactory::getLogger("JFileChooser");

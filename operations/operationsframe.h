@@ -26,7 +26,7 @@ namespace Operations
   /*public*/ OperationsFrame(QString s, QWidget* parent = 0);
   /*public*/ OperationsFrame(QWidget* parent = 0);
   /*public*/ OperationsFrame(OperationsPanel* p, QWidget* parent = 0);
-  /*public*/ QT_DEPRECATED OperationsFrame(QString s, OperationsPanel* p, QWidget* parent = 0);
+  /*public*/ OperationsFrame(QString s, OperationsPanel* p, QWidget* parent = 0);
   /*public*/ void initComponents() override;
   /*public*/ void initMinimumSize();
   /*public*/ void initMinimumSize(QSize dimension);

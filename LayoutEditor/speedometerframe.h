@@ -94,6 +94,7 @@ private slots:
  void stopSensor1_propertyChange(PropertyChangeEvent*);
  void stopSensor2_propertyChange(PropertyChangeEvent*);
 };
+
 /*public*/ /*static*/ class SpeedometerXml : public XmlFile
 {
  Q_OBJECT

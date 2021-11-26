@@ -6,14 +6,14 @@
 #include "trainswitchlisttext.h"
 #include "version.h"
 #include "instancemanager.h"
+#include "loggerfactory.h"
+#include "file.h"
 
 namespace Operations
 {
  OperationsSetupXml::OperationsSetupXml(QObject *parent) :
    OperationsXml(parent)
  {
-  log = new Logger("OperationsSetupXml");
-  operationsFileName = "Operations.xml"; // NOI18N
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
 
@@ -35,7 +35,7 @@ namespace Operations
          log->debug(tr("writeFile %1").arg(name));
      }
      // This is taken in large part from "Java and XML" page 368
-     QFile* file = findFile(name);
+     QFile* file = findFile(name)->toQfile();
      if (file == NULL) {
          file = new QFile(name);
      }
@@ -121,7 +121,7 @@ namespace Operations
  }
 
 
- //static Logger log = LoggerFactory.getLogger(OperationsSetupXml.class.getName());
+ /*static*/ Logger* OperationsSetupXml::log = LoggerFactory::getLogger("OperationsSetupXml");
 
  /*public*/ void OperationsSetupXml::dispose(){
 //     _instance = NULL;

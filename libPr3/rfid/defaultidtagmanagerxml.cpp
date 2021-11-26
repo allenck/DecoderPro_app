@@ -79,7 +79,7 @@
    /*private*/ void DefaultIdTagManagerXml::writeFile(QString fileName) throw (FileNotFoundException, IOException) {
         log->debug(tr("writeFile %1").arg(fileName));
         // This is taken in large part from "Java and XML" page 368
-        QFile* file = findFile(fileName);
+        QFile* file = findFile(fileName)->toQfile();
         if (file == nullptr) {
            file = new QFile(fileName);
         }

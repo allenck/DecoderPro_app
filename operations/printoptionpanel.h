@@ -17,15 +17,15 @@ namespace Operations
   Q_OBJECT
  public:
   PrintOptionPanel(QWidget* parent = 0);
-  /*public*/ QString getTabbedPreferencesTitle();
-  /*public*/ QString getPreferencesTooltip();
-  /*public*/ void savePreferences();
-  /*public*/ bool isDirty();
-
+  /*public*/ QString getTabbedPreferencesTitle() override;
+  /*public*/ QString getPreferencesTooltip() override;
+  /*public*/ void savePreferences() override;
+  /*public*/ bool isDirty() override;
+  /*public*/ QString className() override {return "jmri.jmrit.operations.PrintOptionPanel";}
  public slots:
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
-  /*public*/ void comboBoxActionPerformed(QWidget* ae);
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
+  /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
 
  private:
    Logger* log;

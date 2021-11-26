@@ -293,7 +293,7 @@ namespace Operations
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
 
-  toolMenu->addAction(new OptionAction(tr("Options"), this));
+  toolMenu->addAction(new OptionAction(this));
   toolMenu->addAction(new PrintOptionAction(this));
   toolMenu->addAction(new BuildReportOptionAction(this));
   toolMenu->addAction(new TrainsByCarTypeAction(tr("Modify Trains by Car Type"),this));

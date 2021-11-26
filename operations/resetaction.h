@@ -9,9 +9,9 @@ namespace Operations
  {
    Q_OBJECT
  public:
-  ResetAction(QString, QObject* parent);
+  ResetAction(QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/=0)override;
 
  };
 }

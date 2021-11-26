@@ -319,24 +319,24 @@ XmlFile::XmlFile(QObject *parent) :
  * "decoders/Mine.xml")
  * @return NULL if file found, otherwise the located File
  */
-/*protected*/ QFile* XmlFile::findFile(QString name) const
+/*protected*/ File* XmlFile::findFile(QString name) const
 {
- QFile* fp =  new QFile(FileUtil::getUserFilesPath() + name);
+ File* fp =  new File(FileUtil::getUserFilesPath() + name);
  if (fp->exists())
  {
   return fp;
  }
- fp = new QFile(name);
+ fp = new File(name);
  if (fp->exists())
  {
   return fp;
  }
- fp = new QFile(FileUtil::getProgramPath() + name);
+ fp = new File(FileUtil::getProgramPath() + name);
  if (fp->exists())
  {
   return fp;
  }
- fp = new QFile(xmlDir() + name);
+ fp = new File(xmlDir() + name);
  if (fp->exists())
  {
   return fp;
@@ -368,7 +368,7 @@ XmlFile::XmlFile(QObject *parent) :
  */
 /*public*/ void XmlFile::makeBackupFile(QString name) const
 {
- QFile* file = findFile(name);
+ QFile* file = findFile(name)->toQfile();
  if (file == NULL)
  {
   log->info("No " + name + " file to backup");
@@ -378,7 +378,7 @@ XmlFile::XmlFile(QObject *parent) :
   QFileInfo info(file->fileName());
 
   QString backupName = backupFileName(info.absoluteFilePath());
-  QFile* backupFile = findFile(backupName);
+  QFile* backupFile = findFile(backupName)->toQfile();
   if (backupFile != NULL)
   {
    if (backupFile->remove())
@@ -420,7 +420,7 @@ XmlFile::XmlFile(QObject *parent) :
    log->debug("new backup file: " + backupFullName);
   }
 
-  QFile* backupFile = findFile(backupFullName);
+  QFile* backupFile = findFile(backupFullName)->toQfile();
   if (backupFile != NULL)
   {
    if (backupFile->remove())
@@ -475,12 +475,12 @@ XmlFile::XmlFile(QObject *parent) :
  * pathname for either the xml or preferences directory.
  */
 /*public*/ void XmlFile::revertBackupFile(QString name) {
-    QFile* file = findFile(name);
+    QFile* file = findFile(name)->toQfile();
     if (file == NULL) {
         log->info("No " + name + " file to revert");
     } else {
         QString backupName = QFileInfo(name).absolutePath();
-        QFile* backupFile = findFile(backupName);
+        QFile* backupFile = findFile(backupName)->toQfile();
         if (backupFile != NULL) {
             log->info("No " + backupName + " backup file to revert");
             if (file->remove()) {

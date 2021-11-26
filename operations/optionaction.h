@@ -8,7 +8,7 @@ namespace Operations
  class OptionAction : public AbstractAction
  {
  public:
-  /*public*/ OptionAction(QString s, QObject* parent);
+  /*public*/ OptionAction(QObject* parent);
  public slots:
   /*public*/ void actionPerformed(ActionEvent* /*e*/);
  private:

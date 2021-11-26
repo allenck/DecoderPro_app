@@ -10,8 +10,8 @@
 #include "jtable.h"
 #include "userpreferencesmanager.h"
 #include "instancemanager.h"
-#include "operationssetuppanel.h"
-#include "operationssetupframe.h"
+//#include "operationssetuppanel.h"
+//#include "operationssetupframe.h"
 #include <QScrollArea>
 #include <jtextarea.h>
 #include "routestableframe.h"
@@ -70,10 +70,10 @@ namespace Operations
  }
  // NOTE: calling class should setContentPane explictly!
  /*public*/ OperationsFrame::OperationsFrame(QString s, OperationsPanel* p, QWidget* parent)
-: JmriJFrame(s, parent) {
+  : JmriJFrame(s, parent)
+ {
      //super(s);
-common();
-  QObject* pp = p->parent();
+  common();
      this->setContentPane(p);
      this->setEscapeKeyClosesWindow(true);
  }
