@@ -208,19 +208,7 @@ friend class LinkingLabel;
 friend class DragDecoratorLabel;
 friend class ConvertDialog;
 
-class AddIconActionListener : public ActionListener
-{
- PositionableLabel* parent;
-public:
- AddIconActionListener(PositionableLabel* parent)
- {
-  this->parent = parent;
- }
- void actionPerformed(JActionEvent */*e*/ = 0)
- {
-  parent->editIcon();
- }
-};
+
 
 private slots:
 /*protected*/ virtual void rotateOrthogonal();
@@ -281,6 +269,25 @@ protected:
  friend class IEFWindowListener;
  friend class BlockContentsIcon;
  friend class ConvertFrame;
+ friend class AddIconActionListener;
+};
+
+class AddIconActionListener : public QObject, public ActionListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+ PositionableLabel* parent;
+public:
+ AddIconActionListener(PositionableLabel* parent)
+ {
+  this->parent = parent;
+ }
+ QObject* self() override {return (QObject*)this;}
+public slots:
+ void actionPerformed(JActionEvent */*e*/ = 0)override
+ {
+  parent->editIcon();
+ }
 };
 class IEFWindowListener : public WindowListener
 {

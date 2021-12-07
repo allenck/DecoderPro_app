@@ -5,6 +5,7 @@
 #include <basicrosterentry.h>
 #include <dcclocoaddress.h>
 #include <dccthrottle.h>
+#include <jframe.h>
 #include <listselectionmodel.h>
 #include <locoaddress.h>
 #include <manager.h>
@@ -22,6 +23,7 @@
 #include <qstringlist.h>
 #include <qurl.h>
 #include <qvector.h>
+#include <qwidget.h>
 #include <sensor.h>
 #include <sensormanager.h>
 #include <serialportadapter.h>
@@ -39,6 +41,7 @@
 #include <turnoutmanager.h>
 #include <turnoutoperation.h>
 #include <vetoablechangesupport.h>
+#include <windowinterface.h>
 #include <windowlistener.h>
 #include <xmlfile.h>
 
@@ -1910,6 +1913,52 @@ void delete_VetoableChangeSupport(VetoableChangeSupport* obj) { delete obj; }
    void fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, int  oldValue, int  newValue) throw (PropertyVetoException) ;
    void py_q_fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, int  oldValue, int  newValue) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_fireVetoableChange(propertyName, oldValue, newValue));}
    QObject*  self(VetoableChangeSupport* theWrappedObject);
+};
+
+
+
+
+
+class PythonQtShell_WindowInterface : public WindowInterface
+{
+public:
+    PythonQtShell_WindowInterface(QWidget*  parent = nullptr):WindowInterface(parent),_wrapper(NULL) {}
+
+   ~PythonQtShell_WindowInterface();
+
+virtual void childEvent(QChildEvent*  event);
+virtual void customEvent(QEvent*  event);
+virtual void dispose();
+virtual bool  event(QEvent*  event);
+virtual bool  eventFilter(QObject*  watched, QEvent*  event);
+virtual JFrame*  getFrame();
+virtual bool  multipleInstances();
+virtual void timerEvent(QTimerEvent*  event);
+
+  const QMetaObject* metaObject() const;
+  int qt_metacall(QMetaObject::Call call, int id, void** args);
+  PythonQtInstanceWrapper* _wrapper; 
+};
+
+class PythonQtPublicPromoter_WindowInterface : public WindowInterface
+{ public:
+inline void py_q_dispose() { WindowInterface::dispose(); }
+inline JFrame*  py_q_getFrame() { return WindowInterface::getFrame(); }
+inline bool  py_q_multipleInstances() { return WindowInterface::multipleInstances(); }
+};
+
+class PythonQtWrapper_WindowInterface : public QObject
+{ Q_OBJECT
+public:
+public slots:
+WindowInterface* new_WindowInterface(QWidget*  parent = nullptr);
+void delete_WindowInterface(WindowInterface* obj) { delete obj; } 
+   void dispose(WindowInterface* theWrappedObject);
+   void py_q_dispose(WindowInterface* theWrappedObject){  (((PythonQtPublicPromoter_WindowInterface*)theWrappedObject)->py_q_dispose());}
+   JFrame*  getFrame(WindowInterface* theWrappedObject);
+   JFrame*  py_q_getFrame(WindowInterface* theWrappedObject){  return (((PythonQtPublicPromoter_WindowInterface*)theWrappedObject)->py_q_getFrame());}
+   bool  multipleInstances(WindowInterface* theWrappedObject);
+   bool  py_q_multipleInstances(WindowInterface* theWrappedObject){  return (((PythonQtPublicPromoter_WindowInterface*)theWrappedObject)->py_q_multipleInstances());}
 };
 
 

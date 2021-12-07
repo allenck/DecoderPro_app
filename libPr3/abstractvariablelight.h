@@ -35,7 +35,7 @@ public:
     /*public*/ double getMin() override;
     /*public*/ double getMax() override;
     /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative() override;
-    //QObject* self() override {return this;}
+    QObject* self() override {return this;}
     //QString getSystemName() const override{return AbstractNamedBean::getSystemName();}
 
 signals:

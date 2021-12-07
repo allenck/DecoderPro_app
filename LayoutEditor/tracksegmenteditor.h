@@ -64,6 +64,9 @@ class TSE_editTracksegmentDonePressed : public QObject, public ActionListener
   TrackSegmentEditor* editor;
  public:
   TSE_editTracksegmentDonePressed(TrackSegmentEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
+public slots:
+
   void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editTracksegmentDonePressed();
@@ -77,6 +80,8 @@ class TSE_editTracksegmentCancelPressed : public QObject, public ActionListener
   TrackSegmentEditor* editor;
  public:
   TSE_editTracksegmentCancelPressed(TrackSegmentEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
+public slots:
   void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editTrackSegmentCancelPressed();

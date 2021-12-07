@@ -513,3 +513,25 @@
      */
     /*public*/ /*default*/ void Manager::setDataListenerMute(bool /*muted*/) {
     }
+    /**
+     * Test if parameter is a properly formatted system name. Implementations of
+     * this method <em>must not</em> throw an exception, log an error, or
+     * otherwise disrupt the user.
+     *
+     * @since 4.9.5, although similar methods existed previously in lower-level
+     * classes
+     * @param systemName the system name
+     * @return enum indicating current validity, which might be just as a prefix
+     */
+    //@CheckReturnValue
+    //@OverrideMustInvoke
+    /*public*/ /*default*/ Manager::NameValidity Manager::validSystemNameFormat(/*@Nonnull*/ QString systemName)const {
+        QString prefix = getSystemNamePrefix();
+        if (prefix ==(systemName)) {
+            return NameValidity::VALID_AS_PREFIX_ONLY;
+        }
+        return systemName.startsWith(prefix)
+                ? NameValidity::VALID
+                : NameValidity::INVALID;
+    }
+

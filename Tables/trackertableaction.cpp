@@ -22,6 +22,7 @@
 #include "inputdialog.h"
 #include <QMenu>
 #include "warranttableaction.h"
+#include "instancemanager.h"
 
 TrackerTableAction::TrackerTableAction(QObject *parent) :
   AbstractAction(tr("Trackers"), parent)
@@ -63,6 +64,7 @@ void TrackerTableAction::common()
 /*public*/ /*static*/ TrackerTableAction* TrackerTableAction::getInstance(QObject* parent) {
     if (_instance == NULL) {
         _instance = new TrackerTableAction(tr("Trackers"),parent);
+        InstanceManager::store(_instance, "TrackerTableAction");
     }
     return _instance;
 }

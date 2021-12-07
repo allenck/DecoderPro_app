@@ -367,8 +367,8 @@
 /*public*/ /*static*/ QString JOptionPane::showInputDialog(QWidget* parentComponent,
     QVariant message) //throws HeadlessException
 {
-    return showInputDialog(parentComponent, message, /*UIManager.getString*/QString(
-        "OptionPane.inputDialogTitle"/*, parentComponent*/), QUESTION_MESSAGE);
+    return showInputDialog(parentComponent, message, tr(
+        "Enter new name:"), QUESTION_MESSAGE);
 }
 
 /**
@@ -2390,6 +2390,7 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
   if(options.count() == 1)
   {
    f = new JTextField();
+   f->setEditable(true);
    if(getInitialValue() != QVariant())
     f->setText(getInitialValue().toString());
    ll->addWidget(f);

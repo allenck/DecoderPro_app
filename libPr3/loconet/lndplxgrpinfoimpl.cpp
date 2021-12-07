@@ -84,7 +84,7 @@
         waitingForIplReply = false;
 
 //        swingTmrIplQuery = new javax.swing.Timer(LnDplxGrpInfoImplConstants.IPL_QUERY_DELAY, new java.awt.event.ActionListener() {
-//            @Override
+//     ActionListener       @Override
 //            /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
 //                swingTmrIplQuery.stop();
 //                waitingForIplReply = false;
@@ -100,7 +100,7 @@
 //                }
 //            }
 //        });
-        swingTmrIplQuery = new SwingTmrIpl02(LnDplxGrpInfoImplConstants::IPL_QUERY_DELAY, new ActionListener(), this);
+        swingTmrIplQuery = new Timer(LnDplxGrpInfoImplConstants::IPL_QUERY_DELAY, new SwingTmrIpl02Listener(this), this);
 
 //        swingTmrDuplexInfoQuery = new javax.swing.Timer(LnDplxGrpInfoImplConstants.DPLX_QUERY_DELAY, new java.awt.event.ActionListener() {
 //            @Override
@@ -120,7 +120,7 @@
 //                }
 //            }
 //        });
-        swingTmrDuplexInfoQuery = new SwingTmrDuplex02(LnDplxGrpInfoImplConstants::DPLX_QUERY_DELAY, new ActionListener(), this);
+        swingTmrDuplexInfoQuery = new Timer(LnDplxGrpInfoImplConstants::DPLX_QUERY_DELAY, new SwingTmrIpl02Listener(this), this);
 
         acceptedGroupName = "";
         acceptedGroupChannel = "";

@@ -85,9 +85,10 @@ class EditIconActionListener : public QObject, public ActionListener
  QString key;
  IndicatorTOItemPanel* parent;
 public:
-void init(QString k, IndicatorTOItemPanel* parent);
+ void init(QString k, IndicatorTOItemPanel* parent);
+ QObject* self() override {return (QObject*)this;}
 public slots:
-/*public*/ void actionPerformed(JActionEvent* a = 0);
+ /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 
 protected:
 

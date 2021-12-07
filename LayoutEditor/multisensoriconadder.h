@@ -231,7 +231,9 @@ class DeleteActionListener : public QObject, public ActionListener
   Q_INTERFACES(ActionListener)
    MultiSensorIconAdder* parent;
  QString key;
- public:
+public:
+ QObject* self() override {return (QObject*)this;}
+public slots:
  /*public*/ void actionPerformed(JActionEvent* a = 0) override
  {
   Q_UNUSED(a);

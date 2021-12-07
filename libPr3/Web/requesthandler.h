@@ -6,11 +6,12 @@
 #ifndef REQUESTHANDLER_H
 #define REQUESTHANDLER_H
 
-#include <httpserver/httprequesthandler.h>
-#include "httpserver/httprequest.h"
-#include "httpserver/httpresponse.h"
+#include <../QtWebApp/QtWebApp/httpserver/httprequesthandler.h>
+#include "../QtWebApp/QtWebApp/httpserver/httprequest.h"
+#include "../QtWebApp/QtWebApp/httpserver/httpresponse.h"
 #include "httpservlet.h"
-#include "httpserver/staticfilecontroller.h"
+#include "../QtWebApp/httpserver/staticfilecontroller.h"
+#include <QWebSocket>
 
 class HttpServlet;
 //using namespace stefanfrings;

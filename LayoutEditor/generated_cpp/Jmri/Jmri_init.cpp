@@ -114,6 +114,7 @@ PythonQt::priv()->registerClass(&Turnout::staticMetaObject, "Jmri", PythonQtCrea
 PythonQt::priv()->registerClass(&TurnoutManager::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TurnoutManager>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TurnoutManager>, module, 0);
 PythonQt::priv()->registerClass(&TurnoutOperation::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_TurnoutOperation>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_TurnoutOperation>, module, 0);
 PythonQt::priv()->registerClass(&VetoableChangeSupport::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_VetoableChangeSupport>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_VetoableChangeSupport>, module, 0);
+PythonQt::priv()->registerClass(&WindowInterface::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_WindowInterface>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_WindowInterface>, module, 0);
 PythonQt::priv()->registerClass(&WindowListener::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_WindowListener>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_WindowListener>, module, 0);
 PythonQt::priv()->registerClass(&XmlFile::staticMetaObject, "Jmri", PythonQtCreateObject<PythonQtWrapper_XmlFile>, PythonQtSetInstanceWrapperOnShell<PythonQtShell_XmlFile>, module, 0);
 

@@ -161,11 +161,12 @@ class SlipTurnoutActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
     Q_INTERFACES(ActionListener)
- SlipTurnoutIcon* self;
+ SlipTurnoutIcon* sti;
 public:
- SlipTurnoutActionListener(SlipTurnoutIcon* self) { this->self = self;}
+ SlipTurnoutActionListener(SlipTurnoutIcon* sti) { this->sti = sti;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed(JActionEvent */*e*/ = 0) { self->updateTurnout();}
+ void actionPerformed(JActionEvent */*e*/ = 0) override{ sti->updateTurnout();}
 };
 
 class STOWindowListener : public WindowListener

@@ -19,7 +19,7 @@
 //    @CheckReturnValue
 //    @CheckForNull
 //    @Override
-    virtual/*public*/ VariableLight* getByUserName(/*@Nonnull*/ QString s)=0;
+//    virtual/*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString s) =0;
 
     /**
      * Locate a VariableLight by its system name.

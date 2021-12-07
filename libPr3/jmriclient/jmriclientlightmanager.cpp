@@ -29,7 +29,7 @@
         Light* t;
         int addr = (systemName.mid(prefix.length() + 1).toInt());
         t = new JMRIClientLight(addr, memo);
-        t->setUserName(userName);
+        ((AbstractNamedBean*)t->self())->setUserName(userName);
         return t;
     }
 

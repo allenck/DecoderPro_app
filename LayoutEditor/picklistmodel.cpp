@@ -1114,10 +1114,10 @@ LightPickModel::LightPickModel (QObject *parent) : PickListModel(parent)
     return (NamedBean*)((AbstractLightManager*)manager)->getBySystemName(name);
 }
 /*public*/ NamedBean* LightPickModel::addBean(QString name) {
-    return ((AbstractLightManager*)manager)->provideLight(name);
+    return (NamedBean*)((AbstractLightManager*)manager)->provideLight(name);
 }
 /*public*/ NamedBean* LightPickModel::addBean(QString sysName, QString userName) {
-    return ((AbstractLightManager*)manager)->newLight(sysName, userName);
+    return (NamedBean*)((AbstractLightManager*)manager)->newLight(sysName, userName);
 }
 /*public*/ bool LightPickModel::canAddBean() {
     return true;

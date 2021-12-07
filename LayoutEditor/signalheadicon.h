@@ -76,20 +76,6 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon, pub
     PropertyChangeSupport* pcs;
     void addPropertyChangeListener(PropertyChangeListener*);
     void removePropertyChangeListener(PropertyChangeListener*);
-    class AddIconActionListener : public ActionListener
-    {
-     SignalHeadIcon* parent;
-    public:
-     AddIconActionListener(SignalHeadIcon* parent)
-     {
-      this->parent = parent;
-     }
-     void actionPerformed(JActionEvent */*e*/ = 0)
-     {
-      parent->updateSignal();
-     }
-    };
-
  protected:
 #if 0 // not needed since scaling and rotating is done by QT's QGraphicsScene
     /*protected*/ void rotateOrthogonal();
@@ -101,19 +87,42 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon, pub
     /*protected*/ void editItem();
     /*protected*/ void edit();
     friend class SHIconDragJLabel;
+    friend class AddIconActionListener;
 };
 
-class MyActionListener : public ActionListener
+class SHIAddIconActionListener : public QObject, public ActionListener
 {
-  SignalHeadIcon* self;
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+ SignalHeadIcon* parent;
+public:
+SHIAddIconActionListener(SignalHeadIcon* parent) {
+  this->parent = parent;
+ }
+ QObject* self() override {return (QObject*)this;}
+ public slots:
+ void actionPerformed(JActionEvent */*e*/ = 0)override
+ {
+  parent->updateSignal();
+ }
+};
+
+
+class MyActionListener : public QObject, public ActionListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+  SignalHeadIcon* shi;
  public:
-  MyActionListener(SignalHeadIcon* self)
+  MyActionListener(SignalHeadIcon* shi)
   {
-   this->self = self;
+   this->shi = shi;
   }
-  /*public*/ void actionPerformed(JActionEvent* /*a*/ = 0)
+  QObject* self() override {return (QObject*)this;}
+public slots:
+  /*public*/ void actionPerformed(JActionEvent* /*a*/ = 0)override
   {
-   self->updateItem();
+   shi->updateItem();
   }
 };
 

@@ -16,6 +16,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 
+
 win32_msvc: {
  QMAKE_CXXFLAGS += /wd4290
  QMAKE_CFLAGS_DEBUG += /wd4290
@@ -120,6 +121,8 @@ equals(ENABLE_SCRIPTING, "Y") {
 
 DEFINES += USE_THREAD
 
+
+ENABLE_LOGIXNG = "N" # change to "Y" to compile LogixNG modules
 SOURCES += \
  #abstractproxymanager.cpp \
  addeditsinglelightcontrolframe.cpp \
@@ -1108,14 +1111,31 @@ SOURCES += \
     loconet/lncvprogtablemodel.cpp \
     loconet/lncvprogpane.cpp \
     loconet/lncvprogaction.cpp \
-    logix/learnfunctionpanel.cpp \
-    logix/learncontrolpanel.cpp \
-    logix/learnspeedpanel.cpp \
     abstractprogrammerserver.cpp \
     searchbar.cpp \
-    cvutil.cpp
+    cvutil.cpp \
+    logix/learnfunctionpanel.cpp \
+    logix/learncontrolpanel.cpp \
+    logix/learnspeedpanel.cpp
 #    Throttle/throttleframe.cpp
 
+equals(ENABLE_LOGIXNG, "Y") {
+ SOURCES += \
+ logixng/abortconditionalngexecutionexception.cpp \
+ logixng/abstractmalesocket.cpp \
+ logixng/base.cpp \
+ logixng/category.cpp \
+ logixng/defaultlogixng.cpp \
+ logixng/defaultlogixngmanager.cpp \
+ logixng/defaultlogixngmanagerxml.cpp \
+ logixng/logixng_thread.cpp \
+ logixng/socketalreadyconnectedexception.cpp \
+ logixng/abstractbase.cpp \
+ logixng/abstractfemalesocket.cpp \
+ logixng/clipboardmany.cpp \
+ logixng/defaultclipboard.cpp \
+ logixng/defaultfemaleanysocket.cpp
+}
 
  !contains(FTDI, 1) {
     SOURCES +=
@@ -2228,7 +2248,44 @@ HEADERS += \
  !contains(FTDI, 1) {
     HEADERS +=
  }
+ equals(ENABLE_LOGIXNG, "Y") {
 
+ HEADERS += \
+ logixng/abortconditionalngexecutionexception.h \
+ logixng/abstractmalesocket.h \
+ logixng/base.h \
+ logixng/basemanager.h \
+ logixng/category.h \
+ logixng/conditionalng.h \
+ logixng/conditionalng_manager.h \
+ logixng/debugable.h \
+ logixng/defaultlogixng.h \
+ logixng/defaultlogixngmanager.h \
+ logixng/defaultlogixngmanagerxml.h \
+ logixng/femalesocket.h \
+ logixng/femalesocketmanager.h \
+ logixng/logixng.h \
+ logixng/logixng_initializationmanager.h \
+ logixng/logixng_manager.h \
+ logixng/logixng_thread.h \
+ logixng/logixngpreferences.h \
+ logixng/malesocket.h \
+ logixng/malesocketfactory.h \
+ logixng/module.h \
+ logixng/modulemanager.h \
+ logixng/socketalreadyconnectedexception.h \
+ logixng/symboltable.h \
+ logixng/clipboard.h \
+ logixng/stack.h \
+ logixng/abstractbase.h \
+ logixng/abstractfemalesocket.h \
+ logixng/clipboardmany.h \
+ logixng/defaultclipboard.h \
+ logixng/defaultfemaleanysocket.h \
+ logixng/femaleanysocket.h \
+ logixng/femalesocketlistener.h \
+ logixng/femalesocketoperation.h
+}
 symbian {
     MMP_RULES += EXPORTUNFROZEN
     TARGET.UID3 = 0xE60D7F4C
@@ -2405,7 +2462,7 @@ message(LibPr3: $$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 not found)
 }
 
 
-unix|win32: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+#unix|win32: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
 
 INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
 DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
@@ -2415,6 +2472,7 @@ message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 found)
 } else {
 message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 not found)
 }
+
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
@@ -2433,3 +2491,15 @@ INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
 DEPENDPATH += $$PWD/../../../../QtZeroConf-master
 
 
+
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/release/ -lQtWebAppd
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/debug/ -lQtWebAppd
+#else:unix: LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/ -lQtWebAppd
+
+#INCLUDEPATH += $$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug
+#DEPENDPATH += $$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug
+
+unix|win32: LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += $$PWD/../../../../QtWebApp/QtWebApp
+DEPENDPATH += $$PWD/../../../../QtWebApp/QtWebApp

@@ -59,6 +59,7 @@ namespace Operations
      fc->setApproveButtonText(tr("&B Backup"));
      fc->setApproveButtonToolTipText(tr("Click to save files to the backup folder."));
      fc->setFileNameToolTipText(tr("Enter the new backup directory name. "));
+     //fc->setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY);
 
      File* fs = new File(backup->getBackupRoot()->getPath() + File::separator + backup->suggestBackupSetName());
      fc->setSelectedFile(fs);

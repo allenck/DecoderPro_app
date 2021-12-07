@@ -2,9 +2,9 @@
 #include "insets.h"
 #include "exceptions.h"
 #include "jlabel.h"
-#include "borderfactory.h".h"
+#include "borderfactory.h"
 #include <QLayout>
-
+#include <QPainterPath>
 /**
  * A class which implements an arbitrary border
  * with the addition of a String title in a

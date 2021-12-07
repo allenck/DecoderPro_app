@@ -2862,7 +2862,7 @@ void ConditionalListEdit::variableSignalMastNameListener() // SLOT[]
 #if 1
 //};
 ///*transient*/ CLESelectLogixBoxListener* selectLogixBoxListener = new CLESelectLogixBoxListener(this);
-CLESelectLogixBoxListener::CLESelectLogixBoxListener(ConditionalListEdit *self) {this->_self = self;}
+CLESelectLogixBoxListener::CLESelectLogixBoxListener(ConditionalListEdit *_self) {this->_self = _self;}
      //QOverride
     /*public*/ void CLESelectLogixBoxListener::actionPerformed(JActionEvent *) {
         int lgxIndex = _self->_selectLogixBox->currentIndex();

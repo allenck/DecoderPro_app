@@ -13,7 +13,7 @@ public:
  PanelEditorXml(const PanelEditorXml&) :AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
-    /*public*/ bool load(QDomElement element) throw (Exception) override;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception) override;
     /*public*/ int loadOrder() const override;
 
 signals:

@@ -167,6 +167,7 @@ public:
  {
   this->index = index;
  }
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override
  {

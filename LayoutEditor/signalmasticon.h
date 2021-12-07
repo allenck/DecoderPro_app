@@ -89,22 +89,26 @@ protected:
      */
     /*protected*/ int clickMode;// = 0;
     /*protected*/ bool litMode;// = false;
-    class AddIconActionListener : public ActionListener
-    {
-     SignalMastIcon* parent;
-    public:
-     AddIconActionListener(SignalMastIcon* parent)
-     {
-      this->parent = parent;
-     }
-     void actionPerformed(JActionEvent */*e*/ = 0)
-     {
-      parent->updateItem();
-     }
-    };
 protected slots:
     /*protected*/ void editItem();
-
+ friend class SMIAddIconActionListener;
 };
+class SMIAddIconActionListener : public QObject, public ActionListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+ SignalMastIcon* parent;
+public:
+ SMIAddIconActionListener(SignalMastIcon* parent)
+ {
+  this->parent = parent;
+ }
+ QObject* self() override {return (QObject*)this;}
+ void actionPerformed(JActionEvent */*e*/ = 0) override
+ {
+  parent->updateItem();
+ }
+};
+
 Q_DECLARE_METATYPE(SignalMastIcon)
 #endif // SIGNALMASTICON_H

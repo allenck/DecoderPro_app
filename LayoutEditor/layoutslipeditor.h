@@ -122,6 +122,7 @@ class ActionListenerDone : public QObject, public ActionListener
   LayoutSlipEditor* editor;
  public:
   ActionListenerDone(LayoutSlipEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0) override
   {
@@ -136,6 +137,7 @@ class ActionListenerCancel : public QObject, public ActionListener
   LayoutSlipEditor* editor;
  public:
   ActionListenerCancel(LayoutSlipEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0) override
   {

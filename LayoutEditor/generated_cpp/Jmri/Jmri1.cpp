@@ -865,6 +865,10 @@ EditScene* PythonQtWrapper_EditScene::new_EditScene(QRectF  arg__1, QObject*  pa
 { 
 return new PythonQtShell_EditScene(arg__1, parent); }
 
+EditScene* PythonQtWrapper_EditScene::new_EditScene(qreal  x, qreal  y, qreal  width, qreal  height, QObject*  parent)
+{ 
+return new PythonQtShell_EditScene(x, y, width, height, parent); }
+
 const QMetaObject* PythonQtShell_EditScene::metaObject() const {
   if (QObject::d_ptr->metaObject) {
     return QObject::d_ptr->dynamicMetaObject();
@@ -14602,6 +14606,39 @@ if (_wrapper) {
 }
   LayoutEditor::displayRemoveWarning(track0, itemList1, typeKey2);
 }
+QString  PythonQtShell_LayoutEditor::getClassName()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getClassName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getClassName", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutEditor::getClassName();
+}
 void PythonQtShell_LayoutEditor::init(QString  name0)
 {
 if (_wrapper) {
@@ -14888,6 +14925,72 @@ if (_wrapper) {
 }
   LayoutEditor::setNextLocation(obj0);
 }
+void PythonQtShell_LayoutEditor::setRemoveMenu(Positionable*  p0, QMenu*  popup1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setRemoveMenu");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "Positionable*" , "QMenu*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
+      void* args[3] = {NULL, (void*)&p0, (void*)&popup1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::setRemoveMenu(p0, popup1);
+}
+void PythonQtShell_LayoutEditor::setScroll(QString  value0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setScroll");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&value0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::setScroll(value0);
+}
+void PythonQtShell_LayoutEditor::setScroll(int  state0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("setScroll");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "int"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&state0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::setScroll(state0);
+}
 void PythonQtShell_LayoutEditor::showPopUp(Positionable*  p0, QGraphicsSceneMouseEvent*  event1)
 {
 if (_wrapper) {
@@ -14909,6 +15012,28 @@ if (_wrapper) {
   }
 }
   LayoutEditor::showPopUp(p0, event1);
+}
+void PythonQtShell_LayoutEditor::targetWindowClosingEvent(QCloseEvent*  e0)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("targetWindowClosingEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QCloseEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&e0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  LayoutEditor::targetWindowClosingEvent(e0);
 }
 void PythonQtShell_LayoutEditor::vetoableChange(PropertyChangeEvent*  evt0)
 {
@@ -15113,11 +15238,6 @@ void PythonQtWrapper_LayoutEditor::drawSelectionRect(LayoutEditor* theWrappedObj
   ( theWrappedObject->drawSelectionRect(g2));
 }
 
-void PythonQtWrapper_LayoutEditor::drawTurnouts(LayoutEditor* theWrappedObject, EditScene*  g2)
-{
-  ( ((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->promoted_drawTurnouts(g2));
-}
-
 int  PythonQtWrapper_LayoutEditor::getAnchorX(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getAnchorX());
@@ -15136,11 +15256,6 @@ bool  PythonQtWrapper_LayoutEditor::getAntialiasingOn(LayoutEditor* theWrappedOb
 bool  PythonQtWrapper_LayoutEditor::getAutoBlockAssignment(LayoutEditor* theWrappedObject)
 {
   return ( theWrappedObject->getAutoBlockAssignment());
-}
-
-QString  PythonQtWrapper_LayoutEditor::getClassName(LayoutEditor* theWrappedObject)
-{
-  return ( theWrappedObject->getClassName());
 }
 
 const QIcon  PythonQtWrapper_LayoutEditor::getColourIcon(LayoutEditor* theWrappedObject, QColor  color)
@@ -15611,6 +15726,11 @@ void PythonQtWrapper_LayoutEditor::setOpenDispatcherOnLoad(LayoutEditor* theWrap
 void PythonQtWrapper_LayoutEditor::setPanelBounds(LayoutEditor* theWrappedObject, QRectF  newBounds)
 {
   ( theWrappedObject->setPanelBounds(newBounds));
+}
+
+void PythonQtWrapper_LayoutEditor::setScroll(LayoutEditor* theWrappedObject, QString  value)
+{
+  ( theWrappedObject->setScroll(value));
 }
 
 void PythonQtWrapper_LayoutEditor::setScroll(LayoutEditor* theWrappedObject, int  state)
@@ -16107,16 +16227,6 @@ int PythonQtShell_LayoutTurnout::qt_metacall(QMetaObject::Call call, int id, voi
   int result = LayoutTurnout::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-void PythonQtWrapper_LayoutTurnout::addEditPopUpMenu(LayoutTurnout* theWrappedObject, QObject*  menu)
-{
-  ( theWrappedObject->addEditPopUpMenu(menu));
-}
-
-void PythonQtWrapper_LayoutTurnout::addViewPopUpMenu(LayoutTurnout* theWrappedObject, QObject*  menu)
-{
-  ( theWrappedObject->addViewPopUpMenu(menu));
-}
-
 bool  PythonQtWrapper_LayoutTurnout::canRemove(LayoutTurnout* theWrappedObject)
 {
   return ( theWrappedObject->canRemove());

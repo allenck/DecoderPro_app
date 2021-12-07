@@ -47,7 +47,7 @@ public:
      * @return An array of PropertyChangeListeners.
      */
     //@Nonnull
-    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners() =0; //{return QVector<PropertyChangeListener*>();}
+    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners() {return QVector<PropertyChangeListener*>();}
 
     /**
      * Get all {@link java.beans.PropertyChangeListener}s currently listening to
@@ -57,7 +57,7 @@ public:
      * @return An array of PropertyChangeListeners.
      */
     //@Nonnull
-    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners(/*QNullable*/ QString /*propertyName*/) =0; //{return QVector<PropertyChangeListener*>();}
+    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners(/*QNullable*/ QString /*propertyName*/) {return QVector<PropertyChangeListener*>();}
 
     /**
      * Remove the specified listener from this object.

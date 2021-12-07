@@ -1249,7 +1249,7 @@ void SwitchboardEditor::onOpenEditor()
             return InstanceManager::lightManagerInstance();
      else
             log->error(tr("Unexpected bean type character \"%1\" found.").arg(typeChar));
-            return nullptr;
+     return nullptr;
 }
 
 /**
@@ -1421,23 +1421,12 @@ void SwitchboardEditor::onAddAction()
 /*protected*/ void SwitchboardEditor::setSecondSelectionGroup(QList<Positionable*> list) {
     _secondSelectionGroup = list;
 }
-#if 0
-@Override
-/*protected*/ void paintTargetPanel(Graphics g) {
-    // needed to create PositionablePolygon
-    //_shapeDrawer.paint(g);
-    if (_secondSelectionGroup != null) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(new Color(150, 150, 255));
-        g2d.setStroke(new java.awt.BasicStroke(2.0f));
-        for (Positionable p : _secondSelectionGroup) {
-            if (!(p instanceof jmri.jmrit.display.controlPanelEditor.shape.PositionableShape)) {
-                g.drawRect(p.getX(), p.getY(), p.maxWidth(), p.maxHeight());
-            }
-        }
-    }
+
+//@Override
+/*protected*/ void SwitchboardEditor::paintTargetPanel(QGraphicsScene* g) {
+  // Switch shapes not directly available from switchboardEditor
 }
-#endif
+
 /**
  * Get a beanSwitch object from this switchBoard panel by a given name.
  *

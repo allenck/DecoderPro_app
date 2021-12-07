@@ -189,6 +189,8 @@ class UpdateActionListener : public QObject, public ActionListener
  SensorIcon* parent;
 public:
  UpdateActionListener(SensorIcon* parent);
+ QObject* self() override {return (QObject*)this;}
+public slots:
  /*public*/ void actionPerformed(JActionEvent* a = 0) override;
 };
 
@@ -199,7 +201,9 @@ class EditActionListener : public QObject, public ActionListener
  SensorIcon* parent;
 public:
  EditActionListener(SensorIcon* parent);
- /*public*/ void actionPerformed(JActionEvent* a = 0);
+ QObject* self() override {return (QObject*)this;}
+public slots:
+ /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 
 #endif // SENSORICON_H

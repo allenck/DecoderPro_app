@@ -10,6 +10,8 @@
 #include "instancemanager.h"
 #include "proxylightmanager.h"
 #include <QIntValidator>
+#include "lighttableaction.h"
+#include "variablelight.h"
 
 //SimpleLightCtrlFrame::SimpleLightCtrlFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -107,7 +109,8 @@ JmriJFrame(parent)
  textStateLabel->setVisible(true);
  nowStateTextField->setText(tr("<unknown>"));
  nowStateTextField->setVisible(true);
- textIsEnabledLabel->setText(tr("Enabled:"));
+ nowControllersTextField->setText("");
+ nowControllersTextField->setVisible(true);
  textIsEnabledLabel->setVisible(true);
  statusIsEnabledCheckBox->setVisible(true);
  statusIsEnabledCheckBox->setEnabled(false);
@@ -187,6 +190,17 @@ JmriJFrame(parent)
 //        });
  connect(applyButton, SIGNAL(clicked()), this, SLOT(applyButtonActionPerformed()));
 
+ to1 = new NamedBeanComboBox(InstanceManager::lightManagerInstance());
+ to1->setAllowNull(true);
+// to1->addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+ connect(to1, &NamedBeanComboBox::currentIndexChanged, [=]{
+         log->debug("actionevent");
+         resetLightToCombo();
+//     }
+ });
+
  // general GUI config
  setTitle(tr("Light Control"));
 //        getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -224,6 +238,12 @@ JmriJFrame(parent)
  thisLayout->addLayout(p2Layout);
  }
 
+ //pane2 = new QWidget();
+ {
+  FlowLayout* p2Layout = new FlowLayout();
+ p2Layout->addWidget(nowControllersTextField);
+ thisLayout->addLayout(p2Layout);
+ }
  //pane2 = new QWidget();
  {
   FlowLayout* p2Layout = new FlowLayout();
@@ -265,8 +285,39 @@ JmriJFrame(parent)
  adjustSize();
 }
 
+/*private*/ void SimpleLightCtrlFrame::setControlFrameActive(bool showLight) {
+    log->debug(tr("selected light is %1").arg(to1->getSelectedItem()->getDisplayName()));
+    onButton->setEnabled(showLight);
+    offButton->setEnabled(showLight);
+    statusIsEnabledCheckBox->setEnabled(showLight);
+
+    if (showLight && (qobject_cast<VariableLight*>(light->self()))) {
+        intensityButton->setEnabled(true);
+        intensityMinTextField->setEnabled(true);
+        intensityMaxTextField->setEnabled(true);
+        intensityTextField->setEnabled(true);
+        applyButton->setEnabled(true);
+    } else {
+        intensityButton->setEnabled(false);
+        intensityMinTextField->setEnabled(false);
+        intensityMaxTextField->setEnabled(false);
+        intensityTextField->setEnabled(false);
+        intensityButton->setEnabled(false);
+        applyButton->setEnabled(false);
+    }
+
+    if (showLight && (qobject_cast<VariableLight*>(light->self()))
+            && ((VariableLight*)light->self())->isTransitionAvailable()) {
+        transitionTimeTextField->setEnabled(true);
+    } else {
+        transitionTimeTextField->setEnabled(false);
+    }
+
+}
+
 /*public*/ void SimpleLightCtrlFrame::offButtonActionPerformed(JActionEvent* /*e*/)
 {
+#if 0
  // load address from switchAddrTextField
  try {
      if (light != NULL)
@@ -293,10 +344,24 @@ JmriJFrame(parent)
      log->error(tr("offButtonActionPerformed, exception: ") /*+ ex.toString()*/);
      nowStateTextField->setText("ERROR");
  }
+#else
+ if (to1->getSelectedItem() == nullptr) {
+            nowStateTextField->setText(tr("Error"));
+            return;
+        }
+        try {
+            // and set commanded state to ON
+            light->setState(Light::OFF);
+        } catch (Exception ex) {
+            log->error(tr("%1%2").arg( tr("Error").arg(ex.getMessage())));
+            nowStateTextField->setText(tr("Error"));
+        }
+#endif
 }
 
 /*public*/ void SimpleLightCtrlFrame::onButtonActionPerformed(JActionEvent* /*e*/)
 {
+#if 0
  // load address from switchAddrTextField
  try
  {
@@ -330,6 +395,19 @@ JmriJFrame(parent)
   log->error(tr("LightErrorOnButtonException") /*+ ex.toString()*/);
   nowStateTextField->setText("ERROR");
  }
+#else
+ if (to1->getSelectedItem() == nullptr) {
+      nowStateTextField->setText(tr("Error"));
+      return;
+  }
+  try {
+      // and set commanded state to ON
+      light->setState(Light::ON);
+  } catch (Exception ex) {
+      log->error(tr("%1%2").arg( tr("Error").arg(ex.getMessage())));
+      nowStateTextField->setText(tr("Error"));
+  }
+#endif
 }
 
 /*public*/ void SimpleLightCtrlFrame::intensityButtonActionPerformed(JActionEvent* /*e*/)
@@ -340,7 +418,7 @@ JmriJFrame(parent)
   if (light != NULL)
   {
       // we're changing the light we're watching
-   light->removePropertyChangeListener((PropertyChangeListener*)this);
+   ((NamedBean*)light->self())->removePropertyChangeListener((PropertyChangeListener*)this);
 //   disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(
@@ -351,7 +429,7 @@ JmriJFrame(parent)
   }
   else
   {
-   light->addPropertyChangeListener((PropertyChangeListener*)this);
+   ((NamedBean*)light->self())->addPropertyChangeListener((PropertyChangeListener*)this);
 //   connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    if (log->isDebugEnabled()) {
        log->debug("about to command DIM");
@@ -375,7 +453,7 @@ JmriJFrame(parent)
     try {
         if (light != NULL) {
             // we're changing the light we're watching
-         light->removePropertyChangeListener((PropertyChangeListener*)this);
+         ((NamedBean*)light->self())->removePropertyChangeListener((PropertyChangeListener*)this);
 //         disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         }
         light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(adrTextField->text());
@@ -413,7 +491,7 @@ JmriJFrame(parent)
   if (light != NULL)
   {
    // we're changing the light we're watching
-   light->removePropertyChangeListener((PropertyChangeListener*)this);
+   ((NamedBean*)light->self())->removePropertyChangeListener((PropertyChangeListener*)this);
 //   disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   light = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->provideLight(adrTextField->text());
@@ -483,6 +561,55 @@ JmriJFrame(parent)
         log->debug("recv propertyChange: " + e->getPropertyName() + " " + e->getOldValue().toString() + " -> " + e->getNewValue().toString());
     }
     updateLightStatusFields(false);
+}
+
+/*private*/ void SimpleLightCtrlFrame::resetLightToCombo() {
+    if (light != nullptr && light == (Light*)to1->getSelectedItem()) {
+        return;
+    }
+    log->debug(tr("Light changed in combobox to %1").arg(to1->getSelectedItem()->getDisplayName()));
+    // remove changelistener from previous Light
+    if (light != nullptr) {
+        ((NamedBean*)light)->removePropertyChangeListener(_parentLightListener);
+    }
+    light = (Light*)to1->getSelectedItem();
+    if (light != nullptr) {
+        ((NamedBean*)light->self())->addPropertyChangeListener(
+                _parentLightListener = new SLCFPropertyChangeListener(this));
+//         {
+//                @Override
+//                public void propertyChange(java.beans.PropertyChangeEvent e) {
+//                    log.debug("recv propChange: {} {} -> {}", e.getPropertyName(), e.getOldValue(), e.getNewValue());
+//                    updateLightStatusFields(false);
+//                }
+//            });
+        setControlFrameActive(true);
+        updateLightStatusFields(true);
+
+        QString name = QString("<html>");
+        //light.getLightControlList().forEach((otherLc) -> {
+        for(LightControl* otherLc : light->getLightControlList())
+        {
+            name.append(LightTableAction::getDescriptionText(otherLc, otherLc->getControlType()));
+            name.append("<br>");
+        }//);
+
+        if (light->getLightControlList().isEmpty()) {
+            name.append("None");
+        }
+        name.append("</html>");
+        nowControllersTextField->setText(name/*.toString()*/);
+
+        repaint();
+        //revalidate();
+        update();
+        pack();
+
+    } else {
+        setControlFrameActive(false);
+        nowStateTextField->setText(tr("Unknown"));
+        nowControllersTextField->setText("");
+    }
 }
 
 /*private*/ void SimpleLightCtrlFrame::updateLightStatusFields(bool flag)

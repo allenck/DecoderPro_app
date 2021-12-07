@@ -807,8 +807,8 @@ void DefaultRoute::init()
 //                    }
 //                }
 //            }, getControlTurnout(), "Route " + getDisplayName());
+     ctl->addPropertyChangeListener(mTurnoutListener =new MTurnoutListener(this), getControlTurnout(), "Route " + getDisplayName());
     }
-    ctl->addPropertyChangeListener(mTurnoutListener =new MTurnoutListener(this), getControlTurnout(), "Route " + getDisplayName());
 
     Turnout* lockCtl = getLockCtlTurnout();
     if (lockCtl != nullptr) {

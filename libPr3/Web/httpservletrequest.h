@@ -3,7 +3,7 @@
 #include "servletrequest.h"
 #include "httpservletresponse.h"
 #include "servletexception.h"
-#include "httpserver/httprequest.h"
+#include "../QtWebApp//QtWebApp/httpserver/httprequest.h"
 #include "requesthandler.h"
 #include "fileutil.h"
 

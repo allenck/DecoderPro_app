@@ -501,7 +501,7 @@ QObject((QObject*)parent)
             // Lazily create the event:
             // if (e == NULL)
             //  e = new ChangeEvent(this);
-            ((TableColumnModelListener*)listeners[i+1]->self())->
+            ((TableColumnModelListener*)listeners[i+1]/*->self()*/)->
                 columnAdded(e);
         }
     }
@@ -523,10 +523,10 @@ QObject((QObject*)parent)
     // those that are interested in this event
     for (int i = listeners.length()-2; i>=0; i-=2) {
      if (qobject_cast<TableColumnModelListener*>(listeners[i]->self())) {
-            // Lazily create the event:
+             //Lazily create the event:
             // if (e == NULL)
             //  e = new ChangeEvent(this);
-            ((TableColumnModelListener*)listeners[i+1]->self())->
+            ((TableColumnModelListener*)listeners[i+1]/*->self()*/)->
                 columnRemoved(e);
         }
     }
@@ -552,7 +552,7 @@ QObject((QObject*)parent)
             // Lazily create the event:
             // if (e == NULL)
             //  e = new ChangeEvent(this);
-            ((TableColumnModelListener*)listeners[i+1]->self())->
+            ((TableColumnModelListener*)listeners[i+1]/*->self()*/)->
                 columnMoved(e);
         }
     }

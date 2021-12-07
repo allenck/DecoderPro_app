@@ -109,7 +109,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool PanelEditorXml::load(QDomElement element) throw (Exception)
+/*public*/ bool PanelEditorXml::load(QDomElement shared, QDomElement perNode) throw (Exception)
 {
     bool result = true;
     // find coordinates
@@ -120,13 +120,13 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
 //    try {
     bool bOk = true;
     bool bOk1;
-    x = element.attribute("x").toInt(&bOk1);
+    x = shared.attribute("x").toInt(&bOk1);
     if(!bOk1) bOk = false;
-    y = element.attribute("y").toInt(&bOk1);
+    y = shared.attribute("y").toInt(&bOk1);
     if(!bOk1) bOk = false;
-    height = element.attribute("height").toInt(&bOk1);
+    height = shared.attribute("height").toInt(&bOk1);
     if(!bOk1) bOk = false;
-    width = element.attribute("width").toInt(&bOk1);
+    width = shared.attribute("width").toInt(&bOk1);
 //    } catch ( org.jdom.DataConversionException e) {
     if(!bOk)
     {
@@ -135,8 +135,8 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     }
     // find the name
     QString name = "Panel";
-    if (element.attribute("name")!="")
-     name = element.attribute("name");
+    if (shared.attribute("name")!="")
+     name = shared.attribute("name");
     // confirm that panel hasn't already been loaded
     if(static_cast<PanelMenu*>(InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name))
     {
@@ -165,7 +165,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
 
     PanelEditor* panel = new PanelEditor(name);
     //panel.makeFrame(name);
-    panel->init(name);
+    //panel->init(name);
     ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->addEditorPanel(panel);
     //panel->getTargetFrame()->setsetLocation(x,y);
 //    panel->setLocation(x,y);
@@ -177,84 +177,51 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
 
     // Load editor option flags. This has to be done before the content
     // items are loaded, to preserve the individual item settings
-    QString a;
-    bool value = true;
-    if ((a = element.attribute("editable"))!="" && a==("no"))
-        value = false;
-    panel->setAllEditable(value);
+    panel->setAllEditable(shared.attribute("editable","yes") != ("no"));
+    panel->setAllPositionable(shared.attribute("positionable","yes") != ("no"));
+    //panel.setShowCoordinates(shared.attribute("showcoordinates","no") == s("yes"));
+    panel->setAllShowToolTip(shared.attribute("showtooltips","yes") != ("no"));
+    panel->setAllControlling(shared.attribute("controlling", "yes") != ("no"));
+    panel->setShowHidden(shared.attribute("hide","no") == ("yes"));
+    panel->setPanelMenuVisible(shared.attribute("panelmenu","yes") != ("no"));
+    panel->setScroll(shared.attribute("scrollable","both"));
 
-    value = true;
-    if ((a = element.attribute("positionable"))!="" && a==("no"))
-        value = false;
-    panel->setAllPositionable(value);
-
-    /*
-    value = false;
-    if ((a = element.getAttribute("showcoordinates"))!=NULL && a.getValue().equals("yes"))
-        value = true;
-    panel.setShowCoordinates(value);
-    */
-
-    value = true;
-    if ((a = element.attribute("showtooltips"))!="" && a==("no"))
-        value = false;
-    panel->setAllShowToolTip(value);
-
-    value = true;
-    if ((a = element.attribute("controlling"))!="" && a==("no"))
-        value = false;
-    panel->setAllControlling(value);
-
-    value = false;
-    if ((a = element.attribute("hide"))!="" && a==("yes"))
-        value = true;
-    panel->setShowHidden(value);
-
-    value = true;
-    if ((a = element.attribute("panelmenu"))!="" && a==("no"))
-        value = false;
-    panel->setPanelMenu(value);
-
-    QString state = "both";
-    if ((a = element.attribute("scrollable"))!="")
-        state = a;
-//    panel->setScroll(state);
-
-            // set color if needed
-//    try {
-    QColor defaultColor = QColor(220,220,220);
-    bOk = true;
-    int red = element.attribute("redBackground",QString::number(defaultColor.red())).toInt(&bOk1);
-    if(!bOk1) bOk = false;
-    int blue = element.attribute("blueBackground",QString::number(defaultColor.green())).toInt(&bOk1);
-    if(!bOk1) bOk = false;
-    int green = element.attribute("greenBackground",QString::number(defaultColor.blue())).toInt(&bOk1);
-    if(!bOk1) bOk = false;
-//    } catch ( org.jdom.DataConversionException e) {
-    if(!bOk)
+    // set color if needed
+    try
     {
-     log->warn("Could not parse color attributes!");
+     QColor defaultColor = QColor(220,220,220);
+     bOk = true;
+     int red = shared.attribute("redBackground",QString::number(defaultColor.red())).toInt(&bOk1);
+     if(!bOk1) bOk = false;
+     int blue = shared.attribute("blueBackground",QString::number(defaultColor.green())).toInt(&bOk1);
+     if(!bOk1) bOk = false;
+     int green = shared.attribute("greenBackground",QString::number(defaultColor.blue())).toInt(&bOk1);
+     if(!bOk1) bOk = false;
+ //    } catch ( org.jdom.DataConversionException e) {
+     if(!bOk)
+     {
+      log->warn("Could not parse color attributes!");
+     }
+     else
+      panel->setBackgroundColor(QColor(red, green, blue));
     }
-    else
-     panel->setBackgroundColor(QColor(red, green, blue));
-
-//    catch ( NullPointerException e) {  // considered normal if the attributes are not present
-//    }
+    catch ( NullPointerException e) {  // considered normal if the attributes are not present
+    }
     //set the (global) editor display widgets to their flag settings
     panel->initView();
 
     // load the contents with their individual option settings
-    QDomNodeList items = element.childNodes();
+    QDomNodeList items = shared.childNodes();
     for (int i = 0; i<items.size(); i++)
     {
      // get the class, hence the adapter object to do loading
      QDomElement item = items.at(i).toElement();
      QString adapterName = item.attribute("class");
-     log->debug("load via "+adapterName);
+     log->debug("load via "+adapterName + "tagname " + item.tagName());
      try
      {
       XmlAdapter* adapter = NULL;
-      //XmlAdapter* adapter = (XmlAdapter*)Class.forName(adapterName).newInstance();
+      //XmlAdapter* adapter = (XmlAdapter*)Class.forName(adapterName).getDeclaredConstructor().newInstance();
       if(adapterName == "jmri.jmrit.display.configurexml.MemoryIconXml")
           adapter = new MemoryIconXml(this);
       else if( adapterName == "jmri.jmrit.display.configurexml.AnalogClock2DisplayXml")

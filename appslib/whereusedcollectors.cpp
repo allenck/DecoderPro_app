@@ -22,6 +22,7 @@
 #include "destinationpoints.h"
 #include "transit.h"
 #include "defaultroute.h"
+#include "defaultsignalmastlogicmanager.h"
 
 WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
 {
@@ -107,10 +108,10 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     {
      Light* light = (Light*)nb;
      //light.getUsageReport(bean).forEach((report) -> {
-     foreach(NamedBeanUsageReport* report, light->getUsageReport(bean))
+     foreach(NamedBeanUsageReport* report, ((AbstractNamedBean*)light->self())->getUsageReport(bean))
      {
           if (report->usageKey.startsWith("LightControl")) {  // NOI18N
-                QString name = light->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
+                QString name = ((AbstractNamedBean*)light->self())->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
                                      sb.append(tr("\n%1	").arg(name));  // NOI18N
           }
         }//);
@@ -267,7 +268,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
 /*static*/ QString WhereUsedCollectors::checkSignalMastLogic(NamedBean* bean) {
     QString sb; // = new StringBuilder();
     //InstanceManager.getDefault(SignalMastLogicManager.class).getNamedBeanSet().forEach((sml) -> {
-    foreach(NamedBean* nb, ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getNamedBeanSet())
+    foreach(NamedBean* nb, ((DefaultSignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getNamedBeanSet())
     {
      DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)nb;
      //sml.getUsageReport(bean).forEach((report) -> {

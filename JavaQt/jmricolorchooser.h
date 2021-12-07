@@ -27,24 +27,4 @@ private:
  static QColor color;
 
 };
-#if 0
-class JCCActionListener : public ActionListener
-{
- Q_OBJECT
- JmriColorChooser* jmriColorChooser;
- JColorChooser* chooser;
-public:
- JCCActionListener(JColorChooser* chooser, JmriColorChooser* jmriColorChooser)
- {
-  this->jmriColorChooser = jmriColorChooser;
-  this->chooser = chooser;
- }
-public slots:
- void actionPerformed()
- {
-  jmriColorChooser->color = chooser->getColor();
- }
-
-};
-#endif
 #endif // JMRICOLORCHOOSER_H

@@ -133,6 +133,7 @@ class OTAOkActionListener : public QObject, public ActionListener
  public:
  OBlockTableAction* act;
  OTAOkActionListener(OBlockTableAction* act){this->act = act;}
+ QObject* self() override{return (QObject*)this;}
  public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) override{act->createObPressed();}
 };
@@ -144,6 +145,7 @@ class OTACancelListener : public QObject, public ActionListener
  public:
  OBlockTableAction* act;
  OTACancelListener(OBlockTableAction* act){this->act = act;}
+ QObject* self() override{return (QObject*)this;}
  public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) override{act->cancelObPressed();}
 };

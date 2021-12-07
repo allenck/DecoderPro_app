@@ -19,7 +19,7 @@
     QJsonObject root = QJsonObject(); //mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::LIGHT);
     Light* light = ((ProxyLightManager*)InstanceManager::getDefault("LightManager"))->getLight(name);
-    QJsonObject data = this->getNamedBean(light, name, type, locale);
+    QJsonObject data = this->getNamedBean(((AbstractNamedBean*)light->self()), name, type, locale);
     root.insert(JSON::DATA, data);
     if (light != NULL) {
         switch (light->getState()) {
@@ -48,10 +48,10 @@
         throw  JsonException(404, tr(/*locale, */"Unable to access %1 %2.").arg(JSON::LIGHT).arg( name));
     }
     if (data.value(JSON::USERNAME).isString()) {
-        light->setUserName(data.value(JSON::USERNAME).toString());
+        ((AbstractNamedBean*)light->self())->setUserName(data.value(JSON::USERNAME).toString());
     }
     if (data.value(JSON::COMMENT).isString()) {
-        light->setComment(data.value(JSON::COMMENT).toString());
+        ((AbstractNamedBean*)light->self())->setComment(data.value(JSON::COMMENT).toString());
     }
     int state = data.value(JSON::STATE).toInt(JSON::UNKNOWN);
     if(state== JSON::ON)

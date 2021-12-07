@@ -93,7 +93,7 @@ LightIntensityPane::LightIntensityPane()
  * @param light the Light to set Panel for.
  */
 /*public*/ void LightIntensityPane::setToLight(Light* light){
-    if (qobject_cast<VariableLight*>(light)) {
+    if (qobject_cast<VariableLight*>(light->self())) {
         minIntensity->setValue(((VariableLight*)light)->getMinIntensity()); // displayed as percentage
         maxIntensity->setValue(((VariableLight*)light)->getMaxIntensity());
         if (((VariableLight*)light)->isTransitionAvailable()) {

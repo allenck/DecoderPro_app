@@ -75,7 +75,7 @@ private:
     //static WarrantTableAction* editWarrantAction;
     Logger* log;
     /*private*/ void concatenate();
-    void common();
+    void common(QString menuOption);
     QString command;
 
     /*private*/ static WarrantTableFrame* _tableFrame;
@@ -131,7 +131,9 @@ public:
 //         myListener(java.awt.Window w) {
 //             _w = w;
 //         }  */
- /*public*/ void actionPerformed(JActionEvent* /*e*/) override
+ QObject* self() override {return (QObject*)this;}
+public slots:
+ /*public*/ void actionPerformed(JActionEvent* /*e*/=0) override
  {
      _errorDialog->dispose();
  }
@@ -205,23 +207,5 @@ public slots:
   WarrantTableFrame::nxAction();
  }
 };
-//class CreateNewWarrantActionListener : public ActionListener
-//{
-// Q_OBJECT
-
-//public:
-
-//public slots:
-// void actionPerformed(ActionEvent *e = 0)
-// {
-//  CreateWarrantFrame* f = new CreateWarrantFrame();
-//  try
-//  {
-//   f->initComponents();
-//  } catch (Exception ex ) {/*bogus*/ }
-//  f->setVisible(true);
-// }
-//};
-
 
 #endif // WARRANTTABLEACTION_H

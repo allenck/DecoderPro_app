@@ -114,6 +114,7 @@ class TimeLockingTimerActionListener : public QObject, public ActionListener
   SignalDirectionIndicators* sdi;
  public:
   TimeLockingTimerActionListener(SignalDirectionIndicators* sdi) {this->sdi = sdi;}
+  QObject* self() override{return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0)override
   {
@@ -128,6 +129,7 @@ class CodingTimeTimerActionListener: public QObject, public ActionListener
   SignalDirectionIndicators* sdi;
  public:
   CodingTimeTimerActionListener(SignalDirectionIndicators* sdi) {this->sdi = sdi;}
+  QObject* self() override{return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0)override
   {

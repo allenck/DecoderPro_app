@@ -329,8 +329,8 @@ public:
   */
  void remove();
  /*public*/ bool isActive();
- /*public*/ void addViewPopUpMenu(QObject* menu);
- /*public*/ void addEditPopUpMenu(QObject* menu);
+// /*public*/ void addViewPopUpMenu(QObject* menu);
+// /*public*/ void addEditPopUpMenu(QObject* menu);
 
  /*public*/ void setAdditionalEditPopUpMenu(QMenu* popup);
  /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
@@ -405,9 +405,9 @@ private:
     /*private*/ QLineEdit* turnoutNameField;// = new QLineEdit(16);
     /*private*/ QComboBox* secondTurnoutComboBox = nullptr;
     /*private*/ QLabel* secondTurnoutLabel  = nullptr;
-    /*private*/ QLineEdit* blockBNameField;// = new QLineEdit(16);
-    /*private*/ QLineEdit* blockCNameField;// = new QLineEdit(16);
-    /*private*/ QLineEdit* blockDNameField;// = new QLineEdit(16);
+//    /*private*/ QLineEdit* blockBNameField;// = new QLineEdit(16);
+//    /*private*/ QLineEdit* blockCNameField;// = new QLineEdit(16);
+//    /*private*/ QLineEdit* blockDNameField;// = new QLineEdit(16);
     /*private*/ QComboBox* stateBox;// = new QComboBox();
     /*private*/ QCheckBox* hiddenBox;// = new QCheckBox(rb.getQString("HideTurnout"));
     /*private*/ int turnoutClosedIndex;
@@ -478,7 +478,7 @@ protected:
  /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity() override;
 
  /*protected*/ JmriJFrame* editLayoutTurnoutFrame = nullptr;
- /*protected*/ JTextField* blockNameField;// = new QLineEdit(16);
+ ///*protected*/ JTextField* blockNameField;// = new QLineEdit(16);
  /*protected*/ bool needRedraw;// = false;
  /*protected*/ bool needsBlockUpdate;// = false;
  /*protected*/ mutable NamedBeanHandle<SignalMast*>* signalAMastNamed;// = NULL; // Throat

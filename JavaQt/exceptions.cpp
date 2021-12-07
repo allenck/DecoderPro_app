@@ -42,7 +42,7 @@ LocoNetMessageException::LocoNetMessageException(QString s)
 {
  msg = s;
 }
-
+JmriException::JmriException() {}
 JmriException::JmriException(QString s)
 {
  msg = s;

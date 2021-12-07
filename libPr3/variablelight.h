@@ -63,6 +63,7 @@
  */
 /*public*/ /*interface*/ class VariableLight : public AbstractLight, public AnalogIO
 {
+  Q_OBJECT
   Q_INTERFACES(AnalogIO)
  public:
   /*public*/ VariableLight(QString systemName, QString userName, QObject *parent = 0) : AbstractLight(systemName, userName, parent){}

@@ -3,11 +3,11 @@
   @author Stefan Frings
 */
 
-#include <logging/filelogger.h>
+#include <../QtWebApp/logging/filelogger.h>
 #include "requesthandler.h"
 #include "rosterservlet.h"
-#include "httpserver/staticfilecontroller.h"
-#include "httpserver/httprequest.h"
+#include "../QtWebApp//QtWebApp/httpserver/staticfilecontroller.h"
+#include "../QtWebApp//QtWebApp/httpserver/httprequest.h"
 #include <QApplication>
 #include "httpservletrequest.h"
 #include "httpservletresponse.h"

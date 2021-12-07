@@ -86,8 +86,9 @@ class MiiActionListener : public QObject, public ActionListener
     MemoryInputIcon* parent;
 public:
     MiiActionListener(MemoryInputIcon* parent);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-  /*public*/ void actionPerformed(JActionEvent* a = 0);
+  /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 
 #endif // MEMORYINPUTICON_H

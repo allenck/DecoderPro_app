@@ -2,6 +2,10 @@
 #include "editor.h"
 #include "vptr.h"
 #include "class.h"
+#include "shutdownmanager.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
+#include "storexmluseraction.h"
 
 EditorManager::EditorManager(QObject *parent) : Bean(parent)
 {
@@ -11,6 +15,88 @@ EditorManager::EditorManager(QObject *parent) : Bean(parent)
 
 /*public*/ /*static*/ /*final*/ QString EditorManager::EDITORS = "editors";
 /*public*/ /*static*/ /*final*/ QString EditorManager::TITLE = "title";
+
+
+/**
+ * Panel adds occur during xml data file loading and manual adds.
+ * This sets the change flag for manual adds.
+ * After a Store is complete, the flag is cleared.
+ * @param flag The new value for the panelSetChanged boolean.
+ */
+/*public*/ void EditorManager::setChanged(bool flag) {
+    panelSetChanged = flag;
+}
+
+/*public*/ void EditorManager::setShutDownTask() {
+    shutDownTask = new EMShutdownTask("EditorManager", this);// {
+//        @Override
+//        public Boolean call() {
+//            if (panelSetChanged) {
+//                notifyStoreNeeded();
+//            }
+//            return Boolean.TRUE;
+//        }
+
+//        @Override
+//        public void run() {
+//        }
+//    };
+    ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(shutDownTask);
+    }
+
+    QString getClassName() {
+    //return EditorManager.class.getName();
+     return "jmri.jmrit.display.EditorManager";
+}
+
+/**
+ * Prompt whether to invoke the Store process.
+ * The options are "No" and "Yes".
+ */
+void EditorManager::notifyStoreNeeded() {
+    // Provide option to invoke the store process before the shutdown.
+    /*final*/ JDialog* dialog = new JDialog();
+    dialog->setTitle(tr("Question"));     // NOI18N
+    dialog->setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
+    JPanel* container = new JPanel();
+    container->setBorder(BorderFactory::createEmptyBorder(10, 10, 10, 10));
+    container->setLayout(new QVBoxLayout());//container, BoxLayout.Y_AXIS));
+    JLabel* question = new JLabel(tr("<html>One or more panels have been added and/or deleted.<br>Do you want to <strong>Store ALL tables and panels</strong>?</html>"));  // NOI18N
+//    question->setAlignmentX(Component.CENTER_ALIGNMENT);
+    question->setAlignmentX(Qt::AlignHCenter);
+    container->layout()->addWidget(question);
+
+    JButton* noButton = new JButton(tr("No"));    // NOI18N
+    JButton* yesButton = new JButton(tr("Yes"));      // NOI18N
+    JPanel* button = new JPanel(new FlowLayout());
+//    button.setAlignmentX(Component.CENTER_ALIGNMENT);
+    button->layout()->addWidget(noButton);
+    button->layout()->addWidget(yesButton);
+    container->layout()->addWidget(button);
+
+//    noButton.addActionListener((ActionEvent e) -> {
+    connect(noButton, &JButton::clicked, [=]{
+        dialog->dispose();
+        return;
+    });
+
+    //yesButton.addActionListener((ActionEvent e) -> {
+    connect(yesButton, & JButton::clicked, [=]{
+        dialog->setVisible(false);
+        (new StoreXmlUserAction(""))->actionPerformed();
+        dialog->dispose();
+        return;
+    });
+
+//    container->setAlignmentX(Component.CENTER_ALIGNMENT);
+//    container.setAlignmentY(Component.CENTER_ALIGNMENT);
+    dialog->getContentPane()->layout()->addWidget(container);
+    dialog->pack();
+//    dialog.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - dialog.getWidth() / 2, (Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - dialog.getHeight() / 2);
+    dialog->setModal(true);
+    dialog->setVisible(true);
+}
+
 /**
  * Add an editor to this manager.
  *
@@ -46,6 +132,17 @@ EditorManager::EditorManager(QObject *parent) : Bean(parent)
  */
 /*public*/ bool EditorManager::contains(QString name) {
     return get(name) != nullptr;
+}
+
+/**
+ * Check if an editor is in the manager.
+ *
+ * @param editor the editor to check for
+ * @return true if this manager contains an editor with name; false
+ * otherwise
+ */
+/*public*/ bool EditorManager::containsE(/*@Nonnull*/ Editor* editor) {
+    return set.contains(editor);
 }
 
 /**
@@ -223,5 +320,18 @@ return (QObject*)obj;
     if (result) {
         fireIndexedPropertyChange(EDITORS, set.size(), VPtr<Editor>::asQVariant(editor), QVariant());
         editor->removePropertyChangeListener(TITLE, (PropertyChangeListener*)this);
+        panelSetChanged = true;
+    }
+}
+
+//@Override
+/*public*/ void EditorManager::propertyChange(PropertyChangeEvent* evt) {
+    if (qobject_cast<Editor*>(evt->getSource() )) {
+        Editor* editor = (Editor*) evt->getSource();
+        if (containsE(editor) && TITLE == (evt->getPropertyName())) {
+            set.remove(editor);
+            set.insert(editor);
+            firePropertyChange(evt);
+        }
     }
 }

@@ -176,7 +176,7 @@
   QPushButton* reset = new QPushButton("Reset");
 //  reset.addActionListener(new DefaultResetListener(chooserPane));
   DefaultResetListener* resetListener = new DefaultResetListener(chooserPane);
-  connect(reset, SIGNAL(clicked(bool)), resetListener->self(), SLOT(actionPerformed()));
+  connect(reset, SIGNAL(clicked(bool)), resetListener/*->self()*/, SLOT(actionPerformed()));
 
   thisLayout->addWidget(chooserPane, 1, Qt::AlignTop);//BorderLayout.NORTH);
 

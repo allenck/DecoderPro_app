@@ -188,6 +188,7 @@ public:
         saveTextField = textField;
         this->src = src;
     }
+ QObject* self() override{return (QObject*)this;}
 public slots:
 
     //@Override

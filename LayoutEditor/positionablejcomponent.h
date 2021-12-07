@@ -6,11 +6,12 @@
 #include "positionable.h"
 #include <QFont>
 #include "jcomponent.h"
+#include "liblayouteditor_global.h"
 
 class MyGraphicsProxyWidget;
 class Editor;
 class Positionable;
-class PositionableJComponent : public QWidget, public JComponent, public Positionable
+class LIBLAYOUTEDITORSHARED_EXPORT PositionableJComponent : public QWidget, public JComponent, public Positionable
 {
     Q_OBJECT
     Q_INTERFACES(Positionable JComponent)

@@ -229,7 +229,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("does not change", Light::OFF, l->getState(), __FILE__, __LINE__);
 
     l->deactivateLight();
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 
 }
 
@@ -318,7 +318,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("does not update when light not enabled", Light::ON, l->getState(), __FILE__, __LINE__);
 
     l->deactivateLight();
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 
 }
 
@@ -375,7 +375,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 
     Assert::assertEquals("listener removed", startListeners, timebase->getMinuteChangeListeners().length(), __FILE__, __LINE__);
 
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 }
 
 //@Test
@@ -421,7 +421,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("Light goes off on next update re-enabled", Light::OFF, l->getState(), __FILE__, __LINE__);
 
     l->deactivateLight();
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 }
 
 //@Test
@@ -451,7 +451,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     // adding the PCL to check that we don't get flickering on the Light
     // ie "normal" amount of PCEvents for a state change.
     // NOT testing the actual PCListeners
-    l->addPropertyChangeListener(new ControlListen(this));
+    ((AbstractNamedBean*)l->self())->addPropertyChangeListener(new ControlListen(this));
 
     cal->set(2018, 1, 12, 2, 59, 00); // 02:59:00
     timebase->setTime(cal->getTime());
@@ -498,7 +498,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("8 Light PropertyChangeEvents for 4 actual changes", 8, _listenerkicks, __FILE__, __LINE__);
 
     l->deactivateLight();
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 }
 
 //@Test
@@ -531,7 +531,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     // adding the PCL to check that we don't get flickering on the Light
     // ie "normal" amount of PCEvents for a state change.
     // NOT testing the actual PCListeners
-    l->addPropertyChangeListener(new ControlListen(this));
+    ((AbstractNamedBean*)l->self())->addPropertyChangeListener(new ControlListen(this));
 
     cal->set(2018, 1, 12, 3, 00, 00); // 03:00:00
     timebase->setTime(cal->getTime());
@@ -574,7 +574,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("4 Light PropertyChangeEvents for 2 actual changes", 4, _listenerkicks, __FILE__, __LINE__);
 
     l->deactivateLight();
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 }
 
 //@Test
@@ -594,7 +594,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     // adding the PCL to check the Light changes
     // ie "normal" amount of PCEvents for a state change.
     // NOT testing the actual PCListeners
-    l->addPropertyChangeListener(new ControlListen(this));
+    ((AbstractNamedBean*)l->self())->addPropertyChangeListener(new ControlListen(this));
 
     l->addLightControl(lc);
     l->activateLight();
@@ -663,7 +663,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     l->deactivateLight();
     JUnitAppender::assertWarnMessage("Unexpected control type when deactivating Light: ILL1", __FILE__, __LINE__);
 
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 
 }
 
@@ -778,7 +778,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("does not change", Light::ON, l->getState(), __FILE__, __LINE__);
 
     l->deactivateLight();
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 
 }
 
@@ -801,7 +801,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     // adding the PCL to check the Light changes
     // ie "normal" amount of PCEvents for a state change.
     // NOT testing the actual PCListeners
-    l->addPropertyChangeListener(new ControlListen(this));
+    ((AbstractNamedBean*)l->self())->addPropertyChangeListener(new ControlListen(this));
 
     Assert::assertEquals("Sensor unknown state", Sensor::UNKNOWN, sOne->getState(), __FILE__, __LINE__);
     Assert::assertEquals("Sensor unknown state", Sensor::UNKNOWN, sTwo->getState(), __FILE__, __LINE__);
@@ -834,7 +834,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("4 Light PropertyChangeEvents, 2 actual changes", 4, _listenerkicks, __FILE__, __LINE__);
 
     l->deactivateLight();
-    l->dispose();
+    ((AbstractNamedBean*)l->self())->dispose();
 
 }
 

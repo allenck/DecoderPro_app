@@ -4,7 +4,7 @@
 #ifndef QTWEBAPP
 #include "webserver.h"
 #else
-#include <httpserver/httplistener.h>
+#include <../QtWebApp/QtWebApp/httpserver/httplistener.h>
 //#include <logging/filelogger.h>
 #include "requesthandler.h"
 //#include "logging/logmessage.h"

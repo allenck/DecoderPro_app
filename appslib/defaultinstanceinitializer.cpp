@@ -215,12 +215,12 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
    return o;
  }
 
-// if (type == "SignalMastLogicManager")
-// {
-//  DefaultSignalMastLogicManager* smlm = new DefaultSignalMastLogicManager(memo);
-//  InstanceManager::store(smlm, type);
-//  return smlm;
-// }
+ if (type == "SignalMastLogicManager")
+ {
+  DefaultSignalMastLogicManager* smlm = new DefaultSignalMastLogicManager(memo);
+  InstanceManager::store(smlm, type);
+  return smlm;
+ }
 
  if (type == "EditorManager")
  {
@@ -558,7 +558,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  {
   SignalMastLogicManager* slm = new DefaultSignalMastLogicManager();
   //InstanceManager::store(slm,type);
-  return slm;
+  return (QObject*)slm;
  }
 
  if(type == "JsonServerPreferences")

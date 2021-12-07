@@ -133,6 +133,7 @@ public:
 
   /** The initial color. */
   /*private*/ QColor init;
+
 public:
   /**
    * Creates a new DefaultResetListener with the given JColorChooser.
@@ -145,13 +146,14 @@ public:
     this->chooser = chooser;
     init = chooser->getColor();
    }
-
+   QObject* self() override {return (QObject*)this;}
+ public slots:
    /**
     * This method resets the JColorChooser to its initial color.
     *
     * @param e The ActionEvent.
     */
-    /*public*/ void actionPerformed(/*ActionEvent e*/)
+    /*public*/ void actionPerformed(JActionEvent* =0)override
     {
      chooser->setColor(init);
     }
@@ -179,13 +181,14 @@ public:
      this->dialog = dialog;
     bAccept = accept;
    }
+  QObject* self() override {return (QObject*)this;}
   public slots:
    /**
     * This method hides the JDialog when called.
     *
     * @param e The ActionEvent.
     */
-    /*public*/ void actionPerformed(/*ActionEvent e*/)
+    /*public*/ void actionPerformed(JActionEvent* =0)
     {
      dialog->hide();
      if(bAccept)

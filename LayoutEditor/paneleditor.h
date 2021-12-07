@@ -8,17 +8,20 @@
 #include "abstractaction.h"
 #include "keylistener.h"
 #include "jtextfield.h"
+#include "jcheckbox.h"
+#include "windowlistener.h"
+#include "liblayouteditor_global.h"
 
-namespace Ui {
-class PanelEditor;
-}
+//namespace Ui {
+//class PanelEditor;
+//}
 
 class QComboBox;
 class JTextField;
 //class AddPanelIconDialog;
 //class AddPanelEditorDialog;
 class InputDialog;
-class PanelEditor : public Editor
+class LIBLAYOUTEDITORSHARED_EXPORT PanelEditor : public Editor
 {
     Q_OBJECT
 
@@ -28,17 +31,18 @@ public:
 
     ~PanelEditor();
  PanelEditor(const PanelEditor&) :Editor() {}
-    /*public*/ bool _debug;
- /*public*/ void initView();
- /*public*/ void setRemoveMenu(Positionable* p, QMenu* popup);
- /*public*/ QString getClassName();
+ ///*public*/ bool _debug;
+ /*public*/ void initView()override;
+ /*public*/ void setRemoveMenu(Positionable* p, QMenu* popup) override;
+ /*public*/ QString getClassName() override;
+ /*public*/ JmriJFrame* makeFrame(QString name);
 
 public slots:
-    /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event);
-    /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event);
-    /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event);
-    /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event);
-    /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event);
+    /*public*/ void mousePressed(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void mouseMoved(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void mouseClicked(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void mouseReleased(QGraphicsSceneMouseEvent* event) override;
+    /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event) override;
     void sceneDropEvent(QGraphicsSceneDragDropEvent*);
     /*public*/ void setBackgroundMenu(QMenu* popup);
     void on_backgroundColorSelection(QAction* act);
@@ -52,7 +56,7 @@ public slots:
     void on_addSignalHead_triggered();
     void on_addSignalMast_triggered();
 //    void on_actionOpenEditor_triggered();
-    /*public*/ void putItem(Positionable* l);
+    /*public*/ void putItem(Positionable* l)override;
     void on_addRHTurnout_triggered();
     void on_addLHTurnout_triggered();
     void on_addSlipTurnout_triggered();
@@ -69,11 +73,11 @@ public slots:
     void on_addBackground_triggered();
     void on_actionOpenEditor_triggered();
     /*public*/ void itemStateChanged(int index);
-    /*public*/ void windowClosing(QCloseEvent* e);
+    /*public*/ void windowClosing(QCloseEvent* e) override;
 
 private:
-    Ui::PanelEditor *ui;
- Logger* log;
+    //Ui::PanelEditor *ui;
+ static Logger* log;
  //int panelWidth, panelHeight;
  bool delayedPopupTrigger;
  /*private*/ void amendSelectionGroup(Positionable* p);
@@ -94,23 +98,23 @@ private:
 // AddPanelIconDialog* addBackgroundDlg;
 
  InputDialog* addTextLabelDlg;
- void closeEvent(QCloseEvent *);
- JTextField* nextX;// = new JTextField(tr("Default X"),4);
- JTextField* nextY;// = new JTextField(tr("Default Y"),4);
+ void closeEvent(QCloseEvent *)override;
+ JTextField* nextX = new JTextField(tr("0"),4);
+ JTextField* nextY = new JTextField(tr("0"),4);
  /*private*/ void removeMultiItems();
  /*private*/ void setMultiItemsPositionableMenu(QMenu* popup);
- QCheckBox* editableBox;// = new JCheckBox(Bundle.getMessage("CheckBoxEditable"));
- QCheckBox* positionableBox;// = new JCheckBox(Bundle.getMessage("CheckBoxPositionable"));
- QCheckBox* controllingBox;// = new JCheckBox(Bundle.getMessage("CheckBoxControlling"));
- //QCheckBox* showCoordinatesBox = new JCheckBox(Bundle.getMessage("CheckBoxShowCoordinates"));
- QCheckBox* showTooltipBox;// = new JCheckBox(Bundle.getMessage("CheckBoxShowTooltips"));
- QCheckBox* hiddenBox;// = new JCheckBox(Bundle.getMessage("CheckBoxHidden"));
- QCheckBox* menuBox;// = new JCheckBox(Bundle.getMessage("CheckBoxMenuBar"));
- QLabel* scrollableLabel;// = new JLabel(Bundle.getMessage("ComboBoxScrollable"));
- QComboBox* scrollableComboBox;// = new JComboBox();
+ QCheckBox* editableBox = new QCheckBox(tr("Panel items popup menus active"));
+ QCheckBox* positionableBox = new QCheckBox(tr("All panel items can be repositioned"));
+ QCheckBox* controllingBox = new QCheckBox(tr("Panel items control layout"));
+ //QCheckBox* showCoordinatesBox = new QCheckBox(tr("Show item coordinates in popup menu"));
+ QCheckBox* showTooltipBox = new QCheckBox(tr("Show Tooltips for all items"));
+ QCheckBox* hiddenBox = new QCheckBox(tr("Show all hidden Items"));
+ QCheckBox* menuBox = new QCheckBox(tr("Panel has menu"));
+ QLabel* scrollableLabel = new QLabel(tr("Panel scrollbars"));
+ JComboBox* scrollableComboBox = new JComboBox();
 
- QPushButton* labelAdd;// = new QPushButton(tr("Add text:"));
- JTextField* nextLabel;// = new JTextField(10);
+ QPushButton* labelAdd = new QPushButton(tr("Add text:"));
+ JTextField* nextLabel = new JTextField(10);
 
  QComboBox* _addIconBox;
  /*private*/ void hiddenCheckBoxListener();
@@ -119,11 +123,11 @@ private slots:
 
 protected:
  /*protected*/ void init(QString name);
- /*protected*/ virtual void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
+ /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event)override;
  /*protected*/ void showMultiSelectPopUp(/*final*/ QGraphicsSceneMouseEvent* event, Positionable* p);
- /*protected*/ QList <Positionable*>* _multiItemCopyGroup;// = NULL;  // items gathered inside fence
+ /*protected*/ QList <Positionable*>* _multiItemCopyGroup= nullptr;  // items gathered inside fence
  /*protected*/ void backgroundPopUp(QGraphicsSceneMouseEvent* event);
- /*protected*/ bool pasteItemFlag;// = false;
+ /*protected*/ bool pasteItemFlag = false;
  /*protected*/ void makeColorMenu(QMenu* colorMenu);
  /*protected*/ void addColorMenuEntry(QMenu* menu, QActionGroup* colorButtonGroup,
                         /*final*/ QString name, QColor color);
@@ -132,10 +136,12 @@ protected:
  /*protected*/ void pasteItemPopUp(/*final*/ QGraphicsSceneMouseEvent* event);
  /*protected*/ void pasteItem(QGraphicsSceneMouseEvent* e);
 // /*protected*/ void setNextLocation(Positionable* obj);
- /*protected*/ bool addItemViaMouseClick;// = false;
+ /*protected*/ bool addItemViaMouseClick = false;
  /*protected*/ void copyItem(Positionable* p);
- void repaint();
- /*protected*/ void setNextLocation(Positionable* obj);
+ void repaint()override;
+ /*protected*/ void setNextLocation(Positionable* obj)override;
+ /*protected*/ void paintTargetPanel(QGraphicsScene* g) override;
+ /*protected*/ void targetWindowClosingEvent(QCloseEvent* /*e*/)override;
 
  friend class PositionableLabel;
  friend class RemoveMenuAction;
@@ -146,17 +152,6 @@ protected:
 };
 Q_DECLARE_METATYPE(PanelEditor)
 
-class RemoveMenuAction : public AbstractAction
-{
- Q_OBJECT
- Positionable* comp;
- PanelEditor *parent;
-public slots:
- /*public*/ void actionPerformed();
-public:
- RemoveMenuAction(QString title, PanelEditor *parent);
- AbstractAction* init(Positionable* pos);
-};
 
 class LockItemListener : public QObject, public ActionListener
 {
@@ -166,24 +161,25 @@ class LockItemListener : public QObject, public ActionListener
  QAction* checkBox;
  PanelEditor* editor;
 public slots:
- /*public*/ void actionPerformed();
+ /*public*/ void actionPerformed(JActionEvent* =0)override;
 public:
  LockItemListener(PanelEditor* editor);
  ActionListener* init(Positionable* pos, QAction* cb);
+ QObject* self() override {return (QObject*)this;}
 };
 
-class RenameActionListener : public QObject, public ActionListener
-{
- Q_OBJECT
-    Q_INTERFACES(ActionListener)
- PanelEditor* editor;
+//class RenameActionListener : public QObject, public ActionListener
+//{
+// Q_OBJECT
+//    Q_INTERFACES(ActionListener)
+// PanelEditor* editor;
 
-public slots:
- //@Override
- /*public*/ void actionPerformed(/*ActionEvent e*/);
+//public slots:
+// //@Override
+// /*public*/ void actionPerformed(/*ActionEvent e*/);
 
- ActionListener* init(PanelEditor* e);
-};
+// ActionListener* init(PanelEditor* e);
+//};
 
 class PEKeyListener : public KeyAdapter
 {
@@ -192,7 +188,7 @@ class PEKeyListener : public KeyAdapter
  public:
   PEKeyListener(PanelEditor* editor) {this->editor = editor;}
  public slots:
-  /*public*/ void keyReleased(QKeyEvent* a) override {
+  /*public*/ void keyReleased(QKeyEvent* /*a*/) override {
       if (editor->nextLabel->text() == ("")) {
           editor->labelAdd->setEnabled(false);
           editor->labelAdd->setToolTip(tr("This button will be active after you type text into the text box"));
@@ -202,6 +198,21 @@ class PEKeyListener : public KeyAdapter
       }
   }
   QObject* self() {return (QObject*)this;}
-
 };
+
+class PEWindowAdapter : public WindowListener
+{
+  Q_OBJECT
+  PanelEditor* pe;
+  QHash<QString, JFrameItem*> iconAdderFrames;
+
+ public:
+  PEWindowAdapter(QHash<QString, JFrameItem*> iconAdderFrames, PanelEditor* pe) {this->iconAdderFrames = iconAdderFrames; this->pe = pe;}
+  void windowClosing(QCloseEvent*)
+  {
+   for (JFrameItem* frame : iconAdderFrames.values())
+       frame->dispose();
+  }
+};
+
 #endif // PANELEDITOR_H

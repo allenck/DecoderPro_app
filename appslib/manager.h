@@ -134,7 +134,9 @@ public:
  /*public*/ /*default*/ QString getSystemNamePrefix() const{
      return getSystemPrefix() + typeLetter();
  }
-
+ /*public*/ /*default*/ QString getSubSystemNamePrefix() const{
+     return getSystemNamePrefix();
+ }
  /**
   * @return A system name from a user input, typically a number.
   */
@@ -192,7 +194,7 @@ public:
   * @return enum indicating current validity, which might be just as a prefix
   */
  //@CheckReturnValue
- virtual /*public*/ NameValidity validSystemNameFormat(/*@Nonnull*/ QString /*systemName*/)const {return INVALID;}
+ virtual /*public*/ NameValidity validSystemNameFormat(/*@Nonnull*/ QString /*systemName*/) const;
 
  /**
   * Free resources when no longer used. Specifically, remove all references
@@ -280,7 +282,7 @@ public:
       */
      //@CheckReturnValue
      //@CheckForNull
-     virtual /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString /*userName*/) const {return nullptr;}
+     virtual /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString /*userName*/) const =0;
 
      /**
       * Locate an instance based on a name.  Returns null if no
@@ -397,7 +399,7 @@ public:
       * The non-system-specific RouteManager
       * uses this method.
       */
-     virtual void deregister(NamedBean* /*n*/) const {}
+     virtual void deregister(NamedBean* /*n*/) const =0;
 
      /**
      * The order in which things get saved to the xml file.

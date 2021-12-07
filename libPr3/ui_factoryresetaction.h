@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'factoryresetaction.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.3
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -33,29 +33,29 @@ public:
     void setupUi(QDialog *FactoryResetAction)
     {
         if (FactoryResetAction->objectName().isEmpty())
-            FactoryResetAction->setObjectName(QLatin1String("FactoryResetAction"));
+            FactoryResetAction->setObjectName(QString::fromUtf8("FactoryResetAction"));
         FactoryResetAction->resize(216, 154);
         gridLayout = new QGridLayout(FactoryResetAction);
-        gridLayout->setObjectName(QLatin1String("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         label = new QLabel(FactoryResetAction);
-        label->setObjectName(QLatin1String("label"));
+        label->setObjectName(QString::fromUtf8("label"));
 
         gridLayout->addWidget(label, 0, 0, 1, 1);
 
         comboBox = new QComboBox(FactoryResetAction);
-        comboBox->setObjectName(QLatin1String("comboBox"));
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
 
         gridLayout->addWidget(comboBox, 1, 0, 1, 1);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         btnOK = new QPushButton(FactoryResetAction);
-        btnOK->setObjectName(QLatin1String("btnOK"));
+        btnOK->setObjectName(QString::fromUtf8("btnOK"));
 
         horizontalLayout->addWidget(btnOK);
 
         btnCancel = new QPushButton(FactoryResetAction);
-        btnCancel->setObjectName(QLatin1String("btnCancel"));
+        btnCancel->setObjectName(QString::fromUtf8("btnCancel"));
 
         horizontalLayout->addWidget(btnCancel);
 
@@ -70,10 +70,10 @@ public:
 
     void retranslateUi(QDialog *FactoryResetAction)
     {
-        FactoryResetAction->setWindowTitle(QApplication::translate("FactoryResetAction", "Dialog", nullptr));
-        label->setText(QApplication::translate("FactoryResetAction", "Factory Reset", nullptr));
-        btnOK->setText(QApplication::translate("FactoryResetAction", "OK", nullptr));
-        btnCancel->setText(QApplication::translate("FactoryResetAction", "Cancel", nullptr));
+        FactoryResetAction->setWindowTitle(QCoreApplication::translate("FactoryResetAction", "Dialog", nullptr));
+        label->setText(QCoreApplication::translate("FactoryResetAction", "Factory Reset", nullptr));
+        btnOK->setText(QCoreApplication::translate("FactoryResetAction", "OK", nullptr));
+        btnCancel->setText(QCoreApplication::translate("FactoryResetAction", "Cancel", nullptr));
     } // retranslateUi
 
 };

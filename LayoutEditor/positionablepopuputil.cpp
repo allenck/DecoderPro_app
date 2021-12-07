@@ -646,7 +646,7 @@ void PositionablePopupUtil::setFontWeight(int weight)
  }
 }
 
-void AddColorMenuEntryActionListener::actionPerformed()
+void AddColorMenuEntryActionListener::actionPerformed(JActionEvent *)
 {
  switch(colorType)
  {
@@ -998,7 +998,7 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 *  Add a menu item to be displayed when the popup menu is called for
 *  when in view mode.
 */
-/*public*/ void PositionablePopupUtil::addViewPopUpMenu(QMenu* menu)
+/*public*/ void PositionablePopupUtil::addViewPopUpMenu(QMenu *menu)
 {
  if(!viewAdditionalMenu->contains(menu))
  {

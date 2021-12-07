@@ -27,13 +27,13 @@
 class SignalMast;
 class LayoutEditor;
 class SignalMastLogic;
-/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogicManager : public AbstractManager
+/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogicManager //: public AbstractManager
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
- SignalMastLogicManager(QObject* parent=0) : AbstractManager(parent) {}
- ~SignalMastLogicManager() {}
- SignalMastLogicManager(const SignalMastLogicManager&) : AbstractManager() {}
+// SignalMastLogicManager(QObject* parent=0) : AbstractManager(parent) {}
+// ~SignalMastLogicManager() {}
+// SignalMastLogicManager(const SignalMastLogicManager&) : AbstractManager() {}
     /*public void addDestinationMastToLogic(SignalMastLogic src, SignalMast destination) = 0;*/
 
     /**
@@ -120,6 +120,7 @@ public:
      */
     /*public*/ virtual void removeSignalMastsDirectionSensors() = 0;
 
+    virtual QObject* self() =0;
  friend class RunnableThis;
  friend class DestinationMast;
  friend class LevelXing;
@@ -130,5 +131,5 @@ public:
  friend class LayoutTurnout;
  friend class LayoutSlip;
 };
-//Q_DECLARE_METATYPE(SignalMastLogicManager);
+Q_DECLARE_INTERFACE(SignalMastLogicManager, "SignalMastLogicManager");
 #endif // SIGNALMASTLOGICMANAGER_H

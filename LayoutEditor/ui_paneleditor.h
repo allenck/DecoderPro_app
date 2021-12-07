@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'paneleditor.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.3
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -31,7 +32,7 @@ public:
     QAction *actionRemove_markers;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
-    QWidget *editPanel;
+    QGraphicsView *editPanel;
     QMenuBar *menubar;
     QMenu *menuEdit;
     QMenu *menuMarker;
@@ -42,42 +43,42 @@ public:
     void setupUi(QMainWindow *PanelEditor)
     {
         if (PanelEditor->objectName().isEmpty())
-            PanelEditor->setObjectName(QLatin1String("PanelEditor"));
+            PanelEditor->setObjectName(QString::fromUtf8("PanelEditor"));
         PanelEditor->resize(800, 600);
         actionOpenEditor = new QAction(PanelEditor);
-        actionOpenEditor->setObjectName(QLatin1String("actionOpenEditor"));
+        actionOpenEditor->setObjectName(QString::fromUtf8("actionOpenEditor"));
         actionDelete_this_panel = new QAction(PanelEditor);
-        actionDelete_this_panel->setObjectName(QLatin1String("actionDelete_this_panel"));
+        actionDelete_this_panel->setObjectName(QString::fromUtf8("actionDelete_this_panel"));
         actionAdd_loco = new QAction(PanelEditor);
-        actionAdd_loco->setObjectName(QLatin1String("actionAdd_loco"));
+        actionAdd_loco->setObjectName(QString::fromUtf8("actionAdd_loco"));
         actionAdd_Loco_from_roster = new QAction(PanelEditor);
-        actionAdd_Loco_from_roster->setObjectName(QLatin1String("actionAdd_Loco_from_roster"));
+        actionAdd_Loco_from_roster->setObjectName(QString::fromUtf8("actionAdd_Loco_from_roster"));
         actionRemove_markers = new QAction(PanelEditor);
-        actionRemove_markers->setObjectName(QLatin1String("actionRemove_markers"));
+        actionRemove_markers->setObjectName(QString::fromUtf8("actionRemove_markers"));
         centralwidget = new QWidget(PanelEditor);
-        centralwidget->setObjectName(QLatin1String("centralwidget"));
+        centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout = new QVBoxLayout(centralwidget);
-        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
-        editPanel = new QWidget(centralwidget);
-        editPanel->setObjectName(QLatin1String("editPanel"));
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        editPanel = new QGraphicsView(centralwidget);
+        editPanel->setObjectName(QString::fromUtf8("editPanel"));
 
         verticalLayout->addWidget(editPanel);
 
         PanelEditor->setCentralWidget(centralwidget);
         menubar = new QMenuBar(PanelEditor);
-        menubar->setObjectName(QLatin1String("menubar"));
-        menubar->setGeometry(QRect(0, 0, 800, 25));
+        menubar->setObjectName(QString::fromUtf8("menubar"));
+        menubar->setGeometry(QRect(0, 0, 800, 22));
         menuEdit = new QMenu(menubar);
-        menuEdit->setObjectName(QLatin1String("menuEdit"));
+        menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
         menuMarker = new QMenu(menubar);
-        menuMarker->setObjectName(QLatin1String("menuMarker"));
+        menuMarker->setObjectName(QString::fromUtf8("menuMarker"));
         menuWindow = new QMenu(menubar);
-        menuWindow->setObjectName(QLatin1String("menuWindow"));
+        menuWindow->setObjectName(QString::fromUtf8("menuWindow"));
         menuFile = new QMenu(menubar);
-        menuFile->setObjectName(QLatin1String("menuFile"));
+        menuFile->setObjectName(QString::fromUtf8("menuFile"));
         PanelEditor->setMenuBar(menubar);
         statusbar = new QStatusBar(PanelEditor);
-        statusbar->setObjectName(QLatin1String("statusbar"));
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
         PanelEditor->setStatusBar(statusbar);
 
         menubar->addAction(menuFile->menuAction());
@@ -98,16 +99,16 @@ public:
 
     void retranslateUi(QMainWindow *PanelEditor)
     {
-        PanelEditor->setWindowTitle(QApplication::translate("PanelEditor", "MainWindow", nullptr));
-        actionOpenEditor->setText(QApplication::translate("PanelEditor", "Change view to Control Panel Editor", nullptr));
-        actionDelete_this_panel->setText(QApplication::translate("PanelEditor", "Delete this panel", nullptr));
-        actionAdd_loco->setText(QApplication::translate("PanelEditor", "Add Loco", nullptr));
-        actionAdd_Loco_from_roster->setText(QApplication::translate("PanelEditor", "Add Loco from roster", nullptr));
-        actionRemove_markers->setText(QApplication::translate("PanelEditor", "Remove markers", nullptr));
-        menuEdit->setTitle(QApplication::translate("PanelEditor", "Edit", nullptr));
-        menuMarker->setTitle(QApplication::translate("PanelEditor", "Marker", nullptr));
-        menuWindow->setTitle(QApplication::translate("PanelEditor", "Window", nullptr));
-        menuFile->setTitle(QApplication::translate("PanelEditor", "File", nullptr));
+        PanelEditor->setWindowTitle(QCoreApplication::translate("PanelEditor", "MainWindow", nullptr));
+        actionOpenEditor->setText(QCoreApplication::translate("PanelEditor", "Change view to Control Panel Editor", nullptr));
+        actionDelete_this_panel->setText(QCoreApplication::translate("PanelEditor", "Delete this panel", nullptr));
+        actionAdd_loco->setText(QCoreApplication::translate("PanelEditor", "Add Loco", nullptr));
+        actionAdd_Loco_from_roster->setText(QCoreApplication::translate("PanelEditor", "Add Loco from roster", nullptr));
+        actionRemove_markers->setText(QCoreApplication::translate("PanelEditor", "Remove markers", nullptr));
+        menuEdit->setTitle(QCoreApplication::translate("PanelEditor", "Edit", nullptr));
+        menuMarker->setTitle(QCoreApplication::translate("PanelEditor", "Marker", nullptr));
+        menuWindow->setTitle(QCoreApplication::translate("PanelEditor", "Window", nullptr));
+        menuFile->setTitle(QCoreApplication::translate("PanelEditor", "File", nullptr));
     } // retranslateUi
 
 };

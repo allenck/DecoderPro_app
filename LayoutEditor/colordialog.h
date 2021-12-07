@@ -81,6 +81,7 @@ class CDActionListener : public QObject, public ActionListener
  ColorDialog* colorDialog;
 public:
  CDActionListener(ColorDialog* colorDialog) {this->colorDialog = colorDialog;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) override{colorDialog->update();}
 };

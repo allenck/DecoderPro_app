@@ -205,7 +205,8 @@ long LayoutBlock::time=0;
          }
 
          // Verify registration
-         if (bm->getSystemNameList().contains(s)) {
+         Block* testGet = bm->getBySystemName(s);
+         if ( testGet!=nullptr && bm->getNamedBeanSet().contains(testGet) ) {
              log->debug(tr("Block is valid: %1").arg(s));
              break;
          }
@@ -340,6 +341,7 @@ long LayoutBlock::time=0;
   }
  }
 }
+
 /*public*/ bool  LayoutBlock::isOnPanel(LayoutEditor* panel)
 {
     // returns true if this Layout Block is used on panel
@@ -370,7 +372,7 @@ long LayoutBlock::time=0;
   }
   //panels->at(0)->redrawPanel();
  }
-
+ firePropertyChange("redraw", QVariant(), QVariant());
 }
 
 /**
@@ -3223,6 +3225,20 @@ QVector<Routes*>* LayoutBlock::getNextRoutes(Block* nxtBlock){
     return rtr;
 }
 
+void LayoutBlock::updateRoutingInfo(Routes* route) {
+    if (route->getHopCount() >= 254) {
+        return;
+    }
+    Block* destBlock = route->getDestBlock();
+
+    RoutingPacket* update = new RoutingPacket(UPDATE, destBlock, getBestRouteByHop(destBlock)->getHopCount() + 1,
+            ((getBestRouteByMetric(destBlock)->getMetric()) + metric),
+            ((getBestRouteByMetric(destBlock)->getMetric())
+            + block->getLengthMm()), -1,
+            getNextPacketID());
+    firePropertyChange("routing", QVariant(), VPtr<RoutingPacket>::asQVariant(update));
+}
+
 void LayoutBlock::updateRoutingInfo(LayoutBlock* src, RoutingPacket* update)
 {
     if(enableUpdateRouteLogging)
@@ -3426,19 +3442,78 @@ void LayoutBlock::updateRoutesToNeighbours(QVector<Block*>* messageRecipients, R
     }
 }
 
-Routes* LayoutBlock::getBestRoute(Block* dest){
-    //int bestHopCount = 255;
+//Routes* LayoutBlock::getBestRoute(Block* dest){
+//    //int bestHopCount = 255;
+//    int bestMetric = 965000;
+//    int bestIndex = -1;
+//    QVector<Routes*>* destRoutes = getDestRoutes(dest);
+//    for (int i = 0; i<destRoutes->size(); i++){
+//        if(destRoutes->at(i)->getMetric()<bestMetric){
+//            bestMetric = destRoutes->at(i)->getMetric();
+//            bestIndex=i;
+//        }
+//    }
+//    if (bestIndex==-1)
+//        return NULL;
+//    return destRoutes->at(bestIndex);
+//}
+
+Routes* LayoutBlock::getBestRouteByMetric(Block* dest) {
+    // int bestHopCount = 255;
     int bestMetric = 965000;
     int bestIndex = -1;
+
     QVector<Routes*>* destRoutes = getDestRoutes(dest);
-    for (int i = 0; i<destRoutes->size(); i++){
-        if(destRoutes->at(i)->getMetric()<bestMetric){
+    for (int i = 0; i < destRoutes->size(); i++) {
+        if (destRoutes->at(i)->getMetric() < bestMetric) {
             bestMetric = destRoutes->at(i)->getMetric();
-            bestIndex=i;
+            bestIndex = i;
         }
     }
-    if (bestIndex==-1)
-        return NULL;
+
+    if (bestIndex == -1) {
+        return nullptr;
+    }
+    return destRoutes->at(bestIndex);
+}
+
+Routes* LayoutBlock::getBestRouteByHop(Block* dest) {
+    int bestHopCount = 255;
+    // int bestMetric = 965000;
+    int bestIndex = -1;
+
+    QVector<Routes*>* destRoutes = getDestRoutes(dest);
+    for (int i = 0; i < destRoutes->size(); i++) {
+        if (destRoutes->at(i)->getHopCount() < bestHopCount) {
+            bestHopCount = destRoutes->at(i)->getHopCount();
+            bestIndex = i;
+        }
+    }
+
+    if (bestIndex == -1) {
+        return nullptr;
+    }
+    return destRoutes->at(bestIndex);
+}
+
+Routes* LayoutBlock::getBestRouteByLength(Block* dest) {
+    // int bestHopCount = 255;
+    // int bestMetric = 965000;
+    // long bestLength = 999999999;
+    int bestIndex = -1;
+    QVector<Routes*>* destRoutes = getDestRoutes(dest);
+    float bestLength = destRoutes->at(0)->getLength();
+
+    for (int i = 0; i < destRoutes->size(); i++) {
+        if (destRoutes->at(i)->getLength() < bestLength) {
+            bestLength = destRoutes->at(i)->getLength();
+            bestIndex = i;
+        }
+    }
+
+    if (bestIndex == -1) {
+        return nullptr;
+    }
     return destRoutes->at(bestIndex);
 }
 

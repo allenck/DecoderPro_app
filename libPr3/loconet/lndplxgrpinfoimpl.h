@@ -113,18 +113,20 @@ class LnDplxGrpInfoImpl : public QObject, public JComponent, public LocoNetListe
   /*private*/ bool handleMessageDuplexInfoReport(LocoNetMessage* m);
 
  friend class SwingTmrIpl02;
- friend class SwingTmrDuplex02;
+ friend class SwingTmrIpl02Listener;
 };
 
-class SwingTmrIpl02 : public Timer
+class SwingTmrIpl02Listener : public QObject, public ActionListener
 {
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
   LnDplxGrpInfoImpl* thisone;
  public:
-  SwingTmrIpl02(int interval, ActionListener* listener, LnDplxGrpInfoImpl* thisone) : Timer(interval, listener) {this->thisone = thisone;}
+  SwingTmrIpl02Listener( LnDplxGrpInfoImpl* thisone)  {this->thisone = thisone;}
+  QObject* self() override{return (QObject*)this;}
   //@Override
  public slots:
-  /*public*/ void actionPerformed(/*ActionEvent e*/) {
+  /*public*/ void actionPerformed(JActionEvent* =0) override{
       thisone->swingTmrIplQuery->stop();
       thisone->waitingForIplReply = false;
       int oldvalue = 9999;
@@ -140,28 +142,28 @@ class SwingTmrIpl02 : public Timer
   }
 };
 
-class SwingTmrDuplex02 : public Timer
-{
-  Q_OBJECT
-  LnDplxGrpInfoImpl* thisone;
- public:
-  SwingTmrDuplex02(int interval, ActionListener* listener, LnDplxGrpInfoImpl* thisone) : Timer(interval, listener) {this->thisone = thisone;}
-  public slots:
-  //@Override
-  /*public*/ void actionPerformed(/*java.awt.event.ActionEvent e*/) {
-      thisone->swingTmrDuplexInfoQuery->stop();
-      thisone->waitingForIplReply = false;
-      if (thisone->gotQueryReply == true) {
-          // do not want to erase any status message other than the "Processing" message.
-          thisone->pcs->firePropertyChange(thisone->DPLX_PC_STAT_LN_UPDATE_IF_NOT_CURRENTLY_ERROR, "", " "); // NOI18N
-          thisone->gotQueryReply = false;
-      } else {
-          thisone->pcs->firePropertyChange(thisone->DPLX_PC_STAT_LN_UPDATE, " ", "ErrorNoQueryResponse"); // NOI18N
-          thisone->numUr92 = 0;
-          int oldvalue = 9999;
-          int newvalue = 0;
-          thisone->pcs->firePropertyChange("NumberOfUr92sUpdate", oldvalue, newvalue); // NOI18N
-      }
-  }
-};
+//class SwingTmrDuplex02 : public Timer
+//{
+//  Q_OBJECT
+//  LnDplxGrpInfoImpl* thisone;
+// public:
+//  SwingTmrDuplex02(int interval, ActionListener* listener, LnDplxGrpInfoImpl* thisone) : Timer(interval, listener) {this->thisone = thisone;}
+//  public slots:
+//  //@Override
+//  /*public*/ void actionPerformed(/*java.awt.event.ActionEvent e*/) {
+//      thisone->swingTmrDuplexInfoQuery->stop();
+//      thisone->waitingForIplReply = false;
+//      if (thisone->gotQueryReply == true) {
+//          // do not want to erase any status message other than the "Processing" message.
+//          thisone->pcs->firePropertyChange(thisone->DPLX_PC_STAT_LN_UPDATE_IF_NOT_CURRENTLY_ERROR, "", " "); // NOI18N
+//          thisone->gotQueryReply = false;
+//      } else {
+//          thisone->pcs->firePropertyChange(thisone->DPLX_PC_STAT_LN_UPDATE, " ", "ErrorNoQueryResponse"); // NOI18N
+//          thisone->numUr92 = 0;
+//          int oldvalue = 9999;
+//          int newvalue = 0;
+//          thisone->pcs->firePropertyChange("NumberOfUr92sUpdate", oldvalue, newvalue); // NOI18N
+//      }
+//  }
+//};
 #endif // LNDPLXGRPINFOIMPL_H

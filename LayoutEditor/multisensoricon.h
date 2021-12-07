@@ -93,19 +93,7 @@ private:
     MultiSensorItemPanel* _itemPanel;
     int displaying;// = -1;
     bool buttonLive();
-    class AddIconActionListener : public ActionListener
-    {
-     MultiSensorIcon* parent;
-    public:
-     AddIconActionListener(MultiSensorIcon* parent)
-     {
-      this->parent = parent;
-     }
-     void actionPerformed(JActionEvent */*e*/ = 0)
-     {
-      parent->updateSensor();
-     }
-    };
+
 
 protected:
     /*protected*/ void rotateOrthogonal()override;
@@ -117,6 +105,22 @@ friend class MultiSensorIconWidget;
 friend class MultiSensorIconAdder;
 };
 
+class MSIAddIconActionListener : public QObject, public ActionListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+ MultiSensorIcon* parent;
+public:
+ MSIAddIconActionListener(MultiSensorIcon* parent)
+ {
+  this->parent = parent;
+ }
+ QObject* self() override {return (QObject*)this;}
+ void actionPerformed(JActionEvent */*e*/ = 0)
+ {
+  parent->updateSensor();
+ }
+};
 class UIActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
@@ -127,8 +131,9 @@ public:
  {
   this->parent = parent;
  }
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed(JActionEvent * = 0) { parent->updateItem();}
+ void actionPerformed(JActionEvent * = 0) override{ parent->updateItem();}
 };
 
 #endif // MULTISENSORICON_H

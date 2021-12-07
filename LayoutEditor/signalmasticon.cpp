@@ -434,9 +434,9 @@ void SignalMastIcon::onShowDarkIcon()
 //            updateItem();
 //        }
 //    };
- AddIconActionListener* updateAction = new AddIconActionListener(this);
+ SMIAddIconActionListener* updateAction = new SMIAddIconActionListener(this);
     // _iconMap keys with local names - Let SignalHeadItemPanel figure this out
-#if 0 // TODO:
+#if 1 // TODO:
  _itemPanel->init(updateAction, _iconMap);
 #endif
  _itemPanel->setSelection(getSignalMast());

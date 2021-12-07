@@ -182,6 +182,7 @@ class LnIPLImplementation : public QObject, public JComponent, public LocoNetLis
 
   friend class SwingTmr;
   friend class LnIplImplementationTest;
+  friend class IMPActionListener;
 };
 
 class SwingTmr : public Timer
@@ -202,4 +203,25 @@ public:
       thisone->pcs->firePropertyChange("LnIPLEndOfDeviceQuery", oldvalue, newvalue); // NOI18N
   }
 };
+
+class IMPActionListener : public QObject, public ActionListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+  LnIPLImplementation* lnI;
+ public:
+  IMPActionListener(LnIPLImplementation* lnI) {this->lnI = lnI;}
+  QObject* self() override{return (QObject*)this;}
+ public slots:
+  void actionPerformed(JActionEvent* =0) override
+  {
+   lnI->swingTmrIplQuery->stop();
+   lnI->waitingForIplReply = false;
+   int oldvalue = 9999;
+   int newvalue = 0;
+   lnI->pcs->firePropertyChange("LnIPLEndOfDeviceQuery", oldvalue, newvalue); // NOI18N
+
+  }
+};
+
 #endif // LNIPLIMPLEMENTATION_H

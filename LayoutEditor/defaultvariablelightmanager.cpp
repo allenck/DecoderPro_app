@@ -29,7 +29,7 @@
         lm->addPropertyChangeListener("beans", this);
         for (NamedBean* nb : lm->getNamedBeanSet()) {
          Light* l = (Light*)nb;
-            if (qobject_cast<VariableLight*>(l)) {
+            if (qobject_cast<VariableLight*>(l->self())) {
                 AbstractLightManager::Register((VariableLight*) l);
             }
         }
@@ -79,7 +79,7 @@
     /** {@inheritDoc} */
     //@Override
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultVariableLightManager::deregister(/*@Nonnull*/ VariableLight* s) {
+    /*public*/ void DefaultVariableLightManager::deregister(/*@Nonnull*/ NamedBean *s) const {
         throw  UnsupportedOperationException("Not supported. Use LightManager.deregister() instead");
     }
 
@@ -110,7 +110,7 @@
         }
     }
 
-    /*public*/ VariableLight* DefaultVariableLightManager::getByUserName(/*@Nonnull*/ QString s)
+    /*public*/ NamedBean* DefaultVariableLightManager::getByUserName(/*@Nonnull*/ QString s) const
     {
      return (VariableLight*)AbstractLightManager::getByUserName(s);
     }

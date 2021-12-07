@@ -212,7 +212,7 @@ namespace Operations
 
      // row 1 font type and size
      QWidget* p1 = new QWidget();
-     p1->setLayout(new QVBoxLayout);//(p1, BoxLayout.X_AXIS));
+     p1->setLayout(new QHBoxLayout);//(p1, BoxLayout.X_AXIS));
 
 
      JPanel* pFont = new JPanel();

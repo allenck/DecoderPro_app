@@ -173,3 +173,17 @@ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../tests/ -ltestsd
 
 INCLUDEPATH += $$PWD/../tests
 DEPENDPATH += $$PWD/../tests
+
+
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/release/ -lQtWebAppd
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/debug/ -lQtWebAppd
+#else:unix: LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/ -lQtWebAppd
+
+#INCLUDEPATH += $$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug
+#DEPENDPATH += $$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug
+
+
+unix|win32: LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += $$PWD/../../../../QtWebApp/QtWebApp
+DEPENDPATH += $$PWD/../../../../QtWebApp/QtWebApp

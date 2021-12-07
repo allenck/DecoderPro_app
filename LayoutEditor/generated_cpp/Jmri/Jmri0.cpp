@@ -532,6 +532,39 @@ if (_wrapper) {
 }
   return AbstractLightManager::getBySystemName(name0);
 }
+NamedBean*  PythonQtShell_AbstractLightManager::getByUserName(QString  key0) const
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getByUserName");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"NamedBean*" , "QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      NamedBean* returnValue{};
+      void* args[2] = {NULL, (void*)&key0};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getByUserName", methodInfo, result);
+          } else {
+            returnValue = *((NamedBean**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractLightManager::getByUserName(key0);
+}
 QString  PythonQtShell_AbstractLightManager::getEntryToolTip()
 {
 if (_wrapper) {
@@ -750,11 +783,6 @@ int PythonQtShell_AbstractLightManager::qt_metacall(QMetaObject::Call call, int 
 QString  PythonQtWrapper_AbstractLightManager::getBeanTypeHandled(AbstractLightManager* theWrappedObject, bool  plural) const
 {
   return ( theWrappedObject->getBeanTypeHandled(plural));
-}
-
-NamedBean*  PythonQtWrapper_AbstractLightManager::getByUserName(AbstractLightManager* theWrappedObject, QString  key) const
-{
-  return ( theWrappedObject->getByUserName(key));
 }
 
 QString  PythonQtWrapper_AbstractLightManager::getEntryToolTip(AbstractLightManager* theWrappedObject)

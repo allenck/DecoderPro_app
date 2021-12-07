@@ -5,8 +5,9 @@
 #include "focuslistener.h"
 #include "changelistener.h"
 #include "vptr.h"
+#include "javaqt_global.h"
 
-class JCheckBox : public QCheckBox
+class JAVAQTSHARED_EXPORT JCheckBox : public QCheckBox
 {
  Q_OBJECT
 public:

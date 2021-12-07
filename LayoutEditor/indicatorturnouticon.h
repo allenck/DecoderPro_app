@@ -72,8 +72,9 @@ class ITOUpdateActionListener : public QObject, public ActionListener
     IndicatorTurnoutIcon* parent;
 public:
     ITOUpdateActionListener(IndicatorTurnoutIcon* parent);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-    void actionPerformed(JActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0)override;
 };
 
 #endif // INDICATORTURNOUTICON_H

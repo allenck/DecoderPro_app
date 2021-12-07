@@ -165,6 +165,15 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
 /*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
     return (NamedBean*)_tsys->value(systemName);
 }
+
+/** {@inheritDoc} */
+//@Override
+//@CheckForNull
+/*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) const{
+    QString normalizedUserName = NamedBean::normalizeUserName(userName);
+    return normalizedUserName != nullptr ? _tuser->value(normalizedUserName) : nullptr;
+}
+
 /** {@inheritDoc} */
 ////@Override
 ///*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
@@ -729,13 +738,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  if (getSystemNamePrefix() == (systemName)) {
      return NameValidity::VALID_AS_PREFIX_ONLY;
  }
-// return getSystemNamePrefix() == (systemName)
-//            ? NameValidity::VALID_AS_PREFIX_ONLY
-//            : systemName.startsWith(getSystemNamePrefix())
-//            ? NameValidity::VALID
-//            : NameValidity::INVALID;
  return systemName.startsWith(getSystemNamePrefix()) ? NameValidity::VALID : NameValidity::INVALID;
-
 }
 
 /**

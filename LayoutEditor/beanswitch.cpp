@@ -313,7 +313,7 @@
      }
      else
      {// light
-      getLight()->addPropertyChangeListener((PropertyChangeListener*)this, _label, "Switchboard Editor Light Switch");
+      ((AbstractNamedBean*)getLight()->self())->addPropertyChangeListener((PropertyChangeListener*)this, _label, "Switchboard Editor Light Switch");
       //connect(getLight()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
          // Lights do not support Invert
@@ -801,7 +801,7 @@ void BeanSwitch::addInvert(QMenu* popup) {
      }
      else  if(beanTypeChar ==  'L')
      {
-      nb = InstanceManager::lightManagerInstance()->getLight(newUserName.toString());
+      nb = (NamedBean*)InstanceManager::lightManagerInstance()->getLight(newUserName.toString())->self();
      }
      else
      {
@@ -1043,13 +1043,13 @@ void BeanSwitch::alternateOnClick() {
             try {
                 // add Light to JMRI (w/appropriate manager)
                 l = InstanceManager::lightManagerInstance()->provideLight(sName);
-                l->setUserName(user);
+                ((AbstractNamedBean*)l->self())->setUserName(user);
             } catch (IllegalArgumentException ex) {
                 // user input no good
                 handleCreateException(sName);
                 return; // without creating
             }
-            nb = InstanceManager::lightManagerInstance()->getLight(sName);
+            nb = (NamedBean*)InstanceManager::lightManagerInstance()->getLight(sName)->self();
         }
         else
     {

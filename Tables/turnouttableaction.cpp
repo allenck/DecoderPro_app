@@ -271,27 +271,27 @@ void TurnoutTableAction::common()
 }
 
 
-OkListener::OkListener(TurnoutTableAction *self)
+OkListener::OkListener(TurnoutTableAction *tta)
 {
- this->self = self;
+ this->tta = tta;
 }
 void OkListener::actionPerformed(JActionEvent */*e*/)
 {
- self->createPressed();
+ tta->createPressed();
 }
-ToCancelActionListener::ToCancelActionListener(TurnoutTableAction *self) { this->self = self;}
-void ToCancelActionListener::actionPerformed(JActionEvent *e)
+ToCancelActionListener::ToCancelActionListener(TurnoutTableAction *tta) { this->tta = tta;}
+void ToCancelActionListener::actionPerformed(JActionEvent */*e*/ )
 {
- self->cancelPressed();
+ tta->cancelPressed();
 }
 
-RangeListener::RangeListener(TurnoutTableAction *self)
+RangeListener::RangeListener(TurnoutTableAction *tta)
 {
- this->self = self;
+ this->tta = tta;
 }
 void RangeListener::actionPerformed(JActionEvent */*e*/)
 {
- self->canAddRange();
+ tta->canAddRange();
 }
 
 

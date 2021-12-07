@@ -37,7 +37,7 @@ public:
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
 
    /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
-  //QObject* self() override {return this;}
+  QObject* self() override {return (QObject*)this;}
 
 signals:
     void propertyChange(QString propertyName, int oldState, int newState);

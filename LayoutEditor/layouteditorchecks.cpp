@@ -479,8 +479,6 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
     connect(subMenuItem, &QAction::triggered, [=]{
         doCheckNonContiguousBlocksMenuItem(blockName, trackNameSet);
     });
-//                SubMenuActionListener* listener = new SubMenuActionListener(blockName, trackNameSet, this);
-//                connect(subMenuItem, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
    }
   }
  }

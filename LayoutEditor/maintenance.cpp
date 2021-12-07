@@ -470,7 +470,7 @@ Maintenance::Maintenance(QObject *parent) :
  Light* l =(Light*) ((AbstractLightManager*)lightManager)->getBySystemName(sysName);
  if ( l!=NULL )
  {
-   userName = l->getUserName();
+   userName = ((AbstractNamedBean*)l->self())->getUserName();
    found = true;
  }
  else
@@ -487,7 +487,7 @@ Maintenance::Maintenance(QObject *parent) :
     l = (Light*)((AbstractLightManager*)lightManager)->getByUserName(userName);
     if ( l!=NULL )
     {
-     sysName = l->getSystemName();
+     sysName = ((AbstractNamedBean*)l->self())->getSystemName();
      found = true;
     }
    }

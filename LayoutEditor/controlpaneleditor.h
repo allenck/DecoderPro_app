@@ -15,7 +15,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT ControlPanelEditor : public Editor
 public:
     explicit ControlPanelEditor(QWidget *parent = 0);
     ~ControlPanelEditor();
- ControlPanelEditor(const ControlPanelEditor& other) : Editor((QWidget*)other.parent()) {}
+    ControlPanelEditor(const ControlPanelEditor& other) : Editor((QWidget*)other.parent()) {}
     /*public*/ bool _debug;
     /*public*/ ControlPanelEditor(QString name, QWidget *parent = 0);
     /*public*/ void setCopyMenu(Positionable* p, QMenu* popup);
@@ -71,6 +71,7 @@ private:
  /*private*/ QMenu* _circuitMenu;
  /*private*/ QMenu* _drawMenu;
  /*private*/ CircuitBuilder* _circuitBuilder = nullptr;
+ /*private*/ /*final*/ QList<QRect> _highlightGroup = QList<QRect>();
  /*private*/ QList<Positionable*>* _secondSelectionGroup = nullptr;
  /*private*/ ShapeDrawer* _shapeDrawer;
  /*private*/ ItemPalette* _itemPalette = nullptr;
@@ -87,7 +88,7 @@ private:
  /*private*/ QAction* scrollHorizontal;// = new JRadioButtonMenuItem(Bundle.getMessage("ScrollHorizontal"));
  /*private*/ QAction* scrollVertical;// = new JRadioButtonMenuItem(Bundle.getMessage("ScrollVertical"));
 
-      Logger* log;
+ static Logger* log;
  int _fitX;// = 0;
  int _fitY;// = 0;
  /*private*/ void makeFileMenu();
@@ -170,46 +171,46 @@ friend class EPIconDragJLabel;
 };
 Q_DECLARE_METATYPE(ControlPanelEditor)
 
-class CPEditItemActionListener : public QObject, public ActionListener
-{
-    Q_OBJECT
-    Q_INTERFACES(ActionListener)
-    ControlPanelEditor* panelEd;
-public slots:
-    /*public*/ void actionPerformed(JActionEvent* e = 0);
-public:
-    CPEditItemActionListener* init(ControlPanelEditor* pe);
-};
+//class CPEditItemActionListener : public QObject, public ActionListener
+//{
+//    Q_OBJECT
+//    Q_INTERFACES(ActionListener)
+//    ControlPanelEditor* panelEd;
+//public slots:
+//    /*public*/ void actionPerformed(JActionEvent* e = 0);
+//public:
+//    CPEditItemActionListener* init(ControlPanelEditor* pe);
+//};
 
-class DuplicateActionListener : public QObject, public ActionListener
-{
- Q_OBJECT
-  Q_INTERFACES(ActionListener)
- Positionable* comp;
- ControlPanelEditor* edit;
-public slots:
-    /*public*/ void actionPerformed(JActionEvent* e = 0);
-public:
-    DuplicateActionListener* init(Positionable* pos, ControlPanelEditor* edit);
-};
+//class DuplicateActionListener : public QObject, public ActionListener
+//{
+// Q_OBJECT
+//  Q_INTERFACES(ActionListener)
+// Positionable* comp;
+// ControlPanelEditor* edit;
+//public slots:
+//    /*public*/ void actionPerformed(JActionEvent* e = 0);
+//public:
+//    DuplicateActionListener* init(Positionable* pos, ControlPanelEditor* edit);
+//};
 
-class CPEEditListener : public QObject, public ActionListener
-{
-  Q_OBJECT
-  Q_INTERFACES(ActionListener)
- ControlPanelEditor* edit;
- int type;
- QWidget* pos;
-public:
- CPEEditListener(int type, QWidget* pos, ControlPanelEditor* edit)
- {
-  this->type = type;
-  this->pos = pos;
-  this->edit = edit;
- }
-public slots:
- void actionPerformed() { new ColorDialog(edit, pos, type, nullptr);}
-};
+//class CPEEditListener : public QObject, public ActionListener
+//{
+//  Q_OBJECT
+//  Q_INTERFACES(ActionListener)
+// ControlPanelEditor* edit;
+// int type;
+// QWidget* pos;
+//public:
+// CPEEditListener(int type, QWidget* pos, ControlPanelEditor* edit)
+// {
+//  this->type = type;
+//  this->pos = pos;
+//  this->edit = edit;
+// }
+//public slots:
+// void actionPerformed() { new ColorDialog(edit, pos, type, nullptr);}
+//};
 
 
 #endif // CONTROLPANELEDITOR_H

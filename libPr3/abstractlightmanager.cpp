@@ -63,13 +63,13 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 
     return (Light*)getBySystemName(name);
 }
-#if 1
+
 /**
  * Locate a Light by its system name
  */
 /*public*/ NamedBean* AbstractLightManager::getBySystemName(QString name) const
 {
- return (Light*)(_tsys->value(name));
+ return /*(Light*)*/(_tsys->value(name));
 }
 
 /**
@@ -78,7 +78,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /*public*/ NamedBean *AbstractLightManager::getByUserName(QString key) const {
     return /*dynamic_cast<Light*>*/(_tuser->value(key));
 }
-#endif
+
 /**
  * Return an instance with the specified system and user names.
  * Note that two calls with the same arguments will get the same instance;
@@ -123,15 +123,15 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  Light* s = NULL;
  if ( (userName!=NULL) && ((s = (Light*)getByUserName(userName)) != NULL))
  {
-  if (getBySystemName(systemName)!=s)
+  if (getBySystemName(systemName)!=(NamedBean*)s->self())
    log->error("inconsistent user ("+userName+") and system name ("
-                    +systemName+") results; userName related to ("+s->getSystemName()+")");
+                    +systemName+") results; userName related to ("+((AbstractNamedBean*)s->self())->getSystemName()+")");
   return s;
  }
  if ( (s = (Light*)getBySystemName(systemName)) != NULL)
  {
-  if ((s->getUserName() == NULL) && (userName != NULL))
-   s->setUserName(userName);
+  if ((((AbstractNamedBean*)s->self())->getUserName() == NULL) && (userName != NULL))
+   ((AbstractNamedBean*)s->self())->setUserName(userName);
   else if (userName != NULL) log->warn("Found light via system name ("+systemName
                                 +") with non-NULL user name ("+userName+")");
    return s;
@@ -147,7 +147,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
   throw IllegalArgumentException("cannot create new light "+systemName);
  }
  // save in the maps
- Register(static_cast<NamedBean*>(s));
+ Register(static_cast<NamedBean*>(s->self()));
  emit newLightCreated(this, s);
  return s;
 }

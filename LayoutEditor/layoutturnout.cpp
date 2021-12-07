@@ -237,19 +237,19 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
  circle = nullptr;
 
  turnoutNameField = new JTextField(16);
- blockBNameField = new JTextField(16);
- blockCNameField = new JTextField(16);
- blockDNameField = new JTextField(16);
+// blockBNameField = new JTextField(16);
+// blockCNameField = new JTextField(16);
+// blockDNameField = new JTextField(16);
  stateBox = new QComboBox();
  hiddenBox = new QCheckBox(tr("Hide Turnout"));
  editOpen = false;
  additionalTurnout = new QCheckBox(tr("Use Two Physical Addresses"));
  editLayoutTurnoutFrame = nullptr;
- blockNameField = new JTextField(16);
- connect(blockNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockNameField_textEdited(QString)));
- connect(blockBNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockBNameField_textEdited(QString)));
- connect(blockCNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockCNameField_textEdited(QString)));
- connect(blockDNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockDNameField_textEdited(QString)));
+// blockNameField = new JTextField(16);
+// connect(blockNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockNameField_textEdited(QString)));
+// connect(blockBNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockBNameField_textEdited(QString)));
+// connect(blockCNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockCNameField_textEdited(QString)));
+// connect(blockDNameField, SIGNAL(textEdited(QString)), this, SLOT(on_blockDNameField_textEdited(QString)));
 
  needRedraw = false;
  needsBlockUpdate = false;
@@ -4547,19 +4547,19 @@ void LayoutTurnout::remove()
 }
 
 
-/*public*/ void LayoutTurnout::addEditPopUpMenu(QObject* menu)
-{
- if(!editAdditionalMenu->contains(menu))
- {
-  editAdditionalMenu->append(menu);
- }
-}
+///*public*/ void LayoutTurnout::addEditPopUpMenu(QObject* menu)
+//{
+// if(!editAdditionalMenu->contains(menu))
+// {
+//  editAdditionalMenu->append(menu);
+// }
+//}
 
-/*public*/ void LayoutTurnout::addViewPopUpMenu(QObject* menu){
-    if(!viewAdditionalMenu->contains(menu)){
-        viewAdditionalMenu->append(menu);
-    }
-}
+///*public*/ void LayoutTurnout::addViewPopUpMenu(QObject* menu){
+//    if(!viewAdditionalMenu->contains(menu)){
+//        viewAdditionalMenu->append(menu);
+//    }
+//}
 
 /*public*/ void LayoutTurnout::setAdditionalEditPopUpMenu(QMenu* popup)
 {

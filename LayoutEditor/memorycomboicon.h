@@ -85,8 +85,9 @@ class MCIActionListener : public QObject, public ActionListener
     MemoryComboIcon* parent;
 public:
     MCIActionListener(MemoryComboIcon*);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-    void actionPerformed(JActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0)override;
 };
 
 #endif // MEMORYCOMBOICON_H

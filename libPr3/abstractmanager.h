@@ -117,7 +117,7 @@ public:
 //    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
 //    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
     /*public*/  QString getSystemPrefix() const /*final*/ override;
-    /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)const override;
+    /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName) const override;
     /*public*/ void setDataListenerMute(bool m);
     /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e) override;
     /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e) override;
@@ -137,6 +137,7 @@ public:
     QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
     QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException);
     /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const override;
+    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
 
 signals:
 //    void beanDeleted(NamedBean* s);

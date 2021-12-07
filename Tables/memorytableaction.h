@@ -88,7 +88,7 @@ class MtOkListener : public QObject, public ActionListener
  MemoryTableAction* act;
 public:
  MtOkListener(MemoryTableAction* act);
-public slots:
+QObject* self() override{return (QObject*)this;}public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) override;
 };
 
@@ -99,6 +99,7 @@ class MtCancelListener : public QObject, public ActionListener
  MemoryTableAction* act;
 public:
  MtCancelListener(MemoryTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 };

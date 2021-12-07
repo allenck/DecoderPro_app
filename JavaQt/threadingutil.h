@@ -13,6 +13,7 @@ class ThreadingUtil : public QObject
   explicit ThreadingUtil(QObject *parent = nullptr);
   static /*public*/ QThread* newThread(Runnable* runner);
   static /*public*/ QThread* newThread(Runnable* runner, QString name);
+  static /*public*/ void runOnGUI(/*@Nonnull*/ ThreadAction* ta);
 
  signals:
 
@@ -26,7 +27,7 @@ class ThreadingUtil : public QObject
  */
 //@FunctionalInterface
 /*static*/ /*public*/ /*interface*/ class ThreadAction : public Runnable {
-
+ public:
     /**
      * {@inheritDoc}
      * <p>

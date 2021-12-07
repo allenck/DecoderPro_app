@@ -110,7 +110,7 @@
 //                thisone.firePropertyChange("LnIPLEndOfDeviceQuery", oldvalue, newvalue); // NOI18N
 //            }
 //        });
-        swingTmrIplQuery = new SwingTmr(LnDplxGrpInfoImplConstants::IPL_QUERY_DELAY, new ActionListener(), this);
+        swingTmrIplQuery = new SwingTmr(LnDplxGrpInfoImplConstants::IPL_QUERY_DELAY, new IMPActionListener(this), this);
 
     }
 

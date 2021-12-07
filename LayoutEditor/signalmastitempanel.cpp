@@ -37,25 +37,15 @@
 
 void SignalMastItemPanel::init()
 {
- if(!_initialized)
- {
-  TableItemPanel::init();
-  //_table.getSelectionModel().addListSelectionListener(this);
-  connect(_table, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
-  _showIconsButton->setEnabled(false);
-  _showIconsButton->setToolTip(tr("Select a row from the table to show the icons for the item"));
-  initIconFamiliesPanel();
-  layout()->addWidget(_iconFamilyPanel/*, 1*/);
- }
+ TableItemPanel::init();
+ _showIconsButton->setEnabled(_mast != nullptr);
 }
-#if 0
+
 void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
  TableItemPanel::init(doneAction, iconMap);
-// _table->getSelectionModel().addListSelectionListener(this);
- _previewPanel->setVisible(false);
 }
-#endif
+
 /*protected*/ QWidget* SignalMastItemPanel::instructions()
 {
  _blurb = new QWidget();

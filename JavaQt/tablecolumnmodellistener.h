@@ -13,8 +13,9 @@
 class TableColumnModelEvent;
 class ChangeEvent;
 class ListSelectionEvent;
-/*public*/ /*interface*/class  TableColumnModelListener : public PropertyChangeListener, public EventListener
+/*public*/ /*interface*/class  TableColumnModelListener : /*public QObject,*/ public PropertyChangeListener, public EventListener
 {
+  //Q_OBJECT
   Q_INTERFACES(PropertyChangeListener EventListener)
 public:
  //TableColumnModelListener(QObject* parent = 0) : PropertyChangeListener(this) {}

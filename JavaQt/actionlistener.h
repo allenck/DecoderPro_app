@@ -12,7 +12,7 @@ class JAVAQTSHARED_EXPORT ActionListener : /*public QObject,*/  public EventList
  Q_INTERFACES(EventListener)
 public:
  //explicit ActionListener(QObject *parent = 0) : QObject(parent){}
-    QObject* self() {return (QObject*)this;}
+    //QObject* self() {return (QObject*)this;}
     /**
      * The listener interface for receiving action events.
      * The class that is interested in processing an action event

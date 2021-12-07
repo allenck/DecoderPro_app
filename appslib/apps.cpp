@@ -536,6 +536,11 @@ bool Apps::configDeferredLoadOK = false;
  InstanceManager::getDefault("LayoutBlockManager");
  DefaultCatalogTreeManagerXml().readCatalogTrees();
 
+#if 0
+ LogixNG_Manager* logixNG_Manager =
+                 InstanceManager::getDefault("LogixNG_Manager");
+ logixNG_Manager->setupAllLogixNGs();
+#endif
  StartupActionsManager* mgr = (StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager");
  QTimer::singleShot(100, (StartupActionsManager*)mgr, SLOT(loadFactories()));
 

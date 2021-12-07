@@ -101,6 +101,7 @@ class BTActionListener : public QObject, public ActionListener
  BlockTableAction* blockTableAction;
 public:
  BTActionListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent* = 0)override
  {
@@ -114,6 +115,7 @@ class BTCancelListener : public QObject, public ActionListener
  BlockTableAction* blockTableAction;
 public:
  BTCancelListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent* = 0) override
  {

@@ -13,9 +13,10 @@
 #include "exceptions.h"
 #include "jcomponent.h"
 #include "editscene.h"
+#include "liblayouteditor_global.h"
 
 class Border;
-class MyGraphicsItemGroup : public QGraphicsItemGroup
+class LIBLAYOUTEDITORSHARED_EXPORT MyGraphicsItemGroup : public QGraphicsItemGroup
 {
  QString _name;
 public:

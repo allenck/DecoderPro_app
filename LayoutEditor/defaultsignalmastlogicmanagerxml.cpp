@@ -248,11 +248,11 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(logicList.size())+" signal mast logics");
 
  SignalMastManager* sm = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
- SignalMastLogicManager* smlm = (SignalMastLogicManager*) InstanceManager::getDefault("SignalMastLogicManager");
+ SignalMastLogicManager* smlm = (DefaultSignalMastLogicManager*) InstanceManager::getDefault("SignalMastLogicManager");
  try
  {
      QString logicDelay = signalMastLogic.firstChildElement("logicDelay").text();
-     ((DefaultSignalMastLogicManager*)smlm)->setSignalLogicDelay((logicDelay.toLong()));
+     ((DefaultSignalMastLogicManager*)smlm->self())->setSignalLogicDelay((logicDelay.toLong()));
  }
  catch (NullPointerException e){
      //Considered normal if it doesn't exists

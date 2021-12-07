@@ -95,8 +95,9 @@ class FeedbackResetItemListener : public AbstractAction
  TurnoutEditAction* act;
 public:
  FeedbackResetItemListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(JActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0)override;
 };
 
 class AutomationSelectionListener : public QObject, public ActionListener
@@ -106,6 +107,7 @@ class AutomationSelectionListener : public QObject, public ActionListener
  TurnoutEditAction* act;
 public:
  AutomationSelectionListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent* = 0)override;
 };
@@ -116,24 +118,29 @@ class LockSaveItemListener : public AbstractAction
  TurnoutEditAction* act;
 public:
  LockSaveItemListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent* = 0) override;
 };
+
 class LockResetItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  LockResetItemListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(JActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0)override;
 };
+
 class SpeedSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  SpeedSaveItemListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent* = 0);
 };

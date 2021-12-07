@@ -346,7 +346,7 @@ void MultiSensorIcon::updateItem()
 //            updateSensor();
 //        }
 //    };
- AddIconActionListener* addIconAction = new AddIconActionListener(this);
+ MSIAddIconActionListener* addIconAction = new MSIAddIconActionListener(this);
  //connect(addIconAction, SIGNAL(triggered()), this, SLOT(updateSensor()));
  iconEditor->complete(addIconAction, true, true, true);
 #else

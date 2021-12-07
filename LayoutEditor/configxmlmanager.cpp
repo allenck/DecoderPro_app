@@ -974,7 +974,7 @@ File userPrefsFile;*/
        log->error("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
       }
      }
-     qApp->processEvents();
+//     qApp->processEvents();
     }
     catch (Exception e)
     {

@@ -96,7 +96,6 @@
 #include "layoutsingleslip.h"
 #include "layouttrackview.h"
 #include "positionablepointview.h"
-#include "layouteditorcomponent.h"
 #include "entergridsizesdialog.h"
 #include "moveselectiondialog.h"
 #include <QButtonGroup>
@@ -668,6 +667,7 @@ LayoutEditor::~LayoutEditor()
     optionMenu->addMenu(scrollMenu);
     QActionGroup* scrollGroup = new QActionGroup(this);
     scrollBothMenuItem = new QAction(tr("Scroll Both"), this);
+    scrollBothMenuItem->setCheckable(true);
     scrollGroup->addAction(scrollBothMenuItem);
     scrollMenu->addAction(scrollBothMenuItem);
     scrollBothMenuItem->setChecked(_scrollState == Editor::SCROLL_BOTH);
@@ -1355,9 +1355,10 @@ LayoutEditor::~LayoutEditor()
     gContext->setWindowHeight(screenDim.height() - 120);
 
     // Let Editor make target, and use this frame
-    PanelEditor::setTargetPanel((EditScene*)nullptr, (JmriJFrame*)nullptr);
+    PanelEditor::setTargetPanel((QGraphicsView*)nullptr, (JmriJFrame*)nullptr);
     PanelEditor::setTargetPanelSize(gContext->getWindowWidth(), gContext->getWindowHeight());
-    setSize(screenDim.width(), screenDim.height());
+    //setSize(screenDim.width(), screenDim.height());
+    Editor::setSize(screenDim.width(), screenDim.height());
 
     // register the resulting panel for later configuration
     ConfigureManager* cm = ((ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager"));
@@ -1437,13 +1438,13 @@ LayoutEditor::~LayoutEditor()
  // make sure that the layoutEditorComponent is in the _targetPanel components
 #if 0
  QList<QWidget*> componentList = QList<QWidget*>(_targetPanel->getComponents());
- if (!componentList.contains(layoutEditorComponent)) {
+ if (!componentList.contains((QWidget*)layoutEditorComponent)) {
      try {
-         _targetPanel.remove(layoutEditorComponent);
-         _targetPanel.add(layoutEditorComponent, Integer.valueOf(3));
-         _targetPanel.moveToFront(layoutEditorComponent);
+         _targetPanel->remove(layoutEditorComponent);
+         _targetPanel->append(layoutEditorComponent, (3));
+         _targetPanel->moveToFront(layoutEditorComponent);
      } catch (Exception e) {
-         log.warn("paintTargetPanelBefore: Exception {}", e);
+         log->warn(tr("paintTargetPanelBefore: Exception %1").arg(e.getMessage()));
      }
  }
 #endif
@@ -1808,8 +1809,8 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
  }
 }
 #endif
-/*protected*/ void LayoutEditor::drawTurnouts(EditScene* g2)
-{
+///*protected*/ void LayoutEditor::drawTurnouts(EditScene* g2)
+//{
  //float trackWidth = sideTrackWidth;
  // loop over all defined turnouts
 // for (int i = 0; i<lay->size();i++)
@@ -1818,7 +1819,7 @@ bool LayoutEditor::isEditable() {return bIsEditable;}
 //  t->invalidate(g2);
 //  t->drawTurnouts(this, g2);
 // }
-}
+//}
 
 /*private*/ void LayoutEditor::amendSelectionGroup(Positionable* p)
 {
@@ -3288,7 +3289,8 @@ void LayoutEditor::undoMoveSelection() {
         QActionGroup* inButtonGroup,
         /*final*/ QString inName,
         bool inSelected,
-        ActionListener* inActionListener) {
+        ActionListener* inActionListener)
+{
     JRadioButtonMenuItem* result = new JRadioButtonMenuItem(inName, this);
     if (inActionListener != nullptr) {
 //            result.addActionListener(inActionListener);
@@ -3316,7 +3318,7 @@ void LayoutEditor::undoMoveSelection() {
 //        }
 //    };
  ActionListener* a = new AddTurnoutCircleSizeMenuEntryCactionListener(inSize, this);
-    addButtonGroupMenuEntry(inMenu,
+ addButtonGroupMenuEntry(inMenu,
             turnoutCircleSizeButtonGroup, inName,
             getTurnoutCircleSize() == inSize, a);
 }
@@ -3343,6 +3345,21 @@ void LayoutEditor::undoMoveSelection() {
  {
   Editor::setScroll(state);
  }
+}
+
+/**
+ * The LE xml load uses the string version of setScroll which went directly to
+ * Editor.  The string version has been added here so that LE can set the scroll
+ * selection.
+ * @param value The new scroll value.
+ */
+//@Override
+/*public*/ void LayoutEditor::setScroll(QString value) {
+    if (value != "") Editor::setScroll(value);
+    scrollNoneMenuItem->setChecked(_scrollState == Editor::SCROLL_NONE);
+    scrollBothMenuItem->setChecked(_scrollState == Editor::SCROLL_BOTH);
+    scrollHorizontalMenuItem->setChecked(_scrollState == Editor::SCROLL_HORIZONTAL);
+    scrollVerticalMenuItem->setChecked(_scrollState == Editor::SCROLL_VERTICAL);
 }
 
 /**
@@ -8848,18 +8865,18 @@ QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
  //if (nb instanceof Turnout)
  if(static_cast<Turnout*>(nb)!=nullptr)
  {
-  for (LayoutTurnout* lt : getLayoutTurnoutsAndSlips())
+  for (LayoutTurnoutView* ltv : getLayoutTurnoutAndSlipViews())
   {
-   if(lt->getTurnout()==(nb))
+   if(ltv->getTurnout()==(nb))
    {
-    switch(menu)
-    {
-     case VIEWPOPUPONLY : lt->addViewPopUpMenu(item); break;
-     case EDITPOPUPONLY : lt->addEditPopUpMenu(item); break;
-     default: lt->addEditPopUpMenu(item);
-              lt->addViewPopUpMenu(item);
+#if 0
+    if (menu != Editor::VIEWPOPUPONLY) {
+     ltv->addEditPopUpMenu(item);
     }
-    break;
+    if (menu != Editor::EDITPOPUPONLY) {
+        ltv->addViewPopUpMenu(item);
+    }
+#endif
    }
   }
  }

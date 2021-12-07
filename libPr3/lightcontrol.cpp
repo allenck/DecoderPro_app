@@ -278,7 +278,7 @@ void LightControl::common()
  //          public void propertyChange(PropertyChangeEvent e) {
  //          }
  //      },_parentLight::toString(), getDescriptionText("") );
-   _parentLight->addPropertyChangeListener(new LC1PropertyChangeListener(this),_parentLight->getDisplayName(), getDescriptionText("") );
+   ((AbstractNamedBean*)_parentLight->self())->addPropertyChangeListener(new LC1PropertyChangeListener(this),((AbstractNamedBean*)_parentLight->self())->getDisplayName(), getDescriptionText("") );
 
    // activate according to control type
    switch (_controlType) {
@@ -303,20 +303,20 @@ void LightControl::common()
  //                      }
  //                  }, _controlSensorName, getDescriptionText(_parentLight::getDisplayName()));
                   _namedControlSensor->getBean()->addPropertyChangeListener(new LC2PropertyChangeListener(this), _controlSensorName,
-                                                                          getDescriptionText(_parentLight->getDisplayName()));
+                                                                          getDescriptionText(((AbstractNamedBean*)_parentLight->self())->getDisplayName()));
 
                _active = true;
            } else {
                // control sensor does not exist
                log->error(tr("Light %1 is linked to a Sensor that does not exist: %2").arg(
-                   _parentLight->getSystemName()).arg(_controlSensorName));
+                   ((AbstractNamedBean*)_parentLight->self())->getSystemName()).arg(_controlSensorName));
                return;
            }
            break;
        case Light::FAST_CLOCK_CONTROL:
            if (areFollowerTimesFaulty(_parentLight->getLightControlList())){
                log->error(tr("Light has multiple actions for the same time in %1").arg(
-                   getDescriptionText(_parentLight->getDisplayName())));
+                   getDescriptionText(((AbstractNamedBean*)_parentLight->self())->getDisplayName())));
            }
            if (_clock == nullptr) {
                _clock = (Timebase*)InstanceManager::getDefault("Timebase");
@@ -340,7 +340,7 @@ void LightControl::common()
                        provideTurnout(_controlTurnoutName);
            } catch (IllegalArgumentException e) {
                // control turnout does not exist
-               log->error("Light " + _parentLight->getSystemName()
+               log->error("Light " + ((AbstractNamedBean*)_parentLight->self())->getSystemName()
                        + " is linked to a Turnout that does not exist: " + _controlSensorName);
                return;
            }
@@ -357,7 +357,7 @@ void LightControl::common()
 //                   }
 //               }, _controlTurnoutName, getDescriptionText(_parentLight::getDisplayName()));
            _controlTurnout->addPropertyChangeListener( _turnoutListener = new LC4PropertyChangeListener(this),
-               _controlTurnoutName, getDescriptionText(_parentLight->getDisplayName()));
+               _controlTurnoutName, getDescriptionText(((AbstractNamedBean*)_parentLight->self())->getDisplayName()));
            _active = true;
            break;
        case Light::TIMED_ON_CONTROL:
@@ -393,11 +393,11 @@ void LightControl::common()
 //                       }
 //                   }, _timedSensorName, getDescriptionText(_parentLight::getDisplayName()));
                   _namedTimedControlSensor->getBean()->addPropertyChangeListener(new LC5PropertyChangeListener(this),
-                     _timedSensorName, getDescriptionText(_parentLight->getDisplayName()));
+                     _timedSensorName, getDescriptionText(((AbstractNamedBean*)_parentLight->self())->getDisplayName()));
                _active = true;
            } else {
                // timed control sensor does not exist
-               log->error("Light " + _parentLight->getSystemName()
+               log->error("Light " + ((AbstractNamedBean*)_parentLight->self())->getSystemName()
                        + " is linked to a Sensor that does not exist: " + _timedSensorName);
                return;
            }
@@ -429,7 +429,7 @@ void LightControl::common()
 //                       }
 //                   }, _controlSensorName, getDescriptionText(_parentLight::getDisplayName()));
            _namedControlSensor->getBean()->addPropertyChangeListener(new LC6PropertyChangeListener(this),
-              _controlSensorName, getDescriptionText(_parentLight->getDisplayName()));
+              _controlSensorName, getDescriptionText(((AbstractNamedBean*)_parentLight->self())->getDisplayName()));
 //               _namedControlSensor2.getBean().addPropertyChangeListener(
 //                   _sensor2Listener = new PropertyChangeListener() {
 //                       @Override
@@ -440,17 +440,17 @@ void LightControl::common()
 //                       }
 //                   }, _controlSensor2Name, getDescriptionText(_parentLight::getDisplayName()));
            _namedControlSensor2->getBean()->addPropertyChangeListener(new LC6PropertyChangeListener(this),
-              _controlSensorName, getDescriptionText(_parentLight->getDisplayName()));
+              _controlSensorName, getDescriptionText(((AbstractNamedBean*)_parentLight->self())->getDisplayName()));
                _active = true;
            } else {
                // at least one control sensor does not exist
-               log->error("Light " + _parentLight->getSystemName()
+               log->error("Light " + ((AbstractNamedBean*)_parentLight->self())->getSystemName()
                        + " with 2 Sensor Control is linked to a Sensor that does not exist.");
                return;
            }
            break;
        default:
-           log->error(tr("Unexpected control type when activating Light: %1").arg(_parentLight->getDisplayName()));
+           log->error(tr("Unexpected control type when activating Light: %1").arg(((AbstractNamedBean*)_parentLight->self())->getDisplayName()));
    }
   }
 }
@@ -658,7 +658,7 @@ void LightControl::common()
 {
   // skip if Light Control is not active
   if (_active) {
-      _parentLight->removePropertyChangeListener(_parentLightListener);
+      ((AbstractNamedBean*)_parentLight->self())->removePropertyChangeListener(_parentLightListener);
       // deactivate according to control type
       switch (_controlType) {
           case Light::SENSOR_CONTROL:
@@ -705,7 +705,7 @@ void LightControl::common()
               }
               break;
           default:
-              log->warn(tr("Unexpected control type when deactivating Light: %1").arg(_parentLight->getSystemName()));
+              log->warn(tr("Unexpected control type when deactivating Light: %1").arg(((AbstractNamedBean*)_parentLight->self())->getSystemName()));
       }
       _active = false;
   }
@@ -809,26 +809,5 @@ void LightControl::common()
         }
     }
 }
-/**
- *	Class for defining ActionListener for TIMED_ON_CONTROL
-// */
-//class TimeLight : public ActionListener
-//{
-// public:
-#if 0
-    /*public*/ void TimeLight::actionPerformed(JActionEvent* event)
-    {
-        // Turn Light OFF
-        lc->_parentLight->setState(Light::OFF);
-        // Turn Timer OFF
-        lc->_timedControlTimer->stop();
-        lc->_lightOnTimerActive = false;
-    }
-#endif
-//}
-
 
 /*static*/ Logger* LightControl::log = LoggerFactory::getLogger("LightControl");
-//}
-
-/* @(#)LightControl.java */

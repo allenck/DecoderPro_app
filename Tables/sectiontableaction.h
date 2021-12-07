@@ -243,6 +243,7 @@ class YesButtonActionListener : public QObject, public ActionListener
  JDialog* dlg;
 public:
  YesButtonActionListener(JDialog* dlg, Section* s);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent *e = 0) override;
 };
@@ -254,7 +255,8 @@ class NoButtonActionListener : public QObject, public ActionListener
  JDialog* dlg;
 public:
  NoButtonActionListener(JDialog* dlg);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(JActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0)override;
 };
 #endif // SECTIONTABLEACTION_H

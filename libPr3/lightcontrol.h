@@ -213,14 +213,5 @@ public slots:
  void propertyChange(PropertyChangeEvent*);
 };
 
-//class TimeLight : public ActionListener
-//{
-// Q_OBJECT
-// LightControl* lc;
-//public:
-// TimeLight(LightControl* lc) {this->lc = lc;}
-// public slots:
-//    /*public*/ void actionPerformed(/*ActionEvent* event*/);
-//};
 
 #endif // LIGHTCONTROL_H

@@ -93,6 +93,7 @@ class StateStoredActionListener : public QObject, public ActionListener
  Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  StateStoredActionListener(IdTagTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 
@@ -105,6 +106,7 @@ class FastClockUsedActionListener : public QObject, public ActionListener
     Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  FastClockUsedActionListener(IdTagTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 
@@ -117,6 +119,7 @@ class IdTagOkListener : public QObject, public ActionListener
     Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  IdTagOkListener(IdTagTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 
@@ -129,6 +132,7 @@ class CancelListener : public QObject, public ActionListener
     Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  CancelListener(IdTagTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 

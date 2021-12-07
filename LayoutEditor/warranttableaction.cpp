@@ -35,7 +35,7 @@
 WarrantTableAction::WarrantTableAction(QObject *parent) :
     AbstractAction(tr("Warrants"), parent)
 {
- common();
+ common(QString());
 }
 /**
  * A WarrantAction contains the operating permissions and directives needed for
@@ -90,7 +90,7 @@ WarrantTableAction::WarrantTableAction(QObject *parent) :
 /*public*/ WarrantTableAction::WarrantTableAction(QString menuOption, QObject *parent) : AbstractAction(menuOption,parent)
 {
  //    super(tr(menuOption));
- common();
+ common(menuOption);
 }
 
 /*public*/ /*static*/ WarrantTableAction* WarrantTableAction::getDefault()
@@ -105,9 +105,9 @@ WarrantTableAction::WarrantTableAction(QObject *parent) :
  return wta;
 }
 
-void WarrantTableAction::common()
+void WarrantTableAction::common(QString menuOption)
 {
-  this->menuOption = menuOption;
+ this->menuOption = menuOption;
   log = new Logger("WarrantTableAction");
  _startWarrant = new JTextField(30);
  _endWarrant = new JTextField(30);
@@ -667,7 +667,7 @@ QListIterator <BeanSetting*> iter(myTOs);
 //    };
     //ok.addActionListener(new myListener());
  MyListener* myListener = new MyListener(_errorDialog);
- connect(ok, SIGNAL(clicked()),  myListener->self(), SLOT(actionPerformed()));
+ connect(ok, SIGNAL(clicked()),  myListener, SLOT(actionPerformed()));
     ok->setMaximumSize(ok->sizeHint());
 
 //    QWidget* contentPane = _errorDialog->getContentPane();

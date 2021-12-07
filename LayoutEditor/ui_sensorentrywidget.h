@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'sensorentrywidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.3
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -37,23 +37,23 @@ public:
     void setupUi(QWidget *SensorEntryWidget)
     {
         if (SensorEntryWidget->objectName().isEmpty())
-            SensorEntryWidget->setObjectName(QLatin1String("SensorEntryWidget"));
+            SensorEntryWidget->setObjectName(QString::fromUtf8("SensorEntryWidget"));
         SensorEntryWidget->resize(197, 148);
         verticalLayout = new QVBoxLayout(SensorEntryWidget);
-        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         frame = new QFrame(SensorEntryWidget);
-        frame->setObjectName(QLatin1String("frame"));
+        frame->setObjectName(QString::fromUtf8("frame"));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
         formLayout = new QFormLayout(frame);
-        formLayout->setObjectName(QLatin1String("formLayout"));
+        formLayout->setObjectName(QString::fromUtf8("formLayout"));
         label = new QLabel(frame);
-        label->setObjectName(QLatin1String("label"));
+        label->setObjectName(QString::fromUtf8("label"));
 
         formLayout->setWidget(1, QFormLayout::LabelRole, label);
 
         edSensor = new SensorLineEdit(frame);
-        edSensor->setObjectName(QLatin1String("edSensor"));
+        edSensor->setObjectName(QString::fromUtf8("edSensor"));
         QFont font;
         font.setPointSize(9);
         edSensor->setFont(font);
@@ -61,12 +61,12 @@ public:
         formLayout->setWidget(2, QFormLayout::LabelRole, edSensor);
 
         btnDelete = new QPushButton(frame);
-        btnDelete->setObjectName(QLatin1String("btnDelete"));
+        btnDelete->setObjectName(QString::fromUtf8("btnDelete"));
 
         formLayout->setWidget(3, QFormLayout::LabelRole, btnDelete);
 
         iconButton = new DropPushButton(frame);
-        iconButton->setObjectName(QLatin1String("iconButton"));
+        iconButton->setObjectName(QString::fromUtf8("iconButton"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -78,7 +78,7 @@ public:
         formLayout->setWidget(2, QFormLayout::FieldRole, iconButton);
 
         labelPosition = new QLabel(frame);
-        labelPosition->setObjectName(QLatin1String("labelPosition"));
+        labelPosition->setObjectName(QString::fromUtf8("labelPosition"));
 
         formLayout->setWidget(1, QFormLayout::FieldRole, labelPosition);
 
@@ -93,12 +93,12 @@ public:
 
     void retranslateUi(QWidget *SensorEntryWidget)
     {
-        SensorEntryWidget->setWindowTitle(QApplication::translate("SensorEntryWidget", "Form", nullptr));
-        label->setText(QApplication::translate("SensorEntryWidget", "Sensor", nullptr));
-        edSensor->setText(QApplication::translate("SensorEntryWidget", "undefined", nullptr));
-        btnDelete->setText(QApplication::translate("SensorEntryWidget", "Delete", nullptr));
+        SensorEntryWidget->setWindowTitle(QCoreApplication::translate("SensorEntryWidget", "Form", nullptr));
+        label->setText(QCoreApplication::translate("SensorEntryWidget", "Sensor", nullptr));
+        edSensor->setText(QCoreApplication::translate("SensorEntryWidget", "undefined", nullptr));
+        btnDelete->setText(QCoreApplication::translate("SensorEntryWidget", "Delete", nullptr));
         iconButton->setText(QString());
-        labelPosition->setText(QApplication::translate("SensorEntryWidget", "Position x", nullptr));
+        labelPosition->setText(QCoreApplication::translate("SensorEntryWidget", "Position x", nullptr));
     } // retranslateUi
 
 };

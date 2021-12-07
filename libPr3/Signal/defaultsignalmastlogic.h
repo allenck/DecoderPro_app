@@ -512,7 +512,8 @@ public:
      this->parent = parent;
     }
     DestinationMast* parent;
-    void propertyChange(PropertyChangeEvent *e)
+ public slots:
+    void propertyChange(PropertyChangeEvent *e)override
     {
      Block* block = (Block*) e->getSource();
      if(parent->log->isDebugEnabled())

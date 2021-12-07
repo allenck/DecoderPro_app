@@ -46,6 +46,8 @@
 #include "layoutturntableview.h"
 #include "levelxingview.h"
 #include "path.h"
+#include "jmenuitem.h"
+#include "layouteditorcomponent.h"
 
 enum TOOLBARSIDES
 {
@@ -193,29 +195,29 @@ public:
     static const  int SLIP_C = 23; // offset for slip connection points
     static const  int SLIP_D = 24; // offset for slip connection points
     static const  int TURNTABLE_RAY_OFFSET = 50; // offset for turntable connection points
-    const /*public*/ static int BKG       = 1;
-    const /*public*/ static int TEMP      = 2;
-    const /*public*/ static int ICONS     = 3;
-    const /*public*/ static int LABELS    = 4;
-    const /*public*/ static int MEMORIES  = 5;
-    const /*public*/ static int REPORTERS = 5;
-    const /*public*/ static int SECURITY  = 6;
-    const /*public*/ static int TURNOUTS  = 7;
-    const /*public*/ static int LIGHTS    = 8;
-    const /*public*/ static int SIGNALS   = 9;
-    const /*public*/ static int SENSORS   = 10;
-    const /*public*/ static int CLOCK     = 10;
-    const /*public*/ static int MARKERS   = 10;
-    const /*public*/ static int NUM_LEVELS= 10;
+//    const /*public*/ static int BKG       = 1;
+//    const /*public*/ static int TEMP      = 2;
+//    const /*public*/ static int ICONS     = 3;
+//    const /*public*/ static int LABELS    = 4;
+//    const /*public*/ static int MEMORIES  = 5;
+//    const /*public*/ static int REPORTERS = 5;
+//    const /*public*/ static int SECURITY  = 6;
+//    const /*public*/ static int TURNOUTS  = 7;
+//    const /*public*/ static int LIGHTS    = 8;
+//    const /*public*/ static int SIGNALS   = 9;
+//    const /*public*/ static int SENSORS   = 10;
+//    const /*public*/ static int CLOCK     = 10;
+//    const /*public*/ static int MARKERS   = 10;
+//    const /*public*/ static int NUM_LEVELS= 10;
 
-    const /*public*/ static int SCROLL_NONE       = 0;
-    const /*public*/ static int SCROLL_BOTH       = 1;
-    const /*public*/ static int SCROLL_HORIZONTAL = 2;
-    const /*public*/ static int SCROLL_VERTICAL   = 3;
-    const /*public*/ static int OPTION_POSITION = 1;
-    const /*public*/ static int OPTION_CONTROLS = 2;
-    const /*public*/ static int OPTION_HIDDEN = 3;
-    const /*public*/ static int OPTION_TOOLTIP= 4;
+//    const /*public*/ static int SCROLL_NONE       = 0;
+//    const /*public*/ static int SCROLL_BOTH       = 1;
+//    const /*public*/ static int SCROLL_HORIZONTAL = 2;
+//    const /*public*/ static int SCROLL_VERTICAL   = 3;
+//    const /*public*/ static int OPTION_POSITION = 1;
+//    const /*public*/ static int OPTION_CONTROLS = 2;
+//    const /*public*/ static int OPTION_HIDDEN = 3;
+//    const /*public*/ static int OPTION_TOOLTIP= 4;
     /*public*/ /*final*/ LayoutEditorViewContext* gContext = new LayoutEditorViewContext(); // public for now, as things work access changes
     /*public*/ QList<PositionableLabel*> getLabelImageList();
     /*public*/ void addAnchor();
@@ -349,7 +351,7 @@ public:
     /*public*/ LayoutEditorTools* getLETools();
     /*public*/ LayoutEditorAuxTools* getLEAuxTools();
     /*public*/ LayoutEditorChecks* getLEChecks();
-    /*public*/ void addToPopUpMenu(NamedBean* nb, QMenu* item, int menu);
+    /*public*/ void addToPopUpMenu(NamedBean* nb, QMenu *item, int menu);
     QString toString();
     /*public*/ void vetoableChange(
             /*@Nonnull*/ PropertyChangeEvent* evt) override
@@ -380,7 +382,8 @@ public:
     /*public*/ void setAntialiasingOn(bool state);
     /*public*/ void setDrawLayoutTracksLabel(bool state);
     /*public*/ void setAutoBlockAssignment(bool boo);
-    /*public*/ void setScroll(int state);
+    /*public*/ void setScroll(int state)override;
+    /*public*/ void setScroll(QString value)override;
     /*public*/ void setConnections();
     /*public*/ /*@Nonnull*/ QRectF layoutEditorControlRectAt(/*@Nonnull*/ QPointF inPoint);
     /*public*/ /*@Nonnull*/ QRectF layoutEditorControlCircleRectAt(/*@Nonnull*/ QPointF inPoint);
@@ -752,7 +755,7 @@ private:
  bool main = true;
  bool _editable = false;
  friend class SensorIcon;
- int _scrollState;
+ //int _scrollState;
  int _anchorX = 0, _anchorY = 0;
  int _lastX, _lastY;
  /*public*/ void mouseDragged(QGraphicsSceneMouseEvent* event) override;
@@ -1024,15 +1027,15 @@ protected:
  /*protected*/ void setSelectionsScale(double s, Positionable* p);
  /*protected*/ bool removeLayoutSlip (LayoutTurnout* o);
  /*protected*/ bool skipIncludedTurnout = false;
- /*protected*/ void targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* e);
+ /*protected*/ void targetWindowClosingEvent(/*WindowEvent*/ QCloseEvent* e)override;
  /**
  * Remove marker icons from panel
  */
  /*protected*/ void removeMarkers();
  /*protected*/ void removeBackground(PositionableLabel* b);
- /*protected*/ void drawTurnouts(EditScene* g2);
+// /*protected*/ void drawTurnouts(EditScene* g2);
  /*protected*/ void setupToolsMenu(/*@Nonnull*/ QMenuBar* menuBar);
- /*protected*/ void showPopUp(/*@Nonnull*/ Positionable* p, /*@Nonnull */QGraphicsSceneMouseEvent* event);
+ /*protected*/ void showPopUp(/*@Nonnull*/ Positionable* p, /*@Nonnull */QGraphicsSceneMouseEvent* event)override;
  /*protected*/ QMenu* setupOptionMenu(/*@Nonnull*/ QMenuBar* menuBar);
  /*protected*/ LayoutShape* addLayoutShape(/*@Nonnull*/ QPointF p);
  /*protected*/ bool removeLayoutShape(/*@Nonnull*/ LayoutShape* s);
@@ -1174,8 +1177,9 @@ class AddTurnoutCircleSizeMenuEntryCactionListener : public QObject, public Acti
    this->inSize = inSize;
    this->layoutEditor = layoutEditor;
   }
+  QObject* self() override {return (QObject*)this;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent* =0)override
   {
    if (layoutEditor->getTurnoutCircleSize() != inSize) {
        layoutEditor->setTurnoutCircleSize(inSize);

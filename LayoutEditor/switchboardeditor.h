@@ -5,6 +5,8 @@
 #include "jspinner.h"
 #include "jbutton.h"
 #include "jtextarea.h"
+#include "liblayouteditor_global.h"
+
 
 class NamedBeanHandleManager;
 class BeanSwitch;
@@ -13,15 +15,13 @@ class JTextArea;
 class QComboBox;
 class QCheckBox;
 class JLabel;
-class SwitchboardEditor : public Editor
+class LIBLAYOUTEDITORSHARED_EXPORT SwitchboardEditor : public Editor
 {
  Q_OBJECT
 public:
  SwitchboardEditor(QWidget* parent = nullptr);
  ~SwitchboardEditor();
  /*public*/ SwitchboardEditor(QString name, QWidget* parent = nullptr);
-
-
  /*public*/ QString getSwitchType();
  /*public*/ QString getSwitchTypeName();
  /*public*/ void setSwitchType(QString prefix);
@@ -194,6 +194,7 @@ protected:
  /*protected*/ void showPopUp(Positionable* p, QMouseEvent* event);
  /*protected*/ QList<Positionable*>* getSelectionGroup();
  /*protected*/ void targetWindowClosingEvent(QCloseEvent* e);
+ /*protected*/ void paintTargetPanel(QGraphicsScene* g)override;
 
  friend class BeanSwitch;
  friend class SwitchboardEditorXml;

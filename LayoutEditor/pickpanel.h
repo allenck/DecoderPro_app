@@ -47,24 +47,26 @@ protected:
 
 class ItActionListener : public QObject, public ActionListener
 {
-  PickPanel* self;
+  PickPanel* pp;
   Q_OBJECT
   Q_INTERFACES(ActionListener)
 public:
-  ItActionListener(PickPanel* self);
+  ItActionListener(PickPanel* pp);
+  QObject* self() override {return (QObject*)this;}
 public slots:
-  /*public*/ void actionPerformed(JActionEvent* a = 0) ;
+  /*public*/ void actionPerformed(JActionEvent* a = 0) override;
 };
 
 class PPCancelListener : public QObject, public ActionListener
 {
-  PickPanel* self;
+  PickPanel* pp;
   Q_OBJECT
   Q_INTERFACES(ActionListener)
 public:
-  PPCancelListener(PickPanel* self);
+  PPCancelListener(PickPanel* pp);
+  QObject* self() override {return (QObject*)this;}
 public slots:
-  /*public*/ void actionPerformed(JActionEvent *) ;
+  /*public*/ void actionPerformed(JActionEvent *) override;
 };
 
 #endif // PICKPANEL_H

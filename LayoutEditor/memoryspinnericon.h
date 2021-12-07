@@ -64,8 +64,9 @@ class MSIActionListener : public QObject, public ActionListener
     MemorySpinnerIcon* parent;
 public:
     MSIActionListener(MemorySpinnerIcon* parent);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-    /*public*/ void actionPerformed(JActionEvent* a = 0);
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 
 #endif // MEMORYSPINNERICON_H

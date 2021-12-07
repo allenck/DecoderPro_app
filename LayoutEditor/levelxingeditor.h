@@ -64,6 +64,8 @@ class LXEeditLevelXingDonePressed : public QObject, public ActionListener
   LevelXingEditor* editor;
  public:
   LXEeditLevelXingDonePressed(LevelXingEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
+public slots:
   void actionPerformed(JActionEvent */*e*/ = 0) override
   {
   editor->editLevelXingDonePressed();
@@ -77,6 +79,8 @@ class LXEeditLevelXingCancelPressed : public QObject, public ActionListener
   LevelXingEditor* editor;
  public:
   LXEeditLevelXingCancelPressed(LevelXingEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
+public slots:
   void actionPerformed(JActionEvent */*e*/ = 0)override
   {
   editor->editLevelXingCancelPressed();

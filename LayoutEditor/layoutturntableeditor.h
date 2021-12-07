@@ -104,6 +104,8 @@ class LTTE_editLayoutTurntableDonePressed : public QObject, public ActionListene
   LayoutTurntableEditor* editor;
 public:
   LTTE_editLayoutTurntableDonePressed(LayoutTurntableEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
+public slots:
   void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutTurntableDonePressed();
@@ -117,6 +119,8 @@ class LTTE_turntableEditCancelPressed : public QObject, public ActionListener
   LayoutTurntableEditor* editor;
 public:
   LTTE_turntableEditCancelPressed(LayoutTurntableEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
+public slots:
   void actionPerformed(JActionEvent */*e*/ = 0)override
   {
    editor->turntableEditCancelPressed();

@@ -6,10 +6,12 @@
 #include "javaqt_global.h"
 #include "namedbeanusagereport.h"
 #include "propertyvetoexception.h"
+#include "propertychangeprovider.h"
 
-class JAVAQTSHARED_EXPORT NamedBean : public  QObject
+class JAVAQTSHARED_EXPORT NamedBean : public  QObject, public PropertyChangeProvider
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeProvider)
 public:
     explicit NamedBean(QObject *parent = 0);
     NamedBean(QString name, QObject *parent = 0);

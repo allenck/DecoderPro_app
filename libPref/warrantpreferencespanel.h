@@ -157,6 +157,7 @@ class InsertActionListener : public QObject, public ActionListener
  WarrantPreferencesPanel* panel;
 public:
  InsertActionListener(WarrantPreferencesPanel* panel);
+ QObject* self() override {return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent *e = 0);
 };
@@ -168,6 +169,7 @@ class WPPDeleteActionListener : public QObject, public ActionListener
  WarrantPreferencesPanel* panel;
 public:
  WPPDeleteActionListener(WarrantPreferencesPanel* panel);
+ QObject* self() override {return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent *e = 0);
 };
@@ -181,6 +183,8 @@ class ButtonActionListener : public QObject, public ActionListener
  WarrantPreferencesPanel* panel;
  public:
  ButtonActionListener* init(QRadioButton* b, int num, WarrantPreferencesPanel* panel);
+ QObject* self() override {return (QObject*)this;}
+
 public slots:
  /*public*/ void actionPerformed(JActionEvent* /*e*/) ;
 };

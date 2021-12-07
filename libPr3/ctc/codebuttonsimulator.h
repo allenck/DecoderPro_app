@@ -65,6 +65,7 @@ class PauseActionListener : public QObject, public ActionListener
   CodeButtonSimulator* codeButtonSimulator;
  public:
   PauseActionListener(CodeButtonSimulator* codeButtonSimulator) {this->codeButtonSimulator = codeButtonSimulator;}
+  QObject* self() override{return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0)override
   {

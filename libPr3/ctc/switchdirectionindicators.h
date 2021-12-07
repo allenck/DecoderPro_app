@@ -68,6 +68,7 @@ class  SimulatedTurnoutFeedbackTimerActionListener : public QObject, public Acti
   SwitchDirectionIndicators* sdi;
  public:
   SimulatedTurnoutFeedbackTimerActionListener(SwitchDirectionIndicators* sdi) {this->sdi = sdi;}
+  QObject* self() override{return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0)override
   {

@@ -891,7 +891,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         return; // without creating
     }
     lightControlPanel->setLightFromControlTable(g);
-    if (qobject_cast<VariableLight*>(g)) {
+    if (qobject_cast<VariableLight*>(g->self())) {
          lightIntensityPanel->setLightFromPane((VariableLight*)g);
      }
      g->activateLight();
@@ -901,7 +901,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
      status2->setVisible(false);
 
     // provide feedback to user
-    QString feedback = tr("New Light(s) added:") + " " + g->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
+    QString feedback = tr("New Light(s) added:") + " " + ((AbstractNamedBean*)g->self())->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
     // create additional lights if requested
     if (numberOfLights > 1) {
         QString sxName = "";
@@ -1022,7 +1022,7 @@ void LightTableAction::updatePressed(ActionEvent* /*e*/) {
     if (uName == ("")) {
         uName = "";   // a blank field means no user name
     }
-    QString prevUName = g->getUserName();
+    QString prevUName = ((AbstractNamedBean*)g->self())->getUserName();
     if ((uName != NULL) && !(uName == (prevUName))) {
         // user name has changed - check if already in use
         Light* p = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getByUserName(uName);
@@ -1034,10 +1034,10 @@ void LightTableAction::updatePressed(ActionEvent* /*e*/) {
             return;
         }
         // user name is unique, change it
-        g->setUserName(uName);
+        ((AbstractNamedBean*)g->self())->setUserName(uName);
     } else if ((uName == NULL) && (prevUName != NULL)) {
         // user name has been cleared
-        g->setUserName(NULL);
+        ((AbstractNamedBean*)g->self())->setUserName(NULL);
     }
     setLightControlInformation(g);
     // Variable intensity, transitions

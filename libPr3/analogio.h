@@ -156,6 +156,7 @@
      */
     virtual /*default*/ /*public*/ void requestUpdateFromLayout() {
     }
+  virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(AnalogIO, "AnalogIO")
 #endif // ANALOGIO_H

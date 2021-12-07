@@ -118,6 +118,8 @@ class RTACreateListener : public QObject, public ActionListener
     ReporterTableAction* act;
 public:
     RTACreateListener(ReporterTableAction* act);
+    QObject* self() override{return (QObject*)this;}
+ public slots:
     /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 };
 
@@ -128,6 +130,8 @@ class RTACancelActionListener : public QObject, public ActionListener
     ReporterTableAction* act;
    public:
     RTACancelActionListener(ReporterTableAction* act);
+    QObject* self() override{return (QObject*)this;}
+ public slots:
     /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 };
 
@@ -138,6 +142,8 @@ class ReporterRangeListener : public QObject, public ActionListener
     ReporterTableAction* act;
    public:
      ReporterRangeListener(ReporterTableAction* act);
+     QObject* self() override{return (QObject*)this;}
+  public slots:
     /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 };
 #if 0

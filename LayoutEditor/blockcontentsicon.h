@@ -68,6 +68,7 @@ class AddBCIconActionListener : public QObject, public ActionListener
  BlockContentsIcon* icon;
 public:
  AddBCIconActionListener(BlockContentsIcon* icon);
+ QObject* self() override {return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 };

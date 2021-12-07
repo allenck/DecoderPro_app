@@ -4,6 +4,7 @@
 #include <QtCore/QPropertyAnimation>
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
+#include <QPainterPath>
 
 ///<summary>
 /// Toggle button has 2 different design. In the first design, if the ball (thumb) radius is
@@ -122,7 +123,7 @@ void ToggleButton::paintEvent(QPaintEvent *)
     // Since the antialiasasing provided by the drawText function is incompetent,
     // DrawPath function preferred. But since the drawPath function is not capable of aligment,
     // Pixel offsets calculated to provide aligment.
-    QPainterPath textPath;
+    QPainterPath textPath = QPainterPath();
     qreal pixelOffset = (qreal)mThumbRadius * (1 - 1 / 1.414);
     textPath.addText(mOffset - mThumbRadius + pixelOffset, mBaseOffset + mThumbRadius - pixelOffset, font, mThumbText.value(check));
     p.setFont(txtFont);

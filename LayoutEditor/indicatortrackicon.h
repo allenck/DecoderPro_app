@@ -65,9 +65,10 @@ class ItiActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
     Q_INTERFACES(ActionListener)
-    IndicatorTrackIcon* self;
+    IndicatorTrackIcon* iti;
 public:
-    ItiActionListener(IndicatorTrackIcon* self);
+    ItiActionListener(IndicatorTrackIcon* iti);
+    QObject* self() override {return (QObject*)this;}
 public slots:
  /*public*/ void actionPerformed(JActionEvent* a = 0);
 };

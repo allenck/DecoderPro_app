@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'servoregisterswidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.11.3
+** Created by: Qt User Interface Compiler version 5.15.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -26,14 +26,14 @@ public:
     void setupUi(QWidget *ServoRegistersWidget)
     {
         if (ServoRegistersWidget->objectName().isEmpty())
-            ServoRegistersWidget->setObjectName(QLatin1String("ServoRegistersWidget"));
+            ServoRegistersWidget->setObjectName(QString::fromUtf8("ServoRegistersWidget"));
         ServoRegistersWidget->resize(400, 36);
         verticalLayout = new QVBoxLayout(ServoRegistersWidget);
         verticalLayout->setSpacing(0);
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         HorizontalLayout_registersWidget = new QHBoxLayout();
-        HorizontalLayout_registersWidget->setObjectName(QLatin1String("HorizontalLayout_registersWidget"));
+        HorizontalLayout_registersWidget->setObjectName(QString::fromUtf8("HorizontalLayout_registersWidget"));
 
         verticalLayout->addLayout(HorizontalLayout_registersWidget);
 
@@ -45,7 +45,7 @@ public:
 
     void retranslateUi(QWidget *ServoRegistersWidget)
     {
-        ServoRegistersWidget->setWindowTitle(QApplication::translate("ServoRegistersWidget", "Form", nullptr));
+        ServoRegistersWidget->setWindowTitle(QCoreApplication::translate("ServoRegistersWidget", "Form", nullptr));
     } // retranslateUi
 
 };

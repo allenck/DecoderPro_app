@@ -187,6 +187,7 @@ class OkActionListener : public QObject, public ActionListener
  BeanSwitch* bs;
 public:
  OkActionListener(BeanSwitch* bs) {this->bs = bs;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) override
  {
@@ -201,6 +202,7 @@ class CancelActionListener : public QObject, public ActionListener
  BeanSwitch* bs;
 public:
  CancelActionListener(BeanSwitch* bs) {this->bs = bs;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) override
  {

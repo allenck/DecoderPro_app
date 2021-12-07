@@ -2,8 +2,8 @@
 #define HTTPSERVLETRESPONSE_H
 #include "exceptions.h"
 #include "servletresponse.h"
-#include "httpserver/httpcookie.h"
-#include "httpserver/httpresponse.h"
+#include "../QtWebApp//QtWebApp/httpserver/httpcookie.h"
+#include "../QtWebApp//QtWebApp//httpserver/httpresponse.h"
 #include "requesthandler.h"
 
 class RequestHandler;

@@ -345,8 +345,12 @@ public:
     /*public*/ int getThroughPathIndex(Block* sourceBlock, Block* destinationBlock);
     QVector<Routes*>* getDestRoutes(Block* dstBlock);
     QVector<Routes*>* getNextRoutes(Block* nxtBlock);
+    void updateRoutingInfo(Routes* route);
     void updateRoutingInfo(LayoutBlock* src, RoutingPacket* update);
-    Routes* getBestRoute(Block* dest);
+    //    Routes* getBestRoute(Block* dest);
+    Routes* getBestRouteByMetric(Block* dest);
+    Routes* getBestRouteByHop(Block* dest);
+    Routes* getBestRouteByLength(Block* dest);
     /*public*/ int getNeighbourDirection(LayoutBlock* neigh);
     /*public*/ int getNeighbourDirection(Block* neighbourBlock);
     void addRouteFromNeighbour(LayoutBlock* src, RoutingPacket* update);
@@ -792,7 +796,7 @@ class HandleBlockChangeListener : public QObject, public PropertyChangeListener
     {
      this->parent = parent;
     }
-    QObject* self() {return (QObject*)this;}
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *e) override
     {

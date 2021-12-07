@@ -33,7 +33,7 @@
 
 // /*public*/ class DefaultSignalMastLogicManager implements jmri.SignalMastLogicManager {
 
-/*public*/ DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) : SignalMastLogicManager(parent)
+/*public*/ DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) : AbstractManager(parent)
 {
  setObjectName("DefaultSignalMastLogicManager");
  setProperty("JavaClassName", "jmri.managers.DefaultSignalMastLogicManager");

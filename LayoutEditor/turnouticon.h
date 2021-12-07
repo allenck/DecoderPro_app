@@ -99,9 +99,9 @@ public:
  {
   this->turnoutIcon = turnoutIcon;
  }
-
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed(JActionEvent */*e*/ = 0)
+ void actionPerformed(JActionEvent */*e*/ = 0)override
  {
   turnoutIcon->updateItem();
  }
@@ -117,9 +117,9 @@ public:
  {
   this->turnoutIcon = turnoutIcon;
  }
-
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed(JActionEvent */*e*/ = 0)
+ void actionPerformed(JActionEvent */*e*/ = 0)override
  {
   turnoutIcon->updateTurnout();
  }

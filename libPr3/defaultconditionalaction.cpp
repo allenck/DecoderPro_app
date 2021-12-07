@@ -202,7 +202,7 @@ void DefaultConditionalAction::common()
    }
    break;
   case Conditional::ITEM_TYPE_LIGHT:
-   bean = ((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(devName);
+   bean = (NamedBean*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(devName);
    if (bean == NULL)
    {
         log->error("invalid light name= \""+_deviceName+"\" in conditional action");

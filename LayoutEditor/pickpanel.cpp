@@ -85,21 +85,21 @@ void PickPanel::onRowClicked(QModelIndex index)
     _sysNametext->setMinimumSize( QSize(width, _sysNametext->getPreferredSize().height()));
     return p;
 }
-ItActionListener::ItActionListener(PickPanel* self)
+ItActionListener::ItActionListener(PickPanel* pp)
 {
- this->self = self;
+ this->pp = pp;
 }
 void ItActionListener::actionPerformed(JActionEvent* a)
 {
-  self->addToTable();
+  pp->addToTable();
 }
-PPCancelListener::PPCancelListener(PickPanel *self)
+PPCancelListener::PPCancelListener(PickPanel *pp)
 {
- this->self = self;
+ this->pp = pp;
 }
 void PPCancelListener::actionPerformed(JActionEvent *)
 {
- self->close();
+ pp->close();
 }
 
 void PickPanel::addToTable() {

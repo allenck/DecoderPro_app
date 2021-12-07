@@ -200,7 +200,7 @@ PanelActionListener::PanelActionListener(Editor *panel, PanelMenu* pm)
  this->panel = panel;
  this->pm = pm;
 }
-/*public*/ void PanelActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
+/*public*/ void PanelActionListener::actionPerformed(JActionEvent* /*e*/)
 {
     //if (panel instanceof LayoutEditor) {
  if(qobject_cast<LayoutEditor*>(panel)!= nullptr)

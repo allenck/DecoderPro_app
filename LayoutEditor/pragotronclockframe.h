@@ -56,6 +56,7 @@ private:
  PragotronClockFrame* frame;
 public:
  PCButtonListener(PragotronClockFrame* frame) {this->frame = frame;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void actionPerformed(/*ActionEvent a*/);

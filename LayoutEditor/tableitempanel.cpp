@@ -161,14 +161,14 @@ void AddTableActionListener::actionPerformed(JActionEvent *e)
     _addTableDialog->setVisible(true);
 }
 
-AtCancelListener::AtCancelListener(TableItemPanel *self)
+AtCancelListener::AtCancelListener(TableItemPanel *tip)
 {
- this->self = self;
+ this->tip = tip;
 }
-void AtCancelListener::actionPerformed()
+void AtCancelListener::actionPerformed(JActionEvent*)
 {
  //self->close();
- self->cancelPressed();
+ tip->cancelPressed();
 }
 
 void TableItemPanel::cancelPressed(/*ActionEvent e*/) {

@@ -87,9 +87,10 @@ class TimeSensor : public QObject, public ActionListener
     Q_INTERFACES(ActionListener)
 
     /*private*/ int mIndex;// = 0;
-     DefaultConditional* self;
+     DefaultConditional* dc;
 public:
-     TimeSensor(int index, DefaultConditional* self);
+     TimeSensor(int index, DefaultConditional* dc);
+     QObject* self() override{return (QObject*)this;}
 public slots:
      /*public*/ void actionPerformed(JActionEvent* event = 0)override;
 
@@ -101,9 +102,10 @@ class TimeTurnout : public QObject, public ActionListener
     Q_INTERFACES(ActionListener)
 
     /*private*/ int mIndex;// = 0;
-     DefaultConditional* self;
+     DefaultConditional* dc;
 public:
-    TimeTurnout(int index, DefaultConditional* self);
+    TimeTurnout(int index, DefaultConditional* dc);
+    QObject* self() override{return (QObject*)this;}
 public slots:
     /*public*/ void actionPerformed(JActionEvent* event = 0) override;
 

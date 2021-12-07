@@ -9,14 +9,17 @@ EditScene::EditScene(QObject *parent) :
 }
 EditScene::EditScene(QRectF rect, QObject *parent) : QGraphicsScene(rect, parent)
 {
+}
 
+EditScene::EditScene(qreal x, qreal y, qreal width, qreal height, QObject *parent) : QGraphicsScene(x, y, width, height, parent)
+{
 }
 
 void EditScene::mouseMoveEvent(QGraphicsSceneMouseEvent *e)
 {
  emit sceneMouseMove(e);
  QGraphicsScene::mouseMoveEvent(e);
- QPointF pos = e->scenePos();
+// QPointF pos = e->scenePos();
 }
 void EditScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *e)
 {

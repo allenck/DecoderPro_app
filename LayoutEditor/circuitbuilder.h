@@ -241,7 +241,7 @@ protected slots:
 class EditCircuitActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
-    Q_INTERFACES(ActionListener)
+ Q_INTERFACES(ActionListener)
  CircuitBuilder* parent;
  QString command;
 public:
@@ -251,7 +251,7 @@ public:
  this->command = command;
  }
 public slots:
- void actionPerformed(JActionEvent */*e*/ = 0)
+ void actionPerformed(JActionEvent */*e*/ = 0) override
  {
   QString sysName = command;
   parent-> editCircuitError(sysName);
@@ -269,7 +269,7 @@ class CBFrame : public JmriJFrame //, public ListSelectionListener
 public:
  CBFrame(QString title, CircuitBuilder *cb);
  /*public*/ void dispose()override;
- QString getClassName() {cb->getClassName();}
+ QString getClassName() override{return cb->getClassName();}
 public slots:
  /*public*/ void valueChanged(ListSelectionEvent* e);
 private:

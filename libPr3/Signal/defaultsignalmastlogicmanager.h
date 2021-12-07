@@ -14,13 +14,14 @@ class SignalMast;
 class PropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyBlockManagerListener;
-class LIBPR3SHARED_EXPORT DefaultSignalMastLogicManager : public SignalMastLogicManager
+class LIBPR3SHARED_EXPORT DefaultSignalMastLogicManager : public AbstractManager, public SignalMastLogicManager
 {
     Q_OBJECT
+    Q_INTERFACES(SignalMastLogicManager)
 public:
     explicit DefaultSignalMastLogicManager(QObject *parent = 0);
     ~DefaultSignalMastLogicManager() {}
-    DefaultSignalMastLogicManager(const DefaultSignalMastLogicManager&) : SignalMastLogicManager() {}
+    DefaultSignalMastLogicManager(const DefaultSignalMastLogicManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder() const override;
     /*public*/ /*final*/ static SignalSpeedMap* getSpeedMap();
     /*public*/ SignalMastLogic* getSignalMastLogic(SignalMast* source) override;
@@ -53,7 +54,7 @@ public:
     /*public*/ void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException) override;
     /*public*/ void automaticallyDiscoverSignallingPairs() throw (JmriException) override;
     /*public*/ void generateSection();
-    QObject* self() {return (QObject*)this;}
+    QObject* self() override{return (QObject*)this;}
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ /*Class<SignalMastLogic>*/QString getNamedBeanClass() const override;
     /*public*/ int setupSignalMastsDirectionSensors() override;

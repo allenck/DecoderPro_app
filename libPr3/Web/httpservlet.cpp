@@ -2,7 +2,7 @@
 #include <QTextStream>
 #include <QMetaType>
 #include <QMetaMethod>
-#include "httpserver/httpcookie.h"
+#include "../QtWebApp//QtWebApp/httpserver/httpcookie.h"
 #include <QTextCodec>
 /**
  *

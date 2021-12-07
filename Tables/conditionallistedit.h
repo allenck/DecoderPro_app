@@ -400,7 +400,8 @@ class CLESelectLogixBoxListener : public QObject, public ActionListener
     Q_INTERFACES(ActionListener)
  ConditionalListEdit* _self;
 public:
- CLESelectLogixBoxListener(ConditionalListEdit* self);
+ CLESelectLogixBoxListener(ConditionalListEdit* _self);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
@@ -412,6 +413,7 @@ class CLESelectConditionalBoxListener : public QObject, public ActionListener
  ConditionalListEdit* _self;
 public:
  CLESelectConditionalBoxListener(ConditionalListEdit* self);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 };

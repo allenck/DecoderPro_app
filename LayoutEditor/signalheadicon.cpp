@@ -566,7 +566,7 @@ void SignalHeadIcon::updateItem()
 //            updateSignal();
 //        }
 //    };
- AddIconActionListener* addIconAction = new AddIconActionListener(this);
+ SHIAddIconActionListener* addIconAction = new SHIAddIconActionListener(this);
  _iconEditor->complete(addIconAction, true, false, true);
  _iconEditor->setSelection(getSignalHead());
 }

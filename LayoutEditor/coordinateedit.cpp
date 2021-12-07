@@ -148,7 +148,7 @@ void TooltipEditAction::actionPerformed(JActionEvent *)
 {
  SetBorderSizeActionListener* actionListener = new SetBorderSizeActionListener(pos, parent);
  QAction* act = new QAction(tr("Set Border Size"),parent);
- connect(act, SIGNAL(triggered()), actionListener->self(), SLOT(actionPerformed()));
+ connect(act, SIGNAL(triggered()), actionListener, SLOT(actionPerformed()));
 //    {
 //                /*public*/ void actionPerformed(ActionEvent e) {
 //                    CoordinateEdit f = new CoordinateEdit();

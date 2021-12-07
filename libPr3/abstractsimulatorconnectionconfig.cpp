@@ -112,8 +112,11 @@
 //                    }
 //                });
                 QComboBox* box = (QComboBox*)options.value(i)->getComponent();
-                ASCCActionListener* listener = new ASCCActionListener(item,this);
-                connect(box, SIGNAL(currentIndexChanged(QString)), listener->self(), SLOT(actionPerformed()));
+//                ASCCActionListener* listener = new ASCCActionListener(item,this);
+//                connect(box, SIGNAL(currentIndexChanged(QString)), listener->self(), SLOT(actionPerformed()));
+                connect(box, &QComboBox::currentTextChanged, [=]{
+                 adapter->setOptionState(item, options.value(item)->getItem());
+                });
             }
         }
 
@@ -138,16 +141,16 @@ void AbstractSimulatorConnectionConfig::On_connectionNameField_editingFinished()
   connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());
  }
 }
-ASCCActionListener::ASCCActionListener(QString item, AbstractSimulatorConnectionConfig *parent)
-{
-    this->item = item;
-    this->parent = parent;
-}
+//ASCCActionListener::ASCCActionListener(QString item, AbstractSimulatorConnectionConfig *parent)
+//{
+//    this->item = item;
+//    this->parent = parent;
+//}
 
-void ASCCActionListener::actionPerformed(JActionEvent */*e*/)
-{
-    parent->adapter->setOptionState(item, parent->options.value(item)->getItem());
-}
+//void ASCCActionListener::actionPerformed(JActionEvent */*e*/)
+//{
+//    parent->adapter->setOptionState(item, parent->options.value(item)->getItem());
+//}
 
 /*public*/ void AbstractSimulatorConnectionConfig::updateAdapter()
 {

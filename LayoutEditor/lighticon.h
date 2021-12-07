@@ -3,11 +3,12 @@
 #include "positionableicon.h"
 #include "abstractnamedbean.h"
 #include "propertychangelistener.h"
+#include "liblayouteditor_global.h"
 
 class QGraphicsSceneMouseEvent;
 class Light;
 class PropertyChangeEvent;
-class LightIcon : public PositionableIcon, public PropertyChangeListener
+class LIBLAYOUTEDITORSHARED_EXPORT LightIcon : public PositionableIcon, public PropertyChangeListener
 {
     Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)
@@ -74,6 +75,7 @@ class LightIconActionListener : public QObject, public ActionListener
  LightIcon* icon;
 public:
  LightIconActionListener(LightIcon*);
+ QObject* self() override {return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent *e = 0) override;
 };

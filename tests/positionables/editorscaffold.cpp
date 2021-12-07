@@ -18,21 +18,21 @@
 
 /*public*/ EditorScaffold::EditorScaffold(QWidget *parent) : Editor("foo", true, true,parent) {
     //this("foo");
- setTargetPanel(new EditScene(),this);
+ setTargetPanel(new QGraphicsView(),this);
  this->setMenuBar(new QMenuBar());
 }
 
 /*public*/ EditorScaffold::EditorScaffold(QString name, bool saveSize, bool savePosition, QWidget *parent)
 : Editor(name, saveSize, savePosition, parent) {
     //super(name, saveSize, savePosition);
-    setTargetPanel(new EditScene(),this);
+    setTargetPanel(new QGraphicsView(),this);
     this->setMenuBar(new QMenuBar());
 }
 
 /*public*/ EditorScaffold::EditorScaffold(QString name, QWidget *parent) : Editor(name, true, true, parent)
 {
  //this(name, true, true);
- setTargetPanel(new EditScene(),this);
+ setTargetPanel(new QGraphicsView(),this);
  this->setMenuBar(new QMenuBar());
 }
 

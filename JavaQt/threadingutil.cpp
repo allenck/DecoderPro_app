@@ -85,7 +85,7 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
     static /*public*/ bool isLayoutThread() {
         return isGUIThread();
     }
-
+#endif
     /**
      * Run some GUI-specific code before returning
      * <p>
@@ -102,25 +102,26 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      * @param ta What to run, usually as a lambda expression
      */
     /*static*/ /*public*/ void ThreadingUtil::runOnGUI(/*@Nonnull*/ ThreadAction* ta) {
-        if (isGUIThread()) {
+//        if (isGUIThread()) {
             // run now
-            ta.run();
-        } else {
-            // dispatch to Swing
-            warnLocks();
-            try {
-                SwingUtilities.invokeAndWait(ta);
-            } catch (InterruptedException e) {
-                log.debug("Interrupted while running on GUI thread");
-                Thread.currentThread().interrupt();
-            } catch (InvocationTargetException e) {
-                log.error("Error while on GUI thread", e.getCause());
-                log.error("   Came from call to runOnGUI:", e);
-                // should have been handled inside the ThreadAction
-            }
-        }
+            ta->run();
+//        }
+//        else {
+//            // dispatch to Swing
+//            warnLocks();
+//            try {
+//                SwingUtilities.invokeAndWait(ta);
+//            } catch (InterruptedException e) {
+//                log.debug("Interrupted while running on GUI thread");
+//                Thread.currentThread().interrupt();
+//            } catch (InvocationTargetException e) {
+//                log.error("Error while on GUI thread", e.getCause());
+//                log.error("   Came from call to runOnGUI:", e);
+//                // should have been handled inside the ThreadAction
+//            }
+//        }
     }
-
+#if 0
     /**
      * Run some GUI-specific code before returning a value.
      * <p>

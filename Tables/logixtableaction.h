@@ -469,7 +469,7 @@ class CrossReferenceActionListener : public QObject, public ActionListener
  LogixTableAction* parent;
 public:
  CrossReferenceActionListener(BeanTableFrame* frame, LogixTableAction* parent);
-
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) override;
 };

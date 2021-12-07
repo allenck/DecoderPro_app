@@ -3,10 +3,11 @@
 #include "memoryicon.h"
 #include "Roster/roster.h"
 #include "propertychangelistener.h"
+#include "liblayouteditor_global.h"
 
 class LayoutBlock;
 class Editor;
-class LEMemoryIcon : public MemoryIcon
+class LIBLAYOUTEDITORSHARED_EXPORT LEMemoryIcon : public MemoryIcon
 {
     Q_OBJECT
 public:

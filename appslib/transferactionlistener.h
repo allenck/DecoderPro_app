@@ -10,7 +10,7 @@ class TransferActionListener : public QObject, public ActionListener
   Q_INTERFACES(ActionListener)
 public:
  TransferActionListener();
-
+ QObject* self() override{return (QObject*)this;}
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
  /*public*/ void actionPerformed(JActionEvent* e =0)override;

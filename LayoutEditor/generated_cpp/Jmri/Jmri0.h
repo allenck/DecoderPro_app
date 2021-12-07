@@ -178,6 +178,7 @@ virtual QString  convertSystemNameToAlternate(QString  systemName);
 virtual void dispose();
 virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  name) const;
+virtual NamedBean*  getByUserName(QString  key) const;
 virtual QString  getEntryToolTip();
 virtual int  getXMLOrder() const;
 virtual QString  normalizeSystemName(QString  systemName);
@@ -197,6 +198,7 @@ inline bool  py_q_allowMultipleAdditions(QString  systemName) { return AbstractL
 inline QString  py_q_convertSystemNameToAlternate(QString  systemName) { return AbstractLightManager::convertSystemNameToAlternate(systemName); }
 inline QString  py_q_getBeanTypeHandled(bool  plural) const { return AbstractLightManager::getBeanTypeHandled(plural); }
 inline NamedBean*  py_q_getBySystemName(QString  name) const { return AbstractLightManager::getBySystemName(name); }
+inline NamedBean*  py_q_getByUserName(QString  key) const { return AbstractLightManager::getByUserName(key); }
 inline QString  py_q_getEntryToolTip() { return AbstractLightManager::getEntryToolTip(); }
 inline int  py_q_getXMLOrder() const { return AbstractLightManager::getXMLOrder(); }
 inline QString  py_q_normalizeSystemName(QString  systemName) { return AbstractLightManager::normalizeSystemName(systemName); }
@@ -216,7 +218,7 @@ void delete_AbstractLightManager(AbstractLightManager* obj) { delete obj; }
    QString  getBeanTypeHandled(AbstractLightManager* theWrappedObject, bool  plural) const;
    QString  py_q_getBeanTypeHandled(AbstractLightManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    NamedBean*  py_q_getBySystemName(AbstractLightManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_getBySystemName(name));}
-   NamedBean*  getByUserName(AbstractLightManager* theWrappedObject, QString  key) const;
+   NamedBean*  py_q_getByUserName(AbstractLightManager* theWrappedObject, QString  key) const{  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_getByUserName(key));}
    QString  getEntryToolTip(AbstractLightManager* theWrappedObject);
    QString  py_q_getEntryToolTip(AbstractLightManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_getEntryToolTip());}
    QString  getNamedBeanClass(AbstractLightManager* theWrappedObject) const;

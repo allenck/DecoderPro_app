@@ -1679,19 +1679,19 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
  */
 //class TimeSensor implements java.awt.event.ActionListener
 //{
-    /*public*/ TimeSensor::TimeSensor(int index, DefaultConditional* self) {
+    /*public*/ TimeSensor::TimeSensor(int index, DefaultConditional* dc) {
         mIndex = index;
-        this->self = self;
+        this->dc = dc;
     }
 
     /*public*/ void TimeSensor::actionPerformed(JActionEvent* /*event*/)
     {
         // set sensor state
-        ConditionalAction* action = self->_actionList->at(mIndex);
-        QString devName = self->getDeviceName(action);
+        ConditionalAction* action = dc->_actionList->at(mIndex);
+        QString devName = dc->getDeviceName(action);
         Sensor* sn = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(devName);
         if (sn==nullptr) {
-            self->log->error(self->getDisplayName()+" Invalid delayed sensor name - "+action->getDeviceName());
+            dc->log->error(dc->getDisplayName()+" Invalid delayed sensor name - "+action->getDeviceName());
         }
         else {
             // set the sensor
@@ -1699,7 +1699,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
                 sn->setKnownState(action->getActionData());
             }
             catch (JmriException e) {
-                self->log->warn("Exception setting delayed sensor "+action->getDeviceName()+" in action");
+                dc->log->warn("Exception setting delayed sensor "+action->getDeviceName()+" in action");
             }
         }
         // Turn Timer OFF
@@ -1712,9 +1712,9 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
  */
 //class TimeTurnout implements java.awt.event.ActionListener
 //{
-    /*public*/ TimeTurnout::TimeTurnout(int index, DefaultConditional* self) {
+    /*public*/ TimeTurnout::TimeTurnout(int index, DefaultConditional* dc) {
         mIndex = index;
-    this->self = self;
+    this->dc = dc;
 
     }
 
@@ -1722,11 +1722,11 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
     /*public*/ void TimeTurnout::actionPerformed(JActionEvent* /*event*/)
     {
         // set turnout state
-        ConditionalAction* action = self->_actionList->at(mIndex);
-        QString devName = self->getDeviceName(action);
+        ConditionalAction* action = dc->_actionList->at(mIndex);
+        QString devName = dc->getDeviceName(action);
         Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(devName);
         if (t==nullptr) {
-            self->log->error(self->getDisplayName()+" Invalid delayed turnout name - "+action->getDeviceName());
+            dc->log->error(dc->getDisplayName()+" Invalid delayed turnout name - "+action->getDeviceName());
         }
         else {
             // set the turnout

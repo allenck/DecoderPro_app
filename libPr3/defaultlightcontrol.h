@@ -105,7 +105,9 @@ class DefaultLightControl : public LightControl
   DefaultLightControl* ctl;
  public:
   TimeLight(DefaultLightControl* ctl){this->ctl = ctl;}
-    //@Override
+  QObject* self() override{return (QObject*)this;}
+ public slots:
+  //@Override
     /*public*/ void actionPerformed(JActionEvent* /*event*/) override{
         // Turn Light OFF
        ctl-> _parentLight->setState(Light::OFF);

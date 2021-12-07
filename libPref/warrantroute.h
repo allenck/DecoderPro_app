@@ -262,6 +262,7 @@ public:
  this->caller = caller;
  return this;
  }
+ QObject* self() override {return (QObject*)this;}
 };
 
 class ShowActionListener : public QObject, public ActionListener
@@ -295,5 +296,6 @@ public:
      this->caller = caller;
      return this;
  }
+ QObject* self() override {return (QObject*)this;}
 };
 #endif // WARRANTROUTE_H

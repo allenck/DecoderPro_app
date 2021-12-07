@@ -10,10 +10,12 @@
 #include "logger.h"
 #include "positionablelabel.h"
 #include "jcomponent.h"
+#include "jmenuitem.h"
+#include "liblayouteditor_global.h"
 
 class JComponent;
 class PositionablePropertiesUtil;
-class PositionablePopupUtil : public QObject
+class LIBLAYOUTEDITORSHARED_EXPORT PositionablePopupUtil : public QObject
 {
     Q_OBJECT
 public:
@@ -84,12 +86,12 @@ public:
     *  Add a menu item to be displayed when the popup menu is called for
     *  when in edit mode.
     */
-    /*public*/ void addEditPopUpMenu(QMenu* menu);
+    /*public*/ void addEditPopUpMenu(QMenu *menu);
     /**
     *  Add a menu item to be displayed when the popup menu is called for
     *  when in view mode.
     */
-    /*public*/ void addViewPopUpMenu(QMenu* menu);
+    /*public*/ void addViewPopUpMenu(QMenu *menu);
     /**
     *  Add the menu items to the edit popup menu
     */
@@ -180,7 +182,9 @@ public:
   desiredColor = c;
   this->colorType = colorType;
  }
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed();
+
+ void actionPerformed(JActionEvent* =0)override;
 };
 #endif // POSITIONABLEPOPUPUTIL_H

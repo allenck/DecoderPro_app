@@ -248,8 +248,8 @@
          return onIcon;
         case Light::OFF:
          return offIcon;
-        case Light::INCONSISTENT:
-         return QColor(Qt::red);
+//        case Light::INCONSISTENT:
+//         return QColor(Qt::red);
 //       case Light::INTERMEDIATE:
 //        return "...";
        default:

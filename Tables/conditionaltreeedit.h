@@ -293,6 +293,7 @@ public slots:
 public:
     CTEActionTypeListener(ConditionalTreeEdit* cte);
     /*public*/ void setItemType(int type) ;
+    QObject* self() override{return (QObject*)this;}
 };
 
 class ActionSignalHeadNameListener : public QObject, public ActionListener
@@ -302,6 +303,7 @@ class ActionSignalHeadNameListener : public QObject, public ActionListener
  ConditionalTreeEdit* cte;
 public:
  ActionSignalHeadNameListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 //transient ActionListener actionSignalHeadNameListener = new ActionListener() {
 public slots:
     //@Override
@@ -316,9 +318,10 @@ class ActionSignalMastNameListener :public QObject,  public ActionListener
 //transient ActionListener actionSignalMastNameListener = new ActionListener() {
 public:
  ActionSignalMastNameListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void actionPerformed(JActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 };
 
 // ============ Conditional Tree Node Definition ============
@@ -349,6 +352,7 @@ class VariableSignalHeadNameListener : public QObject, public ActionListener
  ConditionalTreeEdit* cte;
 public:
  VariableSignalHeadNameListener(ConditionalTreeEdit* cfe);
+ QObject* self() override{return (QObject*)this;}
     //@Override
 public slots:
     /*public*/ void actionPerformed(JActionEvent */*e*/ = 0)override;
@@ -362,6 +366,7 @@ class VariableSignalMastNameListener : public QObject, public ActionListener
  ConditionalTreeEdit* cte;
 public:
  VariableSignalMastNameListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void actionPerformed(JActionEvent */*e*/ = 0)override ;
@@ -375,6 +380,7 @@ class CTEVariableSignalTestStateListener : public QObject, public ActionListener
  ConditionalTreeEdit* cte;
 public:
  CTEVariableSignalTestStateListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void actionPerformed(JActionEvent */*e*/ = 0) override;
@@ -388,6 +394,7 @@ class SelectLogixBoxListener : public QObject, public ActionListener
  ConditionalTreeEdit* cte;
 public:
  SelectLogixBoxListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void actionPerformed(JActionEvent */*e*/ = 0)override;
@@ -401,6 +408,7 @@ class SelectConditionalBoxListener : public QObject, public ActionListener
  ConditionalTreeEdit* cte;
 public:
  SelectConditionalBoxListener(ConditionalTreeEdit*cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
      //@Override
     /*public*/ void actionPerformed(JActionEvent */*e*/ = 0) override;
@@ -414,6 +422,7 @@ class CompareTypeBoxListener : public QObject, public ActionListener
   ConditionalTreeEdit* cte;
  public:
   CompareTypeBoxListener(ConditionalTreeEdit* cte);
+  QObject* self() override{return (QObject*)this;}
     //@Override
     /*public*/ void actionPerformed(JActionEvent */*e*/ = 0) override;
 };

@@ -59,7 +59,7 @@
     try {
         validSystemNameFormat(sys);
     } catch (IllegalArgumentException e) {
-        throw new JmriException(e.toString());
+        throw  JmriException(e.toString());
     }
     return sys;
 }
@@ -76,7 +76,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ Manager::NameValidity RpsSensorManager::validSystemNameFormat(QString systemName) const{
+/*public*/ Manager::NameValidity RpsSensorManager::validSystemNameFormat(QString systemName) const {
     return ((RpsSystemConnectionMemo*)getMemo())->validSystemNameFormat(systemName, typeLetter());
 }
 

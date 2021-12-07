@@ -82,6 +82,7 @@ class DisableCheckboxListener : public QObject, public ActionListener
     QCheckBox* checkBox;
 public:
     DisableCheckboxListener(JmrixConfigPane* configPane, QCheckBox* checkBox);
+    QObject* self() override {return (QObject*)this;}
 public slots:
     void actionPerformed(JActionEvent * = 0);
 };
@@ -94,6 +95,7 @@ class CloseButtonListener : public QObject, public ActionListener
     ConnectionsPreferencesPanel* parent;
 public:
     CloseButtonListener(int index, ConnectionsPreferencesPanel* parent);
+    QObject* self() override {return (QObject*)this;}
 public slots:
     void actionPerformed(JActionEvent * = 0);
 };

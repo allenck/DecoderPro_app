@@ -66,15 +66,17 @@ protected:
 
     
 };
+
 class AddReporterIconActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
     Q_INTERFACES(ActionListener)
- ReporterIcon* self;
+ ReporterIcon* ri;
 public:
- AddReporterIconActionListener(ReporterIcon* self) {this->self = self;}
+ AddReporterIconActionListener(ReporterIcon* ri) {this->ri = ri;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed(JActionEvent */*e*/ = 0) { self->editReporter();}
+ void actionPerformed(JActionEvent */*e*/ = 0) override{ ri->editReporter();}
 };
 
 #endif // REPORTERICON_H

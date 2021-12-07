@@ -88,6 +88,7 @@ class ELT_editLayoutTurnoutDonePressed : public QObject, public ActionListener
   LayoutTurnoutEditor* editor;
  public:
   ELT_editLayoutTurnoutDonePressed(LayoutTurnoutEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0)override
   {
@@ -102,6 +103,7 @@ class ELT_editLayoutTurnoutCancelPressed : public QObject, public ActionListener
   LayoutTurnoutEditor* editor;
  public:
   ELT_editLayoutTurnoutCancelPressed(LayoutTurnoutEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0) override
   {

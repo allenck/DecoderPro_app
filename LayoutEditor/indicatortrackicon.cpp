@@ -349,13 +349,13 @@ void IndicatorTrackIcon::displayState(QString status)
  QTimer::singleShot(50, _paletteFrame, SLOT(pack()));
 }
 
-ItiActionListener::ItiActionListener(IndicatorTrackIcon *self)
+ItiActionListener::ItiActionListener(IndicatorTrackIcon *iti)
 {
- this->self = self;
+ this->iti = iti;
 }
 void ItiActionListener::actionPerformed(JActionEvent* /*a*/)
 {
- self->updateItem();
+ iti->updateItem();
 }
 
 void IndicatorTrackIcon::updateItem() {

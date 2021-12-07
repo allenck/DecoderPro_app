@@ -34,16 +34,16 @@ public:
      * @return null if no match found
      */
     /*public*/ Light* getLight(QString name) override;
-#if 1
+
     /**
      * Locate a Light by its system name
      */
-    /*public*/ NamedBean *getBySystemName(QString name)const;
+    /*public*/ NamedBean *getBySystemName(QString name) const override;
     /**
      * Locate a Light by its user name
      */
-    /*public*/ NamedBean* getByUserName(QString key) const;
-#endif
+    /*public*/ NamedBean* getByUserName(QString key) const override;
+
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;

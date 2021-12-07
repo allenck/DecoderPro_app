@@ -131,9 +131,10 @@ class OkListener : public QObject, public ActionListener
 {
     Q_OBJECT
     Q_INTERFACES(ActionListener)
-    TurnoutTableAction* self;
+    TurnoutTableAction* tta;
 public:
-    OkListener(TurnoutTableAction* self);
+    OkListener(TurnoutTableAction* tta);
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void actionPerformed(JActionEvent *e = 0)override;
 };
@@ -142,9 +143,10 @@ class ToCancelActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
     Q_INTERFACES(ActionListener)
-    TurnoutTableAction* self;
+    TurnoutTableAction* tta;
 public:
-    ToCancelActionListener(TurnoutTableAction* self);
+    ToCancelActionListener(TurnoutTableAction* tta);
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void actionPerformed(JActionEvent *e = 0) override;
 };
@@ -153,9 +155,10 @@ class RangeListener : public QObject, public ActionListener
 {
     Q_OBJECT
     Q_INTERFACES(ActionListener)
-    TurnoutTableAction* self;
+    TurnoutTableAction* tta;
 public:
-    RangeListener(TurnoutTableAction* self);
+    RangeListener(TurnoutTableAction* tta);
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void actionPerformed(JActionEvent *e = 0) override;
 };
@@ -167,6 +170,7 @@ class ItemListener1 : public QObject, public ActionListener
  JmriJFrame* F;
 public:
  ItemListener1(JmriJFrame* F);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent *e = 0)override;
 };
@@ -179,6 +183,7 @@ class ItemListener2 : public QObject, public ActionListener
  TurnoutTableAction* tta;
 public:
  ItemListener2(JmriJFrame* F, TurnoutTableAction* tta);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent *e = 0) override;
 };

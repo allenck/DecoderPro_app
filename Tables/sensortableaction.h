@@ -127,6 +127,7 @@ class STOkButtonActionListener : public QObject, public ActionListener
  SensorTableAction* act;
 public:
  STOkButtonActionListener(SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 
@@ -139,6 +140,7 @@ class STCancelActionListener : public QObject, public ActionListener
  SensorTableAction* act;
 public:
  STCancelActionListener(SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
@@ -150,6 +152,7 @@ class STRangeActionListener : public QObject, public ActionListener
  SensorTableAction* act;
 public:
  STRangeActionListener(SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
@@ -162,6 +165,7 @@ class DebounceActionListener : public QObject, public ActionListener
  SensorTableAction* act;
 public:
  DebounceActionListener(JmriJFrame* finalF, SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent *e = 0)override;
 };
@@ -174,6 +178,7 @@ class DefaultStateActionListener : public QObject, public ActionListener
  SensorTableAction* act;
 public:
  DefaultStateActionListener(JmriJFrame* finalF, SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent *e = 0)override;
 };

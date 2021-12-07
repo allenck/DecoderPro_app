@@ -58,7 +58,9 @@ class AActionListener : public QObject, public  ActionListener {
     DirectorySearcher* s;
 public:
     /*public*/ AActionListener(QDir* d, DirectorySearcher* s);
-    /*public*/ void actionPerformed(JActionEvent* a = 0);
+    QObject* self() override {return (QObject*)this;}
+  public slots:
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 
 class MActionListener : public QObject, public  ActionListener {
@@ -69,7 +71,9 @@ class MActionListener : public QObject, public  ActionListener {
     DirectorySearcher* s;
 public:
     /*public*/ MActionListener(QDir* d, bool o, DirectorySearcher* s);
-    /*public*/ void actionPerformed(JActionEvent* a = 0);
+    QObject* self() override {return (QObject*)this;}
+ public slots:
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 class LActionListener : public QObject, public  ActionListener {
     Q_OBJECT
@@ -77,8 +81,10 @@ class LActionListener : public QObject, public  ActionListener {
     DirectorySearcher* s;
 public:
     LActionListener(DirectorySearcher* s);
+    QObject* self() override {return (QObject*)this;}
+  public slots:
 
-    /*public*/ void actionPerformed(JActionEvent* a = 0);
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 class CActionListener : public QObject, public  ActionListener {
     Q_OBJECT
@@ -86,7 +92,9 @@ class CActionListener : public QObject, public  ActionListener {
     DirectorySearcher* s;
 public:
     CActionListener(DirectorySearcher* s);
-    /*public*/ void actionPerformed(JActionEvent* a = 0);
+    QObject* self() override {return (QObject*)this;}
+  public slots:
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 
 #endif // DIRECTORYSEARCHER_H

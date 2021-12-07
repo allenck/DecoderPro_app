@@ -36,6 +36,7 @@ private:
  friend class PSPOkListener;
  friend class PSPCancelListener;
 };
+
 class PSPOkListener : public QObject, public ActionListener
 {
  Q_OBJECT
@@ -43,6 +44,7 @@ class PSPOkListener : public QObject, public ActionListener
  PickSinglePanel* panel;
 public:
  PSPOkListener(PickSinglePanel* panel);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
@@ -54,6 +56,7 @@ class PSPCancelListener : public QObject, public ActionListener
  PickSinglePanel* panel;
 public:
  PSPCancelListener(PickSinglePanel* panel);
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void actionPerformed(JActionEvent */*e*/ = 0)override;
 };

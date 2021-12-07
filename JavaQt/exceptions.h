@@ -158,6 +158,7 @@ class JAVAQTSHARED_EXPORT InterruptedException : public Exception
 class JAVAQTSHARED_EXPORT JmriException : public Exception
 {
 public:
+    JmriException();
     ~JmriException() throw() {}
     JmriException(QString s);
     JmriException(Exception ex) : Exception(ex) {}

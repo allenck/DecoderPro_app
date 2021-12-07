@@ -48,7 +48,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 
 /*protected*/ NamedBean* ProxyLightManager::makeBean(int i, QString systemName, QString userName)
 {
- return ((AbstractLightManager*)getMgr(i))->newLight(systemName, userName);
+ return (NamedBean*)((AbstractLightManager*)getMgr(i))->newLight(systemName, userName);
 }
 
 //@Override
