@@ -24,7 +24,9 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     AbstractXmlAdapter(parent)
 {
  log = new Logger("PanelEditorXml");
+ log->setDebugEnabled(true);
 }
+
 /**
  * Handle configuration for {@link PanelEditor} panes.
  *
@@ -213,7 +215,7 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     value = true;
     if ((a = element.attribute("panelmenu"))!="" && a==("no"))
         value = false;
-    panel->setPanelMenu(value);
+    panel->setPanelMenuVisible(value);
 
     QString state = "both";
     if ((a = element.attribute("scrollable"))!="")
@@ -245,6 +247,15 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
 
     // load the contents with their individual option settings
     QDomNodeList items = element.childNodes();
+    if(log->isDebugEnabled())
+    {
+     log->debug(tr("PanelEditor contains %1 items").arg(items.count()));
+     for(int i=0; i <items.count(); i++)
+     {
+      QDomElement e = items.at(i).toElement();
+      log->debug(tr(" --> %1 %2").arg(e.tagName(), e.attribute("class")));
+     }
+    }
     for (int i = 0; i<items.size(); i++)
     {
      // get the class, hence the adapter object to do loading

@@ -1,5 +1,4 @@
 #include "jfilechooser.h"
-#include <QFileDialog>
 #include "file.h"
 #include "propertychangesupport.h"
 #include "loggerfactory.h"
@@ -245,7 +244,7 @@ void JFileChooser::common()
  return returnValue;
 }
 
-/*protected*/ QFileDialog* JFileChooser::createDialog(QWidget* parent) /*throws HeadlessException */
+/*protected*/ JFCFileDialog* JFileChooser::createDialog(QWidget* parent) /*throws HeadlessException */
 {
  //FileChooserUI ui = getUI();
  //QString title = ui.getDialogTitle(this);
@@ -274,7 +273,7 @@ void JFileChooser::common()
 //        }
 //        dialog.pack();
 //        dialog.setLocationRelativeTo(parent);
- dialog = new QFileDialog(parent, QString(), currentDirectoryPath);
+ dialog = new JFCFileDialog(parent, QString(), currentDirectoryPath);
  dialog->setOption(QFileDialog::DontUseNativeDialog);
  if(dialogType == OPEN_DIALOG)
  {
@@ -587,6 +586,9 @@ QString JFileChooser::getFileFilter() { return selectedFilter;}
   if(timer)
    timer->stop();
  }
+ connect(dialog, &JFCFileDialog::keyPress, [=] {
+     timer->start(i*1000);
+ });
 }
 /*public*/ int JFileChooser::getTimeout(){
  return _timeout / 1000;

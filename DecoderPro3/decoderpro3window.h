@@ -8,13 +8,16 @@ class DecoderPro3Window : public RosterFrame
 public:
  explicit DecoderPro3Window(QWidget *parent = 0);
  /*public*/  DecoderPro3Window(QString menuFile, QString toolbarFile, QWidget *parent = 0);
- /*public*/  void remoteCalls(QStringList args);
+ /*public*/  void remoteCalls(QStringList args)override;
 
 signals:
 
 public slots:
 private:
-    void buildWindow();
+    void buildWindow() override;
+
+ protected:
+    /*protected*/ void additionsToToolBar()override;
 
 };
 

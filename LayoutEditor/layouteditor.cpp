@@ -3875,8 +3875,9 @@ bool LayoutEditor::isDirty() {return bDirty;}
  */
 //@Nonnull
 /*public*/  QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrack* trk, HitPointType::TYPES connectionType) {
- Q_ASSERT(trk != nullptr);
-
+ //Q_ASSERT(trk != nullptr);
+ if(trk == nullptr)
+  throw NullPointerException(tr("LayoutTrack* trk is marked @NonNull but is null"));
  return getCoords(getLayoutTrackView(trk), connectionType);
 }
 

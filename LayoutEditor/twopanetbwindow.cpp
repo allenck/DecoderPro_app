@@ -64,7 +64,7 @@
 }
 
 /*protected*/ void TwoPaneTBWindow::buildGUI(QString menubarFile, QString toolbarFile) {
-    configureFrame();
+    //configureFrame();
     addMainMenuBar(menubarFile);
     addMainToolBar(toolbarFile);
     addMainStatusBar();

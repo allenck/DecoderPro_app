@@ -1775,6 +1775,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 //     log->warn("item already has been added ");
     if(l->_itemGroup && l->_itemGroup->scene())
      log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
+    else
     editScene->addItem(l->_itemGroup);
     if(l->_itemGroup != nullptr && l->_itemGroup->name() == "")
      l->_itemGroup->setName(l->getGroupName());
@@ -2664,7 +2665,7 @@ void Editor::putBackground() {
  else
   if(editScene != nullptr)  // use editPanel?
   {
-   if (((QWidget*)editScene)->window() !=nullptr)
+   if (((QWidget*)editPanel)->window() !=nullptr)
    {
     name=((JFrame*)((QWidget*)editPanel)->window())->getTitle();
    }

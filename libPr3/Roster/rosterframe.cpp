@@ -72,33 +72,34 @@ QList<RosterFrame*> RosterFrame::frameInstances =  QList<RosterFrame*>();
 // See original Java Class RosterFrame
 //int RosterFrame::openWindowInstances = 0;
 RosterFrame::RosterFrame( QWidget *parent) :
-    JmriJFrame(parent),
+    TwoPaneTBWindow(tr("Roster"), QString(), QString(), parent),
     ui(new Ui::RosterFrame)
 {
  common();
- addHelpMenu("package.apps.gui3.dp3.DecoderPro3", true);
+ addHelpMenu("package.apps.guQString() i3.dp3.DecoderPro3", true);
 
 }
 
 /*public*/ RosterFrame::RosterFrame(QString name, QWidget *parent) :
-  JmriJFrame(name, parent),
+  TwoPaneTBWindow(name,  "xml/config/parts/jmri/jmrit/roster/swing/RosterFrameMenu.xml",
+                  "xml/config/parts/jmri/jmrit/roster/swing/RosterFrameToolBar.xml", parent),
   ui(new Ui::RosterFrame)
 {
  common();
- //this->name = name;
- buildGUI("xml/config/parts/jmri/jmrit/roster/swing/RosterFrameMenu.xml",
-                "xml/config/parts/jmri/jmrit/roster/swing/RosterFrameToolBar.xml");
+// //this->name = name;
+// buildGUI("xml/config/parts/jmri/jmrit/roster/swing/RosterFrameMenu.xml",
+//                "xml/config/parts/jmri/jmrit/roster/swing/RosterFrameToolBar.xml");
 }
 
  RosterFrame::RosterFrame(QString name, QString menubarFile, QString toolbarFile, QWidget *parent) :
-  JmriJFrame(name, parent),
+  TwoPaneTBWindow(name, menubarFile, toolbarFile, parent),
   ui(new Ui::RosterFrame)
 {
  common();
  //this->name = name;
- buildGUI(menubarFile,toolbarFile );
- systemsMenu();
- addHelpMenu("package.apps.gui3.dp3.DecoderPro3", true);
+ //buildGUI(menubarFile,toolbarFile );
+ //systemsMenu();
+// addHelpMenu("package.apps.gui3.dp3.DecoderPro3", true);
 }
 
 void RosterFrame::common()
@@ -531,7 +532,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 /*protected*/ /*final*/ void RosterFrame::buildWindow()
 {
  //Additions to the toolbar need to be added first otherwise when trying to hide bits up during the initialisation they remain on screen
- //additionsToToolBar();
+ additionsToToolBar();
  frameInstances.append(this);
 
 #if 1
@@ -549,7 +550,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 //    getBottom().setMinimumSize(summaryPaneDim);
 //    getBottom().add(createBottom());
 //    statusBar();
-//    systemsMenu();
+    systemsMenu();
  helpMenu(getMenu(), this);
  //Set all the sort and width details of the table first.
  QString rostertableref = getWindowFrameRef() + ":roster";

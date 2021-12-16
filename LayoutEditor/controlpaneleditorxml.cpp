@@ -134,7 +134,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool ControlPanelEditorXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException)
+/*public*/ bool ControlPanelEditorXml::load(QDomElement shared, QDomElement /*perNode*/) throw (JmriConfigureXmlException)
 {
  bool result = true;
  // find coordinates

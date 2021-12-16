@@ -783,6 +783,15 @@ File userPrefsFile;*/
   }
   // get the objects to load
   QDomNodeList items = root.childNodes();
+  if(log->isDebugEnabled())
+  {
+   log->debug(tr("ConfigXmlManager contains %1 items").arg(items.count()));
+   for(int i=0; i <items.count(); i++)
+   {
+    QDomElement e = items.at(i).toElement();
+    log->debug(tr(" --> %1 %2").arg(e.tagName(), e.attribute("class")));
+   }
+  }
   for (int i = 0; i<items.size(); i++)
   {
    //Put things into an ordered list
@@ -960,12 +969,14 @@ File userPrefsFile;*/
      {
       // register in the list for deferred load
       loadDeferredList.insert(adapter->loadOrder(), item);
-      if (log->isDebugEnabled()) log->debug("deferred load registered for " + item.tagName() + " "  + adapterName);
+      if (log->isDebugEnabled())
+       log->debug("deferred load registered for " + item.tagName() + " "  + adapterName);
      }
      else
      {
       bool loadStatus = adapter->load(item, item);
-      if (log->isDebugEnabled()) log->debug("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
+      if (log->isDebugEnabled())
+       log->debug("load status for " + item.tagName() + " " +adapterName+" is "+(loadStatus?"true":"false"));
 
       // if any adaptor load fails, then the entire load has failed
       if (!loadStatus)

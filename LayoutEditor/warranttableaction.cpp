@@ -31,6 +31,7 @@
 #include "trackertableaction.h"
 #include "nxframe.h"
 #include "oblockmanager.h"
+#include <QTimer>
 
 WarrantTableAction::WarrantTableAction(QObject *parent) :
     AbstractAction(tr("Warrants"), parent)
@@ -670,6 +671,9 @@ QListIterator <BeanSetting*> iter(myTOs);
  MyListener* myListener = new MyListener(_errorDialog);
  connect(ok, SIGNAL(clicked()),  myListener, SLOT(actionPerformed()));
     ok->setMaximumSize(ok->sizeHint());
+ QTimer* timer = new QTimer();
+ connect(timer, &QTimer::timeout, [=] {ok->click();});
+ timer->start(30000);
 
 //    QWidget* contentPane = _errorDialog->getContentPane();
  QVBoxLayout* contentPaneLayout;

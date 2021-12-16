@@ -43,6 +43,9 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
  _beans = QSet<NamedBean*>( _beans);
 
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
+ lastAutoNamedBeanRef = QAtomicInteger<int>(0);
+ silenceableProperties.insert("beans");
+ listeners = QList<QObject*>();
 
 }
 

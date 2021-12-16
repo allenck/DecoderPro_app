@@ -1,7 +1,7 @@
 #ifndef ROSTERFRAME_H
 #define ROSTERFRAME_H
 
-#include "jmrijframe.h"
+#include "twopanetbwindow.h"
 #include "loconetsystemconnectionmemo.h"
 #include <QComboBox>
 #include <QAction>
@@ -38,7 +38,7 @@ class RosterEntry;
 class Roster;
 class PaneProgFrame;
 class RosterEntryUpdateListener;
-class LIBPR3SHARED_EXPORT RosterFrame : public JmriJFrame, public RosterEntrySelector, public RosterGroupSelector
+class LIBPR3SHARED_EXPORT RosterFrame : public TwoPaneTBWindow, public RosterEntrySelector, public RosterGroupSelector
 {
     Q_OBJECT
 Q_INTERFACES(RosterEntrySelector RosterGroupSelector)
@@ -47,7 +47,7 @@ public:
     RosterFrame(QString name, QWidget *parent = 0);
     RosterFrame(QString name, QString menubarFile, QString toolbarFile, QWidget *parent = 0);
     ~RosterFrame();
-    RosterFrame(const RosterFrame&) : JmriJFrame() {}
+    RosterFrame(const RosterFrame&) : TwoPaneTBWindow(QString(), QString(), QString()) {}
     QString getTitle() override;
 //    void propertyChange(PropertyChangeEvent*);
     //static int openWindowInstances;// = 0;
@@ -55,7 +55,7 @@ public:
     static QList<RosterFrame*> frameInstances;// = new ArrayList<RosterFrame>();
     /*public*/ QMenuBar* getMenu();
     /*public*/ void setAllowQuit(bool allowQuit);
-    void additionsToToolBar();
+    virtual void additionsToToolBar();
     /*public*/ void hideBottomPane(bool hide);
     QSignalMapper* currentMapper;
     /*public*/ void hideGroupsPane(bool hide);

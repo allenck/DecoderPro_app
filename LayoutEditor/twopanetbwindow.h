@@ -11,7 +11,7 @@ class PropertyChangeSupport;
 class TwoPaneTBWindow : public JmriJFrame
 {
 public:
- /*public*/ TwoPaneTBWindow(QString name, QString menubarFile, QString toolbarFile, QWidget* parent);
+ /*public*/ TwoPaneTBWindow(QString name, QString menubarFile, QString toolbarFile, QWidget* parent=nullptr);
  /*public*/ QWidget* getTop();
  /*public*/ QWidget* getBottom();
  /*public*/ QWidget* getToolBar();

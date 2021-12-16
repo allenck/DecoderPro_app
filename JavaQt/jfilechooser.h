@@ -5,7 +5,10 @@
 #include <QStringList>
 #include "javaqt_global.h"
 #include <QTimer>
+#include <QFileDialog>
+#include <QKeyEvent>
 
+class JFCFileDialog;
 class FileSystemView;
 class Logger;
 class File;
@@ -87,7 +90,7 @@ public slots:
 
 private:
  int dialogType;
- QFileDialog* dialog = nullptr;
+ JFCFileDialog* dialog = nullptr;
  PropertyChangeSupport* pcs = nullptr;
  int returnValue;
  File* selectedFile = nullptr;
@@ -109,8 +112,34 @@ private:
  QList<File*>* selectedFiles = new QList<File*>();
 
 protected:
- /*protected*/ QFileDialog* createDialog(QWidget* parent);// /*throws HeadlessException */
+ /*protected*/ JFCFileDialog *createDialog(QWidget* parent);// /*throws HeadlessException */
 
+};
+
+class JFCFileDialog : public QFileDialog
+{
+   Q_OBJECT
+public:
+    explicit JFCFileDialog(QWidget *parent = nullptr,
+                         const QString &caption = QString(),
+                         const QString &directory = QString(),
+                         const QString &filter = QString())
+        : QFileDialog(parent, caption, directory, filter) {}
+signals:
+    void keyPress(QKeyEvent*);
+private:
+    void keyPressEvent(QKeyEvent* e)
+    {
+     if(e)
+     {
+      QFileDialog::keyPressEvent(e);
+      emit keyPress(e);
+     }
+    }
+    void mouseReleaseEvent(QMouseEvent*)
+    {
+     emit keyPressEvent(nullptr);
+    }
 };
 
 #endif // JFILECHOOSER_H

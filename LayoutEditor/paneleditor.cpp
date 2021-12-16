@@ -41,6 +41,7 @@
 #include "class.h"
 #include "lcdclockframe.h"
 #include "nixieclockframe.h"
+#include "loggerfactory.h"
 
 PanelEditor::PanelEditor(QWidget *parent) :
     Editor("NoName", false, true, parent),
@@ -113,11 +114,10 @@ PanelEditor::~PanelEditor()
 
 /*protected*/ void PanelEditor::init(QString name)
 {
- log = new Logger("PanelEditor");
  setObjectName("PanelEditor");
  setProperty("JavaClassName", "jmri.jmrit.display.panelEditor.PanelEditor");
 
- log->setDebugEnabled(false);
+ log->setDebugEnabled(true);
  _debug = log->isDebugEnabled();
  _multiItemCopyGroup = nullptr;  // items gathered inside fence
  pasteItemFlag = false;
@@ -1633,7 +1633,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- void RemoveMenuAction::actionPerformed()
+ void RemoveMenuAction::actionPerformed(JActionEvent*)
  {
   if (parent->_selectionGroup==NULL)
       comp->remove();
@@ -1723,7 +1723,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
   this->editor = editor;
  }
 
- void LockItemListener::actionPerformed()
+ void LockItemListener::actionPerformed(JActionEvent*)
  {
    comp->setPositionable(!checkBox->isChecked());
    editor->setSelectionsPositionable(!checkBox->isChecked(), comp);
@@ -2242,3 +2242,5 @@ void PanelEditor::on_actionOpenEditor_triggered()
 {
  return "jmri.jmrit.display.panelEditor.PanelEditor";
 }
+
+/*private*/ /*static*/ Logger* PanelEditor::log = LoggerFactory::getLogger("PanelEditor");
