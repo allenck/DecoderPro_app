@@ -4,7 +4,9 @@
 
 class VoltageMeter : public Meter
 {
-
+ Q_INTERFACES(Meter)
+ public:
+  QObject* self() override {return (QObject*) this;}
 };
 Q_DECLARE_INTERFACE(VoltageMeter, "VoltageMeter")
 

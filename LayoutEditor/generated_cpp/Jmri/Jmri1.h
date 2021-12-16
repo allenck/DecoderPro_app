@@ -74,6 +74,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1487,7 +1488,6 @@ virtual int  computeDirectionBC(LayoutTurnout*  track);
 virtual int  computeDirectionBD(LayoutTurnout*  track);
 virtual int  computeDirectionCD(LayoutTurnout*  track);
 virtual void displayRemoveWarning(LayoutTrack*  track, QList<QString >  itemList, QString  typeKey);
-virtual QString  getClassName();
 virtual void init(QString  name);
 virtual void initView();
 virtual void keyPressEvent(QKeyEvent*  event);
@@ -1501,7 +1501,6 @@ virtual void redrawPanel();
 virtual void repaint();
 virtual void setAllEditable(bool  editable);
 virtual void setNextLocation(Positionable*  obj);
-virtual void setRemoveMenu(Positionable*  p, QMenu*  popup);
 virtual void setScroll(QString  value);
 virtual void setScroll(int  state);
 virtual void showPopUp(Positionable*  p, QGraphicsSceneMouseEvent*  event);
@@ -1536,7 +1535,6 @@ inline int  py_q_computeDirectionBC(LayoutTurnout*  track) { return LayoutEditor
 inline int  py_q_computeDirectionBD(LayoutTurnout*  track) { return LayoutEditor::computeDirectionBD(track); }
 inline int  py_q_computeDirectionCD(LayoutTurnout*  track) { return LayoutEditor::computeDirectionCD(track); }
 inline void py_q_displayRemoveWarning(LayoutTrack*  track, QList<QString >  itemList, QString  typeKey) { LayoutEditor::displayRemoveWarning(track, itemList, typeKey); }
-inline QString  py_q_getClassName() { return LayoutEditor::getClassName(); }
 inline void py_q_init(QString  name) { LayoutEditor::init(name); }
 inline void py_q_initView() { LayoutEditor::initView(); }
 inline void py_q_keyPressEvent(QKeyEvent*  event) { LayoutEditor::keyPressEvent(event); }
@@ -1607,7 +1605,7 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    int  getAnchorY(LayoutEditor* theWrappedObject);
    bool  getAntialiasingOn(LayoutEditor* theWrappedObject);
    bool  getAutoBlockAssignment(LayoutEditor* theWrappedObject);
-   QString  py_q_getClassName(LayoutEditor* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_getClassName());}
+   QString  getClassName(LayoutEditor* theWrappedObject);
    const QIcon  getColourIcon(LayoutEditor* theWrappedObject, QColor  color);
    QString  getDefaultAlternativeTrackColor(LayoutEditor* theWrappedObject);
    QColor  getDefaultAlternativeTrackColorColor(LayoutEditor* theWrappedObject);

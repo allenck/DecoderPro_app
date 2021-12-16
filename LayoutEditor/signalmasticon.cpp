@@ -19,7 +19,7 @@
 #include "joptionpane.h"
 
 SignalMastIcon::SignalMastIcon(QWidget* parent) :
-    PositionableIcon(parent)
+    PositionableIcon()
 {
 }
 /**

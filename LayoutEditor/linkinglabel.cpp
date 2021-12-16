@@ -5,7 +5,7 @@
 #include "coordinateedit.h"
 #include "loggerfactory.h"
 
-LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
+LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel((Positionable*)parent)
 {
 
 }

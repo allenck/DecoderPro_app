@@ -647,6 +647,7 @@ QListIterator <BeanSetting*> iter(myTOs);
 // scrollPane->setEnabled(true);
 
  _errorDialog = new JDialog();
+ _errorDialog->setModal(true);
  _errorDialog->setTitle(tr("Block/Portal/Path Warnings"));
  QPushButton* ok = new QPushButton(tr("OK"));
 //    class myListener extends java.awt.event.WindowAdapter implements ActionListener {

@@ -58,9 +58,12 @@ unix{
  exists($$PWD/../QtWebApp/libQtWebAppd.so) {
  isEmpty(WEBAPP): WEBAPP = 1
   DEFINES += QTWEBAPP
-  message("libPr3: libQtWebAppd found!")
+  message("libPr3: libQtWebAppd found! define QTWEBAPP is set")
+ } else {
+  message("libPr3: libQtWebAppd not found! define QTWEBAPP not set")
  }
 }
+
 win32{
  isEmpty(PREFIX): PREFIX_USR = "C:/"
  isEmpty(PREFIX): PREFIX_LOCAL = $${PREFIX_USR}QGeomColl
@@ -2438,14 +2441,14 @@ DEPENDPATH += $$PWD/../Tables
 
 DISTFILES +=
 
-contains(WEBAPP, 1) {
+#contains(WEBAPP, 1) {
 
-unix:!macx: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+#unix:!macx: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
 
-INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
-DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
-message("libPr3: link to libQtWebAppd")
-}
+#INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#message("libPr3: link to libQtWebAppd")
+#}
 
 DEFINES += QZEROCONF_STATIC
 
@@ -2462,16 +2465,16 @@ message(LibPr3: $$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 not found)
 }
 
 
-#unix|win32: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+##unix|win32: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
 
-INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
-DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
 
-exists($$PWD/../QtWebApp/libQtWebAppd.so.1) {
-message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 found)
-} else {
-message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 not found)
-}
+#exists($$PWD/../QtWebApp/libQtWebAppd.so.1) {
+#message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 found)
+#} else {
+#message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 not found)
+#}
 
 
 
@@ -2500,6 +2503,13 @@ DEPENDPATH += $$PWD/../../../../QtZeroConf-master
 #DEPENDPATH += $$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug
 
 unix|win32: LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += $$PWD/../../../../QtWebApp/QtWebApp
+DEPENDPATH += $$PWD/../../../../QtWebApp/QtWebApp
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppdd
+else:unix: LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
 
 INCLUDEPATH += $$PWD/../../../../QtWebApp/QtWebApp
 DEPENDPATH += $$PWD/../../../../QtWebApp/QtWebApp

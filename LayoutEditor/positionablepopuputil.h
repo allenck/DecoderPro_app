@@ -131,8 +131,8 @@ private:
  /*private*/ bool _showBorder;// = true;
  /*private*/ int justification;//=CENTRE; //Default is always Centre
  /*private*/ int orientation;// = HORIZONTAL;
- QVector<QMenu*>* editAdditionalMenu;// = new QVector<QMenu*>(0);
- QVector<QMenu*>* viewAdditionalMenu;// = new QVector<QMenu*>(0);
+ QVector<QMenu*> editAdditionalMenu = QVector<QMenu*>(0);
+ QVector<QMenu*> viewAdditionalMenu = QVector<QMenu*>(0);
  int saveType;
  /*private*/ bool _hasBackground;      // Should background be painted or clear
  /*private*/ bool _suppressRecentColor = false;

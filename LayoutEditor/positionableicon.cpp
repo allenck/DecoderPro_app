@@ -4,7 +4,7 @@
 #include <QString>
 #include "editor.h"
 
-PositionableIcon::PositionableIcon(QWidget *parent) :
+PositionableIcon::PositionableIcon(Positionable *parent) :
     PositionableLabel(parent)
 {
 }

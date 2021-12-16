@@ -107,7 +107,8 @@ void JComboBox::currentIndexChanged(int)
 
 /*public*/ QVariant JComboBox::getItemAt(int i)
 {
- return itemData(i);
+ //return itemData(i);
+ return map.value(itemText(i));
 }
 
 /*public*/ void JComboBox::clear()
@@ -126,5 +127,5 @@ void JComboBox::currentIndexChanged(int)
  {
   map.insert(text, data);
  }
- QComboBox::addItem(text, data);
+ QComboBox::addItem(text/*, data*/);
 }

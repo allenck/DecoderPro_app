@@ -195,29 +195,22 @@ public:
     static const  int SLIP_C = 23; // offset for slip connection points
     static const  int SLIP_D = 24; // offset for slip connection points
     static const  int TURNTABLE_RAY_OFFSET = 50; // offset for turntable connection points
-//    const /*public*/ static int BKG       = 1;
-//    const /*public*/ static int TEMP      = 2;
-//    const /*public*/ static int ICONS     = 3;
-//    const /*public*/ static int LABELS    = 4;
-//    const /*public*/ static int MEMORIES  = 5;
-//    const /*public*/ static int REPORTERS = 5;
-//    const /*public*/ static int SECURITY  = 6;
-//    const /*public*/ static int TURNOUTS  = 7;
-//    const /*public*/ static int LIGHTS    = 8;
-//    const /*public*/ static int SIGNALS   = 9;
-//    const /*public*/ static int SENSORS   = 10;
-//    const /*public*/ static int CLOCK     = 10;
-//    const /*public*/ static int MARKERS   = 10;
-//    const /*public*/ static int NUM_LEVELS= 10;
 
-//    const /*public*/ static int SCROLL_NONE       = 0;
-//    const /*public*/ static int SCROLL_BOTH       = 1;
-//    const /*public*/ static int SCROLL_HORIZONTAL = 2;
-//    const /*public*/ static int SCROLL_VERTICAL   = 3;
-//    const /*public*/ static int OPTION_POSITION = 1;
-//    const /*public*/ static int OPTION_CONTROLS = 2;
-//    const /*public*/ static int OPTION_HIDDEN = 3;
-//    const /*public*/ static int OPTION_TOOLTIP= 4;
+    const /*public*/ static int BKG       = 1;
+    const /*public*/ static int TEMP      = 2;
+    const /*public*/ static int ICONS     = 3;
+    const /*public*/ static int LABELS    = 4;
+    const /*public*/ static int MEMORIES  = 5;
+    const /*public*/ static int REPORTERS = 5;
+    const /*public*/ static int SECURITY  = 6;
+    const /*public*/ static int TURNOUTS  = 7;
+    const /*public*/ static int LIGHTS    = 8;
+    const /*public*/ static int SIGNALS   = 9;
+    const /*public*/ static int SENSORS   = 10;
+    const /*public*/ static int CLOCK     = 10;
+    const /*public*/ static int MARKERS   = 10;
+    const /*public*/ static int NUM_LEVELS= 10;
+
     /*public*/ /*final*/ LayoutEditorViewContext* gContext = new LayoutEditorViewContext(); // public for now, as things work access changes
     /*public*/ QList<PositionableLabel*> getLabelImageList();
     /*public*/ void addAnchor();
@@ -289,7 +282,7 @@ public:
     /*public*/ /*const*/ int getAnchorY();
     /*public*/ bool allControlling() ;
     /*public*/ bool setShowAlignmentMenu(QMenu* popup);
-    /*public*/ bool deletePanel();
+    /*public*/ bool deletePanel() override;
 
     /**
     * Add a label to the Draw Panel
@@ -298,7 +291,7 @@ public:
     /*public*/ void putItem(Positionable *l) override;
     EditScene* getScene() {return editScene;}
     /*public*/ void putSensor(SensorIcon* l);
-    void redrawPanel() override { paintTargetPanel(editScene);}
+    void redrawPanel() override { /*paintTargetPanel(editScene)*/ update();}
     /**
     * Display the X & Y coordinates of the Positionable item and provide a
     * dialog memu item to edit them.
@@ -896,7 +889,7 @@ private:
  /*private*/ void hitPointCheckLayoutTurnouts(/*@Nonnull*/ LayoutTurnout* lt);
  /*private*/ void hitPointCheckLayoutTurnoutSubs(/*@Nonnull*/ QPointF dLoc);
  QPen drawingStroke;
- LayoutEditorComponent* layoutEditorComponent = nullptr;
+ LayoutEditorComponent* layoutEditorComponent = new LayoutEditorComponent(this);
  //operational variables for move selection pane
  /*private*/ /*transient*/ JmriJFrame* moveSelectionFrame = nullptr;
  /*private*/ bool moveSelectionOpen = false;

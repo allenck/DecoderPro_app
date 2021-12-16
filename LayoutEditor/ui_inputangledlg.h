@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'inputangledlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -33,31 +33,31 @@ public:
     void setupUi(QDialog *inputAngleDlg)
     {
         if (inputAngleDlg->objectName().isEmpty())
-            inputAngleDlg->setObjectName(QString::fromUtf8("inputAngleDlg"));
+            inputAngleDlg->setObjectName(QLatin1String("inputAngleDlg"));
         inputAngleDlg->resize(215, 108);
         formLayout = new QFormLayout(inputAngleDlg);
-        formLayout->setObjectName(QString::fromUtf8("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         textX = new QLabel(inputAngleDlg);
-        textX->setObjectName(QString::fromUtf8("textX"));
+        textX->setObjectName(QLatin1String("textX"));
 
         formLayout->setWidget(0, QFormLayout::LabelRole, textX);
 
         spinX = new QSpinBox(inputAngleDlg);
-        spinX->setObjectName(QString::fromUtf8("spinX"));
+        spinX->setObjectName(QLatin1String("spinX"));
         spinX->setMinimum(-359);
         spinX->setMaximum(359);
 
         formLayout->setWidget(1, QFormLayout::LabelRole, spinX);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         okButton = new QPushButton(inputAngleDlg);
-        okButton->setObjectName(QString::fromUtf8("okButton"));
+        okButton->setObjectName(QLatin1String("okButton"));
 
         horizontalLayout->addWidget(okButton);
 
         cancelButton = new QPushButton(inputAngleDlg);
-        cancelButton->setObjectName(QString::fromUtf8("cancelButton"));
+        cancelButton->setObjectName(QLatin1String("cancelButton"));
 
         horizontalLayout->addWidget(cancelButton);
 
@@ -72,10 +72,10 @@ public:
 
     void retranslateUi(QDialog *inputAngleDlg)
     {
-        inputAngleDlg->setWindowTitle(QCoreApplication::translate("inputAngleDlg", "Enter Angle", nullptr));
-        textX->setText(QCoreApplication::translate("inputAngleDlg", "TextLabel", nullptr));
-        okButton->setText(QCoreApplication::translate("inputAngleDlg", "OK", nullptr));
-        cancelButton->setText(QCoreApplication::translate("inputAngleDlg", "Cancel", nullptr));
+        inputAngleDlg->setWindowTitle(QApplication::translate("inputAngleDlg", "Enter Angle", nullptr));
+        textX->setText(QApplication::translate("inputAngleDlg", "TextLabel", nullptr));
+        okButton->setText(QApplication::translate("inputAngleDlg", "OK", nullptr));
+        cancelButton->setText(QApplication::translate("inputAngleDlg", "Cancel", nullptr));
     } // retranslateUi
 
 };

@@ -77,13 +77,13 @@
         MeterManager* mm = ((MeterManager*)InstanceManager::getDefault("MeterManager"));
 //        ((AbstractProxyMeterManager*)mm)->createSystemManager("L");
         //Meter* m = (DefaultMeter*)((AbstractMeterManager*)mm)->getBySystemName(voltSysName);
-        Meter* m = (Meter*)mm->getBySystemName(voltSysName);
-        updateAddMeter(m, voltSysName, valVolts, true);
+        NamedBean* m = mm->getBySystemName(voltSysName);
+        updateAddMeter((DefaultMeter*)m, voltSysName, valVolts, true);
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
         //m = (DefaultMeter*)((AbstractMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
-        m = (Meter*)mm->getBeanBySystemName(ampsSysName);
-        updateAddMeter(m, ampsSysName, valAmps, false);
+        m = (DefaultMeter*)mm->getBeanBySystemName(ampsSysName);
+        updateAddMeter((DefaultMeter*)m, ampsSysName, valAmps, false);
     }
 
     /*public*/ void LnPredefinedMeters::dispose() {
@@ -136,7 +136,7 @@
         } else {
             try {
              log->debug(tr("meter %1").arg(((DefaultMeter*)m->self())->objectName()));
-             ((AnalogIO*)m->self())->setCommandedAnalogValue(value);
+             ((AbstractAnalogIO*)m->self())->setCommandedAnalogValue(value);
             } catch (JmriException e) {
                 log->debug(tr("Exception setting %1Meter %2 to value %3: %4").arg(
                         (typeVolt?"volt":"current")).arg( // NOI18N

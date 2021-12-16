@@ -227,8 +227,10 @@ class JAVAQTSHARED_EXPORT TurnoutOperatorException : public Exception
 };
 class JAVAQTSHARED_EXPORT JmriConfigureXmlException : public JmriException
 {
+  Throwable e;
  public:
     JmriConfigureXmlException(QString s ="");
+    JmriConfigureXmlException(QString s, Throwable e);
     ~JmriConfigureXmlException() throw() {}
 };
 class JAVAQTSHARED_EXPORT DataConversionException : public Exception

@@ -1430,7 +1430,8 @@
     window.setAttribute("class", entry.key());
     if(entry.key() == "jmri.jmrit.beantable.ListedTableFrame:Turnout Table" )
     {
-     log->debug("x=0");
+     if(log->isDebugEnabled())
+      log->debug("x=0");
     }
     if (entry.value()->saveLocation)
     {

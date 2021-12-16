@@ -13,8 +13,8 @@ class AbstractAnalogIO : public AbstractNamedBean, public AnalogIO
   /*public*/ void setCommandedAnalogValue(double value) throw (JmriException) override;
   /*public*/ double getCommandedAnalogValue() override;
   /*public*/ double getKnownAnalogValue() override;
-  /*public*/ double getState(double v) override;
-  /*public*/ void setState(double value) throw (JmriException) override;
+  /*public*/ double getState(double v);
+  /*public*/ void setState(double value) throw (JmriException);
   /*public*/ QString getBeanType() override;
   /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
 

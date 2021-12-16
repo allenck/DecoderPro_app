@@ -370,7 +370,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     if (allowNull) {
         vector.add(0, null);
     }
-    setModel(new DefaultComboBoxModel<>(vector));
+    setModel(new DefaultComboBoxModel(vector));
     // retain selection
     if (selectedItem == null && userInput != null) {
         setSelectedItemByName(userInput);
@@ -379,9 +379,10 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     }
 #else
     foreach(NamedBean* bean, set)
-     addItem(bean->getSystemName(), VPtr<NamedBean>::asQVariant(bean));
+     JComboBox::addItem(bean->getSystemName(), VPtr<NamedBean>::asQVariant(bean));
 #endif
 }
+
 /*public*/ void NamedBeanComboBox::setManager(Manager* manager)
 {
  this->manager = manager;

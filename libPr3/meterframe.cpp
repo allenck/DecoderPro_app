@@ -146,9 +146,9 @@
         }
 
         if (qobject_cast<VoltageMeter*>(meter->self())) {
-            setTitle(tr("Voltage Meter - %1").arg(((AbstractNamedBean*)meter)->getDisplayName()));
+            setTitle(tr("Voltage Meter - %1").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
         } else {
-            setTitle(tr("Current Meter - %1").arg(((AbstractNamedBean*)meter)->getDisplayName()));
+            setTitle(tr("Current Meter - %1").arg(((AbstractNamedBean*)meter->self())->getDisplayName()));
         }
     }
 

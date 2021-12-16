@@ -16,7 +16,9 @@ class LIBTABLESSHARED_EXPORT TrackerTableAction : public AbstractAction
 {
  Q_OBJECT
 public:
- explicit TrackerTableAction(QObject *parent = 0);
+ Q_INVOKABLE explicit TrackerTableAction(QObject *parent = 0);
+    ~TrackerTableAction() {}
+    TrackerTableAction(const TrackerTableAction&) : AbstractAction() {}
  static /*public*/ Tracker* markNewTracker(OBlock* block, QString name);
  static /*public*/ void stopTracker(Tracker* t) ;
  static /*public*/ void stopTrackerIn(OBlock* block);
@@ -40,6 +42,7 @@ friend class WarrantTableAction;
 friend class TableFrame;
 friend class TrackerTableModel;
 };
+Q_DECLARE_METATYPE(TrackerTableAction)
 
 class TableFrame : public JmriJFrame, public PropertyChangeListener
 {

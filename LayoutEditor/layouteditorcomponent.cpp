@@ -44,8 +44,8 @@
 //public void paint(Graphics g) {
 /*public*/ void LayoutEditorComponent::paintTargetPanel(EditScene* g2)
 {
- if(!initialized)
-  return;
+// if(!initialized)
+//  return;
  if (qobject_cast<EditScene*>(g2))
  {
         // layoutEditor.draw((Graphics2D) g);
@@ -67,7 +67,7 @@
 //            if (layoutEditor->antialiasingOn) {
 //                g2.setRenderingHints(antialiasing);
 //            }
-  editPanel->setRenderHint(QPainter::Antialiasing, layoutEditor->antialiasingOn);
+  layoutEditor->editPanel->setRenderHint(QPainter::Antialiasing, layoutEditor->antialiasingOn);
 
         // drawPositionableLabelBorder(g2);
         // things that only get drawn in edit mode

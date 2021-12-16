@@ -110,8 +110,6 @@ void PositionablePopupUtil::init()
  _showBorder = true;
  justification=CENTRE; //Default is always Centre
  orientation = HORIZONTAL;
- editAdditionalMenu = new QVector<QMenu*>();
- viewAdditionalMenu = new QVector<QMenu*>();
  _textComponent = NULL;
 }
 
@@ -988,9 +986,9 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 */
 /*public*/ void PositionablePopupUtil::addEditPopUpMenu(QMenu* menu)
 {
- if(!editAdditionalMenu->contains(menu))
+ if(!editAdditionalMenu.contains(menu))
  {
-  editAdditionalMenu->append(menu);
+  editAdditionalMenu.append(menu);
  }
 }
 
@@ -1000,9 +998,9 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 */
 /*public*/ void PositionablePopupUtil::addViewPopUpMenu(QMenu *menu)
 {
- if(!viewAdditionalMenu->contains(menu))
+ if(!viewAdditionalMenu.contains(menu))
  {
-  viewAdditionalMenu->append(menu);
+  viewAdditionalMenu.append(menu);
  }
 }
 
@@ -1011,10 +1009,10 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 */
 /*public*/ void PositionablePopupUtil::setAdditionalEditPopUpMenu(QMenu* popup)
 {
- if(editAdditionalMenu == NULL ||editAdditionalMenu->isEmpty())
+ if(/*editAdditionalMenu == NULL ||*/editAdditionalMenu.isEmpty())
   return;
  popup->addSeparator();
- foreach (QMenu* mi, *editAdditionalMenu)
+ foreach (QMenu* mi, editAdditionalMenu)
  {
   popup->addMenu(mi);
  }
@@ -1025,9 +1023,9 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 */
 /*public*/ void PositionablePopupUtil::setAdditionalViewPopUpMenu(QMenu* popup)
 {
- if(viewAdditionalMenu->isEmpty())
+ if(viewAdditionalMenu.isEmpty())
   return;
- foreach(QMenu* mi, *viewAdditionalMenu)
+ foreach(QMenu* mi, viewAdditionalMenu)
  {
   popup->addMenu(mi);
  }

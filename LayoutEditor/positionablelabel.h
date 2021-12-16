@@ -32,7 +32,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT PositionableLabel : public JLabel, public Pos
  Q_OBJECT
  Q_INTERFACES(Positionable)
 public:
-    explicit PositionableLabel(QWidget *parent = 0);
+    explicit PositionableLabel(Positionable *parent = 0);
     /*public*/ PositionableLabel(QString s, Editor* editor, Positionable *parent=0);
     /*public*/ PositionableLabel(NamedIcon* s, Editor* editor, Positionable *parent=0) ;
     /*public*/ /*final*/ bool isIcon();

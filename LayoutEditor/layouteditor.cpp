@@ -670,11 +670,12 @@ LayoutEditor::~LayoutEditor()
     scrollBothMenuItem->setCheckable(true);
     scrollGroup->addAction(scrollBothMenuItem);
     scrollMenu->addAction(scrollBothMenuItem);
-    scrollBothMenuItem->setChecked(_scrollState == Editor::SCROLL_BOTH);
+    //scrollBothMenuItem->setChecked(_scrollState == Editor::SCROLL_BOTH);
 //    scrollBothMenuItem.addActionListener((ActionEvent event) -> {
     connect(scrollBothMenuItem, &QAction::triggered, [=]{
         _scrollState = Editor::SCROLL_BOTH;
         setScroll(_scrollState);
+        scrollBothMenuItem->setChecked(true);
         redrawPanel();
     });
 

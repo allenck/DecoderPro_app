@@ -284,14 +284,14 @@ HelpUtil::HelpUtil(QObject *parent) :
      return;
  }
 
- if (SystemType::isWindows()) {
+#ifdef Q_OS_WIN
      try {
          openWindowsFile(f);
      } catch (JmriException e) {
          log->error(tr("unable to show help page %1 in Windows due to:").arg(ref), e);
      }
      return;
- }
+ #endif
 
  url = "file://" + fileName;
  HelpUtil::showWebPage(ref, url);

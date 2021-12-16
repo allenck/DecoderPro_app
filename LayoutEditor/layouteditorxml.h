@@ -20,6 +20,7 @@ signals:
 public slots:
 private:
  Logger* log;
+ /*private*/ bool getBooleanValue(QString txt);
 };
 Q_DECLARE_METATYPE(LayoutEditorXml)
 #endif // LAYOUTEDITORXML_H

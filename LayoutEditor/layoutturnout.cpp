@@ -2397,7 +2397,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
           }
       }
   }
-  models->redrawPanel();
+  models->repaint();
 
  }
 //};

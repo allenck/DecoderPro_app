@@ -1,6 +1,7 @@
 #include "positionablelabelxml.h"
 #include "layouteditor.h"
 #include "positionablepopuputil.h"
+#include "exceptions.h"
 
 PositionableLabelXml::PositionableLabelXml(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -122,6 +123,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  */
 /*public*/ void PositionableLabelXml::storeCommonAttributes(Positionable* p, QDomElement element)
 {
+ if (p->getId() != "") element.setAttribute("id", p->getId());
  element.setAttribute("x", p->getX());
  element.setAttribute("y", p->getY());
  element.setAttribute("level", p->getDisplayLevel());
@@ -452,6 +454,13 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 
 /*public*/ void PositionableLabelXml::loadCommonAttributes(Positionable* l, int defaultLevel, QDomElement element)
 {
+ if (element.attribute("id") != "") {
+     try {
+         l->setId(element.attribute("id"));
+     } catch (Positionable::DuplicateIdException e) {
+         throw  JmriConfigureXmlException("Positionable id is not unique", e);
+     }
+ }
  QString a = element.attribute("forcecontroloff");
  if ( (a!="") && a==("true"))
   l->setControlling(false);

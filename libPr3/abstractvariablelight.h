@@ -37,7 +37,6 @@ public:
     /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative() override;
     QObject* self() override {return this;}
     //QString getSystemName() const override{return AbstractNamedBean::getSystemName();}
-
 signals:
 
 public slots:

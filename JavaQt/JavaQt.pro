@@ -60,7 +60,7 @@ SOURCES += javaqt.cpp \
     jtogglebutton.cpp \
     dataflavor.cpp \
     exceptions.cpp \
-    systemtype.cpp \
+    #systemtype.cpp \
     thread.cpp \
     tristatejcheckbox.cpp \
     validation.cpp \
@@ -298,7 +298,7 @@ HEADERS += javaqt.h\
     gridbagconstraints.h \
     insets.h \
  preferNumericComparator.h \
- systemtype.h \
+ #systemtype.h \
  thread.h \
  tristatejcheckbox.h \
  validation.h \

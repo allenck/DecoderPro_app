@@ -16,15 +16,15 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
           /*@Nonnull*/ Unit unit,
           double min, double max, double resolution,
           /*@Nonnull*/ MeterUpdateTask* updateTask, QObject* parent = nullptr);
-  /*public*/ void enable();
-  /*public*/ void disable();
+  /*public*/ void enable() override;
+  /*public*/ void disable()override;
   /*public*/ int getState();
-  /*public*/ QString getBeanType();
-  /*public*/ Unit getUnit();
-  /*public*/ double getMin();
-  /*public*/ double getMax();
-  /*public*/ double getResolution();
-  /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative();
+  /*public*/ QString getBeanType()override;
+  /*public*/ Unit getUnit()override;
+  /*public*/ double getMin()override;
+  /*public*/ double getMax()override;
+  /*public*/ double getResolution()override;
+  /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative()override;
   //QObject* self() {return (QObject*)this;}
   /*public*/ void dispose();
   /*public*/ void requestUpdateFromLayout();
@@ -51,7 +51,7 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
 /*public*/ /*static*/ class DefaultVoltageMeter : public DefaultMeter, public VoltageMeter
 {
   Q_OBJECT
-  //Q_INTERFACES(VoltageMeter)
+  Q_INTERFACES(VoltageMeter)
  public:
     /*public*/ DefaultVoltageMeter(/*@Nonnull*/ QString sys, Unit unit, double min, double max, double resolution, MeterUpdateTask* updateTask)
    : DefaultMeter(sys, unit, min, max, resolution, updateTask){

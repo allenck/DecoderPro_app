@@ -50,9 +50,10 @@ class PanelActionListener : public QObject, public ActionListener
  PanelMenu* pm;
 public:
   PanelActionListener(Editor* panel, PanelMenu* pm);
-  QObject* self() override{return (QObject*)this;}
+  QObject* self() override {return (QObject*)this;}
+
 public slots:
-  void actionPerformed(JActionEvent* =0)override;
+  void actionPerformed();
 };
 
 #endif // PANELMENU_H

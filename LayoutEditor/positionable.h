@@ -68,7 +68,22 @@ class Positionable //: public QLabel
      * @version $Revision: 21256 $
      */
 //    /*public*/ interface Positionable extends Cloneable  {
+     /**
+       * Sets the Id of this Positionable
+       * @param id the id or null if no id
+       * @throws jmri.jmrit.display.Positionable.DuplicateIdException if another
+       *         Positionable in the editor already has this id
+       */
+     virtual void setId(QString /*id*/) /*throw (Positionable::DuplicateIdException)*/ {}
+
+      /**
+       * Gets the Id of this Positionable
+       * @return id the id or null if no id
+       */
+     virtual QString getId() {return "";}
+
      /*public*/ virtual void setPositionable(bool /*enabled*/) =0;
+
      /*public*/ virtual bool isPositionable() =0;
 
      /*public*/ virtual void setEditable(bool /*enabled*/) =0;
@@ -215,7 +230,8 @@ class Positionable //: public QLabel
      virtual bool updateScene() { return false;}
      virtual void setLevel(int /*level*/) {}
      virtual void paint(EditScene*) {}
-
+     /*public*/ /*static*/ class DuplicateIdException : public JmriException {
+         };
  private:
      bool _bVisible = true;
 };

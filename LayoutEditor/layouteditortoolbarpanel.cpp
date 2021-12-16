@@ -42,15 +42,16 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
  turnoutNameComboBox = new NamedBeanComboBox(InstanceManager::turnoutManagerInstance(), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  turnoutNameLabel = new JLabel(tr("%1").arg(tr("Name")));
- turnoutNamePanel = new JPanel(new QHBoxLayout(/*FlowLayout::LEFT, 5, 0*/));
+ turnoutNamePanel = new JPanel(new FlowLayout(/*FlowLayout::LEFT, 5, 0*/));
  //turnoutNamePanelLayout = new FlowLayout();
  turnoutNamePanel->layout()->setSpacing(6);
- extraTurnoutPanel = new JPanel(new QHBoxLayout(/*FlowLayout::LEFT, 5, 0*/));
- extraTurnoutPanel->layout()->setSpacing(6);
+ extraTurnoutPanel = new JPanel();//new FlowLayout(/*FlowLayout::LEFT, 5, 0*/));
+ FlowLayout* extraTurnoutPanelLayout = new FlowLayout(extraTurnoutPanel);
+ extraTurnoutPanelLayout->setSpacing(6);
  //extraTurnoutPanelLayout = new FlowLayout(extraTurnoutPanel);
  extraTurnoutNameComboBox = new NamedBeanComboBox(InstanceManager::turnoutManagerInstance(), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  rotationComboBox = nullptr;
- rotationPanel = new JPanel(new QHBoxLayout(/*FlowLayout::LEFT, 5, 0*/));
+ rotationPanel = new JPanel(new FlowLayout(/*FlowLayout::LEFT, 5, 0*/));
  rotationPanel->layout()->setSpacing(6);
 
  //2nd row of radio buttons
@@ -59,7 +60,7 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
  trackButton = new QRadioButton(tr("Track Segment"));
 
  //2nd row of check boxes
- trackSegmentPropertiesPanel = new JPanel(new QHBoxLayout(/*FlowLayout::LEFT, 5, 0*/));
+ trackSegmentPropertiesPanel = new JPanel(new FlowLayout(/*FlowLayout::LEFT, 5, 0*/));
  //trackSegmentPropertiesPanelLayout = new FlowLayout();
  trackSegmentPropertiesPanel->layout()->setSpacing(6);
 
@@ -349,7 +350,7 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
 
     // disable turnouts that are already in use
 // TODO:       turnoutNameComboBox->addPopupMenuListener(layoutEditor->newTurnoutComboBoxPopupMenuListener(turnoutNameComboBox));
-    // turnoutNameComboBox.setEnabledColor(Color.green.darker().darker());
+    //turnoutNameComboBox->setEnabledColor(Color.green.darker().darker());
     // turnoutNameComboBox.setDisabledColor(Color.red);
 
     layoutEditor->setupComboBox(extraTurnoutNameComboBox, false, true, false);
@@ -525,12 +526,12 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
     signalIconEditor->complete();
 
     sensorFrame = new JFrame(tr("EditSensorIcons"));
-    ((QVBoxLayout*)sensorFrame->getContentPane()->layout())->addWidget(new JLabel(tr("IconChangeInfo")), 0, Qt::AlignTop);//BorderLayout.NORTH);
+    ((QVBoxLayout*)sensorFrame->getContentPane()->layout())->addWidget(new JLabel(tr("<html>Select new image from file,<br>then click an upper preview icon to change it.</html>")), 0, Qt::AlignTop);//BorderLayout.NORTH);
     sensorFrame->getContentPane()->layout()->addWidget(sensorIconEditor);
     sensorFrame->pack();
 
     signalFrame = new JFrame(tr("EditSignalIcons"));
-    ((QVBoxLayout*)signalFrame->getContentPane()->layout())->addWidget(new JLabel(tr("IconChangeInfo")),  0, Qt::AlignTop);//BorderLayout.NORTH);
+    ((QVBoxLayout*)signalFrame->getContentPane()->layout())->addWidget(new JLabel(tr("<html>Select new image from file,<br>then click an upper preview icon to change it.</html>")),  0, Qt::AlignTop);//BorderLayout.NORTH);
     // no spaces around Label as that breaks html formatting
     signalFrame->getContentPane()->layout()->addWidget(signalIconEditor);
     signalFrame->pack();

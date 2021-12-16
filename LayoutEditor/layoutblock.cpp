@@ -4655,7 +4655,7 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
     return routing;
 }
 
-/*public*/ void LayoutSetSaveItemListener::actionPerformed() {
+/*public*/ void LayoutSetSaveItemListener::actionPerformed(JActionEvent*) {
     bool needsRedraw = false;
     int k = lb->senseBox->currentIndex();
     int oldSense = lb->occupiedSense;
@@ -4714,7 +4714,7 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
     }
 }
 
-/*public*/ void LayoutSetResetItemListener::actionPerformed() {
+/*public*/ void LayoutSetResetItemListener::actionPerformed(JActionEvent*) {
     lb->memoryComboBox->setSelectedItem(lb->getMemory());
     lb->trackColorChooser->setColor(lb->blockTrackColor);
     lb->occupiedColorChooser->setColor(lb->blockOccupiedColor);

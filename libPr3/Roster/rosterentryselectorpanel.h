@@ -15,14 +15,14 @@ public:
     //explicit RosterEntrySelectorPanel(QWidget *parent = 0);
     /*public*/ RosterEntrySelectorPanel(QWidget *parent = 0);
     /*public*/ RosterEntrySelectorPanel(RosterEntry* re, QString rg, QWidget *parent = 0);
-    /*public*/ QList<RosterEntry*>* getSelectedRosterEntries();
+    /*public*/ QList<RosterEntry*>* getSelectedRosterEntries() override;
     /*public*/ void setSelectedRosterEntry(RosterEntry* re);
     /*public*/ void setSelectedRosterEntryAndGroup(RosterEntry* re, QString rg);
-    /*public*/ QString getSelectedRosterGroup();
+    /*public*/ QString getSelectedRosterGroup() override;
     /*public*/ void setSelectedRosterGroup(QString rg);
     /*public*/ RosterEntryComboBox* getRosterEntryComboBox();
     /*public*/ RosterGroupComboBox* getRosterGroupComboBox();
-    /*public*/ void setEnabled(bool enabled);
+    /*public*/ void setEnabled(bool enabled) override;
     /*public*/ bool isEnabled();
     /*public*/ QString getNonSelectedItem();
     /*public*/ void setNonSelectedItem(QString itemText);

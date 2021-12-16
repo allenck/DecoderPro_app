@@ -152,9 +152,50 @@
 
 void Editor::commonInit()
 {
- _debug = log->isDebugEnabled();
+ //commonInit();
+ _urlMap = new QMap<QString, QString>();
+ _debug = false;
+ _loadFailed = false;
+ _positionable = true;
+ _controlLayout = true;
+ _showHidden = true;
+ _showTooltip = true;
+ _globalSetsLocal = true;    // pre 2.9.6 behavior
+ _useGlobalFlag = false;     // pre 2.9.6 behavior
+ _ignore = false;
+ _contents = new QVector<Positionable*>();
+ _scrollState = SCROLL_NONE;
+ _editable = true;
+ _selectRect = QRect();
+ _selectRectItemGroup = nullptr;
+ _highlightcomponent = QRect();
+ _dragging = false;
+ _selectionGroup = new QList<Positionable*>();  // items gathered inside fence
+ _toolTip = "";
+ _selectRectStroke = Qt::DashLine;
 
+
+ xLoc = 0;     // x coord of selected Positionable
+ yLoc = 0;     // y coord of selected Positionable
+ defaultBackgroundColor = QColor(Qt::lightGray);
+ _pastePending = false;
+ showCloseInfoMessage = true;	//display info message when closing panel
+ _paintScale = 1.0;   // scale for _targetPanel drawing
+ _targetFrame = (JFrame*)this;
+ _targetPanel = nullptr;
+ editScene = nullptr;
+ _targetPanel = nullptr;
+ editPanel = nullptr;
+ _highlightColor =  QColor(204, 207, 88);
+ _selectGroupColor =  QColor(204, 207, 88);
+ _selectRectColor = QColor(Qt::red);
+ _selectRectStroke = Qt::DashLine;
+ _selectRectItemGroup = new QGraphicsItemGroup();
+ frameLocationX = 0;
+ frameLocationY = 0;
  //_iconEditorFrame = new QHash <QString, JFrameItem*>();
+ _spinCols = new SpinnerNumberModel(3,1,100,1);
+  panelMenuIsVisible = true;
   ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
   ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
@@ -174,6 +215,8 @@ void Editor::commonInit()
  this->savePosition = savePosition;
  commonInit();
 
+ _debug = log->isDebugEnabled();
+ _defaultToolTip = /*new ToolTip(NULL, 0, 0)*/ "";
  setVisible(false);
  static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
@@ -194,6 +237,7 @@ void Editor::commonInit()
 {
  commonInit();
  _debug = false;
+ _loadFailed = false;
 
  showCloseInfoMessage = true;	//display info message when closing panel
 
@@ -239,7 +283,7 @@ void Editor::commonInit()
 
 if (_delete)
 {
- log->debug(QString("loadFailed _delete= ")+(_delete?"true":"false"));
+ log->debug("loadFailed _delete= "+_delete);
   return nullptr;
 }
 if (_newIcon==nullptr)
@@ -297,7 +341,7 @@ if (_newIcon==nullptr)
     if(targetPanel != nullptr);
     _panelScrollPane = new QScrollArea(_targetPanel);
     QWidget* contentPane = frame->getContentPane();
-    QLayout* contentPaneLayout=contentPane->layout();
+    QVBoxLayout* contentPaneLayout;
     if(contentPane->layout() == nullptr)
       contentPaneLayout = new QVBoxLayout(contentPane);
     contentPaneLayout->addWidget(_panelScrollPane);
@@ -318,22 +362,12 @@ if (_newIcon==nullptr)
 }
 
 /*protected*/ void Editor::setTargetPanel(QGraphicsView* targetPanel, JmriJFrame* frame) {
-    editScene = new EditScene();
+         editScene = new EditScene();
     editScene->setObjectName("editScene");
     if (frame == nullptr) {
         _targetFrame = this;
     } else {
         _targetFrame = frame;
-    }
-    if(targetPanel)
-    {
-     editPanel = targetPanel;
-     editPanel->setScene(editScene);
-     editPanel->setMouseTracking(true);
-     editPanel->setRenderHint(QPainter::Antialiasing);
-     editPanel->setScene(editScene);
-     setBackgroundColor(defaultBackgroundColor);
-     return;
     }
 //    _targetFrame->setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 //    _panelScrollPane = new JScrollPane(_targetPanel);
@@ -376,8 +410,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
 }
 
 /*protected*/ void Editor::setTargetPanelSize(int w, int h) {
-    if (_debug)
-     log->debug("setTargetPanelSize now w="+QString::number(w)+", h="+QString::number(h));
+        if (_debug) log->debug("setTargetPanelSize now w="+QString::number(w)+", h="+QString::number(h));
     //_targetPanel->setSize(w, h);
         if(editScene == nullptr) editScene = new EditScene();
     editScene->setSceneRect(QRectF(0,0,w,h));
@@ -417,7 +450,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
 /*public*/ void Editor::setBackgroundColor(QColor color)
 {
  if(editPanel)
-  editScene->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
+  editPanel->setBackgroundBrush(QBrush(color, Qt::SolidPattern));
 }
 
 /*public*/ void Editor::clearBackgroundColor(){
@@ -484,12 +517,10 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
 #endif
 /*private*/ void Editor::setScrollbarScale(double ratio) {
     //resize the panel to reflect scaling
-    //QSize dim = _targetPanel->size();
-    QSize dim = editPanel->size();
+    QSize dim = _targetPanel->size();
     int tpWidth = (int) ((dim.width()) * ratio);
     int tpHeight = (int) ((dim.height()) * ratio);
-    //_targetPanel->resize(tpWidth, tpHeight);
-    editPanel->resize(tpWidth, tpHeight);
+    _targetPanel->resize(tpWidth, tpHeight);
     log->debug(tr("setScrollbarScale: ratio= %1, tpWidth= %2, tpHeight= %3").arg(ratio).arg(tpWidth).arg(tpHeight));
     // compute new scroll bar positions to keep upper left same
     QScrollBar* horScroll = _panelScrollPane->horizontalScrollBar();
@@ -771,6 +802,7 @@ Editor::TFWindowListener::TFWindowListener(Editor *editor) { this->editor = edit
     setScroll(state);
 }
 
+
 /*public*/ QString Editor::getScrollable() {
     QString value = "";
     switch (_scrollState) {
@@ -873,11 +905,36 @@ void Editor::closeEvent(QCloseEvent */*e*/)
  * view
  *
  */
-/*abstract*/ /*protected*/ void Editor::paintTargetPanel(QGraphicsScene* /*g*/){}
+/*abstract*/ /*protected*/ void Editor::paintTargetPanel(QGraphicsScene* /*g*/) {}
 
-///*protected*/ void Editor::setSecondSelectionGroup(QList<Positionable*> list) {
-//    _secondSelectionGroup = list;
-//}
+/**
+ * Set an object's location when it is created.
+ *
+ * @param obj the object to locate
+ */
+///*abstract*/ /*protected*/ void setNextLocation(Positionable* obj);
+
+/**
+ * Editor Views should make calls to this class (Editor) to set popup menu
+ * items. See 'Popup Item Methods' above for the calls.
+ *
+ * @param p     the item containing or requiring the context menu
+ * @param event the event triggering the menu
+ */
+///*abstract*/ /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
+
+/**
+ * After construction, initialize all the widgets to their saved config
+ * settings.
+ */
+///*abstract*/ /*public*/ void initView();
+
+/**
+ * Set up item(s) to be copied by paste.
+ *
+ * @param p the item to copy
+ */
+///*abstract*/ /*protected*/ void copyItem(Positionable p);
 
 /*protected*/ Editor* Editor::changeView(QString className)
 {
@@ -1460,7 +1517,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     if(dlg->exec() == QDialog::Accepted)
     {
      QString nameID= dlg->value();
-     if(!nameID.isNull())
+     if (!nameID.isNull())
      {
       LocoIcon* icon = addLocoIcon(nameID.trimmed());
       icon->setLocation(200,100);
@@ -1601,6 +1658,113 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 /*protected*/ void Editor::addToTarget(Positionable* l)
 {
  bool bAdded = false;
+#if 0
+ PositionableLabel* pl = qobject_cast<PositionableLabel*> (l);
+
+ PositionableJComponent* pj = qobject_cast<PositionableJComponent*>(l);
+ if(pj!=NULL)
+  bAdded = pj->updateScene();
+ if(pj != NULL)
+ {
+  if(pj->_itemGroup != NULL && pj->_itemGroup->scene() != NULL)
+  {
+   //Q_ASSERT(pl->_itemGroup->scene()!=0);
+   editScene->removeItem(pl->_itemGroup);
+  }
+  pj->_itemGroup = new QGraphicsItemGroup();
+  if(qobject_cast<PositionableRoundRect*>(l)!= NULL)
+  {
+   PositionableRoundRect* ps = (PositionableRoundRect*)l;
+   QGraphicsRoundRectItem* rr = new QGraphicsRoundRectItem(0, 0, ps->_width, ps->_height, ps->_radius, ps->_radius);
+   rr->setBrush(QBrush(ps->_fillColor));
+   rr->setPen(QPen(QBrush(ps->_lineColor),ps->_lineWidth));
+   ps->_itemGroup = new QGraphicsItemGroup();
+   ps->_itemGroup->addToGroup(rr);
+   int x = ps->getX();
+   int y = ps->getY();
+   ps->_itemGroup->setPos(x,y);
+   ps->_itemGroup->setZValue(ps->getDisplayLevel());
+   editScene->addItem(ps->_itemGroup);
+  }
+  else
+  if(qobject_cast<PositionableRectangle*>(l)!= NULL)
+  {
+   PositionableRectangle* ps = (PositionableRectangle*)l;
+   QGraphicsRectItem* rr = new QGraphicsRectItem(QRectF(0, 0, ps->_width, ps->_height));
+   rr->setBrush(QBrush(ps->_fillColor));
+   rr->setPen(QPen(QBrush(ps->_lineColor),ps->_lineWidth));
+   ps->_itemGroup = new QGraphicsItemGroup();
+   ps->_itemGroup->addToGroup(rr);
+   int x = ps->getX();
+   int y = ps->getY();
+   ps->_itemGroup->setPos(x,y);
+   ps->_itemGroup->setZValue(ps->getDisplayLevel());
+   editScene->addItem(ps->_itemGroup);
+  }
+  else
+
+   if(qobject_cast<PositionableCircle*>(l)!= NULL)
+  {
+   PositionableCircle* ps = (PositionableCircle*)l;
+   QGraphicsEllipseItem* rr = new QGraphicsEllipseItem(QRectF(0, 0, ps->_radius, ps->_radius));
+   rr->setBrush(QBrush(ps->_fillColor));
+   rr->setPen(QPen(QBrush(ps->_lineColor),ps->_lineWidth));
+   ps->_itemGroup = new QGraphicsItemGroup();
+   ps->_itemGroup->addToGroup(rr);
+   int x = ps->getX();
+   int y = ps->getY();
+   ps->_itemGroup->setPos(x,y);
+   ps->_itemGroup->setZValue(ps->getDisplayLevel());
+   editScene->addItem(ps->_itemGroup);
+  }
+  else if(qobject_cast<PositionableEllipse*>(l)!= NULL)
+  {
+   PositionableEllipse* ps = (PositionableEllipse*)l;
+   QGraphicsEllipseItem* rr = new QGraphicsEllipseItem(QRectF(0, 0, ps->_width, ps->_height));
+   rr->setBrush(QBrush(ps->_fillColor));
+   rr->setPen(QPen(QBrush(ps->_lineColor),ps->_lineWidth));
+   ps->_itemGroup = new QGraphicsItemGroup();
+   ps->_itemGroup->addToGroup(rr);
+   int x = ps->getX();
+   int y = ps->getY();
+   ps->_itemGroup->setPos(x,y);
+   ps->_itemGroup->setZValue(ps->getDisplayLevel());
+   editScene->addItem(ps->_itemGroup);
+  }
+  return;
+ }
+ if(pl == NULL)
+     return;
+ if(pl != NULL)
+ {
+ if(pl->_itemGroup != NULL && pl->_itemGroup->scene() != NULL)
+ {
+  //Q_ASSERT(pl->_itemGroup->scene()!=0);
+  editScene->removeItem(pl->_itemGroup);
+ }
+ pl->_itemGroup = new QGraphicsItemGroup();
+ if(pl->isIcon())
+ {
+  QGraphicsPixmapItem* item = new QGraphicsPixmapItem(QPixmap::fromImage(pl->getIcon()->getOriginalImage()));
+
+  pl->_itemGroup->addToGroup(item);
+  editScene->addItem(pl->_itemGroup);
+  item->setPos(pl->getLocation());
+  item->setToolTip(pl->getTooltip());
+ }
+ else
+ {
+  QGraphicsTextItem* item = new QGraphicsTextItem(pl->getUnRotatedText());
+  pl->_itemGroup->addToGroup(item);
+  editScene->addItem(pl->_itemGroup);
+  item->setPos(pl->getLocation());
+  item->setToolTip(pl->getTooltip());
+ }
+ if(pl->getDegrees() != 0)
+  pl->_itemGroup->setRotation(pl->_itemGroup->rotation()+ pl->getDegrees());
+ }
+ editScene->addItem(pl->_itemGroup);
+#else
 
    if(l != nullptr)
    {
@@ -1625,7 +1789,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 //  QRectF r = ((PositionableLabel*)l)->getBounds();
 //  editScene->invalidate(r,QGraphicsScene::ItemLayer);
 // }
-
+#endif
 }
 /************** Icon editors for adding content ************/
 
@@ -1920,6 +2084,7 @@ void AddPanelIconActionListener::actionPerformed(JActionEvent *)
  frame->show();
 }
 
+#if 1
 /*protected*/ void Editor::addMemoryEditor()
 {
 // IconAdder* editor = new IconAdder("Memory") {
@@ -1974,7 +2139,7 @@ void AddPanelIconActionListener::actionPerformed(JActionEvent *)
     frame->pack();
     frame->show();
 }
-
+#endif
 Editor::MemoryIconAdder::MemoryIconAdder(Editor *parent)
 {
     this->editor = parent;
@@ -2169,7 +2334,7 @@ void Editor::MemoryIconAdder::valueChanged(ListSelectionEvent* e )
 //            putIcon();
 //        }
 //    };
- EDAddIconActionListener* addIconAction = new EDAddIconActionListener(this);
+ AddIconActionListener* addIconAction = new AddIconActionListener(this);
  editor->makeIconPanel(true);
  editor->complete(addIconAction, true, false, false);
  frame->addHelpMenu("package.jmri.jmrit.display.IconAdder", true);
@@ -2488,24 +2653,24 @@ void Editor::putBackground() {
 {
  #if 1
  QString name = "";
- if(editPanel != nullptr)
+ if(_targetPanel != nullptr)
  {
-  if (((QWidget*)editPanel)->window() !=nullptr)
+  if (((QWidget*)_targetPanel)->window() !=nullptr)
   {
    //name=((JFrame*)((QWidget*)_targetPanel)->window())->getTitle();
    name = _targetFrame->getTitle();
   }
  }
-// else
-//  if(editScene != nullptr)
-//  {
-//   if (((QWidget*)editScene->parent())->window() !=nullptr)
-//   {
-//    name=((JFrame*)((QWidget*)editScene->parent())->window())->getTitle();
-//   }
+ else
+  if(editScene != nullptr)  // use editPanel?
+  {
+   if (((QWidget*)editScene)->window() !=nullptr)
+   {
+    name=((JFrame*)((QWidget*)editPanel)->window())->getTitle();
+   }
 
-//  }
-  //else return;
+  }
+  else return;
 
  if (name==nullptr || name==(""))
   JmriJFrame::setTitle(tr("Editor"));
@@ -2600,13 +2765,8 @@ void Editor::putBackground() {
 //             ii.setVisible(true);
 //         }
 //     });
-//  EditItemActionListener* editItemActionListener = new EditItemActionListener();
-//  connect(editItem, SIGNAL(triggered(bool)), editItemActionListener/*->self()*/, SLOT(actionPerformed()));
-  connect(editItem, &QAction::triggered, [=]{
-   ImageIndexEditor* ii = ImageIndexEditor::instance(this);
-   ii->pack();
-   ii->setVisible(true);
-  });
+  EditItemActionListener* editItemActionListener = new EditItemActionListener();
+  connect(editItem, SIGNAL(triggered(bool)), editItemActionListener->self(), SLOT(actionPerformed()));
   findIcon->addAction(editItem);
   findIcon->addSeparator();
 
@@ -2625,16 +2785,9 @@ void Editor::putBackground() {
 //             return this;
 //         }
 //     }.init(editor));
-//  SearchItemActionListener* searchItemActionListener  = new SearchItemActionListener();
-//  searchItemActionListener->init(editor);
-  //connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener, SLOT(actionPerformed()));
-  connect(searchItem, &QAction::triggered, [=]{
-   ((DirectorySearcher*)InstanceManager::getDefault("DirectorySearcher"))->searchFS();
-   ImageIndexEditor* ii = ImageIndexEditor::instance(this);
-   ii->pack();
-   ii->setVisible(true);
-
-  });
+  SearchItemActionListener* searchItemActionListener  = new SearchItemActionListener();
+  searchItemActionListener->init(editor);
+  connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener->self(), SLOT(actionPerformed()));
 
   findIcon->addAction(searchItem);
   frame->setMenuBar(menuBar);
@@ -2679,31 +2832,31 @@ AddIconFrameWindowListener::AddIconFrameWindowListener(Editor *editor)
     if (editor->log->isDebugEnabled()) editor->log->debug("windowClosing: HIDE "+editor->title());
 }
 
-//void SearchItemActionListener::actionPerformed(JActionEvent */*e*/)
-//{
-//    QDir* dir = DirectorySearcher::instance()->searchFS();
-//if (dir != nullptr) {
-//    ea->addDirectoryToCatalog(dir);
-//}
+void SearchItemActionListener::actionPerformed(JActionEvent */*e*/)
+{
+    QDir* dir = DirectorySearcher::instance()->searchFS();
+if (dir != nullptr) {
+    ea->addDirectoryToCatalog(dir);
+}
 
-//}
-//SearchItemActionListener* SearchItemActionListener::init(IconAdder *ed)
-//{
-// ea = ed;
-// return this;
-//}
+}
+SearchItemActionListener* SearchItemActionListener::init(IconAdder *ed)
+{
+ ea = ed;
+ return this;
+}
 
-//EditItemActionListener* EditItemActionListener::init(Editor *ed)
-//{
-// editor = ed;
-// return this;
-//}
-//void EditItemActionListener::actionPerformed(JActionEvent * /*e*/)
-//{
-// ImageIndexEditor* ii = ImageIndexEditor::instance(editor);
-// ii->pack();
-// ii->setVisible(true);
-//}
+EditItemActionListener* EditItemActionListener::init(Editor *ed)
+{
+ editor = ed;
+ return this;
+}
+void EditItemActionListener::actionPerformed(JActionEvent * /*e*/)
+{
+ ImageIndexEditor* ii = ImageIndexEditor::instance(editor);
+ ii->pack();
+ ii->setVisible(true);
+}
 
 /********************* cleanup *************************/
 
@@ -3644,11 +3797,6 @@ abstract /*protected*/ void init(QString name);
 /*public*/ void Editor::setHighlightColor(QColor color) {
      _highlightColor = color;
 }
-
-/*public*/ QColor Editor::getHighlightColor() {
-    return _highlightColor;
-}
-
 /*public*/ void Editor::setSelectGroupColor(QColor color) {
     _selectGroupColor = color;
 }
@@ -3665,12 +3813,12 @@ abstract /*protected*/ void init(QString name);
     _selectRectColor = QColor(Qt::red);
     _selectRectStroke = Qt::DashLine;
 }
-#if 0
-/*public*/ void Editor::paint(EditScene * g2d) {
+
+/*public*/ void Editor::paint(QGraphicsScene* g2d) {
     //Graphics2D g2d = (Graphics2D)g;
 //    g2d.scale(_paintScale, _paintScale);
 //    super.paint(g);
-    paintTargetPanel(editScene);
+    paintTargetPanel(g2d);
 //    java.awt.Stroke stroke = g2d.getStroke();
 //    Color color = g2d.getColor();
     if(_selectRectItemGroup != nullptr && _selectRectItemGroup->scene() != 0)
@@ -3685,6 +3833,7 @@ abstract /*protected*/ void init(QString name);
       _selectRectItemGroup->removeFromGroup(it);
      }
     }
+#if 0
     if (!_selectRect.isNull())
     {
      //Draw a rectangle on top of the image.
@@ -3737,18 +3886,19 @@ abstract /*protected*/ void init(QString name);
 //    if (_tooltip != null) {
 //        _tooltip.paint(g2d, _paintScale);
 //    }
-    QGraphicsScene* parentScene = nullptr;
-    if(_selectRectItemGroup && ((parentScene = _selectRectItemGroup->scene()) == editScene))
-//     return;
-//    else
+    QGraphicsScene* parentScene;
+    if(_selectRectItemGroup && ((parentScene = _selectRectItemGroup->scene()) == g2d))
+     return;
+    else
     {
      log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
      if(parentScene)
       parentScene->removeItem(_selectRectItemGroup);
     }
     g2d->addItem(_selectRectItemGroup);
-}
 #endif
+}
+
 void Editor::setName(QString name)
 {
  this->name = name;
@@ -4049,8 +4199,7 @@ void UrlErrorDialog::cancelButton_clicked()
         }
         for (Positionable* p : toDelete) {
             removeFromContents(p);
-            //_targetPanel->repaint();
-            editPanel->update();
+            _targetPanel->repaint();
         }
     }
 }

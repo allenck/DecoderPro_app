@@ -29,6 +29,7 @@
 #include "instancemanager.h"
 #include "beanedititem.h"
 #include "layoutturnout.h"
+#include "actionlistener.h"
 
 class ConnectivityUtil;
 class JActionEvent;
@@ -860,7 +861,7 @@ class LayoutSetSaveItemListener : public QObject, public ActionListener
  LayoutBlock* lb;
  LayoutSetSaveItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent* =0)override;
 };
 
 class LayoutSetResetItemListener : public QObject, public ActionListener
@@ -870,7 +871,7 @@ class LayoutSetResetItemListener : public QObject, public ActionListener
  LayoutBlock* lb;
  LayoutSetResetItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent* =0)override;
 };
 
 class RoutingSetSaveItemListener : public AbstractAction

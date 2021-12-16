@@ -495,20 +495,26 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
          result = false;
      }
  }
+ // grid size parameter
+ if ((a = shared.attribute("gridSize")) != "") {
+     bool ok;
+         panel->gContext->setGridSize(a.toInt(&ok));
+     if(!ok) {
+         log->error(tr("failed to convert gridSize to int - %1").arg(a));
+         result = false;
+     }
+ }
 
- // set contents state
- QString slValue = "both";
- if ((a = shared.attribute("sliders")) != nullptr && a==("no")) {
-     slValue = "none";
- }
- if ((a = shared.attribute("scrollable")) != nullptr) {
-     slValue = a;
+ // second grid size parameter
+ if ((a = shared.attribute("gridSize2nd")) != "") {
+     bool ok;
+         panel->gContext->setGridSize2nd(a.toInt(&ok));
+     if(!ok) {
+         log->error(tr("failed to convert gridSize2nd to int - %1").arg(a));
+         result = false;
+     }
  }
 
- bool edValue = true;
- if ((a = shared.attribute("editable")) != nullptr && a==("no")) {
-     edValue = false;
- }
 
  bool value = true;
  if ((a = shared.attribute("positionable")) != nullptr && a==("no")) {
@@ -529,36 +535,37 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
  }
  panel->setTurnoutAnimation(value);
 
- bool hbValue = true;
- if ((a = shared.attribute("showhelpbar")) != nullptr && a==("no")) {
-     hbValue = false;
+ try {
+     panel->setDrawGrid(getBooleanValue(shared.attribute("drawgrid")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert drawgrid attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing drawgrid attribute");
  }
 
- bool dgValue = false;
- if ((a = shared.attribute("drawgrid")) != nullptr && a==("yes")) {
-     dgValue = true;
+ try {
+     panel->setSnapOnAdd(getBooleanValue(shared.attribute("snaponadd")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert snaponadd attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing snaponadd attribute");
  }
 
- bool sgaValue = false;
- if ((a = shared.attribute("snaponadd")) != nullptr && a==("yes")) {
-     sgaValue = true;
+ try {
+     panel->setSnapOnMove(getBooleanValue(shared.attribute("snaponmove")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert snaponmove attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing snaponmove attribute");
  }
 
- bool sgmValue = false;
- if ((a = shared.attribute("snaponmove")) != nullptr && a==("yes")) {
-     sgmValue = true;
+ try {
+     panel->setTurnoutCircles(getBooleanValue(shared.attribute("turnoutcircles")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert turnoutcircles attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing turnoutcircles attribute");
  }
-
- bool aaValue = false;
- if ((a = shared.attribute("antialiasing")) != nullptr && a==("yes")) {
-     aaValue = true;
- }
-
- value = false;
- if ((a = shared.attribute("turnoutcircles")) != nullptr && a==("yes")) {
-     value = true;
- }
- panel->setTurnoutCircles(value);
 
  value = false;
  if ((a = shared.attribute("tooltipsnotedit")) != nullptr && a==("yes")) {
@@ -672,20 +679,51 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
  panel->setConnections();
 
  // display the results
- panel->setAllEditable(edValue);  // set first since other attribute use this setting
- panel->setShowHelpBar(hbValue);
- panel->setDrawGrid(dgValue);
- panel->setSnapOnAdd(sgaValue);
- panel->setSnapOnMove(sgmValue);
- panel->setAntialiasingOn(aaValue);
- //panel->setScroll(slValue);
- panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
- panel->editScene->setSceneRect(0,0,panelWidth, panelHeight);
- panel->editPanel->scale(xScale, yScale); // added ACK
+ try {
+     // set first since other attribute use this setting
+     panel->setAllEditable(getBooleanValue(shared.attribute("editable")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert editable attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing editable attribute");
+ }
+ try {
+     panel->setShowHelpBar(getBooleanValue(shared.attribute("showhelpbar")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert showhelpbar attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing showhelpbar attribute");
+ }
+ try {
+     panel->setAntialiasingOn(getBooleanValue(shared.attribute("antialiasing")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert antialiasing attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing antialiasing attribute");
+ }
+
+ // set contents state
+ QString slValue = "both";
+ try {
+     bool value = getBooleanValue(shared.attribute("sliders"));
+     slValue = value ? "both" : "none";
+ } catch (DataConversionException e) {
+     log->warn("unable to convert sliders attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing sliders attribute");
+ }
+ if ((a = shared.attribute("scrollable")) != "") {
+     slValue = a;
+ }
+ panel->setScroll(slValue);
+
  panel->pack();
  panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
+ panel->editScene->setSceneRect(0,0,panelWidth, panelHeight);
+ //panel->editPanel->scale(xScale, yScale); // added ACK
  panel->setVisible(true);    // always show the panel
  panel->resetDirty();
+
  panel->getTargetFrame()->menuBar()->setVisible(true);
  panel->menuBox->setChecked(true);
 
@@ -693,22 +731,24 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
 
 
  // register the resulting panel for later configuration
- static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(panel);
- //if (InstanceManager::transitManagerInstance()->getSystemNameList().size() > 0)
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if (cm != nullptr) {
+     cm->registerUser(panel);
+ }
+ //open Dispatcher frame if any Transits are defined, and open Dispatcher flag set on
  if(((TransitManager*)InstanceManager::getNullableDefault("TransitManager")))
  {
-  if (shared.attribute("openDispatcher") != nullptr)
-  {
-   if (shared.attribute("openDispatcher")==("yes"))
-   {
-    panel->setOpenDispatcherOnLoad(true);
-    DispatcherFrame* df = (DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame");
-    df->loadAtStartup();
-   }
-   else
-   {
-    panel->setOpenDispatcherOnLoad(false);
-   }
+  try {
+      bool value = getBooleanValue(shared.attribute("openDispatcher"));
+      panel->setOpenDispatcherOnLoad(value);
+      if (value) {
+          DispatcherFrame* df = (DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame");
+          df->loadAtStartup();
+      }
+  } catch (DataConversionException e) {
+      log->warn("unable to convert openDispatcher attribute");
+  } catch (NullPointerException e) {  // considered normal if the attribute is not present
+      log->debug("missing openDispatcher attribute");
   }
  }
  return result;
@@ -716,4 +756,14 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
 
 /*public*/ int LayoutEditorXml::loadOrder() const{
     return Manager::PANELFILES;
+}
+
+/*private*/ bool LayoutEditorXml::getBooleanValue(QString val)
+{
+ QString txt = val.trimmed().toLower();
+ if(txt == "yes" || txt == "true" )
+  return true;
+ if(txt == "no" || txt == "false" )
+  return false;
+ throw DataConversionException();
 }

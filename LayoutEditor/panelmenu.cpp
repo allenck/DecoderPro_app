@@ -190,7 +190,7 @@
    PanelActionListener* a = new PanelActionListener(panel, this);
    QAction* r = new QAction(panel->getTitle(), this);
    r->setCheckable(true);
-   connect(r, SIGNAL(toggled(bool)), a->self(), SLOT(actionPerformed()));
+   connect(r, SIGNAL(toggled(bool)), a, SLOT(actionPerformed()));
    panelsSubMenu->addAction(r);
    updateEditorPanel (panel);
 }
@@ -200,7 +200,7 @@ PanelActionListener::PanelActionListener(Editor *panel, PanelMenu* pm)
  this->panel = panel;
  this->pm = pm;
 }
-/*public*/ void PanelActionListener::actionPerformed(JActionEvent* /*e*/)
+/*public*/ void PanelActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 {
     //if (panel instanceof LayoutEditor) {
  if(qobject_cast<LayoutEditor*>(panel)!= nullptr)

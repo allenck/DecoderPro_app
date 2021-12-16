@@ -1514,7 +1514,7 @@
          splitTrackSegment();
 //     }
  });
- connect(act, SIGNAL(triggered(bool)), this, SLOT(splitTrackSegment()));
+ //connect(act, SIGNAL(triggered(bool)), this, SLOT(splitTrackSegment()));
 
  QMenu* lineType = new QMenu(tr("Change To"));
  QActionGroup* lineTypeActGrp = new QActionGroup(this);

@@ -75,8 +75,6 @@
 #include "joptionpane.h"
 #include <QSignalMapper>
 #include "analogclock2displayxml.h"
-#include <QRectF>
-#include "loggerfactory.h"
 
 ControlPanelEditor::ControlPanelEditor(QWidget *parent) :
     Editor(parent)
@@ -133,6 +131,7 @@ ControlPanelEditor::~ControlPanelEditor()
 
 /*protected*/ void ControlPanelEditor::init(QString /*name*/)
 {
+ log = new Logger("ControlPanelEditor");
  setObjectName("ControlPanelEditor");
  setProperty("JavaClassName", "jmri.jmrit.display.controlPanelEditor.ControlPanelEditor");
 
@@ -371,17 +370,17 @@ ControlPanelEditor::~ControlPanelEditor()
      _warrantMenu = new QMenu(tr("Warrant"));
 #if 1 // TODO:
      QSignalMapper* sm = new QSignalMapper(this);
-     JMenuItem* aboutItem = new JMenuItem(tr("About Warrants"),this);
+     QAction* aboutItem = new QAction(tr("About Warrants"),this);
      sm->setMapping(aboutItem,aboutItem);
-     HelpUtil::enableHelpOnButton((QWidget*)aboutItem, "package.jmri.jmrit.logix.Warrant");
+     HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.Warrant", nullptr);
      _warrantMenu->addAction(aboutItem);
-     aboutItem = new JMenuItem(tr("About OBlocks & Portals"),this);
+     aboutItem = new QAction(tr("About OBlocks & Portals"),this);
      sm->setMapping(aboutItem,aboutItem);
-     HelpUtil::enableHelpOnButton((QWidget*)aboutItem, "package.jmri.jmrit.logix.OBlockTable");
+     HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", nullptr);
      _warrantMenu->addAction(aboutItem);
-     aboutItem = new JMenuItem(tr("About Circuit Builder"),this);
+     aboutItem = new QAction(tr("About Circuit Builder"),this);
      sm->setMapping(aboutItem,aboutItem);
-     HelpUtil::enableHelpOnButton((QWidget*)aboutItem, "package.jmri.jmrit.display.CircuitBuilder");
+     HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
      _warrantMenu->addAction(aboutItem);
      //aboutItem.addActionListener((ActionEvent event) -> {
      connect(aboutItem, &QAction::triggered, [=]{
@@ -570,14 +569,9 @@ ControlPanelEditor::~ControlPanelEditor()
 //                return this;
 //            }
 //        }.init(this));
-//    CPEditItemActionListener* eial = new CPEditItemActionListener();
-//    eial->init(this);
-//    connect(editItem, SIGNAL(triggered()), eial->self(), SLOT(actionPerformed()));
-    connect(editItem, &QAction::triggered, [=]{
-     ImageIndexEditor* ii = ImageIndexEditor::instance(this);
-     ii->pack();
-     ii->setVisible(true);
-    });
+    CPEditItemActionListener* eial = new CPEditItemActionListener();
+    eial->init(this);
+    connect(editItem, SIGNAL(triggered()), eial, SLOT(actionPerformed()));
     editItem = new QAction(tr("Change view to Panel Editor"),this);
     _fileMenu->addAction(editItem);
 
@@ -610,18 +604,18 @@ ControlPanelEditor::~ControlPanelEditor()
 //            }
         });
 }
-//void CPEditItemActionListener::actionPerformed(JActionEvent *)
-//{
-//    ImageIndexEditor* ii = ImageIndexEditor::instance(panelEd);
-//    ii->pack();
-//    ii->setVisible(true);
-//}
-//CPEditItemActionListener* CPEditItemActionListener::init(ControlPanelEditor *ed)
-//{
-//  panelEd = ed;
-// return this;
+void CPEditItemActionListener::actionPerformed(JActionEvent *)
+{
+    ImageIndexEditor* ii = ImageIndexEditor::instance(panelEd);
+    ii->pack();
+    ii->setVisible(true);
+}
+CPEditItemActionListener* CPEditItemActionListener::init(ControlPanelEditor *ed)
+{
+  panelEd = ed;
+ return this;
 
-//}
+}
 
 void ControlPanelEditor::deleteAction()
 {
@@ -1544,8 +1538,8 @@ void ControlPanelEditor::selectAllAction()
  Positionable* selection = getCurrentSelection(event);
  if (_shapeDrawer->doMouseClicked(event))
  {
-  //paint(editScene);
-  repaint();
+  paint(editScene);
+
   return;
  }
 
@@ -1577,8 +1571,9 @@ void ControlPanelEditor::selectAllAction()
    _currentSelection = nullptr;
    _highlightcomponent = QRectF();
   }
- editPanel->repaint(); // needed for ToolTip
+ //_targetPanel->repaint(); // needed for ToolTip
 
+ paint(editScene);
 }
 
 /*public*/ void ControlPanelEditor::mouseDragged(QGraphicsSceneMouseEvent* event)
@@ -1715,8 +1710,7 @@ void ControlPanelEditor::selectAllAction()
      // setToolTip("");
   }
  }
- //paint(editScene);
- repaint();
+ paint(editScene);
  if(_targetPanel != nullptr)
   _targetPanel->repaint(); // needed for ToolTip
  else if(editScene != nullptr)
@@ -1883,8 +1877,8 @@ void ControlPanelEditor::abortPasteItems() {
 /*public*/ void ControlPanelEditor::setCopyMenu(Positionable* p, QMenu* popup)
 {
   QAction* edit = new QAction(tr("Duplicate"),this);
-//  DuplicateActionListener* dal = new DuplicateActionListener();
-//  dal->init(p, this);
+  DuplicateActionListener* dal = new DuplicateActionListener();
+  dal->init(p, this);
 //    edit.addActionListener(new ActionListener() {
 //        Positionable comp;
 //        /*public*/ void actionPerformed(ActionEvent e) {
@@ -1896,10 +1890,7 @@ void ControlPanelEditor::abortPasteItems() {
 //        }
 //    }.init(p));
     popup->addAction(edit);
-    //connect(edit, SIGNAL(triggered()), dal->self(), SLOT(actionPerformed()));
-    connect(edit, &QAction::triggered, [=]{
-     copyItem(p);
-    });
+    connect(edit, SIGNAL(triggered()), dal->self(), SLOT(actionPerformed()));
 }
 
 //@Override
@@ -2050,24 +2041,21 @@ void ControlPanelEditor::abortPasteItems() {
 //    edit.addActionListener((ActionEvent event) -> {
 //        new ColorDialog(this, pos, type, null);
 //    });
-//    CPEEditListener* listener = new CPEEditListener(type, pos, this);
-//    connect(edit, SIGNAL(triggered(bool)), listener->self(), SLOT(actionPerformed()));
-    connect(edit, &QAction::triggered, [=]{
-     new ColorDialog(this, pos, type, nullptr);
-    });
+    CPEEditListener* listener = new CPEEditListener(type, pos, this);
+    connect(edit, SIGNAL(triggered(bool)), listener->self(), SLOT(actionPerformed()));
     popup->addAction(edit);
 }
 
-//DuplicateActionListener* DuplicateActionListener::init(Positionable* pos, ControlPanelEditor* edit)
-//{
-// comp = pos;
-// this->edit = edit;
-// return this;
-//}
-//void DuplicateActionListener::actionPerformed(JActionEvent *)
-//{
-// edit->copyItem(comp);
-//}
+DuplicateActionListener* DuplicateActionListener::init(Positionable* pos, ControlPanelEditor* edit)
+{
+ comp = pos;
+ this->edit = edit;
+ return this;
+}
+void DuplicateActionListener::actionPerformed(JActionEvent *)
+{
+ edit->copyItem(comp);
+}
 
 
 
@@ -2700,16 +2688,7 @@ void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
 //  }
 
 
-  if (!_highlightGroup.isEmpty()) {
-      //g.setColor(((TargetPane) getTargetPanel()).getHighlightColor());
-      for (QRectF r : _highlightGroup) {
-          //g->drawRect(r.x, r.y, r.width(), r.height());
-       QGraphicsRectItem* item = new QGraphicsRectItem(r);
-       item->setPen(QPen(getHighlightColor()));
-       g->addItem(item);
-      }
-  }
-#if 0
+#if 1
   if (_secondSelectionGroup != NULL)
   {
 //        Graphics2D g2d = (Graphics2D) g;
@@ -2738,5 +2717,3 @@ void ControlPanelEditor::sceneChanged(QList<QRectF> /*rect*/)
 /*public*/ QString ControlPanelEditor::getClassName(){
  return "jmri.jmrit.display.controlpaneleditor.ControlPanelEditor";
 }
-
-/*private*/ /*final*/ /*static*/ Logger* ControlPanelEditor::log = LoggerFactory::getLogger("ControlPanelEditor");

@@ -33,17 +33,17 @@ class Meter
           Micro
       };
 
-  /*public*/ Unit getUnit() {}
+  /*public*/ virtual Unit getUnit() {return Percent;}
 
       /**
        * Enable this meter
        */
-  /*public*/ void enable() {}
+  /*public*/ virtual void enable() {}
 
       /**
        * Disable this meter
        */
-  /*public*/ void disable() {}
+  /*public*/ virtual void disable() {}
 
       /**
        * Remove references to and from this object, so that it can eventually be
@@ -52,7 +52,7 @@ class Meter
        * The meter must be disabled before it's disposed.
        */
       //@Override
-  /*public*/ void dispose() {}
+  /*public*/ virtual void dispose() {}
   virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(Meter, "Meter")

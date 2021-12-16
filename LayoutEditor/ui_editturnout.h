@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'editturnout.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -24,7 +24,7 @@ public:
     void setupUi(QMainWindow *EditTurnout)
     {
         if (EditTurnout->objectName().isEmpty())
-            EditTurnout->setObjectName(QString::fromUtf8("EditTurnout"));
+            EditTurnout->setObjectName(QLatin1String("EditTurnout"));
         EditTurnout->resize(487, 355);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
         sizePolicy.setHorizontalStretch(0);
@@ -33,7 +33,7 @@ public:
         EditTurnout->setSizePolicy(sizePolicy);
         EditTurnout->setMinimumSize(QSize(400, 200));
         menuBar = new QMenuBar(EditTurnout);
-        menuBar->setObjectName(QString::fromUtf8("menuBar"));
+        menuBar->setObjectName(QLatin1String("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 487, 25));
         EditTurnout->setMenuBar(menuBar);
 
@@ -44,7 +44,7 @@ public:
 
     void retranslateUi(QMainWindow *EditTurnout)
     {
-        EditTurnout->setWindowTitle(QCoreApplication::translate("EditTurnout", "Edit Turnout", nullptr));
+        EditTurnout->setWindowTitle(QApplication::translate("EditTurnout", "Edit Turnout", nullptr));
     } // retranslateUi
 
 };

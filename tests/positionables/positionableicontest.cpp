@@ -23,6 +23,6 @@ PositionableIconTest::PositionableIconTest()
         PositionableTestBase::setUp();
         //if (!GraphicsEnvironment.isHeadless()) {
             editor = new EditorScaffold();
-            p = new PositionableIcon(editor);
+            p = new PositionableIcon(editor, nullptr);
         //}
     }

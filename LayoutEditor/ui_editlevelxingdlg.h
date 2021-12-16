@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'editlevelxingdlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -39,20 +39,20 @@ public:
     void setupUi(QDialog *EditLevelXingDlg)
     {
         if (EditLevelXingDlg->objectName().isEmpty())
-            EditLevelXingDlg->setObjectName(QString::fromUtf8("EditLevelXingDlg"));
+            EditLevelXingDlg->setObjectName(QLatin1String("EditLevelXingDlg"));
         EditLevelXingDlg->resize(325, 155);
         EditLevelXingDlg->setModal(false);
         formLayout = new QFormLayout(EditLevelXingDlg);
-        formLayout->setObjectName(QString::fromUtf8("formLayout"));
+        formLayout->setObjectName(QLatin1String("formLayout"));
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         label = new QLabel(EditLevelXingDlg);
-        label->setObjectName(QString::fromUtf8("label"));
+        label->setObjectName(QLatin1String("label"));
 
         horizontalLayout->addWidget(label);
 
         block1Name = new QLineEdit(EditLevelXingDlg);
-        block1Name->setObjectName(QString::fromUtf8("block1Name"));
+        block1Name->setObjectName(QLatin1String("block1Name"));
 
         horizontalLayout->addWidget(block1Name);
 
@@ -60,14 +60,14 @@ public:
         formLayout->setLayout(0, QFormLayout::SpanningRole, horizontalLayout);
 
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
         label_2 = new QLabel(EditLevelXingDlg);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
 
         horizontalLayout_2->addWidget(label_2);
 
         block2Name = new QLineEdit(EditLevelXingDlg);
-        block2Name->setObjectName(QString::fromUtf8("block2Name"));
+        block2Name->setObjectName(QLatin1String("block2Name"));
 
         horizontalLayout_2->addWidget(block2Name);
 
@@ -75,14 +75,14 @@ public:
         formLayout->setLayout(1, QFormLayout::SpanningRole, horizontalLayout_2);
 
         horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName(QLatin1String("horizontalLayout_3"));
         xingEdit1Block = new QPushButton(EditLevelXingDlg);
-        xingEdit1Block->setObjectName(QString::fromUtf8("xingEdit1Block"));
+        xingEdit1Block->setObjectName(QLatin1String("xingEdit1Block"));
 
         horizontalLayout_3->addWidget(xingEdit1Block);
 
         xingEdit2Block = new QPushButton(EditLevelXingDlg);
-        xingEdit2Block->setObjectName(QString::fromUtf8("xingEdit2Block"));
+        xingEdit2Block->setObjectName(QLatin1String("xingEdit2Block"));
 
         horizontalLayout_3->addWidget(xingEdit2Block);
 
@@ -90,12 +90,12 @@ public:
         formLayout->setLayout(2, QFormLayout::SpanningRole, horizontalLayout_3);
 
         xingEditDone = new QPushButton(EditLevelXingDlg);
-        xingEditDone->setObjectName(QString::fromUtf8("xingEditDone"));
+        xingEditDone->setObjectName(QLatin1String("xingEditDone"));
 
         formLayout->setWidget(3, QFormLayout::LabelRole, xingEditDone);
 
         xingEditCancel = new QPushButton(EditLevelXingDlg);
-        xingEditCancel->setObjectName(QString::fromUtf8("xingEditCancel"));
+        xingEditCancel->setObjectName(QLatin1String("xingEditCancel"));
 
         formLayout->setWidget(3, QFormLayout::FieldRole, xingEditCancel);
 
@@ -107,25 +107,25 @@ public:
 
     void retranslateUi(QDialog *EditLevelXingDlg)
     {
-        EditLevelXingDlg->setWindowTitle(QCoreApplication::translate("EditLevelXingDlg", "Edit Level Crossing", nullptr));
-        label->setText(QCoreApplication::translate("EditLevelXingDlg", "Block 1", nullptr));
-#if QT_CONFIG(tooltip)
-        block1Name->setToolTip(QCoreApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Edit block name to change the linked block. If new name, block will be created. </p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
-        label_2->setText(QCoreApplication::translate("EditLevelXingDlg", "Block 2 ", nullptr));
-#if QT_CONFIG(tooltip)
-        block2Name->setToolTip(QCoreApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Edit block name to change the linked block. If new name, block will be created. </p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
-#if QT_CONFIG(tooltip)
-        xingEdit1Block->setToolTip(QCoreApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Click here to create/edit information for the block shown above. </p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
-        xingEdit1Block->setText(QCoreApplication::translate("EditLevelXingDlg", "Create/Edit Block 1", nullptr));
-#if QT_CONFIG(tooltip)
-        xingEdit2Block->setToolTip(QCoreApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Click here to create/edit information for the block shown above. </p></body></html>", nullptr));
-#endif // QT_CONFIG(tooltip)
-        xingEdit2Block->setText(QCoreApplication::translate("EditLevelXingDlg", "Create/Edit Block 2", nullptr));
-        xingEditDone->setText(QCoreApplication::translate("EditLevelXingDlg", "Done", nullptr));
-        xingEditCancel->setText(QCoreApplication::translate("EditLevelXingDlg", "Cancel", nullptr));
+        EditLevelXingDlg->setWindowTitle(QApplication::translate("EditLevelXingDlg", "Edit Level Crossing", nullptr));
+        label->setText(QApplication::translate("EditLevelXingDlg", "Block 1", nullptr));
+#ifndef QT_NO_TOOLTIP
+        block1Name->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Edit block name to change the linked block. If new name, block will be created. </p></body></html>", nullptr));
+#endif // QT_NO_TOOLTIP
+        label_2->setText(QApplication::translate("EditLevelXingDlg", "Block 2 ", nullptr));
+#ifndef QT_NO_TOOLTIP
+        block2Name->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Edit block name to change the linked block. If new name, block will be created. </p></body></html>", nullptr));
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_TOOLTIP
+        xingEdit1Block->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Click here to create/edit information for the block shown above. </p></body></html>", nullptr));
+#endif // QT_NO_TOOLTIP
+        xingEdit1Block->setText(QApplication::translate("EditLevelXingDlg", "Create/Edit Block 1", nullptr));
+#ifndef QT_NO_TOOLTIP
+        xingEdit2Block->setToolTip(QApplication::translate("EditLevelXingDlg", "<html><head/><body><p>Click here to create/edit information for the block shown above. </p></body></html>", nullptr));
+#endif // QT_NO_TOOLTIP
+        xingEdit2Block->setText(QApplication::translate("EditLevelXingDlg", "Create/Edit Block 2", nullptr));
+        xingEditDone->setText(QApplication::translate("EditLevelXingDlg", "Done", nullptr));
+        xingEditCancel->setText(QApplication::translate("EditLevelXingDlg", "Cancel", nullptr));
     } // retranslateUi
 
 };
