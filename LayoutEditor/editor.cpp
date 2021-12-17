@@ -1776,7 +1776,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     if(l->_itemGroup && l->_itemGroup->scene())
      log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
     else
-    editScene->addItem(l->_itemGroup);
+     editScene->addItem(l->_itemGroup);
     if(l->_itemGroup != nullptr && l->_itemGroup->name() == "")
      l->_itemGroup->setName(l->getGroupName());
    }

@@ -272,7 +272,7 @@ LayoutEditor::~LayoutEditor()
     {
      leToolBarPanel = new LayoutEditorVerticalToolBarPanel(this);
      editToolBarScrollPane = new QScrollArea(/*leToolBarPanel*/);
-     //editToolBarScrollPane->setWidget(leToolBarPanel);
+     editToolBarScrollPane->setWidget(leToolBarPanel);
      editToolBarScrollPane->setWidgetResizable(true);
      toolbarWidth = editToolBarScrollPane->size().width();
      toolbarHeight = screenDim.height();
@@ -280,9 +280,9 @@ LayoutEditor::~LayoutEditor()
     else
     {
      leToolBarPanel = new LayoutEditorHorizontalToolBarPanel(this);
-//        editToolBarScrollPane = new QScrollArea(/*leToolBarPanel*/);
-//        editToolBarScrollPane->setWidget(leToolBarPanel);
-//        editToolBarScrollPane->setWidgetResizable(true);
+     editToolBarScrollPane = new QScrollArea(/*leToolBarPanel*/);
+     editToolBarScrollPane->setWidget(leToolBarPanel);
+     editToolBarScrollPane->setWidgetResizable(true);
      toolbarWidth = screenDim.width();
      setMinimumWidth(toolbarWidth -100);
      toolbarHeight = leToolBarPanel->maximumHeight();
@@ -292,15 +292,15 @@ LayoutEditor::~LayoutEditor()
     editToolBarContainerPanel = new EditToolBarContainerPanel(this);
     QVBoxLayout* editToolBarContainerPanelLayout;
     editToolBarContainerPanel->setLayout(editToolBarContainerPanelLayout = new QVBoxLayout());//editToolBarContainerPanel, BoxLayout.PAGE_AXIS));
-//    editToolBarContainerPanel->setWidget(editToolBarScrollPane);
-//    editToolBarScrollPane->show();
-//    if(toolBarIsVertical)
-//    {
-//     editToolBarScrollPane->setWidget(leToolBarPanel);
-//     editToolBarContainerPanel->setWidget(editToolBarScrollPane);
-//    }
-//    else
-     editToolBarContainerPanelLayout->addWidget(leToolBarPanel);
+    editToolBarContainerPanel->layout()->addWidget(editToolBarScrollPane);
+    editToolBarScrollPane->show();
+    if(toolBarIsVertical)
+    {
+     editToolBarScrollPane->setWidget(leToolBarPanel);
+     editToolBarContainerPanel->layout()->addWidget(editToolBarScrollPane);
+    }
+    else
+     editToolBarContainerPanelLayout->addWidget(editToolBarScrollPane);
 
     //setup notification for when horizontal scrollbar changes visibility
     //editToolBarScroll.getViewport().addChangeListener(e -> {

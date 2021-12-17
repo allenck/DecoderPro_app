@@ -75,7 +75,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("positionable", (p->allPositionable() ? "yes" : "no"));
  panel.setAttribute("controlling", (p->allControlling() ? "yes" : "no"));
  panel.setAttribute("animating", (p->isAnimating() ? "yes" : "no"));
- //panel.setAttribute("showhelpbar", (p->getShowHelpBar() ? "yes" : "no"));
+ panel.setAttribute("showhelpbar", (p->getShowHelpBar() ? "yes" : "no"));
  panel.setAttribute("drawgrid", (p->getDrawGrid() ? "yes" : "no"));
  panel.setAttribute("snaponadd", (p->getSnapOnAdd() ? "yes" : "no"));
  panel.setAttribute("snaponmove", (p->getSnapOnMove() ? "yes" : "no"));

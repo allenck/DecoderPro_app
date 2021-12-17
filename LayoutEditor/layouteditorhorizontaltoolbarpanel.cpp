@@ -9,6 +9,8 @@
 #include <QCheckBox>
 #include "jtextfield.h"
 #include <QPushButton>
+#include "borderfactory.h"
+
 /**
  * This is the horizontal toolbar panel
  *
@@ -38,13 +40,15 @@
 /*protected*/ void LayoutEditorHorizontalToolBarPanel::layoutComponents()
 {
  QVBoxLayout* thisLayout;
-    setLayout(thisLayout = new QVBoxLayout());//this, BoxLayout.PAGE_AXIS));
+ setLayout(thisLayout = new QVBoxLayout());//this, BoxLayout.PAGE_AXIS));
     //setMaximumHeight(180);
     thisLayout->setMargin(0);
     thisLayout ->setSpacing(6);
 
-    JPanel* outerBorderPanel = this;
-    JPanel* innerBorderPanel = this;
+//    JPanel* outerBorderPanel = this;
+//    outerBorderPanel->setLayout(new QVBoxLayout());
+//    JPanel* innerBorderPanel = this;
+//    innerBorderPanel->setLayout(new QVBoxLayout());
 
     //Row 1
     JPanel* hTop1Panel = new JPanel();
@@ -70,7 +74,7 @@
     hTop1PanelLayout->addWidget(hTop1Left);
 
     if (toolBarIsWide) {
-        hTop1Panel->layout()->addWidget(Box::createHorizontalGlue());
+     hTop1Panel->layout()->addWidget(Box::createHorizontalGlue());
 
      JPanel* hTop1Right = new JPanel(/*FlowLayout::RIGHT, 5, 0*/);
      FlowLayout* hTop1RightLayout = new FlowLayout();
@@ -136,7 +140,7 @@
     //FlowLayout* hTop3CenterALayout = new FlowLayout();
     hTop3CenterLayout->addWidget(blockSensorLabel);
     hTop3CenterLayout->addWidget(blockSensorComboBox);
-//        hTop3CenterA.setBorder(new EmptyBorder(0, 20, 0, 0));
+    hTop3CenterA->setBorder(new EmptyBorder(0, 20, 0, 0));
     hTop3CenterLayout->addWidget(hTop3CenterA);
 
     hTop3PanelLayout->addWidget(hTop3Center);
@@ -150,7 +154,7 @@
         hTop3RightLayout->addWidget(locationPanel);
         hTop3PanelLayout->addWidget(hTop3Right);
     }
-//    outerBorderPanel->layout()->addWidget(hTop3Panel);
+    //outerBorderPanel->layout()->addWidget(hTop3Panel);
     thisLayout->addWidget(hTop3Panel,1);
 
     //Row 4
@@ -178,7 +182,6 @@
      hTop4RightLayout->addWidget(locationPanel);
      hTop4PanelLayout->addWidget(hTop4Right);
     }
-    //thisLayout->addWidget(hTop4Panel);
     thisLayout->addWidget(hTop4Panel,1);
 
     //Row 5 Components (wide 4-center)
@@ -187,32 +190,32 @@
      JPanel* hTop4Center = new JPanel(/*FlowLayout::CENTER, 5, 0*/);
      FlowLayout* hTop4CenterLayout = new FlowLayout(hTop4Center);
      //QHBoxLayout* hTop4CenterLayout = new QHBoxLayout();
-        hTop4CenterLayout->addWidget(labelsLabel);
-        hTop4CenterLayout->addWidget(textLabelButton);
-        hTop4CenterLayout->addWidget(textLabelTextField);
-        hTop4CenterLayout->addWidget(memoryButton);
-        hTop4CenterLayout->addWidget(textMemoryComboBox);
-        hTop4CenterLayout->addWidget(blockContentsButton);
-        hTop4CenterLayout->addWidget(blockContentsComboBox);
-        hTop4PanelLayout->addWidget(hTop4Center);
-        hTop4Panel->layout()->addWidget(Box::createHorizontalGlue());
-        thisLayout->addWidget(hTop4Panel,1);
+     hTop4CenterLayout->addWidget(labelsLabel);
+     hTop4CenterLayout->addWidget(textLabelButton);
+     hTop4CenterLayout->addWidget(textLabelTextField);
+     hTop4CenterLayout->addWidget(memoryButton);
+     hTop4CenterLayout->addWidget(textMemoryComboBox);
+     hTop4CenterLayout->addWidget(blockContentsButton);
+     hTop4CenterLayout->addWidget(blockContentsComboBox);
+     hTop4PanelLayout->addWidget(hTop4Center);
+     hTop4Panel->layout()->addWidget(Box::createHorizontalGlue());
+     thisLayout->addWidget(hTop4Panel,1);
     }
     else {
-        thisLayout->addWidget(hTop4Panel,1);
+     thisLayout->addWidget(hTop4Panel,1);
 
-        JPanel* hTop5Left = new JPanel(/*FlowLayout::LEFT, 5, 0*/);
-        FlowLayout* hTop5LeftLayout = new FlowLayout(hTop5Left);
-        //QHBoxLayout* hTop5LeftLayout = new QHBoxLayout(hTop5Left);
-        hTop5LeftLayout->addWidget(labelsLabel);
-        hTop5LeftLayout->addWidget(textLabelButton);
-        hTop5LeftLayout->addWidget(textLabelTextField);
-        hTop5LeftLayout->addWidget(memoryButton);
-        hTop5LeftLayout->addWidget(textMemoryComboBox);
-        hTop5LeftLayout->addWidget(blockContentsButton);
-        hTop5LeftLayout->addWidget(blockContentsComboBox);
-        hTop5LeftLayout->addWidget(Box::createHorizontalGlue());
-        thisLayout->addWidget(hTop5Left,1);
+     JPanel* hTop5Left = new JPanel(/*FlowLayout::LEFT, 5, 0*/);
+     FlowLayout* hTop5LeftLayout = new FlowLayout(hTop5Left);
+     //QHBoxLayout* hTop5LeftLayout = new QHBoxLayout(hTop5Left);
+     hTop5LeftLayout->addWidget(labelsLabel);
+     hTop5LeftLayout->addWidget(textLabelButton);
+     hTop5LeftLayout->addWidget(textLabelTextField);
+     hTop5LeftLayout->addWidget(memoryButton);
+     hTop5LeftLayout->addWidget(textMemoryComboBox);
+     hTop5LeftLayout->addWidget(blockContentsButton);
+     hTop5LeftLayout->addWidget(blockContentsComboBox);
+     hTop5LeftLayout->addWidget(Box::createHorizontalGlue());
+     thisLayout->addWidget(hTop5Left,1);
     }
 
     //Row 6
