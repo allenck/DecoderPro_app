@@ -216,8 +216,8 @@
 /*final*/ /*protected*/ QColor LayoutTrackView::setColorForTrackBlock(EditScene* g2,
         /*@CheckForNull*/ LayoutBlock* layoutBlock, bool forceBlockTrackColor) {
     QColor result = getColorForTrackBlock(layoutBlock, forceBlockTrackColor);
-    if(layoutBlock->getOccupancy())
-        log->debug(tr("block %1 occupied").arg(layoutBlock->getDisplayName()));
+//    if(layoutBlock->getOccupancy())
+//        log->debug(tr("block %1 occupied").arg(layoutBlock->getDisplayName()));
     //g2->setColor(result);
     return result;
 }

@@ -204,8 +204,8 @@ class TrackSegmentView : public LayoutTrackView
   /*private*/ /*final*/ QList<QPointF> bezierControlPoints = QList<QPointF>(); // list of control point displacements
 
   // temporary reference to the Editor that will eventually be part of View
-  /*private*/ /*final*/ TrackSegmentEditor* editor;
-  /*final*/ /*private*/ TrackSegment* trackSegment;
+  /*private*/ /*final*/ TrackSegmentEditor* editor = nullptr;
+  /*final*/ /*private*/ TrackSegment* trackSegment = nullptr;
   /*private*/ QMenu* popupMenu = nullptr;
   /*private*/ /*final*/ JCheckBoxMenuItem* mainlineCheckBoxMenuItem = new JCheckBoxMenuItem(tr("Mainline"), this);
   /*private*/ /*final*/ JCheckBoxMenuItem* hiddenCheckBoxMenuItem = new JCheckBoxMenuItem(tr("Hidden"), this);

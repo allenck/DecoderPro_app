@@ -69,9 +69,9 @@ public:
     /*public*/ QString occupancySensorName;// = "";
     /*public*/ QString memoryName;// = "";
     /*public*/ int occupiedSense;// = Sensor.ACTIVE;
-    /*public*/ QColor blockTrackColor;// = Color.black;
-    /*public*/ QColor blockOccupiedColor;// = Color.black;
-    /*public*/ QColor blockExtraColor;// = Color.black;
+    /*public*/ QColor blockTrackColor = Qt::black;
+    /*public*/ QColor blockOccupiedColor = Qt::black;
+    /*public*/ QColor blockExtraColor = Qt::black;
     // constants
     /*public*/ static const int OCCUPIED = Block::OCCUPIED;
     /*public*/ static const int EMPTY = 0x04;//Block::UNOCCUPIED;
@@ -381,11 +381,11 @@ public slots:
      */
     void handleBlockChange(PropertyChangeEvent* e);
     void handleBlockChange(QString pName, int o, int val);
-#if 0
+
     void sensorDebounceGlobalCheck_clicked();
-    void blockEditCancelPressed(ActionEvent* a = 0);
-    void blockEditDonePressed(ActionEvent* a = 0);
-#endif
+    void blockEditCancelPressed(JActionEvent* a = 0);
+    void blockEditDonePressed(JActionEvent* a = 0);
+
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 private:
     LayoutEditorAuxTools* auxTools= nullptr;
@@ -440,7 +440,7 @@ private:
     /*private*/ void deactivateBlock();
 
     // variables for Edit Layout Block pane
-    /*JmriJFrame*/ QMainWindow* editLayoutBlockFrame; //NULL;
+    /*JmriJFrame*/ JmriJFrameX* editLayoutBlockFrame = nullptr;
     /*Component*/ QWidget* callingPane;
     /*JTextField*/ QLineEdit* sensorNameField; //new /*JTextField*/ QLineEdit(16);
     /*JTextField*/ QLineEdit* sensorDebounceInactiveField; //new /*JTextField*/ QLineEdit(5);
@@ -448,7 +448,7 @@ private:
     /*JCheckBox*/ QCheckBox* sensorDebounceGlobalCheck; //new /*JCheckBox*/ QCheckBox(rb.getQString("OccupancySensorUseGlobal"));
     /*JTextField*/ QLineEdit* memoryNameField; //new /*JTextField*/ QLineEdit(16);
     /*JTextField*/ QLineEdit* metricField; //new /*JTextField*/ QLineEdit(10);
-    /*JComboBox*/ QComboBox* senseBox; //new /*JComboBox*/ QComboBox();
+    /*JComboBox*/ JComboBox* senseBox =new JComboBox();
     /*JCheckBox*/ QCheckBox* permissiveCheck; //new /*JCheckBox*/ QCheckBox("Permissive Working Allowed");
     /*private*/ /*final*/ NamedBeanComboBox/*<Memory*>*/* memoryComboBox = nullptr;// = new NamedBeanComboBox<>(
     //InstanceManager.getDefault(MemoryManager.class), null, DisplayOptions.DISPLAYNAME);

@@ -22,7 +22,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TrackSegmentEditor : public LayoutTrackEditor
   Q_OBJECT
  public:
   /*public*/ TrackSegmentEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrack) override;
+  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrackView) override;
 
  private:
   static Logger* log;

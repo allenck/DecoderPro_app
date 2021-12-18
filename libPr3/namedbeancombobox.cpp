@@ -324,7 +324,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 // if (itemData(currentIndex()) !=QVariant()) {
 //     userInput = QString();
 // }
- QString name = item->getDisplayName();
+ QString name = item->getSystemName();
  JComboBox::setCurrentIndex(JComboBox::findText(name));
 // if (itemData(currentIndex()) ==QVariant()) {
 //     userInput = QString();

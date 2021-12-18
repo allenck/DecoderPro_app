@@ -8142,7 +8142,7 @@ void LayoutEditor::addSensor()
          Block* b = (Block*) nb;
          LayoutBlock* lb = lbm->getLayoutBlock(b);
          if (lb != nullptr) {
-             bool enable = ((inBlock != nullptr) && b ==(inBlock));
+             bool enable = ((inBlock != nullptr) && b->equals(inBlock));
              lb->setUseExtraColor(enable);
              result |= enable;
          }

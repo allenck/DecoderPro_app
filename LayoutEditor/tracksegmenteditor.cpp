@@ -31,12 +31,13 @@
      */
     //@InvokeOnGuiThread
     //@Override
-    /*public*/ void TrackSegmentEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrackView *layoutTrack) {
-        if (qobject_cast<TrackSegment*>(layoutTrack) ) {
-            this->trackSegment = (TrackSegment*) layoutTrack;
+    /*public*/ void TrackSegmentEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrackView *layoutTrackView) {
+        if (qobject_cast<TrackSegmentView*>(layoutTrackView) ) {
+         this->trackSegmentView = (TrackSegmentView*) layoutTrackView;
+         this->trackSegment = this->trackSegmentView->getTrackSegment();
         } else {
             log->error(tr("editLayoutTrack received type %1 content %2").arg(
-                    layoutTrack->metaObject()->className()).arg(layoutTrack->objectName()),
+                    layoutTrackView->metaObject()->className()).arg(layoutTrackView->objectName()),
                     Exception("traceback"));
         }
         sensorList.clear();

@@ -24,10 +24,12 @@
  */
 /*public*/ TrackSegmentView::TrackSegmentView(/*@Nonnull*/ TrackSegment* track, LayoutEditor* layoutEditor) :  LayoutTrackView(track, layoutEditor){
     //super(track);
-    this->trackSegment = track;
- connect(track, &TrackSegment::objectsSet, [=]{
- center = getCentreSeg();
- });
+ this->trackSegment = track;
+ setupDefaultBumperSizes(layoutEditor);
+ editor = new TrackSegmentEditor(layoutEditor);
+// connect(track, &TrackSegment::objectsSet, [=]{
+// center = getCentreSeg();
+// });
 }
 /*public*/ /*static*/ /*final*/  /*const*/ int TrackSegmentView::MAX_BUMPER_LENGTH = 40;
 /*public*/ /*static*/ /*final*/  /*const*/ int TrackSegmentView::MIN_BUMPER_LENGTH = 8;

@@ -105,7 +105,7 @@ long LayoutBlock::time=0;
  memoryNameField->setMaxLength(16);
  metricField = new /*JTextField*/ QLineEdit();
  metricField->setMaxLength(10);
- senseBox = new /*JComboBox*/ QComboBox();
+ //senseBox = new /*JComboBox*/ QComboBox();
  permissiveCheck = new /*JCheckBox*/ QCheckBox();
  permissiveCheck->setText(tr("Permissive Working Allowed"));
  trackColorBox = new /*JComboBox*/ QComboBox();
@@ -988,237 +988,12 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
  */
 /*protected*/ void  LayoutBlock::editLayoutBlock(/*Component*/ QWidget* /*callingPane*/)
 {
-#if 1
- if (editOpen)
- {
-  editLayoutBlockFrame->setVisible(true);
-  return;
- }
-#if 0
- // Initialize if needed
- if (editLayoutBlockFrame == NULL)
- {
-  editLayoutBlockFrame = new JmriJFrameX( tr("Create/Edit Block"), false, false);
-  editLayoutBlockFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutBlock", true);
-//  editLayoutBlockFrame->setLocation(80,40);
-//  QWidget* contentPane = editLayoutBlockFrame->getContentPane();
-//  contentPane->setLayout(new QVBoxLayout(contentPane/*, BoxLayout.Y_AXIS*/));
-  QWidget* contentPane = new QWidget;
-  editLayoutBlockFrame->setCentralWidget(contentPane);
-  QVBoxLayout* contentPaneLayout = new QVBoxLayout(contentPane);
-  // show block ID (not changeable)
-  QWidget* panel1 = new QWidget();
-  panel1->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* blockNameLabel = new /*JLabel*/ QLabel( tr("Name")+": "+blockName );
-  panel1->layout()->addWidget(blockNameLabel);
-  contentPaneLayout->addWidget(panel1);
-  // show current use count (not editable)
-  QWidget* panel2 = new QWidget();
-  panel2->setLayout(new FlowLayout());
-  panel2->layout()->addWidget(blockUseLabel);
-  contentPaneLayout->addWidget(panel2);
-  // set up occupancy sensor (changeable)
-  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  QWidget* panel3 = new QWidget();
-  panel3->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* sensorLabel = new /*JLabel*/ QLabel( tr("Occupancy Sensor")+":");
-  panel3->layout()->addWidget(sensorLabel);
-  panel3->layout()->addWidget(sensorNameField);
-  sensorNameField->setToolTip( tr("Enter name of occupancy sensor for this block; no entry means don't change.") );
-  contentPaneLayout->addWidget(panel3);
-
-  // set up occupied sense (changeable)
-  QWidget* panel4 = new QWidget();
-  panel4->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* sensorSenseLabel = new /*JLabel*/ QLabel( tr("Occupied Sense")+":");
-  panel4->layout()->addWidget(sensorSenseLabel);
-  senseBox->clear();
-  senseBox->addItem( tr("Active") );
-  senseActiveIndex = 0;
-  senseBox->addItem( tr("Inactive") );
-  senseInactiveIndex = 1;
-  panel4->layout()->addWidget(senseBox);
-  senseBox->setToolTip( tr("Select the occupancy sensor state when the block is occupied.") );
-  contentPaneLayout->addWidget(panel4);
-
-  contentPaneLayout->addWidget(sensorDebounceGlobalCheck);
-  sensorDebounceGlobalCheck->setToolTip(tr("Use Global Debounce Values"));
-  QWidget* panel4a = new QWidget();
-  QHBoxLayout* panel4aLayout= new QHBoxLayout(panel4a);
-  panel4aLayout->addWidget(new /*JLabel*/ QLabel(tr("Sensor InActive Debounce")));
-  sensorDebounceInactiveField->setToolTip(tr("Enter in the duration (milli seconds) which the sensor has to be InActive, before the change is acted upon."));
-  panel4aLayout->addWidget(sensorDebounceInactiveField);
-  contentPaneLayout->addWidget(panel4a);
-  QWidget* panel4b = new QWidget();
-  QHBoxLayout* panel4bLayout= new QHBoxLayout(panel4b);
-  panel4bLayout->addWidget(new /*JLabel*/ QLabel(tr("Sensor Active Debounce")));
-  panel4bLayout->addWidget(sensorDebounceActiveField);
-  sensorDebounceActiveField->setToolTip(tr("Enter in the duration (milli seconds) which the sensor has to be Active, before the change is acted upon."));
-  contentPaneLayout->addWidget(panel4b);
-
-  // set up track color (changeable)
-  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  QWidget* panel6 = new QWidget();
-  panel6->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* trackColorLabel = new /*JLabel*/ QLabel( tr("Track Color:") );
-  panel6->layout()->addWidget(trackColorLabel);
-  initializeColorCombo(trackColorBox, blockTrackColor);
-  panel6->layout()->addWidget(trackColorBox);
-  trackColorBox->setToolTip( tr("Select the track color when this block is unoccupied.") );
-  contentPaneLayout->addWidget(panel6);
-  // set up occupied color (changeable)
-  QWidget* panel7 = new QWidget();
-  panel7->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* occupiedColorLabel = new /*JLabel*/ QLabel( tr("Occupied Track Color:") );
-  panel7->layout()->addWidget(occupiedColorLabel);
-  initializeColorCombo(occupiedColorBox, blockOccupiedColor);
-  panel7->layout()->addWidget(occupiedColorBox);
-  occupiedColorBox->setToolTip( tr("Select the track color when this block is occupied.") );
-  contentPaneLayout->addWidget(panel7);
-  // set up extra color (changeable)
-  QWidget* panel7a = new QWidget();
-  panel7a->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* extraColorLabel = new /*JLabel*/ QLabel( tr("Alternate Track Color:") );
-  panel7a->layout()->addWidget(extraColorLabel);
-  initializeColorCombo(extraColorBox, blockExtraColor);
-  panel7a->layout()->addWidget(extraColorBox);
-  extraColorBox->setToolTip( tr("Select the track color for unoccupied special use, e.g. allocated.") );
-  contentPaneLayout->addWidget(panel7a);
-  // set up Memory entry (changeable)
-  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  QWidget* panel8 = new QWidget();
-  panel8->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* memoryLabel = new /*JLabel*/ QLabel( tr("Memory Variable")+":");
-  panel8->layout()->addWidget(memoryLabel);
-  panel8->layout()->addWidget(memoryNameField);
-  memoryNameField->setToolTip( tr("Enter name (system or user) of Memory Variable (optional).") );
-  contentPaneLayout->addWidget(panel8);
-
-  //if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
-  if(((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
-  {
-    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-    QWidget* panel19 = new QWidget();
-    panel19->setLayout(new FlowLayout());
-    /*JLabel*/ QLabel* metricLabel = new /*JLabel*/ QLabel("Block Metric");
-    panel19->layout()->addWidget(metricLabel);
-    panel19->layout()->addWidget(metricField);
-    metricField->setToolTip("set the cost for going over this block");
-    contentPaneLayout->addWidget(panel19);
-    neighbourDir =  QVector<QComboBox*>(getNumberOfNeighbours());
-    for(int i = 0; i<getNumberOfNeighbours(); i++)
-    {
-     QWidget* panel = new QWidget();
-     panel->setLayout(new FlowLayout());
-     panel->layout()->addWidget(new /*JLabel*/ QLabel("Attached Block: " + getNeighbourAtIndex(i)->getDisplayName()));
-     QComboBox* dir = new QComboBox(/*working*/);
-     dir->addItems(working);
-     Block* blk = neighbours->at(i)->getBlock();
-     if(block->isBlockDenied(blk))
-      dir->setCurrentIndex(2);
-     else if (blk->isBlockDenied(block))
-      dir->setCurrentIndex(1);
-     else
-      dir->setCurrentIndex(0);
-     panel->layout()->addWidget(dir);
-     neighbourDir.append(dir);
-     contentPaneLayout->addWidget(panel);
-     }
-    }
-    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-    QWidget* panel20 = new QWidget();
-    panel20->setLayout(new FlowLayout());
-    panel20->layout()->addWidget(permissiveCheck);
-    permissiveCheck->setToolTip("Is another train allowed to enter the block when it is already occupied");
-    contentPaneLayout->addWidget(panel20);
-
-
-    // set up Done and Cancel buttons
-    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-    QWidget* panel5 = new QWidget();
-    panel5->setLayout(new FlowLayout());
-    // Done
-    panel5->layout()->addWidget(blockEditDone = new QPushButton(tr("Done")));
-//        blockEditDone.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                blockEditDonePressed(e);
-//            }
-//        });
-    connect(blockEditDone, SIGNAL(clicked()), this, SLOT(blockEditDonePressed()));
-    blockEditDone->setToolTip( tr("Click Done to accept any changes made above and dismiss this dialog->") );
-    // Cancel
-    panel5->layout()->addWidget(blockEditCancel = new QPushButton(tr("Cancel")));
-//        blockEditCancel.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                blockEditCancelPressed(e);
-//            }
-//        });
-    connect(blockEditCancel, SIGNAL(clicked()), this, SLOT(blockEditCancelPressed()));
-    blockEditCancel->setToolTip( tr("CancelHint") );
-    contentPaneLayout->addWidget(panel5);
-
-
-    }
-    // Set up for Edit
-    blockUseLabel->setText(tr("Current Use Count")+": "+QString::number(useCount) );
-    sensorNameField->setText(getOccupancySensorName());
-    if (occupiedSense==Sensor::ACTIVE)
-    {
-     senseBox->setCurrentIndex(senseActiveIndex);
-    }
-    else
-    {
-     senseBox->setCurrentIndex(senseInactiveIndex);
-    }
-    if(getOccupancySensor()!=NULL)
-    {
-     sensorDebounceGlobalCheck->setChecked(getOccupancySensor()->useDefaultTimerSettings());
-     sensorDebounceInactiveField->setText(QString::number(getOccupancySensor()->getSensorDebounceGoingInActiveTimer()));
-     sensorDebounceActiveField->setText(QString::number(getOccupancySensor()->getSensorDebounceGoingActiveTimer()));
-     sensorDebounceGlobalCheck->setChecked(getOccupancySensor()->useDefaultTimerSettings());
-    }
-//    sensorDebounceGlobalCheck.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e){
-//            if(sensorDebounceGlobalCheck.isSelected()){
-//                sensorDebounceInactiveField.setEnabled(false);
-//                sensorDebounceActiveField.setEnabled(false);
-//                sensorDebounceActiveField.setText(QString::number(jmri.InstanceManager::sensorManagerInstance().getDefaultSensorDebounceGoingActive()));
-//                sensorDebounceInactiveField.setText(QString::number(jmri.InstanceManager::sensorManagerInstance().getDefaultSensorDebounceGoingInActive()));
-//            } else {
-//                sensorDebounceInactiveField.setEnabled(true);
-//                sensorDebounceActiveField.setEnabled(true);
-//            }
-//        }
-//    });
- connect(sensorDebounceGlobalCheck, SIGNAL(clicked()), this, SLOT(sensorDebounceGlobalCheck_clicked()));
- setColorCombo(trackColorBox,blockTrackColor);
- setColorCombo(occupiedColorBox,blockOccupiedColor);
- setColorCombo(extraColorBox,blockExtraColor);
- memoryNameField->setText(memoryName);
- metricField->setText(QString::number(metric));
-
- if(block!=NULL)
-  permissiveCheck->setChecked(block->getPermissiveWorking());
-//    editLayoutBlockFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-//            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                blockEditCancelPressed(NULL);
-//            }
-//        });
- editLayoutBlockFrame->addWindowListener(new LBWindowListener(this));
- editLayoutBlockFrame->adjustSize();
- editLayoutBlockFrame->setVisible(true);
-#else
- editLayoutBlockFrame = new CreateEditBlock(this->blockName, (LayoutEditor*)panels->value(0));
- editLayoutBlockFrame->show();
-#endif
- editOpen = true;
-#else
  LayoutBlockEditAction* beanEdit = new LayoutBlockEditAction(this);
  if (block == nullptr) {
-     //Block may not have been initialised due to an error so manually set it in the edit window
+     // Block may not have been initialised due to an error so manually set it in the edit window
      QString userName = getUserName();
-     if ((!userName.isNull()) && !userName.isEmpty()) {
-         Block* b = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(userName);
+     if ((userName != "") && !userName.isEmpty()) {
+         Block* b = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(userName);
          if (b != nullptr) {
              beanEdit->setBean(b);
          }
@@ -1226,163 +1001,157 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
  } else {
      beanEdit->setBean(block);
  }
- beanEdit->actionPerformed();
+ beanEdit->actionPerformed(nullptr);
+}
 
-#endif
+void LayoutBlock::blockEditDonePressed(JActionEvent*) {
+    bool needsRedraw = false;
+    // check if Sensor changed
+    QString newName = NamedBean::normalizeUserName(sensorNameField->text());
+    if ((getOccupancySensorName()) != (newName)) {
+        // sensor has changed
+        if ((newName == "") || newName.isEmpty()) {
+            setOccupancySensorName(newName);
+            sensorNameField->setText("");
+            needsRedraw = true;
+        } else if (validateSensor(newName, editLayoutBlockFrame) == nullptr) {
+            // invalid sensor entered
+            occupancyNamedSensor = nullptr;
+            occupancySensorName = "";
+            sensorNameField->setText("");
+            return;
+        } else {
+            sensorNameField->setText(newName);
+            needsRedraw = true;
+        }
+    }
+
+    Sensor* s = getOccupancySensor();
+    if ( s != nullptr) {
+        if (sensorDebounceGlobalCheck->isChecked()) {
+            s->setUseDefaultTimerSettings(true);
+        } else {
+            s->setUseDefaultTimerSettings(false);
+            if (!sensorDebounceInactiveField->text().trimmed().isEmpty()) {
+                s->setSensorDebounceGoingInActiveTimer(sensorDebounceInactiveField->text().trimmed().toLong());
+            }
+            if (!sensorDebounceActiveField->text().trimmed().isEmpty()) {
+                s->setSensorDebounceGoingActiveTimer(sensorDebounceActiveField->text().trimmed().toLong());
+            }
+        }
+        Reporter* reporter = s->getReporter();
+        if (reporter != nullptr && block != nullptr) {
+            QString msg = tr("Sensor %1 has Reporter %2 associated with it; do you want to use the Reporter with this block?").arg(
+                    s->getDisplayName(),
+                        reporter->getDisplayName());
+            if (JOptionPane::showConfirmDialog(editLayoutBlockFrame,
+                    msg, tr("Assign Reporter to Block"),
+                    JOptionPane::YES_NO_OPTION) == 0) {
+                block->setReporter(reporter);
+            }
+        }
+    }
+
+    // check if occupied sense changed
+    int k = senseBox->getSelectedIndex();
+    int oldSense = occupiedSense;
+    if (k == senseActiveIndex) {
+        occupiedSense = Sensor::ACTIVE;
+    } else {
+        occupiedSense = Sensor::INACTIVE;
+    }
+    if (oldSense != occupiedSense) {
+        needsRedraw = true;
+    }
+
+    // check if track color changed
+    QColor oldColor = blockTrackColor;
+    blockTrackColor = trackColorChooser->getColor();
+    if (oldColor != blockTrackColor) {
+        needsRedraw = true;
+    }
+    // check if occupied color changed
+    oldColor = blockOccupiedColor;
+    blockOccupiedColor = occupiedColorChooser->getColor();
+    if (oldColor != blockOccupiedColor) {
+        needsRedraw = true;
+    }
+    // check if extra color changed
+    oldColor = blockExtraColor;
+    blockExtraColor = extraColorChooser->getColor();
+    if (oldColor != blockExtraColor) {
+        needsRedraw = true;
+    }
+
+    // check if Memory changed
+    newName = memoryComboBox->getSelectedItemDisplayName();
+    if (newName == "") {
+        newName = "";
+    }
+    if (memoryName !=(newName)) {
+        // memory has changed
+        setMemory(validateMemory(newName, editLayoutBlockFrame), newName);
+        if (getMemory() == nullptr) {
+            // invalid memory entered
+            memoryName = "";
+            memoryComboBox->setSelectedItem(nullptr);
+            return;
+        } else {
+            memoryComboBox->setSelectedItem(getMemory());
+            needsRedraw = true;
+        }
+    }
+    int m = metricField->text().trimmed().toInt();
+    if (m != metric) {
+        setBlockMetric(m);
+    }
+    block->setPermissiveWorking(permissiveCheck->isChecked());
+    if (!neighbourDir.isEmpty()) {
+        for (int i = 0; i < neighbourDir.size(); i++) {
+            int neigh = neighbourDir.at(i)->getSelectedIndex();
+            neighbours->at(i)->getBlock()->removeBlockDenyList(this->block);
+            this->block->removeBlockDenyList(neighbours->at(i)->getBlock());
+            switch (neigh) {
+                case 0: {
+                    updateNeighbourPacketFlow(neighbours->at(i), RXTX);
+                    break;
+                }
+
+                case 1: {
+                    neighbours->at(i)->getBlock()->addBlockDenyList(this->block->getDisplayName());
+                    updateNeighbourPacketFlow(neighbours->at(i), TXONLY);
+                    break;
+                }
+
+                case 2: {
+                    this->block->addBlockDenyList(neighbours->at(i)->getBlock()->getDisplayName());
+                    updateNeighbourPacketFlow(neighbours->at(i), RXONLY);
+                    break;
+                }
+
+                default: {
+                    break;
+                }
+            }
+            /* switch */
+        }
+    }
+    // complete
+    editLayoutBlockFrame->setVisible(false);
+    editLayoutBlockFrame->dispose();
+    editLayoutBlockFrame = nullptr;
+
+    if (needsRedraw) {
+        redrawLayoutBlockPanels();
+    }
+}
+
+void LayoutBlock::blockEditCancelPressed(JActionEvent*) {
+    editLayoutBlockFrame->setVisible(false);
+    editLayoutBlockFrame->dispose();
+    editLayoutBlockFrame = nullptr;
 }
 #if 0
-void LayoutBlock::sensorDebounceGlobalCheck_clicked()
-{
- if(sensorDebounceGlobalCheck->isChecked())
- {
-  sensorDebounceInactiveField->setEnabled(false);
-  sensorDebounceActiveField->setEnabled(false);
-  sensorDebounceActiveField->setText(QString::number(InstanceManager::sensorManagerInstance()->getDefaultSensorDebounceGoingActive()));
-  sensorDebounceInactiveField->setText(QString::number(InstanceManager::sensorManagerInstance()->getDefaultSensorDebounceGoingInActive()));
- }
- else
- {
-  sensorDebounceInactiveField->setEnabled(true);
-  sensorDebounceActiveField->setEnabled(true);
- }
-}
-
-
-void LayoutBlock::blockEditDonePressed(ActionEvent* /*a*/)
-{
- bool needsRedraw = false;
- // check if Sensor changed
- QString newName = NamedBean::normalizeUserName(sensorNameField->text());
- if ( (getOccupancySensorName())!=(newName) )
- {
-  // sensor has changed
-  if ((newName.isNull()) || newName.isEmpty())
-  {
-      setOccupancySensorName(newName);
-      sensorNameField->setText("");
-      needsRedraw = true;
-  } else if (validateSensor(newName, editLayoutBlockFrame) == nullptr) {
-      //invalid sensor entered
-      occupancyNamedSensor = nullptr;
-      occupancySensorName = "";
-      sensorNameField->setText("");
-      return;
-  } else {
-      sensorNameField->setText(newName);
-      needsRedraw = true;
-  }
- }
- if(getOccupancySensor()!=NULL)
- {
-  if(sensorDebounceGlobalCheck->isChecked())
-  {
-   getOccupancySensor()->useDefaultTimerSettings(true);
-  }
-  else
-  {
-   getOccupancySensor()->useDefaultTimerSettings(false);
-   if(sensorDebounceInactiveField->text().trimmed()!=(""))
-    getOccupancySensor()->setSensorDebounceGoingInActiveTimer(sensorDebounceInactiveField->text().trimmed().toLong());
-   if(sensorDebounceActiveField->text().trimmed()!=(""))
-    getOccupancySensor()->setSensorDebounceGoingActiveTimer((sensorDebounceActiveField->text().trimmed().toLong()));
-   }
-   if(getOccupancySensor()->getReporter()!=NULL && block!=NULL)
-   {
-    QString msg = tr("Sensor %1 has reporter %2 associated with it, do you want to use the reporter with this block?").arg( getOccupancySensor()->getDisplayName()).arg(getOccupancySensor()->getReporter()->getDisplayName() );
-//            if(JOptionPane.showConfirmDialog(editLayoutBlockFrame,
-//                                                 msg,tr("BlockAssignReporterTitle"),
-//                                                 JOptionPane.YES_NO_OPTION)==0)
-    if(QMessageBox::question(editLayoutBlockFrame, tr("Assign Reporter to Block"),msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-     block->setReporter(getOccupancySensor()->getReporter());
-
-   }
-  }
-  // check if occupied sense changed
-  int k = senseBox->currentIndex();
-  int oldSense = occupiedSense;
-  if (k==senseActiveIndex) occupiedSense = Sensor::ACTIVE;
-   else occupiedSense = Sensor::INACTIVE;
-  if (oldSense!=occupiedSense)
-   needsRedraw = true;
-
-  // check if track color changed
-  QColor oldColor = blockTrackColor;
-  blockTrackColor = getSelectedColor(trackColorBox);
-  if (oldColor!=blockTrackColor)
-   needsRedraw = true;
-
-  // check if occupied color changed
-  oldColor = blockOccupiedColor;
-  blockOccupiedColor = getSelectedColor(occupiedColorBox);
-  if (oldColor!=blockOccupiedColor)
-   needsRedraw = true;
-  // check if extra color changed
-  oldColor = blockExtraColor;
-  blockExtraColor = getSelectedColor(extraColorBox);
-  if (oldColor!=blockExtraColor)
-   needsRedraw = true;
-
-  // check if Memory changed
-  if ( memoryName!=(memoryNameField->text().trimmed()) )
-  {
-   // memory has changed
-    QString newName = memoryNameField->text().trimmed();
-   if ((memory = validateMemory(newName,editLayoutBlockFrame))==NULL)
-   {
-    // invalid memory entered
-    memoryName = "";
-    memoryNameField->setText("");
-    return;
-   }
-   else
-   {
-    memoryNameField->setText(memoryName);
-    needsRedraw = true;
-   }
-  }
-  int m = metricField->text().trimmed().toInt();
-  if (m!=metric)
-   setBlockMetric(m);
-  block->setPermissiveWorking(permissiveCheck->isChecked());
-  if(!neighbourDir.isEmpty())
-  {
-   for(int i = 0; i<neighbourDir.size(); i++)
-   {
-    int neigh = neighbourDir.at(i)->currentIndex();
-    neighbours->at(i)->getBlock()->removeBlockDenyList(this->block);
-    this->block->removeBlockDenyList(neighbours->at(i)->getBlock());
-    switch(neigh)
-    {
-    case 0 : updateNeighbourPacketFlow(neighbours->at(i), RXTX);
-             break;
-    case 1 :
-            neighbours->at(i)->getBlock()->addBlockDenyList(this->block->getDisplayName());
-            updateNeighbourPacketFlow(neighbours->at(i), TXONLY);
-            break;
-    case 2 :
-            this->block->addBlockDenyList(neighbours->at(i)->getBlock()->getDisplayName());
-            updateNeighbourPacketFlow(neighbours->at(i), RXONLY);
-            break;
-     default: break;
-    }
-   }
-  }
-  // complete
-  editOpen = false;
-  editLayoutBlockFrame->setVisible(false);
-  //editLayoutBlockFrame->dispose();
-  editLayoutBlockFrame = NULL;
-  if (needsRedraw)
-   redrawLayoutBlockPanels();
-}
-
-void LayoutBlock::blockEditCancelPressed(ActionEvent* /*a*/) {
-    editOpen = false;
-    editLayoutBlockFrame->setVisible(false);
-    //editLayoutBlockFrame->dispose();
-    editLayoutBlockFrame = NULL;
-}
-
 /*private*/ void LayoutBlock::initializeColorCombo(QComboBox* colorCombo, QColor c) {
  colorCombo->clear();
  for (int i = 0;i<numColors;i++)
