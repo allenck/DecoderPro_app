@@ -41,9 +41,9 @@
 {
  QVBoxLayout* thisLayout;
  setLayout(thisLayout = new QVBoxLayout());//this, BoxLayout.PAGE_AXIS));
-    //setMaximumHeight(180);
-    thisLayout->setMargin(0);
-    thisLayout ->setSpacing(6);
+//    setMaximumHeight(180);
+//    thisLayout->setMargin(0);
+//    thisLayout ->setSpacing(6);
 
 //    JPanel* outerBorderPanel = this;
 //    outerBorderPanel->setLayout(new QVBoxLayout());
@@ -54,8 +54,8 @@
     JPanel* hTop1Panel = new JPanel();
     QHBoxLayout* hTop1PanelLayout = new QHBoxLayout();
     hTop1Panel->setLayout(hTop1PanelLayout = new QHBoxLayout());//hTop1Panel, BoxLayout.LINE_AXIS));
-    hTop1PanelLayout->setMargin(0);
-    hTop1PanelLayout->setSpacing(6);
+//    hTop1PanelLayout->setMargin(0);
+//    hTop1PanelLayout->setSpacing(6);
 
     //Row 1 : Left Components
     JPanel* hTop1Left = new JPanel(/*FlowLayout::LEFT, 5, 0*/);
@@ -92,8 +92,8 @@
      JPanel* hTop2Panel = new JPanel();
      QHBoxLayout* hTop2PanelLayout = new QHBoxLayout();
      hTop2Panel->setLayout(hTop2PanelLayout);//hTop2Panel, BoxLayout.LINE_AXIS));
-     hTop2PanelLayout->setMargin(0);
-     hTop2PanelLayout->setSpacing(6);
+//     hTop2PanelLayout->setMargin(0);
+//     hTop2PanelLayout->setSpacing(6);
 
      //Row 2 : Left Components
      JPanel* hTop2Center = new JPanel(/*FlowLayout::CENTER, 5, 0*/);
@@ -112,8 +112,8 @@
     JPanel* hTop3Panel = new JPanel();
 //    hTop3Panel->setLayout(new QHBoxLayout());//hTop3Panel, BoxLayout.LINE_AXIS));
     QHBoxLayout* hTop3PanelLayout = new QHBoxLayout(hTop3Panel);
-    hTop3PanelLayout->setMargin(0);
-    hTop3PanelLayout->setSpacing(6);
+//    hTop3PanelLayout->setMargin(0);
+//    hTop3PanelLayout->setSpacing(6);
 
     //Row 3 : Left Components
     JPanel* hTop3Left = new JPanel(/*FlowLayout::LEFT, 5, 0*/);
@@ -161,8 +161,8 @@
     JPanel* hTop4Panel = new JPanel();
 //    hTop4Panel->setLayout(new QHBoxLayout());//hTop4Panel, BoxLayout.LINE_AXIS));
     QHBoxLayout* hTop4PanelLayout = new QHBoxLayout(hTop4Panel);
-    hTop4PanelLayout->setMargin(0);
-    hTop4PanelLayout->setSpacing(6);
+//    hTop4PanelLayout->setMargin(0);
+//    hTop4PanelLayout->setSpacing(6);
 
     //Row 4 : Left Components
     JPanel* hTop4Left = new JPanel(/*FlowLayout::LEFT, 5, 0*/);
@@ -222,8 +222,8 @@
     JPanel* hTop6Panel = new JPanel();
 //    hTop6Panel->setLayout(new QHBoxLayout());//hTop6Panel, BoxLayout.LINE_AXIS));
     QHBoxLayout* hTop6PanelLayout = new QHBoxLayout(hTop6Panel);
-    hTop6PanelLayout->setMargin(0);
-    hTop6PanelLayout->setSpacing(6);
+//    hTop6PanelLayout->setMargin(0);
+//    hTop6PanelLayout->setSpacing(6);
 
     //Row 6 : Left Components
     JPanel* hTop6Left = new JPanel();//new FlowLayout(/*FlowLayout::CENTER, 5, 0*/));

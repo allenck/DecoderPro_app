@@ -320,10 +320,16 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
   return;
  }
 
- JComboBox::setCurrentIndex(JComboBox::findData(VPtr<NamedBean>::asQVariant(item)));
- if (itemData(currentIndex()) !=QVariant()) {
-     userInput = QString();
- }
+// JComboBox::setCurrentIndex(JComboBox::findData(VPtr<NamedBean>::asQVariant(item)));
+// if (itemData(currentIndex()) !=QVariant()) {
+//     userInput = QString();
+// }
+ QString name = item->getDisplayName();
+ JComboBox::setCurrentIndex(JComboBox::findText(name));
+// if (itemData(currentIndex()) ==QVariant()) {
+//     userInput = QString();
+// }
+
 }
 
 /**
@@ -395,7 +401,12 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 /*public*/ NamedBean* NamedBeanComboBox::getNamedBean()
 {
  if(count() >0)
-  return VPtr<NamedBean>::asPtr(itemData(0));
+ {
+  //return VPtr<NamedBean>::asPtr(itemData(0));
+  QString name = currentText();
+  return VPtr<NamedBean>::asPtr(currentData());
+ }
+ return nullptr;
 }
 
 /**

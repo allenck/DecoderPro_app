@@ -47,9 +47,9 @@ private:
 
 private slots:
  void on_selectionListAction();
- void on_highlightBlockCheckBox();
- void on_blockIdComboBox();
- void on_changeIconsButton();
+ //void on_highlightBlockCheckBox();
+ //void on_blockIdComboBox();
+// void on_changeIconsButton();
  /*private*/ QString getEnglishFeetInchesText(int v);
  /*private*/ QString getMetricCMText(int v);
 

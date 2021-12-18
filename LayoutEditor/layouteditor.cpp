@@ -274,7 +274,7 @@ LayoutEditor::~LayoutEditor()
      editToolBarScrollPane = new QScrollArea(/*leToolBarPanel*/);
      editToolBarScrollPane->setWidget(leToolBarPanel);
      editToolBarScrollPane->setWidgetResizable(true);
-     toolbarWidth = editToolBarScrollPane->size().width();
+     toolbarWidth = editToolBarScrollPane->sizeHint().width();
      toolbarHeight = screenDim.height();
     }
     else
@@ -284,7 +284,7 @@ LayoutEditor::~LayoutEditor()
      editToolBarScrollPane->setWidget(leToolBarPanel);
      editToolBarScrollPane->setWidgetResizable(true);
      toolbarWidth = screenDim.width();
-     setMinimumWidth(toolbarWidth -100);
+     //setMinimumWidth(toolbarWidth -100);
      toolbarHeight = leToolBarPanel->maximumHeight();
     }
 
@@ -306,8 +306,11 @@ LayoutEditor::~LayoutEditor()
     //editToolBarScroll.getViewport().addChangeListener(e -> {
     //log.warn("scrollbars visible: " + editToolBarScroll.getHorizontalScrollBar().isVisible());
     //});
-    editToolBarContainerPanel->setMinimumSize(QSize(toolbarWidth, toolbarHeight));
-    editToolBarContainerPanel->resize(QSize(toolbarWidth, toolbarHeight));
+//    editToolBarContainerPanel->setMinimumSize(QSize(toolbarWidth, toolbarHeight));
+//    editToolBarContainerPanel->resize(QSize(toolbarWidth, toolbarHeight));
+    if(!toolBarIsVertical)
+     editToolBarContainerPanel->setMaximumHeight(200);
+#if 0
     if(toolBarIsVertical)
     {
      editToolBarContainerPanel->setMaximumWidth(150);
@@ -321,7 +324,7 @@ LayoutEditor::~LayoutEditor()
      //editToolBarContainerPanel->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
 //     addDockWidget(Qt::TopDockWidgetArea, editToolBarContainerPanel);
     }
-
+#endif
     helpBarPanel = new JPanel(new QHBoxLayout());
     ((QHBoxLayout*)helpBarPanel->layout())->addWidget(helpBar, 1);
 
@@ -333,18 +336,20 @@ LayoutEditor::~LayoutEditor()
             j->setWrapStyleWord(toolBarIsVertical);
         }
     }
-
+#if 1
     switch (toolBarSide->getType())
     {
     case eLEFT:
      //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignLeft);
-     borderLayout->addWidget(editToolBarScrollPane, BorderLayout::West);
-     editToolBarScrollPane->setWidget(editToolBarContainerPanel);
+//     borderLayout->addWidget(editToolBarScrollPane, BorderLayout::West);
+//     editToolBarScrollPane->setWidget(editToolBarContainerPanel);
+     borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::West);
      break;
     case eRIGHT:
      //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignRight);
-     borderLayout->addWidget(editToolBarScrollPane, BorderLayout::East);
-     editToolBarScrollPane->setWidget(editToolBarContainerPanel);
+//     borderLayout->addWidget(editToolBarScrollPane, BorderLayout::East);
+//     editToolBarScrollPane->setWidget(editToolBarContainerPanel);
+     borderLayout->addWidget(editToolBarContainerPanel, BorderLayout::East);
      break;
     case eTOP:
      //ui->verticalLayout->addWidget(editToolBarContainerPanel, 0, Qt::AlignTop);
@@ -357,11 +362,49 @@ LayoutEditor::~LayoutEditor()
     default:
      break;
     }
+# if 0
     borderLayout->addWidget(helpBarPanel, BorderLayout::South);
 
     QWidget* borderWidget = new QWidget();
     borderWidget->setLayout(borderLayout);
     setCentralWidget(borderWidget);
+# else
+    QWidget* contentPane = new QWidget;
+    QVBoxLayout* contentPaneLayout;
+    contentPane->setLayout(contentPaneLayout = new QVBoxLayout());
+    QWidget* borderWidget = new QWidget();
+    borderWidget->setLayout(borderLayout);
+    contentPaneLayout->addWidget(borderWidget,1);
+    contentPaneLayout->addWidget(helpBarPanel);
+    setCentralWidget(contentPane);
+# endif
+#else
+    contentPane->setLayout(new QBoxLayout(/*contentPane,*/ toolBarIsVertical ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom));
+
+    switch (toolBarSide->getType()) {
+        case eTOP:
+        case eLEFT:
+            contentPane->layout()->addWidget(editToolBarContainerPanel/*, 0*/);
+            break;
+
+        case eBOTTOM:
+        case eRIGHT:
+            contentPane->layout()->addWidget(editToolBarContainerPanel);
+            break;
+
+        default:
+            // fall through
+            break;
+    }
+
+    if (toolBarIsVertical) {
+        editToolBarContainerPanel->layout()->addWidget(helpBarPanel);
+    } else {
+        contentPane->layout()->addWidget(helpBarPanel);
+    }
+    helpBarPanel->setVisible(isEditable() && getShowHelpBar());
+    editToolBarContainerPanel->setVisible(isEditable());
+#endif
 }
 
 /*private*/ void LayoutEditor::createfloatingEditToolBoxFrame()
@@ -595,6 +638,7 @@ LayoutEditor::~LayoutEditor()
     toolBarSideTopButton->setChecked(toolBarSide->getName() == (/*ToolBarSide::eTOP*/"top"));
 
     toolBarSideLeftButton = new QAction(tr("Left"));
+    toolBarSideLeftButton->setCheckable(true);
 //    toolBarSideLeftButton.addActionListener((ActionEvent event) -> {
 //    connect(toolBarSideLeftButton, &QAction::triggered, [=]{
 //        setToolBarSide( new ToolBarSide(eLEFT));
@@ -1988,38 +2032,11 @@ QIcon icon =  QIcon(QPixmap::fromImage(resultImage));
 return icon;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void LayoutEditor::closeEvent(QCloseEvent *)
 {
  bool save = (isDirty() || (savedEditMode!=isEditable()) || (savedPositionable!=allPositionable()) || (savedControlLayout!=allControlling()) ||	(savedAnimatingLayout!=animatingLayout) ||	 (savedShowHelpBar!=showHelpBar) );
  targetWindowClosing(save);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*public*/ void LayoutEditor::setXScale(double xSc) {
     gContext->setXScale(xSc);
@@ -2028,19 +2045,6 @@ void LayoutEditor::closeEvent(QCloseEvent *)
 /*public*/ void LayoutEditor::setYScale(double ySc) {
     gContext->setYScale(ySc);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*public*/ QString LayoutEditor::getClassName()
 {

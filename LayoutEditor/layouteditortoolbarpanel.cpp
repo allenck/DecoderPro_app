@@ -416,34 +416,36 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
 
     highlightBlockCheckBox->setToolTip(tr("Check to highlight the selected block on the layout"));
 //        highlightBlockCheckBox.addActionListener((ActionEvent event) -> {
-//            layoutEditor.setHighlightSelectedBlock(highlightBlockCheckBox->isChecked());
-//        });
-    connect(highlightBlockCheckBox, SIGNAL(toggled(bool)), this, SLOT(on_highlightBlockCheckBox()));
+    connect(highlightBlockCheckBox, &QCheckBox::clicked, [=]{
+            layoutEditor->setHighlightSelectedBlock(highlightBlockCheckBox->isChecked());
+        });
+    //connect(highlightBlockCheckBox, SIGNAL(toggled(bool)), this, SLOT(on_highlightBlockCheckBox()));
     highlightBlockCheckBox->setChecked(layoutEditor->getHighlightSelectedBlock());
 
     //change the block name
 //        blockIDComboBox.addActionListener((ActionEvent event) -> {
-//            //use the "Extra" color to highlight the selected block
-//            if (layoutEditor.highlightSelectedBlockFlag) {
-//                layoutEditor.highlightBlockInComboBox(blockIDComboBox);
-//            }
-//            String newName = blockIDComboBox.getSelectedItemDisplayName();
-//            if (newName == null) {
-//                newName = "";
-//            }
-//            LayoutBlock lb = InstanceManager.getDefault(LayoutBlockManager.class).getByUserName(newName);
-//            if (lb != null) {
-//                //if there is an occupancy sensor assigned already
-//                String sensorName = lb.getOccupancySensorName();
+    connect(blockIDComboBox, &NamedBeanComboBox::currentTextChanged, [=]{
+            //use the "Extra" color to highlight the selected block
+            if (layoutEditor->highlightSelectedBlockFlag) {
+                layoutEditor->highlightBlockInComboBox(blockIDComboBox);
+            }
+            QString newName = blockIDComboBox->getSelectedItemDisplayName();
+            if (newName.isNull()) {
+                newName = "";
+            }
+            LayoutBlock* lb = ( LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
+            if (lb != nullptr) {
+                //if there is an occupancy sensor assigned already
+                QString sensorName = lb->getOccupancySensorName();
 
-//                if (!sensorName.isEmpty()) {
-//                    //update the block sensor ComboBox
-//                    blockSensorComboBox.setSelectedItem(lb.getOccupancySensor());
-//                } else {
-//                    blockSensorComboBox.setSelectedItem(null);
-//                }
-//            }
-//        });
+                if (!sensorName.isEmpty()) {
+                    //update the block sensor ComboBox
+                    blockSensorComboBox->setSelectedItem(lb->getOccupancySensor());
+                } else {
+                    blockSensorComboBox->setSelectedItem(nullptr);
+                }
+            }
+        });
 
     layoutEditor->setupComboBox(blockSensorComboBox, false, true, false);
     blockSensorComboBox->setToolTip(tr("Enter name of occupancy sensor for this block; no entry means don't change."));
@@ -467,12 +469,13 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
     layoutEditor->setupComboBox(blockContentsComboBox, true, false, false);
     blockContentsComboBox->setToolTip(tr("Select to add a Block label when next clicking with shift down."));
 //        blockContentsComboBox.addActionListener((ActionEvent event) -> {
-//            //use the "Extra" color to highlight the selected block
-//            if (layoutEditor.highlightSelectedBlockFlag) {
-//                layoutEditor.highlightBlockInComboBox(blockContentsComboBox);
-//            }
-//        });
-    connect(blockContentsComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_blockIdComboBox()));
+    connect(blockContentsComboBox, &NamedBeanComboBox::currentIndexChanged, [=]{
+        //use the "Extra" color to highlight the selected block
+        if (layoutEditor->highlightSelectedBlockFlag) {
+            layoutEditor->highlightBlockInComboBox(blockContentsComboBox);
+        }
+    });
+    //connect(blockContentsComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_blockIdComboBox()));
 
     //fourth row of edit tool bar items
     //multi sensor...
@@ -544,19 +547,20 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
     //change icons...
     //this is enabled/disabled via selectionListAction above
 //        changeIconsButton.addActionListener((ActionEvent event) -> {
-//            if (sensorButton->isChecked()) {
-//                sensorFrame.setVisible(true);
-//            } else if (signalButton->isChecked()) {
-//                signalFrame.setVisible(true);
-//            } else if (iconLabelButton->isChecked()) {
-//                iconFrame.setVisible(true);
-//            } else {
-//                //explain to the user why nothing happens
-//                JOptionPane.showMessageDialog(null, tr("ChangeIconNotApplied"),
-//                        tr("ChangeIcons"), JOptionPane.INFORMATION_MESSAGE);
-//            }
-//        });
-    connect(changeIconsButton, SIGNAL(clicked(bool)), this, SLOT(on_changeIconsButton()));
+    connect(changeIconsButton, &QPushButton::clicked, [=]{
+     if (sensorButton->isChecked()) {
+         sensorFrame->setVisible(true);
+     } else if (signalButton->isChecked()) {
+         signalFrame->setVisible(true);
+     } else if (iconLabelButton->isChecked()) {
+         iconFrame->setVisible(true);
+     } else {
+         //explain to the user why nothing happens
+         JOptionPane::showMessageDialog(nullptr, tr("This only works when a Sensor, Signal Head or\nLabel is selected to the right of this button."),
+                 tr("Change Icons"), JOptionPane::INFORMATION_MESSAGE);
+     }
+    });
+//    connect(changeIconsButton, SIGNAL(clicked(bool)), this, SLOT(on_changeIconsButton()));
 
     changeIconsButton->setToolTip(tr("Select to change icons used to represent Sensors, Signal Heads or Label (whichever is checked at the right)."));
     changeIconsButton->setEnabled(false);
@@ -791,48 +795,48 @@ void LayoutEditorToolBarPanel::on_selectionListAction()
  changeIconsButton->setEnabled(e);
 }
 
-void LayoutEditorToolBarPanel::on_highlightBlockCheckBox()
-{
- layoutEditor->setHighlightSelectedBlock(highlightBlockCheckBox->isChecked());
-}
+//void LayoutEditorToolBarPanel::on_highlightBlockCheckBox()
+//{
+// layoutEditor->setHighlightSelectedBlock(highlightBlockCheckBox->isChecked());
+//}
 
-void LayoutEditorToolBarPanel::on_blockIdComboBox()
-{
- //use the "Extra" color to highlight the selected block
- if (layoutEditor->highlightSelectedBlockFlag) {
-     layoutEditor->highlightBlockInComboBox(blockIDComboBox);
- }
- QString newName = blockIDComboBox->currentText();
- if (newName.isNull()) {
-     newName = "";
- }
- LayoutBlock* lb = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
- if (lb != nullptr) {
-     //if there is an occupancy sensor assigned already
-     QString sensorName = lb->getOccupancySensorName();
+//void LayoutEditorToolBarPanel::on_blockIdComboBox()
+//{
+// //use the "Extra" color to highlight the selected block
+// if (layoutEditor->highlightSelectedBlockFlag) {
+//     layoutEditor->highlightBlockInComboBox(blockIDComboBox);
+// }
+// QString newName = blockIDComboBox->currentText();
+// if (newName.isNull()) {
+//     newName = "";
+// }
+// LayoutBlock* lb = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
+// if (lb != nullptr) {
+//     //if there is an occupancy sensor assigned already
+//     QString sensorName = lb->getOccupancySensorName();
 
-     if (!sensorName.isEmpty()) {
-         //update the block sensor ComboBox
-         blockSensorComboBox->setSelectedItem(lb->getOccupancySensor());
-     } else {
-         blockSensorComboBox->setSelectedItem(nullptr);
-     }
- }
-}
+//     if (!sensorName.isEmpty()) {
+//         //update the block sensor ComboBox
+//         blockSensorComboBox->setSelectedItem(lb->getOccupancySensor());
+//     } else {
+//         blockSensorComboBox->setSelectedItem(nullptr);
+//     }
+// }
+//}
 
-void LayoutEditorToolBarPanel::on_changeIconsButton()
-{
- if (sensorButton->isChecked()) {
-     sensorFrame->setVisible(true);
- } else if (signalButton->isChecked()) {
-     signalFrame->setVisible(true);
- } else if (iconLabelButton->isChecked()) {
-     iconFrame->setVisible(true);
- } else {
-     //explain to the user why nothing happens
-     JOptionPane::showMessageDialog(nullptr, tr("This only works when a Sensor, Signal Head or\nLabel is selected to the right of this button."),
-             tr("Change Icons"), JOptionPane::INFORMATION_MESSAGE);
- }
-}
+//void LayoutEditorToolBarPanel::on_changeIconsButton()
+//{
+// if (sensorButton->isChecked()) {
+//     sensorFrame->setVisible(true);
+// } else if (signalButton->isChecked()) {
+//     signalFrame->setVisible(true);
+// } else if (iconLabelButton->isChecked()) {
+//     iconFrame->setVisible(true);
+// } else {
+//     //explain to the user why nothing happens
+//     JOptionPane::showMessageDialog(nullptr, tr("This only works when a Sensor, Signal Head or\nLabel is selected to the right of this button."),
+//             tr("Change Icons"), JOptionPane::INFORMATION_MESSAGE);
+// }
+//}
     //initialize logging
     /*private*/ /*transient*/ /*final*/ /*static*/ Logger* LayoutEditorToolBarPanel::log = LoggerFactory::getLogger("LayoutEditorToolBarPanel");
