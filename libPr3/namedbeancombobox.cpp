@@ -385,7 +385,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     }
 #else
     foreach(NamedBean* bean, set)
-     JComboBox::addItem(bean->getSystemName(), VPtr<NamedBean>::asQVariant(bean));
+     //JComboBox::addItem(bean->getSystemName(), VPtr<NamedBean>::asQVariant(bean));
+     JComboBox::addItem(bean->getDisplayName(displayOptions), VPtr<NamedBean>::asQVariant(bean));
 #endif
 }
 

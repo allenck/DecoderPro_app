@@ -140,7 +140,8 @@
         editTrackSegmentHiddenCheckBox->setChecked(trackSegmentView->isHidden());
         Block* block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(trackSegment->getBlockName());
         //editTrackSegmentBlockNameComboBox.getEditor().setItem(block);   // Select the item via the editor, empty text field if null
-        editTrackSegmentBlockNameComboBox->setCurrentIndex(editTrackSegmentBlockNameComboBox->findData(VPtr<Block>::asQVariant(block)));
+        //editTrackSegmentBlockNameComboBox->setCurrentIndex(editTrackSegmentBlockNameComboBox->findData(VPtr<Block>::asQVariant(block)));
+        editTrackSegmentBlockNameComboBox->setCurrentIndex(editTrackSegmentBlockNameComboBox->findText(block->getDisplayName(editTrackSegmentBlockNameComboBox->getDisplayOrder())));
         editTrackSegmentBlockNameComboBox->setEnabled(!hasNxSensorPairs(trackSegment->getLayoutBlock()));
 
         if (trackSegmentView->isArc() && trackSegmentView->isCircle()) {
