@@ -10,6 +10,7 @@
 #include "jbutton.h"
 #include "windowadapter.h"
 
+class JTextPane;
 class KeyValueModel;
 class NamedBeanHandleManager;
 class JTextArea;
@@ -56,7 +57,7 @@ private:
  JmriJFrame* f;
  /*private*/ JTabbedPane* detailsTab;// = new JTabbedPane();
 
- void formatTextAreaAsLabel(JTextArea* pane);
+ void formatTextAreaAsLabel(JTextPane *pane);
  static bool validateNumericalInput(QString text);
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class);
  QLabel* statusBarWidget;
@@ -70,7 +71,7 @@ protected:
  virtual /*protected*/ void resetBasicItems(ActionEvent* e = 0);
  virtual /*abstract*/ /*protected*/ QString helpTarget();
  /*protected*/QList<BeanItemPanel*> bei;// = new ArrayList<BeanItemPanel>(5);
- /*protected*/ QWidget* selectedTab;// = NULL;
+ /*protected*/ QWidget* selectedTab = NULL;
  /**
   * Apply Button.
   * Accessible so Edit Actions can set custom tool tip.

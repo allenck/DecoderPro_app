@@ -15,8 +15,8 @@ public:
  /*public*/ QString getDisplayName();
 
 public slots:
- void buttonClicked(JActionEvent*);
- void splitButtonClicked(JActionEvent*e);
+// void buttonClicked(JActionEvent*);
+// void splitButtonClicked(JActionEvent*e);
  void stateChanged(ChangeEvent*);
 
 private:

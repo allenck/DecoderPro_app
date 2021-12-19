@@ -8,7 +8,7 @@
 #include "memory.h"
 #include "turnout.h"
 #include <QDialog>
-#include <QLineEdit>
+#include "jtextfield.h"
 #include <QComboBox>
 #include <QPushButton>
 #include <QLabel>
@@ -422,9 +422,10 @@ private:
     /*private*/ NamedBeanHandle<Sensor*>* occupancyNamedSensor; //NULL;
     /*private*/ NamedBeanHandle<Memory*>* namedMemory = nullptr;
 
+    /*private*/ Block* block = nullptr;
+
     friend class CreateEditBlock;
     /*private*/ Memory* memory; //NULL;
-    /*private*/ Block* block; //NULL;
     ///*private*/ int maxBlockNumber; //0;
     /*private*/ QVector<LayoutEditor*>* panels; //new QVector<LayoutEditor*>();  // panels using this block
     /*private*/ PropertyChangeListener* mBlockListener; //NULL;
@@ -447,7 +448,7 @@ private:
     /*JTextField*/ QLineEdit* sensorDebounceActiveField; //new /*JTextField*/ QLineEdit(5);
     /*JCheckBox*/ QCheckBox* sensorDebounceGlobalCheck; //new /*JCheckBox*/ QCheckBox(rb.getQString("OccupancySensorUseGlobal"));
     /*JTextField*/ QLineEdit* memoryNameField; //new /*JTextField*/ QLineEdit(16);
-    /*JTextField*/ QLineEdit* metricField; //new /*JTextField*/ QLineEdit(10);
+    /*JTextField*/ JTextField* metricField = new JTextField(10);
     /*JComboBox*/ JComboBox* senseBox =new JComboBox();
     /*JCheckBox*/ QCheckBox* permissiveCheck; //new /*JCheckBox*/ QCheckBox("Permissive Working Allowed");
     /*private*/ /*final*/ NamedBeanComboBox/*<Memory*>*/* memoryComboBox = nullptr;// = new NamedBeanComboBox<>(
@@ -710,7 +711,6 @@ private:
  QHash<Block*, Routes*>* adjDestRoutes;// = new Hashtable<Block*, Routes*>();
  QVector<int>* actedUponUpdates;// = new QVector<int>();
  Logger* log;
-
 };
 
 class ThroughPaths : public QObject, public PropertyChangeListener
@@ -854,6 +854,7 @@ private:
     friend class RoutingSetSaveItemListener;
     friend class RoutingSetResetItemListener;
 };
+
 class LayoutSetSaveItemListener : public QObject, public ActionListener
 {
  Q_OBJECT
@@ -880,18 +881,18 @@ class RoutingSetSaveItemListener : public AbstractAction
  LayoutBlock* lb;
  RoutingSetSaveItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent * =0)override;
  friend class LayoutBlockEditAction;
 };
 
-class RoutingSetResetItemListener : public QObject, public ActionListener
+class RoutingSetResetItemListener : public AbstractAction
 {
  Q_OBJECT
     Q_INTERFACES(ActionListener)
  LayoutBlock* lb;
  RoutingSetResetItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed(JActionEvent *) override;
+ void actionPerformed(JActionEvent * =0) override;
  friend class LayoutBlockEditAction;
 };
 

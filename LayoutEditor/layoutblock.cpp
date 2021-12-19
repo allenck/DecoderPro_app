@@ -103,8 +103,8 @@ long LayoutBlock::time=0;
              (MemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr, DisplayOptions::DISPLAYNAME);
  memoryNameField = new /*JTextField*/ QLineEdit();
  memoryNameField->setMaxLength(16);
- metricField = new /*JTextField*/ QLineEdit();
- metricField->setMaxLength(10);
+ //metricField = JTextField();
+ //metricField->setMaxLength(10);
  //senseBox = new /*JComboBox*/ QComboBox();
  permissiveCheck = new /*JCheckBox*/ QCheckBox();
  permissiveCheck->setText(tr("Permissive Working Allowed"));
@@ -4344,6 +4344,7 @@ BeanItemPanel* LayoutBlockEditAction::layoutDetails()
     bei.append(layout);
     return layout;
 }
+
 BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
     BeanItemPanel* routing = new BeanItemPanel();
     routing->setName("Routing");
@@ -4376,7 +4377,7 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
         }
     });
 #endif
-//    routing->setResetItem(new RoutingSetResetItemListener(lb));
+    routing->setResetItem(new RoutingSetResetItemListener(lb));
 #if 0
     routing.setSaveItem(new AbstractAction() {
         @Override
@@ -4425,6 +4426,7 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
 }
 
 /*public*/ void LayoutSetSaveItemListener::actionPerformed(JActionEvent*) {
+#if 0
     bool needsRedraw = false;
     int k = lb->senseBox->currentIndex();
     int oldSense = lb->occupiedSense;
@@ -4481,6 +4483,44 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
     if (needsRedraw) {
         lb->redrawLayoutBlockPanels();
     }
+#else
+ int m = lb->metricField->text().trimmed().toInt();
+  if (m != lb->metric) {
+      lb->setBlockMetric(m);
+  }
+  lb->block->setPermissiveWorking(lb->permissiveCheck->isChecked());
+  if (!lb->neighbourDir .isEmpty()) {
+      for (int i = 0; i < lb->neighbourDir.size(); i++) {
+          int neigh = lb->neighbourDir.at(i)->getSelectedIndex();
+          lb->neighbours->at(i)->getBlock()->removeBlockDenyList(lb->block);
+          lb->block->removeBlockDenyList(lb->neighbours->at(i)->getBlock());
+          switch (neigh) {
+              case 0: {
+                  lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->RXTX);
+                  break;
+              }
+
+              case 1: {
+                  lb->neighbours->at(i)->getBlock()->addBlockDenyList(lb->block->getDisplayName());
+                  lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->TXONLY);
+                  break;
+              }
+
+              case 2: {
+                  lb->block->addBlockDenyList(lb->neighbours->at(i)->getBlock()->getDisplayName());
+                  lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->RXONLY);
+                  break;
+              }
+
+              default: {
+                  break;
+              }
+          }
+          /* switch */
+      }
+  }
+
+#endif
 }
 
 /*public*/ void LayoutSetResetItemListener::actionPerformed(JActionEvent*) {
@@ -4513,7 +4553,7 @@ void RoutingSetResetItemListener::actionPerformed(JActionEvent *)
 }
 
 
-void RoutingSetSaveItemListener::actionPerformed()
+void RoutingSetSaveItemListener::actionPerformed(JActionEvent *)
 {
  int m = (lb->metricField->text().trimmed().toInt());
  if (m != lb->metric) {

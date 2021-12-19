@@ -28,6 +28,7 @@
 #include "joptionpane.h"
 #include "jtabbedpane.h"
 #include "userpreferencesmanager.h"
+#include "jtextpane.h"
 
 BeanEditAction::BeanEditAction(QObject *parent) :
   AbstractAction("Bean Edit", parent)
@@ -297,7 +298,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
   f->addHelpMenu(helpTarget(), true);
   applyBut = new JButton(tr("Apply")); // create before initPanels()
   //java.awt.Container containerPanel = f.getContentPane();
-  QWidget* containerPanel = new QWidget;
+  QWidget* containerPanel = new QWidget();
   QVBoxLayout* containerPanelLayout;
   containerPanel->setLayout(containerPanelLayout = new QVBoxLayout);
   f->setCentralWidget(containerPanel);
@@ -443,7 +444,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
             || qobject_cast<QRadioButton*>(thing)) {
         cD.insets = new Insets(0, 0, 0, 0); // put a little higher than a JLabel
     } else if (qobject_cast<JColorChooser*>(thing)) {
-        cD.insets = new Insets(-6, 0, 0, 0); // move it up
+        cD.insets = new Insets(-6,0,0,0); // move it up
     } else {
         cD.insets = new Insets(4, 0, 0, 0); // reset
     }
@@ -465,10 +466,12 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
   cR.gridy = y;
   if (it->getHelp() != NULL)
   {
-   /*JTextPane*/JTextArea* help = new JTextArea();
+   //JTextPane* help = new JTextPane();
+   JLabel* help = new JLabel();
+
    help->setText(it->getHelp());
    //gbLayout.setConstraints(help, cR);
-   formatTextAreaAsLabel(help);
+   //formatTextAreaAsLabel(help);
    gbLayout->addWidget(help, cR);
   }
   y++;
@@ -478,7 +481,7 @@ PropertiesSetResetActionListener::PropertiesSetResetActionListener(BeanEditActio
  panel->layout()->addWidget(p);
 }
 
-void BeanEditAction::formatTextAreaAsLabel(JTextArea* pane)
+void BeanEditAction::formatTextAreaAsLabel(JTextPane* pane)
 {
 // pane.setOpaque(false);
 // pane.setEditable(false);
