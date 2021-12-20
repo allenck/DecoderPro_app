@@ -2,7 +2,11 @@
 #define NAMEDBEANCOMBOBOX_H
 #include "jcombobox.h"
 #include "manager.h"
-#include "namedbeancomparator.h"
+//#include "namedbeancomparator.h"
+#include "systemnamecomparator.h"
+#include "algorithm"
+#include "alphanumcomparator.h"
+
 class NamedBeanComboBox : public JComboBox
 {
  Q_OBJECT
@@ -58,4 +62,15 @@ private:
   }
  }
 };
+
+class NBSystemNameComparator //: public SystemNameComparator
+{
+ public:
+  static bool compare( const NamedBean *o1, const NamedBean *o2)
+  {
+   return SystemNameComparator::compare(o1->getSystemName(), o2->getSystemName());
+  }
+};
+
+
 #endif // NAMEDBEANCOMBOBOX_H

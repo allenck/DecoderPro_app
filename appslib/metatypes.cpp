@@ -345,6 +345,11 @@
 #include "jmrisrcpserver.h"
 #include "trackertableaction.h"
 #include "helputilpreferencespanel.h"
+#include "layoutdoubleslipviewxml.h"
+#include "layoutrhturnoutviewxml.h"
+#include "layoutlhturnoutviewxml.h"
+#include "layoutsingleslipviewxml.h"
+#include "layoutwyeviewxml.h"
 
 bool Metatypes::done = false;
 
@@ -702,9 +707,14 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LayoutRHXOverViewXml>("LayoutRHXOverViewXml");
  qRegisterMetaType<JmriSRCPServer>("JmriSRCPServer");
  qRegisterMetaType<TrackerTableAction>("TrackerTableAction");
- Metatypes::done = true;
  qRegisterMetaType<HelpUtilPreferencesPanel>("HelpUtilPreferencesPanel");
  qRegisterMetaType<HelpUtilPreferences>("HelpUtilPreferences");
+ qRegisterMetaType<LayoutDoubleSlipViewXml>("LayoutDoubleSlipViewXml");
+ qRegisterMetaType<LayoutSingleSlipViewXml>("LayoutSingleSlipViewXml");
+ qRegisterMetaType<LayoutRHTurnoutViewXml>("LayoutRHTurnoutViewXml");
+ qRegisterMetaType<LayoutLHTurnoutViewXml>("LayoutLHTurnoutViewXml");
+ qRegisterMetaType<LayoutWyeViewXml>("LayoutWyeViewXml");
+
 
  Metatypes::done = true;
 }

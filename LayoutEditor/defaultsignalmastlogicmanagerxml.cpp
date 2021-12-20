@@ -32,10 +32,10 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
 {
  QDomElement signalMastLogic = doc.createElement("signalmastlogics");
  setStoreElementClass(signalMastLogic);
- SignalMastLogicManager* smlm = (SignalMastLogicManager*) o;
+ DefaultSignalMastLogicManager* smlm = (DefaultSignalMastLogicManager*) o;
  QDomElement e1;
  signalMastLogic.appendChild(e1=doc.createElement("logicDelay"));
- e1.appendChild(doc.createTextNode(QString::number(((DefaultSignalMastLogicManager*)smlm)->getSignalLogicDelay())));
+ e1.appendChild(doc.createTextNode(QString::number(smlm->getSignalLogicDelay())));
  QList<SignalMastLogic*> sml = ((DefaultSignalMastLogicManager*)smlm)->getSignalMastLogicList();
  for(int i = 0; i<sml.size(); i++)
  {

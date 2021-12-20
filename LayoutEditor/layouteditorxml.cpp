@@ -133,110 +133,82 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      log->error("Error storing contents element: " + e.getMessage());
  }
 
+ // note: moving zoom attribute into per-window user preference
+ //panel.setAttribute("zoom", Double.toString(p.getZoom()));
+ int num;
+
  // include contents (Icons and Labels)
  QList<Positionable*> contents = p->getContents();
- int num = contents.size();
- if (num > 0)
+ for (Positionable* sub : contents)
  {
-  for (int i = 0; i < num; i++)
+  if (sub != nullptr && sub->storeItem())
   {
-   Positionable* sub = contents.at(i);
-   if (sub != nullptr && sub->storeItem())
+   try
    {
-    try
+    QDomElement e = ConfigXmlManager::elementFromObject(sub->self());
+    if (!e.isNull())
     {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub->self());
-     if (!e.isNull())
-     {
-      panel.appendChild(e);
-     }
-    }
-    catch (Exception e)
-    {
-     log->error("Error storing panel contents element: " + e.getMessage());
+     panel.appendChild(e);
     }
    }
-   else
+   catch (Exception e)
    {
-    log->warn("Null entry found when storing panel contents.");
+    log->error("Error storing panel contents element: " + e.getMessage());
    }
+  }
+  else
+  {
+   log->warn("Null entry found when storing panel contents.");
   }
  }
 
+
  // include LayoutTracks
-    QList<LayoutTrack*> layoutTracks = p->getLayoutTracks();
-    num = layoutTracks.size();
-    if (log->isDebugEnabled()) {
-        log->debug("N LayoutTrack elements: " + QString::number(num));
-    }
+  QList<LayoutTrack*> layoutTracks = p->getLayoutTracks();
+  num = layoutTracks.size();
+  if (log->isDebugEnabled()) {
+      log->debug(tr("N LayoutTrack elements: %1").arg(num));
+  }
 
-    // Because some people (like me) like to edit their panel.xml files
-    // directly we're going to group the layout tracks by class before
-    // storing them. Note: No other order is effected; They should exist
-    // in the saved file in the order that they were created (ether at
-    // panel file load time or later by the users in the editor).
-//    QList<LayoutTrack*> orderedList = layoutTracks.stream() // next line excludes LayoutSlips
-//            .filter(item -> ((item instanceof LayoutTurnout) && !(item instanceof LayoutSlip)))
-//            .map(item -> (LayoutTurnout) item)
-//            .collect(Collectors.toList());
-    QList<LayoutTrack*> orderedList = QList<LayoutTrack*>();
-    for(LayoutTrack* lt : layoutTracks) {
-     if(qobject_cast<LayoutTurnout*>(lt) && !qobject_cast<LayoutSlip*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof TrackSegment)
-//            .map(item -> (TrackSegment) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : layoutTracks) {
-     if(qobject_cast<TrackSegment*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof PositionablePoint)
-//            .map(item -> (PositionablePoint) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : layoutTracks) {
-     if(qobject_cast<PositionablePoint*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof LevelXing)
-//            .map(item -> (LevelXing) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : layoutTracks) {
-     if(qobject_cast<LevelXing*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof LayoutSlip)
-//            .map(item -> (LayoutSlip) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : layoutTracks) {
-     if(qobject_cast<LayoutSlip*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof LayoutTurntable)
-//            .map(item -> (LayoutTurntable) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : layoutTracks) {
-     if(qobject_cast<LayoutTurntable*>(lt))
-      orderedList.append(lt);
-    }
 
-    for (LayoutTrack* lt : orderedList) {
-        try {
-            QDomElement e = ConfigXmlManager::elementFromObject(lt);
-            if (!e.isNull()) {
-                panel.appendChild(e);
-            }
-        } catch (Exception e) {
-            log->error("Error storing layoutturnout element: " + e.getMessage());
-        }
-    }
-    return panel;
-}   // store
+
+  // Previous write order was
+  //   LayoutTurnout) && !(item instanceof LayoutSlip)
+  //   TrackSegment
+  //   PositionablePoint
+  //   LevelXing
+  //   LayoutSlip
+  //   LayoutTurntable
+
+  // write order specified for compatibility
+  for (LayoutTrackView* lv : p->getLayoutTurnoutViews()) {
+      if (! (qobject_cast<LayoutSlipView*>(lv)) )
+          storeOne(panel, lv);
+  }
+  for (LayoutTrackView* lv : p->getTrackSegmentViews())         {storeOne(panel, lv); }
+  for (LayoutTrackView* lv : p->getPositionablePointViews())    {storeOne(panel, (QObject*)lv); }
+  for (LayoutTrackView* lv : p->getLevelXingViews())            {storeOne(panel, lv); }
+  for (LayoutTrackView* lv : p->getLayoutSlipViews())           {storeOne(panel, lv); }
+  for (LayoutTrackView* lv : p->getLayoutTurntableViews())      {storeOne(panel, lv); }
+
+  // include Layout Shapes
+  for (LayoutShape* ls : p->getLayoutShapes()) {storeOne(panel, (QObject*)ls); }
+
+  return panel;
+ }   // store
+
+
+ /*private*/ void LayoutEditorXml::storeOne(QDomElement panel, QObject* item) {
+     try {
+         QDomElement e = ConfigXmlManager::elementFromObject(item);
+         if (e != QDomElement()) {
+             panel.appendChild(e);
+         }
+     } catch (Exception ex) {
+         log->error(tr("Error storing layout item: %1").arg(item->metaObject()->className()), ex);
+     }
+ }
+
 
 /*public*/ void LayoutEditorXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
 {

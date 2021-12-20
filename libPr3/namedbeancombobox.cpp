@@ -1,9 +1,10 @@
 #include "namedbeancombobox.h"
 #include "vptr.h"
 #include "loggerfactory.h"
-#include "namedbeanusernamecomparator.h"
+//#include "namedbeanusernamecomparator.h"
 #include "propertychangesupport.h"
 #include "abstractmanager.h"
+#include "algorithm"
 
 NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 {
@@ -384,7 +385,9 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
         setSelectedItem(selectedItem);
     }
 #else
-    foreach(NamedBean* bean, set)
+    QList<NamedBean*> l = set.values();
+     std::sort(l.begin(), l.end(), NBSystemNameComparator::compare);
+    foreach(NamedBean* bean, l)
      //JComboBox::addItem(bean->getSystemName(), VPtr<NamedBean>::asQVariant(bean));
      JComboBox::addItem(bean->getDisplayName(displayOptions), VPtr<NamedBean>::asQVariant(bean));
 #endif

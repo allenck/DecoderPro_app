@@ -21,6 +21,8 @@ public slots:
 private:
  Logger* log;
  /*private*/ bool getBooleanValue(QString txt);
+ /*private*/ void storeOne(QDomElement panel, QObject* item);
+
 };
 Q_DECLARE_METATYPE(LayoutEditorXml)
 #endif // LAYOUTEDITORXML_H

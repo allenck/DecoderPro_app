@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutTurntableViewXml : public AbstractXmlAd
 {
  Q_OBJECT
 public:
- LayoutTurntableViewXml();
+ Q_INVOKABLE LayoutTurntableViewXml();
  ~LayoutTurntableViewXml() {}
  LayoutTurntableViewXml(const LayoutTurntableViewXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);

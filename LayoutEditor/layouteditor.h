@@ -411,7 +411,7 @@ public:
     /*public*/ QVector<SignalMastIcon*>* signalMastList = new QVector<SignalMastIcon*>();  // Signal Head Icons
     /*private*/ /*transient*/ QList<LayoutShape*> layoutShapes = QList<LayoutShape*>();               // LayoutShap list
     /*public*/ QVector<MultiSensorIcon*>* multiSensors = new QVector<MultiSensorIcon*>(); // MultiSensor Icons
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     /*public*/ QList<PositionablePoint *> getPositionablePoints() /*override*/;
     /*public*/ /*@Nonnull*/ QList<LayoutSlipView*> getLayoutSlipViews();
     /*public*/ QList<LayoutSlip *> getLayoutSlips()/*override*/;
@@ -420,6 +420,7 @@ public:
     /*public*/ /*@Nonnull*/ QList<LayoutTurnoutView*> getLayoutTurnoutViews(); // this specifically does not include slips
     /*public*/ QList<LayoutTurnout *> getLayoutTurnouts() /*override*/;
     /*public*/ QList<LayoutTurntable *> getLayoutTurntables()/*override*/;
+    /*public*/ /*@Nonnull*/ QList<LayoutTurntableView*> getLayoutTurntableViews();
     /*public*/ QList<LevelXing*> getLevelXings() /*override*/;
     /*public*/ QList<LevelXingView*> getLevelXingViews() /*override*/;
 
@@ -471,7 +472,7 @@ public:
     /*public*/ void keyPressEvent(QKeyEvent *event) override;
     /*protected*/ void paintTargetPanel(EditScene* g2);
     /*private*/ QRectF getSelectionRect();
-    /*public*/ QList<PositionablePointView*> getPositionablePointViews() /*override*/;
+    /*public*/ QList<LayoutTrackView *> getPositionablePointViews() /*override*/;
     /*final*/ /*public*/ bool removeLayoutTrackAndRedraw(/*@Nonnull*/ LayoutTrack* trk);
     /*final*/ /*public*/ void removeLayoutTrack(/*@Nonnull */LayoutTrack* trk) /*override*/;
     /*public*/ ToolBarSide *getToolBarSide();

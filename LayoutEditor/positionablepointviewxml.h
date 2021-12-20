@@ -7,7 +7,7 @@ class PositionablePointViewXml : public AbstractXmlAdapter
 {
   Q_OBJECT
  public:
-  PositionablePointViewXml(QObject* parent = nullptr);
+  Q_INVOKABLE PositionablePointViewXml(QObject* parent = nullptr);
   ~PositionablePointViewXml() {}
   PositionablePointViewXml(const PositionablePointViewXml&) : AbstractXmlAdapter() {}
   /*public*/ QDomElement store(QObject* o) override;

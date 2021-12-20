@@ -563,7 +563,7 @@
 
 // draw positionable points
 /*private*/ void LayoutEditorComponent::drawPositionablePoints(EditScene* g2, bool isMain) {
-    for (PositionablePointView* positionablePointView : layoutEditor->getPositionablePointViews()) {
+    for (LayoutTrackView* positionablePointView : layoutEditor->getPositionablePointViews()) {
         positionablePointView->draw1(g2, isMain, false);
     }
 }

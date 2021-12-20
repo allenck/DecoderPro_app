@@ -7,7 +7,7 @@ class LayoutDoubleXOverViewXml : public LayoutXOverViewXml
 {
   Q_OBJECT
  public:
-  LayoutDoubleXOverViewXml(QObject* parent = nullptr);
+  Q_INVOKABLE LayoutDoubleXOverViewXml(QObject* parent = nullptr);
 
  protected:
   /*protected*/ void addClass(QDomElement element);

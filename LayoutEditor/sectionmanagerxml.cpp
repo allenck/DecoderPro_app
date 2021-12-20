@@ -45,7 +45,7 @@ SectionManagerXml::SectionManagerXml(QObject *parent) :
      // store the Section
      for(NamedBean* bean : sctList)
      {
-      Section* x = (Section*)x;
+      Section* x = (Section*)bean;
       QString sName = x->getSystemName();
       log->debug(tr("Section system name is %1").arg(sName));
 

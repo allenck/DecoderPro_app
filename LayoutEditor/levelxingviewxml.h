@@ -9,7 +9,7 @@ class LevelXingViewXml : public AbstractXmlAdapter
 {
   Q_OBJECT
  public:
-  LevelXingViewXml(QObject* parent = nullptr);
+  Q_INVOKABLE LevelXingViewXml(QObject* parent = nullptr);
   ~LevelXingViewXml() {}
   LevelXingViewXml(const LevelXingViewXml&) : AbstractXmlAdapter() {}
   /*public*/ QDomElement store(QObject* o)override;

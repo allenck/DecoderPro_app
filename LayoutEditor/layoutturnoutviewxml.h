@@ -6,7 +6,7 @@
 class LayoutTurnoutViewXml : public AbstractXmlAdapter
 {
  public:
-  LayoutTurnoutViewXml(QObject* parent = nullptr);
+  Q_INVOKABLE LayoutTurnoutViewXml(QObject* parent = nullptr);
   ~LayoutTurnoutViewXml() {}
   LayoutTurnoutViewXml(const LayoutTurnoutViewXml&) : AbstractXmlAdapter() {}
   /*public*/ QDomElement store(QObject* o);

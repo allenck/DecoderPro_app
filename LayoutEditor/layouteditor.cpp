@@ -8383,11 +8383,11 @@ void LayoutEditor::addSensor()
 #endif
 
 /*@Nonnull*/
-/*public*/ QList<PositionablePointView*> LayoutEditor::getPositionablePointViews() {
+/*public*/ QList<LayoutTrackView*> LayoutEditor::getPositionablePointViews() {
 //     return getLayoutTrackViewsOfClass("PositionablePointView")
 //             .map(PositionablePointView.class::cast)
 //             .collect(Collectors.toCollection(ArrayList::new));
-     QList<PositionablePointView*> list = QList<PositionablePointView*>();
+     QList<LayoutTrackView*> list = QList<LayoutTrackView*>();
      for(LayoutTrackView* view : getLayoutTrackViews())
      {
       if(qobject_cast<PositionablePointView*>(view))
@@ -8417,11 +8417,11 @@ QList<LayoutSlipView*> LayoutEditor::getLayoutSlipViews() {
 //            .map(LayoutSlipView.class::cast)
 //            .collect(Collectors.toCollection(ArrayList::new));
  QList<LayoutSlipView*> list = QList<LayoutSlipView*>();
- foreach(LayoutTrack* lt, getLayoutTracks())
+ foreach(LayoutTrackView* lt, getLayoutTrackViews())
  {
-  if(qobject_cast<LayoutSlip*>(lt))
+  if(qobject_cast<LayoutSlipView*>(lt))
   {
-   LayoutSlipView* ltv = getLayoutSlipView((LayoutSlip*)lt);
+   LayoutSlipView* ltv = (LayoutSlipView*)lt;
    list.append(ltv);
   }
  }
@@ -8503,7 +8503,21 @@ QList<LayoutSlipView*> LayoutEditor::getLayoutSlipViews() {
   if(qobject_cast<LayoutTurntable*>(lt))
    list.append((LayoutTurntable*)lt);
  }
- return list;}
+ return list;
+}
+
+/*public*/ /*@Nonnull*/ QList<LayoutTurntableView*> LayoutEditor::getLayoutTurntableViews() {
+//    return getLayoutTrackViewsOfClass(LayoutTurntableView.class)
+//            .map(LayoutTurntableView.class::cast)
+//            .collect(Collectors.toCollection(ArrayList::new));
+ QList<LayoutTurntableView*> list = QList<LayoutTurntableView*>();
+ for(LayoutTrackView* ltv : getLayoutTrackViews())
+ {
+  if(qobject_cast<LayoutTurntableView*>(ltv) )
+   list.append((LayoutTurntableView*)ltv);
+ }
+ return list;
+}
 
 /*public*/ QList<LevelXing*> LayoutEditor::getLevelXings() {
  QList<LayoutTrack*> layoutTracks =  getLayoutTracksOfClass("LevelXing");
@@ -8512,21 +8526,19 @@ QList<LayoutSlipView*> LayoutEditor::getLayoutSlipViews() {
   l.append((LevelXing*)t);
 return l;
 }
+
 /*public*/ /*@Nonnull*/
-QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
-//    return getLayoutTrackViewsOfClass("LevelXingView")
-//            .map(LevelXingView.class::cast)
-//            .collect(Collectors.toCollection(ArrayList::new));
+ QList<LevelXingView*> LayoutEditor::getLevelXingViews() {
+ //    return getLayoutTrackViewsOfClass("LevelXingView")
+ //            .map(LevelXingView.class::cast)
+ //            .collect(Collectors.toCollection(ArrayList::new));
  QList<LevelXingView*> list = QList<LevelXingView*>();
-
-
-
-   for(LayoutTrackView* ltv : getLayoutTrackViews())
-    {
-     if(qobject_cast<LayoutSlipView*>(ltv) || qobject_cast<LayoutTurnoutView*>(ltv))
-      list.append((LevelXingView*)ltv);
-    }
-    return list;
+ for(LayoutTrackView* ltv : getLayoutTrackViews())
+  {
+   if(qobject_cast<LayoutSlipView*>(ltv) || qobject_cast<LayoutTurnoutView*>(ltv))
+    list.append((LevelXingView*)ltv);
+  }
+  return list;
 }
 
 /*public*/ QList<LayoutTrack*> LayoutEditor::getLayoutTracks() {

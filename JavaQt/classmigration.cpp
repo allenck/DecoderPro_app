@@ -6,7 +6,7 @@ ClassMigration::ClassMigration()
 
 }
 
-/*private*/ QMap<QString, QString> ClassMigration::map = {
+/*private*/ QMap<QString, QString> ClassMigration::map = { // see ClassMigration properties
  {"jmri.configurexml.AbstractLightManagerConfigXML","jmri.managers.configurexml.AbstractLightManagerConfigXML"},
  {"jmri.configurexml.AbstractMemoryManagerConfigXML","jmri.managers.configurexml.AbstractMemoryManagerConfigXML"},
  {"jmri.configurexml.AbstractReporterManagerConfigXML","jmri.managers.configurexml.AbstractReporterManagerConfigXML"},
@@ -31,7 +31,7 @@ ClassMigration::ClassMigration()
 
  {"jmri.jmrit.display.configurexml.LayoutBlockManagerXml","jmri.jmrit.display.layoutEditor.configurexml.LayoutBlockManagerXml"},
 
- {"jmri.jmrit.signalling.configurexml.EntryExitPairsXm","jmri.jmrit.entryexit.configurexml.EntryExitPairsXml"},
+ {"jmri.jmrit.signalling.configurexml.EntryExitPairsXml","jmri.jmrit.entryexit.configurexml.EntryExitPairsXml"},
 
  {"jmri.managers.configurexml.InternalLightManagerXml","jmri.jmrix.internal.configurexml.InternalLightManagerXml"},
  {"jmri.managers.configurexml.InternalReporterManagerXml","jmri.jmrix.internal.configurexml.InternalReporterManagerXml"},

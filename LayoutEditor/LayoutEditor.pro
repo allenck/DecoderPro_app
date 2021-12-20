@@ -128,14 +128,19 @@ SOURCES += \
     jmrijframe.cpp \
     jmrijframeinterface.cpp \
     jmripanel.cpp \
+    layoutdoubleslipviewxml.cpp \
     layoutdoublexoverviewxml.cpp \
     layouteditorviewcontext.cpp \
+    layoutlhturnoutviewxml.cpp \
     layoutlhxoverviewxml.cpp \
+    layoutrhturnoutviewxml.cpp \
     layoutrhxoverviewxml.cpp \
+    layoutsingleslipviewxml.cpp \
     layoutslipviewxml.cpp \
     layoutturnout.cpp \
     layoutturnoutviewxml.cpp \
     layoutturntableviewxml.cpp \
+    layoutwyeviewxml.cpp \
     layoutxoverviewxml.cpp \
     levelxing.cpp \
     layoutblock.cpp \
@@ -595,15 +600,20 @@ HEADERS += liblayouteditor_global.h \
     jmrijframe.h \
     jmrijframeinterface.h \
     jmripanel.h \
+    layoutdoubleslipviewxml.h \
     layoutdoublexoverviewxml.h \
     layouteditorviewcontext.h \
+    layoutlhturnoutviewxml.h \
     layoutlhxoverviewxml.h \
     layoutmodels.h \
+    layoutrhturnoutviewxml.h \
     layoutrhxoverviewxml.h \
+    layoutsingleslipviewxml.h \
     layoutslipviewxml.h \
     layoutturnout.h \
     layoutturnoutviewxml.h \
     layoutturntableviewxml.h \
+    layoutwyeviewxml.h \
     layoutxoverviewxml.h \
     levelxing.h \
     layoutblock.h \

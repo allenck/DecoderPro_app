@@ -6,7 +6,7 @@
 class LayoutSlipViewXml : public AbstractXmlAdapter
 {
  public:
-  LayoutSlipViewXml(QObject *parent = nullptr);
+  Q_INVOKABLE LayoutSlipViewXml(QObject *parent = nullptr);
   ~LayoutSlipViewXml() {}
   LayoutSlipViewXml(const LayoutSlipViewXml&) : AbstractXmlAdapter() {}
   /*public*/ QDomElement store(QObject* o) override;
@@ -18,7 +18,7 @@ class LayoutSlipViewXml : public AbstractXmlAdapter
   QString getElement(QDomElement el, QString child);
 
  protected:
-  /*protected*/ void addClass(QDomElement element);
+  /*protected*/ virtual void addClass(QDomElement element);
 
 };
 Q_DECLARE_METATYPE(LayoutSlipViewXml);

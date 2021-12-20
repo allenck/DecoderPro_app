@@ -420,7 +420,9 @@ XmlFile::XmlFile(QObject *parent) :
    log->debug("new backup file: " + backupFullName);
   }
 
-  QFile* backupFile = findFile(backupFullName)->toQfile();
+  QFile* backupFile;
+  File* f = new File(backupFullName);
+  backupFile = f->toQfile();
   if (backupFile != NULL)
   {
    if (backupFile->remove())

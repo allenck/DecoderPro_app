@@ -8,7 +8,7 @@ class LayoutXOverViewXml : public LayoutTurnoutViewXml
 {
   Q_OBJECT
  public:
-  LayoutXOverViewXml(QObject *parent = nullptr);
+  Q_INVOKABLE LayoutXOverViewXml(QObject *parent = nullptr);
   ~LayoutXOverViewXml() {}
   LayoutXOverViewXml(const LayoutXOverViewXml&) : LayoutTurnoutViewXml() {}
 

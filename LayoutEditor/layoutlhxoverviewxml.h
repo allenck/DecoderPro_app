@@ -6,7 +6,7 @@
 class LayoutLHXOverViewXml : public LayoutXOverViewXml
 {
  public:
-  LayoutLHXOverViewXml(QObject* parent = nullptr);
+ Q_INVOKABLE LayoutLHXOverViewXml(QObject* parent = nullptr);
   ~LayoutLHXOverViewXml() {}
   LayoutLHXOverViewXml(const LayoutLHXOverViewXml&) : LayoutXOverViewXml() {}
  protected:

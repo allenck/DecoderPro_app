@@ -9,7 +9,7 @@ class TrackSegmentViewXml : public AbstractXmlAdapter
 {
   Q_OBJECT
  public:
-  TrackSegmentViewXml(QObject* parent = nullptr);
+  Q_INVOKABLE TrackSegmentViewXml(QObject* parent = nullptr);
   ~TrackSegmentViewXml() {}
   TrackSegmentViewXml(const TrackSegmentViewXml&): AbstractXmlAdapter() {}
   /*public*/ QDomElement store(QObject* o) override;
