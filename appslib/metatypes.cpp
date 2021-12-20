@@ -355,6 +355,8 @@
 #include "blockbossaction.h"
 #include "dispatcheraction.h"
 #include "paneopsprogaction.h"
+#include "systemconsoleaction.h"
+#include "tabbedpreferencesprofileaction.h"
 
 bool Metatypes::done = false;
 
@@ -721,9 +723,10 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LayoutWyeViewXml>("LayoutWyeViewXml");
  qRegisterMetaType<LoadDefaultXmlThrottlesLayoutAction>("LoadDefaultXmlThrottlesLayoutAction");
  qRegisterMetaType<PaneProgAction>("PaneProgAction");
- qRegisterMetaType<BlockBossAction*>("BlockBossAction");
+// qRegisterMetaType<BlockBossAction*>("BlockBossAction");
  qRegisterMetaType<DispatcherAction>("DispatcherAction");
  qRegisterMetaType<PaneOpsProgAction>("PaneOpsProgAction");
-
+ qRegisterMetaType<SystemConsoleAction>("SystemConsoleAction");
+ qRegisterMetaType<TabbedPreferencesProfileAction>("TabbedPreferencesProfileAction");
  Metatypes::done = true;
 }

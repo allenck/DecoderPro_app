@@ -9,13 +9,13 @@ public:
  /*public*/ LoadDefaultXmlThrottlesLayoutAction(QString s, WindowInterface* wi);
  /*public*/ LoadDefaultXmlThrottlesLayoutAction(QString s, QIcon i, WindowInterface* wi);
  /*public*/ LoadDefaultXmlThrottlesLayoutAction(QString s, QObject* parent);
- /*public*/ LoadDefaultXmlThrottlesLayoutAction( QObject* parent);
+ Q_INVOKABLE/*public*/ LoadDefaultXmlThrottlesLayoutAction( QObject* parent =0);
   ~LoadDefaultXmlThrottlesLayoutAction() {}
   LoadDefaultXmlThrottlesLayoutAction(const LoadDefaultXmlThrottlesLayoutAction&) : JmriAbstractAction() {}
- /*public*/ JmriPanel* makePanel();
+ /*public*/ JmriPanel* makePanel()override;
 
 public slots:
- /*public*/ void actionPerformed(/*ActionEvent e*/);
+ /*public*/ void actionPerformed(JActionEvent* =0)override;
 
  private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ThrottleCreationAction");

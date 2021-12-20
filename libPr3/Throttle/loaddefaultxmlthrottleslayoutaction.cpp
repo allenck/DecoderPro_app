@@ -63,7 +63,7 @@
  * @param e The event causing the action.
  */
 //@Override
-/*public*/ void LoadDefaultXmlThrottlesLayoutAction::actionPerformed(/*ActionEvent e*/) {
+/*public*/ void LoadDefaultXmlThrottlesLayoutAction::actionPerformed(JActionEvent *) {
     // load throttle preference
     LoadXmlThrottlesLayoutAction* lxta = new LoadXmlThrottlesLayoutAction(parent());
     try {

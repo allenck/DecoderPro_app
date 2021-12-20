@@ -45,7 +45,7 @@ ClassMigration::ClassMigration()
  {"jmri.jmrit.display.configurexml.TrackSegmentXml","jmri.jmrit.display.layoutEditor.configurexml.TrackSegmentViewXml"},
 
  {"jmri.jmrit.display.layoutEditor.configurexml.PositionablePointXml","jmri.jmrit.display.layoutEditor.configurexml.PositionablePointViewXml"},
- {"jmri.jmrit.display.configurexml.PositionablePointXml","jmri.jmrit.display.layoutEditor.configurexml.PositionablePointXml"},
+ {"jmri.jmrit.display.configurexml.PositionablePointXml","jmri.jmrit.display.layoutEditor.configurexml.PositionablePointViewXml"},
 
  {"jmri.jmrit.display.layoutEditor.configurexml.LevelXingXml","jmri.jmrit.display.layoutEditor.configurexml.LevelXingViewXml"},
 

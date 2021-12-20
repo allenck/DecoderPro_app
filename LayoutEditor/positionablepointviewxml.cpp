@@ -72,7 +72,7 @@
             element.setAttribute("linkpointid", p->getLinkedPointId());
         }
 
-        element.setAttribute("class", "jmri.jmrit.display.layoutEditor.configurexml->PositionablePointXml");
+        element.setAttribute("class", "jmri.jmrit.display.layoutEditor.configurexml.PositionablePointXml");
         return element;
     }
 

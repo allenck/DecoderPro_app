@@ -15,7 +15,7 @@ class LIBPR3SHARED_EXPORT PaneProgAction : public AbstractAction
 {
     Q_OBJECT
 public:
-    Q_INVOKABLE explicit PaneProgAction(QObject *parent=nullptr);
+  Q_INVOKABLE explicit PaneProgAction(QObject *parent=nullptr) {}
   ~PaneProgAction() {}
   PaneProgAction(const PaneProgAction&) : AbstractAction() {}
     /*public*/ PaneProgAction(QString s, QObject* parent);
@@ -23,7 +23,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void actionPerformed();
+    /*public*/ void actionPerformed(JActionEvent* =0);
 
 private:
     //Object o1, o2, o3, o4;
