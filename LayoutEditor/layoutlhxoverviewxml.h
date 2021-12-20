@@ -5,6 +5,7 @@
 
 class LayoutLHXOverViewXml : public LayoutXOverViewXml
 {
+  Q_OBJECT
  public:
  Q_INVOKABLE LayoutLHXOverViewXml(QObject* parent = nullptr);
   ~LayoutLHXOverViewXml() {}

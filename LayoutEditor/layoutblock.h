@@ -382,7 +382,7 @@ public slots:
     void handleBlockChange(PropertyChangeEvent* e);
     void handleBlockChange(QString pName, int o, int val);
 
-    void sensorDebounceGlobalCheck_clicked();
+    //void sensorDebounceGlobalCheck_clicked();
     void blockEditCancelPressed(JActionEvent* a = 0);
     void blockEditDonePressed(JActionEvent* a = 0);
 

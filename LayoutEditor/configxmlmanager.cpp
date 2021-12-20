@@ -426,11 +426,11 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
    if (!e.isNull())
     root.appendChild(e);
   }
-  catch (Exception* e)
+  catch (Exception e)
   {
    result = false;
    storingErrorEncountered (((XmlAdapter*)o), "storing to file", Level::_ERROR,
-                                      "Unknown error (Exception)", NULL,NULL,e);
+                                      "Unknown error (Exception)", NULL,NULL,&e);
   }
  }
  return result;
@@ -648,7 +648,7 @@ File userPrefsFile;*/
   aName = QString(o->metaObject()->className()) + "Xml";
  if(QString(o->metaObject()->className()) == "Pr3ConnectionConfig")
   aName = "ConnectionConfigXml";
- log->debug(tr("store %1 using %2").arg(o->metaObject()->className()).arg(aName));
+ log->debug(tr("store %1 using %2").arg(o->metaObject()->className(),aName));
  QObject* adapter = NULL;
 
  try
