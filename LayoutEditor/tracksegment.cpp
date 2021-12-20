@@ -4632,24 +4632,20 @@ void TrackSegment::drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g
   // check first connection for turnout or level crossing
   if (HitPointType::isTurnoutHitType(type1))
   {
-   // have connection to turnout or level crossing
-   if (type1 <= HitPointType::TURNOUT_D)
-   {
-    // have connection to a turnout, is block different
+   // have connection to a turnout, is block different
     LayoutTurnout* lt = (LayoutTurnout*) getConnect1();
     lb2 = lt->getLayoutBlock();
-    if (lt->getTurnoutType() > LayoutTurnout::WYE_TURNOUT)
-    {
-     // not RH, LH, or WYE turnout - other blocks possible
-     if ((type1 == HitPointType::TURNOUT_B) && (lt->getLayoutBlockB() != nullptr)) {
-         lb2 = lt->getLayoutBlockB();
-     }
-     if ((type1 == HitPointType::TURNOUT_C) && (lt->getLayoutBlockC() != nullptr)) {
-         lb2 = lt->getLayoutBlockC();
-     }
-     if ((type1 == HitPointType::TURNOUT_D) && (lt->getLayoutBlockD() != nullptr)) {
-         lb2 = lt->getLayoutBlockD();
-     }
+    if (lt->hasEnteringDoubleTrack()) {
+        // not RH, LH, or WYE turnout - other blocks possible
+        if ((type1 == HitPointType::TURNOUT_B) && (lt->getLayoutBlockB() != nullptr)) {
+            lb2 = lt->getLayoutBlockB();
+        }
+        if ((type1 == HitPointType::TURNOUT_C) && (lt->getLayoutBlockC() != nullptr)) {
+            lb2 = lt->getLayoutBlockC();
+        }
+        if ((type1 == HitPointType::TURNOUT_D) && (lt->getLayoutBlockD() != nullptr)) {
+            lb2 = lt->getLayoutBlockD();
+        }
     }
     if ((lb2 != nullptr) && (lb1 != lb2))
     {
@@ -4681,7 +4677,6 @@ void TrackSegment::drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g
                                getConnect1(), type1 ) );
            results.append(lc);
        }
-   }
   } else if (HitPointType::isSlipHitType(type1))  {
       // have connection to a slip crossing
       LayoutSlip* ls = (LayoutSlip*) getConnect1();
@@ -4701,9 +4696,6 @@ void TrackSegment::drawTrackCircleCentre(LayoutEditor *editor, QGraphicsScene *g
   if (HitPointType::isTurnoutHitType(type2))
   {
     // have connection to a turnout
-   if(getConnect2() == nullptr)  //ACK temp
-    connect2 = models->getFinder()->findObjectByName(tConnect2Name);
-
     LayoutTurnout* lt = (LayoutTurnout*) getConnect2();
     lb2 = lt->getLayoutBlock();
     if (lt->getTurnoutType() > LayoutTurnout::WYE_TURNOUT) {

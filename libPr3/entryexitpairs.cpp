@@ -22,10 +22,6 @@
 #include "joptionpane.h"
 #include "vetoablechangesupport.h"
 
-//EntryExitPairs::EntryExitPairs(QObject *parent) :
-//    Manager(parent)
-//{
-//}
 /**
  * Implements an Entry Exit based method of setting turnouts, setting up signal logic and the
  * allocation of blocks through based upon the layout editor.
@@ -346,6 +342,30 @@ public List<DestinationPoints> getNamedBeanList() {
 
 /*public*/ int EntryExitPairs::getClearDownOption(){
     return routeClearOption;
+}
+
+/*public*/ void EntryExitPairs::setOverlapOption(int i) {
+    routeOverlapOption = i;
+}
+
+/*public*/ int EntryExitPairs::getOverlapOption() {
+    return routeOverlapOption;
+}
+
+/*public*/ void EntryExitPairs::setMemoryOption(QString memoryName) {
+    memoryOption = memoryName;
+}
+
+/*public*/ QString EntryExitPairs::getMemoryOption() {
+    return memoryOption;
+}
+
+/*public*/ void EntryExitPairs::setMemoryClearDelay(int secs) {
+    memoryClearDelay = secs;
+}
+
+/*public*/ int EntryExitPairs::getMemoryClearDelay() {
+    return memoryClearDelay;
 }
 
 /** {@inheritDoc} */

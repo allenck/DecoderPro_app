@@ -10,10 +10,10 @@ public:
     Q_INVOKABLE explicit EntryExitPairsXml(QObject *parent = 0);
     ~EntryExitPairsXml() {}
     EntryExitPairsXml(const EntryExitPairsXml&) : AbstractXmlAdapter() {}
-    /*public*/ QDomElement store(QObject* o);
+    /*public*/ QDomElement store(QObject* o)override;
     /*public*/ void setStoreElementClass(QDomElement messages);
-    /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);
-    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception);
+//    /*public*/ void load(QDomElement element, QObject* o)  throw (Exception);
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception)override;
     /*public*/ int loadOrder()const override;
 
 signals:

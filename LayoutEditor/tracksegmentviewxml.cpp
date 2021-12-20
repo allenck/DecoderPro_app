@@ -44,7 +44,7 @@
     element.setAttribute("type1", metaEnum.valueToKey(trk->getType1()));
     element.setAttribute("connect2name", trk->getConnect2Name());
     //element.setAttribute("type2", "" + htpMap.outputFromEnum(trk->getType2()) );
-    element.setAttribute("type1", metaEnum.valueToKey(trk->getType2()));
+    element.setAttribute("type2", metaEnum.valueToKey(trk->getType2()));
 
     element.setAttribute("dashed",      (view->isDashed() ? "yes" : "no"));
     element.setAttribute("mainline",    (trk->isMainline() ? "yes" : "no"));

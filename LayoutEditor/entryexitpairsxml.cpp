@@ -35,10 +35,37 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
     QDomElement element = doc.createElement("entryexitpairs");
     setStoreElementClass(element);
     QList<LayoutEditor*> editors = p->getSourcePanelList();
-    if (editors.size()==0) return element;
+    if (editors.isEmpty())
+     return QDomElement();
+
     QDomElement e1;
     element.appendChild(e1=doc.createElement("cleardown"));
     e1.appendChild(doc.createTextNode(QString::number(p->getClearDownOption())));
+
+    int overLap = p->getOverlapOption();
+    if (overLap > 0) {
+        element.appendChild(e1=doc.createElement("overlap")); e1.appendChild(doc.createTextNode(QString::number(overLap)));  // NOI18N
+    }
+
+    int memoryClearDelay = p->getMemoryClearDelay();
+    if (memoryClearDelay > 0) {
+        element.appendChild(e1=doc.createElement("memorycleardelay")); e1.appendChild(doc.createTextNode(QString::number(memoryClearDelay)));  // NOI18N
+    }
+
+    QString memoryName = p->getMemoryOption();
+    if (!memoryName.isEmpty()) {
+        element.appendChild(e1=doc.createElement("memoryname")); e1.appendChild(doc.createTextNode(memoryName));  // NOI18N
+    }
+
+    if (p->getDispatcherIntegration()) {
+        element.appendChild(e1=doc.createElement("dispatcherintegration")); e1.appendChild(doc.createTextNode("yes"));  // NOI18N
+    }
+    if (p->useDifferentColorWhenSetting()) {
+        element.appendChild(e1=doc.createElement("colourwhilesetting")); e1
+                .appendChild(doc.createTextNode(ColorUtil::colorToColorName(p->getSettingRouteColor())));  // NOI18N
+        element.appendChild(e1=doc.createElement("settingTimer")); e1.appendChild(doc.createTextNode(QString::number(p->getSettingTimer())));  // NOI18N
+    }
+
     for (int k = 0; k<editors.size(); k++)
     {
         LayoutEditor* panel = editors.at(k);
@@ -135,9 +162,9 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
     messages.setAttribute("class","jmri.jmrit.signalling.configurexml.EntryExitPairsXml");
 }
 
-/*public*/ void EntryExitPairsXml::load(QDomElement /*element*/, QObject* /*o*/)  throw (Exception){
-    log->error("Invalid method called");
-}
+///*public*/ void EntryExitPairsXml::load(QDomElement /*element*/, QObject* /*o*/)  throw (Exception){
+//    log->error("Invalid method called");
+//}
 
 /**
  * Load, starting with the layoutblock element, then

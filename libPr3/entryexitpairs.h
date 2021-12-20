@@ -144,6 +144,12 @@ public:
     /*public*/ void deregister(NamedBean* n)const override;
     /*public*/ void setClearDownOption(int i);
     /*public*/ int getClearDownOption();
+    /*public*/ void setOverlapOption(int i);
+    /*public*/ int getOverlapOption();
+    /*public*/ void setMemoryOption(QString memoryName);
+    /*public*/ QString getMemoryOption();
+    /*public*/ void setMemoryClearDelay(int secs) ;
+    /*public*/ int getMemoryClearDelay();
     /*public*/ void dispose() override;
     /*public*/ QObjectList* getSourceList(LayoutEditor* panel);
     /*public*/ Source* getSourceForPoint(PointDetails* pd);
@@ -221,12 +227,15 @@ public:
 signals:
     //void propertyChange(PropertyChangeEvent*);
 public slots:
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*)override;
     /*public*/ void propertyDestinationPropertyChange(PropertyChangeEvent* e);
     /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
 
 private:
     int routeClearOption;// = PROMPTUSER;
+    int routeOverlapOption = PROMPTUSER;
+    QString memoryOption = "";     // Optional memory variable to receive allocation messages
+    int memoryClearDelay = 0;     // Delay before clearing memory, 0 for clearing disabled
     /*private*/ PointDetails* providePoint(NamedBean* source, LayoutEditor* panel);
     Logger* log;
     QObjectList destinationList;// = new ArrayList<Object>();
