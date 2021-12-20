@@ -8473,7 +8473,7 @@ QList<LayoutSlipView*> LayoutEditor::getLayoutSlipViews() {
     QList<LayoutTurnoutView*> list = QList<LayoutTurnoutView*>();
     for(LayoutTrackView* ltv : getLayoutTrackViews())
     {
-     if(qobject_cast<LayoutSlipView*>(ltv) || qobject_cast<LayoutTurnoutView*>(ltv))
+     if(!qobject_cast<LayoutSlipView*>(ltv) && qobject_cast<LayoutTurnoutView*>(ltv))
       list.append((LayoutTurnoutView*)ltv);
     }
     return list;

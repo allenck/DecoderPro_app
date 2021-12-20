@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'boosterbuttons.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -28,21 +28,21 @@ public:
     void setupUi(QWidget *BoosterButtons)
     {
         if (BoosterButtons->objectName().isEmpty())
-            BoosterButtons->setObjectName(QString::fromUtf8("BoosterButtons"));
+            BoosterButtons->setObjectName(QLatin1String("BoosterButtons"));
         BoosterButtons->resize(175, 300);
         goPushButton = new QPushButton(BoosterButtons);
-        goPushButton->setObjectName(QString::fromUtf8("goPushButton"));
+        goPushButton->setObjectName(QLatin1String("goPushButton"));
         goPushButton->setGeometry(QRect(10, 60, 89, 25));
-        goPushButton->setStyleSheet(QString::fromUtf8("background-color: rgb(138, 226, 52);"));
+        goPushButton->setStyleSheet(QLatin1String("background-color: rgb(138, 226, 52);"));
         stopPushButton = new QPushButton(BoosterButtons);
-        stopPushButton->setObjectName(QString::fromUtf8("stopPushButton"));
+        stopPushButton->setObjectName(QLatin1String("stopPushButton"));
         stopPushButton->setGeometry(QRect(10, 100, 89, 25));
-        stopPushButton->setStyleSheet(QString::fromUtf8("background-color: rgb(164, 0, 0);"));
+        stopPushButton->setStyleSheet(QLatin1String("background-color: rgb(164, 0, 0);"));
         label = new QLabel(BoosterButtons);
-        label->setObjectName(QString::fromUtf8("label"));
+        label->setObjectName(QLatin1String("label"));
         label->setGeometry(QRect(20, 20, 67, 17));
         label_2 = new QLabel(BoosterButtons);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         label_2->setGeometry(QRect(20, 150, 67, 17));
 
         retranslateUi(BoosterButtons);
@@ -52,9 +52,9 @@ public:
 
     void retranslateUi(QWidget *BoosterButtons)
     {
-        BoosterButtons->setWindowTitle(QCoreApplication::translate("BoosterButtons", "Form", nullptr));
-        goPushButton->setText(QCoreApplication::translate("BoosterButtons", "GO", nullptr));
-        stopPushButton->setText(QCoreApplication::translate("BoosterButtons", "STOP", nullptr));
+        BoosterButtons->setWindowTitle(QApplication::translate("BoosterButtons", "Form", nullptr));
+        goPushButton->setText(QApplication::translate("BoosterButtons", "GO", nullptr));
+        stopPushButton->setText(QApplication::translate("BoosterButtons", "STOP", nullptr));
         label->setText(QString());
         label_2->setText(QString());
     } // retranslateUi

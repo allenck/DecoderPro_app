@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'turnoutdlg.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -52,7 +52,7 @@ public:
     void setupUi(QDialog *TurnoutDlg)
     {
         if (TurnoutDlg->objectName().isEmpty())
-            TurnoutDlg->setObjectName(QString::fromUtf8("TurnoutDlg"));
+            TurnoutDlg->setObjectName(QLatin1String("TurnoutDlg"));
         TurnoutDlg->resize(373, 317);
         QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         sizePolicy.setHorizontalStretch(0);
@@ -60,27 +60,27 @@ public:
         sizePolicy.setHeightForWidth(TurnoutDlg->sizePolicy().hasHeightForWidth());
         TurnoutDlg->setSizePolicy(sizePolicy);
         verticalLayout = new QVBoxLayout(TurnoutDlg);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         label = new QLabel(TurnoutDlg);
-        label->setObjectName(QString::fromUtf8("label"));
+        label->setObjectName(QLatin1String("label"));
 
         horizontalLayout->addWidget(label);
 
         edV1 = new QLineEdit(TurnoutDlg);
-        edV1->setObjectName(QString::fromUtf8("edV1"));
+        edV1->setObjectName(QLatin1String("edV1"));
         edV1->setReadOnly(true);
 
         horizontalLayout->addWidget(edV1);
 
         label_2 = new QLabel(TurnoutDlg);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
 
         horizontalLayout->addWidget(label_2);
 
         edV2 = new QLineEdit(TurnoutDlg);
-        edV2->setObjectName(QString::fromUtf8("edV2"));
+        edV2->setObjectName(QLatin1String("edV2"));
         edV2->setReadOnly(true);
 
         horizontalLayout->addWidget(edV2);
@@ -89,16 +89,16 @@ public:
         verticalLayout->addLayout(horizontalLayout);
 
         gbB1Mode = new QGroupBox(TurnoutDlg);
-        gbB1Mode->setObjectName(QString::fromUtf8("gbB1Mode"));
+        gbB1Mode->setObjectName(QLatin1String("gbB1Mode"));
         horizontalLayout_4 = new QHBoxLayout(gbB1Mode);
-        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+        horizontalLayout_4->setObjectName(QLatin1String("horizontalLayout_4"));
         rbB1Input = new QRadioButton(gbB1Mode);
-        rbB1Input->setObjectName(QString::fromUtf8("rbB1Input"));
+        rbB1Input->setObjectName(QLatin1String("rbB1Input"));
 
         horizontalLayout_4->addWidget(rbB1Input);
 
         rbB1Output = new QRadioButton(gbB1Mode);
-        rbB1Output->setObjectName(QString::fromUtf8("rbB1Output"));
+        rbB1Output->setObjectName(QLatin1String("rbB1Output"));
 
         horizontalLayout_4->addWidget(rbB1Output);
 
@@ -106,24 +106,24 @@ public:
         verticalLayout->addWidget(gbB1Mode);
 
         chkDS54Aux = new QCheckBox(TurnoutDlg);
-        chkDS54Aux->setObjectName(QString::fromUtf8("chkDS54Aux"));
+        chkDS54Aux->setObjectName(QLatin1String("chkDS54Aux"));
 
         verticalLayout->addWidget(chkDS54Aux);
 
         chkClosedOn = new QCheckBox(TurnoutDlg);
-        chkClosedOn->setObjectName(QString::fromUtf8("chkClosedOn"));
+        chkClosedOn->setObjectName(QLatin1String("chkClosedOn"));
 
         verticalLayout->addWidget(chkClosedOn);
 
         chkOutputOn = new QCheckBox(TurnoutDlg);
-        chkOutputOn->setObjectName(QString::fromUtf8("chkOutputOn"));
+        chkOutputOn->setObjectName(QLatin1String("chkOutputOn"));
 
         verticalLayout->addWidget(chkOutputOn);
 
         horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName(QLatin1String("horizontalLayout_2"));
         lblAddr = new QLabel(TurnoutDlg);
-        lblAddr->setObjectName(QString::fromUtf8("lblAddr"));
+        lblAddr->setObjectName(QLatin1String("lblAddr"));
         QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -133,7 +133,7 @@ public:
         horizontalLayout_2->addWidget(lblAddr);
 
         sbAddr = new QSpinBox(TurnoutDlg);
-        sbAddr->setObjectName(QString::fromUtf8("sbAddr"));
+        sbAddr->setObjectName(QLatin1String("sbAddr"));
 
         horizontalLayout_2->addWidget(sbAddr);
 
@@ -141,19 +141,19 @@ public:
         verticalLayout->addLayout(horizontalLayout_2);
 
         chkInputHigh = new QCheckBox(TurnoutDlg);
-        chkInputHigh->setObjectName(QString::fromUtf8("chkInputHigh"));
+        chkInputHigh->setObjectName(QLatin1String("chkInputHigh"));
 
         verticalLayout->addWidget(chkInputHigh);
 
         lblHelp = new QLabel(TurnoutDlg);
-        lblHelp->setObjectName(QString::fromUtf8("lblHelp"));
+        lblHelp->setObjectName(QLatin1String("lblHelp"));
 
         verticalLayout->addWidget(lblHelp);
 
         horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName(QLatin1String("horizontalLayout_3"));
         btnCancel = new QPushButton(TurnoutDlg);
-        btnCancel->setObjectName(QString::fromUtf8("btnCancel"));
+        btnCancel->setObjectName(QLatin1String("btnCancel"));
         QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
@@ -163,7 +163,7 @@ public:
         horizontalLayout_3->addWidget(btnCancel);
 
         btnOK = new QPushButton(TurnoutDlg);
-        btnOK->setObjectName(QString::fromUtf8("btnOK"));
+        btnOK->setObjectName(QLatin1String("btnOK"));
         sizePolicy2.setHeightForWidth(btnOK->sizePolicy().hasHeightForWidth());
         btnOK->setSizePolicy(sizePolicy2);
 
@@ -180,20 +180,20 @@ public:
 
     void retranslateUi(QDialog *TurnoutDlg)
     {
-        TurnoutDlg->setWindowTitle(QCoreApplication::translate("TurnoutDlg", "Dialog", nullptr));
-        label->setText(QCoreApplication::translate("TurnoutDlg", "Val 1: ", nullptr));
-        label_2->setText(QCoreApplication::translate("TurnoutDlg", "Val 2:", nullptr));
-        gbB1Mode->setTitle(QCoreApplication::translate("TurnoutDlg", "B1 mode", nullptr));
-        rbB1Input->setText(QCoreApplication::translate("TurnoutDlg", "Input", nullptr));
-        rbB1Output->setText(QCoreApplication::translate("TurnoutDlg", "Output", nullptr));
-        chkDS54Aux->setText(QCoreApplication::translate("TurnoutDlg", "DS54 Aux Input", nullptr));
-        chkClosedOn->setText(QCoreApplication::translate("TurnoutDlg", "Closed ON", nullptr));
-        chkOutputOn->setText(QCoreApplication::translate("TurnoutDlg", "Output ON", nullptr));
-        lblAddr->setText(QCoreApplication::translate("TurnoutDlg", "Address:", nullptr));
-        chkInputHigh->setText(QCoreApplication::translate("TurnoutDlg", "Input High (> +6V)", nullptr));
-        lblHelp->setText(QCoreApplication::translate("TurnoutDlg", "TextLabel", nullptr));
-        btnCancel->setText(QCoreApplication::translate("TurnoutDlg", "Cancel", nullptr));
-        btnOK->setText(QCoreApplication::translate("TurnoutDlg", "OK", nullptr));
+        TurnoutDlg->setWindowTitle(QApplication::translate("TurnoutDlg", "Dialog", nullptr));
+        label->setText(QApplication::translate("TurnoutDlg", "Val 1: ", nullptr));
+        label_2->setText(QApplication::translate("TurnoutDlg", "Val 2:", nullptr));
+        gbB1Mode->setTitle(QApplication::translate("TurnoutDlg", "B1 mode", nullptr));
+        rbB1Input->setText(QApplication::translate("TurnoutDlg", "Input", nullptr));
+        rbB1Output->setText(QApplication::translate("TurnoutDlg", "Output", nullptr));
+        chkDS54Aux->setText(QApplication::translate("TurnoutDlg", "DS54 Aux Input", nullptr));
+        chkClosedOn->setText(QApplication::translate("TurnoutDlg", "Closed ON", nullptr));
+        chkOutputOn->setText(QApplication::translate("TurnoutDlg", "Output ON", nullptr));
+        lblAddr->setText(QApplication::translate("TurnoutDlg", "Address:", nullptr));
+        chkInputHigh->setText(QApplication::translate("TurnoutDlg", "Input High (> +6V)", nullptr));
+        lblHelp->setText(QApplication::translate("TurnoutDlg", "TextLabel", nullptr));
+        btnCancel->setText(QApplication::translate("TurnoutDlg", "Cancel", nullptr));
+        btnOK->setText(QApplication::translate("TurnoutDlg", "OK", nullptr));
     } // retranslateUi
 
 };

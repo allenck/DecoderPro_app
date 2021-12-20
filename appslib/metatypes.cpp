@@ -350,6 +350,11 @@
 #include "layoutlhturnoutviewxml.h"
 #include "layoutsingleslipviewxml.h"
 #include "layoutwyeviewxml.h"
+#include "loaddefaultxmlthrottleslayoutaction.h"
+#include "paneprogaction.h"
+#include "blockbossaction.h"
+#include "dispatcheraction.h"
+#include "paneopsprogaction.h"
 
 bool Metatypes::done = false;
 
@@ -714,7 +719,11 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LayoutRHTurnoutViewXml>("LayoutRHTurnoutViewXml");
  qRegisterMetaType<LayoutLHTurnoutViewXml>("LayoutLHTurnoutViewXml");
  qRegisterMetaType<LayoutWyeViewXml>("LayoutWyeViewXml");
-
+ qRegisterMetaType<LoadDefaultXmlThrottlesLayoutAction>("LoadDefaultXmlThrottlesLayoutAction");
+ qRegisterMetaType<PaneProgAction>("PaneProgAction");
+ qRegisterMetaType<BlockBossAction*>("BlockBossAction");
+ qRegisterMetaType<DispatcherAction>("DispatcherAction");
+ qRegisterMetaType<PaneOpsProgAction>("PaneOpsProgAction");
 
  Metatypes::done = true;
 }

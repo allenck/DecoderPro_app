@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'inportdefinitionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -42,7 +42,7 @@ public:
     void setupUi(QWidget *InPortDefinitionWidget)
     {
         if (InPortDefinitionWidget->objectName().isEmpty())
-            InPortDefinitionWidget->setObjectName(QString::fromUtf8("InPortDefinitionWidget"));
+            InPortDefinitionWidget->setObjectName(QLatin1String("InPortDefinitionWidget"));
         InPortDefinitionWidget->resize(154, 245);
         QPalette palette;
         QBrush brush(QColor(0, 0, 0, 255));
@@ -58,10 +58,10 @@ public:
         InPortDefinitionWidget->setFont(font);
         verticalLayout = new QVBoxLayout(InPortDefinitionWidget);
         verticalLayout->setSpacing(2);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         label = new QLabel(InPortDefinitionWidget);
-        label->setObjectName(QString::fromUtf8("label"));
+        label->setObjectName(QLatin1String("label"));
         QPalette palette1;
         QBrush brush2(QColor(255, 0, 0, 255));
         brush2.setStyle(Qt::SolidPattern);
@@ -76,7 +76,7 @@ public:
         verticalLayout->addWidget(label);
 
         label_2 = new QLabel(InPortDefinitionWidget);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         QPalette palette2;
         palette2.setBrush(QPalette::Active, QPalette::WindowText, brush2);
         palette2.setBrush(QPalette::Active, QPalette::Text, brush2);
@@ -89,7 +89,7 @@ public:
         verticalLayout->addWidget(label_2);
 
         label_3 = new QLabel(InPortDefinitionWidget);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
         QPalette palette3;
         QBrush brush3(QColor(0, 0, 255, 255));
         brush3.setStyle(Qt::SolidPattern);
@@ -104,7 +104,7 @@ public:
         verticalLayout->addWidget(label_3);
 
         label_4 = new QLabel(InPortDefinitionWidget);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setObjectName(QLatin1String("label_4"));
         QPalette palette4;
         palette4.setBrush(QPalette::Active, QPalette::WindowText, brush3);
         palette4.setBrush(QPalette::Active, QPalette::Text, brush3);
@@ -117,7 +117,7 @@ public:
         verticalLayout->addWidget(label_4);
 
         label_5 = new QLabel(InPortDefinitionWidget);
-        label_5->setObjectName(QString::fromUtf8("label_5"));
+        label_5->setObjectName(QLatin1String("label_5"));
         QPalette palette5;
         palette5.setBrush(QPalette::Active, QPalette::WindowText, brush3);
         palette5.setBrush(QPalette::Active, QPalette::Text, brush3);
@@ -130,7 +130,7 @@ public:
         verticalLayout->addWidget(label_5);
 
         label_6 = new QLabel(InPortDefinitionWidget);
-        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setObjectName(QLatin1String("label_6"));
         QPalette palette6;
         QBrush brush4(QColor(0, 170, 0, 255));
         brush4.setStyle(Qt::SolidPattern);
@@ -145,7 +145,7 @@ public:
         verticalLayout->addWidget(label_6);
 
         label_7 = new QLabel(InPortDefinitionWidget);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setObjectName(QLatin1String("label_7"));
         QPalette palette7;
         palette7.setBrush(QPalette::Active, QPalette::WindowText, brush4);
         palette7.setBrush(QPalette::Active, QPalette::Text, brush4);
@@ -158,7 +158,7 @@ public:
         verticalLayout->addWidget(label_7);
 
         label_8 = new QLabel(InPortDefinitionWidget);
-        label_8->setObjectName(QString::fromUtf8("label_8"));
+        label_8->setObjectName(QLatin1String("label_8"));
         QPalette palette8;
         palette8.setBrush(QPalette::Active, QPalette::WindowText, brush4);
         palette8.setBrush(QPalette::Active, QPalette::Text, brush4);
@@ -171,9 +171,9 @@ public:
         verticalLayout->addWidget(label_8);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         checkBox = new QCheckBox(InPortDefinitionWidget);
-        checkBox->setObjectName(QString::fromUtf8("checkBox"));
+        checkBox->setObjectName(QLatin1String("checkBox"));
         QPalette palette9;
         palette9.setBrush(QPalette::Active, QPalette::WindowText, brush4);
         palette9.setBrush(QPalette::Active, QPalette::Text, brush4);
@@ -186,7 +186,7 @@ public:
         horizontalLayout->addWidget(checkBox);
 
         checkBox_2 = new QCheckBox(InPortDefinitionWidget);
-        checkBox_2->setObjectName(QString::fromUtf8("checkBox_2"));
+        checkBox_2->setObjectName(QLatin1String("checkBox_2"));
         QPalette palette10;
         palette10.setBrush(QPalette::Active, QPalette::WindowText, brush4);
         palette10.setBrush(QPalette::Active, QPalette::Text, brush4);
@@ -202,7 +202,7 @@ public:
         verticalLayout->addLayout(horizontalLayout);
 
         label_9 = new QLabel(InPortDefinitionWidget);
-        label_9->setObjectName(QString::fromUtf8("label_9"));
+        label_9->setObjectName(QLatin1String("label_9"));
         QPalette palette11;
         QBrush brush5(QColor(0, 170, 127, 255));
         brush5.setStyle(Qt::SolidPattern);
@@ -217,7 +217,7 @@ public:
         verticalLayout->addWidget(label_9);
 
         label_10 = new QLabel(InPortDefinitionWidget);
-        label_10->setObjectName(QString::fromUtf8("label_10"));
+        label_10->setObjectName(QLatin1String("label_10"));
         QPalette palette12;
         palette12.setBrush(QPalette::Active, QPalette::WindowText, brush5);
         palette12.setBrush(QPalette::Active, QPalette::Text, brush5);
@@ -230,7 +230,7 @@ public:
         verticalLayout->addWidget(label_10);
 
         label_11 = new QLabel(InPortDefinitionWidget);
-        label_11->setObjectName(QString::fromUtf8("label_11"));
+        label_11->setObjectName(QLatin1String("label_11"));
         QPalette palette13;
         palette13.setBrush(QPalette::Active, QPalette::WindowText, brush5);
         palette13.setBrush(QPalette::Active, QPalette::Text, brush5);
@@ -243,7 +243,7 @@ public:
         verticalLayout->addWidget(label_11);
 
         lblDoubleInput = new QLabel(InPortDefinitionWidget);
-        lblDoubleInput->setObjectName(QString::fromUtf8("lblDoubleInput"));
+        lblDoubleInput->setObjectName(QLatin1String("lblDoubleInput"));
         QPalette palette14;
         QBrush brush6(QColor(255, 170, 0, 255));
         brush6.setStyle(Qt::SolidPattern);
@@ -265,21 +265,21 @@ public:
 
     void retranslateUi(QWidget *InPortDefinitionWidget)
     {
-        InPortDefinitionWidget->setWindowTitle(QCoreApplication::translate("InPortDefinitionWidget", "Form", nullptr));
-        label->setText(QCoreApplication::translate("InPortDefinitionWidget", "Port not used", nullptr));
-        label_2->setText(QCoreApplication::translate("InPortDefinitionWidget", "Input", nullptr));
-        label_3->setText(QCoreApplication::translate("InPortDefinitionWidget", "Block Detection Active Low", nullptr));
-        label_4->setText(QCoreApplication::translate("InPortDefinitionWidget", "Block Detection Active High", nullptr));
-        label_5->setText(QCoreApplication::translate("InPortDefinitionWidget", "Block Detection Delay", nullptr));
-        label_6->setText(QCoreApplication::translate("InPortDefinitionWidget", "Toggle Switch", nullptr));
-        label_7->setText(QCoreApplication::translate("InPortDefinitionWidget", "Push Button Active Low", nullptr));
-        label_8->setText(QCoreApplication::translate("InPortDefinitionWidget", "Push Button Active High", nullptr));
-        checkBox->setText(QCoreApplication::translate("InPortDefinitionWidget", "Direct", nullptr));
-        checkBox_2->setText(QCoreApplication::translate("InPortDefinitionWidget", "Indirect", nullptr));
-        label_9->setText(QCoreApplication::translate("InPortDefinitionWidget", "Switch Point Feedback ", nullptr));
-        label_10->setText(QCoreApplication::translate("InPortDefinitionWidget", "Contact 1 Point Feedback", nullptr));
-        label_11->setText(QCoreApplication::translate("InPortDefinitionWidget", "Contact 2 Point Feedback", nullptr));
-        lblDoubleInput->setText(QCoreApplication::translate("InPortDefinitionWidget", "Double Input", nullptr));
+        InPortDefinitionWidget->setWindowTitle(QApplication::translate("InPortDefinitionWidget", "Form", nullptr));
+        label->setText(QApplication::translate("InPortDefinitionWidget", "Port not used", nullptr));
+        label_2->setText(QApplication::translate("InPortDefinitionWidget", "Input", nullptr));
+        label_3->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Active Low", nullptr));
+        label_4->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Active High", nullptr));
+        label_5->setText(QApplication::translate("InPortDefinitionWidget", "Block Detection Delay", nullptr));
+        label_6->setText(QApplication::translate("InPortDefinitionWidget", "Toggle Switch", nullptr));
+        label_7->setText(QApplication::translate("InPortDefinitionWidget", "Push Button Active Low", nullptr));
+        label_8->setText(QApplication::translate("InPortDefinitionWidget", "Push Button Active High", nullptr));
+        checkBox->setText(QApplication::translate("InPortDefinitionWidget", "Direct", nullptr));
+        checkBox_2->setText(QApplication::translate("InPortDefinitionWidget", "Indirect", nullptr));
+        label_9->setText(QApplication::translate("InPortDefinitionWidget", "Switch Point Feedback ", nullptr));
+        label_10->setText(QApplication::translate("InPortDefinitionWidget", "Contact 1 Point Feedback", nullptr));
+        label_11->setText(QApplication::translate("InPortDefinitionWidget", "Contact 2 Point Feedback", nullptr));
+        lblDoubleInput->setText(QApplication::translate("InPortDefinitionWidget", "Double Input", nullptr));
     } // retranslateUi
 
 };

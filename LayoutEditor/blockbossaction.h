@@ -8,6 +8,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT BlockBossAction : public AbstractAction
  Q_OBJECT
 public:
  explicit BlockBossAction(QObject *parent = 0);
+  ~BlockBossAction() {}
+  BlockBossAction(const BlockBossAction&) : AbstractAction() {}
  /*public*/ BlockBossAction(QString s, QObject *parent);
 
 signals:
@@ -18,5 +20,5 @@ public slots:
 private:
  void common();
 };
-
+Q_DECLARE_METATYPE(BlockBossAction);
 #endif // BLOCKBOSSACTION_H

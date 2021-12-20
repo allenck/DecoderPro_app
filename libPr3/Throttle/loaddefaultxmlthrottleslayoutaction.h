@@ -10,7 +10,8 @@ public:
  /*public*/ LoadDefaultXmlThrottlesLayoutAction(QString s, QIcon i, WindowInterface* wi);
  /*public*/ LoadDefaultXmlThrottlesLayoutAction(QString s, QObject* parent);
  /*public*/ LoadDefaultXmlThrottlesLayoutAction( QObject* parent);
-
+  ~LoadDefaultXmlThrottlesLayoutAction() {}
+  LoadDefaultXmlThrottlesLayoutAction(const LoadDefaultXmlThrottlesLayoutAction&) : JmriAbstractAction() {}
  /*public*/ JmriPanel* makePanel();
 
 public slots:
@@ -21,5 +22,5 @@ public slots:
 
 
 };
-
+Q_DECLARE_METATYPE(LoadDefaultXmlThrottlesLayoutAction)
 #endif // LOADDEFAULTXMLTHROTTLESLAYOUTACTION_H

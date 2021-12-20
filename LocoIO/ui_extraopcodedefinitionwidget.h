@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'extraopcodedefinitionwidget.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -38,7 +38,7 @@ public:
     void setupUi(QWidget *ExtraOpcodeDefinitionWidget)
     {
         if (ExtraOpcodeDefinitionWidget->objectName().isEmpty())
-            ExtraOpcodeDefinitionWidget->setObjectName(QString::fromUtf8("ExtraOpcodeDefinitionWidget"));
+            ExtraOpcodeDefinitionWidget->setObjectName(QLatin1String("ExtraOpcodeDefinitionWidget"));
         ExtraOpcodeDefinitionWidget->resize(95, 119);
         QFont font;
         font.setPointSize(7);
@@ -47,15 +47,15 @@ public:
         verticalLayout_2 = new QVBoxLayout(ExtraOpcodeDefinitionWidget);
         verticalLayout_2->setSpacing(2);
         verticalLayout_2->setContentsMargins(0, 0, 0, 0);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        verticalLayout_2->setObjectName(QLatin1String("verticalLayout_2"));
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(2);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(2);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setObjectName(QLatin1String("horizontalLayout"));
         label = new QLabel(ExtraOpcodeDefinitionWidget);
-        label->setObjectName(QString::fromUtf8("label"));
+        label->setObjectName(QLatin1String("label"));
         QPalette palette;
         QBrush brush(QColor(0, 170, 0, 255));
         brush.setStyle(Qt::SolidPattern);
@@ -72,7 +72,7 @@ public:
         horizontalLayout->addWidget(label);
 
         lblHeading = new QLabel(ExtraOpcodeDefinitionWidget);
-        lblHeading->setObjectName(QString::fromUtf8("lblHeading"));
+        lblHeading->setObjectName(QLatin1String("lblHeading"));
         QFont font1;
         font1.setBold(true);
         font1.setWeight(75);
@@ -84,7 +84,7 @@ public:
         verticalLayout->addLayout(horizontalLayout);
 
         label_2 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setObjectName(QLatin1String("label_2"));
         QPalette palette1;
         palette1.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette1.setBrush(QPalette::Active, QPalette::Text, brush);
@@ -97,7 +97,7 @@ public:
         verticalLayout->addWidget(label_2);
 
         label_3 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setObjectName(QLatin1String("label_3"));
         QPalette palette2;
         palette2.setBrush(QPalette::Active, QPalette::WindowText, brush);
         palette2.setBrush(QPalette::Active, QPalette::Text, brush);
@@ -110,7 +110,7 @@ public:
         verticalLayout->addWidget(label_3);
 
         label_4 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setObjectName(QLatin1String("label_4"));
         QPalette palette3;
         QBrush brush2(QColor(0, 0, 255, 255));
         brush2.setStyle(Qt::SolidPattern);
@@ -125,7 +125,7 @@ public:
         verticalLayout->addWidget(label_4);
 
         label_5 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_5->setObjectName(QString::fromUtf8("label_5"));
+        label_5->setObjectName(QLatin1String("label_5"));
         QPalette palette4;
         palette4.setBrush(QPalette::Active, QPalette::WindowText, brush2);
         palette4.setBrush(QPalette::Active, QPalette::Text, brush2);
@@ -138,7 +138,7 @@ public:
         verticalLayout->addWidget(label_5);
 
         label_6 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setObjectName(QLatin1String("label_6"));
         QPalette palette5;
         QBrush brush3(QColor(255, 0, 0, 255));
         brush3.setStyle(Qt::SolidPattern);
@@ -153,7 +153,7 @@ public:
         verticalLayout->addWidget(label_6);
 
         label_7 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setObjectName(QLatin1String("label_7"));
         QPalette palette6;
         QBrush brush4(QColor(255, 170, 0, 255));
         brush4.setStyle(Qt::SolidPattern);
@@ -168,7 +168,7 @@ public:
         verticalLayout->addWidget(label_7);
 
         label_8 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_8->setObjectName(QString::fromUtf8("label_8"));
+        label_8->setObjectName(QLatin1String("label_8"));
         QPalette palette7;
         palette7.setBrush(QPalette::Active, QPalette::WindowText, brush4);
         palette7.setBrush(QPalette::Active, QPalette::Text, brush4);
@@ -181,7 +181,7 @@ public:
         verticalLayout->addWidget(label_8);
 
         label_9 = new QLabel(ExtraOpcodeDefinitionWidget);
-        label_9->setObjectName(QString::fromUtf8("label_9"));
+        label_9->setObjectName(QLatin1String("label_9"));
         QPalette palette8;
         palette8.setBrush(QPalette::Active, QPalette::WindowText, brush4);
         palette8.setBrush(QPalette::Active, QPalette::Text, brush4);
@@ -204,17 +204,17 @@ public:
 
     void retranslateUi(QWidget *ExtraOpcodeDefinitionWidget)
     {
-        ExtraOpcodeDefinitionWidget->setWindowTitle(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "Form", nullptr));
-        label->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "Off", nullptr));
-        lblHeading->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "Extra Opcode x", nullptr));
-        label_2->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "Direct Code", nullptr));
-        label_3->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "Indirect Code", nullptr));
-        label_4->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 1", nullptr));
-        label_5->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 2", nullptr));
-        label_6->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "Address", nullptr));
-        label_7->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "<OPC>", nullptr));
-        label_8->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 1>", nullptr));
-        label_9->setText(QCoreApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 2>", nullptr));
+        ExtraOpcodeDefinitionWidget->setWindowTitle(QApplication::translate("ExtraOpcodeDefinitionWidget", "Form", nullptr));
+        label->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Off", nullptr));
+        lblHeading->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Extra Opcode x", nullptr));
+        label_2->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Direct Code", nullptr));
+        label_3->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Indirect Code", nullptr));
+        label_4->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 1", nullptr));
+        label_5->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Contact 2", nullptr));
+        label_6->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "Address", nullptr));
+        label_7->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<OPC>", nullptr));
+        label_8->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 1>", nullptr));
+        label_9->setText(QApplication::translate("ExtraOpcodeDefinitionWidget", "<ARG 2>", nullptr));
     } // retranslateUi
 
 };

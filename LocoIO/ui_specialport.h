@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'specialport.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.2
+** Created by: Qt User Interface Compiler version 5.11.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -31,17 +31,17 @@ public:
     void setupUi(QWidget *SpecialPort)
     {
         if (SpecialPort->objectName().isEmpty())
-            SpecialPort->setObjectName(QString::fromUtf8("SpecialPort"));
+            SpecialPort->setObjectName(QLatin1String("SpecialPort"));
         SpecialPort->resize(22, 405);
         QFont font;
         font.setPointSize(7);
         SpecialPort->setFont(font);
         verticalLayout = new QVBoxLayout(SpecialPort);
         verticalLayout->setSpacing(2);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName(QLatin1String("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         lblInput = new QLabel(SpecialPort);
-        lblInput->setObjectName(QString::fromUtf8("lblInput"));
+        lblInput->setObjectName(QLatin1String("lblInput"));
         QPalette palette;
         QBrush brush(QColor(0, 0, 0, 255));
         brush.setStyle(Qt::SolidPattern);
@@ -67,42 +67,42 @@ public:
         palette.setBrush(QPalette::Disabled, QPalette::Window, brush1);
         lblInput->setPalette(palette);
         QFont font1;
-        font1.setFamily(QString::fromUtf8("Monospace"));
+        font1.setFamily(QLatin1String("Monospace"));
         font1.setBold(true);
         font1.setItalic(false);
         font1.setWeight(75);
         lblInput->setFont(font1);
         lblInput->setLayoutDirection(Qt::RightToLeft);
         lblInput->setAutoFillBackground(false);
-        lblInput->setStyleSheet(QString::fromUtf8("QLabel { background-color : pink; color : black; }"));
+        lblInput->setStyleSheet(QLatin1String("QLabel { background-color : pink; color : black; }"));
         lblInput->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(lblInput);
 
         rbInput = new QRadioButton(SpecialPort);
-        rbInput->setObjectName(QString::fromUtf8("rbInput"));
+        rbInput->setObjectName(QLatin1String("rbInput"));
         rbInput->setChecked(true);
 
         verticalLayout->addWidget(rbInput);
 
         lblFiller = new QLabel(SpecialPort);
-        lblFiller->setObjectName(QString::fromUtf8("lblFiller"));
+        lblFiller->setObjectName(QLatin1String("lblFiller"));
 
         verticalLayout->addWidget(lblFiller);
 
         rbOutput = new QRadioButton(SpecialPort);
-        rbOutput->setObjectName(QString::fromUtf8("rbOutput"));
+        rbOutput->setObjectName(QLatin1String("rbOutput"));
 
         verticalLayout->addWidget(rbOutput);
 
         lblOutput = new QLabel(SpecialPort);
-        lblOutput->setObjectName(QString::fromUtf8("lblOutput"));
+        lblOutput->setObjectName(QLatin1String("lblOutput"));
         QFont font2;
-        font2.setFamily(QString::fromUtf8("Monospace"));
+        font2.setFamily(QLatin1String("Monospace"));
         font2.setBold(true);
         font2.setWeight(75);
         lblOutput->setFont(font2);
-        lblOutput->setStyleSheet(QString::fromUtf8("QLabel { background-color : yellow; color : black; }"));
+        lblOutput->setStyleSheet(QLatin1String("QLabel { background-color : yellow; color : black; }"));
         lblOutput->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(lblOutput);
@@ -115,8 +115,8 @@ public:
 
     void retranslateUi(QWidget *SpecialPort)
     {
-        SpecialPort->setWindowTitle(QCoreApplication::translate("SpecialPort", "Form", nullptr));
-        lblInput->setText(QCoreApplication::translate("SpecialPort", "I\n"
+        SpecialPort->setWindowTitle(QApplication::translate("SpecialPort", "Form", nullptr));
+        lblInput->setText(QApplication::translate("SpecialPort", "I\n"
 "D\n"
 "L\n"
 "E\n"
@@ -124,7 +124,7 @@ public:
         rbInput->setText(QString());
         lblFiller->setText(QString());
         rbOutput->setText(QString());
-        lblOutput->setText(QCoreApplication::translate("SpecialPort", "S\n"
+        lblOutput->setText(QApplication::translate("SpecialPort", "S\n"
 "T\n"
 "A\n"
 "T\n"

@@ -15,7 +15,9 @@ class LIBPR3SHARED_EXPORT PaneProgAction : public AbstractAction
 {
     Q_OBJECT
 public:
-    //explicit PaneProgAction(QObject *parent);
+    Q_INVOKABLE explicit PaneProgAction(QObject *parent=nullptr);
+  ~PaneProgAction() {}
+  PaneProgAction(const PaneProgAction&) : AbstractAction() {}
     /*public*/ PaneProgAction(QString s, QObject* parent);
     void windowClosing(QCloseEvent*);
 signals:
@@ -54,4 +56,5 @@ public:
 
 };
 #endif
+Q_DECLARE_METATYPE(PaneProgAction)
 #endif // PANEPROGACTION_H

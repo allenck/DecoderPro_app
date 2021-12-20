@@ -11,7 +11,9 @@ class LIBPR3SHARED_EXPORT PaneOpsProgAction : public AbstractAction
 {
     Q_OBJECT
 public:
-    //explicit paneOpsProgAction(QObject *parent = 0);
+  explicit PaneOpsProgAction(QObject *parent = 0) : AbstractAction(parent) {}
+  ~PaneOpsProgAction(){}
+  PaneOpsProgAction(const PaneOpsProgAction&) : AbstractAction() {}
     /*public*/ PaneOpsProgAction(QString s, QObject* parent );
 
 signals:
@@ -31,5 +33,5 @@ private:
 
  };
 };
-
+Q_DECLARE_METATYPE(PaneOpsProgAction)
 #endif // PANEOPSPROGACTION_H
