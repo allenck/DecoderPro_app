@@ -18,7 +18,7 @@
 JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorChooserPanel(parent)
 {
   colors = QList<QColor>() << QColor(Qt::black)<< QColor(Qt::darkGray) << QColor(Qt::gray) <<
-    QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red)<< QColor(255,233,236) << QColor(255,170,0)<<
+    QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red)<< QColor(255,233,236) << QColor(255,165,0)<<
     QColor(Qt::yellow)<< QColor(Qt::green)<< QColor(Qt::blue)<< QColor(Qt::magenta)<< QColor(Qt::cyan)<<
     ColorUtil::BROWN;
  recentPanel = new JPanel();
@@ -70,6 +70,7 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
  QHBoxLayout* thisLayout;
  setLayout(thisLayout = new QHBoxLayout()); //this, BoxLayout.X_AXIS));
  signalMapper = new QSignalMapper(this);
+ connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(onColorButton(QString)));
 
  JPanel* stdColors = new JPanel();
  GridBagLayout* stdColorsLayout = new GridBagLayout(stdColors);
@@ -85,13 +86,15 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
      QPushButton* button;
      stdColorsLayout->addWidget(button = createColorButton(colors[i], true), c);
      button->setCheckable(true);
-     if(colors[i] == defaultColor)
+     signalMapper->setMapping(button, colors.at(i).name());
+     buttonGroup->addButton(button);
+     connect(button, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
+     log->debug(tr(" colors %1 %2").arg(colors[i].name(), defaultColor.name()));
+     if(colors[i].name() == defaultColor.name())
      {
       button->setDefault(true);
+      button->click();
      }
-     buttonGroup->addButton(button);
-     signalMapper->setMapping(button, colors.at(i).name());
-     connect(button, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
  }
  thisLayout->addWidget(stdColors,0);
  stdColors->setBorder(BorderFactory::createTitledBorder(tr("Standard Colors")));  // NOI18N
@@ -111,10 +114,17 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
      idx++;
      signalMapper->setMapping(button, recent.name());
      connect(button, SIGNAL(clicked(bool)), signalMapper, SLOT(map()));
+     log->debug(tr(" recent colors %1 %2").arg(recent.name(), defaultColor.name()));
+
+     if(recent.name() == defaultColor.name())
+     {
+      button->setDefault(true);
+      button->click();
+     }
  }
  thisLayout->addWidget(recentPanel);
  recentPanel->setVisible(true);
- connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(onColorButton(QString)));
+ //connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(onColorButton(QString)));
 }
 
 /**

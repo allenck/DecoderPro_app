@@ -1752,7 +1752,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
  addColorMenuEntry(colorMenu, buttonGrp, tr("LightGray"),QColor(Qt::lightGray));
  addColorMenuEntry(colorMenu, buttonGrp, tr("White"),QColor(Qt::white));
  addColorMenuEntry(colorMenu, buttonGrp, tr("Red"),QColor(Qt::red));
- addColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,170,0));
+ addColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,165,0));
  addColorMenuEntry(colorMenu, buttonGrp, tr("Yellow"),QColor(Qt::yellow));
  addColorMenuEntry(colorMenu, buttonGrp, tr("Green"),QColor(Qt::green));
  addColorMenuEntry(colorMenu, buttonGrp, tr("Blue"),QColor(Qt::blue));

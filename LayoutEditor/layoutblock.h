@@ -360,10 +360,6 @@ public:
     int getBlockStatus();
     void updateRoutesToNeighbours(QVector<Block*>* messageRecipients, Routes* ro, RoutingPacket* update);
     void addRouteToNeighbours(Routes* ro);
-
-    /*public*/ static QString colorToString(QColor color);
-    /*public*/ static QColor stringToColor(QString string);
-
     /*public*/ int getNumberOfNeighbours();
     /*public*/ Block* getNeighbourAtIndex(int i);
     /*public*/ int getNeighbourDirection(int i);
@@ -499,21 +495,6 @@ private:
     int metric; //= 100
     int getNextPacketID();
     bool updatePacketActedUpon(int packetID);
-#if 0
-    /*private*/ void setColorCombo(QComboBox* colorCombo,QColor color);
-    /*private*/ QColor getSelectedColor(QComboBox* colorCombo);
-    /**
-     * Methods and data to support initialization of color Combo box
-     */
-    QStringList colorText;// = {"Black","DarkGray","Gray",
-//            "LightGray","White","Red","Pink","Orange",
-//            "Yellow","Green","Blue","Magenta","Cyan"};
-    QList<QColor> colorCode;// = {Color->black,Color->darkGray,Color->gray,
-//            Color->lightGray,Color->white,Color->red,Color->pink,Color->orange,
-//            Color->yellow,Color->green,Color->blue,Color->magenta,Color->cyan};
-    int numColors;// = 13;  // number of entries in the above arrays
-    /*private*/ void initializeColorCombo(QComboBox* colorCombo, QColor c);
-#endif
     /*public*/ QString getNeighbourPacketFlowAsString(int i);
     /*public*/ bool isNeighbourMutual(int i);
     int getNeighbourIndex(Adjacencies* adj);

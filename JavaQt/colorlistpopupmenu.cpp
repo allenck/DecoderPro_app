@@ -28,7 +28,7 @@ ColorListPopupMenu::ColorListPopupMenu()
 /*public*/ ColorListPopupMenu::ColorListPopupMenu(ColorSelectionModel* m){
     //super();
     colorCode = QVector<QColor>() << QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) <<
-       QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red) << QColor(255,233,236) << QColor(255,170,0) <<
+       QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red) << QColor(255,233,236) << QColor(255,165,0) <<
        QColor(Qt::yellow) << QColor(Qt::green) << QColor(Qt::blue) << QColor(Qt::magenta) << QColor(Qt::cyan)<<
        ColorUtil::BROWN;
 

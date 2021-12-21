@@ -37,10 +37,10 @@ public:
  /*public*/ static QColor setAlpha(/*@Nonnull*/ QColor color, int alpha);
  /*public*/ static QColor setAlpha(/*@Nonnull*/ QColor color, double alpha);
  /*public*/ static QColor contrast(/*@Nonnull*/ QColor color);
+ /*public*/ static QString colorToName(/*@Nullable*/ QColor color);
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("ColorUtil");
- /*private*/ static QString colorToName(/*@Nullable*/ QColor color);
 
  ColorUtil();
 };

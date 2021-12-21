@@ -12,14 +12,14 @@ class JmriColorChooserPanel : public AbstractColorChooserPanel
  Q_OBJECT
 public:
  JmriColorChooserPanel(QWidget* parent = nullptr);
- /*public*/ void updateChooser();
- /*public*/ QString getDisplayName();
- /*public*/ QIcon getSmallDisplayIcon();
- /*public*/ QIcon getLargeDisplayIcon();
- QColor getForeground();
+ /*public*/ void updateChooser()override;
+ /*public*/ QString getDisplayName()override;
+ /*public*/ QIcon getSmallDisplayIcon()override;
+ /*public*/ QIcon getLargeDisplayIcon()override;
+ QColor getForeground()override;
 public slots:
  void onColorButton(QString s);
- QString getTitle();
+ QString getTitle()override;
  void setEnabled(bool b) override {QWidget::setEnabled(b);}
 
 private:
@@ -36,7 +36,7 @@ private:
  static Logger* log;
 
 protected:
- /*protected*/ void buildChooser();
+ /*protected*/ void buildChooser()override;
 
 };
 

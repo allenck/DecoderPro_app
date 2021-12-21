@@ -66,7 +66,7 @@ private:
     /*private*/ static QMap <QString, Warrant*> _warrantMap;// = new HashMap <String, Warrant> ();
     ///*private*/ static JTextArea* _textArea;
     /*private*/ static bool _hasErrors;// = false;
-    /*private*/ static JDialog* _errorDialog;
+    /*private*/ static JmriJFrame* _errorDialog;
     static JTextField*  _startWarrant;// = new JTextField(30);
     static JTextField*  _endWarrant;// = new JTextField(30);
     static JTextField*  _status;// = new JTextField(90);
@@ -85,6 +85,7 @@ private:
     /*private*/ static bool sharedTO(OPath* myPath, OPath* path);
     void on_createWarrant_triggered();
     /*private*/ bool _logging = false;
+    QTimer* timer = nullptr;
 
 protected:
     /*protected*/ static TrackerTableAction* _trackerTable;
@@ -119,25 +120,25 @@ protected:
 };
 Q_DECLARE_METATYPE(WarrantTableAction)
 
-class MyListener : public QObject,  public ActionListener
-{
- Q_OBJECT
-  Q_INTERFACES(ActionListener)
- JDialog* _errorDialog;
+//class MyListener : public QObject,  public ActionListener
+//{
+// Q_OBJECT
+//  Q_INTERFACES(ActionListener)
+// JmriJFrame* _errorDialog;
 
-public:
- MyListener(JDialog* _errorDialog) { this->_errorDialog = _errorDialog;}
-//       /*  java.awt.Window _w;
-//         myListener(java.awt.Window w) {
-//             _w = w;
-//         }  */
- QObject* self() override {return (QObject*)this;}
-public slots:
- /*public*/ void actionPerformed(JActionEvent* /*e*/=0) override
- {
-     _errorDialog->dispose();
- }
-};
+//public:
+// MyListener(JmriJFrame* _errorDialog) { this->_errorDialog = _errorDialog;}
+////       /*  java.awt.Window _w;
+////         myListener(java.awt.Window w) {
+////             _w = w;
+////         }  */
+// QObject* self() override {return (QObject*)this;}
+//public slots:
+// /*public*/ void actionPerformed(JActionEvent* /*e*/=0) override
+// {
+//     _errorDialog->dispose();
+// }
+//};
 /*static*/ class CreateWarrantFrame : public JFrame
 {
  Q_OBJECT
