@@ -2586,7 +2586,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
     // log.warn("mouseWheelMoved");
     if (/*event.isAltDown()*/event->modifiers()&Qt::AltModifier) {
      QGraphicsItem* item = editScene->itemAt(event->scenePos(), QTransform());
-#if 0
+#if 0 // TODO:
      // get the mouse position from the event and convert to target panel coordinates
          Component component = (Component) event.getSource();
          Point eventPoint = event.getPoint();

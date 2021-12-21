@@ -114,7 +114,7 @@ ColorUtil::ColorUtil()
      else if(string == ColorTrack)
             return "";
     log->error("unknown color text '" + string + "' sent to stringToColor");
-    return Qt::black;
+    return QColor(); // null
 }
 
 /**
@@ -140,9 +140,14 @@ ColorUtil::ColorUtil()
  * @return the color name or null if not known
  */
 //'@CheckForNull
-/*private*/ /*static*/ QString ColorUtil::colorToName(/*@Nullable*/ QColor color) {
+/*public*/ /*static*/ QString ColorUtil::colorToName(/*@Nullable*/ QColor color) {
     if (!color.isValid()) {
         return "";
+    }
+    foreach(QString s, QColor::colorNames())
+    {
+     if(QColor(s).name()== color.name())
+      return s;
     }
     if (color == QColor(Qt::black)) {
         return ColorBlack;

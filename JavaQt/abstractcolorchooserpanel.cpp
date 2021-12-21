@@ -37,7 +37,7 @@
  * @since 1.4
  */
 /*public*/ int AbstractColorChooserPanel::getMnemonic() {
-    // compiled code
+ return 0;
 }
 
 /**

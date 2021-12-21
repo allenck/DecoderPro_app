@@ -66,9 +66,9 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
     elem.setAttribute("occupancysensor", b->getOccupancySensorName());
    }
    elem.setAttribute("occupiedsense", b->getOccupiedSense());
-   elem.setAttribute("trackcolor", LayoutBlock::colorToString(b->getBlockTrackColor()));
-   elem.setAttribute("occupiedcolor", LayoutBlock::colorToString(b->getBlockOccupiedColor()));
-   elem.setAttribute("extracolor", LayoutBlock::colorToString(b->getBlockExtraColor()));
+   elem.setAttribute("trackcolor", ColorUtil::colorToColorName(b->getBlockTrackColor()));
+   elem.setAttribute("occupiedcolor", ColorUtil::colorToColorName(b->getBlockOccupiedColor()));
+   elem.setAttribute("extracolor", ColorUtil::colorToColorName(b->getBlockExtraColor()));
    layoutblocks.appendChild(elem);
    if (b->getMemoryName() != "")
    {
@@ -165,36 +165,30 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
   if (b!=NULL)
   {
    // set attributes
-   QColor color = LayoutBlock::stringToColor(((layoutblockList.at(i).toElement())).
-                                            attribute("trackcolor"));
+   QColor color = ColorUtil::stringToColor(((layoutblockList.at(i).toElement())).attribute("trackcolor"));
    b->setBlockTrackColor(color);
-   color = LayoutBlock::stringToColor(((layoutblockList.at(i).toElement()))
-                                        .attribute("occupiedcolor"));
+   color = ColorUtil::stringToColor(((layoutblockList.at(i).toElement())).attribute("occupiedcolor"));
    b->setBlockOccupiedColor(color);
-   QString a = ((layoutblockList.at(i).toElement()))
-                                        .attribute("extracolor");
+   QString a = ((layoutblockList.at(i).toElement())).attribute("extracolor");
    if (a!="")
    {
-    b->setBlockExtraColor(LayoutBlock::stringToColor(a));
+    b->setBlockExtraColor(ColorUtil::stringToColor(a));
    }
    a = ((layoutblockList.at(i).toElement())).attribute("occupancysensor");
    if (a!="")
    {
     b->setOccupancySensorName(a);
    }
-   a = ((layoutblockList.at(i).toElement()))
-                                        .attribute("memory");
+   a = ((layoutblockList.at(i).toElement())).attribute("memory");
    if (a!=NULL)
    {
     b->setMemoryName(a);
    }
-   a = ((layoutblockList.at(i).toElement())).
-                                        attribute("occupancysensorsense");
+   a = ((layoutblockList.at(i).toElement())).attribute("occupancysensorsense");
    int sense = Sensor::ACTIVE;
    try
    {
-    sense = ((layoutblockList.at(i).toElement())).
-                                        attribute("occupiedsense").toInt();
+    sense = ((layoutblockList.at(i).toElement())).attribute("occupiedsense").toInt();
    }
    catch (DataConversionException e)
    {

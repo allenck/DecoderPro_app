@@ -145,9 +145,9 @@
   JDialog* dialog;
   //if (parent instanceof Frame)
   if(qobject_cast<QMainWindow*>(parent))
-    dialog = new JDialog((QMainWindow*) parent, title, true);
+    dialog = new JDialog((QMainWindow*) parent, title, modal);
   else
-    dialog = new JDialog((QDialog*) parent, title, true);
+    dialog = new JDialog((QDialog*) parent, title, modal);
 
   QVBoxLayout* thisLayout;
   dialog->setLayout(thisLayout = new QVBoxLayout());
@@ -235,15 +235,10 @@ void JColorChooser::common(ColorSelectionModel* model)
 // dlg->setOption(QColorDialog::NoButtons);
  tabWidget = new QTabWidget();
  ((QVBoxLayout*)layout())->addWidget(tabWidget, 1);
-// tabWidget->setMinimumHeight(300);
-//  QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
-//  sizePolicy.setHorizontalStretch(1);
-//  sizePolicy.setVerticalStretch(1);
-//  sizePolicy.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
-//  tabWidget->setSizePolicy(sizePolicy);
  if(getPreviewPanel())
    ((QVBoxLayout*)layout())->addWidget(getPreviewPanel(),0);
 }
+
 /**
  * Returns the L&amp;F object that renders this component.
  *

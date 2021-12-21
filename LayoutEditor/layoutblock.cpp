@@ -1179,44 +1179,7 @@ void LayoutBlock::blockEditCancelPressed(JActionEvent*) {
     return (colorCode.at(colorCombo->currentIndex()));
 }
 #endif
-/**
- * Utility methods for converting between string and color
- * Note: These names are only used internally, so don't need a resource bundle
- */
-/*public*/ /*static*/ QString LayoutBlock::colorToString(QColor color) {
-    if(color == QColor(Qt::black)) return "black";
-    else if (color == QColor(Qt::darkGray)) return "darkGray";
-    else if (color == QColor(Qt::gray)) return "gray";
-    else if (color == QColor(Qt::lightGray)) return "lightGray";
-    else if (color == QColor(Qt::white)) return "white";
-    else if (color == QColor(Qt::red)) return "red";
-    else if (color == QColor(255,233,236)) return "pink";
-    else if (color == QColor(255, 165, 0)) return "orange";
-    else if (color == QColor(Qt::yellow)) return "yellow";
-    else if (color == QColor(Qt::green)) return "green";
-    else if (color == QColor(Qt::blue)) return "blue";
-    else if (color == QColor(Qt::magenta)) return "magenta";
-    else if (color == QColor(Qt::cyan)) return "cyan";
-    //log->error ("unknown color sent to colorToQString");
-    return "black";
-}
-/*public*/ /*static*/ QColor LayoutBlock::stringToColor(QString string) {
-    if(string==("black")) return QColor(Qt::black);
-    else if (string==("darkGray")) return QColor(Qt::darkGray);
-    else if (string==("gray")) return QColor(Qt::gray);
-    else if (string==("lightGray")) return QColor(Qt::lightGray);
-    else if (string==("white")) return QColor(Qt::white);
-    else if (string==("red")) return QColor(Qt::red);
-    else if (string==("pink")) return QColor(255,192,203);
-    else if (string==("orange")) return QColor(255,170,0);
-    else if (string==("yellow")) return QColor(Qt::yellow);
-    else if (string==("green")) return QColor(Qt::green);
-    else if (string==("blue")) return QColor(Qt::blue);
-    else if (string==("magenta")) return QColor(Qt::magenta);
-    else if (string==("cyan")) return QColor(Qt::cyan);
-    //log->error("unknown color text '"+string+"' sent to stringToColor");
-    return QColor(Qt::black);
-}
+
 
 /**
  * Removes this object from display and persistance

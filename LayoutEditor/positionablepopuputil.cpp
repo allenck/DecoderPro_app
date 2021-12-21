@@ -633,7 +633,7 @@ void PositionablePopupUtil::setFontWeight(int weight)
  addColorMenuEntry(colorMenu, buttonGrp, tr("LightGray"),QColor(Qt::lightGray), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("White"),QColor(Qt::white), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("Red"),QColor(Qt::red), type);
- addColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,170,0), type);
+ addColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,165,0), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("Yellow"),QColor(Qt::yellow), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("Green"),QColor(Qt::green), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("Blue"),QColor(Qt::blue), type);
