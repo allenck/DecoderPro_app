@@ -819,7 +819,6 @@ private:
  QSignalMapper* turnoutCircleSizeButtonMapper;
  QAction* turnoutDrawUnselectedLegItem;
  QAction* turnoutFillControlCirclesCheckBoxMenuItem = nullptr;
- QAction* useDirectTurnoutControlItem;
  /*private*/ int backgroundColorCount = 0;
  /*private*/ int trackColorCount = 0;
  /*private*/ int trackOccupiedColorCount = 0;

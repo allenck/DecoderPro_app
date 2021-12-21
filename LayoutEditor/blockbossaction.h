@@ -7,7 +7,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT BlockBossAction : public AbstractAction
 {
  Q_OBJECT
 public:
- explicit BlockBossAction(QObject *parent = 0);
+ Q_INVOKABLE explicit BlockBossAction(QObject *parent = 0);
   ~BlockBossAction() {}
   BlockBossAction(const BlockBossAction&) : AbstractAction() {}
  /*public*/ BlockBossAction(QString s, QObject *parent);

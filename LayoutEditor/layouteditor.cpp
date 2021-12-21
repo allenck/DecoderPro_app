@@ -2559,99 +2559,113 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  });
  zoomButtonGroup->addAction(zoom40Item);
  noZoomItem->setChecked(true);
+
+ zoom50Item = new QAction("x 5.0", this);
+ zoomMenu->addAction(zoom50Item);
+ connect(zoom50Item, &QAction::triggered, [=]{ setZoom(5.0);});
+ zoomButtonGroup->addAction(zoom50Item);
+
+ zoom60Item = new QAction("x 6.0", this);
+ zoomMenu->addAction(zoom60Item);
+ connect(zoom60Item, &QAction::triggered, [=]{ setZoom(6.0);});
+ zoomButtonGroup->addAction(zoom60Item);
+
+ zoom70Item = new QAction("x 7.0", this);
+ zoomMenu->addAction(zoom70Item);
+ connect(zoom70Item, &QAction::triggered, [=]{ setZoom(7.0);});
+ zoomButtonGroup->addAction(zoom70Item);
+
+ zoom80Item = new QAction("x 8.0", this);
+ zoomMenu->addAction(zoom80Item);
+ connect(zoom80Item, &QAction::triggered, [=]{ setZoom(8.0);});
+ zoomButtonGroup->addAction(zoom80Item);
 }
 
-#if 1
 //@Override
 /*public*/ void LayoutEditor::mouseWheelMoved(/*@Nonnull*/ QGraphicsSceneWheelEvent* event) {
     // log.warn("mouseWheelMoved");
     if (/*event.isAltDown()*/event->modifiers()&Qt::AltModifier) {
      QGraphicsItem* item = editScene->itemAt(event->scenePos(), QTransform());
-     if(item)
-      log->debug(tr("item = %1").arg(item->type()));
 #if 0
-      QItem  // get the mouse position from the event and convert to target panel coordinates
-        QWidget* component = (Component) event->getSource();
-        QPoint eventPoint = event.getPoint();
-        JComponent targetPanel = getTargetPanel();
-        QPointF mousePoint = SwingUtilities.convertPoint(component, eventPoint, targetPanel);
+     // get the mouse position from the event and convert to target panel coordinates
+         Component component = (Component) event.getSource();
+         Point eventPoint = event.getPoint();
+         JComponent targetPanel = getTargetPanel();
+         Point2D mousePoint = SwingUtilities.convertPoint(component, eventPoint, targetPanel);
 
-        // get the old view port position
-        JScrollPane scrollPane = getPanelScrollPane();
-        JViewport viewPort = scrollPane.getViewport();
-        Point2D viewPosition = viewPort.getViewPosition();
+         // get the old view port position
+         JScrollPane scrollPane = getPanelScrollPane();
+         JViewport viewPort = scrollPane.getViewport();
+         Point2D viewPosition = viewPort.getViewPosition();
 
-        // convert from oldZoom (scaled) coordinates to image coordinates
-        double zoom = getZoom();
-        Point2D imageMousePoint = MathUtil.divide(mousePoint, zoom);
-        Point2D imageViewPosition = MathUtil.divide(viewPosition, zoom);
-        // compute the delta (in image coordinates)
-        Point2D imageDelta = MathUtil.subtract(imageMousePoint, imageViewPosition);
+         // convert from oldZoom (scaled) coordinates to image coordinates
+         double zoom = getZoom();
+         Point2D imageMousePoint = MathUtil.divide(mousePoint, zoom);
+         Point2D imageViewPosition = MathUtil.divide(viewPosition, zoom);
+         // compute the delta (in image coordinates)
+         Point2D imageDelta = MathUtil.subtract(imageMousePoint, imageViewPosition);
 
-        // compute how much to change zoom
-        double amount = Math.pow(1.1, event.getScrollAmount());
-        if (event.getWheelRotation() < 0.0) {
-            // reciprocal for zoom out
-            amount = 1.0 / amount;
-        }
-        // set the new zoom
-        double newZoom = setZoom(zoom * amount);
-        // recalulate the amount (in case setZoom didn't zoom as much as we wanted)
-        amount = newZoom / zoom;
+         // compute how much to change zoom
+         double amount = Math.pow(1.1, event.getScrollAmount());
+         if (event.getWheelRotation() < 0.0) {
+             // reciprocal for zoom out
+             amount = 1.0 / amount;
+         }
+         // set the new zoom
+         double newZoom = setZoom(zoom * amount);
+         // recalulate the amount (in case setZoom didn't zoom as much as we wanted)
+         amount = newZoom / zoom;
 
-        // convert the old delta to the new
-        Point2D newImageDelta = MathUtil.divide(imageDelta, amount);
-        // calculate the new view position (in image coordinates)
-        Point2D newImageViewPosition = MathUtil.subtract(imageMousePoint, newImageDelta);
-        // convert from image coordinates to newZoom (scaled) coordinates
-        Point2D newViewPosition = MathUtil.multiply(newImageViewPosition, newZoom);
+         // convert the old delta to the new
+         Point2D newImageDelta = MathUtil.divide(imageDelta, amount);
+         // calculate the new view position (in image coordinates)
+         Point2D newImageViewPosition = MathUtil.subtract(imageMousePoint, newImageDelta);
+         // convert from image coordinates to newZoom (scaled) coordinates
+         Point2D newViewPosition = MathUtil.multiply(newImageViewPosition, newZoom);
 
-        // don't let origin go negative
-        newViewPosition = MathUtil.max(newViewPosition, MathUtil.zeroPoint2D);
-        // log.info("mouseWheelMoved: newViewPos2D: {}", newViewPosition);
+         // don't let origin go negative
+         newViewPosition = MathUtil.max(newViewPosition, MathUtil.zeroPoint2D);
+         // log.info("mouseWheelMoved: newViewPos2D: {}", newViewPosition);
 
-        // set new view position
-        viewPort.setViewPosition(MathUtil.point2DToPoint(newViewPosition));
-    } else {
-        JScrollPane scrollPane = getPanelScrollPane();
-        if (scrollPane != null) {
-            if (scrollPane.getVerticalScrollBar().isVisible()) {
-                // Redispatch the event to the original MouseWheelListeners
-                for (MouseWheelListener mwl : mouseWheelListeners) {
-                    mwl.mouseWheelMoved(event);
-                }
-            } else {
-                // proprogate event to ancestor
-                Component ancestor = SwingUtilities.getAncestorOfClass(JScrollPane.class,
-                        scrollPane);
-                if (ancestor != null) {
-                    MouseWheelEvent mwe = new MouseWheelEvent(
-                            ancestor,
-                            event.getID(),
-                            event.getWhen(),
-                            event.getModifiersEx(),
-                            event.getX(),
-                            event.getY(),
-                            event.getXOnScreen(),
-                            event.getYOnScreen(),
-                            event.getClickCount(),
-                            event.isPopupTrigger(),
-                            event.getScrollType(),
-                            event.getScrollAmount(),
-                            event.getWheelRotation());
+         // set new view position
+         viewPort.setViewPosition(MathUtil.point2DToPoint(newViewPosition));
+     } else {
+         JScrollPane scrollPane = getPanelScrollPane();
+         if (scrollPane != null) {
+             if (scrollPane.getVerticalScrollBar().isVisible()) {
+                 // Redispatch the event to the original MouseWheelListeners
+                 for (MouseWheelListener mwl : mouseWheelListeners) {
+                     mwl.mouseWheelMoved(event);
+                 }
+             } else {
+                 // proprogate event to ancestor
+                 Component ancestor = SwingUtilities.getAncestorOfClass(JScrollPane.class,
+                         scrollPane);
+                 if (ancestor != null) {
+                     MouseWheelEvent mwe = new MouseWheelEvent(
+                             ancestor,
+                             event.getID(),
+                             event.getWhen(),
+                             event.getModifiersEx(),
+                             event.getX(),
+                             event.getY(),
+                             event.getXOnScreen(),
+                             event.getYOnScreen(),
+                             event.getClickCount(),
+                             event.isPopupTrigger(),
+                             event.getScrollType(),
+                             event.getScrollAmount(),
+                             event.getWheelRotation());
 
-                    ancestor.dispatchEvent(mwe);
-                }
-            }
-        }
+                     ancestor.dispatchEvent(mwe);
+                 }
+             }
+         }
+     }
 #endif
     }
 }
-#endif
 
-//
-//
-//
 /*private*/ void LayoutEditor::selectZoomMenuItem(double zoomFactor) {
     //this will put zoomFactor on 100% increments
     //(so it will more likely match one of these values)
@@ -8264,8 +8278,7 @@ void LayoutEditor::addSensor()
 
  /*public*/ void LayoutEditor::setDirectTurnoutControl(bool boo) {
      useDirectTurnoutControl = boo;
-     useDirectTurnoutControlItem->setChecked(useDirectTurnoutControl);
-
+     useDirectTurnoutControlCheckBoxMenuItem->setChecked(useDirectTurnoutControl);
  }
 
  /*public*/ bool LayoutEditor::getDirectTurnoutControl() {
