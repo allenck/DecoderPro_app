@@ -115,7 +115,6 @@ ColorUtil::ColorUtil()
             return "";
     log->error("unknown color text '" + string + "' sent to stringToColor");
     throw  IllegalArgumentException("unknown color text '" + string + "'");
-
 }
 
 /**
