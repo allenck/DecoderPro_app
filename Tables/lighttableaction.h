@@ -310,8 +310,9 @@ class HAVPropertyChangeListener : public QObject, public PropertyChangeListener
   LightTableAction* lta;
  public:
   HAVPropertyChangeListener(LightTableAction* lta) {this->lta = lta;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
-  void PropertyChange(PropertyChangeEvent* /*evt*/)
+  void propertyChange(PropertyChangeEvent* /*evt*/) override
   {
    Validation* validation = lta->hardwareAddressValidator->getValidation();
    Validation::Type type = validation->getType();
@@ -330,7 +331,6 @@ class HAVPropertyChangeListener : public QObject, public PropertyChangeListener
        lta->status1->setText(message);
    }
   }
-  QObject* self() override {return this;}
 };
 
 #endif // LIGHTTABLEACTION_H
