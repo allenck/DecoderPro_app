@@ -539,35 +539,56 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
      log->debug("missing turnoutcircles attribute");
  }
 
- value = false;
- if ((a = shared.attribute("tooltipsnotedit")) != nullptr && a==("yes")) {
-     value = true;
+ try {
+     panel->setTooltipsNotEdit(getBooleanValue(shared.attribute("tooltipsnotedit")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert tooltipsnotedit attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing tooltipsnotedit attribute");
  }
- panel->setTooltipsNotEdit(value);
 
- value = false;
- if ((a = shared.attribute("autoblkgenerate")) != nullptr && a==("yes")) {
-     value = true;
+ try {
+     panel->setAutoBlockAssignment(getBooleanValue(shared.attribute("autoblkgenerate")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert autoblkgenerate attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing autoblkgenerate attribute");
  }
- panel->setAutoBlockAssignment(value);
 
- value = true;
- if ((a = shared.attribute("tooltipsinedit")) != nullptr && a==("no")) {
-     value = false;
+ try {
+     panel->setTooltipsInEdit(getBooleanValue(shared.attribute("tooltipsinedit")));
+ } catch (DataConversionException e) {
+     log->warn("unable to convert tooltipsinedit attribute");
+ } catch (NullPointerException e) {  // considered normal if the attribute is not present
+     log->debug("missing tooltipsinedit attribute");
  }
- panel->setTooltipsInEdit(value);
 
  // set default track color
- if ((a = shared.attribute("defaulttrackcolor")) != nullptr) {
-     panel->setDefaultTrackColor(a);
+ if ((a = shared.attribute("defaulttrackcolor")) != "") {
+     try {
+         panel->setDefaultTrackColor(ColorUtil::stringToColor(a));
+     } catch (IllegalArgumentException e) {
+         panel->setDefaultTrackColor(Qt::darkGray);
+         log->error(tr("Invalid defaulttrackcolor %1; using 'darkGray'").arg(a));
+     }
  }
- // set default track color
- if ((a = shared.attribute("defaultoccupiedtrackcolor")) != nullptr) {
-  panel->setDefaultOccupiedTrackColor(a);
+ // set default occupied track color
+ if ((a = shared.attribute("defaultoccupiedtrackcolor")) != "") {
+     try {
+         panel->setDefaultOccupiedTrackColor(ColorUtil::stringToColor(a));
+     } catch (IllegalArgumentException e) {
+         panel->setDefaultOccupiedTrackColor(Qt::red);
+         log->error(tr("Invalid defaultoccupiedtrackcolor %1; using 'red'").arg(a));
+     }
  }
- // set default track color
- if ((a = shared.attribute("defaultalternativetrackcolor")) != nullptr) {
-   panel->setDefaultAlternativeTrackColor(a);
+ // set default alternative track color
+ if ((a = shared.attribute("defaultalternativetrackcolor")) != "") {
+     try {
+         panel->setDefaultAlternativeTrackColor(ColorUtil::stringToColor(a));
+     } catch (IllegalArgumentException e) {
+         panel->setDefaultAlternativeTrackColor(Qt::white);
+         log->error(tr("Invalid defaultalternativetrackcolor %1; using 'white'").arg(a));
+     }
  }
  try {
   bool bok;

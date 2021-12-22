@@ -1765,7 +1765,12 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  }
  editScene->addItem(pl->_itemGroup);
 #else
-
+ if(l->_itemGroup && l->_itemGroup->scene())
+ {
+  //log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
+  l->updateScene();
+  return;
+ }
    if(l != nullptr)
    {
     bAdded = l->updateScene();
