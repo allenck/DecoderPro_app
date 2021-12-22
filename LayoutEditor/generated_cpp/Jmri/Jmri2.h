@@ -54,7 +54,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -281,8 +280,6 @@ virtual NamedBean*  getNamedBean(QString  arg__1) const;
 virtual QString  getNamedBeanClass() const;
 virtual QSet<NamedBean* >  getNamedBeanSet();
 virtual int  getObjectCount();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners();
-virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  arg__1);
 virtual QStringList  getSystemNameArray();
 virtual QStringList  getSystemNameList();
 virtual QString  getSystemPrefix() const;
@@ -319,8 +316,6 @@ inline NamedBean*  py_q_getNamedBean(QString  arg__1) const { return Manager::ge
 inline QString  py_q_getNamedBeanClass() const { return this->getNamedBeanClass(); }
 inline QSet<NamedBean* >  py_q_getNamedBeanSet() { return Manager::getNamedBeanSet(); }
 inline int  py_q_getObjectCount() { return Manager::getObjectCount(); }
-inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners() { return Manager::getPropertyChangeListeners(); }
-inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(QString  arg__1) { return Manager::getPropertyChangeListeners(arg__1); }
 inline QStringList  py_q_getSystemNameArray() { return Manager::getSystemNameArray(); }
 inline QStringList  py_q_getSystemNameList() { return Manager::getSystemNameList(); }
 inline QString  py_q_getSystemPrefix() const { return Manager::getSystemPrefix(); }
@@ -379,10 +374,6 @@ void delete_Manager(Manager* obj) { delete obj; }
    QSet<NamedBean* >  py_q_getNamedBeanSet(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getNamedBeanSet());}
    int  getObjectCount(Manager* theWrappedObject);
    int  py_q_getObjectCount(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getObjectCount());}
-   QVector<PropertyChangeListener* >  getPropertyChangeListeners(Manager* theWrappedObject);
-   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getPropertyChangeListeners());}
-   QVector<PropertyChangeListener* >  getPropertyChangeListeners(Manager* theWrappedObject, QString  arg__1);
-   QVector<PropertyChangeListener* >  py_q_getPropertyChangeListeners(Manager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getPropertyChangeListeners(arg__1));}
    QString  getSubSystemNamePrefix(Manager* theWrappedObject) const;
    QStringList  getSystemNameArray(Manager* theWrappedObject);
    QStringList  py_q_getSystemNameArray(Manager* theWrappedObject){  return (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_getSystemNameArray());}

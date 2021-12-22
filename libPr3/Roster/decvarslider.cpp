@@ -30,7 +30,7 @@ DecVarSlider::DecVarSlider(DecVariableValue* var, int min, int max, QWidget *par
  connect(this, SIGNAL(valueChanged(int)), this, SLOT(on_value_Changed(int)));
  addChangeListener((ChangeListener*)this);
  // listen for changes to associated variable
- // _var->addPropertyChangeListener(new PropertyChangeListener();
+ // _var->PropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener();
  DVSPropertyChangeListener* l = new DVSPropertyChangeListener(this);
 //    {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {

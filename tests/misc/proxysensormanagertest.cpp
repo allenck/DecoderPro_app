@@ -182,8 +182,8 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         s1->setUserName("Sensor* 1");
 
         l->addDataListener(this);
-        l->addPropertyChangeListener("length", (PropertyChangeListener*)this);
-        l->addPropertyChangeListener("DisplayListName", (PropertyChangeListener*)this);
+        l->PropertyChangeSupport::addPropertyChangeListener("length", (PropertyChangeListener*)this);
+        l->PropertyChangeSupport::addPropertyChangeListener("DisplayListName", (PropertyChangeListener*)this);
 
         // add an item
         Sensor* s2 = l->provideSensor("IS2");

@@ -92,7 +92,7 @@
  */
 //public abstract class TurnoutOperation implements Comparable<Object> {
 
-TurnoutOperation::TurnoutOperation(QString n, QObject *parent)
+TurnoutOperation::TurnoutOperation(QString n, QObject *parent) : PropertyChangeSupport(this, parent)
 {
  feedbackModes = 0;
  nonce = false;		// created just for one turnout and not reusable
@@ -102,7 +102,7 @@ TurnoutOperation::TurnoutOperation(QString n, QObject *parent)
  pcs = new PropertyChangeSupport(this);
 }
 
-TurnoutOperation::TurnoutOperation(TurnoutOperation & other) : QObject(parent)
+TurnoutOperation::TurnoutOperation(TurnoutOperation & other) : PropertyChangeSupport(this, parent)
 {this->parent = other.parent;
  this->name = other.name;
  this->feedbackModes = other.feedbackModes;
@@ -281,15 +281,15 @@ TurnoutOperationManager::getInstance()->firePropertyChange("Content", QVariant()
     return op;
 }
 
-/*
- * property change support
- */
-/*public synchronized*/ void TurnoutOperation::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
-}
-/*public synchronized*/ void TurnoutOperation::removePropertyChangeListener(PropertyChangeListener* l) {
-    pcs->removePropertyChangeListener(l);
-}
+///*
+// * property change support
+// */
+///*public synchronized*/ void TurnoutOperation::addPropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+//}
+///*public synchronized*/ void TurnoutOperation::removePropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->removePropertyChangeListener(l);
+//}
 
 /**
  * @param mode feedback mode for a turnout

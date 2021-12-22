@@ -12,7 +12,9 @@ class ClipboardMany : public AbstractBase, public FemaleSocketListener
 {
   Q_OBJECT
   Q_INTERFACES(FemaleSocketListener)
-
+public:
+  QObject* self() override {return (QObject*)this;}
+ private:
   /*private*/ /*static*/ class ItemEntry {
       /*private*/ QString _socketSystemName;
       /*private*/ QString _itemManagerClass;
@@ -29,6 +31,7 @@ class ClipboardMany : public AbstractBase, public FemaleSocketListener
       }
    friend class ClipboardMany;
   };
+
   /*public*/ /*static*/ class ItemData {
    public:
       /*public*/ /*final*/ QString _systemName;
@@ -61,7 +64,7 @@ class ClipboardMany : public AbstractBase, public FemaleSocketListener
   /*public*/ void setState(int s) throw (JmriException)override;
   /*public*/ int getState()override;
   /*public*/ QString getBeanType()override;
-  /*public*/ Base* getParent()override;
+  /*public*/ Base* getParent();
   /*public*/ void setParent(Base* parent)override;
   /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw  (JmriException)override;
   /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw (JmriException)override;

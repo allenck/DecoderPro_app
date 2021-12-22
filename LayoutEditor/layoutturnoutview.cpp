@@ -1550,7 +1550,7 @@ void LayoutTurnoutView::reCalculateCenter() {
                     jmi->setEnabled(false);
                 }
                 if ((getLayoutBlockD() != nullptr) && (getLayoutBlockD() != getLayoutBlock())) {
-                    jmi = popup->addSection(tr("%1:").arg(tr("Block %1", "D")) + getLayoutBlockD()->getDisplayName());
+                    jmi = popup->addSection(tr("%1:").arg(tr("Block %1").arg("D")) + getLayoutBlockD()->getDisplayName());
                     jmi->setEnabled(false);
                 }
             }

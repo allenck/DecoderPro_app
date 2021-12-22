@@ -39,7 +39,7 @@
  rosters = QHash<Profile*, Roster*>();
 
 //    log->debug(tr("Roster is %1").arg(this->directory));
-//    FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeEvent evt) -> {
+//    FileUtilSupport::getDefault()->PropertyChangeSupport::addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeEvent evt) -> {
 //        log->debug(tr("UserFiles changed from {} to {}", evt.getOldValue(), evt.getNewValue());
 //        if (RosterConfigManager.this->getDirectory().equals(evt.getOldValue())) {
 //            RosterConfigManager.this->setDirectory(FileUtil.PREFERENCES);

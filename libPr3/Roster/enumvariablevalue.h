@@ -127,7 +127,7 @@ public:
  // get the original color right
  setBackground(_var->getBackground());
  // listen for changes to original state
- //_var->addPropertyChangeListener(_l);
+ //_var->PropertyChangeSupport::addPropertyChangeListener(_l);
  _var->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(_var, SIGNAL(valueChanged(int)), this, SLOT(originalPropertyChanged()));
 }

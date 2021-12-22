@@ -58,7 +58,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -3050,7 +3049,6 @@ public:
 
    ~PythonQtShell_DccThrottle();
 
-virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1);
 virtual bool  getF0();
 virtual bool  getF0Momentary();
 virtual bool  getF1();
@@ -3119,7 +3117,6 @@ virtual LocoAddress*  getLocoAddress();
 virtual BasicRosterEntry*  getRosterEntry();
 virtual float  getSpeedIncrement();
 virtual float  getSpeedSetting();
-virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
 virtual QObject*  self();
 virtual void setF0(bool  arg__1);
 virtual void setF0Momentary(bool  arg__1);

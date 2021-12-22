@@ -331,7 +331,7 @@
 
 
 // needed for deprecationWarning call above
-/*static*/ /*final*/ Logger* Manager::deprecatedManagerLogger = LoggerFactory::getLogger("Manager");
+///*static*/ /*final*/ Logger* Manager::deprecatedManagerLogger = LoggerFactory::getLogger("Manager");
 
 /**
  * Locate an existing instance based on a system name.

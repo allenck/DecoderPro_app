@@ -27,7 +27,7 @@
 
     //"base" variables used to hold original gifs, other variables used with scaled images
 
-/*public*/ LcdClockFrame::LcdClockFrame( QWidget *parent) : JmriJFrame("Lcd Clock", parent)
+/*public*/ LcdClockFrame::LcdClockFrame( QWidget *parent) : JmriJFrame("Lcd Clock", true, true, parent)
 {
  //super(Bundle.getMessage("MenuItemLcdClock"));
  log = new Logger("Lcd Clock");

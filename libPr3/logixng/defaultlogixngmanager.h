@@ -47,7 +47,8 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
   /*public*/ void registerManager(Manager/*<? extends MaleSocket>*/* manager)override;
   /*public*/ Manager/*<? extends MaleSocket>*/* getManager(QString className)override;
   /*public*/ void fireVetoableChange(QString p, QVariant old) throw (PropertyVetoException);
-  /*public*/ /*final*/ void deleteBean(/*@Nonnull*/  /*LogixNG*/NamedBean* logixNG, /*@Nonnull*/  QString property) throw (PropertyVetoException)Register(NamedBean *s) const override();
+  /*public*/ /*final*/ void deleteBean(/*@Nonnull*/  /*LogixNG*/NamedBean* logixNG, /*@Nonnull*/  QString property) throw (PropertyVetoException)override;
+  //Register(NamedBean *s) const override();
 
  private:
   static Logger* log;

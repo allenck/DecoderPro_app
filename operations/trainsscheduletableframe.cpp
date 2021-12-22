@@ -445,7 +445,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*private*/ void TrainsScheduleTableFrame::addPropertyChangeLocations() {
      foreach (Location* location, locationManager->getList()) {
-      location->addPropertyChangeListener(this);
+      location->PropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 

@@ -178,7 +178,7 @@ namespace Operations
 
      // road fields and enable buttons
      if (_track != NULL) {
-         //_track->addPropertyChangeListener(this);
+         //_track->PropertyChangeSupport::addPropertyChangeListener(this);
       connect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          trackName->setText(_track->getName());
          enableButtons(true);

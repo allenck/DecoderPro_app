@@ -1304,7 +1304,7 @@ void DispatcherFrame::allocateNextRequested(int index) {
     //}
     activeTrainsList->append(at);
 //    PropertyChangeListener* listener = NULL;
-//    at->addPropertyChangeListener(listener = new PropertyChangeListener() {
+//    at->PropertyChangeSupport::addPropertyChangeListener(listener = new PropertyChangeListener() {
 //        @Override
 //        /*public*/ void propertyChange(PropertyChangeEvent e) {
 //            handleActiveTrainChange(e);

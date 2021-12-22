@@ -145,7 +145,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      makePanelsVisible();
 
-     //trainManager->addPropertyChangeListener(this);
+     //trainManager->PropertyChangeSupport::addPropertyChangeListener(this);
      connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 

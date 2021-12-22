@@ -2833,7 +2833,7 @@ bool LayoutBlock::isValidNeighbour(Block* blk){
  if (!listeners->contains(l))
  {
   listeners->append(l);
-  pcs->addPropertyChangeListener(l);
+  pcs->PropertyChangeSupport::addPropertyChangeListener(l);
  }
 }
 //@Override
@@ -3780,7 +3780,7 @@ int LayoutBlock::getRouteIndex(Routes* r){
  length = len;
  validCurrentRoute = block->checkIsRouteOnValidThroughPath(this);
  firePropertyChange("length", QVariant(), QVariant());
-//    destBlock->addPropertyChangeListener(this);
+//    destBlock->PropertyChangeSupport::addPropertyChangeListener(this);
 // connect(destBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 // connect(destBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 

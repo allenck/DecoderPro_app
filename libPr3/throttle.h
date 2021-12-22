@@ -391,9 +391,9 @@ public:
         virtual LocoAddress* getLocoAddress()  {return NULL;}
 
         // register for notification if any of the properties change
-        virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
-        virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
-        virtual QVector<PropertyChangeListener*>* getListeners()  {return NULL;}
+//        virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
+//        virtual void addPropertyChangeListener(PropertyChangeListener* /*p*/) {}
+        QT_DEPRECATED virtual QVector<PropertyChangeListener*>* getListeners()  {return NULL;}
 
         /**
          * Not for general use, see {@link #release(ThrottleListener l)} and {@link #dispatch(ThrottleListener l)}.

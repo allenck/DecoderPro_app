@@ -111,7 +111,7 @@ void DoubleTurnoutSignalHead::commandState(int red, int green) {
  }
  mRed = nullptr;
  mGreen = nullptr;
- InstanceManager::turnoutManagerInstance()->removeVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::turnoutManagerInstance()->VetoableChangeSupport::removeVetoableChangeListener((VetoableChangeListener*)this);
  DefaultSignalHead::dispose();
 }
 

@@ -381,12 +381,12 @@
 
     //@Override
     /*public*/ void AbstractFemaleSocket::addPropertyChangeListener(PropertyChangeListener* listener) {
-        pcs->addPropertyChangeListener(listener);
+        pcs->PropertyChangeSupport::addPropertyChangeListener(listener);
     }
 
     //@Override
     /*public*/ void AbstractFemaleSocket::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-        pcs->addPropertyChangeListener(propertyName, listener);
+        pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
     }
 
     //@Override

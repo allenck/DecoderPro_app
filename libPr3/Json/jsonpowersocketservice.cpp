@@ -23,7 +23,7 @@
 {
  if (!this->listening)
  {
-//        ((PowerManager*)InstanceManager::getDefault("PowerManager"))->addPropertyChangeListener(this);
+//        ((PowerManager*)InstanceManager::getDefault("PowerManager"))->PropertyChangeSupport::addPropertyChangeListener(this);
   AbstractPowerManager* pm = (AbstractPowerManager*)InstanceManager::getOptionalDefault("PowerManager");
   connect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 

@@ -13,17 +13,17 @@
 #include <QVector>
 #include "namedbean.h"
 #include "vetoablechangeprovider.h"
+#include "silenceablepropertychangeprovider.h"
 
 class NamedBeanPropertyDescriptor;
 class Logger;
 class SystemConnectionMemo;
 class QStringList;
 class PropertyChangeListener;
-class JAVAQTSHARED_EXPORT
-  Manager //: public VetoableChangeProvider
+class JAVAQTSHARED_EXPORT   Manager : public SilenceablePropertyChangeProvider, public VetoableChangeProvider
 {
  //Q_OBJECT
-  //Q_INTERFACES(VetoableChangeProvider)
+  Q_INTERFACES(SilenceablePropertyChangeProvider VetoableChangeProvider)
 public:
     //explicit Manager(QObject *parent = 0) : QObject(parent) {}
     //Manager(SystemConnectionMemo* /*memo*/, QObject *parent = 0) : QObject(parent) {}
@@ -88,14 +88,6 @@ public:
          VALID_AS_PREFIX_ONLY
      };
  //Q_ENUM(NameValidity)
-//    public interface Manager {
-
-//        /**
-//         * @return The system-specific prefix letter for a specific implementation
-//         * @deprecated 2.9.5 Use getSystemPrefix
-//         */
-//        @Deprecated
-//        virtual char systemLetter();
 
  /**
   * Get the system connection for this manager.
@@ -292,70 +284,6 @@ public:
       */
      virtual  NamedBean* getNamedBean(QString /*name*/) const {return NULL;}
 
-//     /**
-//      * At a minimum,
-//      * subclasses must notify of changes to the list of available NamedBeans;
-//      * they may have other properties that will also notify.
-//      */
-//     virtual void addPropertyChangeListener(PropertyChangeListener* /*l*/) {}
-//     /**
-//      * Add a {@link java.beans.PropertyChangeListener} for a specific property.
-//      *
-//      * @param propertyName The name of the property to listen on.
-//      * @param listener     The PropertyChangeListener to be added
-//      */
-//      virtual /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* /*listener*/){}
-
-//     /**
-//      * At a minimum,
-//      * subclasses must notify of changes to the list of available NamedBeans;
-//      * they may have other properties that will also notify.
-//      */
-//     virtual void removePropertyChangeListener(PropertyChangeListener* /*l*/)  {}
-//     /**
-//      * Remove the specified listener of the specified property from this object.
-//      *
-//      * @param propertyName The name of the property to stop listening to.
-//      * @param listener     The {@link java.beans.PropertyChangeListener} to
-//      *                     remove.
-//      */
-//     virtual /*public*/ void removePropertyChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ PropertyChangeListener* /*listener*/){}
-
-
-     /**
-      * Get all {@link java.beans.PropertyChangeListener}s currently attached to
-      * this object.
-      *
-      * @return An array of PropertyChangeListeners.
-      */
-     //@Nonnull
-     /*public*/ virtual QVector<PropertyChangeListener *> getPropertyChangeListeners() {return QVector<PropertyChangeListener*>();}
-
-     /**
-      * Get all {@link java.beans.PropertyChangeListener}s currently listening to
-      * changes to the specified property.
-      *
-      * @param propertyName The name of the property of interest
-      * @return An array of PropertyChangeListeners.
-      */
-     //@Nonnull
-     virtual /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(/*@CheckForNull*/ QString /*propertyName*/) {return QVector<PropertyChangeListener*>();}
-
-     /**
-      * Remove a VetoableChangeListener to the listener list.
-      *
-      * @param l the listener
-      */
-//     /*public*/ virtual void removeVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* /*l*/) {}
-
-     /**
-      * Remove the specified listener of the specified property from this object.
-      *
-      * @param propertyName The name of the property to stop listening to.
-      * @param listener     The {@link java.beans.VetoableChangeListener} to
-      *                     remove.
-      */
-// /*public*/ virtual void removeVetoableChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ VetoableChangeListener* /*listener*/) {}
 
      /**
       * Method for a UI to delete a bean.
@@ -378,11 +306,8 @@ public:
       *                                          above).
       */
       virtual /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* /*n*/, /*@Nonnull*/ QString /*property*/) throw (PropertyVetoException) {}
- static /*final*/ Logger* deprecatedManagerLogger;// = LoggerFactory::getLogger("Manager");
 
-//  /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName);
-//  /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName);
- virtual /*default*/ /*public*/ QList<NamedBeanPropertyDescriptor*> getKnownBeanProperties();
+      virtual /*default*/ /*public*/ QList<NamedBeanPropertyDescriptor*> getKnownBeanProperties();
 
 
      /**
@@ -444,7 +369,17 @@ public:
      static const   int LOGIXNG_STRING_ACTIONS = LOGIXNG_STRING_EXPRESSIONS + 10;   // LogixNG StringAction
      static const   int METERFRAMES = LOGIXNG_STRING_ACTIONS + 10;
      static const   int CTCDATA = METERFRAMES + 10;
-     virtual int getXMLOrder() const =0;
+
+     /**
+      * Determine the order that types should be written when storing panel
+      * files. Uses one of the constants defined in this class.
+      * <p>
+      * Yes, that's an overly-centralized methodology, but it works for now.
+      *
+      * @return write order for this Manager; larger is later.
+      */
+     /*@CheckReturnValuevirtual*/virtual int getXMLOrder() const =0;
+
      /**
       * For instances in the code where we are dealing with just a bean and a
       * message needs to be passed to the user or in a log.
@@ -648,10 +583,9 @@ public:
      {
       return this->getSystemNamePrefix() == other.getSystemPrefix();
      }
+
      virtual QObject* self() =0;
-signals:
-    //void vetoablePropertyChange(PropertyChangeEvent*);
-public slots:
+
 
 private:
         QT_DEPRECATED
@@ -664,7 +598,6 @@ private:
      //SystemConnectionMemo* memo = nullptr;
     
 };
-
 
 Q_DECLARE_INTERFACE(Manager, "Manager")
 /**

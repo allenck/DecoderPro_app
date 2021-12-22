@@ -282,7 +282,7 @@ void AbstractAction::common()
     if (changeSupport == NULL) {
         changeSupport = new PropertyChangeSupport(this);
     }
-    changeSupport->addPropertyChangeListener(listener);
+    changeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
 // connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

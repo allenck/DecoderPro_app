@@ -494,7 +494,7 @@ void ThrottleWindow::notifyThrottleFound(DccThrottle *t)
  controlPanel->notifyAddressThrottleFound(t);
  functionPanel->setAddressPanel(addressPanel);
  functionPanel->notifyAddressThrottleFound(t);
- throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+ throttle->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  //setWindowTitle(((RosterEntry*)throttle->getRosterEntry())->getId());
  setFrameTitle();

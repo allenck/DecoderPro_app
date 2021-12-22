@@ -834,7 +834,7 @@ NamedBean* PointDetails::getSignal(){
 }
 
 /*public*/ /*synchronized*/ void PointDetails::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 /*public*/ /*synchronized*/ void PointDetails::removePropertyChangeListener(PropertyChangeListener* l) {
     pcs->removePropertyChangeListener(l);

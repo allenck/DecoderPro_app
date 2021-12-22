@@ -45,7 +45,7 @@
  _parent = _parent;
  _tabbed = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed();
  _manager = (PortalManager*)InstanceManager::getDefault("PortalManager");
- _manager->addPropertyChangeListener((PropertyChangeListener*)this);
+ _manager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  if (!_tabbed) {
      // specific stuff for _desktop
      initTempRow();

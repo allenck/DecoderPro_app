@@ -815,7 +815,7 @@ void SpeedProfilePanel::stopTrainTest()
  log->debug("notifyThrottleDisposed");
  if (t != NULL)
  {
-  t->removePropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractThrottle*)t)->removePropertyChangeListener((PropertyChangeListener*)this);
   AbstractThrottle* at = (AbstractThrottle*)t;
   disconnect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }

@@ -81,7 +81,7 @@ namespace Operations
   RollingStockAttributeEditFrame::initComponents(attribute, name);
 
        setTitle(tr("Edit Car %1").arg(attribute ));
-       carManager->addPropertyChangeListener((PropertyChangeListener*)this);
+       carManager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
        addComboBoxAction(comboBox);
 
@@ -195,15 +195,15 @@ namespace Operations
        RollingStockAttributeEditFrame::loadCombobox();
        if (_attribute == (TYPE)) {
            comboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
-           ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addPropertyChangeListener((PropertyChangeListener*)this);
+           ((CarTypes*)InstanceManager::getDefault("CarTypes"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (COLOR)) {
            comboBox = ((CarColors*)InstanceManager::getDefault("CarColors"))->getComboBox();
-           ((CarColors*)InstanceManager::getDefault("CarColors"))->addPropertyChangeListener((PropertyChangeListener*)this);
+           ((CarColors*)InstanceManager::getDefault("CarColors"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (LENGTH)) {
            comboBox = ((CarLengths*)InstanceManager::getDefault("CarLengths"))->getComboBox();
-           ((CarLengths*)InstanceManager::getDefault("CarLengths"))->addPropertyChangeListener((PropertyChangeListener*)this);
+           ((CarLengths*)InstanceManager::getDefault("CarLengths"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (KERNEL)) {
            comboBox = carManager->getKernelComboBox();

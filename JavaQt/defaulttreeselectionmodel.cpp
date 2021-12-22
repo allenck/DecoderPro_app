@@ -788,7 +788,7 @@
     if (changeSupport == nullptr) {
         changeSupport = new PropertyChangeSupport(this);
     }
-    changeSupport->addPropertyChangeListener(listener);
+    changeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /**

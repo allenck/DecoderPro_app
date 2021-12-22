@@ -148,7 +148,7 @@
         addressPanel->removeAddressListener(this);
     }
     if (_throttle != nullptr) {
-        _throttle->removePropertyChangeListener((PropertyChangeListener*)this);
+        ((AbstractThrottle*)_throttle)->removePropertyChangeListener((PropertyChangeListener*)this);
         _throttle = nullptr;
     }
 }

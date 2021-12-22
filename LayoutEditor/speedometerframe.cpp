@@ -426,7 +426,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
  Sensor* s;
  s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
          provideSensor(startSensor->text());
-//    s->addPropertyChangeListener(new PropertyChangeListener() {
+//    s->PropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener() {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //            SpeedometerFrame.log->debug("start sensor fired");
 //            if (e.getPropertyName()==("KnownState")) {
@@ -448,7 +448,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
  // set stop sensor1
  s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
          provideSensor(stopSensor1->text());
-//    s->addPropertyChangeListener(new PropertyChangeListener()
+//    s->PropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener()
 //    {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //            SpeedometerFrame.log->debug("stop sensor fired");

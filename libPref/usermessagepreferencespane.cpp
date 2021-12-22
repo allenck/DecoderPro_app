@@ -48,7 +48,7 @@
 
   //super();
   p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-//    p->addPropertyChangeListener((PropertyChangeEvent e) -> {
+//    p->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeEvent e) -> {
 //        if (e.getPropertyName()==("PreferencesUpdated")) {
 //            refreshOptions();
 //        }

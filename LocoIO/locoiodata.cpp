@@ -202,7 +202,7 @@ LocoIOData::~LocoIOData()
 int LocoIOData::numRows(){return _numRows;}
 #if 1 // TODO::
 /*public*/ void LocoIOData::addPropertyChangeListener(PropertyChangeListener* pcl) {
-    dataListeners->addPropertyChangeListener(pcl);
+    dataListeners->PropertyChangeSupport::addPropertyChangeListener(pcl);
 }
 
 /*public*/ void LocoIOData::removePropertyChangeListener(PropertyChangeListener* pcl) {

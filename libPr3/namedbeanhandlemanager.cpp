@@ -242,7 +242,7 @@ template<class T>
 //        @Override
 //template<class T>
 ///*public synchronized*/ void NamedBeanHandleManager::addPropertyChangeListener(PropertyChangeListener* l) {
-//    pcs->addPropertyChangeListener(l);
+//    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 //}
 
 //        @Override

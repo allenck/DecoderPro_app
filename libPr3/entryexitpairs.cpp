@@ -125,7 +125,7 @@ return (settingRouteColor == QColor() ? false : true);
  memo = (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
    static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
- ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->addPropertyChangeListener(/*propertyBlockManagerListener*/(PropertyChangeListener*)this);
+ ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->PropertyChangeSupport::addPropertyChangeListener(/*propertyBlockManagerListener*/(PropertyChangeListener*)this);
  //connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 
 //    glassPane.setOpaque(false);
@@ -571,7 +571,7 @@ public List<DestinationPoints> getNamedBeanList() {
     currentDealing = routesToSet.at(0)->ref;
     routesToSet.removeAt(0);
 
-    //dp->addPropertyChangeListener(propertyDestinationListener);
+    //dp->PropertyChangeSupport::addPropertyChangeListener(propertyDestinationListener);
     connect(dp->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyDestinationPropertyChange(PropertyChangeEvent*)));
     s->activeBean(dp, dir);
 }

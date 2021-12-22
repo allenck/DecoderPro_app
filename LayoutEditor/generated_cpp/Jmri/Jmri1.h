@@ -74,7 +74,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1487,7 +1486,9 @@ virtual int  computeDirectionAD(LayoutTurnout*  track);
 virtual int  computeDirectionBC(LayoutTurnout*  track);
 virtual int  computeDirectionBD(LayoutTurnout*  track);
 virtual int  computeDirectionCD(LayoutTurnout*  track);
+virtual bool  deletePanel();
 virtual void displayRemoveWarning(LayoutTrack*  track, QList<QString >  itemList, QString  typeKey);
+virtual void dispose();
 virtual void init(QString  name);
 virtual void initView();
 virtual void keyPressEvent(QKeyEvent*  event);
@@ -1534,7 +1535,9 @@ inline int  py_q_computeDirectionAD(LayoutTurnout*  track) { return LayoutEditor
 inline int  py_q_computeDirectionBC(LayoutTurnout*  track) { return LayoutEditor::computeDirectionBC(track); }
 inline int  py_q_computeDirectionBD(LayoutTurnout*  track) { return LayoutEditor::computeDirectionBD(track); }
 inline int  py_q_computeDirectionCD(LayoutTurnout*  track) { return LayoutEditor::computeDirectionCD(track); }
+inline bool  py_q_deletePanel() { return LayoutEditor::deletePanel(); }
 inline void py_q_displayRemoveWarning(LayoutTrack*  track, QList<QString >  itemList, QString  typeKey) { LayoutEditor::displayRemoveWarning(track, itemList, typeKey); }
+inline void py_q_dispose() { LayoutEditor::dispose(); }
 inline void py_q_init(QString  name) { LayoutEditor::init(name); }
 inline void py_q_initView() { LayoutEditor::initView(); }
 inline void py_q_keyPressEvent(QKeyEvent*  event) { LayoutEditor::keyPressEvent(event); }
@@ -1597,9 +1600,11 @@ void delete_LayoutEditor(LayoutEditor* obj) { delete obj; }
    bool  containsSignalHead(LayoutEditor* theWrappedObject, SignalHead*  head);
    bool  containsSignalMast(LayoutEditor* theWrappedObject, SignalMast*  mast);
    bool  deletePanel(LayoutEditor* theWrappedObject);
+   bool  py_q_deletePanel(LayoutEditor* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_deletePanel());}
    void displayRemoveWarning(LayoutEditor* theWrappedObject, LayoutTrack*  track, QList<QString >  itemList, QString  typeKey);
    void py_q_displayRemoveWarning(LayoutEditor* theWrappedObject, LayoutTrack*  track, QList<QString >  itemList, QString  typeKey){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_displayRemoveWarning(track, itemList, typeKey));}
    void dispose(LayoutEditor* theWrappedObject);
+   void py_q_dispose(LayoutEditor* theWrappedObject){  (((PythonQtPublicPromoter_LayoutEditor*)theWrappedObject)->py_q_dispose());}
    void drawSelectionRect(LayoutEditor* theWrappedObject, EditScene*  g2);
    int  getAnchorX(LayoutEditor* theWrappedObject);
    int  getAnchorY(LayoutEditor* theWrappedObject);

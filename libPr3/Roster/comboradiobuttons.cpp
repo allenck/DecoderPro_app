@@ -71,7 +71,7 @@ void ComboRadioButtons::init()
 //    });
  connect(_box, SIGNAL(currentIndexChanged(int)), this, SLOT(originalActionPerformed()));
     // listen for changes to original state
-    //_var->addPropertyChangeListener(p1 = new PropertyChangeListener());
+    //_var->PropertyChangeSupport::addPropertyChangeListener(p1 = new PropertyChangeListener());
  NewListener* listener;
   _var->addPropertyChangeListener(listener = new NewListener(this));
   connect(_var->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));

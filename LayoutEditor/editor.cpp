@@ -196,12 +196,12 @@ void Editor::commonInit()
  //_iconEditorFrame = new QHash <QString, JFrameItem*>();
  _spinCols = new SpinnerNumberModel(3,1,100,1);
   panelMenuIsVisible = true;
-  ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
-  ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
-  InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
-  InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
-  InstanceManager::memoryManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
-  ((BlockManager*)InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+  ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  InstanceManager::turnoutManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  InstanceManager::sensorManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  InstanceManager::memoryManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  ((BlockManager*)InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
   ((EditorManager*)InstanceManager::getDefault("EditorManager"))->addEditor(this);
 }
 
@@ -218,17 +218,17 @@ void Editor::commonInit()
  _debug = log->isDebugEnabled();
  _defaultToolTip = /*new ToolTip(NULL, 0, 0)*/ "";
  setVisible(false);
- static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::turnoutManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::sensorManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- InstanceManager::memoryManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::memoryManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(InstanceManager::memoryManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  editors->append(this);
 }
@@ -1428,7 +1428,7 @@ void Editor::On_removeMenuAction_triggered()
    //         }
    //     }
    // });
-    //rosterBox->addPropertyChangeListener("selectedRosterEntries", (PropertyChangeListener*)this);
+    //rosterBox->PropertyChangeSupport::addPropertyChangeListener("selectedRosterEntries", (PropertyChangeListener*)this);
     connect(rosterBox, SIGNAL(propertyChange(QString,QObject*,QObject*)), this, SLOT(On_rosterBoxSelectionChanged(QString,QObject*,QObject*)));
     //connect(rosterBox, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -4272,12 +4272,12 @@ void UrlErrorDialog::cancelButton_clicked()
 
     /*public*/ void Editor::addPropertyChangeListener(PropertyChangeListener* listener)
     {
-     pcs->addPropertyChangeListener(listener);
+     pcs->PropertyChangeSupport::addPropertyChangeListener(listener);
     }
 
     /*public*/ void Editor::addPropertyChangeListener(QString name, PropertyChangeListener* listener)
     {
-     pcs->addPropertyChangeListener(name, listener);
+     pcs->PropertyChangeSupport::addPropertyChangeListener(name, listener);
     }
 
     /*public*/ void Editor::removePropertyChangeListener(PropertyChangeListener* listener)

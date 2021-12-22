@@ -30,7 +30,7 @@
     if (!this->turnouts->contains(name)) {
         Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getTurnout(name);
         TurnoutListener* listener = new TurnoutListener(turnout, this);
-        //turnout->addPropertyChangeListener(listener);
+        //turnout->PropertyChangeSupport::addPropertyChangeListener(listener);
         connect(turnout->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)) );
         this->turnouts->insert(name, listener);
     }

@@ -100,7 +100,7 @@ namespace Operations
 
   // load the number of engines and listen for changes
   numEngines->setText(QString::number(engineManager->getNumEntries()));
-  engineManager->addPropertyChangeListener(this);
+  engineManager->PropertyChangeSupport::addPropertyChangeListener(this);
   textEngines->setText(tr("engines"));
 
   // Set up the control panel

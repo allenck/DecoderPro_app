@@ -379,7 +379,7 @@ namespace Operations
       updateDepartureTime();
       enableButtons(true);
       // listen for train changes
-      //_train->addPropertyChangeListener(this);
+      //_train->PropertyChangeSupport::addPropertyChangeListener(this);
       connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       // listen for route changes
       Route* route = _train->getRoute();
@@ -557,7 +557,7 @@ namespace Operations
      Train* train = trainManager->newTrain(trainNameTextField->text());
      _train = train;
      if (_train != NULL) {
-         //_train->addPropertyChangeListener(this);
+         //_train->PropertyChangeSupport::addPropertyChangeListener(this);
       connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      // update check boxes
@@ -730,7 +730,7 @@ namespace Operations
              } else {
                  _train->deleteTypeName(checkBox->text());
              }
-             //_train->addPropertyChangeListener(this);
+             //_train->PropertyChangeSupport::addPropertyChangeListener(this);
              connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
      }

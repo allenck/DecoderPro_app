@@ -66,7 +66,7 @@
  * @since 4.17.4
  */
 /*public*/ void Source::addPropertyChangeListener(PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(listener);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /**

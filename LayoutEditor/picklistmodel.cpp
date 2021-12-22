@@ -196,7 +196,7 @@ bool systemNameComparator(QString o1, QString o2)
 {
 
     //log->debug("manager "+getManager());
-  //getManager()->addPropertyChangeListener(this);   // for adds and deletes
+  //getManager()->PropertyChangeSupport::addPropertyChangeListener(this);   // for adds and deletes
  Manager* m = getManager();
  if(m == NULL) return;
 

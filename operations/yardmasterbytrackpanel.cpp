@@ -139,7 +139,7 @@ void YardmasterByTrackPanel::common()
         textSwitchListCommentPane->setText(_location->getSwitchListComment());
         textSwitchListCommentPane->setVisible(_location->getSwitchListComment() != (Location::NONE));
         updateTrackComboBox();
-        _location->addPropertyChangeListener(this);
+        _location->PropertyChangeSupport::addPropertyChangeListener(this);
     }
 
     update();
@@ -253,7 +253,7 @@ void YardmasterByTrackPanel::common()
             }
             for (Engine* engine : *engList) {
                 if (engine->getTrack() == _track) {
-                 engine->addPropertyChangeListener(this);
+                 engine->PropertyChangeSupport::addPropertyChangeListener(this);
                     rollingStock.append(engine);
                     QCheckBox* checkBox = new QCheckBox(trainCommon->pickupEngine(engine));
                     setCheckBoxFont(checkBox);
@@ -275,7 +275,7 @@ void YardmasterByTrackPanel::common()
             }
             for (Engine* engine : *engList) {
                 if (engine->getDestinationTrack() == _track) {
-                 engine->addPropertyChangeListener(this);
+                 engine->PropertyChangeSupport::addPropertyChangeListener(this);
                     rollingStock.append(engine);
                     QCheckBox* checkBox = new QCheckBox(trainCommon->dropEngine(engine));
                     setCheckBoxFont(checkBox);
@@ -304,7 +304,7 @@ void YardmasterByTrackPanel::common()
                     if (car->getTrack() == _track &&
                             car->getRouteDestination() != car->getRouteLocation() &&
                             car->getRouteDestination() == rl) {
-                     car->addPropertyChangeListener(this);
+                     car->PropertyChangeSupport::addPropertyChangeListener(this);
                         rollingStock.append(car);
                         QString text;
                         if (car->isUtility()) {
@@ -340,7 +340,7 @@ void YardmasterByTrackPanel::common()
             for (Car* car : *carList) {
                 if (car->getDestinationTrack() == _track &&
                         car->getRouteLocation() != car->getRouteDestination()) {
-                 car->addPropertyChangeListener(this);
+                 car->PropertyChangeSupport::addPropertyChangeListener(this);
                     rollingStock.append(car);
                     QString text;
                     if (car->isUtility()) {
@@ -374,7 +374,7 @@ void YardmasterByTrackPanel::common()
             for (Car* car : *carList) {
                 if ((car->getTrack() == _track || car->getDestinationTrack() == _track) &&
                         car->getRouteLocation() != NULL && car->getRouteLocation() == car->getRouteDestination()) {
-                 car->addPropertyChangeListener(this);
+                 car->PropertyChangeSupport::addPropertyChangeListener(this);
                     rollingStock.append(car);
                     QString text;
                     if (car->isUtility()) {

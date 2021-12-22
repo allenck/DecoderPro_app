@@ -727,7 +727,7 @@ bool SignalHeadItem::isSensorIncluded(Sensor* pSensor)
 }
 
 /*public*/ /*synchronized*/ void DefaultSignalGroup::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*public*/ /*synchronized*/ void DefaultSignalGroup::removePropertyChangeListener(PropertyChangeListener* l) {

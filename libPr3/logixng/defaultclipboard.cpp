@@ -5,21 +5,20 @@
  *
  * @author Daniel Bergqvist (C) 2020
  */
-/*public*/ class DefaultClipboard extends AbstractBase implements Clipboard {
+///*public*/ class DefaultClipboard extends AbstractBase implements Clipboard {
 
-    /*private*/ ClipboardMany _clipboardItems = new ClipboardMany("", null);
 
-    private final FemaleAnySocket _femaleSocket = new DefaultFemaleAnySocket(this, new FemaleSocketListener() {
-        //@Override
-        /*public*/ void connected(FemaleSocket socket) {
-            // Do nothing
-        }
+//    /*private*/ /*final*/ FemaleAnySocket* _femaleSocket = new DefaultFemaleAnySocket(this, new FemaleSocketListener(),"A") ;
+//        //@Override
+//        /*public*/ void connected(FemaleSocket socket) {
+//            // Do nothing
+//        }
 
-        //@Override
-        /*public*/ void disconnected(FemaleSocket socket) {
-            // Do nothing
-        }
-    }, "A");
+//        //@Override
+//        /*public*/ void disconnected(FemaleSocket socket) {
+//            // Do nothing
+//        }
+//    }, "A");
 
 
     /*public*/ DefaultClipboard() {

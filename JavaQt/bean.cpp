@@ -39,7 +39,7 @@
  */
 //@Override
 /*public*/ void Bean::addPropertyChangeListener(PropertyChangeListener* listener) {
-    propertyChangeSupport->addPropertyChangeListener(listener);
+    propertyChangeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /**
@@ -50,7 +50,7 @@
  */
 //@Override
 /*public*/ void Bean::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    propertyChangeSupport->addPropertyChangeListener(propertyName, listener);
+    propertyChangeSupport->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 /**

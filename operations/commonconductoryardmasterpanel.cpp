@@ -427,7 +427,7 @@ namespace Operations
           locoPaneFrame->setVisible(true);
              pPickupLocos->setVisible(true);
              rollingStock.append(engine);
-             engine->addPropertyChangeListener(this);
+             engine->PropertyChangeSupport::addPropertyChangeListener(this);
              QCheckBox* checkBox = new QCheckBox(trainCommon->pickupEngine(engine));
              setCheckBoxFont(checkBox);
              pPickupLocos->layout()->addWidget(checkBox);
@@ -437,7 +437,7 @@ namespace Operations
              locoPaneFrame->setVisible(true);
              pSetoutLocos->setVisible(true);
              rollingStock.append(engine);
-             engine->addPropertyChangeListener(this);
+             engine->PropertyChangeSupport::addPropertyChangeListener(this);
              QCheckBox* checkBox = new QCheckBox(trainCommon->dropEngine(engine));
              setCheckBoxFont(checkBox);
              pSetoutLocos->layout()->addWidget(checkBox);
@@ -498,7 +498,7 @@ namespace Operations
       if (!rollingStock.contains(car))
       {
           rollingStock.append(car);
-          car->addPropertyChangeListener(this);
+          car->PropertyChangeSupport::addPropertyChangeListener(this);
       }
       // did we already process this car?
       if (checkBoxes.contains("p" + car->getId()))
@@ -555,7 +555,7 @@ namespace Operations
         setoutPaneFrame->setVisible(true);
         if (!rollingStock.contains(car)) {
             rollingStock.append(car);
-            car->addPropertyChangeListener(this);
+            car->PropertyChangeSupport::addPropertyChangeListener(this);
         }
         if (checkBoxes.contains("s" + car->getId())) {
             if (isSetMode && !checkBoxes.value("s" + car->getId())->isChecked()) {

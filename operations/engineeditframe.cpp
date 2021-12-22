@@ -288,8 +288,8 @@ namespace Operations
 
  //@Override
  /*protected*/ void EngineEditFrame::addPropertyChangeListeners() {
-     engineModels->addPropertyChangeListener(this);
-     engineManager->addPropertyChangeListener(this);
+     engineModels->PropertyChangeSupport::addPropertyChangeListener(this);
+     engineManager->PropertyChangeSupport::addPropertyChangeListener(this);
      RollingStockEditFrame::addPropertyChangeListeners();
  }
 

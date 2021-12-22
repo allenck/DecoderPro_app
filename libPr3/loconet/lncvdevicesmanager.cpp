@@ -209,7 +209,7 @@
 
 ///*public*/ void LncvDevicesManager::addPropertyChangeListener(PropertyChangeListener* l)
 //{
-// pcs->addPropertyChangeListener(l);
+// pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 //}
 
 ///*public*/ void LncvDevicesManager::removePropertyChangeListener(PropertyChangeListener* l){

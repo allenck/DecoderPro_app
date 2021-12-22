@@ -84,6 +84,7 @@ class LNGTimerActionListener: public QObject, public ActionListener
   ThreadAction* ta;
  public:
   LNGTimerActionListener(ThreadAction* ta, LogixNG_Thread* thr) {this->ta = ta; this->thr = thr;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
   void actionPerformed(JActionEvent */*e*/ = 0)override
   {

@@ -66,7 +66,7 @@ LocoIOPanel::LocoIOPanel(QWidget *parent) :
  table->resizeColumnsToContents();
  //scroll = new JScrollPane(table);
 
- //data->addPropertyChangeListener(this);
+ //data->PropertyChangeSupport::addPropertyChangeListener(this);
  connect(data, SIGNAL(notifyPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)

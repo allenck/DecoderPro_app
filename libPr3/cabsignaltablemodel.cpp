@@ -206,7 +206,7 @@ CabSignalTableModel::CabSignalTableModel(int /*row*/, int /*column*/, QObject */
     Block* b;
     switch (col) {
         case LOCO_ID_COLUMN:
-//                cabSignalManager->getCabSignalArray()[row]->addPropertyChangeListener( (PropertyChangeEvent e) -> {
+//                cabSignalManager->getCabSignalArray()[row]->PropertyChangeSupport::addPropertyChangeListener( (PropertyChangeEvent e) -> {
 //                   if(e.getSource() instanceof jmri.CabSignal){
 //                      fireTableDataChanged();
 //                   }

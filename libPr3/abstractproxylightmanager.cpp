@@ -140,12 +140,12 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  //propertyVetoListenerList.stream().forEach((l) ->
  foreach(VetoableChangeListener* l, propertyVetoListenerList)
  {
-     ((AbstractManager*)m->self())->addVetoableChangeListener(l);
+     ((AbstractProxyLightManager*)m->self())->addVetoableChangeListener(l);
  }//);
  //propertyListenerList.stream().forEach((l) ->
  foreach(PropertyChangeListener* l, propertyListenerList)
  {
-     ((AbstractManager*)m->self())->addPropertyChangeListener(l);
+     ((AbstractProxyLightManager*)m->self())->PropertyChangeSupport::addPropertyChangeListener(l);
  }//);
  //namedPropertyVetoListenerMap.entrySet().forEach((e) ->
  QMapIterator<QString, QVector<VetoableChangeListener*>*> e(namedPropertyVetoListenerMap);
@@ -155,7 +155,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 //     e.getValue().forEach((l) ->
   foreach(VetoableChangeListener* l, *e.value())
   {
-      ((AbstractManager*)m->self())->addVetoableChangeListener(e.key(), l);
+      ((AbstractProxyLightManager*)m->self())->addVetoableChangeListener(e.key(), l);
   }//);
  }//);
  //namedPropertyListenerMap.entrySet().forEach((e) ->
@@ -166,7 +166,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
      //e.getValue().forEach((l) ->
   foreach(PropertyChangeListener* l, *e1.value())
      {
-         ((AbstractManager*)m->self())->addPropertyChangeListener(e1.key(), l);
+         ((AbstractProxyLightManager*)m->self())->PropertyChangeSupport::addPropertyChangeListener(e1.key(), l);
      }//);
  }//);
 
@@ -437,11 +437,11 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 // if (!propertyListenerList.contains(l)) {
 //     propertyListenerList.append(l);
 // }
- AbstractManager::addPropertyChangeListener(l);
+ PropertyChangeSupport::addPropertyChangeListener(l);
  for (int i = 0; i<nMgrs(); i++)
  {
   Manager* mgr = getMgr(i);
-  ((AbstractManager*)mgr->self())->addPropertyChangeListener(l);
+  ((AbstractProxyLightManager*)mgr->self())->PropertyChangeSupport::addPropertyChangeListener(l);
   //connect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
@@ -450,11 +450,11 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 // if (propertyListenerList.contains(l)) {
 //     propertyListenerList.removeOne(l);
 // }
- AbstractManager::removePropertyChangeListener(l);
+ PropertyChangeSupport::removePropertyChangeListener(l);
  for (int i = 0; i<nMgrs(); i++)
  {
   Manager* mgr = getMgr(i);
-  //mgr->addPropertyChangeListener(l);
+  //mgr->PropertyChangeSupport::addPropertyChangeListener(l);
   //disconnect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
@@ -469,10 +469,10 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 //    if (!namedPropertyListenerMap.value(propertyName)->contains(listener)) {
 //        namedPropertyListenerMap.value(propertyName)->append(listener);
 //    }
- AbstractManager::addPropertyChangeListener(propertyName, listener);
+ PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
  boundPropertyNames.append(propertyName);
     for (Manager/*<E>*/* m : mgrs) {
-        ((AbstractManager*)m->self())->addPropertyChangeListener(propertyName, listener);
+        ((AbstractProxyLightManager*)m->self())->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
     }
 }
 
@@ -508,9 +508,9 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
 //        namedPropertyListenerMap.insert(propertyName, new QVector<PropertyChangeListener*>());
 //    }
 //    namedPropertyListenerMap.value(propertyName)->removeOne(listener);
- AbstractManager::removePropertyChangeListener(propertyName, listener);
+ removePropertyChangeListener(propertyName, listener);
     for (Manager/*<E>*/* m : mgrs) {
-        ((AbstractManager*)m->self())->removePropertyChangeListener(propertyName, listener);
+        ((AbstractProxyLightManager*)m->self())->removePropertyChangeListener(propertyName, listener);
     }
 }
 
@@ -705,10 +705,10 @@ bool sortLessThanconst1( NamedBean* s1,  NamedBean* s2)
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void AbstractProxyLightManager::addVetoableChangeListener(VetoableChangeListener* listener) {
- AbstractManager::addVetoableChangeListener(listener);
+ addVetoableChangeListener(listener);
  foreach(Manager* m, mgrs)
  {
-  ((AbstractManager*)m->self())->addVetoableChangeListener(listener);
+  ((AbstractProxyLightManager*)m->self())->addVetoableChangeListener(listener);
  }
 }
 
@@ -716,10 +716,10 @@ bool sortLessThanconst1( NamedBean* s1,  NamedBean* s2)
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void AbstractProxyLightManager::removeVetoableChangeListener(VetoableChangeListener* listener) {
- AbstractManager::removeVetoableChangeListener(listener);
+ removeVetoableChangeListener(listener);
  foreach(Manager* m, mgrs)
  {
-  ((AbstractManager*)m->self())->removeVetoableChangeListener(listener);
+  ((AbstractProxyLightManager*)m->self())->removeVetoableChangeListener(listener);
  }
 }
 
@@ -727,10 +727,10 @@ bool sortLessThanconst1( NamedBean* s1,  NamedBean* s2)
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ void AbstractProxyLightManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
- AbstractManager::addVetoableChangeListener(propertyName, listener);
+ addVetoableChangeListener(propertyName, listener);
  foreach(Manager* m, mgrs)
  {
-  ((AbstractManager*)m->self())->addVetoableChangeListener(propertyName, listener);
+  ((AbstractProxyLightManager*)m->self())->addVetoableChangeListener(propertyName, listener);
  }
 }
 
@@ -738,10 +738,10 @@ bool sortLessThanconst1( NamedBean* s1,  NamedBean* s2)
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ void AbstractProxyLightManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    AbstractManager::removeVetoableChangeListener(propertyName, listener);
+    removeVetoableChangeListener(propertyName, listener);
     foreach(Manager* m, mgrs)
     {
-     ((AbstractManager*)m->self())->removeVetoableChangeListener(propertyName, listener);
+     ((AbstractProxyLightManager*)m->self())->removeVetoableChangeListener(propertyName, listener);
     }
 }
 

@@ -625,7 +625,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 }
 
 /*protected*/ void AbstractTurnout::operationPropertyChange(PropertyChangeEvent* evt) {
-    if ((TurnoutOperation*)evt->getSource() == myTurnoutOperation)
+    if ((PropertyChangeSupport*)evt->getSource() == myTurnoutOperation)
     {
         if (((TurnoutOperation*) evt->getSource())->isDeleted()) {
             setTurnoutOperation(NULL);

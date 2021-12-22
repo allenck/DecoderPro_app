@@ -39,7 +39,7 @@
  setProperty("JavaClassName", "jmri.managers.ManagerDefaultSelector");
 
  memoListener = new MemoListener(this);
- //SystemConnectionMemoManager::getDefault()->addPropertyChangeListener((PropertyChangeListener*)this);
+ //SystemConnectionMemoManager::getDefault()->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
  defaults = QMap<QString, QString>();
  // Define set of items that we remember defaults for, manually maintained because
@@ -89,7 +89,7 @@
   if(qobject_cast<SystemConnectionMemo*>(VPtr<QObject>::asPtr(e->getNewValue())))
   {
    SystemConnectionMemo* memo = VPtr<SystemConnectionMemo>::asPtr( e->getNewValue());
-   //memo->addPropertyChangeListener(this->memoListener);
+   //memo->PropertyChangeSupport::addPropertyChangeListener(this->memoListener);
    connect((DefaultSystemConnectionMemo*)memo->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    // check for special case of anything else then Internal
    QObjectList* list = InstanceManager::getList("SystemConnectionMemo");

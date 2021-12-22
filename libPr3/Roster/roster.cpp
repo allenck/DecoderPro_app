@@ -1195,11 +1195,11 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
 //@Override
 /*public*/ /*synchronized*/ void Roster::addPropertyChangeListener(PropertyChangeListener* l)
 {
-    pcs->addPropertyChangeListener(l);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*public*/ /*synchronized*/ void Roster::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 /*protected*/ void Roster::firePropertyChange(QString p, QVariant old, QVariant n) {

@@ -514,7 +514,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         //prefixBox.addActionListener((evt) -> hardwareAddressValidator.setManager(prefixBox.getSelectedItem()));
         connect(prefixBox, &ManagerComboBox::currentIndexChanged, [=]{hardwareAddressValidator->setManager(prefixBox->getSelectedItem());});
 #if 0
-        hardwareAddressValidator->addPropertyChangeListener("validation", /*(evt) ->*/&SystemNameValidator::prop
+        hardwareAddressValidator->PropertyChangeSupport::addPropertyChangeListener("validation", /*(evt) ->*/&SystemNameValidator::prop
         { // NOI18N
             Validation* validation = hardwareAddressValidator->getValidation();
             Validation::Type type = validation.getType();

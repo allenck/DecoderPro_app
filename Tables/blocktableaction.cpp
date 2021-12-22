@@ -107,7 +107,7 @@ BlockTableAction::BlockTableAction(QObject *parent) :
  beanTypeChar = 'S'; // for Sensor
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";
- ((BlockManager*)InstanceManager::getDefault("BlockManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
+ ((BlockManager*)InstanceManager::getDefault("BlockManager"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
 
  loadIcons();
@@ -680,8 +680,8 @@ BlockTableAction::BlockTableAction(QObject *parent) :
  setColumnToHoldButton(table, EDITCOL);
  setColumnToHoldButton(table, DELETECOL);
 
- InstanceManager::sensorManagerInstance()->addPropertyChangeListener(/*QPointer<PropertyChangeListener>*/((PropertyChangeListener*)this));
- ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
+ InstanceManager::sensorManagerInstance()->PropertyChangeSupport::addPropertyChangeListener(/*QPointer<PropertyChangeListener>*/((PropertyChangeListener*)this));
+ ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  configStateColumn(table);
  BeanTableDataModel::configureTable(table);
 }

@@ -8,7 +8,7 @@
 ///*public*/ class RequestedDirectionObserved {
 
     /*public*/ RequestedDirectionObserved::RequestedDirectionObserved(QObject* parent) : QObject(parent) { _mRequestedDirection = CTCConstants::OUTOFCORRESPONDENCE; }    // Obviously nothing could have registered with us YET!
-    /*public*/ void RequestedDirectionObserved::addPropertyChangeListener(PropertyChangeListener* pcl) { _mPropertyChangeSupport->addPropertyChangeListener(pcl); }
+    /*public*/ void RequestedDirectionObserved::addPropertyChangeListener(PropertyChangeListener* pcl) { _mPropertyChangeSupport->PropertyChangeSupport::addPropertyChangeListener(pcl); }
     /*public*/ void RequestedDirectionObserved::removePropertyChangeListener(PropertyChangeListener* pcl) { _mPropertyChangeSupport->removePropertyChangeListener(pcl); }
     /*public*/ void RequestedDirectionObserved::setRequestedDirection(int newRequestedDirection) {
         _mRequestedDirection = newRequestedDirection;   // In case user directly asks us instead of using the following values:

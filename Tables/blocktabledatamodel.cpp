@@ -510,8 +510,8 @@ QVariant BlockTableDataModel::data(const QModelIndex &index, int role) const
 
 //@Override
 /*public*/ void BlockTableDataModel::configureTable(JTable* table) {
-    InstanceManager::sensorManagerInstance()->addPropertyChangeListener(this);
-    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addPropertyChangeListener(this);
+    InstanceManager::sensorManagerInstance()->PropertyChangeSupport::addPropertyChangeListener(this);
+    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->PropertyChangeSupport::addPropertyChangeListener(this);
     configStateColumn(table);
     configureColumnDelegates(table);
     BeanTableDataModel::configureTable(table);
@@ -663,8 +663,8 @@ void BlockTableDataModel::editButton(Block* b) {
 
 //@Override
 /*synchronized*/ /*public*/ void BlockTableDataModel::dispose() {
-    ((SensorManager*)InstanceManager::getDefault("SensorManager"))->removePropertyChangeListener(this);
-    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->removePropertyChangeListener(this);
+    ((SensorManager*)InstanceManager::getDefault("SensorManager"))->PropertyChangeSupport::removePropertyChangeListener(this);
+    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->PropertyChangeSupport::removePropertyChangeListener(this);
     BeanTableDataModel::dispose();
 }
 

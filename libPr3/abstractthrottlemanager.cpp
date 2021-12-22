@@ -453,7 +453,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
          if (ads != nullptr && p->value(i)->getRosterEntry() != nullptr && throttle->getRosterEntry() == nullptr) {
              throttle->setRosterEntry(p->at(i)->getRosterEntry());
          }
-         throttle->addPropertyChangeListener(l);
+         ((AbstractThrottle*)throttle)->addPropertyChangeListener(l);
      }
      listenerOnly->remove(addr->hashCode());
  }
@@ -556,7 +556,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 
  if (addressThrottles->contains(la->hashCode()))
  {
-  addressThrottles->value(la->hashCode())->getThrottle()->addPropertyChangeListener(p);
+  ((AbstractThrottle*)addressThrottles->value(la->hashCode())->getThrottle())->addPropertyChangeListener(p);
   p->propertyChange(new PropertyChangeEvent(this, "throttleAssigned", NULL, la));
   return;
  }
@@ -583,7 +583,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
 #if 1 // TODO:
  if (addressThrottles->contains(la->hashCode()))
  {
-  addressThrottles->value(la->hashCode())->getThrottle()->removePropertyChangeListener(p);
+  ((AbstractThrottle*)addressThrottles->value(la->hashCode())->getThrottle())->removePropertyChangeListener(p);
   p->propertyChange(new PropertyChangeEvent(this, "throttleRemoved", la, NULL));
   return;
  }
@@ -818,7 +818,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    foreach (PropertyChangeListener* prop , *v)
    {
     if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
-     ((LocoNetThrottle*)this->throttle)->addPropertyChangeListener(prop);
+     ((LocoNetThrottle*)this->throttle)->PropertyChangeSupport::addPropertyChangeListener(prop);
 #if 1 //TODO:
      prop->propertyChange(new PropertyChangeEvent((QObject*)this, "throttleAssignmentChanged", QString(""), VPtr<DccLocoAddress>::asQVariant(la)));
 #endif

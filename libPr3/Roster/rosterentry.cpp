@@ -1429,7 +1429,7 @@ if (!(_decoderFamily==("")))
 {
  QMutexLocker locker(&mutex);
  if (pcs == NULL) pcs = new PropertyChangeSupport(this);
- pcs->addPropertyChangeListener(l);
+ pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*protected*/ /*synchronized*/ void RosterEntry::firePropertyChange(QString p, QVariant old, QVariant n)

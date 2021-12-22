@@ -836,7 +836,7 @@ static class DisposeOnClose extends ComponentAdapter implements Serializable{
 
 void JColorChooser::addPropertyChangeListener(QString propertyName, PropertyChangeListener *listener)
 {
- pcs->addPropertyChangeListener(propertyName, listener);
+ pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 void JColorChooser::removePropertyChangeListener(QString propertyName, PropertyChangeListener *listener)

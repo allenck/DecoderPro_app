@@ -34,7 +34,7 @@ AutomatSummary* AutomatSummary::self = NULL;
 }
 
 /*public*/ void AutomatSummary::removePropertyChangeListener(PropertyChangeListener* p) { prop->removePropertyChangeListener(p); }
-/*public*/ void AutomatSummary::addPropertyChangeListener(PropertyChangeListener* p) { prop->addPropertyChangeListener(p); }
+/*public*/ void AutomatSummary::addPropertyChangeListener(PropertyChangeListener* p) { prop->PropertyChangeSupport::addPropertyChangeListener(p); }
 
 /**
  * A newly-created AbstractAutomaton instance uses this method to

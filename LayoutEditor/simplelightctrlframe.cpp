@@ -332,7 +332,7 @@ JmriJFrame(parent)
      if (light == NULL) {
          log->error(tr("Light name invalid: ") + adrTextField->text());
      } else {
-         light->addPropertyChangeListener((PropertyChangeListener*)this);
+         light->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
          //connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          if (log->isDebugEnabled()) {
              log->debug("about to command CLOSED");
@@ -380,7 +380,7 @@ JmriJFrame(parent)
   }
   else
   {
-   light->addPropertyChangeListener((PropertyChangeListener*)this);
+   light->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 //   connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    if (log->isDebugEnabled())
    {
@@ -524,7 +524,7 @@ JmriJFrame(parent)
 //				log->error("Light " + adrTextField.text()
 //						+ " is not available");
 //			} else {
-//				light->addPropertyChangeListener(this);
+//				light->PropertyChangeSupport::addPropertyChangeListener(this);
 //
 //			}
 //		} catch (Exception ex) {
@@ -545,7 +545,7 @@ JmriJFrame(parent)
 //				log->error("Light " + adrTextField.text()
 //						+ " is not available");
 //			} else {
-//				light->addPropertyChangeListener(this);
+//				light->PropertyChangeSupport::addPropertyChangeListener(this);
 //
 //			}
 //		} catch (Exception ex) {

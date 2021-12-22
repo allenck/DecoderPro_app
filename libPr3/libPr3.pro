@@ -1184,6 +1184,7 @@ HEADERS += \
     language.h \
     locoaddress.h \
     dcclocoaddress.h \
+ silenceablepropertychangeprovider.h \
     slotmanager.h \
     abstractprogrammer.h \
     programmer.h \

@@ -24,15 +24,15 @@ BlockManager::BlockManager(QObject *parent) :
  defaultSpeed = "Normal";
  paddedNumber = new DecimalFormat("0000");
 
- static_cast<SensorManager*>(InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ static_cast<SensorManager*>(InstanceManager::getDefault("SensorManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
 
-static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  //InstanceManager.getList(PowerManager.class).forEach((pm) -> {
  foreach(QObject* pm, *InstanceManager::getList("PowerManager"))
  {
-     //static_cast<PowerManager*>(pm)->addPropertyChangeListener(this);
+     //static_cast<PowerManager*>(pm)->PropertyChangeSupport::addPropertyChangeListener(this);
   //connect(static_cast<PowerManager*>(pm)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }//);
  powerManagerChangeName = InstanceManager::getListPropertyName("PowerManager");

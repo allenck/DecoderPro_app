@@ -55,7 +55,7 @@ namespace Operations
    _location = location;
    _id = id;
    // listen for name change or delete
-   location->addPropertyChangeListener(this);
+   location->PropertyChangeSupport::addPropertyChangeListener(this);
 
  }
  void RouteLocation::common()
@@ -472,13 +472,13 @@ namespace Operations
          _location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a);
          if (_location != NULL)
          {
-          _location->addPropertyChangeListener(this);
+          _location->PropertyChangeSupport::addPropertyChangeListener(this);
          }
      } // old way of storing a route location
      else if ((a = e.attribute (Xml::NAME)) != NULL) {
          _location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(a);
          if (_location != NULL) {
-          _location->addPropertyChangeListener(this);
+          _location->PropertyChangeSupport::addPropertyChangeListener(this);
          }
          // force rewrite of route file
          ((RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);

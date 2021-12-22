@@ -719,7 +719,7 @@ FunctionPanel::~FunctionPanel()
   log->debug("Throttle found");
  mThrottle = t;
  setEnabled(true);
- //mThrottle->addPropertyChangeListener(this);
+ //mThrottle->PropertyChangeSupport::addPropertyChangeListener(this);
  AbstractThrottle* at = (AbstractThrottle*)t;
  connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  setFnButtons();

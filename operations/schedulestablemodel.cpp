@@ -397,7 +397,7 @@ namespace Operations
  /*private*/ void SchedulesTableModel::addPropertyChangeTracks() {
      // only spurs have schedules
      foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getTracks(Track::SPUR)) {
-         track->addPropertyChangeListener(this);
+         track->PropertyChangeSupport::addPropertyChangeListener(this);
      }
 
  }

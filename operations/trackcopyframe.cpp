@@ -119,7 +119,7 @@ namespace Operations
 
      if (_location != NULL) {
          setTitle(tr("Copy Track to (%1)").arg(_location->getName()));
-         _location->addPropertyChangeListener(this);
+         _location->PropertyChangeSupport::addPropertyChangeListener(this);
      } else {
          copyButton->setEnabled(false);
      }

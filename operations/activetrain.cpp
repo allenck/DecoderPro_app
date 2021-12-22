@@ -1085,7 +1085,7 @@
 
 
 /*public*/ /*synchronized*/ void ActiveTrain::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 #endif
 /*protected*/ void ActiveTrain::firePropertyChange(QString p, QVariant old, QVariant n) {

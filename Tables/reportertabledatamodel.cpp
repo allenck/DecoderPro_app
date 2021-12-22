@@ -49,7 +49,7 @@
         if (!(qobject_cast<ReporterManager*>(rm))) {
             return;
         }
-        getManager()->removePropertyChangeListener(this);
+        getManager()->PropertyChangeSupport::removePropertyChangeListener(this);
         if (!sysNameList.isEmpty()) {
             for (int i = 0; i < sysNameList.size(); i++) {
                 // if object has been deleted, it's not here; ignore it
@@ -60,7 +60,7 @@
             }
         }
         reporterManager = (ReporterManager*) rm;
-        getManager()->addPropertyChangeListener(this);
+        getManager()->PropertyChangeSupport::addPropertyChangeListener(this);
         updateNameList();
     }
 

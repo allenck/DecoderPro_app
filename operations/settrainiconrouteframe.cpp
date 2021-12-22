@@ -257,7 +257,7 @@ namespace Operations
          _rl = _routeList->at(_routeIndex);
      }
      if (_rl != NULL) {
-         //_rl->addPropertyChangeListener(this);
+         //_rl->PropertyChangeSupport::addPropertyChangeListener(this);
       connect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          loadSpinners(_rl);
          routeLocationName->setText(_rl->getName());
@@ -271,7 +271,7 @@ namespace Operations
       disconnect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          _rl->setTrainIconX( spinTrainIconX->value());
          _rl->setTrainIconY( spinTrainIconY->value());
-         //_rl->addPropertyChangeListener(this);
+         //_rl->PropertyChangeSupport::addPropertyChangeListener(this);
          connect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
  }

@@ -733,7 +733,7 @@ if (types.length() == 0) {
      setDirtyAndFirePropertyChange(TRACK_LISTLENGTH_CHANGED_PROPERTY, old, (_trackHashTable
              .size()));
      // listen for name and state changes to forward
-     //track->addPropertyChangeListener(this);
+     //track->PropertyChangeSupport::addPropertyChangeListener(this);
      connect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
@@ -1227,9 +1227,9 @@ if (types.length() == 0) {
  }
 
  /*private*/ void Location::addPropertyChangeListeners() {
-     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addPropertyChangeListener(this);
-     ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addPropertyChangeListener(this);
-     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->addPropertyChangeListener(this);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarRoads*)InstanceManager::getDefault("CarRoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  /**

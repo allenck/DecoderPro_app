@@ -61,7 +61,7 @@ QString AbstractProgrammer::decodeErrorCode(int code)
 //    if (!propListeners->contains(l)) {
 //        propListeners->append(l);
 //    }
- propertyChangeSupport->addPropertyChangeListener(listener);
+ propertyChangeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /*public synchronized*/ void AbstractProgrammer::removePropertyChangeListener(PropertyChangeListener* listener) {

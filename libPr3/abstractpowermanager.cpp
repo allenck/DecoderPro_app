@@ -18,7 +18,7 @@ QString AbstractPowerManager::getUserName() { return userName; }
 void AbstractPowerManager::addPropertyChangeListener(PropertyChangeListener* l)
 {
  QMutexLocker locker(&mutex);
- pcs->addPropertyChangeListener(l);
+ pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 void AbstractPowerManager::firePropertyChange(QString p, QVariant old, QVariant n)
 {  pcs->firePropertyChange(p,old,n);}

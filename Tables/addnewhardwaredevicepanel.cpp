@@ -113,7 +113,7 @@
          sysAddressValidator->setManager(manager);
      }
  });
- //sysAddressValidator->addPropertyChangeListener("validation", (evt) -> { // NOI18N
+ //sysAddressValidator->PropertyChangeSupport::addPropertyChangeListener("validation", (evt) -> { // NOI18N
 #if 0
  connect(sysAddressValidator, &SystemNameValidator::propertyChange(PropertyChangeEvent*), [=] {
      Validation validation = sysAddressValidator.getValidation();

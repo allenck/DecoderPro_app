@@ -7,6 +7,7 @@
 #include "oblock.h"
 #include "instancemanager.h"
 #include "signalspeedmap.h"
+#include "abstractthrottle.h"
 
 /**
  * A JInternalFrame that contains a JSlider to control loco speed, and buttons
@@ -54,7 +55,7 @@
         _throttle = t;
         _warrant->getSpeedUtil()->setIsForward(_throttle->getIsForward());
 
-        _throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+        ((AbstractThrottle*)_throttle)->addPropertyChangeListener((PropertyChangeListener*)this);
         if (log->isDebugEnabled()) {
             DccLocoAddress* Address = (DccLocoAddress*) _throttle->getLocoAddress();
             log->debug(tr("new address is %1").arg(Address->toString()));
@@ -114,7 +115,7 @@
      */
     /*public*/ void LearnSpeedPanel::destroy() {
         if (_throttle != nullptr) {
-            _throttle->removePropertyChangeListener((PropertyChangeListener*)this);
+            ((AbstractThrottle*)_throttle)->removePropertyChangeListener((PropertyChangeListener*)this);
             if (log->isDebugEnabled()) {
                 DccLocoAddress* Address = (DccLocoAddress*) _throttle->getLocoAddress();
                 log->debug(tr("Address %1 destroyed").arg(Address->toString()));

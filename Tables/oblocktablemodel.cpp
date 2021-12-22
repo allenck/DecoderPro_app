@@ -60,7 +60,7 @@
  _tabbed = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed();
  if (_tabbed) {
      _manager = ((OBlockManager*)InstanceManager::getDefault("OBlockManager")); // TODO also for _desktop?
-     _manager->addPropertyChangeListener((PropertyChangeListener*)this);
+     _manager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  }
  updateNameList();
  initTempRow();

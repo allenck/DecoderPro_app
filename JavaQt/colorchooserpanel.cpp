@@ -183,7 +183,7 @@ ColorChooserPanel::ColorChooserPanel()
    setLayout(new QVBoxLayout());
    this->layout()->addWidget(dialog);
 //  this->label->setLabelFor(this->text);
-//        this->text->addPropertyChangeListener("value", this); // NON-NLS: the property name
+//        this->text->PropertyChangeSupport::addPropertyChangeListener("value", this); // NON-NLS: the property name
 //        this->slider.setBorder(this->text.getBorder());
 //        this->diagram.setBorder(this->text.getBorder());
 

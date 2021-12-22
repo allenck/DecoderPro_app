@@ -462,7 +462,7 @@ namespace Operations
                  _rs->getRoadName() != (roadComboBox->getSelectedItem()) ||
                  _rs->getNumber() != (roadNumberTextField->text())) {
              _rs = manager->newRS(/*(String)*/ roadComboBox->getSelectedItem(), roadNumberTextField ->text());
-             _rs->addPropertyChangeListener(this);
+             _rs->PropertyChangeSupport::addPropertyChangeListener(this);
          }
          // engine model must be set before type, length, weight and HP
          if (qobject_cast<Engine*>(_rs) && modelComboBox->getSelectedItem() != nullptr) {
@@ -565,11 +565,11 @@ namespace Operations
      }
 
      /*protected*/ void RollingStockEditFrame::addPropertyChangeListeners() {
-         ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addPropertyChangeListener(this);
-         getTypeManager()->addPropertyChangeListener(this);
-         getLengthManager()->addPropertyChangeListener(this);
-         ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addPropertyChangeListener(this);
-         locationManager->addPropertyChangeListener(this);
+         ((CarRoads*)InstanceManager::getDefault("CarRoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
+         getTypeManager()->PropertyChangeSupport::addPropertyChangeListener(this);
+         getLengthManager()->PropertyChangeSupport::addPropertyChangeListener(this);
+         ((CarOwners*)InstanceManager::getDefault("CarOwners"))->PropertyChangeSupport::addPropertyChangeListener(this);
+         locationManager->PropertyChangeSupport::addPropertyChangeListener(this);
      }
 
      /*protected*/ void RollingStockEditFrame::removePropertyChangeListeners() {

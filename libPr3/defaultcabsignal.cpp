@@ -226,7 +226,7 @@
         if ( _nextMast != nullptr)
         {
             // add signal changelistener
-//                _nextMast->addPropertyChangeListener(_cconSignalMastListener = (PropertyChangeEvent e) -> {
+//                _nextMast->PropertyChangeSupport::addPropertyChangeListener(_cconSignalMastListener = (PropertyChangeEvent e) -> {
             // aspect changed?, need to notify
 //                firePropertyChange("MastChanged",e.getNewValue(),e.getOldValue());
 //                forwardCabSignalToLayout();
@@ -343,7 +343,7 @@
  */
 //@Override
 /*public*/ /*synchronized*/ void DefaultCabSignal::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /**
@@ -383,7 +383,7 @@
    }
    if(qobject_cast<SignalMast*>(event->getSource()))
    {
-    //_nextMast->addPropertyChangeListener(_cconSignalMastListener = (PropertyChangeEvent e) -> {
+    //_nextMast->PropertyChangeSupport::addPropertyChangeListener(_cconSignalMastListener = (PropertyChangeEvent e) -> {
     // aspect changed?, need to notify
     firePropertyChange("MastChanged",event->getNewValue(),event->getOldValue());
     forwardCabSignalToLayout();

@@ -26,7 +26,7 @@
      */
     /*public*/ DefaultVariableLightManager* DefaultVariableLightManager::init() {
         LightManager* lm = (LightManager*)InstanceManager::getDefault("LightManager");
-        lm->addPropertyChangeListener("beans", this);
+       PropertyChangeSupport::addPropertyChangeListener("beans", this);
         for (NamedBean* nb : lm->getNamedBeanSet()) {
          Light* l = (Light*)nb;
             if (qobject_cast<VariableLight*>(l->self())) {

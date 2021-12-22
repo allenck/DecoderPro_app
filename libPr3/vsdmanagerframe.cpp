@@ -130,7 +130,7 @@
   JmriJFrame(false, false, parent) {
     //super(false, false);
     config = new VSDConfig();
-    //this->addPropertyChangeListener((PropertyChangeListener*)VSDecoderManager::instance());
+    //this->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)VSDecoderManager::instance());
     connect(VSDecoderManager::instance(), SIGNAL(fireEvent(VSDManagerEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     log = new Logger("VSDManagerFrame");
     initGUI();
@@ -291,7 +291,7 @@
  // create a new one.
  VSDControl* newControl = new VSDControl(config);
  // Set the Decoder to listen to PropertyChanges from the control
-// TODO:        newControl->addPropertyChangeListener(newDecoder);
+// TODO:        newControl->PropertyChangeSupport::addPropertyChangeListener(newDecoder);
  this->addPropertyChangeListener((PropertyChangeListener*)newDecoder);
  // Set US to listen to PropertyChanges from the control (mainly for DELETE)
 //        newControl.addPropertyChangeListener(new PropertyChangeListener() {

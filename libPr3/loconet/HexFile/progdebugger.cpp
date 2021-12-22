@@ -336,7 +336,7 @@ void ProgDebugger::PDRunnable3::run()
  * @param listener The PropertyChangeListener to be added
  */
 /*public*/ void ProgDebugger::addPropertyChangeListener(PropertyChangeListener* listener) {
-    propertyChangeSupport->addPropertyChangeListener(listener);
+    propertyChangeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /*public*/ void ProgDebugger::removePropertyChangeListener(PropertyChangeListener* listener) {

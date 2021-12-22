@@ -69,7 +69,7 @@ void SensorTableDataModel::common()
  else
  {
   mgr = static_cast<AbstractSensorManager*>(senManager);
-  mgr->removePropertyChangeListener((PropertyChangeListener*) this);
+  mgr->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*) this);
   //disconnect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
@@ -91,17 +91,17 @@ void SensorTableDataModel::common()
   }
  }
  senManager = (SensorManager*)manager;
-// getManager()->addPropertyChangeListener((PropertyChangeListener*)this);
+// getManager()->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 // //ProxySensorManager* mgr = (ProxySensorManager*)getManager();
 // connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  if(proxy != nullptr)
  {
-  proxy->addPropertyChangeListener((PropertyChangeListener*) this);
+  proxy->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*) this);
   //connect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if(mgr != nullptr)
  {
-  mgr->addPropertyChangeListener((PropertyChangeListener*) this);
+  mgr->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*) this);
   //connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(aMgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -148,7 +148,7 @@ void SensorTableDataModel::common()
   }
  }
  senManager = (SensorManager*)manager;
- ((AbstractManager*)getManager()->self())->addPropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractManager*)getManager()->self())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  //ProxySensorManager* mgr = (ProxySensorManager*)getManager();
  //connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  updateNameList();

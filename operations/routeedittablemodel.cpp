@@ -67,7 +67,7 @@ namespace Operations
   routeList = _route->getLocationsBySequenceList();
   // and add them back in
   foreach (RouteLocation* rl, *routeList) {
-      //rl->addPropertyChangeListener(this);
+      //rl->PropertyChangeSupport::addPropertyChangeListener(this);
    connect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
  }

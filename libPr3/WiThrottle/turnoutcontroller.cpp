@@ -129,7 +129,7 @@ void TurnoutController::handleMessage(QString message) {
         }
         list.append("}|{" + QString::number(t->getKnownState()));
         if (canBuildList) {
-           //->addPropertyChangeListener(this);
+           //->PropertyChangeSupport::addPropertyChangeListener(this);
          connect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         }
 

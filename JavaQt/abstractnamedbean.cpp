@@ -102,7 +102,7 @@ QString AbstractNamedBean::getDisplayName()
                                                                           const QString beanRef,
                                                                           QString listenerRef)
 {
- pcs->addPropertyChangeListener(l);
+ pcs->PropertyChangeSupport::addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
  if(beanRef!=NULL)
      _register->insert(l, beanRef);
@@ -118,7 +118,7 @@ QString AbstractNamedBean::getDisplayName()
                                                        QString beanRef, QString listenerRef)
 {
  //QPointer<PropertyChangeListener> listener = (PropertyChangeListener*)l->self();
-    pcs->addPropertyChangeListener(propertyName, /*listener*/l);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, /*listener*/l);
     if (beanRef != "") {
         _register->insert(l, beanRef);
     }
@@ -131,21 +131,21 @@ QString AbstractNamedBean::getDisplayName()
 //@OverridingMethodsMustInvokeSuper
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->addPropertyChangeListener(l);
+ pcs->PropertyChangeSupport::addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)), Qt::DirectConnection);
 }
 
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 ////@Override
 ////@OverridingMethodsMustInvokeSuper
 ///*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName,
 //                                                                              PropertyChangeListener* listener) {
-//    pcs->addPropertyChangeListener(propertyName, listener);
+//    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 //}
 
 /*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* listener)

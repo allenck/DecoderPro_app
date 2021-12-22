@@ -356,5 +356,5 @@ void PathTurnoutTableModel::fireTableRowsUpdated(int, int)
 }
 
 void PathTurnoutTableModel::dispose() {
-        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener((PropertyChangeListener*)this);
+        InstanceManager::turnoutManagerInstance()->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
 }

@@ -358,7 +358,7 @@ if (p == NULL) {
  if (primaryAddr==NULL) log->debug("DCC Address monitor didnt find a Short Address variable"); // NOI18N
  else 
  {
-  //primaryAddr->addPropertyChangeListener(dccNews);
+  //primaryAddr->PropertyChangeSupport::addPropertyChangeListener(dccNews);
   connect(primaryAddr->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  extendAddr = variableModel->findVar("Long Address"); // NOI18N

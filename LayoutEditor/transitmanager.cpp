@@ -51,7 +51,7 @@ TransitManager::TransitManager(QObject *parent) :
 //    }
 
 /*final*/ void TransitManager::addVetoListener(){
-        ((SectionManager*)InstanceManager::getDefault("SectionManager"))->addVetoableChangeListener(this);
+        ((SectionManager*)InstanceManager::getDefault("SectionManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
     } int TransitManager::getXMLOrder()const{
     return Manager::TRANSITS;
 }
@@ -217,7 +217,7 @@ Transit* TransitManager::createNewTransit(QString systemName, QString userName) 
 
 //@Override
 /*public*/ void TransitManager::dispose() {
-    ((SectionManager*)InstanceManager::getDefault("SectionManager"))->removeVetoableChangeListener(this);
+    ((SectionManager*)InstanceManager::getDefault("SectionManager"))->VetoableChangeSupport::removeVetoableChangeListener(this);
     AbstractManager::dispose();
 }
 

@@ -746,7 +746,7 @@ void SignalHeadIcon::updateSignal()
 
 void SignalHeadIcon::addPropertyChangeListener(PropertyChangeListener * /*l*/)
 {
- //pcs->addPropertyChangeListener(l);
+ //pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 
 }
 void SignalHeadIcon::removePropertyChangeListener(PropertyChangeListener */*l*/)

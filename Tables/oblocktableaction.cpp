@@ -43,14 +43,14 @@ void OBlockTableAction::common()
  */
 //@Override
 /*public*/ void OBlockTableAction::setManager(/*@Nonnull*/ Manager/*<OBlock>*/* om) {
-    oblockManager->removePropertyChangeListener((PropertyChangeListener*)this);
+    oblockManager->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
     if (qobject_cast<OBlockManager*>(om->self())) {
         oblockManager = (OBlockManager*) om->self();
         if (m != nullptr) { // model
             m->setManager(oblockManager);
         }
     }
-    oblockManager->addPropertyChangeListener((PropertyChangeListener*)this);
+    oblockManager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 }
 
 // add the 3 buttons to add new OBlock, Portal, Signal

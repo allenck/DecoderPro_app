@@ -67,11 +67,11 @@ void JInputValidator::common(JComponent* component, bool onInput, bool isVerifyi
  return new Validation(Validation::Type::NONE, getToolTipText(), preferences);    }
 
 /*public*/ void JInputValidator::addPropertyChangeListener(PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(listener);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /*public*/ void JInputValidator::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 /*public*/ void JInputValidator::removePropertyChangeListener(PropertyChangeListener* listener) {

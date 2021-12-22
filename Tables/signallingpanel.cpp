@@ -1703,7 +1703,7 @@ void SignallingPanel::editDetails(){
     }
 
     /*public*/ void SPTableModel::dispose() {
-        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener(this);
+        InstanceManager::turnoutManagerInstance()->PropertyChangeSupport::removePropertyChangeListener(this);
     }
 
     /*public*/ QVariant SPTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -1751,7 +1751,7 @@ void SignallingPanel::editDetails(){
     BlockModel::BlockModel(SignallingPanel* signallingPanel) : SPTableModel(signallingPanel)
     {
      BlockManager* mgr = qobject_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")); //.addPropertyChangeListener(this);
-     mgr->addPropertyChangeListener(this);
+     mgr->PropertyChangeSupport::addPropertyChangeListener(this);
      connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 
@@ -2242,7 +2242,7 @@ void SignallingPanel::editDetails(){
     {
      if (signallingPanel->sml!=NULL)
      {
-//            ((DefaultSignalMastLogic*)sml)->addPropertyChangeListener(this);
+//            ((DefaultSignalMastLogic*)sml)->PropertyChangeSupport::addPropertyChangeListener(this);
       DefaultSignalMastLogic* l = (DefaultSignalMastLogic*)signallingPanel->sml;
       connect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
@@ -2305,7 +2305,7 @@ void SignallingPanel::editDetails(){
      //this->self = self;
      if (this->signallingPanel->sml!=NULL)
      {
-      //((DefaultSignalMastLogic*)sml)->addPropertyChangeListener(this);
+      //((DefaultSignalMastLogic*)sml)->PropertyChangeSupport::addPropertyChangeListener(this);
       DefaultSignalMastLogic* l = (DefaultSignalMastLogic*)this->signallingPanel->sml;
       connect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }

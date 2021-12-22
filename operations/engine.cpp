@@ -385,8 +385,8 @@ namespace Operations
  }
 
  /*private*/ void Engine::addPropertyChangeListeners() {
-  ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->addPropertyChangeListener(this);
-  ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->addPropertyChangeListener(this);
+  ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
+  ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->PropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  /*public*/ void Engine::propertyChange(PropertyChangeEvent* e)

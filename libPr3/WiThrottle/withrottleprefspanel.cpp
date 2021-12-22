@@ -67,7 +67,7 @@ void WiThrottlePrefsPanel::common()
     turnoutCB->setChecked(localPrefs->isAllowTurnout());
     routeCB->setChecked(localPrefs->isAllowRoute());
     consistCB->setChecked(localPrefs->isAllowConsist());
-//    InstanceManager::getDefault("StartupActionsManager")->addPropertyChangeListener((PropertyChangeEvent* evt) -> {
+//    InstanceManager::getDefault("StartupActionsManager")->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeEvent* evt) -> {
 //        startupCB->setChecked(isStartUpAction());
 //    });
     wifiRB->setChecked(localPrefs->isUseWiFiConsist());

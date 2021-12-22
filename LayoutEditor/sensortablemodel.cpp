@@ -27,7 +27,7 @@
  log = new Logger("SensorTableModel");
 
     init();
-    ((AbstractManager*)getManager()->self())->addPropertyChangeListener((PropertyChangeListener*)this);
+    ((AbstractManager*)getManager()->self())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 //    ProxySensorManager* a = (ProxySensorManager*)getManager();
 //    connect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
@@ -45,7 +45,7 @@
 }
 
 /*public*/ void SensorTableModel::dispose() {
- ((AbstractManager*)getManager()->self())->removePropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractManager*)getManager()->self())->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
 // ProxySensorManager* a = (ProxySensorManager*)getManager();
 // disconnect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }

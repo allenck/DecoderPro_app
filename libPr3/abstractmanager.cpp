@@ -252,7 +252,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
  if (userName != NULL) _tuser->insert(userName, s);
  firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
  // listen for name and state changes to forward
- s->addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
+ s->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
  
  if(qobject_cast<TreeModel*>(s) != NULL)
  {
@@ -534,7 +534,7 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
 
 ///*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
 //{
-// pcs->addPropertyChangeListener(l);
+// pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 // //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //}
 
@@ -546,20 +546,20 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
 //@Override
 //@OverridingMethodsMustInvokeSuper
 ///*public*/ void AbstractManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-//    pcs->addPropertyChangeListener(propertyName, listener);
+//    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 //}
 
-/*public*/ QVector<PropertyChangeListener *> AbstractManager::getPropertyChangeListeners()
-{
- return getPropertyChangeListeners();
-}
+///*public*/ QVector<PropertyChangeListener *> AbstractManager::getPropertyChangeListeners()
+//{
+// return getPropertyChangeListeners();
+//}
 
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<PropertyChangeListener*> AbstractManager::getPropertyChangeListeners(QString propertyName) {
-    return getPropertyChangeListeners(propertyName);
-}
+///** {@inheritDoc} */
+////@Override
+////@OverridingMethodsMustInvokeSuper
+///*public*/ QVector<PropertyChangeListener*> AbstractManager::getPropertyChangeListeners(QString propertyName) {
+//    return getPropertyChangeListeners(propertyName);
+//}
 
 /** {@inheritDoc} */
 //@Override

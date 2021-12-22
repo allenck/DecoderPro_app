@@ -29,7 +29,7 @@ public:
      *
      * @param listener The VetoableChangeListener to be added
      */
-  virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* listener) {}
+  virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* /*listener*/) {}
 
     /**
      * Add a {@link java.beans.VetoableChangeListener} for a specific property.
@@ -37,7 +37,7 @@ public:
      * @param propertyName The name of the property to listen on.
      * @param listener     The VetoableChangeListener to be added
      */
-    virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* listener) {}
+    virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* /*listener*/) {}
 
     /**
      * Get all {@link java.beans.VetoableChangeListener}s currently attached to
@@ -63,7 +63,7 @@ public:
      *
      * @param listener The {@link java.beans.VetoableChangeListener} to remove.
      */
-    virtual /*public*/ void removeVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* listener) {}
+    virtual /*public*/ void removeVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* /*listener*/) {}
 
     /**
      * Remove the specified listener of the specified property from this object.

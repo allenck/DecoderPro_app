@@ -690,7 +690,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     SignalGroupTurnoutModel::SignalGroupTurnoutModel(SignalGroupSubTableAction* act)
     {
         this->act = act;
-        ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->addPropertyChangeListener((PropertyChangeListener*)this);
+        ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     }
 
     /*public*/ int SignalGroupTurnoutModel::rowCount(const QModelIndex &/*parent*/) const
@@ -772,7 +772,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     SignalGroupSensorModel::SignalGroupSensorModel(SignalGroupSubTableAction* act)
     {
      this->act = act;
-        ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->addPropertyChangeListener((PropertyChangeListener*)this);
+        ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     }
 
     /*public*/ int SignalGroupSensorModel::rowCount(const QModelIndex &/*parent*/) const

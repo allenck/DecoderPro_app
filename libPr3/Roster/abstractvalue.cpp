@@ -89,7 +89,7 @@ AbstractValue::AbstractValue(QObject *parent) :
 
 /*public*/ void AbstractValue::addPropertyChangeListener(PropertyChangeListener* p)
 {
- prop->addPropertyChangeListener(p);
+ prop->PropertyChangeSupport::addPropertyChangeListener(p);
 }
 
 /*public*/ void AbstractValue::removePropertyChangeListener(PropertyChangeListener* p)

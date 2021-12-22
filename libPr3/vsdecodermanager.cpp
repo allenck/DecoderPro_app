@@ -422,7 +422,7 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
     //	    reporterManagerPropertyChange(event);
     //	}
     //   });
-    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
+    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
     // Now, the Reporter Table might already be loaded and filled out, so we need to get all the Reporters and list them.
     // And add ourselves as a listener to them.

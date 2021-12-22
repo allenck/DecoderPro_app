@@ -19,7 +19,7 @@
 
     RouteSensorModel::RouteSensorModel(AbstractRouteAddEditFrame* routeAddFrame, QObject* parent) : RouteOutputModel(parent) {
         this->routeAddFrame = routeAddFrame;
-        InstanceManager::sensorManagerInstance()->addPropertyChangeListener((PropertyChangeListener*)this);
+        InstanceManager::sensorManagerInstance()->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     }
 
     //@Override

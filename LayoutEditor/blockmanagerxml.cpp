@@ -245,15 +245,17 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
    }
   }
  }
- catch (JmriException ex)
+ catch (IllegalArgumentException ex)
  {
   log->error(ex.getMessage());
  }
 
  QDomNodeList list = sharedBlocks.elementsByTagName("block");
- if (log->isDebugEnabled()) log->debug("Found "+QString::number(list.size())+" objects");
- //BlockManager tm = InstanceManager.blockManagerInstance();
+ if (log->isDebugEnabled())
+  log->debug("Found "+QString::number(list.size())+" objects");
 
+ ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setPropertyChangesSilenced("beans", true);
+ // first pass don't load full contents (just create all the blocks)
  for (int i=0; i<list.size(); i++)
  {
   QDomElement block = list.at(i).toElement();
@@ -266,6 +268,8 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
   QDomElement block = list.at(i).toElement();
      loadBlock(block, true);
  }
+ ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setPropertyChangesSilenced("beans", false);
+
  return result;
 }
 

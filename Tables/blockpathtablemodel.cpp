@@ -54,7 +54,7 @@ void BlockPathTableModel::common()
 /*public*/ void BlockPathTableModel::init()
 {
  initTempRow();
- //_block->addPropertyChangeListener(this);
+ //_block->PropertyChangeSupport::addPropertyChangeListener(this);
  connect(_block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

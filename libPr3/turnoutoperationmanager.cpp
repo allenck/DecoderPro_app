@@ -336,7 +336,7 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  */
 /*public synchronized*/ void TurnoutOperationManager::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->addPropertyChangeListener(l);
+ pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 /*public synchronized */void TurnoutOperationManager::removePropertyChangeListener(PropertyChangeListener* l)
 {

@@ -44,7 +44,7 @@
         }
         TimeoutRfidReporter* r;
         r = new TimeoutRfidReporter(systemName, userName);
-        //r->addPropertyChangeListener(this);
+        //r->PropertyChangeSupport::addPropertyChangeListener(this);
         connect(r, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         return r;
     }

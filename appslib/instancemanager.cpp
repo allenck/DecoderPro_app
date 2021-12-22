@@ -640,7 +640,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  * @param l The listener to add
  */
 /*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    getDefault()->pcs->addPropertyChangeListener(l);
+    getDefault()->pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /**
@@ -650,7 +650,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  * @param l            The listener to add
  */
 /*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l) {
-    getDefault()->pcs->addPropertyChangeListener(propertyName, l);
+    getDefault()->pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, l);
 }
 
 

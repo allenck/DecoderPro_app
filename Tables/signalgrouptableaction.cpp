@@ -1056,7 +1056,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
 
     /*public*/ void ATSignalMastAppearanceModel::dispose()
 {
- static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->removePropertyChangeListener((PropertyChangeListener*)this);
+ static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
 }
 
 /*public*/ void ATSignalMastAppearanceModel::propertyChange(PropertyChangeEvent* e)
@@ -1231,7 +1231,7 @@ this->act = act;
 //{
 SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *act) : SignalGroupOutputModel(act)
 {
- static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
+ static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  editMapper = new QSignalMapper;
@@ -1411,7 +1411,7 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
  return false;
 }
     /*public*/ void SignalGroupSignalHeadModel::dispose() {
-        static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->removePropertyChangeListener((PropertyChangeListener*)this);
+        static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
     }
 //};
 

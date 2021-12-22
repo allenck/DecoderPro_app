@@ -12,8 +12,8 @@ DefaultRouteManager::DefaultRouteManager(InternalSystemConnectionMemo* memo, QOb
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
 
- InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
- InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::turnoutManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::sensorManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
 
 }
 /**

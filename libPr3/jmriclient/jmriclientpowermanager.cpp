@@ -67,7 +67,7 @@
 
 //@Override
 /*public*/  void JMRIClientPowerManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*protected*/ void JMRIClientPowerManager::firePropertyChange(QString p, QVariant old, QVariant n) {

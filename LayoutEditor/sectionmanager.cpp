@@ -17,8 +17,8 @@ SectionManager::SectionManager(QObject *parent) :
  registerSelf();
  setProperty("InstanceManagerAutoDefault", "yes");
 
- ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
- ((BlockManager*)InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ ((SensorManager*)InstanceManager::getDefault("SensorManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+ ((BlockManager*)InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
 
 }
 /**

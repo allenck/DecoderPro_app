@@ -109,7 +109,7 @@ namespace Operations
 
      setDirtyAndFirePropertyChange(LISTCHANGE_CHANGED_PROPERTY, old, (_scheduleHashTable.size()));
      // listen for set out and pick up changes to forward
-     //si->addPropertyChangeListener(this);
+     //si->PropertyChangeSupport::addPropertyChangeListener(this);
      connect(si->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      return si;
  }

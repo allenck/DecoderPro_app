@@ -1547,7 +1547,7 @@ LnIplImplementationTest::LnIplImplementationTest(QObject *parent) : QObject(pare
 //                propChangeFlag = true;
 //            }
 //        };
-        iplImplementation->pcs->addPropertyChangeListener(l);
+        iplImplementation->pcs->PropertyChangeSupport::addPropertyChangeListener(l);
         LocoNetMessage* m2;
         propChangeFlag = false;
         propChangeQueryFlag = false;

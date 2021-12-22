@@ -482,13 +482,13 @@ return getLength().toInt();
   {
    _location->addRS(this);
    // Need to know if location name changes so we can forward to listeners
-  _location->addPropertyChangeListener(this);
+  _location->PropertyChangeSupport::addPropertyChangeListener(this);
   }
   if (_trackLocation != NULL)
   {
    _trackLocation->addRS(this);
    // Need to know if location name changes so we can forward to listeners
-   _trackLocation->addPropertyChangeListener(this);
+   _trackLocation->PropertyChangeSupport::addPropertyChangeListener(this);
    // if there's a destination then there's a pick up
    if (_destination != NULL)
    {

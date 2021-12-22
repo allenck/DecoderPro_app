@@ -45,11 +45,11 @@
     runWhenStablised = false;
     propertyBlockManagerListener = new PropertyBlockManagerListener(this);
     registerSelf();
-//    InstanceManager::layoutBlockManagerInstance()->addPropertyChangeListener(propertyBlockManagerListener);
+//    InstanceManager::layoutBlockManagerInstance()->PropertyChangeSupport::addPropertyChangeListener(propertyBlockManagerListener);
     connect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockManagerListener, SLOT(propertyChange(PropertyChangeEvent*)));
-    ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->addPropertyChangeListener(propertyBlockManagerListener);
-    ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
-    InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+    ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->PropertyChangeSupport::addPropertyChangeListener(propertyBlockManagerListener);
+    ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+    InstanceManager::turnoutManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
     //_speedMap = jmri.implementation.SignalSpeedMap.getMap();
 }
 
@@ -288,7 +288,7 @@
 ///*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::addPropertyChangeListener(PropertyChangeListener* l) {
 //    QMutexLocker locker(&mutex);
 
-//    pcs->addPropertyChangeListener(l);
+//    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 //}
 ///*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::removePropertyChangeListener(PropertyChangeListener* l) {
 //    QMutexLocker locker(&mutex);

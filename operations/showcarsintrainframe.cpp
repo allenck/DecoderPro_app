@@ -143,7 +143,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          setTitle(tr("TitleShowCarsInTrain") + " (" + _train->getName() + ")");
 
          // listen for train changes
-         //_train->addPropertyChangeListener(this);
+         //_train->PropertyChangeSupport::addPropertyChangeListener(this);
          connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
 

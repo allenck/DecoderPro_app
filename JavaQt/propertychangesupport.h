@@ -5,10 +5,13 @@
 #include "propertychangelistenermap.h"
 #include "javaqt_global.h"
 #include "logger.h"
+#include "propertychangeprovider.h"
 
-class JAVAQTSHARED_EXPORT PropertyChangeSupport : public QObject
+
+class JAVAQTSHARED_EXPORT PropertyChangeSupport : public QObject , public PropertyChangeProvider
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeProvider)
  public:
  //    explicit PropertyChangeSupport(QObject *parent = 0);
  /**
@@ -27,7 +30,7 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport : public QObject
   *
   * @param listener  The PropertyChangeListener to be added
   */
- virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
+  /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener) override;
  /**
   * Remove a PropertyChangeListener from the listener list.
   * This removes a PropertyChangeListener that was registered
@@ -39,7 +42,7 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport : public QObject
   *
   * @param listener  The PropertyChangeListener to be removed
   */
- virtual /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
+  /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener) override;
  /**
   * Returns an array of all the listeners that were added to the
   * PropertyChangeSupport object with addPropertyChangeListener().
@@ -71,7 +74,7 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport : public QObject
   *         empty array if no listeners have been added
   * @since 1.4
   */
- virtual /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners();
+ /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners() override;
  /**
   * Add a PropertyChangeListensourceer for a specific property.  The listener
   * will be invoked only when a call on firePropertyChange names that
@@ -85,9 +88,9 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport : public QObject
   * @param propertyName  The name of the property to listen on.
   * @param listener  The PropertyChangeListener to be added
   */
- virtual /*public*/ void addPropertyChangeListener(
+  /*public*/ void addPropertyChangeListener(
              QString propertyName,
-             PropertyChangeListener* listener);
+             PropertyChangeListener* listener) override;
  /**
   * Remove a PropertyChangeListener for a specific property.
   * If <code>listener</code> was added more than once to the same event
@@ -101,9 +104,9 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport : public QObject
   * @param propertyName  The name of the property that was listened on.
   * @param listener  The PropertyChangeListener to be removed
   */
- virtual /*public*/ void removePropertyChangeListener(
+ /*public*/ void removePropertyChangeListener(
              QString propertyName,
-             PropertyChangeListener* listener);
+             PropertyChangeListener* listener) override;
  /**
   * Returns an array of all the listeners which have been associated
   * with the named property.
@@ -115,7 +118,7 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport : public QObject
   *         returned.
   * @since 1.4
   */
- virtual /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners(QString propertyName);
+ /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners(QString propertyName) override;
  /**
   * Reports a bound property update to listeners
   * that have been registered to track updates of

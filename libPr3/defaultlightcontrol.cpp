@@ -313,7 +313,7 @@
 
         // register LightControl with Parent Light to indicate Control
         // in use if user attempts to delete light
-//        _parentLight->addPropertyChangeListener(
+//        _parentLight->PropertyChangeSupport::addPropertyChangeListener(
 //            _parentLightListener = (PropertyChangeEvent e) -> {
 //        },_parentLight.toString(), getDescriptionText("") );
         ((AbstractNamedBean*)_parentLight->self())->addPropertyChangeListener(new LC1PropertyChangeListener(this), ((AbstractNamedBean*)_parentLight->self())->getDisplayName(), getDescriptionText("") );
@@ -442,7 +442,7 @@
      */
     /*private*/ PropertyChangeListener* DefaultLightControl::addTwoSensorListener(Sensor* sensor) {
         PropertyChangeListener* pcl;
-//        sensor->addPropertyChangeListener(
+//        sensor->PropertyChangeSupport::addPropertyChangeListener(
 //            pcl = (PropertyChangeEvent e) -> {
 //                if (e.getPropertyName() == ("KnownState")) {
 //                    twoSensorChanged();
@@ -457,7 +457,7 @@
      *
      */
     /*private*/ void DefaultLightControl::addNamedTimedControlListener(){
-//        _namedTimedControlSensor->getBean()->addPropertyChangeListener(
+//        _namedTimedControlSensor->getBean()->PropertyChangeSupport::addPropertyChangeListener(
 //            _timedSensorListener = (PropertyChangeEvent e) -> {
 //                if (e.getPropertyName() == ("KnownState")
 //                    && (int) e.getNewValue() == Sensor::ACTIVE

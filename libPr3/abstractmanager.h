@@ -90,17 +90,17 @@ public:
 //    /*public synchronized */ void addPropertyChangeListener(PropertyChangeListener* l) override;
 //    /*public synchronized*/  void removePropertyChangeListener(PropertyChangeListener* l) override;
 //    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
+//    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
 //    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
 
-    /**
-     * Get all {@link java.beans.PropertyChangeListener}s currently attached to
-     * this object.
-     *
-     * @return An array of PropertyChangeListeners.
-     */
-    //@Nonnull
-    /*public*/  QVector<PropertyChangeListener *> getPropertyChangeListeners() override;
+//    /**
+//     * Get all {@link java.beans.PropertyChangeListener}s currently attached to
+//     * this object.
+//     *
+//     * @return An array of PropertyChangeListeners.
+//     */
+//    //@Nonnull
+//    /*public*/  QVector<PropertyChangeListener *> getPropertyChangeListeners() override;
 
     /**
      * By default, register this manager to store as configuration
@@ -110,29 +110,20 @@ public:
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
 
     /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override; //throws NamedBean.BadSystemNameException
-//    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
-//    /*public*/ /*synchronized*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* l) override;
-//    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l) override;
-//    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
-//    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
-//    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
     /*public*/  QString getSystemPrefix() const /*final*/ override;
+    /*public*/ void setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced) override;
     /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName) const override;
     /*public*/ void setDataListenerMute(bool m);
     /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e) override;
     /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e) override;
-//    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s);
-//    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors);
     /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale()) const override;
     /*public*/ virtual SystemConnectionMemo* getMemo() const override;
-//    /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
     /*public*/ void updateAutoNumber(QString systemName) const;
     /*public*/ QString getAutoSystemName()const;
 
     QObject* self() override{return (QObject*)this;}
     QString getNamedBeanClass() const override{return "AbstractManager";}
     int getXMLOrder() const override {return 0;}
-    /*public*/ void setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced);
     /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
     QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
     QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException);

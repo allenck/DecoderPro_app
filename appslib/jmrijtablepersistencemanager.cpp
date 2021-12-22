@@ -57,9 +57,9 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
 #if 1
   //if (!Arrays.asList(table->getPropertyChangeListeners()).contains(this))
   {
-   //table->addPropertyChangeListener(this);
+   //table->PropertyChangeSupport::addPropertyChangeListener(this);
    connect(table, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   //table->addPropertyChangeListener(listener);
+   //table->PropertyChangeSupport::addPropertyChangeListener(listener);
    connect(table, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
    if(qobject_cast<TableColumnModelListener*>(listener))
     table->getColumnModel()->addColumnModelListener(listener);

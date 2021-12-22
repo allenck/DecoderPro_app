@@ -1476,7 +1476,7 @@ void SectionTableAction::OnRemoveDirSensors()
 {
     //super();
 this->act = act;
-    act->blockManager->addPropertyChangeListener((PropertyChangeListener*)this);
+    act->blockManager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     connect(act->blockManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

@@ -62,7 +62,7 @@
 inHex = true;
 // references to external resources
 liodata = ldata;
-//ldata->addPropertyChangeListener(this);
+//ldata->PropertyChangeSupport::addPropertyChangeListener(this);
 connect(ldata, SIGNAL(notifyPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

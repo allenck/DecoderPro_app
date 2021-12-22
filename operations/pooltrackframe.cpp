@@ -96,8 +96,8 @@ common();
    // the following code sets the frame's initial state
    //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
    QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
-   _track->addPropertyChangeListener(this);
-   _track->getLocation()->addPropertyChangeListener(this);
+   _track->PropertyChangeSupport::addPropertyChangeListener(this);
+   _track->getLocation()->PropertyChangeSupport::addPropertyChangeListener(this);
 
    _pool = _track->getPool();
 

@@ -47,7 +47,7 @@ ComboCheckBox::ComboCheckBox(QComboBox* box, EnumVariableValue* var) {
 //        }
 //    });
     // listen for changes to original state
-    //_var->addPropertyChangeListener(p1 = new PropertyChangeListener());
+    //_var->PropertyChangeSupport::addPropertyChangeListener(p1 = new PropertyChangeListener());
     connect(_var, SIGNAL(valueChanged(int)), this, SLOT(originalActionPerformed()));
 //    {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {

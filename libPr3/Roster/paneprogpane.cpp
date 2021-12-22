@@ -1889,7 +1889,7 @@ MyQualifierAdder::MyQualifierAdder(JLabel *l, PaneProgPane *self) : QualifierAdd
 }
 /*protected*/ void MyQualifierAdder::addListener(PropertyChangeListener* qc)
 {
- //l->addPropertyChangeListener(qc);
+ //l->PropertyChangeSupport::addPropertyChangeListener(qc);
     // TODO:
 }
 
@@ -3185,7 +3185,7 @@ void PaneProgPane::On_confirmAllButtonClicked()
 }
 void PaneProgPane::addPropertyChangeListener(PropertyChangeListener* /*l*/)
 {
-// pcs->addPropertyChangeListener(l);
+// pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 void PaneProgPane::removePropertyChangeListener(PropertyChangeListener* /*l*/)
 {

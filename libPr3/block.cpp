@@ -198,7 +198,7 @@
   _namedSensor = s;
 
   if (_namedSensor != nullptr) {
-//      getSensor()->addPropertyChangeListener(_sensorListener = (PropertyChangeEvent e) -> {
+//      getSensor()->PropertyChangeSupport::addPropertyChangeListener(_sensorListener = (PropertyChangeEvent e) -> {
 //          handleSensorChange(e);
 //      }, s.getName(), "Block Sensor " + getDisplayName());
 //      _current = getSensor()->getState();
@@ -247,7 +247,7 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
  if (_reporter != NULL)
  {
   // attach listener
- // _reporter->addPropertyChangeListener(_reporterListener = new PropertyChangeListener());
+ // _reporter->PropertyChangeSupport::addPropertyChangeListener(_reporterListener = new PropertyChangeListener());
 
 // #if 0
 //  {

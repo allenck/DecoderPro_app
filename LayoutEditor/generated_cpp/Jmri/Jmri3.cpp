@@ -20,7 +20,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qmetaobject.h>
 #include <qobject.h>
 #include <qstringlist.h>
@@ -5299,28 +5298,6 @@ PythonQtShell_Throttle::~PythonQtShell_Throttle() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-void PythonQtShell_Throttle::addPropertyChangeListener(PropertyChangeListener*  arg__1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("addPropertyChangeListener");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "PropertyChangeListener*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&arg__1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  Throttle::addPropertyChangeListener(arg__1);
-}
 bool  PythonQtShell_Throttle::getF0()
 {
 if (_wrapper) {
@@ -7532,28 +7509,6 @@ if (_wrapper) {
 }
   return Throttle::getSpeedSetting();
 }
-void PythonQtShell_Throttle::removePropertyChangeListener(PropertyChangeListener*  arg__1)
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("removePropertyChangeListener");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"" , "PropertyChangeListener*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&arg__1};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  Throttle::removePropertyChangeListener(arg__1);
-}
 QObject*  PythonQtShell_Throttle::self()
 {
 if (_wrapper) {
@@ -9021,11 +8976,6 @@ Throttle* PythonQtWrapper_Throttle::new_Throttle()
 { 
 return new PythonQtShell_Throttle(); }
 
-void PythonQtWrapper_Throttle::addPropertyChangeListener(Throttle* theWrappedObject, PropertyChangeListener*  arg__1)
-{
-  ( theWrappedObject->addPropertyChangeListener(arg__1));
-}
-
 bool  PythonQtWrapper_Throttle::getF0(Throttle* theWrappedObject)
 {
   return ( theWrappedObject->getF0());
@@ -9369,11 +9319,6 @@ BasicRosterEntry*  PythonQtWrapper_Throttle::getRosterEntry(Throttle* theWrapped
 float  PythonQtWrapper_Throttle::getSpeedSetting(Throttle* theWrappedObject)
 {
   return ( theWrappedObject->getSpeedSetting());
-}
-
-void PythonQtWrapper_Throttle::removePropertyChangeListener(Throttle* theWrappedObject, PropertyChangeListener*  arg__1)
-{
-  ( theWrappedObject->removePropertyChangeListener(arg__1));
 }
 
 QObject*  PythonQtWrapper_Throttle::self(Throttle* theWrappedObject)
@@ -13655,11 +13600,6 @@ int PythonQtShell_TurnoutOperation::qt_metacall(QMetaObject::Call call, int id, 
   int result = TurnoutOperation::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-void PythonQtWrapper_TurnoutOperation::addPropertyChangeListener(TurnoutOperation* theWrappedObject, PropertyChangeListener*  l)
-{
-  ( theWrappedObject->addPropertyChangeListener(l));
-}
-
 int  PythonQtWrapper_TurnoutOperation::compareTo(TurnoutOperation* theWrappedObject, QObject*  other)
 {
   return ( theWrappedObject->compareTo(other));
@@ -13718,11 +13658,6 @@ TurnoutOperation*  PythonQtWrapper_TurnoutOperation::makeNonce(TurnoutOperation*
 bool  PythonQtWrapper_TurnoutOperation::matchFeedbackMode(TurnoutOperation* theWrappedObject, int  mode)
 {
   return ( theWrappedObject->matchFeedbackMode(mode));
-}
-
-void PythonQtWrapper_TurnoutOperation::removePropertyChangeListener(TurnoutOperation* theWrappedObject, PropertyChangeListener*  l)
-{
-  ( theWrappedObject->removePropertyChangeListener(l));
 }
 
 bool  PythonQtWrapper_TurnoutOperation::rename(TurnoutOperation* theWrappedObject, QString  newName)

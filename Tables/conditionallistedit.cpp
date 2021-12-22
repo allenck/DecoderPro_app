@@ -4411,7 +4411,7 @@ void ConditionalListEdit::actionSignalMastNameListener() // SLOT[]
  //super();
  _self = (ConditionalListEdit*)parent;
 
- ((DefaultConditionalManager*)_self->_conditionalManager)->addPropertyChangeListener((PropertyChangeListener*)this);
+ ((DefaultConditionalManager*)_self->_conditionalManager)->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
  updateConditionalListeners();
 }

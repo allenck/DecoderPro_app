@@ -2915,7 +2915,7 @@ protected PropertyChangeListener propertySignalMastLogicManagerListener = new Pr
 /*public*/ /*synchronized*/ void DefaultSignalMastLogic::addPropertyChangeListener(PropertyChangeListener* l)
 {
  QMutexLocker locker(&mutex);
- pcs->addPropertyChangeListener(l);
+ pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 /*public*/ /*synchronized*/ void DefaultSignalMastLogic::removePropertyChangeListener(PropertyChangeListener* l)
 {

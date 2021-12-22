@@ -697,7 +697,7 @@ AbstractThrottleTest::AbstractThrottleTest(QObject *parent) : QObject(parent)
 //@Test
 /*public*/ void AbstractThrottleTest::testAddPropertyChangeListener() {
     PropertyChangeListener* l = nullptr;
-    instance->addPropertyChangeListener(l);
+    instance->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /**

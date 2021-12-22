@@ -76,7 +76,7 @@ void /*public*/ BeanTableDataModel::init() // SLOT
  AbstractManager* manager = getManager();
  if(manager != NULL)
  {
-  manager->addPropertyChangeListener((PropertyChangeListener*)this);
+  manager->VetoableChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
   updateNameList();
 //  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -707,7 +707,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 
 /*synchronized*/ /*public*/ void BeanTableDataModel::dispose()
 {
- ((AbstractManager*)getManager()->self())->removePropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractManager*)getManager()->self())->VetoableChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
  if (!sysNameList.isEmpty())
  {
   for (int i = 0; i< sysNameList.size(); i++)

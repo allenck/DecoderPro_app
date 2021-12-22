@@ -128,7 +128,7 @@ void RosterFrame::common()
 // }
 // this->rosterGroupSource = rosterGroupSource;
 // if (this->rosterGroupSource != NULL) {
-//     this->rosterGroupSource->addPropertyChangeListener(SELECTED_ROSTER_GROUP, dataModel);
+//     this->rosterGroupSource->PropertyChangeSupport::addPropertyChangeListener(SELECTED_ROSTER_GROUP, dataModel);
 //  //connect(rosterGroupSource, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 // }
  ui->rtable->setItemDelegateForColumn(RosterTableModel::ICONCOL, new ImageDelegate(this));
@@ -193,7 +193,7 @@ void RosterFrame::common()
  connect(identifyLoco, SIGNAL(clicked()), this, SLOT(startIdentifyLoco()));
 
  PowerManager* pmgr = (PowerManager*) InstanceManager::getDefault("PowerManager");
- //pmgr->addPropertyChangeListener(new PwrListener(this));
+ //pmgr->PropertyChangeSupport::addPropertyChangeListener(new PwrListener(this));
  togglePower = new QToolButton( this);
  togglePower->setIcon(QIcon(":/resources/icons/throttles/power_yellow.png"));
  togglePower->setText(tr("Power unknown"));
@@ -252,7 +252,7 @@ void RosterFrame::common()
 // cbProgrammers->addItem("Zimo");
 // connect(cbProgrammers, SIGNAL(currentIndexChanged(QString)), this, SLOT(On_cbProgrammers_currentIndexChanged(QString)));
  roster = Roster::getDefault();
- //roster->addPropertyChangeListener((PropertyChangeListener*)this);
+ //roster->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  connect(roster->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  list = roster->getEntriesMatchingCriteria("","","","","","","","");
@@ -667,7 +667,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
 
 #endif
  updateProgrammerStatus(NULL);
-// ConnectionStatus::instance()->addPropertyChangeListener(new PropertyChangeListener());
+// ConnectionStatus::instance()->PropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener());
 //    {
 ////        @Override
 //        public void propertyChange(PropertyChangeEvent e) {
@@ -693,7 +693,7 @@ void RosterFrame::on_actionNew_Throttle_triggered()
  if (this->getProgrammerConfigManager()->getDefaultFile() != "") {
      programmer1 = this->getProgrammerConfigManager()->getDefaultFile();
  }
- //this->getProgrammerConfigManager()->addPropertyChangeListener(ProgrammerConfigManager::DEFAULT_FILE, (PropertyChangeEvent evt) -> {
+ //this->getProgrammerConfigManager()->PropertyChangeSupport::addPropertyChangeListener(ProgrammerConfigManager::DEFAULT_FILE, (PropertyChangeEvent evt) -> {
  connect(this->getProgrammerConfigManager()->propertyChangeSupport, &PropertyChangeSupport::propertyChange, [=]{
      if (this->getProgrammerConfigManager()->getDefaultFile() != "") {
          programmer1 = this->getProgrammerConfigManager()->getDefaultFile();

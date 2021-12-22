@@ -596,7 +596,7 @@ void JFrame::setVisible(bool visible)
 
 /*public*/ void JFrame::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->addPropertyChangeListener(l);
+ pcs->PropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*public*/ void JFrame::removePropertyChangeListener(PropertyChangeListener* l)
